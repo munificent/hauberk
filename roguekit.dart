@@ -20,7 +20,25 @@ void set running(bool value) {
 
 main() {
   terminal = new DomTerminal(90, 30, document.query('#terminal'));
-  terminal.rect(3, 10, 8, 4).write('hello there', color: Color.RED);
+  terminal.writeAt(4,  3, 'white',  color: Color.WHITE);
+
+  terminal.writeAt(4,  4, 'gray',  color: Color.GRAY);
+  terminal.writeAt(4,  5, 'red',    color: Color.RED);
+  terminal.writeAt(4,  6, 'orange', color: Color.ORANGE);
+  terminal.writeAt(4,  7, 'yellow', color: Color.YELLOW);
+  terminal.writeAt(4,  8, 'green',  color: Color.GREEN);
+  terminal.writeAt(4,  9, 'aqua',   color: Color.AQUA);
+  terminal.writeAt(4, 10, 'blue',   color: Color.BLUE);
+  terminal.writeAt(4, 11, 'purple', color: Color.PURPLE);
+
+  terminal.writeAt(14,  4, 'dark gray',   color: Color.DARK_GRAY);
+  terminal.writeAt(14,  5, 'dark red',    color: Color.DARK_RED);
+  terminal.writeAt(14,  6, 'dark orange', color: Color.DARK_ORANGE);
+  terminal.writeAt(14,  7, 'dark yellow', color: Color.DARK_YELLOW);
+  terminal.writeAt(14,  8, 'dark green',  color: Color.DARK_GREEN);
+  terminal.writeAt(14,  9, 'dark aqua',   color: Color.DARK_AQUA);
+  terminal.writeAt(14, 10, 'dark blue',   color: Color.DARK_BLUE);
+  terminal.writeAt(14, 11, 'dark purple', color: Color.DARK_PURPLE);
   terminal.render();
 
   document.on.click.add((event) => running = !running);
