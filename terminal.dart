@@ -10,19 +10,13 @@ interface Terminal {
 
 class DomTerminal implements Terminal {
   final Element element;
-  final List<Glyph> glyphs;
+  final Array2D<Glyph> glyphs;
 
-  final int width;
-  final int height;
+  DomTerminal(int width, int height, this.element)
+    : glyphs = new Array2D<Glyph>(width, height, () => new Glyph()) {}
 
-  DomTerminal(this.width, this.height, this.element)
-    : glyphs = <Glyph>[] {
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        glyphs.add(new Glyph());
-      }
-    }
-  }
+  int get width() => glyphs.width;
+  int get height() => glyphs.height;
 
   render() {
     final buffer = new StringBuffer();
@@ -30,7 +24,7 @@ class DomTerminal implements Terminal {
     var color = null;
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        final glyph = glyphs[y * width + x];
+        final glyph = glyphs.get(x, y);
 
         // Switch colors.
         if (glyph.color != color) {
@@ -60,7 +54,7 @@ class DomTerminal implements Terminal {
     // TODO(bob): Bounds check.
     for (int i = 0; i < text.length; i++) {
       if (x + i >= width) break;
-      glyphs[y * width + x + i].set(text[i], color);
+      glyphs.get(x, y).set(text[i], color);
     }
   }
 
