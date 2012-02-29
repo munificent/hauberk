@@ -15,7 +15,6 @@ bool _running = false;
 
 bool get running() => _running;
 void set running(bool value) {
-  print(value);
   if (_running != value) {
     _running = value;
     if (_running) {
@@ -30,7 +29,7 @@ main() {
 
   render();
 
-  document.on.click.add((event) => running = !running);
+  document.on.click.add((event) => running = !running, true);
 
   window.webkitRequestAnimationFrame(tick, document);
   document.on.keyDown.add(keyPress);
@@ -53,16 +52,16 @@ tick(time) {
 keyPress(event) {
   switch (event.keyCode) {
     case KeyCode.UP:
-      game.actors[0].y--;
+      game.hero.y--;
       break;
     case KeyCode.DOWN:
-      game.actors[0].y++;
+      game.hero.y++;
       break;
     case KeyCode.LEFT:
-      game.actors[0].x--;
+      game.hero.x--;
       break;
     case KeyCode.RIGHT:
-      game.actors[0].x++;
+      game.hero.x++;
       break;
   }
 
@@ -91,6 +90,33 @@ render() {
 }
 
 colorTest() {
+  var colors = [
+    Color.WHITE,
+    Color.BLACK,
+    Color.GRAY,
+    Color.RED,
+    Color.ORANGE,
+    Color.YELLOW,
+    Color.GREEN,
+    Color.AQUA,
+    Color.BLUE,
+    Color.PURPLE,
+    Color.DARK_GRAY,
+    Color.DARK_RED,
+    Color.DARK_ORANGE,
+    Color.DARK_YELLOW,
+    Color.DARK_GREEN,
+    Color.DARK_AQUA,
+    Color.DARK_BLUE,
+    Color.DARK_PURPLE
+  ];
+
+  for (var y = 0; y < colors.length; y++) {
+    for (var x = 0; x < colors.length; x++) {
+      terminal.writeAt(x + 4, y + 2, '#', colors[y], colors[x]);
+    }
+  }
+  /*
   terminal.writeAt(4,  3, 'white',  color: Color.WHITE);
 
   terminal.writeAt(4,  4, 'gray',   color: Color.GRAY);
@@ -110,6 +136,7 @@ colorTest() {
   terminal.writeAt(14,  9, 'dark aqua',   color: Color.DARK_AQUA);
   terminal.writeAt(14, 10, 'dark blue',   color: Color.DARK_BLUE);
   terminal.writeAt(14, 11, 'dark purple', color: Color.DARK_PURPLE);
+  */
 }
 
 rand(int max) {

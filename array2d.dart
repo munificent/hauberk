@@ -6,7 +6,8 @@ class Array2D<T> {
   Array2D(width_, height_, T generator())
   : width = width_,
     height = height_,
-    elements = new List<T>(width_ * height_) {
+    elements = new List<T>(width_ * height_)
+  {
     for (int i = 0; i < width * height; i++) {
       elements[i] = generator();
     }

@@ -1,19 +1,23 @@
 /// An active entity in the game. Includes monsters and the hero.
 class Actor {
-  int x;
-  int y;
+  Pt pos;
   int energy;
 
-  Actor(this.x, this.y)
-  : energy = new Energy(Energy.NORMAL_SPEED);
+  int get x() => pos.x;
+  void set x(int value) => pos = new Pt(value, y);
 
-  void update() {
-    if (energy.update()) {
-      takeTurn();
-    }
+  int get y() => pos.y;
+  void set y(int value) => pos = new Pt(x, value);
+
+  Actor(int x, int y)
+  : pos = new Pt(x, y),
+    energy = new Energy(Energy.NORMAL_SPEED);
+
+  Action update() {
+    if (energy.update()) return takeTurn();
   }
 
-  void takeTurn() {
+  Action takeTurn() {
     // Do nothing.
   }
 }

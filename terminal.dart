@@ -13,7 +13,8 @@ class DomTerminal implements Terminal {
   final Array2D<Glyph> glyphs;
 
   DomTerminal(int width, int height, this.element)
-    : glyphs = new Array2D<Glyph>(width, height, () => new Glyph()) {}
+  : glyphs = new Array2D<Glyph>(width, height,
+      () => new Glyph(' ', Color.WHITE, Color.BLACK));
 
   int get width() => glyphs.width;
   int get height() => glyphs.height;
@@ -21,16 +22,18 @@ class DomTerminal implements Terminal {
   render() {
     final buffer = new StringBuffer();
 
-    var color = null;
+    var fore = null;
+    var back = null;
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         final glyph = glyphs.get(x, y);
 
         // Switch colors.
-        if (glyph.color != color) {
-          if (color != null) buffer.add('</span>');
-          color = glyph.color;
-          buffer.add('<span class="${color.cssClass}">');
+        if (glyph.fore != fore || glyph.back != back) {
+          if (glyph.fore != null) buffer.add('</span>');
+          fore = glyph.fore;
+          back = glyph.back;
+          buffer.add('<span class="${glyph.fore.cssClass} b${glyph.back.cssClass}">');
         }
 
         buffer.add(glyph.char);
@@ -41,20 +44,21 @@ class DomTerminal implements Terminal {
     element.innerHTML = buffer.toString();
   }
 
-  void write(String text, [Color color]) {
+  void write(String text, [Color fore, Color back]) {
     for (int x = 0; x < text.length; x++) {
       if (x >= width) break;
-      writeAt(x, 0, text[x], color);
+      writeAt(x, 0, text[x], fore, back);
     }
   }
 
-  void writeAt(int x, int y, String text, [Color color]) {
-    if (color == null) color = Color.WHITE;
+  void writeAt(int x, int y, String text, [Color fore, Color back]) {
+    if (fore == null) fore = Color.WHITE;
+    if (back == null) back = Color.BLACK;
 
     // TODO(bob): Bounds check.
     for (int i = 0; i < text.length; i++) {
       if (x + i >= width) break;
-      glyphs.get(x, y).set(text[i], color);
+      glyphs.set(x, y, new Glyph(text[i], fore, back));
     }
   }
 
@@ -74,13 +78,13 @@ class PortTerminal implements Terminal {
 
   PortTerminal(this._x, this._y, this.width, this.height, this._dom);
 
-  void write(String text, [Color color]) {
-    _dom.writeAt(_x, _y, text[i], color);
+  void write(String text, [Color fore, Color back]) {
+    _dom.writeAt(_x, _y, text[i], fore, back);
   }
 
-  void writeAt(int x, int y, String text, [Color color]) {
+  void writeAt(int x, int y, String text, [Color fore, Color back]) {
     // TODO(bob): Bounds check and crop.
-    _dom.writeAt(_x + x, _y + y, text, color);
+    _dom.writeAt(_x + x, _y + y, text, fore, back);
   }
 
   Terminal rect(int x, int y, int width, int height) {
@@ -91,6 +95,7 @@ class PortTerminal implements Terminal {
 
 class Color {
   static final WHITE       = const Color('w');
+  static final BLACK       = const Color('k');
   static final GRAY        = const Color('e');
   static final DARK_GRAY   = const Color('de');
   static final RED         = const Color('r');
@@ -114,15 +119,9 @@ class Color {
 }
 
 class Glyph {
-  String char;
-  Color  color;
+  final String char;
+  final Color  fore;
+  final Color  back;
 
-  Glyph()
-  : char = ' ',
-    color = Color.WHITE;
-
-  void set(String char, Color color) {
-    this.char = char;
-    this.color = color;
-  }
+  const Glyph(this.char, this.fore, this.back);
 }
