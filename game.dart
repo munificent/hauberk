@@ -32,11 +32,17 @@ class Game {
     }
     */
 
-    final startActor = actors.current;
     while (true) {
-      actors.current.update();
-      actors.advance();
-      if (actors.current == startActor) break;
+      if (actors.current.canTakeTurn && actors.current.needsInput) return;
+
+      if (actors.current.gainEnergy()) {
+        // TODO(bob): Double check here is gross.
+        if (actors.current.needsInput) return;
+
+        final action = actors.current.takeTurn();
+        action.perform(this, actors.current);
+        actors.advance();
+      }
     }
   }
 }

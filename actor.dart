@@ -13,9 +13,11 @@ class Actor {
   : pos = new Pt(x, y),
     energy = new Energy(Energy.NORMAL_SPEED);
 
-  Action update() {
-    if (energy.update()) return takeTurn();
-  }
+  bool get canTakeTurn() => energy.canTakeTurn;
+
+  bool gainEnergy() => energy.gain();
+
+  bool get needsInput() => false;
 
   Action takeTurn() {
     // Do nothing.
@@ -27,16 +29,39 @@ class Beetle extends Actor {
 
   void takeTurn() {
     switch (rand(4)) {
-      case 0: if (y > 0) y--; break;
-      case 1: if (y < 19) y++; break;
-      case 2: if (x > 0) x--; break;
-      case 3: if (x < 49) x++; break;
+      case 0:
+        if (y > 0) return new MoveAction(new Pt(0, -1));
+        break;
+
+      case 1:
+        if (y < 19) return new MoveAction(new Pt(0, 1));
+        break;
+
+      case 2:
+        if (x > 0) return new MoveAction(new Pt(-1, 0));
+        break;
+
+      case 3:
+        if (x < 49) return new MoveAction(new Pt(1, 0));
+        break;
     }
+
+    return new MoveAction(new Pt(0, 0));
   }
 }
 
 class Hero extends Actor {
   Hero(int x, int y) : super(x, y);
+
+  Action nextAction;
+
+  bool get needsInput() => nextAction == null;
+
+  void takeTurn() {
+    final action = nextAction;
+    nextAction = null;
+    return action;
+  }
 }
 
 /// Energy is used to control the rate that actors move relative to other
@@ -75,7 +100,7 @@ class Energy {
 
   /// Advances one game turn and gains an appropriate amount of energy. Returns
   /// `true` if there is enough energy to take a turn.
-  bool update() {
+  bool gain() {
     energy += ENERGY_GAINS[speed];
 
     if (!canTakeTurn) return false;

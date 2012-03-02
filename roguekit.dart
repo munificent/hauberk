@@ -52,16 +52,16 @@ tick(time) {
 keyPress(event) {
   switch (event.keyCode) {
     case KeyCode.UP:
-      game.hero.y--;
+      game.hero.nextAction = new MoveAction(new Pt(0, -1));
       break;
     case KeyCode.DOWN:
-      game.hero.y++;
+      game.hero.nextAction = new MoveAction(new Pt(0, 1));
       break;
     case KeyCode.LEFT:
-      game.hero.x--;
+      game.hero.nextAction = new MoveAction(new Pt(-1, 0));
       break;
     case KeyCode.RIGHT:
-      game.hero.x++;
+      game.hero.nextAction = new MoveAction(new Pt(1, 0));
       break;
   }
 
@@ -83,7 +83,8 @@ render() {
   }
 
   for (final actor in game.actors) {
-    terminal.writeAt(actor.x, actor.y, '@', Color.YELLOW);
+    final color = (actor is Hero) ? Color.YELLOW : Color.GRAY;
+    terminal.writeAt(actor.x, actor.y, '@', color);
   }
 
   terminal.render();
