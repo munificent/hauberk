@@ -8,41 +8,15 @@ interface Terminal {
   Terminal rect(int x, int y, int width, int height);
 }
 
-class DomTerminal implements Terminal {
-  final Element element;
+class BaseTerminal implements Terminal {
   final Array2D<Glyph> glyphs;
 
-  DomTerminal(int width, int height, this.element)
+  BaseTerminal(int width, int height)
   : glyphs = new Array2D<Glyph>(width, height,
       () => new Glyph(' ', Color.WHITE, Color.BLACK));
 
   int get width() => glyphs.width;
   int get height() => glyphs.height;
-
-  render() {
-    final buffer = new StringBuffer();
-
-    var fore = null;
-    var back = null;
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final glyph = glyphs.get(x, y);
-
-        // Switch colors.
-        if (glyph.fore != fore || glyph.back != back) {
-          if (glyph.fore != null) buffer.add('</span>');
-          fore = glyph.fore;
-          back = glyph.back;
-          buffer.add('<span class="${glyph.fore.cssClass} b${glyph.back.cssClass}">');
-        }
-
-        buffer.add(glyph.char);
-      }
-      buffer.add('\n');
-    }
-
-    element.innerHTML = buffer.toString();
-  }
 
   void write(String text, [Color fore, Color back]) {
     for (int x = 0; x < text.length; x++) {
@@ -68,28 +42,97 @@ class DomTerminal implements Terminal {
   }
 }
 
+class DomTerminal extends BaseTerminal {
+  final Element element;
+
+  DomTerminal(int width, int height, this.element)
+  : super(width, height);
+
+  render() {
+    final buffer = new StringBuffer();
+
+    var fore = null;
+    var back = null;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        final glyph = glyphs.get(x, y);
+
+        // Switch colors.
+        if (glyph.fore != fore || glyph.back != back) {
+          if (glyph.fore != null) buffer.add('</span>');
+          fore = glyph.fore;
+          back = glyph.back;
+          buffer.add('<span class="${glyph.fore.cssClass} b${glyph.back.cssClass}">');
+        }
+
+        buffer.add(glyph.char);
+      }
+      buffer.add('\n');
+    }
+
+    element.innerHTML = buffer.toString();
+  }
+}
+
+class CanvasTerminal extends BaseTerminal {
+  final CanvasElement element;
+  CanvasRenderingContext2D context;
+
+  CanvasTerminal(int width, int height, this.element)
+  : super(width, height) {
+    context = element.getContext('2d');
+
+    context.font = '16px/16px inconsolata, monaco, monospace';
+  }
+
+  render() {
+    final CHAR_WIDTH = 10;
+    final CHAR_HEIGHT = 14;
+
+    context.fillStyle = '#500';
+    context.fillRect(0, 0, CHAR_WIDTH * width, CHAR_HEIGHT * height);
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        final glyph = glyphs.get(x, y);
+
+        // Fill in the background.
+        if (glyph.back != Color.BLACK) {
+          // TODO(bob): Use back color.
+          context.fillStyle = '#888';
+          context.fillRect(x * CHAR_WIDTH, y * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT);
+        }
+
+        // TODO(bob): Use fore color.
+        context.fillStyle = '#fff';
+        context.fillText(glyph.char, x * CHAR_WIDTH, y * CHAR_HEIGHT);
+      }
+    }
+  }
+}
+
 class PortTerminal implements Terminal {
   final int width;
   final int height;
 
   final int _x;
   final int _y;
-  final DomTerminal _dom;
+  final Terminal _root;
 
-  PortTerminal(this._x, this._y, this.width, this.height, this._dom);
+  PortTerminal(this._x, this._y, this.width, this.height, this._root);
 
   void write(String text, [Color fore, Color back]) {
-    _dom.writeAt(_x, _y, text[i], fore, back);
+    _root.writeAt(_x, _y, text[i], fore, back);
   }
 
   void writeAt(int x, int y, String text, [Color fore, Color back]) {
     // TODO(bob): Bounds check and crop.
-    _dom.writeAt(_x + x, _y + y, text, fore, back);
+    _root.writeAt(_x + x, _y + y, text, fore, back);
   }
 
   Terminal rect(int x, int y, int width, int height) {
     // TODO(bob): Bounds check.
-    return new PortTerminal(_x + x, _y + y, width, height, _dom);
+    return new PortTerminal(_x + x, _y + y, width, height, _root);
   }
 }
 

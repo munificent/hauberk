@@ -7,7 +7,7 @@ class Game {
   final Hero hero;
 
   Game()
-  : level = new Level(50, 20),
+  : level = new Level(90, 30),
     actors = new Chain<Actor>(),
     effects = <Effect>[],
     hero = new Hero(3, 4)
@@ -22,7 +22,7 @@ class Game {
     }
   }
 
-  void update() {
+  GameResult update() {
     /*
     effects.clear();
 
@@ -33,11 +33,15 @@ class Game {
     */
 
     while (true) {
-      if (actors.current.canTakeTurn && actors.current.needsInput) return;
+      if (actors.current.canTakeTurn && actors.current.needsInput) {
+        return const GameResult(needInput: true, needPause: false);
+      }
 
       if (actors.current.gainEnergy()) {
         // TODO(bob): Double check here is gross.
-        if (actors.current.needsInput) return;
+        if (actors.current.needsInput) {
+          return const GameResult(needInput: true, needPause: false);
+        }
 
         final action = actors.current.takeTurn();
         action.perform(this, actors.current);
@@ -45,6 +49,13 @@ class Game {
       }
     }
   }
+}
+
+class GameResult {
+  final bool needInput;
+  final bool needPause;
+
+  const GameResult([this.needInput, this.needPause]);
 }
 
 /// A doubly-linked list of nodes linked together into a ring.
