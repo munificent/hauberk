@@ -2,11 +2,14 @@
 
 #import('dart:html');
 
+#source('action.dart');
 #source('actor.dart');
 #source('array2d.dart');
+#source('chain.dart');
 #source('game.dart');
 #source('level.dart');
 #source('terminal.dart');
+#source('vec.dart');
 
 DomTerminal terminal;
 Game        game;
@@ -52,16 +55,16 @@ tick(time) {
 keyPress(event) {
   switch (event.keyCode) {
     case KeyCode.UP:
-      game.hero.nextAction = new MoveAction(new Pt(0, -1));
+      game.hero.nextAction = new MoveAction(new Vec(0, -1));
       break;
     case KeyCode.DOWN:
-      game.hero.nextAction = new MoveAction(new Pt(0, 1));
+      game.hero.nextAction = new MoveAction(new Vec(0, 1));
       break;
     case KeyCode.LEFT:
-      game.hero.nextAction = new MoveAction(new Pt(-1, 0));
+      game.hero.nextAction = new MoveAction(new Vec(-1, 0));
       break;
     case KeyCode.RIGHT:
-      game.hero.nextAction = new MoveAction(new Pt(1, 0));
+      game.hero.nextAction = new MoveAction(new Vec(1, 0));
       break;
   }
 

@@ -1,16 +1,16 @@
 /// An active entity in the game. Includes monsters and the hero.
 class Actor {
-  Pt pos;
+  Vec pos;
   int energy;
 
   int get x() => pos.x;
-  void set x(int value) => pos = new Pt(value, y);
+  void set x(int value) => pos = new Vec(value, y);
 
   int get y() => pos.y;
-  void set y(int value) => pos = new Pt(x, value);
+  void set y(int value) => pos = new Vec(x, value);
 
   Actor(int x, int y)
-  : pos = new Pt(x, y),
+  : pos = new Vec(x, y),
     energy = new Energy(Energy.NORMAL_SPEED);
 
   bool get canTakeTurn() => energy.canTakeTurn;
@@ -30,23 +30,23 @@ class Beetle extends Actor {
   void takeTurn() {
     switch (rand(4)) {
       case 0:
-        if (y > 0) return new MoveAction(new Pt(0, -1));
+        if (y > 0) return new MoveAction(new Vec(0, -1));
         break;
 
       case 1:
-        if (y < 19) return new MoveAction(new Pt(0, 1));
+        if (y < 19) return new MoveAction(new Vec(0, 1));
         break;
 
       case 2:
-        if (x > 0) return new MoveAction(new Pt(-1, 0));
+        if (x > 0) return new MoveAction(new Vec(-1, 0));
         break;
 
       case 3:
-        if (x < 49) return new MoveAction(new Pt(1, 0));
+        if (x < 49) return new MoveAction(new Vec(1, 0));
         break;
     }
 
-    return new MoveAction(new Pt(0, 0));
+    return new MoveAction(new Vec(0, 0));
   }
 }
 
