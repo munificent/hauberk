@@ -32,7 +32,7 @@ class BaseTerminal implements Terminal {
     // TODO(bob): Bounds check.
     for (int i = 0; i < text.length; i++) {
       if (x + i >= width) break;
-      glyphs.set(x, y, new Glyph(text[i], fore, back));
+      glyphs.set(x + i, y, new Glyph(text[i], fore, back));
     }
   }
 

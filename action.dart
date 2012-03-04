@@ -1,5 +1,16 @@
 class Action {
-  void perform(Game game, Actor actor) {}
+  Actor _actor;
+
+  Actor get actor() => _actor;
+  // TODO(bob): Should it check that the actor is a hero?
+  Hero get hero() => _actor;
+
+  void bindActor(Actor actor) {
+    assert(_actor == null);
+    _actor = actor;
+  }
+
+  void perform(Game game) {}
 }
 
 class MoveAction extends Action {
@@ -7,7 +18,7 @@ class MoveAction extends Action {
 
   MoveAction(this.offset);
 
-  void perform(Game game, Actor actor) {
+  void perform(Game game) {
     actor.pos += offset;
   }
 }

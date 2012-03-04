@@ -9,7 +9,3 @@ class Vec {
   Vec operator +(Vec other) => new Vec(x + other.x, y + other.y);
   Vec operator -(Vec other) => new Vec(x - other.x, y - other.y);
 }
-
-class Effect {
-  final Vec pos;
-}
