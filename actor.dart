@@ -1,5 +1,6 @@
 /// An active entity in the game. Includes monsters and the hero.
 class Actor {
+  final Game game;
   Vec pos;
   int energy;
 
@@ -9,7 +10,7 @@ class Actor {
   int get y() => pos.y;
   void set y(int value) => pos = new Vec(x, value);
 
-  Actor(int x, int y)
+  Actor(this.game, int x, int y)
   : pos = new Vec(x, y),
     energy = new Energy(Energy.NORMAL_SPEED);
 
@@ -22,10 +23,19 @@ class Actor {
   Action takeTurn() {
     // Do nothing.
   }
+
+  bool canOccupy(Vec pos) {
+    if (pos.x < 0) return false;
+    if (pos.x >= game.level.width) return false;
+    if (pos.y < 0) return false;
+    if (pos.y >= game.level.height) return false;
+
+    return game.level.getVec(pos).type == TileType.FLOOR;
+  }
 }
 
 class Beetle extends Actor {
-  Beetle(int x, int y) : super(x, y);
+  Beetle(Game game, int x, int y) : super(game, x, y);
 
   void takeTurn() {
     switch (rand(4)) {
@@ -51,7 +61,7 @@ class Beetle extends Actor {
 }
 
 class Hero extends Actor {
-  Hero(int x, int y) : super(x, y);
+  Hero(Game game, int x, int y) : super(game, x, y);
 
   Action nextAction;
 

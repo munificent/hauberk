@@ -8,6 +8,7 @@ class Level {
   : tiles = new Array2D<Tile>(width, height, () => new Tile());
 
   // TODO(bob): Multi-argument subscript operators would be nice.
+  Tile getVec(Vec pos) => tiles.getVec(pos);
   Tile get(int x, int y) => tiles.get(x, y);
   void set(int x, int y, Tile tile) => tiles.set(x, y, value);
 }

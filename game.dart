@@ -4,14 +4,15 @@ class Game {
   final Chain<Actor> actors;
   final List<Effect> effects;
 
-  final Hero hero;
+  Hero hero;
 
   Game()
   : level = new Level(90, 30),
     actors = new Chain<Actor>(),
-    effects = <Effect>[],
-    hero = new Hero(3, 4)
+    effects = <Effect>[]
   {
+    hero = new Hero(this, 3, 4);
+
     level.get(5, 10).type = TileType.WALL;
     level.get(5, 11).type = TileType.WALL;
     level.get(5, 12).type = TileType.WALL;
@@ -20,10 +21,10 @@ class Game {
     actors.add(hero);
 
     for (int i = 0; i < 30; i++) {
-      actors.add(new Beetle(i + 10, 9));
-      actors.add(new Beetle(i + 10, 10));
-      actors.add(new Beetle(i + 10, 8));
-      actors.add(new Beetle(i + 10, 11));
+      actors.add(new Beetle(this, i + 10, 9));
+      actors.add(new Beetle(this, i + 10, 10));
+      actors.add(new Beetle(this, i + 10, 8));
+      actors.add(new Beetle(this, i + 10, 11));
     }
   }
 

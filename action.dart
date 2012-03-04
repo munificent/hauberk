@@ -19,6 +19,11 @@ class MoveAction extends Action {
   MoveAction(this.offset);
 
   void perform(Game game) {
-    actor.pos += offset;
+    final pos = actor.pos + offset;
+    if (actor.canOccupy(pos)) {
+      actor.pos = pos;
+    } else {
+      print('$actor hit a wall.');
+    }
   }
 }
