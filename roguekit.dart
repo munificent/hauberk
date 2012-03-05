@@ -7,12 +7,14 @@
 #source('array2d.dart');
 #source('chain.dart');
 #source('game.dart');
+#source('keyboard.dart');
 #source('level.dart');
 #source('terminal.dart');
 #source('vec.dart');
 
 DomTerminal terminal;
 Game        game;
+UserInput   input;
 
 bool _running = false;
 
@@ -30,45 +32,21 @@ main() {
   game = new Game();
   terminal = new DomTerminal(90, 30, document.query('#terminal'));
 
+  input = new UserInput(new Keyboard(document));
+
   render();
 
   document.on.click.add((event) => running = !running, true);
 
-  window.webkitRequestAnimationFrame(tick, document);
-  document.on.keyDown.add(keyPress);
-}
-
-class KeyCode {
-  static final LEFT = 37;
-  static final UP = 38;
-  static final RIGHT = 39;
-  static final DOWN = 40;
+  running = true;
 }
 
 tick(time) {
+  game.hero.nextAction = input.getAction();
   game.update();
   render();
 
   if (running) window.webkitRequestAnimationFrame(tick, document);
-}
-
-keyPress(event) {
-  switch (event.keyCode) {
-    case KeyCode.UP:
-      game.hero.nextAction = new MoveAction(new Vec(0, -1));
-      break;
-    case KeyCode.DOWN:
-      game.hero.nextAction = new MoveAction(new Vec(0, 1));
-      break;
-    case KeyCode.LEFT:
-      game.hero.nextAction = new MoveAction(new Vec(-1, 0));
-      break;
-    case KeyCode.RIGHT:
-      game.hero.nextAction = new MoveAction(new Vec(1, 0));
-      break;
-  }
-
-  render();
 }
 
 render() {
@@ -149,4 +127,27 @@ rand(int max) {
 
 randRange(int min, int max) {
   return ((Math.random() * (max - min)) + min).toInt();
+}
+
+
+class Fps {
+  Fps() : ticks = new List(NUM_TICKS) {
+    for (var i = 0; i < NUM_TICKS; i++) ticks[i] = 0;
+  }
+
+  tick(time) {
+    // Get the duration between the oldest and newest ticks in the buffer.
+    final start = ticks[head];
+    final end = time;
+    print((end - start) / NUM_TICKS);
+
+    // Add it to the buffer.
+    ticks[head] = time;
+    head = (head + 1) % NUM_TICKS;
+  }
+
+  static final NUM_TICKS = 100;
+  /// Circular buffer of past frame times.
+  final List ticks;
+  int head = 0;
 }

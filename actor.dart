@@ -39,21 +39,10 @@ class Beetle extends Actor {
 
   void takeTurn() {
     switch (rand(4)) {
-      case 0:
-        if (y > 0) return new MoveAction(new Vec(0, -1));
-        break;
-
-      case 1:
-        if (y < 19) return new MoveAction(new Vec(0, 1));
-        break;
-
-      case 2:
-        if (x > 0) return new MoveAction(new Vec(-1, 0));
-        break;
-
-      case 3:
-        if (x < 49) return new MoveAction(new Vec(1, 0));
-        break;
+      case 0: return new MoveAction(new Vec(0, -1));
+      case 1: return new MoveAction(new Vec(0, 1));
+      case 2: return new MoveAction(new Vec(-1, 0));
+      case 3: return new MoveAction(new Vec(1, 0));
     }
 
     return new MoveAction(new Vec(0, 0));
