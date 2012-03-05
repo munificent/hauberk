@@ -14,7 +14,9 @@ class Array2D<T> {
   }
 
   // TODO(bob): Bounds check.
-  T getVec(Vec pos) => elements[pos.y * width + pos.x];
+  T operator[](Vec pos) => elements[pos.y * width + pos.x];
+
+  Rect get bounds() => new Rect(0, 0, width, height);
 
   // TODO(bob): Multi-argument subscript operators would be nice.
   T get(int x, int y) => elements[y * width + x];

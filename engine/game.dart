@@ -14,11 +14,6 @@ class Game {
   {
     hero = new Hero(this, 3, 4);
 
-    level.get(5, 10).type = TileType.WALL;
-    level.get(5, 11).type = TileType.WALL;
-    level.get(5, 12).type = TileType.WALL;
-    level.get(5, 13).type = TileType.WALL;
-
     actors.add(hero);
 
     for (int i = 0; i < 30; i++) {

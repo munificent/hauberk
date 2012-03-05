@@ -1,0 +1,195 @@
+/// Unlike a regular [Dungeon], a Maze has walls of "zero" thickness. Used as
+/// an intermediate data structure for building Dungeons. The outer walls of
+/// the Maze can be opened.
+class Maze {
+  final Array2D<Cell> _cells;
+
+  Rect get bounds() => new Rect(0, 0, _cells.width - 1, _cells.height - 1);
+
+  /// Initializes a new solid (i.e. all cells closed) maze.
+  Maze(int width, int height)
+  : _cells = new Array2D<Cell>(width + 1, height + 1, () => new Cell())
+  {
+    // Pad by one for the outer bottom and right walls.
+  }
+
+  /// Implementation of the "growing tree" algorithm from here:
+  /// http://www.astrolog.org/labyrnth/algrithm.htm.
+  void generate() {
+    final cells = <Vec>[];
+
+    // Start with a random cell.
+    final pos = rng.vecInRect(bounds);
+
+    open(pos);
+    cells.add(pos);
+
+    while (cells.length > 0) {
+      // Weighting how the index is chosen here will affect the way the
+      // maze looks.
+      //final index = (rng.TriangleInt(0, cells.length - 1)).abs();
+      final index = cells.length - 1;
+      final cell = cells[index];
+
+      // See which adjacent cells are open.
+      final unmadeCells = <Direction>[];
+
+      if (canCarve(cell, Direction.N)) unmadeCells.add(Direction.N);
+      if (canCarve(cell, Direction.S)) unmadeCells.add(Direction.S);
+      if (canCarve(cell, Direction.E)) unmadeCells.add(Direction.E);
+      if (canCarve(cell, Direction.W)) unmadeCells.add(Direction.W);
+
+      if (unmadeCells.length > 0) {
+        final direction = rng.item(unmadeCells);
+
+        carve(cell, direction);
+        cells.add(cell + direction);
+      } else {
+        // No adjacent uncarved cells.
+        cells.removeRange(index, 1);
+      }
+    }
+  }
+
+  /*
+  void AddLoops(int chance)
+  {
+    if (chance > 0)
+    {
+      foreach (Vec cell in new Rect(0, 0, bounds.Width - 1, bounds.Height - 1))
+      {
+        if (Rng.OneIn(chance))
+        {
+          if (IsOpen(cell) && IsOpen(cell + Direction.E))
+          {
+            carve(cell, Direction.E);
+          }
+        }
+
+        if (Rng.OneIn(chance))
+        {
+          if (IsOpen(cell) && IsOpen(cell + Direction.S))
+          {
+            carve(cell, Direction.S);
+          }
+        }
+      }
+    }
+  }
+
+  void Sparsify(int sparseSteps)
+  {
+    for (int i = 0; i < sparseSteps; i++)
+    {
+      foreach (Vec cell in bounds)
+      {
+        // if it dead-ends
+        if (GetNumExits(cell) == 1)
+        {
+          // fill in the dead end
+          Fill(cell);
+        }
+      }
+    }
+  }
+  */
+
+  bool isOpen(Vec pos) {
+//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
+
+    return _cells[pos].isOpen;
+  }
+
+  /// Gets whether or not an opening can be carved from the given starting
+  /// [Cell] at [pos] to the adjacent Cell facing [direction]. Returns `true`
+  /// if the starting Cell is in bounds and the destination Cell is filled
+  /// (or out of bounds).</returns>
+  bool canCarve(Vec pos, Direction direction) {
+    // Must start in bounds.
+    if (!bounds.contains(pos)) return false;
+
+    // Must end in bounds.
+    if (!bounds.contains(pos + direction)) return false;
+
+    // Destination must not be open.
+    return !_cells[pos + direction].isOpen;
+  }
+
+  /// Gets the number of open walls surrounding the [Cell] at [pos].
+  int getNumExits(Vec pos) {
+//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
+
+    var exits = 0;
+
+    if (_cells[pos].isLeftWallOpen) exits++;
+    if (_cells[pos].isTopWallOpen) exits++;
+    if (_cells[pos.offsetX(1)].isLeftWallOpen) exits++;
+    if (_cells[pos.offsetY(1)].isTopWallOpen) exits++;
+
+    return exits;
+  }
+
+  /// Opens the Cell at [pos]. Does not open any surrounding walls.
+  void open(Vec pos) {
+//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
+
+    _cells[pos].isOpen = true;
+  }
+
+  /// Fills the [Cell] at [pos]. Closes any surrounding walls.
+  void fill(Vec pos)
+  {
+//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
+
+    _cells[pos].isOpen = false;
+    _cells[pos].isLeftWallOpen = false;
+    _cells[pos].isTopWallOpen = false;
+    _cells[pos.offsetX(1)].isLeftWallOpen = false;
+    _cells[pos.offsetY(1)].isTopWallOpen = false;
+  }
+
+  /// Carves a passage from [pos] to the adjacent [Cell] facing [direction].
+  /// Opens the destination Cell (if in bounds) and opens the wall between it
+  /// and the starting Cell.
+  void carve(Vec pos, Direction direction) {
+//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
+
+    // Open the destination.
+    if (bounds.contains(pos + direction)) {
+      _cells[pos + direction].isOpen = true;
+    }
+
+    // Cut the wall.
+    switch (direction) {
+      case Direction.N: _cells[pos].isTopWallOpen = true; break;
+      case Direction.S: _cells[pos + direction].isTopWallOpen = true; break;
+      case Direction.W: _cells[pos].isLeftWallOpen = true; break;
+      case Direction.E: _cells[pos + direction].isLeftWallOpen = true; break;
+      default: assert(false);
+    }
+  }
+
+  void draw(Level level) {
+    void carve(Vec pos) {
+      level[pos].type = TileType.FLOOR;
+    }
+
+    for (final pos in _cells.bounds) {
+      // Open the cell.
+      if (_cells[pos].isOpen) carve((pos * 2) + 1);
+
+      // Open the left wall.
+      if (_cells[pos].isLeftWallOpen) carve((pos * 2) + new Vec(0, 1));
+
+      // Open the top wall.
+      if (_cells[pos].isTopWallOpen) carve((pos * 2) + new Vec(1, 0));
+    }
+  }
+}
+
+// TODO(bob): Rename MazeCell.
+class Cell {
+  bool isOpen = false;
+  bool isLeftWallOpen = false;
+  bool isTopWallOpen = false;
+}

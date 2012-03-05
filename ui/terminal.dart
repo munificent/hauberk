@@ -129,5 +129,5 @@ class Glyph {
   final Color  fore;
   final Color  back;
 
-  const Glyph(this.char, this.fore, this.back);
+  const Glyph(this.char, [this.fore = Color.WHITE, this.back = Color.BLACK]);
 }

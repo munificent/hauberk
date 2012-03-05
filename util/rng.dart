@@ -1,3 +1,15 @@
+
+// TODO(bob): Just use a final static when those can have non-const
+// initializers.
+/// A singleton instance of Rng globally available.
+Rng get rng() {
+  if (_rng == null) _rng = new Rng(new Date.now().value);
+  return _rng;
+}
+
+Rng _rng;
+
+
 /// The Random Number God: deliverer of good and ill fortune alike.
 /// Implemented using a [Mersenne Twister]. Note: I just ported it straight from
 /// wikipedia, and have only loosely tested it.
@@ -44,6 +56,14 @@ class Rng {
 
     _index = (_index + 1) % _SIZE;
     return y;
+  }
+
+  /// Gets a random item from the given list.
+  item(List items) => items[next(items.length)];
+
+  /// Gets a random [Vec] within the given [Rect] (half-inclusive).
+  Vec vecInRect(Rect rect) {
+    return new Vec(next(rect.left, rect.right), next(rect.top, rect.bottom));
   }
 
   void _fillPool() {

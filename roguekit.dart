@@ -47,19 +47,20 @@ render() {
   // Draw the level.
   for (int y = 0; y < game.level.height; y++) {
     for (int x = 0; x < game.level.width; x++) {
-      var char;
+      var glyph;
       var color;
       switch (game.level.get(x, y).type) {
-        case TileType.FLOOR: char = '.'; color = Color.DARK_GRAY; break;
-        case TileType.WALL:  char = '#'; color = Color.WHITE; break;
+        case TileType.FLOOR: glyph = new Glyph('.', Color.DARK_GRAY); break;
+        case TileType.WALL:  glyph = new Glyph('#', Color.GRAY, Color.DARK_GRAY); break;
       }
-      terminal.writeAt(x, y, char, color);
+      terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
     }
   }
 
   for (final actor in game.actors) {
-    final color = (actor is Hero) ? Color.YELLOW : Color.GRAY;
-    terminal.writeAt(actor.x, actor.y, '@', color);
+    final char = (actor is Hero) ? '@' : 'b';
+    final color = (actor is Hero) ? Color.YELLOW : Color.GREEN;
+    terminal.writeAt(actor.x, actor.y, char, color);
   }
 
   terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);

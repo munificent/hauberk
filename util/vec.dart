@@ -5,24 +5,39 @@ class Vec {
 
   const Vec(this.x, this.y);
 
-  Vec operator +(Vec other) => new Vec(x + other.x, y + other.y);
-  Vec operator -(Vec other) => new Vec(x - other.x, y - other.y);
+  Vec operator *(int other) => new Vec(x * other, y * other);
+
+  Vec operator +(other) {
+    if (other is Vec) {
+      return new Vec(x + other.x, y + other.y);
+    } else if (other is int) {
+      return new Vec(x + other, y + other);
+    } else assert(false);
+  }
+
+  Vec operator -(other) {
+    if (other is Vec) {
+      return new Vec(x - other.x, y - other.y);
+    } else if (other is int) {
+      return new Vec(x - other, y - other);
+    } else assert(false);
+  }
+
+  String toString() => '$x, $y';
 }
 
-class Direction {
-  static final NONE = const Direction(-1);
-  static final N  = const Direction(0);
-  static final NE = const Direction(1);
-  static final E  = const Direction(2);
-  static final SE = const Direction(3);
-  static final S  = const Direction(4);
-  static final SW = const Direction(5);
-  static final W  = const Direction(6);
-  static final NW = const Direction(7);
+class Direction extends Vec {
+  static final NONE = const Direction(0, 0);
+  static final N  = const Direction(0, -1);
+  static final NE = const Direction(1, -1);
+  static final E  = const Direction(1, 0);
+  static final SE = const Direction(1, 1);
+  static final S  = const Direction(0, 1);
+  static final SW = const Direction(-1, 1);
+  static final W  = const Direction(-1, 0);
+  static final NW = const Direction(-1, -1);
 
-  final int _value;
-
-  const Direction(this._value);
+  const Direction(int x, int y) : super(x, y);
 }
 
 // TODO(bob): Finish porting from C#. Figure out how to handle overloads.
@@ -136,16 +151,18 @@ class Rect {
 
   int get area() => size.area;
 
+  /*
   const Rect(this.pos, this.size);
 
-  /*
   const Rect(this.size)
   : pos = Vec.zero;
+  */
 
-  const Rect(int x, int y, int width, int height)
-  : pos = const Vec(x, y),
-    size = const Vec(width, height));
+  Rect(int x, int y, int width, int height)
+  : pos = new Vec(x, y),
+    size = new Vec(width, height);
 
+  /*
   const Rect(this.pos, int width, int height)
   : size = const Vec(width, height);
 
@@ -181,17 +198,20 @@ class Rect {
   {
       return new Rect(mPos.Offset(-distance, -distance), mSize.Offset(distance * 2, distance * 2));
   }
+  */
 
-  bool Contains(Vec pos)
-  {
-      if (pos.x < mPos.x) return false;
-      if (pos.x >= mPos.x + mSize.x) return false;
-      if (pos.y < mPos.y) return false;
-      if (pos.y >= mPos.y + mSize.y) return false;
+  bool contains(Vec point) {
+      if (point.x < pos.x) return false;
+      if (point.x >= pos.x + size.x) return false;
+      if (point.y < pos.y) return false;
+      if (point.y >= pos.y + size.y) return false;
 
       return true;
   }
 
+  RectIterator iterator() => new RectIterator(this);
+
+  /*
   bool Contains(Rect rect)
   {
       // all sides must be within
@@ -249,4 +269,28 @@ class Rect {
       // otherwise, the rect doesn't have a positive size, so there's nothing to trace
   }
   */
+}
+
+class RectIterator {
+  final Rect _rect;
+  int _x;
+  int _y;
+
+  RectIterator(this._rect) {
+    _x = _rect.x;
+    _y = _rect.y;
+  }
+
+  bool hasNext() => (_y < _rect.bottom - 1) || (_x < _rect.right - 1);
+
+  Vec next() {
+    final result = new Vec(_x, _y);
+    _x++;
+    if (_x >= _rect.right) {
+      _x = _rect.x;
+      _y++;
+    }
+
+    return result;
+  }
 }
