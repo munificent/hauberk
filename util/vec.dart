@@ -1,12 +1,3 @@
-// TODO(bob): Move to separate file.
-rand(int max) {
-  return (Math.random() * max).toInt();
-}
-
-randRange(int min, int max) {
-  return ((Math.random() * (max - min)) + min).toInt();
-}
-
 /// A two-dimensional point.
 class Vec {
   final int x;

@@ -38,7 +38,7 @@ class Beetle extends Actor {
   Beetle(Game game, int x, int y) : super(game, x, y);
 
   void takeTurn() {
-    switch (rand(4)) {
+    switch (game.rng.next(4)) {
       case 0: return new MoveAction(new Vec(0, -1));
       case 1: return new MoveAction(new Vec(0, 1));
       case 2: return new MoveAction(new Vec(-1, 0));

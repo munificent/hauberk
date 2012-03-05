@@ -3,13 +3,14 @@ class Game {
   final Level        level;
   final Chain<Actor> actors;
   final List<Effect> effects;
-
+  final Rng          rng;
   Hero hero;
 
   Game()
   : level = new Level(80, 40),
     actors = new Chain<Actor>(),
-    effects = <Effect>[]
+    effects = <Effect>[],
+    rng = new Rng(new Date.now().value)
   {
     hero = new Hero(this, 3, 4);
 
