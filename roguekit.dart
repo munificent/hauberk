@@ -30,7 +30,7 @@ void set running(bool value) {
 
 main() {
   game = new Game();
-  terminal = new DomTerminal(90, 30, document.query('#terminal'));
+  terminal = new DomTerminal(100, 40, document.query('#terminal'));
 
   input = new UserInput(new Keyboard(document));
 
@@ -67,6 +67,20 @@ render() {
     final color = (actor is Hero) ? Color.YELLOW : Color.GRAY;
     terminal.writeAt(actor.x, actor.y, '@', color);
   }
+
+  terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
+
+  terminal.writeAt(81, 3, 'Health', Color.GRAY);
+  terminal.writeAt(81, 4, '  Mana', Color.GRAY);
+  terminal.writeAt(81, 5, '   Str', Color.GRAY);
+  terminal.writeAt(81, 6, '   Agi', Color.GRAY);
+  terminal.writeAt(81, 7, '   Int', Color.GRAY);
+
+  terminal.writeAt(88, 3, '25/25', Color.RED);
+  terminal.writeAt(88, 4, '25/25', Color.PURPLE);
+  terminal.writeAt(88, 5, '25/25', Color.ORANGE);
+  terminal.writeAt(88, 6, '25/25', Color.GREEN);
+  terminal.writeAt(88, 7, '25/25', Color.BLUE);
 
   terminal.render();
 }

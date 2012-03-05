@@ -7,7 +7,7 @@ class Game {
   Hero hero;
 
   Game()
-  : level = new Level(90, 30),
+  : level = new Level(80, 40),
     actors = new Chain<Actor>(),
     effects = <Effect>[]
   {
