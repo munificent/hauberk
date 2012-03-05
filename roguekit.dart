@@ -2,15 +2,9 @@
 
 #import('dart:html', prefix: 'html');
 
-#source('action.dart');
-#source('actor.dart');
-#source('array2d.dart');
-#source('chain.dart');
-#source('game.dart');
-#source('keyboard.dart');
-#source('level.dart');
-#source('terminal.dart');
-#source('vec.dart');
+#import('engine.dart');
+#import('ui.dart');
+#import('util.dart');
 
 DomTerminal terminal;
 Game        game;
@@ -135,13 +129,6 @@ colorTest() {
   */
 }
 
-rand(int max) {
-  return (Math.random() * max).toInt();
-}
-
-randRange(int min, int max) {
-  return ((Math.random() * (max - min)) + min).toInt();
-}
 
 
 class Fps {
