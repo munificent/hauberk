@@ -43,7 +43,7 @@ class BaseTerminal implements Terminal {
 }
 
 class DomTerminal extends BaseTerminal {
-  final Element element;
+  final html.Element element;
 
   DomTerminal(int width, int height, this.element)
   : super(width, height);
@@ -71,43 +71,6 @@ class DomTerminal extends BaseTerminal {
     }
 
     element.innerHTML = buffer.toString();
-  }
-}
-
-class CanvasTerminal extends BaseTerminal {
-  final CanvasElement element;
-  CanvasRenderingContext2D context;
-
-  CanvasTerminal(int width, int height, this.element)
-  : super(width, height) {
-    context = element.getContext('2d');
-
-    context.font = '16px/16px inconsolata, monaco, monospace';
-  }
-
-  render() {
-    final CHAR_WIDTH = 10;
-    final CHAR_HEIGHT = 14;
-
-    context.fillStyle = '#500';
-    context.fillRect(0, 0, CHAR_WIDTH * width, CHAR_HEIGHT * height);
-
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final glyph = glyphs.get(x, y);
-
-        // Fill in the background.
-        if (glyph.back != Color.BLACK) {
-          // TODO(bob): Use back color.
-          context.fillStyle = '#888';
-          context.fillRect(x * CHAR_WIDTH, y * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT);
-        }
-
-        // TODO(bob): Use fore color.
-        context.fillStyle = '#fff';
-        context.fillText(glyph.char, x * CHAR_WIDTH, y * CHAR_HEIGHT);
-      }
-    }
   }
 }
 

@@ -1,6 +1,6 @@
 #library('roguekit');
 
-#import('dart:html');
+#import('dart:html', prefix: 'html');
 
 #source('action.dart');
 #source('actor.dart');
@@ -23,20 +23,20 @@ void set running(bool value) {
   if (_running != value) {
     _running = value;
     if (_running) {
-      window.webkitRequestAnimationFrame(tick, document);
+      html.window.webkitRequestAnimationFrame(tick, html.document);
     }
   }
 }
 
 main() {
   game = new Game();
-  terminal = new DomTerminal(100, 40, document.query('#terminal'));
+  terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
 
-  input = new UserInput(new Keyboard(document));
+  input = new UserInput(new Keyboard(html.document));
 
   render();
 
-  document.on.click.add((event) => running = !running, true);
+  html.document.on.click.add((event) => running = !running, true);
 
   running = true;
 }
@@ -46,7 +46,7 @@ tick(time) {
   game.update();
   render();
 
-  if (running) window.webkitRequestAnimationFrame(tick, document);
+  if (running) html.window.webkitRequestAnimationFrame(tick, html.document);
 }
 
 render() {
