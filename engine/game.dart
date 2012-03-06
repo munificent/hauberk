@@ -35,18 +35,23 @@ class Game {
     }
     */
 
+    // Before we get into the loop, check to see if we're just sitting waiting
+    // for user input.
+    if (level.actors.current.energy.canTakeTurn &&
+        level.actors.current.needsInput) {
+      return GameResult.WAITING;
+    }
+
     while (true) {
       final actor = level.actors.current;
 
       if (actor.energy.canTakeTurn && actor.needsInput) {
-        return const GameResult(needInput: true, needPause: false);
+        return GameResult.UPDATED;
       }
 
       if (actor.energy.gain()) {
         // TODO(bob): Double check here is gross.
-        if (actor.needsInput) {
-          return const GameResult(needInput: true, needPause: false);
-        }
+        if (actor.needsInput) return GameResult.UPDATED;
 
         var action = actor.getAction();
         var result = action.perform(this, actor);
@@ -66,10 +71,16 @@ class Game {
 }
 
 class GameResult {
-  final bool needInput;
-  final bool needPause;
+  // Did absolutely nothing. No actions were processed since the very next
+  // thing we need to do is move the hero.
+  static final WAITING = const GameResult(0);
 
-  const GameResult([this.needInput, this.needPause]);
+  // Some actions were processed, so we need to render.
+  static final UPDATED = const GameResult(1);
+
+  final int _value;
+
+  const GameResult(this._value);
 }
 
 class Effect {

@@ -44,8 +44,11 @@ class AttackAction extends Action {
 
   ActionResult onPerform(Game game) {
     // TODO(bob): Real combat mechanics!
-    game.log.add('$actor hits $defender.');
-    game.level.actors.remove(defender);
+    game.log.add('$actor kills $defender.');
+
+    if (defender is! Hero) {
+      game.level.actors.remove(defender);
+    }
 
     return ActionResult.success;
   }

@@ -39,8 +39,11 @@ main() {
 
 tick(time) {
   game.hero.nextAction = input.getAction();
-  game.update();
-  render();
+
+  final result = game.update();
+  if (result == GameResult.UPDATED) {
+    render();
+  }
 
   if (running) html.window.webkitRequestAnimationFrame(tick, html.document);
 }
