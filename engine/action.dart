@@ -22,6 +22,8 @@ class MoveAction extends Action {
     final pos = actor.pos + offset;
     if (actor.canOccupy(pos)) {
       actor.pos = pos;
+    } else if (actor is Hero) {
+      game.log.add('You hit the wall.');
     }
   }
 }

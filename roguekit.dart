@@ -10,6 +10,8 @@ DomTerminal terminal;
 Game        game;
 UserInput   input;
 
+bool logOnTop = false;
+
 bool _running = false;
 
 bool get running() => _running;
@@ -57,10 +59,32 @@ render() {
     }
   }
 
+  // Draw the actors.
   for (final actor in game.actors) {
     final char = (actor is Hero) ? '@' : 'b';
     final color = (actor is Hero) ? Color.YELLOW : Color.GREEN;
     terminal.writeAt(actor.x, actor.y, char, color);
+  }
+
+  // Draw the log.
+
+  // If the log is overlapping the hero, flip it to the other side. Use 0.4 and
+  // 0.6 here to avoid flipping too much if the hero is wandering around near
+  // the middle.
+  if (logOnTop) {
+    if (game.hero.y < terminal.height * 0.4) logOnTop = false;
+  } else {
+    if (game.hero.y > terminal.height * 0.6) logOnTop = true;
+  }
+  var y = logOnTop ? 0 : terminal.height - game.log.messages.length;
+
+  for (final message in game.log.messages) {
+    terminal.writeAt(0, y, message.text);
+    if (message.count > 1) {
+      terminal.writeAt(message.text.length, y, ' (x${message.count})',
+        Color.GRAY);
+    }
+    y++;
   }
 
   terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
@@ -129,8 +153,6 @@ colorTest() {
   terminal.writeAt(14, 11, 'dark purple', color: Color.DARK_PURPLE);
   */
 }
-
-
 
 class Fps {
   Fps() : ticks = new List(NUM_TICKS) {

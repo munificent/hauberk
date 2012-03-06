@@ -6,4 +6,5 @@
 #source('engine/actor.dart');
 #source('engine/game.dart');
 #source('engine/level.dart');
+#source('engine/log.dart');
 #source('engine/maze.dart');

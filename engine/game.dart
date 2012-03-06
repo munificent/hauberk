@@ -3,6 +3,7 @@ class Game {
   final Level        level;
   final Chain<Actor> actors;
   final List<Effect> effects;
+  final Log          log;
   final Rng          rng;
   Hero hero;
 
@@ -10,8 +11,10 @@ class Game {
   : level = new Level(80, 40),
     actors = new Chain<Actor>(),
     effects = <Effect>[],
+    log = new Log(),
     rng = new Rng(new Date.now().value)
   {
+    log.add('Welcome!');
     hero = new Hero(this, 3, 4);
 
     actors.add(hero);
