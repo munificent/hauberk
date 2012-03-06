@@ -5,6 +5,12 @@ class Vec {
 
   const Vec(this.x, this.y);
 
+  bool operator ==(Vec other) {
+    // TODO(bob): Get rid of this when new equality semantics are implemented.
+    if (other === null) return false;
+    return x == other.x && y == other.y;
+  }
+
   Vec operator *(int other) => new Vec(x * other, y * other);
 
   Vec operator +(other) {

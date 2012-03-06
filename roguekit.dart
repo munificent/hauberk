@@ -60,7 +60,7 @@ render() {
   }
 
   // Draw the actors.
-  for (final actor in game.actors) {
+  for (final actor in game.level.actors) {
     final char = (actor is Hero) ? '@' : 'b';
     final color = (actor is Hero) ? Color.YELLOW : Color.GREEN;
     terminal.writeAt(actor.x, actor.y, char, color);

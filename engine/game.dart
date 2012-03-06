@@ -1,7 +1,6 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
   final Level        level;
-  final Chain<Actor> actors;
   final List<Effect> effects;
   final Log          log;
   final Rng          rng;
@@ -9,7 +8,6 @@ class Game {
 
   Game()
   : level = new Level(80, 40),
-    actors = new Chain<Actor>(),
     effects = <Effect>[],
     log = new Log(),
     rng = new Rng(new Date.now().value)
@@ -17,13 +15,13 @@ class Game {
     log.add('Welcome!');
     hero = new Hero(this, 3, 4);
 
-    actors.add(hero);
+    level.actors.add(hero);
 
     for (int i = 0; i < 30; i++) {
-      actors.add(new Beetle(this, i + 10, 9));
-      actors.add(new Beetle(this, i + 10, 10));
-      actors.add(new Beetle(this, i + 10, 8));
-      actors.add(new Beetle(this, i + 10, 11));
+      level.actors.add(new Beetle(this, i + 10, 9));
+      level.actors.add(new Beetle(this, i + 10, 10));
+      level.actors.add(new Beetle(this, i + 10, 8));
+      level.actors.add(new Beetle(this, i + 10, 11));
     }
   }
 
@@ -38,20 +36,30 @@ class Game {
     */
 
     while (true) {
-      if (actors.current.canTakeTurn && actors.current.needsInput) {
+      final actor = level.actors.current;
+
+      if (actor.energy.canTakeTurn && actor.needsInput) {
         return const GameResult(needInput: true, needPause: false);
       }
 
-      if (actors.current.gainEnergy()) {
+      if (actor.energy.gain()) {
         // TODO(bob): Double check here is gross.
-        if (actors.current.needsInput) {
+        if (actor.needsInput) {
           return const GameResult(needInput: true, needPause: false);
         }
 
-        final action = actors.current.takeTurn();
-        action.bindActor(actors.current);
-        action.perform(this);
-        actors.advance();
+        var action = actor.getAction();
+        var result = action.perform(this, actor);
+
+        // Cascade through the alternates until we hit bottom out.
+        while (result.alternate != null) {
+          result = result.alternate.perform(this, actor);
+        }
+
+        if (result.succeeded) {
+          actor.energy.spend();
+          level.actors.advance();
+        }
       }
     }
   }

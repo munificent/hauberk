@@ -13,6 +13,24 @@ class Chain<T> implements Iterable<T> {
     head.insertBefore(new Link<T>(item));
   }
 
+  /// Removes the first occurence [item] from the chain. Returns `true` if the
+  /// item was found and removed.
+  bool remove(T item) {
+    if (head == null) return false;
+
+    var link = head;
+    do {
+      if (link.item == item) {
+        link.remove();
+        return true;
+      }
+
+      link = link.next;
+    } while (link != head);
+
+    return false;
+  }
+
   void advance() {
     if (head == null) return;
 
