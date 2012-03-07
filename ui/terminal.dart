@@ -36,6 +36,10 @@ class BaseTerminal implements Terminal {
     }
   }
 
+  void drawGlyph(int x, int y, Glyph glyph) {
+    glyphs.set(x, y, glyph);
+  }
+
   Terminal rect(int x, int y, int width, int height) {
     // TODO(bob): Bounds check.
     return new PortTerminal(x, y, width, height, this);
@@ -91,6 +95,10 @@ class PortTerminal implements Terminal {
   void writeAt(int x, int y, String text, [Color fore, Color back]) {
     // TODO(bob): Bounds check and crop.
     _root.writeAt(_x + x, _y + y, text, fore, back);
+  }
+
+  void drawGlyph(int x, int y, Glyph glyph) {
+    _root.drawGlyph(_x + x, _y + y, glyph);
   }
 
   Terminal rect(int x, int y, int width, int height) {

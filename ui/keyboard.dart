@@ -81,7 +81,7 @@ class UserInput {
 class Keyboard {
   final Set<int> _pressed;
 
-  Keyboard(Element element)
+  Keyboard(html.Element element)
   : _pressed = new Set<int>()
   {
     element.on.keyDown.add(keyDown);

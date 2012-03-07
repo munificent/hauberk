@@ -44,7 +44,7 @@ class AttackAction extends Action {
 
   ActionResult onPerform(Game game) {
     // TODO(bob): Real combat mechanics!
-    game.log.add('$actor kills $defender.');
+    game.log.add('{1} kill[s] {2}.', actor, defender);
 
     if (defender is! Hero) {
       game.level.actors.remove(defender);
@@ -70,10 +70,7 @@ class MoveAction extends Action {
 
     // See if we can walk there.
     if (!actor.canOccupy(pos)) {
-      if (actor is Hero) {
-        game.log.add('You hit the wall.');
-      }
-
+      game.log.add('{1} hit[s] the wall.', actor);
       return ActionResult.failure;
     }
 

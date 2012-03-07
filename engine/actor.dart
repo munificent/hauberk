@@ -14,6 +14,10 @@ class Actor implements Noun {
   : pos = new Vec(x, y),
     energy = new Energy(Energy.NORMAL_SPEED);
 
+  get appearance() {
+    assert(false); // Abstract.
+  }
+
   bool get needsInput() => false;
 
   Action getAction() {
@@ -47,6 +51,8 @@ class Monster extends Actor {
 
   Monster(Game game, this.breed, int x, int y) : super(game, x, y);
 
+  get appearance() => breed.appearance;
+
   String get nounText() => 'the ${breed.name}';
   int get person() => 3;
   Gender get gender() => breed.gender;
@@ -68,5 +74,8 @@ class Breed {
   final Gender gender;
   final String name;
 
-  Breed(this.name, this.gender);
+  /// Untyped so the engine isn't coupled to how monsters appear.
+  final appearance;
+
+  Breed(this.name, this.gender, this.appearance);
 }

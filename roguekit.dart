@@ -14,6 +14,16 @@ bool logOnTop = false;
 
 main() {
   game = new Game();
+
+  final rat = new Breed('rat', Gender.NEUTER, new Glyph('r', Color.DARK_ORANGE));
+
+  for (int i = 0; i < 30; i++) {
+    game.level.actors.add(new Monster(game, rat, i + 10, 9));
+    game.level.actors.add(new Monster(game, rat, i + 10, 10));
+    game.level.actors.add(new Monster(game, rat, i + 10, 8));
+    game.level.actors.add(new Monster(game, rat, i + 10, 11));
+  }
+
   terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
 
   input = new UserInput(new Keyboard(html.document));
@@ -50,9 +60,9 @@ render() {
 
   // Draw the actors.
   for (final actor in game.level.actors) {
-    final char = (actor is Hero) ? '@' : 'b';
-    final color = (actor is Hero) ? Color.YELLOW : Color.GREEN;
-    terminal.writeAt(actor.x, actor.y, char, color);
+    final appearance = actor.appearance;
+    final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.YELLOW);
+    terminal.drawGlyph(actor.x, actor.y, glyph);
   }
 
   // Draw the log.

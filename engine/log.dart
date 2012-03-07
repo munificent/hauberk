@@ -7,7 +7,7 @@ class Log {
   Log() : messages = new Queue<Message>();
 
   void add(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    message = _formatSentence(message, noun1, noun2, noun3);
+    message = formatSentence(message, noun1, noun2, noun3);
 
     // See if it's a repeat of the last message.
     if (messages.length > 0) {
@@ -83,7 +83,7 @@ class Log {
   ///
   /// Finally, the first letter in the result will be capitalized to properly
   /// sentence case it.
-  void _formatSentence(String text, [Noun noun1, Noun noun2, Noun noun3]) {
+  void formatSentence(String text, [Noun noun1, Noun noun2, Noun noun3]) {
     var result = text;
 
     final nouns = [noun1, noun2, noun3];
@@ -149,41 +149,18 @@ interface Noun {
   Gender get gender();
 }
 
-/*
-  string NounText { get; }
-  Person Person { get; }
-  string Pronoun { get; }
-  string Possessive { get; }
+class Gender {
+  // See http://en.wikipedia.org/wiki/English_personal_pronouns.
+  static final FEMALE = const Gender('she', 'her', 'her');
+  static final MALE   = const Gender('he',  'him', 'his');
+  static final NEUTER = const Gender('it',  'it',  'its');
 
-hero:
-  NounText = "you"
-  Person = 2nd
-  Pronoun = "you"
-  Possessive = "your"
+  final String subjective;
+  final String objective;
+  final String possessive;
 
-monster:
-  NounText = "the $kind"
-  Person = 3rd
-  Pronoun = "it/he/she"
-  Possessive = "its/his/her"
-
-*/
-
-/*
-"Welcome to Amaranth."
-"{subject} close[s] the door."
-"The door is already closed."
-"The door cannot be closed."
-"{subject} ascend[s] closer to the light."
-"{subject} step through as the portal closes behind {pronoun}..."
-"{subject} is growing faint."
-"{subject} buy[s] {object}."
-"{subject} enter[s] {object}."
-"{subject} [are|is] out of ammunition."
-"{subject} [are|is] magically transported."
-"{subject} [are|is] immune to " + element + "."
-"{subject} [are|is] unhurt by {object}."
-*/
+  const Gender(this.subjective, this.objective, this.possessive);
+}
 
 /// A single log entry.
 class Message {

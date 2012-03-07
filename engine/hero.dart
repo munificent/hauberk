@@ -3,9 +3,12 @@ class Hero extends Actor {
   // TODO(bob): Let user specify.
   final Gender gender = Gender.MALE;
 
+  Action nextAction;
+
   Hero(Game game, int x, int y) : super(game, x, y);
 
-  Action nextAction;
+  // TODO(bob): Hackish.
+  get appearance() => 'hero';
 
   bool get needsInput() => nextAction == null;
 
@@ -17,17 +20,4 @@ class Hero extends Actor {
 
   String get nounText() => 'you';
   int get person() => 2;
-}
-
-class Gender {
-  // See http://en.wikipedia.org/wiki/English_personal_pronouns.
-  static final FEMALE = const Gender('she', 'her', 'her');
-  static final MALE   = const Gender('he',  'him', 'his');
-  static final NEUTER = const Gender('it',  'it',  'its');
-
-  final String subjective;
-  final String objective;
-  final String possessive;
-
-  const Gender(this.subjective, this.objective, this.possessive);
 }
