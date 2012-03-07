@@ -12,18 +12,6 @@ UserInput   input;
 
 bool logOnTop = false;
 
-bool _running = false;
-
-bool get running() => _running;
-void set running(bool value) {
-  if (_running != value) {
-    _running = value;
-    if (_running) {
-      html.window.webkitRequestAnimationFrame(tick, html.document);
-    }
-  }
-}
-
 main() {
   game = new Game();
   terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
@@ -32,9 +20,7 @@ main() {
 
   render();
 
-  html.document.on.click.add((event) => running = !running, true);
-
-  running = true;
+  html.window.webkitRequestAnimationFrame(tick, html.document);
 }
 
 tick(time) {
@@ -45,7 +31,7 @@ tick(time) {
     render();
   }
 
-  if (running) html.window.webkitRequestAnimationFrame(tick, html.document);
+  html.window.webkitRequestAnimationFrame(tick, html.document);
 }
 
 render() {

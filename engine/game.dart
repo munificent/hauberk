@@ -17,11 +17,13 @@ class Game {
 
     level.actors.add(hero);
 
+    final rat = new Breed('rat', Gender.NEUTER);
+
     for (int i = 0; i < 30; i++) {
-      level.actors.add(new Beetle(this, i + 10, 9));
-      level.actors.add(new Beetle(this, i + 10, 10));
-      level.actors.add(new Beetle(this, i + 10, 8));
-      level.actors.add(new Beetle(this, i + 10, 11));
+      level.actors.add(new Monster(this, rat, i + 10, 9));
+      level.actors.add(new Monster(this, rat, i + 10, 10));
+      level.actors.add(new Monster(this, rat, i + 10, 8));
+      level.actors.add(new Monster(this, rat, i + 10, 11));
     }
   }
 

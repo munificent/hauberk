@@ -1,5 +1,5 @@
 /// An active entity in the game. Includes monsters and the hero.
-class Actor {
+class Actor implements Noun {
   final Game game;
   Vec pos;
   int energy;
@@ -28,10 +28,28 @@ class Actor {
 
     return game.level[pos].type == TileType.FLOOR;
   }
+
+  String get nounText() {
+    assert(false); // Abstract.
+  }
+
+  int get person() {
+    assert(false); // Abstract.
+  }
+
+  Gender get gender() {
+    assert(false); // Abstract.
+  }
 }
 
-class Beetle extends Actor {
-  Beetle(Game game, int x, int y) : super(game, x, y);
+class Monster extends Actor {
+  final Breed breed;
+
+  Monster(Game game, this.breed, int x, int y) : super(game, x, y);
+
+  String get nounText() => 'the ${breed.name}';
+  int get person() => 3;
+  Gender get gender() => breed.gender;
 
   void getAction() {
     switch (rng.next(4)) {
@@ -43,4 +61,12 @@ class Beetle extends Actor {
 
     return new MoveAction(new Vec(0, 0));
   }
+}
+
+/// A single kind of [Monster] in the game.
+class Breed {
+  final Gender gender;
+  final String name;
+
+  Breed(this.name, this.gender);
 }
