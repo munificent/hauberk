@@ -50,6 +50,13 @@ class AttackAction extends Action {
       game.level.actors.remove(defender);
     }
 
+    for (var i = 0; i < 10; i++) {
+      final theta = rng.range(628) / 100;
+      final radius = rng.range(50, 100) / 300;
+      game.effects.add(new Effect(defender.pos.x, defender.pos.y,
+        Math.cos(theta) * radius, Math.sin(theta) * radius, rng.range(3, 10)));
+    }
+
     return ActionResult.success;
   }
 }

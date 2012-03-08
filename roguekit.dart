@@ -47,8 +47,7 @@ main() {
 tick(time) {
   game.hero.nextAction = input.getAction();
 
-  final result = game.update();
-  if (result == GameResult.UPDATED) {
+  if (game.update()) {
     render();
   }
 
@@ -76,6 +75,14 @@ render() {
         glyph = new Glyph(' ');
       }
       terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
+    }
+  }
+
+  // Draw the effects.
+  for (final effect in game.effects) {
+    final pos = effect.pos;
+    if (game.level[pos].visible) {
+      terminal.writeAt(pos.x, pos.y, '*', Color.RED);
     }
   }
 

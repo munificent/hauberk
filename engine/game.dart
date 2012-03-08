@@ -1,7 +1,7 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
   final Level        level;
-  final List<Effect> effects;
+  List<Effect>       effects;
   final Log          log;
   final Rng          rng;
   Hero hero;
@@ -18,36 +18,33 @@ class Game {
     level.actors.add(hero);
   }
 
-  GameResult update() {
-    /*
-    effects.clear();
+  bool update() {
+    var needsRender = effects.length > 0;
 
-    if (action != null) {
-      action.update();
-      return;
-    }
-    */
-
-    // Before we get into the loop, check to see if we're just sitting waiting
-    // for user input.
-    if (level.actors.current.energy.canTakeTurn &&
-        level.actors.current.needsInput) {
-      return GameResult.WAITING;
-    }
+    // Note that the effects run in realtime independent of the turn-based
+    // energy system. This is good in that it lets the player keep going while
+    // effects are playing out. But it also means that gameplay must *not* take
+    // effects into account in order to remain completely turn-based.
+    effects = effects.filter((effect) {
+      return effect.update() &&
+             level.bounds.contains(effect.pos) &&
+             level[effect.pos].isPassable;
+    });
 
     while (true) {
       final actor = level.actors.current;
 
       if (actor.energy.canTakeTurn && actor.needsInput) {
-        return GameResult.UPDATED;
+        return needsRender;
       }
 
       if (actor.energy.gain()) {
-        // TODO(bob): Double check here is gross.
-        if (actor.needsInput) return GameResult.UPDATED;
+        if (actor.needsInput) return needsRender;
 
         var action = actor.getAction();
         var result = action.perform(this, actor);
+
+        needsRender = true;
 
         // Cascade through the alternates until we hit bottom out.
         while (result.alternate != null) {
@@ -72,19 +69,20 @@ class Game {
   }
 }
 
-class GameResult {
-  // Did absolutely nothing. No actions were processed since the very next
-  // thing we need to do is move the hero.
-  static final WAITING = const GameResult(0);
-
-  // Some actions were processed, so we need to render.
-  static final UPDATED = const GameResult(1);
-
-  final int _value;
-
-  const GameResult(this._value);
-}
-
 class Effect {
-  final Vec pos;
+  Vec get pos() => new Vec(x.toInt(), y.toInt());
+  float x;
+  float y;
+  float h;
+  float v;
+  int life;
+
+  Effect(this.x, this.y, this.h, this.v, this.life);
+
+  bool update() {
+    x += h;
+    y += v;
+    life--;
+    return life >= 0;
+  }
 }
