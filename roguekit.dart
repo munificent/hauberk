@@ -31,6 +31,10 @@ main() {
     game.level.actors.add(new Monster(game, rat, pos.x, pos.y));
   }
 
+  // TODO(bob): Doing this here is a hack, but we need to run it once the
+  // hero knows his position.
+  Fov.refresh(game.level, game.hero.pos);
+
   terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
 
   input = new UserInput(new Keyboard(html.document));
@@ -55,11 +59,21 @@ render() {
   // Draw the level.
   for (int y = 0; y < game.level.height; y++) {
     for (int x = 0; x < game.level.width; x++) {
+      final tile = game.level.get(x, y);
       var glyph;
-      var color;
-      switch (game.level.get(x, y).type) {
-        case TileType.FLOOR: glyph = new Glyph('.', Color.DARK_GRAY); break;
-        case TileType.WALL:  glyph = new Glyph('#', Color.GRAY, Color.DARK_GRAY); break;
+      if (tile.explored) {
+        switch (tile.type) {
+          case TileType.FLOOR:
+            glyph = new Glyph('.', tile.visible ? Color.GRAY : Color.DARK_GRAY);
+            break;
+          case TileType.WALL:
+            glyph = new Glyph('#',
+                tile.visible ? Color.WHITE : Color.GRAY,
+                tile.visible ? Color.DARK_GRAY : Color.BLACK);
+            break;
+        }
+      } else {
+        glyph = new Glyph(' ');
       }
       terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
     }
@@ -67,9 +81,11 @@ render() {
 
   // Draw the actors.
   for (final actor in game.level.actors) {
-    final appearance = actor.appearance;
-    final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.YELLOW);
-    terminal.drawGlyph(actor.x, actor.y, glyph);
+    if (game.level[actor.pos].visible) {
+      final appearance = actor.appearance;
+      final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.YELLOW);
+      terminal.drawGlyph(actor.x, actor.y, glyph);
+    }
   }
 
   // Draw the log.

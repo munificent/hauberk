@@ -18,6 +18,11 @@ class Hero extends Actor {
     return action;
   }
 
+  Vec changePosition(Vec pos) {
+    game.dirtyVisibility();
+    return pos;
+  }
+
   String get nounText() => 'you';
   int get person() => 2;
 }

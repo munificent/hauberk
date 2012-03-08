@@ -6,6 +6,8 @@ class Game {
   final Rng          rng;
   Hero hero;
 
+  bool _visibilityDirty = true;
+
   Game()
   : level = new Level(80, 40),
     effects = <Effect>[],
@@ -52,12 +54,21 @@ class Game {
           result = result.alternate.perform(this, actor);
         }
 
+        if (_visibilityDirty) {
+          Fov.refresh(level, hero.pos);
+          _visibilityDirty = false;
+        }
+
         if (result.succeeded) {
           actor.energy.spend();
           level.actors.advance();
         }
       }
     }
+  }
+
+  void dirtyVisibility() {
+    _visibilityDirty = true;
   }
 }
 

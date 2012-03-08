@@ -1,8 +1,13 @@
 /// An active entity in the game. Includes monsters and the hero.
 class Actor implements Noun {
   final Game game;
-  Vec pos;
   int energy;
+  Vec _pos;
+
+  Vec get pos() => _pos;
+  void set pos(Vec value) {
+    if (value != _pos) _pos = changePosition(value);
+  }
 
   int get x() => pos.x;
   void set x(int value) => pos = new Vec(value, y);
@@ -11,7 +16,7 @@ class Actor implements Noun {
   void set y(int value) => pos = new Vec(x, value);
 
   Actor(this.game, int x, int y)
-  : pos = new Vec(x, y),
+  : _pos = new Vec(x, y),
     energy = new Energy(Energy.NORMAL_SPEED);
 
   get appearance() {
@@ -32,6 +37,10 @@ class Actor implements Noun {
 
     return game.level[pos].type == TileType.FLOOR;
   }
+
+  /// Called when the actor's position is about to change to [pos]. Override
+  /// to do stuff when the position changes. Returns the new position.
+  Vec changePosition(Vec pos) => pos;
 
   String get nounText() {
     assert(false); // Abstract.

@@ -136,9 +136,7 @@ class FeatureCreep {
     return true;
   }
 
-  TileType getTile(Vec pos) {
-    return level[pos].type;
-  }
+  TileType getTile(Vec pos) => level[pos].type;
 
   void setTile(Vec pos, TileType type) {
     level[pos].type = type;

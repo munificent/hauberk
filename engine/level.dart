@@ -36,9 +36,20 @@ class TileType {
 }
 
 class Tile {
-  int type;
+  int  type    = TileType.WALL;
+  bool _visible = false;
+  bool _explored = false;
 
-  Tile() : type = TileType.WALL;
+  Tile();
+
+  bool get visible() => _visible;
+  void set visible(bool value) {
+    if (value) _explored = true;
+    _visible = value;
+  }
+
+  bool get explored() => _explored;
 
   bool get isPassable() => type == TileType.FLOOR;
+  bool get isTransparent() => type == TileType.FLOOR;
 }
