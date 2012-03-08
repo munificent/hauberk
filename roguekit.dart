@@ -17,11 +17,18 @@ main() {
 
   final rat = new Breed('rat', Gender.NEUTER, new Glyph('r', Color.DARK_ORANGE));
 
-  for (int i = 0; i < 30; i++) {
-    game.level.actors.add(new Monster(game, rat, i + 10, 9));
-    game.level.actors.add(new Monster(game, rat, i + 10, 10));
-    game.level.actors.add(new Monster(game, rat, i + 10, 8));
-    game.level.actors.add(new Monster(game, rat, i + 10, 11));
+  // Temp for testing.
+  Vec findOpen() {
+    while (true) {
+      final pos = rng.vecInRect(game.level.bounds);
+      if (game.level[pos].isPassable) return pos;
+    }
+  }
+
+  game.hero.pos = findOpen();
+  for (int i = 0; i < 100; i++) {
+    final pos = findOpen();
+    game.level.actors.add(new Monster(game, rat, pos.x, pos.y));
   }
 
   terminal = new DomTerminal(100, 40, html.document.query('#terminal'));

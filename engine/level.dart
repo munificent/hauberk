@@ -2,6 +2,8 @@
 class Level {
   int get width() => tiles.width;
   int get height() => tiles.height;
+  Vec get bounds() => tiles.bounds;
+
   final Array2D<Tile> tiles;
   final Chain<Actor> actors;
 
@@ -9,9 +11,8 @@ class Level {
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
     actors = new Chain<Actor>()
   {
-    final maze = new Maze(39, 19);
-    maze.generate();
-    maze.draw(this);
+    final creep = new FeatureCreep();
+    creep.create(this, new FeatureCreepOptions());
   }
 
   // TODO(bob): Multi-argument subscript operators would be nice.
@@ -38,4 +39,6 @@ class Tile {
   int type;
 
   Tile() : type = TileType.WALL;
+
+  bool get isPassable() => type == TileType.FLOOR;
 }

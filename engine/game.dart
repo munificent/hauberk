@@ -12,9 +12,7 @@ class Game {
     log = new Log(),
     rng = new Rng(new Date.now().value)
   {
-    log.add('Welcome!');
     hero = new Hero(this, 3, 4);
-
     level.actors.add(hero);
   }
 

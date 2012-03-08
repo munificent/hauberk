@@ -58,7 +58,7 @@ class Monster extends Actor {
   Gender get gender() => breed.gender;
 
   void getAction() {
-    switch (rng.next(4)) {
+    switch (rng.range(4)) {
       case 0: return new MoveAction(new Vec(0, -1));
       case 1: return new MoveAction(new Vec(0, 1));
       case 2: return new MoveAction(new Vec(-1, 0));

@@ -5,6 +5,18 @@ class Vec {
 
   const Vec(this.x, this.y);
 
+  int get area() => x * y;
+
+  /// Gets the rook length of the Vec, which is the number of squares a rook on
+  /// a chessboard would need to move from (0, 0) to reach the endpoint of the
+  /// Vec. Also known as Manhattan or taxicab distance.
+  int get rookLength() => x.abs() + y.abs();
+
+  /// Gets the king length of the Vec, which is the number of squares a king on
+  /// a chessboard would need to move from (0, 0) to reach the endpoint of the
+  /// Vec. Also known as Chebyshev distance.
+  int get kingLength() => Math.max(x.abs(), y.abs());
+
   bool operator ==(Vec other) {
     // TODO(bob): Get rid of this when new equality semantics are implemented.
     if (other === null) return false;
@@ -44,11 +56,81 @@ class Direction extends Vec {
   static final NW = const Direction(-1, -1);
 
   const Direction(int x, int y) : super(x, y);
+
+  Direction get rotateLeft45() {
+    switch (this) {
+      case NONE: return NONE;
+      case N: return NW;
+      case NE: return N;
+      case E: return NE;
+      case SE: return E;
+      case S: return SE;
+      case SW: return S;
+      case W: return SW;
+      case NW: return W;
+    }
+  }
+
+  Direction get rotateRight45() {
+    switch (this) {
+      case NONE: return NONE;
+      case N: return NE;
+      case NE: return E;
+      case E: return SE;
+      case SE: return S;
+      case S: return SW;
+      case SW: return W;
+      case W: return NW;
+      case NW: return N;
+    }
+  }
+
+  Direction get rotateLeft90() {
+    switch (this) {
+      case NONE: return NONE;
+      case N: return W;
+      case NE: return NW;
+      case E: return N;
+      case SE: return NE;
+      case S: return E;
+      case SW: return SE;
+      case W: return S;
+      case NW: return SW;
+    }
+  }
+
+  Direction get rotateRight90() {
+    switch (this) {
+      case NONE: return NONE;
+      case N: return E;
+      case NE: return SE;
+      case E: return S;
+      case SE: return SW;
+      case S: return W;
+      case SW: return NW;
+      case W: return N;
+      case NW: return NE;
+    }
+  }
+
+  Direction get rotate180() {
+    switch (this) {
+      case NONE: return NONE;
+      case N: return S;
+      case NE: return SW;
+      case E: return W;
+      case SE: return NW;
+      case S: return N;
+      case SW: return NE;
+      case W: return E;
+      case NW: return SE;
+    }
+  }
 }
 
 // TODO(bob): Finish porting from C#. Figure out how to handle overloads.
 /// A two-dimensional rectangle.
-class Rect {
+class Rect implements Iterable<Vec> {
   /// Gets the empty rectangle.
   static final EMPTY = const Rect(0, 0, 0, 0);
 
@@ -199,36 +281,34 @@ class Rect {
   {
       return Offset(new Vec(x, y), new Vec(width, height));
   }
-
-  Rect Inflate(int distance)
-  {
-      return new Rect(mPos.Offset(-distance, -distance), mSize.Offset(distance * 2, distance * 2));
-  }
   */
 
-  bool contains(Vec point) {
-      if (point.x < pos.x) return false;
-      if (point.x >= pos.x + size.x) return false;
-      if (point.y < pos.y) return false;
-      if (point.y >= pos.y + size.y) return false;
+  Rect inflate(int distance) {
+    return new Rect(x - distance, y - distance,
+      width + (distance * 2), height + (distance * 2));
+  }
 
-      return true;
+  bool contains(Vec point) {
+    if (point.x < pos.x) return false;
+    if (point.x >= pos.x + size.x) return false;
+    if (point.y < pos.y) return false;
+    if (point.y >= pos.y + size.y) return false;
+
+    return true;
+  }
+
+  bool containsRect(Rect rect) {
+    if (rect.left < left) return false;
+    if (rect.right > right) return false;
+    if (rect.top < top) return false;
+    if (rect.bottom > bottom) return false;
+
+    return true;
   }
 
   RectIterator iterator() => new RectIterator(this);
 
   /*
-  bool Contains(Rect rect)
-  {
-      // all sides must be within
-      if (rect.left < left) return false;
-      if (rect.right > right) return false;
-      if (rect.top < top) return false;
-      if (rect.bottom > bottom) return false;
-
-      return true;
-  }
-
   bool Overlaps(Rect rect)
   {
       // fail if they do not overlap on any axis
@@ -250,31 +330,39 @@ class Rect {
   {
       return CenterIn(this, rect);
   }
-
-  IEnumerable<Vec> Trace()
-  {
-      if ((width > 1) && (height > 1))
-      {
-          // trace all four sides
-          foreach (Vec top in Row(TopLeft, width - 1)) yield return top;
-          foreach (Vec right in Column(TopRight.OffsetX(-1), height - 1)) yield return right;
-          foreach (Vec bottom in Row(width - 1)) yield return BottomRight.Offset(-1, -1) - bottom;
-          foreach (Vec left in Column(height - 1)) yield return BottomLeft.OffsetY(-1) - left;
-      }
-      else if ((width > 1) && (height == 1))
-      {
-          // a single row
-          foreach (Vec pos in Row(TopLeft, width)) yield return pos;
-      }
-      else if ((height >= 1) && (width == 1))
-      {
-          // a single column, or one unit
-          foreach (Vec pos in Column(TopLeft, height)) yield return pos;
-      }
-
-      // otherwise, the rect doesn't have a positive size, so there's nothing to trace
-  }
   */
+
+  // Iterators over the points along the edge of the Rect.
+  Iterable<Vec> trace() {
+    if ((width > 1) && (height > 1)) {
+      // TODO(bob): Implement an iterator class here if building the list is
+      // slow.
+      // Trace all four sides.
+      final result = <Vec>[];
+
+      for (var x = left; x < right; x++) {
+        result.add(new Vec(x, top));
+        result.add(new Vec(x, bottom - 1));
+      }
+
+      for (var y = top + 1; y < bottom - 1; y++) {
+        result.add(new Vec(left, y));
+        result.add(new Vec(right - 1, y));
+      }
+
+      return result;
+    } else if ((width > 1) && (height == 1)) {
+      // A single row.
+      return row(topLeft, width);
+    } else if ((height >= 1) && (width == 1)) {
+      // A single column, or one unit
+      return column(topLeft, height);
+    }
+
+    // Otherwise, the rect doesn't have a positive size, so there's nothing to
+    // trace.
+    return const <Vec>[];
+  }
 }
 
 class RectIterator {
@@ -287,7 +375,7 @@ class RectIterator {
     _y = _rect.y;
   }
 
-  bool hasNext() => (_y < _rect.bottom - 1) || (_x < _rect.right - 1);
+  bool hasNext() => _y < _rect.bottom ;
 
   Vec next() {
     final result = new Vec(_x, _y);
