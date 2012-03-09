@@ -87,7 +87,14 @@ class Monster extends Actor {
       final move = new Vec(x, y);
 
       // TODO(bob): Should try adjacent directions if preferred one is blocked.
-      if (canOccupy(pos + move)) return new MoveAction(move);
+      final dest = pos + move;
+      if (canOccupy(dest)) {
+        // Don't hit another monster.
+        final occupier = game.level.actorAt(dest);
+        if (occupier == null || occupier == game.hero) {
+          return new MoveAction(move);
+        }
+      }
     }
 
     // Can't see, so just sit around...
