@@ -66,13 +66,40 @@ class Monster extends Actor {
   int get person() => 3;
   Gender get gender() => breed.gender;
 
+  /// Gets whether or not this monster has an uninterrupted line of sight to
+  /// [target].
+  bool canView(Pos target) {
+    // Walk to the target.
+    for (final step in new Los(pos, game.hero.pos)) {
+      if (!game.level[step].isTransparent) return false;
+    }
+
+    // If we got here, we made it.
+    return true;
+  }
+
   void getAction() {
+    // If it can see the hero, go straight towards him.
+    if (canView(game.hero.pos)) {
+      // TODO(bob): What about transparent obstacles?
+      final x = sign(game.hero.x - pos.x);
+      final y = sign(game.hero.y - pos.y);
+      final move = new Vec(x, y);
+
+      // TODO(bob): Should try adjacent directions if preferred one is blocked.
+      if (canOccupy(pos + move)) return new MoveAction(move);
+    }
+
+    // Can't see, so just sit around...
+
+    /*
     switch (rng.range(4)) {
       case 0: return new MoveAction(new Vec(0, -1));
       case 1: return new MoveAction(new Vec(0, 1));
       case 2: return new MoveAction(new Vec(-1, 0));
       case 3: return new MoveAction(new Vec(1, 0));
     }
+    */
 
     return new MoveAction(new Vec(0, 0));
   }

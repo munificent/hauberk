@@ -52,5 +52,7 @@ class Vec {
     return true;
   }
 
+  Vec abs() => new Vec(x.abs(), y.abs());
+
   String toString() => '$x, $y';
 }

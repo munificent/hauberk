@@ -11,4 +11,5 @@
 #source('engine/hero.dart');
 #source('engine/level.dart');
 #source('engine/log.dart');
+#source('engine/los.dart');
 #source('engine/maze.dart');

@@ -59,6 +59,8 @@ class AttackAction extends Action {
 
     return ActionResult.success;
   }
+
+  String toString() => '$actor attacks $defender';
 }
 
 class MoveAction extends Action {
@@ -84,4 +86,6 @@ class MoveAction extends Action {
     actor.pos = pos;
     return ActionResult.success;
   }
+
+  String toString() => '$actor moves $offset';
 }
