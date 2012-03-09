@@ -59,6 +59,11 @@ class Game {
         if (result.succeeded) {
           actor.energy.spend();
           level.actors.advance();
+
+
+          // TODO(bob): Doing this here is a hack. Scent should spread at a
+          // uniform rate independent of the hero's speed.
+          if (actor == hero) level.updateScent(hero);
         }
       }
     }

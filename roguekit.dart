@@ -74,6 +74,31 @@ render() {
       } else {
         glyph = new Glyph(' ');
       }
+
+      /*
+      // Visually debug the scent data.
+      if (tile.isPassable) {
+        var scent = game.level.getScent(x, y);
+        var color;
+        if (scent == 0) color = Color.DARK_GRAY;
+        else if (scent < 0.2) color = Color.DARK_PURPLE;
+        else if (scent < 0.4) color = Color.DARK_BLUE;
+        else if (scent < 0.6) color = Color.DARK_AQUA;
+        else if (scent < 0.8) color = Color.DARK_GREEN;
+        else if (scent < 1) color = Color.DARK_YELLOW;
+        else if (scent < 2) color = Color.DARK_ORANGE;
+        else if (scent < 3) color = Color.DARK_RED;
+        else if (scent < 4) color = Color.PURPLE;
+        else if (scent < 5) color = Color.BLUE;
+        else if (scent < 6) color = Color.AQUA;
+        else if (scent < 7) color = Color.GREEN;
+        else if (scent < 8) color = Color.YELLOW;
+        else if (scent < 9) color = Color.ORANGE;
+        else color = Color.RED;
+        glyph = new Glyph('S', color);
+      }
+      */
+
       terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
     }
   }

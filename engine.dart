@@ -13,3 +13,4 @@
 #source('engine/log.dart');
 #source('engine/los.dart');
 #source('engine/maze.dart');
+#source('engine/option.dart');
