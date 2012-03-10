@@ -101,6 +101,28 @@ render() {
       }
       */
 
+      // Visually debug the pathfinding data.
+      /*
+      final colors = const [
+        Color.DARK_PURPLE,
+        Color.DARK_BLUE,
+        Color.DARK_AQUA,
+        Color.DARK_GREEN,
+        Color.DARK_YELLOW,
+        Color.DARK_ORANGE,
+        Color.DARK_RED
+      ];
+
+      if (tile.isPassable) {
+        final steps = game.level.getPath(x, y);
+        if (steps >= 0) {
+          glyph = new Glyph('0123456789'[steps % 10], colors[steps % 7]);
+        } else {
+          glyph = new Glyph('-', Color.DARK_GRAY);
+        }
+      }
+      */
+
       terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
     }
   }

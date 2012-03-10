@@ -15,6 +15,7 @@ class Game {
     rng = new Rng(new Date.now().value)
   {
     hero = new Hero(this, 3, 4);
+    level.game = this;
     level.actors.add(hero);
   }
 

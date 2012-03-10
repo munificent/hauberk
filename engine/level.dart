@@ -11,6 +11,12 @@ class Level {
   // current. Will be `true` if `scent1` is current.
   bool currentScent1;
 
+  /// The number of pathfinding steps that have been calculated so far. Gets
+  /// reset anytime something that affects pathfinding changes (i.e. whenever
+  /// the hero moves since that paths are to him, or when an actor moves since
+  /// actors can block others).
+  int _knownPath = -1;
+
   Level(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
     actors = new Chain<Actor>()
@@ -18,6 +24,8 @@ class Level {
     final creep = new FeatureCreep();
     creep.create(this, new FeatureCreepOptions());
   }
+
+  Game game;
 
   // TODO(bob): Multi-argument subscript operators would be nice.
   Tile operator[](Vec pos) => tiles[pos];
@@ -35,6 +43,86 @@ class Level {
 
   num getScent(int x, int y) {
     return currentScent1 ? tiles.get(x, y).scent1 : tiles.get(x, y).scent2;
+  }
+
+  void dirtyPathfinding() {
+    _knownPath = -1;
+
+    // Clear the pathfinding data.
+    for (final tile in tiles) tile.path = -1;
+  }
+
+  int getPath(int x, int y) {
+    int path = tiles.get(x, y).path;
+
+    // Known path.
+    if (path != -1) return path;
+
+    // If a straight line to the hero is too far, then there can be no path,
+    // so don't even try.
+    if ((game.hero.pos - new Vec(x, y)).kingLength > Option.MAX_PATH) {
+      return path;
+    }
+
+    // We don't know a path yet, so try to find it.
+
+    if (_knownPath == -1) {
+      // No path data is known, so start with the hero.
+      tiles[game.hero.pos].path = 0;
+      _knownPath = 0;
+    }
+
+    // Walk outwards from the hero until we find a path to this tile, or until
+    // we give up. This is basically Dijkstra's algorithm.
+    // TODO(bob): This is an inefficient way to do Dijkstra's. Since we don't
+    // keep track of the set of open nodes (i.e. tiles that are at the edge of
+    // the known paths) we end up walking over all tiles repeatedly. Could
+    // optimize.
+    bool found = false;
+
+    while (_knownPath < Option.MAX_PATH) {
+      for (var scanY = 1; scanY < height - 1; scanY++) {
+        for (var scanX = 1; scanX < width - 1; scanX++) {
+          final tile = tiles.get(scanX, scanY);
+
+          // Can't pathfind through walls.
+          if (!tile.isPassable) continue;
+
+          // Don't do anything if we've already solved this tile.
+          if (tile.path != -1) continue;
+
+          // Find the best path distance to one of this tile's neighbors.
+          int best = Option.MAX_PATH + 1;
+          int testNeighbor(int h, int v) {
+            final path = tiles.get(scanX + h, scanY + v).path;
+            if ((path != -1) && (path < best)) best = path;
+          }
+
+          testNeighbor(-1, -1);
+          testNeighbor( 0, -1);
+          testNeighbor( 1, -1);
+          testNeighbor(-1,  0);
+          testNeighbor( 1,  0);
+          testNeighbor(-1,  1);
+          testNeighbor( 0,  1);
+          testNeighbor( 1,  1);
+
+          // If we have a path to a neighbor, then a path to this tile is just
+          // one more step.
+          if (best <= Option.MAX_PATH) {
+            tile.path = best + 1;
+            if ((x == scanX) && (y == scanY)) found = true;
+          }
+        }
+      }
+
+      _knownPath++;
+
+      // See if we've found a path to our goal yet.
+      if (found) break;
+    }
+
+    return tiles.get(x, y).path;
   }
 
   void updateScent(Hero hero) {
@@ -100,6 +188,11 @@ class Tile {
   bool _explored = false;
   num scent1 = 0;
   num scent2 = 0;
+
+  /// The number of steps from this tile to the hero following the best possible
+  /// path. Will be `-1` if the path isn't known (or if it's too far to
+  /// calculate).
+  int path = -1;
 
   Tile();
 

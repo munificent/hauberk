@@ -105,8 +105,6 @@ class FeatureCreep {
       // the same crowded connectors over and over again.
       if (!success) connectors.add(connector);
     }
-
-    print('Unused connectors: ${connectors.length}, open space: $openCount / ${level.tiles.size.area}');
   }
 
   /// Gets whether the [rect] is empty (i.e. solid walls) and can have

@@ -1,6 +1,11 @@
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {
+  /// The maximum number of steps of ideal pathfinding data that monsters can
+  /// use. Increasing this lets monsters accurately find the hero from farther
+  /// away, but increases processing time.
+  static final MAX_PATH = 12;
+
   /// How much scent is added each turn to the hero's tile. This is basically
   /// how "strong" the hero smells.
   static final SCENT_HERO = 2;

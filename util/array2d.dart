@@ -1,4 +1,4 @@
-class Array2D<T> {
+class Array2D<T> implements Iterable<T> {
   final int width;
   final int height;
   final List<T> elements;
@@ -35,4 +35,6 @@ class Array2D<T> {
       this[pos] = generator(pos);
     }
   }
+
+  Iterable<T> iterator() => elements.iterator();
 }
