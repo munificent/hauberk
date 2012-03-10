@@ -130,6 +130,16 @@ class Monster extends Actor {
     }
     */
   }
+
+  Hit getHit(Actor defender) {
+    // TODO(bob): Get from breed.
+    return new Hit(2, 1);
+  }
+
+  void takeHit(Hit hit) {
+    // TODO(bob): Temp.
+    hit.bindDefense(strike: 30);
+  }
 }
 
 /// A single kind of [Monster] in the game.

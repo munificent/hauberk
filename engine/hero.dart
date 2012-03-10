@@ -18,6 +18,15 @@ class Hero extends Actor {
     return action;
   }
 
+  Hit getHit(Actor defender) {
+    return new Hit(3, 2);
+  }
+
+  void takeHit(Hit hit) {
+    // TODO(bob): Temp.
+    hit.bindDefense(strike: 50);
+  }
+
   Vec changePosition(Vec pos) {
     game.dirtyVisibility();
     game.level.dirtyPathfinding();

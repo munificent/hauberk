@@ -43,8 +43,30 @@ class AttackAction extends Action {
   AttackAction(this.defender);
 
   ActionResult onPerform(Game game) {
-    // TODO(bob): Real combat mechanics!
-    defender.health.current--;
+    final hit = actor.getHit(defender);
+    defender.takeHit(hit);
+
+    // Ask the defender how hard it is to hit.
+    var strike = hit.strike;
+
+    // TODO(bob): Modify by the attacker's strike bonus.
+
+    // Keep it in bounds. We clamp it to [5, 95] so there is always some chance
+    // of a hit or a miss.
+    strike = clamp(5, strike, 95);
+
+    final strikeRoll = rng.inclusive(1, 100);
+
+    if (strikeRoll < strike) {
+      // A swing and a miss!
+      game.log.add('{1} miss[es] {2}.', actor, defender);
+      return ActionResult.success;
+    }
+
+    // The hit made contact.
+    final damage = rng.triangleInt(hit.damage, hit.damageRange);
+    defender.health.current -= damage;
+
     if (defender.health.current == 0) {
       game.log.add('{1} kill[s] {2}.', actor, defender);
 
@@ -57,6 +79,7 @@ class AttackAction extends Action {
         actor, defender);
     }
 
+    // TODO(bob): Hack temp. Spawn some particles.
     for (var i = 0; i < 10; i++) {
       final theta = rng.range(628) / 100;
       final radius = rng.range(50, 100) / 300;
@@ -68,6 +91,22 @@ class AttackAction extends Action {
   }
 
   String toString() => '$actor attacks $defender';
+}
+
+class Hit {
+  /// The average (i.e. center) damage.
+  final int damage;
+
+  /// The range that damage can be around [damage].
+  final int damageRange;
+
+  int strike;
+
+  Hit(this.damage, this.damageRange);
+
+  void bindDefense([int strike]) {
+    this.strike = strike;
+  }
 }
 
 class MoveAction extends Action {

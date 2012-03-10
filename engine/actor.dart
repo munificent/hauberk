@@ -33,6 +33,14 @@ class Actor implements Noun {
     // Do nothing.
   }
 
+  /// Create a new [Hit] for this [Actor] to attempt to hit [defender].
+  abstract Hit getHit(Actor defender);
+
+  /// This is called on the defender when some attacker is attempting to hit it.
+  /// The defender fills it in with the information needed to resolve the the
+  /// hit.
+  abstract void takeHit(Hit hit);
+
   bool canOccupy(Vec pos) {
     if (pos.x < 0) return false;
     if (pos.x >= game.level.width) return false;

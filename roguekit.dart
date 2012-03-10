@@ -168,7 +168,12 @@ render() {
 
   terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
 
-  terminal.writeAt(81, 3, 'Health', Color.GRAY);
+  terminal.writeAt(81, 3, 'Health    /   ', Color.GRAY);
+  terminal.writeAt(88, 3, game.hero.health.current.toString(), Color.RED);
+  terminal.writeAt(92, 3, game.hero.health.max.toString(), Color.RED);
+
+
+  /*
   terminal.writeAt(81, 4, '  Mana', Color.GRAY);
   terminal.writeAt(81, 5, '   Str', Color.GRAY);
   terminal.writeAt(81, 6, '   Agi', Color.GRAY);
@@ -179,6 +184,7 @@ render() {
   terminal.writeAt(88, 5, '25/25', Color.ORANGE);
   terminal.writeAt(88, 6, '25/25', Color.GREEN);
   terminal.writeAt(88, 7, '25/25', Color.BLUE);
+  */
 
   terminal.render();
 }
