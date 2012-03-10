@@ -160,7 +160,7 @@ class Level {
         scent = (scent * Option.SCENT_DECAY) / totalWeight;
 
         // Clamp it within [0,1].
-        scent = Math.min(Math.max(0, scent), 1.0);
+        scent = clamp(0, scent, 1);
 
         // Write it to the other buffer.
         if (currentScent1) {

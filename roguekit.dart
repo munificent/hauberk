@@ -17,6 +17,7 @@ main() {
 
   final rat = new Breed('rat', Gender.NEUTER,
     new Glyph('r', Color.DARK_ORANGE),
+    maxHealth: 4,
     minScent: 0.001);
 
   // Temp for testing.
@@ -30,7 +31,7 @@ main() {
   game.hero.pos = findOpen();
   for (int i = 0; i < 10; i++) {
     final pos = findOpen();
-    game.level.actors.add(new Monster(game, rat, pos.x, pos.y));
+    game.level.actors.add(rat.spawn(game, pos));
   }
 
   // TODO(bob): Doing this here is a hack, but we need to run it once the

@@ -1,6 +1,9 @@
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {
+  /// The max health of a new hero.
+  static final HERO_START_HEALTH = 10;
+
   /// The maximum number of steps of ideal pathfinding data that monsters can
   /// use. Increasing this lets monsters accurately find the hero from farther
   /// away, but increases processing time.

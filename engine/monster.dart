@@ -2,7 +2,8 @@
 class Monster extends Actor {
   final Breed breed;
 
-  Monster(Game game, this.breed, int x, int y) : super(game, x, y);
+  Monster(Game game, this.breed, int x, int y, int maxHealth)
+  : super(game, x, y, maxHealth);
 
   get appearance() => breed.appearance;
 
@@ -139,9 +140,15 @@ class Breed {
   /// Untyped so the engine isn't coupled to how monsters appear.
   final appearance;
 
+  final int maxHealth;
+
   /// The minimum scent strength that the monster can detect. Zero means any
   /// scent can be picked up, 1.0 means the monster has no sense of smell.
   final num minScent;
 
-  Breed(this.name, this.gender, this.appearance, [this.minScent]);
+  Breed(this.name, this.gender, this.appearance, [this.maxHealth, this.minScent]);
+
+  Monster spawn(Game game, Vec pos) {
+    return new Monster(game, this, pos.x, pos.y, maxHealth);
+  }
 }

@@ -5,7 +5,7 @@ class Hero extends Actor {
 
   Action nextAction;
 
-  Hero(Game game, int x, int y) : super(game, x, y);
+  Hero(Game game, int x, int y) : super(game, x, y, Option.HERO_START_HEALTH);
 
   // TODO(bob): Hackish.
   get appearance() => 'hero';

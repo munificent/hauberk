@@ -44,10 +44,17 @@ class AttackAction extends Action {
 
   ActionResult onPerform(Game game) {
     // TODO(bob): Real combat mechanics!
-    game.log.add('{1} kill[s] {2}.', actor, defender);
+    defender.health.current--;
+    if (defender.health.current == 0) {
+      game.log.add('{1} kill[s] {2}.', actor, defender);
 
-    if (defender is! Hero) {
-      game.level.actors.remove(defender);
+      if (defender is! Hero) {
+        game.level.actors.remove(defender);
+      }
+    } else {
+      final health = defender.health;
+      game.log.add('{1} hit[s] {2} (${health.current}/${health.max}).',
+        actor, defender);
     }
 
     for (var i = 0; i < 10; i++) {

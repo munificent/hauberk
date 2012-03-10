@@ -1,6 +1,7 @@
 /// An active entity in the game. Includes monsters and the hero.
 class Actor implements Noun {
   final Game game;
+  final Stat health;
   int energy;
   Vec _pos;
 
@@ -17,8 +18,9 @@ class Actor implements Noun {
   int get y() => pos.y;
   void set y(int value) => pos = new Vec(x, value);
 
-  Actor(this.game, int x, int y)
+  Actor(this.game, int x, int y, int health)
   : _pos = new Vec(x, y),
+    health = new Stat(health),
     energy = new Energy(Energy.NORMAL_SPEED);
 
   get appearance() {
@@ -55,4 +57,26 @@ class Actor implements Noun {
   Gender get gender() {
     assert(false); // Abstract.
   }
+}
+
+class Stat {
+  int _current;
+  int _max;
+
+  int get current() => _current;
+  void set current(int value) {
+    _current = clamp(0, value, _max);
+  }
+
+  int get max() => _max;
+  void set max(int value) {
+    _max = value;
+
+    // Make sure current is still in bounds.
+    _current = clamp(0, _current, _max);
+  }
+
+  Stat(int value)
+  : _current = value,
+    _max = value;
 }
