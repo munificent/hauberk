@@ -15,7 +15,9 @@ bool logOnTop = false;
 main() {
   game = new Game();
 
-  final rat = new Breed('rat', Gender.NEUTER, new Glyph('r', Color.DARK_ORANGE));
+  final rat = new Breed('rat', Gender.NEUTER,
+    new Glyph('r', Color.DARK_ORANGE),
+    minScent: 0.001);
 
   // Temp for testing.
   Vec findOpen() {
@@ -26,7 +28,7 @@ main() {
   }
 
   game.hero.pos = findOpen();
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 10; i++) {
     final pos = findOpen();
     game.level.actors.add(new Monster(game, rat, pos.x, pos.y));
   }
@@ -81,19 +83,19 @@ render() {
         var scent = game.level.getScent(x, y);
         var color;
         if (scent == 0) color = Color.DARK_GRAY;
-        else if (scent < 0.2) color = Color.DARK_PURPLE;
-        else if (scent < 0.4) color = Color.DARK_BLUE;
-        else if (scent < 0.6) color = Color.DARK_AQUA;
-        else if (scent < 0.8) color = Color.DARK_GREEN;
-        else if (scent < 1) color = Color.DARK_YELLOW;
-        else if (scent < 2) color = Color.DARK_ORANGE;
-        else if (scent < 3) color = Color.DARK_RED;
-        else if (scent < 4) color = Color.PURPLE;
-        else if (scent < 5) color = Color.BLUE;
-        else if (scent < 6) color = Color.AQUA;
-        else if (scent < 7) color = Color.GREEN;
-        else if (scent < 8) color = Color.YELLOW;
-        else if (scent < 9) color = Color.ORANGE;
+        else if (scent < 0.02) color = Color.DARK_PURPLE;
+        else if (scent < 0.04) color = Color.DARK_BLUE;
+        else if (scent < 0.06) color = Color.DARK_AQUA;
+        else if (scent < 0.08) color = Color.DARK_GREEN;
+        else if (scent < 0.1) color = Color.DARK_YELLOW;
+        else if (scent < 0.2) color = Color.DARK_ORANGE;
+        else if (scent < 0.3) color = Color.DARK_RED;
+        else if (scent < 0.4) color = Color.PURPLE;
+        else if (scent < 0.5) color = Color.BLUE;
+        else if (scent < 0.6) color = Color.AQUA;
+        else if (scent < 0.7) color = Color.GREEN;
+        else if (scent < 0.8) color = Color.YELLOW;
+        else if (scent < 0.9) color = Color.ORANGE;
         else color = Color.RED;
         glyph = new Glyph('S', color);
       }

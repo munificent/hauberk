@@ -71,8 +71,8 @@ class Level {
         // Weight it with a slight negative bias so that scent fades.
         scent = (scent * Option.SCENT_DECAY) / totalWeight;
 
-        // Can't have negative scent or too much.
-        scent = Math.min(Math.max(0, scent), Option.SCENT_MAX);
+        // Clamp it within [0,1].
+        scent = Math.min(Math.max(0, scent), 1.0);
 
         // Write it to the other buffer.
         if (currentScent1) {
