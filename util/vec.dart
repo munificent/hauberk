@@ -1,5 +1,7 @@
 /// A two-dimensional point.
 class Vec {
+  static final ZERO = const Vec(0, 0);
+
   final int x;
   final int y;
 

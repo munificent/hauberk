@@ -53,7 +53,7 @@ class AttackAction extends Action {
 
     // Keep it in bounds. We clamp it to [5, 95] so there is always some chance
     // of a hit or a miss.
-    strike = clamp(5, strike, 95);
+    strike = clamp(Option.STRIKE_MIN, strike, Option.STRIKE_MAX);
 
     final strikeRoll = rng.inclusive(1, 100);
 
@@ -115,6 +115,11 @@ class MoveAction extends Action {
   MoveAction(this.offset);
 
   ActionResult onPerform(Game game) {
+    // Rest if we aren't moving anywhere.
+    if (offset == Vec.ZERO) {
+      return new ActionResult.alternate(new RestAction());
+    }
+
     final pos = actor.pos + offset;
 
     // See if there is an actor there.
@@ -134,4 +139,27 @@ class MoveAction extends Action {
   }
 
   String toString() => '$actor moves $offset';
+}
+
+class RestAction extends Action {
+  ActionResult onPerform(Game game) {
+    if (actor.health.isMax) {
+      // Don't do anything if already maxed.
+      actor.restCount = 0;
+    } else {
+      // TODO(bob): Could have "regeneration" power-up that speeds this.
+      // The greater the max health, the faster the actor heals when resting.
+      final turnsNeeded = Math.max(
+          Option.REST_MAX_HEALTH_FOR_RATE ~/ actor.health.max, 1);
+
+      if (actor.restCount++ > turnsNeeded) {
+        actor.health.current++;
+        actor.restCount = 0;
+        // TODO(bob): Temp.
+        game.log.add('{1} rest[s].', actor);
+      }
+    }
+
+    return ActionResult.success;
+  }
 }

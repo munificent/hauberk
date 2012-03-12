@@ -2,7 +2,13 @@
 class Actor implements Noun {
   final Game game;
   final Stat health;
-  int energy;
+  Energy energy;
+
+  /// The number of times the actor has rested. Once this crosses a certain
+  /// threshold (based on the Actor's max health), its health will be increased
+  /// and this will be lowered.
+  int restCount = 0;
+
   Vec _pos;
 
   Vec get pos() => _pos;
@@ -83,6 +89,8 @@ class Stat {
     // Make sure current is still in bounds.
     _current = clamp(0, _current, _max);
   }
+
+  bool get isMax() => _current == _max;
 
   Stat(int value)
   : _current = value,

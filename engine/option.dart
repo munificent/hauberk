@@ -1,6 +1,18 @@
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {
+  /// A resting actor regains health every `n` turns where `n` is this number
+  /// divided by the actor's max health. Setting this to be larger makes actors
+  /// regenerate more slowly.
+  static final REST_MAX_HEALTH_FOR_RATE = 100;
+
+  /// The range of valid strike values. After calculating the strike, it will
+  /// be clamped to this bounds and then the strike roll will be compared to it.
+  /// A higher minimum means more strikes are guaranteed misses and a lower
+  /// max means more guaranteed hits.
+  static final STRIKE_MIN = 5;
+  static final STRIKE_MAX = 95;
+
   /// The max health of a new hero.
   static final HERO_START_HEALTH = 10;
 
