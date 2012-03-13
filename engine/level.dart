@@ -157,7 +157,7 @@ class Level {
         addScent(x + 1, y + 1, Option.SCENT_CORNER_CONVOLVE);
 
         // Weight it with a slight negative bias so that scent fades.
-        scent = (scent * Option.SCENT_DECAY) / totalWeight;
+        scent = scent / totalWeight * Option.SCENT_DECAY - Option.SCENT_SUBTRACT;
 
         // Clamp it within [0,1].
         scent = clamp(0, scent, 1);

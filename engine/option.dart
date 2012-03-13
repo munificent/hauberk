@@ -23,7 +23,7 @@ class Option {
 
   /// How much scent is added each turn to the hero's tile. This is basically
   /// how "strong" the hero smells.
-  static final SCENT_HERO = 2;
+  static final SCENT_HERO = 0.2;
 
   /// How much scent fades over time (a multiplier). Note that because scent
   /// decays by multiplication, it will almost never actually reach zero. That
@@ -31,7 +31,9 @@ class Option {
   /// prevent monsters from being able to track the hero from across the level,
   /// they have a scent "threshold" which is a minimum value required for them
   /// to be able to pick up the scent.
-  static final SCENT_DECAY = 0.97;
+  static final SCENT_DECAY = 0.98;
+
+  static final SCENT_SUBTRACT = 0.001;
 
   /// Scent spreads using a simple 3x3 convolution filter. These two options
   /// control how much weight tiles next to and diagonal to the center tile

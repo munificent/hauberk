@@ -45,7 +45,11 @@ class Monster extends Actor {
     // Calculate the score for moving in each possible direction.
     final scores = new List(directions.length);
 
-    final scent = game.level.getScent(pos.x, pos.y);
+    getScent(Vec pos) {
+      return Math.max(game.level.getScent(pos.x, pos.y) - breed.minScent, 0);
+    }
+
+    final scent = getScent(pos);
     final path  = game.level.getPath(pos.x, pos.y);
 
     final MIN_SCORE = -99999;
@@ -66,14 +70,14 @@ class Monster extends Actor {
       // (for example) path finding has a greater influence than scent.
 
       // Apply scent knowledge.
-      final scentGradient = game.level.getScent(dest.x, dest.y) - scent;
-      if (scentGradient.abs() > breed.minScent) {
-        // TODO(bob): Could apply a breed-specific weight here to control how
-        // much the monster relies on their sense of smell.
-        scores[i] += scentGradient;
-      }
+      final scentGradient = getScent(dest) - scent;
+      // TODO(bob): Could apply a breed-specific weight here to control how
+      // much the monster relies on their sense of smell.
+      scores[i] += scentGradient;
 
       // Apply ideal pathfinding (if known).
+      // TODO(bob): Could limit the path length that each breed is smart enough
+      // to follow.
       if (path != -1) {
         final pathHere = game.level.getPath(dest.x, dest.y);
         if (pathHere != -1) {
@@ -81,9 +85,6 @@ class Monster extends Actor {
           scores[i] += (path - pathHere) * 10;
         }
       }
-
-      // TODO(bob): Other pathfinding logic. If the monster is within a certain
-      // distance and can see the hero, should use ideal pathfinding.
 
       // TODO(bob): Should add a random amount to each score based on how
       // erratic the breed is.

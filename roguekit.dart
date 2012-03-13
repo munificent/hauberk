@@ -84,21 +84,41 @@ render() {
         var scent = game.level.getScent(x, y);
         var color;
         if (scent == 0) color = Color.DARK_GRAY;
-        else if (scent < 0.02) color = Color.DARK_PURPLE;
-        else if (scent < 0.04) color = Color.DARK_BLUE;
+        else if (scent < 0.02) color = Color.DARK_BLUE;
+        else if (scent < 0.04) color = Color.BLUE;
         else if (scent < 0.06) color = Color.DARK_AQUA;
-        else if (scent < 0.08) color = Color.DARK_GREEN;
-        else if (scent < 0.1) color = Color.DARK_YELLOW;
-        else if (scent < 0.2) color = Color.DARK_ORANGE;
-        else if (scent < 0.3) color = Color.DARK_RED;
-        else if (scent < 0.4) color = Color.PURPLE;
-        else if (scent < 0.5) color = Color.BLUE;
-        else if (scent < 0.6) color = Color.AQUA;
-        else if (scent < 0.7) color = Color.GREEN;
-        else if (scent < 0.8) color = Color.YELLOW;
-        else if (scent < 0.9) color = Color.ORANGE;
-        else color = Color.RED;
-        glyph = new Glyph('S', color);
+        else if (scent < 0.08) color = Color.AQUA;
+        else if (scent < 0.1) color = Color.DARK_GREEN;
+        else if (scent < 0.2) color = Color.GREEN;
+        else if (scent < 0.3) color = Color.DARK_YELLOW;
+        else if (scent < 0.4) color = Color.YELLOW;
+        else if (scent < 0.5) color = Color.DARK_ORANGE;
+        else if (scent < 0.6) color = Color.ORANGE;
+        else if (scent < 0.7) color = Color.DARK_RED;
+        else if (scent < 0.8) color = Color.RED;
+        else if (scent < 0.9) color = Color.DARK_PURPLE;
+        else color = Color.PURPLE;
+
+        var best = 0;
+        var char = 'O';
+        compareScent(dir, c) {
+          var neighbor = game.level.getScent(x + dir.x, y + dir.y);
+          if (neighbor > best) {
+            best = neighbor;
+            char = c;
+          }
+        }
+
+        compareScent(Direction.N, '|');
+        compareScent(Direction.NE, '/');
+        compareScent(Direction.E, '-');
+        compareScent(Direction.SE, '\\');
+        compareScent(Direction.S, '|');
+        compareScent(Direction.SW, '/');
+        compareScent(Direction.W, '-');
+        compareScent(Direction.NW, '\\');
+
+        glyph = new Glyph(char, color);
       }
       */
 
