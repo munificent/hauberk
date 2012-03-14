@@ -15,30 +15,12 @@ List<Effect> effects;
 bool logOnTop = false;
 
 main() {
-  game = new Game();
-
   final rat = new Breed('rat', Gender.NEUTER,
     new Glyph('r', Color.DARK_ORANGE),
     maxHealth: 4,
     minScent: 0.001);
 
-  // Temp for testing.
-  Vec findOpen() {
-    while (true) {
-      final pos = rng.vecInRect(game.level.bounds);
-      if (game.level[pos].isPassable) return pos;
-    }
-  }
-
-  game.hero.pos = findOpen();
-  for (int i = 0; i < 10; i++) {
-    final pos = findOpen();
-    game.level.actors.add(rat.spawn(game, pos));
-  }
-
-  // TODO(bob): Doing this here is a hack, but we need to run it once the
-  // hero knows his position.
-  Fov.refresh(game.level, game.hero.pos);
+  game = new Game([rat]);
 
   terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
 

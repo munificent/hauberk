@@ -19,10 +19,10 @@ class Level {
 
   Level(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
-    actors = new Chain<Actor>()
-  {
-    final creep = new FeatureCreep();
-    creep.create(this, new FeatureCreepOptions());
+    actors = new Chain<Actor>();
+
+  void generate() {
+    new FeatureCreep().create(this, new FeatureCreepOptions());
   }
 
   Game game;
@@ -175,6 +175,17 @@ class Level {
     currentScent1 = !currentScent1;
   }
 
+  // TODO(bob): This is hackish and may fail to terminate.
+  Vec findOpenTile() {
+    while (true) {
+      final pos = rng.vecInRect(bounds);
+
+      if (!this[pos].isPassable) continue;
+      if (actorAt(pos) != null) continue;
+
+      return pos;
+    }
+  }
 }
 
 class TileType {
