@@ -1,7 +1,6 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
   final Level        level;
-  List<Effect>       effects;
   final Log          log;
   final Rng          rng;
   Hero hero;
@@ -10,7 +9,6 @@ class Game {
 
   Game()
   : level = new Level(80, 40),
-    effects = <Effect>[],
     log = new Log(),
     rng = new Rng(new Date.now().value)
   {
@@ -19,37 +17,29 @@ class Game {
     level.actors.add(hero);
   }
 
-  bool update() {
-    var needsRender = effects.length > 0;
-
-    // Note that the effects run in realtime independent of the turn-based
-    // energy system. This is good in that it lets the player keep going while
-    // effects are playing out. But it also means that gameplay must *not* take
-    // effects into account in order to remain completely turn-based.
-    effects = effects.filter((effect) {
-      return effect.update() &&
-             level.bounds.contains(effect.pos) &&
-             level[effect.pos].isPassable;
-    });
+  GameResult update() {
+    final gameResult = new GameResult();
 
     while (true) {
       final actor = level.actors.current;
 
       if (actor.energy.canTakeTurn && actor.needsInput) {
-        return needsRender;
+        return gameResult;
       }
 
       if (actor.energy.gain()) {
-        if (actor.needsInput) return needsRender;
+        if (actor.needsInput) {
+          return gameResult;
+        }
 
         var action = actor.getAction();
-        var result = action.perform(this, actor);
+        var result = action.perform(this, gameResult, actor);
 
-        needsRender = true;
+        gameResult.madeProgress = true;
 
         // Cascade through the alternates until we hit bottom out.
         while (result.alternate != null) {
-          result = result.alternate.perform(this, actor);
+          result = result.alternate.perform(this, gameResult, actor);
         }
 
         if (_visibilityDirty) {
@@ -60,7 +50,6 @@ class Game {
         if (result.succeeded) {
           actor.energy.spend();
           level.actors.advance();
-
 
           // TODO(bob): Doing this here is a hack. Scent should spread at a
           // uniform rate independent of the hero's speed.
@@ -75,20 +64,39 @@ class Game {
   }
 }
 
-class Effect {
-  Vec get pos() => new Vec(x.toInt(), y.toInt());
-  float x;
-  float y;
-  float h;
-  float v;
-  int life;
+/// Each call to [Game.update()] will return a [GameResult] object that tells
+/// the UI what happened during that update and what it needs to do.
+class GameResult {
+  /// The "interesting" events that occurred in this update.
+  final List<Event> events;
 
-  Effect(this.x, this.y, this.h, this.v, this.life);
+  /// Whether or not any game state has changed. If this is `false`, then no
+  /// game processing has occurred (i.e. the game is stuck waiting for user
+  /// input for the [Hero]).
+  bool madeProgress = false;
 
-  bool update() {
-    x += h;
-    y += v;
-    life--;
-    return life >= 0;
-  }
+  GameResult()
+  : events = <Event>[];
+}
+
+/// Describes a single "interesting" thing that occurred during a call to
+/// [Game.update()]. In general, events correspond to things that a UI is likely
+/// to want to display visually in some form.
+class Event {
+  final EventType type;
+  final Actor actor;
+  final num value;
+
+  Event(this.type, this.actor, this.value);
+  Event.hit(this.actor, this.value)
+  : type = EventType.HIT;
+}
+
+/// A kind of [Event] that has occurred.
+class EventType {
+  /// An [Actor] was hit.
+  static final HIT = const EventType(0);
+
+  final int _value;
+  const EventType(this._value);
 }

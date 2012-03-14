@@ -13,13 +13,7 @@ class Array2D<T> implements Iterable<T> {
     }
   }
 
-  T operator[](Vec pos) {
-    if (!bounds.contains(pos)) {
-      print('$pos is out of bounds for $bounds');
-      throw ':(';
-    }
-    return elements[pos.y * width + pos.x];
-  }
+  T operator[](Vec pos) => elements[pos.y * width + pos.x];
 
   void operator[]=(Vec pos, T value) => elements[pos.y * width + pos.x] = value;
 

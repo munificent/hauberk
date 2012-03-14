@@ -10,6 +10,8 @@ DomTerminal terminal;
 Game        game;
 UserInput   input;
 
+List<Effect> effects;
+
 bool logOnTop = false;
 
 main() {
@@ -41,6 +43,7 @@ main() {
   terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
 
   input = new UserInput(new Keyboard(html.document));
+  effects = <Effect>[];
 
   render();
 
@@ -50,9 +53,18 @@ main() {
 tick(time) {
   game.hero.nextAction = input.getAction();
 
-  if (game.update()) {
-    render();
+  var result = game.update();
+
+  for (final event in result.events) {
+    // TODO(bob): Handle other event types.
+    effects.add(new Effect(event.actor));
   }
+
+  var needsRender = result.madeProgress || (effects.length > 0);
+
+  effects = effects.filter((effect) => effect.update());
+
+  if (needsRender) render();
 
   html.window.webkitRequestAnimationFrame(tick, html.document);
 }
@@ -148,14 +160,6 @@ render() {
     }
   }
 
-  // Draw the effects.
-  for (final effect in game.effects) {
-    final pos = effect.pos;
-    if (game.level[pos].visible) {
-      terminal.writeAt(pos.x, pos.y, '*', Color.RED);
-    }
-  }
-
   // Draw the actors.
   for (final actor in game.level.actors) {
     if (game.level[actor.pos].visible) {
@@ -163,6 +167,11 @@ render() {
       final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.YELLOW);
       terminal.drawGlyph(actor.x, actor.y, glyph);
     }
+  }
+
+  // Draw the effects.
+  for (final effect in effects) {
+    effect.render();
   }
 
   // Draw the log.
@@ -192,6 +201,11 @@ render() {
   terminal.writeAt(88, 3, game.hero.health.current.toString(), Color.RED);
   terminal.writeAt(92, 3, game.hero.health.max.toString(), Color.RED);
 
+  /*
+  terminal.writeAt(50, 20, '    ', Color.RED, Color.RED);
+  terminal.writeAt(54, 20, '!!!', Color.RED, Color.DARK_RED);
+  terminal.writeAt(57, 20, '  ', Color.DARK_GRAY, Color.DARK_GRAY);
+  */
 
   /*
   terminal.writeAt(81, 4, '  Mana', Color.GRAY);
@@ -207,6 +221,34 @@ render() {
   */
 
   terminal.render();
+}
+
+class Effect {
+  final int x;
+  final int y;
+  final int health;
+  int frame = 0;
+
+  static final NUM_FRAMES = 15;
+
+  Effect(Actor actor)
+  : x = actor.x,
+    y = actor.y,
+    health = 9 * actor.health.current ~/ actor.health.max;
+
+  bool update() {
+    return frame++ < NUM_FRAMES;
+  }
+
+  void render() {
+    var back;
+    switch (frame ~/ 5) {
+      case 0: back = Color.RED;      break;
+      case 1: back = Color.DARK_RED; break;
+      case 2: back = Color.BLACK;    break;
+    }
+    terminal.writeAt(x, y, '1234567899'[health], Color.BLACK, back);
+  }
 }
 
 colorTest() {

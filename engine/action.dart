@@ -1,19 +1,25 @@
 class Action {
   Actor _actor;
+  GameResult _gameResult;
 
   Actor get actor() => _actor;
   // TODO(bob): Should it check that the actor is a hero?
   Hero get hero() => _actor;
 
-  ActionResult perform(Game game, Actor actor) {
+  ActionResult perform(Game game, GameResult gameResult, Actor actor) {
     assert(_actor == null);
     _actor = actor;
+    _gameResult = gameResult;
 
     return onPerform(game);
   }
 
   ActionResult onPerform(Game game) {
     assert(false); // Must override.
+  }
+
+  void addEvent(Event event) {
+    _gameResult.events.add(event);
   }
 }
 
@@ -77,14 +83,8 @@ class AttackAction extends Action {
       final health = defender.health;
       game.log.add('{1} hit[s] {2} (${health.current}/${health.max}).',
         actor, defender);
-    }
 
-    // TODO(bob): Hack temp. Spawn some particles.
-    for (var i = 0; i < 10; i++) {
-      final theta = rng.range(628) / 100;
-      final radius = rng.range(50, 100) / 300;
-      game.effects.add(new Effect(defender.pos.x, defender.pos.y,
-        Math.cos(theta) * radius, Math.sin(theta) * radius, rng.range(3, 10)));
+      addEvent(new Event.hit(defender, damage));
     }
 
     return ActionResult.success;
