@@ -6,4 +6,5 @@
 #import('util.dart');
 
 #source('ui/keyboard.dart');
+#source('ui/screen.dart');
 #source('ui/terminal.dart');
