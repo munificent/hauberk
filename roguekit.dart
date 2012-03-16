@@ -2,19 +2,17 @@
 
 #import('dart:html', prefix: 'html');
 
+#import('content.dart');
 #import('engine.dart');
 #import('ui.dart');
 #import('util.dart');
 
 main() {
-  final rat = new Breed('rat', Gender.NEUTER,
-    new Glyph('r', Color.DARK_ORANGE),
-    maxHealth: 4,
-    minScent: 0.001);
+  final breeds = new Content().create();
 
   final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));;
   final input = new UserInput(new Keyboard(html.document));
-  final screen = new GameScreen(input, terminal, [rat]);
+  final screen = new GameScreen(input, terminal, breeds);
 
   screen.render();
 

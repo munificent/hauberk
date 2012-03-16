@@ -86,8 +86,8 @@ class Monster extends Actor {
         }
       }
 
-      // TODO(bob): Should add a random amount to each score based on how
-      // erratic the breed is.
+      // Add some randomness to make the monster meander.
+      scores[i] += rng.range(breed.meander * 5);
     }
 
     // Pick the best move.
@@ -132,10 +132,7 @@ class Monster extends Actor {
     */
   }
 
-  Hit getHit(Actor defender) {
-    // TODO(bob): Get from breed.
-    return new Hit(2, 1);
-  }
+  Attack getAttack(Actor defender) => rng.item(breed.attacks);
 
   void takeHit(Hit hit) {
     // TODO(bob): Temp.
@@ -151,13 +148,19 @@ class Breed {
   /// Untyped so the engine isn't coupled to how monsters appear.
   final appearance;
 
+  final List<Attack> attacks;
+
   final int maxHealth;
 
   /// The minimum scent strength that the monster can detect. Zero means any
   /// scent can be picked up, 1.0 means the monster has no sense of smell.
   final num minScent;
 
-  Breed(this.name, this.gender, this.appearance, [this.maxHealth, this.minScent]);
+  /// How much randomness the monster has when walking towards its target.
+  final int meander;
+
+  Breed(this.name, this.gender, this.appearance, this.attacks,
+      [this.maxHealth, this.minScent, this.meander]);
 
   Monster spawn(Game game, Vec pos) {
     return new Monster(game, this, pos.x, pos.y, maxHealth);

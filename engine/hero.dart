@@ -18,8 +18,9 @@ class Hero extends Actor {
     return action;
   }
 
-  Hit getHit(Actor defender) {
-    return new Hit(3, 2);
+  Attack getAttack(Actor defender) {
+    // TODO(bob): Temp.
+    return new Attack('punch[es]', 3);
   }
 
   void takeHit(Hit hit) {

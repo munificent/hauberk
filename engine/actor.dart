@@ -39,8 +39,8 @@ class Actor implements Noun {
     // Do nothing.
   }
 
-  /// Create a new [Hit] for this [Actor] to attempt to hit [defender].
-  abstract Hit getHit(Actor defender);
+  /// Get an [Attack] for this [Actor] to attempt to hit [defender].
+  abstract Attack getAttack(Actor defender);
 
   /// This is called on the defender when some attacker is attempting to hit it.
   /// The defender fills it in with the information needed to resolve the the

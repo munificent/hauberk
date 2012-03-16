@@ -14,5 +14,6 @@
 #source('engine/log.dart');
 #source('engine/los.dart');
 #source('engine/maze.dart');
+#source('engine/melee.dart');
 #source('engine/monster.dart');
 #source('engine/option.dart');

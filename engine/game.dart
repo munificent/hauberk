@@ -21,7 +21,7 @@ class Game {
     level.actors.add(hero);
 
     // TODO(bob): Temp for testing.
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 30; i++) {
       final pos = level.findOpenTile();
       level.actors.add(rng.item(breeds).spawn(this, pos));
     }

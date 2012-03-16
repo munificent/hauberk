@@ -49,7 +49,8 @@ class AttackAction extends Action {
   AttackAction(this.defender);
 
   ActionResult onPerform(Game game) {
-    final hit = actor.getHit(defender);
+    final attack = actor.getAttack(defender);
+    final hit = new Hit(attack);
     defender.takeHit(hit);
 
     // Ask the defender how hard it is to hit.
@@ -70,7 +71,7 @@ class AttackAction extends Action {
     }
 
     // The hit made contact.
-    final damage = rng.triangleInt(hit.damage, hit.damageRange);
+    final damage = rng.triangleInt(attack.damage, attack.damage ~/ 2);
     defender.health.current -= damage;
 
     if (defender.health.current == 0) {
@@ -81,7 +82,7 @@ class AttackAction extends Action {
       }
     } else {
       final health = defender.health;
-      game.log.add('{1} hit[s] {2} (${health.current}/${health.max}).',
+      game.log.add('{1} ${attack.verb} {2} (${health.current}/${health.max}).',
         actor, defender);
 
       addEvent(new Event.hit(defender, damage));
@@ -91,22 +92,6 @@ class AttackAction extends Action {
   }
 
   String toString() => '$actor attacks $defender';
-}
-
-class Hit {
-  /// The average (i.e. center) damage.
-  final int damage;
-
-  /// The range that damage can be around [damage].
-  final int damageRange;
-
-  int strike;
-
-  Hit(this.damage, this.damageRange);
-
-  void bindDefense([int strike]) {
-    this.strike = strike;
-  }
 }
 
 class MoveAction extends Action {
