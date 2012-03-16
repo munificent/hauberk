@@ -20,18 +20,15 @@
 class FeatureCreep {
   int tries = 0;
   int openCount = 0;
-  FeatureCreepOptions options;
-  Level level;
+  final Level level;
+  final FeatureCreepOptions options;
   final List<Connector> connectors;
   Vec startPos;
 
-  FeatureCreep()
+  FeatureCreep(this.level, this.options)
   : connectors = <Connector>[];
 
-  void create(Level level, /*bool isDescending, int depth, */ options) {
-    this.options = options;
-    this.level = level;
-
+  void generate() {
     // Sometimes the generator makes dud dungeons with just one or two rooms,
     // keep trying from scratch until we get one with at least a certain amount
     // of carved open area.

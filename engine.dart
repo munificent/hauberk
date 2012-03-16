@@ -4,6 +4,7 @@
 
 #source('engine/action.dart');
 #source('engine/actor.dart');
+#source('engine/dungeon.dart');
 #source('engine/energy.dart');
 #source('engine/feature_creep.dart');
 #source('engine/fov.dart');

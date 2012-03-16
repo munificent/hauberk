@@ -22,7 +22,8 @@ class Level {
     actors = new Chain<Actor>();
 
   void generate() {
-    new FeatureCreep().create(this, new FeatureCreepOptions());
+    new FeatureCreep(this, new FeatureCreepOptions()).generate();
+    //new Dungeon(this).generate();
   }
 
   Game game;
