@@ -102,12 +102,19 @@ class Event {
   Event(this.type, this.actor, this.value);
   Event.hit(this.actor, this.value)
   : type = EventType.HIT;
+
+  Event.kill(this.actor)
+  : type = EventType.KILL,
+    value = 0;
 }
 
 /// A kind of [Event] that has occurred.
 class EventType {
   /// An [Actor] was hit.
   static final HIT = const EventType(0);
+
+  /// An [Actor] was killed.
+  static final KILL = const EventType(1);
 
   final int _value;
   const EventType(this._value);

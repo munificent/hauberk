@@ -26,12 +26,23 @@ class GameScreen extends Screen {
 
     for (final event in result.events) {
       // TODO(bob): Handle other event types.
-      effects.add(new Effect(event.actor));
+      switch (event.type) {
+        case EventType.HIT:
+          effects.add(new HitEffect(event.actor));
+          break;
+
+        case EventType.KILL:
+          effects.add(new HitEffect(event.actor));
+          for (var i = 0; i < 10; i++) {
+            effects.add(new ParticleEffect(event.actor.x, event.actor.y));
+          }
+          break;
+      }
     }
 
     var needsRender = result.madeProgress || (effects.length > 0);
 
-    effects = effects.filter((effect) => effect.update());
+    effects = effects.filter((effect) => effect.update(game));
 
     return needsRender;
   }
@@ -191,7 +202,12 @@ class GameScreen extends Screen {
   }
 }
 
-class Effect {
+interface Effect {
+  bool update(Game game);
+  void render(Terminal terminal);
+}
+
+class HitEffect implements Effect {
   final int x;
   final int y;
   final int health;
@@ -199,12 +215,12 @@ class Effect {
 
   static final NUM_FRAMES = 15;
 
-  Effect(Actor actor)
+  HitEffect(Actor actor)
   : x = actor.x,
     y = actor.y,
     health = 9 * actor.health.current ~/ actor.health.max;
 
-  bool update() {
+  bool update(Game game) {
     return frame++ < NUM_FRAMES;
   }
 
@@ -215,6 +231,38 @@ class Effect {
       case 1: back = Color.DARK_RED; break;
       case 2: back = Color.BLACK;    break;
     }
-    terminal.writeAt(x, y, '1234567899'[health], Color.BLACK, back);
+    terminal.writeAt(x, y, '0123456789'[health], Color.BLACK, back);
+  }
+}
+
+class ParticleEffect implements Effect {
+  num x;
+  num y;
+  num h;
+  num v;
+  int life;
+
+  ParticleEffect(this.x, this.y) {
+    final theta = rng.range(628) / 100; // TODO(bob): Ghetto.
+    final radius = rng.range(30, 40) / 100;
+
+    h = Math.cos(theta) * radius;
+    v = Math.sin(theta) * radius;
+    life = rng.range(7, 15);
+  }
+
+  bool update(Game game) {
+    x += h;
+    y += v;
+
+    final pos = new Vec(x.toInt(), y.toInt());
+    if (!game.level.bounds.contains(pos)) return false;
+    if (!game.level[pos].isPassable) return false;
+
+    return life-- > 0;
+  }
+
+  void render(Terminal terminal) {
+    terminal.writeAt(x.toInt(), y.toInt(), '*', Color.RED);
   }
 }

@@ -77,13 +77,14 @@ class AttackAction extends Action {
     if (defender.health.current == 0) {
       game.log.add('{1} kill[s] {2}.', actor, defender);
 
+      addEvent(new Event.kill(defender));
+
       if (defender is! Hero) {
         game.level.actors.remove(defender);
       }
     } else {
       final health = defender.health;
-      game.log.add('{1} ${attack.verb} {2} (${health.current}/${health.max}).',
-        actor, defender);
+      game.log.add('{1} ${attack.verb} {2}.', actor, defender);
 
       addEvent(new Event.hit(defender, damage));
     }
