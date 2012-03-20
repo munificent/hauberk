@@ -67,6 +67,9 @@ class Game {
           // uniform rate independent of the hero's speed.
           if (actor == hero) level.updateScent(hero);
         }
+      } else {
+        // This actor doesn't have enough energy yet, so move on to the next.
+        level.actors.advance();
       }
     }
   }

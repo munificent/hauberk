@@ -11,18 +11,27 @@ class Screen {
 
 class GameScreen extends Screen {
   Game         game;
+  List<Breed>  breeds;
   List<Effect> effects;
   bool         logOnTop = false;
 
   GameScreen(UserInput input, Terminal terminal, List<Breed> breeds)
   : super(input, terminal),
-    game = new Game(breeds),
-    effects = <Effect>[];
+    effects = <Effect>[] {
+    this.breeds = breeds;
+    game = new Game(breeds);
+  }
 
   bool update() {
     game.hero.nextAction = input.getAction();
 
     var result = game.update();
+
+    // TODO(bob): Hack temp.
+    if (game.hero.health.current == 0) {
+      game = new Game(breeds);
+      return true;
+    }
 
     for (final event in result.events) {
       // TODO(bob): Handle other event types.

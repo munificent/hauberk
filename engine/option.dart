@@ -4,7 +4,12 @@ class Option {
   /// A resting actor regains health every `n` turns where `n` is this number
   /// divided by the actor's max health. Setting this to be larger makes actors
   /// regenerate more slowly.
-  static final REST_MAX_HEALTH_FOR_RATE = 100;
+  static final REST_MAX_HEALTH_FOR_RATE = 50;
+
+  /// Each turn that the hero rests, there is a one in `REST_SPAWN_CHANCE` that
+  /// the game will try to place a monster in a randomly selected tile if it
+  /// happens to be empty and unexplored.
+  static final REST_SPAWN_CHANCE = 6;
 
   /// The range of valid strike values. After calculating the strike, it will
   /// be clamped to this bounds and then the strike roll will be compared to it.
@@ -14,12 +19,22 @@ class Option {
   static final STRIKE_MAX = 95;
 
   /// The max health of a new hero.
-  static final HERO_START_HEALTH = 10;
+  static final HERO_START_HEALTH = 20;
 
   /// The maximum number of steps of ideal pathfinding data that monsters can
   /// use. Increasing this lets monsters accurately find the hero from farther
   /// away, but increases processing time.
   static final MAX_PATH = 12;
+
+  /// How much a monster's sense of smell (modified by olfaction) affects their
+  /// choice of action.
+  static final AI_WEIGHT_SCENT = 1.0;
+
+  /// How much ideal pathfinding affects a monster's choice of action.
+  static final AI_WEIGHT_PATH = 10.0;
+
+  /// How much a breed's meander affects the monster's choice of action.
+  static final AI_WEIGHT_MEANDER = 5.0;
 
   /// How much scent is added each turn to the hero's tile. This is basically
   /// how "strong" the hero smells.

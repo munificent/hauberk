@@ -3,7 +3,9 @@ class Monster extends Actor {
   final Breed breed;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth)
-  : super(game, x, y, maxHealth);
+  : super(game, x, y, maxHealth) {
+    energy.speed = Energy.NORMAL_SPEED + breed.speed;
+  }
 
   get appearance() => breed.appearance;
 
@@ -45,8 +47,17 @@ class Monster extends Actor {
     // Calculate the score for moving in each possible direction.
     final scores = new List(directions.length);
 
+    // The minimum scent required for the monster to notice it. Smaller numbers
+    // mean a stronger sense of smell.
+    final minScent = Math.pow(0.5, breed.olfaction);
+
+    // How much the monster listens to their sense of smell. The more sensitive
+    // it is, the more the monster relies on it.
+    // TODO(bob): Add a tuned multiplier here.
+    final scentWeight = breed.olfaction * Option.AI_WEIGHT_SCENT;
+
     getScent(Vec pos) {
-      return Math.max(game.level.getScent(pos.x, pos.y) - breed.minScent, 0);
+      return Math.max(game.level.getScent(pos.x, pos.y) - minScent, 0);
     }
 
     final scent = getScent(pos);
@@ -71,9 +82,7 @@ class Monster extends Actor {
 
       // Apply scent knowledge.
       final scentGradient = getScent(dest) - scent;
-      // TODO(bob): Could apply a breed-specific weight here to control how
-      // much the monster relies on their sense of smell.
-      scores[i] += scentGradient;
+      scores[i] += scentGradient * scentWeight;
 
       // Apply ideal pathfinding (if known).
       // TODO(bob): Could limit the path length that each breed is smart enough
@@ -81,13 +90,12 @@ class Monster extends Actor {
       if (path != -1) {
         final pathHere = game.level.getPath(dest.x, dest.y);
         if (pathHere != -1) {
-          // * 10 to make it more important than scent.
-          scores[i] += (path - pathHere) * 10;
+          scores[i] += (path - pathHere) * Option.AI_WEIGHT_PATH;
         }
       }
 
       // Add some randomness to make the monster meander.
-      scores[i] += rng.range(breed.meander * 5);
+      scores[i] += rng.range(breed.meander * Option.AI_WEIGHT_MEANDER);
     }
 
     // Pick the best move.
@@ -140,6 +148,16 @@ class Monster extends Actor {
   }
 }
 
+/// A [Monster]'s internal mental state.
+class MonsterState {
+  static final ASLEEP = const MonsterState(0);
+  static final AWAKE  = const MonsterState(1);
+  static final AFRAID = const MonsterState(2);
+
+  final int _value;
+  const MonsterState(this._value);
+}
+
 /// A single kind of [Monster] in the game.
 class Breed {
   final Gender gender;
@@ -152,15 +170,20 @@ class Breed {
 
   final int maxHealth;
 
-  /// The minimum scent strength that the monster can detect. Zero means any
-  /// scent can be picked up, 1.0 means the monster has no sense of smell.
-  final num minScent;
+  /// How good the monster's sense of smell is. Ranges from 0 to 10 where 0 is
+  /// no sense of smell and 10 means the monster navigates almost solely using
+  /// it.
+  final num olfaction;
 
   /// How much randomness the monster has when walking towards its target.
   final int meander;
 
+  /// The breed's speed, relative to normal. Ranges from `-6` (slowest) to `6`
+  /// (fastest) where `0` is normal speed.
+  final int speed;
+
   Breed(this.name, this.gender, this.appearance, this.attacks,
-      [this.maxHealth, this.minScent, this.meander]);
+      [this.maxHealth, this.olfaction, this.meander, this.speed]);
 
   Monster spawn(Game game, Vec pos) {
     return new Monster(game, this, pos.x, pos.y, maxHealth);

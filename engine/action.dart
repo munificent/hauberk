@@ -144,6 +144,21 @@ class RestAction extends Action {
         // TODO(bob): Temp.
         game.log.add('{1} rest[s].', actor);
       }
+
+      // Whenever the hero rests, there is a chance for new monsters to appear
+      // in unexplored areas of the level. This is to discourage the player
+      // from resting too much.
+      if (actor is Hero) {
+        if (rng.oneIn(Option.REST_SPAWN_CHANCE)) {
+          final pos = rng.vecInRect(game.level.bounds);
+          final tile = game.level[pos];
+          if (!tile.explored && tile.isPassable) {
+            final monster = rng.item(game.breeds).spawn(game, pos);
+            game.log.add('Spawned ${monster.breed.name} at $pos.');
+            game.level.actors.add(monster);
+          }
+        }
+      }
     }
 
     return ActionResult.success;
