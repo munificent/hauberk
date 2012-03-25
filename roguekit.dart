@@ -15,7 +15,6 @@ main() {
   final screen = new GameScreen(input, terminal, breeds);
 
   screen.render();
-
   tick(time) {
     if (screen.update()) screen.render();
     html.window.webkitRequestAnimationFrame(tick, html.document);

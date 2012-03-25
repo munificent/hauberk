@@ -144,7 +144,7 @@ class Monster extends Actor {
 
   void takeHit(Hit hit) {
     // TODO(bob): Temp.
-    hit.bindDefense(strike: 30);
+    hit.bindDefense(strike: Option.STRIKE_MONSTER);
   }
 }
 

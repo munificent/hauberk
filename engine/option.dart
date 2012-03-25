@@ -18,6 +18,9 @@ class Option {
   static final STRIKE_MIN = 5;
   static final STRIKE_MAX = 95;
 
+  static final STRIKE_MONSTER = 20;
+  static final STRIKE_HERO = 20;
+
   /// The max health of a new hero.
   static final HERO_START_HEALTH = 20;
 

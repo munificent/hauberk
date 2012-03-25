@@ -20,12 +20,12 @@ class Hero extends Actor {
 
   Attack getAttack(Actor defender) {
     // TODO(bob): Temp.
-    return new Attack('punch[es]', 3);
+    return new Attack('punch[es]', 4);
   }
 
   void takeHit(Hit hit) {
     // TODO(bob): Temp.
-    hit.bindDefense(strike: 50);
+    hit.bindDefense(strike: Option.STRIKE_HERO);
   }
 
   Vec changePosition(Vec pos) {
