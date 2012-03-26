@@ -8,11 +8,12 @@
 #import('util.dart');
 
 main() {
-  final breeds = new Content().create();
+  final content = new Content();
 
   final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));;
   final input = new UserInput(new Keyboard(html.document));
-  final screen = new GameScreen(input, terminal, breeds);
+  final screen = new GameScreen(input, terminal,
+      content.breeds, content.itemTypes);
 
   screen.render();
   tick(time) {

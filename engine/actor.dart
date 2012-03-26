@@ -1,15 +1,7 @@
-/// An active entity in the game. Includes monsters and the hero.
-class Actor implements Noun {
-  final Game game;
-  final Stat health;
-  Energy energy;
-
-  /// The number of times the actor has rested. Once this crosses a certain
-  /// threshold (based on the Actor's max health), its health will be increased
-  /// and this will be lowered.
-  int restCount = 0;
-
+class Thing implements Noun {
   Vec _pos;
+
+  Thing(this._pos);
 
   Vec get pos() => _pos;
   void set pos(Vec value) {
@@ -24,14 +16,42 @@ class Actor implements Noun {
   int get y() => pos.y;
   void set y(int value) => pos = new Vec(x, value);
 
-  Actor(this.game, int x, int y, int health)
-  : _pos = new Vec(x, y),
-    health = new Stat(health),
-    energy = new Energy(Energy.NORMAL_SPEED);
+  /// Called when the actor's position is about to change to [pos]. Override
+  /// to do stuff when the position changes. Returns the new position.
+  Vec changePosition(Vec pos) => pos;
 
   get appearance() {
     assert(false); // Abstract.
   }
+
+  String get nounText() {
+    assert(false); // Abstract.
+  }
+
+  int get person() {
+    assert(false); // Abstract.
+  }
+
+  Gender get gender() {
+    assert(false); // Abstract.
+  }
+}
+
+/// An active entity in the game. Includes monsters and the hero.
+class Actor extends Thing {
+  final Game game;
+  final Stat health;
+  Energy energy;
+
+  /// The number of times the actor has rested. Once this crosses a certain
+  /// threshold (based on the Actor's max health), its health will be increased
+  /// and this will be lowered.
+  int restCount = 0;
+
+  Actor(this.game, int x, int y, int health)
+  : super(new Vec(x, y)),
+    health = new Stat(health),
+    energy = new Energy(Energy.NORMAL_SPEED);
 
   bool get needsInput() => false;
 
@@ -54,22 +74,6 @@ class Actor implements Noun {
     if (pos.y >= game.level.height) return false;
 
     return game.level[pos].type == TileType.FLOOR;
-  }
-
-  /// Called when the actor's position is about to change to [pos]. Override
-  /// to do stuff when the position changes. Returns the new position.
-  Vec changePosition(Vec pos) => pos;
-
-  String get nounText() {
-    assert(false); // Abstract.
-  }
-
-  int get person() {
-    assert(false); // Abstract.
-  }
-
-  Gender get gender() {
-    assert(false); // Abstract.
   }
 }
 

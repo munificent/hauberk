@@ -124,7 +124,7 @@ class Log {
       }
 
       // Handle irregular verbs like `[are|is]`.
-      final irregular = const RegExp(@'\[(\w+)\|(\w+)\]');
+      final irregular = const RegExp(@"\[([\w']+)\|([\w']+)\]");
       for (final match in irregular.allMatches(result)) {
         final before = result.substring(0, match.start());
         final after = result.substring(match.end());

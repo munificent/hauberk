@@ -6,6 +6,7 @@ class Level {
 
   final Array2D<Tile> tiles;
   final Chain<Actor> actors;
+  final List<Item> items;
 
   // Scent state is double-buffered in Tiles. This tracks which buffer is
   // current. Will be `true` if `scent1` is current.
@@ -19,7 +20,8 @@ class Level {
 
   Level(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
-    actors = new Chain<Actor>();
+    actors = new Chain<Actor>(),
+    items = <Item>[];
 
   void generate() {
     new FeatureCreep(this, new FeatureCreepOptions()).generate();
@@ -34,9 +36,19 @@ class Level {
   Tile get(int x, int y) => tiles.get(x, y);
   void set(int x, int y, Tile tile) => tiles.set(x, y, value);
 
+  // TODO(bob): Move into Actor collection?
   Actor actorAt(Vec pos) {
     for (final actor in actors) {
       if (actor.pos == pos) return actor;
+    }
+
+    return null;
+  }
+
+  // TODO(bob): Move into Item collection?
+  Item itemAt(Vec pos) {
+    for (final item in items) {
+      if (item.pos == pos) return item;
     }
 
     return null;
@@ -195,8 +207,8 @@ class TileType {
 }
 
 class Tile {
-  int  type    = TileType.WALL;
-  bool _visible = false;
+  int  type      = TileType.WALL;
+  bool _visible  = false;
   bool _explored = false;
   num scent1 = 0;
   num scent2 = 0;
@@ -214,7 +226,7 @@ class Tile {
     _visible = value;
   }
 
-  bool get explored() => _explored;
+  bool get isExplored() => _explored;
 
   bool get isPassable() => type == TileType.FLOOR;
   bool get isTransparent() => type == TileType.FLOOR;

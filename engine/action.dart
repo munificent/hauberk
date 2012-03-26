@@ -24,8 +24,8 @@ class Action {
 }
 
 class ActionResult {
-  static final success = const ActionResult(succeeded: true);
-  static final failure = const ActionResult(succeeded: false);
+  static final SUCCESS = const ActionResult(succeeded: true);
+  static final FAILURE = const ActionResult(succeeded: false);
 
   /// An alternate [Action] that should be performed instead of the one that
   /// failed to perform and returned this. For example, when the [Hero] walks
@@ -67,7 +67,7 @@ class AttackAction extends Action {
     if (strikeRoll < strike) {
       // A swing and a miss!
       game.log.add('{1} miss[es] {2}.', actor, defender);
-      return ActionResult.success;
+      return ActionResult.SUCCESS;
     }
 
     // The hit made contact.
@@ -89,7 +89,7 @@ class AttackAction extends Action {
       addEvent(new Event.hit(defender, damage));
     }
 
-    return ActionResult.success;
+    return ActionResult.SUCCESS;
   }
 
   String toString() => '$actor attacks $defender';
@@ -117,11 +117,11 @@ class MoveAction extends Action {
     // See if we can walk there.
     if (!actor.canOccupy(pos)) {
       game.log.add('{1} hit[s] the wall.', actor);
-      return ActionResult.failure;
+      return ActionResult.FAILURE;
     }
 
     actor.pos = pos;
-    return ActionResult.success;
+    return ActionResult.SUCCESS;
   }
 
   String toString() => '$actor moves $offset';
@@ -152,7 +152,7 @@ class RestAction extends Action {
         if (rng.oneIn(Option.REST_SPAWN_CHANCE)) {
           final pos = rng.vecInRect(game.level.bounds);
           final tile = game.level[pos];
-          if (!tile.explored && tile.isPassable) {
+          if (!tile.isExplored && tile.isPassable) {
             final monster = rng.item(game.breeds).spawn(game, pos);
             game.log.add('Spawned ${monster.breed.name} at $pos.');
             game.level.actors.add(monster);
@@ -161,6 +161,32 @@ class RestAction extends Action {
       }
     }
 
-    return ActionResult.success;
+    return ActionResult.SUCCESS;
+  }
+}
+
+class PickUpAction extends Action {
+  ActionResult onPerform(Game game) {
+    final item = game.level.itemAt(actor.pos);
+    if (item == null) {
+      game.log.add('There is nothing here.');
+      return ActionResult.FAILURE;
+    }
+
+    if (!hero.inventory.tryAdd(item)) {
+      game.log.add("{1} [don't|doesn't] have room for {2}.", actor, item);
+      return ActionResult.FAILURE;
+    }
+    // Remove it from the level.
+    // TODO(bob): Hackish.
+    for (var i = 0; i < game.level.items.length; i++) {
+      if (game.level.items[i] == item) {
+        game.level.items.removeRange(i, 1);
+        break;
+      }
+    }
+
+    game.log.add('{1} pick[s] up {2}.', actor, item);
+    return ActionResult.SUCCESS;
   }
 }

@@ -12,7 +12,12 @@ class UserInput {
   UserInput(this.keyboard);
 
   Action getAction() {
-    // See which direction is being pressed.
+    // First try the key events that only trigger on a press.
+    switch (keyboard.getLastPressed()) {
+      case KeyCode.G: return new PickUpAction();
+    }
+
+    // See what direction is being pressed.
     var direction;
     switch (keyboard.getOnlyKey()) {
       case KeyCode.I:         direction = Direction.NW; break;
@@ -80,6 +85,7 @@ class UserInput {
 /// keys are currently pressed and which are not.
 class Keyboard {
   final Set<int> _pressed;
+  int _lastPressed;
 
   Keyboard(html.Element element)
   : _pressed = new Set<int>()
@@ -101,7 +107,17 @@ class Keyboard {
     for (final key in _pressed) return key;
   }
 
-  void keyDown(event) => _pressed.add(event.keyCode);
+  int getLastPressed() {
+    final lastPressed = _lastPressed;
+    _lastPressed = null;
+    return lastPressed;
+  }
+
+  void keyDown(event) {
+    _pressed.add(event.keyCode);
+    _lastPressed = event.keyCode;
+  }
+
   void keyUp(event) => _pressed.remove(event.keyCode);
 }
 

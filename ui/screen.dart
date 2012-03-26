@@ -10,16 +10,20 @@ class Screen {
 }
 
 class GameScreen extends Screen {
-  Game         game;
-  List<Breed>  breeds;
-  List<Effect> effects;
-  bool         logOnTop = false;
+  Game           game;
+  List<Breed>    breeds;
+  List<ItemType> itemTypes;
+  List<Effect>   effects;
+  bool           logOnTop = false;
 
-  GameScreen(UserInput input, Terminal terminal, List<Breed> breeds)
+  GameScreen(UserInput input, Terminal terminal, List<Breed> breeds,
+    List<ItemType> itemTypes)
   : super(input, terminal),
     effects = <Effect>[] {
     this.breeds = breeds;
-    game = new Game(breeds);
+    this.itemTypes = itemTypes;
+
+    game = new Game(breeds, itemTypes);
   }
 
   bool update() {
@@ -29,7 +33,7 @@ class GameScreen extends Screen {
 
     // TODO(bob): Hack temp.
     if (game.hero.health.current == 0) {
-      game = new Game(breeds);
+      game = new Game(breeds, itemTypes);
       return true;
     }
 
@@ -62,7 +66,7 @@ class GameScreen extends Screen {
       for (int x = 0; x < game.level.width; x++) {
         final tile = game.level.get(x, y);
         var glyph;
-        if (tile.explored) {
+        if (tile.isExplored) {
           switch (tile.type) {
             case TileType.FLOOR:
               glyph = new Glyph('.', tile.visible ? Color.GRAY : Color.DARK_GRAY);
@@ -144,6 +148,13 @@ class GameScreen extends Screen {
         */
 
         terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
+      }
+    }
+
+    // Draw the items.
+    for (final item in game.level.items) {
+      if (game.level[item.pos].isExplored) {
+        terminal.drawGlyph(item.x, item.y, item.appearance);
       }
     }
 

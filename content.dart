@@ -7,11 +7,12 @@
 /// the play experience.
 class Content {
   final List<Breed> breeds;
+  final List<ItemType> itemTypes;
 
   Content()
-  : breeds = <Breed>[];
-
-  List<Breed> create() {
+  : breeds = <Breed>[],
+    itemTypes = <ItemType>[]
+  {
     // $  Creeping Coins
     // a  Arachnid/Scorpion   A  Ancient being
     // b  Giant Bat           B  Bird
@@ -57,7 +58,7 @@ class Content {
       speed: -2
     );
 
-    return breeds;
+    item('stick', brown('/'));
   }
 
   Breed breed(String name, Glyph appearance, List<Attack> attacks,
@@ -67,6 +68,12 @@ class Content {
         speed: speed);
     breeds.add(breed);
     return breed;
+  }
+
+  ItemType item(String name, Glyph appearance) {
+    final itemType = new ItemType(name, appearance);
+    itemTypes.add(itemType);
+    return itemType;
   }
 
   Attack attack(String verb, int damage) => new Attack(verb, damage);

@@ -24,6 +24,9 @@ class Option {
   /// The max health of a new hero.
   static final HERO_START_HEALTH = 20;
 
+  /// The maximum number of items the hero's [Inventory] can contain.
+  static final INVENTORY_MAX_ITEMS = 12;
+
   /// The maximum number of steps of ideal pathfinding data that monsters can
   /// use. Increasing this lets monsters accurately find the hero from farther
   /// away, but increases processing time.

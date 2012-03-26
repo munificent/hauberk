@@ -4,8 +4,11 @@ class Hero extends Actor {
   final Gender gender = Gender.MALE;
 
   Action nextAction;
+  final Inventory inventory;
 
-  Hero(Game game, int x, int y) : super(game, x, y, Option.HERO_START_HEALTH);
+  Hero(Game game, int x, int y)
+  : super(game, x, y, Option.HERO_START_HEALTH),
+    inventory = new Inventory();
 
   // TODO(bob): Hackish.
   get appearance() => 'hero';

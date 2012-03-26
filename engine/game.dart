@@ -1,14 +1,15 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
-  final List<Breed>  breeds;
-  final Level        level;
-  final Log          log;
-  final Rng          rng;
-  Hero               hero;
+  final List<Breed>    breeds;
+  final List<ItemType> itemTypes;
+  final Level          level;
+  final Log            log;
+  final Rng            rng;
+  Hero                 hero;
 
   bool _visibilityDirty = true;
 
-  Game(this.breeds)
+  Game(this.breeds, this.itemTypes)
   : level = new Level(80, 40),
     log = new Log(),
     rng = new Rng(new Date.now().value)
@@ -21,10 +22,16 @@ class Game {
     level.actors.add(hero);
 
     // TODO(bob): Temp for testing.
+    for (var i = 0; i < 30; i++) {
+      final item = new Item(rng.item(itemTypes), level.findOpenTile());
+      level.items.add(item);
+    }
+
     for (int i = 0; i < 30; i++) {
       final pos = level.findOpenTile();
       level.actors.add(rng.item(breeds).spawn(this, pos));
     }
+    // End temp.
 
     Fov.refresh(level, hero.pos);
   }
