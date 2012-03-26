@@ -94,6 +94,8 @@ class Level {
     bool found = false;
 
     while (_knownPath < Option.MAX_PATH) {
+      // TODO(bob): Should optimize this by only scanning an increasing box
+      // surrounding the hero.
       for (var scanY = 1; scanY < height - 1; scanY++) {
         for (var scanX = 1; scanX < width - 1; scanX++) {
           final tile = tiles.get(scanX, scanY);

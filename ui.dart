@@ -5,6 +5,7 @@
 #import('engine.dart');
 #import('util.dart');
 
+#source('ui/game_screen.dart');
 #source('ui/keyboard.dart');
 #source('ui/screen.dart');
 #source('ui/terminal.dart');
