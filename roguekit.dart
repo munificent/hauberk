@@ -8,7 +8,7 @@
 #import('util.dart');
 
 main() {
-  final content = new Content();
+  final content = createContent();
 
   final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));;
   final keyboard = new Keyboard(html.document);
