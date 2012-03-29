@@ -60,7 +60,7 @@ class Rect implements Iterable<Vec> {
   static Rect centerIn(Rect toCenter, Rect main)
   {
     final pos = main.pos + ((main.size - toCenter.size) ~/ 2);
-    return new Rect(pos, toCenter.size);
+    return new Rect.posAndSize(pos, toCenter.size);
   }
 
   /*
@@ -109,14 +109,14 @@ class Rect implements Iterable<Vec> {
 
   int get area() => size.area;
 
-  /*
-  const Rect(this.pos, this.size);
+  const Rect.posAndSize(this.pos, this.size);
 
+  /*
   const Rect(this.size)
   : pos = Vec.zero;
   */
 
-  Rect(int x, int y, int width, int height)
+  const Rect(int x, int y, int width, int height)
   : pos = new Vec(x, y),
     size = new Vec(width, height);
 
@@ -235,7 +235,7 @@ class Rect implements Iterable<Vec> {
   }
 }
 
-class RectIterator {
+class RectIterator implements Iterator<Vec> {
   final Rect _rect;
   int _x;
   int _y;

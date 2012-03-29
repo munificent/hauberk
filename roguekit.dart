@@ -11,12 +11,12 @@ main() {
   final content = new Content();
 
   final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));;
-  final input = new UserInput(new Keyboard(html.document));
-  final ui = new UserInterface(input, terminal);
+  final keyboard = new Keyboard(html.document);
+  final ui = new UserInterface(keyboard, terminal);
   ui.push(new GameScreen(content.breeds, content.itemTypes));
 
   tick(time) {
-    ui.update();
+    ui.tick();
     html.window.webkitRequestAnimationFrame(tick, html.document);
   }
 

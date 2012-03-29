@@ -3,8 +3,9 @@ interface Terminal {
   int get width();
   int get height();
 
-  void write(String text, [Color color]);
-  void writeAt(int x, int y, String text, [Color color]);
+  void write(String text, [Color fore, Color back]);
+  void writeAt(int x, int y, String text, [Color fore, Color back]);
+  void drawGlyph(int x, int y, Glyph glyph);
   Terminal rect(int x, int y, int width, int height);
 }
 
@@ -89,7 +90,7 @@ class PortTerminal implements Terminal {
   PortTerminal(this._x, this._y, this.width, this.height, this._root);
 
   void write(String text, [Color fore, Color back]) {
-    _root.writeAt(_x, _y, text[i], fore, back);
+    _root.writeAt(_x, _y, text, fore, back);
   }
 
   void writeAt(int x, int y, String text, [Color fore, Color back]) {

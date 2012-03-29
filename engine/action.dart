@@ -190,3 +190,19 @@ class PickUpAction extends Action {
     return ActionResult.SUCCESS;
   }
 }
+
+class DropAction extends Action {
+  final int index;
+
+  DropAction(this.index);
+
+  ActionResult onPerform(Game game) {
+    final item = hero.inventory.remove(index);
+    item.pos = hero.pos;
+    game.level.items.add(item);
+
+    game.log.add('{1} drop[s] {2}.', actor, item);
+
+    return ActionResult.SUCCESS;
+  }
+}

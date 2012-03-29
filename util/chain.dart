@@ -41,7 +41,7 @@ class Chain<T> implements Iterable<T> {
 }
 
 /// An [Iterator<T>] for iterating through a [Chain<T>].
-class ChainIterator<T> {
+class ChainIterator<T> implements Iterator<T> {
   Link<T> _current;
   Link<T> _last;
 

@@ -145,8 +145,8 @@ class Fov {
 /// Represents the 1D projection of a 2D shadow onto a normalized line. In
 /// other words, a range from 0.0 to 1.0.
 class Shadow {
-  float start;
-  float end;
+  num start;
+  num end;
 
   Shadow(this.start, this.end);
 

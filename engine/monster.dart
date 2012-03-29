@@ -15,7 +15,7 @@ class Monster extends Actor {
 
   /// Gets whether or not this monster has an uninterrupted line of sight to
   /// [target].
-  bool canView(Pos target) {
+  bool canView(Vec target) {
     // Walk to the target.
     for (final step in new Los(pos, game.hero.pos)) {
       if (!game.level[step].isTransparent) return false;
@@ -25,7 +25,7 @@ class Monster extends Actor {
     return true;
   }
 
-  void getAction() {
+  Action getAction() {
     // If we're next to the hero, just go for the melee hit. Check this first
     // to avoid more costly AI processing when not needed.
     final toHero = game.hero.pos - pos;

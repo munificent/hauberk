@@ -27,6 +27,8 @@ class Vec {
 
   Vec operator *(int other) => new Vec(x * other, y * other);
 
+  Vec operator ~/(int other) => new Vec(x ~/ other, y ~/ other);
+
   Vec operator +(other) {
     if (other is Vec) {
       return new Vec(x + other.x, y + other.y);
@@ -55,6 +57,9 @@ class Vec {
   }
 
   Vec abs() => new Vec(x.abs(), y.abs());
+  
+  Vec offsetX(int x) => new Vec(this.x + x, y);
+  Vec offsetY(int y) => new Vec(x, this.y + y);
 
   String toString() => '$x, $y';
 }

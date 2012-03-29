@@ -83,7 +83,7 @@ class Log {
   ///
   /// Finally, the first letter in the result will be capitalized to properly
   /// sentence case it.
-  void formatSentence(String text, [Noun noun1, Noun noun2, Noun noun3]) {
+  String formatSentence(String text, [Noun noun1, Noun noun2, Noun noun3]) {
     var result = text;
 
     final nouns = [noun1, noun2, noun3];

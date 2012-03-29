@@ -20,12 +20,21 @@ class ItemType {
   ItemType(this.name, this.appearance);
 }
 
+// TODO(bob): Which collection interface should it implement?
 /// The collection of [Item]s held by an [Actor].
-class Inventory {
+class Inventory implements Iterable<Item> {
   final List<Item> _items;
+
+  int get length() => _items.length;
 
   Inventory()
   : _items = <Item>[];
+
+  Item remove(int index) {
+    final item = _items[index];
+    _items.removeRange(index, 1);
+    return item;
+  }
 
   bool tryAdd(Item item) {
     // TODO(bob): Merge stacks.
@@ -34,4 +43,6 @@ class Inventory {
     _items.add(item);
     return true;
   }
+
+  Iterator<Item> iterator() => _items.iterator();
 }

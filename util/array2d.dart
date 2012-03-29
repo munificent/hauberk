@@ -30,5 +30,5 @@ class Array2D<T> implements Iterable<T> {
     }
   }
 
-  Iterable<T> iterator() => elements.iterator();
+  Iterator<T> iterator() => elements.iterator();
 }

@@ -204,16 +204,19 @@ class Level {
 }
 
 class TileType {
-  static final FLOOR = 0;
-  static final WALL  = 1;
+  static final FLOOR = const TileType(0);
+  static final WALL  = const TileType(1);
+
+  final int _value;
+  const TileType(this._value);
 }
 
 class Tile {
-  int  type      = TileType.WALL;
-  bool _visible  = false;
-  bool _explored = false;
-  num scent1 = 0;
-  num scent2 = 0;
+  TileType type      = TileType.WALL;
+  bool     _visible  = false;
+  bool     _explored = false;
+  num      scent1    = 0;
+  num      scent2    = 0;
 
   /// The number of steps from this tile to the hero following the best possible
   /// path. Will be `-1` if the path isn't known (or if it's too far to

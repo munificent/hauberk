@@ -59,6 +59,7 @@ class Content {
     );
 
     item('stick', brown('/'));
+    item('empty bottle', lightBlue('!'));
   }
 
   Breed breed(String name, Glyph appearance, List<Attack> attacks,
@@ -80,5 +81,6 @@ class Content {
 
   Glyph white(String char) => new Glyph(char, Color.WHITE);
   Glyph brown(String char) => new Glyph(char, Color.BROWN);
+  Glyph lightBlue(String char) => new Glyph(char, Color.LIGHT_BLUE);
   Glyph lightGreen(String char) => new Glyph(char, Color.LIGHT_GREEN);
 }

@@ -5,53 +5,58 @@ class GameScreen extends Screen {
   List<ItemType> itemTypes;
   List<Effect>   effects;
   bool           logOnTop = false;
-  Screen         dialog;
+  GameInput      input;
 
   GameScreen(List<Breed> breeds, List<ItemType> itemTypes)
-  : effects = <Effect>[]
+  : effects = <Effect>[],
+    input = new GameInput()
   {
     this.breeds = breeds;
     this.itemTypes = itemTypes;
 
     game = new Game(breeds, itemTypes);
-
-    //dialog = new InventoryDialog(input, terminal, game);
   }
 
-  bool update(UserInput input) {
+  bool handleInput(Keyboard keyboard) {
+    switch (keyboard.lastPressed) {
+      case KeyCode.D:
+        ui.push(new InventoryDialog(game));
+        return true;
+    }
+
+    game.hero.nextAction = input.getAction(keyboard);
+
+    return true;
+  }
+
+  bool update() {
     var needsRender = effects.length > 0;
 
-    if (dialog == null) {
-      game.hero.nextAction = input.getAction();
+    var result = game.update();
 
-      var result = game.update();
-
-      // TODO(bob): Hack temp.
-      if (game.hero.health.current == 0) {
-        game = new Game(breeds, itemTypes);
-        return true;
-      }
-
-      for (final event in result.events) {
-        // TODO(bob): Handle other event types.
-        switch (event.type) {
-          case EventType.HIT:
-            effects.add(new HitEffect(event.actor));
-            break;
-
-          case EventType.KILL:
-            effects.add(new HitEffect(event.actor));
-            for (var i = 0; i < 10; i++) {
-              effects.add(new ParticleEffect(event.actor.x, event.actor.y));
-            }
-            break;
-        }
-      }
-
-      needsRender = needsRender || result.madeProgress;
-    } else {
-      needsRender = needsRender || dialog.update();
+    // TODO(bob): Hack temp.
+    if (game.hero.health.current == 0) {
+      game = new Game(breeds, itemTypes);
+      return true;
     }
+
+    for (final event in result.events) {
+      // TODO(bob): Handle other event types.
+      switch (event.type) {
+        case EventType.HIT:
+          effects.add(new HitEffect(event.actor));
+          break;
+
+        case EventType.KILL:
+          effects.add(new HitEffect(event.actor));
+          for (var i = 0; i < 10; i++) {
+            effects.add(new ParticleEffect(event.actor.x, event.actor.y));
+          }
+          break;
+      }
+    }
+
+    needsRender = needsRender || result.madeProgress;
 
     effects = effects.filter((effect) => effect.update(game));
 
@@ -172,14 +177,18 @@ class GameScreen extends Screen {
 
     // Draw the log.
 
-    // If the log is overlapping the hero, flip it to the other side. Use 0.4 and
-    // 0.6 here to avoid flipping too much if the hero is wandering around near
-    // the middle.
+    // If the log is overlapping the hero, flip it to the other side. Use 0.4
+    // and 0.6 here to avoid flipping too much if the hero is wandering around
+    // near the middle.
     if (logOnTop) {
       if (game.hero.y < terminal.height * 0.4) logOnTop = false;
     } else {
       if (game.hero.y > terminal.height * 0.6) logOnTop = true;
     }
+
+    // Force the log to the bottom if a popup is open so it's still visible.
+    if (!isTopScreen) logOnTop = false;
+
     var y = logOnTop ? 0 : terminal.height - game.log.messages.length;
 
     for (final message in game.log.messages) {
@@ -196,43 +205,83 @@ class GameScreen extends Screen {
     terminal.writeAt(81, 3, 'Health    /   ', Color.GRAY);
     terminal.writeAt(88, 3, game.hero.health.current.toString(), Color.RED);
     terminal.writeAt(92, 3, game.hero.health.max.toString(), Color.RED);
-
-    if (dialog != null) dialog.render();
-
-    /*
-    terminal.writeAt(50, 20, '    ', Color.RED, Color.RED);
-    terminal.writeAt(54, 20, '!!!', Color.RED, Color.DARK_RED);
-    terminal.writeAt(57, 20, '  ', Color.DARK_GRAY, Color.DARK_GRAY);
-    */
-
-    /*
-    terminal.writeAt(81, 4, '  Mana', Color.GRAY);
-    terminal.writeAt(81, 5, '   Str', Color.GRAY);
-    terminal.writeAt(81, 6, '   Agi', Color.GRAY);
-    terminal.writeAt(81, 7, '   Int', Color.GRAY);
-
-    terminal.writeAt(88, 3, '25/25', Color.RED);
-    terminal.writeAt(88, 4, '25/25', Color.PURPLE);
-    terminal.writeAt(88, 5, '25/25', Color.ORANGE);
-    terminal.writeAt(88, 6, '25/25', Color.GREEN);
-    terminal.writeAt(88, 7, '25/25', Color.BLUE);
-    */
-
-    terminal.render();
   }
 }
 
-/// Modal dialog for letting the user select an item from the hero's inventory.
-class InventoryDialog extends Screen {
-  final Game game;
+/// Processes user input while the game is being played.
+class GameInput {
+  /// The direction key the user is currently pressing.
+  Direction currentDirection = null;
 
-  InventoryDialog(UserInput input, Terminal terminal, this.game)
-  : super(input, terminal);
+  /// How long the user has been pressing in the current direction.
+  int holdTime = 0;
 
-  bool update() => false;
+  Action getAction(Keyboard keyboard) {
+    // First try the key events that only trigger on a press.
+    switch (keyboard.lastPressed) {
+      case KeyCode.G: return new PickUpAction();
+    }
 
-  void render() {
-    terminal.writeAt(2, 2, 'Drop which item?');
+    // See what direction is being pressed.
+    var direction;
+    switch (keyboard.getOnlyKey()) {
+      case KeyCode.I:         direction = Direction.NW; break;
+      case KeyCode.O:         direction = Direction.N; break;
+      case KeyCode.P:         direction = Direction.NE; break;
+      case KeyCode.K:         direction = Direction.W; break;
+      case KeyCode.L:         direction = Direction.NONE; break;
+      case KeyCode.SEMICOLON: direction = Direction.E; break;
+      case KeyCode.COMMA:     direction = Direction.SW; break;
+      case KeyCode.PERIOD:    direction = Direction.S; break;
+      case KeyCode.SLASH:     direction = Direction.SE; break;
+    }
+
+    if (direction != currentDirection) {
+      // Changing direction.
+      currentDirection = direction;
+      holdTime = 0;
+    } else {
+      // Still going in the same direction.
+      holdTime++;
+    }
+
+    // TODO(bob): Kinda hackish.
+    // Determine which frames should actually move the hero. The numbers here
+    // gradually accelerate until eventually the hero moves at every frame.
+    shouldMove() {
+      if (holdTime == 0) return true;
+      if (holdTime == 8) return true;
+      if (holdTime == 16) return true;
+      if (holdTime == 23) return true;
+      if (holdTime == 30) return true;
+      if (holdTime == 36) return true;
+      if (holdTime == 42) return true;
+      if (holdTime == 47) return true;
+      if (holdTime == 52) return true;
+      if (holdTime == 56) return true;
+      if (holdTime == 60) return true;
+      if (holdTime == 63) return true;
+      if (holdTime == 66) return true;
+      if (holdTime == 68) return true;
+      if (holdTime >= 70) return true;
+
+      return false;
+    }
+
+    if (currentDirection == null) return null;
+    if (!shouldMove()) return null;
+
+    switch (currentDirection) {
+      case Direction.NW:   return new MoveAction(new Vec(-1, -1));
+      case Direction.N:    return new MoveAction(new Vec(0, -1));
+      case Direction.NE:   return new MoveAction(new Vec(1, -1));
+      case Direction.W:    return new MoveAction(new Vec(-1, 0));
+      case Direction.NONE: return new MoveAction(new Vec(0, 0));
+      case Direction.E:    return new MoveAction(new Vec(1, 0));
+      case Direction.SW:   return new MoveAction(new Vec(-1, 1));
+      case Direction.S:    return new MoveAction(new Vec(0, 1));
+      case Direction.SE:   return new MoveAction(new Vec(1, 1));
+    }
   }
 }
 

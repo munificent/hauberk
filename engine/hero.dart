@@ -15,7 +15,7 @@ class Hero extends Actor {
 
   bool get needsInput() => nextAction == null;
 
-  void getAction() {
+  Action getAction() {
     final action = nextAction;
     nextAction = null;
     return action;
