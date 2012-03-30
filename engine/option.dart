@@ -11,16 +11,6 @@ class Option {
   /// happens to be empty and unexplored.
   static final REST_SPAWN_CHANCE = 6;
 
-  /// The range of valid strike values. After calculating the strike, it will
-  /// be clamped to this bounds and then the strike roll will be compared to it.
-  /// A higher minimum means more strikes are guaranteed misses and a lower
-  /// max means more guaranteed hits.
-  static final STRIKE_MIN = 5;
-  static final STRIKE_MAX = 95;
-
-  static final STRIKE_MONSTER = 20;
-  static final STRIKE_HERO = 20;
-
   /// The max health of a new hero.
   static final HERO_START_HEALTH = 20;
 

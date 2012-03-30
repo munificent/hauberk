@@ -13,11 +13,5 @@ class Hit {
   /// The attack.
   final Attack attack;
 
-  int strike;
-
   Hit(this.attack);
-
-  void bindDefense([int strike]) {
-    this.strike = strike;
-  }
 }

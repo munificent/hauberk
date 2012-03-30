@@ -53,24 +53,6 @@ class AttackAction extends Action {
     final hit = new Hit(attack);
     defender.takeHit(hit);
 
-    // Ask the defender how hard it is to hit.
-    var strike = hit.strike;
-
-    // TODO(bob): Modify by the attacker's strike bonus.
-
-    // Keep it in bounds. We clamp it to [5, 95] so there is always some chance
-    // of a hit or a miss.
-    strike = clamp(Option.STRIKE_MIN, strike, Option.STRIKE_MAX);
-
-    final strikeRoll = rng.inclusive(1, 100);
-
-    if (strikeRoll < strike) {
-      // A swing and a miss!
-      game.log.add('{1} miss[es] {2}.', actor, defender);
-      return ActionResult.SUCCESS;
-    }
-
-    // The hit made contact.
     final damage = rng.triangleInt(attack.damage, attack.damage ~/ 2);
     defender.health.current -= damage;
 

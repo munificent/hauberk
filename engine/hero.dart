@@ -31,8 +31,7 @@ class Hero extends Actor {
   }
 
   void takeHit(Hit hit) {
-    // TODO(bob): Temp.
-    hit.bindDefense(strike: Option.STRIKE_HERO);
+    // TODO(bob): Nothing to do yet. Should eventually handle armor.
   }
 
   Vec changePosition(Vec pos) {

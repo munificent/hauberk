@@ -143,8 +143,7 @@ class Monster extends Actor {
   Attack getAttack(Actor defender) => rng.item(breed.attacks);
 
   void takeHit(Hit hit) {
-    // TODO(bob): Temp.
-    hit.bindDefense(strike: Option.STRIKE_MONSTER);
+    // TODO(bob): Nothing to do yet. Should eventually handle armor.
   }
 }
 
