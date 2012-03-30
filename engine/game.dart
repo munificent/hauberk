@@ -15,7 +15,9 @@ class Game {
     rng = new Rng(new Date.now().value)
   {
     level.game = this;
-    level.generate();
+
+    //new FeatureCreep(level, new FeatureCreepOptions()).generate();
+    new Dungeon(level).generate();
 
     final pos = level.findOpenTile();
     hero = new Hero(this, pos.x, pos.y);

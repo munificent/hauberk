@@ -79,6 +79,14 @@ class Rng {
   /// Gets a random item from the given list.
   item(List items) => items[range(items.length)];
 
+  /// Removes a random item from the given list.
+  take(List items) {
+    final index = range(items.length);
+    final item = items[index];
+    items.removeRange(index, 1);
+    return item;
+  }
+
   /// Gets a random [Vec] within the given [Rect] (half-inclusive).
   Vec vecInRect(Rect rect) {
     return new Vec(range(rect.left, rect.right), range(rect.top, rect.bottom));

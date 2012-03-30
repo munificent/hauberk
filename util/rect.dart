@@ -202,7 +202,35 @@ class Rect implements Iterable<Vec> {
   }
   */
 
-  // Iterators over the points along the edge of the Rect.
+  /// Returns the distance between this Rect and [other]. This is minimum
+  /// length that a corridor would have to be to go from one Rect to the other.
+  /// If the two Rects are adjacent, returns zero. If they overlap, returns -1.
+  int distanceTo(Rect other) {
+    var vertical;
+    if (top >= other.bottom) {
+      vertical = top - other.bottom;
+    } else if (bottom <= other.top) {
+      vertical = other.top - bottom;
+    } else {
+      vertical = -1;
+    }
+
+    var horizontal;
+    if (left >= other.right) {
+      horizontal = left - other.right;
+    } else if (right <= other.left) {
+      horizontal = other.left - right;
+    } else {
+      horizontal = -1;
+    }
+
+    if ((vertical == -1) && (horizontal == -1)) return -1;
+    if (vertical == -1) return horizontal;
+    if (horizontal == -1) return vertical;
+    return horizontal + vertical;
+  }
+
+  /// Iterates over the points along the edge of the Rect.
   Iterable<Vec> trace() {
     if ((width > 1) && (height > 1)) {
       // TODO(bob): Implement an iterator class here if building the list is

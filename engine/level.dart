@@ -23,11 +23,6 @@ class Level {
     actors = new Chain<Actor>(),
     items = <Item>[];
 
-  void generate() {
-    new FeatureCreep(this, new FeatureCreepOptions()).generate();
-    //new Dungeon(this).generate();
-  }
-
   Game game;
 
   // TODO(bob): Multi-argument subscript operators would be nice.
