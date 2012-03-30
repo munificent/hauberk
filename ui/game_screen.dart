@@ -20,7 +20,10 @@ class GameScreen extends Screen {
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
       case KeyCode.D:
-        ui.push(new InventoryDialog(game));
+        ui.push(new InventoryDialog(game, InventoryMode.DROP));
+        return true;
+      case KeyCode.U:
+        ui.push(new InventoryDialog(game, InventoryMode.USE));
         return true;
     }
 

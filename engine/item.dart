@@ -12,12 +12,15 @@ class Item extends Thing {
   Gender get gender() => Gender.NEUTER;
 }
 
+typedef void ItemUse(Game game, Action action);
+
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {
   final String name;
   final appearance;
+  final ItemUse use;
 
-  ItemType(this.name, this.appearance);
+  ItemType(this.name, this.appearance, this.use);
 }
 
 // TODO(bob): Which collection interface should it implement?
@@ -26,6 +29,9 @@ class Inventory implements Iterable<Item> {
   final List<Item> _items;
 
   int get length() => _items.length;
+
+  Item operator[](int index) => _items[index];
+  void operator[]=(int index, Item value) => _items[index] = value;
 
   Inventory()
   : _items = <Item>[];

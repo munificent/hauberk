@@ -2,8 +2,9 @@
 /// Modal dialog for letting the user select an item from the hero's inventory.
 class InventoryDialog extends Screen {
   final Game game;
+  final InventoryMode mode;
 
-  InventoryDialog(this.game);
+  InventoryDialog(this.game, this.mode);
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
@@ -35,24 +36,63 @@ class InventoryDialog extends Screen {
   bool update() => false;
 
   void render(Terminal terminal) {
-    terminal.writeAt(1, 1, 'Drop which item?');
+    terminal.writeAt(0, 0, mode.message);
 
     var i = 0;
     for (final item in game.hero.inventory) {
-      final y = i + 3;
-      terminal.writeAt(1, y, '( )', Color.GRAY);
-      terminal.writeAt(2, y, 'abcdefghijklmnopqrstuvwxyz'[i], Color.YELLOW);
-      terminal.drawGlyph(5, y, item.appearance);
-      terminal.writeAt(7, y, item.nounText);
+      final y = i + 1;
+
+      var borderColor = Color.GRAY;
+      var letterColor = Color.YELLOW;
+      var textColor = Color.WHITE;
+      if (!mode.canSelect(item)) {
+        borderColor = Color.DARK_GRAY;
+        letterColor = Color.GRAY;
+        textColor = Color.GRAY;
+      }
+
+      terminal.writeAt(0, y, '( )   ', borderColor);
+      terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], letterColor);
+      terminal.drawGlyph(4, y, item.appearance);
+      terminal.writeAt(6, y, item.nounText, textColor);
       i++;
     }
   }
 
   void selectItem(int index) {
     // TODO(bob): Just does drop. Eventually support other commands.
-    if (index < game.hero.inventory.length) {
-      game.hero.nextAction = new DropAction(index);
-      ui.pop();
-    }
+    if (index >= game.hero.inventory.length) return;
+    if (!mode.canSelect(game.hero.inventory[index])) return;
+
+    game.hero.nextAction = mode.getAction(index);
+    ui.pop();
   }
+}
+
+/// Actions that the user can perform on the inventory selection screen.
+class InventoryMode {
+  static final DROP = const DropInventoryMode();
+  static final USE  = const UseInventoryMode();
+
+  abstract String get message();
+  abstract bool canSelect(Item item);
+  abstract Action getAction(int index);
+
+  const InventoryMode();
+}
+
+class DropInventoryMode extends InventoryMode {
+  String get message() => 'Drop which item?';
+  const DropInventoryMode() : super();
+
+  bool canSelect(Item item) => true;
+  Action getAction(int index) => new DropAction(index);
+}
+
+class UseInventoryMode extends InventoryMode {
+  String get message() => 'Use which item?';
+  const UseInventoryMode() : super();
+
+  bool canSelect(Item item) => item.type.use != null;
+  Action getAction(int index) => new UseAction(index);
 }

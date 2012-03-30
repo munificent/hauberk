@@ -35,5 +35,6 @@ class ContentBuilder {
   Glyph white(String char) => new Glyph(char, Color.WHITE);
   Glyph brown(String char) => new Glyph(char, Color.BROWN);
   Glyph lightBlue(String char) => new Glyph(char, Color.LIGHT_BLUE);
+  Glyph lightBrown(String char) => new Glyph(char, Color.LIGHT_BROWN);
   Glyph lightGreen(String char) => new Glyph(char, Color.LIGHT_GREEN);
 }

@@ -17,10 +17,25 @@ class ItemBuilder extends ContentBuilder {
 
     item('stick', brown('/'));
     item('empty bottle', lightBlue('!'));
+    item('crusty loaf of bread', lightBrown(','), use: useFood(70));
   }
 
-  ItemType item(String name, Glyph appearance) {
-    final itemType = new ItemType(name, appearance);
+  ItemUse useFood(int amount) {
+    return (Game game, Action action) {
+      final hero = action.hero;
+
+      if (hero.hunger < amount) {
+        game.log.add('{1} [are|is] stuffed.', hero);
+        hero.hunger = 0;
+      } else {
+        hero.hunger -= amount;
+        game.log.add('{1} feel[s] less hungry.', hero);
+      }
+    };
+  }
+
+  ItemType item(String name, Glyph appearance, [ItemUse use]) {
+    final itemType = new ItemType(name, appearance, use);
     content.itemTypes.add(itemType);
     return itemType;
   }

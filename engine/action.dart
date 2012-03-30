@@ -216,3 +216,26 @@ class DropAction extends Action {
     return ActionResult.SUCCESS;
   }
 }
+
+class UseAction extends Action {
+  // TODO(bob): Right now, it assumes you always use an inventory item. May
+  // want to support using items on the ground at some point.
+  final int index;
+
+  UseAction(this.index);
+
+  ActionResult onPerform(Game game) {
+    final item = hero.inventory[index];
+    final use = item.type.use;
+    if (use == null) {
+      game.log.add("{1} can't be used.", item);
+      return ActionResult.FAILURE;
+    }
+
+    hero.inventory.remove(index);
+
+    use(game, this);
+
+    return ActionResult.SUCCESS;
+  }
+}
