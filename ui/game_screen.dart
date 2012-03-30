@@ -201,10 +201,21 @@ class GameScreen extends Screen {
     }
 
     terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
+    drawMeter(terminal, 'Health', 3, Color.RED,
+      game.hero.health.current, game.hero.health.max);
+    drawMeter(terminal, 'Hunger', 4, Color.ORANGE,
+      game.hero.hunger, Option.HUNGER_MAX, showNumber: false);
+  }
 
-    terminal.writeAt(81, 3, 'Health    /   ', Color.GRAY);
-    terminal.writeAt(88, 3, game.hero.health.current.toString(), Color.RED);
-    terminal.writeAt(92, 3, game.hero.health.max.toString(), Color.RED);
+  void drawMeter(Terminal terminal, String label, int y, Color color,
+      int current, int max, [bool showNumber = true]) {
+    terminal.writeAt(81, y, label, Color.GRAY);
+    terminal.writeAt(87, y, padLeft(current.toString(), 3), color);
+
+    final barString = padRight(showNumber ? current.toString() : '', 12);
+    final barWidth = 12 * current ~/ max;
+    terminal.writeAt(88, y, barString.substring(0, barWidth), Color.BLACK, color);
+    terminal.writeAt(88 + barWidth, y, barString.substring(barWidth), color);
   }
 }
 

@@ -6,6 +6,10 @@ class Hero extends Actor {
   Action nextAction;
   final Inventory inventory;
 
+  /// Resting increases this. Eating food lowers it. If it reaches
+  /// [Option.HUNGER_MAX] then resting is ineffective.
+  int hunger = 0;
+
   Hero(Game game, int x, int y)
   : super(game, x, y, Option.HERO_START_HEALTH),
     inventory = new Inventory();

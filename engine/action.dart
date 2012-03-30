@@ -133,6 +133,16 @@ class RestAction extends Action {
       // Don't do anything if already maxed.
       actor.restCount = 0;
     } else {
+      // The hero can only rest if not hungry.
+      if (actor is Hero) {
+        if (hero.hunger < Option.HUNGER_MAX) {
+          hero.hunger++;
+        } else {
+          game.log.add('{1} [are|is] too hungry to rest!', actor);
+          return ActionResult.SUCCESS;
+        }
+      }
+
       // TODO(bob): Could have "regeneration" power-up that speeds this.
       // The greater the max health, the faster the actor heals when resting.
       final turnsNeeded = Math.max(

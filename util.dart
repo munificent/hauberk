@@ -17,3 +17,21 @@ num clamp(num min, num value, num max) {
   if (value > max) return max;
   return value;
 }
+
+String padLeft(String text, int length) {
+  final result = new StringBuffer();
+  for (var i = length - text.length; i >= 0; i--) {
+    result.add(' ');
+  }
+  result.add(text);
+  return result.toString();
+}
+
+String padRight(String text, int length, [String padChar = ' ']) {
+  final result = new StringBuffer();
+  result.add(text);
+  for (var i = length - text.length; i >= 0; i--) {
+    result.add(padChar);
+  }
+  return result.toString();
+}

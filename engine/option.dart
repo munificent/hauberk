@@ -24,6 +24,9 @@ class Option {
   /// The max health of a new hero.
   static final HERO_START_HEALTH = 20;
 
+  /// How hungry the hero must be before resting ceases to work.
+  static final HUNGER_MAX = 200;
+
   /// The maximum number of items the hero's [Inventory] can contain.
   static final INVENTORY_MAX_ITEMS = 12;
 
