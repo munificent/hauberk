@@ -69,7 +69,7 @@ class Game {
         }
 
         if (result.succeeded) {
-          actor.energy.spend();
+          actor.finishTurn();
           level.actors.advance();
 
           // TODO(bob): Doing this here is a hack. Scent should spread at a

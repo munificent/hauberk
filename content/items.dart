@@ -17,7 +17,7 @@ class ItemBuilder extends ContentBuilder {
 
     item('stick', brown('/'));
     item('empty bottle', lightBlue('!'));
-    item('crusty loaf of bread', lightBrown(','), use: useFood(70));
+    item('crusty loaf of bread', lightBrown(','), use: useFood(300));
   }
 
   ItemUse useFood(int amount) {

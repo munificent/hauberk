@@ -146,7 +146,6 @@ class Dungeon {
 
     final color = Math.min(a.color, b.color);
     _usedColors.remove(Math.max(a.color, b.color));
-    print('merge ${a.color} and ${b.color}, ${_usedColors.length} colors');
 
     for (final room in _rooms) {
       if (room.color == a.color || room.color == b.color) {

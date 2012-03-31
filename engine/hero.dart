@@ -40,6 +40,14 @@ class Hero extends Actor {
     return pos;
   }
 
+  void rest() {
+    // The hero can only rest if not hungry.
+    if (hunger < Option.HUNGER_MAX) {
+      hunger++;
+      super.rest();
+    }
+  }
+
   String get nounText() => 'you';
   int get person() => 2;
 }

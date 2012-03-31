@@ -4,7 +4,7 @@ class Option {
   /// A resting actor regains health every `n` turns where `n` is this number
   /// divided by the actor's max health. Setting this to be larger makes actors
   /// regenerate more slowly.
-  static final REST_MAX_HEALTH_FOR_RATE = 50;
+  static final REST_MAX_HEALTH_FOR_RATE = 200;
 
   /// Each turn that the hero rests, there is a one in `REST_SPAWN_CHANCE` that
   /// the game will try to place a monster in a randomly selected tile if it
@@ -15,7 +15,7 @@ class Option {
   static final HERO_START_HEALTH = 20;
 
   /// How hungry the hero must be before resting ceases to work.
-  static final HUNGER_MAX = 200;
+  static final HUNGER_MAX = 400;
 
   /// The maximum number of items the hero's [Inventory] can contain.
   static final INVENTORY_MAX_ITEMS = 12;

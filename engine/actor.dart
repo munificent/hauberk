@@ -75,6 +75,25 @@ class Actor extends Thing {
 
     return game.level[pos].type == TileType.FLOOR;
   }
+
+  void finishTurn() {
+    energy.spend();
+    rest();
+  }
+
+  void rest() {
+    // TODO(bob): Could have "regeneration" power-up that speeds this.
+    // The greater the max health, the faster the actor heals when resting.
+    final turnsNeeded = Math.max(
+        Option.REST_MAX_HEALTH_FOR_RATE ~/ health.max, 1);
+
+    if (restCount++ > turnsNeeded) {
+      health.current++;
+      restCount = 0;
+      // TODO(bob): Temp.
+      game.log.add('{1} rest[s].', this);
+    }
+  }
 }
 
 class Stat {
