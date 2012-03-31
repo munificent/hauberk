@@ -35,20 +35,28 @@ class MonsterBuilder extends ContentBuilder {
     // - Don't use both 'u' and 'U' for undead?
 
     breed('rat', brown('r'), [
-        attack('bite[s]', 3),
+        attack('bite[s]', 4),
         attack('scratch[es]', 2)
       ],
-      maxHealth: 4,
+      maxHealth: 5,
       olfaction: 2,
       meander: 3
     );
 
     breed('slug', lightGreen('s'), [
-        attack('crawl[s] on', 2),
+        attack('crawl[s] on', 6),
       ],
       maxHealth: 8,
-      meander: 6,
-      speed: -2
+      meander: 4,
+      speed: -3
+    );
+
+    breed('giant dragonfly', blue('f'), [
+        attack('sting[s]', 3),
+      ],
+      maxHealth: 2,
+      meander: 8,
+      speed: 2
     );
   }
 

@@ -328,7 +328,7 @@ class HitEffect implements Effect {
       case 1: back = Color.DARK_RED; break;
       case 2: back = Color.BLACK;    break;
     }
-    terminal.writeAt(x, y, '0123456789'[health], Color.BLACK, back);
+    terminal.writeAt(x, y, ' 123456789'[health], Color.BLACK, back);
   }
 }
 
