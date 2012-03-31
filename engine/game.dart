@@ -24,7 +24,7 @@ class Game {
     level.actors.add(hero);
 
     // TODO(bob): Temp for testing.
-    for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < 10; i++) {
       final item = new Item(rng.item(itemTypes), level.findOpenTile());
       level.items.add(item);
     }

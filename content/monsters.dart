@@ -36,17 +36,26 @@ class MonsterBuilder extends ContentBuilder {
 
     breed('rat', brown('r'), [
         attack('bite[s]', 4),
-        attack('scratch[es]', 2)
+        attack('scratch[es]', 3)
       ],
-      maxHealth: 5,
+      maxHealth: 4,
       olfaction: 2,
+      meander: 3,
+      speed: 1
+    );
+
+    breed('mangy cur', gray('c'), [
+        attack('bite[s]', 6),
+      ],
+      maxHealth: 7,
+      olfaction: 5,
       meander: 3
     );
 
-    breed('slug', lightGreen('s'), [
-        attack('crawl[s] on', 6),
+    breed('giant slug', green('s'), [
+        attack('crawl[s] on', 8),
       ],
-      maxHealth: 8,
+      maxHealth: 12,
       meander: 4,
       speed: -3
     );

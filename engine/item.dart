@@ -12,7 +12,7 @@ class Item extends Thing {
   Gender get gender() => Gender.NEUTER;
 }
 
-typedef void ItemUse(Game game, Action action);
+typedef void ItemUse(Game game, UseAction action);
 
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {

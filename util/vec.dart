@@ -19,6 +19,8 @@ class Vec {
   /// Vec. Also known as Chebyshev distance.
   int get kingLength() => Math.max(x.abs(), y.abs());
 
+  int get lengthSquared() => x * x + y * y;
+
   bool operator ==(Vec other) {
     // TODO(bob): Get rid of this when new equality semantics are implemented.
     if (other === null) return false;
@@ -57,7 +59,7 @@ class Vec {
   }
 
   Vec abs() => new Vec(x.abs(), y.abs());
-  
+
   Vec offsetX(int x) => new Vec(this.x + x, y);
   Vec offsetY(int y) => new Vec(x, this.y + y);
 

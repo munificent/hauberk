@@ -15,13 +15,28 @@ class ItemBuilder extends ContentBuilder {
     // ~   Lites, Tools           )   A shield
     // &   Chests, Containers
 
-    item('stick', brown('/'));
-    item('empty bottle', lightBlue('!'));
-    item('crusty loaf of bread', lightBrown(','), use: useFood(300));
+    // Food (,)
+    item('crusty loaf of bread', lightBrown(','), use: Use.food(300));
+
+    // Potions (!)
+
+    // Healing
+    item('salve of mending', lightRed('!'), use: Use.heal(30, 'better'));
+    // balm of soothing, healing, amelioration, rejuvenation
   }
 
-  ItemUse useFood(int amount) {
-    return (Game game, Action action) {
+  ItemType item(String name, Glyph appearance, [ItemUse use]) {
+    final itemType = new ItemType(name, appearance, use);
+    content.itemTypes.add(itemType);
+    return itemType;
+  }
+}
+
+/// Static class containing functions (or, more accurately, function builders)
+/// for the various item uses.
+class Use {
+  static ItemUse food(int amount) {
+    return (Game game, UseAction action) {
       final hero = action.hero;
 
       if (hero.hunger < amount) {
@@ -34,9 +49,14 @@ class ItemBuilder extends ContentBuilder {
     };
   }
 
-  ItemType item(String name, Glyph appearance, [ItemUse use]) {
-    final itemType = new ItemType(name, appearance, use);
-    content.itemTypes.add(itemType);
-    return itemType;
+  static ItemUse heal(int amount, String message) {
+    return (Game game, UseAction action) {
+      if (action.actor.health.isMax) {
+        game.log.add('{1} has no effect.', action.item);
+      } else {
+        action.actor.health.current += amount;
+        game.log.add('{1} feel[s] $message.', action.actor);
+      }
+    };
   }
 }
