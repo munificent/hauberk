@@ -90,8 +90,6 @@ class Actor extends Thing {
     if (restCount++ > turnsNeeded) {
       health.current++;
       restCount = 0;
-      // TODO(bob): Temp.
-      game.log.add('{1} rest[s].', this);
     }
   }
 }

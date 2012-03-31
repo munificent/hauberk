@@ -6,11 +6,6 @@ class Option {
   /// regenerate more slowly.
   static final REST_MAX_HEALTH_FOR_RATE = 200;
 
-  /// Each turn that the hero rests, there is a one in `REST_SPAWN_CHANCE` that
-  /// the game will try to place a monster in a randomly selected tile if it
-  /// happens to be empty and unexplored.
-  static final REST_SPAWN_CHANCE = 6;
-
   /// The max health of a new hero.
   static final HERO_START_HEALTH = 20;
 
@@ -20,10 +15,11 @@ class Option {
   /// The maximum number of items the hero's [Inventory] can contain.
   static final INVENTORY_MAX_ITEMS = 12;
 
-  /// The maximum number of steps of ideal pathfinding data that monsters can
-  /// use. Increasing this lets monsters accurately find the hero from farther
-  /// away, but increases processing time.
-  static final MAX_PATH = 12;
+  /// The maximum number of steps of ideal pathfinding data that is calculated.
+  /// This is used by monster AI and by noise calculation. Increasing it
+  /// increases the radius at which things can have an effect, but also
+  /// increases processing time.
+  static final MAX_PATH = 20;
 
   /// How much a monster's sense of smell (modified by olfaction) affects their
   /// choice of action.
@@ -34,6 +30,16 @@ class Option {
 
   /// How much a breed's meander affects the monster's choice of action.
   static final AI_WEIGHT_MEANDER = 5.0;
+
+  /// How much noise different kinds of actions make.
+  static final NOISE_NORMAL = 10;
+  static final NOISE_HIT    = 60;
+  static final NOISE_REST   =  1;
+
+  /// How much recent noises attenuate each turn. Making this larger means that
+  /// monsters will wake up after a longer series of nearby sounds. Making it
+  /// smaller means it must be a louder closer sound.
+  static final NOISE_FORGET = 0.8;
 
   /// How much scent is added each turn to the hero's tile. This is basically
   /// how "strong" the hero smells.

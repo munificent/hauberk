@@ -2,6 +2,14 @@
 class Monster extends Actor {
   final Breed breed;
 
+  MonsterState state = MonsterState.ASLEEP;
+
+  /// The amount of noise that the monster has heard recently. Nearby actions
+  /// will increase this and it naturally decays over time (as the monster
+  /// "forgets" sounds). If it gets high enough, a sleeping monster will wake
+  /// up.
+  num noise = 0;
+
   Monster(Game game, this.breed, int x, int y, int maxHealth)
   : super(game, x, y, maxHealth) {
     energy.speed = Energy.NORMAL_SPEED + breed.speed;
@@ -26,6 +34,50 @@ class Monster extends Actor {
   }
 
   Action getAction() {
+    // Forget sounds over time. Since this occurs on the monster's turn, it
+    // means slower monsters will attenuate less frequently. The [Math.pow()]
+    // part compensates for this.
+    noise *= Math.pow(Option.NOISE_FORGET, Energy.ticksAtSpeed(breed.speed));
+
+    print(noise);
+
+    switch (state) {
+      case MonsterState.ASLEEP: return getActionAsleep();
+      case MonsterState.AWAKE: return getActionAwake();
+    }
+  }
+
+  Action getActionAsleep() {
+    // See if there is enough noise to wake up.
+    // TODO(bob): Add breed-specific modifier.
+    if (noise > rng.range(50, 5000)) {
+      state = MonsterState.AWAKE;
+      game.log.add('{1} wake[s] up!', this);
+
+      // Bump up the noise. This ensures the monsters is alert and stays awake
+      // for a while.
+      noise += 100;
+
+      return getActionAwake();
+    }
+
+    // TODO(bob): Take LOS into account too.
+
+    // Keep sleeping.
+    return new RestAction();
+  }
+
+  Action getActionAwake() {
+    // See if things are quiet enough to fall asleep.
+    if (noise < rng.range(0, 100)) {
+      state = MonsterState.ASLEEP;
+      game.log.add('{1} fall[s] asleep!', this);
+
+      // Reset the noise. This ensures the monster stays asleep for a while.
+      noise = 0;
+      return getActionAsleep();
+    }
+
     // If we're next to the hero, just go for the melee hit. Check this first
     // to avoid more costly AI processing when not needed.
     final toHero = game.hero.pos - pos;
@@ -143,6 +195,10 @@ class Monster extends Actor {
   Attack getAttack(Actor defender) => rng.item(breed.attacks);
 
   void takeHit(Hit hit) {
+    if (state == MonsterState.ASLEEP) {
+      // Can't sleep through a beating!
+      state = MonsterState.AWAKE;
+    }
     // TODO(bob): Nothing to do yet. Should eventually handle armor.
   }
 }
@@ -151,7 +207,6 @@ class Monster extends Actor {
 class MonsterState {
   static final ASLEEP = const MonsterState(0);
   static final AWAKE  = const MonsterState(1);
-  static final AFRAID = const MonsterState(2);
 
   final int _value;
   const MonsterState(this._value);

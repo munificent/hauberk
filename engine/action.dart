@@ -21,6 +21,10 @@ class Action {
   void addEvent(Event event) {
     _gameResult.events.add(event);
   }
+
+  /// How much noise is produced by this action. Override to make certain
+  /// actions quieter or louder.
+  bool get noise() => Option.NOISE_NORMAL;
 }
 
 class ActionResult {
@@ -74,6 +78,8 @@ class AttackAction extends Action {
     return ActionResult.SUCCESS;
   }
 
+  bool get noise() => Option.NOISE_HIT;
+
   String toString() => '$actor attacks $defender';
 }
 
@@ -109,52 +115,14 @@ class MoveAction extends Action {
   String toString() => '$actor moves $offset';
 }
 
+/// Action for essentially spending a turn walking in place. This is a separate
+/// class mainly to track that it's quieter than walking.
 class RestAction extends Action {
   ActionResult onPerform(Game game) {
-    if (actor.health.isMax) {
-      // Don't do anything if already maxed.
-      actor.restCount = 0;
-    } else {
-      // The hero can only rest if not hungry.
-      if (actor is Hero) {
-        if (hero.hunger < Option.HUNGER_MAX) {
-          hero.hunger++;
-        } else {
-          game.log.add('{1} [are|is] too hungry to rest!', actor);
-          return ActionResult.SUCCESS;
-        }
-      }
-
-      // TODO(bob): Could have "regeneration" power-up that speeds this.
-      // The greater the max health, the faster the actor heals when resting.
-      final turnsNeeded = Math.max(
-          Option.REST_MAX_HEALTH_FOR_RATE ~/ actor.health.max, 1);
-
-      if (actor.restCount++ > turnsNeeded) {
-        actor.health.current++;
-        actor.restCount = 0;
-        // TODO(bob): Temp.
-        game.log.add('{1} rest[s].', actor);
-      }
-
-      // Whenever the hero rests, there is a chance for new monsters to appear
-      // in unexplored areas of the level. This is to discourage the player
-      // from resting too much.
-      if (actor is Hero) {
-        if (rng.oneIn(Option.REST_SPAWN_CHANCE)) {
-          final pos = rng.vecInRect(game.level.bounds);
-          final tile = game.level[pos];
-          if (!tile.isExplored && tile.isPassable) {
-            final monster = rng.item(game.breeds).spawn(game, pos);
-            game.log.add('Spawned ${monster.breed.name} at $pos.');
-            game.level.actors.add(monster);
-          }
-        }
-      }
-    }
-
     return ActionResult.SUCCESS;
   }
+
+  bool get noise() => Option.NOISE_REST;
 }
 
 class PickUpAction extends Action {

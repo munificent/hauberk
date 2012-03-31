@@ -26,6 +26,10 @@ class Energy {
     240     // 4x normal speed
   ];
 
+  static num ticksAtSpeed(int speed) {
+    return ACTION_COST / ENERGY_GAINS[NORMAL_SPEED + speed];
+  }
+
   int speed;
   int energy = 0;
 

@@ -24,7 +24,7 @@ class Game {
     level.actors.add(hero);
 
     // TODO(bob): Temp for testing.
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 20; i++) {
       final item = new Item(rng.item(itemTypes), level.findOpenTile());
       level.items.add(item);
     }
@@ -60,7 +60,8 @@ class Game {
 
         // Cascade through the alternates until we hit bottom out.
         while (result.alternate != null) {
-          result = result.alternate.perform(this, gameResult, actor);
+          action = result.alternate;
+          result = action.perform(this, gameResult, actor);
         }
 
         if (_visibilityDirty) {
@@ -69,6 +70,8 @@ class Game {
         }
 
         if (result.succeeded) {
+          makeNoise(action.actor, action.noise);
+
           actor.finishTurn();
           level.actors.advance();
 
@@ -85,6 +88,47 @@ class Game {
 
   void dirtyVisibility() {
     _visibilityDirty = true;
+  }
+
+  void makeNoise(Actor actor, int noise) {
+    // Monsters ignore sounds from other monsters completely.
+    if (actor is! Hero) return;
+
+    // TODO(bob): Right now, sound doesn't take into account walls or doors. It
+    // should so that the player can be sneaky by keeping doors closed. Instead
+    // of making sound flow (like scent) a faster solution might be to do LOS
+    // between the source and actor and attentuate when it crosses walls or
+    // doors.
+    for (final monster in level.actors) {
+      if (monster is! Monster) continue;
+
+      var distance = level.getPath(monster.x, monster.y);
+
+      // No sound if too far away.
+      if (distance == -1) continue;
+
+      // Avoid divide by zero.
+      if (distance == 0) distance = 1;
+
+      // Inverse-square law for acoustics.
+      final volume = 1000 * noise / (distance * distance);
+      monster.noise += volume;
+
+      // TODO(bob): Using pathfinding data right now only works for the sounds
+      // coming from the hero. If we want to have monsters make sound (that
+      // other monsters can here) we'll either need to support arbitrary
+      // pathfinding, or some simpler calculation. The following calculates
+      // volume just by using straight-line distance.
+      /*
+      var distanceSquared = (monster.pos - actor.pos).lengthSquared;
+
+      // Avoid divide by zero.
+      if (distanceSquared == 0) distanceSquared = 1;
+
+      // Inverse-square law for acoustics.
+      var volume = 1000 * noise / distanceSquared;
+      */
+    }
   }
 }
 

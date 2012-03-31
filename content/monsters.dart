@@ -70,7 +70,7 @@ class MonsterBuilder extends ContentBuilder {
   }
 
   Breed breed(String name, Glyph appearance, List<Attack> attacks,
-      [int maxHealth, int olfaction = 0, int meander, int speed = 0]) {
+      [int maxHealth, int olfaction = 0, int meander = 0, int speed = 0]) {
     final breed = new Breed(name, Gender.NEUTER, appearance, attacks,
         maxHealth: maxHealth, olfaction: olfaction, meander: meander,
         speed: speed);

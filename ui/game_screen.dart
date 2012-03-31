@@ -88,69 +88,8 @@ class GameScreen extends Screen {
         }
 
         /*
-        // Visually debug the scent data.
-        if (tile.isPassable) {
-          var scent = game.level.getScent(x, y);
-          var color;
-          if (scent == 0) color = Color.DARK_GRAY;
-          else if (scent < 0.02) color = Color.DARK_BLUE;
-          else if (scent < 0.04) color = Color.BLUE;
-          else if (scent < 0.06) color = Color.DARK_AQUA;
-          else if (scent < 0.08) color = Color.AQUA;
-          else if (scent < 0.1) color = Color.DARK_GREEN;
-          else if (scent < 0.2) color = Color.GREEN;
-          else if (scent < 0.3) color = Color.DARK_YELLOW;
-          else if (scent < 0.4) color = Color.YELLOW;
-          else if (scent < 0.5) color = Color.DARK_ORANGE;
-          else if (scent < 0.6) color = Color.ORANGE;
-          else if (scent < 0.7) color = Color.DARK_RED;
-          else if (scent < 0.8) color = Color.RED;
-          else if (scent < 0.9) color = Color.DARK_PURPLE;
-          else color = Color.PURPLE;
-
-          var best = 0;
-          var char = 'O';
-          compareScent(dir, c) {
-            var neighbor = game.level.getScent(x + dir.x, y + dir.y);
-            if (neighbor > best) {
-              best = neighbor;
-              char = c;
-            }
-          }
-
-          compareScent(Direction.N, '|');
-          compareScent(Direction.NE, '/');
-          compareScent(Direction.E, '-');
-          compareScent(Direction.SE, '\\');
-          compareScent(Direction.S, '|');
-          compareScent(Direction.SW, '/');
-          compareScent(Direction.W, '-');
-          compareScent(Direction.NW, '\\');
-
-          glyph = new Glyph(char, color);
-        }
-        */
-
-        // Visually debug the pathfinding data.
-        /*
-        final colors = const [
-          Color.DARK_PURPLE,
-          Color.DARK_BLUE,
-          Color.DARK_AQUA,
-          Color.DARK_GREEN,
-          Color.DARK_YELLOW,
-          Color.DARK_ORANGE,
-          Color.DARK_RED
-        ];
-
-        if (tile.isPassable) {
-          final steps = game.level.getPath(x, y);
-          if (steps >= 0) {
-            glyph = new Glyph('0123456789'[steps % 10], colors[steps % 7]);
-          } else {
-            glyph = new Glyph('-', Color.DARK_GRAY);
-          }
-        }
+        glyph = debugScent(x, y, tile, glyph);
+        glyph = debugPathfinding(x, y, tile, glyph);
         */
 
         terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
@@ -219,6 +158,72 @@ class GameScreen extends Screen {
     final barWidth = 12 * current ~/ max;
     terminal.writeAt(88, y, barString.substring(0, barWidth), Color.BLACK, color);
     terminal.writeAt(88 + barWidth, y, barString.substring(barWidth), color);
+  }
+
+  /// Visually debug the scent data.
+  Glyph debugScent(int x, int y, Tile tile, Glyph glyph) {
+    if (!tile.isPassable) return glyph;
+
+    var scent = game.level.getScent(x, y);
+    var color;
+    if (scent == 0) color = Color.DARK_GRAY;
+    else if (scent < 0.02) color = Color.DARK_BLUE;
+    else if (scent < 0.04) color = Color.BLUE;
+    else if (scent < 0.06) color = Color.DARK_AQUA;
+    else if (scent < 0.08) color = Color.AQUA;
+    else if (scent < 0.1) color = Color.DARK_GREEN;
+    else if (scent < 0.2) color = Color.GREEN;
+    else if (scent < 0.3) color = Color.DARK_YELLOW;
+    else if (scent < 0.4) color = Color.YELLOW;
+    else if (scent < 0.5) color = Color.DARK_ORANGE;
+    else if (scent < 0.6) color = Color.ORANGE;
+    else if (scent < 0.7) color = Color.DARK_RED;
+    else if (scent < 0.8) color = Color.RED;
+    else if (scent < 0.9) color = Color.DARK_PURPLE;
+    else color = Color.PURPLE;
+
+    var best = 0;
+    var char = 'O';
+    compareScent(dir, c) {
+      var neighbor = game.level.getScent(x + dir.x, y + dir.y);
+      if (neighbor > best) {
+        best = neighbor;
+        char = c;
+      }
+    }
+
+    compareScent(Direction.N, '|');
+    compareScent(Direction.NE, '/');
+    compareScent(Direction.E, '-');
+    compareScent(Direction.SE, '\\');
+    compareScent(Direction.S, '|');
+    compareScent(Direction.SW, '/');
+    compareScent(Direction.W, '-');
+    compareScent(Direction.NW, '\\');
+
+    return new Glyph(char, color);
+  }
+
+  /// Visually debug the pathfinding data.
+  Glyph debugPathfinding(int x, int y, Tile tile, Glyph glyph) {
+    if (!tile.isPassable) return glyph;
+
+    final colors = const [
+      Color.DARK_PURPLE,
+      Color.DARK_BLUE,
+      Color.DARK_AQUA,
+      Color.DARK_GREEN,
+      Color.DARK_YELLOW,
+      Color.DARK_ORANGE,
+      Color.DARK_RED
+    ];
+
+    final steps = game.level.getPath(x, y);
+    if (steps >= 0) {
+      return new Glyph('0123456789'[steps % 10], colors[steps % 7]);
+    } else {
+      return new Glyph('-', Color.DARK_GRAY);
+    }
   }
 }
 
