@@ -22,6 +22,7 @@ class GameScreen extends Screen {
       case KeyCode.D:
         ui.push(new InventoryDialog(game, InventoryMode.DROP));
         return true;
+
       case KeyCode.U:
         ui.push(new InventoryDialog(game, InventoryMode.USE));
         return true;
@@ -31,9 +32,69 @@ class GameScreen extends Screen {
           game.hero.rest();
           return true;
         }
+        break;
+
+      case KeyCode.I:
+        if (keyboard.shift) {
+          game.hero.run(Direction.NW);
+          return true;
+        }
+        break;
+
+      case KeyCode.O:
+        if (keyboard.shift) {
+          game.hero.run(Direction.N);
+          return true;
+        }
+        break;
+
+      case KeyCode.P:
+        if (keyboard.shift) {
+          game.hero.run(Direction.NE);
+          return true;
+        }
+        break;
+
+      case KeyCode.K:
+        if (keyboard.shift) {
+          game.hero.run(Direction.W);
+          return true;
+        }
+        break;
+
+      case KeyCode.SEMICOLON:
+        if (keyboard.shift) {
+          game.hero.run(Direction.E);
+          return true;
+        }
+        break;
+
+      case KeyCode.COMMA:
+        if (keyboard.shift) {
+          game.hero.run(Direction.SW);
+          return true;
+        }
+        break;
+
+      case KeyCode.PERIOD:
+        if (keyboard.shift) {
+          game.hero.run(Direction.S);
+          return true;
+        }
+        break;
+
+      case KeyCode.SLASH:
+        if (keyboard.shift) {
+          game.hero.run(Direction.SE);
+          return true;
+        }
+        break;
     }
 
-    game.hero.setNextAction(input.getAction(keyboard));
+    final action = input.getAction(keyboard);
+    if (action != null) {
+      game.hero.setNextAction(action);
+    }
 
     return true;
   }
@@ -234,6 +295,9 @@ class GameScreen extends Screen {
 }
 
 /// Processes user input while the game is being played.
+// TODO(bob): Kind of hackish. Needs clean-up. This is only for walking
+// movement, which needs a little extra effort to feel right. (We don't want to
+// rely on the OS's key repeat which is a bit too slow.)
 class GameInput {
   /// The direction key the user is currently pressing.
   Direction currentDirection = null;
@@ -242,6 +306,8 @@ class GameInput {
   int holdTime = 0;
 
   Action getAction(Keyboard keyboard) {
+    if (keyboard.shift) return null;
+
     // First try the key events that only trigger on a press.
     switch (keyboard.lastPressed) {
       case KeyCode.G: return new PickUpAction();

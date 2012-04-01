@@ -18,7 +18,13 @@ class Hero extends Actor {
   // TODO(bob): Hackish.
   get appearance() => 'hero';
 
-  bool get needsInput() => _behavior == null;
+  bool get needsInput() {
+    if ((_behavior != null) && !_behavior.canPerform(this)) {
+      waitForInput();
+    }
+
+    return _behavior == null;
+  }
 
   Action getAction() => _behavior.getAction(this);
 
@@ -43,15 +49,6 @@ class Hero extends Actor {
     if (hunger < Option.HUNGER_MAX) {
       hunger++;
       super.regenerate();
-
-      if (health.isMax && (_behavior is RestBehavior)) {
-        waitForInput();
-      }
-    } else {
-      if (_behavior is RestBehavior) {
-        waitForInput();
-        game.log.add('{1} [are|is] too hungry to rest.', this);
-      }
     }
   }
 
@@ -60,15 +57,15 @@ class Hero extends Actor {
   }
 
   void setNextAction(Action action) {
-    if (action == null) {
-      _behavior = null;
-    } else {
-      _behavior = new ActionBehavior(action);
-    }
+    _behavior = new ActionBehavior(action);
   }
 
   void rest() {
     _behavior = new RestBehavior();
+  }
+
+  void run(Direction direction) {
+    _behavior = new RunBehavior(direction);
   }
 
   void disturb() {
@@ -79,14 +76,22 @@ class Hero extends Actor {
   int get person() => 2;
 }
 
+/// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
+/// user input. Otherwise, the behavior will determine which [Action]s he
+/// performs.
 interface Behavior {
+  bool canPerform(Hero hero);
   Action getAction(Hero hero);
 }
 
+/// A simple one-shot behavior that performs a given [Action] and then reverts
+/// back to waiting for input.
 class ActionBehavior implements Behavior {
   final Action action;
 
   ActionBehavior(this.action);
+
+  bool canPerform(Hero hero) => true;
 
   Action getAction(Hero hero) {
     hero.waitForInput();
@@ -94,6 +99,86 @@ class ActionBehavior implements Behavior {
   }
 }
 
+/// Automatic resting. With this [Behavior], the [Hero] will rest each turn
+/// until any of the following occurs:
+///
+/// * He is fully rested.
+/// * He gets hungry.
+/// * He is "disturbed" and something gets hit attention, like a [Monster]
+///   moving, being hit, etc.
 class RestBehavior implements Behavior {
+  bool canPerform(Hero hero) {
+    // See if done resting.
+    if (hero.health.isMax) return false;
+
+    // Can't rest while hungry.
+    if (hero.hunger == Option.HUNGER_MAX) {
+      game.log.add('{1} [are|is] too hungry to rest.', this);
+      return false;
+    }
+
+    return true;
+  }
+
   Action getAction(Hero hero) => new RestAction();
+}
+
+/// Automatic running. The [Hero] will continue to walk in a given direction
+/// until:
+///
+/// * He hits a wall.
+/// * He is disturbed.
+class RunBehavior implements Behavior {
+  bool firstStep = true;
+  Direction direction;
+
+  RunBehavior(this.direction);
+
+  bool canPerform(Hero hero) {
+    final game = hero.game;
+
+    // Don't run into a wall.
+    final ahead = hero.pos + direction;
+    if (!game.level[ahead].isPassable) return false;
+
+    // Whether or not the hero's left and right sides are open cannot change.
+    // In other words, if he is running in a corridor (closed on both sides)
+    // he will stop if he leaves the corridor (open on both sides). If he is
+    // running along a wall on his left (closed on left, open on right), he
+    // will stop if he enters an open room (open on both).
+    if (!firstStep) {
+      final leftSide = hero.pos + direction.rotateLeft90;
+      final leftCorner = hero.pos + direction.rotateLeft45;
+      if (game.level[leftSide].isPassable !=
+          game.level[leftCorner].isPassable) return false;
+
+      final rightSide = hero.pos + direction.rotateRight90;
+      final rightCorner = hero.pos + direction.rotateRight45;
+      if (game.level[rightSide].isPassable !=
+          game.level[rightCorner].isPassable) return false;
+    }
+
+    // Don't run into someone.
+    if (game.level.actorAt(ahead) != null) return false;
+
+    // Don't run next to someone.
+    if (game.level.actorAt(ahead + (direction.rotateLeft90)) != null) return false;
+    if (game.level.actorAt(ahead + (direction.rotateLeft45)) != null) return false;
+    if (game.level.actorAt(ahead + (direction)) != null) return false;
+    if (game.level.actorAt(ahead + (direction.rotateRight45)) != null) return false;
+    if (game.level.actorAt(ahead + (direction.rotateRight90)) != null) return false;
+
+    // TODO(bob): This is still pretty simple. It won't run around corners in
+    // corridors, which is probably good. (Running around a corner means either
+    // taking a diagonal step which makes you step next to a tile you haven't
+    // see, or going all the way through the corner which is a waste of a turn.)
+    // It also currently won't stop for items.
+
+    return true;
+  }
+
+  Action getAction(Hero hero) {
+    firstStep = false;
+    return new MoveAction(direction);
+  }
 }
