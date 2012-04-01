@@ -199,8 +199,9 @@ class Level {
 }
 
 class TileType {
-  static final FLOOR = const TileType(0);
-  static final WALL  = const TileType(1);
+  static final FLOOR    = const TileType(0);
+  static final WALL     = const TileType(1);
+  static final LOW_WALL = const TileType(2);
 
   final int _value;
   const TileType(this._value);
@@ -229,5 +230,5 @@ class Tile {
   bool get isExplored() => _explored;
 
   bool get isPassable() => type == TileType.FLOOR;
-  bool get isTransparent() => type == TileType.FLOOR;
+  bool get isTransparent() => type != TileType.WALL;
 }
