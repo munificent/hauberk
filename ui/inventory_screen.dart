@@ -64,7 +64,7 @@ class InventoryDialog extends Screen {
     if (index >= game.hero.inventory.length) return;
     if (!mode.canSelect(game.hero.inventory[index])) return;
 
-    game.hero.nextAction = mode.getAction(index);
+    game.hero.setNextAction(mode.getAction(index));
     ui.pop();
   }
 }

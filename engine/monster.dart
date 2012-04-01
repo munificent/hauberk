@@ -39,8 +39,6 @@ class Monster extends Actor {
     // part compensates for this.
     noise *= Math.pow(Option.NOISE_FORGET, Energy.ticksAtSpeed(breed.speed));
 
-    print(noise);
-
     switch (state) {
       case MonsterState.ASLEEP: return getActionAsleep();
       case MonsterState.AWAKE: return getActionAwake();
@@ -58,7 +56,9 @@ class Monster extends Actor {
       // for a while.
       noise += 100;
 
-      return getActionAwake();
+      // Even though the monster is awake now, rest this turn. This avoids an
+      // annoying behavior where a sleeping monster will almost always wake up
+      // right when the hero walks next to it.
     }
 
     // TODO(bob): Take LOS into account too.
@@ -200,6 +200,16 @@ class Monster extends Actor {
       state = MonsterState.AWAKE;
     }
     // TODO(bob): Nothing to do yet. Should eventually handle armor.
+  }
+
+  Vec changePosition(Vec pos) {
+    // If the monster is (or was) visible, don't let the hero rest through it
+    // moving.
+    if (game.level[this.pos].visible || game.level[pos].visible) {
+      game.hero.disturb();
+    }
+
+    return pos;
   }
 }
 

@@ -25,9 +25,15 @@ class GameScreen extends Screen {
       case KeyCode.U:
         ui.push(new InventoryDialog(game, InventoryMode.USE));
         return true;
+
+      case KeyCode.L:
+        if (keyboard.shift) {
+          game.hero.rest();
+          return true;
+        }
     }
 
-    game.hero.nextAction = input.getAction(keyboard);
+    game.hero.setNextAction(input.getAction(keyboard));
 
     return true;
   }

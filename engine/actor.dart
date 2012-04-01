@@ -78,10 +78,10 @@ class Actor extends Thing {
 
   void finishTurn() {
     energy.spend();
-    rest();
+    regenerate();
   }
 
-  void rest() {
+  void regenerate() {
     // TODO(bob): Could have "regeneration" power-up that speeds this.
     // The greater the max health, the faster the actor heals when resting.
     final turnsNeeded = Math.max(

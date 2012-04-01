@@ -3,6 +3,7 @@
 /// keys are currently pressed and which are not.
 class Keyboard {
   final Set<int> _pressed;
+  bool _shift;
   int _lastPressed;
 
   Keyboard(html.Element element)
@@ -11,6 +12,9 @@ class Keyboard {
     element.on.keyDown.add(keyDown);
     element.on.keyUp.add(keyUp);
   }
+
+  /// Gets whether or not the shift modifier key is currently pressed.
+  bool get shift() => _shift;
 
   /// Returns `true` if the [keyCode] is the only key currently being pressed.
   bool isOnlyPressed(int keyCode) => _pressed.length == 1 && isPressed(keyCode);
@@ -28,11 +32,21 @@ class Keyboard {
   int get lastPressed() => _lastPressed;
 
   void keyDown(event) {
-    _pressed.add(event.keyCode);
-    _lastPressed = event.keyCode;
+    if (event.keyCode == KeyCode.SHIFT) {
+      _shift = true;
+    } else {
+      _pressed.add(event.keyCode);
+      _lastPressed = event.keyCode;
+    }
   }
 
-  void keyUp(event) => _pressed.remove(event.keyCode);
+  void keyUp(event) {
+    if (event.keyCode == KeyCode.SHIFT) {
+      _shift = false;
+    } else {
+      _pressed.remove(event.keyCode);
+    }
+  }
 
   void afterUpdate() {
     _lastPressed = null;

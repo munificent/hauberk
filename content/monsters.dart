@@ -35,8 +35,8 @@ class MonsterBuilder extends ContentBuilder {
     // - Don't use both 'u' and 'U' for undead?
 
     breed('rat', brown('r'), [
-        attack('bite[s]', 4),
-        attack('scratch[es]', 3)
+        attack('bite[s]', 3),
+        attack('scratch[es]', 2)
       ],
       maxHealth: 4,
       olfaction: 2,
@@ -45,7 +45,7 @@ class MonsterBuilder extends ContentBuilder {
     );
 
     breed('mangy cur', gray('c'), [
-        attack('bite[s]', 6),
+        attack('bite[s]', 4),
       ],
       maxHealth: 7,
       olfaction: 5,
@@ -61,7 +61,7 @@ class MonsterBuilder extends ContentBuilder {
     );
 
     breed('giant dragonfly', blue('f'), [
-        attack('sting[s]', 3),
+        attack('sting[s]', 2),
       ],
       maxHealth: 2,
       meander: 8,
