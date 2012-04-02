@@ -12,6 +12,8 @@ class Level {
   // current. Will be `true` if `scent1` is current.
   bool currentScent1;
 
+  bool _visibilityDirty = true;
+
   /// The number of pathfinding steps that have been calculated so far. Gets
   /// reset anytime something that affects pathfinding changes (i.e. whenever
   /// the hero moves since that paths are to him, or when an actor moves since
@@ -53,11 +55,22 @@ class Level {
     return currentScent1 ? tiles.get(x, y).scent1 : tiles.get(x, y).scent2;
   }
 
+  void dirtyVisibility() {
+    _visibilityDirty = true;
+  }
+
   void dirtyPathfinding() {
     _knownPath = -1;
 
     // Clear the pathfinding data.
     for (final tile in tiles) tile.path = -1;
+  }
+
+  void refreshVisibility(Hero hero) {
+    if (_visibilityDirty) {
+      Fov.refresh(this, hero.pos);
+      _visibilityDirty = false;
+    }
   }
 
   int getPath(int x, int y) {

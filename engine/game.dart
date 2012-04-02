@@ -7,8 +7,6 @@ class Game {
   final Rng            rng;
   Hero                 hero;
 
-  bool _visibilityDirty = true;
-
   Game(this.breeds, this.itemTypes)
   : level = new Level(80, 40),
     log = new Log(),
@@ -34,6 +32,10 @@ class Game {
       level.actors.add(rng.item(breeds).spawn(this, pos));
     }
     // End temp.
+
+    for (final pos in level.bounds) {
+      level[pos]._explored = true;
+    }
 
     Fov.refresh(level, hero.pos);
   }
@@ -64,10 +66,7 @@ class Game {
           result = action.perform(this, gameResult, actor);
         }
 
-        if (_visibilityDirty) {
-          Fov.refresh(level, hero.pos);
-          _visibilityDirty = false;
-        }
+        level.refreshVisibility(hero);
 
         if (result.succeeded) {
           makeNoise(action.actor, action.noise);
@@ -84,10 +83,6 @@ class Game {
         level.actors.advance();
       }
     }
-  }
-
-  void dirtyVisibility() {
-    _visibilityDirty = true;
   }
 
   void makeNoise(Actor actor, int noise) {

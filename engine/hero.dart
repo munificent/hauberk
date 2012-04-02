@@ -39,7 +39,7 @@ class Hero extends Actor {
   }
 
   Vec changePosition(Vec pos) {
-    game.dirtyVisibility();
+    game.level.dirtyVisibility();
     game.level.dirtyPathfinding();
     return pos;
   }

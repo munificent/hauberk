@@ -102,6 +102,11 @@ class MoveAction extends Action {
       return new ActionResult.alternate(new AttackAction(target));
     }
 
+    // See if it's a door.
+    if (game.level[pos].type == TileType.CLOSED_DOOR) {
+      return new ActionResult.alternate(new OpenDoorAction(pos));
+    }
+
     // See if we can walk there.
     if (!actor.canOccupy(pos)) {
       game.log.add('{1} hit[s] the wall.', actor);
@@ -109,6 +114,24 @@ class MoveAction extends Action {
     }
 
     actor.pos = pos;
+    return ActionResult.SUCCESS;
+  }
+
+  String toString() => '$actor moves $offset';
+}
+
+class OpenDoorAction extends Action {
+  final Vec doorPos;
+
+  OpenDoorAction(this.doorPos);
+
+  ActionResult onPerform(Game game) {
+    game.level[doorPos].type = TileType.OPEN_DOOR;
+    game.level.dirtyVisibility();
+    game.level.dirtyPathfinding();
+
+    game.log.add('{1} open[s] the door.', actor);
+
     return ActionResult.SUCCESS;
   }
 
