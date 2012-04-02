@@ -10,7 +10,7 @@
 main() {
   final content = createContent();
 
-  final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));;
+  final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
   final keyboard = new Keyboard(html.document);
   final ui = new UserInterface(keyboard, terminal);
   ui.push(new GameScreen(content.breeds, content.itemTypes));

@@ -73,7 +73,7 @@ class Actor extends Thing {
     if (pos.y < 0) return false;
     if (pos.y >= game.level.height) return false;
 
-    return game.level[pos].type == TileType.FLOOR;
+    return game.level[pos].isPassable;
   }
 
   void finishTurn() {

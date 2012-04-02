@@ -154,6 +154,14 @@ class GameScreen extends Screen {
                   tile.visible ? Color.GRAY : Color.DARK_GRAY,
                   tile.visible ? Color.DARK_GRAY : Color.BLACK);
               break;
+            case TileType.CLOSED_DOOR:
+              glyph = new Glyph('+',
+                  tile.visible ? Color.BROWN : Color.DARK_BROWN);
+              break;
+            case TileType.OPEN_DOOR:
+              glyph = new Glyph("'",
+                  tile.visible ? Color.BROWN : Color.DARK_BROWN);
+              break;
           }
         } else {
           glyph = new Glyph(' ');

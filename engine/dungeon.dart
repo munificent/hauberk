@@ -68,6 +68,11 @@ class Dungeon {
     // We do this after carving corridors so that when corridors carve through
     // rooms, they don't mess up the decorations.
     decorateRooms();
+
+    // We do this last so that we only add doors where they actually make sense
+    // and don't have to worry about overlapping corridors and other stuff
+    // leading to nonsensical doors.
+    addDoors();
   }
 
   bool overlapsExistingRooms(Rect room, bool allowOverlap) {
@@ -235,6 +240,72 @@ class Dungeon {
     setTile(door, TileType.FLOOR);
 
     return true;
+  }
+
+  bool isFloor(int x, int y) {
+    return level.get(x, y).type == TileType.FLOOR;
+  }
+
+  bool isWall(int x, int y) {
+    return level.get(x, y).type == TileType.WALL;
+  }
+
+  void addDoors() {
+    // For each room, attempt to place doors along its edges.
+    for (final room in _rooms) {
+      // Top and bottom.
+      for (var x = room.bounds.left; x < room.bounds.right; x++) {
+        tryHorizontalDoor(x, room.bounds.top - 1);
+        tryHorizontalDoor(x, room.bounds.bottom);
+      }
+
+      // Left and right.
+      for (var y = room.bounds.top; y < room.bounds.bottom; y++) {
+        tryVerticalDoor(room.bounds.left - 1, y);
+        tryVerticalDoor(room.bounds.right, y);
+      }
+    }
+  }
+
+  void tryHorizontalDoor(int x, int y) {
+    // Must be an opening where the door will be.
+    if (!isFloor(x, y)) return;
+
+    // Must be wall on either end of the door.
+    if (!isWall(x - 1, y)) return;
+    if (!isWall(x + 1, y)) return;
+
+    // And open in front and behind it.
+    if (!isFloor(x, y - 1)) return;
+    if (!isFloor(x, y + 1)) return;
+
+    addDoor(x, y);
+  }
+
+  void tryVerticalDoor(int x, int y) {
+    // Must be an opening where the door will be.
+    if (!isFloor(x, y)) return;
+
+    // Must be wall on either end of the door.
+    if (!isWall(x, y - 1)) return;
+    if (!isWall(x, y + 1)) return;
+
+    // And open in front and behind it.
+    if (!isFloor(x - 1, y)) return;
+    if (!isFloor(x + 1, y)) return;
+
+    addDoor(x, y);
+  }
+
+  void addDoor(int x, int y) {
+    var type;
+    switch (rng.range(3)) {
+    case 0: type = TileType.FLOOR; break; // No door.
+    case 1: type = TileType.CLOSED_DOOR; break;
+    case 2: type = TileType.OPEN_DOOR; break;
+    }
+
+    setTile(new Vec(x, y), type);
   }
 }
 

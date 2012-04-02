@@ -21,7 +21,7 @@ class ItemBuilder extends ContentBuilder {
     // Potions (!)
 
     // Healing
-    item('mending salve', lightRed('!'), use: Use.heal(30, 'better'));
+    item('mending salve', red('!'), use: Use.heal(30, 'better'));
     // balm of soothing, healing, amelioration, rejuvenation
   }
 
