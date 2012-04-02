@@ -138,6 +138,24 @@ class OpenDoorAction extends Action {
   String toString() => '$actor moves $offset';
 }
 
+class CloseDoorAction extends Action {
+  final Vec doorPos;
+
+  CloseDoorAction(this.doorPos);
+
+  ActionResult onPerform(Game game) {
+    game.level[doorPos].type = TileType.CLOSED_DOOR;
+    game.level.dirtyVisibility();
+    game.level.dirtyPathfinding();
+
+    game.log.add('{1} close[s] the door.', actor);
+
+    return ActionResult.SUCCESS;
+  }
+
+  String toString() => '$actor moves $offset';
+}
+
 /// Action for essentially spending a turn walking in place. This is a separate
 /// class mainly to track that it's quieter than walking.
 class RestAction extends Action {

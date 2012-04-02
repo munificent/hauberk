@@ -33,9 +33,11 @@ class Game {
     }
     // End temp.
 
+    /*
     for (final pos in level.bounds) {
       level[pos]._explored = true;
     }
+    */
 
     Fov.refresh(level, hero.pos);
   }

@@ -19,6 +19,10 @@ class GameScreen extends Screen {
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
+      case KeyCode.C:
+        closeDoor();
+        return true;
+
       case KeyCode.D:
         ui.push(new InventoryDialog(game, InventoryMode.DROP));
         return true;
@@ -97,6 +101,29 @@ class GameScreen extends Screen {
     }
 
     return true;
+  }
+
+  void closeDoor() {
+    // See how many adjacent open doors there are.
+    final doors = [];
+    for (final direction in Direction.ALL) {
+      final pos = game.hero.pos + direction;
+      if (game.level[pos].type == TileType.OPEN_DOOR) {
+        doors.add(pos);
+      }
+    }
+
+    if (doors.length == 0) {
+      // TODO(bob): Bug. This doesn't actually get shown immediately. Because
+      // no game update occurs, the screen doesn't refresh.
+      game.log.add('You are not next to an open door.');
+    } else if (doors.length == 1) {
+      game.hero.setNextAction(new CloseDoorAction(doors[0]));
+    } else {
+      // TODO(bob): Bug. This doesn't actually get shown immediately. Because
+      // no game update occurs, the screen doesn't refresh.
+      game.log.add('Not implemented yet.');
+    }
   }
 
   bool update() {

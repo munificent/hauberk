@@ -113,7 +113,10 @@ class RestBehavior implements Behavior {
 
     // Can't rest while hungry.
     if (hero.hunger == Option.HUNGER_MAX) {
-      game.log.add('{1} [are|is] too hungry to rest.', this);
+      // TODO(bob): This message doesn't actually display immediately. Because
+      // it gets added and then no turn is processed, the screen doesn't
+      // refresh.
+      hero.game.log.add('{1} [are|is] too hungry to rest.', hero);
       return false;
     }
 

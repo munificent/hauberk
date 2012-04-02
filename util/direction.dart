@@ -9,6 +9,10 @@ class Direction extends Vec {
   static final W  = const Direction(-1, 0);
   static final NW = const Direction(-1, -1);
 
+  static final ALL = const [
+    N, NE, E, SE, S, SW, W, NW
+  ];
+
   const Direction(int x, int y) : super(x, y);
 
   Direction get rotateLeft45() {
