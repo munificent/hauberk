@@ -120,9 +120,7 @@ class GameScreen extends Screen {
     } else if (doors.length == 1) {
       game.hero.setNextAction(new CloseDoorAction(doors[0]));
     } else {
-      // TODO(bob): Bug. This doesn't actually get shown immediately. Because
-      // no game update occurs, the screen doesn't refresh.
-      game.log.add('Not implemented yet.');
+      ui.push(new CloseDoorDialog(game));
     }
   }
 
@@ -348,71 +346,20 @@ class GameInput {
   Action getAction(Keyboard keyboard) {
     if (keyboard.shift) return null;
 
-    // First try the key events that only trigger on a press.
     switch (keyboard.lastPressed) {
-      case KeyCode.G: return new PickUpAction();
+      case KeyCode.G:         return new PickUpAction();
+      case KeyCode.I:         return new MoveAction(Direction.NW);
+      case KeyCode.O:         return new MoveAction(Direction.N);
+      case KeyCode.P:         return new MoveAction(Direction.NE);
+      case KeyCode.K:         return new MoveAction(Direction.W);
+      case KeyCode.L:         return new MoveAction(Direction.NONE);
+      case KeyCode.SEMICOLON: return new MoveAction(Direction.E);
+      case KeyCode.COMMA:     return new MoveAction(Direction.SW);
+      case KeyCode.PERIOD:    return new MoveAction(Direction.S);
+      case KeyCode.SLASH:     return new MoveAction(Direction.SE);
     }
 
-    // See what direction is being pressed.
-    var direction;
-    switch (keyboard.getOnlyKey()) {
-      case KeyCode.I:         direction = Direction.NW; break;
-      case KeyCode.O:         direction = Direction.N; break;
-      case KeyCode.P:         direction = Direction.NE; break;
-      case KeyCode.K:         direction = Direction.W; break;
-      case KeyCode.L:         direction = Direction.NONE; break;
-      case KeyCode.SEMICOLON: direction = Direction.E; break;
-      case KeyCode.COMMA:     direction = Direction.SW; break;
-      case KeyCode.PERIOD:    direction = Direction.S; break;
-      case KeyCode.SLASH:     direction = Direction.SE; break;
-    }
-
-    if (direction != currentDirection) {
-      // Changing direction.
-      currentDirection = direction;
-      holdTime = 0;
-    } else {
-      // Still going in the same direction.
-      holdTime++;
-    }
-
-    // TODO(bob): Kinda hackish.
-    // Determine which frames should actually move the hero. The numbers here
-    // gradually accelerate until eventually the hero moves at every frame.
-    shouldMove() {
-      if (holdTime == 0) return true;
-      if (holdTime == 8) return true;
-      if (holdTime == 16) return true;
-      if (holdTime == 23) return true;
-      if (holdTime == 30) return true;
-      if (holdTime == 36) return true;
-      if (holdTime == 42) return true;
-      if (holdTime == 47) return true;
-      if (holdTime == 52) return true;
-      if (holdTime == 56) return true;
-      if (holdTime == 60) return true;
-      if (holdTime == 63) return true;
-      if (holdTime == 66) return true;
-      if (holdTime == 68) return true;
-      if (holdTime >= 70) return true;
-
-      return false;
-    }
-
-    if (currentDirection == null) return null;
-    if (!shouldMove()) return null;
-
-    switch (currentDirection) {
-      case Direction.NW:   return new MoveAction(new Vec(-1, -1));
-      case Direction.N:    return new MoveAction(new Vec(0, -1));
-      case Direction.NE:   return new MoveAction(new Vec(1, -1));
-      case Direction.W:    return new MoveAction(new Vec(-1, 0));
-      case Direction.NONE: return new MoveAction(new Vec(0, 0));
-      case Direction.E:    return new MoveAction(new Vec(1, 0));
-      case Direction.SW:   return new MoveAction(new Vec(-1, 1));
-      case Direction.S:    return new MoveAction(new Vec(0, 1));
-      case Direction.SE:   return new MoveAction(new Vec(1, 1));
-    }
+    return null;
   }
 }
 

@@ -5,8 +5,9 @@
 #import('engine.dart');
 #import('util.dart');
 
+#source('ui/close_door_dialog.dart');
 #source('ui/game_screen.dart');
-#source('ui/inventory_screen.dart');
+#source('ui/inventory_dialog.dart');
 #source('ui/keyboard.dart');
 #source('ui/screen.dart');
 #source('ui/terminal.dart');

@@ -79,6 +79,10 @@ class Game {
           // TODO(bob): Doing this here is a hack. Scent should spread at a
           // uniform rate independent of the hero's speed.
           if (actor == hero) level.updateScent(hero);
+
+          // TODO(bob): Uncomment this to animate the hero while resting or
+          // running.
+          //if (actor == hero) return gameResult;
         }
       } else {
         // This actor doesn't have enough energy yet, so move on to the next.
