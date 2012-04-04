@@ -2,6 +2,7 @@
 
 #import('util.dart');
 
+#source('engine/a_star.dart');
 #source('engine/action.dart');
 #source('engine/actor.dart');
 #source('engine/dungeon.dart');

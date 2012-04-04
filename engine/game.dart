@@ -96,31 +96,12 @@ class Game {
     if (actor is! Hero) return;
 
     // TODO(bob): Right now, sound doesn't take into account walls or doors. It
-    // should so that the player can be sneaky by keeping doors closed. Instead
-    // of making sound flow (like scent) a faster solution might be to do LOS
-    // between the source and actor and attentuate when it crosses walls or
-    // doors.
+    // should so that the player can be sneaky by keeping doors closed. One
+    // solution might be to do LOS between the source and actor and attentuate
+    // when it crosses walls or doors.
     for (final monster in level.actors) {
       if (monster is! Monster) continue;
 
-      var distance = level.getPath(monster.x, monster.y);
-
-      // No sound if too far away.
-      if (distance == -1) continue;
-
-      // Avoid divide by zero.
-      if (distance == 0) distance = 1;
-
-      // Inverse-square law for acoustics.
-      final volume = 1000 * noise / (distance * distance);
-      monster.noise += volume;
-
-      // TODO(bob): Using pathfinding data right now only works for the sounds
-      // coming from the hero. If we want to have monsters make sound (that
-      // other monsters can here) we'll either need to support arbitrary
-      // pathfinding, or some simpler calculation. The following calculates
-      // volume just by using straight-line distance.
-      /*
       var distanceSquared = (monster.pos - actor.pos).lengthSquared;
 
       // Avoid divide by zero.
@@ -128,7 +109,7 @@ class Game {
 
       // Inverse-square law for acoustics.
       var volume = 1000 * noise / distanceSquared;
-      */
+      monster.noise += volume;
     }
   }
 }

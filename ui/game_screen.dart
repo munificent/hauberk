@@ -194,27 +194,48 @@ class GameScreen extends Screen {
 
         /*
         glyph = debugScent(x, y, tile, glyph);
-        glyph = debugPathfinding(x, y, tile, glyph);
         */
 
         terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
       }
     }
 
+    // TODO(bob): Temp. Test A*.
+    /*
+    terminal.writeAt(40, 20, '!', Color.AQUA);
+    final aStar = AStar.findPath(game.level, game.hero.pos, new Vec(40, 20), 15);
+    if (aStar != null) {
+      for (final pos in aStar.closed) {
+        terminal.writeAt(pos.x, pos.y, '-', Color.RED);
+      }
+      for (final path in aStar.open) {
+        terminal.writeAt(path.pos.x, path.pos.y, '?', Color.BLUE);
+      }
+
+      var path = aStar.path;
+      while (path != null) {
+        terminal.writeAt(path.pos.x, path.pos.y, '@', Color.ORANGE);
+        path = path.parent;
+      }
+    }
+
+    final d = AStar.findDirection(game.level, game.hero.pos, new Vec(40, 20), 15);
+    final p = game.hero.pos + d;
+    terminal.writeAt(p.x, p.y, '0', Color.YELLOW);
+    */
+
     // Draw the items.
     for (final item in game.level.items) {
-      if (game.level[item.pos].isExplored) {
-        terminal.drawGlyph(item.x, item.y, item.appearance);
-      }
+      if (!game.level[item.pos].isExplored) continue;
+      terminal.drawGlyph(item.x, item.y, item.appearance);
     }
 
     // Draw the actors.
     for (final actor in game.level.actors) {
-      if (game.level[actor.pos].visible) {
-        final appearance = actor.appearance;
-        final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.YELLOW);
-        terminal.drawGlyph(actor.x, actor.y, glyph);
-      }
+      if (!game.level[actor.pos].visible) continue;
+      final appearance = actor.appearance;
+      final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.YELLOW);
+      terminal.drawGlyph(actor.x, actor.y, glyph);
     }
 
     // Draw the effects.
@@ -307,28 +328,6 @@ class GameScreen extends Screen {
     compareScent(Direction.NW, '\\');
 
     return new Glyph(char, color);
-  }
-
-  /// Visually debug the pathfinding data.
-  Glyph debugPathfinding(int x, int y, Tile tile, Glyph glyph) {
-    if (!tile.isPassable) return glyph;
-
-    final colors = const [
-      Color.DARK_PURPLE,
-      Color.DARK_BLUE,
-      Color.DARK_AQUA,
-      Color.DARK_GREEN,
-      Color.DARK_YELLOW,
-      Color.DARK_ORANGE,
-      Color.DARK_RED
-    ];
-
-    final steps = game.level.getPath(x, y);
-    if (steps >= 0) {
-      return new Glyph('0123456789'[steps % 10], colors[steps % 7]);
-    } else {
-      return new Glyph('-', Color.DARK_GRAY);
-    }
   }
 }
 

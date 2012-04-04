@@ -128,7 +128,6 @@ class OpenDoorAction extends Action {
   ActionResult onPerform(Game game) {
     game.level[doorPos].type = TileType.OPEN_DOOR;
     game.level.dirtyVisibility();
-    game.level.dirtyPathfinding();
 
     game.log.add('{1} open[s] the door.', actor);
 
@@ -146,7 +145,6 @@ class CloseDoorAction extends Action {
   ActionResult onPerform(Game game) {
     game.level[doorPos].type = TileType.CLOSED_DOOR;
     game.level.dirtyVisibility();
-    game.level.dirtyPathfinding();
 
     game.log.add('{1} close[s] the door.', actor);
 

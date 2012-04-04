@@ -54,7 +54,7 @@ class Monster extends Actor {
 
       // Bump up the noise. This ensures the monsters is alert and stays awake
       // for a while.
-      noise += 100;
+      noise += 400;
 
       // Even though the monster is awake now, rest this turn. This avoids an
       // annoying behavior where a sleeping monster will almost always wake up
@@ -69,7 +69,7 @@ class Monster extends Actor {
 
   Action getActionAwake() {
     // See if things are quiet enough to fall asleep.
-    if (noise < rng.range(0, 100)) {
+    if ((noise < rng.range(0,25)) && !canView(game.hero.pos)) {
       state = MonsterState.ASLEEP;
       game.log.add('{1} fall[s] asleep!', this);
 
@@ -85,19 +85,8 @@ class Monster extends Actor {
       return new MoveAction(toHero);
     }
 
-    final directions = [
-      Direction.N,
-      Direction.NE,
-      Direction.E,
-      Direction.SE,
-      Direction.S,
-      Direction.SW,
-      Direction.W,
-      Direction.NW
-    ];
-
     // Calculate the score for moving in each possible direction.
-    final scores = new List(directions.length);
+    final scores = new List(Direction.ALL.length);
 
     // The minimum scent required for the monster to notice it. Smaller numbers
     // mean a stronger sense of smell.
@@ -113,13 +102,15 @@ class Monster extends Actor {
     }
 
     final scent = getScent(pos);
-    final path  = game.level.getPath(pos.x, pos.y);
+
+    // TODO(bob): Make maximum path-length be breed tunable.
+    final path = AStar.findDirection(game.level, pos, game.hero.pos, 10);
 
     final MIN_SCORE = -99999;
     final START_SCORE = 100;
 
-    for (var i = 0; i < directions.length; i++) {
-      final dest = pos + directions[i];
+    for (var i = 0; i < Direction.ALL.length; i++) {
+      final dest = pos + Direction.ALL[i];
 
       // If the direction is blocked, give it a negative score and skip it.
       if (!canOccupy(dest) || game.level.actorAt(dest) != null) {
@@ -136,14 +127,13 @@ class Monster extends Actor {
       final scentGradient = getScent(dest) - scent;
       scores[i] += scentGradient * scentWeight;
 
-      // Apply ideal pathfinding (if known).
-      // TODO(bob): Could limit the path length that each breed is smart enough
-      // to follow.
-      if (path != -1) {
-        final pathHere = game.level.getPath(dest.x, dest.y);
-        if (pathHere != -1) {
-          scores[i] += (path - pathHere) * Option.AI_WEIGHT_PATH;
-        }
+      // Apply pathfinding.
+      if (Direction.ALL[i] == path) {
+        scores[i] += Option.AI_WEIGHT_PATH_STRAIGHT;
+      } else if (Direction.ALL[i].rotateLeft45 == path) {
+        scores[i] += Option.AI_WEIGHT_PATH_NEAR;
+      } else if (Direction.ALL[i].rotateRight45 == path) {
+        scores[i] += Option.AI_WEIGHT_PATH_NEAR;
       }
 
       // Add some randomness to make the monster meander.
@@ -153,7 +143,7 @@ class Monster extends Actor {
     // Pick the best move.
     var bestScore = MIN_SCORE - 1;
     var bestIndexes;
-    for (var i = 0; i < directions.length; i++) {
+    for (var i = 0; i < scores.length; i++) {
       if (scores[i] == bestScore) {
         // If multiple directions have the same score, we'll pick randomly
         // between them.
@@ -169,27 +159,7 @@ class Monster extends Actor {
       return new MoveAction(new Vec(0, 0));
     }
 
-    return new MoveAction(directions[rng.item(bestIndexes)]);
-
-    /*
-    // If it can see the hero, go straight towards him.
-    if (canView(game.hero.pos)) {
-      // TODO(bob): What about transparent obstacles?
-      final x = sign(game.hero.x - pos.x);
-      final y = sign(game.hero.y - pos.y);
-      final move = new Vec(x, y);
-
-      // TODO(bob): Should try adjacent directions if preferred one is blocked.
-      final dest = pos + move;
-      if (canOccupy(dest)) {
-        // Don't hit another monster.
-        final occupier = game.level.actorAt(dest);
-        if (occupier == null || occupier == game.hero) {
-          return new MoveAction(move);
-        }
-      }
-    }
-    */
+    return new MoveAction(Direction.ALL[rng.item(bestIndexes)]);
   }
 
   Attack getAttack(Actor defender) => rng.item(breed.attacks);
