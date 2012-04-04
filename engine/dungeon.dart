@@ -189,8 +189,34 @@ class Dungeon {
       if (overlap) continue;
 
       // Try the different kinds of decorations until one succeeds.
-      if (rng.oneIn(3) && decorateInnerRoom(room.bounds)) continue;
+      if (rng.oneIn(4) && decoratePillars(room.bounds)) continue;
+      if (rng.oneIn(4) && decorateInnerRoom(room.bounds)) continue;
       // TODO(bob): Add more decorations.
+    }
+  }
+
+  /// Add rows of pillars to the edge(s) of the room.
+  bool decoratePillars(Rect room) {
+    if (room.width < 5) return false;
+    if (room.height < 5) return false;
+
+    // Only odd-sized sides get them, so make sure at least one side is.
+    if ((room.width % 2 == 0) && (room.height % 2 == 0)) return false;
+
+    final type = rng.oneIn(2) ? TileType.WALL : TileType.LOW_WALL;
+
+    if (room.width % 2 == 1) {
+      for (var x = room.left + 1; x < room.right - 1; x += 2) {
+        setTile(new Vec(x, room.top + 1), type);
+        setTile(new Vec(x, room.bottom - 2), type);
+      }
+    }
+
+    if (room.height % 2 == 1) {
+      for (var y = room.top + 1; y < room.bottom - 1; y += 2) {
+        setTile(new Vec(room.left + 1, y), type);
+        setTile(new Vec(room.right - 2, y), type);
+      }
     }
   }
 

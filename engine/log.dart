@@ -1,6 +1,6 @@
 /// The message log.
 class Log {
-  static final MAX_MESSAGES = 8;
+  static final MAX_MESSAGES = 6;
 
   final Queue<Message> messages;
 
