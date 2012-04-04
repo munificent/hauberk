@@ -206,6 +206,40 @@ class DropAction extends Action {
   }
 }
 
+class EquipAction extends Action {
+  final int index;
+
+  EquipAction(this.index);
+
+  ActionResult onPerform(Game game) {
+    final item = hero.inventory[index];
+
+    if (!hero.equipment.canEquip(item)) {
+      game.log.add('{1} cannot equip {2}.', actor, item);
+      return ActionResult.FAILURE;
+    }
+
+    final unequipped = hero.equipment.equip(item);
+
+    // Add the previously equipped item to inventory.
+    if (unequipped != null) {
+      if (hero.inventory.tryAdd(unequipped)) {
+        game.log.add('{1} unequip[s] {2}.', actor, unequipped);
+      } else {
+        // No room in inventory, so drop it.
+        item.pos = hero.pos;
+        game.level.items.add(item);
+        game.log.add("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
+          actor, unequipped);
+      }
+    }
+
+    game.log.add('{1} equip[s] {2}.', actor, item);
+
+    return ActionResult.SUCCESS;
+  }
+}
+
 class UseAction extends Action {
   // TODO(bob): Right now, it assumes you always use an inventory item. May
   // want to support using items on the ground at some point.
@@ -215,6 +249,12 @@ class UseAction extends Action {
 
   ActionResult onPerform(Game game) {
     final item = hero.inventory[index];
+
+    // If it's equippable, then using it just equips it.
+    if (item.canEquip) {
+      return new ActionResult.alternate(new EquipAction(index));
+    }
+
     final use = item.type.use;
     if (use == null) {
       game.log.add("{1} can't be used.", item);

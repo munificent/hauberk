@@ -90,9 +90,9 @@ class DropInventoryMode extends InventoryMode {
 }
 
 class UseInventoryMode extends InventoryMode {
-  String get message() => 'Use which item?';
+  String get message() => 'Use or equip which item?';
   const UseInventoryMode() : super();
 
-  bool canSelect(Item item) => item.type.use != null;
+  bool canSelect(Item item) => item.canUse || item.canEquip;
   Action getAction(int index) => new UseAction(index);
 }

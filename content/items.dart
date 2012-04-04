@@ -15,18 +15,28 @@ class ItemBuilder extends ContentBuilder {
     // ~   Lites, Tools           )   A shield
     // &   Chests, Containers
 
-    // Food (,)
+    food();
+    potions();
+    weapons();
+  }
+
+  void food() {
     item('crusty loaf of bread', lightBrown(','), use: Use.food(300));
+  }
 
-    // Potions (!)
-
+  void potions() {
     // Healing
     item('mending salve', red('!'), use: Use.heal(30, 'better'));
     // balm of soothing, healing, amelioration, rejuvenation
   }
 
-  ItemType item(String name, Glyph appearance, [ItemUse use]) {
-    final itemType = new ItemType(name, appearance, use);
+  void weapons() {
+    item('dagger', lightGray('|'), equipSlot: 'Weapon');
+  }
+
+  ItemType item(String name, Glyph appearance,
+      [ItemUse use, String equipSlot]) {
+    final itemType = new ItemType(name, appearance, use, equipSlot);
     content.itemTypes.add(itemType);
     return itemType;
   }

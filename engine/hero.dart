@@ -4,6 +4,7 @@ class Hero extends Actor {
   final Gender gender = Gender.MALE;
 
   final Inventory inventory;
+  final Equipment equipment;
 
   /// Resting increases this. Eating food lowers it. If it reaches
   /// [Option.HUNGER_MAX] then resting is ineffective.
@@ -13,7 +14,8 @@ class Hero extends Actor {
 
   Hero(Game game, int x, int y)
   : super(game, x, y, Option.HERO_START_HEALTH),
-    inventory = new Inventory();
+    inventory = new Inventory(),
+    equipment = new Equipment();
 
   // TODO(bob): Hackish.
   get appearance() => 'hero';
