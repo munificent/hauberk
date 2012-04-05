@@ -11,6 +11,9 @@ class Item extends Thing {
   String get equipSlot() => type.equipSlot;
 
   bool get canUse() => type.use != null;
+  ItemUse get use() => type.use;
+
+  Attack get attack() => type.attack;
 
   String get nounText() => 'the ${type.name}';
   int get person() => 3;
@@ -24,12 +27,13 @@ class ItemType {
   final String name;
   final appearance;
   final ItemUse use;
+  final Attack attack;
 
   /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
   /// then this Item cannot be equipped.
   final String equipSlot;
 
-  ItemType(this.name, this.appearance, this.use, this.equipSlot);
+  ItemType(this.name, this.appearance, this.use, this.equipSlot, this.attack);
 }
 
 // TODO(bob): Which collection interface should it implement?
@@ -84,11 +88,24 @@ class Equipment implements Iterable<Item> {
       ],
     slots = new List<Item>(11);
 
+  /// Gets the [Item] currently equipped in [slotType], if any.
+  Item find(String slotType) {
+    for (var i = 0; i < slotTypes.length; i++) {
+      if (slotTypes[i] == slotType) {
+        return slots[i];
+      }
+    }
+
+    // Unknown slot.
+    return null;
+  }
+
   /// Gets whether or not there is a slot to equip [item].
   bool canEquip(Item item) {
     return slotTypes.some((slot) => item.equipSlot == slot);
   }
 
+  /// Equips [item]. Returns the previously equipped item in that slot, if any.
   Item equip(Item item) {
     // TODO(bob): Need to handle multiple slots of the same type. In that case,
     // should prefer an empty slot before reusing an in-use one.

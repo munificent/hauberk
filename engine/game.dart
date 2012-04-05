@@ -32,7 +32,6 @@ class Game {
       level.actors.add(rng.item(breeds).spawn(this, pos));
     }
     // End temp.
-
     /*
     for (final pos in level.bounds) {
       level[pos]._explored = true;

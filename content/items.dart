@@ -31,12 +31,20 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void weapons() {
-    item('dagger', lightGray('|'), equipSlot: 'Weapon');
+    weapon('cudgel', brown('\\'),    'hit[s]', 4);
+    weapon('dagger', lightGray('|'), 'stab[s]', 5);
+  }
+
+  Attack attack(String verb, int damage) => new Attack(verb, damage);
+
+  ItemType weapon(String name, Glyph appearance, String verb, int damage) {
+    return item(name, appearance, equipSlot: 'Weapon',
+        attack: attack(verb, damage));
   }
 
   ItemType item(String name, Glyph appearance,
-      [ItemUse use, String equipSlot]) {
-    final itemType = new ItemType(name, appearance, use, equipSlot);
+      [ItemUse use, String equipSlot, Attack attack]) {
+    final itemType = new ItemType(name, appearance, use, equipSlot, attack);
     content.itemTypes.add(itemType);
     return itemType;
   }

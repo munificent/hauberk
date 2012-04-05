@@ -12,6 +12,9 @@ class Option {
   /// How hungry the hero must be before resting ceases to work.
   static final HUNGER_MAX = 800;
 
+  /// How much damage an unarmed hero does.
+  static final HERO_PUNCH_DAMAGE = 3;
+
   /// The maximum number of items the hero's [Inventory] can contain.
   static final INVENTORY_MAX_ITEMS = 12;
 

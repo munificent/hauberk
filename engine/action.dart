@@ -220,6 +220,7 @@ class EquipAction extends Action {
     }
 
     final unequipped = hero.equipment.equip(item);
+    hero.inventory.remove(index);
 
     // Add the previously equipped item to inventory.
     if (unequipped != null) {
@@ -255,7 +256,7 @@ class UseAction extends Action {
       return new ActionResult.alternate(new EquipAction(index));
     }
 
-    final use = item.type.use;
+    final use = item.use;
     if (use == null) {
       game.log.add("{1} can't be used.", item);
       return ActionResult.FAILURE;

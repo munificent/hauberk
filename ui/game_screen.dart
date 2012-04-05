@@ -234,7 +234,7 @@ class GameScreen extends Screen {
     for (final actor in game.level.actors) {
       if (!game.level[actor.pos].visible) continue;
       final appearance = actor.appearance;
-      final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.YELLOW);
+      final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
       terminal.drawGlyph(actor.x, actor.y, glyph);
     }
 

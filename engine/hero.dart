@@ -31,8 +31,12 @@ class Hero extends Actor {
   Action getAction() => _behavior.getAction(this);
 
   Attack getAttack(Actor defender) {
+    // See if a weapon is equipped.
+    final weapon = equipment.find('Weapon');
+    if (weapon != null) return weapon.attack;
+
     // TODO(bob): Temp.
-    return new Attack('punch[es]', 4);
+    return new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE);
   }
 
   void takeHit(Hit hit) {
