@@ -4,7 +4,7 @@ class AttackAction extends Action {
 
   AttackAction(this.defender);
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     final attack = actor.getAttack(defender);
     final hit = new Hit(attack);
     defender.takeHit(hit);
@@ -34,3 +34,15 @@ class AttackAction extends Action {
 
   String toString() => '$actor attacks $defender';
 }
+
+/*
+class BoltAction extends Action {
+  final Vec from;
+  final Vec to;
+
+  BoltAction(this.from, this.to);
+
+  ActionResult onPerform(Game game) {
+  }
+}
+*/

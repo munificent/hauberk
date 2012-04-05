@@ -1,6 +1,6 @@
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     final item = game.level.itemAt(actor.pos);
     if (item == null) {
       return fail('There is nothing here.');
@@ -30,7 +30,7 @@ class DropAction extends Action {
 
   DropAction(this.index);
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     final item = hero.inventory.remove(index);
     item.pos = hero.pos;
     game.level.items.add(item);
@@ -47,7 +47,7 @@ class EquipAction extends Action {
 
   EquipAction(this.index);
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     final item = hero.inventory[index];
 
     if (!hero.equipment.canEquip(item)) {
@@ -83,7 +83,7 @@ class UseAction extends Action {
 
   UseAction(this.index);
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     final item = hero.inventory[index];
 
     // If it's equippable, then using it just equips it.

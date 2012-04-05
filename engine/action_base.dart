@@ -3,6 +3,7 @@ class Action {
   Game _game;
   GameResult _gameResult;
 
+  Game get game() => _game;
   Actor get actor() => _actor;
   // TODO(bob): Should it check that the actor is a hero?
   Hero get hero() => _actor;
@@ -13,12 +14,10 @@ class Action {
     _game = game;
     _gameResult = gameResult;
 
-    return onPerform(game);
+    return onPerform();
   }
 
-  ActionResult onPerform(Game game) {
-    assert(false); // Must override.
-  }
+  abstract ActionResult onPerform();
 
   void addEvent(Event event) {
     _gameResult.events.add(event);
@@ -74,7 +73,7 @@ class MoveAction extends Action {
 
   MoveAction(this.offset);
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
     if (offset == Vec.ZERO) {
       return alternate(new RestAction());
@@ -110,7 +109,7 @@ class OpenDoorAction extends Action {
 
   OpenDoorAction(this.doorPos);
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     game.level[doorPos].type = TileType.OPEN_DOOR;
     game.level.dirtyVisibility();
 
@@ -125,7 +124,7 @@ class CloseDoorAction extends Action {
 
   CloseDoorAction(this.doorPos);
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
     game.level[doorPos].type = TileType.CLOSED_DOOR;
     game.level.dirtyVisibility();
 
@@ -138,6 +137,6 @@ class CloseDoorAction extends Action {
 /// Action for essentially spending a turn walking in place. This is a separate
 /// class mainly to track that it's quieter than walking.
 class RestAction extends Action {
-  ActionResult onPerform(Game game) => succeed();
+  ActionResult onPerform() => succeed();
   bool get noise() => Option.NOISE_REST;
 }
