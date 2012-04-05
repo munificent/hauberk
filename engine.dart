@@ -3,7 +3,9 @@
 #import('util.dart');
 
 #source('engine/a_star.dart');
-#source('engine/action.dart');
+#source('engine/action_base.dart');
+#source('engine/action_combat.dart');
+#source('engine/action_item.dart');
 #source('engine/actor.dart');
 #source('engine/dungeon.dart');
 #source('engine/energy.dart');
