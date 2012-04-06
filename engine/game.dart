@@ -5,12 +5,14 @@ class Game {
   final Level          level;
   final Log            log;
   final Rng            rng;
+  final Queue<Action>  actions;
   Hero                 hero;
 
   Game(this.breeds, this.itemTypes)
   : level = new Level(80, 40),
     log = new Log(),
-    rng = new Rng(new Date.now().value)
+    rng = new Rng(new Date.now().value),
+    actions = new Queue<Action>()
   {
     level.game = this;
 
@@ -31,12 +33,13 @@ class Game {
       final pos = level.findOpenTile();
       level.actors.add(rng.item(breeds).spawn(this, pos));
     }
-    // End temp.
+
     /*
     for (final pos in level.bounds) {
       level[pos]._explored = true;
     }
     */
+    // End temp.
 
     Fov.refresh(level, hero.pos);
   }
@@ -45,47 +48,63 @@ class Game {
     final gameResult = new GameResult();
 
     while (true) {
-      final actor = level.actors.current;
-
-      if (actor.energy.canTakeTurn && actor.needsInput) {
-        return gameResult;
-      }
-
-      if (actor.energy.gain()) {
-        if (actor.needsInput) {
-          return gameResult;
-        }
-
-        var action = actor.getAction();
-        var result = action.perform(this, gameResult, actor);
-
-        gameResult.madeProgress = true;
+      // Process any ongoing actions.
+      while (actions.length > 0) {
+        var action = actions.first();
 
         // Cascade through the alternates until we hit bottom out.
+        var result = action.perform(gameResult);
         while (result.alternate != null) {
-          action = result.alternate;
-          result = action.perform(this, gameResult, actor);
+          final alternate = result.alternate;
+          action = alternate;
+          result = action.perform(gameResult);
         }
 
         level.refreshVisibility(hero);
 
-        if (result.succeeded) {
-          makeNoise(action.actor, action.noise);
+        gameResult.madeProgress = true;
 
-          actor.finishTurn();
-          level.actors.advance();
+        if (result.done) {
+          actions.removeFirst();
 
-          // TODO(bob): Doing this here is a hack. Scent should spread at a
-          // uniform rate independent of the hero's speed.
-          if (actor == hero) level.updateScent(hero);
+          if (action.consumesEnergy) {
+            makeNoise(action.actor, action.noise);
+
+            action.actor.finishTurn();
+            level.actors.advance();
+
+            // TODO(bob): Doing this here is a hack. Scent should spread at a
+            // uniform rate independent of the hero's speed.
+            if (action.actor == hero) level.updateScent(hero);
+          }
 
           // TODO(bob): Uncomment this to animate the hero while resting or
           // running.
           //if (actor == hero) return gameResult;
         }
-      } else {
-        // This actor doesn't have enough energy yet, so move on to the next.
-        level.actors.advance();
+
+        if (gameResult.events.length > 0) return gameResult;
+      }
+
+      // If we get here, all pending actions are done, so advance to the next
+      // tick until an actor moves.
+      while (actions.length == 0) {
+        final actor = level.actors.current;
+
+        // If we are still waiting for input for the actor, just return (again).
+        if (actor.energy.canTakeTurn && actor.needsInput) return gameResult;
+
+        if (actor.energy.gain()) {
+          // If the actor can move now, but needs input from the user, just
+          // return so we can wait for it.
+          if (actor.needsInput) return gameResult;
+
+          var action = actor.getAction();
+          actions.add(action);
+        } else {
+          // This actor doesn't have enough energy yet, so move on to the next.
+          level.actors.advance();
+        }
       }
     }
   }
@@ -124,6 +143,10 @@ class GameResult {
   /// input for the [Hero]).
   bool madeProgress = false;
 
+  /// Returns `true` if the game state has progressed to the point that a change
+  /// should be shown to the user.
+  bool get needsRefresh() => madeProgress || events.length > 0;
+
   GameResult()
   : events = <Event>[];
 }
@@ -134,9 +157,14 @@ class GameResult {
 class Event {
   final EventType type;
   final Actor actor;
-  final num value;
+  final value;
 
   Event(this.type, this.actor, this.value);
+
+  Event.bolt(Vec this.value)
+  : type = EventType.BOLT,
+    actor = null;
+
   Event.hit(this.actor, this.value)
   : type = EventType.HIT;
 
@@ -147,11 +175,14 @@ class Event {
 
 /// A kind of [Event] that has occurred.
 class EventType {
+  /// One step of a bolt.
+  static final BOLT = const EventType(0);
+
   /// An [Actor] was hit.
-  static final HIT = const EventType(0);
+  static final HIT = const EventType(1);
 
   /// An [Actor] was killed.
-  static final KILL = const EventType(1);
+  static final KILL = const EventType(2);
 
   final int _value;
   const EventType(this._value);

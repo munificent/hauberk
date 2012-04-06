@@ -33,7 +33,7 @@ class Monster extends Actor {
     return true;
   }
 
-  Action getAction() {
+  Action onGetAction() {
     // Forget sounds over time. Since this occurs on the monster's turn, it
     // means slower monsters will attenuate less frequently. The [Math.pow()]
     // part compensates for this.

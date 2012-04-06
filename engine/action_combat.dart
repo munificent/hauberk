@@ -35,14 +35,16 @@ class AttackAction extends Action {
   String toString() => '$actor attacks $defender';
 }
 
-/*
 class BoltAction extends Action {
-  final Vec from;
-  final Vec to;
+  final Iterator<Los> los;
 
-  BoltAction(this.from, this.to);
+  BoltAction(Vec from, Vec to)
+  : los = new Los(from, to).iterator();
 
-  ActionResult onPerform(Game game) {
+  ActionResult onPerform() {
+    final pos = los.next();
+    addEvent(new Event.bolt(pos));
+
+    return los.hasNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;
   }
 }
-*/

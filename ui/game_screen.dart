@@ -5,11 +5,9 @@ class GameScreen extends Screen {
   List<ItemType> itemTypes;
   List<Effect>   effects;
   bool           logOnTop = false;
-  GameInput      input;
 
   GameScreen(List<Breed> breeds, List<ItemType> itemTypes)
-  : effects = <Effect>[],
-    input = new GameInput()
+  : effects = <Effect>[]
   {
     this.breeds = breeds;
     this.itemTypes = itemTypes;
@@ -18,84 +16,108 @@ class GameScreen extends Screen {
   }
 
   bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-      case KeyCode.C:
-        closeDoor();
-        return true;
+    var action;
 
-      case KeyCode.D:
-        ui.push(new InventoryDialog(game, InventoryMode.DROP));
-        return true;
-
-      case KeyCode.U:
-        ui.push(new InventoryDialog(game, InventoryMode.USE));
-        return true;
-
+    if (keyboard.shift) {
+      switch (keyboard.lastPressed) {
       case KeyCode.L:
-        if (keyboard.shift) {
-          game.hero.rest();
-          return true;
-        }
+        game.hero.rest();
         break;
 
       case KeyCode.I:
-        if (keyboard.shift) {
-          game.hero.run(Direction.NW);
-          return true;
-        }
+        game.hero.run(Direction.NW);
         break;
 
       case KeyCode.O:
-        if (keyboard.shift) {
-          game.hero.run(Direction.N);
-          return true;
-        }
+        game.hero.run(Direction.N);
         break;
 
       case KeyCode.P:
-        if (keyboard.shift) {
-          game.hero.run(Direction.NE);
-          return true;
-        }
+        game.hero.run(Direction.NE);
         break;
 
       case KeyCode.K:
-        if (keyboard.shift) {
-          game.hero.run(Direction.W);
-          return true;
-        }
+        game.hero.run(Direction.W);
         break;
 
       case KeyCode.SEMICOLON:
-        if (keyboard.shift) {
-          game.hero.run(Direction.E);
-          return true;
-        }
+        game.hero.run(Direction.E);
         break;
 
       case KeyCode.COMMA:
-        if (keyboard.shift) {
-          game.hero.run(Direction.SW);
-          return true;
-        }
+        game.hero.run(Direction.SW);
         break;
 
       case KeyCode.PERIOD:
-        if (keyboard.shift) {
-          game.hero.run(Direction.S);
-          return true;
-        }
+        game.hero.run(Direction.S);
         break;
 
       case KeyCode.SLASH:
-        if (keyboard.shift) {
-          game.hero.run(Direction.SE);
-          return true;
-        }
+        game.hero.run(Direction.SE);
         break;
+      }
+    } else {
+      switch (keyboard.lastPressed) {
+      case KeyCode.C:
+        closeDoor();
+        break;
+
+      case KeyCode.D:
+        ui.push(new InventoryDialog(game, InventoryMode.DROP));
+        break;
+
+      case KeyCode.U:
+        ui.push(new InventoryDialog(game, InventoryMode.USE));
+        break;
+
+      case KeyCode.J:
+        action = new BoltAction(game.hero.pos,
+          new Vec(game.hero.pos.x + rng.range(-8, 8),
+                  game.hero.pos.y + rng.range(-8, 8)));
+        break;
+
+      case KeyCode.G:
+        action = new PickUpAction();
+        break;
+
+      case KeyCode.I:
+        action = new MoveAction(Direction.NW);
+        break;
+
+      case KeyCode.O:
+        action = new MoveAction(Direction.N);
+        break;
+
+      case KeyCode.P:
+        action = new MoveAction(Direction.NE);
+        break;
+
+      case KeyCode.K:
+        action = new MoveAction(Direction.W);
+        break;
+
+      case KeyCode.L:
+        action = new MoveAction(Direction.NONE);
+        break;
+
+      case KeyCode.SEMICOLON:
+        action = new MoveAction(Direction.E);
+        break;
+
+      case KeyCode.COMMA:
+        action = new MoveAction(Direction.SW);
+        break;
+
+      case KeyCode.PERIOD:
+        action = new MoveAction(Direction.S);
+        break;
+
+      case KeyCode.SLASH:
+        action = new MoveAction(Direction.SE);
+        break;
+      }
     }
 
-    final action = input.getAction(keyboard);
     if (action != null) {
       game.hero.setNextAction(action);
     }
@@ -138,6 +160,10 @@ class GameScreen extends Screen {
     for (final event in result.events) {
       // TODO(bob): Handle other event types.
       switch (event.type) {
+        case EventType.BOLT:
+          effects.add(new FrameEffect(event.value, '*'));
+          break;
+
         case EventType.HIT:
           effects.add(new HitEffect(event.actor));
           break;
@@ -151,7 +177,7 @@ class GameScreen extends Screen {
       }
     }
 
-    needsRender = needsRender || result.madeProgress;
+    needsRender = needsRender || result.needsRefresh;
 
     effects = effects.filter((effect) => effect.update(game));
 
@@ -331,40 +357,25 @@ class GameScreen extends Screen {
   }
 }
 
-/// Processes user input while the game is being played.
-// TODO(bob): Kind of hackish. Needs clean-up. This is only for walking
-// movement, which needs a little extra effort to feel right. (We don't want to
-// rely on the OS's key repeat which is a bit too slow.)
-class GameInput {
-  /// The direction key the user is currently pressing.
-  Direction currentDirection = null;
-
-  /// How long the user has been pressing in the current direction.
-  int holdTime = 0;
-
-  Action getAction(Keyboard keyboard) {
-    if (keyboard.shift) return null;
-
-    switch (keyboard.lastPressed) {
-      case KeyCode.G:         return new PickUpAction();
-      case KeyCode.I:         return new MoveAction(Direction.NW);
-      case KeyCode.O:         return new MoveAction(Direction.N);
-      case KeyCode.P:         return new MoveAction(Direction.NE);
-      case KeyCode.K:         return new MoveAction(Direction.W);
-      case KeyCode.L:         return new MoveAction(Direction.NONE);
-      case KeyCode.SEMICOLON: return new MoveAction(Direction.E);
-      case KeyCode.COMMA:     return new MoveAction(Direction.SW);
-      case KeyCode.PERIOD:    return new MoveAction(Direction.S);
-      case KeyCode.SLASH:     return new MoveAction(Direction.SE);
-    }
-
-    return null;
-  }
-}
-
 interface Effect {
   bool update(Game game);
   void render(Terminal terminal);
+}
+
+class FrameEffect implements Effect {
+  final Vec pos;
+  final String char;
+  int life = 4;
+
+  FrameEffect(this.pos, this.char);
+
+  bool update(Game game) {
+    return --life >= 0;
+  }
+
+  void render(Terminal terminal) {
+    terminal.writeAt(pos.x, pos.y, char, Color.GREEN);
+  }
 }
 
 class HitEffect implements Effect {

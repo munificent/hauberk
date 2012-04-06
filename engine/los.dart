@@ -19,8 +19,6 @@ class LosIterator implements Iterator<Vec> {
   Vec primaryIncrement;
   Vec secondaryIncrement;
 
-  int hack = 0;
-
   LosIterator(this.start, this.end) {
     var delta = end - start;
 
@@ -53,8 +51,6 @@ class LosIterator implements Iterator<Vec> {
   bool hasNext() => pos != end;
 
   Vec next() {
-    if (hack++ > 100) throw '?';
-
     // Move it first, gets it off the entity in the first step.
     pos += primaryIncrement;
 

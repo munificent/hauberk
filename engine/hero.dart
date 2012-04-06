@@ -28,7 +28,7 @@ class Hero extends Actor {
     return _behavior == null;
   }
 
-  Action getAction() => _behavior.getAction(this);
+  Action onGetAction() => _behavior.getAction(this);
 
   Attack getAttack(Actor defender) {
     // See if a weapon is equipped.

@@ -2,18 +2,26 @@ class Action {
   Actor _actor;
   Game _game;
   GameResult _gameResult;
+  bool _consumesEnergy;
 
   Game get game() => _game;
   Actor get actor() => _actor;
   // TODO(bob): Should it check that the actor is a hero?
   Hero get hero() => _actor;
+  bool get consumesEnergy() => _consumesEnergy;
 
-  ActionResult perform(Game game, GameResult gameResult, Actor actor) {
+  void bind(Actor actor, bool consumesEnergy) {
     assert(_actor == null);
-    _actor = actor;
-    _game = game;
-    _gameResult = gameResult;
 
+    _actor = actor;
+    _game = actor.game;
+    _consumesEnergy = consumesEnergy;
+  }
+
+  ActionResult perform(GameResult gameResult) {
+    assert(_actor != null); // Action should be bound already.
+
+    _gameResult = gameResult;
     return onPerform();
   }
 
@@ -44,13 +52,15 @@ class Action {
   }
 
   ActionResult alternate(Action action) {
+    action.bind(_actor, _consumesEnergy);
     return new ActionResult.alternate(action);
   }
 }
 
 class ActionResult {
-  static final SUCCESS = const ActionResult(succeeded: true);
-  static final FAILURE = const ActionResult(succeeded: false);
+  static final SUCCESS = const ActionResult(succeeded: true, done: true);
+  static final FAILURE = const ActionResult(succeeded: false, done: true);
+  static final NOT_DONE = const ActionResult(succeeded: true, done: false);
 
   /// An alternate [Action] that should be performed instead of the one that
   /// failed to perform and returned this. For example, when the [Hero] walks
@@ -61,11 +71,15 @@ class ActionResult {
   /// `true` if the [Action] was successful and energy should be consumed.
   final bool succeeded;
 
-  const ActionResult([bool this.succeeded])
+  /// `true` if the [Action] does not need any further processing.
+  final bool done;
+
+  const ActionResult([this.succeeded, this.done])
   : alternate = null;
 
   const ActionResult.alternate(this.alternate)
-  : succeeded = false;
+  : succeeded = false,
+    done = true;
 }
 
 class MoveAction extends Action {

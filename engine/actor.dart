@@ -56,8 +56,12 @@ class Actor extends Thing {
   bool get needsInput() => false;
 
   Action getAction() {
-    // Do nothing.
+    final action = onGetAction();
+    if (action != null) action.bind(this, true);
+    return action;
   }
+
+  abstract Action onGetAction();
 
   /// Get an [Attack] for this [Actor] to attempt to hit [defender].
   abstract Attack getAttack(Actor defender);
