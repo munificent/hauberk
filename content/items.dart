@@ -21,18 +21,18 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void food() {
-    item('crusty loaf of bread', lightBrown(','), use: Use.food(300));
+    item('Crusty Loaf of Bread', yellow(','), use: Use.food(300));
   }
 
   void potions() {
     // Healing
-    item('mending salve', red('!'), use: Use.heal(30, 'better'));
+    item('Mending Salve', red('!'), use: Use.heal(30, 'better'));
     // balm of soothing, healing, amelioration, rejuvenation
   }
 
   void weapons() {
-    weapon('cudgel', brown('\\'),    'hit[s]', 4);
-    weapon('dagger', lightGray('|'), 'stab[s]', 5);
+    weapon('Cudgel', brown('\\'),    'hit[s]', 4);
+    weapon('Dagger', lightGray('|'), 'stab[s]', 5);
   }
 
   Attack attack(String verb, int damage) => new Attack(verb, damage);

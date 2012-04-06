@@ -24,8 +24,20 @@ class Game {
     level.actors.add(hero);
 
     // TODO(bob): Temp for testing.
+    final prefixType = new PowerType('Elven', 'Weapon', damage: 3, isPrefix: true);
+    final suffixType = new PowerType('of Wounding', 'Weapon', damage: 6, isPrefix: false);
+
     for (var i = 0; i < 20; i++) {
-      final item = new Item(rng.item(itemTypes), level.findOpenTile());
+      final type = rng.item(itemTypes);
+
+      var prefix, suffix;
+      if (rng.oneIn(20) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
+      if (rng.oneIn(20) && suffixType.appliesTo(type)) suffix = suffixType.spawn();
+
+      final item = new Item(type, level.findOpenTile(),
+          prefix, suffix);
+
+      if (prefix != null || suffix != null) print(item);
       level.items.add(item);
     }
 

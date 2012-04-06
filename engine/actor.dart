@@ -35,6 +35,8 @@ class Thing implements Noun {
   Gender get gender() {
     assert(false); // Abstract.
   }
+
+  String toString() => nounText;
 }
 
 /// An active entity in the game. Includes monsters and the hero.
