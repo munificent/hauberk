@@ -43,6 +43,10 @@ class BoltAction extends Action {
 
   ActionResult onPerform() {
     final pos = los.next();
+
+    // Stop if we hit a wall.
+    if (!game.level[pos].isTransparent) return succeed();
+
     addEvent(new Event.bolt(pos));
 
     return los.hasNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;

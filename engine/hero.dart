@@ -1,3 +1,19 @@
+/// When the player is playing the game inside a dungeon, he is using a [Hero].
+/// When outside of the dungeon on the menu screens, though, only a subset of
+/// the hero's data persists (for example, there is no position when not in a
+/// dungeon). This class stores that state.
+class HeroHome {
+  // TODO(bob): Let user specify.
+  final Gender gender = Gender.MALE;
+
+  final Inventory inventory;
+  final Equipment equipment;
+
+  HeroHome()
+  : inventory = new Inventory(),
+    equipment = new Equipment();
+}
+
 /// The main player-controlled [Actor]. The player's avatar in the game world.
 class Hero extends Actor {
   // TODO(bob): Let user specify.
@@ -12,10 +28,12 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  Hero(Game game, int x, int y)
+  Hero(Game game, int x, int y, HeroHome home)
   : super(game, x, y, Option.HERO_START_HEALTH),
-    inventory = new Inventory(),
-    equipment = new Equipment();
+    // Cloned so that if the hero dies in the dungeon, he loses any items
+    // he gained.
+    inventory = home.inventory.clone(),
+    equipment = home.equipment.clone();
 
   // TODO(bob): Hackish.
   get appearance() => 'hero';

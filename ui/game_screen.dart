@@ -1,19 +1,11 @@
 
 class GameScreen extends Screen {
   Game           game;
-  List<Breed>    breeds;
-  List<ItemType> itemTypes;
   List<Effect>   effects;
   bool           logOnTop = false;
 
-  GameScreen(List<Breed> breeds, List<ItemType> itemTypes)
-  : effects = <Effect>[]
-  {
-    this.breeds = breeds;
-    this.itemTypes = itemTypes;
-
-    game = new Game(breeds, itemTypes);
-  }
+  GameScreen(this.game)
+  : effects = <Effect>[];
 
   bool handleInput(Keyboard keyboard) {
     var action;
@@ -153,7 +145,7 @@ class GameScreen extends Screen {
 
     // TODO(bob): Hack temp.
     if (game.hero.health.current == 0) {
-      game = new Game(breeds, itemTypes);
+      ui.pop();
       return true;
     }
 

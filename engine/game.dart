@@ -1,14 +1,13 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
-  final List<Breed>    breeds;
-  final List<ItemType> itemTypes;
+  final Content        content;
   final Level          level;
   final Log            log;
   final Rng            rng;
   final Queue<Action>  actions;
-  Hero                 hero;
+  Hero hero;
 
-  Game(this.breeds, this.itemTypes)
+  Game(this.content, HeroHome home)
   : level = new Level(80, 40),
     log = new Log(),
     rng = new Rng(new Date.now().value),
@@ -20,7 +19,7 @@ class Game {
     new Dungeon(level).generate();
 
     final pos = level.findOpenTile();
-    hero = new Hero(this, pos.x, pos.y);
+    hero = new Hero(this, pos.x, pos.y, home);
     level.actors.add(hero);
 
     // TODO(bob): Temp for testing.
@@ -28,22 +27,22 @@ class Game {
     final suffixType = new PowerType('of Wounding', 'Weapon', damage: 6, isPrefix: false);
 
     for (var i = 0; i < 20; i++) {
-      final type = rng.item(itemTypes);
+      final type = rng.item(content.itemTypes);
 
       var prefix, suffix;
-      if (rng.oneIn(20) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
-      if (rng.oneIn(20) && suffixType.appliesTo(type)) suffix = suffixType.spawn();
+      if (rng.oneIn(40) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
+      if (rng.oneIn(40) && suffixType.appliesTo(type)) suffix = suffixType.spawn();
 
       final item = new Item(type, level.findOpenTile(),
           prefix, suffix);
 
-      if (prefix != null || suffix != null) print(item);
+      if (prefix != null || suffix != null) print(item.toString());
       level.items.add(item);
     }
 
     for (int i = 0; i < 30; i++) {
       final pos = level.findOpenTile();
-      level.actors.add(rng.item(breeds).spawn(this, pos));
+      level.actors.add(rng.item(content.breeds).spawn(this, pos));
     }
 
     /*
@@ -142,6 +141,17 @@ class Game {
       monster.noise += volume;
     }
   }
+}
+
+/// Defines the actual content for the game: the breeds, items, etc. that
+/// define the play experience.
+class Content {
+  final List<Breed> breeds;
+  final List<ItemType> itemTypes;
+
+  Content()
+  : breeds = <Breed>[],
+    itemTypes = <ItemType>[];
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

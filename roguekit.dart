@@ -13,14 +13,16 @@ main() {
   final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
   final keyboard = new Keyboard(html.document);
   final ui = new UserInterface(keyboard, terminal);
-  ui.push(new GameScreen(content.breeds, content.itemTypes));
+  ui.push(new MainMenuScreen(content));
+
+  final element = html.document.query('pre');
 
   tick(time) {
     ui.tick();
-    html.window.webkitRequestAnimationFrame(tick, html.document);
+    html.window.webkitRequestAnimationFrame(tick, element);
   }
 
-  html.window.webkitRequestAnimationFrame(tick, html.document);
+  html.window.webkitRequestAnimationFrame(tick, element);
 }
 
 class Fps {

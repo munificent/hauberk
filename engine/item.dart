@@ -125,6 +125,18 @@ class Inventory implements Iterable<Item> {
   Inventory()
   : _items = <Item>[];
 
+  /// Creates a new copy of this Inventory. This is done when the [Hero] enters
+  /// a [Level] so that any inventory changes that happen in the level are
+  /// discarded if the hero dies.
+  Inventory clone() {
+    // TODO(bob): If items themselves ever become mutable, will need to deep
+    // clone them too.
+    final inventory = new Inventory();
+    for (final item in this) inventory.tryAdd(item);
+
+    return inventory;
+  }
+
   Item remove(int index) {
     final item = _items[index];
     _items.removeRange(index, 1);
@@ -163,6 +175,20 @@ class Equipment implements Iterable<Item> {
       'Boots'
       ],
     slots = new List<Item>(11);
+
+  /// Creates a new copy of this Equipment. This is done when the [Hero] enters
+  /// a [Level] so that any inventory changes that happen in the level are
+  /// discarded if the hero dies.
+  Equipment clone() {
+    // TODO(bob): If items themselves ever become mutable, will need to deep
+    // clone them too.
+    final equipment = new Equipment();
+    for (var i = 0; i < slotTypes.length; i++) {
+      equipment.slots[i] = slots[i];
+    }
+
+    return equipment;
+  }
 
   /// Gets the [Item] currently equipped in [slotType], if any.
   Item find(String slotType) {

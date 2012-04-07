@@ -40,6 +40,15 @@ class UserInterface {
     _render();
   }
 
+  void goTo(Screen screen) {
+    final old = _screens.removeLast();
+    old._unbind();
+
+    screen._bind(this);
+    _screens.add(screen);
+    _render();
+  }
+
   bool isTopScreen(Screen screen) => _screens.last() == screen;
 
   void tick() {

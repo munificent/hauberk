@@ -3,6 +3,7 @@ interface Terminal {
   int get width();
   int get height();
 
+  void clear();
   void write(String text, [Color fore, Color back]);
   void writeAt(int x, int y, String text, [Color fore, Color back]);
   void drawGlyph(int x, int y, Glyph glyph);
@@ -18,6 +19,14 @@ class BaseTerminal implements Terminal {
 
   int get width() => glyphs.width;
   int get height() => glyphs.height;
+
+  void clear() {
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        writeAt(x, y, ' ');
+      }
+    }
+  }
 
   void write(String text, [Color fore, Color back]) {
     for (int x = 0; x < text.length; x++) {
@@ -88,6 +97,14 @@ class PortTerminal implements Terminal {
   final Terminal _root;
 
   PortTerminal(this._x, this._y, this.width, this.height, this._root);
+
+  void clear() {
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        writeAt(x, y, ' ');
+      }
+    }
+  }
 
   void write(String text, [Color fore, Color back]) {
     _root.writeAt(_x, _y, text, fore, back);

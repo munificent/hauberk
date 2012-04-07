@@ -6,18 +6,6 @@
 #source('content/items.dart');
 #source('content/monsters.dart');
 
-// TODO(bob): Move this class to engine (and only this one).
-/// Defines the actual content for the game: the breeds, items, etc. that
-/// define the play experience.
-class Content {
-  final List<Breed> breeds;
-  final List<ItemType> itemTypes;
-
-  Content()
-  : breeds = <Breed>[],
-    itemTypes = <ItemType>[];
-}
-
 Content createContent() {
   final content = new Content();
   new MonsterBuilder(content).build();
