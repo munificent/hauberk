@@ -1,17 +1,16 @@
 
 class MainMenuScreen extends Screen {
-  final Content content;
-  HeroHome home;
+  final Content  content;
+  final HeroHome home;
 
-  MainMenuScreen(this.content) {
-    home = new HeroHome();
-  }
+  MainMenuScreen(this.content)
+  : home = new HeroHome();
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
     case KeyCode.N:
       final game = new Game(content, home);
-      ui.push(new GameScreen(game));
+      ui.push(new GameScreen(home, game));
       break;
     }
 

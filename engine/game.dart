@@ -6,6 +6,7 @@ class Game {
   final Rng            rng;
   final Queue<Action>  actions;
   Hero hero;
+  bool _questComplete = false;
 
   Game(this.content, HeroHome home)
   : level = new Level(80, 40),
@@ -54,6 +55,8 @@ class Game {
 
     Fov.refresh(level, hero.pos);
   }
+
+  bool get isQuestComplete() => _questComplete;
 
   GameResult update() {
     final gameResult = new GameResult();
@@ -118,6 +121,11 @@ class Game {
         }
       }
     }
+  }
+
+  void completeQuest() {
+    log.add('You have completed your quest! Press "q" to exit the level.');
+    _questComplete = true;
   }
 
   void makeNoise(Actor actor, int noise) {

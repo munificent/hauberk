@@ -3,15 +3,20 @@
 /// the hero's data persists (for example, there is no position when not in a
 /// dungeon). This class stores that state.
 class HeroHome {
-  // TODO(bob): Let user specify.
-  final Gender gender = Gender.MALE;
-
-  final Inventory inventory;
-  final Equipment equipment;
+  Inventory inventory;
+  Equipment equipment;
 
   HeroHome()
   : inventory = new Inventory(),
     equipment = new Equipment();
+
+  /// Copies data from [hero] into this object. This should be called when the
+  /// [Hero] has successfully completed a [Level] and his changes need to be
+  /// "saved".
+  void copyFrom(Hero hero) {
+    inventory = hero.inventory;
+    equipment = hero.equipment;
+  }
 }
 
 /// The main player-controlled [Actor]. The player's avatar in the game world.

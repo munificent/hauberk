@@ -1,10 +1,11 @@
 
 class GameScreen extends Screen {
-  Game           game;
+  final HeroHome home;
+  final Game     game;
   List<Effect>   effects;
   bool           logOnTop = false;
 
-  GameScreen(this.game)
+  GameScreen(this.home, this.game)
   : effects = <Effect>[];
 
   bool handleInput(Keyboard keyboard) {
@@ -50,6 +51,17 @@ class GameScreen extends Screen {
       }
     } else {
       switch (keyboard.lastPressed) {
+      case KeyCode.Q:
+        if (game.isQuestComplete) {
+          home.copyFrom(game.hero);
+          ui.pop();
+        } else {
+          // TODO(bob): Bug. This doesn't actually get shown immediately.
+          // Because no game update occurs, the screen doesn't refresh.
+          game.log.add('You have not completed your quest yet.');
+        }
+        break;
+
       case KeyCode.C:
         closeDoor();
         break;

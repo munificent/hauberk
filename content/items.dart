@@ -18,6 +18,8 @@ class ItemBuilder extends ContentBuilder {
     food();
     potions();
     weapons();
+
+    item('Magical chalice', lightBlue(@'$'), use: Use.quest());
   }
 
   void food() {
@@ -75,6 +77,12 @@ class Use {
         action.actor.health.current += amount;
         game.log.add('{1} feel[s] $message.', action.actor);
       }
+    };
+  }
+
+  static ItemUse quest() {
+    return (Game game, UseAction action) {
+      game.completeQuest();
     };
   }
 }
