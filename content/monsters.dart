@@ -1,8 +1,11 @@
 /// Builder class for defining [Monster] [Breed]s.
 class MonsterBuilder extends ContentBuilder {
-  MonsterBuilder(Content content) : super(content);
+  final Map<String, Breed> _breeds;
 
-  void build() {
+  MonsterBuilder()
+  : _breeds = <Breed>{};
+
+  Map<String, Breed> build() {
     // $  Creeping Coins
     // a  Arachnid/Scorpion   A  Ancient being
     // b  Giant Bat           B  Bird
@@ -67,6 +70,8 @@ class MonsterBuilder extends ContentBuilder {
       meander: 8,
       speed: 2
     );
+
+    return _breeds;
   }
 
   Breed breed(String name, Glyph appearance, List<Attack> attacks,
@@ -74,7 +79,7 @@ class MonsterBuilder extends ContentBuilder {
     final breed = new Breed(name, Gender.NEUTER, appearance, attacks,
         maxHealth: maxHealth, olfaction: olfaction, meander: meander,
         speed: speed);
-    content.breeds.add(breed);
+    _breeds[name] = breed;
     return breed;
   }
 }

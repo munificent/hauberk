@@ -21,3 +21,4 @@
 #source('engine/melee.dart');
 #source('engine/monster.dart');
 #source('engine/option.dart');
+#source('engine/territory.dart');

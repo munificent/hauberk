@@ -5,19 +5,18 @@
 
 #source('content/items.dart');
 #source('content/monsters.dart');
+#source('content/territories.dart');
 
 Content createContent() {
-  final content = new Content();
-  new MonsterBuilder(content).build();
-  new ItemBuilder(content).build();
-  return content;
+  final breeds = new MonsterBuilder().build();
+  final items = new ItemBuilder().build();
+  final territories = new TerritoryBuilder(breeds, items).build();
+
+  return new Content(territories);
 }
 
 /// Base class for a builder that provides a DSL for creating game content.
 class ContentBuilder {
-  final Content content;
-  ContentBuilder(this.content);
-
   Attack attack(String verb, int damage) => new Attack(verb, damage);
 
   Glyph black(String char)       => new Glyph(char, Color.BLACK);

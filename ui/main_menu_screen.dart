@@ -9,7 +9,7 @@ class MainMenuScreen extends Screen {
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
     case KeyCode.N:
-      final game = new Game(content, home);
+      final game = new Game(content.territories[0], home);
       ui.push(new GameScreen(home, game));
       break;
     }

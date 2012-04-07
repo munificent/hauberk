@@ -1,6 +1,5 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
-  final Content        content;
   final Level          level;
   final Log            log;
   final Rng            rng;
@@ -8,7 +7,7 @@ class Game {
   Hero hero;
   bool _questComplete = false;
 
-  Game(this.content, HeroHome home)
+  Game(Territory territory, HeroHome home)
   : level = new Level(80, 40),
     log = new Log(),
     rng = new Rng(new Date.now().value),
@@ -16,42 +15,10 @@ class Game {
   {
     level.game = this;
 
-    //new FeatureCreep(level, new FeatureCreepOptions()).generate();
-    new Dungeon(level).generate();
+    final heroPos = territory.makeLevel(this, 0);
 
-    final pos = level.findOpenTile();
-    hero = new Hero(this, pos.x, pos.y, home);
+    hero = new Hero(this, heroPos.x, heroPos.y, home);
     level.actors.add(hero);
-
-    // TODO(bob): Temp for testing.
-    final prefixType = new PowerType('Elven', 'Weapon', damage: 3, isPrefix: true);
-    final suffixType = new PowerType('of Wounding', 'Weapon', damage: 6, isPrefix: false);
-
-    for (var i = 0; i < 20; i++) {
-      final type = rng.item(content.itemTypes);
-
-      var prefix, suffix;
-      if (rng.oneIn(40) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
-      if (rng.oneIn(40) && suffixType.appliesTo(type)) suffix = suffixType.spawn();
-
-      final item = new Item(type, level.findOpenTile(),
-          prefix, suffix);
-
-      if (prefix != null || suffix != null) print(item.toString());
-      level.items.add(item);
-    }
-
-    for (int i = 0; i < 30; i++) {
-      final pos = level.findOpenTile();
-      level.actors.add(rng.item(content.breeds).spawn(this, pos));
-    }
-
-    /*
-    for (final pos in level.bounds) {
-      level[pos]._explored = true;
-    }
-    */
-    // End temp.
 
     Fov.refresh(level, hero.pos);
   }
@@ -154,12 +121,9 @@ class Game {
 /// Defines the actual content for the game: the breeds, items, etc. that
 /// define the play experience.
 class Content {
-  final List<Breed> breeds;
-  final List<ItemType> itemTypes;
+  final List<Territory> territories;
 
-  Content()
-  : breeds = <Breed>[],
-    itemTypes = <ItemType>[];
+  Content(this.territories);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

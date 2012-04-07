@@ -1,8 +1,11 @@
 /// Builder class for defining [ItemType]s.
 class ItemBuilder extends ContentBuilder {
-  ItemBuilder(Content content) : super(content);
+  final Map<String, ItemType> _items;
 
-  void build() {
+  ItemBuilder()
+  : _items = <ItemType>{};
+
+  Map<String, ItemType> build() {
     // From Angband:
     // !   A potion (or flask)    /   A pole-arm
     // ?   A scroll (or book)     |   An edged weapon
@@ -20,6 +23,8 @@ class ItemBuilder extends ContentBuilder {
     weapons();
 
     item('Magical chalice', lightBlue(@'$'), use: Use.quest());
+
+    return _items;
   }
 
   void food() {
@@ -47,7 +52,7 @@ class ItemBuilder extends ContentBuilder {
   ItemType item(String name, Glyph appearance,
       [ItemUse use, String equipSlot, Attack attack]) {
     final itemType = new ItemType(name, appearance, use, equipSlot, attack);
-    content.itemTypes.add(itemType);
+    _items[name] = itemType;
     return itemType;
   }
 }
