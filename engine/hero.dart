@@ -33,8 +33,8 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  Hero(Game game, int x, int y, HeroHome home)
-  : super(game, x, y, Option.HERO_START_HEALTH),
+  Hero(Game game, Vec pos, HeroHome home)
+  : super(game, pos.x, pos.y, Option.HERO_START_HEALTH),
     // Cloned so that if the hero dies in the dungeon, he loses any items
     // he gained.
     inventory = home.inventory.clone(),

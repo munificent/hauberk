@@ -7,7 +7,7 @@ class Game {
   Hero hero;
   bool _questComplete = false;
 
-  Game(Area area, HeroHome home)
+  Game(Area area, int depth, HeroHome home)
   : level = new Level(80, 40),
     log = new Log(),
     rng = new Rng(new Date.now().value),
@@ -15,9 +15,9 @@ class Game {
   {
     level.game = this;
 
-    final heroPos = area.makeLevel(this, 0);
+    final heroPos = area.makeLevel(this, depth);
 
-    hero = new Hero(this, heroPos.x, heroPos.y, home);
+    hero = new Hero(this, heroPos, home);
     level.actors.add(hero);
 
     Fov.refresh(level, hero.pos);

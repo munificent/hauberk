@@ -8,39 +8,37 @@ class AreaBuilder extends ContentBuilder {
   : _areas = <Area>[];
 
   List<Area> build() {
+    final options = new DungeonOptions();
+
     area('Training Grounds', [
-      level(breeds: [
-        'rat',
-        'mangy cur',
-        'giant slug',
-        'giant dragonfly'
-      ],
-      items: [
-        'Magical chalice',
-        'Crusty Loaf of Bread',
-        'Mending Salve',
-        'Cudgel',
-        'Dagger'
-      ])
+      level(options,
+        breeds: [
+          'rat',
+          'mangy cur',
+          'giant slug',
+          'giant dragonfly'
+        ],
+        items: [
+          'Magical chalice',
+          'Crusty Loaf of Bread',
+          'Mending Salve',
+          'Cudgel',
+          'Dagger'
+        ])
     ]);
 
     return _areas;
   }
 
-  AreaLevel level([List<String> breeds, List<String> items]) {
+  AreaLevel level(DungeonOptions options,
+      [List<String> breeds, List<String> items]) {
     final breedList = <Breed>[];
-
-    for (final name in breeds) {
-      breedList.add(_breeds[name]);
-    }
-
     final itemList = <ItemType>[];
 
-    for (final name in items) {
-      itemList.add(_items[name]);
-    }
+    for (final name in breeds) breedList.add(_breeds[name]);
+    for (final name in items) itemList.add(_items[name]);
 
-    return new AreaLevel(breedList, itemList);
+    return new AreaLevel(options, breedList, itemList);
   }
 
   Area area(String name, int numLevels) {

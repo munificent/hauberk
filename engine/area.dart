@@ -8,7 +8,7 @@ class Area {
   Vec makeLevel(Game game, int depth) {
     final level = game.level;
 
-    new Dungeon(level).generate();
+    new Dungeon(level, levels[depth].options).generate();
 
     final pos = level.findOpenTile();
 
@@ -52,8 +52,9 @@ class Area {
 /// Describes one level in a [Area]. When the [Hero] enters a [Level] for an
 /// area, this determines how that specific level is generated.
 class AreaLevel {
+  final DungeonOptions options;
   final List<Breed> breeds;
   final List<ItemType> items;
 
-  AreaLevel(this.breeds, this.items);
+  AreaLevel(this.options, this.breeds, this.items);
 }
