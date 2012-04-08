@@ -7,7 +7,7 @@ class Game {
   Hero hero;
   bool _questComplete = false;
 
-  Game(Territory territory, HeroHome home)
+  Game(Area area, HeroHome home)
   : level = new Level(80, 40),
     log = new Log(),
     rng = new Rng(new Date.now().value),
@@ -15,7 +15,7 @@ class Game {
   {
     level.game = this;
 
-    final heroPos = territory.makeLevel(this, 0);
+    final heroPos = area.makeLevel(this, 0);
 
     hero = new Hero(this, heroPos.x, heroPos.y, home);
     level.actors.add(hero);
@@ -121,9 +121,9 @@ class Game {
 /// Defines the actual content for the game: the breeds, items, etc. that
 /// define the play experience.
 class Content {
-  final List<Territory> territories;
+  final List<Area> areas;
 
-  Content(this.territories);
+  Content(this.areas);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

@@ -1,8 +1,8 @@
-class Territory {
+class Area {
   final String name;
-  final List<TerritoryLevel> levels;
+  final List<AreaLevel> levels;
 
-  Territory(this.name, this.levels);
+  Area(this.name, this.levels);
 
   // TODO(bob): Get rid of content param.
   Vec makeLevel(Game game, int depth) {
@@ -49,11 +49,11 @@ class Territory {
   }
 }
 
-/// Describes one level in a [Territory]. When the [Hero] enters a [Level] for
-/// a territory, this determines how that specific level is generated.
-class TerritoryLevel {
+/// Describes one level in a [Area]. When the [Hero] enters a [Level] for an
+/// area, this determines how that specific level is generated.
+class AreaLevel {
   final List<Breed> breeds;
   final List<ItemType> items;
 
-  TerritoryLevel(this.breeds, this.items);
+  AreaLevel(this.breeds, this.items);
 }

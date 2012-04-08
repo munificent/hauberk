@@ -7,6 +7,7 @@
 #source('engine/action_combat.dart');
 #source('engine/action_item.dart');
 #source('engine/actor.dart');
+#source('engine/area.dart');
 #source('engine/dungeon.dart');
 #source('engine/energy.dart');
 #source('engine/feature_creep.dart');
@@ -21,4 +22,3 @@
 #source('engine/melee.dart');
 #source('engine/monster.dart');
 #source('engine/option.dart');
-#source('engine/territory.dart');

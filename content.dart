@@ -3,16 +3,16 @@
 #import('engine.dart');
 #import('ui.dart');
 
+#source('content/areas.dart');
 #source('content/items.dart');
 #source('content/monsters.dart');
-#source('content/territories.dart');
 
 Content createContent() {
   final breeds = new MonsterBuilder().build();
   final items = new ItemBuilder().build();
-  final territories = new TerritoryBuilder(breeds, items).build();
+  final areas = new AreaBuilder(breeds, items).build();
 
-  return new Content(territories);
+  return new Content(areas);
 }
 
 /// Base class for a builder that provides a DSL for creating game content.
