@@ -20,21 +20,10 @@ class Thing implements Noun {
   /// to do stuff when the position changes. Returns the new position.
   Vec changePosition(Vec pos) => pos;
 
-  get appearance() {
-    assert(false); // Abstract.
-  }
-
-  String get nounText() {
-    assert(false); // Abstract.
-  }
-
-  int get person() {
-    assert(false); // Abstract.
-  }
-
-  Gender get gender() {
-    assert(false); // Abstract.
-  }
+  abstract get appearance();
+  abstract String get nounText();
+  abstract int get person();
+  abstract Gender get gender();
 
   String toString() => nounText;
 }

@@ -22,7 +22,7 @@ class ItemBuilder extends ContentBuilder {
     potions();
     weapons();
 
-    item('Magical chalice', lightBlue(@'$'), use: Use.quest());
+    item('Magical Chalice', lightBlue(@'$'), use: Use.quest());
 
     return _items;
   }
@@ -33,7 +33,7 @@ class ItemBuilder extends ContentBuilder {
 
   void potions() {
     // Healing
-    item('Mending Salve', red('!'), use: Use.heal(30, 'better'));
+    item('Mending Salve', red('!'), use: Use.heal(8, 'better'));
     // balm of soothing, healing, amelioration, rejuvenation
   }
 

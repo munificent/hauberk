@@ -148,6 +148,11 @@ class Rng {
     }
   }
 
+  int taper(int start, int chanceOfIncrement) {
+    while (oneIn(chanceOfIncrement)) start++;
+    return start;
+  }
+
   void _fillPool() {
     for (var i = 0; i < _SIZE; i++) {
       final a = _pool[(i + 1) % _SIZE] & 0x7fffffff;
