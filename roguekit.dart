@@ -13,7 +13,14 @@ main() {
   final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
   final keyboard = new Keyboard(html.document);
   final ui = new UserInterface(keyboard, terminal);
+
   ui.push(new MainMenuScreen(content));
+
+  /*
+  final home = new HeroHome();
+  final game = new Game(content.areas[0], 0, home);
+  ui.push(new GameScreen(home, game));
+  */
 
   final element = html.document.query('pre');
 
