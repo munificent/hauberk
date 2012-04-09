@@ -14,7 +14,7 @@ class Item extends Thing {
   String get equipSlot() => type.equipSlot;
 
   bool get canUse() => type.use != null;
-  ItemUse get use() => type.use;
+  Action use() => type.use();
 
   Attack get attack() {
     if (type.attack == null) return null;
@@ -59,7 +59,7 @@ class Item extends Thing {
   Gender get gender() => Gender.NEUTER;
 }
 
-typedef void ItemUse(Game game, UseAction action);
+typedef Action ItemUse();
 
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {

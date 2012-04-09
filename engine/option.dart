@@ -24,6 +24,11 @@ class Option {
   /// increases processing time.
   static final MAX_PATH = 20;
 
+  /// The AI score to give for actions that should not be performed. Its actual
+  /// value doesn't matter much as long as its low enough that it never becomes
+  /// the highest score after taking into account meander and other scores.
+  static final AI_MIN_SCORE = -99999;
+
   /// How much a monster's sense of smell (modified by olfaction) affects their
   /// choice of action.
   static final AI_WEIGHT_SCENT = 1.0;
@@ -91,4 +96,8 @@ class Option {
   /// disperses: squarish, diamond, or circular.
   static final SCENT_CORNER_CONVOLVE = 0.2;
   static final SCENT_SIDE_CONVOLVE = 0.5;
+
+  static final EFFORT_START = 100;
+  static final EFFORT_REGENERATE = 10;
+  static final EFFORT_MAX = 200;
 }

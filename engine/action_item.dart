@@ -91,14 +91,12 @@ class UseAction extends Action {
       return alternate(new EquipAction(index));
     }
 
-    final use = item.use;
-    if (use == null) {
+    if (!item.canUse) {
       return fail("{1} can't be used.", item);
     }
 
     hero.inventory.remove(index);
-    use(game, this);
 
-    return succeed();
+    return alternate(item.use());
   }
 }

@@ -22,18 +22,21 @@ class ItemBuilder extends ContentBuilder {
     potions();
     weapons();
 
-    item('Magical Chalice', lightBlue(@'$'), use: Use.quest());
+    item('Magical Chalice', lightBlue(@'$'),
+        use: () => new QuestAction());
 
     return _items;
   }
 
   void food() {
-    item('Crusty Loaf of Bread', yellow(','), use: Use.food(300));
+    item('Crusty Loaf of Bread', yellow(','),
+        use: () => new EatAction(300));
   }
 
   void potions() {
     // Healing
-    item('Mending Salve', red('!'), use: Use.heal(8, 'better'));
+    item('Mending Salve', red('!'),
+        use: () => new HealAction(8));
     // balm of soothing, healing, amelioration, rejuvenation
   }
 
@@ -54,40 +57,5 @@ class ItemBuilder extends ContentBuilder {
     final itemType = new ItemType(name, appearance, use, equipSlot, attack);
     _items[name] = itemType;
     return itemType;
-  }
-}
-
-/// Static class containing functions (or, more accurately, function builders)
-/// for the various item uses.
-class Use {
-  static ItemUse food(int amount) {
-    return (Game game, UseAction action) {
-      final hero = action.hero;
-
-      if (hero.hunger < amount) {
-        game.log.add('{1} [are|is] stuffed.', hero);
-        hero.hunger = 0;
-      } else {
-        hero.hunger -= amount;
-        game.log.add('{1} feel[s] less hungry.', hero);
-      }
-    };
-  }
-
-  static ItemUse heal(int amount, String message) {
-    return (Game game, UseAction action) {
-      if (action.actor.health.isMax) {
-        game.log.add('{1} has no effect.', action.item);
-      } else {
-        action.actor.health.current += amount;
-        game.log.add('{1} feel[s] $message.', action.actor);
-      }
-    };
-  }
-
-  static ItemUse quest() {
-    return (Game game, UseAction action) {
-      game.completeQuest();
-    };
   }
 }

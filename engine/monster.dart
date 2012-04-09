@@ -10,6 +10,10 @@ class Monster extends Actor {
   /// up.
   num noise = 0;
 
+  /// In order to perform [Move]s other than just walking and melee attacks, a
+  /// monster must spend this, which regenerates over time.
+  int effort = Option.EFFORT_START;
+
   Monster(Game game, this.breed, int x, int y, int maxHealth)
   : super(game, x, y, maxHealth) {
     energy.speed = Energy.NORMAL_SPEED + breed.speed;
@@ -34,6 +38,9 @@ class Monster extends Actor {
   }
 
   Action onGetAction() {
+    // Regenerate effort.
+    effort = Math.min(Option.EFFORT_MAX, effort + Option.EFFORT_REGENERATE);
+
     // Forget sounds over time. Since this occurs on the monster's turn, it
     // means slower monsters will attenuate less frequently. The [Math.pow()]
     // part compensates for this.
@@ -106,7 +113,6 @@ class Monster extends Actor {
     // TODO(bob): Make maximum path-length be breed tunable.
     final path = AStar.findDirection(game.level, pos, game.hero.pos, 10);
 
-    final MIN_SCORE = -99999;
     final START_SCORE = 100;
 
     for (var i = 0; i < Direction.ALL.length; i++) {
@@ -114,7 +120,7 @@ class Monster extends Actor {
 
       // If the direction is blocked, give it a negative score and skip it.
       if (!canOccupy(dest) || game.level.actorAt(dest) != null) {
-        scores[i] = MIN_SCORE;
+        scores[i] = Option.AI_MIN_SCORE;
         continue;
       }
 
@@ -141,7 +147,7 @@ class Monster extends Actor {
     }
 
     // Pick the best move.
-    var bestScore = MIN_SCORE - 1;
+    var bestScore = Option.AI_MIN_SCORE - 1;
     var bestIndexes;
     for (var i = 0; i < scores.length; i++) {
       if (scores[i] == bestScore) {
@@ -201,6 +207,7 @@ class Breed {
   final appearance;
 
   final List<Attack> attacks;
+  final List<Move>   moves;
 
   final int maxHealth;
 
@@ -216,7 +223,7 @@ class Breed {
   /// (fastest) where `0` is normal speed.
   final int speed;
 
-  Breed(this.name, this.gender, this.appearance, this.attacks,
+  Breed(this.name, this.gender, this.appearance, this.attacks, this.moves,
       [this.maxHealth, this.olfaction, this.meander, this.speed]);
 
   Monster spawn(Game game, Vec pos) {

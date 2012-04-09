@@ -74,9 +74,10 @@ class MonsterBuilder extends ContentBuilder {
     return _breeds;
   }
 
-  Breed breed(String name, Glyph appearance, List<Attack> attacks,
-      [int maxHealth, int olfaction = 0, int meander = 0, int speed = 0]) {
-    final breed = new Breed(name, Gender.NEUTER, appearance, attacks,
+  Breed breed(String name, Glyph appearance, List<Attack> attacks, [
+      List<Move> moves, int maxHealth, int olfaction = 0, int meander = 0,
+      int speed = 0]) {
+    final breed = new Breed(name, Gender.NEUTER, appearance, attacks, moves,
         maxHealth: maxHealth, olfaction: olfaction, meander: meander,
         speed: speed);
     _breeds[name] = breed;
