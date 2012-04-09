@@ -56,9 +56,8 @@ class GameScreen extends Screen {
           home.copyFrom(game.hero);
           ui.pop();
         } else {
-          // TODO(bob): Bug. This doesn't actually get shown immediately.
-          // Because no game update occurs, the screen doesn't refresh.
           game.log.add('You have not completed your quest yet.');
+          dirty();
         }
         break;
 
@@ -140,9 +139,8 @@ class GameScreen extends Screen {
     }
 
     if (doors.length == 0) {
-      // TODO(bob): Bug. This doesn't actually get shown immediately. Because
-      // no game update occurs, the screen doesn't refresh.
       game.log.add('You are not next to an open door.');
+      dirty();
     } else if (doors.length == 1) {
       game.hero.setNextAction(new CloseDoorAction(doors[0]));
     } else {

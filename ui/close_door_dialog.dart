@@ -36,9 +36,8 @@ class CloseDoorDialog extends Screen {
       game.hero.setNextAction(new CloseDoorAction(pos));
       ui.pop();
     } else {
-      // TODO(bob): Bug. This doesn't actually get shown immediately. Because
-      // no game update occurs, the screen doesn't refresh.
-      game.messages.add('There is not an open door there.');
+      game.log.add('There is not an open door there.');
+      dirty();
     }
   }
 }
