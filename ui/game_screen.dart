@@ -85,39 +85,39 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.I:
-        action = new MoveAction(Direction.NW);
+        action = new WalkAction(Direction.NW);
         break;
 
       case KeyCode.O:
-        action = new MoveAction(Direction.N);
+        action = new WalkAction(Direction.N);
         break;
 
       case KeyCode.P:
-        action = new MoveAction(Direction.NE);
+        action = new WalkAction(Direction.NE);
         break;
 
       case KeyCode.K:
-        action = new MoveAction(Direction.W);
+        action = new WalkAction(Direction.W);
         break;
 
       case KeyCode.L:
-        action = new MoveAction(Direction.NONE);
+        action = new WalkAction(Direction.NONE);
         break;
 
       case KeyCode.SEMICOLON:
-        action = new MoveAction(Direction.E);
+        action = new WalkAction(Direction.E);
         break;
 
       case KeyCode.COMMA:
-        action = new MoveAction(Direction.SW);
+        action = new WalkAction(Direction.SW);
         break;
 
       case KeyCode.PERIOD:
-        action = new MoveAction(Direction.S);
+        action = new WalkAction(Direction.S);
         break;
 
       case KeyCode.SLASH:
-        action = new MoveAction(Direction.SE);
+        action = new WalkAction(Direction.SE);
         break;
       }
     }

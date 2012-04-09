@@ -82,10 +82,10 @@ class ActionResult {
     done = true;
 }
 
-class MoveAction extends Action {
+class WalkAction extends Action {
   final Vec offset;
 
-  MoveAction(this.offset);
+  WalkAction(this.offset);
 
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.

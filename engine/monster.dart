@@ -82,7 +82,7 @@ class Monster extends Actor {
     // to avoid more costly AI processing when not needed.
     final toHero = game.hero.pos - pos;
     if (toHero.kingLength == 1) {
-      return new MoveAction(toHero);
+      return new WalkAction(toHero);
     }
 
     // Calculate the score for moving in each possible direction.
@@ -156,10 +156,10 @@ class Monster extends Actor {
 
     if ((bestIndexes.length == 0) || (bestScore == START_SCORE)) {
       // All directions are blocked or no move had any appeal, so just sit.
-      return new MoveAction(new Vec(0, 0));
+      return new WalkAction(new Vec(0, 0));
     }
 
-    return new MoveAction(Direction.ALL[rng.item(bestIndexes)]);
+    return new WalkAction(Direction.ALL[rng.item(bestIndexes)]);
   }
 
   Attack getAttack(Actor defender) => rng.item(breed.attacks);

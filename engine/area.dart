@@ -17,7 +17,8 @@ class Area {
     // Place the items.
     final numItems = rng.taper(area.numItems, 3);
     for (var i = 0; i < numItems; i++) {
-      final type = rng.item(area.items);
+      final itemDepth = pickDepth(depth);
+      final type = rng.item(levels[itemDepth].items);
 
       var prefix, suffix;
       if (rng.oneIn(40) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
@@ -33,10 +34,9 @@ class Area {
     // Place the monsters.
     final numMonsters = rng.taper(area.numMonsters, 3);
     for (int i = 0; i < numMonsters; i++) {
+      final monsterDepth = pickDepth(depth);
       final pos = level.findOpenTile();
-
-      // TODO(bob): Sometimes generate out-of-depth monsters.
-      final monster = rng.item(area.breeds).spawn(game, pos);
+      final monster = rng.item(levels[monsterDepth].breeds).spawn(game, pos);
       level.actors.add(monster);
     }
 
@@ -47,13 +47,17 @@ class Area {
 
     print('$numItems items, $numMonsters monsters');
 
-    /*
-    for (final pos in level.bounds) {
-      level[pos]._explored = true;
-    }
-    */
+    // TODO(bob): Uncomment to make entire level visible for debugging.
+    //for (final pos in level.bounds) level[pos]._explored = true;
 
     return level.findOpenTile();
+  }
+
+  int pickDepth(int depth) {
+    while (rng.oneIn(4) && depth > 0) depth--;
+    while (rng.oneIn(6) && depth < levels.length - 1) depth++;
+
+    return depth;
   }
 }
 

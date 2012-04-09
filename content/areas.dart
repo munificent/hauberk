@@ -55,9 +55,29 @@ class AreaBuilder extends ContentBuilder {
     final options = new DungeonOptions();
 
     area('Training Grounds', [
-      level(options, numMonsters: 30, numItems: 10,
+      level(options, numMonsters: 20, numItems: 5,
         breeds: [
           'rat',
+          'giant dragonfly'
+        ],
+        items: [
+          'Crusty Loaf of Bread',
+          'Mending Salve'
+        ],
+        quest: 'Magical Chalice'),
+      level(options, numMonsters: 25, numItems: 8,
+        breeds: [
+          'rat',
+          'mangy cur',
+          'giant dragonfly'
+        ],
+        items: [
+          'Crusty Loaf of Bread',
+          'Mending Salve'
+        ],
+        quest: 'Magical Chalice'),
+      level(options, numMonsters: 30, numItems: 10,
+        breeds: [
           'mangy cur',
           'giant slug',
           'giant dragonfly'
@@ -68,7 +88,7 @@ class AreaBuilder extends ContentBuilder {
           'Cudgel',
           'Dagger'
         ],
-        quest: 'Magical Chalice')
+        quest: 'Magical Chalice'),
     ]);
 
     return _areas;

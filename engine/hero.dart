@@ -210,6 +210,6 @@ class RunBehavior implements Behavior {
 
   Action getAction(Hero hero) {
     firstStep = false;
-    return new MoveAction(direction);
+    return new WalkAction(direction);
   }
 }

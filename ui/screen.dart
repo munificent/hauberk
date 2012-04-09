@@ -1,5 +1,6 @@
 class Screen {
   UserInterface _ui;
+  bool _dirty;
 
   UserInterface get ui() => _ui;
 
@@ -14,6 +15,8 @@ class Screen {
   }
 
   bool get isTopScreen() => _ui.isTopScreen(this);
+
+  void dirty() { _dirty = true; }
 
   abstract bool handleInput(Keyboard keyboard);
   abstract bool update();
@@ -60,7 +63,7 @@ class UserInterface {
 
     var needsRender = false;
     for (final screen in _screens) {
-      needsRender = needsRender || screen.update();
+      needsRender = needsRender || screen.update() || screen._dirty;
     }
 
     _keyboard.afterUpdate();
@@ -71,6 +74,7 @@ class UserInterface {
   void _render() {
     for (final screen in _screens) {
       screen.render(_terminal);
+      screen._dirty = false;
     }
 
     _terminal.render();
