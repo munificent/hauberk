@@ -150,15 +150,15 @@ class GameScreen extends Screen {
     }
   }
 
-  bool update() {
-    var needsRender = effects.length > 0;
+  void update() {
+    if (effects.length > 0) dirty();
 
     var result = game.update();
 
     // TODO(bob): Hack temp.
     if (game.hero.health.current == 0) {
       ui.pop();
-      return true;
+      return;
     }
 
     for (final event in result.events) {
@@ -181,11 +181,9 @@ class GameScreen extends Screen {
       }
     }
 
-    needsRender = needsRender || result.needsRefresh;
+    if (result.needsRefresh) dirty();
 
     effects = effects.filter((effect) => effect.update(game));
-
-    return needsRender;
   }
 
   void render(Terminal terminal) {

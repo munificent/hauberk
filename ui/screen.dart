@@ -1,6 +1,5 @@
 class Screen {
   UserInterface _ui;
-  bool _dirty;
 
   UserInterface get ui() => _ui;
 
@@ -16,10 +15,10 @@ class Screen {
 
   bool get isTopScreen() => _ui.isTopScreen(this);
 
-  void dirty() { _dirty = true; }
+  void dirty() { _ui.dirty(); }
 
   abstract bool handleInput(Keyboard keyboard);
-  abstract bool update();
+  void update() {}
   abstract void render(Terminal terminal);
 }
 
@@ -27,6 +26,7 @@ class UserInterface {
   final Keyboard     _keyboard;
   final Terminal     _terminal;
   final List<Screen> _screens;
+  bool _dirty;
 
   UserInterface(this._keyboard, this._terminal)
   : _screens = <Screen>[];
@@ -52,6 +52,8 @@ class UserInterface {
     _render();
   }
 
+  void dirty() { _dirty = true; }
+
   bool isTopScreen(Screen screen) => _screens.last() == screen;
 
   void tick() {
@@ -61,22 +63,17 @@ class UserInterface {
       if (_screens[i].handleInput(_keyboard)) break;
     }
 
-    var needsRender = false;
-    for (final screen in _screens) {
-      needsRender = needsRender || screen.update() || screen._dirty;
-    }
+    for (final screen in _screens) screen.update();
 
     _keyboard.afterUpdate();
 
-    if (needsRender) _render();
+    if (_dirty) _render();
   }
 
   void _render() {
-    for (final screen in _screens) {
-      screen.render(_terminal);
-      screen._dirty = false;
-    }
+    for (final screen in _screens) screen.render(_terminal);
 
+    _dirty = false;
     _terminal.render();
   }
 }

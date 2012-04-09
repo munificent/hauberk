@@ -35,8 +35,6 @@ class MainMenuScreen extends Screen {
     return true;
   }
 
-  bool update() => false;
-
   void render(Terminal terminal) {
     if (!isTopScreen) return;
 

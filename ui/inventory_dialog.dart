@@ -33,8 +33,6 @@ class InventoryDialog extends Screen {
     return true;
   }
 
-  bool update() => false;
-
   void render(Terminal terminal) {
     terminal.writeAt(0, 0, mode.message);
 
