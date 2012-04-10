@@ -71,6 +71,20 @@ class AreaLevel {
   final int numItems;
   final ItemType quest;
 
+  // TODO(bob): Kinds of quests:
+  // - Find a certain item (implemented now)
+  // - Kill a certain monster
+  // - Kill a certain number of monsters of a given type
+  // - Get a number or set of items
+  // - Explore the entire dungeon
+  // - Find a certain location in the dungeon
+  // - Find a certain item and use it on a certain monster
+  //
+  // Restrictions that can modify the above:
+  // - Complete quest within a turn limit
+  // - Complete quest without killing any monsters
+  // - Complete quest without using any items
+
   AreaLevel(this.options, this.numMonsters, this.numItems,
       this.breeds, this.items, this.quest);
 }

@@ -307,6 +307,9 @@ class GameScreen extends Screen {
 
     terminal.writeAt(81, 8, 'Armor', Color.GRAY);
     terminal.writeAt(88, 8, game.hero.armor.toString(), Color.YELLOW);
+    terminal.writeAt(92, 8,
+        '${(getArmorMultiplier(game.hero.armor) * 100).toInt().toString()}% ',
+        Color.YELLOW);
   }
 
   void drawMeter(Terminal terminal, String label, int y, Color color,

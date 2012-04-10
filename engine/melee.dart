@@ -19,23 +19,23 @@ class Hit {
 
   int rollDamage() {
     var damage = rng.triangleInt(attack.damage, attack.damage ~/ 2);
-    damage *= armorMultiplier;
+    damage *= getArmorMultiplier(armor);
     return damage.round().toInt();
   }
+}
 
-  /// Armor reduces damage by an inverse curve such that increasing armor has
-  /// less and less effect. Damage is reduced to the following:
-  ///
-  ///     armor damage
-  ///     ------------
-  ///     0     100%
-  ///     40    50%
-  ///     80    33%
-  ///     120   25%
-  ///     160   20%
-  ///     ...   etc.
-  num get armorMultiplier() {
-    // Damage is never increased.
-    return 1.0 / (1.0 + Math.max(0, armor) / 40.0);
-  }
+/// Armor reduces damage by an inverse curve such that increasing armor has
+/// less and less effect. Damage is reduced to the following:
+///
+///     armor damage
+///     ------------
+///     0     100%
+///     40    50%
+///     80    33%
+///     120   25%
+///     160   20%
+///     ...   etc.
+num getArmorMultiplier(int armor) {
+  // Damage is never increased.
+  return 1.0 / (1.0 + Math.max(0, armor) / 40.0);
 }
