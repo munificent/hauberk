@@ -25,6 +25,9 @@ class Monster extends Actor {
   int get person() => 3;
   Gender get gender() => breed.gender;
 
+  /// How much experience a level one [Hero] gains for killing this monster.
+  int get experienceCents() => breed.experienceCents;
+
   /// Gets whether or not this monster has an uninterrupted line of sight to
   /// [target].
   bool canView(Vec target) {
@@ -225,6 +228,27 @@ class Breed {
 
   Breed(this.name, this.gender, this.appearance, this.attacks, this.moves,
       [this.maxHealth, this.olfaction, this.meander, this.speed]);
+
+  /// How much experience a level one [Hero] gains for killing a [Monster] of
+  /// this breed.
+  int get experienceCents() {
+    // The more health it has, the longer it can hurt the hero.
+    var exp = maxHealth;
+
+    // Faster monsters are worth more.
+    exp *= Energy.GAINS[Energy.NORMAL_SPEED + speed];
+
+    // Average the attacks (since they are selected randomly) and factor them
+    // in.
+    var attackTotal = 0;
+    for (final attack in attacks) {
+      attackTotal += attack.damage;
+    }
+    exp *= (attackTotal / attacks.length);
+
+    // TODO(bob): Take into account meander, moves and olfaction.
+    return exp.toInt();
+  }
 
   Monster spawn(Game game, Vec pos) {
     return new Monster(game, this, pos.x, pos.y, maxHealth);

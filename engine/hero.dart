@@ -5,6 +5,7 @@
 class HeroHome {
   Inventory inventory;
   Equipment equipment;
+  int experienceCents = 0;
 
   HeroHome()
   : inventory = new Inventory(),
@@ -16,6 +17,7 @@ class HeroHome {
   void copyFrom(Hero hero) {
     inventory = hero.inventory;
     equipment = hero.equipment;
+    experienceCents = hero._experienceCents;
   }
 }
 
@@ -31,14 +33,24 @@ class Hero extends Actor {
   /// [Option.HUNGER_MAX] then resting is ineffective.
   int hunger = 0;
 
+  /// Experience is stored internally as hundredths of a point for higher (but
+  /// not floating point) precision.
+  int _experienceCents = 0;
+
+  /// The hero's experience level.
+  int _level = 1;
+
   Behavior _behavior;
 
   Hero(Game game, Vec pos, HeroHome home)
-  : super(game, pos.x, pos.y, Option.HERO_START_HEALTH),
+  : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses any items
     // he gained.
     inventory = home.inventory.clone(),
-    equipment = home.equipment.clone();
+    equipment = home.equipment.clone(),
+    _experienceCents = home.experienceCents {
+    _refreshLevel(log: false);
+  }
 
   // TODO(bob): Hackish.
   get appearance() => 'hero';
@@ -50,6 +62,10 @@ class Hero extends Actor {
 
     return _behavior == null;
   }
+
+  int get experience() => _experienceCents ~/ 100;
+
+  int get level() => _level;
 
   Action onGetAction() => _behavior.getAction(this);
 
@@ -65,6 +81,11 @@ class Hero extends Actor {
   void takeHit(Hit hit) {
     // TODO(bob): Nothing to do yet. Should eventually handle armor.
     disturb();
+  }
+
+  void onKilled(Monster defender) {
+    _experienceCents += defender.experienceCents ~/ level;
+    _refreshLevel(log: true);
   }
 
   Vec changePosition(Vec pos) {
@@ -98,6 +119,25 @@ class Hero extends Actor {
 
   void disturb() {
     if (_behavior is! ActionBehavior) waitForInput();
+  }
+
+  void _refreshLevel([bool log = false]) {
+    // See if the we levelled up.
+    for (var level = 1; level <= Option.HERO_LEVEL_MAX; level++) {
+      final levelCost = (level - 1) * (level - 1) * Option.HERO_LEVEL_COST;
+
+      if (experience < levelCost) break;
+
+      if (_level < level) {
+        _level++;
+        health.max += Option.HERO_HEALTH_GAIN;
+        health.current += Option.HERO_HEALTH_GAIN;
+
+        if (log) {
+          game.log.add('{1} [have|has] reached level $level.', this);
+        }
+      }
+    }
   }
 
   String get nounText() => 'you';

@@ -7,13 +7,24 @@ class Option {
   static final REST_MAX_HEALTH_FOR_RATE = 200;
 
   /// The max health of a new hero.
-  static final HERO_START_HEALTH = 20;
+  static final HERO_HEALTH_START = 20;
+
+  /// How much max health is increased when the hero levels up.
+  static final HERO_HEALTH_GAIN = 6;
 
   /// How hungry the hero must be before resting ceases to work.
   static final HUNGER_MAX = 800;
 
   /// How much damage an unarmed hero does.
   static final HERO_PUNCH_DAMAGE = 3;
+
+  /// The highest level the hero can reach.
+  static final HERO_LEVEL_MAX = 50;
+
+  /// How much each level costs. This is multiplied by the (zero-based) level
+  /// (squared) to determine how much experience is required to reach that
+  /// level.
+  static final HERO_LEVEL_COST = 40;
 
   /// The maximum number of items the hero's [Inventory] can contain.
   static final INVENTORY_MAX_ITEMS = 12;

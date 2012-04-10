@@ -299,6 +299,11 @@ class GameScreen extends Screen {
       game.hero.health.current, game.hero.health.max);
     drawMeter(terminal, 'Hunger', 4, Color.ORANGE,
       game.hero.hunger, Option.HUNGER_MAX, showNumber: false);
+
+    terminal.writeAt(81, 6, 'Level', Color.GRAY);
+    terminal.writeAt(88, 6, game.hero.level.toString(), Color.GOLD);
+    terminal.writeAt(81, 7, 'Exp', Color.GRAY);
+    terminal.writeAt(88, 7, game.hero.experience.toString(), Color.GOLD);
   }
 
   void drawMeter(Terminal terminal, String label, int y, Color color,

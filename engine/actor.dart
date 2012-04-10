@@ -62,6 +62,11 @@ class Actor extends Thing {
   /// hit.
   abstract void takeHit(Hit hit);
 
+  /// Called when this Actor has killed [defender].
+  void onKilled(Actor defender) {
+    // Do nothing.
+  }
+
   bool canOccupy(Vec pos) {
     if (pos.x < 0) return false;
     if (pos.x >= game.level.width) return false;

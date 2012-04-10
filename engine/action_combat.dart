@@ -17,6 +17,8 @@ class AttackAction extends Action {
 
       addEvent(new Event.kill(defender));
 
+      actor.onKilled(defender);
+
       if (defender is! Hero) {
         game.level.actors.remove(defender);
       }

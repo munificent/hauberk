@@ -10,7 +10,7 @@ class Energy {
   static final ACTION_COST = 240;
 
   // How much energy is gained each game turn for each speed.
-  static final ENERGY_GAINS = const [
+  static final GAINS = const [
     15,     // 1/4 normal speed
     20,     // 1/3 normal speed
     25,
@@ -27,7 +27,7 @@ class Energy {
   ];
 
   static num ticksAtSpeed(int speed) {
-    return ACTION_COST / ENERGY_GAINS[NORMAL_SPEED + speed];
+    return ACTION_COST / GAINS[NORMAL_SPEED + speed];
   }
 
   int speed;
@@ -40,7 +40,7 @@ class Energy {
   /// Advances one game turn and gains an appropriate amount of energy. Returns
   /// `true` if there is enough energy to take a turn.
   bool gain() {
-    energy += ENERGY_GAINS[speed];
+    energy += GAINS[speed];
     return canTakeTurn;
   }
 
