@@ -107,8 +107,8 @@ class AreaBuilder extends ContentBuilder {
         _items[quest]);
   }
 
-  Area area(String name, int numLevels) {
-    final area = new Area(name, numLevels);
+  Area area(String name, List<AreaLevel> levels) {
+    final area = new Area(name, levels);
     _areas.add(area);
     return area;
   }

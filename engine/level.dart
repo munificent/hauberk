@@ -2,7 +2,7 @@
 class Level {
   int get width() => tiles.width;
   int get height() => tiles.height;
-  Vec get bounds() => tiles.bounds;
+  Rect get bounds() => tiles.bounds;
 
   final Array2D<Tile> tiles;
   final Chain<Actor> actors;
@@ -25,7 +25,7 @@ class Level {
   Tile operator[](Vec pos) => tiles[pos];
 
   Tile get(int x, int y) => tiles.get(x, y);
-  void set(int x, int y, Tile tile) => tiles.set(x, y, value);
+  void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
 
   // TODO(bob): Move into Actor collection?
   Actor actorAt(Vec pos) {

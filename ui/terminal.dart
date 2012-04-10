@@ -8,6 +8,8 @@ interface Terminal {
   void writeAt(int x, int y, String text, [Color fore, Color back]);
   void drawGlyph(int x, int y, Glyph glyph);
   Terminal rect(int x, int y, int width, int height);
+
+  void render();
 }
 
 class BaseTerminal implements Terminal {

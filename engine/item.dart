@@ -120,7 +120,9 @@ class Inventory implements Iterable<Item> {
   int get length() => _items.length;
 
   Item operator[](int index) => _items[index];
-  void operator[]=(int index, Item value) => _items[index] = value;
+  void operator[]=(int index, Item value) {
+    _items[index] = value;
+  }
 
   Inventory()
   : _items = <Item>[];

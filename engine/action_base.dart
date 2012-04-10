@@ -115,7 +115,7 @@ class WalkAction extends Action {
     return succeed();
   }
 
-  String toString() => '$actor moves $offset';
+  String toString() => '$actor walks $offset';
 }
 
 class OpenDoorAction extends Action {
@@ -129,8 +129,6 @@ class OpenDoorAction extends Action {
 
     return succeed('{1} open[s] the door.', actor);
   }
-
-  String toString() => '$actor moves $offset';
 }
 
 class CloseDoorAction extends Action {
@@ -144,8 +142,6 @@ class CloseDoorAction extends Action {
 
     return succeed('{1} close[s] the door.', actor);
   }
-
-  String toString() => '$actor moves $offset';
 }
 
 /// Action for essentially spending a turn walking in place. This is a separate
