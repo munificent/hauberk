@@ -67,6 +67,14 @@ class Hero extends Actor {
 
   int get level() => _level;
 
+  int get armor() {
+    int total = 0;
+    for (final item in equipment) {
+      total += item.armor;
+    }
+    return total;
+  }
+
   Action onGetAction() => _behavior.getAction(this);
 
   Attack getAttack(Actor defender) {
@@ -79,8 +87,9 @@ class Hero extends Actor {
   }
 
   void takeHit(Hit hit) {
-    // TODO(bob): Nothing to do yet. Should eventually handle armor.
     disturb();
+
+    hit.armor = armor;
   }
 
   void onKilled(Monster defender) {

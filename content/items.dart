@@ -21,6 +21,7 @@ class ItemBuilder extends ContentBuilder {
     food();
     potions();
     weapons();
+    bodyArmor();
 
     item('Magical Chalice', lightBlue(@'$'),
         use: () => new QuestAction());
@@ -45,6 +46,28 @@ class ItemBuilder extends ContentBuilder {
     weapon('Dagger', lightGray('|'), 'stab[s]', 5);
   }
 
+  void bodyArmor() {
+    armor('Robe', aqua(']'), 'Body', 4);
+    armor('Lined Robe', purple(']'), 'Body', 6);
+    /*
+    Cloth Shirt[s]
+    Leather Shirt[s]
+    Soft Leather Armor[s]
+    Hard Leather Armor[s]
+    Studded Leather Armor[s]
+    Leather Scale Mail[s]
+    Mail Hauberk[s]
+    Metal Lamellar Armor[s]
+    Chain Mail Armor[s]
+    Metal Scale Mail[s]
+    Plated Mail[s]
+    Brigandine[s]
+    Steel Breastplate[s]
+    Partial Plate Armor[s]
+    Full Plate Armor[s]
+    */
+  }
+
   Attack attack(String verb, int damage) => new Attack(verb, damage);
 
   ItemType weapon(String name, Glyph appearance, String verb, int damage) {
@@ -52,9 +75,14 @@ class ItemBuilder extends ContentBuilder {
         attack: attack(verb, damage));
   }
 
+  ItemType armor(String name, Glyph appearance, String equipSlot, int armor) {
+    return item(name, appearance, equipSlot: equipSlot, armor: armor);
+  }
+
   ItemType item(String name, Glyph appearance,
-      [ItemUse use, String equipSlot, Attack attack]) {
-    final itemType = new ItemType(name, appearance, use, equipSlot, attack);
+      [ItemUse use, String equipSlot, Attack attack, int armor = 0]) {
+    final itemType = new ItemType(name, appearance, use, equipSlot, attack,
+        armor);
     _items[name] = itemType;
     return itemType;
   }

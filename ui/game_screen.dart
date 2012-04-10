@@ -304,6 +304,9 @@ class GameScreen extends Screen {
     terminal.writeAt(88, 6, game.hero.level.toString(), Color.GOLD);
     terminal.writeAt(81, 7, 'Exp', Color.GRAY);
     terminal.writeAt(88, 7, game.hero.experience.toString(), Color.GOLD);
+
+    terminal.writeAt(81, 8, 'Armor', Color.GRAY);
+    terminal.writeAt(88, 8, game.hero.armor.toString(), Color.YELLOW);
   }
 
   void drawMeter(Terminal terminal, String label, int y, Color color,

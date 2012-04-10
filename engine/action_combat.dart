@@ -5,16 +5,22 @@ class AttackAction extends Action {
   AttackAction(this.defender);
 
   ActionResult onPerform() {
+    // Get all of the melee information from the participants.
     final attack = actor.getAttack(defender);
     final hit = new Hit(attack);
     defender.takeHit(hit);
 
-    final damage = rng.triangleInt(attack.damage, attack.damage ~/ 2);
+    // Roll for damage.
+    final damage = hit.rollDamage();
+
+    if (damage == 0) {
+      // Armor cancelled out all damage.
+      return succeed('{1} miss[es] {2}.', actor, defender);
+    }
+
     defender.health.current -= damage;
 
     if (defender.health.current == 0) {
-      game.log.add('{1} kill[s] {2}.', actor, defender);
-
       addEvent(new Event.kill(defender));
 
       actor.onKilled(defender);
@@ -22,14 +28,11 @@ class AttackAction extends Action {
       if (defender is! Hero) {
         game.level.actors.remove(defender);
       }
-    } else {
-      final health = defender.health;
-      game.log.add('{1} ${attack.verb} {2}.', actor, defender);
-
-      addEvent(new Event.hit(defender, damage));
+      return succeed('{1} kill[s] {2}.', actor, defender);
     }
 
-    return succeed();
+    addEvent(new Event.hit(defender, damage));
+    return succeed('{1} ${attack.verb} {2}.', actor, defender);
   }
 
   bool get noise() => Option.NOISE_HIT;

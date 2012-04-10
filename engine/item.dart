@@ -30,6 +30,9 @@ class Item extends Thing {
     return modifier;
   }
 
+  /// The amount of protected provided by the item when equipped.
+  int get armor() => type.armor;
+
   String get nounText() {
     final name = new StringBuffer();
     name.add('the ');
@@ -67,12 +70,14 @@ class ItemType {
   final appearance;
   final ItemUse use;
   final Attack attack;
+  final int armor;
 
   /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
   /// then this Item cannot be equipped.
   final String equipSlot;
 
-  ItemType(this.name, this.appearance, this.use, this.equipSlot, this.attack);
+  ItemType(this.name, this.appearance, this.use, this.equipSlot, this.attack,
+      this.armor);
 }
 
 /// A modifier that can be applied to an [Item] to change its capabilities.
@@ -169,7 +174,7 @@ class Equipment implements Iterable<Item> {
       'Weapon',
       'Ring',
       'Necklace',
-      'Torso',
+      'Body',
       'Cloak',
       'Shield',
       'Helm',
@@ -223,5 +228,10 @@ class Equipment implements Iterable<Item> {
 
     // Should not get here.
     assert(false);
+  }
+
+  Iterator<Item> iterator() {
+    // Don't include empty slots.
+    return slots.filter((item) => item != null).iterator();
   }
 }
