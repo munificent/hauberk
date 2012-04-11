@@ -31,13 +31,13 @@ class ItemBuilder extends ContentBuilder {
 
   void food() {
     item('Crusty Loaf of Bread', yellow(','),
-        use: () => new EatAction(300));
+        use: () => new EatAction(400));
   }
 
   void potions() {
     // Healing
     item('Mending Salve', red('!'),
-        use: () => new HealAction(8));
+        use: () => new HealAction(12));
     // balm of soothing, healing, amelioration, rejuvenation
   }
 

@@ -37,38 +37,52 @@ class MonsterBuilder extends ContentBuilder {
     // - Come up with something better than yeeks for 'y'.
     // - Don't use both 'u' and 'U' for undead?
 
-    breed('rat', brown('r'), [
+    breed('white mouse', white('r'), [
         attack('bite[s]', 3),
         attack('scratch[es]', 2)
       ],
-      maxHealth: 4,
-      olfaction: 2,
-      meander: 3,
-      speed: 1
+      maxHealth: 3, olfaction: 2, meander: 4, speed: 1
     );
 
-    breed('mangy cur', gray('c'), [
+    breed('sewer rat', darkGray('r'), [
+        attack('bite[s]', 3),
+        attack('scratch[es]', 2)
+      ],
+      maxHealth: 4, olfaction: 2, meander: 3, speed: 1,
+      flags: 'group'
+    );
+
+    breed('mangy cur', yellow('c'), [
         attack('bite[s]', 4),
       ],
-      maxHealth: 7,
-      olfaction: 5,
-      meander: 3
+      maxHealth: 7, olfaction: 5, meander: 3,
+      flags: 'few'
     );
 
     breed('giant slug', green('s'), [
         attack('crawl[s] on', 8),
       ],
-      maxHealth: 12,
-      meander: 4,
-      speed: -3
+      maxHealth: 12, meander: 4, speed: -3
     );
 
-    breed('giant dragonfly', blue('f'), [
-        attack('sting[s]', 2),
+    breed('little brown bat', lightBrown('b'), [
+        attack('bite[s]', 3),
       ],
-      maxHealth: 2,
-      meander: 8,
-      speed: 2
+      maxHealth: 4, meander: 6, speed: 2
+    );
+
+    breed('stray cat', gray('F'), [
+        attack('bite[s]', 4),
+        attack('scratch[es]', 3),
+      ],
+      maxHealth: 5, meander: 3, olfaction: 7, speed: 1
+    );
+
+    breed('garden spider', aqua('a'), [
+        attack('bite[s]', 2)
+      ],
+      maxHealth: 3, meander: 8,
+      flags: 'pack'
     );
 
     return _breeds;
@@ -76,10 +90,10 @@ class MonsterBuilder extends ContentBuilder {
 
   Breed breed(String name, Glyph appearance, List<Attack> attacks, [
       List<Move> moves, int maxHealth, int olfaction = 0, int meander = 0,
-      int speed = 0]) {
+      int speed = 0, String flags = '']) {
     final breed = new Breed(name, Gender.NEUTER, appearance, attacks, moves,
         maxHealth: maxHealth, olfaction: olfaction, meander: meander,
-        speed: speed);
+        speed: speed, flags: new Set<String>.from(flags.split(' ')));
     _breeds[name] = breed;
     return breed;
   }

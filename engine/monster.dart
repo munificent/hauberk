@@ -226,8 +226,10 @@ class Breed {
   /// (fastest) where `0` is normal speed.
   final int speed;
 
+  final Set<String> flags;
+
   Breed(this.name, this.gender, this.appearance, this.attacks, this.moves,
-      [this.maxHealth, this.olfaction, this.meander, this.speed]);
+      [this.maxHealth, this.olfaction, this.meander, this.speed, this.flags]);
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
@@ -248,6 +250,17 @@ class Breed {
 
     // TODO(bob): Take into account meander, moves and olfaction.
     return exp.toInt();
+  }
+
+  /// When a [Monster] of this Breed is generated, how many of the same type
+  /// should be spawned together (roughly).
+  int get numberInGroup() {
+    if (flags.contains('horde')) return 30;
+    if (flags.contains('swarm')) return 20;
+    if (flags.contains('pack')) return 12;
+    if (flags.contains('group')) return 6;
+    if (flags.contains('few')) return 3;
+    return 1;
   }
 
   Monster spawn(Game game, Vec pos) {

@@ -306,9 +306,8 @@ class GameScreen extends Screen {
     terminal.writeAt(88, 7, game.hero.experience.toString(), Color.GOLD);
 
     terminal.writeAt(81, 8, 'Armor', Color.GRAY);
-    terminal.writeAt(88, 8, game.hero.armor.toString(), Color.YELLOW);
-    terminal.writeAt(92, 8,
-        '${(getArmorMultiplier(game.hero.armor) * 100).toInt().toString()}% ',
+    terminal.writeAt(88, 8,
+        '${(100 - getArmorMultiplier(game.hero.armor) * 100).toInt().toString()}% ',
         Color.YELLOW);
   }
 
