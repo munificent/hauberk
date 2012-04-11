@@ -78,11 +78,17 @@ class MonsterBuilder extends ContentBuilder {
       maxHealth: 5, meander: 3, olfaction: 7, speed: 1
     );
 
-    breed('garden spider', aqua('a'), [
+    breed('garden spider', darkAqua('a'), [
         attack('bite[s]', 2)
       ],
-      maxHealth: 3, meander: 8,
+      maxHealth: 2, meander: 8,
       flags: 'pack'
+    );
+
+    breed('giant cockroach', darkBrown('i'), [
+        attack('crawl[s] on', 1),
+      ],
+      maxHealth: 12, meander: 8, speed: 3
     );
 
     return _breeds;

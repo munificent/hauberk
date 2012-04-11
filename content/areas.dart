@@ -55,7 +55,7 @@ class AreaBuilder extends ContentBuilder {
     final options = new DungeonOptions();
 
     area('Training Grounds', [
-      level(options, numMonsters: 25, numItems: 8,
+      level(options, numMonsters: 16, numItems: 8,
         breeds: [
           'white mouse',
           'sewer rat',
@@ -63,14 +63,15 @@ class AreaBuilder extends ContentBuilder {
           'giant slug',
           'little brown bat',
           'stray cat',
-          'garden spider'
+          'garden spider',
+          'giant cockroach'
         ],
         items: [
           'Crusty Loaf of Bread',
           'Mending Salve'
         ],
         quest: 'Magical Chalice'),
-      level(options, numMonsters: 30, numItems: 9,
+      level(options, numMonsters: 20, numItems: 9,
         breeds: [
           'white mouse',
           'sewer rat',
@@ -78,7 +79,8 @@ class AreaBuilder extends ContentBuilder {
           'giant slug',
           'little brown bat',
           'stray cat',
-          'garden spider'
+          'garden spider',
+          'giant cockroach'
         ],
         items: [
           'Crusty Loaf of Bread',
@@ -86,7 +88,7 @@ class AreaBuilder extends ContentBuilder {
           'Robe'
         ],
         quest: 'Magical Chalice'),
-      level(options, numMonsters: 35, numItems: 10,
+      level(options, numMonsters: 24, numItems: 10,
         breeds: [
           'white mouse',
           'sewer rat',
@@ -94,7 +96,8 @@ class AreaBuilder extends ContentBuilder {
           'giant slug',
           'little brown bat',
           'stray cat',
-          'garden spider'
+          'garden spider',
+          'giant cockroach'
         ],
         items: [
           'Crusty Loaf of Bread',

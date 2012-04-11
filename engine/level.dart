@@ -121,6 +121,41 @@ class Level {
       return pos;
     }
   }
+
+  void spawnMonster(Breed breed, Vec pos) {
+    final monsters = [];
+    final count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 3);
+
+    addMonster(Vec pos) {
+      final monster = breed.spawn(game, pos);
+      actors.add(monster);
+      monsters.add(monster);
+    }
+
+    // Place the first monster.
+    addMonster(pos);
+
+    // If the monster appears in groups, place the rest of the groups.
+    for (var i = 1; i < count; i++) {
+      // Find every open tile that's neighboring a monster in the group.
+      final open = [];
+      for (final monster in monsters) {
+        for (final dir in Direction.ALL) {
+          final neighbor = monster.pos + dir;
+          if (this[neighbor].isPassable && (actorAt(neighbor) == null)) {
+            open.add(neighbor);
+          }
+        }
+      }
+
+      if (open.length == 0) {
+        // We filled the entire reachable area with monsters, so give up.
+        break;
+      }
+
+      addMonster(rng.item(open));
+    }
+  }
 }
 
 class TileType {

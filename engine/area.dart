@@ -36,41 +36,8 @@ class Area {
     for (int i = 0; i < numMonsters; i++) {
       final monsterDepth = pickDepth(depth);
       final pos = level.findOpenTile();
-
       final breed = rng.item(levels[monsterDepth].breeds);
-      final monsters = [];
-      final count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 3);
-
-      addMonster(Vec pos) {
-        final monster = breed.spawn(game, pos);
-        level.actors.add(monster);
-        monsters.add(monster);
-      }
-
-      // Place the first monster.
-      addMonster(pos);
-
-      // If the monster appears in groups, place the rest of the groups.
-      for (var i = 1; i < count; i++) {
-        // Find every open tile that's neighboring a monster in the group.
-        final open = [];
-        for (final monster in monsters) {
-          for (final dir in Direction.ALL) {
-            final neighbor = monster.pos + dir;
-            if (level[neighbor].isPassable &&
-                (level.actorAt(neighbor) == null)) {
-              open.add(neighbor);
-            }
-          }
-        }
-
-        if (open.length == 0) {
-          // We filled the entire reachable area with monsters, so give up.
-          break;
-        }
-
-        addMonster(rng.item(open));
-      }
+      level.spawnMonster(breed, pos);
     }
 
     // Add the quest item.
@@ -91,6 +58,12 @@ class Area {
     while (rng.oneIn(6) && depth < levels.length - 1) depth++;
 
     return depth;
+  }
+
+  /// Selects a random [Breed] for the appropriate depth in this Area. Will
+  /// occasionally select out-of-depth breeds.
+  Breed pickBreed(int depth) {
+    return rng.item(levels[pickDepth(depth)].breeds);
   }
 }
 

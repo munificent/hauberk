@@ -111,4 +111,8 @@ class Option {
   static final EFFORT_START = 100;
   static final EFFORT_REGENERATE = 10;
   static final EFFORT_MAX = 200;
+
+  /// The chance of trying to spawn a new monster in the unexplored dungeon
+  /// each turn.
+  static final SPAWN_MONSTER_CHANCE = 10;
 }

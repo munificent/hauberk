@@ -1,5 +1,7 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
+  final Area           area;
+  final int            depth;
   final Level          level;
   final Log            log;
   final Rng            rng;
@@ -7,7 +9,7 @@ class Game {
   Hero hero;
   bool _questComplete = false;
 
-  Game(Area area, int depth, HeroHome home)
+  Game(this.area, this.depth, HeroHome home)
   : level = new Level(80, 40),
     log = new Log(),
     rng = new Rng(new Date.now().value),
@@ -86,8 +88,32 @@ class Game {
           // This actor doesn't have enough energy yet, so move on to the next.
           level.actors.advance();
         }
+
+        // Each time we wrap around, process "idle" things that are ongoing and
+        // speed independent.
+        if (actor == hero) {
+          trySpawnMonster();
+        }
       }
     }
+  }
+
+  /// Over time, new monsters will appear in unexplored areas of the dungeon.
+  /// This is to encourage players to not waste time: the more they linger, the
+  /// more dangerous the remaining areas become.
+  void trySpawnMonster() {
+    if (!rng.oneIn(Option.SPAWN_MONSTER_CHANCE)) return;
+
+    // Try to place a new monster in unexplored areas.
+    Vec pos = rng.vecInRect(level.bounds);
+
+    final tile = level[pos];
+    if (tile.visible || tile.isExplored || !tile.isPassable) return;
+    if (level.actorAt(pos) != null) return;
+
+    // TODO(bob): Should reuse code in Area to generate out-of-depth monsters.
+    final breed = area.pickBreed(depth);
+    level.spawnMonster(breed, pos);
   }
 
   void completeQuest() {
