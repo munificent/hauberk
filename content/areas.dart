@@ -62,7 +62,8 @@ class AreaBuilder extends ContentBuilder {
           'mangy cur',
           'giant slug',
           'little brown bat',
-          'stray cat'
+          'stray cat',
+          'garden spider'
         ],
         items: [
           'Crusty Loaf of Bread',
@@ -76,7 +77,8 @@ class AreaBuilder extends ContentBuilder {
           'mangy cur',
           'giant slug',
           'little brown bat',
-          'stray cat'
+          'stray cat',
+          'garden spider'
         ],
         items: [
           'Crusty Loaf of Bread',
@@ -91,7 +93,8 @@ class AreaBuilder extends ContentBuilder {
           'mangy cur',
           'giant slug',
           'little brown bat',
-          'stray cat'
+          'stray cat',
+          'garden spider'
         ],
         items: [
           'Crusty Loaf of Bread',

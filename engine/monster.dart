@@ -163,7 +163,7 @@ class Monster extends Actor {
       }
     }
 
-    if ((bestIndexes.length == 0) || (bestScore == START_SCORE)) {
+    if ((bestIndexes.length == 0) || (bestScore == Option.AI_MIN_SCORE)) {
       // All directions are blocked or no move had any appeal, so just sit.
       return new WalkAction(new Vec(0, 0));
     }
