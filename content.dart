@@ -8,8 +8,8 @@
 #source('content/monsters.dart');
 
 Content createContent() {
-  final breeds = new MonsterBuilder().build();
   final items = new ItemBuilder().build();
+  final breeds = new MonsterBuilder(items).build();
   final areas = new AreaBuilder(breeds, items).build();
 
   return new Content(areas);

@@ -156,6 +156,12 @@ class Level {
       addMonster(rng.item(open));
     }
   }
+
+  void spawnItem(ItemType type, Vec pos) {
+    // TODO(bob): Handle powers.
+    final item = new Item(type, pos, null, null);
+    items.add(item);
+  }
 }
 
 class TileType {

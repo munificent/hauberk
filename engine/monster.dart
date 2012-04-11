@@ -181,6 +181,14 @@ class Monster extends Actor {
     // TODO(bob): Nothing to do yet. Should eventually handle armor.
   }
 
+  /// Called when this Actor has been killed by [attacker].
+  void onDied(Actor attacker) {
+    // Drop the item.
+    if (breed.drops.length > 0) {
+      game.level.spawnItem(rng.item(breed.drops), pos);
+    }
+  }
+
   Vec changePosition(Vec pos) {
     // If the monster is (or was) visible, don't let the hero rest through it
     // moving.
@@ -226,10 +234,14 @@ class Breed {
   /// (fastest) where `0` is normal speed.
   final int speed;
 
+  /// The types of [Item]s this monster may drop when killed.
+  final List<ItemType> drops;
+
   final Set<String> flags;
 
   Breed(this.name, this.gender, this.appearance, this.attacks, this.moves,
-      [this.maxHealth, this.olfaction, this.meander, this.speed, this.flags]);
+      this.drops, [
+      this.maxHealth, this.olfaction, this.meander, this.speed, this.flags]);
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.

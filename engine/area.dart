@@ -10,16 +10,21 @@ class Area {
 
     new Dungeon(level, area.options).generate();
 
+    /*
     // TODO(bob): Temp for testing.
     final prefixType = new PowerType('Elven', 'Weapon', damage: 3, isPrefix: true);
     final suffixType = new PowerType('of Wounding', 'Weapon', damage: 6, isPrefix: false);
+    */
 
     // Place the items.
     final numItems = rng.taper(area.numItems, 3);
     for (var i = 0; i < numItems; i++) {
       final itemDepth = pickDepth(depth);
       final type = rng.item(levels[itemDepth].items);
+      final pos = level.findOpenTile();
 
+      level.spawnItem(type, pos);
+      /*
       var prefix, suffix;
       if (rng.oneIn(40) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
       if (rng.oneIn(40) && suffixType.appliesTo(type)) suffix = suffixType.spawn();
@@ -29,6 +34,7 @@ class Area {
 
       if (prefix != null || suffix != null) print(item.toString());
       level.items.add(item);
+      */
     }
 
     // Place the monsters.
@@ -63,7 +69,13 @@ class Area {
   /// Selects a random [Breed] for the appropriate depth in this Area. Will
   /// occasionally select out-of-depth breeds.
   Breed pickBreed(int depth) {
-    return rng.item(levels[pickDepth(depth)].breeds);
+    if (rng.oneIn(2)) {
+      while (rng.oneIn(2) && depth > 0) depth--;
+    } else {
+      while (rng.oneIn(4) && depth < levels.length - 1) depth++;
+    }
+
+    return rng.item(levels[depth].breeds);
   }
 }
 

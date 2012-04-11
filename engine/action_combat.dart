@@ -23,6 +23,7 @@ class AttackAction extends Action {
     if (defender.health.current == 0) {
       addEvent(new Event.kill(defender));
 
+      defender.onDied(actor);
       actor.onKilled(defender);
 
       if (defender is! Hero) {

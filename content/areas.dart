@@ -73,14 +73,7 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice'),
       level(options, numMonsters: 20, numItems: 9,
         breeds: [
-          'white mouse',
-          'sewer rat',
-          'mangy cur',
-          'giant slug',
-          'little brown bat',
-          'stray cat',
-          'garden spider',
-          'giant cockroach'
+          'doddering old mage',
         ],
         items: [
           'Crusty Loaf of Bread',

@@ -62,6 +62,11 @@ class Actor extends Thing {
   /// hit.
   abstract void takeHit(Hit hit);
 
+  /// Called when this Actor has been killed by [attacker].
+  void onDied(Actor attacker) {
+    // Do nothing.
+  }
+
   /// Called when this Actor has killed [defender].
   void onKilled(Actor defender) {
     // Do nothing.
