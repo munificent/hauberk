@@ -35,6 +35,9 @@ class Option {
   /// increases processing time.
   static final MAX_PATH = 20;
 
+  /// The starting score for a potential AI action.
+  static final AI_START_SCORE = 100;
+
   /// The AI score to give for actions that should not be performed. Its actual
   /// value doesn't matter much as long as its low enough that it never becomes
   /// the highest score after taking into account meander and other scores.
@@ -108,11 +111,11 @@ class Option {
   static final SCENT_CORNER_CONVOLVE = 0.2;
   static final SCENT_SIDE_CONVOLVE = 0.5;
 
-  static final EFFORT_START = 100;
-  static final EFFORT_REGENERATE = 10;
+  static final EFFORT_START = 200;
+  static final EFFORT_REGENERATE = 5;
   static final EFFORT_MAX = 200;
 
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.
-  static final SPAWN_MONSTER_CHANCE = 10;
+  static final SPAWN_MONSTER_CHANCE = 30;
 }

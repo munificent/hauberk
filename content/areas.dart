@@ -73,7 +73,9 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice'),
       level(options, numMonsters: 20, numItems: 9,
         breeds: [
+          'wild dog',
           'doddering old mage',
+          'drunken priest',
         ],
         items: [
           'Crusty Loaf of Bread',

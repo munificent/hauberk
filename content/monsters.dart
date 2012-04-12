@@ -75,6 +75,13 @@ class MonsterBuilder extends ContentBuilder {
       maxHealth: 7, olfaction: 5, meander: 3,
       flags: 'few'
     );
+
+    breed('wild dog', gray('c'), [
+        attack('bite[s]', 5),
+      ],
+      maxHealth: 9, olfaction: 5, meander: 3,
+      flags: 'group'
+    );
   }
 
   felines() {
@@ -105,6 +112,15 @@ class MonsterBuilder extends ContentBuilder {
       drops: ['Mending Salve'],
       maxHealth: 12, meander: 3
     );
+
+    // TODO(bob): Should cast spells.
+    breed('drunken priest', aqua('p'), [
+        attack('hit[s]', 3),
+        new HealMove(100, 8)
+      ],
+      drops: ['Mending Salve'],
+      maxHealth: 12, meander: 6
+    );
   }
 
   rodents() {
@@ -132,9 +148,17 @@ class MonsterBuilder extends ContentBuilder {
     );
   }
 
-  Breed breed(String name, Glyph appearance, List<Attack> attacks, [
-      List<Move> moves, List<String> drops, int maxHealth, int olfaction = 0,
+  Breed breed(String name, Glyph appearance, List actions, [
+      List<String> drops, int maxHealth, int olfaction = 0,
       int meander = 0, int speed = 0, String flags = '']) {
+
+    var attacks = <Attack>[];
+    var moves = <Move>[];
+
+    for (final action in actions) {
+      if (action is Attack) attacks.add(action);
+      if (action is Move) moves.add(action);
+    }
 
     var dropTypes;
     if (drops == null) {

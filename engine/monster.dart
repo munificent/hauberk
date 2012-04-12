@@ -88,15 +88,8 @@ class Monster extends Actor {
       return getActionAsleep();
     }
 
-    // If we're next to the hero, just go for the melee hit. Check this first
-    // to avoid more costly AI processing when not needed.
-    final toHero = game.hero.pos - pos;
-    if (toHero.kingLength == 1) {
-      return new WalkAction(toHero);
-    }
-
-    // Calculate the score for moving in each possible direction.
-    final scores = new List(Direction.ALL.length);
+    // Consider all possible moves and select the best one.
+    final choices = <AIChoice>[];
 
     // The minimum scent required for the monster to notice it. Smaller numbers
     // mean a stronger sense of smell.
@@ -116,59 +109,68 @@ class Monster extends Actor {
     // TODO(bob): Make maximum path-length be breed tunable.
     final path = AStar.findDirection(game.level, pos, game.hero.pos, 10);
 
-    final START_SCORE = 100;
+    // Consider melee attacking.
+    final toHero = game.hero.pos - pos;
+    if (toHero.kingLength == 1) {
+      // TODO(bob): Figure out what this score should be. It should generally
+      // be pretty high. Most of the time a monster should prefer this over
+      // walking, but may prefer other moves over this.
+      var score = Option.AI_START_SCORE + 50;
+      choices.add(new AIChoice(score, () => new WalkAction(toHero)));
+    }
 
+    // Consider each direction to walk in.
     for (var i = 0; i < Direction.ALL.length; i++) {
+      var score = Option.AI_START_SCORE;
       final dest = pos + Direction.ALL[i];
 
-      // If the direction is blocked, give it a negative score and skip it.
-      if (!canOccupy(dest) || game.level.actorAt(dest) != null) {
-        scores[i] = Option.AI_MIN_SCORE;
-        continue;
-      }
-
-      scores[i] = START_SCORE;
-
-      // TODO(bob): These different score modifiers should be weighted so that
-      // (for example) path finding has a greater influence than scent.
+      // If the direction is blocked, don't consider it.
+      if (!canOccupy(dest) || game.level.actorAt(dest) != null) continue;
 
       // Apply scent knowledge.
       final scentGradient = getScent(dest) - scent;
-      scores[i] += scentGradient * scentWeight;
+      score += scentGradient * scentWeight;
 
       // Apply pathfinding.
       if (Direction.ALL[i] == path) {
-        scores[i] += Option.AI_WEIGHT_PATH_STRAIGHT;
+        score += Option.AI_WEIGHT_PATH_STRAIGHT;
       } else if (Direction.ALL[i].rotateLeft45 == path) {
-        scores[i] += Option.AI_WEIGHT_PATH_NEAR;
+        score += Option.AI_WEIGHT_PATH_NEAR;
       } else if (Direction.ALL[i].rotateRight45 == path) {
-        scores[i] += Option.AI_WEIGHT_PATH_NEAR;
+        score += Option.AI_WEIGHT_PATH_NEAR;
       }
 
       // Add some randomness to make the monster meander.
-      scores[i] += rng.range(breed.meander * Option.AI_WEIGHT_MEANDER);
+      score += rng.range(breed.meander * Option.AI_WEIGHT_MEANDER);
+
+      choices.add(new AIChoice(score, () => new WalkAction(Direction.ALL[i])));
     }
 
-    // Pick the best move.
+    // Consider the monster's moves.
+    for (final move in breed.moves) {
+      var score = Option.AI_START_SCORE + move.getScore(this);
+      if (score == Option.AI_MIN_SCORE) continue;
+      choices.add(new AIChoice(score, () => move.getAction(this)));
+    }
+
+    // If the monster couldn't come up with anything to do, just sit.
+    if (choices.length == 0) return new WalkAction(new Vec(0, 0));
+
+    // Pick the best choice.
     var bestScore = Option.AI_MIN_SCORE - 1;
-    var bestIndexes;
-    for (var i = 0; i < scores.length; i++) {
-      if (scores[i] == bestScore) {
-        // If multiple directions have the same score, we'll pick randomly
+    var bestChoices;
+    for (var i = 0; i < choices.length; i++) {
+      if (choices[i].score == bestScore) {
+        // If multiple choices have the same score, we'll pick randomly
         // between them.
-        bestIndexes.add(i);
-      } if (scores[i] > bestScore) {
-        bestScore = scores[i];
-        bestIndexes = [i];
+        bestChoices.add(choices[i]);
+      } if (choices[i].score > bestScore) {
+        bestScore = choices[i].score;
+        bestChoices = [choices[i]];
       }
     }
 
-    if ((bestIndexes.length == 0) || (bestScore == Option.AI_MIN_SCORE)) {
-      // All directions are blocked or no move had any appeal, so just sit.
-      return new WalkAction(new Vec(0, 0));
-    }
-
-    return new WalkAction(Direction.ALL[rng.item(bestIndexes)]);
+    return rng.item(bestChoices).createAction();
   }
 
   Attack getAttack(Actor defender) => rng.item(breed.attacks);
@@ -198,6 +200,13 @@ class Monster extends Actor {
 
     return pos;
   }
+}
+
+class AIChoice {
+  final num score;
+  final createAction;
+
+  AIChoice(this.score, this.createAction);
 }
 
 /// A [Monster]'s internal mental state.

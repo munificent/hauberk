@@ -11,7 +11,7 @@ class Move {
 
   /// Gets the AI score for performing this move. The higher the score, the more
   /// likely the monster is to select this move over other options.
-  int getScore(Monster monster) {
+  num getScore(Monster monster) {
     // Don't select a move the monster can't afford.
     if (monster.effort < cost) return Option.AI_MIN_SCORE;
 
@@ -38,10 +38,9 @@ class HealMove extends Move {
 
   HealMove(int cost, this.amount) : super(cost);
 
-  int onGetScore(Monster monster) {
+  num onGetScore(Monster monster) {
     // The closer it is to death, the more it wants to heal.
-    final health = 1.0 - (monster.health.current / monster.health.max);
-    return health + 20.0;
+    return 100 * (1 - (monster.health.current / monster.health.max));
   }
 
   Action onGetAction(Monster monster) {
