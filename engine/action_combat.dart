@@ -85,6 +85,7 @@ class HealAction extends Action {
       return succeed("{1} [don't|doesn't] feel any different.", actor);
     } else {
       actor.health.current += amount;
+      addEvent(new Event.heal(actor, amount));
       return succeed('{1} feel[s] better.', actor);
     }
   }

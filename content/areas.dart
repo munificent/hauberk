@@ -55,7 +55,7 @@ class AreaBuilder extends ContentBuilder {
     final options = new DungeonOptions();
 
     area('Training Grounds', [
-      level(options, numMonsters: 16, numItems: 8,
+      level(options, numMonsters: 12, numItems: 8,
         breeds: [
           'white mouse',
           'sewer rat',
@@ -71,7 +71,7 @@ class AreaBuilder extends ContentBuilder {
           'Mending Salve'
         ],
         quest: 'Magical Chalice'),
-      level(options, numMonsters: 20, numItems: 9,
+      level(options, numMonsters: 16, numItems: 9,
         breeds: [
           'wild dog',
           'doddering old mage',
@@ -83,7 +83,7 @@ class AreaBuilder extends ContentBuilder {
           'Robe'
         ],
         quest: 'Magical Chalice'),
-      level(options, numMonsters: 24, numItems: 10,
+      level(options, numMonsters: 20, numItems: 10,
         breeds: [
           'white mouse',
           'sewer rat',

@@ -276,11 +276,11 @@ class Breed {
   /// When a [Monster] of this Breed is generated, how many of the same type
   /// should be spawned together (roughly).
   int get numberInGroup() {
-    if (flags.contains('horde')) return 30;
-    if (flags.contains('swarm')) return 20;
-    if (flags.contains('pack')) return 12;
-    if (flags.contains('group')) return 6;
-    if (flags.contains('few')) return 3;
+    if (flags.contains('horde')) return 18;
+    if (flags.contains('swarm')) return 12;
+    if (flags.contains('pack')) return 8;
+    if (flags.contains('group')) return 4;
+    if (flags.contains('few')) return 2;
     return 1;
   }
 

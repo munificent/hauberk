@@ -124,7 +124,7 @@ class Level {
 
   void spawnMonster(Breed breed, Vec pos) {
     final monsters = [];
-    final count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 3);
+    final count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 2);
 
     addMonster(Vec pos) {
       final monster = breed.spawn(game, pos);

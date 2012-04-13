@@ -172,9 +172,12 @@ class GameScreen extends Screen {
 
         case EventType.KILL:
           effects.add(new HitEffect(event.actor));
-          for (var i = 0; i < 10; i++) {
-            effects.add(new ParticleEffect(event.actor.x, event.actor.y));
-          }
+          // TODO(bob): Make number of particles vary based on monster health.
+          _spawnParticles(10, event.actor.pos, Color.RED);
+          break;
+
+        case EventType.HEAL:
+          effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
           break;
       }
     }
@@ -365,6 +368,12 @@ class GameScreen extends Screen {
 
     return new Glyph(char, color);
   }
+
+  void _spawnParticles(int count, Vec pos, Color color) {
+    for (var i = 0; i < count; i++) {
+      effects.add(new ParticleEffect(pos.x, pos.y, color));
+    }
+  }
 }
 
 interface Effect {
@@ -422,8 +431,9 @@ class ParticleEffect implements Effect {
   num h;
   num v;
   int life;
+  final Color color;
 
-  ParticleEffect(this.x, this.y) {
+  ParticleEffect(this.x, this.y, this.color) {
     final theta = rng.range(628) / 100; // TODO(bob): Ghetto.
     final radius = rng.range(30, 40) / 100;
 
@@ -444,6 +454,33 @@ class ParticleEffect implements Effect {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(x.toInt(), y.toInt(), '*', Color.RED);
+    terminal.writeAt(x.toInt(), y.toInt(), '*', color);
+  }
+}
+
+class HealEffect implements Effect {
+  int x;
+  int y;
+  int frame = 0;
+
+  HealEffect(this.x, this.y);
+
+  bool update(Game game) {
+    return frame++ < 24;
+  }
+
+  void render(Terminal terminal) {
+    var back;
+    switch ((frame ~/ 4) % 4) {
+      case 0: back = Color.BLACK;       break;
+      case 1: back = Color.DARK_AQUA;   break;
+      case 2: back = Color.AQUA;        break;
+      case 3: back = Color.LIGHT_AQUA;  break;
+    }
+
+    terminal.writeAt(x - 1, y, '-', back);
+    terminal.writeAt(x + 1, y, '-', back);
+    terminal.writeAt(x, y - 1, '|', back);
+    terminal.writeAt(x, y + 1, '|', back);
   }
 }

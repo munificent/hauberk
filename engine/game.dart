@@ -191,6 +191,9 @@ class Event {
   Event.kill(this.actor)
   : type = EventType.KILL,
     value = 0;
+
+  Event.heal(this.actor, this.value)
+  : type = EventType.HEAL;
 }
 
 /// A kind of [Event] that has occurred.
@@ -203,6 +206,9 @@ class EventType {
 
   /// An [Actor] was killed.
   static final KILL = const EventType(2);
+
+  /// An [Actor] was healed.
+  static final HEAL = const EventType(3);
 
   final int _value;
   const EventType(this._value);
