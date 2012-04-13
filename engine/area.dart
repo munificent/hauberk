@@ -10,6 +10,9 @@ class Area {
 
     new Dungeon(level, area.options).generate();
 
+    final heroPos = level.findOpenTile();
+    _calculateDistances(level, heroPos);
+
     /*
     // TODO(bob): Temp for testing.
     final prefixType = new PowerType('Elven', 'Weapon', damage: 3, isPrefix: true);
@@ -41,22 +44,21 @@ class Area {
     final numMonsters = rng.taper(area.numMonsters, 3);
     for (int i = 0; i < numMonsters; i++) {
       final monsterDepth = pickDepth(depth);
-      final pos = level.findOpenTile();
+
+      // Place strong monsters farther from the hero.
+      var tries = 1;
+      if (monsterDepth > depth) tries = 1 + (monsterDepth - depth) * 2;
+      final pos = findDistantTile(level, tries);
+
       final breed = rng.item(levels[monsterDepth].breeds);
       level.spawnMonster(breed, pos);
     }
 
     // Add the quest item.
-    // TODO(bob): Place it far from the hero.
-    final quest = new Item(area.quest, level.findOpenTile(), null, null);
+    final quest = new Item(area.quest, findDistantTile(level, 10), null, null);
     level.items.add(quest);
 
-    print('$numItems items, $numMonsters monsters');
-
-    // TODO(bob): Uncomment to make entire level visible for debugging.
-    //for (final pos in level.bounds) level[pos]._explored = true;
-
-    return level.findOpenTile();
+    return heroPos;
   }
 
   int pickDepth(int depth) {
@@ -76,6 +78,54 @@ class Area {
     }
 
     return rng.item(levels[depth].breeds);
+  }
+
+  Vec findDistantTile(Level level, int tries) {
+    var bestDistance = -1;
+    var best;
+
+    for (var i = 0; i < tries; i++) {
+      final pos = level.findOpenTile();
+      if (level[pos].scent2 > bestDistance) {
+        best = pos;
+        bestDistance = level[pos].scent2;
+      }
+    }
+
+    return best;
+  }
+
+  /// Run Dijkstra's algorithm to calculate the distance from every reachable
+  /// tile to the [Hero]. We will use this to place better and stronger things
+  /// farther from the Hero. Re-uses the scent data as a convenient buffer for
+  /// this.
+  void _calculateDistances(Level level, Vec start) {
+    // Clear it out.
+    for (final pos in level.bounds) level[pos].scent2 = 9999;
+    level[start].scent2 = 0;
+
+    final open = new Queue<Vec>();
+    open.add(start);
+
+    while (open.length > 0) {
+      final start = open.removeFirst();
+      final distance = level[start].scent2;
+
+      // Update the neighbor's distances.
+      for (var dir in Direction.ALL) {
+        final here = start + dir;
+
+        // Can't reach impassable tiles.
+        if (!level[here].isTraversable) continue;
+
+        // If we got a new best path to this tile, update its distance and
+        // consider its neighbors later.
+        if (level[here].scent2 > distance + 1) {
+          level[here].scent2 = distance + 1;
+          open.add(here);
+        }
+      }
+    }
   }
 }
 

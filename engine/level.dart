@@ -10,7 +10,7 @@ class Level {
 
   // Scent state is double-buffered in Tiles. This tracks which buffer is
   // current. Will be `true` if `scent1` is current.
-  bool currentScent1;
+  bool currentScent1 = true;
 
   bool _visibilityDirty = true;
 
@@ -63,9 +63,9 @@ class Level {
   void updateScent(Hero hero) {
     // The hero stinks!
     if (currentScent1) {
-      tiles[hero.pos].scent1 += Option.SCENT_HERO;
-    } else {
       tiles[hero.pos].scent2 += Option.SCENT_HERO;
+    } else {
+      tiles[hero.pos].scent1 += Option.SCENT_HERO;
     }
 
     for (var y = 1; y < tiles.height - 1; y++) {
@@ -195,6 +195,12 @@ class Tile {
   bool get isPassable() {
     return (type == TileType.FLOOR) ||
            (type == TileType.OPEN_DOOR);
+  }
+
+  bool get isTraversable() {
+    return (type == TileType.FLOOR) ||
+           (type == TileType.OPEN_DOOR) ||
+           (type == TileType.CLOSED_DOOR);
   }
 
   bool get isTransparent() {
