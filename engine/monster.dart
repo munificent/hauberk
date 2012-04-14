@@ -40,6 +40,8 @@ class Monster extends Actor {
     return true;
   }
 
+  bool get canOpenDoors() => breed.flags.contains('open-doors');
+
   Action onGetAction() {
     // Regenerate effort.
     effort = Math.min(Option.EFFORT_MAX, effort + Option.EFFORT_REGENERATE);
@@ -107,7 +109,8 @@ class Monster extends Actor {
     final scent = getScent(pos);
 
     // TODO(bob): Make maximum path-length be breed tunable.
-    final path = AStar.findDirection(game.level, pos, game.hero.pos, 10);
+    final path = AStar.findDirection(game.level, pos, game.hero.pos, 10,
+        canOpenDoors);
 
     // Consider melee attacking.
     final toHero = game.hero.pos - pos;
@@ -125,7 +128,9 @@ class Monster extends Actor {
       final dest = pos + Direction.ALL[i];
 
       // If the direction is blocked, don't consider it.
-      if (!canOccupy(dest) || game.level.actorAt(dest) != null) continue;
+      if (!game.level[dest].isTraversable) continue;
+      if (!canOpenDoors && !game.level[dest].isPassable) continue;
+      if (game.level.actorAt(dest) != null) continue;
 
       // Apply scent knowledge.
       final scentGradient = getScent(dest) - scent;

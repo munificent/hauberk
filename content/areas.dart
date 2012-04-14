@@ -74,6 +74,7 @@ class AreaBuilder extends ContentBuilder {
       level(options, numMonsters: 16, numItems: 9,
         breeds: [
           'wild dog',
+          'giant spider',
           'doddering old mage',
           'drunken priest',
         ],

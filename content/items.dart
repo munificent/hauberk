@@ -43,6 +43,7 @@ class ItemBuilder extends ContentBuilder {
 
   void weapons() {
     weapon('Cudgel', brown('\\'),    'hit[s]', 4);
+    weapon('Staff', lightBrown('_'), 'hit[s]', 5);
     weapon('Dagger', lightGray('|'), 'stab[s]', 5);
   }
 

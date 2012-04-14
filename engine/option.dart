@@ -55,7 +55,7 @@ class Option {
   static final AI_WEIGHT_PATH_NEAR = 5.0;
 
   /// How much a breed's meander affects the monster's choice of action.
-  static final AI_WEIGHT_MEANDER = 5.0;
+  static final AI_WEIGHT_MEANDER = 3.0;
 
   /// When calculating pathfinding, how much it "costs" to move one step on
   /// an open floor tile.
@@ -112,7 +112,7 @@ class Option {
   static final SCENT_SIDE_CONVOLVE = 0.5;
 
   static final EFFORT_START = 200;
-  static final EFFORT_REGENERATE = 5;
+  static final EFFORT_REGENERATE = 2;
   static final EFFORT_MAX = 200;
 
   /// The chance of trying to spawn a new monster in the unexplored dungeon

@@ -16,8 +16,9 @@ class AStar {
   /// steps from [start]. Returns the [Direction] of the first step from [start]
   /// along that path (or [Direction.NONE] if it determines there is no path
   /// possible.
-  static Direction findDirection(Level level, Vec start, Vec end, int maxLength) {
-    final result = findPath(level, start, end, maxLength);
+  static Direction findDirection(Level level, Vec start, Vec end, int maxLength,
+      bool canOpenDoors) {
+    final result = findPath(level, start, end, maxLength, canOpenDoors);
     if (result == null) return Direction.NONE;
 
     var path = result.path;
@@ -28,7 +29,8 @@ class AStar {
     return path.direction;
   }
 
-  static AStarResult findPath(Level level, Vec start, Vec end, int maxLength) {
+  static AStarResult findPath(Level level, Vec start, Vec end, int maxLength,
+      bool canOpenDoors) {
     // TODO(bob): More optimal data structure.
     final startPath = new PathNode(null, Direction.NONE,
         start, 0, heuristic(start, end));
@@ -53,15 +55,20 @@ class AStar {
         final neighbor = current.pos + dir;
 
         // Skip impassable tiles.
-        if (!level[neighbor].isPassable) continue;
+        if (!level[neighbor].isTraversable) continue;
 
         // Given how far the current tile is, how far is each neighbor?
         var stepCost = Option.ASTAR_FLOOR_COST;
         if (level[neighbor].type == TileType.CLOSED_DOOR) {
-          // TODO(bob): If the monster can open doors, this should just be
-          // 20 (the cost for one turn to open the door and one turn to enter
-          // the tile).
-          stepCost = Option.ASTAR_DOOR_COST;
+          if (canOpenDoors) {
+            // One to open the door and one to enter the tile.
+            stepCost = Option.ASTAR_FLOOR_COST * 2;
+          } else {
+            // Even though the monster can't open doors, we don't consider it
+            // totally impassable because there's a chance the door will be
+            // opened by someone else.
+            stepCost = Option.ASTAR_DOOR_COST;
+          }
         } else if (level.actorAt(neighbor) != null) {
           stepCost = Option.ASTAR_OCCUPIED_COST;
         }

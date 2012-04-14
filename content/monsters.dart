@@ -56,7 +56,13 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 2)
       ],
       maxHealth: 2, meander: 8,
-      flags: 'pack'
+      flags: 'group'
+    );
+
+    breed('giant spider', darkBlue('a'), [
+        attack('bite[s]', 8)
+      ],
+      maxHealth: 2, meander: 5
     );
   }
 
@@ -80,7 +86,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 5),
       ],
       maxHealth: 9, olfaction: 5, meander: 3,
-      flags: 'group'
+      flags: 'few'
     );
   }
 
@@ -109,17 +115,18 @@ class MonsterBuilder extends ContentBuilder {
     breed('doddering old mage', purple('p'), [
         attack('hit[s]', 3)
       ],
-      drops: ['Mending Salve'],
-      maxHealth: 12, meander: 3
+      drops: ['Mending Salve', 'Staff', 'Dagger', 'Robe'],
+      maxHealth: 7, meander: 2,
+      flags: 'open-doors'
     );
 
-    // TODO(bob): Should cast spells.
     breed('drunken priest', aqua('p'), [
         attack('hit[s]', 3),
         new HealMove(100, 8)
       ],
-      drops: ['Mending Salve'],
-      maxHealth: 12, meander: 6
+      drops: ['Mending Salve', 'Cudgel', 'Staff', 'Robe'],
+      maxHealth: 8, meander: 4,
+      flags: 'open-doors'
     );
   }
 
