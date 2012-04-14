@@ -6,6 +6,7 @@
 #source('engine/action_base.dart');
 #source('engine/action_combat.dart');
 #source('engine/action_item.dart');
+#source('engine/action_magic.dart');
 #source('engine/actor.dart');
 #source('engine/area.dart');
 #source('engine/dungeon.dart');

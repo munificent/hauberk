@@ -115,7 +115,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('doddering old mage', purple('p'), [
         attack('hit[s]', 3)
       ],
-      drops: ['Mending Salve', 'Staff', 'Dagger', 'Robe'],
+      drops: ['Scroll of Sidestepping', 'Staff', 'Dagger', 'Robe'],
       maxHealth: 7, meander: 2,
       flags: 'open-doors'
     );

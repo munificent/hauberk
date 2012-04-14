@@ -20,6 +20,7 @@ class ItemBuilder extends ContentBuilder {
 
     food();
     potions();
+    scrolls();
     weapons();
     bodyArmor();
 
@@ -39,6 +40,13 @@ class ItemBuilder extends ContentBuilder {
     item('Mending Salve', red('!'),
         use: () => new HealAction(12));
     // balm of soothing, healing, amelioration, rejuvenation
+  }
+
+  void scrolls() {
+    // Teleportation
+    // Phasing, Teleportation, Disappearing
+    item('Scroll of Sidestepping', lightPurple('?'),
+        use: () => new TeleportAction(5));
   }
 
   void weapons() {

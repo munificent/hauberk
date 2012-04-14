@@ -68,7 +68,8 @@ class AreaBuilder extends ContentBuilder {
         ],
         items: [
           'Crusty Loaf of Bread',
-          'Mending Salve'
+          'Mending Salve',
+          'Scroll of Sidestepping'
         ],
         quest: 'Magical Chalice'),
       level(options, numMonsters: 16, numItems: 9,
