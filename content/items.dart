@@ -1,6 +1,7 @@
 /// Builder class for defining [ItemType]s.
 class ItemBuilder extends ContentBuilder {
   final Map<String, ItemType> _items;
+  int _sortIndex = 0;
 
   ItemBuilder()
   : _items = <ItemType>{};
@@ -46,7 +47,7 @@ class ItemBuilder extends ContentBuilder {
     // Teleportation
     // Phasing, Teleportation, Disappearing
     item('Scroll of Sidestepping', lightPurple('?'),
-        use: () => new TeleportAction(5));
+        use: () => new TeleportAction(7));
   }
 
   void weapons() {
@@ -90,8 +91,8 @@ class ItemBuilder extends ContentBuilder {
 
   ItemType item(String name, Glyph appearance,
       [ItemUse use, String equipSlot, Attack attack, int armor = 0]) {
-    final itemType = new ItemType(name, appearance, use, equipSlot, attack,
-        armor);
+    final itemType = new ItemType(name, appearance, _sortIndex++, use,
+        equipSlot, attack, armor);
     _items[name] = itemType;
     return itemType;
   }

@@ -1,6 +1,6 @@
 
 /// A thing that can be picked up.
-class Item extends Thing {
+class Item extends Thing implements Comparable {
   final ItemType type;
 
   final Power prefix;
@@ -60,6 +60,11 @@ class Item extends Thing {
 
   int get person() => 3;
   Gender get gender() => Gender.NEUTER;
+
+  int compareTo(ItemType other) {
+    // TODO(bob): Take into account powers.
+    return type.sortIndex.compareTo(other.type.sortIndex);
+  }
 }
 
 typedef Action ItemUse();
@@ -68,6 +73,7 @@ typedef Action ItemUse();
 class ItemType {
   final String name;
   final appearance;
+  final int sortIndex;
   final ItemUse use;
   final Attack attack;
   final int armor;
@@ -76,8 +82,8 @@ class ItemType {
   /// then this Item cannot be equipped.
   final String equipSlot;
 
-  ItemType(this.name, this.appearance, this.use, this.equipSlot, this.attack,
-      this.armor);
+  ItemType(this.name, this.appearance, this.sortIndex, this.use, this.equipSlot,
+      this.attack, this.armor);
 }
 
 /// A modifier that can be applied to an [Item] to change its capabilities.
@@ -155,6 +161,7 @@ class Inventory implements Iterable<Item> {
     if (_items.length >= Option.INVENTORY_MAX_ITEMS) return false;
 
     _items.add(item);
+    _items.sort((a, b) => a.compareTo(b));
     return true;
   }
 
