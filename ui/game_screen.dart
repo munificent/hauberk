@@ -300,8 +300,10 @@ class GameScreen extends Screen {
     terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
     drawMeter(terminal, 'Health', 3, Color.RED,
       game.hero.health.current, game.hero.health.max);
+    /*
     drawMeter(terminal, 'Hunger', 4, Color.ORANGE,
       game.hero.hunger, Option.HUNGER_MAX, showNumber: false);
+    */
 
     terminal.writeAt(81, 6, 'Level', Color.GRAY);
     terminal.writeAt(88, 6, game.hero.level.toString(), Color.GOLD);

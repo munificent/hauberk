@@ -29,9 +29,11 @@ class Hero extends Actor {
   final Inventory inventory;
   final Equipment equipment;
 
+  /*
   /// Resting increases this. Eating food lowers it. If it reaches
   /// [Option.HUNGER_MAX] then resting is ineffective.
   int hunger = 0;
+  */
 
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
@@ -102,6 +104,7 @@ class Hero extends Actor {
     return pos;
   }
 
+  /*
   void regenerate() {
     // The hero can only rest if not hungry.
     if (hunger < Option.HUNGER_MAX) {
@@ -109,6 +112,7 @@ class Hero extends Actor {
       super.regenerate();
     }
   }
+  */
 
   void waitForInput() {
     _behavior = null;
@@ -188,6 +192,7 @@ class RestBehavior implements Behavior {
     // See if done resting.
     if (hero.health.isMax) return false;
 
+    /*
     // Can't rest while hungry.
     if (hero.hunger == Option.HUNGER_MAX) {
       // TODO(bob): This message doesn't actually display immediately. Because
@@ -196,6 +201,7 @@ class RestBehavior implements Behavior {
       hero.game.log.add('{1} [are|is] too hungry to rest.', hero);
       return false;
     }
+    */
 
     return true;
   }

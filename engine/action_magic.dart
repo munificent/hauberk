@@ -1,4 +1,4 @@
-
+/*
 class EatAction extends Action {
   final int amount;
 
@@ -14,6 +14,7 @@ class EatAction extends Action {
     }
   }
 }
+*/
 
 class HealAction extends Action {
   final int amount;
