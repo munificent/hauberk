@@ -46,13 +46,13 @@ class Rect implements Iterable<Vec> {
   /// <returns></returns>
   static Rect intersect(Rect a, Rect b)
   {
-    final left = Math.max(a.left, b.left);
-    final right = Math.min(a.right, b.right);
-    final top = Math.max(a.top, b.top);
-    final bottom = Math.min(a.bottom, b.bottom);
+    final left = max(a.left, b.left);
+    final right = min(a.right, b.right);
+    final top = max(a.top, b.top);
+    final bottom = min(a.bottom, b.bottom);
 
-    final width = Math.max(0, right - left);
-    final height = Math.max(0, bottom - top);
+    final width = max(0, right - left);
+    final height = max(0, bottom - top);
 
     return new Rect(left, top, width, height);
   }

@@ -142,8 +142,8 @@ class AStar {
     // s.*.*.g
     // .*...*.
     final offset = (end - pos).abs();
-    final numDiagonal = Math.min(offset.x, offset.y);
-    final numStraight = Math.max(offset.x, offset.y) - numDiagonal;
+    final numDiagonal = min(offset.x, offset.y);
+    final numStraight = max(offset.x, offset.y) - numDiagonal;
     return (numDiagonal * Option.ASTAR_FLOOR_COST) +
            (numStraight * Option.ASTAR_STRAIGHT_COST);
   }

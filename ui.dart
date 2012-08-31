@@ -1,6 +1,7 @@
 #library('roguekit-ui');
 
 #import('dart:html', prefix: 'html');
+#import('dart:math');
 
 #import('engine.dart');
 #import('util.dart');

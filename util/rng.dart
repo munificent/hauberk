@@ -3,7 +3,7 @@
 // initializers.
 /// A singleton instance of Rng globally available.
 Rng get rng() {
-  if (_rng == null) _rng = new Rng(new Date.now().value);
+  if (_rng == null) _rng = new Rng(new Date.now().millisecondsSinceEpoch);
   return _rng;
 }
 

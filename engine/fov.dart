@@ -88,8 +88,8 @@ class Fov {
     final rowTopWidth = row + 2;
 
     // Unify the bottom and top edges of the tile.
-    final start = Math.min(col / rowBottomWidth, col / rowTopWidth);
-    final end   = Math.max((col + 1) / rowBottomWidth, (col + 1) / rowTopWidth);
+    final start = min(col / rowBottomWidth, col / rowTopWidth);
+    final end   = max((col + 1) / rowBottomWidth, (col + 1) / rowTopWidth);
 
     return new Shadow(start, end);
   }
@@ -121,16 +121,16 @@ class Fov {
     if (overlapsNext) {
       if (overlapsPrev) {
         // Overlaps both, so unify one and delete the other.
-        shadows[index - 1].end = Math.max(shadows[index - 1].end, shadows[index].end);
+        shadows[index - 1].end = max(shadows[index - 1].end, shadows[index].end);
         shadows.removeRange(index, 1);
       } else {
         // Just overlaps the next shadow, so unify it with that.
-        shadows[index].start = Math.min(shadows[index].start, shadow.start);
+        shadows[index].start = min(shadows[index].start, shadow.start);
       }
     } else {
       if (overlapsPrev) {
         // Just overlaps the previous shadow, so unify it with that.
-        shadows[index - 1].end = Math.max(shadows[index - 1].end, shadow.end);
+        shadows[index - 1].end = max(shadows[index - 1].end, shadow.end);
       } else {
         // Does not overlap anything, so insert.
         shadows.insertRange(index, 1, shadow);

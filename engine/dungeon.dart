@@ -118,8 +118,8 @@ class Dungeon {
   void mergeColors(Room a, Room b) {
     if (a.color == b.color) return;
 
-    final color = Math.min(a.color, b.color);
-    _usedColors.remove(Math.max(a.color, b.color));
+    final color = min(a.color, b.color);
+    _usedColors.remove(max(a.color, b.color));
 
     for (final room in _rooms) {
       if (room.color == a.color || room.color == b.color) {

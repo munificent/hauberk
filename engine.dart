@@ -1,5 +1,6 @@
 #library('roguekit-engine.dart');
 
+#import('dart:math');
 #import('util.dart');
 
 #source('engine/a_star.dart');

@@ -26,10 +26,10 @@ main() {
 
   tick(time) {
     ui.tick();
-    html.window.webkitRequestAnimationFrame(tick, element);
+    html.window.requestAnimationFrame(tick);
   }
 
-  html.window.webkitRequestAnimationFrame(tick, element);
+  html.window.requestAnimationFrame(tick);
 }
 
 class Fps {

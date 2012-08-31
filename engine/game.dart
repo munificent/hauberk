@@ -4,7 +4,6 @@ class Game {
   final int            depth;
   final Level          level;
   final Log            log;
-  final Rng            rng;
   final Queue<Action>  actions;
   Hero hero;
   bool _questComplete = false;
@@ -12,7 +11,6 @@ class Game {
   Game(this.area, this.depth, HeroHome home)
   : level = new Level(80, 40),
     log = new Log(),
-    rng = new Rng(new Date.now().value),
     actions = new Queue<Action>()
   {
     level.game = this;

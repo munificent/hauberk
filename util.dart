@@ -1,5 +1,7 @@
 #library('roguekit-util');
 
+#import('dart:math');
+
 #source('util/array2d.dart');
 #source('util/chain.dart');
 #source('util/direction.dart');

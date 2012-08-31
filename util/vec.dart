@@ -17,7 +17,7 @@ class Vec {
   /// Gets the king length of the Vec, which is the number of squares a king on
   /// a chessboard would need to move from (0, 0) to reach the endpoint of the
   /// Vec. Also known as Chebyshev distance.
-  int get kingLength() => Math.max(x.abs(), y.abs());
+  int get kingLength() => max(x.abs(), y.abs());
 
   int get lengthSquared() => x * x + y * y;
 

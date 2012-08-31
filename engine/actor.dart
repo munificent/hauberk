@@ -89,8 +89,7 @@ class Actor extends Thing {
   void regenerate() {
     // TODO(bob): Could have "regeneration" power-up that speeds this.
     // The greater the max health, the faster the actor heals when resting.
-    final turnsNeeded = Math.max(
-        Option.REST_MAX_HEALTH_FOR_RATE ~/ health.max, 1);
+    final turnsNeeded = max(Option.REST_MAX_HEALTH_FOR_RATE ~/ health.max, 1);
 
     if (restCount++ > turnsNeeded) {
       health.current++;

@@ -439,8 +439,8 @@ class ParticleEffect implements Effect {
     final theta = rng.range(628) / 100; // TODO(bob): Ghetto.
     final radius = rng.range(30, 40) / 100;
 
-    h = Math.cos(theta) * radius;
-    v = Math.sin(theta) * radius;
+    h = cos(theta) * radius;
+    v = sin(theta) * radius;
     life = rng.range(7, 15);
   }
 
