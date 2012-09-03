@@ -143,10 +143,12 @@ class Log {
   }
 }
 
-interface Noun {
-  String get nounText();
-  int get person();
-  Gender get gender();
+class Noun {
+  final String nounText;
+  int get person() => 3;
+  Gender get gender() => Gender.NEUTER;
+
+  Noun(this.nounText);
 }
 
 class Gender {

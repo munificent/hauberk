@@ -32,6 +32,34 @@ class Move {
   abstract Action onGetAction(Monster monster);
 }
 
+class BoltMove extends Move {
+  final Attack attack;
+
+  BoltMove(int cost, this.attack)
+    : super(cost);
+
+  int onGetScore(Monster monster) {
+    // TODO(bob): Should not always assume the hero is the target.
+    final target = monster.game.hero.pos;
+
+    // Don't fire if out of range.
+    if ((target - monster.pos).kingLength > Option.MAX_BOLT_DISTANCE) return 0;
+
+    // Don't fire a bolt if it's obstructed.
+    // TODO(bob): Should probably only fire if there aren't any other monsters
+    // in the way too, though friendly fire is pretty entertaining.
+    if (!monster.canView(target)) return 0;
+
+    // The farther it is, the more likely it is to use a bolt.
+    return 100 * (target - monster.pos).kingLength / Option.MAX_BOLT_DISTANCE;
+  }
+
+  Action onGetAction(Monster monster) {
+    // TODO(bob): Should not always assume the hero is the target.
+    return new BoltAction(monster.pos, monster.game.hero.pos, attack);
+  }
+}
+
 class HealMove extends Move {
   /// How much health to restore.
   final int amount;

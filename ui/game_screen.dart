@@ -73,12 +73,6 @@ class GameScreen extends Screen {
         ui.push(new InventoryDialog(game, InventoryMode.USE));
         break;
 
-      case KeyCode.J:
-        action = new BoltAction(game.hero.pos,
-          new Vec(game.hero.pos.x + rng.range(-8, 8),
-                  game.hero.pos.y + rng.range(-8, 8)));
-        break;
-
       case KeyCode.G:
         action = new PickUpAction();
         break;

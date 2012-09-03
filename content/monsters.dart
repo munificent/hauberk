@@ -111,9 +111,9 @@ class MonsterBuilder extends ContentBuilder {
   }
 
   people() {
-    // TODO(bob): Should cast spells.
     breed('doddering old mage', purple('p'), [
-        attack('hit[s]', 3)
+        attack('hit[s]', 3),
+        sparkBolt(cost: 100, damage: 6)
       ],
       drops: ['Scroll of Sidestepping', 'Staff', 'Dagger', 'Robe'],
       maxHealth: 7, meander: 2,
@@ -122,7 +122,7 @@ class MonsterBuilder extends ContentBuilder {
 
     breed('drunken priest', aqua('p'), [
         attack('hit[s]', 3),
-        new HealMove(100, 8)
+        heal(cost: 100, amount: 8)
       ],
       drops: ['Mending Salve', 'Cudgel', 'Staff', 'Robe'],
       maxHealth: 8, meander: 4,
@@ -180,4 +180,9 @@ class MonsterBuilder extends ContentBuilder {
     _breeds[name] = breed;
     return breed;
   }
+
+  Move heal([int cost, int amount]) => new HealMove(cost, amount);
+
+  Move sparkBolt([int cost, int damage]) =>
+      new BoltMove(cost, new Attack('zaps', damage, new Noun('the spark')));
 }

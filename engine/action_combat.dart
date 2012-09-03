@@ -7,33 +7,7 @@ class AttackAction extends Action {
   ActionResult onPerform() {
     // Get all of the melee information from the participants.
     final attack = actor.getAttack(defender);
-    final hit = new Hit(attack);
-    defender.takeHit(hit);
-
-    // Roll for damage.
-    final damage = hit.rollDamage();
-
-    if (damage == 0) {
-      // Armor cancelled out all damage.
-      return succeed('{1} miss[es] {2}.', actor, defender);
-    }
-
-    defender.health.current -= damage;
-
-    if (defender.health.current == 0) {
-      addEvent(new Event.kill(defender));
-
-      defender.onDied(actor);
-      actor.onKilled(defender);
-
-      if (defender is! Hero) {
-        game.level.actors.remove(defender);
-      }
-      return succeed('{1} kill[s] {2}.', actor, defender);
-    }
-
-    addEvent(new Event.hit(defender, damage));
-    return succeed('{1} ${attack.verb} {2}.', actor, defender);
+    return attack.perform(this, actor, defender);
   }
 
   bool get noise() => Option.NOISE_HIT;
@@ -43,8 +17,9 @@ class AttackAction extends Action {
 
 class BoltAction extends Action {
   final Iterator<Los> los;
+  final Attack attack;
 
-  BoltAction(Vec from, Vec to)
+  BoltAction(Vec from, Vec to, this.attack)
   : los = new Los(from, to).iterator();
 
   ActionResult onPerform() {
@@ -54,6 +29,12 @@ class BoltAction extends Action {
     if (!game.level[pos].isTransparent) return succeed();
 
     addEvent(new Event.bolt(pos));
+
+    // See if there is an actor there.
+    final target = game.level.actorAt(pos);
+    if (target != null && target != actor) {
+      return attack.perform(this, actor, target);
+    }
 
     return los.hasNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;
   }
