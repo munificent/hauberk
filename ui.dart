@@ -1,6 +1,7 @@
 #library('roguekit-ui');
 
 #import('dart:html', prefix: 'html');
+#import('dart:json');
 #import('dart:math');
 
 #import('engine.dart');
@@ -12,4 +13,5 @@
 #source('ui/keyboard.dart');
 #source('ui/main_menu_screen.dart');
 #source('ui/screen.dart');
+#source('ui/select_level_screen.dart');
 #source('ui/terminal.dart');

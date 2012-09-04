@@ -146,9 +146,10 @@ class Game {
 /// define the play experience.
 class Content {
   final List<Area> areas;
+  final Map<String, ItemType> items;
   final List<ItemType> _newHeroItems;
 
-  Content(this.areas, this._newHeroItems);
+  Content(this.areas, this.items, this._newHeroItems);
 
   HeroHome createHero() {
     final hero = new HeroHome();

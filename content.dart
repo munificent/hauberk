@@ -18,7 +18,7 @@ Content createContent() {
     items['Scroll of Sidestepping']
   ];
 
-  return new Content(areas, heroItems);
+  return new Content(areas, items, heroItems);
 }
 
 /// Base class for a builder that provides a DSL for creating game content.

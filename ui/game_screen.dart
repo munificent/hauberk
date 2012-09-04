@@ -2,10 +2,12 @@
 class GameScreen extends Screen {
   final HeroHome home;
   final Game     game;
+  // TODO(bob): Kind of hackish.
+  final Function saveGame;
   List<Effect>   effects;
   bool           logOnTop = false;
 
-  GameScreen(this.home, this.game)
+  GameScreen(this.home, this.game, this.saveGame)
   : effects = <Effect>[];
 
   bool handleInput(Keyboard keyboard) {
@@ -55,6 +57,7 @@ class GameScreen extends Screen {
         if (game.isQuestComplete) {
           home.copyFrom(game.hero);
           ui.pop();
+          saveGame();
         } else {
           game.log.add('You have not completed your quest yet.');
           dirty();
@@ -149,6 +152,7 @@ class GameScreen extends Screen {
 
     // TODO(bob): Hack temp.
     if (game.hero.health.current == 0) {
+      // TODO(bob): Should it save the game here?
       ui.pop();
       return;
     }
@@ -255,7 +259,7 @@ class GameScreen extends Screen {
 
     // Draw the actors.
     for (final actor in game.level.actors) {
-      if (!game.level[actor.pos].visible) continue;
+      //if (!game.level[actor.pos].visible) continue;
       final appearance = actor.appearance;
       final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
       terminal.drawGlyph(actor.x, actor.y, glyph);

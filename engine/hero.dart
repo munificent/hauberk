@@ -11,6 +11,8 @@ class HeroHome {
   : inventory = new Inventory(),
     equipment = new Equipment();
 
+  HeroHome.load(this.inventory, this.equipment, this.experienceCents);
+
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Level] and his changes need to be
   /// "saved".
