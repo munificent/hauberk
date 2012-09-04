@@ -61,10 +61,10 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void bodyArmor() {
+    armor('Cloth Shirt', lightGray(']'), 'Body', 2);
     armor('Robe', aqua(']'), 'Body', 4);
     armor('Lined Robe', purple(']'), 'Body', 6);
     /*
-    Cloth Shirt[s]
     Leather Shirt[s]
     Soft Leather Armor[s]
     Hard Leather Armor[s]

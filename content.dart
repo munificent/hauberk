@@ -12,7 +12,13 @@ Content createContent() {
   final breeds = new MonsterBuilder(items).build();
   final areas = new AreaBuilder(breeds, items).build();
 
-  return new Content(areas);
+  // The items that a new hero starts with.
+  final heroItems = [
+    items['Mending Salve'],
+    items['Scroll of Sidestepping']
+  ];
+
+  return new Content(areas, heroItems);
 }
 
 /// Base class for a builder that provides a DSL for creating game content.

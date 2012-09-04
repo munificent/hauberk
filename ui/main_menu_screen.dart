@@ -5,8 +5,9 @@ class MainMenuScreen extends Screen {
   int selectedArea = 0;
   int selectedLevel = 0;
 
-  MainMenuScreen(this.content)
-  : home = new HeroHome();
+  MainMenuScreen(Content content)
+    : content = content,
+      home = content.createHero();
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {

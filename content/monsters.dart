@@ -115,7 +115,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('hit[s]', 3),
         sparkBolt(cost: 100, damage: 6)
       ],
-      drops: ['Scroll of Sidestepping', 'Staff', 'Dagger', 'Robe'],
+      drops: ['Scroll of Sidestepping', 'Staff', 'Dagger', 'Cloth Shirt', 'Robe'],
       maxHealth: 7, meander: 2,
       flags: 'open-doors'
     );
@@ -124,7 +124,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('hit[s]', 3),
         heal(cost: 100, amount: 8)
       ],
-      drops: ['Mending Salve', 'Cudgel', 'Staff', 'Robe'],
+      drops: ['Mending Salve', 'Cudgel', 'Staff', 'Cloth Shirt', 'Robe'],
       maxHealth: 8, meander: 4,
       flags: 'open-doors'
     );

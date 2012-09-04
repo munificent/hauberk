@@ -146,8 +146,18 @@ class Game {
 /// define the play experience.
 class Content {
   final List<Area> areas;
+  final List<ItemType> _newHeroItems;
 
-  Content(this.areas);
+  Content(this.areas, this._newHeroItems);
+
+  HeroHome createHero() {
+    final hero = new HeroHome();
+    for (final itemType in _newHeroItems) {
+      hero.inventory.tryAdd(new Item(itemType, Vec.ZERO, null, null));
+    }
+
+    return hero;
+  }
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells
