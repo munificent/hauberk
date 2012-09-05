@@ -1,11 +1,11 @@
 
 class GameScreen extends Screen {
-  final HeroHome home;
+  final HeroSave save;
   final Game     game;
   List<Effect>   effects;
   bool           logOnTop = false;
 
-  GameScreen(this.home, this.game)
+  GameScreen(this.save, this.game)
   : effects = <Effect>[];
 
   bool handleInput(Keyboard keyboard) {
@@ -57,7 +57,7 @@ class GameScreen extends Screen {
       switch (keyboard.lastPressed) {
       case KeyCode.Q:
         if (game.isQuestComplete) {
-          home.copyFrom(game.hero);
+          save.copyFrom(game.hero);
           ui.pop(true);
         } else {
           game.log.add('You have not completed your quest yet.');

@@ -2,16 +2,16 @@
 /// When outside of the dungeon on the menu screens, though, only a subset of
 /// the hero's data persists (for example, there is no position when not in a
 /// dungeon). This class stores that state.
-class HeroHome {
+class HeroSave {
   Inventory inventory;
   Equipment equipment;
   int experienceCents = 0;
 
-  HeroHome()
+  HeroSave()
   : inventory = new Inventory(),
     equipment = new Equipment();
 
-  HeroHome.load(this.inventory, this.equipment, this.experienceCents);
+  HeroSave.load(this.inventory, this.equipment, this.experienceCents);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Level] and his changes need to be
@@ -46,13 +46,13 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  Hero(Game game, Vec pos, HeroHome home)
+  Hero(Game game, Vec pos, HeroSave save)
   : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses any items
     // he gained.
-    inventory = home.inventory.clone(),
-    equipment = home.equipment.clone(),
-    _experienceCents = home.experienceCents {
+    inventory = save.inventory.clone(),
+    equipment = save.equipment.clone(),
+    _experienceCents = save.experienceCents {
     _refreshLevel(log: false);
   }
 

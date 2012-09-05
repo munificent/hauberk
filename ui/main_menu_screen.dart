@@ -1,6 +1,6 @@
 class MainMenuScreen extends Screen {
   final Content        content;
-  final List<HeroHome> heroes;
+  final List<HeroSave> heroes;
   int selectedHero = 0;
 
   MainMenuScreen(Content content)
@@ -102,7 +102,7 @@ class MainMenuScreen extends Screen {
       }
 
       final experience = hero['experience'];
-      heroes.add(new HeroHome.load(inventory, equipment, experience));
+      heroes.add(new HeroSave.load(inventory, equipment, experience));
     }
   }
 

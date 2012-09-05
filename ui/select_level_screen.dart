@@ -1,11 +1,11 @@
 class SelectLevelScreen extends Screen {
   final Content  content;
-  final HeroHome home;
+  final HeroSave save;
   final Function saveGame;
   int selectedArea = 0;
   int selectedLevel = 0;
 
-  SelectLevelScreen(this.content, this.home, this.saveGame);
+  SelectLevelScreen(this.content, this.save, this.saveGame);
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
@@ -26,8 +26,8 @@ class SelectLevelScreen extends Screen {
       break;
 
     case KeyCode.L:
-      final game = new Game(content.areas[selectedArea], selectedLevel, home);
-      ui.push(new GameScreen(home, game));
+      final game = new Game(content.areas[selectedArea], selectedLevel, save);
+      ui.push(new GameScreen(save, game));
       break;
     }
 
