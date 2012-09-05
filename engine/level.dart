@@ -37,6 +37,7 @@ class Level {
   }
 
   // TODO(bob): Move into Item collection?
+  // TODO(bob): What if there are multiple items at pos?
   Item itemAt(Vec pos) {
     for (final item in items) {
       if (item.pos == pos) return item;
@@ -75,7 +76,7 @@ class Level {
 
         var scent = 0;
         var totalWeight = 0;
-        num addScent(int x, int y, num weight) {
+        addScent(int x, int y, num weight) {
           if (!tiles.get(x, y).isPassable) return;
           scent += getScent(x, y) * weight;
           totalWeight += weight;

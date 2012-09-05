@@ -76,5 +76,5 @@ class Hit {
 ///     ...   etc.
 num getArmorMultiplier(int armor) {
   // Damage is never increased.
-  return 1.0 / (1.0 + max(0, armor) / 40.0);
+  return 1.0 / (1.0 + math.max(0, armor) / 40.0);
 }

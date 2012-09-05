@@ -35,19 +35,17 @@ class Action {
   /// actions quieter or louder.
   int get noise() => Option.NOISE_NORMAL;
 
-  ActionResult succeed([String message, Noun noun1, Noun noun2, Noun noun3]) {
-    if (message != null) {
-      _game.log.add(message, noun1, noun2, noun3);
-    }
+  void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    _game.log.add(message, noun1, noun2, noun3);
+  }
 
+  ActionResult succeed([String message, Noun noun1, Noun noun2, Noun noun3]) {
+    if (message != null) log(message, noun1, noun2, noun3);
     return ActionResult.SUCCESS;
   }
 
   ActionResult fail([String message, Noun noun1, Noun noun2, Noun noun3]) {
-    if (message != null) {
-      _game.log.add(message, noun1, noun2, noun3);
-    }
-
+    if (message != null) log(message, noun1, noun2, noun3);
     return ActionResult.FAILURE;
   }
 
@@ -112,6 +110,15 @@ class WalkAction extends Action {
     }
 
     actor.pos = pos;
+
+    // See if the hero stepped on anything interesting.
+    if (actor is Hero) {
+      final item = game.level.itemAt(pos);
+      if (item != null) {
+        log('{1} [are|is] standing on {2}.', actor, item);
+      }
+    }
+
     return succeed();
   }
 

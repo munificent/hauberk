@@ -44,12 +44,12 @@ class Monster extends Actor {
 
   Action onGetAction() {
     // Regenerate effort.
-    effort = min(Option.EFFORT_MAX, effort + Option.EFFORT_REGENERATE);
+    effort = math.min(Option.EFFORT_MAX, effort + Option.EFFORT_REGENERATE);
 
     // Forget sounds over time. Since this occurs on the monster's turn, it
     // means slower monsters will attenuate less frequently. The [pow()]
     // part compensates for this.
-    noise *= pow(Option.NOISE_FORGET, Energy.ticksAtSpeed(breed.speed));
+    noise *= math.pow(Option.NOISE_FORGET, Energy.ticksAtSpeed(breed.speed));
 
     switch (state) {
       case MonsterState.ASLEEP: return getActionAsleep();
@@ -95,7 +95,7 @@ class Monster extends Actor {
 
     // The minimum scent required for the monster to notice it. Smaller numbers
     // mean a stronger sense of smell.
-    final minScent = pow(0.5, breed.olfaction);
+    final minScent = math.pow(0.5, breed.olfaction);
 
     // How much the monster listens to their sense of smell. The more sensitive
     // it is, the more the monster relies on it.
@@ -103,7 +103,7 @@ class Monster extends Actor {
     final scentWeight = breed.olfaction * Option.AI_WEIGHT_SCENT;
 
     getScent(Vec pos) {
-      return max(game.level.getScent(pos.x, pos.y) - minScent, 0);
+      return math.max(game.level.getScent(pos.x, pos.y) - minScent, 0);
     }
 
     final scent = getScent(pos);
