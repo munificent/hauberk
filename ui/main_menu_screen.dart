@@ -42,12 +42,15 @@ class MainMenuScreen extends Screen {
 
     terminal.clear();
 
+    terminal.writeAt(0, 0,
+        'Which hero shall you play?');
+    terminal.writeAt(0, terminal.height - 1,
+        '[L] Select a hero, [O]/[.] Change selection, [N] Create a new hero',
+        Color.GRAY);
+
     if (heroes.length == 0) {
-      terminal.writeAt(1, 1,
-          'Welcome. You have no saved heroes. Press N to create a new one.');
-    } else {
-      terminal.writeAt(1, 1,
-          'Welcome. Press L to select a hero or press N to create a new one:');
+      terminal.writeAt(0, 2, '(No heroes. Please create a new one.)',
+          Color.GRAY);
     }
 
     for (var i = 0; i < heroes.length; i++) {
@@ -59,15 +62,23 @@ class MainMenuScreen extends Screen {
       }
 
       // TODO(bob): Show hero name and useful stats (level?).
-      terminal.writeAt(3, 3 + i, "Hero", fore, back);
+      terminal.writeAt(0, 2 + i, "Hero", fore, back);
     }
   }
 
   void _changeSelection(int offset) {
-    selectedHero = (selectedHero + offset) % (heroes.length + 1);
+    selectedHero = (selectedHero + offset) % heroes.length;
+    dirty();
   }
 
   void _loadHeroes() {
+    // TODO(bob): For debugging. If the query is "?clear", then ditch
+    // saved heroes.
+    if (html.window.location.search == '?clear') {
+      _saveHeroes();
+      return;
+    }
+
     final storage = html.window.localStorage['heroes'];
     if (storage == null) return;
 

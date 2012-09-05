@@ -25,7 +25,7 @@ class SelectLevelScreen extends Screen {
       _changeSelection(selectedArea + 1, selectedLevel);
       break;
 
-    case KeyCode.N:
+    case KeyCode.L:
       final game = new Game(content.areas[selectedArea], selectedLevel, home);
       ui.push(new GameScreen(home, game, saveGame));
       break;
@@ -38,7 +38,10 @@ class SelectLevelScreen extends Screen {
     if (!isTopScreen) return;
 
     terminal.clear();
-    terminal.writeAt(1, 1, 'Welcome. Type "N" to enter the dungeon.');
+    terminal.writeAt(0, 0, 'Where shall you quest?');
+    terminal.writeAt(0, terminal.height - 1,
+        '[L] Select area, [O]/[.] Change area, [K]/[;] Change level',
+        Color.GRAY);
 
     for (var i = 0; i < content.areas.length; i++) {
       write(int x, String text, int level) {
@@ -50,11 +53,11 @@ class SelectLevelScreen extends Screen {
           back = Color.YELLOW;
         }
 
-        terminal.writeAt(x, 3 + i, text, fore, back);
+        terminal.writeAt(x, 2 + i, text, fore, back);
       }
 
       final area = content.areas[i];
-      write(1, area.name, -1);
+      write(0, area.name, -1);
 
       for (var level = 0; level < area.levels.length; level++) {
         write(50 + level * 3, (level + 1).toString(), level);
