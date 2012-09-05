@@ -27,7 +27,7 @@ class SelectLevelScreen extends Screen {
 
     case KeyCode.L:
       final game = new Game(content.areas[selectedArea], selectedLevel, home);
-      ui.push(new GameScreen(home, game, saveGame));
+      ui.push(new GameScreen(home, game));
       break;
     }
 
@@ -62,6 +62,13 @@ class SelectLevelScreen extends Screen {
       for (var level = 0; level < area.levels.length; level++) {
         write(50 + level * 3, (level + 1).toString(), level);
       }
+    }
+  }
+
+  void activate(Screen screen, result) {
+    if (screen is GameScreen && result) {
+      // Left successfully, so save.
+      saveGame();
     }
   }
 

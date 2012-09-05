@@ -18,6 +18,12 @@ class Screen {
   void dirty() { _ui.dirty(); }
 
   abstract bool handleInput(Keyboard keyboard);
+
+  /// Called when the screen above this one ([popped]) has been popped and this
+  /// screen is now the top-most screen. If a value was passed to [pop()], it
+  /// will be passed to this as [result].
+  void activate(Screen popped, result) {}
+
   void update() {}
   abstract void render(Terminal terminal);
 }
@@ -37,9 +43,10 @@ class UserInterface {
     _render();
   }
 
-  void pop() {
+  void pop([result]) {
     final screen = _screens.removeLast();
     screen._unbind();
+    _screens[_screens.length - 1].activate(screen, result);
     _render();
   }
 
