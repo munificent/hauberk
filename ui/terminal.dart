@@ -8,7 +8,9 @@ interface Terminal {
   void writeAt(int x, int y, String text, [Color fore, Color back]);
   void drawGlyph(int x, int y, Glyph glyph);
   Terminal rect(int x, int y, int width, int height);
+}
 
+interface RenderableTerminal extends Terminal {
   void render();
 }
 
@@ -58,7 +60,7 @@ class BaseTerminal implements Terminal {
   }
 }
 
-class DomTerminal extends BaseTerminal {
+class DomTerminal extends BaseTerminal implements RenderableTerminal {
   final html.Element element;
 
   DomTerminal(int width, int height, this.element)

@@ -33,7 +33,7 @@ class Action {
 
   /// How much noise is produced by this action. Override to make certain
   /// actions quieter or louder.
-  bool get noise() => Option.NOISE_NORMAL;
+  int get noise() => Option.NOISE_NORMAL;
 
   ActionResult succeed([String message, Noun noun1, Noun noun2, Noun noun3]) {
     if (message != null) {
@@ -148,5 +148,5 @@ class CloseDoorAction extends Action {
 /// class mainly to track that it's quieter than walking.
 class RestAction extends Action {
   ActionResult onPerform() => succeed();
-  bool get noise() => Option.NOISE_REST;
+  int get noise() => Option.NOISE_REST;
 }

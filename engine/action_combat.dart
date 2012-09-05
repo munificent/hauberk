@@ -10,13 +10,13 @@ class AttackAction extends Action {
     return attack.perform(this, actor, defender);
   }
 
-  bool get noise() => Option.NOISE_HIT;
+  int get noise() => Option.NOISE_HIT;
 
   String toString() => '$actor attacks $defender';
 }
 
 class BoltAction extends Action {
-  final Iterator<Los> los;
+  final Iterator<Vec> los;
   final Attack attack;
 
   BoltAction(Vec from, Vec to, this.attack)

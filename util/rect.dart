@@ -2,48 +2,26 @@
 /// A two-dimensional rectangle.
 class Rect implements Iterable<Vec> {
   /// Gets the empty rectangle.
-  static final EMPTY = const Rect(0, 0, 0, 0);
-
-  /*
-  /// Creates a new rectangle a single row in height, as wide as [size].
-  static Rect row(int size) => new Rect(0, 0, size, 1);
-
-  /// Creates a new rectangle a single row in height, as wide as the [size],
-  /// with its top left corner at [x], [y].
-  static Rect row(int x, int y, int size) => new Rect(x, y, size, 1);
+  static final EMPTY = const Rect.posAndSize(Vec.ZERO, Vec.ZERO);
 
   /// Creates a new rectangle a single row in height, as wide as [size],
   /// with its top left corner at [pos].
   static Rect row(Vec pos, int size) => new Rect(pos.x, pos.y, size, 1);
 
-  /// Creates a new rectangle a single column in width, as tall as [size].
-  static Rect column(int size) => new Rect(0, 0, 1, size);
-
-  /// Creates a new rectangle a single column in width, as tall as [size],
-  /// with its top left corner at [x], [y].
-  static Rect column(int x, int y, int size) => new Rect(x, y, 1, size);
-
   /// Creates a new rectangle a single column in width, as tall as [size],
   /// with its top left corner at [pos].
   static Rect column(Vec pos, int size) => new Rect(pos.x, pos.y, 1, size);
-  */
 
-  /// <summary>
-  /// Creates a new rectangle that is the intersection of the two given rectangles.
-  /// </summary>
-  /// <example><code>
-  /// .----------.
-  /// | a        |
-  /// | .--------+----.
-  /// | | result |  b |
-  /// | |        |    |
-  /// '-+--------'    |
-  ///   |             |
-  ///   '-------------'
-  /// </code></example>
-  /// <param name="a">The first rectangle.</param>
-  /// <param name="b">The rectangle to intersect it with.</param>
-  /// <returns></returns>
+  /// Creates a new rectangle that is the intersection of [a] and [b].
+  ///
+  ///     .----------.
+  ///     | a        |
+  ///     | .--------+----.
+  ///     | | result |  b |
+  ///     | |        |    |
+  ///     '-+--------'    |
+  ///       |             |
+  ///       '-------------'
   static Rect intersect(Rect a, Rect b)
   {
     final left = max(a.left, b.left);
@@ -105,7 +83,7 @@ class Rect implements Iterable<Vec> {
   Vec get bottomLeft() => new Vec(left, bottom);
   Vec get bottomRight() => new Vec(right, bottom);
 
-  Vec get center() => new Vec((left + right) / 2, (top + bottom) / 2);
+  Vec get center() => new Vec((left + right) ~/ 2, (top + bottom) ~/ 2);
 
   int get area() => size.area;
 
@@ -116,7 +94,7 @@ class Rect implements Iterable<Vec> {
   : pos = Vec.zero;
   */
 
-  const Rect(int x, int y, int width, int height)
+  Rect(int x, int y, int width, int height)
   : pos = new Vec(x, y),
     size = new Vec(width, height);
 

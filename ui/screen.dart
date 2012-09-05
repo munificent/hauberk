@@ -23,9 +23,9 @@ class Screen {
 }
 
 class UserInterface {
-  final Keyboard     _keyboard;
-  final Terminal     _terminal;
-  final List<Screen> _screens;
+  final Keyboard            _keyboard;
+  final RenderableTerminal  _terminal;
+  final List<Screen>        _screens;
   bool _dirty;
 
   UserInterface(this._keyboard, this._terminal)

@@ -64,7 +64,7 @@ class MainMenuScreen extends Screen {
   }
 
   void _changeSelection(int offset) {
-    selection = (selection + offset) % (heroes.length + 1);
+    selectedHero = (selectedHero + offset) % (heroes.length + 1);
   }
 
   void _loadHeroes() {

@@ -11,10 +11,14 @@ class Thing implements Noun {
   }
 
   int get x() => pos.x;
-  void set x(int value) => pos = new Vec(value, y);
+  void set x(int value) {
+    pos = new Vec(value, y);
+  }
 
   int get y() => pos.y;
-  void set y(int value) => pos = new Vec(x, value);
+  void set y(int value) {
+    pos = new Vec(x, value);
+  }
 
   /// Called when the actor's position is about to change to [pos]. Override
   /// to do stuff when the position changes. Returns the new position.
