@@ -73,6 +73,7 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice'),
       level(options, numMonsters: 16, numItems: 9,
         breeds: [
+          'crow',
           'wild dog',
           'giant spider',
           'doddering old mage',
@@ -85,14 +86,7 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice'),
       level(options, numMonsters: 20, numItems: 10,
         breeds: [
-          'white mouse',
-          'sewer rat',
-          'mangy cur',
-          'giant slug',
-          'little brown bat',
-          'stray cat',
-          'garden spider',
-          'giant cockroach'
+          'raven'
         ],
         items: [
           'Mending Salve',

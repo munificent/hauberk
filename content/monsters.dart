@@ -40,6 +40,7 @@ class MonsterBuilder extends ContentBuilder {
 
     arachnids();
     bats();
+    birds();
     canines();
     felines();
     humanoids();
@@ -70,7 +71,23 @@ class MonsterBuilder extends ContentBuilder {
     breed('little brown bat', lightBrown('b'), [
         attack('bite[s]', 3),
       ],
-      maxHealth: 4, meander: 6, speed: 2
+      maxHealth: 3, meander: 6, speed: 2
+    );
+  }
+
+  birds() {
+    breed('crow', darkGray('B'), [
+        attack('bite[s]', 3),
+      ],
+      maxHealth: 4, meander: 4, speed: 2,
+      flags: 'group'
+    );
+
+    breed('raven', gray('B'), [
+        attack('bite[s]', 5),
+        attack('claws[s]', 4),
+      ],
+      maxHealth: 7, meander: 1
     );
   }
 
