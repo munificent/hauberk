@@ -19,9 +19,6 @@ class ItemBuilder extends ContentBuilder {
     // ~   Lites, Tools           )   A shield
     // &   Chests, Containers
 
-    /*
-    food();
-    */
     potions();
     scrolls();
     weapons();
@@ -32,13 +29,6 @@ class ItemBuilder extends ContentBuilder {
 
     return _items;
   }
-
-  /*
-  void food() {
-    item('Crusty Loaf of Bread', yellow(','),
-        use: () => new EatAction(400));
-  }
-  */
 
   void potions() {
     // Healing

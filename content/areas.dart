@@ -67,9 +67,6 @@ class AreaBuilder extends ContentBuilder {
           'giant cockroach'
         ],
         items: [
-          /*
-          'Crusty Loaf of Bread',
-          */
           'Mending Salve',
           'Scroll of Sidestepping'
         ],
@@ -82,9 +79,6 @@ class AreaBuilder extends ContentBuilder {
           'drunken priest',
         ],
         items: [
-          /*
-          'Crusty Loaf of Bread',
-          */
           'Mending Salve',
           'Robe'
         ],
@@ -101,9 +95,6 @@ class AreaBuilder extends ContentBuilder {
           'giant cockroach'
         ],
         items: [
-          /*
-          'Crusty Loaf of Bread',
-          */
           'Mending Salve',
           'Cudgel',
           'Dagger'

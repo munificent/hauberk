@@ -1,21 +1,3 @@
-/*
-class EatAction extends Action {
-  final int amount;
-
-  EatAction(this.amount);
-
-  ActionResult onPerform() {
-    if (hero.hunger < amount) {
-      hero.hunger = 0;
-      return succeed('{1} [are|is] stuffed.', actor);
-    } else {
-      hero.hunger -= amount;
-      return succeed('{1} feel[s] less hungry.', actor);
-    }
-  }
-}
-*/
-
 class HealAction extends Action {
   final int amount;
 

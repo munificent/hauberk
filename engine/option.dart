@@ -12,11 +12,6 @@ class Option {
   /// How much max health is increased when the hero levels up.
   static final HERO_HEALTH_GAIN = 6;
 
-  /*
-  /// How hungry the hero must be before resting ceases to work.
-  static final HUNGER_MAX = 600;
-  */
-
   /// How much damage an unarmed hero does.
   static final HERO_PUNCH_DAMAGE = 3;
 
