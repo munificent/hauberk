@@ -26,6 +26,13 @@ class MainMenuScreen extends Screen {
       }
       break;
 
+    case KeyCode.D:
+      if (selectedHero < heroes.length) {
+        ui.push(new ConfirmDialog(
+            "Are you sure you want to delete this hero?", 'delete'));
+      }
+      break;
+
     case KeyCode.N:
       heroes.add(content.createHero());
       _saveHeroes();
@@ -37,6 +44,14 @@ class MainMenuScreen extends Screen {
     return true;
   }
 
+  void activate(Screen screen, result) {
+    if (screen is ConfirmDialog && result == 'delete') {
+      heroes.removeRange(selectedHero, 1);
+      if (selectedHero >= heroes.length) selectedHero--;
+      _saveHeroes();
+      dirty();
+    }
+  }
   void render(Terminal terminal) {
     if (!isTopScreen) return;
 
@@ -45,7 +60,7 @@ class MainMenuScreen extends Screen {
     terminal.writeAt(0, 0,
         'Which hero shall you play?');
     terminal.writeAt(0, terminal.height - 1,
-        '[L] Select a hero, [O]/[.] Change selection, [N] Create a new hero',
+        '[L] Select a hero, [O]/[.] Change selection, [N] Create a new hero, [D] Delete hero',
         Color.GRAY);
 
     if (heroes.length == 0) {
