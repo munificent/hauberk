@@ -108,10 +108,14 @@ class Log {
 
     // Make the verb match the subject (which is assumed to be the first noun).
     if (noun1 != null) {
-      final optionalSuffix = const RegExp(@'\[(\w+)\]');
+      final optionalSuffix = const RegExp(@'\[(\w+?)\]');
+      final irregular = const RegExp(@"\[([^|]+)\|([^\]]+)\]");
 
       // Handle verbs with optional suffixes like `close[s]`.
-      for (final match in optionalSuffix.allMatches(result)) {
+      while (true) {
+        final match = optionalSuffix.firstMatch(result);
+        if (match == null) break;
+
         final before = result.substring(0, match.start());
         final after = result.substring(match.end());
         if (noun1.person == 2) {
@@ -124,8 +128,10 @@ class Log {
       }
 
       // Handle irregular verbs like `[are|is]`.
-      final irregular = const RegExp(@"\[([\w']+)\|([\w']+)\]");
-      for (final match in irregular.allMatches(result)) {
+      while (true) {
+        final match = irregular.firstMatch(result);
+        if (match == null) break;
+
         final before = result.substring(0, match.start());
         final after = result.substring(match.end());
         if (noun1.person == 2) {

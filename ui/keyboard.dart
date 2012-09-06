@@ -21,6 +21,11 @@ class Keyboard {
     } else {
       _lastPressed = event.keyCode;
     }
+
+    // Don't let the browser handle the tab key.
+    if (event.keyCode == KeyCode.TAB) {
+      event.preventDefault();
+    }
   }
 
   void keyUp(event) {
@@ -37,6 +42,7 @@ class Keyboard {
 /// Raw key codes. These code straight from the DOM events.
 class KeyCode {
   static final SHIFT      = 16;
+  static final TAB        = 9;
   static final ESCAPE     = 27;
   static final LEFT       = 37;
   static final UP         = 38;

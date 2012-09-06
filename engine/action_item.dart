@@ -10,14 +10,7 @@ class PickUpAction extends Action {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
     }
 
-    // Remove it from the level.
-    // TODO(bob): Hackish.
-    for (var i = 0; i < game.level.items.length; i++) {
-      if (game.level.items[i] == item) {
-        game.level.items.removeRange(i, 1);
-        break;
-      }
-    }
+    game.level.removeItem(item);
 
     return succeed('{1} pick[s] up {2}.', actor, item);
   }
@@ -25,10 +18,10 @@ class PickUpAction extends Action {
 
 /// [Action] for dropping an [Item] from the [Hero]'s [Inventory] onto the
 /// ground.
-class DropAction extends Action {
+class DropInventoryAction extends Action {
   final int index;
 
-  DropAction(this.index);
+  DropInventoryAction(this.index);
 
   ActionResult onPerform() {
     final item = hero.inventory.remove(index);
@@ -39,33 +32,57 @@ class DropAction extends Action {
   }
 }
 
+/// [Action] for dropping an [Item] from the [Hero]'s [Equipment] onto the
+/// ground.
+class DropEquipmentAction extends Action {
+  final int index;
+
+  DropEquipmentAction(this.index);
+
+  ActionResult onPerform() {
+    final item = hero.equipment.remove(index);
+    item.pos = hero.pos;
+    game.level.items.add(item);
+
+    return succeed('{1} take[s] off and drop[s] {2}.', actor, item);
+  }
+}
+
 /// [Action] for moving an [Item] from the [Hero]'s [Inventory] to his
 /// [Equipment]. May cause a currently equipped Item to become unequipped. If
 /// there is no room in the Inventory for that Item, it will drop to the ground.
 class EquipAction extends Action {
   final int index;
+  final bool isOnGround;
 
-  EquipAction(this.index);
+  EquipAction(this.index, this.isOnGround);
 
   ActionResult onPerform() {
-    final item = hero.inventory[index];
+    final item = isOnGround
+        ? game.level.itemsAt(actor.pos)[index]
+        : hero.inventory[index];
 
     if (!hero.equipment.canEquip(item)) {
       return fail('{1} cannot equip {2}.', actor, item);
     }
 
     final unequipped = hero.equipment.equip(item);
-    hero.inventory.remove(index);
+
+    if (isOnGround) {
+      game.level.removeItem(item);
+    } else {
+      hero.inventory.remove(index);
+    }
 
     // Add the previously equipped item to inventory.
     if (unequipped != null) {
       if (hero.inventory.tryAdd(unequipped)) {
-        game.log.add('{1} unequip[s] {2}.', actor, unequipped);
+        log('{1} unequip[s] {2}.', actor, unequipped);
       } else {
         // No room in inventory, so drop it.
-        item.pos = hero.pos;
+        item.pos = actor.pos;
         game.level.items.add(item);
-        game.log.add("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
+        log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
           actor, unequipped);
       }
     }
@@ -74,28 +91,56 @@ class EquipAction extends Action {
   }
 }
 
-/// [Action] for using an [Item]. If the Item is equippable, then using it
-/// means equipping it.
-class UseAction extends Action {
-  // TODO(bob): Right now, it assumes you always use an inventory item. May
-  // want to support using items on the ground at some point.
+/// [Action] for moving an [Item] from the [Hero]'s [Equipment] to his
+/// [Inventory]. If there is no room in the inventory, it will drop to the
+/// ground.
+class UnequipAction extends Action {
   final int index;
 
-  UseAction(this.index);
+  UnequipAction(this.index);
 
   ActionResult onPerform() {
-    final item = hero.inventory[index];
+    final item = hero.equipment.remove(index);
+
+    if (hero.inventory.tryAdd(item)) {
+      return succeed('{1} unequip[s] {2}.', actor, item);
+    }
+
+    // No room in inventory, so drop it.
+    item.pos = actor.pos;
+    game.level.items.add(item);
+    return succeed("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
+        actor, item);
+  }
+}
+
+/// [Action] for using an [Item] from the [Hero]'s [Inventory] or the ground.
+/// If the Item is equippable, then using it means equipping it.
+class UseAction extends Action {
+  final int index;
+  final bool isOnGround;
+
+  UseAction(this.index, this.isOnGround);
+
+  ActionResult onPerform() {
+    final item = isOnGround
+        ? game.level.itemsAt(actor.pos)[index]
+        : hero.inventory[index];
 
     // If it's equippable, then using it just equips it.
     if (item.canEquip) {
-      return alternate(new EquipAction(index));
+      return alternate(new EquipAction(index, isOnGround));
     }
 
     if (!item.canUse) {
       return fail("{1} can't be used.", item);
     }
 
-    hero.inventory.remove(index);
+    if (isOnGround) {
+      game.level.removeItem(item);
+    } else {
+      hero.inventory.remove(index);
+    }
 
     return alternate(item.use());
   }

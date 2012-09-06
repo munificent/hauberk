@@ -151,8 +151,8 @@ class Content {
 
   Content(this.areas, this.items, this._newHeroItems);
 
-  HeroHome createHero() {
-    final hero = new HeroHome();
+  HeroSave createHero() {
+    final hero = new HeroSave();
     for (final itemType in _newHeroItems) {
       hero.inventory.tryAdd(new Item(itemType, Vec.ZERO, null, null));
     }

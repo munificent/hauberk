@@ -46,6 +46,24 @@ class Level {
     return null;
   }
 
+  /// Gets the list of [Item]s at [pos].
+  List<Item> itemsAt(Vec pos) {
+    return items.filter((item) => item.pos == pos);
+  }
+
+  /// Removes [item] from the level. Does nothing if the item is not on the
+  /// ground in the level.
+  void removeItem(Item item) {
+    for (var i = 0; i < items.length; i++) {
+      if (items[i] == item) {
+        items.removeRange(i, 1);
+        return;
+      }
+    }
+
+    assert(false); // Unreachable.
+  }
+
   num getScent(int x, int y) {
     return currentScent1 ? tiles.get(x, y).scent1 : tiles.get(x, y).scent2;
   }

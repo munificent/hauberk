@@ -35,7 +35,7 @@ class Item extends Thing implements Comparable {
 
   String get nounText() {
     final name = new StringBuffer();
-    name.add('the ');
+    name.add('a ');
 
     if (prefix != null) {
       name.add(prefix.name);
@@ -237,7 +237,24 @@ class Equipment implements Iterable<Item> {
     assert(false);
   }
 
+  /// Unequips and returns the [Item] at [index].
+  Item remove(int index) {
+    // Find the slot, skipping over empty ones.
+    for (var i = 0; i < slotTypes.length; i++) {
+      if (slots[i] != null) {
+        if (index == 0) {
+          final item = slots[i];
+          slots[i] = null;
+          return item;
+        } else {
+          index--;
+        }
+      }
+    }
+  }
+
   Iterator<Item> iterator() {
+    // TODO(bob): Would be better if empty slots were shown with a slot label.
     // Don't include empty slots.
     return slots.filter((item) => item != null).iterator();
   }
