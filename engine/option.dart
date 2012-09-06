@@ -45,14 +45,14 @@ class Option {
   static final AI_WEIGHT_SCENT = 1.0;
 
   /// How much pathfinding affects a monster's choice of action.
-  static final AI_WEIGHT_PATH_STRAIGHT = 10.0;
+  static final AI_WEIGHT_PATH_STRAIGHT = 10;
 
   /// How much the two directions adjacent to the pathfinding affects a
-  //  monster's choice of action.
-  static final AI_WEIGHT_PATH_NEAR = 5.0;
+  /// monster's choice of action.
+  static final AI_WEIGHT_PATH_NEAR = 5;
 
   /// How much a breed's meander affects the monster's choice of action.
-  static final AI_WEIGHT_MEANDER = 3.0;
+  static final AI_WEIGHT_MEANDER = 3;
 
   /// When calculating pathfinding, how much it "costs" to move one step on
   /// an open floor tile.
@@ -108,9 +108,9 @@ class Option {
   static final SCENT_CORNER_CONVOLVE = 0.2;
   static final SCENT_SIDE_CONVOLVE = 0.5;
 
-  static final EFFORT_START = 200;
-  static final EFFORT_REGENERATE = 2;
-  static final EFFORT_MAX = 200;
+  /// Monsters have to recharge to recoup a move's cost. This is how quickly
+  /// a monster recharges per monster turn.
+  static final RECHARGE_RATE = 4;
 
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.
@@ -118,4 +118,21 @@ class Option {
 
   /// The maximum distance at which a monster will attempt a bolt attack.
   static final MAX_BOLT_DISTANCE = 12;
+
+  /// The experience point multipliers for each breed flag.
+  static final EXP_FLAG = const {
+    'horde': 1.5,
+    'swarm': 1.4,
+    'pack': 1.3,
+    'group': 1.2,
+    'few': 1.1,
+    'open-doors': 1.1
+  };
+
+  /// The more a monster meanders, the less experience it's worth. This number
+  /// should be larger than the largest meander value, and affects experience
+  /// like so:
+  ///
+  ///     exp *= (EXP_MEANDER - meander) / EXP_MEANDER
+  static final EXP_MEANDER = 30;
 }

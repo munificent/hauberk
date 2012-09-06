@@ -11,22 +11,14 @@ class Move {
 
   /// Gets the AI score for performing this move. The higher the score, the more
   /// likely the monster is to select this move over other options.
-  num getScore(Monster monster) {
-    // Don't select a move the monster can't afford.
-    if (monster.effort < cost) return Option.AI_MIN_SCORE;
-
-    return onGetScore(monster);
-  }
+  abstract num getScore(Monster monster);
 
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.
   Action getAction(Monster monster) {
-    monster.effort -= cost;
+    monster.recharge += cost;
     return onGetAction(monster);
   }
-
-  /// Override this to get the AI score for performing this move.
-  abstract int onGetScore(Monster monster);
 
   /// Create the [Action] to perform this move.
   abstract Action onGetAction(Monster monster);
@@ -38,7 +30,7 @@ class BoltMove extends Move {
   BoltMove(int cost, this.attack)
     : super(cost);
 
-  int onGetScore(Monster monster) {
+  num getScore(Monster monster) {
     // TODO(bob): Should not always assume the hero is the target.
     final target = monster.game.hero.pos;
 
@@ -66,7 +58,7 @@ class HealMove extends Move {
 
   HealMove(int cost, this.amount) : super(cost);
 
-  num onGetScore(Monster monster) {
+  num getScore(Monster monster) {
     // The closer it is to death, the more it wants to heal.
     return 100 * (1 - (monster.health.current / monster.health.max));
   }

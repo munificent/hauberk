@@ -77,17 +77,17 @@ class MonsterBuilder extends ContentBuilder {
 
   birds() {
     breed('crow', darkGray('B'), [
-        attack('bite[s]', 3),
+        attack('bite[s]', 4),
       ],
-      maxHealth: 4, meander: 4, speed: 2,
+      maxHealth: 5, meander: 4, speed: 2,
       flags: 'group'
     );
 
     breed('raven', gray('B'), [
-        attack('bite[s]', 5),
-        attack('claws[s]', 4),
+        attack('bite[s]', 6),
+        attack('claws[s]', 5),
       ],
-      maxHealth: 7, meander: 1
+      maxHealth: 8, meander: 1
     );
   }
 
@@ -130,7 +130,7 @@ class MonsterBuilder extends ContentBuilder {
   people() {
     breed('doddering old mage', purple('p'), [
         attack('hit[s]', 3),
-        sparkBolt(cost: 100, damage: 6)
+        sparkBolt(cost: 16, damage: 6)
       ],
       drops: ['Scroll of Sidestepping', 'Staff', 'Dagger', 'Cloth Shirt', 'Robe'],
       maxHealth: 7, meander: 2,
@@ -139,7 +139,7 @@ class MonsterBuilder extends ContentBuilder {
 
     breed('drunken priest', aqua('p'), [
         attack('hit[s]', 3),
-        heal(cost: 100, amount: 8)
+        heal(cost: 30, amount: 8)
       ],
       drops: ['Mending Salve', 'Cudgel', 'Staff', 'Cloth Shirt', 'Robe'],
       maxHealth: 8, meander: 4,
@@ -174,7 +174,7 @@ class MonsterBuilder extends ContentBuilder {
 
   Breed breed(String name, Glyph appearance, List actions, [
       List<String> drops, int maxHealth, int olfaction = 0,
-      int meander = 0, int speed = 0, String flags = '']) {
+      int meander = 0, int speed = 0, String flags]) {
 
     var attacks = <Attack>[];
     var moves = <Move>[];
@@ -191,9 +191,16 @@ class MonsterBuilder extends ContentBuilder {
       dropTypes = drops.map((name) => _items[name]);
     }
 
+    var flagSet;
+    if (flags != null) {
+      flagSet = new Set<String>.from(flags.split(' '));
+    } else {
+      flagSet = new Set<String>();
+    }
+
     final breed = new Breed(name, Gender.NEUTER, appearance, attacks, moves,
         dropTypes, maxHealth: maxHealth, olfaction: olfaction, meander: meander,
-        speed: speed, flags: new Set<String>.from(flags.split(' ')));
+        speed: speed, flags: flagSet);
     _breeds[name] = breed;
     return breed;
   }

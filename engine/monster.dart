@@ -10,9 +10,10 @@ class Monster extends Actor {
   /// up.
   num noise = 0;
 
-  /// In order to perform [Move]s other than just walking and melee attacks, a
-  /// monster must spend this, which regenerates over time.
-  int effort = Option.EFFORT_START;
+  /// After performing a [Move] a monster must recharge to regain its cost.
+  /// This is how much recharging is left to do before another move can be
+  /// performed.
+  int recharge = 0;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth)
   : super(game, x, y, maxHealth) {
@@ -43,8 +44,8 @@ class Monster extends Actor {
   bool get canOpenDoors() => breed.flags.contains('open-doors');
 
   Action onGetAction() {
-    // Regenerate effort.
-    effort = math.min(Option.EFFORT_MAX, effort + Option.EFFORT_REGENERATE);
+    // Recharge moves.
+    recharge = math.max(0, recharge - Option.RECHARGE_RATE);
 
     // Forget sounds over time. Since this occurs on the monster's turn, it
     // means slower monsters will attenuate less frequently. The [pow()]
@@ -151,11 +152,14 @@ class Monster extends Actor {
       choices.add(new AIChoice(score, () => new WalkAction(Direction.ALL[i])));
     }
 
-    // Consider the monster's moves.
-    for (final move in breed.moves) {
-      var score = Option.AI_START_SCORE + move.getScore(this);
-      if (score == Option.AI_MIN_SCORE) continue;
-      choices.add(new AIChoice(score, () => move.getAction(this)));
+    // Consider the monster's moves if it can.
+    if (recharge == 0) {
+      for (final move in breed.moves) {
+        // TODO(bob): Should move cost affect its score?
+        var score = Option.AI_START_SCORE + move.getScore(this);
+        if (score == Option.AI_MIN_SCORE) continue;
+        choices.add(new AIChoice(score, () => move.getAction(this)));
+      }
     }
 
     // If the monster couldn't come up with anything to do, just sit.
@@ -261,7 +265,7 @@ class Breed {
   /// this breed.
   int get experienceCents() {
     // The more health it has, the longer it can hurt the hero.
-    var exp = maxHealth;
+    num exp = maxHealth;
 
     // Faster monsters are worth more.
     exp *= Energy.GAINS[Energy.NORMAL_SPEED + speed];
@@ -272,7 +276,15 @@ class Breed {
     for (final attack in attacks) {
       attackTotal += attack.damage;
     }
-    exp *= (attackTotal / attacks.length);
+    exp *= attackTotal / attacks.length;
+
+    // Take into account flags.
+    for (final flag in flags) {
+      exp *= Option.EXP_FLAG[flag];
+    }
+
+    // Meandering monsters are worth less.
+    exp *= (Option.EXP_MEANDER - meander) / Option.EXP_MEANDER;
 
     // TODO(bob): Take into account meander, moves and olfaction.
     return exp.toInt();
