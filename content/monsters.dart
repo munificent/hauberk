@@ -48,6 +48,8 @@ class MonsterBuilder extends ContentBuilder {
     people();
     rodents();
     slugs();
+    snakes();
+    worms();
 
     return _breeds;
   }
@@ -60,10 +62,17 @@ class MonsterBuilder extends ContentBuilder {
       flags: 'group'
     );
 
+    breed('brown spider', brown('a'), [
+        attack('bite[s]', 3)
+      ],
+      maxHealth: 3, meander: 8,
+      flags: 'group'
+    );
+
     breed('giant spider', darkBlue('a'), [
         attack('bite[s]', 8)
       ],
-      maxHealth: 2, meander: 5
+      maxHealth: 12, olfaction: 5, meander: 5
     );
   }
 
@@ -79,7 +88,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('crow', darkGray('B'), [
         attack('bite[s]', 4),
       ],
-      maxHealth: 5, meander: 4, speed: 2,
+      maxHealth: 4, meander: 4, speed: 2,
       flags: 'group'
     );
 
@@ -128,12 +137,21 @@ class MonsterBuilder extends ContentBuilder {
   }
 
   people() {
+    breed('simpering knave', orange('p'), [
+        attack('hit[s]', 2),
+        attack('stab[s]', 4)
+      ],
+      drops: ['Dagger', 'Cloth Shirt'],
+      maxHealth: 6, meander: 3,
+      flags: 'open-doors'
+    );
+
     breed('doddering old mage', purple('p'), [
         attack('hit[s]', 3),
-        sparkBolt(cost: 16, damage: 6)
+        sparkBolt(cost: 16, damage: 8)
       ],
       drops: ['Scroll of Sidestepping', 'Staff', 'Dagger', 'Cloth Shirt', 'Robe'],
-      maxHealth: 7, meander: 2,
+      maxHealth: 8, meander: 2,
       flags: 'open-doors'
     );
 
@@ -142,7 +160,7 @@ class MonsterBuilder extends ContentBuilder {
         heal(cost: 30, amount: 8)
       ],
       drops: ['Mending Salve', 'Cudgel', 'Staff', 'Cloth Shirt', 'Robe'],
-      maxHealth: 8, meander: 4,
+      maxHealth: 9, meander: 4,
       flags: 'open-doors'
     );
   }
@@ -159,7 +177,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 3),
         attack('scratch[es]', 2)
       ],
-      maxHealth: 4, olfaction: 2, meander: 3, speed: 1,
+      maxHealth: 5, olfaction: 2, meander: 3, speed: 1,
       flags: 'group'
     );
   }
@@ -169,6 +187,22 @@ class MonsterBuilder extends ContentBuilder {
         attack('crawl[s] on', 8),
       ],
       maxHealth: 12, meander: 4, speed: -3
+    );
+  }
+
+  snakes() {
+    breed('tree snake', lightGreen('S'), [
+        attack('bites[s]', 8),
+      ],
+      maxHealth: 12, meander: 3
+    );
+  }
+
+  worms() {
+    breed('earthworm', lightRed('w'), [
+        attack('crawl[s] on', 8),
+      ],
+      maxHealth: 16, meander: 4, speed: -2
     );
   }
 

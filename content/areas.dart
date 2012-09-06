@@ -58,13 +58,13 @@ class AreaBuilder extends ContentBuilder {
       level(options, numMonsters: 12, numItems: 8,
         breeds: [
           'white mouse',
-          'sewer rat',
           'mangy cur',
           'giant slug',
           'little brown bat',
           'stray cat',
           'garden spider',
-          'giant cockroach'
+          'giant cockroach',
+          'simpering knave'
         ],
         items: [
           'Mending Salve',
@@ -73,10 +73,10 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice'),
       level(options, numMonsters: 16, numItems: 9,
         breeds: [
+          'brown spider',
           'crow',
           'wild dog',
-          'giant spider',
-          'doddering old mage',
+          'sewer rat',
           'drunken priest',
         ],
         items: [
@@ -86,7 +86,11 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice'),
       level(options, numMonsters: 20, numItems: 10,
         breeds: [
-          'raven'
+          'giant spider',
+          'doddering old mage',
+          'raven',
+          'tree snake',
+          'earthworm'
         ],
         items: [
           'Mending Salve',
