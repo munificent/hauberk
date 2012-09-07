@@ -127,6 +127,7 @@ class PowerType {
 /// The collection of [Item]s held by an [Actor].
 class Inventory implements Iterable<Item> {
   final List<Item> _items;
+  final int capacity;
 
   int get length() => _items.length;
 
@@ -135,7 +136,7 @@ class Inventory implements Iterable<Item> {
     _items[index] = value;
   }
 
-  Inventory()
+  Inventory(this.capacity)
   : _items = <Item>[];
 
   /// Creates a new copy of this Inventory. This is done when the [Hero] enters
@@ -144,7 +145,7 @@ class Inventory implements Iterable<Item> {
   Inventory clone() {
     // TODO(bob): If items themselves ever become mutable, will need to deep
     // clone them too.
-    final inventory = new Inventory();
+    final inventory = new Inventory(capacity);
     for (final item in this) inventory.tryAdd(item);
 
     return inventory;
@@ -158,7 +159,7 @@ class Inventory implements Iterable<Item> {
 
   bool tryAdd(Item item) {
     // TODO(bob): Merge stacks.
-    if (_items.length >= Option.INVENTORY_MAX_ITEMS) return false;
+    if (_items.length >= capacity) return false;
 
     _items.add(item);
     _items.sort((a, b) => a.compareTo(b));

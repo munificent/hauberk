@@ -8,7 +8,7 @@ class Game {
   Hero hero;
   bool _questComplete = false;
 
-  Game(this.area, this.depth, HeroHome home)
+  Game(this.area, this.depth, HeroSave save)
   : level = new Level(80, 40),
     log = new Log(),
     actions = new Queue<Action>()
@@ -17,7 +17,7 @@ class Game {
 
     final heroPos = area.makeLevel(this, depth);
 
-    hero = new Hero(this, heroPos, home);
+    hero = new Hero(this, heroPos, save);
     level.actors.add(hero);
 
     Fov.refresh(level, hero.pos);

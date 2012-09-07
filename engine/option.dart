@@ -24,7 +24,10 @@ class Option {
   static final HERO_LEVEL_COST = 40;
 
   /// The maximum number of items the hero's [Inventory] can contain.
-  static final INVENTORY_MAX_ITEMS = 12;
+  static final INVENTORY_CAPACITY = 12;
+
+  /// The maximum number of items the hero's home [Inventory] can contain.
+  static final HOME_CAPACITY = 48;
 
   /// The maximum number of steps of ideal pathfinding data that is calculated.
   /// This is used by monster AI and by noise calculation. Increasing it

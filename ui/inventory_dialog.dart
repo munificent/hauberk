@@ -45,28 +45,11 @@ class InventoryDialog extends Screen {
 
     terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
     terminal.writeAt(0, terminal.height - 1,
-        '[A-P] Select item, [Tab] Switch',
+        '[A-P] Select item, [Tab] Switch view',
         Color.GRAY);
 
-    var i = 0;
-    for (final item in view.getItems(game)) {
-      final y = i + 1;
-
-      var borderColor = Color.GRAY;
-      var letterColor = Color.YELLOW;
-      var textColor = Color.WHITE;
-      if (!mode.canSelect(item)) {
-        borderColor = Color.DARK_GRAY;
-        letterColor = Color.GRAY;
-        textColor = Color.GRAY;
-      }
-
-      terminal.writeAt(0, y, '( )   ', borderColor);
-      terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], letterColor);
-      terminal.drawGlyph(4, y, item.appearance);
-      terminal.writeAt(6, y, item.nounText, textColor);
-      i++;
-    }
+    drawItems(terminal, 0, 1, view.getItems(game),
+        (item) => mode.canSelect(item));
   }
 
   void selectItem(int index) {
@@ -75,6 +58,30 @@ class InventoryDialog extends Screen {
 
     game.hero.setNextAction(mode.getAction(index, view));
     ui.pop();
+  }
+}
+
+// TODO(bob): Move to different file?
+drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
+    bool canSelect(Item item)) {
+  var i = 0;
+  for (final item in items) {
+    final itemY = i + y;
+
+    var borderColor = Color.GRAY;
+    var letterColor = Color.YELLOW;
+    var textColor = Color.WHITE;
+    if (!canSelect(item)) {
+      borderColor = Color.DARK_GRAY;
+      letterColor = Color.GRAY;
+      textColor = Color.GRAY;
+    }
+
+    terminal.writeAt(x, itemY, '( )   ', borderColor);
+    terminal.writeAt(x + 1, itemY, 'abcdefghijklmnopqrstuvwxyz'[i], letterColor);
+    terminal.drawGlyph(x + 4, itemY, item.appearance);
+    terminal.writeAt(x + 6, itemY, item.nounText, textColor);
+    i++;
   }
 }
 

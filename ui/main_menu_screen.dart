@@ -102,7 +102,7 @@ class MainMenuScreen extends Screen {
     // TODO(bob): Check version.
 
     for (final hero in data['heroes']) {
-      final inventory = new Inventory();
+      final inventory = new Inventory(Option.INVENTORY_CAPACITY);
       for (final itemData in hero['inventory']) {
         final item = _loadItem(itemData);
         inventory.tryAdd(item);
@@ -116,8 +116,14 @@ class MainMenuScreen extends Screen {
         equipment.equip(item);
       }
 
+      final home = new Inventory(Option.HOME_CAPACITY);
+      for (final itemData in hero['home']) {
+        final item = _loadItem(itemData);
+        home.tryAdd(item);
+      }
+
       final experience = hero['experience'];
-      heroes.add(new HeroSave.load(inventory, equipment, experience));
+      heroes.add(new HeroSave.load(inventory, equipment, home, experience));
     }
   }
 
@@ -140,9 +146,15 @@ class MainMenuScreen extends Screen {
         equipment.add(_saveItem(item));
       }
 
+      final home = [];
+      for (final item in hero.home) {
+        home.add(_saveItem(item));
+      }
+
       heroData.add({
         'inventory': inventory,
         'equipment': equipment,
+        'home': home,
         'experience': hero.experienceCents
       });
     }

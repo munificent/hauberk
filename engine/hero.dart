@@ -5,13 +5,19 @@
 class HeroSave {
   Inventory inventory;
   Equipment equipment;
+
+  /// Items in the hero's home.
+  Inventory home;
+
   int experienceCents = 0;
 
   HeroSave()
-  : inventory = new Inventory(),
-    equipment = new Equipment();
+  : inventory = new Inventory(Option.INVENTORY_CAPACITY),
+    equipment = new Equipment(),
+    home = new Inventory(Option.HOME_CAPACITY);
 
-  HeroSave.load(this.inventory, this.equipment, this.experienceCents);
+  HeroSave.load(this.inventory, this.equipment, this.home,
+      this.experienceCents);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Level] and his changes need to be
