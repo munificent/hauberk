@@ -27,7 +27,12 @@ class Option {
   static final INVENTORY_CAPACITY = 12;
 
   /// The maximum number of items the hero's home [Inventory] can contain.
-  static final HOME_CAPACITY = 48;
+  /// Note: To make this is more than 26, the home screen UI will need to be
+  /// changed.
+  static final HOME_CAPACITY = 26;
+
+  /// The maximum number of items the hero's crucible can contain.
+  static final CRUCIBLE_CAPACITY = 8;
 
   /// The maximum number of steps of ideal pathfinding data that is calculated.
   /// This is used by monster AI and by noise calculation. Increasing it

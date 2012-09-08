@@ -122,8 +122,15 @@ class MainMenuScreen extends Screen {
         home.tryAdd(item);
       }
 
+      final crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
+      for (final itemData in hero['crucible']) {
+        final item = _loadItem(itemData);
+        crucible.tryAdd(item);
+      }
+
       final experience = hero['experience'];
-      heroes.add(new HeroSave.load(inventory, equipment, home, experience));
+      heroes.add(new HeroSave.load(inventory, equipment, home, crucible,
+          experience));
     }
   }
 
@@ -151,10 +158,16 @@ class MainMenuScreen extends Screen {
         home.add(_saveItem(item));
       }
 
+      final crucible = [];
+      for (final item in hero.crucible) {
+        crucible.add(_saveItem(item));
+      }
+
       heroData.add({
         'inventory': inventory,
         'equipment': equipment,
         'home': home,
+        'crucible': crucible,
         'experience': hero.experienceCents
       });
     }

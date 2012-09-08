@@ -9,14 +9,18 @@ class HeroSave {
   /// Items in the hero's home.
   Inventory home;
 
+  /// Items in the hero's crucible.
+  Inventory crucible;
+
   int experienceCents = 0;
 
   HeroSave()
   : inventory = new Inventory(Option.INVENTORY_CAPACITY),
     equipment = new Equipment(),
-    home = new Inventory(Option.HOME_CAPACITY);
+    home = new Inventory(Option.HOME_CAPACITY),
+    crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
 
-  HeroSave.load(this.inventory, this.equipment, this.home,
+  HeroSave.load(this.inventory, this.equipment, this.home, this.crucible,
       this.experienceCents);
 
   /// Copies data from [hero] into this object. This should be called when the

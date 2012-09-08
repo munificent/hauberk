@@ -124,17 +124,21 @@ class PowerType {
 }
 
 // TODO(bob): Which collection interface should it implement?
+abstract class ItemCollection implements Iterable<Item> {
+  abstract int get length;
+  abstract Item operator[](int index);
+  abstract Item removeAt(int index);
+  abstract bool tryAdd(Item item);
+}
+
 /// The collection of [Item]s held by an [Actor].
-class Inventory implements Iterable<Item> {
+class Inventory implements ItemCollection {
   final List<Item> _items;
   final int capacity;
 
-  int get length() => _items.length;
+  int get length => _items.length;
 
   Item operator[](int index) => _items[index];
-  void operator[]=(int index, Item value) {
-    _items[index] = value;
-  }
 
   Inventory(this.capacity)
   : _items = <Item>[];
@@ -151,7 +155,7 @@ class Inventory implements Iterable<Item> {
     return inventory;
   }
 
-  Item remove(int index) {
+  Item removeAt(int index) {
     final item = _items[index];
     _items.removeRange(index, 1);
     return item;
@@ -172,7 +176,7 @@ class Inventory implements Iterable<Item> {
 // TODO(bob): Which collection interface should it implement?
 /// The collection of wielded [Item]s held by the [Hero]. Unlike [Inventory],
 /// the [Equipment] holds each Item in a categorized slot.
-class Equipment implements Iterable<Item> {
+class Equipment implements ItemCollection {
   final List<String> slotTypes;
   final List<Item> slots;
 
@@ -190,6 +194,22 @@ class Equipment implements Iterable<Item> {
       'Boots'
       ],
     slots = new List<Item>(11);
+
+  /// Gets the number of equipped item. Ignores empty slots.
+  int get length {
+    return slots.reduce(0, (count, item) => count + ((item == null) ? 0 : 1));
+  }
+
+  /// Gets the equipped item at the given index. Ignores empty slots.
+  Item operator[](int index) {
+    // Find the slot, skipping over empty ones.
+    for (var i = 0; i < slotTypes.length; i++) {
+      if (slots[i] != null) {
+        if (index == 0) return slots[i];
+        index--;
+      }
+    }
+  }
 
   /// Creates a new copy of this Equipment. This is done when the [Hero] enters
   /// a [Level] so that any inventory changes that happen in the level are
@@ -222,6 +242,22 @@ class Equipment implements Iterable<Item> {
     return slotTypes.some((slot) => item.equipSlot == slot);
   }
 
+  /// Tries to add the item. This will only succeed if there is an empty slot
+  /// that allows the item. Unlike [equip], this will not swap items. It is
+  /// used by the [HomeScreen].
+  bool tryAdd(Item item) {
+    // TODO(bob): Need to handle multiple slots of the same type. In that case,
+    // should prefer an empty slot before reusing an in-use one.
+    for (var i = 0; i < slotTypes.length; i++) {
+      if (slotTypes[i] == item.equipSlot && slots[i] == null) {
+        slots[i] = item;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /// Equips [item]. Returns the previously equipped item in that slot, if any.
   Item equip(Item item) {
     // TODO(bob): Need to handle multiple slots of the same type. In that case,
@@ -239,7 +275,7 @@ class Equipment implements Iterable<Item> {
   }
 
   /// Unequips and returns the [Item] at [index].
-  Item remove(int index) {
+  Item removeAt(int index) {
     // Find the slot, skipping over empty ones.
     for (var i = 0; i < slotTypes.length; i++) {
       if (slots[i] != null) {

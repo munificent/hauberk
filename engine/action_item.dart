@@ -24,7 +24,7 @@ class DropInventoryAction extends Action {
   DropInventoryAction(this.index);
 
   ActionResult onPerform() {
-    final item = hero.inventory.remove(index);
+    final item = hero.inventory.removeAt(index);
     item.pos = hero.pos;
     game.level.items.add(item);
 
@@ -40,7 +40,7 @@ class DropEquipmentAction extends Action {
   DropEquipmentAction(this.index);
 
   ActionResult onPerform() {
-    final item = hero.equipment.remove(index);
+    final item = hero.equipment.removeAt(index);
     item.pos = hero.pos;
     game.level.items.add(item);
 
@@ -71,7 +71,7 @@ class EquipAction extends Action {
     if (isOnGround) {
       game.level.removeItem(item);
     } else {
-      hero.inventory.remove(index);
+      hero.inventory.removeAt(index);
     }
 
     // Add the previously equipped item to inventory.
@@ -100,7 +100,7 @@ class UnequipAction extends Action {
   UnequipAction(this.index);
 
   ActionResult onPerform() {
-    final item = hero.equipment.remove(index);
+    final item = hero.equipment.removeAt(index);
 
     if (hero.inventory.tryAdd(item)) {
       return succeed('{1} unequip[s] {2}.', actor, item);
@@ -139,7 +139,7 @@ class UseAction extends Action {
     if (isOnGround) {
       game.level.removeItem(item);
     } else {
-      hero.inventory.remove(index);
+      hero.inventory.removeAt(index);
     }
 
     return alternate(item.use());
