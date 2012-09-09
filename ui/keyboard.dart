@@ -44,6 +44,8 @@ class KeyCode {
   static final SHIFT      = 16;
   static final TAB        = 9;
   static final ESCAPE     = 27;
+  static final SPACE      = 32;
+
   static final LEFT       = 37;
   static final UP         = 38;
   static final RIGHT      = 39;

@@ -6,11 +6,13 @@
 #source('content/areas.dart');
 #source('content/items.dart');
 #source('content/monsters.dart');
+#source('content/recipes.dart');
 
 Content createContent() {
   final items = new ItemBuilder().build();
   final breeds = new MonsterBuilder(items).build();
   final areas = new AreaBuilder(breeds, items).build();
+  final recipes = new RecipeBuilder(items).build();
 
   // The items that a new hero starts with.
   final heroItems = [
@@ -18,7 +20,7 @@ Content createContent() {
     items['Scroll of Sidestepping']
   ];
 
-  return new Content(areas, items, heroItems);
+  return new Content(areas, items, recipes, heroItems);
 }
 
 /// Base class for a builder that provides a DSL for creating game content.

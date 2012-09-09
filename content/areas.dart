@@ -67,7 +67,7 @@ class AreaBuilder extends ContentBuilder {
           'simpering knave'
         ],
         items: [
-          'Mending Salve',
+          'Soothing Balm',
           'Scroll of Sidestepping'
         ],
         quest: 'Magical Chalice'),
@@ -80,7 +80,7 @@ class AreaBuilder extends ContentBuilder {
           'drunken priest',
         ],
         items: [
-          'Mending Salve',
+          'Soothing Balm',
           'Robe'
         ],
         quest: 'Magical Chalice'),
@@ -93,7 +93,7 @@ class AreaBuilder extends ContentBuilder {
           'earthworm'
         ],
         items: [
-          'Mending Salve',
+          'Soothing Balm',
           'Cudgel',
           'Dagger'
         ],

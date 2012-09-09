@@ -159,7 +159,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('hit[s]', 3),
         heal(cost: 30, amount: 8)
       ],
-      drops: ['Mending Salve', 'Cudgel', 'Staff', 'Cloth Shirt', 'Robe'],
+      drops: ['Soothing Balm', 'Cudgel', 'Staff', 'Cloth Shirt', 'Robe'],
       maxHealth: 9, meander: 4,
       flags: 'open-doors'
     );

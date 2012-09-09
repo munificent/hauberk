@@ -147,9 +147,10 @@ class Game {
 class Content {
   final List<Area> areas;
   final Map<String, ItemType> items;
+  final List<Recipe> recipes;
   final List<ItemType> _newHeroItems;
 
-  Content(this.areas, this.items, this._newHeroItems);
+  Content(this.areas, this.items, this.recipes, this._newHeroItems);
 
   HeroSave createHero() {
     final hero = new HeroSave();

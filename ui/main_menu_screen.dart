@@ -52,6 +52,7 @@ class MainMenuScreen extends Screen {
       dirty();
     }
   }
+
   void render(Terminal terminal) {
     if (!isTopScreen) return;
 

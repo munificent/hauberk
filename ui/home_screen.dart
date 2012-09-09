@@ -5,6 +5,10 @@ class HomeScreen extends Screen {
   HomeView rightView = HomeView.HOME;
   HomeMode mode = HomeMode.VIEW;
 
+  /// If the crucible contains a complete recipe, this will be it. Otherwise,
+  /// this will be `null`.
+  Recipe completeRecipe;
+
   HomeScreen(this.content, this.save);
 
   bool handleInput(Keyboard keyboard) {
@@ -13,6 +17,17 @@ class HomeScreen extends Screen {
     switch (keyboard.lastPressed) {
       case KeyCode.ESCAPE:
         ui.pop();
+        break;
+
+      case KeyCode.SPACE:
+        if (completeRecipe == null) break;
+        if (rightView != HomeView.CRUCIBLE) break;
+
+        final item = new Item(completeRecipe.result, Vec.ZERO, null, null);
+        save.crucible.clear();
+        save.crucible.tryAdd(item);
+        completeRecipe = null;
+        dirty();
         break;
     }
 
@@ -31,14 +46,29 @@ class HomeScreen extends Screen {
 
     terminal.writeAt(0, 2, leftView.label);
     drawItems(terminal, 0, 3, leftView.getItems(save),
-        (item) => mode.canSelectLeftItem(item));
+        (item) => mode.canSelectLeftItem(this, item));
 
     terminal.writeAt(50, 2, rightView.label);
     drawItems(terminal, 50, 3, rightView.getItems(save),
-        (item) => mode.canSelectRightItem(item));
+        (item) => mode.canSelectRightItem(this, item));
+
+    if (rightView == HomeView.CRUCIBLE && completeRecipe != null) {
+      terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.YELLOW);
+    }
+  }
+
+  /// Sees if the crucible currently contains a complete recipe.
+  void refreshRecipe() {
+    for (final recipe in content.recipes) {
+      if (recipe.isComplete(save.crucible)) {
+        completeRecipe = recipe;
+        return;
+      }
+    }
+
+    completeRecipe = null;
   }
 }
-
 
 /// Which items are currently being shown in the inventory.
 class HomeView {
@@ -84,8 +114,8 @@ class HomeMode {
 
   abstract String get message;
   abstract String get helpText;
-  bool canSelectLeftItem(Item item) => false;
-  bool canSelectRightItem(Item item) => false;
+  bool canSelectLeftItem(HomeScreen home, Item item) => false;
+  bool canSelectRightItem(HomeScreen home, Item item) => false;
   abstract bool handleInput(Keyboard keyboard, HomeScreen home);
 }
 
@@ -222,15 +252,31 @@ class DropHomeMode extends SelectHomeMode {
 
   String get message => 'Drop which item?';
 
-  bool canSelectLeftItem(Item item) => true;
-  bool canSelectRightItem(Item item) => false;
+  bool canSelectLeftItem(HomeScreen home, Item item) {
+    // Can drop anything in the home.
+    if (home.rightView == HomeView.HOME) return true;
+
+    // Can only drop equippable items.
+    if (home.rightView == HomeView.EQUIPMENT) {
+      // TODO(bob): This is a bit wonky. canEquip() assumes you can swap items,
+      // which the home screen doesn't support.
+      return home.save.equipment.canEquip(item);
+    }
+
+    // Can only put items in the crucible if they fit a recipe.
+    final items = new List.from(home.rightView.getItems(home.save));
+    items.add(item);
+    return home.content.recipes.some((recipe) => recipe.allows(items));
+  }
+
+  bool canSelectRightItem(HomeScreen home, Item item) => false;
 
   void selectItem(HomeScreen home, int index) {
     var from = home.leftView.getItems(home.save);
 
     if (index >= from.length) return;
     var item = from[index];
-    if (!canSelectLeftItem(item)) return;
+    if (!canSelectLeftItem(home, item)) return;
 
     var to = home.rightView.getItems(home.save);
 
@@ -240,6 +286,7 @@ class DropHomeMode extends SelectHomeMode {
       // TODO(bob): Show an error message?
     }
 
+    if (home.rightView == HomeView.CRUCIBLE) home.refreshRecipe();
     home.dirty();
   }
 }
@@ -250,15 +297,15 @@ class GetHomeMode extends SelectHomeMode {
 
   String get message => 'Pick up which item?';
 
-  bool canSelectLeftItem(Item item) => false;
-  bool canSelectRightItem(Item item) => true;
+  bool canSelectLeftItem(HomeScreen home, Item item) => false;
+  bool canSelectRightItem(HomeScreen home, Item item) => true;
 
   void selectItem(HomeScreen home, int index) {
     var from = home.rightView.getItems(home.save);
 
     if (index >= from.length) return;
     var item = from[index];
-    if (!canSelectRightItem(item)) return;
+    if (!canSelectRightItem(home, item)) return;
 
     var to = home.leftView.getItems(home.save);
 
@@ -268,6 +315,7 @@ class GetHomeMode extends SelectHomeMode {
       // TODO(bob): Show an error message?
     }
 
+    if (home.rightView == HomeView.CRUCIBLE) home.refreshRecipe();
     home.dirty();
   }
 }

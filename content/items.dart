@@ -32,8 +32,8 @@ class ItemBuilder extends ContentBuilder {
 
   void potions() {
     // Healing
-    item('Mending Salve', red('!'),
-        use: () => new HealAction(12));
+    item('Soothing Balm', lightRed('!'), use: () => new HealAction(12));
+    item('Mending Salve', red('!'), use: () => new HealAction(24));
     // balm of soothing, healing, amelioration, rejuvenation
   }
 
