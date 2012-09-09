@@ -88,7 +88,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('crow', darkGray('B'), [
         attack('bite[s]', 4),
       ],
-      drops: ['Black feather'],
+      drop: chanceOf(25, 'Black feather'),
       maxHealth: 4, meander: 4, speed: 2,
       flags: 'group'
     );
@@ -97,7 +97,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 6),
         attack('claws[s]', 5),
       ],
-      drops: ['Black feather'],
+      drop: chanceOf(50, 'Black feather'),
       maxHealth: 8, meander: 1
     );
   }
@@ -134,7 +134,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('giant cockroach', darkBrown('i'), [
         attack('crawl[s] on', 1),
       ],
-      drops: ['Insect wing'],
+      drop: chanceOf(50, 'Insect wing'),
       maxHealth: 12, meander: 8, speed: 3
     );
   }
@@ -144,7 +144,10 @@ class MonsterBuilder extends ContentBuilder {
         attack('hit[s]', 2),
         attack('stab[s]', 4)
       ],
-      drops: ['Dagger', 'Cloth Shirt'],
+      drop: [
+        chanceOf(20, 'Dagger'),
+        chanceOf(20, 'Cloth Shirt')
+      ],
       maxHealth: 6, meander: 3,
       flags: 'open-doors'
     );
@@ -153,7 +156,13 @@ class MonsterBuilder extends ContentBuilder {
         attack('hit[s]', 3),
         sparkBolt(cost: 16, damage: 8)
       ],
-      drops: ['Scroll of Sidestepping', 'Staff', 'Dagger', 'Cloth Shirt', 'Robe'],
+      drop: [
+         chanceOf(10, 'Scroll of Sidestepping'),
+         chanceOf(7, 'Staff'),
+         chanceOf(7, 'Dagger'),
+         chanceOf(7, 'Cloth Shirt'),
+         chanceOf(5, 'Robe')
+      ],
       maxHealth: 8, meander: 2,
       flags: 'open-doors'
     );
@@ -162,7 +171,13 @@ class MonsterBuilder extends ContentBuilder {
         attack('hit[s]', 3),
         heal(cost: 30, amount: 8)
       ],
-      drops: ['Soothing Balm', 'Cudgel', 'Staff', 'Cloth Shirt', 'Robe'],
+      drop: [
+         chanceOf(10, 'Soothing Balm'),
+         chanceOf(7, 'Staff'),
+         chanceOf(7, 'Cudgel'),
+         chanceOf(7, 'Cloth Shirt'),
+         chanceOf(5, 'Robe')
+      ],
       maxHealth: 9, meander: 4,
       flags: 'open-doors'
     );
@@ -210,7 +225,7 @@ class MonsterBuilder extends ContentBuilder {
   }
 
   Breed breed(String name, Glyph appearance, List actions, [
-      List<String> drops, int maxHealth, int olfaction = 0,
+      drop, int maxHealth, int olfaction = 0,
       int meander = 0, int speed = 0, String flags]) {
 
     var attacks = <Attack>[];
@@ -221,12 +236,7 @@ class MonsterBuilder extends ContentBuilder {
       if (action is Move) moves.add(action);
     }
 
-    var dropTypes;
-    if (drops == null) {
-      dropTypes = <ItemType>[];
-    } else {
-      dropTypes = drops.map((name) => _items[name]);
-    }
+    drop = _parseDrop(drop);
 
     var flagSet;
     if (flags != null) {
@@ -236,10 +246,39 @@ class MonsterBuilder extends ContentBuilder {
     }
 
     final breed = new Breed(name, Gender.NEUTER, appearance, attacks, moves,
-        dropTypes, maxHealth: maxHealth, olfaction: olfaction, meander: meander,
+        drop, maxHealth: maxHealth, olfaction: olfaction, meander: meander,
         speed: speed, flags: flagSet);
     _breeds[name] = breed;
     return breed;
+  }
+
+  Drop chanceOf(int percent, drop) {
+    return new OneOfDrop([_parseDrop(drop)], [percent]);
+  }
+
+  Drop _parseDrop(drop) {
+    if (drop == null) return new OneOfDrop([], []);
+    if (drop is Drop) return drop;
+    if (drop is String) return new ItemDrop(_items[drop]);
+
+    if (drop is List) {
+      final drops = [];
+      final percents = [];
+
+      for (final element in drop) {
+        if (element is OneOfDrop && element.drops.length == 1) {
+          drops.add(element.drops[0]);
+          percents.add(element.percents[0]);
+        } else {
+          // TODO(bob): Be more flexible here.
+          throw 'Right now a list in a drop can only contain chanceOf() calls.';
+        }
+      }
+
+      return new OneOfDrop(drops, percents);
+    }
+
+    throw 'Unknown drop type $drop.';
   }
 
   Move heal([int cost, int amount]) => new HealMove(cost, amount);

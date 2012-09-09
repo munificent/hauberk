@@ -24,12 +24,12 @@ class Option {
   static final HERO_LEVEL_COST = 40;
 
   /// The maximum number of items the hero's [Inventory] can contain.
-  static final INVENTORY_CAPACITY = 12;
+  static final INVENTORY_CAPACITY = 20;
 
   /// The maximum number of items the hero's home [Inventory] can contain.
   /// Note: To make this is more than 26, the home screen UI will need to be
   /// changed.
-  static final HOME_CAPACITY = 26;
+  static final HOME_CAPACITY = 20;
 
   /// The maximum number of items the hero's crucible can contain.
   static final CRUCIBLE_CAPACITY = 8;

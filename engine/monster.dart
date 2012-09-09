@@ -194,9 +194,14 @@ class Monster extends Actor {
 
   /// Called when this Actor has been killed by [attacker].
   void onDied(Actor attacker) {
-    // Drop the item.
-    if (breed.drops.length > 0) {
-      game.level.spawnItem(rng.item(breed.drops), pos);
+    // Handle drops.
+    final types = [];
+    breed.drop.addDrop(types);
+
+    for (var type in types) {
+      // TODO(bob): Scatter items a bit?
+      // TODO(bob): Add message.
+      game.level.spawnItem(type, pos);
     }
   }
 
@@ -252,13 +257,13 @@ class Breed {
   /// (fastest) where `0` is normal speed.
   final int speed;
 
-  /// The types of [Item]s this monster may drop when killed.
-  final List<ItemType> drops;
+  /// The [Item]s this monster may drop when killed.
+  final Drop drop;
 
   final Set<String> flags;
 
   Breed(this.name, this.gender, this.appearance, this.attacks, this.moves,
-      this.drops, [
+      this.drop, [
       this.maxHealth, this.olfaction, this.meander, this.speed, this.flags]);
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of

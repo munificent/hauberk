@@ -302,6 +302,39 @@ class Equipment implements ItemCollection {
   }
 }
 
+class Drop {
+  abstract void addDrop(List<ItemType> types);
+}
+
+class ItemDrop implements Drop {
+  final ItemType type;
+
+  ItemDrop(this.type);
+
+  void addDrop(List<ItemType> types) {
+    types.add(type);
+  }
+}
+
+class OneOfDrop implements Drop {
+  final List<Drop> drops;
+  final List<int> percents;
+
+  OneOfDrop(this.drops, this.percents);
+
+  void addDrop(List<ItemType> types) {
+    var roll = rng.range(100);
+
+    for (var i = 0; i < drops.length; i++) {
+      roll -= percents[i];
+      if (roll <= 0) {
+        drops[i].addDrop(types);
+        return;
+      }
+    }
+  }
+}
+
 /// A recipe defines a set of items that can be placed into the crucible and
 /// transmuted into a new item.
 // TODO(bob): Figure out how this works with powers.
