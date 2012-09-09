@@ -7,22 +7,35 @@ class RecipeBuilder extends ContentBuilder {
   : _recipes = <Recipe>[];
 
   List<Recipe> build() {
-    recipe([
+    recipe('Fur Cloak', [
+      'Fur pelt',
+      'Fur pelt',
+      'Fur pelt',
+      'Fur pelt'
+    ]);
+
+    recipe('Mending Salve', [
       'Soothing Balm',
       'Soothing Balm',
       'Soothing Balm'
-    ], 'Mending Salve');
+    ]);
 
-    recipe([
+    recipe('Scroll of Sidestepping', [
       'Insect wing',
       'Black feather',
       'Parchment'
-    ], 'Scroll of Sidestepping');
+    ]);
+
+    recipe('Fur-lined Robe', [
+      'Robe',
+      'Fur pelt',
+      'Fur pelt'
+    ]);
 
     return _recipes;
   }
 
-  void recipe(List<String> ingredientNames, String result) {
+  void recipe(String result, List<String> ingredientNames) {
     final ingredients = ingredientNames.map((name) => _items[name]);
     _recipes.add(new Recipe(ingredients, _items[result]));
   }

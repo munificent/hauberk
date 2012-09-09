@@ -32,6 +32,7 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void pelts() {
+    item('Fur pelt', lightBrown(','));
     item('Insect wing', purple(','));
     item('Black feather', darkGray(','));
   }
@@ -59,9 +60,11 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void bodyArmor() {
-    armor('Cloth Shirt', lightGray(']'), 'Body', 2);
-    armor('Robe', aqua(']'), 'Body', 4);
-    armor('Lined Robe', purple(']'), 'Body', 6);
+    armor('Fur Cloak', lightBrown('('), 'Cloak', 2);
+
+    armor('Cloth Shirt', lightGray('('), 'Body', 2);
+    armor('Robe', aqua('('), 'Body', 4);
+    armor('Fur-lined Robe', darkAqua('('), 'Body', 6);
     /*
     Leather Shirt[s]
     Soft Leather Armor[s]

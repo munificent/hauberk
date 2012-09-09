@@ -106,6 +106,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('mangy cur', yellow('c'), [
         attack('bite[s]', 4),
       ],
+      drop: chanceOf(10, 'Fur pelt'),
       maxHealth: 7, olfaction: 5, meander: 3,
       flags: 'few'
     );
@@ -113,6 +114,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('wild dog', gray('c'), [
         attack('bite[s]', 5),
       ],
+      drop: chanceOf(30, 'Fur pelt'),
       maxHealth: 9, olfaction: 5, meander: 3,
       flags: 'few'
     );
@@ -123,6 +125,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 4),
         attack('scratch[es]', 3),
       ],
+      drop: chanceOf(20, 'Fur pelt'),
       maxHealth: 5, meander: 3, olfaction: 7, speed: 1
     );
   }

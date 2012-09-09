@@ -122,7 +122,7 @@ class Option {
 
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.
-  static final SPAWN_MONSTER_CHANCE = 30;
+  static final SPAWN_MONSTER_CHANCE = 40;
 
   /// The maximum distance at which a monster will attempt a bolt attack.
   static final MAX_BOLT_DISTANCE = 12;
