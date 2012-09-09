@@ -56,21 +56,21 @@ class MonsterBuilder extends ContentBuilder {
 
   arachnids() {
     breed('garden spider', darkAqua('a'), [
-        attack('bite[s]', 2)
+        attack('bite[s]', 2, Element.POISON)
       ],
       maxHealth: 2, meander: 8,
       flags: 'group'
     );
 
     breed('brown spider', brown('a'), [
-        attack('bite[s]', 3)
+        attack('bite[s]', 3, Element.POISON)
       ],
       maxHealth: 3, meander: 8,
       flags: 'group'
     );
 
     breed('giant spider', darkBlue('a'), [
-        attack('bite[s]', 8)
+        attack('bite[s]', 8, Element.POISON)
       ],
       maxHealth: 12, olfaction: 5, meander: 5
     );
@@ -245,5 +245,6 @@ class MonsterBuilder extends ContentBuilder {
   Move heal([int cost, int amount]) => new HealMove(cost, amount);
 
   Move sparkBolt([int cost, int damage]) =>
-      new BoltMove(cost, new Attack('zaps', damage, new Noun('the spark')));
+      new BoltMove(cost, new Attack('zaps', damage, Element.LIGHTNING,
+          new Noun('the spark')));
 }

@@ -25,7 +25,9 @@ Content createContent() {
 
 /// Base class for a builder that provides a DSL for creating game content.
 class ContentBuilder {
-  Attack attack(String verb, int damage) => new Attack(verb, damage);
+  Attack attack(String verb, int damage, [Element element = Element.NONE]) {
+    return new Attack(verb, damage, element);
+  }
 
   Glyph black(String char)       => new Glyph(char, Color.BLACK);
   Glyph white(String char)       => new Glyph(char, Color.WHITE);

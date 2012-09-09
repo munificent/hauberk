@@ -18,7 +18,7 @@ class Item extends Thing implements Comparable {
 
   Attack get attack() {
     if (type.attack == null) return null;
-    return new Attack(type.attack.verb, type.attack.damage + damageModifier);
+    return type.attack.modifyDamage(damageModifier);
   }
 
   int get damageModifier() {

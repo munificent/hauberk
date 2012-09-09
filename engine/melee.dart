@@ -11,7 +11,16 @@ class Attack {
   /// on this with a range of 1/2 of its value.
   final int damage;
 
-  Attack(this.verb, this.damage, [this.noun]);
+  /// The element for the attack.
+  final Element element;
+
+  Attack(this.verb, this.damage, this.element, [this.noun]);
+
+  /// Returns a new attack identical to this one but with [damageModifier]
+  /// applied.
+  Attack modifyDamage(int damageModifier) {
+    return new Attack(verb, damage + damageModifier, element);
+  }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
   /// [action].

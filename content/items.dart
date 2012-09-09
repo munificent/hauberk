@@ -80,11 +80,9 @@ class ItemBuilder extends ContentBuilder {
     */
   }
 
-  Attack attack(String verb, int damage) => new Attack(verb, damage);
-
   ItemType weapon(String name, Glyph appearance, String verb, int damage) {
     return item(name, appearance, equipSlot: 'Weapon',
-        attack: attack(verb, damage));
+        attack: attack(verb, damage, Element.NONE));
   }
 
   ItemType armor(String name, Glyph appearance, String equipSlot, int armor) {

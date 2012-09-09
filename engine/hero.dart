@@ -91,7 +91,7 @@ class Hero extends Actor {
     if (weapon != null) return weapon.attack;
 
     // TODO(bob): Temp.
-    return new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE);
+    return new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE, Element.NONE);
   }
 
   void takeHit(Hit hit) {
