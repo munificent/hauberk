@@ -67,6 +67,7 @@ class AreaBuilder extends ContentBuilder {
           'simpering knave'
         ],
         items: [
+          'Parchment',
           'Soothing Balm',
           'Scroll of Sidestepping'
         ],
@@ -80,6 +81,7 @@ class AreaBuilder extends ContentBuilder {
           'drunken priest',
         ],
         items: [
+          'Parchment',
           'Soothing Balm',
           'Robe'
         ],

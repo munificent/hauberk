@@ -7,22 +7,23 @@ class RecipeBuilder extends ContentBuilder {
   : _recipes = <Recipe>[];
 
   List<Recipe> build() {
-    recipe({
-      'Soothing Balm': 3
-    }, 'Mending Salve');
+    recipe([
+      'Soothing Balm',
+      'Soothing Balm',
+      'Soothing Balm'
+    ], 'Mending Salve');
+
+    recipe([
+      'Insect wing',
+      'Black feather',
+      'Parchment'
+    ], 'Scroll of Sidestepping');
 
     return _recipes;
   }
 
-  void recipe(Map<String, int> ingredientNames, String result) {
-    final ingredients = [];
-    ingredientNames.forEach((name, amount) {
-      final ingredient = _items[name];
-      for (var i = 0; i < amount; i++) {
-        ingredients.add(ingredient);
-      }
-    });
-
+  void recipe(List<String> ingredientNames, String result) {
+    final ingredients = ingredientNames.map((name) => _items[name]);
     _recipes.add(new Recipe(ingredients, _items[result]));
   }
 }

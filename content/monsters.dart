@@ -88,6 +88,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('crow', darkGray('B'), [
         attack('bite[s]', 4),
       ],
+      drops: ['Black feather'],
       maxHealth: 4, meander: 4, speed: 2,
       flags: 'group'
     );
@@ -96,6 +97,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 6),
         attack('claws[s]', 5),
       ],
+      drops: ['Black feather'],
       maxHealth: 8, meander: 1
     );
   }
@@ -132,6 +134,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('giant cockroach', darkBrown('i'), [
         attack('crawl[s] on', 1),
       ],
+      drops: ['Insect wing'],
       maxHealth: 12, meander: 8, speed: 3
     );
   }

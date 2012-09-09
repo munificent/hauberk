@@ -10,7 +10,7 @@ class ItemBuilder extends ContentBuilder {
     // From Angband:
     // !   A potion (or flask)    /   A pole-arm
     // ?   A scroll (or book)     |   An edged weapon
-    // ,   A mushroom (or food)   \   A hafted weapon
+    // ,   Pelts and body parts   \   A hafted weapon
     // -   A wand or rod          }   A sling, bow, or x-bow
     // _   A staff                {   A shot, arrow, or bolt
     // =   A ring                 (   Soft armour (cloak, robes, leather armor)
@@ -19,6 +19,7 @@ class ItemBuilder extends ContentBuilder {
     // ~   Lites, Tools           )   A shield
     // &   Chests, Containers
 
+    pelts();
     potions();
     scrolls();
     weapons();
@@ -30,6 +31,11 @@ class ItemBuilder extends ContentBuilder {
     return _items;
   }
 
+  void pelts() {
+    item('Insect wing', purple(','));
+    item('Black feather', darkGray(','));
+  }
+
   void potions() {
     // Healing
     item('Soothing Balm', lightRed('!'), use: () => new HealAction(12));
@@ -38,6 +44,8 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void scrolls() {
+    item('Parchment', gray('?'));
+
     // Teleportation
     // Phasing, Teleportation, Disappearing
     item('Scroll of Sidestepping', lightPurple('?'),
