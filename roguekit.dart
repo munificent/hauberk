@@ -16,12 +16,6 @@ main() {
 
   ui.push(new MainMenuScreen(content));
 
-  /*
-  final home = new HeroHome();
-  final game = new Game(content.areas[0], 0, home);
-  ui.push(new GameScreen(home, game));
-  */
-
   final element = html.document.query('pre');
 
   tick(time) {

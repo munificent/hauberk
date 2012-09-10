@@ -26,3 +26,4 @@
 #source('engine/monster.dart');
 #source('engine/move.dart');
 #source('engine/option.dart');
+#source('engine/skill.dart');

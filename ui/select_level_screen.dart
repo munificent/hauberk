@@ -26,7 +26,8 @@ class SelectLevelScreen extends Screen {
       break;
 
     case KeyCode.L:
-      final game = new Game(content.areas[selectedArea], selectedLevel, save);
+      final game = new Game(content.areas[selectedArea], selectedLevel,
+          content, save);
       ui.push(new GameScreen(save, game));
       break;
 

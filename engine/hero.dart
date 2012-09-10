@@ -12,16 +12,19 @@ class HeroSave {
   /// Items in the hero's crucible.
   Inventory crucible;
 
+  final Map<String, int> skillLevels;
+
   int experienceCents = 0;
 
   HeroSave()
   : inventory = new Inventory(Option.INVENTORY_CAPACITY),
     equipment = new Equipment(),
     home = new Inventory(Option.HOME_CAPACITY),
-    crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
+    crucible = new Inventory(Option.CRUCIBLE_CAPACITY),
+    skillLevels = {};
 
   HeroSave.load(this.inventory, this.equipment, this.home, this.crucible,
-      this.experienceCents);
+      this.skillLevels, this.experienceCents);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Level] and his changes need to be
@@ -41,6 +44,9 @@ class Hero extends Actor {
   final Inventory inventory;
   final Equipment equipment;
 
+  final Map<String, Skill> _skills;
+  final Map<String, int> _skillLevels;
+
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
   int _experienceCents = 0;
@@ -50,12 +56,13 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  Hero(Game game, Vec pos, HeroSave save)
+  Hero(Game game, Vec pos, HeroSave save, this._skills)
   : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses any items
     // he gained.
     inventory = save.inventory.clone(),
     equipment = save.equipment.clone(),
+    _skillLevels = save.skillLevels,
     _experienceCents = save.experienceCents {
     _refreshLevel(log: false);
   }
@@ -86,12 +93,22 @@ class Hero extends Actor {
   Action onGetAction() => _behavior.getAction(this);
 
   Attack getAttack(Actor defender) {
+    var attack;
+
     // See if a weapon is equipped.
     final weapon = equipment.find('Weapon');
-    if (weapon != null) return weapon.attack;
+    if (weapon != null) {
+      attack = weapon.attack;
+    } else {
+      attack = new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE, Element.NONE);
+    }
 
-    // TODO(bob): Temp.
-    return new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE, Element.NONE);
+    // See if any skills modify it.
+    _skillLevels.forEach((name, level) {
+      if (level > 0) attack = _skills[name].modifyAttack(level, attack);
+    });
+
+    return attack;
   }
 
   void takeHit(Hit hit) {

@@ -129,9 +129,11 @@ class MainMenuScreen extends Screen {
         crucible.tryAdd(item);
       }
 
+      var skillLevels = hero['skillLevels'];
+
       final experience = hero['experience'];
       heroes.add(new HeroSave.load(inventory, equipment, home, crucible,
-          experience));
+          skillLevels, experience));
     }
   }
 
@@ -169,6 +171,7 @@ class MainMenuScreen extends Screen {
         'equipment': equipment,
         'home': home,
         'crucible': crucible,
+        'skillLevels': hero.skillLevels,
         'experience': hero.experienceCents
       });
     }

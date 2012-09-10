@@ -1,0 +1,33 @@
+Skills. Similar to skill trees in Diablo.
+
+Each time you level up, you gain <n> points that you can spend leveling up
+skills. Skills start at level zero and may have a maximum level. In addition,
+most skills have preconditions: these are minimum levels of other skills. You
+can only gain a skill whose preconditions are met.
+
+Most skills only have a single precondition, which makes it roughly tree-like,
+but some have more than one, so it's really a skill digraph.
+
+Skill points can not generally be reassigned, but there is rare potion that
+enables it.
+
+combat - improve damage
+  melee - improve damage of melee weapons
+    blades - improve damage of bladed weapons
+      swords - improve damage of swords
+      daggers - improve damage of daggers
+    other weapons...
+archery
+spellcasting
+  alchemy
+    ...
+  divination
+    ...
+  enchanting
+    ...
+  necromancy
+    ...
+  sorcery
+    ...
+  conjuring
+    ...

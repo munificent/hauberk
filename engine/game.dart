@@ -8,7 +8,7 @@ class Game {
   Hero hero;
   bool _questComplete = false;
 
-  Game(this.area, this.depth, HeroSave save)
+  Game(this.area, this.depth, Content content, HeroSave save)
   : level = new Level(80, 40),
     log = new Log(),
     actions = new Queue<Action>()
@@ -17,7 +17,7 @@ class Game {
 
     final heroPos = area.makeLevel(this, depth);
 
-    hero = new Hero(this, heroPos, save);
+    hero = new Hero(this, heroPos, save, content.skills);
     level.actors.add(hero);
 
     Fov.refresh(level, hero.pos);
@@ -149,8 +149,10 @@ class Content {
   final Map<String, ItemType> items;
   final List<Recipe> recipes;
   final List<ItemType> _newHeroItems;
+  final Map<String, Skill> skills;
 
-  Content(this.areas, this.items, this.recipes, this._newHeroItems);
+  Content(this.areas, this.items, this.recipes, this.skills,
+      this._newHeroItems);
 
   HeroSave createHero() {
     final hero = new HeroSave();
