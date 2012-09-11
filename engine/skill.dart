@@ -3,7 +3,8 @@
 class Skill {
   abstract String get name;
   abstract String getHelpText(int level);
-  Attack modifyAttack(int level, Item weapon, Attack attack) => attack;
+  num getAttackAddBonus(int level, Item weapon, Attack attack) => 0;
+  num getAttackMultiplyBonus(int level, Item weapon, Attack attack) => 0;
   int modifyHealth(int level) => 0;
 }
 

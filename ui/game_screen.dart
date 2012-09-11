@@ -306,19 +306,20 @@ class GameScreen extends Screen {
     terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
     drawMeter(terminal, 'Health', 3, Color.RED,
       game.hero.health.current, game.hero.health.max);
-    /*
-    drawMeter(terminal, 'Hunger', 4, Color.ORANGE,
-      game.hero.hunger, Option.HUNGER_MAX, showNumber: false);
-    */
 
     terminal.writeAt(81, 6, 'Level', Color.GRAY);
-    terminal.writeAt(88, 6, game.hero.level.toString(), Color.GOLD);
+    terminal.writeAt(88, 6, game.hero.level.toString(), Color.BLUE);
     terminal.writeAt(81, 7, 'Exp', Color.GRAY);
-    terminal.writeAt(88, 7, game.hero.experience.toString(), Color.GOLD);
+    terminal.writeAt(88, 7, game.hero.experience.toString(), Color.AQUA);
 
     terminal.writeAt(81, 8, 'Armor', Color.GRAY);
     terminal.writeAt(88, 8,
-        '${(100 - getArmorMultiplier(game.hero.armor) * 100).toInt().toString()}% ',
+        '${(100 - getArmorMultiplier(game.hero.armor) * 100).toInt()}% ',
+        Color.GREEN);
+
+    terminal.writeAt(81, 9, 'Weapon', Color.GRAY);
+    terminal.writeAt(88, 9,
+        '${game.hero.getAttack(null).damage} ',
         Color.YELLOW);
   }
 
