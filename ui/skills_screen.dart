@@ -22,7 +22,15 @@ class SkillsScreen extends Screen {
         _changeSelection(1);
         break;
 
-      case KeyCode.SPACE:
+      case KeyCode.K:
+        final skill = skills[selectedSkill];
+        if (save.skills[skill] > 0) {
+          save.skills[skill]--;
+          dirty();
+        }
+        break;
+
+      case KeyCode.SEMICOLON:
         if (getSkillPoints() == 0) break;
         save.skills[skills[selectedSkill]]++;
         dirty();
@@ -62,7 +70,7 @@ class SkillsScreen extends Screen {
     terminal.writeAt(0, 24, skill.getHelpText(save.skills[skill] + 1));
 
     terminal.writeAt(0, terminal.height - 1,
-        '[O]/[.] Select skill, [Space] Increase skill, [Esc] Exit',
+        '[O]/[.] Select skill, [K]/[;] Modify skill, [Esc] Exit',
         Color.GRAY);
   }
 
