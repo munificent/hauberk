@@ -108,7 +108,7 @@ class Hero extends Actor {
 
     // See if any skills modify it.
     _skills.forEach(
-        (skill, level) => attack = skill.modifyAttack(level, attack));
+        (skill, level) => attack = skill.modifyAttack(level, weapon, attack));
 
     return attack;
   }

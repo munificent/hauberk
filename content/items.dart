@@ -54,9 +54,9 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void weapons() {
-    weapon('Cudgel', brown('\\'),    'hit[s]', 4);
-    weapon('Staff', lightBrown('_'), 'hit[s]', 5);
-    weapon('Dagger', lightGray('|'), 'stab[s]', 5);
+    weapon('Cudgel', brown('\\'),    'hit[s]', 'Club', 4);
+    weapon('Staff', lightBrown('_'), 'hit[s]', 'Club', 5);
+    weapon('Dagger', lightGray('|'), 'stab[s]', 'Dagger', 5);
   }
 
   void bodyArmor() {
@@ -83,8 +83,9 @@ class ItemBuilder extends ContentBuilder {
     */
   }
 
-  ItemType weapon(String name, Glyph appearance, String verb, int damage) {
-    return item(name, appearance, equipSlot: 'Weapon',
+  ItemType weapon(String name, Glyph appearance, String verb, String category,
+      int damage) {
+    return item(name, appearance, equipSlot: 'Weapon', category: category,
         attack: attack(verb, damage, Element.NONE));
   }
 
@@ -93,9 +94,10 @@ class ItemBuilder extends ContentBuilder {
   }
 
   ItemType item(String name, Glyph appearance,
-      [ItemUse use, String equipSlot, Attack attack, int armor = 0]) {
+      [ItemUse use, String equipSlot, String category, Attack attack,
+       int armor = 0]) {
     final itemType = new ItemType(name, appearance, _sortIndex++, use,
-        equipSlot, attack, armor);
+        equipSlot, category, attack, armor);
     _items[name] = itemType;
     return itemType;
   }

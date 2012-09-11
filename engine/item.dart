@@ -82,8 +82,12 @@ class ItemType {
   /// then this Item cannot be equipped.
   final String equipSlot;
 
+  /// A more precise categorization than [equipSlot]. For example, "dagger",
+  /// or "cloak". May be `null`.
+  final String category;
+
   ItemType(this.name, this.appearance, this.sortIndex, this.use, this.equipSlot,
-      this.attack, this.armor);
+      this.category, this.attack, this.armor);
 
   String toString() => name;
 }

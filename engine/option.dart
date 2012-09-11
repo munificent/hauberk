@@ -35,7 +35,7 @@ class Option {
   static final CRUCIBLE_CAPACITY = 8;
 
   /// The number of skill points the hero can spend per experience level.
-  static final SKILLS_PER_LEVEL = 3;
+  static final SKILLS_PER_LEVEL = 1;
 
   /// The maximum number of steps of ideal pathfinding data that is calculated.
   /// This is used by monster AI and by noise calculation. Increasing it
