@@ -7,9 +7,7 @@ class SkillBuilder extends ContentBuilder {
 
   Map<String, Skill> build() {
     skill(new CombatSkill());
-    skill(new FakeSkill1());
-    skill(new FakeSkill2());
-    skill(new FakeSkill3());
+    skill(new StaminaSkill());
 
     return _skills;
   }
@@ -21,32 +19,17 @@ class SkillBuilder extends ContentBuilder {
 
 class CombatSkill extends Skill {
   String get name => 'Combat';
+  String getHelpText(int level) => 'Increases damage by $level.';
+
   Attack modifyAttack(int level, attack) {
     // One point of damage per level.
     return attack.modifyDamage(level);
   }
 }
 
-class FakeSkill1 extends Skill {
-  String get name => 'Fake One';
-  Attack modifyAttack(int level, attack) {
-    // One point of damage per level.
-    return attack.modifyDamage(level);
-  }
-}
+class StaminaSkill extends Skill {
+  String get name => 'Stamina';
+  String getHelpText(int level) => 'Increases max health by ${level * 2}.';
 
-class FakeSkill2 extends Skill {
-  String get name => 'Fake Two';
-  Attack modifyAttack(int level, attack) {
-    // One point of damage per level.
-    return attack.modifyDamage(level);
-  }
-}
-
-class FakeSkill3 extends Skill {
-  String get name => 'Fake Three';
-  Attack modifyAttack(int level, attack) {
-    // One point of damage per level.
-    return attack.modifyDamage(level);
-  }
+  int modifyHealth(int level) => level * 2;
 }

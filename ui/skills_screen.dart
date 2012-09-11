@@ -55,6 +55,12 @@ class SkillsScreen extends Screen {
       terminal.writeAt(30, i + 2, save.skills[skill].toString(), fore, back);
     }
 
+    final skill = skills[selectedSkill];
+    terminal.writeAt(0, 20, 'Current level:');
+    terminal.writeAt(0, 21, skill.getHelpText(save.skills[skill]));
+    terminal.writeAt(0, 23, 'Next level:');
+    terminal.writeAt(0, 24, skill.getHelpText(save.skills[skill] + 1));
+
     terminal.writeAt(0, terminal.height - 1,
         '[O]/[.] Select skill, [Space] Increase skill, [Esc] Exit',
         Color.GRAY);

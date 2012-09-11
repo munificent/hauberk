@@ -2,7 +2,9 @@
 /// The actual concrete skills are defined in content.
 class Skill {
   abstract String get name;
+  abstract String getHelpText(int level);
   Attack modifyAttack(int level, Attack attack) => attack;
+  int modifyHealth(int level) => 0;
 }
 
 /// The [Hero]'s levels in each skill.

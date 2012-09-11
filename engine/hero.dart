@@ -63,6 +63,11 @@ class Hero extends Actor {
     equipment = save.equipment.clone(),
     _experienceCents = save.experienceCents {
     _refreshLevel(log: false);
+
+    // TODO(bob): Doing this here assumes skills don't change while in the
+    // level.
+    _skills.forEach((skill, level) => health.max += skill.modifyHealth(level));
+    health.current = health.max;
   }
 
   // TODO(bob): Hackish.
