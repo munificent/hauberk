@@ -34,6 +34,9 @@ class Option {
   /// The maximum number of items the hero's crucible can contain.
   static final CRUCIBLE_CAPACITY = 8;
 
+  /// The number of skill points the hero can spend per experience level.
+  static final SKILLS_PER_LEVEL = 3;
+
   /// The maximum number of steps of ideal pathfinding data that is calculated.
   /// This is used by monster AI and by noise calculation. Increasing it
   /// increases the radius at which things can have an effect, but also

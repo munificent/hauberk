@@ -34,6 +34,10 @@ class SelectLevelScreen extends Screen {
     case KeyCode.H:
       ui.push(new HomeScreen(content, save));
       break;
+
+    case KeyCode.S:
+      ui.push(new SkillsScreen(content, save));
+      break;
     }
 
     return true;
@@ -45,7 +49,7 @@ class SelectLevelScreen extends Screen {
     terminal.clear();
     terminal.writeAt(0, 0, 'Where shall you quest?');
     terminal.writeAt(0, terminal.height - 1,
-        '[L] Select area, [O]/[.] Change area, [K]/[;] Change level, [H] Enter home',
+        '[L] Select area, [O]/[.] Select area, [K]/[;] Select level, [H] Enter home, [S] Skills',
         Color.GRAY);
 
     for (var i = 0; i < content.areas.length; i++) {
@@ -74,7 +78,7 @@ class SelectLevelScreen extends Screen {
     if (screen is GameScreen && result) {
       // Left successfully, so save.
       saveGame();
-    } else if (screen is HomeScreen) {
+    } else if (screen is HomeScreen || screen is SkillsScreen) {
       // Always save when leaving the home.
       saveGame();
     }

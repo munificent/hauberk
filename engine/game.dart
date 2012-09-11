@@ -17,7 +17,7 @@ class Game {
 
     final heroPos = area.makeLevel(this, depth);
 
-    hero = new Hero(this, heroPos, save, content.skills);
+    hero = new Hero(this, heroPos, save, save.skills);
     level.actors.add(hero);
 
     Fov.refresh(level, hero.pos);
@@ -155,7 +155,7 @@ class Content {
       this._newHeroItems);
 
   HeroSave createHero() {
-    final hero = new HeroSave();
+    final hero = new HeroSave(skills);
     for (final itemType in _newHeroItems) {
       hero.inventory.tryAdd(new Item(itemType, Vec.ZERO, null, null));
     }

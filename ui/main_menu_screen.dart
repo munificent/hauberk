@@ -129,12 +129,17 @@ class MainMenuScreen extends Screen {
         crucible.tryAdd(item);
       }
 
-      var skillLevels = hero['skillLevels'];
+      final skills = new SkillSet(content.skills);
+      hero['skills'].forEach((name, level) {
+        skills[content.skills[name]] = level;
+      });
 
       final experience = hero['experience'];
       heroes.add(new HeroSave.load(inventory, equipment, home, crucible,
-          skillLevels, experience));
+          skills, experience));
     }
+
+    _saveHeroes();
   }
 
   Item _loadItem(data) {
@@ -166,12 +171,17 @@ class MainMenuScreen extends Screen {
         crucible.add(_saveItem(item));
       }
 
+      final skills = {};
+      hero.skills.forEach((skill, level) {
+        if (level != 0) skills[skill.name] = level;
+      });
+
       heroData.add({
         'inventory': inventory,
         'equipment': equipment,
         'home': home,
         'crucible': crucible,
-        'skillLevels': hero.skillLevels,
+        'skills': skills,
         'experience': hero.experienceCents
       });
     }

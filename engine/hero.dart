@@ -12,19 +12,19 @@ class HeroSave {
   /// Items in the hero's crucible.
   Inventory crucible;
 
-  final Map<String, int> skillLevels;
+  final SkillSet skills;
 
   int experienceCents = 0;
 
-  HeroSave()
+  HeroSave(Map<String, Skill> skills)
   : inventory = new Inventory(Option.INVENTORY_CAPACITY),
     equipment = new Equipment(),
     home = new Inventory(Option.HOME_CAPACITY),
     crucible = new Inventory(Option.CRUCIBLE_CAPACITY),
-    skillLevels = {};
+    skills = new SkillSet(skills);
 
   HeroSave.load(this.inventory, this.equipment, this.home, this.crucible,
-      this.skillLevels, this.experienceCents);
+      this.skills, this.experienceCents);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Level] and his changes need to be
@@ -44,8 +44,7 @@ class Hero extends Actor {
   final Inventory inventory;
   final Equipment equipment;
 
-  final Map<String, Skill> _skills;
-  final Map<String, int> _skillLevels;
+  final SkillSet _skills;
 
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
@@ -62,7 +61,6 @@ class Hero extends Actor {
     // he gained.
     inventory = save.inventory.clone(),
     equipment = save.equipment.clone(),
-    _skillLevels = save.skillLevels,
     _experienceCents = save.experienceCents {
     _refreshLevel(log: false);
   }
@@ -104,9 +102,8 @@ class Hero extends Actor {
     }
 
     // See if any skills modify it.
-    _skillLevels.forEach((name, level) {
-      if (level > 0) attack = _skills[name].modifyAttack(level, attack);
-    });
+    _skills.forEach(
+        (skill, level) => attack = skill.modifyAttack(level, attack));
 
     return attack;
   }
@@ -148,26 +145,33 @@ class Hero extends Actor {
   }
 
   void _refreshLevel([bool log = false]) {
+    int level = calculateLevel(_experienceCents);
+
     // See if the we levelled up.
-    for (var level = 1; level <= Option.HERO_LEVEL_MAX; level++) {
-      final levelCost = (level - 1) * (level - 1) * Option.HERO_LEVEL_COST;
+    while (_level < level) {
+      _level++;
+      health.max += Option.HERO_HEALTH_GAIN;
+      health.current += Option.HERO_HEALTH_GAIN;
 
-      if (experience < levelCost) break;
-
-      if (_level < level) {
-        _level++;
-        health.max += Option.HERO_HEALTH_GAIN;
-        health.current += Option.HERO_HEALTH_GAIN;
-
-        if (log) {
-          game.log.add('{1} [have|has] reached level $level.', this);
-        }
+      if (log) {
+        game.log.add('{1} [have|has] reached level $level.', this);
       }
     }
   }
 
   String get nounText() => 'you';
   int get person() => 2;
+}
+
+int calculateLevel(int experienceCents) {
+  var experience = experienceCents ~/ 100;
+
+  for (var level = 1; level <= Option.HERO_LEVEL_MAX; level++) {
+    final levelCost = (level - 1) * (level - 1) * Option.HERO_LEVEL_COST;
+    if (experience < levelCost) return level;
+  }
+
+  return Option.HERO_LEVEL_MAX;
 }
 
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
