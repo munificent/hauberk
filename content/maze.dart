@@ -95,8 +95,6 @@ class Maze {
   */
 
   bool isOpen(Vec pos) {
-//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
-
     return _cells[pos].isOpen;
   }
 
@@ -117,8 +115,6 @@ class Maze {
 
   /// Gets the number of open walls surrounding the [Cell] at [pos].
   int getNumExits(Vec pos) {
-//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
-
     var exits = 0;
 
     if (_cells[pos].isLeftWallOpen) exits++;
@@ -131,16 +127,12 @@ class Maze {
 
   /// Opens the Cell at [pos]. Does not open any surrounding walls.
   void open(Vec pos) {
-//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
-
     _cells[pos].isOpen = true;
   }
 
   /// Fills the [Cell] at [pos]. Closes any surrounding walls.
   void fill(Vec pos)
   {
-//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
-
     _cells[pos].isOpen = false;
     _cells[pos].isLeftWallOpen = false;
     _cells[pos].isTopWallOpen = false;
@@ -152,8 +144,6 @@ class Maze {
   /// Opens the destination Cell (if in bounds) and opens the wall between it
   /// and the starting Cell.
   void carve(Vec pos, Direction direction) {
-//    if (!bounds.contains(pos)) throw new ArgumentOutOfRangeException("pos");
-
     // Open the destination.
     if (bounds.contains(pos + direction)) {
       _cells[pos + direction].isOpen = true;

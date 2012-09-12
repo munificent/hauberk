@@ -1,10 +1,15 @@
 #library('roguekit-content.dart');
 
+#import('dart:math', prefix: 'math');
 #import('engine.dart');
 #import('ui.dart');
+#import('util.dart');
 
 #source('content/areas.dart');
+#source('content/dungeon.dart');
+#source('content/feature_creep.dart');
 #source('content/items.dart');
+#source('content/maze.dart');
 #source('content/monsters.dart');
 #source('content/recipes.dart');
 #source('content/skills.dart');

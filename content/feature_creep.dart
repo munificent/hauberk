@@ -1,4 +1,4 @@
-
+/*
 /// The dungeon generator used for normal dungeon levels. It works by
 /// iteratively growing the dungeon from a single starting room. The basic
 /// algorithm is:
@@ -655,3 +655,4 @@ class FeatureCreepOptions {
   int chanceOfOpenDoor = 20;
   int chanceOfClosedDoor = 10;
 }
+*/
