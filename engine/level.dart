@@ -190,14 +190,17 @@ abstract class LevelBuilder {
 }
 
 class TileType {
-  static final FLOOR       = const TileType(0);
-  static final WALL        = const TileType(1);
-  static final LOW_WALL    = const TileType(2);
-  static final OPEN_DOOR   = const TileType(3);
-  static final CLOSED_DOOR = const TileType(4);
+  static final FLOOR       = const TileType(0, true, true);
+  static final WALL        = const TileType(1, false, false);
+  static final LOW_WALL    = const TileType(2, false, true);
+  static final OPEN_DOOR   = const TileType(3, true, true);
+  static final CLOSED_DOOR = const TileType(4, false, false);
 
   final int _value;
-  const TileType(this._value);
+  final bool isPassable;
+  final bool isTransparent;
+
+  const TileType(this._value, this.isPassable, this.isTransparent);
 }
 
 class Tile {
@@ -217,10 +220,7 @@ class Tile {
 
   bool get isExplored() => _explored;
 
-  bool get isPassable() {
-    return (type == TileType.FLOOR) ||
-           (type == TileType.OPEN_DOOR);
-  }
+  bool get isPassable() => type.isPassable;
 
   bool get isTraversable() {
     return (type == TileType.FLOOR) ||
@@ -228,9 +228,5 @@ class Tile {
            (type == TileType.CLOSED_DOOR);
   }
 
-  bool get isTransparent() {
-    return (type == TileType.FLOOR) ||
-           (type == TileType.LOW_WALL) ||
-           (type == TileType.OPEN_DOOR);
-  }
+  bool get isTransparent() => type.isTransparent;
 }
