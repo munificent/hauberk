@@ -52,10 +52,10 @@ class AreaBuilder extends ContentBuilder {
     );
     */
 
-    final options = new DungeonOptions();
+    final builder = new DungeonBuilder();
 
     area('Training Grounds', [
-      level(options, numMonsters: 12, numItems: 8,
+      level(builder, numMonsters: 12, numItems: 8,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -72,7 +72,7 @@ class AreaBuilder extends ContentBuilder {
           'Scroll of Sidestepping'
         ],
         quest: 'Magical Chalice'),
-      level(options, numMonsters: 16, numItems: 9,
+      level(builder, numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
           'crow',
@@ -86,7 +86,7 @@ class AreaBuilder extends ContentBuilder {
           'Robe'
         ],
         quest: 'Magical Chalice'),
-      level(options, numMonsters: 20, numItems: 10,
+      level(builder, numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
           'doddering old mage',
@@ -105,7 +105,7 @@ class AreaBuilder extends ContentBuilder {
     return _areas;
   }
 
-  AreaLevel level(DungeonOptions options, [
+  AreaLevel level(DungeonBuilder builder, [
       int numMonsters, int numItems, List<String> breeds, List<String> items,
       String quest]) {
     final breedList = <Breed>[];
@@ -114,7 +114,7 @@ class AreaBuilder extends ContentBuilder {
     for (final name in breeds) breedList.add(_breeds[name]);
     for (final name in items) itemList.add(_items[name]);
 
-    return new AreaLevel(options, numMonsters, numItems, breedList, itemList,
+    return new AreaLevel(builder, numMonsters, numItems, breedList, itemList,
         _items[quest]);
   }
 

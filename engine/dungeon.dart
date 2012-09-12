@@ -1,4 +1,4 @@
-class DungeonOptions {
+class DungeonBuilder implements LevelBuilder {
   final int numRoomTries;
   final int numJunctionTries;
   final int roomWidthMin;
@@ -11,7 +11,7 @@ class DungeonOptions {
   final int extraCorridorOneIn;
   final int extraCorridorDistanceMultiplier;
 
-  DungeonOptions([
+  DungeonBuilder([
     this.numRoomTries = 1000,
     this.numJunctionTries = 30,
     this.roomWidthMin = 3,
@@ -23,6 +23,10 @@ class DungeonOptions {
     this.extraCorridorOneIn = 20,
     this.extraCorridorDistanceMultiplier = 4
   ]);
+
+  void generate(Level level) {
+    new Dungeon(level, this).generate();
+  }
 }
 
 class Dungeon {
@@ -30,11 +34,11 @@ class Dungeon {
   static int NUM_JUNCTION_TRIES = 30;
 
   final Level level;
-  final DungeonOptions options;
+  final DungeonBuilder builder;
   final List<Room> _rooms;
   final Set<int> _usedColors;
 
-  Dungeon(this.level, this.options)
+  Dungeon(this.level, this.builder)
   : _rooms = <Room>[],
     _usedColors = new Set<int>();
 
@@ -47,9 +51,9 @@ class Dungeon {
   void generate() {
     // Layout the rooms.
     int color = 0;
-    for (var i = 0; i < options.numRoomTries; i++) {
-      final width = rng.range(options.roomWidthMin, options.roomWidthMax);
-      final height = rng.range(options.roomHeightMin, options.roomHeightMax);
+    for (var i = 0; i < builder.numRoomTries; i++) {
+      final width = rng.range(builder.roomWidthMin, builder.roomWidthMax);
+      final height = rng.range(builder.roomHeightMin, builder.roomHeightMax);
       final x = rng.range(1, level.width - width);
       final y = rng.range(1, level.height - height);
 
@@ -61,7 +65,7 @@ class Dungeon {
     }
 
     // Add some one-tile "rooms" to work as corridor junctions.
-    for (var i = 0; i < options.numJunctionTries; i++) {
+    for (var i = 0; i < builder.numJunctionTries; i++) {
       final x = rng.range(1, level.width - 3);
       final y = rng.range(1, level.height - 3);
 
@@ -107,7 +111,7 @@ class Dungeon {
     for (final other in _rooms) {
       if (room.distanceTo(other.bounds) <= 0) {
         // Allow some rooms to overlap.
-        if (allowOverlap && rng.oneIn(options.allowOverlapOneIn)) continue;
+        if (allowOverlap && rng.oneIn(builder.allowOverlapOneIn)) continue;
         return true;
       }
     }
@@ -169,9 +173,9 @@ class Dungeon {
         if (fromRoom == toRoom) continue;
 
         final distance = fromRoom.bounds.distanceTo(toRoom.bounds);
-        if ((distance < options.extraCorridorDistanceMax) &&
-            rng.oneIn(options.extraCorridorOneIn + distance *
-                options.extraCorridorDistanceMultiplier)) {
+        if ((distance < builder.extraCorridorDistanceMax) &&
+            rng.oneIn(builder.extraCorridorOneIn + distance *
+                builder.extraCorridorDistanceMultiplier)) {
           carveCorridor(fromRoom, toRoom);
         }
       }

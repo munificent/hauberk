@@ -8,7 +8,7 @@ class Area {
     final level = game.level;
     final area = levels[depth];
 
-    new Dungeon(level, area.options).generate();
+    area.builder.generate(level);
 
     final heroPos = level.findOpenTile();
     _calculateDistances(level, heroPos);
@@ -132,7 +132,7 @@ class Area {
 /// Describes one level in a [Area]. When the [Hero] enters a [Level] for an
 /// area, this determines how that specific level is generated.
 class AreaLevel {
-  final DungeonOptions options;
+  final LevelBuilder builder;
   final List<Breed> breeds;
   final List<ItemType> items;
   final int numMonsters;
@@ -153,6 +153,6 @@ class AreaLevel {
   // - Complete quest without killing any monsters
   // - Complete quest without using any items
 
-  AreaLevel(this.options, this.numMonsters, this.numItems,
+  AreaLevel(this.builder, this.numMonsters, this.numItems,
       this.breeds, this.items, this.quest);
 }

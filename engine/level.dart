@@ -183,6 +183,12 @@ class Level {
   }
 }
 
+/// Abstract class for a level generator. An instance of this encapsulation
+/// some dungeon generation algorithm. These are implemented in content.
+abstract class LevelBuilder {
+  abstract void generate(Level level);
+}
+
 class TileType {
   static final FLOOR       = const TileType(0);
   static final WALL        = const TileType(1);

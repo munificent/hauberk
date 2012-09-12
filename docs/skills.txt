@@ -11,23 +11,18 @@ but some have more than one, so it's really a skill digraph.
 Skill points can not generally be reassigned, but there is rare potion that
 enables it.
 
-combat - improve damage
-  melee - improve damage of melee weapons
-    blades - improve damage of bladed weapons
-      swords - improve damage of swords
-      daggers - improve damage of daggers
-    other weapons...
-archery
-spellcasting
-  alchemy
-    ...
-  divination
-    ...
-  enchanting
-    ...
-  necromancy
-    ...
-  sorcery
-    ...
-  conjuring
-    ...
+Combat - Plus to damage.
+[Weapon] Mastery - Multiplier to damage when wielding a certain kind of weapon.
+Alchemy - Larger crucible, which allows recipes with more ingredients.
+? - Larger inventory.
+Lockpicking - Better success at opening treasure chests and locked doors.
+Botany - Greater chance of plant-based drops. (Mainly useful for ingredients.)
+Hunting - Greater chance of animal-based drops. (Pelts, etc.)
+[Monster] Lore - Multiplier to damage when attacking a certain kind of monster.
+Divination - Reduces mana required to cast divination spells.
+Enchanting - Reduces mana required to cast enchanting spells.
+Necromancy - Reduces mana required to cast necromancy spells.
+Sorcery - Reduces mana required to cast sorcery spells.
+Conjuring - Reduces mana required to cast conjuring spells.
+Stealth - Reduces sound made when walking.
+Assassination - Reduce sound made when attacking, increased damage to sleeping monsters.
