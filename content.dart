@@ -13,8 +13,11 @@
 #source('content/monsters.dart');
 #source('content/recipes.dart');
 #source('content/skills.dart');
+#source('content/tiles.dart');
+#source('content/wilderness.dart');
 
 Content createContent() {
+  new TileBuilder().build();
   final items = new ItemBuilder().build();
   final breeds = new MonsterBuilder(items).build();
   final areas = new AreaBuilder(breeds, items).build();

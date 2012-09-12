@@ -49,6 +49,13 @@ class Dungeon {
   }
 
   void generate() {
+    // Clear the dungeon.
+    for (var y = 0; y < level.height; y++) {
+      for (var x = 0; x < level.width; x++) {
+        setTile(new Vec(x, y), Tiles.wall);
+      }
+    }
+
     // Layout the rooms.
     int color = 0;
     for (var i = 0; i < builder.numRoomTries; i++) {
@@ -79,7 +86,7 @@ class Dungeon {
     // Fill them in.
     for (final room in _rooms) {
       for (final pos in room.bounds) {
-        setTile(pos, TileType.FLOOR);
+        setTile(pos, Tiles.floor);
       }
     }
 
@@ -200,7 +207,7 @@ class Dungeon {
         pos = pos.offsetX(-1);
       }
 
-      setTile(pos, TileType.FLOOR);
+      setTile(pos, Tiles.floor);
     }
 
     mergeColors(fromRoom, toRoom);
@@ -237,7 +244,7 @@ class Dungeon {
     // Only odd-sized sides get them, so make sure at least one side is.
     if ((room.width % 2 == 0) && (room.height % 2 == 0)) return false;
 
-    final type = rng.oneIn(2) ? TileType.WALL : TileType.LOW_WALL;
+    final type = rng.oneIn(2) ? Tiles.wall : Tiles.lowWall;
 
     if (room.width % 2 == 1) {
       for (var x = room.left + 1; x < room.right - 1; x += 2) {
@@ -266,7 +273,7 @@ class Dungeon {
     final y = rng.range(room.y + 1, room.bottom - height);
 
     // Trace the room.
-    final type = rng.oneIn(2) ? TileType.WALL : TileType.LOW_WALL;
+    final type = rng.oneIn(2) ? Tiles.wall : Tiles.lowWall;
     for (final pos in new Rect(x, y, width, height).trace()) {
       setTile(pos, type);
     }
@@ -297,17 +304,17 @@ class Dungeon {
         door = new Vec(x + width - 1, rng.range(y + 1, y + height - 1));
         break;
     }
-    setTile(door, TileType.FLOOR);
+    setTile(door, Tiles.floor);
 
     return true;
   }
 
   bool isFloor(int x, int y) {
-    return level.get(x, y).type == TileType.FLOOR;
+    return level.get(x, y).type == Tiles.floor;
   }
 
   bool isWall(int x, int y) {
-    return level.get(x, y).type == TileType.WALL;
+    return level.get(x, y).type == Tiles.wall;
   }
 
   void addDoors() {
@@ -360,9 +367,9 @@ class Dungeon {
   void addDoor(int x, int y) {
     var type;
     switch (rng.range(3)) {
-    case 0: type = TileType.FLOOR; break; // No door.
-    case 1: type = TileType.CLOSED_DOOR; break;
-    case 2: type = TileType.OPEN_DOOR; break;
+    case 0: type = Tiles.floor; break; // No door.
+    case 1: type = Tiles.closedDoor; break;
+    case 2: type = Tiles.openDoor; break;
     }
 
     setTile(new Vec(x, y), type);

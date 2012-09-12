@@ -131,7 +131,7 @@ class GameScreen extends Screen {
     final doors = [];
     for (final direction in Direction.ALL) {
       final pos = game.hero.pos + direction;
-      if (game.level[pos].type == TileType.OPEN_DOOR) {
+      if (game.level[pos].type.closesTo != null) {
         doors.add(pos);
       }
     }
@@ -194,37 +194,17 @@ class GameScreen extends Screen {
   }
 
   void render(Terminal terminal) {
+    final black = new Glyph(' ');
+
     // Draw the level.
     for (int y = 0; y < game.level.height; y++) {
       for (int x = 0; x < game.level.width; x++) {
         final tile = game.level.get(x, y);
         var glyph;
         if (tile.isExplored) {
-          switch (tile.type) {
-            case TileType.FLOOR:
-              glyph = new Glyph('.', tile.visible ? Color.GRAY : Color.DARK_GRAY);
-              break;
-            case TileType.WALL:
-              glyph = new Glyph('#',
-                  tile.visible ? Color.WHITE : Color.GRAY,
-                  tile.visible ? Color.DARK_GRAY : Color.BLACK);
-              break;
-            case TileType.LOW_WALL:
-              glyph = new Glyph('%',
-                  tile.visible ? Color.GRAY : Color.DARK_GRAY,
-                  tile.visible ? Color.DARK_GRAY : Color.BLACK);
-              break;
-            case TileType.CLOSED_DOOR:
-              glyph = new Glyph('+',
-                  tile.visible ? Color.BROWN : Color.DARK_BROWN);
-              break;
-            case TileType.OPEN_DOOR:
-              glyph = new Glyph("'",
-                  tile.visible ? Color.BROWN : Color.DARK_BROWN);
-              break;
-          }
+          glyph = tile.type.appearance[tile.visible ? 0 : 1];
         } else {
-          glyph = new Glyph(' ');
+          glyph = black;
         }
 
         /*

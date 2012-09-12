@@ -59,7 +59,7 @@ class AStar {
 
         // Given how far the current tile is, how far is each neighbor?
         var stepCost = Option.ASTAR_FLOOR_COST;
-        if (level[neighbor].type == TileType.CLOSED_DOOR) {
+        if (level[neighbor].type.opensTo != null) {
           if (canOpenDoors) {
             // One to open the door and one to enter the tile.
             stepCost = Option.ASTAR_FLOOR_COST * 2;

@@ -125,7 +125,7 @@ class FeatureCreep {
       // Allow the exception.
       if (exception == edge) continue;
 
-      if (level[edge].type != TileType.WALL) return false;
+      if (level[edge].type != Tiles.wall) return false;
     }
 
     return true;
@@ -141,8 +141,8 @@ class FeatureCreep {
 
     /*
     //### bob: hackish. assumes will never get overwritten after
-    if (type == TileType.StairsUp) mMadeUpStair = true;
-    if (type == TileType.StairsDown) mMadeDownStair = true;
+    if (type == Tiles.StairsUp) mMadeUpStair = true;
+    if (type == Tiles.StairsDown) mMadeDownStair = true;
     */
   }
 
@@ -253,16 +253,16 @@ class FeatureCreep {
     if (!level.bounds.contains(leftCorner)) return false;
     if (!level.bounds.contains(rightCorner)) return false;
 
-    if ((getTile(leftCorner) != TileType.WALL) &&
-        (getTile(pos) == TileType.WALL)) return false;
+    if ((getTile(leftCorner) != Tiles.wall) &&
+        (getTile(pos) == Tiles.wall)) return false;
 
-    if ((getTile(rightCorner) != TileType.WALL) &&
-        (getTile(pos) == TileType.WALL)) return false;
+    if ((getTile(rightCorner) != Tiles.wall) &&
+        (getTile(pos) == Tiles.wall)) return false;
 
     // Place the hall.
     var step = connector.pos;
     for (var i = 0; i <= length; i++) {
-      setTile(step, TileType.FLOOR);
+      setTile(step, Tiles.floor);
       step += connector.direction;
     }
 
@@ -311,7 +311,7 @@ class FeatureCreep {
     if (!isOpen(rect, center + connector.direction.rotate180)) return false;
 
     // Place the junction.
-    setTile(center, TileType.FLOOR);
+    setTile(center, Tiles.floor);
 
     // Add the connectors.
     if (left) addRoomConnector(center + connector.direction.rotateLeft90, connector.direction.rotateLeft90);
@@ -332,7 +332,7 @@ class FeatureCreep {
     Rect rect = new Rect(connector.pos.Offset(-1, -1), 3, 3);
     if (!IsOpen(rect, connector.pos + connector.Direction.Rotate180)) return false;
 
-    TileType type = (Rng.Int(10) < 6) ? TileType.StairsDown : TileType.StairsUp;
+    TileType type = (Rng.Int(10) < 6) ? Tiles.StairsDown : Tiles.StairsUp;
     SetTile(connector.pos, type);
 
     return true;
@@ -354,7 +354,7 @@ class FeatureCreep {
     // the hallway around the maze
     foreach (Vec pos in bounds.Trace())
     {
-      SetTile(pos, TileType.Floor);
+      SetTile(pos, Tiles.Floor);
     }
 
     // sometimes make the walls low
@@ -362,7 +362,7 @@ class FeatureCreep {
     {
       foreach (Vec pos in bounds.Inflate(-1))
       {
-        SetTile(pos, TileType.LowWall);
+        SetTile(pos, Tiles.LowWall);
       }
     }
 
@@ -387,7 +387,7 @@ class FeatureCreep {
     maze.GrowTree();
 
     Vec offset = bounds.pos.Offset(1, 1);
-    maze.Draw(pos => SetTile(pos + offset, TileType.Floor));
+    maze.Draw(pos => SetTile(pos + offset, Tiles.Floor));
 
     LightRect(bounds, mDepth);
 
@@ -424,7 +424,7 @@ class FeatureCreep {
     // place the room
     foreach (Vec pos in bounds)
     {
-      SetTile(pos, TileType.Floor);
+      SetTile(pos, Tiles.Floor);
     }
 
     RoomDecoration.DecorateInnerRoom(bounds, new RoomDecorator(this,
@@ -445,7 +445,7 @@ class FeatureCreep {
 
     // Place the room.
     for (final pos in bounds) {
-      setTile(pos, TileType.FLOOR);
+      setTile(pos, Tiles.floor);
     }
 
     /*
@@ -544,15 +544,15 @@ class FeatureCreep {
     int choice = Rng.Int(100);
     if (choice < Options.ChanceOfOpenDoor)
     {
-      SetTile(pos, TileType.DoorOpen);
+      SetTile(pos, Tiles.DoorOpen);
     }
     else if (choice - Options.ChanceOfOpenDoor < Options.ChanceOfClosedDoor)
     {
-      SetTile(pos, TileType.DoorClosed);
+      SetTile(pos, Tiles.DoorClosed);
     }
     else
     {
-      SetTile(pos, TileType.Floor);
+      SetTile(pos, Tiles.Floor);
     }
     //### bob: add locked and secret doors
   }
@@ -568,7 +568,7 @@ class FeatureCreep {
 
   private TileType ChooseInnerWall()
   {
-    return Rng.Item(new TileType[] { TileType.Wall, TileType.LowWall });
+    return Rng.Item(new TileType[] { Tiles.Wall, Tiles.LowWall });
   }
 
   public class RoomDecorator : IRoomDecorator

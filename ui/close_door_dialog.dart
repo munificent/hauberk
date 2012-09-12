@@ -32,7 +32,7 @@ class CloseDoorDialog extends Screen {
 
   void tryClose(Direction direction) {
     final pos = game.hero.pos + direction;
-    if (game.level[pos].type == TileType.OPEN_DOOR) {
+    if (game.level[pos].type.closesTo != null) {
       game.hero.setNextAction(new CloseDoorAction(pos));
       ui.pop();
     } else {

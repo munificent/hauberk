@@ -100,7 +100,7 @@ class WalkAction extends Action {
     }
 
     // See if it's a door.
-    if (game.level[pos].type == TileType.CLOSED_DOOR) {
+    if (game.level[pos].type.opensTo != null) {
       return alternate(new OpenDoorAction(pos));
     }
 
@@ -131,7 +131,7 @@ class OpenDoorAction extends Action {
   OpenDoorAction(this.doorPos);
 
   ActionResult onPerform() {
-    game.level[doorPos].type = TileType.OPEN_DOOR;
+    game.level[doorPos].type = game.level[doorPos].type.opensTo;
     game.level.dirtyVisibility();
 
     return succeed('{1} open[s] the door.', actor);
@@ -144,7 +144,7 @@ class CloseDoorAction extends Action {
   CloseDoorAction(this.doorPos);
 
   ActionResult onPerform() {
-    game.level[doorPos].type = TileType.CLOSED_DOOR;
+    game.level[doorPos].type = game.level[doorPos].type.closesTo;
     game.level.dirtyVisibility();
 
     return succeed('{1} close[s] the door.', actor);

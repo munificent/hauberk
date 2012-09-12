@@ -52,10 +52,8 @@ class AreaBuilder extends ContentBuilder {
     );
     */
 
-    final builder = new DungeonBuilder();
-
     area('Training Grounds', [
-      level(builder, numMonsters: 12, numItems: 8,
+      level(new DungeonBuilder(), numMonsters: 12, numItems: 8,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -72,7 +70,7 @@ class AreaBuilder extends ContentBuilder {
           'Scroll of Sidestepping'
         ],
         quest: 'Magical Chalice'),
-      level(builder, numMonsters: 16, numItems: 9,
+      level(new DungeonBuilder(), numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
           'crow',
@@ -86,7 +84,7 @@ class AreaBuilder extends ContentBuilder {
           'Robe'
         ],
         quest: 'Magical Chalice'),
-      level(builder, numMonsters: 20, numItems: 10,
+      level(new DungeonBuilder(), numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
           'doddering old mage',
@@ -99,13 +97,26 @@ class AreaBuilder extends ContentBuilder {
           'Cudgel',
           'Dagger'
         ],
-        quest: 'Magical Chalice'),
+        quest: 'Magical Chalice')
     ]);
+
+    /*
+    area('Friendly Forest', [
+      level(new WildernessBuilder(), numMonsters: 12, numItems: 8,
+        breeds: [
+          'white mouse'
+        ],
+        items: [
+          'Parchment'
+        ],
+        quest: 'Magical Chalice')
+    ]);
+    */
 
     return _areas;
   }
 
-  AreaLevel level(DungeonBuilder builder, [
+  AreaLevel level(LevelBuilder builder, [
       int numMonsters, int numItems, List<String> breeds, List<String> items,
       String quest]) {
     final breedList = <Breed>[];
