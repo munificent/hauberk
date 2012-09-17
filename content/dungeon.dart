@@ -29,24 +29,30 @@ class DungeonBuilder implements LevelBuilder {
   }
 }
 
-class Dungeon {
-  static int NUM_ROOM_TRIES = 1000;
-  static int NUM_JUNCTION_TRIES = 30;
-
+class LevelGenerator {
   final Level level;
-  final DungeonBuilder builder;
-  final List<Room> _rooms;
-  final Set<int> _usedColors;
 
-  Dungeon(this.level, this.builder)
-  : _rooms = <Room>[],
-    _usedColors = new Set<int>();
+  LevelGenerator(this.level);
 
   TileType getTile(Vec pos) => level[pos].type;
 
   void setTile(Vec pos, TileType type) {
     level[pos].type = type;
   }
+}
+
+class Dungeon extends LevelGenerator {
+  static int NUM_ROOM_TRIES = 1000;
+  static int NUM_JUNCTION_TRIES = 30;
+
+  final DungeonBuilder builder;
+  final List<Room> _rooms;
+  final Set<int> _usedColors;
+
+  Dungeon(Level level, this.builder)
+  : super(level),
+    _rooms = <Room>[],
+    _usedColors = new Set<int>();
 
   void generate() {
     // Clear the dungeon.
