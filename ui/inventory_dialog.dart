@@ -87,9 +87,9 @@ drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
 
 /// Which items are currently being shown in the inventory.
 class InventoryView {
-  static final INVENTORY = const InventoryView(0);
-  static final EQUIPMENT = const InventoryView(1);
-  static final GROUND    = const InventoryView(2);
+  static const INVENTORY = const InventoryView(0);
+  static const EQUIPMENT = const InventoryView(1);
+  static const GROUND    = const InventoryView(2);
 
   final int _value;
 
@@ -128,8 +128,8 @@ class InventoryView {
 
 /// Actions that the user can perform on the inventory selection screen.
 class InventoryMode {
-  static final DROP = const DropInventoryMode();
-  static final USE  = const UseInventoryMode();
+  static const DROP = const DropInventoryMode();
+  static const USE  = const UseInventoryMode();
 
   abstract String message(InventoryView view);
   bool get showGroundItems() => true;

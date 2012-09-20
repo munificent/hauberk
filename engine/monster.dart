@@ -225,8 +225,8 @@ class AIChoice {
 
 /// A [Monster]'s internal mental state.
 class MonsterState {
-  static final ASLEEP = const MonsterState(0);
-  static final AWAKE  = const MonsterState(1);
+  static const ASLEEP = const MonsterState(0);
+  static const AWAKE  = const MonsterState(1);
 
   final int _value;
   const MonsterState(this._value);

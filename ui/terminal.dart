@@ -130,48 +130,48 @@ class PortTerminal implements Terminal {
 }
 
 class Color {
-  static final BLACK        = const Color('k');
-  static final WHITE        = const Color('w');
+  static const BLACK        = const Color('k');
+  static const WHITE        = const Color('w');
 
-  static final LIGHT_GRAY   = const Color('le');
-  static final GRAY         = const Color('e');
-  static final DARK_GRAY    = const Color('de');
+  static const LIGHT_GRAY   = const Color('le');
+  static const GRAY         = const Color('e');
+  static const DARK_GRAY    = const Color('de');
 
-  static final LIGHT_RED    = const Color('lr');
-  static final RED          = const Color('r');
-  static final DARK_RED     = const Color('dr');
+  static const LIGHT_RED    = const Color('lr');
+  static const RED          = const Color('r');
+  static const DARK_RED     = const Color('dr');
 
-  static final LIGHT_ORANGE = const Color('lo');
-  static final ORANGE       = const Color('o');
-  static final DARK_ORANGE  = const Color('do');
+  static const LIGHT_ORANGE = const Color('lo');
+  static const ORANGE       = const Color('o');
+  static const DARK_ORANGE  = const Color('do');
 
-  static final LIGHT_GOLD   = const Color('ld');
-  static final GOLD         = const Color('d');
-  static final DARK_GOLD    = const Color('dd');
+  static const LIGHT_GOLD   = const Color('ld');
+  static const GOLD         = const Color('d');
+  static const DARK_GOLD    = const Color('dd');
 
-  static final LIGHT_YELLOW = const Color('ly');
-  static final YELLOW       = const Color('y');
-  static final DARK_YELLOW  = const Color('dy');
+  static const LIGHT_YELLOW = const Color('ly');
+  static const YELLOW       = const Color('y');
+  static const DARK_YELLOW  = const Color('dy');
 
-  static final LIGHT_GREEN  = const Color('lg');
-  static final GREEN        = const Color('g');
-  static final DARK_GREEN   = const Color('dg');
+  static const LIGHT_GREEN  = const Color('lg');
+  static const GREEN        = const Color('g');
+  static const DARK_GREEN   = const Color('dg');
 
-  static final LIGHT_AQUA   = const Color('la');
-  static final AQUA         = const Color('a');
-  static final DARK_AQUA    = const Color('da');
+  static const LIGHT_AQUA   = const Color('la');
+  static const AQUA         = const Color('a');
+  static const DARK_AQUA    = const Color('da');
 
-  static final LIGHT_BLUE   = const Color('lb');
-  static final BLUE         = const Color('b');
-  static final DARK_BLUE    = const Color('db');
+  static const LIGHT_BLUE   = const Color('lb');
+  static const BLUE         = const Color('b');
+  static const DARK_BLUE    = const Color('db');
 
-  static final LIGHT_PURPLE = const Color('lp');
-  static final PURPLE       = const Color('p');
-  static final DARK_PURPLE  = const Color('dp');
+  static const LIGHT_PURPLE = const Color('lp');
+  static const PURPLE       = const Color('p');
+  static const DARK_PURPLE  = const Color('dp');
 
-  static final LIGHT_BROWN  = const Color('ln');
-  static final BROWN        = const Color('n');
-  static final DARK_BROWN   = const Color('dn');
+  static const LIGHT_BROWN  = const Color('ln');
+  static const BROWN        = const Color('n');
+  static const DARK_BROWN   = const Color('dn');
 
   final String cssClass;
 

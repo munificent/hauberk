@@ -1,11 +1,12 @@
-/// A two-dimensional point.
-class Vec {
-  static final ZERO = const Vec(0, 0);
-
+/// Shared base class of [Vec] and [Direction]. We do this instead of having
+/// [Direction] inherit directly from [Vec] so that we can avoid it inheriting
+/// an `==` operator, which would prevent it from being used in `switch`
+/// statements. Instead, [Direction] uses identity equality.
+class VecBase {
   final int x;
   final int y;
 
-  const Vec(this.x, this.y);
+  const VecBase(this.x, this.y);
 
   int get area() => x * y;
 
@@ -21,18 +22,12 @@ class Vec {
 
   int get lengthSquared() => x * x + y * y;
 
-  bool operator ==(Vec other) {
-    // TODO(bob): Get rid of this when new equality semantics are implemented.
-    if (other === null) return false;
-    return x == other.x && y == other.y;
-  }
-
   Vec operator *(int other) => new Vec(x * other, y * other);
 
   Vec operator ~/(int other) => new Vec(x ~/ other, y ~/ other);
 
   Vec operator +(other) {
-    if (other is Vec) {
+    if (other is VecBase) {
       return new Vec(x + other.x, y + other.y);
     } else if (other is int) {
       return new Vec(x + other, y + other);
@@ -40,7 +35,7 @@ class Vec {
   }
 
   Vec operator -(other) {
-    if (other is Vec) {
+    if (other is VecBase) {
       return new Vec(x - other.x, y - other.y);
     } else if (other is int) {
       return new Vec(x - other, y - other);
@@ -64,4 +59,17 @@ class Vec {
   Vec offsetY(int y) => new Vec(x, this.y + y);
 
   String toString() => '$x, $y';
+}
+
+/// A two-dimensional point.
+class Vec extends VecBase {
+  static const ZERO = const Vec(0, 0);
+
+  const Vec(int x, int y) : super(x, y);
+
+  bool operator ==(Vec other) {
+    // TODO(bob): Get rid of this when new equality semantics are implemented.
+    if (other === null) return false;
+    return x == other.x && y == other.y;
+  }
 }

@@ -2,7 +2,7 @@
 /// A two-dimensional rectangle.
 class Rect implements Iterable<Vec> {
   /// Gets the empty rectangle.
-  static final EMPTY = const Rect.posAndSize(Vec.ZERO, Vec.ZERO);
+  static const EMPTY = const Rect.posAndSize(Vec.ZERO, Vec.ZERO);
 
   /// Creates a new rectangle a single row in height, as wide as [size],
   /// with its top left corner at [pos].

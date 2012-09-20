@@ -1,15 +1,15 @@
-class Direction extends Vec {
-  static final NONE = const Direction(0, 0);
-  static final N  = const Direction(0, -1);
-  static final NE = const Direction(1, -1);
-  static final E  = const Direction(1, 0);
-  static final SE = const Direction(1, 1);
-  static final S  = const Direction(0, 1);
-  static final SW = const Direction(-1, 1);
-  static final W  = const Direction(-1, 0);
-  static final NW = const Direction(-1, -1);
+class Direction extends VecBase {
+  static const NONE = const Direction(0, 0);
+  static const N    = const Direction(0, -1);
+  static const NE   = const Direction(1, -1);
+  static const E    = const Direction(1, 0);
+  static const SE   = const Direction(1, 1);
+  static const S    = const Direction(0, 1);
+  static const SW   = const Direction(-1, 1);
+  static const W    = const Direction(-1, 0);
+  static const NW   = const Direction(-1, -1);
 
-  static final ALL = const [
+  static const ALL = const [
     N, NE, E, SE, S, SW, W, NW
   ];
 

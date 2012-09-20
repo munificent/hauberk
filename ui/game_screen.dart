@@ -196,6 +196,9 @@ class GameScreen extends Screen {
   void render(Terminal terminal) {
     final black = new Glyph(' ');
 
+    // TODO(bob): Hack. Clear out the help text from the previous screen.
+    terminal.rect(0, terminal.height - 1, terminal.width, 1).clear();
+
     // Draw the level.
     for (int y = 0; y < game.level.height; y++) {
       for (int x = 0; x < game.level.width; x++) {

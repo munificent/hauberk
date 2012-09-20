@@ -211,16 +211,16 @@ class Event {
 /// A kind of [Event] that has occurred.
 class EventType {
   /// One step of a bolt.
-  static final BOLT = const EventType(0);
+  static const BOLT = const EventType(0);
 
   /// An [Actor] was hit.
-  static final HIT = const EventType(1);
+  static const HIT = const EventType(1);
 
   /// An [Actor] was killed.
-  static final KILL = const EventType(2);
+  static const KILL = const EventType(2);
 
   /// An [Actor] was healed.
-  static final HEAL = const EventType(3);
+  static const HEAL = const EventType(3);
 
   final int _value;
   const EventType(this._value);

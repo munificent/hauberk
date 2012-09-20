@@ -72,10 +72,10 @@ class HomeScreen extends Screen {
 
 /// Which items are currently being shown in the inventory.
 class HomeView {
-  static final INVENTORY = const HomeView(0);
-  static final EQUIPMENT = const HomeView(1);
-  static final HOME = const HomeView(2);
-  static final CRUCIBLE = const HomeView(3);
+  static const INVENTORY = const HomeView(0);
+  static const EQUIPMENT = const HomeView(1);
+  static const HOME = const HomeView(2);
+  static const CRUCIBLE = const HomeView(3);
 
   final int _value;
 
