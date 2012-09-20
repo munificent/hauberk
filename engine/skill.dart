@@ -6,6 +6,7 @@ class Skill {
   num getAttackAddBonus(int level, Item weapon, Attack attack) => 0;
   num getAttackMultiplyBonus(int level, Item weapon, Attack attack) => 0;
   int modifyHealth(int level) => 0;
+  int getDropChance(int level) => 0;
 }
 
 /// The [Hero]'s levels in each skill.

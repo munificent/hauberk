@@ -44,7 +44,7 @@ class Hero extends Actor {
   final Inventory inventory;
   final Equipment equipment;
 
-  final SkillSet _skills;
+  final SkillSet skills;
 
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
@@ -55,7 +55,7 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  Hero(Game game, Vec pos, HeroSave save, this._skills)
+  Hero(Game game, Vec pos, HeroSave save, this.skills)
   : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses any items
     // he gained.
@@ -66,7 +66,7 @@ class Hero extends Actor {
 
     // TODO(bob): Doing this here assumes skills don't change while in the
     // level.
-    _skills.forEach((skill, level) => health.max += skill.modifyHealth(level));
+    skills.forEach((skill, level) => health.max += skill.modifyHealth(level));
     health.current = health.max;
   }
 
@@ -109,7 +109,7 @@ class Hero extends Actor {
     // See if any skills modify it.
     var add = 0;
     var multiply = 1.0;
-    _skills.forEach((skill, level) {
+    skills.forEach((skill, level) {
       add += skill.getAttackAddBonus(level, weapon, attack);
       multiply += skill.getAttackMultiplyBonus(level, weapon, attack);
     });

@@ -1,9 +1,10 @@
 /// Builder class for defining [Monster] [Breed]s.
 class MonsterBuilder extends ContentBuilder {
   final Map<String, Breed> _breeds;
+  final Map<String, Skill> _skills;
   final Map<String, ItemType> _items;
 
-  MonsterBuilder(this._items)
+  MonsterBuilder(this._skills, this._items)
   : _breeds = <Breed>{};
 
   Map<String, Breed> build() {
@@ -97,7 +98,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 6),
         attack('claws[s]', 5),
       ],
-      drop: chanceOf(50, 'Black feather'),
+      drop: hunting('Black feather'),
       maxHealth: 8, meander: 1
     );
   }
@@ -106,7 +107,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('mangy cur', yellow('c'), [
         attack('bite[s]', 4),
       ],
-      drop: chanceOf(10, 'Fur pelt'),
+      drop: hunting(chanceOf(70, 'Fur pelt')),
       maxHealth: 7, olfaction: 5, meander: 3,
       flags: 'few'
     );
@@ -114,7 +115,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('wild dog', gray('c'), [
         attack('bite[s]', 5),
       ],
-      drop: chanceOf(30, 'Fur pelt'),
+      drop: hunting('Fur pelt'),
       maxHealth: 9, olfaction: 5, meander: 3,
       flags: 'few'
     );
@@ -125,7 +126,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('bite[s]', 4),
         attack('scratch[es]', 3),
       ],
-      drop: chanceOf(20, 'Fur pelt'),
+      drop: hunting(chanceOf(50, 'Fur pelt')),
       maxHealth: 5, meander: 3, olfaction: 7, speed: 1
     );
   }
@@ -137,7 +138,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('giant cockroach', darkBrown('i'), [
         attack('crawl[s] on', 1),
       ],
-      drop: chanceOf(50, 'Insect wing'),
+      drop: hunting('Insect wing'),
       maxHealth: 12, meander: 8, speed: 3
     );
   }
@@ -253,6 +254,14 @@ class MonsterBuilder extends ContentBuilder {
         speed: speed, flags: flagSet);
     _breeds[name] = breed;
     return breed;
+  }
+
+  Drop hunting(drop) {
+    return new SkillDrop(_skills['Hunting'], _parseDrop(drop));
+  }
+
+  Drop botany(drop) {
+    return new SkillDrop(_skills['Botany'], _parseDrop(drop));
   }
 
   Drop chanceOf(int percent, drop) {

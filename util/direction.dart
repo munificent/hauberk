@@ -1,4 +1,4 @@
-class Direction extends VecBase {
+class Direction extends VecBase implements Vec {
   static const NONE = const Direction(0, 0);
   static const N    = const Direction(0, -1);
   static const NE   = const Direction(1, -1);

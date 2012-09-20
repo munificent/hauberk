@@ -307,7 +307,7 @@ class Equipment implements ItemCollection {
 }
 
 class Drop {
-  abstract void addDrop(List<ItemType> types);
+  abstract void addDrop(Game game, List<ItemType> types);
 }
 
 class ItemDrop implements Drop {
@@ -315,7 +315,7 @@ class ItemDrop implements Drop {
 
   ItemDrop(this.type);
 
-  void addDrop(List<ItemType> types) {
+  void addDrop(Game game, List<ItemType> types) {
     types.add(type);
   }
 }
@@ -326,15 +326,28 @@ class OneOfDrop implements Drop {
 
   OneOfDrop(this.drops, this.percents);
 
-  void addDrop(List<ItemType> types) {
+  void addDrop(Game game, List<ItemType> types) {
     var roll = rng.range(100);
 
     for (var i = 0; i < drops.length; i++) {
       roll -= percents[i];
       if (roll <= 0) {
-        drops[i].addDrop(types);
+        drops[i].addDrop(game, types);
         return;
       }
+    }
+  }
+}
+
+class SkillDrop implements Drop {
+  final Skill skill;
+  final Drop drop;
+
+  SkillDrop(this.skill, this.drop);
+
+  void addDrop(Game game, List<ItemType> types) {
+    if (rng.range(100) < skill.getDropChance(game.hero.skills[skill])) {
+      drop.addDrop(game, types);
     }
   }
 }

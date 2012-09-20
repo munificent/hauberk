@@ -64,7 +64,7 @@ class ActionResult {
   /// failed to perform and returned this. For example, when the [Hero] walks
   /// into a closed door, the [WalkAction] will fail (the door is closed) and
   /// return an alternate [OpenDoorAction] instead.
-  final Action alternate;
+  final Action alternative;
 
   /// `true` if the [Action] was successful and energy should be consumed.
   final bool succeeded;
@@ -73,9 +73,9 @@ class ActionResult {
   final bool done;
 
   const ActionResult([this.succeeded, this.done])
-  : alternate = null;
+  : alternative = null;
 
-  const ActionResult.alternate(this.alternate)
+  const ActionResult.alternate(this.alternative)
   : succeeded = false,
     done = true;
 }

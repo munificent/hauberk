@@ -10,6 +10,8 @@ class SkillBuilder extends ContentBuilder {
     skill(new StaminaSkill());
     skill(new WeaponSkill('Club'));
     skill(new WeaponSkill('Dagger'));
+    skill(new DropSkill('Hunting', 'animals'));
+    skill(new DropSkill('Botany', 'plants and fungi'));
 
     return _skills;
   }
@@ -46,4 +48,16 @@ class StaminaSkill extends Skill {
   String getHelpText(int level) => 'Increase max health by ${level * 2}.';
 
   int modifyHealth(int level) => level * 2;
+}
+
+/// A skill that enables monsters to drop certain items.
+class DropSkill extends Skill {
+  final String name;
+  final String monster;
+
+  DropSkill(this.name, this.monster);
+
+  String getHelpText(int level) => '${level * 10}% chance of drop from $monster.';
+
+  int getDropChance(int level) => level * 10;
 }

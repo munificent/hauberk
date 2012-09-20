@@ -18,11 +18,11 @@
 
 Content createContent() {
   new TileBuilder().build();
+  final skills = new SkillBuilder().build();
   final items = new ItemBuilder().build();
-  final breeds = new MonsterBuilder(items).build();
+  final breeds = new MonsterBuilder(skills, items).build();
   final areas = new AreaBuilder(breeds, items).build();
   final recipes = new RecipeBuilder(items).build();
-  final skills = new SkillBuilder().build();
 
   // The items that a new hero starts with.
   final heroItems = [

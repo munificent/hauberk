@@ -196,7 +196,7 @@ class Monster extends Actor {
   void onDied(Actor attacker) {
     // Handle drops.
     final types = [];
-    breed.drop.addDrop(types);
+    breed.drop.addDrop(game, types);
 
     for (var type in types) {
       // TODO(bob): Scatter items a bit?
