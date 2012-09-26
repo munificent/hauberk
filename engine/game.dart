@@ -145,12 +145,13 @@ class Game {
 /// define the play experience.
 class Content {
   final List<Area> areas;
+  final Map<String, Breed> breeds;
   final Map<String, ItemType> items;
   final List<Recipe> recipes;
   final List<ItemType> _newHeroItems;
   final Map<String, Skill> skills;
 
-  Content(this.areas, this.items, this.recipes, this.skills,
+  Content(this.areas, this.breeds, this.items, this.recipes, this.skills,
       this._newHeroItems);
 
   HeroSave createHero() {
