@@ -11,25 +11,26 @@ main() {
   var content = createContent();
 
   var text = new StringBuffer();
-  var names = new List.from(content.breeds.getKeys());
-  names.sort((a, b) => a.compareTo(b));
+  var breeds = new List.from(content.breeds.getValues());
+  breeds.sort((a, b) => a.experienceCents.compareTo(b.experienceCents));
 
   text.add('''
     <thead>
     <tr>
       <td colspan="2">Breed</td>
-      <td>Health</td>
-      <td>Olfaction</td>
+      <td colspan="2">Health</td>
+      <td>Smell</td>
       <td>Meander</td>
       <td>Speed</td>
-      <td>Experience</td>
+      <td>Exp.</td>
+      <td>Attacks</td>
       <td>Flags</td>
     </tr>
     </thead>
     <tbody>
     ''');
-  for (var name in names) {
-    var breed = content.breeds[name];
+
+  for (var breed in breeds) {
     var glyph = breed.appearance as Glyph;
     text.add('''
         <tr>
@@ -39,16 +40,23 @@ main() {
 </pre>
           </td>
           <td>${breed.name}</td>
-          <td>${breed.maxHealth}</td>
-          <td>${breed.olfaction}</td>
-          <td>${breed.meander}</td>
-          <td>${breed.speed}</td>
-          <td>${breed.experienceCents ~/ 100}</td>
+          <td class="r">${breed.maxHealth}</td>
+          <td><span class="bar" style="width: ${breed.maxHealth}px;"></span></td>
+          <td class="r">${breed.olfaction}</td>
+          <td class="r">${breed.meander}</td>
+          <td class="r">${breed.speed}</td>
+          <td class="r">${(breed.experienceCents / 100).toStringAsFixed(2)}</td>
           <td>
         ''');
 
+    var attacks = breed.attacks.map(
+        (attack) => '${Log.makeVerbsAgree(attack.verb, 3)} (${attack.damage})');
+    text.add(Strings.join(attacks, ', '));
+
+    text.add('</td><td>');
+
     for (var flag in breed.flags) {
-      text.add('<span class="flag">${flag}</span> ');
+      text.add('$flag ');
     }
 
     text.add('</td></tr>');

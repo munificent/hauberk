@@ -1,5 +1,44 @@
 /// The message log.
 class Log {
+  static String makeVerbsAgree(String text, int person) {
+    final optionalSuffix = const RegExp(@'\[(\w+?)\]');
+    final irregular = const RegExp(@"\[([^|]+)\|([^\]]+)\]");
+
+    // Handle verbs with optional suffixes like `close[s]`.
+    while (true) {
+      final match = optionalSuffix.firstMatch(text);
+      if (match == null) break;
+
+      final before = text.substring(0, match.start());
+      final after = text.substring(match.end());
+      if (person == 2) {
+        // Omit the optional part.
+        text = '$before$after';
+      } else {
+        // Include the optional part.
+        text = '$before${match[1]}$after';
+      }
+    }
+
+    // Handle irregular verbs like `[are|is]`.
+    while (true) {
+      final match = irregular.firstMatch(text);
+      if (match == null) break;
+
+      final before = text.substring(0, match.start());
+      final after = text.substring(match.end());
+      if (person == 2) {
+        // Use the first form.
+        text = '$before${match[1]}$after';
+      } else {
+        // Use the second form.
+        text = '$before${match[2]}$after';
+      }
+    }
+
+    return text;
+  }
+
   static final MAX_MESSAGES = 6;
 
   final Queue<Message> messages;
@@ -108,40 +147,7 @@ class Log {
 
     // Make the verb match the subject (which is assumed to be the first noun).
     if (noun1 != null) {
-      final optionalSuffix = const RegExp(@'\[(\w+?)\]');
-      final irregular = const RegExp(@"\[([^|]+)\|([^\]]+)\]");
-
-      // Handle verbs with optional suffixes like `close[s]`.
-      while (true) {
-        final match = optionalSuffix.firstMatch(result);
-        if (match == null) break;
-
-        final before = result.substring(0, match.start());
-        final after = result.substring(match.end());
-        if (noun1.person == 2) {
-          // Omit the optional part.
-          result = '$before$after';
-        } else {
-          // Include the optional part.
-          result = '$before${match[1]}$after';
-        }
-      }
-
-      // Handle irregular verbs like `[are|is]`.
-      while (true) {
-        final match = irregular.firstMatch(result);
-        if (match == null) break;
-
-        final before = result.substring(0, match.start());
-        final after = result.substring(match.end());
-        if (noun1.person == 2) {
-          // Use the first form.
-          result = '$before${match[1]}$after';
-        } else {
-          // Use the second form.
-          result = '$before${match[2]}$after';
-        }
-      }
+      result = Log.makeVerbsAgree(result, noun1.person);
     }
 
     // Sentence case it by capitalizing the first letter.

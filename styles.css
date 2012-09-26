@@ -2,19 +2,38 @@ body {
   padding: 40px;
   background: #fed;
   color: #543;
+  font: 17px/24px Buenard, Georgia, serif;
 }
 
 h1, h2, h3, h4 {
   font-family: Metamorphous, serif;
 }
 
+table {
+  border-collapse: collapse;
+}
+
+tr:nth-child(2n) {
+  background-color: #edc;
+}
+
+td {
+  padding: 2px 6px;
+}
+
 thead td {
-  font-size: 18px;
+  font-size: 15px;
   color: #963;
 }
 
-p, td {
-  font-family: 'Jacques Francois', Georgia, serif;
+.bar {
+  display: inline-block;;
+  background: #832;
+  height: 12px;
+}
+
+.r {
+  text-align: right;
 }
 
 pre {
@@ -23,14 +42,6 @@ pre {
   letter-spacing: 1px;
   padding: 2px 4px;
   border: solid 1px #963;
-  border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-}
-
-.flag {
-  padding: 2px 4px;
-  background-color: #edc;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;

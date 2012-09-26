@@ -96,7 +96,7 @@ class MonsterBuilder extends ContentBuilder {
 
     breed('raven', gray('B'), [
         attack('bite[s]', 6),
-        attack('claws[s]', 5),
+        attack('claw[s]', 5),
       ],
       drop: hunting('Black feather'),
       maxHealth: 8, meander: 1
@@ -214,7 +214,7 @@ class MonsterBuilder extends ContentBuilder {
 
   snakes() {
     breed('tree snake', lightGreen('S'), [
-        attack('bites[s]', 8),
+        attack('bite[s]', 8),
       ],
       maxHealth: 12, meander: 3
     );
