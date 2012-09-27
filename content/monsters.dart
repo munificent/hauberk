@@ -144,12 +144,16 @@ class MonsterBuilder extends ContentBuilder {
   }
 
   people() {
+    var dagger = graduated(8, [
+      'Knife', 'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard', 'Main-guache'
+    ]);
+
     breed('simpering knave', orange('p'), [
         attack('hit[s]', 2),
         attack('stab[s]', 4)
       ],
       drop: [
-        chanceOf(20, 'Dagger'),
+        chanceOf(20, dagger),
         chanceOf(20, 'Cloth Shirt')
       ],
       maxHealth: 6, meander: 3,
@@ -163,7 +167,7 @@ class MonsterBuilder extends ContentBuilder {
       drop: [
          chanceOf(10, 'Scroll of Sidestepping'),
          chanceOf(7, 'Staff'),
-         chanceOf(7, 'Dagger'),
+         chanceOf(7, dagger),
          chanceOf(7, 'Cloth Shirt'),
          chanceOf(5, 'Robe')
       ],
@@ -266,6 +270,11 @@ class MonsterBuilder extends ContentBuilder {
 
   Drop chanceOf(int percent, drop) {
     return new OneOfDrop([_parseDrop(drop)], [percent]);
+  }
+
+  Drop graduated(int chance, drops) {
+    drops = drops.map(_parseDrop);
+    return new GraduatedDrop(chance, drops);
   }
 
   Drop _parseDrop(drop) {

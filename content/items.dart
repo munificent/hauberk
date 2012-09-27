@@ -56,7 +56,14 @@ class ItemBuilder extends ContentBuilder {
   void weapons() {
     weapon('Cudgel', brown('\\'),    'hit[s]', 'Club', 4);
     weapon('Staff', lightBrown('_'), 'hit[s]', 'Club', 5);
-    weapon('Dagger', lightGray('|'), 'stab[s]', 'Dagger', 5);
+
+    weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 4);
+    weapon('Dirk', lightGray('|'), 'stab[s]', 'Dagger', 6);
+    weapon('Dagger', white('|'), 'stab[s]', 'Dagger', 8);
+    weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 11);
+    weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 14);
+    weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 20);
+    weapon('Main-guache', aqua('|'), 'stab[s]', 'Dagger', 26);
   }
 
   void bodyArmor() {

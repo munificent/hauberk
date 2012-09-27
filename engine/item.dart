@@ -352,6 +352,20 @@ class SkillDrop implements Drop {
   }
 }
 
+class GraduatedDrop implements Drop {
+  final int chance;
+  final List<Drop> drops;
+
+  GraduatedDrop(this.chance, this.drops);
+
+  void addDrop(Game game, List<ItemType> types) {
+    var index = 0;
+
+    while (index < drops.length - 1 && rng.oneIn(chance)) index++;
+    drops[index].addDrop(game, types);
+  }
+}
+
 /// A recipe defines a set of items that can be placed into the crucible and
 /// transmuted into a new item.
 // TODO(bob): Figure out how this works with powers.

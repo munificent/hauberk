@@ -100,19 +100,6 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice')
     ]);
 
-    /*
-    area('Friendly Forest', [
-      level(new WildernessBuilder(), numMonsters: 12, numItems: 8,
-        breeds: [
-          'white mouse'
-        ],
-        items: [
-          'Parchment'
-        ],
-        quest: 'Magical Chalice')
-    ]);
-    */
-
     return _areas;
   }
 
