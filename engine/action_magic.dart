@@ -25,11 +25,11 @@ class TeleportAction extends Action {
     final bounds = Rect.intersect(
         new Rect(actor.x - distance, actor.y - distance,
                  actor.x + distance, actor.y + distance),
-        game.level.bounds);
+        game.stage.bounds);
 
     for (var pos in bounds) {
-      if (!game.level[pos].isPassable) continue;
-      if (game.level.actorAt(pos) != null) continue;
+      if (!game.stage[pos].isPassable) continue;
+      if (game.stage.actorAt(pos) != null) continue;
       if ((pos - actor.pos).lengthSquared > distance * distance) continue;
       targets.add(pos);
     }

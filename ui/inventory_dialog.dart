@@ -119,7 +119,7 @@ class InventoryView {
     switch (this) {
       case InventoryView.INVENTORY: return game.hero.inventory;
       case InventoryView.EQUIPMENT: return game.hero.equipment;
-      case InventoryView.GROUND: return game.level.itemsAt(game.hero.pos);
+      case InventoryView.GROUND: return game.stage.itemsAt(game.hero.pos);
     }
 
     assert(false); // Unreachable.

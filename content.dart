@@ -14,7 +14,6 @@
 #source('content/recipes.dart');
 #source('content/skills.dart');
 #source('content/tiles.dart');
-#source('content/wilderness.dart');
 
 final List<Area> _areas = [];
 final Map<String, Skill> _skills = {};

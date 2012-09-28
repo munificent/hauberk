@@ -2,25 +2,25 @@
 class Game {
   final Area           area;
   final int            depth;
-  final Level          level;
+  final Stage          stage;
   final Log            log;
   final Queue<Action>  actions;
   Hero hero;
   bool _questComplete = false;
 
   Game(this.area, this.depth, Content content, HeroSave save)
-  : level = new Level(80, 40),
+  : stage = new Stage(80, 40),
     log = new Log(),
     actions = new Queue<Action>()
   {
-    level.game = this;
+    stage.game = this;
 
-    final heroPos = area.makeLevel(this, depth);
+    final heroPos = area.buildStage(this, depth);
 
     hero = new Hero(this, heroPos, save, save.skills);
-    level.actors.add(hero);
+    stage.actors.add(hero);
 
-    Fov.refresh(level, hero.pos);
+    Fov.refresh(stage, hero.pos);
   }
 
   bool get isQuestComplete() => _questComplete;
@@ -40,7 +40,7 @@ class Game {
           result = action.perform(gameResult);
         }
 
-        level.refreshVisibility(hero);
+        stage.refreshVisibility(hero);
 
         gameResult.madeProgress = true;
 
@@ -51,11 +51,11 @@ class Game {
             makeNoise(action.actor, action.noise);
 
             action.actor.finishTurn();
-            level.actors.advance();
+            stage.actors.advance();
 
             // TODO(bob): Doing this here is a hack. Scent should spread at a
             // uniform rate independent of the hero's speed.
-            if (action.actor == hero) level.updateScent(hero);
+            if (action.actor == hero) stage.updateScent(hero);
           }
 
           // TODO(bob): Uncomment this to animate the hero while resting or
@@ -69,7 +69,7 @@ class Game {
       // If we get here, all pending actions are done, so advance to the next
       // tick until an actor moves.
       while (actions.length == 0) {
-        final actor = level.actors.current;
+        final actor = stage.actors.current;
 
         // If we are still waiting for input for the actor, just return (again).
         if (actor.energy.canTakeTurn && actor.needsInput) return gameResult;
@@ -83,7 +83,7 @@ class Game {
           actions.add(action);
         } else {
           // This actor doesn't have enough energy yet, so move on to the next.
-          level.actors.advance();
+          stage.actors.advance();
         }
 
         // Each time we wrap around, process "idle" things that are ongoing and
@@ -102,15 +102,15 @@ class Game {
     if (!rng.oneIn(Option.SPAWN_MONSTER_CHANCE)) return;
 
     // Try to place a new monster in unexplored areas.
-    Vec pos = rng.vecInRect(level.bounds);
+    Vec pos = rng.vecInRect(stage.bounds);
 
-    final tile = level[pos];
+    final tile = stage[pos];
     if (tile.visible || tile.isExplored || !tile.isPassable) return;
-    if (level.actorAt(pos) != null) return;
+    if (stage.actorAt(pos) != null) return;
 
     // TODO(bob): Should reuse code in Area to generate out-of-depth monsters.
     final breed = area.pickBreed(depth);
-    level.spawnMonster(breed, pos);
+    stage.spawnMonster(breed, pos);
   }
 
   void completeQuest() {
@@ -126,7 +126,7 @@ class Game {
     // should so that the player can be sneaky by keeping doors closed. One
     // solution might be to do LOS between the source and actor and attentuate
     // when it crosses walls or doors.
-    for (final monster in level.actors) {
+    for (final monster in stage.actors) {
       if (monster is! Monster) continue;
 
       var distanceSquared = (monster.pos - actor.pos).lengthSquared;

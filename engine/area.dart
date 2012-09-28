@@ -1,17 +1,17 @@
 class Area {
   final String name;
-  final List<AreaLevel> levels;
+  final List<Level> levels;
 
   Area(this.name, this.levels);
 
-  Vec makeLevel(Game game, int depth) {
-    final level = game.level;
+  Vec buildStage(Game game, int depth) {
+    final stage = game.stage;
     final area = levels[depth];
 
-    area.builder.generate(level);
+    area.builder.generate(stage);
 
-    final heroPos = level.findOpenTile();
-    _calculateDistances(level, heroPos);
+    final heroPos = stage.findOpenTile();
+    _calculateDistances(stage, heroPos);
 
     /*
     // TODO(bob): Temp for testing.
@@ -24,12 +24,12 @@ class Area {
     for (var i = 0; i < numItems; i++) {
       final itemDepth = pickDepth(depth);
       final drop = levels[itemDepth].floorDrop;
-      final pos = level.findOpenTile();
+      final pos = stage.findOpenTile();
 
       final types = [];
       drop.addDrop(game, types);
       for (var type in types) {
-        level.spawnItem(type, pos);
+        stage.spawnItem(type, pos);
       }
 
       /*
@@ -37,11 +37,11 @@ class Area {
       if (rng.oneIn(40) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
       if (rng.oneIn(40) && suffixType.appliesTo(type)) suffix = suffixType.spawn();
 
-      final item = new Item(type, level.findOpenTile(),
+      final item = new Item(type, stage.findOpenTile(),
           prefix, suffix);
 
       if (prefix != null || suffix != null) print(item.toString());
-      level.items.add(item);
+      stage.items.add(item);
       */
     }
 
@@ -53,15 +53,15 @@ class Area {
       // Place strong monsters farther from the hero.
       var tries = 1;
       if (monsterDepth > depth) tries = 1 + (monsterDepth - depth) * 2;
-      final pos = findDistantTile(level, tries);
+      final pos = findDistantTile(stage, tries);
 
       final breed = rng.item(levels[monsterDepth].breeds);
-      level.spawnMonster(breed, pos);
+      stage.spawnMonster(breed, pos);
     }
 
     // Add the quest item.
-    final quest = new Item(area.quest, findDistantTile(level, 10), null, null);
-    level.items.add(quest);
+    final quest = new Item(area.quest, findDistantTile(stage, 10), null, null);
+    stage.items.add(quest);
 
     return heroPos;
   }
@@ -85,15 +85,15 @@ class Area {
     return rng.item(levels[depth].breeds);
   }
 
-  Vec findDistantTile(Level level, int tries) {
+  Vec findDistantTile(Stage stage, int tries) {
     var bestDistance = -1;
     var best;
 
     for (var i = 0; i < tries; i++) {
-      final pos = level.findOpenTile();
-      if (level[pos].scent2 > bestDistance) {
+      final pos = stage.findOpenTile();
+      if (stage[pos].scent2 > bestDistance) {
         best = pos;
-        bestDistance = level[pos].scent2;
+        bestDistance = stage[pos].scent2;
       }
     }
 
@@ -104,29 +104,29 @@ class Area {
   /// tile to the [Hero]. We will use this to place better and stronger things
   /// farther from the Hero. Re-uses the scent data as a convenient buffer for
   /// this.
-  void _calculateDistances(Level level, Vec start) {
+  void _calculateDistances(Stage stage, Vec start) {
     // Clear it out.
-    for (final pos in level.bounds) level[pos].scent2 = 9999;
-    level[start].scent2 = 0;
+    for (final pos in stage.bounds) stage[pos].scent2 = 9999;
+    stage[start].scent2 = 0;
 
     final open = new Queue<Vec>();
     open.add(start);
 
     while (open.length > 0) {
       final start = open.removeFirst();
-      final distance = level[start].scent2;
+      final distance = stage[start].scent2;
 
       // Update the neighbor's distances.
       for (var dir in Direction.ALL) {
         final here = start + dir;
 
         // Can't reach impassable tiles.
-        if (!level[here].isTraversable) continue;
+        if (!stage[here].isTraversable) continue;
 
         // If we got a new best path to this tile, update its distance and
         // consider its neighbors later.
-        if (level[here].scent2 > distance + 1) {
-          level[here].scent2 = distance + 1;
+        if (stage[here].scent2 > distance + 1) {
+          stage[here].scent2 = distance + 1;
           open.add(here);
         }
       }
@@ -136,8 +136,8 @@ class Area {
 
 /// Describes one level in a [Area]. When the [Hero] enters a [Level] for an
 /// area, this determines how that specific level is generated.
-class AreaLevel {
-  final LevelBuilder builder;
+class Level {
+  final StageBuilder builder;
   final List<Breed> breeds;
   final Drop floorDrop;
   final int numMonsters;
@@ -158,6 +158,6 @@ class AreaLevel {
   // - Complete quest without killing any monsters
   // - Complete quest without using any items
 
-  AreaLevel(this.builder, this.numMonsters, this.numItems,
+  Level(this.builder, this.numMonsters, this.numItems,
       this.breeds, this.floorDrop, this.quest);
 }

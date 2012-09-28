@@ -34,7 +34,7 @@ class Monster extends Actor {
   bool canView(Vec target) {
     // Walk to the target.
     for (final step in new Los(pos, game.hero.pos)) {
-      if (!game.level[step].isTransparent) return false;
+      if (!game.stage[step].isTransparent) return false;
     }
 
     // If we got here, we made it.
@@ -104,13 +104,13 @@ class Monster extends Actor {
     final scentWeight = breed.olfaction * Option.AI_WEIGHT_SCENT;
 
     getScent(Vec pos) {
-      return math.max(game.level.getScent(pos.x, pos.y) - minScent, 0);
+      return math.max(game.stage.getScent(pos.x, pos.y) - minScent, 0);
     }
 
     final scent = getScent(pos);
 
     // TODO(bob): Make maximum path-length be breed tunable.
-    final path = AStar.findDirection(game.level, pos, game.hero.pos, 10,
+    final path = AStar.findDirection(game.stage, pos, game.hero.pos, 10,
         canOpenDoors);
 
     // Consider melee attacking.
@@ -129,9 +129,9 @@ class Monster extends Actor {
       final dest = pos + Direction.ALL[i];
 
       // If the direction is blocked, don't consider it.
-      if (!game.level[dest].isTraversable) continue;
-      if (!canOpenDoors && !game.level[dest].isPassable) continue;
-      if (game.level.actorAt(dest) != null) continue;
+      if (!game.stage[dest].isTraversable) continue;
+      if (!canOpenDoors && !game.stage[dest].isPassable) continue;
+      if (game.stage.actorAt(dest) != null) continue;
 
       // Apply scent knowledge.
       final scentGradient = getScent(dest) - scent;
@@ -201,14 +201,14 @@ class Monster extends Actor {
     for (var type in types) {
       // TODO(bob): Scatter items a bit?
       // TODO(bob): Add message.
-      game.level.spawnItem(type, pos);
+      game.stage.spawnItem(type, pos);
     }
   }
 
   Vec changePosition(Vec pos) {
     // If the monster is (or was) visible, don't let the hero rest through it
     // moving.
-    if (game.level[this.pos].visible || game.level[pos].visible) {
+    if (game.stage[this.pos].visible || game.stage[pos].visible) {
       game.hero.disturb();
     }
 

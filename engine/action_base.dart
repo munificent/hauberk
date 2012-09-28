@@ -94,13 +94,13 @@ class WalkAction extends Action {
     final pos = actor.pos + offset;
 
     // See if there is an actor there.
-    final target = game.level.actorAt(pos);
+    final target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
       return alternate(new AttackAction(target));
     }
 
     // See if it's a door.
-    if (game.level[pos].type.opensTo != null) {
+    if (game.stage[pos].type.opensTo != null) {
       return alternate(new OpenDoorAction(pos));
     }
 
@@ -113,7 +113,7 @@ class WalkAction extends Action {
 
     // See if the hero stepped on anything interesting.
     if (actor is Hero) {
-      final item = game.level.itemAt(pos);
+      final item = game.stage.itemAt(pos);
       if (item != null) {
         log('{1} [are|is] standing on {2}.', actor, item);
       }
@@ -131,8 +131,8 @@ class OpenDoorAction extends Action {
   OpenDoorAction(this.doorPos);
 
   ActionResult onPerform() {
-    game.level[doorPos].type = game.level[doorPos].type.opensTo;
-    game.level.dirtyVisibility();
+    game.stage[doorPos].type = game.stage[doorPos].type.opensTo;
+    game.stage.dirtyVisibility();
 
     return succeed('{1} open[s] the door.', actor);
   }
@@ -144,8 +144,8 @@ class CloseDoorAction extends Action {
   CloseDoorAction(this.doorPos);
 
   ActionResult onPerform() {
-    game.level[doorPos].type = game.level[doorPos].type.closesTo;
-    game.level.dirtyVisibility();
+    game.stage[doorPos].type = game.stage[doorPos].type.closesTo;
+    game.stage.dirtyVisibility();
 
     return succeed('{1} close[s] the door.', actor);
   }

@@ -150,7 +150,7 @@ class Inventory implements ItemCollection {
   : _items = <Item>[];
 
   /// Creates a new copy of this Inventory. This is done when the [Hero] enters
-  /// a [Level] so that any inventory changes that happen in the level are
+  /// a [Stage] so that any inventory changes that happen in the stage are
   /// discarded if the hero dies.
   Inventory clone() {
     // TODO(bob): If items themselves ever become mutable, will need to deep

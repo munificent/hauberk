@@ -2,18 +2,18 @@
 class Fov {
   static List<Shadow> shadows;
 
-  /// Updates the visible flags in [level] given the [Hero]'s [pos].
-  static void refresh(Level level, Vec pos) {
+  /// Updates the visible flags in [stage] given the [Hero]'s [pos].
+  static void refresh(Stage stage, Vec pos) {
     // Sweep through the octants.
     for (int octant = 0; octant < 8; octant++) {
-      refreshOctant(level, pos, octant);
+      refreshOctant(stage, pos, octant);
     }
 
     // The starting position is always visible.
-    level[pos].visible = true;
+    stage[pos].visible = true;
   }
 
-  static void refreshOctant(Level level, Vec start, int octant) {
+  static void refreshOctant(Stage stage, Vec start, int octant) {
     var rowInc;
     var colInc;
 
@@ -32,7 +32,7 @@ class Fov {
 
     shadows = <Shadow>[];
 
-    final bounds = level.bounds;
+    final bounds = stage.bounds;
     var fullShadow = false;
 
     // Sweep through the rows ('rows' may be vertical or horizontal based on
@@ -53,13 +53,13 @@ class Fov {
         // If we know the entire row is in shadow, we don't need to be more
         // specific.
         if (!fullShadow) {
-          blocksLight = !level[pos].isTransparent;
+          blocksLight = !stage[pos].isTransparent;
           projection = getProjection(col, row);
           visible = !isInShadow(projection);
         }
 
         // Set the visibility of this tile.
-        level[pos].visible = visible;
+        stage[pos].visible = visible;
 
         // Add any opaque tiles to the shadow map.
         if (blocksLight) {

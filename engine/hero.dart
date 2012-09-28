@@ -27,7 +27,7 @@ class HeroSave {
       this.skills, this.experienceCents);
 
   /// Copies data from [hero] into this object. This should be called when the
-  /// [Hero] has successfully completed a [Level] and his changes need to be
+  /// [Hero] has successfully completed a [Stage] and his changes need to be
   /// "saved".
   void copyFrom(Hero hero) {
     inventory = hero.inventory;
@@ -65,7 +65,7 @@ class Hero extends Actor {
     _refreshLevel(log: false);
 
     // TODO(bob): Doing this here assumes skills don't change while in the
-    // level.
+    // stage.
     skills.forEach((skill, level) => health.max += skill.modifyHealth(level));
     health.current = health.max;
   }
@@ -132,7 +132,7 @@ class Hero extends Actor {
   }
 
   Vec changePosition(Vec pos) {
-    game.level.dirtyVisibility();
+    game.stage.dirtyVisibility();
     return pos;
   }
 
@@ -243,7 +243,7 @@ class RunBehavior implements Behavior {
 
     // Don't run into a wall.
     final ahead = hero.pos + direction;
-    if (!game.level[ahead].isPassable) return false;
+    if (!game.stage[ahead].isPassable) return false;
 
     // Whether or not the hero's left and right sides are open cannot change.
     // In other words, if he is running in a corridor (closed on both sides)
@@ -253,24 +253,24 @@ class RunBehavior implements Behavior {
     if (!firstStep) {
       final leftSide = hero.pos + direction.rotateLeft90;
       final leftCorner = hero.pos + direction.rotateLeft45;
-      if (game.level[leftSide].isPassable !=
-          game.level[leftCorner].isPassable) return false;
+      if (game.stage[leftSide].isPassable !=
+          game.stage[leftCorner].isPassable) return false;
 
       final rightSide = hero.pos + direction.rotateRight90;
       final rightCorner = hero.pos + direction.rotateRight45;
-      if (game.level[rightSide].isPassable !=
-          game.level[rightCorner].isPassable) return false;
+      if (game.stage[rightSide].isPassable !=
+          game.stage[rightCorner].isPassable) return false;
     }
 
     // Don't run into someone.
-    if (game.level.actorAt(ahead) != null) return false;
+    if (game.stage.actorAt(ahead) != null) return false;
 
     // Don't run next to someone.
-    if (game.level.actorAt(ahead + (direction.rotateLeft90)) != null) return false;
-    if (game.level.actorAt(ahead + (direction.rotateLeft45)) != null) return false;
-    if (game.level.actorAt(ahead + (direction)) != null) return false;
-    if (game.level.actorAt(ahead + (direction.rotateRight45)) != null) return false;
-    if (game.level.actorAt(ahead + (direction.rotateRight90)) != null) return false;
+    if (game.stage.actorAt(ahead + (direction.rotateLeft90)) != null) return false;
+    if (game.stage.actorAt(ahead + (direction.rotateLeft45)) != null) return false;
+    if (game.stage.actorAt(ahead + (direction)) != null) return false;
+    if (game.stage.actorAt(ahead + (direction.rotateRight45)) != null) return false;
+    if (game.stage.actorAt(ahead + (direction.rotateRight90)) != null) return false;
 
     // TODO(bob): This is still pretty simple. It won't run around corners in
     // corridors, which is probably good. (Running around a corner means either

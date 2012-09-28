@@ -131,7 +131,7 @@ class GameScreen extends Screen {
     final doors = [];
     for (final direction in Direction.ALL) {
       final pos = game.hero.pos + direction;
-      if (game.level[pos].type.closesTo != null) {
+      if (game.stage[pos].type.closesTo != null) {
         doors.add(pos);
       }
     }
@@ -199,10 +199,10 @@ class GameScreen extends Screen {
     // TODO(bob): Hack. Clear out the help text from the previous screen.
     terminal.rect(0, terminal.height - 1, terminal.width, 1).clear();
 
-    // Draw the level.
-    for (int y = 0; y < game.level.height; y++) {
-      for (int x = 0; x < game.level.width; x++) {
-        final tile = game.level.get(x, y);
+    // Draw the stage.
+    for (int y = 0; y < game.stage.height; y++) {
+      for (int x = 0; x < game.stage.width; x++) {
+        final tile = game.stage.get(x, y);
         var glyph;
         if (tile.isExplored) {
           glyph = tile.type.appearance[tile.visible ? 0 : 1];
@@ -243,14 +243,14 @@ class GameScreen extends Screen {
     */
 
     // Draw the items.
-    for (final item in game.level.items) {
-      if (!game.level[item.pos].isExplored) continue;
+    for (final item in game.stage.items) {
+      if (!game.stage[item.pos].isExplored) continue;
       terminal.drawGlyph(item.x, item.y, item.appearance);
     }
 
     // Draw the actors.
-    for (final actor in game.level.actors) {
-      if (!game.level[actor.pos].visible) continue;
+    for (final actor in game.stage.actors) {
+      if (!game.stage[actor.pos].visible) continue;
       final appearance = actor.appearance;
       final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
       terminal.drawGlyph(actor.x, actor.y, glyph);
@@ -321,7 +321,7 @@ class GameScreen extends Screen {
   Glyph debugScent(int x, int y, Tile tile, Glyph glyph) {
     if (!tile.isPassable) return glyph;
 
-    var scent = game.level.getScent(x, y);
+    var scent = game.stage.getScent(x, y);
     var color;
     if (scent == 0) color = Color.DARK_GRAY;
     else if (scent < 0.02) color = Color.DARK_BLUE;
@@ -342,7 +342,7 @@ class GameScreen extends Screen {
     var best = 0;
     var char = 'O';
     compareScent(dir, c) {
-      var neighbor = game.level.getScent(x + dir.x, y + dir.y);
+      var neighbor = game.stage.getScent(x + dir.x, y + dir.y);
       if (neighbor > best) {
         best = neighbor;
         char = c;
@@ -439,8 +439,8 @@ class ParticleEffect implements Effect {
     y += v;
 
     final pos = new Vec(x.toInt(), y.toInt());
-    if (!game.level.bounds.contains(pos)) return false;
-    if (!game.level[pos].isPassable) return false;
+    if (!game.stage.bounds.contains(pos)) return false;
+    if (!game.stage[pos].isPassable) return false;
 
     return life-- > 0;
   }

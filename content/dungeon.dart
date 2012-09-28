@@ -1,4 +1,4 @@
-class DungeonBuilder implements LevelBuilder {
+class DungeonBuilder implements StageBuilder {
   final int numRoomTries;
   final int numJunctionTries;
   final int roomWidthMin;
@@ -24,24 +24,24 @@ class DungeonBuilder implements LevelBuilder {
     this.extraCorridorDistanceMultiplier = 4
   ]);
 
-  void generate(Level level) {
-    new Dungeon(level, this).generate();
+  void generate(Stage stage) {
+    new Dungeon(stage, this).generate();
   }
 }
 
-class LevelGenerator {
-  final Level level;
+class StageGenerator {
+  final Stage stage;
 
-  LevelGenerator(this.level);
+  StageGenerator(this.stage);
 
-  TileType getTile(Vec pos) => level[pos].type;
+  TileType getTile(Vec pos) => stage[pos].type;
 
   void setTile(Vec pos, TileType type) {
-    level[pos].type = type;
+    stage[pos].type = type;
   }
 }
 
-class Dungeon extends LevelGenerator {
+class Dungeon extends StageGenerator {
   static int NUM_ROOM_TRIES = 1000;
   static int NUM_JUNCTION_TRIES = 30;
 
@@ -49,15 +49,15 @@ class Dungeon extends LevelGenerator {
   final List<Room> _rooms;
   final Set<int> _usedColors;
 
-  Dungeon(Level level, this.builder)
-  : super(level),
+  Dungeon(Stage stage, this.builder)
+  : super(stage),
     _rooms = <Room>[],
     _usedColors = new Set<int>();
 
   void generate() {
     // Clear the dungeon.
-    for (var y = 0; y < level.height; y++) {
-      for (var x = 0; x < level.width; x++) {
+    for (var y = 0; y < stage.height; y++) {
+      for (var x = 0; x < stage.width; x++) {
         setTile(new Vec(x, y), Tiles.wall);
       }
     }
@@ -67,8 +67,8 @@ class Dungeon extends LevelGenerator {
     for (var i = 0; i < builder.numRoomTries; i++) {
       final width = rng.range(builder.roomWidthMin, builder.roomWidthMax);
       final height = rng.range(builder.roomHeightMin, builder.roomHeightMax);
-      final x = rng.range(1, level.width - width);
-      final y = rng.range(1, level.height - height);
+      final x = rng.range(1, stage.width - width);
+      final y = rng.range(1, stage.height - height);
 
       final room = new Rect(x, y, width, height);
       if (!overlapsExistingRooms(room, true)){
@@ -79,8 +79,8 @@ class Dungeon extends LevelGenerator {
 
     // Add some one-tile "rooms" to work as corridor junctions.
     for (var i = 0; i < builder.numJunctionTries; i++) {
-      final x = rng.range(1, level.width - 3);
-      final y = rng.range(1, level.height - 3);
+      final x = rng.range(1, stage.width - 3);
+      final y = rng.range(1, stage.height - 3);
 
       final room = new Rect(x, y, 1, 1);
       if (!overlapsExistingRooms(room, false)){
@@ -316,11 +316,11 @@ class Dungeon extends LevelGenerator {
   }
 
   bool isFloor(int x, int y) {
-    return level.get(x, y).type == Tiles.floor;
+    return stage.get(x, y).type == Tiles.floor;
   }
 
   bool isWall(int x, int y) {
-    return level.get(x, y).type == Tiles.wall;
+    return stage.get(x, y).type == Tiles.wall;
   }
 
   void addDoors() {

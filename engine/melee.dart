@@ -47,7 +47,7 @@ class Attack {
       attacker.onKilled(defender);
 
       if (defender is! Hero) {
-        action.game.level.actors.remove(defender);
+        action.game.stage.actors.remove(defender);
       }
       return action.succeed('{1} kill[s] {2}.', attackNoun, defender);
     }

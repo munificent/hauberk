@@ -94,17 +94,17 @@ class AreaBuilder extends ContentBuilder {
     ]);
   }
 
-  AreaLevel level(LevelBuilder builder, [
+  Level level(StageBuilder builder, [
       int numMonsters, int numItems, List<String> breeds, drop, String quest]) {
     final breedList = <Breed>[];
 
     for (final name in breeds) breedList.add(_breeds[name]);
 
-    return new AreaLevel(builder, numMonsters, numItems, breedList,
+    return new Level(builder, numMonsters, numItems, breedList,
         _parseDrop(drop), _items[quest]);
   }
 
-  Area area(String name, List<AreaLevel> levels) {
+  Area area(String name, List<Level> levels) {
     final area = new Area(name, levels);
     _areas.add(area);
     return area;

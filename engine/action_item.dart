@@ -1,7 +1,7 @@
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {
   ActionResult onPerform() {
-    final item = game.level.itemAt(actor.pos);
+    final item = game.stage.itemAt(actor.pos);
     if (item == null) {
       return fail('There is nothing here.');
     }
@@ -10,7 +10,7 @@ class PickUpAction extends Action {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
     }
 
-    game.level.removeItem(item);
+    game.stage.removeItem(item);
 
     return succeed('{1} pick[s] up {2}.', actor, item);
   }
@@ -26,7 +26,7 @@ class DropInventoryAction extends Action {
   ActionResult onPerform() {
     final item = hero.inventory.removeAt(index);
     item.pos = hero.pos;
-    game.level.items.add(item);
+    game.stage.items.add(item);
 
     return succeed('{1} drop[s] {2}.', actor, item);
   }
@@ -42,7 +42,7 @@ class DropEquipmentAction extends Action {
   ActionResult onPerform() {
     final item = hero.equipment.removeAt(index);
     item.pos = hero.pos;
-    game.level.items.add(item);
+    game.stage.items.add(item);
 
     return succeed('{1} take[s] off and drop[s] {2}.', actor, item);
   }
@@ -59,7 +59,7 @@ class EquipAction extends Action {
 
   ActionResult onPerform() {
     final item = isOnGround
-        ? game.level.itemsAt(actor.pos)[index]
+        ? game.stage.itemsAt(actor.pos)[index]
         : hero.inventory[index];
 
     if (!hero.equipment.canEquip(item)) {
@@ -69,7 +69,7 @@ class EquipAction extends Action {
     final unequipped = hero.equipment.equip(item);
 
     if (isOnGround) {
-      game.level.removeItem(item);
+      game.stage.removeItem(item);
     } else {
       hero.inventory.removeAt(index);
     }
@@ -81,7 +81,7 @@ class EquipAction extends Action {
       } else {
         // No room in inventory, so drop it.
         item.pos = actor.pos;
-        game.level.items.add(item);
+        game.stage.items.add(item);
         log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
           actor, unequipped);
       }
@@ -108,7 +108,7 @@ class UnequipAction extends Action {
 
     // No room in inventory, so drop it.
     item.pos = actor.pos;
-    game.level.items.add(item);
+    game.stage.items.add(item);
     return succeed("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
         actor, item);
   }
@@ -124,7 +124,7 @@ class UseAction extends Action {
 
   ActionResult onPerform() {
     final item = isOnGround
-        ? game.level.itemsAt(actor.pos)[index]
+        ? game.stage.itemsAt(actor.pos)[index]
         : hero.inventory[index];
 
     // If it's equippable, then using it just equips it.
@@ -137,7 +137,7 @@ class UseAction extends Action {
     }
 
     if (isOnGround) {
-      game.level.removeItem(item);
+      game.stage.removeItem(item);
     } else {
       hero.inventory.removeAt(index);
     }

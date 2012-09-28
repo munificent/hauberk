@@ -16,7 +16,6 @@
 #source('engine/game.dart');
 #source('engine/hero.dart');
 #source('engine/item.dart');
-#source('engine/level.dart');
 #source('engine/log.dart');
 #source('engine/los.dart');
 #source('engine/melee.dart');
@@ -24,3 +23,4 @@
 #source('engine/move.dart');
 #source('engine/option.dart');
 #source('engine/skill.dart');
+#source('engine/stage.dart');

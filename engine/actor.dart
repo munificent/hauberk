@@ -78,11 +78,11 @@ class Actor extends Thing {
 
   bool canOccupy(Vec pos) {
     if (pos.x < 0) return false;
-    if (pos.x >= game.level.width) return false;
+    if (pos.x >= game.stage.width) return false;
     if (pos.y < 0) return false;
-    if (pos.y >= game.level.height) return false;
+    if (pos.y >= game.stage.height) return false;
 
-    return game.level[pos].isPassable;
+    return game.stage[pos].isPassable;
   }
 
   void finishTurn() {

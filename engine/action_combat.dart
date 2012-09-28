@@ -26,12 +26,12 @@ class BoltAction extends Action {
     final pos = los.next();
 
     // Stop if we hit a wall.
-    if (!game.level[pos].isTransparent) return succeed();
+    if (!game.stage[pos].isTransparent) return succeed();
 
     addEvent(new Event.bolt(pos));
 
     // See if there is an actor there.
-    final target = game.level.actorAt(pos);
+    final target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
       return attack.perform(this, actor, target);
     }

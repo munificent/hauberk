@@ -159,9 +159,9 @@ class Maze {
     }
   }
 
-  void draw(Level level) {
+  void draw(Stage stage) {
     void carve(Vec pos) {
-      level[pos].type = Tiles.floor;
+      stage[pos].type = Tiles.floor;
     }
 
     for (final pos in _cells.bounds) {

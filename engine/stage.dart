@@ -1,5 +1,5 @@
-/// An explorable level in the game.
-class Level {
+/// The game's live play area.
+class Stage {
   int get width() => tiles.width;
   int get height() => tiles.height;
   Rect get bounds() => tiles.bounds;
@@ -14,7 +14,7 @@ class Level {
 
   bool _visibilityDirty = true;
 
-  Level(int width, int height)
+  Stage(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
     actors = new Chain<Actor>(),
     items = <Item>[];
@@ -51,8 +51,8 @@ class Level {
     return items.filter((item) => item.pos == pos);
   }
 
-  /// Removes [item] from the level. Does nothing if the item is not on the
-  /// ground in the level.
+  /// Removes [item] from the stage. Does nothing if the item is not on the
+  /// ground.
   void removeItem(Item item) {
     for (var i = 0; i < items.length; i++) {
       if (items[i] == item) {
@@ -183,10 +183,10 @@ class Level {
   }
 }
 
-/// Abstract class for a level generator. An instance of this encapsulation
+/// Abstract class for a stage generator. An instance of this encapsulation
 /// some dungeon generation algorithm. These are implemented in content.
-abstract class LevelBuilder {
-  abstract void generate(Level level);
+abstract class StageBuilder {
+  abstract void generate(Stage stage);
 }
 
 class TileType {

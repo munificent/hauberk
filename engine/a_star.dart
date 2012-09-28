@@ -16,9 +16,9 @@ class AStar {
   /// steps from [start]. Returns the [Direction] of the first step from [start]
   /// along that path (or [Direction.NONE] if it determines there is no path
   /// possible.
-  static Direction findDirection(Level level, Vec start, Vec end, int maxLength,
+  static Direction findDirection(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
-    final result = findPath(level, start, end, maxLength, canOpenDoors);
+    final result = findPath(stage, start, end, maxLength, canOpenDoors);
     if (result == null) return Direction.NONE;
 
     var path = result.path;
@@ -29,7 +29,7 @@ class AStar {
     return path.direction;
   }
 
-  static AStarResult findPath(Level level, Vec start, Vec end, int maxLength,
+  static AStarResult findPath(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
     // TODO(bob): More optimal data structure.
     final startPath = new PathNode(null, Direction.NONE,
@@ -55,11 +55,11 @@ class AStar {
         final neighbor = current.pos + dir;
 
         // Skip impassable tiles.
-        if (!level[neighbor].isTraversable) continue;
+        if (!stage[neighbor].isTraversable) continue;
 
         // Given how far the current tile is, how far is each neighbor?
         var stepCost = Option.ASTAR_FLOOR_COST;
-        if (level[neighbor].type.opensTo != null) {
+        if (stage[neighbor].type.opensTo != null) {
           if (canOpenDoors) {
             // One to open the door and one to enter the tile.
             stepCost = Option.ASTAR_FLOOR_COST * 2;
@@ -69,7 +69,7 @@ class AStar {
             // opened by someone else.
             stepCost = Option.ASTAR_DOOR_COST;
           }
-        } else if (level.actorAt(neighbor) != null) {
+        } else if (stage.actorAt(neighbor) != null) {
           stepCost = Option.ASTAR_OCCUPIED_COST;
         }
 
