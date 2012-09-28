@@ -1,10 +1,6 @@
 /// Builder class for defining [ItemType]s.
 class ItemBuilder extends ContentBuilder {
-  final Map<String, ItemType> _items;
   int _sortIndex = 0;
-
-  ItemBuilder()
-  : _items = <ItemType>{};
 
   Map<String, ItemType> build() {
     // From Angband:
@@ -27,8 +23,6 @@ class ItemBuilder extends ContentBuilder {
 
     item('Magical Chalice', lightBlue(@'$'),
         use: () => new QuestAction());
-
-    return _items;
   }
 
   void pelts() {

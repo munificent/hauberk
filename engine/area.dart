@@ -23,10 +23,15 @@ class Area {
     final numItems = rng.taper(area.numItems, 3);
     for (var i = 0; i < numItems; i++) {
       final itemDepth = pickDepth(depth);
-      final type = rng.item(levels[itemDepth].items);
+      final drop = levels[itemDepth].floorDrop;
       final pos = level.findOpenTile();
 
-      level.spawnItem(type, pos);
+      final types = [];
+      drop.addDrop(game, types);
+      for (var type in types) {
+        level.spawnItem(type, pos);
+      }
+
       /*
       var prefix, suffix;
       if (rng.oneIn(40) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
@@ -134,7 +139,7 @@ class Area {
 class AreaLevel {
   final LevelBuilder builder;
   final List<Breed> breeds;
-  final List<ItemType> items;
+  final Drop floorDrop;
   final int numMonsters;
   final int numItems;
   final ItemType quest;
@@ -154,5 +159,5 @@ class AreaLevel {
   // - Complete quest without using any items
 
   AreaLevel(this.builder, this.numMonsters, this.numItems,
-      this.breeds, this.items, this.quest);
+      this.breeds, this.floorDrop, this.quest);
 }

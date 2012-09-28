@@ -16,25 +16,99 @@
 #source('content/tiles.dart');
 #source('content/wilderness.dart');
 
+final List<Area> _areas = [];
+final Map<String, Skill> _skills = {};
+final Map<String, ItemType> _items = {};
+final Map<String, Breed> _breeds = {};
+final List<Recipe> _recipes = [];
+
 Content createContent() {
+  // Note: The order is significant here. For example, monster drops will
+  // reference items, which need to have already been created.
   new TileBuilder().build();
-  final skills = new SkillBuilder().build();
-  final items = new ItemBuilder().build();
-  final breeds = new MonsterBuilder(skills, items).build();
-  final areas = new AreaBuilder(breeds, items).build();
-  final recipes = new RecipeBuilder(items).build();
+  new SkillBuilder().build();
+  new ItemBuilder().build();
+  new MonsterBuilder().build();
+  new AreaBuilder().build();
+  new RecipeBuilder().build();
 
   // The items that a new hero starts with.
   final heroItems = [
-    items['Mending Salve'],
-    items['Scroll of Sidestepping']
+    _items['Mending Salve'],
+    _items['Scroll of Sidestepping']
   ];
 
-  return new Content(areas, breeds, items, recipes, skills, heroItems);
+  return new Content(_areas, _breeds, _items, _recipes, _skills, heroItems);
 }
 
 /// Base class for a builder that provides a DSL for creating game content.
 class ContentBuilder {
+  Drop hunting(drop) {
+    return new SkillDrop(_skills['Hunting'], _parseDrop(drop));
+  }
+
+  Drop botany(drop) {
+    return new SkillDrop(_skills['Botany'], _parseDrop(drop));
+  }
+
+  Drop chanceOf(int percent, drop) {
+    return new OneOfDrop([_parseDrop(drop)], [percent]);
+  }
+
+  Drop graduated(int chance, drops) {
+    drops = drops.map(_parseDrop);
+    return new GraduatedDrop(chance, drops);
+  }
+
+  Drop _parseDrop(drop) {
+    if (drop == null) return new OneOfDrop([], []);
+    if (drop is Drop) return drop;
+    if (drop is String) return new ItemDrop(_items[drop]);
+
+    if (drop is List) {
+      final drops = [];
+      final percents = [];
+
+      for (final element in drop) {
+        if (element is OneOfDrop && element.drops.length == 1) {
+          drops.add(element.drops[0]);
+          percents.add(element.percents[0]);
+        } else {
+          // A drop without an explicit chance will just have an even chance.
+          drops.add(_parseDrop(element));
+          percents.add(null);
+        }
+      }
+
+      // Fix up the calculated percents.
+      var remaining = 100;
+      var calculated = [];
+      for (var i = 0; i < percents.length; i++) {
+        if (percents[i] != null) {
+          remaining -= percents[i];
+        } else {
+          calculated.add(i);
+        }
+      }
+
+      for (var i = 0; i < calculated.length; i++) {
+        if (i == calculated.length - 1) {
+          // Handle the last calculated one to round up. Ensures that if,
+          // for example there are three calculated ones, you don't get
+          // 33/33/33 and then have a 1% chance of not dropping anything.
+          percents[i] = remaining -
+              (remaining ~/ calculated.length * (calculated.length - 1));
+        } else {
+          percents[i] = remaining ~/ calculated.length;
+        }
+      }
+
+      return new OneOfDrop(drops, percents);
+    }
+
+    throw 'Unknown drop type $drop.';
+  }
+
   Attack attack(String verb, int damage, [Element element = Element.NONE]) {
     return new Attack(verb, damage, element);
   }

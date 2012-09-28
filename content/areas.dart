@@ -1,12 +1,5 @@
 /// Builder class for defining [Area] objects.
 class AreaBuilder extends ContentBuilder {
-  final Map<String, Breed> _breeds;
-  final Map<String, ItemType> _items;
-  final List<Area> _areas;
-
-  AreaBuilder(this._breeds, this._items)
-  : _areas = <Area>[];
-
   List<Area> build() {
     /*
     // Dense, lots of little rooms.
@@ -64,7 +57,7 @@ class AreaBuilder extends ContentBuilder {
           'giant cockroach',
           'simpering knave'
         ],
-        items: [
+        drop: [
           'Parchment',
           'Soothing Balm',
           'Scroll of Sidestepping'
@@ -78,7 +71,7 @@ class AreaBuilder extends ContentBuilder {
           'sewer rat',
           'drunken priest',
         ],
-        items: [
+        drop: [
           'Parchment',
           'Soothing Balm',
           'Robe'
@@ -92,28 +85,23 @@ class AreaBuilder extends ContentBuilder {
           'tree snake',
           'earthworm'
         ],
-        items: [
+        drop: [
           'Soothing Balm',
           'Cudgel',
           'Dagger'
         ],
         quest: 'Magical Chalice')
     ]);
-
-    return _areas;
   }
 
   AreaLevel level(LevelBuilder builder, [
-      int numMonsters, int numItems, List<String> breeds, List<String> items,
-      String quest]) {
+      int numMonsters, int numItems, List<String> breeds, drop, String quest]) {
     final breedList = <Breed>[];
-    final itemList = <ItemType>[];
 
     for (final name in breeds) breedList.add(_breeds[name]);
-    for (final name in items) itemList.add(_items[name]);
 
-    return new AreaLevel(builder, numMonsters, numItems, breedList, itemList,
-        _items[quest]);
+    return new AreaLevel(builder, numMonsters, numItems, breedList,
+        _parseDrop(drop), _items[quest]);
   }
 
   Area area(String name, List<AreaLevel> levels) {

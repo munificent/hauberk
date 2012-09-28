@@ -1,10 +1,5 @@
 /// Builder class for defining [Skill]s.
 class SkillBuilder extends ContentBuilder {
-  final Map<String, Skill> _skills;
-
-  SkillBuilder()
-  : _skills = <String, Skill>{};
-
   Map<String, Skill> build() {
     skill(new CombatSkill());
     skill(new StaminaSkill());
@@ -12,8 +7,6 @@ class SkillBuilder extends ContentBuilder {
     skill(new WeaponSkill('Dagger'));
     skill(new DropSkill('Hunting', 'animals'));
     skill(new DropSkill('Botany', 'plants and fungi'));
-
-    return _skills;
   }
 
   void skill(Skill skill) {

@@ -1,11 +1,5 @@
 /// Builder class for defining [Recipe]s.
 class RecipeBuilder extends ContentBuilder {
-  final Map<String, ItemType> _items;
-  final List<Recipe> _recipes;
-
-  RecipeBuilder(this._items)
-  : _recipes = <Recipe>[];
-
   List<Recipe> build() {
     recipe('Fur Cloak', [
       'Fur pelt',
@@ -31,8 +25,6 @@ class RecipeBuilder extends ContentBuilder {
       'Fur pelt',
       'Fur pelt'
     ]);
-
-    return _recipes;
   }
 
   void recipe(String result, List<String> ingredientNames) {

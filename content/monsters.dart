@@ -1,12 +1,5 @@
 /// Builder class for defining [Monster] [Breed]s.
 class MonsterBuilder extends ContentBuilder {
-  final Map<String, Breed> _breeds;
-  final Map<String, Skill> _skills;
-  final Map<String, ItemType> _items;
-
-  MonsterBuilder(this._skills, this._items)
-  : _breeds = <Breed>{};
-
   Map<String, Breed> build() {
     // $  Creeping Coins
     // a  Arachnid/Scorpion   A  Ancient being
@@ -51,8 +44,6 @@ class MonsterBuilder extends ContentBuilder {
     slugs();
     snakes();
     worms();
-
-    return _breeds;
   }
 
   arachnids() {
@@ -258,48 +249,6 @@ class MonsterBuilder extends ContentBuilder {
         speed: speed, flags: flagSet);
     _breeds[name] = breed;
     return breed;
-  }
-
-  Drop hunting(drop) {
-    return new SkillDrop(_skills['Hunting'], _parseDrop(drop));
-  }
-
-  Drop botany(drop) {
-    return new SkillDrop(_skills['Botany'], _parseDrop(drop));
-  }
-
-  Drop chanceOf(int percent, drop) {
-    return new OneOfDrop([_parseDrop(drop)], [percent]);
-  }
-
-  Drop graduated(int chance, drops) {
-    drops = drops.map(_parseDrop);
-    return new GraduatedDrop(chance, drops);
-  }
-
-  Drop _parseDrop(drop) {
-    if (drop == null) return new OneOfDrop([], []);
-    if (drop is Drop) return drop;
-    if (drop is String) return new ItemDrop(_items[drop]);
-
-    if (drop is List) {
-      final drops = [];
-      final percents = [];
-
-      for (final element in drop) {
-        if (element is OneOfDrop && element.drops.length == 1) {
-          drops.add(element.drops[0]);
-          percents.add(element.percents[0]);
-        } else {
-          // TODO(bob): Be more flexible here.
-          throw 'Right now a list in a drop can only contain chanceOf() calls.';
-        }
-      }
-
-      return new OneOfDrop(drops, percents);
-    }
-
-    throw 'Unknown drop type $drop.';
   }
 
   Move heal([int cost, int amount]) => new HealMove(cost, amount);
