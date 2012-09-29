@@ -8,7 +8,7 @@ class MonsterBuilder extends ContentBuilder {
     // d  Dragon              D  Ancient Dragon
     // e  Floating Eye        E  Elemental
     // f  Flying Insect       F  Feline (Cat)
-    // g  Golem               G  Ghost
+    // g  Ghost               G  Golem
     // h  Humanoids           H  Hybrid
     // i  Insect              I  Goblin / Imp
     // j  Jelly               J  Slime
@@ -39,6 +39,7 @@ class MonsterBuilder extends ContentBuilder {
     felines();
     humanoids();
     insects();
+    imps();
     people();
     rodents();
     slugs();
@@ -134,8 +135,32 @@ class MonsterBuilder extends ContentBuilder {
     );
   }
 
+  imps() {
+    var spear = graduated(9, [
+      'Spear', 'Angon', 'Lance', 'Partisan'
+    ]);
+
+    var dirk = graduated(8, [
+      'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard', 'Main-guache'
+    ]);
+
+    breed('goblin peon', lightBrown('I'), [
+        attack('stab[s]', 4)
+      ],
+      drop: chanceOf(10, 'Spear'),
+      maxHealth: 10, meander: 2
+    );
+
+    breed('goblin warrior', brown('I'), [
+        attack('stab[s]', 8)
+      ],
+      drop: chanceOf(10, 'Spear'),
+      maxHealth: 16, meander: 1
+    );
+  }
+
   people() {
-    var dagger = graduated(8, [
+    var knife = graduated(8, [
       'Knife', 'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard', 'Main-guache'
     ]);
 
@@ -144,7 +169,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('stab[s]', 4)
       ],
       drop: [
-        chanceOf(20, dagger),
+        chanceOf(20, knife),
         chanceOf(20, 'Cloth Shirt')
       ],
       maxHealth: 6, meander: 3,
@@ -158,7 +183,7 @@ class MonsterBuilder extends ContentBuilder {
       drop: [
          chanceOf(10, 'Scroll of Sidestepping'),
          chanceOf(7, 'Staff'),
-         chanceOf(7, dagger),
+         chanceOf(7, knife),
          chanceOf(7, 'Cloth Shirt'),
          chanceOf(5, 'Robe')
       ],

@@ -92,6 +92,34 @@ class AreaBuilder extends ContentBuilder {
         ],
         quest: 'Magical Chalice')
     ]);
+
+
+    var goblinStronghold = new DungeonBuilder(
+        numRoomTries: 600,
+        numJunctionTries: 50,
+        roomWidthMax: 9,
+        roomHeightMax: 7,
+        allowOverlapOneIn: 50,
+        extraCorridorOneIn: 30);
+    area('Goblin Stronghold', [
+      level(goblinStronghold, numMonsters: 18, numItems: 8,
+        breeds: [
+          'goblin peon',
+          'wild dog'
+        ],
+        drop: [
+          'Soothing Balm'
+        ],
+        quest: 'Magical Chalice'),
+      level(goblinStronghold, numMonsters: 20, numItems: 8,
+        breeds: [
+          'goblin warrior'
+        ],
+        drop: [
+          'Soothing Balm'
+        ],
+        quest: 'Magical Chalice')
+    ]);
   }
 
   Level level(StageBuilder builder, [

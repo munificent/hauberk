@@ -48,9 +48,11 @@ class ItemBuilder extends ContentBuilder {
   }
 
   void weapons() {
+    // Bludgeons.
     weapon('Cudgel', brown('\\'),    'hit[s]', 'Club', 4);
     weapon('Staff', lightBrown('_'), 'hit[s]', 'Club', 5);
 
+    // Knives.
     weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 4);
     weapon('Dirk', lightGray('|'), 'stab[s]', 'Dagger', 6);
     weapon('Dagger', white('|'), 'stab[s]', 'Dagger', 8);
@@ -58,6 +60,14 @@ class ItemBuilder extends ContentBuilder {
     weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 14);
     weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 20);
     weapon('Main-guache', aqua('|'), 'stab[s]', 'Dagger', 26);
+
+    // Spears.
+    weapon('Spear', gray('\\'), 'stab[s]', 'Spear', 8);
+    weapon('Angon', lightGray('\\'), 'stab[s]', 'Spear', 16);
+    weapon('Lance', white('\\'), 'stab[s]', 'Spear', 24);
+    weapon('Partisan', darkGray('\\'), 'stab[s]', 'Spear', 36);
+
+    // glaive, voulge, halberd, pole-axe, lucerne hammer,
   }
 
   void bodyArmor() {

@@ -296,7 +296,7 @@ class GameScreen extends Screen {
 
     drawStat(terminal, 1, 'Level', hero.level, Color.BLUE);
     // TODO(bob): Handle hero at max level.
-    drawStat(terminal, 2, 'Exp', hero.level, Color.AQUA,
+    drawStat(terminal, 2, 'Exp', hero.experience, Color.AQUA,
         calculateLevelCost(hero.level + 1), Color.DARK_AQUA);
     drawStat(terminal, 3, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',

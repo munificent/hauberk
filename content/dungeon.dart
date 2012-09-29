@@ -12,7 +12,7 @@ class DungeonBuilder implements StageBuilder {
   final int extraCorridorDistanceMultiplier;
 
   DungeonBuilder([
-    this.numRoomTries = 1000,
+    this.numRoomTries = 600,
     this.numJunctionTries = 30,
     this.roomWidthMin = 3,
     this.roomWidthMax = 12,
@@ -42,9 +42,6 @@ class StageGenerator {
 }
 
 class Dungeon extends StageGenerator {
-  static int NUM_ROOM_TRIES = 1000;
-  static int NUM_JUNCTION_TRIES = 30;
-
   final DungeonBuilder builder;
   final List<Room> _rooms;
   final Set<int> _usedColors;
