@@ -67,3 +67,24 @@ class HealMove extends Move {
     return new HealAction(amount);
   }
 }
+
+class InsultMove extends Move {
+  InsultMove(int cost) : super(cost);
+
+  num getScore(Monster monster) {
+    // TODO(bob): Should not always assume the hero is the target.
+    final target = monster.game.hero.pos;
+    final distance = (target - monster.pos).kingLength;
+
+    // Don't insult when in melee distance.
+    if (distance <= 1) return 0;
+
+    // Don't insult someone it can't see.
+    if (!monster.canView(target)) return 0;
+
+    // Randomly insult.
+    return rng.range(80);
+  }
+
+  Action onGetAction(Monster monster) => new InsultAction(monster.game.hero);
+}

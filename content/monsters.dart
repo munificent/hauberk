@@ -144,18 +144,28 @@ class MonsterBuilder extends ContentBuilder {
       'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard', 'Main-guache'
     ]);
 
+    breed('scurrilous imp', lightRed('I'), [
+        attack('scratch[es]', 4),
+        insult()
+      ],
+      maxHealth: 10, meander: 4, speed: 1,
+      flags: 'few'
+    );
+
     breed('goblin peon', lightBrown('I'), [
         attack('stab[s]', 4)
       ],
       drop: chanceOf(10, 'Spear'),
-      maxHealth: 10, meander: 2
+      maxHealth: 10, meander: 2,
+      flags: 'open-doors'
     );
 
     breed('goblin warrior', brown('I'), [
         attack('stab[s]', 8)
       ],
       drop: chanceOf(10, 'Spear'),
-      maxHealth: 16, meander: 1
+      maxHealth: 16, meander: 1,
+      flags: 'open-doors'
     );
   }
 
@@ -281,4 +291,6 @@ class MonsterBuilder extends ContentBuilder {
   Move sparkBolt([int cost, int damage]) =>
       new BoltMove(cost, new Attack('zaps', damage, Element.LIGHTNING,
           new Noun('the spark')));
+
+  Move insult([int cost = 20]) => new InsultMove(cost);
 }

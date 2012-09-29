@@ -291,7 +291,7 @@ class Breed {
     // Meandering monsters are worth less.
     exp *= (Option.EXP_MEANDER - meander) / Option.EXP_MEANDER;
 
-    // TODO(bob): Take into account meander, moves and olfaction.
+    // TODO(bob): Take into account moves and olfaction.
     return exp.toInt();
   }
 

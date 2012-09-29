@@ -104,6 +104,7 @@ class AreaBuilder extends ContentBuilder {
     area('Goblin Stronghold', [
       level(goblinStronghold, numMonsters: 18, numItems: 8,
         breeds: [
+          'scurrilous imp',
           'goblin peon',
           'wild dog'
         ],
