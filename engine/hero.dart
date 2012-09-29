@@ -186,6 +186,13 @@ int calculateLevel(int experienceCents) {
   return Option.HERO_LEVEL_MAX;
 }
 
+/// Returns how much experience is needed to reach [level] or `null` if [level]
+/// is greater than the maximum level.
+int calculateLevelCost(int level) {
+  if (level > Option.HERO_LEVEL_MAX) return null;
+ return (level - 1) * (level - 1) * Option.HERO_LEVEL_COST;
+}
+
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
 /// user input. Otherwise, the behavior will determine which [Action]s he
 /// performs.

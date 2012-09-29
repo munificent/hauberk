@@ -291,22 +291,20 @@ class GameScreen extends Screen {
       y++;
     }
 
-    terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
-    drawMeter(terminal, 'Health', 3, Color.RED,
-      hero.health.current, hero.health.max);
+    drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
+        hero.health.max, Color.DARK_RED);
 
-    terminal.writeAt(81, 6, 'Level', Color.GRAY);
-    terminal.writeAt(88, 6, hero.level.toString(), Color.BLUE);
-    terminal.writeAt(81, 7, 'Exp', Color.GRAY);
-    terminal.writeAt(88, 7, hero.experience.toString(), Color.AQUA);
-
-    terminal.writeAt(81, 8, 'Armor', Color.GRAY);
-    terminal.writeAt(88, 8,
+    drawStat(terminal, 1, 'Level', hero.level, Color.BLUE);
+    // TODO(bob): Handle hero at max level.
+    drawStat(terminal, 2, 'Exp', hero.level, Color.AQUA,
+        calculateLevelCost(hero.level + 1), Color.DARK_AQUA);
+    drawStat(terminal, 3, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
+    drawStat(terminal, 4, 'Weapon', hero.getAttack(null).damage, Color.YELLOW);
 
-    terminal.writeAt(81, 9, 'Weapon', Color.GRAY);
-    terminal.writeAt(88, 9, '${hero.getAttack(null).damage} ', Color.YELLOW);
+    terminal.writeAt(81, 18, '@ hero', Color.WHITE);
+    drawHealthBar(terminal, 19, hero);
 
     // Draw the nearby monsters.
     visibleMonsters.sort((a, b) {
@@ -324,29 +322,33 @@ class GameScreen extends Screen {
         terminal.drawGlyph(81, y, monster.appearance);
         terminal.writeAt(83, y, monster.breed.name);
 
-        var barWidth = 8 * monster.health.current ~/ monster.health.max;
-
-        // Don't round down to an entirely empty bar.
-        if (barWidth == 0) barWidth = 1;
-
-        for (var x = 0; x < 8; x++) {
-          var full = x < barWidth;
-          terminal.writeAt(92 + x, y + 1, full ? '|' : '•',
-              full ? Color.RED : Color.DARK_RED);
-        }
+        drawHealthBar(terminal, y + 1, monster);
       }
     }
   }
 
-  void drawMeter(Terminal terminal, String label, int y, Color color,
-      int current, int max, [bool showNumber = true]) {
+  void drawStat(Terminal terminal, int y, String label, value,
+      Color valueColor, [max, Color maxColor]) {
     terminal.writeAt(81, y, label, Color.GRAY);
-    terminal.writeAt(87, y, padLeft(current.toString(), 3), color);
+    var valueString = value.toString();
+    terminal.writeAt(88, y, valueString, valueColor);
 
-    final barString = padRight(showNumber ? current.toString() : '', 12);
-    final barWidth = 12 * current ~/ max;
-    terminal.writeAt(88, y, barString.substring(0, barWidth), Color.BLACK, color);
-    terminal.writeAt(88 + barWidth, y, barString.substring(barWidth), color);
+    if (max != null) {
+      terminal.writeAt(88 + valueString.length, y, ' / $max', maxColor);
+    }
+  }
+
+  void drawHealthBar(Terminal terminal, int y, Actor actor) {
+    var barWidth = 8 * actor.health.current ~/ actor.health.max;
+
+    // Don't round down to an entirely empty bar.
+    if (barWidth == 0) barWidth = 1;
+
+    for (var x = 0; x < 8; x++) {
+      var full = x < barWidth;
+      terminal.writeAt(92 + x, y, full ? '|' : '•',
+          full ? Color.RED : Color.DARK_RED);
+    }
   }
 
   /// Visually debug the scent data.
