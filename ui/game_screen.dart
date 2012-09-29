@@ -248,12 +248,16 @@ class GameScreen extends Screen {
       terminal.drawGlyph(item.x, item.y, item.appearance);
     }
 
+    var visibleMonsters = [];
+
     // Draw the actors.
     for (final actor in game.stage.actors) {
       if (!game.stage[actor.pos].visible) continue;
       final appearance = actor.appearance;
       final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
       terminal.drawGlyph(actor.x, actor.y, glyph);
+
+      if (actor is Monster) visibleMonsters.add(actor);
     }
 
     // Draw the effects.
@@ -262,14 +266,15 @@ class GameScreen extends Screen {
     }
 
     // Draw the log.
+    var hero = game.hero;
 
     // If the log is overlapping the hero, flip it to the other side. Use 0.4
     // and 0.6 here to avoid flipping too much if the hero is wandering around
     // near the middle.
     if (logOnTop) {
-      if (game.hero.y < terminal.height * 0.4) logOnTop = false;
+      if (hero.y < terminal.height * 0.4) logOnTop = false;
     } else {
-      if (game.hero.y > terminal.height * 0.6) logOnTop = true;
+      if (hero.y > terminal.height * 0.6) logOnTop = true;
     }
 
     // Force the log to the bottom if a popup is open so it's still visible.
@@ -288,22 +293,49 @@ class GameScreen extends Screen {
 
     terminal.writeAt(81, 1, 'Phineas the Bold', Color.WHITE);
     drawMeter(terminal, 'Health', 3, Color.RED,
-      game.hero.health.current, game.hero.health.max);
+      hero.health.current, hero.health.max);
 
     terminal.writeAt(81, 6, 'Level', Color.GRAY);
-    terminal.writeAt(88, 6, game.hero.level.toString(), Color.BLUE);
+    terminal.writeAt(88, 6, hero.level.toString(), Color.BLUE);
     terminal.writeAt(81, 7, 'Exp', Color.GRAY);
-    terminal.writeAt(88, 7, game.hero.experience.toString(), Color.AQUA);
+    terminal.writeAt(88, 7, hero.experience.toString(), Color.AQUA);
 
     terminal.writeAt(81, 8, 'Armor', Color.GRAY);
     terminal.writeAt(88, 8,
-        '${(100 - getArmorMultiplier(game.hero.armor) * 100).toInt()}% ',
+        '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
 
     terminal.writeAt(81, 9, 'Weapon', Color.GRAY);
-    terminal.writeAt(88, 9,
-        '${game.hero.getAttack(null).damage} ',
-        Color.YELLOW);
+    terminal.writeAt(88, 9, '${hero.getAttack(null).damage} ', Color.YELLOW);
+
+    // Draw the nearby monsters.
+    visibleMonsters.sort((a, b) {
+      var aDistance = (a.pos - game.hero.pos).lengthSquared;
+      var bDistance = (b.pos - game.hero.pos).lengthSquared;
+      return aDistance.compareTo(bDistance);
+    });
+
+    for (var i = 0; i < 10; i++) {
+      var y = 20 + i * 2;
+      terminal.writeAt(81, y, '                    ');
+      terminal.writeAt(81, y + 1, '                    ');
+      if (i < visibleMonsters.length) {
+        var monster = visibleMonsters[i];
+        terminal.drawGlyph(81, y, monster.appearance);
+        terminal.writeAt(83, y, monster.breed.name);
+
+        var barWidth = 8 * monster.health.current ~/ monster.health.max;
+
+        // Don't round down to an entirely empty bar.
+        if (barWidth == 0) barWidth = 1;
+
+        for (var x = 0; x < 8; x++) {
+          var full = x < barWidth;
+          terminal.writeAt(92 + x, y + 1, full ? '|' : '•',
+              full ? Color.RED : Color.DARK_RED);
+        }
+      }
+    }
   }
 
   void drawMeter(Terminal terminal, String label, int y, Color color,
