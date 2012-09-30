@@ -148,7 +148,7 @@ class MonsterBuilder extends ContentBuilder {
         attack('scratch[es]', 4),
         insult()
       ],
-      maxHealth: 10, meander: 4, speed: 1,
+      maxHealth: 10, meander: 4, speed: 2,
       flags: 'few'
     );
 

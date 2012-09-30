@@ -30,6 +30,16 @@ class InventoryDialog extends Screen {
       case KeyCode.N: selectItem(13); break;
       case KeyCode.O: selectItem(14); break;
       case KeyCode.P: selectItem(15); break;
+      case KeyCode.Q: selectItem(16); break;
+      case KeyCode.R: selectItem(17); break;
+      case KeyCode.S: selectItem(18); break;
+      case KeyCode.T: selectItem(19); break;
+      case KeyCode.U: selectItem(20); break;
+      case KeyCode.V: selectItem(21); break;
+      case KeyCode.W: selectItem(22); break;
+      case KeyCode.X: selectItem(23); break;
+      case KeyCode.Y: selectItem(24); break;
+      case KeyCode.Z: selectItem(25); break;
 
       case KeyCode.TAB:
         view = view.next(mode.showGroundItems);
@@ -45,7 +55,7 @@ class InventoryDialog extends Screen {
 
     terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
     terminal.writeAt(0, terminal.height - 1,
-        '[A-P] Select item, [Tab] Switch view',
+        '[A-Z] Select item, [Tab] Switch view',
         Color.GRAY);
 
     drawItems(terminal, 0, 1, view.getItems(game),

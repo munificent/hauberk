@@ -5,6 +5,8 @@ class SkillBuilder extends ContentBuilder {
     skill(new StaminaSkill());
     skill(new WeaponSkill('Club'));
     skill(new WeaponSkill('Dagger'));
+    skill(new WeaponSkill('Spear'));
+    skill(new WeaponSkill('Sword'));
     skill(new DropSkill('Hunting', 'animals'));
     skill(new DropSkill('Botany', 'plants and fungi'));
   }

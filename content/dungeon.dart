@@ -1,6 +1,7 @@
 class DungeonBuilder implements StageBuilder {
   final int numRoomTries;
   final int numJunctionTries;
+  final int numRoundingTries;
   final int roomWidthMin;
   final int roomWidthMax;
   final int roomHeightMin;
@@ -12,13 +13,14 @@ class DungeonBuilder implements StageBuilder {
   final int extraCorridorDistanceMultiplier;
 
   DungeonBuilder([
-    this.numRoomTries = 600,
+    this.numRoomTries = 300,
     this.numJunctionTries = 30,
+    this.numRoundingTries = 0,
     this.roomWidthMin = 3,
     this.roomWidthMax = 12,
     this.roomHeightMin = 3,
     this.roomHeightMax = 8,
-    this.allowOverlapOneIn = 50,
+    this.allowOverlapOneIn = 0,
     this.extraCorridorDistanceMax = 10,
     this.extraCorridorOneIn = 20,
     this.extraCorridorDistanceMultiplier = 4
@@ -111,6 +113,58 @@ class Dungeon extends StageGenerator {
     // rooms, they don't mess up the decorations.
     decorateRooms();
 
+    // Round off sharp corners to make it look more organic.
+    final bounds = stage.bounds.inflate(-1);
+    for (var i = 0; i < builder.numRoundingTries; i++) {
+      final pos = rng.vecInRect(bounds);
+
+      final here = getTile(pos);
+      if (here != Tiles.floor && here != Tiles.wall) continue;
+
+      bool canChange = true;
+
+      // Keep track of how many walls we're adjacent too. We will only fill in
+      // if we are directly next to a wall.
+      var walls = 0;
+
+      // As we go around the tile's neighbors, keep track of how many times we
+      // switch from wall to floor. We can fill in a tile only if it is next to
+      // a single unbroken expanse of walls. If it is next to two
+      // non-contiguous wall sections, then filling it in may break the
+      // reachability of the dungeon.
+      var inWall;
+      var transitions = 0;
+
+      for (var dir in Direction.ALL) {
+        var tile = getTile(pos + dir);
+        if (tile == Tiles.floor) {
+          if (inWall == true) transitions++;
+          inWall = false;
+        } else if (tile == Tiles.wall) {
+          walls++;
+          if (inWall == false) transitions++;
+          inWall = true;
+        } else {
+          // Don't modify next to "special" features.
+          canChange = false;
+          break;
+        }
+
+        if (transitions > 2) {
+          canChange = false;
+          break;
+        }
+      }
+
+      if (!canChange) continue;
+
+      if (here == Tiles.floor) {
+        if (walls > 3) setTile(pos, Tiles.wall);
+      } else {
+        if (walls < 6) setTile(pos, Tiles.floor);
+      }
+    }
+
     // We do this last so that we only add doors where they actually make sense
     // and don't have to worry about overlapping corridors and other stuff
     // leading to nonsensical doors.
@@ -121,7 +175,8 @@ class Dungeon extends StageGenerator {
     for (final other in _rooms) {
       if (room.distanceTo(other.bounds) <= 0) {
         // Allow some rooms to overlap.
-        if (allowOverlap && rng.oneIn(builder.allowOverlapOneIn)) continue;
+        if (allowOverlap && builder.allowOverlapOneIn > 0 &&
+            rng.oneIn(builder.allowOverlapOneIn)) continue;
         return true;
       }
     }
@@ -217,8 +272,6 @@ class Dungeon extends StageGenerator {
   }
 
   void decorateRooms() {
-    // TODO(bob): Inner loop shouldn't go through all rooms. Redundantly
-    // considers each pair twice.
     for (var i = 0; i < _rooms.length; i++) {
       final room = _rooms[i];
 
