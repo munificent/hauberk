@@ -152,6 +152,14 @@ class MonsterBuilder extends ContentBuilder {
       flags: 'few'
     );
 
+    breed('impish incanter', lightPurple('I'), [
+        attack('scratch[es]', 3),
+        insult(),
+        fireBolt(cost: 12, damage: 8)
+      ],
+      maxHealth: 10, meander: 4, speed: 1
+    );
+
     breed('goblin peon', lightBrown('I'), [
         attack('stab[s]', 4)
       ],
@@ -291,6 +299,10 @@ class MonsterBuilder extends ContentBuilder {
   Move sparkBolt([int cost, int damage]) =>
       new BoltMove(cost, new Attack('zaps', damage, Element.LIGHTNING,
           new Noun('the spark')));
+
+  Move fireBolt([int cost, int damage]) =>
+      new BoltMove(cost, new Attack('burns', damage, Element.FIRE,
+          new Noun('the flame')));
 
   Move insult([int cost = 20]) => new InsultMove(cost);
 }
