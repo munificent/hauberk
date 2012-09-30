@@ -97,7 +97,7 @@ class AreaBuilder extends ContentBuilder {
     var goblinStronghold = new DungeonBuilder(
         numRoomTries: 200,
         numJunctionTries: 50,
-        numRoundingTries: 400,
+        numRoundingTries: 800,
         roomWidthMax: 12,
         roomHeightMax: 9,
         allowOverlapOneIn: 30,
