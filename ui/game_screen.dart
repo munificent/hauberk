@@ -184,7 +184,8 @@ class GameScreen extends Screen {
       // TODO(bob): Handle other event types.
       switch (event.type) {
         case EventType.BOLT:
-          effects.add(new FrameEffect(event.value, '*'));
+          effects.add(new FrameEffect(event.value, '*',
+              getColorForElement(event.element)));
           break;
 
         case EventType.HIT:
@@ -386,6 +387,23 @@ class GameScreen extends Screen {
     }
   }
 
+  Color getColorForElement(Element element) {
+    switch (element) {
+      case Element.NONE: return Color.LIGHT_BROWN;
+      case Element.AIR: return Color.LIGHT_AQUA;
+      case Element.EARTH: return Color.BROWN;
+      case Element.FIRE: return Color.RED;
+      case Element.WATER: return Color.BLUE;
+      case Element.ACID: return Color.GREEN;
+      case Element.COLD: return Color.LIGHT_BLUE;
+      case Element.LIGHTNING: return Color.YELLOW;
+      case Element.POISON: return Color.DARK_GREEN;
+      case Element.DARK: return Color.DARK_GRAY;
+      case Element.LIGHT: return Color.LIGHT_YELLOW;
+      case Element.SPIRIT: return Color.PURPLE;
+    }
+  }
+
   /// Visually debug the scent data.
   Glyph debugScent(int x, int y, Tile tile, Glyph glyph) {
     if (!tile.isPassable) return glyph;
@@ -445,16 +463,17 @@ interface Effect {
 class FrameEffect implements Effect {
   final Vec pos;
   final String char;
+  final Color color;
   int life = 4;
 
-  FrameEffect(this.pos, this.char);
+  FrameEffect(this.pos, this.char, this.color);
 
   bool update(Game game) {
     return --life >= 0;
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(pos.x, pos.y, char, Color.GREEN);
+    terminal.writeAt(pos.x, pos.y, char, color);
   }
 }
 

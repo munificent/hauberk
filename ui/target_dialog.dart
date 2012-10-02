@@ -75,7 +75,7 @@ class TargetDialog extends Screen {
         if (game.stage.actorAt(pos) != null) break;
         if (!game.stage[pos].isTransparent) break;
 
-        terminal.writeAt(pos.x, pos.y, '*',
+        terminal.writeAt(pos.x, pos.y, '•',
             (i == 0) ? Color.YELLOW : Color.DARK_YELLOW);
         i = (i + NUM_FRAMES - 1) % NUM_FRAMES;
       }

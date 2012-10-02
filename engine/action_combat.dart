@@ -28,7 +28,7 @@ class BoltAction extends Action {
     // Stop if we hit a wall.
     if (!game.stage[pos].isTransparent) return succeed();
 
-    addEvent(new Event.bolt(pos));
+    addEvent(new Event.bolt(pos, attack.element));
 
     // See if there is an actor there.
     final target = game.stage.actorAt(pos);

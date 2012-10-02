@@ -189,23 +189,27 @@ class GameResult {
 class Event {
   final EventType type;
   final Actor actor;
+  final Element element;
   final value;
 
-  Event(this.type, this.actor, this.value);
+  Event(this.type, this.actor, this.element, this.value);
 
-  Event.bolt(Vec this.value)
-  : type = EventType.BOLT,
-    actor = null;
+  Event.bolt(Vec this.value, this.element)
+    : type = EventType.BOLT,
+      actor = null;
 
   Event.hit(this.actor, this.value)
-  : type = EventType.HIT;
+    : type = EventType.HIT,
+      element = Element.NONE;
 
   Event.kill(this.actor)
-  : type = EventType.KILL,
-    value = 0;
+    : type = EventType.KILL,
+      element = Element.NONE,
+      value = 0;
 
   Event.heal(this.actor, this.value)
-  : type = EventType.HEAL;
+    : type = EventType.HEAL,
+      element = Element.NONE;
 }
 
 /// A kind of [Event] that has occurred.
