@@ -18,4 +18,5 @@
 #source('ui/screen.dart');
 #source('ui/select_level_screen.dart');
 #source('ui/skills_screen.dart');
+#source('ui/target_dialog.dart');
 #source('ui/terminal.dart');

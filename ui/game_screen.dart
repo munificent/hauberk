@@ -5,6 +5,13 @@ class GameScreen extends Screen {
   List<Effect>   effects;
   bool           logOnTop = false;
 
+  /// The currently targeted actor, if any.
+  // TODO(bob): Need to handle target moving out of visibility. Should not
+  // forget target: if the monster becomes visible again, it should remain
+  // targeted. But if the user opens the target dialog or does "target last"
+  // while the target is invisible, it should treat it as not being targeted.
+  Actor target;
+
   GameScreen(this.save, this.game)
   : effects = <Effect>[];
 
@@ -116,6 +123,10 @@ class GameScreen extends Screen {
       case KeyCode.SLASH:
         action = new WalkAction(Direction.SE);
         break;
+
+      case KeyCode.F:
+        ui.push(new TargetDialog(this, game));
+        break;
       }
     }
 
@@ -150,6 +161,10 @@ class GameScreen extends Screen {
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
+    } else if (popped is TargetDialog && result) {
+      // TODO(bob): Temp. Should look at equipped bow.
+      game.hero.setNextAction(new BoltAction(game.hero.pos, target.pos,
+          new Attack('hit[s]', 4, Element.NONE)));
     }
   }
 
@@ -254,7 +269,12 @@ class GameScreen extends Screen {
     for (final actor in game.stage.actors) {
       if (!game.stage[actor.pos].visible) continue;
       final appearance = actor.appearance;
-      final glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
+      var glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
+
+      if (target == actor) {
+        glyph = new Glyph(glyph.char, glyph.back, glyph.fore);
+      }
+
       terminal.drawGlyph(actor.x, actor.y, glyph);
 
       if (actor is Monster) visibleMonsters.add(actor);
@@ -317,10 +337,18 @@ class GameScreen extends Screen {
       var y = 20 + i * 2;
       terminal.writeAt(81, y, '                    ');
       terminal.writeAt(81, y + 1, '                    ');
+
       if (i < visibleMonsters.length) {
         var monster = visibleMonsters[i];
-        terminal.drawGlyph(81, y, monster.appearance);
-        terminal.writeAt(83, y, monster.breed.name);
+
+        var glyph = monster.appearance;
+        if (target == monster) {
+          glyph = new Glyph(glyph.char, glyph.back, glyph.fore);
+        }
+
+        terminal.drawGlyph(81, y, glyph);
+        terminal.writeAt(83, y, monster.breed.name,
+            (target == monster) ? Color.YELLOW : Color.WHITE);
 
         drawHealthBar(terminal, y + 1, monster);
       }
@@ -348,6 +376,13 @@ class GameScreen extends Screen {
       var full = x < barWidth;
       terminal.writeAt(92 + x, y, full ? '|' : '•',
           full ? Color.RED : Color.DARK_RED);
+    }
+  }
+
+  void targetActor(Actor actor) {
+    if (actor != target) {
+      target = actor;
+      dirty();
     }
   }
 

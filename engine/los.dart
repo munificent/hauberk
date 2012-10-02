@@ -48,7 +48,9 @@ class LosIterator implements Iterator<Vec> {
     error = 0;
   }
 
-  bool hasNext() => pos != end;
+  /// Always returns `true` to allow a line to overshoot the end point. Make
+  /// sure you terminate iteration yourself.
+  bool hasNext() => true;
 
   Vec next() {
     // Move it first, gets it off the entity in the first step.

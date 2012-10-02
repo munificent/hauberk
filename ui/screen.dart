@@ -15,7 +15,13 @@ class Screen {
 
   bool get isTopScreen() => _ui.isTopScreen(this);
 
-  void dirty() { _ui.dirty(); }
+  void dirty() {
+    // If we aren't bound (yet), just do nothing. The screen will be dirtied
+    // when it gets bound.
+    if (_ui == null) return;
+
+    _ui.dirty();
+  }
 
   abstract bool handleInput(Keyboard keyboard);
 
