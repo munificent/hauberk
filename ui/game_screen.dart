@@ -18,7 +18,7 @@ class GameScreen extends Screen {
   bool handleInput(Keyboard keyboard) {
     var action;
 
-    if (keyboard.shift) {
+    if (keyboard.shift && !keyboard.control && !keyboard.option) {
       switch (keyboard.lastPressed) {
       case KeyCode.F:
         ui.push(new ForfeitDialog(game));
@@ -60,7 +60,7 @@ class GameScreen extends Screen {
         game.hero.run(Direction.SE);
         break;
       }
-    } else {
+    } else if (!keyboard.control && !keyboard.option) {
       switch (keyboard.lastPressed) {
       case KeyCode.Q:
         if (game.isQuestComplete) {
@@ -128,6 +128,51 @@ class GameScreen extends Screen {
         ui.push(new TargetDialog(this, game));
         break;
       }
+    } else if (!keyboard.shift && keyboard.option && !keyboard.control) {
+      switch (keyboard.lastPressed) {
+      case KeyCode.I:
+        fireAt(game.hero.pos + Direction.NW);
+        break;
+
+      case KeyCode.O:
+        fireAt(game.hero.pos + Direction.N);
+        break;
+
+      case KeyCode.P:
+        fireAt(game.hero.pos + Direction.NE);
+        break;
+
+      case KeyCode.K:
+        fireAt(game.hero.pos + Direction.W);
+        break;
+
+      case KeyCode.L:
+        // If we still have a visible target, use it.
+        if (target != null && target.isAlive &&
+            game.stage[target.pos].visible) {
+          fireAt(target.pos);
+        } else {
+          // No current target, so ask for one.
+          ui.push(new TargetDialog(this, game));
+        }
+        break;
+
+      case KeyCode.SEMICOLON:
+        fireAt(game.hero.pos + Direction.E);
+        break;
+
+      case KeyCode.COMMA:
+        fireAt(game.hero.pos + Direction.SW);
+        break;
+
+      case KeyCode.PERIOD:
+        fireAt(game.hero.pos + Direction.S);
+        break;
+
+      case KeyCode.SLASH:
+        fireAt(game.hero.pos + Direction.SE);
+        break;
+      }
     }
 
     if (action != null) {
@@ -157,14 +202,36 @@ class GameScreen extends Screen {
     }
   }
 
+  void fireAt(Vec pos) {
+    // If we aren't firing at the current target, see if there is a monster
+    // in that direction that we can target. (In other words, if you fire in
+    // a raw direction, target the monster in that direction for subsequent
+    // shots).
+    if (target == null || target.pos != pos) {
+      for (var step in new Los(game.hero.pos, pos)) {
+        // Stop if we hit a wall.
+        if (!game.stage[step].isTransparent) break;
+
+        // See if there is an actor there.
+        final actor = game.stage.actorAt(step);
+        if (actor != null) {
+          target = actor;
+          break;
+        }
+      }
+    }
+
+    // TODO(bob): Temp. Should look at equipped bow.
+    game.hero.setNextAction(new BoltAction(game.hero.pos, pos,
+        new Attack('hit[s]', 4, Element.NONE)));
+  }
+
   void activate(Screen popped, result) {
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
     } else if (popped is TargetDialog && result) {
-      // TODO(bob): Temp. Should look at equipped bow.
-      game.hero.setNextAction(new BoltAction(game.hero.pos, target.pos,
-          new Attack('hit[s]', 4, Element.NONE)));
+      fireAt(target.pos);
     }
   }
 

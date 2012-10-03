@@ -3,6 +3,9 @@
 /// keys are currently pressed and which are not.
 class Keyboard {
   bool _shift;
+  bool _control;
+  bool _option;
+
   int _lastPressed;
 
   Keyboard(html.Element element) {
@@ -13,12 +16,22 @@ class Keyboard {
   /// Gets whether or not the shift modifier key is currently pressed.
   bool get shift() => _shift;
 
+  /// Gets whether or not the control modifier key is currently pressed.
+  bool get control() => _control;
+
+  /// Gets whether or not the option modifier key is currently pressed.
+  bool get option() => _option;
+
   int get lastPressed() => _lastPressed;
 
   void keyDown(event) {
     if (event.keyCode == KeyCode.SHIFT) {
       _shift = true;
-    } else {
+    } else if (event.keyCode == KeyCode.CONTROL) {
+      _control = true;
+    } else if (event.keyCode == KeyCode.OPTION) {
+      _option = true;
+    } {
       _lastPressed = event.keyCode;
     }
 
@@ -31,6 +44,10 @@ class Keyboard {
   void keyUp(event) {
     if (event.keyCode == KeyCode.SHIFT) {
       _shift = false;
+    } else if (event.keyCode == KeyCode.CONTROL) {
+      _control = false;
+    } else if (event.keyCode == KeyCode.OPTION) {
+      _option = false;
     }
   }
 
@@ -42,6 +59,8 @@ class Keyboard {
 /// Raw key codes. These code straight from the DOM events.
 class KeyCode {
   static const SHIFT      = 16;
+  static const CONTROL    = 17;
+  static const OPTION     = 18;
   static const TAB        = 9;
   static const ESCAPE     = 27;
   static const SPACE      = 32;

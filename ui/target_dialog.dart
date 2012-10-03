@@ -13,7 +13,6 @@ class TargetDialog extends Screen {
   // TODO(bob): Don't store here, just get from game.
   Vec target;
 
-  // TODO(bob): Pass in previous current target.
   TargetDialog(this.gameScreen, this.game) {
     // Default to targeting the nearest monster.
     var nearestDistance = 99999;

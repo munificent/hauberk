@@ -48,7 +48,9 @@ class Actor extends Thing {
     health = new Stat(health),
     energy = new Energy(Energy.NORMAL_SPEED);
 
-  bool get needsInput() => false;
+  bool get isAlive => health.current > 0;
+
+  bool get needsInput => false;
 
   Action getAction() {
     final action = onGetAction();
