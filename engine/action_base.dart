@@ -1,4 +1,4 @@
-class Action {
+abstract class Action {
   Actor _actor;
   Game _game;
   GameResult _gameResult;
@@ -25,7 +25,7 @@ class Action {
     return onPerform();
   }
 
-  abstract ActionResult onPerform();
+  ActionResult onPerform();
 
   void addEvent(Event event) {
     _gameResult.events.add(event);

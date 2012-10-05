@@ -1,6 +1,7 @@
 /// Builder class for defining [Skill]s.
 class SkillBuilder extends ContentBuilder {
   Map<String, Skill> build() {
+    skill(new ArcherySkill());
     skill(new CombatSkill());
     skill(new StaminaSkill());
     skill(new WeaponSkill('Club'));
@@ -13,6 +14,20 @@ class SkillBuilder extends ContentBuilder {
 
   void skill(Skill skill) {
     _skills[skill.name] = skill;
+  }
+}
+
+class ArcherySkill extends Skill {
+  String get name => 'Archery';
+  String getHelpText(int level) => 'Allows using missile weapons.';
+
+  bool get canUse => true;
+  bool get needsTarget => true;
+
+  Action getUseAction(int level, Game game, Vec target) {
+    // TODO(bob): Use equipped bow to determine attack.
+    return new BoltAction(game.hero.pos, target,
+        new Attack('hit[s]', 4, Element.NONE));
   }
 }
 

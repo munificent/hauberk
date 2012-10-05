@@ -12,6 +12,9 @@ class GameScreen extends Screen {
   // while the target is invisible, it should treat it as not being targeted.
   Actor target;
 
+  /// The most recently used skill.
+  Skill lastSkill;
+
   GameScreen(this.save, this.game)
   : effects = <Effect>[];
 
@@ -124,8 +127,8 @@ class GameScreen extends Screen {
         action = new WalkAction(Direction.SE);
         break;
 
-      case KeyCode.F:
-        ui.push(new TargetDialog(this, game));
+      case KeyCode.S:
+        ui.push(new SelectSkillDialog(game));
         break;
       }
     } else if (!keyboard.shift && keyboard.option && !keyboard.control) {
@@ -147,13 +150,20 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.L:
-        // If we still have a visible target, use it.
-        if (target != null && target.isAlive &&
-            game.stage[target.pos].visible) {
-          fireAt(target.pos);
+        if (lastSkill == null) {
+          // Haven't picked a skill yet, so select one.
+          ui.push(new SelectSkillDialog(game));
+        } else if (lastSkill.needsTarget) {
+          // If we still have a visible target, use it.
+          if (target != null && target.isAlive &&
+              game.stage[target.pos].visible) {
+            fireAt(target.pos);
+          } else {
+            // No current target, so ask for one.
+            ui.push(new TargetDialog(this, game));
+          }
         } else {
-          // No current target, so ask for one.
-          ui.push(new TargetDialog(this, game));
+          useLastSkill(null);
         }
         break;
 
@@ -203,6 +213,8 @@ class GameScreen extends Screen {
   }
 
   void fireAt(Vec pos) {
+    if (lastSkill == null || !lastSkill.needsTarget) return;
+
     // If we aren't firing at the current target, see if there is a monster
     // in that direction that we can target. (In other words, if you fire in
     // a raw direction, target the monster in that direction for subsequent
@@ -221,15 +233,26 @@ class GameScreen extends Screen {
       }
     }
 
-    // TODO(bob): Temp. Should look at equipped bow.
-    game.hero.setNextAction(new BoltAction(game.hero.pos, pos,
-        new Attack('hit[s]', 4, Element.NONE)));
+    useLastSkill(target.pos);
+  }
+
+  void useLastSkill(Vec target) {
+    game.hero.setNextAction(
+        lastSkill.getUseAction(game.hero.skills[lastSkill], game, target));
   }
 
   void activate(Screen popped, result) {
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
+    } else if (popped is SelectSkillDialog && result is Skill) {
+      lastSkill = result;
+
+      if (result.needsTarget) {
+        ui.push(new TargetDialog(this, game));
+      } else {
+        useLastSkill(null);
+      }
     } else if (popped is TargetDialog && result) {
       fireAt(target.pos);
     }

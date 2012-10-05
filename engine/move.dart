@@ -1,7 +1,7 @@
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,
 /// and missiles.
-class Move {
+abstract class Move {
   /// Each move has a cost. Monsters have a limited amount of effort that they
   /// can spend on moves, which regenerates over time. This prevents monsters
   /// from using very powerful moves every single turn.
@@ -11,7 +11,7 @@ class Move {
 
   /// Gets the AI score for performing this move. The higher the score, the more
   /// likely the monster is to select this move over other options.
-  abstract num getScore(Monster monster);
+  num getScore(Monster monster);
 
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.

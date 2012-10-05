@@ -105,18 +105,18 @@ class HomeView {
 }
 
 /// What the user is currently doing on the home screen.
-class HomeMode {
+abstract class HomeMode {
   static final VIEW = const ViewHomeMode();
   static final DROP = const DropHomeMode();
   static final GET = const GetHomeMode();
 
   const HomeMode();
 
-  abstract String get message;
-  abstract String get helpText;
+  String get message;
+  String get helpText;
   bool canSelectLeftItem(HomeScreen home, Item item) => false;
   bool canSelectRightItem(HomeScreen home, Item item) => false;
-  abstract bool handleInput(Keyboard keyboard, HomeScreen home);
+  bool handleInput(Keyboard keyboard, HomeScreen home);
 }
 
 /// The default mode. Lets users switch which item lists are being shown on the

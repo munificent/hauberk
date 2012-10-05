@@ -23,7 +23,7 @@ class Screen {
     _ui.dirty();
   }
 
-  abstract bool handleInput(Keyboard keyboard);
+  bool handleInput(Keyboard keyboard) => false;
 
   /// Called when the screen above this one ([popped]) has been popped and this
   /// screen is now the top-most screen. If a value was passed to [pop()], it
@@ -31,7 +31,7 @@ class Screen {
   void activate(Screen popped, result) {}
 
   void update() {}
-  abstract void render(Terminal terminal);
+  void render(Terminal terminal) {}
 }
 
 class UserInterface {

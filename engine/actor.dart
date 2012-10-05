@@ -1,21 +1,21 @@
-class Thing implements Noun {
+abstract class Thing implements Noun {
   Vec _pos;
 
   Thing(this._pos);
 
-  Vec get pos() => _pos;
+  Vec get pos => _pos;
   void set pos(Vec value) {
     if (value != _pos) {
       _pos = changePosition(value);
     }
   }
 
-  int get x() => pos.x;
+  int get x => pos.x;
   void set x(int value) {
     pos = new Vec(value, y);
   }
 
-  int get y() => pos.y;
+  int get y => pos.y;
   void set y(int value) {
     pos = new Vec(x, value);
   }
@@ -24,16 +24,16 @@ class Thing implements Noun {
   /// to do stuff when the position changes. Returns the new position.
   Vec changePosition(Vec pos) => pos;
 
-  abstract get appearance();
-  abstract String get nounText();
-  abstract int get person();
-  abstract Gender get gender();
+  get appearance;
+  String get nounText;
+  int get person;
+  Gender get gender;
 
   String toString() => nounText;
 }
 
 /// An active entity in the game. Includes monsters and the hero.
-class Actor extends Thing {
+abstract class Actor extends Thing {
   final Game game;
   final Stat health;
   Energy energy;
@@ -58,15 +58,15 @@ class Actor extends Thing {
     return action;
   }
 
-  abstract Action onGetAction();
+  Action onGetAction();
 
   /// Get an [Attack] for this [Actor] to attempt to hit [defender].
-  abstract Attack getAttack(Actor defender);
+  Attack getAttack(Actor defender);
 
   /// This is called on the defender when some attacker is attempting to hit it.
   /// The defender fills it in with the information needed to resolve the the
   /// hit.
-  abstract void takeHit(Hit hit);
+  void takeHit(Hit hit);
 
   /// Called when this Actor has been killed by [attacker].
   void onDied(Actor attacker) {

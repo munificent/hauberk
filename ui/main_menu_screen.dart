@@ -130,11 +130,9 @@ class MainMenuScreen extends Screen {
       }
 
       final skills = new SkillSet(content.skills);
-      /*
       hero['skills'].forEach((name, level) {
         skills[content.skills[name]] = level;
       });
-*/
 
       final experience = hero['experience'];
       heroes.add(new HeroSave.load(inventory, equipment, home, crucible,

@@ -8,20 +8,20 @@ class Item extends Thing implements Comparable {
 
   Item(this.type, Vec pos, this.prefix, this.suffix) : super(pos);
 
-  get appearance() => type.appearance;
+  get appearance => type.appearance;
 
-  bool get canEquip() => equipSlot != null;
-  String get equipSlot() => type.equipSlot;
+  bool get canEquip => equipSlot != null;
+  String get equipSlot => type.equipSlot;
 
-  bool get canUse() => type.use != null;
+  bool get canUse => type.use != null;
   Action use() => type.use();
 
-  Attack get attack() {
+  Attack get attack {
     if (type.attack == null) return null;
     return type.attack.modifyDamage(damageModifier);
   }
 
-  int get damageModifier() {
+  int get damageModifier {
     var modifier = 0;
 
     if (prefix != null) modifier += prefix.damage;
@@ -31,9 +31,9 @@ class Item extends Thing implements Comparable {
   }
 
   /// The amount of protected provided by the item when equipped.
-  int get armor() => type.armor;
+  int get armor => type.armor;
 
-  String get nounText() {
+  String get nounText {
     final name = new StringBuffer();
     name.add('a ');
 
@@ -58,8 +58,8 @@ class Item extends Thing implements Comparable {
     return name.toString();
   }
 
-  int get person() => 3;
-  Gender get gender() => Gender.NEUTER;
+  int get person => 3;
+  Gender get gender => Gender.NEUTER;
 
   int compareTo(Item other) {
     // TODO(bob): Take into account powers.
@@ -131,10 +131,10 @@ class PowerType {
 
 // TODO(bob): Which collection interface should it implement?
 abstract class ItemCollection implements Iterable<Item> {
-  abstract int get length;
-  abstract Item operator[](int index);
-  abstract Item removeAt(int index);
-  abstract bool tryAdd(Item item);
+  int get length;
+  Item operator[](int index);
+  Item removeAt(int index);
+  bool tryAdd(Item item);
 }
 
 /// The collection of [Item]s held by an [Actor].
@@ -306,8 +306,8 @@ class Equipment implements ItemCollection {
   }
 }
 
-class Drop {
-  abstract void addDrop(Game game, List<ItemType> types);
+abstract class Drop {
+  void addDrop(Game game, List<ItemType> types);
 }
 
 class ItemDrop implements Drop {

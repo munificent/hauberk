@@ -137,14 +137,14 @@ class InventoryView {
 }
 
 /// Actions that the user can perform on the inventory selection screen.
-class InventoryMode {
+abstract class InventoryMode {
   static const DROP = const DropInventoryMode();
   static const USE  = const UseInventoryMode();
 
-  abstract String message(InventoryView view);
+  String message(InventoryView view);
   bool get showGroundItems() => true;
-  abstract bool canSelect(Item item);
-  abstract Action getAction(int index, InventoryView view);
+  bool canSelect(Item item);
+  Action getAction(int index, InventoryView view);
 
   const InventoryMode();
 }
