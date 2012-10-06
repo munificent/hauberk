@@ -4,11 +4,13 @@ abstract class Action {
   GameResult _gameResult;
   bool _consumesEnergy;
 
-  Game get game() => _game;
-  Actor get actor() => _actor;
+  Game get game => _game;
+  Actor get actor => _actor;
   // TODO(bob): Should it check that the actor is a hero?
-  Hero get hero() => _actor;
-  bool get consumesEnergy() => _consumesEnergy;
+  Hero get hero => _actor;
+  bool get consumesEnergy => _consumesEnergy;
+
+  int get focusOffset => Option.FOCUS_OFFSET_NORMAL;
 
   void bind(Actor actor, bool consumesEnergy) {
     assert(_actor == null);
@@ -87,7 +89,7 @@ class WalkAction extends Action {
 
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
-    if (offset == Vec.ZERO) {
+    if (Vec.ZERO == offset) {
       return alternate(new RestAction());
     }
 
@@ -155,5 +157,6 @@ class CloseDoorAction extends Action {
 /// class mainly to track that it's quieter than walking.
 class RestAction extends Action {
   ActionResult onPerform() => succeed();
-  int get noise() => Option.NOISE_REST;
+  int get noise => Option.NOISE_REST;
+  int get focusOffset => Option.FOCUS_OFFSET_REST;
 }

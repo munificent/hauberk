@@ -1,0 +1,21 @@
+high level intent:
+- get to melee distance
+  - pick walk direction
+    - find path to hero and use that
+    - else see if we have los to hero and use that
+    - else see if we have a scent and use that
+    - else go in general direction (i.e. sound)
+- run away (to heal? to escape?)
+- get to missile distance: not too close but with los
+- melee attack
+- use missile attack
+- other moves like heal, teleport, etc.
+
+q: how does monster determine intent?
+- moves limit: if it doesn't have any missile attacks, it won't try to do that
+- current health: if close to death, more likely to run or prefer missile
+- strength of attacks: more likely to prefer melee or missile based on which is
+  most powerful
+- recharge: more likely to prefer cheaper moves
+- damage: if losing health quickly, more likely to run. if taking a lot of
+  melee damage, more likely to prefer missile attacks, and vice versa

@@ -50,7 +50,7 @@ class Game {
           if (action.consumesEnergy) {
             makeNoise(action.actor, action.noise);
 
-            action.actor.finishTurn();
+            action.actor.finishTurn(action);
             stage.actors.advance();
 
             // TODO(bob): Doing this here is a hack. Scent should spread at a

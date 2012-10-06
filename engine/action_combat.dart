@@ -18,8 +18,10 @@ class AttackAction extends Action {
 class BoltAction extends Action {
   final Iterator<Vec> los;
   final Attack attack;
+  final int focusOffset;
 
-  BoltAction(Vec from, Vec to, this.attack)
+  BoltAction(Vec from, Vec to, this.attack,
+      [this.focusOffset = Option.FOCUS_OFFSET_NORMAL])
   : los = new Los(from, to).iterator();
 
   ActionResult onPerform() {

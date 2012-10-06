@@ -78,6 +78,11 @@ abstract class Actor extends Thing {
     // Do nothing.
   }
 
+  /// Called when this Actor has completed a turn.
+  void onFinishTurn(Action action) {
+    // Do nothing.
+  }
+
   bool canOccupy(Vec pos) {
     if (pos.x < 0) return false;
     if (pos.x >= game.stage.width) return false;
@@ -87,12 +92,10 @@ abstract class Actor extends Thing {
     return game.stage[pos].isPassable;
   }
 
-  void finishTurn() {
+  void finishTurn(Action action) {
     energy.spend();
-    regenerate();
-  }
 
-  void regenerate() {
+    // Regenerate health.
     // TODO(bob): Could have "regeneration" power-up that speeds this.
     // The greater the max health, the faster the actor heals when resting.
     final turnsNeeded = math.max(
@@ -102,6 +105,8 @@ abstract class Actor extends Thing {
       health.current++;
       restCount = 0;
     }
+
+    onFinishTurn(action);
   }
 }
 

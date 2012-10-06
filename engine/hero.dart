@@ -55,6 +55,8 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
+  int _focus = Option.FOCUS_MAX;
+
   Hero(Game game, Vec pos, HeroSave save, this.skills)
   : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses any items
@@ -71,7 +73,7 @@ class Hero extends Actor {
   }
 
   // TODO(bob): Hackish.
-  get appearance() => 'hero';
+  get appearance => 'hero';
 
   bool get needsInput() {
     if ((_behavior != null) && !_behavior.canPerform(this)) {
@@ -81,11 +83,13 @@ class Hero extends Actor {
     return _behavior == null;
   }
 
-  int get experience() => _experienceCents ~/ 100;
+  int get experience => _experienceCents ~/ 100;
 
-  int get level() => _level;
+  int get level => _level;
 
-  int get armor() {
+  int get focus => _focus;
+
+  int get armor {
     int total = 0;
     for (final item in equipment) {
       total += item.armor;
@@ -129,6 +133,11 @@ class Hero extends Actor {
   void onKilled(Monster defender) {
     _experienceCents += defender.experienceCents ~/ level;
     _refreshLevel(log: true);
+  }
+
+  void onFinishTurn(Action action) {
+    // Spend and regain focus.
+    _focus = clamp(0, _focus + action.focusOffset, Option.FOCUS_MAX);
   }
 
   Vec changePosition(Vec pos) {

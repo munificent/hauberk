@@ -24,22 +24,29 @@ class ArcherySkill extends Skill {
   bool get hasUse => true;
   bool get needsTarget => true;
 
+  // TODO(bob): Make focus cost skill level based.
+  static const focusCost = 30;
+
   bool canUse(Game game) {
-    if (game.hero.equipment.find('Bow') != null) return true;
-
-    game.log.add("You don't have a bow equipped.");
-    return false;
-  }
-
-  Action getUseAction(int level, Game game, Vec target) {
     // Get the equipped bow, if any.
     var bow = game.hero.equipment.find('Bow');
     if (bow == null) {
       game.log.add('You do not have a bow equipped.');
-      return null;
+      return false;
     }
 
-    return new BoltAction(game.hero.pos, target, bow.attack);
+    // Make sure the hero is focused.
+    if (game.hero.focus < focusCost) {
+      game.log.add('You are too unfocused!');
+      return false;
+    }
+
+    return true;
+  }
+
+  Action getUseAction(int level, Game game, Vec target) {
+    var bow = game.hero.equipment.find('Bow');
+    return new BoltAction(game.hero.pos, target, bow.attack, -focusCost);
   }
 }
 

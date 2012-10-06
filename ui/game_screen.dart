@@ -417,14 +417,18 @@ class GameScreen extends Screen {
     drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
 
-    drawStat(terminal, 1, 'Level', hero.level, Color.BLUE);
+    terminal.writeAt(81, 1, 'Focus', Color.GRAY);
+    drawMeter(terminal, 1, hero.focus, Option.FOCUS_MAX,
+        Color.BLUE, Color.DARK_BLUE);
+
+    drawStat(terminal, 3, 'Level', hero.level, Color.AQUA);
     // TODO(bob): Handle hero at max level.
-    drawStat(terminal, 2, 'Exp', hero.experience, Color.AQUA,
+    drawStat(terminal, 4, 'Exp', hero.experience, Color.AQUA,
         calculateLevelCost(hero.level + 1), Color.DARK_AQUA);
-    drawStat(terminal, 3, 'Armor',
+    drawStat(terminal, 5, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
-    drawStat(terminal, 4, 'Weapon', hero.getAttack(null).damage, Color.YELLOW);
+    drawStat(terminal, 6, 'Weapon', hero.getAttack(null).damage, Color.YELLOW);
 
     terminal.writeAt(81, 18, '@ hero', Color.WHITE);
     drawHealthBar(terminal, 19, hero);
@@ -470,15 +474,21 @@ class GameScreen extends Screen {
   }
 
   void drawHealthBar(Terminal terminal, int y, Actor actor) {
-    var barWidth = 8 * actor.health.current ~/ actor.health.max;
+    drawMeter(terminal, y, actor.health.current, actor.health.max,
+        Color.RED, Color.DARK_RED);
+  }
+
+  void drawMeter(Terminal terminal, int y, int value, int max,
+                 Color fore, Color back) {
+    var barWidth = 10 * value ~/ max;
 
     // Don't round down to an entirely empty bar.
     if (barWidth == 0) barWidth = 1;
 
-    for (var x = 0; x < 8; x++) {
+    for (var x = 0; x < 10; x++) {
       var full = x < barWidth;
-      terminal.writeAt(92 + x, y, full ? '|' : '•',
-          full ? Color.RED : Color.DARK_RED);
+      terminal.writeAt(90 + x, y, full ? '|' : '•',
+          full ? fore : back);
     }
   }
 
