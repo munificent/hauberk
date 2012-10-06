@@ -19,7 +19,7 @@ class Attack {
   /// Returns a new attack identical to this one but with [damageModifier]
   /// applied.
   Attack modifyDamage(int damageModifier) {
-    return new Attack(verb, damage + damageModifier, element);
+    return new Attack(verb, damage + damageModifier, element, noun);
   }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of

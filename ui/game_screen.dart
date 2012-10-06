@@ -153,6 +153,9 @@ class GameScreen extends Screen {
         if (lastSkill == null) {
           // Haven't picked a skill yet, so select one.
           ui.push(new SelectSkillDialog(game));
+        } else if (!lastSkill.canUse(game)) {
+          // Show the message.
+          dirty();
         } else if (lastSkill.needsTarget) {
           // If we still have a visible target, use it.
           if (target != null && target.isAlive &&
@@ -215,6 +218,12 @@ class GameScreen extends Screen {
   void fireAt(Vec pos) {
     if (lastSkill == null || !lastSkill.needsTarget) return;
 
+    if (!lastSkill.canUse(game)) {
+      // Refresh the log.
+      dirty();
+      return;
+    }
+
     // If we aren't firing at the current target, see if there is a monster
     // in that direction that we can target. (In other words, if you fire in
     // a raw direction, target the monster in that direction for subsequent
@@ -248,7 +257,10 @@ class GameScreen extends Screen {
     } else if (popped is SelectSkillDialog && result is Skill) {
       lastSkill = result;
 
-      if (result.needsTarget) {
+      if (!result.canUse(game)) {
+        // Refresh the log.
+        dirty();
+      } else if (result.needsTarget) {
         ui.push(new TargetDialog(this, game));
       } else {
         useLastSkill(null);

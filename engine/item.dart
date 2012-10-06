@@ -189,10 +189,10 @@ class Equipment implements ItemCollection {
   final List<String> slotTypes;
   final List<Item> slots;
 
-  // TODO(bob): Slot types should be class-dependent.
   Equipment()
   : slotTypes = const [
       'Weapon',
+      'Bow',
       'Ring',
       'Necklace',
       'Body',

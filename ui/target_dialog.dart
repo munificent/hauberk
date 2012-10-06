@@ -53,7 +53,7 @@ class TargetDialog extends Screen {
       case KeyCode.SLASH: changeTarget(Direction.SE); break;
 
       case KeyCode.L:
-        ui.pop(true);
+        ui.pop(target != game.hero.pos);
         break;
     }
 

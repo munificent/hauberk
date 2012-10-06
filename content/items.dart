@@ -19,6 +19,7 @@ class ItemBuilder extends ContentBuilder {
     potions();
     scrolls();
     weapons();
+    bows();
     bodyArmor();
 
     item('Magical Chalice', lightBlue(@'$'),
@@ -70,6 +71,12 @@ class ItemBuilder extends ContentBuilder {
     // glaive, voulge, halberd, pole-axe, lucerne hammer,
   }
 
+  void bows() {
+    bow('Short Bow', brown('}'), 'the arrow', 4);
+    bow('Longbow', lightBrown('}'), 'the arrow', 6);
+    bow('Crossbow', gray('}'), 'the bolt', 10);
+  }
+
   void bodyArmor() {
     armor('Fur Cloak', lightBrown('('), 'Cloak', 2);
 
@@ -98,6 +105,11 @@ class ItemBuilder extends ContentBuilder {
       int damage) {
     return item(name, appearance, equipSlot: 'Weapon', category: category,
         attack: attack(verb, damage, Element.NONE));
+  }
+
+  ItemType bow(String name, Glyph appearance, String noun, int damage) {
+    return item(name, appearance, equipSlot: 'Bow', category: 'Bow',
+        attack: attack('pierce[s]', damage, Element.NONE, new Noun(noun)));
   }
 
   ItemType armor(String name, Glyph appearance, String equipSlot, int armor) {

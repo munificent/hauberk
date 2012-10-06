@@ -161,6 +161,8 @@ class Noun {
   Gender get gender() => Gender.NEUTER;
 
   Noun(this.nounText);
+
+  String toString() => nounText;
 }
 
 class Gender {

@@ -5,7 +5,7 @@ abstract class Skill {
   String getHelpText(int level);
 
   /// Override this to return `true` if the skill has an active use.
-  bool get canUse => false;
+  bool get hasUse => false;
 
   /// Override this to return `true` if the skill can be used but needs a
   /// target to do so.
@@ -16,11 +16,21 @@ abstract class Skill {
   int modifyHealth(int level) => 0;
   int getDropChance(int level) => 0;
 
+  /// Override this to validate that the [Skill] can be used right now. This
+  /// should only be overridden if [hasUse] is `true`. Unlike [hasUse], this
+  /// should return `true` if the Skill can be used *right now*. For example,
+  /// [hasUse] is always `true` for Archery, but [canUse] is only `true` when
+  /// you have a bow equipped.
+  ///
+  /// If this is overridden and returns `false`, it should also log an
+  /// appropriate message so the user knows why it failed.
+  bool canUse(Game game) => true;
+
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Skill]. If the skill needs a target, one will be passed in.
   /// Otherwise, it will be `null`.
   Action getUseAction(int level, Game game, Vec target) {
-    if (!canUse) throw 'This skill cannot be used.';
+    if (!hasUse) throw 'This skill does not have a use.';
   }
 }
 

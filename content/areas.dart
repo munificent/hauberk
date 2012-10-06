@@ -60,7 +60,9 @@ class AreaBuilder extends ContentBuilder {
         drop: [
           'Parchment',
           'Soothing Balm',
-          'Scroll of Sidestepping'
+          'Scroll of Sidestepping',
+          // TODO(bob): Do something better than just have them on the ground.
+          'Short Bow'
         ],
         quest: 'Magical Chalice'),
       level(new DungeonBuilder(), numMonsters: 16, numItems: 9,

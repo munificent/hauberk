@@ -108,8 +108,9 @@ class ContentBuilder {
     throw 'Unknown drop type $drop.';
   }
 
-  Attack attack(String verb, int damage, [Element element = Element.NONE]) {
-    return new Attack(verb, damage, element);
+  Attack attack(String verb, int damage, [Element element = Element.NONE,
+      Noun noun]) {
+    return new Attack(verb, damage, element, noun);
   }
 
   Glyph black(String char)       => new Glyph(char, Color.BLACK);
