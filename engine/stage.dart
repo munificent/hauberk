@@ -175,12 +175,6 @@ class Stage {
       addMonster(rng.item(open));
     }
   }
-
-  void spawnItem(ItemType type, Vec pos) {
-    // TODO(bob): Handle powers.
-    final item = new Item(type, pos, null, null);
-    items.add(item);
-  }
 }
 
 /// Abstract class for a stage generator. An instance of this encapsulation

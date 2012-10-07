@@ -195,14 +195,12 @@ class Monster extends Actor {
   /// Called when this Actor has been killed by [attacker].
   void onDied(Actor attacker) {
     // Handle drops.
-    final types = [];
-    breed.drop.addDrop(game, types);
-
-    for (var type in types) {
+    breed.drop.spawnDrop(game, (Item item) {
+      item.pos = pos;
       // TODO(bob): Scatter items a bit?
       // TODO(bob): Add message.
-      game.stage.spawnItem(type, pos);
-    }
+      game.stage.items.add(item);
+    });
   }
 
   Vec changePosition(Vec pos) {

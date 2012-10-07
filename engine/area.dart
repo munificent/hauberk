@@ -24,13 +24,11 @@ class Area {
     for (var i = 0; i < numItems; i++) {
       final itemDepth = pickDepth(depth);
       final drop = levels[itemDepth].floorDrop;
-      final pos = stage.findOpenTile();
 
-      final types = [];
-      drop.addDrop(game, types);
-      for (var type in types) {
-        stage.spawnItem(type, pos);
-      }
+      drop.spawnDrop(game, (Item item) {
+        item.pos = stage.findOpenTile();
+        stage.items.add(item);
+      });
 
       /*
       var prefix, suffix;
@@ -60,7 +58,8 @@ class Area {
     }
 
     // Add the quest item.
-    final quest = new Item(area.quest, findDistantTile(stage, 10), null, null);
+    final quest = new Item(area.quest);
+    quest.pos = findDistantTile(stage, 10);
     stage.items.add(quest);
 
     return heroPos;

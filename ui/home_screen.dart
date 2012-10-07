@@ -23,7 +23,7 @@ class HomeScreen extends Screen {
         if (completeRecipe == null) break;
         if (rightView != HomeView.CRUCIBLE) break;
 
-        final item = new Item(completeRecipe.result, Vec.ZERO, null, null);
+        final item = new Item(completeRecipe.result);
         save.crucible.clear();
         save.crucible.tryAdd(item);
         completeRecipe = null;

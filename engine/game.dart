@@ -157,7 +157,7 @@ class Content {
   HeroSave createHero() {
     final hero = new HeroSave(skills);
     for (final itemType in _newHeroItems) {
-      hero.inventory.tryAdd(new Item(itemType, Vec.ZERO, null, null));
+      hero.inventory.tryAdd(new Item(itemType));
     }
 
     return hero;

@@ -6,7 +6,7 @@ class Item extends Thing implements Comparable {
   final Power prefix;
   final Power suffix;
 
-  Item(this.type, Vec pos, this.prefix, this.suffix) : super(pos);
+  Item(this.type, [this.prefix, this.suffix]) : super(Vec.ZERO);
 
   get appearance => type.appearance;
 
@@ -306,8 +306,10 @@ class Equipment implements ItemCollection {
   }
 }
 
+typedef void AddItem(Item item);
+
 abstract class Drop {
-  void addDrop(Game game, List<ItemType> types);
+  void spawnDrop(Game game, AddItem addItem);
 }
 
 class ItemDrop implements Drop {
@@ -315,8 +317,8 @@ class ItemDrop implements Drop {
 
   ItemDrop(this.type);
 
-  void addDrop(Game game, List<ItemType> types) {
-    types.add(type);
+  void spawnDrop(Game game, AddItem addItem) {
+    addItem(new Item(type));
   }
 }
 
@@ -326,13 +328,13 @@ class OneOfDrop implements Drop {
 
   OneOfDrop(this.drops, this.percents);
 
-  void addDrop(Game game, List<ItemType> types) {
+  void spawnDrop(Game game, AddItem addItem) {
     var roll = rng.range(100);
 
     for (var i = 0; i < drops.length; i++) {
       roll -= percents[i];
       if (roll <= 0) {
-        drops[i].addDrop(game, types);
+        drops[i].spawnDrop(game, addItem);
         return;
       }
     }
@@ -345,9 +347,9 @@ class SkillDrop implements Drop {
 
   SkillDrop(this.skill, this.drop);
 
-  void addDrop(Game game, List<ItemType> types) {
+  void spawnDrop(Game game, AddItem addItem) {
     if (rng.range(100) < skill.getDropChance(game.hero.skills[skill])) {
-      drop.addDrop(game, types);
+      drop.spawnDrop(game, addItem);
     }
   }
 }
@@ -358,11 +360,11 @@ class GraduatedDrop implements Drop {
 
   GraduatedDrop(this.chance, this.drops);
 
-  void addDrop(Game game, List<ItemType> types) {
+  void spawnDrop(Game game, AddItem addItem) {
     var index = 0;
 
     while (index < drops.length - 1 && rng.oneIn(chance)) index++;
-    drops[index].addDrop(game, types);
+    drops[index].spawnDrop(game, addItem);
   }
 }
 

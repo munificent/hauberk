@@ -145,7 +145,7 @@ class MainMenuScreen extends Screen {
   Item _loadItem(data) {
     final type = content.items[data['type']];
     // TODO(bob): Load powers.
-    return new Item(type, Vec.ZERO, null, null);
+    return new Item(type);
   }
 
   void _saveHeroes() {
