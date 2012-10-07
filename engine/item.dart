@@ -312,62 +312,6 @@ abstract class Drop {
   void spawnDrop(Game game, AddItem addItem);
 }
 
-class ItemDrop implements Drop {
-  final ItemType type;
-
-  ItemDrop(this.type);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    addItem(new Item(type));
-  }
-}
-
-class OneOfDrop implements Drop {
-  final List<Drop> drops;
-  final List<int> percents;
-
-  OneOfDrop(this.drops, this.percents);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    var roll = rng.range(100);
-
-    for (var i = 0; i < drops.length; i++) {
-      roll -= percents[i];
-      if (roll <= 0) {
-        drops[i].spawnDrop(game, addItem);
-        return;
-      }
-    }
-  }
-}
-
-class SkillDrop implements Drop {
-  final Skill skill;
-  final Drop drop;
-
-  SkillDrop(this.skill, this.drop);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    if (rng.range(100) < skill.getDropChance(game.hero.skills[skill])) {
-      drop.spawnDrop(game, addItem);
-    }
-  }
-}
-
-class GraduatedDrop implements Drop {
-  final int chance;
-  final List<Drop> drops;
-
-  GraduatedDrop(this.chance, this.drops);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    var index = 0;
-
-    while (index < drops.length - 1 && rng.oneIn(chance)) index++;
-    drops[index].spawnDrop(game, addItem);
-  }
-}
-
 /// A recipe defines a set of items that can be placed into the crucible and
 /// transmuted into a new item.
 // TODO(bob): Figure out how this works with powers.

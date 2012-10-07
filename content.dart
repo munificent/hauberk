@@ -54,11 +54,6 @@ class ContentBuilder {
     return new OneOfDrop([_parseDrop(drop)], [percent]);
   }
 
-  Drop graduated(int chance, drops) {
-    drops = drops.map(_parseDrop);
-    return new GraduatedDrop(chance, drops);
-  }
-
   Drop _parseDrop(drop) {
     if (drop == null) return new OneOfDrop([], []);
     if (drop is Drop) return drop;

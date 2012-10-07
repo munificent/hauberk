@@ -136,14 +136,6 @@ class MonsterBuilder extends ContentBuilder {
   }
 
   imps() {
-    var spear = graduated(9, [
-      'Spear', 'Angon', 'Lance', 'Partisan'
-    ]);
-
-    var dirk = graduated(8, [
-      'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard', 'Main-guache'
-    ]);
-
     breed('scurrilous imp', lightRed('I'), [
         attack('scratch[es]', 4),
         insult()
@@ -163,7 +155,7 @@ class MonsterBuilder extends ContentBuilder {
     breed('goblin peon', lightBrown('I'), [
         attack('stab[s]', 4)
       ],
-      drop: chanceOf(10, 'Spear'),
+      drop: chanceOf(10, Drops.spear),
       maxHealth: 10, meander: 2,
       flags: 'open-doors'
     );
@@ -171,23 +163,19 @@ class MonsterBuilder extends ContentBuilder {
     breed('goblin warrior', brown('I'), [
         attack('stab[s]', 8)
       ],
-      drop: chanceOf(10, 'Spear'),
+      drop: chanceOf(10, Drops.spear),
       maxHealth: 16, meander: 1,
       flags: 'open-doors'
     );
   }
 
   people() {
-    var knife = graduated(8, [
-      'Knife', 'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard', 'Main-guache'
-    ]);
-
     breed('simpering knave', orange('p'), [
         attack('hit[s]', 2),
         attack('stab[s]', 4)
       ],
       drop: [
-        chanceOf(20, knife),
+        chanceOf(20, Drops.knife),
         chanceOf(20, 'Cloth Shirt')
       ],
       maxHealth: 6, meander: 3,
@@ -201,7 +189,7 @@ class MonsterBuilder extends ContentBuilder {
       drop: [
          chanceOf(10, 'Scroll of Sidestepping'),
          chanceOf(7, 'Staff'),
-         chanceOf(7, knife),
+         chanceOf(7, Drops.knife),
          chanceOf(7, 'Cloth Shirt'),
          chanceOf(5, 'Robe')
       ],

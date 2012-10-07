@@ -60,7 +60,6 @@ class ItemBuilder extends ContentBuilder {
     weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 11);
     weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 14);
     weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 20);
-    weapon('Main-guache', aqua('|'), 'stab[s]', 'Dagger', 26);
 
     // Spears.
     weapon('Spear', gray('\\'), 'stab[s]', 'Spear', 8);
@@ -123,5 +122,115 @@ class ItemBuilder extends ContentBuilder {
         equipSlot, category, attack, armor);
     _items[name] = itemType;
     return itemType;
+  }
+}
+
+class Drops {
+  static final knife = _daggers.drop('Knife');
+  static final dirk = _daggers.drop('Dirk');
+  static final dagger = _daggers.drop('Dagger');
+  static final stiletto = _daggers.drop('Stiletto');
+  static final rondel = _daggers.drop('Rondel');
+  static final baselard = _daggers.drop('Baselard');
+
+  static final _daggers = _sequence(8, [
+    'Knife', 'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard'
+  ]);
+
+  static final spear = _spears.drop('Spear');
+  static final angon = _spears.drop('Angon');
+  static final lance = _spears.drop('Lance');
+  static final partisan = _spears.drop('Partisan');
+
+  static final _spears = _sequence(9, [
+    'Spear', 'Angon', 'Lance', 'Partisan'
+  ]);
+
+  static EquipmentSequence _sequence(int chance, List<String> typeNames) {
+    var types = typeNames.map((name) => _items[name]);
+    return new EquipmentSequence(chance, types);
+  }
+}
+
+class EquipmentSequence {
+  final int chance;
+  final List<ItemType> types;
+
+  EquipmentSequence(this.chance, this.types);
+
+  Drop drop(startItem) {
+    // Find the index of the item in the sequence.
+    var itemType = _items[startItem];
+    for (var i = 0; i < types.length; i++) {
+      if (types[i] == itemType) return new EquipmentDrop(this, i);
+    }
+
+    throw "Couldn't find $itemType in sequence.";
+  }
+}
+
+class EquipmentDrop implements Drop {
+  final EquipmentSequence sequence;
+  final int startIndex;
+
+  EquipmentDrop(this.sequence, this.startIndex);
+
+  void spawnDrop(Game game, AddItem addItem) {
+    var index = startIndex;
+
+    // TODO(bob): Occasionally choose a worse item. If it does, increase the
+    // chance of picking a power.
+
+    // Chance of a better item.
+    while (index < sequence.types.length - 1 && rng.oneIn(sequence.chance)) {
+      index++;
+    }
+
+    // TODO(bob): Powers.
+
+    var item = new Item(sequence.types[index]);
+    addItem(item);
+  }
+}
+
+class ItemDrop implements Drop {
+  final ItemType type;
+
+  ItemDrop(this.type);
+
+  void spawnDrop(Game game, AddItem addItem) {
+    addItem(new Item(type));
+  }
+}
+
+class OneOfDrop implements Drop {
+  final List<Drop> drops;
+  final List<int> percents;
+
+  OneOfDrop(this.drops, this.percents);
+
+  void spawnDrop(Game game, AddItem addItem) {
+    var roll = rng.range(100);
+
+    for (var i = 0; i < drops.length; i++) {
+      roll -= percents[i];
+      if (roll <= 0) {
+        drops[i].spawnDrop(game, addItem);
+        return;
+      }
+    }
+  }
+}
+
+class SkillDrop implements Drop {
+  final Skill skill;
+  final Drop drop;
+
+  SkillDrop(this.skill, this.drop);
+
+  void spawnDrop(Game game, AddItem addItem) {
+    if (rng.range(100) < skill.getDropChance(game.hero.skills[skill])) {
+      drop.spawnDrop(game, addItem);
+    }
   }
 }
