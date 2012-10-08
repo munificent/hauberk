@@ -177,12 +177,6 @@ class Stage {
   }
 }
 
-/// Abstract class for a stage generator. An instance of this encapsulation
-/// some dungeon generation algorithm. These are implemented in content.
-abstract class StageBuilder {
-  abstract void generate(Stage stage);
-}
-
 class TileType {
   final bool isPassable;
   final bool isTransparent;

@@ -1,93 +1,158 @@
-class DungeonBuilder implements StageBuilder {
-  final int numRoomTries;
-  final int numJunctionTries;
-  final int numRoundingTries;
-  final int roomWidthMin;
-  final int roomWidthMax;
-  final int roomHeightMin;
-  final int roomHeightMax;
-  final int allowOverlapOneIn;
-
-  final int extraCorridorDistanceMax;
-  final int extraCorridorOneIn;
-  final int extraCorridorDistanceMultiplier;
-
-  DungeonBuilder([
-    this.numRoomTries = 300,
-    this.numJunctionTries = 30,
-    this.numRoundingTries = 0,
-    this.roomWidthMin = 3,
-    this.roomWidthMax = 12,
-    this.roomHeightMin = 3,
-    this.roomHeightMax = 8,
-    this.allowOverlapOneIn = 0,
-    this.extraCorridorDistanceMax = 10,
-    this.extraCorridorOneIn = 20,
-    this.extraCorridorDistanceMultiplier = 4
-  ]);
-
-  void generate(Stage stage) {
-    new Dungeon(stage, this).generate();
-  }
-}
-
 class StageGenerator {
-  final Stage stage;
-
-  StageGenerator(this.stage);
+  Stage stage;
 
   TileType getTile(Vec pos) => stage[pos].type;
 
   void setTile(Vec pos, TileType type) {
     stage[pos].type = type;
   }
+
+  void bindStage(Stage stage) {
+    this.stage = stage;
+  }
 }
 
-class Dungeon extends StageGenerator {
-  final DungeonBuilder builder;
+class TrainingGrounds extends Dungeon {
+  void onGenerate() {
+    fill(Tiles.wall);
+
+    // Layout the rooms.
+    addRooms(300);
+    addJunctions(30);
+
+    carveRooms();
+    carveCorridors();
+
+    // We do this after carving corridors so that when corridors carve through
+    // rooms, they don't mess up the decorations.
+    //decorateRooms();
+
+    // We do this last so that we only add doors where they actually make sense
+    // and don't have to worry about overlapping corridors and other stuff
+    // leading to nonsensical doors.
+    addDoors();
+  }
+}
+
+class GoblinStronghold extends Dungeon {
+  final int depth;
+
+  GoblinStronghold(this.depth);
+
+  int get roomWidthMax => 8;
+  int get roomHeightMax => 6;
+
+  void onGenerate() {
+    fill(Tiles.wall);
+
+    // Layout the rooms.
+    addRooms(300 - depth * 20);
+
+    carveRooms();
+    carveCorridors();
+
+    erode(500 + depth * 250);
+  }
+
+  bool allowRoomOverlap(Rect a, Rect b) => rng.oneIn(20);
+}
+
+abstract class Dungeon extends StageGenerator {
   final List<Room> _rooms;
   final Set<int> _usedColors;
 
-  Dungeon(Stage stage, this.builder)
-  : super(stage),
-    _rooms = <Room>[],
-    _usedColors = new Set<int>();
+  int get roomWidthMin => 3;
+  int get roomWidthMax => 12;
+  int get roomHeightMin => 3;
+  int get roomHeightMax => 8;
+  int get extraCorridorDistanceMax => 10;
+  int get extraCorridorOneIn => 20;
+  int get extraCorridorDistanceMultiplier => 4;
 
-  void generate() {
-    // Clear the dungeon.
+  TileType get floor => Tiles.floor;
+  TileType get wall => Tiles.wall;
+
+  Dungeon()
+    : _rooms = <Room>[],
+      _usedColors = new Set<int>();
+
+  void generate(Stage stage) {
+    bindStage(stage);
+    onGenerate();
+  }
+
+  abstract void onGenerate();
+
+  void fill(TileType tile) {
     for (var y = 0; y < stage.height; y++) {
       for (var x = 0; x < stage.width; x++) {
-        setTile(new Vec(x, y), Tiles.wall);
+        setTile(new Vec(x, y), tile);
       }
     }
+  }
 
-    // Layout the rooms.
-    int color = 0;
-    for (var i = 0; i < builder.numRoomTries; i++) {
-      final width = rng.range(builder.roomWidthMin, builder.roomWidthMax);
-      final height = rng.range(builder.roomHeightMin, builder.roomHeightMax);
-      final x = rng.range(1, stage.width - width);
-      final y = rng.range(1, stage.height - height);
-
-      final room = new Rect(x, y, width, height);
-      if (!overlapsExistingRooms(room, true)){
-        _rooms.add(new Room(room, ++color));
+  void addRooms(int tries) {
+    for (var i = 0; i < tries; i++) {
+      var room = randomRoom();
+      if (!overlapsExistingRooms(room, false)) {
+        var color = _usedColors.length;
+        _rooms.add(new Room(room, color));
         _usedColors.add(color);
       }
     }
+  }
 
-    // Add some one-tile "rooms" to work as corridor junctions.
-    for (var i = 0; i < builder.numJunctionTries; i++) {
+  Rect randomRoom() {
+    var width = rng.range(roomWidthMin, roomWidthMax);
+    var height = rng.range(roomHeightMin, roomHeightMax);
+    var x = rng.range(1, stage.width - width);
+    var y = rng.range(1, stage.height - height);
+
+    return new Rect(x, y, width, height);
+  }
+
+  void addJunctions(int tries) {
+    for (var i = 0; i < tries; i++) {
       final x = rng.range(1, stage.width - 3);
       final y = rng.range(1, stage.height - 3);
 
       final room = new Rect(x, y, 1, 1);
-      if (!overlapsExistingRooms(room, false)){
+      if (!overlapsExistingRooms(room, true)) {
+        var color = _usedColors.length;
         _rooms.add(new Room(room, ++color));
         _usedColors.add(color);
       }
     }
+  }
 
+  bool overlapsExistingRooms(Rect room, bool isJunction) {
+    for (final other in _rooms) {
+      if (room.distanceTo(other.bounds) <= 0) {
+        // Possibly allow some rooms to overlap.
+        if (!isJunction && allowRoomOverlap(room, other.bounds)) continue;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool allowRoomOverlap(Rect a, Rect b) => false;
+
+  void mergeColors(Room a, Room b) {
+    if (a.color == b.color) return;
+
+    final color = math.min(a.color, b.color);
+    _usedColors.remove(math.max(a.color, b.color));
+
+    for (final room in _rooms) {
+      if (room.color == a.color || room.color == b.color) {
+        room.color = color;
+      }
+    }
+  }
+
+  void carveRooms() {
     // Fill them in.
     for (final room in _rooms) {
       for (final pos in room.bounds) {
@@ -103,47 +168,11 @@ class Dungeon extends StageGenerator {
         if (room == other) continue;
         if (room.bounds.distanceTo(other.bounds) <= 0) {
           mergeColors(room, other);
+
+          // Keep track of which rooms overlap.
+          room.isOverlapping = true;
+          other.isOverlapping = true;
         }
-      }
-    }
-
-    carveCorridors();
-
-    // We do this after carving corridors so that when corridors carve through
-    // rooms, they don't mess up the decorations.
-    decorateRooms();
-
-    // Round off sharp corners to make it look more organic.
-    erode(builder.numRoundingTries);
-
-    // We do this last so that we only add doors where they actually make sense
-    // and don't have to worry about overlapping corridors and other stuff
-    // leading to nonsensical doors.
-    addDoors();
-  }
-
-  bool overlapsExistingRooms(Rect room, bool allowOverlap) {
-    for (final other in _rooms) {
-      if (room.distanceTo(other.bounds) <= 0) {
-        // Allow some rooms to overlap.
-        if (allowOverlap && builder.allowOverlapOneIn > 0 &&
-            rng.oneIn(builder.allowOverlapOneIn)) continue;
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  void mergeColors(Room a, Room b) {
-    if (a.color == b.color) return;
-
-    final color = math.min(a.color, b.color);
-    _usedColors.remove(math.max(a.color, b.color));
-
-    for (final room in _rooms) {
-      if (room.color == a.color || room.color == b.color) {
-        room.color = color;
       }
     }
   }
@@ -189,9 +218,9 @@ class Dungeon extends StageGenerator {
         if (fromRoom == toRoom) continue;
 
         final distance = fromRoom.bounds.distanceTo(toRoom.bounds);
-        if ((distance < builder.extraCorridorDistanceMax) &&
-            rng.oneIn(builder.extraCorridorOneIn + distance *
-                builder.extraCorridorDistanceMultiplier)) {
+        if ((distance < extraCorridorDistanceMax) &&
+            rng.oneIn(extraCorridorOneIn + distance *
+                extraCorridorDistanceMultiplier)) {
           carveCorridor(fromRoom, toRoom);
         }
       }
@@ -318,9 +347,9 @@ class Dungeon extends StageGenerator {
 
   /// Randomly turns some floor tiles into walls and vice versa. Does so while
   /// maintaining the reachability invariant of the dungeon.
-  void erode(int interations) {
+  void erode(int iterations) {
     final bounds = stage.bounds.inflate(-1);
-    for (var i = 0; i < builder.numRoundingTries; i++) {
+    for (var i = 0; i < iterations; i++) {
       final pos = rng.vecInRect(bounds);
 
       final here = getTile(pos);
@@ -375,13 +404,8 @@ class Dungeon extends StageGenerator {
     }
   }
 
-  bool isFloor(int x, int y) {
-    return stage.get(x, y).type == Tiles.floor;
-  }
-
-  bool isWall(int x, int y) {
-    return stage.get(x, y).type == Tiles.wall;
-  }
+  bool isFloor(int x, int y) => stage.get(x, y).type == Tiles.floor;
+  bool isWall(int x, int y) => stage.get(x, y).type == Tiles.wall;
 
   void addDoors() {
     // For each room, attempt to place doors along its edges.
@@ -445,6 +469,7 @@ class Dungeon extends StageGenerator {
 class Room {
   final Rect bounds;
   int color;
+  bool isOverlapping = false;
 
   Room(this.bounds, this.color);
 }

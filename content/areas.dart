@@ -1,52 +1,10 @@
 /// Builder class for defining [Area] objects.
 class AreaBuilder extends ContentBuilder {
   List<Area> build() {
-    /*
-    // Dense, lots of little rooms.
-    final options = new DungeonOptions(
-      numRoomTries: 2000,
-      numJunctionTries: 10,
-      roomWidthMin: 3,
-      roomWidthMax: 8,
-      roomHeightMin: 3,
-      roomHeightMax: 6,
-      allowOverlapOneIn: 500,
-      extraCorridorDistanceMax: 3,
-      extraCorridorOneIn: 100,
-      extraCorridorDistanceMultiplier: 4
-    );
-
-    // Cavernlike, lots of irregular rooms.
-    final options = new DungeonOptions(
-      numRoomTries: 200,
-      numJunctionTries: 10,
-      roomWidthMin: 3,
-      roomWidthMax: 8,
-      roomHeightMin: 3,
-      roomHeightMax: 6,
-      allowOverlapOneIn: 2,
-      extraCorridorDistanceMax: 10,
-      extraCorridorOneIn: 50,
-      extraCorridorDistanceMultiplier: 4
-    );
-
-    // Small number of big open rooms with long corridors between them.
-    final options = new DungeonOptions(
-      numRoomTries: 200,
-      numJunctionTries: 30,
-      roomWidthMin: 3,
-      roomWidthMax: 16,
-      roomHeightMin: 3,
-      roomHeightMax: 12,
-      allowOverlapOneIn: 500,
-      extraCorridorDistanceMax: 20,
-      extraCorridorOneIn: 4,
-      extraCorridorDistanceMultiplier: 50
-    );
-    */
+    trainingGrounds() => new TrainingGrounds().generate;
 
     area('Training Grounds', [
-      level(new DungeonBuilder(), numMonsters: 12, numItems: 8,
+      level(trainingGrounds(), numMonsters: 12, numItems: 8,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -65,7 +23,7 @@ class AreaBuilder extends ContentBuilder {
           'Short Bow'
         ],
         quest: 'Magical Chalice'),
-      level(new DungeonBuilder(), numMonsters: 16, numItems: 9,
+      level(trainingGrounds(), numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
           'crow',
@@ -79,7 +37,7 @@ class AreaBuilder extends ContentBuilder {
           'Robe'
         ],
         quest: 'Magical Chalice'),
-      level(new DungeonBuilder(), numMonsters: 20, numItems: 10,
+      level(trainingGrounds(), numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
           'doddering old mage',
@@ -95,17 +53,10 @@ class AreaBuilder extends ContentBuilder {
         quest: 'Magical Chalice')
     ]);
 
+    goblinStronghold(int depth) => new GoblinStronghold(depth).generate;
 
-    var goblinStronghold = new DungeonBuilder(
-        numRoomTries: 200,
-        numJunctionTries: 50,
-        numRoundingTries: 800,
-        roomWidthMax: 12,
-        roomHeightMax: 9,
-        allowOverlapOneIn: 30,
-        extraCorridorOneIn: 30);
     area('Goblin Stronghold', [
-      level(goblinStronghold, numMonsters: 18, numItems: 8,
+      level(goblinStronghold(0), numMonsters: 18, numItems: 8,
         breeds: [
           'scurrilous imp',
           'impish incanter',
@@ -116,7 +67,7 @@ class AreaBuilder extends ContentBuilder {
           'Soothing Balm'
         ],
         quest: 'Magical Chalice'),
-      level(goblinStronghold, numMonsters: 20, numItems: 8,
+      level(goblinStronghold(10), numMonsters: 20, numItems: 8,
         breeds: [
           'goblin warrior'
         ],

@@ -8,7 +8,7 @@ class Area {
     final stage = game.stage;
     final area = levels[depth];
 
-    area.builder.generate(stage);
+    area.builder(stage);
 
     final heroPos = stage.findOpenTile();
     _calculateDistances(stage, heroPos);
@@ -160,3 +160,7 @@ class Level {
   Level(this.builder, this.numMonsters, this.numItems,
       this.breeds, this.floorDrop, this.quest);
 }
+
+/// Abstract class for a stage generator. An instance of this encapsulation
+/// some dungeon generation algorithm. These are implemented in content.
+typedef void StageBuilder(Stage stage);
