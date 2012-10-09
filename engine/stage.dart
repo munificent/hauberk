@@ -130,6 +130,7 @@ class Stage {
   }
 
   // TODO(bob): This is hackish and may fail to terminate.
+  /// Selects a random passable tile that does not have an [Actor] on it.
   Vec findOpenTile() {
     while (true) {
       final pos = rng.vecInRect(bounds);
@@ -139,6 +140,27 @@ class Stage {
 
       return pos;
     }
+  }
+
+  /// Randomly selects an open tile in the stage. Makes [tries] attempts and
+  /// chooses the one most distance from some point. Assumes that [scent2] has
+  /// been filled with the distance information for the target point.
+  ///
+  /// This is used during level creation to place stronger [Monster]s and
+  /// better treasure farther from the [Hero]'s starting location.
+  Vec findDistantOpenTile(int tries) {
+    var bestDistance = -1;
+    var best;
+
+    for (var i = 0; i < tries; i++) {
+      final pos = findOpenTile();
+      if (this[pos].scent2 > bestDistance) {
+        best = pos;
+        bestDistance = this[pos].scent2;
+      }
+    }
+
+    return best;
   }
 
   void spawnMonster(Breed breed, Vec pos) {

@@ -9,10 +9,9 @@ class Game {
   bool _questComplete = false;
 
   Game(this.area, this.depth, Content content, HeroSave save)
-  : stage = new Stage(80, 40),
-    log = new Log(),
-    actions = new Queue<Action>()
-  {
+    : stage = new Stage(80, 40),
+      log = new Log(),
+      actions = new Queue<Action>() {
     stage.game = this;
 
     final heroPos = area.buildStage(this, depth);
@@ -23,7 +22,7 @@ class Game {
     Fov.refresh(stage, hero.pos);
   }
 
-  bool get isQuestComplete() => _questComplete;
+  bool get isQuestComplete => _questComplete;
 
   GameResult update() {
     final gameResult = new GameResult();

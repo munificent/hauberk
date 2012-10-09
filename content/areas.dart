@@ -22,7 +22,7 @@ class AreaBuilder extends ContentBuilder {
           // TODO(bob): Do something better than just have them on the ground.
           'Short Bow'
         ],
-        quest: 'Magical Chalice'),
+        quest: floorItem('Magical Chalice')),
       level(trainingGrounds(), numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
@@ -36,7 +36,7 @@ class AreaBuilder extends ContentBuilder {
           'Soothing Balm',
           'Robe'
         ],
-        quest: 'Magical Chalice'),
+        quest: floorItem('Magical Chalice')),
       level(trainingGrounds(), numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
@@ -50,7 +50,7 @@ class AreaBuilder extends ContentBuilder {
           'Cudgel',
           'Dagger'
         ],
-        quest: 'Magical Chalice')
+        quest: floorItem('Magical Chalice'))
     ]);
 
     goblinStronghold(int depth) => new GoblinStronghold(depth).generate;
@@ -66,7 +66,7 @@ class AreaBuilder extends ContentBuilder {
         drop: [
           'Soothing Balm'
         ],
-        quest: 'Magical Chalice'),
+        quest: floorItem('Magical Chalice')),
       level(goblinStronghold(10), numMonsters: 20, numItems: 8,
         breeds: [
           'goblin warrior'
@@ -74,18 +74,18 @@ class AreaBuilder extends ContentBuilder {
         drop: [
           'Soothing Balm'
         ],
-        quest: 'Magical Chalice')
+        quest: floorItem('Magical Chalice'))
     ]);
   }
 
   Level level(StageBuilder builder, [
-      int numMonsters, int numItems, List<String> breeds, drop, String quest]) {
+      int numMonsters, int numItems, List<String> breeds, drop, Quest quest]) {
     final breedList = <Breed>[];
 
     for (final name in breeds) breedList.add(_breeds[name]);
 
     return new Level(builder, numMonsters, numItems, breedList,
-        _parseDrop(drop), _items[quest]);
+        _parseDrop(drop), quest);
   }
 
   Area area(String name, List<Level> levels) {
@@ -93,4 +93,6 @@ class AreaBuilder extends ContentBuilder {
     _areas.add(area);
     return area;
   }
+
+  Quest floorItem(String type) => new FloorItemQuest(_items[type]);
 }

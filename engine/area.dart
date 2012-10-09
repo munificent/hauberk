@@ -51,16 +51,13 @@ class Area {
       // Place strong monsters farther from the hero.
       var tries = 1;
       if (monsterDepth > depth) tries = 1 + (monsterDepth - depth) * 2;
-      final pos = findDistantTile(stage, tries);
+      final pos = stage.findDistantOpenTile(tries);
 
       final breed = rng.item(levels[monsterDepth].breeds);
       stage.spawnMonster(breed, pos);
     }
 
-    // Add the quest item.
-    final quest = new Item(area.quest);
-    quest.pos = findDistantTile(stage, 10);
-    stage.items.add(quest);
+    area.quest.generate(stage);
 
     return heroPos;
   }
@@ -82,21 +79,6 @@ class Area {
     }
 
     return rng.item(levels[depth].breeds);
-  }
-
-  Vec findDistantTile(Stage stage, int tries) {
-    var bestDistance = -1;
-    var best;
-
-    for (var i = 0; i < tries; i++) {
-      final pos = stage.findOpenTile();
-      if (stage[pos].scent2 > bestDistance) {
-        best = pos;
-        bestDistance = stage[pos].scent2;
-      }
-    }
-
-    return best;
   }
 
   /// Run Dijkstra's algorithm to calculate the distance from every reachable
@@ -141,8 +123,13 @@ class Level {
   final Drop floorDrop;
   final int numMonsters;
   final int numItems;
-  final ItemType quest;
+  final Quest quest;
 
+  Level(this.builder, this.numMonsters, this.numItems,
+      this.breeds, this.floorDrop, this.quest);
+}
+
+abstract class Quest {
   // TODO(bob): Kinds of quests:
   // - Find a certain item (implemented now)
   // - Kill a certain monster
@@ -157,8 +144,19 @@ class Level {
   // - Complete quest without killing any monsters
   // - Complete quest without using any items
 
-  Level(this.builder, this.numMonsters, this.numItems,
-      this.breeds, this.floorDrop, this.quest);
+  abstract void generate(Stage stage);
+}
+
+class FloorItemQuest extends Quest {
+  final ItemType itemType;
+
+  FloorItemQuest(this.itemType);
+
+  void generate(Stage stage) {
+    final item = new Item(itemType);
+    item.pos = stage.findDistantOpenTile(10);
+    stage.items.add(item);
+  }
 }
 
 /// Abstract class for a stage generator. An instance of this encapsulation
