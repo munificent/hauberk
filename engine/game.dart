@@ -6,7 +6,7 @@ class Game {
   final Log            log;
   final Queue<Action>  actions;
   Hero hero;
-  QuestStatus quest;
+  Quest quest;
 
   Game(this.area, this.depth, Content content, HeroSave save)
     : stage = new Stage(80, 40),

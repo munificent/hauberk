@@ -123,13 +123,13 @@ class Level {
   final Drop floorDrop;
   final int numMonsters;
   final int numItems;
-  final Quest quest;
+  final QuestBuilder quest;
 
   Level(this.builder, this.numMonsters, this.numItems,
       this.breeds, this.floorDrop, this.quest);
 }
 
-abstract class Quest {
+abstract class QuestBuilder {
   // TODO(bob): Kinds of quests:
   // - Find a certain item (implemented now)
   // - Kill a certain monster
@@ -144,10 +144,10 @@ abstract class Quest {
   // - Complete quest without killing any monsters
   // - Complete quest without using any items
 
-  abstract QuestStatus generate(Stage stage);
+  abstract Quest generate(Stage stage);
 }
 
-abstract class QuestStatus {
+abstract class Quest {
   bool _isComplete = false;
   bool get isComplete => _isComplete;
 
@@ -167,24 +167,24 @@ abstract class QuestStatus {
   }
 }
 
-class FloorItemQuest extends Quest {
+class FloorItemQuestBuilder extends QuestBuilder {
   final ItemType itemType;
 
-  FloorItemQuest(this.itemType);
+  FloorItemQuestBuilder(this.itemType);
 
-  QuestStatus generate(Stage stage) {
+  Quest generate(Stage stage) {
     final item = new Item(itemType);
     item.pos = stage.findDistantOpenTile(10);
     stage.items.add(item);
 
-    return new FloorItemQuestStatus(itemType);
+    return new ItemQuest(itemType);
   }
 }
 
-class FloorItemQuestStatus extends QuestStatus {
+class ItemQuest extends Quest {
   final ItemType itemType;
 
-  FloorItemQuestStatus(this.itemType);
+  ItemQuest(this.itemType);
 
   bool onPickUpItem(Game game, Item item) => item.type == itemType;
 }

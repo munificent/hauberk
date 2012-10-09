@@ -79,7 +79,8 @@ class AreaBuilder extends ContentBuilder {
   }
 
   Level level(StageBuilder builder, [
-      int numMonsters, int numItems, List<String> breeds, drop, Quest quest]) {
+      int numMonsters, int numItems, List<String> breeds, drop,
+      QuestBuilder quest]) {
     final breedList = <Breed>[];
 
     for (final name in breeds) breedList.add(_breeds[name]);
@@ -94,5 +95,6 @@ class AreaBuilder extends ContentBuilder {
     return area;
   }
 
-  Quest floorItem(String type) => new FloorItemQuest(_items[type]);
+  QuestBuilder floorItem(String type) =>
+      new FloorItemQuestBuilder(_items[type]);
 }
