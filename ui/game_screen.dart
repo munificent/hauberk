@@ -66,7 +66,7 @@ class GameScreen extends Screen {
     } else if (!keyboard.control && !keyboard.option) {
       switch (keyboard.lastPressed) {
       case KeyCode.Q:
-        if (game.isQuestComplete) {
+        if (game.quest.isComplete) {
           save.copyFrom(game.hero);
           ui.pop(true);
         } else {

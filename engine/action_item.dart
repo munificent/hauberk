@@ -12,7 +12,10 @@ class PickUpAction extends Action {
 
     game.stage.removeItem(item);
 
-    return succeed('{1} pick[s] up {2}.', actor, item);
+    log('{1} pick[s] up {2}.', actor, item);
+
+    game.quest.pickUpItem(game, item);
+    return succeed();
   }
 }
 

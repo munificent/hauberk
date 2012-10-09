@@ -22,8 +22,7 @@ class ItemBuilder extends ContentBuilder {
     bows();
     bodyArmor();
 
-    item('Magical Chalice', lightBlue(@'$'),
-        use: () => new QuestAction());
+    item('Magical Chalice', lightBlue(@'$'));
   }
 
   void pelts() {

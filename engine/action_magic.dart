@@ -56,10 +56,3 @@ class TeleportAction extends Action {
     return succeed('{1} teleport[s] away!', actor);
   }
 }
-
-class QuestAction extends Action {
-  ActionResult onPerform() {
-    game.completeQuest();
-    return succeed();
-  }
-}

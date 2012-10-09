@@ -57,7 +57,7 @@ class Area {
       stage.spawnMonster(breed, pos);
     }
 
-    area.quest.generate(stage);
+    game.quest = area.quest.generate(stage);
 
     return heroPos;
   }
@@ -144,7 +144,27 @@ abstract class Quest {
   // - Complete quest without killing any monsters
   // - Complete quest without using any items
 
-  abstract void generate(Stage stage);
+  abstract QuestStatus generate(Stage stage);
+}
+
+abstract class QuestStatus {
+  bool _isComplete = false;
+  bool get isComplete => _isComplete;
+
+  bool pickUpItem(Game game, Item item) {
+    if (onPickUpItem(game, item)) _complete(game);
+    return _isComplete;
+  }
+
+  bool onPickUpItem(Game game, Item item) => false;
+
+  void _complete(Game game) {
+    // Only complete once.
+    if (_isComplete) return;
+
+    _isComplete = true;
+    game.log.add('You have completed your quest! Press "q" to exit the level.');
+  }
 }
 
 class FloorItemQuest extends Quest {
@@ -152,11 +172,21 @@ class FloorItemQuest extends Quest {
 
   FloorItemQuest(this.itemType);
 
-  void generate(Stage stage) {
+  QuestStatus generate(Stage stage) {
     final item = new Item(itemType);
     item.pos = stage.findDistantOpenTile(10);
     stage.items.add(item);
+
+    return new FloorItemQuestStatus(itemType);
   }
+}
+
+class FloorItemQuestStatus extends QuestStatus {
+  final ItemType itemType;
+
+  FloorItemQuestStatus(this.itemType);
+
+  bool onPickUpItem(Game game, Item item) => item.type == itemType;
 }
 
 /// Abstract class for a stage generator. An instance of this encapsulation

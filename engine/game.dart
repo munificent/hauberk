@@ -6,7 +6,7 @@ class Game {
   final Log            log;
   final Queue<Action>  actions;
   Hero hero;
-  bool _questComplete = false;
+  QuestStatus quest;
 
   Game(this.area, this.depth, Content content, HeroSave save)
     : stage = new Stage(80, 40),
@@ -21,8 +21,6 @@ class Game {
 
     Fov.refresh(stage, hero.pos);
   }
-
-  bool get isQuestComplete => _questComplete;
 
   GameResult update() {
     final gameResult = new GameResult();
@@ -110,11 +108,6 @@ class Game {
     // TODO(bob): Should reuse code in Area to generate out-of-depth monsters.
     final breed = area.pickBreed(depth);
     stage.spawnMonster(breed, pos);
-  }
-
-  void completeQuest() {
-    log.add('You have completed your quest! Press "q" to exit the level.');
-    _questComplete = true;
   }
 
   void makeNoise(Actor actor, int noise) {
