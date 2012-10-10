@@ -43,13 +43,15 @@ class Attack {
     if (defender.health.current == 0) {
       action.addEvent(new Event.kill(defender));
 
+      action.log('{1} kill[s] {2}.', attackNoun, defender);
       defender.onDied(attacker);
       attacker.onKilled(defender);
 
       if (defender is! Hero) {
         action.game.stage.actors.remove(defender);
       }
-      return action.succeed('{1} kill[s] {2}.', attackNoun, defender);
+
+      return action.succeed();
     }
 
     action.addEvent(new Event.hit(defender, damage));

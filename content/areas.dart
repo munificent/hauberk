@@ -22,7 +22,7 @@ class AreaBuilder extends ContentBuilder {
           // TODO(bob): Do something better than just have them on the ground.
           'Short Bow'
         ],
-        quest: floorItem('Magical Chalice')),
+        quest: kill('wild dog', 1)),
       level(trainingGrounds(), numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
@@ -95,6 +95,65 @@ class AreaBuilder extends ContentBuilder {
     return area;
   }
 
+  QuestBuilder kill(String breed, [int count = 1]) =>
+      new MonsterQuestBuilder(_breeds[breed], count);
+
   QuestBuilder floorItem(String type) =>
       new FloorItemQuestBuilder(_items[type]);
+}
+
+/// Builds a quest for killing a certain number of a certain [Monster].
+class MonsterQuestBuilder extends QuestBuilder {
+  final Breed breed;
+  final int count;
+
+  MonsterQuestBuilder(this.breed, this.count);
+
+  Quest generate(Stage stage) {
+    for (var i = 0; i < count; i++) {
+      var pos = stage.findOpenTile();
+      stage.spawnMonster(breed, pos);
+    }
+
+    return new MonsterQuest(breed, count);
+  }
+}
+
+/// Builds a quest for finding an item on the ground in the [Stage].
+class FloorItemQuestBuilder extends QuestBuilder {
+  final ItemType itemType;
+
+  FloorItemQuestBuilder(this.itemType);
+
+  Quest generate(Stage stage) {
+    final item = new Item(itemType);
+    item.pos = stage.findDistantOpenTile(10);
+    stage.items.add(item);
+
+    return new ItemQuest(itemType);
+  }
+}
+
+/// A quest to find an [Item] of a certain [ItemType].
+class ItemQuest extends Quest {
+  final ItemType itemType;
+
+  ItemQuest(this.itemType);
+
+  bool onPickUpItem(Game game, Item item) => item.type == itemType;
+}
+/// A quest to kill a number of [Monster]s of a certain [Breed].
+class MonsterQuest extends Quest {
+  final Breed breed;
+  int remaining;
+
+  MonsterQuest(this.breed, this.remaining);
+
+  bool onKillMonster(Game game, Monster monster) {
+    if (monster.breed == breed) {
+      remaining--;
+    }
+
+    return remaining <= 0;
+  }
 }

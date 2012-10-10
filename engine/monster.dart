@@ -201,6 +201,9 @@ class Monster extends Actor {
       // TODO(bob): Add message.
       game.stage.items.add(item);
     });
+
+    // Tell the quest.
+    game.quest.killMonster(game, this);
   }
 
   Vec changePosition(Vec pos) {

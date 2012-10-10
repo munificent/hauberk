@@ -158,6 +158,13 @@ abstract class Quest {
 
   bool onPickUpItem(Game game, Item item) => false;
 
+  bool killMonster(Game game, Monster monster) {
+    if (onKillMonster(game, monster)) _complete(game);
+    return _isComplete;
+  }
+
+  bool onKillMonster(Game game, Monster monster) => false;
+
   void _complete(Game game) {
     // Only complete once.
     if (_isComplete) return;
@@ -165,28 +172,6 @@ abstract class Quest {
     _isComplete = true;
     game.log.add('You have completed your quest! Press "q" to exit the level.');
   }
-}
-
-class FloorItemQuestBuilder extends QuestBuilder {
-  final ItemType itemType;
-
-  FloorItemQuestBuilder(this.itemType);
-
-  Quest generate(Stage stage) {
-    final item = new Item(itemType);
-    item.pos = stage.findDistantOpenTile(10);
-    stage.items.add(item);
-
-    return new ItemQuest(itemType);
-  }
-}
-
-class ItemQuest extends Quest {
-  final ItemType itemType;
-
-  ItemQuest(this.itemType);
-
-  bool onPickUpItem(Game game, Item item) => item.type == itemType;
 }
 
 /// Abstract class for a stage generator. An instance of this encapsulation
