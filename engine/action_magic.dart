@@ -30,7 +30,7 @@ class TeleportAction extends Action {
     for (var pos in bounds) {
       if (!game.stage[pos].isPassable) continue;
       if (game.stage.actorAt(pos) != null) continue;
-      if ((pos - actor.pos).lengthSquared > distance * distance) continue;
+      if (pos - actor.pos > distance) continue;
       targets.add(pos);
     }
 
@@ -39,16 +39,11 @@ class TeleportAction extends Action {
     }
 
     // Try to teleport as far as possible.
-    var bestDistance = -1;
-    var best;
+    var best = rng.item(targets);
 
     for (var tries = 0; tries < 10; tries++) {
       final pos = rng.item(targets);
-      final distance = (pos - actor.pos).lengthSquared;
-      if (distance > bestDistance) {
-        best = pos;
-        bestDistance = distance;
-      }
+      if (pos - actor.pos > best - actor.pos) best = pos;
     }
 
     // TODO(bob): Effect.

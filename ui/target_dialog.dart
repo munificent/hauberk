@@ -15,7 +15,6 @@ class TargetDialog extends Screen {
 
   TargetDialog(this.gameScreen, this.game) {
     // Default to targeting the nearest monster.
-    var nearestDistance = 99999;
     var nearest;
     for (var actor in game.stage.actors) {
       if (actor is! Monster) continue;
@@ -23,9 +22,8 @@ class TargetDialog extends Screen {
 
       monsters.add(actor);
 
-      var distance = (game.hero.pos - actor.pos).lengthSquared;
-      if (distance < nearestDistance) {
-        nearestDistance = distance;
+      if (nearest == null ||
+          game.hero.pos - actor.pos < game.hero.pos - nearest.pos) {
         nearest = actor;
       }
     }
@@ -74,8 +72,8 @@ class TargetDialog extends Screen {
         if (game.stage.actorAt(pos) != null) break;
         if (!game.stage[pos].isTransparent) break;
 
-        terminal.writeAt(pos.x, pos.y, '•',
-            (i == 0) ? Color.YELLOW : Color.DARK_YELLOW);
+        terminal.drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(249,
+            (i == 0) ? Color.YELLOW : Color.DARK_YELLOW));
         i = (i + NUM_FRAMES - 1) % NUM_FRAMES;
       }
     }
