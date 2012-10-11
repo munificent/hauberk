@@ -14,84 +14,6 @@ interface RenderableTerminal extends Terminal {
   void render();
 }
 
-class BaseTerminal implements Terminal {
-  final Array2D<Glyph> glyphs;
-
-  BaseTerminal(int width, int height)
-  : glyphs = new Array2D<Glyph>(width, height,
-      () => new Glyph(' ', Color.WHITE, Color.BLACK));
-
-  int get width() => glyphs.width;
-  int get height() => glyphs.height;
-
-  void clear() {
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        writeAt(x, y, ' ');
-      }
-    }
-  }
-
-  void write(String text, [Color fore, Color back]) {
-    for (int x = 0; x < text.length; x++) {
-      if (x >= width) break;
-      writeAt(x, 0, text[x], fore, back);
-    }
-  }
-
-  void writeAt(int x, int y, String text, [Color fore, Color back]) {
-    if (fore == null) fore = Color.WHITE;
-    if (back == null) back = Color.BLACK;
-
-    // TODO(bob): Bounds check.
-    for (int i = 0; i < text.length; i++) {
-      if (x + i >= width) break;
-      glyphs.set(x + i, y, new Glyph(text[i], fore, back));
-    }
-  }
-
-  void drawGlyph(int x, int y, Glyph glyph) {
-    glyphs.set(x, y, glyph);
-  }
-
-  Terminal rect(int x, int y, int width, int height) {
-    // TODO(bob): Bounds check.
-    return new PortTerminal(x, y, width, height, this);
-  }
-}
-
-class DomTerminal extends BaseTerminal implements RenderableTerminal {
-  final html.Element element;
-
-  DomTerminal(int width, int height, this.element)
-  : super(width, height);
-
-  render() {
-    final buffer = new StringBuffer();
-
-    var fore = null;
-    var back = null;
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final glyph = glyphs.get(x, y);
-
-        // Switch colors.
-        if (glyph.fore != fore || glyph.back != back) {
-          if (glyph.fore != null) buffer.add('</span>');
-          fore = glyph.fore;
-          back = glyph.back;
-          buffer.add('<span class="${glyph.fore.cssClass} b${glyph.back.cssClass}">');
-        }
-
-        buffer.add(glyph.char);
-      }
-      buffer.add('\n');
-    }
-
-    element.innerHTML = buffer.toString();
-  }
-}
-
 class PortTerminal implements Terminal {
   final int width;
   final int height;
@@ -130,58 +52,69 @@ class PortTerminal implements Terminal {
 }
 
 class Color {
-  static const BLACK        = const Color('k');
-  static const WHITE        = const Color('w');
+  static const BLACK        = const Color('k', '#000');
+  static const WHITE        = const Color('w', '#fff');
 
-  static const LIGHT_GRAY   = const Color('le');
-  static const GRAY         = const Color('e');
-  static const DARK_GRAY    = const Color('de');
+  static const LIGHT_GRAY   = const Color('le', 'rgb(192, 192, 192)');
+  static const GRAY         = const Color('e', 'rgb(128, 128, 128)');
+  static const DARK_GRAY    = const Color('de', 'rgb(64, 64, 64)');
 
-  static const LIGHT_RED    = const Color('lr');
-  static const RED          = const Color('r');
-  static const DARK_RED     = const Color('dr');
+  static const LIGHT_RED    = const Color('lr', 'rgb(255, 160, 160)');
+  static const RED          = const Color('r', 'rgb(220, 0, 0)');
+  static const DARK_RED     = const Color('dr', 'rgb(100, 0, 0)');
 
-  static const LIGHT_ORANGE = const Color('lo');
-  static const ORANGE       = const Color('o');
-  static const DARK_ORANGE  = const Color('do');
+  static const LIGHT_ORANGE = const Color('lo', 'rgb(255, 200, 170)');
+  static const ORANGE       = const Color('o', 'rgb(255, 128, 0)');
+  static const DARK_ORANGE  = const Color('do', 'rgb(128, 64, 0)');
 
-  static const LIGHT_GOLD   = const Color('ld');
-  static const GOLD         = const Color('d');
-  static const DARK_GOLD    = const Color('dd');
+  static const LIGHT_GOLD   = const Color('ld', 'rgb(255, 230, 150)');
+  static const GOLD         = const Color('d', 'rgb(255, 192, 0)');
+  static const DARK_GOLD    = const Color('dd', 'rgb(128, 96, 0)');
 
-  static const LIGHT_YELLOW = const Color('ly');
-  static const YELLOW       = const Color('y');
-  static const DARK_YELLOW  = const Color('dy');
+  static const LIGHT_YELLOW = const Color('ly', 'rgb(255, 255, 150)');
+  static const YELLOW       = const Color('y', 'rgb(255, 255, 0)');
+  static const DARK_YELLOW  = const Color('dy', 'rgb(128, 128, 0)');
 
-  static const LIGHT_GREEN  = const Color('lg');
-  static const GREEN        = const Color('g');
-  static const DARK_GREEN   = const Color('dg');
+  static const LIGHT_GREEN  = const Color('lg', 'rgb(130, 255, 90)');
+  static const GREEN        = const Color('g', 'rgb(0, 200, 0)');
+  static const DARK_GREEN   = const Color('dg', 'rgb(0, 100, 0)');
 
-  static const LIGHT_AQUA   = const Color('la');
-  static const AQUA         = const Color('a');
-  static const DARK_AQUA    = const Color('da');
+  static const LIGHT_AQUA   = const Color('la', 'rgb(200, 255, 255)');
+  static const AQUA         = const Color('a', 'rgb(0, 255, 255)');
+  static const DARK_AQUA    = const Color('da', 'rgb(0, 128, 128)');
 
-  static const LIGHT_BLUE   = const Color('lb');
-  static const BLUE         = const Color('b');
-  static const DARK_BLUE    = const Color('db');
+  static const LIGHT_BLUE   = const Color('lb', 'rgb(128, 160, 255)');
+  static const BLUE         = const Color('b', 'rgb(0, 64, 255)');
+  static const DARK_BLUE    = const Color('db', 'rgb(0, 37, 168)');
 
-  static const LIGHT_PURPLE = const Color('lp');
-  static const PURPLE       = const Color('p');
-  static const DARK_PURPLE  = const Color('dp');
+  static const LIGHT_PURPLE = const Color('lp', 'rgb(200, 140, 255)');
+  static const PURPLE       = const Color('p', 'rgb(128, 0, 255)');
+  static const DARK_PURPLE  = const Color('dp', 'rgb(64, 0, 128)');
 
-  static const LIGHT_BROWN  = const Color('ln');
-  static const BROWN        = const Color('n');
-  static const DARK_BROWN   = const Color('dn');
+  static const LIGHT_BROWN  = const Color('ln', 'rgb(190, 150, 100)');
+  static const BROWN        = const Color('n', 'rgb(160, 110, 60)');
+  static const DARK_BROWN   = const Color('dn', 'rgb(100, 64, 32)');
 
   final String cssClass;
+  final String cssColor;
 
-  const Color(this.cssClass);
+  const Color(this.cssClass, this.cssColor);
 }
 
 class Glyph {
-  final String char;
+  final int    char;
   final Color  fore;
   final Color  back;
 
-  const Glyph(this.char, [this.fore = Color.WHITE, this.back = Color.BLACK]);
+  Glyph(String char, [this.fore = Color.WHITE, this.back = Color.BLACK])
+      : char = char.charCodeAt(0);
+
+  Glyph.fromCharCode(this.char, [this.fore = Color.WHITE, this.back = Color.BLACK]);
+
+  operator ==(other) {
+    if (other is! Glyph) return false;
+    return char == other.char &&
+        fore == other.fore &&
+        back == other.back;
+  }
 }

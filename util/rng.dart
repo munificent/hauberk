@@ -1,14 +1,5 @@
-
-// TODO(bob): Just use a final static when those can have non-const
-// initializers.
 /// A singleton instance of Rng globally available.
-Rng get rng() {
-  if (_rng == null) _rng = new Rng(new Date.now().millisecondsSinceEpoch);
-  return _rng;
-}
-
-Rng _rng;
-
+final rng = new Rng(new Date.now().millisecondsSinceEpoch);
 
 /// The Random Number God: deliverer of good and ill fortune alike.
 /// Implemented using a [Mersenne Twister]. Note: I just ported it straight from

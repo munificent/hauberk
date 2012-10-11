@@ -7,8 +7,10 @@
 #import('engine.dart');
 #import('util.dart');
 
+#source('ui/canvas_terminal.dart');
 #source('ui/close_door_dialog.dart');
 #source('ui/confirm_dialog.dart');
+#source('ui/dom_terminal.dart');
 #source('ui/forfeit_dialog.dart');
 #source('ui/game_screen.dart');
 #source('ui/home_screen.dart');

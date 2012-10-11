@@ -10,7 +10,8 @@
 main() {
   final content = createContent();
 
-  final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
+//  final terminal = new DomTerminal(100, 40, html.document.query('#terminal'));
+  final terminal = new CanvasTerminal(100, 40, html.query('canvas'));
   final keyboard = new Keyboard(html.document);
   final ui = new UserInterface(keyboard, terminal);
 

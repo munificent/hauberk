@@ -59,6 +59,19 @@ class Area {
 
     game.quest = area.quest.generate(stage);
 
+    // TODO(bob): Temp. Wizard light it.
+    /*
+    for (var pos in stage.bounds) {
+      for (var dir in Direction.ALL) {
+        if (stage.bounds.contains(pos + dir) &&
+            stage[pos + dir].isTransparent) {
+          stage[pos].visible = true;
+          break;
+        }
+      }
+    }
+    */
+
     return heroPos;
   }
 

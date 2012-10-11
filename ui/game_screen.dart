@@ -332,7 +332,7 @@ class GameScreen extends Screen {
         glyph = debugScent(x, y, tile, glyph);
         */
 
-        terminal.writeAt(x, y, glyph.char, glyph.fore, glyph.back);
+        terminal.drawGlyph(x, y, glyph);
       }
     }
 
@@ -372,10 +372,10 @@ class GameScreen extends Screen {
     for (final actor in game.stage.actors) {
       if (!game.stage[actor.pos].visible) continue;
       final appearance = actor.appearance;
-      var glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
+      var glyph = (appearance is Glyph) ? appearance : new Glyph.fromCharCode(2, Color.WHITE);
 
       if (target == actor) {
-        glyph = new Glyph(glyph.char, glyph.back, glyph.fore);
+        glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
       }
 
       terminal.drawGlyph(actor.x, actor.y, glyph);
@@ -450,7 +450,7 @@ class GameScreen extends Screen {
 
         var glyph = monster.appearance;
         if (target == monster) {
-          glyph = new Glyph(glyph.char, glyph.back, glyph.fore);
+          glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
         terminal.drawGlyph(81, y, glyph);
