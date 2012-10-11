@@ -72,7 +72,7 @@ class TargetDialog extends Screen {
         if (game.stage.actorAt(pos) != null) break;
         if (!game.stage[pos].isTransparent) break;
 
-        terminal.drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(249,
+        terminal.drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(CharCode.BULLET,
             (i == 0) ? Color.YELLOW : Color.DARK_YELLOW));
         i = (i + NUM_FRAMES - 1) % NUM_FRAMES;
       }

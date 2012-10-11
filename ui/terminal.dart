@@ -118,3 +118,24 @@ class Glyph {
         back == other.back;
   }
 }
+
+/// Character codes for the special characters on [code page 437][font].
+///
+/// [font]: http://en.wikipedia.org/wiki/Code_page_437
+class CharCode {
+  static const OPEN_SMILEY = 1;
+  static const FILLED_SMILEY = 2;
+  static const HEART = 3;
+  static const DIAMOND = 4;
+  static const CLUB = 5;
+  static const SPADE = 6;
+  static const BULLET = 7;
+  static const SPACE = 32;
+  static const SOLID = 219;
+  static const HALF_BOTTOM = 220;
+  static const HALF_LEFT = 221;
+  static const HALF_RIGHT = 222;
+  static const HALF_TOP = 223;
+  static const SMALL_BULLET = 249;
+  static const TINY_BULLET = 250;
+}

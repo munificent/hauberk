@@ -478,17 +478,33 @@ class GameScreen extends Screen {
         Color.RED, Color.DARK_RED);
   }
 
+  /// Draws a progress bar to reflect [value]'s range between `0` and [max].
+  /// Has a couple of special tweaks: the bar will only be empty if [value] is
+  /// exactly `0`, otherwise it will at least show a sliver. Likewise, the bar
+  /// will only be full if [value] is exactly [max], otherwise at least one
+  /// half unit will be missing.
   void drawMeter(Terminal terminal, int y, int value, int max,
                  Color fore, Color back) {
-    var barWidth = 10 * value ~/ max;
-
-    // Don't round down to an entirely empty bar.
-    if (barWidth == 0) barWidth = 1;
+    var barWidth;
+    if (value == max) {
+      barWidth = 20;
+    } else if (max <= 1) {
+      // Corner case: if max is one, avoid dividing by zero.
+      barWidth = 0;
+    } else {
+      barWidth = (19 * value / (max - 1)).ceil().toInt();
+    }
 
     for (var x = 0; x < 10; x++) {
-      var full = x < barWidth;
-      terminal.writeAt(90 + x, y, full ? '|' : '•',
-          full ? fore : back);
+      var char;
+      if (x < barWidth ~/ 2) {
+        char = CharCode.SOLID;
+      } else if (x < (barWidth + 1) ~/ 2) {
+        char = CharCode.HALF_LEFT;
+      } else {
+        char = CharCode.SPACE;
+      }
+      terminal.drawGlyph(90 + x, y, new Glyph.fromCharCode(char, fore, back));
     }
   }
 
