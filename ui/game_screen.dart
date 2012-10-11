@@ -275,10 +275,10 @@ class GameScreen extends Screen {
 
     var result = game.update();
 
-    // TODO(bob): Hack temp.
-    if (game.hero.health.current == 0) {
+    // See if the hero died.
+    if (!game.hero.isAlive) {
       // TODO(bob): Should it save the game here?
-      ui.pop(false);
+      ui.goTo(new GameOverScreen());
       return;
     }
 
