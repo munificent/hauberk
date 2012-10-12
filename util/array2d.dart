@@ -19,8 +19,8 @@ class Array2D<T> implements Iterable<T> {
     elements[pos.y * width + pos.x] = value;
   }
 
-  Rect get bounds() => new Rect(0, 0, width, height);
-  Vec  get size() => new Vec(width, height);
+  Rect get bounds => new Rect(0, 0, width, height);
+  Vec  get size => new Vec(width, height);
 
   // TODO(bob): Multi-argument subscript operators would be nice.
   T get(int x, int y) => elements[y * width + x];

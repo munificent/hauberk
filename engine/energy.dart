@@ -35,7 +35,7 @@ class Energy {
 
   Energy(this.speed);
 
-  bool get canTakeTurn() => energy >= ACTION_COST;
+  bool get canTakeTurn => energy >= ACTION_COST;
 
   /// Advances one game turn and gains an appropriate amount of energy. Returns
   /// `true` if there is enough energy to take a turn.

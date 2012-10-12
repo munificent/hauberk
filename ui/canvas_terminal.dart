@@ -13,8 +13,8 @@ class CanvasTerminal implements RenderableTerminal {
   html.CanvasRenderingContext2D context;
   html.ImageElement font;
 
-  int get width() => glyphs.width;
-  int get height() => glyphs.height;
+  int get width => glyphs.width;
+  int get height => glyphs.height;
 
   /// A cache of the tinted font images. Each key is a CSS class name, and the
   /// image will be the font in that color.

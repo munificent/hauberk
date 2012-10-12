@@ -1,7 +1,7 @@
 
 interface Terminal {
-  int get width();
-  int get height();
+  int get width;
+  int get height;
 
   void clear();
   void write(String text, [Color fore, Color back]);

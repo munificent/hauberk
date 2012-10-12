@@ -4,7 +4,7 @@
 class Maze {
   final Array2D<Cell> _cells;
 
-  Rect get bounds() => new Rect(0, 0, _cells.width - 1, _cells.height - 1);
+  Rect get bounds => new Rect(0, 0, _cells.width - 1, _cells.height - 1);
 
   /// Initializes a new solid (i.e. all cells closed) maze.
   Maze(int width, int height)

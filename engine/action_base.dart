@@ -35,7 +35,7 @@ abstract class Action {
 
   /// How much noise is produced by this action. Override to make certain
   /// actions quieter or louder.
-  int get noise() => Option.NOISE_NORMAL;
+  int get noise => Option.NOISE_NORMAL;
 
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     _game.log.add(message, noun1, noun2, noun3);

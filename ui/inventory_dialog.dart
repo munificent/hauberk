@@ -142,7 +142,7 @@ abstract class InventoryMode {
   static const USE  = const UseInventoryMode();
 
   String message(InventoryView view);
-  bool get showGroundItems() => true;
+  bool get showGroundItems => true;
   bool canSelect(Item item);
   Action getAction(int index, InventoryView view);
 
@@ -157,7 +157,7 @@ class DropInventoryMode extends InventoryMode {
     }
   }
 
-  bool get showGroundItems() => false;
+  bool get showGroundItems => false;
   const DropInventoryMode() : super();
 
   bool canSelect(Item item) => true;

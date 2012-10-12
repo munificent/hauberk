@@ -82,7 +82,7 @@ class Hero extends Actor {
   // TODO(bob): Hackish.
   get appearance => 'hero';
 
-  bool get needsInput() {
+  bool get needsInput {
     if ((_behavior != null) && !_behavior.canPerform(this)) {
       waitForInput();
     }
@@ -187,8 +187,8 @@ class Hero extends Actor {
     }
   }
 
-  String get nounText() => 'you';
-  int get person() => 2;
+  String get nounText => 'you';
+  int get person => 2;
 }
 
 int calculateLevel(int experienceCents) {

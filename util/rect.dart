@@ -41,95 +41,35 @@ class Rect implements Iterable<Vec> {
     return new Rect.posAndSize(pos, toCenter.size);
   }
 
-  /*
-
-  static bool operator ==(Rect r1, Rect r2)
-  {
-      return r1.Equals(r2);
-  }
-
-  static Rect operator +(Rect r1, Vec v2)
-  {
-      return new Rect(r1.pos + v2, r1.size);
-  }
-
-  static Rect operator +(Vec v1, Rect r2)
-  {
-      return new Rect(r2.pos + v1, r2.size);
-  }
-
-  static Rect operator -(Rect r1, Vec v2)
-  {
-      return new Rect(r1.pos - v2, r1.size);
-  }
-
-  */
-
   final Vec pos;
   final Vec size;
 
-  int get x() => pos.x;
-  int get y() => pos.y;
-  int get width() => size.x;
-  int get height() => size.y;
+  int get x => pos.x;
+  int get y => pos.y;
+  int get width => size.x;
+  int get height => size.y;
 
-  int get left() => x;
-  int get top() => y;
-  int get right() => x + width;
-  int get bottom() => y + height;
+  int get left => x;
+  int get top => y;
+  int get right => x + width;
+  int get bottom => y + height;
 
-  Vec get topLeft() => new Vec(left, top);
-  Vec get topRight() => new Vec(right, top);
-  Vec get bottomLeft() => new Vec(left, bottom);
-  Vec get bottomRight() => new Vec(right, bottom);
+  Vec get topLeft => new Vec(left, top);
+  Vec get topRight => new Vec(right, top);
+  Vec get bottomLeft => new Vec(left, bottom);
+  Vec get bottomRight => new Vec(right, bottom);
 
-  Vec get center() => new Vec((left + right) ~/ 2, (top + bottom) ~/ 2);
+  Vec get center => new Vec((left + right) ~/ 2, (top + bottom) ~/ 2);
 
-  int get area() => size.area;
+  int get area => size.area;
 
   const Rect.posAndSize(this.pos, this.size);
-
-  /*
-  const Rect(this.size)
-  : pos = Vec.zero;
-  */
 
   Rect(int x, int y, int width, int height)
   : pos = new Vec(x, y),
     size = new Vec(width, height);
 
-  /*
-  const Rect(this.pos, int width, int height)
-  : size = const Vec(width, height);
-
-  const Rect(int width, int height)
-  : pos = Vec.zero,
-    size = const Vec(width, height);
-
-  const Rect(int x, int y, this.size)
-  : pos = const Vec(x, y);
-  */
-
   String toString() => '($pos)-($size)';
-
-  /*
-  override bool Equals(object obj)
-  {
-      if (obj is Rect) return Equals((Rect)obj);
-
-      return base.Equals(obj);
-  }
-
-  Rect Offset(Vec pos, Vec size)
-  {
-      return new Rect(mPos + pos, mSize + size);
-  }
-
-  Rect Offset(int x, int y, int width, int height)
-  {
-      return Offset(new Vec(x, y), new Vec(width, height));
-  }
-  */
 
   Rect inflate(int distance) {
     return new Rect(x - distance, y - distance,
@@ -155,30 +95,6 @@ class Rect implements Iterable<Vec> {
   }
 
   RectIterator iterator() => new RectIterator(this);
-
-  /*
-  bool Overlaps(Rect rect)
-  {
-      // fail if they do not overlap on any axis
-      if (left > rect.right) return false;
-      if (right < rect.left) return false;
-      if (top > rect.bottom) return false;
-      if (bottom < rect.top) return false;
-
-      // then they must overlap
-      return true;
-  }
-
-  Rect Intersect(Rect rect)
-  {
-      return Intersect(this, rect);
-  }
-
-  Rect CenterIn(Rect rect)
-  {
-      return CenterIn(this, rect);
-  }
-  */
 
   /// Returns the distance between this Rect and [other]. This is minimum
   /// length that a corridor would have to be to go from one Rect to the other.

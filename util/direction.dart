@@ -15,7 +15,7 @@ class Direction extends VecBase implements Vec {
 
   const Direction(int x, int y) : super(x, y);
 
-  Direction get rotateLeft45() {
+  Direction get rotateLeft45 {
     switch (this) {
       case NONE: return NONE;
       case N: return NW;
@@ -29,7 +29,7 @@ class Direction extends VecBase implements Vec {
     }
   }
 
-  Direction get rotateRight45() {
+  Direction get rotateRight45 {
     switch (this) {
       case NONE: return NONE;
       case N: return NE;
@@ -43,7 +43,7 @@ class Direction extends VecBase implements Vec {
     }
   }
 
-  Direction get rotateLeft90() {
+  Direction get rotateLeft90 {
     switch (this) {
       case NONE: return NONE;
       case N: return W;
@@ -57,7 +57,7 @@ class Direction extends VecBase implements Vec {
     }
   }
 
-  Direction get rotateRight90() {
+  Direction get rotateRight90 {
     switch (this) {
       case NONE: return NONE;
       case N: return E;
@@ -71,7 +71,7 @@ class Direction extends VecBase implements Vec {
     }
   }
 
-  Direction get rotate180() {
+  Direction get rotate180 {
     switch (this) {
       case NONE: return NONE;
       case N: return S;

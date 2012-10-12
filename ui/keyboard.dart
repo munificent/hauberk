@@ -14,15 +14,15 @@ class Keyboard {
   }
 
   /// Gets whether or not the shift modifier key is currently pressed.
-  bool get shift() => _shift;
+  bool get shift => _shift;
 
   /// Gets whether or not the control modifier key is currently pressed.
-  bool get control() => _control;
+  bool get control => _control;
 
   /// Gets whether or not the option modifier key is currently pressed.
-  bool get option() => _option;
+  bool get option => _option;
 
-  int get lastPressed() => _lastPressed;
+  int get lastPressed => _lastPressed;
 
   void keyDown(event) {
     if (event.keyCode == KeyCode.SHIFT) {

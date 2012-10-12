@@ -20,14 +20,14 @@ class Monster extends Actor {
     energy.speed = Energy.NORMAL_SPEED + breed.speed;
   }
 
-  get appearance() => breed.appearance;
+  get appearance => breed.appearance;
 
-  String get nounText() => 'the ${breed.name}';
-  int get person() => 3;
-  Gender get gender() => breed.gender;
+  String get nounText => 'the ${breed.name}';
+  int get person => 3;
+  Gender get gender => breed.gender;
 
   /// How much experience a level one [Hero] gains for killing this monster.
-  int get experienceCents() => breed.experienceCents;
+  int get experienceCents => breed.experienceCents;
 
   /// Gets whether or not this monster has an uninterrupted line of sight to
   /// [target].
@@ -41,7 +41,7 @@ class Monster extends Actor {
     return true;
   }
 
-  bool get canOpenDoors() => breed.flags.contains('open-doors');
+  bool get canOpenDoors => breed.flags.contains('open-doors');
 
   Action onGetAction() {
     // Recharge moves.
@@ -269,7 +269,7 @@ class Breed {
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
-  int get experienceCents() {
+  int get experienceCents {
     // The more health it has, the longer it can hurt the hero.
     num exp = maxHealth;
 
@@ -298,7 +298,7 @@ class Breed {
 
   /// When a [Monster] of this Breed is generated, how many of the same type
   /// should be spawned together (roughly).
-  int get numberInGroup() {
+  int get numberInGroup {
     if (flags.contains('horde')) return 18;
     if (flags.contains('swarm')) return 12;
     if (flags.contains('pack')) return 8;

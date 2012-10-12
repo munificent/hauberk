@@ -10,7 +10,7 @@ class AttackAction extends Action {
     return attack.perform(this, actor, defender);
   }
 
-  int get noise() => Option.NOISE_HIT;
+  int get noise => Option.NOISE_HIT;
 
   String toString() => '$actor attacks $defender';
 }

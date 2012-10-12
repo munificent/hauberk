@@ -114,12 +114,12 @@ class Stat {
   int _current;
   int _max;
 
-  int get current() => _current;
+  int get current => _current;
   void set current(int value) {
     _current = clamp(0, value, _max);
   }
 
-  int get max() => _max;
+  int get max => _max;
   void set max(int value) {
     _max = value;
 
@@ -127,7 +127,7 @@ class Stat {
     _current = clamp(0, _current, _max);
   }
 
-  bool get isMax() => _current == _max;
+  bool get isMax => _current == _max;
 
   Stat(int value)
   : _current = value,

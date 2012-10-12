@@ -102,7 +102,7 @@ class Power {
 
   Power(this.type, this.damage);
 
-  String get name() => type.name;
+  String get name => type.name;
 }
 
 /// A kind of [Power]. It has information that is common to all [Power]s of a

@@ -1,8 +1,8 @@
 /// The game's live play area.
 class Stage {
-  int get width() => tiles.width;
-  int get height() => tiles.height;
-  Rect get bounds() => tiles.bounds;
+  int get width => tiles.width;
+  int get height => tiles.height;
+  Rect get bounds => tiles.bounds;
 
   final Array2D<Tile> tiles;
   final Chain<Actor> actors;
@@ -218,14 +218,14 @@ class Tile {
 
   Tile();
 
-  bool get visible() => _visible;
+  bool get visible => _visible;
   void set visible(bool value) {
     if (value) _explored = true;
     _visible = value;
   }
 
-  bool get isExplored() => _explored;
-  bool get isPassable() => type.isPassable;
-  bool get isTraversable() => type.isPassable || (type.opensTo != null);
-  bool get isTransparent() => type.isTransparent;
+  bool get isExplored => _explored;
+  bool get isPassable => type.isPassable;
+  bool get isTraversable => type.isPassable || (type.opensTo != null);
+  bool get isTransparent => type.isTransparent;
 }

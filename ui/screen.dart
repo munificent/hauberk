@@ -1,7 +1,7 @@
 class Screen {
   UserInterface _ui;
 
-  UserInterface get ui() => _ui;
+  UserInterface get ui => _ui;
 
   void _bind(UserInterface ui) {
     assert(ui == null);
@@ -13,7 +13,7 @@ class Screen {
     _ui = null;
   }
 
-  bool get isTopScreen() => _ui.isTopScreen(this);
+  bool get isTopScreen => _ui.isTopScreen(this);
 
   void dirty() {
     // If we aren't bound (yet), just do nothing. The screen will be dirtied

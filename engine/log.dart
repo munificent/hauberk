@@ -157,8 +157,8 @@ class Log {
 
 class Noun {
   final String nounText;
-  int get person() => 3;
-  Gender get gender() => Gender.NEUTER;
+  int get person => 3;
+  Gender get gender => Gender.NEUTER;
 
   Noun(this.nounText);
 

@@ -2,7 +2,7 @@
 class Chain<T> implements Iterable<T> {
   Link<T> head;
 
-  T get current() => head.item;
+  T get current => head.item;
 
   void add(T item) {
     if (head == null) {
