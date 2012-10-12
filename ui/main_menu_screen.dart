@@ -135,8 +135,11 @@ class MainMenuScreen extends Screen {
       });
 
       final experience = hero['experience'];
+
+      final completedLevels = hero['completedLevels'];
+
       heroes.add(new HeroSave.load(inventory, equipment, home, crucible,
-          skills, experience));
+          skills, experience, completedLevels));
     }
 
     _saveHeroes();
@@ -182,7 +185,8 @@ class MainMenuScreen extends Screen {
         'home': home,
         'crucible': crucible,
         'skills': skills,
-        'experience': hero.experienceCents
+        'experience': hero.experienceCents,
+        'completedLevels': hero.completedLevels
       });
     }
 

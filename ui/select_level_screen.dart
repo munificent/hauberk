@@ -53,6 +53,8 @@ class SelectLevelScreen extends Screen {
         Color.GRAY);
 
     for (var i = 0; i < content.areas.length; i++) {
+      final area = content.areas[i];
+
       write(int x, String text, int level) {
         var fore = Color.WHITE;
         var back = Color.BLACK;
@@ -62,11 +64,18 @@ class SelectLevelScreen extends Screen {
           back = Color.YELLOW;
         }
 
+        // Can only select one past the completed level.
+        if (level > getCompletedLevel(area)) {
+          fore = Color.DARK_GRAY;
+        }
+
         terminal.writeAt(x, 2 + i, text, fore, back);
       }
 
-      final area = content.areas[i];
       write(0, area.name, -1);
+
+      var completed = save.completedLevels[area.name];
+      if (completed == null) completed = 0;
 
       for (var level = 0; level < area.levels.length; level++) {
         write(50 + level * 3, (level + 1).toString(), level);
@@ -92,12 +101,21 @@ class SelectLevelScreen extends Screen {
 
     selectedArea = area;
 
+    var maxLevel = min(content.areas[selectedArea].levels.length,
+                       getCompletedLevel(content.areas[selectedArea]) + 1);
+
     if (level < 0) level = 0;
-    if (level >= content.areas[selectedArea].levels.length) {
-      level = content.areas[selectedArea].levels.length - 1;
-    }
+    if (level >= maxLevel) level = maxLevel - 1;
 
     selectedLevel = level;
     dirty();
+  }
+
+  /// Gets the one-based index of the highest completed level in [area].
+  /// Returns `0` if no levels have been completed.
+  int getCompletedLevel(Area area) {
+    var level = save.completedLevels[area.name];
+    if (level == null) return 0;
+    return level;
   }
 }

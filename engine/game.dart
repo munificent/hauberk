@@ -1,20 +1,20 @@
 /// Root class for the game engine. All game state is contained within this.
 class Game {
   final Area           area;
-  final int            depth;
+  final int            level;
   final Stage          stage;
   final Log            log;
   final Queue<Action>  actions;
   Hero hero;
   Quest quest;
 
-  Game(this.area, this.depth, Content content, HeroSave save)
+  Game(this.area, this.level, Content content, HeroSave save)
     : stage = new Stage(80, 40),
       log = new Log(),
       actions = new Queue<Action>() {
     stage.game = this;
 
-    final heroPos = area.buildStage(this, depth);
+    final heroPos = area.buildStage(this, level);
 
     hero = new Hero(this, heroPos, save, save.skills);
     stage.actors.add(hero);
@@ -106,7 +106,7 @@ class Game {
     if (stage.actorAt(pos) != null) return;
 
     // TODO(bob): Should reuse code in Area to generate out-of-depth monsters.
-    final breed = area.pickBreed(depth);
+    final breed = area.pickBreed(level);
     stage.spawnMonster(breed, pos);
   }
 

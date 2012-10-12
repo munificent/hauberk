@@ -68,6 +68,13 @@ class GameScreen extends Screen {
       case KeyCode.Q:
         if (game.quest.isComplete) {
           save.copyFrom(game.hero);
+
+          // Remember that this level was completed.
+          var completed = save.completedLevels[game.area.name];
+          if (completed == null || completed < game.level + 1) {
+            save.completedLevels[game.area.name] = game.level + 1;
+          }
+
           ui.pop(true);
         } else {
           game.log.add('You have not completed your quest yet.');
