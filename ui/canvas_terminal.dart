@@ -27,6 +27,10 @@ class CanvasTerminal implements RenderableTerminal {
 
   static final clearGlyph = new Glyph(' ');
 
+  // TODO(bob): Make this const when we can use const expressions as keys in
+  // map literals.
+  static final unicodeMap = createUnicodeMap();
+
   CanvasTerminal(int width, int height, this.canvas)
       : glyphs = new Array2D<Glyph>(width, height, () => null),
         changedGlyphs = new Array2D<Glyph>(width, height,() => clearGlyph) {
@@ -39,6 +43,14 @@ class CanvasTerminal implements RenderableTerminal {
       _imageLoaded = true;
       render();
     });
+  }
+
+  static Map<int, int> createUnicodeMap() {
+    var map = new Map<int, int>();
+    map[CharCode.BULLET] = 7;
+    map[CharCode.SOLID] = 219;
+    map[CharCode.HALF_LEFT] = 221;
+    return map;
   }
 
   void clear() {
@@ -93,10 +105,14 @@ class CanvasTerminal implements RenderableTerminal {
         glyphs.set(x, y, glyph);
         changedGlyphs.set(x, y, null);
 
-        var ascii = glyph.char;
+        var char = glyph.char;
 
-        var sx = (ascii % 32) * FONT_WIDTH;
-        var sy = (ascii ~/ 32) * FONT_HEIGHT;
+        // See if it's a Unicode character that needs to be remapped.
+        var fromUnicode = unicodeMap[char];
+        if (fromUnicode != null) char = fromUnicode;
+
+        var sx = (char % 32) * FONT_WIDTH;
+        var sy = (char ~/ 32) * FONT_HEIGHT;
 
         // Fill the background.
         context.fillStyle = glyph.back.cssColor;
@@ -104,7 +120,7 @@ class CanvasTerminal implements RenderableTerminal {
             FONT_WIDTH, FONT_HEIGHT);
 
         // Don't bother drawing empty characters.
-        if (ascii == 0 || ascii == 32) continue;
+        if (char == 0 || char == CharCode.SPACE) continue;
 
         var color = _getColorFont(glyph.fore);
         context.drawImage(color, sx, sy, FONT_WIDTH, FONT_HEIGHT,

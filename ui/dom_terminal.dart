@@ -63,7 +63,7 @@ class DomTerminal implements RenderableTerminal {
           buffer.add('<span class="${glyph.fore.cssClass} b${glyph.back.cssClass}">');
         }
 
-        buffer.add(glyph.char);
+        buffer.addCharCode(glyph.char);
       }
       buffer.add('\n');
     }
