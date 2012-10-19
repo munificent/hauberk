@@ -1,8 +1,8 @@
 /// The message log.
 class Log {
   static String makeVerbsAgree(String text, int person) {
-    final optionalSuffix = const RegExp(@'\[(\w+?)\]');
-    final irregular = const RegExp(@"\[([^|]+)\|([^\]]+)\]");
+    final optionalSuffix = const RegExp(r'\[(\w+?)\]');
+    final irregular = const RegExp(r'\[([^|]+)\|([^\]]+)\]');
 
     // Handle verbs with optional suffixes like `close[s]`.
     while (true) {

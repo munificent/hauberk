@@ -22,7 +22,7 @@ class ItemBuilder extends ContentBuilder {
     bows();
     bodyArmor();
 
-    item('Magical Chalice', lightBlue(@'$'));
+    item('Magical Chalice', lightBlue(r'$'));
   }
 
   void pelts() {
