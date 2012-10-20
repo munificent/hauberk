@@ -1,7 +1,4 @@
-/// Draws to a canvas using the old school DOS [code page 437][font] font. It's
-/// got some basic optimization to minimize the amount of drawing it has to do.
-///
-/// [font]: http://en.wikipedia.org/wiki/Code_page_437
+/// Draws to a canvas using a browser font.
 class CanvasTerminal implements RenderableTerminal {
   /// The current display state. The glyphs here mirror what has been rendered.
   final Array2D<Glyph> glyphs;
@@ -9,48 +6,32 @@ class CanvasTerminal implements RenderableTerminal {
   /// The glyphs that have been modified since the last call to [render].
   final Array2D<Glyph> changedGlyphs;
 
+  final Font font;
   final html.CanvasElement canvas;
   html.CanvasRenderingContext2D context;
-  html.ImageElement font;
+
+  int scale = 1;
 
   int get width => glyphs.width;
   int get height => glyphs.height;
 
-  /// A cache of the tinted font images. Each key is a CSS class name, and the
-  /// image will be the font in that color.
-  final Map<String, html.CanvasElement> _fontColorCache = {};
-
-  bool _imageLoaded = false;
-
-  static const FONT_WIDTH = 9;
-  static const FONT_HEIGHT = 16;
-
   static final clearGlyph = new Glyph(' ');
 
-  // TODO(bob): Make this const when we can use const expressions as keys in
-  // map literals.
-  static final unicodeMap = createUnicodeMap();
-
-  CanvasTerminal(int width, int height, this.canvas)
+  CanvasTerminal(int width, int height, this.canvas, this.font)
       : glyphs = new Array2D<Glyph>(width, height, () => null),
         changedGlyphs = new Array2D<Glyph>(width, height,() => clearGlyph) {
     context = canvas.context2d;
-    canvas.width = FONT_WIDTH * width;
-    canvas.height = FONT_HEIGHT * height;
 
-    font = new html.ImageElement('font.png');
-    font.on.load.add((_) {
-      _imageLoaded = true;
-      render();
-    });
-  }
+    canvas.width = font.charWidth * width;
+    canvas.height = font.lineHeight * height;
 
-  static Map<int, int> createUnicodeMap() {
-    var map = new Map<int, int>();
-    map[CharCode.BULLET] = 7;
-    map[CharCode.SOLID] = 219;
-    map[CharCode.HALF_LEFT] = 221;
-    return map;
+    if (html.window.devicePixelRatio > 1) {
+      print('retina! ${html.window.devicePixelRatio}');
+      scale = 2;
+
+      canvas.style.width = '${font.charWidth * width / scale}px';
+      canvas.style.height = '${font.lineHeight * height / scale}px';
+    }
   }
 
   void clear() {
@@ -92,7 +73,7 @@ class CanvasTerminal implements RenderableTerminal {
   }
 
   void render() {
-    if (!_imageLoaded) return;
+    context.font = '${font.size * scale}px ${font.family}, monospace';
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
@@ -107,45 +88,32 @@ class CanvasTerminal implements RenderableTerminal {
 
         var char = glyph.char;
 
-        // See if it's a Unicode character that needs to be remapped.
-        var fromUnicode = unicodeMap[char];
-        if (fromUnicode != null) char = fromUnicode;
-
-        var sx = (char % 32) * FONT_WIDTH;
-        var sy = (char ~/ 32) * FONT_HEIGHT;
-
         // Fill the background.
         context.fillStyle = glyph.back.cssColor;
-        context.fillRect(x * FONT_WIDTH, y * FONT_HEIGHT,
-            FONT_WIDTH, FONT_HEIGHT);
+        context.fillRect(x * font.charWidth, y * font.lineHeight,
+            font.charWidth, font.lineHeight);
 
         // Don't bother drawing empty characters.
         if (char == 0 || char == CharCode.SPACE) continue;
 
-        var color = _getColorFont(glyph.fore);
-        context.drawImage(color, sx, sy, FONT_WIDTH, FONT_HEIGHT,
-            x * FONT_WIDTH, y * FONT_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
+        context.fillStyle = glyph.fore.cssColor;
+        context.fillText(new String.fromCharCodes([char]),
+            x * font.charWidth + font.x, y * font.lineHeight + font.y);
       }
     }
   }
+}
 
-  html.CanvasElement _getColorFont(Color color) {
-    var cached = _fontColorCache[color.cssClass];
-    if (cached != null) return cached;
+/// Describes a font used by [CanvasTerminal].
+class Font {
+  final String family;
+  final int size;
+  final int charWidth;
+  final int lineHeight;
+  final int x;
+  final int y;
 
-    // Create a font using the given color.
-    var tint = new html.CanvasElement(width: font.width, height: font.height);
-    var context = tint.context2d;
-
-    // Draw the font.
-    context.drawImage(font, 0, 0);
-
-    // Tint it by filling in the existing alpha with the color.
-    context.globalCompositeOperation = 'source-atop';
-    context.fillStyle = color.cssColor;
-    context.fillRect(0, 0, font.width, font.height);
-
-    _fontColorCache[color.cssClass] = tint;
-    return tint;
-  }
+  Font(this.family, {this.size, int w, int h, this.x, this.y})
+      : charWidth = w,
+        lineHeight = h;
 }
