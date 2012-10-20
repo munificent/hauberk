@@ -95,86 +95,84 @@ class MainMenuScreen extends Screen {
       return;
     }
 
-    final storage = html.window.localStorage['heroes'];
+    var storage = html.window.localStorage['heroes'];
     if (storage == null) return;
 
-    final data = JSON.parse(storage);
+    var data = JSON.parse(storage);
 
     // TODO(bob): Check version.
 
     for (final hero in data['heroes']) {
-      final inventory = new Inventory(Option.INVENTORY_CAPACITY);
+      var inventory = new Inventory(Option.INVENTORY_CAPACITY);
       for (final itemData in hero['inventory']) {
-        final item = _loadItem(itemData);
+        var item = _loadItem(itemData);
         inventory.tryAdd(item);
       }
 
-      final equipment = new Equipment();
+      var equipment = new Equipment();
       for (final itemData in hero['equipment']) {
-        final item = _loadItem(itemData);
+        var item = _loadItem(itemData);
         // TODO(bob): If there are multiple slots of the same type, this may
         // shuffle items around.
         equipment.equip(item);
       }
 
-      final home = new Inventory(Option.HOME_CAPACITY);
+      var home = new Inventory(Option.HOME_CAPACITY);
       for (final itemData in hero['home']) {
-        final item = _loadItem(itemData);
+        var item = _loadItem(itemData);
         home.tryAdd(item);
       }
 
-      final crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
+      var crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
       for (final itemData in hero['crucible']) {
-        final item = _loadItem(itemData);
+        var item = _loadItem(itemData);
         crucible.tryAdd(item);
       }
 
-      final skills = new SkillSet(content.skills);
+      var skills = new SkillSet(content.skills);
       hero['skills'].forEach((name, level) {
         skills[content.skills[name]] = level;
       });
 
-      final experience = hero['experience'];
+      var experience = hero['experience'];
 
-      final completedLevels = hero['completedLevels'];
+      var completedLevels = hero['completedLevels'];
 
       heroes.add(new HeroSave.load(inventory, equipment, home, crucible,
           skills, experience, completedLevels));
     }
-
-    _saveHeroes();
   }
 
   Item _loadItem(data) {
-    final type = content.items[data['type']];
+    var type = content.items[data['type']];
     // TODO(bob): Load powers.
     return new Item(type);
   }
 
   void _saveHeroes() {
-    final heroData = [];
-    for (final hero in heroes) {
-      final inventory = [];
-      for (final item in hero.inventory) {
+    var heroData = [];
+    for (var hero in heroes) {
+      var inventory = [];
+      for (var item in hero.inventory) {
         inventory.add(_saveItem(item));
       }
 
-      final equipment = [];
-      for (final item in hero.equipment) {
+      var equipment = [];
+      for (var item in hero.equipment) {
         equipment.add(_saveItem(item));
       }
 
-      final home = [];
-      for (final item in hero.home) {
+      var home = [];
+      for (var item in hero.home) {
         home.add(_saveItem(item));
       }
 
-      final crucible = [];
-      for (final item in hero.crucible) {
+      var crucible = [];
+      for (var item in hero.crucible) {
         crucible.add(_saveItem(item));
       }
 
-      final skills = {};
+      var skills = {};
       hero.skills.forEach((skill, level) {
         if (level != 0) skills[skill.name] = level;
       });
@@ -191,7 +189,7 @@ class MainMenuScreen extends Screen {
     }
 
     // TODO(bob): Version.
-    final data = {
+    var data = {
       'heroes': heroData
     };
 

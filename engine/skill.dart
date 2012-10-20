@@ -24,7 +24,7 @@ abstract class Skill {
   ///
   /// If this is overridden and returns `false`, it should also log an
   /// appropriate message so the user knows why it failed.
-  bool canUse(Game game) => true;
+  bool canUse(int level, Game game) => true;
 
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Skill]. If the skill needs a target, one will be passed in.

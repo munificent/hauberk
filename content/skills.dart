@@ -19,15 +19,13 @@ class SkillBuilder extends ContentBuilder {
 
 class ArcherySkill extends Skill {
   String get name => 'Archery';
-  String getHelpText(int level) => 'Allows using missile weapons.';
+  String getHelpText(int level) =>
+      'Allows using missile weapons at a cost of ${getFocusCost(level)} focus.';
 
   bool get hasUse => true;
   bool get needsTarget => true;
 
-  // TODO(bob): Make focus cost skill level based.
-  static const focusCost = 30;
-
-  bool canUse(Game game) {
+  bool canUse(int level, Game game) {
     // Get the equipped bow, if any.
     var bow = game.hero.equipment.find('Bow');
     if (bow == null) {
@@ -36,7 +34,7 @@ class ArcherySkill extends Skill {
     }
 
     // Make sure the hero is focused.
-    if (game.hero.focus < focusCost) {
+    if (game.hero.focus < getFocusCost(level)) {
       game.log.add('You are too unfocused!');
       return false;
     }
@@ -46,8 +44,11 @@ class ArcherySkill extends Skill {
 
   Action getUseAction(int level, Game game, Vec target) {
     var bow = game.hero.equipment.find('Bow');
-    return new BoltAction(game.hero.pos, target, bow.attack, -focusCost);
+    return new BoltAction(game.hero.pos, target, bow.attack,
+        -getFocusCost(level));
   }
+
+  int getFocusCost(int level) => 30 - level * 4;
 }
 
 class CombatSkill extends Skill {

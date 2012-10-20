@@ -160,7 +160,7 @@ class GameScreen extends Screen {
         if (lastSkill == null) {
           // Haven't picked a skill yet, so select one.
           ui.push(new SelectSkillDialog(game));
-        } else if (!lastSkill.canUse(game)) {
+        } else if (!lastSkill.canUse(game.hero.skills[lastSkill], game)) {
           // Show the message.
           dirty();
         } else if (lastSkill.needsTarget) {
@@ -225,7 +225,7 @@ class GameScreen extends Screen {
   void fireAt(Vec pos) {
     if (lastSkill == null || !lastSkill.needsTarget) return;
 
-    if (!lastSkill.canUse(game)) {
+    if (!lastSkill.canUse(game.hero.skills[lastSkill], game)) {
       // Refresh the log.
       dirty();
       return;
@@ -264,7 +264,7 @@ class GameScreen extends Screen {
     } else if (popped is SelectSkillDialog && result is Skill) {
       lastSkill = result;
 
-      if (!result.canUse(game)) {
+      if (!result.canUse(game.hero.skills[result], game)) {
         // Refresh the log.
         dirty();
       } else if (result.needsTarget) {
