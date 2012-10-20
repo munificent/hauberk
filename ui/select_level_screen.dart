@@ -49,7 +49,7 @@ class SelectLevelScreen extends Screen {
     terminal.clear();
     terminal.writeAt(0, 0, 'Where shall you quest?');
     terminal.writeAt(0, terminal.height - 1,
-        '[L] Select area, [O]/[.] Select area, [K]/[;] Select level, [H] Enter home, [S] Skills',
+        '[L] Select area, [↕] Select area, [↔] Select level, [H] Enter home, [S] Skills',
         Color.GRAY);
 
     for (var i = 0; i < content.areas.length; i++) {

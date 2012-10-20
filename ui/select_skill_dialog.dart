@@ -66,7 +66,6 @@ class SelectSkillDialog extends Screen {
     }
 
     terminal.writeAt(0, terminal.height - 1,
-        '[A-Z] Select skill, [1-9] Bind quick key, [Esc] Exit',
-        Color.GRAY);
+        '[A-Z] Select skill, [1-9] Bind quick key, [Esc] Exit', Color.GRAY);
   }
 }

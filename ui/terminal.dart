@@ -128,6 +128,8 @@ class Glyph {
 class CharCode {
   static const SPACE = 32;
   static const BULLET = 0x2022;
+  static const LEFT_RIGHT_ARROW = 0x2194;
+  static const UP_DOWN_ARROW = 0x2195;
   static const SOLID = 0x2588;
   static const HALF_LEFT = 0x258c;
 }

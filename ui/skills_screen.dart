@@ -70,8 +70,7 @@ class SkillsScreen extends Screen {
     terminal.writeAt(0, 24, skill.getHelpText(save.skills[skill] + 1));
 
     terminal.writeAt(0, terminal.height - 1,
-        '[O]/[.] Select skill, [K]/[;] Modify skill, [Esc] Exit',
-        Color.GRAY);
+        '[↕] Select skill, [↔] Modify skill, [Esc] Exit', Color.GRAY);
   }
 
   int getSkillPoints() {

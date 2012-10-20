@@ -61,7 +61,7 @@ class MainMenuScreen extends Screen {
     terminal.writeAt(0, 0,
         'Which hero shall you play?');
     terminal.writeAt(0, terminal.height - 1,
-        '[L] Select a hero, [O]/[.] Change selection, [N] Create a new hero, [D] Delete hero',
+        '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
         Color.GRAY);
 
     if (heroes.length == 0) {

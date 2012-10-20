@@ -48,6 +48,8 @@ class RetroTerminal implements RenderableTerminal {
   static Map<int, int> createUnicodeMap() {
     var map = new Map<int, int>();
     map[CharCode.BULLET] = 7;
+    map[CharCode.LEFT_RIGHT_ARROW] = 29;
+    map[CharCode.UP_DOWN_ARROW] = 18;
     map[CharCode.SOLID] = 219;
     map[CharCode.HALF_LEFT] = 221;
     return map;
