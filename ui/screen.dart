@@ -35,13 +35,18 @@ class Screen {
 }
 
 class UserInterface {
-  final Keyboard            _keyboard;
-  final RenderableTerminal  _terminal;
-  final List<Screen>        _screens;
+  final Keyboard      _keyboard;
+  final List<Screen>  _screens;
+  RenderableTerminal _terminal;
   bool _dirty;
 
   UserInterface(this._keyboard, this._terminal)
   : _screens = <Screen>[];
+
+  void setTerminal(RenderableTerminal terminal) {
+    _terminal = terminal;
+    dirty();
+  }
 
   void push(Screen screen) {
     screen._bind(this);
