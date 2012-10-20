@@ -211,8 +211,6 @@ abstract class Dungeon extends StageGenerator {
     }
 
     // Add some extra corridors so the dungeon isn't a minimum spanning tree.
-    // TODO(bob): Inner loop shouldn't go through all rooms. Redundantly
-    // considers each pair twice.
     for (final fromRoom in _rooms) {
       for (final toRoom in _rooms) {
         if (fromRoom == toRoom) continue;
@@ -228,7 +226,39 @@ abstract class Dungeon extends StageGenerator {
   }
 
   void carveCorridor(Room fromRoom, Room toRoom) {
-    // Draw a corridor.
+    mergeColors(fromRoom, toRoom);
+
+    // If the rooms overlap horizontally, carve a vertical path.
+    final left = math.max(fromRoom.bounds.left, toRoom.bounds.left);
+    final right = math.min(fromRoom.bounds.right, toRoom.bounds.right);
+    if (left < right) {
+      final top = math.min(fromRoom.bounds.top, toRoom.bounds.top);
+      final bottom = math.max(fromRoom.bounds.bottom, toRoom.bounds.bottom);
+
+      final x = rng.range(left, right);
+      for (var y = top; y < bottom; y++) {
+        setTile(new Vec(x, y), Tiles.floor);
+      }
+
+      return;
+    }
+
+    // If the rooms overlap horizontally, carve a horizontal path.
+    final top = math.max(fromRoom.bounds.top, toRoom.bounds.top);
+    final bottom = math.min(fromRoom.bounds.bottom, toRoom.bounds.bottom);
+    if (top < bottom) {
+      final left = math.min(fromRoom.bounds.left, toRoom.bounds.left);
+      final right = math.max(fromRoom.bounds.right, toRoom.bounds.right);
+
+      final y = rng.range(top, bottom);
+      for (var x = left; x < right; x++) {
+        setTile(new Vec(x, y), Tiles.floor);
+      }
+
+      return;
+    }
+
+    // We can't draw a straight corridor, so make an angled one.
     final from = rng.vecInRect(fromRoom.bounds);
     final to = rng.vecInRect(toRoom.bounds);
 
@@ -247,8 +277,6 @@ abstract class Dungeon extends StageGenerator {
 
       setTile(pos, Tiles.floor);
     }
-
-    mergeColors(fromRoom, toRoom);
   }
 
   void decorateRooms() {
