@@ -25,8 +25,8 @@ class CanvasTerminal implements RenderableTerminal {
     canvas.width = font.charWidth * width;
     canvas.height = font.lineHeight * height;
 
+    // Handle high-resolution (i.e. retina) displays.
     if (html.window.devicePixelRatio > 1) {
-      print('retina! ${html.window.devicePixelRatio}');
       scale = 2;
 
       canvas.style.width = '${font.charWidth * width / scale}px';
