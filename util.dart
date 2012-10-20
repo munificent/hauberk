@@ -1,13 +1,13 @@
-#library('roguekit-util');
+library util;
 
-#import('dart:math');
+import 'dart:math';
 
-#source('util/array2d.dart');
-#source('util/chain.dart');
-#source('util/direction.dart');
-#source('util/rect.dart');
-#source('util/rng.dart');
-#source('util/vec.dart');
+part 'util/array2d.dart';
+part 'util/chain.dart';
+part 'util/direction.dart';
+part 'util/rect.dart';
+part 'util/rng.dart';
+part 'util/vec.dart';
 
 // TODO(bob): Where should this go?
 sign(num n) {

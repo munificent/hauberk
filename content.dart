@@ -1,19 +1,19 @@
-#library('roguekit-content.dart');
+library content;
 
-#import('dart:math', prefix: 'math');
-#import('engine.dart');
-#import('ui.dart');
-#import('util.dart');
+import 'dart:math' as math;
+import 'engine.dart';
+import 'ui.dart';
+import 'util.dart';
 
-#source('content/areas.dart');
-#source('content/dungeon.dart');
-#source('content/feature_creep.dart');
-#source('content/items.dart');
-#source('content/maze.dart');
-#source('content/monsters.dart');
-#source('content/recipes.dart');
-#source('content/skills.dart');
-#source('content/tiles.dart');
+part 'content/areas.dart';
+part 'content/dungeon.dart';
+part 'content/feature_creep.dart';
+part 'content/items.dart';
+part 'content/maze.dart';
+part 'content/monsters.dart';
+part 'content/recipes.dart';
+part 'content/skills.dart';
+part 'content/tiles.dart';
 
 final List<Area> _areas = [];
 final Map<String, Skill> _skills = {};

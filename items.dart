@@ -1,11 +1,11 @@
-#library('items');
+library items;
 
-#import('dart:html', prefix: 'html');
+import 'dart:html' as html;
 
-#import('content.dart');
-#import('engine.dart');
-#import('util.dart');
-#import('ui.dart');
+import 'content.dart';
+import 'engine.dart';
+import 'util.dart';
+import 'ui.dart';
 
 main() {
   var content = createContent();

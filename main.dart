@@ -1,11 +1,11 @@
-#library('roguekit');
+library roguekit;
 
-#import('dart:html', prefix: 'html');
+import 'dart:html' as html;
 
-#import('content.dart');
-#import('engine.dart');
-#import('ui.dart');
-#import('util.dart');
+import 'content.dart';
+import 'engine.dart';
+import 'ui.dart';
+import 'util.dart';
 
 const WIDTH = 100;
 const HEIGHT = 40;
