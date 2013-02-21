@@ -1,3 +1,5 @@
+part of engine;
+
 /// Base class for a skill. A skill is a levelable hero ability in the game.
 /// The actual concrete skills are defined in content.
 abstract class Skill {
@@ -43,8 +45,8 @@ class SkillSet {
       : _levels = {};
 
   /// Gets the skills that the [Hero] is at least at level one at.
-  Collection<Skill> get knownSkills =>
-      _skills.getValues().filter((skill) => this[skill] > 0);
+  Iterable<Skill> get knownSkills =>
+      _skills.values.where((skill) => this[skill] > 0);
 
   /// Gets the hero's level at [skill].
   int operator[](Skill skill) {
@@ -59,6 +61,6 @@ class SkillSet {
 
   /// Applies [callback] to every skill in the set.
   void forEach(void callback(Skill skill, int level)) {
-    for (final skill in _skills.getValues()) callback(skill, this[skill]);
+    for (final skill in _skills.values) callback(skill, this[skill]);
   }
 }

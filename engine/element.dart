@@ -1,3 +1,4 @@
+part of engine;
 
 class Element {
   static const NONE      = const Element(0);

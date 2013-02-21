@@ -1,5 +1,6 @@
 library engine;
 
+import 'dart:collection';
 import 'dart:math' as math;
 import 'util.dart';
 

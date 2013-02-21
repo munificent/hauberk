@@ -1,3 +1,5 @@
+part of content;
+
 /// Builder class for defining [Monster] [Breed]s.
 class MonsterBuilder extends ContentBuilder {
   Map<String, Breed> build() {
@@ -254,9 +256,9 @@ class MonsterBuilder extends ContentBuilder {
     );
   }
 
-  Breed breed(String name, Glyph appearance, List actions, [
-      drop, int maxHealth, int olfaction = 0,
-      int meander = 0, int speed = 0, String flags]) {
+  Breed breed(String name, Glyph appearance, List actions, {
+      drop, int maxHealth, int olfaction: 0,
+      int meander: 0, int speed: 0, String flags}) {
 
     var attacks = <Attack>[];
     var moves = <Move>[];
@@ -282,15 +284,15 @@ class MonsterBuilder extends ContentBuilder {
     return breed;
   }
 
-  Move heal([int cost, int amount]) => new HealMove(cost, amount);
+  Move heal({int cost, int amount}) => new HealMove(cost, amount);
 
-  Move sparkBolt([int cost, int damage]) =>
+  Move sparkBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack('zaps', damage, Element.LIGHTNING,
           new Noun('the spark')));
 
-  Move fireBolt([int cost, int damage]) =>
+  Move fireBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack('burns', damage, Element.FIRE,
           new Noun('the flame')));
 
-  Move insult([int cost = 20]) => new InsultMove(cost);
+  Move insult({int cost: 20}) => new InsultMove(cost);
 }

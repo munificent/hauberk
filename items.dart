@@ -11,10 +11,10 @@ main() {
   var content = createContent();
 
   var text = new StringBuffer();
-  var items = new List.from(content.items.getValues());
+  var items = new List.from(content.items.values);
   items.sort((a, b) => a.sortIndex.compareTo(b.sortIndex));
 
-  text.add('''
+  text.write('''
     <thead>
     <tr>
       <td colspan="2">Item</td>
@@ -28,7 +28,7 @@ main() {
 
   for (var item in items) {
     var glyph = item.appearance as Glyph;
-    text.add('''
+    text.write('''
         <tr>
           <td>
 <pre>
@@ -41,16 +41,16 @@ main() {
         ''');
 
     if (item.attack != null) {
-      text.add(item.attack.damage);
+      text.write(item.attack.damage);
     } else {
-      text.add('&mdash;');
+      text.write('&mdash;');
     }
 
-    text.add('<td>${item.armor != 0 ? item.armor : "&mdash;"}</td>');
+    text.write('<td>${item.armor != 0 ? item.armor : "&mdash;"}</td>');
 
-    text.add('</td></tr>');
+    text.write('</td></tr>');
   }
-  text.add('</tbody>');
+  text.write('</tbody>');
 
-  html.query('table').innerHTML = text.toString();
+  html.query('table').innerHtml = text.toString();
 }

@@ -1,3 +1,5 @@
+part of content;
+
 /// Builder class for defining [ItemType]s.
 class ItemBuilder extends ContentBuilder {
   int _sortIndex = 0;
@@ -114,9 +116,8 @@ class ItemBuilder extends ContentBuilder {
     return item(name, appearance, equipSlot: equipSlot, armor: armor);
   }
 
-  ItemType item(String name, Glyph appearance,
-      [ItemUse use, String equipSlot, String category, Attack attack,
-       int armor = 0]) {
+  ItemType item(String name, Glyph appearance, {ItemUse use, String equipSlot,
+      String category, Attack attack, int armor: 0}) {
     final itemType = new ItemType(name, appearance, _sortIndex++, use,
         equipSlot, category, attack, armor);
     _items[name] = itemType;
@@ -146,7 +147,7 @@ class Drops {
   ]);
 
   static EquipmentSequence _sequence(int chance, List<String> typeNames) {
-    var types = typeNames.map((name) => _items[name]);
+    var types = typeNames.map((name) => _items[name]).toList();
     return new EquipmentSequence(chance, types);
   }
 }

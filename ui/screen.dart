@@ -1,3 +1,5 @@
+part of ui;
+
 class Screen {
   UserInterface _ui;
 
@@ -72,7 +74,7 @@ class UserInterface {
 
   void dirty() { _dirty = true; }
 
-  bool isTopScreen(Screen screen) => _screens.last() == screen;
+  bool isTopScreen(Screen screen) => _screens.last == screen;
 
   void tick() {
     // Input is given to the screens from top to bottom, and stops when a

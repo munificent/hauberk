@@ -1,16 +1,18 @@
+part of engine;
+
 /// The message log.
 class Log {
   static String makeVerbsAgree(String text, int person) {
-    final optionalSuffix = const RegExp(r'\[(\w+?)\]');
-    final irregular = const RegExp(r'\[([^|]+)\|([^\]]+)\]');
+    final optionalSuffix = new RegExp(r'\[(\w+?)\]');
+    final irregular = new RegExp(r'\[([^|]+)\|([^\]]+)\]');
 
     // Handle verbs with optional suffixes like `close[s]`.
     while (true) {
       final match = optionalSuffix.firstMatch(text);
       if (match == null) break;
 
-      final before = text.substring(0, match.start());
-      final after = text.substring(match.end());
+      final before = text.substring(0, match.start);
+      final after = text.substring(match.end);
       if (person == 2) {
         // Omit the optional part.
         text = '$before$after';
@@ -25,8 +27,8 @@ class Log {
       final match = irregular.firstMatch(text);
       if (match == null) break;
 
-      final before = text.substring(0, match.start());
-      final after = text.substring(match.end());
+      final before = text.substring(0, match.start);
+      final after = text.substring(match.end);
       if (person == 2) {
         // Use the first form.
         text = '$before${match[1]}$after';
@@ -50,7 +52,7 @@ class Log {
 
     // See if it's a repeat of the last message.
     if (messages.length > 0) {
-      final last = messages.last();
+      final last = messages.last;
       if (last.text == message) {
         // It is, so just repeat the count.
         last.count++;

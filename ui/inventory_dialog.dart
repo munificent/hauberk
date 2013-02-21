@@ -1,3 +1,4 @@
+part of ui;
 
 /// Modal dialog for letting the user select an item from the hero's inventory.
 class InventoryDialog extends Screen {

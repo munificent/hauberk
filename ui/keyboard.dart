@@ -1,3 +1,5 @@
+part of ui;
+
 /// A keyboard is the lowest-level mapping from raw keyboard input to meaningful
 /// use input. It listens to the raw DOM key events and keeps track of which
 /// keys are currently pressed and which are not.
@@ -9,8 +11,8 @@ class Keyboard {
   int _lastPressed;
 
   Keyboard(html.Element element) {
-    element.on.keyDown.add(keyDown);
-    element.on.keyUp.add(keyUp);
+    element.onKeyDown.listen(keyDown);
+    element.onKeyUp.listen(keyUp);
   }
 
   /// Gets whether or not the shift modifier key is currently pressed.

@@ -1,3 +1,5 @@
+part of engine;
+
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {

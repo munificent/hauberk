@@ -1,3 +1,5 @@
+part of content;
+
 /// Builder class for defining [Skill]s.
 class SkillBuilder extends ContentBuilder {
   Map<String, Skill> build() {

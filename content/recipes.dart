@@ -1,3 +1,5 @@
+part of content;
+
 /// Builder class for defining [Recipe]s.
 class RecipeBuilder extends ContentBuilder {
   List<Recipe> build() {
@@ -28,7 +30,7 @@ class RecipeBuilder extends ContentBuilder {
   }
 
   void recipe(String result, List<String> ingredientNames) {
-    final ingredients = ingredientNames.map((name) => _items[name]);
+    final ingredients = ingredientNames.map((name) => _items[name]).toList();
     _recipes.add(new Recipe(ingredients, _items[result]));
   }
 }

@@ -1,3 +1,5 @@
+part of engine;
+
 abstract class Action {
   Actor _actor;
   Game _game;
@@ -74,7 +76,7 @@ class ActionResult {
   /// `true` if the [Action] does not need any further processing.
   final bool done;
 
-  const ActionResult([this.succeeded, this.done])
+  const ActionResult({this.succeeded, this.done})
   : alternative = null;
 
   const ActionResult.alternate(this.alternative)

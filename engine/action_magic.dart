@@ -1,3 +1,5 @@
+part of engine;
+
 class HealAction extends Action {
   final int amount;
 

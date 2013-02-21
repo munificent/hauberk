@@ -1,3 +1,5 @@
+part of ui;
+
 class HomeScreen extends Screen {
   final Content  content;
   final HeroSave save;
@@ -243,7 +245,7 @@ abstract class SelectHomeMode extends HomeMode {
     return true;
   }
 
-  abstract void selectItem(HomeScreen home, int index);
+  void selectItem(HomeScreen home, int index);
 }
 
 /// Mode for "dropping" an item into the home or crucible.
@@ -266,7 +268,7 @@ class DropHomeMode extends SelectHomeMode {
     // Can only put items in the crucible if they fit a recipe.
     final items = new List.from(home.rightView.getItems(home.save));
     items.add(item);
-    return home.content.recipes.some((recipe) => recipe.allows(items));
+    return home.content.recipes.any((recipe) => recipe.allows(items));
   }
 
   bool canSelectRightItem(HomeScreen home, Item item) => false;

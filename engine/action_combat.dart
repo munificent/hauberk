@@ -1,3 +1,5 @@
+part of engine;
+
 /// [Action] for a melee attack from one [Actor] to another.
 class AttackAction extends Action {
   final Actor defender;
@@ -22,10 +24,13 @@ class BoltAction extends Action {
 
   BoltAction(Vec from, Vec to, this.attack,
       [this.focusOffset = Option.FOCUS_OFFSET_NORMAL])
-  : los = new Los(from, to).iterator();
+  : los = new Los(from, to).iterator {
+    // Advance to the first item.
+    los.moveNext();
+  }
 
   ActionResult onPerform() {
-    final pos = los.next();
+    final pos = los.current;
 
     // Stop if we hit a wall.
     if (!game.stage[pos].isTransparent) return succeed();
@@ -38,7 +43,7 @@ class BoltAction extends Action {
       return attack.perform(this, actor, target);
     }
 
-    return los.hasNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;
+    return los.moveNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;
   }
 }
 

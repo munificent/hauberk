@@ -1,6 +1,7 @@
 library util;
 
-import 'dart:math';
+import 'dart:collection'; // TODO(bob): For IterableMixinWorkaround.
+import 'dart:math' as math;
 
 part 'util/array2d.dart';
 part 'util/chain.dart';

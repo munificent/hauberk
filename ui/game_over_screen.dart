@@ -1,3 +1,5 @@
+part of ui;
+
 class GameOverScreen extends Screen {
   GameOverScreen();
 

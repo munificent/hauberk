@@ -22,11 +22,11 @@ addTerminal(String name, html.Element element,
 
   // Make a button for it.
   var button = new html.ButtonElement();
-  button.innerHTML = name;
-  button.on.click.add((_) {
+  button.innerHtml = name;
+  button.onClick.listen((_) {
     for (var i = 0; i < terminals.length; i++) {
       if (terminals[i][0] == name) {
-        html.document.body.elements.add(terminals[i][1]);
+        html.document.body.children.add(terminals[i][1]);
       } else {
         terminals[i][1].remove();
       }
@@ -37,7 +37,7 @@ addTerminal(String name, html.Element element,
     html.window.localStorage['font'] = name;
   });
 
-  html.query('.button-bar').elements.add(button);
+  html.query('.button-bar').children.add(button);
 }
 
 main() {
@@ -67,8 +67,8 @@ main() {
     }
   }
 
-  html.document.body.elements.add(terminals[fontIndex][1]);
-  var keyboard = new Keyboard(html.document);
+  html.document.body.children.add(terminals[fontIndex][1]);
+  var keyboard = new Keyboard(html.document.body);
   ui = new UserInterface(keyboard, terminals[fontIndex][2]);
 
   ui.push(new MainMenuScreen(content));

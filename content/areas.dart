@@ -1,3 +1,5 @@
+part of content;
+
 /// Builder class for defining [Area] objects.
 class AreaBuilder extends ContentBuilder {
   List<Area> build() {
@@ -78,9 +80,9 @@ class AreaBuilder extends ContentBuilder {
     ]);
   }
 
-  Level level(StageBuilder builder, [
+  Level level(StageBuilder builder, {
       int numMonsters, int numItems, List<String> breeds, drop,
-      QuestBuilder quest]) {
+      QuestBuilder quest}) {
     final breedList = <Breed>[];
 
     for (final name in breeds) breedList.add(_breeds[name]);

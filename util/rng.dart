@@ -1,3 +1,5 @@
+part of util;
+
 /// A singleton instance of Rng globally available.
 final rng = new Rng(new Date.now().millisecondsSinceEpoch);
 

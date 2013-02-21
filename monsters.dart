@@ -11,10 +11,10 @@ main() {
   var content = createContent();
 
   var text = new StringBuffer();
-  var breeds = new List.from(content.breeds.getValues());
+  var breeds = new List.from(content.breeds.values);
   breeds.sort((a, b) => a.experienceCents.compareTo(b.experienceCents));
 
-  text.add('''
+  text.write('''
     <thead>
     <tr>
       <td colspan="2">Breed</td>
@@ -32,7 +32,7 @@ main() {
 
   for (var breed in breeds) {
     var glyph = breed.appearance as Glyph;
-    text.add('''
+    text.write('''
         <tr>
           <td>
 <pre>
@@ -51,17 +51,17 @@ main() {
 
     var attacks = breed.attacks.map(
         (attack) => '${Log.makeVerbsAgree(attack.verb, 3)} (${attack.damage})');
-    text.add(Strings.join(attacks, ', '));
+    text.write(attacks.join(', '));
 
-    text.add('</td><td>');
+    text.write('</td><td>');
 
     for (var flag in breed.flags) {
-      text.add('$flag ');
+      text.write('$flag ');
     }
 
-    text.add('</td></tr>');
+    text.write('</td></tr>');
   }
-  text.add('</tbody>');
+  text.write('</tbody>');
 
-  html.query('table').innerHTML = text.toString();
+  html.query('table').innerHtml = text.toString();
 }

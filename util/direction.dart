@@ -1,3 +1,5 @@
+part of util;
+
 class Direction extends VecBase implements Vec {
   static const NONE = const Direction(0, 0);
   static const N    = const Direction(0, -1);

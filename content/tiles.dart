@@ -1,3 +1,5 @@
+part of content;
+
 /// Builder class for defining [TileType]s.
 class TileBuilder extends ContentBuilder {
   TileBuilder();

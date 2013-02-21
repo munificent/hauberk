@@ -1,3 +1,4 @@
+part of ui;
 
 /// Modal dialog for letting the user confirm forfeiting the level.
 class ForfeitDialog extends Screen {

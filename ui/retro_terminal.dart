@@ -1,3 +1,5 @@
+part of ui;
+
 /// Draws to a canvas using the old school DOS [code page 437][font] font. It's
 /// got some basic optimization to minimize the amount of drawing it has to do.
 ///
@@ -38,8 +40,8 @@ class RetroTerminal implements RenderableTerminal {
     canvas.width = FONT_WIDTH * width;
     canvas.height = FONT_HEIGHT * height;
 
-    font = new html.ImageElement('font.png');
-    font.on.load.add((_) {
+    font = new html.ImageElement(src: 'font.png');
+    font.onLoad.listen((_) {
       _imageLoaded = true;
       render();
     });
@@ -76,7 +78,8 @@ class RetroTerminal implements RenderableTerminal {
     // TODO(bob): Bounds check.
     for (int i = 0; i < text.length; i++) {
       if (x + i >= width) break;
-      drawGlyph(x + i, y, new Glyph.fromCharCode(text.charCodeAt(i), fore, back));
+      // TODO(bob): Is charCodes[] the right thing here? Is it fast?
+      drawGlyph(x + i, y, new Glyph.fromCharCode(text.charCodes[i], fore, back));
     }
   }
 

@@ -1,3 +1,5 @@
+part of ui;
+
 class SelectLevelScreen extends Screen {
   final Content  content;
   final HeroSave save;

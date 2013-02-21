@@ -1,10 +1,12 @@
+part of ui;
+
 class SelectSkillDialog extends Screen {
   final Game game;
   final List<Skill> _usableSkills;
 
   SelectSkillDialog(this.game)
       : _usableSkills = [] {
-     _usableSkills.addAll(game.hero.skills.knownSkills.filter(
+     _usableSkills.addAll(game.hero.skills.knownSkills.where(
          (skill) => skill.hasUse));
      _usableSkills.sort((a, b) => a.name.compareTo(b.name));
   }

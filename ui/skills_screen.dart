@@ -1,3 +1,5 @@
+part of ui;
+
 class SkillsScreen extends Screen {
   final Content  content;
   final HeroSave save;
@@ -8,7 +10,7 @@ class SkillsScreen extends Screen {
       : skills = [] {
     // Sort the skills.
     // TODO(bob): Would be cooler to show them in tree form based on prereqs.
-    skills.addAll(content.skills.getValues());
+    skills.addAll(content.skills.values);
     skills.sort((a, b) => a.name.compareTo(b.name));
   }
 

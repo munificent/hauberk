@@ -1,3 +1,4 @@
+part of ui;
 
 /// Modal dialog for letting the user select a direction to fire a missile.
 class TargetDialog extends Screen {

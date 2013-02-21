@@ -1,3 +1,4 @@
+part of engine;
 
 class Attack {
   /// The thing performing the attack. If `null`, then the attacker will be

@@ -1,3 +1,5 @@
+part of ui;
+
 class MainMenuScreen extends Screen {
   final Content        content;
   final List<HeroSave> heroes;
@@ -98,7 +100,7 @@ class MainMenuScreen extends Screen {
     var storage = html.window.localStorage['heroes'];
     if (storage == null) return;
 
-    var data = JSON.parse(storage);
+    var data = json.parse(storage);
 
     // TODO(bob): Check version.
 
@@ -193,7 +195,7 @@ class MainMenuScreen extends Screen {
       'heroes': heroData
     };
 
-    html.window.localStorage['heroes'] = JSON.stringify(data);
+    html.window.localStorage['heroes'] = json.stringify(data);
     print('Saved.');
   }
 

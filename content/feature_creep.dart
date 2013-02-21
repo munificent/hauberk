@@ -1,3 +1,5 @@
+part of content;
+
 /*
 /// The dungeon generator used for normal dungeon levels. It works by
 /// iteratively growing the dungeon from a single starting room. The basic

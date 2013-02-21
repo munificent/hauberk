@@ -1,3 +1,5 @@
+part of ui;
+
 /// Draws directly using the DOM by building `<span>` elements inside a `<pre>`
 /// for the terminal characters. Looks nice, but is quite slow.
 class DomTerminal implements RenderableTerminal {
@@ -68,6 +70,6 @@ class DomTerminal implements RenderableTerminal {
       buffer.add('\n');
     }
 
-    element.innerHTML = buffer.toString();
+    element.innerHtml = buffer.toString();
   }
 }

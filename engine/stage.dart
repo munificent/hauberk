@@ -1,3 +1,5 @@
+part of engine;
+
 /// The game's live play area.
 class Stage {
   int get width => tiles.width;
@@ -46,10 +48,8 @@ class Stage {
     return null;
   }
 
-  /// Gets the list of [Item]s at [pos].
-  List<Item> itemsAt(Vec pos) {
-    return items.filter((item) => item.pos == pos);
-  }
+  /// Gets the [Item]s at [pos].
+  Iterable<Item> itemsAt(Vec pos) => items.where((item) => item.pos == pos);
 
   /// Removes [item] from the stage. Does nothing if the item is not on the
   /// ground.

@@ -1,3 +1,5 @@
+part of engine;
+
 class AStarResult {
   final PathNode path;
   final List<Vec> closed;

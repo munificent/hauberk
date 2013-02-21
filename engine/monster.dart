@@ -1,3 +1,4 @@
+part of engine;
 
 class Monster extends Actor {
   final Breed breed;
@@ -264,8 +265,8 @@ class Breed {
   final Set<String> flags;
 
   Breed(this.name, this.gender, this.appearance, this.attacks, this.moves,
-      this.drop, [
-      this.maxHealth, this.olfaction, this.meander, this.speed, this.flags]);
+      this.drop, {
+      this.maxHealth, this.olfaction, this.meander, this.speed, this.flags});
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.

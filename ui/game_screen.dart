@@ -1,3 +1,4 @@
+part of ui;
 
 class GameScreen extends Screen {
   final HeroSave save;
@@ -315,7 +316,7 @@ class GameScreen extends Screen {
 
     if (result.needsRefresh) dirty();
 
-    effects = effects.filter((effect) => effect.update(game));
+    effects = effects.where((effect) => effect.update(game)).toList();
   }
 
   void render(Terminal terminal) {
@@ -590,7 +591,7 @@ class GameScreen extends Screen {
   }
 }
 
-interface Effect {
+abstract class Effect {
   bool update(Game game);
   void render(Terminal terminal);
 }

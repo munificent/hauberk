@@ -1,3 +1,5 @@
+part of ui;
+
 /// Draws to a canvas using a browser font.
 class CanvasTerminal implements RenderableTerminal {
   /// The current display state. The glyphs here mirror what has been rendered.

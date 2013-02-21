@@ -1,3 +1,5 @@
+part of engine;
+
 class Area {
   final String name;
   final List<Level> levels;
@@ -157,7 +159,7 @@ abstract class QuestBuilder {
   // - Complete quest without killing any monsters
   // - Complete quest without using any items
 
-  abstract Quest generate(Stage stage);
+  Quest generate(Stage stage);
 }
 
 abstract class Quest {

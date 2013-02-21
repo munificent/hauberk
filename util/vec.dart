@@ -1,3 +1,5 @@
+part of util;
+
 /// Shared base class of [Vec] and [Direction]. We do this instead of having
 /// [Direction] inherit directly from [Vec] so that we can avoid it inheriting
 /// an `==` operator, which would prevent it from being used in `switch`
@@ -18,7 +20,7 @@ class VecBase {
   /// Gets the king length of the Vec, which is the number of squares a king on
   /// a chessboard would need to move from (0, 0) to reach the endpoint of the
   /// Vec. Also known as Chebyshev distance.
-  int get kingLength => max(x.abs(), y.abs());
+  int get kingLength => math.max(x.abs(), y.abs());
 
   int get lengthSquared => x * x + y * y;
 
@@ -93,9 +95,5 @@ class Vec extends VecBase {
 
   const Vec(int x, int y) : super(x, y);
 
-  bool operator ==(Vec other) {
-    // TODO(bob): Get rid of this when new equality semantics are implemented.
-    if (other === null) return false;
-    return x == other.x && y == other.y;
-  }
+  bool operator ==(Vec other) => x == other.x && y == other.y;
 }

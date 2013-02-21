@@ -1,3 +1,5 @@
+part of engine;
+
 /// Calculates the [Hero]'s field of view of the dungeon.
 class Fov {
   static List<Shadow> shadows;

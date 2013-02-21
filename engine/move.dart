@@ -1,3 +1,5 @@
+part of engine;
+
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,
 /// and missiles.
@@ -21,7 +23,7 @@ abstract class Move {
   }
 
   /// Create the [Action] to perform this move.
-  abstract Action onGetAction(Monster monster);
+  Action onGetAction(Monster monster);
 }
 
 class BoltMove extends Move {

@@ -1,3 +1,5 @@
+part of engine;
+
 /// Root class for the game engine. All game state is contained within this.
 class Game {
   final Area           area;
@@ -28,7 +30,7 @@ class Game {
     while (true) {
       // Process any ongoing actions.
       while (actions.length > 0) {
-        var action = actions.first();
+        var action = actions.first;
 
         // Cascade through the alternates until we hit bottom out.
         var result = action.perform(gameResult);

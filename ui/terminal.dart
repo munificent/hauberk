@@ -1,5 +1,6 @@
+part of ui;
 
-interface Terminal {
+abstract class Terminal {
   int get width;
   int get height;
 
@@ -10,7 +11,7 @@ interface Terminal {
   Terminal rect(int x, int y, int width, int height);
 }
 
-interface RenderableTerminal extends Terminal {
+abstract class RenderableTerminal extends Terminal {
   void render();
 }
 

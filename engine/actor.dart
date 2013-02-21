@@ -1,3 +1,5 @@
+part of engine;
+
 abstract class Thing implements Noun {
   Vec _pos;
 

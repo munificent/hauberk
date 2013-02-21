@@ -1,3 +1,4 @@
+part of ui;
 
 /// Modal dialog for letting the user select an adjacent open door to close it.
 class CloseDoorDialog extends Screen {

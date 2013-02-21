@@ -1,3 +1,5 @@
+part of content;
+
 class StageGenerator {
   Stage stage;
 
@@ -81,7 +83,7 @@ abstract class Dungeon extends StageGenerator {
     onGenerate();
   }
 
-  abstract void onGenerate();
+  void onGenerate();
 
   void fill(TileType tile) {
     for (var y = 0; y < stage.height; y++) {

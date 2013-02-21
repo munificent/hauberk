@@ -1,3 +1,5 @@
+part of engine;
+
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {
   ActionResult onPerform() {

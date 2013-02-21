@@ -1,3 +1,4 @@
+part of engine;
 
 /// A thing that can be picked up.
 class Item extends Thing implements Comparable {
@@ -123,14 +124,10 @@ class PowerType {
     return equipSlots.indexOf(type.equipSlot) != -1;
   }
 
-  Power spawn() {
-    final damage = rng.triangleInt(damage, damage ~/ 4);
-    return new Power(this, damage);
-  }
+  Power spawn() => new Power(this, rng.triangleInt(damage, damage ~/ 4));
 }
 
-// TODO(bob): Which collection interface should it implement?
-abstract class ItemCollection implements Iterable<Item> {
+abstract class ItemCollection extends Iterable<Item> {
   int get length;
   Item operator[](int index);
   Item removeAt(int index);
@@ -179,7 +176,40 @@ class Inventory implements ItemCollection {
     return true;
   }
 
-  Iterator<Item> iterator() => _items.iterator();
+  Iterator<Item> get iterator => _items.iterator;
+
+  // TODO(bob): Use a mixin when available.
+  bool get isEmpty => IterableMixinWorkaround.isEmpty(this);
+  Item get first => IterableMixinWorkaround.first(this);
+  Item get last => IterableMixinWorkaround.last(this);
+  Item get single => IterableMixinWorkaround.single(this);
+  Iterable<Item> map(f(Item element)) => IterableMixinWorkaround.map(this, f);
+  // TODO(bob): Remove when removed from Iterable.
+  Iterable<Item> mappedBy(f(Item element)) => IterableMixinWorkaround.map(this, f);
+  Iterable<Item> where(bool test(Item element)) => IterableMixinWorkaround.where(this, test);
+  Iterable expand(f(Item element)) => IterableMixinWorkaround.expand(this, f);
+  bool contains(Item element) => IterableMixinWorkaround.contains(this, element);
+  void forEach(void f(Item o)) => IterableMixinWorkaround.forEach(this, f);
+  bool any(bool f(Item o)) => IterableMixinWorkaround.any(this, f);
+  bool every(bool f(Item o)) => IterableMixinWorkaround.every(this, f);
+  reduce(seed, f(accumulator, Item o)) => IterableMixinWorkaround.reduce(this, seed, f);
+  String join([String separator]) => IterableMixinWorkaround.join(this, separator);
+  List<Item> toList() => new List.from(this);
+  Set<Item> toSet() => new Set.from(this);
+  Item min([int compare(Item a, Item b)]) => IterableMixinWorkaround.min(this, compare);
+  Item max([int compare(Item a, Item b)]) => IterableMixinWorkaround.max(this, compare);
+  Iterable<Item> take(int n) {
+    throw new UnimplementedError();
+  }
+  Iterable<Item> takeWhile(bool test(Item value)) => IterableMixinWorkaround.takeWhile(this, test);
+  Iterable<Item> skip(int n) {
+    throw new UnimplementedError();
+  }
+  Iterable<Item> skipWhile(bool test(Item value)) => IterableMixinWorkaround.skipWhile(this, test);
+  Item firstMatching(bool test(Item value), {Item orElse()}) => IterableMixinWorkaround.firstMatching(this, test, orElse);
+  Item lastMatching(bool test(Item value), {Item orElse()}) => IterableMixinWorkaround.lastMatching(this, test, orElse);
+  Item singleMatching(bool test(Item value)) => IterableMixinWorkaround.singleMatching(this, test);
+  Item elementAt(int index) => IterableMixinWorkaround.elementAt(this, index);
 }
 
 // TODO(bob): Which collection interface should it implement?
@@ -248,7 +278,7 @@ class Equipment implements ItemCollection {
 
   /// Gets whether or not there is a slot to equip [item].
   bool canEquip(Item item) {
-    return slotTypes.some((slot) => item.equipSlot == slot);
+    return slotTypes.any((slot) => item.equipSlot == slot);
   }
 
   /// Tries to add the item. This will only succeed if there is an empty slot
@@ -299,12 +329,44 @@ class Equipment implements ItemCollection {
     }
   }
 
-  Iterator<Item> iterator() {
+  Iterator<Item> get iterator {
     // TODO(bob): Would be better if empty slots were shown with a slot label.
     // Don't include empty slots.
-    return slots.filter((item) => item != null).iterator();
+    return slots.where((item) => item != null).iterator;
   }
-}
+
+  // TODO(bob): Use a mixin when available.
+  bool get isEmpty => IterableMixinWorkaround.isEmpty(this);
+  Item get first => IterableMixinWorkaround.first(this);
+  Item get last => IterableMixinWorkaround.last(this);
+  Item get single => IterableMixinWorkaround.single(this);
+  Iterable<Item> map(f(Item element)) => IterableMixinWorkaround.map(this, f);
+  // TODO(bob): Remove when removed from Iterable.
+  Iterable<Item> mappedBy(f(Item element)) => IterableMixinWorkaround.map(this, f);
+  Iterable<Item> where(bool test(Item element)) => IterableMixinWorkaround.where(this, test);
+  Iterable expand(f(Item element)) => IterableMixinWorkaround.expand(this, f);
+  bool contains(Item element) => IterableMixinWorkaround.contains(this, element);
+  void forEach(void f(Item o)) => IterableMixinWorkaround.forEach(this, f);
+  bool any(bool f(Item o)) => IterableMixinWorkaround.any(this, f);
+  bool every(bool f(Item o)) => IterableMixinWorkaround.every(this, f);
+  reduce(seed, f(accumulator, Item o)) => IterableMixinWorkaround.reduce(this, seed, f);
+  String join([String separator]) => IterableMixinWorkaround.join(this, separator);
+  List<Item> toList() => new List.from(this);
+  Set<Item> toSet() => new Set.from(this);
+  Item min([int compare(Item a, Item b)]) => IterableMixinWorkaround.min(this, compare);
+  Item max([int compare(Item a, Item b)]) => IterableMixinWorkaround.max(this, compare);
+  Iterable<Item> take(int n) {
+    throw new UnimplementedError();
+  }
+  Iterable<Item> takeWhile(bool test(Item value)) => IterableMixinWorkaround.takeWhile(this, test);
+  Iterable<Item> skip(int n) {
+    throw new UnimplementedError();
+  }
+  Iterable<Item> skipWhile(bool test(Item value)) => IterableMixinWorkaround.skipWhile(this, test);
+  Item firstMatching(bool test(Item value), {Item orElse()}) => IterableMixinWorkaround.firstMatching(this, test, orElse);
+  Item lastMatching(bool test(Item value), {Item orElse()}) => IterableMixinWorkaround.lastMatching(this, test, orElse);
+  Item singleMatching(bool test(Item value)) => IterableMixinWorkaround.singleMatching(this, test);
+  Item elementAt(int index) => IterableMixinWorkaround.elementAt(this, index);}
 
 typedef void AddItem(Item item);
 

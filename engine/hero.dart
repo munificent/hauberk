@@ -1,3 +1,5 @@
+part of engine;
+
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
 /// the hero's data persists (for example, there is no position when not in a
@@ -172,7 +174,7 @@ class Hero extends Actor {
     if (_behavior is! ActionBehavior) waitForInput();
   }
 
-  void _refreshLevel([bool log = false]) {
+  void _refreshLevel({bool log: false}) {
     int level = calculateLevel(_experienceCents);
 
     // See if the we levelled up.
@@ -212,14 +214,14 @@ int calculateLevelCost(int level) {
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
 /// user input. Otherwise, the behavior will determine which [Action]s he
 /// performs.
-interface Behavior {
+abstract class Behavior {
   bool canPerform(Hero hero);
   Action getAction(Hero hero);
 }
 
 /// A simple one-shot behavior that performs a given [Action] and then reverts
 /// back to waiting for input.
-class ActionBehavior implements Behavior {
+class ActionBehavior extends Behavior {
   final Action action;
 
   ActionBehavior(this.action);
@@ -239,7 +241,7 @@ class ActionBehavior implements Behavior {
 /// * He gets hungry.
 /// * He is "disturbed" and something gets hit attention, like a [Monster]
 ///   moving, being hit, etc.
-class RestBehavior implements Behavior {
+class RestBehavior extends Behavior {
   bool canPerform(Hero hero) {
     // See if done resting.
     if (hero.health.isMax) return false;
@@ -255,7 +257,7 @@ class RestBehavior implements Behavior {
 ///
 /// * He hits a wall.
 /// * He is disturbed.
-class RunBehavior implements Behavior {
+class RunBehavior extends Behavior {
   bool firstStep = true;
   Direction direction;
 
@@ -298,8 +300,8 @@ class RunBehavior implements Behavior {
     // TODO(bob): This is still pretty simple. It won't run around corners in
     // corridors, which is probably good. (Running around a corner means either
     // taking a diagonal step which makes you step next to a tile you haven't
-    // see, or going all the way through the corner which is a waste of a turn.)
-    // It also currently won't stop for items.
+    // seen, or going all the way through the corner which is a waste of a
+    // turn.) It also currently won't stop for items.
 
     return true;
   }

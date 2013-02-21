@@ -1,3 +1,5 @@
+part of util;
+
 // TODO(bob): Finish porting from C#. Figure out how to handle overloads.
 /// A two-dimensional rectangle.
 class Rect implements Iterable<Vec> {
@@ -24,13 +26,13 @@ class Rect implements Iterable<Vec> {
   ///       '-------------'
   static Rect intersect(Rect a, Rect b)
   {
-    final left = max(a.left, b.left);
-    final right = min(a.right, b.right);
-    final top = max(a.top, b.top);
-    final bottom = min(a.bottom, b.bottom);
+    final left = math.max(a.left, b.left);
+    final right = math.min(a.right, b.right);
+    final top = math.max(a.top, b.top);
+    final bottom = math.min(a.bottom, b.bottom);
 
-    final width = max(0, right - left);
-    final height = max(0, bottom - top);
+    final width = math.max(0, right - left);
+    final height = math.max(0, bottom - top);
 
     return new Rect(left, top, width, height);
   }
@@ -94,7 +96,7 @@ class Rect implements Iterable<Vec> {
     return true;
   }
 
-  RectIterator iterator() => new RectIterator(this);
+  RectIterator get iterator => new RectIterator(this);
 
   /// Returns the distance between this Rect and [other]. This is minimum
   /// length that a corridor would have to be to go from one Rect to the other.
@@ -155,6 +157,40 @@ class Rect implements Iterable<Vec> {
     // trace.
     return const <Vec>[];
   }
+
+
+  // TODO(bob): Use a mixin when available.
+  int get length => area;
+  bool get isEmpty => IterableMixinWorkaround.isEmpty(this);
+  Vec get first => IterableMixinWorkaround.first(this);
+  Vec get last => IterableMixinWorkaround.last(this);
+  Vec get single => IterableMixinWorkaround.single(this);
+  Iterable<Vec> map(f(Vec element)) => IterableMixinWorkaround.map(this, f);
+  // TODO(bob): Remove when removed from Iterable.
+  Iterable<Vec> mappedBy(f(Vec element)) => IterableMixinWorkaround.map(this, f);
+  Iterable<Vec> where(bool test(Vec element)) => IterableMixinWorkaround.where(this, test);
+  Iterable expand(f(Vec element)) => IterableMixinWorkaround.expand(this, f);
+  void forEach(void f(Vec o)) => IterableMixinWorkaround.forEach(this, f);
+  bool any(bool f(Vec o)) => IterableMixinWorkaround.any(this, f);
+  bool every(bool f(Vec o)) => IterableMixinWorkaround.every(this, f);
+  reduce(seed, f(accumulator, Vec o)) => IterableMixinWorkaround.reduce(this, seed, f);
+  String join([String separator]) => IterableMixinWorkaround.join(this, separator);
+  List<Vec> toList() => new List.from(this);
+  Set<Vec> toSet() => new Set.from(this);
+  Vec min([int compare(Vec a, Vec b)]) => IterableMixinWorkaround.min(this, compare);
+  Vec max([int compare(Vec a, Vec b)]) => IterableMixinWorkaround.max(this, compare);
+  Iterable<Vec> take(int n) {
+    throw new UnimplementedError();
+  }
+  Iterable<Vec> takeWhile(bool test(Vec value)) => IterableMixinWorkaround.takeWhile(this, test);
+  Iterable<Vec> skip(int n) {
+    throw new UnimplementedError();
+  }
+  Iterable<Vec> skipWhile(bool test(Vec value)) => IterableMixinWorkaround.skipWhile(this, test);
+  Vec firstMatching(bool test(Vec value), {Vec orElse()}) => IterableMixinWorkaround.firstMatching(this, test, orElse);
+  Vec lastMatching(bool test(Vec value), {Vec orElse()}) => IterableMixinWorkaround.lastMatching(this, test, orElse);
+  Vec singleMatching(bool test(Vec value)) => IterableMixinWorkaround.singleMatching(this, test);
+  Vec elementAt(int index) => IterableMixinWorkaround.elementAt(this, index);
 }
 
 class RectIterator implements Iterator<Vec> {
@@ -163,20 +199,19 @@ class RectIterator implements Iterator<Vec> {
   int _y;
 
   RectIterator(this._rect) {
-    _x = _rect.x;
+    _x = _rect.x - 1;
     _y = _rect.y;
   }
 
-  bool hasNext() => _y < _rect.bottom ;
+  Vec get current => new Vec(_x, _y);
 
-  Vec next() {
-    final result = new Vec(_x, _y);
+  bool moveNext() {
     _x++;
     if (_x >= _rect.right) {
       _x = _rect.x;
       _y++;
     }
 
-    return result;
+   return  _y < _rect.bottom;
   }
 }
