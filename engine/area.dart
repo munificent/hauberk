@@ -60,6 +60,7 @@ class Area {
     }
 
     game.quest = area.quest.generate(stage);
+    game.quest.announce(game.log);
 
     // TODO(bob): Temp. Wizard light it.
     /*
@@ -165,6 +166,9 @@ abstract class QuestBuilder {
 abstract class Quest {
   bool _isComplete = false;
   bool get isComplete => _isComplete;
+
+  /// Logs the goal of this quest so the player knows what to do.
+  void announce(Log log);
 
   bool pickUpItem(Game game, Item item) {
     if (onPickUpItem(game, item)) _complete(game);

@@ -24,7 +24,7 @@ class AreaBuilder extends ContentBuilder {
           // TODO(bob): Do something better than just have them on the ground.
           'Short Bow'
         ],
-        quest: kill('wild dog', 1)),
+        quest: kill('wild dog', 3)),
       level(trainingGrounds(), numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
@@ -142,6 +142,11 @@ class ItemQuest extends Quest {
 
   ItemQuest(this.itemType);
 
+  void announce(Log log) {
+    // TODO(bob): Handle a/an.
+    log.add("You must find a ${itemType.name}.");
+  }
+
   bool onPickUpItem(Game game, Item item) => item.type == itemType;
 }
 /// A quest to kill a number of [Monster]s of a certain [Breed].
@@ -149,11 +154,21 @@ class MonsterQuest extends Quest {
   final Breed breed;
   int remaining;
 
+  void announce(Log log) {
+    // TODO(bob): Handle pluralization correctly.
+    log.add("You must kill $remaining ${breed.name}s.");
+  }
+
   MonsterQuest(this.breed, this.remaining);
 
   bool onKillMonster(Game game, Monster monster) {
     if (monster.breed == breed) {
       remaining--;
+
+      if (remaining > 0) {
+        // TODO(bob): Handle pluralization correctly.
+        game.log.add("$remaining more ${breed.name}s await death at your hands.");
+      }
     }
 
     return remaining <= 0;
