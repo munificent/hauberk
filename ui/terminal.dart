@@ -108,7 +108,7 @@ class Glyph {
   final Color  back;
 
   Glyph(String char, [this.fore = Color.WHITE, this.back = Color.BLACK])
-      : char = char.charCodeAt(0);
+      : char = char.codeUnits[0];
 
   Glyph.fromCharCode(this.char, [this.fore = Color.WHITE, this.back = Color.BLACK]);
 

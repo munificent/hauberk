@@ -36,24 +36,24 @@ class Item extends Thing implements Comparable {
 
   String get nounText {
     final name = new StringBuffer();
-    name.add('a ');
+    name.write('a ');
 
     if (prefix != null) {
-      name.add(prefix.name);
-      name.add(' ');
+      name.write(prefix.name);
+      name.write(' ');
     }
 
-    name.add(type.name);
+    name.write(type.name);
 
     if (suffix != null) {
-      name.add(' ');
-      name.add(suffix.name);
+      name.write(' ');
+      name.write(suffix.name);
     }
 
     if (type.attack != null) {
-      name.add(' (');
-      name.add(type.attack.damage + damageModifier);
-      name.add(')');
+      name.write(' (');
+      name.write(type.attack.damage + damageModifier);
+      name.write(')');
     }
 
     return name.toString();
@@ -194,7 +194,7 @@ class Inventory implements ItemCollection {
   bool every(bool f(Item o)) => IterableMixinWorkaround.every(this, f);
   reduce(seed, f(accumulator, Item o)) => IterableMixinWorkaround.reduce(this, seed, f);
   String join([String separator]) => IterableMixinWorkaround.join(this, separator);
-  List<Item> toList() => new List.from(this);
+  List<Item> toList({bool growable: true}) => new List.from(this, growable: growable);
   Set<Item> toSet() => new Set.from(this);
   Item min([int compare(Item a, Item b)]) => IterableMixinWorkaround.min(this, compare);
   Item max([int compare(Item a, Item b)]) => IterableMixinWorkaround.max(this, compare);
@@ -351,7 +351,7 @@ class Equipment implements ItemCollection {
   bool every(bool f(Item o)) => IterableMixinWorkaround.every(this, f);
   reduce(seed, f(accumulator, Item o)) => IterableMixinWorkaround.reduce(this, seed, f);
   String join([String separator]) => IterableMixinWorkaround.join(this, separator);
-  List<Item> toList() => new List.from(this);
+  List<Item> toList({bool growable: true}) => new List.from(this, growable: growable);
   Set<Item> toSet() => new Set.from(this);
   Item min([int compare(Item a, Item b)]) => IterableMixinWorkaround.min(this, compare);
   Item max([int compare(Item a, Item b)]) => IterableMixinWorkaround.max(this, compare);

@@ -57,7 +57,7 @@ class CanvasTerminal implements RenderableTerminal {
     // TODO(bob): Bounds check.
     for (int i = 0; i < text.length; i++) {
       if (x + i >= width) break;
-      drawGlyph(x + i, y, new Glyph.fromCharCode(text.charCodeAt(i), fore, back));
+      drawGlyph(x + i, y, new Glyph.fromCharCode(text.codeUnits[i], fore, back));
     }
   }
 

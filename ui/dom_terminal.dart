@@ -35,7 +35,7 @@ class DomTerminal implements RenderableTerminal {
     // TODO(bob): Bounds check.
     for (int i = 0; i < text.length; i++) {
       if (x + i >= width) break;
-      glyphs.set(x + i, y, new Glyph.fromCharCode(text.charCodeAt(i), fore, back));
+      glyphs.set(x + i, y, new Glyph.fromCharCode(text.codeUnits[i], fore, back));
     }
   }
 
@@ -59,15 +59,15 @@ class DomTerminal implements RenderableTerminal {
 
         // Switch colors.
         if (glyph.fore != fore || glyph.back != back) {
-          if (glyph.fore != null) buffer.add('</span>');
+          if (glyph.fore != null) buffer.write('</span>');
           fore = glyph.fore;
           back = glyph.back;
-          buffer.add('<span class="${glyph.fore.cssClass} b${glyph.back.cssClass}">');
+          buffer.write('<span class="${glyph.fore.cssClass} b${glyph.back.cssClass}">');
         }
 
-        buffer.addCharCode(glyph.char);
+        buffer.writeCharCode(glyph.char);
       }
-      buffer.add('\n');
+      buffer.write('\n');
     }
 
     element.innerHtml = buffer.toString();

@@ -28,7 +28,7 @@ class Los implements Iterable<Vec> {
   bool every(bool f(Vec o)) => IterableMixinWorkaround.every(this, f);
   reduce(seed, f(accumulator, Vec o)) => IterableMixinWorkaround.reduce(this, seed, f);
   String join([String separator]) => IterableMixinWorkaround.join(this, separator);
-  List<Vec> toList() => new List.from(this);
+  List<Vec> toList({bool growable: true}) => new List.from(this, growable: growable);
   Set<Vec> toSet() => new Set.from(this);
   Vec min([int compare(Vec a, Vec b)]) => IterableMixinWorkaround.min(this, compare);
   Vec max([int compare(Vec a, Vec b)]) => IterableMixinWorkaround.max(this, compare);

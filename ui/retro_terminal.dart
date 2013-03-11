@@ -78,8 +78,8 @@ class RetroTerminal implements RenderableTerminal {
     // TODO(bob): Bounds check.
     for (int i = 0; i < text.length; i++) {
       if (x + i >= width) break;
-      // TODO(bob): Is charCodes[] the right thing here? Is it fast?
-      drawGlyph(x + i, y, new Glyph.fromCharCode(text.charCodes[i], fore, back));
+      // TODO(bob): Is codeUnits[] the right thing here? Is it fast?
+      drawGlyph(x + i, y, new Glyph.fromCharCode(text.codeUnits[i], fore, back));
     }
   }
 

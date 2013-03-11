@@ -58,7 +58,7 @@ class Array2D<T> implements Iterable<T> {
   bool every(bool f(T o)) => IterableMixinWorkaround.every(this, f);
   reduce(seed, f(accumulator, T o)) => IterableMixinWorkaround.reduce(this, seed, f);
   String join([String separator]) => IterableMixinWorkaround.join(this, separator);
-  List<T> toList() => new List.from(this);
+  List<T> toList({bool growable: true}) => new List.from(this, growable: growable);
   Set<T> toSet() => new Set.from(this);
   T min([int compare(T a, T b)]) => IterableMixinWorkaround.min(this, compare);
   T max([int compare(T a, T b)]) => IterableMixinWorkaround.max(this, compare);

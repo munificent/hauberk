@@ -49,7 +49,8 @@ class Stage {
   }
 
   /// Gets the [Item]s at [pos].
-  Iterable<Item> itemsAt(Vec pos) => items.where((item) => item.pos == pos);
+  List<Item> itemsAt(Vec pos) =>
+      items.where((item) => item.pos == pos).toList();
 
   /// Removes [item] from the stage. Does nothing if the item is not on the
   /// ground.
