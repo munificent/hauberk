@@ -22,6 +22,18 @@ class RecipeBuilder extends ContentBuilder {
       'Parchment'
     ]);
 
+    recipe('Scroll of Phasing', [
+      'Scroll of Sidestepping',
+      'Scroll of Sidestepping',
+      'Scroll of Sidestepping'
+    ]);
+
+    recipe('Scroll of Teleportation', [
+      'Scroll of Phasing',
+      'Scroll of Phasing',
+      'Scroll of Phasing'
+    ]);
+
     recipe('Fur-lined Robe', [
       'Robe',
       'Fur pelt',

@@ -44,9 +44,13 @@ class ItemBuilder extends ContentBuilder {
     item('Parchment', gray('?'));
 
     // Teleportation
-    // Phasing, Teleportation, Disappearing
+    // Disappearing
     item('Scroll of Sidestepping', lightPurple('?'),
-        use: () => new TeleportAction(7));
+        use: () => new TeleportAction(6));
+    item('Scroll of Phasing', purple('?'),
+        use: () => new TeleportAction(12));
+    item('Scroll of Teleportation', darkPurple('?'),
+        use: () => new TeleportAction(24));
   }
 
   void weapons() {
