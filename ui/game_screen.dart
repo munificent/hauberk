@@ -78,7 +78,8 @@ class GameScreen extends Screen {
 
           ui.pop(true);
         } else {
-          game.log.add('You have not completed your quest yet.');
+          game.log.add('You have not completed your quest yet:');
+          game.quest.announce(game.log);
           dirty();
         }
         break;
