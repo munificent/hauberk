@@ -78,7 +78,7 @@ class GameScreen extends Screen {
 
           ui.pop(true);
         } else {
-          game.log.add('You have not completed your quest yet:');
+          game.log.error('You have not completed your quest yet:');
           game.quest.announce(game.log);
           dirty();
         }
@@ -215,7 +215,7 @@ class GameScreen extends Screen {
     }
 
     if (doors.length == 0) {
-      game.log.add('You are not next to an open door.');
+      game.log.error('You are not next to an open door.');
       dirty();
     } else if (doors.length == 1) {
       game.hero.setNextAction(new CloseDoorAction(doors[0]));
@@ -415,10 +415,19 @@ class GameScreen extends Screen {
     var y = logOnTop ? 0 : terminal.height - game.log.messages.length;
 
     for (final message in game.log.messages) {
-      terminal.writeAt(0, y, message.text);
+      var color;
+      switch (message.type) {
+        case LogType.MESSAGE: color = Color.WHITE; break;
+        case LogType.ERROR: color = Color.RED; break;
+        case LogType.QUEST: color = Color.PURPLE; break;
+        case LogType.GAIN: color = Color.GOLD; break;
+        case LogType.HELP: color = Color.GREEN; break;
+      }
+
+      terminal.writeAt(0, y, message.text, color);
       if (message.count > 1) {
         terminal.writeAt(message.text.length, y, ' (x${message.count})',
-          Color.GRAY);
+            Color.GRAY);
       }
       y++;
     }

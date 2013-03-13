@@ -144,7 +144,7 @@ class ItemQuest extends Quest {
 
   void announce(Log log) {
     // TODO(bob): Handle a/an.
-    log.add("You must find a ${itemType.name}.");
+    log.quest("You must find a ${itemType.name}.");
   }
 
   bool onPickUpItem(Game game, Item item) => item.type == itemType;
@@ -156,7 +156,7 @@ class MonsterQuest extends Quest {
 
   void announce(Log log) {
     // TODO(bob): Handle pluralization correctly.
-    log.add("You must kill $remaining ${breed.name}s.");
+    log.quest("You must kill $remaining ${breed.name}s.");
   }
 
   MonsterQuest(this.breed, this.remaining);
@@ -167,7 +167,7 @@ class MonsterQuest extends Quest {
 
       if (remaining > 0) {
         // TODO(bob): Handle pluralization correctly.
-        game.log.add("$remaining more ${breed.name}s await death at your hands.");
+        game.log.quest("$remaining more ${breed.name}s await death at your hands.");
       }
     }
 

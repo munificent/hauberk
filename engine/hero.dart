@@ -184,7 +184,7 @@ class Hero extends Actor {
       health.current += Option.HERO_HEALTH_GAIN;
 
       if (log) {
-        game.log.add('{1} [have|has] reached level $level.', this);
+        game.log.gain('{1} [have|has] reached level $level.', this);
       }
     }
   }

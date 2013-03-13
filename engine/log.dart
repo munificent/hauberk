@@ -47,7 +47,27 @@ class Log {
 
   Log() : messages = new Queue<Message>();
 
-  void add(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void message(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    add(LogType.MESSAGE, message, noun1, noun2, noun3);
+  }
+
+  void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    add(LogType.ERROR, message, noun1, noun2, noun3);
+  }
+
+  void quest(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    add(LogType.QUEST, message, noun1, noun2, noun3);
+  }
+
+  void gain(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    add(LogType.GAIN, message, noun1, noun2, noun3);
+  }
+
+  void help(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    add(LogType.HELP, message, noun1, noun2, noun3);
+  }
+
+  void add(LogType type, String message, [Noun noun1, Noun noun2, Noun noun3]) {
     message = formatSentence(message, noun1, noun2, noun3);
 
     // See if it's a repeat of the last message.
@@ -61,7 +81,7 @@ class Log {
     }
 
     // It's a new message.
-    messages.add(new Message(message));
+    messages.add(new Message(type, message));
     if (messages.length > MAX_MESSAGES) messages.removeFirst();
   }
 
@@ -180,13 +200,36 @@ class Gender {
   const Gender(this.subjective, this.objective, this.possessive);
 }
 
+class LogType {
+  /// Normal log messages.
+  static const MESSAGE = const LogType._("MESSAGE");
+
+  /// Messages when the player tries an invalid action.
+  static const ERROR = const LogType._("ERROR");
+
+  /// Messages related to the hero's quest.
+  static const QUEST = const LogType._("QUEST");
+
+  /// Messages when the hero levels up or gains powers.
+  static const GAIN = const LogType._("GAIN");
+
+  /// Help or tutorial messages.
+  static const HELP = const LogType._("HELP");
+
+  final String _name;
+  const LogType._(this._name);
+
+  String toString() => _name;
+}
+
 /// A single log entry.
 class Message {
+  final LogType type;
   final String text;
 
   /// The number of times this message has been repeated.
   int count = 1;
 
-  Message(this.text);
+  Message(this.type, this.text);
 }
 

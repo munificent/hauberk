@@ -39,8 +39,12 @@ abstract class Action {
   /// actions quieter or louder.
   int get noise => Option.NOISE_NORMAL;
 
+  void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    _game.log.error(message, noun1, noun2, noun3);
+  }
+
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    _game.log.add(message, noun1, noun2, noun3);
+    _game.log.message(message, noun1, noun2, noun3);
   }
 
   ActionResult succeed([String message, Noun noun1, Noun noun2, Noun noun3]) {
@@ -49,7 +53,7 @@ abstract class Action {
   }
 
   ActionResult fail([String message, Noun noun1, Noun noun2, Noun noun3]) {
-    if (message != null) log(message, noun1, noun2, noun3);
+    if (message != null) error(message, noun1, noun2, noun3);
     return ActionResult.FAILURE;
   }
 

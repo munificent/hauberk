@@ -64,7 +64,7 @@ class Monster extends Actor {
     // TODO(bob): Add breed-specific modifier.
     if (noise > rng.range(50, 5000)) {
       state = MonsterState.AWAKE;
-      game.log.add('{1} wake[s] up!', this);
+      game.log.message('{1} wake[s] up!', this);
 
       // Bump up the noise. This ensures the monsters is alert and stays awake
       // for a while.
@@ -85,7 +85,7 @@ class Monster extends Actor {
     // See if things are quiet enough to fall asleep.
     if ((noise < rng.range(0,25)) && !canView(game.hero.pos)) {
       state = MonsterState.ASLEEP;
-      game.log.add('{1} fall[s] asleep!', this);
+      game.log.message('{1} fall[s] asleep!', this);
 
       // Reset the noise. This ensures the monster stays asleep for a while.
       noise = 0;

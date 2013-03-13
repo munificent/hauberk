@@ -189,7 +189,8 @@ abstract class Quest {
     if (_isComplete) return;
 
     _isComplete = true;
-    game.log.add('You have completed your quest! Press "q" to exit the level.');
+    game.log.quest(
+        'You have completed your quest! Press "q" to exit the level.');
   }
 }
 

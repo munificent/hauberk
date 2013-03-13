@@ -37,7 +37,7 @@ class CloseDoorDialog extends Screen {
       game.hero.setNextAction(new CloseDoorAction(pos));
       ui.pop();
     } else {
-      game.log.add('There is not an open door there.');
+      game.log.error('There is not an open door there.');
       dirty();
     }
   }

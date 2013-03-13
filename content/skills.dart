@@ -31,13 +31,13 @@ class ArcherySkill extends Skill {
     // Get the equipped bow, if any.
     var bow = game.hero.equipment.find('Bow');
     if (bow == null) {
-      game.log.add('You do not have a bow equipped.');
+      game.log.error('You do not have a bow equipped.');
       return false;
     }
 
     // Make sure the hero is focused.
     if (game.hero.focus < getFocusCost(level)) {
-      game.log.add('You are too unfocused!');
+      game.log.error('You are too unfocused!');
       return false;
     }
 
