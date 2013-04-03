@@ -5,14 +5,16 @@ part of engine;
 /// the hero's data persists (for example, there is no position when not in a
 /// dungeon). This class stores that state.
 class HeroSave {
-  Inventory inventory;
-  Equipment equipment;
+  final String name;
+
+  Inventory inventory = new Inventory(Option.INVENTORY_CAPACITY);
+  Equipment equipment = new Equipment();
 
   /// Items in the hero's home.
-  Inventory home;
+  Inventory home = new Inventory(Option.HOME_CAPACITY);
 
   /// Items in the hero's crucible.
-  Inventory crucible;
+  Inventory crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
 
   final SkillSet skills;
 
@@ -24,16 +26,12 @@ class HeroSave {
   /// that area.
   final Map<String, int> completedLevels;
 
-  HeroSave(Map<String, Skill> skills)
-      : inventory = new Inventory(Option.INVENTORY_CAPACITY),
-        equipment = new Equipment(),
-        home = new Inventory(Option.HOME_CAPACITY),
-        crucible = new Inventory(Option.CRUCIBLE_CAPACITY),
-        skills = new SkillSet(skills),
+  HeroSave(Map<String, Skill> skills, this.name)
+      : skills = new SkillSet(skills),
         completedLevels = <String, int>{};
 
-  HeroSave.load(this.inventory, this.equipment, this.home, this.crucible,
-      this.skills, this.experienceCents, this.completedLevels);
+  HeroSave.load(this.name, this.inventory, this.equipment, this.home,
+      this.crucible, this.skills, this.experienceCents, this.completedLevels);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be
@@ -197,8 +195,7 @@ int calculateLevel(int experienceCents) {
   var experience = experienceCents ~/ 100;
 
   for (var level = 1; level <= Option.HERO_LEVEL_MAX; level++) {
-    final levelCost = (level - 1) * (level - 1) * Option.HERO_LEVEL_COST;
-    if (experience < levelCost) return level;
+    if (experience < calculateLevelCost(level)) return level - 1;
   }
 
   return Option.HERO_LEVEL_MAX;

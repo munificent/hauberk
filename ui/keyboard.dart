@@ -37,8 +37,9 @@ class Keyboard {
       _lastPressed = event.keyCode;
     }
 
-    // Don't let the browser handle the tab key.
-    if (event.keyCode == KeyCode.TAB) {
+    // Don't let the browser handle the tab or backspace key.
+    if (event.keyCode == KeyCode.TAB ||
+        event.keyCode == KeyCode.DELETE) {
       event.preventDefault();
     }
   }
@@ -60,10 +61,12 @@ class Keyboard {
 
 /// Raw key codes. These code straight from the DOM events.
 class KeyCode {
+  static const DELETE     = 8;
+  static const TAB        = 9;
+  static const ENTER      = 13;
   static const SHIFT      = 16;
   static const CONTROL    = 17;
   static const OPTION     = 18;
-  static const TAB        = 9;
   static const ESCAPE     = 27;
   static const SPACE      = 32;
 
@@ -71,6 +74,18 @@ class KeyCode {
   static const UP         = 38;
   static const RIGHT      = 39;
   static const DOWN       = 40;
+
+  static const ZERO       = 48;
+  static const ONE        = 49;
+  static const TWO        = 50;
+  static const THREE      = 51;
+  static const FOUR       = 52;
+  static const FIVE       = 53;
+  static const SIX        = 54;
+  static const SEVEN      = 55;
+  static const EIGHT      = 56;
+  static const NINE       = 57;
+
   static const A          = 65;
   static const B          = 66;
   static const C          = 67;
@@ -97,6 +112,7 @@ class KeyCode {
   static const X          = 88;
   static const Y          = 89;
   static const Z          = 90;
+
   static const SEMICOLON  = 186;
   static const COMMA      = 188;
   static const PERIOD     = 190;

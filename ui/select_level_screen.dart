@@ -3,11 +3,11 @@ part of ui;
 class SelectLevelScreen extends Screen {
   final Content  content;
   final HeroSave save;
-  final Function saveGame;
+  final Storage storage;
   int selectedArea = 0;
   int selectedLevel = 0;
 
-  SelectLevelScreen(this.content, this.save, this.saveGame);
+  SelectLevelScreen(this.content, this.save, this.storage);
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
@@ -40,6 +40,10 @@ class SelectLevelScreen extends Screen {
     case KeyCode.S:
       ui.push(new SkillsScreen(content, save));
       break;
+
+    case KeyCode.ESCAPE:
+      ui.pop();
+      break;
     }
 
     return true;
@@ -49,7 +53,7 @@ class SelectLevelScreen extends Screen {
     if (!isTopScreen) return;
 
     terminal.clear();
-    terminal.writeAt(0, 0, 'Where shall you quest?');
+    terminal.writeAt(0, 0, 'Greetings, ${save.name}, where shall you quest?');
     terminal.writeAt(0, terminal.height - 1,
         '[L] Select area, [↕] Select area, [↔] Select level, [H] Enter home, [S] Skills',
         Color.GRAY);
@@ -88,10 +92,10 @@ class SelectLevelScreen extends Screen {
   void activate(Screen screen, result) {
     if (screen is GameScreen && result) {
       // Left successfully, so save.
-      saveGame();
+      storage.save();
     } else if (screen is HomeScreen || screen is SkillsScreen) {
       // Always save when leaving the home.
-      saveGame();
+      storage.save();
     }
   }
 

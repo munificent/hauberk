@@ -1,7 +1,7 @@
 part of util;
 
 /// A singleton instance of Rng globally available.
-final rng = new Rng(new Date.now().millisecondsSinceEpoch);
+final rng = new Rng(new DateTime.now().millisecondsSinceEpoch);
 
 /// The Random Number God: deliverer of good and ill fortune alike.
 /// Implemented using a [Mersenne Twister]. Note: I just ported it straight from

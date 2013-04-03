@@ -36,7 +36,7 @@ main() {
         <tr>
           <td>
 <pre>
-<span class="${glyph.fore.cssClass}">${glyph.char}</span>
+<span class="${glyph.fore.cssClass}">${new String.fromCharCodes([glyph.char])}</span>
 </pre>
           </td>
           <td>${breed.name}</td>

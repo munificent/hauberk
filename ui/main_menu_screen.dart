@@ -1,15 +1,13 @@
 part of ui;
 
 class MainMenuScreen extends Screen {
-  final Content        content;
-  final List<HeroSave> heroes;
+  final Content content;
+  final Storage storage;
   int selectedHero = 0;
 
   MainMenuScreen(Content content)
-    : content = content,
-      heroes = [] {
-    _loadHeroes();
-  }
+      : content = content,
+        storage = new Storage(content);
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
@@ -22,24 +20,21 @@ class MainMenuScreen extends Screen {
       break;
 
     case KeyCode.L:
-      if (selectedHero < heroes.length) {
-        ui.push(new SelectLevelScreen(content, heroes[selectedHero],
-            _saveHeroes));
+      if (selectedHero < storage.heroes.length) {
+        ui.push(new SelectLevelScreen(content, storage.heroes[selectedHero],
+            storage));
       }
       break;
 
     case KeyCode.D:
-      if (selectedHero < heroes.length) {
+      if (selectedHero < storage.heroes.length) {
         ui.push(new ConfirmDialog(
             "Are you sure you want to delete this hero?", 'delete'));
       }
       break;
 
     case KeyCode.N:
-      heroes.add(content.createHero());
-      _saveHeroes();
-      ui.push(new SelectLevelScreen(content, heroes[heroes.length - 1],
-          _saveHeroes));
+      ui.push(new NewHeroScreen(content, storage));
       break;
     }
 
@@ -48,9 +43,9 @@ class MainMenuScreen extends Screen {
 
   void activate(Screen screen, result) {
     if (screen is ConfirmDialog && result == 'delete') {
-      heroes.removeRange(selectedHero, 1);
-      if (selectedHero >= heroes.length) selectedHero--;
-      _saveHeroes();
+      storage.heroes.removeRange(selectedHero, 1);
+      if (selectedHero >= storage.heroes.length) selectedHero--;
+      storage.save();
       dirty();
     }
   }
@@ -66,12 +61,14 @@ class MainMenuScreen extends Screen {
         '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
         Color.GRAY);
 
-    if (heroes.length == 0) {
+    if (storage.heroes.length == 0) {
       terminal.writeAt(0, 2, '(No heroes. Please create a new one.)',
           Color.GRAY);
     }
 
-    for (var i = 0; i < heroes.length; i++) {
+    for (var i = 0; i < storage.heroes.length; i++) {
+      var hero = storage.heroes[i];
+
       var fore = Color.WHITE;
       var back = Color.BLACK;
       if (i == selectedHero) {
@@ -79,130 +76,13 @@ class MainMenuScreen extends Screen {
         back = Color.YELLOW;
       }
 
-      // TODO(bob): Show hero name and useful stats (level?).
-      terminal.writeAt(0, 2 + i, "Hero", fore, back);
+      // TODO(bob): Show useful stats (level?).
+      terminal.writeAt(0, 2 + i, hero.name, fore, back);
     }
   }
 
   void _changeSelection(int offset) {
-    selectedHero = (selectedHero + offset) % heroes.length;
+    selectedHero = (selectedHero + offset) % storage.heroes.length;
     dirty();
-  }
-
-  void _loadHeroes() {
-    // TODO(bob): For debugging. If the query is "?clear", then ditch
-    // saved heroes.
-    if (html.window.location.search == '?clear') {
-      _saveHeroes();
-      return;
-    }
-
-    var storage = html.window.localStorage['heroes'];
-    if (storage == null) return;
-
-    var data = json.parse(storage);
-
-    // TODO(bob): Check version.
-
-    for (final hero in data['heroes']) {
-      var inventory = new Inventory(Option.INVENTORY_CAPACITY);
-      for (final itemData in hero['inventory']) {
-        var item = _loadItem(itemData);
-        inventory.tryAdd(item);
-      }
-
-      var equipment = new Equipment();
-      for (final itemData in hero['equipment']) {
-        var item = _loadItem(itemData);
-        // TODO(bob): If there are multiple slots of the same type, this may
-        // shuffle items around.
-        equipment.equip(item);
-      }
-
-      var home = new Inventory(Option.HOME_CAPACITY);
-      for (final itemData in hero['home']) {
-        var item = _loadItem(itemData);
-        home.tryAdd(item);
-      }
-
-      var crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
-      for (final itemData in hero['crucible']) {
-        var item = _loadItem(itemData);
-        crucible.tryAdd(item);
-      }
-
-      var skills = new SkillSet(content.skills);
-      hero['skills'].forEach((name, level) {
-        skills[content.skills[name]] = level;
-      });
-
-      var experience = hero['experience'];
-
-      var completedLevels = hero['completedLevels'];
-
-      heroes.add(new HeroSave.load(inventory, equipment, home, crucible,
-          skills, experience, completedLevels));
-    }
-  }
-
-  Item _loadItem(data) {
-    var type = content.items[data['type']];
-    // TODO(bob): Load powers.
-    return new Item(type);
-  }
-
-  void _saveHeroes() {
-    var heroData = [];
-    for (var hero in heroes) {
-      var inventory = [];
-      for (var item in hero.inventory) {
-        inventory.add(_saveItem(item));
-      }
-
-      var equipment = [];
-      for (var item in hero.equipment) {
-        equipment.add(_saveItem(item));
-      }
-
-      var home = [];
-      for (var item in hero.home) {
-        home.add(_saveItem(item));
-      }
-
-      var crucible = [];
-      for (var item in hero.crucible) {
-        crucible.add(_saveItem(item));
-      }
-
-      var skills = {};
-      hero.skills.forEach((skill, level) {
-        if (level != 0) skills[skill.name] = level;
-      });
-
-      heroData.add({
-        'inventory': inventory,
-        'equipment': equipment,
-        'home': home,
-        'crucible': crucible,
-        'skills': skills,
-        'experience': hero.experienceCents,
-        'completedLevels': hero.completedLevels
-      });
-    }
-
-    // TODO(bob): Version.
-    var data = {
-      'heroes': heroData
-    };
-
-    html.window.localStorage['heroes'] = json.stringify(data);
-    print('Saved.');
-  }
-
-  _saveItem(Item item) {
-    // TODO(bob): Save powers.
-    return {
-      'type': item.type.name
-    };
   }
 }

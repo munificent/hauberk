@@ -128,7 +128,8 @@ class RetroTerminal implements RenderableTerminal {
         if (char == 0 || char == CharCode.SPACE) continue;
 
         var color = _getColorFont(glyph.fore);
-        context.drawImage(color, sx, sy, FONT_WIDTH, FONT_HEIGHT,
+        context.drawImageScaledFromSource(color,
+            sx, sy, FONT_WIDTH, FONT_HEIGHT,
             x * FONT_WIDTH, y * FONT_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
       }
     }

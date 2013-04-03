@@ -148,8 +148,8 @@ class Content {
   Content(this.areas, this.breeds, this.items, this.recipes, this.skills,
       this._newHeroItems);
 
-  HeroSave createHero() {
-    final hero = new HeroSave(skills);
+  HeroSave createHero(String name) {
+    final hero = new HeroSave(skills, name);
     for (final itemType in _newHeroItems) {
       hero.inventory.tryAdd(new Item(itemType));
     }
