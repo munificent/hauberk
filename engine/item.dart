@@ -163,7 +163,7 @@ class Inventory implements ItemCollection {
 
   Item removeAt(int index) {
     final item = _items[index];
-    _items.removeRange(index, 1);
+    _items.removeAt(index);
     return item;
   }
 
@@ -405,7 +405,7 @@ class Recipe {
       if (found == -1) return null;
 
       // Don't allow extra copies of ingredients.
-      missing.removeRange(found, 1);
+      missing.removeAt(found);
     }
 
     return missing;

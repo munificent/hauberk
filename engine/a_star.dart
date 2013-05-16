@@ -87,7 +87,7 @@ class AStar {
           final alreadyOpen = open[i];
           if (alreadyOpen.pos == neighbor) {
             if (alreadyOpen.cost > cost) {
-              open.removeRange(i, 1);
+              open.removeAt(i);
               i--;
             } else {
               inOpen = true;
@@ -116,14 +116,14 @@ class AStar {
           bool inserted = false;
           for (var i = open.length - 1; i >= 0; i--) {
             if (open[i].guess > guess) {
-              open.insertRange(i + 1, 1, path);
+              open.insert(i + 1, path);
               inserted = true;
               break;
             }
           }
 
           // If we didn't find a node to put it after, put it at the front.
-          if (!inserted) open.insertRange(0, 1, path);
+          if (!inserted) open.insert(0, path);
         }
       }
     }

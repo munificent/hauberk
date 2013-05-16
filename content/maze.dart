@@ -48,7 +48,7 @@ class Maze {
         cells.add(cell + direction);
       } else {
         // No adjacent uncarved cells.
-        cells.removeRange(index, 1);
+        cells.removeAt(index);
       }
     }
   }

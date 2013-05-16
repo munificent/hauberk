@@ -43,7 +43,7 @@ class MainMenuScreen extends Screen {
 
   void activate(Screen screen, result) {
     if (screen is ConfirmDialog && result == 'delete') {
-      storage.heroes.removeRange(selectedHero, 1);
+      storage.heroes.removeAt(selectedHero);
       if (selectedHero >= storage.heroes.length) selectedHero--;
       storage.save();
       dirty();

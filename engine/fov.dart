@@ -125,7 +125,7 @@ class Fov {
         // Overlaps both, so unify one and delete the other.
         shadows[index - 1].end =
             math.max(shadows[index - 1].end, shadows[index].end);
-        shadows.removeRange(index, 1);
+        shadows.removeAt(index);
       } else {
         // Just overlaps the next shadow, so unify it with that.
         shadows[index].start = math.min(shadows[index].start, shadow.start);
@@ -136,7 +136,7 @@ class Fov {
         shadows[index - 1].end = math.max(shadows[index - 1].end, shadow.end);
       } else {
         // Does not overlap anything, so insert.
-        shadows.insertRange(index, 1, shadow);
+        shadows.insert(index, shadow);
       }
     }
 

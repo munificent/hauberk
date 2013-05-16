@@ -57,7 +57,7 @@ class Stage {
   void removeItem(Item item) {
     for (var i = 0; i < items.length; i++) {
       if (items[i] == item) {
-        items.removeRange(i, 1);
+        items.removeAt(i);
         return;
       }
     }

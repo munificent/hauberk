@@ -76,7 +76,7 @@ class Rng {
   take(List items) {
     final index = range(items.length);
     final item = items[index];
-    items.removeRange(index, 1);
+    items.removeAt(index);
     return item;
   }
 

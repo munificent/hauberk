@@ -96,7 +96,7 @@ class FeatureCreep {
       }
 
       // The connector has been tried.
-      connectors.removeRange(0, 1);
+      connectors.removeAt(0);
 
       // If we failed to connect something, move the connector to the end of
       // the list. Since it pulls connectors from the beginning, this should
@@ -163,12 +163,12 @@ class FeatureCreep {
   */
 
   void addRoomConnector(Vec pos, Direction dir) {
-    connectors.insertRange(rng.inclusive(connectors.length), 1,
+    connectors.insert(rng.inclusive(connectors.length),
         new Connector(ConnectFrom.ROOM, dir, pos));
   }
 
   void addHallConnector(Vec pos, Direction dir) {
-    connectors.insertRange(rng.inclusive(connectors.length), 1,
+    connectors.insert(rng.inclusive(connectors.length),
         new Connector(ConnectFrom.HALL, dir, pos));
   }
 
