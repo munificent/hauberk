@@ -32,7 +32,7 @@ abstract class Skill {
   /// using this [Skill]. If the skill needs a target, one will be passed in.
   /// Otherwise, it will be `null`.
   Action getUseAction(int level, Game game, Vec target) {
-    if (!hasUse) throw 'This skill does not have a use.';
+    throw 'Should be overridden in skills that have uses.';
   }
 }
 

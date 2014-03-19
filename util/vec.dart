@@ -33,7 +33,9 @@ class VecBase {
       return new Vec(x + other.x, y + other.y);
     } else if (other is int) {
       return new Vec(x + other, y + other);
-    } else assert(false);
+    }
+
+    throw new ArgumentError("Operand must be an int or VecBase.");
   }
 
   Vec operator -(other) {
@@ -41,7 +43,9 @@ class VecBase {
       return new Vec(x - other.x, y - other.y);
     } else if (other is int) {
       return new Vec(x - other, y - other);
-    } else assert(false);
+    }
+
+    throw new ArgumentError("Operand must be an int or VecBase.");
   }
 
   /// Returns `true` if the magnitude of this vector is greater than [other].

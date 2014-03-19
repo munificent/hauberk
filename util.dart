@@ -1,6 +1,6 @@
 library util;
 
-import 'dart:collection'; // TODO(bob): For IterableMixinWorkaround.
+import 'dart:collection';
 import 'dart:math' as math;
 
 part 'util/array2d.dart';
@@ -24,17 +24,17 @@ num clamp(num min, num value, num max) {
 String padLeft(String text, int length) {
   final result = new StringBuffer();
   for (var i = length - text.length; i >= 0; i--) {
-    result.add(' ');
+    result.write(' ');
   }
-  result.add(text);
+  result.write(text);
   return result.toString();
 }
 
 String padRight(String text, int length, [String padChar = ' ']) {
   final result = new StringBuffer();
-  result.add(text);
+  result.write(text);
   for (var i = length - text.length; i >= 0; i--) {
-    result.add(padChar);
+    result.write(padChar);
   }
   return result.toString();
 }

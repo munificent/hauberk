@@ -29,6 +29,8 @@ class Direction extends VecBase implements Vec {
       case W: return SW;
       case NW: return W;
     }
+
+    throw "unreachable";
   }
 
   Direction get rotateRight45 {
@@ -43,6 +45,8 @@ class Direction extends VecBase implements Vec {
       case W: return NW;
       case NW: return N;
     }
+
+    throw "unreachable";
   }
 
   Direction get rotateLeft90 {
@@ -57,6 +61,8 @@ class Direction extends VecBase implements Vec {
       case W: return S;
       case NW: return SW;
     }
+
+    throw "unreachable";
   }
 
   Direction get rotateRight90 {
@@ -71,6 +77,8 @@ class Direction extends VecBase implements Vec {
       case W: return N;
       case NW: return NE;
     }
+
+    throw "unreachable";
   }
 
   Direction get rotate180 {
@@ -85,5 +93,7 @@ class Direction extends VecBase implements Vec {
       case W: return E;
       case NW: return SE;
     }
+
+    throw "unreachable";
   }
 }

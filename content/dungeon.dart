@@ -325,6 +325,8 @@ abstract class Dungeon extends StageGenerator {
         setTile(new Vec(room.right - 2, y), type);
       }
     }
+
+    return true;
   }
 
   /// If [room] is big enough, adds a floating room inside of it with a single

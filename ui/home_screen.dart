@@ -91,6 +91,8 @@ class HomeView {
       case HomeView.HOME: return 'Home';
       case HomeView.CRUCIBLE: return 'Crucible';
     }
+
+    throw "unreachable";
   }
 
   /// Gets the list of items for this view.
@@ -102,7 +104,7 @@ class HomeView {
       case HomeView.CRUCIBLE: return save.crucible;
     }
 
-    assert(false); // Unreachable.
+    throw "unreachable";
   }
 }
 

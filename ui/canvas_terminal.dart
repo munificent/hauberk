@@ -22,7 +22,7 @@ class CanvasTerminal implements RenderableTerminal {
   CanvasTerminal(int width, int height, this.canvas, this.font)
       : glyphs = new Array2D<Glyph>(width, height, () => null),
         changedGlyphs = new Array2D<Glyph>(width, height,() => clearGlyph) {
-    context = canvas.context2d;
+    context = canvas.context2D;
 
     canvas.width = font.charWidth * width;
     canvas.height = font.lineHeight * height;

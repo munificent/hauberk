@@ -122,7 +122,7 @@ class InventoryView {
       case InventoryView.GROUND: return InventoryView.INVENTORY;
     }
 
-    assert(false); // Unreachable.
+    throw "unreachable";
   }
 
   /// Gets the list of items for this view.
@@ -133,7 +133,7 @@ class InventoryView {
       case InventoryView.GROUND: return game.stage.itemsAt(game.hero.pos);
     }
 
-    assert(false); // Unreachable.
+    throw "unreachable";
   }
 }
 
@@ -156,6 +156,8 @@ class DropInventoryMode extends InventoryMode {
       case InventoryView.INVENTORY: return 'Drop which item?';
       case InventoryView.EQUIPMENT: return 'Unequip and drop which item?';
     }
+
+    throw "unreachable";
   }
 
   bool get showGroundItems => false;
@@ -175,6 +177,8 @@ class UseInventoryMode extends InventoryMode {
       case InventoryView.EQUIPMENT: return 'Unequip which item?';
       case InventoryView.GROUND: return 'Pick up and use which item?';
     }
+
+    throw "unreachable";
   }
 
   const UseInventoryMode() : super();
@@ -186,5 +190,7 @@ class UseInventoryMode extends InventoryMode {
       case InventoryView.EQUIPMENT: return new UnequipAction(index);
       case InventoryView.GROUND: return new UseAction(index, true);
     }
+
+    throw "unreachable";
   }
 }

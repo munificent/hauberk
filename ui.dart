@@ -1,7 +1,7 @@
 library ui;
 
 import 'dart:html' as html;
-import 'dart:json' as json;
+import 'dart:convert';
 import 'dart:math';
 
 import 'engine.dart';

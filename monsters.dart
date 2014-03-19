@@ -4,7 +4,6 @@ import 'dart:html' as html;
 
 import 'content.dart';
 import 'engine.dart';
-import 'util.dart';
 import 'ui.dart';
 
 main() {
@@ -63,5 +62,5 @@ main() {
   }
   text.write('</tbody>');
 
-  html.query('table').innerHtml = text.toString();
+  html.querySelector('table').innerHtml = text.toString();
 }

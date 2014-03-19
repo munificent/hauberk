@@ -548,6 +548,8 @@ class GameScreen extends Screen {
       case Element.LIGHT: return Color.LIGHT_YELLOW;
       case Element.SPIRIT: return Color.PURPLE;
     }
+
+    throw "unreachable";
   }
 
   /// Visually debug the scent data.

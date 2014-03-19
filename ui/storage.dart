@@ -20,7 +20,7 @@ class Storage {
     var storage = html.window.localStorage['heroes'];
     if (storage == null) return;
 
-    var data = json.parse(storage);
+    var data = JSON.decode(storage);
 
     // TODO(bob): Check version.
 
@@ -118,7 +118,7 @@ class Storage {
       'heroes': heroData
     };
 
-    html.window.localStorage['heroes'] = json.stringify(data);
+    html.window.localStorage['heroes'] = JSON.encode(data);
     print('Saved.');
   }
 

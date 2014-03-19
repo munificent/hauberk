@@ -2,7 +2,7 @@ part of content;
 
 /// Builder class for defining [Skill]s.
 class SkillBuilder extends ContentBuilder {
-  Map<String, Skill> build() {
+  void build() {
     skill(new ArcherySkill());
     skill(new CombatSkill());
     skill(new StaminaSkill());

@@ -3,9 +3,7 @@ library roguekit;
 import 'dart:html' as html;
 
 import 'content.dart';
-import 'engine.dart';
 import 'ui.dart';
-import 'util.dart';
 
 const WIDTH = 100;
 const HEIGHT = 40;
@@ -37,7 +35,7 @@ addTerminal(String name, html.Element element,
     html.window.localStorage['font'] = name;
   });
 
-  html.query('.button-bar').children.add(button);
+  html.querySelector('.button-bar').children.add(button);
 }
 
 main() {

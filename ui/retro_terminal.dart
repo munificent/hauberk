@@ -36,7 +36,7 @@ class RetroTerminal implements RenderableTerminal {
   RetroTerminal(int width, int height, this.canvas)
       : glyphs = new Array2D<Glyph>(width, height, () => null),
         changedGlyphs = new Array2D<Glyph>(width, height,() => clearGlyph) {
-    context = canvas.context2d;
+    context = canvas.context2D;
     canvas.width = FONT_WIDTH * width;
     canvas.height = FONT_HEIGHT * height;
 
@@ -141,7 +141,7 @@ class RetroTerminal implements RenderableTerminal {
 
     // Create a font using the given color.
     var tint = new html.CanvasElement(width: font.width, height: font.height);
-    var context = tint.context2d;
+    var context = tint.context2D;
 
     // Draw the font.
     context.drawImage(font, 0, 0);
