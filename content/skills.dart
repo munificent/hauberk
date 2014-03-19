@@ -4,10 +4,10 @@ import '../engine.dart';
 import '../util.dart';
 import 'builder.dart';
 
-final Map<String, Skill> skills = {};
-
 /// Builder class for defining [Skill]s.
-class SkillBuilder extends ContentBuilder {
+class Skills extends ContentBuilder {
+  static final Map<String, Skill> all = {};
+
   void build() {
     skill(new ArcherySkill());
     skill(new CombatSkill());
@@ -21,7 +21,7 @@ class SkillBuilder extends ContentBuilder {
   }
 
   void skill(Skill skill) {
-    skills[skill.name] = skill;
+    Skills.all[skill.name] = skill;
   }
 }
 

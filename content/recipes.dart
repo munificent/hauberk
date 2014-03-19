@@ -4,10 +4,10 @@ import '../engine.dart';
 import 'builder.dart';
 import 'items.dart';
 
-final List<Recipe> recipes = [];
-
 /// Builder class for defining [Recipe]s.
-class RecipeBuilder extends ContentBuilder {
+class Recipes extends ContentBuilder {
+  static final List<Recipe> all = [];
+
   void build() {
     recipe('Fur Cloak', [
       'Fur pelt',
@@ -48,7 +48,7 @@ class RecipeBuilder extends ContentBuilder {
   }
 
   void recipe(String result, List<String> ingredientNames) {
-    final ingredients = ingredientNames.map((name) => items[name]).toList();
-    recipes.add(new Recipe(ingredients, items[result]));
+    final ingredients = ingredientNames.map((name) => Items.all[name]).toList();
+    Recipes.all.add(new Recipe(ingredients, Items.all[result]));
   }
 }

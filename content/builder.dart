@@ -8,11 +8,11 @@ import 'skills.dart';
 /// Base class for a builder that provides a DSL for creating game content.
 class ContentBuilder {
   Drop hunting(drop) {
-    return new SkillDrop(skills['Hunting'], parseDrop(drop));
+    return new SkillDrop(Skills.all['Hunting'], parseDrop(drop));
   }
 
   Drop botany(drop) {
-    return new SkillDrop(skills['Botany'], parseDrop(drop));
+    return new SkillDrop(Skills.all['Botany'], parseDrop(drop));
   }
 
   Drop chanceOf(int percent, drop) {
@@ -22,7 +22,7 @@ class ContentBuilder {
   Drop parseDrop(drop) {
     if (drop == null) return new OneOfDrop([], []);
     if (drop is Drop) return drop;
-    if (drop is String) return new ItemDrop(items[drop]);
+    if (drop is String) return new ItemDrop(Items.all[drop]);
 
     if (drop is List) {
       final drops = [];

@@ -5,10 +5,10 @@ import '../ui.dart';
 import 'builder.dart';
 import 'items.dart';
 
-final Map<String, Breed> breeds = {};
-
 /// Builder class for defining [Monster] [Breed]s.
-class MonsterBuilder extends ContentBuilder {
+class Monsters extends ContentBuilder {
+  static final Map<String, Breed> all = {};
+
   void build() {
     // $  Creeping Coins
     // a  Arachnid/Scorpion   A  Ancient being
@@ -266,7 +266,6 @@ class MonsterBuilder extends ContentBuilder {
   Breed breed(String name, Glyph appearance, List actions, {
       drop, int maxHealth, int olfaction: 0,
       int meander: 0, int speed: 0, String flags}) {
-
     var attacks = <Attack>[];
     var moves = <Move>[];
 
@@ -287,7 +286,7 @@ class MonsterBuilder extends ContentBuilder {
     final breed = new Breed(name, Gender.NEUTER, appearance, attacks, moves,
         drop, maxHealth: maxHealth, olfaction: olfaction, meander: meander,
         speed: speed, flags: flagSet);
-    breeds[name] = breed;
+    Monsters.all[name] = breed;
     return breed;
   }
 

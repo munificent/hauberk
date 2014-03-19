@@ -5,8 +5,12 @@ import '../ui.dart';
 import 'builder.dart';
 
 /// Builder class for defining [TileType]s.
-class TileBuilder extends ContentBuilder {
-  TileBuilder();
+class Tiles extends ContentBuilder {
+  static TileType floor;
+  static TileType wall;
+  static TileType lowWall;
+  static TileType openDoor;
+  static TileType closedDoor;
 
   void build() {
     // Define the tile types.
@@ -26,12 +30,4 @@ class TileBuilder extends ContentBuilder {
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
   }
-}
-
-class Tiles {
-  static TileType floor;
-  static TileType wall;
-  static TileType lowWall;
-  static TileType openDoor;
-  static TileType closedDoor;
 }

@@ -5,10 +5,10 @@ import '../ui.dart';
 import '../util.dart';
 import 'builder.dart';
 
-final Map<String, ItemType> items = {};
-
 /// Builder class for defining [ItemType]s.
-class ItemBuilder extends ContentBuilder {
+class Items extends ContentBuilder {
+  static final Map<String, ItemType> all = {};
+
   int _sortIndex = 0;
 
   void build() {
@@ -131,7 +131,7 @@ class ItemBuilder extends ContentBuilder {
       String category, Attack attack, int armor: 0}) {
     final itemType = new ItemType(name, appearance, _sortIndex++, use,
         equipSlot, category, attack, armor);
-    items[name] = itemType;
+    Items.all[name] = itemType;
     return itemType;
   }
 }
@@ -158,7 +158,7 @@ class Drops {
   ]);
 
   static EquipmentSequence _sequence(int chance, List<String> typeNames) {
-    var types = typeNames.map((name) => items[name]).toList();
+    var types = typeNames.map((name) => Items.all[name]).toList();
     return new EquipmentSequence(chance, types);
   }
 }
@@ -171,7 +171,7 @@ class EquipmentSequence {
 
   Drop drop(startItem) {
     // Find the index of the item in the sequence.
-    var itemType = items[startItem];
+    var itemType = Items.all[startItem];
     for (var i = 0; i < types.length; i++) {
       if (types[i] == itemType) return new EquipmentDrop(this, i);
     }
