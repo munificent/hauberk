@@ -1,4 +1,10 @@
-part of content;
+library content.recipes;
+
+import '../engine.dart';
+import 'builder.dart';
+import 'items.dart';
+
+final List<Recipe> recipes = [];
 
 /// Builder class for defining [Recipe]s.
 class RecipeBuilder extends ContentBuilder {
@@ -42,7 +48,7 @@ class RecipeBuilder extends ContentBuilder {
   }
 
   void recipe(String result, List<String> ingredientNames) {
-    final ingredients = ingredientNames.map((name) => _items[name]).toList();
-    _recipes.add(new Recipe(ingredients, _items[result]));
+    final ingredients = ingredientNames.map((name) => items[name]).toList();
+    recipes.add(new Recipe(ingredients, items[result]));
   }
 }

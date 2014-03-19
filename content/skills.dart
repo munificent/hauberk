@@ -1,4 +1,10 @@
-part of content;
+library content.skills;
+
+import '../engine.dart';
+import '../util.dart';
+import 'builder.dart';
+
+final Map<String, Skill> skills = {};
 
 /// Builder class for defining [Skill]s.
 class SkillBuilder extends ContentBuilder {
@@ -15,7 +21,7 @@ class SkillBuilder extends ContentBuilder {
   }
 
   void skill(Skill skill) {
-    _skills[skill.name] = skill;
+    skills[skill.name] = skill;
   }
 }
 

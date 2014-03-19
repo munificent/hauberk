@@ -1,4 +1,12 @@
-part of content;
+library content.areas;
+
+import '../engine.dart';
+import 'builder.dart';
+import 'dungeon.dart';
+import 'items.dart';
+import 'monsters.dart';
+
+final List<Area> areas = [];
 
 /// Builder class for defining [Area] objects.
 class AreaBuilder extends ContentBuilder {
@@ -85,23 +93,23 @@ class AreaBuilder extends ContentBuilder {
       QuestBuilder quest}) {
     final breedList = <Breed>[];
 
-    for (final name in breeds) breedList.add(_breeds[name]);
+    for (final name in breeds) breedList.add(breeds[name]);
 
     return new Level(builder, numMonsters, numItems, breedList,
-        _parseDrop(drop), quest);
+        parseDrop(drop), quest);
   }
 
   Area area(String name, List<Level> levels) {
     final area = new Area(name, levels);
-    _areas.add(area);
+    areas.add(area);
     return area;
   }
 
   QuestBuilder kill(String breed, [int count = 1]) =>
-      new MonsterQuestBuilder(_breeds[breed], count);
+      new MonsterQuestBuilder(breeds[breed], count);
 
   QuestBuilder floorItem(String type) =>
-      new FloorItemQuestBuilder(_items[type]);
+      new FloorItemQuestBuilder(items[type]);
 }
 
 /// Builds a quest for killing a certain number of a certain [Monster].

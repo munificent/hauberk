@@ -1,4 +1,10 @@
-part of content;
+library content.dungeon;
+
+import 'dart:math' as math;
+
+import '../engine.dart';
+import '../util.dart';
+import 'tiles.dart';
 
 class StageGenerator {
   Stage stage;

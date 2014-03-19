@@ -1,4 +1,8 @@
-part of content;
+library content.tiles;
+
+import '../engine.dart';
+import '../ui.dart';
+import 'builder.dart';
 
 /// Builder class for defining [TileType]s.
 class TileBuilder extends ContentBuilder {

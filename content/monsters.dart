@@ -1,4 +1,11 @@
-part of content;
+library content.monsters;
+
+import '../engine.dart';
+import '../ui.dart';
+import 'builder.dart';
+import 'items.dart';
+
+final Map<String, Breed> breeds = {};
 
 /// Builder class for defining [Monster] [Breed]s.
 class MonsterBuilder extends ContentBuilder {
@@ -268,7 +275,7 @@ class MonsterBuilder extends ContentBuilder {
       if (action is Move) moves.add(action);
     }
 
-    drop = _parseDrop(drop);
+    drop = parseDrop(drop);
 
     var flagSet;
     if (flags != null) {
@@ -280,7 +287,7 @@ class MonsterBuilder extends ContentBuilder {
     final breed = new Breed(name, Gender.NEUTER, appearance, attacks, moves,
         drop, maxHealth: maxHealth, olfaction: olfaction, meander: meander,
         speed: speed, flags: flagSet);
-    _breeds[name] = breed;
+    breeds[name] = breed;
     return breed;
   }
 
