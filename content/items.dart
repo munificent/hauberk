@@ -4,7 +4,7 @@ part of content;
 class ItemBuilder extends ContentBuilder {
   int _sortIndex = 0;
 
-  Map<String, ItemType> build() {
+  void build() {
     // From Angband:
     // !   A potion (or flask)    /   A pole-arm
     // ?   A scroll (or book)     |   An edged weapon

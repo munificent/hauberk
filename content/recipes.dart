@@ -2,7 +2,7 @@ part of content;
 
 /// Builder class for defining [Recipe]s.
 class RecipeBuilder extends ContentBuilder {
-  List<Recipe> build() {
+  void build() {
     recipe('Fur Cloak', [
       'Fur pelt',
       'Fur pelt',

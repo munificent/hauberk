@@ -2,7 +2,7 @@ part of content;
 
 /// Builder class for defining [Monster] [Breed]s.
 class MonsterBuilder extends ContentBuilder {
-  Map<String, Breed> build() {
+  void build() {
     // $  Creeping Coins
     // a  Arachnid/Scorpion   A  Ancient being
     // b  Giant Bat           B  Bird

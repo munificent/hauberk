@@ -57,6 +57,8 @@ class Monster extends Actor {
       case MonsterState.ASLEEP: return getActionAsleep();
       case MonsterState.AWAKE: return getActionAwake();
     }
+
+    throw "unreachable";
   }
 
   Action getActionAsleep() {

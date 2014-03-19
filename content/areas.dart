@@ -2,7 +2,7 @@ part of content;
 
 /// Builder class for defining [Area] objects.
 class AreaBuilder extends ContentBuilder {
-  List<Area> build() {
+  void build() {
     trainingGrounds() => new TrainingGrounds().generate;
 
     area('Training Grounds', [
