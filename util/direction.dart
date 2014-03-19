@@ -1,4 +1,6 @@
-part of util;
+library util.direction;
+
+import 'vec.dart';
 
 class Direction extends VecBase implements Vec {
   static const NONE = const Direction(0, 0);

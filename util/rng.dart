@@ -1,4 +1,7 @@
-part of util;
+library util.rng;
+
+import 'rect.dart';
+import 'vec.dart';
 
 /// A singleton instance of Rng globally available.
 final rng = new Rng(new DateTime.now().millisecondsSinceEpoch);

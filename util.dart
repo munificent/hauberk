@@ -1,14 +1,11 @@
 library util;
 
-import 'dart:collection';
-import 'dart:math' as math;
-
-part 'util/array2d.dart';
-part 'util/chain.dart';
-part 'util/direction.dart';
-part 'util/rect.dart';
-part 'util/rng.dart';
-part 'util/vec.dart';
+export 'util/array2d.dart';
+export 'util/chain.dart';
+export 'util/direction.dart';
+export 'util/rect.dart';
+export 'util/rng.dart';
+export 'util/vec.dart';
 
 // TODO(bob): Where should this go?
 sign(num n) {

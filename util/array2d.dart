@@ -1,4 +1,9 @@
-part of util;
+library util.array2d;
+
+import 'dart:collection';
+
+import 'rect.dart';
+import 'vec.dart';
 
 class Array2D<T> extends IterableBase<T> {
   final int width;

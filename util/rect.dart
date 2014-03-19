@@ -1,4 +1,9 @@
-part of util;
+library util.rect;
+
+import 'dart:collection';
+import 'dart:math' as math;
+
+import 'vec.dart';
 
 // TODO(bob): Finish porting from C#. Figure out how to handle overloads.
 /// A two-dimensional rectangle.

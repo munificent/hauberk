@@ -1,4 +1,6 @@
-part of util;
+library util.chain;
+
+import 'dart:collection';
 
 /// A doubly-linked list of nodes linked together into a ring.
 class Chain<T> extends IterableBase<T> {

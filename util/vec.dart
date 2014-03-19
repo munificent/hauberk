@@ -1,4 +1,6 @@
-part of util;
+library util.vec;
+
+import 'dart:math' as math;
 
 /// Shared base class of [Vec] and [Direction]. We do this instead of having
 /// [Direction] inherit directly from [Vec] so that we can avoid it inheriting
