@@ -1,4 +1,18 @@
-part of ui;
+library ui.game_screen;
+
+import 'dart:math' as math;
+
+import '../engine.dart';
+import '../util.dart';
+import 'close_door_dialog.dart';
+import 'game_over_screen.dart';
+import 'forfeit_dialog.dart';
+import 'inventory_dialog.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'select_skill_dialog.dart';
+import 'target_dialog.dart';
+import 'terminal.dart';
 
 class GameScreen extends Screen {
   final HeroSave save;
@@ -665,8 +679,8 @@ class ParticleEffect implements Effect {
     final theta = rng.range(628) / 100; // TODO(bob): Ghetto.
     final radius = rng.range(30, 40) / 100;
 
-    h = cos(theta) * radius;
-    v = sin(theta) * radius;
+    h = math.cos(theta) * radius;
+    v = math.sin(theta) * radius;
     life = rng.range(7, 15);
   }
 

@@ -1,4 +1,9 @@
-part of ui;
+library ui.dom_terminal;
+
+import 'dart:html' as html;
+
+import '../util.dart';
+import 'terminal.dart';
 
 /// Draws directly using the DOM by building `<span>` elements inside a `<pre>`
 /// for the terminal characters. Looks nice, but is quite slow.

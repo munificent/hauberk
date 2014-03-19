@@ -1,4 +1,9 @@
-part of ui;
+library ui.forfeit_dialog;
+
+import '../engine.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 /// Modal dialog for letting the user confirm forfeiting the level.
 class ForfeitDialog extends Screen {

@@ -1,4 +1,13 @@
-part of ui;
+library ui.main_menu_screen;
+
+import '../engine.dart';
+import 'confirm_dialog.dart';
+import 'keyboard.dart';
+import 'new_hero_screen.dart';
+import 'screen.dart';
+import 'select_level_screen.dart';
+import 'storage.dart';
+import 'terminal.dart';
 
 class MainMenuScreen extends Screen {
   final Content content;

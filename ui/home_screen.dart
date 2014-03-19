@@ -1,4 +1,10 @@
-part of ui;
+library ui.home_screen;
+
+import '../engine.dart';
+import 'inventory_dialog.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 class HomeScreen extends Screen {
   final Content  content;

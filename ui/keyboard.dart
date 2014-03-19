@@ -1,4 +1,6 @@
-part of ui;
+library ui.keyboard;
+
+import 'dart:html' as html;
 
 /// A keyboard is the lowest-level mapping from raw keyboard input to meaningful
 /// use input. It listens to the raw DOM key events and keeps track of which

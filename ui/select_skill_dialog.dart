@@ -1,4 +1,9 @@
-part of ui;
+library ui.select_skill_dialog;
+
+import '../engine.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 class SelectSkillDialog extends Screen {
   final Game game;

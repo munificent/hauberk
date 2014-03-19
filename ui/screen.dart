@@ -1,4 +1,7 @@
-part of ui;
+library ui.screen;
+
+import 'keyboard.dart';
+import 'terminal.dart';
 
 class Screen {
   UserInterface _ui;

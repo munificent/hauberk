@@ -1,4 +1,4 @@
-part of ui;
+library ui.terminal;
 
 abstract class Terminal {
   int get width;

@@ -1,4 +1,8 @@
-part of ui;
+library ui.confirm_dialog;
+
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 /// Modal dialog for letting the user confirm an action.
 class ConfirmDialog extends Screen {

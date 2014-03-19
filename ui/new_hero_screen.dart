@@ -1,4 +1,12 @@
-part of ui;
+library ui.new_hero_screen;
+
+import '../engine.dart';
+import '../util.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'select_level_screen.dart';
+import 'storage.dart';
+import 'terminal.dart';
 
 // From: http://medieval.stormthecastle.com/medieval-names.htm.
 const _DEFAULT_NAMES = const [

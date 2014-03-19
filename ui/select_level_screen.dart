@@ -1,4 +1,15 @@
-part of ui;
+library ui.select_level_screen;
+
+import 'dart:math' as math;
+
+import '../engine.dart';
+import 'game_screen.dart';
+import 'home_screen.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'skills_screen.dart';
+import 'storage.dart';
+import 'terminal.dart';
 
 class SelectLevelScreen extends Screen {
   final Content  content;
@@ -107,7 +118,7 @@ class SelectLevelScreen extends Screen {
 
     selectedArea = area;
 
-    var maxLevel = min(content.areas[selectedArea].levels.length,
+    var maxLevel = math.min(content.areas[selectedArea].levels.length,
                        getCompletedLevel(content.areas[selectedArea]) + 1);
 
     if (level < 0) level = 0;

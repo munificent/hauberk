@@ -1,4 +1,9 @@
-part of ui;
+library ui.storage;
+
+import 'dart:convert';
+import 'dart:html' as html;
+
+import '../engine.dart';
 
 /// The entrypoint for all persisted save data.
 class Storage {

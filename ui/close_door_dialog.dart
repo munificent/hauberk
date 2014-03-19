@@ -1,4 +1,10 @@
-part of ui;
+library ui.close_door_dialog;
+
+import '../engine.dart';
+import '../util.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 /// Modal dialog for letting the user select an adjacent open door to close it.
 class CloseDoorDialog extends Screen {

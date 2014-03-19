@@ -1,4 +1,8 @@
-part of ui;
+library ui.game_over_screen;
+
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 class GameOverScreen extends Screen {
   GameOverScreen();

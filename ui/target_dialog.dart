@@ -1,4 +1,11 @@
-part of ui;
+library ui.target_dialog;
+
+import '../engine.dart';
+import '../util.dart';
+import 'game_screen.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 /// Modal dialog for letting the user select a direction to fire a missile.
 class TargetDialog extends Screen {

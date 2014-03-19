@@ -1,4 +1,9 @@
-part of ui;
+library ui.inventory_dialog;
+
+import '../engine.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 /// Modal dialog for letting the user select an item from the hero's inventory.
 class InventoryDialog extends Screen {

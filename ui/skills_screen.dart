@@ -1,4 +1,9 @@
-part of ui;
+library ui.skills_screen;
+
+import '../engine.dart';
+import 'keyboard.dart';
+import 'screen.dart';
+import 'terminal.dart';
 
 class SkillsScreen extends Screen {
   final Content  content;

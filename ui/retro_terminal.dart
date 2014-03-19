@@ -1,4 +1,9 @@
-part of ui;
+library ui.retro_terminal;
+
+import 'dart:html' as html;
+
+import '../util.dart';
+import 'terminal.dart';
 
 /// Draws to a canvas using the old school DOS [code page 437][font] font. It's
 /// got some basic optimization to minimize the amount of drawing it has to do.

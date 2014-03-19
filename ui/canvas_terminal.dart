@@ -1,4 +1,9 @@
-part of ui;
+library ui.canvas_terminal;
+
+import 'dart:html' as html;
+
+import '../util.dart';
+import 'terminal.dart';
 
 /// Draws to a canvas using a browser font.
 class CanvasTerminal implements RenderableTerminal {
