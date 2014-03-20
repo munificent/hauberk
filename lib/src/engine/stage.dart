@@ -10,8 +10,8 @@ class Stage {
   final Chain<Actor> actors;
   final List<Item> items;
 
-  // Scent state is double-buffered in Tiles. This tracks which buffer is
-  // current. Will be `true` if `scent1` is current.
+  /// Scent state is double-buffered in Tiles. This tracks which buffer is
+  /// current. Will be `true` if `scent1` is current.
   bool currentScent1 = true;
 
   bool _visibilityDirty = true;

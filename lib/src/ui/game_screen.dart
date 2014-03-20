@@ -384,9 +384,13 @@ class GameScreen extends Screen {
     */
 
     // Draw the items.
+    var unexploredItem = new Glyph('?', Color.DARK_GRAY);
     for (final item in game.stage.items) {
-      if (!game.stage[item.pos].isExplored) continue;
-      terminal.drawGlyph(item.x, item.y, item.appearance);
+      if (game.stage[item.pos].isExplored) {
+        terminal.drawGlyph(item.x, item.y, item.appearance);
+      } else {
+        terminal.drawGlyph(item.x, item.y, unexploredItem);
+      }
     }
 
     var visibleMonsters = [];
@@ -498,6 +502,7 @@ class GameScreen extends Screen {
       Color valueColor, [max, Color maxColor]) {
     terminal.writeAt(81, y, label, Color.GRAY);
     var valueString = value.toString();
+    terminal.writeAt(88, y, "             ");
     terminal.writeAt(88, y, valueString, valueColor);
 
     if (max != null) {
