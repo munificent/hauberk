@@ -32,8 +32,8 @@ class RetroTerminal implements RenderableTerminal {
 
   bool _imageLoaded = false;
 
-  static const FONT_WIDTH = 9;
-  static const FONT_HEIGHT = 16;
+  final int _fontWidth;
+  final int _fontHeight;
 
   static final clearGlyph = new Glyph(' ');
 
@@ -41,9 +41,12 @@ class RetroTerminal implements RenderableTerminal {
   // map literals.
   static final unicodeMap = createUnicodeMap();
 
-  RetroTerminal(int width, int height, this.canvas)
+  RetroTerminal(int width, int height, this.canvas, String image,
+      {int w, int h})
       : glyphs = new Array2D<Glyph>(width, height, () => null),
-        changedGlyphs = new Array2D<Glyph>(width, height,() => clearGlyph) {
+        changedGlyphs = new Array2D<Glyph>(width, height,() => clearGlyph),
+        _fontWidth = w,
+        _fontHeight = h {
     context = canvas.context2D;
 
     // Handle high-resolution (i.e. retina) displays.
@@ -51,14 +54,14 @@ class RetroTerminal implements RenderableTerminal {
       _scale = 2;
     }
 
-    var canvasWidth = FONT_WIDTH * width;
-    var canvasHeight = FONT_HEIGHT * height;
+    var canvasWidth = _fontWidth * width;
+    var canvasHeight = _fontHeight * height;
     canvas.width = canvasWidth * _scale;
     canvas.height = canvasHeight * _scale;
     canvas.style.width = '${canvasWidth}px';
     canvas.style.height = '${canvasHeight}px';
 
-    font = new html.ImageElement(src: 'font.png');
+    font = new html.ImageElement(src: image);
     font.onLoad.listen((_) {
       _imageLoaded = true;
       render();
@@ -134,16 +137,16 @@ class RetroTerminal implements RenderableTerminal {
         var fromUnicode = unicodeMap[char];
         if (fromUnicode != null) char = fromUnicode;
 
-        var sx = (char % 32) * FONT_WIDTH;
-        var sy = (char ~/ 32) * FONT_HEIGHT;
+        var sx = (char % 32) * _fontWidth;
+        var sy = (char ~/ 32) * _fontHeight;
 
         // Fill the background.
         context.fillStyle = glyph.back.cssColor;
         context.fillRect(
-            x * FONT_WIDTH * _scale,
-            y * FONT_HEIGHT * _scale,
-            FONT_WIDTH * _scale,
-            FONT_HEIGHT * _scale);
+            x * _fontWidth * _scale,
+            y * _fontHeight * _scale,
+            _fontWidth * _scale,
+            _fontHeight * _scale);
 
         // Don't bother drawing empty characters.
         if (char == 0 || char == CharCode.SPACE) continue;
@@ -152,11 +155,11 @@ class RetroTerminal implements RenderableTerminal {
         // *2 because the font image is double-sized. That ensures it stays
         // sharp on retina displays and doesn't render scaled up.
         context.drawImageScaledFromSource(color,
-            sx * 2, sy * 2, FONT_WIDTH * 2, FONT_HEIGHT * 2,
-            x * FONT_WIDTH * _scale,
-            y * FONT_HEIGHT * _scale,
-            FONT_WIDTH * _scale,
-            FONT_HEIGHT * _scale);
+            sx * 2, sy * 2, _fontWidth * 2, _fontHeight * 2,
+            x * _fontWidth * _scale,
+            y * _fontHeight * _scale,
+            _fontWidth * _scale,
+            _fontHeight * _scale);
       }
     }
   }
