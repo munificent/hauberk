@@ -27,6 +27,9 @@ class RetroTerminal implements RenderableTerminal {
   /// image will be the font in that color.
   final Map<String, html.CanvasElement> _fontColorCache = {};
 
+  /// The drawing scale, used to adapt to Retina displays.
+  int _scale = 1;
+
   bool _imageLoaded = false;
 
   static const FONT_WIDTH = 9;
@@ -42,8 +45,18 @@ class RetroTerminal implements RenderableTerminal {
       : glyphs = new Array2D<Glyph>(width, height, () => null),
         changedGlyphs = new Array2D<Glyph>(width, height,() => clearGlyph) {
     context = canvas.context2D;
-    canvas.width = FONT_WIDTH * width;
-    canvas.height = FONT_HEIGHT * height;
+
+    // Handle high-resolution (i.e. retina) displays.
+    if (html.window.devicePixelRatio > 1) {
+      _scale = 2;
+    }
+
+    var canvasWidth = FONT_WIDTH * width;
+    var canvasHeight = FONT_HEIGHT * height;
+    canvas.width = canvasWidth * _scale;
+    canvas.height = canvasHeight * _scale;
+    canvas.style.width = '${canvasWidth}px';
+    canvas.style.height = '${canvasHeight}px';
 
     font = new html.ImageElement(src: 'font.png');
     font.onLoad.listen((_) {
@@ -126,16 +139,24 @@ class RetroTerminal implements RenderableTerminal {
 
         // Fill the background.
         context.fillStyle = glyph.back.cssColor;
-        context.fillRect(x * FONT_WIDTH, y * FONT_HEIGHT,
-            FONT_WIDTH, FONT_HEIGHT);
+        context.fillRect(
+            x * FONT_WIDTH * _scale,
+            y * FONT_HEIGHT * _scale,
+            FONT_WIDTH * _scale,
+            FONT_HEIGHT * _scale);
 
         // Don't bother drawing empty characters.
         if (char == 0 || char == CharCode.SPACE) continue;
 
         var color = _getColorFont(glyph.fore);
+        // *2 because the font image is double-sized. That ensures it stays
+        // sharp on retina displays and doesn't render scaled up.
         context.drawImageScaledFromSource(color,
-            sx, sy, FONT_WIDTH, FONT_HEIGHT,
-            x * FONT_WIDTH, y * FONT_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
+            sx * 2, sy * 2, FONT_WIDTH * 2, FONT_HEIGHT * 2,
+            x * FONT_WIDTH * _scale,
+            y * FONT_HEIGHT * _scale,
+            FONT_WIDTH * _scale,
+            FONT_HEIGHT * _scale);
       }
     }
   }
