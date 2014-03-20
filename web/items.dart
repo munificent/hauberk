@@ -2,8 +2,8 @@ library items;
 
 import 'dart:html' as html;
 
-import 'content.dart';
-import 'ui.dart';
+import 'package:roguekit/src/content.dart';
+import 'package:roguekit/src/ui.dart';
 
 main() {
   var content = createContent();

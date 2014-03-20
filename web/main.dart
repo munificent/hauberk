@@ -2,8 +2,8 @@ library roguekit;
 
 import 'dart:html' as html;
 
-import 'content.dart';
-import 'ui.dart';
+import 'package:roguekit/src/content.dart';
+import 'package:roguekit/src/ui.dart';
 
 const WIDTH = 100;
 const HEIGHT = 40;
