@@ -13,6 +13,28 @@ main() {
   var breeds = new List.from(content.breeds.values);
   breeds.sort((a, b) => a.experienceCents.compareTo(b.experienceCents));
 
+  // Generate a bunch of drops.
+  var tries = 0;
+  var drops = {};
+
+  var save = new HeroSave({}, "Hero");
+  var game = new Game(content.areas[0], 0, content, save);
+
+  for (var breed in breeds) {
+    drops[breed.name] = {};
+  }
+
+  for (var i = 0; i < 10000; i++) {
+    tries++;
+
+    for (Breed breed in breeds) {
+      breed.drop.spawnDrop(game, (item) {
+        drops[breed.name].putIfAbsent(item.type.name, () => 0);
+        drops[breed.name][item.type.name]++;
+      });
+    }
+  }
+
   text.write('''
     <thead>
     <tr>
@@ -24,6 +46,7 @@ main() {
       <td>Exp.</td>
       <td>Attacks</td>
       <td>Flags</td>
+      <td>Drops</td>
     </tr>
     </thead>
     <tbody>
@@ -57,6 +80,16 @@ main() {
     for (var flag in breed.flags) {
       text.write('$flag ');
     }
+
+    text.write('</td><td>');
+
+    var drop = drops[breed.name];
+    var items = drop.keys.toList();
+    items.sort((a, b) => drop[b].compareTo(drop[a]));
+
+    text.write(items.map((item) {
+      return "${(drop[item] / tries * 100).toStringAsFixed(3)}% $item";
+    }).join("<br>"));
 
     text.write('</td></tr>');
   }
