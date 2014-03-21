@@ -8,6 +8,7 @@ import 'builder.dart';
 /// Builder class for defining [ItemType]s.
 class Items extends ContentBuilder {
   static final Map<String, ItemType> all = {};
+  static final Map<String, ItemSequence> sequences = {};
 
   int _sortIndex = 0;
 
@@ -42,22 +43,30 @@ class Items extends ContentBuilder {
 
   void potions() {
     // Healing
-    item('Soothing Balm', lightRed('!'), use: () => new HealAction(12));
-    item('Mending Salve', red('!'), use: () => new HealAction(24));
-    // balm of soothing, healing, amelioration, rejuvenation
+    // TODO: Higher-level ones should remove conditions too.
+    sequence(15, [
+      item('Soothing Balm', lightRed('!'), use: () => new HealAction(12)),
+      item('Mending Salve', red('!'), use: () => new HealAction(24)),
+      item('Healing Poultice', darkRed('!'), use: () => new HealAction(48)),
+      item('Potion of Amelioration', darkRed('!'), use: () => new HealAction(120)),
+      item('Potion of Rejuvenation', darkRed('!'), use: () => new HealAction(1000))
+    ]);
   }
 
   void scrolls() {
     item('Parchment', gray('?'));
 
     // Teleportation
-    // Disappearing
-    item('Scroll of Sidestepping', lightPurple('?'),
-        use: () => new TeleportAction(6));
-    item('Scroll of Phasing', purple('?'),
-        use: () => new TeleportAction(12));
-    item('Scroll of Teleportation', darkPurple('?'),
-        use: () => new TeleportAction(24));
+    sequence(20, [
+      item('Scroll of Sidestepping', lightPurple('?'),
+          use: () => new TeleportAction(6)),
+      item('Scroll of Phasing', purple('?'),
+          use: () => new TeleportAction(12)),
+      item('Scroll of Teleportation', darkPurple('?'),
+          use: () => new TeleportAction(24)),
+      item('Scroll of Disappearing', darkBlue('?'),
+          use: () => new TeleportAction(48))
+    ]);
   }
 
   void weapons() {
@@ -66,34 +75,42 @@ class Items extends ContentBuilder {
     weapon('Staff', lightBrown('_'), 'hit[s]', 'Club', 5);
 
     // Knives.
-    weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 4);
-    weapon('Dirk', lightGray('|'), 'stab[s]', 'Dagger', 6);
-    weapon('Dagger', white('|'), 'stab[s]', 'Dagger', 8);
-    weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 11);
-    weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 14);
-    weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 20);
+    sequence(10, [
+      weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 3),
+      weapon('Dirk', lightGray('|'), 'stab[s]', 'Dagger', 4),
+      weapon('Dagger', white('|'), 'stab[s]', 'Dagger', 5),
+      weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 6),
+      weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 8),
+      weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 10)
+    ]);
 
     // Spears.
-    weapon('Spear', gray('\\'), 'stab[s]', 'Spear', 8);
-    weapon('Angon', lightGray('\\'), 'stab[s]', 'Spear', 16);
-    weapon('Lance', white('\\'), 'stab[s]', 'Spear', 24);
-    weapon('Partisan', darkGray('\\'), 'stab[s]', 'Spear', 36);
+    sequence(12, [
+      weapon('Spear', gray('\\'), 'stab[s]', 'Spear', 8),
+      weapon('Angon', lightGray('\\'), 'stab[s]', 'Spear', 16),
+      weapon('Lance', white('\\'), 'stab[s]', 'Spear', 24),
+      weapon('Partisan', darkGray('\\'), 'stab[s]', 'Spear', 36)
+    ]);
 
     // glaive, voulge, halberd, pole-axe, lucerne hammer,
   }
 
   void bows() {
-    bow('Short Bow', brown('}'), 'the arrow', 4);
-    bow('Longbow', lightBrown('}'), 'the arrow', 6);
-    bow('Crossbow', gray('}'), 'the bolt', 10);
+    sequence(10, [
+      bow('Short Bow', brown('}'), 'the arrow', 4),
+      bow('Longbow', lightBrown('}'), 'the arrow', 6),
+      bow('Crossbow', gray('}'), 'the bolt', 10)
+    ]);
   }
 
   void bodyArmor() {
     armor('Fur Cloak', lightBrown('('), 'Cloak', 2);
 
-    armor('Cloth Shirt', lightGray('('), 'Body', 2);
-    armor('Robe', aqua('('), 'Body', 4);
-    armor('Fur-lined Robe', darkAqua('('), 'Body', 6);
+    sequence(10, [
+      armor('Cloth Shirt', lightGray('('), 'Body', 2),
+      armor('Robe', aqua('('), 'Body', 4),
+      armor('Fur-lined Robe', darkAqua('('), 'Body', 6)
+    ]);
     /*
     Leather Shirt[s]
     Soft Leather Armor[s]
@@ -134,57 +151,42 @@ class Items extends ContentBuilder {
     Items.all[name] = itemType;
     return itemType;
   }
-}
 
-class Drops {
-  static final knife = _daggers.drop('Knife');
-  static final dirk = _daggers.drop('Dirk');
-  static final dagger = _daggers.drop('Dagger');
-  static final stiletto = _daggers.drop('Stiletto');
-  static final rondel = _daggers.drop('Rondel');
-  static final baselard = _daggers.drop('Baselard');
+  void sequence(int chance, List<ItemType> types) {
+    var sequence = new ItemSequence(chance, types);
 
-  static final _daggers = _sequence(8, [
-    'Knife', 'Dirk', 'Dagger', 'Stiletto', 'Rondel', 'Baselard'
-  ]);
-
-  static final spear = _spears.drop('Spear');
-  static final angon = _spears.drop('Angon');
-  static final lance = _spears.drop('Lance');
-  static final partisan = _spears.drop('Partisan');
-
-  static final _spears = _sequence(9, [
-    'Spear', 'Angon', 'Lance', 'Partisan'
-  ]);
-
-  static EquipmentSequence _sequence(int chance, List<String> typeNames) {
-    var types = typeNames.map((name) => Items.all[name]).toList();
-    return new EquipmentSequence(chance, types);
+    // Bind it to all of the type names.
+    for (var type in types) {
+      sequences[type.name] = sequence;
+    }
   }
 }
 
-class EquipmentSequence {
+/// A sequence of items of the same general category in order of increasing
+/// value. Can be used to generate drops that will pick an item from the
+/// sequence with a chance of a better or worse one.
+class ItemSequence {
   final int chance;
   final List<ItemType> types;
 
-  EquipmentSequence(this.chance, this.types);
+  ItemSequence(this.chance, this.types);
 
-  Drop drop(startItem) {
+  Drop drop(String startItem) {
     // Find the index of the item in the sequence.
-    var itemType = Items.all[startItem];
     for (var i = 0; i < types.length; i++) {
-      if (types[i] == itemType) return new EquipmentDrop(this, i);
+      if (types[i].name == startItem) return new ItemSequenceDrop(this, i);
     }
 
-    throw "Couldn't find $itemType in sequence.";
+    throw "Couldn't find $startItem in sequence.";
   }
 }
 
-class EquipmentDrop implements Drop {
-  final EquipmentSequence sequence;
+/// Drops one item from a [ItemSequence].
+class ItemSequenceDrop implements Drop {
+  final ItemSequence sequence;
   final int startIndex;
 
-  EquipmentDrop(this.sequence, this.startIndex);
+  ItemSequenceDrop(this.sequence, this.startIndex);
 
   void spawnDrop(Game game, AddItem addItem) {
     var index = startIndex;
@@ -204,6 +206,7 @@ class EquipmentDrop implements Drop {
   }
 }
 
+/// Drops an item of a given type.
 class ItemDrop implements Drop {
   final ItemType type;
 
@@ -233,6 +236,7 @@ class OneOfDrop implements Drop {
   }
 }
 
+/// Drops an item whose probability is based on the hero's level in some skill.
 class SkillDrop implements Drop {
   final Skill skill;
   final Drop drop;

@@ -22,7 +22,17 @@ class ContentBuilder {
   Drop parseDrop(drop) {
     if (drop == null) return new OneOfDrop([], []);
     if (drop is Drop) return drop;
-    if (drop is String) return new ItemDrop(Items.all[drop]);
+
+    if (drop is String) {
+      // Look for a matching sequence.
+      var sequence = Items.sequences[drop];
+      if (sequence != null) {
+        return sequence.drop(drop);
+      }
+
+      // Otherwise, just drop that item.
+      return new ItemDrop(Items.all[drop]);
+    }
 
     if (drop is List) {
       final drops = [];

@@ -51,6 +51,7 @@ class Areas extends ContentBuilder {
         breeds: [
           'giant spider',
           'doddering old mage',
+          'unlucky ranger', // TODO: Move to different level?
           'raven',
           'tree snake',
           'earthworm'

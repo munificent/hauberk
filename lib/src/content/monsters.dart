@@ -164,7 +164,7 @@ class Monsters extends ContentBuilder {
     breed('goblin peon', lightBrown('I'), [
         attack('stab[s]', 4)
       ],
-      drop: chanceOf(10, Drops.spear),
+      drop: chanceOf(10, 'Spear'),
       maxHealth: 10, meander: 2,
       flags: 'open-doors'
     );
@@ -172,7 +172,7 @@ class Monsters extends ContentBuilder {
     breed('goblin warrior', brown('I'), [
         attack('stab[s]', 8)
       ],
-      drop: chanceOf(10, Drops.spear),
+      drop: chanceOf(10, 'Spear'),
       maxHealth: 16, meander: 1,
       flags: 'open-doors'
     );
@@ -184,7 +184,7 @@ class Monsters extends ContentBuilder {
         attack('stab[s]', 4)
       ],
       drop: [
-        chanceOf(20, Drops.knife),
+        chanceOf(20, 'Knife'),
         chanceOf(20, 'Cloth Shirt')
       ],
       maxHealth: 6, meander: 3,
@@ -198,11 +198,25 @@ class Monsters extends ContentBuilder {
       drop: [
          chanceOf(10, 'Scroll of Sidestepping'),
          chanceOf(7, 'Staff'),
-         chanceOf(7, Drops.knife),
+         chanceOf(7, 'Knife'),
          chanceOf(7, 'Cloth Shirt'),
          chanceOf(5, 'Robe')
       ],
       maxHealth: 8, meander: 2,
+      flags: 'open-doors'
+    );
+
+    breed('unlucky ranger', green('p'), [
+        attack('stab[s]', 2),
+        arrow(cost: 10, damage: 2)
+      ],
+      drop: [
+         chanceOf(10, 'Scroll of Sidestepping'),
+         chanceOf(4, 'Short Bow'),
+         chanceOf(10, 'Knife'),
+         chanceOf(8, 'Cloth Shirt')
+      ],
+      maxHealth: 10, meander: 2,
       flags: 'open-doors'
     );
 
@@ -291,6 +305,10 @@ class Monsters extends ContentBuilder {
   }
 
   Move heal({int cost, int amount}) => new HealMove(cost, amount);
+
+  Move arrow({int cost, int damage}) =>
+      new BoltMove(cost, new Attack('fires', damage, Element.NONE,
+          new Noun('the arrow')));
 
   Move sparkBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack('zaps', damage, Element.LIGHTNING,
