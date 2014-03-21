@@ -34,12 +34,12 @@ class Monster extends Actor {
   /// [target].
   bool canView(Vec target) {
     // Walk to the target.
-    for (final step in new Los(pos, game.hero.pos)) {
+    for (final step in new Los(pos, target)) {
+      if (step == target) return true;
       if (!game.stage[step].isTransparent) return false;
     }
 
-    // If we got here, we made it.
-    return true;
+    throw 'unreachable';
   }
 
   bool get canOpenDoors => breed.flags.contains('open-doors');
