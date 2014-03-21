@@ -52,28 +52,48 @@ class VecBase {
 
   /// Returns `true` if the magnitude of this vector is greater than [other].
   bool operator >(other) {
-    if (other is Vec) other = other.lengthSquared;
-    return lengthSquared > other * other;
+    if (other is VecBase) {
+      return lengthSquared > other.lengthSquared;
+    } else if (other is int) {
+      return lengthSquared > other * other;
+    }
+
+    throw new ArgumentError("Operand must be an int or VecBase.");
   }
 
   /// Returns `true` if the magnitude of this vector is greater than or equal
   /// to [other].
   bool operator >=(other) {
-    if (other is Vec) other = other.lengthSquared;
-    return lengthSquared >= other * other;
+    if (other is VecBase) {
+      return lengthSquared >= other.lengthSquared;
+    } else if (other is int) {
+      return lengthSquared >= other * other;
+    }
+
+    throw new ArgumentError("Operand must be an int or VecBase.");
   }
 
   /// Returns `true` if the magnitude of this vector is less than [other].
   bool operator <(other) {
-    if (other is Vec) other = other.lengthSquared;
-    return lengthSquared < other * other;
+    if (other is VecBase) {
+      return lengthSquared < other.lengthSquared;
+    } else if (other is int) {
+      return lengthSquared < other * other;
+    }
+
+    throw new ArgumentError("Operand must be an int or VecBase.");
   }
 
   /// Returns `true` if the magnitude of this vector is less than or equal to
   /// [other].
   bool operator <=(other) {
-    if (other is Vec) other = other.lengthSquared;
-    return lengthSquared <= other * other;
+    if (other is VecBase) {
+      return lengthSquared <= other.lengthSquared;
+    } else if (other is int) {
+      return lengthSquared <= other * other;
+    }
+
+    throw new ArgumentError("Operand must be an int or VecBase.");
   }
 
   /// Gets whether the given vector is within a rectangle from (0,0) to this
