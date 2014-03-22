@@ -99,6 +99,14 @@ class Forest extends StageBuilder {
     }
 
     erodeWalls(2000, floor: Tiles.grass, wall: Tiles.tree);
+
+    // Randomly vary the tree type.
+    var trees = [Tiles.tree, Tiles.treeAlt1, Tiles.treeAlt2];
+    for (var pos in stage.bounds) {
+      if (getTile(pos) == Tiles.tree) {
+        setTile(pos, rng.item(trees));
+      }
+    }
   }
 
   void carvePath(Vec from, Vec to) {

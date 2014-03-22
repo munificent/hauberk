@@ -133,4 +133,7 @@ class CharCode {
   static const UP_DOWN_ARROW = 0x2195;
   static const SOLID = 0x2588;
   static const HALF_LEFT = 0x258c;
+  static const BLACK_UP_POINTING_TRIANGLE = 0x25b2;
+  static const BLACK_SPADE_SUIT = 0x2660;
+  static const BLACK_CLUB_SUIT = 0x2663;
 }

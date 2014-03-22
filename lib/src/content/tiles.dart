@@ -14,6 +14,8 @@ class Tiles extends ContentBuilder {
 
   static TileType grass;
   static TileType tree;
+  static TileType treeAlt1;
+  static TileType treeAlt2;
 
   void build() {
     // Define the tile types.
@@ -35,7 +37,21 @@ class Tiles extends ContentBuilder {
     Tiles.grass = new TileType(true, true, [lightGreen('.'), green('.')]);
 
     Tiles.tree = new TileType(false, false,
-        [new Glyph('^', Color.LIGHT_GREEN, Color.DARK_GREEN),
-         new Glyph('^', Color.DARK_GREEN)]);
+        [new Glyph.fromCharCode(CharCode.BLACK_UP_POINTING_TRIANGLE,
+            Color.GREEN, Color.DARK_GREEN),
+         new Glyph.fromCharCode(CharCode.BLACK_UP_POINTING_TRIANGLE,
+             Color.DARK_GREEN)]);
+
+    Tiles.treeAlt1 = new TileType(false, false,
+        [new Glyph.fromCharCode(CharCode.BLACK_SPADE_SUIT,
+            Color.GREEN, Color.DARK_GREEN),
+         new Glyph.fromCharCode(CharCode.BLACK_SPADE_SUIT,
+             Color.DARK_GREEN)]);
+
+    Tiles.treeAlt2 = new TileType(false, false,
+        [new Glyph.fromCharCode(CharCode.BLACK_CLUB_SUIT,
+            Color.GREEN, Color.DARK_GREEN),
+         new Glyph.fromCharCode(CharCode.BLACK_CLUB_SUIT,
+             Color.DARK_GREEN)]);
   }
 }
