@@ -16,6 +16,12 @@ class Recipes extends ContentBuilder {
       'Fur pelt'
     ]);
 
+    recipe('Soothing Balm', [
+      'Flower',
+      'Flower',
+      'Flower'
+    ]);
+
     recipe('Mending Salve', [
       'Soothing Balm',
       'Soothing Balm',

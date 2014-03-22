@@ -36,7 +36,7 @@ class Items extends ContentBuilder {
   }
 
   void pelts() {
-    item('Flower', lightAqua(',')); // TODO: Use in recipe.
+    item('Flower', lightAqua(','));
     item('Fur pelt', lightBrown(','));
     item('Insect wing', purple(','));
     item('Red feather', red(',')); // TODO: Use in recipe.
