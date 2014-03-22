@@ -4,21 +4,8 @@ import 'dart:math' as math;
 
 import '../engine.dart';
 import '../util.dart';
+import 'stage_builder.dart';
 import 'tiles.dart';
-
-class StageGenerator {
-  Stage stage;
-
-  TileType getTile(Vec pos) => stage[pos].type;
-
-  void setTile(Vec pos, TileType type) {
-    stage[pos].type = type;
-  }
-
-  void bindStage(Stage stage) {
-    this.stage = stage;
-  }
-}
 
 class TrainingGrounds extends Dungeon {
   void onGenerate() {
@@ -65,7 +52,7 @@ class GoblinStronghold extends Dungeon {
   bool allowRoomOverlap(Rect a, Rect b) => rng.oneIn(20);
 }
 
-abstract class Dungeon extends StageGenerator {
+abstract class Dungeon extends StageBuilder {
   final List<Room> _rooms;
   final Set<int> _usedColors;
 
@@ -90,14 +77,6 @@ abstract class Dungeon extends StageGenerator {
   }
 
   void onGenerate();
-
-  void fill(TileType tile) {
-    for (var y = 0; y < stage.height; y++) {
-      for (var x = 0; x < stage.width; x++) {
-        setTile(new Vec(x, y), tile);
-      }
-    }
-  }
 
   void addRooms(int tries) {
     for (var i = 0; i < tries; i++) {
@@ -381,65 +360,6 @@ abstract class Dungeon extends StageGenerator {
     setTile(door, Tiles.floor);
 
     return true;
-  }
-
-  /// Randomly turns some floor tiles into walls and vice versa. Does so while
-  /// maintaining the reachability invariant of the dungeon.
-  void erode(int iterations) {
-    final bounds = stage.bounds.inflate(-1);
-    for (var i = 0; i < iterations; i++) {
-      final pos = rng.vecInRect(bounds);
-
-      final here = getTile(pos);
-      if (here != Tiles.floor && here != Tiles.wall) continue;
-
-      bool canChange = true;
-
-      // Keep track of how many walls we're adjacent too. We will only fill in
-      // if we are directly next to a wall.
-      var walls = 0;
-
-      // As we go around the tile's neighbors, keep track of how many times we
-      // switch from wall to floor. We can fill in a tile only if it is next to
-      // a single unbroken expanse of walls. If it is next to two
-      // non-contiguous wall sections, then filling it in may break the
-      // reachability of the dungeon.
-      var inWall;
-      var transitions = 0;
-
-      for (var dir in Direction.ALL) {
-        var tile = getTile(pos + dir);
-        if (tile == Tiles.floor) {
-          if (inWall == true) transitions++;
-          inWall = false;
-        } else if (tile == Tiles.wall) {
-          walls++;
-          if (inWall == false) transitions++;
-          inWall = true;
-        } else {
-          // Don't modify next to "special" features.
-          canChange = false;
-          break;
-        }
-
-        if (transitions > 2) {
-          canChange = false;
-          break;
-        }
-      }
-
-      if (!canChange) continue;
-
-      if (here == Tiles.floor) {
-        if (walls > 3 ||
-            (walls == 3 && rng.oneIn(4)) ||
-            (walls == 2 && rng.oneIn(8))) setTile(pos, Tiles.wall);
-      } else {
-        if (walls < 5 ||
-            (walls == 5 && rng.oneIn(4)) ||
-            (walls == 6 && rng.oneIn(8))) setTile(pos, Tiles.floor);
-      }
-    }
   }
 
   bool isFloor(int x, int y) => stage.get(x, y).type == Tiles.floor;

@@ -12,6 +12,9 @@ class Tiles extends ContentBuilder {
   static TileType openDoor;
   static TileType closedDoor;
 
+  static TileType grass;
+  static TileType tree;
+
   void build() {
     // Define the tile types.
     Tiles.floor = new TileType(true, true, [gray('.'), darkGray('.')]);
@@ -26,8 +29,13 @@ class Tiles extends ContentBuilder {
 
     Tiles.openDoor = new TileType(true, true, [brown("'"), darkBrown("'")]);
     Tiles.closedDoor = new TileType(false, false, [brown('+'), darkBrown('+')]);
-
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
+
+    Tiles.grass = new TileType(true, true, [lightGreen('.'), green('.')]);
+
+    Tiles.tree = new TileType(false, false,
+        [new Glyph('^', Color.LIGHT_GREEN, Color.DARK_GREEN),
+         new Glyph('^', Color.DARK_GREEN)]);
   }
 }

@@ -3,18 +3,31 @@ library content.areas;
 import '../engine.dart';
 import 'builder.dart';
 import 'dungeon.dart';
+import 'forest.dart';
 import 'items.dart';
 import 'monsters.dart';
+import 'stage_builder.dart';
 
 /// Builder class for defining [Area] objects.
 class Areas extends ContentBuilder {
   static final List<Area> all = [];
 
   void build() {
-    trainingGrounds() => new TrainingGrounds().generate;
+    area('Friendly Forest', [
+      level(new Forest(), numMonsters: 6, numItems: 2,
+        breeds: [
+          'white mouse',
+          'robin',
+          'garter snake'
+        ],
+        drop: [
+          'Flower'
+        ],
+        quest: kill('fuzzy bunny', 1)),
+    ]);
 
     area('Training Grounds', [
-      level(trainingGrounds(), numMonsters: 12, numItems: 8,
+      level(new TrainingGrounds(), numMonsters: 12, numItems: 8,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -29,11 +42,9 @@ class Areas extends ContentBuilder {
           'Parchment',
           'Soothing Balm',
           'Scroll of Sidestepping',
-          // TODO(bob): Do something better than just have them on the ground.
-          'Short Bow'
         ],
         quest: kill('wild dog', 3)),
-      level(trainingGrounds(), numMonsters: 16, numItems: 9,
+      level(new TrainingGrounds(), numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
           'crow',
@@ -47,7 +58,7 @@ class Areas extends ContentBuilder {
           'Robe'
         ],
         quest: floorItem('Magical Chalice')),
-      level(trainingGrounds(), numMonsters: 20, numItems: 10,
+      level(new TrainingGrounds(), numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
           'doddering old mage',
@@ -64,10 +75,8 @@ class Areas extends ContentBuilder {
         quest: floorItem('Magical Chalice'))
     ]);
 
-    goblinStronghold(int depth) => new GoblinStronghold(depth).generate;
-
     area('Goblin Stronghold', [
-      level(goblinStronghold(0), numMonsters: 18, numItems: 8,
+      level(new GoblinStronghold(0), numMonsters: 18, numItems: 8,
         breeds: [
           'scurrilous imp',
           'impish incanter',
@@ -78,7 +87,7 @@ class Areas extends ContentBuilder {
           'Soothing Balm'
         ],
         quest: floorItem('Magical Chalice')),
-      level(goblinStronghold(10), numMonsters: 20, numItems: 8,
+      level(new GoblinStronghold(10), numMonsters: 20, numItems: 8,
         breeds: [
           'goblin warrior'
         ],
@@ -96,7 +105,7 @@ class Areas extends ContentBuilder {
 
     for (final name in breeds) breedList.add(Monsters.all[name]);
 
-    return new Level(builder, numMonsters, numItems, breedList,
+    return new Level(builder.generate, numMonsters, numItems, breedList,
         parseDrop(drop), quest);
   }
 

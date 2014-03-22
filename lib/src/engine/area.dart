@@ -10,7 +10,7 @@ class Area {
     final stage = game.stage;
     final area = levels[depth];
 
-    area.builder(stage);
+    area.buildStage(stage);
 
     final heroPos = stage.findOpenTile();
     _calculateDistances(stage, heroPos);
@@ -134,14 +134,14 @@ class Area {
 /// Describes one level in a [Area]. When the [Hero] enters a [Level] for an
 /// area, this determines how that specific level is generated.
 class Level {
-  final StageBuilder builder;
+  final BuildStage buildStage;
   final List<Breed> breeds;
   final Drop floorDrop;
   final int numMonsters;
   final int numItems;
   final QuestBuilder quest;
 
-  Level(this.builder, this.numMonsters, this.numItems,
+  Level(this.buildStage, this.numMonsters, this.numItems,
       this.breeds, this.floorDrop, this.quest);
 }
 
@@ -196,4 +196,4 @@ abstract class Quest {
 
 /// Abstract class for a stage generator. An instance of this encapsulation
 /// some dungeon generation algorithm. These are implemented in content.
-typedef void StageBuilder(Stage stage);
+typedef void BuildStage(Stage stage);

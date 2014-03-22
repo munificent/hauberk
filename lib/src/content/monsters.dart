@@ -28,7 +28,7 @@ class Monsters extends ContentBuilder {
     // o  Orc                 O  Ogre
     // p  Human "person"      P  Giant "person"
     // q  Quadruped           Q  End boss ("quest")
-    // r  Rodent              R  Reptile/Amphibian
+    // r  Rodent/Rabbit       R  Reptile/Amphibian
     // s  Slug                S  Snake
     // t  Troglodyte          T  Troll
     // u  Minor Undead        U  Major Undead
@@ -87,6 +87,13 @@ class Monsters extends ContentBuilder {
   }
 
   birds() {
+    breed('robin', lightRed('B'), [
+        attack('claw[s]', 1),
+      ],
+      drop: chanceOf(25, 'Red feather'),
+      maxHealth: 3, meander: 4, speed: 2
+    );
+
     breed('crow', darkGray('B'), [
         attack('bite[s]', 4),
       ],
@@ -244,6 +251,13 @@ class Monsters extends ContentBuilder {
       maxHealth: 3, olfaction: 2, meander: 4, speed: 1
     );
 
+    breed('fuzzy bunny', lightBlue('r'), [
+        attack('bite[s]', 2),
+        attack('kick[s]', 1)
+      ],
+      maxHealth: 5, olfaction: 2, meander: 4, speed: 1
+    );
+
     breed('sewer rat', darkGray('r'), [
         attack('bite[s]', 3),
         attack('scratch[es]', 2)
@@ -262,6 +276,12 @@ class Monsters extends ContentBuilder {
   }
 
   snakes() {
+    breed('garter snake', gold('S'), [
+        attack('bite[s]', 1),
+      ],
+      maxHealth: 3, meander: 3
+    );
+
     breed('tree snake', lightGreen('S'), [
         attack('bite[s]', 8),
       ],

@@ -77,10 +77,10 @@ class Color {
   static const DARK_YELLOW  = const Color('dy', 'rgb(128, 128, 0)');
 
   static const LIGHT_GREEN  = const Color('lg', 'rgb(130, 255, 90)');
-  static const GREEN        = const Color('g', 'rgb(0, 200, 0)');
-  static const DARK_GREEN   = const Color('dg', 'rgb(0, 100, 0)');
+  static const GREEN        = const Color('g', 'rgb(0, 128, 0)');
+  static const DARK_GREEN   = const Color('dg', 'rgb(0, 64, 0)');
 
-  static const LIGHT_AQUA   = const Color('la', 'rgb(200, 255, 255)');
+  static const LIGHT_AQUA   = const Color('la', 'rgb(128, 255, 255)');
   static const AQUA         = const Color('a', 'rgb(0, 255, 255)');
   static const DARK_AQUA    = const Color('da', 'rgb(0, 128, 128)');
 
