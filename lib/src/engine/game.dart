@@ -113,10 +113,10 @@ class Game {
   }
 
   void makeNoise(Actor actor, int noise) {
-    // Monsters ignore sounds from other monsters completely.
-    if (actor is! Hero) return;
+    // Monsters mostly ignore sounds from other monsters.
+    if (actor is! Hero) noise ~/= 4;
 
-    // TODO(bob): Right now, sound doesn't take into account walls or doors. It
+    // TODO: Right now, sound doesn't take into account walls or doors. It
     // should so that the player can be sneaky by keeping doors closed. One
     // solution might be to do LOS between the source and actor and attentuate
     // when it crosses walls or doors.
@@ -128,8 +128,12 @@ class Game {
       // Avoid divide by zero.
       if (distanceSquared == 0) distanceSquared = 1;
 
+      // Would be better to handle sound travelling around corners, but this
+      // is a loose approximation of sound being attenuated by obstacles.
+      if (monster.canView(actor.pos)) noise *= 10;
+
       // Inverse-square law for acoustics.
-      var volume = 1000 * noise / distanceSquared;
+      var volume = 100 * noise / distanceSquared;
       monster.noise += volume;
     }
   }

@@ -31,8 +31,6 @@ class Items extends ContentBuilder {
     weapons();
     bows();
     bodyArmor();
-
-    item('Magical Chalice', lightBlue(r'$'));
   }
 
   void pelts() {
@@ -73,8 +71,9 @@ class Items extends ContentBuilder {
 
   void weapons() {
     // Bludgeons.
-    weapon('Cudgel', brown('\\'),    'hit[s]', 'Club', 4);
-    weapon('Staff', lightBrown('_'), 'hit[s]', 'Club', 5);
+    weapon('Cudgel', lightBrown('\\'), 'hit[s]', 'Club', 4);
+    weapon('Club', brown('\\'),        'hit[s]', 'Club', 5);
+    weapon('Staff', lightBrown('_'),   'hit[s]', 'Club', 6);
 
     // Knives.
     sequence(10, [
@@ -106,18 +105,26 @@ class Items extends ContentBuilder {
   }
 
   void bodyArmor() {
-    armor('Fur Cloak', lightBrown('('), 'Cloak', 2);
+    sequence(12, [
+      armor('Cloak', darkBlue('('), 'Cloak', 2),
+      armor('Fur Cloak', lightBrown('('), 'Cloak', 3)
+    ]);
+
+    sequence(10, [
+      armor('Cloth Shirt', lightGray('('), 'Body', 2),
+      armor('Leather Shirt', lightBrown('('), 'Body', 5),
+      armor('Leather Armor', brown('('), 'Body', 8),
+      armor('Padded Armor', darkBrown('('), 'Body', 11),
+      armor('Studded Leather Armor', gray('('), 'Body', 15)
+    ]);
 
     sequence(10, [
       armor('Cloth Shirt', lightGray('('), 'Body', 2),
       armor('Robe', aqua('('), 'Body', 4),
       armor('Fur-lined Robe', darkAqua('('), 'Body', 6)
     ]);
+
     /*
-    Leather Shirt[s]
-    Soft Leather Armor[s]
-    Hard Leather Armor[s]
-    Studded Leather Armor[s]
     Leather Scale Mail[s]
     Mail Hauberk[s]
     Metal Lamellar Armor[s]

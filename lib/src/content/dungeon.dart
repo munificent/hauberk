@@ -9,8 +9,6 @@ import 'tiles.dart';
 
 class TrainingGrounds extends Dungeon {
   void onGenerate() {
-    fill(Tiles.wall);
-
     // Layout the rooms.
     addRooms(300);
     addJunctions(30);
@@ -37,16 +35,20 @@ class GoblinStronghold extends Dungeon {
   int get roomWidthMax => 8;
   int get roomHeightMax => 6;
 
-  void onGenerate() {
-    fill(Tiles.wall);
+  /// Loosely connected.
+  int get extraCorridorOneIn => 200;
 
+  /// Pretty closed off.
+  int get closedDoorPercent => 70;
+  int get openDoorPercent => 20;
+
+  void onGenerate() {
     // Layout the rooms.
-    addRooms(300 - depth * 20);
+    addRooms(50);
 
     carveRooms();
     carveCorridors();
-
-    erode(500 + depth * 250);
+    addDoors();
   }
 
   bool allowRoomOverlap(Rect a, Rect b) => rng.oneIn(20);
@@ -64,6 +66,12 @@ abstract class Dungeon extends StageBuilder {
   int get extraCorridorOneIn => 20;
   int get extraCorridorDistanceMultiplier => 4;
 
+  /// Chance out of 100 that an opening to a room will be a closed door.
+  int get closedDoorPercent => 30;
+
+  /// Chance out of 100 that an opening to a room will be an open door.
+  int get openDoorPercent => 40;
+
   TileType get floor => Tiles.floor;
   TileType get wall => Tiles.wall;
 
@@ -73,6 +81,7 @@ abstract class Dungeon extends StageBuilder {
 
   void generate(Stage stage) {
     bindStage(stage);
+    fill(Tiles.wall);
     onGenerate();
   }
 
@@ -413,11 +422,13 @@ abstract class Dungeon extends StageBuilder {
   }
 
   void addDoor(int x, int y) {
-    var type;
-    switch (rng.range(3)) {
-    case 0: type = Tiles.floor; break; // No door.
-    case 1: type = Tiles.closedDoor; break;
-    case 2: type = Tiles.openDoor; break;
+    var type = Tiles.floor;
+
+    var roll = rng.range(100);
+    if (roll < closedDoorPercent) {
+      type = Tiles.closedDoor;
+    } else if (roll < closedDoorPercent + openDoorPercent) {
+      type = Tiles.openDoor;
     }
 
     setTile(new Vec(x, y), type);

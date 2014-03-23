@@ -62,7 +62,7 @@ class Area {
     game.quest = area.quest.generate(stage);
     game.quest.announce(game.log);
 
-    // TODO(bob): Temp. Wizard light it.
+    // TODO: Temp. Wizard light it.
     /*
     for (var pos in stage.bounds) {
       for (var dir in Direction.ALL) {
@@ -183,6 +183,13 @@ abstract class Quest {
   }
 
   bool onKillMonster(Game game, Monster monster) => false;
+
+  bool enterTile(Game game, Tile tile) {
+    if (onEnterTile(game, tile)) _complete(game);
+    return _isComplete;
+  }
+
+  bool onEnterTile(Game game, Tile tile) => false;
 
   void _complete(Game game) {
     // Only complete once.

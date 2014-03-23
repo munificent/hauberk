@@ -149,6 +149,7 @@ class Hero extends Actor {
 
   Vec changePosition(Vec pos) {
     game.stage.dirtyVisibility();
+    game.quest.enterTile(game, game.stage[pos]);
     return pos;
   }
 

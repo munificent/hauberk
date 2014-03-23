@@ -8,6 +8,7 @@ import 'items.dart';
 import 'monsters.dart';
 import 'quests.dart';
 import 'stage_builder.dart';
+import 'tiles.dart';
 
 /// Builder class for defining [Area] objects.
 class Areas extends ContentBuilder {
@@ -58,7 +59,7 @@ class Areas extends ContentBuilder {
           'Soothing Balm',
           'Robe'
         ],
-        quest: floorItem('Magical Chalice')),
+        quest: kill('giant spider')),
       level(new TrainingGrounds(), numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
@@ -73,29 +74,31 @@ class Areas extends ContentBuilder {
           'Cudgel',
           'Dagger'
         ],
-        quest: floorItem('Magical Chalice'))
+        quest: kill('giant cave worm'))
     ]);
 
     area('Goblin Stronghold', [
-      level(new GoblinStronghold(0), numMonsters: 18, numItems: 8,
+      level(new GoblinStronghold(0), numMonsters: 20, numItems: 8,
         breeds: [
           'scurrilous imp',
-          'impish incanter',
+          'vexing imp',
           'goblin peon',
+          'goblin archer',
           'wild dog'
         ],
         drop: [
           'Soothing Balm'
         ],
-        quest: floorItem('Magical Chalice')),
+        quest: tileType('the stairs', Tiles.stairs)),
       level(new GoblinStronghold(10), numMonsters: 20, numItems: 8,
         breeds: [
+          'impish incanter',
           'goblin warrior'
         ],
         drop: [
           'Soothing Balm'
         ],
-        quest: floorItem('Magical Chalice'))
+        quest: tileType('the stairs', Tiles.stairs))
     ]);
   }
 
@@ -118,6 +121,9 @@ class Areas extends ContentBuilder {
 
   QuestBuilder kill(String breed, [int count = 1]) =>
       new MonsterQuestBuilder(Monsters.all[breed], count);
+
+  QuestBuilder tileType(String description, TileType type) =>
+      new TileQuestBuilder(description, type);
 
   QuestBuilder floorItem(String type) =>
       new FloorItemQuestBuilder(Items.all[type]);

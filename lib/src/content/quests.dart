@@ -19,6 +19,32 @@ class MonsterQuestBuilder extends QuestBuilder {
   }
 }
 
+/// A quest to kill a number of [Monster]s of a certain [Breed].
+class MonsterQuest extends Quest {
+  final Breed breed;
+  int remaining;
+
+  void announce(Log log) {
+    // TODO(bob): Handle pluralization correctly.
+    log.quest("You must kill {1}.", new Quantity(remaining, breed));
+  }
+
+  MonsterQuest(this.breed, this.remaining);
+
+  bool onKillMonster(Game game, Monster monster) {
+    if (monster.breed == breed) {
+      remaining--;
+
+      if (remaining > 0) {
+        game.log.quest("{1} await[s] death at your hands.",
+            new Quantity(remaining, breed));
+      }
+    }
+
+    return remaining <= 0;
+  }
+}
+
 /// Builds a quest for finding an item on the ground in the [Stage].
 class FloorItemQuestBuilder extends QuestBuilder {
   final ItemType itemType;
@@ -48,28 +74,31 @@ class ItemQuest extends Quest {
   bool onPickUpItem(Game game, Item item) => item.type == itemType;
 }
 
-/// A quest to kill a number of [Monster]s of a certain [Breed].
-class MonsterQuest extends Quest {
-  final Breed breed;
-  int remaining;
+/// Builds a quest for standing on a [TileType] on the [Stage].
+class TileQuestBuilder extends QuestBuilder {
+  final String description;
+  final TileType tileType;
+
+  TileQuestBuilder(this.description, this.tileType);
+
+  Quest generate(Stage stage) {
+    var pos = stage.findDistantOpenTile(10);
+    stage[pos].type = tileType;
+
+    return new TileQuest(description, tileType);
+  }
+}
+
+/// A quest to stand on a tile of a certain [TileType].
+class TileQuest extends Quest {
+  final String description;
+  final TileType tileType;
+
+  TileQuest(this.description, this.tileType);
 
   void announce(Log log) {
-    // TODO(bob): Handle pluralization correctly.
-    log.quest("You must kill {1}.", new Quantity(remaining, breed));
+    log.quest("You must find $description.");
   }
 
-  MonsterQuest(this.breed, this.remaining);
-
-  bool onKillMonster(Game game, Monster monster) {
-    if (monster.breed == breed) {
-      remaining--;
-
-      if (remaining > 0) {
-        game.log.quest("{1} await[s] death at your hands.",
-            new Quantity(remaining, breed));
-      }
-    }
-
-    return remaining <= 0;
-  }
+  bool onEnterTile(Game game, Tile tile) => tile.type == tileType;
 }

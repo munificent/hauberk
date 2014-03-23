@@ -155,14 +155,27 @@ class Monsters extends ContentBuilder {
         attack('scratch[es]', 4),
         insult()
       ],
+      drop: [
+        chanceOf(8, 'Cudgel'),
+        chanceOf(8, 'Leather Shirt'),
+      ],
       maxHealth: 10, meander: 4, speed: 2,
       flags: 'few'
+    );
+
+    // TODO: More drops.
+    breed('vexing imp', purple('I'), [
+        attack('scratch[es]', 3),
+        insult(),
+        sparkBolt(cost: 10, damage: 6)
+      ],
+      maxHealth: 8, meander: 4, speed: 1
     );
 
     breed('impish incanter', lightPurple('I'), [
         attack('scratch[es]', 3),
         insult(),
-        fireBolt(cost: 12, damage: 8)
+        fireBolt(cost: 10, damage: 8)
       ],
       maxHealth: 10, meander: 4, speed: 1
     );
@@ -173,6 +186,18 @@ class Monsters extends ContentBuilder {
       drop: chanceOf(10, 'Spear'),
       maxHealth: 10, meander: 2,
       flags: 'open-doors'
+    );
+
+    breed('goblin archer', green('I'), [
+        attack('stab[s]', 3),
+        arrow(cost: 10, damage: 3)
+      ],
+      drop: [
+        chanceOf(4, 'Short Bow'),
+        chanceOf(10, 'Knife')
+      ],
+      maxHealth: 6, meander: 2,
+      flags: 'few'
     );
 
     breed('goblin warrior', brown('I'), [
@@ -202,11 +227,11 @@ class Monsters extends ContentBuilder {
         sparkBolt(cost: 16, damage: 8)
       ],
       drop: [
-         chanceOf(10, 'Scroll of Sidestepping'),
-         chanceOf(7, 'Staff'),
-         chanceOf(7, 'Knife'),
-         chanceOf(7, 'Cloth Shirt'),
-         chanceOf(5, 'Robe')
+        chanceOf(10, 'Scroll of Sidestepping'),
+        chanceOf(7, 'Staff'),
+        chanceOf(7, 'Knife'),
+        chanceOf(7, 'Cloth Shirt'),
+        chanceOf(5, 'Robe')
       ],
       maxHealth: 8, meander: 2,
       flags: 'open-doors'
@@ -217,10 +242,9 @@ class Monsters extends ContentBuilder {
         arrow(cost: 10, damage: 2)
       ],
       drop: [
-         chanceOf(10, 'Scroll of Sidestepping'),
-         chanceOf(4, 'Short Bow'),
-         chanceOf(10, 'Knife'),
-         chanceOf(8, 'Cloth Shirt')
+        chanceOf(4, 'Short Bow'),
+        chanceOf(10, 'Knife'),
+        chanceOf(8, 'Cloth Shirt')
       ],
       maxHealth: 10, meander: 2,
       flags: 'open-doors'
@@ -231,11 +255,11 @@ class Monsters extends ContentBuilder {
         heal(cost: 30, amount: 8)
       ],
       drop: [
-         chanceOf(10, 'Soothing Balm'),
-         chanceOf(7, 'Staff'),
-         chanceOf(7, 'Cudgel'),
-         chanceOf(7, 'Cloth Shirt'),
-         chanceOf(5, 'Robe')
+        chanceOf(10, 'Soothing Balm'),
+        chanceOf(7, 'Staff'),
+        chanceOf(7, 'Cudgel'),
+        chanceOf(7, 'Cloth Shirt'),
+        chanceOf(5, 'Robe')
       ],
       maxHealth: 9, meander: 4,
       flags: 'open-doors'
@@ -294,6 +318,12 @@ class Monsters extends ContentBuilder {
       ],
       maxHealth: 16, meander: 4, speed: -2
     );
+
+    breed('giant cave worm', white('w'), [
+        attack('crawl[s] on', 8),
+      ],
+      maxHealth: 24, meander: 4, speed: -2
+    );
   }
 
   Breed breed(String name, Glyph appearance, List actions, {
@@ -326,7 +356,7 @@ class Monsters extends ContentBuilder {
   Move heal({int cost, int amount}) => new HealMove(cost, amount);
 
   Move arrow({int cost, int damage}) =>
-      new BoltMove(cost, new Attack('fires', damage, Element.NONE,
+      new BoltMove(cost, new Attack('hits', damage, Element.NONE,
           new Noun('the arrow')));
 
   Move sparkBolt({int cost, int damage}) =>

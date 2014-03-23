@@ -63,7 +63,7 @@ class Monster extends Actor {
   Action getActionAsleep() {
     // See if there is enough noise to wake up.
     // TODO(bob): Add breed-specific modifier.
-    if (noise > rng.range(50, 5000)) {
+    if (noise > rng.range(100, 5000)) {
       state = MonsterState.AWAKE;
       game.log.message('{1} wake[s] up!', this);
 

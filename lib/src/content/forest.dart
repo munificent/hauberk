@@ -98,7 +98,7 @@ class Forest extends StageBuilder {
       carveCircle(point, 3);
     }
 
-    erodeWalls(2000, floor: Tiles.grass, wall: Tiles.tree);
+    erode(2000, floor: Tiles.grass, wall: Tiles.tree);
 
     // Randomly vary the tree type.
     var trees = [Tiles.tree, Tiles.treeAlt1, Tiles.treeAlt2];
