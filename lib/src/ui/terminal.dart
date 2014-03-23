@@ -136,4 +136,5 @@ class CharCode {
   static const BLACK_UP_POINTING_TRIANGLE = 0x25b2;
   static const BLACK_SPADE_SUIT = 0x2660;
   static const BLACK_CLUB_SUIT = 0x2663;
+  static const BOX_DRAWINGS_LIGHT_VERTICAL = 0x2502;
 }

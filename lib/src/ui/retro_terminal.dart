@@ -78,6 +78,7 @@ class RetroTerminal implements RenderableTerminal {
     map[CharCode.BLACK_CLUB_SUIT] = 5;
     map[CharCode.SOLID] = 219;
     map[CharCode.HALF_LEFT] = 221;
+    map[CharCode.BOX_DRAWINGS_LIGHT_VERTICAL] = 179;
     return map;
   }
 

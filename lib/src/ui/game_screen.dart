@@ -450,10 +450,16 @@ class GameScreen extends Screen {
       y++;
     }
 
+    var bar = new Glyph.fromCharCode(
+        CharCode.BOX_DRAWINGS_LIGHT_VERTICAL, Color.DARK_GRAY);
+    for (var y = 0; y < terminal.height; y++) {
+      terminal.drawGlyph(81, y, bar);
+    }
+
     drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
 
-    terminal.writeAt(81, 1, 'Focus', Color.GRAY);
+    terminal.writeAt(82, 1, 'Focus', Color.GRAY);
     drawMeter(terminal, 1, hero.focus, Option.FOCUS_MAX,
         Color.BLUE, Color.DARK_BLUE);
 
@@ -466,7 +472,7 @@ class GameScreen extends Screen {
         Color.GREEN);
     drawStat(terminal, 6, 'Weapon', hero.getAttack(null).damage, Color.YELLOW);
 
-    terminal.writeAt(81, 18, '@ hero', Color.WHITE);
+    terminal.writeAt(82, 18, '@ hero', Color.WHITE);
     drawHealthBar(terminal, 19, hero);
 
     // Draw the nearby monsters.
@@ -478,8 +484,8 @@ class GameScreen extends Screen {
 
     for (var i = 0; i < 10; i++) {
       var y = 20 + i * 2;
-      terminal.writeAt(81, y, '                    ');
-      terminal.writeAt(81, y + 1, '                    ');
+      terminal.writeAt(82, y, '                   ');
+      terminal.writeAt(82, y + 1, '                   ');
 
       if (i < visibleMonsters.length) {
         var monster = visibleMonsters[i];
@@ -489,8 +495,8 @@ class GameScreen extends Screen {
           glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
-        terminal.drawGlyph(81, y, glyph);
-        terminal.writeAt(83, y, monster.breed.name,
+        terminal.drawGlyph(82, y, glyph);
+        terminal.writeAt(84, y, monster.breed.name,
             (target == monster) ? Color.YELLOW : Color.WHITE);
 
         drawHealthBar(terminal, y + 1, monster);
@@ -500,13 +506,13 @@ class GameScreen extends Screen {
 
   void drawStat(Terminal terminal, int y, String label, value,
       Color valueColor, [max, Color maxColor]) {
-    terminal.writeAt(81, y, label, Color.GRAY);
+    terminal.writeAt(82, y, label, Color.GRAY);
     var valueString = value.toString();
-    terminal.writeAt(88, y, "             ");
-    terminal.writeAt(88, y, valueString, valueColor);
+    terminal.writeAt(89, y, "             ");
+    terminal.writeAt(89, y, valueString, valueColor);
 
     if (max != null) {
-      terminal.writeAt(88 + valueString.length, y, ' / $max', maxColor);
+      terminal.writeAt(89 + valueString.length, y, ' / $max', maxColor);
     }
   }
 
