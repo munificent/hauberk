@@ -384,7 +384,7 @@ class GameScreen extends Screen {
     */
 
     // Draw the items.
-    var unexploredItem = new Glyph('?', Color.DARK_GRAY);
+    var unexploredItem = new Glyph('?', Color.BLACK, Color.DARK_BLUE);
     for (final item in game.stage.items) {
       if (game.stage[item.pos].isExplored) {
         terminal.drawGlyph(item.x, item.y, item.appearance);

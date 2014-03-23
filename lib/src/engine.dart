@@ -11,6 +11,7 @@ part 'engine/action_item.dart';
 part 'engine/action_magic.dart';
 part 'engine/actor.dart';
 part 'engine/area.dart';
+part 'engine/breed.dart';
 part 'engine/element.dart';
 part 'engine/energy.dart';
 part 'engine/fov.dart';

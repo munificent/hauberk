@@ -22,7 +22,7 @@ class Tiles extends ContentBuilder {
     Tiles.floor = new TileType(true, true, [gray('.'), darkGray('.')]);
 
     Tiles.wall = new TileType(false, false,
-        [new Glyph('#', Color.WHITE, Color.DARK_GRAY),
+        [new Glyph('#', Color.LIGHT_GRAY, Color.DARK_GRAY),
          new Glyph('#', Color.GRAY)]);
 
     Tiles.lowWall = new TileType(false, true,

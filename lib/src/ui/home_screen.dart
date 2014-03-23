@@ -35,6 +35,9 @@ class HomeScreen extends Screen {
         save.crucible.clear();
         save.crucible.tryAdd(item);
         completeRecipe = null;
+
+        // The player probably wants to get the item out of the crucible.
+        mode = HomeMode.GET;
         dirty();
         break;
     }
