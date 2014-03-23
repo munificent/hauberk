@@ -1,9 +1,9 @@
 part of engine;
 
 /// A single kind of [Monster] in the game.
-class Breed {
-  final Gender gender;
-  final String name;
+class Breed implements Quantifiable {
+  final Pronoun pronoun;
+  String get name => singular;
 
   /// Untyped so the engine isn't coupled to how monsters appear.
   final appearance;
@@ -30,9 +30,18 @@ class Breed {
 
   final Set<String> flags;
 
-  Breed(this.name, this.gender, this.appearance, this.attacks, this.moves,
+  /// The name of the breed. If the breed's name has irregular pluralization
+  /// like "bunn[y|ies]", this will be the original unparsed string.
+  final String _name;
+
+  Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, {
       this.maxHealth, this.olfaction, this.meander, this.speed, this.flags});
+
+  String get singular =>
+      Log.parsePlural(_name, isPlural: false, forcePlural: true);
+  String get plural =>
+      Log.parsePlural(_name, isPlural: true, forcePlural: true);
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.

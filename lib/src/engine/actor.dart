@@ -28,8 +28,7 @@ abstract class Thing implements Noun {
 
   get appearance;
   String get nounText;
-  int get person;
-  Gender get gender;
+  Pronoun get pronoun => Pronoun.IT;
 
   String toString() => nounText;
 }

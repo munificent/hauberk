@@ -2,46 +2,68 @@ part of engine;
 
 /// The message log.
 class Log {
-  static String makeVerbsAgree(String text, int person) {
-    final optionalSuffix = new RegExp(r'\[(\w+?)\]');
-    final irregular = new RegExp(r'\[([^|]+)\|([^\]]+)\]');
+  /// Parses strings that have singular and plural options and selects one of
+  /// the two. Examples:
+  ///
+  ///     parsePlural("nothing", isPlural: false)     // "nothing"
+  ///     parsePlural("nothing", isPlural: true)      // "nothing"
+  ///     parsePlural("run[s]", isPlural: false)      // "run"
+  ///     parsePlural("run[s]", isPlural: true)       // "runs"
+  ///     parsePlural("bunn[y|ies]", isPlural: false) // "bunny"
+  ///     parsePlural("bunn[y|ies]", isPlural: true)  // "bunnies"
+  ///
+  /// If [forcePlural] is `true`, then a trailing "s" will be added to the end
+  /// if [isPlural] is `true` and [text] doesn't have any formatting.
+  static String parsePlural(String text, {bool isPlural, bool forcePlural}) {
+    var optionalSuffix = new RegExp(r'\[(\w+?)\]');
+    var irregular = new RegExp(r'\[([^|]+)\|([^\]]+)\]');
+
+    // If it's a regular plural word, just add an "s".
+    if (forcePlural == true && isPlural == true && !text.contains("[")) {
+      return "${text}s";
+    }
 
     // Handle verbs with optional suffixes like `close[s]`.
     while (true) {
-      final match = optionalSuffix.firstMatch(text);
+      var match = optionalSuffix.firstMatch(text);
       if (match == null) break;
 
-      final before = text.substring(0, match.start);
-      final after = text.substring(match.end);
-      if (person == 2) {
-        // Omit the optional part.
-        text = '$before$after';
-      } else {
+      var before = text.substring(0, match.start);
+      var after = text.substring(match.end);
+      if (isPlural) {
         // Include the optional part.
         text = '$before${match[1]}$after';
+      } else {
+        // Omit the optional part.
+        text = '$before$after';
       }
     }
 
     // Handle irregular verbs like `[are|is]`.
     while (true) {
-      final match = irregular.firstMatch(text);
+      var match = irregular.firstMatch(text);
       if (match == null) break;
 
-      final before = text.substring(0, match.start);
-      final after = text.substring(match.end);
-      if (person == 2) {
-        // Use the first form.
-        text = '$before${match[1]}$after';
-      } else {
+      var before = text.substring(0, match.start);
+      var after = text.substring(match.end);
+      if (isPlural) {
         // Use the second form.
         text = '$before${match[2]}$after';
+      } else {
+        // Use the first form.
+        text = '$before${match[1]}$after';
       }
     }
 
     return text;
   }
 
-  static final MAX_MESSAGES = 6;
+  static String makeVerbsAgree(String text, Pronoun pronoun) {
+    var isPlural = pronoun != Pronoun.YOU && pronoun != Pronoun.THEY;
+    return parsePlural(text, isPlural: isPlural);
+  }
+
+  static const MAX_MESSAGES = 6;
 
   final Queue<Message> messages;
 
@@ -155,21 +177,15 @@ class Log {
         result = result.replaceAll('{$i}', noun.nounText);
 
         // Handle pronouns.
-        if (noun.person == 2) {
-          result = result.replaceAll('{$i he}', 'you');
-          result = result.replaceAll('{$i him}', 'you');
-          result = result.replaceAll('{$i his}', 'your');
-        } else {
-          result = result.replaceAll('{$i he}', noun.gender.subjective);
-          result = result.replaceAll('{$i him}', noun.gender.objective);
-          result = result.replaceAll('{$i his}', noun.gender.possessive);
-        }
+        result = result.replaceAll('{$i he}', noun.pronoun.subjective);
+        result = result.replaceAll('{$i him}', noun.pronoun.objective);
+        result = result.replaceAll('{$i his}', noun.pronoun.possessive);
       }
     }
 
     // Make the verb match the subject (which is assumed to be the first noun).
     if (noun1 != null) {
-      result = Log.makeVerbsAgree(result, noun1.person);
+      result = Log.makeVerbsAgree(result, noun1.pronoun);
     }
 
     // Sentence case it by capitalizing the first letter.
@@ -179,25 +195,65 @@ class Log {
 
 class Noun {
   final String nounText;
-  int get person => 3;
-  Gender get gender => Gender.NEUTER;
+  Pronoun get pronoun => Pronoun.IT;
 
   Noun(this.nounText);
 
   String toString() => nounText;
 }
 
-class Gender {
+/// A noun-like thing that can be quantified.
+abstract class Quantifiable {
+  String get singular;
+  String get plural;
+  Pronoun get pronoun;
+}
+
+/// A [Noun] for a specific quantity of some thing.
+class Quantity implements Noun {
+  final int count;
+  final Quantifiable _object;
+
+  String get nounText {
+    // TODO: a/an.
+    if (count == 1) return "a ${_object.singular}";
+
+    var quantity;
+    switch (count) {
+      case 2: quantity = "two"; break;
+      case 3: quantity = "three"; break;
+      case 4: quantity = "four"; break;
+      case 5: quantity = "five"; break;
+      case 6: quantity = "six"; break;
+      case 7: quantity = "seven"; break;
+      case 8: quantity = "eight"; break;
+      case 9: quantity = "nine"; break;
+      case 10: quantity = "ten"; break;
+      default:
+        quantity = count.toString();
+    }
+
+    return "$quantity ${_object.plural}";
+  }
+
+  Pronoun get pronoun => count == 1 ? _object.pronoun : Pronoun.THEY;
+
+  Quantity(this.count, this._object);
+}
+
+class Pronoun {
   // See http://en.wikipedia.org/wiki/English_personal_pronouns.
-  static final FEMALE = const Gender('she', 'her', 'her');
-  static final MALE   = const Gender('he',  'him', 'his');
-  static final NEUTER = const Gender('it',  'it',  'its');
+  static final YOU  = const Pronoun('you',  'you',  'your');
+  static final SHE  = const Pronoun('she',  'her',  'her');
+  static final HE   = const Pronoun('he',   'him',  'his');
+  static final IT   = const Pronoun('it',   'it',   'its');
+  static final THEY = const Pronoun('they', 'them', 'their');
 
   final String subjective;
   final String objective;
   final String possessive;
 
-  const Gender(this.subjective, this.objective, this.possessive);
+  const Pronoun(this.subjective, this.objective, this.possessive);
 }
 
 class LogType {

@@ -3,7 +3,6 @@ library content.monsters;
 import '../engine.dart';
 import '../ui.dart';
 import 'builder.dart';
-import 'items.dart';
 
 /// Builder class for defining [Monster] [Breed]s.
 class Monsters extends ContentBuilder {
@@ -143,7 +142,7 @@ class Monsters extends ContentBuilder {
   }
 
   insects() {
-    breed('giant cockroach', darkBrown('i'), [
+    breed('giant cockroach[es]', darkBrown('i'), [
         attack('crawl[s] on', 1),
       ],
       drop: hunting('Insect wing'),
@@ -244,14 +243,14 @@ class Monsters extends ContentBuilder {
   }
 
   rodents() {
-    breed('white mouse', white('r'), [
+    breed('white [mouse|mice]', white('r'), [
         attack('bite[s]', 3),
         attack('scratch[es]', 2)
       ],
       maxHealth: 3, olfaction: 2, meander: 4, speed: 1
     );
 
-    breed('fuzzy bunny', lightBlue('r'), [
+    breed('fuzzy bunn[y|ies]', lightBlue('r'), [
         attack('bite[s]', 2),
         attack('kick[s]', 1)
       ],
@@ -317,10 +316,10 @@ class Monsters extends ContentBuilder {
       flagSet = new Set<String>();
     }
 
-    final breed = new Breed(name, Gender.NEUTER, appearance, attacks, moves,
+    final breed = new Breed(name, Pronoun.IT, appearance, attacks, moves,
         drop, maxHealth: maxHealth, olfaction: olfaction, meander: meander,
         speed: speed, flags: flagSet);
-    Monsters.all[name] = breed;
+    Monsters.all[breed.name] = breed;
     return breed;
   }
 

@@ -59,9 +59,6 @@ class Item extends Thing implements Comparable {
     return name.toString();
   }
 
-  int get person => 3;
-  Gender get gender => Gender.NEUTER;
-
   int compareTo(Item other) {
     // TODO(bob): Take into account powers.
     return type.sortIndex.compareTo(other.type.sortIndex);

@@ -45,8 +45,8 @@ class HeroSave {
 
 /// The main player-controlled [Actor]. The player's avatar in the game world.
 class Hero extends Actor {
-  // TODO(bob): Let user specify.
-  final Gender gender = Gender.MALE;
+  String get nounText => 'you';
+  final Pronoun pronoun = Pronoun.YOU;
 
   final Inventory inventory;
   final Equipment equipment;
@@ -186,9 +186,6 @@ class Hero extends Actor {
       }
     }
   }
-
-  String get nounText => 'you';
-  int get person => 2;
 }
 
 int calculateLevel(int experienceCents) {

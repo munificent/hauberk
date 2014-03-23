@@ -55,7 +55,7 @@ class MonsterQuest extends Quest {
 
   void announce(Log log) {
     // TODO(bob): Handle pluralization correctly.
-    log.quest("You must kill $remaining ${breed.name}s.");
+    log.quest("You must kill {1}.", new Quantity(remaining, breed));
   }
 
   MonsterQuest(this.breed, this.remaining);
@@ -65,8 +65,8 @@ class MonsterQuest extends Quest {
       remaining--;
 
       if (remaining > 0) {
-        // TODO(bob): Handle pluralization correctly.
-        game.log.quest("$remaining more ${breed.name}s await death at your hands.");
+        game.log.quest("{1} await[s] death at your hands.",
+            new Quantity(remaining, breed));
       }
     }
 

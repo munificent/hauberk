@@ -24,8 +24,7 @@ class Monster extends Actor {
   get appearance => breed.appearance;
 
   String get nounText => 'the ${breed.name}';
-  int get person => 3;
-  Gender get gender => breed.gender;
+  Pronoun get pronoun => breed.pronoun;
 
   /// How much experience a level one [Hero] gains for killing this monster.
   int get experienceCents => breed.experienceCents;

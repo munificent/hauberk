@@ -72,7 +72,7 @@ main() {
         ''');
 
     var attacks = breed.attacks.map(
-        (attack) => '${Log.makeVerbsAgree(attack.verb, 3)} (${attack.damage})');
+        (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} (${attack.damage})');
     text.write(attacks.join(', '));
 
     text.write('</td><td>');
