@@ -218,8 +218,9 @@ class Monsters extends ContentBuilder {
   }
 
   jellies() {
+    // TODO: Attack should slow.
     breed('green slime', green('j'), [
-        attack('crawl[s] on', 3),
+        attack('crawl[s] on', 3)
       ],
       maxHealth: 10, meander: 4,
       flags: 'few'

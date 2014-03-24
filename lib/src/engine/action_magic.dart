@@ -61,7 +61,41 @@ class HasteAction extends Action {
   HasteAction(this._duration, this._speed);
 
   ActionResult onPerform() {
-    actor.haste.activate(_duration, _speed);
+    // The behavior is based on the actor's current haste level (the rows in
+    // the table) and the one being applied by this action (the columns).
+    var dispatch = [
+      // -2     -1         0     1          2
+      [_extend, _noEffect, null, _fast,     _fast],   // -2
+      [_slow,   _extend,   null, _fast,     _fast],   // -1
+      [_slow,   _slow,     null, _fast,     _fast],   // Normal
+      [_resist, _resist,   null, _extend,   _fast],   // 1
+      [_resist, _resist,   null, _noEffect, _extend], // 2
+    ];
+
+    dispatch[actor.haste.intensity + 2][_speed + 2]();
     return succeed();
+  }
+
+  void _extend() {
+    actor.haste.extend(_duration ~/ 2);
+    log("{1} [feel]s the effects lasting longer.", actor);
+  }
+
+  void _noEffect() {
+    log("It has no effect.", actor);
+  }
+
+  void _resist() {
+    log("{1 his} speed protects you from slowing.", actor);
+  }
+
+  void _slow() {
+    log("{1} start[s] moving slower.", actor);
+    actor.haste.activate(_duration, _speed);
+  }
+
+  void _fast() {
+    log("{1} start[s] moving faster.", actor);
+    actor.haste.activate(_duration, _speed);
   }
 }

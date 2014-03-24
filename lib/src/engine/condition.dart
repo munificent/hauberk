@@ -32,34 +32,35 @@ abstract class Condition {
     if (isActive) {
       _turnsRemaining--;
       if (!isActive) {
-        _intensity = 0;
         onDeactivate();
+        _intensity = 0;
       }
     }
   }
 
-  /// Activates the condition for [duration] turns. If already active, adds to
-  /// the previous duration.
-  void activate(int duration, [int intensity = 0]) {
-    var improved = !isActive || intensity > _intensity;
-    _intensity = math.max(_intensity, intensity);
-
-    if (improved) onActivate();
+  /// Extends the condition by [duration].
+  void extend(int duration) {
+    assert(isActive);
 
     _turnsRemaining += duration;
   }
 
-  void onActivate(int intensity);
+  /// Activates the condition for [duration] turns at [intensity].
+  void activate(int duration, [int intensity = 1]) {
+    _turnsRemaining = duration;
+    _intensity = intensity;
+  }
+
   void onDeactivate();
 }
 
-/// A condition that temporarily boosts the actor's speed.
+/// A condition that temporarily modifies the actor's speed.
 class HasteCondition extends Condition {
-  void onActivate() {
-    actor.game.log.message("{1} speed[s] up!", actor);
-  }
-
   void onDeactivate() {
-    actor.game.log.message("{1} slow[s] back down.", actor);
+    if (intensity > 0) {
+      actor.game.log.message("{1} slow[s] back down.", actor);
+    } else {
+      actor.game.log.message("{1} speed[s] back up.", actor);
+    }
   }
 }

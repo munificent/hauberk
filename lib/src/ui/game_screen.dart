@@ -475,6 +475,8 @@ class GameScreen extends Screen {
     // Show conditions.
     terminal.writeAt(82,  8, "                    ");
     switch (hero.haste.intensity) {
+      case -2: terminal.writeAt(82,  8, "Para", Color.DARK_GREEN); break;
+      case -1: terminal.writeAt(82,  8, "Slow", Color.DARK_GREEN); break;
       case 1: terminal.writeAt(82,  8, "Quik", Color.GREEN); break;
       case 2: terminal.writeAt(82,  8, "Alac", Color.GREEN); break;
       case 3: terminal.writeAt(82,  8, "Sped", Color.GREEN); break;

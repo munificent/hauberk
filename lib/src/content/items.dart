@@ -29,7 +29,6 @@ class Items extends ContentBuilder {
     potions();
     scrolls();
     weapons();
-    bows();
     bodyArmor();
   }
 
@@ -42,7 +41,7 @@ class Items extends ContentBuilder {
   }
 
   void potions() {
-    // Healing
+    // Healing.
     // TODO: Higher-level ones should remove conditions too.
     sequence(15, [
       item('Soothing Balm', lightRed('!'), use: () => new HealAction(12)),
@@ -52,8 +51,7 @@ class Items extends ContentBuilder {
       item('Potion of Rejuvenation', darkRed('!'), use: () => new HealAction(1000))
     ]);
 
-    // Speed
-    // TODO: Should cure slow condition too.
+    // Speed.
     sequence(20, [
       item('Potion of Quickness', lightGreen('!'), use: () => new HasteAction(20, 1)),
       item('Potion of Alacrity', green('!'), use: () => new HasteAction(30, 2)),
@@ -64,7 +62,7 @@ class Items extends ContentBuilder {
   void scrolls() {
     item('Parchment', gray('?'));
 
-    // Teleportation
+    // Teleportation.
     sequence(20, [
       item('Scroll of Sidestepping', lightPurple('?'),
           use: () => new TeleportAction(6)),
@@ -102,9 +100,8 @@ class Items extends ContentBuilder {
     ]);
 
     // glaive, voulge, halberd, pole-axe, lucerne hammer,
-  }
 
-  void bows() {
+    // Bows.
     sequence(10, [
       bow('Short Bow', brown('}'), 'the arrow', 4),
       bow('Longbow', lightBrown('}'), 'the arrow', 6),

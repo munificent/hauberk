@@ -109,7 +109,7 @@ class HasteMove extends Move {
     if (distance <= 1) return 0;
 
     // Prefer using it when farther away.
-    return rng.range(80 - distance * 2);
+    return rng.range(50) + distance * 10;
   }
 
   Action onGetAction(Monster monster) => new HasteAction(_duration, _speed);
