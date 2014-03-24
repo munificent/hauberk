@@ -104,6 +104,8 @@ class Hero extends Actor {
     return total;
   }
 
+  int onGetSpeed() => Energy.NORMAL_SPEED;
+
   Action onGetAction() => _behavior.getAction(this);
 
   Attack getAttack(Actor defender) {

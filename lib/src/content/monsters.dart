@@ -160,15 +160,15 @@ class Monsters extends ContentBuilder {
 
   imps() {
     breed('scurrilous imp', lightRed('I'), [
-        attack('scratch[es]', 4),
-        insult()
+        attack('club[s]', 4),
+        insult(),
+        haste()
       ],
       drop: [
-        chanceOf(8, 'Cudgel'),
-        chanceOf(8, 'Leather Shirt'),
+        chanceOf(10, 'Cudgel'),
+        chanceOf(7, 'Potion of Quickness')
       ],
-      maxHealth: 14, meander: 4, speed: 2,
-      flags: 'few'
+      maxHealth: 14, meander: 4
     );
 
     // TODO: More drops.
@@ -400,4 +400,7 @@ class Monsters extends ContentBuilder {
           new Noun('the flame')));
 
   Move insult({int cost: 20}) => new InsultMove(cost);
+
+  Move haste({int cost: 20, int duration: 10, int speed: 1}) =>
+      new HasteMove(cost, duration, speed);
 }

@@ -73,7 +73,7 @@ class Game {
         // If we are still waiting for input for the actor, just return (again).
         if (actor.energy.canTakeTurn && actor.needsInput) return gameResult;
 
-        if (actor.energy.gain()) {
+        if (actor.energy.gain(actor.speed)) {
           // If the actor can move now, but needs input from the user, just
           // return so we can wait for it.
           if (actor.needsInput) return gameResult;

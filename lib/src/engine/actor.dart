@@ -37,7 +37,8 @@ abstract class Thing implements Noun {
 abstract class Actor extends Thing {
   final Game game;
   final Stat health;
-  Energy energy;
+  final Energy energy = new Energy();
+  final Condition haste = new HasteCondition();
 
   /// The number of times the actor has rested. Once this crosses a certain
   /// threshold (based on the Actor's max health), its health will be increased
@@ -46,12 +47,23 @@ abstract class Actor extends Thing {
 
   Actor(this.game, int x, int y, int health)
   : super(new Vec(x, y)),
-    health = new Stat(health),
-    energy = new Energy(Energy.NORMAL_SPEED);
+    health = new Stat(health) {
+    haste.bind(this);
+  }
 
   bool get isAlive => health.current > 0;
 
   bool get needsInput => false;
+
+  /// Gets the actor's current speed, taking into any account any active
+  /// [Condition]s.
+  int get speed {
+    var speed = onGetSpeed();
+    speed += haste.intensity;
+    return speed;
+  }
+
+  int onGetSpeed();
 
   Action getAction() {
     final action = onGetAction();
@@ -106,6 +118,8 @@ abstract class Actor extends Thing {
       health.current++;
       restCount = 0;
     }
+
+    haste.update();
 
     onFinishTurn(action);
   }

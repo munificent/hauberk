@@ -472,6 +472,14 @@ class GameScreen extends Screen {
         Color.GREEN);
     drawStat(terminal, 6, 'Weapon', hero.getAttack(null).damage, Color.YELLOW);
 
+    // Show conditions.
+    terminal.writeAt(82,  8, "                    ");
+    switch (hero.haste.intensity) {
+      case 1: terminal.writeAt(82,  8, "Quik", Color.GREEN); break;
+      case 2: terminal.writeAt(82,  8, "Alac", Color.GREEN); break;
+      case 3: terminal.writeAt(82,  8, "Sped", Color.GREEN); break;
+    }
+
     terminal.writeAt(82, 18, '@ hero', Color.WHITE);
     drawHealthBar(terminal, 19, hero);
 

@@ -17,9 +17,7 @@ class Monster extends Actor {
   int recharge = 0;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth)
-  : super(game, x, y, maxHealth) {
-    energy.speed = Energy.NORMAL_SPEED + breed.speed;
-  }
+      : super(game, x, y, maxHealth);
 
   get appearance => breed.appearance;
 
@@ -42,6 +40,8 @@ class Monster extends Actor {
   }
 
   bool get canOpenDoors => breed.flags.contains('open-doors');
+
+  int onGetSpeed() => Energy.NORMAL_SPEED + breed.speed;
 
   Action onGetAction() {
     // Recharge moves.

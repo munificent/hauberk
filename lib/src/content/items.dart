@@ -51,6 +51,14 @@ class Items extends ContentBuilder {
       item('Potion of Amelioration', darkRed('!'), use: () => new HealAction(120)),
       item('Potion of Rejuvenation', darkRed('!'), use: () => new HealAction(1000))
     ]);
+
+    // Speed
+    // TODO: Should cure slow condition too.
+    sequence(20, [
+      item('Potion of Quickness', lightGreen('!'), use: () => new HasteAction(20, 1)),
+      item('Potion of Alacrity', green('!'), use: () => new HasteAction(30, 2)),
+      item('Potion of Speed', darkGreen('!'), use: () => new HasteAction(40, 3))
+    ]);
   }
 
   void scrolls() {

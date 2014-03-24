@@ -14,7 +14,8 @@ class Log {
   ///
   /// If [forcePlural] is `true`, then a trailing "s" will be added to the end
   /// if [isPlural] is `true` and [text] doesn't have any formatting.
-  static String parsePlural(String text, {bool isPlural, bool forcePlural}) {
+  static String parsePlural(String text,
+                            {bool isPlural, bool forcePlural: false}) {
     var optionalSuffix = new RegExp(r'\[(\w+?)\]');
     var irregular = new RegExp(r'\[([^|]+)\|([^\]]+)\]');
 

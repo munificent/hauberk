@@ -74,7 +74,7 @@ class InsultMove extends Move {
   InsultMove(int cost) : super(cost);
 
   num getScore(Monster monster) {
-    // TODO(bob): Should not always assume the hero is the target.
+    // TODO: Should not always assume the hero is the target.
     final target = monster.game.hero.pos;
     final distance = (target - monster.pos).kingLength;
 
@@ -89,4 +89,28 @@ class InsultMove extends Move {
   }
 
   Action onGetAction(Monster monster) => new InsultAction(monster.game.hero);
+}
+
+class HasteMove extends Move {
+  final int _duration;
+  final int _speed;
+
+  HasteMove(int cost, this._duration, this._speed) : super(cost);
+
+  num getScore(Monster monster) {
+    // Don't use if already hasted.
+    if (monster.haste.isActive) return 0;
+
+    // TODO: Should not always assume the hero is the target.
+    final target = monster.game.hero.pos;
+    final distance = (target - monster.pos).kingLength;
+
+    // Don't use when in melee distance.
+    if (distance <= 1) return 0;
+
+    // Prefer using it when farther away.
+    return rng.range(80 - distance * 2);
+  }
+
+  Action onGetAction(Monster monster) => new HasteAction(_duration, _speed);
 }

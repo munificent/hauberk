@@ -53,3 +53,15 @@ class TeleportAction extends Action {
     return succeed('{1} teleport[s] away!', actor);
   }
 }
+
+class HasteAction extends Action {
+  final int _duration;
+  final int _speed;
+
+  HasteAction(this._duration, this._speed);
+
+  ActionResult onPerform() {
+    actor.haste.activate(_duration, _speed);
+    return succeed();
+  }
+}

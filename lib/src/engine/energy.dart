@@ -31,16 +31,13 @@ class Energy {
     return ACTION_COST / GAINS[NORMAL_SPEED + speed];
   }
 
-  int speed;
   int energy = 0;
-
-  Energy(this.speed);
 
   bool get canTakeTurn => energy >= ACTION_COST;
 
   /// Advances one game turn and gains an appropriate amount of energy. Returns
   /// `true` if there is enough energy to take a turn.
-  bool gain() {
+  bool gain(int speed) {
     energy += GAINS[speed];
     return canTakeTurn;
   }
