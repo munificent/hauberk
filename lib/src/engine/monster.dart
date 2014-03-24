@@ -111,9 +111,8 @@ class Monster extends Actor {
 
     final scent = getScent(pos);
 
-    // TODO(bob): Make maximum path-length be breed tunable.
-    final path = AStar.findDirection(game.stage, pos, game.hero.pos, 10,
-        canOpenDoors);
+    final path = AStar.findDirection(game.stage, pos, game.hero.pos,
+        10 - breed.meander, canOpenDoors);
 
     // Consider melee attacking.
     final toHero = game.hero.pos - pos;

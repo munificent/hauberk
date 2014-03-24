@@ -201,13 +201,14 @@ class Stage {
 }
 
 class TileType {
+  final String name;
   final bool isPassable;
   final bool isTransparent;
   final appearance;
   TileType opensTo;
   TileType closesTo;
 
-  TileType(this.isPassable, this.isTransparent, this.appearance);
+  TileType(this.name, this.isPassable, this.isTransparent, this.appearance);
 }
 
 class Tile {

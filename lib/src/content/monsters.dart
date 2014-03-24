@@ -48,8 +48,10 @@ class Monsters extends ContentBuilder {
     humanoids();
     insects();
     imps();
+    jellies();
     people();
     rodents();
+    reptiles();
     slugs();
     snakes();
     worms();
@@ -82,6 +84,12 @@ class Monsters extends ContentBuilder {
         attack('bite[s]', 3),
       ],
       maxHealth: 3, meander: 6, speed: 2
+    );
+
+    breed('giant bat', lightBrown('b'), [
+        attack('bite[s]', 8),
+      ],
+      maxHealth: 12, meander: 6, speed: 2
     );
   }
 
@@ -159,7 +167,7 @@ class Monsters extends ContentBuilder {
         chanceOf(8, 'Cudgel'),
         chanceOf(8, 'Leather Shirt'),
       ],
-      maxHealth: 10, meander: 4, speed: 2,
+      maxHealth: 14, meander: 4, speed: 2,
       flags: 'few'
     );
 
@@ -169,7 +177,7 @@ class Monsters extends ContentBuilder {
         insult(),
         sparkBolt(cost: 10, damage: 6)
       ],
-      maxHealth: 8, meander: 4, speed: 1
+      maxHealth: 12, meander: 4, speed: 1
     );
 
     breed('impish incanter', lightPurple('I'), [
@@ -177,14 +185,14 @@ class Monsters extends ContentBuilder {
         insult(),
         fireBolt(cost: 10, damage: 8)
       ],
-      maxHealth: 10, meander: 4, speed: 1
+      maxHealth: 16, meander: 4, speed: 1
     );
 
     breed('goblin peon', lightBrown('I'), [
         attack('stab[s]', 4)
       ],
       drop: chanceOf(10, 'Spear'),
-      maxHealth: 10, meander: 2,
+      maxHealth: 15, meander: 2,
       flags: 'open-doors'
     );
 
@@ -196,7 +204,7 @@ class Monsters extends ContentBuilder {
         chanceOf(4, 'Short Bow'),
         chanceOf(10, 'Knife')
       ],
-      maxHealth: 6, meander: 2,
+      maxHealth: 12, meander: 2,
       flags: 'few'
     );
 
@@ -204,8 +212,17 @@ class Monsters extends ContentBuilder {
         attack('stab[s]', 8)
       ],
       drop: chanceOf(10, 'Spear'),
-      maxHealth: 16, meander: 1,
+      maxHealth: 24, meander: 1,
       flags: 'open-doors'
+    );
+  }
+
+  jellies() {
+    breed('green slime', green('j'), [
+        attack('crawl[s] on', 3),
+      ],
+      maxHealth: 10, meander: 4,
+      flags: 'few'
     );
   }
 
@@ -290,6 +307,14 @@ class Monsters extends ContentBuilder {
     );
   }
 
+  reptiles() {
+    breed('frog', green('R'), [
+        attack('hops[s] on', 2),
+      ],
+      maxHealth: 4, meander: 4, speed: 1
+    );
+  }
+
   slugs() {
     breed('giant slug', green('s'), [
         attack('crawl[s] on', 8),
@@ -317,6 +342,13 @@ class Monsters extends ContentBuilder {
         attack('crawl[s] on', 8),
       ],
       maxHealth: 16, meander: 4, speed: -2
+    );
+
+    breed('maggot', lightGray('w'), [
+        attack('crawl[s] on', 5),
+      ],
+      maxHealth: 2, meander: 4,
+      flags: 'swarm'
     );
 
     breed('giant cave worm', white('w'), [

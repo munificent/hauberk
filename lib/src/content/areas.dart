@@ -20,7 +20,8 @@ class Areas extends ContentBuilder {
         breeds: [
           'white mouse',
           'robin',
-          'garter snake'
+          'garter snake',
+          'frog'
         ],
         drop: [
           'Flower'
@@ -77,23 +78,28 @@ class Areas extends ContentBuilder {
         quest: kill('giant cave worm'))
     ]);
 
+    // TODO: Better floor drops.
     area('Goblin Stronghold', [
-      level(new GoblinStronghold(0), numMonsters: 20, numItems: 8,
+      level(new GoblinStronghold(50), numMonsters: 20, numItems: 8,
         breeds: [
           'scurrilous imp',
           'vexing imp',
           'goblin peon',
-          'goblin archer',
-          'wild dog'
+          'wild dog',
+          'maggot',
+          'giant cave worm',
+          'green slime'
         ],
         drop: [
           'Soothing Balm'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(new GoblinStronghold(10), numMonsters: 20, numItems: 8,
+      level(new GoblinStronghold(70), numMonsters: 24, numItems: 8,
         breeds: [
           'impish incanter',
-          'goblin warrior'
+          'goblin archer',
+          'goblin warrior',
+          'giant bat'
         ],
         drop: [
           'Soothing Balm'

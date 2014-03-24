@@ -18,7 +18,10 @@ class TrainingGrounds extends Dungeon {
 
     // We do this after carving corridors so that when corridors carve through
     // rooms, they don't mess up the decorations.
-    //decorateRooms();
+    //decorateRooms((room) {
+    //  if (rng.oneIn(4) && decoratePillars(room.bounds)) return;
+    //  if (rng.oneIn(4) && decorateInnerRoom(room.bounds)) return;
+    //});
 
     // We do this last so that we only add doors where they actually make sense
     // and don't have to worry about overlapping corridors and other stuff
@@ -28,9 +31,9 @@ class TrainingGrounds extends Dungeon {
 }
 
 class GoblinStronghold extends Dungeon {
-  final int depth;
+  final int _numRooms;
 
-  GoblinStronghold(this.depth);
+  GoblinStronghold(this._numRooms);
 
   int get roomWidthMax => 8;
   int get roomHeightMax => 6;
@@ -44,10 +47,15 @@ class GoblinStronghold extends Dungeon {
 
   void onGenerate() {
     // Layout the rooms.
-    addRooms(50);
+    addRooms(_numRooms);
 
     carveRooms();
     carveCorridors();
+
+    decorateRooms((room) {
+      if (rng.oneIn(5)) decorateTable(room);
+    });
+
     addDoors();
   }
 
@@ -275,7 +283,7 @@ abstract class Dungeon extends StageBuilder {
     }
   }
 
-  void decorateRooms() {
+  void decorateRooms(void decorateRoom(Rect room)) {
     for (var i = 0; i < _rooms.length; i++) {
       final room = _rooms[i];
 
@@ -289,10 +297,7 @@ abstract class Dungeon extends StageBuilder {
       }
       if (overlap) continue;
 
-      // Try the different kinds of decorations until one succeeds.
-      if (rng.oneIn(4) && decoratePillars(room.bounds)) continue;
-      if (rng.oneIn(4) && decorateInnerRoom(room.bounds)) continue;
-      // TODO(bob): Add more decorations.
+      decorateRoom(room.bounds);
     }
   }
 
@@ -368,6 +373,31 @@ abstract class Dungeon extends StageBuilder {
     }
     setTile(door, Tiles.floor);
 
+    return true;
+  }
+
+  /// Places a table in the room.
+  bool decorateTable(Rect room) {
+    var pos = rng.vecInRect(room);
+
+    // Don't block an exit.
+    if (pos.x == room.left && getTile(pos.offsetX(-1)) != Tiles.wall) {
+      return false;
+    }
+
+    if (pos.y == room.top && getTile(pos.offsetY(-1)) != Tiles.wall) {
+      return false;
+    }
+
+    if (pos.x == room.right && getTile(pos.offsetX(1)) != Tiles.wall) {
+      return false;
+    }
+
+    if (pos.y == room.bottom && getTile(pos.offsetY(1)) != Tiles.wall) {
+      return false;
+    }
+
+    setTile(pos, Tiles.table);
     return true;
   }
 

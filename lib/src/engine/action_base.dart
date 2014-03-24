@@ -108,13 +108,14 @@ class WalkAction extends Action {
     }
 
     // See if it's a door.
-    if (game.stage[pos].type.opensTo != null) {
+    var tile = game.stage[pos].type;
+    if (tile.opensTo != null) {
       return alternate(new OpenDoorAction(pos));
     }
 
     // See if we can walk there.
     if (!actor.canOccupy(pos)) {
-      return fail('{1} hit[s] the wall.', actor);
+      return fail('{1} hit[s] the ${tile.name}.', actor);
     }
 
     actor.pos = pos;
