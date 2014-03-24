@@ -61,9 +61,9 @@ class ArcherySkill extends Skill {
 
 class CombatSkill extends Skill {
   String get name => 'Combat';
-  String getHelpText(int level) => 'Increase damage by $level.';
+  String getHelpText(int level) => 'Increase damage by ${level ~/ 2}.';
 
-  num getAttackAddBonus(int level, Item weapon, Attack attack) => level;
+  num getAttackAddBonus(int level, Item weapon, Attack attack) => level ~/ 2;
 }
 
 class WeaponSkill extends Skill {
