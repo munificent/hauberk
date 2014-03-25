@@ -1,4 +1,12 @@
-part of engine;
+library dngn.engine.item;
+
+import 'dart:collection';
+
+import '../util.dart';
+import 'action_base.dart';
+import 'actor.dart';
+import 'game.dart';
+import 'melee.dart';
 
 /// A thing that can be picked up.
 class Item extends Thing implements Comparable {

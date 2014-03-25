@@ -1,4 +1,4 @@
-library content.tiles;
+library dngn.content.tiles;
 
 import '../engine.dart';
 import '../ui.dart';

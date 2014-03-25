@@ -1,4 +1,4 @@
-library content.quests;
+library dngn.content.quests;
 
 import '../engine.dart';
 

@@ -1,4 +1,4 @@
-library ui;
+library dngn.ui;
 
 export 'ui/canvas_terminal.dart';
 export 'ui/close_door_dialog.dart';

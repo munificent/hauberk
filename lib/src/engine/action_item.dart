@@ -1,4 +1,6 @@
-part of engine;
+library dngn.engine.action_item;
+
+import 'action_base.dart';
 
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {

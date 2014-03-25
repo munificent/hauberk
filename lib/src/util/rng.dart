@@ -1,4 +1,4 @@
-library util.rng;
+library dngn.util.rng;
 
 import 'rect.dart';
 import 'vec.dart';

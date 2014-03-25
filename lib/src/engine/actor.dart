@@ -1,4 +1,15 @@
-part of engine;
+library dngn.engine.actor;
+
+import 'dart:math' as math;
+
+import '../util.dart';
+import 'action_base.dart';
+import 'condition.dart';
+import 'energy.dart';
+import 'game.dart';
+import 'log.dart';
+import 'melee.dart';
+import 'option.dart';
 
 abstract class Thing implements Noun {
   Vec _pos;

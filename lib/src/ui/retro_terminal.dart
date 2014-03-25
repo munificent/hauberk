@@ -1,4 +1,4 @@
-library ui.retro_terminal;
+library dngn.ui.retro_terminal;
 
 import 'dart:html' as html;
 

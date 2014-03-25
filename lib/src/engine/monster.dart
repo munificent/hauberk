@@ -1,4 +1,19 @@
-part of engine;
+library dngn.engine.monster;
+
+import 'dart:math' as math;
+
+import '../util.dart';
+import 'a_star.dart';
+import 'action_base.dart';
+import 'actor.dart';
+import 'breed.dart';
+import 'energy.dart';
+import 'game.dart';
+import 'hero.dart';
+import 'log.dart';
+import 'los.dart';
+import 'melee.dart';
+import 'option.dart';
 
 class Monster extends Actor {
   final Breed breed;
@@ -196,7 +211,7 @@ class Monster extends Actor {
   /// Called when this Actor has been killed by [attacker].
   void onDied(Actor attacker) {
     // Handle drops.
-    breed.drop.spawnDrop(game, (Item item) {
+    breed.drop.spawnDrop(game, (item) {
       item.pos = pos;
       // TODO(bob): Scatter items a bit?
       // TODO(bob): Add message.

@@ -1,4 +1,4 @@
-library ui.inventory_dialog;
+library dngn.ui.inventory_dialog;
 
 import '../engine.dart';
 import 'keyboard.dart';

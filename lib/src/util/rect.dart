@@ -1,4 +1,4 @@
-library util.rect;
+library dngn.util.rect;
 
 import 'dart:collection';
 import 'dart:math' as math;

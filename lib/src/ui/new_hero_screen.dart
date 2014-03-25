@@ -1,4 +1,4 @@
-library ui.new_hero_screen;
+library dngn.ui.new_hero_screen;
 
 import '../engine.dart';
 import '../util.dart';

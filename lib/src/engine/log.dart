@@ -1,4 +1,6 @@
-part of engine;
+library dngn.engine.log;
+
+import 'dart:collection';
 
 /// The message log.
 class Log {

@@ -1,4 +1,4 @@
-library util.chain;
+library dngn.util.chain;
 
 import 'dart:collection';
 

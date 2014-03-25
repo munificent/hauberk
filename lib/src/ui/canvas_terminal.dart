@@ -1,4 +1,4 @@
-library ui.canvas_terminal;
+library dngn.ui.canvas_terminal;
 
 import 'dart:html' as html;
 

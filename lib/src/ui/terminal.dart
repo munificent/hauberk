@@ -1,4 +1,4 @@
-library ui.terminal;
+library dngn.ui.terminal;
 
 abstract class Terminal {
   int get width;

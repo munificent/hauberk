@@ -1,4 +1,10 @@
-part of engine;
+library dngn.engine.a_star;
+
+import 'dart:math' as math;
+
+import '../util.dart';
+import 'option.dart';
+import 'stage.dart';
 
 class AStarResult {
   final PathNode path;

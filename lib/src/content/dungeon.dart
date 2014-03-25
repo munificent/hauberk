@@ -1,4 +1,4 @@
-library content.dungeon;
+library dngn.content.dungeon;
 
 import 'dart:math' as math;
 

@@ -1,4 +1,4 @@
-library ui.target_dialog;
+library dngn.ui.target_dialog;
 
 import '../engine.dart';
 import '../util.dart';

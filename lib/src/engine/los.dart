@@ -1,4 +1,8 @@
-part of engine;
+library dngn.engine.los;
+
+import 'dart:collection';
+
+import '../util.dart';
 
 /// Line-of-sight object for tracing a straight line from a [start] to [end]
 /// and determining which intermediate tiles are touched.

@@ -1,4 +1,4 @@
-library ui.game_screen;
+library dngn.ui.game_screen;
 
 import 'dart:math' as math;
 

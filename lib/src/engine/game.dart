@@ -1,4 +1,22 @@
-part of engine;
+library dngn.engine.game;
+
+import 'dart:collection';
+
+import '../util.dart';
+import 'action_base.dart';
+import 'actor.dart';
+import 'area.dart';
+import 'breed.dart';
+import 'element.dart';
+import 'fov.dart';
+import 'hero.dart';
+import 'item.dart';
+import 'log.dart';
+import 'monster.dart';
+import 'option.dart';
+import 'quest.dart';
+import 'skill.dart';
+import 'stage.dart';
 
 /// Root class for the game engine. All game state is contained within this.
 class Game {

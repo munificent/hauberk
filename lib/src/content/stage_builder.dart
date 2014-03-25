@@ -1,4 +1,4 @@
-library content.stage_builder;
+library dngn.content.stage_builder;
 
 import '../engine.dart';
 import '../util.dart';

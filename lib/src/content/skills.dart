@@ -1,4 +1,4 @@
-library content.skills;
+library dngn.content.skills;
 
 import '../engine.dart';
 import '../util.dart';

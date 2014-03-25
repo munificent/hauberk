@@ -1,4 +1,4 @@
-library ui.storage;
+library dngn.ui.storage;
 
 import 'dart:convert';
 import 'dart:html' as html;

@@ -1,4 +1,4 @@
-library content;
+library dngn.content;
 
 import 'engine.dart';
 

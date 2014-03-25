@@ -1,4 +1,17 @@
-part of engine;
+library dngn.engine.hero;
+
+import '../util.dart';
+import 'action_base.dart';
+import 'actor.dart';
+import 'element.dart';
+import 'energy.dart';
+import 'game.dart';
+import 'item.dart';
+import 'log.dart';
+import 'melee.dart';
+import 'monster.dart';
+import 'option.dart';
+import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of

@@ -1,4 +1,4 @@
-library util.direction;
+library dngn.util.direction;
 
 import 'vec.dart';
 

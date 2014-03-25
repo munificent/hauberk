@@ -1,4 +1,14 @@
-part of engine;
+library dngn.engine.melee;
+
+import 'dart:math' as math;
+
+import '../util.dart';
+import 'action_base.dart';
+import 'actor.dart';
+import 'element.dart';
+import 'game.dart';
+import 'hero.dart';
+import 'log.dart';
 
 class Attack {
   /// The thing performing the attack. If `null`, then the attacker will be

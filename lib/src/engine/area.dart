@@ -1,4 +1,14 @@
-part of engine;
+library dngn.engine.area;
+
+import 'dart:collection';
+
+import '../util.dart';
+import 'breed.dart';
+import 'game.dart';
+import 'item.dart';
+import 'log.dart';
+import 'monster.dart';
+import 'stage.dart';
 
 class Area {
   final String name;
@@ -27,7 +37,7 @@ class Area {
       final itemDepth = pickDepth(depth);
       final drop = levels[itemDepth].floorDrop;
 
-      drop.spawnDrop(game, (Item item) {
+      drop.spawnDrop(game, (item) {
         item.pos = stage.findOpenTile();
         stage.items.add(item);
       });

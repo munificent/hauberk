@@ -1,4 +1,4 @@
-library content.maze;
+library dngn.content.maze;
 
 import '../engine.dart';
 import '../util.dart';

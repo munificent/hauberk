@@ -1,4 +1,4 @@
-part of engine;
+library dngn.engine.element;
 
 class Element {
   static const NONE      = const Element(0);

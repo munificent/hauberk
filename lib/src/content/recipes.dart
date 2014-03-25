@@ -1,4 +1,4 @@
-library content.recipes;
+library dngn.content.recipes;
 
 import '../engine.dart';
 import 'builder.dart';

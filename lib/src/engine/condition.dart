@@ -1,4 +1,6 @@
-part of engine;
+library dngn.engine.condition;
+
+import 'actor.dart';
 
 /// A temporary condition that modifies some property of an [Actor] while it
 /// is in effect.

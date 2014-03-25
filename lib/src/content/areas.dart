@@ -1,4 +1,4 @@
-library content.areas;
+library dngn.content.areas;
 
 import '../engine.dart';
 import 'builder.dart';

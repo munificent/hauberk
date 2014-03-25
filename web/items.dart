@@ -1,9 +1,9 @@
-library items;
+library dngn.web.items;
 
 import 'dart:html' as html;
 
-import 'package:roguekit/src/content.dart';
-import 'package:roguekit/src/ui.dart';
+import 'package:dngn/src/content.dart';
+import 'package:dngn/src/ui.dart';
 
 main() {
   var content = createContent();

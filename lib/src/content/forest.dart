@@ -1,4 +1,4 @@
-library content.forest;
+library dngn.content.forest;
 
 import 'dart:math' as math;
 

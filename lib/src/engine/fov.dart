@@ -1,4 +1,9 @@
-part of engine;
+library dngn.engine.fov;
+
+import 'dart:math' as math;
+
+import '../engine.dart';
+import '../util.dart';
 
 /// Calculates the [Hero]'s field of view of the dungeon.
 class Fov {

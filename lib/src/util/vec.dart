@@ -1,4 +1,4 @@
-library util.vec;
+library dngn.util.vec;
 
 import 'dart:math' as math;
 

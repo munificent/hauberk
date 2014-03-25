@@ -1,4 +1,4 @@
-library ui.home_screen;
+library dngn.ui.home_screen;
 
 import '../engine.dart';
 import 'inventory_dialog.dart';

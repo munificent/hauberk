@@ -1,4 +1,13 @@
-part of engine;
+library dngn.engine.stage;
+
+import '../util.dart';
+import 'actor.dart';
+import 'breed.dart';
+import 'fov.dart';
+import 'game.dart';
+import 'hero.dart';
+import 'item.dart';
+import 'option.dart';
 
 /// The game's live play area.
 class Stage {

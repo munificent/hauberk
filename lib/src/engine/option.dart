@@ -1,4 +1,4 @@
-part of engine;
+library dngn.engine.option;
 
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.

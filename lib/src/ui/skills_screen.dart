@@ -1,4 +1,4 @@
-library ui.skills_screen;
+library dngn.ui.skills_screen;
 
 import '../engine.dart';
 import 'keyboard.dart';

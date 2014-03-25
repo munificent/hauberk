@@ -1,4 +1,10 @@
-part of engine;
+library dngn.engine.skill;
+
+import '../util.dart';
+import 'action_base.dart';
+import 'game.dart';
+import 'item.dart';
+import 'melee.dart';
 
 /// Base class for a skill. A skill is a levelable hero ability in the game.
 /// The actual concrete skills are defined in content.

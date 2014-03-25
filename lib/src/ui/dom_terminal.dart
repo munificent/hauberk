@@ -1,4 +1,4 @@
-library ui.dom_terminal;
+library dngn.ui.dom_terminal;
 
 import 'dart:html' as html;
 

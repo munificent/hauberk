@@ -1,4 +1,4 @@
-library ui.forfeit_dialog;
+library dngn.ui.forfeit_dialog;
 
 import '../engine.dart';
 import 'keyboard.dart';

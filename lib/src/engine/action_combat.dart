@@ -1,4 +1,12 @@
-part of engine;
+library dngn.engine.action_combat;
+
+import '../util.dart';
+import 'action_base.dart';
+import 'actor.dart';
+import 'game.dart';
+import 'los.dart';
+import 'melee.dart';
+import 'option.dart';
 
 /// [Action] for a melee attack from one [Actor] to another.
 class AttackAction extends Action {

@@ -1,4 +1,4 @@
-library ui.screen;
+library dngn.ui.screen;
 
 import 'keyboard.dart';
 import 'terminal.dart';

@@ -1,4 +1,4 @@
-library content.monsters;
+library dngn.content.monsters;
 
 import '../engine.dart';
 import '../ui.dart';

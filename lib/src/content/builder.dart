@@ -1,4 +1,4 @@
-library content.builder;
+library dngn.content.builder;
 
 import '../engine.dart';
 import '../ui.dart';

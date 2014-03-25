@@ -1,4 +1,15 @@
-part of engine;
+library dngn.engine.breed;
+
+import '../util.dart';
+import 'energy.dart';
+import 'game.dart';
+import 'hero.dart';
+import 'item.dart';
+import 'log.dart';
+import 'melee.dart';
+import 'move.dart';
+import 'monster.dart';
+import 'option.dart';
 
 /// A single kind of [Monster] in the game.
 class Breed implements Quantifiable {

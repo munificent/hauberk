@@ -1,4 +1,4 @@
-library ui.main_menu_screen;
+library dngn.ui.main_menu_screen;
 
 import '../engine.dart';
 import 'confirm_dialog.dart';

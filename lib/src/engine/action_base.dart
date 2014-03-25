@@ -1,4 +1,12 @@
-part of engine;
+library dngn.engine.action_base;
+
+import '../util.dart';
+import 'action_combat.dart';
+import 'actor.dart';
+import 'game.dart';
+import 'hero.dart';
+import 'log.dart';
+import 'option.dart';
 
 abstract class Action {
   Actor _actor;
@@ -9,7 +17,7 @@ abstract class Action {
   Game get game => _game;
   Actor get actor => _actor;
   // TODO(bob): Should it check that the actor is a hero?
-  Hero get hero => _actor;
+  Hero get hero => _actor as Hero;
   bool get consumesEnergy => _consumesEnergy;
 
   int get focusOffset => Option.FOCUS_OFFSET_NORMAL;

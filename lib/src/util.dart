@@ -1,4 +1,4 @@
-library util;
+library dngn.util;
 
 export 'util/array2d.dart';
 export 'util/chain.dart';

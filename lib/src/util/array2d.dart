@@ -1,4 +1,4 @@
-library util.array2d;
+library dngn.util.array2d;
 
 import 'dart:collection';
 
