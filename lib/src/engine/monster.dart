@@ -20,16 +20,15 @@ class Monster extends Actor {
 
   MonsterState state = MonsterState.ASLEEP;
 
-  /// The amount of noise that the monster has heard recently. Nearby actions
-  /// will increase this and it naturally decays over time (as the monster
-  /// "forgets" sounds). If it gets high enough, a sleeping monster will wake
-  /// up.
-  num noise = 0;
-
   /// After performing a [Move] a monster must recharge to regain its cost.
   /// This is how much recharging is left to do before another move can be
   /// performed.
   int recharge = 0;
+
+  /// How many turns the monster has taken while awake since it last saw the
+  /// hero. If it goes too long, it will eventually get bored and fall back
+  /// asleep.
+  int _turnsSinceLastSawHero = 0;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth)
       : super(game, x, y, maxHealth);
@@ -62,69 +61,69 @@ class Monster extends Actor {
     // Recharge moves.
     recharge = math.max(0, recharge - Option.RECHARGE_RATE);
 
-    // Forget sounds over time. Since this occurs on the monster's turn, it
-    // means slower monsters will attenuate less frequently. The [pow()]
-    // part compensates for this.
-    noise *= math.pow(Option.NOISE_FORGET, Energy.ticksAtSpeed(breed.speed));
-
     switch (state) {
-      case MonsterState.ASLEEP: return getActionAsleep();
-      case MonsterState.AWAKE: return getActionAwake();
+      case MonsterState.ASLEEP: return _getActionAsleep();
+      case MonsterState.AWAKE: return _getActionAwake();
     }
 
     throw "unreachable";
   }
 
-  Action getActionAsleep() {
-    // See if there is enough noise to wake up.
-    // TODO(bob): Add breed-specific modifier.
-    if (noise > rng.range(100, 5000)) {
-      state = MonsterState.AWAKE;
-      game.log.message('{1} wake[s] up!', this);
+  Action _getActionAsleep() {
+    var distance = (game.hero.pos - pos).kingLength;
 
-      // Bump up the noise. This ensures the monsters is alert and stays awake
-      // for a while.
-      noise += 400;
+    // Don't wake up it very far away.
+    if (distance > 30) return new RestAction();
 
-      // Even though the monster is awake now, rest this turn. This avoids an
-      // annoying behavior where a sleeping monster will almost always wake up
-      // right when the hero walks next to it.
+    // If the monster can see the hero, there's a good chance it will wake up.
+    if (canView(game.hero.pos)) {
+      // TODO: Breed-specific sight/alertness.
+      if (rng.oneIn(distance + 1)) {
+        _turnsSinceLastSawHero = 0;
+        state = MonsterState.AWAKE;
+        game.log.message('{1} notice[s] {2}!', this, game.hero);
+        return _getActionAwake();
+      }
+
+      return new RestAction();
     }
 
-    // TODO(bob): Take LOS into account too.
+    if (distance > 20) return new RestAction();
+
+    // Otherwise, if sound can travel to it from the hero, it may wake up.
+    // TODO: Breed-specific hearing.
+    // Sound attenuates based on the inverse square of the distance.
+    var flowDistance = game.stage.getHeroDistanceTo(pos);
+    var noise = game.hero.lastNoise * 100 ~/ (flowDistance * flowDistance);
+
+    if (noise > rng.range(500)) {
+      _turnsSinceLastSawHero = 0;
+      state = MonsterState.AWAKE;
+      game.log.message('Something stirs in the darkness.');
+      return _getActionAwake();
+    }
 
     // Keep sleeping.
     return new RestAction();
   }
 
-  Action getActionAwake() {
+  Action _getActionAwake() {
     // See if things are quiet enough to fall asleep.
-    if ((noise < rng.range(0,25)) && !canView(game.hero.pos)) {
-      state = MonsterState.ASLEEP;
-      game.log.message('{1} fall[s] asleep!', this);
+    if (canView(game.hero.pos)) {
+      _turnsSinceLastSawHero = 0;
+    } else {
+      _turnsSinceLastSawHero++;
 
-      // Reset the noise. This ensures the monster stays asleep for a while.
-      noise = 0;
-      return getActionAsleep();
+      // The longer it goes without seeing the hero the more likely it will
+      // fall asleep.
+      if (_turnsSinceLastSawHero > rng.range(10, 20)) {
+        state = MonsterState.ASLEEP;
+        return _getActionAsleep();
+      }
     }
 
     // Consider all possible moves and select the best one.
     final choices = <AIChoice>[];
-
-    // The minimum scent required for the monster to notice it. Smaller numbers
-    // mean a stronger sense of smell.
-    final minScent = math.pow(0.5, breed.olfaction);
-
-    // How much the monster listens to their sense of smell. The more sensitive
-    // it is, the more the monster relies on it.
-    // TODO(bob): Add a tuned multiplier here.
-    final scentWeight = breed.olfaction * Option.AI_WEIGHT_SCENT;
-
-    getScent(Vec pos) {
-      return math.max(game.stage.getScent(pos.x, pos.y) - minScent, 0);
-    }
-
-    final scent = getScent(pos);
 
     final path = AStar.findDirection(game.stage, pos, game.hero.pos,
         10 - breed.meander, canOpenDoors);
@@ -148,10 +147,6 @@ class Monster extends Actor {
       if (!game.stage[dest].isTraversable) continue;
       if (!canOpenDoors && !game.stage[dest].isPassable) continue;
       if (game.stage.actorAt(dest) != null) continue;
-
-      // Apply scent knowledge.
-      final scentGradient = getScent(dest) - scent;
-      score += scentGradient * scentWeight;
 
       // Apply pathfinding.
       if (Direction.ALL[i] == path) {

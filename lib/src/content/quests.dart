@@ -10,8 +10,15 @@ class MonsterQuestBuilder extends QuestBuilder {
   MonsterQuestBuilder(this.breed, this.count);
 
   Quest generate(Stage stage) {
-    for (var i = 0; i < count; i++) {
-      var pos = stage.findOpenTile();
+    // Make at least one "boss" one far away.
+    if (count == 1) {
+      var pos = stage.findDistantOpenTile(10);
+      stage.spawnMonster(breed, pos);
+    }
+
+    // Scatter any others a little more freely.
+    for (var i = 1; i < count; i++) {
+      var pos = stage.findDistantOpenTile(3);
       stage.spawnMonster(breed, pos);
     }
 

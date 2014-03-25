@@ -1,10 +1,9 @@
 library dngn.engine.area;
 
-import 'dart:collection';
-
 import '../util.dart';
 import 'breed.dart';
 import 'game.dart';
+import 'hero.dart';
 import 'item.dart';
 import 'log.dart';
 import 'monster.dart';
@@ -16,14 +15,15 @@ class Area {
 
   Area(this.name, this.levels);
 
-  Vec buildStage(Game game, int depth) {
+  Vec buildStage(Game game, int depth, HeroSave heroSave) {
     final stage = game.stage;
     final area = levels[depth];
 
     area.buildStage(stage);
 
-    final heroPos = stage.findOpenTile();
-    _calculateDistances(stage, heroPos);
+    var heroPos = stage.findOpenTile();
+    game.hero = new Hero(game, heroPos, heroSave, heroSave.skills);
+    stage.actors.add(game.hero);
 
     /*
     // TODO(bob): Temp for testing.
@@ -105,39 +105,6 @@ class Area {
     }
 
     return rng.item(levels[depth].breeds);
-  }
-
-  /// Run Dijkstra's algorithm to calculate the distance from every reachable
-  /// tile to the [Hero]. We will use this to place better and stronger things
-  /// farther from the Hero. Re-uses the scent data as a convenient buffer for
-  /// this.
-  void _calculateDistances(Stage stage, Vec start) {
-    // Clear it out.
-    for (final pos in stage.bounds) stage[pos].scent2 = 9999;
-    stage[start].scent2 = 0;
-
-    final open = new Queue<Vec>();
-    open.add(start);
-
-    while (open.length > 0) {
-      final start = open.removeFirst();
-      final distance = stage[start].scent2;
-
-      // Update the neighbor's distances.
-      for (var dir in Direction.ALL) {
-        final here = start + dir;
-
-        // Can't reach impassable tiles.
-        if (!stage[here].isTraversable) continue;
-
-        // If we got a new best path to this tile, update its distance and
-        // consider its neighbors later.
-        if (stage[here].scent2 > distance + 1) {
-          stage[here].scent2 = distance + 1;
-          open.add(here);
-        }
-      }
-    }
   }
 }
 

@@ -16,7 +16,7 @@ abstract class Action {
 
   Game get game => _game;
   Actor get actor => _actor;
-  // TODO(bob): Should it check that the actor is a hero?
+  // TODO: Should it check that the actor is a hero?
   Hero get hero => _actor as Hero;
   bool get consumesEnergy => _consumesEnergy;
 

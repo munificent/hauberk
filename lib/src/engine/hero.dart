@@ -77,6 +77,10 @@ class Hero extends Actor {
 
   int _focus = Option.FOCUS_MAX;
 
+  /// How much noise the Hero's last action made.
+  int get lastNoise => _lastNoise;
+  int _lastNoise = 0;
+
   Hero(Game game, Vec pos, HeroSave save, this.skills)
   : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses any items
@@ -158,6 +162,9 @@ class Hero extends Actor {
   }
 
   void onFinishTurn(Action action) {
+    // Make some noise.
+    _lastNoise = action.noise;
+
     // Spend and regain focus.
     _focus = clamp(0, _focus + action.focusOffset, Option.FOCUS_MAX);
   }

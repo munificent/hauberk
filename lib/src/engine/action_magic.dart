@@ -2,11 +2,7 @@ library dngn.engine.action_magic;
 
 import '../util.dart';
 import 'action_base.dart';
-import 'actor.dart';
 import 'game.dart';
-import 'los.dart';
-import 'melee.dart';
-import 'option.dart';
 
 class HealAction extends Action {
   final int amount;

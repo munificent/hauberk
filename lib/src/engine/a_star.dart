@@ -39,12 +39,12 @@ class AStar {
 
   static AStarResult findPath(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
-    // TODO(bob): More optimal data structure.
+    // TODO: More optimal data structure.
     final startPath = new PathNode(null, Direction.NONE,
         start, 0, heuristic(start, end));
     final open = <PathNode>[startPath];
 
-    // TODO(bob): More optimal data structure.
+    // TODO: More optimal data structure.
     final closed = <Vec>[];
 
     while (open.length > 0) {
@@ -109,7 +109,7 @@ class AStar {
           }
         }
 
-        // TODO(bob): May need to do the above check on the closed set too if
+        // TODO: May need to do the above check on the closed set too if
         // we use inadmissable heuristics.
 
         // If we have a new path, add it.

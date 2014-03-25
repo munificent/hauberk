@@ -1,5 +1,7 @@
 library dngn.engine.stage;
 
+import 'dart:collection';
+
 import '../util.dart';
 import 'actor.dart';
 import 'breed.dart';
@@ -7,7 +9,6 @@ import 'fov.dart';
 import 'game.dart';
 import 'hero.dart';
 import 'item.dart';
-import 'option.dart';
 
 /// The game's live play area.
 class Stage {
@@ -19,11 +20,15 @@ class Stage {
   final Chain<Actor> actors;
   final List<Item> items;
 
-  /// Scent state is double-buffered in Tiles. This tracks which buffer is
-  /// current. Will be `true` if `scent1` is current.
-  bool currentScent1 = true;
-
   bool _visibilityDirty = true;
+
+  /// For each tile, contains the number of steps between this tile and the
+  /// hero.
+  Array2D<int> _distances;
+
+  /// The position where the [Hero] was the last time [_distances] was
+  /// calculated.
+  Vec _distancesHeroPos;
 
   Stage(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
@@ -32,13 +37,12 @@ class Stage {
 
   Game game;
 
-  // TODO(bob): Multi-argument subscript operators would be nice.
   Tile operator[](Vec pos) => tiles[pos];
 
   Tile get(int x, int y) => tiles.get(x, y);
   void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
 
-  // TODO(bob): Move into Actor collection?
+  // TODO: Move into Actor collection?
   Actor actorAt(Vec pos) {
     for (final actor in actors) {
       if (actor.pos == pos) return actor;
@@ -47,8 +51,8 @@ class Stage {
     return null;
   }
 
-  // TODO(bob): Move into Item collection?
-  // TODO(bob): What if there are multiple items at pos?
+  // TODO: Move into Item collection?
+  // TODO: What if there are multiple items at pos?
   Item itemAt(Vec pos) {
     for (final item in items) {
       if (item.pos == pos) return item;
@@ -74,10 +78,6 @@ class Stage {
     assert(false); // Unreachable.
   }
 
-  num getScent(int x, int y) {
-    return currentScent1 ? tiles.get(x, y).scent1 : tiles.get(x, y).scent2;
-  }
-
   void dirtyVisibility() {
     _visibilityDirty = true;
   }
@@ -89,67 +89,24 @@ class Stage {
     }
   }
 
-  void updateScent(Hero hero) {
-    // The hero stinks!
-    if (currentScent1) {
-      tiles[hero.pos].scent2 += Option.SCENT_HERO;
-    } else {
-      tiles[hero.pos].scent1 += Option.SCENT_HERO;
-    }
-
-    for (var y = 1; y < tiles.height - 1; y++) {
-      for (var x = 1; x < tiles.width - 1; x++) {
-        // Scent doesn't flow through walls.
-        if (!tiles.get(x, y).isPassable) continue;
-
-        var scent = 0;
-        var totalWeight = 0;
-        addScent(int x, int y, num weight) {
-          if (!tiles.get(x, y).isPassable) return;
-          scent += getScent(x, y) * weight;
-          totalWeight += weight;
-        }
-
-        addScent(x - 1, y - 1, Option.SCENT_CORNER_CONVOLVE);
-        addScent(x    , y - 1, Option.SCENT_SIDE_CONVOLVE);
-        addScent(x + 1, y - 1, Option.SCENT_CORNER_CONVOLVE);
-        addScent(x - 1, y,     Option.SCENT_SIDE_CONVOLVE);
-        addScent(x    , y,     1.0);
-        addScent(x + 1, y,     Option.SCENT_SIDE_CONVOLVE);
-        addScent(x - 1, y + 1, Option.SCENT_CORNER_CONVOLVE);
-        addScent(x    , y + 1, Option.SCENT_SIDE_CONVOLVE);
-        addScent(x + 1, y + 1, Option.SCENT_CORNER_CONVOLVE);
-
-        // Weight it with a slight negative bias so that scent fades.
-        scent = scent / totalWeight * Option.SCENT_DECAY - Option.SCENT_SUBTRACT;
-
-        // Clamp it within [0,1].
-        scent = clamp(0, scent, 1);
-
-        // Write it to the other buffer.
-        if (currentScent1) {
-          tiles.get(x, y).scent2 = scent;
-        } else {
-          tiles.get(x, y).scent1 = scent;
-        }
-      }
-    }
-
-    // Flip the buffers.
-    currentScent1 = !currentScent1;
-  }
-
-  // TODO(bob): This is hackish and may fail to terminate.
+  // TODO: This is hackish and may fail to terminate.
   /// Selects a random passable tile that does not have an [Actor] on it.
   Vec findOpenTile() {
     while (true) {
-      final pos = rng.vecInRect(bounds);
+      var pos = rng.vecInRect(bounds);
 
       if (!this[pos].isPassable) continue;
       if (actorAt(pos) != null) continue;
 
       return pos;
     }
+  }
+
+  /// Gets the number of tiles to walk from [pos] to the [Hero]'s current
+  /// position taking into account which tiles are traversable.
+  int getHeroDistanceTo(Vec pos) {
+    _refreshDistances();
+    return _distances[pos];
   }
 
   /// Randomly selects an open tile in the stage. Makes [tries] attempts and
@@ -159,11 +116,13 @@ class Stage {
   /// This is used during level creation to place stronger [Monster]s and
   /// better treasure farther from the [Hero]'s starting location.
   Vec findDistantOpenTile(int tries) {
+    _refreshDistances();
+
     var bestDistance = -1;
     var best;
 
     for (var i = 0; i < tries; i++) {
-      final pos = findOpenTile();
+      var pos = findOpenTile();
       if (this[pos].scent2 > bestDistance) {
         best = pos;
         bestDistance = this[pos].scent2;
@@ -205,6 +164,43 @@ class Stage {
       }
 
       addMonster(rng.item(open));
+    }
+  }
+
+  /// Run Dijkstra's algorithm to calculate the distance from every reachable
+  /// tile to[start]. We will use this to place better and stronger things
+  /// farther from the Hero. Re-uses the scent data as a convenient buffer for
+  /// this.
+  void _refreshDistances() {
+    // Don't recalculate if still valid.
+    if (game.hero.pos == _distancesHeroPos) return;
+
+    // Clear it out.
+    _distances = new Array2D<int>(width, height, () => 9999);
+    _distancesHeroPos = game.hero.pos;
+    _distances[_distancesHeroPos] = 0;
+
+    var open = new Queue<Vec>();
+    open.add(_distancesHeroPos);
+
+    while (open.length > 0) {
+      var start = open.removeFirst();
+      var distance = _distances[start];
+
+      // Update the neighbor's distances.
+      for (var dir in Direction.ALL) {
+        var here = start + dir;
+
+        // Can't reach impassable tiles.
+        if (!this[here].isTraversable) continue;
+
+        // If we got a new best path to this tile, update its distance and
+        // consider its neighbors later.
+        if (_distances[here] > distance + 1) {
+          _distances[here] = distance + 1;
+          open.add(here);
+        }
+      }
     }
   }
 }

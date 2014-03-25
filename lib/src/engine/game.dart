@@ -12,7 +12,6 @@ import 'fov.dart';
 import 'hero.dart';
 import 'item.dart';
 import 'log.dart';
-import 'monster.dart';
 import 'option.dart';
 import 'skill.dart';
 import 'stage.dart';
@@ -33,11 +32,7 @@ class Game {
       actions = new Queue<Action>() {
     stage.game = this;
 
-    final heroPos = area.buildStage(this, level);
-
-    hero = new Hero(this, heroPos, save, save.skills);
-    stage.actors.add(hero);
-
+    area.buildStage(this, level, save);
     Fov.refresh(stage, hero.pos);
   }
 
@@ -64,19 +59,12 @@ class Game {
           actions.removeFirst();
 
           if (action.consumesEnergy) {
-            makeNoise(action.actor, action.noise);
-
             action.actor.finishTurn(action);
             stage.actors.advance();
-
-            // TODO(bob): Doing this here is a hack. Scent should spread at a
-            // uniform rate independent of the hero's speed.
-            if (action.actor == hero) stage.updateScent(hero);
           }
 
-          // TODO(bob): Uncomment this to animate the hero while resting or
-          // running.
-          //if (actor == hero) return gameResult;
+          // Refresh every time the hero takes a turn.
+          if (action.actor == hero) return gameResult;
         }
 
         if (gameResult.events.length > 0) return gameResult;
@@ -127,32 +115,6 @@ class Game {
     // TODO(bob): Should reuse code in Area to generate out-of-depth monsters.
     final breed = area.pickBreed(level);
     stage.spawnMonster(breed, pos);
-  }
-
-  void makeNoise(Actor actor, int noise) {
-    // Monsters mostly ignore sounds from other monsters.
-    if (actor is! Hero) noise ~/= 4;
-
-    // TODO: Right now, sound doesn't take into account walls or doors. It
-    // should so that the player can be sneaky by keeping doors closed. One
-    // solution might be to do LOS between the source and actor and attentuate
-    // when it crosses walls or doors.
-    for (final monster in stage.actors) {
-      if (monster is! Monster) continue;
-
-      var distanceSquared = (monster.pos - actor.pos).lengthSquared;
-
-      // Avoid divide by zero.
-      if (distanceSquared == 0) distanceSquared = 1;
-
-      // Would be better to handle sound travelling around corners, but this
-      // is a loose approximation of sound being attenuated by obstacles.
-      if (monster.canView(actor.pos)) noise *= 10;
-
-      // Inverse-square law for acoustics.
-      var volume = 100 * noise / distanceSquared;
-      monster.noise += volume;
-    }
   }
 }
 
