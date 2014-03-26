@@ -60,6 +60,8 @@ class BoltMove extends Move {
     // TODO(bob): Should not always assume the hero is the target.
     return new BoltAction(monster.pos, monster.game.hero.pos, attack);
   }
+
+  String toString() => "Bolt $attack cost: $cost";
 }
 
 class HealMove extends Move {
@@ -76,6 +78,8 @@ class HealMove extends Move {
   Action onGetAction(Monster monster) {
     return new HealAction(amount);
   }
+
+  String toString() => "Heal $amount cost: $cost";
 }
 
 class InsultMove extends Move {
@@ -97,6 +101,8 @@ class InsultMove extends Move {
   }
 
   Action onGetAction(Monster monster) => new InsultAction(monster.game.hero);
+
+  String toString() => "Insult cost: $cost";
 }
 
 class HasteMove extends Move {
@@ -121,4 +127,6 @@ class HasteMove extends Move {
   }
 
   Action onGetAction(Monster monster) => new HasteAction(_duration, _speed);
+
+  String toString() => "Haste $_speed for $_duration turns cost: $cost";
 }

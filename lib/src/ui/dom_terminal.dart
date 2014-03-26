@@ -77,4 +77,7 @@ class DomTerminal implements RenderableTerminal {
 
     element.innerHtml = buffer.toString();
   }
+
+  // TODO: Implement.
+  Vec pixelToChar(Vec pixel) => throw new UnimplementedError();
 }

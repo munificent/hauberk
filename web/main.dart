@@ -3,7 +3,9 @@ library dngn.web.main;
 import 'dart:html' as html;
 
 import 'package:dngn/src/content.dart';
+import 'package:dngn/src/debug.dart';
 import 'package:dngn/src/ui.dart';
+import 'package:dngn/src/util.dart';
 
 const WIDTH = 100;
 const HEIGHT = 40;
@@ -17,6 +19,21 @@ addTerminal(String name, html.Element element,
   // Make the terminal.
   var terminal = terminalCallback(element);
   terminals.add([name, element, terminal]);
+
+  if (Debug.ENABLED) {
+    var debugBox = new html.PreElement();
+    debugBox.id = "debug";
+    html.document.body.children.add(debugBox);
+
+    var lastPos;
+    element.onMouseMove.listen((event) {
+      var pixel = new Vec(event.offset.x, event.offset.y);
+      var pos = terminal.pixelToChar(pixel);
+      var absolute = pixel + new Vec(element.offsetLeft, element.offsetTop);
+      if (pos != lastPos) debugHover(debugBox, absolute, pos);
+      lastPos = pos;
+    });
+  }
 
   // Make a button for it.
   var button = new html.ButtonElement();
@@ -82,4 +99,17 @@ main() {
   }
 
   html.window.requestAnimationFrame(tick);
+}
+
+void debugHover(html.Element debugBox, Vec pixel, Vec pos) {
+  var info = Debug.getMonsterInfoAt(pos);
+  if (info == null) {
+    debugBox.style.display = "none";
+    return;
+  }
+
+  debugBox.style.display = "inline-block";
+  debugBox.style.left = "${pixel.x + 10}";
+  debugBox.style.top = "${pixel.y}";
+  debugBox.text = info;
 }

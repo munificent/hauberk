@@ -1,5 +1,7 @@
 library dngn.ui.terminal;
 
+import '../util.dart';
+
 abstract class Terminal {
   int get width;
   int get height;
@@ -13,6 +15,10 @@ abstract class Terminal {
 
 abstract class RenderableTerminal extends Terminal {
   void render();
+
+  /// Given a point in pixel coordinates, returns the coordinates of the
+  /// character that contains that pixel.
+  Vec pixelToChar(Vec pixel);
 }
 
 class PortTerminal implements Terminal {

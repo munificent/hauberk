@@ -68,6 +68,8 @@ class Attack {
     action.addEvent(new Event.hit(defender, damage));
     return action.succeed('{1} ${verb} {2}.', attackNoun, defender);
   }
+
+  String toString() => "$damage $element";
 }
 
 class Hit {

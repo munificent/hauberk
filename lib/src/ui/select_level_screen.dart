@@ -2,6 +2,7 @@ library dngn.ui.select_level_screen;
 
 import 'dart:math' as math;
 
+import '../debug.dart';
 import '../engine.dart';
 import 'game_screen.dart';
 import 'home_screen.dart';
@@ -104,6 +105,7 @@ class SelectLevelScreen extends Screen {
     if (screen is GameScreen && result) {
       // Left successfully, so save.
       storage.save();
+      Debug.exitLevel();
     } else if (screen is HomeScreen || screen is SkillsScreen) {
       // Always save when leaving the home.
       storage.save();

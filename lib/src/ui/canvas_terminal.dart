@@ -109,6 +109,9 @@ class CanvasTerminal implements RenderableTerminal {
       }
     }
   }
+
+  Vec pixelToChar(Vec pixel) =>
+      new Vec(pixel.x ~/ font.charWidth, pixel.y ~/ font.lineHeight);
 }
 
 /// Describes a font used by [CanvasTerminal].

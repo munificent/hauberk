@@ -57,6 +57,8 @@ class Items extends ContentBuilder {
       item('Potion of Alacrity', green('!'), use: () => new HasteAction(30, 2)),
       item('Potion of Speed', darkGreen('!'), use: () => new HasteAction(40, 3))
     ]);
+
+    // dram, draught, elixir, philter
   }
 
   void scrolls() {

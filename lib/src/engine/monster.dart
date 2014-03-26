@@ -2,6 +2,7 @@ library dngn.engine.monster;
 
 import 'dart:math' as math;
 
+import '../debug.dart';
 import '../util.dart';
 import 'a_star.dart';
 import 'action_base.dart';
@@ -31,7 +32,9 @@ class Monster extends Actor {
   int _turnsSinceLastSawHero = 0;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth)
-      : super(game, x, y, maxHealth);
+      : super(game, x, y, maxHealth) {
+    Debug.addMonster(this);
+  }
 
   get appearance => breed.appearance;
 
@@ -73,7 +76,10 @@ class Monster extends Actor {
     var distance = (game.hero.pos - pos).kingLength;
 
     // Don't wake up it very far away.
-    if (distance > 30) return new RestAction();
+    if (distance > 30) {
+      Debug.logMonster(this, "Sleep: Distance $distance is too far to see.");
+      return new RestAction();
+    }
 
     // If the monster can see the hero, there's a good chance it will wake up.
     if (canView(game.hero.pos)) {
@@ -82,13 +88,18 @@ class Monster extends Actor {
         _turnsSinceLastSawHero = 0;
         state = MonsterState.AWAKE;
         game.log.message('{1} notice[s] {2}!', this, game.hero);
+        Debug.logMonster(this, "Sleep: In LOS, awoke.");
         return _getActionAwake();
       }
 
+      Debug.logMonster(this, "Sleep: In LOS, failed oneIn(${distance + 1}).");
       return new RestAction();
     }
 
-    if (distance > 20) return new RestAction();
+    if (distance > 20) {
+      Debug.logMonster(this, "Sleep: Distance $distance is too far to hear");
+      return new RestAction();
+    }
 
     // Otherwise, if sound can travel to it from the hero, it may wake up.
     // TODO: Breed-specific hearing.
@@ -100,10 +111,14 @@ class Monster extends Actor {
       _turnsSinceLastSawHero = 0;
       state = MonsterState.AWAKE;
       game.log.message('Something stirs in the darkness.');
+      Debug.logMonster(this, "Sleep: Passed noise check, flow distance: "
+          "$flowDistance, noise: $noise");
       return _getActionAwake();
     }
 
     // Keep sleeping.
+    Debug.logMonster(this, "Sleep: Failed noise check, flow distance: "
+        "$flowDistance, noise: $noise");
     return new RestAction();
   }
 
@@ -117,6 +132,8 @@ class Monster extends Actor {
       // The longer it goes without seeing the hero the more likely it will
       // fall asleep.
       if (_turnsSinceLastSawHero > rng.range(10, 20)) {
+        Debug.logMonster(this,
+            "Haven't seen hero in $_turnsSinceLastSawHero, sleeping");
         state = MonsterState.ASLEEP;
         return _getActionAsleep();
       }
@@ -135,7 +152,8 @@ class Monster extends Actor {
       // be pretty high. Most of the time a monster should prefer this over
       // walking, but may prefer other moves over this.
       var score = Option.AI_START_SCORE + 50;
-      choices.add(new AIChoice(score, () => new WalkAction(toHero)));
+      choices.add(new AIChoice(score, "melee",
+          () => new WalkAction(toHero)));
     }
 
     // Consider each direction to walk in.
@@ -160,7 +178,8 @@ class Monster extends Actor {
       // Add some randomness to make the monster meander.
       score += rng.range(breed.meander * Option.AI_WEIGHT_MEANDER);
 
-      choices.add(new AIChoice(score, () => new WalkAction(Direction.ALL[i])));
+      choices.add(new AIChoice(score, "walk ${Direction.ALL[i]}",
+          () => new WalkAction(Direction.ALL[i])));
     }
 
     // Consider the monster's moves if it can.
@@ -169,12 +188,16 @@ class Monster extends Actor {
         // TODO(bob): Should move cost affect its score?
         var score = Option.AI_START_SCORE + move.getScore(this);
         if (score == Option.AI_MIN_SCORE) continue;
-        choices.add(new AIChoice(score, () => move.getAction(this)));
+        choices.add(new AIChoice(score, move.toString(),
+            () => move.getAction(this)));
       }
     }
 
     // If the monster couldn't come up with anything to do, just sit.
-    if (choices.length == 0) return new WalkAction(new Vec(0, 0));
+    if (choices.length == 0) {
+      Debug.logMonster(this, "Nothing to do, resting.");
+      return new RestAction();
+    }
 
     // Pick the best choice.
     var bestScore = Option.AI_MIN_SCORE - 1;
@@ -188,6 +211,15 @@ class Monster extends Actor {
         bestScore = choices[i].score;
         bestChoices = [choices[i]];
       }
+    }
+
+    if (Debug.ENABLED) {
+      choices.sort((a, b) => b.score.compareTo(a.score));
+      var buffer = new StringBuffer();
+      for (var choice in choices) {
+        buffer.writeln(choice);
+      }
+      Debug.logMonster(this, buffer.toString());
     }
 
     return rng.item(bestChoices).createAction();
@@ -215,6 +247,8 @@ class Monster extends Actor {
 
     // Tell the quest.
     game.quest.killMonster(game, this);
+
+    Debug.removeMonster(this);
   }
 
   Vec changePosition(Vec pos) {
@@ -231,8 +265,11 @@ class Monster extends Actor {
 class AIChoice {
   final num score;
   final createAction;
+  final description;
 
-  AIChoice(this.score, this.createAction);
+  AIChoice(this.score, this.description, this.createAction);
+
+  String toString() => "$score - $description";
 }
 
 /// A [Monster]'s internal mental state.

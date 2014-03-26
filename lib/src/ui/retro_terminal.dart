@@ -39,7 +39,7 @@ class RetroTerminal implements RenderableTerminal {
 
   // TODO(bob): Make this const when we can use const expressions as keys in
   // map literals.
-  static final unicodeMap = createUnicodeMap();
+  static final unicodeMap = _createUnicodeMap();
 
   RetroTerminal(int width, int height, this.canvas, String image,
       {int w, int h})
@@ -68,7 +68,7 @@ class RetroTerminal implements RenderableTerminal {
     });
   }
 
-  static Map<int, int> createUnicodeMap() {
+  static Map<int, int> _createUnicodeMap() {
     var map = new Map<int, int>();
     map[CharCode.BULLET] = 7;
     map[CharCode.UP_DOWN_ARROW] = 18;
@@ -169,6 +169,9 @@ class RetroTerminal implements RenderableTerminal {
       }
     }
   }
+
+  Vec pixelToChar(Vec pixel) =>
+      new Vec(pixel.x ~/ _fontWidth, pixel.y ~/ _fontHeight);
 
   html.CanvasElement _getColorFont(Color color) {
     var cached = _fontColorCache[color.cssClass];
