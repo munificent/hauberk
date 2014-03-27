@@ -15,6 +15,13 @@ class ContentBuilder {
     return new SkillDrop(Skills.all['Botany'], parseDrop(drop));
   }
 
+  Drop allOf(drop) {
+    var drops = [];
+    var percents = [];
+    _parsePercentList(drop, drops, percents);
+    return new AllOfDrop(drops, percents);
+  }
+
   Drop chanceOf(int percent, drop) {
     return new OneOfDrop([parseDrop(drop)], [percent]);
   }
@@ -35,47 +42,51 @@ class ContentBuilder {
     }
 
     if (drop is List) {
-      final drops = [];
-      final percents = [];
-
-      for (final element in drop) {
-        if (element is OneOfDrop && element.drops.length == 1) {
-          drops.add(element.drops[0]);
-          percents.add(element.percents[0]);
-        } else {
-          // A drop without an explicit chance will just have an even chance.
-          drops.add(parseDrop(element));
-          percents.add(null);
-        }
-      }
-
-      // Fix up the calculated percents.
-      var remaining = 100;
-      var calculated = [];
-      for (var i = 0; i < percents.length; i++) {
-        if (percents[i] != null) {
-          remaining -= percents[i];
-        } else {
-          calculated.add(i);
-        }
-      }
-
-      for (var i = 0; i < calculated.length; i++) {
-        if (i == calculated.length - 1) {
-          // Handle the last calculated one to round up. Ensures that if,
-          // for example there are three calculated ones, you don't get
-          // 33/33/33 and then have a 1% chance of not dropping anything.
-          percents[i] = remaining -
-              (remaining ~/ calculated.length * (calculated.length - 1));
-        } else {
-          percents[i] = remaining ~/ calculated.length;
-        }
-      }
-
+      var drops = [];
+      var percents = [];
+      _parsePercentList(drop, drops, percents);
       return new OneOfDrop(drops, percents);
     }
 
     throw 'Unknown drop type $drop.';
+  }
+
+  /// Parses the drops in [drop] into percent/drop pairs, normalizes the odds,
+  /// and populates [drops] and [percents] with the results.
+  void _parsePercentList(List drop, List<Drop> drops, List<int> percents) {
+    for (var element in drop) {
+      if (element is OneOfDrop && element.drops.length == 1) {
+        drops.add(element.drops[0]);
+        percents.add(element.percents[0]);
+      } else {
+        // A drop without an explicit chance will just have an even chance.
+        drops.add(parseDrop(element));
+        percents.add(null);
+      }
+    }
+
+    // Fix up the calculated percents.
+    var remaining = 100;
+    var calculated = [];
+    for (var i = 0; i < percents.length; i++) {
+      if (percents[i] != null) {
+        remaining -= percents[i];
+      } else {
+        calculated.add(i);
+      }
+    }
+
+    for (var i = 0; i < calculated.length; i++) {
+      if (i == calculated.length - 1) {
+        // Handle the last calculated one to round up. Ensures that if,
+        // for example there are three calculated ones, you don't get
+        // 33/33/33 and then have a 1% chance of not dropping anything.
+        percents[i] = remaining -
+            (remaining ~/ calculated.length * (calculated.length - 1));
+      } else {
+        percents[i] = remaining ~/ calculated.length;
+      }
+    }
   }
 
   Attack attack(String verb, int damage, [Element element = Element.NONE,

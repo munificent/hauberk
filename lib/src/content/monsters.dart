@@ -54,6 +54,7 @@ class Monsters extends ContentBuilder {
       insects,
       imps,
       jellies,
+      skeletons,
       people,
       rodents,
       reptiles,
@@ -262,31 +263,38 @@ class Monsters extends ContentBuilder {
     );
   }
 
+  skeletons() {
+
+  }
+
   people() {
+    defaultTracking = 14;
+
     breed('simpering knave', orange('p'), [
         attack('hit[s]', 2),
         attack('stab[s]', 4)
       ],
-      drop: [
-        chanceOf(40, 'Knife'),
-        chanceOf(40, 'Cloth Shirt')
-      ],
+      drop: allOf([
+        chanceOf(50, ['Knife','Cudgel']),
+        chanceOf(40, 'Cloth Shirt'),
+        chanceOf(20, 'Leather Sandals')
+      ]),
       maxHealth: 6, meander: 3,
       flags: 'open-doors'
     );
 
-    breed('doddering old mage', purple('p'), [
-        attack('hit[s]', 3),
-        sparkBolt(cost: 16, damage: 8)
+    breed('decrepit mage', purple('p'), [
+        attack('hit[s]', 2),
+        sparkBolt(cost: 30, damage: 8)
       ],
-      drop: [
-        chanceOf(10, 'Scroll of Sidestepping'),
-        chanceOf(7, 'Staff'),
-        chanceOf(7, 'Knife'),
-        chanceOf(7, 'Cloth Shirt'),
-        chanceOf(5, 'Robe')
-      ],
-      maxHealth: 8, meander: 2,
+      drop: allOf([
+        chanceOf(20, 'Scroll of Sidestepping'),
+        chanceOf(20, 'Soothing Balm'),
+        chanceOf(30, ['Knife', 'Staff']),
+        chanceOf(40, ['Cloth Shirt', 'Robe']),
+        chanceOf(10, 'Leather Sandals')
+      ]),
+      maxHealth: 6, meander: 2,
       flags: 'open-doors'
     );
 

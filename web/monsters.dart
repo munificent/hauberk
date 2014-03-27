@@ -40,7 +40,6 @@ main() {
     <tr>
       <td colspan="2">Breed</td>
       <td colspan="2">Health</td>
-      <td>Smell</td>
       <td>Meander</td>
       <td>Speed</td>
       <td>Exp.</td>
@@ -64,7 +63,6 @@ main() {
           <td>${breed.name}</td>
           <td class="r">${breed.maxHealth}</td>
           <td><span class="bar" style="width: ${breed.maxHealth}px;"></span></td>
-          <td class="r">${breed.olfaction}</td>
           <td class="r">${breed.meander}</td>
           <td class="r">${breed.speed}</td>
           <td class="r">${(breed.experienceCents / 100).toStringAsFixed(2)}</td>

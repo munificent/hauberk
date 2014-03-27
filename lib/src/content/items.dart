@@ -30,6 +30,7 @@ class Items extends ContentBuilder {
     scrolls();
     weapons();
     bodyArmor();
+    boots();
   }
 
   void pelts() {
@@ -126,7 +127,6 @@ class Items extends ContentBuilder {
     ]);
 
     sequence(10, [
-      armor('Cloth Shirt', lightGray('('), 'Body', 2),
       armor('Robe', aqua('('), 'Body', 4),
       armor('Fur-lined Robe', darkAqua('('), 'Body', 6)
     ]);
@@ -143,6 +143,16 @@ class Items extends ContentBuilder {
     Partial Plate Armor[s]
     Full Plate Armor[s]
     */
+  }
+
+  void boots() {
+    sequence(15, [
+      armor('Leather Sandals', lightBrown(']'), 'Boots', 1),
+      armor('Leather Shoes', brown(']'), 'Boots', 2),
+      armor('Leather Boots', darkBrown(']'), 'Boots', 4),
+      armor('Metal Shod Boots', gray(']'), 'Boots', 7),
+      armor('Greaves', lightGray(']'), 'Boots', 12)
+    ]);
   }
 
   ItemType weapon(String name, Glyph appearance, String verb, String category,
@@ -233,6 +243,27 @@ class ItemDrop implements Drop {
   }
 }
 
+/// Chooses zero or more [Drop]s from a list of possible options where each has
+/// its own independent chance of being dropped.
+class AllOfDrop implements Drop {
+  final List<Drop> drops;
+  final List<int> percents;
+
+  AllOfDrop(this.drops, this.percents);
+
+  void spawnDrop(Game game, AddItem addItem) {
+    var roll = rng.range(100);
+
+    for (var i = 0; i < drops.length; i++) {
+      if (rng.range(100) < percents[i]) {
+        drops[i].spawnDrop(game, addItem);
+      }
+    }
+  }
+}
+
+/// Chooses a single [Drop] from a list of possible options with a percentage
+/// chance for each. If the odds don't add up to 100%, no item may be dropped.
 class OneOfDrop implements Drop {
   final List<Drop> drops;
   final List<int> percents;

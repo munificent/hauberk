@@ -29,6 +29,7 @@ class Areas extends ContentBuilder {
         ],
         quest: kill('fuzzy bunny', 1)),
     ]);
+    // TODO: Garden spider in level 2.
 
     area('Training Grounds', [
       level(new TrainingGrounds(), numMonsters: 12, numItems: 8,
@@ -38,9 +39,9 @@ class Areas extends ContentBuilder {
           'giant slug',
           'little brown bat',
           'stray cat',
-          'garden spider',
           'giant cockroach',
-          'simpering knave'
+          'simpering knave',
+          'decrepit mage'
         ],
         drop: [
           'Parchment',
@@ -65,7 +66,6 @@ class Areas extends ContentBuilder {
       level(new TrainingGrounds(), numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
-          'doddering old mage',
           'unlucky ranger', // TODO: Move to different level?
           'raven',
           'tree snake',
