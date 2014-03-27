@@ -16,9 +16,10 @@ class Areas extends ContentBuilder {
 
   void build() {
     area('Friendly Forest', [
-      level(new Forest(), numMonsters: 6, numItems: 2,
+      level(new Forest(), numMonsters: 10, numItems: 2,
         breeds: [
-          'white mouse',
+          'butterfly',
+          'field mouse',
           'robin',
           'garter snake',
           'frog'
@@ -68,7 +69,7 @@ class Areas extends ContentBuilder {
           'unlucky ranger', // TODO: Move to different level?
           'raven',
           'tree snake',
-          'earthworm'
+          'giant earthworm'
         ],
         drop: [
           'Soothing Balm',

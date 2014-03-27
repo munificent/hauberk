@@ -44,6 +44,7 @@ class Monsters extends ContentBuilder {
     bats();
     birds();
     canines();
+    flyingInsects();
     felines();
     humanoids();
     insects();
@@ -75,7 +76,7 @@ class Monsters extends ContentBuilder {
     breed('giant spider', darkBlue('a'), [
         attack('bite[s]', 8, Element.POISON)
       ],
-      maxHealth: 12, olfaction: 5, meander: 5
+      maxHealth: 12, meander: 5
     );
   }
 
@@ -123,7 +124,7 @@ class Monsters extends ContentBuilder {
         attack('bite[s]', 4),
       ],
       drop: hunting(chanceOf(70, 'Fur pelt')),
-      maxHealth: 7, olfaction: 5, meander: 3,
+      maxHealth: 7, meander: 3,
       flags: 'few'
     );
 
@@ -131,8 +132,17 @@ class Monsters extends ContentBuilder {
         attack('bite[s]', 5),
       ],
       drop: hunting('Fur pelt'),
-      maxHealth: 9, olfaction: 5, meander: 3,
+      maxHealth: 9, meander: 3,
       flags: 'few'
+    );
+  }
+
+  flyingInsects() {
+    breed('butterfl[y|ies]', lightPurple('i'), [
+        attack('tickle[s] on', 1),
+      ],
+      drop: hunting('Insect wing'),
+      maxHealth: 1, meander: 8, speed: 2
     );
   }
 
@@ -142,7 +152,7 @@ class Monsters extends ContentBuilder {
         attack('scratch[es]', 3),
       ],
       drop: hunting(chanceOf(50, 'Fur pelt')),
-      maxHealth: 5, meander: 3, olfaction: 7, speed: 1
+      maxHealth: 5, meander: 3, speed: 1
     );
   }
 
@@ -233,8 +243,8 @@ class Monsters extends ContentBuilder {
         attack('stab[s]', 4)
       ],
       drop: [
-        chanceOf(20, 'Knife'),
-        chanceOf(20, 'Cloth Shirt')
+        chanceOf(40, 'Knife'),
+        chanceOf(40, 'Cloth Shirt')
       ],
       maxHealth: 6, meander: 3,
       flags: 'open-doors'
@@ -285,32 +295,39 @@ class Monsters extends ContentBuilder {
   }
 
   rodents() {
-    breed('white [mouse|mice]', white('r'), [
+    breed('field [mouse|mice]', lightBrown('r'), [
         attack('bite[s]', 3),
         attack('scratch[es]', 2)
       ],
-      maxHealth: 3, olfaction: 2, meander: 4, speed: 1
+      maxHealth: 3, meander: 4, speed: 1
     );
 
     breed('fuzzy bunn[y|ies]', lightBlue('r'), [
         attack('bite[s]', 2),
         attack('kick[s]', 1)
       ],
-      maxHealth: 5, olfaction: 2, meander: 4, speed: 1
+      maxHealth: 8, meander: 2
+    );
+
+    breed('white [mouse|mice]', white('r'), [
+        attack('bite[s]', 3),
+        attack('scratch[es]', 2)
+      ],
+      maxHealth: 4, meander: 4, speed: 1
     );
 
     breed('sewer rat', darkGray('r'), [
         attack('bite[s]', 3),
         attack('scratch[es]', 2)
       ],
-      maxHealth: 5, olfaction: 2, meander: 3, speed: 1,
+      maxHealth: 5, meander: 3, speed: 1,
       flags: 'group'
     );
   }
 
   reptiles() {
     breed('frog', green('R'), [
-        attack('hops[s] on', 2),
+        attack('hop[s] on', 2),
       ],
       maxHealth: 4, meander: 4, speed: 1
     );
@@ -328,7 +345,7 @@ class Monsters extends ContentBuilder {
     breed('garter snake', gold('S'), [
         attack('bite[s]', 1),
       ],
-      maxHealth: 3, meander: 3
+      maxHealth: 4, meander: 3
     );
 
     breed('tree snake', lightGreen('S'), [
@@ -339,7 +356,7 @@ class Monsters extends ContentBuilder {
   }
 
   worms() {
-    breed('earthworm', lightRed('w'), [
+    breed('giant earthworm', lightRed('w'), [
         attack('crawl[s] on', 8),
       ],
       maxHealth: 16, meander: 4, speed: -2
@@ -360,8 +377,7 @@ class Monsters extends ContentBuilder {
   }
 
   Breed breed(String name, Glyph appearance, List actions, {
-      drop, int maxHealth, int olfaction: 0,
-      int meander: 0, int speed: 0, String flags}) {
+      drop, int maxHealth, int meander: 0, int speed: 0, String flags}) {
     var attacks = <Attack>[];
     var moves = <Move>[];
 
@@ -380,8 +396,8 @@ class Monsters extends ContentBuilder {
     }
 
     final breed = new Breed(name, Pronoun.IT, appearance, attacks, moves,
-        drop, maxHealth: maxHealth, olfaction: olfaction, meander: meander,
-        speed: speed, flags: flagSet);
+        drop, maxHealth: maxHealth, meander: meander, speed: speed,
+        flags: flagSet);
     Monsters.all[breed.name] = breed;
     return breed;
   }

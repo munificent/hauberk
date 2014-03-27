@@ -66,6 +66,9 @@ class Flow {
         // TODO: Make this customizable.
         if (!_stage[here + _offset].isTraversable) continue;
 
+        // Can't walk through actors.
+        if (_stage.actorAt(here + _offset) != null) continue;
+
         // If we got a new best path to this tile, update its distance and
         // consider its neighbors later.
         if (_values[here] > distance + 1) {

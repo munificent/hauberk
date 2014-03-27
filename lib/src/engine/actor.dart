@@ -92,6 +92,16 @@ abstract class Actor extends Thing {
   /// hit.
   void takeHit(Hit hit);
 
+  /// Called when this actor has successfully hit this [defender].
+  void onDamage(Actor defender, int damage) {
+    // Do nothing.
+  }
+
+  /// Called when [attacker] has successfully hit this actor.
+  void onDamaged(Actor attacker, int damage) {
+    // Do nothing.
+  }
+
   /// Called when this Actor has been killed by [attacker].
   void onDied(Actor attacker) {
     // Do nothing.

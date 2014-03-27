@@ -24,11 +24,6 @@ class Breed implements Quantifiable {
 
   final int maxHealth;
 
-  /// How good the monster's sense of smell is. Ranges from 0 to 10 where 0 is
-  /// no sense of smell and 10 means the monster navigates almost solely using
-  /// it.
-  final num olfaction;
-
   /// How much randomness the monster has when walking towards its target.
   final int meander;
 
@@ -47,7 +42,7 @@ class Breed implements Quantifiable {
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, {
-      this.maxHealth, this.olfaction, this.meander, this.speed, this.flags});
+      this.maxHealth, this.meander, this.speed, this.flags});
 
   String get singular =>
       Log.parsePlural(_name, isPlural: false, forcePlural: true);
@@ -79,7 +74,7 @@ class Breed implements Quantifiable {
     // Meandering monsters are worth less.
     exp *= (Option.EXP_MEANDER - meander) / Option.EXP_MEANDER;
 
-    // TODO(bob): Take into account moves and olfaction.
+    // TODO(bob): Take into account moves.
     return exp.toInt();
   }
 
