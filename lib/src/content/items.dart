@@ -207,7 +207,7 @@ class ItemSequenceDrop implements Drop {
   void spawnDrop(Game game, AddItem addItem) {
     var index = startIndex;
 
-    // TODO(bob): Occasionally choose a worse item. If it does, increase the
+    // TODO: Occasionally choose a worse item. If it does, increase the
     // chance of picking a power.
 
     // Chance of a better item.
@@ -215,7 +215,7 @@ class ItemSequenceDrop implements Drop {
       index++;
     }
 
-    // TODO(bob): Powers.
+    // TODO: Powers.
 
     var item = new Item(sequence.types[index]);
     addItem(item);

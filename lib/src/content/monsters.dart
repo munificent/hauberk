@@ -8,6 +8,9 @@ import 'builder.dart';
 class Monsters extends ContentBuilder {
   static final Map<String, Breed> all = {};
 
+  var defaultTracking;
+  var defaultMeander;
+
   void build() {
     // $  Creeping Coins
     // a  Arachnid/Scorpion   A  Ancient being
@@ -40,22 +43,32 @@ class Monsters extends ContentBuilder {
     // - Come up with something better than yeeks for 'y'.
     // - Don't use both 'u' and 'U' for undead?
 
-    arachnids();
-    bats();
-    birds();
-    canines();
-    flyingInsects();
-    felines();
-    humanoids();
-    insects();
-    imps();
-    jellies();
-    people();
-    rodents();
-    reptiles();
-    slugs();
-    snakes();
-    worms();
+    var categories = [
+      arachnids,
+      bats,
+      birds,
+      canines,
+      flyingInsects,
+      felines,
+      humanoids,
+      insects,
+      imps,
+      jellies,
+      people,
+      rodents,
+      reptiles,
+      slugs,
+      snakes,
+      worms
+    ];
+
+    for (var category in categories) {
+      // Reset the defaults.
+      defaultTracking = 10;
+      defaultMeander = 0;
+
+      category();
+    }
   }
 
   arachnids() {
@@ -90,7 +103,7 @@ class Monsters extends ContentBuilder {
     breed('giant bat', lightBrown('b'), [
         attack('bite[s]', 8),
       ],
-      maxHealth: 12, meander: 6, speed: 2
+      maxHealth: 12, meander: 4, speed: 2
     );
   }
 
@@ -120,11 +133,14 @@ class Monsters extends ContentBuilder {
   }
 
   canines() {
+    defaultTracking = 20;
+    defaultMeander = 3;
+
     breed('mangy cur', yellow('c'), [
         attack('bite[s]', 4),
       ],
       drop: hunting(chanceOf(70, 'Fur pelt')),
-      maxHealth: 7, meander: 3,
+      maxHealth: 7,
       flags: 'few'
     );
 
@@ -132,17 +148,20 @@ class Monsters extends ContentBuilder {
         attack('bite[s]', 5),
       ],
       drop: hunting('Fur pelt'),
-      maxHealth: 9, meander: 3,
+      maxHealth: 9,
       flags: 'few'
     );
   }
 
   flyingInsects() {
+    defaultTracking = 5;
+    defaultMeander = 8;
+
     breed('butterfl[y|ies]', lightPurple('i'), [
         attack('tickle[s] on', 1),
       ],
       drop: hunting('Insect wing'),
-      maxHealth: 1, meander: 8, speed: 2
+      maxHealth: 1, speed: 2
     );
   }
 
@@ -160,11 +179,14 @@ class Monsters extends ContentBuilder {
   }
 
   insects() {
+    defaultTracking = 3;
+    defaultMeander = 8;
+
     breed('giant cockroach[es]', darkBrown('i'), [
         attack('crawl[s] on', 1),
       ],
       drop: hunting('Insect wing'),
-      maxHealth: 12, meander: 8, speed: 3
+      maxHealth: 12, speed: 3
     );
   }
 
@@ -228,11 +250,14 @@ class Monsters extends ContentBuilder {
   }
 
   jellies() {
+    defaultTracking = 2;
+    defaultMeander = 4;
+
     // TODO: Attack should slow.
     breed('green slime', green('j'), [
         attack('crawl[s] on', 3)
       ],
-      maxHealth: 10, meander: 4,
+      maxHealth: 10,
       flags: 'few'
     );
   }
@@ -334,50 +359,60 @@ class Monsters extends ContentBuilder {
   }
 
   slugs() {
+    defaultTracking = 2;
+
     breed('giant slug', green('s'), [
         attack('crawl[s] on', 8),
       ],
-      maxHealth: 12, meander: 4, speed: -3
+      maxHealth: 12, meander: 1, speed: -3
     );
   }
 
   snakes() {
+    defaultMeander = 4;
+
     breed('garter snake', gold('S'), [
         attack('bite[s]', 1),
       ],
-      maxHealth: 4, meander: 3
+      maxHealth: 4
     );
 
     breed('tree snake', lightGreen('S'), [
         attack('bite[s]', 8),
       ],
-      maxHealth: 12, meander: 3
+      maxHealth: 12
     );
   }
 
   worms() {
+    defaultMeander = 4;
+
     breed('giant earthworm', lightRed('w'), [
         attack('crawl[s] on', 8),
       ],
-      maxHealth: 16, meander: 4, speed: -2
+      maxHealth: 16, speed: -2
     );
 
     breed('maggot', lightGray('w'), [
         attack('crawl[s] on', 5),
       ],
-      maxHealth: 2, meander: 4,
+      maxHealth: 2,
       flags: 'swarm'
     );
 
     breed('giant cave worm', white('w'), [
         attack('crawl[s] on', 8),
       ],
-      maxHealth: 24, meander: 4, speed: -2
+      maxHealth: 24, speed: -2
     );
   }
 
   Breed breed(String name, Glyph appearance, List actions, {
-      drop, int maxHealth, int meander: 0, int speed: 0, String flags}) {
+      drop, int maxHealth, int tracking, int meander, int speed: 0,
+      String flags}) {
+    if (tracking == null) tracking = defaultTracking;
+    if (meander == null) meander = defaultMeander;
+
     var attacks = <Attack>[];
     var moves = <Move>[];
 
@@ -396,8 +431,8 @@ class Monsters extends ContentBuilder {
     }
 
     final breed = new Breed(name, Pronoun.IT, appearance, attacks, moves,
-        drop, maxHealth: maxHealth, meander: meander, speed: speed,
-        flags: flagSet);
+        drop, maxHealth: maxHealth, tracking: tracking,
+        meander: meander, speed: speed, flags: flagSet);
     Monsters.all[breed.name] = breed;
     return breed;
   }

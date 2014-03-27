@@ -80,6 +80,7 @@ other stuff:
 - omniscient monsters just know hero's weaknesses
 - all but stupidest monsters won't use move that applies condition currently
   in effect
+- stupid monsters don't pathfind as well
 
 - would be nice to have a state for assisting other monsters
 
@@ -96,7 +97,6 @@ courage level examples:
 - raven: "normal" fear response
 - mangy cur: easily frightened
 - scurrilous imp: very easily frightened
-
  */
 
 class Monster extends Actor {
@@ -415,7 +415,7 @@ class _AwakeState extends _MonsterState {
     final choices = <AIChoice>[];
 
     final path = AStar.findDirection(game.stage, pos, game.hero.pos,
-        10 - breed.meander, canOpenDoors);
+        breed.tracking, canOpenDoors);
 
     // Consider melee attacking.
     final toHero = game.hero.pos - pos;
@@ -508,7 +508,7 @@ class _AfraidState extends _MonsterState {
   Action getAction() {
     // TODO: Tune max distance?
     // Find the nearest place the hero can't see.
-    var flow = new Flow(game.stage, pos, 10);
+    var flow = new Flow(game.stage, pos, breed.tracking);
     var dir = flow.directionToNearestWhere((tile) => !tile.visible);
     // TODO: If no place to escape, become unafraid.
     Debug.logMonster(monster, "Fleeing $dir");

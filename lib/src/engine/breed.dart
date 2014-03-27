@@ -24,6 +24,11 @@ class Breed implements Quantifiable {
 
   final int maxHealth;
 
+  /// How well the monster can navigate the stage to reach its target.
+  ///
+  /// Used to determine maximum pathfinding distance.
+  final int tracking;
+
   /// How much randomness the monster has when walking towards its target.
   final int meander;
 
@@ -42,7 +47,7 @@ class Breed implements Quantifiable {
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, {
-      this.maxHealth, this.meander, this.speed, this.flags});
+      this.maxHealth, this.tracking, this.meander, this.speed, this.flags});
 
   String get singular =>
       Log.parsePlural(_name, isPlural: false, forcePlural: true);
