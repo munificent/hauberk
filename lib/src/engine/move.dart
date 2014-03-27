@@ -26,7 +26,7 @@ abstract class Move {
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.
   Action getAction(Monster monster) {
-    monster.recharge += cost;
+    monster.spendCharge(cost);
     return onGetAction(monster);
   }
 

@@ -13,12 +13,12 @@ class Array2D<T> extends IterableBase<T> {
   Array2D(width_, height_, T generator())
   : width = width_,
     height = height_,
-    elements = new List<T>(width_ * height_)
-  {
-    for (int i = 0; i < width * height; i++) {
-      elements[i] = generator();
-    }
-  }
+    elements = new List<T>.generate(width_ * height_, (_) => generator());
+
+  Array2D.filled(width_, height_, T value)
+  : width = width_,
+    height = height_,
+    elements = new List<T>.filled(width_ * height_, value);
 
   T operator[](Vec pos) => elements[pos.y * width + pos.x];
 

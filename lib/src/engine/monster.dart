@@ -16,24 +16,94 @@ import 'los.dart';
 import 'melee.dart';
 import 'option.dart';
 
+/*
+
+monster has "mood", which describes how it's feeling:
+- how afraid
+- how bored
+- other stuff?
+
+those change over time based on stimulus:
+- los with hero decreases boredom
+- hearing hero decreases boredom
+- no los with hero increases boredom
+- seeing hero take damage decreases fear
+- taking damage increases fear
+- seeing hero inflict damage increases fear
+- just seeing hero's health increases fear?
+- being bored decreases fear
+
+monster also has set of moves it can perform, and it can reason about them
+in ai:
+- knows which moves are ranged attacks
+- knows element move uses for attack
+
+mood and moves are then used to determine goal:
+- melee attack hero
+- sleep
+- flee
+- get in position for ranged attack
+- use other move
+
+when goal is attack:
+- tries to find path to get to hero
+- if has haste, will likely use it
+- if can teleport to, will likely use it
+- hits if adjacent
+
+when goal is flee:
+- tries to find path to nearest tile that is not visible to hero
+- if has healing move may use it
+- if has haste, may use it
+- if can teleport away, will likely use it
+- if cornered, attacks
+
+when goal is get in position for ranged attack:
+- tries to find path to nearest range position. good range position is:
+  - not too far from hero
+  - not too close
+  - has open los to hero
+- if in position, uses ranged move
+- distance range is based on
+  - strength of melee attacks
+  - strength of ranged attacks
+  - cost of ranged attacks
+  - fear
+  - recharge
+
+other stuff:
+- semi-intelligent monsters should learn hero resists by seeing which moves
+  are ineffective
+- intelligent monsters do same, but take into account moves *other* monsters
+  do if they can see hero when it happens
+- omniscient monsters just know hero's weaknesses
+- all but stupidest monsters won't use move that applies condition currently
+  in effect
+
+- would be nice to have a state for assisting other monsters
+
+ */
+
 class Monster extends Actor {
   final Breed breed;
 
-  MonsterState state = MonsterState.ASLEEP;
+  _MonsterState _state;
 
   /// After performing a [Move] a monster must recharge to regain its cost.
   /// This is how much recharging is left to do before another move can be
   /// performed.
-  int recharge = 0;
+  int _recharge = 0;
 
-  /// How many turns the monster has taken while awake since it last saw the
-  /// hero. If it goes too long, it will eventually get bored and fall back
-  /// asleep.
-  int _turnsSinceLastSawHero = 0;
+  bool get isRecharged => _recharge == 0;
+
+  void spendCharge(int cost) {
+    _recharge += cost;
+  }
 
   Monster(Game game, this.breed, int x, int y, int maxHealth)
       : super(game, x, y, maxHealth) {
     Debug.addMonster(this);
+    _changeState(new _AsleepState());
   }
 
   get appearance => breed.appearance;
@@ -62,42 +132,110 @@ class Monster extends Actor {
 
   Action onGetAction() {
     // Recharge moves.
-    recharge = math.max(0, recharge - Option.RECHARGE_RATE);
-
-    switch (state) {
-      case MonsterState.ASLEEP: return _getActionAsleep();
-      case MonsterState.AWAKE: return _getActionAwake();
-    }
-
-    throw "unreachable";
+    _recharge = math.max(0, _recharge - Option.RECHARGE_RATE);
+    return _state.getAction();
   }
 
-  Action _getActionAsleep() {
+  void _changeState(_MonsterState state) {
+    _state = state;
+    _state.bind(this);
+  }
+
+  Attack getAttack(Actor defender) => rng.item(breed.attacks);
+
+  void takeHit(Hit hit) {
+    _state.takeHit();
+
+    // TODO(bob): Nothing to do yet. Should eventually handle armor.
+  }
+
+  /// Called when this Actor has been killed by [attacker].
+  void onDied(Actor attacker) {
+    // Handle drops.
+    breed.drop.spawnDrop(game, (item) {
+      item.pos = pos;
+      // TODO: Scatter items a bit?
+      // TODO: Add message.
+      game.stage.items.add(item);
+    });
+
+    // Tell the quest.
+    game.quest.killMonster(game, this);
+
+    Debug.removeMonster(this);
+  }
+
+  Vec changePosition(Vec pos) {
+    // If the monster is (or was) visible, don't let the hero rest through it
+    // moving.
+    if (game.stage[this.pos].visible || game.stage[pos].visible) {
+      game.hero.disturb();
+    }
+
+    return pos;
+  }
+}
+
+abstract class _MonsterState {
+  Monster _monster;
+
+  void bind(Monster monster) {
+    _monster = monster;
+  }
+
+  Monster get monster => _monster;
+  Breed get breed => _monster.breed;
+  Game get game => _monster.game;
+  Vec get pos => _monster.pos;
+  bool get isRecharged => _monster.isRecharged;
+  bool get canOpenDoors => _monster.canOpenDoors;
+
+  void takeHit() {}
+  Action getAction();
+
+  void changeState(_MonsterState state) {
+    _monster._changeState(state);
+  }
+
+  Action getNextStateAction(_MonsterState state) {
+    _monster._changeState(state);
+    return state.getAction();
+  }
+}
+
+class _AsleepState extends _MonsterState {
+  void takeHit() {
+    // Don't sleep through a beating!
+    Debug.logMonster(monster, "Wake on hit.");
+    changeState(new _AwakeState());
+  }
+
+  Action getAction() {
     var distance = (game.hero.pos - pos).kingLength;
 
     // Don't wake up it very far away.
     if (distance > 30) {
-      Debug.logMonster(this, "Sleep: Distance $distance is too far to see.");
+      Debug.logMonster(monster, "Sleep: Distance $distance is too far to see.");
       return new RestAction();
     }
 
     // If the monster can see the hero, there's a good chance it will wake up.
-    if (canView(game.hero.pos)) {
+    if (game.stage[pos].visible) {
       // TODO: Breed-specific sight/alertness.
       if (rng.oneIn(distance + 1)) {
-        _turnsSinceLastSawHero = 0;
-        state = MonsterState.AWAKE;
-        game.log.message('{1} notice[s] {2}!', this, game.hero);
-        Debug.logMonster(this, "Sleep: In LOS, awoke.");
-        return _getActionAwake();
+        game.log.message('{1} notice[s] {2}!', monster, game.hero);
+        Debug.logMonster(monster, "Sleep: In LOS, awoke.");
+        return getNextStateAction(new _AwakeState());
       }
 
-      Debug.logMonster(this, "Sleep: In LOS, failed oneIn(${distance + 1}).");
+      Debug.logMonster(monster,
+          "Sleep: In LOS, failed oneIn(${distance + 1}).");
       return new RestAction();
     }
 
     if (distance > 20) {
-      Debug.logMonster(this, "Sleep: Distance $distance is too far to hear");
+      Debug.logMonster(monster,
+          "Sleep: Distance $distance is too far to hear");
       return new RestAction();
     }
 
@@ -108,23 +246,28 @@ class Monster extends Actor {
     var noise = game.hero.lastNoise * 100 ~/ (flowDistance * flowDistance);
 
     if (noise > rng.range(500)) {
-      _turnsSinceLastSawHero = 0;
-      state = MonsterState.AWAKE;
       game.log.message('Something stirs in the darkness.');
-      Debug.logMonster(this, "Sleep: Passed noise check, flow distance: "
+      Debug.logMonster(monster, "Sleep: Passed noise check, flow distance: "
           "$flowDistance, noise: $noise");
-      return _getActionAwake();
+      return getNextStateAction(new _AwakeState());
     }
 
     // Keep sleeping.
-    Debug.logMonster(this, "Sleep: Failed noise check, flow distance: "
+    Debug.logMonster(monster, "Sleep: Failed noise check, flow distance: "
         "$flowDistance, noise: $noise");
     return new RestAction();
   }
+}
 
-  Action _getActionAwake() {
+class _AwakeState extends _MonsterState {
+  /// How many turns the monster has taken while awake since it last saw the
+  /// hero. If it goes too long, it will eventually get bored and fall back
+  /// asleep.
+  int _turnsSinceLastSawHero = 0;
+
+  Action getAction() {
     // See if things are quiet enough to fall asleep.
-    if (canView(game.hero.pos)) {
+    if (game.stage[pos].visible) {
       _turnsSinceLastSawHero = 0;
     } else {
       _turnsSinceLastSawHero++;
@@ -132,10 +275,9 @@ class Monster extends Actor {
       // The longer it goes without seeing the hero the more likely it will
       // fall asleep.
       if (_turnsSinceLastSawHero > rng.range(10, 20)) {
-        Debug.logMonster(this,
+        Debug.logMonster(monster,
             "Haven't seen hero in $_turnsSinceLastSawHero, sleeping");
-        state = MonsterState.ASLEEP;
-        return _getActionAsleep();
+        return getNextStateAction(new _AsleepState());
       }
     }
 
@@ -183,19 +325,19 @@ class Monster extends Actor {
     }
 
     // Consider the monster's moves if it can.
-    if (recharge == 0) {
+    if (isRecharged) {
       for (final move in breed.moves) {
         // TODO(bob): Should move cost affect its score?
-        var score = Option.AI_START_SCORE + move.getScore(this);
+        var score = Option.AI_START_SCORE + move.getScore(monster);
         if (score == Option.AI_MIN_SCORE) continue;
         choices.add(new AIChoice(score, move.toString(),
-            () => move.getAction(this)));
+            () => move.getAction(monster)));
       }
     }
 
     // If the monster couldn't come up with anything to do, just sit.
     if (choices.length == 0) {
-      Debug.logMonster(this, "Nothing to do, resting.");
+      Debug.logMonster(monster, "Nothing to do, resting.");
       return new RestAction();
     }
 
@@ -219,46 +361,10 @@ class Monster extends Actor {
       for (var choice in choices) {
         buffer.writeln(choice);
       }
-      Debug.logMonster(this, buffer.toString());
+      Debug.logMonster(monster, buffer.toString());
     }
 
     return rng.item(bestChoices).createAction();
-  }
-
-  Attack getAttack(Actor defender) => rng.item(breed.attacks);
-
-  void takeHit(Hit hit) {
-    if (state == MonsterState.ASLEEP) {
-      // Can't sleep through a beating!
-      state = MonsterState.AWAKE;
-    }
-    // TODO(bob): Nothing to do yet. Should eventually handle armor.
-  }
-
-  /// Called when this Actor has been killed by [attacker].
-  void onDied(Actor attacker) {
-    // Handle drops.
-    breed.drop.spawnDrop(game, (item) {
-      item.pos = pos;
-      // TODO(bob): Scatter items a bit?
-      // TODO(bob): Add message.
-      game.stage.items.add(item);
-    });
-
-    // Tell the quest.
-    game.quest.killMonster(game, this);
-
-    Debug.removeMonster(this);
-  }
-
-  Vec changePosition(Vec pos) {
-    // If the monster is (or was) visible, don't let the hero rest through it
-    // moving.
-    if (game.stage[this.pos].visible || game.stage[pos].visible) {
-      game.hero.disturb();
-    }
-
-    return pos;
   }
 }
 
@@ -272,11 +378,20 @@ class AIChoice {
   String toString() => "$score - $description";
 }
 
-/// A [Monster]'s internal mental state.
-class MonsterState {
-  static const ASLEEP = const MonsterState(0);
-  static const AWAKE  = const MonsterState(1);
+/*
 
-  final int _value;
-  const MonsterState(this._value);
-}
+  Action _getActionAfraid() {
+    // TODO: Tune max distance?
+    // Find the nearest place the hero can't see.
+    var flow = new Flow(game.stage, pos, 10);
+    var dir = flow.directionToNearestWhere((tile) => !tile.visible);
+    Debug.logMonster(this, "Fleeing $dir");
+
+    // TODO: Should not walk past hero to get to escape!
+    // TODO: Should take into account distance from here when choosing an
+    // escape destination.
+    // TODO: What should it do once it's in shadow?
+    return new WalkAction(dir);
+  }
+
+ */
