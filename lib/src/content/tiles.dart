@@ -24,20 +24,14 @@ class Tiles extends ContentBuilder {
     Tiles.floor = new TileType("floor", true, true,
         [gray('.'), darkGray('.')]);
 
-    Tiles.wall = new TileType("wall", false, false, [
-      new Glyph('#', Color.LIGHT_GRAY, Color.DARK_GRAY),
-      new Glyph('#', Color.DARK_GRAY)
-    ]);
+    Tiles.wall = new TileType("wall", false, false,
+        [lightGray('#', Color.DARK_GRAY), darkGray('#')]);
 
-    Tiles.table = new TileType("table", false, true, [
-      new Glyph.fromCharCode(CharCode.PI, Color.BROWN),
-      new Glyph.fromCharCode(CharCode.PI, Color.DARK_BROWN)
-    ]);
+    Tiles.table = new TileType("table", false, true,
+        [brown(CharCode.PI), darkBrown(CharCode.PI)]);
 
-    Tiles.lowWall = new TileType("low wall", false, true, [
-      new Glyph('%', Color.GRAY, Color.DARK_GRAY),
-      new Glyph('%', Color.DARK_GRAY)
-    ]);
+    Tiles.lowWall = new TileType("low wall", false, true,
+        [gray('%', Color.DARK_GRAY), darkGray('%')]);
 
     Tiles.openDoor = new TileType("open door", true, true,
         [brown("'"), darkBrown("'")]);
@@ -46,33 +40,25 @@ class Tiles extends ContentBuilder {
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
 
-    Tiles.stairs = new TileType("stairs", true, true, [
-      new Glyph.fromCharCode(CharCode.TRIPLE_BAR, Color.LIGHT_GRAY),
-      new Glyph.fromCharCode(CharCode.TRIPLE_BAR, Color.DARK_GRAY)
-    ]);
+    Tiles.stairs = new TileType("stairs", true, true,
+        [lightGray(CharCode.TRIPLE_BAR), darkGray(CharCode.TRIPLE_BAR)]);
 
     Tiles.grass = new TileType("grass", true, true,
         [lightGreen('.'), green('.')]);
 
     Tiles.tree = new TileType("tree", false, false, [
-      new Glyph.fromCharCode(CharCode.BLACK_UP_POINTING_TRIANGLE,
-          Color.GREEN, Color.DARK_GREEN),
-      new Glyph.fromCharCode(CharCode.BLACK_UP_POINTING_TRIANGLE,
-          Color.DARK_GREEN)
+      green(CharCode.BLACK_UP_POINTING_TRIANGLE, Color.DARK_GREEN),
+      darkGreen(CharCode.BLACK_UP_POINTING_TRIANGLE)
     ]);
 
     Tiles.treeAlt1 = new TileType("tree", false, false, [
-      new Glyph.fromCharCode(CharCode.BLACK_SPADE_SUIT,
-          Color.GREEN, Color.DARK_GREEN),
-      new Glyph.fromCharCode(CharCode.BLACK_SPADE_SUIT,
-          Color.DARK_GREEN)
+      green(CharCode.BLACK_SPADE_SUIT, Color.DARK_GREEN),
+      darkGreen(CharCode.BLACK_SPADE_SUIT)
     ]);
 
     Tiles.treeAlt2 = new TileType("tree", false, false, [
-      new Glyph.fromCharCode(CharCode.BLACK_CLUB_SUIT,
-          Color.GREEN, Color.DARK_GREEN),
-      new Glyph.fromCharCode(CharCode.BLACK_CLUB_SUIT,
-          Color.DARK_GREEN)
+      green(CharCode.BLACK_CLUB_SUIT, Color.DARK_GREEN),
+      darkGreen(CharCode.BLACK_CLUB_SUIT)
     ]);
   }
 }

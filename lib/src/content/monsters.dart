@@ -162,7 +162,8 @@ class Monsters extends ContentBuilder {
         attack('tickle[s] on', 1),
       ],
       drop: hunting('Insect wing'),
-      maxHealth: 1, speed: 2
+      maxHealth: 1, speed: 2,
+      flags: 'few'
     );
   }
 
@@ -231,7 +232,7 @@ class Monsters extends ContentBuilder {
 
     breed('goblin archer', green('I'), [
         attack('stab[s]', 3),
-        arrow(cost: 10, damage: 3)
+        arrow(cost: 8, damage: 3)
       ],
       drop: [
         chanceOf(4, 'Short Bow'),

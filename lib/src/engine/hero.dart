@@ -183,8 +183,15 @@ class Hero extends Actor {
     _behavior = new ActionBehavior(action);
   }
 
-  void rest() {
+  /// Starts resting, if the hero has eaten and is able to regenerate.
+  bool rest() {
+    if (!food.isActive) {
+      game.log.error("You are too hungry to rest!");
+      return false;
+    }
+
     _behavior = new RestBehavior();
+    return true;
   }
 
   void run(Direction direction) {
@@ -262,6 +269,11 @@ class RestBehavior extends Behavior {
   bool canPerform(Hero hero) {
     // See if done resting.
     if (hero.health.isMax) return false;
+
+    if (!hero.food.isActive) {
+      hero.game.log.message("You are getting hungry.");
+      return false;
+    }
 
     return true;
   }

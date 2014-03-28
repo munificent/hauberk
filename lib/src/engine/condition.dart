@@ -42,8 +42,6 @@ abstract class Condition {
 
   /// Extends the condition by [duration].
   void extend(int duration) {
-    assert(isActive);
-
     _turnsRemaining += duration;
   }
 
@@ -60,9 +58,16 @@ abstract class Condition {
 class HasteCondition extends Condition {
   void onDeactivate() {
     if (intensity > 0) {
-      actor.game.log.message("{1} slow[s] back down.", actor);
+      actor.log("{1} slow[s] back down.", actor);
     } else {
-      actor.game.log.message("{1} speed[s] back up.", actor);
+      actor.log("{1} speed[s] back up.", actor);
     }
+  }
+}
+
+/// A condition that slowly regenerates health.
+class FoodCondition extends Condition {
+  void onDeactivate() {
+    actor.log("{1} [are|is] getting hungry.", actor);
   }
 }

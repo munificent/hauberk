@@ -43,7 +43,10 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.L:
-        game.hero.rest();
+        if (!game.hero.rest()) {
+          // Show the message.
+          dirty();
+        }
         break;
 
       case KeyCode.I:
@@ -474,12 +477,21 @@ class GameScreen extends Screen {
 
     // Show conditions.
     terminal.writeAt(82,  8, "                    ");
+    var conditions = [];
+
+    if (hero.food.isActive) conditions.add(["Food", Color.ORANGE]);
     switch (hero.haste.intensity) {
-      case -2: terminal.writeAt(82,  8, "Para", Color.DARK_GREEN); break;
-      case -1: terminal.writeAt(82,  8, "Slow", Color.DARK_GREEN); break;
-      case 1: terminal.writeAt(82,  8, "Quik", Color.GREEN); break;
-      case 2: terminal.writeAt(82,  8, "Alac", Color.GREEN); break;
-      case 3: terminal.writeAt(82,  8, "Sped", Color.GREEN); break;
+      case -2: conditions.add(["Para", Color.DARK_GREEN]); break;
+      case -1: conditions.add(["Slow", Color.DARK_GREEN]); break;
+      case 1: conditions.add(["Quik", Color.GREEN]); break;
+      case 2: conditions.add(["Alac", Color.GREEN]); break;
+      case 3: conditions.add(["Sped", Color.GREEN]); break;
+    }
+
+    var x = 82;
+    for (var condition in conditions) {
+      terminal.writeAt(x,  8, condition[0], condition[1]);
+      x += 5;
     }
 
     terminal.writeAt(82, 18, '@ hero', Color.WHITE);

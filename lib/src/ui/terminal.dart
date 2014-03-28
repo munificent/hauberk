@@ -118,6 +118,12 @@ class Glyph {
 
   Glyph.fromCharCode(this.char, [this.fore = Color.WHITE, this.back = Color.BLACK]);
 
+  factory Glyph.fromDynamic(charOrCharCode,
+      [Color fore = Color.WHITE, Color back = Color.BLACK]) {
+    if (charOrCharCode is String) return new Glyph(charOrCharCode, fore, back);
+    return new Glyph.fromCharCode(charOrCharCode, fore, back);
+  }
+
   operator ==(other) {
     if (other is! Glyph) return false;
     return char == other.char &&
@@ -145,4 +151,5 @@ class CharCode {
   static const BOX_DRAWINGS_LIGHT_VERTICAL = 0x2502;
   static const TRIPLE_BAR = 0x2261;
   static const PI = 0x03C0;
+  static const BLACK_HEART_SUIT = 0x2665;
 }

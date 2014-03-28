@@ -100,6 +100,11 @@ courage level examples:
  */
 
 class Monster extends Actor {
+  /// The number of times the actor has rested. Once this crosses a certain
+  /// threshold (based on the Actor's max health), its health will be increased
+  /// and this will be lowered.
+  int _restCount = 0;
+
   final Breed breed;
 
   _MonsterState _state;
@@ -125,9 +130,6 @@ class Monster extends Actor {
 
   /// How much experience a level one [Hero] gains for killing this monster.
   int get experienceCents => breed.experienceCents;
-
-  /// Whether or not the monster can be seen by the [Hero].
-  bool get isVisible => game.stage[pos].visible;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth)
       : super(game, x, y, maxHealth) {
@@ -167,15 +169,11 @@ class Monster extends Actor {
   void _updateFear() {
     // TODO: Also check for other awake non-afraid states.
     if (_state is _AwakeState && _fear > rng.range(40, 100)) {
-      if (isVisible) {
-        game.log.message("{1} is afraid!", this);
-      }
+      log("{1} is afraid!", this);
       _changeState(new _AfraidState());
     } else if (_state is _AfraidState && _fear <= 0.0) {
       // TODO: Should possibly go into other non-afraid states.
-      if (isVisible) {
-        game.log.message("{1} grows courageous!", this);
-      }
+      log("{1} grows courageous!", this);
       _changeState(new _AwakeState());
     }
 
@@ -276,6 +274,20 @@ class Monster extends Actor {
     Debug.removeMonster(this);
   }
 
+  void onFinishTurn(Action action) {
+    // Regenerate health if out of sight.
+    if (isVisible) return;
+
+    // TODO: Tune this now that it only applies to monsters.
+    var turnsNeeded = math.max(
+        Option.REST_MAX_HEALTH_FOR_RATE ~/ health.max, 1);
+
+    if (_restCount++ > turnsNeeded) {
+      health.current++;
+      _restCount = 0;
+    }
+  }
+
   Vec changePosition(Vec pos) {
     // If the monster is (or was) visible, don't let the hero rest through it
     // moving.
@@ -316,6 +328,10 @@ abstract class _MonsterState {
   bool get isVisible => _monster.isVisible;
   bool get canOpenDoors => _monster.canOpenDoors;
 
+  void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    monster.log(message, noun1, noun2, noun3);
+  }
+
   void takeHit() {}
   Action getAction();
 
@@ -353,7 +369,7 @@ class _AsleepState extends _MonsterState {
     if (isVisible) {
       // TODO: Breed-specific sight/alertness.
       if (rng.oneIn(distance + 1)) {
-        game.log.message('{1} notice[s] {2}!', monster, game.hero);
+        log('{1} notice[s] {2}!', monster, game.hero);
         Debug.logMonster(monster, "Sleep: In LOS, awoke.");
         return getNextStateAction(new _AwakeState());
       }

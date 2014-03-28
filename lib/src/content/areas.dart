@@ -16,7 +16,7 @@ class Areas extends ContentBuilder {
 
   void build() {
     area('Friendly Forest', [
-      level(new Forest(), numMonsters: 10, numItems: 2,
+      level(new Forest(), numMonsters: 10, numItems: 4,
         breeds: [
           'butterfly',
           'field mouse',
@@ -25,7 +25,10 @@ class Areas extends ContentBuilder {
           'frog'
         ],
         drop: [
-          'Flower'
+          'Flower',
+          'Edible Mushroom',
+          'Handful of Berries',
+          'Loaf of Bread'
         ],
         quest: kill('fuzzy bunny', 1)),
     ]);

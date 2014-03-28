@@ -49,20 +49,23 @@ abstract class Actor extends Thing {
   final Game game;
   final Stat health;
   final Energy energy = new Energy();
-  final Condition haste = new HasteCondition();
 
-  /// The number of times the actor has rested. Once this crosses a certain
-  /// threshold (based on the Actor's max health), its health will be increased
-  /// and this will be lowered.
-  int restCount = 0;
+  /// Eating food lets the actor slowly regenerate health.
+  final Condition food = new FoodCondition();
+
+  final Condition haste = new HasteCondition();
 
   Actor(this.game, int x, int y, int health)
   : super(new Vec(x, y)),
     health = new Stat(health) {
+    food.bind(this);
     haste.bind(this);
   }
 
   bool get isAlive => health.current > 0;
+
+  /// Whether or not the actor can be seen by the [Hero].
+  bool get isVisible => game.stage[pos].visible;
 
   bool get needsInput => false;
 
@@ -129,20 +132,17 @@ abstract class Actor extends Thing {
   void finishTurn(Action action) {
     energy.spend();
 
-    // Regenerate health.
-    // TODO(bob): Could have "regeneration" power-up that speeds this.
-    // The greater the max health, the faster the actor heals when resting.
-    final turnsNeeded = math.max(
-        Option.REST_MAX_HEALTH_FOR_RATE ~/ health.max, 1);
-
-    if (restCount++ > turnsNeeded) {
-      health.current++;
-      restCount = 0;
-    }
-
+    // TODO: Move food to hero?
+    food.update();
     haste.update();
 
     onFinishTurn(action);
+  }
+
+  /// Logs [message] if the actor is visible to the hero.
+  void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    if (!isVisible) return;
+    game.log.message(message, noun1, noun2, noun3);
   }
 }
 

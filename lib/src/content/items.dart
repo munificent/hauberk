@@ -16,15 +16,18 @@ class Items extends ContentBuilder {
     // From Angband:
     // !   A potion (or flask)    /   A pole-arm
     // ?   A scroll (or book)     |   An edged weapon
-    // ,   Pelts and body parts   \   A hafted weapon
+    // ,   Food                   \   A hafted weapon
     // -   A wand or rod          }   A sling, bow, or x-bow
     // _   A staff                {   A shot, arrow, or bolt
     // =   A ring                 (   Soft armour (cloak, robes, leather armor)
     // "   An amulet              [   Hard armour (metal armor)
     // $   Gold or gems           ]   Misc. armour (gloves, helm, boots)
-    // ~   Lites, Tools           )   A shield
+    // ~   Pelts and body parts   )   A shield
     // &   Chests, Containers
 
+    // Unused: ; : ` % ^ < >
+
+    food();
     pelts();
     potions();
     scrolls();
@@ -33,12 +36,20 @@ class Items extends ContentBuilder {
     boots();
   }
 
+  void food() {
+    var heart = CharCode.BLACK_HEART_SUIT;
+    item('Edible Mushroom', lightGray(heart), use: () => new EatAction(20));
+    item('Handful of Berries', red(heart), use: () => new EatAction(30));
+    item('Loaf of Bread', gold(heart), use: () => new EatAction(50));
+    item('Leg of Lamb', brown(heart), use: () => new EatAction(80));
+  }
+
   void pelts() {
-    item('Flower', lightAqua(','));
-    item('Fur pelt', lightBrown(','));
-    item('Insect wing', purple(','));
-    item('Red feather', red(',')); // TODO: Use in recipe.
-    item('Black feather', darkGray(','));
+    item('Flower', lightAqua('~'));
+    item('Fur pelt', lightBrown('~'));
+    item('Insect wing', purple('~'));
+    item('Red feather', red('~')); // TODO: Use in recipe.
+    item('Black feather', darkGray('~'));
   }
 
   void potions() {

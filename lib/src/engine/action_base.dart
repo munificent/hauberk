@@ -48,10 +48,12 @@ abstract class Action {
   int get noise => Option.NOISE_NORMAL;
 
   void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    if (!_actor.isVisible) return;
     _game.log.error(message, noun1, noun2, noun3);
   }
 
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    if (!_actor.isVisible) return;
     _game.log.message(message, noun1, noun2, noun3);
   }
 
@@ -168,10 +170,27 @@ class CloseDoorAction extends Action {
   }
 }
 
-/// Action for essentially spending a turn walking in place. This is a separate
-/// class mainly to track that it's quieter than walking.
+/// Action for doing nothing for a turn.
 class RestAction extends Action {
-  ActionResult onPerform() => succeed();
+  ActionResult onPerform() {
+    if (actor.food.isActive) actor.health.current++;
+
+    return succeed();
+  }
+
   int get noise => Option.NOISE_REST;
   int get focusOffset => Option.FOCUS_OFFSET_REST;
+}
+
+/// Action for eating some food.
+class EatAction extends Action {
+  final int _duration;
+
+  EatAction(this._duration);
+
+  ActionResult onPerform() {
+    // TODO: Max duration?
+    actor.food.extend(_duration);
+    return succeed("{1} feel[s] better.", actor);
+  }
 }
