@@ -56,9 +56,9 @@ class Items extends ContentBuilder {
     // Healing.
     // TODO: Higher-level ones should remove conditions too.
     sequence(15, [
-      item('Soothing Balm', lightRed('!'), use: () => new HealAction(12)),
-      item('Mending Salve', red('!'), use: () => new HealAction(24)),
-      item('Healing Poultice', darkRed('!'), use: () => new HealAction(48)),
+      item('Soothing Balm', lightRed('!'), use: () => new HealAction(24)),
+      item('Mending Salve', red('!'), use: () => new HealAction(48)),
+      item('Healing Poultice', darkRed('!'), use: () => new HealAction(64)),
       item('Potion of Amelioration', darkRed('!'), use: () => new HealAction(120)),
       item('Potion of Rejuvenation', darkRed('!'), use: () => new HealAction(1000))
     ]);
@@ -90,24 +90,28 @@ class Items extends ContentBuilder {
   }
 
   void weapons() {
+    weapon('Stick', brown('_'), 'hit[s]', 'Club', 4);
+
     // Bludgeons.
-    weapon('Cudgel', lightBrown('\\'), 'hit[s]', 'Club', 4);
-    weapon('Club', brown('\\'),        'hit[s]', 'Club', 5);
-    weapon('Staff', lightBrown('_'),   'hit[s]', 'Club', 6);
+    sequence(10, [
+      weapon('Cudgel', lightBrown('\\'), 'hit[s]', 'Club', 5),
+      weapon('Club', brown('\\'),        'hit[s]', 'Club', 6),
+      weapon('Staff', lightBrown('_'),   'hit[s]', 'Club', 7)
+    ]);
 
     // Knives.
     sequence(10, [
-      weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 3),
-      weapon('Dirk', lightGray('|'), 'stab[s]', 'Dagger', 4),
-      weapon('Dagger', white('|'), 'stab[s]', 'Dagger', 5),
-      weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 6),
-      weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 8),
-      weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 10)
+      weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 5),
+      weapon('Dirk', lightGray('|'), 'stab[s]', 'Dagger', 6),
+      weapon('Dagger', white('|'), 'stab[s]', 'Dagger', 8),
+      weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 11),
+      weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 14),
+      weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 16)
     ]);
 
     // Spears.
     sequence(12, [
-      weapon('Spear', gray('\\'), 'stab[s]', 'Spear', 8),
+      weapon('Spear', gray('\\'), 'stab[s]', 'Spear', 12),
       weapon('Angon', lightGray('\\'), 'stab[s]', 'Spear', 16),
       weapon('Lance', white('\\'), 'stab[s]', 'Spear', 24),
       weapon('Partisan', darkGray('\\'), 'stab[s]', 'Spear', 36)

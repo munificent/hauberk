@@ -337,10 +337,10 @@ class Monsters extends ContentBuilder {
     );
 
     breed('fuzzy bunn[y|ies]', lightBlue('r'), [
-        attack('bite[s]', 2),
-        attack('kick[s]', 1)
+        attack('bite[s]', 3),
+        attack('kick[s]', 2)
       ],
-      maxHealth: 8, meander: 2
+      maxHealth: 10, meander: 2
     );
 
     breed('white [mouse|mice]', white('r'), [
