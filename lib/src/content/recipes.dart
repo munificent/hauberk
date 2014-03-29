@@ -9,11 +9,28 @@ class Recipes extends ContentBuilder {
   static final List<Recipe> all = [];
 
   void build() {
+    recipe('Berry Pie', [
+      'Handful of Berries',
+      'Handful of Berries',
+      'Handful of Berries'
+    ]);
+
+    recipe("Traveler's Ration", [
+      'Edible Mushroom',
+      'Handful of Berries',
+      'Honeycomb',
+      'Honeycomb',
+      'Honeycomb'
+    ]);
+
     recipe('Fur Cloak', [
-      'Fur pelt',
-      'Fur pelt',
-      'Fur pelt',
-      'Fur pelt'
+      'Fox Pelt'
+    ]);
+
+    recipe('Fur Cloak', [
+      'Fur Pelt',
+      'Fur Pelt',
+      'Fur Pelt'
     ]);
 
     recipe('Soothing Balm', [
@@ -29,8 +46,8 @@ class Recipes extends ContentBuilder {
     ]);
 
     recipe('Scroll of Sidestepping', [
-      'Insect wing',
-      'Black feather',
+      'Insect Wing',
+      'Black Feather',
       'Parchment'
     ]);
 
@@ -48,9 +65,15 @@ class Recipes extends ContentBuilder {
 
     recipe('Fur-lined Robe', [
       'Robe',
-      'Fur pelt',
-      'Fur pelt'
+      'Fur Pelt',
+      'Fur Pelt'
     ]);
+
+    recipe('Fur-lined Robe', [
+      'Robe',
+      'Fox Pelt'
+    ]);
+
   }
 
   void recipe(String result, List<String> ingredientNames) {

@@ -253,7 +253,9 @@ class Monster extends Actor {
     // TODO: Allow breed to tune this.
     var fear = 50.0 * damage / health.max;
 
-    _fear += fear;
+    if (breed.flags.contains("protective")) fear *= -1.0;
+
+    _fear = math.max(0, _fear + fear);
     Debug.logMonster(this, "Witness ${damage} / ${health.max} "
         "increases fear by ${fear} to $_fear");
   }
@@ -264,7 +266,7 @@ class Monster extends Actor {
     breed.drop.spawnDrop(game, (item) {
       item.pos = pos;
       // TODO: Scatter items a bit?
-      // TODO: Add message.
+      log("{1} drop[s] {2}.", this, item);
       game.stage.items.add(item);
     });
 

@@ -14,13 +14,15 @@ class Forest extends StageBuilder {
 
   /// How for the meadows are positioned from the edge of the stage. Larger
   /// numbers mean a smaller dungeon centered in the stage.
-  int get meadowInset => 7;
+  final int meadowInset;
 
   /// The number of iterations of Lloyd's algorithm to run on the points.
   ///
   /// Fewer results in clumpier, less evenly spaced points. More results in
   /// more evenly spaced but can eventually look too regular.
   int get voronoiIterations => 4;
+
+  Forest({this.meadowInset});
 
   void generate(Stage stage) {
     bindStage(stage);

@@ -108,7 +108,8 @@ class Option {
     'pack': 1.3,
     'group': 1.2,
     'few': 1.1,
-    'open-doors': 1.1
+    'open-doors': 1.1,
+    'protective': 1.1
   };
 
   /// The more a monster meanders, the less experience it's worth. This number

@@ -56,6 +56,7 @@ class Monsters extends ContentBuilder {
       jellies,
       skeletons,
       people,
+      quadrupeds,
       rodents,
       reptiles,
       slugs,
@@ -112,14 +113,14 @@ class Monsters extends ContentBuilder {
     breed('robin', lightRed('B'), [
         attack('claw[s]', 1),
       ],
-      drop: chanceOf(25, 'Red feather'),
+      drop: chanceOf(25, 'Red Feather'),
       maxHealth: 3, meander: 4, speed: 2
     );
 
     breed('crow', darkGray('B'), [
         attack('bite[s]', 4),
       ],
-      drop: chanceOf(25, 'Black feather'),
+      drop: chanceOf(25, 'Black Feather'),
       maxHealth: 4, meander: 4, speed: 2,
       flags: 'group'
     );
@@ -128,7 +129,7 @@ class Monsters extends ContentBuilder {
         attack('bite[s]', 6),
         attack('claw[s]', 5),
       ],
-      drop: hunting('Black feather'),
+      drop: hunting('Black Feather'),
       maxHealth: 8, meander: 1
     );
   }
@@ -140,7 +141,7 @@ class Monsters extends ContentBuilder {
     breed('mangy cur', yellow('c'), [
         attack('bite[s]', 4),
       ],
-      drop: hunting(chanceOf(70, 'Fur pelt')),
+      drop: hunting(chanceOf(70, 'Fur Pelt')),
       maxHealth: 7,
       flags: 'few'
     );
@@ -148,7 +149,7 @@ class Monsters extends ContentBuilder {
     breed('wild dog', gray('c'), [
         attack('bite[s]', 5),
       ],
-      drop: hunting('Fur pelt'),
+      drop: hunting('Fur Pelt'),
       maxHealth: 9,
       flags: 'few'
     );
@@ -165,14 +166,22 @@ class Monsters extends ContentBuilder {
       maxHealth: 1, speed: 2,
       flags: 'few'
     );
+
+    breed('bee', yellow('i'), [
+        attack('sting[s]', 2),
+      ],
+      drop: chanceOf(50, 'Honeycomb'),
+      maxHealth: 1, speed: 1,
+      flags: 'group protective'
+    );
   }
 
   felines() {
-    breed('stray cat', gray('F'), [
+    breed('stray cat', lightOrange('F'), [
         attack('bite[s]', 4),
         attack('scratch[es]', 3),
       ],
-      drop: hunting(chanceOf(50, 'Fur pelt')),
+      drop: hunting(chanceOf(50, 'Fur Pelt')),
       maxHealth: 5, meander: 3, speed: 1
     );
   }
@@ -268,6 +277,16 @@ class Monsters extends ContentBuilder {
 
   }
 
+  quadrupeds() {
+    breed('fox', orange('q'), [
+        attack('bite[s]', 7),
+        attack('scratch[es]', 4)
+      ],
+      drop: 'Fox Pelt',
+      maxHealth: 7, meander: 1, speed: 1
+    );
+  }
+
   people() {
     defaultTracking = 14;
 
@@ -343,18 +362,24 @@ class Monsters extends ContentBuilder {
       maxHealth: 10, meander: 2
     );
 
-    breed('white [mouse|mice]', white('r'), [
-        attack('bite[s]', 3),
-        attack('scratch[es]', 2)
+    breed('vole', darkGray('r'), [
+        attack('bite[s]', 4)
       ],
-      maxHealth: 4, meander: 4, speed: 1
+      maxHealth: 5, meander: 3, speed: 1
+    );
+
+    breed('white [mouse|mice]', white('r'), [
+        attack('bite[s]', 5),
+        attack('scratch[es]', 3)
+      ],
+      maxHealth: 6, meander: 4, speed: 1
     );
 
     breed('sewer rat', darkGray('r'), [
-        attack('bite[s]', 3),
-        attack('scratch[es]', 2)
+        attack('bite[s]', 4),
+        attack('scratch[es]', 3)
       ],
-      maxHealth: 5, meander: 3, speed: 1,
+      maxHealth: 6, meander: 3, speed: 1,
       flags: 'group'
     );
   }

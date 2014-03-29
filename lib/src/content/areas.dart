@@ -16,7 +16,7 @@ class Areas extends ContentBuilder {
 
   void build() {
     area('Friendly Forest', [
-      level(() => new Forest(), numMonsters: 10, numItems: 5,
+      level(() => new Forest(meadowInset: 8), numMonsters: 10, numItems: 6,
         breeds: [
           'butterfly',
           'field mouse',
@@ -25,14 +25,28 @@ class Areas extends ContentBuilder {
           'frog'
         ],
         drop: [
-          chanceOf(30, 'Flower'),
+          chanceOf(20, 'Flower'),
           chanceOf(40, 'Edible Mushroom'),
-          chanceOf(20, 'Handful of Berries'),
+          chanceOf(30, 'Handful of Berries'),
           chanceOf(10, 'Stick')
         ],
         quest: kill('fuzzy bunny', 1)),
+      level(() => new Forest(meadowInset: 6), numMonsters: 11, numItems: 8,
+        breeds: [
+          'bee',
+          'vole',
+          'tree snake',
+          'giant earthworm',
+          'garden spider'
+        ],
+        drop: [
+          chanceOf(20, 'Flower'),
+          chanceOf(20, 'Edible Mushroom'),
+          chanceOf(40, 'Handful of Berries'),
+          chanceOf(20, 'Stick')
+        ],
+        quest: kill('fox', 1)),
     ]);
-    // TODO: Garden spider in level 2.
 
     area('Training Grounds', [
       level(() => new TrainingGrounds(), numMonsters: 12, numItems: 8,

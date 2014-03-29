@@ -1,4 +1,4 @@
-library dngn.engine.stage;
+library dngn.engine.flow;
 
 import 'dart:collection';
 import 'dart:math' as math;

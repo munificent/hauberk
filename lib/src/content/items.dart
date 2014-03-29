@@ -40,16 +40,20 @@ class Items extends ContentBuilder {
     var heart = CharCode.BLACK_HEART_SUIT;
     item('Edible Mushroom', lightGray(heart), use: () => new EatAction(20));
     item('Handful of Berries', red(heart), use: () => new EatAction(30));
-    item('Loaf of Bread', gold(heart), use: () => new EatAction(50));
-    item('Leg of Lamb', brown(heart), use: () => new EatAction(80));
+    item('Honeycomb', lightGold(heart), use: () => new EatAction(40));
+    item('Loaf of Bread', lightBrown(heart), use: () => new EatAction(80));
+    item('Berry Pie', red(heart), use: () => new EatAction(100));
+    item("Traveler's Ration", gold(heart), use: () => new EatAction(300));
+    item('Leg of Lamb', brown(heart), use: () => new EatAction(300));
   }
 
   void pelts() {
-    item('Flower', lightAqua('~'));
-    item('Fur pelt', lightBrown('~'));
-    item('Insect wing', purple('~'));
-    item('Red feather', red('~')); // TODO: Use in recipe.
-    item('Black feather', darkGray('~'));
+    item('Flower', lightAqua('~')); // TODO: Use in recipe.
+    item('Fur Pelt', lightBrown('~'));
+    item('Fox Pelt', orange('~'));
+    item('Insect Wing', purple('~'));
+    item('Red Feather', red('~')); // TODO: Use in recipe.
+    item('Black Feather', darkGray('~'));
   }
 
   void potions() {
