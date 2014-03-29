@@ -16,7 +16,7 @@ class Areas extends ContentBuilder {
 
   void build() {
     area('Friendly Forest', [
-      level(new Forest(), numMonsters: 10, numItems: 5,
+      level(() => new Forest(), numMonsters: 10, numItems: 5,
         breeds: [
           'butterfly',
           'field mouse',
@@ -35,7 +35,7 @@ class Areas extends ContentBuilder {
     // TODO: Garden spider in level 2.
 
     area('Training Grounds', [
-      level(new TrainingGrounds(), numMonsters: 12, numItems: 8,
+      level(() => new TrainingGrounds(), numMonsters: 12, numItems: 8,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -52,7 +52,7 @@ class Areas extends ContentBuilder {
           'Scroll of Sidestepping',
         ],
         quest: kill('wild dog', 3)),
-      level(new TrainingGrounds(), numMonsters: 16, numItems: 9,
+      level(() => new TrainingGrounds(), numMonsters: 16, numItems: 9,
         breeds: [
           'brown spider',
           'crow',
@@ -66,7 +66,7 @@ class Areas extends ContentBuilder {
           'Robe'
         ],
         quest: kill('giant spider')),
-      level(new TrainingGrounds(), numMonsters: 20, numItems: 10,
+      level(() => new TrainingGrounds(), numMonsters: 20, numItems: 10,
         breeds: [
           'giant spider',
           'unlucky ranger', // TODO: Move to different level?
@@ -84,7 +84,7 @@ class Areas extends ContentBuilder {
 
     // TODO: Better floor drops.
     area('Goblin Stronghold', [
-      level(new GoblinStronghold(50), numMonsters: 20, numItems: 8,
+      level(() => new GoblinStronghold(50), numMonsters: 20, numItems: 8,
         breeds: [
           'scurrilous imp',
           'vexing imp',
@@ -98,7 +98,7 @@ class Areas extends ContentBuilder {
           'Soothing Balm'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(new GoblinStronghold(70), numMonsters: 24, numItems: 8,
+      level(() => new GoblinStronghold(70), numMonsters: 24, numItems: 8,
         breeds: [
           'impish incanter',
           'goblin archer',
@@ -112,15 +112,15 @@ class Areas extends ContentBuilder {
     ]);
   }
 
-  Level level(StageBuilder builder, {
+  Level level(StageBuilder builder(), {
       int numMonsters, int numItems, List<String> breeds, drop,
       QuestBuilder quest}) {
     final breedList = <Breed>[];
 
     for (final name in breeds) breedList.add(Monsters.all[name]);
 
-    return new Level(builder.generate, numMonsters, numItems, breedList,
-        parseDrop(drop), quest);
+    return new Level((stage) => builder().generate(stage), numMonsters,
+        numItems, breedList, parseDrop(drop), quest);
   }
 
   Area area(String name, List<Level> levels) {
