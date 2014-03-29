@@ -396,14 +396,30 @@ class GameScreen extends Screen {
       }
     }
 
+    var hero = game.hero;
     var visibleMonsters = [];
 
     // Draw the actors.
     for (final actor in game.stage.actors) {
       if (!game.stage[actor.pos].visible) continue;
-      final appearance = actor.appearance;
-      var glyph = (appearance is Glyph) ? appearance : new Glyph('@', Color.WHITE);
 
+      var glyph = actor.appearance;
+      if (glyph is! Glyph) {
+        // The hero doesn't have a normal glyph.
+        var color = Color.WHITE;
+        if (hero.health.current < hero.health.max / 4) {
+          color = Color.RED;
+        } else if (hero.health.current < hero.health.max / 2) {
+          color = Color.LIGHT_RED;
+        } else {
+          color = Color.WHITE;
+        }
+        // TODO: Different colors for other statuses.
+
+        glyph = new Glyph('@', color);
+      }
+
+      // If the actor is being targeted, invert its colors.
       if (target == actor) {
         glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
       }
@@ -419,8 +435,6 @@ class GameScreen extends Screen {
     }
 
     // Draw the log.
-    var hero = game.hero;
-
     // If the log is overlapping the hero, flip it to the other side. Use 0.4
     // and 0.6 here to avoid flipping too much if the hero is wandering around
     // near the middle.
