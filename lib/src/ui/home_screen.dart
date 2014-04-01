@@ -120,7 +120,7 @@ class HomeView {
 /// What the user is currently doing on the home screen.
 abstract class HomeMode {
   static final VIEW = const ViewHomeMode();
-  static final DROP = const DropHomeMode();
+  static final PUT = const PutHomeMode();
   static final GET = const GetHomeMode();
 
   const HomeMode();
@@ -138,7 +138,7 @@ class ViewHomeMode extends HomeMode {
   const ViewHomeMode();
 
   String get message => 'What would you like to do?';
-  String get helpText => '[Tab] Switch left, [H] Show home, [C] Show crucible, [E] Show equipment, [D] Drop item, [G] Get item';
+  String get helpText => '[Tab] Switch left, [H] Home, [C] Crucible, [E] Equipment, [G] Get, [P] Put';
 
   bool handleInput(Keyboard keyboard, HomeScreen home) {
     switch (keyboard.lastPressed) {
@@ -191,13 +191,13 @@ class ViewHomeMode extends HomeMode {
         home.dirty();
         break;
 
-      case KeyCode.D:
-        home.mode = HomeMode.DROP;
+      case KeyCode.G:
+        home.mode = HomeMode.GET;
         home.dirty();
         break;
 
-      case KeyCode.G:
-        home.mode = HomeMode.GET;
+      case KeyCode.P:
+        home.mode = HomeMode.PUT;
         home.dirty();
         break;
 
@@ -259,19 +259,19 @@ abstract class SelectHomeMode extends HomeMode {
   void selectItem(HomeScreen home, int index);
 }
 
-/// Mode for "dropping" an item into the home or crucible.
-class DropHomeMode extends SelectHomeMode {
-  const DropHomeMode();
+/// Mode for putting an item into the home, equipment, or crucible.
+class PutHomeMode extends SelectHomeMode {
+  const PutHomeMode();
 
-  String get message => 'Drop which item?';
+  String get message => 'Put which item?';
 
   bool canSelectLeftItem(HomeScreen home, Item item) {
-    // Can drop anything in the home.
+    // Can put anything in the home.
     if (home.rightView == HomeView.HOME) return true;
 
-    // Can only drop equippable items.
+    // Can only put equippable items.
     if (home.rightView == HomeView.EQUIPMENT) {
-      // TODO(bob): This is a bit wonky. canEquip() assumes you can swap items,
+      // TODO: This is a bit wonky. canEquip() assumes you can swap items,
       // which the home screen doesn't support.
       return home.save.equipment.canEquip(item);
     }
@@ -296,7 +296,7 @@ class DropHomeMode extends SelectHomeMode {
     if (to.tryAdd(item)) {
       from.removeAt(index);
     } else {
-      // TODO(bob): Show an error message?
+      // TODO: Show an error message?
     }
 
     if (home.rightView == HomeView.CRUCIBLE) home.refreshRecipe();
@@ -324,8 +324,11 @@ class GetHomeMode extends SelectHomeMode {
 
     if (to.tryAdd(item)) {
       from.removeAt(index);
+
+      // If we get the last item, automatically switch out of get mode.
+      if (from.isEmpty) home.mode = HomeMode.VIEW;
     } else {
-      // TODO(bob): Show an error message?
+      // TODO: Show an error message?
     }
 
     if (home.rightView == HomeView.CRUCIBLE) home.refreshRecipe();
