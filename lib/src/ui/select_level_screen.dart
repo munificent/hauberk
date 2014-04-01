@@ -19,6 +19,19 @@ class SelectLevelScreen extends Screen {
   int selectedArea = 0;
   int selectedLevel = 0;
 
+  /// Gets the number of areas that the Hero is allowed to enter.
+  ///
+  /// For an area to be open, at least one level must have been completed in
+  /// the previous area.
+  int get _openAreas {
+    var i;
+    for (i = 1; i < content.areas.length; i++) {
+      if (getCompletedLevel(content.areas[i - 1]) == 0) break;
+    }
+
+    return i;
+  }
+
   SelectLevelScreen(this.content, this.save, this.storage);
 
   bool handleInput(Keyboard keyboard) {
@@ -83,7 +96,7 @@ class SelectLevelScreen extends Screen {
         }
 
         // Can only select one past the completed level.
-        if (level > getCompletedLevel(area)) {
+        if (i >= _openAreas || level > getCompletedLevel(area)) {
           fore = Color.DARK_GRAY;
         }
 
@@ -114,8 +127,8 @@ class SelectLevelScreen extends Screen {
 
   void _changeSelection(int area, int level) {
     if (area < 0) area = 0;
-    if (area >= content.areas.length) {
-      area = content.areas.length - 1;
+    if (area >= _openAreas) {
+      area = _openAreas - 1;
     }
 
     selectedArea = area;
