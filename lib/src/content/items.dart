@@ -34,6 +34,26 @@ class Items extends ContentBuilder {
     weapons();
     bodyArmor();
     boots();
+
+    /*
+
+    Pair[s] of Leather Gloves
+    Set[s] of Bracers
+    Pair[s] of Gauntlets
+
+    Leather Cap[s]
+    Chainmail Coif[s]
+    Steel Cap[s]
+    Visored Helm[s]
+    Great Helm[s]
+
+    Small Leather Shield[s]
+    Wooden Targe[s]
+    Large Leather Shield[s]
+    Steel Buckler[s]
+    Kite Shield[s]
+
+     */
   }
 
   void food() {
@@ -103,6 +123,35 @@ class Items extends ContentBuilder {
       weapon('Staff', lightBrown('_'),   'hit[s]', 'Club', 7)
     ]);
 
+    /*
+    Quarterstaff|Quarterstaves
+    Hammer[s]
+    Mattock[s]
+
+    Morningstar[s]
+    Mace[s]
+    War Hammer[s]
+
+    // One-handed swords
+    Rapier[s]
+    Shortsword[s]
+    Scimitar[s]
+    Cutlass[es]
+    Falchion[s]
+
+    // Two-handed swords
+    Bastard Sword[s]
+    Longsword[s]
+    Broadsword[s]
+    Claymore[s]
+    Flamberge[s]
+
+    Whip[s]
+    Chain Whip[s]
+    Flail[s]
+
+    */
+
     // Knives.
     sequence(10, [
       weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 5),
@@ -111,7 +160,9 @@ class Items extends ContentBuilder {
       weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 11),
       weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 14),
       weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 16)
+      // Main-guache
     ]);
+    // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
     // Spears.
     sequence(12, [
@@ -122,6 +173,13 @@ class Items extends ContentBuilder {
     ]);
 
     // glaive, voulge, halberd, pole-axe, lucerne hammer,
+
+    /*
+    Hatchet[s]
+    Axe[s]
+    Valaska[s]
+    Battleaxe[s]
+    */
 
     // Bows.
     sequence(10, [
@@ -151,6 +209,9 @@ class Items extends ContentBuilder {
     ]);
 
     /*
+    Jerkin
+    Soft Leather Armor[s]
+    Hard Leather Armor[s]
     Leather Scale Mail[s]
     Mail Hauberk[s]
     Metal Lamellar Armor[s]
