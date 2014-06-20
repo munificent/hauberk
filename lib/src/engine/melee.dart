@@ -49,9 +49,9 @@ class Attack {
       return action.succeed('{1} miss[es] {2}.', attackNoun, defender);
     }
 
-    attacker.onDamage(defender, damage);
-    defender.onDamaged(attacker, damage);
+    attacker.onDamage(action, defender, damage);
     defender.health.current -= damage;
+    defender.onDamaged(action, attacker, damage);
 
     if (defender.health.current == 0) {
       action.addEvent(new Event.kill(defender));

@@ -169,7 +169,7 @@ class Event {
   final Element element;
   final value;
 
-  Event(this.type, this.actor, this.element, this.value);
+  Event(this.type, this.actor, [this.element = Element.NONE, this.value = 0]);
 
   Event.bolt(Vec this.value, this.element)
     : type = EventType.BOLT,
@@ -192,17 +192,23 @@ class Event {
 /// A kind of [Event] that has occurred.
 class EventType {
   /// One step of a bolt.
-  static const BOLT = const EventType(0);
+  static const BOLT = const EventType("bolt");
 
   /// An [Actor] was hit.
-  static const HIT = const EventType(1);
+  static const HIT = const EventType("hit");
 
   /// An [Actor] was killed.
-  static const KILL = const EventType(2);
+  static const KILL = const EventType("kill");
 
   /// An [Actor] was healed.
-  static const HEAL = const EventType(3);
+  static const HEAL = const EventType("heal");
 
-  final int _value;
+  /// An [Actor] was frightened.
+  static const FEAR = const EventType("fear");
+
+  /// An [Actor] regained their courage.
+  static const COURAGE = const EventType("courage");
+
+  final String _value;
   const EventType(this._value);
 }

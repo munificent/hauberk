@@ -120,6 +120,11 @@ class Monster extends Actor {
   /// the monster will switch to the afraid state and try to flee.
   double _fear = 0.0;
 
+  /// The fear level that will cause the monster to become frightened. This is
+  /// randomized every frame so that all monsters don't become frightened at
+  /// the same time.
+  double _frightenThreshold = 1000.0;
+
   // TODO: Only used by debug log. Do something better.
   double get fear => _fear;
 
@@ -161,34 +166,35 @@ class Monster extends Actor {
     // Recharge moves.
     _recharge = math.max(0, _recharge - Option.RECHARGE_RATE);
 
-    _updateFear();
+    // We do the randomization once per turn and not in [_modifyFear] because
+    // calling that repeatedly should not increase the chance of a state change.
+    _frightenThreshold = rng.range(60, 100).toDouble();
 
     return _state.getAction();
   }
 
-  void _updateFear() {
+  /// Modifies fear and then determines if it's has crossed the threshold to
+  /// cause a state change.
+  void _modifyFear(Action action, double offset) {
+    // Don't add effects if the monster already died.
+    if (!isAlive) return;
+
+    _fear = math.max(0.0, _fear + offset);
+
     // TODO: Also check for other awake non-afraid states.
-    if (_state is _AwakeState && _fear > rng.range(40, 100)) {
+    if (_state is _AwakeState && _fear > _frightenThreshold) {
       log("{1} is afraid!", this);
       _changeState(new _AfraidState());
-    } else if (_state is _AfraidState && _fear <= 0.0) {
+      action.addEvent(new Event(EventType.FEAR, this));
+      return;
+    }
+
+    if (_state is _AfraidState && _fear <= 0.0) {
       // TODO: Should possibly go into other non-afraid states.
       log("{1} grows courageous!", this);
       _changeState(new _AwakeState());
+      action.addEvent(new Event(EventType.COURAGE, this));
     }
-
-    // Fear decays over time, more quickly the farther the monster is from the
-    // hero.
-    var fearDecay = 5.0 + (pos - game.hero.pos).kingLength;
-
-    // Fear decays more quickly if out of sight.
-    if (!isVisible) fearDecay = 5.0 + fearDecay * 2.0;
-
-    // The closer the monster is to death, the less quickly it gets over fear.
-    fearDecay = 2.0 + fearDecay * health.current / health.max;
-
-    _fear = math.max(_fear - fearDecay, 0.0);
-    Debug.logMonster(this, "Decay fear by $fearDecay to $_fear");
   }
 
   void _changeState(_MonsterState state) {
@@ -205,57 +211,57 @@ class Monster extends Actor {
   }
 
   /// Inflicting damage decreases fear.
-  void onDamage(Actor defender, int damage) {
+  void onDamage(Action action, Actor defender, int damage) {
     // The greater the power of the hit, the more emboldening it is.
     var fear = 100.0 * damage / game.hero.health.max;
     // TODO: Allow breed to tune this.
 
-    _fear = math.max(0.0, _fear - fear);
+    _modifyFear(action, -fear);
     Debug.logMonster(this, "Hit for ${damage} / ${game.hero.health.max} "
         "decreases fear by ${fear} to $_fear");
 
     // Nearby monsters may witness it.
     _updateWitnesses((witness) {
-      witness._viewHeroDamage(damage);
+      witness._viewHeroDamage(action, damage);
     });
   }
 
   /// This is called when another monster in sight of this one has damaged the
   /// hero.
-  void _viewHeroDamage(int damage) {
+  void _viewHeroDamage(Action action, int damage) {
     // TODO: Allow breed to tune this.
     var fear = 50.0 * damage / health.max;
 
-    _fear = math.max(0.0, _fear - fear);
+    _modifyFear(action, -fear);
     Debug.logMonster(this, "Witness ${damage} / ${health.max} "
         "decreases fear by ${fear} to $_fear");
   }
 
   /// Taking damage increases fear.
-  void onDamaged(Actor attacker, int damage) {
+  void onDamaged(Action action, Actor attacker, int damage) {
     // The greater the power of the hit, the more frightening it is.
     var fear = 100.0 * damage / health.max;
     // TODO: Allow breed to tune this.
 
-    _fear += fear;
+    _modifyFear(action, fear);
     Debug.logMonster(this, "Hit for ${damage} / ${health.max} "
         "increases fear by ${fear} to $_fear");
 
     // Nearby monsters may witness it.
     _updateWitnesses((witness) {
-      witness._viewMonsterDamage(damage);
+      witness._viewMonsterDamage(action, damage);
     });
   }
 
   /// This is called when another monster in sight of this one has taken
   /// damage.
-  void _viewMonsterDamage(int damage) {
+  void _viewMonsterDamage(Action action, int damage) {
     // TODO: Allow breed to tune this.
     var fear = 50.0 * damage / health.max;
 
     if (breed.flags.contains("protective")) fear *= -1.0;
 
-    _fear = math.max(0, _fear + fear);
+    _modifyFear(action, fear);
     Debug.logMonster(this, "Witness ${damage} / ${health.max} "
         "increases fear by ${fear} to $_fear");
   }
@@ -277,6 +283,8 @@ class Monster extends Actor {
   }
 
   void onFinishTurn(Action action) {
+    _decayFear(action);
+
     // Regenerate health if out of sight.
     if (isVisible) return;
 
@@ -312,6 +320,21 @@ class Monster extends Actor {
 
       if (other.canView(pos)) callback(other);
     }
+  }
+
+  /// Fear decays over time, more quickly the farther the monster is from the
+  /// hero.
+  void _decayFear(Action action) {
+    var fearDecay = 5.0 + (pos - game.hero.pos).kingLength;
+
+    // Fear decays more quickly if out of sight.
+    if (!isVisible) fearDecay = 5.0 + fearDecay * 2.0;
+
+    // The closer the monster is to death, the less quickly it gets over fear.
+    fearDecay = 2.0 + fearDecay * health.current / health.max;
+
+    _modifyFear(action, -fearDecay);
+    Debug.logMonster(this, "Decay fear by $fearDecay to $_fear");
   }
 }
 
@@ -405,6 +428,16 @@ class _AsleepState extends _MonsterState {
         "$flowDistance, noise: $noise");
     return new RestAction();
   }
+}
+
+class AIChoice {
+  final num score;
+  final createAction;
+  final description;
+
+  AIChoice(this.score, this.description, this.createAction);
+
+  String toString() => "$score - $description";
 }
 
 class _AwakeState extends _MonsterState {
@@ -510,16 +543,6 @@ class _AwakeState extends _MonsterState {
 
     return rng.item(bestChoices).createAction();
   }
-}
-
-class AIChoice {
-  final num score;
-  final createAction;
-  final description;
-
-  AIChoice(this.score, this.description, this.createAction);
-
-  String toString() => "$score - $description";
 }
 
 class _AfraidState extends _MonsterState {

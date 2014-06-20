@@ -329,6 +329,14 @@ class GameScreen extends Screen {
         case EventType.HEAL:
           effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
           break;
+
+        case EventType.FEAR:
+          effects.add(new BlinkEffect(event.actor, Color.YELLOW));
+          break;
+
+        case EventType.COURAGE:
+          effects.add(new BlinkEffect(event.actor, Color.RED));
+          break;
       }
     }
 
@@ -639,6 +647,29 @@ class FrameEffect implements Effect {
 
   void render(Terminal terminal) {
     terminal.writeAt(pos.x, pos.y, char, color);
+  }
+}
+
+/// Blinks the background color for an actor a couple of times.
+class BlinkEffect implements Effect {
+  final Actor actor;
+  final Color color;
+  int life = 8 * 3;
+
+  BlinkEffect(this.actor, this.color);
+
+  bool update(Game game) {
+    return --life >= 0;
+  }
+
+  void render(Terminal terminal) {
+    if (!actor.isVisible) return;
+
+    if ((life ~/ 8) % 2 == 0) {
+      var glyph = actor.appearance;
+      glyph = new Glyph.fromCharCode(glyph.char, glyph.fore, color);
+      terminal.drawGlyph(actor.pos.x, actor.pos.y, glyph);
+    }
   }
 }
 
