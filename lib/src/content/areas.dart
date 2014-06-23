@@ -37,7 +37,8 @@ class Areas extends ContentBuilder {
           'vole',
           'tree snake',
           'giant earthworm',
-          'garden spider'
+          'garden spider',
+          'wasp'
         ],
         drop: [
           chanceOf(20, 'Flower'),
@@ -109,7 +110,10 @@ class Areas extends ContentBuilder {
           'green slime'
         ],
         drop: [
-          'Soothing Balm'
+          'Loaf of Bread',
+          'Soothing Balm',
+          'Scroll of Sidestepping',
+          'Leather Sandals'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
       level(() => new GoblinStronghold(70), numMonsters: 24, numItems: 8,
@@ -117,10 +121,14 @@ class Areas extends ContentBuilder {
           'impish incanter',
           'goblin archer',
           'goblin warrior',
-          'giant bat'
+          'giant bat',
+          'mongrel',
+          'giant centipede'
         ],
         drop: [
-          'Soothing Balm'
+          'Loaf of Bread',
+          'Soothing Balm',
+          'Potion of Quickness'
         ],
         quest: tileType('the stairs', Tiles.stairs))
     ]);

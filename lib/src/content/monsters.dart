@@ -78,20 +78,21 @@ class Monsters extends ContentBuilder {
         attack('bite[s]', 2, Element.POISON)
       ],
       maxHealth: 2, meander: 8,
-      flags: 'group'
+      flags: 'group fearless'
     );
 
     breed('brown spider', brown('a'), [
         attack('bite[s]', 3, Element.POISON)
       ],
       maxHealth: 3, meander: 8,
-      flags: 'group'
+      flags: 'group fearless'
     );
 
     breed('giant spider', darkBlue('a'), [
         attack('bite[s]', 8, Element.POISON)
       ],
-      maxHealth: 12, meander: 5
+      maxHealth: 12, meander: 5,
+      flags: 'fearless'
     );
   }
 
@@ -130,7 +131,8 @@ class Monsters extends ContentBuilder {
         attack('claw[s]', 5),
       ],
       drop: hunting('Black Feather'),
-      maxHealth: 8, meander: 1
+      maxHealth: 8, meander: 1,
+      flags: 'protective'
     );
   }
 
@@ -153,6 +155,14 @@ class Monsters extends ContentBuilder {
       maxHealth: 9,
       flags: 'few'
     );
+
+    breed('mongrel', orange('c'), [
+        attack('bite[s]', 7),
+      ],
+      drop: hunting('Fur Pelt'),
+      maxHealth: 11,
+      flags: 'few'
+    );
   }
 
   flyingInsects() {
@@ -164,7 +174,7 @@ class Monsters extends ContentBuilder {
       ],
       drop: hunting('Insect wing'),
       maxHealth: 1, speed: 2,
-      flags: 'few'
+      flags: 'few fearless'
     );
 
     breed('bee', yellow('i'), [
@@ -173,6 +183,13 @@ class Monsters extends ContentBuilder {
       drop: chanceOf(50, 'Honeycomb'),
       maxHealth: 1, speed: 1,
       flags: 'group protective'
+    );
+
+    breed('wasp', brown('i'), [
+        attack('sting[s]', 4),
+      ],
+      maxHealth: 1, speed: 2,
+      flags: 'berzerk'
     );
   }
 
@@ -197,7 +214,16 @@ class Monsters extends ContentBuilder {
         attack('crawl[s] on', 1),
       ],
       drop: hunting('Insect wing'),
-      maxHealth: 12, speed: 3
+      maxHealth: 12, speed: 3,
+      flags: 'fearless'
+    );
+
+    breed('giant centipede', red('i'), [
+        attack('crawl[s] on', 3),
+        attack('bite[s]', 6),
+      ],
+      maxHealth: 12, speed: 2,
+      flags: 'fearless'
     );
   }
 
@@ -211,7 +237,8 @@ class Monsters extends ContentBuilder {
         chanceOf(10, 'Cudgel'),
         chanceOf(7, 'Potion of Quickness')
       ],
-      maxHealth: 14, meander: 4
+      maxHealth: 14, meander: 4,
+      flags: 'cowardly'
     );
 
     // TODO: More drops.
@@ -220,7 +247,8 @@ class Monsters extends ContentBuilder {
         insult(),
         sparkBolt(cost: 10, damage: 6)
       ],
-      maxHealth: 12, meander: 4, speed: 1
+      maxHealth: 12, meander: 4, speed: 1,
+      flags: 'cowardly'
     );
 
     breed('impish incanter', lightPurple('I'), [
@@ -269,7 +297,7 @@ class Monsters extends ContentBuilder {
         attack('crawl[s] on', 3)
       ],
       maxHealth: 10,
-      flags: 'few'
+      flags: 'few fearless'
     );
   }
 
@@ -300,7 +328,7 @@ class Monsters extends ContentBuilder {
         chanceOf(20, 'Leather Sandals')
       ]),
       maxHealth: 6, meander: 3,
-      flags: 'open-doors'
+      flags: 'open-doors cowardly'
     );
 
     breed('decrepit mage', purple('p'), [
@@ -343,7 +371,7 @@ class Monsters extends ContentBuilder {
         chanceOf(5, 'Robe')
       ],
       maxHealth: 9, meander: 4,
-      flags: 'open-doors'
+      flags: 'open-doors fearless'
     );
   }
 
@@ -398,7 +426,8 @@ class Monsters extends ContentBuilder {
     breed('giant slug', green('s'), [
         attack('crawl[s] on', 8),
       ],
-      maxHealth: 12, meander: 1, speed: -3
+      maxHealth: 12, meander: 1, speed: -3,
+      flags: 'fearless'
     );
   }
 
@@ -424,20 +453,22 @@ class Monsters extends ContentBuilder {
     breed('giant earthworm', lightRed('w'), [
         attack('crawl[s] on', 8),
       ],
-      maxHealth: 16, speed: -2
+      maxHealth: 16, speed: -2,
+      flags: 'fearless'
     );
 
     breed('maggot', lightGray('w'), [
         attack('crawl[s] on', 5),
       ],
       maxHealth: 2,
-      flags: 'swarm'
+      flags: 'swarm fearless'
     );
 
     breed('giant cave worm', white('w'), [
         attack('crawl[s] on', 8),
       ],
-      maxHealth: 24, speed: -2
+      maxHealth: 24, speed: -2,
+      flags: 'fearless'
     );
   }
 

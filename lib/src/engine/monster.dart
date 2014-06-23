@@ -179,6 +179,8 @@ class Monster extends Actor {
     // Don't add effects if the monster already died.
     if (!isAlive) return;
 
+    if (breed.flags.contains("fearless")) return;
+
     _fear = math.max(0.0, _fear + offset);
 
     // TODO: Also check for other awake non-afraid states.
@@ -214,7 +216,6 @@ class Monster extends Actor {
   void onDamage(Action action, Actor defender, int damage) {
     // The greater the power of the hit, the more emboldening it is.
     var fear = 100.0 * damage / game.hero.health.max;
-    // TODO: Allow breed to tune this.
 
     _modifyFear(action, -fear);
     Debug.logMonster(this, "Hit for ${damage} / ${game.hero.health.max} "
@@ -229,7 +230,6 @@ class Monster extends Actor {
   /// This is called when another monster in sight of this one has damaged the
   /// hero.
   void _viewHeroDamage(Action action, int damage) {
-    // TODO: Allow breed to tune this.
     var fear = 50.0 * damage / health.max;
 
     _modifyFear(action, -fear);
@@ -241,7 +241,13 @@ class Monster extends Actor {
   void onDamaged(Action action, Actor attacker, int damage) {
     // The greater the power of the hit, the more frightening it is.
     var fear = 100.0 * damage / health.max;
-    // TODO: Allow breed to tune this.
+
+    if (breed.flags.contains("cowardly")) {
+      fear *= 2.0;
+    } else if (breed.flags.contains("berzerk")) {
+      // Getting hurt enrages it.
+      fear *= -3.0;
+    }
 
     _modifyFear(action, fear);
     Debug.logMonster(this, "Hit for ${damage} / ${health.max} "
@@ -249,17 +255,24 @@ class Monster extends Actor {
 
     // Nearby monsters may witness it.
     _updateWitnesses((witness) {
-      witness._viewMonsterDamage(action, damage);
+      witness._viewMonsterDamage(action, this, damage);
     });
   }
 
   /// This is called when another monster in sight of this one has taken
   /// damage.
-  void _viewMonsterDamage(Action action, int damage) {
-    // TODO: Allow breed to tune this.
+  void _viewMonsterDamage(Action action, Monster monster, int damage) {
     var fear = 50.0 * damage / health.max;
 
-    if (breed.flags.contains("protective")) fear *= -1.0;
+    if (breed.flags.contains("cowardly")) {
+      fear *= 2.0;
+    } else if (breed.flags.contains("protective") && monster.breed == breed) {
+      // Seeing its own kind get hurt enrages it.
+      fear *= -2.0;
+    } else if (breed.flags.contains("berzerk")) {
+      // Seeing any monster get hurt enrages it.
+      fear *= -1.0;
+    }
 
     _modifyFear(action, fear);
     Debug.logMonster(this, "Witness ${damage} / ${health.max} "

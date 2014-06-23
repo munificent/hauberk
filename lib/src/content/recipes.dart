@@ -45,6 +45,25 @@ class Recipes extends ContentBuilder {
       'Soothing Balm'
     ]);
 
+    recipe('Healing Poultice', [
+      'Mending Salve',
+      'Mending Salve',
+      'Mending Salve'
+    ]);
+
+    recipe('Potion of Amelioration', [
+      'Healing Poultice',
+      'Healing Poultice',
+      'Healing Poultice'
+    ]);
+
+    recipe('Potion of Rejuvenation', [
+      'Potion of Amelioration',
+      'Potion of Amelioration',
+      'Potion of Amelioration',
+      'Potion of Amelioration'
+    ]);
+
     recipe('Scroll of Sidestepping', [
       'Insect Wing',
       'Black Feather',
@@ -61,6 +80,12 @@ class Recipes extends ContentBuilder {
       'Scroll of Phasing',
       'Scroll of Phasing',
       'Scroll of Phasing'
+    ]);
+
+    recipe('Scroll of Disappearing', [
+      'Scroll of Teleportation',
+      'Scroll of Teleportation',
+      'Scroll of Teleportation'
     ]);
 
     recipe('Fur-lined Robe', [

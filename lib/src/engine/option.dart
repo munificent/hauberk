@@ -109,7 +109,10 @@ class Option {
     'group': 1.2,
     'few': 1.1,
     'open-doors': 1.1,
-    'protective': 1.1
+    'fearless': 1.2,
+    'protective': 1.1,
+    'cowardly': 0.8,
+    'berzerk': 1.2
   };
 
   /// The more a monster meanders, the less experience it's worth. This number
