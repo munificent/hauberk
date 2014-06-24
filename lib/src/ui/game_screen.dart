@@ -303,13 +303,12 @@ class GameScreen extends Screen {
 
     // See if the hero died.
     if (!game.hero.isAlive) {
-      // TODO(bob): Should it save the game here?
       ui.goTo(new GameOverScreen());
       return;
     }
 
     for (final event in result.events) {
-      // TODO(bob): Handle other event types.
+      // TODO: Handle other event types.
       switch (event.type) {
         case EventType.BOLT:
           effects.add(new FrameEffect(event.value, '*',
@@ -320,9 +319,9 @@ class GameScreen extends Screen {
           effects.add(new HitEffect(event.actor));
           break;
 
-        case EventType.KILL:
+        case EventType.DIE:
           effects.add(new HitEffect(event.actor));
-          // TODO(bob): Make number of particles vary based on monster health.
+          // TODO: Make number of particles vary based on monster health.
           _spawnParticles(10, event.actor.pos, Color.RED);
           break;
 
@@ -348,7 +347,7 @@ class GameScreen extends Screen {
   void render(Terminal terminal) {
     final black = new Glyph(' ');
 
-    // TODO(bob): Hack. Clear out the help text from the previous screen.
+    // TODO: Hack. Clear out the help text from the previous screen.
     terminal.rect(0, terminal.height - 1, terminal.width, 1).clear();
 
     // Draw the stage.
@@ -489,7 +488,7 @@ class GameScreen extends Screen {
         Color.BLUE, Color.DARK_BLUE);
 
     drawStat(terminal, 3, 'Level', hero.level, Color.AQUA);
-    // TODO(bob): Handle hero at max level.
+    // TODO: Handle hero at max level.
     drawStat(terminal, 4, 'Exp', hero.experience, Color.AQUA,
         calculateLevelCost(hero.level + 1), Color.DARK_AQUA);
     drawStat(terminal, 5, 'Armor',

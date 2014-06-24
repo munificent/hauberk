@@ -66,7 +66,7 @@ class Attack {
     defender.onDamaged(action, attacker, damage);
 
     if (defender.health.current == 0) {
-      action.addEvent(new Event.kill(defender));
+      action.addEvent(new Event.die(defender));
 
       action.log('{1} kill[s] {2}.', attackNoun, defender);
       defender.onDied(attacker);

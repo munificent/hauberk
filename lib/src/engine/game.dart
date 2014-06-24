@@ -103,9 +103,7 @@ class Game {
     if (tile.visible || tile.isExplored || !tile.isPassable) return;
     if (stage.actorAt(pos) != null) return;
 
-    // TODO(bob): Should reuse code in Area to generate out-of-depth monsters.
-    final breed = area.pickBreed(level);
-    stage.spawnMonster(breed, pos);
+    stage.spawnMonster(area.pickBreed(level), pos);
   }
 }
 
@@ -170,8 +168,8 @@ class Event {
     : type = EventType.HIT,
       element = Element.NONE;
 
-  Event.kill(this.actor)
-    : type = EventType.KILL,
+  Event.die(this.actor)
+    : type = EventType.DIE,
       element = Element.NONE,
       value = 0;
 
@@ -188,8 +186,8 @@ class EventType {
   /// An [Actor] was hit.
   static const HIT = const EventType("hit");
 
-  /// An [Actor] was killed.
-  static const KILL = const EventType("kill");
+  /// An [Actor] died.
+  static const DIE = const EventType("die");
 
   /// An [Actor] was healed.
   static const HEAL = const EventType("heal");
