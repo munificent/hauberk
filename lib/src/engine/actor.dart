@@ -1,7 +1,5 @@
 library dngn.engine.actor;
 
-import 'dart:math' as math;
-
 import '../util.dart';
 import 'action_base.dart';
 import 'condition.dart';
@@ -9,7 +7,6 @@ import 'energy.dart';
 import 'game.dart';
 import 'log.dart';
 import 'melee.dart';
-import 'option.dart';
 
 abstract class Thing implements Noun {
   Vec _pos;
@@ -91,9 +88,8 @@ abstract class Actor extends Thing {
   Attack getAttack(Actor defender);
 
   /// This is called on the defender when some attacker is attempting to hit it.
-  /// The defender fills it in with the information needed to resolve the the
-  /// hit.
-  void takeHit(Hit hit);
+  /// The defender can modify the attack or simply return the incoming one.
+  Attack defend(Attack attack) => attack;
 
   /// Called when this actor has successfully hit this [defender].
   void onDamage(Action action, Actor defender, int damage) {

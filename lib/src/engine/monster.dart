@@ -206,10 +206,11 @@ class Monster extends Actor {
 
   Attack getAttack(Actor defender) => rng.item(breed.attacks);
 
-  void takeHit(Hit hit) {
-    _state.takeHit();
+  Attack defend(Attack attack) {
+    _state.defend();
 
     // TODO: Handle resists.
+    return attack;
   }
 
   /// Inflicting damage decreases fear.
@@ -292,6 +293,7 @@ class Monster extends Actor {
     // Tell the quest.
     game.quest.killMonster(game, this);
 
+    game.stage.actors.remove(this);
     Debug.removeMonster(this);
   }
 
@@ -370,7 +372,7 @@ abstract class _MonsterState {
     monster.log(message, noun1, noun2, noun3);
   }
 
-  void takeHit() {}
+  void defend() {}
   Action getAction();
 
   void changeState(_MonsterState state) {
@@ -384,7 +386,7 @@ abstract class _MonsterState {
 }
 
 class _AsleepState extends _MonsterState {
-  void takeHit() {
+  void defend() {
     // Don't sleep through a beating!
     Debug.logMonster(monster, "Wake on hit.");
     changeState(new _AwakeState());

@@ -150,10 +150,9 @@ class Hero extends Actor {
     return attack;
   }
 
-  void takeHit(Hit hit) {
+  Attack defend(Attack attack) {
     disturb();
-
-    hit.armor = armor;
+    return attack.addArmor(armor);
   }
 
   void onKilled(Monster defender) {

@@ -7,7 +7,6 @@ import 'action_base.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'game.dart';
-import 'hero.dart';
 import 'log.dart';
 
 class Attack {
@@ -20,29 +19,42 @@ class Attack {
 
   /// The average damage. The actual damage will be a `Rng.triangleInt` centered
   /// on this with a range of 1/2 of its value.
-  final int damage;
+  final num damage;
 
   /// The element for the attack.
   final Element element;
 
-  Attack(this.verb, this.damage, this.element, [this.noun]);
+  /// The defender's armor.
+  final num armor;
+
+  Attack(this.verb, this.damage, this.element, [this.noun])
+      : armor = 0;
+
+  Attack._(this.noun, this.verb, this.damage, this.element, this.armor);
 
   /// Returns a new attack identical to this one but with [damageModifier]
-  /// applied.
-  Attack modifyDamage(int damageModifier) {
-    return new Attack(verb, damage + damageModifier, element, noun);
+  /// added.
+  Attack addDamage(num offset) {
+    return new Attack._(noun, verb, damage + offset, element, armor);
+  }
+
+  /// Returns a new attack with [armor] added to it.
+  Attack addArmor(num armor) {
+    return new Attack._(noun, verb, damage, element, this.armor + armor);
   }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
   /// [action].
   ActionResult perform(Action action, Actor attacker, Actor defender) {
-    final hit = new Hit(this);
-    defender.takeHit(hit);
+    var attack = defender.defend(this);
+    return attack._perform(action, attacker, defender);
+  }
 
+  ActionResult _perform(Action action, Actor attacker, Actor defender) {
     final attackNoun = noun != null ? noun : attacker;
 
     // Roll for damage.
-    final damage = hit.rollDamage();
+    final damage = _rollDamage();
 
     if (damage == 0) {
       // Armor cancelled out all damage.
@@ -60,10 +72,6 @@ class Attack {
       defender.onDied(attacker);
       attacker.onKilled(defender);
 
-      if (defender is! Hero) {
-        action.game.stage.actors.remove(defender);
-      }
-
       return action.succeed();
     }
 
@@ -71,22 +79,14 @@ class Attack {
     return action.succeed('{1} ${verb} {2}.', attackNoun, defender);
   }
 
-  String toString() => "$damage $element";
-}
-
-class Hit {
-  /// The attack.
-  final Attack attack;
-
-  int armor = 0;
-
-  Hit(this.attack);
-
-  int rollDamage() {
-    var damage = rng.triangleInt(attack.damage, attack.damage ~/ 2);
-    damage *= getArmorMultiplier(armor);
-    return damage.round().toInt();
+  int _rollDamage() {
+    var baseDamage = damage.toInt();
+    var rolled = rng.triangleInt(baseDamage, baseDamage ~/ 2);
+    rolled *= getArmorMultiplier(armor);
+    return damage.round();
   }
+
+  String toString() => "$damage $element";
 }
 
 /// Armor reduces damage by an inverse curve such that increasing armor has
@@ -100,7 +100,7 @@ class Hit {
 ///     120   25%
 ///     160   20%
 ///     ...   etc.
-num getArmorMultiplier(int armor) {
+num getArmorMultiplier(num armor) {
   // Damage is never increased.
   return 1.0 / (1.0 + math.max(0, armor) / 40.0);
 }

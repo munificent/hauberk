@@ -1,7 +1,5 @@
 library dngn.engine.game;
 
-import 'dart:collection';
-
 import '../util.dart';
 import 'action_base.dart';
 import 'actor.dart';
