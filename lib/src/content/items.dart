@@ -35,6 +35,25 @@ class Items extends ContentBuilder {
     bodyArmor();
     boots();
 
+    // Make the secondary sequences. These contain items from a bunch of
+    // sequences and make it easier to define monsters that drop a wide variety
+    // of stuff.
+    namedSequence('magic', 10, [
+      'Scroll of Sidestepping',
+      'Soothing Balm',
+      'Antidote',
+      'Scroll of Phasing',
+      'Potion of Quickness',
+      'Mending Salve',
+      'Scroll of Teleportation',
+      'Healing Poultice',
+      'Potion of Alacrity',
+      'Scroll of Disappearing',
+      'Potion of Amelioration',
+      'Potion of Speed',
+      'Potion of Rejuvenation'
+    ]);
+
     /*
 
     Pair[s] of Leather Gloves
@@ -74,11 +93,10 @@ class Items extends ContentBuilder {
     item('Insect Wing', purple('~'));
     item('Red Feather', red('~')); // TODO: Use in recipe.
     item('Black Feather', darkGray('~'));
+    item('Stinger', gold('~'));
   }
 
   void potions() {
-    // TODO: Potion of cure poison.
-
     // Healing.
     sequence(15, [
       item('Soothing Balm', lightRed('!'),
@@ -93,6 +111,9 @@ class Items extends ContentBuilder {
           use: () => new HealAction(1000, curePoison: true))
     ]);
 
+    item('Antidote', lightRed('!'),
+        use: () => new HealAction(0, curePoison: true));
+
     // Speed.
     sequence(20, [
       item('Potion of Quickness', lightGreen('!'), use: () => new HasteAction(20, 1)),
@@ -104,8 +125,6 @@ class Items extends ContentBuilder {
   }
 
   void scrolls() {
-    item('Parchment', gray('?'));
-
     // Teleportation.
     sequence(20, [
       item('Scroll of Sidestepping', lightPurple('?'),
@@ -271,6 +290,12 @@ class Items extends ContentBuilder {
     for (var type in types) {
       sequences[type.name] = sequence;
     }
+  }
+
+  void namedSequence(String name, int chance, List<String> typeNames) {
+    var sequence = new ItemSequence(chance,
+        typeNames.map((name) => Items.all[name]).toList());
+    sequences[name] = sequence;
   }
 }
 

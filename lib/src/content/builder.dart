@@ -31,8 +31,17 @@ class ContentBuilder {
     if (drop is Drop) return drop;
 
     if (drop is String) {
+      // If the drop has an explicit sequence name like "potion|Heal", use that
+      // instead of looking up the canonical sequence for the item.
+      var sequenceName = drop;
+      var parts = drop.split("|");
+      if (parts.length > 1) {
+        sequenceName = parts[0];
+        drop = parts[1];
+      }
+
       // Look for a matching sequence.
-      var sequence = Items.sequences[drop];
+      var sequence = Items.sequences[sequenceName];
       if (sequence != null) {
         return sequence.drop(drop);
       }

@@ -62,9 +62,9 @@ class Areas extends ContentBuilder {
           'decrepit mage'
         ],
         drop: [
-          'Parchment',
-          'Soothing Balm',
-          'Scroll of Sidestepping',
+          'Edible Mushroom',
+          'magic|Scroll of Sidestepping',
+          'magic|Soothing Balm'
         ],
         quest: kill('wild dog', 3)),
       level(() => new TrainingGrounds(), numMonsters: 16, numItems: 9,
@@ -76,8 +76,7 @@ class Areas extends ContentBuilder {
           'drunken priest',
         ],
         drop: [
-          'Parchment',
-          'Soothing Balm',
+          'magic|Soothing Balm',
           'Robe'
         ],
         quest: kill('giant spider')),
@@ -90,7 +89,7 @@ class Areas extends ContentBuilder {
           'giant earthworm'
         ],
         drop: [
-          'Soothing Balm',
+          'magic|Soothing Balm',
           'Cudgel',
           'Dagger'
         ],

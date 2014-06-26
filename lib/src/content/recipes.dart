@@ -33,6 +33,11 @@ class Recipes extends ContentBuilder {
       'Fur Pelt'
     ]);
 
+    recipe('Antidote', [
+      'Soothing Balm',
+      'Stinger'
+    ]);
+
     recipe('Soothing Balm', [
       'Flower',
       'Flower',
@@ -66,8 +71,7 @@ class Recipes extends ContentBuilder {
 
     recipe('Scroll of Sidestepping', [
       'Insect Wing',
-      'Black Feather',
-      'Parchment'
+      'Black Feather'
     ]);
 
     recipe('Scroll of Phasing', [

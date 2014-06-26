@@ -188,6 +188,7 @@ class Monsters extends ContentBuilder {
     breed('wasp', brown('i'), [
         attack('sting[s]', 4, Element.POISON),
       ],
+      drop: chanceOf(30, 'Stinger'),
       maxHealth: 1, speed: 2,
       flags: 'berzerk'
     );
@@ -235,17 +236,20 @@ class Monsters extends ContentBuilder {
       ],
       drop: [
         chanceOf(10, 'Cudgel'),
-        chanceOf(7, 'Potion of Quickness')
+        chanceOf(7, 'Potion of Quickness'),
+        chanceOf(5, 'magic|Scroll of Sidestepping'),
       ],
       maxHealth: 14, meander: 4,
       flags: 'cowardly'
     );
 
-    // TODO: More drops.
     breed('vexing imp', purple('I'), [
         attack('scratch[es]', 3),
         insult(),
         sparkBolt(cost: 10, damage: 6)
+      ],
+      drop: [
+        chanceOf(10, 'magic|Potion of Quickness'),
       ],
       maxHealth: 12, meander: 4, speed: 1,
       flags: 'cowardly'
@@ -256,13 +260,19 @@ class Monsters extends ContentBuilder {
         insult(),
         fireBolt(cost: 10, damage: 8)
       ],
+      drop: [
+        chanceOf(10, 'magic|Potion of Quickness'),
+      ],
       maxHealth: 16, meander: 4, speed: 1
     );
 
     breed('goblin peon', lightBrown('I'), [
         attack('stab[s]', 4)
       ],
-      drop: chanceOf(10, 'Spear'),
+      drop: [
+        chanceOf(10, 'Spear'),
+        chanceOf(5, 'magic|Soothing Balm'),
+      ],
       maxHealth: 15, meander: 2,
       flags: 'open-doors'
     );
@@ -273,7 +283,8 @@ class Monsters extends ContentBuilder {
       ],
       drop: [
         chanceOf(4, 'Short Bow'),
-        chanceOf(10, 'Knife')
+        chanceOf(10, 'Knife'),
+        chanceOf(5, 'magic|Soothing Balm'),
       ],
       maxHealth: 12, meander: 2,
       flags: 'few'
@@ -282,7 +293,10 @@ class Monsters extends ContentBuilder {
     breed('goblin warrior', brown('I'), [
         attack('stab[s]', 8)
       ],
-      drop: chanceOf(10, 'Spear'),
+      drop: [
+        chanceOf(10, 'Spear'),
+        chanceOf(5, 'magic|Soothing Balm'),
+      ],
       maxHealth: 24, meander: 1,
       flags: 'open-doors'
     );
@@ -325,7 +339,8 @@ class Monsters extends ContentBuilder {
       drop: allOf([
         chanceOf(50, ['Knife','Cudgel']),
         chanceOf(40, 'Cloth Shirt'),
-        chanceOf(20, 'Leather Sandals')
+        chanceOf(20, 'Leather Sandals'),
+        chanceOf(8, 'magic|Soothing Balm'),
       ]),
       maxHealth: 6, meander: 3,
       flags: 'open-doors cowardly'
@@ -336,8 +351,7 @@ class Monsters extends ContentBuilder {
         sparkBolt(cost: 30, damage: 8)
       ],
       drop: allOf([
-        chanceOf(20, 'Scroll of Sidestepping'),
-        chanceOf(20, 'Soothing Balm'),
+        chanceOf(20, 'magic|Scroll of Sidestepping'),
         chanceOf(30, ['Knife', 'Staff']),
         chanceOf(40, ['Cloth Shirt', 'Robe']),
         chanceOf(10, 'Leather Sandals')
@@ -351,6 +365,7 @@ class Monsters extends ContentBuilder {
         arrow(cost: 10, damage: 2)
       ],
       drop: [
+        chanceOf(10, 'magic|Scroll of Sidestepping'),
         chanceOf(4, 'Short Bow'),
         chanceOf(10, 'Knife'),
         chanceOf(8, 'Cloth Shirt')
@@ -364,7 +379,7 @@ class Monsters extends ContentBuilder {
         heal(cost: 30, amount: 8)
       ],
       drop: [
-        chanceOf(10, 'Soothing Balm'),
+        chanceOf(10, 'magic|Soothing Balm'),
         chanceOf(7, 'Staff'),
         chanceOf(7, 'Cudgel'),
         chanceOf(7, 'Cloth Shirt'),

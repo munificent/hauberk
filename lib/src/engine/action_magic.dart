@@ -19,7 +19,7 @@ class HealAction extends Action {
       changed = true;
     }
 
-    if (!actor.health.isMax) {
+    if (!actor.health.isMax && amount > 0) {
       actor.health.current += amount;
       addEvent(new Event.heal(actor, amount));
       log('{1} feel[s] better.', actor);
