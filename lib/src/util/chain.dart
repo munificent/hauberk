@@ -22,6 +22,19 @@ class Chain<T> extends IterableBase<T> {
   bool remove(T item) {
     if (head == null) return false;
 
+    // If the head of the list is removed, advance the head.
+    if (head.item == item) {
+      // If the head is the only item, the list is now empty.
+      if (head.next == head) {
+        head = null;
+        return true;
+      }
+
+      var link = head;
+      head = link.next;
+      link.remove();
+    }
+
     var link = head;
     do {
       if (link.item == item) {

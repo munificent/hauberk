@@ -50,13 +50,18 @@ abstract class Actor extends Thing {
   /// Eating food lets the actor slowly regenerate health.
   final Condition food = new FoodCondition();
 
+  /// Haste raises or lowers speed.
   final Condition haste = new HasteCondition();
+
+  /// Poison inflicts damage each turn.
+  final Condition poison = new PoisonCondition();
 
   Actor(this.game, int x, int y, int health)
   : super(new Vec(x, y)),
     health = new Stat(health) {
     food.bind(this);
     haste.bind(this);
+    poison.bind(this);
   }
 
   bool get isAlive => health.current > 0;
@@ -90,6 +95,24 @@ abstract class Actor extends Thing {
   /// This is called on the defender when some attacker is attempting to hit it.
   /// The defender can modify the attack or simply return the incoming one.
   Attack defend(Attack attack) => attack;
+
+  /// Reduces the actor's health by [damage], and handles its death. Returns
+  /// `true` if the actor died.
+  bool takeDamage(Action action, int damage, Noun attackNoun,
+                  [Actor attacker]) {
+    health.current -= damage;
+    onDamaged(action, attacker, damage);
+
+    if (health.current > 0) return false;
+
+    action.addEvent(new Event.die(this));
+    onDied(attacker);
+
+    action.log("{1} kill[s] {2}.", attackNoun, this);
+    if (attacker != null) attacker.onKilled(this);
+
+    return true;
+  }
 
   /// Called when this actor has successfully hit this [defender].
   void onDamage(Action action, Actor defender, int damage) {
@@ -129,10 +152,11 @@ abstract class Actor extends Thing {
     energy.spend();
 
     // TODO: Move food to hero?
-    food.update();
-    haste.update();
+    food.update(action);
+    haste.update(action);
+    poison.update(action);
 
-    onFinishTurn(action);
+    if (isAlive) onFinishTurn(action);
   }
 
   /// Logs [message] if the actor is visible to the hero.

@@ -340,6 +340,7 @@ class Monster extends Actor {
   /// Fear decays over time, more quickly the farther the monster is from the
   /// hero.
   void _decayFear(Action action) {
+    // TODO: Poison should slow the decay of fear.
     var fearDecay = 5.0 + (pos - game.hero.pos).kingLength;
 
     // Fear decays more quickly if out of sight.

@@ -6,16 +6,30 @@ import 'game.dart';
 
 class HealAction extends Action {
   final int amount;
+  final bool curePoison;
 
-  HealAction(this.amount);
+  HealAction(this.amount, {this.curePoison: false});
 
   ActionResult onPerform() {
-    if (actor.health.isMax) {
-      return succeed("{1} [don't|doesn't] feel any different.", actor);
-    } else {
+    var changed = false;
+
+    if (actor.poison.isActive && curePoison) {
+      actor.poison.cancel();
+      log("{1} [are|is] cleansed of poison.", actor);
+      changed = true;
+    }
+
+    if (!actor.health.isMax) {
       actor.health.current += amount;
       addEvent(new Event.heal(actor, amount));
-      return succeed('{1} feel[s] better.', actor);
+      log('{1} feel[s] better.', actor);
+      changed = true;
+    }
+
+    if (changed) {
+      return ActionResult.SUCCESS;
+    } else {
+      return succeed("{1} [don't|doesn't] feel any different.", actor);
     }
   }
 }
@@ -101,5 +115,48 @@ class HasteAction extends Action {
   void _fast() {
     log("{1} start[s] moving faster.", actor);
     actor.haste.activate(_duration, _speed);
+  }
+}
+
+class PoisonAction extends Action {
+  final int _damage;
+
+  PoisonAction(this._damage);
+
+  ActionResult onPerform() {
+    // Intensity ramps up slowly since greater damage also increases duration.
+    var intensity = 1 + (_damage / 20).round();
+    var duration = 1 + rng.triangleInt(_damage ~/ 2, _damage ~/ 2);
+
+    // TODO: Apply resistance to duration and bail if zero duration.
+    // TODO: Don't lower intensity by resistance here (we want to handle that
+    // each turn in case it changes), but do see if resistance will lower the
+    // intensity to zero. If so, bail.
+
+    if (!actor.poison.isActive) {
+      actor.poison.activate(duration, intensity);
+      return succeed("{1} [are|is] poisoned!", actor);
+    }
+
+    if (actor.poison.intensity >= intensity) {
+      // Scale down the new duration by how much weaker the new poison is.
+      duration = (duration * intensity) / actor.poison.intensity;
+
+      // Compound poison doesn't add as much as the first one.
+      duration = (duration / 2).truncate();
+      if (duration == 0) return succeed();
+
+      actor.poison.extend(duration);
+      return succeed("{1} feel[s] the poison linger!", actor);
+    }
+
+    // Scale down the existing duration by how much stronger the new poison
+    // is.
+    var oldDuration = (actor.poison.duration * actor.poison.intensity)
+        / intensity;
+
+    actor.poison.activate((oldDuration + duration / 2).truncate(),
+        intensity);
+    return succeed("{1} feel[s] the poison intensify!", actor);
   }
 }

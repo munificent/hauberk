@@ -186,7 +186,7 @@ class Monsters extends ContentBuilder {
     );
 
     breed('wasp', brown('i'), [
-        attack('sting[s]', 4),
+        attack('sting[s]', 4, Element.POISON),
       ],
       maxHealth: 1, speed: 2,
       flags: 'berzerk'

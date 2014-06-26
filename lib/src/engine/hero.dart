@@ -184,6 +184,12 @@ class Hero extends Actor {
 
   /// Starts resting, if the hero has eaten and is able to regenerate.
   bool rest() {
+    if (poison.isActive) {
+      game.log.error(
+          "You cannot rest while poison courses through your veins!");
+      return false;
+    }
+
     if (!food.isActive) {
       game.log.error("You are too hungry to rest!");
       return false;

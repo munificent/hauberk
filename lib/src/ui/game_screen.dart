@@ -501,12 +501,13 @@ class GameScreen extends Screen {
     var conditions = [];
 
     if (hero.food.isActive) conditions.add(["Food", Color.ORANGE]);
+    if (hero.poison.isActive) conditions.add(["Pois", Color.DARK_GREEN]);
     switch (hero.haste.intensity) {
-      case -2: conditions.add(["Para", Color.DARK_GREEN]); break;
-      case -1: conditions.add(["Slow", Color.DARK_GREEN]); break;
-      case 1: conditions.add(["Quik", Color.GREEN]); break;
-      case 2: conditions.add(["Alac", Color.GREEN]); break;
-      case 3: conditions.add(["Sped", Color.GREEN]); break;
+      case -2: conditions.add(["Para", Color.DARK_GOLD]); break;
+      case -1: conditions.add(["Slow", Color.DARK_GOLD]); break;
+      case 1: conditions.add(["Quik", Color.GOLD]); break;
+      case 2: conditions.add(["Alac", Color.GOLD]); break;
+      case 3: conditions.add(["Sped", Color.GOLD]); break;
     }
 
     var x = 82;

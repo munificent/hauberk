@@ -77,14 +77,20 @@ class Items extends ContentBuilder {
   }
 
   void potions() {
+    // TODO: Potion of cure poison.
+
     // Healing.
-    // TODO: Higher-level ones should remove conditions too.
     sequence(15, [
-      item('Soothing Balm', lightRed('!'), use: () => new HealAction(24)),
-      item('Mending Salve', red('!'), use: () => new HealAction(48)),
-      item('Healing Poultice', darkRed('!'), use: () => new HealAction(64)),
-      item('Potion of Amelioration', darkRed('!'), use: () => new HealAction(120)),
-      item('Potion of Rejuvenation', darkRed('!'), use: () => new HealAction(1000))
+      item('Soothing Balm', lightRed('!'),
+          use: () => new HealAction(24)),
+      item('Mending Salve', red('!'),
+          use: () => new HealAction(48)),
+      item('Healing Poultice', darkRed('!'),
+          use: () => new HealAction(64, curePoison: true)),
+      item('Potion of Amelioration', darkPurple('!'),
+          use: () => new HealAction(120, curePoison: true)),
+      item('Potion of Rejuvenation', purple('!'),
+          use: () => new HealAction(1000, curePoison: true))
     ]);
 
     // Speed.

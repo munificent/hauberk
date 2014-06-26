@@ -1,5 +1,7 @@
 library dngn.engine.game;
 
+import 'dart:collection';
+
 import '../util.dart';
 import 'action_base.dart';
 import 'actor.dart';
@@ -18,9 +20,9 @@ import 'stage.dart';
 class Game {
   final Area area;
   final int level;
-  final Stage stage = new Stage(80, 40);
-  final Log log = new Log();
-  Action _action;
+  final stage = new Stage(80, 40);
+  final log = new Log();
+  final _actions = new Queue<Action>();
   Hero hero;
   Quest quest;
 
@@ -34,13 +36,15 @@ class Game {
     final gameResult = new GameResult();
 
     while (true) {
-      // Process any ongoing action.
-      while (_action != null) {
+      // Process any ongoing or pending actions.
+      while (_actions.isNotEmpty) {
+        var action = _actions.first;
+
         // Cascade through the alternates until we hit bottom out.
-        var result = _action.perform(gameResult);
+        var result = action.perform(_actions, gameResult);
         while (result.alternative != null) {
-          _action = result.alternative;
-          result = _action.perform(gameResult);
+          action = result.alternative;
+          result = action.perform(_actions, gameResult);
         }
 
         stage.refreshVisibility(hero);
@@ -48,15 +52,15 @@ class Game {
         gameResult.madeProgress = true;
 
         if (result.done) {
-          if (_action.consumesEnergy) {
-            _action.actor.finishTurn(_action);
+          _actions.removeFirst();
+
+          if (action.consumesEnergy) {
+            action.actor.finishTurn(action);
             stage.actors.advance();
           }
 
           // Refresh every time the hero takes a turn.
-          var wasHero = _action.actor == hero;
-          _action = null;
-          if (wasHero) return gameResult;
+          if (action.actor == hero) return gameResult;
         }
 
         if (gameResult.events.length > 0) return gameResult;
@@ -64,7 +68,7 @@ class Game {
 
       // If we get here, all pending actions are done, so advance to the next
       // tick until an actor moves.
-      while (_action == null) {
+      while (_actions.isEmpty) {
         final actor = stage.actors.current;
 
         // If we are still waiting for input for the actor, just return (again).
@@ -75,7 +79,7 @@ class Game {
           // return so we can wait for it.
           if (actor.needsInput) return gameResult;
 
-          _action = actor.getAction();
+          _actions.add(actor.getAction());
         } else {
           // This actor doesn't have enough energy yet, so move on to the next.
           stage.actors.advance();

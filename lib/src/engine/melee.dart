@@ -4,6 +4,7 @@ import 'dart:math' as math;
 
 import '../util.dart';
 import 'action_base.dart';
+import 'action_magic.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'game.dart';
@@ -51,10 +52,10 @@ class Attack {
   }
 
   ActionResult _perform(Action action, Actor attacker, Actor defender) {
-    final attackNoun = noun != null ? noun : attacker;
+    var attackNoun = noun != null ? noun : attacker;
 
     // Roll for damage.
-    final damage = _rollDamage();
+    var damage = _rollDamage();
 
     if (damage == 0) {
       // Armor cancelled out all damage.
@@ -62,17 +63,59 @@ class Attack {
     }
 
     attacker.onDamage(action, defender, damage);
-    defender.health.current -= damage;
-    defender.onDamaged(action, attacker, damage);
-
-    if (defender.health.current == 0) {
-      action.addEvent(new Event.die(defender));
-
-      action.log('{1} kill[s] {2}.', attackNoun, defender);
-      defender.onDied(attacker);
-      attacker.onKilled(defender);
-
+    if (defender.takeDamage(action, damage, attackNoun, attacker)) {
       return action.succeed();
+    }
+
+    // Apply any element-specific effects.
+    switch (element) {
+      case Element.NONE:
+        // No effect.
+        break;
+
+      case Element.AIR:
+        // TODO: Teleport.
+        break;
+
+      case Element.EARTH:
+        // TODO: Cuts?
+        break;
+
+      case Element.FIRE:
+        // TODO: Burn items.
+        break;
+
+      case Element.WATER:
+        // TODO: Push back.
+        break;
+
+      case Element.ACID:
+        // TODO: Destroy items.
+        break;
+
+      case Element.COLD:
+        // TODO: Freeze.
+        break;
+
+      case Element.LIGHTNING:
+        // TODO: Break glass. Recharge some items?
+        break;
+
+      case Element.POISON:
+        action.addAction(new PoisonAction(damage), defender);
+        break;
+
+      case Element.DARK:
+        // TODO: Blind.
+        break;
+
+      case Element.LIGHT:
+        // TODO: Blind.
+        break;
+
+      case Element.SPIRIT:
+        // TODO: Drain experience.
+        break;
     }
 
     action.addEvent(new Event.hit(defender, damage));

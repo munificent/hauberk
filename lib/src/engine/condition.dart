@@ -1,6 +1,8 @@
 library dngn.engine.condition;
 
+import 'action_base.dart';
 import 'actor.dart';
+import 'log.dart';
 
 /// A temporary condition that modifies some property of an [Actor] while it
 /// is in effect.
@@ -19,6 +21,8 @@ abstract class Condition {
   /// Gets whether the condition is currently in effect.
   bool get isActive => _turnsRemaining > 0;
 
+  int get duration => _turnsRemaining;
+
   /// The condition's current intensity, or zero if not active.
   int get intensity => _intensity;
 
@@ -30,10 +34,12 @@ abstract class Condition {
   }
 
   /// Processes one turn of the condition.
-  void update() {
+  void update(Action action) {
     if (isActive) {
       _turnsRemaining--;
-      if (!isActive) {
+      if (isActive) {
+        onUpdate(action);
+      } else {
         onDeactivate();
         _intensity = 0;
       }
@@ -50,6 +56,14 @@ abstract class Condition {
     _turnsRemaining = duration;
     _intensity = intensity;
   }
+
+  /// Cancels the condition immediately. Does not deactivate the condition.
+  void cancel() {
+    _turnsRemaining = 0;
+    _intensity = 0;
+  }
+
+  void onUpdate(Action action) {}
 
   void onDeactivate();
 }
@@ -69,5 +83,21 @@ class HasteCondition extends Condition {
 class FoodCondition extends Condition {
   void onDeactivate() {
     actor.log("{1} [are|is] getting hungry.", actor);
+  }
+}
+
+/// A condition that slowly regenerates health.
+class PoisonCondition extends Condition {
+  void onUpdate(Action action) {
+    // TODO: Apply resistances. If resistance lowers intensity to zero, end
+    // condition and log message.
+
+    if (!actor.takeDamage(action, intensity, new Noun("the poison"))) {
+      actor.log("{1} [are|is] hurt by poison!", actor);
+    }
+  }
+
+  void onDeactivate() {
+    actor.log("{1} [are|is] no longer poisoned.", actor);
   }
 }

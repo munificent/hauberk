@@ -1,5 +1,7 @@
 library dngn.engine.action_base;
 
+import 'dart:collection';
+
 import '../util.dart';
 import 'action_combat.dart';
 import 'actor.dart';
@@ -11,6 +13,7 @@ import 'option.dart';
 abstract class Action {
   Actor _actor;
   Game _game;
+  Queue<Action> _actions;
   GameResult _gameResult;
   bool _consumesEnergy;
 
@@ -30,14 +33,21 @@ abstract class Action {
     _consumesEnergy = consumesEnergy;
   }
 
-  ActionResult perform(GameResult gameResult) {
+  ActionResult perform(Queue<Action> actions, GameResult gameResult) {
     assert(_actor != null); // Action should be bound already.
 
+    _actions = actions;
     _gameResult = gameResult;
     return onPerform();
   }
 
   ActionResult onPerform();
+
+  /// Enqueue a secondary action that is a consequence of this one.
+  void addAction(Action action, [Actor actor]) {
+    action.bind(actor == null ? _actor : actor, false);
+    _actions.add(action);
+  }
 
   void addEvent(Event event) {
     _gameResult.events.add(event);
