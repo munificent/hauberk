@@ -3,7 +3,7 @@ library dngn.web.items;
 import 'dart:html' as html;
 
 import 'package:dngn/src/content.dart';
-import 'package:dngn/src/ui.dart';
+import 'package:dngn/src/util.dart';
 
 main() {
   var content = createContent();

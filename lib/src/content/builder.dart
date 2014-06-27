@@ -1,9 +1,11 @@
 library dngn.content.builder;
 
 import '../engine.dart';
-import '../ui.dart';
+import '../util.dart';
 import 'items.dart';
 import 'skills.dart';
+
+final _groupDropPattern = new RegExp(r"([a-z/]+):(\d+)");
 
 /// Base class for a builder that provides a DSL for creating game content.
 class ContentBuilder {
@@ -26,28 +28,32 @@ class ContentBuilder {
     return new OneOfDrop([parseDrop(drop)], [percent]);
   }
 
+  /// Parses a drop description. It can be any of:
+  ///
+  ///  *  If it's a string like "equipment 10" or "magic/scroll 4" then it's
+  ///     a group drop. The leading string is the path to the group to choose
+  ///     from and the trailing number is the level of the drop.
+  ///  *  If it's any other string, that's the (singular) name of an item type
+  ///     to drop.
+  ///  *  If it's a list, each element is in turn parsed as a drop, and the
+  ///     outer drop selects from one of them.
   Drop parseDrop(drop) {
     if (drop == null) return new OneOfDrop([], []);
     if (drop is Drop) return drop;
 
     if (drop is String) {
-      // If the drop has an explicit sequence name like "potion|Heal", use that
-      // instead of looking up the canonical sequence for the item.
-      var sequenceName = drop;
-      var parts = drop.split("|");
-      if (parts.length > 1) {
-        sequenceName = parts[0];
-        drop = parts[1];
-      }
-
-      // Look for a matching sequence.
-      var sequence = Items.sequences[sequenceName];
-      if (sequence != null) {
-        return sequence.drop(drop);
+      // See if it's a group.
+      var match = _groupDropPattern.firstMatch(drop);
+      if (match != null) {
+        var group = match[1];
+        var level = int.parse(match[2]);
+        return new GroupDrop(group, level);
       }
 
       // Otherwise, just drop that item.
-      return new ItemDrop(Items.all[drop]);
+      var itemType = Items.all[drop];
+      if (itemType == null) throw "Couldn't find item type $drop.";
+      return new ItemDrop(itemType);
     }
 
     if (drop is List) {

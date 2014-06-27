@@ -1,6 +1,7 @@
 library dngn.ui.inventory_dialog;
 
 import '../engine.dart';
+import '../util.dart';
 import 'keyboard.dart';
 import 'screen.dart';
 import 'terminal.dart';

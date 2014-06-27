@@ -1,16 +1,28 @@
 library dngn.content.items;
 
 import '../engine.dart';
-import '../ui.dart';
 import '../util.dart';
 import 'builder.dart';
+
+/// The root of the [ItemGroup] tree that contains all items.
+final _rootGroup = new ItemGroup(null);
+
+/// Maps group names to the actual group object. This lets drops refer to just
+/// the short name of the group (which is assumed to be unique) instead of the
+/// full path.
+final _groupNames = new Map<String, ItemGroup>();
 
 /// Builder class for defining [ItemType]s.
 class Items extends ContentBuilder {
   static final Map<String, ItemType> all = {};
-  static final Map<String, ItemSequence> sequences = {};
 
   int _sortIndex = 0;
+
+  /// The current glyph. Any items defined will use this. Can be a string or
+  /// a character code.
+  var _glyph;
+
+  String _group;
 
   void build() {
     // From Angband:
@@ -27,32 +39,13 @@ class Items extends ContentBuilder {
 
     // Unused: ; : ` % ^ < >
 
-    food();
+    foods();
     pelts();
     potions();
     scrolls();
     weapons();
     bodyArmor();
     boots();
-
-    // Make the secondary sequences. These contain items from a bunch of
-    // sequences and make it easier to define monsters that drop a wide variety
-    // of stuff.
-    namedSequence('magic', 10, [
-      'Scroll of Sidestepping',
-      'Soothing Balm',
-      'Antidote',
-      'Scroll of Phasing',
-      'Potion of Quickness',
-      'Mending Salve',
-      'Scroll of Teleportation',
-      'Healing Poultice',
-      'Potion of Alacrity',
-      'Scroll of Disappearing',
-      'Potion of Amelioration',
-      'Potion of Speed',
-      'Potion of Rejuvenation'
-    ]);
 
     /*
 
@@ -75,81 +68,85 @@ class Items extends ContentBuilder {
      */
   }
 
-  void food() {
-    var heart = CharCode.BLACK_HEART_SUIT;
-    item('Edible Mushroom', lightGray(heart), use: () => new EatAction(20));
-    item('Handful of Berries', red(heart), use: () => new EatAction(30));
-    item('Honeycomb', lightGold(heart), use: () => new EatAction(40));
-    item('Loaf of Bread', lightBrown(heart), use: () => new EatAction(80));
-    item('Berry Pie', red(heart), use: () => new EatAction(100));
-    item("Traveler's Ration", gold(heart), use: () => new EatAction(300));
-    item('Leg of Lamb', brown(heart), use: () => new EatAction(300));
+  void foods() {
+    group(CharCode.BLACK_HEART_SUIT, "food");
+    food("Edible Mushroom",      1, lightGray,  20);
+    food("Handful of Berries",   2, red,        30);
+    food("Honeycomb",            3, lightGold,  40);
+    food("Loaf of Bread",        4, lightBrown, 80);
+    food("Berry Pie",            5, red,        100);
+    food("Leg of Lamb",          6, brown,      200);
+    food("Traveler's Ration",    7, gold,       300);
+    // TODO: Magic foods that also cure/heal.
   }
 
   void pelts() {
-    item('Flower', lightAqua('~')); // TODO: Use in recipe.
-    item('Fur Pelt', lightBrown('~'));
-    item('Fox Pelt', orange('~'));
-    item('Insect Wing', purple('~'));
-    item('Red Feather', red('~')); // TODO: Use in recipe.
-    item('Black Feather', darkGray('~'));
-    item('Stinger', gold('~'));
+    group("~");
+    item("Flower",        1, lightAqua); // TODO: Use in recipe.
+    item("Fur Pelt",      1, lightBrown);
+    item("Insect Wing",   1, purple);
+    item("Fox Pelt",      2, orange);
+    item("Red Feather",   2, red); // TODO: Use in recipe.
+    item("Black Feather", 2, darkGray);
+    item("Stinger",       2, gold);
   }
 
   void potions() {
     // Healing.
-    sequence(15, [
-      item('Soothing Balm', lightRed('!'),
-          use: () => new HealAction(24)),
-      item('Mending Salve', red('!'),
-          use: () => new HealAction(48)),
-      item('Healing Poultice', darkRed('!'),
-          use: () => new HealAction(64, curePoison: true)),
-      item('Potion of Amelioration', darkPurple('!'),
-          use: () => new HealAction(120, curePoison: true)),
-      item('Potion of Rejuvenation', purple('!'),
-          use: () => new HealAction(1000, curePoison: true))
-    ]);
+    group("!", "magic/potion/healing");
+    item("Soothing Balm", 2, lightRed,
+        use: () => new HealAction(24));
+    item("Mending Salve", 4, red,
+        use: () => new HealAction(48));
+    item("Healing Poultice", 12, darkRed,
+        use: () => new HealAction(64, curePoison: true));
+    item("Potion of Amelioration", 24, darkPurple,
+        use: () => new HealAction(120, curePoison: true));
+    item("Potion of Rejuvenation", 65, purple,
+        use: () => new HealAction(1000, curePoison: true));
 
-    item('Antidote', lightRed('!'),
+    item("Antidote", 5, lightRed,
         use: () => new HealAction(0, curePoison: true));
 
     // Speed.
-    sequence(20, [
-      item('Potion of Quickness', lightGreen('!'), use: () => new HasteAction(20, 1)),
-      item('Potion of Alacrity', green('!'), use: () => new HasteAction(30, 2)),
-      item('Potion of Speed', darkGreen('!'), use: () => new HasteAction(40, 3))
-    ]);
+    group("!", "magic/potion/speed");
+    item("Potion of Quickness", 3, lightGreen,
+        use: () => new HasteAction(20, 1));
+    item("Potion of Alacrity", 18, green,
+        use: () => new HasteAction(30, 2));
+    item("Potion of Speed", 34, darkGreen,
+        use: () => new HasteAction(40, 3));
 
     // dram, draught, elixir, philter
   }
 
   void scrolls() {
     // Teleportation.
-    sequence(20, [
-      item('Scroll of Sidestepping', lightPurple('?'),
-          use: () => new TeleportAction(6)),
-      item('Scroll of Phasing', purple('?'),
-          use: () => new TeleportAction(12)),
-      item('Scroll of Teleportation', darkPurple('?'),
-          use: () => new TeleportAction(24)),
-      item('Scroll of Disappearing', darkBlue('?'),
-          use: () => new TeleportAction(48))
-    ]);
+    group("?", "magic/scroll/teleportation");
+    item("Scroll of Sidestepping", 3, lightPurple,
+        use: () => new TeleportAction(6));
+    item("Scroll of Phasing", 8, purple,
+        use: () => new TeleportAction(12));
+    item("Scroll of Teleportation", 15, darkPurple,
+        use: () => new TeleportAction(24));
+    item("Scroll of Disappearing", 26, darkBlue,
+        use: () => new TeleportAction(48));
   }
 
   void weapons() {
-    weapon('Stick', brown('_'), 'hit[s]', 'Club', 4);
-
     // Bludgeons.
-    sequence(10, [
-      weapon('Cudgel', lightBrown('\\'), 'hit[s]', 'Club', 5),
-      weapon('Club', brown('\\'),        'hit[s]', 'Club', 6),
-      weapon('Staff', lightBrown('_'),   'hit[s]', 'Club', 7)
-    ]);
+    group(r"\", "equipment/weapon/club");
+    weapon("Stick", 1, brown, "hit[s]", 3);
+    weapon("Cudgel", 3, lightBrown, "hit[s]", 5);
+    weapon("Club", 6, brown,        "hit[s]", 6);
+
+    // Staves.
+    group("_", "equipment/weapon/staff");
+    weapon("Walking Stick", 3, darkBrown("_"),   "hit[s]", 3);
+    weapon("Staff", 11, lightBrown("_"),   "hit[s]", 7);
+    weapon("Quarterstaff", 15, brown("_"),   "hit[s]", 12);
 
     /*
-    Quarterstaff|Quarterstaves
     Hammer[s]
     Mattock[s]
 
@@ -178,24 +175,23 @@ class Items extends ContentBuilder {
     */
 
     // Knives.
-    sequence(10, [
-      weapon('Knife', gray('|'), 'stab[s]', 'Dagger', 5),
-      weapon('Dirk', lightGray('|'), 'stab[s]', 'Dagger', 6),
-      weapon('Dagger', white('|'), 'stab[s]', 'Dagger', 8),
-      weapon('Stiletto', darkGray('|'), 'stab[s]', 'Dagger', 11),
-      weapon('Rondel', lightAqua('|'), 'stab[s]', 'Dagger', 14),
-      weapon('Baselard', lightBlue('|'), 'stab[s]', 'Dagger', 16)
-      // Main-guache
-    ]);
+    group("|", "equipment/weapon/dagger");
+    weapon("Knife", 3, gray, "stab[s]", 5);
+    weapon("Dirk", 6, lightGray, "stab[s]", 6);
+    weapon("Dagger", 10, white, "stab[s]", 8);
+    weapon("Stiletto", 16, darkGray, "stab[s]", 11);
+    weapon("Rondel", 20, lightAqua, "stab[s]", 14);
+    weapon("Baselard", 40, lightBlue, "stab[s]", 16);
+    // Main-guache
     // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
     // Spears.
-    sequence(12, [
-      weapon('Spear', gray('\\'), 'stab[s]', 'Spear', 12),
-      weapon('Angon', lightGray('\\'), 'stab[s]', 'Spear', 16),
-      weapon('Lance', white('\\'), 'stab[s]', 'Spear', 24),
-      weapon('Partisan', darkGray('\\'), 'stab[s]', 'Spear', 36)
-    ]);
+    group(r"\", "equipment/weapon/spear");
+    weapon("Pointed Stick", 5, brown, "stab[s]", 7);
+    weapon("Spear", 25, gray, "stab[s]", 12);
+    weapon("Angon", 35, lightGray, "stab[s]", 16);
+    weapon("Lance", 45, white, "stab[s]", 24);
+    weapon("Partisan", 55, darkGray, "stab[s]", 36);
 
     // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
@@ -207,31 +203,27 @@ class Items extends ContentBuilder {
     */
 
     // Bows.
-    sequence(10, [
-      bow('Short Bow', brown('}'), 'the arrow', 4),
-      bow('Longbow', lightBrown('}'), 'the arrow', 6),
-      bow('Crossbow', gray('}'), 'the bolt', 10)
-    ]);
+    group("}", "equipment/weapon/bow");
+    bow("Short Bow", 7, brown, "the arrow", 4);
+    bow("Longbow", 13, lightBrown, "the arrow", 6);
+    bow("Crossbow", 28, gray, "the bolt", 10);
   }
 
   void bodyArmor() {
-    sequence(12, [
-      armor('Cloak', darkBlue('('), 'Cloak', 2),
-      armor('Fur Cloak', lightBrown('('), 'Cloak', 3)
-    ]);
+    group("(", "equipment/armor/cloak");
+    armor("Cloak", 4, darkBlue, 2);
+    armor("Fur Cloak", 9, lightBrown, 3);
 
-    sequence(10, [
-      armor('Cloth Shirt', lightGray('('), 'Body', 2),
-      armor('Leather Shirt', lightBrown('('), 'Body', 5),
-      armor('Leather Armor', brown('('), 'Body', 8),
-      armor('Padded Armor', darkBrown('('), 'Body', 11),
-      armor('Studded Leather Armor', gray('('), 'Body', 15)
-    ]);
+    group("(", "equipment/armor/body");
+    armor("Cloth Shirt", 2, lightGray, 2);
+    armor("Leather Shirt", 5, lightBrown, 5);
+    armor("Leather Armor", 13, brown, 8);
+    armor("Padded Armor", 17, darkBrown, 11);
+    armor("Studded Leather Armor", 21, gray, 15);
 
-    sequence(10, [
-      armor('Robe', aqua('('), 'Body', 4),
-      armor('Fur-lined Robe', darkAqua('('), 'Body', 6)
-    ]);
+    group("(", "equipment/armor/robe");
+    armor("Robe", 4, aqua, 4, equipSlot: "body");
+    armor("Fur-lined Robe", 9, darkAqua, 6, equipSlot: "body");
 
     /*
     Jerkin
@@ -251,95 +243,181 @@ class Items extends ContentBuilder {
   }
 
   void boots() {
-    sequence(15, [
-      armor('Leather Sandals', lightBrown(']'), 'Boots', 1),
-      armor('Leather Shoes', brown(']'), 'Boots', 2),
-      armor('Leather Boots', darkBrown(']'), 'Boots', 4),
-      armor('Metal Shod Boots', gray(']'), 'Boots', 7),
-      armor('Greaves', lightGray(']'), 'Boots', 12)
-    ]);
+    group("]", "equipment/armor/boots");
+    armor("Leather Sandals", 3, lightBrown, 1);
+    armor("Leather Shoes", 8, brown, 2);
+    armor("Leather Boots", 14, darkBrown, 4);
+    armor("Metal Shod Boots", 22, gray, 7);
+    armor("Greaves", 47, lightGray, 12);
   }
 
-  ItemType weapon(String name, Glyph appearance, String verb, String category,
-      int damage) {
-    return item(name, appearance, equipSlot: 'Weapon', category: category,
-        attack: attack(verb, damage, Element.NONE));
+  group(glyph, [String group]) {
+    _glyph = glyph;
+    _group = group;
   }
 
-  ItemType bow(String name, Glyph appearance, String noun, int damage) {
-    return item(name, appearance, equipSlot: 'Bow', category: 'Bow',
-        attack: attack('pierce[s]', damage, Element.NONE, new Noun(noun)));
+  food(String name, int level, appearance, int amount) {
+    return item(name, level, appearance, use: () => new EatAction(amount));
   }
 
-  ItemType armor(String name, Glyph appearance, String equipSlot, int armor) {
-    return item(name, appearance, equipSlot: equipSlot, armor: armor);
+  ItemType weapon(String name, int level, appearance, String verb, int damage) {
+    var category = _group.split("/").last;
+    return item(name, level, appearance, equipSlot: "weapon",
+        category: category, attack: attack(verb, damage, Element.NONE));
   }
 
-  ItemType item(String name, Glyph appearance, {ItemUse use, String equipSlot,
-      String category, Attack attack, int armor: 0}) {
-    final itemType = new ItemType(name, appearance, _sortIndex++, use,
-        equipSlot, category, attack, armor);
+  ItemType bow(String name, int level, appearance, String noun, int damage) {
+    return item(name, level, appearance, equipSlot: "bow", category: "bow",
+        attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun)));
+  }
+
+  ItemType armor(String name, int level, appearance, int armor,
+        {String equipSlot}) {
+    if (equipSlot == null) equipSlot = _group.split("/").last;
+    return item(name, level, appearance, equipSlot: equipSlot, armor: armor);
+  }
+
+  ItemType item(String name, int level, appearance, {ItemUse use,
+      String equipSlot, String category, Attack attack, int armor: 0}) {
+    // If the appearance isn"t an actual glyph, it should be a color function
+    // that will be applied to the current glyph.
+    if (appearance is! Glyph) {
+      appearance = appearance(_glyph);
+    }
+
+    var itemType = new ItemType(name, appearance, _sortIndex++, use, equipSlot,
+        category, attack, armor);
     Items.all[name] = itemType;
+
+    if (_group != null) {
+      _rootGroup.add(_group, itemType, level);
+    }
+
     return itemType;
   }
+}
 
-  void sequence(int chance, List<ItemType> types) {
-    var sequence = new ItemSequence(chance, types);
+// TODO: Move to separate file.
+class ItemGroup {
+  final ItemGroup parent;
 
-    // Bind it to all of the type names.
-    for (var type in types) {
-      sequences[type.name] = sequence;
-    }
+  /// The child groups contained within this group.
+  final groups = new Map<String, ItemGroup>();
+
+  /// The [ItemType]s that live directly in this group, keyed by their level.
+  final items = new Map<int, ItemType>();
+
+  ItemGroup(this.parent);
+
+  /// Adds [item] to the group at [path]. Creates child groups as needed.
+  void add(String path, ItemType item, int level) {
+    _add(path.split("/"), item, level);
   }
 
-  void namedSequence(String name, int chance, List<String> typeNames) {
-    var sequence = new ItemSequence(chance,
-        typeNames.map((name) => Items.all[name]).toList());
-    sequences[name] = sequence;
+  void _add(Iterable<String> path, ItemType item, int level) {
+    // If we"ve navigated to the end of the path, add it here.
+    if (path.isEmpty) {
+      items[level] = item;
+      return;
+    }
+
+    // Otherwise, it goes into a child group;
+    var group = groups.putIfAbsent(path.first,
+        () => _groupNames[path.first] = new ItemGroup(this));
+    group._add(path.skip(1), item, level);
+  }
+
+  Item createItem(int level) {
+    // Possibly choose from the parent group.
+    if (parent != null && rng.oneIn(10)) return parent.createItem(level);
+
+    // Possibly tweak the level.
+    if (rng.oneIn(2)) {
+      while (level > 1 && rng.oneIn(3)) level--;
+    } else {
+      while (level > 1 && rng.oneIn(2)) level++;
+    }
+
+    // Take all of the items in this group and organize them by level.
+    var itemsByLevel = {};
+
+    addGroup(ItemGroup group) {
+      // Recurse into child groups.
+      group.groups.values.forEach(addGroup);
+
+      group.items.forEach((level, item) {
+        var itemsAtLevel = itemsByLevel.putIfAbsent(level, () => []);
+        itemsAtLevel.add(item);
+      });
+    }
+
+    addGroup(this);
+
+    // Find the greatest level at or below the target. If no levels are below
+    // the target, will just pick the first level. This ensures this can always
+    // find some item for the group.
+    var levels = itemsByLevel.keys.toList();
+    levels.sort();
+
+    var bestLevel = levels.lastWhere((l) => l < level,
+        orElse: () => levels.first);
+    var items = itemsByLevel[bestLevel];
+
+    // Note: This doesn"t distribute things very evenly. In particular, if
+    // items aren"t smoothly distributed across levels, then items near gaps
+    // will get picked more frequently. This isn"t a bug, but it is something
+    // to keep in mind when assigning items to levels.
+
+    // Pick one of the items at that level randomly.
+    var itemType = rng.item(items);
+
+    // TODO: Powers. Should take into account the level of the actual item
+    // type chosen relative to the original desired level. Items from a lower
+    // than target level should be more likely to have powers (i.e. get a
+    // stick deep in the dungeon and you can bet it will be an Elven Stick of
+    // Thrashing) and vice versa.
+
+    var item = new Item(itemType);
+    return item;
+  }
+
+  void _dump([String indent = ""]) {
+    items.forEach((level, item) {
+      print("$indent$level $item");
+    });
+
+    groups.forEach((name, group) {
+      print("$indent$name/");
+      group._dump("$indent  ");
+    });
   }
 }
 
-/// A sequence of items of the same general category in order of increasing
-/// value. Can be used to generate drops that will pick an item from the
-/// sequence with a chance of a better or worse one.
-class ItemSequence {
-  final int chance;
-  final List<ItemType> types;
+/// Drops a randomly chosen item near a given level from a given group within
+/// the group tree. Has a chance to walk upwards and choose from a different
+/// group.
+///
+/// To spawn a drop, first it selects a group. Normally, this will be the group
+/// at the drop's path. (If the path points to a parent group, the "group"
+/// will be the union of all of its children.) There is a slight chance it will
+/// walk up to a parent group (recursively). For example, a
+/// "equipment/armor/boots" drop will usually drop some kind of footwear, but
+/// may drop any armor and has an even smaller chance of dropping any equipment.
+///
+/// Once the group is selected, all of the items contained in that group (and
+/// any child groups) are collected and sorted by level. The level of the drop
+/// is perturbed randomly, then the item nearst that level is chosen.
+class GroupDrop implements Drop {
+  /// The name of the group to choose from.
+  final String _group;
 
-  ItemSequence(this.chance, this.types);
+  /// The average level of the drop.
+  final int _level;
 
-  Drop drop(String startItem) {
-    // Find the index of the item in the sequence.
-    for (var i = 0; i < types.length; i++) {
-      if (types[i].name == startItem) return new ItemSequenceDrop(this, i);
-    }
-
-    throw "Couldn't find $startItem in sequence.";
-  }
-}
-
-/// Drops one item from a [ItemSequence].
-class ItemSequenceDrop implements Drop {
-  final ItemSequence sequence;
-  final int startIndex;
-
-  ItemSequenceDrop(this.sequence, this.startIndex);
+  GroupDrop(this._group, this._level);
 
   void spawnDrop(Game game, AddItem addItem) {
-    var index = startIndex;
-
-    // TODO: Occasionally choose a worse item. If it does, increase the
-    // chance of picking a power.
-
-    // Chance of a better item.
-    while (index < sequence.types.length - 1 && rng.oneIn(sequence.chance)) {
-      index++;
-    }
-
-    // TODO: Powers.
-
-    var item = new Item(sequence.types[index]);
-    addItem(item);
+    addItem(_groupNames[_group].createItem(_level));
   }
 }
 
@@ -374,7 +452,7 @@ class AllOfDrop implements Drop {
 }
 
 /// Chooses a single [Drop] from a list of possible options with a percentage
-/// chance for each. If the odds don't add up to 100%, no item may be dropped.
+/// chance for each. If the odds don"t add up to 100%, no item may be dropped.
 class OneOfDrop implements Drop {
   final List<Drop> drops;
   final List<int> percents;

@@ -1,7 +1,7 @@
 library dngn.content.monsters;
 
 import '../engine.dart';
-import '../ui.dart';
+import '../util.dart';
 import 'builder.dart';
 
 /// Builder class for defining [Monster] [Breed]s.
@@ -40,8 +40,8 @@ class Monsters extends ContentBuilder {
     // y  Yeek                Y  Yeti
     // z  Zombie/Mummy        Z  Serpent (snake-like dragon)
     // TODO(bob):
-    // - Come up with something better than yeeks for 'y'.
-    // - Don't use both 'u' and 'U' for undead?
+    // - Come up with something better than yeeks for "y".
+    // - Don't use both "u" and "U" for undead?
 
     var categories = [
       arachnids,
@@ -74,65 +74,68 @@ class Monsters extends ContentBuilder {
   }
 
   arachnids() {
-    breed('garden spider', darkAqua('a'), [
-        attack('bite[s]', 2, Element.POISON)
+    breed("garden spider", darkAqua("a"), [
+        attack("bite[s]", 2, Element.POISON)
       ],
+      drop: chanceOf(3, "Stinger"),
       maxHealth: 2, meander: 8,
-      flags: 'group fearless'
+      flags: "group fearless"
     );
 
-    breed('brown spider', brown('a'), [
-        attack('bite[s]', 3, Element.POISON)
+    breed("brown spider", brown("a"), [
+        attack("bite[s]", 3, Element.POISON)
       ],
+      drop: chanceOf(5, "Stinger"),
       maxHealth: 3, meander: 8,
-      flags: 'group fearless'
+      flags: "group fearless"
     );
 
-    breed('giant spider', darkBlue('a'), [
-        attack('bite[s]', 8, Element.POISON)
+    breed("giant spider", darkBlue("a"), [
+        attack("bite[s]", 8, Element.POISON)
       ],
+      drop: chanceOf(10, "Stinger"),
       maxHealth: 12, meander: 5,
-      flags: 'fearless'
+      flags: "fearless"
     );
   }
 
   bats() {
-    breed('little brown bat', lightBrown('b'), [
-        attack('bite[s]', 3),
+    breed("little brown bat", lightBrown("b"), [
+        attack("bite[s]", 3),
       ],
       maxHealth: 3, meander: 6, speed: 2
     );
 
-    breed('giant bat', lightBrown('b'), [
-        attack('bite[s]', 8),
+    breed("giant bat", lightBrown("b"), [
+        attack("bite[s]", 8),
       ],
       maxHealth: 12, meander: 4, speed: 2
     );
   }
 
   birds() {
-    breed('robin', lightRed('B'), [
-        attack('claw[s]', 1),
+    breed("robin", lightRed("B"), [
+        attack("claw[s]", 1),
       ],
-      drop: chanceOf(25, 'Red Feather'),
+      drop: chanceOf(25, "Red Feather"),
       maxHealth: 3, meander: 4, speed: 2
     );
 
-    breed('crow', darkGray('B'), [
-        attack('bite[s]', 4),
+    breed("crow", darkGray("B"), [
+        attack("bite[s]", 4),
       ],
-      drop: chanceOf(25, 'Black Feather'),
+      drop: chanceOf(25, "Black Feather"),
       maxHealth: 4, meander: 4, speed: 2,
-      flags: 'group'
+      flags: "group"
     );
 
-    breed('raven', gray('B'), [
-        attack('bite[s]', 6),
-        attack('claw[s]', 5),
+    breed("raven", gray("B"), [
+        attack("bite[s]", 6),
+        attack("claw[s]", 5),
       ],
-      drop: hunting('Black Feather'),
+      drop: hunting("Black Feather"),
       maxHealth: 8, meander: 1,
-      flags: 'protective'
+      flags: "protective"
     );
   }
 
@@ -140,28 +143,28 @@ class Monsters extends ContentBuilder {
     defaultTracking = 20;
     defaultMeander = 3;
 
-    breed('mangy cur', yellow('c'), [
-        attack('bite[s]', 4),
+    breed("mangy cur", yellow("c"), [
+        attack("bite[s]", 4),
       ],
-      drop: hunting(chanceOf(70, 'Fur Pelt')),
+      drop: hunting(chanceOf(70, "Fur Pelt")),
       maxHealth: 7,
-      flags: 'few'
+      flags: "few"
     );
 
-    breed('wild dog', gray('c'), [
-        attack('bite[s]', 5),
+    breed("wild dog", gray("c"), [
+        attack("bite[s]", 5),
       ],
-      drop: hunting('Fur Pelt'),
+      drop: hunting("Fur Pelt"),
       maxHealth: 9,
-      flags: 'few'
+      flags: "few"
     );
 
-    breed('mongrel', orange('c'), [
-        attack('bite[s]', 7),
+    breed("mongrel", orange("c"), [
+        attack("bite[s]", 7),
       ],
-      drop: hunting('Fur Pelt'),
+      drop: hunting("Fur Pelt"),
       maxHealth: 11,
-      flags: 'few'
+      flags: "few"
     );
   }
 
@@ -169,37 +172,37 @@ class Monsters extends ContentBuilder {
     defaultTracking = 5;
     defaultMeander = 8;
 
-    breed('butterfl[y|ies]', lightPurple('i'), [
-        attack('tickle[s] on', 1),
+    breed("butterfl[y|ies]", lightPurple("i"), [
+        attack("tickle[s] on", 1),
       ],
-      drop: hunting('Insect wing'),
+      drop: hunting("Insect Wing"),
       maxHealth: 1, speed: 2,
-      flags: 'few fearless'
+      flags: "few fearless"
     );
 
-    breed('bee', yellow('i'), [
-        attack('sting[s]', 2),
+    breed("bee", yellow("i"), [
+        attack("sting[s]", 2),
       ],
-      drop: chanceOf(50, 'Honeycomb'),
+      drop: chanceOf(50, "Honeycomb"),
       maxHealth: 1, speed: 1,
-      flags: 'group protective'
+      flags: "group protective"
     );
 
-    breed('wasp', brown('i'), [
-        attack('sting[s]', 4, Element.POISON),
+    breed("wasp", brown("i"), [
+        attack("sting[s]", 4, Element.POISON),
       ],
-      drop: chanceOf(30, 'Stinger'),
+      drop: chanceOf(30, "Stinger"),
       maxHealth: 1, speed: 2,
-      flags: 'berzerk'
+      flags: "berzerk"
     );
   }
 
   felines() {
-    breed('stray cat', lightOrange('F'), [
-        attack('bite[s]', 4),
-        attack('scratch[es]', 3),
+    breed("stray cat", lightOrange("F"), [
+        attack("bite[s]", 4),
+        attack("scratch[es]", 3),
       ],
-      drop: hunting(chanceOf(50, 'Fur Pelt')),
+      drop: hunting(chanceOf(50, "Fur Pelt")),
       maxHealth: 5, meander: 3, speed: 1
     );
   }
@@ -211,94 +214,93 @@ class Monsters extends ContentBuilder {
     defaultTracking = 3;
     defaultMeander = 8;
 
-    breed('giant cockroach[es]', darkBrown('i'), [
-        attack('crawl[s] on', 1),
+    breed("giant cockroach[es]", darkBrown("i"), [
+        attack("crawl[s] on", 1),
       ],
-      drop: hunting('Insect wing'),
+      drop: hunting("Insect Wing"),
       maxHealth: 12, speed: 3,
-      flags: 'fearless'
+      flags: "fearless"
     );
 
-    breed('giant centipede', red('i'), [
-        attack('crawl[s] on', 3),
-        attack('bite[s]', 6),
+    breed("giant centipede", red("i"), [
+        attack("crawl[s] on", 3),
+        attack("bite[s]", 6),
       ],
       maxHealth: 12, speed: 2,
-      flags: 'fearless'
+      flags: "fearless"
     );
   }
 
   imps() {
-    breed('scurrilous imp', lightRed('I'), [
-        attack('club[s]', 4),
+    breed("scurrilous imp", lightRed("I"), [
+        attack("club[s]", 4),
         insult(),
         haste()
       ],
       drop: [
-        chanceOf(10, 'Cudgel'),
-        chanceOf(7, 'Potion of Quickness'),
-        chanceOf(5, 'magic|Scroll of Sidestepping'),
+        chanceOf(10, "club:1"),
+        chanceOf(5, "speed:1"),
       ],
       maxHealth: 14, meander: 4,
-      flags: 'cowardly'
+      flags: "cowardly"
     );
 
-    breed('vexing imp', purple('I'), [
-        attack('scratch[es]', 3),
+    breed("vexing imp", purple("I"), [
+        attack("scratch[es]", 3),
         insult(),
         sparkBolt(cost: 10, damage: 6)
       ],
       drop: [
-        chanceOf(10, 'magic|Potion of Quickness'),
+        chanceOf(10, "teleportation:1"),
       ],
       maxHealth: 12, meander: 4, speed: 1,
-      flags: 'cowardly'
+      flags: "cowardly"
     );
 
-    breed('impish incanter', lightPurple('I'), [
-        attack('scratch[es]', 3),
+    breed("impish incanter", lightPurple("I"), [
+        attack("scratch[es]", 3),
         insult(),
         fireBolt(cost: 10, damage: 8)
       ],
       drop: [
-        chanceOf(10, 'magic|Potion of Quickness'),
+        chanceOf(10, "magic:1"),
       ],
       maxHealth: 16, meander: 4, speed: 1
     );
 
-    breed('goblin peon', lightBrown('I'), [
-        attack('stab[s]', 4)
+    breed("goblin peon", lightBrown("I"), [
+        attack("stab[s]", 4)
       ],
       drop: [
-        chanceOf(10, 'Spear'),
-        chanceOf(5, 'magic|Soothing Balm'),
+        chanceOf(10, "spear:3"),
+        chanceOf(5, "healing:2"),
       ],
       maxHealth: 15, meander: 2,
-      flags: 'open-doors'
+      flags: "open-doors"
     );
 
-    breed('goblin archer', green('I'), [
-        attack('stab[s]', 3),
+    breed("goblin archer", green("I"), [
+        attack("stab[s]", 3),
         arrow(cost: 8, damage: 3)
       ],
       drop: [
-        chanceOf(4, 'Short Bow'),
-        chanceOf(10, 'Knife'),
-        chanceOf(5, 'magic|Soothing Balm'),
+        chanceOf(4, "bow:1"),
+        chanceOf(10, "dagger:1"),
+        chanceOf(5, "healing:3"),
       ],
       maxHealth: 12, meander: 2,
-      flags: 'few'
+      flags: "few"
     );
 
-    breed('goblin warrior', brown('I'), [
-        attack('stab[s]', 8)
+    breed("goblin warrior", brown("I"), [
+        attack("stab[s]", 8)
       ],
       drop: [
-        chanceOf(10, 'Spear'),
-        chanceOf(5, 'magic|Soothing Balm'),
+        chanceOf(10, "spear:4"),
+        chanceOf(5, "healing:3"),
       ],
       maxHealth: 24, meander: 1,
-      flags: 'open-doors'
+      flags: "open-doors"
     );
   }
 
@@ -307,11 +309,11 @@ class Monsters extends ContentBuilder {
     defaultMeander = 4;
 
     // TODO: Attack should slow.
-    breed('green slime', green('j'), [
-        attack('crawl[s] on', 3)
+    breed("green slime", green("j"), [
+        attack("crawl[s] on", 3)
       ],
       maxHealth: 10,
-      flags: 'few fearless'
+      flags: "few fearless"
     );
   }
 
@@ -320,11 +322,11 @@ class Monsters extends ContentBuilder {
   }
 
   quadrupeds() {
-    breed('fox', orange('q'), [
-        attack('bite[s]', 7),
-        attack('scratch[es]', 4)
+    breed("fox", orange("q"), [
+        attack("bite[s]", 7),
+        attack("scratch[es]", 4)
       ],
-      drop: 'Fox Pelt',
+      drop: "Fox Pelt",
       maxHealth: 7, meander: 1, speed: 1
     );
   }
@@ -332,104 +334,102 @@ class Monsters extends ContentBuilder {
   people() {
     defaultTracking = 14;
 
-    breed('simpering knave', orange('p'), [
-        attack('hit[s]', 2),
-        attack('stab[s]', 4)
+    breed("simpering knave", orange("p"), [
+        attack("hit[s]", 2),
+        attack("stab[s]", 4)
       ],
       drop: allOf([
-        chanceOf(50, ['Knife','Cudgel']),
-        chanceOf(40, 'Cloth Shirt'),
-        chanceOf(20, 'Leather Sandals'),
-        chanceOf(8, 'magic|Soothing Balm'),
+        chanceOf(50, "dagger:1"),
+        chanceOf(40, "body:1"),
+        chanceOf(20, "boots:1"),
+        chanceOf(8, "magic:1"),
       ]),
       maxHealth: 6, meander: 3,
-      flags: 'open-doors cowardly'
+      flags: "open-doors cowardly"
     );
 
-    breed('decrepit mage', purple('p'), [
-        attack('hit[s]', 2),
+    breed("decrepit mage", purple("p"), [
+        attack("hit[s]", 2),
         sparkBolt(cost: 30, damage: 8)
       ],
       drop: allOf([
-        chanceOf(20, 'magic|Scroll of Sidestepping'),
-        chanceOf(30, ['Knife', 'Staff']),
-        chanceOf(40, ['Cloth Shirt', 'Robe']),
-        chanceOf(10, 'Leather Sandals')
+        chanceOf(20, "magic:3"),
+        chanceOf(30, ["dagger:1", "staff:1"]),
+        chanceOf(40, "robe:1"),
+        chanceOf(10, "boots:1")
       ]),
       maxHealth: 6, meander: 2,
-      flags: 'open-doors'
+      flags: "open-doors"
     );
 
-    breed('unlucky ranger', green('p'), [
-        attack('stab[s]', 2),
+    breed("unlucky ranger", green("p"), [
+        attack("stab[s]", 2),
         arrow(cost: 10, damage: 2)
       ],
       drop: [
-        chanceOf(10, 'magic|Scroll of Sidestepping'),
-        chanceOf(4, 'Short Bow'),
-        chanceOf(10, 'Knife'),
-        chanceOf(8, 'Cloth Shirt')
+        chanceOf(10, "potion:3"),
+        chanceOf(4, "bow:4"),
+        chanceOf(10, "dagger:3"),
+        chanceOf(8, "body:3")
       ],
       maxHealth: 10, meander: 2,
-      flags: 'open-doors'
+      flags: "open-doors"
     );
 
-    breed('drunken priest', aqua('p'), [
-        attack('hit[s]', 3),
+    breed("drunken priest", aqua("p"), [
+        attack("hit[s]", 3),
         heal(cost: 30, amount: 8)
       ],
       drop: [
-        chanceOf(10, 'magic|Soothing Balm'),
-        chanceOf(7, 'Staff'),
-        chanceOf(7, 'Cudgel'),
-        chanceOf(7, 'Cloth Shirt'),
-        chanceOf(5, 'Robe')
+        chanceOf(10, "scroll:3"),
+        chanceOf(7, "club:2"),
+        chanceOf(7, "robe:2")
       ],
       maxHealth: 9, meander: 4,
-      flags: 'open-doors fearless'
+      flags: "open-doors fearless"
     );
   }
 
   rodents() {
-    breed('field [mouse|mice]', lightBrown('r'), [
-        attack('bite[s]', 3),
-        attack('scratch[es]', 2)
+    breed("field [mouse|mice]", lightBrown("r"), [
+        attack("bite[s]", 3),
+        attack("scratch[es]", 2)
       ],
       maxHealth: 3, meander: 4, speed: 1
     );
 
-    breed('fuzzy bunn[y|ies]', lightBlue('r'), [
-        attack('bite[s]', 3),
-        attack('kick[s]', 2)
+    breed("fuzzy bunn[y|ies]", lightBlue("r"), [
+        attack("bite[s]", 3),
+        attack("kick[s]", 2)
       ],
       maxHealth: 10, meander: 2
     );
 
-    breed('vole', darkGray('r'), [
-        attack('bite[s]', 4)
+    breed("vole", darkGray("r"), [
+        attack("bite[s]", 4)
       ],
       maxHealth: 5, meander: 3, speed: 1
     );
 
-    breed('white [mouse|mice]', white('r'), [
-        attack('bite[s]', 5),
-        attack('scratch[es]', 3)
+    breed("white [mouse|mice]", white("r"), [
+        attack("bite[s]", 5),
+        attack("scratch[es]", 3)
       ],
       maxHealth: 6, meander: 4, speed: 1
     );
 
-    breed('sewer rat', darkGray('r'), [
-        attack('bite[s]', 4),
-        attack('scratch[es]', 3)
+    breed("sewer rat", darkGray("r"), [
+        attack("bite[s]", 4),
+        attack("scratch[es]", 3)
       ],
       maxHealth: 6, meander: 3, speed: 1,
-      flags: 'group'
+      flags: "group"
     );
   }
 
   reptiles() {
-    breed('frog', green('R'), [
-        attack('hop[s] on', 2),
+    breed("frog", green("R"), [
+        attack("hop[s] on", 2),
       ],
       maxHealth: 4, meander: 4, speed: 1
     );
@@ -438,25 +438,25 @@ class Monsters extends ContentBuilder {
   slugs() {
     defaultTracking = 2;
 
-    breed('giant slug', green('s'), [
-        attack('crawl[s] on', 8),
+    breed("giant slug", green("s"), [
+        attack("crawl[s] on", 8),
       ],
       maxHealth: 12, meander: 1, speed: -3,
-      flags: 'fearless'
+      flags: "fearless"
     );
   }
 
   snakes() {
     defaultMeander = 4;
 
-    breed('garter snake', gold('S'), [
-        attack('bite[s]', 1),
+    breed("garter snake", gold("S"), [
+        attack("bite[s]", 1),
       ],
       maxHealth: 4
     );
 
-    breed('tree snake', lightGreen('S'), [
-        attack('bite[s]', 8),
+    breed("tree snake", lightGreen("S"), [
+        attack("bite[s]", 8),
       ],
       maxHealth: 12
     );
@@ -465,25 +465,25 @@ class Monsters extends ContentBuilder {
   worms() {
     defaultMeander = 4;
 
-    breed('giant earthworm', lightRed('w'), [
-        attack('crawl[s] on', 8),
+    breed("giant earthworm", lightRed("w"), [
+        attack("crawl[s] on", 8),
       ],
       maxHealth: 16, speed: -2,
-      flags: 'fearless'
+      flags: "fearless"
     );
 
-    breed('maggot', lightGray('w'), [
-        attack('crawl[s] on', 5),
+    breed("maggot", lightGray("w"), [
+        attack("crawl[s] on", 5),
       ],
       maxHealth: 2,
-      flags: 'swarm fearless'
+      flags: "swarm fearless"
     );
 
-    breed('giant cave worm', white('w'), [
-        attack('crawl[s] on', 8),
+    breed("giant cave worm", white("w"), [
+        attack("crawl[s] on", 8),
       ],
       maxHealth: 24, speed: -2,
-      flags: 'fearless'
+      flags: "fearless"
     );
   }
 
@@ -505,7 +505,7 @@ class Monsters extends ContentBuilder {
 
     var flagSet;
     if (flags != null) {
-      flagSet = new Set<String>.from(flags.split(' '));
+      flagSet = new Set<String>.from(flags.split(" "));
     } else {
       flagSet = new Set<String>();
     }
@@ -520,16 +520,16 @@ class Monsters extends ContentBuilder {
   Move heal({int cost, int amount}) => new HealMove(cost, amount);
 
   Move arrow({int cost, int damage}) =>
-      new BoltMove(cost, new Attack('hits', damage, Element.NONE,
-          new Noun('the arrow')));
+      new BoltMove(cost, new Attack("hits", damage, Element.NONE,
+          new Noun("the arrow")));
 
   Move sparkBolt({int cost, int damage}) =>
-      new BoltMove(cost, new Attack('zaps', damage, Element.LIGHTNING,
-          new Noun('the spark')));
+      new BoltMove(cost, new Attack("zaps", damage, Element.LIGHTNING,
+          new Noun("the spark")));
 
   Move fireBolt({int cost, int damage}) =>
-      new BoltMove(cost, new Attack('burns', damage, Element.FIRE,
-          new Noun('the flame')));
+      new BoltMove(cost, new Attack("burns", damage, Element.FIRE,
+          new Noun("the flame")));
 
   Move insult({int cost: 20}) => new InsultMove(cost);
 

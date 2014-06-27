@@ -1,5 +1,6 @@
 library dngn.ui.game_over_screen;
 
+import '../util.dart';
 import 'keyboard.dart';
 import 'screen.dart';
 import 'terminal.dart';

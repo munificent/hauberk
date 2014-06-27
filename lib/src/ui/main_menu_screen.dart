@@ -1,6 +1,7 @@
 library dngn.ui.main_menu_screen;
 
 import '../engine.dart';
+import '../util.dart';
 import 'confirm_dialog.dart';
 import 'keyboard.dart';
 import 'new_hero_screen.dart';

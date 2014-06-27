@@ -3,6 +3,7 @@ library dngn.util;
 export 'util/array2d.dart';
 export 'util/chain.dart';
 export 'util/direction.dart';
+export 'util/glyph.dart';
 export 'util/rect.dart';
 export 'util/rng.dart';
 export 'util/vec.dart';

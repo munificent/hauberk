@@ -4,7 +4,7 @@ import 'dart:html' as html;
 
 import 'package:dngn/src/content.dart';
 import 'package:dngn/src/engine.dart';
-import 'package:dngn/src/ui.dart';
+import 'package:dngn/src/util.dart';
 
 main() {
   var content = createContent();
@@ -24,7 +24,7 @@ main() {
     drops[breed.name] = {};
   }
 
-  for (var i = 0; i < 10000; i++) {
+  for (var i = 0; i < 100000; i++) {
     tries++;
 
     for (Breed breed in breeds) {

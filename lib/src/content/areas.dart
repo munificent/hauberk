@@ -25,10 +25,10 @@ class Areas extends ContentBuilder {
           'frog'
         ],
         drop: [
-          chanceOf(20, 'Flower'),
-          chanceOf(40, 'Edible Mushroom'),
-          chanceOf(30, 'Handful of Berries'),
-          chanceOf(10, 'Stick')
+          chanceOf(30, 'Flower'),
+          chanceOf(40, 'food:1'),
+          chanceOf(10, 'magic:1'),
+          chanceOf(20, 'Stick')
         ],
         quest: kill('fuzzy bunny', 1)),
       level(() => new Forest(meadowInset: 6), numMonsters: 11, numItems: 8,
@@ -42,8 +42,7 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           chanceOf(20, 'Flower'),
-          chanceOf(20, 'Edible Mushroom'),
-          chanceOf(40, 'Handful of Berries'),
+          chanceOf(20, 'food:1'),
           chanceOf(20, 'Stick')
         ],
         quest: kill('fox', 1)),
@@ -62,9 +61,8 @@ class Areas extends ContentBuilder {
           'decrepit mage'
         ],
         drop: [
-          'Edible Mushroom',
-          'magic|Scroll of Sidestepping',
-          'magic|Soothing Balm'
+          'food:1',
+          'magic:1'
         ],
         quest: kill('wild dog', 3)),
       level(() => new TrainingGrounds(), numMonsters: 16, numItems: 9,
@@ -76,8 +74,9 @@ class Areas extends ContentBuilder {
           'drunken priest',
         ],
         drop: [
-          'magic|Soothing Balm',
-          'Robe'
+          'food:3',
+          'magic:2',
+          'equipment:2'
         ],
         quest: kill('giant spider')),
       level(() => new TrainingGrounds(), numMonsters: 20, numItems: 10,
@@ -89,9 +88,9 @@ class Areas extends ContentBuilder {
           'giant earthworm'
         ],
         drop: [
-          'magic|Soothing Balm',
-          'Cudgel',
-          'Dagger'
+          'food:4',
+          'magic:3',
+          'equipment:3'
         ],
         quest: kill('giant cave worm'))
     ]);
@@ -109,10 +108,9 @@ class Areas extends ContentBuilder {
           'green slime'
         ],
         drop: [
-          'Loaf of Bread',
-          'Soothing Balm',
-          'Scroll of Sidestepping',
-          'Leather Sandals'
+          'food:3',
+          'magic:3',
+          'equipment:3'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
       level(() => new GoblinStronghold(70), numMonsters: 24, numItems: 8,
@@ -125,9 +123,9 @@ class Areas extends ContentBuilder {
           'giant centipede'
         ],
         drop: [
-          'Loaf of Bread',
-          'Soothing Balm',
-          'Potion of Quickness'
+          'food:4',
+          'megic:4',
+          'equipment:4'
         ],
         quest: tileType('the stairs', Tiles.stairs))
     ]);

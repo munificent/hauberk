@@ -193,16 +193,16 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
 
   Equipment()
   : slotTypes = const [
-      'Weapon',
-      'Bow',
-      'Ring',
-      'Necklace',
-      'Body',
-      'Cloak',
-      'Shield',
-      'Helm',
-      'Gloves',
-      'Boots'
+      'weapon',
+      'bow',
+      'ring',
+      'necklace',
+      'body',
+      'cloak',
+      'shield',
+      'helm',
+      'gloves',
+      'boots'
       ],
     slots = new List<Item>(11);
 

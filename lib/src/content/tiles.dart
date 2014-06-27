@@ -1,7 +1,7 @@
 library dngn.content.tiles;
 
 import '../engine.dart';
-import '../ui.dart';
+import '../util.dart';
 import 'builder.dart';
 
 /// Builder class for defining [TileType]s.

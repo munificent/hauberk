@@ -76,7 +76,9 @@ class WeaponSkill extends Skill {
       'Increase damage by ${level * 10}% when wielding a $_category.';
 
   num getAttackMultiplyBonus(int level, Item weapon, Attack attack) {
-    if (weapon == null || weapon.type.category != _category) return 0;
+    if (weapon == null || weapon.type.category != _category.toLowerCase()) {
+      return 0;
+    }
     return level * 10 / 100;
   }
 }
