@@ -95,7 +95,6 @@ class Areas extends ContentBuilder {
         quest: kill('giant cave worm'))
     ]);
 
-    // TODO: Better floor drops.
     area('Goblin Stronghold', [
       level(() => new GoblinStronghold(50), numMonsters: 20, numItems: 8,
         breeds: [
@@ -113,7 +112,7 @@ class Areas extends ContentBuilder {
           'equipment:3'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(70), numMonsters: 24, numItems: 8,
+      level(() => new GoblinStronghold(70), numMonsters: 24, numItems: 9,
         breeds: [
           'impish incanter',
           'goblin archer',
@@ -124,7 +123,7 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           'food:4',
-          'megic:4',
+          'magic:4',
           'equipment:4'
         ],
         quest: tileType('the stairs', Tiles.stairs))
