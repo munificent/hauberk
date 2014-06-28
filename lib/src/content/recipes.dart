@@ -102,7 +102,6 @@ class Recipes extends ContentBuilder {
       'Robe',
       'Fox Pelt'
     ]);
-
   }
 
   void recipe(String result, List<String> ingredientNames) {

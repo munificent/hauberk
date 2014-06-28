@@ -21,8 +21,10 @@ Content createContent() {
 
   // The items that a new hero starts with.
   final heroItems = [
-    Items.all['Mending Salve'],
-    Items.all['Scroll of Sidestepping']
+    Items.all["Loaf of Bread"],
+    Items.all["Loaf of Bread"],
+    Items.all["Mending Salve"],
+    Items.all["Scroll of Sidestepping"]
   ];
 
   return new Content(Areas.all, Monsters.all, Items.all, Recipes.all, Skills.all, heroItems);
