@@ -1,6 +1,6 @@
 library dngn.engine;
 
-export 'engine/a_star.dart';
+export 'engine/ai/a_star.dart';
 export 'engine/action_base.dart';
 export 'engine/action_combat.dart';
 export 'engine/action_item.dart';
@@ -19,7 +19,7 @@ export 'engine/log.dart';
 export 'engine/los.dart';
 export 'engine/melee.dart';
 export 'engine/monster.dart';
-export 'engine/move.dart';
+export 'engine/ai/move.dart';
 export 'engine/option.dart';
 export 'engine/skill.dart';
 export 'engine/stage.dart';

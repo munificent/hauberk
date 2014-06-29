@@ -1,12 +1,12 @@
 library dngn.engine.move;
 
-import '../util.dart';
-import 'action_base.dart';
-import 'action_combat.dart';
-import 'action_magic.dart';
-import 'melee.dart';
-import 'monster.dart';
-import 'option.dart';
+import '../../util.dart';
+import '../action_base.dart';
+import '../action_combat.dart';
+import '../action_magic.dart';
+import '../melee.dart';
+import '../monster.dart';
+import '../option.dart';
 
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,

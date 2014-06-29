@@ -7,7 +7,7 @@ import 'hero.dart';
 import 'item.dart';
 import 'log.dart';
 import 'melee.dart';
-import 'move.dart';
+import 'ai/move.dart';
 import 'monster.dart';
 import 'option.dart';
 
