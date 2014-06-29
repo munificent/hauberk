@@ -267,9 +267,13 @@ class Monsters extends ContentBuilder {
 
   jellies() {
     group("j", tracking: 2, meander: 4);
-    // TODO: Attack should slow.
     breed("green slime", green, 10, [
-        attack("crawl[s] on", 3)
+        attack("crawl[s] on", 3, Element.POISON)
+      ],
+      flags: "few fearless");
+
+    breed("blue slime", blue, 12, [
+        attack("crawl[s] on", 4, Element.COLD)
       ],
       flags: "few fearless");
   }

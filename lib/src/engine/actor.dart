@@ -50,8 +50,11 @@ abstract class Actor extends Thing {
   /// Eating food lets the actor slowly regenerate health.
   final Condition food = new FoodCondition();
 
-  /// Haste raises or lowers speed.
+  /// Haste raises speed.
   final Condition haste = new HasteCondition();
+
+  /// Cold lowers speed.
+  final Condition cold = new ColdCondition();
 
   /// Poison inflicts damage each turn.
   final Condition poison = new PoisonCondition();
@@ -61,6 +64,7 @@ abstract class Actor extends Thing {
     health = new Stat(health) {
     food.bind(this);
     haste.bind(this);
+    cold.bind(this);
     poison.bind(this);
   }
 
@@ -76,6 +80,7 @@ abstract class Actor extends Thing {
   int get speed {
     var speed = onGetSpeed();
     speed += haste.intensity;
+    speed -= cold.intensity;
     return speed;
   }
 

@@ -43,14 +43,14 @@ class Areas extends ContentBuilder {
         drop: [
           chanceOf(20, 'Flower'),
           chanceOf(40, 'food:1'),
-          chanceOf(25, 'magic:1'),
-          chanceOf(15, 'Stick')
+          chanceOf(20, 'magic:1'),
+          chanceOf(10, 'Stick')
         ],
         quest: kill('fox', 1)),
     ]);
 
     area('Training Grounds', [
-      level(() => new TrainingGrounds(), numMonsters: 12, numItems: 8,
+      level(() => new TrainingGrounds(), numMonsters: 12, numItems: 10,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -62,11 +62,12 @@ class Areas extends ContentBuilder {
           'decrepit mage'
         ],
         drop: [
-          'food:1',
-          'magic:1'
+          chanceOf(60, 'food:2'),
+          chanceOf(35, 'magic:2'),
+          chanceOf(5, 'equipment:1')
         ],
         quest: kill('wild dog', 3)),
-      level(() => new TrainingGrounds(), numMonsters: 16, numItems: 9,
+      level(() => new TrainingGrounds(), numMonsters: 16, numItems: 11,
         breeds: [
           'brown spider',
           'crow',
@@ -75,12 +76,12 @@ class Areas extends ContentBuilder {
           'drunken priest',
         ],
         drop: [
-          'food:3',
-          'magic:2',
-          'equipment:2'
+          chanceOf(55, 'food:3'),
+          chanceOf(35, 'magic:2'),
+          chanceOf(10, 'equipment:2')
         ],
         quest: kill('giant spider')),
-      level(() => new TrainingGrounds(), numMonsters: 20, numItems: 10,
+      level(() => new TrainingGrounds(), numMonsters: 20, numItems: 12,
         breeds: [
           'giant spider',
           'unlucky ranger', // TODO: Move to different level?
@@ -89,9 +90,9 @@ class Areas extends ContentBuilder {
           'giant earthworm'
         ],
         drop: [
-          'food:4',
-          'magic:3',
-          'equipment:3'
+          chanceOf(55, 'food:4'),
+          chanceOf(35, 'magic:3'),
+          chanceOf(10, 'equipment:3')
         ],
         quest: kill('giant cave worm'))
     ]);
@@ -120,7 +121,8 @@ class Areas extends ContentBuilder {
           'goblin warrior',
           'giant bat',
           'mongrel',
-          'giant centipede'
+          'giant centipede',
+          'blue slime'
         ],
         drop: [
           'food:4',

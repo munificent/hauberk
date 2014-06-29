@@ -68,14 +68,17 @@ abstract class Condition {
   void onDeactivate();
 }
 
-/// A condition that temporarily modifies the actor's speed.
+/// A condition that temporarily boosts the actor's speed.
 class HasteCondition extends Condition {
   void onDeactivate() {
-    if (intensity > 0) {
-      actor.log("{1} slow[s] back down.", actor);
-    } else {
-      actor.log("{1} speed[s] back up.", actor);
-    }
+    actor.log("{1} slow[s] back down.", actor);
+  }
+}
+
+/// A condition that temporarily lowers the actor's speed.
+class ColdCondition extends Condition {
+  void onDeactivate() {
+    actor.log("{1} warm[s] back up.", actor);
   }
 }
 

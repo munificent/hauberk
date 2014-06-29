@@ -94,7 +94,7 @@ class Attack {
         break;
 
       case Element.COLD:
-        // TODO: Freeze.
+        action.addAction(new FreezeAction(damage), defender);
         break;
 
       case Element.LIGHTNING:

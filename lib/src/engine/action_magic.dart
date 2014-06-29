@@ -2,6 +2,7 @@ library dngn.engine.action_magic;
 
 import '../util.dart';
 import 'action_base.dart';
+import 'condition.dart';
 import 'game.dart';
 
 class HealAction extends Action {
@@ -72,91 +73,109 @@ class TeleportAction extends Action {
   }
 }
 
-class HasteAction extends Action {
-  final int _duration;
-  final int _speed;
+/// Base class for an [Action] that applies (or extends/intensifies) a
+/// [Condition]. It handles cases where the condition is already in effect with
+/// possibly a different intensity.
+abstract class ConditionAction extends Action {
+  /// The [Condition] on the actor that should be affected.
+  Condition get condition;
 
-  HasteAction(this._duration, this._speed);
+  /// The intensity of the condition to apply.
+  int getIntensity();
 
-  ActionResult onPerform() {
-    // The behavior is based on the actor's current haste level (the rows in
-    // the table) and the one being applied by this action (the columns).
-    var dispatch = [
-      // -2     -1         0     1          2
-      [_extend, _noEffect, null, _fast,     _fast],   // -2
-      [_slow,   _extend,   null, _fast,     _fast],   // -1
-      [_slow,   _slow,     null, _fast,     _fast],   // Normal
-      [_resist, _resist,   null, _extend,   _fast],   // 1
-      [_resist, _resist,   null, _noEffect, _extend], // 2
-    ];
+  /// The number of turns the condition should last.
+  int getDuration();
 
-    dispatch[actor.haste.intensity + 2][_speed + 2]();
-    return succeed();
-  }
+  /// Override this to log the message when the condition is first applied.
+  void logApply();
 
-  void _extend() {
-    actor.haste.extend(_duration ~/ 2);
-    log("{1} [feel]s the effects lasting longer.", actor);
-  }
+  /// Override this to log the message when the condition is already in effect
+  /// and its duration is extended.
+  void logExtend();
 
-  void _noEffect() {
-    log("It has no effect.", actor);
-  }
-
-  void _resist() {
-    log("{1 his} speed protects you from slowing.", actor);
-  }
-
-  void _slow() {
-    log("{1} start[s] moving slower.", actor);
-    actor.haste.activate(_duration, _speed);
-  }
-
-  void _fast() {
-    log("{1} start[s] moving faster.", actor);
-    actor.haste.activate(_duration, _speed);
-  }
-}
-
-class PoisonAction extends Action {
-  final int _damage;
-
-  PoisonAction(this._damage);
+  /// Override this to log the message when the condition is already in effect
+  /// at a weaker intensity and the intensity increases.
+  void logIntensify();
 
   ActionResult onPerform() {
-    // Intensity ramps up slowly since greater damage also increases duration.
-    var intensity = 1 + (_damage / 20).round();
-    var duration = 1 + rng.triangleInt(_damage ~/ 2, _damage ~/ 2);
+    var intensity = getIntensity();
+    var duration = getDuration();
 
     // TODO: Apply resistance to duration and bail if zero duration.
     // TODO: Don't lower intensity by resistance here (we want to handle that
     // each turn in case it changes), but do see if resistance will lower the
     // intensity to zero. If so, bail.
 
-    if (!actor.poison.isActive) {
-      actor.poison.activate(duration, intensity);
-      return succeed("{1} [are|is] poisoned!", actor);
+    if (!condition.isActive) {
+      condition.activate(duration, intensity);
+      logApply();
+      return ActionResult.SUCCESS;
     }
 
-    if (actor.poison.intensity >= intensity) {
-      // Scale down the new duration by how much weaker the new poison is.
-      duration = (duration * intensity) / actor.poison.intensity;
+    if (condition.intensity >= intensity) {
+      // Scale down the new duration by how much weaker the new intensity is.
+      duration = (duration * intensity) / condition.intensity;
 
-      // Compound poison doesn't add as much as the first one.
+      // Compounding doesn't add as much as the first one.
       duration = (duration / 2).truncate();
       if (duration == 0) return succeed();
 
-      actor.poison.extend(duration);
-      return succeed("{1} feel[s] the poison linger!", actor);
+      condition.extend(duration);
+      logExtend();
+      return ActionResult.SUCCESS;
     }
 
     // Scale down the existing duration by how much stronger the new poison
     // is.
-    var oldDuration = (actor.poison.duration * actor.poison.intensity)
-        / intensity;
+    var oldDuration = (condition.duration * condition.intensity) / intensity;
 
-    actor.poison.activate((oldDuration + duration / 2).truncate(),
-        intensity);
-    return succeed("{1} feel[s] the poison intensify!", actor);
+    condition.activate((oldDuration + duration / 2).truncate(), intensity);
+    logIntensify();
+    return ActionResult.SUCCESS;
   }
+}
+
+class HasteAction extends ConditionAction {
+  final int _duration;
+  final int _speed;
+
+  HasteAction(this._duration, this._speed);
+
+  Condition get condition => actor.haste;
+
+  int getIntensity() => _speed;
+  int getDuration() => _duration;
+  void logApply() => log("{1} start[s] moving faster.", actor);
+  void logExtend() => log("{1} [feel]s the haste lasting longer.", actor);
+  void logIntensify() => log("{1} move[s] even faster.", actor);
+}
+
+class FreezeAction extends ConditionAction {
+  final int _damage;
+
+  FreezeAction(this._damage);
+
+  Condition get condition => actor.cold;
+
+  // TODO: Should also break items in inventory.
+
+  int getIntensity() => 1 + _damage ~/ 40;
+  int getDuration() => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
+  void logApply() => log("{1} [are|is] frozen!", actor);
+  void logExtend() => log("{1} feel[s] the cold linger!", actor);
+  void logIntensify() => log("{1} feel[s] the cold intensify!", actor);
+}
+
+class PoisonAction extends ConditionAction {
+  final int _damage;
+
+  PoisonAction(this._damage);
+
+  Condition get condition => actor.poison;
+
+  int getIntensity() => 1 + _damage ~/ 20;
+  int getDuration() => 1 + rng.triangleInt(_damage * 2, _damage ~/ 2);
+  void logApply() => log("{1} [are|is] poisoned!", actor);
+  void logExtend() => log("{1} feel[s] the poison linger!", actor);
+  void logIntensify() => log("{1} feel[s] the poison intensify!", actor);
 }

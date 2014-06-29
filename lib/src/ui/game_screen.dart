@@ -404,6 +404,19 @@ class GameScreen extends Screen {
     }
 
     var hero = game.hero;
+    var heroColor = Color.WHITE;
+    if (hero.health.current < hero.health.max / 4) {
+      heroColor = Color.RED;
+    } else if (hero.poison.isActive) {
+      heroColor = Color.GREEN;
+    } else if (hero.cold.isActive) {
+      heroColor = Color.LIGHT_BLUE;
+    } else if (hero.health.current < hero.health.max / 2) {
+      heroColor = Color.LIGHT_RED;
+    } else {
+      heroColor = Color.WHITE;
+    }
+
     var visibleMonsters = [];
 
     // Draw the actors.
@@ -412,18 +425,7 @@ class GameScreen extends Screen {
 
       var glyph = actor.appearance;
       if (glyph is! Glyph) {
-        // The hero doesn't have a normal glyph.
-        var color = Color.WHITE;
-        if (hero.health.current < hero.health.max / 4) {
-          color = Color.RED;
-        } else if (hero.health.current < hero.health.max / 2) {
-          color = Color.LIGHT_RED;
-        } else {
-          color = Color.WHITE;
-        }
-        // TODO: Different colors for other statuses.
-
-        glyph = new Glyph('@', color);
+        glyph = new Glyph('@', heroColor);
       }
 
       // If the actor is being targeted, invert its colors.
@@ -502,9 +504,8 @@ class GameScreen extends Screen {
 
     if (hero.food.isActive) conditions.add(["Food", Color.ORANGE]);
     if (hero.poison.isActive) conditions.add(["Pois", Color.DARK_GREEN]);
+    if (hero.cold.isActive) conditions.add(["Cold", Color.LIGHT_BLUE]);
     switch (hero.haste.intensity) {
-      case -2: conditions.add(["Para", Color.DARK_GOLD]); break;
-      case -1: conditions.add(["Slow", Color.DARK_GOLD]); break;
       case 1: conditions.add(["Quik", Color.GOLD]); break;
       case 2: conditions.add(["Alac", Color.GOLD]); break;
       case 3: conditions.add(["Sped", Color.GOLD]); break;
@@ -516,7 +517,7 @@ class GameScreen extends Screen {
       x += 5;
     }
 
-    terminal.writeAt(82, 18, '@ hero', Color.WHITE);
+    terminal.writeAt(82, 18, '@ hero', heroColor);
     drawHealthBar(terminal, 19, hero);
 
     // Draw the nearby monsters.
