@@ -3,6 +3,7 @@ library dngn.content.builder;
 import '../engine.dart';
 import '../util.dart';
 import 'items.dart';
+import 'item_group.dart';
 import 'skills.dart';
 
 final _groupDropPattern = new RegExp(r"([a-z/]+):(\d+)");
