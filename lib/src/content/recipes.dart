@@ -15,6 +15,13 @@ class Recipes extends ContentBuilder {
       'Handful of Berries'
     ]);
 
+    recipe("Healing Poultice", [
+        'Edible Mushroom',
+        'Edible Mushroom',
+        'Flower',
+        'Soothing Balm'
+    ]);
+
     recipe("Traveler's Ration", [
       'Edible Mushroom',
       'Handful of Berries',

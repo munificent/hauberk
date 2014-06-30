@@ -53,7 +53,7 @@ class ItemGroup {
     if (rng.oneIn(2)) {
       while (level > 1 && rng.oneIn(3)) level--;
     } else {
-      while (level > 1 && rng.oneIn(2)) level++;
+      while (level < 100 && rng.oneIn(2)) level++;
     }
 
     // Take all of the items in this group and organize them by level.

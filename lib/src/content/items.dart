@@ -64,12 +64,12 @@ class Items extends ContentBuilder {
   void foods() {
     group(CharCode.BLACK_HEART_SUIT, "food");
     food("Edible Mushroom",      1, lightGray,  20);
-    food("Handful of Berries",   2, red,        30);
-    food("Honeycomb",            3, lightGold,  40);
+    food("Handful of Berries",   1, red,        30);
+    food("Honeycomb",            3, gold,       40);
     food("Loaf of Bread",        4, lightBrown, 80);
     food("Berry Pie",            5, red,        100);
     food("Leg of Lamb",          6, brown,      200);
-    food("Traveler's Ration",    7, gold,       300);
+    food("Traveler's Ration",    7, green,      300);
     // TODO: Magic foods that also cure/heal.
   }
 
@@ -87,7 +87,7 @@ class Items extends ContentBuilder {
   void potions() {
     // Healing.
     group("!", "magic/potion/healing");
-    item("Soothing Balm", 2, lightRed,
+    item("Soothing Balm", 1, lightRed,
         use: () => new HealAction(24));
     item("Mending Salve", 4, red,
         use: () => new HealAction(48));

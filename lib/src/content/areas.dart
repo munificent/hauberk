@@ -16,7 +16,7 @@ class Areas extends ContentBuilder {
 
   void build() {
     area('Friendly Forest', [
-      level(() => new Forest(meadowInset: 8), numMonsters: 8, numItems: 6,
+      level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 8,
         breeds: [
           'butterfly',
           'field mouse',
@@ -25,13 +25,13 @@ class Areas extends ContentBuilder {
           'frog'
         ],
         drop: [
-          chanceOf(30, 'Flower'),
-          chanceOf(40, 'food:1'),
+          chanceOf(25, 'Flower'),
+          chanceOf(50, 'food:1'),
           chanceOf(10, 'magic:1'),
-          chanceOf(20, 'Stick')
+          chanceOf(15, 'Stick')
         ],
         quest: kill('fuzzy bunny', 1)),
-      level(() => new Forest(meadowInset: 6), numMonsters: 10, numItems: 8,
+      level(() => new Forest(meadowInset: 6), numMonsters: 8, numItems: 10,
         breeds: [
           'bee',
           'vole',
@@ -42,7 +42,7 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           chanceOf(20, 'Flower'),
-          chanceOf(40, 'food:1'),
+          chanceOf(50, 'food:1'),
           chanceOf(20, 'magic:1'),
           chanceOf(10, 'Stick')
         ],

@@ -164,7 +164,7 @@ class Monsters extends ContentBuilder {
     breed("bee", yellow, 1, [
         attack("sting[s]", 2),
       ],
-      drop: chanceOf(30, "Honeycomb"),
+      drop: chanceOf(40, "Honeycomb"),
       speed: 1, flags: "group protective");
 
     breed("wasp", brown, 1, [
