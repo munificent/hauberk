@@ -130,14 +130,14 @@ class Items extends ContentBuilder {
     // Bludgeons.
     group(r"\", "equipment/weapon/club");
     weapon("Stick", 1, brown, "hit[s]", 4);
-    weapon("Cudgel", 3, lightBrown, "hit[s]", 5);
-    weapon("Club", 6, brown,        "hit[s]", 6);
+    weapon("Cudgel", 3, gray, "hit[s]", 5);
+    weapon("Club", 6, lightBrown, "hit[s]", 6);
 
     // Staves.
     group("_", "equipment/weapon/staff");
-    weapon("Walking Stick", 3, darkBrown("_"),   "hit[s]", 5);
-    weapon("Staff", 11, lightBrown("_"),   "hit[s]", 7);
-    weapon("Quarterstaff", 15, brown("_"),   "hit[s]", 12);
+    weapon("Walking Stick", 3, darkBrown, "hit[s]", 5);
+    weapon("Staff", 11, lightBrown, "hit[s]", 7);
+    weapon("Quarterstaff", 15, brown, "hit[s]", 12);
 
     /*
     Hammer[s]

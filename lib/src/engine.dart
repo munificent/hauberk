@@ -11,6 +11,7 @@ export 'engine/breed.dart';
 export 'engine/condition.dart';
 export 'engine/element.dart';
 export 'engine/energy.dart';
+export 'engine/flow.dart';
 export 'engine/fov.dart';
 export 'engine/game.dart';
 export 'engine/hero.dart';

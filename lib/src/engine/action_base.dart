@@ -142,8 +142,7 @@ class WalkAction extends Action {
 
     // See if the hero stepped on anything interesting.
     if (actor is Hero) {
-      final item = game.stage.itemAt(pos);
-      if (item != null) {
+      for (var item in game.stage.itemsAt(pos)) {
         log('{1} [are|is] standing on {2}.', actor, item);
       }
     }

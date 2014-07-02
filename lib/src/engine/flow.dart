@@ -13,7 +13,7 @@ class Flow {
   final Vec _target;
   final int _maxDistance;
 
-  Array2D<int> _values;
+  Array2D<int> _distances;
 
   /// The position of the array's top-level corner relative to the stage.
   Vec _offset;
@@ -26,27 +26,24 @@ class Flow {
   /// Coordinates are local to [_values], not the [Stage].
   final _found = <Vec>[];
 
-  Flow(this._stage, this._target, [int maxDistance])
+  Flow(this._stage, this._target, {int maxDistance, bool canOpenDoors})
       : _maxDistance = maxDistance {
-    if (_values != null) return;
-
-    // Inset by one since we can assume the edges are impassable.
     if (_maxDistance == null) {
+      // Inset by one since we can assume the edges are impassable.
       _offset = new Vec(1, 1);
-      _values = new Array2D<int>.filled(_stage.width - 2, _stage.height - 2,
+      _distances = new Array2D<int>.filled(_stage.width - 2, _stage.height - 2,
           _MAX);
-      return;
+    } else {
+      var left = math.max(1, _target.x - _maxDistance);
+      var top = math.max(1, _target.y - _maxDistance);
+      var right = math.min(_stage.width - 1, _target.x + _maxDistance + 1);
+      var bottom = math.min(_stage.height - 1, _target.y + _maxDistance + 1);
+      _offset = new Vec(left, top);
+      _distances = new Array2D<int>.filled(right - left, bottom - top, _MAX);
     }
 
-    var left = math.max(1, _target.x - _maxDistance);
-    var top = math.max(1, _target.y - _maxDistance);
-    var right = math.min(_stage.width - 1, _target.x + _maxDistance + 1);
-    var bottom = math.min(_stage.height - 1, _target.y + _maxDistance + 1);
-    _offset = new Vec(left, top);
-    _values = new Array2D<int>.filled(right - left, bottom - top, _MAX);
-
     _open.add(_target - _offset);
-    _values[_open.first] = 0;
+    _distances[_open.first] = 0;
     _found.add(_target - _offset);
 
     // TODO: For now, just eagerly run Dijkstra's. If we change the open and
@@ -54,32 +51,42 @@ class Flow {
     // can do this lazily.
     while (_open.isNotEmpty) {
       var start = _open.removeFirst();
-      var distance = _values[start];
+      var distance = _distances[start];
 
       // Update the neighbor's distances.
       for (var dir in Direction.ALL) {
         var here = start + dir;
 
-        if (!_values.bounds.contains(here)) continue;
+        if (!_distances.bounds.contains(here)) continue;
 
         // Can't reach impassable tiles.
-        // TODO: Make this customizable.
-        if (!_stage[here + _offset].isTraversable) continue;
+        var tile = _stage[here + _offset];
+        if (!tile.isTraversable) continue;
+        if (!tile.isPassable && !canOpenDoors) continue;
 
         // Can't walk through actors.
         if (_stage.actorAt(here + _offset) != null) continue;
 
         // If we got a new best path to this tile, update its distance and
         // consider its neighbors later.
-        if (_values[here] > distance + 1) {
-          _values[here] = distance + 1;
+        if (_distances[here] > distance + 1) {
+          _distances[here] = distance + 1;
           _open.add(here);
           _found.add(here);
         }
       }
     }
 
-    _found.sort((a, b) => _values[a].compareTo(_values[b]));
+    _found.sort((a, b) => _distances[a].compareTo(_distances[b]));
+  }
+
+  /// Gets the distance from the starting position to [pos], or `null` if there
+  /// is no path to it.
+  int getDistance(Vec pos) {
+    pos -= _offset;
+    if (!_distances.bounds.contains(pos)) return null;
+    var distance = _distances[pos];
+    return distance == _MAX ? null : distance;
   }
 
   /// Find the reachable position nearest to the target that matches
@@ -87,7 +94,6 @@ class Flow {
   ///
   /// Returns `null` if no matching position was found.
   Vec findNearestWhere(bool predicate(Tile tile)) {
-    // TODO: Don't allow target position.
     // TODO: Hack. Skipping one to not include target in result. Sometimes
     // that's desired sometimes it isn't.
     // TODO: If there are multiple equidistant ones, choose randomly?
@@ -114,8 +120,8 @@ class Flow {
       // Find the directions that get closer to the starting point.
       var dirs = Direction.ALL.where((dir) {
         var here = goal - dir;
-        if (!_values.bounds.contains(here)) return false;
-        return _values[here] < _values[goal];
+        if (!_distances.bounds.contains(here)) return false;
+        return _distances[here] < _distances[goal];
       }).toList();
 
       lastDir = rng.item(dirs);

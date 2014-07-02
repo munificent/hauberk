@@ -304,13 +304,14 @@ class AfraidState extends MonsterState {
   Action getAction() {
     // TODO: Tune max distance?
     // Find the nearest place the hero can't see.
-    var flow = new Flow(game.stage, pos, breed.tracking);
+    var flow = new Flow(game.stage, pos, maxDistance: breed.tracking,
+        canOpenDoors: monster.canOpenDoors);
     var dir = flow.directionToNearestWhere((tile) => !tile.visible);
     // TODO: If no place to escape, become unafraid.
     Debug.logMonster(monster, "Fleeing $dir");
 
     // TODO: Should not walk past hero to get to escape!
-    // TODO: Should take into account distance from here when choosing an
+    // TODO: Should take into account distance from hero when choosing an
     // escape destination.
     // TODO: What should it do once it's in shadow?
     return new WalkAction(dir);

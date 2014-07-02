@@ -124,9 +124,10 @@ class Stage {
 
     for (var i = 0; i < tries; i++) {
       var pos = findOpenTile();
-      if (this[pos].scent2 > bestDistance) {
+      best = pos;
+      if (_distances[pos] > bestDistance) {
         best = pos;
-        bestDistance = this[pos].scent2;
+        bestDistance = _distances[pos];
       }
     }
 
@@ -207,90 +208,6 @@ class Stage {
   }
 }
 
-// TODO: Move to separate library.
-class Flow {
-  static const _MAX = 999999;
-
-  final Stage _stage;
-  final Vec _target;
-  final int _maxDistance;
-
-  Array2D<int> _values;
-
-  /// The position of the array's top-level corner relative to the stage.
-  Vec _offset;
-
-  /// The positions that are still remaining to be processed.
-  final _open = new Queue<Vec>();
-
-  /// The list of reachable cells that have been found so far.
-  ///
-  /// Coordinates are local to [_values], not the [Stage].
-  final _found = <Vec>[];
-
-  Flow(this._stage, this._target, [int maxDistance])
-      : _maxDistance = maxDistance {
-    if (_values != null) return;
-
-    _open.add(_target);
-    _found.add(_target);
-
-    // Inset by one since we can assume the edges are impassable.
-    if (_maxDistance == null) {
-      _offset = new Vec(1, 1);
-      _values = new Array2D<int>.filled(_stage.width - 2, _stage.height - 2,
-          _MAX);
-      return;
-    }
-
-    var left = math.max(1, _target.x - _maxDistance);
-    var top = math.max(1, _target.y - _maxDistance);
-    var right = math.min(_stage.width - 1, _target.x + _maxDistance);
-    var bottom = math.min(_stage.height - 1, _target.y + _maxDistance);
-    _offset = new Vec(left, top);
-    _values = new Array2D<int>.filled(right - left, bottom - top, _MAX);
-  }
-
-  Vec findNearestWhere(bool predicate(Tile tile)) {
-    // See if it's already been found.
-    // TODO: Assumes _found is sorted!
-    for (var existing in _found) {
-      if (predicate(_stage[existing + _offset])) return existing + _offset;
-    }
-
-    // Keep flowing until we find it (or give up).
-    while (_open.isNotEmpty) {
-      var start = _open.removeFirst();
-      var distance = _values[start];
-
-      // Update the neighbor's distances.
-      for (var dir in Direction.ALL) {
-        var here = start + dir;
-
-        if (!_values.bounds.contains(here)) continue;
-
-        // Can't reach impassable tiles.
-        // TODO: Make this customizable.
-        if (!_stage[here + _offset].isTraversable) continue;
-
-        // If we got a new best path to this tile, update its distance and
-        // consider its neighbors later.
-        if (_values[here] > distance + 1) {
-          _values[here] = distance + 1;
-          // TODO: Is _open always sorted?
-          _open.add(here);
-          _found.add(here);
-
-          if (predicate(_stage[here + _offset])) return here + _offset;
-        }
-      }
-    }
-
-    // Not found.
-    return null;
-  }
-}
-
 class TileType {
   final String name;
   final bool isPassable;
@@ -306,8 +223,6 @@ class Tile {
   TileType type;
   bool     _visible  = false;
   bool     _explored = false;
-  num      scent1    = 0;
-  num      scent2    = 0;
 
   Tile();
 

@@ -385,7 +385,7 @@ class Monsters extends ContentBuilder {
   slugs() {
     group("s", tracking: 2);
     breed("giant slug", green, 12, [
-        attack("crawl[s] on", 8),
+        attack("crawl[s] on", 5, Element.POISON),
       ],
       meander: 1, speed: -3, flags: "fearless");
   }

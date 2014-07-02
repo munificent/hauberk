@@ -361,37 +361,9 @@ class GameScreen extends Screen {
           glyph = black;
         }
 
-        /*
-        glyph = debugScent(x, y, tile, glyph);
-        */
-
         terminal.drawGlyph(x, y, glyph);
       }
     }
-
-    // TODO(bob): Temp. Test A*.
-    /*
-    terminal.writeAt(40, 20, '!', Color.AQUA);
-    final aStar = AStar.findPath(game.level, game.hero.pos, new Vec(40, 20), 15);
-    if (aStar != null) {
-      for (final pos in aStar.closed) {
-        terminal.writeAt(pos.x, pos.y, '-', Color.RED);
-      }
-      for (final path in aStar.open) {
-        terminal.writeAt(path.pos.x, path.pos.y, '?', Color.BLUE);
-      }
-
-      var path = aStar.path;
-      while (path != null) {
-        terminal.writeAt(path.pos.x, path.pos.y, '@', Color.ORANGE);
-        path = path.parent;
-      }
-    }
-
-    final d = AStar.findDirection(game.level, game.hero.pos, new Vec(40, 20), 15);
-    final p = game.hero.pos + d;
-    terminal.writeAt(p.x, p.y, '0', Color.YELLOW);
-    */
 
     // Draw the items.
     var unexploredItem = new Glyph('?', Color.BLACK, Color.DARK_BLUE);
@@ -635,6 +607,21 @@ class GameScreen extends Screen {
   void _spawnParticles(int count, Vec pos, Color color) {
     for (var i = 0; i < count; i++) {
       effects.add(new ParticleEffect(pos.x, pos.y, color));
+    }
+  }
+
+  void _tempDebugFlow(Terminal terminal) {
+    var c = [
+      Color.GREEN, Color.AQUA, Color.BLUE, Color.PURPLE, Color.RED,
+      Color.ORANGE, Color.YELLOW
+    ];
+
+    var flow = new Flow(game.stage, game.hero.pos, canOpenDoors: true);
+    for (var pos in game.stage.bounds) {
+      var distance = flow.getDistance(pos);
+      if (distance != null) {
+        terminal.writeAt(pos.x, pos.y, ".", c[distance % c.length]);
+      }
     }
   }
 }
