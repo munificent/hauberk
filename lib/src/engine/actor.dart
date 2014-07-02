@@ -114,7 +114,7 @@ abstract class Actor extends Thing {
     onDied(attacker);
 
     action.log("{1} kill[s] {2}.", attackNoun, this);
-    if (attacker != null) attacker.onKilled(this);
+    if (attacker != null) attacker.onKilled(action, this);
 
     return true;
   }
@@ -135,7 +135,7 @@ abstract class Actor extends Thing {
   }
 
   /// Called when this Actor has killed [defender].
-  void onKilled(Actor defender) {
+  void onKilled(Action action, Actor defender) {
     // Do nothing.
   }
 

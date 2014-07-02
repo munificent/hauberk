@@ -67,8 +67,16 @@ class Storage {
 
       var completedLevels = hero['completedLevels'];
 
-      heroes.add(new HeroSave.load(name, inventory, equipment, home, crucible,
-          skills, experience, completedLevels));
+      var heroClass;
+      switch (hero['class']['name']) {
+        case 'warrior': heroClass = _loadWarrior(hero['class']); break;
+        default:
+          throw 'Unknown hero class "${hero['class']['name']}".';
+      }
+
+      var heroSave = new HeroSave.load(name, heroClass, inventory, equipment,
+          home, crucible, skills, experience, completedLevels);
+      heroes.add(heroSave);
     }
   }
 
@@ -76,6 +84,10 @@ class Storage {
     var type = content.items[data['type']];
     // TODO(bob): Load powers.
     return new Item(type);
+  }
+
+  HeroClass _loadWarrior(Map data) {
+    return new Warrior.load(data['numKills']);
   }
 
   void save() {
@@ -106,8 +118,15 @@ class Storage {
         if (level != 0) skills[skill.name] = level;
       });
 
+      var heroClass = {};
+      if (hero.heroClass is Warrior) {
+        heroClass['name'] = 'warrior';
+        _saveWarrior(hero.heroClass, heroClass);
+      }
+
       heroData.add({
         'name': hero.name,
+        'class': heroClass,
         'inventory': inventory,
         'equipment': equipment,
         'home': home,
@@ -118,7 +137,7 @@ class Storage {
       });
     }
 
-    // TODO(bob): Version.
+    // TODO: Version.
     var data = {
       'heroes': heroData
     };
@@ -127,10 +146,14 @@ class Storage {
     print('Saved.');
   }
 
-  _saveItem(Item item) {
-    // TODO(bob): Save powers.
+  Map _saveItem(Item item) {
+    // TODO: Save powers.
     return {
       'type': item.type.name
     };
+  }
+
+  void _saveWarrior(Warrior warrior, Map data) {
+    data['numKills'] = warrior.combat.count;
   }
 }

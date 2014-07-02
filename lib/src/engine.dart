@@ -14,6 +14,7 @@ export 'engine/energy.dart';
 export 'engine/fov.dart';
 export 'engine/game.dart';
 export 'engine/hero.dart';
+export 'engine/hero_class.dart';
 export 'engine/item.dart';
 export 'engine/log.dart';
 export 'engine/los.dart';

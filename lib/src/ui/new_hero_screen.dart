@@ -34,7 +34,10 @@ class NewHeroScreen extends Screen {
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
       case KeyCode.ENTER:
-        var hero = content.createHero(name.isEmpty ? defaultName : name);
+        // TODO: Other classes.
+        var heroClass = new Warrior();
+        var hero = content.createHero(name.isEmpty ? defaultName : name,
+            heroClass);
         storage.heroes.add(hero);
         storage.save();
         ui.goTo(new SelectLevelScreen(content, hero, storage));

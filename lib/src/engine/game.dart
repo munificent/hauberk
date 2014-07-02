@@ -10,6 +10,7 @@ import 'breed.dart';
 import 'element.dart';
 import 'fov.dart';
 import 'hero.dart';
+import 'hero_class.dart';
 import 'item.dart';
 import 'log.dart';
 import 'option.dart';
@@ -124,9 +125,9 @@ class Content {
   Content(this.areas, this.breeds, this.items, this.recipes, this.skills,
       this._newHeroItems);
 
-  HeroSave createHero(String name) {
-    final hero = new HeroSave(skills, name);
-    for (final itemType in _newHeroItems) {
+  HeroSave createHero(String name, HeroClass heroClass) {
+    var hero = new HeroSave(skills, name, heroClass);
+    for (var itemType in _newHeroItems) {
       hero.inventory.tryAdd(new Item(itemType));
     }
 

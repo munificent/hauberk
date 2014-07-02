@@ -6,6 +6,7 @@ import 'actor.dart';
 import 'element.dart';
 import 'energy.dart';
 import 'game.dart';
+import 'hero_class.dart';
 import 'item.dart';
 import 'log.dart';
 import 'melee.dart';
@@ -19,6 +20,8 @@ import 'skill.dart';
 /// dungeon). This class stores that state.
 class HeroSave {
   final String name;
+
+  HeroClass heroClass;
 
   Inventory inventory = new Inventory(Option.INVENTORY_CAPACITY);
   Equipment equipment = new Equipment();
@@ -39,17 +42,19 @@ class HeroSave {
   /// that area.
   final Map<String, int> completedLevels;
 
-  HeroSave(Map<String, Skill> skills, this.name)
+  HeroSave(Map<String, Skill> skills, this.name, this.heroClass)
       : skills = new SkillSet(skills),
         completedLevels = <String, int>{};
 
-  HeroSave.load(this.name, this.inventory, this.equipment, this.home,
-      this.crucible, this.skills, this.experienceCents, this.completedLevels);
+  HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
+      this.home, this.crucible, this.skills, this.experienceCents,
+      this.completedLevels);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be
   /// "saved".
   void copyFrom(Hero hero) {
+    heroClass = hero.heroClass;
     inventory = hero.inventory;
     equipment = hero.equipment;
     experienceCents = hero._experienceCents;
@@ -60,6 +65,8 @@ class HeroSave {
 class Hero extends Actor {
   String get nounText => 'you';
   final Pronoun pronoun = Pronoun.YOU;
+
+  final HeroClass heroClass;
 
   final Inventory inventory;
   final Equipment equipment;
@@ -83,20 +90,19 @@ class Hero extends Actor {
 
   Hero(Game game, Vec pos, HeroSave save, this.skills)
   : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
-    // Cloned so that if the hero dies in the dungeon, he loses any items
-    // he gained.
+    // Cloned so that if the hero dies in the dungeon, he loses anything gained.
+    heroClass = save.heroClass.clone(),
     inventory = save.inventory.clone(),
     equipment = save.equipment.clone(),
     _experienceCents = save.experienceCents {
     _refreshLevel(log: false);
 
-    // TODO(bob): Doing this here assumes skills don't change while in the
-    // stage.
+    // TODO: Doing this here assumes skills don't change while in the stage.
     skills.forEach((skill, level) => health.max += skill.modifyHealth(level));
     health.current = health.max;
   }
 
-  // TODO(bob): Hackish.
+  // TODO: Hackish.
   get appearance => 'hero';
 
   bool get needsInput {
@@ -136,6 +142,9 @@ class Hero extends Actor {
       attack = new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE, Element.NONE);
     }
 
+    // Let the class modify it.
+    attack = heroClass.modifyAttack(attack, defender);
+
     // See if any skills modify it.
     var add = 0;
     var multiply = 1.0;
@@ -155,9 +164,10 @@ class Hero extends Actor {
     return attack.addArmor(armor);
   }
 
-  void onKilled(Monster defender) {
+  void onKilled(Action action, Monster defender) {
     _experienceCents += defender.experienceCents ~/ level;
     _refreshLevel(log: true);
+    heroClass.killedMonster(action, defender);
   }
 
   void onFinishTurn(Action action) {

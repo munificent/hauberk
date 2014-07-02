@@ -517,10 +517,20 @@ class GameScreen extends Screen {
       x += 5;
     }
 
+    // Draw the class stats.
+    if (hero.heroClass is Warrior) {
+      var warrior = hero.heroClass as Warrior;
+      // TODO: Subclass.
+      terminal.writeAt(82, 10, "Warrior");
+      terminal.writeAt(82, 11, "Combat", Color.GRAY);
+      terminal.writeAt(90, 11, warrior.combat.level.toString());
+      terminal.writeAt(94, 11, "(${warrior.combat.percentUntilNext}%)");
+    }
+
+    // Draw the nearby monsters.
     terminal.writeAt(82, 18, '@ hero', heroColor);
     drawHealthBar(terminal, 19, hero);
 
-    // Draw the nearby monsters.
     visibleMonsters.sort((a, b) {
       var aDistance = (a.pos - game.hero.pos).lengthSquared;
       var bDistance = (b.pos - game.hero.pos).lengthSquared;
