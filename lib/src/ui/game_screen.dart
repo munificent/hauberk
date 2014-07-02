@@ -489,21 +489,7 @@ class GameScreen extends Screen {
       x += 5;
     }
 
-    // Draw the class stats.
-    drawTrained(int y, String name, TrainedStat stat) {
-      terminal.writeAt(82, y, name, Color.GRAY);
-      terminal.writeAt(90, y, "          ");
-      terminal.writeAt(90, y, stat.level.toString());
-      terminal.writeAt(96, y, "${stat.percentUntilNext}%", Color.DARK_GRAY);
-    }
-
-    if (hero.heroClass is Warrior) {
-      var warrior = hero.heroClass as Warrior;
-      // TODO: Subclass.
-      terminal.writeAt(82, 10, "Warrior");
-      drawTrained(11, "Combat", warrior.combat);
-      drawTrained(12, "Tough", warrior.toughness);
-    }
+    if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
 
     // Draw the nearby monsters.
     terminal.writeAt(82, 18, '@ hero', heroColor);
@@ -582,6 +568,28 @@ class GameScreen extends Screen {
       }
       terminal.drawGlyph(90 + x, y, new Glyph.fromCharCode(char, fore, back));
     }
+  }
+
+  void _drawWarriorStats(Terminal terminal, Hero hero) {
+    // TODO: Subclass.
+    terminal.writeAt(82, 10, "Warrior");
+
+    var warrior = hero.heroClass as Warrior;
+    var y = 11;
+
+    draw(String name, TrainedStat stat) {
+      // Hide stats until the hero has made progress on them.
+      if (stat.level == 0 && stat.percentUntilNext == 0) return;
+
+      terminal.writeAt(82, y, "                 ");
+      terminal.writeAt(82, y, name, Color.GRAY);
+      terminal.writeAt(93, y, stat.level.toString());
+      terminal.writeAt(97, y, "${stat.percentUntilNext}%", Color.DARK_GRAY);
+      y++;
+    }
+
+    draw("Combat", warrior.combat);
+    draw("Toughness", warrior.toughness);
   }
 
   void targetActor(Actor actor) {
