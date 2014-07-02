@@ -1,10 +1,10 @@
-library dngn.engine.flow;
+library dngn.engine.ai.flow;
 
 import 'dart:collection';
 import 'dart:math' as math;
 
-import '../util.dart';
-import 'stage.dart';
+import '../../util.dart';
+import '../stage.dart';
 
 class Flow {
   static const _MAX = 999999;

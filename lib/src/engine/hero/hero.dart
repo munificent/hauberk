@@ -1,17 +1,17 @@
-library dngn.engine.hero;
+library dngn.engine.hero.hero;
 
-import '../util.dart';
-import 'action_base.dart';
-import 'actor.dart';
-import 'element.dart';
-import 'energy.dart';
-import 'game.dart';
+import '../../util.dart';
+import '../action_base.dart';
+import '../actor.dart';
+import '../element.dart';
+import '../energy.dart';
+import '../game.dart';
+import '../item.dart';
+import '../log.dart';
+import '../melee.dart';
+import '../monster.dart';
+import '../option.dart';
 import 'hero_class.dart';
-import 'item.dart';
-import 'log.dart';
-import 'melee.dart';
-import 'monster.dart';
-import 'option.dart';
 import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].

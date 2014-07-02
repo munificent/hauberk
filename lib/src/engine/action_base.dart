@@ -6,7 +6,7 @@ import '../util.dart';
 import 'action_combat.dart';
 import 'actor.dart';
 import 'game.dart';
-import 'hero.dart';
+import 'hero/hero.dart';
 import 'log.dart';
 import 'option.dart';
 

@@ -8,7 +8,7 @@ import 'actor.dart';
 import 'breed.dart';
 import 'fov.dart';
 import 'game.dart';
-import 'hero.dart';
+import 'hero/hero.dart';
 import 'item.dart';
 
 /// The game's live play area.

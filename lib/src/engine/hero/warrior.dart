@@ -1,31 +1,10 @@
-library dngn.engine.hero_class;
+library dngn.engine.hero.warrior;
 
-import 'dart:math' as math;
-
-import 'action_base.dart';
-import 'actor.dart';
-import 'melee.dart';
-import 'monster.dart';
-
-/// Base class for a Hero's character class.
-///
-/// Each class has its own unique behavior and game mechanics. To support this,
-/// there are a number of abstract methods here that will be called at
-/// appropriate times during the game. Specific classes can then decide how to
-/// handle that.
-abstract class HeroClass {
-  /// Gives the class a chance to modify the attack the hero is about to perform
-  /// on [defender].
-  Attack modifyAttack(Attack attack, Actor defender) => attack;
-
-  void killedMonster(Action action, Monster monster);
-
-  /// Clones this object.
-  ///
-  /// Called when the hero enters the level so that if they die, all changes
-  /// can be discarded.
-  HeroClass clone();
-}
+import '../action_base.dart';
+import '../actor.dart';
+import '../melee.dart';
+import '../monster.dart';
+import 'hero_class.dart';
 
 /// A warrior is focused on combat. Players choosing them don't want to spend
 /// a bunch of time fiddling with skills so almost all warrior skills are
@@ -49,7 +28,7 @@ class Warrior extends HeroClass {
   void killedMonster(Action action, Monster monster) {
     if (combat.increment(1)) {
       action.game.log.gain('{1} [have|has] reached combat level '
-          '${combat.level}.', action.actor);
+      '${combat.level}.', action.actor);
     }
   }
 }

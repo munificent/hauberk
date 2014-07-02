@@ -9,12 +9,12 @@ import 'area.dart';
 import 'breed.dart';
 import 'element.dart';
 import 'fov.dart';
-import 'hero.dart';
-import 'hero_class.dart';
+import 'hero/hero.dart';
+import 'hero/hero_class.dart';
+import 'hero/skill.dart';
 import 'item.dart';
 import 'log.dart';
 import 'option.dart';
-import 'skill.dart';
 import 'stage.dart';
 
 /// Root class for the game engine. All game state is contained within this.

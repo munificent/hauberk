@@ -5,11 +5,11 @@ import '../../util.dart';
 import '../action_base.dart';
 import '../ai/a_star.dart';
 import '../breed.dart';
-import '../flow.dart';
 import '../game.dart';
 import '../log.dart';
 import '../monster.dart';
 import '../option.dart';
+import 'flow.dart';
 
 /*
 

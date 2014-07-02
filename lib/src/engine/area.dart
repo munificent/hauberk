@@ -3,7 +3,7 @@ library dngn.engine.area;
 import '../util.dart';
 import 'breed.dart';
 import 'game.dart';
-import 'hero.dart';
+import 'hero/hero.dart';
 import 'item.dart';
 import 'log.dart';
 import 'monster.dart';

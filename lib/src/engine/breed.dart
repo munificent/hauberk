@@ -3,7 +3,7 @@ library dngn.engine.breed;
 import '../util.dart';
 import 'energy.dart';
 import 'game.dart';
-import 'hero.dart';
+import 'hero/hero.dart';
 import 'item.dart';
 import 'log.dart';
 import 'melee.dart';
