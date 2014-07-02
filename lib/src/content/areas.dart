@@ -25,10 +25,11 @@ class Areas extends ContentBuilder {
           'frog'
         ],
         drop: [
-          chanceOf(25, 'Flower'),
+          chanceOf(20, 'Flower'),
           chanceOf(50, 'food:1'),
           chanceOf(10, 'magic:1'),
-          chanceOf(15, 'Stick')
+          chanceOf(10, 'equipment:1'),
+          chanceOf(10, 'Stick')
         ],
         quest: kill('fuzzy bunny', 1)),
       level(() => new Forest(meadowInset: 6), numMonsters: 8, numItems: 10,
@@ -43,7 +44,8 @@ class Areas extends ContentBuilder {
         drop: [
           chanceOf(20, 'Flower'),
           chanceOf(50, 'food:1'),
-          chanceOf(20, 'magic:1'),
+          chanceOf(10, 'magic:1'),
+          chanceOf(10, 'equipment:1'),
           chanceOf(10, 'Stick')
         ],
         quest: kill('fox', 1)),
@@ -63,8 +65,8 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           chanceOf(60, 'food:2'),
-          chanceOf(35, 'magic:2'),
-          chanceOf(5, 'equipment:1')
+          chanceOf(30, 'magic:2'),
+          chanceOf(10, 'equipment:2')
         ],
         quest: kill('wild dog', 3)),
       level(() => new TrainingGrounds(), numMonsters: 16, numItems: 11,
@@ -77,8 +79,8 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           chanceOf(55, 'food:3'),
-          chanceOf(35, 'magic:2'),
-          chanceOf(10, 'equipment:2')
+          chanceOf(30, 'magic:2'),
+          chanceOf(15, 'equipment:3')
         ],
         quest: kill('giant spider')),
       level(() => new TrainingGrounds(), numMonsters: 20, numItems: 12,
@@ -91,8 +93,8 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           chanceOf(55, 'food:4'),
-          chanceOf(35, 'magic:3'),
-          chanceOf(10, 'equipment:3')
+          chanceOf(30, 'magic:3'),
+          chanceOf(15, 'equipment:3')
         ],
         quest: kill('giant cave worm'))
     ]);
