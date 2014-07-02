@@ -79,19 +79,19 @@ class Monsters extends ContentBuilder {
   arachnids() {
     group("a");
     breed("garden spider", darkAqua, 2, [
-        attack("bite[s]", 2, Element.POISON)
+        attack("bite[s]", 1, Element.POISON)
       ],
       drop: chanceOf(3, "Stinger"),
       meander: 8, flags: "group fearless");
 
     breed("brown spider", brown, 3, [
-        attack("bite[s]", 3, Element.POISON)
+        attack("bite[s]", 2, Element.POISON)
       ],
       drop: chanceOf(5, "Stinger"),
       meander: 8, flags: "group fearless");
 
     breed("giant spider", darkBlue, 12, [
-        attack("bite[s]", 8, Element.POISON)
+        attack("bite[s]", 3, Element.POISON)
       ],
       drop: chanceOf(10, "Stinger"),
       meander: 5, flags: "fearless");
@@ -168,7 +168,7 @@ class Monsters extends ContentBuilder {
       speed: 1, flags: "group protective");
 
     breed("wasp", brown, 1, [
-        attack("sting[s]", 4, Element.POISON),
+        attack("sting[s]", 2, Element.POISON),
       ],
       drop: chanceOf(30, "Stinger"),
       speed: 2, flags: "berzerk");
