@@ -87,7 +87,9 @@ class Storage {
   }
 
   HeroClass _loadWarrior(Map data) {
-    return new Warrior.load(data['numKills']);
+    return new Warrior.load(
+        combat: data['combat'],
+        toughness: data['toughness']);
   }
 
   void save() {
@@ -154,6 +156,7 @@ class Storage {
   }
 
   void _saveWarrior(Warrior warrior, Map data) {
-    data['numKills'] = warrior.combat.count;
+    data['combat'] = warrior.combat.count;
+    data['toughness'] = warrior.toughness.count;
   }
 }

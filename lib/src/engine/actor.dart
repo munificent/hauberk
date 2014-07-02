@@ -125,6 +125,9 @@ abstract class Actor extends Thing {
   }
 
   /// Called when [attacker] has successfully hit this actor.
+  ///
+  /// [attacker] may be `null` if the damage is not the direct result of an
+  /// attack (for example, poison).
   void onDamaged(Action action, Actor attacker, int damage) {
     // Do nothing.
   }

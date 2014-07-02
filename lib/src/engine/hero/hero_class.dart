@@ -12,11 +12,28 @@ import '../monster.dart';
 /// appropriate times during the game. Specific classes can then decide how to
 /// handle that.
 abstract class HeroClass {
+  /// Gets the [Hero] that has this class.
+  Hero get hero => _hero;
+  Hero _hero;
+
+  /// Gets the armor bonus conferred by this class.
+  int get armor => 0;
+
+  /// Attaches this class to a [hero].
+  void bind(Hero hero) {
+    assert(_hero == null);
+    _hero = hero;
+  }
+
   /// Gives the class a chance to modify the attack the hero is about to perform
   /// on [defender].
   Attack modifyAttack(Attack attack, Actor defender) => attack;
 
-  void killedMonster(Action action, Monster monster);
+  /// Called when the [Hero] has taken [damage] from [attacker].
+  void tookDamage(Action action, Actor attacker, int damage) {}
+
+  /// Called when the [Hero] has killed [monster].
+  void killedMonster(Action action, Monster monster) {}
 
   /// Clones this object.
   ///

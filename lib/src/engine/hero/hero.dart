@@ -97,6 +97,8 @@ class Hero extends Actor {
     _experienceCents = save.experienceCents {
     _refreshLevel(log: false);
 
+    heroClass.bind(this);
+
     // TODO: Doing this here assumes skills don't change while in the stage.
     skills.forEach((skill, level) => health.max += skill.modifyHealth(level));
     health.current = health.max;
@@ -124,6 +126,9 @@ class Hero extends Actor {
     for (final item in equipment) {
       total += item.armor;
     }
+
+    total += heroClass.armor;
+
     return total;
   }
 
@@ -162,6 +167,10 @@ class Hero extends Actor {
   Attack defend(Attack attack) {
     disturb();
     return attack.addArmor(armor);
+  }
+
+  void onDamaged(Action action, Actor attacker, int damage) {
+    heroClass.tookDamage(action, attacker, damage);
   }
 
   void onKilled(Action action, Monster defender) {

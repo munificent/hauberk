@@ -490,13 +490,19 @@ class GameScreen extends Screen {
     }
 
     // Draw the class stats.
+    drawTrained(int y, String name, TrainedStat stat) {
+      terminal.writeAt(82, y, name, Color.GRAY);
+      terminal.writeAt(90, y, "          ");
+      terminal.writeAt(90, y, stat.level.toString());
+      terminal.writeAt(96, y, "${stat.percentUntilNext}%", Color.DARK_GRAY);
+    }
+
     if (hero.heroClass is Warrior) {
       var warrior = hero.heroClass as Warrior;
       // TODO: Subclass.
       terminal.writeAt(82, 10, "Warrior");
-      terminal.writeAt(82, 11, "Combat", Color.GRAY);
-      terminal.writeAt(90, 11, warrior.combat.level.toString());
-      terminal.writeAt(94, 11, "(${warrior.combat.percentUntilNext}%)");
+      drawTrained(11, "Combat", warrior.combat);
+      drawTrained(12, "Tough", warrior.toughness);
     }
 
     // Draw the nearby monsters.

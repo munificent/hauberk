@@ -4,6 +4,7 @@ import '../action_base.dart';
 import '../actor.dart';
 import '../melee.dart';
 import '../monster.dart';
+import 'hero.dart';
 import 'hero_class.dart';
 
 /// A warrior is focused on combat. Players choosing them don't want to spend
@@ -11,24 +12,47 @@ import 'hero_class.dart';
 /// passive and increase in level automatically simply by doing something
 /// related to the skill.
 class Warrior extends HeroClass {
+  int get armor => toughness.level;
+
+  /// Increases damage. Trained by killing monsters.
   final combat = new TrainedStat(10, 10);
+
+  // Increases armor. Trained by taking damage.
+  final toughness = new TrainedStat(400, 100);
 
   Warrior();
 
-  Warrior.load(int numKills) {
-    combat.increment(numKills);
+  Warrior.load({int combat, int toughness}) {
+    this.combat.increment(combat);
+    this.toughness.increment(toughness);
   }
 
-  Warrior clone() => new Warrior.load(combat.count);
+  Warrior clone() => new Warrior.load(
+      combat: combat.count,
+      toughness: toughness.count);
 
   Attack modifyAttack(Attack attack, Actor defender) {
     return attack.addDamage(combat.level);
   }
 
+  void tookDamage(Action action, Actor attacker, int damage) {
+    // Indirect damage doesn't increase toughness.
+    if (attacker == null) return;
+
+    // Reduce damage by armor (again). This is so that toughness increases
+    // much more slowly as the hero wears more armor.
+    damage = (damage * getArmorMultiplier(hero.armor - toughness.level) * 10)
+        .floor();
+    if (toughness.increment(damage)) {
+      action.game.log.gain('{1} [have|has] reached toughness level '
+          '${toughness.level}.', hero);
+    }
+  }
+
   void killedMonster(Action action, Monster monster) {
     if (combat.increment(1)) {
       action.game.log.gain('{1} [have|has] reached combat level '
-      '${combat.level}.', action.actor);
+          '${combat.level}.', hero);
     }
   }
 }
