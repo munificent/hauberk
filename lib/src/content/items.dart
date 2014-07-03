@@ -124,6 +124,12 @@ class Items extends ContentBuilder {
         use: () => new TeleportAction(24));
     item("Scroll of Disappearing", 26, darkBlue,
         use: () => new TeleportAction(48));
+
+    // Detection.
+    group("?", "magic/scroll/detection");
+    item("Scroll of Item Detection", 2, lightOrange,
+        use: () => new DetectItemsAction());
+
   }
 
   void weapons() {

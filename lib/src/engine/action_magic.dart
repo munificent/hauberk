@@ -73,6 +73,27 @@ class TeleportAction extends Action {
   }
 }
 
+/// An [Action] that marks all tiles containing [Item]s explored.
+class DetectItemsAction extends Action {
+  ActionResult onPerform() {
+    var numFound = 0;
+    for (var item in game.stage.items) {
+      // Ignore items already found.
+      if (game.stage[item.pos].isExplored) continue;
+
+      // TODO: Effect.
+      numFound++;
+      game.stage[item.pos].isExplored = true;
+    }
+
+    if (numFound == 0) {
+      return succeed('The darkness holds no secrets.');
+    }
+
+    return succeed('{1} sense[s] the treasures held in the dark!', actor);
+  }
+}
+
 /// Base class for an [Action] that applies (or extends/intensifies) a
 /// [Condition]. It handles cases where the condition is already in effect with
 /// possibly a different intensity.

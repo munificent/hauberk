@@ -221,18 +221,17 @@ class TileType {
 
 class Tile {
   TileType type;
-  bool     _visible  = false;
-  bool     _explored = false;
+  bool _visible  = false;
 
   Tile();
 
   bool get visible => _visible;
   void set visible(bool value) {
-    if (value) _explored = true;
+    if (value) isExplored = true;
     _visible = value;
   }
 
-  bool get isExplored => _explored;
+  bool isExplored = false;
   bool get isPassable => type.isPassable;
   bool get isTraversable => type.isPassable || (type.opensTo != null);
   bool get isTransparent => type.isTransparent;
