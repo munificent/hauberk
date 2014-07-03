@@ -4,6 +4,7 @@ import '../engine.dart';
 import '../util.dart';
 import 'builder.dart';
 import 'item_group.dart';
+import 'powers.dart';
 
 /// Builder class for defining [ItemType]s.
 class Items extends ContentBuilder {
@@ -296,14 +297,24 @@ class Items extends ContentBuilder {
   }
 }
 
+// TODO: Powers.
 /// Drops an item of a given type.
 class ItemDrop implements Drop {
+  /// The [ItemGroup] that contains this item, or `null` if it's not grouped.
+  final ItemGroup _group;
   final ItemType type;
 
-  ItemDrop(this.type);
+  ItemDrop(ItemType type)
+    : _group = ItemGroup.find(type),
+      type = type;
 
   void spawnDrop(Game game, AddItem addItem) {
-    addItem(new Item(type));
+    if (_group == null) {
+      addItem(new Item(type));
+    } else {
+      var powers = choosePowers(_group, type);
+      addItem(new Item(type, powers[0], powers[1]));
+    }
   }
 }
 

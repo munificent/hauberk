@@ -3,20 +3,29 @@ library dngn.content.item_group;
 import '../engine.dart';
 import '../util.dart';
 import 'builder.dart';
+import 'powers.dart';
 
 /// The root of the [ItemGroup] tree that contains all items.
-final _rootGroup = new ItemGroup(null);
+final _rootGroup = new ItemGroup("item", null);
 
 /// Maps group names to the actual group object. This lets drops refer to just
 /// the short name of the group (which is assumed to be unique) instead of the
 /// full path.
-final _groupNames = new Map<String, ItemGroup>();
+final _allGroups = new Map<String, ItemGroup>();
 
 class ItemGroup {
   static void define(String name, ItemType itemType, int level) {
     _rootGroup.add(name, itemType, level);
   }
 
+  /// Finds the item group that directly contains [type], or returns `null` if
+  /// the item is not in any group.
+  static ItemGroup find(ItemType type) {
+    return _allGroups.values.firstWhere(
+        (group) => group.items.values.contains(type), orElse: () => null);
+  }
+
+  final String name;
   final ItemGroup parent;
 
   /// The child groups contained within this group.
@@ -25,7 +34,21 @@ class ItemGroup {
   /// The [ItemType]s that live directly in this group, keyed by their level.
   final items = new Map<int, ItemType>();
 
-  ItemGroup(this.parent);
+  ItemGroup(this.name, this.parent);
+
+  /// Gets whether this group is [name], or is contained in a parent group with
+  /// that name.
+  bool isWithin(String name) {
+    // Walk up the path looking for the name.
+    var group = this;
+    var child = this;
+    while (group != null) {
+      if (group.name == name) return true;
+      group = group.parent;
+    }
+
+    return false;
+  }
 
   /// Adds [item] to the group at [path]. Creates child groups as needed.
   void add(String path, ItemType item, int level) {
@@ -33,7 +56,7 @@ class ItemGroup {
   }
 
   void _add(Iterable<String> path, ItemType item, int level) {
-    // If we"ve navigated to the end of the path, add it here.
+    // If we've navigated to the end of the path, add it here.
     if (path.isEmpty) {
       items[level] = item;
       return;
@@ -41,7 +64,7 @@ class ItemGroup {
 
     // Otherwise, it goes into a child group;
     var group = groups.putIfAbsent(path.first,
-        () => _groupNames[path.first] = new ItemGroup(this));
+        () => _allGroups[path.first] = new ItemGroup(path.first, this));
     group._add(path.skip(1), item, level);
   }
 
@@ -58,6 +81,7 @@ class ItemGroup {
 
     // Take all of the items in this group and organize them by level.
     var itemsByLevel = {};
+    var groupsForItem = {};
 
     addGroup(ItemGroup group) {
       // Recurse into child groups.
@@ -66,6 +90,7 @@ class ItemGroup {
       group.items.forEach((level, item) {
         var itemsAtLevel = itemsByLevel.putIfAbsent(level, () => []);
         itemsAtLevel.add(item);
+        groupsForItem[item] = group;
       });
     }
 
@@ -89,13 +114,10 @@ class ItemGroup {
     // Pick one of the items at that level randomly.
     var itemType = rng.item(items);
 
-    // TODO: Powers. Should take into account the level of the actual item
-    // type chosen relative to the original desired level. Items from a lower
-    // than target level should be more likely to have powers (i.e. get a
-    // stick deep in the dungeon and you can bet it will be an Elven Stick of
-    // Thrashing) and vice versa.
+    // TODO: Take level into account when choosing powers.
+    var powers = choosePowers(groupsForItem[itemType], itemType);
 
-    var item = new Item(itemType);
+    var item = new Item(itemType, powers[0], powers[1]);
     return item;
   }
 
@@ -135,6 +157,6 @@ class GroupDrop implements Drop {
   GroupDrop(this._group, this._level);
 
   void spawnDrop(Game game, AddItem addItem) {
-    addItem(_groupNames[_group].createItem(_level));
+    addItem(_allGroups[_group].createItem(_level));
   }
 }

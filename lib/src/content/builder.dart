@@ -54,6 +54,8 @@ class ContentBuilder {
       // Otherwise, just drop that item.
       var itemType = Items.all[drop];
       if (itemType == null) throw "Couldn't find item type $drop.";
+
+      // See if the item is in a group.
       return new ItemDrop(itemType);
     }
 

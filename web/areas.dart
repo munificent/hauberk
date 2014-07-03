@@ -9,7 +9,8 @@ import 'package:dngn/src/util.dart';
 main() {
   var content = createContent();
 
-  var save = new HeroSave({}, "Hero");
+  var heroClass = new Warrior();
+  var save = new HeroSave({}, "Hero", heroClass);
   var game = new Game(content.areas[0], 0, content, save);
 
   var text = new StringBuffer();
@@ -19,14 +20,14 @@ main() {
     for (var level in area.levels) {
       var drops = {};
 
-      var tries = 100000;
+      var tries = 10000;
       for (var i = 0; i < tries; i++) {
         final itemDepth = pickDepth(levelNum, area.levels.length);
         final drop = area.levels[itemDepth].floorDrop;
 
         area.levels[itemDepth].floorDrop.spawnDrop(game, (item) {
-          drops.putIfAbsent(item.type.name, () => 0);
-          drops[item.type.name]++;
+          drops.putIfAbsent(item.toString(), () => 0);
+          drops[item.toString()]++;
         });
       }
 

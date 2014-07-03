@@ -29,8 +29,8 @@ class Item extends Thing implements Comparable {
     if (type.attack == null) return null;
 
     var attack = type.attack;
-    if (prefix != null) attack = attack.addDamage(prefix.damage);
-    if (suffix != null) attack = attack.addDamage(suffix.damage);
+    if (prefix != null) attack = prefix.modifyAttack(attack);
+    if (suffix != null) attack = suffix.modifyAttack(attack);
 
     return attack;
   }
@@ -54,10 +54,9 @@ class Item extends Thing implements Comparable {
       name.write(suffix.name);
     }
 
-    if (type.attack != null) {
+    if (attack != null) {
       name.write(' (');
-      // TODO: Make prettier.
-      name.write(type.attack);
+      name.write(attack);
       name.write(')');
     }
 
@@ -97,36 +96,13 @@ class ItemType {
 
 /// A modifier that can be applied to an [Item] to change its capabilities.
 /// For example, in a "Dagger of Wounding", the "of Wounding" part is a Power.
-class Power {
-  final PowerType type;
+abstract class Power {
+  String get name;
 
-  /// The damage modifier.
-  final int damage;
-
-  Power(this.type, this.damage);
-
-  String get name => type.name;
-}
-
-/// A kind of [Power]. It has information that is common to all [Power]s of a
-/// given type, an can generate specific powers of its type.
-class PowerType {
-  final String name;
-  final List<String> equipSlots;
-  final bool isPrefix;
-  final int damage;
-
-  PowerType(this.name, String equipSlots,
-    [this.damage = 0, this.isPrefix = true])
-  : equipSlots = equipSlots.split(' ');
-
-  /// Returns `true` if this PowerType can be applied to an [Item] of the given
-  /// [ItemType].
-  bool appliesTo(ItemType type) {
-    return equipSlots.indexOf(type.equipSlot) != -1;
-  }
-
-  Power spawn() => new Power(this, rng.triangleInt(damage, damage ~/ 4));
+  // TODO: Power, Skill, Condition and HeroClass all have this or something
+  // similar. Should we have a generic interface for stuff that can modify an
+  // attack?
+  Attack modifyAttack(Attack attack) => attack;
 }
 
 abstract class ItemCollection extends Iterable<Item> {

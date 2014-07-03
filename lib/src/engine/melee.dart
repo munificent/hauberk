@@ -50,6 +50,12 @@ class Attack {
         damageScale, element, armor);
   }
 
+  /// Returns a new attack identical to this one but with [element].
+  Attack brand(Element element) {
+    return new Attack._(noun, verb, baseDamage, damageBonus,
+        damageScale, element, armor);
+  }
+
   /// Returns a new attack identical to this one but with damage scaled by
   /// [factor].
   Attack multiplyDamage(num factor) {
@@ -151,9 +157,16 @@ class Attack {
   }
 
   String toString() {
-    var result = baseDamage.toString();
-    if (damageBonus != 0 || damageScale != 1.0) {
-      result += " ($damageBonus, $damageScale)";
+    var result = baseDamage.toInt().toString();
+
+    if (damageBonus > 0) {
+      result += "+${damageBonus.toInt()}";
+    } else if (damageBonus < 0) {
+      result += "${damageBonus.toInt()}";
+    }
+
+    if (damageScale != 1.0) {
+      result += "x$damageScale";
     }
 
     if (element != Element.NONE) {
