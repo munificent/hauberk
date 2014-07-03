@@ -87,9 +87,12 @@ class Storage {
   }
 
   HeroClass _loadWarrior(Map data) {
+
     return new Warrior.load(
+        fighting: data['fighting'],
         combat: data['combat'],
-        toughness: data['toughness']);
+        toughness: data['toughness'],
+        masteries: data['masteries']);
   }
 
   void save() {
@@ -156,7 +159,15 @@ class Storage {
   }
 
   void _saveWarrior(Warrior warrior, Map data) {
+    data['fighting'] = warrior.fighting.count;
     data['combat'] = warrior.combat.count;
     data['toughness'] = warrior.toughness.count;
+
+    var masteries = {};
+    warrior.masteries.forEach((category, stat) {
+      masteries[category] = stat.count;
+    });
+
+    data['masteries'] = masteries;
   }
 }

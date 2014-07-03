@@ -14,25 +14,61 @@ import 'hero_class.dart';
 class Warrior extends HeroClass {
   int get armor => toughness.level;
 
-  /// Increases damage. Trained by killing monsters.
-  final combat = new TrainedStat(10, 10);
+  /// Increases damage when unarmed. Trained by killing monsters while unarmed.
+  final fighting = new TrainedStat(40, 10);
+
+  /// Increases damage when armed. Trained by killing monsters while armed.
+  final combat = new TrainedStat(50, 20);
 
   // Increases armor. Trained by taking damage.
   final toughness = new TrainedStat(400, 100);
 
+  // Each mastery increases damage when wielding a weapon of a given category.
+  final masteries = <String, TrainedStat>{};
+  TrainedStat _newMasteryStat() => new TrainedStat(50, 15);
+
   Warrior();
 
-  Warrior.load({int combat, int toughness}) {
+  Warrior.load({int fighting, int combat, int toughness,
+      Map<String, int> masteries}) {
+    this.fighting.increment(fighting);
     this.combat.increment(combat);
     this.toughness.increment(toughness);
+
+    masteries.forEach((category, count) {
+      var stat = _newMasteryStat();
+      stat.increment(count);
+      this.masteries[category] = stat;
+    });
   }
 
-  Warrior clone() => new Warrior.load(
+  Warrior clone() {
+    var masteryCounts = {};
+    masteries.forEach((category, stat) {
+      masteryCounts[category] = stat.count;
+    });
+
+    return new Warrior.load(
+      fighting: fighting.count,
       combat: combat.count,
-      toughness: toughness.count);
+      toughness: toughness.count,
+      masteries: masteryCounts);
+  }
 
   Attack modifyAttack(Attack attack, Actor defender) {
-    return attack.addDamage(combat.level);
+    var weapon = hero.equipment.weapon;
+    if (weapon != null) {
+      attack = attack.addDamage(combat.level);
+
+      var mastery = masteries[weapon.type.category];
+      if (mastery != null) {
+        attack = attack.multiplyDamage(1.0 + mastery.level * 0.2);
+      }
+
+      return attack;
+    } else {
+      return attack.addDamage(fighting.level);
+    }
   }
 
   void tookDamage(Action action, Actor attacker, int damage) {
@@ -50,9 +86,29 @@ class Warrior extends HeroClass {
   }
 
   void killedMonster(Action action, Monster monster) {
-    if (combat.increment(1)) {
-      action.game.log.gain('{1} [have|has] reached combat level '
-          '${combat.level}.', hero);
+    var weapon = hero.equipment.weapon;
+    var stat;
+    var name;
+    if (weapon != null) {
+      stat = combat;
+      name = "combat";
+
+      var mastery = masteries.putIfAbsent(weapon.type.category,
+          _newMasteryStat);
+      if (mastery.increment(monster.breed.maxHealth)) {
+        action.game.log.gain("{1} [have|has] reached ${weapon.type.category} "
+            "mastery level ${mastery.level}.", hero);
+      }
+    } else {
+      stat = fighting;
+      name = "fighting";
+    }
+
+    // Base it on the health of the monster to discourage the player from just
+    // killing piles of weak monsters.
+    if (stat.increment(monster.breed.maxHealth)) {
+      action.game.log.gain("{1} [have|has] reached $name level "
+          "${stat.level}.", hero);
     }
   }
 }

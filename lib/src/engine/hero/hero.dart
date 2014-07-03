@@ -140,7 +140,7 @@ class Hero extends Actor {
     var attack;
 
     // See if a weapon is equipped.
-    final weapon = equipment.find('Weapon');
+    final weapon = equipment.weapon;
     if (weapon != null) {
       attack = weapon.attack;
     } else {

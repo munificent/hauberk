@@ -33,10 +33,20 @@ class Attack {
 
   Attack._(this.noun, this.verb, this.damage, this.element, this.armor);
 
-  /// Returns a new attack identical to this one but with [damageModifier]
-  /// added.
+  // TODO: Instead of applying add and multiply bonuses eagerly, Attack should
+  // compound them and only apply them at the end. This way:
+  // - The game screen can show them split out.
+  // - We can ensure bonuses stack the right way.
+
+  /// Returns a new attack identical to this one but with [offset] added.
   Attack addDamage(num offset) {
     return new Attack._(noun, verb, damage + offset, element, armor);
+  }
+
+  /// Returns a new attack identical to this one but with damage scaled by
+  /// [factor].
+  Attack multiplyDamage(num factor) {
+    return new Attack._(noun, verb, damage * factor, element, armor);
   }
 
   /// Returns a new attack with [armor] added to it.

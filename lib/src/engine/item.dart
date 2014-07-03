@@ -206,6 +206,9 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
       ],
     slots = new List<Item>(11);
 
+  /// Gets the [Item] in the weapon slot, if any.
+  Item get weapon => find('weapon');
+
   /// Gets the number of equipped item. Ignores empty slots.
   int get length {
     return slots.fold(0, (count, item) => count + ((item == null) ? 0 : 1));
@@ -246,8 +249,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
       }
     }
 
-    // Unknown slot.
-    return null;
+    throw 'Unknown equipment slot type "$slotType".';
   }
 
   /// Gets whether or not there is a slot to equip [item].

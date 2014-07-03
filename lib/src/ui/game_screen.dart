@@ -574,6 +574,10 @@ class GameScreen extends Screen {
     // TODO: Subclass.
     terminal.writeAt(82, 10, "Warrior");
 
+    for (var i = 0; i < 6; i++) {
+      terminal.writeAt(82, 11 + i, "                    ");
+    }
+
     var warrior = hero.heroClass as Warrior;
     var y = 11;
 
@@ -581,14 +585,26 @@ class GameScreen extends Screen {
       // Hide stats until the hero has made progress on them.
       if (stat.level == 0 && stat.percentUntilNext == 0) return;
 
-      terminal.writeAt(82, y, "                 ");
       terminal.writeAt(82, y, name, Color.GRAY);
-      terminal.writeAt(93, y, stat.level.toString());
+      terminal.writeAt(94, y, stat.level.toString());
       terminal.writeAt(97, y, "${stat.percentUntilNext}%", Color.DARK_GRAY);
       y++;
     }
 
-    draw("Combat", warrior.combat);
+    var weapon = hero.equipment.weapon;
+    if (weapon == null) {
+      draw("Fighting", warrior.fighting);
+    } else {
+      draw("Combat", warrior.combat);
+      var mastery = warrior.masteries[weapon.type.category];
+      if (mastery != null) {
+        // Capitalize it.
+        var category = weapon.type.category;
+        category = category.substring(0, 1).toUpperCase() +
+            category.substring(1);
+        draw("$category Master", mastery);
+      }
+    }
     draw("Toughness", warrior.toughness);
   }
 
