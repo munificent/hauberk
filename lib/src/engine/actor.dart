@@ -162,6 +162,7 @@ abstract class Actor extends Thing {
     // TODO: Move food to hero?
     food.update(action);
     haste.update(action);
+    cold.update(action);
     poison.update(action);
 
     if (isAlive) onFinishTurn(action);

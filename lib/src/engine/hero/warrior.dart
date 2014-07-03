@@ -15,17 +15,17 @@ class Warrior extends HeroClass {
   int get armor => toughness.level;
 
   /// Increases damage when unarmed. Trained by killing monsters while unarmed.
-  final fighting = new TrainedStat(60, 20);
+  final fighting = new TrainedStat(60, 30);
 
   /// Increases damage when armed. Trained by killing monsters while armed.
-  final combat = new TrainedStat(80, 40);
+  final combat = new TrainedStat(100, 60);
 
   // Increases armor. Trained by taking damage.
   final toughness = new TrainedStat(400, 100);
 
   // Each mastery increases damage when wielding a weapon of a given category.
   final masteries = <String, TrainedStat>{};
-  TrainedStat _newMasteryStat() => new TrainedStat(60, 50);
+  TrainedStat _newMasteryStat() => new TrainedStat(100, 60);
 
   Warrior();
 

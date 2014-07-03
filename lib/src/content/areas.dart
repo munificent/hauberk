@@ -111,25 +111,37 @@ class Areas extends ContentBuilder {
           'green slime'
         ],
         drop: [
-          'food:3',
-          'magic:3',
-          'equipment:3'
+          'food:4',
+          'magic:4',
+          'equipment:4'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
       level(() => new GoblinStronghold(70), numMonsters: 24, numItems: 9,
         breeds: [
           'impish incanter',
           'goblin archer',
-          'goblin warrior',
+          'goblin fighter',
           'giant bat',
           'mongrel',
           'giant centipede',
           'blue slime'
         ],
         drop: [
-          'food:4',
-          'magic:4',
-          'equipment:4'
+          'food:5',
+          'magic:5',
+          'equipment:5'
+        ],
+        quest: tileType('the stairs', Tiles.stairs)),
+      level(() => new GoblinStronghold(90), numMonsters: 26, numItems: 10,
+        breeds: [
+          'imp warlock',
+          'goblin warrior',
+          'red slime'
+        ],
+        drop: [
+          'food:6',
+          'magic:6',
+          'equipment:6'
         ],
         quest: tileType('the stairs', Tiles.stairs))
     ]);

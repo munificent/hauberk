@@ -205,7 +205,7 @@ class Monsters extends ContentBuilder {
   imps() {
     group("I");
     breed("scurrilous imp", lightRed, 14, [
-        attack("club[s]", 4),
+        attack("club[s]", 6),
         insult(),
         haste()
       ],
@@ -213,56 +213,75 @@ class Monsters extends ContentBuilder {
         chanceOf(10, "club:1"),
         chanceOf(5, "speed:1"),
       ],
-      meander: 4, flags: "cowardly");
+      meander: 4, flags: "cowardly open-doors");
 
     breed("vexing imp", purple, 12, [
-        attack("scratch[es]", 3),
+        attack("scratch[es]", 5),
         insult(),
-        sparkBolt(cost: 10, damage: 6)
+        sparkBolt(cost: 10, damage: 8)
       ],
       drop: [
         chanceOf(10, "teleportation:1"),
       ],
-      meander: 4, speed: 1, flags: "cowardly");
+      meander: 4, speed: 1, flags: "cowardly open-doors");
 
     breed("impish incanter", lightPurple, 16, [
-        attack("scratch[es]", 3),
+        attack("scratch[es]", 5),
         insult(),
-        fireBolt(cost: 10, damage: 8)
+        fireBolt(cost: 10, damage: 10)
       ],
       drop: [
         chanceOf(10, "magic:1"),
       ],
-      meander: 4, speed: 1);
+      meander: 4, speed: 1, flags: "cowardly open-doors");
 
-    breed("goblin peon", lightBrown, 15, [
-        attack("stab[s]", 4)
+    breed("goblin peon", lightBrown, 16, [
+        attack("stab[s]", 6)
       ],
       drop: [
         chanceOf(10, "spear:3"),
         chanceOf(5, "healing:2"),
       ],
-      meander: 2, flags: "open-doors");
+      meander: 2, flags: "few open-doors");
 
-    breed("goblin archer", green, 12, [
+    breed("goblin archer", green, 14, [
         attack("stab[s]", 3),
-        arrow(cost: 8, damage: 3)
+        arrow(cost: 8, damage: 4)
       ],
       drop: [
-        chanceOf(4, "bow:1"),
-        chanceOf(10, "dagger:1"),
+        chanceOf(20, "bow:1"),
+        chanceOf(10, "dagger:2"),
         chanceOf(5, "healing:3"),
       ],
-      meander: 2, flags: "few");
+      meander: 2, flags: "few open-doors");
 
-    breed("goblin warrior", brown, 24, [
+    breed("goblin fighter", brown, 24, [
         attack("stab[s]", 8)
       ],
       drop: [
-        chanceOf(10, "spear:4"),
+        chanceOf(15, "spear:5"),
         chanceOf(5, "healing:3"),
       ],
       meander: 1, flags: "open-doors");
+
+    breed("imp warlock", darkPurple, 20, [
+        attack("stab[s]", 6),
+        iceBolt(cost: 7, damage: 12),
+        fireBolt(cost: 7, damage: 12)
+      ],
+      drop: [
+        chanceOf(10, "magic:4"),
+      ],
+      meander: 3, speed: 1, flags: "cowardly open-doors");
+
+    breed("goblin warrior", gray, 32, [
+        attack("stab[s]", 14)
+      ],
+      drop: [
+        chanceOf(20, "spear:6"),
+        chanceOf(5, "healing:3"),
+      ],
+      meander: 1, flags: "protective open-doors");
   }
 
   jellies() {
@@ -276,6 +295,11 @@ class Monsters extends ContentBuilder {
         attack("crawl[s] on", 4, Element.COLD)
       ],
       flags: "few fearless");
+
+    breed("red slime", blue, 14, [
+      attack("crawl[s] on", 6, Element.FIRE)
+    ],
+    flags: "few fearless");
   }
 
   skeletons() {
@@ -464,6 +488,10 @@ class Monsters extends ContentBuilder {
   Move sparkBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack("zaps", damage, Element.LIGHTNING,
           new Noun("the spark")));
+
+  Move iceBolt({int cost, int damage}) =>
+      new BoltMove(cost, new Attack("freezes", damage, Element.COLD,
+          new Noun("the ice")));
 
   Move fireBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack("burns", damage, Element.FIRE,
