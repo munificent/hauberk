@@ -19,8 +19,7 @@ abstract class Skill {
   /// target to do so.
   bool get needsTarget => false;
 
-  num getAttackAddBonus(int level, Item weapon, Attack attack) => 0;
-  num getAttackMultiplyBonus(int level, Item weapon, Attack attack) => 0;
+  Attack modifyAttack(int level, Item weapon, Attack attack) => attack;
   int modifyHealth(int level) => 0;
   int getDropChance(int level) => 0;
 

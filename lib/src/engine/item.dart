@@ -27,16 +27,12 @@ class Item extends Thing implements Comparable {
 
   Attack get attack {
     if (type.attack == null) return null;
-    return type.attack.addDamage(damageModifier);
-  }
 
-  int get damageModifier {
-    var modifier = 0;
+    var attack = type.attack;
+    if (prefix != null) attack = attack.addDamage(prefix.damage);
+    if (suffix != null) attack = attack.addDamage(suffix.damage);
 
-    if (prefix != null) modifier += prefix.damage;
-    if (suffix != null) modifier += suffix.damage;
-
-    return modifier;
+    return attack;
   }
 
   /// The amount of protected provided by the item when equipped.
@@ -60,7 +56,8 @@ class Item extends Thing implements Comparable {
 
     if (type.attack != null) {
       name.write(' (');
-      name.write(type.attack.damage + damageModifier);
+      // TODO: Make prettier.
+      name.write(type.attack);
       name.write(')');
     }
 
@@ -68,7 +65,7 @@ class Item extends Thing implements Comparable {
   }
 
   int compareTo(Item other) {
-    // TODO(bob): Take into account powers.
+    // TODO: Take into account powers.
     return type.sortIndex.compareTo(other.type.sortIndex);
   }
 }

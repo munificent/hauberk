@@ -63,7 +63,9 @@ class CombatSkill extends Skill {
   String get name => 'Combat';
   String getHelpText(int level) => 'Increase damage by $level.';
 
-  num getAttackAddBonus(int level, Item weapon, Attack attack) => level;
+  Attack modifyAttack(int level, Item weapon, Attack attack) {
+    return attack.addDamage(level);
+  }
 }
 
 class WeaponSkill extends Skill {
@@ -75,11 +77,12 @@ class WeaponSkill extends Skill {
   String getHelpText(int level) =>
       'Increase damage by ${level * 10}% when wielding a $_category.';
 
-  num getAttackMultiplyBonus(int level, Item weapon, Attack attack) {
+  Attack modifyAttack(int level, Item weapon, Attack attack) {
     if (weapon == null || weapon.type.category != _category.toLowerCase()) {
-      return 0;
+      return attack;
     }
-    return level * 10 / 100;
+
+    return attack.multiplyDamage(1.0 + level * 10.0 / 100.0);
   }
 }
 

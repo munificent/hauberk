@@ -4,6 +4,7 @@ import '../action_base.dart';
 import '../actor.dart';
 import '../melee.dart';
 import '../monster.dart';
+import 'hero.dart';
 
 /// Base class for a Hero's character class.
 ///

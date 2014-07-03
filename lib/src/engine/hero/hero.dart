@@ -151,15 +151,9 @@ class Hero extends Actor {
     attack = heroClass.modifyAttack(attack, defender);
 
     // See if any skills modify it.
-    var add = 0;
-    var multiply = 1.0;
     skills.forEach((skill, level) {
-      add += skill.getAttackAddBonus(level, weapon, attack);
-      multiply += skill.getAttackMultiplyBonus(level, weapon, attack);
+      attack = skill.modifyAttack(level, weapon, attack);
     });
-
-    attack = new Attack(attack.verb, ((attack.damage + add) * multiply).toInt(),
-        attack.element, attack.noun);
 
     return attack;
   }

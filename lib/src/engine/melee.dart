@@ -20,7 +20,17 @@ class Attack {
 
   /// The average damage. The actual damage will be a `Rng.triangleInt` centered
   /// on this with a range of 1/2 of its value.
-  final num damage;
+  final num baseDamage;
+
+  /// Additional damage added to [baseDamage] after the multiplier has been
+  /// applied.
+  final num damageBonus;
+
+  /// The multiplier for [baseDamage].
+  final num damageScale;
+
+  /// The average damage inflicted by the attack.
+  num get averageDamage => baseDamage * damageScale + damageBonus;
 
   /// The element for the attack.
   final Element element;
@@ -28,30 +38,29 @@ class Attack {
   /// The defender's armor.
   final num armor;
 
-  Attack(this.verb, this.damage, this.element, [this.noun])
-      : armor = 0;
+  Attack(String verb, num baseDamage, Element element, [Noun noun])
+      : this._(noun, verb, baseDamage, 0.0, 1.0, element, 0);
 
-  Attack._(this.noun, this.verb, this.damage, this.element, this.armor);
-
-  // TODO: Instead of applying add and multiply bonuses eagerly, Attack should
-  // compound them and only apply them at the end. This way:
-  // - The game screen can show them split out.
-  // - We can ensure bonuses stack the right way.
+  Attack._(this.noun, this.verb, this.baseDamage, this.damageBonus,
+      this.damageScale, this.element, this.armor);
 
   /// Returns a new attack identical to this one but with [offset] added.
   Attack addDamage(num offset) {
-    return new Attack._(noun, verb, damage + offset, element, armor);
+    return new Attack._(noun, verb, baseDamage, damageBonus + offset,
+        damageScale, element, armor);
   }
 
   /// Returns a new attack identical to this one but with damage scaled by
   /// [factor].
   Attack multiplyDamage(num factor) {
-    return new Attack._(noun, verb, damage * factor, element, armor);
+    return new Attack._(noun, verb, baseDamage, damageBonus,
+        damageScale * factor, element, armor);
   }
 
   /// Returns a new attack with [armor] added to it.
   Attack addArmor(num armor) {
-    return new Attack._(noun, verb, damage, element, this.armor + armor);
+    return new Attack._(noun, verb, baseDamage, damageBonus, damageScale,
+        element, this.armor + armor);
   }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
@@ -133,13 +142,26 @@ class Attack {
   }
 
   int _rollDamage() {
-    var baseDamage = damage.toInt();
-    var rolled = rng.triangleInt(baseDamage, baseDamage ~/ 2);
+    // Calculate in cents so that we don't do as much rounding until after
+    // armor is taken into account.
+    var damageCents = (averageDamage * 100).toInt();
+    var rolled = rng.triangleInt(damageCents, damageCents ~/ 2);
     rolled *= getArmorMultiplier(armor);
-    return damage.round();
+    return (rolled / 100).round();
   }
 
-  String toString() => "$damage $element";
+  String toString() {
+    var result = baseDamage.toString();
+    if (damageBonus != 0 || damageScale != 1.0) {
+      result += " ($damageBonus, $damageScale)";
+    }
+
+    if (element != Element.NONE) {
+      result += " $element";
+    }
+
+    return result;
+  }
 }
 
 /// Armor reduces damage by an inverse curve such that increasing armor has

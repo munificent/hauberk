@@ -468,7 +468,7 @@ class GameScreen extends Screen {
     drawStat(terminal, 5, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
-    drawStat(terminal, 6, 'Weapon', hero.getAttack(null).damage, Color.YELLOW);
+    drawStat(terminal, 6, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
     // Show conditions.
     terminal.writeAt(82,  8, "                    ");

@@ -67,7 +67,7 @@ class Breed implements Quantifiable {
     // in.
     var attackTotal = 0;
     for (final attack in attacks) {
-      attackTotal += attack.damage;
+      attackTotal += attack.averageDamage;
     }
     exp *= attackTotal / attacks.length;
 
