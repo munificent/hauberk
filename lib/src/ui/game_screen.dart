@@ -330,11 +330,11 @@ class GameScreen extends Screen {
           break;
 
         case EventType.FEAR:
-          effects.add(new BlinkEffect(event.actor, Color.YELLOW));
+          effects.add(new BlinkEffect(event.actor, Color.DARK_YELLOW));
           break;
 
         case EventType.COURAGE:
-          effects.add(new BlinkEffect(event.actor, Color.RED));
+          effects.add(new BlinkEffect(event.actor, Color.YELLOW));
           break;
       }
     }
@@ -366,13 +366,9 @@ class GameScreen extends Screen {
     }
 
     // Draw the items.
-    var unexploredItem = new Glyph('?', Color.BLACK, Color.DARK_BLUE);
     for (final item in game.stage.items) {
-      if (game.stage[item.pos].isExplored) {
-        terminal.drawGlyph(item.x, item.y, item.appearance);
-      } else {
-        terminal.drawGlyph(item.x, item.y, unexploredItem);
-      }
+      if (!game.stage[item.pos].isExplored) continue;
+      terminal.drawGlyph(item.x, item.y, item.appearance);
     }
 
     var hero = game.hero;
@@ -519,6 +515,24 @@ class GameScreen extends Screen {
             (target == monster) ? Color.YELLOW : Color.WHITE);
 
         drawHealthBar(terminal, y + 1, monster);
+      }
+    }
+
+    // Draw the unseen items.
+    terminal.writeAt(82, 38, "Unfound items:", Color.GRAY);
+    terminal.writeAt(82, 39, "                    ");
+    var unseen = game.stage.items.where(
+        (item) => !game.stage[item.pos].isExplored).toList();
+    unseen.sort();
+    // Show the "best" ones first.
+    x = 82;
+    var lastGlyph;
+    for (var item in unseen.reversed) {
+      if (item.appearance != lastGlyph) {
+        terminal.drawGlyph(x, 39, item.appearance);
+        x++;
+        if (x > 99) break;
+        lastGlyph = item.appearance;
       }
     }
   }

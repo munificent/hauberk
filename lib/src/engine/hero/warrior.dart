@@ -25,7 +25,7 @@ class Warrior extends HeroClass {
 
   // Each mastery increases damage when wielding a weapon of a given category.
   final masteries = <String, TrainedStat>{};
-  TrainedStat _newMasteryStat() => new TrainedStat(60, 40);
+  TrainedStat _newMasteryStat() => new TrainedStat(60, 50);
 
   Warrior();
 

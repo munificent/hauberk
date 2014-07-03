@@ -284,7 +284,7 @@ class Monsters extends ContentBuilder {
 
   quadrupeds() {
     group("q");
-    breed("fox", orange, 7, [
+    breed("fox", orange, 12, [
         attack("bite[s]", 7),
         attack("scratch[es]", 4)
       ],
@@ -413,8 +413,8 @@ class Monsters extends ContentBuilder {
       ],
       flags: "swarm fearless");
 
-    breed("giant cave worm", white, 24, [
-        attack("crawl[s] on", 8),
+    breed("giant cave worm", white, 36, [
+        attack("crawl[s] on", 8, Element.ACID),
       ],
       speed: -2, flags: "fearless");
   }

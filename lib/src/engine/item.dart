@@ -152,7 +152,7 @@ class Inventory extends IterableBase<Item> implements ItemCollection {
   /// a [Stage] so that any inventory changes that happen in the stage are
   /// discarded if the hero dies.
   Inventory clone() {
-    // TODO(bob): If items themselves ever become mutable, will need to deep
+    // TODO: If items themselves ever become mutable, will need to deep
     // clone them too.
     final inventory = new Inventory(capacity);
     for (final item in this) inventory.tryAdd(item);
@@ -170,18 +170,18 @@ class Inventory extends IterableBase<Item> implements ItemCollection {
   }
 
   bool tryAdd(Item item) {
-    // TODO(bob): Merge stacks.
+    // TODO: Merge stacks.
     if (_items.length >= capacity) return false;
 
     _items.add(item);
-    _items.sort((a, b) => a.compareTo(b));
+    _items.sort();
     return true;
   }
 
   Iterator<Item> get iterator => _items.iterator;
 }
 
-// TODO(bob): Which collection interface should it implement?
+// TODO: Which collection interface should it implement?
 /// The collection of wielded [Item]s held by the [Hero]. Unlike [Inventory],
 /// the [Equipment] holds each Item in a categorized slot.
 class Equipment extends IterableBase<Item> implements ItemCollection {
