@@ -117,41 +117,15 @@ class GameScreen extends Screen {
         action = new PickUpAction();
         break;
 
-      case KeyCode.I:
-        action = new WalkAction(Direction.NW);
-        break;
-
-      case KeyCode.O:
-        action = new WalkAction(Direction.N);
-        break;
-
-      case KeyCode.P:
-        action = new WalkAction(Direction.NE);
-        break;
-
-      case KeyCode.K:
-        action = new WalkAction(Direction.W);
-        break;
-
-      case KeyCode.L:
-        action = new WalkAction(Direction.NONE);
-        break;
-
-      case KeyCode.SEMICOLON:
-        action = new WalkAction(Direction.E);
-        break;
-
-      case KeyCode.COMMA:
-        action = new WalkAction(Direction.SW);
-        break;
-
-      case KeyCode.PERIOD:
-        action = new WalkAction(Direction.S);
-        break;
-
-      case KeyCode.SLASH:
-        action = new WalkAction(Direction.SE);
-        break;
+      case KeyCode.I: action = new WalkAction(Direction.NW); break;
+      case KeyCode.O: action = new WalkAction(Direction.N); break;
+      case KeyCode.P: action = new WalkAction(Direction.NE); break;
+      case KeyCode.K: action = new WalkAction(Direction.W); break;
+      case KeyCode.L: action = new WalkAction(Direction.NONE); break;
+      case KeyCode.SEMICOLON: action = new WalkAction(Direction.E); break;
+      case KeyCode.COMMA: action = new WalkAction(Direction.SW); break;
+      case KeyCode.PERIOD: action = new WalkAction(Direction.S); break;
+      case KeyCode.SLASH: action = new WalkAction(Direction.SE); break;
 
       case KeyCode.S:
         ui.push(new SelectSkillDialog(game));
@@ -414,8 +388,9 @@ class GameScreen extends Screen {
     }
 
     // Draw the effects.
+    var stageTerm = terminal.rect(0, 0, game.stage.width, game.stage.height);
     for (final effect in effects) {
-      effect.render(terminal);
+      effect.render(stageTerm);
     }
 
     // Draw the log.
@@ -454,13 +429,13 @@ class GameScreen extends Screen {
     var bar = new Glyph.fromCharCode(
         CharCode.BOX_DRAWINGS_LIGHT_VERTICAL, Color.DARK_GRAY);
     for (var y = 0; y < terminal.height; y++) {
-      terminal.drawGlyph(81, y, bar);
+      terminal.drawGlyph(80, y, bar);
     }
 
     drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
 
-    terminal.writeAt(82, 1, 'Focus', Color.GRAY);
+    terminal.writeAt(81, 1, 'Focus', Color.GRAY);
     drawMeter(terminal, 1, hero.focus, Option.FOCUS_MAX,
         Color.BLUE, Color.DARK_BLUE);
 
@@ -474,7 +449,7 @@ class GameScreen extends Screen {
     drawStat(terminal, 6, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
     // Show conditions.
-    terminal.writeAt(82,  8, "                    ");
+    terminal.writeAt(81,  8, "                    ");
     var conditions = [];
 
     if (hero.food.isActive) conditions.add(["Food", Color.ORANGE]);
@@ -486,7 +461,7 @@ class GameScreen extends Screen {
       case 3: conditions.add(["Sped", Color.GOLD]); break;
     }
 
-    var x = 82;
+    var x = 81;
     for (var condition in conditions) {
       terminal.writeAt(x,  8, condition[0], condition[1]);
       x += 5;
@@ -495,7 +470,7 @@ class GameScreen extends Screen {
     if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
 
     // Draw the nearby monsters.
-    terminal.writeAt(82, 18, '@ hero', heroColor);
+    terminal.writeAt(81, 18, '@ hero', heroColor);
     drawHealthBar(terminal, 19, hero);
 
     visibleMonsters.sort((a, b) {
@@ -506,8 +481,8 @@ class GameScreen extends Screen {
 
     for (var i = 0; i < 10; i++) {
       var y = 20 + i * 2;
-      terminal.writeAt(82, y, '                   ');
-      terminal.writeAt(82, y + 1, '                   ');
+      terminal.writeAt(81, y, '                    ');
+      terminal.writeAt(81, y + 1, '                    ');
 
       if (i < visibleMonsters.length) {
         var monster = visibleMonsters[i];
@@ -517,8 +492,8 @@ class GameScreen extends Screen {
           glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
-        terminal.drawGlyph(82, y, glyph);
-        terminal.writeAt(84, y, monster.breed.name,
+        terminal.drawGlyph(81, y, glyph);
+        terminal.writeAt(83, y, monster.breed.name,
             (target == monster) ? Color.YELLOW : Color.WHITE);
 
         drawHealthBar(terminal, y + 1, monster);
@@ -526,13 +501,13 @@ class GameScreen extends Screen {
     }
 
     // Draw the unseen items.
-    terminal.writeAt(82, 38, "Unfound items:", Color.GRAY);
-    terminal.writeAt(82, 39, "                    ");
+    terminal.writeAt(81, 38, "Unfound items:", Color.GRAY);
+    terminal.writeAt(81, 39, "                    ");
     var unseen = game.stage.items.where(
         (item) => !game.stage[item.pos].isExplored).toList();
     unseen.sort();
     // Show the "best" ones first.
-    x = 82;
+    x = 81;
     var lastGlyph;
     for (var item in unseen.reversed) {
       if (item.appearance != lastGlyph) {
@@ -546,13 +521,13 @@ class GameScreen extends Screen {
 
   void drawStat(Terminal terminal, int y, String label, value,
       Color valueColor, [max, Color maxColor]) {
-    terminal.writeAt(82, y, label, Color.GRAY);
+    terminal.writeAt(81, y, label, Color.GRAY);
     var valueString = value.toString();
-    terminal.writeAt(89, y, "             ");
-    terminal.writeAt(89, y, valueString, valueColor);
+    terminal.writeAt(88, y, "             ");
+    terminal.writeAt(88, y, valueString, valueColor);
 
     if (max != null) {
-      terminal.writeAt(89 + valueString.length, y, ' / $max', maxColor);
+      terminal.writeAt(88 + valueString.length, y, ' / $max', maxColor);
     }
   }
 
@@ -593,10 +568,10 @@ class GameScreen extends Screen {
 
   void _drawWarriorStats(Terminal terminal, Hero hero) {
     // TODO: Subclass.
-    terminal.writeAt(82, 10, "Warrior");
+    terminal.writeAt(81, 10, "Warrior");
 
     for (var i = 0; i < 6; i++) {
-      terminal.writeAt(82, 11 + i, "                    ");
+      terminal.writeAt(81, 11 + i, "                    ");
     }
 
     var warrior = hero.heroClass as Warrior;
@@ -606,7 +581,7 @@ class GameScreen extends Screen {
       // Hide stats until the hero has made progress on them.
       if (stat.level == 0 && stat.percentUntilNext == 0) return;
 
-      terminal.writeAt(82, y, name, Color.GRAY);
+      terminal.writeAt(81, y, name, Color.GRAY);
       terminal.writeAt(94, y, stat.level.toString());
       terminal.writeAt(97, y, "${stat.percentUntilNext}%", Color.DARK_GRAY);
       y++;
@@ -823,12 +798,20 @@ class DetectEffect implements Effect {
   void render(Terminal terminal) {
     var radius = life ~/ 4;
     var glyph = new Glyph("*", Color.LIGHT_GOLD);
-    for (var x = pos.x - radius; x < pos.x + radius; x++) {
-      for (var y = pos.y - radius; y < pos.y + radius; y++) {
-        var relative = pos - new Vec(x, y);
-        if (relative < radius && relative > radius - 2) {
-          terminal.drawGlyph(x, y, glyph);
-        }
+
+    var bounds = new Rect(pos.x - radius, pos.y - radius,
+        radius * 2 + 1, radius * 2 + 1);
+    bounds = Rect.intersect(bounds, new Rect(0, 0,
+        terminal.width, terminal.height));
+
+    for (var pixel in bounds) {
+      if (pixel.x >= terminal.width) {
+        print("!!! $pixel, ${terminal.width}");
+      }
+
+      var relative = pos - pixel;
+      if (relative < radius && relative > radius - 2) {
+        terminal.drawGlyph(pixel.x, pixel.y, glyph);
       }
     }
   }

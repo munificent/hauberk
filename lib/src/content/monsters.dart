@@ -146,7 +146,7 @@ class Monsters extends ContentBuilder {
       drop: hunting("Fur Pelt"),
       flags: "few");
 
-    breed("mongrel", orange, 11, [
+    breed("mongrel", orange, 16, [
         attack("bite[s]", 7),
       ],
       drop: hunting("Fur Pelt"),
@@ -405,8 +405,8 @@ class Monsters extends ContentBuilder {
       ],
       meander: 4, speed: 1);
 
-    breed("guard lizard", orange, 18, [
-        attack("bite[s]", 7),
+    breed("salamander", red, 14, [
+        attack("bite[s]", 22, Element.FIRE),
       ],
       meander: 2, flags: "fearless");
   }
@@ -437,7 +437,7 @@ class Monsters extends ContentBuilder {
       ],
       speed: -2, flags: "fearless");
 
-    breed("maggot", lightGray, 2, [
+    breed("blood worm", red, 4, [
         attack("crawl[s] on", 5),
       ],
       flags: "swarm fearless");
