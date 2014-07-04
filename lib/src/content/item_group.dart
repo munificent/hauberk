@@ -18,11 +18,23 @@ class ItemGroup {
     _rootGroup.add(name, itemType, level);
   }
 
+  // TODO: The ItemGroup data structures aren't really organized for efficient
+  // use right now. Do something better.
+
   /// Finds the item group that directly contains [type], or returns `null` if
   /// the item is not in any group.
   static ItemGroup find(ItemType type) {
     return _allGroups.values.firstWhere(
         (group) => group.items.values.contains(type), orElse: () => null);
+  }
+
+  /// Finds the level of [type].
+  static int findLevel(ItemType type) {
+    for (var group in _allGroups.values) {
+      for (var level in group.items.keys) {
+        if (group.items[level] == type) return level;
+      }
+    }
   }
 
   final String name;
@@ -81,7 +93,6 @@ class ItemGroup {
 
     // Take all of the items in this group and organize them by level.
     var itemsByLevel = {};
-    var groupsForItem = {};
 
     addGroup(ItemGroup group) {
       // Recurse into child groups.
@@ -90,7 +101,6 @@ class ItemGroup {
       group.items.forEach((level, item) {
         var itemsAtLevel = itemsByLevel.putIfAbsent(level, () => []);
         itemsAtLevel.add(item);
-        groupsForItem[item] = group;
       });
     }
 
@@ -114,11 +124,8 @@ class ItemGroup {
     // Pick one of the items at that level randomly.
     var itemType = rng.item(items);
 
-    // TODO: Take level into account when choosing powers.
-    var powers = choosePowers(groupsForItem[itemType], itemType);
-
-    var item = new Item(itemType, powers[0], powers[1]);
-    return item;
+    // TODO: Take into account out of depth items when choosing powers.
+    return Powers.createItem(itemType);
   }
 
   void _dump([String indent = ""]) {

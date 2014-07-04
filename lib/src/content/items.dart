@@ -99,7 +99,7 @@ class Items extends ContentBuilder {
     item("Potion of Rejuvenation", 65, purple,
         use: () => new HealAction(1000, curePoison: true));
 
-    item("Antidote", 5, lightRed,
+    item("Antidote", 5, green,
         use: () => new HealAction(0, curePoison: true));
 
     // Speed.
@@ -285,8 +285,8 @@ class Items extends ContentBuilder {
       appearance = appearance(_glyph);
     }
 
-    var itemType = new ItemType(name, appearance, _sortIndex++, use, equipSlot,
-        category, attack, armor);
+    var itemType = new ItemType(name, appearance, _sortIndex++, use,
+        equipSlot, category, attack, armor);
     Items.all[name] = itemType;
 
     if (_group != null) {
@@ -297,24 +297,14 @@ class Items extends ContentBuilder {
   }
 }
 
-// TODO: Powers.
 /// Drops an item of a given type.
 class ItemDrop implements Drop {
-  /// The [ItemGroup] that contains this item, or `null` if it's not grouped.
-  final ItemGroup _group;
-  final ItemType type;
+  final ItemType _type;
 
-  ItemDrop(ItemType type)
-    : _group = ItemGroup.find(type),
-      type = type;
+  ItemDrop(this._type);
 
   void spawnDrop(Game game, AddItem addItem) {
-    if (_group == null) {
-      addItem(new Item(type));
-    } else {
-      var powers = choosePowers(_group, type);
-      addItem(new Item(type, powers[0], powers[1]));
-    }
+    addItem(Powers.createItem(_type));
   }
 }
 

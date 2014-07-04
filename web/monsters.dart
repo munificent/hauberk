@@ -30,8 +30,8 @@ main() {
 
     for (Breed breed in breeds) {
       breed.drop.spawnDrop(game, (item) {
-        drops[breed.name].putIfAbsent(item.type.name, () => 0);
-        drops[breed.name][item.type.name]++;
+        drops[breed.name].putIfAbsent(item.toString(), () => 0);
+        drops[breed.name][item.toString()]++;
       });
     }
   }
@@ -71,7 +71,7 @@ main() {
         ''');
 
     var attacks = breed.attacks.map(
-        (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} (${attack.damage})');
+        (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} (${attack.averageDamage})');
     text.write(attacks.join(', '));
 
     text.write('</td><td>');
