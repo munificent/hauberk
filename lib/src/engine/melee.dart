@@ -107,7 +107,7 @@ class Attack {
         break;
 
       case Element.FIRE:
-        // TODO: Burn items.
+        action.addAction(new BurnAction(damage), defender);
         break;
 
       case Element.WATER:
@@ -143,7 +143,8 @@ class Attack {
         break;
     }
 
-    action.addEvent(new Event.hit(defender, damage));
+    // TODO: Pass in and use element.
+    action.addEvent(new Event(EventType.HIT, actor: defender, value: damage));
     return action.succeed('{1} ${verb} {2}.', attackNoun, defender);
   }
 

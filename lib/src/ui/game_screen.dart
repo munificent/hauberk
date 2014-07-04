@@ -308,7 +308,6 @@ class GameScreen extends Screen {
     }
 
     for (final event in result.events) {
-      // TODO: Handle other event types.
       switch (event.type) {
         case EventType.BOLT:
           effects.add(new FrameEffect(event.value, '*',
@@ -335,6 +334,14 @@ class GameScreen extends Screen {
 
         case EventType.COURAGE:
           effects.add(new BlinkEffect(event.actor, Color.YELLOW));
+          break;
+
+        case EventType.DETECT:
+          effects.add(new DetectEffect(event.value));
+          break;
+
+        case EventType.TELEPORT:
+          effects.add(new TeleportEffect(event.value, event.actor.pos));
           break;
       }
     }
@@ -800,5 +807,55 @@ class HealEffect implements Effect {
     terminal.writeAt(x + 1, y, '-', back);
     terminal.writeAt(x, y - 1, '|', back);
     terminal.writeAt(x, y + 1, '|', back);
+  }
+}
+
+class DetectEffect implements Effect {
+  final Vec pos;
+  int life = 30;
+
+  DetectEffect(this.pos);
+
+  bool update(Game game) {
+    return --life >= 0;
+  }
+
+  void render(Terminal terminal) {
+    var radius = life ~/ 4;
+    var glyph = new Glyph("*", Color.LIGHT_GOLD);
+    for (var x = pos.x - radius; x < pos.x + radius; x++) {
+      for (var y = pos.y - radius; y < pos.y + radius; y++) {
+        var relative = pos - new Vec(x, y);
+        if (relative < radius && relative > radius - 2) {
+          terminal.drawGlyph(x, y, glyph);
+        }
+      }
+    }
+  }
+}
+
+class TeleportEffect implements Effect {
+  final Vec to;
+  final Iterator<Vec> los;
+  int tick = 0;
+
+  TeleportEffect(Vec from, Vec to)
+    : to = to,
+      los = new Los(from, to).iterator;
+
+  bool update(Game game) {
+    if (los.current == to) return false;
+    los.moveNext();
+    return true;
+  }
+
+  void render(Terminal terminal) {
+    var color = rng.item([Color.WHITE, Color.AQUA, Color.BLUE]);
+
+    terminal.drawGlyph(los.current.x - 1, los.current.y, new Glyph('-', color));
+    terminal.drawGlyph(los.current.x + 1, los.current.y, new Glyph('-', color));
+    terminal.drawGlyph(los.current.x, los.current.y - 1, new Glyph('|', color));
+    terminal.drawGlyph(los.current.x, los.current.y + 1, new Glyph('|', color));
+    terminal.drawGlyph(los.current.x, los.current.y, new Glyph('*', color));
   }
 }

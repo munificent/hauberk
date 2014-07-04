@@ -163,24 +163,7 @@ class Event {
   final Element element;
   final value;
 
-  Event(this.type, this.actor, [this.element = Element.NONE, this.value = 0]);
-
-  Event.bolt(Vec this.value, this.element)
-    : type = EventType.BOLT,
-      actor = null;
-
-  Event.hit(this.actor, this.value)
-    : type = EventType.HIT,
-      element = Element.NONE;
-
-  Event.die(this.actor)
-    : type = EventType.DIE,
-      element = Element.NONE,
-      value = 0;
-
-  Event.heal(this.actor, this.value)
-    : type = EventType.HEAL,
-      element = Element.NONE;
+  Event(this.type, {this.actor, this.element: Element.NONE, this.value: 0});
 }
 
 /// A kind of [Event] that has occurred.
@@ -202,6 +185,12 @@ class EventType {
 
   /// An [Actor] regained their courage.
   static const COURAGE = const EventType("courage");
+
+  /// Something in the level was detected.
+  static const DETECT = const EventType("detect");
+
+  /// Something in the level was detected.
+  static const TELEPORT = const EventType("teleport");
 
   final String _value;
   const EventType(this._value);

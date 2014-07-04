@@ -29,7 +29,7 @@ class Monsters extends ContentBuilder {
     // g  Ghost               G  Golem
     // h  Humanoids           H  Hybrid
     // i  Insect              I  Goblin / Imp
-    // j  Jelly               J  Slime
+    // j  Jelly / Slime       J  (unused)
     // k  Skeleton            K  Kraken/Land Octopus
     // l  Lizard man          L  Lich
     // m  Mold/Mushroom       M  Multi-Headed Hydra
@@ -306,16 +306,6 @@ class Monsters extends ContentBuilder {
 
   }
 
-  quadrupeds() {
-    group("q");
-    breed("fox", orange, 12, [
-        attack("bite[s]", 7),
-        attack("scratch[es]", 4)
-      ],
-      drop: "Fox Pelt",
-      meander: 1, speed: 1);
-  }
-
   people() {
     group("p", tracking: 14);
     breed("simpering knave", orange, 6, [
@@ -366,6 +356,16 @@ class Monsters extends ContentBuilder {
       meander: 4, flags: "open-doors fearless");
   }
 
+  quadrupeds() {
+    group("q");
+    breed("fox", orange, 12, [
+        attack("bite[s]", 7),
+        attack("scratch[es]", 4)
+      ],
+      drop: "Fox Pelt",
+      meander: 1, speed: 1);
+  }
+
   rodents() {
     group("r");
     breed("field [mouse|mice]", lightBrown, 3, [
@@ -404,6 +404,11 @@ class Monsters extends ContentBuilder {
         attack("hop[s] on", 2),
       ],
       meander: 4, speed: 1);
+
+    breed("guard lizard", orange, 18, [
+        attack("bite[s]", 7),
+      ],
+      meander: 2, flags: "fearless");
   }
 
   slugs() {

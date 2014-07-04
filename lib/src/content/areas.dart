@@ -79,7 +79,7 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           chanceOf(55, 'food:3'),
-          chanceOf(30, 'magic:2'),
+          chanceOf(30, 'magic:3'),
           chanceOf(15, 'equipment:3')
         ],
         quest: kill('giant spider')),
@@ -93,8 +93,8 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           chanceOf(55, 'food:4'),
-          chanceOf(30, 'magic:3'),
-          chanceOf(15, 'equipment:3')
+          chanceOf(30, 'magic:4'),
+          chanceOf(15, 'equipment:4')
         ],
         quest: kill('giant cave worm'))
     ]);
@@ -136,7 +136,8 @@ class Areas extends ContentBuilder {
         breeds: [
           'imp warlock',
           'goblin warrior',
-          'red slime'
+          'red slime',
+          'guard lizard'
         ],
         drop: [
           'food:6',

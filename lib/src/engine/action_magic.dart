@@ -22,7 +22,7 @@ class HealAction extends Action {
 
     if (!actor.health.isMax && amount > 0) {
       actor.health.current += amount;
-      addEvent(new Event.heal(actor, amount));
+      addEvent(new Event(EventType.HEAL, actor: actor, value: amount));
       log('{1} feel[s] better.', actor);
       changed = true;
     }
@@ -67,8 +67,9 @@ class TeleportAction extends Action {
       if (pos - actor.pos > best - actor.pos) best = pos;
     }
 
-    // TODO(bob): Effect.
+    var from = actor.pos;
     actor.pos = best;
+    addEvent(new Event(EventType.TELEPORT, actor: actor, value: from));
     return succeed('{1} teleport[s] away!', actor);
   }
 }
@@ -81,9 +82,9 @@ class DetectItemsAction extends Action {
       // Ignore items already found.
       if (game.stage[item.pos].isExplored) continue;
 
-      // TODO: Effect.
       numFound++;
       game.stage[item.pos].isExplored = true;
+      addEvent(new Event(EventType.DETECT, value: item.pos));
     }
 
     if (numFound == 0) {
@@ -91,6 +92,22 @@ class DetectItemsAction extends Action {
     }
 
     return succeed('{1} sense[s] the treasures held in the dark!', actor);
+  }
+}
+
+class BurnAction extends Action {
+  BurnAction(num damage);
+
+  ActionResult onPerform() {
+    // TODO: Burn flammable items.
+
+    // Being burned "cures" cold.
+    if (actor.cold.isActive) {
+      actor.cold.cancel();
+      return succeed("The fire warms {1} back up.", actor);
+    }
+
+    return ActionResult.SUCCESS;
   }
 }
 

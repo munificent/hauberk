@@ -106,7 +106,7 @@ class Monster extends Actor {
     if (_state is AwakeState && _fear > _frightenThreshold) {
       log("{1} is afraid!", this);
       changeState(new AfraidState());
-      action.addEvent(new Event(EventType.FEAR, this));
+      action.addEvent(new Event(EventType.FEAR, actor: this));
       return;
     }
 
@@ -114,7 +114,7 @@ class Monster extends Actor {
       // TODO: Should possibly go into other non-afraid states.
       log("{1} grows courageous!", this);
       changeState(new AwakeState());
-      action.addEvent(new Event(EventType.COURAGE, this));
+      action.addEvent(new Event(EventType.COURAGE, actor: this));
     }
   }
 
