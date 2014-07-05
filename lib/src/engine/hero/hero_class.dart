@@ -18,6 +18,8 @@ abstract class HeroClass {
   Hero get hero => _hero;
   Hero _hero;
 
+  String get name;
+
   /// The [Skills] that the class enables.
   List<Skill> get skills;
 

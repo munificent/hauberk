@@ -431,42 +431,30 @@ class GameScreen extends Screen {
       terminal.drawGlyph(80, y, bar);
     }
 
-    drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
+    // Clear the sidebar.
+    var sidebar = terminal.rect(81, 0, 20, 40);
+    sidebar.clear();
+
+    drawStat(sidebar, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
 
-    drawStat(terminal, 2, 'Level', hero.level, Color.AQUA);
-    // TODO: Handle hero at max level.
-    drawStat(terminal, 3, 'Exp', hero.experience, Color.AQUA,
-        calculateLevelCost(hero.level + 1), Color.DARK_AQUA);
-    drawStat(terminal, 4, 'Armor',
+    drawStat(sidebar, 1, 'Level', hero.level, Color.AQUA);
+    var levelPercent = (100 * hero.experience /
+        (calculateLevelCost(hero.level + 1) -
+        calculateLevelCost(hero.level))).toInt();
+    sidebar.writeAt(16, 1, '$levelPercent%', Color.DARK_AQUA);
+    drawStat(sidebar, 2, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
-    drawStat(terminal, 5, 'Weapon', hero.getAttack(null), Color.YELLOW);
+    drawStat(sidebar, 3, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
-    // Show conditions.
-    terminal.writeAt(81,  7, "                    ");
-    var conditions = [];
-
-    if (hero.food.isActive) conditions.add(["Food", Color.ORANGE]);
-    if (hero.poison.isActive) conditions.add(["Pois", Color.DARK_GREEN]);
-    if (hero.cold.isActive) conditions.add(["Cold", Color.LIGHT_BLUE]);
-    switch (hero.haste.intensity) {
-      case 1: conditions.add(["Quik", Color.GOLD]); break;
-      case 2: conditions.add(["Alac", Color.GOLD]); break;
-      case 3: conditions.add(["Sped", Color.GOLD]); break;
-    }
-
-    var x = 81;
-    for (var condition in conditions) {
-      terminal.writeAt(x,  7, condition[0], condition[1]);
-      x += 5;
-    }
-
-    if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
+    sidebar.writeAt(0, 5, hero.heroClass.name);
+    if (hero.heroClass is Warrior) _drawWarriorStats(sidebar, hero);
 
     // Draw the nearby monsters.
-    terminal.writeAt(81, 18, '@ hero', heroColor);
-    drawHealthBar(terminal, 19, hero);
+    sidebar.writeAt(0, 18, '@', heroColor);
+    sidebar.writeAt(2, 18, save.name);
+    drawHealthBar(sidebar, 19, hero);
 
     visibleMonsters.sort((a, b) {
       var aDistance = (a.pos - game.hero.pos).lengthSquared;
@@ -476,9 +464,6 @@ class GameScreen extends Screen {
 
     for (var i = 0; i < 10; i++) {
       var y = 20 + i * 2;
-      terminal.writeAt(81, y, '                    ');
-      terminal.writeAt(81, y + 1, '                    ');
-
       if (i < visibleMonsters.length) {
         var monster = visibleMonsters[i];
 
@@ -487,46 +472,75 @@ class GameScreen extends Screen {
           glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
-        terminal.drawGlyph(81, y, glyph);
-        terminal.writeAt(83, y, monster.breed.name,
+        sidebar.drawGlyph(0, y, glyph);
+        sidebar.writeAt(2, y, monster.breed.name,
             (target == monster) ? Color.YELLOW : Color.WHITE);
 
-        drawHealthBar(terminal, y + 1, monster);
+        drawHealthBar(sidebar, y + 1, monster);
       }
     }
 
     // Draw the unseen items.
-    terminal.writeAt(81, 38, "Unfound items:", Color.GRAY);
-    terminal.writeAt(81, 39, "                    ");
+    sidebar.writeAt(0, 38, "Unfound items:", Color.GRAY);
     var unseen = game.stage.items.where(
         (item) => !game.stage[item.pos].isExplored).toList();
     unseen.sort();
     // Show the "best" ones first.
-    x = 81;
+    var x = 0;
     var lastGlyph;
     for (var item in unseen.reversed) {
       if (item.appearance != lastGlyph) {
-        terminal.drawGlyph(x, 39, item.appearance);
+        sidebar.drawGlyph(x, 39, item.appearance);
         x++;
-        if (x > 99) break;
+        if (x >= sidebar.width) break;
         lastGlyph = item.appearance;
       }
     }
   }
 
+  /// Draws a labeled numeric stat.
   void drawStat(Terminal terminal, int y, String label, value,
       Color valueColor, [max, Color maxColor]) {
-    terminal.writeAt(81, y, label, Color.GRAY);
+    terminal.writeAt(0, y, label, Color.GRAY);
     var valueString = value.toString();
-    terminal.writeAt(88, y, "             ");
-    terminal.writeAt(88, y, valueString, valueColor);
+    terminal.writeAt(7, y, valueString, valueColor);
 
     if (max != null) {
-      terminal.writeAt(88 + valueString.length, y, ' / $max', maxColor);
+      terminal.writeAt(7 + valueString.length, y, ' / $max', maxColor);
     }
   }
 
+  /// Draws a health bar for [actor].
   void drawHealthBar(Terminal terminal, int y, Actor actor) {
+    // Show conditions.
+    var conditions = [];
+
+    if (actor is Monster && actor.isAfraid) {
+      conditions.add(["F", Color.YELLOW]);
+    }
+
+    if (actor.food.isActive) conditions.add(["F", Color.ORANGE]);
+    if (actor.poison.isActive) {
+      switch (actor.poison.intensity) {
+        case 1: conditions.add(["P", Color.DARK_GREEN]); break;
+        case 2: conditions.add(["P", Color.GREEN]); break;
+        default: conditions.add(["P", Color.LIGHT_GREEN]); break;
+      }
+    }
+
+    if (actor.cold.isActive) conditions.add(["C", Color.LIGHT_BLUE]);
+    switch (actor.haste.intensity) {
+      case 1: conditions.add(["S", Color.DARK_GOLD]); break;
+      case 2: conditions.add(["S", Color.GOLD]); break;
+      case 3: conditions.add(["S", Color.LIGHT_GOLD]); break;
+    }
+
+    var x = 2;
+    for (var condition in conditions.take(6)) {
+      terminal.writeAt(x, y, condition[0], condition[1]);
+      x++;
+    }
+
     drawMeter(terminal, y, actor.health.current, actor.health.max,
         Color.RED, Color.DARK_RED);
   }
@@ -557,28 +571,21 @@ class GameScreen extends Screen {
       } else {
         char = CharCode.SPACE;
       }
-      terminal.drawGlyph(90 + x, y, new Glyph.fromCharCode(char, fore, back));
+      terminal.drawGlyph(9 + x, y, new Glyph.fromCharCode(char, fore, back));
     }
   }
 
   void _drawWarriorStats(Terminal terminal, Hero hero) {
-    // TODO: Subclass.
-    terminal.writeAt(81, 10, "Warrior");
-
-    for (var i = 0; i < 6; i++) {
-      terminal.writeAt(81, 11 + i, "                    ");
-    }
-
     var warrior = hero.heroClass as Warrior;
-    var y = 11;
+    var y = 6;
 
     draw(String name, TrainedStat stat) {
       // Hide stats until the hero has made progress on them.
       if (stat.level == 0 && stat.percentUntilNext == 0) return;
 
-      terminal.writeAt(81, y, name, Color.GRAY);
-      terminal.writeAt(94, y, stat.level.toString());
-      terminal.writeAt(97, y, "${stat.percentUntilNext}%", Color.DARK_GRAY);
+      terminal.writeAt(0, y, name, Color.GRAY);
+      terminal.writeAt(13, y, stat.level.toString());
+      terminal.writeAt(16, y, "${stat.percentUntilNext}%", Color.DARK_GRAY);
       y++;
     }
 

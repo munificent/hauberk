@@ -16,6 +16,8 @@ import 'skill.dart';
 /// passive and increase in level automatically simply by doing something
 /// related to the skill.
 class Warrior extends HeroClass {
+  String get name => "Warrior";
+
   List<Skill> get skills => [new ArcherySkill()];
 
   int get armor => toughness.level;

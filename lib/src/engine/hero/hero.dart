@@ -20,6 +20,8 @@ import 'hero_class.dart';
 class HeroSave {
   final String name;
 
+  int get level => calculateLevel(experienceCents);
+
   HeroClass heroClass;
 
   Inventory inventory = new Inventory(Option.INVENTORY_CAPACITY);

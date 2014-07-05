@@ -35,6 +35,8 @@ class Monster extends Actor {
 
   bool get isRecharged => _recharge == 0;
 
+  bool get isAfraid => _state is AfraidState;
+
   /// How afraid of the hero the monster currently is. If it gets high enough,
   /// the monster will switch to the afraid state and try to flee.
   double _fear = 0.0;

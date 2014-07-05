@@ -80,14 +80,17 @@ class MainMenuScreen extends Screen {
       var hero = storage.heroes[i];
 
       var fore = Color.WHITE;
+      var secondaryFore = Color.GRAY;
       var back = Color.BLACK;
       if (i == selectedHero) {
         fore = Color.BLACK;
+        secondaryFore = Color.WHITE;
         back = Color.YELLOW;
       }
 
-      // TODO(bob): Show useful stats (level?).
-      terminal.writeAt(0, 2 + i, hero.name, fore, back);
+      terminal.writeAt(1, 2 + i, hero.name, fore, back);
+      terminal.writeAt(20, 2 + i, "Level ${hero.level}", secondaryFore);
+      terminal.writeAt(30, 2 + i, hero.heroClass.name, secondaryFore);
     }
   }
 
