@@ -15,8 +15,7 @@ class Storage {
   }
 
   void _load() {
-    // TODO(bob): For debugging. If the query is "?clear", then ditch
-    // saved heroes.
+    // TODO: For debugging. If the query is "?clear", then ditch saved heroes.
     if (html.window.location.search == '?clear') {
       save();
       return;
@@ -27,7 +26,7 @@ class Storage {
 
     var data = JSON.decode(storage);
 
-    // TODO(bob): Check version.
+    // TODO: Check version.
 
     for (final hero in data['heroes']) {
       var name = hero['name'];
@@ -58,11 +57,6 @@ class Storage {
         crucible.tryAdd(item);
       }
 
-      var skills = new SkillSet(content.skills);
-      hero['skills'].forEach((name, level) {
-        skills[content.skills[name]] = level;
-      });
-
       var experience = hero['experience'];
 
       var completedLevels = hero['completedLevels'];
@@ -75,7 +69,7 @@ class Storage {
       }
 
       var heroSave = new HeroSave.load(name, heroClass, inventory, equipment,
-          home, crucible, skills, experience, completedLevels);
+          home, crucible, experience, completedLevels);
       heroes.add(heroSave);
     }
   }
@@ -118,11 +112,6 @@ class Storage {
         crucible.add(_saveItem(item));
       }
 
-      var skills = {};
-      hero.skills.forEach((skill, level) {
-        if (level != 0) skills[skill.name] = level;
-      });
-
       var heroClass = {};
       if (hero.heroClass is Warrior) {
         heroClass['name'] = 'warrior';
@@ -136,7 +125,6 @@ class Storage {
         'equipment': equipment,
         'home': home,
         'crucible': crucible,
-        'skills': skills,
         'experience': hero.experienceCents,
         'completedLevels': hero.completedLevels
       });

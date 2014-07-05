@@ -28,10 +28,8 @@ class AttackAction extends Action {
 class BoltAction extends Action {
   final Iterator<Vec> los;
   final Attack attack;
-  final int focusOffset;
 
-  BoltAction(Vec from, Vec to, this.attack,
-      [this.focusOffset = Option.FOCUS_OFFSET_NORMAL])
+  BoltAction(Vec from, Vec to, this.attack)
   : los = new Los(from, to).iterator {
     // Advance to the first item.
     los.moveNext();
@@ -44,6 +42,8 @@ class BoltAction extends Action {
     if (!game.stage[pos].isTransparent) return succeed();
 
     addEvent(new Event(EventType.BOLT, element: attack.element, value: pos));
+
+    // TODO: Chance of missing that increases with distance.
 
     // See if there is an actor there.
     final target = game.stage.actorAt(pos);

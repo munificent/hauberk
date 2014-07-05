@@ -7,15 +7,12 @@ import 'screen.dart';
 import 'terminal.dart';
 
 class SelectSkillDialog extends Screen {
-  final Game game;
-  final List<Skill> _usableSkills;
+  final Game _game;
+  final List<Skill> _skills;
 
-  SelectSkillDialog(this.game)
-      : _usableSkills = [] {
-     _usableSkills.addAll(game.hero.skills.knownSkills.where(
-         (skill) => skill.hasUse));
-     _usableSkills.sort((a, b) => a.name.compareTo(b.name));
-  }
+  SelectSkillDialog(Game game)
+      : _game = game,
+        _skills = game.hero.heroClass.skills;
 
   bool handleInput(Keyboard keyboard) {
     switch (keyboard.lastPressed) {
@@ -51,26 +48,25 @@ class SelectSkillDialog extends Screen {
       case KeyCode.Z: selectSkill(25); break;
     }
 
+    // TODO: Quick keys!
+
     return true;
   }
 
   void selectSkill(int index) {
-    if (index >= _usableSkills.length) return;
-
-    ui.pop(_usableSkills[index]);
+    if (index < _skills.length) ui.pop(_skills[index]);
   }
 
   void render(Terminal terminal) {
     terminal.writeAt(0, 0, "Use which skill?");
 
-    for (var i = 0; i < _usableSkills.length; i++) {
+    for (var i = 0; i < _skills.length; i++) {
       var y = i + 1;
-      var skill = _usableSkills[i];
+      var skill = _skills[i];
 
       terminal.writeAt(0, y, '( )   ', Color.GRAY);
       terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], Color.YELLOW);
-
-      terminal.writeAt(4, y, '${skill.name} (${game.hero.skills[skill]})');
+      terminal.writeAt(4, y, skill.name);
     }
 
     terminal.writeAt(0, terminal.height - 1,

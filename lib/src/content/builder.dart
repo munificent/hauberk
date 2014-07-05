@@ -4,20 +4,11 @@ import '../engine.dart';
 import '../util.dart';
 import 'items.dart';
 import 'item_group.dart';
-import 'skills.dart';
 
 final _groupDropPattern = new RegExp(r"([a-z/]+):(\d+)");
 
 /// Base class for a builder that provides a DSL for creating game content.
 class ContentBuilder {
-  Drop hunting(drop) {
-    return new SkillDrop(Skills.all['Hunting'], parseDrop(drop));
-  }
-
-  Drop botany(drop) {
-    return new SkillDrop(Skills.all['Botany'], parseDrop(drop));
-  }
-
   Drop allOf(drop) {
     var drops = [];
     var percents = [];

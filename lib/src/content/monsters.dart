@@ -120,7 +120,7 @@ class Monsters extends ContentBuilder {
     breed("raven", gray, 8, [
       attack("bite[s]", 6),
       attack("claw[s]", 5),
-    ], drop: hunting("Black Feather"),
+    ], drop: chanceOf(20, "Black Feather"),
         meander: 1, flags: "protective");
   }
 
@@ -128,17 +128,17 @@ class Monsters extends ContentBuilder {
     group("c", tracking: 20, meander: 3);
     breed("mangy cur", yellow, 7, [
       attack("bite[s]", 4),
-    ], drop: hunting(chanceOf(70, "Fur Pelt")),
+    ], drop: chanceOf(20, "Fur Pelt"),
         flags: "few");
 
     breed("wild dog", gray, 9, [
       attack("bite[s]", 5),
-    ], drop: hunting("Fur Pelt"),
+    ], drop: chanceOf(20, "Fur Pelt"),
         flags: "few");
 
     breed("mongrel", orange, 16, [
       attack("bite[s]", 7),
-    ], drop: hunting("Fur Pelt"),
+    ], drop: chanceOf(20, "Fur Pelt"),
         flags: "few");
   }
 
@@ -146,7 +146,7 @@ class Monsters extends ContentBuilder {
     group("i", tracking: 5, meander: 8);
     breed("butterfl[y|ies]", lightPurple, 1, [
       attack("tickle[s] on", 1),
-    ], drop: hunting("Insect Wing"),
+    ], drop: chanceOf(20, "Insect Wing"),
         speed: 2, flags: "few fearless");
 
     breed("bee", yellow, 1, [
@@ -165,7 +165,7 @@ class Monsters extends ContentBuilder {
     breed("stray cat", lightOrange, 5, [
       attack("bite[s]", 4),
       attack("scratch[es]", 3),
-    ], drop: hunting(chanceOf(50, "Fur Pelt")),
+    ], drop: chanceOf(10, "Fur Pelt"),
         meander: 3, speed: 1);
   }
 
@@ -176,7 +176,7 @@ class Monsters extends ContentBuilder {
     group("i", tracking: 3, meander: 8);
     breed("giant cockroach[es]", darkBrown, 12, [
       attack("crawl[s] on", 1),
-    ], drop: hunting("Insect Wing"),
+    ], drop: chanceOf(10, "Insect Wing"),
         speed: 3, flags: "fearless");
 
     breed("giant centipede", red, 12, [

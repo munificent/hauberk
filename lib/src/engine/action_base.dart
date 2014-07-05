@@ -23,8 +23,6 @@ abstract class Action {
   Hero get hero => _actor as Hero;
   bool get consumesEnergy => _consumesEnergy;
 
-  int get focusOffset => Option.FOCUS_OFFSET_NORMAL;
-
   void bind(Actor actor, bool consumesEnergy) {
     assert(_actor == null);
 
@@ -188,7 +186,6 @@ class RestAction extends Action {
   }
 
   int get noise => Option.NOISE_REST;
-  int get focusOffset => Option.FOCUS_OFFSET_REST;
 }
 
 /// Action for eating some food.

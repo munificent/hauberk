@@ -22,14 +22,8 @@ class Area {
     area.buildStage(stage);
 
     var heroPos = stage.findOpenTile();
-    game.hero = new Hero(game, heroPos, heroSave, heroSave.skills);
+    game.hero = new Hero(game, heroPos, heroSave);
     stage.actors.add(game.hero);
-
-    /*
-    // TODO(bob): Temp for testing.
-    final prefixType = new PowerType('Elven', 'Weapon', damage: 3, isPrefix: true);
-    final suffixType = new PowerType('of Wounding', 'Weapon', damage: 6, isPrefix: false);
-    */
 
     // Place the items.
     final numItems = rng.taper(area.numItems, 3);
@@ -41,18 +35,6 @@ class Area {
         item.pos = stage.findOpenTile();
         stage.items.add(item);
       });
-
-      /*
-      var prefix, suffix;
-      if (rng.oneIn(40) && prefixType.appliesTo(type)) prefix = prefixType.spawn();
-      if (rng.oneIn(40) && suffixType.appliesTo(type)) suffix = suffixType.spawn();
-
-      final item = new Item(type, stage.findOpenTile(),
-          prefix, suffix);
-
-      if (prefix != null || suffix != null) print(item.toString());
-      stage.items.add(item);
-      */
     }
 
     // Place the monsters.

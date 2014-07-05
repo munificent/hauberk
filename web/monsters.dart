@@ -18,7 +18,7 @@ main() {
   var drops = {};
 
   var heroClass = new Warrior();
-  var save = new HeroSave({}, "Hero", heroClass);
+  var save = new HeroSave("Hero", heroClass);
   var game = new Game(content.areas[0], 0, content, save);
 
   for (var breed in breeds) {

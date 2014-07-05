@@ -5,6 +5,7 @@ import '../actor.dart';
 import '../melee.dart';
 import '../monster.dart';
 import 'hero.dart';
+import 'skill.dart';
 
 /// Base class for a Hero's character class.
 ///
@@ -16,6 +17,9 @@ abstract class HeroClass {
   /// Gets the [Hero] that has this class.
   Hero get hero => _hero;
   Hero _hero;
+
+  /// The [Skills] that the class enables.
+  List<Skill> get skills;
 
   /// Gets the armor bonus conferred by this class.
   int get armor => 0;

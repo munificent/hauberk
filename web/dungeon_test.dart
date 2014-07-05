@@ -19,7 +19,7 @@ main() {
   var area = 1;
   var level = 0;
   var heroClass = new Warrior();
-  var save = new HeroSave({}, "Hero", heroClass);
+  var save = new HeroSave("Hero", heroClass);
 
   canvas.onClick.listen((_) {
     var game = new Game(content.areas[area], level, content, save);

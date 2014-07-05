@@ -12,7 +12,6 @@ import '../melee.dart';
 import '../monster.dart';
 import '../option.dart';
 import 'hero_class.dart';
-import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -32,8 +31,6 @@ class HeroSave {
   /// Items in the hero's crucible.
   Inventory crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
 
-  final SkillSet skills;
-
   int experienceCents = 0;
 
   /// The index of the highest [Level] that the [Hero] has completed in each
@@ -42,12 +39,11 @@ class HeroSave {
   /// that area.
   final Map<String, int> completedLevels;
 
-  HeroSave(Map<String, Skill> skills, this.name, this.heroClass)
-      : skills = new SkillSet(skills),
-        completedLevels = <String, int>{};
+  HeroSave(this.name, this.heroClass)
+      : completedLevels = <String, int>{};
 
   HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
-      this.home, this.crucible, this.skills, this.experienceCents,
+      this.home, this.crucible, this.experienceCents,
       this.completedLevels);
 
   /// Copies data from [hero] into this object. This should be called when the
@@ -71,8 +67,6 @@ class Hero extends Actor {
   final Inventory inventory;
   final Equipment equipment;
 
-  final SkillSet skills;
-
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
   int _experienceCents = 0;
@@ -82,13 +76,11 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  int _focus = Option.FOCUS_MAX;
-
   /// How much noise the Hero's last action made.
   int get lastNoise => _lastNoise;
   int _lastNoise = 0;
 
-  Hero(Game game, Vec pos, HeroSave save, this.skills)
+  Hero(Game game, Vec pos, HeroSave save)
   : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses anything gained.
     heroClass = save.heroClass.clone(),
@@ -98,9 +90,6 @@ class Hero extends Actor {
     _refreshLevel(log: false);
 
     heroClass.bind(this);
-
-    // TODO: Doing this here assumes skills don't change while in the stage.
-    skills.forEach((skill, level) => health.max += skill.modifyHealth(level));
     health.current = health.max;
   }
 
@@ -118,8 +107,6 @@ class Hero extends Actor {
   int get experience => _experienceCents ~/ 100;
 
   int get level => _level;
-
-  int get focus => _focus;
 
   int get armor {
     int total = 0;
@@ -148,14 +135,7 @@ class Hero extends Actor {
     }
 
     // Let the class modify it.
-    attack = heroClass.modifyAttack(attack, defender);
-
-    // See if any skills modify it.
-    skills.forEach((skill, level) {
-      attack = skill.modifyAttack(level, weapon, attack);
-    });
-
-    return attack;
+    return heroClass.modifyAttack(attack, defender);
   }
 
   Attack defend(Attack attack) {
@@ -176,9 +156,6 @@ class Hero extends Actor {
   void onFinishTurn(Action action) {
     // Make some noise.
     _lastNoise = action.noise;
-
-    // Spend and regain focus.
-    _focus = clamp(0, _focus + action.focusOffset, Option.FOCUS_MAX);
   }
 
   Vec changePosition(Vec pos) {

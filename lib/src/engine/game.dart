@@ -11,7 +11,6 @@ import 'element.dart';
 import 'fov.dart';
 import 'hero/hero.dart';
 import 'hero/hero_class.dart';
-import 'hero/skill.dart';
 import 'item.dart';
 import 'log.dart';
 import 'option.dart';
@@ -120,13 +119,12 @@ class Content {
   final Map<String, ItemType> items;
   final List<Recipe> recipes;
   final List<ItemType> _newHeroItems;
-  final Map<String, Skill> skills;
 
-  Content(this.areas, this.breeds, this.items, this.recipes, this.skills,
+  Content(this.areas, this.breeds, this.items, this.recipes,
       this._newHeroItems);
 
   HeroSave createHero(String name, HeroClass heroClass) {
-    var hero = new HeroSave(skills, name, heroClass);
+    var hero = new HeroSave(name, heroClass);
     for (var itemType in _newHeroItems) {
       hero.inventory.tryAdd(new Item(itemType));
     }

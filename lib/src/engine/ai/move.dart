@@ -41,16 +41,19 @@ class BoltMove extends Move {
     : super(cost);
 
   num getScore(Monster monster) {
-    // TODO(bob): Should not always assume the hero is the target.
+    // TODO: Should not always assume the hero is the target.
     final target = monster.game.hero.pos;
 
     // Don't fire if out of range.
     if ((target - monster.pos).kingLength > Option.MAX_BOLT_DISTANCE) return 0;
 
     // Don't fire a bolt if it's obstructed.
-    // TODO(bob): Should probably only fire if there aren't any other monsters
+    // TODO: Should probably only fire if there aren't any other monsters
     // in the way too, though friendly fire is pretty entertaining.
     if (!monster.canView(target)) return 0;
+
+    // TODO: If we make bolts less accurate at longer distances, take that into
+    // account here.
 
     // The farther it is, the more likely it is to use a bolt.
     return 100 * (target - monster.pos).kingLength / Option.MAX_BOLT_DISTANCE;

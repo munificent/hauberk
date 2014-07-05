@@ -25,12 +25,6 @@ class Option {
   /// level.
   static final HERO_LEVEL_COST = 40;
 
-  static const FOCUS_MAX = 100;
-
-  /// How much focus the hero regains each turn.
-  static const FOCUS_OFFSET_NORMAL = 10;
-  static const FOCUS_OFFSET_REST = 20;
-
   /// The maximum number of items the hero's [Inventory] can contain.
   static final INVENTORY_CAPACITY = 20;
 

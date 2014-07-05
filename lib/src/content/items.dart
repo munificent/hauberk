@@ -347,17 +347,3 @@ class OneOfDrop implements Drop {
     }
   }
 }
-
-/// Drops an item whose probability is based on the hero's level in some skill.
-class SkillDrop implements Drop {
-  final Skill skill;
-  final Drop drop;
-
-  SkillDrop(this.skill, this.drop);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    if (rng.range(100) < skill.getDropChance(game.hero.skills[skill])) {
-      drop.spawnDrop(game, addItem);
-    }
-  }
-}

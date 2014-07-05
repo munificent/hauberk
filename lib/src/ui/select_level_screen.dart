@@ -9,7 +9,6 @@ import 'game_screen.dart';
 import 'home_screen.dart';
 import 'keyboard.dart';
 import 'screen.dart';
-import 'skills_screen.dart';
 import 'storage.dart';
 import 'terminal.dart';
 
@@ -61,10 +60,6 @@ class SelectLevelScreen extends Screen {
 
     case KeyCode.H:
       ui.push(new HomeScreen(content, save));
-      break;
-
-    case KeyCode.S:
-      ui.push(new SkillsScreen(content, save));
       break;
 
     case KeyCode.ESCAPE:
@@ -120,7 +115,7 @@ class SelectLevelScreen extends Screen {
       // Left successfully, so save.
       storage.save();
       Debug.exitLevel();
-    } else if (screen is HomeScreen || screen is SkillsScreen) {
+    } else if (screen is HomeScreen) {
       // Always save when leaving the home.
       storage.save();
     }

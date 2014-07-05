@@ -1,17 +1,23 @@
 library dngn.engine.hero.warrior;
 
+import '../../util.dart';
 import '../action_base.dart';
+import '../action_combat.dart';
 import '../actor.dart';
+import '../game.dart';
 import '../melee.dart';
 import '../monster.dart';
 import 'hero.dart';
 import 'hero_class.dart';
+import 'skill.dart';
 
 /// A warrior is focused on combat. Players choosing them don't want to spend
 /// a bunch of time fiddling with skills so almost all warrior skills are
 /// passive and increase in level automatically simply by doing something
 /// related to the skill.
 class Warrior extends HeroClass {
+  List<Skill> get skills => [new ArcherySkill()];
+
   int get armor => toughness.level;
 
   /// Increases damage when unarmed. Trained by killing monsters while unarmed.
@@ -171,5 +177,29 @@ class TrainedStat {
     var oldLevel = level;
     _count += count;
     return level != oldLevel;
+  }
+}
+
+class ArcherySkill extends Skill {
+  String get name => "Archery";
+
+  bool get needsTarget => true;
+
+  bool canUse(Game game) {
+    // TODO: Don't use separate slot for bow.
+
+    // Get the equipped bow, if any.
+    var bow = game.hero.equipment.find("bow");
+    if (bow == null) {
+      game.log.error("You do not have a missile weapon equipped.");
+      return false;
+    }
+
+    return true;
+  }
+
+  Action getUseAction(Game game, Vec target) {
+    var bow = game.hero.equipment.find("bow");
+    return new BoltAction(game.hero.pos, target, bow.attack);
   }
 }

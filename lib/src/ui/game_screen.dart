@@ -28,7 +28,7 @@ class GameScreen extends Screen {
   Actor target;
 
   /// The most recently used skill.
-  Skill lastSkill;
+  Skill _lastSkill;
 
   GameScreen(this.save, this.game)
   : effects = <Effect>[];
@@ -150,13 +150,13 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.L:
-        if (lastSkill == null) {
+        if (_lastSkill == null) {
           // Haven't picked a skill yet, so select one.
           ui.push(new SelectSkillDialog(game));
-        } else if (!lastSkill.canUse(game.hero.skills[lastSkill], game)) {
+        } else if (!_lastSkill.canUse(game)) {
           // Show the message.
           dirty();
-        } else if (lastSkill.needsTarget) {
+        } else if (_lastSkill.needsTarget) {
           // If we still have a visible target, use it.
           if (target != null && target.isAlive &&
               game.stage[target.pos].visible) {
@@ -216,9 +216,9 @@ class GameScreen extends Screen {
   }
 
   void fireAt(Vec pos) {
-    if (lastSkill == null || !lastSkill.needsTarget) return;
+    if (_lastSkill == null || !_lastSkill.needsTarget) return;
 
-    if (!lastSkill.canUse(game.hero.skills[lastSkill], game)) {
+    if (!_lastSkill.canUse(game)) {
       // Refresh the log.
       dirty();
       return;
@@ -246,8 +246,7 @@ class GameScreen extends Screen {
   }
 
   void useLastSkill(Vec target) {
-    game.hero.setNextAction(
-        lastSkill.getUseAction(game.hero.skills[lastSkill], game, target));
+    game.hero.setNextAction(_lastSkill.getUseAction(game, target));
   }
 
   void activate(Screen popped, result) {
@@ -255,9 +254,9 @@ class GameScreen extends Screen {
       // Forfeiting, so exit.
       ui.pop(false);
     } else if (popped is SelectSkillDialog && result is Skill) {
-      lastSkill = result;
+      _lastSkill = result;
 
-      if (!result.canUse(game.hero.skills[result], game)) {
+      if (!result.canUse(game)) {
         // Refresh the log.
         dirty();
       } else if (result.needsTarget) {
@@ -435,21 +434,17 @@ class GameScreen extends Screen {
     drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
 
-    terminal.writeAt(81, 1, 'Focus', Color.GRAY);
-    drawMeter(terminal, 1, hero.focus, Option.FOCUS_MAX,
-        Color.BLUE, Color.DARK_BLUE);
-
-    drawStat(terminal, 3, 'Level', hero.level, Color.AQUA);
+    drawStat(terminal, 2, 'Level', hero.level, Color.AQUA);
     // TODO: Handle hero at max level.
-    drawStat(terminal, 4, 'Exp', hero.experience, Color.AQUA,
+    drawStat(terminal, 3, 'Exp', hero.experience, Color.AQUA,
         calculateLevelCost(hero.level + 1), Color.DARK_AQUA);
-    drawStat(terminal, 5, 'Armor',
+    drawStat(terminal, 4, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
-    drawStat(terminal, 6, 'Weapon', hero.getAttack(null), Color.YELLOW);
+    drawStat(terminal, 5, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
     // Show conditions.
-    terminal.writeAt(81,  8, "                    ");
+    terminal.writeAt(81,  7, "                    ");
     var conditions = [];
 
     if (hero.food.isActive) conditions.add(["Food", Color.ORANGE]);
@@ -463,7 +458,7 @@ class GameScreen extends Screen {
 
     var x = 81;
     for (var condition in conditions) {
-      terminal.writeAt(x,  8, condition[0], condition[1]);
+      terminal.writeAt(x,  7, condition[0], condition[1]);
       x += 5;
     }
 
