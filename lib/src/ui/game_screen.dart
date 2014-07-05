@@ -805,10 +805,6 @@ class DetectEffect implements Effect {
         terminal.width, terminal.height));
 
     for (var pixel in bounds) {
-      if (pixel.x >= terminal.width) {
-        print("!!! $pixel, ${terminal.width}");
-      }
-
       var relative = pos - pixel;
       if (relative < radius && relative > radius - 2) {
         terminal.drawGlyph(pixel.x, pixel.y, glyph);
