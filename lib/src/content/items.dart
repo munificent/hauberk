@@ -69,7 +69,7 @@ class Items extends ContentBuilder {
     food("Honeycomb",            3, gold,       40);
     food("Loaf of Bread",        4, lightBrown, 80);
     food("Berry Pie",            5, red,        100);
-    food("Leg of Lamb",          6, brown,      200);
+    food("Leg of Lamb",          6, darkBrown,  200);
     food("Traveler's Ration",    7, green,      300);
     // TODO: Magic foods that also cure/heal.
   }

@@ -108,7 +108,8 @@ class Areas extends ContentBuilder {
           'wild dog',
           'maggot',
           'giant cave worm',
-          'green slime'
+          'green slime',
+          'salamander'
         ],
         drop: [
           'food:4',
@@ -116,7 +117,7 @@ class Areas extends ContentBuilder {
           'equipment:4'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(70), numMonsters: 24, numItems: 9,
+      level(() => new GoblinStronghold(70), numMonsters: 22, numItems: 9,
         breeds: [
           'impish incanter',
           'goblin archer',
@@ -124,7 +125,8 @@ class Areas extends ContentBuilder {
           'giant bat',
           'mongrel',
           'giant centipede',
-          'blue slime'
+          'blue slime',
+          'lizard guard',
         ],
         drop: [
           'food:5',
@@ -132,17 +134,27 @@ class Areas extends ContentBuilder {
           'equipment:5'
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(90), numMonsters: 26, numItems: 10,
+      level(() => new GoblinStronghold(90), numMonsters: 24, numItems: 10,
         breeds: [
           'imp warlock',
           'goblin warrior',
           'red slime',
-          'guard lizard'
+          'lizard protector'
         ],
         drop: [
           'food:6',
           'magic:6',
           'equipment:6'
+        ],
+        quest: tileType('the stairs', Tiles.stairs)),
+      level(() => new GoblinStronghold(110), numMonsters: 26, numItems: 11,
+        breeds: [
+          'armored lizard'
+        ],
+        drop: [
+          'food:7',
+          'magic:7',
+          'equipment:7'
         ],
         quest: tileType('the stairs', Tiles.stairs))
     ]);
