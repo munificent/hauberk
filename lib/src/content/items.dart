@@ -204,9 +204,9 @@ class Items extends ContentBuilder {
 
     // Bows.
     group("}", "equipment/weapon/bow");
-    bow("Short Bow", 7, brown, "the arrow", 4);
-    bow("Longbow", 13, lightBrown, "the arrow", 6);
-    bow("Crossbow", 28, gray, "the bolt", 10);
+    bow("Short Bow", 7, brown, "the arrow", 3);
+    bow("Longbow", 13, lightBrown, "the arrow", 5);
+    bow("Crossbow", 28, gray, "the bolt", 8);
   }
 
   void bodyArmor() {
@@ -217,20 +217,18 @@ class Items extends ContentBuilder {
     group("(", "equipment/armor/body");
     armor("Cloth Shirt", 2, lightGray, 2);
     armor("Leather Shirt", 5, lightBrown, 5);
+    armor("Jerkin", 7, orange, 6);
     armor("Leather Armor", 13, brown, 8);
     armor("Padded Armor", 17, darkBrown, 11);
     armor("Studded Leather Armor", 21, gray, 15);
+    armor("Mail Hauberk", 26, darkGray, 18);
+    armor("Scale Mail", 30, lightGray, 21);
 
     group("(", "equipment/armor/robe");
     armor("Robe", 4, aqua, 4, equipSlot: "body");
     armor("Fur-lined Robe", 9, darkAqua, 6, equipSlot: "body");
 
     /*
-    Jerkin
-    Soft Leather Armor[s]
-    Hard Leather Armor[s]
-    Leather Scale Mail[s]
-    Mail Hauberk[s]
     Metal Lamellar Armor[s]
     Chain Mail Armor[s]
     Metal Scale Mail[s]
@@ -267,8 +265,9 @@ class Items extends ContentBuilder {
   }
 
   ItemType bow(String name, int level, appearance, String noun, int damage) {
-    return item(name, level, appearance, equipSlot: "bow", category: "bow",
-        attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun)));
+    return item(name, level, appearance, equipSlot: "weapon", category: "bow",
+        attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun)),
+        isRanged: true);
   }
 
   ItemType armor(String name, int level, appearance, int armor,
@@ -278,7 +277,8 @@ class Items extends ContentBuilder {
   }
 
   ItemType item(String name, int level, appearance, {ItemUse use,
-      String equipSlot, String category, Attack attack, int armor: 0}) {
+      String equipSlot, String category, Attack attack, bool isRanged: false,
+      int armor: 0}) {
     // If the appearance isn"t an actual glyph, it should be a color function
     // that will be applied to the current glyph.
     if (appearance is! Glyph) {
@@ -286,7 +286,7 @@ class Items extends ContentBuilder {
     }
 
     var itemType = new ItemType(name, appearance, _sortIndex++, use,
-        equipSlot, category, attack, armor);
+        equipSlot, category, attack, isRanged, armor);
     Items.all[name] = itemType;
 
     if (_group != null) {

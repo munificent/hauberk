@@ -25,6 +25,8 @@ class Item extends Thing implements Comparable {
   bool get canUse => type.use != null;
   Action use() => type.use();
 
+  /// Gets the melee [Attack] for the item, taking into account any [Power]s it
+  /// has.
   Attack get attack {
     if (type.attack == null) return null;
 
@@ -34,6 +36,8 @@ class Item extends Thing implements Comparable {
 
     return attack;
   }
+
+  bool get isRanged => type.isRanged;
 
   /// The amount of protected provided by the item when equipped.
   int get armor => type.armor;
@@ -77,7 +81,14 @@ class ItemType {
   final appearance;
   final int sortIndex;
   final ItemUse use;
+
+  /// The item's [Attack] or `null` if the item is not a weapon.
   final Attack attack;
+
+  /// `true` if the item is a missile weapon. In that case, [attack] is used
+  /// for the ranged attack and the weapon has no melee attack.
+  final bool isRanged;
+
   final int armor;
 
   /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
@@ -89,7 +100,7 @@ class ItemType {
   final String category;
 
   ItemType(this.name, this.appearance, this.sortIndex, this.use, this.equipSlot,
-      this.category, this.attack, this.armor);
+      this.category, this.attack, this.isRanged, this.armor);
 
   String toString() => name;
 }
@@ -176,7 +187,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
       'helm',
       'gloves',
       'boots'
-      ],
+    ],
     slots = new List<Item>(11);
 
   /// Gets the [Item] in the weapon slot, if any.
@@ -204,7 +215,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
   /// a [Level] so that any inventory changes that happen in the level are
   /// discarded if the hero dies.
   Equipment clone() {
-    // TODO(bob): If items themselves ever become mutable, will need to deep
+    // TODO: If items themselves ever become mutable, will need to deep
     // clone them too.
     final equipment = new Equipment();
     for (var i = 0; i < slotTypes.length; i++) {
@@ -234,7 +245,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
   /// that allows the item. Unlike [equip], this will not swap items. It is
   /// used by the [HomeScreen].
   bool tryAdd(Item item) {
-    // TODO(bob): Need to handle multiple slots of the same type. In that case,
+    // TODO: Need to handle multiple slots of the same type. In that case,
     // should prefer an empty slot before reusing an in-use one.
     for (var i = 0; i < slotTypes.length; i++) {
       if (slotTypes[i] == item.equipSlot && slots[i] == null) {
@@ -248,7 +259,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
 
   /// Equips [item]. Returns the previously equipped item in that slot, if any.
   Item equip(Item item) {
-    // TODO(bob): Need to handle multiple slots of the same type. In that case,
+    // TODO: Need to handle multiple slots of the same type. In that case,
     // should prefer an empty slot before reusing an in-use one.
     for (var i = 0; i < slotTypes.length; i++) {
       if (slotTypes[i] == item.equipSlot) {
@@ -280,7 +291,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
   }
 
   Iterator<Item> get iterator {
-    // TODO(bob): Would be better if empty slots were shown with a slot label.
+    // TODO: Would be better if empty slots were shown with a slot label.
     // Don't include empty slots.
     return slots.where((item) => item != null).iterator;
   }
@@ -294,7 +305,7 @@ abstract class Drop {
 
 /// A recipe defines a set of items that can be placed into the crucible and
 /// transmuted into a new item.
-// TODO(bob): Figure out how this works with powers.
+// TODO: Figure out how this works with powers.
 class Recipe {
   final List<ItemType> ingredients;
   final ItemType result;

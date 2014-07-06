@@ -66,6 +66,7 @@ class Warrior extends HeroClass {
   Attack modifyAttack(Attack attack, Actor defender) {
     var weapon = hero.equipment.weapon;
     if (weapon != null) {
+      // TODO: Should combat apply to ranged attacks?
       attack = attack.addDamage(combat.level);
 
       var mastery = masteries[weapon.type.category];
@@ -188,12 +189,10 @@ class ArcherySkill extends Skill {
   bool get needsTarget => true;
 
   bool canUse(Game game) {
-    // TODO: Don't use separate slot for bow.
-
-    // Get the equipped bow, if any.
-    var bow = game.hero.equipment.find("bow");
-    if (bow == null) {
-      game.log.error("You do not have a missile weapon equipped.");
+    // Get the equipped ranged weapon, if any.
+    var weapon = game.hero.equipment.weapon;
+    if (weapon == null || !weapon.isRanged) {
+      game.log.error("You do not have a ranged weapon equipped.");
       return false;
     }
 
@@ -201,7 +200,7 @@ class ArcherySkill extends Skill {
   }
 
   Action getUseAction(Game game, Vec target) {
-    var bow = game.hero.equipment.find("bow");
-    return new BoltAction(game.hero.pos, target, bow.attack);
+    var weapon = game.hero.equipment.weapon;
+    return new BoltAction(game.hero.pos, target, weapon.attack);
   }
 }

@@ -128,9 +128,9 @@ class Hero extends Actor {
   Attack getAttack(Actor defender) {
     var attack;
 
-    // See if a weapon is equipped.
+    // See if a melee weapon is equipped.
     final weapon = equipment.weapon;
-    if (weapon != null) {
+    if (weapon != null && !weapon.isRanged) {
       attack = weapon.attack;
     } else {
       attack = new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE, Element.NONE);
