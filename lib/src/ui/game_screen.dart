@@ -117,6 +117,15 @@ class GameScreen extends Screen {
         action = new PickUpAction();
         break;
 
+      case KeyCode.X:
+        if (game.hero.inventory.lastUnequipped == -1) {
+          game.log.error("You aren't holding an unequipped item to swap.");
+          dirty();
+        } else {
+          action = new EquipAction(game.hero.inventory.lastUnequipped, false);
+        }
+        break;
+
       case KeyCode.I: action = new WalkAction(Direction.NW); break;
       case KeyCode.O: action = new WalkAction(Direction.N); break;
       case KeyCode.P: action = new WalkAction(Direction.NE); break;
@@ -446,6 +455,7 @@ class GameScreen extends Screen {
     drawStat(sidebar, 2, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
+    // TODO: Show the weapon and stats better.
     drawStat(sidebar, 3, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
     sidebar.writeAt(0, 5, hero.heroClass.name);

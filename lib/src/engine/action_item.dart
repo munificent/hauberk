@@ -5,6 +5,7 @@ import 'action_base.dart';
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {
   ActionResult onPerform() {
+    // TODO: Handle stacks on the ground.
     final item = game.stage.itemAt(actor.pos);
     if (item == null) {
       return fail('There is nothing here.');
@@ -83,7 +84,7 @@ class EquipAction extends Action {
 
     // Add the previously equipped item to inventory.
     if (unequipped != null) {
-      if (hero.inventory.tryAdd(unequipped)) {
+      if (hero.inventory.tryAdd(unequipped, wasUnequipped: true)) {
         log('{1} unequip[s] {2}.', actor, unequipped);
       } else {
         // No room in inventory, so drop it.
