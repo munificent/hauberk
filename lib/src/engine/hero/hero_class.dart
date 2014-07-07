@@ -5,7 +5,7 @@ import '../actor.dart';
 import '../melee.dart';
 import '../monster.dart';
 import 'hero.dart';
-import 'skill.dart';
+import 'command.dart';
 
 /// Base class for a Hero's character class.
 ///
@@ -20,8 +20,8 @@ abstract class HeroClass {
 
   String get name;
 
-  /// The [Skills] that the class enables.
-  List<Skill> get skills;
+  /// The [Command]s that the class enables.
+  List<Command> get commands;
 
   /// Gets the armor bonus conferred by this class.
   int get armor => 0;

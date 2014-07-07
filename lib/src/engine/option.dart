@@ -36,9 +36,6 @@ class Option {
   /// The maximum number of items the hero's crucible can contain.
   static final CRUCIBLE_CAPACITY = 8;
 
-  /// The number of skill points the hero can spend per experience level.
-  static final SKILLS_PER_LEVEL = 1;
-
   /// The starting score for a potential AI action.
   static final AI_START_SCORE = 100;
 

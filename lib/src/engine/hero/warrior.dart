@@ -7,18 +7,18 @@ import '../actor.dart';
 import '../game.dart';
 import '../melee.dart';
 import '../monster.dart';
+import 'command.dart';
 import 'hero.dart';
 import 'hero_class.dart';
-import 'skill.dart';
 
 /// A warrior is focused on combat. Players choosing them don't want to spend
-/// a bunch of time fiddling with skills so almost all warrior skills are
+/// a bunch of time fiddling with commands so almost all warrior abilities are
 /// passive and increase in level automatically simply by doing something
-/// related to the skill.
+/// related to the ability.
 class Warrior extends HeroClass {
   String get name => "Warrior";
 
-  List<Skill> get skills => [new ArcherySkill()];
+  List<Command> get commands => [new ArcheryCommand()];
 
   int get armor => toughness.level;
 
@@ -122,8 +122,8 @@ class Warrior extends HeroClass {
   }
 }
 
-/// A skill that can increase in level based on some occurrence happening a
-/// certain number of times.
+/// A learned ability that can increase in level based on some occurrence
+/// happening a certain number of times.
 class TrainedStat {
   /// The current count of occurrences.
   int get count => _count;
@@ -183,7 +183,7 @@ class TrainedStat {
   }
 }
 
-class ArcherySkill extends Skill {
+class ArcheryCommand extends Command {
   String get name => "Archery";
 
   bool get needsTarget => true;

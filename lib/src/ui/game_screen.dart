@@ -10,7 +10,7 @@ import 'forfeit_dialog.dart';
 import 'inventory_dialog.dart';
 import 'keyboard.dart';
 import 'screen.dart';
-import 'select_skill_dialog.dart';
+import 'select_command_dialog.dart';
 import 'target_dialog.dart';
 import 'terminal.dart';
 
@@ -27,8 +27,8 @@ class GameScreen extends Screen {
   // while the target is invisible, it should treat it as not being targeted.
   Actor target;
 
-  /// The most recently used skill.
-  Skill _lastSkill;
+  /// The most recently performed command.
+  Command _lastCommand;
 
   GameScreen(this.save, this.game)
   : effects = <Effect>[];
@@ -137,7 +137,7 @@ class GameScreen extends Screen {
       case KeyCode.SLASH: action = new WalkAction(Direction.SE); break;
 
       case KeyCode.S:
-        ui.push(new SelectSkillDialog(game));
+        ui.push(new SelectCommandDialog(game));
         break;
       }
     } else if (!keyboard.shift && keyboard.option && !keyboard.control) {
@@ -159,13 +159,13 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.L:
-        if (_lastSkill == null) {
-          // Haven't picked a skill yet, so select one.
-          ui.push(new SelectSkillDialog(game));
-        } else if (!_lastSkill.canUse(game)) {
+        if (_lastCommand == null) {
+          // Haven't picked a command yet, so select one.
+          ui.push(new SelectCommandDialog(game));
+        } else if (!_lastCommand.canUse(game)) {
           // Show the message.
           dirty();
-        } else if (_lastSkill.needsTarget) {
+        } else if (_lastCommand.needsTarget) {
           // If we still have a visible target, use it.
           if (target != null && target.isAlive &&
               game.stage[target.pos].visible) {
@@ -225,9 +225,9 @@ class GameScreen extends Screen {
   }
 
   void fireAt(Vec pos) {
-    if (_lastSkill == null || !_lastSkill.needsTarget) return;
+    if (_lastCommand == null || !_lastCommand.needsTarget) return;
 
-    if (!_lastSkill.canUse(game)) {
+    if (!_lastCommand.canUse(game)) {
       // Refresh the log.
       dirty();
       return;
@@ -255,15 +255,15 @@ class GameScreen extends Screen {
   }
 
   void useLastSkill(Vec target) {
-    game.hero.setNextAction(_lastSkill.getUseAction(game, target));
+    game.hero.setNextAction(_lastCommand.getUseAction(game, target));
   }
 
   void activate(Screen popped, result) {
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
-    } else if (popped is SelectSkillDialog && result is Skill) {
-      _lastSkill = result;
+    } else if (popped is SelectCommandDialog && result is Command) {
+      _lastCommand = result;
 
       if (!result.canUse(game)) {
         // Refresh the log.

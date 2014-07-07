@@ -17,7 +17,7 @@ export 'engine/fov.dart';
 export 'engine/game.dart';
 export 'engine/hero/hero.dart';
 export 'engine/hero/hero_class.dart';
-export 'engine/hero/skill.dart';
+export 'engine/hero/command.dart';
 export 'engine/hero/warrior.dart';
 export 'engine/item.dart';
 export 'engine/log.dart';
