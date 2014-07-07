@@ -1,4 +1,4 @@
-library dngn.ui.keyboard;
+library hauberk.ui.keyboard;
 
 import 'dart:html' as html;
 

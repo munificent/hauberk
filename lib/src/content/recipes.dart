@@ -1,4 +1,4 @@
-library dngn.content.recipes;
+library hauberk.content.recipes;
 
 import '../engine.dart';
 import 'builder.dart';

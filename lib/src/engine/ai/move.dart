@@ -1,4 +1,4 @@
-library dngn.engine.move;
+library hauberk.engine.move;
 
 import '../../util.dart';
 import '../action_base.dart';

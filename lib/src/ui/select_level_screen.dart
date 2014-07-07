@@ -1,4 +1,4 @@
-library dngn.ui.select_level_screen;
+library hauberk.ui.select_level_screen;
 
 import 'dart:math' as math;
 

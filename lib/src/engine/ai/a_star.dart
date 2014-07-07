@@ -1,4 +1,4 @@
-library dngn.engine.a_star;
+library hauberk.engine.a_star;
 
 import 'dart:math' as math;
 

@@ -1,4 +1,4 @@
-library dngn.ui.select_command_dialog;
+library hauberk.ui.select_command_dialog;
 
 import '../engine.dart';
 import '../util.dart';

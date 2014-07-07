@@ -1,4 +1,4 @@
-library dngn.ui.game_screen;
+library hauberk.ui.game_screen;
 
 import 'dart:math' as math;
 

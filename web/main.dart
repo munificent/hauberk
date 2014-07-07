@@ -1,11 +1,11 @@
-library dngn.web.main;
+library hauberk.web.main;
 
 import 'dart:html' as html;
 
-import 'package:dngn/src/content.dart';
-import 'package:dngn/src/debug.dart';
-import 'package:dngn/src/ui.dart';
-import 'package:dngn/src/util.dart';
+import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/debug.dart';
+import 'package:hauberk/src/ui.dart';
+import 'package:hauberk/src/util.dart';
 
 const WIDTH = 100;
 const HEIGHT = 40;

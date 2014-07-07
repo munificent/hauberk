@@ -1,4 +1,4 @@
-library dngn.engine.log;
+library hauberk.engine.log;
 
 import 'dart:collection';
 

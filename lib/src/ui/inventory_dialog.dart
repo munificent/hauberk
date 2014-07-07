@@ -1,4 +1,4 @@
-library dngn.ui.inventory_dialog;
+library hauberk.ui.inventory_dialog;
 
 import '../engine.dart';
 import '../util.dart';

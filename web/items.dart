@@ -1,9 +1,9 @@
-library dngn.web.items;
+library hauberk.web.items;
 
 import 'dart:html' as html;
 
-import 'package:dngn/src/content.dart';
-import 'package:dngn/src/util.dart';
+import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/util.dart';
 
 main() {
   var content = createContent();

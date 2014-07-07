@@ -1,4 +1,4 @@
-library dngn.engine.action_base;
+library hauberk.engine.action_base;
 
 import 'dart:collection';
 

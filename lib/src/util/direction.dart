@@ -1,4 +1,4 @@
-library dngn.util.direction;
+library hauberk.util.direction;
 
 import 'vec.dart';
 

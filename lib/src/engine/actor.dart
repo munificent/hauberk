@@ -1,4 +1,4 @@
-library dngn.engine.actor;
+library hauberk.engine.actor;
 
 import '../util.dart';
 import 'action_base.dart';

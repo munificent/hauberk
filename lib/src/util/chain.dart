@@ -1,4 +1,4 @@
-library dngn.util.chain;
+library hauberk.util.chain;
 
 import 'dart:collection';
 

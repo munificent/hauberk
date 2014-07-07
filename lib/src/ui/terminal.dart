@@ -1,4 +1,4 @@
-library dngn.ui.terminal;
+library hauberk.ui.terminal;
 
 import '../util.dart';
 

@@ -1,4 +1,4 @@
-library dngn.content.areas;
+library hauberk.content.areas;
 
 import '../engine.dart';
 import 'builder.dart';

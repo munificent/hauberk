@@ -1,4 +1,4 @@
-library dngn.content.stage_builder;
+library hauberk.content.stage_builder;
 
 import '../engine.dart';
 import '../util.dart';

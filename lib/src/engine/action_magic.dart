@@ -1,4 +1,4 @@
-library dngn.engine.action_magic;
+library hauberk.engine.action_magic;
 
 import '../util.dart';
 import 'action_base.dart';

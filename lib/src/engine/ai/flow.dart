@@ -1,4 +1,4 @@
-library dngn.engine.ai.flow;
+library hauberk.engine.ai.flow;
 
 import 'dart:collection';
 import 'dart:math' as math;

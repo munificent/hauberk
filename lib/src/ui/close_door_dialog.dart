@@ -1,4 +1,4 @@
-library dngn.ui.close_door_dialog;
+library hauberk.ui.close_door_dialog;
 
 import '../engine.dart';
 import '../util.dart';

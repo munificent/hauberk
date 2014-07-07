@@ -1,4 +1,4 @@
-library dngn.engine.action_combat;
+library hauberk.engine.action_combat;
 
 import '../util.dart';
 import 'action_base.dart';

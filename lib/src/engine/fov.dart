@@ -1,4 +1,4 @@
-library dngn.engine.fov;
+library hauberk.engine.fov;
 
 import 'dart:math' as math;
 

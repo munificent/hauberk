@@ -1,4 +1,4 @@
-library dngn.engine.los;
+library hauberk.engine.los;
 
 import 'dart:collection';
 

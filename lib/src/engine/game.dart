@@ -1,4 +1,4 @@
-library dngn.engine.game;
+library hauberk.engine.game;
 
 import 'dart:collection';
 

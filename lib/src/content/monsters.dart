@@ -1,4 +1,4 @@
-library dngn.content.monsters;
+library hauberk.content.monsters;
 
 import '../engine.dart';
 import '../util.dart';

@@ -1,4 +1,4 @@
-library dngn.util.vec;
+library hauberk.util.vec;
 
 import 'dart:math' as math;
 

@@ -1,4 +1,4 @@
-library dngn.ui.home_screen;
+library hauberk.ui.home_screen;
 
 import '../engine.dart';
 import '../util.dart';

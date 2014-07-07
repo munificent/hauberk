@@ -1,4 +1,4 @@
-library dngn.ui.game_over_screen;
+library hauberk.ui.game_over_screen;
 
 import '../util.dart';
 import 'keyboard.dart';

@@ -1,4 +1,4 @@
-library dngn.engine.ai.monster_states;
+library hauberk.engine.ai.monster_states;
 
 import '../../debug.dart';
 import '../../util.dart';

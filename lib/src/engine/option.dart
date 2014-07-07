@@ -1,4 +1,4 @@
-library dngn.engine.option;
+library hauberk.engine.option;
 
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.

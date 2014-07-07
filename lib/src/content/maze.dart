@@ -1,4 +1,4 @@
-library dngn.content.maze;
+library hauberk.content.maze;
 
 import '../engine.dart';
 import '../util.dart';

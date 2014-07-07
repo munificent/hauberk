@@ -1,4 +1,4 @@
-library dngn.util.array2d;
+library hauberk.util.array2d;
 
 import 'dart:collection';
 

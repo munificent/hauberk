@@ -1,4 +1,4 @@
-library dngn.engine.breed;
+library hauberk.engine.breed;
 
 import '../util.dart';
 import 'energy.dart';

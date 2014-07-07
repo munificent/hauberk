@@ -1,4 +1,4 @@
-library dngn.content.quests;
+library hauberk.content.quests;
 
 import '../engine.dart';
 

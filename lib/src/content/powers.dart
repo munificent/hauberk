@@ -1,4 +1,4 @@
-library dngn.content.powers;
+library hauberk.content.powers;
 
 import '../engine.dart';
 import '../util.dart';

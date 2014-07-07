@@ -1,4 +1,4 @@
-library dngn.ui.storage;
+library hauberk.ui.storage;
 
 import 'dart:convert';
 import 'dart:html' as html;

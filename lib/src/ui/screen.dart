@@ -1,4 +1,4 @@
-library dngn.ui.screen;
+library hauberk.ui.screen;
 
 import 'keyboard.dart';
 import 'terminal.dart';

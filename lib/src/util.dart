@@ -1,4 +1,4 @@
-library dngn.util;
+library hauberk.util;
 
 export 'util/array2d.dart';
 export 'util/chain.dart';

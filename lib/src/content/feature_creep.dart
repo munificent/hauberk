@@ -1,4 +1,4 @@
-library dngn.content.feature_creep;
+library hauberk.content.feature_creep;
 
 /*
 /// The dungeon generator used for normal dungeon levels. It works by

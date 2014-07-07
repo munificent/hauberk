@@ -1,4 +1,4 @@
-library dngn.util.rng;
+library hauberk.util.rng;
 
 import 'rect.dart';
 import 'vec.dart';

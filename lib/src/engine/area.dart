@@ -1,4 +1,4 @@
-library dngn.engine.area;
+library hauberk.engine.area;
 
 import '../util.dart';
 import 'breed.dart';

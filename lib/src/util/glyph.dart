@@ -1,4 +1,4 @@
-library dngn.util.glyph;
+library hauberk.util.glyph;
 
 class Color {
   static const BLACK        = const Color('k', '#000');

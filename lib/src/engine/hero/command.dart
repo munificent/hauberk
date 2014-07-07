@@ -1,4 +1,4 @@
-library dngn.engine.hero.command;
+library hauberk.engine.hero.command;
 
 import '../../util.dart';
 import '../action_base.dart';

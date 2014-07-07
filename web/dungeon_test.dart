@@ -1,12 +1,12 @@
-library dngn.web.dungeon_test;
+library hauberk.web.dungeon_test;
 
 import 'dart:html' as html;
 
-import 'package:dngn/src/content.dart';
-import 'package:dngn/src/engine.dart';
+import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/engine.dart';
 
 // TODO: Hack.
-import 'package:dngn/src/content/tiles.dart';
+import 'package:hauberk/src/content/tiles.dart';
 
 html.CanvasElement canvas;
 html.CanvasRenderingContext2D context;

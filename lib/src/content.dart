@@ -1,4 +1,4 @@
-library dngn.content;
+library hauberk.content;
 
 import 'engine.dart';
 

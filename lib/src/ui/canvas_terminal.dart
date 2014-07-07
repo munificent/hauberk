@@ -1,4 +1,4 @@
-library dngn.ui.canvas_terminal;
+library hauberk.ui.canvas_terminal;
 
 import 'dart:html' as html;
 

@@ -1,4 +1,4 @@
-library dngn.ui;
+library hauberk.ui;
 
 export 'ui/canvas_terminal.dart';
 export 'ui/dom_terminal.dart';

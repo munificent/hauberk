@@ -1,4 +1,4 @@
-library dngn.ui.target_dialog;
+library hauberk.ui.target_dialog;
 
 import '../engine.dart';
 import '../util.dart';

@@ -1,4 +1,4 @@
-library dngn.engine.element;
+library hauberk.engine.element;
 
 class Element {
   static const NONE      = const Element(0, "None");

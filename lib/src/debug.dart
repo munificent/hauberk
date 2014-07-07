@@ -1,4 +1,4 @@
-library dngn.debug;
+library hauberk.debug;
 
 import 'dart:collection';
 

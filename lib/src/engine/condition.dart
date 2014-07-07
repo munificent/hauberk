@@ -1,4 +1,4 @@
-library dngn.engine.condition;
+library hauberk.engine.condition;
 
 import 'action_base.dart';
 import 'actor.dart';

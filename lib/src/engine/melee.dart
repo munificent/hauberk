@@ -1,4 +1,4 @@
-library dngn.engine.melee;
+library hauberk.engine.melee;
 
 import 'dart:math' as math;
 

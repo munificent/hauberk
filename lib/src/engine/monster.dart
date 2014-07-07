@@ -1,4 +1,4 @@
-library dngn.engine.monster;
+library hauberk.engine.monster;
 
 import 'dart:math' as math;
 

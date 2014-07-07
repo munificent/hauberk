@@ -1,4 +1,4 @@
-library dngn.ui.confirm_dialog;
+library hauberk.ui.confirm_dialog;
 
 import 'keyboard.dart';
 import 'screen.dart';

@@ -1,4 +1,4 @@
-library dngn.content.dungeon;
+library hauberk.content.dungeon;
 
 import 'dart:math' as math;
 
