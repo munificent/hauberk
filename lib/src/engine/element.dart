@@ -1,23 +1,40 @@
 library hauberk.engine.element;
 
 class Element {
-  static const NONE      = const Element(0, "None");
-  static const AIR       = const Element(1, "Air");
-  static const EARTH     = const Element(2, "Earth");
-  static const FIRE      = const Element(3, "Fire");
-  static const WATER     = const Element(4, "Water");
-  static const ACID      = const Element(5, "Acid");
-  static const COLD      = const Element(6, "Cold");
-  static const LIGHTNING = const Element(7, "Lightning");
-  static const POISON    = const Element(8, "Poison");
-  static const DARK      = const Element(9, "Dark");
-  static const LIGHT     = const Element(10, "Light");
-  static const SPIRIT    = const Element(11, "Spirit");
+  static const NONE      = const Element("None");
+  static const AIR       = const Element("Air");
+  static const EARTH     = const Element("Earth");
+  static const FIRE      = const Element("Fire");
+  static const WATER     = const Element("Water");
+  static const ACID      = const Element("Acid");
+  static const COLD      = const Element("Cold");
+  static const LIGHTNING = const Element("Lightning");
+  static const POISON    = const Element("Poison");
+  static const DARK      = const Element("Dark");
+  static const LIGHT     = const Element("Light");
+  static const SPIRIT    = const Element("Spirit");
 
-  final int _value;
-  final String _name;
+  static Element fromName(String name) {
+    switch (name) {
+      case "None":      return NONE;
+      case "Air":       return AIR;
+      case "Earth":     return EARTH;
+      case "Fire":      return FIRE;
+      case "Water":     return WATER;
+      case "Acid":      return ACID;
+      case "Cold":      return COLD;
+      case "Lightning": return LIGHTNING;
+      case "Poison":    return POISON;
+      case "Dark":      return DARK;
+      case "Light":     return LIGHT;
+      case "Spirit":    return SPIRIT;
+      default: throw new ArgumentError('Unknown element name "$name".');
+    }
+  }
 
-  const Element(this._value, this._name);
+  final String name;
 
-  String toString() => _name;
+  const Element(this.name);
+
+  String toString() => name;
 }

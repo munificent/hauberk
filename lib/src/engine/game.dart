@@ -113,24 +113,16 @@ class Game {
 
 /// Defines the actual content for the game: the breeds, items, etc. that
 /// define the play experience.
-class Content {
-  final List<Area> areas;
-  final Map<String, Breed> breeds;
-  final Map<String, ItemType> items;
-  final List<Recipe> recipes;
-  final List<ItemType> _newHeroItems;
+abstract class Content {
+  List<Area> get areas;
+  Map<String, Breed> get breeds;
+  Map<String, ItemType> get items;
+  List<Recipe> get recipes;
 
-  Content(this.areas, this.breeds, this.items, this.recipes,
-      this._newHeroItems);
+  HeroSave createHero(String name, HeroClass heroClass);
 
-  HeroSave createHero(String name, HeroClass heroClass) {
-    var hero = new HeroSave(name, heroClass);
-    for (var itemType in _newHeroItems) {
-      hero.inventory.tryAdd(new Item(itemType));
-    }
-
-    return hero;
-  }
+  Map serializeAffix(Affix affix);
+  Affix deserializeAffix(Map affix);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

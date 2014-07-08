@@ -3,6 +3,7 @@ library hauberk.ui.storage;
 import 'dart:convert';
 import 'dart:html' as html;
 
+import '../content.dart';
 import '../engine.dart';
 
 /// The entrypoint for all persisted save data.
@@ -74,10 +75,20 @@ class Storage {
     }
   }
 
-  Item _loadItem(data) {
+  Item _loadItem(Map data) {
     var type = content.items[data['type']];
-    // TODO(bob): Load affixes.
-    return new Item(type);
+
+    var prefix;
+    if (data.containsKey('prefix')) {
+      prefix = content.deserializeAffix(data['prefix']);
+    }
+
+    var suffix;
+    if (data.containsKey('suffix')) {
+      suffix = content.deserializeAffix(data['suffix']);
+    }
+
+    return new Item(type, prefix, suffix);
   }
 
   HeroClass _loadWarrior(Map data) {
@@ -140,10 +151,19 @@ class Storage {
   }
 
   Map _saveItem(Item item) {
-    // TODO: Save affixes.
-    return {
+    var itemData = {
       'type': item.type.name
     };
+
+    if (item.prefix != null) {
+      itemData['prefix'] = content.serializeAffix(item.prefix);
+    }
+
+    if (item.suffix != null) {
+      itemData['suffix'] = content.serializeAffix(item.suffix);
+    }
+
+    return itemData;
   }
 
   void _saveWarrior(Warrior warrior, Map data) {

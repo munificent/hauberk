@@ -19,15 +19,30 @@ Content createContent() {
   new Recipes().build();
   Affixes.build();
 
-  // The items that a new hero starts with.
-  final heroItems = [
-    Items.all["Short Bow"],
-    Items.all["Loaf of Bread"],
-    Items.all["Loaf of Bread"],
-    Items.all["Mending Salve"],
-    Items.all["Scroll of Sidestepping"]
-  ];
+  return new GameContent();
+}
 
-  return new Content(Areas.all, Monsters.all, Items.all, Recipes.all,
-      heroItems);
+class GameContent implements Content {
+  List<Area> get areas => Areas.all;
+  Map<String, Breed> get breeds => Monsters.all;
+  Map<String, ItemType> get items => Items.all;
+  List<Recipe> get recipes => Recipes.all;
+
+  HeroSave createHero(String name, HeroClass heroClass) {
+    var hero = new HeroSave(name, heroClass);
+    for (var itemType in [
+      Items.all["Short Bow"],
+      Items.all["Loaf of Bread"],
+      Items.all["Loaf of Bread"],
+      Items.all["Mending Salve"],
+      Items.all["Scroll of Sidestepping"]
+    ]) {
+      hero.inventory.tryAdd(new Item(itemType));
+    }
+
+    return hero;
+  }
+
+  Map serializeAffix(Affix affix) => Affixes.serialize(affix);
+  Affix deserializeAffix(Map data) => Affixes.deserialize(data);
 }
