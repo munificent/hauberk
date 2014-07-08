@@ -15,6 +15,12 @@ abstract class Command {
   /// target to do so.
   bool get needsTarget => false;
 
+  /// For commands that need a target, gets the minimum range of the target.
+  num getMinRange(Game game) => 0;
+
+  /// For commands that need a target, gets the maximum range of the target.
+  num getMaxRange(Game game) => 0;
+
   /// Override this to validate that the [Command] can be used right now. For
   /// example, this is only `true` for the archery command when the hero has a
   /// ranged weapon equipped.

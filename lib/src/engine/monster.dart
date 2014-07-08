@@ -67,12 +67,29 @@ class Monster extends Actor {
     _recharge += cost;
   }
 
-  /// Gets whether or not this monster has an uninterrupted line of sight to
-  /// [target].
+  /// Gets whether or not this monster has a line of sight to [target].
+  ///
+  /// Does not take into account if there are other [Actor]s between the monster
+  /// and the target.
   bool canView(Vec target) {
     // Walk to the target.
     for (final step in new Los(pos, target)) {
       if (step == target) return true;
+      if (!game.stage[step].isTransparent) return false;
+    }
+
+    throw 'unreachable';
+  }
+
+  /// Gets whether or not this monster has a line of sight to [target].
+  ///
+  /// Does take into account if there are other [Actor]s between the monster
+  /// and the target.
+  bool canTarget(Vec target) {
+    // Walk to the target.
+    for (final step in new Los(pos, target)) {
+      if (step == target) return true;
+      if (game.stage.actorAt(step) != null) return false;
       if (!game.stage[step].isTransparent) return false;
     }
 

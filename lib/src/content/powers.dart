@@ -117,6 +117,8 @@ class Powers {
     suffix("of Slaying", 65, 1, "weapon", (name) {
       return new DamagePower(name, rng.taper(10, 3));
     });
+
+    // TODO: "of Accuracy" increases range of bows.
   }
 
   /// Defines a weapon prefix power for giving an elemental brand.

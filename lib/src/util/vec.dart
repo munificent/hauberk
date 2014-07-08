@@ -54,7 +54,7 @@ class VecBase {
   bool operator >(other) {
     if (other is VecBase) {
       return lengthSquared > other.lengthSquared;
-    } else if (other is int) {
+    } else if (other is num) {
       return lengthSquared > other * other;
     }
 
@@ -66,7 +66,7 @@ class VecBase {
   bool operator >=(other) {
     if (other is VecBase) {
       return lengthSquared >= other.lengthSquared;
-    } else if (other is int) {
+    } else if (other is num) {
       return lengthSquared >= other * other;
     }
 
@@ -77,7 +77,7 @@ class VecBase {
   bool operator <(other) {
     if (other is VecBase) {
       return lengthSquared < other.lengthSquared;
-    } else if (other is int) {
+    } else if (other is num) {
       return lengthSquared < other * other;
     }
 
@@ -89,7 +89,7 @@ class VecBase {
   bool operator <=(other) {
     if (other is VecBase) {
       return lengthSquared <= other.lengthSquared;
-    } else if (other is int) {
+    } else if (other is num) {
       return lengthSquared <= other * other;
     }
 

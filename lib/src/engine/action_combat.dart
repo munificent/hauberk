@@ -26,32 +26,43 @@ class AttackAction extends Action {
 }
 
 class BoltAction extends Action {
-  final Iterator<Vec> los;
-  final Attack attack;
+  final Vec _start;
+  final Iterator<Vec> _los;
+  final Attack _attack;
+  final num _minRange;
+  final num _maxRange;
 
-  BoltAction(Vec from, Vec to, this.attack)
-  : los = new Los(from, to).iterator {
-    // Advance to the first item.
-    los.moveNext();
+  BoltAction(Vec from, Vec to, this._attack, [this._maxRange = 9999,
+        this._minRange = 0])
+      : _start = from,
+        _los = new Los(from, to).iterator {
+    // Advance to the first tile.
+    _los.moveNext();
   }
 
   ActionResult onPerform() {
-    final pos = los.current;
+    final pos = _los.current;
 
     // Stop if we hit a wall.
     if (!game.stage[pos].isTransparent) return succeed();
 
-    addEvent(new Event(EventType.BOLT, element: attack.element, value: pos));
-
-    // TODO: Chance of missing that increases with distance.
+    addEvent(new Event(EventType.BOLT, element: _attack.element, value: pos));
 
     // See if there is an actor there.
     final target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
+      var attack = _attack;
+
+      // Being too close or too far weakens the bolt.
+      var toTarget = pos - _start;
+      if (toTarget <= _minRange || toTarget > _maxRange * 2 / 3) {
+        attack = attack.multiplyDamage(0.5);
+      }
+
       return attack.perform(this, actor, target);
     }
 
-    return los.moveNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;
+    return _los.moveNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;
   }
 }
 

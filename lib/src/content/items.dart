@@ -204,9 +204,9 @@ class Items extends ContentBuilder {
 
     // Bows.
     group("}", "equipment/weapon/bow");
-    bow("Short Bow", 7, brown, "the arrow", 3);
-    bow("Longbow", 13, lightBrown, "the arrow", 5);
-    bow("Crossbow", 28, gray, "the bolt", 8);
+    bow("Short Bow", 7, brown, "the arrow", damage: 3, range: 10);
+    bow("Longbow", 13, lightBrown, "the arrow", damage: 5, range: 12);
+    bow("Crossbow", 28, gray, "the bolt", damage: 8, range: 14);
   }
 
   void bodyArmor() {
@@ -264,10 +264,11 @@ class Items extends ContentBuilder {
         category: category, attack: attack(verb, damage, Element.NONE));
   }
 
-  ItemType bow(String name, int level, appearance, String noun, int damage) {
+  ItemType bow(String name, int level, appearance, String noun, {int damage,
+      int range}) {
     return item(name, level, appearance, equipSlot: "weapon", category: "bow",
         attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun)),
-        isRanged: true);
+        range: range);
   }
 
   ItemType armor(String name, int level, appearance, int armor,
@@ -277,7 +278,7 @@ class Items extends ContentBuilder {
   }
 
   ItemType item(String name, int level, appearance, {ItemUse use,
-      String equipSlot, String category, Attack attack, bool isRanged: false,
+      String equipSlot, String category, Attack attack, int range: 0,
       int armor: 0}) {
     // If the appearance isn"t an actual glyph, it should be a color function
     // that will be applied to the current glyph.
@@ -286,7 +287,7 @@ class Items extends ContentBuilder {
     }
 
     var itemType = new ItemType(name, appearance, _sortIndex++, use,
-        equipSlot, category, attack, isRanged, armor);
+        equipSlot, category, attack, range, armor);
     Items.all[name] = itemType;
 
     if (_group != null) {

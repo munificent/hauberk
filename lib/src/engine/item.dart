@@ -37,7 +37,8 @@ class Item extends Thing implements Comparable {
     return attack;
   }
 
-  bool get isRanged => type.isRanged;
+  bool get isRanged => type.range != 0;
+  int get range => type.range;
 
   /// The amount of protected provided by the item when equipped.
   int get armor => type.armor;
@@ -85,9 +86,9 @@ class ItemType {
   /// The item's [Attack] or `null` if the item is not a weapon.
   final Attack attack;
 
-  /// `true` if the item is a missile weapon. In that case, [attack] is used
-  /// for the ranged attack and the weapon has no melee attack.
-  final bool isRanged;
+  /// The maximum range of a missile weapon, or `0` if the item isn't a weapon
+  /// or isn't ranged.
+  final int range;
 
   final int armor;
 
@@ -100,7 +101,7 @@ class ItemType {
   final String category;
 
   ItemType(this.name, this.appearance, this.sortIndex, this.use, this.equipSlot,
-      this.category, this.attack, this.isRanged, this.armor);
+      this.category, this.attack, this.range, this.armor);
 
   String toString() => name;
 }

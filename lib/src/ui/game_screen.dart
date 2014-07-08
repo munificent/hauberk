@@ -172,7 +172,7 @@ class GameScreen extends Screen {
             fireAt(target.pos);
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, game));
+            ui.push(new TargetDialog(this, game, _lastCommand));
           }
         } else {
           useLastSkill(null);
@@ -269,7 +269,7 @@ class GameScreen extends Screen {
         // Refresh the log.
         dirty();
       } else if (result.needsTarget) {
-        ui.push(new TargetDialog(this, game));
+        ui.push(new TargetDialog(this, game, result));
       } else {
         useLastSkill(null);
       }
