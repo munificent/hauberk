@@ -76,7 +76,7 @@ class Storage {
 
   Item _loadItem(data) {
     var type = content.items[data['type']];
-    // TODO(bob): Load powers.
+    // TODO(bob): Load affixes.
     return new Item(type);
   }
 
@@ -140,7 +140,7 @@ class Storage {
   }
 
   Map _saveItem(Item item) {
-    // TODO: Save powers.
+    // TODO: Save affixes.
     return {
       'type': item.type.name
     };

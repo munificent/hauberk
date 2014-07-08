@@ -1,43 +1,44 @@
-library hauberk.content.powers;
+library hauberk.content.affixes;
 
 import '../engine.dart';
 import '../util.dart';
 import 'item_group.dart';
 
-typedef Power _CreatePower(String name);
+typedef Affix _CreateAffix(String name);
 
-/// A generic "kind" of power that can create concrete [Power] instances.
-class _PowerFactory {
+/// A generic "kind" of affix that can create concrete [Affix] instances.
+class _AffixFactory {
   final String name;
 
-  /// The names of the [ItemGroup]s that this power can apply to.
+  /// The names of the [ItemGroup]s that this affix can apply to.
   final List<String> groups;
 
-  /// The level of the power. Higher level powers tend to only appear on
+  /// The level of the affix. Higher level affixes tend to only appear on
   /// higher level items.
   final int level;
   final int rarity;
-  final _CreatePower create;
+  final _CreateAffix create;
 
-  _PowerFactory(this.name, this.groups, this.level, this.rarity, this.create);
+  _AffixFactory(this.name, this.groups, this.level, this.rarity, this.create);
 }
 
-class Powers {
-  /// Creates a new [Item] of [itemType] and chooses powers for it.
+class Affixes {
+  /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType) {
     var group = ItemGroup.find(itemType);
 
-    // Ungrouped items don't have any powers.
+    // Ungrouped items don't have any affixes.
     if (group == null) return new Item(itemType);
 
-    // Give items a chance to boost their effective level when choosing a power.
+    // Give items a chance to boost their effective level when choosing a
+    // affixes.
     var level = rng.taper(ItemGroup.findLevel(itemType), 2);
 
-    var prefix = _choosePower(_prefixes, itemType, group, level);
-    var suffix = _choosePower(_suffixes, itemType, group, level);
+    var prefix = _chooseAffix(_prefixes, itemType, group, level);
+    var suffix = _chooseAffix(_suffixes, itemType, group, level);
 
     // Decide if the item may have just a prefix, just a suffix, or (rarely)
-    // both. This is mainly to make dual-power items less common since they
+    // both. This is mainly to make dual-affix items less common since they
     // look a bit funny.
     switch (rng.range(5)) {
       case 0:
@@ -51,22 +52,22 @@ class Powers {
     }
   }
 
-  static Power _choosePower(List<_PowerFactory> factories, ItemType itemType,
+  static Affix _chooseAffix(List<_AffixFactory> factories, ItemType itemType,
     ItemGroup group, int level) {
-    // Get the powers that can apply to the item.
+    // Get the affixes that can apply to the item.
     factories = factories.where((factory) {
       if (factory.level > level) return false;
       return factory.groups.any((factoryGroup) => group.isWithin(factoryGroup));
     }).toList();
 
-    // TODO: For high level drops, consider randomly discarding some of the lower
-    // level powers.
+    // TODO: For high level drops, consider randomly discarding some of the
+    // lower-level affixes.
 
-    // Try all of the powers and see if one sticks.
+    // Try all of the affixes and see if one sticks.
     factories.shuffle();
     for (var factory in factories) {
       // Take the rarity into account and also have a chance of not
-      // selecting the power at all.
+      // selecting the affix at all.
       if (rng.range(1000) > 100 ~/ factory.rarity) {
         return factory.create(factory.name);
       }
@@ -75,8 +76,8 @@ class Powers {
     return null;
   }
 
-  static final _prefixes = <_PowerFactory>[];
-  static final _suffixes = <_PowerFactory>[];
+  static final _prefixes = <_AffixFactory>[];
+  static final _suffixes = <_AffixFactory>[];
 
   static void build() {
     brand("Glimmering", 12, 3, Element.LIGHT, 0, 1.0);
@@ -103,69 +104,69 @@ class Powers {
 
     // TODO: Should these scale damage?
     suffix("of Harming", 8, 1, "weapon", (name) {
-      return new DamagePower(name, rng.taper(1, 4));
+      return new DamageAffix(name, rng.taper(1, 4));
     });
 
     suffix("of Wounding", 15, 1, "weapon", (name) {
-      return new DamagePower(name, rng.taper(3, 4));
+      return new DamageAffix(name, rng.taper(3, 4));
     });
 
     suffix("of Maiming", 35, 1, "weapon", (name) {
-      return new DamagePower(name, rng.taper(6, 3));
+      return new DamageAffix(name, rng.taper(6, 3));
     });
 
     suffix("of Slaying", 65, 1, "weapon", (name) {
-      return new DamagePower(name, rng.taper(10, 3));
+      return new DamageAffix(name, rng.taper(10, 3));
     });
 
     // TODO: "of Accuracy" increases range of bows.
   }
 
-  /// Defines a weapon prefix power for giving an elemental brand.
+  /// Defines a weapon prefix for giving an elemental brand.
   static void brand(String name, int level, int rarity, Element element,
       int bonus, num scale) {
     prefix(name, level, rarity, "weapon", (name) {
-      return new BrandPower(name, element, rng.taper(bonus, 5),
+      return new BrandAffix(name, element, rng.taper(bonus, 5),
       rng.taper((scale + 10).toInt(), 4) / 10);
     });
   }
 
-  /// Defines a new prefix [Power].
+  /// Defines a new prefix [Affix].
   static void prefix(String name, int level, int rarity, String groups,
-      _CreatePower create) {
+      _CreateAffix create) {
     _prefixes.add(
-      new _PowerFactory(name, groups.split(" "), level, rarity, create));
+      new _AffixFactory(name, groups.split(" "), level, rarity, create));
   }
 
-  /// Defines a new suffix [Power].
+  /// Defines a new suffix [Affix].
   static void suffix(String name, int level, int rarity, String groups,
-      _CreatePower create) {
+      _CreateAffix create) {
     _suffixes.add(
-      new _PowerFactory(name, groups.split(" "), level, rarity, create));
+      new _AffixFactory(name, groups.split(" "), level, rarity, create));
   }
 }
 
-/// A [Power] that adds to a weapon's damage.
-class DamagePower extends Power {
+/// An [Affix] that adds to a weapon's damage.
+class DamageAffix extends Affix {
   final String name;
 
   final num _damage;
 
-  DamagePower(this.name, this._damage);
+  DamageAffix(this.name, this._damage);
 
   Attack modifyAttack(Attack attack) => attack.addDamage(_damage);
 }
 
-/// A [Power] that brands a weapon's attack with an element and boosts its
+/// An [Affix] that brands a weapon's attack with an element and boosts its
 /// damage.
-class BrandPower extends Power {
+class BrandAffix extends Affix {
   final String name;
 
   final Element _element;
   final num _bonus;
   final num _multiplier;
 
-  BrandPower(this.name, this._element, this._bonus, this._multiplier);
+  BrandAffix(this.name, this._element, this._bonus, this._multiplier);
 
   Attack modifyAttack(Attack attack) =>
       attack.brand(_element).addDamage(_bonus).multiplyDamage(_multiplier);

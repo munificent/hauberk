@@ -2,10 +2,10 @@ library hauberk.content;
 
 import 'engine.dart';
 
+import 'content/affixes.dart';
 import 'content/areas.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
-import 'content/powers.dart';
 import 'content/recipes.dart';
 import 'content/tiles.dart';
 
@@ -17,7 +17,7 @@ Content createContent() {
   new Monsters().build();
   new Areas().build();
   new Recipes().build();
-  Powers.build();
+  Affixes.build();
 
   // The items that a new hero starts with.
   final heroItems = [

@@ -12,8 +12,8 @@ import 'melee.dart';
 class Item extends Thing implements Comparable {
   final ItemType type;
 
-  final Power prefix;
-  final Power suffix;
+  final Affix prefix;
+  final Affix suffix;
 
   Item(this.type, [this.prefix, this.suffix]) : super(Vec.ZERO);
 
@@ -25,8 +25,8 @@ class Item extends Thing implements Comparable {
   bool get canUse => type.use != null;
   Action use() => type.use();
 
-  /// Gets the melee [Attack] for the item, taking into account any [Power]s it
-  /// has.
+  /// Gets the melee [Attack] for the item, taking into account any [Affixes]s
+  // it has.
   Attack get attack {
     if (type.attack == null) return null;
 
@@ -69,7 +69,7 @@ class Item extends Thing implements Comparable {
   }
 
   int compareTo(Item other) {
-    // TODO: Take into account powers.
+    // TODO: Take into account affixes.
     return type.sortIndex.compareTo(other.type.sortIndex);
   }
 }
@@ -107,13 +107,13 @@ class ItemType {
 }
 
 /// A modifier that can be applied to an [Item] to change its capabilities.
-/// For example, in a "Dagger of Wounding", the "of Wounding" part is a Power.
-abstract class Power {
+/// For example, in a "Dagger of Wounding", the "of Wounding" part is an affix.
+abstract class Affix {
   String get name;
 
-  // TODO: Power, Skill, Condition and HeroClass all have this or something
-  // similar. Should we have a generic interface for stuff that can modify an
-  // attack?
+  // TODO: Affix, TrainedStat, Condition and HeroClass all have this or
+  // something similar. Should we have a generic interface for stuff that can
+  // modify an attack?
   Attack modifyAttack(Attack attack) => attack;
 }
 
@@ -320,7 +320,7 @@ abstract class Drop {
 
 /// A recipe defines a set of items that can be placed into the crucible and
 /// transmuted into a new item.
-// TODO: Figure out how this works with powers.
+// TODO: Figure out how this works with affixes.
 class Recipe {
   final List<ItemType> ingredients;
   final ItemType result;

@@ -3,7 +3,7 @@ library hauberk.content.item_group;
 import '../engine.dart';
 import '../util.dart';
 import 'builder.dart';
-import 'powers.dart';
+import 'affixes.dart';
 
 /// The root of the [ItemGroup] tree that contains all items.
 final _rootGroup = new ItemGroup("item", null);
@@ -124,8 +124,8 @@ class ItemGroup {
     // Pick one of the items at that level randomly.
     var itemType = rng.item(items);
 
-    // TODO: Take into account out of depth items when choosing powers.
-    return Powers.createItem(itemType);
+    // TODO: Take into account out of depth items when choosing affixes.
+    return Affixes.createItem(itemType);
   }
 
   void _dump([String indent = ""]) {

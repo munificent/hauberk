@@ -4,7 +4,7 @@ import '../engine.dart';
 import '../util.dart';
 import 'builder.dart';
 import 'item_group.dart';
-import 'powers.dart';
+import 'affixes.dart';
 
 /// Builder class for defining [ItemType]s.
 class Items extends ContentBuilder {
@@ -305,7 +305,7 @@ class ItemDrop implements Drop {
   ItemDrop(this._type);
 
   void spawnDrop(Game game, AddItem addItem) {
-    addItem(Powers.createItem(_type));
+    addItem(Affixes.createItem(_type));
   }
 }
 
