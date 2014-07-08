@@ -50,7 +50,7 @@ class BoltMove extends Move {
     // Don't fire a bolt if it's obstructed.
     // TODO: Should probably only fire if there aren't any other monsters
     // in the way too, though friendly fire is pretty entertaining.
-    if (!monster.canView(target)) return 0;
+    if (!monster.canTarget(target)) return 0;
 
     // TODO: If we make bolts less accurate at longer distances, take that into
     // account here.
@@ -60,7 +60,7 @@ class BoltMove extends Move {
   }
 
   Action onGetAction(Monster monster) {
-    // TODO(bob): Should not always assume the hero is the target.
+    // TODO: Should not always assume the hero is the target.
     return new BoltAction(monster.pos, monster.game.hero.pos, attack);
   }
 
