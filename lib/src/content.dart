@@ -4,6 +4,7 @@ import 'engine.dart';
 
 import 'content/affixes.dart';
 import 'content/areas.dart';
+import 'content/item_group.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
@@ -45,4 +46,8 @@ class GameContent implements Content {
 
   Map serializeAffix(Affix affix) => Affixes.serialize(affix);
   Affix deserializeAffix(Map data) => Affixes.deserialize(data);
+
+  int getItemLevel(ItemType itemType) => ItemGroup.findLevel(itemType);
+  List<String> getItemPath(ItemType itemType) =>
+      ItemGroup.getItemPath(itemType);
 }

@@ -37,6 +37,18 @@ class ItemGroup {
     }
   }
 
+  static List<String> getItemPath(ItemType type) {
+    var group = find(type);
+
+    var path = [];
+    while (group != null) {
+      path.add(group.name);
+      group = group.parent;
+    }
+
+    return path.reversed.toList();
+  }
+
   final String name;
   final ItemGroup parent;
 
