@@ -65,7 +65,7 @@ class Items extends ContentBuilder {
   void foods() {
     group(CharCode.BLACK_HEART_SUIT, "food");
     food("Edible Mushroom",      1, lightGray,  20);
-    food("Handful of Berries",   1, red,        30);
+    food("Handful of Berries",   2, red,        30);
     food("Honeycomb",            3, gold,       40);
     food("Loaf of Bread",        4, lightBrown, 80);
     food("Berry Pie",            5, red,        100);
@@ -142,9 +142,9 @@ class Items extends ContentBuilder {
 
     // Staves.
     group("_", "equipment/weapon/staff");
-    weapon("Walking Stick", 3, darkBrown, "hit[s]", 5);
-    weapon("Staff", 11, lightBrown, "hit[s]", 7);
-    weapon("Quarterstaff", 15, brown, "hit[s]", 12);
+    weapon("Walking Stick", 2, darkBrown, "hit[s]", 5);
+    weapon("Staff", 5, lightBrown, "hit[s]", 7);
+    weapon("Quarterstaff", 11, brown, "hit[s]", 12);
 
     /*
     Hammer[s]
@@ -176,22 +176,22 @@ class Items extends ContentBuilder {
 
     // Knives.
     group("|", "equipment/weapon/dagger");
-    weapon("Knife", 3, gray, "stab[s]", 5);
-    weapon("Dirk", 6, lightGray, "stab[s]", 6);
-    weapon("Dagger", 10, white, "stab[s]", 8);
-    weapon("Stiletto", 16, darkGray, "stab[s]", 11);
+    weapon("Knife", 1, gray, "stab[s]", 5);
+    weapon("Dirk", 3, lightGray, "stab[s]", 6);
+    weapon("Dagger", 6, white, "stab[s]", 8);
+    weapon("Stiletto", 10, darkGray, "stab[s]", 11);
     weapon("Rondel", 20, lightAqua, "stab[s]", 14);
-    weapon("Baselard", 40, lightBlue, "stab[s]", 16);
+    weapon("Baselard", 30, lightBlue, "stab[s]", 16);
     // Main-guache
     // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
     // Spears.
     group(r"\", "equipment/weapon/spear");
-    weapon("Pointed Stick", 5, brown, "stab[s]", 7);
-    weapon("Spear", 25, gray, "stab[s]", 12);
-    weapon("Angon", 35, lightGray, "stab[s]", 16);
-    weapon("Lance", 45, white, "stab[s]", 24);
-    weapon("Partisan", 55, darkGray, "stab[s]", 36);
+    weapon("Pointed Stick", 2, brown, "stab[s]", 7);
+    weapon("Spear", 7, gray, "stab[s]", 12);
+    weapon("Angon", 14, lightGray, "stab[s]", 16);
+    weapon("Lance", 28, white, "stab[s]", 24);
+    weapon("Partisan", 35, darkGray, "stab[s]", 36);
 
     // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
@@ -204,7 +204,7 @@ class Items extends ContentBuilder {
 
     // Bows.
     group("}", "equipment/weapon/bow");
-    bow("Short Bow", 7, brown, "the arrow", damage: 3, range: 10);
+    bow("Short Bow", 3, brown, "the arrow", damage: 3, range: 10);
     bow("Longbow", 13, lightBrown, "the arrow", damage: 5, range: 12);
     bow("Crossbow", 28, gray, "the bolt", damage: 8, range: 14);
   }
@@ -225,7 +225,7 @@ class Items extends ContentBuilder {
     armor("Scale Mail", 30, lightGray, 21);
 
     group("(", "equipment/armor/robe");
-    armor("Robe", 4, aqua, 4, equipSlot: "body");
+    armor("Robe", 2, aqua, 4, equipSlot: "body");
     armor("Fur-lined Robe", 9, darkAqua, 6, equipSlot: "body");
 
     /*
