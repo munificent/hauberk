@@ -3,7 +3,6 @@ library hauberk.content.items;
 import '../engine.dart';
 import '../util.dart';
 import 'builder.dart';
-import 'item_group.dart';
 import 'affixes.dart';
 
 /// Builder class for defining [ItemType]s.
@@ -16,7 +15,7 @@ class Items extends ContentBuilder {
   /// a character code.
   var _glyph;
 
-  String _group;
+  String _category;
 
   void build() {
     // From Angband:
@@ -63,7 +62,7 @@ class Items extends ContentBuilder {
   }
 
   void foods() {
-    group(CharCode.BLACK_HEART_SUIT, "food");
+    category(CharCode.BLACK_HEART_SUIT, "food");
     food("Edible Mushroom",      1, lightGray,  20);
     food("Handful of Berries",   2, red,        30);
     food("Honeycomb",            3, gold,       40);
@@ -75,7 +74,7 @@ class Items extends ContentBuilder {
   }
 
   void pelts() {
-    group("~");
+    category("~");
     item("Flower",        1, lightAqua); // TODO: Use in recipe.
     item("Fur Pelt",      1, lightBrown);
     item("Insect Wing",   1, purple);
@@ -87,7 +86,7 @@ class Items extends ContentBuilder {
 
   void potions() {
     // Healing.
-    group("!", "magic/potion/healing");
+    category("!", "magic/potion/healing");
     item("Soothing Balm", 1, lightRed,
         use: () => new HealAction(24));
     item("Mending Salve", 4, red,
@@ -103,7 +102,7 @@ class Items extends ContentBuilder {
         use: () => new HealAction(0, curePoison: true));
 
     // Speed.
-    group("!", "magic/potion/speed");
+    category("!", "magic/potion/speed");
     item("Potion of Quickness", 3, lightGreen,
         use: () => new HasteAction(20, 1));
     item("Potion of Alacrity", 18, green,
@@ -116,7 +115,7 @@ class Items extends ContentBuilder {
 
   void scrolls() {
     // Teleportation.
-    group("?", "magic/scroll/teleportation");
+    category("?", "magic/scroll/teleportation");
     item("Scroll of Sidestepping", 3, lightPurple,
         use: () => new TeleportAction(6));
     item("Scroll of Phasing", 8, purple,
@@ -127,7 +126,7 @@ class Items extends ContentBuilder {
         use: () => new TeleportAction(48));
 
     // Detection.
-    group("?", "magic/scroll/detection");
+    category("?", "magic/scroll/detection");
     item("Scroll of Item Detection", 2, lightOrange,
         use: () => new DetectItemsAction());
 
@@ -135,13 +134,13 @@ class Items extends ContentBuilder {
 
   void weapons() {
     // Bludgeons.
-    group(r"\", "equipment/weapon/club");
+    category(r"\", "equipment/weapon/club");
     weapon("Stick", 1, brown, "hit[s]", 4);
     weapon("Cudgel", 3, gray, "hit[s]", 5);
     weapon("Club", 6, lightBrown, "hit[s]", 6);
 
     // Staves.
-    group("_", "equipment/weapon/staff");
+    category("_", "equipment/weapon/staff");
     weapon("Walking Stick", 2, darkBrown, "hit[s]", 5);
     weapon("Staff", 5, lightBrown, "hit[s]", 7);
     weapon("Quarterstaff", 11, brown, "hit[s]", 12);
@@ -175,7 +174,7 @@ class Items extends ContentBuilder {
     */
 
     // Knives.
-    group("|", "equipment/weapon/dagger");
+    category("|", "equipment/weapon/dagger");
     weapon("Knife", 1, gray, "stab[s]", 5);
     weapon("Dirk", 3, lightGray, "stab[s]", 6);
     weapon("Dagger", 6, white, "stab[s]", 8);
@@ -186,7 +185,7 @@ class Items extends ContentBuilder {
     // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
     // Spears.
-    group(r"\", "equipment/weapon/spear");
+    category(r"\", "equipment/weapon/spear");
     weapon("Pointed Stick", 2, brown, "stab[s]", 7);
     weapon("Spear", 7, gray, "stab[s]", 12);
     weapon("Angon", 14, lightGray, "stab[s]", 16);
@@ -203,18 +202,18 @@ class Items extends ContentBuilder {
     */
 
     // Bows.
-    group("}", "equipment/weapon/bow");
+    category("}", "equipment/weapon/bow");
     bow("Short Bow", 3, brown, "the arrow", damage: 3, range: 10);
     bow("Longbow", 13, lightBrown, "the arrow", damage: 5, range: 12);
     bow("Crossbow", 28, gray, "the bolt", damage: 8, range: 14);
   }
 
   void bodyArmor() {
-    group("(", "equipment/armor/cloak");
+    category("(", "equipment/armor/cloak");
     armor("Cloak", 4, darkBlue, 2);
     armor("Fur Cloak", 9, lightBrown, 3);
 
-    group("(", "equipment/armor/body");
+    category("(", "equipment/armor/body");
     armor("Cloth Shirt", 2, lightGray, 2);
     armor("Leather Shirt", 5, lightBrown, 5);
     armor("Jerkin", 7, orange, 6);
@@ -224,9 +223,9 @@ class Items extends ContentBuilder {
     armor("Mail Hauberk", 26, darkGray, 18);
     armor("Scale Mail", 30, lightGray, 21);
 
-    group("(", "equipment/armor/robe");
-    armor("Robe", 2, aqua, 4, equipSlot: "body");
-    armor("Fur-lined Robe", 9, darkAqua, 6, equipSlot: "body");
+    category("(", "equipment/armor/body/robe");
+    armor("Robe", 2, aqua, 4);
+    armor("Fur-lined Robe", 9, darkAqua, 6);
 
     /*
     Metal Lamellar Armor[s]
@@ -241,7 +240,7 @@ class Items extends ContentBuilder {
   }
 
   void boots() {
-    group("]", "equipment/armor/boots");
+    category("]", "equipment/armor/boots");
     armor("Leather Sandals", 3, lightBrown, 1);
     armor("Leather Shoes", 8, brown, 2);
     armor("Leather Boots", 14, darkBrown, 4);
@@ -249,52 +248,47 @@ class Items extends ContentBuilder {
     armor("Greaves", 47, lightGray, 12);
   }
 
-  group(glyph, [String group]) {
+  category(glyph, [String category]) {
     _glyph = glyph;
-    _group = group;
+    if (category == null) {
+      _category = null;
+    } else {
+    _category = "item/$category";
+    }
   }
 
-  food(String name, int level, appearance, int amount) {
-    return item(name, level, appearance, use: () => new EatAction(amount));
+  void food(String name, int level, appearance, int amount) {
+    item(name, level, appearance, use: () => new EatAction(amount));
   }
 
-  ItemType weapon(String name, int level, appearance, String verb, int damage) {
-    var category = _group.split("/").last;
-    return item(name, level, appearance, equipSlot: "weapon",
-        category: category, attack: attack(verb, damage, Element.NONE));
+  void weapon(String name, int level, appearance, String verb, int damage) {
+    item(name, level, appearance, attack: attack(verb, damage, Element.NONE));
   }
 
-  ItemType bow(String name, int level, appearance, String noun, {int damage,
+  void bow(String name, int level, appearance, String noun, {int damage,
       int range}) {
-    return item(name, level, appearance, equipSlot: "weapon", category: "bow",
+    item(name, level, appearance,
         attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun)),
         range: range);
   }
 
-  ItemType armor(String name, int level, appearance, int armor,
-        {String equipSlot}) {
-    if (equipSlot == null) equipSlot = _group.split("/").last;
-    return item(name, level, appearance, equipSlot: equipSlot, armor: armor);
+  void armor(String name, int level, appearance, int armor) {
+    item(name, level, appearance, armor: armor);
   }
 
-  ItemType item(String name, int level, appearance, {ItemUse use,
-      String equipSlot, String category, Attack attack, int range: 0,
-      int armor: 0}) {
+  void item(String name, int level, appearance, {ItemUse use,
+      Attack attack, int range: 0, int armor: 0}) {
     // If the appearance isn"t an actual glyph, it should be a color function
     // that will be applied to the current glyph.
     if (appearance is! Glyph) {
       appearance = appearance(_glyph);
     }
 
-    var itemType = new ItemType(name, appearance, _sortIndex++, use,
-        equipSlot, category, attack, range, armor);
-    Items.all[name] = itemType;
+    var categories = [];
+    if (_category != null) categories = _category.split("/");
 
-    if (_group != null) {
-      ItemGroup.define(_group, itemType, level);
-    }
-
-    return itemType;
+    Items.all[name] = new ItemType(name, appearance, level, _sortIndex++, use,
+        categories, attack, range, armor);
   }
 }
 
@@ -346,5 +340,55 @@ class OneOfDrop implements Drop {
         return;
       }
     }
+  }
+}
+
+/// Drops a randomly selected item near a level from a category.
+class CategoryDrop implements Drop {
+  /// The path to the category to choose from.
+  final List<String> _category;
+
+  /// The average level of the drop.
+  final int _level;
+
+  CategoryDrop(this._category, this._level);
+
+  void spawnDrop(Game game, AddItem addItem) {
+    // Possibly choose from the parent category.
+    var categoryDepth = _category.length - 1;
+    if (categoryDepth > 1 && rng.oneIn(10)) categoryDepth--;
+
+    // Chance of out-of-depth items.
+    var level = _level;
+    if (rng.oneIn(1000)) {
+      level += rng.range(20, 100);
+    } else if (rng.oneIn(100)) {
+      level += rng.range(5, 20);
+    } else if (rng.oneIn(10)) {
+      level += rng.range(1, 5);
+    }
+
+    // Find all of the items at or below the max level and in the category.
+    var category = _category[categoryDepth];
+    var items = Items.all.values
+        .where((item) => item.level <= level &&
+                         item.categories.contains(category)).toList();
+
+    // TODO: Item rarity?
+
+    // Pick an item. Try a few times and take the best.
+    var itemType = rng.item(items);
+    for (var i = 0; i < 3; i++) {
+      var thisType = rng.item(items);
+      if (thisType.level > itemType.level) itemType = thisType;
+    }
+
+    // Compare the item's actual level to the original desired level. If the
+    // item is below that level, it increases the chances of an affix. (A weaker
+    // item deeper in the dungeon is more likely to be magic.) Likewise, an
+    // already-out-of-depth item is less likely to also be special.
+    var levelOffset = itemType.level - _level;
+
+    addItem(Affixes.createItem(itemType, levelOffset));
   }
 }

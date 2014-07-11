@@ -15,17 +15,14 @@ main() {
   items.sort((a, b) => a.sortIndex.compareTo(b.sortIndex));
   */
   items.sort((a, b) {
-    var levelA = content.getItemLevel(a);
-    var levelB = content.getItemLevel(b);
-
-    if (levelA == null && levelB == null) {
+    if (a.level == null && b.level == null) {
       return a.sortIndex.compareTo(b.sortIndex);
     }
 
-    if (levelA == null) return -1;
-    if (levelB == null) return 1;
+    if (a.level == null) return -1;
+    if (b.level == null) return 1;
 
-    return levelA.compareTo(levelB);
+    return a.level.compareTo(b.level);
   });
 
   text.write('''
@@ -52,18 +49,16 @@ main() {
           <td>${item.name}</td>
         ''');
 
-    var level = content.getItemLevel(item);
-    if (level == null) {
+    if (item.level == null) {
       text.write('<td>&mdash;</td>');
     } else {
-      text.write('<td>$level</td>');
+      text.write('<td>${item.level}</td>');
     }
 
-    var group = content.getItemPath(item);
-    if (group.isEmpty) {
+    if (item.categories.isEmpty) {
       text.write('<td>&mdash;</td>');
     } else {
-      text.write('<td>${group.join("&thinsp;/&thinsp;")}</td>');
+      text.write('<td>${item.categories.join("&thinsp;/&thinsp;")}</td>');
     }
 
     text.write('''

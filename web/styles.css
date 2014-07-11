@@ -20,6 +20,7 @@ tr:nth-child(2n) {
 
 td {
   padding: 2px 6px;
+  vertical-align: top;
 }
 
 thead td {

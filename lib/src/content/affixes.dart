@@ -2,7 +2,6 @@ library hauberk.content.affixes;
 
 import '../engine.dart';
 import '../util.dart';
-import 'item_group.dart';
 
 typedef Affix _CreateAffix(String name);
 typedef Map _SerializeAffix(Affix affix);
@@ -12,8 +11,8 @@ typedef Affix _DeserializeAffix(Map data);
 class _AffixFactory {
   final String name;
 
-  /// The names of the [ItemGroup]s that this affix can apply to.
-  final List<String> groups;
+  /// The names of the categories that this affix can apply to.
+  final List<String> categories;
 
   /// The level of the affix. Higher level affixes tend to only appear on
   /// higher level items.
@@ -21,23 +20,22 @@ class _AffixFactory {
   final int rarity;
   final _CreateAffix create;
 
-  _AffixFactory(this.name, this.groups, this.level, this.rarity, this.create);
+  _AffixFactory(this.name, this.categories, this.level, this.rarity,
+      this.create);
 }
 
 class Affixes {
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
-  static Item createItem(ItemType itemType) {
-    var group = ItemGroup.find(itemType);
-
-    // Ungrouped items don't have any affixes.
-    if (group == null) return new Item(itemType);
+  static Item createItem(ItemType itemType, [int levelOffset = 0]) {
+    // Uncategorized items don't have any affixes.
+    if (itemType.category == null) return new Item(itemType);
 
     // Give items a chance to boost their effective level when choosing a
     // affixes.
-    var level = rng.taper(ItemGroup.findLevel(itemType), 2);
+    var level = rng.taper(itemType.level, 2);
 
-    var prefix = _chooseAffix(_prefixes, itemType, group, level);
-    var suffix = _chooseAffix(_suffixes, itemType, group, level);
+    var prefix = _chooseAffix(_prefixes, itemType, level, levelOffset);
+    var suffix = _chooseAffix(_suffixes, itemType, level, levelOffset);
 
     // Decide if the item may have just a prefix, just a suffix, or (rarely)
     // both. This is mainly to make dual-affix items less common since they
@@ -55,22 +53,27 @@ class Affixes {
   }
 
   static Affix _chooseAffix(List<_AffixFactory> factories, ItemType itemType,
-    ItemGroup group, int level) {
+      int level, int chanceOffset) {
     // Get the affixes that can apply to the item.
     factories = factories.where((factory) {
       if (factory.level > level) return false;
-      return factory.groups.any((factoryGroup) => group.isWithin(factoryGroup));
+      return factory.categories.any(
+          (category) => itemType.categories.contains(category));
     }).toList();
 
     // TODO: For high level drops, consider randomly discarding some of the
     // lower-level affixes.
 
     // Try all of the affixes and see if one sticks.
+    // TODO: The way this works means adding more affixes makes them more
+    // common. Should probably choose one instead of trying them all.
     factories.shuffle();
     for (var factory in factories) {
-      // Take the rarity into account and also have a chance of not
-      // selecting the affix at all.
-      if (rng.range(1000) < 100 ~/ factory.rarity) {
+      // There's a chance of not selecting the affix at all.
+      if (rng.range(100) < 90 + chanceOffset) continue;
+
+      // Take the rarity into account.
+      if (rng.range(100) < 100 ~/ factory.rarity) {
         return factory.create(factory.name);
       }
     }

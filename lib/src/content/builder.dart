@@ -3,9 +3,8 @@ library hauberk.content.builder;
 import '../engine.dart';
 import '../util.dart';
 import 'items.dart';
-import 'item_group.dart';
 
-final _groupDropPattern = new RegExp(r"([a-z/]+):(\d+)");
+final _categoryDropPattern = new RegExp(r"([a-z/]+):(\d+)");
 
 /// Base class for a builder that provides a DSL for creating game content.
 class ContentBuilder {
@@ -34,12 +33,27 @@ class ContentBuilder {
     if (drop is Drop) return drop;
 
     if (drop is String) {
-      // See if it's a group.
-      var match = _groupDropPattern.firstMatch(drop);
+      // See if it's a category.
+      var match = _categoryDropPattern.firstMatch(drop);
       if (match != null) {
-        var group = match[1];
+        var category = match[1];
+
+        // Find an item in this category so we can figure out the full path
+        // to it.
+        var categories;
+        for (var item in Items.all.values) {
+          if (item.categories.contains(category)) {
+            categories = item.categories;
+            break;
+          }
+        }
+
+        if (categories == null) {
+          throw 'Could not find item in category "$category".';
+        }
+
         var level = int.parse(match[2]);
-        return new GroupDrop(group, level);
+        return new CategoryDrop(categories, level);
       }
 
       // Otherwise, just drop that item.

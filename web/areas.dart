@@ -20,14 +20,17 @@ main() {
     for (var level in area.levels) {
       var drops = {};
 
-      var tries = 100000;
+      var tries = 10000;
       for (var i = 0; i < tries; i++) {
         final itemDepth = pickDepth(levelNum, area.levels.length);
         final drop = area.levels[itemDepth].floorDrop;
 
         area.levels[itemDepth].floorDrop.spawnDrop(game, (item) {
-          drops.putIfAbsent(item.toString(), () => 0);
-          drops[item.toString()]++;
+          var name = item.type.name;
+          if (item.prefix != null) name = "${item.prefix.name} $name";
+          if (item.suffix != null) name = "$name ${item.suffix.name}";
+          drops.putIfAbsent(name, () => 0);
+          drops[name]++;
         });
       }
 
@@ -40,18 +43,34 @@ main() {
         <td>
       ''');
 
-      text.write(items.map((item) {
-        return "${(drops[item] / tries * 100).toStringAsFixed(3)}% $item";
-      }).join("<br>"));
+      var more = 0;
+      for (var item in items) {
+        var width = drops[item] * 400 ~/ tries;
+        if (width < 1) {
+          more++;
+          continue;
+        }
+        text.write('<div class="bar" style="width: ${width}px;"></div>');
+        //return "${(drops[item] / tries * 100).toStringAsFixed(3)}% $item";
+        text.write(" $item");
+        text.write("<br>");
+      }
 
-      text.write('''</td></tr>
-      ''');
+      if (more > 0) {
+        text.write("<em>$more more&hellip;</em>");
+      }
+
+      text.write('</td></tr>');
 
       levelNum++;
     }
   }
 
-  html.querySelector('table').innerHtml = text.toString();
+  var validator = new html.NodeValidatorBuilder.common();
+  validator.allowInlineStyles();
+
+  html.querySelector('table').setInnerHtml(text.toString(),
+      validator: validator);
 }
 
 int pickDepth(int depth, int numLevels) {

@@ -80,6 +80,13 @@ typedef Action ItemUse();
 class ItemType {
   final String name;
   final appearance;
+
+  /// The item's level.
+  ///
+  /// Higher level items are found later in the game. Some items may not have
+  /// a level.
+  final int level;
+
   final int sortIndex;
   final ItemUse use;
 
@@ -92,16 +99,30 @@ class ItemType {
 
   final int armor;
 
+  /// The path to this item type in the hierarchical organization of items.
+  ///
+  /// May be empty for uncategorized items.
+  final List<String> categories;
+
   /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
   /// then this Item cannot be equipped.
-  final String equipSlot;
+  String get equipSlot {
+    // The equipment slot is the category right after "equipment".
+    var equip = categories.indexOf("equipment");
+    if (equip == -1) return null;
+
+    return categories[equip + 1];
+  }
 
   /// A more precise categorization than [equipSlot]. For example, "dagger",
   /// or "cloak". May be `null`.
-  final String category;
+  String get category {
+    if (categories.isEmpty) return null;
+    return categories.last;
+  }
 
-  ItemType(this.name, this.appearance, this.sortIndex, this.use, this.equipSlot,
-      this.category, this.attack, this.range, this.armor);
+  ItemType(this.name, this.appearance, this.level, this.sortIndex, this.use,
+      this.categories, this.attack, this.range, this.armor);
 
   String toString() => name;
 }
