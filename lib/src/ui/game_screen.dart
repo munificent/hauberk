@@ -647,21 +647,6 @@ class GameScreen extends Screen {
       effects.add(new ParticleEffect(pos.x, pos.y, color));
     }
   }
-
-  void _tempDebugFlow(Terminal terminal) {
-    var c = [
-      Color.GREEN, Color.AQUA, Color.BLUE, Color.PURPLE, Color.RED,
-      Color.ORANGE, Color.YELLOW
-    ];
-
-    var flow = new Flow(game.stage, game.hero.pos, canOpenDoors: true);
-    for (var pos in game.stage.bounds) {
-      var distance = flow.getDistance(pos);
-      if (distance != null) {
-        terminal.writeAt(pos.x, pos.y, ".", c[distance % c.length]);
-      }
-    }
-  }
 }
 
 abstract class Effect {
