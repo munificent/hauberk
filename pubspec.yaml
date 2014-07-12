@@ -1,3 +1,7 @@
 name: hauberk
 dependencies:
   browser: any
+  barback: any
+  markdown: any
+transformers:
+- hauberk/src/markdown_to_html

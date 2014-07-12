@@ -1,13 +1,13 @@
 body {
   padding: 40px;
-  background: #f5e3bf;
-  color: #655639;
-  font: 17px/24px Buenard, Georgia, serif;
+  background: hsl(35, 60%, 85%);
+  color: hsl(30, 40%, 30%);
+  font: 18px/24px Buenard, Georgia, serif;
 }
 
 h1, h2, h3, h4 {
   font-family: Metamorphous, serif;
-  color: #8a663f;
+  color: hsl(30, 80%, 40%);
 }
 
 table {
@@ -38,9 +38,14 @@ thead td {
   text-align: right;
 }
 
+.content {
+  max-width: 700px;
+}
+
 pre {
   font: 14px/14px monospace;
   background-color: #000;
+  color: #ccc;
   letter-spacing: 1px;
   padding: 2px 4px;
   border: solid 1px #963;
