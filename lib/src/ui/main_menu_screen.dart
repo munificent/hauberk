@@ -30,6 +30,7 @@ class MainMenuScreen extends Screen {
       break;
 
     case KeyCode.L:
+    case KeyCode.ENTER:
       if (selectedHero < storage.heroes.length) {
         ui.push(new SelectLevelScreen(content, storage.heroes[selectedHero],
             storage));

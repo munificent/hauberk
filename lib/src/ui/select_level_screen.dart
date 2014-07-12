@@ -53,6 +53,7 @@ class SelectLevelScreen extends Screen {
       break;
 
     case KeyCode.L:
+    case KeyCode.ENTER:
       final game = new Game(content.areas[selectedArea], selectedLevel,
           content, save);
       ui.push(new GameScreen(save, game));
