@@ -306,7 +306,8 @@ class AfraidState extends MonsterState {
     // Find the nearest place the hero can't see.
     var flow = new Flow(game.stage, pos, maxDistance: breed.tracking,
         canOpenDoors: monster.canOpenDoors);
-    var dir = flow.directionToNearestWhere((tile) => !tile.visible);
+    var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
+
     // TODO: If no place to escape, become unafraid.
     Debug.logMonster(monster, "Fleeing $dir");
 

@@ -81,20 +81,20 @@ class Flow {
   }
 
   /// Chooses a random direction from [_target] that gets closer to one of the
-  /// nearest tiles matching [predicate].
+  /// nearest positions matching [predicate].
   ///
   /// Returns [Direction.NONE] if no matching positions were found.
-  List<Direction> directionToNearestWhere(bool predicate(Tile tile)) {
+  List<Direction> directionToNearestWhere(bool predicate(Vec pos)) {
     var directions = directionsToNearestWhere(predicate);
     if (directions.isEmpty) return Direction.NONE;
     return rng.item(directions);
   }
-  
+
   /// Find all directions from [_target] that get closer to one of the nearest
-  /// tiles matching [predicate].
+  /// positions matching [predicate].
   ///
   /// Returns an empty list if no matching positions were found.
-  List<Direction> directionsToNearestWhere(bool predicate(Tile tile)) {
+  List<Direction> directionsToNearestWhere(bool predicate(Vec pos)) {
     var goals = _findAllNearestWhere(predicate);
     if (goals == null) return [];
 
@@ -130,7 +130,7 @@ class Flow {
   /// positions meeting the criteria. Returns an empty list if no valid
   /// positions are found. Returned positions are local to [_distances], not
   /// the [Stage].
-  List<Vec> _findAllNearestWhere(bool predicate(Tile tile)) {
+  List<Vec> _findAllNearestWhere(bool predicate(Vec pos)) {
     var goals;
 
     var i = 0;
@@ -143,7 +143,7 @@ class Flow {
       if (_open.isEmpty && i >= _found.length) return [];
 
       var pos = _found[i];
-      if (!predicate(_stage[pos + _offset])) continue;
+      if (!predicate(pos + _offset)) continue;
 
       var distance = _distances[pos];
 
