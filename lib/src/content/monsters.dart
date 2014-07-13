@@ -280,7 +280,7 @@ class Monsters extends ContentBuilder {
     ], drop: allOf([
       chanceOf(50, "dagger:1"),
       chanceOf(40, "body:1"),
-      chanceOf(20, "boots:1"),
+      chanceOf(20, "boots:2"),
       chanceOf(8, "magic:1"),
     ]), meander: 3, flags: "open-doors cowardly");
 
@@ -290,8 +290,8 @@ class Monsters extends ContentBuilder {
     ], drop: allOf([
       chanceOf(20, "magic:3"),
       chanceOf(30, ["dagger:1", "staff:1"]),
-      chanceOf(40, "robe:1"),
-      chanceOf(10, "boots:1")
+      chanceOf(40, "robe:2"),
+      chanceOf(10, "boots:2")
     ]), meander: 2, flags: "open-doors");
 
     breed("unlucky ranger", green, 10, [

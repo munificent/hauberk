@@ -88,6 +88,11 @@ class ItemType {
   final int level;
 
   final int sortIndex;
+
+  /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
+  /// then this Item cannot be equipped.
+  final String equipSlot;
+
   final ItemUse use;
 
   /// The item's [Attack] or `null` if the item is not a weapon.
@@ -104,16 +109,6 @@ class ItemType {
   /// May be empty for uncategorized items.
   final List<String> categories;
 
-  /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
-  /// then this Item cannot be equipped.
-  String get equipSlot {
-    // The equipment slot is the category right after "equipment".
-    var equip = categories.indexOf("equipment");
-    if (equip == -1) return null;
-
-    return categories[equip + 1];
-  }
-
   /// A more precise categorization than [equipSlot]. For example, "dagger",
   /// or "cloak". May be `null`.
   String get category {
@@ -121,8 +116,9 @@ class ItemType {
     return categories.last;
   }
 
-  ItemType(this.name, this.appearance, this.level, this.sortIndex, this.use,
-      this.categories, this.attack, this.range, this.armor);
+  ItemType(this.name, this.appearance, this.level, this.sortIndex,
+      this.equipSlot, this.use, this.categories, this.attack, this.range,
+      this.armor);
 
   String toString() => name;
 }

@@ -16,6 +16,7 @@ class Items extends ContentBuilder {
   var _glyph;
 
   String _category;
+  String _equipSlot;
 
   void build() {
     // From Angband:
@@ -209,11 +210,11 @@ class Items extends ContentBuilder {
   }
 
   void bodyArmor() {
-    category("(", "equipment/armor/cloak");
+    category("(", "equipment/armor/cloak", "cloak");
     armor("Cloak", 4, darkBlue, 2);
     armor("Fur Cloak", 9, lightBrown, 3);
 
-    category("(", "equipment/armor/body");
+    category("(", "equipment/armor/body", "body");
     armor("Cloth Shirt", 2, lightGray, 2);
     armor("Leather Shirt", 5, lightBrown, 5);
     armor("Jerkin", 7, orange, 6);
@@ -223,7 +224,7 @@ class Items extends ContentBuilder {
     armor("Mail Hauberk", 26, darkGray, 18);
     armor("Scale Mail", 30, lightGray, 21);
 
-    category("(", "equipment/armor/body/robe");
+    category("(", "equipment/armor/body/robe", "body");
     armor("Robe", 2, aqua, 4);
     armor("Fur-lined Robe", 9, darkAqua, 6);
 
@@ -240,21 +241,23 @@ class Items extends ContentBuilder {
   }
 
   void boots() {
-    category("]", "equipment/armor/boots");
-    armor("Leather Sandals", 3, lightBrown, 1);
+    category("]", "equipment/armor/boots", "boots");
+    armor("Leather Sandals", 2, lightBrown, 1);
     armor("Leather Shoes", 8, brown, 2);
     armor("Leather Boots", 14, darkBrown, 4);
     armor("Metal Shod Boots", 22, gray, 7);
     armor("Greaves", 47, lightGray, 12);
   }
 
-  category(glyph, [String category]) {
+  category(glyph, [String category, String equipSlot]) {
     _glyph = glyph;
     if (category == null) {
       _category = null;
     } else {
     _category = "item/$category";
     }
+
+    _equipSlot = equipSlot;
   }
 
   void food(String name, int level, appearance, int amount) {
@@ -262,12 +265,13 @@ class Items extends ContentBuilder {
   }
 
   void weapon(String name, int level, appearance, String verb, int damage) {
-    item(name, level, appearance, attack: attack(verb, damage, Element.NONE));
+    item(name, level, appearance, equipSlot: "weapon",
+        attack: attack(verb, damage, Element.NONE));
   }
 
   void bow(String name, int level, appearance, String noun, {int damage,
       int range}) {
-    item(name, level, appearance,
+    item(name, level, appearance, equipSlot: "weapon",
         attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun)),
         range: range);
   }
@@ -276,7 +280,7 @@ class Items extends ContentBuilder {
     item(name, level, appearance, armor: armor);
   }
 
-  void item(String name, int level, appearance, {ItemUse use,
+  void item(String name, int level, appearance, {String equipSlot, ItemUse use,
       Attack attack, int range: 0, int armor: 0}) {
     // If the appearance isn"t an actual glyph, it should be a color function
     // that will be applied to the current glyph.
@@ -287,8 +291,10 @@ class Items extends ContentBuilder {
     var categories = [];
     if (_category != null) categories = _category.split("/");
 
-    Items.all[name] = new ItemType(name, appearance, level, _sortIndex++, use,
-        categories, attack, range, armor);
+    if (equipSlot == null) equipSlot = _equipSlot;
+
+    Items.all[name] = new ItemType(name, appearance, level, _sortIndex++,
+        equipSlot, use, categories, attack, range, armor);
   }
 }
 
@@ -373,6 +379,8 @@ class CategoryDrop implements Drop {
     var items = Items.all.values
         .where((item) => item.level <= level &&
                          item.categories.contains(category)).toList();
+
+    if (items.isEmpty) return;
 
     // TODO: Item rarity?
 
