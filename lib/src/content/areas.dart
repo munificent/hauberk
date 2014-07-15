@@ -118,7 +118,7 @@ class Areas extends ContentBuilder {
           'vexing imp',
           'goblin peon',
           'wild dog',
-          'maggot',
+          'blood worm',
           'giant cave worm',
           'green slime',
           'salamander'
@@ -175,16 +175,20 @@ class Areas extends ContentBuilder {
   Level level(StageBuilder builder(), {
       int numMonsters, int numItems, List<String> breeds, drop,
       QuestBuilder quest}) {
-    final breedList = <Breed>[];
+    var breedList = <Breed>[];
 
-    for (final name in breeds) breedList.add(Monsters.all[name]);
+    for (var name in breeds) {
+      var breed = Monsters.all[name];
+      if (breed == null) throw 'Could not find breed "$name".';
+      breedList.add(breed);
+    }
 
     return new Level((stage) => builder().generate(stage), numMonsters,
         numItems, breedList, parseDrop(drop), quest);
   }
 
   Area area(String name, List<Level> levels) {
-    final area = new Area(name, levels);
+    var area = new Area(name, levels);
     Areas.all.add(area);
     return area;
   }

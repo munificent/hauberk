@@ -31,7 +31,6 @@ class GameContent implements Content {
   HeroSave createHero(String name, HeroClass heroClass) {
     var hero = new HeroSave(name, heroClass);
     for (var itemType in [
-      Items.all["Short Bow"],
       Items.all["Loaf of Bread"],
       Items.all["Loaf of Bread"],
       Items.all["Mending Salve"],

@@ -160,8 +160,8 @@ class Inventory extends IterableBase<Item> implements ItemCollection {
   Inventory clone() {
     // TODO: If items themselves ever become mutable, will need to deep
     // clone them too.
-    final inventory = new Inventory(capacity);
-    for (final item in this) inventory.tryAdd(item);
+    var inventory = new Inventory(capacity);
+    for (var item in this) inventory.tryAdd(item);
 
     return inventory;
   }
@@ -173,7 +173,7 @@ class Inventory extends IterableBase<Item> implements ItemCollection {
   }
 
   Item removeAt(int index) {
-    final item = _items[index];
+    var item = _items[index];
     _items.removeAt(index);
     if (_lastUnequipped == item) _lastUnequipped = null;
     return item;

@@ -66,7 +66,7 @@ class EquipAction extends Action {
   EquipAction(this.index, this.isOnGround);
 
   ActionResult onPerform() {
-    final item = isOnGround
+    var item = isOnGround
         ? game.stage.itemsAt(actor.pos)[index]
         : hero.inventory[index];
 
@@ -91,7 +91,7 @@ class EquipAction extends Action {
         item.pos = actor.pos;
         game.stage.items.add(item);
         log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
-          actor, unequipped);
+            actor, unequipped);
       }
     }
 
@@ -110,7 +110,7 @@ class UnequipAction extends Action {
   ActionResult onPerform() {
     final item = hero.equipment.removeAt(index);
 
-    if (hero.inventory.tryAdd(item)) {
+    if (hero.inventory.tryAdd(item, wasUnequipped: true)) {
       return succeed('{1} unequip[s] {2}.', actor, item);
     }
 

@@ -98,6 +98,52 @@ abstract class MonsterState {
     _monster.changeState(state);
     return state.getAction();
   }
+
+  /// Applies the monster's meandering to [dir].
+  Direction _meander(Direction dir) {
+    var chance = 15;
+
+    return dir;
+    // Monsters are (mostly) smart enough to not meander when they're about to
+    // melee. A small chance of meandering is still useful to get a monster out
+    // of a doorway sometimes.
+    if (pos + dir == game.hero.pos) chance = 50;
+
+    if (breed.meander <= rng.range(chance)) return dir;
+
+    var dirs;
+    if (dir == Direction.NONE) {
+      // Since the monster has no direction, any is equally valid.
+      dirs = Direction.ALL;
+    } else {
+      dirs = [];
+
+      // Otherwise, bias towards the direction the monster is headed.
+      for (var i = 0; i < 3; i++) {
+        dirs.add(dir.rotateLeft45);
+        dirs.add(dir.rotateRight45);
+      }
+
+      for (var i = 0; i < 2; i++) {
+        dirs.add(dir.rotateLeft90);
+        dirs.add(dir.rotateRight90);
+      }
+
+      dirs.add(dir.rotateLeft90.rotateLeft45);
+      dirs.add(dir.rotateRight90.rotateRight45);
+      dirs.add(dir.rotate180);
+    }
+
+    dirs = dirs.where((dir) {
+      var here = pos + dir;
+      if (!monster.canOccupy(here)) return false;
+      var actor = game.stage.actorAt(here);
+      return actor == null || actor == game.hero;
+    });
+
+    if (dirs.isEmpty) return dir;
+    return rng.item(dirs.toList());
+  }
 }
 
 class AsleepState extends MonsterState {
@@ -240,13 +286,15 @@ class AwakeState extends MonsterState {
 
       // The more damage a monster can do with ranged attacks, relative to its
       // melee attacks, the more cautious it is.
-      var caution = 100 * rangedDamage / (rangedDamage + meleeDamage);
+      var damageRatio = 100 * rangedDamage / (rangedDamage + meleeDamage);
+      var caution = damageRatio;
 
       // Being afraid makes the monster more cautious.
       caution += monster.fear;
 
       // Being close to death makes the monster more cautious.
-      caution += 200 * (1 - monster.health.current / monster.health.max);
+      var nearDeath = 200 * (1 - monster.health.current / monster.health.max);
+      caution += nearDeath;
 
       // TODO: Breed-specific "aggression" modifier to caution.
 
@@ -257,85 +305,29 @@ class AwakeState extends MonsterState {
       } else {
         wantsToMelee = caution < 50;
       }
+
+      Debug.logMonster(monster, "$damageRatio ranged damage + ${monster.fear} "
+          "fear + $nearDeath near death = $caution, "
+          "${wantsToMelee ? 'want melee' : 'want ranged'}}");
     }
 
     // Now that we know what the monster *wants* to do, reconcile it with what
     // they're able to do.
-    var meleePath = AStar.findPath(game.stage, pos, game.hero.pos,
-        breed.tracking, canOpenDoors);
+    var meleeDir = _findMeleePath();
 
     var rangedDir;
     if (rangedAttacks > 0) rangedDir = _findRangedPath();
 
-    var canMelee = meleePath.length > 0 &&
-        game.stage.actorAt(pos + meleePath.direction) == null;
-    var canRanged = rangedDir != null;
-
     var walkDir;
     if (wantsToMelee) {
-      if (canMelee) {
-        walkDir = meleePath.direction;
-      } else {
-        walkDir = rangedDir;
-      }
+      walkDir = meleeDir != null ? meleeDir : rangedDir;
     } else {
-      if (canRanged) {
-        walkDir = rangedDir;
-      } else {
-        walkDir = meleePath.direction;
-      }
+      walkDir = rangedDir != null ? rangedDir : meleeDir;
     }
 
     if (walkDir == null) walkDir = Direction.NONE;
 
-    walkDir = _meander(walkDir);
-
-    return new WalkAction(walkDir);
-  }
-
-  /// Applies the monster's meandering to [dir].
-  Direction _meander(Direction dir) {
-    var chance = 10;
-
-    // Monsters are (mostly) smart enough to not meander when they're about to
-    // melee. A small chance of meandering is still useful to get a monster out
-    // of a doorway sometimes.
-    if (pos + dir == game.hero.pos) chance = 50;
-
-    if (breed.meander <= rng.range(chance)) return dir;
-
-    var dirs;
-    if (dir == Direction.NONE) {
-      // Since the monster has no direction, any is equally valid.
-      dirs = Direction.ALL;
-    } else {
-      dirs = [];
-
-      // Otherwise, bias towards the direction the monster is headed.
-      for (var i = 0; i < 3; i++) {
-        dirs.add(dir.rotateLeft45);
-        dirs.add(dir.rotateRight45);
-      }
-
-      for (var i = 0; i < 2; i++) {
-        dirs.add(dir.rotateLeft90);
-        dirs.add(dir.rotateRight90);
-      }
-
-      dirs.add(dir.rotateLeft90.rotateLeft45);
-      dirs.add(dir.rotateRight90.rotateRight45);
-      dirs.add(dir.rotate180);
-    }
-
-    dirs = dirs.where((dir) {
-      var here = pos + dir;
-      if (!monster.canOccupy(here)) return false;
-      var actor = game.stage.actorAt(here);
-      return actor == null || actor == game.hero;
-    });
-
-    if (dirs.isEmpty) return dir;
-    return rng.item(dirs.toList());
+    return new WalkAction(_meander(walkDir));
   }
 
   /// Tries to find a path a desirable position for using a ranged [Move].
@@ -344,8 +336,10 @@ class AwakeState extends MonsterState {
   /// if the monster's current position is a good ranged spot. Returns `null`
   /// if no good ranged position could be found.
   Direction _findRangedPath() {
-    var maxRange = breed.moves.fold(0,
-        (max, move) => math.min(max, move.range));
+    var maxRange = 9999;
+    for (var move in breed.moves) {
+      if (move.range > 0 && move.range < maxRange) maxRange = move.range;
+    }
 
     var flow = new Flow(game.stage, pos, maxDistance: maxRange,
         canOpenDoors: canOpenDoors);
@@ -410,14 +404,17 @@ class AwakeState extends MonsterState {
     return null;
   }
 
-  Direction _findMeleePath() {
-    // Melee attack if next to the hero.
-    var toHero = game.hero.pos - pos;
-    if (toHero.kingLength == 1) return toHero;
-
+  Vec _findMeleePath() {
     // Try to pathfind towards the hero.
-    return AStar.findDirection(game.stage, pos, game.hero.pos,
+    var path = AStar.findPath(game.stage, pos, game.hero.pos,
         breed.tracking, canOpenDoors);
+
+    if (path.length == 0) return null;
+
+    // Don't walk into another monster.
+    var actor = game.stage.actorAt(pos + path.direction);
+    if (actor != null && actor != game.hero) return null;
+    return path.direction;
   }
 
   /// Returns `true` if there is an open LOS from [from] to the hero.
@@ -444,7 +441,7 @@ class AfraidState extends MonsterState {
 
     if (dir != Direction.NONE) {
       Debug.logMonster(monster, "Fleeing $dir to darkness");
-      return new WalkAction(dir);
+      return new WalkAction(_meander(dir));
     }
 
     // If we couldn't find a hidden tile, at least try to get some distance.
@@ -459,7 +456,7 @@ class AfraidState extends MonsterState {
     if (farther.isNotEmpty) {
       dir = rng.item(farther.toList());
       Debug.logMonster(monster, "Fleeing $dir away from hero");
-      return new WalkAction(dir);
+      return new WalkAction(_meander(dir));
     }
 
     // If we got here, we couldn't escape. Cornered!
