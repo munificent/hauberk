@@ -14,6 +14,9 @@ class Monsters extends ContentBuilder {
   /// The default meander for a breed that doesn't specify it.
   var _meander;
 
+  /// Default flags for the current group.
+  var _flags;
+
   /// The current glyph. Any items defined will use this. Can be a string or
   /// a character code.
   var _glyph;
@@ -77,21 +80,21 @@ class Monsters extends ContentBuilder {
   }
 
   arachnids() {
-    group("a");
+    group("a", flags: "fearless");
     breed("garden spider", darkAqua, 2, [
       attack("bite[s]", 1, Element.POISON)
     ], drop: chanceOf(3, "Stinger"),
-        meander: 8, flags: "group fearless");
+        meander: 8, flags: "group");
 
     breed("brown spider", brown, 3, [
       attack("bite[s]", 2, Element.POISON)
     ], drop: chanceOf(5, "Stinger"),
-        meander: 8, flags: "group fearless");
+        meander: 8, flags: "group");
 
     breed("giant spider", darkBlue, 12, [
       attack("bite[s]", 3, Element.POISON)
     ], drop: chanceOf(10, "Stinger"),
-        meander: 5, flags: "fearless");
+        meander: 5);
   }
 
   bats() {
@@ -125,21 +128,18 @@ class Monsters extends ContentBuilder {
   }
 
   canines() {
-    group("c", tracking: 20, meander: 3);
+    group("c", tracking: 20, meander: 3, flags: "few");
     breed("mangy cur", yellow, 7, [
       attack("bite[s]", 4),
-    ], drop: chanceOf(20, "Fur Pelt"),
-        flags: "few");
+    ], drop: chanceOf(20, "Fur Pelt"));
 
     breed("wild dog", gray, 9, [
       attack("bite[s]", 5),
-    ], drop: chanceOf(20, "Fur Pelt"),
-        flags: "few");
+    ], drop: chanceOf(20, "Fur Pelt"));
 
     breed("mongrel", orange, 16, [
       attack("bite[s]", 7),
-    ], drop: chanceOf(20, "Fur Pelt"),
-        flags: "few");
+    ], drop: chanceOf(20, "Fur Pelt"));
   }
 
   flyingInsects() {
@@ -173,20 +173,20 @@ class Monsters extends ContentBuilder {
   }
 
   insects() {
-    group("i", tracking: 3, meander: 8);
+    group("i", tracking: 3, meander: 8, flags: "fearless");
     breed("giant cockroach[es]", darkBrown, 12, [
       attack("crawl[s] on", 1),
     ], drop: chanceOf(10, "Insect Wing"),
-        speed: 3, flags: "fearless");
+        speed: 3);
 
     breed("giant centipede", red, 12, [
       attack("crawl[s] on", 3),
       attack("bite[s]", 6),
-    ], speed: 2, flags: "fearless");
+    ], speed: 2);
   }
 
   imps() {
-    group("I");
+    group("I", flags: "open-doors");
     breed("scurrilous imp", lightRed, 14, [
       attack("club[s]", 6),
       insult(),
@@ -194,7 +194,7 @@ class Monsters extends ContentBuilder {
     ], drop: [
       chanceOf(10, "club:1"),
       chanceOf(5, "speed:1"),
-    ], meander: 4, flags: "cowardly open-doors");
+    ], meander: 4, flags: "cowardly");
 
     breed("vexing imp", purple, 12, [
       attack("scratch[es]", 5),
@@ -202,7 +202,7 @@ class Monsters extends ContentBuilder {
       sparkBolt(cost: 10, damage: 8)
     ], drop: [
       chanceOf(10, "teleportation:1"),
-    ], meander: 4, speed: 1, flags: "cowardly open-doors");
+    ], meander: 4, speed: 1, flags: "cowardly");
 
     breed("impish incanter", lightPurple, 16, [
       attack("scratch[es]", 5),
@@ -210,7 +210,7 @@ class Monsters extends ContentBuilder {
       fireBolt(cost: 10, damage: 10)
     ], drop: [
       chanceOf(10, "magic:1"),
-    ], meander: 4, speed: 1, flags: "cowardly open-doors");
+    ], meander: 4, speed: 1, flags: "cowardly");
 
     breed("goblin peon", lightBrown, 16, [
       attack("stab[s]", 6)
@@ -218,7 +218,7 @@ class Monsters extends ContentBuilder {
     drop: [
       chanceOf(10, "spear:3"),
       chanceOf(5, "healing:2"),
-    ], meander: 2, flags: "few open-doors");
+    ], meander: 2, flags: "few");
 
     breed("goblin archer", green, 14, [
       attack("stab[s]", 3),
@@ -228,14 +228,14 @@ class Monsters extends ContentBuilder {
       chanceOf(20, "bow:1"),
       chanceOf(10, "dagger:2"),
       chanceOf(5, "healing:3"),
-    ], meander: 2, flags: "few open-doors");
+    ], meander: 2, flags: "few");
 
     breed("goblin fighter", brown, 24, [
       attack("stab[s]", 8)
     ], drop: [
       chanceOf(15, "spear:5"),
       chanceOf(5, "healing:3"),
-    ], meander: 1, flags: "open-doors");
+    ], meander: 1);
 
     breed("imp warlock", darkPurple, 20, [
       attack("stab[s]", 6),
@@ -243,29 +243,29 @@ class Monsters extends ContentBuilder {
       fireBolt(cost: 7, damage: 12)
     ], drop: [
       chanceOf(10, "magic:4"),
-    ], meander: 3, speed: 1, flags: "cowardly open-doors");
+    ], meander: 3, speed: 1, flags: "cowardly");
 
     breed("goblin warrior", gray, 32, [
       attack("stab[s]", 14)
     ], drop: [
       chanceOf(20, "spear:6"),
       chanceOf(5, "healing:3"),
-    ], meander: 1, flags: "protective open-doors");
+    ], meander: 1, flags: "protective");
   }
 
   jellies() {
-    group("j", tracking: 2, meander: 4);
+    group("j", tracking: 2, meander: 4, flags: "few fearless");
     breed("green slime", green, 10, [
       attack("crawl[s] on", 3, Element.POISON)
-    ], flags: "few fearless");
+    ]);
 
     breed("blue slime", blue, 12, [
       attack("crawl[s] on", 4, Element.COLD)
-    ], flags: "few fearless");
+    ]);
 
     breed("red slime", blue, 14, [
       attack("crawl[s] on", 6, Element.FIRE)
-    ], flags: "few fearless");
+    ]);
   }
 
   skeletons() {
@@ -273,7 +273,7 @@ class Monsters extends ContentBuilder {
   }
 
   people() {
-    group("p", tracking: 14);
+    group("p", tracking: 14, flags: "open-doors");
 
     /*
     breed("debug meander", purple, 6, [
@@ -294,7 +294,7 @@ class Monsters extends ContentBuilder {
       chanceOf(40, "body:1"),
       chanceOf(20, "boots:2"),
       chanceOf(8, "magic:1"),
-    ]), meander: 3, flags: "open-doors cowardly");
+    ]), meander: 3, flags: "cowardly");
 
     breed("decrepit mage", purple, 6, [
       attack("hit[s]", 2),
@@ -304,7 +304,7 @@ class Monsters extends ContentBuilder {
       chanceOf(30, ["dagger:1", "staff:1"]),
       chanceOf(40, "robe:2"),
       chanceOf(10, "boots:2")
-    ]), meander: 2, flags: "open-doors");
+    ]), meander: 2);
 
     breed("unlucky ranger", green, 10, [
       attack("stab[s]", 2),
@@ -314,7 +314,7 @@ class Monsters extends ContentBuilder {
       chanceOf(4, "bow:4"),
       chanceOf(10, "dagger:3"),
       chanceOf(8, "body:3")
-    ], meander: 2, flags: "open-doors");
+    ], meander: 2);
 
     breed("drunken priest", aqua, 9, [
       attack("hit[s]", 3),
@@ -323,7 +323,7 @@ class Monsters extends ContentBuilder {
       chanceOf(10, "scroll:3"),
       chanceOf(7, "club:2"),
       chanceOf(7, "robe:2")
-    ], meander: 4, flags: "open-doors fearless");
+    ], meander: 4, flags: "fearless");
   }
 
   quadrupeds() {
@@ -390,10 +390,10 @@ class Monsters extends ContentBuilder {
   }
 
   slugs() {
-    group("s", tracking: 2);
+    group("s", tracking: 2, flags: "fearless");
     breed("giant slug", green, 12, [
       attack("crawl[s] on", 5, Element.POISON),
-    ], meander: 1, speed: -3, flags: "fearless");
+    ], meander: 1, speed: -3);
   }
 
   snakes() {
@@ -408,24 +408,25 @@ class Monsters extends ContentBuilder {
   }
 
   worms() {
-    group("w", meander: 4);
+    group("w", meander: 4, flags: "fearless");
     breed("giant earthworm", lightRed, 16, [
       attack("crawl[s] on", 8),
-    ], speed: -2, flags: "fearless");
+    ], speed: -2);
 
     breed("blood worm", red, 4, [
       attack("crawl[s] on", 5),
-    ], flags: "swarm fearless");
+    ], flags: "swarm");
 
     breed("giant cave worm", white, 36, [
       attack("crawl[s] on", 8, Element.ACID),
-    ], speed: -2, flags: "fearless");
+    ], speed: -2);
   }
 
-  void group(glyph, {int meander, int tracking}) {
+  void group(glyph, {int meander, int tracking, String flags}) {
     _glyph = glyph;
     _meander = meander != null ? meander : 0;
     _tracking = tracking != null ? tracking : 10;
+    _flags = flags;
   }
 
   Breed breed(String name, Glyph appearance(char), int health, List actions, {
@@ -444,12 +445,9 @@ class Monsters extends ContentBuilder {
 
     drop = parseDrop(drop);
 
-    var flagSet;
-    if (flags != null) {
-      flagSet = new Set<String>.from(flags.split(" "));
-    } else {
-      flagSet = new Set<String>();
-    }
+    var flagSet = new Set<String>();
+    if (_flags != null) flagSet.addAll(_flags.split(" "));
+    if (flags != null) flagSet.addAll(flags.split(" "));
 
     final breed = new Breed(name, Pronoun.IT, appearance(_glyph), attacks,
         moves, drop, maxHealth: health, tracking: tracking, meander: meander,
