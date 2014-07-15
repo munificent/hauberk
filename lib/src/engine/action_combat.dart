@@ -29,11 +29,11 @@ class BoltAction extends Action {
   final Vec _start;
   final Iterator<Vec> _los;
   final Attack _attack;
-  final num _minRange;
-  final num _maxRange;
 
-  BoltAction(Vec from, Vec to, this._attack, [this._maxRange = 9999,
-        this._minRange = 0])
+  // TODO: Move to Attack.
+  final num _minRange;
+
+  BoltAction(Vec from, Vec to, this._attack, [this._minRange = 0])
       : _start = from,
         _los = new Los(from, to).iterator {
     // Advance to the first tile.
@@ -46,6 +46,9 @@ class BoltAction extends Action {
     // Stop if we hit a wall.
     if (!game.stage[pos].isTransparent) return succeed();
 
+    // Stop if we're out of range.
+    if (pos - _start > _attack.range) return succeed();
+
     addEvent(new Event(EventType.BOLT, element: _attack.element, value: pos));
 
     // See if there is an actor there.
@@ -55,7 +58,7 @@ class BoltAction extends Action {
 
       // Being too close or too far weakens the bolt.
       var toTarget = pos - _start;
-      if (toTarget <= _minRange || toTarget > _maxRange * 2 / 3) {
+      if (toTarget <= _minRange || toTarget > _attack.range * 2 / 3) {
         attack = attack.multiplyDamage(0.5);
       }
 

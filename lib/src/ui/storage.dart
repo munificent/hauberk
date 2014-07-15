@@ -3,7 +3,6 @@ library hauberk.ui.storage;
 import 'dart:convert';
 import 'dart:html' as html;
 
-import '../content.dart';
 import '../engine.dart';
 
 /// The entrypoint for all persisted save data.

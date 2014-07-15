@@ -26,6 +26,8 @@ class VecBase {
 
   int get lengthSquared => x * x + y * y;
 
+  num get length => math.sqrt(lengthSquared);
+
   Vec operator *(int other) => new Vec(x * other, y * other);
 
   Vec operator ~/(int other) => new Vec(x ~/ other, y ~/ other);

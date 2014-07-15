@@ -160,10 +160,10 @@ class Hero extends Actor {
     _lastNoise = action.noise;
   }
 
-  Vec changePosition(Vec pos) {
+  void changePosition(Vec from, Vec to) {
+    super.changePosition(from, to);
     game.stage.dirtyVisibility();
-    game.quest.enterTile(game, game.stage[pos]);
-    return pos;
+    game.quest.enterTile(game, game.stage[to]);
   }
 
   void waitForInput() {

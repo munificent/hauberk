@@ -16,7 +16,8 @@ abstract class Thing implements Noun {
   Vec get pos => _pos;
   void set pos(Vec value) {
     if (value != _pos) {
-      _pos = changePosition(value);
+      changePosition(_pos, value);
+      _pos = value;
     }
   }
 
@@ -30,9 +31,8 @@ abstract class Thing implements Noun {
     pos = new Vec(x, value);
   }
 
-  /// Called when the actor's position is about to change to [pos]. Override
-  /// to do stuff when the position changes. Returns the new position.
-  Vec changePosition(Vec pos) => pos;
+  /// Called when the actor's position is about to change from [from] to [to].
+  void changePosition(Vec from, Vec to) {}
 
   get appearance;
   String get nounText;
@@ -82,6 +82,10 @@ abstract class Actor extends Thing {
     speed += haste.intensity;
     speed -= cold.intensity;
     return speed;
+  }
+
+  void changePosition(Vec from, Vec to) {
+    game.stage.moveActor(from, to);
   }
 
   int onGetSpeed();

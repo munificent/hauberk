@@ -272,8 +272,8 @@ class Items extends ContentBuilder {
   void bow(String name, int level, appearance, String noun, {int damage,
       int range}) {
     item(name, level, appearance, equipSlot: "weapon",
-        attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun)),
-        range: range);
+        attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun),
+            range));
   }
 
   void armor(String name, int level, appearance, int armor) {
@@ -281,7 +281,7 @@ class Items extends ContentBuilder {
   }
 
   void item(String name, int level, appearance, {String equipSlot, ItemUse use,
-      Attack attack, int range: 0, int armor: 0}) {
+      Attack attack, int armor: 0}) {
     // If the appearance isn"t an actual glyph, it should be a color function
     // that will be applied to the current glyph.
     if (appearance is! Glyph) {
@@ -294,7 +294,7 @@ class Items extends ContentBuilder {
     if (equipSlot == null) equipSlot = _equipSlot;
 
     Items.all[name] = new ItemType(name, appearance, level, _sortIndex++,
-        equipSlot, use, categories, attack, range, armor);
+        categories, equipSlot, use, attack, armor);
   }
 }
 

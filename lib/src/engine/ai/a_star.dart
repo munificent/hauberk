@@ -6,12 +6,14 @@ import '../../util.dart';
 import '../option.dart';
 import '../stage.dart';
 
-class AStarResult {
-  final PathNode path;
-  final List<Vec> closed;
-  final List<PathNode> open;
+class PathResult {
+  /// The direction to move on the first step of the path.
+  final Direction direction;
 
-  AStarResult(this.path, this.closed, this.open);
+  /// The total number of steps in the path.
+  final int length;
+
+  PathResult(this.direction, this.length);
 }
 
 /// A* pathfinding algorithm.
@@ -26,10 +28,9 @@ class AStar {
   /// possible.
   static Direction findDirection(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
-    final result = findPath(stage, start, end, maxLength, canOpenDoors);
-    if (result == null) return Direction.NONE;
+    var path = _findPath(stage, start, end, maxLength, canOpenDoors);
+    if (path == null) return Direction.NONE;
 
-    var path = result.path;
     while (path.parent != null && path.parent.parent != null) {
       path = path.parent;
     }
@@ -37,30 +38,42 @@ class AStar {
     return path.direction;
   }
 
-  static AStarResult findPath(Stage stage, Vec start, Vec end, int maxLength,
+  static PathResult findPath(Stage stage, Vec start, Vec end, int maxLength,
+      bool canOpenDoors) {
+    var path = _findPath(stage, start, end, maxLength, canOpenDoors);
+    if (path == null) return new PathResult(Direction.NONE, 0);
+
+    var length = 1;
+    while (path.parent != null && path.parent.parent != null) {
+      path = path.parent;
+      length++;
+    }
+
+    return new PathResult(path.direction, length);
+  }
+
+  static _PathNode _findPath(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
     // TODO: More optimal data structure.
-    final startPath = new PathNode(null, Direction.NONE,
+    var startPath = new _PathNode(null, Direction.NONE,
         start, 0, heuristic(start, end));
-    final open = <PathNode>[startPath];
-
-    // TODO: More optimal data structure.
-    final closed = <Vec>[];
+    var open = <_PathNode>[startPath];
+    var closed = new Set<Vec>();
 
     while (open.length > 0) {
       // Pull out the best potential candidate.
-      final current = open.removeLast();
+      var current = open.removeLast();
 
       if ((current.pos == end) ||
           (current.cost > Option.ASTAR_FLOOR_COST * maxLength)) {
         // Found the path.
-        return new AStarResult(current, closed, open);
+        return current;
       }
 
       closed.add(current.pos);
 
-      for (final dir in Direction.ALL) {
-        final neighbor = current.pos + dir;
+      for (var dir in Direction.ALL) {
+        var neighbor = current.pos + dir;
 
         // Skip impassable tiles.
         if (!stage[neighbor].isTraversable) continue;
@@ -81,16 +94,15 @@ class AStar {
           stepCost = Option.ASTAR_OCCUPIED_COST;
         }
 
-        final cost = current.cost + stepCost;
+        var cost = current.cost + stepCost;
 
         // See if we just found a better path to a tile we're already
         // considering. If so, remove the old one and replace it (below) with
         // this new better path.
-        bool inOpen = false;
-        bool inClosed = false;
+        var inOpen = false;
 
         for (var i = 0; i < open.length; i++) {
-          final alreadyOpen = open[i];
+          var alreadyOpen = open[i];
           if (alreadyOpen.pos == neighbor) {
             if (alreadyOpen.cost > cost) {
               open.removeAt(i);
@@ -102,20 +114,15 @@ class AStar {
           }
         }
 
-        for (final alreadyClosed in closed) {
-          if (alreadyClosed == neighbor) {
-            inClosed = true;
-            break;
-          }
-        }
+        var inClosed = closed.contains(neighbor);
 
         // TODO: May need to do the above check on the closed set too if
         // we use inadmissable heuristics.
 
         // If we have a new path, add it.
         if (!inOpen && !inClosed) {
-          final guess = cost + heuristic(neighbor, end);
-          final path = new PathNode(current, dir, neighbor, cost, guess);
+          var guess = cost + heuristic(neighbor, end);
+          var path = new _PathNode(current, dir, neighbor, cost, guess);
 
           // Insert it in sorted order (such that the best node is at the *end*
           // of the list for easy removal).
@@ -157,8 +164,8 @@ class AStar {
   }
 }
 
-class PathNode {
-  final PathNode parent;
+class _PathNode {
+  final _PathNode parent;
   final Direction direction;
   final Vec pos;
 
@@ -172,5 +179,5 @@ class PathNode {
   /// along this path. In other words, this is [cost] plus the heuristic.
   final int guess;
 
-  PathNode(this.parent, this.direction, this.pos, this.cost, this.guess);
+  _PathNode(this.parent, this.direction, this.pos, this.cost, this.guess);
 }

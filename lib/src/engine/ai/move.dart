@@ -1,12 +1,10 @@
 library hauberk.engine.move;
 
-import '../../util.dart';
 import '../action_base.dart';
 import '../action_combat.dart';
 import '../action_magic.dart';
 import '../melee.dart';
 import '../monster.dart';
-import '../option.dart';
 
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,
@@ -17,11 +15,14 @@ abstract class Move {
   /// from using very powerful moves every single turn.
   final int cost;
 
+  /// The range of this move if it's a ranged one, or `0` otherwise.
+  int get range => 0;
+
   Move(this.cost);
 
-  /// Gets the AI score for performing this move. The higher the score, the more
-  /// likely the monster is to select this move over other options.
-  num getScore(Monster monster);
+  /// Returns `true` if the monster would reasonably perform this move right
+  /// now.
+  bool shouldUse(Monster monster);
 
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.
@@ -37,26 +38,25 @@ abstract class Move {
 class BoltMove extends Move {
   final Attack attack;
 
+  int get range => attack.range;
+
   BoltMove(int cost, this.attack)
     : super(cost);
 
-  num getScore(Monster monster) {
+  bool shouldUse(Monster monster) {
     // TODO: Should not always assume the hero is the target.
-    final target = monster.game.hero.pos;
+    var target = monster.game.hero.pos;
 
     // Don't fire if out of range.
-    if ((target - monster.pos).kingLength > Option.MAX_BOLT_DISTANCE) return 0;
+    var toTarget = target - monster.pos;
+    if (toTarget > range) return false;
+    if (toTarget < 1.5) return false;
 
     // Don't fire a bolt if it's obstructed.
-    // TODO: Should probably only fire if there aren't any other monsters
-    // in the way too, though friendly fire is pretty entertaining.
-    if (!monster.canTarget(target)) return 0;
-
-    // TODO: If we make bolts less accurate at longer distances, take that into
-    // account here.
+    if (!monster.canTarget(target)) return false;
 
     // The farther it is, the more likely it is to use a bolt.
-    return 100 * (target - monster.pos).kingLength / Option.MAX_BOLT_DISTANCE;
+    return true;
   }
 
   Action onGetAction(Monster monster) {
@@ -69,38 +69,38 @@ class BoltMove extends Move {
 
 class HealMove extends Move {
   /// How much health to restore.
-  final int amount;
+  final int _amount;
 
-  HealMove(int cost, this.amount) : super(cost);
+  HealMove(int cost, this._amount) : super(cost);
 
-  num getScore(Monster monster) {
-    // The closer it is to death, the more it wants to heal.
-    return 100 * (1 - (monster.health.current / monster.health.max));
+  bool shouldUse(Monster monster) {
+    // Heal if it could heal the full amount, or it's getting close to death.
+    return (monster.health.current / monster.health.max < 0.25) ||
+           (monster.health.max - monster.health.current >= _amount);
   }
 
   Action onGetAction(Monster monster) {
-    return new HealAction(amount);
+    return new HealAction(_amount);
   }
 
-  String toString() => "Heal $amount cost: $cost";
+  String toString() => "Heal $_amount cost: $cost";
 }
 
 class InsultMove extends Move {
   InsultMove(int cost) : super(cost);
 
-  num getScore(Monster monster) {
+  bool get isRanged => true;
+
+  bool shouldUse(Monster monster) {
     // TODO: Should not always assume the hero is the target.
-    final target = monster.game.hero.pos;
-    final distance = (target - monster.pos).kingLength;
+    var target = monster.game.hero.pos;
+    var distance = (target - monster.pos).kingLength;
 
     // Don't insult when in melee distance.
-    if (distance <= 1) return 0;
+    if (distance <= 1) return false;
 
     // Don't insult someone it can't see.
-    if (!monster.canView(target)) return 0;
-
-    // Randomly insult.
-    return rng.range(80);
+    return monster.canView(target);
   }
 
   Action onGetAction(Monster monster) => new InsultAction(monster.game.hero);
@@ -114,19 +114,9 @@ class HasteMove extends Move {
 
   HasteMove(int cost, this._duration, this._speed) : super(cost);
 
-  num getScore(Monster monster) {
+  bool shouldUse(Monster monster) {
     // Don't use if already hasted.
-    if (monster.haste.isActive) return 0;
-
-    // TODO: Should not always assume the hero is the target.
-    final target = monster.game.hero.pos;
-    final distance = (target - monster.pos).kingLength;
-
-    // Don't use when in melee distance.
-    if (distance <= 1) return 0;
-
-    // Prefer using it when farther away.
-    return rng.range(50) + distance * 10;
+    return !monster.haste.isActive;
   }
 
   Action onGetAction(Monster monster) => new HasteAction(_duration, _speed);

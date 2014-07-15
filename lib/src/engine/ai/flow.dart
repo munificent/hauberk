@@ -37,6 +37,9 @@ class Flow {
   /// Coordinates are local to [_distances], not the [Stage].
   final _found = <Vec>[];
 
+  /// Gets the bounds of the [Flow] in stage coordinates.
+  Rect get bounds => new Rect.posAndSize(_offset, _distances.size);
+
   Flow(this._stage, this._target, {int maxDistance, bool canOpenDoors})
       : _maxDistance = maxDistance,
         _canOpenDoors = canOpenDoors {
@@ -80,11 +83,18 @@ class Flow {
     return distance;
   }
 
+  /// Chooses a random direction from [_target] that gets closer to [pos].
+  Direction directionTo(Vec pos) {
+    var directions = _directionsTo([pos - _offset]);
+    if (directions.isEmpty) return Direction.NONE;
+    return rng.item(directions);
+  }
+
   /// Chooses a random direction from [_target] that gets closer to one of the
   /// nearest positions matching [predicate].
   ///
   /// Returns [Direction.NONE] if no matching positions were found.
-  List<Direction> directionToNearestWhere(bool predicate(Vec pos)) {
+  Direction directionToNearestWhere(bool predicate(Vec pos)) {
     var directions = directionsToNearestWhere(predicate);
     if (directions.isEmpty) return Direction.NONE;
     return rng.item(directions);
@@ -98,30 +108,7 @@ class Flow {
     var goals = _findAllNearestWhere(predicate);
     if (goals == null) return [];
 
-    var walked = new Set<Vec>();
-    var directions = new Set<Direction>();
-
-    // Starting at [pos], recursively walk along all paths that proceed towards
-    // [_target].
-    walkBack(Vec pos) {
-      if (walked.contains(pos)) return;
-      walked.add(pos);
-
-      for (var dir in Direction.ALL) {
-        if (pos + dir == _target - _offset) {
-          // If this step reached the target, mark the direction of the step.
-          directions.add(dir.rotate180);
-        } else if (_distances[pos + dir] >= 0 &&
-                   _distances[pos + dir] < _distances[pos]) {
-          walkBack(pos + dir);
-        }
-      }
-    }
-
-    // Trace all paths from the goals back to the target.
-    goals.forEach(walkBack);
-
-    return directions.toList();
+    return _directionsTo(goals);
   }
 
   /// Get the positions closest to [_target] that meet [predicate].
@@ -164,6 +151,39 @@ class Flow {
     }
 
     return goals;
+  }
+
+  /// Find all directions from [_target] that get closer to one of positions in
+  /// [goals].
+  ///
+  /// Returns an empty list if none of the goals can be reached.
+  List<Direction> _directionsTo(List<Vec> goals) {
+    var walked = new Set<Vec>();
+    var directions = new Set<Direction>();
+
+    // Starting at [pos], recursively walk along all paths that proceed towards
+    // [_target].
+    walkBack(Vec pos) {
+      if (walked.contains(pos)) return;
+      walked.add(pos);
+
+      for (var dir in Direction.ALL) {
+        var here = pos + dir;
+        if (!_distances.bounds.contains(here)) continue;
+
+        if (here == _target - _offset) {
+          // If this step reached the target, mark the direction of the step.
+          directions.add(dir.rotate180);
+        } else if (_distances[here] >= 0 &&
+                   _distances[here] < _distances[pos]) {
+          walkBack(here);
+        }
+      }
+    }
+
+    // Trace all paths from the goals back to the target.
+    goals.forEach(walkBack);
+    return directions.toList();
   }
 
   /// Runs one iteration of Dijkstra's algorithm.

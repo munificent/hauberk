@@ -36,24 +36,6 @@ class Option {
   /// The maximum number of items the hero's crucible can contain.
   static final CRUCIBLE_CAPACITY = 8;
 
-  /// The starting score for a potential AI action.
-  static final AI_START_SCORE = 100;
-
-  /// The AI score to give for actions that should not be performed. Its actual
-  /// value doesn't matter much as long as its low enough that it never becomes
-  /// the highest score after taking into account meander and other scores.
-  static final AI_MIN_SCORE = -99999;
-
-  /// How much pathfinding affects a monster's choice of action.
-  static final AI_WEIGHT_PATH_STRAIGHT = 10;
-
-  /// How much the two directions adjacent to the pathfinding affects a
-  /// monster's choice of action.
-  static final AI_WEIGHT_PATH_NEAR = 5;
-
-  /// How much a breed's meander affects the monster's choice of action.
-  static final AI_WEIGHT_MEANDER = 3;
-
   /// When calculating pathfinding, how much it "costs" to move one step on
   /// an open floor tile.
   static final ASTAR_FLOOR_COST = 10;

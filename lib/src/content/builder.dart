@@ -113,8 +113,8 @@ class ContentBuilder {
   }
 
   Attack attack(String verb, int damage, [Element element = Element.NONE,
-      Noun noun]) {
-    return new Attack(verb, damage, element, noun);
+      Noun noun, int range]) {
+    return new Attack(verb, damage, element, noun, range);
   }
 
   Glyph black(char, [Color back = Color.BLACK])       => new Glyph.fromDynamic(char, Color.BLACK, back);

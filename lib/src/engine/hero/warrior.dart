@@ -8,7 +8,6 @@ import '../game.dart';
 import '../melee.dart';
 import '../monster.dart';
 import 'command.dart';
-import 'hero.dart';
 import 'hero_class.dart';
 
 /// A warrior is focused on combat. Players choosing them don't want to spend
@@ -189,12 +188,12 @@ class ArcheryCommand extends Command {
   bool get needsTarget => true;
 
   num getMinRange(Game game) => 1.5;
-  num getMaxRange(Game game) => game.hero.equipment.weapon.range;
+  num getMaxRange(Game game) => game.hero.equipment.weapon.attack.range;
 
   bool canUse(Game game) {
     // Get the equipped ranged weapon, if any.
     var weapon = game.hero.equipment.weapon;
-    if (weapon == null || !weapon.isRanged) {
+    if (weapon == null || !weapon.attack.isRanged) {
       game.log.error("You do not have a ranged weapon equipped.");
       return false;
     }

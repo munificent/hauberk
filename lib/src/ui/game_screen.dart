@@ -448,9 +448,9 @@ class GameScreen extends Screen {
         hero.health.max, Color.DARK_RED);
 
     drawStat(sidebar, 1, 'Level', hero.level, Color.AQUA);
-    var levelPercent = (100 * hero.experience /
+    var levelPercent = 100 * hero.experience ~/
         (calculateLevelCost(hero.level + 1) -
-        calculateLevelCost(hero.level))).toInt();
+        calculateLevelCost(hero.level));
     sidebar.writeAt(16, 1, '$levelPercent%', Color.DARK_AQUA);
     drawStat(sidebar, 2, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
@@ -462,9 +462,9 @@ class GameScreen extends Screen {
     if (hero.heroClass is Warrior) _drawWarriorStats(sidebar, hero);
 
     // Draw the nearby monsters.
-    sidebar.writeAt(0, 18, '@', heroColor);
-    sidebar.writeAt(2, 18, save.name);
-    drawHealthBar(sidebar, 19, hero);
+    sidebar.writeAt(0, 16, '@', heroColor);
+    sidebar.writeAt(2, 16, save.name);
+    drawHealthBar(sidebar, 17, hero);
 
     visibleMonsters.sort((a, b) {
       var aDistance = (a.pos - game.hero.pos).lengthSquared;
@@ -473,7 +473,7 @@ class GameScreen extends Screen {
     });
 
     for (var i = 0; i < 10; i++) {
-      var y = 20 + i * 2;
+      var y = 18 + i * 2;
       if (i < visibleMonsters.length) {
         var monster = visibleMonsters[i];
 
@@ -705,7 +705,7 @@ class HitEffect implements Effect {
   HitEffect(Actor actor)
   : x = actor.x,
     y = actor.y,
-    health = 9 * actor.health.current ~/ actor.health.max;
+    health = 10 * actor.health.current ~/ actor.health.max;
 
   bool update(Game game) {
     return frame++ < NUM_FRAMES;

@@ -56,7 +56,7 @@ class Game {
 
           if (result.succeeded && action.consumesEnergy) {
             action.actor.finishTurn(action);
-            stage.actors.advance();
+            stage.advanceActor();
           }
 
           // Refresh every time the hero takes a turn.
@@ -69,12 +69,12 @@ class Game {
       // If we get here, all pending actions are done, so advance to the next
       // tick until an actor moves.
       while (_actions.isEmpty) {
-        final actor = stage.actors.current;
+        var actor = stage.currentActor;
 
         // If we are still waiting for input for the actor, just return (again).
         if (actor.energy.canTakeTurn && actor.needsInput) return gameResult;
 
-        if (actor.energy.gain(actor.speed)) {
+        if (actor.energy.canTakeTurn || actor.energy.gain(actor.speed)) {
           // If the actor can move now, but needs input from the user, just
           // return so we can wait for it.
           if (actor.needsInput) return gameResult;
@@ -82,7 +82,7 @@ class Game {
           _actions.add(actor.getAction());
         } else {
           // This actor doesn't have enough energy yet, so move on to the next.
-          stage.actors.advance();
+          stage.advanceActor();
         }
 
         // Each time we wrap around, process "idle" things that are ongoing and

@@ -274,6 +274,18 @@ class Monsters extends ContentBuilder {
 
   people() {
     group("p", tracking: 14);
+
+    /*
+    breed("debug meander", purple, 6, [
+      attack("stab[s]", 1),
+    ], meander: 2);
+
+    breed("debug archer", green, 12, [
+      attack("stab[s]", 4),
+      arrow(cost: 10, damage: 2)
+    ], meander: 2);
+    */
+
     breed("simpering knave", orange, 6, [
       attack("hit[s]", 2),
       attack("stab[s]", 4)
@@ -450,19 +462,19 @@ class Monsters extends ContentBuilder {
 
   Move arrow({int cost, int damage}) =>
       new BoltMove(cost, new Attack("hits", damage, Element.NONE,
-          new Noun("the arrow")));
+          new Noun("the arrow"), 8));
 
   Move sparkBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack("zaps", damage, Element.LIGHTNING,
-          new Noun("the spark")));
+          new Noun("the spark"), 8));
 
   Move iceBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack("freezes", damage, Element.COLD,
-          new Noun("the ice")));
+          new Noun("the ice"), 8));
 
   Move fireBolt({int cost, int damage}) =>
       new BoltMove(cost, new Attack("burns", damage, Element.FIRE,
-          new Noun("the flame")));
+          new Noun("the flame"), 8));
 
   Move insult({int cost: 20}) => new InsultMove(cost);
 

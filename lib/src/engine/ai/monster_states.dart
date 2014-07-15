@@ -1,97 +1,72 @@
 library hauberk.engine.ai.monster_states;
 
+import 'dart:math' as math;
+
 import '../../debug.dart';
 import '../../util.dart';
 import '../action_base.dart';
-import '../ai/a_star.dart';
 import '../breed.dart';
 import '../game.dart';
 import '../log.dart';
+import '../los.dart';
 import '../monster.dart';
 import '../option.dart';
+import 'a_star.dart';
 import 'flow.dart';
+import 'move.dart';
 
-/*
-
-monster has "mood", which describes how it's feeling:
-- how afraid
-- how bored
-- other stuff?
-
-those change over time based on stimulus:
-- los with hero decreases boredom
-- hearing hero decreases boredom
-- no los with hero increases boredom
-- seeing hero take damage decreases fear
-- taking damage increases fear
-- seeing hero inflict damage increases fear
-- just seeing hero's health increases fear?
-- being bored decreases fear
-
-monster also has set of moves it can perform, and it can reason about them
-in ai:
-- knows which moves are ranged attacks
-- knows element move uses for attack
-
-mood and moves are then used to determine goal:
-- melee attack hero
-- sleep
-- flee
-- get in position for ranged attack
-- use other move
-
-when goal is attack:
-- tries to find path to get to hero
-- if has haste, will likely use it
-- if can teleport to, will likely use it
-- hits if adjacent
-
-when goal is flee:
-- tries to find path to nearest tile that is not visible to hero
-- if has healing move may use it
-- if has haste, may use it
-- if can teleport away, will likely use it
-- if cornered, attacks
-
-when goal is get in position for ranged attack:
-- tries to find path to nearest range position. good range position is:
-  - not too far from hero
-  - not too close
-  - has open los to hero
-- if in position, uses ranged move
-- distance range is based on
-  - strength of melee attacks
-  - strength of ranged attacks
-  - cost of ranged attacks
-  - fear
-  - recharge
-
-other stuff:
-- semi-intelligent monsters should learn hero resists by seeing which moves
-  are ineffective
-- intelligent monsters do same, but take into account moves *other* monsters
-  do if they can see hero when it happens
-- omniscient monsters just know hero's weaknesses
-- all but stupidest monsters won't use move that applies condition currently
-  in effect
-- stupid monsters don't pathfind as well
-
-- would be nice to have a state for assisting other monsters
-
-different ways monsters handle fear:
-- cowardly: easily frightened when hurt or others are
-- protective: frightened when hurt, emboldened when others (esp weaker) are
-- stoic: not easily frightened
-- selfish: easily frightened when hurt, not when others are
-- berzerk: emboldened when hurt or others are
-
-courage level examples:
-- creeper vine: too dumb to be afraid at all
-- cockroach: too dumb to be afraid almost all the time
-- raven: "normal" fear response
-- mangy cur: easily frightened
-- scurrilous imp: very easily frightened
- */
+/// This defines the monster AI. AI is broken into a three level hierarchy.
+///
+/// The top sort-of level is the monster's "mood". This is a set of variables
+/// that describe how the monster is "feeling". How afraid they are, how bored
+/// they are, etc. These are the monster's senses and memory.
+///
+/// At the beginning of each turn, the monster uses these and some hysteresis
+/// to determine it's *state*, which is how their mood manifests in behavior.
+/// Where the "fear" mood fluctuates every turn, only when it reaches a high
+/// enough point to trigger a transition to the "afraid" *state* does its
+/// behavior change.
+///
+/// Most monsters the hero is interacting with are in the "awake" state.
+/// Monsters off in the distances are usually asleep. Other states may be added
+/// later: confused, blind, charmed, etc.
+///
+/// When awake, the monster has to decide what to do. It has a few options:
+///
+/// - It can perform a [Move], which are the "special" things different breeds
+///   can do: teleportation, bolt attacks, etc.
+/// - It can try to walk up to the hero and engage in melee combat.
+/// - If it has a ranged attack move, it can try to get to a good vantage point
+///   (not near the hero but still in range, with open LOS) and use a ranged
+///   move.
+///
+/// Each move carries with it a little bit of logic to determine if it's a good
+/// idea to use it. For example, the [HealMove] won't let itself be used if the
+/// monster is at max health. In order to use a move, the monster must be
+/// "recharged". Each move has a cost, and after using it, the monster must
+/// recharge before another move can be performed. (Melee attacks have no cost.)
+///
+/// If a monster is recharged and does have a usable move, it will always prefer
+/// to do that first. Once it's got no moves to do, it has to determine how it
+/// wants to fight.
+///
+/// To choose between melee and ranged attacks, it decides how "cautious" it is.
+/// The more damaging its ranged attacks are relative to melee, the more
+/// cautious it is. Greater fear and lower health also make it more cautious.
+/// If caution is above a threshold, the monster will prefer a ranged attack.
+///
+/// To get in position for that, it pathfinds to the nearest tile that's in
+/// range and has an open line of sight to the hero. Checking for an open line
+/// of sight obviously avoids friendly fire, but also makes monsters spread out
+/// and flank the hero, which plays and looks cool.
+///
+/// Once it's on a good targeting tile, it will keep walking towards adjacent
+/// tiles that are farther from the hero but still in range until it's fully
+/// charged.
+///
+/// If it decides to go melee, it simply pathfinds to the hero and goes for it.
+/// In either case, the end result is walking one tile (or possibly standing
+/// in place.)
 
 abstract class MonsterState {
   Monster _monster;
@@ -217,104 +192,278 @@ class AwakeState extends MonsterState {
       }
     }
 
-    // Consider all possible moves and select the best one.
-    final choices = <AIChoice>[];
-
-    final path = AStar.findDirection(game.stage, pos, game.hero.pos,
-    breed.tracking, canOpenDoors);
-
-    // Consider melee attacking.
-    final toHero = game.hero.pos - pos;
-    if (toHero.kingLength == 1) {
-      // TODO: Figure out what this score should be. It should generally
-      // be pretty high. Most of the time a monster should prefer this over
-      // walking, but may prefer other moves over this.
-      var score = Option.AI_START_SCORE + 50;
-      choices.add(new AIChoice(score, "melee",
-          () => new WalkAction(toHero)));
-    }
-
-    // Consider each direction to walk in.
-    for (var i = 0; i < Direction.ALL.length; i++) {
-      var score = Option.AI_START_SCORE;
-      final dest = pos + Direction.ALL[i];
-
-      // If the direction is blocked, don't consider it.
-      if (!game.stage[dest].isTraversable) continue;
-      if (!canOpenDoors && !game.stage[dest].isPassable) continue;
-      if (game.stage.actorAt(dest) != null) continue;
-
-      // Apply pathfinding.
-      if (Direction.ALL[i] == path) {
-        score += Option.AI_WEIGHT_PATH_STRAIGHT;
-      } else if (Direction.ALL[i].rotateLeft45 == path) {
-        score += Option.AI_WEIGHT_PATH_NEAR;
-      } else if (Direction.ALL[i].rotateRight45 == path) {
-        score += Option.AI_WEIGHT_PATH_NEAR;
-      }
-
-      // Add some randomness to make the monster meander.
-      score += rng.range(breed.meander * Option.AI_WEIGHT_MEANDER);
-
-      choices.add(new AIChoice(score, "walk ${Direction.ALL[i]}",
-          () => new WalkAction(Direction.ALL[i])));
-    }
-
-    // Consider the monster's moves if it can.
+    // If there is a worthwhile move, use it.
     if (isRecharged) {
-      for (final move in breed.moves) {
-        // TODO(bob): Should move cost affect its score?
-        var score = Option.AI_START_SCORE + move.getScore(monster);
-        if (score == Option.AI_MIN_SCORE) continue;
-        choices.add(new AIChoice(score, move.toString(),
-            () => move.getAction(monster)));
+      var moves = breed.moves.where((move) => move.shouldUse(monster)).toList();
+      if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
+    }
+
+    // The monster doesn't have a move to use, so they are going to attack.
+    // It needs to decide if it wants to do a ranged attack or a melee attack.
+    var wantsToMelee = true;
+
+    // First, it determines how "cautious" it is. Being more cautious makes the
+    // monster prefer a ranged attack when possible.
+
+    // Determine how much ranged damage it can dish out per turn.
+    var rangedDamage = 0;
+    var rangedAttacks = 0;
+
+    for (var move in breed.moves) {
+      // TODO: Handle other ranged damage moves.
+      if (move is! BoltMove) continue;
+
+      var movesPerTurn = Option.RECHARGE_RATE / move.cost;
+      rangedDamage += move.attack.averageDamage * movesPerTurn;
+      rangedAttacks++;
+
+      // TODO: Take elements into account?
+      // TODO: Smart monsters should take hero resists into account.
+    }
+
+    if (rangedAttacks != 0) {
+      // Determine how much melee damage it can dish out per turn.
+      var meleeDamage = 0;
+      var meleeAttacks = 0;
+
+      for (var attack in breed.attacks) {
+        // Monsters don't have any raw ranged attacks, just ranged moves.
+        assert(!attack.isRanged);
+        meleeDamage += attack.averageDamage;
+        meleeAttacks++;
+
+        // TODO: Smart monsters should take hero resists into account.
+      }
+
+      if (meleeAttacks > 0) meleeDamage /= meleeAttacks;
+      rangedDamage /= rangedAttacks;
+
+      // The more damage a monster can do with ranged attacks, relative to its
+      // melee attacks, the more cautious it is.
+      var caution = 100 * rangedDamage / (rangedDamage + meleeDamage);
+
+      // Being afraid makes the monster more cautious.
+      caution += monster.fear;
+
+      // Being close to death makes the monster more cautious.
+      caution += 200 * (1 - monster.health.current / monster.health.max);
+
+      // TODO: Breed-specific "aggression" modifier to caution.
+
+      // Less likely to break away for a ranged attack if already in melee
+      // distance.
+      if (pos - game.hero.pos <= 1) {
+        wantsToMelee = caution < 100;
+      } else {
+        wantsToMelee = caution < 50;
       }
     }
 
-    // If the monster couldn't come up with anything to do, just sit.
-    if (choices.length == 0) {
-      Debug.logMonster(monster, "Nothing to do, resting.");
-      return new RestAction();
-    }
+    // Now that we know what the monster *wants* to do, reconcile it with what
+    // they're able to do.
+    var meleePath = AStar.findPath(game.stage, pos, game.hero.pos,
+        breed.tracking, canOpenDoors);
 
-    // Pick the best choice.
-    var bestScore = Option.AI_MIN_SCORE - 1;
-    var bestChoices;
-    for (var i = 0; i < choices.length; i++) {
-      if (choices[i].score == bestScore) {
-        // If multiple choices have the same score, we'll pick randomly
-        // between them.
-        bestChoices.add(choices[i]);
-      } if (choices[i].score > bestScore) {
-        bestScore = choices[i].score;
-        bestChoices = [choices[i]];
+    var rangedDir;
+    if (rangedAttacks > 0) rangedDir = _findRangedPath();
+
+    var canMelee = meleePath.length > 0 &&
+        game.stage.actorAt(pos + meleePath.direction) == null;
+    var canRanged = rangedDir != null;
+
+    var walkDir;
+    if (wantsToMelee) {
+      if (canMelee) {
+        walkDir = meleePath.direction;
+      } else {
+        walkDir = rangedDir;
+      }
+    } else {
+      if (canRanged) {
+        walkDir = rangedDir;
+      } else {
+        walkDir = meleePath.direction;
       }
     }
 
-    if (Debug.ENABLED) {
-      choices.sort((a, b) => b.score.compareTo(a.score));
-      Debug.logMonster(monster, choices.join(", "));
+    if (walkDir == null) walkDir = Direction.NONE;
+
+    walkDir = _meander(walkDir);
+
+    return new WalkAction(walkDir);
+  }
+
+  /// Applies the monster's meandering to [dir].
+  Direction _meander(Direction dir) {
+    var chance = 10;
+
+    // Monsters are (mostly) smart enough to not meander when they're about to
+    // melee. A small chance of meandering is still useful to get a monster out
+    // of a doorway sometimes.
+    if (pos + dir == game.hero.pos) chance = 50;
+
+    if (breed.meander <= rng.range(chance)) return dir;
+
+    var dirs;
+    if (dir == Direction.NONE) {
+      // Since the monster has no direction, any is equally valid.
+      dirs = Direction.ALL;
+    } else {
+      dirs = [];
+
+      // Otherwise, bias towards the direction the monster is headed.
+      for (var i = 0; i < 3; i++) {
+        dirs.add(dir.rotateLeft45);
+        dirs.add(dir.rotateRight45);
+      }
+
+      for (var i = 0; i < 2; i++) {
+        dirs.add(dir.rotateLeft90);
+        dirs.add(dir.rotateRight90);
+      }
+
+      dirs.add(dir.rotateLeft90.rotateLeft45);
+      dirs.add(dir.rotateRight90.rotateRight45);
+      dirs.add(dir.rotate180);
     }
 
-    return rng.item(bestChoices).createAction();
+    dirs = dirs.where((dir) {
+      var here = pos + dir;
+      if (!monster.canOccupy(here)) return false;
+      var actor = game.stage.actorAt(here);
+      return actor == null || actor == game.hero;
+    });
+
+    if (dirs.isEmpty) return dir;
+    return rng.item(dirs.toList());
+  }
+
+  /// Tries to find a path a desirable position for using a ranged [Move].
+  ///
+  /// Returns the [Direction] to take along the path. Returns [Direction.NONE]
+  /// if the monster's current position is a good ranged spot. Returns `null`
+  /// if no good ranged position could be found.
+  Direction _findRangedPath() {
+    var maxRange = breed.moves.fold(0,
+        (max, move) => math.min(max, move.range));
+
+    var flow = new Flow(game.stage, pos, maxDistance: maxRange,
+        canOpenDoors: canOpenDoors);
+
+    isValidRangedPosition(pos) {
+      // Ignore tiles that are out of range.
+      var toHero = pos - game.hero.pos;
+      if (toHero > maxRange) return false;
+
+      // TODO: Being near max range reduces damage. Should try to be within
+      // max damage range.
+
+      // Don't go point-blank.
+      if (toHero.kingLength <= 2) return false;
+
+      // Ignore occupied tiles.
+      var actor = game.stage.actorAt(pos);
+      if (actor != null && actor != monster) return false;
+
+      // Ignore tiles that don't have a line-of-sight to the hero.
+      return _hasLosFrom(pos);
+    }
+
+    // First, see if the current tile or any of its neighbors are good. Once in
+    // a tolerable position, the monster will hill-climb to get into a local
+    // optimal position (which basically means as far from the hero as possible
+    // while still in range).
+    var best;
+    var bestDistance = 0;
+
+    if (isValidRangedPosition(pos)) {
+      best = Direction.NONE;
+      // TODO: Need to decide whether ranged attacks use kingLength or Cartesian
+      // and then apply consistently.
+      bestDistance = (pos - game.hero.pos).lengthSquared;
+    }
+
+    for (var dir in Direction.ALL) {
+      var pos = monster.pos + dir;
+      if (!monster.canOccupy(pos)) continue;
+      if (!isValidRangedPosition(pos)) continue;
+
+      var distance = (pos - game.hero.pos).lengthSquared;
+      if (distance > bestDistance) {
+        best = dir;
+        bestDistance = distance;
+      }
+    }
+
+    if (best != null) return best;
+
+    // Otherwise, we'll need to actually pathfind to reach a good vantage point.
+    var dir = flow.directionToNearestWhere(isValidRangedPosition);
+    if (dir != Direction.NONE) {
+      Debug.logMonster(monster, "Ranged position $dir");
+      return dir;
+    }
+
+    // If we get here, couldn't find to a ranged position at all. We may be
+    // cornered, or the hero may be surrounded.
+    Debug.logMonster(monster, "No good ranged position");
+    return null;
+  }
+
+  Direction _findMeleePath() {
+    // Melee attack if next to the hero.
+    var toHero = game.hero.pos - pos;
+    if (toHero.kingLength == 1) return toHero;
+
+    // Try to pathfind towards the hero.
+    return AStar.findDirection(game.stage, pos, game.hero.pos,
+        breed.tracking, canOpenDoors);
+  }
+
+  /// Returns `true` if there is an open LOS from [from] to the hero.
+  bool _hasLosFrom(Vec from) {
+    for (var step in new Los(from, game.hero.pos)) {
+      if (step == game.hero.pos) return true;
+      if (!game.stage[step].isTransparent) return false;
+      var actor = game.stage.actorAt(step);
+      if (actor != null && actor != this) return false;
+    }
+
+    throw "unreachable";
   }
 }
 
 class AfraidState extends MonsterState {
   Action getAction() {
-    // TODO: Tune max distance?
+    // TODO: Should not walk past hero to get to escape!
+    // TODO: What should it do once it's in shadow?
     // Find the nearest place the hero can't see.
     var flow = new Flow(game.stage, pos, maxDistance: breed.tracking,
         canOpenDoors: monster.canOpenDoors);
     var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
 
-    // TODO: If no place to escape, become unafraid.
-    Debug.logMonster(monster, "Fleeing $dir");
+    if (dir != Direction.NONE) {
+      Debug.logMonster(monster, "Fleeing $dir to darkness");
+      return new WalkAction(dir);
+    }
 
-    // TODO: Should not walk past hero to get to escape!
-    // TODO: Should take into account distance from hero when choosing an
-    // escape destination.
-    // TODO: What should it do once it's in shadow?
-    return new WalkAction(dir);
+    // If we couldn't find a hidden tile, at least try to get some distance.
+    var heroDistance = (pos - game.hero.pos).kingLength;
+    var farther = Direction.ALL.where((dir) {
+      var here = pos + dir;
+      if (!monster.canOccupy(here)) return false;
+      if (game.stage.actorAt(here) != null) return false;
+      return (here - game.hero.pos).kingLength > heroDistance;
+    });
+
+    if (farther.isNotEmpty) {
+      dir = rng.item(farther.toList());
+      Debug.logMonster(monster, "Fleeing $dir away from hero");
+      return new WalkAction(dir);
+    }
+
+    // If we got here, we couldn't escape. Cornered!
+    Debug.logMonster(monster, "Cornered!");
+    return getNextStateAction(new AwakeState());
   }
 }

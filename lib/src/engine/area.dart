@@ -23,7 +23,7 @@ class Area {
 
     var heroPos = stage.findOpenTile();
     game.hero = new Hero(game, heroPos, heroSave);
-    stage.actors.add(game.hero);
+    stage.addActor(game.hero);
 
     // Place the items.
     final numItems = rng.taper(area.numItems, 3);

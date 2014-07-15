@@ -1,7 +1,6 @@
 library hauberk.engine.stage;
 
 import 'dart:collection';
-import 'dart:math' as math;
 
 import '../util.dart';
 import 'actor.dart';
@@ -17,9 +16,18 @@ class Stage {
   int get height => tiles.height;
   Rect get bounds => tiles.bounds;
 
+  Iterable<Actor> get actors => _actors;
+  Actor get currentActor => _actors.current;
+
   final Array2D<Tile> tiles;
-  final Chain<Actor> actors;
+  final Chain<Actor> _actors;
   final List<Item> items;
+
+  /// A spatial partition to let us quickly locate an actor by tile.
+  ///
+  /// This is a performance bottleneck since pathfinding needs to ensure it
+  /// doesn't step on other actors.
+  final Array2D<Actor> _actorsByTile;
 
   bool _visibilityDirty = true;
 
@@ -33,8 +41,9 @@ class Stage {
 
   Stage(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
-    actors = new Chain<Actor>(),
-    items = <Item>[];
+    _actors = new Chain<Actor>(),
+    items = <Item>[],
+    _actorsByTile = new Array2D<Actor>.filled(width, height, null);
 
   Game game;
 
@@ -43,14 +52,29 @@ class Stage {
   Tile get(int x, int y) => tiles.get(x, y);
   void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
 
-  // TODO: Move into Actor collection?
-  Actor actorAt(Vec pos) {
-    for (final actor in actors) {
-      if (actor.pos == pos) return actor;
-    }
-
-    return null;
+  void addActor(Actor actor) {
+    _actors.add(actor);
+    _actorsByTile[actor.pos] = actor;
   }
+
+  /// Called when an [Actor]'s position has changed so the stage can track it.
+  void moveActor(Vec from, Vec to) {
+    var actor = _actorsByTile[from];
+    _actorsByTile[from] = null;
+    _actorsByTile[to] = actor;
+  }
+
+  void removeActor(Actor actor) {
+    assert(_actorsByTile[actor.pos] == actor);
+    _actors.remove(actor);
+    _actorsByTile[actor.pos] = null;
+  }
+
+  void advanceActor() {
+    _actors.advance();
+  }
+
+  Actor actorAt(Vec pos) => _actorsByTile[pos];
 
   // TODO: Move into Item collection?
   // TODO: What if there are multiple items at pos?
@@ -140,7 +164,7 @@ class Stage {
 
     addMonster(Vec pos) {
       final monster = breed.spawn(game, pos);
-      actors.add(monster);
+      addActor(monster);
       monsters.add(monster);
     }
 

@@ -6,11 +6,9 @@ import '../debug.dart';
 import '../util.dart';
 import 'action_base.dart';
 import 'actor.dart';
-import 'ai/a_star.dart';
 import 'ai/monster_states.dart';
 import 'breed.dart';
 import 'energy.dart';
-import 'ai/flow.dart';
 import 'game.dart';
 import 'hero/hero.dart';
 import 'log.dart';
@@ -64,7 +62,9 @@ class Monster extends Actor {
   }
 
   void spendCharge(int cost) {
-    _recharge += cost;
+    // Add some randomness to the cost. Since monsters very eagerly prefer to
+    // use moves, this ensures they don't use them too predictably.
+    _recharge += rng.range(cost, cost * 5);
   }
 
   /// Gets whether or not this monster has a line of sight to [target].
@@ -231,7 +231,7 @@ class Monster extends Actor {
     // Tell the quest.
     game.quest.killMonster(game, this);
 
-    game.stage.actors.remove(this);
+    game.stage.removeActor(this);
     Debug.removeMonster(this);
   }
 
@@ -251,14 +251,14 @@ class Monster extends Actor {
     }
   }
 
-  Vec changePosition(Vec pos) {
+  void changePosition(Vec from, Vec to) {
+    super.changePosition(from, to);
+
     // If the monster is (or was) visible, don't let the hero rest through it
     // moving.
-    if (game.stage[this.pos].visible || game.stage[pos].visible) {
+    if (game.stage[from].visible || game.stage[to].visible) {
       game.hero.disturb();
     }
-
-    return pos;
   }
 
   /// Invokes [callback] on all nearby monsters that can see this one.

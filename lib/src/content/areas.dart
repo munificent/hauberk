@@ -2,6 +2,7 @@ library hauberk.content.areas;
 
 import '../engine.dart';
 import 'builder.dart';
+import 'debug_area.dart';
 import 'dungeon.dart';
 import 'forest.dart';
 import 'items.dart';
@@ -15,6 +16,17 @@ class Areas extends ContentBuilder {
   static final List<Area> all = [];
 
   void build() {
+    /*
+    area('Debugland', [
+      level(() => new DebugArea(), numMonsters: 2, numItems: 1,
+        breeds: [
+          'debug archer'
+        ],
+        drop: ['item:10'],
+        quest: tileType('the stairs', Tiles.stairs))
+    ]);
+    */
+
     area('Friendly Forest', [
       level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 8,
         breeds: [

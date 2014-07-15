@@ -38,35 +38,41 @@ class Attack {
   /// The defender's armor.
   final num armor;
 
-  Attack(String verb, num baseDamage, Element element, [Noun noun])
-      : this._(noun, verb, baseDamage, 0.0, 1.0, element, 0);
+  /// The maximum range of a missile attack, or `0` if the attack isn't ranged.
+  final int range;
+
+  bool get isRanged => range != 0;
+
+  Attack(String verb, num baseDamage, Element element, [Noun noun, int range])
+      : this._(noun, verb, baseDamage, 0.0, 1.0, element, 0,
+          range != null ? range : 0);
 
   Attack._(this.noun, this.verb, this.baseDamage, this.damageBonus,
-      this.damageScale, this.element, this.armor);
+      this.damageScale, this.element, this.armor, this.range);
 
   /// Returns a new attack identical to this one but with [offset] added.
   Attack addDamage(num offset) {
     return new Attack._(noun, verb, baseDamage, damageBonus + offset,
-        damageScale, element, armor);
+        damageScale, element, armor, range);
   }
 
   /// Returns a new attack identical to this one but with [element].
   Attack brand(Element element) {
     return new Attack._(noun, verb, baseDamage, damageBonus,
-        damageScale, element, armor);
+        damageScale, element, armor, range);
   }
 
   /// Returns a new attack identical to this one but with damage scaled by
   /// [factor].
   Attack multiplyDamage(num factor) {
     return new Attack._(noun, verb, baseDamage, damageBonus,
-        damageScale * factor, element, armor);
+        damageScale * factor, element, armor, range);
   }
 
   /// Returns a new attack with [armor] added to it.
   Attack addArmor(num armor) {
     return new Attack._(noun, verb, baseDamage, damageBonus, damageScale,
-        element, this.armor + armor);
+        element, this.armor + armor, range);
   }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of

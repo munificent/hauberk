@@ -3,8 +3,6 @@ library hauberk.engine.hero.command;
 import '../../util.dart';
 import '../action_base.dart';
 import '../game.dart';
-import '../item.dart';
-import '../melee.dart';
 
 /// A command is a specific ability that the player can select for the hero to
 /// perform.

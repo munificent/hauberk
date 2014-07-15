@@ -19,6 +19,8 @@ class Item extends Thing implements Comparable {
 
   get appearance => type.appearance;
 
+  bool get isRanged => type.attack != null && type.attack.isRanged;
+
   bool get canEquip => equipSlot != null;
   String get equipSlot => type.equipSlot;
 
@@ -36,9 +38,6 @@ class Item extends Thing implements Comparable {
 
     return attack;
   }
-
-  bool get isRanged => type.range != 0;
-  int get range => type.range;
 
   /// The amount of protected provided by the item when equipped.
   int get armor => type.armor;
@@ -98,10 +97,6 @@ class ItemType {
   /// The item's [Attack] or `null` if the item is not a weapon.
   final Attack attack;
 
-  /// The maximum range of a missile weapon, or `0` if the item isn't a weapon
-  /// or isn't ranged.
-  final int range;
-
   final int armor;
 
   /// The path to this item type in the hierarchical organization of items.
@@ -117,8 +112,7 @@ class ItemType {
   }
 
   ItemType(this.name, this.appearance, this.level, this.sortIndex,
-      this.equipSlot, this.use, this.categories, this.attack, this.range,
-      this.armor);
+      this.categories, this.equipSlot, this.use, this.attack, this.armor);
 
   String toString() => name;
 }
