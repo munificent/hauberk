@@ -411,6 +411,8 @@ class AwakeState extends MonsterState {
 
     if (path.length == 0) return null;
 
+    if (!monster.canOccupy(pos + path.direction)) return null;
+
     // Don't walk into another monster.
     var actor = game.stage.actorAt(pos + path.direction);
     if (actor != null && actor != game.hero) return null;

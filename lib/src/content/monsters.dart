@@ -25,7 +25,7 @@ class Monsters extends ContentBuilder {
     // $  Creeping Coins
     // a  Arachnid/Scorpion   A  Ancient being
     // b  Giant Bat           B  Bird
-    // c  Canine (Dog)        C  Canid (Dog-like humanoid, kobold)
+    // c  Canine (Dog)        C  Canid (Dog-like humanoid)
     // d  Dragon              D  Ancient Dragon
     // e  Floating Eye        E  Elemental
     // f  Flying Insect       F  Feline (Cat)
@@ -33,7 +33,7 @@ class Monsters extends ContentBuilder {
     // h  Humanoids           H  Hybrid
     // i  Insect              I  Goblin / Imp
     // j  Jelly / Slime       J  (unused)
-    // k  Skeleton            K  Kraken/Land Octopus
+    // k  Kobold              K  Kraken/Land Octopus
     // l  Lizard man          L  Lich
     // m  Mold/Mushroom       M  Multi-Headed Hydra
     // n  Naga                N  Demon
@@ -46,7 +46,7 @@ class Monsters extends ContentBuilder {
     // u  Minor Undead        U  Major Undead
     // v  Vine/Plant          V  Vampire
     // w  Worm or Worm Mass   W  Wight/Wraith
-    // x  (unused)            X  Xorn/Xaren
+    // x  Skeleton            X  Xorn/Xaren
     // y  Yeek                Y  Yeti
     // z  Zombie/Mummy        Z  Serpent (snake-like dragon)
     // TODO(bob):

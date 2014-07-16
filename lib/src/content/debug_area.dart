@@ -14,13 +14,16 @@ class DebugArea extends StageBuilder {
       setTile(pos, Tiles.floor);
     }
 
-    for (var x = 10; x < 20; x++) {
+    for (var x = 10; x <= 20; x++) {
       setTile(new Vec(x, 15), Tiles.wall);
       setTile(new Vec(x, 25), Tiles.wall);
     }
 
-    for (var y = 15; y < 25; y++) {
+    for (var y = 15; y <= 25; y++) {
       setTile(new Vec(10, y), Tiles.wall);
+      setTile(new Vec(20, y), Tiles.wall);
     }
+
+    setTile(new Vec(20, 20), Tiles.closedDoor);
   }
 }

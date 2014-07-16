@@ -18,15 +18,15 @@ class Areas extends ContentBuilder {
   void build() {
     /*
     area('Debugland', [
-      level(() => new DebugArea(), numMonsters: 2, numItems: 1,
+      level(() => new DebugArea(), numMonsters: 10, numItems: 1,
         breeds: [
-          'debug archer'
+          'scurrilous imp'
         ],
         drop: ['item:10'],
         quest: tileType('the stairs', Tiles.stairs))
     ]);
     */
-
+    
     area('Friendly Forest', [
       level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 8,
         breeds: [

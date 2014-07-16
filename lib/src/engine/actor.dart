@@ -75,6 +75,8 @@ abstract class Actor extends Thing {
 
   bool get needsInput => false;
 
+  bool get canOpenDoors => true;
+
   /// Gets the actor's current speed, taking into any account any active
   /// [Condition]s.
   int get speed {
@@ -157,7 +159,8 @@ abstract class Actor extends Thing {
     if (pos.y < 0) return false;
     if (pos.y >= game.stage.height) return false;
 
-    return game.stage[pos].isPassable;
+    if (game.stage[pos].isPassable) return true;
+    return game.stage[pos].isTraversable && canOpenDoors;
   }
 
   void finishTurn(Action action) {
