@@ -118,6 +118,7 @@ class Areas extends ContentBuilder {
           'scurrilous imp',
           'vexing imp',
           'goblin peon',
+          'house sprite',
           'wild dog',
           'blood worm',
           'giant cave worm',
@@ -132,8 +133,8 @@ class Areas extends ContentBuilder {
         quest: tileType('the stairs', Tiles.stairs)),
       level(() => new GoblinStronghold(70), numMonsters: 22, numItems: 9,
         breeds: [
-          'impish incanter',
-          'goblin archer',
+          'imp incanter',
+          'kobold',
           'goblin fighter',
           'giant bat',
           'mongrel',
@@ -150,10 +151,12 @@ class Areas extends ContentBuilder {
       level(() => new GoblinStronghold(90), numMonsters: 24, numItems: 10,
         breeds: [
           'imp warlock',
+          'goblin archer',
           'goblin warrior',
           'red slime',
           'lizard protector',
-          'floating eye'
+          'floating eye',
+          'plague rat'
         ],
         drop: [
           'food:6',
@@ -163,7 +166,8 @@ class Areas extends ContentBuilder {
         quest: tileType('the stairs', Tiles.stairs)),
       level(() => new GoblinStronghold(110), numMonsters: 26, numItems: 11,
         breeds: [
-          'armored lizard'
+          'armored lizard',
+          'goblin mage',
         ],
         drop: [
           'food:7',

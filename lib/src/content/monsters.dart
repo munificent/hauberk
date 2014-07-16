@@ -29,11 +29,11 @@ class Monsters extends ContentBuilder {
     // d  Dragon              D  Ancient Dragon
     // e  Floating Eye        E  Elemental
     // f  Flying Insect       F  Feline (Cat)
-    // g  Ghost               G  Golem
+    // g  Goblin              G  Golem
     // h  Humanoids           H  Hybrid
-    // i  Insect              I  Goblin / Imp
-    // j  Jelly / Slime       J  (unused)
-    // k  Kobold              K  Kraken/Land Octopus
+    // i  Insect              I  Insubstantial (ghost)
+    // j  Jelly/Slime         J  (unused)
+    // k  Kobold/Imp/Sprite   K  Kraken/Land Octopus
     // l  Lizard man          L  Lich
     // m  Mold/Mushroom       M  Multi-Headed Hydra
     // n  Naga                N  Demon
@@ -61,10 +61,11 @@ class Monsters extends ContentBuilder {
       eyes,
       flyingInsects,
       felines,
+      goblins,
       humanoids,
       insects,
-      imps,
       jellies,
+      kobolds,
       people,
       quadrupeds,
       rodents,
@@ -145,10 +146,10 @@ class Monsters extends ContentBuilder {
 
   eyes() {
     group("e", flags: "immobile");
-    breed("floating eye", yellow, 9, [
-      attack("touch[es]", 3),
-      lightBolt(cost: 10, damage: 4),
-      teleport(cost: 40, range: 5)
+    breed("floating eye", yellow, 16, [
+      attack("touch[es]", 4),
+      lightBolt(cost: 10, damage: 8),
+      teleport(cost: 40, range: 7)
     ]);
 
     // baleful eye, malevolent eye, murderous eye
@@ -181,57 +182,8 @@ class Monsters extends ContentBuilder {
         meander: 3, speed: 1);
   }
 
-  humanoids() {
-  }
-
-  insects() {
-    group("i", tracking: 3, meander: 8, flags: "fearless");
-    breed("giant cockroach[es]", darkBrown, 12, [
-      attack("crawl[s] on", 1),
-    ], drop: chanceOf(10, "Insect Wing"),
-        speed: 3);
-
-    breed("giant centipede", red, 12, [
-      attack("crawl[s] on", 3),
-      attack("bite[s]", 6),
-    ], speed: 2);
-  }
-
-  imps() {
-    group("I", flags: "open-doors");
-    breed("forest sprite", lightGreen, 6, [
-      attack("scratch[es]", 4),
-      teleport(range: 6)
-    ], drop: [
-      chanceOf(10, "food:1"),
-      chanceOf(20, "magic:1")
-    ], meander: 4, flags: "cowardly");
-
-    breed("scurrilous imp", lightRed, 14, [
-      attack("club[s]", 6),
-      insult(),
-      haste()
-    ], drop: [
-      chanceOf(10, "club:1"),
-      chanceOf(5, "speed:1"),
-    ], meander: 4, flags: "cowardly");
-
-    breed("vexing imp", purple, 12, [
-      attack("scratch[es]", 5),
-      insult(),
-      sparkBolt(cost: 10, damage: 8)
-    ], drop: [
-      chanceOf(10, "teleportation:1"),
-    ], meander: 4, speed: 1, flags: "cowardly");
-
-    breed("impish incanter", lightPurple, 16, [
-      attack("scratch[es]", 5),
-      insult(),
-      fireBolt(cost: 10, damage: 10)
-    ], drop: [
-      chanceOf(10, "magic:1"),
-    ], meander: 4, speed: 1, flags: "cowardly");
-
+  goblins() {
+    group("g", meander: 1, flags: "open-doors");
     breed("goblin peon", lightBrown, 16, [
       attack("stab[s]", 6)
     ],
@@ -248,29 +200,46 @@ class Monsters extends ContentBuilder {
       chanceOf(20, "bow:1"),
       chanceOf(10, "dagger:2"),
       chanceOf(5, "healing:3"),
-    ], meander: 2, flags: "few");
+    ], flags: "few");
 
     breed("goblin fighter", brown, 24, [
       attack("stab[s]", 8)
     ], drop: [
       chanceOf(15, "spear:5"),
       chanceOf(5, "healing:3"),
-    ], meander: 1);
-
-    breed("imp warlock", darkPurple, 20, [
-      attack("stab[s]", 6),
-      iceBolt(cost: 7, damage: 12),
-      fireBolt(cost: 7, damage: 12)
-    ], drop: [
-      chanceOf(10, "magic:4"),
-    ], meander: 3, speed: 1, flags: "cowardly");
+    ]);
 
     breed("goblin warrior", gray, 32, [
       attack("stab[s]", 14)
     ], drop: [
       chanceOf(20, "spear:6"),
       chanceOf(5, "healing:3"),
-    ], meander: 1, flags: "protective");
+    ], flags: "protective");
+
+    breed("goblin mage", blue, 20, [
+      attack("bash[es]", 14),
+      fireBolt(cost: 16, damage: 6),
+      sparkBolt(cost: 16, damage: 8),
+    ], drop: [
+      chanceOf(10, "equipment:3"),
+      chanceOf(20, "magic:6"),
+    ]);
+  }
+
+  humanoids() {
+  }
+
+  insects() {
+    group("i", tracking: 3, meander: 8, flags: "fearless");
+    breed("giant cockroach[es]", darkBrown, 12, [
+      attack("crawl[s] on", 1),
+    ], drop: chanceOf(10, "Insect Wing"),
+        speed: 3);
+
+    breed("giant centipede", red, 12, [
+      attack("crawl[s] on", 3),
+      attack("bite[s]", 6),
+    ], speed: 2);
   }
 
   jellies() {
@@ -286,6 +255,66 @@ class Monsters extends ContentBuilder {
     breed("red slime", blue, 14, [
       attack("crawl[s] on", 6, Element.FIRE)
     ]);
+  }
+
+  kobolds() {
+    group("k", flags: "open-doors");
+    breed("forest sprite", lightGreen, 6, [
+      attack("scratch[es]", 4),
+      teleport(range: 6)
+    ], drop: [
+      chanceOf(10, "food:1"),
+      chanceOf(20, "magic:1")
+    ], meander: 4, flags: "cowardly");
+
+    breed("house sprite", lightBlue, 6, [
+      attack("stab[s]", 8),
+      teleport(range: 6)
+    ], drop: [
+      chanceOf(10, "food:3"),
+      chanceOf(20, "magic:6")
+    ], meander: 4, flags: "cowardly");
+
+    breed("scurrilous imp", lightRed, 14, [
+      attack("club[s]", 6),
+      insult(),
+      haste()
+    ], drop: [
+      chanceOf(10, "club:1"),
+      chanceOf(5, "speed:1"),
+    ], meander: 4, flags: "cowardly");
+
+    breed("vexing imp", purple, 12, [
+      attack("scratch[es]", 5),
+      insult(),
+      sparkBolt(cost: 10, damage: 6)
+    ], drop: [
+      chanceOf(10, "teleportation:1"),
+    ], meander: 4, speed: 1, flags: "cowardly");
+
+    breed("kobold", blue, 8, [
+      attack("poke[s]", 4),
+      teleport(cost: 20, range: 6)
+    ], drop: [
+      chanceOf(10, "food:3"),
+      chanceOf(30, "magic:7")
+    ], meander: 4, flags: "group");
+
+    breed("imp incanter", lightPurple, 16, [
+      attack("scratch[es]", 5),
+      insult(),
+      fireBolt(cost: 10, damage: 10)
+    ], drop: [
+      chanceOf(10, "magic:1"),
+    ], meander: 4, speed: 1, flags: "cowardly");
+
+    breed("imp warlock", darkPurple, 20, [
+      attack("stab[s]", 6),
+      iceBolt(cost: 7, damage: 12),
+      fireBolt(cost: 7, damage: 12)
+    ], drop: [
+      chanceOf(10, "magic:4"),
+    ], meander: 3, speed: 1, flags: "cowardly");
   }
 
   people() {
@@ -352,11 +381,11 @@ class Monsters extends ContentBuilder {
   }
 
   rodents() {
-    group("r");
+    group("r", meander: 4);
     breed("field [mouse|mice]", lightBrown, 3, [
       attack("bite[s]", 3),
       attack("scratch[es]", 2)
-    ], meander: 4, speed: 1);
+    ], speed: 1);
 
     breed("fuzzy bunn[y|ies]", lightBlue, 10, [
       attack("bite[s]", 3),
@@ -365,17 +394,22 @@ class Monsters extends ContentBuilder {
 
     breed("vole", darkGray, 5, [
       attack("bite[s]", 4)
-    ], meander: 3, speed: 1);
+    ], speed: 1);
 
     breed("white [mouse|mice]", white, 6, [
       attack("bite[s]", 5),
       attack("scratch[es]", 3)
-    ], meander: 4, speed: 1);
+    ], speed: 1);
 
     breed("sewer rat", darkGray, 6, [
       attack("bite[s]", 4),
       attack("scratch[es]", 3)
     ], meander: 3, speed: 1, flags: "group");
+
+    breed("plague rat", darkGreen, 7, [
+      attack("bite[s]", 5, Element.POISON),
+      attack("scratch[es]", 3)
+    ], speed: 1, flags: "group");
   }
 
   reptiles() {
@@ -478,23 +512,23 @@ class Monsters extends ContentBuilder {
 
   Move heal({int cost, int amount}) => new HealMove(cost, amount);
 
-  Move arrow({int cost, int damage}) =>
+  Move arrow({int cost: 20, int damage}) =>
       new BoltMove(cost, new Attack("hits", damage, Element.NONE,
           new Noun("the arrow"), 8));
 
-  Move sparkBolt({int cost, int damage}) =>
+  Move sparkBolt({int cost: 20, int damage}) =>
       new BoltMove(cost, new Attack("zaps", damage, Element.LIGHTNING,
           new Noun("the spark"), 8));
 
-  Move iceBolt({int cost, int damage}) =>
+  Move iceBolt({int cost: 20, int damage}) =>
       new BoltMove(cost, new Attack("freezes", damage, Element.COLD,
           new Noun("the ice"), 8));
 
-  Move fireBolt({int cost, int damage}) =>
+  Move fireBolt({int cost: 20, int damage}) =>
       new BoltMove(cost, new Attack("burns", damage, Element.FIRE,
           new Noun("the flame"), 8));
 
-  Move lightBolt({int cost, int damage}) =>
+  Move lightBolt({int cost: 20, int damage}) =>
       new BoltMove(cost, new Attack("sears", damage, Element.LIGHT,
           new Noun("the light"), 10));
 
