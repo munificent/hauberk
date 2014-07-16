@@ -22,7 +22,7 @@ abstract class Move {
 
   /// Returns `true` if the monster would reasonably perform this move right
   /// now.
-  bool shouldUse(Monster monster);
+  bool shouldUse(Monster monster) => true;
 
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.
@@ -122,4 +122,13 @@ class HasteMove extends Move {
   Action onGetAction(Monster monster) => new HasteAction(_duration, _speed);
 
   String toString() => "Haste $_speed for $_duration turns cost: $cost";
+}
+
+/// Teleports the [Monster] randomly from its current position.
+class TeleportMove extends Move {
+  final int _range;
+
+  TeleportMove(int cost, this._range) : super(cost);
+
+  Action onGetAction(Monster monster) => new TeleportAction(_range);
 }

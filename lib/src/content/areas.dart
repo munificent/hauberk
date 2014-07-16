@@ -20,18 +20,19 @@ class Areas extends ContentBuilder {
     area('Debugland', [
       level(() => new DebugArea(), numMonsters: 10, numItems: 1,
         breeds: [
-          'scurrilous imp'
+          'floating eye'
         ],
         drop: ['item:10'],
         quest: tileType('the stairs', Tiles.stairs))
     ]);
     */
-    
+
     area('Friendly Forest', [
       level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 8,
         breeds: [
           'butterfly',
           'field mouse',
+          'vole',
           'robin',
           'garter snake',
           'frog'
@@ -47,15 +48,15 @@ class Areas extends ContentBuilder {
       level(() => new Forest(meadowInset: 6), numMonsters: 8, numItems: 10,
         breeds: [
           'bee',
-          'vole',
           'tree snake',
           'giant earthworm',
           'garden spider',
-          'wasp'
+          'wasp',
+          'forest sprite'
         ],
         drop: [
           chanceOf(20, 'Flower'),
-          chanceOf(50, 'food:1'),
+          chanceOf(50, 'food:2'),
           chanceOf(10, 'magic:1'),
           chanceOf(10, 'equipment:1'),
           chanceOf(10, 'Stick')
@@ -151,7 +152,8 @@ class Areas extends ContentBuilder {
           'imp warlock',
           'goblin warrior',
           'red slime',
-          'lizard protector'
+          'lizard protector',
+          'floating eye'
         ],
         drop: [
           'food:6',

@@ -119,6 +119,9 @@ class Monster extends Actor {
 
     if (breed.flags.contains("fearless")) return;
 
+    // If it can't run, there's no point in being afraid.
+    if (breed.flags.contains("immobile")) return;
+
     _fear = math.max(0.0, _fear + offset);
 
     // TODO: Also check for other awake non-afraid states.

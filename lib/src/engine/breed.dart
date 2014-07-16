@@ -79,7 +79,7 @@ class Breed implements Quantifiable {
     // Meandering monsters are worth less.
     exp *= (Option.EXP_MEANDER - meander) / Option.EXP_MEANDER;
 
-    // TODO(bob): Take into account moves.
+    // TODO: Take into account moves.
     return exp.toInt();
   }
 

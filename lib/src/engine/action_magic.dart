@@ -70,7 +70,7 @@ class TeleportAction extends Action {
     var from = actor.pos;
     actor.pos = best;
     addEvent(new Event(EventType.TELEPORT, actor: actor, value: from));
-    return succeed('{1} teleport[s] away!', actor);
+    return succeed('{1} teleport[s]!', actor);
   }
 }
 

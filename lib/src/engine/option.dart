@@ -85,7 +85,8 @@ class Option {
     'fearless': 1.2,
     'protective': 1.1,
     'cowardly': 0.8,
-    'berzerk': 1.2
+    'berzerk': 1.2,
+    'immobile': 0.7
   };
 
   /// The more a monster meanders, the less experience it's worth. This number

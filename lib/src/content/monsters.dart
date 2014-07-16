@@ -58,20 +58,21 @@ class Monsters extends ContentBuilder {
       bats,
       birds,
       canines,
+      eyes,
       flyingInsects,
       felines,
       humanoids,
       insects,
       imps,
       jellies,
-      skeletons,
       people,
       quadrupeds,
       rodents,
       reptiles,
       slugs,
       snakes,
-      worms
+      worms,
+      skeletons
     ];
 
     for (var category in categories) {
@@ -142,8 +143,19 @@ class Monsters extends ContentBuilder {
     ], drop: chanceOf(20, "Fur Pelt"));
   }
 
+  eyes() {
+    group("e", flags: "immobile");
+    breed("floating eye", yellow, 9, [
+      attack("touch[es]", 3),
+      lightBolt(cost: 10, damage: 4),
+      teleport(cost: 40, range: 5)
+    ]);
+
+    // baleful eye, malevolent eye, murderous eye
+  }
+
   flyingInsects() {
-    group("i", tracking: 5, meander: 8);
+    group("f", tracking: 5, meander: 8);
     breed("butterfl[y|ies]", lightPurple, 1, [
       attack("tickle[s] on", 1),
     ], drop: chanceOf(20, "Insect Wing"),
@@ -187,6 +199,14 @@ class Monsters extends ContentBuilder {
 
   imps() {
     group("I", flags: "open-doors");
+    breed("forest sprite", lightGreen, 6, [
+      attack("scratch[es]", 4),
+      teleport(range: 6)
+    ], drop: [
+      chanceOf(10, "food:1"),
+      chanceOf(20, "magic:1")
+    ], meander: 4, flags: "cowardly");
+
     breed("scurrilous imp", lightRed, 14, [
       attack("club[s]", 6),
       insult(),
@@ -266,10 +286,6 @@ class Monsters extends ContentBuilder {
     breed("red slime", blue, 14, [
       attack("crawl[s] on", 6, Element.FIRE)
     ]);
-  }
-
-  skeletons() {
-
   }
 
   people() {
@@ -422,6 +438,10 @@ class Monsters extends ContentBuilder {
     ], speed: -2);
   }
 
+  skeletons() {
+
+  }
+
   void group(glyph, {int meander, int tracking, String flags}) {
     _glyph = glyph;
     _meander = meander != null ? meander : 0;
@@ -474,8 +494,15 @@ class Monsters extends ContentBuilder {
       new BoltMove(cost, new Attack("burns", damage, Element.FIRE,
           new Noun("the flame"), 8));
 
+  Move lightBolt({int cost, int damage}) =>
+      new BoltMove(cost, new Attack("sears", damage, Element.LIGHT,
+          new Noun("the light"), 10));
+
   Move insult({int cost: 20}) => new InsultMove(cost);
 
   Move haste({int cost: 20, int duration: 10, int speed: 1}) =>
       new HasteMove(cost, duration, speed);
+
+  Move teleport({int cost: 20, int range: 10}) =>
+      new TeleportMove(cost, range);
 }

@@ -244,6 +244,13 @@ class AwakeState extends MonsterState {
       if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
     }
 
+    // If the monster can't walk, then it does melee or waits.
+    if (breed.flags.contains("immobile")) {
+      var toHero = game.hero.pos - pos;
+      if (toHero.kingLength == 1) return new WalkAction(toHero);
+      return new WalkAction(Direction.NONE);
+    }
+
     // The monster doesn't have a move to use, so they are going to attack.
     // It needs to decide if it wants to do a ranged attack or a melee attack.
     var wantsToMelee = true;
