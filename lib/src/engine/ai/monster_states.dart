@@ -1,9 +1,8 @@
 library hauberk.engine.ai.monster_states;
 
-import 'dart:math' as math;
+import 'package:piecemeal/piecemeal.dart';
 
 import '../../debug.dart';
-import '../../util.dart';
 import '../action_base.dart';
 import '../breed.dart';
 import '../game.dart';
@@ -103,7 +102,6 @@ abstract class MonsterState {
   Direction _meander(Direction dir) {
     var chance = 15;
 
-    return dir;
     // Monsters are (mostly) smart enough to not meander when they're about to
     // melee. A small chance of meandering is still useful to get a monster out
     // of a doorway sometimes.

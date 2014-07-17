@@ -1,7 +1,8 @@
 library hauberk.content.debug_area;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 

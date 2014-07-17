@@ -1,8 +1,10 @@
 library hauberk.ui.target_dialog;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
 import 'game_screen.dart';
+import 'glyph.dart';
 import 'keyboard.dart';
 import 'screen.dart';
 import 'terminal.dart';

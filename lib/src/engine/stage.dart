@@ -2,7 +2,8 @@ library hauberk.engine.stage;
 
 import 'dart:collection';
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import 'actor.dart';
 import 'breed.dart';
 import 'fov.dart';
@@ -12,16 +13,19 @@ import 'item.dart';
 
 /// The game's live play area.
 class Stage {
+  final _actors = <Actor>[];
+  int _currentActorIndex = 0;
+
   int get width => tiles.width;
   int get height => tiles.height;
   Rect get bounds => tiles.bounds;
 
   Iterable<Actor> get actors => _actors;
-  Actor get currentActor => _actors.current;
+
+  Actor get currentActor => _actors[_currentActorIndex];
 
   final Array2D<Tile> tiles;
-  final Chain<Actor> _actors;
-  final List<Item> items;
+  final items = <Item>[];
 
   /// A spatial partition to let us quickly locate an actor by tile.
   ///
@@ -41,8 +45,6 @@ class Stage {
 
   Stage(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
-    _actors = new Chain<Actor>(),
-    items = <Item>[],
     _actorsByTile = new Array2D<Actor>.filled(width, height, null);
 
   Game game;
@@ -66,12 +68,16 @@ class Stage {
 
   void removeActor(Actor actor) {
     assert(_actorsByTile[actor.pos] == actor);
-    _actors.remove(actor);
+
+    var index = _actors.indexOf(actor);
+    if (_currentActorIndex > index) _currentActorIndex--;
+    _actors.removeAt(index);
+
     _actorsByTile[actor.pos] = null;
   }
 
   void advanceActor() {
-    _actors.advance();
+    _currentActorIndex = (_currentActorIndex + 1) % _actors.length;
   }
 
   Actor actorAt(Vec pos) => _actorsByTile[pos];

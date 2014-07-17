@@ -1,6 +1,7 @@
 library hauberk.engine.hero.warrior;
 
-import '../../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import '../action_base.dart';
 import '../action_combat.dart';
 import '../actor.dart';

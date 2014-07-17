@@ -1,8 +1,8 @@
 library hauberk.ui.main_menu_screen;
 
 import '../engine.dart';
-import '../util.dart';
 import 'confirm_dialog.dart';
+import 'glyph.dart';
 import 'keyboard.dart';
 import 'new_hero_screen.dart';
 import 'screen.dart';

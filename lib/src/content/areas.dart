@@ -2,7 +2,6 @@ library hauberk.content.areas;
 
 import '../engine.dart';
 import 'builder.dart';
-import 'debug_area.dart';
 import 'dungeon.dart';
 import 'forest.dart';
 import 'items.dart';

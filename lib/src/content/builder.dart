@@ -1,7 +1,7 @@
 library hauberk.content.builder;
 
 import '../engine.dart';
-import '../util.dart';
+import '../ui/glyph.dart';
 import 'items.dart';
 
 final _categoryDropPattern = new RegExp(r"([a-z/]+):(\d+)");

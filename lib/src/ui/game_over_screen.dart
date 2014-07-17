@@ -1,6 +1,6 @@
 library hauberk.ui.game_over_screen;
 
-import '../util.dart';
+import 'glyph.dart';
 import 'keyboard.dart';
 import 'screen.dart';
 import 'terminal.dart';

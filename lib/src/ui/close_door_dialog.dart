@@ -1,7 +1,8 @@
 library hauberk.ui.close_door_dialog;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
 import 'keyboard.dart';
 import 'screen.dart';
 import 'terminal.dart';

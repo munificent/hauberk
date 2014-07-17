@@ -1,7 +1,8 @@
 library hauberk.content.stage_builder;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
 import 'tiles.dart';
 
 abstract class StageBuilder {

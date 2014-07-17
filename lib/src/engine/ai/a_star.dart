@@ -2,7 +2,8 @@ library hauberk.engine.a_star;
 
 import 'dart:math' as math;
 
-import '../../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import '../option.dart';
 import '../stage.dart';
 

@@ -2,8 +2,9 @@ library hauberk.web.items;
 
 import 'dart:html' as html;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import 'package:hauberk/src/content.dart';
-import 'package:hauberk/src/util.dart';
 
 main() {
   var content = createContent();

@@ -2,7 +2,9 @@ library hauberk.ui.dom_terminal;
 
 import 'dart:html' as html;
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
+import 'glyph.dart';
 import 'terminal.dart';
 
 /// Draws directly using the DOM by building `<span>` elements inside a `<pre>`

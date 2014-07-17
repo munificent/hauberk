@@ -1,7 +1,7 @@
 library hauberk.ui.inventory_dialog;
 
 import '../engine.dart';
-import '../util.dart';
+import 'glyph.dart';
 import 'keyboard.dart';
 import 'screen.dart';
 import 'terminal.dart';

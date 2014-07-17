@@ -1,7 +1,7 @@
 library hauberk.ui.home_screen;
 
 import '../engine.dart';
-import '../util.dart';
+import 'glyph.dart';
 import 'inventory_dialog.dart';
 import 'keyboard.dart';
 import 'screen.dart';

@@ -4,8 +4,8 @@ import 'dart:math' as math;
 
 import '../debug.dart';
 import '../engine.dart';
-import '../util.dart';
 import 'game_screen.dart';
+import 'glyph.dart';
 import 'home_screen.dart';
 import 'keyboard.dart';
 import 'screen.dart';

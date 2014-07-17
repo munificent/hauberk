@@ -21,6 +21,12 @@ packages:
     description: path
     source: hosted
     version: "1.2.1"
+  piecemeal:
+    description:
+      path: "../piecemeal"
+      relative: true
+    source: path
+    version: "0.0.1"
   source_maps:
     description: source_maps
     source: hosted

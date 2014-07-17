@@ -3,5 +3,7 @@ dependencies:
   browser: any
   barback: any
   markdown: any
+  piecemeal:
+    path: ../piecemeal
 transformers:
 - hauberk/src/markdown_to_html

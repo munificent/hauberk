@@ -2,8 +2,9 @@ library hauberk.engine.fov;
 
 import 'dart:math' as math;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
 
 /// Calculates the [Hero]'s field of view of the dungeon.
 class Fov {

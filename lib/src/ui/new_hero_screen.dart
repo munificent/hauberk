@@ -1,7 +1,9 @@
 library hauberk.ui.new_hero_screen;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
+import 'glyph.dart';
 import 'keyboard.dart';
 import 'screen.dart';
 import 'select_level_screen.dart';

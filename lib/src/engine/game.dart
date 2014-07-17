@@ -2,7 +2,8 @@ library hauberk.engine.game;
 
 import 'dart:collection';
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import 'action_base.dart';
 import 'actor.dart';
 import 'area.dart';

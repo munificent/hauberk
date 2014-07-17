@@ -1,6 +1,8 @@
 library hauberk.ui.terminal;
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
+import 'glyph.dart';
 
 abstract class Terminal {
   int get width;

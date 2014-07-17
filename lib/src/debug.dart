@@ -2,8 +2,9 @@ library hauberk.debug;
 
 import 'dart:collection';
 
+import 'package:piecemeal/piecemeal.dart';
+
 import 'engine.dart';
-import 'util.dart';
 
 /// A class for storing debugging information.
 ///

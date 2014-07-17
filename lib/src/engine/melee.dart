@@ -2,7 +2,8 @@ library hauberk.engine.melee;
 
 import 'dart:math' as math;
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import 'action_base.dart';
 import 'action_magic.dart';
 import 'actor.dart';

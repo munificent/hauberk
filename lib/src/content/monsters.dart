@@ -1,7 +1,7 @@
 library hauberk.content.monsters;
 
 import '../engine.dart';
-import '../util.dart';
+import '../ui/glyph.dart';
 import 'builder.dart';
 
 /// Builder class for defining [Monster] [Breed]s.

@@ -1,7 +1,7 @@
 library hauberk.content.tiles;
 
 import '../engine.dart';
-import '../util.dart';
+import '../ui/glyph.dart';
 import 'builder.dart';
 
 /// Builder class for defining [TileType]s.

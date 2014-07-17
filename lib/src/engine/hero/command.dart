@@ -1,6 +1,7 @@
 library hauberk.engine.hero.command;
 
-import '../../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import '../action_base.dart';
 import '../game.dart';
 

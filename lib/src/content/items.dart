@@ -1,7 +1,9 @@
 library hauberk.content.items;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
+import '../ui/glyph.dart';
 import 'builder.dart';
 import 'affixes.dart';
 

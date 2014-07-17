@@ -3,7 +3,8 @@ library hauberk.engine.ai.flow;
 import 'dart:collection';
 import 'dart:math' as math;
 
-import '../../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import '../stage.dart';
 
 /// A lazy, generic pathfinder.

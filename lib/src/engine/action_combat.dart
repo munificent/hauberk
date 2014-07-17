@@ -1,6 +1,7 @@
 library hauberk.engine.action_combat;
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import 'action_base.dart';
 import 'actor.dart';
 import 'game.dart';

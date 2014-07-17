@@ -2,7 +2,9 @@ library hauberk.ui.canvas_terminal;
 
 import 'dart:html' as html;
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
+import 'glyph.dart';
 import 'terminal.dart';
 
 /// Draws to a canvas using a browser font.

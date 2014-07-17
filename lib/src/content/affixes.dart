@@ -1,7 +1,8 @@
 library hauberk.content.affixes;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
 
 typedef Affix _CreateAffix(String name);
 typedef Map _SerializeAffix(Affix affix);

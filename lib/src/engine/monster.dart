@@ -2,8 +2,9 @@ library hauberk.engine.monster;
 
 import 'dart:math' as math;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../debug.dart';
-import '../util.dart';
 import 'action_base.dart';
 import 'actor.dart';
 import 'ai/monster_states.dart';

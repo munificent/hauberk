@@ -2,10 +2,12 @@ library hauberk.ui.game_screen;
 
 import 'dart:math' as math;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../engine.dart';
-import '../util.dart';
 import 'close_door_dialog.dart';
 import 'game_over_screen.dart';
+import 'glyph.dart';
 import 'forfeit_dialog.dart';
 import 'inventory_dialog.dart';
 import 'keyboard.dart';

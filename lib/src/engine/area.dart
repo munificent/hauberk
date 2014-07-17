@@ -1,6 +1,7 @@
 library hauberk.engine.area;
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import 'breed.dart';
 import 'game.dart';
 import 'hero/hero.dart';

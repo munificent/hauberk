@@ -1,6 +1,7 @@
 library hauberk.engine.action_magic;
 
-import '../util.dart';
+import 'package:piecemeal/piecemeal.dart';
+
 import 'action_base.dart';
 import 'condition.dart';
 import 'game.dart';
