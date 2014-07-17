@@ -3,6 +3,8 @@ dependencies:
   browser: any
   barback: any
   markdown: any
+  malison:
+    path: ../malison
   piecemeal:
     path: ../piecemeal
 transformers:

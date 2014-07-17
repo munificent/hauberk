@@ -2,19 +2,16 @@ library hauberk.ui.game_screen;
 
 import 'dart:math' as math;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'close_door_dialog.dart';
 import 'game_over_screen.dart';
-import 'glyph.dart';
 import 'forfeit_dialog.dart';
 import 'inventory_dialog.dart';
-import 'keyboard.dart';
-import 'screen.dart';
 import 'select_command_dialog.dart';
 import 'target_dialog.dart';
-import 'terminal.dart';
 
 class GameScreen extends Screen {
   final HeroSave save;

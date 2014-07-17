@@ -1,9 +1,9 @@
 library hauberk.content.items;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
-import '../ui/glyph.dart';
 import 'builder.dart';
 import 'affixes.dart';
 

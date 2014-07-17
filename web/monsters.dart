@@ -2,7 +2,7 @@ library hauberk.web.monsters;
 
 import 'dart:html' as html;
 
-import 'package:piecemeal/piecemeal.dart';
+import 'package:malison/malison.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';

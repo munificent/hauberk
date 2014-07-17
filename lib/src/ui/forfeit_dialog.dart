@@ -1,9 +1,8 @@
 library hauberk.ui.forfeit_dialog;
 
+import 'package:malison/malison.dart';
+
 import '../engine.dart';
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
 
 /// Modal dialog for letting the user confirm forfeiting the level.
 class ForfeitDialog extends Screen {

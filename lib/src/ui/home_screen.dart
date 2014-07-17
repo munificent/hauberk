@@ -1,11 +1,9 @@
 library hauberk.ui.home_screen;
 
+import 'package:malison/malison.dart';
+
 import '../engine.dart';
-import 'glyph.dart';
 import 'inventory_dialog.dart';
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
 
 class HomeScreen extends Screen {
   final Content  content;

@@ -13,6 +13,12 @@ packages:
     description: collection
     source: hosted
     version: "0.9.4"
+  malison:
+    description:
+      path: "../malison"
+      relative: true
+    source: path
+    version: "0.0.1"
   markdown:
     description: markdown
     source: hosted

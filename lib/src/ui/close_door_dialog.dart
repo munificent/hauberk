@@ -1,11 +1,9 @@
 library hauberk.ui.close_door_dialog;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
 
 /// Modal dialog for letting the user select an adjacent open door to close it.
 class CloseDoorDialog extends Screen {

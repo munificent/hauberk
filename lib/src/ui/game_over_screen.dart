@@ -1,9 +1,6 @@
 library hauberk.ui.game_over_screen;
 
-import 'glyph.dart';
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
+import 'package:malison/malison.dart';
 
 class GameOverScreen extends Screen {
   GameOverScreen();

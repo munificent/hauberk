@@ -1,7 +1,8 @@
 library hauberk.content.monsters;
 
+import 'package:malison/malison.dart';
+
 import '../engine.dart';
-import '../ui/glyph.dart';
 import 'builder.dart';
 
 /// Builder class for defining [Monster] [Breed]s.

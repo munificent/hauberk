@@ -2,11 +2,12 @@ library hauberk.web.main;
 
 import 'dart:html' as html;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/debug.dart';
-import 'package:hauberk/src/ui.dart';
+import 'package:hauberk/src/ui/main_menu_screen.dart';
 
 const WIDTH = 100;
 const HEIGHT = 40;

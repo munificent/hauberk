@@ -1,5 +1,6 @@
 library hauberk.content.affixes;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';

@@ -1,8 +1,6 @@
 library hauberk.ui.confirm_dialog;
 
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
+import 'package:malison/malison.dart';
 
 /// Modal dialog for letting the user confirm an action.
 class ConfirmDialog extends Screen {

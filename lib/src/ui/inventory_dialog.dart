@@ -1,10 +1,8 @@
 library hauberk.ui.inventory_dialog;
 
+import 'package:malison/malison.dart';
+
 import '../engine.dart';
-import 'glyph.dart';
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
 
 /// Modal dialog for letting the user select an item from the hero's inventory.
 class InventoryDialog extends Screen {

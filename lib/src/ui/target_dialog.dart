@@ -1,13 +1,10 @@
 library hauberk.ui.target_dialog;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'game_screen.dart';
-import 'glyph.dart';
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
 
 /// Modal dialog for letting the user select a direction to fire a missile.
 class TargetDialog extends Screen {

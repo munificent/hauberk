@@ -1,10 +1,8 @@
 library hauberk.ui.select_command_dialog;
 
+import 'package:malison/malison.dart';
+
 import '../engine.dart';
-import 'glyph.dart';
-import 'keyboard.dart';
-import 'screen.dart';
-import 'terminal.dart';
 
 class SelectCommandDialog extends Screen {
   final Game _game;
