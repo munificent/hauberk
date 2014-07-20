@@ -72,12 +72,10 @@ main() {
           new Font('Menlo', size: 12, w: 16, h: 28, x: 1, y: 21)));
 
   addTerminal('DOS', new html.CanvasElement(),
-      (element) => new RetroTerminal(WIDTH, HEIGHT, element, "dos.png",
-        w: 9, h: 16));
+      (element) => new RetroTerminal.dos(WIDTH, HEIGHT, element));
 
   addTerminal('DOS Short', new html.CanvasElement(),
-      (element) => new RetroTerminal(WIDTH, HEIGHT, element, "dos-short.png",
-        w: 9, h: 13));
+      (element) => new RetroTerminal.shortDos(WIDTH, HEIGHT, element));
 
   // Load the user's font preference, if any.
   var font = html.window.localStorage['font'];
