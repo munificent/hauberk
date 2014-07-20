@@ -10,17 +10,17 @@ import 'storage.dart';
 
 
 const _CHARS = const [
-  r"______   ______                          _____                                _____",
-  r"\ .  /   \  . /                          \ . |                                \  .|",
-  r" | .|     |. |                            | .|                                 |. |",
-  r" |. |_____| .|    _______   _____  _____  |. | _____      _______  ____  ____  | .|   ____",
-  r" |:::_____:::|    \::::::\  \:::|  \:::|  |::|/:::::\    /:::::::\ \:::|/::::\ |::|  /::/",
-  r" |xx|     |xx|   _____ \xx|  |xx|   |xx|  |xx|    \xx\  |xx|___)xx| |xx|   \x| |xx|_/x/",
-  r" |xx|     |xx|  /xxxxx\|xx|  |xx|   |xx|  |xx|     |xx| |xx|\xxxxx| |xx|       |xxxxxxx\",
-  r" |XX|     |XX| |XX(____|XX|  |XX\___|XX|  |XX|____/XXX| |XX|______  |XX|       |XX|  \XX\_",
-  r" |XX|     |XX|  \XXXXXX/\XX\  \XXXX/|XXX\/XXX/\XXXXXX/   \XXXXXXX/ /XXXX\     /XXXX\  \XXX\",
-  r" |XX|     |XX| _____________________________________________________________________________",
-  r" |XX|     |XX| |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",
+  r"______   ______                          _____                               _____",
+  r"\ .  /   \  . /                          \ . |                               \  .|",
+  r" | .|     |. |                            | .|                                |. |",
+  r" |. |_____| .|    _______   _____  _____  |. | _____      _______  ____  ____ | .|   ____",
+  r" |:::_____:::|    \::::::\  \:::|  \:::|  |::|/:::::\    /:::::::\ \:::|/::::\|::|  /::/",
+  r" |xx|     |xx|   _____ \xx|  |xx|   |xx|  |xx|    \xx\  |xx|___)xx| |xx|   \x||xx|_/x/",
+  r" |xx|     |xx|  /xxxxx\|xx|  |xx|   |xx|  |xx|     |xx| |xx|\xxxxx| |xx|      |xxxxxxx\",
+  r" |XX|     |XX| |XX(____|XX|  |XX\___|XX|  |XX|____/XXX| |XX|______  |XX|      |XX|  \XX\_",
+  r" |XX|     |XX|  \XXXXXX/\XX\  \XXXX/|XXX\/XXX/\XXXXXX/   \XXXXXXX/ /XXXX\    /XXXX\  \XXX\",
+  r" |XX|     |XX| ____________________________________________________________________________",
+  r" |XX|     |XX| |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",
   r"_|XX|     |XX|_",
   r"\XXX|     |XXX/",
   r" \XX|     |XX/",
@@ -29,17 +29,17 @@ const _CHARS = const [
 ];
 
 const _CHAR_COLORS = const [
-  "LLLLLL   LLLLLL                          LLLLL                                LLLLL",
-  "ERRRRE   ERRRRE                          ERRRE                                ERRRE",
-  " ERRE     ERRE                            ERRE                                 ERRE",
-  " ERRELLLLLERRE    LLLLLLL   LLLLL  LLLLL  ERRE LLLLL      LLLLLLL  LLLL  LLLL  ERRE   LLLL",
-  " ERRREEEEERRRE    ERRRRRRL  ERRRE  ERRRE  ERREERRRRRL    LRRRRRRRL ERRRLLRRRRL ERRE  LRRE",
-  " ERRE     ERRE   LLLLL ERRE  ERRE   ERRE  ERRE    ERRL  ERRELLLERRE ERRE   ERE ERRELLRE",
-  " EOOE     EOOE  LOOOOOEEOOE  EOOE   EOOE  EOOE     EOOE EOOEEOOOOOE EOOE       EOOOOOOOL",
-  " EGGE     EGGE EGGELLLLEGGE  EGGLLLLEGGE  EGGELLLLLGGGE EGGELLLLLL  EGGE       EGGE  EGGLL",
-  " EYYE     EYYE  EYYYYYYEEYYE  EYYYY/EYYYLLYYYEEYYYYYYE   EYYYYYYYE LYYYYL     LYYYYL  EYYYL",
-  " EYYE     EYYE LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
-  " EYYE     EYYE EYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYL",
+  "LLLLLL   LLLLLL                          LLLLL                               LLLLL",
+  "ERRRRE   ERRRRE                          ERRRE                               ERRRE",
+  " ERRE     ERRE                            ERRE                                ERRE",
+  " ERRELLLLLERRE    LLLLLLL   LLLLL  LLLLL  ERRE LLLLL      LLLLLLL  LLLL  LLLL ERRE   LLLL",
+  " ERRREEEEERRRE    ERRRRRRL  ERRRE  ERRRE  ERREERRRRRL    LRRRRRRRL ERRRLLRRRRLERRE  LRRE",
+  " ERRE     ERRE   LLLLL ERRE  ERRE   ERRE  ERRE    ERRL  ERRELLLERRE ERRE   EREERRELLRE",
+  " EOOE     EOOE  LOOOOOEEOOE  EOOE   EOOE  EOOE     EOOE EOOEEOOOOOE EOOE      EOOOOOOOL",
+  " EGGE     EGGE EGGELLLLEGGE  EGGLLLLEGGE  EGGELLLLLGGGE EGGELLLLLL  EGGE      EGGE  EGGLL",
+  " EYYE     EYYE  EYYYYYYEEYYE  EYYYY/EYYYLLYYYEEYYYYYYE   EYYYYYYYE LYYYYL    LYYYYL  EYYYL",
+  " EYYE     EYYE LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+  " EYYE     EYYE EYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYL",
   "LEYYE     EYYEL",
   "EYYYE     EYYYE",
   " EYYE     EYYE",
@@ -115,18 +115,18 @@ class MainMenuScreen extends Screen {
     for (var y = 0; y < _CHARS.length; y++) {
       for (var x = 0; x < _CHARS[y].length; x++) {
         var color = _COLORS[_CHAR_COLORS[y][x]];
-        terminal.writeAt(x + 3, y + 1, _CHARS[y][x], color);
+        terminal.writeAt(x + 4, y + 1, _CHARS[y][x], color);
       }
     }
 
-    terminal.writeAt(20, 18,
+    terminal.writeAt(25, 18,
         'Which hero shall you play?');
     terminal.writeAt(0, terminal.height - 1,
         '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
         Color.GRAY);
 
     if (storage.heroes.length == 0) {
-      terminal.writeAt(20, 20, '(No heroes. Please create a new one.)',
+      terminal.writeAt(25, 20, '(No heroes. Please create a new one.)',
           Color.GRAY);
     }
 
@@ -142,9 +142,9 @@ class MainMenuScreen extends Screen {
         back = Color.YELLOW;
       }
 
-      terminal.writeAt(21, 20 + i, hero.name, fore, back);
-      terminal.writeAt(40, 20 + i, "Level ${hero.level}", secondaryFore);
-      terminal.writeAt(50, 20 + i, hero.heroClass.name, secondaryFore);
+      terminal.writeAt(26, 20 + i, hero.name, fore, back);
+      terminal.writeAt(45, 20 + i, "Level ${hero.level}", secondaryFore);
+      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondaryFore);
     }
   }
 
