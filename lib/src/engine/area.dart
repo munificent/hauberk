@@ -56,7 +56,6 @@ class Area {
     game.quest.announce(game.log);
 
     // TODO: Temp. Wizard light it.
-    /*
     for (var pos in stage.bounds) {
       for (var dir in Direction.ALL) {
         if (stage.bounds.contains(pos + dir) &&
@@ -66,7 +65,6 @@ class Area {
         }
       }
     }
-    */
 
     return heroPos;
   }
@@ -106,14 +104,11 @@ class Level {
 }
 
 abstract class QuestBuilder {
-  // TODO(bob): Kinds of quests:
-  // - Find a certain item (implemented now)
-  // - Kill a certain monster
-  // - Kill a certain number of monsters of a given type
+  // TODO: Kinds of quests:
   // - Get a number or set of items
   // - Explore the entire dungeon
-  // - Find a certain location in the dungeon
   // - Find a certain item and use it on a certain monster
+  // - Get dropped item from monster and use elsewhere.
   //
   // Restrictions that can modify the above:
   // - Complete quest within a turn limit

@@ -9,13 +9,13 @@ import 'tiles.dart';
 /// an intermediate data structure for building Dungeons. The outer walls of
 /// the Maze can be opened.
 class Maze {
-  final Array2D<Cell> _cells;
+  final Array2D<_Cell> _cells;
 
   Rect get bounds => new Rect(0, 0, _cells.width - 1, _cells.height - 1);
 
   /// Initializes a new solid (i.e. all cells closed) maze.
   Maze(int width, int height)
-  : _cells = new Array2D<Cell>(width + 1, height + 1, () => new Cell())
+  : _cells = new Array2D<_Cell>(width + 1, height + 1, () => new _Cell())
   {
     // Pad by one for the outer bottom and right walls.
   }
@@ -59,24 +59,17 @@ class Maze {
   }
 
   /*
-  void AddLoops(int chance)
-  {
-    if (chance > 0)
-    {
-      foreach (Vec cell in new Rect(0, 0, bounds.Width - 1, bounds.Height - 1))
-      {
-        if (Rng.OneIn(chance))
-        {
-          if (IsOpen(cell) && IsOpen(cell + Direction.E))
-          {
+  void AddLoops(int chance) {
+    if (chance > 0) {
+      for (var cell in new Rect(0, 0, bounds.width - 1, bounds.height - 1)) {
+        if (rng.oneIn(chance)) {
+          if (isOpen(cell) && isOpen(cell + Direction.E)) {
             carve(cell, Direction.E);
           }
         }
 
-        if (Rng.OneIn(chance))
-        {
-          if (IsOpen(cell) && IsOpen(cell + Direction.S))
-          {
+        if (rng.OneIn(chance)) {
+          if (isOpen(cell) && isOpen(cell + Direction.S)) {
             carve(cell, Direction.S);
           }
         }
@@ -84,17 +77,13 @@ class Maze {
     }
   }
 
-  void Sparsify(int sparseSteps)
-  {
-    for (int i = 0; i < sparseSteps; i++)
-    {
-      foreach (Vec cell in bounds)
-      {
-        // if it dead-ends
-        if (GetNumExits(cell) == 1)
-        {
-          // fill in the dead end
-          Fill(cell);
+  void Sparsify(int sparseSteps) {
+    for (int i = 0; i < sparseSteps; i++) {
+      for (var cell in bounds) {
+        // If it dead-ends.
+        if (getNumExits(cell) == 1) {
+          // Fill in the dead end.
+          fill(cell);
         }
       }
     }
@@ -184,8 +173,7 @@ class Maze {
   }
 }
 
-// TODO(bob): Rename MazeCell.
-class Cell {
+class _Cell {
   bool isOpen = false;
   bool isLeftWallOpen = false;
   bool isTopWallOpen = false;

@@ -32,12 +32,12 @@ class MonsterQuest extends Quest {
   int remaining;
 
   void announce(Log log) {
-    // TODO(bob): Handle pluralization correctly.
     log.quest("You must kill {1}.", new Quantity(remaining, breed));
   }
 
   MonsterQuest(this.breed, this.remaining);
 
+  // TODO: Need to handle quest monster being killed by friendly fire.
   bool onKillMonster(Game game, Monster monster) {
     if (monster.breed == breed) {
       remaining--;

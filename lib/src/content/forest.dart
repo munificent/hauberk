@@ -45,8 +45,6 @@ class Forest extends StageBuilder {
     // http://en.wikipedia.org/wiki/Lloyd%27s_algorithm
     for (var i = 0; i < voronoiIterations; i++) {
       // For each cell in the stage, determine which point it's nearest to.
-      // TODO: Using every tile on the stage may be overkill. Could iterate by
-      // farther than 1 to get a looser approximation.
       var regions = new List.generate(numMeadows, (i) => [meadows[i]]);
       for (var y = meadowInset; y < stage.height - meadowInset; y++) {
         for (var x = meadowInset * 2; x < stage.width - meadowInset * 2; x++) {
@@ -113,9 +111,7 @@ class Forest extends StageBuilder {
   }
 
   void carvePath(Vec from, Vec to) {
-    // TODO: A slightly random walk would be cool here.
     for (var pos in new Los(from, to)) {
-      // TODO: Have option in Los to stop at endpoint.
       if (pos == to) break;
 
       // Make slightly wider passages.
@@ -126,18 +122,14 @@ class Forest extends StageBuilder {
   }
 
   void carveCircle(Vec center, int radius) {
-    // TODO: Kind of biased and gross.
-    for (var x = math.max(1, center.x - radius);
-        x < math.min(center.x + radius, stage.width - 1);
-        x++) {
-      for (var y = math.max(1, center.y - radius);
-          y < math.min(center.y + radius, stage.height - 1);
-          y++) {
-        var pos = new Vec(x, y);
-        if ((pos - center) < radius) {
-          setTile(pos, Tiles.grass);
-        }
-      }
+    var bounds = new Rect.leftTopRightBottom(
+        math.max(1, center.x - radius),
+        math.max(1, center.y - radius),
+        math.min(center.x + radius, stage.width - 1),
+        math.min(center.y + radius, stage.height - 1));
+
+    for (var pos in bounds) {
+      if ((pos - center) < radius) setTile(pos, Tiles.grass);
     }
   }
 }

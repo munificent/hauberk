@@ -730,7 +730,7 @@ class ParticleEffect implements Effect {
   final Color color;
 
   ParticleEffect(this.x, this.y, this.color) {
-    final theta = rng.range(628) / 100; // TODO(bob): Ghetto.
+    final theta = rng.range(628) / 100;
     final radius = rng.range(30, 40) / 100;
 
     h = math.cos(theta) * radius;

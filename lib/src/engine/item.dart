@@ -195,7 +195,6 @@ class Inventory extends IterableBase<Item> implements ItemCollection {
   Iterator<Item> get iterator => _items.iterator;
 }
 
-// TODO: Which collection interface should it implement?
 /// The collection of wielded [Item]s held by the [Hero]. Unlike [Inventory],
 /// the [Equipment] holds each Item in a categorized slot.
 class Equipment extends IterableBase<Item> implements ItemCollection {

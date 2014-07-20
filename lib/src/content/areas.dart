@@ -98,7 +98,7 @@ class Areas extends ContentBuilder {
       level(() => new TrainingGrounds(), numMonsters: 20, numItems: 12,
         breeds: [
           'giant spider',
-          'unlucky ranger', // TODO: Move to different level?
+          'unlucky ranger',
           'raven',
           'tree snake',
           'giant earthworm'

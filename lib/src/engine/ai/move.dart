@@ -44,7 +44,6 @@ class BoltMove extends Move {
     : super(cost);
 
   bool shouldUse(Monster monster) {
-    // TODO: Should not always assume the hero is the target.
     var target = monster.game.hero.pos;
 
     // Don't fire if out of range.
@@ -60,7 +59,6 @@ class BoltMove extends Move {
   }
 
   Action onGetAction(Monster monster) {
-    // TODO: Should not always assume the hero is the target.
     return new BoltAction(monster.pos, monster.game.hero.pos, attack);
   }
 
@@ -92,7 +90,6 @@ class InsultMove extends Move {
   bool get isRanged => true;
 
   bool shouldUse(Monster monster) {
-    // TODO: Should not always assume the hero is the target.
     var target = monster.game.hero.pos;
     var distance = (target - monster.pos).kingLength;
 

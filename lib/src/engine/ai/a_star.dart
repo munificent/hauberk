@@ -117,9 +117,6 @@ class AStar {
 
         var inClosed = closed.contains(neighbor);
 
-        // TODO: May need to do the above check on the closed set too if
-        // we use inadmissable heuristics.
-
         // If we have a new path, add it.
         if (!inOpen && !inClosed) {
           var guess = cost + heuristic(neighbor, end);

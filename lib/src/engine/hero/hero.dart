@@ -324,7 +324,7 @@ class RunBehavior extends Behavior {
     if (game.stage.actorAt(ahead + (direction.rotateRight45)) != null) return false;
     if (game.stage.actorAt(ahead + (direction.rotateRight90)) != null) return false;
 
-    // TODO(bob): This is still pretty simple. It won't run around corners in
+    // TODO: This is still pretty simple. It won't run around corners in
     // corridors, which is probably good. (Running around a corner means either
     // taking a diagonal step which makes you step next to a tile you haven't
     // seen, or going all the way through the corner which is a waste of a

@@ -439,9 +439,11 @@ class AwakeState extends MonsterState {
 
 class AfraidState extends MonsterState {
   Action getAction() {
+    // If we're already in the darkness, rest.
+    if (!game.stage[pos].visible) return new RestAction();
+
     // TODO: Should not walk past hero to get to escape!
-    // TODO: What should it do once it's in shadow?
-    // Find the nearest place the hero can't see.
+    // Run to the nearest place the hero can't see.
     var flow = new Flow(game.stage, pos, maxDistance: breed.tracking,
         canOpenDoors: monster.canOpenDoors);
     var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
