@@ -166,14 +166,17 @@ abstract class Dungeon extends StageBuilder {
     }
 
     // Unify colors for rooms that are already overlapping.
-    // TODO(bob): Inner loop shouldn't go through all rooms. Redundantly
-    // considers each pair twice.
-    for (final room in _rooms) {
-      for (final other in _rooms) {
-        if (room == other) continue;
+    _unifyColorsForOverlappingRooms();
+  }
+
+  void _unifyColorsForOverlappingRooms() {
+    for (var i = 0; i < _rooms.length - 1; i++) {
+      final room = _rooms[i];
+      for (var j = i + 1; j < _rooms.length; j++) {
+        final other = _rooms[j];
         if (room.bounds.distanceTo(other.bounds) <= 0) {
           mergeColors(room, other);
-
+    
           // Keep track of which rooms overlap.
           room.isOverlapping = true;
           other.isOverlapping = true;
@@ -194,15 +197,14 @@ abstract class Dungeon extends StageBuilder {
       var nearestFrom = null;
       var nearestTo = null;
       var nearestDistance = 9999;
-
-      // TODO(bob): Inner loop shouldn't go through all rooms. Redundantly
-      // considers each pair twice.
-      for (final fromRoom in _rooms) {
-        if (fromRoom.color != fromColor) continue;
-
-        for (final toRoom in _rooms) {
-          if (toRoom.color == fromColor) continue;
-
+      
+      var roomsSameColor = new List<Room>();
+      var roomsDifferentColour = new List<Room>();
+      _rooms.forEach((room) => (room.color == fromColor) 
+          ? roomsSameColor.add(room) : roomsDifferentColour.add(room));
+      
+      for (final fromRoom in roomsSameColor) {
+        for (final toRoom in roomsDifferentColour) {
           final distance = fromRoom.bounds.distanceTo(toRoom.bounds);
           if (distance < nearestDistance) {
             nearestFrom = fromRoom;
@@ -211,7 +213,6 @@ abstract class Dungeon extends StageBuilder {
           }
         }
       }
-
       carveCorridor(nearestFrom, nearestTo);
     }
 
@@ -237,14 +238,7 @@ abstract class Dungeon extends StageBuilder {
     final left = math.max(fromRoom.bounds.left, toRoom.bounds.left);
     final right = math.min(fromRoom.bounds.right, toRoom.bounds.right);
     if (left < right) {
-      final top = math.min(fromRoom.bounds.top, toRoom.bounds.top);
-      final bottom = math.max(fromRoom.bounds.bottom, toRoom.bounds.bottom);
-
-      final x = rng.range(left, right);
-      for (var y = top; y < bottom; y++) {
-        setTile(new Vec(x, y), Tiles.floor);
-      }
-
+      _carveVerticalCorridor(fromRoom, toRoom, left, right);
       return;
     }
 
@@ -252,21 +246,38 @@ abstract class Dungeon extends StageBuilder {
     final top = math.max(fromRoom.bounds.top, toRoom.bounds.top);
     final bottom = math.min(fromRoom.bounds.bottom, toRoom.bounds.bottom);
     if (top < bottom) {
-      final left = math.min(fromRoom.bounds.left, toRoom.bounds.left);
-      final right = math.max(fromRoom.bounds.right, toRoom.bounds.right);
-
-      final y = rng.range(top, bottom);
-      for (var x = left; x < right; x++) {
-        setTile(new Vec(x, y), Tiles.floor);
-      }
-
+      _carveHorizontalCorridor(fromRoom, toRoom, top, bottom);
       return;
     }
 
     // We can't draw a straight corridor, so make an angled one.
+    _carveAngledCorridor(fromRoom, toRoom);
+  }
+
+  void _carveVerticalCorridor(Room fromRoom, Room toRoom, int left, int right) {
+    final top = math.min(fromRoom.bounds.top, toRoom.bounds.top);
+    final bottom = math.max(fromRoom.bounds.bottom, toRoom.bounds.bottom);
+    
+    final x = rng.range(left, right);
+    for (var y = top; y < bottom; y++) {
+      setTile(new Vec(x, y), Tiles.floor);
+    }
+  }
+  
+  void _carveHorizontalCorridor(Room fromRoom, Room toRoom, int top, int bottom) {
+    final left = math.min(fromRoom.bounds.left, toRoom.bounds.left);
+    final right = math.max(fromRoom.bounds.right, toRoom.bounds.right);
+    
+    final y = rng.range(top, bottom);
+    for (var x = left; x < right; x++) {
+      setTile(new Vec(x, y), Tiles.floor);
+    }
+  }
+  
+  void _carveAngledCorridor(Room fromRoom, Room toRoom) {
     final from = rng.vecInRect(fromRoom.bounds);
     final to = rng.vecInRect(toRoom.bounds);
-
+    
     // TODO(bob): Make corridor meander more.
     var pos = from;
     while (pos != to) {
@@ -279,7 +290,7 @@ abstract class Dungeon extends StageBuilder {
       } else if (pos.x > to.x) {
         pos = pos.offsetX(-1);
       }
-
+    
       setTile(pos, Tiles.floor);
     }
   }
@@ -297,7 +308,7 @@ abstract class Dungeon extends StageBuilder {
         }
       }
       if (overlap) continue;
-
+      
       decorateRoom(room.bounds);
     }
   }
@@ -346,8 +357,15 @@ abstract class Dungeon extends StageBuilder {
       setTile(pos, type);
     }
 
-    // Make an entrance. If it's a narrow room, always place the door on the
-    // wider side.
+    var directions = _findSidesForEntrance(width, height);
+    var door = _selectSideForDoor(directions, x, y, width, height);
+    setTile(door, Tiles.floor);
+    return true;
+  }
+  
+  /// Make an entrance. If it's a narrow room, always place the door on the
+  /// wider side.
+  List<Direction> _findSidesForEntrance(int width, int height) {
     var directions;
     if ((width == 3) && (height > 3)) {
       directions = [Direction.E, Direction.W];
@@ -356,25 +374,21 @@ abstract class Dungeon extends StageBuilder {
     } else {
       directions = [Direction.N, Direction.S, Direction.E, Direction.W];
     }
+    return directions;
+  }
 
-    var door;
+  Vec _selectSideForDoor(List<Direction> directions, int x, int y, int width, 
+                         int height) {
     switch (rng.item(directions)) {
       case Direction.N:
-        door = new Vec(rng.range(x + 1, x + width - 1), y);
-        break;
+        return new Vec(rng.range(x + 1, x + width - 1), y);
       case Direction.S:
-        door = new Vec(rng.range(x + 1, x + width - 1), y + height - 1);
-        break;
+        return new Vec(rng.range(x + 1, x + width - 1), y + height - 1);
       case Direction.W:
-        door = new Vec(x, rng.range(y + 1, y + height - 1));
-        break;
+        return new Vec(x, rng.range(y + 1, y + height - 1));
       case Direction.E:
-        door = new Vec(x + width - 1, rng.range(y + 1, y + height - 1));
-        break;
+        return new Vec(x + width - 1, rng.range(y + 1, y + height - 1));
     }
-    setTile(door, Tiles.floor);
-
-    return true;
   }
 
   /// Places a table in the room.
