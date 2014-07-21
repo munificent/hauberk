@@ -9,11 +9,6 @@ import 'package:hauberk/src/engine.dart';
 
 main() {
   var content = createContent();
-
-  var heroClass = new Warrior();
-  var save = new HeroSave("Hero", heroClass);
-  var game = new Game(content.areas[0], 0, content, save);
-
   var text = new StringBuffer();
 
   for (var area in content.areas) {
@@ -26,7 +21,7 @@ main() {
         final itemDepth = pickDepth(levelNum, area.levels.length);
         final drop = area.levels[itemDepth].floorDrop;
 
-        area.levels[itemDepth].floorDrop.spawnDrop(game, (item) {
+        area.levels[itemDepth].floorDrop.spawnDrop((item) {
           var name = item.type.name;
           if (item.prefix != null) name = "${item.prefix.name} $name";
           if (item.suffix != null) name = "$name ${item.suffix.name}";
@@ -46,7 +41,7 @@ main() {
 
       var more = 0;
       for (var item in items) {
-        var width = drops[item] * 400 ~/ tries;
+        var width = drops[item] * 200 ~/ tries;
         if (width < 1) {
           more++;
           continue;

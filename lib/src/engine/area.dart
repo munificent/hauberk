@@ -32,7 +32,7 @@ class Area {
       final itemDepth = pickDepth(depth);
       final drop = levels[itemDepth].floorDrop;
 
-      drop.spawnDrop(game, (item) {
+      drop.spawnDrop((item) {
         item.pos = stage.findOpenTile();
         stage.items.add(item);
       });
@@ -56,6 +56,7 @@ class Area {
     game.quest.announce(game.log);
 
     // TODO: Temp. Wizard light it.
+    /*
     for (var pos in stage.bounds) {
       for (var dir in Direction.ALL) {
         if (stage.bounds.contains(pos + dir) &&
@@ -65,6 +66,7 @@ class Area {
         }
       }
     }
+    */
 
     return heroPos;
   }

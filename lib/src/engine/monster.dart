@@ -225,7 +225,7 @@ class Monster extends Actor {
   /// Called when this Actor has been killed by [attacker].
   void onDied(Actor attacker) {
     // Handle drops.
-    breed.drop.spawnDrop(game, (item) {
+    breed.drop.spawnDrop((item) {
       item.pos = pos;
       // TODO: Scatter items a bit?
       log("{1} drop[s] {2}.", this, item);

@@ -86,17 +86,17 @@ class Monsters extends ContentBuilder {
     group("a", flags: "fearless");
     breed("garden spider", darkAqua, 2, [
       attack("bite[s]", 1, Element.POISON)
-    ], drop: chanceOf(3, "Stinger"),
+    ], drop: percent(3, "Stinger"),
         meander: 8, flags: "group");
 
     breed("brown spider", brown, 3, [
       attack("bite[s]", 2, Element.POISON)
-    ], drop: chanceOf(5, "Stinger"),
+    ], drop: percent(5, "Stinger"),
         meander: 8, flags: "group");
 
     breed("giant spider", darkBlue, 12, [
       attack("bite[s]", 3, Element.POISON)
-    ], drop: chanceOf(10, "Stinger"),
+    ], drop: percent(10, "Stinger"),
         meander: 5);
   }
 
@@ -115,18 +115,18 @@ class Monsters extends ContentBuilder {
     group("B");
     breed("robin", lightRed, 3, [
       attack("claw[s]", 1),
-    ], drop: chanceOf(25, "Red Feather"),
+    ], drop: percent(25, "Red Feather"),
         meander: 4, speed: 2);
 
     breed("crow", darkGray, 4, [
       attack("bite[s]", 4),
-    ], drop: chanceOf(25, "Black Feather"),
+    ], drop: percent(25, "Black Feather"),
         meander: 4, speed: 2, flags: "group");
 
     breed("raven", gray, 8, [
       attack("bite[s]", 6),
       attack("claw[s]", 5),
-    ], drop: chanceOf(20, "Black Feather"),
+    ], drop: percent(20, "Black Feather"),
         meander: 1, flags: "protective");
   }
 
@@ -134,15 +134,15 @@ class Monsters extends ContentBuilder {
     group("c", tracking: 20, meander: 3, flags: "few");
     breed("mangy cur", yellow, 7, [
       attack("bite[s]", 4),
-    ], drop: chanceOf(20, "Fur Pelt"));
+    ], drop: percent(20, "Fur Pelt"));
 
     breed("wild dog", gray, 9, [
       attack("bite[s]", 5),
-    ], drop: chanceOf(20, "Fur Pelt"));
+    ], drop: percent(20, "Fur Pelt"));
 
     breed("mongrel", orange, 16, [
       attack("bite[s]", 7),
-    ], drop: chanceOf(20, "Fur Pelt"));
+    ], drop: percent(20, "Fur Pelt"));
   }
 
   eyes() {
@@ -160,17 +160,17 @@ class Monsters extends ContentBuilder {
     group("f", tracking: 5, meander: 8);
     breed("butterfl[y|ies]", lightPurple, 1, [
       attack("tickle[s] on", 1),
-    ], drop: chanceOf(20, "Insect Wing"),
+    ], drop: percent(20, "Insect Wing"),
         speed: 2, flags: "few fearless");
 
     breed("bee", yellow, 1, [
       attack("sting[s]", 2),
-    ], drop: chanceOf(40, "Honeycomb"),
+    ], drop: percent(40, "Honeycomb"),
         speed: 1, flags: "group protective");
 
     breed("wasp", brown, 1, [
       attack("sting[s]", 2, Element.POISON),
-    ], drop: chanceOf(30, "Stinger"),
+    ], drop: percent(30, "Stinger"),
         speed: 2, flags: "berzerk");
   }
 
@@ -179,7 +179,7 @@ class Monsters extends ContentBuilder {
     breed("stray cat", lightOrange, 5, [
       attack("bite[s]", 4),
       attack("scratch[es]", 3),
-    ], drop: chanceOf(10, "Fur Pelt"),
+    ], drop: percent(10, "Fur Pelt"),
         meander: 3, speed: 1);
   }
 
@@ -189,8 +189,8 @@ class Monsters extends ContentBuilder {
       attack("stab[s]", 6)
     ],
     drop: [
-      chanceOf(10, "spear:3"),
-      chanceOf(5, "healing:2"),
+      percent(10, "spear", 3),
+      percent(5, "healing", 2),
     ], meander: 2, flags: "few");
 
     breed("goblin archer", green, 14, [
@@ -198,23 +198,23 @@ class Monsters extends ContentBuilder {
       arrow(cost: 8, damage: 4)
     ],
     drop: [
-      chanceOf(20, "bow:1"),
-      chanceOf(10, "dagger:2"),
-      chanceOf(5, "healing:3"),
+      percent(20, "bow", 1),
+      percent(10, "dagger", 2),
+      percent(5, "healing", 3),
     ], flags: "few");
 
     breed("goblin fighter", brown, 24, [
       attack("stab[s]", 8)
     ], drop: [
-      chanceOf(15, "spear:5"),
-      chanceOf(5, "healing:3"),
+      percent(15, "spear", 5),
+      percent(5, "healing", 3),
     ]);
 
     breed("goblin warrior", gray, 32, [
       attack("stab[s]", 14)
     ], drop: [
-      chanceOf(20, "spear:6"),
-      chanceOf(5, "healing:3"),
+      percent(20, "spear", 6),
+      percent(5, "healing", 3),
     ], flags: "protective");
 
     breed("goblin mage", blue, 20, [
@@ -222,8 +222,8 @@ class Monsters extends ContentBuilder {
       fireBolt(cost: 16, damage: 6),
       sparkBolt(cost: 16, damage: 8),
     ], drop: [
-      chanceOf(10, "equipment:3"),
-      chanceOf(20, "magic:6"),
+      percent(10, "equipment", 3),
+      percent(20, "magic", 6),
     ]);
   }
 
@@ -234,7 +234,7 @@ class Monsters extends ContentBuilder {
     group("i", tracking: 3, meander: 8, flags: "fearless");
     breed("giant cockroach[es]", darkBrown, 12, [
       attack("crawl[s] on", 1),
-    ], drop: chanceOf(10, "Insect Wing"),
+    ], drop: percent(10, "Insect Wing"),
         speed: 3);
 
     breed("giant centipede", red, 12, [
@@ -264,16 +264,16 @@ class Monsters extends ContentBuilder {
       attack("scratch[es]", 4),
       teleport(range: 6)
     ], drop: [
-      chanceOf(10, "food:1"),
-      chanceOf(20, "magic:1")
+      percent(10, "food", 1),
+      percent(20, "magic", 1)
     ], meander: 4, flags: "cowardly");
 
     breed("house sprite", lightBlue, 6, [
       attack("stab[s]", 8),
       teleport(range: 6)
     ], drop: [
-      chanceOf(10, "food:3"),
-      chanceOf(20, "magic:6")
+      percent(10, "food", 3),
+      percent(20, "magic", 6)
     ], meander: 4, flags: "cowardly");
 
     breed("scurrilous imp", lightRed, 14, [
@@ -281,41 +281,38 @@ class Monsters extends ContentBuilder {
       insult(),
       haste()
     ], drop: [
-      chanceOf(10, "club:1"),
-      chanceOf(5, "speed:1"),
+      percent(10, "club", 1),
+      percent(5, "speed", 1),
     ], meander: 4, flags: "cowardly");
 
     breed("vexing imp", purple, 12, [
       attack("scratch[es]", 5),
       insult(),
       sparkBolt(cost: 10, damage: 6)
-    ], drop: [
-      chanceOf(10, "teleportation:1"),
-    ], meander: 4, speed: 1, flags: "cowardly");
+    ], drop: percent(10, "teleportation", 1),
+        meander: 4, speed: 1, flags: "cowardly");
 
     breed("kobold", blue, 8, [
       attack("poke[s]", 4),
       teleport(cost: 20, range: 6)
     ], drop: [
-      chanceOf(10, "food:3"),
-      chanceOf(30, "magic:7")
+      percent(10, "food", 3),
+      percent(30, "magic", 7)
     ], meander: 4, flags: "group");
 
     breed("imp incanter", lightPurple, 16, [
       attack("scratch[es]", 5),
       insult(),
       fireBolt(cost: 10, damage: 10)
-    ], drop: [
-      chanceOf(10, "magic:1"),
-    ], meander: 4, speed: 1, flags: "cowardly");
+    ], drop: percent(10, "magic", 1),
+        meander: 4, speed: 1, flags: "cowardly");
 
     breed("imp warlock", darkPurple, 20, [
       attack("stab[s]", 6),
       iceBolt(cost: 7, damage: 12),
       fireBolt(cost: 7, damage: 12)
-    ], drop: [
-      chanceOf(10, "magic:4"),
-    ], meander: 3, speed: 1, flags: "cowardly");
+    ], drop: percent(10, "magic", 4),
+        meander: 3, speed: 1, flags: "cowardly");
   }
 
   people() {
@@ -335,40 +332,41 @@ class Monsters extends ContentBuilder {
     breed("simpering knave", orange, 6, [
       attack("hit[s]", 2),
       attack("stab[s]", 4)
-    ], drop: allOf([
-      chanceOf(50, "dagger:1"),
-      chanceOf(40, "body:1"),
-      chanceOf(20, "boots:2"),
-      chanceOf(8, "magic:1"),
-    ]), meander: 3, flags: "cowardly");
+    ], drop: [
+      percent(30, "dagger", 1),
+      percent(20, "body", 1),
+      percent(10, "boots", 2),
+      percent(10, "magic", 1),
+    ], meander: 3, flags: "cowardly");
 
     breed("decrepit mage", purple, 6, [
       attack("hit[s]", 2),
       sparkBolt(cost: 30, damage: 8)
-    ], drop: allOf([
-      chanceOf(20, "magic:3"),
-      chanceOf(30, ["dagger:1", "staff:1"]),
-      chanceOf(40, "robe:2"),
-      chanceOf(10, "boots:2")
-    ]), meander: 2);
+    ], drop: [
+      percent(20, "magic", 3),
+      percent(15, "dagger", 1),
+      percent(15, "staff", 1),
+      percent(40, "robe", 2),
+      percent(10, "boots", 2)
+    ], meander: 2);
 
     breed("unlucky ranger", green, 10, [
       attack("stab[s]", 2),
       arrow(cost: 10, damage: 2)
     ], drop: [
-      chanceOf(10, "potion:3"),
-      chanceOf(4, "bow:4"),
-      chanceOf(10, "dagger:3"),
-      chanceOf(8, "body:3")
+      percent(10, "potion", 3),
+      percent(4, "bow", 4),
+      percent(10, "dagger", 3),
+      percent(8, "body", 3)
     ], meander: 2);
 
     breed("drunken priest", aqua, 9, [
       attack("hit[s]", 3),
       heal(cost: 30, amount: 8)
     ], drop: [
-      chanceOf(10, "scroll:3"),
-      chanceOf(7, "club:2"),
-      chanceOf(7, "robe:2")
+      percent(10, "scroll", 3),
+      percent(7, "club", 2),
+      percent(7, "robe", 2)
     ], meander: 4, flags: "fearless");
   }
 
@@ -498,7 +496,16 @@ class Monsters extends ContentBuilder {
       if (action is Move) moves.add(action);
     }
 
-    drop = parseDrop(drop);
+    if (drop is List) {
+      drop = dropAllOf(drop);
+    } else if (drop is Drop) {
+      drop = dropAllOf([drop]);
+    } else if (drop is String) {
+      drop = parseDrop(drop);
+    } else {
+      // Non-null way of dropping nothing.
+      drop = dropAllOf([]);
+    }
 
     var flagSet = new Set<String>();
     if (_flags != null) flagSet.addAll(_flags.split(" "));

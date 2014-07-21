@@ -30,10 +30,9 @@ class HomeScreen extends Screen {
         if (completeRecipe == null) break;
         if (rightView != HomeView.CRUCIBLE) break;
 
-        final item = new Item(completeRecipe.result);
         save.crucible.clear();
-        save.crucible.tryAdd(item);
-        completeRecipe = null;
+        completeRecipe.result.spawnDrop(save.crucible.tryAdd);
+        refreshRecipe();
 
         // The player probably wants to get the item out of the crucible.
         mode = HomeMode.GET;

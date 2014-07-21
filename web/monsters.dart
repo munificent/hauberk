@@ -18,10 +18,6 @@ main() {
   var tries = 0;
   var drops = {};
 
-  var heroClass = new Warrior();
-  var save = new HeroSave("Hero", heroClass);
-  var game = new Game(content.areas[0], 0, content, save);
-
   for (var breed in breeds) {
     drops[breed.name] = {};
   }
@@ -30,7 +26,7 @@ main() {
     tries++;
 
     for (Breed breed in breeds) {
-      breed.drop.spawnDrop(game, (item) {
+      breed.drop.spawnDrop((item) {
         drops[breed.name].putIfAbsent(item.toString(), () => 0);
         drops[breed.name][item.toString()]++;
       });

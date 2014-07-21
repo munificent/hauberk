@@ -326,15 +326,15 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
 typedef void AddItem(Item item);
 
 abstract class Drop {
-  void spawnDrop(Game game, AddItem addItem);
+  void spawnDrop(AddItem addItem);
 }
 
 /// A recipe defines a set of items that can be placed into the crucible and
-/// transmuted into a new item.
+/// transmuted into something new.
 // TODO: Figure out how this works with affixes.
 class Recipe {
   final List<ItemType> ingredients;
-  final ItemType result;
+  final Drop result;
 
   Recipe(this.ingredients, this.result);
 

@@ -6,15 +6,10 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
-import 'package:hauberk/src/content/items.dart';
+import 'package:hauberk/src/content/builder.dart';
 
 main() {
   var content = createContent();
-
-  var heroClass = new Warrior();
-  var save = new HeroSave("Hero", heroClass);
-  var game = new Game(content.areas[0], 0, content, save);
-
   var text = new StringBuffer();
 
   for (var i = 1; i <= 100; i++) {
@@ -23,7 +18,7 @@ main() {
 
     var tries = 1000;
     for (var i = 0; i < tries; i++) {
-      drop.spawnDrop(game, (item) {
+      drop.spawnDrop((item) {
         var name = item.type.name;
         if (item.prefix != null) name = "${item.prefix.name} $name";
         if (item.suffix != null) name = "$name ${item.suffix.name}";

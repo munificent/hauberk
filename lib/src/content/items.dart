@@ -35,6 +35,7 @@ class Items extends ContentBuilder {
 
     // Unused: ; : ` % ^ < >
 
+    treasure();
     foods();
     pelts();
     potions();
@@ -60,6 +61,39 @@ class Items extends ContentBuilder {
     Large Leather Shield[s]
     Steel Buckler[s]
     Kite Shield[s]
+
+    */
+  }
+
+  void treasure() {
+    // TODO: Use cent symbol?
+    // TODO: Use in recipe.
+    // TODO: Make stuff drop.
+    category(r"$", "treasure/coin");
+    item("Copper Coin", 1, brown);
+    item("Bronze Coin", 15, darkGold);
+    item("Silver Coin", 30, gray);
+    item("Electrum Coin", 40, lightGold);
+    item("Gold Coin", 60, gold);
+    item("Platinum Coin", 80, lightGray);
+
+    /*
+
+    Gems:
+    Amethyst[s] LightPurple $
+    Sapphire[s] Blue $
+    Emerald[s] Green $
+    Ruby|Rubies Red $
+    Diamond[s] White $
+    Blue Diamond[s] LightBlue $
+
+    Rocks:
+    Turquoise Stone[s] Cyan $
+    Onyx Stone[s] DarkGray $
+    Malachite Stone[s] DarkCyan $
+    Jade Stone[s] DarkGreen $
+    Pearl[s] LightYellow $
+    Opal[s] LightPurple $
 
      */
   }
@@ -256,7 +290,7 @@ class Items extends ContentBuilder {
     if (category == null) {
       _category = null;
     } else {
-    _category = "item/$category";
+      _category = "item/$category";
     }
 
     _equipSlot = equipSlot;
@@ -297,108 +331,5 @@ class Items extends ContentBuilder {
 
     Items.all[name] = new ItemType(name, appearance, level, _sortIndex++,
         categories, equipSlot, use, attack, armor);
-  }
-}
-
-/// Drops an item of a given type.
-class ItemDrop implements Drop {
-  final ItemType _type;
-
-  ItemDrop(this._type);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    addItem(Affixes.createItem(_type));
-  }
-}
-
-/// Chooses zero or more [Drop]s from a list of possible options where each has
-/// its own independent chance of being dropped.
-class AllOfDrop implements Drop {
-  final List<Drop> drops;
-  final List<int> percents;
-
-  AllOfDrop(this.drops, this.percents);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    var roll = rng.range(100);
-
-    for (var i = 0; i < drops.length; i++) {
-      if (rng.range(100) < percents[i]) {
-        drops[i].spawnDrop(game, addItem);
-      }
-    }
-  }
-}
-
-/// Chooses a single [Drop] from a list of possible options with a percentage
-/// chance for each. If the odds don"t add up to 100%, no item may be dropped.
-class OneOfDrop implements Drop {
-  final List<Drop> drops;
-  final List<int> percents;
-
-  OneOfDrop(this.drops, this.percents);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    var roll = rng.range(100);
-
-    for (var i = 0; i < drops.length; i++) {
-      roll -= percents[i];
-      if (roll <= 0) {
-        drops[i].spawnDrop(game, addItem);
-        return;
-      }
-    }
-  }
-}
-
-/// Drops a randomly selected item near a level from a category.
-class CategoryDrop implements Drop {
-  /// The path to the category to choose from.
-  final List<String> _category;
-
-  /// The average level of the drop.
-  final int _level;
-
-  CategoryDrop(this._category, this._level);
-
-  void spawnDrop(Game game, AddItem addItem) {
-    // Possibly choose from the parent category.
-    var categoryDepth = _category.length - 1;
-    if (categoryDepth > 1 && rng.oneIn(10)) categoryDepth--;
-
-    // Chance of out-of-depth items.
-    var level = _level;
-    if (rng.oneIn(1000)) {
-      level += rng.range(20, 100);
-    } else if (rng.oneIn(100)) {
-      level += rng.range(5, 20);
-    } else if (rng.oneIn(10)) {
-      level += rng.range(1, 5);
-    }
-
-    // Find all of the items at or below the max level and in the category.
-    var category = _category[categoryDepth];
-    var items = Items.all.values
-        .where((item) => item.level <= level &&
-                         item.categories.contains(category)).toList();
-
-    if (items.isEmpty) return;
-
-    // TODO: Item rarity?
-
-    // Pick an item. Try a few times and take the best.
-    var itemType = rng.item(items);
-    for (var i = 0; i < 3; i++) {
-      var thisType = rng.item(items);
-      if (thisType.level > itemType.level) itemType = thisType;
-    }
-
-    // Compare the item's actual level to the original desired level. If the
-    // item is below that level, it increases the chances of an affix. (A weaker
-    // item deeper in the dungeon is more likely to be magic.) Likewise, an
-    // already-out-of-depth item is less likely to also be special.
-    var levelOffset = itemType.level - _level;
-
-    addItem(Affixes.createItem(itemType, levelOffset));
   }
 }
