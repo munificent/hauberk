@@ -3,7 +3,7 @@ library hauberk.ui.home_screen;
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
-import 'inventory_dialog.dart';
+import 'item_dialog.dart';
 
 class HomeScreen extends Screen {
   final Content  content;

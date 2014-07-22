@@ -9,7 +9,7 @@ import '../engine.dart';
 import 'close_door_dialog.dart';
 import 'game_over_screen.dart';
 import 'forfeit_dialog.dart';
-import 'inventory_dialog.dart';
+import 'item_dialog.dart';
 import 'select_command_dialog.dart';
 import 'target_dialog.dart';
 
@@ -105,11 +105,11 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.D:
-        ui.push(new InventoryDialog(game, InventoryMode.DROP));
+        ui.push(new ItemDialog.drop(game));
         break;
 
       case KeyCode.U:
-        ui.push(new InventoryDialog(game, InventoryMode.USE));
+        ui.push(new ItemDialog.use(game));
         break;
 
       case KeyCode.G:
