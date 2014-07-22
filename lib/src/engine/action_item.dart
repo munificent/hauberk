@@ -88,10 +88,10 @@ class EquipAction extends Action {
         log('{1} unequip[s] {2}.', actor, unequipped);
       } else {
         // No room in inventory, so drop it.
-        item.pos = actor.pos;
-        game.stage.items.add(item);
-        log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.",
-            actor, unequipped);
+        unequipped.pos = actor.pos;
+        game.stage.items.add(unequipped);
+        log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
+            "ground.", actor, unequipped);
       }
     }
 
