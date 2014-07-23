@@ -64,7 +64,7 @@ class Areas extends ContentBuilder {
     ]);
 
     area('Training Grounds', [
-      level(() => new TrainingGrounds(), numMonsters: 12, numItems: 10,
+      level(() => new TrainingGrounds(), numMonsters: 12, numItems: 6,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -82,7 +82,7 @@ class Areas extends ContentBuilder {
           frequency(1, 'equipment', 2)
         ],
         quest: kill('wild dog', 3)),
-      level(() => new TrainingGrounds(), numMonsters: 16, numItems: 11,
+      level(() => new TrainingGrounds(), numMonsters: 16, numItems: 7,
         breeds: [
           'brown spider',
           'crow',
@@ -91,13 +91,13 @@ class Areas extends ContentBuilder {
           'drunken priest',
         ],
         drop: [
-          frequency(3, 'food', 3),
+          frequency(4, 'food', 3),
           frequency(2, 'magic', 3),
           frequency(1, 'treasure', 3),
           frequency(1, 'equipment', 3)
         ],
         quest: kill('giant spider')),
-      level(() => new TrainingGrounds(), numMonsters: 20, numItems: 12,
+      level(() => new TrainingGrounds(), numMonsters: 20, numItems: 8,
         breeds: [
           'giant spider',
           'unlucky ranger',
@@ -106,7 +106,7 @@ class Areas extends ContentBuilder {
           'giant earthworm'
         ],
         drop: [
-          frequency(3, 'food', 4),
+          frequency(4, 'food', 4),
           frequency(2, 'magic', 4),
           frequency(2, 'treasure', 4),
           frequency(1, 'equipment', 4)
@@ -128,6 +128,7 @@ class Areas extends ContentBuilder {
           'salamander'
         ],
         drop: [
+          frequency(2, 'food', 4),
           frequency(1, 'item', 4)
         ],
         quest: tileType('the stairs', Tiles.stairs)),
@@ -143,6 +144,7 @@ class Areas extends ContentBuilder {
           'lizard guard',
         ],
         drop: [
+          frequency(2, 'food', 5),
           frequency(1, 'item', 5)
         ],
         quest: tileType('the stairs', Tiles.stairs)),
@@ -157,6 +159,7 @@ class Areas extends ContentBuilder {
           'plague rat'
         ],
         drop: [
+          frequency(2, 'food', 6),
           frequency(1, 'item', 6)
         ],
         quest: tileType('the stairs', Tiles.stairs)),
@@ -166,6 +169,7 @@ class Areas extends ContentBuilder {
           'goblin mage',
         ],
         drop: [
+          frequency(2, 'food', 7),
           frequency(1, 'item', 7)
         ],
         quest: tileType('the stairs', Tiles.stairs))

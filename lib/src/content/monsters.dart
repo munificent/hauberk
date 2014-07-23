@@ -90,12 +90,12 @@ class Monsters extends ContentBuilder {
         meander: 8, flags: "group");
 
     breed("brown spider", brown, 3, [
-      attack("bite[s]", 2, Element.POISON)
+      attack("bite[s]", 5, Element.POISON)
     ], drop: percent(5, "Stinger"),
-        meander: 8, flags: "group");
+        meander: 8, speed: 2);
 
-    breed("giant spider", darkBlue, 12, [
-      attack("bite[s]", 3, Element.POISON)
+    breed("giant spider", darkBlue, 16, [
+      attack("bite[s]", 4, Element.POISON)
     ], drop: percent(10, "Stinger"),
         meander: 5);
   }
