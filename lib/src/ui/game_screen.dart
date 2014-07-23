@@ -20,11 +20,21 @@ class GameScreen extends Screen {
   bool           logOnTop = false;
 
   /// The currently targeted actor, if any.
-  // TODO(bob): Need to handle target moving out of visibility. Should not
-  // forget target: if the monster becomes visible again, it should remain
-  // targeted. But if the user opens the target dialog or does "target last"
-  // while the target is invisible, it should treat it as not being targeted.
-  Actor target;
+  Actor get target {
+    // Make sure the target is still valid.
+    if (_target != null) {
+      if (!_target.isAlive || !_target.isVisible) _target = null;
+    }
+
+    return _target;
+  }
+
+  set target(Actor value) {
+    if (_target == value) return;
+    _target = value;
+    dirty();
+  }
+  Actor _target;
 
   /// The most recently performed command.
   Command _lastCommand;
@@ -613,13 +623,6 @@ class GameScreen extends Screen {
       }
     }
     draw("Toughness", warrior.toughness);
-  }
-
-  void targetActor(Actor actor) {
-    if (actor != target) {
-      target = actor;
-      dirty();
-    }
   }
 
   Color getColorForElement(Element element) {

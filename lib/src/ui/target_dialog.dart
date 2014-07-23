@@ -19,8 +19,12 @@ class TargetDialog extends Screen {
 
   int _animateOffset = 0;
 
-  // TODO: Don't store here, just get from game.
-  Vec _target;
+  /// The position of the currently targeted [Actor] or `null` if no actor is
+  /// targeted.
+  Vec get _target {
+    if (_gameScreen.target == null) return null;
+    return _gameScreen.target.pos;
+  }
 
   TargetDialog(this._gameScreen, Game game, Command command)
       : _game = game,
@@ -45,9 +49,7 @@ class TargetDialog extends Screen {
     }
 
     if (nearest != null) {
-      setTarget(nearest);
-    } else {
-      _target = game.hero.pos;
+      _gameScreen.target = nearest;
     }
   }
 
@@ -67,7 +69,7 @@ class TargetDialog extends Screen {
       case KeyCode.SLASH: _changeTarget(Direction.SE); break;
 
       case KeyCode.L:
-        ui.pop(_target != _game.hero.pos);
+        ui.pop(_target != null);
         break;
     }
 
@@ -81,8 +83,6 @@ class TargetDialog extends Screen {
 
   void render(Terminal terminal) {
     // Show the range field.
-    var reachedTarget = false;
-
     var black = new Glyph(" ");
     for (var pos in _game.stage.bounds) {
       var tile = _game.stage[pos];
@@ -113,24 +113,25 @@ class TargetDialog extends Screen {
           new Glyph.fromCharCode(glyph.char, color));
     }
 
+    if (_target == null) return;
+
     // Show the path that the bolt will trace, stopping when it hits an
     // obstacle.
     int i = _animateOffset ~/ _TICKS_PER_FRAME;
-    if (_target != _game.hero.pos) {
-      for (var pos in new Los(_game.hero.pos, _target)) {
-        // Note if we made it to the target.
-        if (pos == _target) {
-          reachedTarget = true;
-          break;
-        }
-
-        if (_game.stage.actorAt(pos) != null) break;
-        if (!_game.stage[pos].isTransparent) break;
-
-        terminal.drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(CharCode.BULLET,
-            (i == 0) ? Color.YELLOW : Color.DARK_YELLOW));
-        i = (i + _NUM_FRAMES - 1) % _NUM_FRAMES;
+    var reachedTarget = false;
+    for (var pos in new Los(_game.hero.pos, _target)) {
+      // Note if we made it to the target.
+      if (pos == _target) {
+        reachedTarget = true;
+        break;
       }
+
+      if (_game.stage.actorAt(pos) != null) break;
+      if (!_game.stage[pos].isTransparent) break;
+
+      terminal.drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(CharCode.BULLET,
+          (i == 0) ? Color.YELLOW : Color.DARK_YELLOW));
+      i = (i + _NUM_FRAMES - 1) % _NUM_FRAMES;
     }
 
     // Only show the reticle if the bolt will reach the target.
@@ -146,12 +147,6 @@ class TargetDialog extends Screen {
       terminal.writeAt(_target.x, _target.y - 1, '|', targetColor);
       terminal.writeAt(_target.x, _target.y + 1, '|', targetColor);
     }
-  }
-
-  void setTarget(Actor actor) {
-    _target = actor.pos;
-    _gameScreen.targetActor(actor);
-    dirty();
   }
 
   /// Target the nearest monster in [dir] from the current target. Precisely,
@@ -174,22 +169,26 @@ class TargetDialog extends Screen {
       }
     }
 
-    var nearest = findLowest(ahead,
+    var nearest = _findLowest(ahead,
         (monster) => (monster.pos - _target).lengthSquared);
     if (nearest != null) {
-      setTarget(nearest);
+      _gameScreen.target = nearest;
       return;
     }
 
-    var farthest = findHighest(behind,
+    var farthest = _findHighest(behind,
         (monster) => (monster.pos - _target).lengthSquared);
     if (farthest != null) {
-      setTarget(farthest);
+      _gameScreen.target = farthest;
     }
   }
 }
 
-findLowest(Iterable collection, num callback(item)) {
+/// Finds the item in [collection] whose score is lowest.
+///
+/// The score for an item is determined by calling [callback] on it. Returns
+/// `null` if the [collection] is `null` or empty.
+_findLowest(Iterable collection, num callback(item)) {
   if (collection == null) return null;
 
   var bestItem;
@@ -206,7 +205,11 @@ findLowest(Iterable collection, num callback(item)) {
   return bestItem;
 }
 
-findHighest(Iterable collection, num callback(item)) {
+/// Finds the item in [collection] whose score is highest.
+///
+/// The score for an item is determined by calling [callback] on it. Returns
+/// `null` if the [collection] is `null` or empty.
+_findHighest(Iterable collection, num callback(item)) {
   if (collection == null) return null;
 
   var bestItem;
