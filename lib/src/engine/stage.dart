@@ -4,6 +4,7 @@ import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
 
+import 'ai/flow.dart';
 import 'actor.dart';
 import 'breed.dart';
 import 'fov.dart';
@@ -35,13 +36,8 @@ class Stage {
 
   bool _visibilityDirty = true;
 
-  /// For each tile, contains the number of steps between this tile and the
-  /// hero.
-  Array2D<int> _distances;
-
-  /// The position where the [Hero] was the last time [_distances] was
-  /// calculated.
-  Vec _distancesHeroPos;
+  /// Tracks global pathfinding distances to the hero, ignoring other actors.
+  Flow _heroPaths;
 
   Stage(int width, int height)
   : tiles = new Array2D<Tile>(width, height, () => new Tile()),
@@ -137,7 +133,7 @@ class Stage {
   /// position taking into account which tiles are traversable.
   int getHeroDistanceTo(Vec pos) {
     _refreshDistances();
-    return _distances[pos];
+    return _heroPaths.getDistance(pos);
   }
 
   /// Randomly selects an open tile in the stage. Makes [tries] attempts and
@@ -155,9 +151,10 @@ class Stage {
     for (var i = 0; i < tries; i++) {
       var pos = findOpenTile();
       best = pos;
-      if (_distances[pos] > bestDistance) {
+
+      if (_heroPaths.getDistance(pos) > bestDistance) {
         best = pos;
-        bestDistance = _distances[pos];
+        bestDistance = _heroPaths.getDistance(pos);
       }
     }
 
@@ -199,42 +196,14 @@ class Stage {
     }
   }
 
-  /// Run Dijkstra's algorithm to calculate the distance from every reachable
-  /// tile to[start]. We will use this to place better and stronger things
-  /// farther from the Hero. Re-uses the scent data as a convenient buffer for
-  /// this.
+  /// Lazily calculates the paths from every reachable tile to the [Hero]. We
+  /// use this to place better and stronger things farther from the Hero. Sound
+  /// propagation is also based on this.
   void _refreshDistances() {
-    // TODO: Use Flow.
     // Don't recalculate if still valid.
-    if (game.hero.pos == _distancesHeroPos) return;
+    if (_heroPaths != null &&  game.hero.pos == _heroPaths.start) return;
 
-    // Clear it out.
-    _distances = new Array2D<int>(width, height, () => 9999);
-    _distancesHeroPos = game.hero.pos;
-    _distances[_distancesHeroPos] = 0;
-
-    var open = new Queue<Vec>();
-    open.add(_distancesHeroPos);
-
-    while (open.length > 0) {
-      var start = open.removeFirst();
-      var distance = _distances[start];
-
-      // Update the neighbor's distances.
-      for (var dir in Direction.ALL) {
-        var here = start + dir;
-
-        // Can't reach impassable tiles.
-        if (!this[here].isTraversable) continue;
-
-        // If we got a new best path to this tile, update its distance and
-        // consider its neighbors later.
-        if (_distances[here] > distance + 1) {
-          _distances[here] = distance + 1;
-          open.add(here);
-        }
-      }
-    }
+    _heroPaths = new Flow(this, game.hero.pos, ignoreActors: true);
   }
 }
 
