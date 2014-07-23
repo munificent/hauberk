@@ -1,13 +1,57 @@
 body {
   padding: 40px;
-  background: hsl(35, 60%, 85%);
-  color: hsl(30, 40%, 30%);
+  background: hsl(35, 10%, 70%);
+  color: hsl(30, 10%, 20%);
   font: 18px/24px Buenard, Georgia, serif;
+}
+
+a {
+  color: hsl(30, 90%, 25%);
+}
+
+a:visited {
+  color: hsl(30, 90%, 15%);
+}
+
+a:hover {
+  color: hsl(30, 90%, 5%);
 }
 
 h1, h2, h3, h4 {
   font-family: Metamorphous, serif;
-  color: hsl(30, 80%, 40%);
+  color: hsl(30, 90%, 25%);
+  text-shadow: hsl(45, 50%, 80%) 0 1px,
+               hsl(35, 10%, 60%) 0 -1px;
+}
+
+h1 {
+  font-size: 48px;
+  margin: 40px 0;
+}
+
+h2 {
+  font-size: 24px;
+  margin: 30px 0 10px 0;
+}
+
+h3 {
+  color: hsl(30, 50%, 35%);
+  font-size: 18px;
+  margin: 30px 0 -10px 0;
+  text-shadow: none;
+}
+
+p {
+  margin: 16px 0;
+}
+
+code {
+  font: 16px/16px monospace;
+  color: hsl(30, 20%, 40%);
+  background: hsl(35, 10%, 66%);
+  padding: 0 4px;
+  border-radius: 2px;
+  border-bottom: solid 1px hsl(35, 10%, 50%);
 }
 
 table {
@@ -39,17 +83,23 @@ thead td {
 }
 
 .content {
-  max-width: 800px;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 pre {
   font: 14px/14px monospace;
   background-color: #000;
-  color: #ccc;
   letter-spacing: 1px;
   padding: 2px 4px;
-  border: solid 1px #963;
   border-radius: 2px;
+}
+
+pre code {
+  color: #ccc;
+  background: none;
+  padding: 0;
+  border: none;
 }
 
 pre .k  { color: #000; }
