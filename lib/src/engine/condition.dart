@@ -104,3 +104,10 @@ class PoisonCondition extends Condition {
     actor.log("{1} [are|is] no longer poisoned.", actor);
   }
 }
+
+/// A condition that impairs vision.
+class DazzleCondition extends Condition {
+  void onDeactivate() {
+    actor.log("{1} can see clearly again.", actor);
+  }
+}

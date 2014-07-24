@@ -29,7 +29,7 @@ addTerminal(String name, html.Element element,
 
     var lastPos;
     element.onMouseMove.listen((event) {
-      var pixel = new Vec(event.offset.x, event.offset.y);
+      var pixel = new Vec(event.offset.x - 4, event.offset.y - 4);
       var pos = terminal.pixelToChar(pixel);
       var absolute = pixel + new Vec(element.offsetLeft, element.offsetTop);
       if (pos != lastPos) debugHover(debugBox, absolute, pos);

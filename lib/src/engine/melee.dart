@@ -142,7 +142,7 @@ class Attack {
         break;
 
       case Element.LIGHT:
-        // TODO: Blind.
+        action.addAction(new DazzleAction(damage), defender);
         break;
 
       case Element.SPIRIT:

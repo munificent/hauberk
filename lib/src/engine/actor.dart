@@ -60,6 +60,9 @@ abstract class Actor extends Thing {
   /// Poison inflicts damage each turn.
   final Condition poison = new PoisonCondition();
 
+  /// Makes it hard for the actor to see.
+  final Condition dazzle = new DazzleCondition();
+
   Actor(this.game, int x, int y, int health)
   : super(new Vec(x, y)),
     health = new Stat(health) {
@@ -67,6 +70,7 @@ abstract class Actor extends Thing {
     haste.bind(this);
     cold.bind(this);
     poison.bind(this);
+    dazzle.bind(this);
   }
 
   bool get isAlive => health.current > 0;
@@ -172,6 +176,7 @@ abstract class Actor extends Thing {
     haste.update(action);
     cold.update(action);
     poison.update(action);
+    dazzle.update(action);
 
     if (isAlive) onFinishTurn(action);
   }

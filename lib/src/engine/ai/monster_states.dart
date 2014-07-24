@@ -107,6 +107,11 @@ abstract class MonsterState {
     // of a doorway sometimes.
     if (pos + dir == game.hero.pos) chance = 50;
 
+    var meander = breed.meander;
+
+    // Being dazzled makes the monster stumble around.
+    meander += math.min(6, monster.dazzle.duration ~/ 4);
+
     if (breed.meander <= rng.range(chance)) return dir;
 
     var dirs;

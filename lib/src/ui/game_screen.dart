@@ -16,7 +16,7 @@ import 'target_dialog.dart';
 class GameScreen extends Screen {
   final HeroSave save;
   final Game     game;
-  List<Effect>   effects;
+  List<Effect>   effects = <Effect>[];
   bool           logOnTop = false;
 
   /// The currently targeted actor, if any.
@@ -39,8 +39,7 @@ class GameScreen extends Screen {
   /// The most recently performed command.
   Command _lastCommand;
 
-  GameScreen(this.save, this.game)
-  : effects = <Effect>[];
+  GameScreen(this.save, this.game);
 
   bool handleInput(Keyboard keyboard) {
     var action;
@@ -298,6 +297,8 @@ class GameScreen extends Screen {
       return;
     }
 
+    if (game.hero.dazzle.isActive) dirty();
+
     for (final event in result.events) {
       switch (event.type) {
         case EventType.BOLT:
@@ -348,6 +349,20 @@ class GameScreen extends Screen {
     // TODO: Hack. Clear out the help text from the previous screen.
     terminal.rect(0, terminal.height - 1, terminal.width, 1).clear();
 
+    var hero = game.hero;
+
+    dazzleGlyph(Glyph glyph) {
+      if (!hero.dazzle.isActive) return glyph;
+
+      var chance = 10 + math.min(80, hero.dazzle.duration * 10);
+      if (rng.range(100) > chance) return glyph;
+
+      var colors = [Color.AQUA, Color.BLUE, Color.PURPLE, Color.RED,
+          Color.ORANGE, Color.GOLD, Color.YELLOW, Color.GREEN];
+      var char = (rng.range(100) > chance) ? glyph.char : CharCode.ASTERISK;
+      return new Glyph.fromCharCode(char, rng.item(colors));
+    }
+
     // Draw the stage.
     for (int y = 0; y < game.stage.height; y++) {
       for (int x = 0; x < game.stage.width; x++) {
@@ -355,6 +370,7 @@ class GameScreen extends Screen {
         var glyph;
         if (tile.isExplored) {
           glyph = tile.type.appearance[tile.visible ? 0 : 1];
+          if (tile.visible) glyph = dazzleGlyph(glyph);
         } else {
           glyph = black;
         }
@@ -366,10 +382,10 @@ class GameScreen extends Screen {
     // Draw the items.
     for (final item in game.stage.items) {
       if (!game.stage[item.pos].isExplored) continue;
-      terminal.drawGlyph(item.x, item.y, item.appearance);
+      var glyph = dazzleGlyph(item.appearance);
+      terminal.drawGlyph(item.x, item.y, glyph);
     }
 
-    var hero = game.hero;
     var heroColor = Color.WHITE;
     if (hero.health.current < hero.health.max / 4) {
       heroColor = Color.RED;
@@ -399,6 +415,8 @@ class GameScreen extends Screen {
         glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
       }
 
+      if (actor is! Hero) glyph = dazzleGlyph(glyph);
+
       terminal.drawGlyph(actor.x, actor.y, glyph);
 
       if (actor is Monster) visibleMonsters.add(actor);
@@ -407,7 +425,7 @@ class GameScreen extends Screen {
     // Draw the effects.
     var stageTerm = terminal.rect(0, 0, game.stage.width, game.stage.height);
     for (final effect in effects) {
-      effect.render(stageTerm);
+      effect.render(game, stageTerm);
     }
 
     // Draw the log.
@@ -554,6 +572,8 @@ class GameScreen extends Screen {
       case 3: conditions.add(["S", Color.LIGHT_GOLD]); break;
     }
 
+    if (actor.dazzle.isActive) conditions.add(["D", Color.LIGHT_PURPLE]);
+
     var x = 2;
     for (var condition in conditions.take(6)) {
       terminal.writeAt(x, y, condition[0], condition[1]);
@@ -653,7 +673,7 @@ class GameScreen extends Screen {
 
 abstract class Effect {
   bool update(Game game);
-  void render(Terminal terminal);
+  void render(Game game, Terminal terminal);
 }
 
 class FrameEffect implements Effect {
@@ -668,7 +688,7 @@ class FrameEffect implements Effect {
     return --life >= 0;
   }
 
-  void render(Terminal terminal) {
+  void render(Game game, Terminal terminal) {
     terminal.writeAt(pos.x, pos.y, char, color);
   }
 }
@@ -685,7 +705,7 @@ class BlinkEffect implements Effect {
     return --life >= 0;
   }
 
-  void render(Terminal terminal) {
+  void render(Game game, Terminal terminal) {
     if (!actor.isVisible) return;
 
     if ((life ~/ 8) % 2 == 0) {
@@ -713,7 +733,7 @@ class HitEffect implements Effect {
     return frame++ < NUM_FRAMES;
   }
 
-  void render(Terminal terminal) {
+  void render(Game game, Terminal terminal) {
     var back;
     switch (frame ~/ 5) {
       case 0: back = Color.RED;      break;
@@ -752,7 +772,7 @@ class ParticleEffect implements Effect {
     return life-- > 0;
   }
 
-  void render(Terminal terminal) {
+  void render(Game game, Terminal terminal) {
     terminal.writeAt(x.toInt(), y.toInt(), '*', color);
   }
 }
@@ -768,7 +788,9 @@ class HealEffect implements Effect {
     return frame++ < 24;
   }
 
-  void render(Terminal terminal) {
+  void render(Game game, Terminal terminal) {
+    if (!game.stage.get(x, y).visible) return;
+
     var back;
     switch ((frame ~/ 4) % 4) {
       case 0: back = Color.BLACK;       break;
@@ -794,7 +816,7 @@ class DetectEffect implements Effect {
     return --life >= 0;
   }
 
-  void render(Terminal terminal) {
+  void render(Game game, Terminal terminal) {
     var radius = life ~/ 4;
     var glyph = new Glyph("*", Color.LIGHT_GOLD);
 
@@ -827,7 +849,9 @@ class TeleportEffect implements Effect {
     return true;
   }
 
-  void render(Terminal terminal) {
+  void render(Game game, Terminal terminal) {
+    if (!game.stage[los.current].visible) return;
+
     var color = rng.item([Color.WHITE, Color.AQUA, Color.BLUE]);
 
     terminal.drawGlyph(los.current.x - 1, los.current.y, new Glyph('-', color));

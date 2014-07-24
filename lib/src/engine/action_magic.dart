@@ -120,7 +120,7 @@ abstract class ConditionAction extends Action {
   Condition get condition;
 
   /// The intensity of the condition to apply.
-  int getIntensity();
+  int getIntensity() => 1;
 
   /// The number of turns the condition should last.
   int getDuration();
@@ -134,7 +134,7 @@ abstract class ConditionAction extends Action {
 
   /// Override this to log the message when the condition is already in effect
   /// at a weaker intensity and the intensity increases.
-  void logIntensify();
+  void logIntensify() {}
 
   ActionResult onPerform() {
     var intensity = getIntensity();
@@ -164,7 +164,7 @@ abstract class ConditionAction extends Action {
       return ActionResult.SUCCESS;
     }
 
-    // Scale down the existing duration by how much stronger the new poison
+    // Scale down the existing duration by how much stronger the new intensity
     // is.
     var oldDuration = (condition.duration * condition.intensity) / intensity;
 
@@ -217,4 +217,16 @@ class PoisonAction extends ConditionAction {
   void logApply() => log("{1} [are|is] poisoned!", actor);
   void logExtend() => log("{1} feel[s] the poison linger!", actor);
   void logIntensify() => log("{1} feel[s] the poison intensify!", actor);
+}
+
+class DazzleAction extends ConditionAction {
+  final int _damage;
+
+  DazzleAction(this._damage);
+
+  Condition get condition => actor.dazzle;
+
+  int getDuration() => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
+  void logApply() => log("{1} [are|is] dazzled by the light!", actor);
+  void logExtend() => log("{1} [are|is] dazzled by the light!", actor);
 }
