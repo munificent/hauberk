@@ -5,7 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'hero/hero.dart';
-import 'item.dart';
+import 'items/item.dart';
 import 'log.dart';
 import 'melee.dart';
 import 'ai/move.dart';

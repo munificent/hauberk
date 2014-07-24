@@ -10,7 +10,7 @@ import 'breed.dart';
 import 'fov.dart';
 import 'game.dart';
 import 'hero/hero.dart';
-import 'item.dart';
+import 'items/item.dart';
 
 /// The game's live play area.
 class Stage {

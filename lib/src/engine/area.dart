@@ -5,7 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import 'breed.dart';
 import 'game.dart';
 import 'hero/hero.dart';
-import 'item.dart';
+import 'items/item.dart';
 import 'log.dart';
 import 'monster.dart';
 import 'stage.dart';
