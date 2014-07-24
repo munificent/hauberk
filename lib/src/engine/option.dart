@@ -63,10 +63,6 @@ class Option {
   static final NOISE_HIT    = 50;
   static final NOISE_REST   =  1;
 
-  /// Monsters have to recharge to recoup a move's cost. This is how quickly
-  /// a monster recharges per monster turn.
-  static final RECHARGE_RATE = 4;
-
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.
   static final SPAWN_MONSTER_CHANCE = 40;

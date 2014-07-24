@@ -1,5 +1,6 @@
 library hauberk.engine.move;
 
+import '../../debug.dart';
 import '../action_base.dart';
 import '../action_combat.dart';
 import '../action_magic.dart';
@@ -10,15 +11,18 @@ import '../monster.dart';
 /// walking and melee attack actions. Moves include things like spells, breaths,
 /// and missiles.
 abstract class Move {
-  /// Each move has a cost. Monsters have a limited amount of effort that they
-  /// can spend on moves, which regenerates over time. This prevents monsters
-  /// from using very powerful moves every single turn.
-  final int cost;
+  /// The frequency at which the monster can perform this move (with some
+  /// randomness added in).
+  ///
+  /// A rate of 1 means the monster can perform the move roughly every turn.
+  /// A rate of 10 means it can perform it about one in ten turns. Fractional
+  /// rates are allowed.
+  final num rate;
 
   /// The range of this move if it's a ranged one, or `0` otherwise.
   int get range => 0;
 
-  Move(this.cost);
+  Move(this.rate);
 
   /// Returns `true` if the monster would reasonably perform this move right
   /// now.
@@ -27,7 +31,7 @@ abstract class Move {
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.
   Action getAction(Monster monster) {
-    monster.spendCharge(cost);
+    monster.useMove(this);
     return onGetAction(monster);
   }
 
@@ -40,21 +44,30 @@ class BoltMove extends Move {
 
   int get range => attack.range;
 
-  BoltMove(int cost, this.attack)
-    : super(cost);
+  BoltMove(num rate, this.attack)
+    : super(rate);
 
   bool shouldUse(Monster monster) {
     var target = monster.game.hero.pos;
 
     // Don't fire if out of range.
     var toTarget = target - monster.pos;
-    if (toTarget > range) return false;
-    if (toTarget < 1.5) return false;
+    if (toTarget > range) {
+      Debug.logMonster(monster, "Bolt move too far.");
+      return false;
+    }
+    if (toTarget < 1.5) {
+      Debug.logMonster(monster, "Bolt move too close.");
+      return false;
+    }
 
     // Don't fire a bolt if it's obstructed.
-    if (!monster.canTarget(target)) return false;
+    if (!monster.canTarget(target)) {
+      Debug.logMonster(monster, "Bolt move can't target.");
+      return false;
+    }
 
-    // The farther it is, the more likely it is to use a bolt.
+    Debug.logMonster(monster, "Bolt move OK.");
     return true;
   }
 
@@ -62,14 +75,14 @@ class BoltMove extends Move {
     return new BoltAction(monster.pos, monster.game.hero.pos, attack);
   }
 
-  String toString() => "Bolt $attack cost: $cost";
+  String toString() => "Bolt $attack rate: $rate";
 }
 
 class HealMove extends Move {
   /// How much health to restore.
   final int _amount;
 
-  HealMove(int cost, this._amount) : super(cost);
+  HealMove(num rate, this._amount) : super(rate);
 
   bool shouldUse(Monster monster) {
     // Heal if it could heal the full amount, or it's getting close to death.
@@ -81,11 +94,11 @@ class HealMove extends Move {
     return new HealAction(_amount);
   }
 
-  String toString() => "Heal $_amount cost: $cost";
+  String toString() => "Heal $_amount rate: $rate";
 }
 
 class InsultMove extends Move {
-  InsultMove(int cost) : super(cost);
+  InsultMove(num rate) : super(rate);
 
   bool get isRanged => true;
 
@@ -102,14 +115,14 @@ class InsultMove extends Move {
 
   Action onGetAction(Monster monster) => new InsultAction(monster.game.hero);
 
-  String toString() => "Insult cost: $cost";
+  String toString() => "Insult rate: $rate";
 }
 
 class HasteMove extends Move {
   final int _duration;
   final int _speed;
 
-  HasteMove(int cost, this._duration, this._speed) : super(cost);
+  HasteMove(num rate, this._duration, this._speed) : super(rate);
 
   bool shouldUse(Monster monster) {
     // Don't use if already hasted.
@@ -118,7 +131,7 @@ class HasteMove extends Move {
 
   Action onGetAction(Monster monster) => new HasteAction(_duration, _speed);
 
-  String toString() => "Haste $_speed for $_duration turns cost: $cost";
+  String toString() => "Haste $_speed for $_duration turns rate: $rate";
 }
 
 /// Teleports the [Monster] randomly from its current position.

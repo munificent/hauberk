@@ -2,6 +2,7 @@ library hauberk.content.areas;
 
 import '../engine.dart';
 import 'builder.dart';
+import 'debug_area.dart';
 import 'dungeon.dart';
 import 'forest.dart';
 import 'items.dart';
@@ -21,13 +22,13 @@ class Areas extends ContentBuilder {
         breeds: [
           'floating eye'
         ],
-        drop: ['item:10'],
+        drop: [frequency(1, 'item', 10)],
         quest: tileType('the stairs', Tiles.stairs))
     ]);
     */
 
     area('Friendly Forest', [
-      level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 8,
+      level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 4,
         breeds: [
           'butterfly',
           'field mouse',
@@ -40,11 +41,10 @@ class Areas extends ContentBuilder {
           frequency(2, 'Flower'),
           frequency(5, 'food', 1),
           frequency(1, 'magic', 1),
-          frequency(1, 'equipment', 1),
           frequency(1, 'Stick')
         ],
         quest: kill('fuzzy bunny', 1)),
-      level(() => new Forest(meadowInset: 6), numMonsters: 8, numItems: 10,
+      level(() => new Forest(meadowInset: 6), numMonsters: 8, numItems: 5,
         breeds: [
           'bee',
           'tree snake',
@@ -57,8 +57,7 @@ class Areas extends ContentBuilder {
           frequency(2, 'Flower'),
           frequency(5, 'food', 2),
           frequency(1, 'magic', 2),
-          frequency(1, 'equipment', 1),
-          frequency(1, 'Stick')
+          frequency(1, 'equipment', 1)
         ],
         quest: kill('fox', 1)),
     ]);

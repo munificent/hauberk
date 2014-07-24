@@ -8,6 +8,7 @@ import '../debug.dart';
 import 'action_base.dart';
 import 'actor.dart';
 import 'ai/monster_states.dart';
+import 'ai/move.dart';
 import 'breed.dart';
 import 'energy.dart';
 import 'game.dart';
@@ -27,12 +28,13 @@ class Monster extends Actor {
 
   MonsterState _state;
 
-  /// After performing a [Move] a monster must recharge to regain its cost.
-  /// This is how much recharging is left to do before another move can be
-  /// performed.
-  int _recharge = 0;
-
-  bool get isRecharged => _recharge == 0;
+  /// After performing a [Move] a monster must recharge to limit the rate that
+  /// it can be performed. This tracks how much recharging is left to do for
+  /// each move.
+  ///
+  /// When a move is performed, its rate is added to this. It then reduces over
+  /// time. When it reaches zero, the move can be performed again.
+  final _recharges = <Move, num>{};
 
   bool get isAfraid => _state is AfraidState;
 
@@ -60,13 +62,21 @@ class Monster extends Actor {
       : super(game, x, y, maxHealth) {
     Debug.addMonster(this);
     changeState(new AsleepState());
+
+    // All moves are initially charged.
+    for (var move in breed.moves) {
+      _recharges[move] = 0.0;
+    }
   }
 
-  void spendCharge(int cost) {
-    // Add some randomness to the cost. Since monsters very eagerly prefer to
+  void useMove(Move move) {
+    // Add some randomness to the rate. Since monsters very eagerly prefer to
     // use moves, this ensures they don't use them too predictably.
-    _recharge += rng.range(cost, cost * 5);
+    _recharges[move] += rng.range(move.rate, move.rate * 2);
   }
+
+  /// Returns `true` if [move] is recharged.
+  bool canUse(Move move) => _recharges[move] == 0;
 
   /// Gets whether or not this monster has a line of sight to [target].
   ///
@@ -103,7 +113,9 @@ class Monster extends Actor {
 
   Action onGetAction() {
     // Recharge moves.
-    _recharge = math.max(0, _recharge - Option.RECHARGE_RATE);
+    for (var move in breed.moves) {
+      _recharges[move] = math.max(0.0, _recharges[move] - 1.0);
+    }
 
     // We do the randomization once per turn and not in [_modifyFear] because
     // calling that repeatedly should not increase the chance of a state change.

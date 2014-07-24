@@ -1,5 +1,7 @@
 library hauberk.engine.ai.monster_states;
 
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../debug.dart';
@@ -78,7 +80,6 @@ abstract class MonsterState {
   Breed get breed => _monster.breed;
   Game get game => _monster.game;
   Vec get pos => _monster.pos;
-  bool get isRecharged => _monster.isRecharged;
   bool get isVisible => _monster.isVisible;
   bool get canOpenDoors => _monster.canOpenDoors;
 
@@ -242,10 +243,10 @@ class AwakeState extends MonsterState {
     }
 
     // If there is a worthwhile move, use it.
-    if (isRecharged) {
-      var moves = breed.moves.where((move) => move.shouldUse(monster)).toList();
-      if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
-    }
+    var moves = breed.moves
+        .where((move) => monster.canUse(move) && move.shouldUse(monster))
+        .toList();
+    if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
 
     // If the monster can't walk, then it does melee or waits.
     if (breed.flags.contains("immobile")) {
@@ -269,8 +270,7 @@ class AwakeState extends MonsterState {
       // TODO: Handle other ranged damage moves.
       if (move is! BoltMove) continue;
 
-      var movesPerTurn = Option.RECHARGE_RATE / move.cost;
-      rangedDamage += move.attack.averageDamage * movesPerTurn;
+      rangedDamage += move.attack.averageDamage * move.rate;
       rangedAttacks++;
 
       // TODO: Take elements into account?

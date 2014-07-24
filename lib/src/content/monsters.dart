@@ -149,8 +149,8 @@ class Monsters extends ContentBuilder {
     group("e", flags: "immobile");
     breed("floating eye", yellow, 16, [
       attack("touch[es]", 4),
-      lightBolt(cost: 10, damage: 8),
-      teleport(cost: 40, range: 7)
+      lightBolt(rate: 5, damage: 16),
+      teleport(rate: 8, range: 7)
     ]);
 
     // baleful eye, malevolent eye, murderous eye
@@ -195,7 +195,7 @@ class Monsters extends ContentBuilder {
 
     breed("goblin archer", green, 14, [
       attack("stab[s]", 3),
-      arrow(cost: 8, damage: 4)
+      arrow(rate: 3, damage: 4)
     ],
     drop: [
       percent(20, "bow", 1),
@@ -219,8 +219,8 @@ class Monsters extends ContentBuilder {
 
     breed("goblin mage", blue, 20, [
       attack("bash[es]", 14),
-      fireBolt(cost: 16, damage: 6),
-      sparkBolt(cost: 16, damage: 8),
+      fireBolt(rate: 12, damage: 6),
+      sparkBolt(rate: 12, damage: 8),
     ], drop: [
       percent(10, "equipment", 3),
       percent(20, "magic", 6),
@@ -288,13 +288,13 @@ class Monsters extends ContentBuilder {
     breed("vexing imp", purple, 12, [
       attack("scratch[es]", 5),
       insult(),
-      sparkBolt(cost: 10, damage: 6)
+      sparkBolt(rate: 5, damage: 6)
     ], drop: percent(10, "teleportation", 1),
         meander: 4, speed: 1, flags: "cowardly");
 
     breed("kobold", blue, 8, [
       attack("poke[s]", 4),
-      teleport(cost: 20, range: 6)
+      teleport(rate: 6, range: 6)
     ], drop: [
       percent(10, "food", 3),
       percent(30, "magic", 7)
@@ -303,14 +303,14 @@ class Monsters extends ContentBuilder {
     breed("imp incanter", lightPurple, 16, [
       attack("scratch[es]", 5),
       insult(),
-      fireBolt(cost: 10, damage: 10)
+      fireBolt(rate: 5, damage: 10)
     ], drop: percent(10, "magic", 1),
         meander: 4, speed: 1, flags: "cowardly");
 
     breed("imp warlock", darkPurple, 20, [
       attack("stab[s]", 6),
-      iceBolt(cost: 7, damage: 12),
-      fireBolt(cost: 7, damage: 12)
+      iceBolt(rate: 8, damage: 12),
+      fireBolt(rate: 8, damage: 12)
     ], drop: percent(10, "magic", 4),
         meander: 3, speed: 1, flags: "cowardly");
   }
@@ -341,7 +341,7 @@ class Monsters extends ContentBuilder {
 
     breed("decrepit mage", purple, 6, [
       attack("hit[s]", 2),
-      sparkBolt(cost: 30, damage: 8)
+      sparkBolt(rate: 10, damage: 8)
     ], drop: [
       percent(20, "magic", 3),
       percent(15, "dagger", 1),
@@ -352,7 +352,7 @@ class Monsters extends ContentBuilder {
 
     breed("unlucky ranger", green, 10, [
       attack("stab[s]", 2),
-      arrow(cost: 10, damage: 2)
+      arrow(rate: 4, damage: 2)
     ], drop: [
       percent(10, "potion", 3),
       percent(4, "bow", 4),
@@ -362,7 +362,7 @@ class Monsters extends ContentBuilder {
 
     breed("drunken priest", aqua, 9, [
       attack("hit[s]", 3),
-      heal(cost: 30, amount: 8)
+      heal(rate: 15, amount: 8)
     ], drop: [
       percent(10, "scroll", 3),
       percent(7, "club", 2),
@@ -518,33 +518,33 @@ class Monsters extends ContentBuilder {
     return breed;
   }
 
-  Move heal({int cost, int amount}) => new HealMove(cost, amount);
+  Move heal({num rate: 5, int amount}) => new HealMove(rate, amount);
 
-  Move arrow({int cost: 20, int damage}) =>
-      new BoltMove(cost, new Attack("hits", damage, Element.NONE,
+  Move arrow({num rate: 5, int damage}) =>
+      new BoltMove(rate, new Attack("hits", damage, Element.NONE,
           new Noun("the arrow"), 8));
 
-  Move sparkBolt({int cost: 20, int damage}) =>
-      new BoltMove(cost, new Attack("zaps", damage, Element.LIGHTNING,
+  Move sparkBolt({num rate: 5, int damage}) =>
+      new BoltMove(rate, new Attack("zaps", damage, Element.LIGHTNING,
           new Noun("the spark"), 8));
 
-  Move iceBolt({int cost: 20, int damage}) =>
-      new BoltMove(cost, new Attack("freezes", damage, Element.COLD,
+  Move iceBolt({num rate: 5, int damage}) =>
+      new BoltMove(rate, new Attack("freezes", damage, Element.COLD,
           new Noun("the ice"), 8));
 
-  Move fireBolt({int cost: 20, int damage}) =>
-      new BoltMove(cost, new Attack("burns", damage, Element.FIRE,
+  Move fireBolt({num rate: 5, int damage}) =>
+      new BoltMove(rate, new Attack("burns", damage, Element.FIRE,
           new Noun("the flame"), 8));
 
-  Move lightBolt({int cost: 20, int damage}) =>
-      new BoltMove(cost, new Attack("sears", damage, Element.LIGHT,
+  Move lightBolt({num rate: 5, int damage}) =>
+      new BoltMove(rate, new Attack("sears", damage, Element.LIGHT,
           new Noun("the light"), 10));
 
-  Move insult({int cost: 20}) => new InsultMove(cost);
+  Move insult({num rate: 5}) => new InsultMove(rate);
 
-  Move haste({int cost: 20, int duration: 10, int speed: 1}) =>
-      new HasteMove(cost, duration, speed);
+  Move haste({num rate: 5, int duration: 10, int speed: 1}) =>
+      new HasteMove(rate, duration, speed);
 
-  Move teleport({int cost: 20, int range: 10}) =>
-      new TeleportMove(cost, range);
+  Move teleport({num rate: 5, int range: 10}) =>
+      new TeleportMove(rate, range);
 }
