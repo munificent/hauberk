@@ -36,7 +36,6 @@ class Items extends ContentBuilder {
     // Unused: ; : ` % ^ < >
 
     treasure();
-    foods();
     pelts();
     potions();
     scrolls();
@@ -96,18 +95,6 @@ class Items extends ContentBuilder {
     Opal[s] LightPurple $
 
      */
-  }
-
-  void foods() {
-    category(CharCode.BLACK_HEART_SUIT, "food");
-    food("Edible Mushroom",      1, lightGray,  20);
-    food("Handful of Berries",   2, red,        30);
-    food("Honeycomb",            3, gold,       40);
-    food("Loaf of Bread",        4, lightBrown, 80);
-    food("Berry Pie",            5, red,        100);
-    food("Leg of Lamb",          6, darkBrown,  200);
-    food("Traveler's Ration",    7, green,      300);
-    // TODO: Magic foods that also cure/heal.
   }
 
   void pelts() {
@@ -294,10 +281,6 @@ class Items extends ContentBuilder {
     }
 
     _equipSlot = equipSlot;
-  }
-
-  void food(String name, int level, appearance, int amount) {
-    item(name, level, appearance, use: () => new EatAction(amount));
   }
 
   void weapon(String name, int level, appearance, String verb, int damage) {

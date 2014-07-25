@@ -165,8 +165,7 @@ class Monsters extends ContentBuilder {
 
     breed("bee", yellow, 1, [
       attack("sting[s]", 2),
-    ], drop: percent(40, "Honeycomb"),
-        speed: 1, flags: "group protective");
+    ], speed: 1, flags: "group protective");
 
     breed("wasp", brown, 1, [
       attack("sting[s]", 2, Element.POISON),
@@ -264,7 +263,6 @@ class Monsters extends ContentBuilder {
       attack("scratch[es]", 4),
       teleport(range: 6)
     ], drop: [
-      percent(10, "food", 1),
       percent(20, "magic", 1)
     ], meander: 4, flags: "cowardly");
 
@@ -272,7 +270,6 @@ class Monsters extends ContentBuilder {
       attack("stab[s]", 8),
       teleport(range: 6)
     ], drop: [
-      percent(10, "food", 3),
       percent(20, "magic", 6)
     ], meander: 4, flags: "cowardly");
 
@@ -296,7 +293,6 @@ class Monsters extends ContentBuilder {
       attack("poke[s]", 4),
       teleport(rate: 6, range: 6)
     ], drop: [
-      percent(10, "food", 3),
       percent(30, "magic", 7)
     ], meander: 4, flags: "group");
 

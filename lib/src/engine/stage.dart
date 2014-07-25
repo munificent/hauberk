@@ -14,8 +14,15 @@ import 'items/item.dart';
 
 /// The game's live play area.
 class Stage {
+  final Game game;
+
   final _actors = <Actor>[];
+  final Fov _fov;
   int _currentActorIndex = 0;
+
+  /// The total number of tiles the [Hero] can explore in the stage.
+  int get numExplorable => _numExplorable;
+  int _numExplorable;
 
   int get width => tiles.width;
   int get height => tiles.height;
@@ -39,16 +46,39 @@ class Stage {
   /// Tracks global pathfinding distances to the hero, ignoring other actors.
   Flow _heroPaths;
 
-  Stage(int width, int height)
-  : tiles = new Array2D<Tile>(width, height, () => new Tile()),
-    _actorsByTile = new Array2D<Actor>.filled(width, height, null);
-
-  Game game;
+  Stage(int width, int height, Game game)
+      : game = game,
+        tiles = new Array2D<Tile>(width, height, () => new Tile()),
+        _actorsByTile = new Array2D<Actor>.filled(width, height, null),
+        _fov = new Fov(game);
 
   Tile operator[](Vec pos) => tiles[pos];
 
   Tile get(int x, int y) => tiles.get(x, y);
   void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
+
+  /// Called after the level generator has finished laying out the stage.
+  void finishBuild() {
+    // Count the explorable tiles. We assume the level is fully reachable, so
+    // any traversable tile or tile next to a traversable one is explorable.
+    _numExplorable = 0;
+    for (var pos in bounds.inflate(-1)) {
+      var tile = this[pos];
+      if (tile.isTraversable) {
+        _numExplorable++;
+      } else {
+        // See if it's next to an traversable one.
+        for (var dir in Direction.ALL) {
+          if (this[pos + dir].isTraversable) {
+            _numExplorable++;
+            break;
+          }
+        }
+      }
+    }
+
+    _fov.refresh(game.hero.pos);
+  }
 
   void addActor(Actor actor) {
     _actors.add(actor);
@@ -111,7 +141,7 @@ class Stage {
 
   void refreshVisibility(Hero hero) {
     if (_visibilityDirty) {
-      Fov.refresh(this, hero.pos);
+      _fov.refresh(hero.pos);
       _visibilityDirty = false;
     }
   }
@@ -228,6 +258,20 @@ class Tile {
   void set visible(bool value) {
     if (value) isExplored = true;
     _visible = value;
+  }
+
+  /// Sets the visibility of this tile to [visible].
+  ///
+  /// Returns `true` if this is the first time the tile has been made visible.
+  bool setVisible(bool visible) {
+    _visible = visible;
+
+    if (visible && !isExplored) {
+      isExplored = true;
+      return true;
+    }
+
+    return false;
   }
 
   bool isExplored = false;

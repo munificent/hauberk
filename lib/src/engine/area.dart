@@ -12,13 +12,20 @@ import 'stage.dart';
 
 class Area {
   final String name;
+
+  /// The amount of food the level contains.
+  ///
+  /// A higher number here increases the rate that the [Hero] finds food as they
+  /// explore the level.
+  final num abundance;
+
   final List<Level> levels;
 
-  Area(this.name, this.levels);
+  Area(this.name, this.abundance, this.levels);
 
   Vec buildStage(Game game, int depth, HeroSave heroSave) {
-    final stage = game.stage;
-    final area = levels[depth];
+    var stage = game.stage;
+    var area = levels[depth];
 
     area.buildStage(stage);
 
@@ -27,7 +34,7 @@ class Area {
     stage.addActor(game.hero);
 
     // Place the items.
-    final numItems = rng.taper(area.numItems, 3);
+    var numItems = rng.taper(area.numItems, 3);
     for (var i = 0; i < numItems; i++) {
       final itemDepth = pickDepth(depth);
       final drop = levels[itemDepth].floorDrop;
@@ -51,6 +58,8 @@ class Area {
       final breed = rng.item(levels[monsterDepth].breeds);
       stage.spawnMonster(breed, pos);
     }
+
+    stage.finishBuild();
 
     game.quest = area.quest.generate(stage);
     game.quest.announce(game.log);

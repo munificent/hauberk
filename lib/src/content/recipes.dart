@@ -11,32 +11,14 @@ class Recipes extends ContentBuilder {
   static final List<Recipe> all = [];
 
   void build() {
-    foods();
     healing();
     teleportation();
     armor();
     coins();
   }
 
-  void foods() {
-    recipe('Berry Pie', [
-      'Handful of Berries',
-      'Handful of Berries',
-      'Handful of Berries'
-    ]);
-
-    recipe("Traveler's Ration", [
-      'Edible Mushroom',
-      'Handful of Berries',
-      'Honeycomb',
-      'Honeycomb'
-    ]);
-  }
-
   void healing() {
     recipe("Healing Poultice", [
-        'Edible Mushroom',
-        'Edible Mushroom',
         'Flower',
         'Soothing Balm'
     ]);

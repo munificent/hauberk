@@ -80,6 +80,12 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
+  /// How much "food" the hero has.
+  ///
+  /// The hero gains food by exploring the level and can spend it while resting
+  /// to regain health.
+  num food = 0.0;
+
   /// How much noise the Hero's last action made.
   int get lastNoise => _lastNoise;
   int _lastNoise = 0;
@@ -121,6 +127,13 @@ class Hero extends Actor {
     total += heroClass.armor;
 
     return total;
+  }
+
+  /// Increases the hero's food by an appropriate amount after having explored
+  /// [numExplored] additional tiles.
+  void explore(int numExplored) {
+    food += health.max * game.area.abundance *
+            numExplored / game.stage.numExplorable;
   }
 
   int onGetSpeed() => Energy.NORMAL_SPEED;
@@ -184,8 +197,8 @@ class Hero extends Actor {
       return false;
     }
 
-    if (!food.isActive) {
-      game.log.error("You are too hungry to rest!");
+    if (food == 0) {
+      game.log.error("You must explore more before you can rest.");
       return false;
     }
 
@@ -269,8 +282,8 @@ class RestBehavior extends Behavior {
     // See if done resting.
     if (hero.health.isMax) return false;
 
-    if (!hero.food.isActive) {
-      hero.game.log.message("You are getting hungry.");
+    if (hero.food <= 0) {
+      hero.game.log.message("You must explore more before you can rest.");
       return false;
     }
 

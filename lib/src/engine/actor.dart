@@ -48,9 +48,6 @@ abstract class Actor extends Thing {
   final Stat health;
   final Energy energy = new Energy();
 
-  /// Eating food lets the actor slowly regenerate health.
-  final Condition food = new FoodCondition();
-
   /// Haste raises speed.
   final Condition haste = new HasteCondition();
 
@@ -66,7 +63,6 @@ abstract class Actor extends Thing {
   Actor(this.game, int x, int y, int health)
   : super(new Vec(x, y)),
     health = new Stat(health) {
-    food.bind(this);
     haste.bind(this);
     cold.bind(this);
     poison.bind(this);
@@ -171,8 +167,6 @@ abstract class Actor extends Thing {
   void finishTurn(Action action) {
     energy.spend();
 
-    // TODO: Move food to hero?
-    food.update(action);
     haste.update(action);
     cold.update(action);
     poison.update(action);

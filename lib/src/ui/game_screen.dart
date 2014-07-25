@@ -473,19 +473,21 @@ class GameScreen extends Screen {
 
     drawStat(sidebar, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
+    sidebar.writeAt(0, 1, 'Food', Color.GRAY);
+    sidebar.writeAt(7, 1, hero.food.ceil().toString(), Color.ORANGE);
 
-    drawStat(sidebar, 1, 'Level', hero.level, Color.AQUA);
+    drawStat(sidebar, 2, 'Level', hero.level, Color.AQUA);
     var levelPercent = 100 * hero.experience ~/
         (calculateLevelCost(hero.level + 1) -
         calculateLevelCost(hero.level));
-    sidebar.writeAt(16, 1, '$levelPercent%', Color.DARK_AQUA);
-    drawStat(sidebar, 2, 'Armor',
+    sidebar.writeAt(16, 2, '$levelPercent%', Color.DARK_AQUA);
+    drawStat(sidebar, 3, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
     // TODO: Show the weapon and stats better.
-    drawStat(sidebar, 3, 'Weapon', hero.getAttack(null), Color.YELLOW);
+    drawStat(sidebar, 4, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
-    sidebar.writeAt(0, 5, hero.heroClass.name);
+    sidebar.writeAt(0, 6, hero.heroClass.name);
     if (hero.heroClass is Warrior) _drawWarriorStats(sidebar, hero);
 
     // Draw the nearby monsters.
@@ -556,7 +558,6 @@ class GameScreen extends Screen {
       conditions.add(["F", Color.YELLOW]);
     }
 
-    if (actor.food.isActive) conditions.add(["F", Color.ORANGE]);
     if (actor.poison.isActive) {
       switch (actor.poison.intensity) {
         case 1: conditions.add(["P", Color.DARK_GREEN]); break;
@@ -616,7 +617,7 @@ class GameScreen extends Screen {
 
   void _drawWarriorStats(Terminal terminal, Hero hero) {
     var warrior = hero.heroClass as Warrior;
-    var y = 6;
+    var y = 7;
 
     draw(String name, TrainedStat stat) {
       // Hide stats until the hero has made progress on them.

@@ -27,8 +27,8 @@ class Areas extends ContentBuilder {
     ]);
     */
 
-    area('Friendly Forest', [
-      level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 4,
+    area('Friendly Forest', 7.0, [
+      level(() => new Forest(meadowInset: 8), numMonsters: 6, numItems: 2,
         breeds: [
           'butterfly',
           'field mouse',
@@ -39,12 +39,11 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           frequency(2, 'Flower'),
-          frequency(5, 'food', 1),
           frequency(1, 'magic', 1),
           frequency(1, 'Stick')
         ],
         quest: kill('fuzzy bunny', 1)),
-      level(() => new Forest(meadowInset: 6), numMonsters: 8, numItems: 5,
+      level(() => new Forest(meadowInset: 6), numMonsters: 8, numItems: 3,
         breeds: [
           'bee',
           'tree snake',
@@ -55,15 +54,14 @@ class Areas extends ContentBuilder {
         ],
         drop: [
           frequency(2, 'Flower'),
-          frequency(5, 'food', 2),
           frequency(1, 'magic', 2),
           frequency(1, 'equipment', 1)
         ],
         quest: kill('fox', 1)),
     ]);
 
-    area('Training Grounds', [
-      level(() => new TrainingGrounds(), numMonsters: 12, numItems: 6,
+    area('Training Grounds', 6.0, [
+      level(() => new TrainingGrounds(), numMonsters: 12, numItems: 4,
         breeds: [
           'white mouse',
           'mangy cur',
@@ -75,13 +73,12 @@ class Areas extends ContentBuilder {
           'decrepit mage'
         ],
         drop: [
-          frequency(6, 'food', 2),
           frequency(3, 'magic', 2),
           frequency(1, 'treasure', 2),
           frequency(1, 'equipment', 2)
         ],
         quest: kill('wild dog', 3)),
-      level(() => new TrainingGrounds(), numMonsters: 16, numItems: 7,
+      level(() => new TrainingGrounds(), numMonsters: 16, numItems: 5,
         breeds: [
           'brown spider',
           'crow',
@@ -90,13 +87,12 @@ class Areas extends ContentBuilder {
           'drunken priest',
         ],
         drop: [
-          frequency(4, 'food', 3),
           frequency(2, 'magic', 3),
           frequency(1, 'treasure', 3),
           frequency(1, 'equipment', 3)
         ],
         quest: kill('giant spider')),
-      level(() => new TrainingGrounds(), numMonsters: 20, numItems: 8,
+      level(() => new TrainingGrounds(), numMonsters: 20, numItems: 6,
         breeds: [
           'giant spider',
           'unlucky ranger',
@@ -105,7 +101,6 @@ class Areas extends ContentBuilder {
           'giant earthworm'
         ],
         drop: [
-          frequency(4, 'food', 4),
           frequency(2, 'magic', 4),
           frequency(2, 'treasure', 4),
           frequency(1, 'equipment', 4)
@@ -113,8 +108,8 @@ class Areas extends ContentBuilder {
         quest: kill('giant cave worm'))
     ]);
 
-    area('Goblin Stronghold', [
-      level(() => new GoblinStronghold(50), numMonsters: 20, numItems: 8,
+    area('Goblin Stronghold', 5.0, [
+      level(() => new GoblinStronghold(50), numMonsters: 20, numItems: 5,
         breeds: [
           'scurrilous imp',
           'vexing imp',
@@ -127,11 +122,10 @@ class Areas extends ContentBuilder {
           'salamander'
         ],
         drop: [
-          frequency(2, 'food', 4),
           frequency(1, 'item', 4)
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(70), numMonsters: 22, numItems: 9,
+      level(() => new GoblinStronghold(70), numMonsters: 22, numItems: 6,
         breeds: [
           'imp incanter',
           'kobold',
@@ -143,11 +137,10 @@ class Areas extends ContentBuilder {
           'lizard guard',
         ],
         drop: [
-          frequency(2, 'food', 5),
           frequency(1, 'item', 5)
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(90), numMonsters: 24, numItems: 10,
+      level(() => new GoblinStronghold(90), numMonsters: 24, numItems: 7,
         breeds: [
           'imp warlock',
           'goblin archer',
@@ -158,17 +151,15 @@ class Areas extends ContentBuilder {
           'plague rat'
         ],
         drop: [
-          frequency(2, 'food', 6),
           frequency(1, 'item', 6)
         ],
         quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(110), numMonsters: 26, numItems: 11,
+      level(() => new GoblinStronghold(110), numMonsters: 26, numItems: 8,
         breeds: [
           'armored lizard',
           'goblin mage',
         ],
         drop: [
-          frequency(2, 'food', 7),
           frequency(1, 'item', 7)
         ],
         quest: tileType('the stairs', Tiles.stairs))
@@ -190,8 +181,8 @@ class Areas extends ContentBuilder {
         numItems, breedList, dropOneOf(drop), quest);
   }
 
-  Area area(String name, List<Level> levels) {
-    var area = new Area(name, levels);
+  Area area(String name, num abundance, List<Level> levels) {
+    var area = new Area(name, abundance, levels);
     Areas.all.add(area);
     return area;
   }

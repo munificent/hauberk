@@ -1,6 +1,7 @@
 library hauberk.engine.action_base;
 
 import 'dart:collection';
+import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
@@ -181,23 +182,25 @@ class CloseDoorAction extends Action {
 /// Action for doing nothing for a turn.
 class RestAction extends Action {
   ActionResult onPerform() {
-    if (actor.food.isActive) actor.health.current++;
+    if (actor is Hero) {
+      _eatFood();
+    } else {
+      // Monsters can always rest.
+      actor.health.current++;
+    }
 
     return succeed();
   }
 
-  int get noise => Option.NOISE_REST;
-}
+  /// Regenerates health when the hero rests, if possible.
+  void _eatFood() {
+    if (hero.food <= 0) return;
+    if (hero.poison.isActive) return;
+    if (hero.health.isMax) return;
 
-/// Action for eating some food.
-class EatAction extends Action {
-  final int _duration;
-
-  EatAction(this._duration);
-
-  ActionResult onPerform() {
-    // TODO: Max duration?
-    actor.food.extend(_duration);
-    return succeed("{1} feel[s] better.", actor);
+    hero.food--;
+    hero.health.current++;
   }
+
+  int get noise => Option.NOISE_REST;
 }

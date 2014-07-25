@@ -22,16 +22,16 @@ import 'stage.dart';
 class Game {
   final Area area;
   final int level;
-  final stage = new Stage(80, 40);
+  Stage get stage => _stage;
+  Stage _stage;
   final log = new Log();
   final _actions = new Queue<Action>();
   Hero hero;
   Quest quest;
 
   Game(this.area, this.level, Content content, HeroSave save) {
-    stage.game = this;
+    _stage = new Stage(80, 40, this);
     area.buildStage(this, level, save);
-    Fov.refresh(stage, hero.pos);
   }
 
   GameResult update() {
