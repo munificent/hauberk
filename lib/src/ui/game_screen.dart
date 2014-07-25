@@ -14,10 +14,10 @@ import 'select_command_dialog.dart';
 import 'target_dialog.dart';
 
 class GameScreen extends Screen {
-  final HeroSave save;
-  final Game     game;
-  List<Effect>   effects = <Effect>[];
-  bool           logOnTop = false;
+  final HeroSave _save;
+  final Game     _game;
+  List<Effect>   _effects = <Effect>[];
+  bool           _logOnTop = false;
 
   /// The currently targeted actor, if any.
   Actor get target {
@@ -39,7 +39,7 @@ class GameScreen extends Screen {
   /// The most recently performed command.
   Command _lastCommand;
 
-  GameScreen(this.save, this.game);
+  GameScreen(this._save, this._game);
 
   bool handleInput(Keyboard keyboard) {
     var action;
@@ -47,64 +47,64 @@ class GameScreen extends Screen {
     if (keyboard.shift && !keyboard.control && !keyboard.option) {
       switch (keyboard.lastPressed) {
       case KeyCode.F:
-        ui.push(new ForfeitDialog(game));
+        ui.push(new ForfeitDialog(_game));
         break;
 
       case KeyCode.L:
-        if (!game.hero.rest()) {
+        if (!_game.hero.rest()) {
           // Show the message.
           dirty();
         }
         break;
 
       case KeyCode.I:
-        game.hero.run(Direction.NW);
+        _game.hero.run(Direction.NW);
         break;
 
       case KeyCode.O:
-        game.hero.run(Direction.N);
+        _game.hero.run(Direction.N);
         break;
 
       case KeyCode.P:
-        game.hero.run(Direction.NE);
+        _game.hero.run(Direction.NE);
         break;
 
       case KeyCode.K:
-        game.hero.run(Direction.W);
+        _game.hero.run(Direction.W);
         break;
 
       case KeyCode.SEMICOLON:
-        game.hero.run(Direction.E);
+        _game.hero.run(Direction.E);
         break;
 
       case KeyCode.COMMA:
-        game.hero.run(Direction.SW);
+        _game.hero.run(Direction.SW);
         break;
 
       case KeyCode.PERIOD:
-        game.hero.run(Direction.S);
+        _game.hero.run(Direction.S);
         break;
 
       case KeyCode.SLASH:
-        game.hero.run(Direction.SE);
+        _game.hero.run(Direction.SE);
         break;
       }
     } else if (!keyboard.control && !keyboard.option) {
       switch (keyboard.lastPressed) {
       case KeyCode.Q:
-        if (game.quest.isComplete) {
-          save.copyFrom(game.hero);
+        if (_game.quest.isComplete) {
+          _save.copyFrom(_game.hero);
 
           // Remember that this level was completed.
-          var completed = save.completedLevels[game.area.name];
-          if (completed == null || completed < game.level + 1) {
-            save.completedLevels[game.area.name] = game.level + 1;
+          var completed = _save.completedLevels[_game.area.name];
+          if (completed == null || completed < _game.level + 1) {
+            _save.completedLevels[_game.area.name] = _game.level + 1;
           }
 
           ui.pop(true);
         } else {
-          game.log.error('You have not completed your quest yet:');
-          game.quest.announce(game.log);
+          _game.log.error('You have not completed your quest yet:');
+          _game.quest.announce(_game.log);
           dirty();
         }
         break;
@@ -114,11 +114,11 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.D:
-        ui.push(new ItemDialog.drop(game));
+        ui.push(new ItemDialog.drop(_game));
         break;
 
       case KeyCode.U:
-        ui.push(new ItemDialog.use(game));
+        ui.push(new ItemDialog.use(_game));
         break;
 
       case KeyCode.G:
@@ -126,11 +126,11 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.X:
-        if (game.hero.inventory.lastUnequipped == -1) {
-          game.log.error("You aren't holding an unequipped item to swap.");
+        if (_game.hero.inventory.lastUnequipped == -1) {
+          _game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
-          action = new EquipAction(game.hero.inventory.lastUnequipped, false);
+          action = new EquipAction(_game.hero.inventory.lastUnequipped, false);
         }
         break;
 
@@ -145,42 +145,42 @@ class GameScreen extends Screen {
       case KeyCode.SLASH: action = new WalkAction(Direction.SE); break;
 
       case KeyCode.S:
-        ui.push(new SelectCommandDialog(game));
+        ui.push(new SelectCommandDialog(_game));
         break;
       }
     } else if (!keyboard.shift && keyboard.option && !keyboard.control) {
       switch (keyboard.lastPressed) {
       case KeyCode.I:
-        fireAt(game.hero.pos + Direction.NW);
+        fireAt(_game.hero.pos + Direction.NW);
         break;
 
       case KeyCode.O:
-        fireAt(game.hero.pos + Direction.N);
+        fireAt(_game.hero.pos + Direction.N);
         break;
 
       case KeyCode.P:
-        fireAt(game.hero.pos + Direction.NE);
+        fireAt(_game.hero.pos + Direction.NE);
         break;
 
       case KeyCode.K:
-        fireAt(game.hero.pos + Direction.W);
+        fireAt(_game.hero.pos + Direction.W);
         break;
 
       case KeyCode.L:
         if (_lastCommand == null) {
           // Haven't picked a command yet, so select one.
-          ui.push(new SelectCommandDialog(game));
-        } else if (!_lastCommand.canUse(game)) {
+          ui.push(new SelectCommandDialog(_game));
+        } else if (!_lastCommand.canUse(_game)) {
           // Show the message.
           dirty();
         } else if (_lastCommand.needsTarget) {
           // If we still have a visible target, use it.
           if (target != null && target.isAlive &&
-              game.stage[target.pos].visible) {
+              _game.stage[target.pos].visible) {
             fireAt(target.pos);
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, game, _lastCommand));
+            ui.push(new TargetDialog(this, _game, _lastCommand));
           }
         } else {
           useLastSkill(null);
@@ -188,25 +188,25 @@ class GameScreen extends Screen {
         break;
 
       case KeyCode.SEMICOLON:
-        fireAt(game.hero.pos + Direction.E);
+        fireAt(_game.hero.pos + Direction.E);
         break;
 
       case KeyCode.COMMA:
-        fireAt(game.hero.pos + Direction.SW);
+        fireAt(_game.hero.pos + Direction.SW);
         break;
 
       case KeyCode.PERIOD:
-        fireAt(game.hero.pos + Direction.S);
+        fireAt(_game.hero.pos + Direction.S);
         break;
 
       case KeyCode.SLASH:
-        fireAt(game.hero.pos + Direction.SE);
+        fireAt(_game.hero.pos + Direction.SE);
         break;
       }
     }
 
     if (action != null) {
-      game.hero.setNextAction(action);
+      _game.hero.setNextAction(action);
     }
 
     return true;
@@ -216,26 +216,26 @@ class GameScreen extends Screen {
     // See how many adjacent open doors there are.
     final doors = [];
     for (final direction in Direction.ALL) {
-      final pos = game.hero.pos + direction;
-      if (game.stage[pos].type.closesTo != null) {
+      final pos = _game.hero.pos + direction;
+      if (_game.stage[pos].type.closesTo != null) {
         doors.add(pos);
       }
     }
 
     if (doors.length == 0) {
-      game.log.error('You are not next to an open door.');
+      _game.log.error('You are not next to an open door.');
       dirty();
     } else if (doors.length == 1) {
-      game.hero.setNextAction(new CloseDoorAction(doors[0]));
+      _game.hero.setNextAction(new CloseDoorAction(doors[0]));
     } else {
-      ui.push(new CloseDoorDialog(game));
+      ui.push(new CloseDoorDialog(_game));
     }
   }
 
   void fireAt(Vec pos) {
     if (_lastCommand == null || !_lastCommand.needsTarget) return;
 
-    if (!_lastCommand.canUse(game)) {
+    if (!_lastCommand.canUse(_game)) {
       // Refresh the log.
       dirty();
       return;
@@ -246,12 +246,12 @@ class GameScreen extends Screen {
     // a raw direction, target the monster in that direction for subsequent
     // shots).
     if (target == null || target.pos != pos) {
-      for (var step in new Los(game.hero.pos, pos)) {
+      for (var step in new Los(_game.hero.pos, pos)) {
         // Stop if we hit a wall.
-        if (!game.stage[step].isTransparent) break;
+        if (!_game.stage[step].isTransparent) break;
 
         // See if there is an actor there.
-        final actor = game.stage.actorAt(step);
+        final actor = _game.stage.actorAt(step);
         if (actor != null) {
           target = actor;
           break;
@@ -263,7 +263,7 @@ class GameScreen extends Screen {
   }
 
   void useLastSkill(Vec target) {
-    game.hero.setNextAction(_lastCommand.getUseAction(game, target));
+    _game.hero.setNextAction(_lastCommand.getUseAction(_game, target));
   }
 
   void activate(Screen popped, result) {
@@ -273,11 +273,11 @@ class GameScreen extends Screen {
     } else if (popped is SelectCommandDialog && result is Command) {
       _lastCommand = result;
 
-      if (!result.canUse(game)) {
+      if (!result.canUse(_game)) {
         // Refresh the log.
         dirty();
       } else if (result.needsTarget) {
-        ui.push(new TargetDialog(this, game, result));
+        ui.push(new TargetDialog(this, _game, result));
       } else {
         useLastSkill(null);
       }
@@ -287,105 +287,72 @@ class GameScreen extends Screen {
   }
 
   void update() {
-    if (effects.length > 0) dirty();
+    if (_effects.length > 0) dirty();
 
-    var result = game.update();
+    var result = _game.update();
 
     // See if the hero died.
-    if (!game.hero.isAlive) {
+    if (!_game.hero.isAlive) {
       ui.goTo(new GameOverScreen());
       return;
     }
 
-    if (game.hero.dazzle.isActive) dirty();
+    if (_game.hero.dazzle.isActive) dirty();
 
     for (final event in result.events) {
       switch (event.type) {
         case EventType.BOLT:
-          effects.add(new FrameEffect(event.value, '*',
-              getColorForElement(event.element)));
+          _effects.add(new FrameEffect(event.value, '*',
+              _getColorForElement(event.element)));
           break;
 
         case EventType.HIT:
-          effects.add(new HitEffect(event.actor));
+          _effects.add(new HitEffect(event.actor));
           break;
 
         case EventType.DIE:
-          effects.add(new HitEffect(event.actor));
+          _effects.add(new HitEffect(event.actor));
           // TODO: Make number of particles vary based on monster health.
           _spawnParticles(10, event.actor.pos, Color.RED);
           break;
 
         case EventType.HEAL:
-          effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
+          _effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
           break;
 
         case EventType.FEAR:
-          effects.add(new BlinkEffect(event.actor, Color.DARK_YELLOW));
+          _effects.add(new BlinkEffect(event.actor, Color.DARK_YELLOW));
           break;
 
         case EventType.COURAGE:
-          effects.add(new BlinkEffect(event.actor, Color.YELLOW));
+          _effects.add(new BlinkEffect(event.actor, Color.YELLOW));
           break;
 
         case EventType.DETECT:
-          effects.add(new DetectEffect(event.value));
+          _effects.add(new DetectEffect(event.value));
           break;
 
         case EventType.TELEPORT:
-          effects.add(new TeleportEffect(event.value, event.actor.pos));
+          _effects.add(new TeleportEffect(event.value, event.actor.pos));
           break;
       }
     }
 
     if (result.needsRefresh) dirty();
 
-    effects = effects.where((effect) => effect.update(game)).toList();
+    _effects = _effects.where((effect) => effect.update(_game)).toList();
   }
 
   void render(Terminal terminal) {
-    final black = new Glyph(' ');
+    terminal.clear();
 
-    // TODO: Hack. Clear out the help text from the previous screen.
-    terminal.rect(0, terminal.height - 1, terminal.width, 1).clear();
-
-    var hero = game.hero;
-
-    dazzleGlyph(Glyph glyph) {
-      if (!hero.dazzle.isActive) return glyph;
-
-      var chance = 10 + math.min(80, hero.dazzle.duration * 10);
-      if (rng.range(100) > chance) return glyph;
-
-      var colors = [Color.AQUA, Color.BLUE, Color.PURPLE, Color.RED,
-          Color.ORANGE, Color.GOLD, Color.YELLOW, Color.GREEN];
-      var char = (rng.range(100) > chance) ? glyph.char : CharCode.ASTERISK;
-      return new Glyph.fromCharCode(char, rng.item(colors));
+    var bar = new Glyph.fromCharCode(
+        CharCode.BOX_DRAWINGS_LIGHT_VERTICAL, Color.DARK_GRAY);
+    for (var y = 0; y < terminal.height; y++) {
+      terminal.drawGlyph(80, y, bar);
     }
 
-    // Draw the stage.
-    for (int y = 0; y < game.stage.height; y++) {
-      for (int x = 0; x < game.stage.width; x++) {
-        final tile = game.stage.get(x, y);
-        var glyph;
-        if (tile.isExplored) {
-          glyph = tile.type.appearance[tile.visible ? 0 : 1];
-          if (tile.visible) glyph = dazzleGlyph(glyph);
-        } else {
-          glyph = black;
-        }
-
-        terminal.drawGlyph(x, y, glyph);
-      }
-    }
-
-    // Draw the items.
-    for (final item in game.stage.items) {
-      if (!game.stage[item.pos].isExplored) continue;
-      var glyph = dazzleGlyph(item.appearance);
-      terminal.drawGlyph(item.x, item.y, glyph);
-    }
-
+    var hero = _game.hero;
     var heroColor = Color.WHITE;
     if (hero.health.current < hero.health.max / 4) {
       heroColor = Color.RED;
@@ -401,9 +368,50 @@ class GameScreen extends Screen {
 
     var visibleMonsters = [];
 
+    _drawStage(terminal, heroColor, visibleMonsters);
+    _drawLog(terminal);
+    _drawSidebar(terminal.rect(81, 0, 20, 40), heroColor, visibleMonsters);
+  }
+
+  void _drawStage(Terminal terminal, Color heroColor,
+      List<Actor> visibleMonsters) {
+    var hero = _game.hero;
+
+    dazzleGlyph(Glyph glyph) {
+      if (!hero.dazzle.isActive) return glyph;
+
+      var chance = 10 + math.min(80, hero.dazzle.duration * 10);
+      if (rng.range(100) > chance) return glyph;
+
+      var colors = [Color.AQUA, Color.BLUE, Color.PURPLE, Color.RED,
+          Color.ORANGE, Color.GOLD, Color.YELLOW, Color.GREEN];
+      var char = (rng.range(100) > chance) ? glyph.char : CharCode.ASTERISK;
+      return new Glyph.fromCharCode(char, rng.item(colors));
+    }
+
+    // Draw the tiles.
+    for (int y = 0; y < _game.stage.height; y++) {
+      for (int x = 0; x < _game.stage.width; x++) {
+        final tile = _game.stage.get(x, y);
+        var glyph;
+        if (tile.isExplored) {
+          glyph = tile.type.appearance[tile.visible ? 0 : 1];
+          if (tile.visible) glyph = dazzleGlyph(glyph);
+          terminal.drawGlyph(x, y, glyph);
+        }
+      }
+    }
+
+    // Draw the items.
+    for (final item in _game.stage.items) {
+      if (!_game.stage[item.pos].isExplored) continue;
+      var glyph = dazzleGlyph(item.appearance);
+      terminal.drawGlyph(item.x, item.y, glyph);
+    }
+
     // Draw the actors.
-    for (final actor in game.stage.actors) {
-      if (!game.stage[actor.pos].visible) continue;
+    for (final actor in _game.stage.actors) {
+      if (!_game.stage[actor.pos].visible) continue;
 
       var glyph = actor.appearance;
       if (glyph is! Glyph) {
@@ -423,27 +431,29 @@ class GameScreen extends Screen {
     }
 
     // Draw the effects.
-    var stageTerm = terminal.rect(0, 0, game.stage.width, game.stage.height);
-    for (final effect in effects) {
-      effect.render(game, stageTerm);
+    var stageTerm = terminal.rect(0, 0, _game.stage.width, _game.stage.height);
+    for (final effect in _effects) {
+      effect.render(_game, stageTerm);
     }
+  }
 
-    // Draw the log.
+  void _drawLog(Terminal terminal) {
     // If the log is overlapping the hero, flip it to the other side. Use 0.4
     // and 0.6 here to avoid flipping too much if the hero is wandering around
     // near the middle.
-    if (logOnTop) {
-      if (hero.y < terminal.height * 0.4) logOnTop = false;
+    var hero = _game.hero;
+    if (_logOnTop) {
+      if (hero.y < terminal.height * 0.4) _logOnTop = false;
     } else {
-      if (hero.y > terminal.height * 0.6) logOnTop = true;
+      if (hero.y > terminal.height * 0.6) _logOnTop = true;
     }
 
     // Force the log to the bottom if a popup is open so it's still visible.
-    if (!isTopScreen) logOnTop = false;
+    if (!isTopScreen) _logOnTop = false;
 
-    var y = logOnTop ? 0 : terminal.height - game.log.messages.length;
+    var y = _logOnTop ? 0 : terminal.height - _game.log.messages.length;
 
-    for (final message in game.log.messages) {
+    for (final message in _game.log.messages) {
       var color;
       switch (message.type) {
         case LogType.MESSAGE: color = Color.WHITE; break;
@@ -460,44 +470,38 @@ class GameScreen extends Screen {
       }
       y++;
     }
+  }
 
-    var bar = new Glyph.fromCharCode(
-        CharCode.BOX_DRAWINGS_LIGHT_VERTICAL, Color.DARK_GRAY);
-    for (var y = 0; y < terminal.height; y++) {
-      terminal.drawGlyph(80, y, bar);
-    }
-
-    // Clear the sidebar.
-    var sidebar = terminal.rect(81, 0, 20, 40);
-    sidebar.clear();
-
-    drawStat(sidebar, 0, 'Health', hero.health.current, Color.RED,
+  void _drawSidebar(Terminal terminal, Color heroColor,
+      List<Actor> visibleMonsters) {
+    var hero = _game.hero;
+    _drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
-    sidebar.writeAt(0, 1, 'Food', Color.GRAY);
-    sidebar.writeAt(7, 1, hero.food.ceil().toString(), Color.ORANGE);
+    terminal.writeAt(0, 1, 'Food', Color.GRAY);
+    terminal.writeAt(7, 1, hero.food.ceil().toString(), Color.ORANGE);
 
-    drawStat(sidebar, 2, 'Level', hero.level, Color.AQUA);
+    _drawStat(terminal, 2, 'Level', hero.level, Color.AQUA);
     var levelPercent = 100 * hero.experience ~/
         (calculateLevelCost(hero.level + 1) -
         calculateLevelCost(hero.level));
-    sidebar.writeAt(16, 2, '$levelPercent%', Color.DARK_AQUA);
-    drawStat(sidebar, 3, 'Armor',
+    terminal.writeAt(16, 2, '$levelPercent%', Color.DARK_AQUA);
+    _drawStat(terminal, 3, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
     // TODO: Show the weapon and stats better.
-    drawStat(sidebar, 4, 'Weapon', hero.getAttack(null), Color.YELLOW);
+    _drawStat(terminal, 4, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
-    sidebar.writeAt(0, 6, hero.heroClass.name);
-    if (hero.heroClass is Warrior) _drawWarriorStats(sidebar, hero);
+    terminal.writeAt(0, 6, hero.heroClass.name);
+    if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
 
     // Draw the nearby monsters.
-    sidebar.writeAt(0, 16, '@', heroColor);
-    sidebar.writeAt(2, 16, save.name);
-    drawHealthBar(sidebar, 17, hero);
+    terminal.writeAt(0, 16, '@', heroColor);
+    terminal.writeAt(2, 16, _save.name);
+    _drawHealthBar(terminal, 17, hero);
 
     visibleMonsters.sort((a, b) {
-      var aDistance = (a.pos - game.hero.pos).lengthSquared;
-      var bDistance = (b.pos - game.hero.pos).lengthSquared;
+      var aDistance = (a.pos - _game.hero.pos).lengthSquared;
+      var bDistance = (b.pos - _game.hero.pos).lengthSquared;
       return aDistance.compareTo(bDistance);
     });
 
@@ -511,34 +515,34 @@ class GameScreen extends Screen {
           glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
-        sidebar.drawGlyph(0, y, glyph);
-        sidebar.writeAt(2, y, monster.breed.name,
+        terminal.drawGlyph(0, y, glyph);
+        terminal.writeAt(2, y, monster.breed.name,
             (target == monster) ? Color.YELLOW : Color.WHITE);
 
-        drawHealthBar(sidebar, y + 1, monster);
+        _drawHealthBar(terminal, y + 1, monster);
       }
     }
 
     // Draw the unseen items.
-    sidebar.writeAt(0, 38, "Unfound items:", Color.GRAY);
-    var unseen = game.stage.items.where(
-        (item) => !game.stage[item.pos].isExplored).toList();
+    terminal.writeAt(0, 38, "Unfound items:", Color.GRAY);
+    var unseen = _game.stage.items.where(
+        (item) => !_game.stage[item.pos].isExplored).toList();
     unseen.sort();
     // Show the "best" ones first.
     var x = 0;
     var lastGlyph;
     for (var item in unseen.reversed) {
       if (item.appearance != lastGlyph) {
-        sidebar.drawGlyph(x, 39, item.appearance);
+        terminal.drawGlyph(x, 39, item.appearance);
         x++;
-        if (x >= sidebar.width) break;
+        if (x >= terminal.width) break;
         lastGlyph = item.appearance;
       }
     }
   }
 
   /// Draws a labeled numeric stat.
-  void drawStat(Terminal terminal, int y, String label, value,
+  void _drawStat(Terminal terminal, int y, String label, value,
       Color valueColor, [max, Color maxColor]) {
     terminal.writeAt(0, y, label, Color.GRAY);
     var valueString = value.toString();
@@ -550,7 +554,7 @@ class GameScreen extends Screen {
   }
 
   /// Draws a health bar for [actor].
-  void drawHealthBar(Terminal terminal, int y, Actor actor) {
+  void _drawHealthBar(Terminal terminal, int y, Actor actor) {
     // Show conditions.
     var conditions = [];
 
@@ -581,7 +585,7 @@ class GameScreen extends Screen {
       x++;
     }
 
-    drawMeter(terminal, y, actor.health.current, actor.health.max,
+    _drawMeter(terminal, y, actor.health.current, actor.health.max,
         Color.RED, Color.DARK_RED);
   }
 
@@ -590,7 +594,7 @@ class GameScreen extends Screen {
   /// exactly `0`, otherwise it will at least show a sliver. Likewise, the bar
   /// will only be full if [value] is exactly [max], otherwise at least one
   /// half unit will be missing.
-  void drawMeter(Terminal terminal, int y, int value, int max,
+  void _drawMeter(Terminal terminal, int y, int value, int max,
                  Color fore, Color back) {
     var barWidth;
     if (value == max) {
@@ -646,7 +650,7 @@ class GameScreen extends Screen {
     draw("Toughness", warrior.toughness);
   }
 
-  Color getColorForElement(Element element) {
+  Color _getColorForElement(Element element) {
     switch (element) {
       case Element.NONE: return Color.LIGHT_BROWN;
       case Element.AIR: return Color.LIGHT_AQUA;
@@ -667,7 +671,7 @@ class GameScreen extends Screen {
 
   void _spawnParticles(int count, Vec pos, Color color) {
     for (var i = 0; i < count; i++) {
-      effects.add(new ParticleEffect(pos.x, pos.y, color));
+      _effects.add(new ParticleEffect(pos.x, pos.y, color));
     }
   }
 }
