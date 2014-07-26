@@ -17,7 +17,6 @@ class GameScreen extends Screen {
   final HeroSave _save;
   final Game     _game;
   List<Effect>   _effects = <Effect>[];
-  bool           _logOnTop = false;
 
   /// The currently targeted actor, if any.
   Actor get target {
@@ -368,14 +367,21 @@ class GameScreen extends Screen {
 
     var visibleMonsters = [];
 
-    _drawStage(terminal, heroColor, visibleMonsters);
-    _drawLog(terminal);
+    _drawStage(terminal.rect(0, 0, 80, 34), heroColor, visibleMonsters);
+    _drawLog(terminal.rect(0, 34, 80, 6));
     _drawSidebar(terminal.rect(81, 0, 20, 40), heroColor, visibleMonsters);
   }
 
   void _drawStage(Terminal terminal, Color heroColor,
       List<Actor> visibleMonsters) {
     var hero = _game.hero;
+
+    var camera = hero.pos - new Vec(terminal.width, terminal.height) ~/ 2;
+    var cameraBounds = new Rect(0, 0,
+        _game.stage.width - terminal.width,
+        _game.stage.height - terminal.height);
+
+    camera = cameraBounds.clamp(camera);
 
     dazzleGlyph(Glyph glyph) {
       if (!hero.dazzle.isActive) return glyph;
@@ -389,28 +395,31 @@ class GameScreen extends Screen {
       return new Glyph.fromCharCode(char, rng.item(colors));
     }
 
+    drawGlyph(int x, int y, Glyph glyph) {
+      terminal.drawGlyph(x - camera.x, y - camera.y, glyph);
+    }
+
     // Draw the tiles.
-    for (int y = 0; y < _game.stage.height; y++) {
-      for (int x = 0; x < _game.stage.width; x++) {
-        final tile = _game.stage.get(x, y);
-        var glyph;
-        if (tile.isExplored) {
-          glyph = tile.type.appearance[tile.visible ? 0 : 1];
-          if (tile.visible) glyph = dazzleGlyph(glyph);
-          terminal.drawGlyph(x, y, glyph);
-        }
+    var viewBounds = new Rect.posAndSize(camera, terminal.size);
+    for (var pos in viewBounds) {
+      var tile = _game.stage[pos];
+      var glyph;
+      if (tile.isExplored) {
+        glyph = tile.type.appearance[tile.visible ? 0 : 1];
+        if (tile.visible) glyph = dazzleGlyph(glyph);
+        drawGlyph(pos.x, pos.y, glyph);
       }
     }
 
     // Draw the items.
-    for (final item in _game.stage.items) {
+    for (var item in _game.stage.items) {
       if (!_game.stage[item.pos].isExplored) continue;
       var glyph = dazzleGlyph(item.appearance);
-      terminal.drawGlyph(item.x, item.y, glyph);
+      drawGlyph(item.x, item.y, glyph);
     }
 
     // Draw the actors.
-    for (final actor in _game.stage.actors) {
+    for (var actor in _game.stage.actors) {
       if (!_game.stage[actor.pos].visible) continue;
 
       var glyph = actor.appearance;
@@ -425,33 +434,19 @@ class GameScreen extends Screen {
 
       if (actor is! Hero) glyph = dazzleGlyph(glyph);
 
-      terminal.drawGlyph(actor.x, actor.y, glyph);
+      drawGlyph(actor.x, actor.y, glyph);
 
       if (actor is Monster) visibleMonsters.add(actor);
     }
 
     // Draw the effects.
-    var stageTerm = terminal.rect(0, 0, _game.stage.width, _game.stage.height);
-    for (final effect in _effects) {
-      effect.render(_game, stageTerm);
+    for (var effect in _effects) {
+      effect.render(_game, drawGlyph);
     }
   }
 
   void _drawLog(Terminal terminal) {
-    // If the log is overlapping the hero, flip it to the other side. Use 0.4
-    // and 0.6 here to avoid flipping too much if the hero is wandering around
-    // near the middle.
-    var hero = _game.hero;
-    if (_logOnTop) {
-      if (hero.y < terminal.height * 0.4) _logOnTop = false;
-    } else {
-      if (hero.y > terminal.height * 0.6) _logOnTop = true;
-    }
-
-    // Force the log to the bottom if a popup is open so it's still visible.
-    if (!isTopScreen) _logOnTop = false;
-
-    var y = _logOnTop ? 0 : terminal.height - _game.log.messages.length;
+    var y = 0;
 
     for (final message in _game.log.messages) {
       var color;
@@ -676,9 +671,11 @@ class GameScreen extends Screen {
   }
 }
 
+typedef void DrawGlyph(int x, int y, Glyph glyph);
+
 abstract class Effect {
   bool update(Game game);
-  void render(Game game, Terminal terminal);
+  void render(Game game, DrawGlyph drawGlyph);
 }
 
 class FrameEffect implements Effect {
@@ -693,8 +690,8 @@ class FrameEffect implements Effect {
     return --life >= 0;
   }
 
-  void render(Game game, Terminal terminal) {
-    terminal.writeAt(pos.x, pos.y, char, color);
+  void render(Game game, DrawGlyph drawGlyph) {
+    drawGlyph(pos.x, pos.y, new Glyph(char, color));
   }
 }
 
@@ -710,13 +707,13 @@ class BlinkEffect implements Effect {
     return --life >= 0;
   }
 
-  void render(Game game, Terminal terminal) {
+  void render(Game game, DrawGlyph drawGlyph) {
     if (!actor.isVisible) return;
 
     if ((life ~/ 8) % 2 == 0) {
       var glyph = actor.appearance;
       glyph = new Glyph.fromCharCode(glyph.char, glyph.fore, color);
-      terminal.drawGlyph(actor.pos.x, actor.pos.y, glyph);
+      drawGlyph(actor.pos.x, actor.pos.y, glyph);
     }
   }
 }
@@ -738,14 +735,14 @@ class HitEffect implements Effect {
     return frame++ < NUM_FRAMES;
   }
 
-  void render(Game game, Terminal terminal) {
+  void render(Game game, DrawGlyph drawGlyph) {
     var back;
     switch (frame ~/ 5) {
       case 0: back = Color.RED;      break;
       case 1: back = Color.DARK_RED; break;
       case 2: back = Color.BLACK;    break;
     }
-    terminal.writeAt(x, y, ' 123456789'[health], Color.BLACK, back);
+    drawGlyph(x, y, new Glyph(' 123456789'[health], Color.BLACK, back));
   }
 }
 
@@ -777,8 +774,8 @@ class ParticleEffect implements Effect {
     return life-- > 0;
   }
 
-  void render(Game game, Terminal terminal) {
-    terminal.writeAt(x.toInt(), y.toInt(), '*', color);
+  void render(Game game, DrawGlyph drawGlyph) {
+    drawGlyph(x.toInt(), y.toInt(), new Glyph('*', color));
   }
 }
 
@@ -793,7 +790,7 @@ class HealEffect implements Effect {
     return frame++ < 24;
   }
 
-  void render(Game game, Terminal terminal) {
+  void render(Game game, DrawGlyph drawGlyph) {
     if (!game.stage.get(x, y).visible) return;
 
     var back;
@@ -804,10 +801,10 @@ class HealEffect implements Effect {
       case 3: back = Color.LIGHT_AQUA;  break;
     }
 
-    terminal.writeAt(x - 1, y, '-', back);
-    terminal.writeAt(x + 1, y, '-', back);
-    terminal.writeAt(x, y - 1, '|', back);
-    terminal.writeAt(x, y + 1, '|', back);
+    drawGlyph(x - 1, y, new Glyph('-', back));
+    drawGlyph(x + 1, y, new Glyph('-', back));
+    drawGlyph(x, y - 1, new Glyph('|', back));
+    drawGlyph(x, y + 1, new Glyph('|', back));
   }
 }
 
@@ -821,19 +818,17 @@ class DetectEffect implements Effect {
     return --life >= 0;
   }
 
-  void render(Game game, Terminal terminal) {
+  void render(Game game, DrawGlyph drawGlyph) {
     var radius = life ~/ 4;
     var glyph = new Glyph("*", Color.LIGHT_GOLD);
 
     var bounds = new Rect(pos.x - radius, pos.y - radius,
         radius * 2 + 1, radius * 2 + 1);
-    bounds = Rect.intersect(bounds, new Rect(0, 0,
-        terminal.width, terminal.height));
 
     for (var pixel in bounds) {
       var relative = pos - pixel;
       if (relative < radius && relative > radius - 2) {
-        terminal.drawGlyph(pixel.x, pixel.y, glyph);
+        drawGlyph(pixel.x, pixel.y, glyph);
       }
     }
   }
@@ -854,15 +849,15 @@ class TeleportEffect implements Effect {
     return true;
   }
 
-  void render(Game game, Terminal terminal) {
+  void render(Game game, DrawGlyph drawGlyph) {
     if (!game.stage[los.current].visible) return;
 
     var color = rng.item([Color.WHITE, Color.AQUA, Color.BLUE]);
 
-    terminal.drawGlyph(los.current.x - 1, los.current.y, new Glyph('-', color));
-    terminal.drawGlyph(los.current.x + 1, los.current.y, new Glyph('-', color));
-    terminal.drawGlyph(los.current.x, los.current.y - 1, new Glyph('|', color));
-    terminal.drawGlyph(los.current.x, los.current.y + 1, new Glyph('|', color));
-    terminal.drawGlyph(los.current.x, los.current.y, new Glyph('*', color));
+    drawGlyph(los.current.x - 1, los.current.y, new Glyph('-', color));
+    drawGlyph(los.current.x + 1, los.current.y, new Glyph('-', color));
+    drawGlyph(los.current.x, los.current.y - 1, new Glyph('|', color));
+    drawGlyph(los.current.x, los.current.y + 1, new Glyph('|', color));
+    drawGlyph(los.current.x, los.current.y, new Glyph('*', color));
   }
 }

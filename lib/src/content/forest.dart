@@ -13,17 +13,13 @@ class Forest extends StageBuilder {
   /// connected by passages.
   int get numMeadows => 10;
 
-  /// How for the meadows are positioned from the edge of the stage. Larger
-  /// numbers mean a smaller dungeon centered in the stage.
-  final int meadowInset;
-
   /// The number of iterations of Lloyd's algorithm to run on the points.
   ///
   /// Fewer results in clumpier, less evenly spaced points. More results in
   /// more evenly spaced but can eventually look too regular.
-  int get voronoiIterations => 4;
+  int get voronoiIterations => 5;
 
-  Forest({this.meadowInset});
+  Forest();
 
   void generate(Stage stage) {
     bindStage(stage);
@@ -33,8 +29,8 @@ class Forest extends StageBuilder {
     // Randomly position the meadows.
     var meadows = [];
     for (var i = 0; i < numMeadows; i++) {
-      var x = rng.range(meadowInset * 2, stage.width - meadowInset * 2);
-      var y = rng.range(meadowInset, stage.height - meadowInset);
+      var x = rng.range(0, stage.width);
+      var y = rng.range(0, stage.height);
       meadows.add(new Vec(x, y));
     }
 
@@ -46,22 +42,18 @@ class Forest extends StageBuilder {
     for (var i = 0; i < voronoiIterations; i++) {
       // For each cell in the stage, determine which point it's nearest to.
       var regions = new List.generate(numMeadows, (i) => [meadows[i]]);
-      for (var y = meadowInset; y < stage.height - meadowInset; y++) {
-        for (var x = meadowInset * 2; x < stage.width - meadowInset * 2; x++) {
-          var cell = new Vec(x, y);
-
-          var nearest;
-          var nearestDistanceSquared = 99999999;
-          for (var i = 0; i < numMeadows; i++) {
-            var offset = meadows[i] - cell;
-            if (offset.lengthSquared < nearestDistanceSquared) {
-              nearestDistanceSquared = offset.lengthSquared;
-              nearest = i;
-            }
+      for (var cell in stage.bounds) {
+        var nearest;
+        var nearestDistanceSquared = 99999999;
+        for (var i = 0; i < numMeadows; i++) {
+          var offset = meadows[i] - cell;
+          if (offset.lengthSquared < nearestDistanceSquared) {
+            nearestDistanceSquared = offset.lengthSquared;
+            nearest = i;
           }
-
-          regions[nearest].add(cell);
         }
+
+        regions[nearest].add(cell);
       }
 
       // Now move each point to the centroid of its region. The centroid is
@@ -96,10 +88,10 @@ class Forest extends StageBuilder {
 
     // Carve out the meadows.
     for (var point in connected) {
-      carveCircle(point, 3);
+      carveCircle(point, 4);
     }
 
-    erode(2000, floor: Tiles.grass, wall: Tiles.tree);
+    erode(10000, floor: Tiles.grass, wall: Tiles.tree);
 
     // Randomly vary the tree type.
     var trees = [Tiles.tree, Tiles.treeAlt1, Tiles.treeAlt2];

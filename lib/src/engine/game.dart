@@ -30,8 +30,8 @@ class Game {
   Quest quest;
 
   Game(this.area, this.level, Content content, HeroSave save) {
-    _stage = new Stage(80, 40, this);
-    area.buildStage(this, level, save);
+    _stage = area.buildStage(this, level, save);
+    _stage.finishBuild();
   }
 
   GameResult update() {

@@ -13,6 +13,12 @@ import 'stage.dart';
 class Area {
   final String name;
 
+  /// Width of the stage for this area.
+  final int width;
+
+  /// Height of the stage for this area.
+  final int height;
+
   /// The amount of food the level contains.
   ///
   /// A higher number here increases the rate that the [Hero] finds food as they
@@ -21,20 +27,20 @@ class Area {
 
   final List<Level> levels;
 
-  Area(this.name, this.abundance, this.levels);
+  Area(this.name, this.width, this.height, this.abundance, this.levels);
 
-  Vec buildStage(Game game, int depth, HeroSave heroSave) {
-    var stage = game.stage;
-    var area = levels[depth];
+  Stage buildStage(Game game, int depth, HeroSave heroSave) {
+    var level = levels[depth];
 
-    area.buildStage(stage);
+    var stage = new Stage(width, height, game);
+    level.buildStage(stage);
 
     var heroPos = stage.findOpenTile();
     game.hero = new Hero(game, heroPos, heroSave);
     stage.addActor(game.hero);
 
     // Place the items.
-    var numItems = rng.taper(area.numItems, 3);
+    var numItems = rng.taper(level.numItems, 3);
     for (var i = 0; i < numItems; i++) {
       final itemDepth = pickDepth(depth);
       final drop = levels[itemDepth].floorDrop;
@@ -46,7 +52,7 @@ class Area {
     }
 
     // Place the monsters.
-    final numMonsters = rng.taper(area.numMonsters, 3);
+    final numMonsters = rng.taper(level.numMonsters, 3);
     for (int i = 0; i < numMonsters; i++) {
       final monsterDepth = pickDepth(depth);
 
@@ -59,9 +65,7 @@ class Area {
       stage.spawnMonster(breed, pos);
     }
 
-    stage.finishBuild();
-
-    game.quest = area.quest.generate(stage);
+    game.quest = level.quest.generate(stage);
     game.quest.announce(game.log);
 
     // TODO: Temp. Wizard light it.
@@ -77,7 +81,7 @@ class Area {
     }
     */
 
-    return heroPos;
+    return stage;
   }
 
   int pickDepth(int depth) {
@@ -110,8 +114,8 @@ class Level {
   final int numItems;
   final QuestBuilder quest;
 
-  Level(this.buildStage, this.numMonsters, this.numItems,
-      this.breeds, this.floorDrop, this.quest);
+  Level(this.buildStage, this.numMonsters, this.numItems, this.breeds,
+      this.floorDrop, this.quest);
 }
 
 abstract class QuestBuilder {

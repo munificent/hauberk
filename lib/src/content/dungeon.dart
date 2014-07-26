@@ -12,7 +12,7 @@ class TrainingGrounds extends Dungeon {
   void onGenerate() {
     // Layout the rooms.
     addRooms(300);
-    addJunctions(30);
+    addJunctions(100);
 
     _carveRooms();
     _carveCorridors();
@@ -36,8 +36,8 @@ class GoblinStronghold extends Dungeon {
 
   GoblinStronghold(this._numRooms);
 
-  int get roomWidthMax => 8;
-  int get roomHeightMax => 6;
+  int get roomWidthMax => 12;
+  int get roomHeightMax => 8;
 
   /// Loosely connected.
   int get extraCorridorOneIn => 200;
@@ -391,6 +391,9 @@ abstract class Dungeon extends StageBuilder {
   void _addDoors() {
     // For each room, attempt to place doors along its edges.
     for (var room in _rooms) {
+      // Don't put doors in corridors.
+      if (room.bounds.width == 1 || room.bounds.height == 1) continue;
+
       // Top and bottom.
       for (var x = room.bounds.left; x < room.bounds.right; x++) {
         _tryHorizontalDoor(x, room.bounds.top - 1);

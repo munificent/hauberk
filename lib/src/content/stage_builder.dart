@@ -35,9 +35,11 @@ abstract class StageBuilder {
 
     final bounds = stage.bounds.inflate(-1);
     for (var i = 0; i < iterations; i++) {
-      final pos = rng.vecInRect(bounds);
+      // TODO: This way this works is super inefficient. Would be better to
+      // keep track of the floor tiles near open ones and choose from them.
+      var pos = rng.vecInRect(bounds);
 
-      final here = getTile(pos);
+      var here = getTile(pos);
       if (here != wall) continue;
 
       // Keep track of how many floors we're adjacent too. We will only erode
@@ -49,13 +51,10 @@ abstract class StageBuilder {
         if (tile == floor) floors++;
       }
 
-      if (floors == 0) continue;
-
-      // Prefer not to erode tiles that are only touching a single floor so we
-      // don't get lots of narrow cracks.
-      if (floors > 1 || rng.oneIn(4)) {
-        setTile(pos, floor);
-      }
+      // Prefer to erode tiles near more floor tiles so the erosion isn't too
+      // spiky.
+      if (floors < 2) continue;
+      if (rng.oneIn(9 - floors)) setTile(pos, floor);
     }
   }
 }
