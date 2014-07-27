@@ -56,6 +56,25 @@ main() {
         text.write("<em>$more more&hellip;</em>");
       }
 
+      text.write('</td><td>');
+
+      var monsters = {};
+      for (var breed in area.breeds) {
+        monsters[breed.name] = 0;
+      }
+
+      for (var i = 0; i < tries; i++) {
+        var breed = area.pickBreed(levelNum);
+        monsters[breed.name]++;
+      }
+
+      for (var breed in area.breeds) {
+        var width = monsters[breed.name] * 400 ~/ tries;
+        text.write('<div class="bar" style="width: ${width}px;"></div>');
+        text.write(" ${breed.name}");
+        text.write("<br>");
+      }
+
       text.write('</td></tr>');
 
       levelNum++;

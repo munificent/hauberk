@@ -27,165 +27,129 @@ class Areas extends ContentBuilder {
     ]);
     */
 
-    area('Friendly Forest', 80, 34, 7.0, [
-      level(() => new Forest(), numMonsters: 6, numItems: 2,
-        breeds: [
-          'butterfly',
-          'field mouse',
-          'vole',
-          'robin',
-          'garter snake',
-          'frog'
-        ],
-        drop: [
-          frequency(2, 'Flower'),
-          frequency(1, 'magic', 1),
-          frequency(1, 'Stick')
-        ],
-        quest: kill('fuzzy bunny', 1)),
-      level(() => new Forest(), numMonsters: 8, numItems: 3,
-        breeds: [
-          'bee',
-          'tree snake',
-          'giant earthworm',
-          'garden spider',
-          'wasp',
-          'forest sprite'
-        ],
-        drop: [
-          frequency(2, 'Flower'),
-          frequency(1, 'magic', 2),
-          frequency(1, 'equipment', 1)
-        ],
-        quest: kill('fox', 1)),
+    area('Friendly Forest', 80, 34, 7.0, breeds: [
+      'butterfly',
+      'field mouse',
+      'vole',
+      'robin',
+      'garter snake',
+      'frog',
+      'bee',
+      'tree snake',
+      'giant earthworm',
+      'garden spider',
+      'wasp',
+      'forest sprite'
+    ], levels: [
+      level(() => new Forest(), monsters: 6, items: 2, drop: [
+        frequency(2, 'Flower'),
+        frequency(1, 'magic', 1),
+        frequency(1, 'Stick')
+      ], quest: kill('fuzzy bunny', 1)),
+      level(() => new Forest(), monsters: 8, items: 3, drop: [
+        frequency(2, 'Flower'),
+        frequency(1, 'magic', 2),
+        frequency(1, 'equipment', 1)
+      ], quest: kill('fox', 1)),
     ]);
 
-    area('Training Grounds', 100, 60, 12.0, [
-      level(() => new TrainingGrounds(), numMonsters: 30, numItems: 6,
-        breeds: [
-          'white mouse',
-          'mangy cur',
-          'giant slug',
-          'little brown bat',
-          'stray cat',
-          'giant cockroach',
-          'simpering knave',
-          'decrepit mage'
-        ],
-        drop: [
-          frequency(3, 'magic', 2),
-          frequency(1, 'treasure', 2),
-          frequency(1, 'equipment', 2)
-        ],
-        quest: kill('wild dog', 3)),
-      level(() => new TrainingGrounds(), numMonsters: 32, numItems: 7,
-        breeds: [
-          'brown spider',
-          'crow',
-          'wild dog',
-          'sewer rat',
-          'drunken priest',
-        ],
-        drop: [
-          frequency(2, 'magic', 3),
-          frequency(1, 'treasure', 3),
-          frequency(1, 'equipment', 3)
-        ],
-        quest: kill('giant spider')),
-      level(() => new TrainingGrounds(), numMonsters: 34, numItems: 8,
-        breeds: [
-          'giant spider',
-          'unlucky ranger',
-          'raven',
-          'tree snake',
-          'giant earthworm'
-        ],
-        drop: [
-          frequency(2, 'magic', 4),
-          frequency(2, 'treasure', 4),
-          frequency(1, 'equipment', 4)
-        ],
-        quest: kill('giant cave worm'))
+    area('Training Grounds', 100, 60, 12.0, breeds: [
+      'white mouse',
+      'mangy cur',
+      'giant slug',
+      'little brown bat',
+      'stray cat',
+      'giant cockroach',
+      'simpering knave',
+      'decrepit mage',
+      'brown spider',
+      'crow',
+      'wild dog',
+      'sewer rat',
+      'drunken priest',
+      'giant spider',
+      'unlucky ranger',
+      'raven',
+      'tree snake',
+      'giant earthworm'
+    ], levels: [
+      level(() => new TrainingGrounds(), monsters: 30, items: 6, drop: [
+        frequency(3, 'magic', 2),
+        frequency(1, 'treasure', 2),
+        frequency(1, 'equipment', 2)
+      ], quest: kill('wild dog', 3)),
+      level(() => new TrainingGrounds(), monsters: 32, items: 7, drop: [
+        frequency(2, 'magic', 3),
+        frequency(1, 'treasure', 3),
+        frequency(1, 'equipment', 3)
+      ], quest: kill('giant spider')),
+      level(() => new TrainingGrounds(), monsters: 34, items: 8, drop: [
+        frequency(2, 'magic', 4),
+        frequency(2, 'treasure', 4),
+        frequency(1, 'equipment', 4)
+      ], quest: kill('giant cave worm'))
     ]);
 
-    area('Goblin Stronghold', 120, 70, 25.0, [
-      level(() => new GoblinStronghold(500), numMonsters: 40, numItems: 50,
-        breeds: [
-          'scurrilous imp',
-          'vexing imp',
-          'goblin peon',
-          'house sprite',
-          'wild dog',
-          'blood worm',
-          'giant cave worm',
-          'green slime',
-          'salamander'
-        ],
-        drop: [
-          frequency(1, 'item', 4)
-        ],
-        quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(70), numMonsters: 42, numItems: 6,
-        breeds: [
-          'imp incanter',
-          'kobold',
-          'goblin fighter',
-          'giant bat',
-          'mongrel',
-          'giant centipede',
-          'blue slime',
-          'lizard guard',
-        ],
-        drop: [
-          frequency(1, 'item', 5)
-        ],
-        quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(90), numMonsters: 44, numItems: 7,
-        breeds: [
-          'imp warlock',
-          'goblin archer',
-          'goblin warrior',
-          'red slime',
-          'lizard protector',
-          'floating eye',
-          'plague rat'
-        ],
-        drop: [
-          frequency(1, 'item', 6)
-        ],
-        quest: tileType('the stairs', Tiles.stairs)),
-      level(() => new GoblinStronghold(110), numMonsters: 46, numItems: 8,
-        breeds: [
-          'armored lizard',
-          'goblin mage',
-        ],
-        drop: [
-          frequency(1, 'item', 7)
-        ],
-        quest: tileType('the stairs', Tiles.stairs))
+    area('Goblin Stronghold', 120, 70, 25.0, breeds: [
+      'scurrilous imp',
+      'vexing imp',
+      'goblin peon',
+      'house sprite',
+      'wild dog',
+      'blood worm',
+      'giant cave worm',
+      'green slime',
+      'salamander',
+      'imp incanter',
+      'kobold',
+      'goblin fighter',
+      'giant bat',
+      'mongrel',
+      'giant centipede',
+      'blue slime',
+      'lizard guard',
+      'imp warlock',
+      'goblin archer',
+      'goblin warrior',
+      'red slime',
+      'lizard protector',
+      'floating eye',
+      'plague rat',
+      'armored lizard',
+      'goblin mage',
+    ], levels: [
+      level(() => new GoblinStronghold(500), monsters: 40, items: 10, drop: [
+        frequency(1, 'item', 4)
+      ], quest: tileType('the stairs', Tiles.stairs)),
+      level(() => new GoblinStronghold(70), monsters: 42, items: 11, drop: [
+        frequency(1, 'item', 5)
+      ], quest: tileType('the stairs', Tiles.stairs)),
+      level(() => new GoblinStronghold(90), monsters: 44, items: 12, drop: [
+        frequency(1, 'item', 6)
+      ], quest: tileType('the stairs', Tiles.stairs)),
+      level(() => new GoblinStronghold(110), monsters: 46, items: 13, drop: [
+        frequency(1, 'item', 7)
+      ], quest: tileType('the stairs', Tiles.stairs))
     ]);
   }
 
   Level level(StageBuilder builder(), {
-      int numMonsters, int numItems, List<String> breeds, List<Frequency> drop,
+      int monsters, int items, List<Frequency> drop,
       QuestBuilder quest}) {
-    var breedList = <Breed>[];
+    return new Level((stage) => builder().generate(stage), monsters,
+        items, dropOneOf(drop), quest);
+  }
 
+  void area(String name, int width, int height, num abundance,
+      {List<String> breeds, List<Level> levels}) {
+    var breedList = <Breed>[];
     for (var name in breeds) {
       var breed = Monsters.all[name];
       if (breed == null) throw 'Could not find breed "$name".';
       breedList.add(breed);
     }
 
-    return new Level((stage) => builder().generate(stage), numMonsters,
-        numItems, breedList, dropOneOf(drop), quest);
-  }
-
-  Area area(String name, int width, int height, num abundance,
-      List<Level> levels) {
-    var area = new Area(name, width, height, abundance, levels);
-    Areas.all.add(area);
-    return area;
+    Areas.all.add(new Area(name, width, height, abundance, breedList, levels));
   }
 
   QuestBuilder kill(String breed, [int count = 1]) =>

@@ -25,9 +25,13 @@ class Area {
   /// explore the level.
   final num abundance;
 
+  /// The [Breed]s that appear in this [Area] in order of increasing strength.
+  final List<Breed> breeds;
+
   final List<Level> levels;
 
-  Area(this.name, this.width, this.height, this.abundance, this.levels);
+  Area(this.name, this.width, this.height, this.abundance, this.breeds,
+      this.levels);
 
   Stage buildStage(Game game, int depth, HeroSave heroSave) {
     var level = levels[depth];
@@ -52,17 +56,11 @@ class Area {
     }
 
     // Place the monsters.
-    final numMonsters = rng.taper(level.numMonsters, 3);
-    for (int i = 0; i < numMonsters; i++) {
-      final monsterDepth = pickDepth(depth);
-
-      // Place strong monsters farther from the hero.
-      var tries = 1;
-      if (monsterDepth > depth) tries = 1 + (monsterDepth - depth) * 2;
-      final pos = stage.findDistantOpenTile(tries);
-
-      final breed = rng.item(levels[monsterDepth].breeds);
-      stage.spawnMonster(breed, pos);
+    var numMonsters = rng.taper(level.numMonsters, 3);
+    for (var i = 0; i < numMonsters; i++) {
+      // TODO: Place strong monsters farther from the hero.
+      var pos = stage.findDistantOpenTile(2);
+      stage.spawnMonster(pickBreed(depth), pos);
     }
 
     game.quest = level.quest.generate(stage);
@@ -91,16 +89,24 @@ class Area {
     return depth;
   }
 
-  /// Selects a random [Breed] for the appropriate depth in this Area. Will
-  /// occasionally select out-of-depth breeds.
-  Breed pickBreed(int depth) {
+  /// Selects a random [Breed] for [level] in this area.
+  Breed pickBreed(int level) {
+    // Divide the breeds into roughly equal sections for each level.
+    var section = breeds.length / levels.length;
+    var min = (level * section).floor();
+    var max = ((level + 1) * section).ceil();
+
+    // Pick a breed from the section.
+    var breed = rng.range(min, max);
+
+    // Boost or lower it to randomly include breeds from nearby levels.
     if (rng.oneIn(2)) {
-      while (rng.oneIn(2) && depth > 0) depth--;
+      while (breed > 0 && rng.oneIn(2)) breed--;
     } else {
-      while (rng.oneIn(4) && depth < levels.length - 1) depth++;
+      while (breed < breeds.length - 1 && rng.oneIn(2)) breed++;
     }
 
-    return rng.item(levels[depth].breeds);
+    return breeds[breed];
   }
 }
 
@@ -108,13 +114,12 @@ class Area {
 /// area, this determines how that specific level is generated.
 class Level {
   final BuildStage buildStage;
-  final List<Breed> breeds;
   final Drop floorDrop;
   final int numMonsters;
   final int numItems;
   final QuestBuilder quest;
 
-  Level(this.buildStage, this.numMonsters, this.numItems, this.breeds,
+  Level(this.buildStage, this.numMonsters, this.numItems,
       this.floorDrop, this.quest);
 }
 

@@ -96,7 +96,7 @@ abstract class Dungeon extends StageBuilder {
 
   void addRooms(int tries) {
     for (var i = 0; i < tries; i++) {
-      var room = randomRoom();
+      var room = _randomRoom();
       if (!_overlapsExistingRooms(room, false)) {
         var color = _usedColors.length;
         _rooms.add(new _Room(room, color));
@@ -105,7 +105,7 @@ abstract class Dungeon extends StageBuilder {
     }
   }
 
-  Rect randomRoom() {
+  Rect _randomRoom() {
     var width = rng.range(roomWidthMin, roomWidthMax);
     var height = rng.range(roomHeightMin, roomHeightMax);
     var x = rng.range(1, stage.width - width);
