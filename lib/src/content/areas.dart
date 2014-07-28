@@ -53,7 +53,7 @@ class Areas extends ContentBuilder {
       ], quest: kill('fox', 1)),
     ]);
 
-    area('Training Grounds', 100, 60, 12.0, breeds: [
+    area('Training Grounds', 100, 60, 16.0, breeds: [
       'white mouse',
       'mangy cur',
       'giant slug',

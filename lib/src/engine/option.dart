@@ -9,10 +9,10 @@ class Option {
   static final REST_MAX_HEALTH_FOR_RATE = 200;
 
   /// The max health of a new hero.
-  static final HERO_HEALTH_START = 20;
+  static final HERO_HEALTH_START = 24;
 
   /// How much max health is increased when the hero levels up.
-  static final HERO_HEALTH_GAIN = 6;
+  static final HERO_HEALTH_GAIN = 8;
 
   /// How much damage an unarmed hero does.
   static final HERO_PUNCH_DAMAGE = 3;
