@@ -18,6 +18,13 @@ class GameScreen extends Screen {
   final Game     _game;
   List<Effect>   _effects = <Effect>[];
 
+  /// The size of the [Stage] view area.
+  final Vec viewSize = new Vec(80, 34);
+
+  /// The portion of the [Stage] currently in view on screen.
+  Rect _cameraBounds;
+  Rect get cameraBounds => _cameraBounds;
+
   /// The currently targeted actor, if any.
   Actor get target {
     // Make sure the target is still valid.
@@ -38,7 +45,9 @@ class GameScreen extends Screen {
   /// The most recently performed command.
   Command _lastCommand;
 
-  GameScreen(this._save, this._game);
+  GameScreen(this._save, this._game) {
+    _positionCamera();
+  }
 
   bool handleInput(Keyboard keyboard) {
     var action;
@@ -340,6 +349,7 @@ class GameScreen extends Screen {
     if (result.needsRefresh) dirty();
 
     _effects = _effects.where((effect) => effect.update(_game)).toList();
+    _positionCamera();
   }
 
   void render(Terminal terminal) {
@@ -367,21 +377,32 @@ class GameScreen extends Screen {
 
     var visibleMonsters = [];
 
-    _drawStage(terminal.rect(0, 0, 80, 34), heroColor, visibleMonsters);
+    _drawStage(terminal.rect(0, 0, viewSize.x, viewSize.y), heroColor,
+        visibleMonsters);
     _drawLog(terminal.rect(0, 34, 80, 6));
     _drawSidebar(terminal.rect(81, 0, 20, 40), heroColor, visibleMonsters);
+  }
+
+  /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the current view.
+  void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
+    terminal.drawGlyph(x - _cameraBounds.x, y - _cameraBounds.y, glyph);
+  }
+
+  /// Determines which portion of the [Stage] should be in view based on the
+  /// position of the [Hero].
+  void _positionCamera() {
+        var camera = _game.hero.pos - viewSize ~/ 2;
+    var cameraRange = new Rect(0, 0,
+        _game.stage.width - viewSize.x,
+        _game.stage.height - viewSize.y);
+
+    camera = cameraRange.clamp(camera);
+    _cameraBounds = new Rect.posAndSize(camera, viewSize);
   }
 
   void _drawStage(Terminal terminal, Color heroColor,
       List<Actor> visibleMonsters) {
     var hero = _game.hero;
-
-    var camera = hero.pos - new Vec(terminal.width, terminal.height) ~/ 2;
-    var cameraBounds = new Rect(0, 0,
-        _game.stage.width - terminal.width,
-        _game.stage.height - terminal.height);
-
-    camera = cameraBounds.clamp(camera);
 
     dazzleGlyph(Glyph glyph) {
       if (!hero.dazzle.isActive) return glyph;
@@ -395,19 +416,14 @@ class GameScreen extends Screen {
       return new Glyph.fromCharCode(char, rng.item(colors));
     }
 
-    drawGlyph(int x, int y, Glyph glyph) {
-      terminal.drawGlyph(x - camera.x, y - camera.y, glyph);
-    }
-
     // Draw the tiles.
-    var viewBounds = new Rect.posAndSize(camera, terminal.size);
-    for (var pos in viewBounds) {
+    for (var pos in _cameraBounds) {
       var tile = _game.stage[pos];
       var glyph;
       if (tile.isExplored) {
         glyph = tile.type.appearance[tile.visible ? 0 : 1];
         if (tile.visible) glyph = dazzleGlyph(glyph);
-        drawGlyph(pos.x, pos.y, glyph);
+        drawStageGlyph(terminal, pos.x, pos.y, glyph);
       }
     }
 
@@ -415,7 +431,7 @@ class GameScreen extends Screen {
     for (var item in _game.stage.items) {
       if (!_game.stage[item.pos].isExplored) continue;
       var glyph = dazzleGlyph(item.appearance);
-      drawGlyph(item.x, item.y, glyph);
+      drawStageGlyph(terminal, item.x, item.y, glyph);
     }
 
     // Draw the actors.
@@ -434,14 +450,16 @@ class GameScreen extends Screen {
 
       if (actor is! Hero) glyph = dazzleGlyph(glyph);
 
-      drawGlyph(actor.x, actor.y, glyph);
+      drawStageGlyph(terminal, actor.x, actor.y, glyph);
 
       if (actor is Monster) visibleMonsters.add(actor);
     }
 
     // Draw the effects.
     for (var effect in _effects) {
-      effect.render(_game, drawGlyph);
+      effect.render(_game, (x, y, glyph) {
+        drawStageGlyph(terminal, x, y, glyph);
+      });
     }
   }
 

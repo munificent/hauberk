@@ -84,10 +84,10 @@ class TargetDialog extends Screen {
   void render(Terminal terminal) {
     // Show the range field.
     var black = new Glyph(" ");
-    for (var pos in _game.stage.bounds) {
+    for (var pos in _gameScreen.cameraBounds) {
       var tile = _game.stage[pos];
       if (!tile.visible) {
-        terminal.drawGlyph(pos.x, pos.y, black);
+        _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
         continue;
       }
 
@@ -98,7 +98,7 @@ class TargetDialog extends Screen {
       // Must be in range.
       var toPos = pos - _game.hero.pos;
       if (toPos > _maxRange) {
-        terminal.drawGlyph(pos.x, pos.y, black);
+        _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
         continue;
       }
 
@@ -109,7 +109,7 @@ class TargetDialog extends Screen {
       }
 
       var glyph = tile.type.appearance[1] as Glyph;
-      terminal.drawGlyph(pos.x, pos.y,
+      _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
           new Glyph.fromCharCode(glyph.char, color));
     }
 
@@ -129,8 +129,9 @@ class TargetDialog extends Screen {
       if (_game.stage.actorAt(pos) != null) break;
       if (!_game.stage[pos].isTransparent) break;
 
-      terminal.drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(CharCode.BULLET,
-          (i == 0) ? Color.YELLOW : Color.DARK_YELLOW));
+      _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
+          new Glyph.fromCharCode(CharCode.BULLET,
+              (i == 0) ? Color.YELLOW : Color.DARK_YELLOW));
       i = (i + _NUM_FRAMES - 1) % _NUM_FRAMES;
     }
 
@@ -142,10 +143,14 @@ class TargetDialog extends Screen {
         targetColor = Color.DARK_YELLOW;
       }
 
-      terminal.writeAt(_target.x - 1, _target.y, '-', targetColor);
-      terminal.writeAt(_target.x + 1, _target.y, '-', targetColor);
-      terminal.writeAt(_target.x, _target.y - 1, '|', targetColor);
-      terminal.writeAt(_target.x, _target.y + 1, '|', targetColor);
+      _gameScreen.drawStageGlyph(terminal, _target.x - 1, _target.y,
+          new Glyph('-', targetColor));
+      _gameScreen.drawStageGlyph(terminal, _target.x + 1, _target.y,
+          new Glyph('-', targetColor));
+      _gameScreen.drawStageGlyph(terminal, _target.x, _target.y - 1,
+          new Glyph('|', targetColor));
+      _gameScreen.drawStageGlyph(terminal, _target.x, _target.y + 1,
+          new Glyph('|', targetColor));
     }
   }
 
