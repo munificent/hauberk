@@ -94,8 +94,8 @@ class Monsters extends ContentBuilder {
     ], drop: percent(5, "Stinger"),
         meander: 8, speed: 2);
 
-    breed("giant spider", darkBlue, 16, [
-      attack("bite[s]", 4, Element.POISON)
+    breed("giant spider", darkBlue, 20, [
+      attack("bite[s]", 3, Element.POISON)
     ], drop: percent(10, "Stinger"),
         meander: 5);
   }
@@ -106,8 +106,8 @@ class Monsters extends ContentBuilder {
       attack("bite[s]", 3),
     ], meander: 6, speed: 2);
 
-    breed("giant bat", lightBrown, 12, [
-      attack("bite[s]", 8),
+    breed("giant bat", lightBrown, 16, [
+      attack("bite[s]", 6),
     ], meander: 4, speed: 2);
   }
 
@@ -118,14 +118,14 @@ class Monsters extends ContentBuilder {
     ], drop: percent(25, "Red Feather"),
         meander: 4, speed: 2);
 
-    breed("crow", darkGray, 4, [
+    breed("crow", darkGray, 7, [
       attack("bite[s]", 4),
     ], drop: percent(25, "Black Feather"),
         meander: 4, speed: 2, flags: "group");
 
-    breed("raven", gray, 8, [
-      attack("bite[s]", 6),
-      attack("claw[s]", 5),
+    breed("raven", gray, 12, [
+      attack("bite[s]", 5),
+      attack("claw[s]", 4),
     ], drop: percent(20, "Black Feather"),
         meander: 1, flags: "protective");
   }
@@ -136,18 +136,18 @@ class Monsters extends ContentBuilder {
       attack("bite[s]", 4),
     ], drop: percent(20, "Fur Pelt"));
 
-    breed("wild dog", gray, 9, [
-      attack("bite[s]", 5),
+    breed("wild dog", gray, 13, [
+      attack("bite[s]", 4),
     ], drop: percent(20, "Fur Pelt"));
 
-    breed("mongrel", orange, 16, [
-      attack("bite[s]", 7),
+    breed("mongrel", orange, 24, [
+      attack("bite[s]", 6),
     ], drop: percent(20, "Fur Pelt"));
   }
 
   eyes() {
     group("e", flags: "immobile");
-    breed("floating eye", yellow, 16, [
+    breed("floating eye", yellow, 30, [
       attack("touch[es]", 4),
       lightBolt(rate: 5, damage: 16),
       teleport(rate: 8, range: 7)
@@ -175,24 +175,24 @@ class Monsters extends ContentBuilder {
 
   felines() {
     group("F");
-    breed("stray cat", lightOrange, 5, [
-      attack("bite[s]", 4),
-      attack("scratch[es]", 3),
+    breed("stray cat", lightOrange, 7, [
+      attack("bite[s]", 3),
+      attack("scratch[es]", 2),
     ], drop: percent(10, "Fur Pelt"),
         meander: 3, speed: 1);
   }
 
   goblins() {
     group("g", meander: 1, flags: "open-doors");
-    breed("goblin peon", lightBrown, 16, [
-      attack("stab[s]", 6)
+    breed("goblin peon", lightBrown, 20, [
+      attack("stab[s]", 5)
     ],
     drop: [
       percent(10, "spear", 3),
       percent(5, "healing", 2),
     ], meander: 2, flags: "few");
 
-    breed("goblin archer", green, 14, [
+    breed("goblin archer", green, 22, [
       attack("stab[s]", 3),
       arrow(rate: 3, damage: 4)
     ],
@@ -202,26 +202,27 @@ class Monsters extends ContentBuilder {
       percent(5, "healing", 3),
     ], flags: "few");
 
-    breed("goblin fighter", brown, 24, [
-      attack("stab[s]", 8)
+    breed("goblin fighter", brown, 30, [
+      attack("stab[s]", 7)
     ], drop: [
       percent(15, "spear", 5),
       percent(5, "healing", 3),
     ]);
 
-    breed("goblin warrior", gray, 32, [
-      attack("stab[s]", 14)
+    breed("goblin warrior", gray, 38, [
+      attack("stab[s]", 10)
     ], drop: [
       percent(20, "spear", 6),
       percent(5, "healing", 3),
     ], flags: "protective");
 
-    breed("goblin mage", blue, 20, [
-      attack("bash[es]", 14),
+    breed("goblin mage", blue, 36, [
+      attack("whip[s]", 7),
       fireBolt(rate: 12, damage: 6),
       sparkBolt(rate: 12, damage: 8),
     ], drop: [
-      percent(10, "equipment", 3),
+      percent(10, "equipment", 5),
+      percent(10, "whip", 5),
       percent(20, "magic", 6),
     ]);
   }
@@ -236,9 +237,9 @@ class Monsters extends ContentBuilder {
     ], drop: percent(10, "Insect Wing"),
         speed: 3);
 
-    breed("giant centipede", red, 12, [
+    breed("giant centipede", red, 16, [
       attack("crawl[s] on", 3),
-      attack("bite[s]", 6),
+      attack("bite[s]", 5),
     ], speed: 2);
   }
 
@@ -248,12 +249,12 @@ class Monsters extends ContentBuilder {
       attack("crawl[s] on", 3, Element.POISON)
     ]);
 
-    breed("blue slime", blue, 12, [
+    breed("blue slime", blue, 14, [
       attack("crawl[s] on", 4, Element.COLD)
     ]);
 
-    breed("red slime", blue, 14, [
-      attack("crawl[s] on", 6, Element.FIRE)
+    breed("red slime", blue, 18, [
+      attack("crawl[s] on", 5, Element.FIRE)
     ]);
   }
 
@@ -266,15 +267,15 @@ class Monsters extends ContentBuilder {
       percent(20, "magic", 1)
     ], meander: 4, flags: "cowardly");
 
-    breed("house sprite", lightBlue, 6, [
-      attack("stab[s]", 8),
+    breed("house sprite", lightBlue, 10, [
+      attack("stab[s]", 6),
       teleport(range: 6)
     ], drop: [
       percent(20, "magic", 6)
     ], meander: 4, flags: "cowardly");
 
-    breed("scurrilous imp", lightRed, 14, [
-      attack("club[s]", 6),
+    breed("scurrilous imp", lightRed, 18, [
+      attack("club[s]", 4),
       insult(),
       haste()
     ], drop: [
@@ -282,29 +283,29 @@ class Monsters extends ContentBuilder {
       percent(5, "speed", 1),
     ], meander: 4, flags: "cowardly");
 
-    breed("vexing imp", purple, 12, [
-      attack("scratch[es]", 5),
+    breed("vexing imp", purple, 19, [
+      attack("scratch[es]", 4),
       insult(),
       sparkBolt(rate: 5, damage: 6)
     ], drop: percent(10, "teleportation", 1),
         meander: 4, speed: 1, flags: "cowardly");
 
-    breed("kobold", blue, 8, [
+    breed("kobold", blue, 12, [
       attack("poke[s]", 4),
       teleport(rate: 6, range: 6)
     ], drop: [
       percent(30, "magic", 7)
     ], meander: 4, flags: "group");
 
-    breed("imp incanter", lightPurple, 16, [
-      attack("scratch[es]", 5),
+    breed("imp incanter", lightPurple, 18, [
+      attack("scratch[es]", 4),
       insult(),
       fireBolt(rate: 5, damage: 10)
     ], drop: percent(10, "magic", 1),
         meander: 4, speed: 1, flags: "cowardly");
 
-    breed("imp warlock", darkPurple, 20, [
-      attack("stab[s]", 6),
+    breed("imp warlock", darkPurple, 40, [
+      attack("stab[s]", 5),
       iceBolt(rate: 8, damage: 12),
       fireBolt(rate: 8, damage: 12)
     ], drop: percent(10, "magic", 4),
@@ -325,17 +326,17 @@ class Monsters extends ContentBuilder {
     ], meander: 2);
     */
 
-    breed("simpering knave", orange, 6, [
+    breed("simpering knave", orange, 15, [
       attack("hit[s]", 2),
       attack("stab[s]", 4)
     ], drop: [
-      percent(30, "dagger", 1),
+      percent(30, "whip", 1),
       percent(20, "body", 1),
       percent(10, "boots", 2),
       percent(10, "magic", 1),
     ], meander: 3, flags: "cowardly");
 
-    breed("decrepit mage", purple, 6, [
+    breed("decrepit mage", purple, 16, [
       attack("hit[s]", 2),
       sparkBolt(rate: 10, damage: 8)
     ], drop: [
@@ -346,17 +347,17 @@ class Monsters extends ContentBuilder {
       percent(10, "boots", 2)
     ], meander: 2);
 
-    breed("unlucky ranger", green, 10, [
+    breed("unlucky ranger", green, 20, [
       attack("stab[s]", 2),
       arrow(rate: 4, damage: 2)
     ], drop: [
       percent(10, "potion", 3),
-      percent(4, "bow", 4),
-      percent(10, "dagger", 3),
+      percent(15, "bow", 4),
+      percent(5, "dagger", 3),
       percent(8, "body", 3)
     ], meander: 2);
 
-    breed("drunken priest", aqua, 9, [
+    breed("drunken priest", aqua, 18, [
       attack("hit[s]", 3),
       heal(rate: 15, amount: 8)
     ], drop: [
@@ -368,8 +369,8 @@ class Monsters extends ContentBuilder {
 
   quadrupeds() {
     group("q");
-    breed("fox", orange, 12, [
-      attack("bite[s]", 7),
+    breed("fox", orange, 20, [
+      attack("bite[s]", 5),
       attack("scratch[es]", 4)
     ], drop: "Fox Pelt",
         meander: 1, speed: 1);
@@ -382,7 +383,7 @@ class Monsters extends ContentBuilder {
       attack("scratch[es]", 2)
     ], speed: 1);
 
-    breed("fuzzy bunn[y|ies]", lightBlue, 10, [
+    breed("fuzzy bunn[y|ies]", lightBlue, 14, [
       attack("bite[s]", 3),
       attack("kick[s]", 2)
     ], meander: 2);
@@ -396,13 +397,13 @@ class Monsters extends ContentBuilder {
       attack("scratch[es]", 3)
     ], speed: 1);
 
-    breed("sewer rat", darkGray, 6, [
+    breed("sewer rat", darkGray, 7, [
       attack("bite[s]", 4),
       attack("scratch[es]", 3)
     ], meander: 3, speed: 1, flags: "group");
 
-    breed("plague rat", darkGreen, 7, [
-      attack("bite[s]", 5, Element.POISON),
+    breed("plague rat", darkGreen, 10, [
+      attack("bite[s]", 4, Element.POISON),
       attack("scratch[es]", 3)
     ], speed: 1, flags: "group");
   }
@@ -414,29 +415,29 @@ class Monsters extends ContentBuilder {
     ], meander: 4, speed: 1);
 
     breed("salamander", red, 10, [
-      attack("bite[s]", 22, Element.FIRE),
+      attack("bite[s]", 24, Element.FIRE),
     ], meander: 3);
 
     // TODO: Drop scales?
-    breed("lizard guard", yellow, 20, [
+    breed("lizard guard", yellow, 26, [
+      attack("claw[s]", 8),
+      attack("bite[s]", 10),
+    ], meander: 1, flags: "fearless");
+
+    breed("lizard protector", darkYellow, 32, [
       attack("claw[s]", 10),
       attack("bite[s]", 14),
     ], meander: 1, flags: "fearless");
 
-    breed("lizard protector", darkYellow, 26, [
-      attack("claw[s]", 12),
-      attack("bite[s]", 17),
-    ], meander: 1, flags: "fearless");
-
-    breed("armored lizard", gray, 36, [
-      attack("claw[s]", 13),
-      attack("bite[s]", 20),
+    breed("armored lizard", gray, 46, [
+      attack("claw[s]", 10),
+      attack("bite[s]", 15),
     ], meander: 1, flags: "fearless");
   }
 
   slugs() {
     group("s", tracking: 2, flags: "fearless");
-    breed("giant slug", green, 12, [
+    breed("giant slug", green, 20, [
       attack("crawl[s] on", 5, Element.POISON),
     ], meander: 1, speed: -3);
   }
@@ -454,8 +455,8 @@ class Monsters extends ContentBuilder {
 
   worms() {
     group("w", meander: 4, flags: "fearless");
-    breed("giant earthworm", lightRed, 16, [
-      attack("crawl[s] on", 8),
+    breed("giant earthworm", lightRed, 20, [
+      attack("crawl[s] on", 4),
     ], speed: -2);
 
     breed("blood worm", red, 4, [

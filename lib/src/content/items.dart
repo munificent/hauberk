@@ -98,7 +98,7 @@ class Items extends ContentBuilder {
   }
 
   void pelts() {
-    category("~");
+    category("%");
     item("Flower",        1, lightAqua); // TODO: Use in recipe.
     item("Fur Pelt",      1, lightBrown);
     item("Insect Wing",   1, purple);
@@ -169,14 +169,22 @@ class Items extends ContentBuilder {
     weapon("Staff", 5, lightBrown, "hit[s]", 7);
     weapon("Quarterstaff", 11, brown, "hit[s]", 12);
 
+    // Hammers.
+    category("=", "equipment/weapon/hammer");
+    weapon("Hammer", 27, brown, "bash[es]", 16);
+    weapon("Mattock", 39, darkBrown, "bash[es]", 20);
+    weapon("War Hammer", 45, lightGray, "bash[es]", 24);
+
+    category("=", "equipment/weapon/mace");
+    weapon("Morningstar", 24, gray, "bash[es]", 13);
+    weapon("Mace", 33, darkGray, "bash[es]", 18);
+
+    category("~", "equipment/weapon/whip");
+    weapon("Whip", 4, lightBrown, "whip[s]", 5);
+    weapon("Chain Whip", 15, darkGray, "whip[s]", 9);
+    weapon("Flail", 27, darkGray, "whip[s]", 14);
+
     /*
-    Hammer[s]
-    Mattock[s]
-
-    Morningstar[s]
-    Mace[s]
-    War Hammer[s]
-
     // One-handed swords
     Rapier[s]
     Shortsword[s]
@@ -190,10 +198,6 @@ class Items extends ContentBuilder {
     Broadsword[s]
     Claymore[s]
     Flamberge[s]
-
-    Whip[s]
-    Chain Whip[s]
-    Flail[s]
 
     */
 

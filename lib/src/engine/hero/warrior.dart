@@ -71,7 +71,7 @@ class Warrior extends HeroClass {
 
       var mastery = masteries[weapon.type.category];
       if (mastery != null) {
-        attack = attack.multiplyDamage(1.0 + mastery.level * 0.2);
+        attack = attack.multiplyDamage(1.0 + mastery.level * 0.1);
       }
 
       return attack;
