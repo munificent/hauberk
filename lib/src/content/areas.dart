@@ -17,16 +17,15 @@ class Areas extends ContentBuilder {
 
   void build() {
     /*
-    area('Debugland', 80, 40, [
-      level(() => new DebugArea(), numMonsters: 10, numItems: 1,
-        breeds: [
-          'floating eye'
-        ],
+    area('Debugland', 80, 40, 100.0, breeds: [
+      'green slime'
+    ], levels: [
+      level(() => new DebugArea(), monsters: 2, items: 1,
         drop: [frequency(1, 'item', 10)],
         quest: tileType('the stairs', Tiles.stairs))
     ]);
     */
-
+    
     area('Friendly Forest', 80, 34, 7.0, breeds: [
       'butterfly',
       'field mouse',
@@ -106,12 +105,12 @@ class Areas extends ContentBuilder {
       'giant bat',
       'mongrel',
       'giant centipede',
-      'blue slime',
+      'frosty slime',
       'lizard guard',
       'imp warlock',
       'goblin archer',
       'goblin warrior',
-      'red slime',
+      'smoking slime',
       'lizard protector',
       'floating eye',
       'plague rat',

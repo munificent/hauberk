@@ -19,12 +19,17 @@ import 'melee.dart';
 import 'option.dart';
 
 class Monster extends Actor {
-  /// The number of times the actor has rested. Once this crosses a certain
-  /// threshold (based on the Actor's max health), its health will be increased
-  /// and this will be lowered.
-  int _restCount = 0;
-
   final Breed breed;
+
+  /// The monster's generation.
+  ///
+  /// Monsters created directly in the level are one. Monsters that are spawned
+  /// or summoned by another monster have a generation one greater than that
+  /// monster.
+  ///
+  /// When a monster spawns another, its generation increases too so that it
+  /// also spawns less frequently over time.
+  int generation;
 
   MonsterState _state;
 
@@ -58,7 +63,7 @@ class Monster extends Actor {
   /// How much experience a level one [Hero] gains for killing this monster.
   int get experienceCents => breed.experienceCents;
 
-  Monster(Game game, this.breed, int x, int y, int maxHealth)
+  Monster(Game game, this.breed, int x, int y, int maxHealth, this.generation)
       : super(game, x, y, maxHealth) {
     Debug.addMonster(this);
     changeState(new AsleepState());
@@ -253,18 +258,6 @@ class Monster extends Actor {
 
   void onFinishTurn(Action action) {
     _decayFear(action);
-
-    // Regenerate health if out of sight.
-    if (isVisible) return;
-
-    // TODO: Tune this now that it only applies to monsters.
-    var turnsNeeded = math.max(
-        Option.REST_MAX_HEALTH_FOR_RATE ~/ health.max, 1);
-
-    if (_restCount++ > turnsNeeded) {
-      health.current++;
-      _restCount = 0;
-    }
   }
 
   void changePosition(Vec from, Vec to) {

@@ -270,7 +270,7 @@ class AwakeState extends MonsterState {
       // TODO: Handle other ranged damage moves.
       if (move is! BoltMove) continue;
 
-      rangedDamage += move.attack.averageDamage * move.rate;
+      rangedDamage += move.attack.averageDamage / move.rate;
       rangedAttacks++;
 
       // TODO: Take elements into account?

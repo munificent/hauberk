@@ -181,8 +181,11 @@ class EventType {
   /// Something in the level was detected.
   static const DETECT = const EventType("detect");
 
-  /// Something in the level was detected.
+  /// An [Actor] teleported..
   static const TELEPORT = const EventType("teleport");
+
+  /// A new [Actor] was spawned by another.
+  static const SPAWN = const EventType("spawn");
 
   final String _value;
   const EventType(this._value);

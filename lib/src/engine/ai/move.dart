@@ -1,5 +1,7 @@
 library hauberk.engine.move;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../../debug.dart';
 import '../action_base.dart';
 import '../action_combat.dart';
@@ -141,4 +143,31 @@ class TeleportMove extends Move {
   TeleportMove(int cost, this._range) : super(cost);
 
   Action onGetAction(Monster monster) => new TeleportAction(_range);
+}
+
+/// Spawns a new [Monster] of the same [Breed] adjacent to this one.
+class SpawnMove extends Move {
+  SpawnMove(num rate) : super(rate);
+
+  bool shouldUse(Monster monster) {
+    // Look for an open adjacent tile.
+    for (var dir in Direction.ALL) {
+      var here = monster.pos + dir;
+      if (monster.game.stage[here].isPassable &&
+          monster.game.stage.actorAt(here) == null) return true;
+    }
+
+    return false;
+  }
+
+  Action onGetAction(Monster monster) {
+    // Pick an open adjacent tile.
+    var dirs = Direction.ALL.where((dir) {
+      var here = monster.pos + dir;
+      return monster.game.stage[here].isPassable &&
+          monster.game.stage.actorAt(here) == null;
+    }).toList();
+
+    return new SpawnAction(monster.pos + rng.item(dirs), monster.breed);
+  }
 }

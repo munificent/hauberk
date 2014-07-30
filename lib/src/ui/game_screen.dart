@@ -343,6 +343,11 @@ class GameScreen extends Screen {
         case EventType.TELEPORT:
           _effects.add(new TeleportEffect(event.value, event.actor.pos));
           break;
+
+        case EventType.SPAWN:
+          // TODO: Something more interesting.
+          _effects.add(new FrameEffect(event.actor.pos, '*', Color.WHITE));
+          break;
       }
     }
 

@@ -95,7 +95,10 @@ class Breed implements Quantifiable {
     return 1;
   }
 
-  Monster spawn(Game game, Vec pos) {
-    return new Monster(game, this, pos.x, pos.y, maxHealth);
+  Monster spawn(Game game, Vec pos, [Monster parent]) {
+    var generation = 1;
+    if (parent != null) generation = parent.generation + 1;
+
+    return new Monster(game, this, pos.x, pos.y, maxHealth, generation);
   }
 }

@@ -10,6 +10,7 @@ import 'actor.dart';
 import 'game.dart';
 import 'hero/hero.dart';
 import 'log.dart';
+import 'monster.dart';
 import 'option.dart';
 
 abstract class Action {
@@ -21,7 +22,7 @@ abstract class Action {
 
   Game get game => _game;
   Actor get actor => _actor;
-  // TODO: Should it check that the actor is a hero?
+  Monster get monster => _actor as Monster;
   Hero get hero => _actor as Hero;
   bool get consumesEnergy => _consumesEnergy;
 

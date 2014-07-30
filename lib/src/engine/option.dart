@@ -3,11 +3,6 @@ library hauberk.engine.option;
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {
-  /// A resting actor regains health every `n` turns where `n` is this number
-  /// divided by the actor's max health. Setting this to be larger makes actors
-  /// regenerate more slowly.
-  static final REST_MAX_HEALTH_FOR_RATE = 200;
-
   /// The max health of a new hero.
   static final HERO_HEALTH_START = 24;
 

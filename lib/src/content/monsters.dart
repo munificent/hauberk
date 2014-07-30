@@ -175,7 +175,7 @@ class Monsters extends ContentBuilder {
 
   felines() {
     group("F");
-    breed("stray cat", lightOrange, 7, [
+    breed("stray cat", gold, 7, [
       attack("bite[s]", 3),
       attack("scratch[es]", 2),
     ], drop: percent(10, "Fur Pelt"),
@@ -244,17 +244,20 @@ class Monsters extends ContentBuilder {
   }
 
   jellies() {
-    group("j", tracking: 2, meander: 4, flags: "few fearless");
+    group("j", flags: "few immobile");
     breed("green slime", green, 10, [
-      attack("crawl[s] on", 3, Element.POISON)
+      attack("crawl[s] on", 3),
+      spawn(rate: 6)
     ]);
 
-    breed("blue slime", blue, 14, [
-      attack("crawl[s] on", 4, Element.COLD)
+    breed("frosty slime", white, 14, [
+      attack("crawl[s] on", 4, Element.COLD),
+      spawn(rate: 6)
     ]);
 
-    breed("red slime", blue, 18, [
-      attack("crawl[s] on", 5, Element.FIRE)
+    breed("smoking slime", red, 18, [
+      attack("crawl[s] on", 5, Element.FIRE),
+      spawn(rate: 6)
     ]);
   }
 
@@ -544,4 +547,6 @@ class Monsters extends ContentBuilder {
 
   Move teleport({num rate: 5, int range: 10}) =>
       new TeleportMove(rate, range);
+
+  Move spawn({num rate: 10}) => new SpawnMove(rate);
 }
