@@ -1,11 +1,25 @@
 <html>
 <head>
   <title>Hauberk</title>
+  <link href='http://fonts.googleapis.com/css?family=Buenard' rel='stylesheet' type='text/css'>
   <style>
     body {
       background: #111;
       color: #ccc;
       text-align: center;
+      font: 18px/24px Buenard, Georgia, serif;
+    }
+
+    a {
+      color: hsl(30, 90%, 55%);
+    }
+
+    a:visited {
+      color: hsl(30, 90%, 45%);
+    }
+
+    a:hover {
+      color: hsl(30, 90%, 75%);
     }
 
     canvas {
@@ -129,6 +143,8 @@
 <body>
 <div class="button-bar">
 </div>
+<div id="game"></div>
+<p><a href="guide.html" target="_blank">How to Play</a></p>
 <script type="application/dart" src="main.dart"></script>
 <script src="packages/browser/dart.js"></script>
 </body>

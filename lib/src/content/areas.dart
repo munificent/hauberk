@@ -25,7 +25,7 @@ class Areas extends ContentBuilder {
         quest: tileType('the stairs', Tiles.stairs))
     ]);
     */
-    
+
     area('Friendly Forest', 80, 34, 7.0, breeds: [
       'butterfly',
       'field mouse',

@@ -43,7 +43,7 @@ addTerminal(String name, html.Element element,
   button.onClick.listen((_) {
     for (var i = 0; i < terminals.length; i++) {
       if (terminals[i][0] == name) {
-        html.document.body.children.add(terminals[i][1]);
+        html.querySelector("#game").append(terminals[i][1]);
       } else {
         terminals[i][1].remove();
       }
@@ -87,7 +87,7 @@ main() {
     }
   }
 
-  html.document.body.children.add(terminals[fontIndex][1]);
+  html.querySelector("#game").append(terminals[fontIndex][1]);
   var keyboard = new Keyboard(html.document.body);
   ui = new UserInterface(keyboard, terminals[fontIndex][2]);
 

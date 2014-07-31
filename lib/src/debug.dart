@@ -12,7 +12,7 @@ import 'engine.dart';
 /// the engine to punch debug info all the way to where the UI can get it. It
 /// should not be used outside of a debugging scenario.
 class Debug {
-  static const ENABLED = true;
+  static const ENABLED = false;
 
   static final _monsters = new Map<Monster, _MonsterLog>();
 
