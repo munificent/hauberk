@@ -163,7 +163,7 @@ class Monster extends Actor {
     _state.bind(this);
   }
 
-  Attack getAttack(Actor defender) => rng.item(breed.attacks);
+  Attack onGetAttack(Actor defender) => rng.item(breed.attacks);
 
   Attack defend(Attack attack) {
     _state.defend();

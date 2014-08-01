@@ -58,12 +58,13 @@ class BoltAction extends Action {
       var attack = _attack;
 
       // Being too close or too far weakens the bolt.
+      // TODO: Make this modify strike instead?
       var toTarget = pos - _start;
       if (toTarget <= _minRange || toTarget > _attack.range * 2 / 3) {
         attack = attack.multiplyDamage(0.5);
       }
 
-      return attack.perform(this, actor, target);
+      return attack.perform(this, actor, target, canMiss: false);
     }
 
     return _los.moveNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;

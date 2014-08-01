@@ -19,6 +19,10 @@ class Attack {
   /// A verb string describing the attack: "hits", "fries", etc.
   final String verb;
 
+  /// The bonus applied to the defender's base dodge ability. A higher bonus
+  /// makes it more likely the attack will make contact.
+  final num strikeBonus;
+
   /// The average damage. The actual damage will be a `Rng.triangleInt` centered
   /// on this with a range of 1/2 of its value.
   final num baseDamage;
@@ -45,53 +49,79 @@ class Attack {
   bool get isRanged => range != 0;
 
   Attack(String verb, num baseDamage, Element element, [Noun noun, int range])
-      : this._(noun, verb, baseDamage, 0.0, 1.0, element, 0,
+      : this._(noun, verb, 0.0, baseDamage, 0.0, 1.0, element, 0,
           range != null ? range : 0);
 
-  Attack._(this.noun, this.verb, this.baseDamage, this.damageBonus,
-      this.damageScale, this.element, this.armor, this.range);
+  Attack._(this.noun, this.verb, this.strikeBonus, this.baseDamage,
+      this.damageBonus, this.damageScale, this.element, this.armor, this.range);
 
   /// Returns a new attack identical to this one but with [offset] added.
   Attack addDamage(num offset) {
-    return new Attack._(noun, verb, baseDamage, damageBonus + offset,
-        damageScale, element, armor, range);
+    return new Attack._(noun, verb, strikeBonus, baseDamage,
+        damageBonus + offset, damageScale, element, armor, range);
   }
 
   /// Returns a new attack identical to this one but with [element].
   Attack brand(Element element) {
-    return new Attack._(noun, verb, baseDamage, damageBonus,
+    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
         damageScale, element, armor, range);
+  }
+
+  /// Returns a new attack identical to this one but with [bonus] added to the
+  /// strike modifier.
+  Attack addStrike(num bonus) {
+    return new Attack._(noun, verb, strikeBonus + bonus, baseDamage,
+        damageBonus, damageScale, element, armor, range);
   }
 
   /// Returns a new attack identical to this one but with damage scaled by
   /// [factor].
   Attack multiplyDamage(num factor) {
-    return new Attack._(noun, verb, baseDamage, damageBonus,
+    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
         damageScale * factor, element, armor, range);
   }
 
   /// Returns a new attack with [armor] added to it.
   Attack addArmor(num armor) {
-    return new Attack._(noun, verb, baseDamage, damageBonus, damageScale,
-        element, this.armor + armor, range);
+    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
+        damageScale, element, this.armor + armor, range);
   }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
   /// [action].
-  ActionResult perform(Action action, Actor attacker, Actor defender) {
+  ActionResult perform(Action action, Actor attacker, Actor defender,
+      {bool canMiss}) {
     var attack = defender.defend(this);
-    return attack._perform(action, attacker, defender);
+    return attack._perform(action, attacker, defender, canMiss: canMiss);
   }
 
-  ActionResult _perform(Action action, Actor attacker, Actor defender) {
+  ActionResult _perform(Action action, Actor attacker, Actor defender,
+      {bool canMiss}) {
+    if (canMiss == null) canMiss = true;
+
     var attackNoun = noun != null ? noun : attacker;
+
+    // See if the attack hits.
+    if (canMiss) {
+      var dodge = defender.dodge + strikeBonus;
+      var strike = rng.inclusive(1, 100);
+
+      // There's always at least a 5% chance of missing and a 5% chance of
+      // hitting, regardless of all modifiers.
+      strike = clamp(5, strike, 95);
+
+      if (strike < dodge) {
+        return action.succeed('{1} miss[es] {2}.', attackNoun, defender);
+      }
+    }
 
     // Roll for damage.
     var damage = _rollDamage();
 
     if (damage == 0) {
       // Armor cancelled out all damage.
-      return action.succeed('{1} miss[es] {2}.', attackNoun, defender);
+      return action.succeed('{1} do[es] no damage to {2}.', attackNoun,
+          defender);
     }
 
     attacker.onDamage(action, defender, damage);

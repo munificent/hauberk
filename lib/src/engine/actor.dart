@@ -87,6 +87,17 @@ abstract class Actor extends Thing {
     return speed;
   }
 
+  /// The actor's dodge ability. This is the percentage chance of a melee
+  /// attack missing the actor.
+  int get dodge {
+    var dodge = 15;
+
+    // Hard to block an attack you can't see coming.
+    if (dazzle.isActive) dodge -= 2;
+
+    return dodge;
+  }
+
   void changePosition(Vec from, Vec to) {
     game.stage.moveActor(from, to);
   }
@@ -102,7 +113,17 @@ abstract class Actor extends Thing {
   Action onGetAction();
 
   /// Get an [Attack] for this [Actor] to attempt to hit [defender].
-  Attack getAttack(Actor defender);
+  Attack getAttack(Actor defender) {
+    var attack = onGetAttack(defender);
+
+    // Hard to hit an actor you can't see.
+    if (dazzle.isActive) attack = attack.addStrike(-5);
+
+    return attack;
+  }
+
+  /// Get an [Attack] for this [Actor] to attempt to hit [defender].
+  Attack onGetAttack(Actor defender);
 
   /// This is called on the defender when some attacker is attempting to hit it.
   /// The defender can modify the attack or simply return the incoming one.

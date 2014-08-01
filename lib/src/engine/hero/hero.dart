@@ -140,7 +140,7 @@ class Hero extends Actor {
 
   Action onGetAction() => _behavior.getAction(this);
 
-  Attack getAttack(Actor defender) {
+  Attack onGetAttack(Actor defender) {
     var attack;
 
     // See if a melee weapon is equipped.
