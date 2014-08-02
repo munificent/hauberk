@@ -306,15 +306,15 @@ class Monsters extends ContentBuilder {
       waterBolt(rate: 5, damage: 6)
     ], drop: [
       percent(40, "magic", 7)
-    ], meander: 2, flags: "few");
+    ], meander: 2);
 
-    breed("kobold trickster", gold, 15, [
+    breed("kobold trickster", gold, 20, [
       attack("hit[s]", 5),
       teleport(rate: 5, range: 6),
       haste(rate: 7)
     ], drop: [
       percent(40, "magic", 7)
-    ], meander: 2, flags: "few");
+    ], meander: 2);
 
     breed("imp incanter", lightPurple, 18, [
       attack("scratch[es]", 4),
@@ -433,11 +433,6 @@ class Monsters extends ContentBuilder {
       attack("hop[s] on", 2),
     ], meander: 4, speed: 1);
 
-    breed("juvenile salamander", lightRed, 10, [
-      attack("bite[s]", 12, Element.FIRE),
-      fireCone(rate: 10, damage: 3, range: 6)
-    ], meander: 3);
-
     // TODO: Drop scales?
     group("R", meander: 1, flags: "fearless");
     breed("lizard guard", yellow, 20, [
@@ -460,9 +455,15 @@ class Monsters extends ContentBuilder {
       attack("bite[s]", 15),
     ]);
 
+    group("R", meander: 3);
+    breed("juvenile salamander", lightRed, 18, [
+      attack("bite[s]", 12, Element.FIRE),
+      fireCone(rate: 10, damage: 8, range: 6)
+    ], meander: 3);
+
     breed("salamander", red, 30, [
-      attack("bite[s]", 16, Element.FIRE),
-      fireCone(rate: 10, damage: 10, range: 8)
+      attack("bite[s]", 13, Element.FIRE),
+      fireCone(rate: 10, damage: 14, range: 8)
     ], meander: 3);
   }
 
