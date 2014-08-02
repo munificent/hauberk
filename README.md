@@ -36,9 +36,9 @@ I'd love to have more people involved. You're more than welcome to contribute
 to Hauberk itself. There's lots to be done, both code and game content
 (monsters, items, recipes, areas, etc.)
 
-I also had in mind that this codebase could be used as a sprinboard for other
+I also had in mind that this codebase could be used as a springboard for other
 games. Feel free to fork Hauberk and make it into your own thing in any way
-you choose. It uses a very permissive MIT license, so you can do pretty much
+you choose. It uses a very permissive [MIT license][], so you can do pretty much
 whatever you want with it.
 
 [roguelike]: http://en.wikipedia.org/wiki/Roguelike
@@ -47,3 +47,4 @@ whatever you want with it.
 [dungeon]: http://i.imgur.com/0Lrc3dn.gif
 [sdk]: https://www.dartlang.org/tools/download.html
 [dartium]: https://www.dartlang.org/tools/dartium/
+[mit license]: https://github.com/munificent/hauberk/blob/master/COPYRIGHT

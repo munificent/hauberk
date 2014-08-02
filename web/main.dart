@@ -76,7 +76,7 @@ main() {
 
   // Load the user's font preference, if any.
   var font = html.window.localStorage['font'];
-  var fontIndex = 1;
+  var fontIndex = 3;
   for (var i = 0; i < terminals.length; i++) {
     if (terminals[i][0] == font) {
       fontIndex = i;
