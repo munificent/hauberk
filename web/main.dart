@@ -60,9 +60,6 @@ addTerminal(String name, html.Element element,
 main() {
   var content = createContent();
 
-  addTerminal('Compat', new html.PreElement(),
-      (element) => new DomTerminal(WIDTH, HEIGHT, element));
-
   addTerminal('Courier', new html.CanvasElement(),
       (element) => new CanvasTerminal(WIDTH, HEIGHT, element,
           new Font('"Courier New"', size: 12, w: 15, h: 28, x: 1, y: 21)));

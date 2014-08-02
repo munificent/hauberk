@@ -68,7 +68,7 @@ class Flow {
       height = bottom - top;
     }
 
-    _distances = new Array2D<int>.filled(width, height, _UNKNOWN);
+    _distances = new Array2D<int>(width, height, _UNKNOWN);
 
     // Seed it with the starting position.
     _open.add(_start - _offset);

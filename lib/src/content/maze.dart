@@ -15,8 +15,8 @@ class Maze {
 
   /// Initializes a new solid (i.e. all cells closed) maze.
   Maze(int width, int height)
-  : _cells = new Array2D<_Cell>(width + 1, height + 1, () => new _Cell())
-  {
+      : _cells = new Array2D<_Cell>.generated(width + 1, height + 1,
+        () => new _Cell()) {
     // Pad by one for the outer bottom and right walls.
   }
 

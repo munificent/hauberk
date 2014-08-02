@@ -48,8 +48,8 @@ class Stage {
 
   Stage(int width, int height, Game game)
       : game = game,
-        tiles = new Array2D<Tile>(width, height, () => new Tile()),
-        _actorsByTile = new Array2D<Actor>.filled(width, height, null),
+        tiles = new Array2D<Tile>.generated(width, height, () => new Tile()),
+        _actorsByTile = new Array2D<Actor>(width, height),
         _fov = new Fov(game);
 
   Tile operator[](Vec pos) => tiles[pos];
