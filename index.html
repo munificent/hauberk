@@ -1,0 +1,151 @@
+<html>
+<head>
+  <title>Hauberk</title>
+  <link href='http://fonts.googleapis.com/css?family=Buenard' rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      font: 18px/24px Buenard, Georgia, serif;
+    }
+
+    a {
+      color: hsl(30, 90%, 55%);
+    }
+
+    a:visited {
+      color: hsl(30, 90%, 45%);
+    }
+
+    a:hover {
+      color: hsl(30, 90%, 75%);
+    }
+
+    canvas {
+      display: inline-block;
+      margin-top: 20px;
+      border: solid 4px #000;
+    }
+
+    pre {
+      font: 12px/14px Menlo, inconsolata, monaco, monospace;
+      letter-spacing: 1px;
+      width: 900px;
+      margin: 20px auto;
+    }
+
+    .button-bar {
+      position: fixed;
+      bottom: 0;
+    }
+
+    button {
+      font-size: 10px;
+      background: #222;
+      border: solid 1px #222;
+      color: #000;
+      border-radius: 2px;
+      margin-right: 2px;
+      outline: none;
+    }
+
+    .button-bar:hover button {
+      background: #333;
+      border: solid 1px #666;
+      color: #999;
+    }
+
+    .button-bar:hover button:hover {
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    pre .k  { color: #000; }
+    pre .w  { color: #fff; }
+    pre .le { color: rgb(192, 192, 192); }
+    pre .e  { color: rgb(128, 128, 128); }
+    pre .de { color: rgb(64, 64, 64); }
+    pre .lr { color: rgb(255, 160, 160); }
+    pre .r  { color: rgb(220, 0, 0); }
+    pre .dr { color: rgb(100, 0, 0); }
+    pre .lo { color: rgb(255, 200, 170); }
+    pre .o  { color: rgb(255, 128, 0); }
+    pre .do { color: rgb(128, 64, 0); }
+    pre .ld { color: rgb(255, 230, 150); }
+    pre .d  { color: rgb(255, 192, 0); }
+    pre .dd { color: rgb(128, 96, 0); }
+    pre .ly { color: rgb(255, 255, 150); }
+    pre .y  { color: rgb(255, 255, 0); }
+    pre .dy { color: rgb(128, 128, 0); }
+    pre .lg { color: rgb(130, 255, 90); }
+    pre .g  { color: rgb(0, 200, 0); }
+    pre .dg { color: rgb(0, 100, 0); }
+    pre .la { color: rgb(200, 255, 255); }
+    pre .a  { color: rgb(0, 255, 255); }
+    pre .da { color: rgb(0, 128, 128); }
+    pre .lb { color: rgb(128, 160, 255); }
+    pre .b  { color: rgb(0, 64, 255); }
+    pre .db { color: rgb(0, 37, 168); }
+    pre .lp { color: rgb(200, 140, 255); }
+    pre .p  { color: rgb(128, 0, 255); }
+    pre .dp { color: rgb(64, 0, 128); }
+    pre .ln { color: rgb(190, 150, 100); }
+    pre .n  { color: rgb(160, 110, 60); }
+    pre .dn { color: rgb(100, 64, 32); }
+
+    pre .bk  { background-color: #000; }
+    pre .bw  { background-color: #fff; }
+    pre .ble { background-color: rgb(192, 192, 192); }
+    pre .be  { background-color: rgb(128, 128, 128); }
+    pre .bde { background-color: rgb(48, 48, 48); }
+    pre .blr { background-color: rgb(255, 160, 160); }
+    pre .br  { background-color: rgb(220, 0, 0); }
+    pre .bdr { background-color: rgb(100, 0, 0); }
+    pre .blo { background-color: rgb(255, 200, 170); }
+    pre .bo  { background-color: rgb(255, 128, 0); }
+    pre .bdo { background-color: rgb(128, 64, 0); }
+    pre .bld { background-color: rgb(255, 230, 150); }
+    pre .bd  { background-color: rgb(255, 192, 0); }
+    pre .bdd { background-color: rgb(128, 96, 0); }
+    pre .bly { background-color: rgb(255, 255, 150); }
+    pre .by  { background-color: rgb(255, 255, 0); }
+    pre .bdy { background-color: rgb(128, 128, 0); }
+    pre .blg { background-color: rgb(130, 255, 90); }
+    pre .bg  { background-color: rgb(0, 200, 0); }
+    pre .bdg { background-color: rgb(0, 100, 0); }
+    pre .bla { background-color: rgb(200, 255, 255); }
+    pre .ba  { background-color: rgb(0, 255, 255); }
+    pre .bda { background-color: rgb(0, 128, 128); }
+    pre .blb { background-color: rgb(128, 160, 255); }
+    pre .bb  { background-color: rgb(0, 64, 255); }
+    pre .bdb { background-color: rgb(0, 37, 168); }
+    pre .blp { background-color: rgb(200, 140, 255); }
+    pre .bp  { background-color: rgb(128, 0, 255); }
+    pre .bdp { background-color: rgb(64, 0, 128); }
+    pre .bln { background-color: rgb(190, 150, 100); }
+    pre .bn  { background-color: rgb(160, 110, 60); }
+    pre .bdn { background-color: rgb(100, 64, 32); }
+
+    #debug {
+      position: absolute;
+      font: 10px/11px Menlo, inconsolata, monaco, monospace;
+      color: #ddd;
+      background: #222;
+      padding: 5px;
+      text-align: left;
+      width: inherit;
+      margin: 0;
+      letter-spacing: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="button-bar">
+</div>
+<div id="game"></div>
+<p><a href="guide.html" target="_blank">How to Play</a></p>
+<script type="application/dart" src="main.dart"></script>
+<script src="packages/browser/dart.js"></script>
+</body>
+</html>
