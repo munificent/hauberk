@@ -1,6 +1,21 @@
 library hauberk.engine.element;
 
 class Element {
+  static const ALL = const [
+    NONE,
+    AIR,
+    EARTH,
+    FIRE,
+    WATER,
+    ACID,
+    COLD,
+    LIGHTNING,
+    POISON,
+    DARK,
+    LIGHT,
+    SPIRIT
+  ];
+
   static const NONE      = const Element("None");
   static const AIR       = const Element("Air");
   static const EARTH     = const Element("Earth");

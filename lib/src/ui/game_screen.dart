@@ -7,6 +7,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'close_door_dialog.dart';
+import 'effect.dart';
 import 'game_over_screen.dart';
 import 'forfeit_dialog.dart';
 import 'item_dialog.dart';
@@ -310,8 +311,11 @@ class GameScreen extends Screen {
     for (final event in result.events) {
       switch (event.type) {
         case EventType.BOLT:
-          _effects.add(new FrameEffect(event.value, '*',
-              _getColorForElement(event.element)));
+          _effects.add(new ElementEffect(event.value, event.element));
+          break;
+
+        case EventType.CONE:
+          _effects.add(new ElementEffect(event.value, event.element));
           break;
 
         case EventType.HIT:
@@ -668,219 +672,9 @@ class GameScreen extends Screen {
     draw("Toughness", warrior.toughness);
   }
 
-  Color _getColorForElement(Element element) {
-    switch (element) {
-      case Element.NONE: return Color.LIGHT_BROWN;
-      case Element.AIR: return Color.LIGHT_AQUA;
-      case Element.EARTH: return Color.BROWN;
-      case Element.FIRE: return Color.RED;
-      case Element.WATER: return Color.BLUE;
-      case Element.ACID: return Color.GREEN;
-      case Element.COLD: return Color.LIGHT_BLUE;
-      case Element.LIGHTNING: return Color.YELLOW;
-      case Element.POISON: return Color.DARK_GREEN;
-      case Element.DARK: return Color.DARK_GRAY;
-      case Element.LIGHT: return Color.LIGHT_YELLOW;
-      case Element.SPIRIT: return Color.PURPLE;
-    }
-
-    throw "unreachable";
-  }
-
   void _spawnParticles(int count, Vec pos, Color color) {
     for (var i = 0; i < count; i++) {
       _effects.add(new ParticleEffect(pos.x, pos.y, color));
     }
-  }
-}
-
-typedef void DrawGlyph(int x, int y, Glyph glyph);
-
-abstract class Effect {
-  bool update(Game game);
-  void render(Game game, DrawGlyph drawGlyph);
-}
-
-class FrameEffect implements Effect {
-  final Vec pos;
-  final String char;
-  final Color color;
-  int life = 4;
-
-  FrameEffect(this.pos, this.char, this.color);
-
-  bool update(Game game) {
-    return --life >= 0;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(pos.x, pos.y, new Glyph(char, color));
-  }
-}
-
-/// Blinks the background color for an actor a couple of times.
-class BlinkEffect implements Effect {
-  final Actor actor;
-  final Color color;
-  int life = 8 * 3;
-
-  BlinkEffect(this.actor, this.color);
-
-  bool update(Game game) {
-    return --life >= 0;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    if (!actor.isVisible) return;
-
-    if ((life ~/ 8) % 2 == 0) {
-      var glyph = actor.appearance;
-      glyph = new Glyph.fromCharCode(glyph.char, glyph.fore, color);
-      drawGlyph(actor.pos.x, actor.pos.y, glyph);
-    }
-  }
-}
-
-class HitEffect implements Effect {
-  final int x;
-  final int y;
-  final int health;
-  int frame = 0;
-
-  static final NUM_FRAMES = 15;
-
-  HitEffect(Actor actor)
-  : x = actor.x,
-    y = actor.y,
-    health = 10 * actor.health.current ~/ actor.health.max;
-
-  bool update(Game game) {
-    return frame++ < NUM_FRAMES;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    var back;
-    switch (frame ~/ 5) {
-      case 0: back = Color.RED;      break;
-      case 1: back = Color.DARK_RED; break;
-      case 2: back = Color.BLACK;    break;
-    }
-    drawGlyph(x, y, new Glyph(' 123456789'[health], Color.BLACK, back));
-  }
-}
-
-class ParticleEffect implements Effect {
-  num x;
-  num y;
-  num h;
-  num v;
-  int life;
-  final Color color;
-
-  ParticleEffect(this.x, this.y, this.color) {
-    final theta = rng.range(628) / 100;
-    final radius = rng.range(30, 40) / 100;
-
-    h = math.cos(theta) * radius;
-    v = math.sin(theta) * radius;
-    life = rng.range(7, 15);
-  }
-
-  bool update(Game game) {
-    x += h;
-    y += v;
-
-    final pos = new Vec(x.toInt(), y.toInt());
-    if (!game.stage.bounds.contains(pos)) return false;
-    if (!game.stage[pos].isPassable) return false;
-
-    return life-- > 0;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(x.toInt(), y.toInt(), new Glyph('*', color));
-  }
-}
-
-class HealEffect implements Effect {
-  int x;
-  int y;
-  int frame = 0;
-
-  HealEffect(this.x, this.y);
-
-  bool update(Game game) {
-    return frame++ < 24;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    if (!game.stage.get(x, y).visible) return;
-
-    var back;
-    switch ((frame ~/ 4) % 4) {
-      case 0: back = Color.BLACK;       break;
-      case 1: back = Color.DARK_AQUA;   break;
-      case 2: back = Color.AQUA;        break;
-      case 3: back = Color.LIGHT_AQUA;  break;
-    }
-
-    drawGlyph(x - 1, y, new Glyph('-', back));
-    drawGlyph(x + 1, y, new Glyph('-', back));
-    drawGlyph(x, y - 1, new Glyph('|', back));
-    drawGlyph(x, y + 1, new Glyph('|', back));
-  }
-}
-
-class DetectEffect implements Effect {
-  final Vec pos;
-  int life = 30;
-
-  DetectEffect(this.pos);
-
-  bool update(Game game) {
-    return --life >= 0;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    var radius = life ~/ 4;
-    var glyph = new Glyph("*", Color.LIGHT_GOLD);
-
-    var bounds = new Rect(pos.x - radius, pos.y - radius,
-        radius * 2 + 1, radius * 2 + 1);
-
-    for (var pixel in bounds) {
-      var relative = pos - pixel;
-      if (relative < radius && relative > radius - 2) {
-        drawGlyph(pixel.x, pixel.y, glyph);
-      }
-    }
-  }
-}
-
-class TeleportEffect implements Effect {
-  final Vec to;
-  final Iterator<Vec> los;
-  int tick = 0;
-
-  TeleportEffect(Vec from, Vec to)
-    : to = to,
-      los = new Los(from, to).iterator;
-
-  bool update(Game game) {
-    if (los.current == to) return false;
-    los.moveNext();
-    return true;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    if (!game.stage[los.current].visible) return;
-
-    var color = rng.item([Color.WHITE, Color.AQUA, Color.BLUE]);
-
-    drawGlyph(los.current.x - 1, los.current.y, new Glyph('-', color));
-    drawGlyph(los.current.x + 1, los.current.y, new Glyph('-', color));
-    drawGlyph(los.current.x, los.current.y - 1, new Glyph('|', color));
-    drawGlyph(los.current.x, los.current.y + 1, new Glyph('|', color));
-    drawGlyph(los.current.x, los.current.y, new Glyph('*', color));
   }
 }

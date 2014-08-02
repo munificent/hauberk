@@ -80,6 +80,39 @@ class BoltMove extends Move {
   String toString() => "Bolt $attack rate: $rate";
 }
 
+class ConeMove extends Move {  final Attack attack;
+  int get range => attack.range;
+
+  ConeMove(num rate, this.attack)
+    : super(rate);
+
+  bool shouldUse(Monster monster) {
+    var target = monster.game.hero.pos;
+
+    // Don't fire if out of range.
+    var toTarget = target - monster.pos;
+    if (toTarget > range) {
+      Debug.logMonster(monster, "Cone move too far.");
+      return false;
+    }
+
+    // TODO: Should minimize friendly fire.
+    if (!monster.canView(target)) {
+      Debug.logMonster(monster, "Cone move can't target.");
+      return false;
+    }
+
+    Debug.logMonster(monster, "Cone move OK.");
+    return true;
+  }
+
+  Action onGetAction(Monster monster) {
+    return new ConeAction(monster.pos, monster.game.hero.pos, attack);
+  }
+
+  String toString() => "Cone $attack rate: $rate";
+}
+
 class HealMove extends Move {
   /// How much health to restore.
   final int _amount;

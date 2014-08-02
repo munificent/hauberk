@@ -163,6 +163,9 @@ class EventType {
   /// One step of a bolt.
   static const BOLT = const EventType("bolt");
 
+  /// The leading edge of a cone.
+  static const CONE = const EventType("cone");
+
   /// An [Actor] was hit.
   static const HIT = const EventType("hit");
 

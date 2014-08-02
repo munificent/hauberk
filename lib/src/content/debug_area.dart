@@ -1,11 +1,13 @@
 library hauberk.content.debug_area;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 
+/*
 class DebugArea extends StageBuilder {
   void generate(Stage stage) {
     bindStage(stage);
@@ -26,5 +28,41 @@ class DebugArea extends StageBuilder {
     }
 
     setTile(new Vec(20, 20), Tiles.closedDoor);
+  }
+}
+*/
+
+/// Creates a monster that breathes a cone for each element. Useful for
+/// debugging element effects.
+class DebugArea extends StageBuilder {
+  void generate(Stage stage) {
+    bindStage(stage);
+    fill(Tiles.wall);
+
+    for (var pos in stage.bounds.inflate(-1)) {
+      setTile(pos, Tiles.floor);
+    }
+
+    var x = 4;
+    var y = 4;
+    for (var element in Element.ALL) {
+      // TODO: Element-based color.
+      var breed = new Breed("${element} breather", Pronoun.IT,
+          new Glyph(element.name.substring(0, 1).toUpperCase(), Color.WHITE), [
+      ], [
+        new BoltMove(2,
+          new Attack("hits", 1, element, new Noun("element"), 12)),
+        new ConeMove(2,
+          new Attack("hits", 1, element, new Noun("element"), 12))
+      ], null, maxHealth: 100, tracking: 0, meander: 0, speed: 0,
+          flags: new Set.from(["immobile"]));
+
+      stage.addActor(breed.spawn(stage.game, new Vec(x, y)));
+      x += 12;
+      if (x > stage.width) {
+        x = 10;
+        y = stage.height - 6;
+      }
+    }
   }
 }

@@ -293,12 +293,28 @@ class Monsters extends ContentBuilder {
     ], drop: percent(10, "teleportation", 1),
         meander: 4, speed: 1, flags: "cowardly");
 
-    breed("kobold", blue, 12, [
+    breed("kobold", red, 12, [
       attack("poke[s]", 4),
       teleport(rate: 6, range: 6)
     ], drop: [
       percent(30, "magic", 7)
-    ], meander: 4, flags: "group");
+    ], meander: 2, flags: "group");
+
+    breed("kobold shaman", blue, 14, [
+      attack("hit[s]", 4),
+      teleport(rate: 5, range: 6),
+      waterBolt(rate: 5, damage: 6)
+    ], drop: [
+      percent(40, "magic", 7)
+    ], meander: 2, flags: "few");
+
+    breed("kobold trickster", gold, 15, [
+      attack("hit[s]", 5),
+      teleport(rate: 5, range: 6),
+      haste(rate: 7)
+    ], drop: [
+      percent(40, "magic", 7)
+    ], meander: 2, flags: "few");
 
     breed("imp incanter", lightPurple, 18, [
       attack("scratch[es]", 4),
@@ -417,25 +433,37 @@ class Monsters extends ContentBuilder {
       attack("hop[s] on", 2),
     ], meander: 4, speed: 1);
 
-    breed("salamander", red, 10, [
-      attack("bite[s]", 24, Element.FIRE),
+    breed("juvenile salamander", lightRed, 10, [
+      attack("bite[s]", 12, Element.FIRE),
+      fireCone(rate: 10, damage: 3, range: 6)
     ], meander: 3);
 
     // TODO: Drop scales?
-    breed("lizard guard", yellow, 26, [
+    group("R", meander: 1, flags: "fearless");
+    breed("lizard guard", yellow, 20, [
       attack("claw[s]", 8),
       attack("bite[s]", 10),
-    ], meander: 1, flags: "fearless");
+    ]);
 
-    breed("lizard protector", darkYellow, 32, [
+    breed("lizard protector", darkYellow, 28, [
       attack("claw[s]", 10),
       attack("bite[s]", 14),
-    ], meander: 1, flags: "fearless");
+    ]);
 
-    breed("armored lizard", gray, 46, [
+    breed("armored lizard", gray, 36, [
       attack("claw[s]", 10),
       attack("bite[s]", 15),
-    ], meander: 1, flags: "fearless");
+    ]);
+
+    breed("scaled guardian", darkGray, 42, [
+      attack("claw[s]", 10),
+      attack("bite[s]", 15),
+    ]);
+
+    breed("salamander", red, 30, [
+      attack("bite[s]", 16, Element.FIRE),
+      fireCone(rate: 10, damage: 10, range: 8)
+    ], meander: 3);
   }
 
   slugs() {
@@ -524,6 +552,10 @@ class Monsters extends ContentBuilder {
       new BoltMove(rate, new Attack("hits", damage, Element.NONE,
           new Noun("the arrow"), 8));
 
+  Move waterBolt({num rate: 5, int damage}) =>
+      new BoltMove(rate, new Attack("splashes", damage, Element.WATER,
+          new Noun("the jet"), 8));
+
   Move sparkBolt({num rate: 5, int damage}) =>
       new BoltMove(rate, new Attack("zaps", damage, Element.LIGHTNING,
           new Noun("the spark"), 8));
@@ -539,6 +571,10 @@ class Monsters extends ContentBuilder {
   Move lightBolt({num rate: 5, int damage}) =>
       new BoltMove(rate, new Attack("sears", damage, Element.LIGHT,
           new Noun("the light"), 10));
+
+  Move fireCone({num rate: 5, int damage, int range}) =>
+      new ConeMove(rate, new Attack("burns", damage, Element.FIRE,
+          new Noun("the flame"), range));
 
   Move insult({num rate: 5}) => new InsultMove(rate);
 

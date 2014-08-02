@@ -17,10 +17,10 @@ class Areas extends ContentBuilder {
 
   void build() {
     /*
-    area('Debugland', 80, 40, 100.0, breeds: [
-      'green slime'
+    area('Debugland', 80, 34, 100.0, breeds: [
+      'butterfly'
     ], levels: [
-      level(() => new DebugArea(), monsters: 2, items: 1,
+      level(() => new DebugArea(), monsters: 0, items: 1,
         drop: [frequency(1, 'item', 10)],
         quest: tileType('the stairs', Tiles.stairs))
     ]);
@@ -98,24 +98,28 @@ class Areas extends ContentBuilder {
       'blood worm',
       'giant cave worm',
       'green slime',
-      'salamander',
+      'juvenile salamander',
       'imp incanter',
+      'lizard guard',
       'kobold',
       'goblin fighter',
       'giant bat',
+      'kobold shaman',
       'mongrel',
       'giant centipede',
       'frosty slime',
-      'lizard guard',
+      'lizard protector',
+      'kobold trickster',
       'imp warlock',
       'goblin archer',
+      'armored lizard',
       'goblin warrior',
       'smoking slime',
-      'lizard protector',
       'floating eye',
       'plague rat',
-      'armored lizard',
+      'salamander',
       'goblin mage',
+      'scaled guardian'
     ], levels: [
       level(() => new GoblinStronghold(500), monsters: 40, items: 10, drop: [
         frequency(1, 'item', 4)
