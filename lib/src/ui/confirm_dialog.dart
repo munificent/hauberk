@@ -2,16 +2,30 @@ library hauberk.ui.confirm_dialog;
 
 import 'package:malison/malison.dart';
 
+import 'input.dart';
+
 /// Modal dialog for letting the user confirm an action.
 class ConfirmDialog extends Screen {
   final String message;
   final result;
 
+  bool get isTransparent => true;
+
   ConfirmDialog(this.message, this.result);
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-      case KeyCode.ESCAPE:
+  bool handleInput(Input input) {
+    if (input == Input.CANCEL) {
+      ui.pop(null);
+      return true;
+    }
+
+    return false;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    switch (keyCode) {
       case KeyCode.N:
         ui.pop(null);
         break;

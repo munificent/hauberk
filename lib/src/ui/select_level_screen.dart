@@ -8,6 +8,7 @@ import '../debug.dart';
 import '../engine.dart';
 import 'game_screen.dart';
 import 'home_screen.dart';
+import 'input.dart';
 import 'storage.dart';
 
 class SelectLevelScreen extends Screen {
@@ -32,50 +33,54 @@ class SelectLevelScreen extends Screen {
 
   SelectLevelScreen(this.content, this.save, this.storage);
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-    case KeyCode.K:
-      _changeSelection(selectedArea, selectedLevel - 1);
-      break;
+  bool handleInput(Input input) {
+    switch (input) {
+    case Input.W:
+        _changeSelection(selectedArea, selectedLevel - 1);
+        return true;
 
-    case KeyCode.SEMICOLON:
-      _changeSelection(selectedArea, selectedLevel + 1);
-      break;
+    case Input.E:
+        _changeSelection(selectedArea, selectedLevel + 1);
+        return true;
 
-    case KeyCode.O:
-      _changeSelection(selectedArea - 1, selectedLevel);
-      break;
+    case Input.N:
+        _changeSelection(selectedArea - 1, selectedLevel);
+        return true;
 
-    case KeyCode.PERIOD:
-      _changeSelection(selectedArea + 1, selectedLevel);
-      break;
+    case Input.S:
+        _changeSelection(selectedArea + 1, selectedLevel);
+        return true;
 
-    case KeyCode.L:
-    case KeyCode.ENTER:
-      final game = new Game(content.areas[selectedArea], selectedLevel,
+    case Input.OK:
+      var game = new Game(content.areas[selectedArea], selectedLevel,
           content, save);
       ui.push(new GameScreen(save, game));
-      break;
+      return true;
 
-    case KeyCode.H:
-      ui.push(new HomeScreen(content, save));
-      break;
-
-    case KeyCode.ESCAPE:
+    case Input.CANCEL:
       ui.pop();
-      break;
+      return true;
     }
 
-    return true;
+    return false;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    switch (keyCode) {
+      case KeyCode.H:
+        ui.push(new HomeScreen(content, save));
+        return true;
+    }
+
+    return false;
   }
 
   void render(Terminal terminal) {
-    if (!isTopScreen) return;
-
-    terminal.clear();
     terminal.writeAt(0, 0, 'Greetings, ${save.name}, where shall you quest?');
     terminal.writeAt(0, terminal.height - 1,
-        '[L] Select area, [↕] Select area, [↔] Select level, [H] Enter home, [S] Skills',
+        '[L] Select area, [↕] Select area, [↔] Select level, [H] Enter home',
         Color.GRAY);
 
     for (var i = 0; i < content.areas.length; i++) {

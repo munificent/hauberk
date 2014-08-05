@@ -4,6 +4,7 @@ import 'package:malison/malison.dart';
 
 import '../engine.dart';
 import 'confirm_dialog.dart';
+import 'input.dart';
 import 'new_hero_screen.dart';
 import 'select_level_screen.dart';
 import 'storage.dart';
@@ -65,37 +66,39 @@ class MainMenuScreen extends Screen {
       : content = content,
         storage = new Storage(content);
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-    case KeyCode.O:
-      _changeSelection(-1);
-      break;
+  bool handleInput(Input input) {
+    switch (input) {
+      case Input.N: _changeSelection(-1); return true;
+      case Input.S: _changeSelection(1); return true;
 
-    case KeyCode.PERIOD:
-      _changeSelection(1);
-      break;
-
-    case KeyCode.L:
-    case KeyCode.ENTER:
-      if (selectedHero < storage.heroes.length) {
-        ui.push(new SelectLevelScreen(content, storage.heroes[selectedHero],
-            storage));
-      }
-      break;
-
-    case KeyCode.D:
-      if (selectedHero < storage.heroes.length) {
-        ui.push(new ConfirmDialog(
-            "Are you sure you want to delete this hero?", 'delete'));
-      }
-      break;
-
-    case KeyCode.N:
-      ui.push(new NewHeroScreen(content, storage));
-      break;
+      case Input.OK:
+        if (selectedHero < storage.heroes.length) {
+          ui.push(new SelectLevelScreen(content, storage.heroes[selectedHero],
+              storage));
+        }
+        return true;
     }
 
-    return true;
+    return false;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    switch (keyCode) {
+      case KeyCode.D:
+        if (selectedHero < storage.heroes.length) {
+          ui.push(new ConfirmDialog(
+              "Are you sure you want to delete this hero?", 'delete'));
+        }
+        return true;
+
+      case KeyCode.N:
+        ui.push(new NewHeroScreen(content, storage));
+        return true;
+    }
+
+    return false;
   }
 
   void activate(Screen screen, result) {
@@ -108,10 +111,6 @@ class MainMenuScreen extends Screen {
   }
 
   void render(Terminal terminal) {
-    if (!isTopScreen) return;
-
-    terminal.clear();
-
     for (var y = 0; y < _CHARS.length; y++) {
       for (var x = 0; x < _CHARS[y].length; x++) {
         var color = _COLORS[_CHAR_COLORS[y][x]];

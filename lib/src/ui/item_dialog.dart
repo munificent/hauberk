@@ -3,6 +3,7 @@ library hauberk.ui.item_dialog;
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
+import 'input.dart';
 
 /// Modal dialog for letting the user perform an [Action] on an [Item]
 /// accessible to the [Hero].
@@ -10,6 +11,8 @@ class ItemDialog extends Screen {
   final Game _game;
   final _ItemCommand _mode;
   _ItemView _view;
+
+  bool get isTransparent => true;
 
   ItemDialog.drop(this._game)
       : _mode = new _DropItemCommand(),
@@ -19,47 +22,31 @@ class ItemDialog extends Screen {
       : _mode = new _UseItemCommand(),
         _view = new _InventoryView();
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-      case KeyCode.ESCAPE:
-        ui.pop();
-        break;
-
-      case KeyCode.A: selectItem(0); break;
-      case KeyCode.B: selectItem(1); break;
-      case KeyCode.C: selectItem(2); break;
-      case KeyCode.D: selectItem(3); break;
-      case KeyCode.E: selectItem(4); break;
-      case KeyCode.F: selectItem(5); break;
-      case KeyCode.G: selectItem(6); break;
-      case KeyCode.H: selectItem(7); break;
-      case KeyCode.I: selectItem(8); break;
-      case KeyCode.J: selectItem(9); break;
-      case KeyCode.K: selectItem(10); break;
-      case KeyCode.L: selectItem(11); break;
-      case KeyCode.M: selectItem(12); break;
-      case KeyCode.N: selectItem(13); break;
-      case KeyCode.O: selectItem(14); break;
-      case KeyCode.P: selectItem(15); break;
-      case KeyCode.Q: selectItem(16); break;
-      case KeyCode.R: selectItem(17); break;
-      case KeyCode.S: selectItem(18); break;
-      case KeyCode.T: selectItem(19); break;
-      case KeyCode.U: selectItem(20); break;
-      case KeyCode.V: selectItem(21); break;
-      case KeyCode.W: selectItem(22); break;
-      case KeyCode.X: selectItem(23); break;
-      case KeyCode.Y: selectItem(24); break;
-      case KeyCode.Z: selectItem(25); break;
-
-      case KeyCode.TAB:
-        _view = _view.next;
-        if (!_mode.showGroundItems && _view is _GroundView) _view = _view.next;
-        dirty();
-        break;
+  bool handleInput(Input input) {
+    if (input == Input.CANCEL) {
+      ui.pop();
+      return true;
     }
 
-    return true;
+    return false;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    if (keyCode >= KeyCode.A && keyCode <= KeyCode.Z) {
+      selectItem(keyCode - KeyCode.A);
+      return true;
+    }
+
+    if (keyCode == KeyCode.TAB) {
+      _view = _view.next;
+      if (!_mode.showGroundItems && _view is _GroundView) _view = _view.next;
+      dirty();
+      return true;
+    }
+
+    return false;
   }
 
   void render(Terminal terminal) {

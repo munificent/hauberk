@@ -6,33 +6,27 @@ A caution for the unwary: **The game is not done, or balanced, or complete, or b
 
 ## Input
 
-Hauberk is played using your keyboard. Most user input is directional, and the eight cardinal directions use these keys:
+Hauberk is played using your keyboard. A lot of input is directional. Arrow keys work for that, but that don't cover diagonal moves. Instead, you're better off using the numpad on your keyboard if you have one:
 
-     (I)(O)([)
-       \ | /
-        \|/
-    (K)-(L)-(;)
-        /|\
-       / | \
-     (,)(.)(/)
+    .---.---.---.          .---.---.---.
+    | 7 | 8 | 9 |          | \ | ^ | / |
+    |---+---+---|          |---+---+---|
+    | 4 | 5 | 6 | maps to: |<- |   | ->|
+    |---+---+---|          |---+---+---|
+    | 7 | 8 | 9 |          | / | v | \ |
+    '---'---'---'          '---'---'---'
 
-In other words, `I` goes north-west, `.` goes south, etc. I know those seem totally random, but (on a US keyboard at least), they use a nice little box of keys under your right hand:
+If you don't have a numpad, but do have a US layout keyboard, you can also use:
 
-    .---.---.---.
-    | I | O | [ |
-    '---+---+---+
-     | K | L | ; |
-     '---+---+---+
-      | , | . | / |
-      '---'---'---'
+    .---.---.---.          .---.---.---.
+    | I | O | P |          | \ | ^ | / |
+    '---+---+---+          '---+---+---+
+     | K | L | ; | maps to: |<- |   | ->|
+     '---+---+---+          '---+---+---+
+      | , | . | / |          | / | v | \ |
+      '---'---'---'          '---'---'---'
 
-These is used for navigating in the game, and also on menu screens. `L` is also the "OK button": use it to select menu items. You'll spend most of the game with your right middle finger sitting comfortably on `L`.
-
-`Escape` is used to go back in menu screens and exit dialogs.
-
-This layout is currently tuned for a Mac laptop keyboard with US layout since that's what I use. Keybindings are not currently configurable, but I would like it to work well for as many users as possible. If you have suggestions on how to handle other platforms/languages, [let me know][bug].
-
-[bug]: https://github.com/munificent/hauberk/issues
+The `5` and `L` buttons in the middle are "stand". They're also used like an "OK" button to accept a selection on menu screens. `Escape` is used to go back in menu screens and exit dialogs.
 
 (Note that all keys are shown uppercase here but are typed lower case. `L` means a lowercase "l". An uppercase one will be `Shift-L`.)
 
@@ -88,7 +82,7 @@ If you want to give up and leave the level before completing the quest, you can 
 
 Your avatar in the game is represented by a `@`. Floor tiles are usually `.`, and impassible barriers and walls look like `#`, or other hopefully obvious solid looking tiles.
 
-You can walk around using the directional keys. Pressing `L` will stand still for a turn.
+You can walk around using the directional keys. Pressing the stand key (`5` or `L`) makes your hero stand still for a turn. That's useful to let a monster take a step closer so you can attack the next turn.
 
 If you hold down `Shift` and press a directional key, your hero will *run* in that direction. They will repeatedly walk in that direction until *disturbed* by reaching an obstacle, a fork in the path, or seeing a monster. When not in combat, running is the most user-friendly way to get from point A to point B.
 
@@ -102,6 +96,12 @@ When you kill a monster, you are granted some *experience points*. Earn enough o
 
 Meanwhile, monsters will be attacking you. You are outnumbered, so try not to let them surround you. Attacking from the safety of a narrow corridor helps.
 
+### Resting
 
+After a scirmish, your hero has likely lost some health. That can be regained by imbibing magic potions, but those are in short supply. Instead, they'll have to rest.
+
+Resting requires *food*, which your hero silently automatically discovers as they explore the level. Every turn that you stand still will consume a bit of food and regain a point of health. Instead of mashing down the stand key, if you press `Shift-Stand`, your hero will repeatedly rest until they run out of food, fully regain their health, or are disturbed by a nearby monster.
+
+If you don't have any food, resting accomplishes nothing. To get food, you *must* explore new parts of the level. No resting on your laurels or wandering through familiar passages!
 
 **TODO: Archery. Items.**

@@ -3,6 +3,7 @@ library hauberk.ui.home_screen;
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
+import 'input.dart';
 import 'item_dialog.dart';
 
 class HomeScreen extends Screen {
@@ -18,35 +19,39 @@ class HomeScreen extends Screen {
 
   HomeScreen(this.content, this.save);
 
-  bool handleInput(Keyboard keyboard) {
-    if (mode.handleInput(keyboard, this)) return true;
+  bool handleInput(Input input) {
+    if (mode.handleInput(input, this)) return true;
 
-    switch (keyboard.lastPressed) {
-      case KeyCode.ESCAPE:
-        ui.pop();
-        break;
-
-      case KeyCode.SPACE:
-        if (completeRecipe == null) break;
-        if (rightView != HomeView.CRUCIBLE) break;
-
-        save.crucible.clear();
-        completeRecipe.result.spawnDrop(save.crucible.tryAdd);
-        refreshRecipe();
-
-        // The player probably wants to get the item out of the crucible.
-        mode = HomeMode.GET;
-        dirty();
-        break;
+    if (input == Input.CANCEL) {
+      ui.pop();
+      return true;
     }
 
-    return true;
+    return false;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    if (mode.keyDown(keyCode, this)) return true;
+
+    if (keyCode == KeyCode.SPACE &&
+        completeRecipe != null &&
+        rightView == HomeView.CRUCIBLE) {
+      save.crucible.clear();
+      completeRecipe.result.spawnDrop(save.crucible.tryAdd);
+      refreshRecipe();
+
+      // The player probably wants to get the item out of the crucible.
+      mode = HomeMode.GET;
+      dirty();
+      return true;
+    }
+
+    return false;
   }
 
   void render(Terminal terminal) {
-    if (!isTopScreen) return;
-
-    terminal.clear();
     terminal.writeAt(0, 0, 'Welcome home, hero. ${mode.message}');
 
     terminal.writeAt(0, terminal.height - 1,
@@ -127,7 +132,9 @@ abstract class HomeMode {
   String get helpText;
   bool canSelectLeftItem(HomeScreen home, Item item) => false;
   bool canSelectRightItem(HomeScreen home, Item item) => false;
-  bool handleInput(Keyboard keyboard, HomeScreen home);
+
+  bool handleInput(Input input, HomeScreen home) => false;
+  bool keyDown(int keyCode, HomeScreen home);
 }
 
 /// The default mode. Lets users switch which item lists are being shown on the
@@ -138,8 +145,8 @@ class ViewHomeMode extends HomeMode {
   String get message => 'What would you like to do?';
   String get helpText => '[Tab] Switch left, [H] Home, [C] Crucible, [E] Equipment, [G] Get, [P] Put';
 
-  bool handleInput(Keyboard keyboard, HomeScreen home) {
-    switch (keyboard.lastPressed) {
+  bool keyDown(int keyCode, HomeScreen home) {
+    switch (keyCode) {
       case KeyCode.TAB:
         switch (home.leftView) {
           case HomeView.INVENTORY:
@@ -213,45 +220,23 @@ abstract class SelectHomeMode extends HomeMode {
 
   String get helpText => '[A-Z] Choose an item, [Esc] Cancel';
 
-  bool handleInput(Keyboard keyboard, HomeScreen home) {
-    switch (keyboard.lastPressed) {
-      case KeyCode.ESCAPE:
-        home.mode = HomeMode.VIEW;
-        home.dirty();
-        break;
-
-      case KeyCode.A: selectItem(home, 0); break;
-      case KeyCode.B: selectItem(home, 1); break;
-      case KeyCode.C: selectItem(home, 2); break;
-      case KeyCode.D: selectItem(home, 3); break;
-      case KeyCode.E: selectItem(home, 4); break;
-      case KeyCode.F: selectItem(home, 5); break;
-      case KeyCode.G: selectItem(home, 6); break;
-      case KeyCode.H: selectItem(home, 7); break;
-      case KeyCode.I: selectItem(home, 8); break;
-      case KeyCode.J: selectItem(home, 9); break;
-      case KeyCode.K: selectItem(home, 10); break;
-      case KeyCode.L: selectItem(home, 11); break;
-      case KeyCode.M: selectItem(home, 12); break;
-      case KeyCode.N: selectItem(home, 13); break;
-      case KeyCode.O: selectItem(home, 14); break;
-      case KeyCode.P: selectItem(home, 15); break;
-      case KeyCode.Q: selectItem(home, 16); break;
-      case KeyCode.R: selectItem(home, 17); break;
-      case KeyCode.S: selectItem(home, 18); break;
-      case KeyCode.T: selectItem(home, 19); break;
-      case KeyCode.U: selectItem(home, 20); break;
-      case KeyCode.V: selectItem(home, 21); break;
-      case KeyCode.W: selectItem(home, 22); break;
-      case KeyCode.X: selectItem(home, 23); break;
-      case KeyCode.Y: selectItem(home, 24); break;
-      case KeyCode.Z: selectItem(home, 25); break;
-
-      default:
-        return false;
+  bool handleInput(Input input, HomeScreen home) {
+    if (input == Input.CANCEL) {
+      home.mode = HomeMode.VIEW;
+      home.dirty();
+      return true;
     }
 
-    return true;
+    return false;
+  }
+
+  bool keyDown(int keyCode, HomeScreen home) {
+    if (keyCode >= KeyCode.A && keyCode <= KeyCode.Z) {
+      selectItem(home, keyCode - KeyCode.A);
+      return true;
+    }
+
+    return false;
   }
 
   void selectItem(HomeScreen home, int index);

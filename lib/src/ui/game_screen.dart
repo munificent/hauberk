@@ -10,6 +10,7 @@ import 'close_door_dialog.dart';
 import 'effect.dart';
 import 'game_over_screen.dart';
 import 'forfeit_dialog.dart';
+import 'input.dart';
 import 'item_dialog.dart';
 import 'select_command_dialog.dart';
 import 'target_dialog.dart';
@@ -50,57 +51,11 @@ class GameScreen extends Screen {
     _positionCamera();
   }
 
-  bool handleInput(Keyboard keyboard) {
+  bool handleInput(Input input) {
     var action;
 
-    if (keyboard.shift && !keyboard.control && !keyboard.option) {
-      switch (keyboard.lastPressed) {
-      case KeyCode.F:
-        ui.push(new ForfeitDialog(_game));
-        break;
-
-      case KeyCode.L:
-        if (!_game.hero.rest()) {
-          // Show the message.
-          dirty();
-        }
-        break;
-
-      case KeyCode.I:
-        _game.hero.run(Direction.NW);
-        break;
-
-      case KeyCode.O:
-        _game.hero.run(Direction.N);
-        break;
-
-      case KeyCode.P:
-        _game.hero.run(Direction.NE);
-        break;
-
-      case KeyCode.K:
-        _game.hero.run(Direction.W);
-        break;
-
-      case KeyCode.SEMICOLON:
-        _game.hero.run(Direction.E);
-        break;
-
-      case KeyCode.COMMA:
-        _game.hero.run(Direction.SW);
-        break;
-
-      case KeyCode.PERIOD:
-        _game.hero.run(Direction.S);
-        break;
-
-      case KeyCode.SLASH:
-        _game.hero.run(Direction.SE);
-        break;
-      }
-    } else if (!keyboard.control && !keyboard.option) {
-      switch (keyboard.lastPressed) {
-      case KeyCode.Q:
+    switch (input) {
+      case Input.QUIT:
         if (_game.quest.isComplete) {
           _save.copyFrom(_game.hero);
 
@@ -118,64 +73,50 @@ class GameScreen extends Screen {
         }
         break;
 
-      case KeyCode.C:
-        closeDoor();
-        break;
+      case Input.FORFEIT: ui.push(new ForfeitDialog(_game)); break;
+      case Input.SELECT_COMMAND: ui.push(new SelectCommandDialog(_game)); break;
+      case Input.DROP: ui.push(new ItemDialog.drop(_game)); break;
+      case Input.USE: ui.push(new ItemDialog.use(_game)); break;
 
-      case KeyCode.D:
-        ui.push(new ItemDialog.drop(_game));
-        break;
-
-      case KeyCode.U:
-        ui.push(new ItemDialog.use(_game));
-        break;
-
-      case KeyCode.G:
-        action = new PickUpAction();
-        break;
-
-      case KeyCode.X:
-        if (_game.hero.inventory.lastUnequipped == -1) {
-          _game.log.error("You aren't holding an unequipped item to swap.");
+      case Input.REST:
+        if (!_game.hero.rest()) {
+          // Show the message.
           dirty();
-        } else {
-          action = new EquipAction(_game.hero.inventory.lastUnequipped, false);
         }
         break;
 
-      case KeyCode.I: action = new WalkAction(Direction.NW); break;
-      case KeyCode.O: action = new WalkAction(Direction.N); break;
-      case KeyCode.P: action = new WalkAction(Direction.NE); break;
-      case KeyCode.K: action = new WalkAction(Direction.W); break;
-      case KeyCode.L: action = new WalkAction(Direction.NONE); break;
-      case KeyCode.SEMICOLON: action = new WalkAction(Direction.E); break;
-      case KeyCode.COMMA: action = new WalkAction(Direction.SW); break;
-      case KeyCode.PERIOD: action = new WalkAction(Direction.S); break;
-      case KeyCode.SLASH: action = new WalkAction(Direction.SE); break;
+      case Input.CLOSE_DOOR: closeDoor(); break;
+      case Input.PICK_UP: action = new PickUpAction(); break;
 
-      case KeyCode.S:
-        ui.push(new SelectCommandDialog(_game));
-        break;
-      }
-    } else if (!keyboard.shift && keyboard.option && !keyboard.control) {
-      switch (keyboard.lastPressed) {
-      case KeyCode.I:
-        fireAt(_game.hero.pos + Direction.NW);
-        break;
+      case Input.NW: action = new WalkAction(Direction.NW); break;
+      case Input.N: action = new WalkAction(Direction.N); break;
+      case Input.NE: action = new WalkAction(Direction.NE); break;
+      case Input.W: action = new WalkAction(Direction.W); break;
+      case Input.OK: action = new WalkAction(Direction.NONE); break;
+      case Input.E: action = new WalkAction(Direction.E); break;
+      case Input.SW: action = new WalkAction(Direction.SW); break;
+      case Input.S: action = new WalkAction(Direction.S); break;
+      case Input.SE: action = new WalkAction(Direction.SE); break;
 
-      case KeyCode.O:
-        fireAt(_game.hero.pos + Direction.N);
-        break;
+      case Input.RUN_NW: _game.hero.run(Direction.NW); break;
+      case Input.RUN_N: _game.hero.run(Direction.N); break;
+      case Input.RUN_NE: _game.hero.run(Direction.NE); break;
+      case Input.RUN_W: _game.hero.run(Direction.W); break;
+      case Input.RUN_E: _game.hero.run(Direction.E); break;
+      case Input.RUN_SW: _game.hero.run(Direction.SW); break;
+      case Input.RUN_S: _game.hero.run(Direction.S); break;
+      case Input.RUN_SE: _game.hero.run(Direction.SE); break;
 
-      case KeyCode.P:
-        fireAt(_game.hero.pos + Direction.NE);
-        break;
+      case Input.FIRE_NW: fireAt(_game.hero.pos + Direction.NW); break;
+      case Input.FIRE_N: fireAt(_game.hero.pos + Direction.N); break;
+      case Input.FIRE_NE: fireAt(_game.hero.pos + Direction.NE); break;
+      case Input.FIRE_W: fireAt(_game.hero.pos + Direction.W); break;
+      case Input.FIRE_E: fireAt(_game.hero.pos + Direction.E); break;
+      case Input.FIRE_SW: fireAt(_game.hero.pos + Direction.SW); break;
+      case Input.FIRE_S: fireAt(_game.hero.pos + Direction.S); break;
+      case Input.FIRE_SE: fireAt(_game.hero.pos + Direction.SE); break;
 
-      case KeyCode.K:
-        fireAt(_game.hero.pos + Direction.W);
-        break;
-
-      case KeyCode.L:
+      case Input.FIRE:
         if (_lastCommand == null) {
           // Haven't picked a command yet, so select one.
           ui.push(new SelectCommandDialog(_game));
@@ -196,27 +137,17 @@ class GameScreen extends Screen {
         }
         break;
 
-      case KeyCode.SEMICOLON:
-        fireAt(_game.hero.pos + Direction.E);
+      case Input.SWAP:
+        if (_game.hero.inventory.lastUnequipped == -1) {
+          _game.log.error("You aren't holding an unequipped item to swap.");
+          dirty();
+        } else {
+          action = new EquipAction(_game.hero.inventory.lastUnequipped, false);
+        }
         break;
-
-      case KeyCode.COMMA:
-        fireAt(_game.hero.pos + Direction.SW);
-        break;
-
-      case KeyCode.PERIOD:
-        fireAt(_game.hero.pos + Direction.S);
-        break;
-
-      case KeyCode.SLASH:
-        fireAt(_game.hero.pos + Direction.SE);
-        break;
-      }
     }
 
-    if (action != null) {
-      _game.hero.setNextAction(action);
-    }
+    if (action != null) _game.hero.setNextAction(action);
 
     return true;
   }

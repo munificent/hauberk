@@ -2,12 +2,14 @@ library hauberk.ui.game_over_screen;
 
 import 'package:malison/malison.dart';
 
+import 'input.dart';
+
 class GameOverScreen extends Screen {
   GameOverScreen();
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-    case KeyCode.ESCAPE:
+  bool handleInput(Input input) {
+    switch (input) {
+    case Input.CANCEL:
       ui.pop();
       break;
     }

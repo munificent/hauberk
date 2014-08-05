@@ -3,16 +3,30 @@ library hauberk.ui.forfeit_dialog;
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
+import 'input.dart';
 
+// TODO: Unify with ConfirmDialog.
 /// Modal dialog for letting the user confirm forfeiting the level.
 class ForfeitDialog extends Screen {
   final Game game;
 
+  bool get isTransparent => true;
+
   ForfeitDialog(this.game);
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-      case KeyCode.ESCAPE:
+  bool handleInput(Input input) {
+    if (input == Input.CANCEL) {
+      ui.pop(false);
+      return true;
+    }
+
+    return false;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    switch (keyCode) {
       case KeyCode.N:
         ui.pop(false);
         break;

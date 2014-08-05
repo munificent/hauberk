@@ -30,8 +30,11 @@ class NewHeroScreen extends Screen {
 
   NewHeroScreen(this.content, this.storage) {}
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    // TODO: Figuring out the char code manually here is lame. Pass it in from
+    // the KeyEvent?
+
+    switch (keyCode) {
       case KeyCode.ENTER:
         // TODO: Other classes.
         var heroClass = new Warrior();
@@ -60,26 +63,26 @@ class NewHeroScreen extends Screen {
         break;
 
       case KeyCode.SPACE:
-        // TODO(bob): Handle modifiers.
+        // TODO: Handle modifiers.
         name = '$name ';
         dirty();
         break;
 
       default:
-        var key = keyboard.lastPressed;
+        var key = keyCode;
         if (key == null) break;
 
         if (key >= KeyCode.A && key <= KeyCode.Z) {
-          // TODO(bob): Use +=.
           var charCode = key;
-          // TODO(bob): Handle other modifiers.
-          if (!keyboard.shift) {
+          // TODO: Handle other modifiers.
+          if (!shift) {
             charCode = 'a'.codeUnits[0] - 'A'.codeUnits[0] + charCode;
           }
-          name = '$name${new String.fromCharCodes([charCode])}';
+
+          name += new String.fromCharCodes([charCode]);
           dirty();
         } else if (key >= KeyCode.ZERO && key <= KeyCode.NINE) {
-          name = '$name${new String.fromCharCodes([key])}';
+          name += new String.fromCharCodes([key]);
           dirty();
         }
 

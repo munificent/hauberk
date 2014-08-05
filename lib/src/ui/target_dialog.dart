@@ -5,6 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'game_screen.dart';
+import 'input.dart';
 
 /// Modal dialog for letting the user select a direction to fire a missile.
 class TargetDialog extends Screen {
@@ -25,6 +26,8 @@ class TargetDialog extends Screen {
     if (_gameScreen.target == null) return null;
     return _gameScreen.target.pos;
   }
+
+  bool get isTransparent => true;
 
   TargetDialog(this._gameScreen, Game game, Command command)
       : _game = game,
@@ -53,24 +56,19 @@ class TargetDialog extends Screen {
     }
   }
 
-  bool handleInput(Keyboard keyboard) {
-    switch (keyboard.lastPressed) {
-      case KeyCode.ESCAPE:
-        ui.pop(false);
-        break;
+  bool handleInput(Input input) {
+    switch (input) {
+      case Input.OK: ui.pop(_target != null); break;
+      case Input.CANCEL: ui.pop(false); break;
 
-      case KeyCode.I: _changeTarget(Direction.NW); break;
-      case KeyCode.O: _changeTarget(Direction.N); break;
-      case KeyCode.P: _changeTarget(Direction.NE); break;
-      case KeyCode.K: _changeTarget(Direction.W); break;
-      case KeyCode.SEMICOLON: _changeTarget(Direction.E); break;
-      case KeyCode.COMMA: _changeTarget(Direction.SW); break;
-      case KeyCode.PERIOD: _changeTarget(Direction.S); break;
-      case KeyCode.SLASH: _changeTarget(Direction.SE); break;
-
-      case KeyCode.L:
-        ui.pop(_target != null);
-        break;
+      case Input.NW: _changeTarget(Direction.NW); break;
+      case Input.N: _changeTarget(Direction.N); break;
+      case Input.NE: _changeTarget(Direction.NE); break;
+      case Input.W: _changeTarget(Direction.W); break;
+      case Input.E: _changeTarget(Direction.E); break;
+      case Input.SW: _changeTarget(Direction.SW); break;
+      case Input.S: _changeTarget(Direction.S); break;
+      case Input.SE: _changeTarget(Direction.SE); break;
     }
 
     return true;
