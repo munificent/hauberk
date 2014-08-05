@@ -10,27 +10,25 @@
 <p>Welcome! I see you have an adventurous spirit! Not because you wish to venture into dungeons filled with beasts and untolds horrors, but because you have the fortitude to try out a game while it's still under development. Well, some of the former too.</p>
 <p>A caution for the unwary: <strong>The game is not done, or balanced, or complete, or bug-free.</strong> You can help!</p>
 <h2>Input</h2>
-<p>Hauberk is played using your keyboard. Most user input is directional, and the eight cardinal directions use these keys:</p>
-<pre><code> (I)(O)(P)
-   \ | /
-    \|/
-(K)-(L)-(;)
-    /|\
-   / | \
- (,)(.)(/)
+<p>Hauberk is played using your keyboard. A lot of input is directional. Arrow keys work for that, but that don't cover diagonal moves. Instead, you're better off using the numpad on your keyboard if you have one:</p>
+<pre><code>.---.---.---.          .---.---.---.
+| 7 | 8 | 9 |          | \ | ^ | / |
+|---+---+---|          |---+---+---|
+| 4 | 5 | 6 | maps to: |&lt;- |   | -&gt;|
+|---+---+---|          |---+---+---|
+| 7 | 8 | 9 |          | / | v | \ |
+'---'---'---'          '---'---'---'
 </code></pre>
-<p>In other words, <code>I</code> goes north-west, <code>.</code> goes south, etc. I know those seem totally random, but (on a US keyboard at least), they use a nice little box of keys under your right hand:</p>
-<pre><code>.---.---.---.
-| I | O | P |
-'---+---+---+
- | K | L | ; |
- '---+---+---+
-  | , | . | / |
-  '---'---'---'
+<p>If you don't have a numpad, but do have a US layout keyboard, you can also use:</p>
+<pre><code>.---.---.---.          .---.---.---.
+| I | O | P |          | \ | ^ | / |
+'---+---+---+          '---+---+---+
+ | K | L | ; | maps to: |&lt;- |   | -&gt;|
+ '---+---+---+          '---+---+---+
+  | , | . | / |          | / | v | \ |
+  '---'---'---'          '---'---'---'
 </code></pre>
-<p>These is used for navigating in the game, and also on menu screens. <code>L</code> is also the "OK button": use it to select menu items. You'll spend most of the game with your right middle finger sitting comfortably on <code>L</code>.</p>
-<p><code>Escape</code> is used to go back in menu screens and exit dialogs.</p>
-<p>This layout is currently tuned for a Mac laptop keyboard with US layout since that's what I use. Keybindings are not currently configurable, but I would like it to work well for as many users as possible. If you have suggestions on how to handle other platforms/languages, <a href="https://github.com/munificent/hauberk/issues">let me know</a>.</p>
+<p>The <code>5</code> and <code>L</code> buttons in the middle are "stand". They're also used like an "OK" button to accept a selection on menu screens. <code>Escape</code> is used to go back in menu screens and exit dialogs.</p>
 <p>(Note that all keys are shown uppercase here but are typed lower case. <code>L</code> means a lowercase "l". An uppercase one will be <code>Shift-L</code>.)</p>
 <h2>A Hero Awakens</h2>
 <p>To start playing, first you need to create a character. On the Main Menu Screen, type <code>N</code> to create a new hero. Enter a name (or use the default suggested one) and hit <code>Enter</code>.</p>
@@ -57,13 +55,17 @@
 <p>If you want to give up and leave the level before completing the quest, you can <em>forfeit</em> by typing <code>Shift-F</code>. Like dying, doing this sacrifices anything you've gained since entering the level.</p>
 <h3>Navigating the level</h3>
 <p>Your avatar in the game is represented by a <code>@</code>. Floor tiles are usually <code>.</code>, and impassible barriers and walls look like <code>#</code>, or other hopefully obvious solid looking tiles.</p>
-<p>You can walk around using the directional keys. Pressing <code>L</code> will stand still for a turn.</p>
+<p>You can walk around using the directional keys. Pressing the stand key (<code>5</code> or <code>L</code>) makes your hero stand still for a turn. That's useful to let a monster take a step closer so you can attack the next turn.</p>
 <p>If you hold down <code>Shift</code> and press a directional key, your hero will <em>run</em> in that direction. They will repeatedly walk in that direction until <em>disturbed</em> by reaching an obstacle, a fork in the path, or seeing a monster. When not in combat, running is the most user-friendly way to get from point A to point B.</p>
 <p>Closed doors look like <code>+</code>. You can open them (which takes a turn) by simply walking into them. An open door looks like <code>-</code>. You can close a door by pressing <code>C</code> while standing next to one.</p>
 <h3>Combat!</h3>
 <p>Monsters in the game are represented using letters. You attack by trying to walk into the tile where a monster is standing. On the right side of the screen you can see your health along with some of the nearby monsters. Try to get theirs to zero before your does!</p>
 <p>When you kill a monster, you are granted some <em>experience points</em>. Earn enough of those, and your hero will increase in <em>experience level</em>. That increases your maximum health and does some other good stuff.</p>
 <p>Meanwhile, monsters will be attacking you. You are outnumbered, so try not to let them surround you. Attacking from the safety of a narrow corridor helps.</p>
+<h3>Resting</h3>
+<p>After a scirmish, your hero has likely lost some health. That can be regained by imbibing magic potions, but those are in short supply. Instead, they'll have to rest.</p>
+<p>Resting requires <em>food</em>, which your hero silently automatically discovers as they explore the level. Every turn that you stand still will consume a bit of food and regain a point of health. Instead of mashing down the stand key, if you press <code>Shift-Stand</code>, your hero will repeatedly rest until they run out of food, fully regain their health, or are disturbed by a nearby monster.</p>
+<p>If you don't have any food, resting accomplishes nothing. To get food, you <em>must</em> explore new parts of the level. No resting on your laurels or wandering through familiar passages!</p>
 <p><strong>TODO: Archery. Items.</strong></p>
 </div>
 </body>
