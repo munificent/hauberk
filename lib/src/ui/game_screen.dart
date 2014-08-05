@@ -239,52 +239,7 @@ class GameScreen extends Screen {
 
     if (_game.hero.dazzle.isActive) dirty();
 
-    for (final event in result.events) {
-      switch (event.type) {
-        case EventType.BOLT:
-          _effects.add(new ElementEffect(event.value, event.element));
-          break;
-
-        case EventType.CONE:
-          _effects.add(new ElementEffect(event.value, event.element));
-          break;
-
-        case EventType.HIT:
-          _effects.add(new HitEffect(event.actor));
-          break;
-
-        case EventType.DIE:
-          _effects.add(new HitEffect(event.actor));
-          // TODO: Make number of particles vary based on monster health.
-          _spawnParticles(10, event.actor.pos, Color.RED);
-          break;
-
-        case EventType.HEAL:
-          _effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
-          break;
-
-        case EventType.FEAR:
-          _effects.add(new BlinkEffect(event.actor, Color.DARK_YELLOW));
-          break;
-
-        case EventType.COURAGE:
-          _effects.add(new BlinkEffect(event.actor, Color.YELLOW));
-          break;
-
-        case EventType.DETECT:
-          _effects.add(new DetectEffect(event.value));
-          break;
-
-        case EventType.TELEPORT:
-          _effects.add(new TeleportEffect(event.value, event.actor.pos));
-          break;
-
-        case EventType.SPAWN:
-          // TODO: Something more interesting.
-          _effects.add(new FrameEffect(event.actor.pos, '*', Color.WHITE));
-          break;
-      }
-    }
+    for (final event in result.events) addEffects(_effects, event);
 
     if (result.needsRefresh) dirty();
 
@@ -601,11 +556,5 @@ class GameScreen extends Screen {
       }
     }
     draw("Toughness", warrior.toughness);
-  }
-
-  void _spawnParticles(int count, Vec pos, Color color) {
-    for (var i = 0; i < count; i++) {
-      _effects.add(new ParticleEffect(pos.x, pos.y, color));
-    }
   }
 }

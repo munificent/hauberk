@@ -7,6 +7,60 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 
+/// Adds an [Effect]s that should be displayed when [event] happens.
+void addEffects(List<Effect> effects, Event event) {
+  switch (event.type) {
+    case EventType.BOLT:
+      effects.add(new ElementEffect(event.value, event.element));
+      break;
+
+    case EventType.CONE:
+      effects.add(new ElementEffect(event.value, event.element));
+      break;
+
+    case EventType.HIT:
+      effects.add(new HitEffect(event.actor));
+      break;
+
+    case EventType.DIE:
+      effects.add(new HitEffect(event.actor));
+      // TODO: Make number of particles vary based on monster health.
+      for (var i = 0; i < 10; i++) {
+        effects.add(new ParticleEffect(event.actor.x, event.actor.y,
+            Color.RED));
+      }
+      break;
+
+    case EventType.HEAL:
+      effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
+      break;
+
+    case EventType.FEAR:
+      effects.add(new BlinkEffect(event.actor, Color.DARK_YELLOW));
+      break;
+
+    case EventType.COURAGE:
+      effects.add(new BlinkEffect(event.actor, Color.YELLOW));
+      break;
+
+    case EventType.DETECT:
+      effects.add(new DetectEffect(event.value));
+      break;
+
+    case EventType.TELEPORT:
+      var numParticles = (event.actor.pos - event.value).kingLength * 2;
+      for (var i = 0; i < numParticles; i++) {
+        effects.add(new TeleportEffect(event.value, event.actor.pos));
+      }
+      break;
+
+    case EventType.SPAWN:
+      // TODO: Something more interesting.
+      effects.add(new FrameEffect(event.actor.pos, '*', Color.WHITE));
+      break;
+  }
+}
+
 typedef void DrawGlyph(int x, int y, Glyph glyph);
 
 abstract class Effect {
@@ -244,6 +298,67 @@ class ParticleEffect implements Effect {
   }
 }
 
+/// A particle that starts with a random initial velocity and arcs towards a
+/// target.
+class TeleportEffect implements Effect {
+  num x;
+  num y;
+  num h;
+  num v;
+  int age = 0;
+  final Vec target;
+
+  static final _colors =
+      [Color.LIGHT_AQUA, Color.AQUA, Color.LIGHT_BLUE, Color.WHITE];
+
+  TeleportEffect(Vec from, this.target) {
+    x = from.x;
+    y = from.y;
+
+    var theta = rng.range(628) / 100;
+    var radius = rng.range(10, 80) / 100;
+
+    h = math.cos(theta) * radius;
+    v = math.sin(theta) * radius;
+  }
+
+  bool update(Game game) {
+    var friction = 1.0 - age * 0.015;
+    h *= friction;
+    v *= friction;
+
+    var pull = age * 0.003;
+    h += (target.x - x) * pull;
+    v += (target.y - y) * pull;
+
+    x += h;
+    y += v;
+
+    age++;
+    return (new Vec(x, y) - target) > 1;
+  }
+
+  void render(Game game, DrawGlyph drawGlyph) {
+    var pos = new Vec(x.toInt(), y.toInt());
+    if (!game.stage.bounds.contains(pos)) return;
+
+    var char = _getChar(h, v);
+    var color = rng.item(_colors);
+
+    drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(char, color));
+  }
+
+  /// Chooses a "line" character based on the vector [x], [y]. It will try to
+  /// pick a line that follows the vector.
+  _getChar(num x, num y) {
+    var velocity = new Vec((x * 10).toInt(), (y * 10).toInt());
+    if (velocity < 5) return CharCode.BULLET;
+
+    var angle = math.atan2(x, y) / (math.PI * 2) * 16 + 8;
+    return r"|\\--//||\\--//||".codeUnitAt(angle.floor());
+  }
+}
+
 class HealEffect implements Effect {
   int x;
   int y;
@@ -296,33 +411,5 @@ class DetectEffect implements Effect {
         drawGlyph(pixel.x, pixel.y, glyph);
       }
     }
-  }
-}
-
-class TeleportEffect implements Effect {
-  final Vec to;
-  final Iterator<Vec> los;
-  int tick = 0;
-
-  TeleportEffect(Vec from, Vec to)
-    : to = to,
-      los = new Los(from, to).iterator;
-
-  bool update(Game game) {
-    if (los.current == to) return false;
-    los.moveNext();
-    return true;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    if (!game.stage[los.current].visible) return;
-
-    var color = rng.item([Color.WHITE, Color.AQUA, Color.BLUE]);
-
-    drawGlyph(los.current.x - 1, los.current.y, new Glyph('-', color));
-    drawGlyph(los.current.x + 1, los.current.y, new Glyph('-', color));
-    drawGlyph(los.current.x, los.current.y - 1, new Glyph('|', color));
-    drawGlyph(los.current.x, los.current.y + 1, new Glyph('|', color));
-    drawGlyph(los.current.x, los.current.y, new Glyph('*', color));
   }
 }
