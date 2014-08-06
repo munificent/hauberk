@@ -17,19 +17,62 @@ var level = 0;
 var heroClass = new Warrior();
 var save = new HeroSave("Hero", heroClass);
 
+Area get currentArea {
+  var areaSelect = html.querySelector("#area") as html.SelectElement;
+  var areaIndex = int.parse(areaSelect.value);
+  return content.areas[areaIndex];
+}
+
+int get currentLevel {
+  var levelSelect = html.querySelector("#level") as html.SelectElement;
+  return int.parse(levelSelect.value);
+}
+
 main() {
   canvas = html.querySelector("canvas") as html.CanvasElement;
   context = canvas.context2D;
+
+  var areaSelect = html.querySelector("#area") as html.SelectElement;
+
+  var i = 0;
+  for (var area in content.areas) {
+    areaSelect.append(
+      new html.OptionElement(data: area.name, value: i.toString(),
+          selected: i == 0));
+    i++;
+  }
+
+  areaSelect.onChange.listen((event) {
+    refreshLevelSelect();
+    render();
+  });
+
+  var levelSelect = html.querySelector("#level") as html.SelectElement;
+  levelSelect.onChange.listen((event) {
+    render();
+  });
 
   canvas.onClick.listen((_) {
     render();
   });
 
+  refreshLevelSelect();
   render();
 }
 
+refreshLevelSelect() {
+  var levelSelect = html.querySelector("#level");
+  levelSelect.children.clear();
+
+  for (var i = 0; i < currentArea.levels.length; i++) {
+    levelSelect.append(
+      new html.OptionElement(data: (i + 1).toString(), value: i.toString(),
+          selected: i == 0));
+  }
+}
+
 render() {
-  var game = new Game(content.areas[area], level, content, save);
+  var game = new Game(currentArea, currentLevel, content, save);
 
   context.fillStyle = '#000';
   context.fillRect(0, 0, canvas.width, canvas.height);
