@@ -121,6 +121,7 @@ void potions() {
   item("Potion of Rejuvenation", 65, purple,
       use: () => new HealAction(1000, curePoison: true));
 
+  // TODO: Increase level of this and put resist fire potion around level 5.
   item("Antidote", 5, green,
       use: () => new HealAction(0, curePoison: true));
 

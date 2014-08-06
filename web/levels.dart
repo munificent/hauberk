@@ -5,15 +5,14 @@ import 'dart:html' as html;
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
-import 'package:hauberk/src/engine.dart';
-import 'package:hauberk/src/content/builder.dart';
+import 'package:hauberk/src/content/drops.dart';
 
 main() {
   var content = createContent();
   var text = new StringBuffer();
 
   for (var i = 1; i <= 100; i++) {
-    var drop = new CategoryDrop(["item"], i);
+    var drop = parseDrop("item", i);
     var drops = {};
 
     var tries = 1000;
