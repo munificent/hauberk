@@ -34,9 +34,9 @@ class Areas extends ContentBuilder {
       'garter snake',
       'frog',
       'bee',
-      'tree snake',
       'giant earthworm',
       'garden spider',
+      'tree snake',
       'wasp',
       'forest sprite'
     ], levels: [
@@ -115,6 +115,7 @@ class Areas extends ContentBuilder {
       'armored lizard',
       'goblin warrior',
       'smoking slime',
+      'cave snake',
       'floating eye',
       'plague rat',
       'salamander',

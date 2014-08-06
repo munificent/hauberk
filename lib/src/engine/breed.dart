@@ -87,8 +87,8 @@ class Breed implements Quantifiable {
   /// When a [Monster] of this Breed is generated, how many of the same type
   /// should be spawned together (roughly).
   int get numberInGroup {
-    if (flags.contains('horde')) return 16;
-    if (flags.contains('swarm')) return 10;
+    if (flags.contains('horde')) return 12;
+    if (flags.contains('swarm')) return 8;
     if (flags.contains('pack')) return 6;
     if (flags.contains('group')) return 4;
     if (flags.contains('few')) return 2;

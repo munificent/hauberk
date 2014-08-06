@@ -47,12 +47,9 @@ class Monster extends Actor {
   /// the monster will switch to the afraid state and try to flee.
   double _fear = 0.0;
 
-  /// The fear level that will cause the monster to become frightened. This is
-  /// randomized every frame so that all monsters don't become frightened at
-  /// the same time.
-  double _frightenThreshold = 1000.0;
+  /// The fear level that will cause the monster to become frightened.
+  double _frightenThreshold;
 
-  // TODO: Only used by debug log. Do something better.
   double get fear => _fear;
 
   get appearance => breed.appearance;
@@ -67,6 +64,12 @@ class Monster extends Actor {
       : super(game, x, y, maxHealth) {
     Debug.addMonster(this);
     changeState(new AsleepState());
+
+
+    /// Give this some random variation within monsters of the same breed so
+    /// they don't all become frightened at the same time.
+    _frightenThreshold = rng.range(60, 100).toDouble();
+    if (breed.flags.contains("cowardly")) _frightenThreshold *= 0.7;
 
     // All moves are initially charged.
     for (var move in breed.moves) {
@@ -121,10 +124,6 @@ class Monster extends Actor {
     for (var move in breed.moves) {
       _recharges[move] = math.max(0.0, _recharges[move] - 1.0);
     }
-
-    // We do the randomization once per turn and not in [_modifyFear] because
-    // calling that repeatedly should not increase the chance of a state change.
-    _frightenThreshold = rng.range(60, 100).toDouble();
 
     return _state.getAction();
   }
@@ -202,12 +201,8 @@ class Monster extends Actor {
     // The greater the power of the hit, the more frightening it is.
     var fear = 100.0 * damage / health.max;
 
-    if (breed.flags.contains("cowardly")) {
-      fear *= 2.0;
-    } else if (breed.flags.contains("berzerk")) {
-      // Getting hurt enrages it.
-      fear *= -3.0;
-    }
+    // Getting hurt enrages it.
+    if (breed.flags.contains("berzerk")) fear *= -3.0;
 
     _modifyFear(action, fear);
     Debug.logMonster(this, "Hit for ${damage} / ${health.max} "
@@ -224,9 +219,7 @@ class Monster extends Actor {
   void _viewMonsterDamage(Action action, Monster monster, int damage) {
     var fear = 50.0 * damage / health.max;
 
-    if (breed.flags.contains("cowardly")) {
-      fear *= 2.0;
-    } else if (breed.flags.contains("protective") && monster.breed == breed) {
+    if (breed.flags.contains("protective") && monster.breed == breed) {
       // Seeing its own kind get hurt enrages it.
       fear *= -2.0;
     } else if (breed.flags.contains("berzerk")) {

@@ -65,7 +65,6 @@ class _MonsterLog {
 
     buffer.write(monster.breed.name);
     buffer.write(" health: ${monster.health.current}/${monster.health.max}");
-    buffer.writeln(" fear: ${monster.fear}");
     buffer.writeAll(log, "\n");
     return buffer.toString();
   }

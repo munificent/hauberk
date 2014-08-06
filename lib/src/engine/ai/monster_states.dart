@@ -101,7 +101,7 @@ abstract class MonsterState {
 
   /// Applies the monster's meandering to [dir].
   Direction _meander(Direction dir) {
-    var chance = 15;
+    var chance = 25;
 
     // Monsters are (mostly) smart enough to not meander when they're about to
     // melee. A small chance of meandering is still useful to get a monster out
@@ -303,7 +303,7 @@ class AwakeState extends MonsterState {
       caution += monster.fear;
 
       // Being close to death makes the monster more cautious.
-      var nearDeath = 200 * (1 - monster.health.current / monster.health.max);
+      var nearDeath = 100 * (1 - monster.health.current / monster.health.max);
       caution += nearDeath;
 
       // TODO: Breed-specific "aggression" modifier to caution.
@@ -311,12 +311,12 @@ class AwakeState extends MonsterState {
       // Less likely to break away for a ranged attack if already in melee
       // distance.
       if (pos - game.hero.pos <= 1) {
-        wantsToMelee = caution < 100;
+        wantsToMelee = caution < 60;
       } else {
-        wantsToMelee = caution < 50;
+        wantsToMelee = caution < 30;
       }
 
-      Debug.logMonster(monster, "$damageRatio ranged damage + ${monster.fear} "
+      Debug.logMonster(monster, "$rangedDamage/$meleeDamage ($damageRatio%) ranged ratio + ${monster.fear} "
           "fear + $nearDeath near death = $caution, "
           "${wantsToMelee ? 'want melee' : 'want ranged'}}");
     }

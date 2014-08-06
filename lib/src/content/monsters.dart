@@ -12,7 +12,12 @@ class Monsters extends ContentBuilder {
   /// The default tracking for a breed that doesn't specify it.
   var _tracking;
 
-  /// The default meander for a breed that doesn't specify it.
+  /// The default speed for breeds in the current group. If the breed
+  /// specifies a speed, it is added to this.
+  var _speed;
+
+  /// The default meander for breeds in the current group. If the breed
+  /// specifies a meander, it is added to this.
   var _meander;
 
   /// Default flags for the current group.
@@ -55,24 +60,24 @@ class Monsters extends ContentBuilder {
     // - Don't use both "u" and "U" for undead?
 
     var categories = [
-      arachnids,
-      bats,
-      birds,
-      canines,
-      eyes,
-      flyingInsects,
-      felines,
-      goblins,
-      humanoids,
-      insects,
-      jellies,
-      kobolds,
-      people,
+      arachnids,      ancients,
+      bats,           birds,
+      canines,        canids,
+      eyes,           elementals,
+      flyingInsects,  felines,
+      goblins,        golems,
+      humanoids,      hybrids,
+      insects,        insubstantials,
+      jellies,        // J unused
+      kobolds,        krakens,
+      lizardMen,      lichs,
+      mushrooms,      hydras,
+      nagas,          demons,
+      orcs,           ogres,
+      people,         giants,
       quadrupeds,
-      rodents,
-      reptiles,
-      slugs,
-      snakes,
+      rodents,        reptiles,
+      slugs,          snakes,
       worms,
       skeletons
     ];
@@ -98,6 +103,10 @@ class Monsters extends ContentBuilder {
       attack("bite[s]", 3, Element.POISON)
     ], drop: percent(10, "Stinger"),
         meander: 5);
+  }
+
+  ancients() {
+
   }
 
   bats() {
@@ -145,6 +154,9 @@ class Monsters extends ContentBuilder {
     ], drop: percent(20, "Fur Pelt"));
   }
 
+  canids() {
+  }
+
   eyes() {
     group("e", flags: "immobile");
     breed("floating eye", yellow, 30, [
@@ -154,6 +166,10 @@ class Monsters extends ContentBuilder {
     ]);
 
     // baleful eye, malevolent eye, murderous eye
+  }
+
+  elementals() {
+
   }
 
   flyingInsects() {
@@ -206,13 +222,15 @@ class Monsters extends ContentBuilder {
       attack("stab[s]", 7)
     ], drop: [
       percent(15, "spear", 5),
+      percent(10, "armor", 5),
       percent(5, "healing", 3),
     ]);
 
-    breed("goblin warrior", gray, 38, [
+    breed("goblin warrior", gray, 42, [
       attack("stab[s]", 10)
     ], drop: [
       percent(20, "spear", 6),
+      percent(20, "armor", 6),
       percent(5, "healing", 3),
     ], flags: "protective");
 
@@ -227,7 +245,13 @@ class Monsters extends ContentBuilder {
     ]);
   }
 
+  golems() {
+  }
+
   humanoids() {
+  }
+
+  hybrids() {
   }
 
   insects() {
@@ -243,9 +267,13 @@ class Monsters extends ContentBuilder {
     ], speed: 2);
   }
 
+  insubstantials() {
+
+  }
+
   jellies() {
-    group("j", flags: "few immobile");
-    breed("green slime", green, 10, [
+    group("j", meander: 4, speed: -1, tracking: 4, flags: "few fearless");
+    breed("green slime", green, 12, [
       attack("crawl[s] on", 3),
       spawn(rate: 6)
     ]);
@@ -291,7 +319,7 @@ class Monsters extends ContentBuilder {
       insult(),
       sparkBolt(rate: 5, damage: 6)
     ], drop: percent(10, "teleportation", 1),
-        meander: 4, speed: 1, flags: "cowardly");
+        meander: 2, speed: 1, flags: "cowardly");
 
     breed("kobold", red, 12, [
       attack("poke[s]", 4),
@@ -310,6 +338,7 @@ class Monsters extends ContentBuilder {
 
     breed("kobold trickster", gold, 20, [
       attack("hit[s]", 5),
+      sparkBolt(rate: 5, damage: 8),
       teleport(rate: 5, range: 6),
       haste(rate: 7)
     ], drop: [
@@ -329,22 +358,49 @@ class Monsters extends ContentBuilder {
       fireBolt(rate: 8, damage: 12)
     ], drop: percent(10, "magic", 4),
         meander: 3, speed: 1, flags: "cowardly");
+
+    // homonculous
+  }
+
+  krakens() {
+
+  }
+
+  lizardMen() {
+    // troglodyte
+    // reptilian
+  }
+
+  lichs() {
+
+  }
+
+  mushrooms() {
+
+  }
+
+  hydras() {
+
+  }
+
+  nagas() {
+
+  }
+
+  demons() {
+
+  }
+
+  orcs() {
+
+  }
+
+  ogres() {
+
   }
 
   people() {
     group("p", tracking: 14, flags: "open-doors");
-
-    /*
-    breed("debug meander", purple, 6, [
-      attack("stab[s]", 1),
-    ], meander: 2);
-
-    breed("debug archer", green, 12, [
-      attack("stab[s]", 4),
-      arrow(cost: 10, damage: 2)
-    ], meander: 2);
-    */
-
     breed("simpering knave", orange, 15, [
       attack("hit[s]", 2),
       attack("stab[s]", 4)
@@ -386,6 +442,10 @@ class Monsters extends ContentBuilder {
     ], meander: 4, flags: "fearless");
   }
 
+  giants() {
+
+  }
+
   quadrupeds() {
     group("q");
     breed("fox", orange, 20, [
@@ -405,7 +465,7 @@ class Monsters extends ContentBuilder {
     breed("fuzzy bunn[y|ies]", lightBlue, 14, [
       attack("bite[s]", 3),
       attack("kick[s]", 2)
-    ], meander: 2);
+    ], meander: -2);
 
     breed("vole", darkGray, 5, [
       attack("bite[s]", 4)
@@ -419,7 +479,7 @@ class Monsters extends ContentBuilder {
     breed("sewer rat", darkGray, 7, [
       attack("bite[s]", 4),
       attack("scratch[es]", 3)
-    ], meander: 3, speed: 1, flags: "group");
+    ], meander: -1, speed: 1, flags: "group");
 
     breed("plague rat", darkGreen, 10, [
       attack("bite[s]", 4, Element.POISON),
@@ -459,12 +519,12 @@ class Monsters extends ContentBuilder {
     breed("juvenile salamander", lightRed, 18, [
       attack("bite[s]", 12, Element.FIRE),
       fireCone(rate: 10, damage: 8, range: 6)
-    ], meander: 3);
+    ]);
 
     breed("salamander", red, 30, [
       attack("bite[s]", 13, Element.FIRE),
       fireCone(rate: 10, damage: 14, range: 8)
-    ], meander: 3);
+    ]);
   }
 
   slugs() {
@@ -481,7 +541,11 @@ class Monsters extends ContentBuilder {
     ]);
 
     breed("tree snake", lightGreen, 12, [
-      attack("bite[s]", 8),
+      attack("bite[s]", 4),
+    ]);
+
+    breed("cave snake", gray, 35, [
+      attack("bite[s]", 10),
     ]);
   }
 
@@ -504,23 +568,22 @@ class Monsters extends ContentBuilder {
 
   }
 
-  void group(glyph, {int meander, int tracking, String flags}) {
+  void group(glyph, {int meander, int speed, int tracking, String flags}) {
     _glyph = glyph;
     _meander = meander != null ? meander : 0;
+    _speed = speed != null ? speed : 0;
     _tracking = tracking != null ? tracking : 10;
     _flags = flags;
   }
 
   Breed breed(String name, Glyph appearance(char), int health, List actions, {
-      drop, int tracking, int meander, int speed: 0,
-      String flags}) {
+      drop, int tracking, int meander: 0, int speed: 0, String flags}) {
     if (tracking == null) tracking = _tracking;
-    if (meander == null) meander = _meander;
 
     var attacks = <Attack>[];
     var moves = <Move>[];
 
-    for (final action in actions) {
+    for (var action in actions) {
       if (action is Attack) attacks.add(action);
       if (action is Move) moves.add(action);
     }
@@ -540,9 +603,10 @@ class Monsters extends ContentBuilder {
     if (_flags != null) flagSet.addAll(_flags.split(" "));
     if (flags != null) flagSet.addAll(flags.split(" "));
 
-    final breed = new Breed(name, Pronoun.IT, appearance(_glyph), attacks,
-        moves, drop, maxHealth: health, tracking: tracking, meander: meander,
-        speed: speed, flags: flagSet);
+    var breed = new Breed(name, Pronoun.IT, appearance(_glyph), attacks,
+        moves, drop, maxHealth: health, tracking: tracking,
+        meander: meander + _meander,
+        speed: speed + _speed, flags: flagSet);
     Monsters.all[breed.name] = breed;
     return breed;
   }

@@ -30,6 +30,7 @@ addTerminal(String name, html.Element element,
 
     var lastPos;
     element.onMouseMove.listen((event) {
+      // TODO: This is broken now that maps scroll. :(
       var pixel = new Vec(event.offset.x - 4, event.offset.y - 4);
       var pos = terminal.pixelToChar(pixel);
       var absolute = pixel + new Vec(element.offsetLeft, element.offsetTop);
