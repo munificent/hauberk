@@ -12,12 +12,12 @@ import 'content/tiles.dart';
 Content createContent() {
   // Note: The order is significant here. For example, monster drops will
   // reference items, which need to have already been created.
-  new Tiles().build();
-  new Items().build();
-  new Monsters().build();
-  new Areas().build();
-  new Recipes().build();
-  Affixes.build();
+  Tiles.initialize();
+  Items.initialize();
+  Monsters.initialize();
+  Areas.initialize();
+  Recipes.initialize();
+  Affixes.initialize();
 
   return new GameContent();
 }

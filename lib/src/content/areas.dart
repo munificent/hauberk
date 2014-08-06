@@ -1,8 +1,7 @@
 library hauberk.content.areas;
 
 import '../engine.dart';
-import 'builder.dart';
-import 'debug_area.dart';
+import 'drops.dart';
 import 'dungeon.dart';
 import 'forest.dart';
 import 'items.dart';
@@ -12,10 +11,10 @@ import 'stage_builder.dart';
 import 'tiles.dart';
 
 /// Builder class for defining [Area] objects.
-class Areas extends ContentBuilder {
+class Areas {
   static final List<Area> all = [];
 
-  void build() {
+  static void initialize() {
     /*
     area('Debugland', 80, 34, 100.0, breeds: [
       'butterfly'
@@ -136,32 +135,32 @@ class Areas extends ContentBuilder {
       ], quest: tileType('the stairs', Tiles.stairs))
     ]);
   }
-
-  Level level(StageBuilder builder(), {
-      int monsters, int items, List<Frequency> drop,
-      QuestBuilder quest}) {
-    return new Level((stage) => builder().generate(stage), monsters,
-        items, dropOneOf(drop), quest);
-  }
-
-  void area(String name, int width, int height, num abundance,
-      {List<String> breeds, List<Level> levels}) {
-    var breedList = <Breed>[];
-    for (var name in breeds) {
-      var breed = Monsters.all[name];
-      if (breed == null) throw 'Could not find breed "$name".';
-      breedList.add(breed);
-    }
-
-    Areas.all.add(new Area(name, width, height, abundance, breedList, levels));
-  }
-
-  QuestBuilder kill(String breed, [int count = 1]) =>
-      new MonsterQuestBuilder(Monsters.all[breed], count);
-
-  QuestBuilder tileType(String description, TileType type) =>
-      new TileQuestBuilder(description, type);
-
-  QuestBuilder floorItem(String type) =>
-      new FloorItemQuestBuilder(Items.all[type]);
 }
+
+Level level(StageBuilder builder(), {
+    int monsters, int items, List<Frequency> drop,
+    QuestBuilder quest}) {
+  return new Level((stage) => builder().generate(stage), monsters,
+      items, dropOneOf(drop), quest);
+}
+
+void area(String name, int width, int height, num abundance,
+    {List<String> breeds, List<Level> levels}) {
+  var breedList = <Breed>[];
+  for (var name in breeds) {
+    var breed = Monsters.all[name];
+    if (breed == null) throw 'Could not find breed "$name".';
+    breedList.add(breed);
+  }
+
+  Areas.all.add(new Area(name, width, height, abundance, breedList, levels));
+}
+
+QuestBuilder kill(String breed, [int count = 1]) =>
+    new MonsterQuestBuilder(Monsters.all[breed], count);
+
+QuestBuilder tileType(String description, TileType type) =>
+    new TileQuestBuilder(description, type);
+
+QuestBuilder floorItem(String type) =>
+    new FloorItemQuestBuilder(Items.all[type]);

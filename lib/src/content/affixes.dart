@@ -1,6 +1,5 @@
 library hauberk.content.affixes;
 
-import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
@@ -89,7 +88,7 @@ class Affixes {
   static final _serializers = <String, _SerializeAffix>{};
   static final _deserializers = <String, _DeserializeAffix>{};
 
-  static void build() {
+  static void initialize() {
     brand("Glimmering", 12, 3, Element.LIGHT, 0, 1.0);
     brand("Shining", 24, 4, Element.LIGHT, 2, 1.1);
     brand("Radiant", 48, 5, Element.LIGHT, 4, 1.2);

@@ -3,10 +3,10 @@ library hauberk.content.tiles;
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
-import 'builder.dart';
+import 'utils.dart';
 
-/// Builder class for defining [TileType]s.
-class Tiles extends ContentBuilder {
+/// Static class containing all of the [TileType]s.
+class Tiles {
   static TileType floor;
   static TileType wall;
   static TileType lowWall;
@@ -20,7 +20,7 @@ class Tiles extends ContentBuilder {
   static TileType treeAlt1;
   static TileType treeAlt2;
 
-  void build() {
+  static void initialize() {
     // Define the tile types.
     Tiles.floor = new TileType("floor", true, true,
         [gray('.'), darkGray('.')]);
