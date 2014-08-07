@@ -1,6 +1,6 @@
 library hauberk.engine.condition;
 
-import 'action_base.dart';
+import 'action/action.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'log.dart';

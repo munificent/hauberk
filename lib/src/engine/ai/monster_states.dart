@@ -5,13 +5,13 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../debug.dart';
-import '../action_base.dart';
+import '../action/action.dart';
+import '../action/walk.dart';
 import '../breed.dart';
 import '../game.dart';
 import '../log.dart';
 import '../los.dart';
 import '../monster.dart';
-import '../option.dart';
 import 'a_star.dart';
 import 'flow.dart';
 import 'move.dart';

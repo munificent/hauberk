@@ -2,7 +2,7 @@ library hauberk.engine.items.recipe;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../action_base.dart';
+import '../action/walk.dart';
 import '../actor.dart';
 import '../melee.dart';
 import 'item.dart';

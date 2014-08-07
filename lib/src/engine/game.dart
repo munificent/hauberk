@@ -4,7 +4,7 @@ import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
 
-import 'action_base.dart';
+import 'action/action.dart';
 import 'actor.dart';
 import 'area.dart';
 import 'breed.dart';

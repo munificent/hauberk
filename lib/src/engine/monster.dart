@@ -5,7 +5,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../debug.dart';
-import 'action_base.dart';
+import 'action/action.dart';
 import 'actor.dart';
 import 'ai/monster_states.dart';
 import 'ai/move.dart';
@@ -16,7 +16,6 @@ import 'hero/hero.dart';
 import 'log.dart';
 import 'los.dart';
 import 'melee.dart';
-import 'option.dart';
 
 class Monster extends Actor {
   final Breed breed;

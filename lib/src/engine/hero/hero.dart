@@ -2,7 +2,8 @@ library hauberk.engine.hero.hero;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../action_base.dart';
+import '../action/action.dart';
+import '../action/walk.dart';
 import '../actor.dart';
 import '../element.dart';
 import '../energy.dart';

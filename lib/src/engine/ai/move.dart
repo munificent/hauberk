@@ -3,9 +3,14 @@ library hauberk.engine.move;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../debug.dart';
-import '../action_base.dart';
-import '../action_combat.dart';
-import '../action_magic.dart';
+import '../action/action.dart';
+import '../action/attack.dart';
+import '../action/bolt.dart';
+import '../action/condition.dart';
+import '../action/cone.dart';
+import '../action/heal.dart';
+import '../action/spawn.dart';
+import '../action/teleport.dart';
 import '../melee.dart';
 import '../monster.dart';
 

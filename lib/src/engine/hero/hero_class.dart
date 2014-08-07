@@ -1,6 +1,6 @@
 library hauberk.engine.hero.hero_class;
 
-import '../action_base.dart';
+import '../action/action.dart';
 import '../actor.dart';
 import '../melee.dart';
 import '../monster.dart';

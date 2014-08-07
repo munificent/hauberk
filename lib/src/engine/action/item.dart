@@ -1,6 +1,6 @@
-library hauberk.engine.action_item;
+library hauberk.engine.action.item;
 
-import 'action_base.dart';
+import 'action.dart';
 
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {

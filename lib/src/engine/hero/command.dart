@@ -2,7 +2,7 @@ library hauberk.engine.hero.command;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../action_base.dart';
+import '../action/action.dart';
 import '../game.dart';
 
 /// A command is a specific ability that the player can select for the hero to

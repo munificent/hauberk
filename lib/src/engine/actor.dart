@@ -2,7 +2,7 @@ library hauberk.engine.actor;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import 'action_base.dart';
+import 'action/action.dart';
 import 'condition.dart';
 import 'element.dart';
 import 'energy.dart';

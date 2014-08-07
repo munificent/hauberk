@@ -4,8 +4,9 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import 'action_base.dart';
-import 'action_magic.dart';
+import 'action/action.dart';
+import 'action/condition.dart';
+import 'action/element.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'game.dart';
