@@ -157,6 +157,7 @@ class Hero extends Actor {
 
   Attack defend(Attack attack) {
     disturb();
+    attack = super.defend(attack);
     return attack.addArmor(armor);
   }
 

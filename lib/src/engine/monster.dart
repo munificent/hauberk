@@ -167,8 +167,8 @@ class Monster extends Actor {
   Attack defend(Attack attack) {
     _state.defend();
 
-    // TODO: Handle resists.
-    return attack;
+    // TODO: Breed-specific resists.
+    return super.defend(attack);
   }
 
   /// Inflicting damage decreases fear.

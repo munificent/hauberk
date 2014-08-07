@@ -1,6 +1,8 @@
 library hauberk.content.areas;
 
+import '../debug.dart';
 import '../engine.dart';
+import 'debug_area.dart';
 import 'drops.dart';
 import 'dungeon.dart';
 import 'forest.dart';
@@ -23,6 +25,8 @@ class Areas {
   static final List<Area> all = [];
 
   static void initialize() {
+    if (Debug.ENABLED) debugAreas();
+
     area('Friendly Forest', 80, 34, 7.0);
     level(() => new Forest(), monsters: 6, items: 2, breeds: [
       'butterfly',
@@ -142,6 +146,15 @@ class Areas {
     ], drop: [
       frequency(1, 'item', 7)
     ]);
+  }
+
+  static void debugAreas() {
+    area('Debugland', 80, 34, 100.0);
+    level(() => new DebugArea(), monsters: 3, items: 6, breeds: [
+      'salamander'
+    ], drop: [
+      frequency(1, 'Salve of Heat Resistance')
+    ], quest: tileType('the stairs', Tiles.stairs));
   }
 }
 

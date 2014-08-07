@@ -43,48 +43,63 @@ class Attack {
   /// The defender's armor.
   final num armor;
 
+  /// The defender's level of resistance to the attack's element.
+  ///
+  /// Zero means no resistance. Everything above that reduces damage by
+  /// 1/(resistance + 1), so that one resists is half damage, two is third, etc.
+  /// Secondary effects from the element are nullified if the defender has any
+  /// resistance.
+  final int resistance;
+
   /// The maximum range of a missile attack, or `0` if the attack isn't ranged.
   final int range;
 
   bool get isRanged => range != 0;
 
   Attack(String verb, num baseDamage, Element element, [Noun noun, int range])
-      : this._(noun, verb, 0.0, baseDamage, 0.0, 1.0, element, 0,
+      : this._(noun, verb, 0.0, baseDamage, 0.0, 1.0, element, 0, 0,
           range != null ? range : 0);
 
   Attack._(this.noun, this.verb, this.strikeBonus, this.baseDamage,
-      this.damageBonus, this.damageScale, this.element, this.armor, this.range);
+      this.damageBonus, this.damageScale, this.element, this.armor,
+      this.resistance, this.range);
 
   /// Returns a new attack identical to this one but with [offset] added.
   Attack addDamage(num offset) {
     return new Attack._(noun, verb, strikeBonus, baseDamage,
-        damageBonus + offset, damageScale, element, armor, range);
+        damageBonus + offset, damageScale, element, armor, resistance, range);
   }
 
   /// Returns a new attack identical to this one but with [element].
   Attack brand(Element element) {
     return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
-        damageScale, element, armor, range);
+        damageScale, element, armor, resistance, range);
   }
 
   /// Returns a new attack identical to this one but with [bonus] added to the
   /// strike modifier.
   Attack addStrike(num bonus) {
     return new Attack._(noun, verb, strikeBonus + bonus, baseDamage,
-        damageBonus, damageScale, element, armor, range);
+        damageBonus, damageScale, element, armor, resistance, range);
   }
 
   /// Returns a new attack identical to this one but with damage scaled by
   /// [factor].
   Attack multiplyDamage(num factor) {
     return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
-        damageScale * factor, element, armor, range);
+        damageScale * factor, element, armor, resistance, range);
   }
 
   /// Returns a new attack with [armor] added to it.
   Attack addArmor(num armor) {
     return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
-        damageScale, element, this.armor + armor, range);
+        damageScale, element, this.armor + armor, resistance, range);
+  }
+
+  /// Returns a new attack with [resist] added to it.
+  Attack addResistance(int resist) {
+    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
+        damageScale, element, this.armor + armor, resistance + resist, range);
   }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
@@ -129,6 +144,14 @@ class Attack {
       return action.succeed();
     }
 
+    if (resistance == 0) _elementalSideEffect(defender, action, damage);
+
+    // TODO: Pass in and use element.
+    action.addEvent(new Event(EventType.HIT, actor: defender, value: damage));
+    return action.succeed('{1} ${verb} {2}.', attackNoun, defender);
+  }
+
+  void _elementalSideEffect(Actor defender, Action action, int damage) {
     // Apply any element-specific effects.
     switch (element) {
       case Element.NONE:
@@ -179,10 +202,6 @@ class Attack {
         // TODO: Drain experience.
         break;
     }
-
-    // TODO: Pass in and use element.
-    action.addEvent(new Event(EventType.HIT, actor: defender, value: damage));
-    return action.succeed('{1} ${verb} {2}.', attackNoun, defender);
   }
 
   int _rollDamage() {

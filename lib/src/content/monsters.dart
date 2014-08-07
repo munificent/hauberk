@@ -224,6 +224,7 @@ goblins() {
   ], drop: [
     percent(15, "spear", 5),
     percent(10, "armor", 5),
+    percent(5, "resistance", 3),
     percent(5, "healing", 3),
   ]);
 
@@ -232,6 +233,7 @@ goblins() {
   ], drop: [
     percent(20, "spear", 6),
     percent(20, "armor", 6),
+    percent(5, "resistance", 3),
     percent(5, "healing", 3),
   ], flags: "protective");
 
@@ -350,14 +352,14 @@ kobolds() {
     attack("scratch[es]", 4),
     insult(),
     fireBolt(rate: 5, damage: 10)
-  ], drop: percent(10, "magic", 1),
+  ], drop: percent(20, "magic", 1),
       meander: 4, speed: 1, flags: "cowardly");
 
   breed("imp warlock", darkPurple, 40, [
     attack("stab[s]", 5),
     iceBolt(rate: 8, damage: 12),
     fireBolt(rate: 8, damage: 12)
-  ], drop: percent(10, "magic", 4),
+  ], drop: percent(20, "magic", 4),
       meander: 3, speed: 1, flags: "cowardly");
 
   // homonculous

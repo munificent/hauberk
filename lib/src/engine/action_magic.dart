@@ -5,6 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import 'action_base.dart';
 import 'breed.dart';
 import 'condition.dart';
+import 'element.dart';
 import 'game.dart';
 import 'monster.dart';
 
@@ -259,4 +260,18 @@ class DazzleAction extends ConditionAction {
   int getDuration() => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
   void logApply() => log("{1} [are|is] dazzled by the light!", actor);
   void logExtend() => log("{1} [are|is] dazzled by the light!", actor);
+}
+
+class ResistAction extends ConditionAction {
+  final int _duration;
+  final Element _element;
+
+  ResistAction(this._duration, this._element);
+
+  Condition get condition => actor.resistances[_element];
+
+  int getDuration() => _duration;
+  // TODO: Resistances of different intensity.
+  void logApply() => log("{1} [are|is] resistant to $_element.", actor);
+  void logExtend() => log("{1} feel[s] the resistance extend.", actor);
 }

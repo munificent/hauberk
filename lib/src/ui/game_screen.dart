@@ -461,13 +461,27 @@ class GameScreen extends Screen {
     }
   }
 
+  static final _resistConditions = {
+    Element.AIR: ["A", Color.BLACK, Color.LIGHT_AQUA],
+    Element.EARTH: ["E", Color.BLACK, Color.BROWN],
+    Element.FIRE: ["F", Color.BLACK, Color.ORANGE],
+    Element.WATER: ["W", Color.BLACK, Color.BLUE],
+    Element.ACID: ["A", Color.BLACK, Color.DARK_YELLOW],
+    Element.COLD: ["C", Color.BLACK, Color.LIGHT_BLUE],
+    Element.LIGHTNING: ["L", Color.BLACK, Color.LIGHT_PURPLE],
+    Element.POISON: ["P", Color.BLACK, Color.GREEN],
+    Element.DARK: ["D", Color.BLACK, Color.ORANGE],
+    Element.LIGHT: ["L", Color.BLACK, Color.ORANGE],
+    Element.SPIRIT: ["S", Color.BLACK, Color.ORANGE]
+  };
+
   /// Draws a health bar for [actor].
   void _drawHealthBar(Terminal terminal, int y, Actor actor) {
     // Show conditions.
     var conditions = [];
 
     if (actor is Monster && actor.isAfraid) {
-      conditions.add(["F", Color.YELLOW]);
+      conditions.add(["!", Color.YELLOW]);
     }
 
     if (actor.poison.isActive) {
@@ -487,9 +501,19 @@ class GameScreen extends Screen {
 
     if (actor.dazzle.isActive) conditions.add(["D", Color.LIGHT_PURPLE]);
 
+    for (var element in Element.ALL) {
+      if (actor.resistances[element].isActive) {
+        conditions.add(_resistConditions[element]);
+      }
+    }
+
     var x = 2;
     for (var condition in conditions.take(6)) {
-      terminal.writeAt(x, y, condition[0], condition[1]);
+      if (condition.length == 3) {
+        terminal.writeAt(x, y, condition[0], condition[1], condition[2]);
+      } else {
+        terminal.writeAt(x, y, condition[0], condition[1]);
+      }
       x++;
     }
 

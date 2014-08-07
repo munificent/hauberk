@@ -7,7 +7,6 @@ import '../engine.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 
-/*
 class DebugArea extends StageBuilder {
   void generate(Stage stage) {
     bindStage(stage);
@@ -30,11 +29,10 @@ class DebugArea extends StageBuilder {
     setTile(new Vec(20, 20), Tiles.closedDoor);
   }
 }
-*/
 
 /// Creates a monster that breathes a cone for each element. Useful for
 /// debugging element effects.
-class DebugArea extends StageBuilder {
+class DebugConeArea extends StageBuilder {
   void generate(Stage stage) {
     bindStage(stage);
     fill(Tiles.wall);

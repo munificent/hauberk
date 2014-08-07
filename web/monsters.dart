@@ -22,7 +22,7 @@ main() {
     drops[breed.name] = {};
   }
 
-  for (var i = 0; i < 100000; i++) {
+  for (var i = 0; i < 1000; i++) {
     tries++;
 
     for (Breed breed in breeds) {
@@ -54,9 +54,9 @@ main() {
     text.write('''
         <tr>
           <td>
-<pre>
-<span class="${glyph.fore.cssClass}">${new String.fromCharCodes([glyph.char])}</span>
-</pre>
+            <pre>
+            <span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span>
+            </pre>
           </td>
           <td>${breed.name}</td>
           <td class="r">${breed.maxHealth}</td>
@@ -91,5 +91,9 @@ main() {
   }
   text.write('</tbody>');
 
-  html.querySelector('table').innerHtml = text.toString();
+  var validator = new html.NodeValidatorBuilder.common();
+  validator.allowInlineStyles();
+
+  html.querySelector('table').setInnerHtml(text.toString(),
+      validator: validator);
 }

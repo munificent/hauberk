@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'action_base.dart';
 import 'condition.dart';
+import 'element.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'log.dart';
@@ -60,13 +61,26 @@ abstract class Actor extends Thing {
   /// Makes it hard for the actor to see.
   final Condition dazzle = new DazzleCondition();
 
+  // Temporary resistance to elements.
+  final resistances = <Element, ResistCondition>{};
+
+  // All [Condition]s for the actor.
+  Iterable<Condition> get conditions => [
+    haste,
+    cold,
+    poison,
+    dazzle
+  ]..addAll(resistances.values);
+
   Actor(this.game, int x, int y, int health)
   : super(new Vec(x, y)),
     health = new Stat(health) {
-    haste.bind(this);
-    cold.bind(this);
-    poison.bind(this);
-    dazzle.bind(this);
+
+    for (var element in Element.ALL) {
+      resistances[element] = new ResistCondition(element);
+    }
+
+    conditions.forEach((condition) => condition.bind(this));
   }
 
   bool get isAlive => health.current > 0;
@@ -127,7 +141,15 @@ abstract class Actor extends Thing {
 
   /// This is called on the defender when some attacker is attempting to hit it.
   /// The defender can modify the attack or simply return the incoming one.
-  Attack defend(Attack attack) => attack;
+  Attack defend(Attack attack) {
+    // Apply temporary resistance.
+    var resistance = resistances[attack.element];
+    if (resistance.isActive) {
+      attack = attack.addResistance(resistance.intensity);
+    }
+
+    return attack;
+  }
 
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.
@@ -188,10 +210,7 @@ abstract class Actor extends Thing {
   void finishTurn(Action action) {
     energy.spend();
 
-    haste.update(action);
-    cold.update(action);
-    poison.update(action);
-    dazzle.update(action);
+    conditions.forEach((condition) => condition.update(action));
 
     if (isAlive) onFinishTurn(action);
   }

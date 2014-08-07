@@ -108,6 +108,7 @@ void pelts() {
 }
 
 void potions() {
+  // TODO: Make these foods?
   // Healing.
   category("!", "magic/potion/healing");
   item("Soothing Balm", 1, lightRed,
@@ -121,8 +122,27 @@ void potions() {
   item("Potion of Rejuvenation", 65, purple,
       use: () => new HealAction(1000, curePoison: true));
 
-  // TODO: Increase level of this and put resist fire potion around level 5.
-  item("Antidote", 5, green,
+  category("!", "magic/potion/resistance");
+  resistSalve(String name, int level, appearance, Element element) {
+    item("Salve of $name Resistance", level, appearance,
+        use: () => new ResistAction(40, element));
+  }
+
+  resistSalve("Heat", 5, orange, Element.FIRE);
+  resistSalve("Cold", 6, orange, Element.COLD);
+  resistSalve("Wind", 7, orange, Element.AIR);
+  resistSalve("Electricity", 8, orange, Element.LIGHTNING);
+  resistSalve("Darkness", 9, orange, Element.DARK);
+  resistSalve("Light", 10, orange, Element.LIGHT);
+  resistSalve("Earth", 13, orange, Element.EARTH);
+  resistSalve("Water", 16, orange, Element.WATER);
+  resistSalve("Acid", 19, orange, Element.ACID);
+  resistSalve("Poison", 23, orange, Element.POISON);
+  resistSalve("Death", 30, orange, Element.SPIRIT);
+
+  // TODO: "Insulation", "the Elements" and other multi-element resistances.
+
+  item("Antidote", 15, green,
       use: () => new HealAction(0, curePoison: true));
 
   // Speed.

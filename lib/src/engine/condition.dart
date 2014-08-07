@@ -2,6 +2,7 @@ library hauberk.engine.condition;
 
 import 'action_base.dart';
 import 'actor.dart';
+import 'element.dart';
 import 'log.dart';
 
 /// A temporary condition that modifies some property of an [Actor] while it
@@ -82,14 +83,7 @@ class ColdCondition extends Condition {
   }
 }
 
-/// A condition that slowly regenerates health.
-class FoodCondition extends Condition {
-  void onDeactivate() {
-    actor.log("{1} [are|is] getting hungry.", actor);
-  }
-}
-
-/// A condition that slowly regenerates health.
+/// A condition that inflicts damage every turn.
 class PoisonCondition extends Condition {
   void onUpdate(Action action) {
     // TODO: Apply resistances. If resistance lowers intensity to zero, end
@@ -109,5 +103,16 @@ class PoisonCondition extends Condition {
 class DazzleCondition extends Condition {
   void onDeactivate() {
     actor.log("{1} can see clearly again.", actor);
+  }
+}
+
+/// A condition that provides resistance to an element.
+class ResistCondition extends Condition {
+  final Element _element;
+
+  ResistCondition(this._element);
+
+  void onDeactivate() {
+    actor.log("{1} feel[s] susceptible to $_element.", actor);
   }
 }
