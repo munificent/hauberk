@@ -121,7 +121,8 @@ class Areas {
       frequency(1, 'item', 5)
     ]);
 
-    level(() => new GoblinStronghold(1000), monsters: 44, items: 12, breeds: [
+    level(() => new GoblinStronghold(800), monsters: 44, items: 12,
+        quest: kill("Feng"), breeds: [
       'kobold shaman',
       'mongrel',
       'giant centipede',
@@ -134,15 +135,28 @@ class Areas {
       frequency(1, 'item', 6)
     ]);
 
-    level(() => new GoblinStronghold(1400), monsters: 46, items: 13, breeds: [
+    level(() => new GoblinStronghold(1000), monsters: 46, items: 13, breeds: [
+      'kobold priest',
       'goblin warrior',
       'smoking slime',
       'cave snake',
       'floating eye',
       'plague rat',
       'salamander',
-      'goblin mage',
       'scaled guardian'
+    ], drop: [
+      frequency(1, 'item', 7)
+    ]);
+
+    level(() => new GoblinStronghold(1200), monsters: 48, items: 14,
+        quest: kill("Erlkonig, the Goblin Prince"), breeds: [
+      'goblin ranger',
+      'goblin mage',
+      'mischievous sprite',
+      'cave bat',
+      'fire worm',
+      'sparkling slime',
+      'saurian'
     ], drop: [
       frequency(1, 'item', 7)
     ]);

@@ -129,16 +129,16 @@ void potions() {
   }
 
   resistSalve("Heat", 5, orange, Element.FIRE);
-  resistSalve("Cold", 6, orange, Element.COLD);
-  resistSalve("Wind", 7, orange, Element.AIR);
-  resistSalve("Electricity", 8, orange, Element.LIGHTNING);
-  resistSalve("Darkness", 9, orange, Element.DARK);
-  resistSalve("Light", 10, orange, Element.LIGHT);
-  resistSalve("Earth", 13, orange, Element.EARTH);
-  resistSalve("Water", 16, orange, Element.WATER);
-  resistSalve("Acid", 19, orange, Element.ACID);
-  resistSalve("Poison", 23, orange, Element.POISON);
-  resistSalve("Death", 30, orange, Element.SPIRIT);
+  resistSalve("Cold", 6, lightBlue, Element.COLD);
+  resistSalve("Light", 7, lightYellow, Element.LIGHT);
+  resistSalve("Wind", 8, lightAqua, Element.AIR);
+  resistSalve("Electricity", 9, lightPurple, Element.LIGHTNING);
+  resistSalve("Darkness", 10, darkGray, Element.DARK);
+  resistSalve("Earth", 13, brown, Element.EARTH);
+  resistSalve("Water", 16, blue, Element.WATER);
+  resistSalve("Acid", 19, lightOrange, Element.ACID);
+  resistSalve("Poison", 23, green, Element.POISON);
+  resistSalve("Death", 30, purple, Element.SPIRIT);
 
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
 
@@ -173,7 +173,6 @@ void scrolls() {
   category("?", "magic/scroll/detection");
   item("Scroll of Item Detection", 2, lightOrange,
       use: () => new DetectItemsAction());
-
 }
 
 void weapons() {
@@ -242,18 +241,22 @@ void weapons() {
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
-  /*
-  Hatchet[s]
-  Axe[s]
-  Valaska[s]
-  Battleaxe[s]
-  */
+  category(r"\", "equipment/weapon/axe");
+  weapon("Hatchet", 6, darkGray, "chop[s]", 10);
+  weapon("Axe", 12, lightBrown, "chop[s]", 16);
+  weapon("Valaska", 20, gray, "chop[s]", 26);
+  weapon("Battleaxe", 30, lightBlue, "chop[s]", 32);
+
+  // Sling. In a category itself because many box affixes don't apply to it.
+  category("}", "equipment/weapon/sling");
+  ranged("Sling", 3, darkBrown, "the stone", damage: 3, range: 10);
 
   // Bows.
   category("}", "equipment/weapon/bow");
-  bow("Short Bow", 3, brown, "the arrow", damage: 3, range: 10);
-  bow("Longbow", 13, lightBrown, "the arrow", damage: 5, range: 12);
-  bow("Crossbow", 28, gray, "the bolt", damage: 8, range: 14);
+  ranged("Sling", 3, darkBrown, "the stone", damage: 3, range: 10);
+  ranged("Short Bow", 5, brown, "the arrow", damage: 5, range: 11);
+  ranged("Longbow", 13, lightBrown, "the arrow", damage: 8, range: 12);
+  ranged("Crossbow", 28, gray, "the bolt", damage: 12, range: 14);
 }
 
 void bodyArmor() {
@@ -312,7 +315,7 @@ void weapon(String name, int level, appearance, String verb, int damage) {
       attack: attack(verb, damage, Element.NONE));
 }
 
-void bow(String name, int level, appearance, String noun, {int damage,
+void ranged(String name, int level, appearance, String noun, {int damage,
     int range}) {
   item(name, level, appearance, equipSlot: "weapon",
       attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun),

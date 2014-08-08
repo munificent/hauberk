@@ -45,7 +45,7 @@ main() {
     text.write('''
         <tr>
           <td>
-<pre><span class="${glyph.fore.cssClass}">${new String.fromCharCodes([glyph.char])}</span></pre>
+<pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
           </td>
           <td>${item.name}</td>
         ''');
@@ -79,5 +79,9 @@ main() {
   }
   text.write('</tbody>');
 
-  html.querySelector('table').innerHtml = text.toString();
+  var validator = new html.NodeValidatorBuilder.common();
+  validator.allowInlineStyles();
+
+  html.querySelector('table').setInnerHtml(text.toString(),
+      validator: validator);
 }

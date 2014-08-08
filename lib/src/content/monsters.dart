@@ -119,6 +119,10 @@ bats() {
   breed("giant bat", lightBrown, 16, [
     attack("bite[s]", 6),
   ], meander: 4, speed: 2);
+
+  breed("cave bat", gray, 5, [
+    attack("bite[s]", 3),
+  ], meander: 3, speed: 3, flags: "group");
 }
 
 birds() {
@@ -234,13 +238,13 @@ goblins() {
   breed("goblin warrior", gray, 42, [
     attack("stab[s]", 10)
   ], drop: [
-    percent(20, "spear", 6),
+    percent(20, "axe", 6),
     percent(20, "armor", 6),
     percent(5, "resistance", 3),
     percent(5, "healing", 3),
   ], flags: "protective");
 
-  breed("goblin mage", blue, 36, [
+  breed("goblin mage", blue, 30, [
     attack("whip[s]", 7),
     fireBolt(rate: 12, damage: 6),
     sparkBolt(rate: 12, damage: 8),
@@ -249,6 +253,26 @@ goblins() {
     percent(10, "whip", 5),
     percent(20, "magic", 6),
   ]);
+
+  breed("goblin ranger", darkGreen, 36, [
+    attack("stab[s]", 10),
+    arrow(rate: 3, damage: 8)
+  ], drop: [
+    percent(30, "bow", 11),
+    percent(20, "armor", 8),
+    percent(20, "magic", 8)
+  ]);
+
+  // TODO: Always drop something good.
+  breed("Erlkonig, the Goblin Prince", darkGray, 80, [
+    attack("hit[s]", 10),
+    attack("slash[es]", 14),
+    darkBolt(rate: 20, damage: 10),
+  ], drop: dropAllOf([
+    percent(60, "equipment", 10),
+    percent(60, "equipment", 10),
+    percent(40, "magic", 12),
+  ]), flags: "protective");
 }
 
 golems() {
@@ -270,7 +294,7 @@ insects() {
   breed("giant centipede", red, 16, [
     attack("crawl[s] on", 3),
     attack("bite[s]", 5),
-  ], speed: 2);
+  ], speed: 3, meander: 0);
 }
 
 insubstantials() {
@@ -280,36 +304,50 @@ insubstantials() {
 jellies() {
   group("j", meander: 4, speed: -1, tracking: 4, flags: "few fearless");
   breed("green slime", green, 12, [
-    attack("crawl[s] on", 3),
+    attack("crawl[s] on", 4),
     spawn(rate: 6)
   ]);
 
   breed("frosty slime", white, 14, [
-    attack("crawl[s] on", 4, Element.COLD),
+    attack("crawl[s] on", 5, Element.COLD),
     spawn(rate: 6)
   ]);
 
   breed("smoking slime", red, 18, [
-    attack("crawl[s] on", 5, Element.FIRE),
+    attack("crawl[s] on", 6, Element.FIRE),
+    spawn(rate: 6)
+  ]);
+
+  breed("sparkling slime", lightPurple, 22, [
+    attack("crawl[s] on", 8, Element.LIGHTNING),
     spawn(rate: 6)
   ]);
 }
 
 kobolds() {
-  group("k", flags: "open-doors");
+  group("k", speed: 2, meander: 4, flags: "cowardly");
   breed("forest sprite", lightGreen, 6, [
     attack("scratch[es]", 4),
     teleport(range: 6)
   ], drop: [
     percent(20, "magic", 1)
-  ], meander: 4, flags: "cowardly");
+  ]);
 
   breed("house sprite", lightBlue, 10, [
-    attack("stab[s]", 6),
+    attack("poke[s]", 6),
     teleport(range: 6)
   ], drop: [
     percent(20, "magic", 6)
-  ], meander: 4, flags: "cowardly");
+  ]);
+
+  breed("mischievous sprite", lightRed, 20, [
+    attack("stab[s]", 6),
+    sparkBolt(rate: 8, damage: 8),
+    poisonBolt(rate: 15, damage: 10),
+    teleport(range: 8)
+  ], drop: [
+    percent(40, "magic", 8)
+  ]);
 
   breed("scurrilous imp", lightRed, 18, [
     attack("club[s]", 4),
@@ -351,6 +389,17 @@ kobolds() {
     percent(40, "magic", 7)
   ], meander: 2);
 
+  breed("kobold priest", white, 25, [
+    attack("club[s]", 6),
+    heal(rate: 15, amount: 10),
+    fireBolt(rate: 10, damage: 8),
+    teleport(rate: 5, range: 6),
+    haste(rate: 7)
+  ], drop: [
+    percent(30, "club", 10),
+    percent(40, "magic", 7)
+  ], meander: 2);
+
   breed("imp incanter", lightPurple, 18, [
     attack("scratch[es]", 4),
     insult(),
@@ -362,6 +411,16 @@ kobolds() {
     attack("stab[s]", 5),
     iceBolt(rate: 8, damage: 12),
     fireBolt(rate: 8, damage: 12)
+  ], drop: percent(20, "magic", 4),
+      meander: 3, speed: 1, flags: "cowardly");
+
+  // TODO: Always drop something good.
+  breed("Feng", orange, 60, [
+    attack("stab[s]", 5),
+    teleport(rate: 5, range: 6),
+    teleport(rate: 50, range: 30),
+    insult(),
+    lightningCone(rate: 8, damage: 12)
   ], drop: percent(20, "magic", 4),
       meander: 3, speed: 1, flags: "cowardly");
 
@@ -521,15 +580,20 @@ reptiles() {
     attack("bite[s]", 15),
   ]);
 
+  breed("saurian", orange, 56, [
+    attack("claw[s]", 12),
+    attack("bite[s]", 17),
+  ]);
+
   group("R", meander: 3);
   breed("juvenile salamander", lightRed, 18, [
     attack("bite[s]", 12, Element.FIRE),
-    fireCone(rate: 10, damage: 8, range: 6)
+    fireCone(rate: 16, damage: 15, range: 6)
   ]);
 
   breed("salamander", red, 30, [
     attack("bite[s]", 13, Element.FIRE),
-    fireCone(rate: 10, damage: 14, range: 8)
+    fireCone(rate: 16, damage: 20, range: 8)
   ]);
 }
 
@@ -568,6 +632,10 @@ worms() {
   breed("giant cave worm", white, 36, [
     attack("crawl[s] on", 8, Element.ACID),
   ], speed: -2);
+
+  breed("fire worm", orange, 6, [
+    attack("crawl[s] on", 5, Element.FIRE),
+  ], flags: "swarm");
 }
 
 skeletons() {
@@ -639,13 +707,25 @@ Move fireBolt({num rate: 5, int damage}) =>
     new BoltMove(rate, new Attack("burns", damage, Element.FIRE,
         new Noun("the flame"), 8));
 
+Move darkBolt({num rate: 5, int damage}) =>
+    new BoltMove(rate, new Attack("crushes", damage, Element.DARK,
+        new Noun("the darkness"), 10));
+
 Move lightBolt({num rate: 5, int damage}) =>
     new BoltMove(rate, new Attack("sears", damage, Element.LIGHT,
         new Noun("the light"), 10));
 
+Move poisonBolt({num rate: 5, int damage}) =>
+    new BoltMove(rate, new Attack("engulfs", damage, Element.POISON,
+        new Noun("the poison"), 8));
+
 Move fireCone({num rate: 5, int damage, int range}) =>
     new ConeMove(rate, new Attack("burns", damage, Element.FIRE,
         new Noun("the flame"), range));
+
+Move lightningCone({num rate: 5, int damage, int range}) =>
+    new ConeMove(rate, new Attack("shocks", damage, Element.LIGHTNING,
+        new Noun("the lightning"), range));
 
 Move insult({num rate: 5}) => new InsultMove(rate);
 Move howl({num rate: 10, int range: 10}) => new HowlMove(rate, range);

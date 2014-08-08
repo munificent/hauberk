@@ -71,7 +71,7 @@ class Affixes {
     factories.shuffle();
     for (var factory in factories) {
       // There's a chance of not selecting the affix at all.
-      if (rng.range(100) < 90 + chanceOffset) continue;
+      if (rng.range(100) < 60 + chanceOffset) continue;
 
       // Take the rarity into account.
       if (rng.range(100) < 100 ~/ factory.rarity) {
@@ -117,17 +117,28 @@ class Affixes {
     damage("of Maiming", 35, 1, 6, 3);
     damage("of Slaying", 65, 1, 10, 3);
 
+    bowDamage("Ash", 10, 1, 3, 4);
+    bowDamage("Yew", 20, 1, 5, 3);
+
     // TODO: "of Accuracy" increases range of bows.
   }
 
-  /// Defines a weapon suffix for adding damage.
+  /// A weapon suffix for adding damage.
   static void damage(String name, int level, int rarity, int base, int taper) {
     suffix(name, level, rarity, "weapon", create: (name) {
       return new DamageAffix(name, rng.taper(base, taper));
     }, serialize: DamageAffix.serialize, deserialize: DamageAffix.deserialize);
   }
 
-  /// Defines a weapon prefix for giving an elemental brand.
+  /// bow prefix for adding damage.
+  static void bowDamage(String name, int level, int rarity, int base,
+      int taper) {
+    prefix(name, level, rarity, "bow", create: (name) {
+      return new DamageAffix(name, rng.taper(base, taper));
+    }, serialize: DamageAffix.serialize, deserialize: DamageAffix.deserialize);
+  }
+
+  /// A weapon prefix for giving an elemental brand.
   static void brand(String name, int level, int rarity, Element element,
       int bonus, num scale) {
     prefix(name, level, rarity, "weapon", create: (name) {
