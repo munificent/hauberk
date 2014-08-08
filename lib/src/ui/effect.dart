@@ -58,6 +58,12 @@ void addEffects(List<Effect> effects, Event event) {
       // TODO: Something more interesting.
       effects.add(new FrameEffect(event.actor.pos, '*', Color.WHITE));
       break;
+
+    case EventType.HOWL:
+      var colors = [Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.GRAY];
+      var color = colors[(event.value * 3).toInt()];
+      effects.add(new FrameEffect(event.pos, '.', color));
+      break;
   }
 }
 
@@ -206,6 +212,8 @@ class FrameEffect implements Effect {
   FrameEffect(this.pos, this.char, this.color, {this.life: 4});
 
   bool update(Game game) {
+    if (!game.stage[pos].visible) return false;
+
     return --life >= 0;
   }
 

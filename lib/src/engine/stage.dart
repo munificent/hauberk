@@ -233,7 +233,8 @@ class Stage {
     // Don't recalculate if still valid.
     if (_heroPaths != null &&  game.hero.pos == _heroPaths.start) return;
 
-    _heroPaths = new Flow(this, game.hero.pos, ignoreActors: true);
+    _heroPaths = new Flow(this, game.hero.pos,
+        canOpenDoors: true, ignoreActors: true);
   }
 }
 

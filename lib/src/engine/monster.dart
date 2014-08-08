@@ -42,6 +42,8 @@ class Monster extends Actor {
 
   bool get isAfraid => _state is AfraidState;
 
+  bool get isAsleep => _state is AsleepState;
+
   /// How afraid of the hero the monster currently is. If it gets high enough,
   /// the monster will switch to the afraid state and try to flee.
   double _fear = 0.0;
@@ -67,7 +69,7 @@ class Monster extends Actor {
 
     /// Give this some random variation within monsters of the same breed so
     /// they don't all become frightened at the same time.
-    _frightenThreshold = rng.range(60, 100).toDouble();
+    _frightenThreshold = rng.range(60, 200).toDouble();
     if (breed.flags.contains("cowardly")) _frightenThreshold *= 0.7;
 
     // All moves are initially charged.
@@ -140,8 +142,13 @@ class Monster extends Actor {
 
     _fear = math.max(0.0, _fear + offset);
 
-    // TODO: Also check for other awake non-afraid states.
     if (_state is AwakeState && _fear > _frightenThreshold) {
+      // Clamp the fear. This is mainly to ensure that a bunch of monsters
+      // don't all get over their fear at the exact same time later. Since the
+      // threshold is randomized, this will make the delay before growing
+      // courageous random too.
+      _fear = _frightenThreshold;
+
       log("{1} is afraid!", this);
       changeState(new AfraidState());
       action.addEvent(new Event(EventType.FEAR, actor: this));
@@ -149,11 +156,16 @@ class Monster extends Actor {
     }
 
     if (_state is AfraidState && _fear <= 0.0) {
-      // TODO: Should possibly go into other non-afraid states.
       log("{1} grows courageous!", this);
       changeState(new AwakeState());
       action.addEvent(new Event(EventType.COURAGE, actor: this));
     }
+  }
+
+  /// Changes the monster to its awake state if sleeping.
+  void wakeUp() {
+    if (_state is! AsleepState) return;
+    changeState(new AwakeState());
   }
 
   void changeState(MonsterState state) {

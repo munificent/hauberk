@@ -146,6 +146,7 @@ class GameResult {
   : events = <Event>[];
 }
 
+// TODO: Move to using pos for most events instead of value.
 /// Describes a single "interesting" thing that occurred during a call to
 /// [Game.update()]. In general, events correspond to things that a UI is likely
 /// to want to display visually in some form.
@@ -154,8 +155,10 @@ class Event {
   final Actor actor;
   final Element element;
   final value;
+  final Vec pos;
 
-  Event(this.type, {this.actor, this.element: Element.NONE, this.value: 0});
+  Event(this.type, {this.actor, this.element: Element.NONE, this.value: 0,
+      this.pos});
 }
 
 /// A kind of [Event] that has occurred.
@@ -189,6 +192,9 @@ class EventType {
 
   /// A new [Actor] was spawned by another.
   static const SPAWN = const EventType("spawn");
+
+  /// A tile has been hit by sound.
+  static const HOWL = const EventType("howl");
 
   final String _value;
   const EventType(this._value);

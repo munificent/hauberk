@@ -144,14 +144,17 @@ canines() {
   group("c", tracking: 20, meander: 3, flags: "few");
   breed("mangy cur", yellow, 7, [
     attack("bite[s]", 4),
+    howl(range: 6)
   ], drop: percent(20, "Fur Pelt"));
 
   breed("wild dog", gray, 13, [
     attack("bite[s]", 4),
+    howl(range: 8)
   ], drop: percent(20, "Fur Pelt"));
 
   breed("mongrel", orange, 24, [
     attack("bite[s]", 6),
+    howl(range: 10)
   ], drop: percent(20, "Fur Pelt"));
 }
 
@@ -645,6 +648,7 @@ Move fireCone({num rate: 5, int damage, int range}) =>
         new Noun("the flame"), range));
 
 Move insult({num rate: 5}) => new InsultMove(rate);
+Move howl({num rate: 10, int range: 10}) => new HowlMove(rate, range);
 
 Move haste({num rate: 5, int duration: 10, int speed: 1}) =>
     new HasteMove(rate, duration, speed);

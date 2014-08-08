@@ -154,7 +154,7 @@ class AsleepState extends MonsterState {
   void defend() {
     // Don't sleep through a beating!
     Debug.logMonster(monster, "Wake on hit.");
-    changeState(new AwakeState());
+    monster.wakeUp();
   }
 
   Action getAction() {
@@ -194,7 +194,10 @@ class AsleepState extends MonsterState {
     // TODO: Breed-specific hearing.
     // Sound attenuates based on the inverse square of the distance.
     var flowDistance = game.stage.getHeroDistanceTo(pos);
-    var noise = game.hero.lastNoise * 100 ~/ (flowDistance * flowDistance);
+    var noise = 0;
+    if (flowDistance != null) {
+      noise = game.hero.lastNoise * 100 ~/ (flowDistance * flowDistance);
+    }
 
     if (noise > rng.range(500)) {
       game.log.message('Something stirs in the darkness.');

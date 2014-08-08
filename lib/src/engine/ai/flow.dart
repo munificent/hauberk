@@ -48,7 +48,7 @@ class Flow {
   Flow(this._stage, this._start, {int maxDistance, bool canOpenDoors,
         bool ignoreActors})
       : _maxDistance = maxDistance,
-        _canOpenDoors = canOpenDoors,
+        _canOpenDoors = canOpenDoors != null ? canOpenDoors : false,
         _ignoreActors = ignoreActors {
     var width;
     var height;
@@ -212,8 +212,8 @@ class Flow {
 
       // Can't reach impassable tiles.
       var tile = _stage[here + _offset];
-      var canEnter = tile.isTraversable ||
-                     (tile.isPassable && _canOpenDoors);
+      var canEnter = tile.isPassable ||
+                     (tile.isTraversable && _canOpenDoors);
 
       // Can't walk through other actors.
       if (!_ignoreActors &&
