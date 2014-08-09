@@ -1,2 +1,9 @@
 packages
 build/
+gh-pages/
+
+# Ignore unshared Intellij stuff.
+# See: https://intellij-support.jetbrains.com/entries/23393067
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/uiDesigner.xml
