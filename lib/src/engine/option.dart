@@ -1,5 +1,7 @@
 library hauberk.engine.option;
 
+import 'element.dart';
+
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {
@@ -78,6 +80,23 @@ class Option {
     'cowardly': 0.8,
     'berzerk': 1.2,
     'immobile': 0.7
+  };
+
+  /// The experience point multipliers for an attack or move using a given
+  /// element.
+  static final EXP_ELEMENT = const {
+    Element.NONE: 1.0,
+    Element.AIR: 1.2,
+    Element.EARTH: 1.2,
+    Element.FIRE: 1.1,
+    Element.WATER: 1.3,
+    Element.ACID: 1.4,
+    Element.COLD: 1.2,
+    Element.LIGHTNING: 1.1,
+    Element.POISON: 2.0,
+    Element.DARK: 1.5,
+    Element.LIGHT: 1.5,
+    Element.SPIRIT: 3.0
   };
 
   /// The more a monster meanders, the less experience it's worth. This number

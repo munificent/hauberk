@@ -16,6 +16,7 @@ import '../ai/flow.dart';
 import '../circle.dart';
 import '../melee.dart';
 import '../monster.dart';
+import '../option.dart';
 
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,
@@ -31,6 +32,11 @@ abstract class Move {
 
   /// The range of this move if it's a ranged one, or `0` otherwise.
   int get range => 0;
+
+  /// The experience gained by killing a [Monster] with this move.
+  ///
+  /// This should take the power of the move into account, but not its rate.
+  num get experience;
 
   Move(this.rate);
 
@@ -53,6 +59,9 @@ class BoltMove extends Move {
   final Attack attack;
 
   int get range => attack.range;
+
+  num get experience => attack.averageDamage *
+      Option.EXP_ELEMENT[attack.element] * (1.0 + range / 20);
 
   BoltMove(num rate, this.attack)
     : super(rate);
@@ -91,6 +100,9 @@ class BoltMove extends Move {
 class ConeMove extends Move {  final Attack attack;
   int get range => attack.range;
 
+  num get experience => attack.averageDamage * 3.0 *
+      Option.EXP_ELEMENT[attack.element] * (1.0 + range / 10);
+
   ConeMove(num rate, this.attack)
     : super(rate);
 
@@ -125,6 +137,8 @@ class HealMove extends Move {
   /// How much health to restore.
   final int _amount;
 
+  num get experience => _amount;
+
   HealMove(num rate, this._amount) : super(rate);
 
   bool shouldUse(Monster monster) {
@@ -143,7 +157,7 @@ class HealMove extends Move {
 class InsultMove extends Move {
   InsultMove(num rate) : super(rate);
 
-  bool get isRanged => true;
+  num get experience => 0.0;
 
   bool shouldUse(Monster monster) {
     var target = monster.game.hero.pos;
@@ -165,6 +179,8 @@ class HasteMove extends Move {
   final int _duration;
   final int _speed;
 
+  num get experience => _duration * _speed;
+
   HasteMove(num rate, this._duration, this._speed) : super(rate);
 
   bool shouldUse(Monster monster) {
@@ -181,6 +197,8 @@ class HasteMove extends Move {
 class TeleportMove extends Move {
   final int _range;
 
+  num get experience => _range * 0.7;
+
   TeleportMove(int cost, this._range) : super(cost);
 
   Action onGetAction(Monster monster) => new TeleportAction(_range);
@@ -189,6 +207,8 @@ class TeleportMove extends Move {
 /// Spawns a new [Monster] of the same [Breed] adjacent to this one.
 class SpawnMove extends Move {
   SpawnMove(num rate) : super(rate);
+
+  num get experience => 6.0;
 
   bool shouldUse(Monster monster) {
     // Look for an open adjacent tile.
@@ -211,10 +231,14 @@ class SpawnMove extends Move {
 
     return new SpawnAction(monster.pos + rng.item(dirs), monster.breed);
   }
+
+  String toString() => "Spawn";
 }
 
 class HowlMove extends Move {
   final int _range;
+
+  num get experience => _range * 0.5;
 
   HowlMove(num rate, this._range) : super(rate);
 
@@ -238,4 +262,6 @@ class HowlMove extends Move {
   }
 
   Action onGetAction(Monster monster) => new HowlAction(_range);
+
+  String toString() => "Howl $_range";
 }

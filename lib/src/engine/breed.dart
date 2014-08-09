@@ -1,5 +1,7 @@
 library hauberk.engine.breed;
 
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import 'energy.dart';
@@ -59,7 +61,7 @@ class Breed implements Quantifiable {
   /// this breed.
   int get experienceCents {
     // The more health it has, the longer it can hurt the hero.
-    num exp = maxHealth;
+    var exp = maxHealth;
 
     // Faster monsters are worth more.
     exp *= Energy.GAINS[Energy.NORMAL_SPEED + speed];
@@ -67,20 +69,43 @@ class Breed implements Quantifiable {
     // Average the attacks (since they are selected randomly) and factor them
     // in.
     var attackTotal = 0;
-    for (final attack in attacks) {
-      attackTotal += attack.averageDamage;
+    for (var attack in attacks) {
+      // TODO: Take range into account?
+      attackTotal += attack.averageDamage * Option.EXP_ELEMENT[attack.element];
     }
-    exp *= attackTotal / attacks.length;
+
+    attackTotal /= attacks.length;
+
+    var moveTotal = 0;
+    var moveRateTotal = 0;
+    for (var move in moves) {
+      // Scale by the move rate. The less frequently a move can be performed,
+      // the less it affects experience.
+      moveTotal += move.experience / move.rate;
+
+      // Magify the rate to roughly account for the fact that a move may not be
+      // applicable all the time.
+      moveRateTotal += 1 / (move.rate * 2);
+    }
+
+    // A monster can only do one thing each turn, so even if the move rates
+    // are better than than, limit it.
+    moveRateTotal = math.min(1.0, moveRateTotal);
+
+    // Time spent using moves is not time spent attacking.
+    attackTotal *= (1.0 - moveRateTotal);
+
+    // Add in moves and attacks.
+    exp *= attackTotal + moveTotal;
 
     // Take into account flags.
-    for (final flag in flags) {
+    for (var flag in flags) {
       exp *= Option.EXP_FLAG[flag];
     }
 
     // Meandering monsters are worth less.
     exp *= (Option.EXP_MEANDER - meander) / Option.EXP_MEANDER;
 
-    // TODO: Take into account moves.
     return exp.toInt();
   }
 
