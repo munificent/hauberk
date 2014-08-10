@@ -59,19 +59,19 @@ main() {
       text.write('</td><td>');
 
       var monsters = {};
-      for (var breed in area.breeds) {
-        monsters[breed.name] = 0;
-      }
-
       for (var i = 0; i < tries; i++) {
         var breed = area.pickBreed(levelNum);
+        monsters.putIfAbsent(breed.name, () => 0);
         monsters[breed.name]++;
       }
 
-      for (var breed in area.breeds) {
-        var width = monsters[breed.name] * 400 ~/ tries;
+      var names = monsters.keys.toList();
+      names.sort((a, b) => monsters[b].compareTo(monsters[a]));
+
+      for (var breed in names) {
+        var width = monsters[breed] * 400 ~/ tries;
         text.write('<div class="bar" style="width: ${width}px;"></div>');
-        text.write(" ${breed.name}");
+        text.write(" ${breed}");
         text.write("<br>");
       }
 
