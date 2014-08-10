@@ -59,7 +59,7 @@ main() {
       text.write('</td><td>');
 
       var monsters = {};
-      for (var breed in area.breeds) {
+      for (var breed in content.breeds) {
         monsters[breed.name] = 0;
       }
 
@@ -68,7 +68,7 @@ main() {
         monsters[breed.name]++;
       }
 
-      for (var breed in area.breeds) {
+      for (var breed in content.breeds) {
         var width = monsters[breed.name] * 400 ~/ tries;
         text.write('<div class="bar" style="width: ${width}px;"></div>');
         text.write(" ${breed.name}");
