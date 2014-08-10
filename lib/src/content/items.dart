@@ -173,6 +173,23 @@ void scrolls() {
   category("?", "magic/scroll/detection");
   item("Scroll of Item Detection", 2, lightOrange,
       use: () => new DetectItemsAction());
+
+  // TODO: Make monsters drop these.
+  category("?", "magic/scroll/blast");
+  item("Wind Scroll", 2, white,
+      use: () => new RingSelfAction(
+          new Attack("blasts", 8, Element.AIR, new Noun("the wind"), 8)));
+  item("Ice Scroll", 5, lightBlue,
+      use: () => new RingSelfAction(
+          new Attack("freezes", 15, Element.COLD, new Noun("the ice"), 9)));
+  item("Fire Scroll", 8, red,
+      use: () => new RingSelfAction(
+          new Attack("burns", 22, Element.FIRE, new Noun("the fire"), 10)));
+  item("Lightning Scroll", 12, lightPurple,
+      use: () => new RingSelfAction(
+          new Attack("shocks", 34, Element.LIGHTNING, new Noun("the lightning"),
+              11)));
+  // TODO: Other elements, other intensities.
 }
 
 void weapons() {

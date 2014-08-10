@@ -44,8 +44,12 @@ class Game {
 
         // Cascade through the alternates until we hit bottom out.
         var result = action.perform(_actions, gameResult);
+
         while (result.alternative != null) {
+          _actions.removeFirst();
           action = result.alternative;
+          _actions.addFirst(action);
+
           result = action.perform(_actions, gameResult);
         }
 

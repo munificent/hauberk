@@ -7,9 +7,9 @@ import '../action/action.dart';
 import '../action/attack.dart';
 import '../action/bolt.dart';
 import '../action/condition.dart';
-import '../action/cone.dart';
 import '../action/heal.dart';
 import '../action/howl.dart';
+import '../action/ray.dart';
 import '../action/spawn.dart';
 import '../action/teleport.dart';
 import '../ai/flow.dart';
@@ -126,9 +126,8 @@ class ConeMove extends Move {  final Attack attack;
     return true;
   }
 
-  Action onGetAction(Monster monster) {
-    return new ConeAction(monster.pos, monster.game.hero.pos, attack);
-  }
+  Action onGetAction(Monster monster) =>
+      new RayAction.cone(monster.pos, monster.game.hero.pos, attack);
 
   String toString() => "Cone $attack rate: $rate";
 }
