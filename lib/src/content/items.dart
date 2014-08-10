@@ -261,18 +261,18 @@ void weapons() {
 
 void bodyArmor() {
   category("(", "equipment/armor/cloak", "cloak");
-  armor("Cloak", 4, darkBlue, 2);
+  armor("Cloak", 3, darkBlue, 2);
   armor("Fur Cloak", 9, lightBrown, 3);
 
   category("(", "equipment/armor/body", "body");
   armor("Cloth Shirt", 2, lightGray, 2);
   armor("Leather Shirt", 5, lightBrown, 5);
   armor("Jerkin", 7, orange, 6);
-  armor("Leather Armor", 13, brown, 8);
-  armor("Padded Armor", 17, darkBrown, 11);
-  armor("Studded Leather Armor", 21, gray, 15);
-  armor("Mail Hauberk", 26, darkGray, 18);
-  armor("Scale Mail", 30, lightGray, 21);
+  armor("Leather Armor", 10, brown, 8);
+  armor("Padded Armor", 14, darkBrown, 11);
+  armor("Studded Leather Armor", 17, gray, 15);
+  armor("Mail Hauberk", 20, darkGray, 18);
+  armor("Scale Mail", 23, lightGray, 21);
 
   category("(", "equipment/armor/body/robe", "body");
   armor("Robe", 2, aqua, 4);

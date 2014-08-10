@@ -146,17 +146,17 @@ birds() {
 
 canines() {
   group("c", tracking: 20, meander: 3, flags: "few");
-  breed("mangy cur", yellow, 7, [
+  breed("mangy cur", yellow, 9, [
     attack("bite[s]", 4),
     howl(range: 6)
   ], drop: percent(20, "Fur Pelt"));
 
-  breed("wild dog", gray, 13, [
+  breed("wild dog", gray, 16, [
     attack("bite[s]", 4),
     howl(range: 8)
   ], drop: percent(20, "Fur Pelt"));
 
-  breed("mongrel", orange, 24, [
+  breed("mongrel", orange, 28, [
     attack("bite[s]", 6),
     howl(range: 10)
   ], drop: percent(20, "Fur Pelt"));
@@ -326,7 +326,7 @@ jellies() {
 
 kobolds() {
   group("k", speed: 2, meander: 4, flags: "cowardly");
-  breed("forest sprite", lightGreen, 6, [
+  breed("forest sprite", lightGreen, 8, [
     attack("scratch[es]", 4),
     teleport(range: 6)
   ], drop: [
@@ -528,8 +528,8 @@ rodents() {
   ], speed: 1);
 
   breed("fuzzy bunn[y|ies]", lightBlue, 14, [
-    attack("bite[s]", 3),
-    attack("kick[s]", 2)
+    attack("bite[s]", 5),
+    attack("kick[s]", 4)
   ], meander: -2);
 
   breed("vole", darkGray, 5, [
@@ -606,11 +606,11 @@ slugs() {
 
 snakes() {
   group("S", meander: 4);
-  breed("garter snake", gold, 4, [
+  breed("garter snake", gold, 5, [
     attack("bite[s]", 1),
   ]);
 
-  breed("tree snake", lightGreen, 12, [
+  breed("tree snake", lightGreen, 14, [
     attack("bite[s]", 4),
   ]);
 
