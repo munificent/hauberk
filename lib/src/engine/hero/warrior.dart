@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../action/bolt.dart';
+import '../action/slash.dart';
 import '../actor.dart';
 import '../game.dart';
 import '../melee.dart';
@@ -18,7 +19,10 @@ import 'hero_class.dart';
 class Warrior extends HeroClass {
   String get name => "Warrior";
 
-  List<Command> get commands => [new ArcheryCommand()];
+  final List<Command> commands = [
+    new ArcheryCommand(),
+    new SlashCommand()
+  ];
 
   int get armor => toughness.level;
 
@@ -183,10 +187,8 @@ class TrainedStat {
   }
 }
 
-class ArcheryCommand extends Command {
+class ArcheryCommand extends TargetCommand {
   String get name => "Archery";
-
-  bool get needsTarget => true;
 
   num getMinRange(Game game) => 1.5;
   num getMaxRange(Game game) => game.hero.equipment.weapon.attack.range;
@@ -194,16 +196,26 @@ class ArcheryCommand extends Command {
   bool canUse(Game game) {
     // Get the equipped ranged weapon, if any.
     var weapon = game.hero.equipment.weapon;
-    if (weapon == null || !weapon.attack.isRanged) {
-      game.log.error("You do not have a ranged weapon equipped.");
-      return false;
-    }
-
-    return true;
+    return weapon != null && weapon.attack.isRanged;
   }
 
-  Action getUseAction(Game game, Vec target) {
+  Action getTargetAction(Game game, Vec target) {
     var weapon = game.hero.equipment.weapon;
     return new BoltAction(game.hero.pos, target, weapon.attack);
   }
+}
+
+/// A slashing melee attack that hits a number of adjacent monsters.
+class SlashCommand extends DirectionCommand {
+  String get name => "Slash";
+
+  bool canUse(Game game) {
+    // Must have a sword equipped.
+    var weapon = game.hero.equipment.weapon;
+    if (weapon == null) return false;
+
+    return weapon.type.categories.contains("sword");
+  }
+
+  Action getDirectionAction(Game game, Direction dir) => new SlashAction(dir);
 }

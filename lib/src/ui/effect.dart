@@ -7,6 +7,17 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 
+final _directionLines = {
+  Direction.N: "|",
+  Direction.NE: "/",
+  Direction.E: "-",
+  Direction.SE: r"\",
+  Direction.S: "|",
+  Direction.SW: "/",
+  Direction.W: "-",
+  Direction.NW: r"\"
+};
+
 /// Adds an [Effect]s that should be displayed when [event] happens.
 void addEffects(List<Effect> effects, Event event) {
   switch (event.type) {
@@ -64,6 +75,11 @@ void addEffects(List<Effect> effects, Event event) {
       var color = colors[(event.value * 3).toInt()];
       effects.add(new FrameEffect(event.pos, '.', color));
       break;
+
+    case EventType.SLASH:
+      var line = _directionLines[event.value];
+      // TODO: Element color.
+      effects.add(new FrameEffect(event.pos, line, Color.WHITE));
   }
 }
 

@@ -14,8 +14,9 @@ class AttackAction extends Action {
 
   ActionResult onPerform() {
     // Get all of the melee information from the participants.
-    final attack = actor.getAttack(defender);
-    return attack.perform(this, actor, defender);
+    var attack = actor.getAttack(defender);
+    attack.perform(this, actor, defender);
+    return ActionResult.SUCCESS;
   }
 
   int get noise => Option.NOISE_HIT;

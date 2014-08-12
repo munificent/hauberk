@@ -26,7 +26,7 @@ class BoltAction extends Action {
   }
 
   ActionResult onPerform() {
-    final pos = _los.current;
+    var pos = _los.current;
 
     // Stop if we hit a wall.
     if (!game.stage[pos].isTransparent) return succeed();
@@ -37,7 +37,7 @@ class BoltAction extends Action {
     addEvent(new Event(EventType.BOLT, element: _attack.element, value: pos));
 
     // See if there is an actor there.
-    final target = game.stage.actorAt(pos);
+    var target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
       var attack = _attack;
 
@@ -48,7 +48,8 @@ class BoltAction extends Action {
         attack = attack.multiplyDamage(0.5);
       }
 
-      return attack.perform(this, actor, target, canMiss: false);
+      attack.perform(this, actor, target, canMiss: false);
+      return ActionResult.SUCCESS;
     }
 
     return _los.moveNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;

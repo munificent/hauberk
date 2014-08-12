@@ -200,6 +200,9 @@ class EventType {
   /// A tile has been hit by sound.
   static const HOWL = const EventType("howl");
 
+  /// A warrior's slash attack hits a tile.
+  static const SLASH = const EventType("slash");
+
   final String _value;
   const EventType(this._value);
 }

@@ -7,7 +7,7 @@ import '../engine.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
-/// Modal dialog for letting the user select a direction to fire a missile.
+/// Modal dialog for letting the user select a target to perform a [Command] on.
 class TargetDialog extends Screen {
   static const _NUM_FRAMES = 5;
   static const _TICKS_PER_FRAME = 5;
@@ -29,7 +29,7 @@ class TargetDialog extends Screen {
 
   bool get isTransparent => true;
 
-  TargetDialog(this._gameScreen, Game game, Command command)
+  TargetDialog(this._gameScreen, Game game, TargetCommand command)
       : _game = game,
         _minRange = command.getMinRange(game),
         _maxRange = command.getMaxRange(game) {

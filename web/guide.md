@@ -10,7 +10,7 @@ If you just want to know what buttons do what, check out the [input quick refere
 
 ## Input
 
-Hauberk is played using your keyboard, the fixie of input devices. A lot of input is directional. Arrow keys work for that, but don't support diagonal moves. Instead, you're better off using the numpad on your keyboard if you have one:
+Hauberk is played using your keyboard, the fixie of input devices. A lot of input is directional. Arrow keys work for that, but don't support diagonal moves. Instead, you're better off hitting num lock and using the numpad on your keyboard if you have one:
 
     .---.---.---.          .---.---.---.
     | 7 | 8 | 9 |          | \ | ^ | / |

@@ -7,6 +7,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'close_door_dialog.dart';
+import 'direction_dialog.dart';
 import 'effect.dart';
 import 'game_over_screen.dart';
 import 'forfeit_dialog.dart';
@@ -43,9 +44,6 @@ class GameScreen extends Screen {
     dirty();
   }
   Actor _target;
-
-  /// The most recently performed command.
-  Command _lastCommand;
 
   GameScreen(this._save, this._game) {
     _positionCamera();
@@ -107,33 +105,34 @@ class GameScreen extends Screen {
       case Input.RUN_S: _game.hero.run(Direction.S); break;
       case Input.RUN_SE: _game.hero.run(Direction.SE); break;
 
-      case Input.FIRE_NW: fireAt(_game.hero.pos + Direction.NW); break;
-      case Input.FIRE_N: fireAt(_game.hero.pos + Direction.N); break;
-      case Input.FIRE_NE: fireAt(_game.hero.pos + Direction.NE); break;
-      case Input.FIRE_W: fireAt(_game.hero.pos + Direction.W); break;
-      case Input.FIRE_E: fireAt(_game.hero.pos + Direction.E); break;
-      case Input.FIRE_SW: fireAt(_game.hero.pos + Direction.SW); break;
-      case Input.FIRE_S: fireAt(_game.hero.pos + Direction.S); break;
-      case Input.FIRE_SE: fireAt(_game.hero.pos + Direction.SE); break;
+      case Input.FIRE_NW: _fireTowards(Direction.NW); break;
+      case Input.FIRE_N: _fireTowards(Direction.N); break;
+      case Input.FIRE_NE: _fireTowards(Direction.NE); break;
+      case Input.FIRE_W: _fireTowards(Direction.W); break;
+      case Input.FIRE_E: _fireTowards(Direction.E); break;
+      case Input.FIRE_SW: _fireTowards(Direction.SW); break;
+      case Input.FIRE_S: _fireTowards(Direction.S); break;
+      case Input.FIRE_SE: _fireTowards(Direction.SE); break;
 
       case Input.FIRE:
-        if (_lastCommand == null) {
-          // Haven't picked a command yet, so select one.
-          ui.push(new SelectCommandDialog(_game));
-        } else if (!_lastCommand.canUse(_game)) {
-          // Show the message.
-          dirty();
-        } else if (_lastCommand.needsTarget) {
+        // TODO: When there is more than one usable command, bring up the
+        // SelectCommandDialog. Until then, just pick the first valid one.
+        var command = _game.hero.heroClass.commands
+            .firstWhere((command) => command.canUse(_game), orElse: () => null);
+        if (command is TargetCommand) {
           // If we still have a visible target, use it.
           if (target != null && target.isAlive &&
               _game.stage[target.pos].visible) {
-            fireAt(target.pos);
+            _fireAtTarget();
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, _game, _lastCommand));
+            ui.push(new TargetDialog(this, _game, command));
           }
+        } else if (command is DirectionCommand) {
+          ui.push(new DirectionDialog(this, _game));
         } else {
-          useLastSkill(null);
+          _game.log.error("You don't have any commands you can perform.");
+          dirty();
         }
         break;
 
@@ -172,20 +171,40 @@ class GameScreen extends Screen {
     }
   }
 
-  void fireAt(Vec pos) {
-    if (_lastCommand == null || !_lastCommand.needsTarget) return;
+  void _fireAtTarget() {
+    // TODO: When there is more than one usable command, bring up the
+    // SelectCommandDialog. Until then, just pick the first valid one.
+    var command = _game.hero.heroClass.commands
+        .firstWhere((command) => command.canUse(_game), orElse: () => null);
 
-    if (!_lastCommand.canUse(_game)) {
-      // Refresh the log.
+    // Should only get here from using a targeted command.
+    assert(command is TargetCommand);
+    assert(target != null);
+
+    _game.hero.setNextAction(command.getTargetAction(_game, target.pos));
+  }
+
+  void _fireTowards(Direction dir) {
+    // TODO: When there is more than one usable command, bring up the
+    // SelectCommandDialog. Until then, just pick the first valid one.
+    var command = _game.hero.heroClass.commands
+        .firstWhere((command) => command.canUse(_game), orElse: () => null);
+
+    if (command == null) {
+      _game.log.error("You don't have any commands you can perform.");
       dirty();
       return;
     }
 
-    // If we aren't firing at the current target, see if there is a monster
-    // in that direction that we can target. (In other words, if you fire in
-    // a raw direction, target the monster in that direction for subsequent
-    // shots).
-    if (target == null || target.pos != pos) {
+    if (command is DirectionCommand) {
+      _game.hero.setNextAction(command.getDirectionAction(_game, dir));
+      return;
+    }
+
+    if (command is TargetCommand) {
+      var pos = _game.hero.pos + dir;
+
+      // Target the monster that is in the fired direction.
       for (var step in new Los(_game.hero.pos, pos)) {
         // Stop if we hit a wall.
         if (!_game.stage[step].isTransparent) break;
@@ -197,13 +216,10 @@ class GameScreen extends Screen {
           break;
         }
       }
+
+      _game.hero.setNextAction(command.getTargetAction(_game, pos));
+      return;
     }
-
-    useLastSkill(target.pos);
-  }
-
-  void useLastSkill(Vec target) {
-    _game.hero.setNextAction(_lastCommand.getUseAction(_game, target));
   }
 
   void activate(Screen popped, result) {
@@ -211,18 +227,18 @@ class GameScreen extends Screen {
       // Forfeiting, so exit.
       ui.pop(false);
     } else if (popped is SelectCommandDialog && result is Command) {
-      _lastCommand = result;
-
       if (!result.canUse(_game)) {
         // Refresh the log.
         dirty();
-      } else if (result.needsTarget) {
+      } else if (result is TargetCommand) {
         ui.push(new TargetDialog(this, _game, result));
-      } else {
-        useLastSkill(null);
+      } else if (result is DirectionCommand) {
+        ui.push(new DirectionDialog(this, _game));
       }
     } else if (popped is TargetDialog && result) {
-      fireAt(target.pos);
+      _fireAtTarget();
+    } else if (popped is DirectionDialog && result != Direction.NONE) {
+      _fireTowards(result);
     }
   }
 

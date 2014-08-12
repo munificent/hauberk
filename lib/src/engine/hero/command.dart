@@ -7,29 +7,39 @@ import '../game.dart';
 
 /// A command is a specific ability that the player can select for the hero to
 /// perform.
+///
+/// Some commands require additional data to be performed -- a target position
+/// or a direction. Those will implement one of the subclasses, [TargetCommand]
+/// or [DirectionCommand].
 abstract class Command {
+  /// The name of the command.
   String get name;
-
-  /// Override this to return `true` if the command can be used but needs a
-  /// target to do so.
-  bool get needsTarget => false;
-
-  /// For commands that need a target, gets the minimum range of the target.
-  num getMinRange(Game game) => 0;
-
-  /// For commands that need a target, gets the maximum range of the target.
-  num getMaxRange(Game game) => 0;
 
   /// Override this to validate that the [Command] can be used right now. For
   /// example, this is only `true` for the archery command when the hero has a
   /// ranged weapon equipped.
-  ///
-  /// If this is overridden and returns `false`, it should also log an
-  /// appropriate message so the user knows why it failed.
   bool canUse(Game game) => true;
 
+  // TODO: Add getAction() here when there are commands that don't require a
+  // target or direction.
+}
+
+/// A command that requires a target position to perform.
+abstract class TargetCommand extends Command {
+  /// The minimum range of the target from the hero.
+  num getMinRange(Game game) => 0;
+
+  /// The maximum range of the target from the hero.
+  num getMaxRange(Game game) => 0;
+
   /// Override this to create the [Action] that the [Hero] should perform when
-  /// using this [Command]. If the command needs a target, one will be passed
-  /// in. Otherwise, it will be `null`.
-  Action getUseAction(Game game, Vec target);
+  /// using this [Command].
+  Action getTargetAction(Game game, Vec target);
+}
+
+/// A command that requires a direction to perform.
+abstract class DirectionCommand extends Command {
+  /// Override this to create the [Action] that the [Hero] should perform when
+  /// using this [Command].
+  Action getDirectionAction(Game game, Direction dir);
 }
