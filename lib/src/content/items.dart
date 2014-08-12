@@ -220,13 +220,14 @@ void weapons() {
   weapon("Chain Whip", 15, darkGray, "whip[s]", 9);
   weapon("Flail", 27, darkGray, "whip[s]", 14);
 
+  category("|", "equipment/weapon/sword");
+  weapon("Rapier", 4, gray, "slash[es]", 5);
+  weapon("Shortsword", 9, darkGray, "slash[es]", 8);
+  weapon("Scimitar", 15, lightGray, "slash[es]", 11);
+  weapon("Cutlass", 21, lightGold, "slash[es]", 15);
+  weapon("Falchion", 34, white, "slash[es]", 21);
+
   /*
-  // One-handed swords
-  Rapier[s]
-  Shortsword[s]
-  Scimitar[s]
-  Cutlass[es]
-  Falchion[s]
 
   // Two-handed swords
   Bastard Sword[s]

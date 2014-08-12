@@ -488,12 +488,12 @@ people() {
   ], meander: 2);
 
   breed("unlucky ranger", green, 20, [
-    attack("stab[s]", 2),
+    attack("slash[es]", 2),
     arrow(rate: 4, damage: 2)
   ], drop: [
     percent(10, "potion", 3),
     percent(15, "bow", 4),
-    percent(5, "dagger", 3),
+    percent(5, "sword", 4),
     percent(8, "body", 3)
   ], meander: 2);
 
