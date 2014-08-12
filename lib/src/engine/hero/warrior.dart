@@ -9,6 +9,9 @@ import '../actor.dart';
 import '../game.dart';
 import '../melee.dart';
 import '../monster.dart';
+import '../command/archery.dart';
+import '../command/slash.dart';
+import '../command/stab.dart';
 import 'command.dart';
 import 'hero_class.dart';
 
@@ -21,7 +24,8 @@ class Warrior extends HeroClass {
 
   final List<Command> commands = [
     new ArcheryCommand(),
-    new SlashCommand()
+    new SlashCommand(),
+    new StabCommand()
   ];
 
   int get armor => toughness.level;
@@ -185,37 +189,4 @@ class TrainedStat {
     _count += count;
     return level != oldLevel;
   }
-}
-
-class ArcheryCommand extends TargetCommand {
-  String get name => "Archery";
-
-  num getMinRange(Game game) => 1.5;
-  num getMaxRange(Game game) => game.hero.equipment.weapon.attack.range;
-
-  bool canUse(Game game) {
-    // Get the equipped ranged weapon, if any.
-    var weapon = game.hero.equipment.weapon;
-    return weapon != null && weapon.attack.isRanged;
-  }
-
-  Action getTargetAction(Game game, Vec target) {
-    var weapon = game.hero.equipment.weapon;
-    return new BoltAction(game.hero.pos, target, weapon.attack);
-  }
-}
-
-/// A slashing melee attack that hits a number of adjacent monsters.
-class SlashCommand extends DirectionCommand {
-  String get name => "Slash";
-
-  bool canUse(Game game) {
-    // Must have a sword equipped.
-    var weapon = game.hero.equipment.weapon;
-    if (weapon == null) return false;
-
-    return weapon.type.categories.contains("sword");
-  }
-
-  Action getDirectionAction(Game game, Direction dir) => new SlashAction(dir);
 }

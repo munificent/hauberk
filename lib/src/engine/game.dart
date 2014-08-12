@@ -201,6 +201,9 @@ class EventType {
   /// A warrior's slash attack hits a tile.
   static const SLASH = const EventType("slash");
 
+  /// A warrior's stab attack hits a tile.
+  static const STAB = const EventType("stab");
+
   final String _value;
   const EventType(this._value);
 }

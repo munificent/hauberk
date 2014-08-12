@@ -74,6 +74,7 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.SLASH:
+    case EventType.STAB:
       var line = _directionLines[event.dir];
       // TODO: Element color.
       effects.add(new FrameEffect(event.pos, line, Color.WHITE));
