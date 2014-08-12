@@ -2,7 +2,10 @@ library hauberk.engine.action.action;
 
 import 'dart:collection';
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../actor.dart';
+import '../element.dart';
 import '../game.dart';
 import '../hero/hero.dart';
 import '../log.dart';
@@ -46,8 +49,9 @@ abstract class Action {
     _actions.add(action);
   }
 
-  void addEvent(Event event) {
-    _gameResult.events.add(event);
+  void addEvent(EventType type, {Actor actor, Element element, amount,
+      Vec pos, Direction dir}) {
+    _gameResult.events.add(new Event(type, actor, element, pos, dir, amount));
   }
 
   /// How much noise is produced by this action. Override to make certain

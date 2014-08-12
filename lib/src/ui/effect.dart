@@ -22,11 +22,8 @@ final _directionLines = {
 void addEffects(List<Effect> effects, Event event) {
   switch (event.type) {
     case EventType.BOLT:
-      effects.add(new ElementEffect(event.value, event.element));
-      break;
-
     case EventType.CONE:
-      effects.add(new ElementEffect(event.value, event.element));
+      effects.add(new ElementEffect(event.pos, event.element));
       break;
 
     case EventType.HIT:
@@ -55,13 +52,13 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.DETECT:
-      effects.add(new DetectEffect(event.value));
+      effects.add(new DetectEffect(event.pos));
       break;
 
     case EventType.TELEPORT:
-      var numParticles = (event.actor.pos - event.value).kingLength * 2;
+      var numParticles = (event.actor.pos - event.pos).kingLength * 2;
       for (var i = 0; i < numParticles; i++) {
-        effects.add(new TeleportEffect(event.value, event.actor.pos));
+        effects.add(new TeleportEffect(event.pos, event.actor.pos));
       }
       break;
 
@@ -72,12 +69,12 @@ void addEffects(List<Effect> effects, Event event) {
 
     case EventType.HOWL:
       var colors = [Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.GRAY];
-      var color = colors[(event.value * 3).toInt()];
+      var color = colors[(event.amount * 3).toInt()];
       effects.add(new FrameEffect(event.pos, '.', color));
       break;
 
     case EventType.SLASH:
-      var line = _directionLines[event.value];
+      var line = _directionLines[event.dir];
       // TODO: Element color.
       effects.add(new FrameEffect(event.pos, line, Color.WHITE));
   }

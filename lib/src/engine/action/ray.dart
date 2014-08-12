@@ -80,7 +80,7 @@ class RayAction extends Action {
       // Don't hit the same tile twice.
       if (_hitTiles.contains(pos)) return false;
 
-      addEvent(new Event(EventType.CONE, value: pos, element: _attack.element));
+      addEvent(EventType.CONE, element: _attack.element, pos: pos);
       _hitTiles.add(pos);
 
       // See if there is an actor there.

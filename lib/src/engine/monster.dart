@@ -151,14 +151,14 @@ class Monster extends Actor {
 
       log("{1} is afraid!", this);
       changeState(new AfraidState());
-      action.addEvent(new Event(EventType.FEAR, actor: this));
+      action.addEvent(EventType.FEAR, actor: this);
       return;
     }
 
     if (_state is AfraidState && _fear <= 0.0) {
       log("{1} grows courageous!", this);
       changeState(new AwakeState());
-      action.addEvent(new Event(EventType.COURAGE, actor: this));
+      action.addEvent(EventType.COURAGE, actor: this);
     }
   }
 

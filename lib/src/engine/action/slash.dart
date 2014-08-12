@@ -26,7 +26,7 @@ class SlashAction extends Action {
     // Show the effect and perform the attack on alternate frames. This ensures
     // the effect gets a chance to be shown before the hit effect covers hit.
     if (_step % 2 == 0) {
-      addEvent(new Event(EventType.SLASH, pos: actor.pos + dir, value: dir));
+      addEvent(EventType.SLASH, pos: actor.pos + dir, dir: dir);
     } else if (_step % 2 == 1) {
       var defender = game.stage.actorAt(actor.pos + dir);
       if (defender != null) {

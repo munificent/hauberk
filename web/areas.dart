@@ -5,7 +5,6 @@ import 'dart:html' as html;
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
-import 'package:hauberk/src/engine.dart';
 
 main() {
   var content = createContent();

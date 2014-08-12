@@ -1,15 +1,9 @@
 library hauberk.engine.items.recipe;
 
-import 'package:piecemeal/piecemeal.dart';
-
-import '../action/walk.dart';
-import '../actor.dart';
-import '../melee.dart';
 import 'item.dart';
 
 /// A recipe defines a set of items that can be placed into the crucible and
 /// transmuted into something new.
-// TODO: Figure out how this works with affixes.
 class Recipe {
   final List<ItemType> ingredients;
   final Drop result;

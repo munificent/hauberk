@@ -148,7 +148,7 @@ class Attack {
     if (resistance == 0) _elementalSideEffect(defender, action, damage);
 
     // TODO: Pass in and use element.
-    action.addEvent(new Event(EventType.HIT, actor: defender, value: damage));
+    action.addEvent(EventType.HIT, actor: defender, amount: damage);
     action.log('{1} ${verb} {2}.', attackNoun, defender);
   }
 

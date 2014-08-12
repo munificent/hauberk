@@ -34,7 +34,7 @@ class BoltAction extends Action {
     // Stop if we're out of range.
     if (pos - _start > _attack.range) return succeed();
 
-    addEvent(new Event(EventType.BOLT, element: _attack.element, value: pos));
+    addEvent(EventType.BOLT, element: _attack.element, pos: pos);
 
     // See if there is an actor there.
     var target = game.stage.actorAt(pos);

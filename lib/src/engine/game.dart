@@ -9,7 +9,6 @@ import 'actor.dart';
 import 'area.dart';
 import 'breed.dart';
 import 'element.dart';
-import 'fov.dart';
 import 'hero/hero.dart';
 import 'hero/hero_class.dart';
 import 'items/item.dart';
@@ -150,7 +149,6 @@ class GameResult {
   : events = <Event>[];
 }
 
-// TODO: Move to using pos for most events instead of value.
 /// Describes a single "interesting" thing that occurred during a call to
 /// [Game.update()]. In general, events correspond to things that a UI is likely
 /// to want to display visually in some form.
@@ -158,11 +156,11 @@ class Event {
   final EventType type;
   final Actor actor;
   final Element element;
-  final value;
+  final amount;
   final Vec pos;
+  final Direction dir;
 
-  Event(this.type, {this.actor, this.element: Element.NONE, this.value: 0,
-      this.pos});
+  Event(this.type, this.actor, this.element, this.pos, this.dir, this.amount);
 }
 
 /// A kind of [Event] that has occurred.

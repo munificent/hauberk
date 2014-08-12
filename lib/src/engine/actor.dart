@@ -160,7 +160,7 @@ abstract class Actor extends Thing {
 
     if (health.current > 0) return false;
 
-    action.addEvent(new Event(EventType.DIE, actor: this));
+    action.addEvent(EventType.DIE, actor: this);
     onDied(attacker);
 
     action.log("{1} kill[s] {2}.", attackNoun, this);
