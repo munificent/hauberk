@@ -88,12 +88,12 @@ void treasure() {
   // Rocks
   category(r"$", "treasure/rock");
   item("Turquoise Stone", 15, aqua);
-  item("Onyx Stone", 20, darkGray);
+  item("Onyx Stone",      20, darkGray);
   item("Malachite Stone", 25, darkAqua);
-  item("Jade Stone", 30, darkGreen);
-  item("Pearl", 35, lightYellow);
-  item("Opal", 40, lightPurple);
-  item("Fire Opal", 50, lightOrange);
+  item("Jade Stone",      30, darkGreen);
+  item("Pearl",           35, lightYellow);
+  item("Opal",            40, lightPurple);
+  item("Fire Opal",       50, lightOrange);
 }
 
 void pelts() {
