@@ -9,18 +9,20 @@ import 'input.dart';
 /// accessible to the [Hero].
 class ItemDialog extends Screen {
   final Game _game;
-  final _ItemCommand _mode;
-  _ItemView _view;
+
+  /// The command the player is trying to perform on an item.
+  final _ItemCommand _command;
+
+  /// The current location being shown to the player.
+  ItemLocation _location = ItemLocation.INVENTORY;
 
   bool get isTransparent => true;
 
   ItemDialog.drop(this._game)
-      : _mode = new _DropItemCommand(),
-        _view = new _InventoryView();
+      : _command = new _DropItemCommand();
 
   ItemDialog.use(this._game)
-      : _mode = new _UseItemCommand(),
-        _view = new _InventoryView();
+      : _command = new _UseItemCommand();
 
   bool handleInput(Input input) {
     if (input == Input.CANCEL) {
@@ -35,13 +37,12 @@ class ItemDialog extends Screen {
     if (shift || alt) return false;
 
     if (keyCode >= KeyCode.A && keyCode <= KeyCode.Z) {
-      selectItem(keyCode - KeyCode.A);
+      _selectItem(keyCode - KeyCode.A);
       return true;
     }
 
     if (keyCode == KeyCode.TAB) {
-      _view = _view.next;
-      if (!_mode.showGroundItems && _view is _GroundView) _view = _view.next;
+      _advanceLocation();
       dirty();
       return true;
     }
@@ -50,24 +51,54 @@ class ItemDialog extends Screen {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, _mode.query(_view));
+    terminal.writeAt(0, 0, _command.query(_location));
 
     terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
     terminal.writeAt(0, terminal.height - 1,
         '[A-Z] Select item, [Tab] Switch view',
         Color.GRAY);
 
-    drawItems(terminal, 0, 1, _view.getItems(_game),
-        (item) => _mode.canSelect(item));
+    drawItems(terminal, 0, 1, _getItems(), (item) => _command.canSelect(item));
   }
 
-  void selectItem(int index) {
-    var items = _view.getItems(_game).toList();
+  void _selectItem(int index) {
+    var items = _getItems().toList();
     if (index >= items.length) return;
-    if (!_mode.canSelect(items[index])) return;
+    if (!_command.canSelect(items[index])) return;
 
-    _game.hero.setNextAction(_mode.getAction(index, _view));
+    _game.hero.setNextAction(_command.getAction(index, _location));
     ui.pop();
+  }
+
+  Iterable<Item> _getItems() {
+    switch (_location) {
+      case ItemLocation.INVENTORY: return _game.hero.inventory;
+      case ItemLocation.EQUIPMENT: return _game.hero.equipment;
+      case ItemLocation.ON_GROUND: return _game.stage.itemsAt(_game.hero.pos);
+    }
+
+    throw "unreachable";
+  }
+
+  /// Rotates through the viewable locations the player can select an item from.
+  void _advanceLocation() {
+    switch (_location) {
+      case ItemLocation.INVENTORY:
+        _location = ItemLocation.EQUIPMENT;
+        break;
+
+      case ItemLocation.EQUIPMENT:
+        if (_command.showGroundItems) {
+          _location = ItemLocation.ON_GROUND;
+        } else {
+          _location = ItemLocation.INVENTORY;
+        }
+        break;
+
+      case ItemLocation.ON_GROUND:
+        _location = ItemLocation.INVENTORY;
+        break;
+    }
   }
 }
 
@@ -95,60 +126,6 @@ void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
   }
 }
 
-/// Which set of items are currently being shown in the view.
-abstract class _ItemView {
-  /// The query shown to the user when selecting an item to drop from this view.
-  String get dropQuery;
-
-  /// The query shown to the user when selecting an item to use from this view.
-  String get useQuery;
-
-  /// Gets the next inventory view, rotating through all three.
-  _ItemView get next;
-
-  /// Gets the items visible in this view.
-  Iterable<Item> getItems(Game game);
-
-  /// Creates an [Action] that will drop the item at [index] from this view.
-  Action getDropAction(int index);
-
-  /// Creates an [Action] that will use the item at [index] from this view.
-  Action getUseAction(int index);
-}
-
-/// An [ItemView] for items in the hero's [Inventory].
-class _InventoryView implements _ItemView {
-  String get dropQuery => 'Drop which item?';
-  String get useQuery => 'Use or equip which item?';
-  _ItemView get next => new _EquipmentView();
-
-  Iterable<Item> getItems(Game game) => game.hero.inventory;
-  Action getDropAction(int index) => new DropInventoryAction(index);
-  Action getUseAction(int index) => new UseAction(index, false);
-}
-
-/// An [ItemView] for items in the hero's [Equipment].
-class _EquipmentView implements _ItemView {
-  String get dropQuery => 'Unequip and drop which item?';
-  String get useQuery => 'Unequip which item?';
-  _ItemView get next => new _GroundView();
-
-  Iterable<Item> getItems(Game game) => game.hero.equipment;
-  Action getDropAction(int index) => new DropEquipmentAction(index);
-  Action getUseAction(int index) => new UnequipAction(index);
-}
-
-/// An [ItemView] for items on the ground where the hero is standing.
-class _GroundView implements _ItemView {
-  String get dropQuery => throw "unreachable";
-  String get useQuery => 'Pick up and use which item?';
-  _ItemView get next => new _InventoryView();
-
-  Iterable<Item> getItems(Game game) => game.stage.itemsAt(game.hero.pos);
-  Action getDropAction(int index) => throw "unreachable";
-  Action getUseAction(int index) => new UseAction(index, true);
-}
-
 /// The action the user wants to perform on the selected item.
 abstract class _ItemCommand {
   /// `true` if items on the ground can be used with this command.
@@ -156,26 +133,47 @@ abstract class _ItemCommand {
 
   /// The query shown to the user when selecting an item in this mode from
   /// [view].
-  String query(_ItemView view);
+  String query(ItemLocation location);
 
   /// Returns `true` if [item] is a valid selection for this command.
   bool canSelect(Item item);
 
   /// Creates an [Action] to perform this command on the item at [index] in
   /// [view].
-  Action getAction(int index, _ItemView view);
+  Action getAction(int index, ItemLocation location);
 }
 
 class _DropItemCommand extends _ItemCommand {
   bool get showGroundItems => false;
 
-  String query(_ItemView view) => view.dropQuery;
+  String query(ItemLocation location) {
+    switch (location) {
+      case ItemLocation.INVENTORY: return 'Drop which item?';
+      case ItemLocation.EQUIPMENT: return 'Unequip and drop which item?';
+    }
+
+    throw "unreachable";
+  }
+
   bool canSelect(Item item) => true;
-  Action getAction(int index, _ItemView view) => view.getDropAction(index);
+
+  Action getAction(int index, ItemLocation location) =>
+      new DropAction(location, index);
 }
 
 class _UseItemCommand extends _ItemCommand {
-  String query(_ItemView view) => view.useQuery;
+  String query(ItemLocation location) {
+    switch (location) {
+      case ItemLocation.INVENTORY: return 'Use or equip which item?';
+      case ItemLocation.EQUIPMENT: return 'Unequip which item?';
+      case ItemLocation.ON_GROUND: return 'Pick up and use which item?';
+    }
+
+    throw "unreachable";
+  }
+
   bool canSelect(Item item) => item.canUse || item.canEquip;
-  Action getAction(int index, _ItemView view) => view.getUseAction(index);
+
+  Action getAction(int index, ItemLocation location) =>
+      new UseAction(location, index);
 }

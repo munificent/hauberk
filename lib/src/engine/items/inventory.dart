@@ -3,7 +3,20 @@ library hauberk.engine.items.inventory;
 import 'dart:collection';
 
 import '../actor.dart';
+import '../hero/hero.dart';
 import 'item.dart';
+
+/// An [Item] in the game can be either on the ground in the level, or held by
+/// the [Hero] in their [Inventory] or [Equipment]. This enum describes which
+/// of those is the case.
+class ItemLocation {
+  static const ON_GROUND = const ItemLocation("on ground");
+  static const INVENTORY = const ItemLocation("inventory");
+  static const EQUIPMENT = const ItemLocation("equipment");
+
+  final String name;
+  const ItemLocation(this.name);
+}
 
 abstract class ItemCollection extends Iterable<Item> {
   int get length;
