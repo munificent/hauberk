@@ -139,8 +139,10 @@ class _FrequencyDrop implements Drop {
 
     for (var i = 0; i < _drops.length; i++) {
       roll -= _drops[i]._frequency;
-      if (roll > 0) continue;
-      _drops[i]._drop.spawnDrop(addItem);
+      if (roll < 0) {
+        _drops[i]._drop.spawnDrop(addItem);
+        return;
+      }
     }
   }
 }
