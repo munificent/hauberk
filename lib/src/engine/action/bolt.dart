@@ -4,9 +4,9 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';
 import '../actor.dart';
+import '../attack.dart';
 import '../game.dart';
 import '../los.dart';
-import '../melee.dart';
 
 /// Fires a bolt, a straight line of an elemental attack that stops at the
 /// first [Actor] is hits or opaque tile.

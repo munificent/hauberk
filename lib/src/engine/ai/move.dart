@@ -13,8 +13,8 @@ import '../action/ray.dart';
 import '../action/spawn.dart';
 import '../action/teleport.dart';
 import '../ai/flow.dart';
+import '../attack.dart';
 import '../circle.dart';
-import '../melee.dart';
 import '../monster.dart';
 import '../option.dart';
 

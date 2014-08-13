@@ -3,12 +3,12 @@ library hauberk.engine.actor;
 import 'package:piecemeal/piecemeal.dart';
 
 import 'action/action.dart';
+import 'attack.dart';
 import 'condition.dart';
 import 'element.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'log.dart';
-import 'melee.dart';
 
 abstract class Thing implements Noun {
   Vec _pos;

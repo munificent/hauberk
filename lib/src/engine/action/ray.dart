@@ -5,8 +5,8 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';
+import '../attack.dart';
 import '../game.dart';
-import '../melee.dart';
 
 /// Creates a 45° swath of damage that radiates out from a point.
 class RayAction extends Action {

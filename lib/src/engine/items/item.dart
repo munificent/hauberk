@@ -4,7 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../actor.dart';
-import '../melee.dart';
+import '../attack.dart';
 
 /// A thing that can be picked up.
 class Item extends Thing implements Comparable {

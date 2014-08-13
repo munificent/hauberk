@@ -4,13 +4,13 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+import 'ai/move.dart';
+import 'attack.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'hero/hero.dart';
 import 'items/item.dart';
 import 'log.dart';
-import 'melee.dart';
-import 'ai/move.dart';
 import 'monster.dart';
 import 'option.dart';
 

@@ -2,7 +2,7 @@ library hauberk.engine.hero.hero_class;
 
 import '../action/action.dart';
 import '../actor.dart';
-import '../melee.dart';
+import '../attack.dart';
 import '../monster.dart';
 import 'hero.dart';
 import 'command.dart';

@@ -9,13 +9,13 @@ import 'action/action.dart';
 import 'actor.dart';
 import 'ai/monster_states.dart';
 import 'ai/move.dart';
+import 'attack.dart';
 import 'breed.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'hero/hero.dart';
 import 'log.dart';
 import 'los.dart';
-import 'melee.dart';
 
 class Monster extends Actor {
   final Breed breed;
