@@ -89,7 +89,7 @@ void treasure() {
   category(r"$", "treasure/rock");
   item("Turquoise Stone", 15, aqua);
   item("Onyx Stone",      20, darkGray);
-  item("Malachite Stone", 25, darkAqua);
+  item("Malachite Stone", 25, lightGreen);
   item("Jade Stone",      30, darkGreen);
   item("Pearl",           35, lightYellow);
   item("Opal",            40, lightPurple);
