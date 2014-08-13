@@ -67,6 +67,7 @@ void treasure() {
   // TODO: Use cent symbol?
   // TODO: Use in recipe.
   // TODO: Make stuff drop.
+  // Coins
   category(r"$", "treasure/coin");
   item("Copper Coin", 1, brown);
   item("Bronze Coin", 15, darkGold);
@@ -74,26 +75,25 @@ void treasure() {
   item("Electrum Coin", 40, lightGold);
   item("Gold Coin", 60, gold);
   item("Platinum Coin", 80, lightGray);
+  
+  // Gems
+  category(r"$", "treasure/gem");
+  item("Amethyst",      3,  lightPurple);
+  item("Sapphire",      12, blue);
+  item("Emerald",       20, green);
+  item("Ruby",          35, red);
+  item("Diamond",       60, white);
+  item("Blue Diamond",  80, lightBlue);
 
-  /*
-
-  Gems:
-  Amethyst[s] LightPurple $
-  Sapphire[s] Blue $
-  Emerald[s] Green $
-  Ruby|Rubies Red $
-  Diamond[s] White $
-  Blue Diamond[s] LightBlue $
-
-  Rocks:
-  Turquoise Stone[s] Cyan $
-  Onyx Stone[s] DarkGray $
-  Malachite Stone[s] DarkCyan $
-  Jade Stone[s] DarkGreen $
-  Pearl[s] LightYellow $
-  Opal[s] LightPurple $
-
-   */
+  // Rocks
+  category(r"$", "treasure/rock");
+  item("Turquoise Stone", 15, aqua);
+  item("Onyx Stone", 20, darkGray);
+  item("Malachite Stone", 25, darkAqua);
+  item("Jade Stone", 30, darkGreen);
+  item("Pearl", 35, lightYellow);
+  item("Opal", 40, lightPurple);
+  item("Fire Opal", 50, lightOrange);
 }
 
 void pelts() {
