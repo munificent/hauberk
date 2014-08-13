@@ -56,7 +56,7 @@ abstract class Move {
 }
 
 class BoltMove extends Move {
-  final Attack attack;
+  final RangedAttack attack;
 
   int get range => attack.range;
 
@@ -97,7 +97,8 @@ class BoltMove extends Move {
   String toString() => "Bolt $attack rate: $rate";
 }
 
-class ConeMove extends Move {  final Attack attack;
+class ConeMove extends Move {
+  final RangedAttack attack;
   int get range => attack.range;
 
   num get experience => attack.averageDamage * 3.0 *

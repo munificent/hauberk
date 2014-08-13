@@ -17,7 +17,7 @@ class RayAction extends Action {
   /// [_from] to this.
   final Vec _to;
 
-  final Attack _attack;
+  final RangedAttack _attack;
 
   /// The tiles that have already been touched by the effect. Used to make sure
   /// we don't hit the same tile multiple times.

@@ -17,7 +17,7 @@ class Item extends Thing implements Comparable {
 
   get appearance => type.appearance;
 
-  bool get isRanged => type.attack != null && type.attack.isRanged;
+  bool get isRanged => type.attack is RangedAttack;
 
   bool get canEquip => equipSlot != null;
   String get equipSlot => type.equipSlot;

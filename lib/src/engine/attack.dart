@@ -12,6 +12,47 @@ import 'element.dart';
 import 'game.dart';
 import 'log.dart';
 
+// item needs:
+// attack (covers both melee and ranged since can't use weapon for both)
+// equipped range (determines melee weapon versus ranged)
+// thrown range
+// thrown... effect? will be attack for some things, other action for other
+//     things
+//
+// if you throw a rock and it hits a monster, it performs an attack and falls
+//    to the ground
+//    if it reaches the end of its range, it lands on the ground
+//
+// if you throw a fire potion and it hits a monster, it does an attack and
+//    a ball of damage
+//    if it reaches the end of its range, it blows up
+//
+// if you throw a dagger -> works like rock
+//
+// if you throw a scroll and it hits a monster, it does no damage and lands on
+//    the ground
+
+// range is used in bolt action to stop
+// it's used in ray action for the same reason
+// the corresponding bolt and cone moves also use it
+// the archery command gets it from the weapon and passes it out
+
+/// Armor reduces damage by an inverse curve such that increasing armor has
+/// less and less effect. Damage is reduced to the following:
+///
+///     armor damage
+///     ------------
+///     0     100%
+///     40    50%
+///     80    33%
+///     120   25%
+///     160   20%
+///     ...   etc.
+num getArmorMultiplier(num armor) {
+  // Damage is never increased.
+  return 1.0 / (1.0 + math.max(0, armor) / 40.0);
+}
+
 class Attack {
   /// The thing performing the attack. If `null`, then the attacker will be
   /// used.
@@ -22,7 +63,8 @@ class Attack {
 
   /// The bonus applied to the defender's base dodge ability. A higher bonus
   /// makes it more likely the attack will make contact.
-  final num strikeBonus;
+  num get strikeBonus => _strikeBonus;
+  num _strikeBonus = 0.0;
 
   /// The average damage. The actual damage will be a `Rng.triangleInt` centered
   /// on this with a range of 1/2 of its value.
@@ -30,19 +72,23 @@ class Attack {
 
   /// Additional damage added to [baseDamage] after the multiplier has been
   /// applied.
-  final num damageBonus;
+  num get damageBonus => _damageBonus;
+  num _damageBonus = 0.0;
 
   /// The multiplier for [baseDamage].
-  final num damageScale;
+  num get damageScale => _damageScale;
+  num _damageScale = 1.0;
 
   /// The average damage inflicted by the attack.
   num get averageDamage => baseDamage * damageScale + damageBonus;
 
   /// The element for the attack.
-  final Element element;
+  Element get element => _element;
+  Element _element = Element.NONE;
 
   /// The defender's armor.
-  final num armor;
+  num get armor => _armor;
+  num _armor = 0.0;
 
   /// The defender's level of resistance to the attack's element.
   ///
@@ -50,69 +96,39 @@ class Attack {
   /// 1/(resistance + 1), so that one resists is half damage, two is third, etc.
   /// Secondary effects from the element are nullified if the defender has any
   /// resistance.
-  final int resistance;
+  int get resistance => _resistance;
+  int _resistance = 0;
 
-  /// The maximum range of a missile attack, or `0` if the attack isn't ranged.
-  final int range;
-
-  bool get isRanged => range != 0;
-
-  Attack(String verb, num baseDamage, Element element, [Noun noun, int range])
-      : this._(noun, verb, 0.0, baseDamage, 0.0, 1.0, element, 0, 0,
-          range != null ? range : 0);
-
-  Attack._(this.noun, this.verb, this.strikeBonus, this.baseDamage,
-      this.damageBonus, this.damageScale, this.element, this.armor,
-      this.resistance, this.range);
+  Attack(this.verb, this.baseDamage, this._element, [this.noun]);
 
   /// Returns a new attack identical to this one but with [offset] added.
-  Attack addDamage(num offset) {
-    return new Attack._(noun, verb, strikeBonus, baseDamage,
-        damageBonus + offset, damageScale, element, armor, resistance, range);
-  }
+  Attack addDamage(num offset) => _clone().._damageBonus += offset;
 
   /// Returns a new attack identical to this one but with [element].
-  Attack brand(Element element) {
-    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
-        damageScale, element, armor, resistance, range);
-  }
+  Attack brand(Element element) => _clone().._element = element;
 
   /// Returns a new attack identical to this one but with [bonus] added to the
   /// strike modifier.
-  Attack addStrike(num bonus) {
-    return new Attack._(noun, verb, strikeBonus + bonus, baseDamage,
-        damageBonus, damageScale, element, armor, resistance, range);
-  }
+  Attack addStrike(num bonus) => _clone().._strikeBonus += bonus;
 
   /// Returns a new attack identical to this one but with damage scaled by
   /// [factor].
-  Attack multiplyDamage(num factor) {
-    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
-        damageScale * factor, element, armor, resistance, range);
-  }
+  Attack multiplyDamage(num factor) => _clone().._damageScale *= factor;
 
   /// Returns a new attack with [armor] added to it.
-  Attack addArmor(num armor) {
-    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
-        damageScale, element, this.armor + armor, resistance, range);
-  }
+  Attack addArmor(num armor) => _clone().._armor += armor;
 
   /// Returns a new attack with [resist] added to it.
-  Attack addResistance(int resist) {
-    return new Attack._(noun, verb, strikeBonus, baseDamage, damageBonus,
-        damageScale, element, this.armor + armor, resistance + resist, range);
-  }
+  Attack addResistance(int resist) => _clone().._resistance += resist;
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
   /// [action].
-  void perform(Action action, Actor attacker, Actor defender,
-      {bool canMiss}) {
+  void perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
     var attack = defender.defend(this);
     attack._perform(action, attacker, defender, canMiss: canMiss);
   }
 
-  void _perform(Action action, Actor attacker, Actor defender,
-      {bool canMiss}) {
+  void _perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
     if (canMiss == null) canMiss = true;
 
     var attackNoun = noun != null ? noun : attacker;
@@ -233,20 +249,32 @@ class Attack {
 
     return result;
   }
+
+  void _copyTo(Attack other) {
+    other._strikeBonus = strikeBonus;
+    other._damageBonus = damageBonus;
+    other._damageScale = damageScale;
+    other._armor = armor;
+    other._resistance = resistance;
+  }
+
+  Attack _clone() {
+    var attack = new Attack(verb, baseDamage, element, noun);
+    _copyTo(attack);
+    return attack;
+  }
 }
 
-/// Armor reduces damage by an inverse curve such that increasing armor has
-/// less and less effect. Damage is reduced to the following:
-///
-///     armor damage
-///     ------------
-///     0     100%
-///     40    50%
-///     80    33%
-///     120   25%
-///     160   20%
-///     ...   etc.
-num getArmorMultiplier(num armor) {
-  // Damage is never increased.
-  return 1.0 / (1.0 + math.max(0, armor) / 40.0);
+class RangedAttack extends Attack {
+  /// The maximum range of the attack.
+  final int range;
+
+  RangedAttack(String noun, String verb, num baseDamage, Element element, this.range)
+      : super(verb, baseDamage, element, new Noun(noun));
+
+  RangedAttack _clone() {
+    var attack = new RangedAttack(noun.nounText, verb, baseDamage, element, range);
+    _copyTo(attack);
+    return attack;
+  }
 }

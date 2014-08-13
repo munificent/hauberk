@@ -6,8 +6,8 @@ import '../engine.dart';
 
 /// Creates a new [Attack].
 Attack attack(String verb, int damage, [Element element = Element.NONE,
-    Noun noun, int range]) {
-  return new Attack(verb, damage, element, noun, range);
+    Noun noun]) {
+  return new Attack(verb, damage, element, noun);
 }
 
 Glyph black(char, [Color back = Color.BLACK])       => new Glyph.fromDynamic(char, Color.BLACK, back);

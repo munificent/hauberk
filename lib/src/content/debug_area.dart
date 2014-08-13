@@ -48,10 +48,8 @@ class DebugConeArea extends StageBuilder {
       var breed = new Breed("${element} breather", Pronoun.IT,
           new Glyph(element.name.substring(0, 1).toUpperCase(), Color.WHITE), [
       ], [
-        new BoltMove(2,
-          new Attack("hits", 1, element, new Noun("element"), 12)),
-        new ConeMove(2,
-          new Attack("hits", 1, element, new Noun("element"), 12))
+        new BoltMove(2, new RangedAttack("element", "hits", 1, element, 12)),
+        new ConeMove(2, new RangedAttack("element", "hits", 1, element, 12))
       ], null, maxHealth: 100, tracking: 0, meander: 0, speed: 0,
           flags: new Set.from(["immobile"]));
 

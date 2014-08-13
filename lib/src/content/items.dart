@@ -177,18 +177,17 @@ void scrolls() {
   // TODO: Make monsters drop these.
   category("?", "magic/scroll/blast");
   item("Wind Scroll", 2, white,
-      use: () => new RingSelfAction(
-          new Attack("blasts", 8, Element.AIR, new Noun("the wind"), 8)));
+      use: () => new RingSelfAction(new RangedAttack("the wind", "blasts",
+          8, Element.AIR, 8)));
   item("Ice Scroll", 5, lightBlue,
-      use: () => new RingSelfAction(
-          new Attack("freezes", 15, Element.COLD, new Noun("the ice"), 9)));
+      use: () => new RingSelfAction(new RangedAttack("the ice", "freezes",
+          15, Element.COLD, 9)));
   item("Fire Scroll", 8, red,
-      use: () => new RingSelfAction(
-          new Attack("burns", 22, Element.FIRE, new Noun("the fire"), 10)));
+      use: () => new RingSelfAction(new RangedAttack("the fire", "burns",
+          22, Element.FIRE, 10)));
   item("Lightning Scroll", 12, lightPurple,
-      use: () => new RingSelfAction(
-          new Attack("shocks", 34, Element.LIGHTNING, new Noun("the lightning"),
-              11)));
+      use: () => new RingSelfAction(new RangedAttack("the lightning", "shocks",
+          34, Element.LIGHTNING, 11)));
   // TODO: Other elements, other intensities.
 }
 
@@ -336,8 +335,7 @@ void weapon(String name, int level, appearance, String verb, int damage) {
 void ranged(String name, int level, appearance, String noun, {int damage,
     int range}) {
   item(name, level, appearance, equipSlot: "weapon",
-      attack: attack("pierce[s]", damage, Element.NONE, new Noun(noun),
-          range));
+      attack: new RangedAttack(noun, "pierce[s]", damage, Element.NONE, range));
 }
 
 void armor(String name, int level, appearance, int armor) {

@@ -688,44 +688,34 @@ Breed breed(String name, Glyph appearance(char), int health, List actions, {
 Move heal({num rate: 5, int amount}) => new HealMove(rate, amount);
 
 Move arrow({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("hits", damage, Element.NONE,
-        new Noun("the arrow"), 8));
+    new BoltMove(rate, new RangedAttack("the arrow", "hits", damage, Element.NONE, 8));
 
 Move waterBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("splashes", damage, Element.WATER,
-        new Noun("the jet"), 8));
+    new BoltMove(rate, new RangedAttack("the jet", "splashes", damage, Element.WATER, 8));
 
 Move sparkBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("zaps", damage, Element.LIGHTNING,
-        new Noun("the spark"), 8));
+    new BoltMove(rate, new RangedAttack("the spark", "zaps", damage, Element.LIGHTNING, 8));
 
 Move iceBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("freezes", damage, Element.COLD,
-        new Noun("the ice"), 8));
+    new BoltMove(rate, new RangedAttack("the ice", "freezes", damage, Element.COLD, 8));
 
 Move fireBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("burns", damage, Element.FIRE,
-        new Noun("the flame"), 8));
+    new BoltMove(rate, new RangedAttack("the flame", "burns", damage, Element.FIRE, 8));
 
 Move darkBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("crushes", damage, Element.DARK,
-        new Noun("the darkness"), 10));
+    new BoltMove(rate, new RangedAttack("the darkness", "crushes", damage, Element.DARK, 10));
 
 Move lightBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("sears", damage, Element.LIGHT,
-        new Noun("the light"), 10));
+    new BoltMove(rate, new RangedAttack("the light", "sears", damage, Element.LIGHT, 10));
 
 Move poisonBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new Attack("engulfs", damage, Element.POISON,
-        new Noun("the poison"), 8));
+    new BoltMove(rate, new RangedAttack("the poison", "engulfs", damage, Element.POISON, 8));
 
 Move fireCone({num rate: 5, int damage, int range}) =>
-    new ConeMove(rate, new Attack("burns", damage, Element.FIRE,
-        new Noun("the flame"), range));
+    new ConeMove(rate, new RangedAttack("the flame", "burns", damage, Element.FIRE, range));
 
 Move lightningCone({num rate: 5, int damage, int range}) =>
-    new ConeMove(rate, new Attack("shocks", damage, Element.LIGHTNING,
-        new Noun("the lightning"), range));
+    new ConeMove(rate, new RangedAttack("the lightning", "shocks", damage, Element.LIGHTNING, range));
 
 Move insult({num rate: 5}) => new InsultMove(rate);
 Move howl({num rate: 10, int range: 10}) => new HowlMove(rate, range);

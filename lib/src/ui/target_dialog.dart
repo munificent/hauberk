@@ -14,8 +14,7 @@ class TargetDialog extends Screen {
 
   final GameScreen _gameScreen;
   final Game _game;
-  final num _minRange;
-  final num _maxRange;
+  final num _range;
   final List<Monster> _monsters = <Monster>[];
 
   int _animateOffset = 0;
@@ -31,8 +30,7 @@ class TargetDialog extends Screen {
 
   TargetDialog(this._gameScreen, Game game, TargetCommand command)
       : _game = game,
-        _minRange = command.getMinRange(game),
-        _maxRange = command.getMaxRange(game) {
+        _range = command.getRange(game) {
     // Default to targeting the nearest monster.
     var nearest;
     for (var actor in game.stage.actors) {
@@ -41,7 +39,7 @@ class TargetDialog extends Screen {
 
       // Must be within range.
       var toMonster = actor.pos - _game.hero.pos;
-      if (toMonster > _maxRange) continue;
+      if (toMonster > _range) continue;
 
       _monsters.add(actor);
 
@@ -95,14 +93,14 @@ class TargetDialog extends Screen {
 
       // Must be in range.
       var toPos = pos - _game.hero.pos;
-      if (toPos > _maxRange) {
+      if (toPos > _range) {
         _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
         continue;
       }
 
       // Show the damage ranges.
       var color = Color.YELLOW;
-      if (toPos <= _minRange || toPos > _maxRange * 2 / 3) {
+      if (toPos > _range * 2 / 3) {
         color = Color.DARK_YELLOW;
       }
 
@@ -137,7 +135,7 @@ class TargetDialog extends Screen {
     if (reachedTarget) {
       var targetColor = Color.YELLOW;
       var toTarget = _target - _game.hero.pos;
-      if (toTarget <= _minRange || toTarget > _maxRange * 2 / 3) {
+      if (toTarget > _range * 2 / 3) {
         targetColor = Color.DARK_YELLOW;
       }
 
