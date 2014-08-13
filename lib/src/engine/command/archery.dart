@@ -1,5 +1,7 @@
 library hauberk.engine.command.archery;
 
+import 'package:piecemeal/src/vec.dart';
+
 import '../action/action.dart';
 import '../action/bolt.dart';
 import '../game.dart';
