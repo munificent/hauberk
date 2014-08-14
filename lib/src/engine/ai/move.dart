@@ -90,9 +90,8 @@ class BoltMove extends Move {
     return true;
   }
 
-  Action onGetAction(Monster monster) {
-    return new BoltAction(monster.pos, monster.game.hero.pos, attack);
-  }
+  Action onGetAction(Monster monster) =>
+      new BoltAction(monster.game.hero.pos, attack);
 
   String toString() => "Bolt $attack rate: $rate";
 }

@@ -73,8 +73,9 @@ class GameScreen extends Screen {
 
       case Input.FORFEIT: ui.push(new ForfeitDialog(_game)); break;
       case Input.SELECT_COMMAND: ui.push(new SelectCommandDialog(_game)); break;
-      case Input.DROP: ui.push(new ItemDialog.drop(_game)); break;
-      case Input.USE: ui.push(new ItemDialog.use(_game)); break;
+      case Input.DROP: ui.push(new ItemDialog.drop(this, _game)); break;
+      case Input.USE: ui.push(new ItemDialog.use(this, _game)); break;
+      case Input.TOSS: ui.push(new ItemDialog.toss(this, _game)); break;
 
       case Input.REST:
         if (!_game.hero.rest()) {
@@ -126,7 +127,8 @@ class GameScreen extends Screen {
             _fireAtTarget();
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, _game, command));
+            ui.push(new TargetDialog(this, _game, command.getRange(_game),
+                (_) => _fireAtTarget()));
           }
         } else if (command is DirectionCommand) {
           ui.push(new DirectionDialog(this, _game));
@@ -141,7 +143,8 @@ class GameScreen extends Screen {
           _game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
-          action = new EquipAction(_game.hero.inventory.lastUnequipped, false);
+          action = new EquipAction(ItemLocation.INVENTORY,
+              _game.hero.inventory.lastUnequipped);
         }
         break;
     }
@@ -231,12 +234,11 @@ class GameScreen extends Screen {
         // Refresh the log.
         dirty();
       } else if (result is TargetCommand) {
-        ui.push(new TargetDialog(this, _game, result));
+        ui.push(new TargetDialog(this, _game, result.getRange(_game),
+            (_) => _fireAtTarget()));
       } else if (result is DirectionCommand) {
         ui.push(new DirectionDialog(this, _game));
       }
-    } else if (popped is TargetDialog && result) {
-      _fireAtTarget();
     } else if (popped is DirectionDialog && result != Direction.NONE) {
       _fireTowards(result);
     }

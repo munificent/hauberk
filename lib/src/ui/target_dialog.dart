@@ -7,6 +7,11 @@ import '../engine.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
+/// A callback invoked when a target has been selected.
+typedef SelectTarget(Vec target);
+
+// TODO: Support targeting floor tiles and not just actors.
+
 /// Modal dialog for letting the user select a target to perform a [Command] on.
 class TargetDialog extends Screen {
   static const _NUM_FRAMES = 5;
@@ -15,6 +20,7 @@ class TargetDialog extends Screen {
   final GameScreen _gameScreen;
   final Game _game;
   final num _range;
+  final SelectTarget _onSelect;
   final List<Monster> _monsters = <Monster>[];
 
   int _animateOffset = 0;
@@ -28,9 +34,9 @@ class TargetDialog extends Screen {
 
   bool get isTransparent => true;
 
-  TargetDialog(this._gameScreen, Game game, TargetCommand command)
-      : _game = game,
-        _range = command.getRange(game) {
+  // TODO: Get Game from GameScreen.
+  TargetDialog(this._gameScreen, Game game, this._range, this._onSelect)
+      : _game = game {
     // Default to targeting the nearest monster.
     var nearest;
     for (var actor in game.stage.actors) {
@@ -56,8 +62,14 @@ class TargetDialog extends Screen {
 
   bool handleInput(Input input) {
     switch (input) {
-      case Input.OK: ui.pop(_target != null); break;
-      case Input.CANCEL: ui.pop(false); break;
+      case Input.OK:
+        if (_target != null) {
+          ui.pop();
+          _onSelect(_target);
+        }
+        break;
+
+      case Input.CANCEL: ui.pop(); break;
 
       case Input.NW: _changeTarget(Direction.NW); break;
       case Input.N: _changeTarget(Direction.N); break;

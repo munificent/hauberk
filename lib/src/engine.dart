@@ -14,6 +14,7 @@ export 'engine/action/item.dart';
 export 'engine/action/ray.dart';
 export 'engine/action/spawn.dart';
 export 'engine/action/teleport.dart';
+export 'engine/action/toss.dart';
 export 'engine/action/walk.dart';
 export 'engine/actor.dart';
 export 'engine/area.dart';

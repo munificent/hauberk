@@ -22,7 +22,9 @@ class Input {
   static const DROP = const Input("DROP");
   static const USE = const Input("USE");
   static const PICK_UP = const Input("PICK_UP");
+  static const TOSS = const Input("TOSS");
   static const SWAP = const Input("SWAP");
+
   static const SELECT_COMMAND = const Input("SELECT_COMMAND");
 
   /// Directional inputs.

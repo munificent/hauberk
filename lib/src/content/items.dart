@@ -13,6 +13,9 @@ var _glyph;
 
 String _category;
 String _equipSlot;
+String _verb;
+int _tossDamage;
+int _tossRange;
 
 /// Static class containing all of the [ItemType]s.
 class Items {
@@ -32,6 +35,10 @@ class Items {
     // &   Chests, Containers
 
     // Unused: ; : ` % ^ < >
+
+    category(",", null);
+    item("Rock", 1, lightBrown, tossAttack:
+        new RangedAttack("the rock", "hits", 6, Element.EARTH, 8));
 
     treasure();
     pelts();
@@ -67,7 +74,7 @@ void treasure() {
   // TODO: Use cent symbol?
   // TODO: Use in recipe.
   // TODO: Make stuff drop.
-  category(r"$", "treasure/coin");
+  category(r"$", "treasure/coin", tossDamage: 1, tossRange: 7);
   item("Copper Coin", 1, brown);
   item("Bronze Coin", 15, darkGold);
   item("Silver Coin", 30, gray);
@@ -97,7 +104,7 @@ void treasure() {
 }
 
 void pelts() {
-  category("%");
+  category("%", null);
   item("Flower",        1, lightAqua); // TODO: Use in recipe.
   item("Fur Pelt",      1, lightBrown);
   item("Insect Wing",   1, purple);
@@ -109,8 +116,11 @@ void pelts() {
 
 void potions() {
   // TODO: Make these foods?
+
+  // TODO: Potions should shatter when thrown. Some should perform an effect.
+
   // Healing.
-  category("!", "magic/potion/healing");
+  category("!", "magic/potion/healing", tossDamage: 1, tossRange: 7);
   item("Soothing Balm", 1, lightRed,
       use: () => new HealAction(24));
   item("Mending Salve", 4, red,
@@ -122,7 +132,7 @@ void potions() {
   item("Potion of Rejuvenation", 65, purple,
       use: () => new HealAction(1000, curePoison: true));
 
-  category("!", "magic/potion/resistance");
+  category("!", "magic/potion/resistance", tossDamage: 1, tossRange: 7);
   resistSalve(String name, int level, appearance, Element element) {
     item("Salve of $name Resistance", level, appearance,
         use: () => new ResistAction(40, element));
@@ -146,7 +156,7 @@ void potions() {
       use: () => new HealAction(0, curePoison: true));
 
   // Speed.
-  category("!", "magic/potion/speed");
+  category("!", "magic/potion/speed", tossDamage: 1, tossRange: 7);
   item("Potion of Quickness", 3, lightGreen,
       use: () => new HasteAction(20, 1));
   item("Potion of Alacrity", 18, green,
@@ -155,11 +165,28 @@ void potions() {
       use: () => new HasteAction(40, 3));
 
   // dram, draught, elixir, philter
+
+  // TODO: Make monsters drop these.
+  category("?", "magic/potion/bottled", tossDamage: 1, tossRange: 7);
+  item("Bottled Wind", 2, white,
+      use: () => new RingSelfAction(new RangedAttack("the wind", "blasts",
+          8, Element.AIR, 6)));
+  item("Bottled Ice", 5, lightBlue,
+      use: () => new RingSelfAction(new RangedAttack("the ice", "freezes",
+          15, Element.COLD, 7)));
+  item("Bottled Fire", 8, red,
+      use: () => new RingSelfAction(new RangedAttack("the fire", "burns",
+          22, Element.FIRE, 8)));
+  item("Bottled Lightning", 12, lightPurple,
+      use: () => new RingSelfAction(new RangedAttack("the lightning", "shocks",
+          34, Element.LIGHTNING, 9)));
+  // TODO: Other elements, other intensities.
+
 }
 
 void scrolls() {
   // Teleportation.
-  category("?", "magic/scroll/teleportation");
+  category("?", "magic/scroll/teleportation", tossDamage: 1, tossRange: 5);
   item("Scroll of Sidestepping", 3, lightPurple,
       use: () => new TeleportAction(6));
   item("Scroll of Phasing", 8, purple,
@@ -170,61 +197,45 @@ void scrolls() {
       use: () => new TeleportAction(48));
 
   // Detection.
-  category("?", "magic/scroll/detection");
+  category("?", "magic/scroll/detection", tossDamage: 1, tossRange: 5);
   item("Scroll of Item Detection", 2, lightOrange,
       use: () => new DetectItemsAction());
-
-  // TODO: Make monsters drop these.
-  category("?", "magic/scroll/blast");
-  item("Wind Scroll", 2, white,
-      use: () => new RingSelfAction(new RangedAttack("the wind", "blasts",
-          8, Element.AIR, 8)));
-  item("Ice Scroll", 5, lightBlue,
-      use: () => new RingSelfAction(new RangedAttack("the ice", "freezes",
-          15, Element.COLD, 9)));
-  item("Fire Scroll", 8, red,
-      use: () => new RingSelfAction(new RangedAttack("the fire", "burns",
-          22, Element.FIRE, 10)));
-  item("Lightning Scroll", 12, lightPurple,
-      use: () => new RingSelfAction(new RangedAttack("the lightning", "shocks",
-          34, Element.LIGHTNING, 11)));
-  // TODO: Other elements, other intensities.
 }
 
 void weapons() {
   // Bludgeons.
-  category(r"\", "equipment/weapon/club");
-  weapon("Stick", 1, brown, "hit[s]", 4);
-  weapon("Cudgel", 3, gray, "hit[s]", 5);
-  weapon("Club", 6, lightBrown, "hit[s]", 6);
+  category(r"\", "equipment/weapon/club", verb: "hit[s]");
+  weapon("Stick",          1, brown,       4,  3, 7);
+  weapon("Cudgel",         3, gray,        5,  4, 7);
+  weapon("Club",           6, lightBrown,  6,  5, 7);
 
   // Staves.
-  category("_", "equipment/weapon/staff");
-  weapon("Walking Stick", 2, darkBrown, "hit[s]", 5);
-  weapon("Staff", 5, lightBrown, "hit[s]", 7);
-  weapon("Quarterstaff", 11, brown, "hit[s]", 12);
+  category("_", "equipment/weapon/staff", verb: "hit[s]");
+  weapon("Walking Stick",  2, darkBrown,   5,  3, 6);
+  weapon("Staff",          5, lightBrown,  7,  5, 6);
+  weapon("Quarterstaff",  11, brown,      12,  8, 6);
 
   // Hammers.
-  category("=", "equipment/weapon/hammer");
-  weapon("Hammer", 27, brown, "bash[es]", 16);
-  weapon("Mattock", 39, darkBrown, "bash[es]", 20);
-  weapon("War Hammer", 45, lightGray, "bash[es]", 24);
+  category("=", "equipment/weapon/hammer", verb: "bash[es]");
+  weapon("Hammer",        27, brown,      16, 12, 5);
+  weapon("Mattock",       39, darkBrown,  20, 16, 5);
+  weapon("War Hammer",    45, lightGray,  24, 20, 5);
 
-  category("=", "equipment/weapon/mace");
-  weapon("Morningstar", 24, gray, "bash[es]", 13);
-  weapon("Mace", 33, darkGray, "bash[es]", 18);
+  category("=", "equipment/weapon/mace", verb: "bash[es]");
+  weapon("Morningstar",   24, gray,       13, 11, 5);
+  weapon("Mace",          33, darkGray,   18, 16, 5);
 
-  category("~", "equipment/weapon/whip");
-  weapon("Whip", 4, lightBrown, "whip[s]", 5);
-  weapon("Chain Whip", 15, darkGray, "whip[s]", 9);
-  weapon("Flail", 27, darkGray, "whip[s]", 14);
+  category("~", "equipment/weapon/whip", verb: "whip[s]");
+  weapon("Whip",           4, lightBrown,  5,  1, 5);
+  weapon("Chain Whip",    15, darkGray,    9,  2, 5);
+  weapon("Flail",         27, darkGray,   14,  4, 5);
 
-  category("|", "equipment/weapon/sword");
-  weapon("Rapier", 4, gray, "slash[es]", 5);
-  weapon("Shortsword", 9, darkGray, "slash[es]", 8);
-  weapon("Scimitar", 15, lightGray, "slash[es]", 11);
-  weapon("Cutlass", 21, lightGold, "slash[es]", 15);
-  weapon("Falchion", 34, white, "slash[es]", 21);
+  category("|", "equipment/weapon/sword", verb: "slash[es]");
+  weapon("Rapier",         4, gray,        5,  4, 6);
+  weapon("Shortsword",     9, darkGray,    8,  6, 6);
+  weapon("Scimitar",      15, lightGray,  11,  9, 6);
+  weapon("Cutlass",       21, lightGold,  15, 11, 6);
+  weapon("Falchion",      34, white,      21, 15, 6);
 
   /*
 
@@ -238,50 +249,51 @@ void weapons() {
   */
 
   // Knives.
-  category("|", "equipment/weapon/dagger");
-  weapon("Knife", 1, gray, "stab[s]", 5);
-  weapon("Dirk", 3, lightGray, "stab[s]", 6);
-  weapon("Dagger", 6, white, "stab[s]", 8);
-  weapon("Stiletto", 10, darkGray, "stab[s]", 11);
-  weapon("Rondel", 20, lightAqua, "stab[s]", 14);
-  weapon("Baselard", 30, lightBlue, "stab[s]", 16);
+  category("|", "equipment/weapon/dagger", verb: "stab[s]");
+  weapon("Knife",          1, gray,        5,  5, 10);
+  weapon("Dirk",           3, lightGray,   6,  6, 10);
+  weapon("Dagger",         6, white,       8,  8, 10);
+  weapon("Stiletto",      10, darkGray,   11, 11, 10);
+  weapon("Rondel",        20, lightAqua,  14, 14, 10);
+  weapon("Baselard",      30, lightBlue,  16, 16, 10);
   // Main-guache
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
   // Spears.
-  category(r"\", "equipment/weapon/spear");
-  weapon("Pointed Stick", 2, brown, "stab[s]", 7);
-  weapon("Spear", 7, gray, "stab[s]", 12);
-  weapon("Angon", 14, lightGray, "stab[s]", 16);
-  weapon("Lance", 28, white, "stab[s]", 24);
-  weapon("Partisan", 35, darkGray, "stab[s]", 36);
+  category(r"\", "equipment/weapon/spear", verb: "stab[s]");
+  weapon("Pointed Stick",  2, brown,       7,  9, 11);
+  weapon("Spear",          7, gray,       12, 15, 11);
+  weapon("Angon",         14, lightGray,  16, 20, 11);
+  weapon("Lance",         28, white,      24, 28, 11);
+  weapon("Partisan",      35, darkGray,   36, 40, 11);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
-  category(r"\", "equipment/weapon/axe");
-  weapon("Hatchet", 6, darkGray, "chop[s]", 10);
-  weapon("Axe", 12, lightBrown, "chop[s]", 16);
-  weapon("Valaska", 20, gray, "chop[s]", 26);
-  weapon("Battleaxe", 30, lightBlue, "chop[s]", 32);
+  category(r"\", "equipment/weapon/axe", verb: "chop[s]");
+  weapon("Hatchet",        6, darkGray,   10, 12, 10);
+  weapon("Axe",           12, lightBrown, 16, 18, 9);
+  weapon("Valaska",       20, gray,       26, 26, 8);
+  weapon("Battleaxe",     30, lightBlue,  32, 32, 7);
 
   // Sling. In a category itself because many box affixes don't apply to it.
-  category("}", "equipment/weapon/sling");
-  ranged("Sling", 3, darkBrown, "the stone", damage: 3, range: 10);
+  category("}", "equipment/weapon/sling", verb: "hit[s]");
+  ranged("Sling",          3, darkBrown,  "the stone",  3, 10, 1, 5);
 
   // Bows.
-  category("}", "equipment/weapon/bow");
-  ranged("Sling", 3, darkBrown, "the stone", damage: 3, range: 10);
-  ranged("Short Bow", 5, brown, "the arrow", damage: 5, range: 11);
-  ranged("Longbow", 13, lightBrown, "the arrow", damage: 8, range: 12);
-  ranged("Crossbow", 28, gray, "the bolt", damage: 12, range: 14);
+  category("}", "equipment/weapon/bow", verb: "hit[s]");
+  ranged("Short Bow",      5, brown,      "the arrow",  5, 12, 2, 5);
+  ranged("Longbow",       13, lightBrown, "the arrow",  8, 14, 3, 5);
+  ranged("Crossbow",      28, gray,       "the bolt",  12, 16, 4, 5);
 }
 
 void bodyArmor() {
-  category("(", "equipment/armor/cloak", "cloak");
+  // TODO: Make some armor throwable.
+
+  category("(", "equipment/armor/cloak", equip: "cloak");
   armor("Cloak", 3, darkBlue, 2);
   armor("Fur Cloak", 9, lightBrown, 3);
 
-  category("(", "equipment/armor/body", "body");
+  category("(", "equipment/armor/body", equip: "body");
   armor("Cloth Shirt", 2, lightGray, 2);
   armor("Leather Shirt", 5, lightBrown, 5);
   armor("Jerkin", 7, orange, 6);
@@ -291,7 +303,7 @@ void bodyArmor() {
   armor("Mail Hauberk", 20, darkGray, 18);
   armor("Scale Mail", 23, lightGray, 21);
 
-  category("(", "equipment/armor/body/robe", "body");
+  category("(", "equipment/armor/body/robe", equip: "body");
   armor("Robe", 2, aqua, 4);
   armor("Fur-lined Robe", 9, darkAqua, 6);
 
@@ -308,7 +320,7 @@ void bodyArmor() {
 }
 
 void boots() {
-  category("]", "equipment/armor/boots", "boots");
+  category("]", "equipment/armor/boots", equip: "boots");
   armor("Leather Sandals", 2, lightBrown, 1);
   armor("Leather Shoes", 8, brown, 2);
   armor("Leather Boots", 14, darkBrown, 4);
@@ -316,7 +328,8 @@ void boots() {
   armor("Greaves", 47, lightGray, 12);
 }
 
-category(glyph, [String category, String equipSlot]) {
+void category(glyph, String category, {String equip, String verb,
+    int tossDamage, int tossRange}) {
   _glyph = glyph;
   if (category == null) {
     _category = null;
@@ -324,18 +337,29 @@ category(glyph, [String category, String equipSlot]) {
     _category = "item/$category";
   }
 
-  _equipSlot = equipSlot;
+  _equipSlot = equip;
+  _verb = verb;
+  _tossDamage = tossDamage;
+  _tossRange = tossRange;
 }
 
-void weapon(String name, int level, appearance, String verb, int damage) {
+void weapon(String name, int level, appearance, int damage, int tossDamage,
+      int tossRange) {
+  var toss = new RangedAttack("the ${name.toLowerCase()}",
+      Log.makeVerbsAgree(_verb, Pronoun.IT), tossDamage, Element.NONE,
+      tossRange);
   item(name, level, appearance, equipSlot: "weapon",
-      attack: attack(verb, damage, Element.NONE));
+      attack: attack(_verb, damage, Element.NONE), tossAttack: toss);
 }
 
-void ranged(String name, int level, appearance, String noun, {int damage,
-    int range}) {
+void ranged(String name, int level, appearance, String noun, int damage,
+    int range, int tossDamage, int tossRange) {
+  var toss = new RangedAttack("the ${name.toLowerCase()}",
+      Log.makeVerbsAgree(_verb, Pronoun.IT), tossDamage, Element.NONE,
+      tossRange);
   item(name, level, appearance, equipSlot: "weapon",
-      attack: new RangedAttack(noun, "pierce[s]", damage, Element.NONE, range));
+      attack: new RangedAttack(noun, "pierce[s]", damage, Element.NONE, range),
+      tossAttack: toss);
 }
 
 void armor(String name, int level, appearance, int armor) {
@@ -343,7 +367,7 @@ void armor(String name, int level, appearance, int armor) {
 }
 
 void item(String name, int level, appearance, {String equipSlot, ItemUse use,
-    Attack attack, int armor: 0}) {
+    Attack attack, Attack tossAttack, int armor: 0}) {
   // If the appearance isn"t an actual glyph, it should be a color function
   // that will be applied to the current glyph.
   if (appearance is! Glyph) {
@@ -355,7 +379,12 @@ void item(String name, int level, appearance, {String equipSlot, ItemUse use,
 
   if (equipSlot == null) equipSlot = _equipSlot;
 
+  if (tossAttack == null && _tossDamage != null) {
+    tossAttack = new RangedAttack("the ${name.toLowerCase()}", "hits",
+        _tossDamage, Element.NONE, _tossRange);
+  }
+
   Items.all[name] = new ItemType(name, appearance, level, _sortIndex++,
-      categories, equipSlot, use, attack, armor);
+      categories, equipSlot, use, attack, tossAttack, armor);
 }
 

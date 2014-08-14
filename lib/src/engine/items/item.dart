@@ -22,8 +22,12 @@ class Item extends Thing implements Comparable {
   bool get canEquip => equipSlot != null;
   String get equipSlot => type.equipSlot;
 
+  /// Whether the item can be used or not.
   bool get canUse => type.use != null;
   Action use() => type.use();
+
+  /// Whether the item can be thrown or not.
+  bool get canToss => type.tossAttack != null;
 
   /// Gets the melee [Attack] for the item, taking into account any [Affixes]s
   // it has.
@@ -92,8 +96,12 @@ class ItemType {
 
   final ItemUse use;
 
-  /// The item's [Attack] or `null` if the item is not a weapon.
+  /// The item's [Attack] or `null` if the item is not an equippable weapon.
   final Attack attack;
+
+  /// The item's [RangedAttack] when thrown or `null` if the item can't be
+  /// thrown.
+  final RangedAttack tossAttack;
 
   final int armor;
 
@@ -110,7 +118,8 @@ class ItemType {
   }
 
   ItemType(this.name, this.appearance, this.level, this.sortIndex,
-      this.categories, this.equipSlot, this.use, this.attack, this.armor);
+      this.categories, this.equipSlot, this.use, this.attack, this.tossAttack,
+      this.armor);
 
   String toString() => name;
 }

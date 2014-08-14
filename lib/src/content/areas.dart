@@ -28,7 +28,7 @@ class Areas {
     if (Debug.ENABLED) debugAreas();
 
     area('Friendly Forest', 80, 34, 7.0);
-    level(() => new Forest(), monsters: 6, items: 2, breeds: [
+    level(() => new Forest(), monsters: 6, items: 6, breeds: [
       'butterfly',
       'field mouse',
       'vole',
@@ -36,12 +36,13 @@ class Areas {
       'garter snake',
       'frog'
     ], drop: [
+      frequency(3, 'Rock'),
       frequency(2, 'Flower'),
       frequency(1, 'magic', 1),
       frequency(1, 'Stick')
     ], quest: kill('fuzzy bunny', 1));
 
-    level(() => new Forest(), monsters: 8, items: 3, breeds: [
+    level(() => new Forest(), monsters: 8, items: 7, breeds: [
       'bee',
       'giant earthworm',
       'garden spider',
@@ -49,10 +50,13 @@ class Areas {
       'wasp',
       'forest sprite'
     ], drop: [
+      frequency(3, 'Rock'),
       frequency(2, 'Flower'),
       frequency(1, 'magic', 2),
       frequency(1, 'equipment', 1)
     ], quest: kill('fox', 1));
+
+    // TODO: Rocks in other levels.
 
     area('Training Grounds', 100, 60, 15.0);
     level(() => new TrainingGrounds(), monsters: 30, items: 6, breeds: [

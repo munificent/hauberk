@@ -156,11 +156,11 @@ class Event {
   final EventType type;
   final Actor actor;
   final Element element;
-  final amount;
+  final other;
   final Vec pos;
   final Direction dir;
 
-  Event(this.type, this.actor, this.element, this.pos, this.dir, this.amount);
+  Event(this.type, this.actor, this.element, this.pos, this.dir, this.other);
 }
 
 /// A kind of [Event] that has occurred.
@@ -170,6 +170,9 @@ class EventType {
 
   /// The leading edge of a cone.
   static const CONE = const EventType("cone");
+
+  /// A thrown item in flight.
+  static const TOSS = const EventType("toss");
 
   /// An [Actor] was hit.
   static const HIT = const EventType("hit");

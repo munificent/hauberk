@@ -3,11 +3,14 @@ library hauberk.ui.item_dialog;
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
+import 'game_screen.dart';
 import 'input.dart';
+import 'target_dialog.dart';
 
 /// Modal dialog for letting the user perform an [Action] on an [Item]
 /// accessible to the [Hero].
 class ItemDialog extends Screen {
+  final GameScreen _gameScreen;
   final Game _game;
 
   /// The command the player is trying to perform on an item.
@@ -18,11 +21,15 @@ class ItemDialog extends Screen {
 
   bool get isTransparent => true;
 
-  ItemDialog.drop(this._game)
+  // TODO: Get Game from GameScreen.
+  ItemDialog.drop(this._gameScreen, this._game)
       : _command = new _DropItemCommand();
 
-  ItemDialog.use(this._game)
+  ItemDialog.use(this._gameScreen, this._game)
       : _command = new _UseItemCommand();
+
+  ItemDialog.toss(this._gameScreen, this._game)
+      : _command = new _TossItemCommand();
 
   bool handleInput(Input input) {
     if (input == Input.CANCEL) {
@@ -66,8 +73,7 @@ class ItemDialog extends Screen {
     if (index >= items.length) return;
     if (!_command.canSelect(items[index])) return;
 
-    _game.hero.setNextAction(_command.getAction(index, _location));
-    ui.pop();
+    _command.selectItem(this, items[index], _location, index);
   }
 
   Iterable<Item> _getItems() {
@@ -138,9 +144,9 @@ abstract class _ItemCommand {
   /// Returns `true` if [item] is a valid selection for this command.
   bool canSelect(Item item);
 
-  /// Creates an [Action] to perform this command on the item at [index] in
-  /// [view].
-  Action getAction(int index, ItemLocation location);
+  /// Called when a valid item has been selected.
+  void selectItem(ItemDialog dialog, Item item,
+      ItemLocation location, int index);
 }
 
 class _DropItemCommand extends _ItemCommand {
@@ -157,8 +163,11 @@ class _DropItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => true;
 
-  Action getAction(int index, ItemLocation location) =>
-      new DropAction(location, index);
+  void selectItem(ItemDialog dialog, Item item,
+      ItemLocation location, int index) {
+    dialog._game.hero.setNextAction(new DropAction(location, index));
+    dialog.ui.pop();
+  }
 }
 
 class _UseItemCommand extends _ItemCommand {
@@ -174,6 +183,32 @@ class _UseItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => item.canUse || item.canEquip;
 
-  Action getAction(int index, ItemLocation location) =>
-      new UseAction(location, index);
+  void selectItem(ItemDialog dialog, Item item,
+      ItemLocation location, int index) {
+    dialog._game.hero.setNextAction(new UseAction(location, index));
+    dialog.ui.pop();
+  }
+}
+
+class _TossItemCommand extends _ItemCommand {
+  String query(ItemLocation location) {
+    switch (location) {
+      case ItemLocation.INVENTORY: return 'Throw which item?';
+      case ItemLocation.EQUIPMENT: return 'Unequip and throw which item?';
+      case ItemLocation.ON_GROUND: return 'Pick up and throw which item?';
+    }
+
+    throw "unreachable";
+  }
+
+  bool canSelect(Item item) => item.canToss;
+
+  void selectItem(ItemDialog dialog, Item item,
+      ItemLocation location, int index) {
+    // Now we need a target.
+    dialog.ui.goTo(new TargetDialog(dialog._gameScreen, dialog._game,
+        item.type.tossAttack.range, (target) {
+      dialog._game.hero.setNextAction(new TossAction(location, index, target));
+    }));
+  }
 }
