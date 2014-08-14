@@ -92,7 +92,7 @@ class Hero extends Actor {
   int _lastNoise = 0;
 
   Hero(Game game, Vec pos, HeroSave save)
-  : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
+      : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
     // Cloned so that if the hero dies in the dungeon, he loses anything gained.
     heroClass = save.heroClass.clone(),
     inventory = save.inventory.clone(),
@@ -101,7 +101,9 @@ class Hero extends Actor {
     _refreshLevel(log: false);
 
     heroClass.bind(this);
-    health.current = health.max;
+
+    // Give the hero energy so they can act before all of the monsters.
+    energy.energy = Energy.ACTION_COST;
   }
 
   // TODO: Hackish.

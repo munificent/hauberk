@@ -38,7 +38,7 @@ class Items {
 
     category(",", null);
     item("Rock", 1, lightBrown, tossAttack:
-        new RangedAttack("the rock", "hits", 6, Element.EARTH, 8));
+        new RangedAttack("the rock", "hits", 5, Element.EARTH, 8));
 
     treasure();
     pelts();
@@ -123,7 +123,7 @@ void potions() {
   category("!", "magic/potion/healing", tossDamage: 1, tossRange: 7);
   item("Soothing Balm", 1, lightRed,
       use: () => new HealAction(24));
-  item("Mending Salve", 4, red,
+  item("Mending Salve", 7, red,
       use: () => new HealAction(48));
   item("Healing Poultice", 12, darkRed,
       use: () => new HealAction(64, curePoison: true));
@@ -168,16 +168,16 @@ void potions() {
 
   // TODO: Make monsters drop these.
   category("?", "magic/potion/bottled", tossDamage: 1, tossRange: 7);
-  item("Bottled Wind", 2, white,
+  item("Bottled Wind", 4, white,
       use: () => new RingSelfAction(new RangedAttack("the wind", "blasts",
           8, Element.AIR, 6)));
-  item("Bottled Ice", 5, lightBlue,
+  item("Bottled Ice", 7, lightBlue,
       use: () => new RingSelfAction(new RangedAttack("the ice", "freezes",
           15, Element.COLD, 7)));
-  item("Bottled Fire", 8, red,
+  item("Bottled Fire", 11, red,
       use: () => new RingSelfAction(new RangedAttack("the fire", "burns",
           22, Element.FIRE, 8)));
-  item("Bottled Lightning", 12, lightPurple,
+  item("Bottled Lightning", 16, lightPurple,
       use: () => new RingSelfAction(new RangedAttack("the lightning", "shocks",
           34, Element.LIGHTNING, 9)));
   // TODO: Other elements, other intensities.
@@ -187,9 +187,9 @@ void potions() {
 void scrolls() {
   // Teleportation.
   category("?", "magic/scroll/teleportation", tossDamage: 1, tossRange: 5);
-  item("Scroll of Sidestepping", 3, lightPurple,
+  item("Scroll of Sidestepping", 2, lightPurple,
       use: () => new TeleportAction(6));
-  item("Scroll of Phasing", 8, purple,
+  item("Scroll of Phasing", 6, purple,
       use: () => new TeleportAction(12));
   item("Scroll of Teleportation", 15, darkPurple,
       use: () => new TeleportAction(24));
@@ -198,7 +198,7 @@ void scrolls() {
 
   // Detection.
   category("?", "magic/scroll/detection", tossDamage: 1, tossRange: 5);
-  item("Scroll of Item Detection", 2, lightOrange,
+  item("Scroll of Item Detection", 7, lightOrange,
       use: () => new DetectItemsAction());
 }
 

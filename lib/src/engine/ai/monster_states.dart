@@ -101,19 +101,19 @@ abstract class MonsterState {
 
   /// Applies the monster's meandering to [dir].
   Direction _meander(Direction dir) {
-    var chance = 25;
+    var chance = 10;
 
     // Monsters are (mostly) smart enough to not meander when they're about to
     // melee. A small chance of meandering is still useful to get a monster out
     // of a doorway sometimes.
-    if (pos + dir == game.hero.pos) chance = 50;
+    if (pos + dir == game.hero.pos) chance = 20;
 
     var meander = breed.meander;
 
     // Being dazzled makes the monster stumble around.
     meander += math.min(6, monster.dazzle.duration ~/ 4);
 
-    if (breed.meander <= rng.range(chance)) return dir;
+    if (rng.range(chance) >= breed.meander) return dir;
 
     var dirs;
     if (dir == Direction.NONE) {
@@ -123,6 +123,10 @@ abstract class MonsterState {
       dirs = [];
 
       // Otherwise, bias towards the direction the monster is headed.
+      for (var i = 0; i < 4; i++) {
+        dirs.add(dir);
+      }
+
       for (var i = 0; i < 3; i++) {
         dirs.add(dir.rotateLeft45);
         dirs.add(dir.rotateRight45);

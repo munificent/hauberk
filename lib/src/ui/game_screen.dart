@@ -74,9 +74,9 @@ class GameScreen extends Screen {
 
       case Input.FORFEIT: ui.push(new ForfeitDialog(game)); break;
       case Input.SELECT_COMMAND: ui.push(new SelectCommandDialog(game)); break;
-      case Input.DROP: ui.push(new ItemDialog.drop(this, game)); break;
-      case Input.USE: ui.push(new ItemDialog.use(this, game)); break;
-      case Input.TOSS: ui.push(new ItemDialog.toss(this, game)); break;
+      case Input.DROP: ui.push(new ItemDialog.drop(this)); break;
+      case Input.USE: ui.push(new ItemDialog.use(this)); break;
+      case Input.TOSS: ui.push(new ItemDialog.toss(this)); break;
 
       case Input.REST:
         if (!game.hero.rest()) {

@@ -95,13 +95,13 @@ arachnids() {
   ], drop: percent(3, "Stinger"),
       meander: 8, flags: "group");
 
-  breed("brown spider", brown, 3, [
-    attack("bite[s]", 5, Element.POISON)
+  breed("brown spider", brown, 1, [
+    attack("bite[s]", 15, Element.POISON)
   ], drop: percent(5, "Stinger"),
-      meander: 8, speed: 2);
+      meander: 8);
 
   breed("giant spider", darkBlue, 20, [
-    attack("bite[s]", 3, Element.POISON)
+    attack("bite[s]", 5, Element.POISON)
   ], drop: percent(10, "Stinger"),
       meander: 5);
 }
@@ -210,8 +210,7 @@ goblins() {
   group("g", meander: 1, flags: "open-doors");
   breed("goblin peon", lightBrown, 20, [
     attack("stab[s]", 5)
-  ],
-  drop: [
+  ], drop: [
     percent(10, "spear", 3),
     percent(5, "healing", 2),
   ], meander: 2, flags: "few");
@@ -219,8 +218,7 @@ goblins() {
   breed("goblin archer", green, 22, [
     attack("stab[s]", 3),
     arrow(rate: 3, damage: 4)
-  ],
-  drop: [
+  ], drop: [
     percent(20, "bow", 1),
     percent(10, "dagger", 2),
     percent(5, "healing", 3),
@@ -286,10 +284,11 @@ hybrids() {
 
 insects() {
   group("i", tracking: 3, meander: 8, flags: "fearless");
-  breed("giant cockroach[es]", darkBrown, 12, [
+  breed("giant cockroach[es]", darkBrown, 4, [
     attack("crawl[s] on", 1),
+    spawn(rate: 8)
   ], drop: percent(10, "Insect Wing"),
-      speed: 3);
+      speed: 2);
 
   breed("giant centipede", red, 16, [
     attack("crawl[s] on", 3),
@@ -480,10 +479,10 @@ people() {
     attack("hit[s]", 2),
     sparkBolt(rate: 10, damage: 8)
   ], drop: [
-    percent(20, "magic", 3),
+    percent(30, "magic", 3),
     percent(15, "dagger", 1),
     percent(15, "staff", 1),
-    percent(40, "robe", 2),
+    percent(10, "robe", 2),
     percent(10, "boots", 2)
   ], meander: 2);
 
@@ -491,8 +490,8 @@ people() {
     attack("slash[es]", 2),
     arrow(rate: 4, damage: 2)
   ], drop: [
-    percent(10, "potion", 3),
-    percent(15, "bow", 4),
+    percent(15, "potion", 3),
+    percent(10, "bow", 4),
     percent(5, "sword", 4),
     percent(8, "body", 3)
   ], meander: 2);
@@ -501,7 +500,7 @@ people() {
     attack("hit[s]", 3),
     heal(rate: 15, amount: 8)
   ], drop: [
-    percent(10, "scroll", 3),
+    percent(15, "scroll", 3),
     percent(7, "club", 2),
     percent(7, "robe", 2)
   ], meander: 4, flags: "fearless");
@@ -517,7 +516,7 @@ quadrupeds() {
     attack("bite[s]", 5),
     attack("scratch[es]", 4)
   ], drop: "Fox Pelt",
-      meander: 1, speed: 1);
+      meander: 1);
 }
 
 rodents() {

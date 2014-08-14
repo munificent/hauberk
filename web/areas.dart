@@ -15,7 +15,7 @@ main() {
     for (var level in area.levels) {
       var drops = {};
 
-      var tries = 1000;
+      var tries = 10000;
       for (var i = 0; i < tries; i++) {
         var itemDepth = pickDepth(levelNum, area.levels.length);
         var drop = area.levels[itemDepth].floorDrop;

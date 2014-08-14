@@ -36,10 +36,10 @@ class Areas {
       'garter snake',
       'frog'
     ], drop: [
-      frequency(3, 'Rock'),
-      frequency(2, 'Flower'),
-      frequency(1, 'magic', 1),
-      frequency(1, 'Stick')
+      rarity(1, 'Rock'),
+      rarity(1, 'Flower'),
+      rarity(2, 'Stick'),
+      rarity(3, 'magic', 1)
     ], quest: kill('fuzzy bunny', 1));
 
     level(() => new Forest(), monsters: 8, items: 7, breeds: [
@@ -50,15 +50,16 @@ class Areas {
       'wasp',
       'forest sprite'
     ], drop: [
-      frequency(3, 'Rock'),
-      frequency(2, 'Flower'),
-      frequency(1, 'magic', 2),
-      frequency(1, 'equipment', 1)
+      rarity(1, 'Rock'),
+      rarity(2, 'Flower'),
+      rarity(3, 'Stick'),
+      rarity(2, 'magic', 2),
+      rarity(2, 'equipment', 2)
     ], quest: kill('fox', 1));
 
     // TODO: Rocks in other levels.
 
-    area('Training Grounds', 100, 60, 15.0);
+    area('Training Grounds', 100, 60, 11.0);
     level(() => new TrainingGrounds(), monsters: 30, items: 6, breeds: [
       'white mouse',
       'mangy cur',
@@ -69,9 +70,9 @@ class Areas {
       'simpering knave',
       'decrepit mage'
     ], drop: [
-      frequency(3, 'magic', 2),
-      frequency(1, 'treasure', 2),
-      frequency(1, 'equipment', 2)
+      rarity(3, 'magic', 2),
+      rarity(1, 'treasure', 2),
+      rarity(1, 'equipment', 2)
     ], quest: kill('wild dog', 3));
 
     level(() => new TrainingGrounds(), monsters: 32, items: 7, breeds: [
@@ -81,9 +82,9 @@ class Areas {
       'sewer rat',
       'drunken priest'
     ], drop: [
-      frequency(2, 'magic', 3),
-      frequency(1, 'treasure', 3),
-      frequency(1, 'equipment', 3)
+      rarity(2, 'magic', 3),
+      rarity(1, 'treasure', 3),
+      rarity(1, 'equipment', 3)
     ], quest: kill('giant spider'));
 
     level(() => new TrainingGrounds(), monsters: 34, items: 8, breeds: [
@@ -93,9 +94,9 @@ class Areas {
       'tree snake',
       'giant earthworm'
     ], drop: [
-      frequency(2, 'magic', 4),
-      frequency(2, 'treasure', 4),
-      frequency(1, 'equipment', 4)
+      rarity(2, 'magic', 4),
+      rarity(2, 'treasure', 4),
+      rarity(1, 'equipment', 4)
     ], quest: kill('giant cave worm'));
 
     area('Goblin Stronghold', 100, 60, 25.0,
@@ -110,7 +111,7 @@ class Areas {
       'blood worm',
       'giant cave worm'
     ], drop: [
-      frequency(1, 'item', 4)
+      rarity(1, 'item', 4)
     ]);
 
     level(() => new GoblinStronghold(600), monsters: 42, items: 11, breeds: [
@@ -122,7 +123,7 @@ class Areas {
       'lizard protector',
       'giant bat'
     ], drop: [
-      frequency(1, 'item', 5)
+      rarity(1, 'item', 5)
     ]);
 
     level(() => new GoblinStronghold(800), monsters: 44, items: 12,
@@ -136,7 +137,7 @@ class Areas {
       'goblin archer',
       'armored lizard',
     ], drop: [
-      frequency(1, 'item', 6)
+      rarity(1, 'item', 6)
     ]);
 
     level(() => new GoblinStronghold(1000), monsters: 46, items: 13, breeds: [
@@ -149,7 +150,7 @@ class Areas {
       'salamander',
       'scaled guardian'
     ], drop: [
-      frequency(1, 'item', 7)
+      rarity(1, 'item', 7)
     ]);
 
     level(() => new GoblinStronghold(1200), monsters: 48, items: 14,
@@ -162,7 +163,7 @@ class Areas {
       'sparkling slime',
       'saurian'
     ], drop: [
-      frequency(1, 'item', 7)
+      rarity(1, 'item', 7)
     ]);
   }
 
@@ -171,7 +172,7 @@ class Areas {
     level(() => new DebugArea(), monsters: 3, items: 6, breeds: [
       'salamander'
     ], drop: [
-      frequency(1, 'Salve of Heat Resistance')
+      rarity(1, 'Salve of Heat Resistance')
     ], quest: tileType('the stairs', Tiles.stairs));
   }
 }
@@ -184,7 +185,7 @@ void area(String name, int width, int height, num abundance,
 }
 
 void level(StageBuilder builder(), {
-    int monsters, int items, List<String> breeds, List<Frequency> drop,
+    int monsters, int items, List<String> breeds, List<Rarity> drop,
     QuestBuilder quest}) {
   if (quest == null) quest = _quest;
 
