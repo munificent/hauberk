@@ -15,10 +15,10 @@ main() {
     for (var level in area.levels) {
       var drops = {};
 
-      var tries = 10000;
+      var tries = 1000;
       for (var i = 0; i < tries; i++) {
-        final itemDepth = pickDepth(levelNum, area.levels.length);
-        final drop = area.levels[itemDepth].floorDrop;
+        var itemDepth = pickDepth(levelNum, area.levels.length);
+        var drop = area.levels[itemDepth].floorDrop;
 
         area.levels[itemDepth].floorDrop.spawnDrop((item) {
           var name = item.type.name;

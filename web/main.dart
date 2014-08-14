@@ -101,6 +101,7 @@ main() {
   ui.keyBindings.bind(Input.USE, KeyCode.U);
   ui.keyBindings.bind(Input.PICK_UP, KeyCode.G);
   ui.keyBindings.bind(Input.SWAP, KeyCode.X);
+  ui.keyBindings.bind(Input.TOSS, KeyCode.T);
   ui.keyBindings.bind(Input.SELECT_COMMAND, KeyCode.S);
 
   // Laptop directions.

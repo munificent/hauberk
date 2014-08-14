@@ -23,7 +23,12 @@ void addEffects(List<Effect> effects, Event event) {
   switch (event.type) {
     case EventType.BOLT:
     case EventType.CONE:
+      // TODO: Use something better for arrows.
       effects.add(new ElementEffect(event.pos, event.element));
+      break;
+
+    case EventType.TOSS:
+      effects.add(new ItemEffect(event.pos, event.other));
       break;
 
     case EventType.HIT:
@@ -69,7 +74,7 @@ void addEffects(List<Effect> effects, Event event) {
 
     case EventType.HOWL:
       var colors = [Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.GRAY];
-      var color = colors[(event.amount * 3).toInt()];
+      var color = colors[(event.other * 3).toInt()];
       effects.add(new FrameEffect(event.pos, '.', color));
       break;
 
@@ -233,6 +238,25 @@ class FrameEffect implements Effect {
 
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(pos.x, pos.y, new Glyph(char, color));
+  }
+}
+
+/// Draws an [Item] as a given position. Used for thrown items.
+class ItemEffect implements Effect {
+  final Vec pos;
+  final Item item;
+  int _life = 2;
+
+  ItemEffect(this.pos, this.item);
+
+  bool update(Game game) {
+    if (!game.stage[pos].visible) return false;
+
+    return --_life >= 0;
+  }
+
+  void render(Game game, DrawGlyph drawGlyph) {
+    drawGlyph(pos.x, pos.y, item.appearance);
   }
 }
 

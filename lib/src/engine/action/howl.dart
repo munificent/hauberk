@@ -26,7 +26,7 @@ class HowlAction extends Action {
       if (!game.stage.bounds.contains(pos)) continue;
       if (_flow.getDistance(pos) == null) continue;
 
-      addEvent(EventType.HOWL, pos: pos, amount: _step / _range);
+      addEvent(EventType.HOWL, pos: pos, other: _step / _range);
 
       var monster = game.stage.actorAt(pos);
       if (monster is! Monster) continue;

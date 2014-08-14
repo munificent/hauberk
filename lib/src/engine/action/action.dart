@@ -49,9 +49,9 @@ abstract class Action {
     _actions.add(action);
   }
 
-  void addEvent(EventType type, {Actor actor, Element element, amount,
+  void addEvent(EventType type, {Actor actor, Element element, other,
       Vec pos, Direction dir}) {
-    _gameResult.events.add(new Event(type, actor, element, pos, dir, amount));
+    _gameResult.events.add(new Event(type, actor, element, pos, dir, other));
   }
 
   /// How much noise is produced by this action. Override to make certain
