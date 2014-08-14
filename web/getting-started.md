@@ -1,12 +1,8 @@
-# Hauberk Player's Guide
+# Getting Started
 
 Welcome! I see you have an adventurous spirit! Not because you wish to venture into dungeons filled with beasts and untolds horrors, but because you have the fortitude to try out a game while it's still under development. Well, some of the former too.
 
 A caution for the unwary: **The game is not done, or balanced, or complete, or bug-free.** It may destroy your savefiles or steal your boyfriend!
-
-If you just want to know what buttons do what, check out the [input quick reference][]. Otherwise, read on!
-
-[input quick reference]: input.html
 
 ## Input
 
@@ -46,13 +42,13 @@ Your hero is saved in your browser's [local storage][]. This means you can retur
 
 [local storage]: https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage#localStorage
 
-The game is *not* saved while you're in the middle of a level! If you close your browser in the middle of playing because your boss walked in, your progress in the level will be lost. Your hero will still be saved, of course.
+The game is *not* saved while you're in the middle of a level! If you close your browser in the middle of playing because your boss walked in, your progress in the level will be lost. That's what you get for slacking off at work.
 
 *Because the game is still in active development, new releases may not be savefile compatible with previous ones. Your heroes may get deleted if they don't work with the latest code. Sorry.*
 
 ### The hero screen
 
-Once you create or choose a hero, you're taken to the *hero screen*. This is sort of like the "town" in other games. It's the safe place where you can tinker with your hero and enter the game.
+Once you create or choose a hero, you're taken to the *hero screen*. This is sort of like the "town" in other games. It's the safe place where you can tinker with your gear and enter the game.
 
 ### Your home
 
@@ -92,15 +88,15 @@ If you want to give up and leave the level before completing the quest, you can 
 
 Your avatar in the game is represented by a `@`. Floor tiles are usually `.`, and impassible barriers and walls look like `#`, or other hopefully obvious solid looking tiles.
 
-You can walk around using the directional keys. Pressing the stand key (`5` or `L`) makes your hero stand still for a turn. That's useful to let a monster take a step closer so you can attack the next turn.
+You walk around using the directional keys. Pressing the stand key (`5` or `L`) makes you stand still for a turn. That's useful to let a monster take a step closer so you can attack the next turn.
 
-If you hold down `Shift` and press a directional key, your hero will *run* in that direction. They will repeatedly walk in that direction until *disturbed* by reaching an obstacle, a fork in the path, or seeing a monster. When not in combat, running is the most user-friendly way to get from point A to point B.
+Hold down `Shift` and press a direction to *run* in that direction. You will repeatedly walk in that direction until *disturbed* by reaching an obstacle, a fork in the path, or seeing a monster. When not in combat, running is the most user-friendly way to get from point A to point B.
 
 Closed doors look like `+`. You can open them (which takes a turn) by simply walking into them. An open door looks like `-`. You can close a door by pressing `C` while standing next to one.
 
 ### Combat!
 
-Monsters in the game are represented using letters. You attack by trying to walk into the tile where a monster is standing. On the right side of the screen you can see your health along with some of the nearby monsters. Try to get theirs to zero before your does!
+Monsters in the game are represented using letters. You attack by trying to walk into the tile where a monster is standing. On the right side of the screen you can see your health along with some of the nearby monsters. Try to get theirs to zero before yours does!
 
 When you kill a monster, you are granted some *experience points*. Earn enough of those, and your hero will increase in *experience level*. That increases your maximum health and does some other good stuff.
 
@@ -108,24 +104,26 @@ Meanwhile, monsters will be attacking you. You are outnumbered, so try not to le
 
 ### Resting
 
-After a scirmish, your hero has likely lost some health. That can be regained by imbibing magic potions, but those are in short supply. Instead, they'll have to rest.
+After a skirmish, your hero has likely lost some health. That can be regained by imbibing magic potions, but those are in short supply. Instead, they'll have to rest.
 
-Resting requires *food*, which your hero silently automatically discovers as they explore the level. Every turn that you stand still will consume a bit of food and regain a point of health. Instead of mashing down the stand key, if you press `Shift-Stand`, your hero will repeatedly rest until they run out of food, fully regain their health, or are disturbed by a nearby monster.
+Resting requires *food*, which you automatically discover as you explore the level. Every turn that you stand still consumes a bit of food and regains a point of health. Instead of mashing down the stand key, if you press `Shift-Stand`, you will repeatedly rest until you run out of food, fully regain their health, or are disturbed by a nearby monster.
 
 If you don't have any food, resting accomplishes nothing. To get food, you *must* explore new parts of the level. No resting on your laurels or wandering through familiar passages!
 
 ### Loot!
 
-You don't kill monsters purely for the satisfaction of seeing them die. You want some spoils for your labor. Many monsters drop treasure, and you'll find some laying on the ground as well. Different levels and monsters tend to drop different stuff, so explore (and murder) widely.
+While the ridding the world of an evil beast is its own reward, it's not the *only* reward. Many monsters drop treasure, and you'll find some laying on the ground as well. Different levels and monsters tend to drop different stuff, so explore (and murder) widely.
 
 Items are represented using punctuation characters. Potions are `!`, scrolls are `?`, etc. You can pick up an item off the ground by standing on top of it and pressing `G`, for "get".
 
 *If there are multiple items in the same tile, that picks up the top one. Press `G` repeatedly to pick them all up. Eventually, I'll add a menu to let you pick which one you want.*
 
-Many items can be *used*. Potions can be quaffed, scrolls read, wands... uh... waved around? To use an item, press `U` to bring up the item selection screen. In addition to your inventory and equipment, you can also use items that are laying on the ground under you. You don't have to pick them up first. (And *not* picking them up first can save you a turn. Useful in the heat of battle!) Pressing `Tab` on the item screen will cycle through these three views.
+Many items can be *used*. Potions can be quaffed, scrolls read, wands... uh... waved around? To use an item, press `U` to bring up the item selection screen. In addition to your inventory and equipment, you can also use items that are laying on the ground under you. You don't have to pick them up first. (And *not* picking them up first saves you a turn. Useful in the heat of battle!) Pressing `Tab` on the item screen cycles through these three views.
 
 Type the letter next to an item to use it. If the item has an active "use" like a potion, this will perform it. "Using" a piece of equipment equips it. Using a piece of equipment that you're already wearing unequips it. Remember that equipment must be worn to get any advantage! Carrying around a sword in your backpack doesn't do you much good.
 
 If you want to discard an item, press `D`, then select the item. It will drop onto the ground. It may gaze back at you forlornly, wondering why it wasn't good enough and why you love the other items in your inventory more.
 
-**TODO: Archery.**
+A more entertaining and often more useful way to rid yourself of an item is to *throw* it, which is done by pressing `T`. Throwing an item at a monster will often harm it, and some items do fun and exciting things like explode when lobbed at an unsuspecting beastie.
+
+**TODO: Warrior skills.**

@@ -1,6 +1,8 @@
-# Input Quick Reference
+# Quick Reference
 
 ## Movement
+
+There are two sets of direction keys:
 
 <table>
 <tr>
@@ -17,7 +19,17 @@
 </tr>
 </table>
 
-Pressing normally takes one step in that direction. Holding `Shift` and pressing a direction key runs in that direction. Holding `Alt` (`Option` on Mac) and a direction key uses the most recent command in that direction.
+They can be combined with modifier keys like so:
+
+<table width="100%">
+<tr>
+  <td><code>Direction</code></td><td>Walk one step in direction, attack adjacent monster</td>
+</tr><tr>
+  <td><code>Shift-Direction</code></td><td>Run in direction until disturbed</td>
+</tr><tr>
+  <td><code>Alt-Direction</code></td><td>Use last command in that direction</td>
+</tr>
+</table>
 
 ## Other commands
 
@@ -32,6 +44,8 @@ Pressing normally takes one step in that direction. Holding `Shift` and pressing
   <td><code>U</code></td><td>Use item</td>
 </tr><tr>
   <td><code>D</code></td><td>Drop item</td>
+</tr><tr>
+  <td><code>T</code></td><td>Throw item</td>
 </tr><tr>
   <td><code>X</code></td><td>Swap&mdash;re-equip last unequipped item</td>
 </tr><tr>

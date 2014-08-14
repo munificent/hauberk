@@ -6,15 +6,15 @@ body {
 }
 
 a {
-  color: hsl(30, 90%, 25%);
+  color: hsl(30, 90%, 35%);
 }
 
 a:visited {
-  color: hsl(30, 90%, 15%);
+  color: hsl(30, 90%, 25%);
 }
 
 a:hover {
-  color: hsl(30, 90%, 5%);
+  color: hsl(30, 90%, 45%);
 }
 
 h1, h2, h3, h4 {
@@ -82,9 +82,28 @@ thead td {
   text-align: right;
 }
 
-.content {
-  max-width: 700px;
+.page {
+  width: 900px;
   margin: 0 auto;
+}
+
+article {
+  width: 660px;
+}
+
+nav {
+  width: 200px;
+  padding-top: 60px;
+  float: right;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0 0 0 20px;
+}
+
+nav a {
+  text-decoration: none;
 }
 
 pre {

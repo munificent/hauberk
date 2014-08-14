@@ -13,7 +13,7 @@ I use the latest dev channel release of Dart, which you can get from
 [here][sdk].
 
 Once you have Dart installed and its `bin/` directory on your `PATH`, then:
- 
+
 1. Clone this repo.
 2. From the root directory of it, run: `$ pub serve`
 3. In your browser, open: `http://localhost:8080`
@@ -34,7 +34,9 @@ version please do file an issue.
 
 I'd love to have more people involved. You're more than welcome to contribute
 to Hauberk itself. There's lots to be done, both code and game content
-(monsters, items, recipes, areas, etc.)
+(monsters, items, recipes, areas, etc.).
+
+If you'd like to hack some code, search through the codebase for "TODO". I sprinkle those in liberally to mark things that need fixing or are open to extension. If you find one that catches your eye, let me know and I can fill you in on the details, or just send a pull request.
 
 I also had in mind that this codebase could be used as a springboard for other
 games. Feel free to fork Hauberk and make it into your own thing in any way
