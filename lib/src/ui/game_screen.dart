@@ -17,12 +17,13 @@ import 'select_command_dialog.dart';
 import 'target_dialog.dart';
 
 class GameScreen extends Screen {
+  final Game game;
+
   final HeroSave _save;
-  final Game     _game;
-  List<Effect>   _effects = <Effect>[];
+  List<Effect> _effects = <Effect>[];
 
   /// The size of the [Stage] view area.
-  final Vec viewSize = new Vec(80, 34);
+  final viewSize = new Vec(80, 34);
 
   /// The portion of the [Stage] currently in view on screen.
   Rect _cameraBounds;
@@ -45,7 +46,7 @@ class GameScreen extends Screen {
   }
   Actor _target;
 
-  GameScreen(this._save, this._game) {
+  GameScreen(this._save, this.game) {
     _positionCamera();
   }
 
@@ -54,31 +55,31 @@ class GameScreen extends Screen {
 
     switch (input) {
       case Input.QUIT:
-        if (_game.quest.isComplete) {
-          _save.copyFrom(_game.hero);
+        if (game.quest.isComplete) {
+          _save.copyFrom(game.hero);
 
           // Remember that this level was completed.
-          var completed = _save.completedLevels[_game.area.name];
-          if (completed == null || completed < _game.level + 1) {
-            _save.completedLevels[_game.area.name] = _game.level + 1;
+          var completed = _save.completedLevels[game.area.name];
+          if (completed == null || completed < game.level + 1) {
+            _save.completedLevels[game.area.name] = game.level + 1;
           }
 
           ui.pop(true);
         } else {
-          _game.log.error('You have not completed your quest yet:');
-          _game.quest.announce(_game.log);
+          game.log.error('You have not completed your quest yet:');
+          game.quest.announce(game.log);
           dirty();
         }
         break;
 
-      case Input.FORFEIT: ui.push(new ForfeitDialog(_game)); break;
-      case Input.SELECT_COMMAND: ui.push(new SelectCommandDialog(_game)); break;
-      case Input.DROP: ui.push(new ItemDialog.drop(this, _game)); break;
-      case Input.USE: ui.push(new ItemDialog.use(this, _game)); break;
-      case Input.TOSS: ui.push(new ItemDialog.toss(this, _game)); break;
+      case Input.FORFEIT: ui.push(new ForfeitDialog(game)); break;
+      case Input.SELECT_COMMAND: ui.push(new SelectCommandDialog(game)); break;
+      case Input.DROP: ui.push(new ItemDialog.drop(this, game)); break;
+      case Input.USE: ui.push(new ItemDialog.use(this, game)); break;
+      case Input.TOSS: ui.push(new ItemDialog.toss(this, game)); break;
 
       case Input.REST:
-        if (!_game.hero.rest()) {
+        if (!game.hero.rest()) {
           // Show the message.
           dirty();
         }
@@ -97,14 +98,14 @@ class GameScreen extends Screen {
       case Input.S: action = new WalkAction(Direction.S); break;
       case Input.SE: action = new WalkAction(Direction.SE); break;
 
-      case Input.RUN_NW: _game.hero.run(Direction.NW); break;
-      case Input.RUN_N: _game.hero.run(Direction.N); break;
-      case Input.RUN_NE: _game.hero.run(Direction.NE); break;
-      case Input.RUN_W: _game.hero.run(Direction.W); break;
-      case Input.RUN_E: _game.hero.run(Direction.E); break;
-      case Input.RUN_SW: _game.hero.run(Direction.SW); break;
-      case Input.RUN_S: _game.hero.run(Direction.S); break;
-      case Input.RUN_SE: _game.hero.run(Direction.SE); break;
+      case Input.RUN_NW: game.hero.run(Direction.NW); break;
+      case Input.RUN_N: game.hero.run(Direction.N); break;
+      case Input.RUN_NE: game.hero.run(Direction.NE); break;
+      case Input.RUN_W: game.hero.run(Direction.W); break;
+      case Input.RUN_E: game.hero.run(Direction.E); break;
+      case Input.RUN_SW: game.hero.run(Direction.SW); break;
+      case Input.RUN_S: game.hero.run(Direction.S); break;
+      case Input.RUN_SE: game.hero.run(Direction.SE); break;
 
       case Input.FIRE_NW: _fireTowards(Direction.NW); break;
       case Input.FIRE_N: _fireTowards(Direction.N); break;
@@ -118,38 +119,38 @@ class GameScreen extends Screen {
       case Input.FIRE:
         // TODO: When there is more than one usable command, bring up the
         // SelectCommandDialog. Until then, just pick the first valid one.
-        var command = _game.hero.heroClass.commands
-            .firstWhere((command) => command.canUse(_game), orElse: () => null);
+        var command = game.hero.heroClass.commands
+            .firstWhere((command) => command.canUse(game), orElse: () => null);
         if (command is TargetCommand) {
           // If we still have a visible target, use it.
           if (target != null && target.isAlive &&
-              _game.stage[target.pos].visible) {
+              game.stage[target.pos].visible) {
             _fireAtTarget();
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, _game, command.getRange(_game),
+            ui.push(new TargetDialog(this, command.getRange(game),
                 (_) => _fireAtTarget()));
           }
         } else if (command is DirectionCommand) {
-          ui.push(new DirectionDialog(this, _game));
+          ui.push(new DirectionDialog(this, game));
         } else {
-          _game.log.error("You don't have any commands you can perform.");
+          game.log.error("You don't have any commands you can perform.");
           dirty();
         }
         break;
 
       case Input.SWAP:
-        if (_game.hero.inventory.lastUnequipped == -1) {
-          _game.log.error("You aren't holding an unequipped item to swap.");
+        if (game.hero.inventory.lastUnequipped == -1) {
+          game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
           action = new EquipAction(ItemLocation.INVENTORY,
-              _game.hero.inventory.lastUnequipped);
+              game.hero.inventory.lastUnequipped);
         }
         break;
     }
 
-    if (action != null) _game.hero.setNextAction(action);
+    if (action != null) game.hero.setNextAction(action);
 
     return true;
   }
@@ -158,69 +159,69 @@ class GameScreen extends Screen {
     // See how many adjacent open doors there are.
     final doors = [];
     for (final direction in Direction.ALL) {
-      final pos = _game.hero.pos + direction;
-      if (_game.stage[pos].type.closesTo != null) {
+      final pos = game.hero.pos + direction;
+      if (game.stage[pos].type.closesTo != null) {
         doors.add(pos);
       }
     }
 
     if (doors.length == 0) {
-      _game.log.error('You are not next to an open door.');
+      game.log.error('You are not next to an open door.');
       dirty();
     } else if (doors.length == 1) {
-      _game.hero.setNextAction(new CloseDoorAction(doors[0]));
+      game.hero.setNextAction(new CloseDoorAction(doors[0]));
     } else {
-      ui.push(new CloseDoorDialog(_game));
+      ui.push(new CloseDoorDialog(game));
     }
   }
 
   void _fireAtTarget() {
     // TODO: When there is more than one usable command, bring up the
     // SelectCommandDialog. Until then, just pick the first valid one.
-    var command = _game.hero.heroClass.commands
-        .firstWhere((command) => command.canUse(_game), orElse: () => null);
+    var command = game.hero.heroClass.commands
+        .firstWhere((command) => command.canUse(game), orElse: () => null);
 
     // Should only get here from using a targeted command.
     assert(command is TargetCommand);
     assert(target != null);
 
-    _game.hero.setNextAction(command.getTargetAction(_game, target.pos));
+    game.hero.setNextAction(command.getTargetAction(game, target.pos));
   }
 
   void _fireTowards(Direction dir) {
     // TODO: When there is more than one usable command, bring up the
     // SelectCommandDialog. Until then, just pick the first valid one.
-    var command = _game.hero.heroClass.commands
-        .firstWhere((command) => command.canUse(_game), orElse: () => null);
+    var command = game.hero.heroClass.commands
+        .firstWhere((command) => command.canUse(game), orElse: () => null);
 
     if (command == null) {
-      _game.log.error("You don't have any commands you can perform.");
+      game.log.error("You don't have any commands you can perform.");
       dirty();
       return;
     }
 
     if (command is DirectionCommand) {
-      _game.hero.setNextAction(command.getDirectionAction(_game, dir));
+      game.hero.setNextAction(command.getDirectionAction(game, dir));
       return;
     }
 
     if (command is TargetCommand) {
-      var pos = _game.hero.pos + dir;
+      var pos = game.hero.pos + dir;
 
       // Target the monster that is in the fired direction.
-      for (var step in new Los(_game.hero.pos, pos)) {
+      for (var step in new Los(game.hero.pos, pos)) {
         // Stop if we hit a wall.
-        if (!_game.stage[step].isTransparent) break;
+        if (!game.stage[step].isTransparent) break;
 
         // See if there is an actor there.
-        final actor = _game.stage.actorAt(step);
+        final actor = game.stage.actorAt(step);
         if (actor != null) {
           target = actor;
           break;
         }
       }
 
-      _game.hero.setNextAction(command.getTargetAction(_game, pos));
+      game.hero.setNextAction(command.getTargetAction(game, pos));
       return;
     }
   }
@@ -230,14 +231,14 @@ class GameScreen extends Screen {
       // Forfeiting, so exit.
       ui.pop(false);
     } else if (popped is SelectCommandDialog && result is Command) {
-      if (!result.canUse(_game)) {
+      if (!result.canUse(game)) {
         // Refresh the log.
         dirty();
       } else if (result is TargetCommand) {
-        ui.push(new TargetDialog(this, _game, result.getRange(_game),
+        ui.push(new TargetDialog(this, result.getRange(game),
             (_) => _fireAtTarget()));
       } else if (result is DirectionCommand) {
-        ui.push(new DirectionDialog(this, _game));
+        ui.push(new DirectionDialog(this, game));
       }
     } else if (popped is DirectionDialog && result != Direction.NONE) {
       _fireTowards(result);
@@ -247,21 +248,21 @@ class GameScreen extends Screen {
   void update() {
     if (_effects.length > 0) dirty();
 
-    var result = _game.update();
+    var result = game.update();
 
     // See if the hero died.
-    if (!_game.hero.isAlive) {
+    if (!game.hero.isAlive) {
       ui.goTo(new GameOverScreen());
       return;
     }
 
-    if (_game.hero.dazzle.isActive) dirty();
+    if (game.hero.dazzle.isActive) dirty();
 
     for (final event in result.events) addEffects(_effects, event);
 
     if (result.needsRefresh) dirty();
 
-    _effects = _effects.where((effect) => effect.update(_game)).toList();
+    _effects = _effects.where((effect) => effect.update(game)).toList();
     _positionCamera();
   }
 
@@ -274,7 +275,7 @@ class GameScreen extends Screen {
       terminal.drawGlyph(80, y, bar);
     }
 
-    var hero = _game.hero;
+    var hero = game.hero;
     var heroColor = Color.WHITE;
     if (hero.health.current < hero.health.max / 4) {
       heroColor = Color.RED;
@@ -304,10 +305,10 @@ class GameScreen extends Screen {
   /// Determines which portion of the [Stage] should be in view based on the
   /// position of the [Hero].
   void _positionCamera() {
-        var camera = _game.hero.pos - viewSize ~/ 2;
+        var camera = game.hero.pos - viewSize ~/ 2;
     var cameraRange = new Rect(0, 0,
-        _game.stage.width - viewSize.x,
-        _game.stage.height - viewSize.y);
+        game.stage.width - viewSize.x,
+        game.stage.height - viewSize.y);
 
     camera = cameraRange.clamp(camera);
     _cameraBounds = new Rect.posAndSize(camera, viewSize);
@@ -315,7 +316,7 @@ class GameScreen extends Screen {
 
   void _drawStage(Terminal terminal, Color heroColor,
       List<Actor> visibleMonsters) {
-    var hero = _game.hero;
+    var hero = game.hero;
 
     dazzleGlyph(Glyph glyph) {
       if (!hero.dazzle.isActive) return glyph;
@@ -331,7 +332,7 @@ class GameScreen extends Screen {
 
     // Draw the tiles.
     for (var pos in _cameraBounds) {
-      var tile = _game.stage[pos];
+      var tile = game.stage[pos];
       var glyph;
       if (tile.isExplored) {
         glyph = tile.type.appearance[tile.visible ? 0 : 1];
@@ -341,15 +342,15 @@ class GameScreen extends Screen {
     }
 
     // Draw the items.
-    for (var item in _game.stage.items) {
-      if (!_game.stage[item.pos].isExplored) continue;
+    for (var item in game.stage.items) {
+      if (!game.stage[item.pos].isExplored) continue;
       var glyph = dazzleGlyph(item.appearance);
       drawStageGlyph(terminal, item.x, item.y, glyph);
     }
 
     // Draw the actors.
-    for (var actor in _game.stage.actors) {
-      if (!_game.stage[actor.pos].visible) continue;
+    for (var actor in game.stage.actors) {
+      if (!game.stage[actor.pos].visible) continue;
 
       var glyph = actor.appearance;
       if (glyph is! Glyph) {
@@ -370,7 +371,7 @@ class GameScreen extends Screen {
 
     // Draw the effects.
     for (var effect in _effects) {
-      effect.render(_game, (x, y, glyph) {
+      effect.render(game, (x, y, glyph) {
         drawStageGlyph(terminal, x, y, glyph);
       });
     }
@@ -379,7 +380,7 @@ class GameScreen extends Screen {
   void _drawLog(Terminal terminal) {
     var y = 0;
 
-    for (final message in _game.log.messages) {
+    for (final message in game.log.messages) {
       var color;
       switch (message.type) {
         case LogType.MESSAGE: color = Color.WHITE; break;
@@ -400,7 +401,7 @@ class GameScreen extends Screen {
 
   void _drawSidebar(Terminal terminal, Color heroColor,
       List<Actor> visibleMonsters) {
-    var hero = _game.hero;
+    var hero = game.hero;
     _drawStat(terminal, 0, 'Health', hero.health.current, Color.RED,
         hero.health.max, Color.DARK_RED);
     terminal.writeAt(0, 1, 'Food', Color.GRAY);
@@ -426,8 +427,8 @@ class GameScreen extends Screen {
     _drawHealthBar(terminal, 17, hero);
 
     visibleMonsters.sort((a, b) {
-      var aDistance = (a.pos - _game.hero.pos).lengthSquared;
-      var bDistance = (b.pos - _game.hero.pos).lengthSquared;
+      var aDistance = (a.pos - game.hero.pos).lengthSquared;
+      var bDistance = (b.pos - game.hero.pos).lengthSquared;
       return aDistance.compareTo(bDistance);
     });
 
@@ -451,8 +452,8 @@ class GameScreen extends Screen {
 
     // Draw the unseen items.
     terminal.writeAt(0, 38, "Unfound items:", Color.GRAY);
-    var unseen = _game.stage.items.where(
-        (item) => !_game.stage[item.pos].isExplored).toList();
+    var unseen = game.stage.items.where(
+        (item) => !game.stage[item.pos].isExplored).toList();
     unseen.sort();
     // Show the "best" ones first.
     var x = 0;

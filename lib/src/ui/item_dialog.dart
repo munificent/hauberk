@@ -11,7 +11,6 @@ import 'target_dialog.dart';
 /// accessible to the [Hero].
 class ItemDialog extends Screen {
   final GameScreen _gameScreen;
-  final Game _game;
 
   /// The command the player is trying to perform on an item.
   final _ItemCommand _command;
@@ -21,15 +20,9 @@ class ItemDialog extends Screen {
 
   bool get isTransparent => true;
 
-  // TODO: Get Game from GameScreen.
-  ItemDialog.drop(this._gameScreen, this._game)
-      : _command = new _DropItemCommand();
-
-  ItemDialog.use(this._gameScreen, this._game)
-      : _command = new _UseItemCommand();
-
-  ItemDialog.toss(this._gameScreen, this._game)
-      : _command = new _TossItemCommand();
+  ItemDialog.drop(this._gameScreen) : _command = new _DropItemCommand();
+  ItemDialog.use(this._gameScreen) : _command = new _UseItemCommand();
+  ItemDialog.toss(this._gameScreen) : _command = new _TossItemCommand();
 
   bool handleInput(Input input) {
     if (input == Input.CANCEL) {
@@ -78,9 +71,10 @@ class ItemDialog extends Screen {
 
   Iterable<Item> _getItems() {
     switch (_location) {
-      case ItemLocation.INVENTORY: return _game.hero.inventory;
-      case ItemLocation.EQUIPMENT: return _game.hero.equipment;
-      case ItemLocation.ON_GROUND: return _game.stage.itemsAt(_game.hero.pos);
+      case ItemLocation.INVENTORY: return _gameScreen.game.hero.inventory;
+      case ItemLocation.EQUIPMENT: return _gameScreen.game.hero.equipment;
+      case ItemLocation.ON_GROUND:
+        return _gameScreen.game.stage.itemsAt(_gameScreen.game.hero.pos);
     }
 
     throw "unreachable";
@@ -165,7 +159,7 @@ class _DropItemCommand extends _ItemCommand {
 
   void selectItem(ItemDialog dialog, Item item,
       ItemLocation location, int index) {
-    dialog._game.hero.setNextAction(new DropAction(location, index));
+    dialog._gameScreen.game.hero.setNextAction(new DropAction(location, index));
     dialog.ui.pop();
   }
 }
@@ -185,7 +179,7 @@ class _UseItemCommand extends _ItemCommand {
 
   void selectItem(ItemDialog dialog, Item item,
       ItemLocation location, int index) {
-    dialog._game.hero.setNextAction(new UseAction(location, index));
+    dialog._gameScreen.game.hero.setNextAction(new UseAction(location, index));
     dialog.ui.pop();
   }
 }
@@ -206,9 +200,10 @@ class _TossItemCommand extends _ItemCommand {
   void selectItem(ItemDialog dialog, Item item,
       ItemLocation location, int index) {
     // Now we need a target.
-    dialog.ui.goTo(new TargetDialog(dialog._gameScreen, dialog._game,
+    dialog.ui.goTo(new TargetDialog(dialog._gameScreen,
         item.type.tossAttack.range, (target) {
-      dialog._game.hero.setNextAction(new TossAction(location, index, target));
+      dialog._gameScreen.game.hero.setNextAction(
+          new TossAction(location, index, target));
     }));
   }
 }

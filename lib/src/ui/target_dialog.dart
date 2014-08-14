@@ -18,7 +18,6 @@ class TargetDialog extends Screen {
   static const _TICKS_PER_FRAME = 5;
 
   final GameScreen _gameScreen;
-  final Game _game;
   final num _range;
   final SelectTarget _onSelect;
   final List<Monster> _monsters = <Monster>[];
@@ -34,23 +33,21 @@ class TargetDialog extends Screen {
 
   bool get isTransparent => true;
 
-  // TODO: Get Game from GameScreen.
-  TargetDialog(this._gameScreen, Game game, this._range, this._onSelect)
-      : _game = game {
+  TargetDialog(this._gameScreen, this._range, this._onSelect) {
     // Default to targeting the nearest monster.
     var nearest;
-    for (var actor in game.stage.actors) {
+    for (var actor in _gameScreen.game.stage.actors) {
       if (actor is! Monster) continue;
-      if (!_game.stage[actor.pos].visible) continue;
+      if (!_gameScreen.game.stage[actor.pos].visible) continue;
 
       // Must be within range.
-      var toMonster = actor.pos - _game.hero.pos;
+      var hero = _gameScreen.game.hero;
+      var toMonster = actor.pos - hero.pos;
       if (toMonster > _range) continue;
 
       _monsters.add(actor);
 
-      if (nearest == null ||
-          _game.hero.pos - actor.pos < _game.hero.pos - nearest.pos) {
+      if (nearest == null || hero.pos - actor.pos < hero.pos - nearest.pos) {
         nearest = actor;
       }
     }
@@ -90,21 +87,23 @@ class TargetDialog extends Screen {
   }
 
   void render(Terminal terminal) {
+    var stage = _gameScreen.game.stage;
+
     // Show the range field.
     var black = new Glyph(" ");
     for (var pos in _gameScreen.cameraBounds) {
-      var tile = _game.stage[pos];
+      var tile = stage[pos];
       if (!tile.visible) {
         _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
         continue;
       }
 
       if (!tile.isPassable) continue;
-      if (_game.stage.actorAt(pos) != null) continue;
-      if (_game.stage.itemAt(pos) != null) continue;
+      if (stage.actorAt(pos) != null) continue;
+      if (stage.itemAt(pos) != null) continue;
 
       // Must be in range.
-      var toPos = pos - _game.hero.pos;
+      var toPos = pos - _gameScreen.game.hero.pos;
       if (toPos > _range) {
         _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
         continue;
@@ -127,15 +126,15 @@ class TargetDialog extends Screen {
     // obstacle.
     int i = _animateOffset ~/ _TICKS_PER_FRAME;
     var reachedTarget = false;
-    for (var pos in new Los(_game.hero.pos, _target)) {
+    for (var pos in new Los(_gameScreen.game.hero.pos, _target)) {
       // Note if we made it to the target.
       if (pos == _target) {
         reachedTarget = true;
         break;
       }
 
-      if (_game.stage.actorAt(pos) != null) break;
-      if (!_game.stage[pos].isTransparent) break;
+      if (stage.actorAt(pos) != null) break;
+      if (!stage[pos].isTransparent) break;
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
           new Glyph.fromCharCode(CharCode.BULLET,
@@ -146,7 +145,7 @@ class TargetDialog extends Screen {
     // Only show the reticle if the bolt will reach the target.
     if (reachedTarget) {
       var targetColor = Color.YELLOW;
-      var toTarget = _target - _game.hero.pos;
+      var toTarget = _target - _gameScreen.game.hero.pos;
       if (toTarget > _range * 2 / 3) {
         targetColor = Color.DARK_YELLOW;
       }
