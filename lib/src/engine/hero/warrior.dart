@@ -32,7 +32,7 @@ class Warrior extends HeroClass {
   final combat = new TrainedStat(100, 200);
 
   // Increases armor. Trained by taking damage.
-  final toughness = new TrainedStat(400, 100);
+  final toughness = new TrainedStat(400, 120);
 
   // Each mastery increases damage when wielding a weapon of a given category.
   final masteries = <String, TrainedStat>{};

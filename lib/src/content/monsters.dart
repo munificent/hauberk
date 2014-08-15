@@ -286,7 +286,7 @@ insects() {
   group("i", tracking: 3, meander: 8, flags: "fearless");
   breed("giant cockroach[es]", darkBrown, 4, [
     attack("crawl[s] on", 1),
-    spawn(rate: 8)
+    spawn(rate: 6)
   ], drop: percent(10, "Insect Wing"),
       speed: 2);
 
@@ -364,14 +364,14 @@ kobolds() {
   ], drop: percent(10, "teleportation", 1),
       meander: 2, speed: 1, flags: "cowardly");
 
-  breed("kobold", red, 12, [
+  breed("kobold", red, 16, [
     attack("poke[s]", 4),
     teleport(rate: 6, range: 6)
   ], drop: [
     percent(30, "magic", 7)
   ], meander: 2, flags: "group");
 
-  breed("kobold shaman", blue, 14, [
+  breed("kobold shaman", blue, 16, [
     attack("hit[s]", 4),
     teleport(rate: 5, range: 6),
     waterBolt(rate: 5, damage: 6)
@@ -531,7 +531,7 @@ rodents() {
     attack("kick[s]", 4)
   ], meander: -2);
 
-  breed("vole", darkGray, 5, [
+  breed("vole", gray, 5, [
     attack("bite[s]", 4)
   ], speed: 1);
 
@@ -559,7 +559,7 @@ reptiles() {
 
   // TODO: Drop scales?
   group("R", meander: 1, flags: "fearless");
-  breed("lizard guard", yellow, 20, [
+  breed("lizard guard", yellow, 26, [
     attack("claw[s]", 8),
     attack("bite[s]", 10),
   ]);
@@ -605,7 +605,7 @@ slugs() {
 
 snakes() {
   group("S", meander: 4);
-  breed("garter snake", gold, 5, [
+  breed("garter snake", gold, 7, [
     attack("bite[s]", 1),
   ]);
 
@@ -710,10 +710,10 @@ Move lightBolt({num rate: 5, int damage}) =>
 Move poisonBolt({num rate: 5, int damage}) =>
     new BoltMove(rate, new RangedAttack("the poison", "engulfs", damage, Element.POISON, 8));
 
-Move fireCone({num rate: 5, int damage, int range}) =>
+Move fireCone({num rate: 5, int damage, int range: 10}) =>
     new ConeMove(rate, new RangedAttack("the flame", "burns", damage, Element.FIRE, range));
 
-Move lightningCone({num rate: 5, int damage, int range}) =>
+Move lightningCone({num rate: 5, int damage, int range: 10}) =>
     new ConeMove(rate, new RangedAttack("the lightning", "shocks", damage, Element.LIGHTNING, range));
 
 Move insult({num rate: 5}) => new InsultMove(rate);

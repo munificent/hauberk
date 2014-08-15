@@ -34,6 +34,11 @@ class TossAction extends ItemAction {
 class TossLosAction extends LosAction {
   final Item _item;
 
+  /// `true` if the item has reached an [Actor] and failed to hit it. When this
+  /// happens, the item will keep flying past its target until the end of its
+  /// range.
+  bool _missed = false;
+
   int get range => _item.type.tossAttack.range;
 
   TossLosAction(Vec target, this._item)
@@ -43,42 +48,46 @@ class TossLosAction extends LosAction {
     addEvent(EventType.TOSS, pos: pos, other: _item);
   }
 
-  void onHitActor(Vec pos, Actor target) {
+  bool onHitActor(Vec pos, Actor target) {
     var attack = _item.type.tossAttack;
 
-    // Being too close or too far weakens the bolt.
-    // TODO: Make this modify strike instead?
-    var toTarget = pos - actor.pos;
-    if (toTarget > attack.range * 2 / 3) {
-      attack = attack.multiplyDamage(0.5);
+    // TODO: Range should affect strike.
+    if (!attack.perform(this, actor, target)) {
+      // The item missed, so keep flying.
+      _missed = true;
+      return false;
     }
 
-    attack.perform(this, actor, target, canMiss: false);
-
-    // Drop the item onto the ground.
-    _item.pos = pos;
-    game.stage.items.add(_item);
-
-    // TODO: Secondary actions: potions explode etc.
+    _endThrow(pos);
+    return true;
   }
 
   void onEnd(Vec pos) {
-    // Drop the item onto the ground.
-    _item.pos = pos;
-    game.stage.items.add(_item);
-
-    // TODO: Secondary actions: potions explode etc.
+    _endThrow(pos);
   }
 
   bool onTarget(Vec pos) {
-    // Drop the item onto the ground.
-    _item.pos = pos;
-    game.stage.items.add(_item);
+    // If the item failed to make contact with an actor, it's no longer well
+    // targeted and just keeps going.
+    if (_missed) return false;
 
-    // TODO: Secondary actions: potions explode etc.
+    _endThrow(pos);
 
     // Let the player aim at a specific tile on the ground.
     return true;
   }
 
+  void _endThrow(Vec pos) {
+    // See if it breaks.
+    if (rng.range(100) < _item.type.breakage) {
+      log("{1} breaks!", _item.type.tossAttack.noun);
+      return;
+    }
+
+    // Drop the item onto the ground.
+    _item.pos = pos;
+    game.stage.items.add(_item);
+
+    // TODO: Secondary actions: potions explode etc.
+  }
 }

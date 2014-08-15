@@ -71,8 +71,10 @@ class CloseDoorAction extends Action {
   CloseDoorAction(this.doorPos);
 
   ActionResult onPerform() {
-    var actor = game.stage.actorAt(doorPos);
-    if (actor != null) return fail("{1} in the way!", actor);
+    var blockingActor = game.stage.actorAt(doorPos);
+    if (blockingActor != null) {
+      return fail("{1} [are|is] in the way!", blockingActor);
+    }
 
     game.stage[doorPos].type = game.stage[doorPos].type.closesTo;
     game.stage.dirtyVisibility();
@@ -86,7 +88,7 @@ class RestAction extends Action {
   ActionResult onPerform() {
     if (actor is Hero) {
       _eatFood();
-    } else if (actor.isVisible) {
+    } else if (!actor.isVisible) {
       // Monsters can rest if out of sight.
       actor.health.current++;
     }

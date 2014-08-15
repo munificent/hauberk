@@ -42,8 +42,7 @@ abstract class LosAction extends Action {
     // See if there is an actor there.
     var target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
-      onHitActor(pos, target);
-      return ActionResult.SUCCESS;
+      if (onHitActor(pos, target)) return ActionResult.SUCCESS;
     }
 
     if (pos == _target) {
@@ -58,7 +57,10 @@ abstract class LosAction extends Action {
   void onStep(Vec pos);
 
   /// Override this to handle the LOS hitting an [Actor].
-  void onHitActor(Vec pos, Actor actor);
+  ///
+  /// Return `true` if the LOS should stop here or `false` if it should keep
+  /// going.
+  bool onHitActor(Vec pos, Actor actor) => true;
 
   /// Override this to handle the LOS hitting a wall or going out of range.
   ///
@@ -88,16 +90,12 @@ class BoltAction extends LosAction {
     addEvent(EventType.BOLT, element: _attack.element, pos: pos);
   }
 
-  void onHitActor(Vec pos, Actor target) {
+  bool onHitActor(Vec pos, Actor target) {
     var attack = _attack;
 
-    // Being too close or too far weakens the bolt.
-    // TODO: Make this modify strike instead?
-    var toTarget = pos - actor.pos;
-    if (toTarget > _attack.range * 2 / 3) {
-      attack = attack.multiplyDamage(0.5);
-    }
-
+    // TODO: Should this be able to miss? If so, strike should take range into
+    // account.
     attack.perform(this, actor, target, canMiss: false);
+    return true;
   }
 }

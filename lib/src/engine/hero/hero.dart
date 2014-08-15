@@ -102,8 +102,12 @@ class Hero extends Actor {
 
     heroClass.bind(this);
 
-    // Give the hero energy so they can act before all of the monsters.
+    // Give the hero energy so we can act before all of the monsters.
     energy.energy = Energy.ACTION_COST;
+
+    // Start with some initial ability to rest so we aren't weakest at the very
+    // beginning.
+    food = health.max;
   }
 
   // TODO: Hackish.

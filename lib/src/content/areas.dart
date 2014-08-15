@@ -27,8 +27,8 @@ class Areas {
   static void initialize() {
     if (Debug.ENABLED) debugAreas();
 
-    area('Friendly Forest', 80, 34, 7.0);
-    level(() => new Forest(), monsters: 6, items: 6, breeds: [
+    area('Friendly Forest', 80, 34, 3.0);
+    level(() => new Forest(), monsters: 14, items: 6, breeds: [
       'butterfly',
       'field mouse',
       'vole',
@@ -42,7 +42,7 @@ class Areas {
       rarity(3, 'magic', 1)
     ], quest: kill('fuzzy bunny', 1));
 
-    level(() => new Forest(), monsters: 8, items: 7, breeds: [
+    level(() => new Forest(), monsters: 18, items: 7, breeds: [
       'bee',
       'giant earthworm',
       'garden spider',
@@ -57,9 +57,7 @@ class Areas {
       rarity(2, 'equipment', 2)
     ], quest: kill('fox', 1));
 
-    // TODO: Rocks in other levels.
-
-    area('Training Grounds', 100, 60, 11.0);
+    area('Training Grounds', 100, 60, 7.0);
     level(() => new TrainingGrounds(), monsters: 30, items: 6, breeds: [
       'white mouse',
       'mangy cur',
@@ -70,6 +68,7 @@ class Areas {
       'simpering knave',
       'decrepit mage'
     ], drop: [
+      rarity(3, 'Rock'),
       rarity(3, 'magic', 2),
       rarity(1, 'treasure', 2),
       rarity(1, 'equipment', 2)
@@ -82,6 +81,7 @@ class Areas {
       'sewer rat',
       'drunken priest'
     ], drop: [
+      rarity(3, 'Rock'),
       rarity(2, 'magic', 3),
       rarity(1, 'treasure', 3),
       rarity(1, 'equipment', 3)
@@ -94,12 +94,13 @@ class Areas {
       'tree snake',
       'giant earthworm'
     ], drop: [
+      rarity(3, 'Rock'),
       rarity(2, 'magic', 4),
       rarity(2, 'treasure', 4),
       rarity(1, 'equipment', 4)
     ], quest: kill('giant cave worm'));
 
-    area('Goblin Stronghold', 100, 60, 25.0,
+    area('Goblin Stronghold', 100, 60, 17.0,
         quest: tileType('the stairs', Tiles.stairs));
     level(() => new GoblinStronghold(400), monsters: 40, items: 10, breeds: [
       'scurrilous imp',
@@ -111,6 +112,7 @@ class Areas {
       'blood worm',
       'giant cave worm'
     ], drop: [
+      rarity(10, 'Rock'),
       rarity(1, 'item', 4)
     ]);
 
@@ -123,6 +125,7 @@ class Areas {
       'lizard protector',
       'giant bat'
     ], drop: [
+      rarity(10, 'Rock'),
       rarity(1, 'item', 5)
     ]);
 
@@ -137,6 +140,7 @@ class Areas {
       'goblin archer',
       'armored lizard',
     ], drop: [
+      rarity(10, 'Rock'),
       rarity(1, 'item', 6)
     ]);
 
@@ -150,6 +154,7 @@ class Areas {
       'salamander',
       'scaled guardian'
     ], drop: [
+      rarity(10, 'Rock'),
       rarity(1, 'item', 7)
     ]);
 
@@ -163,16 +168,17 @@ class Areas {
       'sparkling slime',
       'saurian'
     ], drop: [
+      rarity(10, 'Rock'),
       rarity(1, 'item', 7)
     ]);
   }
 
   static void debugAreas() {
     area('Debugland', 80, 34, 100.0);
-    level(() => new DebugArea(), monsters: 3, items: 6, breeds: [
-      'salamander'
+    level(() => new DebugArea(), monsters: 6, items: 20, breeds: [
+      'giant slug'
     ], drop: [
-      rarity(1, 'Salve of Heat Resistance')
+      rarity(1, 'Rock')
     ], quest: tileType('the stairs', Tiles.stairs));
   }
 }

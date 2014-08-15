@@ -123,12 +123,14 @@ class Attack {
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
   /// [action].
-  void perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
+  ///
+  /// Returns `true` if the attack connected.
+  bool perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
     var attack = defender.defend(this);
-    attack._perform(action, attacker, defender, canMiss: canMiss);
+    return attack._perform(action, attacker, defender, canMiss: canMiss);
   }
 
-  void _perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
+  bool _perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
     if (canMiss == null) canMiss = true;
 
     var attackNoun = noun != null ? noun : attacker;
@@ -144,7 +146,7 @@ class Attack {
 
       if (strike < dodge) {
         action.log('{1} miss[es] {2}.', attackNoun, defender);
-        return;
+        return false;
       }
     }
 
@@ -155,17 +157,18 @@ class Attack {
       // Armor cancelled out all damage.
       action.log('{1} do[es] no damage to {2}.', attackNoun,
           defender);
-      return;
+      return true;
     }
 
     attacker.onDamage(action, defender, damage);
-    if (defender.takeDamage(action, damage, attackNoun, attacker)) return;
+    if (defender.takeDamage(action, damage, attackNoun, attacker)) return true;
 
     if (resistance == 0) _elementalSideEffect(defender, action, damage);
 
     // TODO: Pass in and use element.
     action.addEvent(EventType.HIT, actor: defender, other: damage);
     action.log('{1} ${verb} {2}.', attackNoun, defender);
+    return true;
   }
 
   void _elementalSideEffect(Actor defender, Action action, int damage) {

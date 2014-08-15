@@ -103,6 +103,10 @@ class ItemType {
   /// thrown.
   final RangedAttack tossAttack;
 
+  /// The percent chance of the item breaking when thrown. `null` if the item
+  /// can't be thrown.
+  final int breakage;
+
   final int armor;
 
   /// The path to this item type in the hierarchical organization of items.
@@ -119,7 +123,7 @@ class ItemType {
 
   ItemType(this.name, this.appearance, this.level, this.sortIndex,
       this.categories, this.equipSlot, this.use, this.attack, this.tossAttack,
-      this.armor);
+      this.breakage, this.armor);
 
   String toString() => name;
 }
