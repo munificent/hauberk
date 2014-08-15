@@ -119,7 +119,11 @@ render() {
 
       var actor = stage.actorAt(new Vec(x, y));
       if (actor != null) {
-        context.fillStyle = 'rgb(160, 0, 0)';
+        if (actor is Hero) {
+          context.fillStyle = 'rgb(0, 100, 240)';
+        } else {
+          context.fillStyle = 'rgb(160, 0, 0)';
+        }
         context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
       }
     }

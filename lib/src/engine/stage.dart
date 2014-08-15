@@ -178,11 +178,10 @@ class Stage {
 
     for (var i = 0; i < tries; i++) {
       var pos = findOpenTile();
-      best = pos;
-
-      if (_heroPaths.getDistance(pos) > bestDistance) {
+      var distance = _heroPaths.getDistance(pos);
+      if (distance > bestDistance) {
         best = pos;
-        bestDistance = _heroPaths.getDistance(pos);
+        bestDistance = distance;
       }
     }
 
