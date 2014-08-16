@@ -69,16 +69,9 @@ class HomeScreen extends Screen {
     if (rightView == HomeView.CRUCIBLE && completeRecipe != null) {
       terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.YELLOW);
       
-      if (completeRecipe.produces != null) {
-        terminal.writeAt(50, rightView.getItems(save).length + 4,
-            "Produces: ${completeRecipe.produces}", Color.YELLOW);
-      } else {
-      terminal.writeAt(50, rightView.getItems(save).length + 4,
-          "May create a random piece of equipment similar to", Color.YELLOW);
-      terminal.writeAt(50, rightView.getItems(save).length + 5,
-          "the placed item. Add coins to improve the quality", Color.YELLOW);
-      terminal.writeAt(50, rightView.getItems(save).length + 6,
-          "and chance of a successful forging.", Color.YELLOW);
+      for (int i = 0; i < completeRecipe.produces.length; i++) {
+        terminal.writeAt(50, rightView.getItems(save).length + (i + 4),
+            completeRecipe.produces.elementAt(i), Color.YELLOW);
       }
     }
   }

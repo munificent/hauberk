@@ -10,9 +10,9 @@ class Recipe {
   
   /// If this recipe results in a specific item, [produces] will store that
   /// item's name. Otherwise, [produces] will be null.
-  final String produces;
+  final List<String> produces;
 
-  Recipe(this.ingredients, this.result, [this.produces]);
+  Recipe(this.ingredients, this.result, this.produces);
 
   /// Returns `true` if [items] are valid (but not necessarily complete)
   /// ingredients for this recipe.
