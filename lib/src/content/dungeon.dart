@@ -9,6 +9,11 @@ import 'stage_builder.dart';
 import 'tiles.dart';
 
 class TrainingGrounds extends Dungeon {
+  /// Well connected.
+  int get extraCorridorDistanceMax => 20;
+  int get extraCorridorOneIn => 20;
+  int get extraCorridorDistanceMultiplier => 2;
+
   void onGenerate() {
     // Layout the rooms.
     addRooms(300);

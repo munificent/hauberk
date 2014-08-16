@@ -43,6 +43,7 @@ class Areas {
     ], quest: kill('fuzzy bunny', 1));
 
     level(() => new Forest(), monsters: 18, items: 7, breeds: [
+      'white mouse',
       'bee',
       'giant earthworm',
       'garden spider',
@@ -58,15 +59,15 @@ class Areas {
     ], quest: kill('fox', 1));
 
     area('Training Grounds', 100, 60, 7.0);
-    level(() => new TrainingGrounds(), monsters: 30, items: 6, breeds: [
-      'white mouse',
+    level(() => new TrainingGrounds(), monsters: 40, items: 6, breeds: [
       'mangy cur',
       'giant slug',
-      'little brown bat',
+      'brown bat',
       'stray cat',
       'giant cockroach',
       'simpering knave',
-      'decrepit mage'
+      'decrepit mage',
+      'lazy eye'
     ], drop: [
       rarity(3, 'Rock'),
       rarity(3, 'magic', 2),
@@ -74,7 +75,7 @@ class Areas {
       rarity(1, 'equipment', 2)
     ], quest: kill('wild dog', 3));
 
-    level(() => new TrainingGrounds(), monsters: 32, items: 7, breeds: [
+    level(() => new TrainingGrounds(), monsters: 46, items: 7, breeds: [
       'brown spider',
       'crow',
       'wild dog',
@@ -87,7 +88,7 @@ class Areas {
       rarity(1, 'equipment', 3)
     ], quest: kill('giant spider'));
 
-    level(() => new TrainingGrounds(), monsters: 34, items: 8, breeds: [
+    level(() => new TrainingGrounds(), monsters: 52, items: 8, breeds: [
       'giant spider',
       'unlucky ranger',
       'raven',

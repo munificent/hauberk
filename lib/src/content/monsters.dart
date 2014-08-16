@@ -112,8 +112,8 @@ ancients() {
 
 bats() {
   group("b");
-  breed("little brown bat", lightBrown, 3, [
-    attack("bite[s]", 3),
+  breed("brown bat", lightBrown, 8, [
+    attack("bite[s]", 4),
   ], meander: 6, speed: 2);
 
   breed("giant bat", lightBrown, 16, [
@@ -167,6 +167,13 @@ canids() {
 
 eyes() {
   group("e", flags: "immobile");
+  breed("lazy eye", white, 20, [
+    attack("gaze[s] into", 6),
+    iceBolt(rate: 7, damage: 8, range: 5),
+    teleport(rate: 9, range: 4)
+  ]);
+
+  group("e", flags: "immobile");
   breed("floating eye", yellow, 30, [
     attack("touch[es]", 4),
     lightBolt(rate: 5, damage: 16),
@@ -199,7 +206,7 @@ flyingInsects() {
 
 felines() {
   group("F");
-  breed("stray cat", gold, 7, [
+  breed("stray cat", gold, 9, [
     attack("bite[s]", 3),
     attack("scratch[es]", 2),
   ], drop: percent(10, "Fur Pelt"),
@@ -285,10 +292,10 @@ hybrids() {
 insects() {
   group("i", tracking: 3, meander: 8, flags: "fearless");
   breed("giant cockroach[es]", darkBrown, 4, [
-    attack("crawl[s] on", 1),
-    spawn(rate: 6)
+    attack("crawl[s] on", 3),
+    spawn(rate: 3)
   ], drop: percent(10, "Insect Wing"),
-      speed: 2);
+      speed: 4);
 
   breed("giant centipede", red, 16, [
     attack("crawl[s] on", 3),
@@ -695,8 +702,8 @@ Move waterBolt({num rate: 5, int damage}) =>
 Move sparkBolt({num rate: 5, int damage}) =>
     new BoltMove(rate, new RangedAttack("the spark", "zaps", damage, Element.LIGHTNING, 8));
 
-Move iceBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the ice", "freezes", damage, Element.COLD, 8));
+Move iceBolt({num rate: 5, int damage, int range: 8}) =>
+    new BoltMove(rate, new RangedAttack("the ice", "freezes", damage, Element.COLD, range));
 
 Move fireBolt({num rate: 5, int damage}) =>
     new BoltMove(rate, new RangedAttack("the flame", "burns", damage, Element.FIRE, 8));
