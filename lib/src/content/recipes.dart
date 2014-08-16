@@ -145,7 +145,11 @@ void coins() {
 }
 
 void recipe(drop, List<String> ingredientNames) {
+  String produces;
   var ingredients = ingredientNames.map((name) => Items.all[name]).toList();
-  if (drop is String) drop = parseDrop(drop);
-  Recipes.all.add(new Recipe(ingredients, drop));
+  if (drop is String) {
+    produces = drop;
+    drop = parseDrop(drop);
+  }
+  Recipes.all.add(new Recipe(ingredients, drop, produces));
 }
