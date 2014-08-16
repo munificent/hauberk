@@ -71,7 +71,7 @@ class HomeScreen extends Screen {
       
       if (completeRecipe.produces != null) {
         terminal.writeAt(50, rightView.getItems(save).length + 4,
-            "Expected result: ${completeRecipe.produces}", Color.YELLOW);
+            "Produces: ${completeRecipe.produces}", Color.YELLOW);
       } else {
       terminal.writeAt(50, rightView.getItems(save).length + 4,
           "May create a random piece of equipment similar to", Color.YELLOW);
