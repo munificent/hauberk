@@ -145,7 +145,17 @@ void coins() {
 }
 
 void recipe(drop, List<String> ingredientNames) {
+  List<String> produces;
   var ingredients = ingredientNames.map((name) => Items.all[name]).toList();
-  if (drop is String) drop = parseDrop(drop);
-  Recipes.all.add(new Recipe(ingredients, drop));
+  if (drop is String) {
+    produces = ["Produces: $drop"];
+    drop = parseDrop(drop);
+  } else {
+    produces = [
+      "May create a random piece of equipment similar to",
+      "the placed item. Add coins to improve the quality",
+      "and chance of a successful forging."
+    ];
+  }
+  Recipes.all.add(new Recipe(ingredients, drop, produces));
 }
