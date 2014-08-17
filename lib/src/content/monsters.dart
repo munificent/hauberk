@@ -167,9 +167,9 @@ canids() {
 
 eyes() {
   group("e", flags: "immobile");
-  breed("lazy eye", white, 20, [
+  breed("lazy eye", white, 16, [
     attack("gaze[s] into", 6),
-    iceBolt(rate: 7, damage: 8, range: 5),
+    sparkBolt(rate: 7, damage: 8, range: 5),
     teleport(rate: 9, range: 4)
   ]);
 
@@ -293,9 +293,9 @@ insects() {
   group("i", tracking: 3, meander: 8, flags: "fearless");
   breed("giant cockroach[es]", darkBrown, 4, [
     attack("crawl[s] on", 3),
-    spawn(rate: 3)
+    spawn(rate: 4)
   ], drop: percent(10, "Insect Wing"),
-      speed: 4);
+      speed: 3);
 
   breed("giant centipede", red, 16, [
     attack("crawl[s] on", 3),
@@ -699,8 +699,8 @@ Move arrow({num rate: 5, int damage}) =>
 Move waterBolt({num rate: 5, int damage}) =>
     new BoltMove(rate, new RangedAttack("the jet", "splashes", damage, Element.WATER, 8));
 
-Move sparkBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the spark", "zaps", damage, Element.LIGHTNING, 8));
+Move sparkBolt({num rate: 5, int damage, int range: 8}) =>
+    new BoltMove(rate, new RangedAttack("the spark", "zaps", damage, Element.LIGHTNING, range));
 
 Move iceBolt({num rate: 5, int damage, int range: 8}) =>
     new BoltMove(rate, new RangedAttack("the ice", "freezes", damage, Element.COLD, range));

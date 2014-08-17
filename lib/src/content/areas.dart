@@ -1,14 +1,17 @@
 library hauberk.content.areas;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import '../debug.dart';
 import '../engine.dart';
 import 'debug_area.dart';
 import 'drops.dart';
-import 'dungeon.dart';
 import 'forest.dart';
 import 'items.dart';
+import 'dungeon.dart';
 import 'monsters.dart';
 import 'quests.dart';
+import 'room_decorator.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 
@@ -58,7 +61,7 @@ class Areas {
       rarity(2, 'equipment', 2)
     ], quest: kill('fox', 1));
 
-    area('Training Grounds', 100, 60, 7.0);
+    area('Training Grounds', 89, 49, 7.0);
     level(() => new TrainingGrounds(), monsters: 40, items: 6, breeds: [
       'mangy cur',
       'giant slug',
@@ -101,9 +104,9 @@ class Areas {
       rarity(1, 'equipment', 4)
     ], quest: kill('giant cave worm'));
 
-    area('Goblin Stronghold', 100, 60, 17.0,
+    area('Goblin Stronghold', 89, 49, 17.0,
         quest: tileType('the stairs', Tiles.stairs));
-    level(() => new GoblinStronghold(400), monsters: 40, items: 10, breeds: [
+    level(() => new GoblinStronghold(), monsters: 40, items: 10, breeds: [
       'scurrilous imp',
       'vexing imp',
       'goblin peon',
@@ -117,7 +120,7 @@ class Areas {
       rarity(1, 'item', 4)
     ]);
 
-    level(() => new GoblinStronghold(600), monsters: 42, items: 11, breeds: [
+    level(() => new GoblinStronghold(), monsters: 42, items: 11, breeds: [
       'green slime',
       'juvenile salamander',
       'imp incanter',
@@ -130,7 +133,7 @@ class Areas {
       rarity(1, 'item', 5)
     ]);
 
-    level(() => new GoblinStronghold(800), monsters: 44, items: 12,
+    level(() => new GoblinStronghold(), monsters: 44, items: 12,
         quest: kill("Feng"), breeds: [
       'kobold shaman',
       'mongrel',
@@ -145,7 +148,7 @@ class Areas {
       rarity(1, 'item', 6)
     ]);
 
-    level(() => new GoblinStronghold(1000), monsters: 46, items: 13, breeds: [
+    level(() => new GoblinStronghold(), monsters: 46, items: 13, breeds: [
       'kobold priest',
       'goblin warrior',
       'smoking slime',
@@ -159,7 +162,7 @@ class Areas {
       rarity(1, 'item', 7)
     ]);
 
-    level(() => new GoblinStronghold(1200), monsters: 48, items: 14,
+    level(() => new GoblinStronghold(), monsters: 48, items: 14,
         quest: kill("Erlkonig, the Goblin Prince"), breeds: [
       'goblin ranger',
       'goblin mage',
@@ -181,6 +184,18 @@ class Areas {
     ], drop: [
       rarity(1, 'Rock')
     ], quest: tileType('the stairs', Tiles.stairs));
+  }
+}
+
+class TrainingGrounds extends Dungeon {
+  int get numRoomTries => 80;
+}
+
+class GoblinStronghold extends Dungeon with RoomDecorator {
+  int get numRoomTries => 200;
+
+  void onDecorateRoom(Rect room) {
+    if (rng.oneIn(5)) decorateTable(room);
   }
 }
 

@@ -93,7 +93,7 @@ render() {
       } else if (type == Tiles.wall) {
         fill = '#aaa';
       } else if (type == Tiles.table) {
-        fill = 'rgb(160, 110, 60)';
+        fill = 'rgb(80, 55, 30)';
       } else if (type == Tiles.lowWall) {
         fill = '#666';
       } else if (type == Tiles.openDoor) {

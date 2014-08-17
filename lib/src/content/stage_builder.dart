@@ -8,6 +8,8 @@ import 'tiles.dart';
 abstract class StageBuilder {
   Stage stage;
 
+  Rect get bounds => stage.bounds;
+
   void generate(Stage stage);
 
   void bindStage(Stage stage) {

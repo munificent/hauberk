@@ -1,4 +1,4 @@
-library hauberk.content.dungeon;
+library hauberk.content.maze_dungeon;
 
 import 'dart:math' as math;
 
@@ -8,468 +8,287 @@ import '../engine.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 
-class TrainingGrounds extends Dungeon {
-  /// Well connected.
-  int get extraCorridorDistanceMax => 20;
-  int get extraCorridorOneIn => 20;
-  int get extraCorridorDistanceMultiplier => 2;
-
-  void onGenerate() {
-    // Layout the rooms.
-    addRooms(300);
-    addJunctions(100);
-
-    _carveRooms();
-    _carveCorridors();
-
-    // We do this after carving corridors so that when corridors carve through
-    // rooms, they don't mess up the decorations.
-    //decorateRooms((room) {
-    //  if (rng.oneIn(4) && decoratePillars(room.bounds)) return;
-    //  if (rng.oneIn(4) && decorateInnerRoom(room.bounds)) return;
-    //});
-
-    // We do this last so that we only add doors where they actually make sense
-    // and don't have to worry about overlapping corridors and other stuff
-    // leading to nonsensical doors.
-    _addDoors();
-  }
-}
-
-class GoblinStronghold extends Dungeon {
-  final int _numRooms;
-
-  GoblinStronghold(this._numRooms);
-
-  int get roomWidthMax => 12;
-  int get roomHeightMax => 8;
-
-  /// Loosely connected.
-  int get extraCorridorOneIn => 200;
-
-  /// Pretty closed off.
-  int get closedDoorPercent => 70;
-  int get openDoorPercent => 20;
-
-  void onGenerate() {
-    // Layout the rooms.
-    addRooms(_numRooms);
-
-    _carveRooms();
-    _carveCorridors();
-
-    _decorateRooms((room) {
-      if (rng.oneIn(5)) _decorateTable(room);
-    });
-
-    _addDoors();
-  }
-
-  bool _allowRoomOverlap(Rect a, Rect b) => rng.oneIn(20);
-}
-
+/// The random dungeon generator.
+///
+/// Starting with a stage of solid walls, it works like so:
+///
+/// 1. Place a number of randomly sized and positioned rooms. If a room
+///    overlaps an existing room, it is discarded. Any remaining rooms are
+///    carved out.
+/// 2. Any remaining solid areas are filled in with mazes. The maze generator
+///    will grow and fill in even odd-shaped areas, but will not touch any
+///    rooms.
+/// 3. The result of the previous two steps is a series of unconnected rooms
+///    and mazes. We walk the stage and find every tile that can be a
+///    "connector". This is a solid tile that is adjacent to two unconnected
+///    regions.
+/// 4. We randomly choose connectors and open them or place a door there until
+///    all of the unconnected regions have been joined. There is also a slight
+///    chance to carve a connector between two already-joined regions, so that
+///    the dungeon isn't single connected.
+/// 5. The mazes will have a lot of dead ends. Finally, we remove those by
+///    repeatedly filling in any open tile that's closed on three sides. When
+///    this is done, every corridor in a maze actually leads somewhere.
+///
+/// The end result of this is a multiply-connected dungeon with rooms and lots
+/// of winding corridors.
 abstract class Dungeon extends StageBuilder {
-  final _rooms = <_Room>[];
-  final _usedColors = new Set<int>();
+  /// The windiness of the maze corridors. A lower number here leads to
+  /// straighter passageways.
+  int get windiness => 3;
 
-  int get roomWidthMin => 3;
-  int get roomWidthMax => 12;
-  int get roomHeightMin => 3;
-  int get roomHeightMax => 8;
-  int get extraCorridorDistanceMax => 10;
-  int get extraCorridorOneIn => 20;
-  int get extraCorridorDistanceMultiplier => 4;
+  int get numRoomTries;
 
-  /// Chance out of 100 that an opening to a room will be a closed door.
-  int get closedDoorPercent => 30;
+  /// The inverse chance of adding a connector between two regions that have
+  /// already been joined. Increasing this leads to more loosely connected
+  /// dungeons.
+  int get extraConnectorChance => 20;
 
-  /// Chance out of 100 that an opening to a room will be an open door.
-  int get openDoorPercent => 40;
+  var _rooms = <Rect>[];
 
-  TileType get floor => Tiles.floor;
-  TileType get wall => Tiles.wall;
+  /// For each open position in the dungeon, the index of the connected region
+  /// that that position is a part of.
+  Array2D<int> _regions;
 
-  Dungeon();
+  /// The index of the current region being carved.
+  int _currentRegion = -1;
 
   void generate(Stage stage) {
+    if (stage.width % 2 == 0 || stage.height % 2 == 0) {
+      throw new ArgumentError("The stage must be odd-sized.");
+    }
+
     bindStage(stage);
+
     fill(Tiles.wall);
-    onGenerate();
+    _regions = new Array2D(stage.width, stage.height);
+
+    _addRooms();
+
+    // Fill in all of the empty space with mazes.
+    for (var y = 1; y < bounds.height; y += 2) {
+      for (var x = 1; x < bounds.width; x += 2) {
+        var pos = new Vec(x, y);
+        if (getTile(pos) != Tiles.wall) continue;
+        _growMaze(pos);
+      }
+    }
+
+    _connectRegions();
+    _removeDeadEnds();
+
+    _rooms.forEach(onDecorateRoom);
   }
 
-  void onGenerate();
+  void onDecorateRoom(Rect room) {}
 
-  void addRooms(int tries) {
-    for (var i = 0; i < tries; i++) {
-      var room = _randomRoom();
-      if (!_overlapsExistingRooms(room, false)) {
-        var color = _usedColors.length;
-        _rooms.add(new _Room(room, color));
-        _usedColors.add(color);
+  /// Implementation of the "growing tree" algorithm from here:
+  /// http://www.astrolog.org/labyrnth/algrithm.htm.
+  void _growMaze(Vec start) {
+    var cells = <Vec>[];
+
+    _startRegion();
+    _carve(start);
+
+    cells.add(start);
+    while (cells.isNotEmpty) {
+      // Weighting how the index is chosen here will affect the way the
+      // maze looks.
+      var index = 0;
+      for (var i = 0; i < windiness; i++) {
+        index = math.max(index, rng.range(cells.length));
+      }
+
+      var cell = cells[index];
+
+      // See which adjacent cells are open.
+      var unmadeCells = <Direction>[];
+
+      for (var dir in Direction.CARDINAL) {
+        if (_canCarve(cell, dir)) unmadeCells.add(dir);
+      }
+
+      if (unmadeCells.isNotEmpty) {
+        var dir = rng.item(unmadeCells);
+
+        _carve(cell + dir);
+        _carve(cell + dir * 2);
+
+        cells.add(cell + dir * 2);
+      } else {
+        // No adjacent uncarved cells.
+        cells.removeAt(index);
       }
     }
   }
 
-  Rect _randomRoom() {
-    var width = rng.range(roomWidthMin, roomWidthMax);
-    var height = rng.range(roomHeightMin, roomHeightMax);
-    var x = rng.range(1, stage.width - width);
-    var y = rng.range(1, stage.height - height);
-
-    return new Rect(x, y, width, height);
-  }
-
-  void addJunctions(int tries) {
-    for (var i = 0; i < tries; i++) {
-      var x = rng.range(1, stage.width - 3);
-      var y = rng.range(1, stage.height - 3);
-
-      var room = new Rect(x, y, 1, 1);
-      if (!_overlapsExistingRooms(room, true)) {
-        var color = _usedColors.length;
-        _rooms.add(new _Room(room, ++color));
-        _usedColors.add(color);
-      }
-    }
-  }
-
-  bool _overlapsExistingRooms(Rect room, bool isJunction) {
-    for (var other in _rooms) {
-      if (room.distanceTo(other.bounds) <= 0) {
-        // Possibly allow some rooms to overlap.
-        if (!isJunction && _allowRoomOverlap(room, other.bounds)) continue;
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  bool _allowRoomOverlap(Rect a, Rect b) => false;
-
-  void _mergeColors(_Room a, _Room b) {
-    if (a.color == b.color) return;
-
-    var color = math.min(a.color, b.color);
-    _usedColors.remove(math.max(a.color, b.color));
-
-    for (var room in _rooms) {
-      if (room.color == a.color || room.color == b.color) {
-        room.color = color;
-      }
-    }
-  }
-
-  void _carveRooms() {
-    // Fill them in.
-    for (var room in _rooms) {
-      for (var pos in room.bounds) {
-        setTile(pos, Tiles.floor);
-      }
-    }
-
-    // Unify colors for rooms that are already overlapping.
-    _forEachRoomPair((room, other) {
-      if (room.bounds.distanceTo(other.bounds) > 0) return;
-      _mergeColors(room, other);
-
-      // Keep track of which rooms overlap.
-      room.isOverlapping = true;
-      other.isOverlapping = true;
-    });
-  }
-
-  void _carveCorridors() {
-    // Keep adding corridors until all rooms are connected.
-    while (_usedColors.length > 1) {
-      // Pick a random color.
-      var fromColor = rng.item(_rooms).color;
-
-      // Find the room that is nearest to any room of this color and has a
-      // different color. (In other words, find the nearest unconnected room to
-      // this set of rooms.)
-      var nearestFrom = null;
-      var nearestTo = null;
-      var nearestDistance = 9999;
-
-      for (var fromRoom in _rooms) {
-        if (fromRoom.color != fromColor) continue;
-
-        for (var toRoom in _rooms) {
-          if (toRoom.color == fromColor) continue;
-
-          var distance = fromRoom.bounds.distanceTo(toRoom.bounds);
-          if (distance >= nearestDistance) continue;
-          nearestFrom = fromRoom;
-          nearestTo = toRoom;
-          nearestDistance = distance;
-        }
+  /// Places rooms ignoring the existing maze corridors.
+  void _addRooms() {
+    for (var i = 0; i < numRoomTries; i++) {
+      // Pick a random room size. The funny math here does two things:
+      // - It makes sure rooms are odd-sized to line up with maze.
+      // - It avoids creating rooms that are too rectangular: too tall and
+      //   narrow or too wide and flat.
+      // TODO: This isn't very flexible or tunable. Do something better here.
+      var size = rng.range(1, 3) * 2 + 1;
+      var rectangularity = rng.range(0, 1 + size ~/ 2) * 2;
+      var width = size;
+      var height = size;
+      if (rng.oneIn(2)) {
+        width += rectangularity;
+      } else {
+        height += rectangularity;
       }
 
-      _carveCorridor(nearestFrom, nearestTo);
-    }
+      var x = rng.range((bounds.width - width) ~/ 2) * 2 + 1;
+      var y = rng.range((bounds.height - height) ~/ 2) * 2 + 1;
 
-    // Add some extra corridors so the dungeon isn't a minimum spanning tree.
-    _forEachRoomPair((fromRoom, toRoom) {
-      var distance = fromRoom.bounds.distanceTo(toRoom.bounds);
-      if (distance >= extraCorridorDistanceMax) return;
-      if (!rng.oneIn(extraCorridorOneIn + distance *
-              extraCorridorDistanceMultiplier)) return;
-      _carveCorridor(fromRoom, toRoom);
-    });
-  }
+      var room = new Rect(x, y, width, height);
 
-  void _carveCorridor(_Room fromRoom, _Room toRoom) {
-    _mergeColors(fromRoom, toRoom);
-
-    // If the rooms overlap horizontally, carve a vertical path.
-    var left = math.max(fromRoom.bounds.left, toRoom.bounds.left);
-    var right = math.min(fromRoom.bounds.right, toRoom.bounds.right);
-    if (left < right) {
-      var top = math.min(fromRoom.bounds.top, toRoom.bounds.top);
-      var bottom = math.max(fromRoom.bounds.bottom, toRoom.bounds.bottom);
-
-      var x = rng.range(left, right);
-      for (var y = top; y < bottom; y++) {
-        setTile(new Vec(x, y), Tiles.floor);
-      }
-
-      return;
-    }
-
-    // If the rooms overlap horizontally, carve a horizontal path.
-    var top = math.max(fromRoom.bounds.top, toRoom.bounds.top);
-    var bottom = math.min(fromRoom.bounds.bottom, toRoom.bounds.bottom);
-    if (top < bottom) {
-      var left = math.min(fromRoom.bounds.left, toRoom.bounds.left);
-      var right = math.max(fromRoom.bounds.right, toRoom.bounds.right);
-
-      var y = rng.range(top, bottom);
-      for (var x = left; x < right; x++) {
-        setTile(new Vec(x, y), Tiles.floor);
-      }
-
-      return;
-    }
-
-    // We can't draw a straight corridor, so make an angled one.
-    var from = rng.vecInRect(fromRoom.bounds);
-    var to = rng.vecInRect(toRoom.bounds);
-
-    var pos = from;
-    while (pos != to) {
-      if (pos.y < to.y) {
-        pos = pos.offsetY(1);
-      } else if (pos.y > to.y) {
-        pos = pos.offsetY(-1);
-      } else if (pos.x < to.x) {
-        pos = pos.offsetX(1);
-      } else if (pos.x > to.x) {
-        pos = pos.offsetX(-1);
-      }
-
-      setTile(pos, Tiles.floor);
-    }
-  }
-
-  void _decorateRooms(void decorateRoom(Rect room)) {
-    for (var i = 0; i < _rooms.length; i++) {
-      var room = _rooms[i];
-
-      // Don't decorate overlapping rooms.
-      var overlap = false;
-      for (var j = i + 1; j < _rooms.length; j++) {
-        if (room.bounds.distanceTo(_rooms[j].bounds) <= 0) {
-          overlap = true;
+      var overlaps = false;
+      for (var other in _rooms) {
+        if (room.distanceTo(other) <= 0) {
+          overlaps = true;
           break;
         }
       }
-      if (overlap) continue;
 
-      decorateRoom(room.bounds);
+      if (overlaps) continue;
+
+      _rooms.add(room);
+
+      _startRegion();
+      for (var pos in new Rect(x, y, width, height)) {
+        _carve(pos);
+      }
     }
   }
 
-  /// Add rows of pillars to the edge(s) of the room.
-  bool _decoratePillars(Rect room) {
-    if (room.width < 5) return false;
-    if (room.height < 5) return false;
+  void _connectRegions() {
+    // Find all of the tiles that can connect two (or more) regions.
+    var connectorRegions = <Vec, Set<int>>{};
+    for (var pos in bounds.inflate(-1)) {
+      // Can't already be part of a region.
+      if (getTile(pos) != Tiles.wall) continue;
 
-    // Only odd-sized sides get them, so make sure at least one side is.
-    if ((room.width % 2 == 0) && (room.height % 2 == 0)) return false;
-
-    var type = rng.oneIn(2) ? Tiles.wall : Tiles.lowWall;
-
-    if (room.width % 2 == 1) {
-      for (var x = room.left + 1; x < room.right - 1; x += 2) {
-        setTile(new Vec(x, room.top + 1), type);
-        setTile(new Vec(x, room.bottom - 2), type);
+      var regions = new Set<int>();
+      for (var dir in Direction.CARDINAL) {
+        var region = _regions[pos + dir];
+        if (region != null) regions.add(region);
       }
+
+      if (regions.length < 2) continue;
+
+      connectorRegions[pos] = regions;
     }
 
-    if (room.height % 2 == 1) {
-      for (var y = room.top + 1; y < room.bottom - 1; y += 2) {
-        setTile(new Vec(room.left + 1, y), type);
-        setTile(new Vec(room.right - 2, y), type);
-      }
+    var connectors = connectorRegions.keys.toList();
+
+    // Keep track of which regions have been merged. This maps an original
+    // region index to the one it has been merged to.
+    var merged = {};
+    var openRegions = new Set<int>();
+    for (var i = 0; i <= _currentRegion; i++) {
+      merged[i] = i;
+      openRegions.add(i);
     }
 
-    return true;
+    // Keep connecting regions until we're down to one.
+    while (openRegions.length > 1) {
+      var connector = rng.item(connectors);
+
+      // Carve the connection.
+      _addJunction(connector);
+
+      // Merge the connected regions. We'll pick one region (arbitrarily) and
+      // map all of the other regions to its index.
+      var regions = connectorRegions[connector]
+          .map((region) => merged[region]);
+      var dest = regions.first;
+      var sources = regions.skip(1).toList();
+
+      // Merge all of the affected regions. We have to look at *all* of the
+      // regions because other regions may have previously been merged with
+      // some of the ones we're merging now.
+      for (var i = 0; i <= _currentRegion; i++) {
+        if (sources.contains(merged[i])) {
+          merged[i] = dest;
+        }
+      }
+
+      // The sources are no longer in use.
+      openRegions.removeAll(sources);
+
+      // Remove any connectors that aren't needed anymore.
+      connectors.removeWhere((pos) {
+        // Don't allow connectors right next to each other.
+        if (connector - pos < 2) return true;
+
+        // If the connector no long spans different regions, we don't need it.
+        var regions = connectorRegions[pos].map((region) => merged[region])
+            .toSet();
+
+        if (regions.length > 1) return false;
+
+        // This connecter isn't needed, but connect it occasionally so that the
+        // dungeon isn't singly-connected.
+        if (rng.oneIn(extraConnectorChance)) _addJunction(pos);
+
+        return true;
+      });
+    }
   }
 
-  /// If [room] is big enough, adds a floating room inside of it with a single
-  /// entrance.
-  bool _decorateInnerRoom(Rect room) {
-    if (room.width < 5) return false;
-    if (room.height < 5) return false;
-
-    var width = rng.range(3, room.width  - 2);
-    var height = rng.range(3, room.height - 2);
-    var x = rng.range(room.x + 1, room.right - width);
-    var y = rng.range(room.y + 1, room.bottom - height);
-
-    // Trace the room.
-    var type = rng.oneIn(2) ? Tiles.wall : Tiles.lowWall;
-    for (var pos in new Rect(x, y, width, height).trace()) {
-      setTile(pos, type);
-    }
-
-    // Make an entrance. If it's a narrow room, always place the door on the
-    // wider side.
-    var directions;
-    if ((width == 3) && (height > 3)) {
-      directions = [Direction.E, Direction.W];
-    } else if ((height == 3) && (width > 3)) {
-      directions = [Direction.N, Direction.S];
+  void _addJunction(Vec pos) {
+    if (rng.oneIn(4)) {
+      setTile(pos, rng.oneIn(3) ? Tiles.openDoor : Tiles.floor);
     } else {
-      directions = [Direction.N, Direction.S, Direction.E, Direction.W];
+      setTile(pos, Tiles.closedDoor);
     }
-
-    var door;
-    switch (rng.item(directions)) {
-      case Direction.N:
-        door = new Vec(rng.range(x + 1, x + width - 1), y);
-        break;
-      case Direction.S:
-        door = new Vec(rng.range(x + 1, x + width - 1), y + height - 1);
-        break;
-      case Direction.W:
-        door = new Vec(x, rng.range(y + 1, y + height - 1));
-        break;
-      case Direction.E:
-        door = new Vec(x + width - 1, rng.range(y + 1, y + height - 1));
-        break;
-    }
-    setTile(door, Tiles.floor);
-
-    return true;
   }
 
-  /// Places a table in the room.
-  bool _decorateTable(Rect room) {
-    var pos = rng.vecInRect(room);
+  void _removeDeadEnds() {
+    var done = false;
 
-    // Don't block an exit.
-    if (pos.x == room.left && getTile(pos.offsetX(-1)) != Tiles.wall) {
-      return false;
-    }
+    while (!done) {
+      done = true;
 
-    if (pos.y == room.top && getTile(pos.offsetY(-1)) != Tiles.wall) {
-      return false;
-    }
+      for (var pos in bounds.inflate(-1)) {
+        if (getTile(pos) == Tiles.wall) continue;
 
-    if (pos.x == room.right && getTile(pos.offsetX(1)) != Tiles.wall) {
-      return false;
-    }
+        // If it only has one exit, it's a dead end.
+        var exits = 0;
+        for (var dir in Direction.CARDINAL) {
+          if (getTile(pos + dir) != Tiles.wall) exits++;
+        }
 
-    if (pos.y == room.bottom && getTile(pos.offsetY(1)) != Tiles.wall) {
-      return false;
-    }
+        if (exits != 1) continue;
 
-    setTile(pos, Tiles.table);
-    return true;
-  }
-
-  bool _isFloor(int x, int y) => stage.get(x, y).type == Tiles.floor;
-  bool _isWall(int x, int y) => stage.get(x, y).type == Tiles.wall;
-
-  void _addDoors() {
-    // For each room, attempt to place doors along its edges.
-    for (var room in _rooms) {
-      // Don't put doors in corridors.
-      if (room.bounds.width == 1 || room.bounds.height == 1) continue;
-
-      // Top and bottom.
-      for (var x = room.bounds.left; x < room.bounds.right; x++) {
-        _tryHorizontalDoor(x, room.bounds.top - 1);
-        _tryHorizontalDoor(x, room.bounds.bottom);
-      }
-
-      // Left and right.
-      for (var y = room.bounds.top; y < room.bounds.bottom; y++) {
-        _tryVerticalDoor(room.bounds.left - 1, y);
-        _tryVerticalDoor(room.bounds.right, y);
+        done = false;
+        setTile(pos, Tiles.wall);
       }
     }
   }
 
-  void _tryHorizontalDoor(int x, int y) {
-    // Must be an opening where the door will be.
-    if (!_isFloor(x, y)) return;
+  /// Gets whether or not an opening can be carved from the given starting
+  /// [Cell] at [pos] to the adjacent Cell facing [direction]. Returns `true`
+  /// if the starting Cell is in bounds and the destination Cell is filled
+  /// (or out of bounds).</returns>
+  bool _canCarve(Vec pos, Direction direction) {
+    // Must end in bounds.
+    if (!bounds.contains(pos + direction * 3)) return false;
 
-    // Must be wall on either end of the door.
-    if (!_isWall(x - 1, y)) return;
-    if (!_isWall(x + 1, y)) return;
-
-    // And open in front and behind it.
-    if (!_isFloor(x, y - 1)) return;
-    if (!_isFloor(x, y + 1)) return;
-
-    _addDoor(x, y);
+    // Destination must not be open.
+    return getTile(pos + direction * 2) == Tiles.wall;
   }
 
-  void _tryVerticalDoor(int x, int y) {
-    // Must be an opening where the door will be.
-    if (!_isFloor(x, y)) return;
-
-    // Must be wall on either end of the door.
-    if (!_isWall(x, y - 1)) return;
-    if (!_isWall(x, y + 1)) return;
-
-    // And open in front and behind it.
-    if (!_isFloor(x - 1, y)) return;
-    if (!_isFloor(x + 1, y)) return;
-
-    _addDoor(x, y);
+  void _startRegion() {
+    _currentRegion++;
   }
 
-  void _addDoor(int x, int y) {
-    var type = Tiles.floor;
-
-    var roll = rng.range(100);
-    if (roll < closedDoorPercent) {
-      type = Tiles.closedDoor;
-    } else if (roll < closedDoorPercent + openDoorPercent) {
-      type = Tiles.openDoor;
-    }
-
-    setTile(new Vec(x, y), type);
+  void _carve(Vec pos, [TileType type]) {
+    if (type == null) type = Tiles.floor;
+    setTile(pos, type);
+    _regions[pos] = _currentRegion;
   }
-
-  /// Invokes [callback] on each unique pair of [Room]s.
-  void _forEachRoomPair(callback(_Room a, _Room b)) {
-    for (var i = 0; i < _rooms.length - 1; i++) {
-      for (var j = i + 1; j < _rooms.length; j++) {
-        callback(_rooms[i], _rooms[j]);
-      }
-    }
-  }
-}
-
-class _Room {
-  final Rect bounds;
-  int color;
-  bool isOverlapping = false;
-
-  _Room(this.bounds, this.color);
 }
