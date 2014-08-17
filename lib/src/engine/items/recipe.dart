@@ -7,7 +7,8 @@ import 'item.dart';
 class Recipe {
   final List<ItemType> ingredients;
   final Drop result;
-  
+
+  // TODO: Instead of hard-coding the word wrapping here, wrap it in the UI.
   /// If this recipe results in a specific item, [produces] will store that
   /// item's name. Otherwise, [produces] will be null.
   final List<String> produces;
