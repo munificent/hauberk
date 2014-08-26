@@ -82,11 +82,11 @@ void treasure() {
   // Coins
   category(r"$", "treasure/coin");
   tossable(damage: 1, range: 7, breakage: 5);
-  item("Copper Coin", 1, brown);
-  item("Bronze Coin", 15, darkGold);
-  item("Silver Coin", 30, gray);
+  item("Copper Coin",   1,  brown);
+  item("Bronze Coin",   15, darkGold);
+  item("Silver Coin",   30, gray);
   item("Electrum Coin", 40, lightGold);
-  item("Gold Coin", 60, gold);
+  item("Gold Coin",     60, gold);
   item("Platinum Coin", 80, lightGray);
 
   // Gems
@@ -189,10 +189,31 @@ void potions() {
   item("Bottled Fire", 11, red,
       use: () => new RingSelfAction(new RangedAttack("the fire", "burns",
           22, Element.FIRE, 8)));
+  item("Bottled Water", 12, blue,
+        use: () => new RingSelfAction(new RangedAttack("the water", "drowns",
+            26, Element.WATER, 8)));
+  item("Bottled Earth", 13, brown,
+      use: () => new RingSelfAction(new RangedAttack("the earth", "crushes",
+          28, Element.EARTH, 9)));
   item("Bottled Lightning", 16, lightPurple,
       use: () => new RingSelfAction(new RangedAttack("the lightning", "shocks",
           34, Element.LIGHTNING, 9)));
-  // TODO: Other elements, other intensities.
+  item("Bottled Acid", 18, lightGreen,
+      use: () => new RingSelfAction(new RangedAttack("the acid", "corrodes",
+          38, Element.ACID, 10)));
+  item("Bottled Poison", 22, darkGreen,
+      use: () => new RingSelfAction(new RangedAttack("the poison", "infects",
+          42, Element.POISON, 10)));
+  item("Bottled Darkness", 28, black,
+      use: () => new RingSelfAction(new RangedAttack("the darkness", "consumes",
+          48, Element.DARK, 11)));
+  item("Bottled Light", 34, white,
+      use: () => new RingSelfAction(new RangedAttack("the light", "blinds",
+          52, Element.LIGHT, 11)));
+  item("Bottled Spirit", 40, darkGray,
+      use: () => new RingSelfAction(new RangedAttack("the spirits", "torment",
+          58, Element.SPIRIT, 12)));
+  // TODO: other intensities.
 
 }
 
