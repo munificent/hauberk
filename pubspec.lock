@@ -4,7 +4,7 @@ packages:
   barback:
     description: barback
     source: hosted
-    version: "0.15.0"
+    version: "0.15.0+1"
   browser:
     description: browser
     source: hosted
@@ -12,7 +12,7 @@ packages:
   collection:
     description: collection
     source: hosted
-    version: "0.9.4"
+    version: "1.0.0"
   malison:
     description: malison
     source: hosted

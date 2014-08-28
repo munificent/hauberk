@@ -112,7 +112,7 @@ ancients() {
 
 bats() {
   group("b");
-  breed("brown bat", lightBrown, 8, [
+  breed("brown bat", lightBrown, 9, [
     attack("bite[s]", 4),
   ], meander: 6, speed: 2);
 
@@ -120,8 +120,8 @@ bats() {
     attack("bite[s]", 6),
   ], meander: 4, speed: 2);
 
-  breed("cave bat", gray, 5, [
-    attack("bite[s]", 3),
+  breed("cave bat", gray, 10, [
+    attack("bite[s]", 6),
   ], meander: 3, speed: 3, flags: "group");
 }
 
@@ -132,8 +132,8 @@ birds() {
   ], drop: percent(25, "Red Feather"),
       meander: 4, speed: 2);
 
-  breed("crow", darkGray, 7, [
-    attack("bite[s]", 4),
+  breed("crow", darkGray, 9, [
+    attack("bite[s]", 5),
   ], drop: percent(25, "Black Feather"),
       meander: 4, speed: 2, flags: "group");
 
@@ -146,7 +146,7 @@ birds() {
 
 canines() {
   group("c", tracking: 20, meander: 3, flags: "few");
-  breed("mangy cur", yellow, 9, [
+  breed("mangy cur", yellow, 11, [
     attack("bite[s]", 4),
     howl(range: 6)
   ], drop: percent(20, "Fur Pelt"));
@@ -169,7 +169,7 @@ eyes() {
   group("e", flags: "immobile");
   breed("lazy eye", white, 16, [
     attack("gaze[s] into", 6),
-    sparkBolt(rate: 7, damage: 8, range: 5),
+    sparkBolt(rate: 7, damage: 10, range: 5),
     teleport(rate: 9, range: 4)
   ]);
 
@@ -606,7 +606,7 @@ reptiles() {
 slugs() {
   group("s", tracking: 2, flags: "fearless");
   breed("giant slug", green, 20, [
-    attack("crawl[s] on", 5, Element.POISON),
+    attack("crawl[s] on", 7, Element.POISON),
   ], meander: 1, speed: -3);
 }
 
