@@ -204,14 +204,14 @@ void potions() {
   item("Bottled Poison", 22, darkGreen,
       use: () => new RingSelfAction(new RangedAttack("the poison", "infects",
           42, Element.POISON, 10)));
-  item("Bottled Darkness", 28, black,
-      use: () => new RingSelfAction(new RangedAttack("the darkness", "consumes",
+  item("Bottled Shadows", 28, black,
+      use: () => new RingSelfAction(new RangedAttack("the darkness", "torments",
           48, Element.DARK, 11)));
-  item("Bottled Light", 34, white,
-      use: () => new RingSelfAction(new RangedAttack("the light", "blinds",
+  item("Bottled Radiance", 34, white,
+      use: () => new RingSelfAction(new RangedAttack("the light", "sears",
           52, Element.LIGHT, 11)));
-  item("Bottled Spirit", 40, darkGray,
-      use: () => new RingSelfAction(new RangedAttack("the spirits", "torment",
+  item("Bottled Spirits", 40, darkGray,
+      use: () => new RingSelfAction(new RangedAttack("the spirit", "haunts",
           58, Element.SPIRIT, 12)));
   // TODO: other intensities.
 
