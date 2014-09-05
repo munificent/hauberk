@@ -104,7 +104,7 @@ class Areas {
       rarity(1, 'equipment', 4)
     ], quest: kill('giant cave worm'));
 
-    area('Goblin Stronghold', 89, 49, 17.0,
+    area('Goblin Stronghold', 89, 49, 12.0,
         quest: tileType('the stairs', Tiles.stairs));
     level(() => new GoblinStronghold(), monsters: 40, items: 10, breeds: [
       'scurrilous imp',

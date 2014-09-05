@@ -180,41 +180,23 @@ void potions() {
   // TODO: Make monsters drop these.
   category("?", "magic/potion/bottled");
   tossable(damage: 1, range: 8, breakage: 100);
-  item("Bottled Wind", 4, white,
-      use: () => new RingSelfAction(new RangedAttack("the wind", "blasts",
-          8, Element.AIR, 6)));
-  item("Bottled Ice", 7, lightBlue,
-      use: () => new RingSelfAction(new RangedAttack("the ice", "freezes",
-          15, Element.COLD, 7)));
-  item("Bottled Fire", 11, red,
-      use: () => new RingSelfAction(new RangedAttack("the fire", "burns",
-          22, Element.FIRE, 8)));
-  item("Bottled Water", 12, blue,
-        use: () => new RingSelfAction(new RangedAttack("the water", "drowns",
-            26, Element.WATER, 8)));
-  item("Bottled Earth", 13, brown,
-      use: () => new RingSelfAction(new RangedAttack("the earth", "crushes",
-          28, Element.EARTH, 9)));
-  item("Bottled Lightning", 16, lightPurple,
-      use: () => new RingSelfAction(new RangedAttack("the lightning", "shocks",
-          34, Element.LIGHTNING, 9)));
-  item("Bottled Acid", 18, lightGreen,
-      use: () => new RingSelfAction(new RangedAttack("the acid", "corrodes",
-          38, Element.ACID, 10)));
-  item("Bottled Poison", 22, darkGreen,
-      use: () => new RingSelfAction(new RangedAttack("the poison", "infects",
-          42, Element.POISON, 10)));
-  item("Bottled Shadows", 28, black,
-      use: () => new RingSelfAction(new RangedAttack("the darkness", "torments",
-          48, Element.DARK, 11)));
-  item("Bottled Radiance", 34, white,
-      use: () => new RingSelfAction(new RangedAttack("the light", "sears",
-          52, Element.LIGHT, 11)));
-  item("Bottled Spirits", 40, darkGray,
-      use: () => new RingSelfAction(new RangedAttack("the spirit", "haunts",
-          58, Element.SPIRIT, 12)));
-  // TODO: other intensities.
+  bottledElement(String name, int level, appearance, Element element,
+      int damage, int range, String noun, String verb) {
+    item("Bottled $name", level, appearance, use: () => new RingSelfAction(
+        new RangedAttack(noun, verb, damage, element, range)));
+  }
 
+  bottledElement("Wind", 4, white, Element.AIR, 8, 6, "the wind", "blasts");
+  bottledElement("Ice", 7, lightBlue, Element.COLD, 15, 7, "the ice", "freezes");
+  bottledElement("Fire", 11, red, Element.FIRE, 22, 8, "the fire", "burns");
+  bottledElement("Water", 12, blue, Element.WATER, 26, 8, "the water", "drowns");
+  bottledElement("Earth", 13, brown, Element.EARTH, 28, 9, "the earth", "crushes");
+  bottledElement("Lightning", 16, lightPurple, Element.LIGHTNING, 34, 9, "the lightning", "shocks");
+  bottledElement("Acid", 18, lightGreen, Element.ACID, 38, 10, "the acid", "corrodes");
+  bottledElement("Poison", 22, darkGreen, Element.POISON, 42, 10, "the poison", "infects");
+  bottledElement("Shadows", 28, black, Element.DARK, 48, 11, "the darkness", "torments");
+  bottledElement("Radiance", 34, white, Element.LIGHT, 52, 11, "the light", "sears");
+  bottledElement("Spirits", 40, darkGray, Element.SPIRIT, 58, 12, "the spirit", "haunts");
 }
 
 void scrolls() {
