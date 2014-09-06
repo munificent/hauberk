@@ -572,7 +572,11 @@ class GameScreen extends Screen {
 
   void _drawWarriorStats(Terminal terminal, Hero hero) {
     var warrior = hero.heroClass as Warrior;
-    var y = 7;
+
+    terminal.writeAt(0, 7, "Fury", Color.GRAY);
+    _drawMeter(terminal, 7, hero.charge, 100, Color.ORANGE, Color.DARK_ORANGE);
+
+    var y = 8;
 
     draw(String name, TrainedStat stat) {
       // Hide stats until the hero has made progress on them.

@@ -3,7 +3,7 @@ library hauberk.engine.command.stab;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../action/stab.dart';
+import '../action/fury.dart';
 import '../game.dart';
 import '../hero/command.dart';
 

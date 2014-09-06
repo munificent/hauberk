@@ -42,6 +42,9 @@ abstract class HeroClass {
   /// Called when the [Hero] has killed [monster].
   void killedMonster(Action action, Monster monster) {}
 
+  /// Called when the [Hero] has finished taking a turn.
+  void finishedTurn(Action action) {}
+
   /// Clones this object.
   ///
   /// Called when the hero enters the level so that if they die, all changes

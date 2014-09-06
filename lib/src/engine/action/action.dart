@@ -82,6 +82,11 @@ abstract class Action {
     action.bind(_actor, _consumesEnergy);
     return new ActionResult.alternate(action);
   }
+
+  /// Returns [SUCCESS] if [done] is `true`, otherwise returns [NOT_DONE].
+  ActionResult doneIf(bool done) {
+    return done ? ActionResult.SUCCESS : ActionResult.NOT_DONE;
+  }
 }
 
 class ActionResult {

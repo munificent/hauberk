@@ -1,5 +1,7 @@
 library hauberk.engine.hero.warrior;
 
+import 'dart:math' as math;
+
 import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';
@@ -84,6 +86,9 @@ class Warrior extends HeroClass {
   }
 
   void tookDamage(Action action, Actor attacker, int damage) {
+    // Getting hit increases fury.
+    hero.charge = math.min(100, hero.charge + 400 * damage / hero.health.max);
+
     // Indirect damage doesn't increase toughness.
     if (attacker == null) return;
 
@@ -122,6 +127,11 @@ class Warrior extends HeroClass {
       action.game.log.gain("{1} [have|has] reached $name level "
           "${stat.level}.", hero);
     }
+  }
+
+  void finishedTurn(Action action) {
+    // Fury decays over time.
+    hero.charge = math.max(0, hero.charge - 5);
   }
 }
 

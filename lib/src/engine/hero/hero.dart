@@ -87,6 +87,12 @@ class Hero extends Actor {
   /// to regain health.
   num food = 0.0;
 
+  /// The hero's current "charge".
+  ///
+  /// This is interpreted and managed differently for each class: "fury" for
+  /// warriors, "mana" for mages, etc.
+  num charge = 0.0;
+
   /// How much noise the Hero's last action made.
   int get lastNoise => _lastNoise;
   int _lastNoise = 0;
@@ -181,6 +187,8 @@ class Hero extends Actor {
   void onFinishTurn(Action action) {
     // Make some noise.
     _lastNoise = action.noise;
+
+    heroClass.finishedTurn(action);
   }
 
   void changePosition(Vec from, Vec to) {
