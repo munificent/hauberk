@@ -32,29 +32,29 @@ class Storage {
       var name = hero['name'];
 
       var inventory = new Inventory(Option.INVENTORY_CAPACITY);
-      for (final itemData in hero['inventory']) {
+      for (var itemData in hero['inventory']) {
         var item = _loadItem(itemData);
-        inventory.tryAdd(item);
+        if (item != null) inventory.tryAdd(item);
       }
 
       var equipment = new Equipment();
-      for (final itemData in hero['equipment']) {
+      for (var itemData in hero['equipment']) {
         var item = _loadItem(itemData);
         // TODO(bob): If there are multiple slots of the same type, this may
         // shuffle items around.
-        equipment.equip(item);
+        if (item != null) equipment.equip(item);
       }
 
       var home = new Inventory(Option.HOME_CAPACITY);
-      for (final itemData in hero['home']) {
+      for (var itemData in hero['home']) {
         var item = _loadItem(itemData);
-        home.tryAdd(item);
+        if (item != null) home.tryAdd(item);
       }
 
       var crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
-      for (final itemData in hero['crucible']) {
+      for (var itemData in hero['crucible']) {
         var item = _loadItem(itemData);
-        crucible.tryAdd(item);
+        if (item != null) crucible.tryAdd(item);
       }
 
       var experience = hero['experience'];
@@ -76,6 +76,10 @@ class Storage {
 
   Item _loadItem(Map data) {
     var type = content.items[data['type']];
+    if (type == null) {
+      print("Couldn't find item type '${data['type']}, discarding item.");
+      return null;
+    }
 
     var prefix;
     if (data.containsKey('prefix')) {
@@ -91,7 +95,6 @@ class Storage {
   }
 
   HeroClass _loadWarrior(Map data) {
-
     return new Warrior.load(
         fighting: data['fighting'],
         combat: data['combat'],
