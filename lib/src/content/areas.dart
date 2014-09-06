@@ -37,7 +37,8 @@ class Areas {
       'vole',
       'robin',
       'garter snake',
-      'frog'
+      'frog',
+      'slug',
     ], drop: [
       rarity(1, 'Rock'),
       rarity(1, 'Flower'),

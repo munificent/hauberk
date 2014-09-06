@@ -91,7 +91,7 @@ class Monsters {
 arachnids() {
   group("a", flags: "fearless");
   breed("garden spider", darkAqua, 2, [
-    attack("bite[s]", 1, Element.POISON)
+    attack("bite[s]", 2)
   ], drop: percent(3, "Stinger"),
       meander: 8, flags: "group");
 
@@ -604,10 +604,14 @@ reptiles() {
 }
 
 slugs() {
-  group("s", tracking: 2, flags: "fearless");
+  group("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
+  breed("slug", darkYellow, 6, [
+    attack("crawl[s] on", 3),
+  ]);
+
   breed("giant slug", green, 20, [
     attack("crawl[s] on", 7, Element.POISON),
-  ], meander: 1, speed: -3);
+  ]);
 }
 
 snakes() {
