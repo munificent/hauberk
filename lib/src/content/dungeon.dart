@@ -33,16 +33,17 @@ import 'tiles.dart';
 /// The end result of this is a multiply-connected dungeon with rooms and lots
 /// of winding corridors.
 abstract class Dungeon extends StageBuilder {
-  /// The windiness of the maze corridors. A lower number here leads to
-  /// straighter passageways.
-  int get windiness => 3;
-
   int get numRoomTries;
 
   /// The inverse chance of adding a connector between two regions that have
   /// already been joined. Increasing this leads to more loosely connected
   /// dungeons.
   int get extraConnectorChance => 20;
+
+  /// Increasing this allows rooms to be larger.
+  int get roomExtraSize => 0;
+
+  int get windingPercent => 0;
 
   var _rooms = <Rect>[];
 
@@ -86,20 +87,14 @@ abstract class Dungeon extends StageBuilder {
   /// http://www.astrolog.org/labyrnth/algrithm.htm.
   void _growMaze(Vec start) {
     var cells = <Vec>[];
+    var lastDir;
 
     _startRegion();
     _carve(start);
 
     cells.add(start);
     while (cells.isNotEmpty) {
-      // Weighting how the index is chosen here will affect the way the
-      // maze looks.
-      var index = 0;
-      for (var i = 0; i < windiness; i++) {
-        index = math.max(index, rng.range(cells.length));
-      }
-
-      var cell = cells[index];
+      var cell = cells.last;
 
       // See which adjacent cells are open.
       var unmadeCells = <Direction>[];
@@ -109,15 +104,26 @@ abstract class Dungeon extends StageBuilder {
       }
 
       if (unmadeCells.isNotEmpty) {
-        var dir = rng.item(unmadeCells);
+        // Based on how "windy" passages are, try to prefer carving in the
+        // same direction.
+        var dir;
+        if (unmadeCells.contains(lastDir) && rng.range(100) > windingPercent) {
+          dir = lastDir;
+        } else {
+          dir = rng.item(unmadeCells);
+        }
 
         _carve(cell + dir);
         _carve(cell + dir * 2);
 
         cells.add(cell + dir * 2);
+        lastDir = dir;
       } else {
         // No adjacent uncarved cells.
-        cells.removeAt(index);
+        cells.removeLast();
+
+        // This path has ended.
+        lastDir = null;
       }
     }
   }
@@ -130,7 +136,7 @@ abstract class Dungeon extends StageBuilder {
       // - It avoids creating rooms that are too rectangular: too tall and
       //   narrow or too wide and flat.
       // TODO: This isn't very flexible or tunable. Do something better here.
-      var size = rng.range(1, 3) * 2 + 1;
+      var size = rng.range(1, 3 + roomExtraSize) * 2 + 1;
       var rectangularity = rng.range(0, 1 + size ~/ 2) * 2;
       var width = size;
       var height = size;

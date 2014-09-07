@@ -89,7 +89,7 @@ class TileQuestBuilder extends QuestBuilder {
   TileQuestBuilder(this.description, this.tileType);
 
   Quest generate(Stage stage) {
-    var pos = stage.findDistantOpenTile(10);
+    var pos = stage.findDistantOpenTile(5);
     stage[pos].type = tileType;
 
     return new TileQuest(description, tileType);

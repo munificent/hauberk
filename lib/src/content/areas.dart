@@ -62,7 +62,7 @@ class Areas {
       rarity(2, 'equipment', 2)
     ], quest: kill('fox', 1));
 
-    area('Training Grounds', 89, 49, 7.0);
+    area('Training Grounds', 79, 33, 7.0);
     level(() => new TrainingGrounds(), monsters: 40, items: 6, breeds: [
       'mangy cur',
       'giant slug',
@@ -105,9 +105,9 @@ class Areas {
       rarity(1, 'equipment', 4)
     ], quest: kill('giant cave worm'));
 
-    area('Goblin Stronghold', 89, 49, 12.0,
+    area('Goblin Stronghold', 85, 39, 12.0,
         quest: tileType('the stairs', Tiles.stairs));
-    level(() => new GoblinStronghold(), monsters: 40, items: 10, breeds: [
+    level(() => new GoblinStronghold(), monsters: 48, items: 12, breeds: [
       'scurrilous imp',
       'vexing imp',
       'goblin peon',
@@ -121,7 +121,7 @@ class Areas {
       rarity(1, 'item', 4)
     ]);
 
-    level(() => new GoblinStronghold(), monsters: 42, items: 11, breeds: [
+    level(() => new GoblinStronghold(), monsters: 50, items: 13, breeds: [
       'green slime',
       'juvenile salamander',
       'imp incanter',
@@ -134,7 +134,7 @@ class Areas {
       rarity(1, 'item', 5)
     ]);
 
-    level(() => new GoblinStronghold(), monsters: 44, items: 12,
+    level(() => new GoblinStronghold(), monsters: 52, items: 14,
         quest: kill("Feng"), breeds: [
       'kobold shaman',
       'mongrel',
@@ -149,7 +149,7 @@ class Areas {
       rarity(1, 'item', 6)
     ]);
 
-    level(() => new GoblinStronghold(), monsters: 46, items: 13, breeds: [
+    level(() => new GoblinStronghold(), monsters: 54, items: 15, breeds: [
       'kobold priest',
       'goblin warrior',
       'smoking slime',
@@ -163,7 +163,7 @@ class Areas {
       rarity(1, 'item', 7)
     ]);
 
-    level(() => new GoblinStronghold(), monsters: 48, items: 14,
+    level(() => new GoblinStronghold(), monsters: 56, items: 16,
         quest: kill("Erlkonig, the Goblin Prince"), breeds: [
       'goblin ranger',
       'goblin mage',
@@ -181,22 +181,26 @@ class Areas {
   static void debugAreas() {
     area('Debugland', 80, 34, 100.0);
     level(() => new DebugArea(), monsters: 6, items: 20, breeds: [
-      'giant slug'
+      'saurian'
     ], drop: [
-      rarity(1, 'Rock')
+      rarity(1, 'dagger', 4)
     ], quest: tileType('the stairs', Tiles.stairs));
   }
 }
 
 class TrainingGrounds extends Dungeon {
-  int get numRoomTries => 80;
+  int get numRoomTries => 60;
 }
 
 class GoblinStronghold extends Dungeon with RoomDecorator {
-  int get numRoomTries => 200;
+  int get numRoomTries => 140;
+  int get windingPercent => 70;
+  int get roomExtraSize => 1;
 
   void onDecorateRoom(Rect room) {
-    if (rng.oneIn(5)) decorateTable(room);
+    if (rng.oneIn(2) && decorateRoundedCorners(room)) return;
+    if (rng.oneIn(5) && decorateTable(room)) return;
+    if (rng.oneIn(10) && decorateInnerRoom(room)) return;
   }
 }
 

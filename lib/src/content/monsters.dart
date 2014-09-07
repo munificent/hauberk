@@ -39,7 +39,7 @@ class Monsters {
     // h  Humanoids           H  Hybrid
     // i  Insect              I  Insubstantial (ghost)
     // j  Jelly/Slime         J  (unused)
-    // k  Kobold/Imp/Sprite   K  Kraken/Land Octopus
+    // k  Kobold/Imp/ete   K  Kraken/Land Octopus
     // l  Lizard man          L  Lich
     // m  Mold/Mushroom       M  Multi-Headed Hydra
     // n  Naga                N  Demon
@@ -339,15 +339,15 @@ kobolds() {
     percent(20, "magic", 1)
   ]);
 
-  breed("house sprite", lightBlue, 10, [
-    attack("poke[s]", 6),
+  breed("house sprite", lightBlue, 15, [
+    attack("poke[s]", 8),
     teleport(range: 6)
   ], drop: [
     percent(20, "magic", 6)
   ]);
 
-  breed("mischievous sprite", lightRed, 20, [
-    attack("stab[s]", 6),
+  breed("mischievous sprite", lightRed, 24, [
+    attack("stab[s]", 9),
     sparkBolt(rate: 8, damage: 8),
     poisonBolt(rate: 15, damage: 10),
     teleport(range: 8)
@@ -571,35 +571,35 @@ reptiles() {
     attack("bite[s]", 10),
   ]);
 
-  breed("lizard protector", darkYellow, 28, [
+  breed("lizard protector", darkYellow, 30, [
     attack("claw[s]", 10),
     attack("bite[s]", 14),
   ]);
 
-  breed("armored lizard", gray, 36, [
+  breed("armored lizard", gray, 38, [
     attack("claw[s]", 10),
     attack("bite[s]", 15),
   ]);
 
-  breed("scaled guardian", darkGray, 42, [
+  breed("scaled guardian", darkGray, 50, [
     attack("claw[s]", 10),
     attack("bite[s]", 15),
   ]);
 
-  breed("saurian", orange, 56, [
+  breed("saurian", orange, 64, [
     attack("claw[s]", 12),
     attack("bite[s]", 17),
   ]);
 
   group("R", meander: 3);
-  breed("juvenile salamander", lightRed, 18, [
+  breed("juvenile salamander", lightRed, 24, [
     attack("bite[s]", 12, Element.FIRE),
-    fireCone(rate: 16, damage: 15, range: 6)
+    fireCone(rate: 16, damage: 18, range: 6)
   ]);
 
-  breed("salamander", red, 30, [
-    attack("bite[s]", 13, Element.FIRE),
-    fireCone(rate: 16, damage: 20, range: 8)
+  breed("salamander", red, 40, [
+    attack("bite[s]", 16, Element.FIRE),
+    fireCone(rate: 16, damage: 24, range: 8)
   ]);
 }
 
