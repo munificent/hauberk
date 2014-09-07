@@ -6,6 +6,7 @@ import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';
 import '../command/archery.dart';
+import '../command/lance.dart';
 import '../command/slash.dart';
 import '../command/stab.dart';
 import '../monster.dart';
@@ -21,6 +22,7 @@ class Warrior extends HeroClass {
 
   final List<Command> commands = [
     new ArcheryCommand(),
+    new LanceCommand(),
     new SlashCommand(),
     new StabCommand()
   ];
@@ -31,14 +33,14 @@ class Warrior extends HeroClass {
   final fighting = new TrainedStat(80, 60);
 
   /// Increases damage when armed. Trained by killing monsters while armed.
-  final combat = new TrainedStat(100, 200);
+  final combat = new TrainedStat(100, 240);
 
   // Increases armor. Trained by taking damage.
-  final toughness = new TrainedStat(400, 120);
+  final toughness = new TrainedStat(400, 200);
 
   // Each mastery increases damage when wielding a weapon of a given category.
   final masteries = <String, TrainedStat>{};
-  TrainedStat _newMasteryStat() => new TrainedStat(80, 160);
+  TrainedStat _newMasteryStat() => new TrainedStat(100, 180);
 
   Warrior();
 
