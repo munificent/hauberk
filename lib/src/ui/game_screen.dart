@@ -305,13 +305,17 @@ class GameScreen extends Screen {
   /// Determines which portion of the [Stage] should be in view based on the
   /// position of the [Hero].
   void _positionCamera() {
-        var camera = game.hero.pos - viewSize ~/ 2;
-    var cameraRange = new Rect(0, 0,
-        game.stage.width - viewSize.x,
-        game.stage.height - viewSize.y);
+    // Handle the stage being smaller than the view.
+    var rangeWidth = math.max(0, game.stage.width - viewSize.x);
+    var rangeHeight = math.max(0, game.stage.height - viewSize.y);
 
+    var cameraRange = new Rect(0, 0, rangeWidth,  rangeHeight);
+
+    var camera = game.hero.pos - viewSize ~/ 2;
     camera = cameraRange.clamp(camera);
-    _cameraBounds = new Rect.posAndSize(camera, viewSize);
+    _cameraBounds = new Rect(camera.x, camera.y,
+        math.min(viewSize.x, game.stage.width),
+        math.min(viewSize.y, game.stage.height));
   }
 
   void _drawStage(Terminal terminal, Color heroColor,
