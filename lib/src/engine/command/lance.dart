@@ -1,4 +1,4 @@
-library hauberk.engine.command.stab;
+library hauberk.engine.command.lance;
 
 import 'package:piecemeal/piecemeal.dart';
 
