@@ -20,9 +20,14 @@ class ItemDialog extends Screen {
 
   bool get isTransparent => true;
 
+  /// True if the item dialog supports tabbing between item lists.
+  bool get canSwitchLocations => _command.allowedLocations.length > 1;
+
   ItemDialog.drop(this._gameScreen) : _command = new _DropItemCommand();
   ItemDialog.use(this._gameScreen) : _command = new _UseItemCommand();
   ItemDialog.toss(this._gameScreen) : _command = new _TossItemCommand();
+  ItemDialog.pickUp(this._gameScreen) :
+    _command = new _PickUpItemCommand(), _location = ItemLocation.ON_GROUND;
 
   bool handleInput(Input input) {
     if (input == Input.CANCEL) {
@@ -41,7 +46,7 @@ class ItemDialog extends Screen {
       return true;
     }
 
-    if (keyCode == KeyCode.TAB) {
+    if (keyCode == KeyCode.TAB && canSwitchLocations) {
       _advanceLocation();
       dirty();
       return true;
@@ -54,8 +59,12 @@ class ItemDialog extends Screen {
     terminal.writeAt(0, 0, _command.query(_location));
 
     terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
+
+    String selectItem = '[A-Z] Select item';
+    String helpText = canSwitchLocations ? ', [Tab] Switch view' : '';
+
     terminal.writeAt(0, terminal.height - 1,
-        '[A-Z] Select item, [Tab] Switch view',
+        '$selectItem$helpText',
         Color.GRAY);
 
     drawItems(terminal, 0, 1, _getItems(), (item) => _command.canSelect(item));
@@ -82,23 +91,8 @@ class ItemDialog extends Screen {
 
   /// Rotates through the viewable locations the player can select an item from.
   void _advanceLocation() {
-    switch (_location) {
-      case ItemLocation.INVENTORY:
-        _location = ItemLocation.EQUIPMENT;
-        break;
-
-      case ItemLocation.EQUIPMENT:
-        if (_command.showGroundItems) {
-          _location = ItemLocation.ON_GROUND;
-        } else {
-          _location = ItemLocation.INVENTORY;
-        }
-        break;
-
-      case ItemLocation.ON_GROUND:
-        _location = ItemLocation.INVENTORY;
-        break;
-    }
+    var index = _command.allowedLocations.indexOf(_location);
+    _location = _command.allowedLocations[(index + 1) % _command.allowedLocations.length];
   }
 }
 
@@ -128,8 +122,13 @@ void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
 
 /// The action the user wants to perform on the selected item.
 abstract class _ItemCommand {
-  /// `true` if items on the ground can be used with this command.
-  bool get showGroundItems => true;
+  /// Locations of items that can be used with this command. When a command
+  /// allows multiple locations, players can switch between them.
+  List<ItemLocation> get allowedLocations => const [
+    ItemLocation.INVENTORY,
+    ItemLocation.EQUIPMENT,
+    ItemLocation.ON_GROUND
+  ];
 
   /// The query shown to the user when selecting an item in this mode from
   /// [view].
@@ -144,7 +143,10 @@ abstract class _ItemCommand {
 }
 
 class _DropItemCommand extends _ItemCommand {
-  bool get showGroundItems => false;
+  List<ItemLocation> get allowedLocations => const [
+    ItemLocation.INVENTORY,
+    ItemLocation.EQUIPMENT
+  ];
 
   String query(ItemLocation location) {
     switch (location) {
@@ -205,5 +207,24 @@ class _TossItemCommand extends _ItemCommand {
       dialog._gameScreen.game.hero.setNextAction(
           new TossAction(location, index, target));
     }));
+  }
+}
+
+class _PickUpItemCommand extends _ItemCommand {
+  List<ItemLocation> get allowedLocations => const [
+    ItemLocation.ON_GROUND
+  ];
+
+  String query(ItemLocation location) => 'Pick up which item?';
+
+  bool canSelect(Item item) => true;
+
+  void selectItem(ItemDialog dialog, Item item,
+      ItemLocation location, int index) {
+    // Pick up item and return to the game
+    dialog._gameScreen.game.hero.setNextAction(
+      new PickUpAction(index)
+    );
+    dialog.ui.pop();
   }
 }
