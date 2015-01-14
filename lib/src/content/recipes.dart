@@ -107,36 +107,6 @@ void armor() {
 }
 
 void coins() {
-  recipe('Bronze Coin', [
-   'Copper Coin',
-   'Copper Coin',
-   'Copper Coin'
-  ]);
-  
-  recipe('Silver Coin',[
-    'Bronze Coin',
-    'Bronze Coin',
-    'Bronze Coin'
-  ]);
-  
-  recipe('Electrum Coin', [
-    'Silver Coin',
-    'Silver Coin',
-    'Silver Coin'
-  ]);
-  
-  recipe('Gold Coin', [
-    'Electrum Coin',
-    'Electrum Coin',
-    'Electrum Coin'
-  ]);
-  
-  recipe('Platinum Coin', [
-    'Gold Coin',
-    'Gold Coin',
-    'Gold Coin'
-  ]);
-  
   var coins = [
     'Copper', 'Bronze', 'Silver', 'Electrum', 'Gold', 'Platinum'
   ];
