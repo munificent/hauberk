@@ -4,6 +4,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/bin/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/packages/hauberk" />
       <excludeFolder url="file://$MODULE_DIR$/web/packages" />
     </content>
@@ -12,4 +13,3 @@
     <orderEntry type="library" name="Dart SDK" level="application" />
   </component>
 </module>
-

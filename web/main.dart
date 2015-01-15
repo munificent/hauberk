@@ -157,6 +157,14 @@ main() {
   ui.keyBindings.bind(Input.SW, KeyCode.NUMPAD_1);
   ui.keyBindings.bind(Input.S, KeyCode.NUMPAD_2);
   ui.keyBindings.bind(Input.SE, KeyCode.NUMPAD_3);
+  ui.keyBindings.bind(Input.RUN_NW, KeyCode.NUMPAD_7, shift: true);
+  ui.keyBindings.bind(Input.RUN_N, KeyCode.NUMPAD_8, shift: true);
+  ui.keyBindings.bind(Input.RUN_NE, KeyCode.NUMPAD_9, shift: true);
+  ui.keyBindings.bind(Input.RUN_W, KeyCode.NUMPAD_4, shift: true);
+  ui.keyBindings.bind(Input.RUN_E, KeyCode.NUMPAD_6, shift: true);
+  ui.keyBindings.bind(Input.RUN_SW, KeyCode.NUMPAD_1, shift: true);
+  ui.keyBindings.bind(Input.RUN_S, KeyCode.NUMPAD_2, shift: true);
+  ui.keyBindings.bind(Input.RUN_SE, KeyCode.NUMPAD_3, shift: true);
 
   ui.keyBindings.bind(Input.OK, KeyCode.NUMPAD_5);
   ui.keyBindings.bind(Input.REST, KeyCode.NUMPAD_5, shift: true);
