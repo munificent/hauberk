@@ -5,7 +5,9 @@ import 'package:malison/malison.dart';
 import 'input.dart';
 
 class GameOverScreen extends Screen {
-  GameOverScreen();
+  final Log log;
+
+  GameOverScreen(this.log);
 
   bool handleInput(Input input) {
     switch (input) {
@@ -20,8 +22,7 @@ class GameOverScreen extends Screen {
   void render(Terminal terminal) {
     terminal.clear();
 
-    // TODO: Show more here. Explain what happens to your character.
-    terminal.writeAt(0, 0, 'You have died.');
+    terminal.writeAt(0, 0, log.messages.last.text);
     terminal.writeAt(0, terminal.height - 1,
         '[Esc] Return to quest menu',
         Color.GRAY);

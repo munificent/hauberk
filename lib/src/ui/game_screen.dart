@@ -252,7 +252,7 @@ class GameScreen extends Screen {
 
     // See if the hero died.
     if (!game.hero.isAlive) {
-      ui.goTo(new GameOverScreen());
+      ui.goTo(new GameOverScreen(game.log));
       return;
     }
 

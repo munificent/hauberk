@@ -184,6 +184,10 @@ class Hero extends Actor {
     heroClass.killedMonster(action, defender);
   }
 
+  void onDied(Actor attacker) {
+    game.log.message("you were slain by {1}.", attacker);
+  }
+
   void onFinishTurn(Action action) {
     // Make some noise.
     _lastNoise = action.noise;
