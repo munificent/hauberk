@@ -243,8 +243,8 @@ class Monster extends Actor {
         "increases fear by ${fear} to $_fear");
   }
 
-  /// Called when this Actor has been killed by [attacker].
-  void onDied(Actor attacker) {
+  /// Called when this Actor has been killed by [attackNoun].
+  void onDied(Noun attackNoun) {
     // Handle drops.
     breed.drop.spawnDrop((item) {
       item.pos = pos;

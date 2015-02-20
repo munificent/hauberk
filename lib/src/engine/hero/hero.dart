@@ -184,8 +184,8 @@ class Hero extends Actor {
     heroClass.killedMonster(action, defender);
   }
 
-  void onDied(Actor attacker) {
-    game.log.message("you were slain by {1}.", attacker);
+  void onDied(Noun attackNoun) {
+    game.log.message("you were slain by {1}.", attackNoun);
   }
 
   void onFinishTurn(Action action) {
