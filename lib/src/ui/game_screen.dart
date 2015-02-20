@@ -86,7 +86,7 @@ class GameScreen extends Screen {
         break;
 
       case Input.CLOSE_DOOR: closeDoor(); break;
-      case Input.PICK_UP: action = new PickUpAction(); break;
+      case Input.PICK_UP: pickUp(); break;
 
       case Input.NW: action = new WalkAction(Direction.NW); break;
       case Input.N: action = new WalkAction(Direction.N); break;
@@ -172,6 +172,18 @@ class GameScreen extends Screen {
       game.hero.setNextAction(new CloseDoorAction(doors[0]));
     } else {
       ui.push(new CloseDoorDialog(game));
+    }
+  }
+
+  void pickUp() {
+    final items = game.stage.itemsAt(game.hero.pos);
+
+    if (items.length > 1) {
+      // Show item dialog if there are multiple things to pick up.
+      ui.push(new ItemDialog.pickUp(this));
+    } else {
+      // Otherwise attempt to pick up any available item.
+      game.hero.setNextAction(new PickUpAction(items.length - 1));
     }
   }
 

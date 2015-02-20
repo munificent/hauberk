@@ -56,9 +56,12 @@ abstract class ItemAction extends Action {
 
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {
+  final int index;
+
+  PickUpAction(this.index);
+
   ActionResult onPerform() {
-    // TODO: Handle stacks on the ground.
-    var item = game.stage.itemAt(actor.pos);
+    var item = game.stage.itemsAt(actor.pos)[index];
     if (item == null) return fail('There is nothing here.');
 
     if (!hero.inventory.tryAdd(item)) {
