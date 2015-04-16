@@ -22,6 +22,9 @@ Element _tossElement;
 /// Percent chance of objects in the current category breaking when thrown.
 int _breakage;
 
+/// Percent chance of objects in the current category catching fire when burned.
+int _flammable;
+
 /// Static class containing all of the [ItemType]s.
 class Items {
   static final Map<String, ItemType> all = {};
@@ -371,6 +374,7 @@ void category(glyph, String category, {String equip, String verb}) {
   _tossDamage = null;
   _tossRange = null;
   _breakage = null;
+  _flammable = null;
 }
 
 /// Makes items in the current category throwable.
@@ -383,7 +387,6 @@ void tossable({int damage, Element element, int range, int breakage}) {
   _tossElement = element;
   _tossRange = range;
   _breakage = breakage;
-
 }
 
 void weapon(String name, int level, appearance, int damage, int tossDamage,
@@ -428,6 +431,6 @@ void item(String name, int level, appearance, {String equipSlot, ItemUse use,
   }
 
   Items.all[name] = new ItemType(name, appearance, level, _sortIndex++,
-      categories, equipSlot, use, attack, tossAttack, _breakage, armor);
+      categories, equipSlot, use, attack, tossAttack, _breakage, _flammable, armor);
 }
 

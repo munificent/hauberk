@@ -107,6 +107,10 @@ class ItemType {
   /// can't be thrown.
   final int breakage;
 
+  /// The percent chance of the item catching fire when burned. `null` if the
+  /// item can't be burned.
+  final int flammable;
+
   final int armor;
 
   /// The path to this item type in the hierarchical organization of items.
@@ -123,7 +127,7 @@ class ItemType {
 
   ItemType(this.name, this.appearance, this.level, this.sortIndex,
       this.categories, this.equipSlot, this.use, this.attack, this.tossAttack,
-      this.breakage, this.armor);
+      this.breakage, this.flammable, this.armor);
 
   String toString() => name;
 }
