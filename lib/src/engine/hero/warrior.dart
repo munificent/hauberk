@@ -146,12 +146,10 @@ class TrainedStat {
 
   /// How far into reaching the next level the stat is, as a percentage.
   int get percentUntilNext {
-    var level = 0;
     var left = _count;
     var cost = _cost;
 
     while (left >= cost) {
-      level++;
       left -= cost;
       cost += _increase;
     }
