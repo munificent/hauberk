@@ -1,0 +1,7 @@
+things gems could do:
+
+1. upgrade equipment to the next better version: dirk -> dagger, etc.
+2. choose a random affix with a chance of failure
+3. choose a specific affix
+4. turn equipment into a unique artifact-like equipment. (in other words, an
+   item with a distinct name and powers, not just regular item + affix)

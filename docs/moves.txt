@@ -1,0 +1,28 @@
+Ideas for more things monsters can do to increase variety:
+
+- Dogs should bark to wake nearby monsters
+- Cone and ball attacks
+- Chain lightning
+- Breed (i.e. spawn same type)
+- Summon (i.e. spawn other type)
+- Make some monsters prefer to hug walls when walking
+- Throw items, which can hit hero and/or fall on the ground?
+- Self-immolate: suicide with ball damage
+- Wake nearby
+- Haste other
+- Teleport to
+- Teleport away
+- Teleport other to
+- Beam
+- Teleport hero
+- Confuse
+- Drain experience
+- Steal from inventory
+- Pick up item
+- Heal other
+- Eat weaker monsters to gain health
+- Drain health from hero or other monsters (could chain this too)
+- Boost armor
+- Temporary resist
+- Push past other monsters
+- Split into two weaker monsters

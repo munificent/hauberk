@@ -1,0 +1,27 @@
+Pustulent Swamps
+Open forested area with patches of swamps. Molds, slimes, and undead. Lots of
+poison. Living plants.
+
+Gaol of the Heretics
+Deep prison-like dungeon. Lots of locked doors and barred walls. Rats, and
+other cave-dwellers. Humanoids and people. Some ghosts and undead.
+
+Twilit Wood
+Forested cemeteries. Undead and nocturnal forest creatures.
+
+Forgotten Dungeon
+Classic roguelike dungeon. Mixture of elementals, golems, undead, demons, etc.
+
+Infernal Crypts
+Twisty caverns. Undead and demons.
+
+Ascendence Keep
+Open, clean castle. Lots of classic mythical beasts. Humanoids.
+
+Dragonmount
+Relatively spacious open out-door mountain area. Obviously, lots of dragons.
+
+Citadel of the Ancients
+Symmetric castle. Ancients.
+
+cavern, crypt, keep, dungeon, swamp, wood, tower, castle
