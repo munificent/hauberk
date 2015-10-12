@@ -1,4 +1,5 @@
 packages
+.packages
 build/
 gh-pages/
 
