@@ -101,18 +101,19 @@ class Fov {
   /// Creates a [Shadow] that corresponds to the projected silhouette of the
   /// given tile. This is used both to determine visibility (if any of the
   /// projection is visible, the tile is) and to add the tile to the shadow map.
+  ///
+  /// The maximal projection of a square is always from the two opposing
+  /// corners. From the perspective of octant zero, we know the square is
+  /// above and to the right of the viewpoint, so it will be the top left and
+  /// bottom right corners.
   static _Shadow getProjection(int col, int row) {
-    // The bottom edge of row 0 is 1 wide.
-    final rowBottomWidth = row + 1;
-
     // The top edge of row 0 is 2 wide.
-    final rowTopWidth = row + 2;
+    var topLeft = col / (row + 2);
 
-    // Unify the bottom and top edges of the tile.
-    final start = math.min(col / rowBottomWidth, col / rowTopWidth);
-    final end   = math.max((col + 1) / rowBottomWidth, (col + 1) / rowTopWidth);
+    // The bottom edge of row 0 is 1 wide.
+    var bottomRight = (col + 1) / (row + 1);
 
-    return new _Shadow(start, end);
+    return new _Shadow(topLeft, bottomRight);
   }
 
   bool _isInShadow(_Shadow projection) {
