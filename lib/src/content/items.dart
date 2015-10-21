@@ -45,7 +45,7 @@ class Items {
     tossable(damage: 4, range: 8, element: Element.EARTH, breakage: 10);
     item("Rock", 1, lightBrown);
 
-    treasure();
+    treasures();
     pelts();
     potions();
     scrolls();
@@ -75,40 +75,51 @@ class Items {
   }
 }
 
-void treasure() {
-  // TODO: Use cent symbol?
-  // TODO: Use in recipe.
-  // TODO: Make stuff drop.
-  // Coins
-  category(r"$", "treasure/coin");
-  tossable(damage: 1, range: 7, breakage: 5);
-  item("Copper Coin",   1,  brown);
-  item("Bronze Coin",   15, darkGold);
-  item("Silver Coin",   30, gray);
-  item("Electrum Coin", 40, lightGold);
-  item("Gold Coin",     60, gold);
-  item("Platinum Coin", 80, lightGray);
+void treasures() {
+  // TODO: Make monsters and areas drop these.
+  // Coins.
+  category("¢", "treasure/coin");
+  treasure("Copper Coins",    1, brown,           1);
+  treasure("Bronze Coins",    7, darkGold,        8);
+  treasure("Silver Coins",   11, gray,           20);
+  treasure("Electrum Coins", 20, lightGold,      50);
+  treasure("Gold Coins",     30, gold,           100);
+  treasure("Platinum Coins", 40, lightGray,      300);
 
+  // Bars.
+  category(r"$", "treasure/bar");
+  treasure("Copper Bar",     35, brown,          150);
+  treasure("Bronze Bar",     50, darkGold,       500);
+  treasure("Silver Bar",     60, gray,           800);
+  treasure("Electrum Bar",   70, lightGold,     1200);
+  treasure("Gold Bar",       80, gold,          2000);
+  treasure("Platinum Bar",   90, lightGray,     3000);
+
+  // TODO: Could add more treasure using other currency symbols.
+
+  // TODO: Instead of treasure, make these recipe components.
+  /*
   // Gems
   category(r"$", "treasure/gem");
   tossable(damage: 2, range: 7, breakage: 5);
-  item("Amethyst",      3,  lightPurple);
-  item("Sapphire",      12, blue);
-  item("Emerald",       20, green);
-  item("Ruby",          35, red);
-  item("Diamond",       60, white);
-  item("Blue Diamond",  80, lightBlue);
+  treasure("Amethyst",      3,  lightPurple,   100);
+  treasure("Sapphire",      12, blue,          200);
+  treasure("Emerald",       20, green,         300);
+  treasure("Ruby",          35, red,           500);
+  treasure("Diamond",       60, white,        1000);
+  treasure("Blue Diamond",  80, lightBlue,    2000);
 
   // Rocks
   category(r"$", "treasure/rock");
   tossable(damage: 2, range: 7, breakage: 5);
-  item("Turquoise Stone", 15, aqua);
-  item("Onyx Stone",      20, darkGray);
-  item("Malachite Stone", 25, lightGreen);
-  item("Jade Stone",      30, darkGreen);
-  item("Pearl",           35, lightYellow);
-  item("Opal",            40, lightPurple);
-  item("Fire Opal",       50, lightOrange);
+  treasure("Turquoise Stone", 15, aqua,         60);
+  treasure("Onyx Stone",      20, darkGray,    160);
+  treasure("Malachite Stone", 25, lightGreen,  400);
+  treasure("Jade Stone",      30, darkGreen,   400);
+  treasure("Pearl",           35, lightYellow, 600);
+  treasure("Opal",            40, lightPurple, 800);
+  treasure("Fire Opal",       50, lightOrange, 900);
+  */
 }
 
 void pelts() {
@@ -383,7 +394,10 @@ void tossable({int damage, Element element, int range, int breakage}) {
   _tossElement = element;
   _tossRange = range;
   _breakage = breakage;
+}
 
+void treasure(String name, int level, appearance, int price) {
+  item(name, level, appearance, treasure: true, price: price);
 }
 
 void weapon(String name, int level, appearance, int damage, int tossDamage,
@@ -410,7 +424,8 @@ void armor(String name, int level, appearance, int armor) {
 }
 
 void item(String name, int level, appearance, {String equipSlot, ItemUse use,
-    Attack attack, Attack tossAttack, int armor: 0}) {
+    Attack attack, Attack tossAttack, int armor: 0, int price: 0,
+    bool treasure: false}) {
   // If the appearance isn"t an actual glyph, it should be a color function
   // that will be applied to the current glyph.
   if (appearance is! Glyph) {
@@ -428,6 +443,7 @@ void item(String name, int level, appearance, {String equipSlot, ItemUse use,
   }
 
   Items.all[name] = new ItemType(name, appearance, level, _sortIndex++,
-      categories, equipSlot, use, attack, tossAttack, _breakage, armor);
+      categories, equipSlot, use, attack, tossAttack, _breakage, armor, price,
+      treasure: treasure);
 }
 

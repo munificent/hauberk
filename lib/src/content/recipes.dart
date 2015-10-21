@@ -1,7 +1,5 @@
 library hauberk.content.recipes;
 
-import 'dart:math' as math;
-
 import '../engine.dart';
 import 'drops.dart';
 import 'items.dart';
@@ -14,7 +12,6 @@ class Recipes {
     healing();
     teleportation();
     armor();
-    coins();
   }
 }
 
@@ -104,44 +101,6 @@ void armor() {
     'Robe',
     'Fox Pelt'
   ]);
-}
-
-void coins() {
-  var coins = [
-    'Copper', 'Bronze', 'Silver', 'Electrum', 'Gold', 'Platinum'
-  ];
-
-  // For each item in an equipment category, make recipes to reroll a similar
-  // item.
-  for (var item in Items.all.values) {
-    if (item.categories.length < 2) continue;
-    if (item.categories[1] != "equipment") continue;
-
-    equipmentRecipe(ItemType item, int chance, int levelBoost,
-        List<String> coins) {
-      var level = math.min(100, item.level + levelBoost);
-      recipe(percent(chance, item.category, level),
-          [item.name]..addAll(coins));
-    }
-
-    // Better coins increase the level of the rerolled item. More coins
-    // increase the odds of a drop.
-    equipmentRecipe(item, 50, 0, []);
-    for (var i = 0; i < coins.length; i++) {
-      var coin = '${coins[i]} Coin';
-      var boost = 5 + i * 10;
-      equipmentRecipe(item, 70, boost, [coin]);
-      equipmentRecipe(item, 80, boost, [coin, coin]);
-      equipmentRecipe(item, 90, boost, [coin, coin, coin]);
-      equipmentRecipe(item, 100, boost, [coin, coin, coin, coin]);
-    }
-  }
-
-  // Recipes to upgrade coins.
-  for (var i = 0; i < coins.length - 1; i++) {
-    var coin = "${coins[i]} Coin";
-    recipe("${coins[i + 1]} Coin", [coin, coin, coin]);
-  }
 }
 
 void recipe(drop, List<String> ingredientNames) {

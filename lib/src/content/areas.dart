@@ -180,6 +180,16 @@ class Areas {
 
   static void debugAreas() {
     area('Debugland', 80, 34, 100.0);
+
+    level(() => new DebugArea(), monsters: 1, items: 20, breeds: [
+      'field mouse',
+    ], drop: [
+      rarity(1, 'treasure', 10),
+      rarity(1, 'treasure', 30),
+      rarity(1, 'treasure', 50),
+      rarity(1, 'treasure', 70)
+    ], quest: kill('field mouse', 1));
+
     level(() => new DebugArea(), monsters: 6, items: 20, breeds: [
       'saurian'
     ], drop: [

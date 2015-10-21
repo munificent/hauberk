@@ -69,6 +69,11 @@ class Item extends Thing implements Comparable {
     return name.toString();
   }
 
+  // TODO: Take affixes into account.
+  int get price => type.price;
+
+  bool get isTreasure => type.isTreasure;
+
   int compareTo(Item other) {
     // TODO: Take into account affixes.
     return type.sortIndex.compareTo(other.type.sortIndex);
@@ -121,9 +126,19 @@ class ItemType {
     return categories.last;
   }
 
+  /// How much gold this item is worth.
+  final int price;
+
+  /// True if this item is "treasure".
+  ///
+  /// That means it just has a gold value. As soon as the hero steps on it, it
+  /// increases the hero's gold and disappears.
+  bool isTreasure;
+
   ItemType(this.name, this.appearance, this.level, this.sortIndex,
       this.categories, this.equipSlot, this.use, this.attack, this.tossAttack,
-      this.breakage, this.armor);
+      this.breakage, this.armor, this.price, {treasure: false})
+      : isTreasure = treasure;
 
   String toString() => name;
 }

@@ -43,7 +43,19 @@ class WalkAction extends Action {
     if (actor is Hero) {
       for (var item in game.stage.itemsAt(pos)) {
         hero.disturb();
-        log('{1} [are|is] standing on {2}.', actor, item);
+
+        // Treasure is immediately, freely acquired.
+        if (item.isTreasure) {
+          // Pick a random value near the price.
+          var min = (item.price * 0.5).ceil();
+          var max = (item.price * 1.5).ceil();
+          var value = rng.range(min, max);
+          hero.gold += value;
+          log("{1} pick[s] up {2} worth $value gold.", hero, item);
+          game.stage.removeItem(item);
+        } else {
+          log('{1} [are|is] standing on {2}.', actor, item);
+        }
       }
     }
 
