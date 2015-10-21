@@ -38,6 +38,8 @@ class HeroSave {
 
   int experienceCents = 0;
 
+  int gold = 0;
+
   /// The index of the highest [Level] that the [Hero] has completed in each
   /// [Area]. The key will be the [Area] name. The value will be the one-based
   /// index of the level. No key means the hero has not completed any levels in
@@ -49,7 +51,7 @@ class HeroSave {
 
   HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
       this.home, this.crucible, this.experienceCents,
-      this.completedLevels);
+      this.completedLevels, this.gold);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be
@@ -59,6 +61,7 @@ class HeroSave {
     inventory = hero.inventory;
     equipment = hero.equipment;
     experienceCents = hero._experienceCents;
+    gold = hero.gold;
   }
 }
 
@@ -78,6 +81,8 @@ class Hero extends Actor {
 
   /// The hero's experience level.
   int _level = 1;
+
+  int gold;
 
   Behavior _behavior;
 
@@ -99,11 +104,12 @@ class Hero extends Actor {
 
   Hero(Game game, Vec pos, HeroSave save)
       : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
-    // Cloned so that if the hero dies in the dungeon, he loses anything gained.
-    heroClass = save.heroClass.clone(),
-    inventory = save.inventory.clone(),
-    equipment = save.equipment.clone(),
-    _experienceCents = save.experienceCents {
+      // Cloned so that if the hero dies in the dungeon, he loses anything gained.
+      heroClass = save.heroClass.clone(),
+      inventory = save.inventory.clone(),
+      equipment = save.equipment.clone(),
+      _experienceCents = save.experienceCents,
+      gold = save.gold {
     _refreshLevel(log: false);
 
     heroClass.bind(this);

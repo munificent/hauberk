@@ -61,6 +61,11 @@ class Storage {
 
       var completedLevels = hero['completedLevels'];
 
+      var gold = hero['gold'];
+
+      // Older heroes don't have gold.
+      if (gold == null) gold = 0;
+
       var heroClass;
       switch (hero['class']['name']) {
         case 'warrior': heroClass = _loadWarrior(hero['class']); break;
@@ -69,7 +74,7 @@ class Storage {
       }
 
       var heroSave = new HeroSave.load(name, heroClass, inventory, equipment,
-          home, crucible, experience, completedLevels);
+          home, crucible, experience, completedLevels, gold);
       heroes.add(heroSave);
     }
   }
@@ -139,7 +144,8 @@ class Storage {
         'home': home,
         'crucible': crucible,
         'experience': hero.experienceCents,
-        'completedLevels': hero.completedLevels
+        'completedLevels': hero.completedLevels,
+        'gold': hero.gold
       });
     }
 

@@ -428,18 +428,19 @@ class GameScreen extends Screen {
         (calculateLevelCost(hero.level + 1) -
         calculateLevelCost(hero.level));
     terminal.writeAt(16, 2, '$levelPercent%', Color.DARK_AQUA);
-    _drawStat(terminal, 3, 'Armor',
+    _drawStat(terminal, 3, 'Gold', hero.gold, Color.GOLD);
+    _drawStat(terminal, 4, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.GREEN);
     // TODO: Show the weapon and stats better.
-    _drawStat(terminal, 4, 'Weapon', hero.getAttack(null), Color.YELLOW);
+    _drawStat(terminal, 5, 'Weapon', hero.getAttack(null), Color.YELLOW);
 
-    terminal.writeAt(0, 6, hero.heroClass.name);
+    terminal.writeAt(0, 7, hero.heroClass.name);
     if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
 
     // Draw the nearby monsters.
-    terminal.writeAt(0, 16, '@', heroColor);
-    terminal.writeAt(2, 16, _save.name);
+    terminal.writeAt(0, 17, '@', heroColor);
+    terminal.writeAt(2, 17, _save.name);
     _drawHealthBar(terminal, 17, hero);
 
     visibleMonsters.sort((a, b) {
@@ -589,10 +590,10 @@ class GameScreen extends Screen {
   void _drawWarriorStats(Terminal terminal, Hero hero) {
     var warrior = hero.heroClass as Warrior;
 
-    terminal.writeAt(0, 7, "Fury", Color.GRAY);
-    _drawMeter(terminal, 7, hero.charge, 100, Color.ORANGE, Color.DARK_ORANGE);
+    terminal.writeAt(0, 8, "Fury", Color.GRAY);
+    _drawMeter(terminal, 8, hero.charge, 100, Color.ORANGE, Color.DARK_ORANGE);
 
-    var y = 8;
+    var y = 9;
 
     draw(String name, TrainedStat stat) {
       // Hide stats until the hero has made progress on them.
