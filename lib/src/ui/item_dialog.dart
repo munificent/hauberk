@@ -100,8 +100,8 @@ class ItemDialog extends Screen {
 void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     bool canSelect(Item item)) {
   var i = 0;
-  for (final item in items) {
-    final itemY = i + y;
+  for (var item in items) {
+    var itemY = i + y;
 
     var borderColor = Color.GRAY;
     var letterColor = Color.YELLOW;

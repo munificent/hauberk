@@ -9,9 +9,27 @@ import 'item_dialog.dart';
 class HomeScreen extends Screen {
   final Content  content;
   final HeroSave save;
-  HomeView leftView = HomeView.INVENTORY;
-  HomeView rightView = HomeView.HOME;
+
+  /// Which views are shown on each side.
+  final Map<Side, HomeView> views = {
+    Side.LEFT: HomeView.INVENTORY,
+    Side.RIGHT: HomeView.HOME
+  };
+
+  HomeView get leftView => views[Side.LEFT];
+  set leftView(HomeView value) {
+    views[Side.LEFT] = value;
+  }
+
+  HomeView get rightView => views[Side.RIGHT];
+  set rightView(HomeView value) {
+    views[Side.RIGHT] = value;
+  }
+
   HomeMode mode = HomeMode.VIEW;
+
+  /// Which side has keyboard focus.
+  Side active = Side.LEFT;
 
   /// If the crucible contains a complete recipe, this will be it. Otherwise,
   /// this will be `null`.
@@ -22,12 +40,50 @@ class HomeScreen extends Screen {
   bool handleInput(Input input) {
     if (mode.handleInput(input, this)) return true;
 
-    if (input == Input.CANCEL) {
-      ui.pop();
-      return true;
+    switch (input) {
+      case Input.CANCEL:
+        ui.pop();
+        break;
+
+      // Switch columns.
+      case Input.E:
+        active = Side.RIGHT;
+        break;
+
+      case Input.W:
+        active = Side.LEFT;
+        break;
+
+      // Switch views on the current column.
+      case Input.N:
+        do {
+          views[active] = views[active].previous;
+        }
+        while (!views[active].allowedOnSide(active));
+        break;
+
+      case Input.S:
+        do {
+          views[active] = views[active].next;
+        }
+        while (!views[active].allowedOnSide(active));
+        break;
+
+      default:
+        return false;
     }
 
-    return false;
+    // Don't show the same on both sides.
+    if (leftView == rightView) {
+      if (active == Side.LEFT) {
+        rightView = HomeView.CRUCIBLE;
+      } else {
+        leftView = HomeView.INVENTORY;
+      }
+    }
+
+    dirty();
+    return true;
   }
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
@@ -58,19 +114,28 @@ class HomeScreen extends Screen {
         '${mode.helpText}, [Esc] Exit',
         Color.GRAY);
 
-    terminal.writeAt(0, 2, leftView.label);
-    drawItems(terminal, 0, 3, leftView.getItems(save),
-        (item) => mode.canSelectLeftItem(this, item));
+    drawSide(Side side, int x) {
+      var view = views[side];
 
-    terminal.writeAt(50, 2, rightView.label);
-    drawItems(terminal, 50, 3, rightView.getItems(save),
-        (item) => mode.canSelectRightItem(this, item));
+      if (active == side && mode == HomeMode.VIEW) {
+        terminal.writeAt(x, 2, view.label, Color.BLACK, Color.YELLOW);
+      } else {
+        terminal.writeAt(x, 2, view.label);
+      }
+
+      canSelect(Item item) => mode.canSelectItem(this, side, item);
+
+      drawItems(terminal, x, 3, view.getItems(this), canSelect);
+    }
+
+    drawSide(Side.LEFT, 0);
+    drawSide(Side.RIGHT, 50);
 
     if (rightView == HomeView.CRUCIBLE && completeRecipe != null) {
       terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.YELLOW);
 
-      for (int i = 0; i < completeRecipe.produces.length; i++) {
-        terminal.writeAt(50, rightView.getItems(save).length + (i + 4),
+      for (var i = 0; i < completeRecipe.produces.length; i++) {
+        terminal.writeAt(50, rightView.getItems(this).length + (i + 4),
             completeRecipe.produces.elementAt(i));
       }
     }
@@ -89,40 +154,54 @@ class HomeScreen extends Screen {
   }
 }
 
+/// Identifies the two columns on the screen.
+enum Side {
+  LEFT,
+  RIGHT
+}
+
 /// Which items are currently being shown in the inventory.
 class HomeView {
-  static const INVENTORY = const HomeView(0);
-  static const EQUIPMENT = const HomeView(1);
-  static const HOME = const HomeView(2);
-  static const CRUCIBLE = const HomeView(3);
+  static const INVENTORY = const HomeView('Inventory', allowOnRight: false);
+  static const EQUIPMENT = const HomeView('Equipment');
+  static const HOME = const HomeView('Home');
+  static const CRUCIBLE = const HomeView('Crucible', allowOnLeft: false);
 
-  final int _value;
+  static const List<HomeView> _all = const [
+    INVENTORY,
+    EQUIPMENT,
+    HOME,
+    CRUCIBLE
+  ];
 
-  const HomeView(this._value);
+  /// The display label for the view.
+  final String label;
 
-  /// Gets the display label for the view.
-  String get label {
-    switch (this) {
-      case HomeView.INVENTORY: return 'Inventory';
-      case HomeView.EQUIPMENT: return 'Equipment';
-      case HomeView.HOME: return 'Home';
-      case HomeView.CRUCIBLE: return 'Crucible';
-    }
+  /// Which columns this view may be seen on.
+  final bool allowOnLeft;
+  final bool allowOnRight;
 
-    throw "unreachable";
-  }
+  const HomeView(this.label, {this.allowOnLeft: true, this.allowOnRight: true});
+
+  HomeView get next => _all[(_all.indexOf(this) + 1) % _all.length];
+
+  HomeView get previous => _all[(_all.indexOf(this) - 1) % _all.length];
 
   /// Gets the list of items for this view.
-  ItemCollection getItems(HeroSave save) {
+  ItemCollection getItems(HomeScreen home) {
     switch (this) {
-      case HomeView.INVENTORY: return save.inventory;
-      case HomeView.EQUIPMENT: return save.equipment;
-      case HomeView.HOME: return save.home;
-      case HomeView.CRUCIBLE: return save.crucible;
+      case HomeView.INVENTORY: return home.save.inventory;
+      case HomeView.EQUIPMENT: return home.save.equipment;
+      case HomeView.HOME: return home.save.home;
+      case HomeView.CRUCIBLE: return home.save.crucible;
     }
 
     throw "unreachable";
   }
+
+  /// Returns `true` if the view is allowed on [side].
+  bool allowedOnSide(Side side) =>
+      side == Side.LEFT ? allowOnLeft : allowOnRight;
 }
 
 /// What the user is currently doing on the home screen.
@@ -135,8 +214,8 @@ abstract class HomeMode {
 
   String get message;
   String get helpText;
-  bool canSelectLeftItem(HomeScreen home, Item item) => false;
-  bool canSelectRightItem(HomeScreen home, Item item) => false;
+
+  bool canSelectItem(HomeScreen home, Side side, Item item) => false;
 
   bool handleInput(Input input, HomeScreen home) => false;
   bool keyDown(int keyCode, HomeScreen home);
@@ -148,73 +227,18 @@ class ViewHomeMode extends HomeMode {
   const ViewHomeMode();
 
   String get message => 'What would you like to do?';
-  String get helpText => '[Tab] Switch left, [H] Home, [C] Crucible, [E] Equipment, [G] Get, [P] Put';
+  String get helpText => '[↔] Select column, [↕] Select source, [G] Get, [P] Put';
 
   bool keyDown(int keyCode, HomeScreen home) {
     switch (keyCode) {
-      case KeyCode.TAB:
-        switch (home.leftView) {
-          case HomeView.INVENTORY:
-            home.leftView = HomeView.EQUIPMENT;
-            if (home.rightView == HomeView.EQUIPMENT) {
-              // Don't show equipment on both sides.
-              home.rightView = HomeView.HOME;
-            }
-            break;
-
-          case HomeView.EQUIPMENT:
-            home.leftView = HomeView.HOME;
-            if (home.rightView == HomeView.HOME) {
-              // Don't show home on both sides.
-              home.rightView = HomeView.CRUCIBLE;
-            }
-            break;
-
-          case HomeView.HOME:
-            home.leftView = HomeView.INVENTORY;
-            break;
-        }
-
-        home.dirty();
-        break;
-
-      case KeyCode.H:
-        home.rightView = HomeView.HOME;
-        if (home.leftView == HomeView.HOME) {
-          // Don't show home on both sides.
-          home.leftView = HomeView.INVENTORY;
-        }
-        home.dirty();
-        break;
-
-      case KeyCode.C:
-        home.rightView = HomeView.CRUCIBLE;
-        home.dirty();
-        break;
-
-      case KeyCode.E:
-        home.rightView = HomeView.EQUIPMENT;
-        if (home.leftView == HomeView.EQUIPMENT) {
-          // Don't show equipment on both sides.
-          home.leftView = HomeView.INVENTORY;
-        }
-        home.dirty();
-        break;
-
-      case KeyCode.G:
-        home.mode = HomeMode.GET;
-        home.dirty();
-        break;
-
-      case KeyCode.P:
-        home.mode = HomeMode.PUT;
-        home.dirty();
-        break;
+      case KeyCode.G: home.mode = HomeMode.GET; break;
+      case KeyCode.P: home.mode = HomeMode.PUT; break;
 
       default:
         return false;
     }
 
+    home.dirty();
     return true;
   }
 }
@@ -253,7 +277,9 @@ class PutHomeMode extends SelectHomeMode {
 
   String get message => 'Put which item?';
 
-  bool canSelectLeftItem(HomeScreen home, Item item) {
+  bool canSelectItem(HomeScreen home, Side side, Item item) {
+    if (side == Side.RIGHT) return false;
+
     // Can put anything in the home.
     if (home.rightView == HomeView.HOME) return true;
 
@@ -265,21 +291,19 @@ class PutHomeMode extends SelectHomeMode {
     }
 
     // Can only put items in the crucible if they fit a recipe.
-    final items = new List.from(home.rightView.getItems(home.save));
+    var items = new List.from(home.rightView.getItems(home));
     items.add(item);
     return home.content.recipes.any((recipe) => recipe.allows(items));
   }
 
-  bool canSelectRightItem(HomeScreen home, Item item) => false;
-
   void selectItem(HomeScreen home, int index) {
-    var from = home.leftView.getItems(home.save);
+    var from = home.leftView.getItems(home);
 
     if (index >= from.length) return;
     var item = from[index];
-    if (!canSelectLeftItem(home, item)) return;
+    if (!canSelectItem(home, Side.LEFT, item)) return;
 
-    var to = home.rightView.getItems(home.save);
+    var to = home.rightView.getItems(home);
 
     if (to.tryAdd(item)) {
       from.removeAt(index);
@@ -298,17 +322,17 @@ class GetHomeMode extends SelectHomeMode {
 
   String get message => 'Pick up which item?';
 
-  bool canSelectLeftItem(HomeScreen home, Item item) => false;
-  bool canSelectRightItem(HomeScreen home, Item item) => true;
+  bool canSelectItem(HomeScreen home, Side side, Item item) {
+    return side == Side.RIGHT;
+  }
 
   void selectItem(HomeScreen home, int index) {
-    var from = home.rightView.getItems(home.save);
+    var from = home.rightView.getItems(home);
 
     if (index >= from.length) return;
     var item = from[index];
-    if (!canSelectRightItem(home, item)) return;
 
-    var to = home.leftView.getItems(home.save);
+    var to = home.leftView.getItems(home);
 
     if (to.tryAdd(item)) {
       from.removeAt(index);
