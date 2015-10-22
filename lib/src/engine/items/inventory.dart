@@ -26,7 +26,7 @@ abstract class ItemCollection extends Iterable<Item> {
 }
 
 /// The collection of [Item]s held by an [Actor].
-class Inventory extends IterableBase<Item> implements ItemCollection {
+class Inventory extends IterableMixin<Item> implements ItemCollection {
   final List<Item> _items;
   final int capacity;
 

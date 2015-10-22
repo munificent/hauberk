@@ -14,7 +14,7 @@ import 'engine.dart';
 class Debug {
   static const ENABLED = false;
 
-  static final _monsters = new Map<Monster, _MonsterLog>();
+  static final Map<Monster, _MonsterLog> _monsters = {};
 
   static void addMonster(Monster monster) {
     if (!ENABLED) return;
