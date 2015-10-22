@@ -7,8 +7,8 @@ import 'package:malison/malison.dart';
 import '../debug.dart';
 import '../engine.dart';
 import 'game_screen.dart';
-import 'home_screen.dart';
 import 'input.dart';
+import 'item_screen.dart';
 import 'storage.dart';
 
 class SelectLevelScreen extends Screen {
@@ -69,8 +69,8 @@ class SelectLevelScreen extends Screen {
     if (shift || alt) return false;
 
     switch (keyCode) {
-      case KeyCode.h:
-        ui.push(new HomeScreen(content, save));
+      case KeyCode.i:
+        ui.push(new ItemScreen(content, save));
         return true;
     }
 
@@ -80,7 +80,7 @@ class SelectLevelScreen extends Screen {
   void render(Terminal terminal) {
     terminal.writeAt(0, 0, 'Greetings, ${save.name}, where shall you quest?');
     terminal.writeAt(0, terminal.height - 1,
-        '[L] Select area, [↕] Select area, [↔] Select level, [H] Enter home',
+        '[L] Select area, [↕] Select area, [↔] Select level, [I] Manage items',
         Color.gray);
 
     for (var i = 0; i < content.areas.length; i++) {
@@ -119,8 +119,8 @@ class SelectLevelScreen extends Screen {
       // Left successfully, so save.
       storage.save();
       Debug.exitLevel();
-    } else if (screen is HomeScreen) {
-      // Always save when leaving the home.
+    } else if (screen is ItemScreen) {
+      // Always save when leaving the item screen.
       storage.save();
     }
   }
