@@ -69,7 +69,7 @@ class SelectLevelScreen extends Screen {
     if (shift || alt) return false;
 
     switch (keyCode) {
-      case KeyCode.H:
+      case KeyCode.h:
         ui.push(new HomeScreen(content, save));
         return true;
     }
@@ -81,23 +81,23 @@ class SelectLevelScreen extends Screen {
     terminal.writeAt(0, 0, 'Greetings, ${save.name}, where shall you quest?');
     terminal.writeAt(0, terminal.height - 1,
         '[L] Select area, [↕] Select area, [↔] Select level, [H] Enter home',
-        Color.GRAY);
+        Color.gray);
 
     for (var i = 0; i < content.areas.length; i++) {
       final area = content.areas[i];
 
       write(int x, String text, int level) {
-        var fore = Color.WHITE;
-        var back = Color.BLACK;
+        var fore = Color.white;
+        var back = Color.black;
         if ((i == selectedArea) &&
            ((level == selectedLevel) || (level == -1))) {
-          fore = Color.BLACK;
-          back = Color.YELLOW;
+          fore = Color.black;
+          back = Color.yellow;
         }
 
         // Can only select one past the completed level.
         if (i >= _openAreas || level > getCompletedLevel(area)) {
-          fore = Color.DARK_GRAY;
+          fore = Color.darkGray;
         }
 
         terminal.writeAt(x, 2 + i, text, fore, back);

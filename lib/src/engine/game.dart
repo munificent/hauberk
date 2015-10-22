@@ -208,7 +208,7 @@ class EventType {
   static const STAB = const EventType("stab");
 
   final String _name;
-  
+
   const EventType(this._name);
 
   String toString() => _name;

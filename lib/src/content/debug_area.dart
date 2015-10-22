@@ -46,7 +46,7 @@ class DebugConeArea extends StageBuilder {
     for (var element in Element.ALL) {
       // TODO: Element-based color.
       var breed = new Breed("${element} breather", Pronoun.IT,
-          new Glyph(element.name.substring(0, 1).toUpperCase(), Color.WHITE), [
+          new Glyph(element.name.substring(0, 1).toUpperCase(), Color.white), [
       ], [
         new BoltMove(2, new RangedAttack("element", "hits", 1, element, 12)),
         new ConeMove(2, new RangedAttack("element", "hits", 1, element, 12))

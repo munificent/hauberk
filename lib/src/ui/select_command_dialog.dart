@@ -27,8 +27,8 @@ class SelectCommandDialog extends Screen {
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
 
-    if (keyCode >= KeyCode.A && keyCode <= KeyCode.Z) {
-      selectCommand(keyCode - KeyCode.A);
+    if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
+      selectCommand(keyCode - KeyCode.a);
       return true;
     }
 
@@ -47,12 +47,12 @@ class SelectCommandDialog extends Screen {
       var y = i + 1;
       var command = _commands[i];
 
-      terminal.writeAt(0, y, '( )   ', Color.GRAY);
-      terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], Color.YELLOW);
+      terminal.writeAt(0, y, '( )   ', Color.gray);
+      terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], Color.yellow);
       terminal.writeAt(4, y, command.name);
     }
 
     terminal.writeAt(0, terminal.height - 1,
-        '[A-Z] Select command, [1-9] Bind quick key, [Esc] Exit', Color.GRAY);
+        '[A-Z] Select command, [1-9] Bind quick key, [Esc] Exit', Color.gray);
   }
 }

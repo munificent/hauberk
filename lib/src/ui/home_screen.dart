@@ -91,7 +91,7 @@ class HomeScreen extends Screen {
 
     if (mode.keyDown(keyCode, this)) return true;
 
-    if (keyCode == KeyCode.SPACE &&
+    if (keyCode == KeyCode.space &&
         completeRecipe != null &&
         rightView == HomeView.CRUCIBLE) {
       save.crucible.clear();
@@ -112,13 +112,13 @@ class HomeScreen extends Screen {
 
     terminal.writeAt(0, terminal.height - 1,
         '${mode.helpText}, [Esc] Exit',
-        Color.GRAY);
+        Color.gray);
 
     drawSide(Side side, int x) {
       var view = views[side];
 
       if (active == side && mode == HomeMode.VIEW) {
-        terminal.writeAt(x, 2, view.label, Color.BLACK, Color.YELLOW);
+        terminal.writeAt(x, 2, view.label, Color.black, Color.yellow);
       } else {
         terminal.writeAt(x, 2, view.label);
       }
@@ -132,7 +132,7 @@ class HomeScreen extends Screen {
     drawSide(Side.RIGHT, 50);
 
     if (rightView == HomeView.CRUCIBLE && completeRecipe != null) {
-      terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.YELLOW);
+      terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.yellow);
 
       for (var i = 0; i < completeRecipe.produces.length; i++) {
         terminal.writeAt(50, rightView.getItems(this).length + (i + 4),
@@ -231,8 +231,8 @@ class ViewHomeMode extends HomeMode {
 
   bool keyDown(int keyCode, HomeScreen home) {
     switch (keyCode) {
-      case KeyCode.G: home.mode = HomeMode.GET; break;
-      case KeyCode.P: home.mode = HomeMode.PUT; break;
+      case KeyCode.g: home.mode = HomeMode.GET; break;
+      case KeyCode.p: home.mode = HomeMode.PUT; break;
 
       default:
         return false;
@@ -260,8 +260,8 @@ abstract class SelectHomeMode extends HomeMode {
   }
 
   bool keyDown(int keyCode, HomeScreen home) {
-    if (keyCode >= KeyCode.A && keyCode <= KeyCode.Z) {
-      selectItem(home, keyCode - KeyCode.A);
+    if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
+      selectItem(home, keyCode - KeyCode.a);
       return true;
     }
 

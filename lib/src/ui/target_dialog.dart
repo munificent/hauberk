@@ -110,9 +110,9 @@ class TargetDialog extends Screen {
       }
 
       // Show the damage ranges.
-      var color = Color.YELLOW;
+      var color = Color.yellow;
       if (toPos > _range * 2 / 3) {
-        color = Color.DARK_YELLOW;
+        color = Color.darkYellow;
       }
 
       var glyph = tile.type.appearance[1] as Glyph;
@@ -137,17 +137,17 @@ class TargetDialog extends Screen {
       if (!stage[pos].isTransparent) break;
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
-          new Glyph.fromCharCode(CharCode.BULLET,
-              (i == 0) ? Color.YELLOW : Color.DARK_YELLOW));
+          new Glyph.fromCharCode(CharCode.bullet,
+              (i == 0) ? Color.yellow : Color.darkYellow));
       i = (i + _NUM_FRAMES - 1) % _NUM_FRAMES;
     }
 
     // Only show the reticle if the bolt will reach the target.
     if (reachedTarget) {
-      var targetColor = Color.YELLOW;
+      var targetColor = Color.yellow;
       var toTarget = _target - _gameScreen.game.hero.pos;
       if (toTarget > _range * 2 / 3) {
-        targetColor = Color.DARK_YELLOW;
+        targetColor = Color.darkYellow;
       }
 
       _gameScreen.drawStageGlyph(terminal, _target.x - 1, _target.y,

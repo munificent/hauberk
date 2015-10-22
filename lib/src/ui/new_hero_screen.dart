@@ -35,7 +35,7 @@ class NewHeroScreen extends Screen {
     // the KeyEvent?
 
     switch (keyCode) {
-      case KeyCode.ENTER:
+      case KeyCode.enter:
         // TODO: Other classes.
         var heroClass = new Warrior();
         var hero = content.createHero(name.isEmpty ? defaultName : name,
@@ -45,11 +45,11 @@ class NewHeroScreen extends Screen {
         ui.goTo(new SelectLevelScreen(content, hero, storage));
         break;
 
-      case KeyCode.ESCAPE:
+      case KeyCode.escape:
         ui.pop();
         break;
 
-      case KeyCode.DELETE:
+      case KeyCode.delete:
         if (name.length > 0) {
           name = name.substring(0, name.length - 1);
 
@@ -62,7 +62,7 @@ class NewHeroScreen extends Screen {
         }
         break;
 
-      case KeyCode.SPACE:
+      case KeyCode.space:
         // TODO: Handle modifiers.
         name = '$name ';
         dirty();
@@ -72,7 +72,7 @@ class NewHeroScreen extends Screen {
         var key = keyCode;
         if (key == null) break;
 
-        if (key >= KeyCode.A && key <= KeyCode.Z) {
+        if (key >= KeyCode.a && key <= KeyCode.z) {
           var charCode = key;
           // TODO: Handle other modifiers.
           if (!shift) {
@@ -81,7 +81,7 @@ class NewHeroScreen extends Screen {
 
           name += new String.fromCharCodes([charCode]);
           dirty();
-        } else if (key >= KeyCode.ZERO && key <= KeyCode.NINE) {
+        } else if (key >= KeyCode.zero && key <= KeyCode.nine) {
           name += new String.fromCharCodes([key]);
           dirty();
         }
@@ -99,13 +99,13 @@ class NewHeroScreen extends Screen {
         "What name shall the bards use to sing of your hero's adventures?");
 
     if (name.isEmpty) {
-      terminal.writeAt(0, 2, defaultName, Color.BLACK, Color.YELLOW);
+      terminal.writeAt(0, 2, defaultName, Color.black, Color.yellow);
     } else {
       terminal.writeAt(0, 2, name);
-      terminal.writeAt(name.length, 2, " ", Color.BLACK, Color.YELLOW);
+      terminal.writeAt(name.length, 2, " ", Color.black, Color.yellow);
     }
 
     terminal.writeAt(0, terminal.height - 1,
-        '[A-Z] Enter name, [Del] Delete letter, [Enter] Create hero, [Esc] Cancel', Color.GRAY);
+        '[A-Z] Enter name, [Del] Delete letter, [Enter] Create hero, [Esc] Cancel', Color.gray);
   }
 }

@@ -26,11 +26,11 @@ class ConfirmDialog extends Screen {
     if (shift || alt) return false;
 
     switch (keyCode) {
-      case KeyCode.N:
+      case KeyCode.n:
         ui.pop(null);
         break;
 
-      case KeyCode.Y:
+      case KeyCode.y:
         ui.pop(result);
         break;
     }

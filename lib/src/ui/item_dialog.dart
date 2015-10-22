@@ -41,12 +41,12 @@ class ItemDialog extends Screen {
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
 
-    if (keyCode >= KeyCode.A && keyCode <= KeyCode.Z) {
-      _selectItem(keyCode - KeyCode.A);
+    if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
+      _selectItem(keyCode - KeyCode.a);
       return true;
     }
 
-    if (keyCode == KeyCode.TAB && canSwitchLocations) {
+    if (keyCode == KeyCode.tab && canSwitchLocations) {
       _advanceLocation();
       dirty();
       return true;
@@ -65,7 +65,7 @@ class ItemDialog extends Screen {
 
     terminal.writeAt(0, terminal.height - 1,
         '$selectItem$helpText',
-        Color.GRAY);
+        Color.gray);
 
     drawItems(terminal, 0, 1, _getItems(), (item) => _command.canSelect(item));
   }
@@ -103,13 +103,13 @@ void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
   for (var item in items) {
     var itemY = i + y;
 
-    var borderColor = Color.GRAY;
-    var letterColor = Color.YELLOW;
-    var textColor = Color.WHITE;
+    var borderColor = Color.gray;
+    var letterColor = Color.yellow;
+    var textColor = Color.white;
     if (!canSelect(item)) {
-      borderColor = Color.DARK_GRAY;
-      letterColor = Color.GRAY;
-      textColor = Color.GRAY;
+      borderColor = Color.darkGray;
+      letterColor = Color.gray;
+      textColor = Color.gray;
     }
 
     terminal.writeAt(x, itemY, '( )   ', borderColor);

@@ -40,7 +40,7 @@ void addEffects(List<Effect> effects, Event event) {
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
         effects.add(new ParticleEffect(event.actor.x, event.actor.y,
-            Color.RED));
+            Color.red));
       }
       break;
 
@@ -49,11 +49,11 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.FEAR:
-      effects.add(new BlinkEffect(event.actor, Color.DARK_YELLOW));
+      effects.add(new BlinkEffect(event.actor, Color.darkYellow));
       break;
 
     case EventType.COURAGE:
-      effects.add(new BlinkEffect(event.actor, Color.YELLOW));
+      effects.add(new BlinkEffect(event.actor, Color.yellow));
       break;
 
     case EventType.DETECT:
@@ -69,11 +69,11 @@ void addEffects(List<Effect> effects, Event event) {
 
     case EventType.SPAWN:
       // TODO: Something more interesting.
-      effects.add(new FrameEffect(event.actor.pos, '*', Color.WHITE));
+      effects.add(new FrameEffect(event.actor.pos, '*', Color.white));
       break;
 
     case EventType.HOWL:
-      var colors = [Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.GRAY];
+      var colors = [Color.white, Color.lightGray, Color.gray, Color.gray];
       var color = colors[(event.other * 3).toInt()];
       effects.add(new FrameEffect(event.pos, '.', color));
       break;
@@ -82,7 +82,7 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.STAB:
       var line = _directionLines[event.dir];
       // TODO: Element color.
-      effects.add(new FrameEffect(event.pos, line, Color.WHITE));
+      effects.add(new FrameEffect(event.pos, line, Color.white));
   }
 }
 
@@ -106,85 +106,85 @@ List<Glyph> _glyphs(String chars, List<Color> colors) {
 }
 
 final _noneSequence = [
-  _glyphs("•", [Color.LIGHT_BROWN]),
-  _glyphs("•", [Color.LIGHT_BROWN]),
-  _glyphs("•", [Color.BROWN])
+  _glyphs("•", [Color.lightBrown]),
+  _glyphs("•", [Color.lightBrown]),
+  _glyphs("•", [Color.brown])
 ];
 
 final _airSequence = [
-  _glyphs("Oo", [Color.WHITE, Color.LIGHT_AQUA]),
-  _glyphs(".", [Color.LIGHT_AQUA]),
-  _glyphs(".", [Color.LIGHT_GRAY])
+  _glyphs("Oo", [Color.white, Color.lightAqua]),
+  _glyphs(".", [Color.lightAqua]),
+  _glyphs(".", [Color.lightGray])
 ];
 
 final _earthSequence = [
-  _glyphs("*%", [Color.LIGHT_BROWN, Color.GOLD]),
-  _glyphs("*%", [Color.BROWN, Color.DARK_ORANGE]),
-  _glyphs("•*", [Color.BROWN]),
-  _glyphs("•", [Color.DARK_BROWN])
+  _glyphs("*%", [Color.lightBrown, Color.gold]),
+  _glyphs("*%", [Color.brown, Color.darkOrange]),
+  _glyphs("•*", [Color.brown]),
+  _glyphs("•", [Color.darkBrown])
 ];
 
 final _fireSequence = [
-  _glyphs("*", [Color.GOLD, Color.YELLOW]),
-  _glyphs("*", [Color.ORANGE]),
-  _glyphs("•", [Color.RED]),
-  _glyphs("•", [Color.DARK_RED, Color.RED]),
-  _glyphs(".", [Color.DARK_RED, Color.RED])
+  _glyphs("*", [Color.gold, Color.yellow]),
+  _glyphs("*", [Color.orange]),
+  _glyphs("•", [Color.red]),
+  _glyphs("•", [Color.darkRed, Color.red]),
+  _glyphs(".", [Color.darkRed, Color.red])
 ];
 
 final _waterSequence = [
-  _glyphs("Oo", [Color.AQUA, Color.LIGHT_BLUE]),
-  _glyphs("o•~", [Color.BLUE]),
-  _glyphs("~", [Color.BLUE]),
-  _glyphs("~", [Color.DARK_BLUE]),
-  _glyphs(".", [Color.DARK_BLUE])
+  _glyphs("Oo", [Color.aqua, Color.lightBlue]),
+  _glyphs("o•~", [Color.blue]),
+  _glyphs("~", [Color.blue]),
+  _glyphs("~", [Color.darkBlue]),
+  _glyphs(".", [Color.darkBlue])
 ];
 
 final _acidSequence = [
-  _glyphs("Oo", [Color.YELLOW, Color.GOLD]),
-  _glyphs("o•~", [Color.DARK_YELLOW, Color.GOLD]),
-  _glyphs(":,", [Color.DARK_YELLOW, Color.DARK_GOLD]),
-  _glyphs(".", [Color.DARK_YELLOW])
+  _glyphs("Oo", [Color.yellow, Color.gold]),
+  _glyphs("o•~", [Color.darkYellow, Color.gold]),
+  _glyphs(":,", [Color.darkYellow, Color.darkGold]),
+  _glyphs(".", [Color.darkYellow])
 ];
 
 final _coldSequence = [
-  _glyphs("*", [Color.WHITE]),
-  _glyphs("+x", [Color.LIGHT_BLUE, Color.WHITE]),
-  _glyphs("+x", [Color.LIGHT_BLUE, Color.LIGHT_GRAY]),
-  _glyphs(".", [Color.GRAY, Color.DARK_BLUE])
+  _glyphs("*", [Color.white]),
+  _glyphs("+x", [Color.lightBlue, Color.white]),
+  _glyphs("+x", [Color.lightBlue, Color.lightGray]),
+  _glyphs(".", [Color.gray, Color.darkBlue])
 ];
 
 final _lightningSequence = [
-  _glyphs("*", [Color.LIGHT_PURPLE]),
-  _glyphs(r"-|\/", [Color.PURPLE, Color.WHITE]),
-  _glyphs(".", [Color.BLACK, Color.BLACK, Color.BLACK, Color.LIGHT_PURPLE])
+  _glyphs("*", [Color.lightPurple]),
+  _glyphs(r"-|\/", [Color.purple, Color.white]),
+  _glyphs(".", [Color.black, Color.black, Color.black, Color.lightPurple])
 ];
 
 final _poisonSequence = [
-  _glyphs("Oo", [Color.YELLOW, Color.LIGHT_GREEN]),
-  _glyphs("o•", [Color.GREEN, Color.GREEN, Color.DARK_YELLOW]),
-  _glyphs("•", [Color.DARK_GREEN, Color.DARK_YELLOW]),
-  _glyphs(".", [Color.DARK_GREEN])
+  _glyphs("Oo", [Color.yellow, Color.lightGreen]),
+  _glyphs("o•", [Color.green, Color.green, Color.darkYellow]),
+  _glyphs("•", [Color.darkGreen, Color.darkYellow]),
+  _glyphs(".", [Color.darkGreen])
 ];
 
 final _darkSequence = [
-  _glyphs("*%", [Color.BLACK, Color.BLACK, Color.LIGHT_GRAY]),
-  _glyphs("•", [Color.BLACK, Color.BLACK, Color.GRAY]),
-  _glyphs(".", [Color.BLACK]),
-  _glyphs(".", [Color.BLACK])
+  _glyphs("*%", [Color.black, Color.black, Color.lightGray]),
+  _glyphs("•", [Color.black, Color.black, Color.gray]),
+  _glyphs(".", [Color.black]),
+  _glyphs(".", [Color.black])
 ];
 
 final _lightSequence = [
-  _glyphs("*", [Color.WHITE]),
-  _glyphs("x+", [Color.WHITE, Color.LIGHT_YELLOW]),
-  _glyphs(":;\"'`,", [Color.LIGHT_GRAY, Color.YELLOW]),
-  _glyphs(".", [Color.GRAY, Color.YELLOW])
+  _glyphs("*", [Color.white]),
+  _glyphs("x+", [Color.white, Color.lightYellow]),
+  _glyphs(":;\"'`,", [Color.lightGray, Color.yellow]),
+  _glyphs(".", [Color.gray, Color.yellow])
 ];
 
 final _spiritSequence = [
-  _glyphs("Oo*+", [Color.LIGHT_PURPLE, Color.GRAY]),
-  _glyphs("o+", [Color.PURPLE, Color.GREEN]),
-  _glyphs("•.", [Color.DARK_PURPLE, Color.DARK_GREEN, Color.DARK_GREEN])
+  _glyphs("Oo*+", [Color.lightPurple, Color.gray]),
+  _glyphs("o+", [Color.purple, Color.green]),
+  _glyphs("•.", [Color.darkPurple, Color.darkGreen, Color.darkGreen])
 ];
 
 final _elementSequences = {
@@ -303,11 +303,11 @@ class HitEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var back;
     switch (frame ~/ 5) {
-      case 0: back = Color.RED;      break;
-      case 1: back = Color.DARK_RED; break;
-      case 2: back = Color.BLACK;    break;
+      case 0: back = Color.red;     break;
+      case 1: back = Color.darkRed; break;
+      case 2: back = Color.black;   break;
     }
-    drawGlyph(x, y, new Glyph(' 123456789'[health], Color.BLACK, back));
+    drawGlyph(x, y, new Glyph(' 123456789'[health], Color.black, back));
   }
 }
 
@@ -355,7 +355,7 @@ class TeleportEffect implements Effect {
   final Vec target;
 
   static final _colors =
-      [Color.LIGHT_AQUA, Color.AQUA, Color.LIGHT_BLUE, Color.WHITE];
+      [Color.lightAqua, Color.aqua, Color.lightBlue, Color.white];
 
   TeleportEffect(Vec from, this.target) {
     x = from.x;
@@ -398,7 +398,7 @@ class TeleportEffect implements Effect {
   /// pick a line that follows the vector.
   _getChar(num x, num y) {
     var velocity = new Vec((x * 10).toInt(), (y * 10).toInt());
-    if (velocity < 5) return CharCode.BULLET;
+    if (velocity < 5) return CharCode.bullet;
 
     var angle = math.atan2(x, y) / (math.PI * 2) * 16 + 8;
     return r"|\\--//||\\--//||".codeUnitAt(angle.floor());
@@ -421,10 +421,10 @@ class HealEffect implements Effect {
 
     var back;
     switch ((frame ~/ 4) % 4) {
-      case 0: back = Color.BLACK;       break;
-      case 1: back = Color.DARK_AQUA;   break;
-      case 2: back = Color.AQUA;        break;
-      case 3: back = Color.LIGHT_AQUA;  break;
+      case 0: back = Color.black;      break;
+      case 1: back = Color.darkAqua;   break;
+      case 2: back = Color.aqua;       break;
+      case 3: back = Color.lightAqua;  break;
     }
 
     drawGlyph(x - 1, y, new Glyph('-', back));
@@ -446,7 +446,7 @@ class DetectEffect implements Effect {
 
   void render(Game game, DrawGlyph drawGlyph) {
     var radius = life ~/ 4;
-    var glyph = new Glyph("*", Color.LIGHT_GOLD);
+    var glyph = new Glyph("*", Color.lightGold);
 
     var bounds = new Rect(pos.x - radius, pos.y - radius,
         radius * 2 + 1, radius * 2 + 1);

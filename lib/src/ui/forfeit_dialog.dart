@@ -27,11 +27,11 @@ class ForfeitDialog extends Screen {
     if (shift || alt) return false;
 
     switch (keyCode) {
-      case KeyCode.N:
+      case KeyCode.n:
         ui.pop(false);
         break;
 
-      case KeyCode.Y:
+      case KeyCode.y:
         ui.pop(true);
         break;
     }

@@ -26,13 +26,15 @@ class Tiles {
         [gray('.'), darkGray('.')]);
 
     Tiles.wall = new TileType("wall", false, false,
-        [lightGray('#', Color.DARK_GRAY), darkGray('#')]);
+        [lightGray('#', Color.darkGray), darkGray('#')]);
 
-    Tiles.table = new TileType("table", false, true,
-        [brown(CharCode.PI), darkBrown(CharCode.PI)]);
+    Tiles.table = new TileType("table", false, true, [
+      brown(CharCode.greekSmallLetterPi),
+      darkBrown(CharCode.greekSmallLetterPi)
+    ]);
 
     Tiles.lowWall = new TileType("low wall", false, true,
-        [gray('%', Color.DARK_GRAY), darkGray('%')]);
+        [gray('%', Color.darkGray), darkGray('%')]);
 
     Tiles.openDoor = new TileType("open door", true, true,
         [brown("'"), darkBrown("'")]);
@@ -42,24 +44,24 @@ class Tiles {
     Tiles.closedDoor.opensTo = Tiles.openDoor;
 
     Tiles.stairs = new TileType("stairs", true, true,
-        [lightGray(CharCode.TRIPLE_BAR), darkGray(CharCode.TRIPLE_BAR)]);
+        [lightGray(CharCode.identicalTo), darkGray(CharCode.identicalTo)]);
 
     Tiles.grass = new TileType("grass", true, true,
         [lightGreen('.'), green('.')]);
 
     Tiles.tree = new TileType("tree", false, false, [
-      green(CharCode.BLACK_UP_POINTING_TRIANGLE, Color.DARK_GREEN),
-      darkGreen(CharCode.BLACK_UP_POINTING_TRIANGLE)
+      green(CharCode.blackUpPointingTriangle, Color.darkGreen),
+      darkGreen(CharCode.blackUpPointingTriangle)
     ]);
 
     Tiles.treeAlt1 = new TileType("tree", false, false, [
-      green(CharCode.BLACK_SPADE_SUIT, Color.DARK_GREEN),
-      darkGreen(CharCode.BLACK_SPADE_SUIT)
+      green(CharCode.blackSpadeSuit, Color.darkGreen),
+      darkGreen(CharCode.blackSpadeSuit)
     ]);
 
     Tiles.treeAlt2 = new TileType("tree", false, false, [
-      green(CharCode.BLACK_CLUB_SUIT, Color.DARK_GREEN),
-      darkGreen(CharCode.BLACK_CLUB_SUIT)
+      green(CharCode.blackClubSuit, Color.darkGreen),
+      darkGreen(CharCode.blackClubSuit)
     ]);
   }
 }

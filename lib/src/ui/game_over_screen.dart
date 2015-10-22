@@ -26,6 +26,6 @@ class GameOverScreen extends Screen {
     terminal.writeAt(0, 0, log.messages.last.text);
     terminal.writeAt(0, terminal.height - 1,
         '[Esc] Return to quest menu',
-        Color.GRAY);
+        Color.gray);
   }
 }

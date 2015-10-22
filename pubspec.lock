@@ -20,7 +20,7 @@ packages:
   malison:
     description: malison
     source: hosted
-    version: "0.3.0"
+    version: "0.4.1"
   markdown:
     description: markdown
     source: hosted

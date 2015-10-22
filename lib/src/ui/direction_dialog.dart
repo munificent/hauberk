@@ -51,7 +51,7 @@ class DirectionDialog extends Screen {
   void render(Terminal terminal) {
     draw(int frame, Direction dir, String char) {
       var color = (_animateOffset ~/ _TICKS_PER_FRAME == frame) ?
-          Color.YELLOW : Color.DARK_YELLOW;
+          Color.yellow : Color.darkYellow;
 
       _gameScreen.drawStageGlyph(terminal,
           _game.hero.pos.x + dir.x, _game.hero.pos.y + dir.y,

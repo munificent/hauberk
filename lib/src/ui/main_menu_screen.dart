@@ -49,12 +49,12 @@ const _CHAR_COLORS = const [
 ];
 
 const _COLORS = const {
-  "L": Color.LIGHT_GRAY,
-  "E": Color.GRAY,
-  "R": Color.RED,
-  "O": Color.ORANGE,
-  "G": Color.GOLD,
-  "Y": Color.YELLOW
+  "L": Color.lightGray,
+  "E": Color.gray,
+  "R": Color.red,
+  "O": Color.orange,
+  "G": Color.gold,
+  "Y": Color.yellow
 };
 
 class MainMenuScreen extends Screen {
@@ -86,14 +86,14 @@ class MainMenuScreen extends Screen {
     if (shift || alt) return false;
 
     switch (keyCode) {
-      case KeyCode.D:
+      case KeyCode.d:
         if (selectedHero < storage.heroes.length) {
           ui.push(new ConfirmDialog(
               "Are you sure you want to delete this hero?", 'delete'));
         }
         return true;
 
-      case KeyCode.N:
+      case KeyCode.n:
         ui.push(new NewHeroScreen(content, storage));
         return true;
     }
@@ -122,23 +122,23 @@ class MainMenuScreen extends Screen {
         'Which hero shall you play?');
     terminal.writeAt(0, terminal.height - 1,
         '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
-        Color.GRAY);
+        Color.gray);
 
     if (storage.heroes.length == 0) {
       terminal.writeAt(25, 20, '(No heroes. Please create a new one.)',
-          Color.GRAY);
+          Color.gray);
     }
 
     for (var i = 0; i < storage.heroes.length; i++) {
       var hero = storage.heroes[i];
 
-      var fore = Color.WHITE;
-      var secondaryFore = Color.GRAY;
-      var back = Color.BLACK;
+      var fore = Color.white;
+      var secondaryFore = Color.gray;
+      var back = Color.black;
       if (i == selectedHero) {
-        fore = Color.BLACK;
-        secondaryFore = Color.WHITE;
-        back = Color.YELLOW;
+        fore = Color.black;
+        secondaryFore = Color.white;
+        back = Color.yellow;
       }
 
       terminal.writeAt(26, 20 + i, hero.name, fore, back);
