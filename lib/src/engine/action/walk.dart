@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';
 import 'attack.dart';
+import '../game.dart';
 import '../hero/hero.dart';
 import '../option.dart';
 
@@ -53,6 +54,8 @@ class WalkAction extends Action {
           hero.gold += value;
           log("{1} pick[s] up {2} worth $value gold.", hero, item);
           game.stage.removeItem(item);
+
+          addEvent(EventType.GOLD, actor: actor, pos: actor.pos, other: item);
         } else {
           log('{1} [are|is] standing on {2}.', actor, item);
         }

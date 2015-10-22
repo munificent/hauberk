@@ -207,6 +207,9 @@ class EventType {
   /// A warrior's stab attack hits a tile.
   static const STAB = const EventType("stab");
 
+  /// The hero picks up gold worth [other].
+  static const GOLD = const EventType("gold");
+
   final String _name;
 
   const EventType(this._name);

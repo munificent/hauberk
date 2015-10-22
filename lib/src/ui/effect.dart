@@ -83,6 +83,11 @@ void addEffects(List<Effect> effects, Event event) {
       var line = _directionLines[event.dir];
       // TODO: Element color.
       effects.add(new FrameEffect(event.pos, line, Color.white));
+      break;
+
+    case EventType.GOLD:
+      effects.add(new TreasureEffect(event.pos, event.other));
+      break;
   }
 }
 
@@ -457,5 +462,29 @@ class DetectEffect implements Effect {
         drawGlyph(pixel.x, pixel.y, glyph);
       }
     }
+  }
+}
+
+/// Floats a treasure item upward.
+class TreasureEffect implements Effect {
+  final int _x;
+  int _y;
+  final Item _item;
+  int _life = 8;
+
+  TreasureEffect(Vec pos, this._item)
+      : _x = pos.x, _y = pos.y;
+
+  bool update(Game game) {
+    if (_life % 2 == 0) {
+      _y--;
+      if (_y < 0) return false;
+    }
+
+    return --_life >= 0;
+  }
+
+  void render(Game game, DrawGlyph drawGlyph) {
+    drawGlyph(_x, _y, _item.appearance);
   }
 }
