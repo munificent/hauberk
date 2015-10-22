@@ -443,8 +443,6 @@ class RunBehavior extends Behavior {
   }
 
   bool _runInOpen(Hero hero) {
-    var game = hero.game;
-
     // Whether or not the hero's left and right sides are open cannot change.
     // In other words, if he is running along a wall on his left (closed on
     // left, open on right), he will stop if he enters an open room (open on

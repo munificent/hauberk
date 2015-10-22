@@ -1,7 +1,5 @@
 library hauberk.content.maze_dungeon;
 
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';

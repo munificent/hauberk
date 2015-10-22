@@ -7,6 +7,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../debug.dart';
 import '../action/action.dart';
 import '../action/walk.dart';
+import '../attack.dart';
 import '../breed.dart';
 import '../game.dart';
 import '../log.dart';
@@ -111,9 +112,11 @@ abstract class MonsterState {
     var meander = breed.meander;
 
     // Being dazzled makes the monster stumble around.
-    meander += math.min(6, monster.dazzle.duration ~/ 4);
+    if (monster.dazzle.isActive) {
+      meander += math.min(6, monster.dazzle.duration ~/ 4);
+    }
 
-    if (rng.range(chance) >= breed.meander) return dir;
+    if (rng.range(chance) >= meander) return dir;
 
     var dirs;
     if (dir == Direction.NONE) {
@@ -291,7 +294,7 @@ class AwakeState extends MonsterState {
 
       for (var attack in breed.attacks) {
         // Monsters don't have any raw ranged attacks, just ranged moves.
-        assert(!attack.isRanged);
+        assert(attack is! RangedAttack);
         meleeDamage += attack.averageDamage;
         meleeAttacks++;
 

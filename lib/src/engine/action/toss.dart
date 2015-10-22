@@ -17,7 +17,6 @@ import 'item.dart';
 /// reserved word.
 class TossAction extends ItemAction {
   final Vec _target;
-  Iterator<Vec> _los;
 
   TossAction(ItemLocation location, int index, this._target)
       : super(location, index);

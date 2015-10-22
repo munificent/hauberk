@@ -8,7 +8,7 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/drops.dart';
 
 main() {
-  var content = createContent();
+  createContent();
   var text = new StringBuffer();
 
   for (var i = 1; i <= 100; i++) {

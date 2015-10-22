@@ -11,15 +11,12 @@ main() {
   var text = new StringBuffer();
 
   for (var area in content.areas) {
-    var levelNum = 0;
-    for (var level in area.levels) {
+    for (var levelNum = 0; levelNum < area.levels.length; levelNum++) {
       var drops = {};
 
       var tries = 10000;
       for (var i = 0; i < tries; i++) {
         var itemDepth = pickDepth(levelNum, area.levels.length);
-        var drop = area.levels[itemDepth].floorDrop;
-
         area.levels[itemDepth].floorDrop.spawnDrop((item) {
           var name = item.type.name;
           if (item.prefix != null) name = "${item.prefix.name} $name";
@@ -75,8 +72,6 @@ main() {
       }
 
       text.write('</td></tr>');
-
-      levelNum++;
     }
   }
 

@@ -2,6 +2,7 @@ library hauberk.ui.game_over_screen;
 
 import 'package:malison/malison.dart';
 
+import '../engine.dart';
 import 'input.dart';
 
 class GameOverScreen extends Screen {

@@ -127,7 +127,6 @@ class Flow {
   List<Vec> _findAllNearestWhere(bool predicate(Vec pos)) {
     var goals;
 
-    var i = 0;
     var nearestDistance;
     for (var i = 0;; i++) {
       // Lazily find the next open tile.
@@ -231,6 +230,7 @@ class Flow {
   }
 
   /// Prints the distances array for debugging.
+  /*
   void _dump() {
     var buffer = new StringBuffer();
     for (var y = 0; y < _distances.height; y++) {
@@ -249,4 +249,5 @@ class Flow {
 
     print(buffer.toString());
   }
+  */
 }

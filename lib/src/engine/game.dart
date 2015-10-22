@@ -207,6 +207,9 @@ class EventType {
   /// A warrior's stab attack hits a tile.
   static const STAB = const EventType("stab");
 
-  final String _value;
-  const EventType(this._value);
+  final String _name;
+  
+  const EventType(this._name);
+
+  String toString() => _name;
 }
