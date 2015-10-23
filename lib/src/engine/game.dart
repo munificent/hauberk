@@ -13,6 +13,7 @@ import 'hero/hero.dart';
 import 'hero/hero_class.dart';
 import 'items/item.dart';
 import 'items/recipe.dart';
+import 'items/shop.dart';
 import 'log.dart';
 import 'option.dart';
 import 'stage.dart';
@@ -123,6 +124,7 @@ abstract class Content {
   Map<String, Breed> get breeds;
   Map<String, ItemType> get items;
   List<Recipe> get recipes;
+  List<Shop> get shops;
 
   HeroSave createHero(String name, HeroClass heroClass);
 

@@ -38,7 +38,8 @@ class HeroSave {
 
   int experienceCents = 0;
 
-  int gold = 0;
+  /// How much gold the hero has.
+  int gold = Option.HERO_GOLD_START;
 
   /// The index of the highest [Level] that the [Hero] has completed in each
   /// [Area]. The key will be the [Area] name. The value will be the one-based

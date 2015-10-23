@@ -42,11 +42,12 @@ class Areas {
     ], drop: [
       rarity(1, 'Rock'),
       rarity(1, 'Flower'),
+      rarity(1, 'treasure', 1),
       rarity(2, 'Stick'),
       rarity(3, 'magic', 1)
     ], quest: kill('fuzzy bunny', 1));
 
-    level(() => new Forest(), monsters: 18, items: 7, breeds: [
+    level(() => new Forest(), monsters: 18, items: 8, breeds: [
       'white mouse',
       'bee',
       'giant earthworm',
@@ -58,6 +59,7 @@ class Areas {
       rarity(1, 'Rock'),
       rarity(2, 'Flower'),
       rarity(3, 'Stick'),
+      rarity(1, 'treasure', 1),
       rarity(2, 'magic', 2),
       rarity(2, 'equipment', 2)
     ], quest: kill('fox', 1));

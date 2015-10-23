@@ -22,6 +22,9 @@ class Option {
   /// level.
   static final HERO_LEVEL_COST = 40;
 
+  /// The amount of gold a new hero starts with.
+  static final HERO_GOLD_START = 60;
+
   /// The maximum number of items the hero's [Inventory] can contain.
   static final INVENTORY_CAPACITY = 20;
 

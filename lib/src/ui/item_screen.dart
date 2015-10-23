@@ -34,11 +34,25 @@ class ItemScreen extends Screen {
   /// Which side has keyboard focus.
   Side active = Side.left;
 
+  /// All of the views that can be shown.
+  final List<View> _allViews = [];
+
   /// If the crucible contains a complete recipe, this will be it. Otherwise,
   /// this will be `null`.
   Recipe completeRecipe;
 
-  ItemScreen(this.content, this.save);
+  ItemScreen(this.content, this.save) {
+    _allViews.addAll([
+      View.inventory,
+      View.equipment,
+      View.home,
+      View.crucible
+    ]);
+
+    for (var shop in content.shops) {
+      _allViews.add(new ShopView(shop));
+    }
+  }
 
   bool handleInput(Input input) {
     if (mode.handleInput(input, this)) return true;
@@ -60,14 +74,14 @@ class ItemScreen extends Screen {
       // Switch views on the current column.
       case Input.N:
         do {
-          views[active] = views[active].previous;
+          views[active] = _changeView(views[active], -1);
         }
         while (!views[active].allowedOnSide(active));
         break;
 
       case Input.S:
         do {
-          views[active] = views[active].next;
+          views[active] = _changeView(views[active], 1);
         }
         while (!views[active].allowedOnSide(active));
         break;
@@ -111,13 +125,13 @@ class ItemScreen extends Screen {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, mode.message);
+    terminal.writeAt(0, 0, mode.message(this));
 
     var gold = _priceString(save.gold);
-    terminal.writeAt(83, 0, "Gold:");
-    terminal.writeAt(100 - gold.length, 0, gold, Color.gold);
+    terminal.writeAt(82, 0, "Gold:");
+    terminal.writeAt(99 - gold.length, 0, gold, Color.gold);
 
-    terminal.writeAt(0, terminal.height - 1, "${mode.helpText}, [Esc] Exit",
+    terminal.writeAt(0, terminal.height - 1, "${mode.helpText(this)}",
         Color.gray);
 
     var bar = new Glyph.fromCharCode(
@@ -139,12 +153,13 @@ class ItemScreen extends Screen {
 
       drawItems(terminal, x, 3, view.getItems(this), canSelect);
 
-      var y = 3;
+      var y = 2;
       for (var item in view.getItems(this)) {
+        y++;
         if (item.price == 0) continue;
 
         var price = _priceString(item.price);
-        terminal.writeAt(x + 49 - price.length, y++, price, Color.darkGray);
+        terminal.writeAt(x + 49 - price.length, y, price, Color.darkGray);
       }
     }
 
@@ -193,6 +208,10 @@ class ItemScreen extends Screen {
 
     return result;
   }
+
+  // Rotates [view] to a later or earlier one based on [offset].
+  View _changeView(View view, int offset) =>
+      _allViews[(_allViews.indexOf(view) + offset) % _allViews.length];
 }
 
 /// Identifies the two columns on the screen.
@@ -208,13 +227,6 @@ class View {
   static const home = const View('Home');
   static const crucible = const View('Crucible', allowOnLeft: false);
 
-  static const List<View> _all = const [
-    inventory,
-    equipment,
-    home,
-    crucible
-  ];
-
   /// The display label for the view.
   final String label;
 
@@ -222,11 +234,13 @@ class View {
   final bool allowOnLeft;
   final bool allowOnRight;
 
+  String get getVerb => "Get";
+  String get putVerb => "Put";
+
+  int get getKeyCode => KeyCode.g;
+  int get putKeyCode => KeyCode.p;
+
   const View(this.label, {this.allowOnLeft: true, this.allowOnRight: true});
-
-  View get next => _all[(_all.indexOf(this) + 1) % _all.length];
-
-  View get previous => _all[(_all.indexOf(this) - 1) % _all.length];
 
   /// Gets the list of items for this view.
   ItemCollection getItems(ItemScreen screen) {
@@ -245,6 +259,29 @@ class View {
       side == Side.left ? allowOnLeft : allowOnRight;
 }
 
+class ShopView implements View {
+  final Shop _shop;
+
+  String get label => _shop.name;
+
+  bool get allowOnLeft => false;
+  bool get allowOnRight => true;
+
+  String get getVerb => "Buy";
+  String get putVerb => "Sell";
+
+  int get getKeyCode => KeyCode.b;
+  int get putKeyCode => KeyCode.s;
+
+  ShopView(this._shop);
+
+  /// Returns `true` if the view is allowed on [side].
+  bool allowedOnSide(Side side) =>
+      side == Side.left ? allowOnLeft : allowOnRight;
+
+  ItemCollection getItems(ItemScreen screen) => _shop;
+}
+
 /// What the user is currently doing on the item screen.
 abstract class Mode {
   static final view = const ViewMode();
@@ -253,8 +290,9 @@ abstract class Mode {
 
   const Mode();
 
-  String get message;
-  String get helpText;
+  String message(ItemScreen screen);
+
+  String helpText(ItemScreen screen);
 
   bool canSelectItem(ItemScreen screen, Side side, Item item) => false;
 
@@ -267,16 +305,22 @@ abstract class Mode {
 class ViewMode extends Mode {
   const ViewMode();
 
-  String get message => 'Which items do you want to look at?';
-  String get helpText => '[↔] Select column, [↕] Select source, [G] Get, [P] Put';
+  String message(ItemScreen screen) => 'Which items do you want to look at?';
+
+  String helpText(ItemScreen screen) {
+    return "[↔] Select column, [↕] Select source, "
+        "[${screen.rightView.getVerb[0]}] ${screen.rightView.getVerb}, "
+        "[${screen.rightView.putVerb[0]}] ${screen.rightView.putVerb}, "
+        "[Esc] Exit";
+  }
 
   bool keyDown(int keyCode, ItemScreen screen) {
-    switch (keyCode) {
-      case KeyCode.g: screen.mode = Mode.get; break;
-      case KeyCode.p: screen.mode = Mode.put; break;
-
-      default:
-        return false;
+    if (keyCode == screen.rightView.getKeyCode) {
+      screen.mode = Mode.get;
+    } else if (keyCode == screen.rightView.putKeyCode) {
+      screen.mode = Mode.put;
+    } else {
+      return false;
     }
 
     screen.dirty();
@@ -288,7 +332,7 @@ class ViewMode extends Mode {
 abstract class SelectMode extends Mode {
   const SelectMode();
 
-  String get helpText => '[A-Z] Choose an item, [Esc] Cancel';
+  String helpText(ItemScreen screen) => '[A-Z] Choose item, [Esc] Cancel';
 
   bool handleInput(Input input, ItemScreen screen) {
     if (input == Input.CANCEL) {
@@ -303,6 +347,9 @@ abstract class SelectMode extends Mode {
   bool keyDown(int keyCode, ItemScreen screen) {
     if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
       selectItem(screen, keyCode - KeyCode.a);
+
+      // TODO: There is a bug here that this prevents Ctrl-R from refreshing
+      // the page. Should only get here if Ctrl is not pressed.
       return true;
     }
 
@@ -316,10 +363,13 @@ abstract class SelectMode extends Mode {
 class PutMode extends SelectMode {
   const PutMode();
 
-  String get message => 'Put which item?';
+  String message(ItemScreen screen) =>
+      "${screen.rightView.putVerb} which item?";
 
   bool canSelectItem(ItemScreen screen, Side side, Item item) {
     if (side == Side.right) return false;
+
+    // TODO: Move these checks into the View.
 
     // Can put anything in the home.
     if (screen.rightView == View.home) return true;
@@ -332,9 +382,18 @@ class PutMode extends SelectMode {
     }
 
     // Can only put items in the crucible if they fit a recipe.
-    var items = new List.from(screen.rightView.getItems(screen));
-    items.add(item);
-    return screen.content.recipes.any((recipe) => recipe.allows(items));
+    if (screen.rightView == View.crucible) {
+      var items = new List.from(screen.rightView.getItems(screen));
+      items.add(item);
+      return screen.content.recipes.any((recipe) => recipe.allows(items));
+    }
+
+    // Can only sell things that have a price.
+    if (screen.rightView is ShopView) {
+      return item.price > 0;
+    }
+
+    throw "unreachable";
   }
 
   void selectItem(ItemScreen screen, int index) {
@@ -352,6 +411,10 @@ class PutMode extends SelectMode {
       // TODO: Show an error message?
     }
 
+    if (screen.rightView is ShopView) {
+      screen.save.gold += item.price;
+    }
+
     if (screen.rightView == View.crucible) screen.refreshRecipe();
     screen.dirty();
   }
@@ -361,10 +424,19 @@ class PutMode extends SelectMode {
 class GetMode extends SelectMode {
   const GetMode();
 
-  String get message => 'Pick up which item?';
+  String message(ItemScreen screen) =>
+      "${screen.rightView.getVerb} which item?";
 
   bool canSelectItem(ItemScreen screen, Side side, Item item) {
-    return side == Side.right;
+    if (side == Side.left) return false;
+
+    var view = screen.views[side];
+    if (view is ShopView) {
+      // Have to have enough gold to buy it.
+      if (screen.save.gold < item.price) return false;
+    }
+
+    return true;
   }
 
   void selectItem(ItemScreen screen, int index) {
@@ -377,6 +449,11 @@ class GetMode extends SelectMode {
 
     if (to.tryAdd(item)) {
       from.removeAt(index);
+
+      // If it's taken from a shop, pay for it.
+      if (screen.rightView is ShopView) {
+        screen.save.gold -= item.price;
+      }
 
       // If we get the last item, automatically switch out of get mode.
       if (from.isEmpty) screen.mode = Mode.view;

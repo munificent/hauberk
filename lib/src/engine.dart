@@ -33,6 +33,7 @@ export 'engine/items/equipment.dart';
 export 'engine/items/inventory.dart';
 export 'engine/items/item.dart';
 export 'engine/items/recipe.dart';
+export 'engine/items/shop.dart';
 export 'engine/log.dart';
 export 'engine/los.dart';
 export 'engine/monster.dart';

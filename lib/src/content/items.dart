@@ -211,41 +211,41 @@ void weapons() {
   category(r"\", "equipment/weapon/club", verb: "hit[s]");
   tossable(breakage: 25, range: 7);
   weapon("Stick",          1,    0, brown,       4,   3);
-  weapon("Cudgel",         3,    4, gray,        5,   4);
-  weapon("Club",           6,    6, lightBrown,  6,   5);
+  weapon("Cudgel",         3,    9, gray,        5,   4);
+  weapon("Club",           6,   21, lightBrown,  6,   5);
 
   // Staves.
   category("_", "equipment/weapon/staff", verb: "hit[s]");
   tossable(breakage: 35, range: 6);
-  weapon("Walking Stick",  2,    5, darkBrown,   5,   3);
-  weapon("Staff",          5,   10, lightBrown,  7,   5);
-  weapon("Quarterstaff",  11,   14, brown,      12,   8);
+  weapon("Walking Stick",  2,    9, darkBrown,   5,   3);
+  weapon("Staff",          5,   38, lightBrown,  7,   5);
+  weapon("Quarterstaff",  11,  250, brown,      12,   8);
 
   // Hammers.
   category("=", "equipment/weapon/hammer", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
-  weapon("Hammer",        27,  800, brown,      16, 12);
-  weapon("Mattock",       39, 1400, darkBrown,  20, 16);
-  weapon("War Hammer",    45, 2300, lightGray,  24, 20);
+  weapon("Hammer",        27,  621, brown,      16, 12);
+  weapon("Mattock",       39, 1225, darkBrown,  20, 16);
+  weapon("War Hammer",    45, 2106, lightGray,  24, 20);
 
   category("=", "equipment/weapon/mace", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
-  weapon("Morningstar",   24,  600, gray,       13, 11);
-  weapon("Mace",          33, 1000, darkGray,   18, 16);
+  weapon("Morningstar",   24,  324, gray,       13, 11);
+  weapon("Mace",          33,  891, darkGray,   18, 16);
 
   category("~", "equipment/weapon/whip", verb: "whip[s]");
   tossable(breakage: 25, range: 5);
-  weapon("Whip",           4,   8, lightBrown,  5,  1);
-  weapon("Chain Whip",    15,  40, darkGray,    9,  2);
-  weapon("Flail",         27, 700, darkGray,   14,  4);
+  weapon("Whip",           4,    9, lightBrown,  5,  1);
+  weapon("Chain Whip",    15,   95, darkGray,    9,  2);
+  weapon("Flail",         27,  409, darkGray,   14,  4);
 
   category("|", "equipment/weapon/sword", verb: "slash[es]");
   tossable(breakage: 20, range: 6);
-  weapon("Rapier",         7,   18, gray,       11,  4);
-  weapon("Shortsword",    11,   36, darkGray,   13,  6);
-  weapon("Scimitar",      18,  150, lightGray,  17,  9);
-  weapon("Cutlass",       24,  500, lightGold,  21, 11);
-  weapon("Falchion",      38, 1500, white,      25, 15);
+  weapon("Rapier",         7,  188, gray,       11,  4);
+  weapon("Shortsword",    11,  324, darkGray,   13,  6);
+  weapon("Scimitar",      18,  748, lightGray,  17,  9);
+  weapon("Cutlass",       24, 1417, lightGold,  21, 11);
+  weapon("Falchion",      38, 2374, white,      25, 15);
 
   /*
 
@@ -261,12 +261,12 @@ void weapons() {
   // Knives.
   category("|", "equipment/weapon/dagger", verb: "stab[s]");
   tossable(breakage: 2, range: 10);
-  weapon("Knife",          3,    6, gray,        5,  5);
-  weapon("Dirk",           4,   12, lightGray,   6,  6);
-  weapon("Dagger",         6,   30, white,       8,  8);
-  weapon("Stiletto",      10,  130, darkGray,   11, 11);
-  weapon("Rondel",        20,  700, lightAqua,  14, 14);
-  weapon("Baselard",      30, 1000, lightBlue,  16, 16);
+  weapon("Knife",          3,    9, gray,        5,  5);
+  weapon("Dirk",           4,   21, lightGray,   6,  6);
+  weapon("Dagger",         6,   63, white,       8,  8);
+  weapon("Stiletto",      10,  188, darkGray,   11, 11);
+  weapon("Rondel",        20,  409, lightAqua,  14, 14);
+  weapon("Baselard",      30,  621, lightBlue,  16, 16);
   // Main-guache
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
@@ -274,19 +274,19 @@ void weapons() {
   category(r"\", "equipment/weapon/spear", verb: "stab[s]");
   tossable(breakage: 3, range: 11);
   weapon("Pointed Stick",  2,    0, brown,       5,  9);
-  weapon("Spear",          7,  200, gray,       10, 15);
-  weapon("Angon",         14,  600, lightGray,  16, 20);
-  weapon("Lance",         28,  900, white,      24, 28);
-  weapon("Partisan",      35, 1400, darkGray,   36, 40);
+  weapon("Spear",          7,  137, gray,       10, 15);
+  weapon("Angon",         14,  621, lightGray,  16, 20);
+  weapon("Lance",         28, 2106, white,      24, 28);
+  weapon("Partisan",      35, 6833, darkGray,   36, 40);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
   category(r"\", "equipment/weapon/axe", verb: "chop[s]");
   tossable(breakage: 4);
-  weapon("Hatchet",        6,  100, darkGray,   10, 12, 10);
-  weapon("Axe",           12,  300, lightBrown, 16, 18, 9);
-  weapon("Valaska",       24,  600, gray,       26, 26, 8);
-  weapon("Battleaxe",     40, 2000, lightBlue,  32, 32, 7);
+  weapon("Hatchet",        6,  137, darkGray,   10, 12, 10);
+  weapon("Axe",           12,  621, lightBrown, 16, 18, 9);
+  weapon("Valaska",       24, 2664, gray,       26, 26, 8);
+  weapon("Battleaxe",     40, 4866, lightBlue,  32, 32, 7);
 
   // Sling. In a category itself because many box affixes don't apply to it.
   category("}", "equipment/weapon/sling", verb: "hit[s]");
@@ -296,7 +296,7 @@ void weapons() {
   // Bows.
   category("}", "equipment/weapon/bow", verb: "hit[s]");
   tossable(breakage: 50, range: 5);
-  ranged("Short Bow",      5,   80, brown,      "the arrow",  5, 12, 2);
+  ranged("Short Bow",      5,  180, brown,      "the arrow",  5, 12, 2);
   ranged("Longbow",       13,  600, lightBrown, "the arrow",  8, 14, 3);
   ranged("Crossbow",      28, 2000, gray,       "the bolt",  12, 16, 4);
 }
@@ -305,22 +305,22 @@ void bodyArmor() {
   // TODO: Make some armor throwable.
 
   category("(", "equipment/armor/cloak", equip: "cloak");
-  armor("Cloak",                   3,   8, darkBlue,    2);
-  armor("Fur Cloak",               9,  35, lightBrown,  3);
+  armor("Cloak",                   3,   19, darkBlue,    2);
+  armor("Fur Cloak",               9,   42, lightBrown,  3);
 
   category("(", "equipment/armor/body", equip: "body");
-  armor("Cloth Shirt",             2,   6, lightGray,   2);
-  armor("Leather Shirt",           5,  12, lightBrown,  5);
-  armor("Jerkin",                  7,  24, orange,      6);
-  armor("Leather Armor",          10,  30, brown,       8);
-  armor("Padded Armor",           14,  50, darkBrown,  11);
-  armor("Studded Leather Armor",  17,  70, gray,       15);
-  armor("Mail Hauberk",           20, 120, darkGray,   18);
-  armor("Scale Mail",             23, 200, lightGray,  21);
+  armor("Cloth Shirt",             2,   19, lightGray,   2);
+  armor("Leather Shirt",           5,  126, lightBrown,  5);
+  armor("Jerkin",                  7,  191, orange,      6);
+  armor("Leather Armor",          10,  377, brown,       8);
+  armor("Padded Armor",           14,  819, darkBrown,  11);
+  armor("Studded Leather Armor",  17, 1782, gray,       15);
+  armor("Mail Hauberk",           20, 2835, darkGray,   18);
+  armor("Scale Mail",             23, 4212, lightGray,  21);
 
   category("(", "equipment/armor/body/robe", equip: "body");
-  armor("Robe",                    2,  13, aqua,        4);
-  armor("Fur-lined Robe",          9,  29, darkAqua,    6);
+  armor("Robe",                    2,   77, aqua,        4);
+  armor("Fur-lined Robe",          9,  191, darkAqua,    6);
 
   /*
   Metal Lamellar Armor[s]
@@ -336,11 +336,11 @@ void bodyArmor() {
 
 void boots() {
   category("]", "equipment/armor/boots", equip: "boots");
-  armor("Leather Sandals",       2,   4, lightBrown,  1);
-  armor("Leather Shoes",         8,  11, brown,       2);
-  armor("Leather Boots",        14,  40, darkBrown,   4);
-  armor("Metal Shod Boots",     22,  60, gray,        7);
-  armor("Greaves",              47, 150, lightGray,  12);
+  armor("Leather Sandals",       2,    6, lightBrown,  1);
+  armor("Leather Shoes",         8,   19, brown,       2);
+  armor("Leather Boots",        14,   77, darkBrown,   4);
+  armor("Metal Shod Boots",     22,  274, gray,        7);
+  armor("Greaves",              47, 1017, lightGray,  12);
 }
 
 void category(glyph, String category, {String equip, String verb}) {
@@ -406,7 +406,7 @@ void bottled(String name, int level, int price, appearance, Element element,
 void scroll(String name, int level, int price, appearance, ItemUse use) {
   if (name.startsWith("of")) name = "Scroll $name";
 
-  item(name, level, appearance, use: use);
+  item(name, level, appearance, price: price, use: use);
 }
 
 void weapon(String name, int level, int price, appearance, int damage,

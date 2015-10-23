@@ -439,8 +439,8 @@ class GameScreen extends Screen {
     if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
 
     // Draw the nearby monsters.
-    terminal.writeAt(0, 17, '@', heroColor);
-    terminal.writeAt(2, 17, _save.name);
+    terminal.writeAt(0, 16, '@', heroColor);
+    terminal.writeAt(2, 16, _save.name);
     _drawHealthBar(terminal, 17, hero);
 
     visibleMonsters.sort((a, b) {

@@ -78,6 +78,9 @@ class Item extends Thing implements Comparable {
     // TODO: Take into account affixes.
     return type.sortIndex.compareTo(other.type.sortIndex);
   }
+
+  /// Creates a new [Item] with the same type and affixes as this one.
+  Item clone() => new Item(type, prefix, suffix);
 }
 
 typedef Action ItemUse();

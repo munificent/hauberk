@@ -7,6 +7,7 @@ import 'content/areas.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
+import 'content/shops.dart';
 import 'content/tiles.dart';
 
 Content createContent() {
@@ -18,6 +19,7 @@ Content createContent() {
   Areas.initialize();
   Recipes.initialize();
   Affixes.initialize();
+  Shops.initialize();
 
   return new GameContent();
 }
@@ -27,6 +29,7 @@ class GameContent implements Content {
   Map<String, Breed> get breeds => Monsters.all;
   Map<String, ItemType> get items => Items.all;
   List<Recipe> get recipes => Recipes.all;
+  List<Shop> get shops => Shops.all;
 
   HeroSave createHero(String name, HeroClass heroClass) {
     var hero = new HeroSave(name, heroClass);
