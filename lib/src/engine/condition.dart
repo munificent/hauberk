@@ -5,6 +5,9 @@ import 'actor.dart';
 import 'element.dart';
 import 'log.dart';
 
+// TODO: To reinforce the session-oriented play style of the game, maybe these
+// shouldn't wear off?
+
 /// A temporary condition that modifies some property of an [Actor] while it
 /// is in effect.
 abstract class Condition {

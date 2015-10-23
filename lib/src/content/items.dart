@@ -141,93 +141,69 @@ void potions() {
   // Healing.
   category("!", "magic/potion/healing");
   tossable(damage: 1, range: 8, breakage: 100);
-  item("Soothing Balm", 1, lightRed,
-      use: () => new HealAction(24));
-  item("Mending Salve", 7, red,
-      use: () => new HealAction(48));
-  item("Healing Poultice", 12, darkRed,
-      use: () => new HealAction(64, curePoison: true));
-  item("Potion of Amelioration", 24, darkPurple,
-      use: () => new HealAction(120, curePoison: true));
-  item("Potion of Rejuvenation", 65, purple,
-      use: () => new HealAction(1000, curePoison: true));
+  healing("Soothing Balm",     1,   10, lightRed,     24);
+  healing("Mending Salve",     7,   40, red,          48);
+  healing("Healing Poultice", 12,   80, darkRed,      64, curePoison: true);
+  healing("of Amelioration",  24,  200, darkPurple,  120, curePoison: true);
+  healing("of Rejuvenation",  65,  500, purple,     1000, curePoison: true);
+
+  healing("Antidote",         15,   18, green,         0, curePoison: true);
 
   category("!", "magic/potion/resistance");
   tossable(damage: 1, range: 8, breakage: 100);
-  resistSalve(String name, int level, appearance, Element element) {
-    item("Salve of $name Resistance", level, appearance,
-        use: () => new ResistAction(40, element));
-  }
-
-  resistSalve("Heat", 5, orange, Element.FIRE);
-  resistSalve("Cold", 6, lightBlue, Element.COLD);
-  resistSalve("Light", 7, lightYellow, Element.LIGHT);
-  resistSalve("Wind", 8, lightAqua, Element.AIR);
-  resistSalve("Electricity", 9, lightPurple, Element.LIGHTNING);
-  resistSalve("Darkness", 10, darkGray, Element.DARK);
-  resistSalve("Earth", 13, brown, Element.EARTH);
-  resistSalve("Water", 16, blue, Element.WATER);
-  resistSalve("Acid", 19, lightOrange, Element.ACID);
-  resistSalve("Poison", 23, green, Element.POISON);
-  resistSalve("Death", 30, purple, Element.SPIRIT);
+  resistSalve("Heat",          5, 20, orange, Element.FIRE);
+  resistSalve("Cold",          6, 24, lightBlue, Element.COLD);
+  resistSalve("Light",         7, 28, lightYellow, Element.LIGHT);
+  resistSalve("Wind",          8, 32, lightAqua, Element.AIR);
+  resistSalve("Electricity",   9, 36, lightPurple, Element.LIGHTNING);
+  resistSalve("Darkness",     10, 40, darkGray, Element.DARK);
+  resistSalve("Earth",        13, 44, brown, Element.EARTH);
+  resistSalve("Water",        16, 48, blue, Element.WATER);
+  resistSalve("Acid",         19, 52, lightOrange, Element.ACID);
+  resistSalve("Poison",       23, 56, green, Element.POISON);
+  resistSalve("Death",        30, 60, purple, Element.SPIRIT);
 
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
-
-  item("Antidote", 15, green,
-      use: () => new HealAction(0, curePoison: true));
 
   // Speed.
   category("!", "magic/potion/speed");
   tossable(damage: 1, range: 8, breakage: 100);
-  item("Potion of Quickness", 3, lightGreen,
-      use: () => new HasteAction(20, 1));
-  item("Potion of Alacrity", 18, green,
-      use: () => new HasteAction(30, 2));
-  item("Potion of Speed", 34, darkGreen,
-      use: () => new HasteAction(40, 3));
+  potion("of Quickness",  3,  20, lightGreen, () => new HasteAction(20, 1));
+  potion("of Alacrity",  18,  40, green,      () => new HasteAction(30, 2));
+  potion("of Speed",     34, 200, darkGreen,  () => new HasteAction(40, 3));
 
   // dram, draught, elixir, philter
 
   // TODO: Make monsters drop these.
   category("?", "magic/potion/bottled");
   tossable(damage: 1, range: 8, breakage: 100);
-  bottledElement(String name, int level, appearance, Element element,
-      int damage, int range, String noun, String verb) {
-    item("Bottled $name", level, appearance, use: () => new RingSelfAction(
-        new RangedAttack(noun, verb, damage, element, range)));
-  }
-
-  bottledElement("Wind", 4, white, Element.AIR, 8, 6, "the wind", "blasts");
-  bottledElement("Ice", 7, lightBlue, Element.COLD, 15, 7, "the ice", "freezes");
-  bottledElement("Fire", 11, red, Element.FIRE, 22, 8, "the fire", "burns");
-  bottledElement("Water", 12, blue, Element.WATER, 26, 8, "the water", "drowns");
-  bottledElement("Earth", 13, brown, Element.EARTH, 28, 9, "the earth", "crushes");
-  bottledElement("Lightning", 16, lightPurple, Element.LIGHTNING, 34, 9, "the lightning", "shocks");
-  bottledElement("Acid", 18, lightGreen, Element.ACID, 38, 10, "the acid", "corrodes");
-  bottledElement("Poison", 22, darkGreen, Element.POISON, 42, 10, "the poison", "infects");
-  bottledElement("Shadows", 28, black, Element.DARK, 48, 11, "the darkness", "torments");
-  bottledElement("Radiance", 34, white, Element.LIGHT, 52, 11, "the light", "sears");
-  bottledElement("Spirits", 40, darkGray, Element.SPIRIT, 58, 12, "the spirit", "haunts");
+  bottled("Wind",       4,   30, white,       Element.AIR,         8, 6, "blasts");
+  bottled("Ice",        7,   55, lightBlue,   Element.COLD,       15, 7, "freezes");
+  bottled("Fire",      11,   70, red,         Element.FIRE,       22, 8, "burns");
+  bottled("Water",     12,  110, blue,        Element.WATER,      26, 8, "drowns");
+  bottled("Earth",     13,  150, brown,       Element.EARTH,      28, 9, "crushes");
+  bottled("Lightning", 16,  200, lightPurple, Element.LIGHTNING,  34, 9, "shocks");
+  bottled("Acid",      18,  250, lightGreen,  Element.ACID,       38, 10, "corrodes");
+  bottled("Poison",    22,  330, darkGreen,   Element.POISON,     42, 10, "infects");
+  bottled("Shadows",   28,  440, black,       Element.DARK,       48, 11, "torments",
+      "the darkness");
+  bottled("Radiance",  34,  600, white,       Element.LIGHT,      52, 11, "sears");
+  bottled("Spirits",   40, 1000, darkGray,    Element.SPIRIT,     58, 12, "haunts");
 }
 
 void scrolls() {
   // Teleportation.
   category("?", "magic/scroll/teleportation");
   tossable(damage: 1, range: 4, breakage: 75);
-  item("Scroll of Sidestepping", 2, lightPurple,
-      use: () => new TeleportAction(6));
-  item("Scroll of Phasing", 6, purple,
-      use: () => new TeleportAction(12));
-  item("Scroll of Teleportation", 15, darkPurple,
-      use: () => new TeleportAction(24));
-  item("Scroll of Disappearing", 26, darkBlue,
-      use: () => new TeleportAction(48));
+  scroll("of Sidestepping",   2,  9, lightPurple, () => new TeleportAction(6));
+  scroll("of Phasing",        6, 17, purple,      () => new TeleportAction(12));
+  scroll("of Teleportation", 15, 33, darkPurple,  () => new TeleportAction(24));
+  scroll("of Disappearing",  26, 47, darkBlue,    () => new TeleportAction(48));
 
   // Detection.
   category("?", "magic/scroll/detection");
   tossable(damage: 1, range: 4, breakage: 75);
-  item("Scroll of Item Detection", 7, lightOrange,
-      use: () => new DetectItemsAction());
+  scroll("of Item Detection", 7, 27, lightOrange, () => new DetectItemsAction());
 }
 
 void weapons() {
@@ -273,7 +249,7 @@ void weapons() {
 
   /*
 
-  // Two-handed swords
+  // Two-handed swords.
   Bastard Sword[s]
   Longsword[s]
   Broadsword[s]
@@ -329,22 +305,22 @@ void bodyArmor() {
   // TODO: Make some armor throwable.
 
   category("(", "equipment/armor/cloak", equip: "cloak");
-  armor("Cloak",                   3, darkBlue,    2);
-  armor("Fur Cloak",               9, lightBrown,  3);
+  armor("Cloak",                   3,   8, darkBlue,    2);
+  armor("Fur Cloak",               9,  35, lightBrown,  3);
 
   category("(", "equipment/armor/body", equip: "body");
-  armor("Cloth Shirt",             2, lightGray,   2);
-  armor("Leather Shirt",           5, lightBrown,  5);
-  armor("Jerkin",                  7, orange,      6);
-  armor("Leather Armor",          10, brown,       8);
-  armor("Padded Armor",           14, darkBrown,  11);
-  armor("Studded Leather Armor",  17, gray,       15);
-  armor("Mail Hauberk",           20, darkGray,   18);
-  armor("Scale Mail",             23, lightGray,  21);
+  armor("Cloth Shirt",             2,   6, lightGray,   2);
+  armor("Leather Shirt",           5,  12, lightBrown,  5);
+  armor("Jerkin",                  7,  24, orange,      6);
+  armor("Leather Armor",          10,  30, brown,       8);
+  armor("Padded Armor",           14,  50, darkBrown,  11);
+  armor("Studded Leather Armor",  17,  70, gray,       15);
+  armor("Mail Hauberk",           20, 120, darkGray,   18);
+  armor("Scale Mail",             23, 200, lightGray,  21);
 
   category("(", "equipment/armor/body/robe", equip: "body");
-  armor("Robe",                    2, aqua,        4);
-  armor("Fur-lined Robe",          9, darkAqua,    6);
+  armor("Robe",                    2,  13, aqua,        4);
+  armor("Fur-lined Robe",          9,  29, darkAqua,    6);
 
   /*
   Metal Lamellar Armor[s]
@@ -360,11 +336,11 @@ void bodyArmor() {
 
 void boots() {
   category("]", "equipment/armor/boots", equip: "boots");
-  armor("Leather Sandals",       2, lightBrown,  1);
-  armor("Leather Shoes",         8, brown,       2);
-  armor("Leather Boots",        14, darkBrown,   4);
-  armor("Metal Shod Boots",     22, gray,        7);
-  armor("Greaves",              47, lightGray,  12);
+  armor("Leather Sandals",       2,   4, lightBrown,  1);
+  armor("Leather Shoes",         8,  11, brown,       2);
+  armor("Leather Boots",        14,  40, darkBrown,   4);
+  armor("Metal Shod Boots",     22,  60, gray,        7);
+  armor("Greaves",              47, 150, lightGray,  12);
 }
 
 void category(glyph, String category, {String equip, String verb}) {
@@ -400,6 +376,39 @@ void treasure(String name, int level, appearance, int price) {
   item(name, level, appearance, treasure: true, price: price);
 }
 
+void potion(String name, int level, int price, appearance, ItemUse use) {
+  if (name.startsWith("of")) name = "Potion $name";
+
+  item(name, level, appearance, price: price, use: use);
+}
+
+void healing(String name, int level, int price, appearance, int amount,
+    {bool curePoison: false}) {
+  potion(name, level, price, appearance,
+      () => new HealAction(amount, curePoison: curePoison));
+}
+
+void resistSalve(String name, int level, int price, appearance,
+    Element element) {
+  item("Salve of $name Resistance", level, appearance,
+      price: price, use: () => new ResistAction(40, element));
+}
+
+void bottled(String name, int level, int price, appearance, Element element,
+    int damage, int range, String verb, [String noun]) {
+  if (noun == null) noun = "the ${name.toLowerCase()}";
+
+  item("Bottled $name", level, appearance, price: price,
+      use: () => new RingSelfAction(
+          new RangedAttack(noun, verb, damage, element, range)));
+}
+
+void scroll(String name, int level, int price, appearance, ItemUse use) {
+  if (name.startsWith("of")) name = "Scroll $name";
+
+  item(name, level, appearance, use: use);
+}
+
 void weapon(String name, int level, int price, appearance, int damage,
       int tossDamage,
       [int tossRange]) {
@@ -425,7 +434,7 @@ void ranged(String name, int level, int price, appearance, String noun,
       price: price);
 }
 
-void armor(String name, int level, appearance, int armor) {
+void armor(String name, int level, int price, appearance, int armor) {
   item(name, level, appearance, armor: armor);
 }
 
