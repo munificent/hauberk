@@ -22,6 +22,6 @@ class ArcheryCommand extends TargetCommand {
 
   Action getTargetAction(Game game, Vec target) {
     var weapon = game.hero.equipment.weapon;
-    return new BoltAction(target, weapon.attack);
+    return new BoltAction(target, weapon.attack, canMiss: true);
   }
 }

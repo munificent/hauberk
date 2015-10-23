@@ -80,11 +80,13 @@ abstract class LosAction extends Action {
 /// first [Actor] is hits or opaque tile.
 class BoltAction extends LosAction {
   final RangedAttack _attack;
+  final bool _canMiss;
 
   int get range => _attack.range;
 
-  BoltAction(Vec target, this._attack)
-      : super(target);
+  BoltAction(Vec target, this._attack, {bool canMiss: false})
+      : _canMiss = canMiss,
+        super(target);
 
   void onStep(Vec pos) {
     addEvent(EventType.BOLT, element: _attack.element, pos: pos);
@@ -93,9 +95,10 @@ class BoltAction extends LosAction {
   bool onHitActor(Vec pos, Actor target) {
     var attack = _attack;
 
-    // TODO: Should this be able to miss? If so, strike should take range into
-    // account.
-    attack.perform(this, actor, target, canMiss: false);
+    // TODO: Should range increase odds of missing? If so, do that here. Also
+    // need to tweak enemy AI then since they shouldn't always try to maximize
+    // distance.
+    attack.perform(this, actor, target, canMiss: _canMiss);
     return true;
   }
 }

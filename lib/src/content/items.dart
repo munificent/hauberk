@@ -291,12 +291,12 @@ void weapons() {
   // Sling. In a category itself because many box affixes don't apply to it.
   category("}", "equipment/weapon/sling", verb: "hit[s]");
   tossable(breakage: 15, range: 5);
-  ranged("Sling",          3,   20, darkBrown,  "the stone",  3, 10, 1);
+  ranged("Sling",          3,   20, darkBrown,  "the stone",  2, 10, 1);
 
   // Bows.
   category("}", "equipment/weapon/bow", verb: "hit[s]");
   tossable(breakage: 50, range: 5);
-  ranged("Short Bow",      5,  180, brown,      "the arrow",  5, 12, 2);
+  ranged("Short Bow",      5,  180, brown,      "the arrow",  4, 12, 2);
   ranged("Longbow",       13,  600, lightBrown, "the arrow",  8, 14, 3);
   ranged("Crossbow",      28, 2000, gray,       "the bolt",  12, 16, 4);
 }
@@ -435,7 +435,7 @@ void ranged(String name, int level, int price, appearance, String noun,
 }
 
 void armor(String name, int level, int price, appearance, int armor) {
-  item(name, level, appearance, armor: armor);
+  item(name, level, appearance, armor: armor, price: price);
 }
 
 void item(String name, int level, appearance, {String equipSlot, ItemUse use,

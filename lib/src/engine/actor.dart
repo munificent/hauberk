@@ -107,7 +107,7 @@ abstract class Actor extends Thing {
     var dodge = 15;
 
     // Hard to block an attack you can't see coming.
-    if (dazzle.isActive) dodge -= 2;
+    if (dazzle.isActive) dodge -= 5;
 
     return dodge;
   }
