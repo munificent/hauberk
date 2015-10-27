@@ -104,13 +104,14 @@ class Hero extends Actor {
   int _lastNoise = 0;
 
   Hero(Game game, Vec pos, HeroSave save)
-      : super(game, pos.x, pos.y, Option.HERO_HEALTH_START),
-      // Cloned so that if the hero dies in the dungeon, he loses anything gained.
-      heroClass = save.heroClass.clone(),
-      inventory = save.inventory.clone(),
-      equipment = save.equipment.clone(),
-      _experienceCents = save.experienceCents,
-      gold = save.gold {
+      : heroClass = save.heroClass.clone(),
+        inventory = save.inventory.clone(),
+        equipment = save.equipment.clone(),
+        _experienceCents = save.experienceCents,
+        gold = save.gold,
+        super(game, pos.x, pos.y, Option.HERO_HEALTH_START) {
+    // Hero state is cloned so that if they die in the dungeon, they lose
+    // anything they found.
     _refreshLevel(log: false);
 
     heroClass.bind(this);

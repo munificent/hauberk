@@ -447,7 +447,7 @@ void item(String name, int level, appearance, {String equipSlot, ItemUse use,
     appearance = appearance(_glyph);
   }
 
-  var categories = [];
+  var categories = <String>[];
   if (_category != null) categories = _category.split("/");
 
   if (equipSlot == null) equipSlot = _equipSlot;

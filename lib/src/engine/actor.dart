@@ -65,7 +65,7 @@ abstract class Actor extends Thing {
   final resistances = <Element, ResistCondition>{};
 
   // All [Condition]s for the actor.
-  Iterable<Condition> get conditions => [
+  Iterable<Condition> get conditions => <Condition>[
     haste,
     cold,
     poison,
@@ -73,9 +73,8 @@ abstract class Actor extends Thing {
   ]..addAll(resistances.values);
 
   Actor(this.game, int x, int y, int health)
-  : super(new Vec(x, y)),
-    health = new Stat(health) {
-
+      : health = new Stat(health),
+        super(new Vec(x, y)) {
     for (var element in Element.ALL) {
       resistances[element] = new ResistCondition(element);
     }

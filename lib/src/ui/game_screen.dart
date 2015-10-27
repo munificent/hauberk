@@ -191,11 +191,7 @@ class GameScreen extends Screen {
     // TODO: When there is more than one usable command, bring up the
     // SelectCommandDialog. Until then, just pick the first valid one.
     var command = game.hero.heroClass.commands
-        .firstWhere((command) => command.canUse(game), orElse: () => null);
-
-    // Should only get here from using a targeted command.
-    assert(command is TargetCommand);
-    assert(target != null);
+        .firstWhere((command) => command.canUse(game)) as TargetCommand;
 
     game.hero.setNextAction(command.getTargetAction(game, target.pos));
   }
@@ -301,7 +297,7 @@ class GameScreen extends Screen {
       heroColor = Color.white;
     }
 
-    var visibleMonsters = [];
+    var visibleMonsters = <Monster>[];
 
     _drawStage(terminal.rect(0, 0, viewSize.x, viewSize.y), heroColor,
         visibleMonsters);
@@ -331,7 +327,7 @@ class GameScreen extends Screen {
   }
 
   void _drawStage(Terminal terminal, Color heroColor,
-      List<Actor> visibleMonsters) {
+      List<Monster> visibleMonsters) {
     var hero = game.hero;
 
     dazzleGlyph(Glyph glyph) {
@@ -416,7 +412,7 @@ class GameScreen extends Screen {
   }
 
   void _drawSidebar(Terminal terminal, Color heroColor,
-      List<Actor> visibleMonsters) {
+      List<Monster> visibleMonsters) {
     var hero = game.hero;
     _drawStat(terminal, 0, 'Health', hero.health.current, Color.red,
         hero.health.max, Color.darkRed);

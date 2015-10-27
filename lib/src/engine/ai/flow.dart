@@ -125,7 +125,7 @@ class Flow {
   /// positions are found. Returned positions are local to [_distances], not
   /// the [Stage].
   List<Vec> _findAllNearestWhere(bool predicate(Vec pos)) {
-    var goals;
+    var goals = <Vec>[];
 
     var nearestDistance;
     for (var i = 0;; i++) {
@@ -133,7 +133,7 @@ class Flow {
       while (_open.isNotEmpty && i >= _found.length) _processNext();
 
       // If we flowed everywhere and didn't find anything, give up.
-      if (_open.isEmpty && i >= _found.length) return [];
+      if (_open.isEmpty && i >= _found.length) return goals;
 
       var pos = _found[i];
       if (!predicate(pos + _offset)) continue;
@@ -143,11 +143,9 @@ class Flow {
       // Since pos was from _found, it should be reachable.
       assert(distance >= 0);
 
-      if (nearestDistance == null) {
+      if (nearestDistance == null || distance == nearestDistance) {
+        // Consider all goals at the nearest distance.
         nearestDistance = distance;
-        goals = [pos];
-      } else if (distance == nearestDistance) {
-        // If we're still finding goals at the same distance, include them.
         goals.add(pos);
       } else {
         // We hit a tile that's farther than a valid goal, so we can stop

@@ -7,18 +7,18 @@ import 'utils.dart';
 import 'drops.dart';
 
 /// The default tracking for a breed that doesn't specify it.
-var _tracking;
+int _tracking;
 
 /// The default speed for breeds in the current group. If the breed
 /// specifies a speed, it is added to this.
-var _speed;
+int _speed;
 
 /// The default meander for breeds in the current group. If the breed
 /// specifies a meander, it is added to this.
-var _meander;
+int _meander;
 
 /// Default flags for the current group.
-var _flags;
+String _flags;
 
 /// The current glyph. Any items defined will use this. Can be a string or
 /// a character code.

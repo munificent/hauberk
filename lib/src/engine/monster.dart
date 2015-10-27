@@ -278,13 +278,16 @@ class Monster extends Actor {
   void _updateWitnesses(callback(Monster monster)) {
     for (var other in game.stage.actors) {
       if (other == this) continue;
-      if (other is! Monster) continue;
-      if (other._state is AsleepState) continue;
 
-      var distance = (other.pos - pos).kingLength;
+      if (other is! Monster) continue;
+      var monster = other as Monster;
+
+      if (monster._state is AsleepState) continue;
+
+      var distance = (monster.pos - pos).kingLength;
       if (distance > 20) continue;
 
-      if (other.canView(pos)) callback(other);
+      if (monster.canView(pos)) callback(monster);
     }
   }
 

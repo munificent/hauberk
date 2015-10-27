@@ -55,7 +55,7 @@ class RayAction extends Action {
     // Figure out the center angle of the cone.
     var offset = _to - _from;
     // TODO: Make atan2 getter on Vec?
-    var centerTheta = 0;
+    var centerTheta = 0.0;
     if (_from != _to) {
       centerTheta = math.atan2(offset.x, offset.y);
     }

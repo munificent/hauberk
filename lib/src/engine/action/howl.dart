@@ -28,8 +28,10 @@ class HowlAction extends Action {
 
       addEvent(EventType.HOWL, pos: pos, other: _step / _range);
 
-      var monster = game.stage.actorAt(pos);
-      if (monster is! Monster) continue;
+      var actor = game.stage.actorAt(pos);
+
+      if (actor is! Monster) continue;
+      var monster = actor as Monster;
 
       // TODO: Should also reduce fear.
 

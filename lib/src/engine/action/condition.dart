@@ -47,10 +47,10 @@ abstract class ConditionAction extends Action {
 
     if (condition.intensity >= intensity) {
       // Scale down the new duration by how much weaker the new intensity is.
-      duration = (duration * intensity) / condition.intensity;
+      duration = (duration * intensity) ~/ condition.intensity;
 
       // Compounding doesn't add as much as the first one.
-      duration = (duration / 2).truncate();
+      duration ~/= 2;
       if (duration == 0) return succeed();
 
       condition.extend(duration);
@@ -60,9 +60,9 @@ abstract class ConditionAction extends Action {
 
     // Scale down the existing duration by how much stronger the new intensity
     // is.
-    var oldDuration = (condition.duration * condition.intensity) / intensity;
+    var oldDuration = (condition.duration * condition.intensity) ~/ intensity;
 
-    condition.activate((oldDuration + duration / 2).truncate(), intensity);
+    condition.activate(oldDuration + duration ~/ 2, intensity);
     logIntensify();
     return ActionResult.SUCCESS;
   }

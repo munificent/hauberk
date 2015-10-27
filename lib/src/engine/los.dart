@@ -45,13 +45,13 @@ class LosIterator implements Iterator<Vec> {
 
     // Swap the order if the y magnitude is greater.
     if (delta.y > delta.x) {
-      var temp = primary;
+      var tempVec = primary;
       primary = secondary;
-      secondary = temp;
+      secondary = tempVec;
 
-      temp = primaryIncrement;
+      var tempIncrement = primaryIncrement;
       primaryIncrement = secondaryIncrement;
-      secondaryIncrement = temp;
+      secondaryIncrement = tempIncrement;
     }
 
     current = start;

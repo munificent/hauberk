@@ -273,14 +273,14 @@ class AwakeState extends MonsterState {
     // monster prefer a ranged attack when possible.
 
     // Determine how much ranged damage it can dish out per turn.
-    var rangedDamage = 0;
-    var rangedAttacks = 0;
+    var rangedDamage = 0.0;
+    var rangedAttacks = 0.0;
 
     for (var move in breed.moves) {
       // TODO: Handle other ranged damage moves.
       if (move is! BoltMove) continue;
 
-      rangedDamage += move.attack.averageDamage / move.rate;
+      rangedDamage += (move as BoltMove).attack.averageDamage / move.rate;
       rangedAttacks++;
 
       // TODO: Take elements into account?
@@ -289,8 +289,8 @@ class AwakeState extends MonsterState {
 
     if (rangedAttacks != 0) {
       // Determine how much melee damage it can dish out per turn.
-      var meleeDamage = 0;
-      var meleeAttacks = 0;
+      var meleeDamage = 0.0;
+      var meleeAttacks = 0.0;
 
       for (var attack in breed.attacks) {
         // Monsters don't have any raw ranged attacks, just ranged moves.

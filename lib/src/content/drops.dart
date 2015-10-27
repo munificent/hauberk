@@ -11,13 +11,8 @@ Drop parseDrop(String name, [int level]) {
 
   // Find an item in this category so we can figure out the full path
   // to it.
-  var categories;
-  for (var item in Items.all.values) {
-    if (item.categories.contains(name)) {
-      categories = item.categories;
-      break;
-    }
-  }
+  var categories = Items.all.values
+      .firstWhere((item) => item.categories.contains(name)).categories;
 
   // Only keep the prefix of the path up to the given category.
   categories = categories.take(categories.indexOf(name) + 1).toList();

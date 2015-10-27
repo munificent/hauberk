@@ -61,14 +61,14 @@ class Breed implements Quantifiable {
   /// this breed.
   int get experienceCents {
     // The more health it has, the longer it can hurt the hero.
-    var exp = maxHealth;
+    var exp = maxHealth.toDouble();
 
     // Faster monsters are worth more.
     exp *= Energy.GAINS[Energy.NORMAL_SPEED + speed];
 
     // Average the attacks (since they are selected randomly) and factor them
     // in.
-    var attackTotal = 0;
+    var attackTotal = 0.0;
     for (var attack in attacks) {
       // TODO: Take range into account?
       attackTotal += attack.averageDamage * Option.EXP_ELEMENT[attack.element];
@@ -76,8 +76,8 @@ class Breed implements Quantifiable {
 
     attackTotal /= attacks.length;
 
-    var moveTotal = 0;
-    var moveRateTotal = 0;
+    var moveTotal = 0.0;
+    var moveRateTotal = 0.0;
     for (var move in moves) {
       // Scale by the move rate. The less frequently a move can be performed,
       // the less it affects experience.

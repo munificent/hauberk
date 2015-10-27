@@ -25,7 +25,7 @@ main() {
   for (var i = 0; i < 1000; i++) {
     tries++;
 
-    for (Breed breed in breeds) {
+    for (var breed in breeds) {
       breed.drop.spawnDrop((item) {
         drops[breed.name].putIfAbsent(item.toString(), () => 0);
         drops[breed.name][item.toString()]++;

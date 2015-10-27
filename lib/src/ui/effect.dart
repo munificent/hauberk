@@ -39,8 +39,8 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(new HitEffect(event.actor));
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
-        effects.add(new ParticleEffect(event.actor.x, event.actor.y,
-            Color.red));
+        effects
+            .add(new ParticleEffect(event.actor.x, event.actor.y, Color.red));
       }
       break;
 
@@ -100,7 +100,7 @@ abstract class Effect {
 
 /// Creates a list of [Glyph]s for each combination of [chars] and [colors].
 List<Glyph> _glyphs(String chars, List<Color> colors) {
-  var results = [];
+  var results = <Glyph>[];
   for (var char in chars.codeUnits) {
     for (var color in colors) {
       results.add(new Glyph.fromCharCode(char, color));
@@ -110,101 +110,77 @@ List<Glyph> _glyphs(String chars, List<Color> colors) {
   return results;
 }
 
-final _noneSequence = [
-  _glyphs("•", [Color.lightBrown]),
-  _glyphs("•", [Color.lightBrown]),
-  _glyphs("•", [Color.brown])
-];
-
-final _airSequence = [
-  _glyphs("Oo", [Color.white, Color.lightAqua]),
-  _glyphs(".", [Color.lightAqua]),
-  _glyphs(".", [Color.lightGray])
-];
-
-final _earthSequence = [
-  _glyphs("*%", [Color.lightBrown, Color.gold]),
-  _glyphs("*%", [Color.brown, Color.darkOrange]),
-  _glyphs("•*", [Color.brown]),
-  _glyphs("•", [Color.darkBrown])
-];
-
-final _fireSequence = [
-  _glyphs("*", [Color.gold, Color.yellow]),
-  _glyphs("*", [Color.orange]),
-  _glyphs("•", [Color.red]),
-  _glyphs("•", [Color.darkRed, Color.red]),
-  _glyphs(".", [Color.darkRed, Color.red])
-];
-
-final _waterSequence = [
-  _glyphs("Oo", [Color.aqua, Color.lightBlue]),
-  _glyphs("o•~", [Color.blue]),
-  _glyphs("~", [Color.blue]),
-  _glyphs("~", [Color.darkBlue]),
-  _glyphs(".", [Color.darkBlue])
-];
-
-final _acidSequence = [
-  _glyphs("Oo", [Color.yellow, Color.gold]),
-  _glyphs("o•~", [Color.darkYellow, Color.gold]),
-  _glyphs(":,", [Color.darkYellow, Color.darkGold]),
-  _glyphs(".", [Color.darkYellow])
-];
-
-final _coldSequence = [
-  _glyphs("*", [Color.white]),
-  _glyphs("+x", [Color.lightBlue, Color.white]),
-  _glyphs("+x", [Color.lightBlue, Color.lightGray]),
-  _glyphs(".", [Color.gray, Color.darkBlue])
-];
-
-final _lightningSequence = [
-  _glyphs("*", [Color.lightPurple]),
-  _glyphs(r"-|\/", [Color.purple, Color.white]),
-  _glyphs(".", [Color.black, Color.black, Color.black, Color.lightPurple])
-];
-
-final _poisonSequence = [
-  _glyphs("Oo", [Color.yellow, Color.lightGreen]),
-  _glyphs("o•", [Color.green, Color.green, Color.darkYellow]),
-  _glyphs("•", [Color.darkGreen, Color.darkYellow]),
-  _glyphs(".", [Color.darkGreen])
-];
-
-final _darkSequence = [
-  _glyphs("*%", [Color.black, Color.black, Color.lightGray]),
-  _glyphs("•", [Color.black, Color.black, Color.gray]),
-  _glyphs(".", [Color.black]),
-  _glyphs(".", [Color.black])
-];
-
-final _lightSequence = [
-  _glyphs("*", [Color.white]),
-  _glyphs("x+", [Color.white, Color.lightYellow]),
-  _glyphs(":;\"'`,", [Color.lightGray, Color.yellow]),
-  _glyphs(".", [Color.gray, Color.yellow])
-];
-
-final _spiritSequence = [
-  _glyphs("Oo*+", [Color.lightPurple, Color.gray]),
-  _glyphs("o+", [Color.purple, Color.green]),
-  _glyphs("•.", [Color.darkPurple, Color.darkGreen, Color.darkGreen])
-];
-
-final _elementSequences = {
-  Element.NONE:      _noneSequence,
-  Element.AIR:       _airSequence,
-  Element.EARTH:     _earthSequence,
-  Element.FIRE:      _fireSequence,
-  Element.WATER:     _waterSequence,
-  Element.ACID:      _acidSequence,
-  Element.COLD:      _coldSequence,
-  Element.LIGHTNING: _lightningSequence,
-  Element.POISON:    _poisonSequence,
-  Element.DARK:      _darkSequence,
-  Element.LIGHT:     _lightSequence,
-  Element.SPIRIT:    _spiritSequence
+final _elementSequences = <Element, List<List<Glyph>>> {
+  Element.NONE: [
+    _glyphs("•", [Color.lightBrown]),
+    _glyphs("•", [Color.lightBrown]),
+    _glyphs("•", [Color.brown])
+  ],
+  Element.AIR: [
+    _glyphs("Oo", [Color.white, Color.lightAqua]),
+    _glyphs(".", [Color.lightAqua]),
+    _glyphs(".", [Color.lightGray])
+  ],
+  Element.EARTH: [
+    _glyphs("*%", [Color.lightBrown, Color.gold]),
+    _glyphs("*%", [Color.brown, Color.darkOrange]),
+    _glyphs("•*", [Color.brown]),
+    _glyphs("•", [Color.darkBrown])
+  ],
+  Element.FIRE: [
+    _glyphs("*", [Color.gold, Color.yellow]),
+    _glyphs("*", [Color.orange]),
+    _glyphs("•", [Color.red]),
+    _glyphs("•", [Color.darkRed, Color.red]),
+    _glyphs(".", [Color.darkRed, Color.red])
+  ],
+  Element.WATER: [
+    _glyphs("Oo", [Color.aqua, Color.lightBlue]),
+    _glyphs("o•~", [Color.blue]),
+    _glyphs("~", [Color.blue]),
+    _glyphs("~", [Color.darkBlue]),
+    _glyphs(".", [Color.darkBlue])
+  ],
+  Element.ACID: [
+    _glyphs("Oo", [Color.yellow, Color.gold]),
+    _glyphs("o•~", [Color.darkYellow, Color.gold]),
+    _glyphs(":,", [Color.darkYellow, Color.darkGold]),
+    _glyphs(".", [Color.darkYellow])
+  ],
+  Element.COLD: [
+    _glyphs("*", [Color.white]),
+    _glyphs("+x", [Color.lightBlue, Color.white]),
+    _glyphs("+x", [Color.lightBlue, Color.lightGray]),
+    _glyphs(".", [Color.gray, Color.darkBlue])
+  ],
+  Element.LIGHTNING: [
+    _glyphs("*", [Color.lightPurple]),
+    _glyphs(r"-|\/", [Color.purple, Color.white]),
+    _glyphs(".", [Color.black, Color.black, Color.black, Color.lightPurple])
+  ],
+  Element.POISON: [
+    _glyphs("Oo", [Color.yellow, Color.lightGreen]),
+    _glyphs("o•", [Color.green, Color.green, Color.darkYellow]),
+    _glyphs("•", [Color.darkGreen, Color.darkYellow]),
+    _glyphs(".", [Color.darkGreen])
+  ],
+  Element.DARK: [
+    _glyphs("*%", [Color.black, Color.black, Color.lightGray]),
+    _glyphs("•", [Color.black, Color.black, Color.gray]),
+    _glyphs(".", [Color.black]),
+    _glyphs(".", [Color.black])
+  ],
+  Element.LIGHT: [
+    _glyphs("*", [Color.white]),
+    _glyphs("x+", [Color.white, Color.lightYellow]),
+    _glyphs(":;\"'`,", [Color.lightGray, Color.yellow]),
+    _glyphs(".", [Color.gray, Color.yellow])
+  ],
+  Element.SPIRIT: [
+    _glyphs("Oo*+", [Color.lightPurple, Color.gray]),
+    _glyphs("o+", [Color.purple, Color.green]),
+    _glyphs("•.", [Color.darkPurple, Color.darkGreen, Color.darkGreen])
+  ]
 };
 
 /// Draws a motionless particle for an [Element] that fades in intensity over
@@ -297,9 +273,9 @@ class HitEffect implements Effect {
   static final NUM_FRAMES = 15;
 
   HitEffect(Actor actor)
-  : x = actor.x,
-    y = actor.y,
-    health = 10 * actor.health.current ~/ actor.health.max;
+      : x = actor.x,
+        y = actor.y,
+        health = 10 * actor.health.current ~/ actor.health.max;
 
   bool update(Game game) {
     return frame++ < NUM_FRAMES;
@@ -359,8 +335,12 @@ class TeleportEffect implements Effect {
   int age = 0;
   final Vec target;
 
-  static final _colors =
-      [Color.lightAqua, Color.aqua, Color.lightBlue, Color.white];
+  static final _colors = [
+    Color.lightAqua,
+    Color.aqua,
+    Color.lightBlue,
+    Color.white
+  ];
 
   TeleportEffect(Vec from, this.target) {
     x = from.x;
@@ -453,8 +433,8 @@ class DetectEffect implements Effect {
     var radius = life ~/ 4;
     var glyph = new Glyph("*", Color.lightGold);
 
-    var bounds = new Rect(pos.x - radius, pos.y - radius,
-        radius * 2 + 1, radius * 2 + 1);
+    var bounds = new Rect(
+        pos.x - radius, pos.y - radius, radius * 2 + 1, radius * 2 + 1);
 
     for (var pixel in bounds) {
       var relative = pos - pixel;
@@ -473,7 +453,8 @@ class TreasureEffect implements Effect {
   int _life = 8;
 
   TreasureEffect(Vec pos, this._item)
-      : _x = pos.x, _y = pos.y;
+      : _x = pos.x,
+        _y = pos.y;
 
   bool update(Game game) {
     if (_life % 2 == 0) {

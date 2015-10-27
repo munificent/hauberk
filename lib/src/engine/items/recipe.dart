@@ -22,7 +22,7 @@ class Recipe {
   /// Returns `true` if [items] are the complete ingredients needed for this
   /// recipe.
   bool isComplete(Iterable<Item> items) {
-    final missing = getMissingIngredients(items);
+    var missing = getMissingIngredients(items);
     return missing != null && missing.length == 0;
   }
 
@@ -30,16 +30,8 @@ class Recipe {
   /// [items] ingredients. Returns `null` if [items] contains invalid
   /// ingredients.
   List<ItemType> getMissingIngredients(Iterable<Item> items) {
-    final missing = new List.from(ingredients);
-
-    for (final item in items) {
-      final found = missing.indexOf(item.type);
-      if (found == -1) return null;
-
-      // Don't allow extra copies of ingredients.
-      missing.removeAt(found);
-    }
-
-    return missing;
+    var missing = ingredients.toSet();
+    missing.removeAll(items);
+    return missing.toList();
   }
 }
