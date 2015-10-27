@@ -61,8 +61,9 @@ class PickUpAction extends Action {
   PickUpAction(this.index);
 
   ActionResult onPerform() {
+    if (index == -1) return fail('There is nothing here.');
+
     var item = game.stage.itemsAt(actor.pos)[index];
-    if (item == null) return fail('There is nothing here.');
 
     if (!hero.inventory.tryAdd(item)) {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
