@@ -34,7 +34,7 @@ abstract class Dungeon extends StageBuilder {
   int get numRoomTries;
 
   /// The inverse chance of adding a connector between two regions that have
-  /// already been joined. Increasing this leads to more loosely connected
+  /// already been joined. Increasing this leads to more redundantly connected
   /// dungeons.
   int get extraConnectorChance => 20;
 

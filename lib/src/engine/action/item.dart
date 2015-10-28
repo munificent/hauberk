@@ -15,13 +15,13 @@ abstract class ItemAction extends Action {
   /// Gets the referenced item.
   Item get item {
     switch (location) {
-      case ItemLocation.ON_GROUND:
+      case ItemLocation.onGround:
         return game.stage.itemsAt(actor.pos)[itemIndex];
 
-      case ItemLocation.INVENTORY:
+      case ItemLocation.inventory:
         return hero.inventory[itemIndex];
 
-      case ItemLocation.EQUIPMENT:
+      case ItemLocation.equipment:
         return hero.equipment[itemIndex];
     }
 
@@ -35,16 +35,16 @@ abstract class ItemAction extends Action {
     var item;
 
     switch (location) {
-      case ItemLocation.ON_GROUND:
+      case ItemLocation.onGround:
         item = game.stage.itemsAt(actor.pos)[itemIndex];
         game.stage.removeItem(item);
         break;
 
-      case ItemLocation.INVENTORY:
+      case ItemLocation.inventory:
         item = hero.inventory.removeAt(itemIndex);
         break;
 
-      case ItemLocation.EQUIPMENT:
+      case ItemLocation.equipment:
         item = hero.equipment.removeAt(itemIndex);
         break;
     }
@@ -88,7 +88,7 @@ class DropAction extends ItemAction {
     var dropped = removeItem();
     game.stage.items.add(dropped);
 
-    if (location == ItemLocation.EQUIPMENT) {
+    if (location == ItemLocation.equipment) {
       return succeed('{1} take[s] off and drop[s] {2}.', actor, dropped);
     } else {
       return succeed('{1} drop[s] {2}.', actor, dropped);
@@ -105,7 +105,7 @@ class EquipAction extends ItemAction {
 
   ActionResult onPerform() {
     // If it's already equipped, unequip it.
-    if (location == ItemLocation.EQUIPMENT) {
+    if (location == ItemLocation.equipment) {
       return alternate(new UnequipAction(location, itemIndex));
     }
 

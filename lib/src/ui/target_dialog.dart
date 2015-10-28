@@ -14,8 +14,8 @@ typedef SelectTarget(Vec target);
 
 /// Modal dialog for letting the user select a target to perform a [Command] on.
 class TargetDialog extends Screen {
-  static const _NUM_FRAMES = 5;
-  static const _TICKS_PER_FRAME = 5;
+  static const _numFrames = 5;
+  static const _ticksPerFrame = 5;
 
   final GameScreen _gameScreen;
   final num _range;
@@ -59,31 +59,31 @@ class TargetDialog extends Screen {
 
   bool handleInput(Input input) {
     switch (input) {
-      case Input.OK:
+      case Input.ok:
         if (_target != null) {
           ui.pop();
           _onSelect(_target);
         }
         break;
 
-      case Input.CANCEL: ui.pop(); break;
+      case Input.cancel: ui.pop(); break;
 
-      case Input.NW: _changeTarget(Direction.NW); break;
-      case Input.N: _changeTarget(Direction.N); break;
-      case Input.NE: _changeTarget(Direction.NE); break;
-      case Input.W: _changeTarget(Direction.W); break;
-      case Input.E: _changeTarget(Direction.E); break;
-      case Input.SW: _changeTarget(Direction.SW); break;
-      case Input.S: _changeTarget(Direction.S); break;
-      case Input.SE: _changeTarget(Direction.SE); break;
+      case Input.nw: _changeTarget(Direction.NW); break;
+      case Input.n: _changeTarget(Direction.N); break;
+      case Input.ne: _changeTarget(Direction.NE); break;
+      case Input.w: _changeTarget(Direction.W); break;
+      case Input.e: _changeTarget(Direction.E); break;
+      case Input.sw: _changeTarget(Direction.SW); break;
+      case Input.s: _changeTarget(Direction.S); break;
+      case Input.se: _changeTarget(Direction.SE); break;
     }
 
     return true;
   }
 
   void update() {
-    _animateOffset = (_animateOffset + 1) % (_NUM_FRAMES * _TICKS_PER_FRAME);
-    if (_animateOffset % _TICKS_PER_FRAME == 0) dirty();
+    _animateOffset = (_animateOffset + 1) % (_numFrames * _ticksPerFrame);
+    if (_animateOffset % _ticksPerFrame == 0) dirty();
   }
 
   void render(Terminal terminal) {
@@ -124,7 +124,7 @@ class TargetDialog extends Screen {
 
     // Show the path that the bolt will trace, stopping when it hits an
     // obstacle.
-    int i = _animateOffset ~/ _TICKS_PER_FRAME;
+    int i = _animateOffset ~/ _ticksPerFrame;
     var reachedTarget = false;
     for (var pos in new Los(_gameScreen.game.hero.pos, _target)) {
       // Note if we made it to the target.
@@ -139,7 +139,7 @@ class TargetDialog extends Screen {
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
           new Glyph.fromCharCode(CharCode.bullet,
               (i == 0) ? Color.yellow : Color.darkYellow));
-      i = (i + _NUM_FRAMES - 1) % _NUM_FRAMES;
+      i = (i + _numFrames - 1) % _numFrames;
     }
 
     // Only show the reticle if the bolt will reach the target.

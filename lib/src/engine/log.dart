@@ -62,34 +62,34 @@ class Log {
   }
 
   static String makeVerbsAgree(String text, Pronoun pronoun) {
-    var isPlural = pronoun != Pronoun.YOU && pronoun != Pronoun.THEY;
+    var isPlural = pronoun != Pronoun.you && pronoun != Pronoun.they;
     return parsePlural(text, isPlural: isPlural);
   }
 
-  static const MAX_MESSAGES = 6;
+  static const maxMessages = 6;
 
   final Queue<Message> messages;
 
   Log() : messages = new Queue<Message>();
 
   void message(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    add(LogType.MESSAGE, message, noun1, noun2, noun3);
+    add(LogType.message, message, noun1, noun2, noun3);
   }
 
   void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    add(LogType.ERROR, message, noun1, noun2, noun3);
+    add(LogType.error, message, noun1, noun2, noun3);
   }
 
   void quest(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    add(LogType.QUEST, message, noun1, noun2, noun3);
+    add(LogType.quest, message, noun1, noun2, noun3);
   }
 
   void gain(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    add(LogType.GAIN, message, noun1, noun2, noun3);
+    add(LogType.gain, message, noun1, noun2, noun3);
   }
 
   void help(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    add(LogType.HELP, message, noun1, noun2, noun3);
+    add(LogType.help, message, noun1, noun2, noun3);
   }
 
   void add(LogType type, String message, [Noun noun1, Noun noun2, Noun noun3]) {
@@ -107,7 +107,7 @@ class Log {
 
     // It's a new message.
     messages.add(new Message(type, message));
-    if (messages.length > MAX_MESSAGES) messages.removeFirst();
+    if (messages.length > maxMessages) messages.removeFirst();
   }
 
   /// The same message can apply to a variety of subjects and objects, and it
@@ -198,7 +198,7 @@ class Log {
 
 class Noun {
   final String nounText;
-  Pronoun get pronoun => Pronoun.IT;
+  Pronoun get pronoun => Pronoun.it;
 
   Noun(this.nounText);
 
@@ -239,18 +239,18 @@ class Quantity implements Noun {
     return "$quantity ${_object.plural}";
   }
 
-  Pronoun get pronoun => count == 1 ? _object.pronoun : Pronoun.THEY;
+  Pronoun get pronoun => count == 1 ? _object.pronoun : Pronoun.they;
 
   Quantity(this.count, this._object);
 }
 
 class Pronoun {
   // See http://en.wikipedia.org/wiki/English_personal_pronouns.
-  static final YOU  = const Pronoun('you',  'you',  'your');
-  static final SHE  = const Pronoun('she',  'her',  'her');
-  static final HE   = const Pronoun('he',   'him',  'his');
-  static final IT   = const Pronoun('it',   'it',   'its');
-  static final THEY = const Pronoun('they', 'them', 'their');
+  static final you  = const Pronoun('you',  'you',  'your');
+  static final she  = const Pronoun('she',  'her',  'her');
+  static final he   = const Pronoun('he',   'him',  'his');
+  static final it   = const Pronoun('it',   'it',   'its');
+  static final they = const Pronoun('they', 'them', 'their');
 
   final String subjective;
   final String objective;
@@ -261,19 +261,19 @@ class Pronoun {
 
 class LogType {
   /// Normal log messages.
-  static const MESSAGE = const LogType._("MESSAGE");
+  static const message = const LogType._("message");
 
   /// Messages when the player tries an invalid action.
-  static const ERROR = const LogType._("ERROR");
+  static const error = const LogType._("error");
 
   /// Messages related to the hero's quest.
-  static const QUEST = const LogType._("QUEST");
+  static const quest = const LogType._("quest");
 
   /// Messages when the hero levels up or gains powers.
-  static const GAIN = const LogType._("GAIN");
+  static const gain = const LogType._("gain");
 
   /// Help or tutorial messages.
-  static const HELP = const LogType._("HELP");
+  static const help = const LogType._("help");
 
   final String _name;
   const LogType._(this._name);

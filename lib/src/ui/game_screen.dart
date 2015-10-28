@@ -54,7 +54,7 @@ class GameScreen extends Screen {
     var action;
 
     switch (input) {
-      case Input.QUIT:
+      case Input.quit:
         if (game.quest.isComplete) {
           _save.copyFrom(game.hero);
 
@@ -72,51 +72,51 @@ class GameScreen extends Screen {
         }
         break;
 
-      case Input.FORFEIT: ui.push(new ForfeitDialog(game)); break;
-      case Input.SELECT_COMMAND: ui.push(new SelectCommandDialog(game)); break;
-      case Input.DROP: ui.push(new ItemDialog.drop(this)); break;
-      case Input.USE: ui.push(new ItemDialog.use(this)); break;
-      case Input.TOSS: ui.push(new ItemDialog.toss(this)); break;
+      case Input.forfeit: ui.push(new ForfeitDialog(game)); break;
+      case Input.selectCommand: ui.push(new SelectCommandDialog(game)); break;
+      case Input.drop: ui.push(new ItemDialog.drop(this)); break;
+      case Input.use: ui.push(new ItemDialog.use(this)); break;
+      case Input.toss: ui.push(new ItemDialog.toss(this)); break;
 
-      case Input.REST:
+      case Input.rest:
         if (!game.hero.rest()) {
           // Show the message.
           dirty();
         }
         break;
 
-      case Input.CLOSE_DOOR: closeDoor(); break;
-      case Input.PICK_UP: pickUp(); break;
+      case Input.closeDoor: closeDoor(); break;
+      case Input.pickUp: pickUp(); break;
 
-      case Input.NW: action = new WalkAction(Direction.NW); break;
-      case Input.N: action = new WalkAction(Direction.N); break;
-      case Input.NE: action = new WalkAction(Direction.NE); break;
-      case Input.W: action = new WalkAction(Direction.W); break;
-      case Input.OK: action = new WalkAction(Direction.NONE); break;
-      case Input.E: action = new WalkAction(Direction.E); break;
-      case Input.SW: action = new WalkAction(Direction.SW); break;
-      case Input.S: action = new WalkAction(Direction.S); break;
-      case Input.SE: action = new WalkAction(Direction.SE); break;
+      case Input.nw: action = new WalkAction(Direction.NW); break;
+      case Input.n: action = new WalkAction(Direction.N); break;
+      case Input.ne: action = new WalkAction(Direction.NE); break;
+      case Input.w: action = new WalkAction(Direction.W); break;
+      case Input.ok: action = new WalkAction(Direction.NONE); break;
+      case Input.e: action = new WalkAction(Direction.E); break;
+      case Input.sw: action = new WalkAction(Direction.SW); break;
+      case Input.s: action = new WalkAction(Direction.S); break;
+      case Input.se: action = new WalkAction(Direction.SE); break;
 
-      case Input.RUN_NW: game.hero.run(Direction.NW); break;
-      case Input.RUN_N: game.hero.run(Direction.N); break;
-      case Input.RUN_NE: game.hero.run(Direction.NE); break;
-      case Input.RUN_W: game.hero.run(Direction.W); break;
-      case Input.RUN_E: game.hero.run(Direction.E); break;
-      case Input.RUN_SW: game.hero.run(Direction.SW); break;
-      case Input.RUN_S: game.hero.run(Direction.S); break;
-      case Input.RUN_SE: game.hero.run(Direction.SE); break;
+      case Input.runNW: game.hero.run(Direction.NW); break;
+      case Input.runN: game.hero.run(Direction.N); break;
+      case Input.runNE: game.hero.run(Direction.NE); break;
+      case Input.runW: game.hero.run(Direction.W); break;
+      case Input.runE: game.hero.run(Direction.E); break;
+      case Input.runSW: game.hero.run(Direction.SW); break;
+      case Input.runS: game.hero.run(Direction.S); break;
+      case Input.runSE: game.hero.run(Direction.SE); break;
 
-      case Input.FIRE_NW: _fireTowards(Direction.NW); break;
-      case Input.FIRE_N: _fireTowards(Direction.N); break;
-      case Input.FIRE_NE: _fireTowards(Direction.NE); break;
-      case Input.FIRE_W: _fireTowards(Direction.W); break;
-      case Input.FIRE_E: _fireTowards(Direction.E); break;
-      case Input.FIRE_SW: _fireTowards(Direction.SW); break;
-      case Input.FIRE_S: _fireTowards(Direction.S); break;
-      case Input.FIRE_SE: _fireTowards(Direction.SE); break;
+      case Input.fireNW: _fireTowards(Direction.NW); break;
+      case Input.fireN: _fireTowards(Direction.N); break;
+      case Input.fireNE: _fireTowards(Direction.NE); break;
+      case Input.fireW: _fireTowards(Direction.W); break;
+      case Input.fireE: _fireTowards(Direction.E); break;
+      case Input.fireSW: _fireTowards(Direction.SW); break;
+      case Input.fireS: _fireTowards(Direction.S); break;
+      case Input.fireSE: _fireTowards(Direction.SE); break;
 
-      case Input.FIRE:
+      case Input.fire:
         // TODO: When there is more than one usable command, bring up the
         // SelectCommandDialog. Until then, just pick the first valid one.
         var command = game.hero.heroClass.commands
@@ -139,12 +139,12 @@ class GameScreen extends Screen {
         }
         break;
 
-      case Input.SWAP:
+      case Input.swap:
         if (game.hero.inventory.lastUnequipped == -1) {
           game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
-          action = new EquipAction(ItemLocation.INVENTORY,
+          action = new EquipAction(ItemLocation.inventory,
               game.hero.inventory.lastUnequipped);
         }
         break;
@@ -395,11 +395,11 @@ class GameScreen extends Screen {
     for (final message in game.log.messages) {
       var color;
       switch (message.type) {
-        case LogType.MESSAGE: color = Color.white; break;
-        case LogType.ERROR: color = Color.red; break;
-        case LogType.QUEST: color = Color.purple; break;
-        case LogType.GAIN: color = Color.gold; break;
-        case LogType.HELP: color = Color.green; break;
+        case LogType.message: color = Color.white; break;
+        case LogType.error: color = Color.red; break;
+        case LogType.quest: color = Color.purple; break;
+        case LogType.gain: color = Color.gold; break;
+        case LogType.help: color = Color.green; break;
       }
 
       terminal.writeAt(0, y, message.text, color);
@@ -494,17 +494,17 @@ class GameScreen extends Screen {
   }
 
   static final _resistConditions = {
-    Element.AIR: ["A", Color.black, Color.lightAqua],
-    Element.EARTH: ["E", Color.black, Color.brown],
-    Element.FIRE: ["F", Color.black, Color.orange],
-    Element.WATER: ["W", Color.black, Color.blue],
-    Element.ACID: ["A", Color.black, Color.darkYellow],
-    Element.COLD: ["C", Color.black, Color.lightBlue],
-    Element.LIGHTNING: ["L", Color.black, Color.lightPurple],
-    Element.POISON: ["P", Color.black, Color.green],
-    Element.DARK: ["D", Color.black, Color.orange],
-    Element.LIGHT: ["L", Color.black, Color.orange],
-    Element.SPIRIT: ["S", Color.black, Color.orange]
+    Element.air: ["A", Color.black, Color.lightAqua],
+    Element.earth: ["E", Color.black, Color.brown],
+    Element.fire: ["F", Color.black, Color.orange],
+    Element.water: ["W", Color.black, Color.blue],
+    Element.acid: ["A", Color.black, Color.darkYellow],
+    Element.cold: ["C", Color.black, Color.lightBlue],
+    Element.lightning: ["L", Color.black, Color.lightPurple],
+    Element.poison: ["P", Color.black, Color.green],
+    Element.dark: ["D", Color.black, Color.orange],
+    Element.light: ["L", Color.black, Color.orange],
+    Element.spirit: ["S", Color.black, Color.orange]
   };
 
   /// Draws a health bar for [actor].
@@ -533,7 +533,7 @@ class GameScreen extends Screen {
 
     if (actor.dazzle.isActive) conditions.add(["D", Color.lightPurple]);
 
-    for (var element in Element.ALL) {
+    for (var element in Element.all) {
       if (actor.resistances[element].isActive) {
         conditions.add(_resistConditions[element]);
       }

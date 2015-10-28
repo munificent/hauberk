@@ -16,15 +16,15 @@ class CloseDoorDialog extends Screen {
 
   bool handleInput(Input input) {
     switch (input) {
-      case Input.CANCEL: ui.pop(); break;
-      case Input.NW: tryClose(Direction.NW); break;
-      case Input.N:  tryClose(Direction.N); break;
-      case Input.NE: tryClose(Direction.NE); break;
-      case Input.W:  tryClose(Direction.W); break;
-      case Input.E:  tryClose(Direction.E); break;
-      case Input.SW: tryClose(Direction.SW); break;
-      case Input.S:  tryClose(Direction.S); break;
-      case Input.SE: tryClose(Direction.SE); break;
+      case Input.cancel: ui.pop(); break;
+      case Input.nw: tryClose(Direction.NW); break;
+      case Input.n:  tryClose(Direction.N); break;
+      case Input.ne: tryClose(Direction.NE); break;
+      case Input.w:  tryClose(Direction.W); break;
+      case Input.e:  tryClose(Direction.E); break;
+      case Input.sw: tryClose(Direction.SW); break;
+      case Input.s:  tryClose(Direction.S); break;
+      case Input.se: tryClose(Direction.SE); break;
     }
 
     return true;

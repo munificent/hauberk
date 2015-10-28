@@ -21,13 +21,13 @@ class HealAction extends Action {
 
     if (!actor.health.isMax && amount > 0) {
       actor.health.current += amount;
-      addEvent(EventType.HEAL, actor: actor, other: amount);
+      addEvent(EventType.heal, actor: actor, other: amount);
       log('{1} feel[s] better.', actor);
       changed = true;
     }
 
     if (changed) {
-      return ActionResult.SUCCESS;
+      return ActionResult.success;
     } else {
       return succeed("{1} [don't|doesn't] feel any different.", actor);
     }

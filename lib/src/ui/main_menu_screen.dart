@@ -10,7 +10,7 @@ import 'select_level_screen.dart';
 import 'storage.dart';
 
 
-const _CHARS = const [
+const _chars = const [
   r"______   ______                          _____                               _____",
   r"\ .  /   \  . /                          \ . |                               \  .|",
   r" | .|     |. |                            | .|                                |. |",
@@ -29,7 +29,7 @@ const _CHARS = const [
   r"   \|     |/",
 ];
 
-const _CHAR_COLORS = const [
+const _charColors = const [
   "LLLLLL   LLLLLL                          LLLLL                               LLLLL",
   "ERRRRE   ERRRRE                          ERRRE                               ERRRE",
   " ERRE     ERRE                            ERRE                                ERRE",
@@ -48,7 +48,7 @@ const _CHAR_COLORS = const [
   "   EE     EE",
 ];
 
-const _COLORS = const {
+const _colors = const {
   "L": Color.lightGray,
   "E": Color.gray,
   "R": Color.red,
@@ -68,10 +68,10 @@ class MainMenuScreen extends Screen {
 
   bool handleInput(Input input) {
     switch (input) {
-      case Input.N: _changeSelection(-1); return true;
-      case Input.S: _changeSelection(1); return true;
+      case Input.n: _changeSelection(-1); return true;
+      case Input.s: _changeSelection(1); return true;
 
-      case Input.OK:
+      case Input.ok:
         if (selectedHero < storage.heroes.length) {
           ui.push(new SelectLevelScreen(content, storage.heroes[selectedHero],
               storage));
@@ -111,10 +111,10 @@ class MainMenuScreen extends Screen {
   }
 
   void render(Terminal terminal) {
-    for (var y = 0; y < _CHARS.length; y++) {
-      for (var x = 0; x < _CHARS[y].length; x++) {
-        var color = _COLORS[_CHAR_COLORS[y][x]];
-        terminal.writeAt(x + 4, y + 1, _CHARS[y][x], color);
+    for (var y = 0; y < _chars.length; y++) {
+      for (var x = 0; x < _chars[y].length; x++) {
+        var color = _colors[_charColors[y][x]];
+        terminal.writeAt(x + 4, y + 1, _chars[y][x], color);
       }
     }
 

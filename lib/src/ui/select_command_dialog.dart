@@ -16,7 +16,7 @@ class SelectCommandDialog extends Screen {
         _commands = game.hero.heroClass.commands;
 
   bool handleInput(Input input) {
-    if (input == Input.CANCEL) {
+    if (input == Input.cancel) {
       ui.pop();
       return true;
     }

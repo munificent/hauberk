@@ -10,8 +10,8 @@ import 'package:hauberk/src/debug.dart';
 import 'package:hauberk/src/ui/input.dart';
 import 'package:hauberk/src/ui/main_menu_screen.dart';
 
-const WIDTH = 100;
-const HEIGHT = 40;
+const width = 100;
+const height = 40;
 
 final terminals = [];
 UserInterface ui;
@@ -23,7 +23,7 @@ addTerminal(String name, html.Element element,
   var terminal = terminalCallback(element);
   terminals.add([name, element, terminal]);
 
-  if (Debug.ENABLED) {
+  if (Debug.enabled) {
     var debugBox = new html.PreElement();
     debugBox.id = "debug";
     html.document.body.children.add(debugBox);
@@ -63,19 +63,19 @@ main() {
   var content = createContent();
 
   addTerminal('Courier', new html.CanvasElement(),
-      (element) => new CanvasTerminal(WIDTH, HEIGHT,
+      (element) => new CanvasTerminal(width, height,
           new Font('"Courier New"', size: 12, w: 8, h: 14, x: 1, y: 11),
           element));
 
   addTerminal('Menlo', new html.CanvasElement(),
-      (element) => new CanvasTerminal(WIDTH, HEIGHT,
+      (element) => new CanvasTerminal(width, height,
           new Font('Menlo', size: 12, w: 8, h: 13, x: 1, y: 11), element));
 
   addTerminal('DOS', new html.CanvasElement(),
-      (element) => new RetroTerminal.dos(WIDTH, HEIGHT, element));
+      (element) => new RetroTerminal.dos(width, height, element));
 
   addTerminal('DOS Short', new html.CanvasElement(),
-      (element) => new RetroTerminal.shortDos(WIDTH, HEIGHT, element));
+      (element) => new RetroTerminal.shortDos(width, height, element));
 
   // Load the user's font preference, if any.
   var font = html.window.localStorage['font'];
@@ -92,84 +92,84 @@ main() {
   ui = new UserInterface(terminals[fontIndex][2]);
 
   // Set up the keyPress.
-  ui.keyPress.bind(Input.OK, KeyCode.enter);
-  ui.keyPress.bind(Input.CANCEL, KeyCode.escape);
-  ui.keyPress.bind(Input.FORFEIT, KeyCode.f, shift: true);
-  ui.keyPress.bind(Input.QUIT, KeyCode.q);
+  ui.keyPress.bind(Input.ok, KeyCode.enter);
+  ui.keyPress.bind(Input.cancel, KeyCode.escape);
+  ui.keyPress.bind(Input.forfeit, KeyCode.f, shift: true);
+  ui.keyPress.bind(Input.quit, KeyCode.q);
 
-  ui.keyPress.bind(Input.CLOSE_DOOR, KeyCode.c);
-  ui.keyPress.bind(Input.DROP, KeyCode.d);
-  ui.keyPress.bind(Input.USE, KeyCode.u);
-  ui.keyPress.bind(Input.PICK_UP, KeyCode.g);
-  ui.keyPress.bind(Input.SWAP, KeyCode.x);
-  ui.keyPress.bind(Input.TOSS, KeyCode.t);
-  ui.keyPress.bind(Input.SELECT_COMMAND, KeyCode.s);
+  ui.keyPress.bind(Input.closeDoor, KeyCode.c);
+  ui.keyPress.bind(Input.drop, KeyCode.d);
+  ui.keyPress.bind(Input.use, KeyCode.u);
+  ui.keyPress.bind(Input.pickUp, KeyCode.g);
+  ui.keyPress.bind(Input.swap, KeyCode.x);
+  ui.keyPress.bind(Input.toss, KeyCode.t);
+  ui.keyPress.bind(Input.selectCommand, KeyCode.s);
 
   // Laptop directions.
-  ui.keyPress.bind(Input.NW, KeyCode.i);
-  ui.keyPress.bind(Input.N, KeyCode.o);
-  ui.keyPress.bind(Input.NE, KeyCode.p);
-  ui.keyPress.bind(Input.W, KeyCode.k);
-  ui.keyPress.bind(Input.E, KeyCode.semicolon);
-  ui.keyPress.bind(Input.SW, KeyCode.comma);
-  ui.keyPress.bind(Input.S, KeyCode.period);
-  ui.keyPress.bind(Input.SE, KeyCode.slash);
-  ui.keyPress.bind(Input.RUN_NW, KeyCode.i, shift: true);
-  ui.keyPress.bind(Input.RUN_N, KeyCode.o, shift: true);
-  ui.keyPress.bind(Input.RUN_NE, KeyCode.p, shift: true);
-  ui.keyPress.bind(Input.RUN_W, KeyCode.k, shift: true);
-  ui.keyPress.bind(Input.RUN_E, KeyCode.semicolon, shift: true);
-  ui.keyPress.bind(Input.RUN_SW, KeyCode.comma, shift: true);
-  ui.keyPress.bind(Input.RUN_S, KeyCode.period, shift: true);
-  ui.keyPress.bind(Input.RUN_SE, KeyCode.slash, shift: true);
-  ui.keyPress.bind(Input.FIRE_NW, KeyCode.i, alt: true);
-  ui.keyPress.bind(Input.FIRE_N, KeyCode.o, alt: true);
-  ui.keyPress.bind(Input.FIRE_NE, KeyCode.p, alt: true);
-  ui.keyPress.bind(Input.FIRE_W, KeyCode.k, alt: true);
-  ui.keyPress.bind(Input.FIRE_E, KeyCode.semicolon, alt: true);
-  ui.keyPress.bind(Input.FIRE_SW, KeyCode.comma, alt: true);
-  ui.keyPress.bind(Input.FIRE_S, KeyCode.period, alt: true);
-  ui.keyPress.bind(Input.FIRE_SE, KeyCode.slash, alt: true);
+  ui.keyPress.bind(Input.nw, KeyCode.i);
+  ui.keyPress.bind(Input.n, KeyCode.o);
+  ui.keyPress.bind(Input.ne, KeyCode.p);
+  ui.keyPress.bind(Input.w, KeyCode.k);
+  ui.keyPress.bind(Input.e, KeyCode.semicolon);
+  ui.keyPress.bind(Input.sw, KeyCode.comma);
+  ui.keyPress.bind(Input.s, KeyCode.period);
+  ui.keyPress.bind(Input.se, KeyCode.slash);
+  ui.keyPress.bind(Input.runNW, KeyCode.i, shift: true);
+  ui.keyPress.bind(Input.runN, KeyCode.o, shift: true);
+  ui.keyPress.bind(Input.runNE, KeyCode.p, shift: true);
+  ui.keyPress.bind(Input.runW, KeyCode.k, shift: true);
+  ui.keyPress.bind(Input.runE, KeyCode.semicolon, shift: true);
+  ui.keyPress.bind(Input.runSW, KeyCode.comma, shift: true);
+  ui.keyPress.bind(Input.runS, KeyCode.period, shift: true);
+  ui.keyPress.bind(Input.runSE, KeyCode.slash, shift: true);
+  ui.keyPress.bind(Input.fireNW, KeyCode.i, alt: true);
+  ui.keyPress.bind(Input.fireN, KeyCode.o, alt: true);
+  ui.keyPress.bind(Input.fireNE, KeyCode.p, alt: true);
+  ui.keyPress.bind(Input.fireW, KeyCode.k, alt: true);
+  ui.keyPress.bind(Input.fireE, KeyCode.semicolon, alt: true);
+  ui.keyPress.bind(Input.fireSW, KeyCode.comma, alt: true);
+  ui.keyPress.bind(Input.fireS, KeyCode.period, alt: true);
+  ui.keyPress.bind(Input.fireSE, KeyCode.slash, alt: true);
 
-  ui.keyPress.bind(Input.OK, KeyCode.l);
-  ui.keyPress.bind(Input.REST, KeyCode.l, shift: true);
-  ui.keyPress.bind(Input.FIRE, KeyCode.l, alt: true);
+  ui.keyPress.bind(Input.ok, KeyCode.l);
+  ui.keyPress.bind(Input.rest, KeyCode.l, shift: true);
+  ui.keyPress.bind(Input.fire, KeyCode.l, alt: true);
 
   // Arrow keys.
-  ui.keyPress.bind(Input.N, KeyCode.up);
-  ui.keyPress.bind(Input.W, KeyCode.left);
-  ui.keyPress.bind(Input.E, KeyCode.right);
-  ui.keyPress.bind(Input.S, KeyCode.down);
-  ui.keyPress.bind(Input.RUN_N, KeyCode.up, shift: true);
-  ui.keyPress.bind(Input.RUN_W, KeyCode.left, shift: true);
-  ui.keyPress.bind(Input.RUN_E, KeyCode.right, shift: true);
-  ui.keyPress.bind(Input.RUN_S, KeyCode.down, shift: true);
-  ui.keyPress.bind(Input.FIRE_N, KeyCode.up, alt: true);
-  ui.keyPress.bind(Input.FIRE_W, KeyCode.left, alt: true);
-  ui.keyPress.bind(Input.FIRE_E, KeyCode.right, alt: true);
-  ui.keyPress.bind(Input.FIRE_S, KeyCode.down, alt: true);
+  ui.keyPress.bind(Input.n, KeyCode.up);
+  ui.keyPress.bind(Input.w, KeyCode.left);
+  ui.keyPress.bind(Input.e, KeyCode.right);
+  ui.keyPress.bind(Input.s, KeyCode.down);
+  ui.keyPress.bind(Input.runN, KeyCode.up, shift: true);
+  ui.keyPress.bind(Input.runW, KeyCode.left, shift: true);
+  ui.keyPress.bind(Input.runE, KeyCode.right, shift: true);
+  ui.keyPress.bind(Input.runS, KeyCode.down, shift: true);
+  ui.keyPress.bind(Input.fireN, KeyCode.up, alt: true);
+  ui.keyPress.bind(Input.fireW, KeyCode.left, alt: true);
+  ui.keyPress.bind(Input.fireE, KeyCode.right, alt: true);
+  ui.keyPress.bind(Input.fireS, KeyCode.down, alt: true);
 
   // Numeric keypad.
-  ui.keyPress.bind(Input.NW, KeyCode.numpad7);
-  ui.keyPress.bind(Input.N, KeyCode.numpad8);
-  ui.keyPress.bind(Input.NE, KeyCode.numpad9);
-  ui.keyPress.bind(Input.W, KeyCode.numpad4);
-  ui.keyPress.bind(Input.E, KeyCode.numpad6);
-  ui.keyPress.bind(Input.SW, KeyCode.numpad1);
-  ui.keyPress.bind(Input.S, KeyCode.numpad2);
-  ui.keyPress.bind(Input.SE, KeyCode.numpad3);
-  ui.keyPress.bind(Input.RUN_NW, KeyCode.numpad7, shift: true);
-  ui.keyPress.bind(Input.RUN_N, KeyCode.numpad8, shift: true);
-  ui.keyPress.bind(Input.RUN_NE, KeyCode.numpad9, shift: true);
-  ui.keyPress.bind(Input.RUN_W, KeyCode.numpad4, shift: true);
-  ui.keyPress.bind(Input.RUN_E, KeyCode.numpad6, shift: true);
-  ui.keyPress.bind(Input.RUN_SW, KeyCode.numpad1, shift: true);
-  ui.keyPress.bind(Input.RUN_S, KeyCode.numpad2, shift: true);
-  ui.keyPress.bind(Input.RUN_SE, KeyCode.numpad3, shift: true);
+  ui.keyPress.bind(Input.nw, KeyCode.numpad7);
+  ui.keyPress.bind(Input.n, KeyCode.numpad8);
+  ui.keyPress.bind(Input.ne, KeyCode.numpad9);
+  ui.keyPress.bind(Input.w, KeyCode.numpad4);
+  ui.keyPress.bind(Input.e, KeyCode.numpad6);
+  ui.keyPress.bind(Input.sw, KeyCode.numpad1);
+  ui.keyPress.bind(Input.s, KeyCode.numpad2);
+  ui.keyPress.bind(Input.se, KeyCode.numpad3);
+  ui.keyPress.bind(Input.runNW, KeyCode.numpad7, shift: true);
+  ui.keyPress.bind(Input.runN, KeyCode.numpad8, shift: true);
+  ui.keyPress.bind(Input.runNE, KeyCode.numpad9, shift: true);
+  ui.keyPress.bind(Input.runW, KeyCode.numpad4, shift: true);
+  ui.keyPress.bind(Input.runE, KeyCode.numpad6, shift: true);
+  ui.keyPress.bind(Input.runSW, KeyCode.numpad1, shift: true);
+  ui.keyPress.bind(Input.runS, KeyCode.numpad2, shift: true);
+  ui.keyPress.bind(Input.runSE, KeyCode.numpad3, shift: true);
 
-  ui.keyPress.bind(Input.OK, KeyCode.numpad5);
-  ui.keyPress.bind(Input.REST, KeyCode.numpad5, shift: true);
-  ui.keyPress.bind(Input.FIRE, KeyCode.numpad5, alt: true);
+  ui.keyPress.bind(Input.ok, KeyCode.numpad5);
+  ui.keyPress.bind(Input.rest, KeyCode.numpad5, shift: true);
+  ui.keyPress.bind(Input.fire, KeyCode.numpad5, alt: true);
 
   ui.push(new MainMenuScreen(content));
 

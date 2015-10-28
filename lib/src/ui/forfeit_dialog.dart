@@ -15,7 +15,7 @@ class ForfeitDialog extends Screen {
   ForfeitDialog(this.game);
 
   bool handleInput(Input input) {
-    if (input == Input.CANCEL) {
+    if (input == Input.cancel) {
       ui.pop(false);
       return true;
     }

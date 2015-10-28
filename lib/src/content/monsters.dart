@@ -55,7 +55,7 @@ class Monsters {
     // x  Skeleton            X  Xorn/Xaren
     // y  Yeek                Y  Yeti
     // z  Zombie/Mummy        Z  Serpent (snake-like dragon)
-    // TODO(bob):
+    // TODO:
     // - Come up with something better than yeeks for "y".
     // - Don't use both "u" and "U" for undead?
 
@@ -96,12 +96,12 @@ arachnids() {
       meander: 8, flags: "group");
 
   breed("brown spider", brown, 1, [
-    attack("bite[s]", 15, Element.POISON)
+    attack("bite[s]", 15, Element.poison)
   ], drop: percent(5, "Stinger"),
       meander: 8);
 
   breed("giant spider", darkBlue, 20, [
-    attack("bite[s]", 5, Element.POISON)
+    attack("bite[s]", 5, Element.poison)
   ], drop: percent(10, "Stinger"),
       meander: 5);
 }
@@ -199,7 +199,7 @@ flyingInsects() {
   ], speed: 1, flags: "group protective");
 
   breed("wasp", brown, 1, [
-    attack("sting[s]", 2, Element.POISON),
+    attack("sting[s]", 2, Element.poison),
   ], drop: percent(30, "Stinger"),
       speed: 2, flags: "berzerk");
 }
@@ -315,17 +315,17 @@ jellies() {
   ]);
 
   breed("frosty slime", white, 14, [
-    attack("crawl[s] on", 5, Element.COLD),
+    attack("crawl[s] on", 5, Element.cold),
     spawn(rate: 6)
   ]);
 
   breed("smoking slime", red, 18, [
-    attack("crawl[s] on", 6, Element.FIRE),
+    attack("crawl[s] on", 6, Element.fire),
     spawn(rate: 6)
   ]);
 
   breed("sparkling slime", lightPurple, 22, [
-    attack("crawl[s] on", 8, Element.LIGHTNING),
+    attack("crawl[s] on", 8, Element.lightning),
     spawn(rate: 6)
   ]);
 }
@@ -553,7 +553,7 @@ rodents() {
   ], meander: -1, speed: 1, flags: "group");
 
   breed("plague rat", darkGreen, 10, [
-    attack("bite[s]", 4, Element.POISON),
+    attack("bite[s]", 4, Element.poison),
     attack("scratch[es]", 3)
   ], speed: 1, flags: "group");
 }
@@ -593,12 +593,12 @@ reptiles() {
 
   group("R", meander: 3);
   breed("juvenile salamander", lightRed, 24, [
-    attack("bite[s]", 12, Element.FIRE),
+    attack("bite[s]", 12, Element.fire),
     fireCone(rate: 16, damage: 18, range: 6)
   ]);
 
   breed("salamander", red, 40, [
-    attack("bite[s]", 16, Element.FIRE),
+    attack("bite[s]", 16, Element.fire),
     fireCone(rate: 16, damage: 24, range: 8)
   ]);
 }
@@ -610,7 +610,7 @@ slugs() {
   ]);
 
   breed("giant slug", green, 20, [
-    attack("crawl[s] on", 7, Element.POISON),
+    attack("crawl[s] on", 7, Element.poison),
   ]);
 }
 
@@ -640,11 +640,11 @@ worms() {
   ], flags: "swarm");
 
   breed("giant cave worm", white, 36, [
-    attack("crawl[s] on", 8, Element.ACID),
+    attack("crawl[s] on", 8, Element.acid),
   ], speed: -2);
 
   breed("fire worm", orange, 6, [
-    attack("crawl[s] on", 5, Element.FIRE),
+    attack("crawl[s] on", 5, Element.fire),
   ], flags: "swarm");
 }
 
@@ -687,7 +687,7 @@ Breed breed(String name, Glyph appearance(char), int health, List actions, {
   if (_flags != null) flagSet.addAll(_flags.split(" "));
   if (flags != null) flagSet.addAll(flags.split(" "));
 
-  var breed = new Breed(name, Pronoun.IT, appearance(_glyph), attacks,
+  var breed = new Breed(name, Pronoun.it, appearance(_glyph), attacks,
       moves, drop, maxHealth: health, tracking: tracking,
       meander: meander + _meander,
       speed: speed + _speed, flags: flagSet);
@@ -698,34 +698,34 @@ Breed breed(String name, Glyph appearance(char), int health, List actions, {
 Move heal({num rate: 5, int amount}) => new HealMove(rate, amount);
 
 Move arrow({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the arrow", "hits", damage, Element.NONE, 8));
+    new BoltMove(rate, new RangedAttack("the arrow", "hits", damage, Element.none, 8));
 
 Move waterBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the jet", "splashes", damage, Element.WATER, 8));
+    new BoltMove(rate, new RangedAttack("the jet", "splashes", damage, Element.water, 8));
 
 Move sparkBolt({num rate: 5, int damage, int range: 8}) =>
-    new BoltMove(rate, new RangedAttack("the spark", "zaps", damage, Element.LIGHTNING, range));
+    new BoltMove(rate, new RangedAttack("the spark", "zaps", damage, Element.lightning, range));
 
 Move iceBolt({num rate: 5, int damage, int range: 8}) =>
-    new BoltMove(rate, new RangedAttack("the ice", "freezes", damage, Element.COLD, range));
+    new BoltMove(rate, new RangedAttack("the ice", "freezes", damage, Element.cold, range));
 
 Move fireBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the flame", "burns", damage, Element.FIRE, 8));
+    new BoltMove(rate, new RangedAttack("the flame", "burns", damage, Element.fire, 8));
 
 Move darkBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the darkness", "crushes", damage, Element.DARK, 10));
+    new BoltMove(rate, new RangedAttack("the darkness", "crushes", damage, Element.dark, 10));
 
 Move lightBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the light", "sears", damage, Element.LIGHT, 10));
+    new BoltMove(rate, new RangedAttack("the light", "sears", damage, Element.light, 10));
 
 Move poisonBolt({num rate: 5, int damage}) =>
-    new BoltMove(rate, new RangedAttack("the poison", "engulfs", damage, Element.POISON, 8));
+    new BoltMove(rate, new RangedAttack("the poison", "engulfs", damage, Element.poison, 8));
 
 Move fireCone({num rate: 5, int damage, int range: 10}) =>
-    new ConeMove(rate, new RangedAttack("the flame", "burns", damage, Element.FIRE, range));
+    new ConeMove(rate, new RangedAttack("the flame", "burns", damage, Element.fire, range));
 
 Move lightningCone({num rate: 5, int damage, int range: 10}) =>
-    new ConeMove(rate, new RangedAttack("the lightning", "shocks", damage, Element.LIGHTNING, range));
+    new ConeMove(rate, new RangedAttack("the lightning", "shocks", damage, Element.lightning, range));
 
 Move insult({num rate: 5}) => new InsultMove(rate);
 Move howl({num rate: 10, int range: 10}) => new HowlMove(rate, range);

@@ -10,9 +10,9 @@ import 'item.dart';
 /// the [Hero] in their [Inventory] or [Equipment]. This enum describes which
 /// of those is the case.
 class ItemLocation {
-  static const ON_GROUND = const ItemLocation("on ground");
-  static const INVENTORY = const ItemLocation("inventory");
-  static const EQUIPMENT = const ItemLocation("equipment");
+  static const onGround = const ItemLocation("on ground");
+  static const inventory = const ItemLocation("inventory");
+  static const equipment = const ItemLocation("equipment");
 
   final String name;
   const ItemLocation(this.name);

@@ -27,19 +27,19 @@ class HeroSave {
 
   HeroClass heroClass;
 
-  Inventory inventory = new Inventory(Option.INVENTORY_CAPACITY);
+  Inventory inventory = new Inventory(Option.inventoryCapacity);
   Equipment equipment = new Equipment();
 
   /// Items in the hero's home.
-  Inventory home = new Inventory(Option.HOME_CAPACITY);
+  Inventory home = new Inventory(Option.homeCapacity);
 
   /// Items in the hero's crucible.
-  Inventory crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
+  Inventory crucible = new Inventory(Option.crucibleCapacity);
 
   int experienceCents = 0;
 
   /// How much gold the hero has.
-  int gold = Option.HERO_GOLD_START;
+  int gold = Option.heroGoldStart;
 
   /// The index of the highest [Level] that the [Hero] has completed in each
   /// [Area]. The key will be the [Area] name. The value will be the one-based
@@ -69,7 +69,7 @@ class HeroSave {
 /// The main player-controlled [Actor]. The player's avatar in the game world.
 class Hero extends Actor {
   String get nounText => 'you';
-  final Pronoun pronoun = Pronoun.YOU;
+  final Pronoun pronoun = Pronoun.you;
 
   final HeroClass heroClass;
 
@@ -109,7 +109,7 @@ class Hero extends Actor {
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
         gold = save.gold,
-        super(game, pos.x, pos.y, Option.HERO_HEALTH_START) {
+        super(game, pos.x, pos.y, Option.heroHealthStart) {
     // Hero state is cloned so that if they die in the dungeon, they lose
     // anything they found.
     _refreshLevel(log: false);
@@ -117,7 +117,7 @@ class Hero extends Actor {
     heroClass.bind(this);
 
     // Give the hero energy so we can act before all of the monsters.
-    energy.energy = Energy.ACTION_COST;
+    energy.energy = Energy.actionCost;
 
     // Start with some initial ability to rest so we aren't weakest at the very
     // beginning.
@@ -157,7 +157,7 @@ class Hero extends Actor {
             numExplored / game.stage.numExplorable;
   }
 
-  int onGetSpeed() => Energy.NORMAL_SPEED;
+  int onGetSpeed() => Energy.normalSpeed;
 
   Action onGetAction() => _behavior.getAction(this);
 
@@ -169,7 +169,7 @@ class Hero extends Actor {
     if (weapon != null && !weapon.isRanged) {
       attack = weapon.attack;
     } else {
-      attack = new Attack('punch[es]', Option.HERO_PUNCH_DAMAGE, Element.NONE);
+      attack = new Attack('punch[es]', Option.heroPunchDamage, Element.none);
     }
 
     // Let the class modify it.
@@ -248,8 +248,8 @@ class Hero extends Actor {
     // See if the we levelled up.
     while (_level < level) {
       _level++;
-      health.max += Option.HERO_HEALTH_GAIN;
-      health.current += Option.HERO_HEALTH_GAIN;
+      health.max += Option.heroHealthGain;
+      health.current += Option.heroHealthGain;
 
       if (log) {
         game.log.gain('{1} [have|has] reached level $level.', this);
@@ -261,18 +261,18 @@ class Hero extends Actor {
 int calculateLevel(int experienceCents) {
   var experience = experienceCents ~/ 100;
 
-  for (var level = 1; level <= Option.HERO_LEVEL_MAX; level++) {
+  for (var level = 1; level <= Option.heroLevelMax; level++) {
     if (experience < calculateLevelCost(level)) return level - 1;
   }
 
-  return Option.HERO_LEVEL_MAX;
+  return Option.heroLevelMax;
 }
 
 /// Returns how much experience is needed to reach [level] or `null` if [level]
 /// is greater than the maximum level.
 int calculateLevelCost(int level) {
-  if (level > Option.HERO_LEVEL_MAX) return null;
- return (level - 1) * (level - 1) * Option.HERO_LEVEL_COST;
+  if (level > Option.heroLevelMax) return null;
+ return (level - 1) * (level - 1) * Option.heroLevelCost;
 }
 
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for

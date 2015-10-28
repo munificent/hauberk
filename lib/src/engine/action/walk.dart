@@ -55,7 +55,7 @@ class WalkAction extends Action {
           log("{1} pick[s] up {2} worth $value gold.", hero, item);
           game.stage.removeItem(item);
 
-          addEvent(EventType.GOLD, actor: actor, pos: actor.pos, other: item);
+          addEvent(EventType.gold, actor: actor, pos: actor.pos, other: item);
         } else {
           log('{1} [are|is] standing on {2}.', actor, item);
         }
@@ -122,5 +122,5 @@ class RestAction extends Action {
     hero.health.current++;
   }
 
-  int get noise => Option.NOISE_REST;
+  int get noise => Option.noiseRest;
 }

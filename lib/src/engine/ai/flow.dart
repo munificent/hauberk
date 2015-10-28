@@ -16,8 +16,8 @@ import '../stage.dart';
 /// as far as needed to answer the query. In practice, this means it often does
 /// less than 10% of the iterations of a full eager search.
 class Flow {
-  static const _UNKNOWN = -2;
-  static const _UNREACHABLE = -1;
+  static const _unknown = -2;
+  static const _unreachable = -1;
 
   final Stage _stage;
   final Vec _start;
@@ -68,7 +68,7 @@ class Flow {
       height = bottom - top;
     }
 
-    _distances = new Array2D<int>(width, height, _UNKNOWN);
+    _distances = new Array2D<int>(width, height, _unknown);
 
     // Seed it with the starting position.
     _open.add(_start - _offset);
@@ -83,10 +83,10 @@ class Flow {
 
     // Lazily search until we reach the tile in question or run out of paths to
     // try.
-    while (_open.isNotEmpty && _distances[pos] == _UNKNOWN) _processNext();
+    while (_open.isNotEmpty && _distances[pos] == _unknown) _processNext();
 
     var distance = _distances[pos];
-    if (distance == _UNKNOWN || distance == _UNREACHABLE) return null;
+    if (distance == _unknown || distance == _unreachable) return null;
     return distance;
   }
 
@@ -205,7 +205,7 @@ class Flow {
       if (!_distances.bounds.contains(here)) continue;
 
       // Ignore tiles we've already reached.
-      if (_distances[here] != _UNKNOWN) continue;
+      if (_distances[here] != _unknown) continue;
 
       // Can't reach impassable tiles.
       var tile = _stage[here + _offset];
@@ -217,7 +217,7 @@ class Flow {
           _stage.actorAt(here + _offset) != null) canEnter = false;
 
       if (!canEnter) {
-        _distances[here] = _UNREACHABLE;
+        _distances[here] = _unreachable;
         continue;
       }
 
@@ -234,9 +234,9 @@ class Flow {
     for (var y = 0; y < _distances.height; y++) {
       for (var x = 0; x < _distances.width; x++) {
         var distance = _distances.get(x, y);
-        if (distance == _UNKNOWN) {
+        if (distance == _unknown) {
           buffer.write("?");
-        } else if (distance == _UNREACHABLE) {
+        } else if (distance == _unreachable) {
           buffer.write("#");
         } else {
           buffer.write(distance % 10);

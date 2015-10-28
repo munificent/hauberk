@@ -50,7 +50,7 @@ abstract class FuryAction extends Action {
 /// A sweeping melee attack that hits three adjacent tiles.
 class SlashAction extends FuryAction {
   /// How many frames it pauses between each step of the swing.
-  static const _FRAME_RATE = 5;
+  static const _frameRate = 5;
 
   final Direction _dir;
   int _step = 0;
@@ -59,7 +59,7 @@ class SlashAction extends FuryAction {
 
   ActionResult performAttack() {
     var dir;
-    switch (_step ~/ _FRAME_RATE) {
+    switch (_step ~/ _frameRate) {
       case 0: dir = _dir.rotateLeft45; break;
       case 1: dir = _dir; break;
       case 2: dir = _dir.rotateRight45; break;
@@ -68,16 +68,16 @@ class SlashAction extends FuryAction {
     // Show the effect and perform the attack on alternate frames. This ensures
     // the effect gets a chance to be shown before the hit effect covers hit.
     if (_step % 2 == 0) {
-      addEvent(EventType.SLASH, pos: actor.pos + dir, dir: dir);
+      addEvent(EventType.slash, pos: actor.pos + dir, dir: dir);
     } else if (_step % 2 == 1) {
       attack(actor.pos + dir);
     }
 
     _step++;
-    return doneIf(_step == _FRAME_RATE * 3);
+    return doneIf(_step == _frameRate * 3);
   }
 
-  int get noise => Option.NOISE_HIT;
+  int get noise => Option.noiseHit;
 
   String toString() => '$actor slashes $_dir';
 }
@@ -85,7 +85,7 @@ class SlashAction extends FuryAction {
 /// A melee attack that penetrates a row of actors.
 class LanceAction extends FuryAction {
   /// How many frames it pauses between each step of the swing.
-  static const _FRAME_RATE = 2;
+  static const _frameRate = 2;
 
   final Direction _dir;
   int _step = 0;
@@ -93,21 +93,21 @@ class LanceAction extends FuryAction {
   LanceAction(this._dir);
 
   ActionResult performAttack() {
-    var pos = actor.pos + _dir * (_step ~/ _FRAME_RATE + 1);
+    var pos = actor.pos + _dir * (_step ~/ _frameRate + 1);
 
     // Show the effect and perform the attack on alternate frames. This ensures
     // the effect gets a chance to be shown before the hit effect covers hit.
-    if (_step % _FRAME_RATE == 0) {
-      addEvent(EventType.STAB, pos: pos, dir: _dir);
-    } else if (_step % _FRAME_RATE == 1) {
+    if (_step % _frameRate == 0) {
+      addEvent(EventType.stab, pos: pos, dir: _dir);
+    } else if (_step % _frameRate == 1) {
       attack(pos);
     }
 
     _step++;
-    return doneIf(_step == _FRAME_RATE * 3);
+    return doneIf(_step == _frameRate * 3);
   }
 
-  int get noise => Option.NOISE_HIT;
+  int get noise => Option.noiseHit;
 
   String toString() => '$actor spears $_dir';
 }
@@ -115,7 +115,7 @@ class LanceAction extends FuryAction {
 /// A melee attack that repeatedly hits in one direction.
 class StabAction extends FuryAction {
   /// How many frames it pauses between each step of the stab.
-  static const _FRAME_RATE = 4;
+  static const _frameRate = 4;
 
   final Direction _dir;
   int _step = 0;
@@ -127,17 +127,17 @@ class StabAction extends FuryAction {
 
     // Show the effect and perform the attack on alternate frames. This ensures
     // the effect gets a chance to be shown before the hit effect covers hit.
-    if (_step % _FRAME_RATE == 0) {
-      addEvent(EventType.STAB, pos: pos, dir: _dir);
-    } else if (_step % _FRAME_RATE == 1) {
+    if (_step % _frameRate == 0) {
+      addEvent(EventType.stab, pos: pos, dir: _dir);
+    } else if (_step % _frameRate == 1) {
       attack(pos);
     }
 
     _step++;
-    return doneIf(_step == _FRAME_RATE * 3);
+    return doneIf(_step == _frameRate * 3);
   }
 
-  int get noise => Option.NOISE_HIT;
+  int get noise => Option.noiseHit;
 
   String toString() => '$actor stabs $_dir';
 }

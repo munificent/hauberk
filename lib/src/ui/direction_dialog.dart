@@ -10,8 +10,8 @@ import 'input.dart';
 /// Modal dialog for letting the user select a [Direction] to perform a
 /// [Command] in.
 class DirectionDialog extends Screen {
-  static const _NUM_FRAMES = 8;
-  static const _TICKS_PER_FRAME = 5;
+  static const _numFrames = 8;
+  static const _ticksPerFrame = 5;
 
   final GameScreen _gameScreen;
   final Game _game;
@@ -27,30 +27,30 @@ class DirectionDialog extends Screen {
 
   bool handleInput(Input input) {
     switch (input) {
-      case Input.OK: ui.pop(_direction); break;
-      case Input.CANCEL: ui.pop(Direction.NONE); break;
+      case Input.ok: ui.pop(_direction); break;
+      case Input.cancel: ui.pop(Direction.NONE); break;
 
-      case Input.NW: ui.pop(Direction.NW); break;
-      case Input.N: ui.pop(Direction.N); break;
-      case Input.NE: ui.pop(Direction.NE); break;
-      case Input.W: ui.pop(Direction.W); break;
-      case Input.E: ui.pop(Direction.E); break;
-      case Input.SW: ui.pop(Direction.SW); break;
-      case Input.S: ui.pop(Direction.S); break;
-      case Input.SE: ui.pop(Direction.SE); break;
+      case Input.nw: ui.pop(Direction.NW); break;
+      case Input.n: ui.pop(Direction.N); break;
+      case Input.ne: ui.pop(Direction.NE); break;
+      case Input.w: ui.pop(Direction.W); break;
+      case Input.e: ui.pop(Direction.E); break;
+      case Input.sw: ui.pop(Direction.SW); break;
+      case Input.s: ui.pop(Direction.S); break;
+      case Input.se: ui.pop(Direction.SE); break;
     }
 
     return true;
   }
 
   void update() {
-    _animateOffset = (_animateOffset + 1) % (_NUM_FRAMES * _TICKS_PER_FRAME);
-    if (_animateOffset % _TICKS_PER_FRAME == 0) dirty();
+    _animateOffset = (_animateOffset + 1) % (_numFrames * _ticksPerFrame);
+    if (_animateOffset % _ticksPerFrame == 0) dirty();
   }
 
   void render(Terminal terminal) {
     draw(int frame, Direction dir, String char) {
-      var color = (_animateOffset ~/ _TICKS_PER_FRAME == frame) ?
+      var color = (_animateOffset ~/ _ticksPerFrame == frame) ?
           Color.yellow : Color.darkYellow;
 
       _gameScreen.drawStageGlyph(terminal,

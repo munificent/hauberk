@@ -28,7 +28,8 @@ class Areas {
   static final List<Area> all = [];
 
   static void initialize() {
-    if (Debug.ENABLED) debugAreas();
+    if (Debug.enabled) debugAreas();
+
 
     area('Friendly Forest', 80, 34, 3.0);
     level(() => new Forest(), monsters: 14, items: 6, breeds: [

@@ -80,7 +80,7 @@ class RayAction extends Action {
       // Don't hit the same tile twice.
       if (_hitTiles.contains(pos)) return false;
 
-      addEvent(EventType.CONE, element: _attack.element, pos: pos);
+      addEvent(EventType.cone, element: _attack.element, pos: pos);
       _hitTiles.add(pos);
 
       // See if there is an actor there.
@@ -94,10 +94,10 @@ class RayAction extends Action {
     });
 
     _radius++;
-    if (_radius > _attack.range || _rays.isEmpty) return ActionResult.SUCCESS;
+    if (_radius > _attack.range || _rays.isEmpty) return ActionResult.success;
 
     // Still going.
-    return ActionResult.NOT_DONE;
+    return ActionResult.notDone;
   }
 }
 

@@ -18,7 +18,7 @@ class SpawnAction extends Action {
     // There's a chance the move will do nothing (except burn charge) based on
     // the monster's generation. This is to keep breeders from filling the
     // dungeon.
-    if (!rng.oneIn(monster.generation)) return ActionResult.SUCCESS;
+    if (!rng.oneIn(monster.generation)) return ActionResult.success;
 
     // Increase the generation on the spawner too so that its rate decreases
     // over time.
@@ -27,9 +27,9 @@ class SpawnAction extends Action {
     var spawned = _breed.spawn(game, _pos, actor);
     game.stage.addActor(spawned);
 
-    addEvent(EventType.SPAWN, actor: spawned);
+    addEvent(EventType.spawn, actor: spawned);
 
     // TODO: Message?
-    return ActionResult.SUCCESS;
+    return ActionResult.success;
   }
 }

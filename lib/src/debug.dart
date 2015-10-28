@@ -12,33 +12,33 @@ import 'engine.dart';
 /// the engine to punch debug info all the way to where the UI can get it. It
 /// should not be used outside of a debugging scenario.
 class Debug {
-  static const ENABLED = false;
+  static const enabled = false;
 
   static final Map<Monster, _MonsterLog> _monsters = {};
 
   static void addMonster(Monster monster) {
-    if (!ENABLED) return;
+    if (!enabled) return;
     _monsters[monster] = new _MonsterLog(monster);
   }
 
   static void removeMonster(Monster monster) {
-    if (!ENABLED) return;
+    if (!enabled) return;
     _monsters.remove(monster);
   }
 
   static void logMonster(Monster monster, String log) {
-    if (!ENABLED) return;
+    if (!enabled) return;
     var monsterLog = _monsters[monster];
     monsterLog.add(log);
   }
 
   static void exitLevel() {
-    if (!ENABLED) return;
+    if (!enabled) return;
     _monsters.clear();
   }
 
   static String getMonsterInfoAt(Vec pos) {
-    if (!ENABLED) return null;
+    if (!enabled) return null;
     for (var monster in _monsters.keys) {
       if (monster.pos == pos) {
         return _monsters[monster].toString();

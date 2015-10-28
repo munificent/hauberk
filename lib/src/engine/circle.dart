@@ -78,11 +78,11 @@ class _CircleIterator implements Iterator<Vec> {
   }
 }
 
-const _RADII_SQUARED = const [0, 2, 5, 10, 18, 26, 38];
+const _radiiSquared = const [0, 2, 5, 10, 18, 26, 38];
 
 int _getRadiusSquared(int radius) {
   // If small enough, use the tuned radius to look best.
-  if (radius < _RADII_SQUARED.length) return _RADII_SQUARED[radius];
+  if (radius < _radiiSquared.length) return _radiiSquared[radius];
 
   return radius * radius;
 }

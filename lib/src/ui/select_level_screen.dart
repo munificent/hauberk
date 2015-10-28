@@ -35,29 +35,29 @@ class SelectLevelScreen extends Screen {
 
   bool handleInput(Input input) {
     switch (input) {
-    case Input.W:
+    case Input.w:
         _changeSelection(selectedArea, selectedLevel - 1);
         return true;
 
-    case Input.E:
+    case Input.e:
         _changeSelection(selectedArea, selectedLevel + 1);
         return true;
 
-    case Input.N:
+    case Input.n:
         _changeSelection(selectedArea - 1, selectedLevel);
         return true;
 
-    case Input.S:
+    case Input.s:
         _changeSelection(selectedArea + 1, selectedLevel);
         return true;
 
-    case Input.OK:
+    case Input.ok:
       var game = new Game(content.areas[selectedArea], selectedLevel,
           content, save);
       ui.push(new GameScreen(save, game));
       return true;
 
-    case Input.CANCEL:
+    case Input.cancel:
       ui.pop();
       return true;
     }

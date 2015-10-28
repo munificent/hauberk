@@ -104,7 +104,7 @@ class Game {
   /// This is to encourage players to not waste time: the more they linger, the
   /// more dangerous the remaining areas become.
   void trySpawnMonster() {
-    if (!rng.oneIn(Option.SPAWN_MONSTER_CHANCE)) return;
+    if (!rng.oneIn(Option.spawnMonsterChance)) return;
 
     // Try to place a new monster in unexplored areas.
     Vec pos = rng.vecInRect(stage.bounds);
@@ -168,49 +168,49 @@ class Event {
 /// A kind of [Event] that has occurred.
 class EventType {
   /// One step of a bolt.
-  static const BOLT = const EventType("bolt");
+  static const bolt = const EventType("bolt");
 
   /// The leading edge of a cone.
-  static const CONE = const EventType("cone");
+  static const cone = const EventType("cone");
 
   /// A thrown item in flight.
-  static const TOSS = const EventType("toss");
+  static const toss = const EventType("toss");
 
   /// An [Actor] was hit.
-  static const HIT = const EventType("hit");
+  static const hit = const EventType("hit");
 
   /// An [Actor] died.
-  static const DIE = const EventType("die");
+  static const die = const EventType("die");
 
   /// An [Actor] was healed.
-  static const HEAL = const EventType("heal");
+  static const heal = const EventType("heal");
 
   /// An [Actor] was frightened.
-  static const FEAR = const EventType("fear");
+  static const fear = const EventType("fear");
 
   /// An [Actor] regained their courage.
-  static const COURAGE = const EventType("courage");
+  static const courage = const EventType("courage");
 
   /// Something in the level was detected.
-  static const DETECT = const EventType("detect");
+  static const detect = const EventType("detect");
 
   /// An [Actor] teleported..
-  static const TELEPORT = const EventType("teleport");
+  static const teleport = const EventType("teleport");
 
   /// A new [Actor] was spawned by another.
-  static const SPAWN = const EventType("spawn");
+  static const spawn = const EventType("spawn");
 
   /// A tile has been hit by sound.
-  static const HOWL = const EventType("howl");
+  static const howl = const EventType("howl");
 
   /// A warrior's slash attack hits a tile.
-  static const SLASH = const EventType("slash");
+  static const slash = const EventType("slash");
 
   /// A warrior's stab attack hits a tile.
-  static const STAB = const EventType("stab");
+  static const stab = const EventType("stab");
 
   /// The hero picks up gold worth [other].
-  static const GOLD = const EventType("gold");
+  static const gold = const EventType("gold");
 
   final String _name;
 

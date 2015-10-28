@@ -4,14 +4,14 @@ library hauberk.engine.energy;
 /// actors. Each game turn, every actor will accumulate energy based on their
 /// speed. When it reaches a threshold, that actor can take a turn.
 class Energy {
-  static final MIN_SPEED    = 0;
-  static final NORMAL_SPEED = 6;
-  static final MAX_SPEED    = 12;
+  static final minSpeed    = 0;
+  static final normalSpeed = 6;
+  static final maxSpeed    = 12;
 
-  static final ACTION_COST = 240;
+  static final actionCost = 240;
 
   // How much energy is gained each game turn for each speed.
-  static final GAINS = const [
+  static final gains = const [
     15,     // 1/4 normal speed
     20,     // 1/3 normal speed
     25,
@@ -27,24 +27,22 @@ class Energy {
     240     // 4x normal speed
   ];
 
-  static num ticksAtSpeed(int speed) {
-    return ACTION_COST / GAINS[NORMAL_SPEED + speed];
-  }
+  static num ticksAtSpeed(int speed) => actionCost / gains[normalSpeed + speed];
 
   int energy = 0;
 
-  bool get canTakeTurn => energy >= ACTION_COST;
+  bool get canTakeTurn => energy >= actionCost;
 
   /// Advances one game turn and gains an appropriate amount of energy. Returns
   /// `true` if there is enough energy to take a turn.
   bool gain(int speed) {
-    energy += GAINS[speed];
+    energy += gains[speed];
     return canTakeTurn;
   }
 
   /// Spends a turn's worth of energy.
   void spend() {
-    assert(energy >= ACTION_COST);
-    energy -= ACTION_COST;
+    assert(energy >= actionCost);
+    energy -= actionCost;
   }
 }

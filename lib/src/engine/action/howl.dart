@@ -26,7 +26,7 @@ class HowlAction extends Action {
       if (!game.stage.bounds.contains(pos)) continue;
       if (_flow.getDistance(pos) == null) continue;
 
-      addEvent(EventType.HOWL, pos: pos, other: _step / _range);
+      addEvent(EventType.howl, pos: pos, other: _step / _range);
 
       var actor = game.stage.actorAt(pos);
 
@@ -42,7 +42,7 @@ class HowlAction extends Action {
     }
 
     _step++;
-    if (_step > _range) return ActionResult.SUCCESS;
-    return ActionResult.NOT_DONE;
+    if (_step > _range) return ActionResult.success;
+    return ActionResult.notDone;
   }
 }

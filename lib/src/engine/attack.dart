@@ -84,7 +84,7 @@ class Attack {
 
   /// The element for the attack.
   Element get element => _element;
-  Element _element = Element.NONE;
+  Element _element = Element.none;
 
   /// The defender's armor.
   num get armor => _armor;
@@ -166,7 +166,7 @@ class Attack {
     if (resistance == 0) _elementalSideEffect(defender, action, damage);
 
     // TODO: Pass in and use element.
-    action.addEvent(EventType.HIT, actor: defender, other: damage);
+    action.addEvent(EventType.hit, actor: defender, other: damage);
     action.log('{1} ${verb} {2}.', attackNoun, defender);
     return true;
   }
@@ -174,51 +174,51 @@ class Attack {
   void _elementalSideEffect(Actor defender, Action action, int damage) {
     // Apply any element-specific effects.
     switch (element) {
-      case Element.NONE:
+      case Element.none:
         // No effect.
         break;
 
-      case Element.AIR:
+      case Element.air:
         // TODO: Teleport.
         break;
 
-      case Element.EARTH:
+      case Element.earth:
         // TODO: Cuts?
         break;
 
-      case Element.FIRE:
+      case Element.fire:
         action.addAction(new BurnAction(damage), defender);
         break;
 
-      case Element.WATER:
+      case Element.water:
         // TODO: Push back.
         break;
 
-      case Element.ACID:
+      case Element.acid:
         // TODO: Destroy items.
         break;
 
-      case Element.COLD:
+      case Element.cold:
         action.addAction(new FreezeAction(damage), defender);
         break;
 
-      case Element.LIGHTNING:
+      case Element.lightning:
         // TODO: Break glass. Recharge some items?
         break;
 
-      case Element.POISON:
+      case Element.poison:
         action.addAction(new PoisonAction(damage), defender);
         break;
 
-      case Element.DARK:
+      case Element.dark:
         // TODO: Blind.
         break;
 
-      case Element.LIGHT:
+      case Element.light:
         action.addAction(new DazzleAction(damage), defender);
         break;
 
-      case Element.SPIRIT:
+      case Element.spirit:
         // TODO: Drain experience.
         break;
     }
@@ -246,7 +246,7 @@ class Attack {
       result += "x$damageScale";
     }
 
-    if (element != Element.NONE) {
+    if (element != Element.none) {
       result += " $element";
     }
 

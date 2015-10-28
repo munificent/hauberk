@@ -31,7 +31,7 @@ class Storage {
     for (final hero in data['heroes']) {
       var name = hero['name'];
 
-      var inventory = new Inventory(Option.INVENTORY_CAPACITY);
+      var inventory = new Inventory(Option.inventoryCapacity);
       for (var itemData in hero['inventory']) {
         var item = _loadItem(itemData);
         if (item != null) inventory.tryAdd(item);
@@ -45,13 +45,13 @@ class Storage {
         if (item != null) equipment.equip(item);
       }
 
-      var home = new Inventory(Option.HOME_CAPACITY);
+      var home = new Inventory(Option.homeCapacity);
       for (var itemData in hero['home']) {
         var item = _loadItem(itemData);
         if (item != null) home.tryAdd(item);
       }
 
-      var crucible = new Inventory(Option.CRUCIBLE_CAPACITY);
+      var crucible = new Inventory(Option.crucibleCapacity);
       for (var itemData in hero['crucible']) {
         var item = _loadItem(itemData);
         if (item != null) crucible.tryAdd(item);

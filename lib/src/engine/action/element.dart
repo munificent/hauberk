@@ -16,6 +16,6 @@ class BurnAction extends Action {
       return succeed("The fire warms {1} back up.", actor);
     }
 
-    return ActionResult.SUCCESS;
+    return ActionResult.success;
   }
 }

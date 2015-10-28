@@ -13,7 +13,7 @@ class DetectItemsAction extends Action {
 
       numFound++;
       game.stage[item.pos].isExplored = true;
-      addEvent(EventType.DETECT, pos: item.pos);
+      addEvent(EventType.detect, pos: item.pos);
     }
 
     if (numFound == 0) {

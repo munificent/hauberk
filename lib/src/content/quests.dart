@@ -74,7 +74,7 @@ class ItemQuest extends Quest {
   ItemQuest(this.itemType);
 
   void announce(Log log) {
-    // TODO(bob): Handle a/an.
+    // TODO: Handle a/an.
     log.quest("You must find a ${itemType.name}.");
   }
 

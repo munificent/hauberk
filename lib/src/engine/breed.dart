@@ -64,14 +64,14 @@ class Breed implements Quantifiable {
     var exp = maxHealth.toDouble();
 
     // Faster monsters are worth more.
-    exp *= Energy.GAINS[Energy.NORMAL_SPEED + speed];
+    exp *= Energy.gains[Energy.normalSpeed + speed];
 
     // Average the attacks (since they are selected randomly) and factor them
     // in.
     var attackTotal = 0.0;
     for (var attack in attacks) {
       // TODO: Take range into account?
-      attackTotal += attack.averageDamage * Option.EXP_ELEMENT[attack.element];
+      attackTotal += attack.averageDamage * Option.expElement[attack.element];
     }
 
     attackTotal /= attacks.length;
@@ -100,11 +100,11 @@ class Breed implements Quantifiable {
 
     // Take into account flags.
     for (var flag in flags) {
-      exp *= Option.EXP_FLAG[flag];
+      exp *= Option.expFlag[flag];
     }
 
     // Meandering monsters are worth less.
-    exp *= (Option.EXP_MEANDER - meander) / Option.EXP_MEANDER;
+    exp *= (Option.expMeander - meander) / Option.expMeander;
 
     return exp.toInt();
   }

@@ -58,28 +58,28 @@ class ItemScreen extends Screen {
     if (mode.handleInput(input, this)) return true;
 
     switch (input) {
-      case Input.CANCEL:
+      case Input.cancel:
         ui.pop();
         break;
 
       // Switch columns.
-      case Input.E:
+      case Input.e:
         active = Side.right;
         break;
 
-      case Input.W:
+      case Input.w:
         active = Side.left;
         break;
 
       // Switch views on the current column.
-      case Input.N:
+      case Input.n:
         do {
           views[active] = _changeView(views[active], -1);
         }
         while (!views[active].allowedOnSide(active));
         break;
 
-      case Input.S:
+      case Input.s:
         do {
           views[active] = _changeView(views[active], 1);
         }
@@ -335,7 +335,7 @@ abstract class SelectMode extends Mode {
   String helpText(ItemScreen screen) => '[A-Z] Choose item, [Esc] Cancel';
 
   bool handleInput(Input input, ItemScreen screen) {
-    if (input == Input.CANCEL) {
+    if (input == Input.cancel) {
       screen.mode = Mode.view;
       screen.dirty();
       return true;

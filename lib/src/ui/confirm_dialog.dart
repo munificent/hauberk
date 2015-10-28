@@ -14,7 +14,7 @@ class ConfirmDialog extends Screen {
   ConfirmDialog(this.message, this.result);
 
   bool handleInput(Input input) {
-    if (input == Input.CANCEL) {
+    if (input == Input.cancel) {
       ui.pop(null);
       return true;
     }

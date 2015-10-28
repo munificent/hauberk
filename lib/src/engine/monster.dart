@@ -118,7 +118,7 @@ class Monster extends Actor {
 
   bool get canOpenDoors => breed.flags.contains('open-doors');
 
-  int onGetSpeed() => Energy.NORMAL_SPEED + breed.speed;
+  int onGetSpeed() => Energy.normalSpeed + breed.speed;
 
   Action onGetAction() {
     // Recharge moves.
@@ -151,14 +151,14 @@ class Monster extends Actor {
 
       log("{1} is afraid!", this);
       changeState(new AfraidState());
-      action.addEvent(EventType.FEAR, actor: this);
+      action.addEvent(EventType.fear, actor: this);
       return;
     }
 
     if (_state is AfraidState && _fear <= 0.0) {
       log("{1} grows courageous!", this);
       changeState(new AwakeState());
-      action.addEvent(EventType.COURAGE, actor: this);
+      action.addEvent(EventType.courage, actor: this);
     }
   }
 

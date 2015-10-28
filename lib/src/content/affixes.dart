@@ -21,8 +21,8 @@ class _AffixFactory {
   final int rarity;
   final _CreateAffix create;
 
-  _AffixFactory(this.name, this.categories, this.level, this.rarity,
-      this.create);
+  _AffixFactory(
+      this.name, this.categories, this.level, this.rarity, this.create);
 }
 
 class Affixes {
@@ -58,8 +58,8 @@ class Affixes {
     // Get the affixes that can apply to the item.
     factories = factories.where((factory) {
       if (factory.level > level) return false;
-      return factory.categories.any(
-          (category) => itemType.categories.contains(category));
+      return factory.categories
+          .any((category) => itemType.categories.contains(category));
     }).toList();
 
     // TODO: For high level drops, consider randomly discarding some of the
@@ -89,27 +89,27 @@ class Affixes {
   static final _deserializers = <String, _DeserializeAffix>{};
 
   static void initialize() {
-    brand("Glimmering", 12, 3, Element.LIGHT, 0, 1.0);
-    brand("Shining", 24, 4, Element.LIGHT, 2, 1.1);
-    brand("Radiant", 48, 5, Element.LIGHT, 4, 1.2);
+    brand("Glimmering", 12, 3, Element.light, 0, 1.0);
+    brand("Shining", 24, 4, Element.light, 2, 1.1);
+    brand("Radiant", 48, 5, Element.light, 4, 1.2);
 
-    brand("Dim", 16, 3, Element.DARK, 0, 1.1);
-    brand("Dark", 32, 4, Element.DARK, 1, 1.2);
-    brand("Black", 56, 5, Element.DARK, 3, 1.3);
+    brand("Dim", 16, 3, Element.dark, 0, 1.1);
+    brand("Dark", 32, 4, Element.dark, 1, 1.2);
+    brand("Black", 56, 5, Element.dark, 3, 1.3);
 
-    brand("Freezing", 20, 3, Element.COLD, 2, 1.2);
+    brand("Freezing", 20, 3, Element.cold, 2, 1.2);
 
-    brand("Burning", 20, 3, Element.FIRE, 2, 1.2);
-    brand("Flaming", 40, 4, Element.FIRE, 4, 1.3);
-    brand("Searing", 60, 5, Element.FIRE, 6, 1.4);
+    brand("Burning", 20, 3, Element.fire, 2, 1.2);
+    brand("Flaming", 40, 4, Element.fire, 4, 1.3);
+    brand("Searing", 60, 5, Element.fire, 6, 1.4);
 
-    brand("Electric", 50, 5, Element.LIGHTNING, 4, 1.6);
-    brand("Shocking", 70, 5, Element.LIGHTNING, 6, 1.8);
+    brand("Electric", 50, 5, Element.lightning, 4, 1.6);
+    brand("Shocking", 70, 5, Element.lightning, 6, 1.8);
 
-    brand("Poisoned", 35, 5, Element.POISON, 5, 1.3);
-    brand("Venomous", 70, 5, Element.POISON, 6, 1.5);
+    brand("Poisoned", 35, 5, Element.poison, 5, 1.3);
+    brand("Venomous", 70, 5, Element.poison, 6, 1.5);
 
-    brand("Ghostly", 45, 5, Element.SPIRIT, 3, 1.3);
+    brand("Ghostly", 45, 5, Element.spirit, 3, 1.3);
 
     // TODO: Should these scale damage?
     damage("of Harming", 8, 1, 1, 4);
@@ -125,44 +125,49 @@ class Affixes {
 
   /// A weapon suffix for adding damage.
   static void damage(String name, int level, int rarity, int base, int taper) {
-    suffix(name, level, rarity, "weapon", create: (name) {
-      return new DamageAffix(name, rng.taper(base, taper));
-    }, serialize: DamageAffix.serialize, deserialize: DamageAffix.deserialize);
+    suffix(name, level, rarity, "weapon",
+        create: (name) => new DamageAffix(name, rng.taper(base, taper)),
+        serialize: DamageAffix.serialize,
+        deserialize: DamageAffix.deserialize);
   }
 
   /// bow prefix for adding damage.
-  static void bowDamage(String name, int level, int rarity, int base,
-      int taper) {
-    prefix(name, level, rarity, "bow", create: (name) {
-      return new DamageAffix(name, rng.taper(base, taper));
-    }, serialize: DamageAffix.serialize, deserialize: DamageAffix.deserialize);
+  static void bowDamage(
+      String name, int level, int rarity, int base, int taper) {
+    prefix(name, level, rarity, "bow",
+        create: (name) => new DamageAffix(name, rng.taper(base, taper)),
+        serialize: DamageAffix.serialize,
+        deserialize: DamageAffix.deserialize);
   }
 
   /// A weapon prefix for giving an elemental brand.
   static void brand(String name, int level, int rarity, Element element,
       int bonus, num scale) {
-    prefix(name, level, rarity, "weapon", create: (name) {
-      return new BrandAffix(name, element, rng.taper(bonus, 5),
-      rng.taper((scale + 10).toInt(), 4) / 10);
-    }, serialize: BrandAffix.serialize, deserialize: BrandAffix.deserialize);
+    prefix(name, level, rarity, "weapon",
+        create: (name) => new BrandAffix(name, element, rng.taper(bonus, 5),
+            rng.taper((scale + 10).toInt(), 4) / 10),
+        serialize: BrandAffix.serialize,
+        deserialize: BrandAffix.deserialize);
   }
 
   /// Defines a new prefix [Affix].
   static void prefix(String name, int level, int rarity, String groups,
-      {_CreateAffix create, _SerializeAffix serialize,
+      {_CreateAffix create,
+      _SerializeAffix serialize,
       _DeserializeAffix deserialize}) {
-    _prefixes.add(new _AffixFactory(name, groups.split(" "), level, rarity,
-        create));
+    _prefixes
+        .add(new _AffixFactory(name, groups.split(" "), level, rarity, create));
     _serializers[name] = serialize;
     _deserializers[name] = deserialize;
   }
 
   /// Defines a new suffix [Affix].
   static void suffix(String name, int level, int rarity, String groups,
-      {_CreateAffix create, _SerializeAffix serialize,
+      {_CreateAffix create,
+      _SerializeAffix serialize,
       _DeserializeAffix deserialize}) {
-    _suffixes.add(new _AffixFactory(name, groups.split(" "), level, rarity,
-        create));
+    _suffixes
+        .add(new _AffixFactory(name, groups.split(" "), level, rarity, create));
     _serializers[name] = serialize;
     _deserializers[name] = deserialize;
   }
@@ -179,16 +184,11 @@ class Affixes {
 /// An [Affix] that adds to a weapon's damage.
 class DamageAffix extends Affix {
   static Map serialize(DamageAffix affix) {
-    return {
-      "name": affix.name,
-      "damage": affix._damage
-    };
+    return {"name": affix.name, "damage": affix._damage};
   }
 
   static Affix deserialize(Map data) {
-    return new DamageAffix(
-      data["name"],
-      data["damage"]);
+    return new DamageAffix(data["name"], data["damage"]);
   }
 
   final String name;
@@ -213,11 +213,8 @@ class BrandAffix extends Affix {
   }
 
   static Affix deserialize(Map data) {
-    return new BrandAffix(
-      data["name"],
-      Element.fromName(data["element"]),
-      data["bonus"],
-      data["multiplier"]);
+    return new BrandAffix(data["name"], Element.fromName(data["element"]),
+        data["bonus"], data["multiplier"]);
   }
 
   final String name;

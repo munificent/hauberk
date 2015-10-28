@@ -38,7 +38,7 @@ abstract class Thing implements Noun {
 
   get appearance;
   String get nounText;
-  Pronoun get pronoun => Pronoun.IT;
+  Pronoun get pronoun => Pronoun.it;
 
   String toString() => nounText;
 }
@@ -75,7 +75,7 @@ abstract class Actor extends Thing {
   Actor(this.game, int x, int y, int health)
       : health = new Stat(health),
         super(new Vec(x, y)) {
-    for (var element in Element.ALL) {
+    for (var element in Element.all) {
       resistances[element] = new ResistCondition(element);
     }
 
@@ -159,7 +159,7 @@ abstract class Actor extends Thing {
 
     if (health.current > 0) return false;
 
-    action.addEvent(EventType.DIE, actor: this);
+    action.addEvent(EventType.die, actor: this);
 
     action.log("{1} kill[s] {2}.", attackNoun, this);
     if (attacker != null) attacker.onKilled(action, this);

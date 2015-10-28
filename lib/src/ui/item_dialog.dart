@@ -16,7 +16,7 @@ class ItemDialog extends Screen {
   final _ItemCommand _command;
 
   /// The current location being shown to the player.
-  ItemLocation _location = ItemLocation.INVENTORY;
+  ItemLocation _location = ItemLocation.inventory;
 
   bool get isTransparent => true;
 
@@ -27,10 +27,10 @@ class ItemDialog extends Screen {
   ItemDialog.use(this._gameScreen) : _command = new _UseItemCommand();
   ItemDialog.toss(this._gameScreen) : _command = new _TossItemCommand();
   ItemDialog.pickUp(this._gameScreen) :
-    _command = new _PickUpItemCommand(), _location = ItemLocation.ON_GROUND;
+    _command = new _PickUpItemCommand(), _location = ItemLocation.onGround;
 
   bool handleInput(Input input) {
-    if (input == Input.CANCEL) {
+    if (input == Input.cancel) {
       ui.pop();
       return true;
     }
@@ -80,9 +80,9 @@ class ItemDialog extends Screen {
 
   Iterable<Item> _getItems() {
     switch (_location) {
-      case ItemLocation.INVENTORY: return _gameScreen.game.hero.inventory;
-      case ItemLocation.EQUIPMENT: return _gameScreen.game.hero.equipment;
-      case ItemLocation.ON_GROUND:
+      case ItemLocation.inventory: return _gameScreen.game.hero.inventory;
+      case ItemLocation.equipment: return _gameScreen.game.hero.equipment;
+      case ItemLocation.onGround:
         return _gameScreen.game.stage.itemsAt(_gameScreen.game.hero.pos);
     }
 
@@ -125,9 +125,9 @@ abstract class _ItemCommand {
   /// Locations of items that can be used with this command. When a command
   /// allows multiple locations, players can switch between them.
   List<ItemLocation> get allowedLocations => const [
-    ItemLocation.INVENTORY,
-    ItemLocation.EQUIPMENT,
-    ItemLocation.ON_GROUND
+    ItemLocation.inventory,
+    ItemLocation.equipment,
+    ItemLocation.onGround
   ];
 
   /// The query shown to the user when selecting an item in this mode from
@@ -144,14 +144,14 @@ abstract class _ItemCommand {
 
 class _DropItemCommand extends _ItemCommand {
   List<ItemLocation> get allowedLocations => const [
-    ItemLocation.INVENTORY,
-    ItemLocation.EQUIPMENT
+    ItemLocation.inventory,
+    ItemLocation.equipment
   ];
 
   String query(ItemLocation location) {
     switch (location) {
-      case ItemLocation.INVENTORY: return 'Drop which item?';
-      case ItemLocation.EQUIPMENT: return 'Unequip and drop which item?';
+      case ItemLocation.inventory: return 'Drop which item?';
+      case ItemLocation.equipment: return 'Unequip and drop which item?';
     }
 
     throw "unreachable";
@@ -169,9 +169,9 @@ class _DropItemCommand extends _ItemCommand {
 class _UseItemCommand extends _ItemCommand {
   String query(ItemLocation location) {
     switch (location) {
-      case ItemLocation.INVENTORY: return 'Use or equip which item?';
-      case ItemLocation.EQUIPMENT: return 'Unequip which item?';
-      case ItemLocation.ON_GROUND: return 'Pick up and use which item?';
+      case ItemLocation.inventory: return 'Use or equip which item?';
+      case ItemLocation.equipment: return 'Unequip which item?';
+      case ItemLocation.onGround: return 'Pick up and use which item?';
     }
 
     throw "unreachable";
@@ -189,9 +189,9 @@ class _UseItemCommand extends _ItemCommand {
 class _TossItemCommand extends _ItemCommand {
   String query(ItemLocation location) {
     switch (location) {
-      case ItemLocation.INVENTORY: return 'Throw which item?';
-      case ItemLocation.EQUIPMENT: return 'Unequip and throw which item?';
-      case ItemLocation.ON_GROUND: return 'Pick up and throw which item?';
+      case ItemLocation.inventory: return 'Throw which item?';
+      case ItemLocation.equipment: return 'Unequip and throw which item?';
+      case ItemLocation.onGround: return 'Pick up and throw which item?';
     }
 
     throw "unreachable";
@@ -212,7 +212,7 @@ class _TossItemCommand extends _ItemCommand {
 
 class _PickUpItemCommand extends _ItemCommand {
   List<ItemLocation> get allowedLocations => const [
-    ItemLocation.ON_GROUND
+    ItemLocation.onGround
   ];
 
   String query(ItemLocation location) => 'Pick up which item?';

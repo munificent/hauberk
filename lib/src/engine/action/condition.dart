@@ -42,7 +42,7 @@ abstract class ConditionAction extends Action {
     if (!condition.isActive) {
       condition.activate(duration, intensity);
       logApply();
-      return ActionResult.SUCCESS;
+      return ActionResult.success;
     }
 
     if (condition.intensity >= intensity) {
@@ -55,7 +55,7 @@ abstract class ConditionAction extends Action {
 
       condition.extend(duration);
       logExtend();
-      return ActionResult.SUCCESS;
+      return ActionResult.success;
     }
 
     // Scale down the existing duration by how much stronger the new intensity
@@ -64,7 +64,7 @@ abstract class ConditionAction extends Action {
 
     condition.activate(oldDuration + duration ~/ 2, intensity);
     logIntensify();
-    return ActionResult.SUCCESS;
+    return ActionResult.success;
   }
 }
 

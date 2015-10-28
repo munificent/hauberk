@@ -61,7 +61,7 @@ class BoltMove extends Move {
   int get range => attack.range;
 
   num get experience => attack.averageDamage *
-      Option.EXP_ELEMENT[attack.element] * (1.0 + range / 20);
+      Option.expElement[attack.element] * (1.0 + range / 20);
 
   BoltMove(num rate, this.attack)
     : super(rate);
@@ -101,7 +101,7 @@ class ConeMove extends Move {
   int get range => attack.range;
 
   num get experience => attack.averageDamage * 3.0 *
-      Option.EXP_ELEMENT[attack.element] * (1.0 + range / 10);
+      Option.expElement[attack.element] * (1.0 + range / 10);
 
   ConeMove(num rate, this.attack)
     : super(rate);

@@ -8,7 +8,7 @@ import 'select_level_screen.dart';
 import 'storage.dart';
 
 // From: http://medieval.stormthecastle.com/medieval-names.htm.
-const _DEFAULT_NAMES = const [
+const _defaultNames = const [
   "Merek", "Carac", "Ulric", "Tybalt", "Borin", "Sadon", "Terrowin", "Rowan",
   "Forthwind", "Althalos", "Fendrel", "Brom", "Hadrian", "Crewe", "Bolbec",
   "Fenwick", "Mowbray", "Drake", "Bryce", "Leofrick", "Letholdus", "Lief",
@@ -25,7 +25,7 @@ class NewHeroScreen extends Screen {
   final Content content;
   final Storage storage;
 
-  String defaultName = rng.item(_DEFAULT_NAMES);
+  String defaultName = rng.item(_defaultNames);
   String name = "";
 
   NewHeroScreen(this.content, this.storage) {}
@@ -55,7 +55,7 @@ class NewHeroScreen extends Screen {
 
           // Pick a new random name.
           if (name.length == 0) {
-            defaultName = rng.item(_DEFAULT_NAMES);
+            defaultName = rng.item(_defaultNames);
           }
 
           dirty();

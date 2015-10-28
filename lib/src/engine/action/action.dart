@@ -56,7 +56,7 @@ abstract class Action {
 
   /// How much noise is produced by this action. Override to make certain
   /// actions quieter or louder.
-  int get noise => Option.NOISE_NORMAL;
+  int get noise => Option.noiseNormal;
 
   void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     if (!_actor.isVisible) return;
@@ -70,12 +70,12 @@ abstract class Action {
 
   ActionResult succeed([String message, Noun noun1, Noun noun2, Noun noun3]) {
     if (message != null) log(message, noun1, noun2, noun3);
-    return ActionResult.SUCCESS;
+    return ActionResult.success;
   }
 
   ActionResult fail([String message, Noun noun1, Noun noun2, Noun noun3]) {
     if (message != null) error(message, noun1, noun2, noun3);
-    return ActionResult.FAILURE;
+    return ActionResult.failure;
   }
 
   ActionResult alternate(Action action) {
@@ -83,16 +83,16 @@ abstract class Action {
     return new ActionResult.alternate(action);
   }
 
-  /// Returns [SUCCESS] if [done] is `true`, otherwise returns [NOT_DONE].
+  /// Returns [success] if [done] is `true`, otherwise returns [notDone].
   ActionResult doneIf(bool done) {
-    return done ? ActionResult.SUCCESS : ActionResult.NOT_DONE;
+    return done ? ActionResult.success : ActionResult.notDone;
   }
 }
 
 class ActionResult {
-  static final SUCCESS = const ActionResult(succeeded: true, done: true);
-  static final FAILURE = const ActionResult(succeeded: false, done: true);
-  static final NOT_DONE = const ActionResult(succeeded: true, done: false);
+  static final success = const ActionResult(succeeded: true, done: true);
+  static final failure = const ActionResult(succeeded: false, done: true);
+  static final notDone = const ActionResult(succeeded: true, done: false);
 
   /// An alternate [Action] that should be performed instead of the one that
   /// failed to perform and returned this. For example, when the [Hero] walks

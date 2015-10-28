@@ -21,21 +21,21 @@ final _directionLines = {
 /// Adds an [Effect]s that should be displayed when [event] happens.
 void addEffects(List<Effect> effects, Event event) {
   switch (event.type) {
-    case EventType.BOLT:
-    case EventType.CONE:
+    case EventType.bolt:
+    case EventType.cone:
       // TODO: Use something better for arrows.
       effects.add(new ElementEffect(event.pos, event.element));
       break;
 
-    case EventType.TOSS:
+    case EventType.toss:
       effects.add(new ItemEffect(event.pos, event.other));
       break;
 
-    case EventType.HIT:
+    case EventType.hit:
       effects.add(new HitEffect(event.actor));
       break;
 
-    case EventType.DIE:
+    case EventType.die:
       effects.add(new HitEffect(event.actor));
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
@@ -44,48 +44,48 @@ void addEffects(List<Effect> effects, Event event) {
       }
       break;
 
-    case EventType.HEAL:
+    case EventType.heal:
       effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
       break;
 
-    case EventType.FEAR:
+    case EventType.fear:
       effects.add(new BlinkEffect(event.actor, Color.darkYellow));
       break;
 
-    case EventType.COURAGE:
+    case EventType.courage:
       effects.add(new BlinkEffect(event.actor, Color.yellow));
       break;
 
-    case EventType.DETECT:
+    case EventType.detect:
       effects.add(new DetectEffect(event.pos));
       break;
 
-    case EventType.TELEPORT:
+    case EventType.teleport:
       var numParticles = (event.actor.pos - event.pos).kingLength * 2;
       for (var i = 0; i < numParticles; i++) {
         effects.add(new TeleportEffect(event.pos, event.actor.pos));
       }
       break;
 
-    case EventType.SPAWN:
+    case EventType.spawn:
       // TODO: Something more interesting.
       effects.add(new FrameEffect(event.actor.pos, '*', Color.white));
       break;
 
-    case EventType.HOWL:
+    case EventType.howl:
       var colors = [Color.white, Color.lightGray, Color.gray, Color.gray];
       var color = colors[(event.other * 3).toInt()];
       effects.add(new FrameEffect(event.pos, '.', color));
       break;
 
-    case EventType.SLASH:
-    case EventType.STAB:
+    case EventType.slash:
+    case EventType.stab:
       var line = _directionLines[event.dir];
       // TODO: Element color.
       effects.add(new FrameEffect(event.pos, line, Color.white));
       break;
 
-    case EventType.GOLD:
+    case EventType.gold:
       effects.add(new TreasureEffect(event.pos, event.other));
       break;
   }
@@ -111,72 +111,72 @@ List<Glyph> _glyphs(String chars, List<Color> colors) {
 }
 
 final _elementSequences = <Element, List<List<Glyph>>> {
-  Element.NONE: [
+  Element.none: [
     _glyphs("•", [Color.lightBrown]),
     _glyphs("•", [Color.lightBrown]),
     _glyphs("•", [Color.brown])
   ],
-  Element.AIR: [
+  Element.air: [
     _glyphs("Oo", [Color.white, Color.lightAqua]),
     _glyphs(".", [Color.lightAqua]),
     _glyphs(".", [Color.lightGray])
   ],
-  Element.EARTH: [
+  Element.earth: [
     _glyphs("*%", [Color.lightBrown, Color.gold]),
     _glyphs("*%", [Color.brown, Color.darkOrange]),
     _glyphs("•*", [Color.brown]),
     _glyphs("•", [Color.darkBrown])
   ],
-  Element.FIRE: [
+  Element.fire: [
     _glyphs("*", [Color.gold, Color.yellow]),
     _glyphs("*", [Color.orange]),
     _glyphs("•", [Color.red]),
     _glyphs("•", [Color.darkRed, Color.red]),
     _glyphs(".", [Color.darkRed, Color.red])
   ],
-  Element.WATER: [
+  Element.water: [
     _glyphs("Oo", [Color.aqua, Color.lightBlue]),
     _glyphs("o•~", [Color.blue]),
     _glyphs("~", [Color.blue]),
     _glyphs("~", [Color.darkBlue]),
     _glyphs(".", [Color.darkBlue])
   ],
-  Element.ACID: [
+  Element.acid: [
     _glyphs("Oo", [Color.yellow, Color.gold]),
     _glyphs("o•~", [Color.darkYellow, Color.gold]),
     _glyphs(":,", [Color.darkYellow, Color.darkGold]),
     _glyphs(".", [Color.darkYellow])
   ],
-  Element.COLD: [
+  Element.cold: [
     _glyphs("*", [Color.white]),
     _glyphs("+x", [Color.lightBlue, Color.white]),
     _glyphs("+x", [Color.lightBlue, Color.lightGray]),
     _glyphs(".", [Color.gray, Color.darkBlue])
   ],
-  Element.LIGHTNING: [
+  Element.lightning: [
     _glyphs("*", [Color.lightPurple]),
     _glyphs(r"-|\/", [Color.purple, Color.white]),
     _glyphs(".", [Color.black, Color.black, Color.black, Color.lightPurple])
   ],
-  Element.POISON: [
+  Element.poison: [
     _glyphs("Oo", [Color.yellow, Color.lightGreen]),
     _glyphs("o•", [Color.green, Color.green, Color.darkYellow]),
     _glyphs("•", [Color.darkGreen, Color.darkYellow]),
     _glyphs(".", [Color.darkGreen])
   ],
-  Element.DARK: [
+  Element.dark: [
     _glyphs("*%", [Color.black, Color.black, Color.lightGray]),
     _glyphs("•", [Color.black, Color.black, Color.gray]),
     _glyphs(".", [Color.black]),
     _glyphs(".", [Color.black])
   ],
-  Element.LIGHT: [
+  Element.light: [
     _glyphs("*", [Color.white]),
     _glyphs("x+", [Color.white, Color.lightYellow]),
     _glyphs(":;\"'`,", [Color.lightGray, Color.yellow]),
     _glyphs(".", [Color.gray, Color.yellow])
   ],
-  Element.SPIRIT: [
+  Element.spirit: [
     _glyphs("Oo*+", [Color.lightPurple, Color.gray]),
     _glyphs("o+", [Color.purple, Color.green]),
     _glyphs("•.", [Color.darkPurple, Color.darkGreen, Color.darkGreen])
@@ -270,7 +270,7 @@ class HitEffect implements Effect {
   final int health;
   int frame = 0;
 
-  static final NUM_FRAMES = 15;
+  static final _numFrames = 15;
 
   HitEffect(Actor actor)
       : x = actor.x,
@@ -278,7 +278,7 @@ class HitEffect implements Effect {
         health = 10 * actor.health.current ~/ actor.health.max;
 
   bool update(Game game) {
-    return frame++ < NUM_FRAMES;
+    return frame++ < _numFrames;
   }
 
   void render(Game game, DrawGlyph drawGlyph) {

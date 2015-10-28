@@ -19,10 +19,6 @@ class PathResult {
 
 /// A* pathfinding algorithm.
 class AStar {
-  static final FLOOR_COST = 10;
-  static final MONSTER_COST = 40;
-  static final STRAIGHT_STEP_COST = 9;
-
   /// Tries to find a path from [start] to [end], searching up to [maxLength]
   /// steps from [start]. Returns the [Direction] of the first step from [start]
   /// along that path (or [Direction.NONE] if it determines there is no path
@@ -66,7 +62,7 @@ class AStar {
       var current = open.removeLast();
 
       if ((current.pos == end) ||
-          (current.cost > Option.ASTAR_FLOOR_COST * maxLength)) {
+          (current.cost > Option.aStarFloorCost * maxLength)) {
         // Found the path.
         return current;
       }
@@ -80,19 +76,19 @@ class AStar {
         if (!stage[neighbor].isTraversable) continue;
 
         // Given how far the current tile is, how far is each neighbor?
-        var stepCost = Option.ASTAR_FLOOR_COST;
+        var stepCost = Option.aStarFloorCost;
         if (stage[neighbor].type.opensTo != null) {
           if (canOpenDoors) {
             // One to open the door and one to enter the tile.
-            stepCost = Option.ASTAR_FLOOR_COST * 2;
+            stepCost = Option.aStarFloorCost * 2;
           } else {
             // Even though the monster can't open doors, we don't consider it
             // totally impassable because there's a chance the door will be
             // opened by someone else.
-            stepCost = Option.ASTAR_DOOR_COST;
+            stepCost = Option.aStarDoorCost;
           }
         } else if (stage.actorAt(neighbor) != null) {
-          stepCost = Option.ASTAR_OCCUPIED_COST;
+          stepCost = Option.aStarOccupiedCost;
         }
 
         var cost = current.cost + stepCost;
@@ -157,8 +153,8 @@ class AStar {
     final offset = (end - pos).abs();
     final numDiagonal = math.min(offset.x, offset.y);
     final numStraight = math.max(offset.x, offset.y) - numDiagonal;
-    return (numDiagonal * Option.ASTAR_FLOOR_COST) +
-           (numStraight * Option.ASTAR_STRAIGHT_COST);
+    return (numDiagonal * Option.aStarFloorCost) +
+           (numStraight * Option.aStarStraightCost);
   }
 }
 

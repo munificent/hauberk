@@ -42,7 +42,7 @@ class Items {
     // Unused: ; : ` % ^ < >
 
     category(",", null);
-    tossable(damage: 4, range: 8, element: Element.EARTH, breakage: 10);
+    tossable(damage: 4, range: 8, element: Element.earth, breakage: 10);
     item("Rock", 1, lightBrown);
 
     treasures();
@@ -151,17 +151,17 @@ void potions() {
 
   category("!", "magic/potion/resistance");
   tossable(damage: 1, range: 8, breakage: 100);
-  resistSalve("Heat",          5, 20, orange, Element.FIRE);
-  resistSalve("Cold",          6, 24, lightBlue, Element.COLD);
-  resistSalve("Light",         7, 28, lightYellow, Element.LIGHT);
-  resistSalve("Wind",          8, 32, lightAqua, Element.AIR);
-  resistSalve("Electricity",   9, 36, lightPurple, Element.LIGHTNING);
-  resistSalve("Darkness",     10, 40, darkGray, Element.DARK);
-  resistSalve("Earth",        13, 44, brown, Element.EARTH);
-  resistSalve("Water",        16, 48, blue, Element.WATER);
-  resistSalve("Acid",         19, 52, lightOrange, Element.ACID);
-  resistSalve("Poison",       23, 56, green, Element.POISON);
-  resistSalve("Death",        30, 60, purple, Element.SPIRIT);
+  resistSalve("Heat",          5, 20, orange, Element.fire);
+  resistSalve("Cold",          6, 24, lightBlue, Element.cold);
+  resistSalve("Light",         7, 28, lightYellow, Element.light);
+  resistSalve("Wind",          8, 32, lightAqua, Element.air);
+  resistSalve("Electricity",   9, 36, lightPurple, Element.lightning);
+  resistSalve("Darkness",     10, 40, darkGray, Element.dark);
+  resistSalve("Earth",        13, 44, brown, Element.earth);
+  resistSalve("Water",        16, 48, blue, Element.water);
+  resistSalve("Acid",         19, 52, lightOrange, Element.acid);
+  resistSalve("Poison",       23, 56, green, Element.poison);
+  resistSalve("Death",        30, 60, purple, Element.spirit);
 
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
 
@@ -177,18 +177,18 @@ void potions() {
   // TODO: Make monsters drop these.
   category("?", "magic/potion/bottled");
   tossable(damage: 1, range: 8, breakage: 100);
-  bottled("Wind",       4,   30, white,       Element.AIR,         8, 6, "blasts");
-  bottled("Ice",        7,   55, lightBlue,   Element.COLD,       15, 7, "freezes");
-  bottled("Fire",      11,   70, red,         Element.FIRE,       22, 8, "burns");
-  bottled("Water",     12,  110, blue,        Element.WATER,      26, 8, "drowns");
-  bottled("Earth",     13,  150, brown,       Element.EARTH,      28, 9, "crushes");
-  bottled("Lightning", 16,  200, lightPurple, Element.LIGHTNING,  34, 9, "shocks");
-  bottled("Acid",      18,  250, lightGreen,  Element.ACID,       38, 10, "corrodes");
-  bottled("Poison",    22,  330, darkGreen,   Element.POISON,     42, 10, "infects");
-  bottled("Shadows",   28,  440, black,       Element.DARK,       48, 11, "torments",
+  bottled("Wind",       4,   30, white,       Element.air,         8, 6, "blasts");
+  bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, 7, "freezes");
+  bottled("Fire",      11,   70, red,         Element.fire,       22, 8, "burns");
+  bottled("Water",     12,  110, blue,        Element.water,      26, 8, "drowns");
+  bottled("Earth",     13,  150, brown,       Element.earth,      28, 9, "crushes");
+  bottled("Lightning", 16,  200, lightPurple, Element.lightning,  34, 9, "shocks");
+  bottled("Acid",      18,  250, lightGreen,  Element.acid,       38, 10, "corrodes");
+  bottled("Poison",    22,  330, darkGreen,   Element.poison,     42, 10, "infects");
+  bottled("Shadows",   28,  440, black,       Element.dark,       48, 11, "torments",
       "the darkness");
-  bottled("Radiance",  34,  600, white,       Element.LIGHT,      52, 11, "sears");
-  bottled("Spirits",   40, 1000, darkGray,    Element.SPIRIT,     58, 12, "haunts");
+  bottled("Radiance",  34,  600, white,       Element.light,      52, 11, "sears");
+  bottled("Spirits",   40, 1000, darkGray,    Element.spirit,     58, 12, "haunts");
 }
 
 void scrolls() {
@@ -364,7 +364,7 @@ void category(glyph, String category, {String equip, String verb}) {
 ///
 /// This must be called *after* [category] is called.
 void tossable({int damage, Element element, int range, int breakage}) {
-  if (element == null) element = Element.NONE;
+  if (element == null) element = Element.none;
 
   _tossDamage = damage;
   _tossElement = element;
@@ -413,11 +413,11 @@ void weapon(String name, int level, int price, appearance, int damage,
       int tossDamage,
       [int tossRange]) {
   var toss = new RangedAttack("the ${name.toLowerCase()}",
-      Log.makeVerbsAgree(_verb, Pronoun.IT), tossDamage, Element.NONE,
+      Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
       tossRange != null ? tossRange : _tossRange);
   item(name, level, appearance,
       equipSlot: "weapon",
-      attack: attack(_verb, damage, Element.NONE),
+      attack: attack(_verb, damage, Element.none),
       tossAttack: toss,
       price: price);
 }
@@ -425,11 +425,11 @@ void weapon(String name, int level, int price, appearance, int damage,
 void ranged(String name, int level, int price, appearance, String noun,
     int damage, int range, int tossDamage) {
   var toss = new RangedAttack("the ${name.toLowerCase()}",
-      Log.makeVerbsAgree(_verb, Pronoun.IT), tossDamage, Element.NONE,
+      Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
       _tossRange);
   item(name, level, appearance,
       equipSlot: "weapon",
-      attack: new RangedAttack(noun, "pierce[s]", damage, Element.NONE, range),
+      attack: new RangedAttack(noun, "pierce[s]", damage, Element.none, range),
       tossAttack: toss,
       price: price);
 }

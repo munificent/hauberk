@@ -42,15 +42,15 @@ abstract class LosAction extends Action {
     // See if there is an actor there.
     var target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
-      if (onHitActor(pos, target)) return ActionResult.SUCCESS;
+      if (onHitActor(pos, target)) return ActionResult.success;
     }
 
     if (pos == _target) {
-      if (onTarget(pos)) return ActionResult.SUCCESS;
+      if (onTarget(pos)) return ActionResult.success;
     }
 
     _lastPos = pos;
-    return _los.moveNext() ? ActionResult.NOT_DONE : ActionResult.SUCCESS;
+    return doneIf(!_los.moveNext());
   }
 
   /// Override this to handle the LOS reaching an open tile.
@@ -89,7 +89,7 @@ class BoltAction extends LosAction {
         super(target);
 
   void onStep(Vec pos) {
-    addEvent(EventType.BOLT, element: _attack.element, pos: pos);
+    addEvent(EventType.bolt, element: _attack.element, pos: pos);
   }
 
   bool onHitActor(Vec pos, Actor target) {

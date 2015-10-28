@@ -71,7 +71,7 @@ class Area {
     // TODO: Temp. Wizard light it.
     /*
     for (var pos in stage.bounds) {
-      for (var dir in Direction.ALL) {
+      for (var dir in Direction.all) {
         if (stage.bounds.contains(pos + dir) &&
             stage[pos + dir].isTransparent) {
           stage[pos].visible = true;

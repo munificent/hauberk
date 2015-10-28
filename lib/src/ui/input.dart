@@ -6,62 +6,62 @@ library hauberk.ui.input;
 /// then interprets.
 class Input {
   /// Rests in the level, selects a menu item.
-  static const OK = const Input("OK");
+  static const ok = const Input("ok");
 
   // TODO: Unify cancel, forfeit, and quit?
 
-  static const CANCEL = const Input("CANCEL");
-  static const FORFEIT = const Input("FORFEIT");
+  static const cancel = const Input("cancel");
+  static const forfeit = const Input("forfeit");
 
   /// Exit the successfully completed level.
-  static const QUIT = const Input("QUIT");
+  static const quit = const Input("quit");
 
   /// Close nearby doors.
-  static const CLOSE_DOOR = const Input("CLOSE_DOOR");
+  static const closeDoor = const Input("closeDoor");
 
-  static const DROP = const Input("DROP");
-  static const USE = const Input("USE");
-  static const PICK_UP = const Input("PICK_UP");
-  static const TOSS = const Input("TOSS");
-  static const SWAP = const Input("SWAP");
+  static const drop = const Input("drop");
+  static const use = const Input("use");
+  static const pickUp = const Input("pickUp");
+  static const toss = const Input("toss");
+  static const swap = const Input("swap");
 
-  static const SELECT_COMMAND = const Input("SELECT_COMMAND");
+  static const selectCommand = const Input("selectCommand");
 
   /// Directional inputs.
   ///
   /// These are used both for navigating in the level and menu screens.
-  static const N  = const Input("N");
-  static const NE  = const Input("NE");
-  static const E  = const Input("E");
-  static const SE  = const Input("SE");
-  static const S  = const Input("S");
-  static const SW  = const Input("SW");
-  static const W  = const Input("W");
-  static const NW  = const Input("NW");
+  static const n  = const Input("n");
+  static const ne = const Input("ne");
+  static const e  = const Input("e");
+  static const se = const Input("se");
+  static const s  = const Input("s");
+  static const sw = const Input("sw");
+  static const w  = const Input("w");
+  static const nw = const Input("nw");
 
   /// Rest repeatedly.
-  static const REST = const Input("REST");
+  static const rest = const Input("rest");
 
-  static const RUN_N  = const Input("RUN_N");
-  static const RUN_NE  = const Input("RUN_NE");
-  static const RUN_E  = const Input("RUN_E");
-  static const RUN_SE  = const Input("RUN_SE");
-  static const RUN_S  = const Input("RUN_S");
-  static const RUN_SW  = const Input("RUN_SW");
-  static const RUN_W  = const Input("RUN_W");
-  static const RUN_NW  = const Input("RUN_NW");
+  static const runN  = const Input("runN");
+  static const runNE = const Input("runNE");
+  static const runE  = const Input("runE");
+  static const runSE = const Input("runSE");
+  static const runS  = const Input("runS");
+  static const runSW = const Input("runSW");
+  static const runW  = const Input("runW");
+  static const runNW = const Input("runNW");
 
   /// Fire the last selected skill.
-  static const FIRE = const Input("FIRE");
+  static const fire = const Input("fire");
 
-  static const FIRE_N  = const Input("FIRE_N");
-  static const FIRE_NE  = const Input("FIRE_NE");
-  static const FIRE_E  = const Input("FIRE_E");
-  static const FIRE_SE  = const Input("FIRE_SE");
-  static const FIRE_S  = const Input("FIRE_S");
-  static const FIRE_SW  = const Input("FIRE_SW");
-  static const FIRE_W  = const Input("FIRE_W");
-  static const FIRE_NW  = const Input("FIRE_NW");
+  static const fireN  = const Input("fireN");
+  static const fireNE = const Input("fireNE");
+  static const fireE  = const Input("fireE");
+  static const fireSE = const Input("fireSE");
+  static const fireS  = const Input("fireS");
+  static const fireSW = const Input("fireSW");
+  static const fireW  = const Input("fireW");
+  static const fireNW = const Input("fireNW");
 
   final String name;
 
