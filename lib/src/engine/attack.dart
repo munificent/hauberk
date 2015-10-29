@@ -12,31 +12,6 @@ import 'element.dart';
 import 'game.dart';
 import 'log.dart';
 
-// item needs:
-// attack (covers both melee and ranged since can't use weapon for both)
-// equipped range (determines melee weapon versus ranged)
-// thrown range
-// thrown... effect? will be attack for some things, other action for other
-//     things
-//
-// if you throw a rock and it hits a monster, it performs an attack and falls
-//    to the ground
-//    if it reaches the end of its range, it lands on the ground
-//
-// if you throw a fire potion and it hits a monster, it does an attack and
-//    a ball of damage
-//    if it reaches the end of its range, it blows up
-//
-// if you throw a dagger -> works like rock
-//
-// if you throw a scroll and it hits a monster, it does no damage and lands on
-//    the ground
-
-// range is used in bolt action to stop
-// it's used in ray action for the same reason
-// the corresponding bolt and cone moves also use it
-// the archery command gets it from the weapon and passes it out
-
 /// Armor reduces damage by an inverse curve such that increasing armor has
 /// less and less effect. Damage is reduced to the following:
 ///
@@ -99,7 +74,19 @@ class Attack {
   int get resistance => _resistance;
   int _resistance = 0;
 
-  Attack(this.verb, this.baseDamage, this._element, [this.noun]);
+  Attack(this.verb, this.baseDamage, [Element element, this.noun])
+      : _element = element != null ? element : Element.none;
+
+  /// Creates an [Attack] intended to be passed to [combine].
+  Attack.modifier({Element element, int strikeBonus, int damageBonus,
+    num damageScale})
+      : verb = "",
+        noun = null,
+        baseDamage = 0,
+        _element = element != null ? element : Element.none,
+        _strikeBonus = strikeBonus != null ? strikeBonus : 0,
+        _damageBonus = damageBonus != null ? damageBonus : 0,
+        _damageScale = damageScale != null ? damageScale : 1.0;
 
   /// Returns a new attack identical to this one but with [offset] added.
   Attack addDamage(num offset) => _clone().._damageBonus += offset;
@@ -120,6 +107,20 @@ class Attack {
 
   /// Returns a new attack with [resist] added to it.
   Attack addResistance(int resist) => _clone().._resistance += resist;
+
+  /// Creates a new attack that combines this one with [modifier].
+  Attack combine(Attack modifier) {
+    var result = _clone();
+    result._strikeBonus += modifier._strikeBonus;
+    result._damageBonus += modifier._damageBonus;
+    result._damageScale *= modifier._damageScale;
+
+    if (modifier.element != Element.none) {
+      result._element = modifier._element;
+    }
+
+    return result;
+  }
 
   /// Performs a melee [attack] from [attacker] to [defender] in the course of
   /// [action].

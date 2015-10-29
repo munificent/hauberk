@@ -127,9 +127,6 @@ abstract class Content {
   List<Shop> get shops;
 
   HeroSave createHero(String name, HeroClass heroClass);
-
-  Map serializeAffix(Affix affix);
-  Affix deserializeAffix(Map affix);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

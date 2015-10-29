@@ -4,9 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 
-typedef Affix _CreateAffix(String name);
-typedef Map _SerializeAffix(Affix affix);
-typedef Affix _DeserializeAffix(Map data);
+typedef Attack _CreateAttack();
 
 /// A generic "kind" of affix that can create concrete [Affix] instances.
 class _AffixFactory {
@@ -19,10 +17,10 @@ class _AffixFactory {
   /// higher level items.
   final int level;
   final int rarity;
-  final _CreateAffix create;
+  final _CreateAttack attack;
 
   _AffixFactory(
-      this.name, this.categories, this.level, this.rarity, this.create);
+      this.name, this.categories, this.level, this.rarity, this.attack);
 }
 
 class Affixes {
@@ -75,7 +73,8 @@ class Affixes {
 
       // Take the rarity into account.
       if (rng.range(100) < 100 ~/ factory.rarity) {
-        return factory.create(factory.name);
+        var attack = factory.attack();
+        return new Affix(factory.name, attack);
       }
     }
 
@@ -84,9 +83,6 @@ class Affixes {
 
   static final _prefixes = <_AffixFactory>[];
   static final _suffixes = <_AffixFactory>[];
-
-  static final _serializers = <String, _SerializeAffix>{};
-  static final _deserializers = <String, _DeserializeAffix>{};
 
   static void initialize() {
     brand("Glimmering", 12, 3, Element.light, 0, 1.0);
@@ -125,106 +121,30 @@ class Affixes {
 
   /// A weapon suffix for adding damage.
   static void damage(String name, int level, int rarity, int base, int taper) {
-    suffix(name, level, rarity, "weapon",
-        create: (name) => new DamageAffix(name, rng.taper(base, taper)),
-        serialize: DamageAffix.serialize,
-        deserialize: DamageAffix.deserialize);
+    affixFactory(_suffixes, name, level, rarity, "weapon",
+        () => new Attack.modifier(damageBonus: rng.taper(base, taper)));
   }
 
   /// bow prefix for adding damage.
   static void bowDamage(
       String name, int level, int rarity, int base, int taper) {
-    prefix(name, level, rarity, "bow",
-        create: (name) => new DamageAffix(name, rng.taper(base, taper)),
-        serialize: DamageAffix.serialize,
-        deserialize: DamageAffix.deserialize);
+    affixFactory(_prefixes, name, level, rarity, "bow",
+        () => new Attack.modifier(damageBonus: rng.taper(base, taper)));
   }
 
   /// A weapon prefix for giving an elemental brand.
   static void brand(String name, int level, int rarity, Element element,
       int bonus, num scale) {
-    prefix(name, level, rarity, "weapon",
-        create: (name) => new BrandAffix(name, element, rng.taper(bonus, 5),
-            rng.taper((scale + 10).toInt(), 4) / 10),
-        serialize: BrandAffix.serialize,
-        deserialize: BrandAffix.deserialize);
+    affixFactory(_prefixes, name, level, rarity, "weapon",
+        () => new Attack.modifier(element: element,
+            damageBonus: rng.taper(bonus, 5),
+            damageScale: rng.taper((scale + 10).toInt(), 4) / 10));
   }
 
   /// Defines a new prefix [Affix].
-  static void prefix(String name, int level, int rarity, String groups,
-      {_CreateAffix create,
-      _SerializeAffix serialize,
-      _DeserializeAffix deserialize}) {
-    _prefixes
-        .add(new _AffixFactory(name, groups.split(" "), level, rarity, create));
-    _serializers[name] = serialize;
-    _deserializers[name] = deserialize;
+  static void affixFactory(List<_AffixFactory> factories, String name,
+      int level, int rarity, String groups, _CreateAttack createAttack) {
+    factories.add(new _AffixFactory(name, groups.split(" "), level, rarity,
+        createAttack));
   }
-
-  /// Defines a new suffix [Affix].
-  static void suffix(String name, int level, int rarity, String groups,
-      {_CreateAffix create,
-      _SerializeAffix serialize,
-      _DeserializeAffix deserialize}) {
-    _suffixes
-        .add(new _AffixFactory(name, groups.split(" "), level, rarity, create));
-    _serializers[name] = serialize;
-    _deserializers[name] = deserialize;
-  }
-
-  static Map serialize(Affix affix) {
-    return _serializers[affix.name](affix);
-  }
-
-  static Affix deserialize(Map data) {
-    return _deserializers[data["name"]](data);
-  }
-}
-
-/// An [Affix] that adds to a weapon's damage.
-class DamageAffix extends Affix {
-  static Map serialize(DamageAffix affix) {
-    return {"name": affix.name, "damage": affix._damage};
-  }
-
-  static Affix deserialize(Map data) {
-    return new DamageAffix(data["name"], data["damage"]);
-  }
-
-  final String name;
-
-  final num _damage;
-
-  DamageAffix(this.name, this._damage);
-
-  Attack modifyAttack(Attack attack) => attack.addDamage(_damage);
-}
-
-/// An [Affix] that brands a weapon's attack with an element and boosts its
-/// damage.
-class BrandAffix extends Affix {
-  static Map serialize(BrandAffix affix) {
-    return {
-      "name": affix.name,
-      "element": affix._element.name,
-      "bonus": affix._bonus,
-      "multiplier": affix._multiplier
-    };
-  }
-
-  static Affix deserialize(Map data) {
-    return new BrandAffix(data["name"], Element.fromName(data["element"]),
-        data["bonus"], data["multiplier"]);
-  }
-
-  final String name;
-
-  final Element _element;
-  final num _bonus;
-  final num _multiplier;
-
-  BrandAffix(this.name, this._element, this._bonus, this._multiplier);
-
-  Attack modifyAttack(Attack attack) =>
-      attack.brand(_element).addDamage(_bonus).multiplyDamage(_multiplier);
 }

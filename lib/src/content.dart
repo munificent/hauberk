@@ -42,7 +42,4 @@ class GameContent implements Content {
 
     return hero;
   }
-
-  Map serializeAffix(Affix affix) => Affixes.serialize(affix);
-  Affix deserializeAffix(Map data) => Affixes.deserialize(data);
 }

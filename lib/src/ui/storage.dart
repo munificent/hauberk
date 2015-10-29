@@ -88,12 +88,12 @@ class Storage {
 
     var prefix;
     if (data.containsKey('prefix')) {
-      prefix = content.deserializeAffix(data['prefix']);
+      prefix = _loadAffix(data['prefix']);
     }
 
     var suffix;
     if (data.containsKey('suffix')) {
-      suffix = content.deserializeAffix(data['suffix']);
+      suffix = _loadAffix(data['suffix']);
     }
 
     return new Item(type, prefix, suffix);
@@ -105,6 +105,32 @@ class Storage {
         combat: data['combat'],
         toughness: data['toughness'],
         masteries: data['masteries']);
+  }
+
+  Affix _loadAffix(Map data) {
+    var attack;
+
+    var attackData = data['attack'];
+    if (attackData != null) {
+      attack = new Attack("", 0);
+      if (attackData['element'] != null) {
+        attack = attack.brand(Element.fromName(attackData['element']));
+      }
+
+      if (attackData['damageBonus'] != null) {
+        attack = attack.addDamage(attackData['damageBonus']);
+      }
+
+      if (attackData['strikeBonus'] != null) {
+        attack = attack.addStrike(attackData['strikeBonus']);
+      }
+
+      if (attackData['damageScale'] != null) {
+        attack = attack.multiplyDamage(attackData['damageScale']);
+      }
+    }
+
+    return new Affix(data['name'], attack);
   }
 
   void save() {
@@ -164,14 +190,43 @@ class Storage {
     };
 
     if (item.prefix != null) {
-      itemData['prefix'] = content.serializeAffix(item.prefix);
+      itemData['prefix'] = _saveAffix(item.prefix);
     }
 
     if (item.suffix != null) {
-      itemData['suffix'] = content.serializeAffix(item.suffix);
+      itemData['suffix'] = _saveAffix(item.suffix);
     }
 
     return itemData;
+  }
+
+  Map _saveAffix(Affix affix) {
+    var affixData = {
+      'name': affix.name
+    };
+
+    if (affix.attack != null) {
+      var attackData = {};
+      affixData['attack'] = attackData;
+
+      if (affix.attack.element != Element.none) {
+        attackData['element'] = affix.attack.element.name;
+      }
+
+      if (affix.attack.damageBonus != 0) {
+        attackData['damageBonus'] = affix.attack.damageBonus;
+      }
+
+      if (affix.attack.strikeBonus != 0) {
+        attackData['strikeBonus'] = affix.attack.strikeBonus;
+      }
+
+      if (affix.attack.damageScale != 1.0) {
+        attackData['damageScale'] = affix.attack.damageScale;
+      }
+    }
+
+    return affixData;
   }
 
   void _saveWarrior(Warrior warrior, Map data) {

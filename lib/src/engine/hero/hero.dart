@@ -6,7 +6,6 @@ import '../action/action.dart';
 import '../action/walk.dart';
 import '../actor.dart';
 import '../attack.dart';
-import '../element.dart';
 import '../energy.dart';
 import '../game.dart';
 import '../items/equipment.dart';
@@ -169,7 +168,7 @@ class Hero extends Actor {
     if (weapon != null && !weapon.isRanged) {
       attack = weapon.attack;
     } else {
-      attack = new Attack('punch[es]', Option.heroPunchDamage, Element.none);
+      attack = new Attack('punch[es]', Option.heroPunchDamage);
     }
 
     // Let the class modify it.

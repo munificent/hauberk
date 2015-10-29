@@ -5,8 +5,7 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 
 /// Creates a new [Attack].
-Attack attack(String verb, int damage, [Element element = Element.none,
-    Noun noun]) {
+Attack attack(String verb, int damage, [Element element, Noun noun]) {
   return new Attack(verb, damage, element, noun);
 }
 

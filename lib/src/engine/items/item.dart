@@ -35,8 +35,13 @@ class Item extends Thing implements Comparable {
     if (type.attack == null) return null;
 
     var attack = type.attack;
-    if (prefix != null) attack = prefix.modifyAttack(attack);
-    if (suffix != null) attack = suffix.modifyAttack(attack);
+    if (prefix != null && prefix.attack != null) {
+      attack = attack.combine(prefix.attack);
+    }
+
+    if (prefix != null && suffix.attack != null) {
+      attack = attack.combine(suffix.attack);
+    }
 
     return attack;
   }
@@ -148,13 +153,12 @@ class ItemType {
 
 /// A modifier that can be applied to an [Item] to change its capabilities.
 /// For example, in a "Dagger of Wounding", the "of Wounding" part is an affix.
-abstract class Affix {
-  String get name;
+class Affix {
+  final String name;
 
-  // TODO: Affix, TrainedStat, Condition and HeroClass all have this or
-  // something similar. Should we have a generic interface for stuff that can
-  // modify an attack?
-  Attack modifyAttack(Attack attack) => attack;
+  final Attack attack;
+
+  Affix(this.name, this.attack);
 }
 
 typedef void AddItem(Item item);
