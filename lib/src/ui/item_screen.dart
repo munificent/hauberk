@@ -127,7 +127,7 @@ class ItemScreen extends Screen {
   void render(Terminal terminal) {
     terminal.writeAt(0, 0, mode.message(this));
 
-    var gold = _priceString(save.gold);
+    var gold = priceString(save.gold);
     terminal.writeAt(82, 0, "Gold:");
     terminal.writeAt(99 - gold.length, 0, gold, Color.gold);
 
@@ -149,17 +149,11 @@ class ItemScreen extends Screen {
         terminal.writeAt(x, 2, view.label);
       }
 
-      canSelect(Item item) => mode.canSelectItem(this, side, item);
-
-      drawItems(terminal, x, 3, view.getItems(this), canSelect);
-
-      var y = 2;
-      for (var item in view.getItems(this)) {
-        y++;
-        if (item.price == 0) continue;
-
-        var price = _priceString(item.price);
-        terminal.writeAt(x + 49 - price.length, y, price, Color.darkGray);
+      if (mode.allowsSelection) {
+        drawItems(terminal, x, 4, view.getItems(this),
+            (item) => mode.canSelectItem(this, side, item));
+      } else {
+        drawItems(terminal, x, 4, view.getItems(this));
       }
     }
 
@@ -186,27 +180,6 @@ class ItemScreen extends Screen {
     }
 
     completeRecipe = null;
-  }
-
-  /// Converts an integer to a comma-grouped string like "123,456".
-  String _priceString(int price) {
-    var result = price.toString();
-    if (price > 999999999) {
-      result = result.substring(0, result.length - 9) + "," +
-          result.substring(result.length - 9);
-    }
-
-    if (price > 999999) {
-      result = result.substring(0, result.length - 6) + "," +
-          result.substring(result.length - 6);
-    }
-
-    if (price > 999) {
-      result = result.substring(0, result.length - 3) + "," +
-          result.substring(result.length - 3);
-    }
-
-    return result;
   }
 
   // Rotates [view] to a later or earlier one based on [offset].
@@ -290,10 +263,14 @@ abstract class Mode {
 
   const Mode();
 
+  /// Whether items should be shown as selectable or not.
+  bool get allowsSelection => false;
+
   String message(ItemScreen screen);
 
   String helpText(ItemScreen screen);
 
+  /// If [allowsSelection] is true, which items can be selected.
   bool canSelectItem(ItemScreen screen, Side side, Item item) => false;
 
   bool handleInput(Input input, ItemScreen screen) => false;
@@ -331,6 +308,8 @@ class ViewMode extends Mode {
 /// Base class for a mode that lets a user select an item.
 abstract class SelectMode extends Mode {
   const SelectMode();
+
+  bool get allowsSelection => true;
 
   String helpText(ItemScreen screen) => '[A-Z] Choose item, [Esc] Cancel';
 

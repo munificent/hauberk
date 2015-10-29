@@ -65,12 +65,6 @@ class Item extends Thing implements Comparable {
       name.write(suffix.name);
     }
 
-    if (attack != null) {
-      name.write(' (');
-      name.write(attack);
-      name.write(')');
-    }
-
     return name.toString();
   }
 
