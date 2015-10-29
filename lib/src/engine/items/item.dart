@@ -39,7 +39,7 @@ class Item extends Thing implements Comparable {
       attack = attack.combine(prefix.attack);
     }
 
-    if (prefix != null && suffix.attack != null) {
+    if (suffix != null && suffix.attack != null) {
       attack = attack.combine(suffix.attack);
     }
 
