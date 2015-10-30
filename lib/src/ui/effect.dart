@@ -36,7 +36,6 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.die:
-      effects.add(new HitEffect(event.actor));
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
         effects
@@ -265,16 +264,14 @@ class BlinkEffect implements Effect {
 }
 
 class HitEffect implements Effect {
-  final int x;
-  final int y;
+  final Actor actor;
   final int health;
   int frame = 0;
 
-  static final _numFrames = 15;
+  static final _numFrames = 23;
 
   HitEffect(Actor actor)
-      : x = actor.x,
-        y = actor.y,
+      : actor = actor,
         health = 10 * actor.health.current ~/ actor.health.max;
 
   bool update(Game game) {
@@ -282,13 +279,12 @@ class HitEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    var back;
-    switch (frame ~/ 5) {
-      case 0: back = Color.red;     break;
-      case 1: back = Color.darkRed; break;
-      case 2: back = Color.black;   break;
-    }
-    drawGlyph(x, y, new Glyph(' 123456789'[health], Color.black, back));
+    var back = const [
+      Color.lightRed, Color.red, Color.darkRed, Color.black
+    ][frame ~/ 6];
+
+    drawGlyph(actor.x, actor.y,
+        new Glyph(' 123456789'[health], Color.black, back));
   }
 }
 

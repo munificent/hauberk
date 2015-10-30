@@ -89,7 +89,7 @@ render() {
       if (type == Tiles.floor) {
         fill = '#000';
       } else if (type == Tiles.grass) {
-        fill = 'rgb(0, 20, 0)';
+        fill = 'rgb(0, 40, 0)';
       } else if (type == Tiles.wall) {
         fill = '#aaa';
       } else if (type == Tiles.table) {
