@@ -267,7 +267,7 @@ class AwakeState extends MonsterState {
 
     // The monster doesn't have a move to use, so they are going to attack.
     // It needs to decide if it wants to do a ranged attack or a melee attack.
-    var wantsToMelee = true;
+    monster.wantsToMelee = true;
 
     // First, it determines how "cautious" it is. Being more cautious makes the
     // monster prefer a ranged attack when possible.
@@ -321,9 +321,9 @@ class AwakeState extends MonsterState {
       // Less likely to break away for a ranged attack if already in melee
       // distance.
       if (pos - game.hero.pos <= 1) {
-        wantsToMelee = caution < 60;
+        monster.wantsToMelee = caution < 60;
       } else {
-        wantsToMelee = caution < 30;
+        monster.wantsToMelee = caution < 30;
       }
 
       Debug.logMonster(monster, "$rangedDamage/$meleeDamage ($damageRatio%) ranged ratio + ${monster.fear} "

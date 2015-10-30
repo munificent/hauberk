@@ -200,6 +200,18 @@ class TeleportMove extends Move {
 
   TeleportMove(int cost, this._range) : super(cost);
 
+  bool shouldUse(Monster monster) {
+    if (monster.isAfraid) return true;
+
+    var target = monster.game.hero.pos;
+    var distance = (target - monster.pos).kingLength;
+
+    // If we're next to the hero and want to start there, don't teleport away.
+    if (monster.wantsToMelee && distance <= 1) return false;
+
+    return true;
+  }
+
   Action onGetAction(Monster monster) => new TeleportAction(_range);
 }
 

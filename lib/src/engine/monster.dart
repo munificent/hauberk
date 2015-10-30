@@ -44,6 +44,10 @@ class Monster extends Actor {
 
   bool get isAsleep => _state is AsleepState;
 
+  /// Whether the monster wanted to melee or do a ranged attack the last time
+  /// it took a step.
+  bool wantsToMelee = true;
+
   /// How afraid of the hero the monster currently is. If it gets high enough,
   /// the monster will switch to the afraid state and try to flee.
   double _fear = 0.0;
@@ -66,13 +70,13 @@ class Monster extends Actor {
     Debug.addMonster(this);
     changeState(new AsleepState());
 
-
     /// Give this some random variation within monsters of the same breed so
     /// they don't all become frightened at the same time.
     _frightenThreshold = rng.range(60, 200).toDouble();
     if (breed.flags.contains("cowardly")) _frightenThreshold *= 0.7;
 
-    // All moves are initially charged.
+    // Initialize the recharges. These will be set to real values when the
+    // monster wakes up.
     for (var move in breed.moves) {
       _recharges[move] = 0.0;
     }
@@ -171,6 +175,15 @@ class Monster extends Actor {
   void changeState(MonsterState state) {
     _state = state;
     _state.bind(this);
+
+    // TODO: Move this into state?
+    if (state is AwakeState) {
+      // Randomly charge the moves. This ensures the monster doesn't
+      // immediately unload everything on the hero when first spotted.
+      for (var move in breed.moves) {
+        _recharges[move] = rng.range(move.rate);
+      }
+    }
   }
 
   Attack onGetAttack(Actor defender) => rng.item(breed.attacks);
