@@ -325,10 +325,6 @@ class AwakeState extends MonsterState {
       } else {
         monster.wantsToMelee = caution < 30;
       }
-
-      Debug.logMonster(monster, "$rangedDamage/$meleeDamage ($damageRatio%) ranged ratio + ${monster.fear} "
-          "fear + $nearDeath near death = $caution, "
-          "${wantsToMelee ? 'want melee' : 'want ranged'}}");
     }
 
     // Now that we know what the monster *wants* to do, reconcile it with what
@@ -339,7 +335,7 @@ class AwakeState extends MonsterState {
     if (rangedAttacks > 0) rangedDir = _findRangedPath();
 
     var walkDir;
-    if (wantsToMelee) {
+    if (monster.wantsToMelee) {
       walkDir = meleeDir != null ? meleeDir : rangedDir;
     } else {
       walkDir = rangedDir != null ? rangedDir : meleeDir;
