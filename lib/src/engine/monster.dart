@@ -7,6 +7,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../debug.dart';
 import 'action/action.dart';
 import 'actor.dart';
+import 'ai/flow.dart';
 import 'ai/monster_states.dart';
 import 'ai/move.dart';
 import 'attack.dart';
@@ -258,12 +259,23 @@ class Monster extends Actor {
 
   /// Called when this Actor has been killed by [attackNoun].
   void onDied(Noun attackNoun) {
+    // Try to keep dropped items from overlapping.
+    var flow = new Flow(game.stage, pos,
+        canOpenDoors: false, ignoreActors: true);
+
     // Handle drops.
     breed.drop.spawnDrop((item) {
-      item.pos = pos;
-      // TODO: Scatter items a bit?
-      log("{1} drop[s] {2}.", this, item);
+      var itemPos = pos;
+      if (game.stage.itemAt(pos) != null) {
+        itemPos = flow.nearestWhere((pos) {
+          if (rng.oneIn(5)) return true;
+          return game.stage.itemAt(pos) == null;
+        });
+      }
+
+      item.pos = itemPos;
       game.stage.items.add(item);
+      log("{1} drop[s] {2}.", this, item);
     });
 
     // Tell the quest.
