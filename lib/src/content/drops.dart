@@ -38,6 +38,8 @@ Drop dropAllOf(List<Drop> drops) => new _AllOfDrop(drops);
 /// own [Frequency].
 Drop dropOneOf(List<Rarity> drops) => new _RarityDrop(drops);
 
+Drop repeatDrop(int count, Drop drop) => new _RepeatDrop(count, drop);
+
 /// A rarity for a single case in a [_RarityDrop].
 ///
 /// This determines how rare a drop is relative to other cases in the drop. A
@@ -180,5 +182,20 @@ class _AllOfDrop implements Drop {
 
   void spawnDrop(AddItem addItem) {
     for (var drop in _drops) drop.spawnDrop(addItem);
+  }
+}
+
+/// A [Drop] that drops a child drop more than once.
+class _RepeatDrop implements Drop {
+  final int _count;
+  final Drop _drop;
+
+  _RepeatDrop(this._count, this._drop);
+
+  void spawnDrop(AddItem addItem) {
+    var count = rng.triangleInt(_count, _count ~/ 2) + rng.taper(0, 5);
+    for (var i = 0; i < count; i++) {
+      _drop.spawnDrop(addItem);
+    }
   }
 }

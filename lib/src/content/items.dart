@@ -177,18 +177,18 @@ void potions() {
   // TODO: Make monsters drop these.
   category("?", "magic/potion/bottled");
   tossable(damage: 1, range: 8, breakage: 100);
-  bottled("Wind",       4,   30, white,       Element.air,         8, 6, "blasts");
-  bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, 7, "freezes");
-  bottled("Fire",      11,   70, red,         Element.fire,       22, 8, "burns");
-  bottled("Water",     12,  110, blue,        Element.water,      26, 8, "drowns");
-  bottled("Earth",     13,  150, brown,       Element.earth,      28, 9, "crushes");
-  bottled("Lightning", 16,  200, lightPurple, Element.lightning,  34, 9, "shocks");
-  bottled("Acid",      18,  250, lightGreen,  Element.acid,       38, 10, "corrodes");
-  bottled("Poison",    22,  330, darkGreen,   Element.poison,     42, 10, "infects");
-  bottled("Shadows",   28,  440, black,       Element.dark,       48, 11, "torments",
+  bottled("Wind",       4,   30, white,       Element.air,         8, "blasts");
+  bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, "freezes");
+  bottled("Fire",      11,   70, red,         Element.fire,       22, "burns");
+  bottled("Water",     12,  110, blue,        Element.water,      26, "drowns");
+  bottled("Earth",     13,  150, brown,       Element.earth,      28, "crushes");
+  bottled("Lightning", 16,  200, lightPurple, Element.lightning,  34, "shocks");
+  bottled("Acid",      18,  250, lightGreen,  Element.acid,       38, "corrodes");
+  bottled("Poison",    22,  330, darkGreen,   Element.poison,     42, "infects");
+  bottled("Shadows",   28,  440, black,       Element.dark,       48, "torments",
       "the darkness");
-  bottled("Radiance",  34,  600, white,       Element.light,      52, 11, "sears");
-  bottled("Spirits",   40, 1000, darkGray,    Element.spirit,     58, 12, "haunts");
+  bottled("Radiance",  34,  600, white,       Element.light,      52, "sears");
+  bottled("Spirits",   40, 1000, darkGray,    Element.spirit,     58, "haunts");
 }
 
 void scrolls() {
@@ -395,12 +395,12 @@ void resistSalve(String name, int level, int price, appearance,
 }
 
 void bottled(String name, int level, int price, appearance, Element element,
-    int damage, int range, String verb, [String noun]) {
+    int damage, String verb, [String noun]) {
   if (noun == null) noun = "the ${name.toLowerCase()}";
 
   item("Bottled $name", level, appearance, price: price,
       use: () => new RingSelfAction(
-          new RangedAttack(noun, verb, damage, element, range)));
+          new RangedAttack(noun, verb, damage, element, 6)));
 }
 
 void scroll(String name, int level, int price, appearance, ItemUse use) {
