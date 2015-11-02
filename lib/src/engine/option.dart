@@ -6,13 +6,13 @@ import 'element.dart';
 /// massively affect all aspects of gameplay.
 class Option {
   /// The max health of a new hero.
-  static final heroHealthStart = 24;
+  static final heroHealthStart = 40;
 
   /// How much max health is increased when the hero levels up.
-  static final heroHealthGain = 8;
+  static final heroHealthGain = 12;
 
   /// How much damage an unarmed hero does.
-  static final heroPunchDamage = 3;
+  static final heroPunchDamage = 5;
 
   /// The highest level the hero can reach.
   static final heroLevelMax = 50;

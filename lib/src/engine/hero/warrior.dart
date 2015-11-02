@@ -89,7 +89,7 @@ class Warrior extends HeroClass {
 
   void tookDamage(Action action, Actor attacker, int damage) {
     // Getting hit increases fury.
-    hero.charge = math.min(100, hero.charge + 400 * damage / hero.health.max);
+    hero.charge = math.min(100, hero.charge + 200 * damage / hero.health.max);
 
     // Indirect damage doesn't increase toughness.
     if (attacker == null) return;
@@ -133,7 +133,7 @@ class Warrior extends HeroClass {
 
   void finishedTurn(Action action) {
     // Fury decays over time.
-    hero.charge = math.max(0, hero.charge - 5);
+    hero.charge = (hero.charge * 0.9).floor();
   }
 }
 

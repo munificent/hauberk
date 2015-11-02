@@ -12,12 +12,12 @@ abstract class FuryAction extends Action {
   bool _madeContact = false;
 
   ActionResult onPerform() {
-    if (hero.charge < 20) return fail("You are not furious enough yet.");
+    if (hero.charge < 1) return fail("You are not furious enough yet.");
 
     var result = performAttack();
 
     // Drain fury when the attack is done if it hit something.
-    if (result.done && _madeContact) hero.charge /= 2;
+    if (result.done && _madeContact) hero.charge ~/= 2;
     return result;
   }
 
@@ -32,17 +32,11 @@ abstract class FuryAction extends Action {
 
     // The more furious the warrior is, the stronger the attack will be (and the
     // more fury that will be spent). The attack multiplier increases more
-    // quickly that the fury cost so that the player is rewarded for building
-    // up fury and doing a single stronger attack. The ramp works like:
-    //
-    //     Fury  Multiplier
-    //       20  1.0
-    //       40  3.0
-    //       60  5.0
-    //       80  7.0
-    //      100  9.0
-    var multiplier = (hero.charge - 10) / 10;
-    attack.multiplyDamage(multiplier);
+    // quickly than the fury cost so that the player is rewarded for building
+    // up fury and doing a single stronger attack.
+    var multiplier = 1.0 + hero.charge / 20;
+    attack = attack.multiplyDamage(multiplier);
+
     if (attack.perform(this, actor, defender)) _madeContact = true;
   }
 }
