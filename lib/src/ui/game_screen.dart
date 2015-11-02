@@ -333,7 +333,7 @@ class GameScreen extends Screen {
     dazzleGlyph(Glyph glyph) {
       if (!hero.dazzle.isActive) return glyph;
 
-      var chance = 10 + math.min(80, hero.dazzle.duration * 10);
+      var chance = math.min(90, hero.dazzle.duration * 8);
       if (rng.range(100) > chance) return glyph;
 
       var colors = [Color.aqua, Color.blue, Color.purple, Color.red,
