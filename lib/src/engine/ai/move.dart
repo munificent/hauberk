@@ -222,6 +222,10 @@ class SpawnMove extends Move {
   num get experience => 6.0;
 
   bool shouldUse(Monster monster) {
+    // Don't breed offscreen since it can end up filling the room before the
+    // hero gets there.
+    if (!monster.isVisible) return false;
+
     // Look for an open adjacent tile.
     for (var dir in Direction.ALL) {
       var here = monster.pos + dir;
