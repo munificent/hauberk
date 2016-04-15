@@ -362,7 +362,7 @@ class RunBehavior extends Behavior {
         direction.rotateRight45,
       ];
 
-      if (Direction.CARDINAL.contains(direction)) {
+      if (Direction.cardinal.contains(direction)) {
         dirs.add(direction.rotateLeft90);
         dirs.add(direction.rotateRight90);
       }

@@ -21,12 +21,12 @@ class PathResult {
 class AStar {
   /// Tries to find a path from [start] to [end], searching up to [maxLength]
   /// steps from [start]. Returns the [Direction] of the first step from [start]
-  /// along that path (or [Direction.NONE] if it determines there is no path
+  /// along that path (or [Direction.none] if it determines there is no path
   /// possible.
   static Direction findDirection(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
     var path = _findPath(stage, start, end, maxLength, canOpenDoors);
-    if (path == null) return Direction.NONE;
+    if (path == null) return Direction.none;
 
     while (path.parent != null && path.parent.parent != null) {
       path = path.parent;
@@ -38,7 +38,7 @@ class AStar {
   static PathResult findPath(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
     var path = _findPath(stage, start, end, maxLength, canOpenDoors);
-    if (path == null) return new PathResult(Direction.NONE, 0);
+    if (path == null) return new PathResult(Direction.none, 0);
 
     var length = 1;
     while (path.parent != null && path.parent.parent != null) {
@@ -52,7 +52,7 @@ class AStar {
   static _PathNode _findPath(Stage stage, Vec start, Vec end, int maxLength,
       bool canOpenDoors) {
     // TODO: More optimal data structure.
-    var startPath = new _PathNode(null, Direction.NONE,
+    var startPath = new _PathNode(null, Direction.none,
         start, 0, heuristic(start, end));
     var open = <_PathNode>[startPath];
     var closed = new Set<Vec>();
@@ -69,7 +69,7 @@ class AStar {
 
       closed.add(current.pos);
 
-      for (var dir in Direction.ALL) {
+      for (var dir in Direction.all) {
         var neighbor = current.pos + dir;
 
         // Skip impassable tiles.

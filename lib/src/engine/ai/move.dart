@@ -227,7 +227,7 @@ class SpawnMove extends Move {
     if (!monster.isVisible) return false;
 
     // Look for an open adjacent tile.
-    for (var dir in Direction.ALL) {
+    for (var dir in Direction.all) {
       var here = monster.pos + dir;
       if (monster.game.stage[here].isPassable &&
           monster.game.stage.actorAt(here) == null) return true;
@@ -238,7 +238,7 @@ class SpawnMove extends Move {
 
   Action onGetAction(Monster monster) {
     // Pick an open adjacent tile.
-    var dirs = Direction.ALL.where((dir) {
+    var dirs = Direction.all.where((dir) {
       var here = monster.pos + dir;
       return monster.game.stage[here].isPassable &&
           monster.game.stage.actorAt(here) == null;

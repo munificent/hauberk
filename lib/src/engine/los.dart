@@ -33,8 +33,8 @@ class LosIterator implements Iterator<Vec> {
     var delta = end - start;
 
     // Figure which octant the line is in and increment appropriately.
-    primaryIncrement = new Vec(sign(delta.x), 0);
-    secondaryIncrement = new Vec(0, sign(delta.y));
+    primaryIncrement = new Vec(delta.x.sign, 0);
+    secondaryIncrement = new Vec(0, delta.y.sign);
 
     // Discard the signs now that they are accounted for.
     delta = delta.abs();

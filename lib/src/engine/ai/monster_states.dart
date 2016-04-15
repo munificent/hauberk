@@ -119,9 +119,9 @@ abstract class MonsterState {
     if (rng.range(chance) >= meander) return dir;
 
     var dirs;
-    if (dir == Direction.NONE) {
+    if (dir == Direction.none) {
       // Since the monster has no direction, any is equally valid.
-      dirs = Direction.ALL;
+      dirs = Direction.all;
     } else {
       dirs = [];
 
@@ -262,7 +262,7 @@ class AwakeState extends MonsterState {
     if (breed.flags.contains("immobile")) {
       var toHero = game.hero.pos - pos;
       if (toHero.kingLength == 1) return new WalkAction(toHero);
-      return new WalkAction(Direction.NONE);
+      return new WalkAction(Direction.none);
     }
 
     // The monster doesn't have a move to use, so they are going to attack.
@@ -341,14 +341,14 @@ class AwakeState extends MonsterState {
       walkDir = rangedDir != null ? rangedDir : meleeDir;
     }
 
-    if (walkDir == null) walkDir = Direction.NONE;
+    if (walkDir == null) walkDir = Direction.none;
 
     return new WalkAction(_meander(walkDir));
   }
 
   /// Tries to find a path a desirable position for using a ranged [Move].
   ///
-  /// Returns the [Direction] to take along the path. Returns [Direction.NONE]
+  /// Returns the [Direction] to take along the path. Returns [Direction.none]
   /// if the monster's current position is a good ranged spot. Returns `null`
   /// if no good ranged position could be found.
   Direction _findRangedPath() {
@@ -387,13 +387,13 @@ class AwakeState extends MonsterState {
     var bestDistance = 0;
 
     if (isValidRangedPosition(pos)) {
-      best = Direction.NONE;
+      best = Direction.none;
       // TODO: Need to decide whether ranged attacks use kingLength or Cartesian
       // and then apply consistently.
       bestDistance = (pos - game.hero.pos).lengthSquared;
     }
 
-    for (var dir in Direction.ALL) {
+    for (var dir in Direction.all) {
       var pos = monster.pos + dir;
       if (!monster.canOccupy(pos)) continue;
       if (!isValidRangedPosition(pos)) continue;
@@ -409,7 +409,7 @@ class AwakeState extends MonsterState {
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
     var dir = flow.directionToNearestWhere(isValidRangedPosition);
-    if (dir != Direction.NONE) {
+    if (dir != Direction.none) {
       Debug.logMonster(monster, "Ranged position $dir");
       return dir;
     }
@@ -459,14 +459,14 @@ class AfraidState extends MonsterState {
         canOpenDoors: monster.canOpenDoors);
     var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
 
-    if (dir != Direction.NONE) {
+    if (dir != Direction.none) {
       Debug.logMonster(monster, "Fleeing $dir to darkness");
       return new WalkAction(_meander(dir));
     }
 
     // If we couldn't find a hidden tile, at least try to get some distance.
     var heroDistance = (pos - game.hero.pos).kingLength;
-    var farther = Direction.ALL.where((dir) {
+    var farther = Direction.all.where((dir) {
       var here = pos + dir;
       if (!monster.canOccupy(here)) return false;
       if (game.stage.actorAt(here) != null) return false;

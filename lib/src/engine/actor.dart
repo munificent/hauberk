@@ -228,7 +228,7 @@ class Stat {
 
   int get current => _current;
   void set current(int value) {
-    _current = clamp(0, value, _max);
+    _current = value.clamp(0, _max);
   }
 
   int get max => _max;
@@ -236,7 +236,7 @@ class Stat {
     _max = value;
 
     // Make sure current is still in bounds.
-    _current = clamp(0, _current, _max);
+    _current = _current.clamp(0, _max);
   }
 
   bool get isMax => _current == _max;

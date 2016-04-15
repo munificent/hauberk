@@ -143,7 +143,7 @@ class Attack {
 
       // There's always at least a 5% chance of missing and a 5% chance of
       // hitting, regardless of all modifiers.
-      strike = clamp(5, strike, 95);
+      strike = strike.clamp(5, 95);
 
       if (strike < dodge) {
         action.log('{1} miss[es] {2}.', attackNoun, defender);

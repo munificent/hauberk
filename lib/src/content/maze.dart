@@ -41,10 +41,10 @@ class Maze {
       // See which adjacent cells are open.
       final unmadeCells = <Direction>[];
 
-      if (canCarve(cell, Direction.N)) unmadeCells.add(Direction.N);
-      if (canCarve(cell, Direction.S)) unmadeCells.add(Direction.S);
-      if (canCarve(cell, Direction.E)) unmadeCells.add(Direction.E);
-      if (canCarve(cell, Direction.W)) unmadeCells.add(Direction.W);
+      if (canCarve(cell, Direction.n)) unmadeCells.add(Direction.n);
+      if (canCarve(cell, Direction.s)) unmadeCells.add(Direction.s);
+      if (canCarve(cell, Direction.e)) unmadeCells.add(Direction.e);
+      if (canCarve(cell, Direction.w)) unmadeCells.add(Direction.w);
 
       if (unmadeCells.length > 0) {
         final direction = rng.item(unmadeCells);
@@ -63,14 +63,14 @@ class Maze {
     if (chance > 0) {
       for (var cell in new Rect(0, 0, bounds.width - 1, bounds.height - 1)) {
         if (rng.oneIn(chance)) {
-          if (isOpen(cell) && isOpen(cell + Direction.E)) {
-            carve(cell, Direction.E);
+          if (isOpen(cell) && isOpen(cell + Direction.e)) {
+            carve(cell, Direction.e);
           }
         }
 
         if (rng.OneIn(chance)) {
-          if (isOpen(cell) && isOpen(cell + Direction.S)) {
-            carve(cell, Direction.S);
+          if (isOpen(cell) && isOpen(cell + Direction.s)) {
+            carve(cell, Direction.s);
           }
         }
       }
@@ -147,10 +147,10 @@ class Maze {
 
     // Cut the wall.
     switch (direction) {
-      case Direction.N: _cells[pos].isTopWallOpen = true; break;
-      case Direction.S: _cells[pos + direction].isTopWallOpen = true; break;
-      case Direction.W: _cells[pos].isLeftWallOpen = true; break;
-      case Direction.E: _cells[pos + direction].isLeftWallOpen = true; break;
+      case Direction.n: _cells[pos].isTopWallOpen = true; break;
+      case Direction.s: _cells[pos + direction].isTopWallOpen = true; break;
+      case Direction.w: _cells[pos].isLeftWallOpen = true; break;
+      case Direction.e: _cells[pos + direction].isLeftWallOpen = true; break;
       default: assert(false);
     }
   }

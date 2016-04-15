@@ -88,33 +88,33 @@ class GameScreen extends Screen {
       case Input.closeDoor: closeDoor(); break;
       case Input.pickUp: pickUp(); break;
 
-      case Input.nw: action = new WalkAction(Direction.NW); break;
-      case Input.n: action = new WalkAction(Direction.N); break;
-      case Input.ne: action = new WalkAction(Direction.NE); break;
-      case Input.w: action = new WalkAction(Direction.W); break;
-      case Input.ok: action = new WalkAction(Direction.NONE); break;
-      case Input.e: action = new WalkAction(Direction.E); break;
-      case Input.sw: action = new WalkAction(Direction.SW); break;
-      case Input.s: action = new WalkAction(Direction.S); break;
-      case Input.se: action = new WalkAction(Direction.SE); break;
+      case Input.nw: action = new WalkAction(Direction.nw); break;
+      case Input.n: action = new WalkAction(Direction.n); break;
+      case Input.ne: action = new WalkAction(Direction.ne); break;
+      case Input.w: action = new WalkAction(Direction.w); break;
+      case Input.ok: action = new WalkAction(Direction.none); break;
+      case Input.e: action = new WalkAction(Direction.e); break;
+      case Input.sw: action = new WalkAction(Direction.sw); break;
+      case Input.s: action = new WalkAction(Direction.s); break;
+      case Input.se: action = new WalkAction(Direction.se); break;
 
-      case Input.runNW: game.hero.run(Direction.NW); break;
-      case Input.runN: game.hero.run(Direction.N); break;
-      case Input.runNE: game.hero.run(Direction.NE); break;
-      case Input.runW: game.hero.run(Direction.W); break;
-      case Input.runE: game.hero.run(Direction.E); break;
-      case Input.runSW: game.hero.run(Direction.SW); break;
-      case Input.runS: game.hero.run(Direction.S); break;
-      case Input.runSE: game.hero.run(Direction.SE); break;
+      case Input.runNW: game.hero.run(Direction.nw); break;
+      case Input.runN: game.hero.run(Direction.n); break;
+      case Input.runNE: game.hero.run(Direction.ne); break;
+      case Input.runW: game.hero.run(Direction.w); break;
+      case Input.runE: game.hero.run(Direction.e); break;
+      case Input.runSW: game.hero.run(Direction.sw); break;
+      case Input.runS: game.hero.run(Direction.s); break;
+      case Input.runSE: game.hero.run(Direction.se); break;
 
-      case Input.fireNW: _fireTowards(Direction.NW); break;
-      case Input.fireN: _fireTowards(Direction.N); break;
-      case Input.fireNE: _fireTowards(Direction.NE); break;
-      case Input.fireW: _fireTowards(Direction.W); break;
-      case Input.fireE: _fireTowards(Direction.E); break;
-      case Input.fireSW: _fireTowards(Direction.SW); break;
-      case Input.fireS: _fireTowards(Direction.S); break;
-      case Input.fireSE: _fireTowards(Direction.SE); break;
+      case Input.fireNW: _fireTowards(Direction.nw); break;
+      case Input.fireN: _fireTowards(Direction.n); break;
+      case Input.fireNE: _fireTowards(Direction.ne); break;
+      case Input.fireW: _fireTowards(Direction.w); break;
+      case Input.fireE: _fireTowards(Direction.e); break;
+      case Input.fireSW: _fireTowards(Direction.sw); break;
+      case Input.fireS: _fireTowards(Direction.s); break;
+      case Input.fireSE: _fireTowards(Direction.se); break;
 
       case Input.fire:
         // TODO: When there is more than one usable command, bring up the
@@ -158,7 +158,7 @@ class GameScreen extends Screen {
   void closeDoor() {
     // See how many adjacent open doors there are.
     final doors = [];
-    for (final direction in Direction.ALL) {
+    for (final direction in Direction.all) {
       final pos = game.hero.pos + direction;
       if (game.stage[pos].type.closesTo != null) {
         doors.add(pos);
@@ -248,7 +248,7 @@ class GameScreen extends Screen {
       } else if (result is DirectionCommand) {
         ui.push(new DirectionDialog(this, game));
       }
-    } else if (popped is DirectionDialog && result != Direction.NONE) {
+    } else if (popped is DirectionDialog && result != Direction.none) {
       _fireTowards(result);
     }
   }
@@ -587,7 +587,7 @@ class GameScreen extends Screen {
     var warrior = hero.heroClass as Warrior;
 
     terminal.writeAt(0, 8, "Fury", Color.gray);
-    _drawMeter(terminal, 8, hero.charge, 100, Color.orange, Color.darkOrange);
+    _drawMeter(terminal, 8, hero.charge.toInt(), 100, Color.orange, Color.darkOrange);
 
     var y = 9;
 

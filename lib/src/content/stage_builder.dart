@@ -48,7 +48,7 @@ abstract class StageBuilder {
       // if we are directly next to a floor.
       var floors = 0;
 
-      for (var dir in Direction.ALL) {
+      for (var dir in Direction.all) {
         var tile = getTile(pos + dir);
         if (tile == floor) floors++;
       }

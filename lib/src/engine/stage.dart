@@ -66,7 +66,7 @@ class Stage {
         _numExplorable++;
       } else {
         // See if it's next to an traversable one.
-        for (var dir in Direction.ALL) {
+        for (var dir in Direction.all) {
           if (this[pos + dir].isTraversable) {
             _numExplorable++;
             break;
@@ -206,7 +206,7 @@ class Stage {
       // Find every open tile that's neighboring a monster in the group.
       final open = [];
       for (final monster in monsters) {
-        for (final dir in Direction.ALL) {
+        for (final dir in Direction.all) {
           final neighbor = monster.pos + dir;
           if (this[neighbor].isPassable && (actorAt(neighbor) == null)) {
             open.add(neighbor);

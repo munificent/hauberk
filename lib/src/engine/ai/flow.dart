@@ -48,8 +48,8 @@ class Flow {
   Flow(this._stage, this._start, {int maxDistance, bool canOpenDoors,
         bool ignoreActors})
       : _maxDistance = maxDistance,
-        _canOpenDoors = canOpenDoors != null ? canOpenDoors : false,
-        _ignoreActors = ignoreActors {
+        _canOpenDoors = canOpenDoors ?? false,
+        _ignoreActors = ignoreActors ?? false {
     var width;
     var height;
 
@@ -104,17 +104,17 @@ class Flow {
   /// Chooses a random direction from [start] that gets closer to [pos].
   Direction directionTo(Vec pos) {
     var directions = _directionsTo([pos - _offset]);
-    if (directions.isEmpty) return Direction.NONE;
+    if (directions.isEmpty) return Direction.none;
     return rng.item(directions);
   }
 
   /// Chooses a random direction from [start] that gets closer to one of the
   /// nearest positions matching [predicate].
   ///
-  /// Returns [Direction.NONE] if no matching positions were found.
+  /// Returns [Direction.none] if no matching positions were found.
   Direction directionToNearestWhere(bool predicate(Vec pos)) {
     var directions = directionsToNearestWhere(predicate);
-    if (directions.isEmpty) return Direction.NONE;
+    if (directions.isEmpty) return Direction.none;
     return rng.item(directions);
   }
 
@@ -182,7 +182,7 @@ class Flow {
       if (walked.contains(pos)) return;
       walked.add(pos);
 
-      for (var dir in Direction.ALL) {
+      for (var dir in Direction.all) {
         var here = pos + dir;
         if (!_distances.bounds.contains(here)) continue;
 
@@ -210,7 +210,7 @@ class Flow {
     var distance = _distances[start];
 
     // Update the neighbor's distances.
-    for (var dir in Direction.ALL) {
+    for (var dir in Direction.all) {
       var here = start + dir;
 
       if (!_distances.bounds.contains(here)) continue;

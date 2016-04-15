@@ -15,7 +15,7 @@ class WalkAction extends Action {
 
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
-    if (Vec.ZERO == offset) {
+    if (Vec.zero == offset) {
       return alternate(new RestAction());
     }
 

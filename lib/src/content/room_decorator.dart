@@ -80,25 +80,25 @@ abstract class RoomDecorator implements StageBuilder {
     // wider side.
     var directions;
     if ((width == 3) && (height > 3)) {
-      directions = [Direction.E, Direction.W];
+      directions = [Direction.e, Direction.w];
     } else if ((height == 3) && (width > 3)) {
-      directions = [Direction.N, Direction.S];
+      directions = [Direction.n, Direction.s];
     } else {
-      directions = [Direction.N, Direction.S, Direction.E, Direction.W];
+      directions = [Direction.n, Direction.s, Direction.e, Direction.w];
     }
 
     var door;
     switch (rng.item(directions)) {
-      case Direction.N:
+      case Direction.n:
         door = new Vec(rng.range(x + 1, x + width - 1), y);
         break;
-      case Direction.S:
+      case Direction.s:
         door = new Vec(rng.range(x + 1, x + width - 1), y + height - 1);
         break;
-      case Direction.W:
+      case Direction.w:
         door = new Vec(x, rng.range(y + 1, y + height - 1));
         break;
-      case Direction.E:
+      case Direction.e:
         door = new Vec(x + width - 1, rng.range(y + 1, y + height - 1));
         break;
     }
@@ -114,73 +114,73 @@ abstract class RoomDecorator implements StageBuilder {
     var modified = false;
 
     // Try the top-left corner.
-    if (getTile(room.topLeft + Direction.W) == Tiles.wall &&
-        getTile(room.topLeft + Direction.N) == Tiles.wall) {
+    if (getTile(room.topLeft + Direction.w) == Tiles.wall &&
+        getTile(room.topLeft + Direction.n) == Tiles.wall) {
       setTile(room.topLeft, Tiles.wall);
       modified = true;
 
       if (room.height > 5 &&
-          getTile(room.topLeft + Direction.SW) == Tiles.wall) {
-        setTile(room.topLeft + Direction.S, Tiles.wall);
+          getTile(room.topLeft + Direction.sw) == Tiles.wall) {
+        setTile(room.topLeft + Direction.s, Tiles.wall);
       }
 
       if (room.width > 5 &&
-          getTile(room.topLeft + Direction.NE) == Tiles.wall) {
-        setTile(room.topLeft + Direction.E, Tiles.wall);
+          getTile(room.topLeft + Direction.ne) == Tiles.wall) {
+        setTile(room.topLeft + Direction.e, Tiles.wall);
       }
     }
 
     // Try the top-right corner.
-    var topRight = room.topRight + Direction.W;
-    if (getTile(topRight + Direction.E) == Tiles.wall &&
-        getTile(topRight + Direction.N) == Tiles.wall) {
+    var topRight = room.topRight + Direction.w;
+    if (getTile(topRight + Direction.e) == Tiles.wall &&
+        getTile(topRight + Direction.n) == Tiles.wall) {
       setTile(topRight, Tiles.wall);
       modified = true;
 
       if (room.height > 5 &&
-          getTile(topRight + Direction.SE) == Tiles.wall) {
-        setTile(topRight + Direction.S, Tiles.wall);
+          getTile(topRight + Direction.se) == Tiles.wall) {
+        setTile(topRight + Direction.s, Tiles.wall);
       }
 
       if (room.width > 5 &&
-          getTile(topRight + Direction.NW) == Tiles.wall) {
-        setTile(topRight + Direction.W, Tiles.wall);
+          getTile(topRight + Direction.nw) == Tiles.wall) {
+        setTile(topRight + Direction.w, Tiles.wall);
       }
     }
 
     // Try the bottom-left corner.
-    var bottomLeft = room.bottomLeft + Direction.N;
-    if (getTile(bottomLeft + Direction.W) == Tiles.wall &&
-        getTile(bottomLeft + Direction.S) == Tiles.wall) {
+    var bottomLeft = room.bottomLeft + Direction.n;
+    if (getTile(bottomLeft + Direction.w) == Tiles.wall &&
+        getTile(bottomLeft + Direction.s) == Tiles.wall) {
       setTile(bottomLeft, Tiles.wall);
       modified = true;
 
       if (room.height > 5 &&
-          getTile(bottomLeft + Direction.NW) == Tiles.wall) {
-        setTile(bottomLeft + Direction.N, Tiles.wall);
+          getTile(bottomLeft + Direction.nw) == Tiles.wall) {
+        setTile(bottomLeft + Direction.n, Tiles.wall);
       }
 
       if (room.width > 5 &&
-          getTile(bottomLeft + Direction.SE) == Tiles.wall) {
-        setTile(bottomLeft + Direction.E, Tiles.wall);
+          getTile(bottomLeft + Direction.se) == Tiles.wall) {
+        setTile(bottomLeft + Direction.e, Tiles.wall);
       }
     }
 
     // Try the bottom-right corner.
-    var bottomRight = room.bottomRight + Direction.NW;
-    if (getTile(bottomRight + Direction.E) == Tiles.wall &&
-        getTile(bottomRight + Direction.S) == Tiles.wall) {
+    var bottomRight = room.bottomRight + Direction.nw;
+    if (getTile(bottomRight + Direction.e) == Tiles.wall &&
+        getTile(bottomRight + Direction.s) == Tiles.wall) {
       setTile(bottomRight, Tiles.wall);
       modified = true;
 
       if (room.height > 5 &&
-          getTile(bottomRight + Direction.SW) == Tiles.wall) {
-        setTile(bottomRight + Direction.S, Tiles.wall);
+          getTile(bottomRight + Direction.sw) == Tiles.wall) {
+        setTile(bottomRight + Direction.s, Tiles.wall);
       }
 
       if (room.width > 5 &&
-          getTile(bottomRight + Direction.NE) == Tiles.wall) {
-        setTile(bottomRight + Direction.E, Tiles.wall);
+          getTile(bottomRight + Direction.ne) == Tiles.wall) {
+        setTile(bottomRight + Direction.e, Tiles.wall);
       }
     }
 

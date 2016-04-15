@@ -8,14 +8,14 @@ import 'package:piecemeal/piecemeal.dart';
 import '../engine.dart';
 
 final _directionLines = {
-  Direction.N: "|",
-  Direction.NE: "/",
-  Direction.E: "-",
-  Direction.SE: r"\",
-  Direction.S: "|",
-  Direction.SW: "/",
-  Direction.W: "-",
-  Direction.NW: r"\"
+  Direction.n: "|",
+  Direction.ne: "/",
+  Direction.e: "-",
+  Direction.se: r"\",
+  Direction.s: "|",
+  Direction.sw: "/",
+  Direction.w: "-",
+  Direction.nw: r"\"
 };
 
 /// Adds an [Effect]s that should be displayed when [event] happens.
@@ -362,7 +362,7 @@ class TeleportEffect implements Effect {
     y += v;
 
     age++;
-    return (new Vec(x, y) - target) > 1;
+    return (new Vec(x.toInt(), y.toInt()) - target) > 1;
   }
 
   void render(Game game, DrawGlyph drawGlyph) {

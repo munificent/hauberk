@@ -13,7 +13,7 @@ class Item extends Thing implements Comparable {
   final Affix prefix;
   final Affix suffix;
 
-  Item(this.type, [this.prefix, this.suffix]) : super(Vec.ZERO);
+  Item(this.type, [this.prefix, this.suffix]) : super(Vec.zero);
 
   get appearance => type.appearance;
 

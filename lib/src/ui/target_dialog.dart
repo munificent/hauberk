@@ -68,14 +68,14 @@ class TargetDialog extends Screen {
 
       case Input.cancel: ui.pop(); break;
 
-      case Input.nw: _changeTarget(Direction.NW); break;
-      case Input.n: _changeTarget(Direction.N); break;
-      case Input.ne: _changeTarget(Direction.NE); break;
-      case Input.w: _changeTarget(Direction.W); break;
-      case Input.e: _changeTarget(Direction.E); break;
-      case Input.sw: _changeTarget(Direction.SW); break;
-      case Input.s: _changeTarget(Direction.S); break;
-      case Input.se: _changeTarget(Direction.SE); break;
+      case Input.nw: _changeTarget(Direction.nw); break;
+      case Input.n: _changeTarget(Direction.n); break;
+      case Input.ne: _changeTarget(Direction.ne); break;
+      case Input.w: _changeTarget(Direction.w); break;
+      case Input.e: _changeTarget(Direction.e); break;
+      case Input.sw: _changeTarget(Direction.sw); break;
+      case Input.s: _changeTarget(Direction.s); break;
+      case Input.se: _changeTarget(Direction.se); break;
     }
 
     return true;

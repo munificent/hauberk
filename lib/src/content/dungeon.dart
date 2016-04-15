@@ -97,7 +97,7 @@ abstract class Dungeon extends StageBuilder {
       // See which adjacent cells are open.
       var unmadeCells = <Direction>[];
 
-      for (var dir in Direction.CARDINAL) {
+      for (var dir in Direction.cardinal) {
         if (_canCarve(cell, dir)) unmadeCells.add(dir);
       }
 
@@ -176,7 +176,7 @@ abstract class Dungeon extends StageBuilder {
       if (getTile(pos) != Tiles.wall) continue;
 
       var regions = new Set<int>();
-      for (var dir in Direction.CARDINAL) {
+      for (var dir in Direction.cardinal) {
         var region = _regions[pos + dir];
         if (region != null) regions.add(region);
       }
@@ -262,7 +262,7 @@ abstract class Dungeon extends StageBuilder {
 
         // If it only has one exit, it's a dead end.
         var exits = 0;
-        for (var dir in Direction.CARDINAL) {
+        for (var dir in Direction.cardinal) {
           if (getTile(pos + dir) != Tiles.wall) exits++;
         }
 

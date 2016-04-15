@@ -19,7 +19,7 @@ class DirectionDialog extends Screen {
   int _animateOffset = 0;
 
   /// The selected [Direction].
-  Direction _direction = Direction.NONE;
+  Direction _direction = Direction.none;
 
   bool get isTransparent => true;
 
@@ -28,16 +28,16 @@ class DirectionDialog extends Screen {
   bool handleInput(Input input) {
     switch (input) {
       case Input.ok: ui.pop(_direction); break;
-      case Input.cancel: ui.pop(Direction.NONE); break;
+      case Input.cancel: ui.pop(Direction.none); break;
 
-      case Input.nw: ui.pop(Direction.NW); break;
-      case Input.n: ui.pop(Direction.N); break;
-      case Input.ne: ui.pop(Direction.NE); break;
-      case Input.w: ui.pop(Direction.W); break;
-      case Input.e: ui.pop(Direction.E); break;
-      case Input.sw: ui.pop(Direction.SW); break;
-      case Input.s: ui.pop(Direction.S); break;
-      case Input.se: ui.pop(Direction.SE); break;
+      case Input.nw: ui.pop(Direction.nw); break;
+      case Input.n: ui.pop(Direction.n); break;
+      case Input.ne: ui.pop(Direction.ne); break;
+      case Input.w: ui.pop(Direction.w); break;
+      case Input.e: ui.pop(Direction.e); break;
+      case Input.sw: ui.pop(Direction.sw); break;
+      case Input.s: ui.pop(Direction.s); break;
+      case Input.se: ui.pop(Direction.se); break;
     }
 
     return true;
@@ -59,13 +59,13 @@ class DirectionDialog extends Screen {
     }
 
     // TODO: Let command filter out valid directions.
-    draw(0, Direction.N, "|");
-    draw(1, Direction.NE, "/");
-    draw(2, Direction.E, "-");
-    draw(3, Direction.SE, r"\");
-    draw(4, Direction.S, "|");
-    draw(5, Direction.SW, "/");
-    draw(6, Direction.W, "-");
-    draw(7, Direction.NW, r"\");
+    draw(0, Direction.n, "|");
+    draw(1, Direction.ne, "/");
+    draw(2, Direction.e, "-");
+    draw(3, Direction.se, r"\");
+    draw(4, Direction.s, "|");
+    draw(5, Direction.sw, "/");
+    draw(6, Direction.w, "-");
+    draw(7, Direction.nw, r"\");
   }
 }
