@@ -5,7 +5,7 @@ import 'input.dart';
 
 // TODO: Unify with ConfirmDialog.
 /// Modal dialog for letting the user confirm forfeiting the level.
-class ForfeitDialog extends Screen {
+class ForfeitDialog extends Screen<Input> {
   final Game game;
 
   bool get isTransparent => true;

@@ -9,7 +9,7 @@ import 'input.dart';
 import 'item_screen.dart';
 import 'storage.dart';
 
-class SelectLevelScreen extends Screen {
+class SelectLevelScreen extends Screen<Input> {
   final Content  content;
   final HeroSave save;
   final Storage storage;

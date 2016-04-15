@@ -7,7 +7,7 @@ import 'input.dart';
 
 /// Modal dialog for letting the user select a [Direction] to perform a
 /// [Command] in.
-class DirectionDialog extends Screen {
+class DirectionDialog extends Screen<Input> {
   static const _numFrames = 8;
   static const _ticksPerFrame = 5;
 

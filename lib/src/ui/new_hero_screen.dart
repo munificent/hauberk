@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import 'input.dart';
 import 'select_level_screen.dart';
 import 'storage.dart';
 
@@ -19,7 +20,7 @@ const _defaultNames = const [
   "Gussalen", "Enndolynn", "Krea", "Dimia", "Aleida"
 ];
 
-class NewHeroScreen extends Screen {
+class NewHeroScreen extends Screen<Input> {
   final Content content;
   final Storage storage;
 

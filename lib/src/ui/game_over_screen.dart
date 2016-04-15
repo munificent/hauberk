@@ -3,7 +3,7 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import 'input.dart';
 
-class GameOverScreen extends Screen {
+class GameOverScreen extends Screen<Input> {
   final Log log;
 
   GameOverScreen(this.log);

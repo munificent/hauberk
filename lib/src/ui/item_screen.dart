@@ -7,7 +7,7 @@ import 'item_dialog.dart';
 /// A screen where the hero can manage their items outside of the levels.
 ///
 /// Let's them transfer between their inventory, equipment, crucible, and home.
-class ItemScreen extends Screen {
+class ItemScreen extends Screen<Input> {
   final Content  content;
   final HeroSave save;
 
@@ -360,7 +360,7 @@ class PutMode extends SelectMode {
 
     // Can only put items in the crucible if they fit a recipe.
     if (screen.rightView == View.crucible) {
-      var items = new List.from(screen.rightView.getItems(screen));
+      var items = screen.rightView.getItems(screen).toList();
       items.add(item);
       return screen.content.recipes.any((recipe) => recipe.allows(items));
     }

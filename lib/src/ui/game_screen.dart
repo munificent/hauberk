@@ -14,7 +14,7 @@ import 'item_dialog.dart';
 import 'select_command_dialog.dart';
 import 'target_dialog.dart';
 
-class GameScreen extends Screen {
+class GameScreen extends Screen<Input> {
   final Game game;
 
   final HeroSave _save;

@@ -55,7 +55,7 @@ const _colors = const {
   "Y": Color.yellow
 };
 
-class MainMenuScreen extends Screen {
+class MainMenuScreen extends Screen<Input> {
   final Content content;
   final Storage storage;
   int selectedHero = 0;

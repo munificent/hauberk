@@ -358,7 +358,7 @@ class AwakeState extends MonsterState {
     var flow = new Flow(game.stage, pos, maxDistance: maxRange,
         canOpenDoors: canOpenDoors);
 
-    isValidRangedPosition(pos) {
+    bool isValidRangedPosition(Vec pos) {
       // Ignore tiles that are out of range.
       var toHero = pos - game.hero.pos;
       if (toHero > maxRange) return false;

@@ -5,7 +5,7 @@ import '../engine.dart';
 import 'input.dart';
 
 /// Modal dialog for letting the user select an adjacent open door to close it.
-class CloseDoorDialog extends Screen {
+class CloseDoorDialog extends Screen<Input> {
   final Game game;
 
   bool get isTransparent => true;

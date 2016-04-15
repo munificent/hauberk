@@ -183,10 +183,11 @@ class Hero extends Actor {
     heroClass.tookDamage(action, attacker, damage);
   }
 
-  void onKilled(Action action, Monster defender) {
-    _experienceCents += defender.experienceCents ~/ level;
+  void onKilled(Action action, Actor defender) {
+    var monster = defender as Monster;
+    _experienceCents += monster.experienceCents ~/ level;
     _refreshLevel(log: true);
-    heroClass.killedMonster(action, defender);
+    heroClass.killedMonster(action, monster);
   }
 
   void onDied(Noun attackNoun) {

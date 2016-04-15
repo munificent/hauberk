@@ -12,7 +12,7 @@ const width = 100;
 const height = 40;
 
 final terminals = [];
-UserInterface ui;
+UserInterface<Input> ui;
 
 addTerminal(String name, html.Element element,
     RenderableTerminal terminalCallback(html.Element element)) {
@@ -87,7 +87,7 @@ main() {
 
   html.querySelector("#game").append(terminals[fontIndex][1]);
 
-  ui = new UserInterface(terminals[fontIndex][2]);
+  ui = new UserInterface<Input>(terminals[fontIndex][2]);
 
   // Set up the keyPress.
   ui.keyPress.bind(Input.ok, KeyCode.enter);

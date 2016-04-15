@@ -57,7 +57,7 @@ class Storage {
 
       var experience = hero['experience'];
 
-      var completedLevels = hero['completedLevels'];
+      var completedLevels = hero['completedLevels'] as Map<String, int>;
 
       var gold = hero['gold'];
 
@@ -102,7 +102,7 @@ class Storage {
         fighting: data['fighting'],
         combat: data['combat'],
         toughness: data['toughness'],
-        masteries: data['masteries']);
+        masteries: data['masteries'] as Map<String, int>);
   }
 
   Affix _loadAffix(Map data) {
@@ -183,7 +183,7 @@ class Storage {
   }
 
   Map _saveItem(Item item) {
-    var itemData = {
+    var itemData = <String, dynamic>{
       'type': item.type.name
     };
 
@@ -199,7 +199,7 @@ class Storage {
   }
 
   Map _saveAffix(Affix affix) {
-    var affixData = {
+    var affixData = <String, dynamic>{
       'name': affix.name
     };
 

@@ -7,7 +7,7 @@ import 'target_dialog.dart';
 
 /// Modal dialog for letting the user perform an [Action] on an [Item]
 /// accessible to the [Hero].
-class ItemDialog extends Screen {
+class ItemDialog extends Screen<Input> {
   final GameScreen _gameScreen;
 
   /// The command the player is trying to perform on an item.

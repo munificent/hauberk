@@ -3,7 +3,7 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import 'input.dart';
 
-class SelectCommandDialog extends Screen {
+class SelectCommandDialog extends Screen<Input> {
   final Game _game;
   final List<Command> _commands;
 

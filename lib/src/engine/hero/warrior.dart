@@ -56,7 +56,7 @@ class Warrior extends HeroClass {
   }
 
   Warrior clone() {
-    var masteryCounts = {};
+    var masteryCounts = <String, int>{};
     masteries.forEach((category, stat) {
       masteryCounts[category] = stat.count;
     });

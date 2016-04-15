@@ -3,7 +3,7 @@ import 'package:malison/malison.dart';
 import 'input.dart';
 
 /// Modal dialog for letting the user confirm an action.
-class ConfirmDialog extends Screen {
+class ConfirmDialog extends Screen<Input> {
   final String message;
   final result;
 
