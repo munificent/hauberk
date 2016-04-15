@@ -1,5 +1,3 @@
-library hauberk.engine.hero.hero_class;
-
 import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';

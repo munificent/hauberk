@@ -1,5 +1,3 @@
-library hauberk.engine.action.detection;
-
 import 'action.dart';
 import '../game.dart';
 

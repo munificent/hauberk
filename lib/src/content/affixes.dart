@@ -1,5 +1,3 @@
-library hauberk.content.affixes;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';

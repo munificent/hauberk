@@ -1,5 +1,3 @@
-library hauberk.engine.ai.monster_states;
-
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';

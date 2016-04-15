@@ -1,5 +1,3 @@
-library hauberk.ui.effect;
-
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';

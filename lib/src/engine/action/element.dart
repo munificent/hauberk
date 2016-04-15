@@ -1,5 +1,3 @@
-library hauberk.engine.action.element;
-
 import 'action.dart';
 
 /// These actions are side effects from taking elemental damage.

@@ -1,5 +1,3 @@
-library hauberk.engine.actor;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'action/action.dart';

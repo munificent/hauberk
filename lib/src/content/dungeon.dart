@@ -1,5 +1,3 @@
-library hauberk.content.maze_dungeon;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';

@@ -1,5 +1,3 @@
-library hauberk.ui.game_screen;
-
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';

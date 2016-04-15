@@ -1,5 +1,3 @@
-library hauberk.content.debug_area;
-
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 

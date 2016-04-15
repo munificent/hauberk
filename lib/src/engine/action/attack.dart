@@ -1,5 +1,3 @@
-library hauberk.engine.action.attack;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';

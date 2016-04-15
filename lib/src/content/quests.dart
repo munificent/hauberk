@@ -1,5 +1,3 @@
-library hauberk.content.quests;
-
 import '../engine.dart';
 
 /// Builds a quest for killing a certain number of a certain [Monster].

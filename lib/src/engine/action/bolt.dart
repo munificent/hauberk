@@ -1,5 +1,3 @@
-library hauberk.engine.action.bolt;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';

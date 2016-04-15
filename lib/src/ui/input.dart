@@ -1,5 +1,3 @@
-library hauberk.ui.input;
-
 /// Enum class defining the high-level inputs from the user.
 ///
 /// Physical keys on the keyboard are mapped to these, which the user interface

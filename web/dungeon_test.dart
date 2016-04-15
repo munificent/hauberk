@@ -1,5 +1,3 @@
-library hauberk.web.dungeon_test;
-
 import 'dart:html' as html;
 
 import 'package:piecemeal/piecemeal.dart';

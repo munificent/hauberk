@@ -1,5 +1,3 @@
-library hauberk.content.builder;
-
 import 'package:malison/malison.dart';
 
 import '../engine.dart';

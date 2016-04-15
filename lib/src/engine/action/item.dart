@@ -1,5 +1,3 @@
-library hauberk.engine.action.item;
-
 import 'action.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';

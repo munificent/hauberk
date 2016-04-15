@@ -1,5 +1,3 @@
-library hauberk.engine.action.toss;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../actor.dart';

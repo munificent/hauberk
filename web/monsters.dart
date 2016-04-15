@@ -1,5 +1,3 @@
-library hauberk.web.monsters;
-
 import 'dart:html' as html;
 
 import 'package:malison/malison.dart';

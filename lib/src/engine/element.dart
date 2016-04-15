@@ -1,5 +1,3 @@
-library hauberk.engine.element;
-
 class Element {
   static const all = const [
     none,

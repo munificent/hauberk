@@ -1,5 +1,3 @@
-library hauberk.engine.a_star;
-
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';

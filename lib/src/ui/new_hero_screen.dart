@@ -1,5 +1,3 @@
-library hauberk.ui.new_hero_screen;
-
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 

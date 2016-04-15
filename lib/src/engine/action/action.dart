@@ -1,5 +1,3 @@
-library hauberk.engine.action.action;
-
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';

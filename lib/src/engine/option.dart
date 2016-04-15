@@ -1,5 +1,3 @@
-library hauberk.engine.option;
-
 import 'element.dart';
 
 /// This contains all of the tunable game engine parameters. Tweaking these can

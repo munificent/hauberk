@@ -1,5 +1,3 @@
-library hauberk.engine.action.heal;
-
 import 'action.dart';
 import '../game.dart';
 

@@ -1,5 +1,3 @@
-library hauberk.engine.log;
-
 import 'dart:collection';
 
 /// The message log.

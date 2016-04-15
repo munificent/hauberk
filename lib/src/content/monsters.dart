@@ -1,5 +1,3 @@
-library hauberk.content.monsters;
-
 import 'package:malison/malison.dart';
 
 import '../engine.dart';

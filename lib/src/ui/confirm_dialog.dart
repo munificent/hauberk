@@ -1,5 +1,3 @@
-library hauberk.ui.confirm_dialog;
-
 import 'package:malison/malison.dart';
 
 import 'input.dart';

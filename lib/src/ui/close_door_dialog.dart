@@ -1,5 +1,3 @@
-library hauberk.ui.close_door_dialog;
-
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 

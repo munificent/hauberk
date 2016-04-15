@@ -1,5 +1,3 @@
-library hauberk.engine.command.archery;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';

@@ -1,5 +1,3 @@
-library hauberk.ui.main_menu_screen;
-
 import 'package:malison/malison.dart';
 
 import '../engine.dart';

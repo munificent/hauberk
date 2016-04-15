@@ -1,5 +1,3 @@
-library hauberk.engine.game;
-
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';

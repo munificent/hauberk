@@ -1,5 +1,3 @@
-library hauberk.engine.hero.warrior;
-
 import 'dart:math' as math;
 
 import '../action/action.dart';

@@ -1,5 +1,3 @@
-library hauberk.engine.action.stab;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';

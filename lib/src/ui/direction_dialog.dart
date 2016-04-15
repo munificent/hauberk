@@ -1,5 +1,3 @@
-library hauberk.ui.direction_dialog;
-
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 

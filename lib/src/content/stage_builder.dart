@@ -1,5 +1,3 @@
-library hauberk.content.stage_builder;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';

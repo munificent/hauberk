@@ -1,5 +1,3 @@
-library hauberk.debug;
-
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';

@@ -1,5 +1,3 @@
-library hauberk.content.drops;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';

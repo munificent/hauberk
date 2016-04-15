@@ -1,5 +1,3 @@
-library hauberk.content.recipes;
-
 import '../engine.dart';
 import 'drops.dart';
 import 'items.dart';

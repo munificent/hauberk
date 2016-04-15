@@ -1,5 +1,3 @@
-library hauberk.engine.command.slash;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';

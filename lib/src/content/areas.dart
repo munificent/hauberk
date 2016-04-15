@@ -1,5 +1,3 @@
-library hauberk.content.areas;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../debug.dart';

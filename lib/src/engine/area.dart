@@ -1,5 +1,3 @@
-library hauberk.engine.area;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'breed.dart';

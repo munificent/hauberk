@@ -1,5 +1,3 @@
-library hauberk.engine.hero.hero;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';

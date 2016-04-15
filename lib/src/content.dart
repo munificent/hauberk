@@ -1,5 +1,3 @@
-library hauberk.content;
-
 import 'engine.dart';
 
 import 'content/affixes.dart';

@@ -1,5 +1,3 @@
-library hauberk.engine.action.howl;
-
 import 'action.dart';
 import '../circle.dart';
 import '../ai/flow.dart';

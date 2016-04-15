@@ -1,5 +1,3 @@
-library hauberk.bin.monsters;
-
 /*
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';

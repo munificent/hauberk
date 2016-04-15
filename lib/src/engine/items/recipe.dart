@@ -1,5 +1,3 @@
-library hauberk.engine.items.recipe;
-
 import 'item.dart';
 
 /// A recipe defines a set of items that can be placed into the crucible and

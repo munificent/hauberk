@@ -1,5 +1,3 @@
-library hauberk.content.forest;
-
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';

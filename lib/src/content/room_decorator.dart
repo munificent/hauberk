@@ -1,5 +1,3 @@
-library hauberk.content.room_decorator;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'stage_builder.dart';

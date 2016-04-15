@@ -1,5 +1,3 @@
-library hauberk.engine.condition;
-
 import 'action/action.dart';
 import 'actor.dart';
 import 'element.dart';

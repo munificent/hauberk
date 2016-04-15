@@ -1,5 +1,3 @@
-library hauberk.engine.energy;
-
 /// Energy is used to control the rate that actors move relative to other
 /// actors. Each game turn, every actor will accumulate energy based on their
 /// speed. When it reaches a threshold, that actor can take a turn.

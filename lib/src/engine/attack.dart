@@ -1,5 +1,3 @@
-library hauberk.engine.melee;
-
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';

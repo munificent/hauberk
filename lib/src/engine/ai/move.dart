@@ -1,5 +1,3 @@
-library hauberk.engine.move;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../debug.dart';

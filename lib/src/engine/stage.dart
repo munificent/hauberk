@@ -1,5 +1,3 @@
-library hauberk.engine.stage;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'ai/flow.dart';

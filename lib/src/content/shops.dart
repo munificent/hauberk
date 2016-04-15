@@ -1,5 +1,3 @@
-library hauberk.content.shops;
-
 import '../engine.dart';
 import 'items.dart';
 

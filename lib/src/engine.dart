@@ -1,5 +1,3 @@
-library hauberk.engine;
-
 export 'engine/ai/a_star.dart';
 export 'engine/ai/flow.dart';
 export 'engine/ai/move.dart';

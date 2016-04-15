@@ -1,5 +1,3 @@
-library hauberk.ui.select_command_dialog;
-
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
