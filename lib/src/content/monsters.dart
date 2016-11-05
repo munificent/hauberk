@@ -673,7 +673,7 @@ Breed breed(String name, Glyph appearance(char), int health, List actions, {
   if (drop is List) {
     drop = dropAllOf(drop as List<Drop>);
   } else if (drop is Drop) {
-    drop = dropAllOf([drop]);
+    drop = dropAllOf(<Drop>[drop]);
   } else if (drop is String) {
     drop = parseDrop(drop);
   } else {

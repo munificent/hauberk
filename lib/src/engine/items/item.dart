@@ -5,7 +5,7 @@ import '../actor.dart';
 import '../attack.dart';
 
 /// A thing that can be picked up.
-class Item extends Thing implements Comparable {
+class Item extends Thing implements Comparable<Item> {
   final ItemType type;
 
   final Affix prefix;
