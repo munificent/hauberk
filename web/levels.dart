@@ -4,13 +4,17 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/drops.dart';
+import 'package:hauberk/src/content/monsters.dart';
+import 'package:hauberk/src/engine.dart';
 
 main() {
   createContent();
   var text = new StringBuffer();
 
-  for (var i = 1; i <= 100; i++) {
-    var drop = parseDrop("item", i);
+  for (var depth = 1; depth <= 100; depth++) {
+    text.write('<tr><td>$depth</td><td>');
+
+    var drop = parseDrop("item", depth);
     var drops = {};
 
     var tries = 100;
@@ -27,12 +31,6 @@ main() {
 
     var items = drops.keys.toList();
     items.sort((a, b) => drops[b].compareTo(drops[a]));
-
-    text.write('''
-    <tr>
-      <td>$i</td>
-      <td>
-    ''');
 
     var more = 0;
     for (var item in items) {
@@ -51,8 +49,37 @@ main() {
       text.write("<em>$more more&hellip;</em>");
     }
 
-    text.write('''</td></tr>
-    ''');
+    text.write('</td><td>');
+
+    var breedCounts = {};
+    for (var i = 0; i < tries; i++) {
+      var breed = Monsters.rootTag.choose(depth, Monsters.all) as Breed;
+      if (breed == null) continue;
+
+      breedCounts.putIfAbsent(breed.name, () => 0);
+      breedCounts[breed.name] += breed.numberInGroup;
+    }
+
+    var breeds = breedCounts.keys.toList();
+    breeds.sort((a, b) => breedCounts[b].compareTo(breedCounts[a]));
+
+    more = 0;
+    for (var breed in breeds) {
+      var width = breedCounts[breed] * 400 ~/ tries;
+      if (width < 1) {
+        more++;
+        continue;
+      }
+      text.write('<div class="bar" style="width: ${width}px;"></div>');
+      text.write(" ${breed}");
+      text.write("<br>");
+    }
+
+    if (more > 0) {
+      text.write("<em>$more more&hellip;</em>");
+    }
+
+    text.write('</td></tr>');
   }
 
   var validator = new html.NodeValidatorBuilder.common();
