@@ -194,6 +194,8 @@ void potions() {
       noun: "the darkness");
   bottled("Radiance",  34,  600, white,       Element.light,      52, "sears");
   bottled("Spirits",   40, 1000, darkGray,    Element.spirit,     58, "haunts");
+
+  // TODO: Potions that raise fury, sustain it, and that trade health for it.
 }
 
 void scrolls() {

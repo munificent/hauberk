@@ -35,7 +35,10 @@ class SelectCommandDialog extends Screen<Input> {
   }
 
   void selectCommand(int index) {
-    if (index < _commands.length) ui.pop(_commands[index]);
+    if (index >= _commands.length) return;
+    if (!_commands[index].canUse(_game)) return;
+
+    ui.pop(_commands[index]);
   }
 
   void render(Terminal terminal) {
@@ -45,9 +48,19 @@ class SelectCommandDialog extends Screen<Input> {
       var y = i + 1;
       var command = _commands[i];
 
-      terminal.writeAt(0, y, '( )   ', Color.gray);
-      terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], Color.yellow);
-      terminal.writeAt(4, y, command.name);
+      var borderColor = Color.darkGray;
+      var letterColor = Color.black;
+      var textColor = Color.darkGray;
+
+      if (command.canUse(_game)) {
+        borderColor = Color.gray;
+        letterColor = Color.yellow;
+        textColor = Color.white;
+      }
+
+      terminal.writeAt(0, y, '( )   ', borderColor);
+      terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], letterColor);
+      terminal.writeAt(4, y, command.name, textColor);
     }
 
     terminal.writeAt(0, terminal.height - 1,

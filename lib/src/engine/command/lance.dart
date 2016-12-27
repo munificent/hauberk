@@ -9,7 +9,7 @@ import '../hero/command.dart';
 // for polearms.
 /// A piercing melee attack that penetrates a row of adjacent monsters.
 class LanceCommand extends DirectionCommand {
-  String get name => "Stab";
+  String get name => "Lance";
 
   bool canUse(Game game) {
     // Must have a spear equipped.
