@@ -144,7 +144,7 @@ void potions() {
   // TODO: Potions should shatter when thrown. Some should perform an effect.
 
   // Healing.
-  category("!", "magic/potion/healing");
+  category("!", "magic/potion/healing", flags: "freezable");
   tossable(damage: 1, range: 8, breakage: 100);
   healing("Soothing Balm",     1,   10, lightRed,     24);
   healing("Mending Salve",     7,   40, red,          48);
@@ -154,7 +154,7 @@ void potions() {
 
   healing("Antidote",         15,   18, green,         0, curePoison: true);
 
-  category("!", "magic/potion/resistance");
+  category("!", "magic/potion/resistance", flags: "freezable");
   tossable(damage: 1, range: 8, breakage: 100);
   resistSalve("Heat",          5, 20, orange, Element.fire);
   resistSalve("Cold",          6, 24, lightBlue, Element.cold);
@@ -171,7 +171,7 @@ void potions() {
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
 
   // Speed.
-  category("!", "magic/potion/speed");
+  category("!", "magic/potion/speed", flags: "freezable");
   tossable(damage: 1, range: 8, breakage: 100);
   potion("of Quickness",  3,  20, lightGreen, () => new HasteAction(20, 1));
   potion("of Alacrity",  18,  40, green,      () => new HasteAction(30, 2));
@@ -180,7 +180,7 @@ void potions() {
   // dram, draught, elixir, philter
 
   // TODO: Make monsters drop these.
-  category("?", "magic/potion/bottled");
+  category("?", "magic/potion/bottled", flags: "freezable");
   tossable(damage: 1, range: 8, breakage: 100);
   bottled("Wind",       4,   30, white,       Element.air,         8, "blasts");
   bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, "freezes");

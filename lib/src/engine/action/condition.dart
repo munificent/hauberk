@@ -1,8 +1,9 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import 'action.dart';
 import '../condition.dart';
 import '../element.dart';
+import 'action.dart';
+import 'element.dart';
 
 /// Base class for an [Action] that applies (or extends/intensifies) a
 /// [Condition]. It handles cases where the condition is already in effect with
@@ -81,14 +82,18 @@ class HasteAction extends ConditionAction {
   void logIntensify() => log("{1} move[s] even faster.", actor);
 }
 
-class FreezeAction extends ConditionAction {
+class FreezeAction extends ConditionAction with DestroyItemsMixin {
   final int _damage;
+  final int resistance;
 
-  FreezeAction(this._damage);
+  FreezeAction(this._damage, this.resistance);
 
   Condition get condition => actor.cold;
 
-  // TODO: Should also break items in inventory.
+  ActionResult onPerform() {
+    destroyItems(8, "freezable", "shatters");
+    return super.onPerform();
+  }
 
   int getIntensity() => 1 + _damage ~/ 40;
   int getDuration() => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
