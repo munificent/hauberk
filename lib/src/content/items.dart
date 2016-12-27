@@ -11,6 +11,7 @@ var _glyph;
 
 String _tagPath;
 String _verb;
+List<String> _flags;
 
 int _tossDamage;
 int _tossRange;
@@ -127,7 +128,7 @@ void treasures() {
 }
 
 void pelts() {
-  category("%", null);
+  category("%", null, flags: "flammable");
   item("Flower",        1, lightAqua); // TODO: Use in recipe.
   item("Fur Pelt",      1, lightBrown);
   item("Insect Wing",   1, purple);
@@ -197,7 +198,7 @@ void potions() {
 
 void scrolls() {
   // Teleportation.
-  category("?", "magic/scroll/teleportation");
+  category("?", "magic/scroll/teleportation", flags: "flammable");
   tossable(damage: 1, range: 4, breakage: 75);
   scroll("of Sidestepping",   2,  9, lightPurple, () => new TeleportAction(6));
   scroll("of Phasing",        6, 17, purple,      () => new TeleportAction(12));
@@ -205,7 +206,7 @@ void scrolls() {
   scroll("of Disappearing",  26, 47, darkBlue,    () => new TeleportAction(48));
 
   // Detection.
-  category("?", "magic/scroll/detection");
+  category("?", "magic/scroll/detection", flags: "flammable");
   tossable(damage: 1, range: 4, breakage: 75);
   scroll("of Item Detection", 7, 27, lightOrange, () => new DetectItemsAction());
 }
@@ -347,10 +348,15 @@ void boots() {
   armor("Greaves",              47, 1017, lightGray,  12);
 }
 
-void category(glyph, String tag, {String verb}) {
+void category(glyph, String tag, {String verb, String flags}) {
   _glyph = glyph;
   _tagPath = tag;
   _verb = verb;
+  if (flags != null) {
+    _flags = flags.split(" ");
+  } else {
+    _flags = const [];
+  }
 
   // Default to not throwable.
   _tossDamage = null;
@@ -488,6 +494,7 @@ void item(String name, int depth, appearance, {ItemUse use,
       treasure: treasure);
 
   if (tag != null) itemType.tags.add(tag);
+  itemType.flags.addAll(_flags);
 
   Items.all[name] = itemType;
 }

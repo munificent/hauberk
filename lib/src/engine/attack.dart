@@ -67,8 +67,6 @@ class Attack {
   ///
   /// Zero means no resistance. Everything above that reduces damage by
   /// 1/(resistance + 1), so that one resists is half damage, two is third, etc.
-  /// Secondary effects from the element are nullified if the defender has any
-  /// resistance.
   int get resistance => _resistance;
   int _resistance = 0;
 
@@ -162,7 +160,7 @@ class Attack {
     attacker.onDamage(action, defender, damage);
     if (defender.takeDamage(action, damage, attackNoun, attacker)) return true;
 
-    if (resistance == 0) _elementalSideEffect(defender, action, damage);
+    _elementalSideEffect(defender, action, damage);
 
     // TODO: Pass in and use element.
     action.addEvent(EventType.hit, actor: defender, other: damage);
@@ -186,7 +184,7 @@ class Attack {
         break;
 
       case Element.fire:
-        action.addAction(new BurnAction(damage), defender);
+        action.addAction(new BurnAction(damage, resistance), defender);
         break;
 
       case Element.water:

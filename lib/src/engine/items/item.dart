@@ -72,6 +72,8 @@ class Item extends Thing implements Comparable<Item> {
 
   bool get isTreasure => type.isTreasure;
 
+  Set<String> get flags => type.flags;
+
   int compareTo(Item other) {
     // TODO: Take into account affixes.
     return type.sortIndex.compareTo(other.type.sortIndex);
@@ -117,6 +119,8 @@ class ItemType extends Tagged {
   /// That means it just has a gold value. As soon as the hero steps on it, it
   /// increases the hero's gold and disappears.
   bool isTreasure;
+
+  final Set<String> flags = new Set();
 
   ItemType(this.name, this.appearance, int depth, this.sortIndex,
       this.equipSlot, this.use, this.attack, this.tossAttack,
