@@ -5,10 +5,10 @@ import '../hero/hero.dart';
 
 /// These actions are side effects from taking elemental damage.
 
-abstract class DestroyItemsMixin extends Action {
+abstract class DestroyInventoryMixin extends Action {
   int get resistance;
 
-  void destroyItems(int chance, String flag, String message) {
+  void destroyInventory(int chance, String flag, String message) {
     // TODO: If monsters have inventories, need to handle that here.
     if (actor is! Hero) return;
 
@@ -20,6 +20,7 @@ abstract class DestroyItemsMixin extends Action {
     for (var i = 0; i < hero.inventory.length; i++) {
       var item = hero.inventory[i];
       if (item.flags.contains(flag) && rng.oneIn(chance)) {
+        // TODO: Effect.
         log("{1} $message!", item);
         hero.inventory.removeAt(i);
         i--;
@@ -28,13 +29,13 @@ abstract class DestroyItemsMixin extends Action {
   }
 }
 
-class BurnAction extends Action with DestroyItemsMixin {
+class BurnAction extends Action with DestroyInventoryMixin {
   final int resistance;
 
   BurnAction(num damage, this.resistance);
 
   ActionResult onPerform() {
-    destroyItems(5, "flammable", "burns up");
+    destroyInventory(5, "flammable", "burns up");
 
     // Being burned "cures" cold.
     if (actor.cold.isActive) {

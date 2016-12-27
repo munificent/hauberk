@@ -157,7 +157,7 @@ void potions() {
   category("!", "magic/potion/resistance", flags: "freezable");
   tossable(damage: 1, range: 8, breakage: 100);
   resistSalve("Heat",          5, 20, orange, Element.fire);
-  resistSalve("Cold",          6, 24, lightBlue, Element.cold);
+  resistSalve("Cold",          6, 24, lightBlue, Element.cold, "-freezable");
   resistSalve("Light",         7, 28, lightYellow, Element.light);
   resistSalve("Wind",          8, 32, lightAqua, Element.air);
   resistSalve("Electricity",   9, 36, lightPurple, Element.lightning);
@@ -183,7 +183,7 @@ void potions() {
   category("?", "magic/potion/bottled", flags: "freezable");
   tossable(damage: 1, range: 8, breakage: 100);
   bottled("Wind",       4,   30, white,       Element.air,         8, "blasts");
-  bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, "freezes");
+  bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, "freezes", flags: "-freezable");
   bottled("Fire",      11,   70, red,         Element.fire,       22, "burns");
   bottled("Ocean",     12,  110, blue,        Element.water,      26, "drowns");
   bottled("Earth",     13,  150, brown,       Element.earth,      28, "crushes");
@@ -191,7 +191,7 @@ void potions() {
   bottled("Acid",      18,  250, lightGreen,  Element.acid,       38, "corrodes");
   bottled("Poison",    22,  330, darkGreen,   Element.poison,     42, "infects");
   bottled("Shadows",   28,  440, black,       Element.dark,       48, "torments",
-      "the darkness");
+      noun: "the darkness");
   bottled("Radiance",  34,  600, white,       Element.light,      52, "sears");
   bottled("Spirits",   40, 1000, darkGray,    Element.spirit,     58, "haunts");
 }
@@ -393,18 +393,20 @@ void healing(String name, int depth, int price, appearance, int amount,
 }
 
 void resistSalve(String name, int depth, int price, appearance,
-    Element element) {
+    Element element, [String flags]) {
   item("Salve of $name Resistance", depth, appearance,
-      price: price, use: () => new ResistAction(40, element));
+      price: price, use: () => new ResistAction(40, element),
+      flags: flags);
 }
 
 void bottled(String name, int depth, int price, appearance, Element element,
-    int damage, String verb, [String noun]) {
+    int damage, String verb, {String noun, String flags}) {
   if (noun == null) noun = "the ${name.toLowerCase()}";
 
   item("Bottled $name", depth, appearance, price: price,
       use: () => new RingSelfAction(
-          new RangedAttack(noun, verb, damage, element, 6)));
+          new RangedAttack(noun, verb, damage, element, 6)),
+      flags: flags);
 }
 
 void scroll(String name, int depth, int price, appearance, ItemUse use) {
@@ -442,7 +444,7 @@ void armor(String name, int depth, int price, appearance, int armor) {
 
 void item(String name, int depth, appearance, {ItemUse use,
     Attack attack, Attack tossAttack, int armor: 0, int price: 0,
-    bool treasure: false}) {
+    bool treasure: false, String flags}) {
   // If the appearance isn't an actual glyph, it should be a color function
   // that will be applied to the current glyph.
   if (appearance is! Glyph) {
@@ -501,7 +503,17 @@ void item(String name, int depth, appearance, {ItemUse use,
       treasure: treasure);
 
   if (tag != null) itemType.tags.add(tag);
+
   itemType.flags.addAll(_flags);
+  if (flags != null) {
+    for (var flag in flags.split(" ")) {
+      if (flag.startsWith("-")) {
+        itemType.flags.remove(flag.substring(1));
+      } else {
+        itemType.flags.add(flag);
+      }
+    }
+  }
 
   Items.all[name] = itemType;
 }

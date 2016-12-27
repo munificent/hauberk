@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';
 import '../attack.dart';
+import '../element.dart';
 import '../game.dart';
 
 /// Creates a 45° swath of damage that radiates out from a point.
@@ -88,6 +89,9 @@ class RayAction extends Action {
         _attack.perform(this, actor, target, canMiss: false);
       }
 
+      // Hit stuff on the floor too.
+      _hitFloor(pos);
+
       return false;
     });
 
@@ -96,6 +100,73 @@ class RayAction extends Action {
 
     // Still going.
     return ActionResult.notDone;
+  }
+
+  void _hitFloor(Vec pos) {
+    // TODO: There's some overlap between this and the element effects in
+    // attack, which apply to an actor that gets hit. Unify?
+
+    // Apply any element-specific effects.
+    switch (_attack.element) {
+      case Element.none:
+      // No effect.
+        break;
+
+      case Element.air:
+        // TODO: Teleport items.
+        break;
+
+      case Element.earth:
+        break;
+
+      case Element.fire:
+        _destroyFloorItems(pos, 3, "flammable", "burns up");
+        break;
+
+      case Element.water:
+        // TODO: Move items.
+        break;
+
+      case Element.acid:
+        // TODO: Destroy items.
+        break;
+
+      case Element.cold:
+        _destroyFloorItems(pos, 6, "freezable", "shatters");
+        break;
+
+      case Element.lightning:
+        // TODO: Break glass. Recharge some items?
+        break;
+
+      case Element.poison:
+        break;
+
+      case Element.dark:
+        // TODO: Blind.
+        break;
+
+      case Element.light:
+        break;
+
+      case Element.spirit:
+        break;
+    }
+
+    return null;
+  }
+
+  void _destroyFloorItems(Vec pos, int chance, String flag, String message) {
+    var items = game.stage.itemsAt(pos);
+
+    // TODO: There is overlap between this and DestroyInventoryMixin. Unify?
+    for (var item in items) {
+      if (item.flags.contains(flag) && rng.oneIn(chance)) {
+        // TODO: Effect.
+        log("{1} $message!", item);
+        game.stage.removeItem(item);
+      }
+    }
   }
 }
 
