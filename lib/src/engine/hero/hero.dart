@@ -38,18 +38,10 @@ class HeroSave {
   /// How much gold the hero has.
   int gold = Option.heroGoldStart;
 
-  /// The index of the highest [Level] that the [Hero] has completed in each
-  /// [Area]. The key will be the [Area] name. The value will be the one-based
-  /// index of the level. No key means the hero has not completed any levels in
-  /// that area.
-  final Map<String, int> completedLevels;
-
-  HeroSave(this.name, this.heroClass)
-      : completedLevels = <String, int>{};
+  HeroSave(this.name, this.heroClass);
 
   HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
-      this.home, this.crucible, this.experienceCents,
-      this.completedLevels, this.gold);
+      this.home, this.crucible, this.experienceCents, this.gold);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be

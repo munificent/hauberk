@@ -57,8 +57,6 @@ class Storage {
 
       var experience = hero['experience'];
 
-      var completedLevels = hero['completedLevels'] as Map<String, int>;
-
       var gold = hero['gold'];
 
       // Older heroes don't have gold.
@@ -72,7 +70,7 @@ class Storage {
       }
 
       var heroSave = new HeroSave.load(name, heroClass, inventory, equipment,
-          home, crucible, experience, completedLevels, gold);
+          home, crucible, experience, gold);
       heroes.add(heroSave);
     }
   }
@@ -168,7 +166,6 @@ class Storage {
         'home': home,
         'crucible': crucible,
         'experience': hero.experienceCents,
-        'completedLevels': hero.completedLevels,
         'gold': hero.gold
       });
     }
