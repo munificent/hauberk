@@ -15,7 +15,6 @@ export 'engine/action/teleport.dart';
 export 'engine/action/toss.dart';
 export 'engine/action/walk.dart';
 export 'engine/actor.dart';
-export 'engine/area.dart';
 export 'engine/attack.dart';
 export 'engine/breed.dart';
 export 'engine/condition.dart';

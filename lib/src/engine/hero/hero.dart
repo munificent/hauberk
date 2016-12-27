@@ -197,7 +197,6 @@ class Hero extends Actor {
   void changePosition(Vec from, Vec to) {
     super.changePosition(from, to);
     game.stage.dirtyVisibility();
-    game.quest.enterTile(game, game.stage[to]);
   }
 
   void waitForInput() {

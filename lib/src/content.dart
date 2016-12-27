@@ -5,7 +5,6 @@ import 'content/dungeon.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
-import 'content/quests.dart';
 import 'content/shops.dart';
 import 'content/tiles.dart';
 
@@ -27,11 +26,6 @@ class GameContent implements Content {
     // TODO: Get rid of dungeon subclasses.
     // TODO: Tweak parameters based on depth.
     new Dungeon().generate(stage);
-  }
-
-  Quest generateQuest(Stage stage) {
-    // TODO: Get rid of quest stuff.
-    return new TileQuestBuilder("the stairs", Tiles.stairs).generate(stage);
   }
 
   Map<String, Breed> get breeds => Monsters.all;

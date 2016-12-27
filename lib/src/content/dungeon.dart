@@ -76,6 +76,13 @@ class Dungeon extends StageBuilder with RoomDecorator {
     _removeDeadEnds();
 
     _rooms.forEach(onDecorateRoom);
+
+    // TODO: Temp hack. Place strairs in a more logical way.
+    var numStairs = rng.inclusive(2, 10);
+    for (var i = 0; i < numStairs; i++) {
+      var pos = stage.findOpenTile();
+      stage.tiles[pos].type = Tiles.stairs;
+    }
   }
 
   void onDecorateRoom(Rect room) {}

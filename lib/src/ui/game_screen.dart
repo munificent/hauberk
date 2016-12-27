@@ -53,7 +53,8 @@ class GameScreen extends Screen<Input> {
 
     switch (input) {
       case Input.quit:
-        if (game.quest.isComplete) {
+        // TODO: Should confirm first.
+        if (game.stage[game.hero.pos].isExit) {
           _save.copyFrom(game.hero);
 
           // Remember that this level was completed.
@@ -65,8 +66,7 @@ class GameScreen extends Screen<Input> {
 
           ui.pop(true);
         } else {
-          game.log.error('You have not completed your quest yet:');
-          game.quest.announce(game.log);
+          game.log.error('You cannot exit from here.');
           dirty();
         }
         break;

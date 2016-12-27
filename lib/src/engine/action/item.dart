@@ -71,7 +71,6 @@ class PickUpAction extends Action {
 
     log('{1} pick[s] up {2}.', actor, item);
 
-    game.quest.pickUpItem(game, item);
     return succeed();
   }
 }

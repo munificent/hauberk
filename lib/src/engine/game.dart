@@ -4,7 +4,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'action/action.dart';
 import 'actor.dart';
-import 'area.dart';
 import 'breed.dart';
 import 'element.dart';
 import 'hero/hero.dart';
@@ -22,8 +21,6 @@ class Game {
   final log = new Log();
   final _actions = new Queue<Action>();
   Hero hero;
-  Quest get quest => _quest;
-  Quest _quest;
 
   Game(Content content, HeroSave save) {
     _buildStage(content, save);
@@ -150,9 +147,6 @@ class Game {
 //      stage.spawnMonster(breed, pos);
 //    }
 
-    _quest = content.generateQuest(stage);
-    _quest.announce(log);
-
     // TODO: Temp. Wizard light it.
     /*
     for (var pos in stage.bounds) {
@@ -175,7 +169,6 @@ class Game {
 abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
   void buildStage(Stage stage);
-  Quest generateQuest(Stage stage);
 
   Map<String, Breed> get breeds;
   Map<String, ItemType> get items;

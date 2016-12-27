@@ -237,11 +237,13 @@ class TileType {
   final String name;
   final bool isPassable;
   final bool isTransparent;
+  final bool isExit;
   final appearance;
   TileType opensTo;
   TileType closesTo;
 
-  TileType(this.name, this.isPassable, this.isTransparent, this.appearance);
+  TileType(this.name, this.appearance,
+      {this.isPassable, this.isTransparent, this.isExit});
 }
 
 class Tile {
@@ -274,4 +276,5 @@ class Tile {
   bool get isPassable => type.isPassable;
   bool get isTraversable => type.isPassable || (type.opensTo != null);
   bool get isTransparent => type.isTransparent;
+  bool get isExit => type.isExit;
 }

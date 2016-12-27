@@ -20,46 +20,63 @@ class Tiles {
 
   static void initialize() {
     // Define the tile types.
-    Tiles.floor = new TileType("floor", true, true,
-        [gray('.'), darkGray('.')]);
+    Tiles.floor = open("floor", gray('.'), darkGray('.'));
+    Tiles.wall = solid("wall", lightGray('#', Color.darkGray), darkGray('#'));
 
-    Tiles.wall = new TileType("wall", false, false,
-        [lightGray('#', Color.darkGray), darkGray('#')]);
-
-    Tiles.table = new TileType("table", false, true, [
+    Tiles.table = obstacle("table",
       brown(CharCode.greekSmallLetterPi),
-      darkBrown(CharCode.greekSmallLetterPi)
-    ]);
+      darkBrown(CharCode.greekSmallLetterPi));
 
-    Tiles.lowWall = new TileType("low wall", false, true,
-        [gray('%', Color.darkGray), darkGray('%')]);
+    Tiles.lowWall = obstacle("low wall", gray('%', Color.darkGray), darkGray('%'));
 
-    Tiles.openDoor = new TileType("open door", true, true,
-        [brown("'"), darkBrown("'")]);
-    Tiles.closedDoor = new TileType("closed door", false, false,
-        [brown('+'), darkBrown('+')]);
+    Tiles.openDoor = open("open door", brown("'"), darkBrown("'"));
+    Tiles.closedDoor = solid("closed door", brown('+'), darkBrown('+'));
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
 
-    Tiles.stairs = new TileType("stairs", true, true,
-        [lightGray(CharCode.identicalTo), darkGray(CharCode.identicalTo)]);
+    Tiles.stairs = exit("stairs",
+        lightGray(CharCode.identicalTo), darkGray(CharCode.identicalTo));
 
-    Tiles.grass = new TileType("grass", true, true,
-        [lightGreen('.'), green('.')]);
+    Tiles.grass = open("grass", lightGreen('.'), green('.'));
 
-    Tiles.tree = new TileType("tree", false, false, [
-      green(CharCode.blackUpPointingTriangle, Color.darkGreen),
-      darkGreen(CharCode.blackUpPointingTriangle)
-    ]);
+    Tiles.tree = solid("tree",
+        green(CharCode.blackUpPointingTriangle, Color.darkGreen),
+        darkGreen(CharCode.blackUpPointingTriangle));
 
-    Tiles.treeAlt1 = new TileType("tree", false, false, [
-      green(CharCode.blackSpadeSuit, Color.darkGreen),
-      darkGreen(CharCode.blackSpadeSuit)
-    ]);
+    Tiles.treeAlt1 = solid("tree",
+        green(CharCode.blackSpadeSuit, Color.darkGreen),
+        darkGreen(CharCode.blackSpadeSuit));
 
-    Tiles.treeAlt2 = new TileType("tree", false, false, [
-      green(CharCode.blackClubSuit, Color.darkGreen),
-      darkGreen(CharCode.blackClubSuit)
-    ]);
+    Tiles.treeAlt2 = solid("tree",
+        green(CharCode.blackClubSuit, Color.darkGreen),
+        darkGreen(CharCode.blackClubSuit));
   }
+}
+
+TileType tileType(String name, bool isPassable, bool isTransparent, appearance) {
+  return new TileType(name, appearance, isPassable: isPassable, isTransparent: isTransparent);
+}
+
+/// Creates a passable, transparent tile.
+TileType open(String name, Glyph lit, Glyph unlit) {
+  return new TileType(name, <Glyph>[lit, unlit],
+      isPassable: true, isTransparent: true, isExit: false);
+}
+
+/// Creates an impassable, opaque tile.
+TileType solid(String name, Glyph lit, Glyph unlit) {
+  return new TileType(name, <Glyph>[lit, unlit],
+      isPassable: false, isTransparent: false, isExit: false);
+}
+
+/// Creates an impassable, transparent tile.
+TileType obstacle(String name, Glyph lit, Glyph unlit) {
+  return new TileType(name, <Glyph>[lit, unlit],
+      isPassable: false, isTransparent: true, isExit: false);
+}
+
+/// Creates a passable, transparent exit tile.
+TileType exit(String name, Glyph lit, Glyph unlit) {
+  return new TileType(name, <Glyph>[lit, unlit],
+      isPassable: true, isTransparent: true, isExit: true);
 }

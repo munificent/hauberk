@@ -276,9 +276,6 @@ class Monster extends Actor {
       log("{1} drop[s] {2}.", this, item);
     });
 
-    // Tell the quest.
-    game.quest.killMonster(game, this);
-
     game.stage.removeActor(this);
     Debug.removeMonster(this);
   }
