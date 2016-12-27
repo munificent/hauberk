@@ -1,10 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'affixes.dart';
 import 'items.dart';
 import 'monsters.dart';
-import 'room_decorator.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 
@@ -32,20 +33,22 @@ import 'tiles.dart';
 ///
 /// The end result of this is a multiply-connected dungeon with rooms and lots
 /// of winding corridors.
-class Dungeon extends StageBuilder with RoomDecorator {
-  int get numRoomTries => 300;
+class Dungeon extends StageBuilder {
+  static const numRoomTries = 20;
+  static const numRoomPositionTries = 20;
 
   /// The inverse chance of adding a connector between two regions that have
   /// already been joined. Increasing this leads to more redundantly connected
   /// dungeons.
-  int get extraConnectorChance => 40;
+  static const extraConnectorChance = 40;
 
   /// Increasing this allows rooms to be larger.
   int get roomExtraSize => 2;
 
-  int get windingPercent => 30;
+  static const windingPercent = 30;
 
-  var _rooms = <Rect>[];
+  final _rooms = <Rect, RoomType>{};
+  final _connectors = <Vec>[];
 
   /// For each open position in the dungeon, the index of the connected region
   /// that that position is a part of.
@@ -55,6 +58,14 @@ class Dungeon extends StageBuilder with RoomDecorator {
   int _currentRegion = -1;
 
   void generate(Stage stage, int depth) {
+    // TODO: This occasionally generates dungeons with unreachable areas. I
+    // think it's because of the limited connectors exposed by some room types.
+    // Need to decide how to handle that.
+    //
+    // The simplest solution is to add a "give up" command and permit it to
+    // happen. Characters with stone to mud or teleportation may be able to
+    // escape.
+
     if (stage.width % 2 == 0 || stage.height % 2 == 0) {
       throw new ArgumentError("The stage must be odd-sized.");
     }
@@ -75,10 +86,12 @@ class Dungeon extends StageBuilder with RoomDecorator {
       }
     }
 
+    _rooms.forEach((room, type) {
+      type.place(this, room);
+    });
+
     _connectRegions();
     _removeDeadEnds();
-
-    _rooms.forEach(onDecorateRoom);
 
     // TODO: Temp hack. Place strairs in a more logical way.
     var numStairs = rng.inclusive(2, 10);
@@ -89,7 +102,7 @@ class Dungeon extends StageBuilder with RoomDecorator {
 
     // Place the items.
     // TODO: Place into rooms. Give them themes, etc.
-    var numItems = rng.taper(100, 2);
+    var numItems = rng.taper(80 + depth * 2, 2);
     for (int i = 0; i < numItems; i++) {
       var itemType = Items.rootTag.choose(depth, Items.all.values);
       if (itemType == null) continue;
@@ -163,54 +176,70 @@ class Dungeon extends StageBuilder with RoomDecorator {
     }
   }
 
-  /// Places rooms ignoring the existing maze corridors.
   void _addRooms() {
+    // TODO: Make some room types rarer than others. Tune by depth.
+    var roomTypes = [
+      new RectangleRoom(3, 3),
+      new RectangleRoom(5, 3), new RectangleRoom(3, 5),
+      new RectangleRoom(5, 5),
+      new RectangleRoom(7, 5), new RectangleRoom(5, 7),
+      new RectangleRoom(9, 5), new RectangleRoom(5, 9),
+      new RectangleRoom(9, 7), new RectangleRoom(7, 9),
+      new RectangleRoom(11, 7), new RectangleRoom(7, 11),
+      new RectangleRoom(11, 9), new RectangleRoom(9, 11),
+      new RectangleRoom(11, 11),
+      new RectangleRoom(13, 7), new RectangleRoom(7, 13),
+      new RectangleRoom(13, 9), new RectangleRoom(9, 13),
+      new OctagonRoom(5, 5, 1),
+      new OctagonRoom(7, 7, 2),
+      new OctagonRoom(9, 9, 2),
+      new OctagonRoom(9, 9, 3),
+      new OctagonRoom(11, 11, 2),
+      new OctagonRoom(11, 11, 3),
+    ];
+
     for (var i = 0; i < numRoomTries; i++) {
-      // Pick a random room size. The funny math here does two things:
-      // - It makes sure rooms are odd-sized to line up with maze.
-      // - It avoids creating rooms that are too rectangular: too tall and
-      //   narrow or too wide and flat.
-      // TODO: This isn't very flexible or tunable. Do something better here.
-      var size = rng.range(1, 3 + roomExtraSize) * 2 + 1;
-      var rectangularity = rng.range(0, 1 + size ~/ 2) * 2;
-      var width = size;
-      var height = size;
-      if (rng.oneIn(2)) {
-        width += rectangularity;
-      } else {
-        height += rectangularity;
-      }
+      var roomType = rng.item(roomTypes);
+      for (var j = 0; j < numRoomPositionTries; j++) {
+        var x = rng.range((bounds.width - roomType.width) ~/ 2) * 2 + 1;
+        var y = rng.range((bounds.height - roomType.height) ~/ 2) * 2 + 1;
 
-      var x = rng.range((bounds.width - width) ~/ 2) * 2 + 1;
-      var y = rng.range((bounds.height - height) ~/ 2) * 2 + 1;
+        var room = new Rect(x, y, roomType.width, roomType.height);
 
-      var room = new Rect(x, y, width, height);
+        var overlaps = false;
+        for (var other in _rooms.keys) {
+          if (room.distanceTo(other) <= 0) {
+            overlaps = true;
+            break;
+          }
+        }
 
-      var overlaps = false;
-      for (var other in _rooms) {
-        if (room.distanceTo(other) <= 0) {
-          overlaps = true;
-          break;
+        if (overlaps) continue;
+
+        _rooms[room] = roomType;
+
+        _startRegion();
+
+        for (var pos in room) {
+          _carve(pos);
         }
       }
-
-      if (overlaps) continue;
-
-      _rooms.add(room);
-
-      _startRegion();
-      for (var pos in new Rect(x, y, width, height)) {
-        _carve(pos);
-      }
     }
+  }
+
+  void _addConnector(int x, int y) {
+    var pos = new Vec(x, y);
+    if (!bounds.inflate(-1).contains(pos)) return;
+
+    _connectors.add(pos);
   }
 
   void _connectRegions() {
     // Find all of the tiles that can connect two (or more) regions.
     var connectorRegions = <Vec, Set<int>>{};
-    for (var pos in bounds.inflate(-1)) {
-      // Can't already be part of a region.
-      if (getTile(pos) != Tiles.wall) continue;
+    var allowed = bounds.inflate(-1);
+    for (var pos in _connectors) {
+      if (!allowed.contains(pos)) continue;
 
       var regions = new Set<int>();
       for (var dir in Direction.cardinal) {
@@ -331,5 +360,103 @@ class Dungeon extends StageBuilder with RoomDecorator {
     if (type == null) type = Tiles.floor;
     setTile(pos, type);
     _regions[pos] = _currentRegion;
+  }
+}
+
+abstract class RoomType {
+  int get width;
+  int get height;
+
+  /// Fill in the bounds of [room] with this room's individual style.
+  ///
+  /// Also, add any connectors as are possible from the room.
+  ///
+  /// When this is called, [room] will already be cleared to all floor.
+  void place(Dungeon dungeon, Rect room);
+
+  void decorate(Dungeon dungeon, Rect room) {
+    if (rng.oneIn(2)) {
+      var tables = rng.inclusive(1, 3);
+      for (var i = 0; i < tables; i++) {
+        decorateTable(dungeon, room);
+      }
+    }
+  }
+
+  /// Tries to place a table in the room.
+  bool decorateTable(Dungeon dungeon, Rect room) {
+    var pos = rng.vecInRect(room);
+
+    if (dungeon.getTile(pos) != Tiles.floor) return false;
+
+    // Don't block an exit.
+    if (pos.x == room.left && dungeon.getTile(pos.offsetX(-1)) != Tiles.wall) {
+      return false;
+    }
+
+    if (pos.y == room.top && dungeon.getTile(pos.offsetY(-1)) != Tiles.wall) {
+      return false;
+    }
+
+    if (pos.x == room.right && dungeon.getTile(pos.offsetX(1)) != Tiles.wall) {
+      return false;
+    }
+
+    if (pos.y == room.bottom && dungeon.getTile(pos.offsetY(1)) != Tiles.wall) {
+      return false;
+    }
+
+    dungeon.setTile(pos, Tiles.table);
+    return true;
+  }
+}
+
+class RectangleRoom extends RoomType {
+  final int width;
+  final int height;
+
+  RectangleRoom(this.width, this.height);
+
+  void place(Dungeon dungeon, Rect room) {
+    for (var x = room.left; x < room.right; x++) {
+      dungeon._addConnector(x, room.top - 1);
+      dungeon._addConnector(x, room.bottom);
+    }
+
+    for (var y = room.top; y < room.bottom; y++) {
+      dungeon._addConnector(room.left - 1, y);
+      dungeon._addConnector(room.right, y);
+    }
+
+    decorate(dungeon, room);
+  }
+}
+
+class OctagonRoom extends RoomType {
+  final int width;
+  final int height;
+  final int slope;
+
+  OctagonRoom(this.width, this.height, this.slope);
+
+  void place(Dungeon dungeon, Rect room) {
+    for (var pos in room) {
+      // Fill in the corners.
+      if ((room.topLeft - pos).rookLength < slope ||
+          (room.topRight - pos).rookLength < slope + 1 ||
+          (room.bottomLeft - pos).rookLength < slope + 1 ||
+          (room.bottomRight - pos).rookLength < slope + 2) {
+        dungeon.setTile(pos, Tiles.wall);
+      }
+    }
+
+    // TODO: Decorate inside?
+
+    dungeon._addConnector(room.center.x, room.top - 1);
+    dungeon._addConnector(room.center.x, room.bottom);
+    dungeon._addConnector(room.left - 1, room.center.y);
+    dungeon._addConnector(room.right, room.center.y);
+
+    decorate(dungeon, room);
   }
 }
