@@ -208,8 +208,8 @@ flyingInsects() {
 felines() {
   group("F");
   breed("stray cat", 1, gold, 9, [
-    attack("bite[s]", 3),
-    attack("scratch[es]", 2),
+    attack("bite[s]", 5),
+    attack("scratch[es]", 4),
   ], drop: percent(10, "Fur Pelt"),
       meander: 3, speed: 1);
 }
@@ -551,8 +551,8 @@ quadrupeds() {
 rodents() {
   group("r", meander: 4);
   breed("[mouse|mice]", 1, white, 6, [
-    attack("bite[s]", 5),
-    attack("scratch[es]", 3)
+    attack("bite[s]", 3),
+    attack("scratch[es]", 2)
   ], speed: 1);
 
   breed("sewer rat", 2, darkGray, 7, [

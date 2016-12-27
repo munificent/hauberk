@@ -46,7 +46,7 @@ class Items {
 
     // Unused: ; : ` % ^ < >
 
-    category(",", null);
+    category(",", "item");
     tossable(damage: 4, range: 8, element: Element.earth, breakage: 10);
     item("Rock", 1, lightBrown);
 
@@ -449,15 +449,22 @@ void item(String name, int depth, appearance, {ItemUse use,
     appearance = appearance(_glyph);
   }
 
-  var tags = <String>[];
-  if (_tagPath != null) tags = _tagPath.split("/");
+  List<String> tags;
+  if (_tagPath == "item") {
+    tags = ["item"];
+  } else if (_tagPath != null) {
+    tags = ["item"];
+    tags.addAll(_tagPath.split("/"));
+  }
 
-  Tag parent = Items.rootTag;
   Tag tag;
-  for (var tagName in tags) {
-    tag = Items.tags.putIfAbsent(tagName, () => new Tag(tagName));
-    tag.parents.add(parent);
-    parent = tag;
+  if (tags != null) {
+    Tag parent;
+    for (var tagName in tags) {
+      tag = Items.tags.putIfAbsent(tagName, () => new Tag(tagName));
+      if (parent != null) tag.parents.add(parent);
+      parent = tag;
+    }
   }
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
