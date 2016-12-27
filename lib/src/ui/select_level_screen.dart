@@ -21,6 +21,8 @@ class SelectLevelScreen extends Screen<Input> {
   /// For an area to be open, at least one level must have been completed in
   /// the previous area.
   int get _openAreas {
+    if (Debug.enabled) return content.areas.length;
+
     var i;
     for (i = 1; i < content.areas.length; i++) {
       if (getCompletedLevel(content.areas[i - 1]) == 0) break;
@@ -144,6 +146,8 @@ class SelectLevelScreen extends Screen<Input> {
   /// Gets the one-based index of the highest completed level in [area].
   /// Returns `0` if no levels have been completed.
   int getCompletedLevel(Area area) {
+    if (Debug.enabled) return area.levels.length - 1;
+
     var level = save.completedLevels[area.name];
     if (level == null) return 0;
     return level;
