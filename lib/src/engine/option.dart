@@ -3,6 +3,8 @@ import 'element.dart';
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {
+  static final maxDepth = 200;
+
   /// The max health of a new hero.
   static final heroHealthStart = 40;
 

@@ -4,7 +4,7 @@ import '../engine.dart';
 import 'confirm_dialog.dart';
 import 'input.dart';
 import 'new_hero_screen.dart';
-import 'select_level_screen.dart';
+import 'select_depth_screen.dart';
 import 'storage.dart';
 
 
@@ -71,7 +71,7 @@ class MainMenuScreen extends Screen<Input> {
 
       case Input.ok:
         if (selectedHero < storage.heroes.length) {
-          ui.push(new SelectLevelScreen(content, storage.heroes[selectedHero],
+          ui.push(new SelectDepthScreen(content, storage.heroes[selectedHero],
               storage));
         }
         return true;

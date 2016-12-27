@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'input.dart';
-import 'select_level_screen.dart';
+import 'select_depth_screen.dart';
 import 'storage.dart';
 
 // From: http://medieval.stormthecastle.com/medieval-names.htm.
@@ -41,7 +41,7 @@ class NewHeroScreen extends Screen<Input> {
             heroClass);
         storage.heroes.add(hero);
         storage.save();
-        ui.goTo(new SelectLevelScreen(content, hero, storage));
+        ui.goTo(new SelectDepthScreen(content, hero, storage));
         break;
 
       case KeyCode.escape:
