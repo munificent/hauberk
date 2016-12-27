@@ -10,7 +10,6 @@ int _sortIndex = 0;
 var _glyph;
 
 String _tagPath;
-String _equipSlot;
 String _verb;
 
 int _tossDamage;
@@ -309,11 +308,11 @@ void weapons() {
 void bodyArmor() {
   // TODO: Make some armor throwable.
 
-  category("(", "equipment/armor/cloak", equip: "cloak");
+  category("(", "equipment/armor/cloak");
   armor("Cloak",                   3,   19, darkBlue,    2);
   armor("Fur Cloak",               9,   42, lightBrown,  3);
 
-  category("(", "equipment/armor/body", equip: "body");
+  category("(", "equipment/armor/body");
   armor("Cloth Shirt",             2,   19, lightGray,   2);
   armor("Leather Shirt",           5,  126, lightBrown,  5);
   armor("Jerkin",                  7,  191, orange,      6);
@@ -323,7 +322,7 @@ void bodyArmor() {
   armor("Mail Hauberk",           20, 2835, darkGray,   18);
   armor("Scale Mail",             23, 4212, lightGray,  21);
 
-  category("(", "equipment/armor/body/robe", equip: "body");
+  category("(", "equipment/armor/body/robe");
   armor("Robe",                    2,   77, aqua,        4);
   armor("Fur-lined Robe",          9,  191, darkAqua,    6);
 
@@ -340,7 +339,7 @@ void bodyArmor() {
 }
 
 void boots() {
-  category("]", "equipment/armor/boots", equip: "boots");
+  category("]", "equipment/armor/boots");
   armor("Leather Sandals",       2,    6, lightBrown,  1);
   armor("Leather Shoes",         8,   19, brown,       2);
   armor("Leather Boots",        14,   77, darkBrown,   4);
@@ -348,10 +347,9 @@ void boots() {
   armor("Greaves",              47, 1017, lightGray,  12);
 }
 
-void category(glyph, String tag, {String equip, String verb}) {
+void category(glyph, String tag, {String verb}) {
   _glyph = glyph;
   _tagPath = tag;
-  _equipSlot = equip;
   _verb = verb;
 
   // Default to not throwable.
@@ -416,7 +414,6 @@ void weapon(String name, int depth, int price, appearance, int damage,
       Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
       tossRange != null ? tossRange : _tossRange);
   item(name, depth, appearance,
-      equipSlot: "weapon",
       attack: attack(_verb, damage, Element.none),
       tossAttack: toss,
       price: price);
@@ -428,7 +425,6 @@ void ranged(String name, int depth, int price, appearance, String noun,
       Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
       _tossRange);
   item(name, depth, appearance,
-      equipSlot: "weapon",
       attack: new RangedAttack(noun, "pierce[s]", damage, Element.none, range),
       tossAttack: toss,
       price: price);
@@ -438,7 +434,7 @@ void armor(String name, int depth, int price, appearance, int armor) {
   item(name, depth, appearance, armor: armor, price: price);
 }
 
-void item(String name, int depth, appearance, {String equipSlot, ItemUse use,
+void item(String name, int depth, appearance, {ItemUse use,
     Attack attack, Attack tossAttack, int armor: 0, int price: 0,
     bool treasure: false}) {
   // If the appearance isn't an actual glyph, it should be a color function
@@ -458,7 +454,29 @@ void item(String name, int depth, appearance, {String equipSlot, ItemUse use,
     parent = tag;
   }
 
-  if (equipSlot == null) equipSlot = _equipSlot;
+  // Use the tags (if any) to figure out which slot it can be equipped in.
+  String equipSlot;
+  if (tag != null) {
+    // TODO: Copied from equipment.dart. Unify?
+    var equipSlots = [
+      'weapon',
+      'ring',
+      'necklace',
+      'body',
+      'cloak',
+      'shield',
+      'helm',
+      'gloves',
+      'boots'
+    ];
+
+    for (var slot in equipSlots) {
+      if (tag.hasTag(slot)) {
+        equipSlot = slot;
+        break;
+      }
+    }
+  }
 
   if (tossAttack == null && _tossDamage != null) {
     tossAttack = new RangedAttack("the ${name.toLowerCase()}", "hits",
