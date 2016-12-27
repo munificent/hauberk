@@ -9,6 +9,8 @@ import 'package:hauberk/src/content/tiles.dart';
 html.CanvasElement canvas;
 html.CanvasRenderingContext2D context;
 
+// TODO: Get this working again now that areas and levels are gone.
+
 var content = createContent();
 var area = 2;
 var level = 0;
@@ -70,7 +72,8 @@ refreshLevelSelect() {
 }
 
 render() {
-  var game = new Game(currentArea, currentLevel, content, save);
+  // TODO: Get rid of area and level selects, replace with depth select.
+  var game = new Game(content, save);
 
   context.fillStyle = '#000';
   context.fillRect(0, 0, canvas.width, canvas.height);

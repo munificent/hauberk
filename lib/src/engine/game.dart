@@ -13,23 +13,20 @@ import 'items/item.dart';
 import 'items/recipe.dart';
 import 'items/shop.dart';
 import 'log.dart';
-import 'option.dart';
 import 'stage.dart';
 
 /// Root class for the game engine. All game state is contained within this.
 class Game {
-  final Area area;
-  final int level;
   Stage get stage => _stage;
   Stage _stage;
   final log = new Log();
   final _actions = new Queue<Action>();
   Hero hero;
-  Quest quest;
+  Quest get quest => _quest;
+  Quest _quest;
 
-  Game(this.area, this.level, Content content, HeroSave save) {
-    _stage = area.buildStage(this, level, save);
-    _stage.finishBuild();
+  Game(Content content, HeroSave save) {
+    _buildStage(content, save);
   }
 
   GameResult update() {
@@ -92,33 +89,94 @@ class Game {
         // Each time we wrap around, process "idle" things that are ongoing and
         // speed independent.
         if (actor == hero) {
-          trySpawnMonster();
+//          trySpawnMonster();
         }
       }
     }
   }
 
+  // TODO: Decide if we want to keep this. Now that there is hunger forcing the
+  // player to explore, it doesn't seem strictly necessary.
   /// Over time, new monsters will appear in unexplored areas of the dungeon.
   /// This is to encourage players to not waste time: the more they linger, the
   /// more dangerous the remaining areas become.
-  void trySpawnMonster() {
-    if (!rng.oneIn(Option.spawnMonsterChance)) return;
+//  void trySpawnMonster() {
+//    if (!rng.oneIn(Option.spawnMonsterChance)) return;
+//
+//    // Try to place a new monster in unexplored areas.
+//    Vec pos = rng.vecInRect(stage.bounds);
+//
+//    final tile = stage[pos];
+//    if (tile.visible || tile.isExplored || !tile.isPassable) return;
+//    if (stage.actorAt(pos) != null) return;
+//
+//    stage.spawnMonster(area.pickBreed(level), pos);
+//  }
 
-    // Try to place a new monster in unexplored areas.
-    Vec pos = rng.vecInRect(stage.bounds);
+  // TODO: Move to separate class.
+  void _buildStage(Content content, HeroSave heroSave) {
+    // TODO: Vary size?
+    _stage = new Stage(201, 81, this);
 
-    final tile = stage[pos];
-    if (tile.visible || tile.isExplored || !tile.isPassable) return;
-    if (stage.actorAt(pos) != null) return;
+    content.buildStage(_stage);
 
-    stage.spawnMonster(area.pickBreed(level), pos);
+    var heroPos = stage.findOpenTile();
+    hero = new Hero(this, heroPos, heroSave);
+    _stage.addActor(hero);
+
+    // Place the items.
+//    var numItems = rng.taper(level.numItems, 3);
+//    for (var i = 0; i < numItems; i++) {
+//      final itemDepth = pickDepth(depth);
+//      final drop = levels[itemDepth].floorDrop;
+//
+//      drop.spawnDrop((item) {
+//        item.pos = stage.findOpenTile();
+//        stage.items.add(item);
+//      });
+//    }
+
+    // Place the monsters.
+//    var numMonsters = rng.taper(level.numMonsters, 3);
+//    for (int i = 0; i < numMonsters; i++) {
+//      var monsterDepth = pickDepth(depth);
+//
+//      // Place strong monsters farther from the hero.
+//      var tries = 1;
+//      if (monsterDepth > depth) tries = 1 + (monsterDepth - depth) * 2;
+//      var pos = stage.findDistantOpenTile(tries);
+//
+//      var breed = rng.item(levels[monsterDepth].breeds);
+//      stage.spawnMonster(breed, pos);
+//    }
+
+    _quest = content.generateQuest(stage);
+    _quest.announce(log);
+
+    // TODO: Temp. Wizard light it.
+    /*
+    for (var pos in stage.bounds) {
+      for (var dir in Direction.all) {
+        if (stage.bounds.contains(pos + dir) &&
+            stage[pos + dir].isTransparent) {
+          stage[pos].visible = true;
+          break;
+        }
+      }
+    }
+    */
+
+    _stage.finishBuild();
   }
 }
 
 /// Defines the actual content for the game: the breeds, items, etc. that
 /// define the play experience.
 abstract class Content {
-  List<Area> get areas;
+  // TODO: Temp. Figure out where dungeon generator lives.
+  void buildStage(Stage stage);
+  Quest generateQuest(Stage stage);
+
   Map<String, Breed> get breeds;
   Map<String, ItemType> get items;
   List<Recipe> get recipes;

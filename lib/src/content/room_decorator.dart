@@ -3,8 +3,16 @@ import 'package:piecemeal/piecemeal.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 
+// TODO: Refactor this and move into Dungeon since there are no longer
+// subclasses.
 /// Mixin class with methods for decorating a room.
 abstract class RoomDecorator implements StageBuilder {
+  void onDecorateRoom(Rect room) {
+    if (rng.oneIn(2) && decorateRoundedCorners(room)) return;
+    if (rng.oneIn(5) && decorateTable(room)) return;
+    if (rng.oneIn(10) && decorateInnerRoom(room)) return;
+  }
+
   /// Places a few tables in the room.
   bool decorateTable(Rect room) {
     var pos = rng.vecInRect(room);

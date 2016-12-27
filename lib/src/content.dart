@@ -1,10 +1,11 @@
 import 'engine.dart';
 
 import 'content/affixes.dart';
-import 'content/areas.dart';
+import 'content/dungeon.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
+import 'content/quests.dart';
 import 'content/shops.dart';
 import 'content/tiles.dart';
 
@@ -14,7 +15,6 @@ Content createContent() {
   Tiles.initialize();
   Items.initialize();
   Monsters.initialize();
-  Areas.initialize();
   Recipes.initialize();
   Affixes.initialize();
   Shops.initialize();
@@ -23,7 +23,17 @@ Content createContent() {
 }
 
 class GameContent implements Content {
-  List<Area> get areas => Areas.all;
+  void buildStage(Stage stage) {
+    // TODO: Get rid of dungeon subclasses.
+    // TODO: Tweak parameters based on depth.
+    new Dungeon().generate(stage);
+  }
+
+  Quest generateQuest(Stage stage) {
+    // TODO: Get rid of quest stuff.
+    return new TileQuestBuilder("the stairs", Tiles.stairs).generate(stage);
+  }
+
   Map<String, Breed> get breeds => Monsters.all;
   Map<String, ItemType> get items => Items.all;
   List<Recipe> get recipes => Recipes.all;

@@ -57,10 +57,11 @@ class GameScreen extends Screen<Input> {
           _save.copyFrom(game.hero);
 
           // Remember that this level was completed.
-          var completed = _save.completedLevels[game.area.name];
-          if (completed == null || completed < game.level + 1) {
-            _save.completedLevels[game.area.name] = game.level + 1;
-          }
+          // TODO: Resurrect this for remembering which depth was completed.
+//          var completed = _save.completedLevels[game.area.name];
+//          if (completed == null || completed < game.level + 1) {
+//            _save.completedLevels[game.area.name] = game.level + 1;
+//          }
 
           ui.pop(true);
         } else {

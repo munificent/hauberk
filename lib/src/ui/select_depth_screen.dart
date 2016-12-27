@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:malison/malison.dart';
 
 import '../debug.dart';
@@ -36,9 +34,8 @@ class SelectDepthScreen extends Screen<Input> {
           return true;
 
       case Input.ok:
-        // TODO: Don't use area and level.
-        var game = new Game(content.areas[0], selectedDepth,
-            content, save);
+        // TODO: Pass in depth.
+        var game = new Game(content, save);
         ui.push(new GameScreen(save, game));
         return true;
 

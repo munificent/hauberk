@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import 'room_decorator.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
 
@@ -28,8 +29,8 @@ import 'tiles.dart';
 ///
 /// The end result of this is a multiply-connected dungeon with rooms and lots
 /// of winding corridors.
-abstract class Dungeon extends StageBuilder {
-  int get numRoomTries;
+class Dungeon extends StageBuilder with RoomDecorator {
+  int get numRoomTries => 140;
 
   /// The inverse chance of adding a connector between two regions that have
   /// already been joined. Increasing this leads to more redundantly connected
@@ -37,9 +38,9 @@ abstract class Dungeon extends StageBuilder {
   int get extraConnectorChance => 20;
 
   /// Increasing this allows rooms to be larger.
-  int get roomExtraSize => 0;
+  int get roomExtraSize => 1;
 
-  int get windingPercent => 0;
+  int get windingPercent => 70;
 
   var _rooms = <Rect>[];
 

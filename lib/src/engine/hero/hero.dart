@@ -150,8 +150,9 @@ class Hero extends Actor {
   /// Increases the hero's food by an appropriate amount after having explored
   /// [numExplored] additional tiles.
   void explore(int numExplored) {
-    food += health.max * game.area.abundance *
-            numExplored / game.stage.numExplorable;
+    // TODO: Tune abundance by depth, with some randomness?
+    const abundance = 12.0;
+    food += health.max * abundance * numExplored / game.stage.numExplorable;
   }
 
   int onGetSpeed() => Energy.normalSpeed;
