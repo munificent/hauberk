@@ -439,7 +439,7 @@ void armor(String name, int level, int price, appearance, int armor) {
 void item(String name, int level, appearance, {String equipSlot, ItemUse use,
     Attack attack, Attack tossAttack, int armor: 0, int price: 0,
     bool treasure: false}) {
-  // If the appearance isn"t an actual glyph, it should be a color function
+  // If the appearance isn't an actual glyph, it should be a color function
   // that will be applied to the current glyph.
   if (appearance is! Glyph) {
     appearance = appearance(_glyph);
