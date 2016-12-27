@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import 'monsters.dart';
 import 'room_decorator.dart';
 import 'stage_builder.dart';
 import 'tiles.dart';
@@ -51,7 +52,7 @@ class Dungeon extends StageBuilder with RoomDecorator {
   /// The index of the current region being carved.
   int _currentRegion = -1;
 
-  void generate(Stage stage) {
+  void generate(Stage stage, int depth) {
     if (stage.width % 2 == 0 || stage.height % 2 == 0) {
       throw new ArgumentError("The stage must be odd-sized.");
     }
@@ -82,6 +83,20 @@ class Dungeon extends StageBuilder with RoomDecorator {
     for (var i = 0; i < numStairs; i++) {
       var pos = stage.findOpenTile();
       stage.tiles[pos].type = Tiles.stairs;
+    }
+
+    // Place the monsters.
+    // TODO: Tune this. Make it based on depth. Take density of open areas into
+    // account?
+    // TODO: Place monsters into rooms. Give them themes.
+    var numMonsters = rng.taper(40, 2);
+    for (int i = 0; i < numMonsters; i++) {
+      var breed = Monsters.rootTag.choose(depth, Monsters.all);
+      if (breed == null) continue;
+
+      // TODO: Place strong monsters farther from the hero?
+      var pos = stage.findOpenTile();
+      stage.spawnMonster(breed, pos);
     }
   }
 

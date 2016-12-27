@@ -1,5 +1,6 @@
 import 'dart:html' as html;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
@@ -99,4 +100,65 @@ void generate() {
       }
     }
   }
+
+  var tableContents = new StringBuffer();
+  tableContents.write('''
+    <thead>
+    <tr>
+      <td colspan="2">Breed</td>
+      <td>Depth</td>
+      <td colspan="2">Health</td>
+      <td>Exp.</td>
+      <!--<td>Drops</td>-->
+    </tr>
+    </thead>
+    <tbody>
+    ''');
+
+  for (var actor in stage.actors) {
+    if (actor is Monster) {
+      var breed = actor.breed;
+      var glyph = breed.appearance as Glyph;
+      tableContents.write('''
+      <tr>
+        <td>
+          <pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
+        </td>
+        <td>${breed.name}</td>
+        <td>${breed.depth}</td>
+        <td class="r">${breed.maxHealth}</td>
+        <td><span class="bar" style="width: ${breed.maxHealth}px;"></span></td>
+        <td class="r">${(breed.experienceCents / 100).toStringAsFixed(2)}</td>
+        <td>
+      ''');
+
+      var attacks = breed.attacks.map(
+          (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} (${attack.averageDamage})');
+      tableContents.write(attacks.join(', '));
+
+      tableContents.write('</td><td>');
+
+      for (var flag in breed.flags) {
+        tableContents.write('$flag ');
+      }
+
+//      tableContents.write('</td><td>');
+//      var drop = drops[breed.name];
+//      var items = drop.keys.toList();
+//      items.sort((a, b) => drop[b].compareTo(drop[a]));
+//
+//      tableContents.write(items.map((item) {
+//        return "${(drop[item] / tries * 100).toStringAsFixed(3)}% $item";
+//      }).join("<br>"));
+
+      tableContents.write('</td></tr>');
+    }
+    tableContents.write('</tbody>');
+  }
+
+  var validator = new html.NodeValidatorBuilder.common();
+  validator.allowInlineStyles();
+
+  html.querySelector('table').setInnerHtml(tableContents.toString(),
+      validator: validator);
 }

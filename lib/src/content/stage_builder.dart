@@ -8,7 +8,7 @@ abstract class StageBuilder {
 
   Rect get bounds => stage.bounds;
 
-  void generate(Stage stage);
+  void generate(Stage stage, int depth);
 
   void bindStage(Stage stage) {
     this.stage = stage;

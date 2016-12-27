@@ -22,13 +22,11 @@ Content createContent() {
 }
 
 class GameContent implements Content {
-  void buildStage(Stage stage) {
-    // TODO: Get rid of dungeon subclasses.
-    // TODO: Tweak parameters based on depth.
-    new Dungeon().generate(stage);
+  void buildStage(Stage stage, int depth) {
+    new Dungeon().generate(stage, depth);
   }
 
-  Map<String, Breed> get breeds => Monsters.all;
+  List<Breed> get breeds => Monsters.all;
   Map<String, ItemType> get items => Items.all;
   List<Recipe> get recipes => Recipes.all;
   List<Shop> get shops => Shops.all;

@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
@@ -116,7 +117,7 @@ class Game {
     // TODO: Vary size?
     _stage = new Stage(151, 101, this);
 
-    content.buildStage(_stage);
+    content.buildStage(_stage, depth);
 
     var heroPos = stage.findOpenTile();
     hero = new Hero(this, heroPos, heroSave);
@@ -132,20 +133,6 @@ class Game {
 //        item.pos = stage.findOpenTile();
 //        stage.items.add(item);
 //      });
-//    }
-
-    // Place the monsters.
-//    var numMonsters = rng.taper(level.numMonsters, 3);
-//    for (int i = 0; i < numMonsters; i++) {
-//      var monsterDepth = pickDepth(depth);
-//
-//      // Place strong monsters farther from the hero.
-//      var tries = 1;
-//      if (monsterDepth > depth) tries = 1 + (monsterDepth - depth) * 2;
-//      var pos = stage.findDistantOpenTile(tries);
-//
-//      var breed = rng.item(levels[monsterDepth].breeds);
-//      stage.spawnMonster(breed, pos);
 //    }
 
     // TODO: Temp. Wizard light it.
@@ -169,9 +156,9 @@ class Game {
 /// define the play experience.
 abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
-  void buildStage(Stage stage);
+  void buildStage(Stage stage, int depth);
 
-  Map<String, Breed> get breeds;
+  List<Breed> get breeds;
   Map<String, ItemType> get items;
   List<Recipe> get recipes;
   List<Shop> get shops;

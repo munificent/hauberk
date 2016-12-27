@@ -19,7 +19,7 @@ class Forest extends StageBuilder {
 
   Forest();
 
-  void generate(Stage stage) {
+  void generate(Stage stage, int depth) {
     bindStage(stage);
 
     fill(Tiles.tree);

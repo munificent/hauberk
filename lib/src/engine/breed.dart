@@ -11,9 +11,10 @@ import 'items/item.dart';
 import 'log.dart';
 import 'monster.dart';
 import 'option.dart';
+import 'tag.dart';
 
 /// A single kind of [Monster] in the game.
-class Breed implements Quantifiable {
+class Breed extends Tagged implements Quantifiable {
   final Pronoun pronoun;
   String get name => singular;
 
@@ -48,7 +49,9 @@ class Breed implements Quantifiable {
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, {
-      this.maxHealth, this.tracking, this.meander, this.speed, this.flags});
+      int depth, this.maxHealth, this.tracking, this.meander, this.speed,
+      this.flags})
+      : super(depth);
 
   String get singular =>
       Log.parsePlural(_name, isPlural: false, forcePlural: true);

@@ -9,8 +9,8 @@ main() {
   var content = createContent();
 
   var text = new StringBuffer();
-  var breeds = new List.from(content.breeds.values);
-  breeds.sort((a, b) => a.experienceCents.compareTo(b.experienceCents));
+  var breeds = new List.from(content.breeds);
+  breeds.sort((a, b) => a.depth.compareTo(b.depth));
 
   // Generate a bunch of drops.
   var tries = 0;
@@ -20,7 +20,7 @@ main() {
     drops[breed.name] = {};
   }
 
-  for (var i = 0; i < 1000; i++) {
+  for (var i = 0; i < 100; i++) {
     tries++;
 
     for (var breed in breeds) {
@@ -35,6 +35,7 @@ main() {
     <thead>
     <tr>
       <td colspan="2">Breed</td>
+      <td>Depth</td>
       <td colspan="2">Health</td>
       <td>Meander</td>
       <td>Speed</td>
@@ -49,17 +50,21 @@ main() {
 
   for (var breed in breeds) {
     var glyph = breed.appearance as Glyph;
+
+    var exp = (breed.experienceCents / 100).toStringAsFixed(2);
+    var expPerLevel = (breed.experienceCents / breed.depth / 100).toStringAsFixed(2);
     text.write('''
         <tr>
           <td>
             <pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
           </td>
           <td>${breed.name}</td>
+          <td>${breed.depth}</td>
           <td class="r">${breed.maxHealth}</td>
           <td><span class="bar" style="width: ${breed.maxHealth}px;"></span></td>
           <td class="r">${breed.meander}</td>
           <td class="r">${breed.speed}</td>
-          <td class="r">${(breed.experienceCents / 100).toStringAsFixed(2)}</td>
+          <td class="r">$exp ($expPerLevel)</td>
           <td>
         ''');
 
