@@ -605,13 +605,13 @@ class GameScreen extends Screen<Input> {
       draw("Fighting", warrior.fighting);
     } else {
       draw("Combat", warrior.combat);
-      var mastery = warrior.masteries[weapon.type.category];
+      var mastery = warrior.masteries[weapon.type.weaponType];
       if (mastery != null) {
         // Capitalize it.
-        var category = weapon.type.category;
-        category = category.substring(0, 1).toUpperCase() +
-            category.substring(1);
-        draw("$category Master", mastery);
+        var weaponType = weapon.type.weaponType;
+        weaponType = weaponType.substring(0, 1).toUpperCase() +
+            weaponType.substring(1);
+        draw("$weaponType Master", mastery);
       }
     }
     draw("Toughness", warrior.toughness);

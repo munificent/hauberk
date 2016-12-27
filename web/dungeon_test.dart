@@ -49,7 +49,7 @@ void generate() {
   context.fillStyle = '#000';
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  var size = 5;
+  var size = 6;
   var stage = game.stage;
   canvas.width = stage.width * size;
   canvas.height = stage.height * size;

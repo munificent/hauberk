@@ -7,16 +7,9 @@ import 'items.dart';
 Drop parseDrop(String name, [int level]) {
   if (level == null) return _itemDrop(name);
 
-  // Find an item in this category so we can figure out the full path
-  // to it.
-  var categories = Items.all.values
-      .firstWhere((item) => item.categories.contains(name)).categories;
-
-  // Only keep the prefix of the path up to the given category.
-  categories = categories.take(categories.indexOf(name) + 1).toList();
-
-  if (categories == null) throw 'Could not find category "$name".';
-  return new _CategoryDrop(categories, level);
+  var tag = Items.tags[name];
+  if (tag == null) throw 'Could not find tag "$name".';
+  return new _TagDrop(tag, level);
 }
 
 /// Creates a single drop [Rarity].
@@ -74,55 +67,30 @@ class _ItemDrop implements Drop {
   }
 }
 
-/// Drops a randomly selected item near a level from a category.
-class _CategoryDrop implements Drop {
-  /// The path to the category to choose from.
-  final List<String> _category;
+/// Drops a randomly selected item near a level with a given tag.
+class _TagDrop implements Drop {
+  /// The tag to choose from.
+  final Tag _tag;
 
-  /// The average level of the drop.
-  final int _level;
+  /// The average depth of the drop.
+  final int _depth;
 
-  _CategoryDrop(this._category, this._level);
+  _TagDrop(this._tag, this._depth);
 
   void spawnDrop(AddItem addItem) {
-    // Possibly choose from the parent category.
-    var categoryDepth = _category.length - 1;
-    if (categoryDepth > 1 && rng.oneIn(10)) categoryDepth--;
-
-    // Chance of out-of-depth items.
-    var level = _level;
-    if (rng.oneIn(1000)) {
-      level += rng.range(20, 100);
-    } else if (rng.oneIn(100)) {
-      level += rng.range(5, 20);
-    } else if (rng.oneIn(10)) {
-      level += rng.range(1, 5);
-    }
-
-    // Find all of the items at or below the max level and in the category.
-    var category = _category[categoryDepth];
-    var items = Items.all.values
-        .where((item) => item.level <= level &&
-                         item.categories.contains(category)).toList();
-
-    if (items.isEmpty) return;
+    // TODO: Instead of downcast, make Tagged generic?
+    var itemType = _tag.choose(_depth, Items.all.values) as ItemType;
+    if (itemType == null) return;
 
     // TODO: Item rarity?
-
-    // Pick an item. Try a few times and take the best.
-    var itemType = rng.item(items);
-    for (var i = 0; i < 3; i++) {
-      var thisType = rng.item(items);
-      if (thisType.level > itemType.level) itemType = thisType;
-    }
 
     // Compare the item's actual level to the original desired level. If the
     // item is below that level, it increases the chances of an affix. (A weaker
     // item deeper in the dungeon is more likely to be magic.) Likewise, an
     // already-out-of-depth item is less likely to also be special.
-    var levelOffset = itemType.level - _level;
+    var depthOffset = itemType.depth - _depth;
 
-    addItem(Affixes.createItem(itemType, levelOffset));
+    addItem(Affixes.createItem(itemType, depthOffset));
   }
 }
 

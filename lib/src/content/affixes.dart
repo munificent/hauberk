@@ -8,8 +8,8 @@ typedef Attack _CreateAttack();
 class _AffixFactory {
   final String name;
 
-  /// The names of the categories that this affix can apply to.
-  final List<String> categories;
+  /// The names of the tags that this affix can apply to.
+  final List<String> tags;
 
   /// The level of the affix. Higher level affixes tend to only appear on
   /// higher level items.
@@ -18,21 +18,21 @@ class _AffixFactory {
   final _CreateAttack attack;
 
   _AffixFactory(
-      this.name, this.categories, this.level, this.rarity, this.attack);
+      this.name, this.tags, this.level, this.rarity, this.attack);
 }
 
 class Affixes {
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, [int levelOffset = 0]) {
-    // Uncategorized items don't have any affixes.
-    if (itemType.category == null) return new Item(itemType);
+    // Untagged items don't have any affixes.
+    if (itemType.tags.isEmpty) return new Item(itemType);
 
     // Give items a chance to boost their effective level when choosing a
     // affixes.
-    var level = rng.taper(itemType.level, 2);
+    var depth = rng.taper(itemType.depth, 2);
 
-    var prefix = _chooseAffix(_prefixes, itemType, level, levelOffset);
-    var suffix = _chooseAffix(_suffixes, itemType, level, levelOffset);
+    var prefix = _chooseAffix(_prefixes, itemType, depth, levelOffset);
+    var suffix = _chooseAffix(_suffixes, itemType, depth, levelOffset);
 
     // Decide if the item may have just a prefix, just a suffix, or (rarely)
     // both. This is mainly to make dual-affix items less common since they
@@ -54,8 +54,7 @@ class Affixes {
     // Get the affixes that can apply to the item.
     factories = factories.where((factory) {
       if (factory.level > level) return false;
-      return factory.categories
-          .any((category) => itemType.categories.contains(category));
+      return factory.tags.any(itemType.hasTag);
     }).toList();
 
     // TODO: For high level drops, consider randomly discarding some of the

@@ -36,7 +36,7 @@ class Warrior extends HeroClass {
   // Increases armor. Trained by taking damage.
   final toughness = new TrainedStat(400, 200);
 
-  // Each mastery increases damage when wielding a weapon of a given category.
+  // Each mastery increases damage when wielding a weapon of a given type.
   final masteries = <String, TrainedStat>{};
   TrainedStat _newMasteryStat() => new TrainedStat(100, 180);
 
@@ -48,17 +48,17 @@ class Warrior extends HeroClass {
     this.combat.increment(combat);
     this.toughness.increment(toughness);
 
-    masteries.forEach((category, count) {
+    masteries.forEach((name, count) {
       var stat = _newMasteryStat();
       stat.increment(count);
-      this.masteries[category] = stat;
+      this.masteries[name] = stat;
     });
   }
 
   Warrior clone() {
     var masteryCounts = <String, int>{};
-    masteries.forEach((category, stat) {
-      masteryCounts[category] = stat.count;
+    masteries.forEach((name, stat) {
+      masteryCounts[name] = stat.count;
     });
 
     return new Warrior.load(
@@ -74,7 +74,7 @@ class Warrior extends HeroClass {
       // TODO: Should combat apply to ranged attacks?
       attack = attack.addDamage(combat.level);
 
-      var mastery = masteries[weapon.type.category];
+      var mastery = masteries[weapon.type.weaponType];
       if (mastery != null) {
         attack = attack.multiplyDamage(1.0 + mastery.level * 0.1);
       }
@@ -110,10 +110,10 @@ class Warrior extends HeroClass {
       stat = combat;
       name = "combat";
 
-      var mastery = masteries.putIfAbsent(weapon.type.category,
+      var mastery = masteries.putIfAbsent(weapon.type.weaponType,
           _newMasteryStat);
       if (mastery.increment(monster.breed.maxHealth)) {
-        action.game.log.gain("{1} [have|has] reached ${weapon.type.category} "
+        action.game.log.gain("{1} [have|has] reached ${weapon.type.weaponType} "
             "mastery level ${mastery.level}.", hero);
       }
     } else {

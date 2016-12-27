@@ -16,7 +16,7 @@ class LanceCommand extends DirectionCommand {
     var weapon = game.hero.equipment.weapon;
     if (weapon == null) return false;
 
-    return weapon.type.categories.contains("spear");
+    return weapon.type.hasTag("spear");
   }
 
   Action getDirectionAction(Game game, Direction dir) => new LanceAction(dir);

@@ -1,6 +1,8 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import 'affixes.dart';
+import 'items.dart';
 import 'monsters.dart';
 import 'room_decorator.dart';
 import 'stage_builder.dart';
@@ -31,7 +33,7 @@ import 'tiles.dart';
 /// The end result of this is a multiply-connected dungeon with rooms and lots
 /// of winding corridors.
 class Dungeon extends StageBuilder with RoomDecorator {
-  int get numRoomTries => 140;
+  int get numRoomTries => 300;
 
   /// The inverse chance of adding a connector between two regions that have
   /// already been joined. Increasing this leads to more redundantly connected
@@ -39,9 +41,9 @@ class Dungeon extends StageBuilder with RoomDecorator {
   int get extraConnectorChance => 40;
 
   /// Increasing this allows rooms to be larger.
-  int get roomExtraSize => 1;
+  int get roomExtraSize => 2;
 
-  int get windingPercent => 40;
+  int get windingPercent => 30;
 
   var _rooms = <Rect>[];
 
@@ -85,11 +87,25 @@ class Dungeon extends StageBuilder with RoomDecorator {
       stage.tiles[pos].type = Tiles.stairs;
     }
 
+    // Place the items.
+    // TODO: Place into rooms. Give them themes, etc.
+    var numItems = rng.taper(100, 2);
+    for (int i = 0; i < numItems; i++) {
+      var itemType = Items.rootTag.choose(depth, Items.all.values);
+      if (itemType == null) continue;
+
+      var pos = stage.findOpenTile();
+      // TODO: Pass in levelOffset.
+      var item = Affixes.createItem(itemType);
+      item.pos = pos;
+      stage.items.add(item);
+    }
+
     // Place the monsters.
     // TODO: Tune this. Make it based on depth. Take density of open areas into
     // account?
     // TODO: Place monsters into rooms. Give them themes.
-    var numMonsters = rng.taper(40, 2);
+    var numMonsters = rng.taper(30 + depth, 2);
     for (int i = 0; i < numMonsters; i++) {
       var breed = Monsters.rootTag.choose(depth, Monsters.all);
       if (breed == null) continue;

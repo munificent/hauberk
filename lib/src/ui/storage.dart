@@ -230,8 +230,8 @@ class Storage {
     data['toughness'] = warrior.toughness.count;
 
     var masteries = {};
-    warrior.masteries.forEach((category, stat) {
-      masteries[category] = stat.count;
+    warrior.masteries.forEach((name, stat) {
+      masteries[name] = stat.count;
     });
 
     data['masteries'] = masteries;

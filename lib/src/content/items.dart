@@ -9,7 +9,7 @@ int _sortIndex = 0;
 /// a character code.
 var _glyph;
 
-String _category;
+String _tagPath;
 String _equipSlot;
 String _verb;
 
@@ -20,9 +20,16 @@ Element _tossElement;
 /// Percent chance of objects in the current category breaking when thrown.
 int _breakage;
 
+
 /// Static class containing all of the [ItemType]s.
 class Items {
   static final Map<String, ItemType> all = {};
+
+  static Tag get rootTag => tags["item"];
+
+  static final Map<String, Tag> tags = {
+    "item": new Tag("item")
+  };
 
   static void initialize() {
     // From Angband:
@@ -178,7 +185,7 @@ void potions() {
   bottled("Wind",       4,   30, white,       Element.air,         8, "blasts");
   bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, "freezes");
   bottled("Fire",      11,   70, red,         Element.fire,       22, "burns");
-  bottled("Water",     12,  110, blue,        Element.water,      26, "drowns");
+  bottled("Ocean",     12,  110, blue,        Element.water,      26, "drowns");
   bottled("Earth",     13,  150, brown,       Element.earth,      28, "crushes");
   bottled("Lightning", 16,  200, lightPurple, Element.lightning,  34, "shocks");
   bottled("Acid",      18,  250, lightGreen,  Element.acid,       38, "corrodes");
@@ -286,7 +293,7 @@ void weapons() {
   weapon("Valaska",       24, 2664, gray,       26, 26, 8);
   weapon("Battleaxe",     40, 4866, lightBlue,  32, 32, 7);
 
-  // Sling. In a category itself because many box affixes don't apply to it.
+  // Sling. In a category itself because many bow affixes don't apply to it.
   category("}", "equipment/weapon/sling", verb: "hit[s]");
   tossable(breakage: 15, range: 5);
   ranged("Sling",          3,   20, darkBrown,  "the stone",  2, 10, 1);
@@ -341,14 +348,9 @@ void boots() {
   armor("Greaves",              47, 1017, lightGray,  12);
 }
 
-void category(glyph, String category, {String equip, String verb}) {
+void category(glyph, String tag, {String equip, String verb}) {
   _glyph = glyph;
-  if (category == null) {
-    _category = null;
-  } else {
-    _category = "item/$category";
-  }
-
+  _tagPath = tag;
   _equipSlot = equip;
   _verb = verb;
 
@@ -370,73 +372,73 @@ void tossable({int damage, Element element, int range, int breakage}) {
   _breakage = breakage;
 }
 
-void treasure(String name, int level, appearance, int price) {
-  item(name, level, appearance, treasure: true, price: price);
+void treasure(String name, int depth, appearance, int price) {
+  item(name, depth, appearance, treasure: true, price: price);
 }
 
-void potion(String name, int level, int price, appearance, ItemUse use) {
+void potion(String name, int depth, int price, appearance, ItemUse use) {
   if (name.startsWith("of")) name = "Potion $name";
 
-  item(name, level, appearance, price: price, use: use);
+  item(name, depth, appearance, price: price, use: use);
 }
 
-void healing(String name, int level, int price, appearance, int amount,
+void healing(String name, int depth, int price, appearance, int amount,
     {bool curePoison: false}) {
-  potion(name, level, price, appearance,
+  potion(name, depth, price, appearance,
       () => new HealAction(amount, curePoison: curePoison));
 }
 
-void resistSalve(String name, int level, int price, appearance,
+void resistSalve(String name, int depth, int price, appearance,
     Element element) {
-  item("Salve of $name Resistance", level, appearance,
+  item("Salve of $name Resistance", depth, appearance,
       price: price, use: () => new ResistAction(40, element));
 }
 
-void bottled(String name, int level, int price, appearance, Element element,
+void bottled(String name, int depth, int price, appearance, Element element,
     int damage, String verb, [String noun]) {
   if (noun == null) noun = "the ${name.toLowerCase()}";
 
-  item("Bottled $name", level, appearance, price: price,
+  item("Bottled $name", depth, appearance, price: price,
       use: () => new RingSelfAction(
           new RangedAttack(noun, verb, damage, element, 6)));
 }
 
-void scroll(String name, int level, int price, appearance, ItemUse use) {
+void scroll(String name, int depth, int price, appearance, ItemUse use) {
   if (name.startsWith("of")) name = "Scroll $name";
 
-  item(name, level, appearance, price: price, use: use);
+  item(name, depth, appearance, price: price, use: use);
 }
 
-void weapon(String name, int level, int price, appearance, int damage,
+void weapon(String name, int depth, int price, appearance, int damage,
       int tossDamage,
       [int tossRange]) {
   var toss = new RangedAttack("the ${name.toLowerCase()}",
       Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
       tossRange != null ? tossRange : _tossRange);
-  item(name, level, appearance,
+  item(name, depth, appearance,
       equipSlot: "weapon",
       attack: attack(_verb, damage, Element.none),
       tossAttack: toss,
       price: price);
 }
 
-void ranged(String name, int level, int price, appearance, String noun,
+void ranged(String name, int depth, int price, appearance, String noun,
     int damage, int range, int tossDamage) {
   var toss = new RangedAttack("the ${name.toLowerCase()}",
       Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
       _tossRange);
-  item(name, level, appearance,
+  item(name, depth, appearance,
       equipSlot: "weapon",
       attack: new RangedAttack(noun, "pierce[s]", damage, Element.none, range),
       tossAttack: toss,
       price: price);
 }
 
-void armor(String name, int level, int price, appearance, int armor) {
-  item(name, level, appearance, armor: armor, price: price);
+void armor(String name, int depth, int price, appearance, int armor) {
+  item(name, depth, appearance, armor: armor, price: price);
 }
 
-void item(String name, int level, appearance, {String equipSlot, ItemUse use,
+void item(String name, int depth, appearance, {String equipSlot, ItemUse use,
     Attack attack, Attack tossAttack, int armor: 0, int price: 0,
     bool treasure: false}) {
   // If the appearance isn't an actual glyph, it should be a color function
@@ -445,8 +447,16 @@ void item(String name, int level, appearance, {String equipSlot, ItemUse use,
     appearance = appearance(_glyph);
   }
 
-  var categories = <String>[];
-  if (_category != null) categories = _category.split("/");
+  var tags = <String>[];
+  if (_tagPath != null) tags = _tagPath.split("/");
+
+  Tag parent = Items.rootTag;
+  Tag tag;
+  for (var tagName in tags) {
+    tag = Items.tags.putIfAbsent(tagName, () => new Tag(tagName));
+    tag.parents.add(parent);
+    parent = tag;
+  }
 
   if (equipSlot == null) equipSlot = _equipSlot;
 
@@ -455,8 +465,12 @@ void item(String name, int level, appearance, {String equipSlot, ItemUse use,
         _tossDamage, _tossElement, _tossRange);
   }
 
-  Items.all[name] = new ItemType(name, appearance, level, _sortIndex++,
-      categories, equipSlot, use, attack, tossAttack, _breakage, armor, price,
+  var itemType = new ItemType(name, appearance, depth, _sortIndex++, equipSlot,
+      use, attack, tossAttack, _breakage, armor, price,
       treasure: treasure);
+
+  if (tag != null) itemType.tags.add(tag);
+
+  Items.all[name] = itemType;
 }
 

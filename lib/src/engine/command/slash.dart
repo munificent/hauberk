@@ -14,7 +14,7 @@ class SlashCommand extends DirectionCommand {
     var weapon = game.hero.equipment.weapon;
     if (weapon == null) return false;
 
-    return weapon.type.categories.contains("sword");
+    return weapon.type.hasTag("sword");
   }
 
   Action getDirectionAction(Game game, Direction dir) => new SlashAction(dir);

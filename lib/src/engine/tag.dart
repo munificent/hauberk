@@ -10,37 +10,41 @@ class Tagged {
   /// Higher depth objects are found later in the game.
   final int depth;
 
-  final List<Tag> tags = [];
+  final Set<Tag> tags = new Set();
 
   Tagged(this.depth);
 
-  bool hasTag(Tag tag) => tags.any((thisTag) => thisTag.hasTag(tag));
+  Set<Tag> get allTags {
+    var tags = new Set<Tag>();
+    for (var tag in this.tags) tag._addTags(tags);
+    return tags;
+  }
+
+  bool hasTag(String name) => tags.any((tag) => tag.hasTag(name));
 }
 
 class Tag {
   final String name;
-  final List<Tag> parents = [];
+  final Set<Tag> parents = new Set();
 
   Tag(this.name);
 
-  bool hasTag(Tag tag) {
-    if (tag == this) return true;
-    return parents.any((thisTag) => thisTag.hasTag(tag));
+  bool hasTag(String name) {
+    if (name == this.name) return true;
+    return parents.any((tag) => tag.hasTag(name));
   }
 
   // TODO: Make generic.
-  // TODO: This is copied from _CategoryDrop. Unify them.
-  Tagged choose(int depth, List<Tagged> all) {
+  Tagged choose(int depth, Iterable<Tagged> all) {
     // Possibly choose from a parent tag.
     var tag = this;
     while (tag.parents.isNotEmpty && rng.oneIn(10)) {
-      tag = rng.item(tag.parents);
+      tag = rng.item(tag.parents.toList());
     }
 
     var minDepth = depth ~/ 2;
 
     // Bell curve around goal depth.
-    var before = depth;
     var width = depth ~/ 5;
     for (var i = 0; i < 3; i++) {
       depth += rng.triangleInt(0, width);
@@ -59,7 +63,7 @@ class Tag {
     var allowed = all
         .where((tagged) => tagged.depth >= minDepth &&
             tagged.depth <= depth &&
-            tagged.hasTag(tag))
+            tagged.hasTag(tag.name))
         .toList();
 
     // TODO: Rarity?
@@ -75,4 +79,13 @@ class Tag {
 
     return object;
   }
+
+  void _addTags(Set<Tag> tags) {
+    if (tags.contains(this)) return;
+
+    tags.add(this);
+    for (var parent in parents) parent._addTags(tags);
+  }
+
+  String toString() => name;
 }

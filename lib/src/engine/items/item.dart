@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';
+import '../tag.dart';
 
 /// A thing that can be picked up.
 class Item extends Thing implements Comparable<Item> {
@@ -83,15 +84,9 @@ class Item extends Thing implements Comparable<Item> {
 typedef Action ItemUse();
 
 /// A kind of [Item]. Each item will have a type that describes the item.
-class ItemType {
+class ItemType extends Tagged {
   final String name;
   final appearance;
-
-  /// The item's level.
-  ///
-  /// Higher level items are found later in the game. Some items may not have
-  /// a level.
-  final int level;
 
   final int sortIndex;
 
@@ -114,18 +109,6 @@ class ItemType {
 
   final int armor;
 
-  /// The path to this item type in the hierarchical organization of items.
-  ///
-  /// May be empty for uncategorized items.
-  final List<String> categories;
-
-  /// A more precise categorization than [equipSlot]. For example, "dagger",
-  /// or "cloak". May be `null`.
-  String get category {
-    if (categories.isEmpty) return null;
-    return categories.last;
-  }
-
   /// How much gold this item is worth.
   final int price;
 
@@ -135,10 +118,23 @@ class ItemType {
   /// increases the hero's gold and disappears.
   bool isTreasure;
 
-  ItemType(this.name, this.appearance, this.level, this.sortIndex,
-      this.categories, this.equipSlot, this.use, this.attack, this.tossAttack,
+  ItemType(this.name, this.appearance, int depth, this.sortIndex,
+      this.equipSlot, this.use, this.attack, this.tossAttack,
       this.breakage, this.armor, this.price, {treasure: false})
-      : isTreasure = treasure;
+      : isTreasure = treasure,
+        super(depth);
+
+  /// If this item is a weapon, returns which kind of weapon it is -- "spear",
+  /// "sword", etc. Otherwise returns `null`.
+  String get weaponType {
+    for (var tag in allTags) {
+      for (var parent in tag.parents) {
+        if (parent.name == "weapon") return tag.name;
+      }
+    }
+
+    return null;
+  }
 
   String toString() => name;
 }

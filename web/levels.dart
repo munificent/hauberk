@@ -13,7 +13,7 @@ main() {
     var drop = parseDrop("item", i);
     var drops = {};
 
-    var tries = 1000;
+    var tries = 100;
     for (var i = 0; i < tries; i++) {
       drop.spawnDrop((item) {
         var name = item.type.name;
