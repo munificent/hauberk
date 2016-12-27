@@ -35,12 +35,12 @@ class Dungeon extends StageBuilder with RoomDecorator {
   /// The inverse chance of adding a connector between two regions that have
   /// already been joined. Increasing this leads to more redundantly connected
   /// dungeons.
-  int get extraConnectorChance => 20;
+  int get extraConnectorChance => 40;
 
   /// Increasing this allows rooms to be larger.
   int get roomExtraSize => 1;
 
-  int get windingPercent => 70;
+  int get windingPercent => 40;
 
   var _rooms = <Rect>[];
 

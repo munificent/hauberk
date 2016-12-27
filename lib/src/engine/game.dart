@@ -22,8 +22,8 @@ class Game {
   final _actions = new Queue<Action>();
   Hero hero;
 
-  Game(Content content, HeroSave save) {
-    _buildStage(content, save);
+  Game(Content content, HeroSave save, int depth) {
+    _buildStage(content, save, depth);
   }
 
   GameResult update() {
@@ -111,9 +111,10 @@ class Game {
 //  }
 
   // TODO: Move to separate class.
-  void _buildStage(Content content, HeroSave heroSave) {
+  void _buildStage(Content content, HeroSave heroSave, int depth) {
+    // TODO: Do something useful with depth.
     // TODO: Vary size?
-    _stage = new Stage(201, 81, this);
+    _stage = new Stage(151, 101, this);
 
     content.buildStage(_stage);
 

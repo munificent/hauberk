@@ -34,8 +34,7 @@ class SelectDepthScreen extends Screen<Input> {
           return true;
 
       case Input.ok:
-        // TODO: Pass in depth.
-        var game = new Game(content, save);
+        var game = new Game(content, save, selectedDepth);
         ui.push(new GameScreen(save, game));
         return true;
 

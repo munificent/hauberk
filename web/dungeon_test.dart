@@ -12,73 +12,43 @@ html.CanvasRenderingContext2D context;
 // TODO: Get this working again now that areas and levels are gone.
 
 var content = createContent();
-var area = 2;
-var level = 0;
 var heroClass = new Warrior();
 var save = new HeroSave("Hero", heroClass);
 
-Area get currentArea {
-  var areaSelect = html.querySelector("#area") as html.SelectElement;
-  var areaIndex = int.parse(areaSelect.value);
-  return content.areas[areaIndex];
-}
-
-int get currentLevel {
-  var levelSelect = html.querySelector("#level") as html.SelectElement;
-  return int.parse(levelSelect.value);
+int get depth {
+  var depthSelect = html.querySelector("#depth") as html.SelectElement;
+  return int.parse(depthSelect.value);
 }
 
 main() {
   canvas = html.querySelector("canvas") as html.CanvasElement;
   context = canvas.context2D;
 
-  var areaSelect = html.querySelector("#area") as html.SelectElement;
-
-  var i = 0;
-  for (var area in content.areas) {
-    areaSelect.append(
-      new html.OptionElement(data: area.name, value: i.toString(),
-          selected: i == 0));
-    i++;
+  var depthSelect = html.querySelector("#depth") as html.SelectElement;
+  for (var i = 1; i <= Option.maxDepth; i++) {
+    depthSelect.append(
+      new html.OptionElement(data: i.toString(), value: i.toString(),
+          selected: i == 1));
   }
 
-  areaSelect.onChange.listen((event) {
-    refreshLevelSelect();
-    render();
-  });
-
-  var levelSelect = html.querySelector("#level") as html.SelectElement;
-  levelSelect.onChange.listen((event) {
-    render();
+  depthSelect.onChange.listen((event) {
+    generate();
   });
 
   canvas.onClick.listen((_) {
-    render();
+    generate();
   });
 
-  refreshLevelSelect();
-  render();
+  generate();
 }
 
-refreshLevelSelect() {
-  var levelSelect = html.querySelector("#level");
-  levelSelect.children.clear();
-
-  for (var i = 0; i < currentArea.levels.length; i++) {
-    levelSelect.append(
-      new html.OptionElement(data: (i + 1).toString(), value: i.toString(),
-          selected: i == 0));
-  }
-}
-
-render() {
-  // TODO: Get rid of area and level selects, replace with depth select.
-  var game = new Game(content, save);
+void generate() {
+  var game = new Game(content, save, depth);
 
   context.fillStyle = '#000';
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  var size = 8;
+  var size = 5;
   var stage = game.stage;
   canvas.width = stage.width * size;
   canvas.height = stage.height * size;
