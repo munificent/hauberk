@@ -16,13 +16,14 @@ import 'stage.dart';
 
 /// Root class for the game engine. All game state is contained within this.
 class Game {
+  final int depth;
   Stage get stage => _stage;
   Stage _stage;
   final log = new Log();
   final _actions = new Queue<Action>();
   Hero hero;
 
-  Game(Content content, HeroSave save, int depth) {
+  Game(Content content, HeroSave save, this.depth) {
     _buildStage(content, save, depth);
   }
 

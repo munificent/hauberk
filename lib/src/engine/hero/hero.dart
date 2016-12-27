@@ -38,10 +38,13 @@ class HeroSave {
   /// How much gold the hero has.
   int gold = Option.heroGoldStart;
 
+  /// The lowest depth that the hero has successfully explored and exited.
+  int maxDepth = 0;
+
   HeroSave(this.name, this.heroClass);
 
   HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
-      this.home, this.crucible, this.experienceCents, this.gold);
+      this.home, this.crucible, this.experienceCents, this.gold, this.maxDepth);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be

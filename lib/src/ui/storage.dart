@@ -59,8 +59,9 @@ class Storage {
 
       var gold = hero['gold'];
 
-      // Older heroes don't have gold.
-      if (gold == null) gold = 0;
+      var maxDepth = hero['maxDepth'];
+      // Older saves don't have this.
+      if (maxDepth == null) maxDepth = 0;
 
       var heroClass;
       switch (hero['class']['name']) {
@@ -70,7 +71,7 @@ class Storage {
       }
 
       var heroSave = new HeroSave.load(name, heroClass, inventory, equipment,
-          home, crucible, experience, gold);
+          home, crucible, experience, gold, maxDepth);
       heroes.add(heroSave);
     }
   }
@@ -166,7 +167,8 @@ class Storage {
         'home': home,
         'crucible': crucible,
         'experience': hero.experienceCents,
-        'gold': hero.gold
+        'gold': hero.gold,
+        'maxDepth': hero.maxDepth
       });
     }
 

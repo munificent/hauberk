@@ -57,13 +57,8 @@ class GameScreen extends Screen<Input> {
         if (game.stage[game.hero.pos].isExit) {
           _save.copyFrom(game.hero);
 
-          // Remember that this level was completed.
-          // TODO: Resurrect this for remembering which depth was completed.
-//          var completed = _save.completedLevels[game.area.name];
-//          if (completed == null || completed < game.level + 1) {
-//            _save.completedLevels[game.area.name] = game.level + 1;
-//          }
-
+          // Remember that this depth was reached.
+          _save.maxDepth = math.max(_save.maxDepth, game.depth);
           ui.pop(true);
         } else {
           game.log.error('You cannot exit from here.');

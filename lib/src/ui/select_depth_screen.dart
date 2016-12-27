@@ -26,11 +26,11 @@ class SelectDepthScreen extends Screen<Input> {
           return true;
 
       case Input.n:
-          _changeDepth(selectedDepth - 15);
+          _changeDepth(selectedDepth - 10);
           return true;
 
       case Input.s:
-          _changeDepth(selectedDepth + 15);
+          _changeDepth(selectedDepth + 10);
           return true;
 
       case Input.ok:
@@ -66,16 +66,18 @@ class SelectDepthScreen extends Screen<Input> {
 
     // TODO: Do something prettier.
     for (var depth = 1; depth <= Option.maxDepth; depth++) {
-      var x = (depth - 1) % 15;
-      var y = (depth - 1) ~/ 15;
+      var x = (depth - 1) % 10;
+      var y = (depth - 1) ~/ 10;
 
       var fore = Color.white;
       var back = Color.black;
-      if (depth == selectedDepth) {
+      if (!Debug.enabled && depth > save.maxDepth + 1) {
+        fore = Color.darkGray;
+      } else if (depth == selectedDepth) {
         fore = Color.black;
         back = Color.yellow;
       }
-      terminal.writeAt(5 + x * 6, 5 + y * 2,
+      terminal.writeAt(17 + x * 6, 8 + y * 2,
           depth.toString().padLeft(3), fore, back);
     }
   }
@@ -94,9 +96,7 @@ class SelectDepthScreen extends Screen<Input> {
   void _changeDepth(int level) {
     if (level < 1) return;
     if (level > Option.maxDepth) return;
-
-    // TODO: Limit level that can be selected based on how deep previously
-    // went.
+    if (!Debug.enabled && level > save.maxDepth + 1) return;
 
     selectedDepth = level;
     dirty();
