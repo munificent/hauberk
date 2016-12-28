@@ -7,3 +7,8 @@ dependencies:
   piecemeal: any
 transformers:
 - hauberk/src/markdown_to_html
+
+dependency_overrides:
+  piecemeal:
+    path:
+      ../piecemeal

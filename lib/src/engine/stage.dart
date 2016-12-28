@@ -187,7 +187,7 @@ class Stage {
   }
 
   void spawnMonster(Breed breed, Vec pos) {
-    final monsters = [];
+    final monsters = <Actor>[];
     final count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 2);
 
     addMonster(Vec pos) {
@@ -202,7 +202,7 @@ class Stage {
     // If the monster appears in groups, place the rest of the groups.
     for (var i = 1; i < count; i++) {
       // Find every open tile that's neighboring a monster in the group.
-      final open = [];
+      final open = <Vec>[];
       for (final monster in monsters) {
         for (final dir in Direction.all) {
           final neighbor = monster.pos + dir;

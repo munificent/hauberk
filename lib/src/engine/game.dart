@@ -115,25 +115,13 @@ class Game {
   void _buildStage(Content content, HeroSave heroSave, int depth) {
     // TODO: Do something useful with depth.
     // TODO: Vary size?
-    _stage = new Stage(151, 101, this);
+    _stage = new Stage(121, 81, this);
 
     content.buildStage(_stage, depth);
 
     var heroPos = stage.findOpenTile();
     hero = new Hero(this, heroPos, heroSave);
     _stage.addActor(hero);
-
-    // Place the items.
-//    var numItems = rng.taper(level.numItems, 3);
-//    for (var i = 0; i < numItems; i++) {
-//      final itemDepth = pickDepth(depth);
-//      final drop = levels[itemDepth].floorDrop;
-//
-//      drop.spawnDrop((item) {
-//        item.pos = stage.findOpenTile();
-//        stage.items.add(item);
-//      });
-//    }
 
     // TODO: Temp. Wizard light it.
     /*

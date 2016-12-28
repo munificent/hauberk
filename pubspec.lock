@@ -37,9 +37,9 @@ packages:
     version: "1.3.6"
   piecemeal:
     description:
-      name: piecemeal
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../piecemeal"
+      relative: true
+    source: path
     version: "0.2.1"
   pool:
     description: pool

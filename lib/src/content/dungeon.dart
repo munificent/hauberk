@@ -1,14 +1,11 @@
-import 'dart:math' as math;
-
-import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'affixes.dart';
 import 'items.dart';
 import 'monsters.dart';
-import 'stage_builder.dart';
 import 'tiles.dart';
+import 'rooms.dart';
 
 /// The random dungeon generator.
 ///
@@ -35,7 +32,7 @@ import 'tiles.dart';
 /// The end result of this is a multiply-connected dungeon with rooms and lots
 /// of winding corridors.
 class Dungeon {
-  static const numRoomTries = 20;
+  static const numRoomTries = 60;
   static const numRoomPositionTries = 20;
 
   /// The inverse chance of adding a connector between two regions that have
@@ -172,6 +169,7 @@ class Dungeon {
 
     _startRegion();
     _carve(start);
+    _maze.add(start);
 
     cells.add(start);
     while (cells.isNotEmpty) {
@@ -212,95 +210,47 @@ class Dungeon {
   }
 
   void _addRooms() {
-    // TODO: Make some room types rarer than others. Tune by depth.
-    // TODO: Cache this so we don't do it every time we generate a dungeon.
-    var roomTypes = <RoomType>[
-      new RectangleRoom(3, 3),
-      new RectangleRoom(5, 3), new RectangleRoom(3, 5),
-      new RectangleRoom(5, 5),
-      new RectangleRoom(7, 5), new RectangleRoom(5, 7),
-      new RectangleRoom(7, 7),
-      new RectangleRoom(9, 5), new RectangleRoom(5, 9),
-      new RectangleRoom(9, 7), new RectangleRoom(7, 9),
-      new RectangleRoom(9, 9),
-      new RectangleRoom(11, 7), new RectangleRoom(7, 11),
-      new RectangleRoom(11, 9), new RectangleRoom(9, 11),
-      new RectangleRoom(11, 11),
-      new RectangleRoom(13, 7), new RectangleRoom(7, 13),
-      new RectangleRoom(13, 9), new RectangleRoom(9, 13),
-      new OctagonRoom(5, 5, 1),
-      new OctagonRoom(7, 7, 2),
-      new OctagonRoom(9, 9, 2),
-      new OctagonRoom(9, 9, 3),
-      new OctagonRoom(11, 11, 2),
-      new OctagonRoom(11, 11, 3),
-    ];
-
-    for (var template in roomTemplates.values) {
-      var lines = template.split("\n").map((line) => line.trim()).toList();
-      lines.removeLast();
-      roomTypes.add(new TemplateRoom(lines));
-
-      // Flip it horizontally.
-      roomTypes.add(new TemplateRoom(lines
-          .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
-          .toList()));
-
-      // Flip it vertically.
-      roomTypes.add(new TemplateRoom(lines.reversed.toList()));
-
-      // Flip it both ways.
-        roomTypes.add(new TemplateRoom(lines.reversed
-            .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
-            .toList()));
-
-      // Rotate it left.
-      var rotated = <String>[];
-      for (var x = 0; x < lines[0].length; x++) {
-        var codes = <int>[];
-        for (var y = 0; y < lines.length; y++) {
-          codes.add(lines[y].codeUnitAt(x));
-        }
-        rotated.add(new String.fromCharCodes(codes));
-      }
-      roomTypes.add(new TemplateRoom(rotated));
-
-      // Rotate it right.
-      roomTypes.add(new TemplateRoom(rotated.reversed
-          .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
-          .toList()));
-    }
-
     for (var i = 0; i < numRoomTries; i++) {
-      var roomType = rng.item(roomTypes);
-      for (var j = 0; j < numRoomPositionTries; j++) {
-        var x = rng.range((bounds.width - roomType.width) ~/ 2) * 2 + 1;
-        var y = rng.range((bounds.height - roomType.height) ~/ 2) * 2 + 1;
+      var roomType = RoomType.choose(depth);
 
-        var room = new Rect(x, y, roomType.width, roomType.height);
+      var room = _tryFindOpenSpace(roomType.width, roomType.height);
+      if (room == null) continue;
 
-        var overlaps = false;
-        for (var other in _rooms.keys) {
-          if (room.distanceTo(other) <= 0) {
-            overlaps = true;
-            break;
-          }
-        }
+      _rooms[room] = roomType;
+      _startRegion();
 
-        if (overlaps) continue;
-
-        _rooms[room] = roomType;
-
-        _startRegion();
-
-        for (var pos in room) {
-          _carve(pos);
-        }
+      for (var pos in room) {
+        _carve(pos);
       }
     }
   }
 
-  void _addConnector(int x, int y) {
+  /// Tries to find an open area large enough for a room with size [width],
+  /// [height].
+  ///
+  /// Returns `null` if not found.
+  Rect _tryFindOpenSpace(int width, int height) {
+    for (var j = 0; j < numRoomPositionTries; j++) {
+      var x = rng.range((bounds.width - width) ~/ 2) * 2 + 1;
+      var y = rng.range((bounds.height - height) ~/ 2) * 2 + 1;
+
+      var room = new Rect(x, y, width, height);
+
+      var overlaps = false;
+      for (var other in _rooms.keys) {
+        if (room.distanceTo(other) <= 0) {
+          overlaps = true;
+          break;
+        }
+      }
+
+      if (!overlaps) return room;
+    }
+
+    return null;
+  }
+
+  void addConnector(int x, int y) {
     var pos = new Vec(x, y);
     if (!bounds.inflate(-1).contains(pos)) return;
 
@@ -435,285 +385,3 @@ class Dungeon {
     _regions[pos] = _currentRegion;
   }
 }
-
-abstract class RoomType {
-  int get width;
-  int get height;
-
-  /// Fill in the bounds of [room] with this room's individual style.
-  ///
-  /// Also, add any connectors as are possible from the room.
-  ///
-  /// When this is called, [room] will already be cleared to all floor.
-  void place(Dungeon dungeon, Rect room);
-
-  void decorate(Dungeon dungeon, Rect room) {
-    if (rng.oneIn(2)) {
-      var tables = rng.inclusive(1, 3);
-      for (var i = 0; i < tables; i++) {
-        decorateTable(dungeon, room);
-      }
-    }
-  }
-
-  /// Tries to place a table in the room.
-  bool decorateTable(Dungeon dungeon, Rect room) {
-    var pos = rng.vecInRect(room);
-
-    if (dungeon.getTile(pos) != Tiles.floor) return false;
-
-    // Don't block an exit.
-    if (pos.x == room.left && dungeon.getTile(pos.offsetX(-1)) != Tiles.wall) {
-      return false;
-    }
-
-    if (pos.y == room.top && dungeon.getTile(pos.offsetY(-1)) != Tiles.wall) {
-      return false;
-    }
-
-    if (pos.x == room.right && dungeon.getTile(pos.offsetX(1)) != Tiles.wall) {
-      return false;
-    }
-
-    if (pos.y == room.bottom && dungeon.getTile(pos.offsetY(1)) != Tiles.wall) {
-      return false;
-    }
-
-    dungeon.setTile(pos, Tiles.table);
-    return true;
-  }
-}
-
-class RectangleRoom extends RoomType {
-  final int width;
-  final int height;
-
-  RectangleRoom(this.width, this.height);
-
-  void place(Dungeon dungeon, Rect room) {
-    for (var x = room.left; x < room.right; x++) {
-      dungeon._addConnector(x, room.top - 1);
-      dungeon._addConnector(x, room.bottom);
-    }
-
-    for (var y = room.top; y < room.bottom; y++) {
-      dungeon._addConnector(room.left - 1, y);
-      dungeon._addConnector(room.right, y);
-    }
-
-    decorate(dungeon, room);
-  }
-}
-
-class OctagonRoom extends RoomType {
-  final int width;
-  final int height;
-  final int slope;
-
-  OctagonRoom(this.width, this.height, this.slope);
-
-  void place(Dungeon dungeon, Rect room) {
-    for (var pos in room) {
-      // Fill in the corners.
-      if ((room.topLeft - pos).rookLength < slope ||
-          (room.topRight - pos).rookLength < slope + 1 ||
-          (room.bottomLeft - pos).rookLength < slope + 1 ||
-          (room.bottomRight - pos).rookLength < slope + 2) {
-        dungeon.setTile(pos, Tiles.wall);
-      }
-    }
-
-    // TODO: Decorate inside?
-
-    dungeon._addConnector(room.center.x, room.top - 1);
-    dungeon._addConnector(room.center.x, room.bottom);
-    dungeon._addConnector(room.left - 1, room.center.y);
-    dungeon._addConnector(room.right, room.center.y);
-
-    decorate(dungeon, room);
-  }
-}
-
-class TemplateRoom extends RoomType {
-  int get width => lines[0].length - 2;
-  int get height => lines.length - 2;
-
-  final List<String> lines;
-
-  TemplateRoom(this.lines);
-
-  void place(Dungeon dungeon, Rect room) {
-    // Render the tiles.
-    var doorChoices = <Vec>[];
-
-    for (var y = 0; y < height; y++) {
-      var line = lines[y + 1];
-      for (var x = 0; x < width; x++) {
-        var pos = room.pos.offset(x, y);
-
-        var tileType = templateTiles[line[x + 1]];
-        if (tileType != null) {
-          dungeon.setTile(pos, tileType);
-        } else {
-          switch (line[x + 1]) {
-            case '?':
-              // The template can have multiple "?" and one of them will be
-              // randomly turned into a door and the others walls.
-              doorChoices.add(pos);
-              break;
-          }
-        }
-      }
-    }
-
-    // Place the random door.
-    if (doorChoices.isNotEmpty) {
-      var door = rng.range(doorChoices.length);
-      for (var i = 0; i < doorChoices.length; i++) {
-        dungeon.setTile(doorChoices[i],
-            i == door ? Tiles.closedDoor : Tiles.wall);
-      }
-    }
-
-    // Handle the treasure and monster tiles. Do this after the tile ones so
-    // that group monsters don't spawn in tiles that later get filled.
-    for (var y = 0; y < height; y++) {
-      var line = lines[y + 1];
-      for (var x = 0; x < width; x++) {
-        var pos = room.pos.offset(x, y);
-        switch (line[x + 1]) {
-          case '1': dungeon.tryPlaceItem(pos, dungeon.depth); break;
-          case '2': dungeon.tryPlaceItem(pos, dungeon.depth + 4); break;
-          case '3': dungeon.tryPlaceItem(pos, dungeon.depth + 8); break;
-          case '4': dungeon.tryPlaceItem(pos, dungeon.depth + 16); break;
-          case '5': dungeon.tryPlaceItem(pos, dungeon.depth + 32); break;
-
-          case 'a': dungeon.trySpawn(pos, dungeon.depth); break;
-          case 'b': dungeon.trySpawn(pos, dungeon.depth + 4); break;
-          case 'c': dungeon.trySpawn(pos, dungeon.depth + 8); break;
-          case 'd': dungeon.trySpawn(pos, dungeon.depth + 16); break;
-          case 'e': dungeon.trySpawn(pos, dungeon.depth + 32); break;
-
-          case 'A':
-            dungeon.tryPlaceItem(pos, dungeon.depth);
-            dungeon.trySpawn(pos, dungeon.depth);
-            break;
-          case 'B':
-            dungeon.tryPlaceItem(pos, dungeon.depth + 4);
-            dungeon.trySpawn(pos, dungeon.depth + 4);
-            break;
-          case 'C':
-            dungeon.tryPlaceItem(pos, dungeon.depth + 8);
-            dungeon.trySpawn(pos, dungeon.depth + 8);
-            break;
-          case 'D':
-            dungeon.tryPlaceItem(pos, dungeon.depth + 16);
-            dungeon.trySpawn(pos, dungeon.depth + 16);
-            break;
-          case 'E':
-            dungeon.tryPlaceItem(pos, dungeon.depth + 32);
-            dungeon.trySpawn(pos, dungeon.depth + 32);
-            break;
-        }
-      }
-    }
-
-    // Look for `+` along the outer rim. Those are the connectors.
-    for (var x = 0; x < lines[0].length; x++) {
-      if (lines[0][x] == '+') {
-        dungeon._addConnector(room.left + x, room.top - 1);
-      }
-
-      if (lines[lines.length - 1][x] == '+') {
-        dungeon._addConnector(room.left + x, room.bottom);
-      }
-    }
-
-    for (var y = 0; y < lines.length; y++) {
-      if (lines[y][0] == '+') {
-        dungeon._addConnector(room.left - 1, room.top + y);
-      }
-
-      if (lines[y][lines[y].length - 1] == '+') {
-        dungeon._addConnector(room.right, room.top + y);
-      }
-    }
-  }
-}
-
-final templateTiles = {
-  '.': Tiles.floor,
-  '%': Tiles.lowWall,
-  '+': Tiles.closedDoor,
-  '#': Tiles.wall,
-  '~': Tiles.water
-};
-
-const roomTemplates = const {
-"Tiny treasure nook":
-r"""
-##+#+#+##
-#.......#
-#.##?##.#
-+.?1B1?.+
-#.##?##.#
-#.......#
-##+#+#+##
-""",
-
-"Moat":
-r"""
-###+#+#+###
-##.......##
-#.........#
-#~~~~a~~~~#
-#.........#
-##.......##
-###+#+#+###
-""",
-
-"Snake":
-r"""
-###+#+#+###
-#1..a.a..1#
-#.#######.#
-+.+.AB11#.+
-#.#######.#
-+.#CBA..+.+
-#.#.#####.#
-+.#..222#.+
-#.#######.#
-#1..a.a..1#
-###+#+#+###
-""",
-
-"Castle":
-r"""
-#######################
-#.....................#
-#.....................#
-#..#####.......#####..#
-#..#.1.#.......#.2.#..#
-#..#11.#########.22#..#
-#..#...+..bbb..+...#..#
-#..###+#########+###..#
-#....#a#...d...#.#....#
-#....#a#.#####.#c#....#
-#....+a#..d..#.#c#....#
-#....#######.#d#c#....#
-#....#.e.e...#.#.#....#
-#..###+#######.#+###..#
-#..#...+.+...#.+...#..#
-#..#44.####+####.33#..#
-#..#.4.#.......#.3.#..#
-#..#####..555..#####..#
-#....~~~.......~~~....#
-#.....~~~~~~~~~~~.....#
-#......~~~~~~~~~......#
-#.....................#
-#.....................#
-#.....................#
-#.....................#
-###+++++++++++++++++###
-"""
-};
