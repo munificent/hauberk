@@ -26,16 +26,16 @@ class GameContent implements Content {
     new Dungeon(stage, depth).generate();
   }
 
-  List<Breed> get breeds => Monsters.all;
-  Map<String, ItemType> get items => Items.all;
+  ItemType findItem(String name) => Items.types.find(name);
+
   List<Recipe> get recipes => Recipes.all;
   List<Shop> get shops => Shops.all;
 
   HeroSave createHero(String name, HeroClass heroClass) {
     var hero = new HeroSave(name, heroClass);
     for (var itemType in [
-      Items.all["Mending Salve"],
-      Items.all["Scroll of Sidestepping"]
+      Items.types.find("Mending Salve"),
+      Items.types.find("Scroll of Sidestepping")
     ]) {
       hero.inventory.tryAdd(new Item(itemType));
     }

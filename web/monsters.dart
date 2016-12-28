@@ -2,14 +2,15 @@ import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
 
-import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/content/items.dart';
+import 'package:hauberk/src/content/monsters.dart';
 import 'package:hauberk/src/engine.dart';
 
 main() {
-  var content = createContent();
-
   var text = new StringBuffer();
-  var breeds = new List.from(content.breeds);
+  Items.initialize();
+  Monsters.initialize();
+  var breeds = Monsters.breeds.all.toList();
   breeds.sort((a, b) => a.depth.compareTo(b.depth));
 
   // Generate a bunch of drops.

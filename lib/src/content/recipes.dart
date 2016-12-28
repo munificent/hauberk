@@ -103,7 +103,7 @@ void armor() {
 
 void recipe(drop, List<String> ingredientNames) {
   List<String> produces;
-  var ingredients = ingredientNames.map((name) => Items.all[name]).toList();
+  var ingredients = ingredientNames.map(Items.types.find).toList();
   if (drop is String) {
     produces = ["Produces: $drop"];
     drop = parseDrop(drop);

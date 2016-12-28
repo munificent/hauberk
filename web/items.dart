@@ -2,13 +2,12 @@ import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
 
-import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/content/items.dart';
 
 main() {
-  var content = createContent();
-
   var text = new StringBuffer();
-  var items = content.items.values.toList();
+  Items.initialize();
+  var items = Items.types.all.toList();
 
   items.sort((a, b) {
     if (a.depth == null && b.depth == null) {

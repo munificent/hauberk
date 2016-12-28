@@ -138,14 +138,7 @@ class Dungeon {
   }
 
   void tryPlaceItem(Vec pos, int depth, [String tag]) {
-    Tag<ItemType> itemTag;
-    if (tag == null) {
-      itemTag = Items.rootTag;
-    } else {
-      itemTag = Items.tags[tag];
-    }
-
-    var itemType = itemTag.choose(depth, Items.all.values);
+    var itemType = Items.types.choose(depth, tag);
     if (itemType == null) return;
 
     // TODO: Pass in levelOffset.
@@ -155,7 +148,7 @@ class Dungeon {
   }
 
   void trySpawn(Vec pos, int depth) {
-    var breed = Monsters.rootTag.choose(depth, Monsters.all);
+    var breed = Monsters.breeds.choose(depth);
     if (breed == null) return;
 
     stage.spawnMonster(breed, pos);

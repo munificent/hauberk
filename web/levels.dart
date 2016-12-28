@@ -5,7 +5,6 @@ import 'package:piecemeal/piecemeal.dart';
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/drops.dart';
 import 'package:hauberk/src/content/monsters.dart';
-import 'package:hauberk/src/engine.dart';
 
 main() {
   createContent();
@@ -53,7 +52,7 @@ main() {
 
     var breedCounts = {};
     for (var i = 0; i < tries; i++) {
-      var breed = Monsters.rootTag.choose(depth, Monsters.all) as Breed;
+      var breed = Monsters.breeds.choose(depth);
       if (breed == null) continue;
 
       breedCounts.putIfAbsent(breed.name, () => 0);

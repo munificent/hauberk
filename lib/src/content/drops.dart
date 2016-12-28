@@ -6,10 +6,7 @@ import 'items.dart';
 
 Drop parseDrop(String name, [int level]) {
   if (level == null) return _itemDrop(name);
-
-  var tag = Items.tags[name];
-  if (tag == null) throw 'Could not find tag "$name".';
-  return new _TagDrop(tag, level);
+  return new _TagDrop(name, level);
 }
 
 /// Creates a single drop [Rarity].
@@ -49,11 +46,7 @@ class Rarity {
 }
 
 Drop _itemDrop(String name) {
-  var itemType = Items.all[name];
-  if (itemType == null) throw 'Could not find item type "$name".';
-
-  // See if the item is in a group.
-  return new _ItemDrop(itemType);
+  return new _ItemDrop(Items.types.find(name));
 }
 
 /// Drops an item of a given type.
@@ -70,7 +63,7 @@ class _ItemDrop implements Drop {
 /// Drops a randomly selected item near a level with a given tag.
 class _TagDrop implements Drop {
   /// The tag to choose from.
-  final Tag<ItemType> _tag;
+  final String _tag;
 
   /// The average depth of the drop.
   final int _depth;
@@ -78,8 +71,7 @@ class _TagDrop implements Drop {
   _TagDrop(this._tag, this._depth);
 
   void spawnDrop(AddItem addItem) {
-    // TODO: Instead of downcast, make Tagged generic?
-    var itemType = _tag.choose(_depth, Items.all.values) as ItemType;
+    var itemType = Items.types.choose(_depth, _tag);
     if (itemType == null) return;
 
     // TODO: Item rarity?

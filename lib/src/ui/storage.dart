@@ -77,7 +77,7 @@ class Storage {
   }
 
   Item _loadItem(Map data) {
-    var type = content.items[data['type']];
+    var type = content.findItem(data['type']);
     if (type == null) {
       print("Couldn't find item type '${data['type']}, discarding item.");
       return null;

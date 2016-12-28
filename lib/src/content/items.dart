@@ -20,16 +20,9 @@ Element _tossElement;
 /// Percent chance of objects in the current category breaking when thrown.
 int _breakage;
 
-
 /// Static class containing all of the [ItemType]s.
 class Items {
-  static final Map<String, ItemType> all = {};
-
-  static Tag<ItemType> get rootTag => tags["item"];
-
-  static final Map<String, Tag<ItemType>> tags = {
-    "item": new Tag<ItemType>("item")
-  };
+  static final types = new TagSet<ItemType>("item");
 
   static void initialize() {
     // From Angband:
@@ -453,22 +446,11 @@ void item(String name, int depth, appearance, {ItemUse use,
     appearance = appearance(_glyph);
   }
 
-  List<String> tags;
-  if (_tagPath == "item") {
-    tags = ["item"];
-  } else if (_tagPath != null) {
-    tags = ["item"];
-    tags.addAll(_tagPath.split("/"));
-  }
-
   Tag<ItemType> tag;
-  if (tags != null) {
-    Tag<ItemType> parent;
-    for (var tagName in tags) {
-      tag = Items.tags.putIfAbsent(tagName, () => new Tag<ItemType>(tagName));
-      if (parent != null) tag.parents.add(parent);
-      parent = tag;
-    }
+  if (_tagPath == null) {
+    // Do nothing.
+  } else {
+    tag = Items.types.defineTag(_tagPath);
   }
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
@@ -488,7 +470,7 @@ void item(String name, int depth, appearance, {ItemUse use,
     ];
 
     for (var slot in equipSlots) {
-      if (tag.hasTag(slot)) {
+      if (tag.contains(slot)) {
         equipSlot = slot;
         break;
       }
@@ -504,8 +486,6 @@ void item(String name, int depth, appearance, {ItemUse use,
       use, attack, tossAttack, _breakage, armor, price,
       treasure: treasure);
 
-  if (tag != null) itemType.tags.add(tag);
-
   itemType.flags.addAll(_flags);
   if (flags != null) {
     for (var flag in flags.split(" ")) {
@@ -517,6 +497,10 @@ void item(String name, int depth, appearance, {ItemUse use,
     }
   }
 
-  Items.all[name] = itemType;
+  if (tag != null) {
+    Items.types.add(itemType, tag.name);
+  } else {
+    Items.types.addUntagged(itemType);
+  }
 }
 

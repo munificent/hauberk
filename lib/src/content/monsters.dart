@@ -24,9 +24,7 @@ var _glyph;
 
 /// Static class containing all of the [Monster] [Breed]s.
 class Monsters {
-  static final List<Breed> all = [];
-
-  static final rootTag = new Tag<Breed>("monster");
+  static final TagSet<Breed> breeds = new TagSet("monster");
 
   static void initialize() {
     // Here's approximately the level distributions for the different
@@ -741,8 +739,8 @@ Breed breed(String name, int depth, Glyph appearance(char), int health,
       moves, drop, depth: depth, maxHealth: health, tracking: tracking,
       meander: meander + _meander,
       speed: speed + _speed, flags: flagSet);
-  breed.tags.add(Monsters.rootTag);
-  Monsters.all.add(breed);
+
+  Monsters.breeds.add(breed, "monster");
   return breed;
 }
 

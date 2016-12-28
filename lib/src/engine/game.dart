@@ -4,7 +4,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'action/action.dart';
 import 'actor.dart';
-import 'breed.dart';
 import 'element.dart';
 import 'hero/hero.dart';
 import 'hero/hero_class.dart';
@@ -146,8 +145,7 @@ abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
   void buildStage(Stage stage, int depth);
 
-  List<Breed> get breeds;
-  Map<String, ItemType> get items;
+  ItemType findItem(String name);
   List<Recipe> get recipes;
   List<Shop> get shops;
 
