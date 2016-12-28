@@ -72,6 +72,8 @@ void generate() {
         fill = 'rgb(160, 110, 60)';
       } else if (type == Tiles.closedDoor) {
         fill = 'rgb(160, 110, 60)';
+      } else if (type == Tiles.water) {
+        fill = 'hsl(220, 100%, 40%)';
       } else if (type == Tiles.tree) {
         fill = 'rgb(0, 100, 0)';
       } else if (type == Tiles.treeAlt1) {

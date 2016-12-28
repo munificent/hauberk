@@ -23,7 +23,7 @@ Content createContent() {
 
 class GameContent implements Content {
   void buildStage(Stage stage, int depth) {
-    new Dungeon().generate(stage, depth);
+    new Dungeon(stage, depth).generate();
   }
 
   List<Breed> get breeds => Monsters.all;

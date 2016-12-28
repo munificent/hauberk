@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
@@ -33,7 +34,7 @@ import 'tiles.dart';
 ///
 /// The end result of this is a multiply-connected dungeon with rooms and lots
 /// of winding corridors.
-class Dungeon extends StageBuilder {
+class Dungeon {
   static const numRoomTries = 20;
   static const numRoomPositionTries = 20;
 
@@ -42,6 +43,11 @@ class Dungeon extends StageBuilder {
   /// dungeons.
   static const extraConnectorChance = 40;
 
+  final Stage stage;
+  final int depth;
+
+  Rect get bounds => stage.bounds;
+
   /// Increasing this allows rooms to be larger.
   int get roomExtraSize => 2;
 
@@ -49,6 +55,7 @@ class Dungeon extends StageBuilder {
 
   final _rooms = <Rect, RoomType>{};
   final _connectors = <Vec>[];
+  final _maze = <Vec>[];
 
   /// For each open position in the dungeon, the index of the connected region
   /// that that position is a part of.
@@ -57,7 +64,9 @@ class Dungeon extends StageBuilder {
   /// The index of the current region being carved.
   int _currentRegion = -1;
 
-  void generate(Stage stage, int depth) {
+  Dungeon(this.stage, this.depth);
+
+  void generate() {
     // TODO: This occasionally generates dungeons with unreachable areas. I
     // think it's because of the limited connectors exposed by some room types.
     // Need to decide how to handle that.
@@ -69,8 +78,6 @@ class Dungeon extends StageBuilder {
     if (stage.width % 2 == 0 || stage.height % 2 == 0) {
       throw new ArgumentError("The stage must be odd-sized.");
     }
-
-    bindStage(stage);
 
     fill(Tiles.wall);
     _regions = new Array2D(stage.width, stage.height);
@@ -104,14 +111,8 @@ class Dungeon extends StageBuilder {
     // TODO: Place into rooms. Give them themes, etc.
     var numItems = rng.taper(80 + depth * 2, 2);
     for (int i = 0; i < numItems; i++) {
-      var itemType = Items.rootTag.choose(depth, Items.all.values);
-      if (itemType == null) continue;
-
       var pos = stage.findOpenTile();
-      // TODO: Pass in levelOffset.
-      var item = Affixes.createItem(itemType);
-      item.pos = pos;
-      stage.items.add(item);
+      tryPlaceItem(pos, depth);
     }
 
     // Place the monsters.
@@ -120,16 +121,48 @@ class Dungeon extends StageBuilder {
     // TODO: Place monsters into rooms. Give them themes.
     var numMonsters = rng.taper(30 + depth, 2);
     for (int i = 0; i < numMonsters; i++) {
-      var breed = Monsters.rootTag.choose(depth, Monsters.all);
-      if (breed == null) continue;
-
-      // TODO: Place strong monsters farther from the hero?
       var pos = stage.findOpenTile();
-      stage.spawnMonster(breed, pos);
+      trySpawn(pos, depth);
     }
   }
 
-  void onDecorateRoom(Rect room) {}
+  TileType getTile(Vec pos) => stage[pos].type;
+
+  void setTile(Vec pos, TileType type) {
+    stage[pos].type = type;
+  }
+
+  void fill(TileType tile) {
+    for (var y = 0; y < stage.height; y++) {
+      for (var x = 0; x < stage.width; x++) {
+        setTile(new Vec(x, y), tile);
+      }
+    }
+  }
+
+  void tryPlaceItem(Vec pos, int depth, [String tag]) {
+    Tag itemTag;
+    if (tag == null) {
+      itemTag = Items.rootTag;
+    } else {
+      itemTag = Items.tags[tag];
+    }
+
+    var itemType = itemTag.choose(depth, Items.all.values);
+    if (itemType == null) return;
+
+    // TODO: Pass in levelOffset.
+    var item = Affixes.createItem(itemType);
+    item.pos = pos;
+    stage.items.add(item);
+  }
+
+  void trySpawn(Vec pos, int depth) {
+    var breed = Monsters.rootTag.choose(depth, Monsters.all);
+    if (breed == null) return;
+
+    stage.spawnMonster(breed, pos);
+  }
 
   /// Implementation of the "growing tree" algorithm from here:
   /// http://www.astrolog.org/labyrnth/algrithm.htm.
@@ -163,6 +196,8 @@ class Dungeon extends StageBuilder {
 
         _carve(cell + dir);
         _carve(cell + dir * 2);
+        _maze.add(cell + dir);
+        _maze.add(cell + dir * 2);
 
         cells.add(cell + dir * 2);
         lastDir = dir;
@@ -178,13 +213,16 @@ class Dungeon extends StageBuilder {
 
   void _addRooms() {
     // TODO: Make some room types rarer than others. Tune by depth.
-    var roomTypes = [
+    // TODO: Cache this so we don't do it every time we generate a dungeon.
+    var roomTypes = <RoomType>[
       new RectangleRoom(3, 3),
       new RectangleRoom(5, 3), new RectangleRoom(3, 5),
       new RectangleRoom(5, 5),
       new RectangleRoom(7, 5), new RectangleRoom(5, 7),
+      new RectangleRoom(7, 7),
       new RectangleRoom(9, 5), new RectangleRoom(5, 9),
       new RectangleRoom(9, 7), new RectangleRoom(7, 9),
+      new RectangleRoom(9, 9),
       new RectangleRoom(11, 7), new RectangleRoom(7, 11),
       new RectangleRoom(11, 9), new RectangleRoom(9, 11),
       new RectangleRoom(11, 11),
@@ -197,6 +235,41 @@ class Dungeon extends StageBuilder {
       new OctagonRoom(11, 11, 2),
       new OctagonRoom(11, 11, 3),
     ];
+
+    for (var template in roomTemplates.values) {
+      var lines = template.split("\n").map((line) => line.trim()).toList();
+      lines.removeLast();
+      roomTypes.add(new TemplateRoom(lines));
+
+      // Flip it horizontally.
+      roomTypes.add(new TemplateRoom(lines
+          .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
+          .toList()));
+
+      // Flip it vertically.
+      roomTypes.add(new TemplateRoom(lines.reversed.toList()));
+
+      // Flip it both ways.
+        roomTypes.add(new TemplateRoom(lines.reversed
+            .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
+            .toList()));
+
+      // Rotate it left.
+      var rotated = <String>[];
+      for (var x = 0; x < lines[0].length; x++) {
+        var codes = <int>[];
+        for (var y = 0; y < lines.length; y++) {
+          codes.add(lines[y].codeUnitAt(x));
+        }
+        rotated.add(new String.fromCharCodes(codes));
+      }
+      roomTypes.add(new TemplateRoom(rotated));
+
+      // Rotate it right.
+      roomTypes.add(new TemplateRoom(rotated.reversed
+          .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
+          .toList()));
+    }
 
     for (var i = 0; i < numRoomTries; i++) {
       var roomType = rng.item(roomTypes);
@@ -323,7 +396,7 @@ class Dungeon extends StageBuilder {
     while (!done) {
       done = true;
 
-      for (var pos in bounds.inflate(-1)) {
+      for (var pos in _maze) {
         if (getTile(pos) == Tiles.wall) continue;
 
         // If it only has one exit, it's a dead end.
@@ -460,3 +533,187 @@ class OctagonRoom extends RoomType {
     decorate(dungeon, room);
   }
 }
+
+class TemplateRoom extends RoomType {
+  int get width => lines[0].length - 2;
+  int get height => lines.length - 2;
+
+  final List<String> lines;
+
+  TemplateRoom(this.lines);
+
+  void place(Dungeon dungeon, Rect room) {
+    // Render the tiles.
+    var doorChoices = <Vec>[];
+
+    for (var y = 0; y < height; y++) {
+      var line = lines[y + 1];
+      for (var x = 0; x < width; x++) {
+        var pos = room.pos.offset(x, y);
+
+        var tileType = templateTiles[line[x + 1]];
+        if (tileType != null) {
+          dungeon.setTile(pos, tileType);
+        } else {
+          switch (line[x + 1]) {
+            case '?':
+              // The template can have multiple "?" and one of them will be
+              // randomly turned into a door and the others walls.
+              doorChoices.add(pos);
+              break;
+          }
+        }
+      }
+    }
+
+    // Place the random door.
+    if (doorChoices.isNotEmpty) {
+      var door = rng.range(doorChoices.length);
+      for (var i = 0; i < doorChoices.length; i++) {
+        dungeon.setTile(doorChoices[i],
+            i == door ? Tiles.closedDoor : Tiles.wall);
+      }
+    }
+
+    // Handle the treasure and monster tiles. Do this after the tile ones so
+    // that group monsters don't spawn in tiles that later get filled.
+    for (var y = 0; y < height; y++) {
+      var line = lines[y + 1];
+      for (var x = 0; x < width; x++) {
+        var pos = room.pos.offset(x, y);
+        switch (line[x + 1]) {
+          case '1': dungeon.tryPlaceItem(pos, dungeon.depth); break;
+          case '2': dungeon.tryPlaceItem(pos, dungeon.depth + 4); break;
+          case '3': dungeon.tryPlaceItem(pos, dungeon.depth + 8); break;
+          case '4': dungeon.tryPlaceItem(pos, dungeon.depth + 16); break;
+          case '5': dungeon.tryPlaceItem(pos, dungeon.depth + 32); break;
+
+          case 'a': dungeon.trySpawn(pos, dungeon.depth); break;
+          case 'b': dungeon.trySpawn(pos, dungeon.depth + 4); break;
+          case 'c': dungeon.trySpawn(pos, dungeon.depth + 8); break;
+          case 'd': dungeon.trySpawn(pos, dungeon.depth + 16); break;
+          case 'e': dungeon.trySpawn(pos, dungeon.depth + 32); break;
+
+          case 'A':
+            dungeon.tryPlaceItem(pos, dungeon.depth);
+            dungeon.trySpawn(pos, dungeon.depth);
+            break;
+          case 'B':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 4);
+            dungeon.trySpawn(pos, dungeon.depth + 4);
+            break;
+          case 'C':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 8);
+            dungeon.trySpawn(pos, dungeon.depth + 8);
+            break;
+          case 'D':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 16);
+            dungeon.trySpawn(pos, dungeon.depth + 16);
+            break;
+          case 'E':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 32);
+            dungeon.trySpawn(pos, dungeon.depth + 32);
+            break;
+        }
+      }
+    }
+
+    // Look for `+` along the outer rim. Those are the connectors.
+    for (var x = 0; x < lines[0].length; x++) {
+      if (lines[0][x] == '+') {
+        dungeon._addConnector(room.left + x, room.top - 1);
+      }
+
+      if (lines[lines.length - 1][x] == '+') {
+        dungeon._addConnector(room.left + x, room.bottom);
+      }
+    }
+
+    for (var y = 0; y < lines.length; y++) {
+      if (lines[y][0] == '+') {
+        dungeon._addConnector(room.left - 1, room.top + y);
+      }
+
+      if (lines[y][lines[y].length - 1] == '+') {
+        dungeon._addConnector(room.right, room.top + y);
+      }
+    }
+  }
+}
+
+final templateTiles = {
+  '.': Tiles.floor,
+  '%': Tiles.lowWall,
+  '+': Tiles.closedDoor,
+  '#': Tiles.wall,
+  '~': Tiles.water
+};
+
+const roomTemplates = const {
+"Tiny treasure nook":
+r"""
+##+#+#+##
+#.......#
+#.##?##.#
++.?1B1?.+
+#.##?##.#
+#.......#
+##+#+#+##
+""",
+
+"Moat":
+r"""
+###+#+#+###
+##.......##
+#.........#
+#~~~~a~~~~#
+#.........#
+##.......##
+###+#+#+###
+""",
+
+"Snake":
+r"""
+###+#+#+###
+#1..a.a..1#
+#.#######.#
++.+.AB11#.+
+#.#######.#
++.#CBA..+.+
+#.#.#####.#
++.#..222#.+
+#.#######.#
+#1..a.a..1#
+###+#+#+###
+""",
+
+"Castle":
+r"""
+#######################
+#.....................#
+#.....................#
+#..#####.......#####..#
+#..#.1.#.......#.2.#..#
+#..#11.#########.22#..#
+#..#...+..bbb..+...#..#
+#..###+#########+###..#
+#....#a#...d...#.#....#
+#....#a#.#####.#c#....#
+#....+a#..d..#.#c#....#
+#....#######.#d#c#....#
+#....#.e.e...#.#.#....#
+#..###+#######.#+###..#
+#..#...+.+...#.+...#..#
+#..#44.####+####.33#..#
+#..#.4.#.......#.3.#..#
+#..#####..555..#####..#
+#....~~~.......~~~....#
+#.....~~~~~~~~~~~.....#
+#......~~~~~~~~~......#
+#.....................#
+#.....................#
+#.....................#
+#.....................#
+###+++++++++++++++++###
+"""
+};

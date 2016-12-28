@@ -29,6 +29,52 @@ class Monsters {
   static final rootTag = new Tag("monster");
 
   static void initialize() {
+    // Here's approximately the level distributions for the different
+    // broad categories on monsters. Monsters are very roughly lumped
+    // together so that different depths tend to have a different
+    // feel. This doesn't mean that all monsters of a category will
+    // fall in that range, just that they tend to. For every group,
+    // there will likely be some oddball out of range monsters, like
+    // death molds.
+
+    //                   0  10  20  30  40  50  60  70  80  90 100
+    // jelly             OOOooo-----
+    // bugs              --oooOOOooo-----------
+    // animals           ooOOOooooooo------
+    // kobolds              --ooOOoo--
+    // reptilians               --oooOOOo-
+    // humanoids             ----oooooOOOOoooo----
+    // plants                  --o--        --oooOoo----
+    // orcs                    --ooOOOoo----
+    // ogres                        --ooOOOo-
+    // undead                            --------oOOOOOoooooo-----
+    // trolls                           --ooOOOoooo-------
+    // demons                                 -----ooooOOOOooooo--
+    // elementals                   --------ooooooooooooo-----
+    // golems                                --ooOOOoooo---
+    // giants                                     --oooOOOooo-----
+    // quylthulgs                                     -----ooooooo
+    // mythical beasts                 ----------oooooooOOOOoo----
+    // dragons                                  -----oooOOOoo-
+    // ancient dragons                               ----ooooOOOOo
+    // ancients                                            ---ooOO
+
+    // jelly - unmoving, do interesting things when touched
+    // bugs - quick, breed, normal attacks
+    // animals - normal normal normal, sometimes groups
+    // kobolds - weakest of the "human-like" races that can drop useable stuff
+    // reptilians
+    // humanoids
+    // plants - poison touch, unmoving but very strong
+    // orcs
+    // ogres
+    // undead
+    //   zombies - slow, appear in groups, very bad to be touched by
+    //   ghosts - quick, bad to be touched by
+
+    // Here's the different letters used for monsters. Letters marked
+    // with a * differ from how the letter is used in Angband.
+
     // a  Arachnid/Scorpion   A  Ancient being
     // b  Giant Bat           B  Bird
     // c  Canine (Dog)        C  Canid (Dog-like humanoid)
@@ -97,13 +143,8 @@ class Monsters {
 
 arachnids() {
   group("a", flags: "fearless");
-  breed("garden spider", 1, darkAqua, 2, [
-    attack("bite[s]", 2)
-  ], drop: percent(3, "Stinger"),
-      meander: 8, flags: "group");
-
-  breed("brown spider", 3, brown, 1, [
-    attack("bite[s]", 15, Element.poison)
+  breed("brown spider", 1, brown, 3, [
+    attack("bite[s]", 8, Element.poison)
   ], drop: percent(5, "Stinger"),
       meander: 8);
 
@@ -299,8 +340,8 @@ insects() {
       speed: 3);
 
   breed("giant centipede", 3, red, 16, [
-    attack("crawl[s] on", 3),
-    attack("bite[s]", 5),
+    attack("crawl[s] on", 4),
+    attack("bite[s]", 8),
   ], speed: 3, meander: 0);
 }
 
@@ -526,7 +567,7 @@ people() {
   ], meander: 2);
 
   breed("drunken priest", 5, aqua, 18, [
-    attack("hit[s]", 3),
+    attack("hit[s]", 8),
     heal(rate: 15, amount: 8)
   ], drop: [
     percent(15, "scroll", 3),

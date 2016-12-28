@@ -12,6 +12,7 @@ class Tiles {
   static TileType openDoor;
   static TileType closedDoor;
   static TileType stairs;
+  static TileType water;
 
   static TileType grass;
   static TileType tree;
@@ -33,6 +34,10 @@ class Tiles {
     Tiles.closedDoor = solid("closed door", brown('+'), darkBrown('+'));
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
+
+    // TODO: Allow flying monster to fly over it.
+    Tiles.water = obstacle("water",
+        blue(CharCode.almostEqualTo), darkBlue(CharCode.almostEqualTo));
 
     Tiles.stairs = exit("stairs",
         lightGray(CharCode.identicalTo), darkGray(CharCode.identicalTo));

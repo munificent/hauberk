@@ -61,7 +61,7 @@ main() {
           <td>${breed.name}</td>
           <td>${breed.depth}</td>
           <td class="r">${breed.maxHealth}</td>
-          <td><span class="bar" style="width: ${breed.maxHealth}px;"></span></td>
+          <td><span class="bar" style="width: ${breed.maxHealth / 10}px;"></span></td>
           <td class="r">${breed.meander}</td>
           <td class="r">${breed.speed}</td>
           <td class="r">$exp ($expPerLevel)</td>
