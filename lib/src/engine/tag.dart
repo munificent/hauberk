@@ -83,18 +83,19 @@ class TagSet<T extends Tagged<T>> {
       }
 
       tag.parents.add(parent);
+      parent = tag;
     }
 
     return tag;
   }
 
-  void add(T element, [String tagPaths]) {
+  void add(T element, [String tagNames]) {
     var tags = <Tag<T>>[];
-    if (tagPaths == null) {
+    if (tagNames == null) {
       tags.add(_tags[_rootTagName]);
     } else {
-      for (var tagPath in tagPaths.split(" ")) {
-        tags.add(defineTag(tagPath));
+      for (var name in tagNames.split(" ")) {
+        tags.add(findTag(name));
       }
     }
 

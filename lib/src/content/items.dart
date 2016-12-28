@@ -9,7 +9,7 @@ int _sortIndex = 0;
 /// a character code.
 var _glyph;
 
-String _tagPath;
+Tag<ItemType> _tag;
 String _verb;
 List<String> _flags;
 
@@ -345,7 +345,13 @@ void boots() {
 
 void category(glyph, String tag, {String verb, String flags}) {
   _glyph = glyph;
-  _tagPath = tag;
+
+  if (tag != null) {
+    _tag = Items.types.defineTag(tag);
+  } else {
+    _tag = null;
+  }
+
   _verb = verb;
   if (flags != null) {
     _flags = flags.split(" ");
@@ -446,16 +452,9 @@ void item(String name, int depth, appearance, {ItemUse use,
     appearance = appearance(_glyph);
   }
 
-  Tag<ItemType> tag;
-  if (_tagPath == null) {
-    // Do nothing.
-  } else {
-    tag = Items.types.defineTag(_tagPath);
-  }
-
   // Use the tags (if any) to figure out which slot it can be equipped in.
   String equipSlot;
-  if (tag != null) {
+  if (_tag != null) {
     // TODO: Copied from equipment.dart. Unify?
     var equipSlots = [
       'weapon',
@@ -470,7 +469,7 @@ void item(String name, int depth, appearance, {ItemUse use,
     ];
 
     for (var slot in equipSlots) {
-      if (tag.contains(slot)) {
+      if (_tag.contains(slot)) {
         equipSlot = slot;
         break;
       }
@@ -497,8 +496,8 @@ void item(String name, int depth, appearance, {ItemUse use,
     }
   }
 
-  if (tag != null) {
-    Items.types.add(itemType, tag.name);
+  if (_tag != null) {
+    Items.types.add(itemType, _tag.name);
   } else {
     Items.types.addUntagged(itemType);
   }
