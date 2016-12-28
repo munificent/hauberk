@@ -1,21 +1,19 @@
 import 'package:piecemeal/piecemeal.dart';
 
-// TODO: Use this for ItemType too.
-
 /// Base class for objects that are organized into a hierarchy with levels for
 /// each object.
-class Tagged {
+class Tagged<T> {
   /// The object's depth.
   ///
   /// Higher depth objects are found later in the game.
   final int depth;
 
-  final Set<Tag> tags = new Set();
+  final Set<Tag<T>> tags = new Set();
 
   Tagged(this.depth);
 
-  Set<Tag> get allTags {
-    var tags = new Set<Tag>();
+  Set<Tag<T>> get allTags {
+    var tags = new Set<Tag<T>>();
     for (var tag in this.tags) tag._addTags(tags);
     return tags;
   }
@@ -23,9 +21,9 @@ class Tagged {
   bool hasTag(String name) => tags.any((tag) => tag.hasTag(name));
 }
 
-class Tag {
+class Tag<T> {
   final String name;
-  final Set<Tag> parents = new Set();
+  final Set<Tag<T>> parents = new Set();
 
   Tag(this.name);
 
@@ -34,8 +32,7 @@ class Tag {
     return parents.any((tag) => tag.hasTag(name));
   }
 
-  // TODO: Make generic.
-  Tagged choose(int depth, Iterable<Tagged> all) {
+  Tagged<T> choose(int depth, Iterable<Tagged<T>> all) {
     // Possibly choose from a parent tag.
     var tag = this;
     while (tag.parents.isNotEmpty && rng.oneIn(10)) {
@@ -80,7 +77,7 @@ class Tag {
     return object;
   }
 
-  void _addTags(Set<Tag> tags) {
+  void _addTags(Set<Tag<T>> tags) {
     if (tags.contains(this)) return;
 
     tags.add(this);

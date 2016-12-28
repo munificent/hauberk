@@ -138,7 +138,7 @@ class Dungeon {
   }
 
   void tryPlaceItem(Vec pos, int depth, [String tag]) {
-    Tag itemTag;
+    Tag<ItemType> itemTag;
     if (tag == null) {
       itemTag = Items.rootTag;
     } else {

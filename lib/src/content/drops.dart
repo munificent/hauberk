@@ -70,7 +70,7 @@ class _ItemDrop implements Drop {
 /// Drops a randomly selected item near a level with a given tag.
 class _TagDrop implements Drop {
   /// The tag to choose from.
-  final Tag _tag;
+  final Tag<ItemType> _tag;
 
   /// The average depth of the drop.
   final int _depth;

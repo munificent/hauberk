@@ -86,7 +86,7 @@ class Item extends Thing implements Comparable<Item> {
 typedef Action ItemUse();
 
 /// A kind of [Item]. Each item will have a type that describes the item.
-class ItemType extends Tagged {
+class ItemType extends Tagged<ItemType> {
   final String name;
   final appearance;
 

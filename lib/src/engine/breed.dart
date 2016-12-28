@@ -14,7 +14,7 @@ import 'option.dart';
 import 'tag.dart';
 
 /// A single kind of [Monster] in the game.
-class Breed extends Tagged implements Quantifiable {
+class Breed extends Tagged<Breed> implements Quantifiable {
   final Pronoun pronoun;
   String get name => singular;
 

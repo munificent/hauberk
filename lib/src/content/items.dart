@@ -25,10 +25,10 @@ int _breakage;
 class Items {
   static final Map<String, ItemType> all = {};
 
-  static Tag get rootTag => tags["item"];
+  static Tag<ItemType> get rootTag => tags["item"];
 
-  static final Map<String, Tag> tags = {
-    "item": new Tag("item")
+  static final Map<String, Tag<ItemType>> tags = {
+    "item": new Tag<ItemType>("item")
   };
 
   static void initialize() {
@@ -461,11 +461,11 @@ void item(String name, int depth, appearance, {ItemUse use,
     tags.addAll(_tagPath.split("/"));
   }
 
-  Tag tag;
+  Tag<ItemType> tag;
   if (tags != null) {
-    Tag parent;
+    Tag<ItemType> parent;
     for (var tagName in tags) {
-      tag = Items.tags.putIfAbsent(tagName, () => new Tag(tagName));
+      tag = Items.tags.putIfAbsent(tagName, () => new Tag<ItemType>(tagName));
       if (parent != null) tag.parents.add(parent);
       parent = tag;
     }

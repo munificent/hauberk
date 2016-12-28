@@ -26,7 +26,7 @@ var _glyph;
 class Monsters {
   static final List<Breed> all = [];
 
-  static final rootTag = new Tag("monster");
+  static final rootTag = new Tag<Breed>("monster");
 
   static void initialize() {
     // Here's approximately the level distributions for the different
