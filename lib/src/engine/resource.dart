@@ -5,6 +5,9 @@ class ResourceSet<T> {
   final Map<String, _Tag<T>> _tags = {};
   final Map<String, _Resource<T>> _allResources = {};
 
+  bool get isEmpty => _allResources.isEmpty;
+  bool get isNotEmpty => _allResources.isNotEmpty;
+
   void add(String name, T object, int depth, int rarity, String tagNames) {
     if (_allResources.containsKey(name)) {
       throw new ArgumentError('Already have a resource named "$name".');

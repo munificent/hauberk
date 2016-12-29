@@ -1,33 +1,32 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import 'dungeon.dart';
-import 'rarity_set.dart';
 import 'rooms.dart';
 import 'tiles.dart';
 
 class TemplateRoom extends RoomType {
-  static void initialize(RaritySet<RoomType> types) {
+  static void initialize() {
     for (var template in _templates) {
       var lines = template.template
           .split("\n").map((line) => line.trim()).toList();
       lines.removeLast();
-      types.add(new TemplateRoom(lines), template.rarity * 6);
+      RoomType.add(new TemplateRoom(lines), template.rarity * 6);
 
       // Automatically generate all mirrors and rotations of templates too.
       // Because of this, we scale the rarity by six to cancel out the extra
       // frequency.
 
       // Flip it horizontally.
-      types.add(new TemplateRoom(lines
+      RoomType.add(new TemplateRoom(lines
           .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
           .toList()), template.rarity * 6);
 
       // Flip it vertically.
-      types.add(new TemplateRoom(lines.reversed.toList()),
+      RoomType.add(new TemplateRoom(lines.reversed.toList()),
           template.rarity * 6);
 
       // Flip it both ways.
-      types.add(new TemplateRoom(lines.reversed
+      RoomType.add(new TemplateRoom(lines.reversed
           .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
           .toList()), template.rarity * 6);
 
@@ -40,10 +39,10 @@ class TemplateRoom extends RoomType {
         }
         rotated.add(new String.fromCharCodes(codes));
       }
-      types.add(new TemplateRoom(rotated), template.rarity * 6);
+      RoomType.add(new TemplateRoom(rotated), template.rarity * 6);
 
       // Rotate it right.
-      types.add(new TemplateRoom(rotated.reversed
+      RoomType.add(new TemplateRoom(rotated.reversed
           .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
           .toList()), template.rarity * 6);
     }

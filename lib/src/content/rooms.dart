@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import '../engine.dart';
 import 'dungeon.dart';
-import 'rarity_set.dart';
 import 'template_rooms.dart';
 import 'tiles.dart';
 
@@ -9,19 +9,29 @@ abstract class RoomType {
   int get width;
   int get height;
 
-  static RaritySet<RoomType> _allTypes = new RaritySet();
+  static ResourceSet<RoomType> _allTypes = new ResourceSet();
+
+  // TODO: Hacky. ResourceSet assumes resources are named and have unique names.
+  // Relax that constraint?
+  static int _nextNameId = 0;
 
   static RoomType choose(int depth) {
     if (_allTypes.isEmpty) _initializeRoomTypes();
 
     // TODO: Take depth into account somehow.
-    return _allTypes.choose();
+    return _allTypes.tryChoose(1, "room");
+  }
+
+  static void add(RoomType type, int rarity) {
+    _allTypes.add("room_${_nextNameId++}", type, 1, rarity, "room");
   }
 
   static void _initializeRoomTypes() {
+    _allTypes.defineTags("room");
+
     rectangle(int w, int h, {int rarity: 1}) {
-      _allTypes.add(new RectangleRoom(w, h), rarity);
-      if (w != h) _allTypes.add(new RectangleRoom(h, w), rarity);
+      add(new RectangleRoom(w, h), rarity);
+      if (w != h) add(new RectangleRoom(h, w), rarity);
     }
 
     rectangle(3, 3, rarity: 2);
@@ -40,8 +50,8 @@ abstract class RoomType {
 
     octagon(int w, int h, int slope, {int rarity: 1}) {
       // 4 * to make all octagonal rooms less common.
-      _allTypes.add(new OctagonRoom(w, h, slope), 4 * rarity);
-      if (w != h) _allTypes.add(new OctagonRoom(h, w, slope), 4 * rarity);
+      add(new OctagonRoom(w, h, slope), 4 * rarity);
+      if (w != h) add(new OctagonRoom(h, w, slope), 4 * rarity);
     }
 
     octagon(5, 5, 1);
@@ -54,7 +64,7 @@ abstract class RoomType {
     octagon(9, 11, 3, rarity: 2);
     octagon(11, 11, 3, rarity: 2);
 
-    TemplateRoom.initialize(_allTypes);
+    TemplateRoom.initialize();
   }
 
   /// Fill in the bounds of [room] with this room's individual style.
