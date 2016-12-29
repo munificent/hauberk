@@ -52,7 +52,7 @@ main() {
 
     var breedCounts = {};
     for (var i = 0; i < tries; i++) {
-      var breed = Monsters.breeds.choose(depth);
+      var breed = Monsters.breeds.tryChoose(depth, "monster");
       if (breed == null) continue;
 
       breedCounts.putIfAbsent(breed.name, () => 0);

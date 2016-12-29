@@ -148,7 +148,7 @@ class Dungeon {
   }
 
   void trySpawn(Vec pos, int depth) {
-    var breed = Monsters.breeds.choose(depth);
+    var breed = Monsters.breeds.tryChoose(depth, "monster");
     if (breed == null) return;
 
     stage.spawnMonster(breed, pos);

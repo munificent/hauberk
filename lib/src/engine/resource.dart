@@ -3,13 +3,15 @@ import 'package:piecemeal/piecemeal.dart';
 // TODO: Unify this with the stuff in tag.dart and RaritySet.
 class ResourceSet<T> {
   final Map<String, _Tag<T>> _tags = {};
-  final Map<String, _Resource<T>> _allResources = {};
+  final Map<String, _Resource<T>> _resources = {};
 
-  bool get isEmpty => _allResources.isEmpty;
-  bool get isNotEmpty => _allResources.isNotEmpty;
+  bool get isEmpty => _resources.isEmpty;
+  bool get isNotEmpty => _resources.isNotEmpty;
+
+  Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
   void add(String name, T object, int depth, int rarity, String tagNames) {
-    if (_allResources.containsKey(name)) {
+    if (_resources.containsKey(name)) {
       throw new ArgumentError('Already have a resource named "$name".');
     }
 
@@ -20,7 +22,7 @@ class ResourceSet<T> {
     });
 
     var resource = new _Resource(object, depth, 1.0 / rarity, tags.toList());
-    _allResources[name] = resource;
+    _resources[name] = resource;
   }
 
   /// Given a string like "a/b/c d/e" defines tags for "a", "b", "c", "d", and
@@ -94,7 +96,7 @@ class ResourceSet<T> {
     }
 
     // Find all of the objects at or below the max depth and with the tag.
-    var allowed = _allResources.values
+    var allowed = _resources.values
         .where((resource) => resource.depth >= minDepth &&
         resource.depth <= depth &&
         resource.hasAnyTag(tags));

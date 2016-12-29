@@ -29,9 +29,11 @@ var _glyph;
 
 /// Static class containing all of the [Monster] [Breed]s.
 class Monsters {
-  static final TagSet<Breed> breeds = new TagSet("monster");
+  static final ResourceSet<Breed> breeds = new ResourceSet();
 
   static void initialize() {
+    breeds.defineTags("monster");
+
     // Here's approximately the level distributions for the different
     // broad categories on monsters. Monsters are very roughly lumped
     // together so that different depths tend to have a different
@@ -641,7 +643,8 @@ void finishBuilder() {
   if (_builder == null) return;
 
   var breed = _builder.build();
-  Monsters.breeds.add(breed, "monster");
+  // TODO: Give breeds rarity.
+  Monsters.breeds.add(breed.name, breed, breed.depth, 1, "monster");
   _builder = null;
 }
 
