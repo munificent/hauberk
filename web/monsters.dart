@@ -40,7 +40,7 @@ main() {
       <td colspan="2">Health</td>
       <td>Meander</td>
       <td>Speed</td>
-      <td>Exp.</td>
+      <td>Exp./Level</td>
       <td>Attacks</td>
       <td>Flags</td>
       <td>Drops</td>
@@ -52,7 +52,6 @@ main() {
   for (var breed in breeds) {
     var glyph = breed.appearance as Glyph;
 
-    var exp = (breed.experienceCents / 100).toStringAsFixed(2);
     var expPerLevel = (breed.experienceCents / breed.depth / 100).toStringAsFixed(2);
     text.write('''
         <tr>
@@ -65,7 +64,7 @@ main() {
           <td><span class="bar" style="width: ${breed.maxHealth / 10}px;"></span></td>
           <td class="r">${breed.meander}</td>
           <td class="r">${breed.speed}</td>
-          <td class="r">$exp ($expPerLevel)</td>
+          <td class="r">$expPerLevel</td>
           <td>
         ''');
 

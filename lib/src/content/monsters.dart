@@ -125,11 +125,16 @@ class Monsters {
       nagas,          demons,
       orcs,           ogres,
       people,         giants,
-      quadrupeds,
+      quadrupeds,     quest,
       rodents,        reptiles,
       slugs,          snakes,
-      worms,
-      skeletons
+      troglodytes,    trolls,
+      minorUndead,    majorUndead,
+      vines,          vampires,
+      worms,          wraiths,
+      skeletons,      xorns,
+      /* y and Y? */
+      zombies,        serpents
     ];
 
     for (var category in categories) {
@@ -146,7 +151,7 @@ class Monsters {
   }
 }
 
-arachnids() {
+void arachnids() {
   group("a", flags: "fearless");
   breed("brown spider", 1, brown, 3, meander: 8)
       .attack("bite[s]", 8, Element.poison)
@@ -157,9 +162,9 @@ arachnids() {
       .drop(10, "Stinger");
 }
 
-ancients() {}
+void ancients() {}
 
-bats() {
+void bats() {
   group("b");
   breed("brown bat", 2, lightBrown, 9, speed: 2, meander: 6)
       .attack("bite[s]", 4);
@@ -172,7 +177,7 @@ bats() {
       .flags("group");
 }
 
-birds() {
+void birds() {
   group("B");
   breed("crow", 4, darkGray, 9, speed: 2, meander: 4)
       .attack("bite[s]", 5)
@@ -186,7 +191,7 @@ birds() {
       .flags("protective");
 }
 
-canines() {
+void canines() {
   group("c", tracking: 20, meander: 3, flags: "few");
   breed("mangy cur", 2, yellow, 11)
       .attack("bite[s]", 4)
@@ -204,9 +209,9 @@ canines() {
       .drop(20, "Fur Pelt");
 }
 
-canids() {}
+void canids() {}
 
-dragons() {
+void dragons() {
   // TODO: Tune. Give more attacks. Tune drops.
   group("d");
   breed("red dragon", 50, red, 400)
@@ -218,9 +223,9 @@ dragons() {
       .dropMany(5, "equipment");
 }
 
-greaterDragons() {}
+void greaterDragons() {}
 
-eyes() {
+void eyes() {
   group("e", flags: "immobile");
   breed("lazy eye", 3, white, 16)
       .attack("gaze[s] into", 6)
@@ -236,11 +241,11 @@ eyes() {
   // baleful eye, malevolent eye, murderous eye
 }
 
-elementals() {}
+void elementals() {}
 
-flyingInsects() {}
+void flyingInsects() {}
 
-felines() {
+void felines() {
   group("F");
   breed("stray cat", 1, gold, 9, speed: 1, meander: 3)
       .attack("bite[s]", 5)
@@ -248,7 +253,7 @@ felines() {
       .drop(10, "Fur Pelt");
 }
 
-goblins() {
+void goblins() {
   group("g", meander: 1, flags: "open-doors");
   breed("goblin peon", 4, lightBrown, 20, meander: 2)
       .attack("stab[s]", 5)
@@ -305,13 +310,13 @@ goblins() {
       .flags("protective");
 }
 
-golems() {}
+void golems() {}
 
-humanoids() {}
+void humanoids() {}
 
-hybrids() {}
+void hybrids() {}
 
-insects() {
+void insects() {
   group("i", tracking: 3, meander: 8, flags: "fearless");
   breed("giant cockroach[es]", 1, darkBrown, 4, speed: 3)
       .attack("crawl[s] on", 3)
@@ -323,11 +328,9 @@ insects() {
       .attack("bite[s]", 8);
 }
 
-insubstantials() {
+void insubstantials() {}
 
-}
-
-jellies() {
+void jellies() {
   group("j", meander: 4, speed: -1, tracking: 4, flags: "few fearless");
   breed("green slime", 1, green, 8)
       .attack("crawl[s] on", 4)
@@ -363,7 +366,7 @@ jellies() {
       .spawn(rate: 6);
 }
 
-kobolds() {
+void kobolds() {
   group("k", speed: 2, meander: 4, flags: "cowardly");
   breed("forest sprite", 2, lightGreen, 8)
       .attack("scratch[es]", 4)
@@ -452,28 +455,22 @@ kobolds() {
   // homonculous
 }
 
-krakens() {}
+void krakens() {}
 
-lizardMen() {
+void lizardMen() {
   // troglodyte
   // reptilian
 }
 
-lichs() {}
+void lichs() {}
+void mushrooms() {}
+void hydras() {}
+void nagas() {}
+void demons() {}
+void orcs() {}
+void ogres() {}
 
-mushrooms() {}
-
-hydras() {}
-
-nagas() {}
-
-demons() {}
-
-orcs() {}
-
-ogres() {}
-
-people() {
+void people() {
   group("p", tracking: 14, flags: "open-doors");
   breed("simpering knave", 2, orange, 15, meander: 3)
       .attack("hit[s]", 2)
@@ -510,9 +507,9 @@ people() {
       .flags("fearless");
 }
 
-giants() {}
+void giants() {}
 
-quadrupeds() {
+void quadrupeds() {
   group("q");
   breed("fox", 4, orange, 20, meander: 1)
       .attack("bite[s]", 5)
@@ -520,7 +517,9 @@ quadrupeds() {
       .drop(80, "Fox Pelt");
 }
 
-rodents() {
+void quest() {}
+
+void rodents() {
   group("r", meander: 4);
   breed("[mouse|mice]", 1, white, 6, speed: 1)
       .attack("bite[s]", 3)
@@ -537,7 +536,7 @@ rodents() {
       .flags("group");
 }
 
-reptiles() {
+void reptiles() {
   group("R");
   breed("frog", 1, green, 4, speed: 1, meander: 4)
       .attack("hop[s] on", 2);
@@ -574,7 +573,7 @@ reptiles() {
       .fireCone(rate: 16, damage: 24, range: 8);
 }
 
-slugs() {
+void slugs() {
   group("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
   breed("slug", 1, darkYellow, 6)
       .attack("crawl[s] on", 3);
@@ -583,7 +582,7 @@ slugs() {
       .attack("crawl[s] on", 7, Element.poison);
 }
 
-snakes() {
+void snakes() {
   group("S", meander: 4);
   breed("garter snake", 1, gold, 7)
       .attack("bite[s]", 1);
@@ -595,7 +594,14 @@ snakes() {
       .attack("bite[s]", 10);
 }
 
-worms() {
+void troglodytes() {}
+void trolls() {}
+void minorUndead() {}
+void majorUndead() {}
+void vines() {}
+void vampires() {}
+
+void worms() {
   group("w", meander: 4, flags: "fearless");
   breed("giant earthworm", 2, lightRed, 20, speed: -2)
       .attack("crawl[s] on", 4);
@@ -612,7 +618,14 @@ worms() {
       .flags("swarm");
 }
 
-skeletons() {}
+void wraiths() {}
+
+void skeletons() {}
+
+void xorns() {}
+
+void zombies() {}
+void serpents() {}
 
 void group(glyph, {int meander, int speed, int tracking, String flags}) {
   finishBuilder();
