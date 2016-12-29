@@ -35,5 +35,6 @@ export 'engine/log.dart';
 export 'engine/los.dart';
 export 'engine/monster.dart';
 export 'engine/option.dart';
+export 'engine/resource.dart';
 export 'engine/stage.dart';
 export 'engine/tag.dart';

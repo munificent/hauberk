@@ -10,8 +10,6 @@ import 'package:hauberk/src/content/tiles.dart';
 html.CanvasElement canvas;
 html.CanvasRenderingContext2D context;
 
-// TODO: Get this working again now that areas and levels are gone.
-
 var content = createContent();
 var heroClass = new Warrior();
 var save = new HeroSave("Hero", heroClass);

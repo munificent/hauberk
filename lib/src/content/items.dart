@@ -1,6 +1,7 @@
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
+import 'affixes.dart';
 import 'utils.dart';
 
 int _sortIndex = 0;
@@ -348,6 +349,10 @@ void category(glyph, String tag, {String verb, String flags}) {
 
   if (tag != null) {
     _tag = Items.types.defineTag(tag);
+
+    // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
+    // example, a "sword" item will match a "weapon" affix.
+    Affixes.defineItemTag(tag);
   } else {
     _tag = null;
   }

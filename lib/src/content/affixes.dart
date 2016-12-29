@@ -5,25 +5,19 @@ import '../engine.dart';
 typedef Attack _CreateAttack();
 
 /// A generic "kind" of affix that can create concrete [Affix] instances.
-class _AffixFactory {
+class _AffixType {
   final String name;
-
-  /// The names of the tags that this affix can apply to.
-  final List<String> tags;
-
-  /// The level of the affix. Higher level affixes tend to only appear on
-  /// higher level items.
-  final int level;
-  final int rarity;
   final _CreateAttack attack;
 
-  _AffixFactory(
-      this.name, this.tags, this.level, this.rarity, this.attack);
+  _AffixType(this.name, this.attack);
 }
 
 class Affixes {
+  static final _prefixes = new ResourceSet<_AffixType>();
+  static final _suffixes = new ResourceSet<_AffixType>();
+
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
-  static Item createItem(ItemType itemType, [int levelOffset = 0]) {
+  static Item createItem(ItemType itemType) {
     // Untagged items don't have any affixes.
     if (itemType.tags.isEmpty) return new Item(itemType);
 
@@ -31,8 +25,8 @@ class Affixes {
     // affixes.
     var depth = rng.taper(itemType.depth, 2);
 
-    var prefix = _chooseAffix(_prefixes, itemType, depth, levelOffset);
-    var suffix = _chooseAffix(_suffixes, itemType, depth, levelOffset);
+    var prefix = _chooseAffix(_prefixes, itemType, depth);
+    var suffix = _chooseAffix(_suffixes, itemType, depth);
 
     // Decide if the item may have just a prefix, just a suffix, or (rarely)
     // both. This is mainly to make dual-affix items less common since they
@@ -49,37 +43,16 @@ class Affixes {
     }
   }
 
-  static Affix _chooseAffix(List<_AffixFactory> factories, ItemType itemType,
-      int level, int chanceOffset) {
-    // Get the affixes that can apply to the item.
-    factories = factories.where((factory) {
-      if (factory.level > level) return false;
-      return factory.tags.any(itemType.hasTag);
-    }).toList();
+  static Affix _chooseAffix(
+      ResourceSet<_AffixType> affixes, ItemType itemType, int depth) {
+    var type = affixes.tryChooseAny(depth,
+        itemType.tags.map((tag) => tag.name));
 
-    // TODO: For high level drops, consider randomly discarding some of the
-    // lower-level affixes.
+    if (type == null) return null;
 
-    // Try all of the affixes and see if one sticks.
-    // TODO: The way this works means adding more affixes makes them more
-    // common. Should probably choose one instead of trying them all.
-    factories.shuffle();
-    for (var factory in factories) {
-      // There's a chance of not selecting the affix at all.
-      if (rng.range(100) < 60 + chanceOffset) continue;
-
-      // Take the rarity into account.
-      if (rng.range(100) < 100 ~/ factory.rarity) {
-        var attack = factory.attack();
-        return new Affix(factory.name, attack);
-      }
-    }
-
-    return null;
+    var attack = type.attack();
+    return new Affix(type.name, attack);
   }
-
-  static final _prefixes = <_AffixFactory>[];
-  static final _suffixes = <_AffixFactory>[];
 
   static void initialize() {
     brand("Glimmering", 12, 3, Element.light, 0, 1.0);
@@ -116,32 +89,38 @@ class Affixes {
     // TODO: "of Accuracy" increases range of bows.
   }
 
+  static void defineItemTag(String tag) {
+    _prefixes.defineTags(tag);
+    _suffixes.defineTags(tag);
+  }
+
   /// A weapon suffix for adding damage.
   static void damage(String name, int level, int rarity, int base, int taper) {
-    affixFactory(_suffixes, name, level, rarity, "weapon",
+    affixType(_suffixes, name, level, rarity, "weapon",
         () => new Attack.modifier(damageBonus: rng.taper(base, taper)));
   }
 
   /// bow prefix for adding damage.
   static void bowDamage(
       String name, int level, int rarity, int base, int taper) {
-    affixFactory(_prefixes, name, level, rarity, "bow",
+    affixType(_prefixes, name, level, rarity, "bow",
         () => new Attack.modifier(damageBonus: rng.taper(base, taper)));
   }
 
   /// A weapon prefix for giving an elemental brand.
   static void brand(String name, int level, int rarity, Element element,
       int bonus, num scale) {
-    affixFactory(_prefixes, name, level, rarity, "weapon",
+    affixType(_prefixes, name, level, rarity, "weapon",
         () => new Attack.modifier(element: element,
             damageBonus: rng.taper(bonus, 5),
             damageScale: rng.taper((scale + 10).toInt(), 4) / 10));
   }
 
-  /// Defines a new prefix [Affix].
-  static void affixFactory(List<_AffixFactory> factories, String name,
-      int level, int rarity, String groups, _CreateAttack createAttack) {
-    factories.add(new _AffixFactory(name, groups.split(" "), level, rarity,
-        createAttack));
+  /// Defines a new [Affix].
+  static void affixType(ResourceSet<_AffixType> types, String name,
+      int depth, int rarity, String tag, _CreateAttack createAttack) {
+    var type = new _AffixType(name, createAttack);
+
+    types.add(name, type, depth, rarity, tag);
   }
 }
