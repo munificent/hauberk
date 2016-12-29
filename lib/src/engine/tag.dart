@@ -64,11 +64,7 @@ class TagSet<T extends Tagged<T>> {
     return tag;
   }
 
-  T find(String name) {
-    var element = _tagged[name];
-    if (element == null) throw new ArgumentError('Unknown element "$name".');
-    return element;
-  }
+  T find(String name) => _tagged[name];
 
   Tag<T> defineTag(String tagPath) {
     if (tagPath == _rootTagName) return _tags[_rootTagName];

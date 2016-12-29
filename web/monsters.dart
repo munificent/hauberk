@@ -86,7 +86,7 @@ main() {
     items.sort((a, b) => drop[b].compareTo(drop[a]));
 
     text.write(items.map((item) {
-      return "${(drop[item] / tries * 100).toStringAsFixed(3)}% $item";
+      return "${(drop[item] / tries * 100).toStringAsFixed(1)}% $item";
     }).join("<br>"));
 
     text.write('</td></tr>');

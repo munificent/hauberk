@@ -5,48 +5,22 @@ import 'affixes.dart';
 import 'items.dart';
 
 Drop parseDrop(String name, [int level]) {
-  if (level == null) return _itemDrop(name);
+  var itemType = Items.types.find(name);
+  if (itemType != null) return new _ItemDrop(itemType);
+
   return new _TagDrop(name, level);
 }
 
-/// Creates a single drop [Rarity].
-Rarity rarity(int rarity, String name, [int level]) {
-  return new Rarity(rarity, parseDrop(name, level));
-}
-
 /// Creates a [Drop] that has a [chance]% chance of dropping [drop].
-Drop percent(int chance, drop, [int level]) {
+Drop percentDrop(int chance, drop, [int level]) {
   return new _PercentDrop(chance, parseDrop(drop, level));
 }
 
 /// Creates a [Drop] that drops all of [drops].
 Drop dropAllOf(List<Drop> drops) => new _AllOfDrop(drops);
 
-/// Creates a [Drop] that has a chance to drop one of [drops] each with its
-/// own [Frequency].
-Drop dropOneOf(List<Rarity> drops) => new _RarityDrop(drops);
-
-Drop repeatDrop(int count, Drop drop) => new _RepeatDrop(count, drop);
-
-/// A rarity for a single case in a [_RarityDrop].
-///
-/// This determines how rare a drop is relative to other cases in the drop. A
-/// rarity of five means other drops are five times more common that this one.
-///
-/// Frequency and rarity are inverses of each other. If one case becomes more
-/// rare, that's equivalent to the frequencies of all other drops increasing.
-class Rarity {
-  final int _rarity;
-  final Drop _drop;
-
-  /// The inverse of [_rarity]. Calculated by [_RarityDrop].
-  int _frequency = 1;
-
-  Rarity(this._rarity, this._drop);
-}
-
-Drop _itemDrop(String name) {
-  return new _ItemDrop(Items.types.find(name));
+Drop repeatDrop(int count, drop, [int level]) {
+  return new _RepeatDrop(count, parseDrop(drop, level));
 }
 
 /// Drops an item of a given type.
@@ -86,39 +60,6 @@ class _TagDrop implements Drop {
   }
 }
 
-/// Chooses a single [Drop] from a list of possible options with a rarity for
-/// each.
-class _RarityDrop implements Drop {
-  final List<Rarity> _drops;
-
-  int _total;
-
-  _RarityDrop(this._drops) {
-    // Convert rarity to frequency by using each drop's rarity to increase the
-    // frequency of all of the others.
-    for (var drop in _drops) {
-      for (var other in _drops) {
-        if (other == drop) continue;
-        other._frequency *= drop._rarity;
-      }
-    }
-
-    _total = _drops.fold(0, (total, drop) => total + drop._frequency);
-  }
-
-  void spawnDrop(AddItem addItem) {
-    var roll = rng.range(_total);
-
-    for (var i = 0; i < _drops.length; i++) {
-      roll -= _drops[i]._frequency;
-      if (roll < 0) {
-        _drops[i]._drop.spawnDrop(addItem);
-        return;
-      }
-    }
-  }
-}
-
 /// A [Drop] that will create an inner drop some random percentage of the time.
 class _PercentDrop implements Drop {
   final int _chance;
@@ -151,7 +92,11 @@ class _RepeatDrop implements Drop {
   _RepeatDrop(this._count, this._drop);
 
   void spawnDrop(AddItem addItem) {
-    var count = rng.triangleInt(_count, _count ~/ 2) + rng.taper(0, 5);
+    var taper = 5;
+    if (_count > 3) taper = 4;
+    if (_count > 6) taper = 3;
+
+    var count = rng.triangleInt(_count, _count ~/ 2) + rng.taper(0, taper);
     for (var i = 0; i < count; i++) {
       _drop.spawnDrop(addItem);
     }
