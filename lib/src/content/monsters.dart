@@ -156,7 +156,7 @@ class Monsters {
 void arachnids() {
   group("a", flags: "fearless");
   breed("brown spider", 1, brown, 3, meander: 8)
-      .attack("bite[s]", 8, Element.poison)
+      .attack("bite[s]", 5, Element.poison)
       .drop(5, "Stinger");
 
   breed("giant spider", 6, darkBlue, 20, meander: 5)

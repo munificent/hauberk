@@ -45,8 +45,6 @@ class Affixes {
     // affixes.
     var depth = rng.taper(itemType.depth, 2);
 
-    depth = 40;
-
     var prefix = _chooseAffix(_prefixes, itemType, depth);
     var suffix = _chooseAffix(_suffixes, itemType, depth);
 
