@@ -32,8 +32,8 @@ main() {
 }
 
 void generate() {
-  var items = new Histogram();
-  var affixes = new Histogram();
+  var items = new Histogram<String>();
+  var affixes = new Histogram<String>();
 
   for (var i = 0; i < tries; i++) {
     var itemType = Items.types.tryChoose(depth, "item");

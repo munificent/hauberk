@@ -6,35 +6,28 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/drops.dart';
 import 'package:hauberk/src/content/monsters.dart';
 
+import 'histogram.dart';
+
 main() {
   createContent();
   var text = new StringBuffer();
 
   for (var depth = 1; depth <= 100; depth++) {
-    text.write('<tr><td>$depth</td><td>');
+    text.write('<tr><td>$depth</td><td width="50%">');
 
     var drop = parseDrop("item", depth);
-    // TODO: Use Histogram class.
-    var drops = {};
+    var items = new Histogram<String>();
 
     var tries = 100;
     for (var i = 0; i < tries; i++) {
       drop.spawnDrop((item) {
-        var name = item.type.name;
-        if (item.prefix != null) name = "${item.prefix.name} $name";
-        if (item.suffix != null) name = "$name ${item.suffix.name}";
-
-        drops.putIfAbsent(name, () => 0);
-        drops[name]++;
+        items.add(item.nounText);
       });
     }
 
-    var items = drops.keys.toList();
-    items.sort((a, b) => drops[b].compareTo(drops[a]));
-
     var more = 0;
-    for (var item in items) {
-      var width = drops[item] * 400 ~/ tries;
+    for (var item in items.descending()) {
+      var width = items.count(item) * 300 ~/ tries;
       if (width < 1) {
         more++;
         continue;
@@ -49,23 +42,21 @@ main() {
       text.write("<em>$more more&hellip;</em>");
     }
 
-    text.write('</td><td>');
+    text.write('</td><td width="50%">');
 
-    var breedCounts = {};
+    var breeds = new Histogram<String>();
     for (var i = 0; i < tries; i++) {
       var breed = Monsters.breeds.tryChoose(depth, "monster");
       if (breed == null) continue;
 
-      breedCounts.putIfAbsent(breed.name, () => 0);
-      breedCounts[breed.name] += breed.numberInGroup;
+      for (var i = 0; i < breed.numberInGroup; i++) {
+        breeds.add(breed.name);
+      }
     }
 
-    var breeds = breedCounts.keys.toList();
-    breeds.sort((a, b) => breedCounts[b].compareTo(breedCounts[a]));
-
     more = 0;
-    for (var breed in breeds) {
-      var width = breedCounts[breed] * 400 ~/ tries;
+    for (var breed in breeds.descending()) {
+      var width = breeds.count(breed) * 300 ~/ tries;
       if (width < 1) {
         more++;
         continue;

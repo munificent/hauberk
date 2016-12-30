@@ -103,10 +103,19 @@ void generate() {
     }
   }
 
+  var monsters = new Histogram<Breed>();
+  for (var actor in stage.actors) {
+    if (actor is Monster) {
+      var breed = actor.breed;
+      monsters.add(breed);
+    }
+  }
+
   var tableContents = new StringBuffer();
   tableContents.write('''
     <thead>
     <tr>
+      <td>Count</td>
       <td colspan="2">Breed</td>
       <td>Depth</td>
       <td colspan="2">Health</td>
@@ -117,12 +126,11 @@ void generate() {
     <tbody>
     ''');
 
-  for (var actor in stage.actors) {
-    if (actor is Monster) {
-      var breed = actor.breed;
-      var glyph = breed.appearance as Glyph;
-      tableContents.write('''
+  for (var breed in monsters.descending()) {
+    var glyph = breed.appearance as Glyph;
+    tableContents.write('''
       <tr>
+        <td>${monsters.count(breed)}</td>
         <td>
           <pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
         </td>
@@ -134,29 +142,19 @@ void generate() {
         <td>
       ''');
 
-      var attacks = breed.attacks.map(
-          (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} (${attack.averageDamage})');
-      tableContents.write(attacks.join(', '));
+    var attacks = breed.attacks.map(
+        (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} (${attack.averageDamage})');
+    tableContents.write(attacks.join(', '));
 
-      tableContents.write('</td><td>');
+    tableContents.write('</td><td>');
 
-      for (var flag in breed.flags) {
-        tableContents.write('$flag ');
-      }
-
-//      tableContents.write('</td><td>');
-//      var drop = drops[breed.name];
-//      var items = drop.keys.toList();
-//      items.sort((a, b) => drop[b].compareTo(drop[a]));
-//
-//      tableContents.write(items.map((item) {
-//        return "${(drop[item] / tries * 100).toStringAsFixed(3)}% $item";
-//      }).join("<br>"));
-
-      tableContents.write('</td></tr>');
+    for (var flag in breed.flags) {
+      tableContents.write('$flag ');
     }
-    tableContents.write('</tbody>');
+
+    tableContents.write('</td></tr>');
   }
+  tableContents.write('</tbody>');
 
   var validator = new html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
@@ -179,8 +177,7 @@ void generate() {
     <tbody>
     ''');
 
-  var items = new Histogram();
-
+  var items = new Histogram<String>();
   for (var item in stage.items) {
     items.add(item.toString());
   }
@@ -189,8 +186,8 @@ void generate() {
   tableContents.write('''
     <thead>
     <tr>
-      <td width="300px">Item</td>
       <td>Count</td>
+      <td width="300px">Item</td>
     </tr>
     </thead>
     <tbody>
@@ -199,8 +196,8 @@ void generate() {
   for (var item in items.descending()) {
     tableContents.write('''
     <tr>
-      <td>$item</td>
       <td>${items.count(item)}</td>
+      <td>$item</td>
     </tr>
     ''');
   }
