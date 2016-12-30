@@ -158,7 +158,7 @@ class Hero extends Actor {
     var attack;
 
     // See if a melee weapon is equipped.
-    final weapon = equipment.weapon;
+    var weapon = equipment.weapon;
     if (weapon != null && !weapon.isRanged) {
       attack = weapon.attack;
     } else {
@@ -169,10 +169,15 @@ class Hero extends Actor {
     return heroClass.modifyAttack(attack, defender);
   }
 
-  Attack defend(Attack attack) {
+  Attack onDefend(Attack attack) {
     disturb();
-    attack = super.defend(attack);
-    return attack.addArmor(armor);
+
+    // Let the equipment protect against it.
+    for (var item in equipment) {
+      attack = item.defend(attack);
+    }
+
+    return attack.addArmor(heroClass.armor);
   }
 
   void onDamaged(Action action, Actor attacker, int damage) {

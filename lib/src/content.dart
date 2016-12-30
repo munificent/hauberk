@@ -26,6 +26,7 @@ class GameContent implements Content {
     new Dungeon(stage, depth).generate();
   }
 
+  AffixType findAffix(String name) => Affixes.find(name);
   ItemType findItem(String name) => Items.types.find(name);
 
   List<Recipe> get recipes => Recipes.all;

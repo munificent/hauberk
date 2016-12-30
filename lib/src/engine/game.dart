@@ -145,7 +145,9 @@ abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
   void buildStage(Stage stage, int depth);
 
+  AffixType findAffix(String name);
   ItemType findItem(String name);
+
   List<Recipe> get recipes;
   List<Shop> get shops;
 

@@ -110,6 +110,7 @@ class Attack {
     result._strikeBonus += modifier._strikeBonus;
     result._damageBonus += modifier._damageBonus;
     result._damageScale *= modifier._damageScale;
+    result._resistance += modifier._resistance;
 
     if (modifier.element != Element.none) {
       result._element = modifier._element;
@@ -245,6 +246,14 @@ class Attack {
 
     if (element != Element.none) {
       result += " $element";
+    }
+
+    if (armor != 0.0) {
+      result += " ($armor armor)";
+    }
+
+    if (resistance != 0) {
+      result += " ($resistance resist)";
     }
 
     return result;

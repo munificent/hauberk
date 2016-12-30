@@ -28,7 +28,7 @@ class Item extends Thing implements Comparable<Item> {
   bool get canToss => type.tossAttack != null;
 
   /// Gets the melee [Attack] for the item, taking into account any [Affixes]s
-  // it has.
+  /// it has.
   Attack get attack {
     if (type.attack == null) return null;
 
@@ -72,6 +72,22 @@ class Item extends Thing implements Comparable<Item> {
   bool get isTreasure => type.isTreasure;
 
   Set<String> get flags => type.flags;
+
+  /// Modifies [attack] by applying any defensive modifiers this item provides
+  /// when equipped.
+  Attack defend(Attack attack) {
+    attack = attack.addArmor(armor);
+
+    if (prefix != null) {
+      attack = prefix.defend(attack);
+    }
+
+    if (suffix != null) {
+      attack = suffix.defend(attack);
+    }
+
+    return attack;
+  }
 
   int compareTo(Item other) {
     // TODO: Take into account affixes.
@@ -144,11 +160,29 @@ class ItemType {
 /// A modifier that can be applied to an [Item] to change its capabilities.
 /// For example, in a "Dagger of Wounding", the "of Wounding" part is an affix.
 class Affix {
-  final String name;
+  final AffixType type;
 
   final Attack attack;
 
-  Affix(this.name, this.attack);
+  Affix(this.type, this.attack);
+
+  String get name => type.name;
+
+  Attack defend(Attack attack) {
+    // TODO: Apply affix-instance-specific defenses here. If, for example, we
+    // have an affix type that chooses a random resist for the affix, that
+    // would go here.
+    return type.defend(attack);
+  }
+}
+
+abstract class AffixType {
+  final String name;
+
+  AffixType(this.name);
+
+  Affix create();
+  Attack defend(Attack attack) => attack;
 }
 
 typedef void AddItem(Item item);

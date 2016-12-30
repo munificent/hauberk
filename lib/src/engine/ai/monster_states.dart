@@ -148,10 +148,10 @@ abstract class MonsterState {
       if (!monster.canOccupy(here)) return false;
       var actor = game.stage.actorAt(here);
       return actor == null || actor == game.hero;
-    });
+    }).toList();
 
     if (dirs.isEmpty) return dir;
-    return rng.item(dirs.toList());
+    return rng.item(dirs);
   }
 }
 

@@ -47,6 +47,8 @@ class Element {
 
   final String name;
 
+  String get capitalized => "${name[0].toUpperCase()}${name.substring(1)}";
+
   const Element(this.name);
 
   String toString() => name;

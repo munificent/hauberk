@@ -139,6 +139,9 @@ abstract class Actor extends Thing {
   /// This is called on the defender when some attacker is attempting to hit it.
   /// The defender can modify the attack or simply return the incoming one.
   Attack defend(Attack attack) {
+    // Let the subclass modify it.
+    attack = onDefend(attack);
+
     // Apply temporary resistance.
     var resistance = resistances[attack.element];
     if (resistance.isActive) {
@@ -147,6 +150,8 @@ abstract class Actor extends Thing {
 
     return attack;
   }
+
+  Attack onDefend(Attack attack);
 
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.

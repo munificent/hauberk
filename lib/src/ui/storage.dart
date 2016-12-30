@@ -105,8 +105,9 @@ class Storage {
   }
 
   Affix _loadAffix(Map data) {
-    var attack;
+    var type = content.findAffix(data['name']);
 
+    var attack;
     var attackData = data['attack'];
     if (attackData != null) {
       attack = new Attack("", 0);
@@ -127,7 +128,7 @@ class Storage {
       }
     }
 
-    return new Affix(data['name'], attack);
+    return new Affix(type, attack);
   }
 
   void save() {

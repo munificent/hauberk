@@ -187,11 +187,11 @@ class Monster extends Actor {
 
   Attack onGetAttack(Actor defender) => rng.item(breed.attacks);
 
-  Attack defend(Attack attack) {
+  Attack onDefend(Attack attack) {
     _state.defend();
 
     // TODO: Breed-specific resists.
-    return super.defend(attack);
+    return attack;
   }
 
   /// Inflicting damage decreases fear.
