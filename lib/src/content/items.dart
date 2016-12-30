@@ -10,7 +10,9 @@ int _sortIndex = 0;
 /// a character code.
 var _glyph;
 
-Tag<ItemType> _tag;
+String _tag;
+String _equipSlot;
+String _weaponType;
 String _verb;
 List<String> _flags;
 
@@ -23,9 +25,11 @@ int _breakage;
 
 /// Static class containing all of the [ItemType]s.
 class Items {
-  static final types = new TagSet<ItemType>("item");
+  static final types = new ResourceSet<ItemType>();
 
   static void initialize() {
+    types.defineTags("item");
+
     // From Angband:
     // !   A potion (or flask)    /   A pole-arm
     // ?   A scroll (or book)     |   An edged weapon
@@ -347,8 +351,37 @@ void boots() {
 void category(glyph, String tag, {String verb, String flags}) {
   _glyph = glyph;
 
+  _equipSlot = null;
+  _weaponType = null;
   if (tag != null) {
-    _tag = Items.types.defineTag(tag);
+    // Define the tag path and store the leaf tag which is what gets used by
+    // the item types.
+    Items.types.defineTags("item/$tag");
+    var tags = tag.split("/");
+    _tag = tags.last;
+
+    const tagEquipSlots = const [
+      'weapon',
+      'ring',
+      'necklace',
+      'body',
+      'cloak',
+      'shield',
+      'helm',
+      'gloves',
+      'boots'
+    ];
+
+    for (var equipSlot in tagEquipSlots) {
+      if (tags.contains(equipSlot)) {
+        _equipSlot = equipSlot;
+        break;
+      }
+    }
+
+    if (tags.contains("weapon")) {
+      _weaponType = tags[tags.indexOf("weapon") + 1];
+    }
 
     // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
     // example, a "sword" item will match a "weapon" affix.
@@ -458,36 +491,13 @@ void item(String name, int depth, appearance, {ItemUse use,
   }
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
-  String equipSlot;
-  if (_tag != null) {
-    // TODO: Copied from equipment.dart. Unify?
-    var equipSlots = [
-      'weapon',
-      'ring',
-      'necklace',
-      'body',
-      'cloak',
-      'shield',
-      'helm',
-      'gloves',
-      'boots'
-    ];
-
-    for (var slot in equipSlots) {
-      if (_tag.contains(slot)) {
-        equipSlot = slot;
-        break;
-      }
-    }
-  }
-
   if (tossAttack == null && _tossDamage != null) {
     tossAttack = new RangedAttack("the ${name.toLowerCase()}", "hits",
         _tossDamage, _tossElement, _tossRange);
   }
 
-  var itemType = new ItemType(name, appearance, depth, _sortIndex++, equipSlot,
-      use, attack, tossAttack, _breakage, armor, price,
+  var itemType = new ItemType(name, appearance, depth, _sortIndex++, _equipSlot,
+      _weaponType, use, attack, tossAttack, _breakage, armor, price,
       treasure: treasure);
 
   itemType.flags.addAll(_flags);
@@ -501,10 +511,7 @@ void item(String name, int depth, appearance, {ItemUse use,
     }
   }
 
-  if (_tag != null) {
-    Items.types.add(itemType, _tag.name);
-  } else {
-    Items.types.addUntagged(itemType);
-  }
+  // TODO: Give items rarities.
+  Items.types.add(itemType.name, itemType, itemType.depth, 1, _tag);
 }
 

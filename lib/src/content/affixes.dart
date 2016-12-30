@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import 'items.dart';
 
 typedef Attack _CreateAttack();
 
@@ -19,7 +20,7 @@ class Affixes {
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType) {
     // Untagged items don't have any affixes.
-    if (itemType.tags.isEmpty) return new Item(itemType);
+    if (Items.types.getTags(itemType.name).isEmpty) return new Item(itemType);
 
     // Give items a chance to boost their effective level when choosing a
     // affixes.
@@ -45,8 +46,8 @@ class Affixes {
 
   static Affix _chooseAffix(
       ResourceSet<_AffixType> affixes, ItemType itemType, int depth) {
-    var type = affixes.tryChooseAny(depth,
-        itemType.tags.map((tag) => tag.name));
+    var type = affixes.tryChooseMatching(depth,
+        Items.types.getTags(itemType.name));
 
     if (type == null) return null;
 

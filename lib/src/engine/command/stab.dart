@@ -14,7 +14,7 @@ class StabCommand extends DirectionCommand {
     var weapon = game.hero.equipment.weapon;
     if (weapon == null) return false;
 
-    return weapon.type.hasTag("dagger");
+    return weapon.type.weaponType == "dagger";
   }
 
   Action getDirectionAction(Game game, Direction dir) => new StabAction(dir);

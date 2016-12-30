@@ -116,7 +116,7 @@ abstract class MonsterState {
 
     if (rng.range(chance) >= meander) return dir;
 
-    var dirs;
+    List<Direction> dirs;
     if (dir == Direction.none) {
       // Since the monster has no direction, any is equally valid.
       dirs = Direction.all;

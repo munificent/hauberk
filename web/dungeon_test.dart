@@ -7,6 +7,8 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content/tiles.dart';
 
+import 'histogram.dart';
+
 html.CanvasElement canvas;
 html.CanvasRenderingContext2D context;
 
@@ -159,6 +161,49 @@ void generate() {
   var validator = new html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
 
-  html.querySelector('table').setInnerHtml(tableContents.toString(),
+  html.querySelector('table[id=monsters]').setInnerHtml(tableContents.toString(),
+      validator: validator);
+
+  tableContents.clear();
+  tableContents.write('''
+    <thead>
+    <tr>
+      <td colspan="2">Item</td>
+      <td>Depth</td>
+      <td>Tags</td>
+      <td>Equip.</td>
+      <td>Attack</td>
+      <td>Armor</td>
+    </tr>
+    </thead>
+    <tbody>
+    ''');
+
+  var items = new Histogram();
+
+  for (var item in stage.items) {
+    items.add(item.toString());
+  }
+
+  tableContents.clear();
+  tableContents.write('''
+    <thead>
+    <tr>
+      <td width="300px">Item</td>
+      <td>Count</td>
+    </tr>
+    </thead>
+    <tbody>
+    ''');
+
+  for (var item in items.descending()) {
+    tableContents.write('''
+    <tr>
+      <td>$item</td>
+      <td>${items.count(item)}</td>
+    </tr>
+    ''');
+  }
+  html.querySelector('table[id=items]').setInnerHtml(tableContents.toString(),
       validator: validator);
 }

@@ -137,8 +137,8 @@ class Dungeon {
     }
   }
 
-  void tryPlaceItem(Vec pos, int depth, [String tag]) {
-    var itemType = Items.types.choose(depth, tag);
+  void tryPlaceItem(Vec pos, int depth) {
+    var itemType = Items.types.tryChoose(depth, "item");
     if (itemType == null) return;
 
     // TODO: Pass in levelOffset.

@@ -11,15 +11,19 @@ import 'items/item.dart';
 import 'log.dart';
 import 'monster.dart';
 import 'option.dart';
-import 'tag.dart';
 
 /// A single kind of [Monster] in the game.
-class Breed extends Tagged<Breed> implements Quantifiable {
+class Breed implements Quantifiable {
   final Pronoun pronoun;
   String get name => singular;
 
   /// Untyped so the engine isn't coupled to how monsters appear.
   final appearance;
+
+  /// The breeds's depth.
+  ///
+  /// Higher depth breeds are found later in the game.
+  final int depth;
 
   final List<Attack> attacks;
   final List<Move>   moves;
@@ -49,9 +53,8 @@ class Breed extends Tagged<Breed> implements Quantifiable {
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, {
-      int depth, this.maxHealth, this.tracking, this.meander, this.speed,
-      this.flags})
-      : super(depth);
+      this.depth, this.maxHealth, this.tracking, this.meander, this.speed,
+      this.flags});
 
   String get singular =>
       Log.parsePlural(_name, isPlural: false, forcePlural: true);

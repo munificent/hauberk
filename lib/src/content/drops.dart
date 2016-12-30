@@ -5,7 +5,7 @@ import 'affixes.dart';
 import 'items.dart';
 
 Drop parseDrop(String name, [int level]) {
-  var itemType = Items.types.find(name);
+  var itemType = Items.types.tryFind(name);
   if (itemType != null) return new _ItemDrop(itemType);
 
   return new _TagDrop(name, level);
@@ -45,7 +45,7 @@ class _TagDrop implements Drop {
   _TagDrop(this._tag, this._depth);
 
   void spawnDrop(AddItem addItem) {
-    var itemType = Items.types.choose(_depth, _tag);
+    var itemType = Items.types.tryChoose(_depth, _tag);
     if (itemType == null) return;
 
     // TODO: Item rarity?

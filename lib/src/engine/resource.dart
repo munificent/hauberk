@@ -1,6 +1,5 @@
 import 'package:piecemeal/piecemeal.dart';
 
-// TODO: Unify this with the stuff in tag.dart and RaritySet.
 class ResourceSet<T> {
   final Map<String, _Tag<T>> _tags = {};
   final Map<String, _Resource<T>> _resources = {};
@@ -10,19 +9,21 @@ class ResourceSet<T> {
 
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
-  void add(String name, T object, int depth, int rarity, String tagNames) {
+  void add(String name, T object, int depth, int rarity, [String tagNames]) {
     if (_resources.containsKey(name)) {
       throw new ArgumentError('Already have a resource named "$name".');
     }
 
-    var tags = tagNames.split(" ").map((name) {
-      var tag = _tags[name];
-      if (tag == null) throw new ArgumentError('Unknown tag "$name".');
-      return tag;
-    });
-
-    var resource = new _Resource(object, depth, 1.0 / rarity, tags.toList());
+    var resource = new _Resource(object, depth, 1.0 / rarity);
     _resources[name] = resource;
+
+    if (tagNames != null) {
+      for (var tagName in tagNames.split(" ")) {
+        var tag = _tags[tagName];
+        if (tag == null) throw new ArgumentError('Unknown tag "$name".');
+        resource._tags.add(tag);
+      }
+    }
   }
 
   /// Given a string like "a/b/c d/e" defines tags for "a", "b", "c", "d", and
@@ -44,6 +45,27 @@ class ResourceSet<T> {
     }
   }
 
+  /// Returns the resource with [name].
+  T find(String name) {
+    var resource = _resources[name];
+    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+    return resource.object;
+  }
+
+  /// Returns the resource with [name], if any, or else `null`.
+  T tryFind(String name) {
+    var resource = _resources[name];
+    if (resource == null) return null;
+    return resource.object;
+  }
+
+  /// Gets the names of the tags for the resource with [name].
+  Iterable<String> getTags(String name) {
+    var resource = _resources[name];
+    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+    return resource._tags.map((tag) => tag.name);
+  }
+
   /// Chooses a random resource in [tagName] for [depth].
   ///
   /// Includes all resources of child tags of [tagName]. There is also a random
@@ -61,23 +83,38 @@ class ResourceSet<T> {
       tag = tag.parent;
     }
 
-    return _tryChoose(depth, [tag]);
+    return _tryChoose(depth, (resource) {
+      for (var resourceTag in resource._tags) {
+        if (resourceTag.contains(tag)) return true;
+      }
+
+      return false;
+    });
   }
 
-  /// Chooses a random resource at [depth].
+  /// Chooses a random resource at [depth] from the set of resources whose tags
+  /// match at least one of [tags].
   ///
-  /// Only includes resources that have one of [tags] (or any of their parents).
-  T tryChooseAny(int depth, Iterable<String> tags) {
+  /// For example, given tag path "equipment/weapon/sword", if [tags] is
+  /// "weapon", this will permit resources tagged "weapon" or "equipment", but
+  /// not "sword".
+  T tryChooseMatching(int depth, Iterable<String> tags) {
     var tagObjects = tags.map((name) {
       var tag = _tags[name];
       if (tag == null) throw new ArgumentError('Unknown tag "$name".');
       return tag;
     });
 
-    return _tryChoose(depth, tagObjects);
+    return _tryChoose(depth, (resource) {
+      for (var resourceTag in resource._tags) {
+        if (tagObjects.any((tag) => tag.contains(resourceTag))) return true;
+      }
+
+      return false;
+    });
   }
 
-  T _tryChoose(int depth, Iterable<_Tag<T>> tags) {
+  T _tryChoose(int depth, bool predicate(_Resource<T> resource)) {
     var minDepth = depth ~/ 2;
 
     // Bell curve around goal depth.
@@ -99,7 +136,7 @@ class ResourceSet<T> {
     var allowed = _resources.values
         .where((resource) => resource.depth >= minDepth &&
         resource.depth <= depth &&
-        resource.hasAnyTag(tags));
+        predicate(resource));
 
     if (allowed.isEmpty) return null;
 
@@ -141,19 +178,9 @@ class _Resource<T> {
 
   /// The reciprocal of the resource's rarity.
   final double frequency;
-  final List<_Tag<T>> _tags;
+  final Set<_Tag<T>> _tags = new Set();
 
-  _Resource(this.object, this.depth, this.frequency, this._tags);
-
-  /// Returns true if this resource has any of [tags] (or any of their parent
-  /// tags).
-  bool hasAnyTag(Iterable<_Tag<T>> tags) {
-    for (var tag in _tags) {
-      if (tags.any((thisTag) => thisTag.contains(tag))) return true;
-    }
-
-    return false;
-  }
+  _Resource(this.object, this.depth, this.frequency);
 }
 
 class _Tag<T> {

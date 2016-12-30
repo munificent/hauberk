@@ -25,8 +25,8 @@ main() {
     <tr>
       <td colspan="2">Item</td>
       <td>Depth</td>
-      <td>Tags</td>
       <td>Equip.</td>
+      <td>Weapon</td>
       <td>Attack</td>
       <td>Armor</td>
     </tr>
@@ -50,26 +50,22 @@ main() {
       text.write('<td>${item.depth}</td>');
     }
 
-//    if (item.categories.isEmpty) {
-//      text.write('<td>&mdash;</td>');
-//    } else {
-//      text.write('<td>${item.categories.join("&thinsp;/&thinsp;")}</td>');
-//    }
-    if (item.tags.isEmpty) {
+    if (item.equipSlot == null) {
       text.write('<td>&mdash;</td>');
     } else {
-      text.write('<td>${item.allTags.join(" ")}</td>');
+      text.write('<td>${item.equipSlot}</td>');
     }
 
-    text.write('''
-          <td>${item.equipSlot != null ? item.equipSlot : "&mdash;"}</td>
-          <td>
-        ''');
-
-    if (item.attack != null) {
-      text.write(item.attack.averageDamage);
+    if (item.weaponType == null) {
+      text.write('<td>&mdash;</td>');
     } else {
-      text.write('&mdash;');
+      text.write('<td>${item.weaponType}</td>');
+    }
+
+    if (item.attack == null) {
+      text.write('<td>&mdash;</td>');
+    } else {
+      text.write('<td>${item.attack.averageDamage}</td>');
     }
 
     text.write('<td>${item.armor != 0 ? item.armor : "&mdash;"}</td>');

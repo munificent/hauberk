@@ -14,6 +14,7 @@ main() {
     text.write('<tr><td>$depth</td><td>');
 
     var drop = parseDrop("item", depth);
+    // TODO: Use Histogram class.
     var drops = {};
 
     var tries = 100;

@@ -3,7 +3,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';
-import '../tag.dart';
 
 /// A thing that can be picked up.
 class Item extends Thing implements Comparable<Item> {
@@ -86,15 +85,27 @@ class Item extends Thing implements Comparable<Item> {
 typedef Action ItemUse();
 
 /// A kind of [Item]. Each item will have a type that describes the item.
-class ItemType extends Tagged<ItemType> {
+class ItemType {
   final String name;
   final appearance;
 
+  /// The item types's depth.
+  ///
+  /// Higher depth objects are found later in the game.
+  final int depth;
+
   final int sortIndex;
+
+  // TODO: These two fields are sort of redundant with tags, but ItemTypes
+  // don't own their tags. Should they?
 
   /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
   /// then this Item cannot be equipped.
   final String equipSlot;
+
+  /// If this item is a weapon, returns which kind of weapon it is -- "spear",
+  /// "sword", etc. Otherwise returns `null`.
+  final String weaponType;
 
   final ItemUse use;
 
@@ -122,23 +133,10 @@ class ItemType extends Tagged<ItemType> {
 
   final Set<String> flags = new Set();
 
-  ItemType(this.name, this.appearance, int depth, this.sortIndex,
-      this.equipSlot, this.use, this.attack, this.tossAttack,
+  ItemType(this.name, this.appearance, this.depth, this.sortIndex,
+      this.equipSlot, this.weaponType, this.use, this.attack, this.tossAttack,
       this.breakage, this.armor, this.price, {treasure: false})
-      : isTreasure = treasure,
-        super(depth);
-
-  /// If this item is a weapon, returns which kind of weapon it is -- "spear",
-  /// "sword", etc. Otherwise returns `null`.
-  String get weaponType {
-    for (var tag in allTags) {
-      for (var parent in tag.parents) {
-        if (parent.name == "weapon") return tag.name;
-      }
-    }
-
-    return null;
-  }
+      : isTreasure = treasure;
 
   String toString() => name;
 }
