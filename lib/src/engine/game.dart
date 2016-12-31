@@ -114,7 +114,7 @@ class Game {
   void _buildStage(Content content, HeroSave heroSave, int depth) {
     // TODO: Do something useful with depth.
     // TODO: Vary size?
-    _stage = new Stage(121, 81, this);
+    _stage = new Stage(101, 71, this);
 
     content.buildStage(_stage, depth);
 

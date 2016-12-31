@@ -40,8 +40,9 @@ main() {
       <td colspan="2">Health</td>
       <td>Meander</td>
       <td>Speed</td>
-      <td>Exp./Level</td>
+      <td>Exp/Level</td>
       <td>Attacks</td>
+      <td>Moves</td>
       <td>Flags</td>
       <td>Drops</td>
     </tr>
@@ -69,9 +70,12 @@ main() {
         ''');
 
     var attacks = breed.attacks.map(
-        (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} (${attack.averageDamage})');
+        (attack) => '${Log.makeVerbsAgree(attack.verb, breed.pronoun)} $attack');
     text.write(attacks.join(', '));
 
+    text.write('</td><td>');
+
+    text.writeln(breed.moves.join(', '));
     text.write('</td><td>');
 
     for (var flag in breed.flags) {

@@ -21,7 +21,7 @@ class Option {
   /// How much each level costs. This is multiplied by the (zero-based) level
   /// (squared) to determine how much experience is required to reach that
   /// level.
-  static final heroLevelCost = 40;
+  static final heroLevelCost = 50;
 
   /// The amount of gold a new hero starts with.
   static final heroGoldStart = 60;

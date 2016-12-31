@@ -211,6 +211,8 @@ class TeleportMove extends Move {
   }
 
   Action onGetAction(Monster monster) => new TeleportAction(_range);
+
+  String toString() => "Teleport $_range";
 }
 
 /// Spawns a new [Monster] of the same [Breed] adjacent to this one.

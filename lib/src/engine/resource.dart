@@ -147,7 +147,7 @@ class ResourceSet<T> {
     // Pick an item. Try a few times and take the best.
     var resource = _pickWeighted(allowed, totalFrequency);
     // TODO: Make tunable?
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 1; i++) {
       var other = _pickWeighted(allowed, totalFrequency);
       if (other.depth > resource.depth) resource = other;
     }

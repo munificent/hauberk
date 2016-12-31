@@ -4,16 +4,16 @@ import '../engine.dart';
 import 'affixes.dart';
 import 'items.dart';
 
-Drop parseDrop(String name, [int level]) {
+Drop parseDrop(String name, int depth) {
   var itemType = Items.types.tryFind(name);
-  if (itemType != null) return new _ItemDrop(itemType);
+  if (itemType != null) return new _ItemDrop(itemType, depth);
 
-  return new _TagDrop(name, level);
+  return new _TagDrop(name, depth);
 }
 
 /// Creates a [Drop] that has a [chance]% chance of dropping [drop].
-Drop percentDrop(int chance, drop, [int level]) {
-  return new _PercentDrop(chance, parseDrop(drop, level));
+Drop percentDrop(int chance, drop, int depth) {
+  return new _PercentDrop(chance, parseDrop(drop, depth));
 }
 
 /// Creates a [Drop] that drops all of [drops].
@@ -26,11 +26,12 @@ Drop repeatDrop(int count, drop, [int level]) {
 /// Drops an item of a given type.
 class _ItemDrop implements Drop {
   final ItemType _type;
+  final int _depth;
 
-  _ItemDrop(this._type);
+  _ItemDrop(this._type, this._depth);
 
   void spawnDrop(AddItem addItem) {
-    addItem(Affixes.createItem(_type));
+    addItem(Affixes.createItem(_type, _depth));
   }
 }
 
@@ -57,7 +58,7 @@ class _TagDrop implements Drop {
     // TODO: Get this working again.
 //    var depthOffset = itemType.depth - _depth;
 
-    addItem(Affixes.createItem(itemType));
+    addItem(Affixes.createItem(itemType, _depth));
   }
 }
 

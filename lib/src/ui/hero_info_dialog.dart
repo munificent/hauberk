@@ -27,7 +27,8 @@ class HeroInfoDialog extends Screen<Input> {
     terminal.writeAt(3, 3, "Equipment", Color.gray);
     terminal.writeAt(45, 3, "El Dam Mult Add Hit Dge Arm Add", Color.gray);
 
-    terminal.writeAt(38, 5 + _hero.equipment.slots.length, "Total:", Color.gray);
+    var totalY = 5 + _hero.equipment.slots.length;
+    terminal.writeAt(38, totalY, "Total:", Color.gray);
 
     var i = 0;
     for (var element in Element.all.skip(1)) {
@@ -44,8 +45,7 @@ class HeroInfoDialog extends Screen<Input> {
         color = Color.red;
       }
 
-      terminal.writeAt(x, 5 + _hero.equipment.slots.length,
-          resistance.toString().padLeft(2), color);
+      terminal.writeAt(x, totalY, resistance.toString().padLeft(2), color);
       i++;
     }
 
@@ -142,8 +142,11 @@ class HeroInfoDialog extends Screen<Input> {
       y++;
     }
 
-    terminal.writeAt(0, terminal.height - 1,
-        '[Esc] Exit', Color.gray);
+    terminal.writeAt(69, totalY, _hero.armor.toString().padLeft(3));
+    var armorPercent = 100 - getArmorMultiplier(_hero.armor) * 100;
+    terminal.writeAt(73, totalY, armorPercent.toInt().toString().padLeft(2) + "%");
+
+    terminal.writeAt(0, terminal.height - 1, '[Esc] Exit', Color.gray);
   }
 
   // TODO: Unify these colors and abbreviations with how the game

@@ -31,6 +31,10 @@ main() {
   generate();
 }
 
+String percent(int count) {
+  return (count * 100 / tries).toStringAsFixed(3) + "%";
+}
+
 void generate() {
   var items = new Histogram<String>();
   var affixes = new Histogram<String>();
@@ -40,7 +44,7 @@ void generate() {
     if (itemType == null) continue;
 
     // TODO: Pass in levelOffset.
-    var item = Affixes.createItem(itemType);
+    var item = Affixes.createItem(itemType, depth);
 
     items.add(item.toString());
     if (item.prefix != null) affixes.add("${item.prefix.name} ___");
@@ -52,7 +56,7 @@ void generate() {
     <thead>
     <tr>
       <td width="300px">Item</td>
-      <td>Count</td>
+      <td>Chance</td>
     </tr>
     </thead>
     <tbody>
@@ -62,7 +66,7 @@ void generate() {
     tableContents.write('''
     <tr>
       <td>$affix</td>
-      <td>${affixes.count(affix)}</td>
+      <td>${percent(affixes.count(affix))}</td>
     </tr>
     ''');
   }
@@ -71,7 +75,7 @@ void generate() {
     tableContents.write('''
     <tr>
       <td>$item</td>
-      <td>${items.count(item)}</td>
+      <td>${percent(items.count(item))}</td>
     </tr>
     ''');
   }

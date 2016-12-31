@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
@@ -8,16 +10,20 @@ class Affixes {
   static final _suffixes = new ResourceSet<Affix>();
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
-  static Item createItem(ItemType itemType) {
+  static Item createItem(ItemType itemType, int depth) {
     // Untagged items don't have any affixes.
     if (Items.types.getTags(itemType.name).isEmpty) return new Item(itemType);
 
+    // There's a chance of no affixes at all, based on the depth.
+    // TODO: Allow some drops to modify this.
+    if (rng.range(100) >= depth) return new Item(itemType);
+
     // Give items a chance to boost their effective level when choosing a
     // affixes.
-    var depth = rng.taper(itemType.depth, 2);
+    var affixDepth = math.max(depth, itemType.depth) + rng.taper(0, 2);
 
-    var prefix = _chooseAffix(_prefixes, itemType, depth);
-    var suffix = _chooseAffix(_suffixes, itemType, depth);
+    var prefix = _chooseAffix(_prefixes, itemType, affixDepth);
+    var suffix = _chooseAffix(_suffixes, itemType, affixDepth);
 
     // Decide if the item may have just a prefix, just a suffix, or (rarely)
     // both. This is mainly to make dual-affix items less common since they
@@ -55,29 +61,29 @@ class Affixes {
   }
 
   static void _resists() {
-    _resistWeak(Element.air, 4, 2);
-    _resistWeak(Element.earth, 8, 2);
+    _resistWeak(Element.air, 10, 2);
+    _resistWeak(Element.earth, 11, 2);
     _resistWeak(Element.fire, 12, 2);
-    _resistWeak(Element.water, 16, 2);
-    _resistWeak(Element.acid, 20, 2);
-    _resistWeak(Element.cold, 24, 2);
-    _resistWeak(Element.lightning, 28, 2);
-    _resistWeak(Element.poison, 32, 2);
-    _resistWeak(Element.dark, 36, 2);
-    _resistWeak(Element.light, 40, 2);
-    _resistWeak(Element.spirit, 46, 2);
+    _resistWeak(Element.water, 13, 2);
+    _resistWeak(Element.acid, 14, 3);
+    _resistWeak(Element.cold, 15, 2);
+    _resistWeak(Element.lightning, 16, 3);
+    _resistWeak(Element.poison, 17, 4);
+    _resistWeak(Element.dark, 18, 4);
+    _resistWeak(Element.light, 19, 4);
+    _resistWeak(Element.spirit, 20, 5);
 
-    _resistStrong(Element.air, 14, 4);
-    _resistStrong(Element.earth, 18, 4);
-    _resistStrong(Element.fire, 22, 4);
-    _resistStrong(Element.water, 26, 4);
-    _resistStrong(Element.acid, 30, 4);
-    _resistStrong(Element.cold, 34, 4);
-    _resistStrong(Element.lightning, 38, 4);
-    _resistStrong(Element.poison, 42, 4);
-    _resistStrong(Element.dark, 46, 4);
-    _resistStrong(Element.light, 50, 4);
-    _resistStrong(Element.spirit, 54, 4);
+    _resistStrong(Element.air, 16, 4);
+    _resistStrong(Element.earth, 17, 4);
+    _resistStrong(Element.fire, 18, 4);
+    _resistStrong(Element.water, 19, 4);
+    _resistStrong(Element.acid, 20, 5);
+    _resistStrong(Element.cold, 21, 4);
+    _resistStrong(Element.lightning, 22, 6);
+    _resistStrong(Element.poison, 23, 7);
+    _resistStrong(Element.dark, 24, 7);
+    _resistStrong(Element.light, 25, 7);
+    _resistStrong(Element.spirit, 26, 8);
   }
 
   static void _extraDamage() {
@@ -93,8 +99,8 @@ class Affixes {
 
   static void _brands() {
     // TODO: Should these grant resistance to their element too?
-    brand("Glimmering", 12, 3, Element.light, scale: 1.5);
-    brand("Shining", 24, 4, Element.light, scale: 2.0);
+    brand("Glimmering", 20, 3, Element.light, scale: 1.5);
+    brand("Shining", 32, 4, Element.light, scale: 2.0);
     brand("Radiant", 48, 5, Element.light, scale: 2.5);
 
     brand("Dim", 16, 3, Element.dark, scale: 1.5);

@@ -141,8 +141,7 @@ class Dungeon {
     var itemType = Items.types.tryChoose(depth, "item");
     if (itemType == null) return;
 
-    // TODO: Pass in levelOffset.
-    var item = Affixes.createItem(itemType);
+    var item = Affixes.createItem(itemType, depth);
     item.pos = pos;
     stage.items.add(item);
   }

@@ -106,7 +106,7 @@ void recipe(drop, List<String> ingredientNames) {
   var ingredients = ingredientNames.map(Items.types.find).toList();
   if (drop is String) {
     produces = ["Produces: $drop"];
-    drop = parseDrop(drop);
+    drop = parseDrop(drop, 1);
   } else {
     produces = [
       "May create a random piece of equipment similar to",

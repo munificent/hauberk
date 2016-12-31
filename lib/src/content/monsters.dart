@@ -90,7 +90,7 @@ class Monsters {
     // h  Humanoids           H  Hybrid
     // i  Insect              I  Insubstantial (ghost)
     // j  Jelly/Slime         J  (unused)
-    // k  Kobold/Imp/ete   K  Kraken/Land Octopus
+    // k  Kobold/Imp/etc      K  Kraken/Land Octopus
     // l  Lizard man          L  Lich
     // m  Mold/Mushroom       M  Multi-Headed Hydra
     // n  Naga                N  Demon
@@ -229,18 +229,47 @@ void greaterDragons() {}
 
 void eyes() {
   group("e", flags: "immobile");
-  breed("lazy eye", 3, white, 16)
-      .attack("gaze[s] into", 6)
-      .sparkBolt(rate: 7, damage: 10, range: 5)
-      .teleport(rate: 9, range: 4);
+  breed("lazy eye", 1, white, 10)
+      .attack("stare[s] at", 4)
+      .sparkBolt(rate: 6, damage: 10, range: 6);
 
-  group("e", flags: "immobile");
+  breed("mad eye", 5, lightRed, 20)
+      .attack("stare[s] at", 6)
+      .windBolt(rate: 6, damage: 20);
+
   breed("floating eye", 9, yellow, 30)
-      .attack("touch[es]", 4)
-      .lightBolt(rate: 5, damage: 16)
+      .attack("stare[s] at", 8)
+      .sparkBolt(rate: 5, damage: 16)
       .teleport(rate: 8, range: 7);
 
-  // baleful eye, malevolent eye, murderous eye
+  breed("baleful eye", 20, orange, 50)
+      .attack("gaze[s] into", 12)
+      .fireBolt(rate: 4, damage: 20)
+      .waterBolt(rate: 4, damage: 20)
+      .teleport(rate: 8, range: 9);
+
+  breed("malevolent eye", 30, red, 70)
+      .attack("gaze[s] into", 20)
+      .lightBolt(rate: 4, damage: 20)
+      .darkBolt(rate: 4, damage: 20)
+      .fireCone(rate: 7, damage: 30)
+      .teleport(rate: 8, range: 9);
+
+  breed("murderous eye", 40, darkRed, 90)
+      .attack("gaze[s] into", 30)
+      .acidBolt(rate: 7, damage: 50)
+      .stoneBolt(rate: 7, damage: 50)
+      .iceCone(rate: 7, damage: 40)
+      .teleport(rate: 8, range: 9);
+
+  breed("watcher", 60, gray, 140)
+      .attack("see[s]", 50)
+      .lightBolt(rate: 7, damage: 40)
+      .lightCone(rate: 7, damage: 60)
+      .darkBolt(rate: 7, damage: 50)
+      .darkCone(rate: 7, damage: 70);
+
+  // beholder, undead beholder, rotting beholder
 }
 
 void elementals() {}
@@ -370,12 +399,12 @@ void jellies() {
 
 void kobolds() {
   group("k", speed: 2, meander: 4, flags: "cowardly");
-  breed("forest sprite", 2, lightGreen, 8)
+  breed("forest sprite", 1, lightGreen, 8)
       .attack("scratch[es]", 4)
       .teleport(range: 6)
       .drop(20, "magic");
 
-  breed("house sprite", 4, lightBlue, 15)
+  breed("house sprite", 3, lightBlue, 15)
       .attack("poke[s]", 8)
       .teleport(range: 6)
       .drop(20, "magic");
@@ -577,17 +606,17 @@ void reptiles() {
 
 void slugs() {
   group("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
-  breed("slug", 1, darkYellow, 6)
-      .attack("crawl[s] on", 3);
+  breed("slug", 1, darkYellow, 14)
+      .attack("crawl[s] on", 5);
 
   breed("giant slug", 6, green, 20)
       .attack("crawl[s] on", 7, Element.poison);
 }
 
 void snakes() {
-  group("S", meander: 4);
-  breed("garter snake", 1, gold, 7)
-      .attack("bite[s]", 1);
+  group("S", speed: 1, meander: 4);
+  breed("garter snake", 1, green, 7)
+      .attack("bite[s]", 3);
 
   breed("brown snake", 3, brown, 14)
       .attack("bite[s]", 4);
@@ -702,6 +731,12 @@ class _BreedBuilder {
   _BreedBuilder arrow({num rate: 5, int damage}) =>
       _bolt("the arrow", "hits", Element.none, damage, rate, 8);
 
+  _BreedBuilder windBolt({num rate: 5, int damage}) =>
+      _bolt("the wind", "blows", Element.air, damage, rate, 8);
+
+  _BreedBuilder stoneBolt({num rate: 5, int damage}) =>
+      _bolt("the stone", "hits", Element.earth, damage, rate, 8);
+
   _BreedBuilder waterBolt({num rate: 5, int damage}) =>
       _bolt("the jet", "splashes", Element.water, damage, rate, 8);
 
@@ -713,6 +748,12 @@ class _BreedBuilder {
 
   _BreedBuilder fireBolt({num rate: 5, int damage}) =>
       _bolt("the flame", "burns", Element.fire, damage, rate, 8);
+
+  _BreedBuilder lightningBolt({num rate: 5, int damage}) =>
+      _bolt("the lightning", "shocks", Element.lightning, damage, rate, 10);
+
+  _BreedBuilder acidBolt({num rate: 5, int damage, int range: 8}) =>
+      _bolt("the acid", "burns", Element.acid, damage, rate, range);
 
   _BreedBuilder darkBolt({num rate: 5, int damage}) =>
       _bolt("the darkness", "crushes", Element.dark, damage, rate, 10);
@@ -726,8 +767,17 @@ class _BreedBuilder {
   _BreedBuilder fireCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the flame", "burns", Element.fire, rate, damage, range);
 
+  _BreedBuilder iceCone({num rate: 5, int damage, int range: 10}) =>
+      _cone("the ice", "freezes", Element.cold, rate, damage, range);
+
   _BreedBuilder lightningCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the lightning", "shocks", Element.lightning, rate, damage, range);
+
+  _BreedBuilder lightCone({num rate: 5, int damage, int range: 10}) =>
+      _cone("the light", "sears", Element.light, rate, damage, range);
+
+  _BreedBuilder darkCone({num rate: 5, int damage, int range: 10}) =>
+      _cone("the darkness", "crushes", Element.dark, rate, damage, range);
 
   _BreedBuilder insult({num rate: 5}) => _addMove(new InsultMove(rate));
 
