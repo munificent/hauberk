@@ -78,24 +78,18 @@ class Item extends Thing implements Comparable<Item> {
   /// when equipped.
   Attack defend(Attack attack) {
     attack = attack.addArmor(armor);
-
-    if (prefix != null) {
-      attack = prefix.defend(attack);
-    }
-
-    if (suffix != null) {
-      attack = suffix.defend(attack);
-    }
-
+    attack = attack.addResistance(resistance(attack.element));
     return attack;
   }
 
   /// Gets the resistance this item confers to [element].
   int resistance(Element element) {
-    // TODO: Hacky. Should affixes expose this directly?
-    var attack = new Attack("", 1, element);
-    attack = defend(attack);
-    return attack.resistance;
+    var resistance = 0;
+
+    if (prefix != null) resistance += prefix.resists[element];
+    if (suffix != null) resistance += suffix.resists[element];
+
+    return resistance;
   }
 
   int compareTo(Item other) {
@@ -176,14 +170,10 @@ class Affix {
 
   final Map<Element, int> resists = {};
 
-  Affix(this.name, [this.attack]);
-
-  Attack defend(Attack attack) {
-    if (resists.containsKey(attack.element)) {
-      return attack.addResistance(resists[attack.element]);
+  Affix(this.name, [this.attack]) {
+    for (var element in Element.all) {
+      resists[element] = 0;
     }
-
-    return attack;
   }
 }
 
