@@ -102,6 +102,7 @@ main() {
   ui.keyPress.bind(Input.swap, KeyCode.x);
   ui.keyPress.bind(Input.toss, KeyCode.t);
   ui.keyPress.bind(Input.selectCommand, KeyCode.s);
+  ui.keyPress.bind(Input.heroInfo, KeyCode.a);
 
   // Laptop directions.
   ui.keyPress.bind(Input.nw, KeyCode.i);

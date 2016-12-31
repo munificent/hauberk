@@ -70,6 +70,8 @@ class ItemScreen extends Screen<Input> {
         break;
 
       // Switch views on the current column.
+      // TODO: This is totally wrong. It means you can't do anything with items
+      // in slots "o" or "l".
       case Input.n:
         do {
           views[active] = _changeView(views[active], -1);

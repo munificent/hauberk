@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';
+import '../element.dart';
 
 /// A thing that can be picked up.
 class Item extends Thing implements Comparable<Item> {
@@ -89,6 +90,14 @@ class Item extends Thing implements Comparable<Item> {
     return attack;
   }
 
+  /// Gets the resistance this item confers to [element].
+  int resistance(Element element) {
+    // TODO: Hacky. Should affixes expose this directly?
+    var attack = new Attack("", 1, element);
+    attack = defend(attack);
+    return attack.resistance;
+  }
+
   int compareTo(Item other) {
     // TODO: Take into account affixes.
     return type.sortIndex.compareTo(other.type.sortIndex);
@@ -138,6 +147,7 @@ class ItemType {
 
   final int armor;
 
+  // TODO: Affix should modify this.
   /// How much gold this item is worth.
   final int price;
 

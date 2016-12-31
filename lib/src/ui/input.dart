@@ -24,6 +24,7 @@ class Input {
   static const swap = const Input("swap");
 
   static const selectCommand = const Input("selectCommand");
+  static const heroInfo = const Input("heroInfo");
 
   /// Directional inputs.
   ///

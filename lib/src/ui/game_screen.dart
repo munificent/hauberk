@@ -7,8 +7,9 @@ import '../engine.dart';
 import 'close_door_dialog.dart';
 import 'direction_dialog.dart';
 import 'effect.dart';
-import 'game_over_screen.dart';
 import 'forfeit_dialog.dart';
+import 'game_over_screen.dart';
+import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item_dialog.dart';
 import 'select_command_dialog.dart';
@@ -68,6 +69,7 @@ class GameScreen extends Screen<Input> {
 
       case Input.forfeit: ui.push(new ForfeitDialog(game)); break;
       case Input.selectCommand: ui.push(new SelectCommandDialog(game)); break;
+      case Input.heroInfo: ui.push(new HeroInfoDialog(game.hero)); break;
       case Input.drop: ui.push(new ItemDialog.drop(this)); break;
       case Input.use: ui.push(new ItemDialog.use(this)); break;
       case Input.toss: ui.push(new ItemDialog.toss(this)); break;
