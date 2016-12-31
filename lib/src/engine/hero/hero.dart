@@ -4,6 +4,7 @@ import '../action/action.dart';
 import '../action/walk.dart';
 import '../actor.dart';
 import '../attack.dart';
+import '../element.dart';
 import '../energy.dart';
 import '../game.dart';
 import '../items/equipment.dart';
@@ -140,6 +141,20 @@ class Hero extends Actor {
     total += heroClass.armor;
 
     return total;
+  }
+
+  /// Gets the total permament resistance provided by all equipment.
+  int permanentResistance(Element element) {
+    // TODO: If class or race can affect this, add it in.
+    var resistance = 0;
+
+    for (var item in equipment) {
+      resistance += item.resistance(element);
+    }
+
+    // TODO: Unify this with onDefend().
+
+    return resistance;
   }
 
   /// Increases the hero's food by an appropriate amount after having explored

@@ -6,8 +6,6 @@ import 'input.dart';
 class HeroInfoDialog extends Screen<Input> {
   final Hero _hero;
 
-  bool get isTransparent => true;
-
   HeroInfoDialog(this._hero);
 
   bool handleInput(Input input) {
@@ -20,82 +18,139 @@ class HeroInfoDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    var window = terminal.rect(0, 0, 80, 32);
-    window.clear();
+    terminal.clear();
 
-    // TODO: Show strike bonuses.
-    // TODO: If armor can modify attack, show that.
-    window.writeAt(3, 2, "Equipment", Color.gray);
-    window.writeAt(40, 2, "Dam   Elem   Def ┌──── Resistance ────┐", Color.gray);
+    terminal.writeAt(45, 2, "┌─────Attack──────┐ ┌─Defense─┐ ┌─────Resistance─────┐", Color.darkGray);
+    terminal.writeAt(51, 2, "Attack", Color.gray);
+    terminal.writeAt(67, 2, "Defense", Color.gray);
+    terminal.writeAt(83, 2, "Resistance", Color.gray);
+    terminal.writeAt(3, 3, "Equipment", Color.gray);
+    terminal.writeAt(45, 3, "El Dam Mult Add Hit Dge Arm Add", Color.gray);
+
+    terminal.writeAt(38, 5 + _hero.equipment.slots.length, "Total:", Color.gray);
 
     var i = 0;
     for (var element in Element.all.skip(1)) {
-      var x = 57 + i * 2;
-      window.writeAt(x, 3, elementAbbreviation(element),
+      var x = 77 + i * 2;
+      terminal.writeAt(x, 3, elementAbbreviation(element),
           elementColor(element));
+
+      // Show the total resistance.
+      var resistance = _hero.permanentResistance(element);
+      var color = Color.gray;
+      if (resistance > 0) {
+        color = Color.lightGreen;
+      } else if (resistance < 0) {
+        color = Color.red;
+      }
+
+      terminal.writeAt(x, 5 + _hero.equipment.slots.length,
+          resistance.toString().padLeft(2), color);
       i++;
     }
 
-    var y = 4;
-    for (var item in _hero.equipment) {
-      window.drawGlyph(1, y, item.appearance);
-      window.writeAt(3, y, item.nounText);
+    var y = 5;
+    for (var slot in _hero.equipment.slotTypes) {
+      var item = _hero.equipment.find(slot);
+      if (item == null) {
+        terminal.writeAt(3, y, "(${slot})", Color.darkGray);
+        y++;
+        continue;
+      }
+
+      terminal.drawGlyph(1, y, item.appearance);
+      terminal.writeAt(3, y, item.nounText);
 
       if (item.attack != null) {
         var attack = item.attack;
-        window.writeAt(40, y, attack.averageDamage.toStringAsFixed(2).padLeft(6),
-            Color.orange);
 
-        if (attack.element == Element.none) {
-          window.writeAt(47, y, "--", Color.darkGray);
+        terminal.writeAt(45, y, elementAbbreviation(attack.element),
+            elementColor(attack.element));
+
+        terminal.writeAt(48, y, attack.baseDamage.toString().padLeft(3));
+
+        if (attack.damageScale > 1.0) {
+          terminal.writeAt(52, y, "x", Color.green);
+          terminal.writeAt(53, y, attack.damageScale.toStringAsFixed(1).padLeft(3), Color.lightGreen);
+        } else if (attack.damageScale < 1.0) {
+          terminal.writeAt(52, y, "x", Color.darkRed);
+          terminal.writeAt(53, y, (-attack.damageScale).toStringAsFixed(1).padLeft(3),
+              Color.red);
         } else {
-          window.writeAt(47, y, elementAbbreviation(attack.element),
-              elementColor(attack.element));
+          terminal.writeAt(52, y, "x1.0", Color.darkGray);
         }
+
+        if (attack.damageBonus > 0) {
+          terminal.writeAt(57, y, "+", Color.green);
+          terminal.writeAt(58, y, attack.damageBonus.toString().padLeft(2), Color.lightGreen);
+        } else if (attack.damageBonus < 0) {
+          terminal.writeAt(57, y, "-", Color.darkRed);
+          terminal.writeAt(58, y, (-attack.damageBonus).toString().padLeft(2),
+              Color.red);
+        } else {
+          terminal.writeAt(58, y, " 0", Color.darkGray);
+        }
+
+        if (attack.strikeBonus > 0) {
+          terminal.writeAt(61, y, "+", Color.green);
+          terminal.writeAt(62, y, attack.strikeBonus.toString().padLeft(2), Color.lightGreen);
+        } else if (attack.strikeBonus < 0) {
+          terminal.writeAt(61, y, "-", Color.darkRed);
+          terminal.writeAt(62, y, (-attack.strikeBonus).toString().padLeft(2),
+              Color.red);
+        } else {
+          terminal.writeAt(62, y, " 0", Color.darkGray);
+        }
+      } else {
+        terminal.writeAt(45, y, "-- ---  ---  --  --", Color.darkGray);
       }
 
-      if (item.armor != 0) {
-        window.writeAt(53, y, item.armor.toString().padLeft(3));
+      if (item.baseArmor != 0) {
+        terminal.writeAt(69, y, item.baseArmor.toString().padLeft(3));
+      } else {
+        terminal.writeAt(70, y, "--", Color.darkGray);
+      }
+
+      if (item.armorModifier > 0) {
+        terminal.writeAt(73, y, "+", Color.green);
+        terminal.writeAt(74, y, item.armorModifier.toString().padLeft(2), Color.lightGreen);
+      } else if (item.armorModifier < 0) {
+        terminal.writeAt(73, y, "-", Color.darkRed);
+        terminal.writeAt(74, y, (-item.armorModifier).toString().padLeft(2),
+            Color.red);
+      } else if (item.baseArmor != 0) {
+        terminal.writeAt(74, y, " 0", Color.darkGray);
+      } else {
+        terminal.writeAt(74, y, "--", Color.darkGray);
       }
 
       var i = 0;
       for (var element in Element.all.skip(1)) {
-        var x = 57 + i * 2;
+        var x = 77 + i * 2;
         var resistance = item.resistance(element);
         var color = Color.darkGray;
-        if (resistance > 1) {
+        if (resistance > 0) {
           color = Color.lightGreen;
-        } else if (resistance == 1) {
-          color = Color.green;
-        } else if (resistance == -1) {
+        } else if (resistance < 0) {
           color = Color.red;
-        } else if (resistance < -1) {
-          color = Color.lightRed;
         }
 
-        window.writeAt(x, y, item.resistance(element).toString().padLeft(2),
-            color);
+        terminal.writeAt(x, y, resistance.toString().padLeft(2), color);
         i++;
       }
 
       y++;
     }
 
-    var bar = new Glyph.fromCharCode(
-        CharCode.boxDrawingsLightHorizontal, Color.darkGray);
-    for (var x = 0; x < window.width; x++) {
-      terminal.drawGlyph(x, window.height - 1, bar);
-    }
-
-    window.writeAt((window.width - 12) ~/ 2, window.height - 1,
-        ' [Esc] Exit ', Color.gray);
+    terminal.writeAt(0, terminal.height - 1,
+        '[Esc] Exit', Color.gray);
   }
 
   // TODO: Unify these colors and abbreviations with how the game
   // screen shows resists, the colors used for ball attacks, etc.
   String elementAbbreviation(Element element) {
     return const {
-      Element.none: "--",
+      Element.none: "No",
       Element.air: "Ai",
       Element.earth: "Ea",
       Element.fire: "Fi",
@@ -112,17 +167,17 @@ class HeroInfoDialog extends Screen<Input> {
 
   Color elementColor(Element element) {
     return const {
-      Element.none: Color.darkGray,
+      Element.none: Color.gray,
       Element.air: Color.lightAqua,
       Element.earth: Color.brown,
-      Element.fire: Color.orange,
+      Element.fire: Color.red,
       Element.water: Color.blue,
-      Element.acid: Color.darkYellow,
+      Element.acid: Color.lightGreen,
       Element.cold: Color.lightBlue,
       Element.lightning: Color.lightPurple,
       Element.poison: Color.green,
       Element.dark: Color.gray,
-      Element.light: Color.white,
+      Element.light: Color.lightYellow,
       Element.spirit: Color.purple
     }[element];
   }

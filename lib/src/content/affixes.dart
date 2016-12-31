@@ -131,7 +131,8 @@ class Affixes {
   }
 
   static void _resist(String name, int depth, int rarity, Element element, int power) {
-    var affix = new Affix(name);
+    // Also boost armor a little.
+    var affix = new Affix(name, armor: power);
     affix.resists[element] = power;
 
     // TODO: Don't apply to all armor types?
@@ -140,14 +141,14 @@ class Affixes {
 
   /// A weapon suffix for adding damage.
   static void damage(String tag, String name, int depth, int rarity, {int damage}) {
-    var affix = new Affix(name, new Attack.modifier(damageBonus: damage));
+    var affix = new Affix(name, attack: new Attack.modifier(damageBonus: damage));
     _suffixes.add(name, affix, depth, rarity, tag);
   }
 
   /// A weapon prefix for giving an elemental brand.
   static void brand(String name, int depth, int rarity, Element element,
       {num scale}) {
-    var affix = new Affix(name, new Attack.modifier(
+    var affix = new Affix(name, attack: new Attack.modifier(
         element: element, damageScale: scale));
     _prefixes.add(name, affix, depth, rarity, "weapon");
   }

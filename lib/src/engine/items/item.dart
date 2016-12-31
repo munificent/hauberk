@@ -45,8 +45,20 @@ class Item extends Thing implements Comparable<Item> {
     return attack;
   }
 
-  /// The amount of protected provided by the item when equipped.
-  int get armor => type.armor;
+  /// The amount of protection provided by the item when equipped.
+  int get armor => baseArmor + armorModifier;
+
+  /// The base amount of protection provided by the item when equipped,
+  /// ignoring any affix modifiers.
+  int get baseArmor => type.armor;
+
+  /// The amount of protection added by the affixes.
+  int get armorModifier {
+    var result = 0;
+    if (prefix != null) result += prefix.armor;
+    if (suffix != null) result += suffix.armor;
+    return result;
+  }
 
   String get nounText {
     final name = new StringBuffer();
@@ -106,7 +118,7 @@ typedef Action ItemUse();
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {
   final String name;
-  final appearance;
+  final Object appearance;
 
   /// The item types's depth.
   ///
@@ -168,9 +180,11 @@ class Affix {
 
   final Attack attack;
 
+  final int armor;
+
   final Map<Element, int> resists = {};
 
-  Affix(this.name, [this.attack]) {
+  Affix(this.name, {this.attack, this.armor: 0}) {
     for (var element in Element.all) {
       resists[element] = 0;
     }
