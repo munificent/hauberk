@@ -3,38 +3,9 @@ import 'package:piecemeal/piecemeal.dart';
 import '../engine.dart';
 import 'items.dart';
 
-typedef Attack _CreateAttack();
-
-class _AttackAffix extends AffixType {
-  final _CreateAttack _createAttack;
-
-  _AttackAffix(String name, this._createAttack) : super(name);
-
-  Affix create() {
-    return new Affix(this, _createAttack());
-  }
-}
-
-class _ResistAffix extends AffixType {
-  final Element _element;
-  final int _power;
-
-  _ResistAffix(String name, this._element, this._power) : super(name);
-
-  Affix create() => new Affix(this, null);
-
-  Attack defend(Attack attack) {
-    if (attack.element == _element) {
-      attack = attack.addResistance(_power);
-    }
-
-    return attack;
-  }
-}
-
 class Affixes {
-  static final _prefixes = new ResourceSet<AffixType>();
-  static final _suffixes = new ResourceSet<AffixType>();
+  static final _prefixes = new ResourceSet<Affix>();
+  static final _suffixes = new ResourceSet<Affix>();
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType) {
@@ -63,7 +34,7 @@ class Affixes {
     }
   }
 
-  static AffixType find(String name) {
+  static Affix find(String name) {
     var type = _prefixes.tryFind(name);
     if (type != null) return type;
 
@@ -71,12 +42,8 @@ class Affixes {
   }
 
   static Affix _chooseAffix(
-      ResourceSet<AffixType> affixes, ItemType itemType, int depth) {
-    var type = affixes.tryChooseMatching(depth,
-        Items.types.getTags(itemType.name));
-
-    if (type == null) return null;
-    return type.create();
+      ResourceSet<Affix> affixes, ItemType itemType, int depth) {
+    return affixes.tryChooseMatching(depth, Items.types.getTags(itemType.name));
   }
 
   static void initialize() {
@@ -115,39 +82,39 @@ class Affixes {
 
   static void _extraDamage() {
     // TODO: Should these scale damage?
-    damage("of Harming", 8, 1, 1, 4);
-    damage("of Wounding", 15, 1, 3, 4);
-    damage("of Maiming", 35, 1, 6, 3);
-    damage("of Slaying", 65, 1, 10, 3);
+    damage("weapon", "of Harming", 8, 1, damage: 1);
+    damage("weapon", "of Wounding", 15, 1, damage: 2);
+    damage("weapon", "of Maiming", 35, 1, damage: 3);
+    damage("weapon", "of Slaying", 65, 1, damage: 5);
 
-    bowDamage("Ash", 10, 1, 3, 4);
-    bowDamage("Yew", 20, 1, 5, 3);
+    damage("bow", "Ash", 10, 1, damage: 3);
+    damage("bow", "Yew", 20, 1, damage: 5);
   }
 
   static void _brands() {
     // TODO: Should these grant resistance to their element too?
-    brand("Glimmering", 12, 3, Element.light, 0, 1.0);
-    brand("Shining", 24, 4, Element.light, 2, 1.1);
-    brand("Radiant", 48, 5, Element.light, 4, 1.2);
+    brand("Glimmering", 12, 3, Element.light, scale: 1.5);
+    brand("Shining", 24, 4, Element.light, scale: 2.0);
+    brand("Radiant", 48, 5, Element.light, scale: 2.5);
 
-    brand("Dim", 16, 3, Element.dark, 0, 1.1);
-    brand("Dark", 32, 4, Element.dark, 1, 1.2);
-    brand("Black", 56, 5, Element.dark, 3, 1.3);
+    brand("Dim", 16, 3, Element.dark, scale: 1.5);
+    brand("Dark", 32, 4, Element.dark, scale: 2.0);
+    brand("Black", 56, 5, Element.dark, scale: 2.5);
 
-    brand("Freezing", 20, 3, Element.cold, 2, 1.2);
+    brand("Freezing", 20, 3, Element.cold, scale: 2.0);
 
-    brand("Burning", 20, 3, Element.fire, 2, 1.2);
-    brand("Flaming", 40, 4, Element.fire, 4, 1.3);
-    brand("Searing", 60, 5, Element.fire, 6, 1.4);
+    brand("Burning", 20, 3, Element.fire, scale: 1.5);
+    brand("Flaming", 40, 4, Element.fire, scale: 2.0);
+    brand("Searing", 60, 5, Element.fire, scale: 2.5);
 
-    brand("Electric", 50, 5, Element.lightning, 4, 1.6);
-    brand("Shocking", 70, 5, Element.lightning, 6, 1.8);
+    brand("Electric", 50, 5, Element.lightning, scale: 2.0);
+    brand("Shocking", 70, 5, Element.lightning, scale: 3.0);
 
-    brand("Poisoned", 35, 5, Element.poison, 5, 1.3);
-    brand("Venomous", 70, 5, Element.poison, 6, 1.5);
+    brand("Poisoned", 35, 5, Element.poison, scale: 1.5);
+    brand("Venomous", 70, 5, Element.poison, scale: 2.0);
 
-    brand("Ghostly", 45, 5, Element.spirit, 3, 1.3);
-    brand("Spiritual", 80, 8, Element.spirit, 8, 1.5);
+    brand("Ghostly", 45, 5, Element.spirit, scale: 2.0);
+    brand("Spiritual", 80, 8, Element.spirit, scale: 3.0);
   }
 
   static void defineItemTag(String tag) {
@@ -164,37 +131,24 @@ class Affixes {
   }
 
   static void _resist(String name, int depth, int rarity, Element element, int power) {
-    var affix = new _ResistAffix(name, element, power);
+    var affix = new Affix(name);
+    affix.resists[element] = power;
+
     // TODO: Don't apply to all armor types?
-    _suffixes.add(affix.name, affix, depth, rarity, "armor");
+    _suffixes.add(name, affix, depth, rarity, "armor");
   }
 
   /// A weapon suffix for adding damage.
-  static void damage(String name, int depth, int rarity, int base, int taper) {
-    _attackAffix(_suffixes, name, depth, rarity, "weapon",
-        () => new Attack.modifier(damageBonus: rng.taper(base, taper)));
-  }
-
-  /// bow prefix for adding damage.
-  static void bowDamage(
-      String name, int depth, int rarity, int base, int taper) {
-    _attackAffix(_prefixes, name, depth, rarity, "bow",
-        () => new Attack.modifier(damageBonus: rng.taper(base, taper)));
+  static void damage(String tag, String name, int depth, int rarity, {int damage}) {
+    var affix = new Affix(name, new Attack.modifier(damageBonus: damage));
+    _suffixes.add(name, affix, depth, rarity, tag);
   }
 
   /// A weapon prefix for giving an elemental brand.
   static void brand(String name, int depth, int rarity, Element element,
-      int bonus, num scale) {
-    _attackAffix(_prefixes, name, depth, rarity, "weapon",
-        () => new Attack.modifier(element: element,
-            damageBonus: rng.taper(bonus, 5),
-            damageScale: rng.taper((scale + 10).toInt(), 4) / 10));
-  }
-
-  /// Defines a new [Affix].
-  static void _attackAffix(ResourceSet<AffixType> types, String name,
-      int depth, int rarity, String tag, _CreateAttack createAttack) {
-    var type = new _AttackAffix(name, createAttack);
-    types.add(name, type, depth, rarity, tag);
+      {num scale}) {
+    var affix = new Affix(name, new Attack.modifier(
+        element: element, damageScale: scale));
+    _prefixes.add(name, affix, depth, rarity, "weapon");
   }
 }

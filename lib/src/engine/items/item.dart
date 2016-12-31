@@ -170,29 +170,21 @@ class ItemType {
 /// A modifier that can be applied to an [Item] to change its capabilities.
 /// For example, in a "Dagger of Wounding", the "of Wounding" part is an affix.
 class Affix {
-  final AffixType type;
+  final String name;
 
   final Attack attack;
 
-  Affix(this.type, this.attack);
+  final Map<Element, int> resists = {};
 
-  String get name => type.name;
+  Affix(this.name, [this.attack]);
 
   Attack defend(Attack attack) {
-    // TODO: Apply affix-instance-specific defenses here. If, for example, we
-    // have an affix type that chooses a random resist for the affix, that
-    // would go here.
-    return type.defend(attack);
+    if (resists.containsKey(attack.element)) {
+      return attack.addResistance(resists[attack.element]);
+    }
+
+    return attack;
   }
-}
-
-abstract class AffixType {
-  final String name;
-
-  AffixType(this.name);
-
-  Affix create();
-  Attack defend(Attack attack) => attack;
 }
 
 typedef void AddItem(Item item);

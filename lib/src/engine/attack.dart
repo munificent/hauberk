@@ -21,7 +21,7 @@ import 'log.dart';
 ///     120   25%
 ///     160   20%
 ///     ...   etc.
-num getArmorMultiplier(num armor) {
+num getArmorMultiplier(int armor) {
   // Damage is never increased.
   return 1.0 / (1.0 + math.max(0, armor) / 40.0);
 }
@@ -36,17 +36,17 @@ class Attack {
 
   /// The bonus applied to the defender's base dodge ability. A higher bonus
   /// makes it more likely the attack will make contact.
-  num get strikeBonus => _strikeBonus;
-  num _strikeBonus = 0.0;
+  int get strikeBonus => _strikeBonus;
+  int _strikeBonus = 0;
 
   /// The average damage. The actual damage will be a `Rng.triangleInt` centered
   /// on this with a range of 1/2 of its value.
-  final num baseDamage;
+  final int baseDamage;
 
   /// Additional damage added to [baseDamage] after the multiplier has been
   /// applied.
-  num get damageBonus => _damageBonus;
-  num _damageBonus = 0.0;
+  int get damageBonus => _damageBonus;
+  int _damageBonus = 0;
 
   /// The multiplier for [baseDamage].
   num get damageScale => _damageScale;
@@ -60,8 +60,8 @@ class Attack {
   Element _element = Element.none;
 
   /// The defender's armor.
-  num get armor => _armor;
-  num _armor = 0.0;
+  int get armor => _armor;
+  int _armor = 0;
 
   /// The defender's level of resistance to the attack's element.
   ///
@@ -85,21 +85,21 @@ class Attack {
         _damageScale = damageScale != null ? damageScale : 1.0;
 
   /// Returns a new attack identical to this one but with [offset] added.
-  Attack addDamage(num offset) => _clone().._damageBonus += offset;
+  Attack addDamage(int offset) => _clone().._damageBonus += offset;
 
   /// Returns a new attack identical to this one but with [element].
   Attack brand(Element element) => _clone().._element = element;
 
   /// Returns a new attack identical to this one but with [bonus] added to the
   /// strike modifier.
-  Attack addStrike(num bonus) => _clone().._strikeBonus += bonus;
+  Attack addStrike(int bonus) => _clone().._strikeBonus += bonus;
 
   /// Returns a new attack identical to this one but with damage scaled by
   /// [factor].
   Attack multiplyDamage(num factor) => _clone().._damageScale *= factor;
 
   /// Returns a new attack with [armor] added to it.
-  Attack addArmor(num armor) => _clone().._armor += armor;
+  Attack addArmor(int armor) => _clone().._armor += armor;
 
   /// Returns a new attack with [resist] added to it.
   Attack addResistance(int resist) => _clone().._resistance += resist;
@@ -232,12 +232,12 @@ class Attack {
   }
 
   String toString() {
-    var result = baseDamage.toInt().toString();
+    var result = baseDamage.toString();
 
     if (damageBonus > 0) {
-      result += "+${damageBonus.toInt()}";
+      result += "+${damageBonus}";
     } else if (damageBonus < 0) {
-      result += "${damageBonus.toInt()}";
+      result += "${damageBonus}";
     }
 
     if (damageScale != 1.0) {
@@ -248,7 +248,7 @@ class Attack {
       result += " $element";
     }
 
-    if (armor != 0.0) {
+    if (armor != 0) {
       result += " ($armor armor)";
     }
 
@@ -278,7 +278,7 @@ class RangedAttack extends Attack {
   /// The maximum range of the attack.
   final int range;
 
-  RangedAttack(String noun, String verb, num baseDamage, Element element, this.range)
+  RangedAttack(String noun, String verb, int baseDamage, Element element, this.range)
       : super(verb, baseDamage, element, new Noun(noun));
 
   RangedAttack _clone() {

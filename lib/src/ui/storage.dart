@@ -63,7 +63,7 @@ class Storage {
       // Older saves don't have this.
       if (maxDepth == null) maxDepth = 0;
 
-      var heroClass;
+      HeroClass heroClass;
       switch (hero['class']['name']) {
         case 'warrior': heroClass = _loadWarrior(hero['class']); break;
         default:
@@ -83,14 +83,24 @@ class Storage {
       return null;
     }
 
-    var prefix;
+    Affix prefix;
     if (data.containsKey('prefix')) {
-      prefix = _loadAffix(data['prefix']);
+      // TODO: Older save from back when affixes had types.
+      if (data['prefix'] is Map) {
+        prefix = content.findAffix(data['prefix']['name']);
+      } else {
+        prefix = content.findAffix(data['prefix']);
+      }
     }
 
-    var suffix;
+    Affix suffix;
     if (data.containsKey('suffix')) {
-      suffix = _loadAffix(data['suffix']);
+      // TODO: Older save from back when affixes had types.
+      if (data['suffix'] is Map) {
+        suffix = content.findAffix(data['suffix']['name']);
+      } else {
+        suffix = content.findAffix(data['suffix']);
+      }
     }
 
     return new Item(type, prefix, suffix);
@@ -102,33 +112,6 @@ class Storage {
         combat: data['combat'],
         toughness: data['toughness'],
         masteries: data['masteries'] as Map<String, int>);
-  }
-
-  Affix _loadAffix(Map data) {
-    var type = content.findAffix(data['name']);
-
-    var attack;
-    var attackData = data['attack'];
-    if (attackData != null) {
-      attack = new Attack("", 0);
-      if (attackData['element'] != null) {
-        attack = attack.brand(Element.fromName(attackData['element']));
-      }
-
-      if (attackData['damageBonus'] != null) {
-        attack = attack.addDamage(attackData['damageBonus']);
-      }
-
-      if (attackData['strikeBonus'] != null) {
-        attack = attack.addStrike(attackData['strikeBonus']);
-      }
-
-      if (attackData['damageScale'] != null) {
-        attack = attack.multiplyDamage(attackData['damageScale']);
-      }
-    }
-
-    return new Affix(type, attack);
   }
 
   void save() {
@@ -188,43 +171,14 @@ class Storage {
     };
 
     if (item.prefix != null) {
-      itemData['prefix'] = _saveAffix(item.prefix);
+      itemData['prefix'] = item.prefix.name;
     }
 
     if (item.suffix != null) {
-      itemData['suffix'] = _saveAffix(item.suffix);
+      itemData['suffix'] = item.suffix.name;
     }
 
     return itemData;
-  }
-
-  Map _saveAffix(Affix affix) {
-    var affixData = <String, dynamic>{
-      'name': affix.name
-    };
-
-    if (affix.attack != null) {
-      var attackData = {};
-      affixData['attack'] = attackData;
-
-      if (affix.attack.element != Element.none) {
-        attackData['element'] = affix.attack.element.name;
-      }
-
-      if (affix.attack.damageBonus != 0) {
-        attackData['damageBonus'] = affix.attack.damageBonus;
-      }
-
-      if (affix.attack.strikeBonus != 0) {
-        attackData['strikeBonus'] = affix.attack.strikeBonus;
-      }
-
-      if (affix.attack.damageScale != 1.0) {
-        attackData['damageScale'] = affix.attack.damageScale;
-      }
-    }
-
-    return affixData;
   }
 
   void _saveWarrior(Warrior warrior, Map data) {
