@@ -68,10 +68,26 @@ class Shops {
       "Metal Shod Boots",
       "Greaves"
     ]);
+
+    shop("Unguence the Alchemist", [
+      "Soothing Balm",
+      "Mending Salve",
+      "Healing Poultice",
+      "Antidote",
+      "Potion of Quickness",
+      "Potion of Alacrity",
+      "Bottled Wind",
+      "Bottled Ice",
+      "Bottled Fire",
+      "Bottled Ocean",
+      "Bottled Earth",
+      "Scroll of Sidestepping",
+      "Scroll of Phasing",
+      "Scroll of Item Detection"
+    ]);
   }
 
   /*
-  Unguence the Alchemist
   The Droll Magery
   Glur's Rare Artifacts
   */

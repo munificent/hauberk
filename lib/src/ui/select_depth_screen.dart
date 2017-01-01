@@ -50,18 +50,39 @@ class SelectDepthScreen extends Screen<Input> {
     if (shift || alt) return false;
 
     switch (keyCode) {
-      case KeyCode.i:
-        ui.push(new ItemScreen(content, save));
+      case KeyCode.c:
+        ui.push(new ItemScreen(content, save, View.crucible));
+        break;
+
+      case KeyCode.h:
+        ui.push(new ItemScreen(content, save, View.home));
         return true;
+
+      case KeyCode.one: return tryEnterShop(0);
+      case KeyCode.two: return tryEnterShop(1);
+      case KeyCode.three: return tryEnterShop(2);
+      case KeyCode.four: return tryEnterShop(3);
+      case KeyCode.five: return tryEnterShop(4);
+      case KeyCode.six: return tryEnterShop(5);
+      case KeyCode.seven: return tryEnterShop(6);
+      case KeyCode.eight: return tryEnterShop(7);
+      case KeyCode.nine: return tryEnterShop(8);
     }
 
     return false;
   }
 
+  bool tryEnterShop(int index) {
+    if (index >= content.shops.length) return false;
+
+    ui.push(new ItemScreen.shop(content, save, content.shops[index]));
+    return true;
+  }
+
   void render(Terminal terminal) {
     terminal.writeAt(0, 0, 'Greetings, ${save.name}, how deep shall you venture?');
     terminal.writeAt(0, terminal.height - 1,
-        '[L] Select area, [↕] Change depth, [↔] Change depth, [I] Manage items',
+        '[L] Enter dungeon, [↕] Change depth, [↔] Change depth',
         Color.gray);
 
     // TODO: Do something prettier.
@@ -77,8 +98,26 @@ class SelectDepthScreen extends Screen<Input> {
         fore = Color.black;
         back = Color.yellow;
       }
-      terminal.writeAt(17 + x * 6, 8 + y * 2,
+      terminal.writeAt(17 + x * 6, 4 + y,
           depth.toString().padLeft(3), fore, back);
+    }
+
+    var y = 17;
+    drawMenuItem(String key, String label) {
+      terminal.writeAt(30, y, key, Color.gray);
+      terminal.writeAt(31, y, ")", Color.darkGray);
+      terminal.writeAt(33, y, label);
+      y++;
+    }
+
+    drawMenuItem("h", "Enter Home");
+    drawMenuItem("c", "Use Crucible");
+    y++;
+
+    var i = 1;
+    for (var shop in content.shops) {
+      drawMenuItem(i.toString(), shop.name);
+      i++;
     }
   }
 

@@ -29,82 +29,42 @@ class ItemScreen extends Screen<Input> {
 
   Mode mode = Mode.view;
 
-  /// Which side has keyboard focus.
-  Side active = Side.left;
-
-  /// All of the views that can be shown.
-  final List<View> _allViews = [];
-
   /// If the crucible contains a complete recipe, this will be it. Otherwise,
   /// this will be `null`.
   Recipe completeRecipe;
 
-  ItemScreen(this.content, this.save) {
-    _allViews.addAll([
-      View.inventory,
-      View.equipment,
-      View.home,
-      View.crucible
-    ]);
+  ItemScreen(this.content, this.save, View view) {
+    views[Side.right] = view;
+  }
 
-    for (var shop in content.shops) {
-      _allViews.add(new ShopView(shop));
-    }
+  ItemScreen.shop(this.content, this.save, Shop shop) {
+    views[Side.right] = new ShopView(shop);
   }
 
   bool handleInput(Input input) {
     if (mode.handleInput(input, this)) return true;
 
-    switch (input) {
-      case Input.cancel:
-        ui.pop();
-        break;
-
-      // Switch columns.
-      case Input.e:
-        active = Side.right;
-        break;
-
-      case Input.w:
-        active = Side.left;
-        break;
-
-      // Switch views on the current column.
-      // TODO: This is totally wrong. It means you can't do anything with items
-      // in slots "o" or "l".
-      case Input.n:
-        do {
-          views[active] = _changeView(views[active], -1);
-        }
-        while (!views[active].allowedOnSide(active));
-        break;
-
-      case Input.s:
-        do {
-          views[active] = _changeView(views[active], 1);
-        }
-        while (!views[active].allowedOnSide(active));
-        break;
-
-      default:
-        return false;
+    if (input == Input.cancel) {
+      ui.pop();
+      return true;
     }
 
-    // Don't show the same on both sides.
-    if (leftView == rightView) {
-      if (active == Side.left) {
-        rightView = View.crucible;
-      } else {
-        leftView = View.inventory;
-      }
-    }
-
-    dirty();
-    return true;
+    return false;
   }
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
+
+    if (keyCode == KeyCode.tab) {
+      if (leftView == View.inventory) {
+        leftView = View.equipment;
+      } else {
+        leftView = View.inventory;
+      }
+
+      dirty();
+      return true;
+    }
 
     if (mode.keyDown(keyCode, this)) return true;
 
@@ -143,11 +103,7 @@ class ItemScreen extends Screen<Input> {
     drawSide(Side side, int x) {
       var view = views[side];
 
-      if (active == side && mode == Mode.view) {
-        terminal.writeAt(x, 2, view.label, Color.black, Color.yellow);
-      } else {
-        terminal.writeAt(x, 2, view.label);
-      }
+      terminal.writeAt(x, 2, view.label);
 
       if (mode.allowsSelection) {
         drawItems(terminal, x, 4, view.getItems(this),
@@ -181,10 +137,6 @@ class ItemScreen extends Screen<Input> {
 
     completeRecipe = null;
   }
-
-  // Rotates [view] to a later or earlier one based on [offset].
-  View _changeView(View view, int offset) =>
-      _allViews[(_allViews.indexOf(view) + offset) % _allViews.length];
 }
 
 /// Identifies the two columns on the screen.
@@ -285,7 +237,10 @@ class ViewMode extends Mode {
   String message(ItemScreen screen) => 'Which items do you want to look at?';
 
   String helpText(ItemScreen screen) {
-    return "[↔] Select column, [↕] Select source, "
+    var tab = screen.leftView == View.inventory ?
+      "Switch to equipment" : "Switch to inventory";
+
+    return "[Tab] $tab, "
         "[${screen.rightView.getVerb[0]}] ${screen.rightView.getVerb}, "
         "[${screen.rightView.putVerb[0]}] ${screen.rightView.putVerb}, "
         "[Esc] Exit";
