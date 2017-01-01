@@ -57,7 +57,10 @@ abstract class Actor extends Thing {
   final Condition poison = new PoisonCondition();
 
   /// Makes it hard for the actor to see.
-  final Condition dazzle = new DazzleCondition();
+  final Condition blindness = new BlindnessCondition();
+
+  /// Makes it hard for the actor to see.
+  final Condition dazzle = new BlindnessCondition();
 
   // Temporary resistance to elements.
   final resistances = <Element, ResistCondition>{};
@@ -67,6 +70,7 @@ abstract class Actor extends Thing {
     haste,
     cold,
     poison,
+    blindness,
     dazzle
   ]..addAll(resistances.values);
 
@@ -84,6 +88,9 @@ abstract class Actor extends Thing {
 
   /// Whether or not the actor can be seen by the [Hero].
   bool get isVisible => game.stage[pos].visible;
+
+  /// Whether the actor's vision is currently impaired.
+  bool get isBlinded => blindness.isActive || dazzle.isActive;
 
   bool get needsInput => false;
 
@@ -104,7 +111,7 @@ abstract class Actor extends Thing {
     var dodge = 15;
 
     // Hard to block an attack you can't see coming.
-    if (dazzle.isActive) dodge -= 5;
+    if (isBlinded) dodge -= 5;
 
     return dodge;
   }
@@ -128,7 +135,7 @@ abstract class Actor extends Thing {
     var attack = onGetAttack(defender);
 
     // Hard to hit an actor you can't see.
-    if (dazzle.isActive) attack = attack.addStrike(-5);
+    if (isBlinded) attack = attack.addStrike(-5);
 
     return attack;
   }

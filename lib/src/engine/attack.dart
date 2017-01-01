@@ -209,11 +209,11 @@ class Attack {
         break;
 
       case Element.dark:
-        // TODO: Blind.
+        action.addAction(new BlindAction(damage, resistance), defender);
         break;
 
       case Element.light:
-        action.addAction(new DazzleAction(damage), defender);
+        action.addAction(new DazzleAction(damage, resistance), defender);
         break;
 
       case Element.spirit:

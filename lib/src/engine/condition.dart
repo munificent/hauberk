@@ -101,9 +101,10 @@ class PoisonCondition extends Condition {
 }
 
 /// A condition that impairs vision.
-class DazzleCondition extends Condition {
+class BlindnessCondition extends Condition {
   void onDeactivate() {
     actor.log("{1} can see clearly again.", actor);
+    if (actor == actor.game.hero) actor.game.stage.dirtyVisibility();
   }
 }
 

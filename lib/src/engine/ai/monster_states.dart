@@ -109,9 +109,10 @@ abstract class MonsterState {
 
     var meander = breed.meander;
 
-    // Being dazzled makes the monster stumble around.
-    if (monster.dazzle.isActive) {
-      meander += math.min(6, monster.dazzle.duration ~/ 4);
+    // Being blinded makes the monster stumble around.
+    if (monster.isBlinded) {
+      var duration = monster.dazzle.duration + monster.blindness.duration;
+      meander += math.min(6, duration ~/ 4);
     }
 
     if (rng.range(chance) >= meander) return dir;

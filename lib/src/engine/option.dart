@@ -10,7 +10,7 @@ class Option {
   static final heroHealthStart = 20;
 
   /// How much max health is increased when the hero levels up.
-  static final heroHealthGain = 10;
+  static final heroHealthGain = 6;
 
   /// How much damage an unarmed hero does.
   static final heroPunchDamage = 5;

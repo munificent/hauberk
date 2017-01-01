@@ -7,7 +7,7 @@ import '../attack.dart';
 import '../element.dart';
 import '../game.dart';
 
-/// Creates a 45° swath of damage that radiates out from a point.
+/// Creates a swath of damage that radiates out from a point.
 class RayAction extends Action {
   /// The centerpoint that the cone is radiating from.
   final Vec _from;

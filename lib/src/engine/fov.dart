@@ -16,6 +16,11 @@ class Fov {
 
   /// Updates the visible flags in [stage] given the [Hero]'s [pos].
   void refresh(Vec pos) {
+    if (_game.hero.blindness.isActive) {
+      _hideAll();
+      return;
+    }
+
     var numExplored = 0;
 
     // Sweep through the octants.
@@ -27,6 +32,15 @@ class Fov {
     if (_stage[pos].setVisible(true)) numExplored++;
 
     _game.hero.explore(numExplored);
+  }
+
+  void _hideAll() {
+    for (var pos in _stage.bounds) {
+      _stage[pos].setVisible(false);
+    }
+
+    // Hero know where they are.
+    _stage[_game.hero.pos].setVisible(true);
   }
 
   int _refreshOctant(Vec start, int octant) {

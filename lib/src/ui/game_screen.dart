@@ -297,6 +297,7 @@ class GameScreen extends Screen<Input> {
 
     _drawStage(terminal.rect(0, 0, viewSize.x, viewSize.y), heroColor,
         visibleMonsters);
+
     _drawLog(terminal.rect(0, 34, 80, 6));
     _drawSidebar(terminal.rect(81, 0, 20, 40), heroColor, visibleMonsters);
   }
@@ -334,9 +335,9 @@ class GameScreen extends Screen<Input> {
 
       var colors = [Color.aqua, Color.blue, Color.purple, Color.red,
           Color.orange, Color.gold, Color.yellow, Color.green];
-      var char = (rng.range(100) > chance) ? glyph.char : CharCode.asterisk;
-      return new Glyph.fromCharCode(char, rng.item(colors));
-    }
+        var char = (rng.range(100) > chance) ? glyph.char : CharCode.asterisk;
+        return new Glyph.fromCharCode(char, rng.item(colors));
+      }
 
     // Draw the tiles.
     for (var pos in _cameraBounds) {
@@ -527,6 +528,7 @@ class GameScreen extends Screen<Input> {
       case 3: conditions.add(["S", Color.lightGold]); break;
     }
 
+    if (actor.blindness.isActive) conditions.add(["B", Color.darkGray]);
     if (actor.dazzle.isActive) conditions.add(["D", Color.lightPurple]);
 
     for (var element in Element.all) {
