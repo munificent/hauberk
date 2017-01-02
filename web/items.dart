@@ -29,6 +29,7 @@ main() {
       <td>Weapon</td>
       <td>Attack</td>
       <td>Armor</td>
+      <td>Stack</td>
     </tr>
     </thead>
     <tbody>
@@ -69,8 +70,8 @@ main() {
     }
 
     text.write('<td>${item.armor != 0 ? item.armor : "&mdash;"}</td>');
-
-    text.write('</td></tr>');
+    text.write('<td>${item.maxStack}</td>');
+    text.write('</tr>');
   }
   text.write('</tbody>');
 

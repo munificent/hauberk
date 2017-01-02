@@ -155,11 +155,14 @@ class ItemType {
   /// increases the hero's gold and disappears.
   bool isTreasure;
 
+  /// The maximum number of items of this type that a single stack may contain.
+  final int maxStack;
+
   final Set<String> flags = new Set();
 
   ItemType(this.name, this.appearance, this.depth, this.sortIndex,
       this.equipSlot, this.weaponType, this.use, this.attack, this.tossAttack,
-      this.breakage, this.armor, this.price, {treasure: false})
+      this.breakage, this.armor, this.price, this.maxStack, {treasure: false})
       : isTreasure = treasure;
 
   String toString() => name;

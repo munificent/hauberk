@@ -35,6 +35,8 @@ Angband drops a ton of loot, but:
    I always found churning through detection annoying in Angband, but maybe
    there's something to it.
 
+*  Bows needs arrows. Crossbows need bolts.
+
 I have some ideas, but nothing is really there yet:
 
 *   My hope was that the crucible would ensure equipment is never useless. Even

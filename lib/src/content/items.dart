@@ -15,7 +15,7 @@ String _equipSlot;
 String _weaponType;
 String _verb;
 List<String> _flags;
-
+int _maxStack;
 int _tossDamage;
 int _tossRange;
 Element _tossElement;
@@ -44,7 +44,7 @@ class Items {
 
     // Unused: ; : ` % ^ < >
 
-    category(",", "item");
+    category(",", stack: 20, tag: "item");
     tossable(damage: 4, range: 8, element: Element.earth, breakage: 10);
     item("Rock", 1, lightBrown);
 
@@ -81,7 +81,7 @@ class Items {
 void treasures() {
   // TODO: Make monsters and areas drop these.
   // Coins.
-  category("¢", "treasure/coin");
+  category("¢", tag: "treasure/coin");
   treasure("Copper Coins",    1, brown,           1);
   treasure("Bronze Coins",    7, darkGold,        8);
   treasure("Silver Coins",   11, gray,           20);
@@ -90,7 +90,7 @@ void treasures() {
   treasure("Platinum Coins", 40, lightGray,      300);
 
   // Bars.
-  category(r"$", "treasure/bar");
+  category(r"$", tag: "treasure/bar");
   treasure("Copper Bar",     35, brown,          150);
   treasure("Bronze Bar",     50, darkGold,       500);
   treasure("Silver Bar",     60, gray,           800);
@@ -126,7 +126,7 @@ void treasures() {
 }
 
 void pelts() {
-  category("%", null, flags: "flammable");
+  category("%", flags: "flammable");
   item("Flower",        1, lightAqua); // TODO: Use in recipe.
   item("Fur Pelt",      1, lightBrown);
   item("Insect Wing",   1, purple);
@@ -137,12 +137,14 @@ void pelts() {
 }
 
 void potions() {
+  category("!", stack: 10, flags: "freezable");
+
   // TODO: Make these foods?
 
   // TODO: Potions should shatter when thrown. Some should perform an effect.
 
   // Healing.
-  category("!", "magic/potion/healing", flags: "freezable");
+  tagged("magic/potion/healing");
   tossable(damage: 1, range: 8, breakage: 100);
   healing("Soothing Balm",     1,   10, lightRed,     24);
   healing("Mending Salve",     7,   40, red,          48);
@@ -152,7 +154,7 @@ void potions() {
 
   healing("Antidote",         15,   18, green,         0, curePoison: true);
 
-  category("!", "magic/potion/resistance", flags: "freezable");
+  tagged("magic/potion/resistance");
   tossable(damage: 1, range: 8, breakage: 100);
   resistSalve("Heat",          5, 20, orange, Element.fire);
   resistSalve("Cold",          6, 24, lightBlue, Element.cold, "-freezable");
@@ -169,7 +171,7 @@ void potions() {
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
 
   // Speed.
-  category("!", "magic/potion/speed", flags: "freezable");
+  tagged("magic/potion/speed");
   tossable(damage: 1, range: 8, breakage: 100);
   potion("of Quickness",  3,  20, lightGreen, () => new HasteAction(20, 1));
   potion("of Alacrity",  18,  40, green,      () => new HasteAction(30, 2));
@@ -178,7 +180,7 @@ void potions() {
   // dram, draught, elixir, philter
 
   // TODO: Make monsters drop these.
-  category("?", "magic/potion/bottled", flags: "freezable");
+  tagged("magic/potion/bottled");
   tossable(damage: 1, range: 8, breakage: 100);
   bottled("Wind",       4,   30, white,       Element.air,         8, "blasts");
   bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, "freezes", flags: "-freezable");
@@ -197,8 +199,10 @@ void potions() {
 }
 
 void scrolls() {
+  category("?", stack: 20, flags: "flammable");
+
   // Teleportation.
-  category("?", "magic/scroll/teleportation", flags: "flammable");
+  tagged("magic/scroll/teleportation");
   tossable(damage: 1, range: 4, breakage: 75);
   scroll("of Sidestepping",   2,  9, lightPurple, () => new TeleportAction(6));
   scroll("of Phasing",        6, 17, purple,      () => new TeleportAction(12));
@@ -206,45 +210,45 @@ void scrolls() {
   scroll("of Disappearing",  26, 47, darkBlue,    () => new TeleportAction(48));
 
   // Detection.
-  category("?", "magic/scroll/detection", flags: "flammable");
+  tagged("magic/scroll/detection");
   tossable(damage: 1, range: 4, breakage: 75);
   scroll("of Item Detection", 7, 27, lightOrange, () => new DetectItemsAction());
 }
 
 void weapons() {
   // Bludgeons.
-  category(r"\", "equipment/weapon/club", verb: "hit[s]");
+  category(r"\", tag: "equipment/weapon/club", verb: "hit[s]");
   tossable(breakage: 25, range: 7);
   weapon("Stick",          1,    0, brown,       4,   3);
   weapon("Cudgel",         3,    9, gray,        5,   4);
   weapon("Club",           6,   21, lightBrown,  6,   5);
 
   // Staves.
-  category("_", "equipment/weapon/staff", verb: "hit[s]");
+  category("_", tag: "equipment/weapon/staff", verb: "hit[s]");
   tossable(breakage: 35, range: 6);
   weapon("Walking Stick",  2,    9, darkBrown,   5,   3);
   weapon("Staff",          5,   38, lightBrown,  7,   5);
   weapon("Quarterstaff",  11,  250, brown,      12,   8);
 
   // Hammers.
-  category("=", "equipment/weapon/hammer", verb: "bash[es]");
+  category("=", tag: "equipment/weapon/hammer", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
   weapon("Hammer",        27,  621, brown,      16, 12);
   weapon("Mattock",       39, 1225, darkBrown,  20, 16);
   weapon("War Hammer",    45, 2106, lightGray,  24, 20);
 
-  category("=", "equipment/weapon/mace", verb: "bash[es]");
+  category("=", tag: "equipment/weapon/mace", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
   weapon("Morningstar",   24,  324, gray,       13, 11);
   weapon("Mace",          33,  891, darkGray,   18, 16);
 
-  category("~", "equipment/weapon/whip", verb: "whip[s]");
+  category("~", tag: "equipment/weapon/whip", verb: "whip[s]");
   tossable(breakage: 25, range: 5);
   weapon("Whip",           4,    9, lightBrown,  5,  1);
   weapon("Chain Whip",    15,   95, darkGray,    9,  2);
   weapon("Flail",         27,  409, darkGray,   14,  4);
 
-  category("|", "equipment/weapon/sword", verb: "slash[es]");
+  category("|", tag: "equipment/weapon/sword", verb: "slash[es]");
   tossable(breakage: 20, range: 6);
   weapon("Rapier",         7,  188, gray,       11,  4);
   weapon("Shortsword",    11,  324, darkGray,   13,  6);
@@ -264,7 +268,7 @@ void weapons() {
   */
 
   // Knives.
-  category("|", "equipment/weapon/dagger", verb: "stab[s]");
+  category("|", tag: "equipment/weapon/dagger", verb: "stab[s]");
   tossable(breakage: 2, range: 10);
   weapon("Knife",          3,    9, gray,        5,  5);
   weapon("Dirk",           4,   21, lightGray,   6,  6);
@@ -276,7 +280,7 @@ void weapons() {
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
   // Spears.
-  category(r"\", "equipment/weapon/spear", verb: "stab[s]");
+  category(r"\", tag: "equipment/weapon/spear", verb: "stab[s]");
   tossable(breakage: 3, range: 11);
   weapon("Pointed Stick",  2,    0, brown,       5,  9);
   weapon("Spear",          7,  137, gray,       10, 15);
@@ -286,7 +290,7 @@ void weapons() {
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
-  category(r"\", "equipment/weapon/axe", verb: "chop[s]");
+  category(r"\", tag: "equipment/weapon/axe", verb: "chop[s]");
   tossable(breakage: 4);
   weapon("Hatchet",        6,  137, darkGray,   10, 12, 10);
   weapon("Axe",           12,  621, lightBrown, 16, 18, 9);
@@ -294,12 +298,12 @@ void weapons() {
   weapon("Battleaxe",     40, 4866, lightBlue,  32, 32, 7);
 
   // Sling. In a category itself because many bow affixes don't apply to it.
-  category("}", "equipment/weapon/sling", verb: "hit[s]");
+  category("}", tag: "equipment/weapon/sling", verb: "hit[s]");
   tossable(breakage: 15, range: 5);
   ranged("Sling",          3,   20, darkBrown,  "the stone",  2, 10, 1);
 
   // Bows.
-  category("}", "equipment/weapon/bow", verb: "hit[s]");
+  category("}", tag: "equipment/weapon/bow", verb: "hit[s]");
   tossable(breakage: 50, range: 5);
   ranged("Short Bow",      5,  180, brown,      "the arrow",  4, 12, 2);
   ranged("Longbow",       13,  600, lightBrown, "the arrow",  8, 14, 3);
@@ -309,11 +313,11 @@ void weapons() {
 void bodyArmor() {
   // TODO: Make some armor throwable.
 
-  category("(", "equipment/armor/cloak");
+  category("(", tag: "equipment/armor/cloak");
   armor("Cloak",                   3,   19, darkBlue,    2);
   armor("Fur Cloak",               9,   42, lightBrown,  3);
 
-  category("(", "equipment/armor/body");
+  category("(", tag: "equipment/armor/body");
   armor("Cloth Shirt",             2,   19, lightGray,   2);
   armor("Leather Shirt",           5,  126, lightBrown,  5);
   armor("Jerkin",                  7,  191, orange,      6);
@@ -323,7 +327,7 @@ void bodyArmor() {
   armor("Mail Hauberk",           20, 2835, darkGray,   18);
   armor("Scale Mail",             23, 4212, lightGray,  21);
 
-  category("(", "equipment/armor/body/robe");
+  category("(", tag: "equipment/armor/body/robe");
   armor("Robe",                    2,   77, aqua,        4);
   armor("Fur-lined Robe",          9,  191, darkAqua,    6);
 
@@ -340,7 +344,7 @@ void bodyArmor() {
 }
 
 void boots() {
-  category("]", "equipment/armor/boots");
+  category("]", tag: "equipment/armor/boots");
   armor("Leather Sandals",       2,    6, lightBrown,  1);
   armor("Leather Shoes",         8,   19, brown,       2);
   armor("Leather Boots",        14,   77, darkBrown,   4);
@@ -348,16 +352,34 @@ void boots() {
   armor("Greaves",              47, 1017, lightGray,  12);
 }
 
-void category(glyph, String tag, {String verb, String flags}) {
+void category(glyph, {String tag, String verb, String flags, int stack: 1}) {
   _glyph = glyph;
 
+  _verb = verb;
+  if (flags != null) {
+    _flags = flags.split(" ");
+  } else {
+    _flags = const [];
+  }
+
+  tagged(tag);
+
+  _maxStack = stack;
+
+  // Default to not throwable.
+  _tossDamage = null;
+  _tossRange = null;
+  _breakage = null;
+}
+
+void tagged(String tagPath) {
   _equipSlot = null;
   _weaponType = null;
-  if (tag != null) {
+  if (tagPath != null) {
     // Define the tag path and store the leaf tag which is what gets used by
     // the item types.
-    Items.types.defineTags("item/$tag");
-    var tags = tag.split("/");
+    Items.types.defineTags("item/$tagPath");
+    var tags = tagPath.split("/");
     _tag = tags.last;
 
     const tagEquipSlots = const [
@@ -385,22 +407,10 @@ void category(glyph, String tag, {String verb, String flags}) {
 
     // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
     // example, a "sword" item will match a "weapon" affix.
-    Affixes.defineItemTag(tag);
+    Affixes.defineItemTag(tagPath);
   } else {
     _tag = null;
   }
-
-  _verb = verb;
-  if (flags != null) {
-    _flags = flags.split(" ");
-  } else {
-    _flags = const [];
-  }
-
-  // Default to not throwable.
-  _tossDamage = null;
-  _tossRange = null;
-  _breakage = null;
 }
 
 /// Makes items in the current category throwable.
@@ -497,7 +507,7 @@ void item(String name, int depth, appearance, {ItemUse use,
   }
 
   var itemType = new ItemType(name, appearance, depth, _sortIndex++, _equipSlot,
-      _weaponType, use, attack, tossAttack, _breakage, armor, price,
+      _weaponType, use, attack, tossAttack, _breakage, armor, price, _maxStack,
       treasure: treasure);
 
   itemType.flags.addAll(_flags);
