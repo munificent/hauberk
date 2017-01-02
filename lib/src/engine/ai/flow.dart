@@ -127,6 +127,15 @@ class Flow {
     return _directionsTo(goals);
   }
 
+  /// Get all reachable positions.
+  ///
+  /// Since this eagerly explores the entire reachable area, this can be very
+  /// slow unless you set a small max distance.
+  Iterable<Vec> findAll() {
+    while (_open.isNotEmpty) _processNext();
+    return _found.map((pos) => pos + _offset);
+  }
+
   /// Get the positions closest to [start] that meet [predicate].
   ///
   /// Only returns more than one position if there are multiple equidistance

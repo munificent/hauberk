@@ -34,9 +34,9 @@ class Game {
       while (_actions.isNotEmpty) {
         var action = _actions.first;
 
-        // Cascade through the alternates until we hit bottom out.
         var result = action.perform(_actions, gameResult);
 
+        // Cascade through the alternates until we hit bottom.
         while (result.alternative != null) {
           _actions.removeFirst();
           action = result.alternative;
@@ -216,7 +216,7 @@ class EventType {
   /// Something in the level was detected.
   static const detect = const EventType("detect");
 
-  /// An [Actor] teleported..
+  /// An [Actor] teleported.
   static const teleport = const EventType("teleport");
 
   /// A new [Actor] was spawned by another.
@@ -224,6 +224,9 @@ class EventType {
 
   /// A tile has been hit by sound.
   static const howl = const EventType("howl");
+
+  /// An [Actor] was blown by wind.
+  static const wind = const EventType("wind");
 
   /// A warrior's slash attack hits a tile.
   static const slash = const EventType("slash");

@@ -21,6 +21,10 @@ class GameScreen extends Screen<Input> {
   final HeroSave _save;
   List<Effect> _effects = <Effect>[];
 
+  /// The number of ticks left to wait before restarting the game loop after
+  /// coming back from a dialog where the player chose an action for the hero.
+  int _pause = 0;
+
   /// The size of the [Stage] view area.
   final viewSize = new Vec(80, 34);
 
@@ -231,6 +235,13 @@ class GameScreen extends Screen<Input> {
   }
 
   void activate(Screen popped, result) {
+    if (!game.hero.needsInput) {
+      // The player is coming back from a screen where they selected an action
+      // for the hero. Give them a bit to visually reorient themselves before
+      // kicking off the action.
+      _pause = 20;
+    }
+
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
@@ -250,6 +261,11 @@ class GameScreen extends Screen<Input> {
   }
 
   void update() {
+    if (_pause > 0) {
+      _pause--;
+      return;
+    }
+
     if (_effects.length > 0) dirty();
 
     var result = game.update();

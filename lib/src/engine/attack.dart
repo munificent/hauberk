@@ -161,7 +161,8 @@ class Attack {
         break;
 
       case Element.air:
-        // TODO: Teleport.
+        // TODO: Should damage affect distance?
+        action.addAction(new WindAction(), defender);
         break;
 
       case Element.earth:
@@ -169,7 +170,7 @@ class Attack {
         break;
 
       case Element.fire:
-        action.addAction(new BurnAction(damage), defender);
+        action.addAction(new BurnAction(), defender);
         break;
 
       case Element.water:

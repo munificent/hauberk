@@ -764,6 +764,9 @@ class _BreedBuilder {
   _BreedBuilder poisonBolt({num rate: 5, int damage}) =>
       _bolt("the poison", "engulfs", Element.poison, damage, rate, 8);
 
+  _BreedBuilder windCone({num rate: 5, int damage, int range: 10}) =>
+      _cone("the wind", "buffets", Element.air, rate, damage, range);
+
   _BreedBuilder fireCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the flame", "burns", Element.fire, rate, damage, range);
 

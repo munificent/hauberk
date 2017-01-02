@@ -1,6 +1,8 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';
+import '../ai/flow.dart';
+import '../game.dart';
 import '../hero/hero.dart';
 
 /// These actions are side effects from taking elemental damage.
@@ -25,8 +27,6 @@ abstract class DestroyInventoryMixin extends Action {
 }
 
 class BurnAction extends Action with DestroyInventoryMixin {
-  BurnAction(num damage);
-
   ActionResult onPerform() {
     destroyInventory(5, "flammable", "burns up");
 
@@ -35,6 +35,24 @@ class BurnAction extends Action with DestroyInventoryMixin {
       actor.cold.cancel();
       return succeed("The fire warms {1} back up.", actor);
     }
+
+    return ActionResult.success;
+  }
+}
+
+class WindAction extends Action {
+  ActionResult onPerform() {
+    // Move the actor to a random reachable tile.
+    var flow = new Flow(game.stage, actor.pos, maxDistance: 2);
+    var positions = flow
+        .findAll()
+        .where((pos) => game.stage.actorAt(pos) == null)
+        .toList();
+    if (positions.isEmpty) return ActionResult.failure;
+
+    log("{1} [are|is] thrown by the wind!", actor);
+    addEvent(EventType.wind, actor: actor, pos: actor.pos);
+    actor.pos = rng.item(positions);
 
     return ActionResult.success;
   }

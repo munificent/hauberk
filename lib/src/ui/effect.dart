@@ -75,6 +75,10 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(new FrameEffect(event.pos, '.', color));
       break;
 
+    case EventType.wind:
+      // TODO: Do something.
+      break;
+
     case EventType.slash:
     case EventType.stab:
       var line = _directionLines[event.dir];
