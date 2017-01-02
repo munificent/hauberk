@@ -11,7 +11,6 @@ import 'element.dart';
 abstract class ConditionAction extends Action {
   /// The [Condition] on the actor that should be affected.
   Condition get condition;
-  int get resistance => 0;
 
   /// The intensity of the condition to apply.
   int getIntensity() => 1;
@@ -30,21 +29,9 @@ abstract class ConditionAction extends Action {
   /// at a weaker intensity and the intensity increases.
   void onIntensify() {}
 
-  void onResist() {}
-
   ActionResult onPerform() {
     var intensity = getIntensity();
     var duration = getDuration();
-
-    if (resistance > 0 && !rng.oneIn(resistance + 1)) {
-      if (!condition.isActive) onResist();
-      return ActionResult.failure;
-    }
-
-    // TODO: Apply resistance to duration and bail if zero duration.
-    // TODO: Don't lower intensity by resistance here (we want to handle that
-    // each turn in case it changes), but do see if resistance will lower the
-    // intensity to zero. If so, bail.
 
     if (!condition.isActive) {
       condition.activate(duration, intensity);
@@ -92,9 +79,8 @@ class HasteAction extends ConditionAction {
 
 class FreezeAction extends ConditionAction with DestroyInventoryMixin {
   final int _damage;
-  final int resistance;
 
-  FreezeAction(this._damage, this.resistance);
+  FreezeAction(this._damage);
 
   Condition get condition => actor.cold;
 
@@ -108,15 +94,11 @@ class FreezeAction extends ConditionAction with DestroyInventoryMixin {
   void onActivate() => log("{1} [are|is] frozen!", actor);
   void onExtend() => log("{1} feel[s] the cold linger!", actor);
   void onIntensify() => log("{1} feel[s] the cold intensify!", actor);
-  void onResist() {
-    log("{1} [are|is] unaffected by the cold.", actor);
-  }
 }
 
 class PoisonAction extends ConditionAction {
   final int _damage;
 
-  // TODO: Resistance.
   PoisonAction(this._damage);
 
   Condition get condition => actor.poison;
@@ -130,9 +112,8 @@ class PoisonAction extends ConditionAction {
 
 class BlindAction extends ConditionAction {
   final int _damage;
-  final int resistance;
 
-  BlindAction(this._damage, this.resistance);
+  BlindAction(this._damage);
 
   Condition get condition => actor.blindness;
 
@@ -144,27 +125,18 @@ class BlindAction extends ConditionAction {
   }
 
   void onExtend() => log("{1 his} vision dims!", actor);
-
-  void onResist() {
-    log("{1 his} vision is unaffected.", actor);
-  }
 }
 
 class DazzleAction extends ConditionAction {
   final int _damage;
-  final int resistance;
 
-  DazzleAction(this._damage, this.resistance);
+  DazzleAction(this._damage);
 
   Condition get condition => actor.dazzle;
 
   int getDuration() => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
   void onActivate() => log("{1} [are|is] dazzled by the light!", actor);
   void onExtend() => log("{1} [are|is] dazzled by the light!", actor);
-
-  void onResist() {
-    log("{1 his} vision is unaffected.", actor);
-  }
 }
 
 class ResistAction extends ConditionAction {

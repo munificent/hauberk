@@ -59,17 +59,6 @@ class Attack {
   Element get element => _element;
   Element _element = Element.none;
 
-  /// The defender's armor.
-  int get armor => _armor;
-  int _armor = 0;
-
-  /// The defender's level of resistance to the attack's element.
-  ///
-  /// Zero means no resistance. Everything above that reduces damage by
-  /// 1/(resistance + 1), so that one resists is half damage, two is third, etc.
-  int get resistance => _resistance;
-  int _resistance = 0;
-
   Attack(this.verb, this.baseDamage, [Element element, this.noun])
       : _element = element != null ? element : Element.none;
 
@@ -98,19 +87,12 @@ class Attack {
   /// [factor].
   Attack multiplyDamage(num factor) => _clone().._damageScale *= factor;
 
-  /// Returns a new attack with [armor] added to it.
-  Attack addArmor(int armor) => _clone().._armor += armor;
-
-  /// Returns a new attack with [resist] added to it.
-  Attack addResistance(int resist) => _clone().._resistance += resist;
-
   /// Creates a new attack that combines this one with [modifier].
   Attack combine(Attack modifier) {
     var result = _clone();
     result._strikeBonus += modifier._strikeBonus;
     result._damageBonus += modifier._damageBonus;
     result._damageScale *= modifier._damageScale;
-    result._resistance += modifier._resistance;
 
     if (modifier.element != Element.none) {
       result._element = modifier._element;
@@ -124,11 +106,6 @@ class Attack {
   ///
   /// Returns `true` if the attack connected.
   bool perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
-    var attack = defender.defend(this);
-    return attack._perform(action, attacker, defender, canMiss: canMiss);
-  }
-
-  bool _perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
     if (canMiss == null) canMiss = true;
 
     var attackNoun = noun != null ? noun : attacker;
@@ -149,7 +126,9 @@ class Attack {
     }
 
     // Roll for damage.
-    var damage = _rollDamage();
+    var armor = defender.armor;
+    var resistance = defender.resistance(element);
+    var damage = _rollDamage(armor, resistance);
 
     if (damage == 0) {
       // Armor cancelled out all damage.
@@ -161,7 +140,12 @@ class Attack {
     attacker.onDamage(action, defender, damage);
     if (defender.takeDamage(action, damage, attackNoun, attacker)) return true;
 
-    _elementalSideEffect(defender, action, damage);
+    // Any resistance cancels all side effects.
+    if (resistance <= 0) {
+      _elementalSideEffect(defender, action, damage);
+      // TODO: Should we log a message to let the player know the side effect
+      // was resisted?
+    }
 
     // TODO: Pass in and use element.
     action.addEvent(EventType.hit, actor: defender, other: damage);
@@ -185,7 +169,7 @@ class Attack {
         break;
 
       case Element.fire:
-        action.addAction(new BurnAction(damage, resistance), defender);
+        action.addAction(new BurnAction(damage), defender);
         break;
 
       case Element.water:
@@ -197,7 +181,7 @@ class Attack {
         break;
 
       case Element.cold:
-        action.addAction(new FreezeAction(damage, resistance), defender);
+        action.addAction(new FreezeAction(damage), defender);
         break;
 
       case Element.lightning:
@@ -209,11 +193,11 @@ class Attack {
         break;
 
       case Element.dark:
-        action.addAction(new BlindAction(damage, resistance), defender);
+        action.addAction(new BlindAction(damage), defender);
         break;
 
       case Element.light:
-        action.addAction(new DazzleAction(damage, resistance), defender);
+        action.addAction(new DazzleAction(damage), defender);
         break;
 
       case Element.spirit:
@@ -222,10 +206,12 @@ class Attack {
     }
   }
 
-  int _rollDamage() {
+  int _rollDamage(int armor, int resistance) {
+    var resistScale = 1 / (1 + resistance);
+
     // Calculate in cents so that we don't do as much rounding until after
     // armor is taken into account.
-    var damageCents = (averageDamage * 100).toInt();
+    var damageCents = (averageDamage * resistScale * 100).toInt();
     var rolled = rng.triangleInt(damageCents, damageCents ~/ 2);
     rolled *= getArmorMultiplier(armor);
     return (rolled / 100).round();
@@ -248,14 +234,6 @@ class Attack {
       result += " $element";
     }
 
-    if (armor != 0) {
-      result += " ($armor armor)";
-    }
-
-    if (resistance != 0) {
-      result += " ($resistance resist)";
-    }
-
     return result;
   }
 
@@ -263,8 +241,6 @@ class Attack {
     other._strikeBonus = strikeBonus;
     other._damageBonus = damageBonus;
     other._damageScale = damageScale;
-    other._armor = armor;
-    other._resistance = resistance;
   }
 
   Attack _clone() {

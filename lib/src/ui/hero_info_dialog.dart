@@ -31,13 +31,13 @@ class HeroInfoDialog extends Screen<Input> {
     terminal.writeAt(38, totalY, "Total:", Color.gray);
 
     var i = 0;
-    for (var element in Element.all.skip(1)) {
+    for (var element in Element.allButNone) {
       var x = 77 + i * 2;
       terminal.writeAt(x, 3, elementAbbreviation(element),
           elementColor(element));
 
       // Show the total resistance.
-      var resistance = _hero.permanentResistance(element);
+      var resistance = _hero.equipmentResistance(element);
       var color = Color.gray;
       if (resistance > 0) {
         color = Color.lightGreen;
@@ -125,7 +125,7 @@ class HeroInfoDialog extends Screen<Input> {
       }
 
       var i = 0;
-      for (var element in Element.all.skip(1)) {
+      for (var element in Element.allButNone) {
         var x = 77 + i * 2;
         var resistance = item.resistance(element);
         var color = Color.darkGray;

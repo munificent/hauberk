@@ -10,6 +10,7 @@ import 'ai/monster_states.dart';
 import 'ai/move.dart';
 import 'attack.dart';
 import 'breed.dart';
+import 'element.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'hero/hero.dart';
@@ -63,6 +64,10 @@ class Monster extends Actor {
 
   /// How much experience a level one [Hero] gains for killing this monster.
   int get experienceCents => breed.experienceCents;
+
+  /// Instead of armor, we just scale up the health for different breeds to
+  /// accomplish the same thing.
+  int get armor => 0;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth, this.generation)
       : super(game, x, y, maxHealth) {
@@ -187,11 +192,11 @@ class Monster extends Actor {
 
   Attack onGetAttack(Actor defender) => rng.item(breed.attacks);
 
-  Attack onDefend(Attack attack) {
-    _state.defend();
+  // TODO: Breed resistances.
+  int onGetResistance(Element element) => 0;
 
-    // TODO: Breed-specific resists.
-    return attack;
+  void defend() {
+    _state.defend();
   }
 
   /// Inflicting damage decreases fear.

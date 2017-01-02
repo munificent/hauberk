@@ -116,6 +116,9 @@ abstract class Actor extends Thing {
     return dodge;
   }
 
+  /// The amount of protection against damage the actor has.
+  int get armor;
+
   void changePosition(Vec from, Vec to) {
     game.stage.moveActor(from, to);
   }
@@ -144,21 +147,29 @@ abstract class Actor extends Thing {
   Attack onGetAttack(Actor defender);
 
   /// This is called on the defender when some attacker is attempting to hit it.
-  /// The defender can modify the attack or simply return the incoming one.
-  Attack defend(Attack attack) {
-    // Let the subclass modify it.
-    attack = onDefend(attack);
+  void defend();
+
+  /// The amount of resistance the actor currently has to [element].
+  ///
+  /// Every level of resist reduces the damage taken by an attack of that
+  /// element by 1/(resistance + 1), so that 1 resist is half damange, 2 is
+  /// third, etc.
+  int resistance(Element element) {
+    // TODO: What about negative resists?
+
+    // Get the base resist from the subclass.
+    var result = onGetResistance(element);
 
     // Apply temporary resistance.
-    var resistance = resistances[attack.element];
+    var resistance = resistances[element];
     if (resistance.isActive) {
-      attack = attack.addResistance(resistance.intensity);
+      result += resistance.intensity;
     }
 
-    return attack;
+    return result;
   }
 
-  Attack onDefend(Attack attack);
+  int onGetResistance(Element element);
 
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.

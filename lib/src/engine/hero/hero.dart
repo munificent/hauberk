@@ -144,7 +144,7 @@ class Hero extends Actor {
   }
 
   /// Gets the total permament resistance provided by all equipment.
-  int permanentResistance(Element element) {
+  int equipmentResistance(Element element) {
     // TODO: If class or race can affect this, add it in.
     var resistance = 0;
 
@@ -184,16 +184,12 @@ class Hero extends Actor {
     return heroClass.modifyAttack(attack, defender);
   }
 
-  Attack onDefend(Attack attack) {
+  void defend() {
     disturb();
-
-    // Let the equipment protect against it.
-    for (var item in equipment) {
-      attack = item.defend(attack);
-    }
-
-    return attack.addArmor(heroClass.armor);
   }
+
+  // TODO: If class or race can affect this, add it in.
+  int onGetResistance(Element element) => equipmentResistance(element);
 
   void onDamaged(Action action, Actor attacker, int damage) {
     heroClass.tookDamage(action, attacker, damage);

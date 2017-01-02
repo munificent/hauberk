@@ -14,6 +14,20 @@ class Element {
     spirit
   ];
 
+  static const allButNone = const [
+    air,
+    earth,
+    fire,
+    water,
+    acid,
+    cold,
+    lightning,
+    poison,
+    dark,
+    light,
+    spirit
+  ];
+
   static const none      = const Element("none");
   static const air       = const Element("air");
   static const earth     = const Element("earth");

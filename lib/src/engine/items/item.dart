@@ -86,14 +86,6 @@ class Item extends Thing implements Comparable<Item> {
 
   Set<String> get flags => type.flags;
 
-  /// Modifies [attack] by applying any defensive modifiers this item provides
-  /// when equipped.
-  Attack defend(Attack attack) {
-    attack = attack.addArmor(armor);
-    attack = attack.addResistance(resistance(attack.element));
-    return attack;
-  }
-
   /// Gets the resistance this item confers to [element].
   int resistance(Element element) {
     var resistance = 0;
