@@ -77,7 +77,7 @@ class HasteAction extends ConditionAction {
   void onIntensify() => log("{1} move[s] even faster.", actor);
 }
 
-class FreezeAction extends ConditionAction with DestroyInventoryMixin {
+class FreezeAction extends ConditionAction with DestroyItemMixin {
   final int _damage;
 
   FreezeAction(this._damage);

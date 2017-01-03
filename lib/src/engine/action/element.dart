@@ -4,29 +4,57 @@ import 'action.dart';
 import '../ai/flow.dart';
 import '../game.dart';
 import '../hero/hero.dart';
+import '../items/item.dart';
 
 /// These actions are side effects from taking elemental damage.
 
-abstract class DestroyInventoryMixin extends Action {
+abstract class DestroyItemMixin extends Action {
+  /// Tries to destroy [items] where each item with [flag] has a one in [chance]
+  /// chance of being destroyed.
+  ///
+  /// Handles splitting stacks and logging errors. Returns the list of
+  /// completely destroyed items so they can be removed from whatever collection
+  /// contains them.
+  List<Item> destroyItems(
+      Iterable<Item> items, int chance, String flag, String message) {
+    var destroyed = <Item>[];
+
+    for (var item in items) {
+      if (!item.flags.contains(flag)) continue;
+
+      // See how much of the stack is destroyed.
+      var destroyedCount = 0;
+      for (var i = 0; i < item.count; i++) {
+        if (rng.oneIn(chance)) destroyedCount++;
+      }
+
+      if (destroyedCount == item.count) {
+        // TODO: Effect.
+        log("{1} $message!", item);
+        destroyed.add(item);
+      } else if (destroyedCount > 0) {
+        var destroyedPart = item.splitStack(destroyedCount);
+        // TODO: Effect.
+        log("{1} $message!", destroyedPart);
+      }
+    }
+
+    return destroyed;
+  }
+
   void destroyInventory(int chance, String flag, String message) {
     // TODO: If monsters have inventories, need to handle that here.
     if (actor is! Hero) return;
 
-    // TODO: Do same thing for equipment slots if there are any flammable
+    // TODO: Do same thing for equipment slots if there are any destroyable
     // equippable items.
-    for (var i = 0; i < hero.inventory.length; i++) {
-      var item = hero.inventory[i];
-      if (item.flags.contains(flag) && rng.oneIn(chance)) {
-        // TODO: Effect.
-        log("{1} $message!", item);
-        hero.inventory.removeAt(i);
-        i--;
-      }
+    for (var item in destroyItems(hero.inventory, chance, flag, message)) {
+      hero.inventory.remove(item);
     }
   }
 }
 
-class BurnAction extends Action with DestroyInventoryMixin {
+class BurnAction extends Action with DestroyItemMixin {
   ActionResult onPerform() {
     destroyInventory(5, "flammable", "burns up");
 

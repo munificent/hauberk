@@ -2,13 +2,14 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import 'action.dart';
 import '../attack.dart';
 import '../element.dart';
 import '../game.dart';
+import 'action.dart';
+import 'element.dart';
 
 /// Creates a swath of damage that radiates out from a point.
-class RayAction extends Action {
+class RayAction extends Action with DestroyItemMixin {
   /// The centerpoint that the cone is radiating from.
   final Vec _from;
 
@@ -102,14 +103,11 @@ class RayAction extends Action {
     return ActionResult.notDone;
   }
 
+  /// Applies element-specific effects to items on the floor.
   void _hitFloor(Vec pos) {
-    // TODO: There's some overlap between this and the element effects in
-    // attack, which apply to an actor that gets hit. Unify?
-
-    // Apply any element-specific effects.
     switch (_attack.element) {
       case Element.none:
-      // No effect.
+        // No effect.
         break;
 
       case Element.air:
@@ -157,15 +155,10 @@ class RayAction extends Action {
   }
 
   void _destroyFloorItems(Vec pos, int chance, String flag, String message) {
-    var items = game.stage.itemsAt(pos);
-
-    // TODO: There is overlap between this and DestroyInventoryMixin. Unify?
-    for (var item in items) {
-      if (item.flags.contains(flag) && rng.oneIn(chance)) {
-        // TODO: Effect.
-        log("{1} $message!", item);
-        game.stage.removeItem(item);
-      }
+    var destroyed = destroyItems(
+        game.stage.itemsAt(pos), chance, flag, message);
+    for (var item in destroyed) {
+      game.stage.removeItem(item);
     }
   }
 }

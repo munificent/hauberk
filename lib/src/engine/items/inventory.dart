@@ -58,6 +58,10 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
     _lastUnequipped = null;
   }
 
+  void remove(Item item) {
+    _items.remove(item);
+  }
+
   Item removeAt(int index) {
     var item = _items[index];
     _items.removeAt(index);
