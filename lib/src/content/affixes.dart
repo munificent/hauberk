@@ -12,11 +12,11 @@ class Affixes {
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int depth) {
     // Untagged items don't have any affixes.
-    if (Items.types.getTags(itemType.name).isEmpty) return new Item(itemType);
+    if (Items.types.getTags(itemType.name).isEmpty) return new Item(itemType, 1);
 
     // There's a chance of no affixes at all, based on the depth.
     // TODO: Allow some drops to modify this.
-    if (rng.range(100) >= depth) return new Item(itemType);
+    if (rng.range(100) >= depth) return new Item(itemType, 1);
 
     // Give items a chance to boost their effective level when choosing a
     // affixes.
@@ -31,12 +31,12 @@ class Affixes {
     switch (rng.range(5)) {
       case 0:
       case 1:
-        return new Item(itemType, prefix, null);
+        return new Item(itemType, 1, prefix, null);
       case 2:
       case 3:
-        return new Item(itemType, null, suffix);
+        return new Item(itemType, 1, null, suffix);
       default:
-        return new Item(itemType, prefix, suffix);
+        return new Item(itemType, 1, prefix, suffix);
     }
   }
 

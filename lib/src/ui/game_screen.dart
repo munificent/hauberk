@@ -176,14 +176,13 @@ class GameScreen extends Screen<Input> {
   }
 
   void pickUp() {
-    final items = game.stage.itemsAt(game.hero.pos);
-
+    var items = game.stage.itemsAt(game.hero.pos);
     if (items.length > 1) {
       // Show item dialog if there are multiple things to pick up.
       ui.push(new ItemDialog.pickUp(this));
     } else {
-      // Otherwise attempt to pick up any available item.
-      game.hero.setNextAction(new PickUpAction(items.length - 1));
+      // Otherwise attempt to pick the one item.
+      game.hero.setNextAction(new PickUpAction(0));
     }
   }
 
@@ -239,7 +238,7 @@ class GameScreen extends Screen<Input> {
       // The player is coming back from a screen where they selected an action
       // for the hero. Give them a bit to visually reorient themselves before
       // kicking off the action.
-      _pause = 20;
+      _pause = 10;
     }
 
     if (popped is ForfeitDialog && result) {

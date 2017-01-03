@@ -44,8 +44,8 @@ class Items {
 
     // Unused: ; : ` % ^ < >
 
-    category(",", stack: 20, tag: "item");
-    tossable(damage: 4, range: 8, element: Element.earth, breakage: 10);
+    category(",", stack: 10, tag: "item");
+    tossable(damage: 3, range: 8, element: Element.earth, breakage: 10);
     item("Rock", 1, lightBrown);
 
     treasures();

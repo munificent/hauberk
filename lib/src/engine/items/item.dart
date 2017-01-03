@@ -12,7 +12,7 @@ class Item extends Thing implements Comparable<Item> {
   final Affix prefix;
   final Affix suffix;
 
-  Item(this.type, [this.prefix, this.suffix]) : super(Vec.zero);
+  Item(this.type, this._count, [this.prefix, this.suffix]) : super(Vec.zero);
 
   get appearance => type.appearance;
 
@@ -23,7 +23,14 @@ class Item extends Thing implements Comparable<Item> {
 
   /// Whether the item can be used or not.
   bool get canUse => type.use != null;
-  Action use() => type.use();
+
+  /// Create the action to perform when this item is used, and reduce its count.
+  Action use() {
+    // TODO: Some kinds of usable items shouldn't be consumed, like rods in
+    // Angband.
+    _count--;
+    return type.use();
+  }
 
   /// Whether the item can be thrown or not.
   bool get canToss => type.tossAttack != null;
@@ -62,13 +69,15 @@ class Item extends Thing implements Comparable<Item> {
 
   String get nounText {
     final name = new StringBuffer();
-    name.write('a ');
+    // TODO: "a/an" if only one.
+    name.write('${count} ');
 
     if (prefix != null) {
       name.write(prefix.name);
       name.write(' ');
     }
 
+    // TODO: Pluralize name to handle count.
     name.write(type.name);
 
     if (suffix != null) {
@@ -86,6 +95,10 @@ class Item extends Thing implements Comparable<Item> {
 
   Set<String> get flags => type.flags;
 
+  /// The number of items in this stack.
+  int get count => _count;
+  int _count = 1;
+
   /// Gets the resistance this item confers to [element].
   int resistance(Element element) {
     var resistance = 0;
@@ -97,12 +110,60 @@ class Item extends Thing implements Comparable<Item> {
   }
 
   int compareTo(Item other) {
+    if (type.sortIndex != other.type.sortIndex) {
+      return type.sortIndex.compareTo(other.type.sortIndex);
+    }
+
     // TODO: Take into account affixes.
-    return type.sortIndex.compareTo(other.type.sortIndex);
+
+    // Order by descending count.
+    if (count != other.count) return other.count.compareTo(count);
+
+    return 0;
   }
 
   /// Creates a new [Item] with the same type and affixes as this one.
-  Item clone() => new Item(type, prefix, suffix);
+  ///
+  /// If [count] is given, the clone has that count. Otherwise, it has the
+  /// same count as this item.
+  Item clone([int count]) => new Item(type, count ?? _count, prefix, suffix);
+
+  /// Try to combine [item] with this item into a single stack.
+  ///
+  /// Updates the counts of the two items. If completely successful, [item]
+  /// will end up with a count of zero. If the items cannot be stacked, [item]'s
+  /// count is unchanged.
+  void stack(Item item) {
+    // Must be the same type and stackable.
+    if (type != item.type) return;
+    if (type.maxStack == 1) return;
+
+    // If we get here, we are trying to stack. We don't support stacking
+    // items with affixes, and we should avoid that by not having any affixes
+    // defined for stackable items. Validate that invariant here.
+    assert(prefix == null && suffix == null &&
+        item.prefix == null && item.suffix == null);
+
+    var total = count + item.count;
+    if (total <= type.maxStack) {
+      // Completely merge the stack.
+      _count = total;
+      item._count = 0;
+    } else {
+      // There is some left.
+      _count = type.maxStack;
+      item._count = total - type.maxStack;
+    }
+  }
+
+  /// Splits this item into two stacks. Returns a new item with [count], and
+  /// reduces this stack by that amount.
+  Item splitStack(int count) {
+    assert(count < _count);
+
+    _count -= count;
+    return clone(count);
+  }
 }
 
 typedef Action ItemUse();

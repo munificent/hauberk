@@ -95,6 +95,6 @@ class Shops {
 
 void shop(String name, List<String> itemTypes) {
   var items = itemTypes
-      .map((typeName) => new Item(Items.types.find(typeName))).toList();
+      .map((typeName) => new Item(Items.types.find(typeName), 1)).toList();
   Shops.all.add(new Shop(name, items));
 }

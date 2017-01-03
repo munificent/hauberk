@@ -16,6 +16,13 @@ class ItemDialog extends Screen<Input> {
   /// The current location being shown to the player.
   ItemLocation _location = ItemLocation.inventory;
 
+  /// If the player needs to select a quantity for an item they have already
+  /// chosen, this will be the index of the item.
+  Item _selectedItem;
+
+  /// The number of items the player selected.
+  int _count;
+
   bool get isTransparent => true;
 
   /// True if the item dialog supports tabbing between item lists.
@@ -28,9 +35,45 @@ class ItemDialog extends Screen<Input> {
     _command = new _PickUpItemCommand(), _location = ItemLocation.onGround;
 
   bool handleInput(Input input) {
-    if (input == Input.cancel) {
-      ui.pop();
-      return true;
+    switch (input) {
+      case Input.ok:
+        if (_selectedItem != null) {
+          var items = _getItems().toList();
+          var index = items.indexOf(_selectedItem);
+          _command.selectItem(this, _selectedItem, _count, _location, index);
+          return true;
+        }
+        break;
+
+      case Input.cancel:
+        if (_selectedItem != null) {
+          // Go back to selecting an item.
+          _selectedItem = null;
+          dirty();
+        } else {
+          ui.pop();
+        }
+        return true;
+
+      case Input.n:
+        if (_selectedItem != null) {
+          if (_count < _selectedItem.count) {
+            _count++;
+            dirty();
+          }
+          return true;
+        }
+        break;
+
+      case Input.s:
+        if (_selectedItem != null) {
+          if (_count > 1) {
+            _count--;
+            dirty();
+          }
+          return true;
+        }
+        break;
     }
 
     return false;
@@ -38,6 +81,9 @@ class ItemDialog extends Screen<Input> {
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
+
+    // Can't switch view or select an item while selecting a count.
+    if (_selectedItem != null) return false;
 
     if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
       _selectItem(keyCode - KeyCode.a);
@@ -54,18 +100,25 @@ class ItemDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, _command.query(_location));
+    if (_selectedItem == null) {
+      terminal.writeAt(0, 0, _command.query(_location));
+    } else {
+      var query = _command.queryCount(_location);
+      terminal.writeAt(0, 0, query);
+      terminal.writeAt(query.length + 1, 0, _count.toString(), Color.yellow);
+    }
 
     terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
 
-    String selectItem = '[A-Z] Select item';
-    String helpText = canSwitchLocations ? ', [Tab] Switch view' : '';
+    var select = _selectedItem == null ? '[A-Z] Select item' : '[↕] Choose quantity';
+    var helpText = canSwitchLocations ? ', [Tab] Switch view' : '';
 
-    terminal.writeAt(0, terminal.height - 1,
-        '$selectItem$helpText',
-        Color.gray);
+    terminal.writeAt(0, terminal.height - 1, '$select$helpText', Color.gray);
 
-    drawItems(terminal, 0, 1, _getItems(), (item) => _command.canSelect(item));
+    drawItems(terminal, 0, 1, _getItems(), (item) {
+      if (_selectedItem != null) return item == _selectedItem;
+      return _command.canSelect(item);
+    });
   }
 
   void _selectItem(int index) {
@@ -73,7 +126,14 @@ class ItemDialog extends Screen<Input> {
     if (index >= items.length) return;
     if (!_command.canSelect(items[index])) return;
 
-    _command.selectItem(this, items[index], _location, index);
+    if (items[index].count > 1 && _command.needsCount) {
+      _selectedItem = items[index];
+      _count = _selectedItem.count;
+      dirty();
+    } else {
+      // Either we don't need a count or there's only one item.
+      _command.selectItem(this, items[index], 1, _location, index);
+    }
   }
 
   Iterable<Item> _getItems() {
@@ -210,15 +270,22 @@ abstract class _ItemCommand {
     ItemLocation.onGround
   ];
 
+  /// If the player must select how many items in a stack, returns `true`.
+  bool get needsCount;
+
   /// The query shown to the user when selecting an item in this mode from
   /// [view].
   String query(ItemLocation location);
+
+  /// The query shown to the user when selecting a quantity for an item in this
+  /// mode from [view].
+  String queryCount(ItemLocation location) => null;
 
   /// Returns `true` if [item] is a valid selection for this command.
   bool canSelect(Item item);
 
   /// Called when a valid item has been selected.
-  void selectItem(ItemDialog dialog, Item item,
+  void selectItem(ItemDialog dialog, Item item, int count,
       ItemLocation location, int index);
 }
 
@@ -227,6 +294,8 @@ class _DropItemCommand extends _ItemCommand {
     ItemLocation.inventory,
     ItemLocation.equipment
   ];
+
+  bool get needsCount => true;
 
   String query(ItemLocation location) {
     switch (location) {
@@ -237,16 +306,20 @@ class _DropItemCommand extends _ItemCommand {
     throw "unreachable";
   }
 
+  String queryCount(ItemLocation location) => 'Drop how many?';
+
   bool canSelect(Item item) => true;
 
-  void selectItem(ItemDialog dialog, Item item,
+  void selectItem(ItemDialog dialog, Item item, int count,
       ItemLocation location, int index) {
-    dialog._gameScreen.game.hero.setNextAction(new DropAction(location, index));
+    dialog._gameScreen.game.hero.setNextAction(new DropAction(location, index, count));
     dialog.ui.pop();
   }
 }
 
 class _UseItemCommand extends _ItemCommand {
+  bool get needsCount => false;
+
   String query(ItemLocation location) {
     switch (location) {
       case ItemLocation.inventory: return 'Use or equip which item?';
@@ -259,7 +332,7 @@ class _UseItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => item.canUse || item.canEquip;
 
-  void selectItem(ItemDialog dialog, Item item,
+  void selectItem(ItemDialog dialog, Item item, int count,
       ItemLocation location, int index) {
     dialog._gameScreen.game.hero.setNextAction(new UseAction(location, index));
     dialog.ui.pop();
@@ -267,6 +340,8 @@ class _UseItemCommand extends _ItemCommand {
 }
 
 class _TossItemCommand extends _ItemCommand {
+  bool get needsCount => false;
+
   String query(ItemLocation location) {
     switch (location) {
       case ItemLocation.inventory: return 'Throw which item?';
@@ -279,7 +354,7 @@ class _TossItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => item.canToss;
 
-  void selectItem(ItemDialog dialog, Item item,
+  void selectItem(ItemDialog dialog, Item item, int count,
       ItemLocation location, int index) {
     // Now we need a target.
     dialog.ui.goTo(new TargetDialog(dialog._gameScreen,
@@ -295,11 +370,15 @@ class _PickUpItemCommand extends _ItemCommand {
     ItemLocation.onGround
   ];
 
+  bool get needsCount => true;
+
   String query(ItemLocation location) => 'Pick up which item?';
+
+  String queryCount(ItemLocation location) => 'Pick up how many?';
 
   bool canSelect(Item item) => true;
 
-  void selectItem(ItemDialog dialog, Item item,
+  void selectItem(ItemDialog dialog, Item item, int count,
       ItemLocation location, int index) {
     // Pick up item and return to the game
     dialog._gameScreen.game.hero.setNextAction(

@@ -38,7 +38,7 @@ class GameContent implements Content {
       Items.types.find("Mending Salve"),
       Items.types.find("Scroll of Sidestepping")
     ]) {
-      hero.inventory.tryAdd(new Item(itemType));
+      hero.inventory.tryAdd2(new Item(itemType, 1));
     }
 
     return hero;

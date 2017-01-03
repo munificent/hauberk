@@ -29,31 +29,40 @@ class Storage {
     for (final hero in data['heroes']) {
       var name = hero['name'];
 
-      var inventory = new Inventory(Option.inventoryCapacity);
+      var items = <Item>[];
       for (var itemData in hero['inventory']) {
         var item = _loadItem(itemData);
-        if (item != null) inventory.tryAdd(item);
+        if (item != null) items.add(item);
       }
+      var inventory = new Inventory(Option.inventoryCapacity, items);
 
       var equipment = new Equipment();
       for (var itemData in hero['equipment']) {
         var item = _loadItem(itemData);
-        // TODO(bob): If there are multiple slots of the same type, this may
+        // TODO: If there are multiple slots of the same type, this may
         // shuffle items around.
         if (item != null) equipment.equip(item);
       }
 
-      var home = new Inventory(Option.homeCapacity);
+      items = [];
       for (var itemData in hero['home']) {
         var item = _loadItem(itemData);
-        if (item != null) home.tryAdd(item);
+        if (item != null) items.add(item);
       }
+      var home = new Inventory(Option.homeCapacity, items);
 
-      var crucible = new Inventory(Option.crucibleCapacity);
+      items = [];
       for (var itemData in hero['crucible']) {
         var item = _loadItem(itemData);
-        if (item != null) crucible.tryAdd(item);
+        if (item != null) items.add(item);
       }
+      var crucible = new Inventory(Option.crucibleCapacity, items);
+
+      // Clean up legacy heroes before item stacks.
+      // TODO: Remove this once we don't need to worry about it anymore.
+      inventory.optimizeStacks();
+      home.optimizeStacks();
+      crucible.optimizeStacks();
 
       var experience = hero['experience'];
 
@@ -83,6 +92,12 @@ class Storage {
       return null;
     }
 
+    var count = 1;
+    // Existing save files don't store count, so allow it to be missing.
+    if (data.containsKey('count')) {
+      count = data['count'];
+    }
+
     Affix prefix;
     if (data.containsKey('prefix')) {
       // TODO: Older save from back when affixes had types.
@@ -103,7 +118,7 @@ class Storage {
       }
     }
 
-    return new Item(type, prefix, suffix);
+    return new Item(type, count, prefix, suffix);
   }
 
   HeroClass _loadWarrior(Map data) {
@@ -167,7 +182,8 @@ class Storage {
 
   Map _saveItem(Item item) {
     var itemData = <String, dynamic>{
-      'type': item.type.name
+      'type': item.type.name,
+      'count': item.count
     };
 
     if (item.prefix != null) {

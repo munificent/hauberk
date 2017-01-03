@@ -27,3 +27,5 @@ Ideas for more things monsters can do to increase variety:
 - Temporary resist
 - Push past other monsters
 - Split into two weaker monsters
+- Walk through walls (insubstantial)
+- Bore through walls

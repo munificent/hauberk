@@ -15,7 +15,7 @@ class Shop extends IterableMixin<Item> implements ItemCollection {
 
   Item operator[](int index) => _items[index];
 
-  Item removeAt(int index) => _items[index].clone();
+  Item removeAt(int index) => _items[index].clone(1);
 
   /// Any item can be "added" to a shop.
   ///

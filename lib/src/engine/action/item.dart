@@ -63,26 +63,40 @@ class PickUpAction extends Action {
 
     var item = game.stage.itemsAt(actor.pos)[index];
 
-    if (!hero.inventory.tryAdd(item)) {
+    var result = hero.inventory.tryAdd2(item);
+    if (result.added == 0) {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
+    } else if (result.remaining == 0) {
+      game.stage.removeItem(item);
+      return succeed('{1} pick[s] up {2}.', actor, item.clone(result.added));
+    } else {
+      log('{1} pick[s] up {2}.', actor, item.clone(result.added));
+      return succeed("{1} [don't|doesn't] have room for {2}.", actor,
+          item.clone(result.remaining));
     }
-
-    game.stage.removeItem(item);
-
-    log('{1} pick[s] up {2}.', actor, item);
-
-    return succeed();
   }
 }
 
 /// [Action] for dropping an [Item] from the [Hero]'s [Inventory] or [Equipment]
 /// onto the ground.
 class DropAction extends ItemAction {
-  DropAction(ItemLocation location, int index)
+  /// The number of items in the stack to drop.
+  final int _count;
+
+  DropAction(ItemLocation location, int index, this._count)
       : super(location, index);
 
   ActionResult onPerform() {
-    var dropped = removeItem();
+    Item dropped;
+    if (_count == item.count) {
+      // Dropping the entire stack.
+      dropped = removeItem();
+    } else {
+      dropped = item.splitStack(_count);
+      dropped.pos = actor.pos;
+      if (location == ItemLocation.inventory) hero.inventory.optimizeStacks();
+    }
+
     game.stage.items.add(dropped);
 
     if (location == ItemLocation.equipment) {
@@ -115,7 +129,8 @@ class EquipAction extends ItemAction {
 
     // Add the previously equipped item to inventory.
     if (unequipped != null) {
-      if (hero.inventory.tryAdd(unequipped, wasUnequipped: true)) {
+      var result = hero.inventory.tryAdd2(unequipped, wasUnequipped: true);
+      if (result.remaining == 0) {
         log('{1} unequip[s] {2}.', actor, unequipped);
       } else {
         // No room in inventory, so drop it.
@@ -140,7 +155,8 @@ class UnequipAction extends ItemAction {
   ActionResult onPerform() {
     var item = removeItem();
 
-    if (hero.inventory.tryAdd(item, wasUnequipped: true)) {
+    var result = hero.inventory.tryAdd2(item, wasUnequipped: true);
+    if (result.remaining == 0) {
       return succeed('{1} unequip[s] {2}.', actor, item);
     }
 
@@ -168,6 +184,15 @@ class UseAction extends ItemAction {
       return fail("{1} can't be used.", item);
     }
 
-    return alternate(removeItem().use());
+    var useAction = item.use();
+
+    if (item.count == 0) {
+      // The stack is used up, delete it.
+      removeItem();
+    } else {
+      if (location == ItemLocation.inventory) hero.inventory.optimizeStacks();
+    }
+
+    return alternate(useAction);
   }
 }

@@ -22,8 +22,18 @@ class TossAction extends ItemAction {
   ActionResult onPerform() {
     if (!item.canToss) return fail("{1} can't be thrown.", item);
 
+    Item tossed;
+    if (item.count == 1) {
+      // Throwing the entire stack.
+      tossed = removeItem();
+    } else {
+      // Throwing one item from a stack.
+      tossed = item.splitStack(1);
+      if (location == ItemLocation.inventory) hero.inventory.optimizeStacks();
+    }
+
     // Take the item and throw it.
-    return alternate(new TossLosAction(_target, removeItem()));
+    return alternate(new TossLosAction(_target, tossed));
   }
 }
 

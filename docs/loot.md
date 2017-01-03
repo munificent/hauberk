@@ -84,5 +84,7 @@ I have some ideas, but nothing is really there yet:
 
 *   Bad and worthless items.
 
+*   More useful consumables around detection. Detect monsters, mapping, etc.
+
 OK, given all that, I think the biggest negative right now is the lack of item
 stacking, so I'll start with that.

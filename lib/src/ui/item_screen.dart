@@ -4,6 +4,9 @@ import '../engine.dart';
 import 'input.dart';
 import 'item_dialog.dart';
 
+// TODO: Can simplify this a lot now that there are separate entrypoints for
+// each store and the inventory/equipment is always on the left.
+
 /// A screen where the hero can manage their items outside of the levels.
 ///
 /// Let's them transfer between their inventory, equipment, crucible, and home.
@@ -293,6 +296,8 @@ abstract class SelectMode extends Mode {
   void selectItem(ItemScreen screen, int index);
 }
 
+// TODO: Add a mode to equip/unequip an item.
+
 /// Mode for putting an item into the home, equipment, or crucible.
 class PutMode extends SelectMode {
   const PutMode();
@@ -337,6 +342,8 @@ class PutMode extends SelectMode {
     var item = from[index];
     if (!canSelectItem(screen, Side.left, item)) return;
 
+    // TODO: Prompt the user for a count if the item is a stack.
+
     var to = screen.rightView.getItems(screen);
 
     if (to.tryAdd(item)) {
@@ -364,6 +371,8 @@ class GetMode extends SelectMode {
   bool canSelectItem(ItemScreen screen, Side side, Item item) {
     if (side == Side.left) return false;
 
+    // TODO: Prompt for count when appropriate.
+
     var view = screen.views[side];
     if (view is ShopView) {
       // Have to have enough gold to buy it.
@@ -381,6 +390,7 @@ class GetMode extends SelectMode {
 
     var to = screen.leftView.getItems(screen);
 
+    // TODO: Handle item stacks.
     if (to.tryAdd(item)) {
       from.removeAt(index);
 
