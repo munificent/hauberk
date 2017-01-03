@@ -27,7 +27,7 @@ class GameContent implements Content {
   }
 
   Affix findAffix(String name) => Affixes.find(name);
-  ItemType findItem(String name) => Items.types.find(name);
+  ItemType tryFindItem(String name) => Items.types.tryFind(name);
 
   List<Recipe> get recipes => Recipes.all;
   List<Shop> get shops => Shops.all;

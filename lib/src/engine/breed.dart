@@ -13,9 +13,9 @@ import 'monster.dart';
 import 'option.dart';
 
 /// A single kind of [Monster] in the game.
-class Breed implements Quantifiable {
+class Breed {
   final Pronoun pronoun;
-  String get name => singular;
+  String get name => Log.singular(_name);
 
   /// Untyped so the engine isn't coupled to how monsters appear.
   final appearance;
@@ -55,11 +55,6 @@ class Breed implements Quantifiable {
       this.drop, {
       this.depth, this.maxHealth, this.tracking, this.meander, this.speed,
       this.flags});
-
-  String get singular =>
-      Log.parsePlural(_name, isPlural: false, forcePlural: true);
-  String get plural =>
-      Log.parsePlural(_name, isPlural: true, forcePlural: true);
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.

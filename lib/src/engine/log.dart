@@ -2,66 +2,46 @@ import 'dart:collection';
 
 /// The message log.
 class Log {
-  /// Parses strings that have singular and plural options and selects one of
-  /// the two. Examples:
+  /// Given a noun pattern, returns the unquantified singular form of it.
+  /// Examples:
   ///
-  ///     parsePlural("nothing", isPlural: false)     // "nothing"
-  ///     parsePlural("nothing", isPlural: true)      // "nothing"
-  ///     parsePlural("run[s]", isPlural: false)      // "run"
-  ///     parsePlural("run[s]", isPlural: true)       // "runs"
-  ///     parsePlural("bunn[y|ies]", isPlural: false) // "bunny"
-  ///     parsePlural("bunn[y|ies]", isPlural: true)  // "bunnies"
-  ///
-  /// If [forcePlural] is `true`, then a trailing "s" will be added to the end
-  /// if [isPlural] is `true` and [text] doesn't have any formatting.
-  static String parsePlural(String text,
-                            {bool isPlural, bool forcePlural: false}) {
-    var optionalSuffix = new RegExp(r'\[(\w+?)\]');
-    var irregular = new RegExp(r'\[([^|]+)\|([^\]]+)\]');
+  ///     singular("dog");           // "dog"
+  ///     singular("dogg[y|ies]");   // "doggy"
+  ///     singular("cockroach[es]"); // "cockroach"
+  static String singular(String text) => _categorize(text, isFirst: true);
 
-    // If it's a regular plural word, just add an "s".
-    if (forcePlural == true && isPlural == true && !text.contains("[")) {
-      return "${text}s";
-    }
-
-    // Handle verbs with optional suffixes like `close[s]`.
-    while (true) {
-      var match = optionalSuffix.firstMatch(text);
-      if (match == null) break;
-
-      var before = text.substring(0, match.start);
-      var after = text.substring(match.end);
-      if (isPlural) {
-        // Include the optional part.
-        text = '$before${match[1]}$after';
-      } else {
-        // Omit the optional part.
-        text = '$before$after';
-      }
-    }
-
-    // Handle irregular verbs like `[are|is]`.
-    while (true) {
-      var match = irregular.firstMatch(text);
-      if (match == null) break;
-
-      var before = text.substring(0, match.start);
-      var after = text.substring(match.end);
-      if (isPlural) {
-        // Use the second form.
-        text = '$before${match[2]}$after';
-      } else {
-        // Use the first form.
-        text = '$before${match[1]}$after';
-      }
-    }
-
-    return text;
+  /// Conjugates the verb pattern in [text] to agree with [pronoun].
+  static String conjugate(String text, Pronoun pronoun) {
+    var isFirst = pronoun == Pronoun.you || pronoun == Pronoun.they;
+    return _categorize(text, isFirst: isFirst);
   }
 
-  static String makeVerbsAgree(String text, Pronoun pronoun) {
-    var isPlural = pronoun != Pronoun.you && pronoun != Pronoun.they;
-    return parsePlural(text, isPlural: isPlural);
+  /// Quantifies the noun pattern in [text] to create a noun phrase for that
+  /// number. Examples:
+  ///
+  ///     quantify("bunn[y|ies]", 1); // -> "a bunny"
+  ///     quantify("bunn[y|ies]", 2); // -> "2 bunnies"
+  ///     quantify("bunn[y|ies]", 2); // -> "2 bunnies"
+  ///     quantify("(a) unicorn", 1); // -> "a unicorn"
+  ///     quantify("ocelot", 1);      // -> "an ocelot"
+  static String quantify(String text, int count) {
+    String quantity;
+    if (count == 1) {
+      // Handle irregular nouns that start with a vowel but use "a", like
+      // "a unicorn".
+      if (text.startsWith("(a) ")) {
+        quantity = "a";
+        text = text.substring(4);
+      } else if ("aeiou".contains(text[0])) {
+        quantity = "an";
+      } else {
+        quantity = "a";
+      }
+    } else {
+      quantity = count.toString();
+    }
+
+    return "$quantity ${_categorize(text, isFirst: count == 1, force: true)}";
   }
 
   static const maxMessages = 6;
@@ -91,7 +71,7 @@ class Log {
   }
 
   void add(LogType type, String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    message = formatSentence(message, noun1, noun2, noun3);
+    message = _format(message, noun1, noun2, noun3);
 
     // See if it's a repeat of the last message.
     if (messages.length > 0) {
@@ -153,8 +133,8 @@ class Log {
   ///
   /// A series of letters enclosed in square brackets defines an optional verb
   /// suffix. If noun 1 is second person, then the contents will be included.
-  /// Otherwise they are omitted. For example, `open[s]` will result in `opens`
-  /// if noun 1 is second-person (i.e. the [Hero]) or `open` if third-person.
+  /// Otherwise they are omitted. For example, `open[s]` will result in `open`
+  /// if noun 1 is second-person (i.e. the [Hero]) or `opens` if third-person.
   ///
   /// ### Irregular verbs: `[second|third]`
   ///
@@ -167,7 +147,7 @@ class Log {
   ///
   /// Finally, the first letter in the result will be capitalized to properly
   /// sentence case it.
-  String formatSentence(String text, [Noun noun1, Noun noun2, Noun noun3]) {
+  String _format(String text, [Noun noun1, Noun noun2, Noun noun3]) {
     var result = text;
 
     final nouns = [noun1, noun2, noun3];
@@ -186,60 +166,85 @@ class Log {
 
     // Make the verb match the subject (which is assumed to be the first noun).
     if (noun1 != null) {
-      result = Log.makeVerbsAgree(result, noun1.pronoun);
+      result = Log.conjugate(result, noun1.pronoun);
     }
 
     // Sentence case it by capitalizing the first letter.
     return '${result[0].toUpperCase()}${result.substring(1)}';
   }
+
+  /// Parses a string and chooses one of two grammatical categories.
+  ///
+  /// If used for verbs, selects a verb form to agree with a subject. In that
+  /// case, the first category is is for agreeing with a third-person singular
+  /// noun ("it runs") and the second is for a second-person noun ("you run").
+  ///
+  /// If used for a noun, selects a number. The first category is singular
+  /// ("knife") and the second is plural ("knives").
+  ///
+  /// Examples:
+  ///
+  ///     _categorize("run[s]", isFirst: true)       // -> "run"
+  ///     _categorize("run[s]", isFirst: false)      // -> "runs"
+  ///     _categorize("bunn[y|ies]", isFirst: true)  // -> "bunny"
+  ///     _categorize("bunn[y|ies]", isFirst: false) // -> "bunnies"
+  ///
+  /// If [force] is `true`, then a trailing "s" will be added to the end if
+  /// [isFirst] is `false` and [text] doesn't have any formatting.
+  static String _categorize(String text,
+      {bool isFirst, bool force: false}) {
+    assert(isFirst != null);
+
+    var optionalSuffix = new RegExp(r'\[(\w+?)\]');
+    var irregular = new RegExp(r'\[([^|]+)\|([^\]]+)\]');
+
+    // If it's a regular word in second category, just add an "s".
+    if (force && !isFirst && !text.contains("[")) return "${text}s";
+
+    // Handle words with optional suffixes like `close[s]` and `sword[s]`.
+    while (true) {
+      var match = optionalSuffix.firstMatch(text);
+      if (match == null) break;
+
+      var before = text.substring(0, match.start);
+      var after = text.substring(match.end);
+      if (isFirst) {
+        // Omit the optional part.
+        text = '$before$after';
+      } else {
+        // Include the optional part.
+        text = '$before${match[1]}$after';
+      }
+    }
+
+    // Handle irregular words like `[are|is]` and `sta[ff|aves]`.
+    while (true) {
+      var match = irregular.firstMatch(text);
+      if (match == null) break;
+
+      var before = text.substring(0, match.start);
+      var after = text.substring(match.end);
+      if (isFirst) {
+        // Use the first form.
+        text = '$before${match[1]}$after';
+      } else {
+        // Use the second form.
+        text = '$before${match[2]}$after';
+      }
+    }
+
+    return text;
+  }
 }
 
 class Noun {
   final String nounText;
+
   Pronoun get pronoun => Pronoun.it;
 
   Noun(this.nounText);
 
   String toString() => nounText;
-}
-
-/// A noun-like thing that can be quantified.
-abstract class Quantifiable {
-  String get singular;
-  String get plural;
-  Pronoun get pronoun;
-}
-
-/// A [Noun] for a specific quantity of some thing.
-class Quantity implements Noun {
-  final int count;
-  final Quantifiable _object;
-
-  String get nounText {
-    // TODO: a/an.
-    if (count == 1) return "a ${_object.singular}";
-
-    var quantity;
-    switch (count) {
-      case 2: quantity = "two"; break;
-      case 3: quantity = "three"; break;
-      case 4: quantity = "four"; break;
-      case 5: quantity = "five"; break;
-      case 6: quantity = "six"; break;
-      case 7: quantity = "seven"; break;
-      case 8: quantity = "eight"; break;
-      case 9: quantity = "nine"; break;
-      case 10: quantity = "ten"; break;
-      default:
-        quantity = count.toString();
-    }
-
-    return "$quantity ${_object.plural}";
-  }
-
-  Pronoun get pronoun => count == 1 ? _object.pronoun : Pronoun.they;
-
-  Quantity(this.count, this._object);
 }
 
 class Pronoun {

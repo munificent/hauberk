@@ -62,11 +62,11 @@ class Shops {
       "Scale Mail",
       "Robe",
       "Fur-lined Robe",
-      "Leather Sandals",
-      "Leather Shoes",
-      "Leather Boots",
-      "Metal Shod Boots",
-      "Greaves"
+      "Pair of Leather Sandals",
+      "Pair of Leather Shoes",
+      "Pair of Leather Boots",
+      "Pair of Metal Shod Boots",
+      "Pair of Greaves"
     ]);
 
     shop("Unguence the Alchemist", [

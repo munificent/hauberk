@@ -146,7 +146,7 @@ abstract class Content {
   void buildStage(Stage stage, int depth);
 
   Affix findAffix(String name);
-  ItemType findItem(String name);
+  ItemType tryFindItem(String name);
 
   List<Recipe> get recipes;
   List<Shop> get shops;

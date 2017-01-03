@@ -82,6 +82,7 @@ void treasures() {
   // TODO: Make monsters and areas drop these.
   // Coins.
   category("¢", tag: "treasure/coin");
+  // TODO: Figure out these should be quantified.
   treasure("Copper Coins",    1, brown,           1);
   treasure("Bronze Coins",    7, darkGold,        8);
   treasure("Silver Coins",   11, gray,           20);
@@ -182,19 +183,18 @@ void potions() {
   // TODO: Make monsters drop these.
   tagged("magic/potion/bottled");
   tossable(damage: 1, range: 8, breakage: 100);
-  bottled("Wind",       4,   30, white,       Element.air,         8, "blasts");
-  bottled("Ice",        7,   55, lightBlue,   Element.cold,       15, "freezes", flags: "-freezable");
-  bottled("Fire",      11,   70, red,         Element.fire,       22, "burns");
-  bottled("Ocean",     12,  110, blue,        Element.water,      26, "drowns");
-  bottled("Earth",     13,  150, brown,       Element.earth,      28, "crushes");
-  bottled("Lightning", 16,  200, lightPurple, Element.lightning,  34, "shocks");
-  bottled("Acid",      18,  250, lightGreen,  Element.acid,       38, "corrodes");
-  bottled("Poison",    22,  330, darkGreen,   Element.poison,     42, "infects");
-  bottled("Shadows",   28,  440, black,       Element.dark,       48, "torments",
+  bottled("Wind",         4,   30, white,       Element.air,         8, "blasts");
+  bottled("Ice",          7,   55, lightBlue,   Element.cold,       15, "freezes", flags: "-freezable");
+  bottled("Fire",        11,   70, red,         Element.fire,       22, "burns");
+  bottled("Ocean",       12,  110, blue,        Element.water,      26, "drowns");
+  bottled("Earth",       13,  150, brown,       Element.earth,      28, "crushes");
+  bottled("Lightning",   16,  200, lightPurple, Element.lightning,  34, "shocks");
+  bottled("Acid",        18,  250, lightGreen,  Element.acid,       38, "corrodes");
+  bottled("Poison",      22,  330, darkGreen,   Element.poison,     42, "infects");
+  bottled("Shadow",      28,  440, black,       Element.dark,       48, "torments",
       noun: "the darkness");
-  bottled("Radiance",  34,  600, white,       Element.light,      52, "sears");
-  bottled("Spirits",   40, 1000, darkGray,    Element.spirit,     58, "haunts");
-
+  bottled("Radiance",    34,  600, white,       Element.light,      52, "sears");
+  bottled("Spirit",      40, 1000, darkGray,    Element.spirit,     58, "haunts");
   // TODO: Potions that raise fury, sustain it, and that trade health for it.
 }
 
@@ -226,9 +226,9 @@ void weapons() {
   // Staves.
   category("_", tag: "equipment/weapon/staff", verb: "hit[s]");
   tossable(breakage: 35, range: 6);
-  weapon("Walking Stick",  2,    9, darkBrown,   5,   3);
-  weapon("Staff",          5,   38, lightBrown,  7,   5);
-  weapon("Quarterstaff",  11,  250, brown,      12,   8);
+  weapon("Walking Stick",        2,    9, darkBrown,   5,   3);
+  weapon("Sta[ff|aves]",         5,   38, lightBrown,  7,   5);
+  weapon("Quartersta[ff|aves]", 11,  250, brown,      12,   8);
 
   // Hammers.
   category("=", tag: "equipment/weapon/hammer", verb: "bash[es]");
@@ -253,7 +253,7 @@ void weapons() {
   weapon("Rapier",         7,  188, gray,       11,  4);
   weapon("Shortsword",    11,  324, darkGray,   13,  6);
   weapon("Scimitar",      18,  748, lightGray,  17,  9);
-  weapon("Cutlass",       24, 1417, lightGold,  21, 11);
+  weapon("Cutlass[es]",   24, 1417, lightGold,  21, 11);
   weapon("Falchion",      38, 2374, white,      25, 15);
 
   /*
@@ -270,10 +270,10 @@ void weapons() {
   // Knives.
   category("|", tag: "equipment/weapon/dagger", verb: "stab[s]");
   tossable(breakage: 2, range: 10);
-  weapon("Knife",          3,    9, gray,        5,  5);
+  weapon("Kni[fe|ves]",    3,    9, gray,        5,  5);
   weapon("Dirk",           4,   21, lightGray,   6,  6);
   weapon("Dagger",         6,   63, white,       8,  8);
-  weapon("Stiletto",      10,  188, darkGray,   11, 11);
+  weapon("Stiletto[es]",  10,  188, darkGray,   11, 11);
   weapon("Rondel",        20,  409, lightAqua,  14, 14);
   weapon("Baselard",      30,  621, lightBlue,  16, 16);
   // Main-guache
@@ -292,10 +292,10 @@ void weapons() {
 
   category(r"\", tag: "equipment/weapon/axe", verb: "chop[s]");
   tossable(breakage: 4);
-  weapon("Hatchet",        6,  137, darkGray,   10, 12, 10);
-  weapon("Axe",           12,  621, lightBrown, 16, 18, 9);
-  weapon("Valaska",       24, 2664, gray,       26, 26, 8);
-  weapon("Battleaxe",     40, 4866, lightBlue,  32, 32, 7);
+  weapon("Hatchet",    6,  137, darkGray,   10, 12, 10);
+  weapon("Axe",       12,  621, lightBrown, 16, 18, 9);
+  weapon("Valaska",   24, 2664, gray,       26, 26, 8);
+  weapon("Battleaxe", 40, 4866, lightBlue,  32, 32, 7);
 
   // Sling. In a category itself because many bow affixes don't apply to it.
   category("}", tag: "equipment/weapon/sling", verb: "hit[s]");
@@ -345,11 +345,11 @@ void bodyArmor() {
 
 void boots() {
   category("]", tag: "equipment/armor/boots");
-  armor("Leather Sandals",       2,    6, lightBrown,  1);
-  armor("Leather Shoes",         8,   19, brown,       2);
-  armor("Leather Boots",        14,   77, darkBrown,   4);
-  armor("Metal Shod Boots",     22,  274, gray,        7);
-  armor("Greaves",              47, 1017, lightGray,  12);
+  armor("Pair[s] of Leather Sandals",       2,    6, lightBrown,  1);
+  armor("Pair[s] of Leather Shoes",         8,   19, brown,       2);
+  armor("Pair[s] of Leather Boots",        14,   77, darkBrown,   4);
+  armor("Pair[s] of Metal Shod Boots",     22,  274, gray,        7);
+  armor("Pair[s] of Greaves",              47, 1017, lightGray,  12);
 }
 
 void category(glyph, {String tag, String verb, String flags, int stack: 1}) {
@@ -430,7 +430,7 @@ void treasure(String name, int depth, appearance, int price) {
 }
 
 void potion(String name, int depth, int price, appearance, ItemUse use) {
-  if (name.startsWith("of")) name = "Potion $name";
+  if (name.startsWith("of")) name = "Potion[s] $name";
 
   item(name, depth, appearance, price: price, use: use);
 }
@@ -443,7 +443,7 @@ void healing(String name, int depth, int price, appearance, int amount,
 
 void resistSalve(String name, int depth, int price, appearance,
     Element element, [String flags]) {
-  item("Salve of $name Resistance", depth, appearance,
+  item("Salve[s] of $name Resistance", depth, appearance,
       price: price, use: () => new ResistAction(40, element),
       flags: flags);
 }
@@ -454,12 +454,12 @@ void bottled(String name, int depth, int price, appearance, Element element,
 
   item("Bottled $name", depth, appearance, price: price,
       use: () => new RingSelfAction(
-          new RangedAttack(noun, verb, damage, element, 6)),
+          new RangedAttack(new Noun(noun), verb, damage, element, 6)),
       flags: flags);
 }
 
 void scroll(String name, int depth, int price, appearance, ItemUse use) {
-  if (name.startsWith("of")) name = "Scroll $name";
+  if (name.startsWith("of")) name = "Scroll[s] $name";
 
   item(name, depth, appearance, price: price, use: use);
 }
@@ -467,8 +467,8 @@ void scroll(String name, int depth, int price, appearance, ItemUse use) {
 void weapon(String name, int depth, int price, appearance, int damage,
       int tossDamage,
       [int tossRange]) {
-  var toss = new RangedAttack("the ${name.toLowerCase()}",
-      Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
+  var toss = new RangedAttack(new Noun("the ${name.toLowerCase()}"),
+      Log.conjugate(_verb, Pronoun.it), tossDamage, Element.none,
       tossRange != null ? tossRange : _tossRange);
   item(name, depth, appearance,
       attack: attack(_verb, damage, Element.none),
@@ -478,11 +478,11 @@ void weapon(String name, int depth, int price, appearance, int damage,
 
 void ranged(String name, int depth, int price, appearance, String noun,
     int damage, int range, int tossDamage) {
-  var toss = new RangedAttack("the ${name.toLowerCase()}",
-      Log.makeVerbsAgree(_verb, Pronoun.it), tossDamage, Element.none,
+  var toss = new RangedAttack(new Noun("the ${name.toLowerCase()}"),
+      Log.conjugate(_verb, Pronoun.it), tossDamage, Element.none,
       _tossRange);
   item(name, depth, appearance,
-      attack: new RangedAttack(noun, "pierce[s]", damage, Element.none, range),
+      attack: new RangedAttack(new Noun(noun), "pierce[s]", damage, Element.none, range),
       tossAttack: toss,
       price: price);
 }
@@ -502,7 +502,7 @@ void item(String name, int depth, appearance, {ItemUse use,
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
   if (tossAttack == null && _tossDamage != null) {
-    tossAttack = new RangedAttack("the ${name.toLowerCase()}", "hits",
+    tossAttack = new RangedAttack(new Noun("the ${name.toLowerCase()}"), "hits",
         _tossDamage, _tossElement, _tossRange);
   }
 

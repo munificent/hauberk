@@ -4,6 +4,7 @@ import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';
 import '../element.dart';
+import '../log.dart';
 
 /// A thing that can be picked up.
 class Item extends Thing implements Comparable<Item> {
@@ -69,23 +70,20 @@ class Item extends Thing implements Comparable<Item> {
 
   String get nounText {
     final name = new StringBuffer();
-    // TODO: "a/an" if only one.
-    name.write('${count} ');
 
     if (prefix != null) {
       name.write(prefix.name);
       name.write(' ');
     }
 
-    // TODO: Pluralize name to handle count.
-    name.write(type.name);
+    name.write(type._name);
 
     if (suffix != null) {
       name.write(' ');
       name.write(suffix.name);
     }
 
-    return name.toString();
+    return Log.quantify(name.toString(), count);
   }
 
   // TODO: Take affixes into account.
@@ -170,7 +168,9 @@ typedef Action ItemUse();
 
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {
-  final String name;
+  final String _name;
+  String get name => Log.singular(_name);
+
   final Object appearance;
 
   /// The item types's depth.
@@ -221,7 +221,7 @@ class ItemType {
 
   final Set<String> flags = new Set();
 
-  ItemType(this.name, this.appearance, this.depth, this.sortIndex,
+  ItemType(this._name, this.appearance, this.depth, this.sortIndex,
       this.equipSlot, this.weaponType, this.use, this.attack, this.tossAttack,
       this.breakage, this.armor, this.price, this.maxStack, {treasure: false})
       : isTreasure = treasure;

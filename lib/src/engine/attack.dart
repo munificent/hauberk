@@ -255,11 +255,11 @@ class RangedAttack extends Attack {
   /// The maximum range of the attack.
   final int range;
 
-  RangedAttack(String noun, String verb, int baseDamage, Element element, this.range)
-      : super(verb, baseDamage, element, new Noun(noun));
+  RangedAttack(Noun noun, String verb, int baseDamage, Element element, this.range)
+      : super(verb, baseDamage, element, noun);
 
   RangedAttack _clone() {
-    var attack = new RangedAttack(noun.nounText, verb, baseDamage, element, range);
+    var attack = new RangedAttack(noun, verb, baseDamage, element, range);
     _copyTo(attack);
     return attack;
   }
