@@ -98,7 +98,7 @@ class TargetDialog extends Screen<Input> {
 
       if (!tile.isPassable) continue;
       if (stage.actorAt(pos) != null) continue;
-      if (stage.itemAt(pos) != null) continue;
+      if (stage.isItemAt(pos)) continue;
 
       // Must be in range.
       var toPos = pos - _gameScreen.game.hero.pos;

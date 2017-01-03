@@ -269,15 +269,15 @@ class Monster extends Actor {
     // Handle drops.
     breed.drop.spawnDrop((item) {
       var itemPos = pos;
-      if (game.stage.itemAt(pos) != null) {
+      if (game.stage.isItemAt(pos)) {
         itemPos = flow.nearestWhere((pos) {
           if (rng.oneIn(5)) return true;
-          return game.stage.itemAt(pos) == null;
+          return !game.stage.isItemAt(pos);
         });
       }
 
       item.pos = itemPos;
-      game.stage.items.add(item);
+      game.stage.addItem(item);
       log("{1} drop[s] {2}.", this, item);
     });
 

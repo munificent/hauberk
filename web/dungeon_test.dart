@@ -85,8 +85,8 @@ void generate() {
       context.fillStyle = fill;
       context.fillRect(x * size, y * size, size - 0.25, size - 0.25);
 
-      var item = stage.itemAt(new Vec(x, y));
-      if (item != null) {
+      var hasItem = stage.isItemAt(new Vec(x, y));
+      if (hasItem) {
         context.fillStyle = 'rgb(240, 240, 0)';
         context.fillRect(x * size + 2, y * size + 2, size - 4, size - 4);
       }

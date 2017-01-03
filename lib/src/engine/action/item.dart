@@ -97,7 +97,7 @@ class DropAction extends ItemAction {
       if (location == ItemLocation.inventory) hero.inventory.optimizeStacks();
     }
 
-    game.stage.items.add(dropped);
+    game.stage.addItem(dropped);
 
     if (location == ItemLocation.equipment) {
       return succeed('{1} take[s] off and drop[s] {2}.', actor, dropped);
@@ -135,7 +135,7 @@ class EquipAction extends ItemAction {
       } else {
         // No room in inventory, so drop it.
         unequipped.pos = actor.pos;
-        game.stage.items.add(unequipped);
+        game.stage.addItem(unequipped);
         log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
             "ground.", actor, unequipped);
       }
@@ -162,7 +162,7 @@ class UnequipAction extends ItemAction {
 
     // No room in inventory, so drop it.
     item.pos = actor.pos;
-    game.stage.items.add(item);
+    game.stage.addItem(item);
     return succeed("{1} [don't|doesn't] have room for {2} and {2 he} drops to "
         "the ground.", actor, item);
   }

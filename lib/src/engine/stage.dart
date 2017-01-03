@@ -29,7 +29,9 @@ class Stage {
   Actor get currentActor => _actors[_currentActorIndex];
 
   final Array2D<Tile> tiles;
-  final items = <Item>[];
+
+  Iterable<Item> get items => _items;
+  final _items = <Item>[];
 
   /// A spatial partition to let us quickly locate an actor by tile.
   ///
@@ -104,31 +106,27 @@ class Stage {
 
   Actor actorAt(Vec pos) => _actorsByTile[pos];
 
-  // TODO: Move into Item collection?
-  // TODO: What if there are multiple items at pos?
-  Item itemAt(Vec pos) {
-    for (final item in items) {
-      if (item.pos == pos) return item;
+  void addItem(Item item) {
+    _items.add(item);
+  }
+
+  /// Returns `true` if there is at least one item at [pos].
+  bool isItemAt(Vec pos) {
+    for (var item in _items) {
+      if (item.pos == pos) return true;
     }
 
-    return null;
+    return false;
   }
 
   /// Gets the [Item]s at [pos].
   List<Item> itemsAt(Vec pos) =>
-      items.where((item) => item.pos == pos).toList();
+      _items.where((item) => item.pos == pos).toList();
 
   /// Removes [item] from the stage. Does nothing if the item is not on the
   /// ground.
   void removeItem(Item item) {
-    for (var i = 0; i < items.length; i++) {
-      if (items[i] == item) {
-        items.removeAt(i);
-        return;
-      }
-    }
-
-    assert(false); // Unreachable.
+    _items.remove(item);
   }
 
   void dirtyVisibility() {

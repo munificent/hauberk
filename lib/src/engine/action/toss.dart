@@ -93,7 +93,7 @@ class TossLosAction extends LosAction {
 
     // Drop the item onto the ground.
     _item.pos = pos;
-    game.stage.items.add(_item);
+    game.stage.addItem(_item);
 
     // TODO: Secondary actions: potions explode etc.
   }
