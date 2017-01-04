@@ -11,41 +11,36 @@ import 'item_dialog.dart';
 ///
 /// Let's them transfer between their inventory, equipment, crucible, and home.
 class ItemScreen extends Screen<Input> {
-  final Content  content;
-  final HeroSave save;
+  final Content _content;
+  final HeroSave _save;
 
-  /// Which views are shown on each side.
-  final Map<Side, View> views = {
-    Side.left: View.inventory,
-    Side.right: View.home
-  };
+  /// Whether the left hand side is showing the inventory or equipment.
+  bool _showingInventory = true;
 
-  View get leftView => views[Side.left];
-  set leftView(View value) {
-    views[Side.left] = value;
-  }
+  /// The collection of items on the hero's person being shown.
+  ItemCollection get _heroItems =>
+      _showingInventory ? _save.inventory : _save.equipment;
 
-  View get rightView => views[Side.right];
-  set rightView(View value) {
-    views[Side.right] = value;
-  }
+  /// The place whose items are being interacted with.
+  final _Place _place;
 
-  Mode mode = Mode.view;
+  Mode _mode = Mode.view;
 
   /// If the crucible contains a complete recipe, this will be it. Otherwise,
   /// this will be `null`.
   Recipe completeRecipe;
 
-  ItemScreen(this.content, this.save, View view) {
-    views[Side.right] = view;
-  }
+  ItemScreen.crucible(this._content, this._save)
+      : _place = _Place.crucible;
 
-  ItemScreen.shop(this.content, this.save, Shop shop) {
-    views[Side.right] = new ShopView(shop);
-  }
+  ItemScreen.home(this._content, this._save)
+      : _place = _Place.home;
+
+  ItemScreen.shop(this._content, this._save, Shop shop)
+      : _place = new _ShopPlace(shop);
 
   bool handleInput(Input input) {
-    if (mode.handleInput(input, this)) return true;
+    if (_mode.handleInput(input, this)) return true;
 
     if (input == Input.cancel) {
       ui.pop();
@@ -59,27 +54,22 @@ class ItemScreen extends Screen<Input> {
     if (shift || alt) return false;
 
     if (keyCode == KeyCode.tab) {
-      if (leftView == View.inventory) {
-        leftView = View.equipment;
-      } else {
-        leftView = View.inventory;
-      }
-
+      _showingInventory = !_showingInventory;
       dirty();
       return true;
     }
 
-    if (mode.keyDown(keyCode, this)) return true;
+    if (_mode.keyDown(keyCode, this)) return true;
 
     if (keyCode == KeyCode.space &&
         completeRecipe != null &&
-        rightView == View.crucible) {
-      save.crucible.clear();
-      completeRecipe.result.spawnDrop(save.crucible.tryAdd);
+        _place == _Place.crucible) {
+      _save.crucible.clear();
+      completeRecipe.result.spawnDrop(_save.crucible.tryAdd);
       refreshRecipe();
 
       // The player probably wants to get the item out of the crucible.
-      mode = Mode.get;
+      _mode = Mode.get;
       dirty();
       return true;
     }
@@ -88,13 +78,13 @@ class ItemScreen extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, mode.message(this));
+    terminal.writeAt(0, 0, _mode.message(this));
 
-    var gold = priceString(save.gold);
+    var gold = priceString(_save.gold);
     terminal.writeAt(82, 0, "Gold:");
     terminal.writeAt(99 - gold.length, 0, gold, Color.gold);
 
-    terminal.writeAt(0, terminal.height - 1, "${mode.helpText(this)}",
+    terminal.writeAt(0, terminal.height - 1, "${_mode.helpText(this)}",
         Color.gray);
 
     var bar = new Glyph.fromCharCode(
@@ -103,36 +93,44 @@ class ItemScreen extends Screen<Input> {
       terminal.drawGlyph(49, y, bar);
     }
 
-    drawSide(Side side, int x) {
-      var view = views[side];
+    terminal.writeAt(0, 2, _showingInventory ? "Inventory" : "Equipment");
+    _drawSide(terminal, _heroItems, 0, isHero: true);
 
-      terminal.writeAt(x, 2, view.label);
+    terminal.writeAt(50, 2, _place.label);
+    _drawSide(terminal, _place.items(this), 50, isHero: false);
 
-      if (mode.allowsSelection) {
-        drawItems(terminal, x, 4, view.getItems(this),
-            (item) => mode.canSelectItem(this, side, item));
-      } else {
-        drawItems(terminal, x, 4, view.getItems(this));
-      }
-    }
-
-    drawSide(Side.left, 0);
-    drawSide(Side.right, 50);
-
-    if (rightView == View.crucible && completeRecipe != null) {
+    if (_place == _Place.crucible && completeRecipe != null) {
       terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.yellow);
 
+      var itemCount = _place.items(this).length;
       for (var i = 0; i < completeRecipe.produces.length; i++) {
-        terminal.writeAt(50, rightView.getItems(this).length + (i + 4),
+        terminal.writeAt(50, itemCount + i + 4,
             completeRecipe.produces.elementAt(i));
       }
     }
   }
 
+  void _drawSide(Terminal terminal, ItemCollection items, int x,
+      {bool isHero}) {
+    if (_mode.selectingFromHero || _mode.selectingFromPlace) {
+      drawItems(terminal, x, 4, items, (item) {
+        if (isHero) {
+          if (!_mode.selectingFromHero) return false;
+        } else {
+          if (!_mode.selectingFromPlace) return false;
+        }
+
+        return _mode.canSelectItem(this, item);
+      });
+    } else {
+      drawItems(terminal, x, 4, items);
+    }
+  }
+
   /// Sees if the crucible currently contains a complete recipe.
   void refreshRecipe() {
-    for (final recipe in content.recipes) {
-      if (recipe.isComplete(save.crucible)) {
+    for (final recipe in _content.recipes) {
+      if (recipe.isComplete(_save.crucible)) {
         completeRecipe = recipe;
         return;
       }
@@ -142,25 +140,13 @@ class ItemScreen extends Screen<Input> {
   }
 }
 
-/// Identifies the two columns on the screen.
-enum Side {
-  left,
-  right
-}
+/// A source of items not on the hero's person.
+class _Place {
+  static const home = const _Place('Home');
+  static const crucible = const _Place('Crucible');
 
-/// Which items are currently being shown in a column.
-class View {
-  static const inventory = const View('Inventory', allowOnRight: false);
-  static const equipment = const View('Equipment');
-  static const home = const View('Home');
-  static const crucible = const View('Crucible', allowOnLeft: false);
-
-  /// The display label for the view.
+  /// The display label for the place.
   final String label;
-
-  /// Which columns this view may be seen on.
-  final bool allowOnLeft;
-  final bool allowOnRight;
 
   String get getVerb => "Get";
   String get putVerb => "Put";
@@ -168,32 +154,23 @@ class View {
   int get getKeyCode => KeyCode.g;
   int get putKeyCode => KeyCode.p;
 
-  const View(this.label, {this.allowOnLeft: true, this.allowOnRight: true});
+  const _Place(this.label);
 
-  /// Gets the list of items for this view.
-  ItemCollection getItems(ItemScreen screen) {
+  /// Gets the list of items from this place.
+  ItemCollection items(ItemScreen screen) {
     switch (this) {
-      case View.inventory: return screen.save.inventory;
-      case View.equipment: return screen.save.equipment;
-      case View.home: return screen.save.home;
-      case View.crucible: return screen.save.crucible;
+      case _Place.home: return screen._save.home;
+      case _Place.crucible: return screen._save.crucible;
     }
 
     throw "unreachable";
   }
-
-  /// Returns `true` if the view is allowed on [side].
-  bool allowedOnSide(Side side) =>
-      side == Side.left ? allowOnLeft : allowOnRight;
 }
 
-class ShopView implements View {
+class _ShopPlace implements _Place {
   final Shop _shop;
 
   String get label => _shop.name;
-
-  bool get allowOnLeft => false;
-  bool get allowOnRight => true;
 
   String get getVerb => "Buy";
   String get putVerb => "Sell";
@@ -201,13 +178,9 @@ class ShopView implements View {
   int get getKeyCode => KeyCode.b;
   int get putKeyCode => KeyCode.s;
 
-  ShopView(this._shop);
+  _ShopPlace(this._shop);
 
-  /// Returns `true` if the view is allowed on [side].
-  bool allowedOnSide(Side side) =>
-      side == Side.left ? allowOnLeft : allowOnRight;
-
-  ItemCollection getItems(ItemScreen screen) => _shop;
+  ItemCollection items(ItemScreen screen) => _shop;
 }
 
 /// What the user is currently doing on the item screen.
@@ -218,15 +191,18 @@ abstract class Mode {
 
   const Mode();
 
-  /// Whether items should be shown as selectable or not.
-  bool get allowsSelection => false;
+  /// Whether the hero's items should be shown as selectable.
+  bool get selectingFromHero => false;
+
+  /// Whether the place's items should be shown as selectable.
+  bool get selectingFromPlace => false;
 
   String message(ItemScreen screen);
 
   String helpText(ItemScreen screen);
 
-  /// If [allowsSelection] is true, which items can be selected.
-  bool canSelectItem(ItemScreen screen, Side side, Item item) => false;
+  /// If [item] can be selected.
+  bool canSelectItem(ItemScreen screen, Item item) => false;
 
   bool handleInput(Input input, ItemScreen screen) => false;
   bool keyDown(int keyCode, ItemScreen screen);
@@ -240,20 +216,20 @@ class ViewMode extends Mode {
   String message(ItemScreen screen) => 'Which items do you want to look at?';
 
   String helpText(ItemScreen screen) {
-    var tab = screen.leftView == View.inventory ?
-      "Switch to equipment" : "Switch to inventory";
+    var tab = screen._showingInventory ?
+        "Switch to equipment" : "Switch to inventory";
 
     return "[Tab] $tab, "
-        "[${screen.rightView.getVerb[0]}] ${screen.rightView.getVerb}, "
-        "[${screen.rightView.putVerb[0]}] ${screen.rightView.putVerb}, "
+        "[${screen._place.getVerb[0]}] ${screen._place.getVerb}, "
+        "[${screen._place.putVerb[0]}] ${screen._place.putVerb}, "
         "[Esc] Exit";
   }
 
   bool keyDown(int keyCode, ItemScreen screen) {
-    if (keyCode == screen.rightView.getKeyCode) {
-      screen.mode = Mode.get;
-    } else if (keyCode == screen.rightView.putKeyCode) {
-      screen.mode = Mode.put;
+    if (keyCode == screen._place.getKeyCode) {
+      screen._mode = Mode.get;
+    } else if (keyCode == screen._place.putKeyCode) {
+      screen._mode = Mode.put;
     } else {
       return false;
     }
@@ -267,13 +243,11 @@ class ViewMode extends Mode {
 abstract class SelectMode extends Mode {
   const SelectMode();
 
-  bool get allowsSelection => true;
-
   String helpText(ItemScreen screen) => '[A-Z] Choose item, [Esc] Cancel';
 
   bool handleInput(Input input, ItemScreen screen) {
     if (input == Input.cancel) {
-      screen.mode = Mode.view;
+      screen._mode = Mode.view;
       screen.dirty();
       return true;
     }
@@ -282,18 +256,18 @@ abstract class SelectMode extends Mode {
   }
 
   bool keyDown(int keyCode, ItemScreen screen) {
-    if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
-      selectItem(screen, keyCode - KeyCode.a);
+    if (keyCode < KeyCode.a || keyCode > KeyCode.z) return false;
 
-      // TODO: There is a bug here that this prevents Ctrl-R from refreshing
-      // the page. Should only get here if Ctrl is not pressed.
-      return true;
+    if (selectItem(screen, keyCode - KeyCode.a)) {
+      // Switch back to viewing after a successful action.
+      screen._mode = Mode.view;
+      screen.dirty();
     }
 
-    return false;
+    return true;
   }
 
-  void selectItem(ItemScreen screen, int index);
+  bool selectItem(ItemScreen screen, int index);
 }
 
 // TODO: Add a mode to equip/unequip an item.
@@ -302,49 +276,38 @@ abstract class SelectMode extends Mode {
 class PutMode extends SelectMode {
   const PutMode();
 
+  bool get selectingFromHero => true;
+
   String message(ItemScreen screen) =>
-      "${screen.rightView.putVerb} which item?";
+      "${screen._place.putVerb} which item?";
 
-  bool canSelectItem(ItemScreen screen, Side side, Item item) {
-    if (side == Side.right) return false;
-
-    // TODO: Move these checks into the View.
+  bool canSelectItem(ItemScreen screen, Item item) {
+    // TODO: Move these checks into the Place.
 
     // Can put anything in the home.
-    if (screen.rightView == View.home) return true;
-
-    // Can only put equippable items.
-    if (screen.rightView == View.equipment) {
-      // TODO: This is a bit wonky. canEquip() assumes you can swap items,
-      // which the item screen doesn't support.
-      return screen.save.equipment.canEquip(item);
-    }
+    if (screen._place == _Place.home) return true;
 
     // Can only put items in the crucible if they fit a recipe.
-    if (screen.rightView == View.crucible) {
-      var items = screen.rightView.getItems(screen).toList();
+    if (screen._place == _Place.crucible) {
+      var items = screen._place.items(screen).toList();
       items.add(item);
-      return screen.content.recipes.any((recipe) => recipe.allows(items));
+      return screen._content.recipes.any((recipe) => recipe.allows(items));
     }
 
     // Can only sell things that have a price.
-    if (screen.rightView is ShopView) {
-      return item.price > 0;
-    }
-
-    throw "unreachable";
+    return item.price > 0;
   }
 
-  void selectItem(ItemScreen screen, int index) {
-    var from = screen.leftView.getItems(screen);
+  bool selectItem(ItemScreen screen, int index) {
+    var from = screen._heroItems;
 
-    if (index >= from.length) return;
+    if (index >= from.length) return false;
     var item = from[index];
-    if (!canSelectItem(screen, Side.left, item)) return;
+    if (!canSelectItem(screen, item)) return false;
 
     // TODO: Prompt the user for a count if the item is a stack.
 
-    var to = screen.rightView.getItems(screen);
+    var to = screen._place.items(screen);
 
     if (to.tryAdd(item)) {
       from.removeAt(index);
@@ -352,12 +315,12 @@ class PutMode extends SelectMode {
       // TODO: Show an error message?
     }
 
-    if (screen.rightView is ShopView) {
-      screen.save.gold += item.price;
+    if (screen._place is _ShopPlace) {
+      screen._save.gold += item.price;
     }
 
-    if (screen.rightView == View.crucible) screen.refreshRecipe();
-    screen.dirty();
+    if (screen._place == _Place.crucible) screen.refreshRecipe();
+    return true;
   }
 }
 
@@ -365,47 +328,44 @@ class PutMode extends SelectMode {
 class GetMode extends SelectMode {
   const GetMode();
 
+  bool get selectingFromPlace => true;
+
   String message(ItemScreen screen) =>
-      "${screen.rightView.getVerb} which item?";
+      "${screen._place.getVerb} which item?";
 
-  bool canSelectItem(ItemScreen screen, Side side, Item item) {
-    if (side == Side.left) return false;
-
+  bool canSelectItem(ItemScreen screen, Item item) {
     // TODO: Prompt for count when appropriate.
 
-    var view = screen.views[side];
-    if (view is ShopView) {
+    var place = screen._place;
+    if (place is _ShopPlace) {
       // Have to have enough gold to buy it.
-      if (screen.save.gold < item.price) return false;
+      if (screen._save.gold < item.price) return false;
     }
 
     return true;
   }
 
-  void selectItem(ItemScreen screen, int index) {
-    var from = screen.rightView.getItems(screen);
+  bool selectItem(ItemScreen screen, int index) {
+    var from = screen._place.items(screen);
 
-    if (index >= from.length) return;
+    if (index >= from.length) return false;
     var item = from[index];
 
-    var to = screen.leftView.getItems(screen);
+    var to = screen._heroItems;
 
     // TODO: Handle item stacks.
     if (to.tryAdd(item)) {
       from.removeAt(index);
 
       // If it's taken from a shop, pay for it.
-      if (screen.rightView is ShopView) {
-        screen.save.gold -= item.price;
+      if (screen._place is _ShopPlace) {
+        screen._save.gold -= item.price;
       }
-
-      // If we get the last item, automatically switch out of get mode.
-      if (from.isEmpty) screen.mode = Mode.view;
     } else {
       // TODO: Show an error message?
     }
 
-    if (screen.rightView == View.crucible) screen.refreshRecipe();
-    screen.dirty();
+    if (screen._place == _Place.crucible) screen.refreshRecipe();
+    return true;
   }
 }

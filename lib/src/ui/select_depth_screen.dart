@@ -51,11 +51,11 @@ class SelectDepthScreen extends Screen<Input> {
 
     switch (keyCode) {
       case KeyCode.c:
-        ui.push(new ItemScreen(content, save, View.crucible));
+        ui.push(new ItemScreen.crucible(content, save));
         break;
 
       case KeyCode.h:
-        ui.push(new ItemScreen(content, save, View.home));
+        ui.push(new ItemScreen.home(content, save));
         return true;
 
       case KeyCode.one: return tryEnterShop(0);
