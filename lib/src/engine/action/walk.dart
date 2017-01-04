@@ -51,7 +51,7 @@ class WalkAction extends Action {
           var value = rng.range(min, max);
           hero.gold += value;
           log("{1} pick[s] up {2} worth $value gold.", hero, item);
-          game.stage.removeItem(item);
+          game.stage.removeItem(item, pos);
 
           addEvent(EventType.gold, actor: actor, pos: actor.pos, other: item);
         } else {

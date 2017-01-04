@@ -140,7 +140,7 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.swap:
-        if (game.hero.inventory.lastUnequipped == -1) {
+        if (game.hero.inventory.lastUnequipped == null) {
           game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
@@ -180,9 +180,12 @@ class GameScreen extends Screen<Input> {
     if (items.length > 1) {
       // Show item dialog if there are multiple things to pick up.
       ui.push(new ItemDialog.pickUp(this));
-    } else {
+    } else if (items.length == 1) {
       // Otherwise attempt to pick the one item.
-      game.hero.setNextAction(new PickUpAction(0));
+      game.hero.setNextAction(new PickUpAction(items.first));
+    } else {
+      game.log.error('There is nothing here.');
+      dirty();
     }
   }
 
@@ -354,24 +357,27 @@ class GameScreen extends Screen<Input> {
         return new Glyph.fromCharCode(char, rng.item(colors));
       }
 
-    // Draw the tiles.
+    // Draw the tiles and items.
     for (var pos in _cameraBounds) {
       var tile = game.stage[pos];
-      var glyph;
       if (tile.isExplored) {
-        glyph = tile.type.appearance[tile.visible ? 0 : 1];
+        var items = game.stage.itemsAt(pos);
+        var glyph;
+        if (items.isEmpty) {
+          glyph = tile.type.appearance[tile.visible ? 0 : 1];
+        } else {
+          // TODO: If there are multiple items on the same tile, render them
+          // differently?
+          glyph = dazzleGlyph(items.first.appearance);
+        }
+
         if (tile.visible) glyph = dazzleGlyph(glyph);
         drawStageGlyph(terminal, pos.x, pos.y, glyph);
       }
     }
 
-    // Draw the items.
-    for (var item in game.stage.items) {
-      if (!game.stage[item.pos].isExplored) continue;
-      var glyph = dazzleGlyph(item.appearance);
-      drawStageGlyph(terminal, item.x, item.y, glyph);
-    }
-
+    // TODO: Merge this with tiles and items now that we organize actors by
+    // position as well?
     // Draw the actors.
     for (var actor in game.stage.actors) {
       if (!game.stage[actor.pos].visible) continue;
@@ -477,10 +483,14 @@ class GameScreen extends Screen<Input> {
 
     // Draw the unseen items.
     terminal.writeAt(0, 38, "Unfound items:", Color.gray);
-    var unseen = game.stage.items.where(
-        (item) => !game.stage[item.pos].isExplored).toList();
-    unseen.sort();
+    var unseen = <Item>[];
+    game.stage.forEachItem((item, pos) {
+      if (!game.stage[pos].isExplored) unseen.add(item);
+    });
+
     // Show the "best" ones first.
+    unseen.sort();
+
     var x = 0;
     var lastGlyph;
     for (var item in unseen.reversed) {

@@ -113,6 +113,15 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
     throw "unreachable";
   }
 
+  void remove(Item item) {
+    for (var i = 0; i < slots.length; i++) {
+      if (slots[i] == item) {
+        slots[i] == null;
+        break;
+      }
+    }
+  }
+
   /// Unequips and returns the [Item] at [index].
   Item removeAt(int index) {
     // Find the slot, skipping over empty ones.

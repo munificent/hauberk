@@ -158,7 +158,7 @@ class RayAction extends Action with DestroyItemMixin {
     var destroyed = destroyItems(
         game.stage.itemsAt(pos), chance, flag, message);
     for (var item in destroyed) {
-      game.stage.removeItem(item);
+      game.stage.removeItem(item, pos);
     }
   }
 }

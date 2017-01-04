@@ -178,7 +178,7 @@ void generate() {
     ''');
 
   var items = new Histogram<String>();
-  for (var item in stage.items) {
+  for (var item in stage.allItems) {
     items.add(item.toString());
   }
 

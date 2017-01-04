@@ -1,19 +1,16 @@
-import 'package:piecemeal/piecemeal.dart';
-
 import '../action/action.dart';
-import '../actor.dart';
 import '../attack.dart';
 import '../element.dart';
 import '../log.dart';
 
 /// A thing that can be picked up.
-class Item extends Thing implements Comparable<Item> {
+class Item implements Comparable<Item>, Noun {
   final ItemType type;
 
   final Affix prefix;
   final Affix suffix;
 
-  Item(this.type, this._count, [this.prefix, this.suffix]) : super(Vec.zero);
+  Item(this.type, this._count, [this.prefix, this.suffix]);
 
   get appearance => type.appearance;
 
@@ -85,6 +82,8 @@ class Item extends Thing implements Comparable<Item> {
 
     return Log.quantify(name.toString(), count);
   }
+
+  Pronoun get pronoun => Pronoun.it;
 
   // TODO: Take affixes into account.
   int get price => type.price;
@@ -162,6 +161,8 @@ class Item extends Thing implements Comparable<Item> {
     _count -= count;
     return clone(count);
   }
+
+  String toString() => nounText;
 }
 
 typedef Action ItemUse();

@@ -276,8 +276,7 @@ class Monster extends Actor {
         });
       }
 
-      item.pos = itemPos;
-      game.stage.addItem(item);
+      game.stage.addItem(item, itemPos);
       log("{1} drop[s] {2}.", this, item);
     });
 

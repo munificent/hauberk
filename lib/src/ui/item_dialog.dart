@@ -38,9 +38,7 @@ class ItemDialog extends Screen<Input> {
     switch (input) {
       case Input.ok:
         if (_selectedItem != null) {
-          var items = _getItems().toList();
-          var index = items.indexOf(_selectedItem);
-          _command.selectItem(this, _selectedItem, _count, _location, index);
+          _command.selectItem(this, _selectedItem, _count, _location);
           return true;
         }
         break;
@@ -132,7 +130,7 @@ class ItemDialog extends Screen<Input> {
       dirty();
     } else {
       // Either we don't need a count or there's only one item.
-      _command.selectItem(this, items[index], 1, _location, index);
+      _command.selectItem(this, items[index], 1, _location);
     }
   }
 
@@ -286,7 +284,7 @@ abstract class _ItemCommand {
 
   /// Called when a valid item has been selected.
   void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location, int index);
+      ItemLocation location);
 }
 
 class _DropItemCommand extends _ItemCommand {
@@ -311,8 +309,8 @@ class _DropItemCommand extends _ItemCommand {
   bool canSelect(Item item) => true;
 
   void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location, int index) {
-    dialog._gameScreen.game.hero.setNextAction(new DropAction(location, index, count));
+      ItemLocation location) {
+    dialog._gameScreen.game.hero.setNextAction(new DropAction(location, item, count));
     dialog.ui.pop();
   }
 }
@@ -333,8 +331,8 @@ class _UseItemCommand extends _ItemCommand {
   bool canSelect(Item item) => item.canUse || item.canEquip;
 
   void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location, int index) {
-    dialog._gameScreen.game.hero.setNextAction(new UseAction(location, index));
+      ItemLocation location) {
+    dialog._gameScreen.game.hero.setNextAction(new UseAction(location, item));
     dialog.ui.pop();
   }
 }
@@ -355,12 +353,12 @@ class _TossItemCommand extends _ItemCommand {
   bool canSelect(Item item) => item.canToss;
 
   void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location, int index) {
+      ItemLocation location) {
     // Now we need a target.
     dialog.ui.goTo(new TargetDialog(dialog._gameScreen,
         item.type.tossAttack.range, (target) {
       dialog._gameScreen.game.hero.setNextAction(
-          new TossAction(location, index, target));
+          new TossAction(location, item, target));
     }));
   }
 }
@@ -379,10 +377,10 @@ class _PickUpItemCommand extends _ItemCommand {
   bool canSelect(Item item) => true;
 
   void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location, int index) {
+      ItemLocation location) {
     // Pick up item and return to the game
     dialog._gameScreen.game.hero.setNextAction(
-      new PickUpAction(index)
+      new PickUpAction(item)
     );
     dialog.ui.pop();
   }

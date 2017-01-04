@@ -6,6 +6,7 @@ import 'breed.dart';
 import 'fov.dart';
 import 'game.dart';
 import 'hero/hero.dart';
+import 'items/inventory.dart';
 import 'items/item.dart';
 
 /// The game's live play area.
@@ -30,8 +31,7 @@ class Stage {
 
   final Array2D<Tile> tiles;
 
-  Iterable<Item> get items => _items;
-  final _items = <Item>[];
+  final _itemsByTile = <Vec, Inventory>{};
 
   /// A spatial partition to let us quickly locate an actor by tile.
   ///
@@ -51,6 +51,13 @@ class Stage {
         _fov = new Fov(game);
 
   Tile operator[](Vec pos) => tiles[pos];
+
+  /// Iterates over every item on the ground on the stage.
+  Iterable<Item> get allItems sync* {
+    for (var inventory in _itemsByTile.values) {
+      yield* inventory;
+    }
+  }
 
   Tile get(int x, int y) => tiles.get(x, y);
   void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
@@ -106,27 +113,45 @@ class Stage {
 
   Actor actorAt(Vec pos) => _actorsByTile[pos];
 
-  void addItem(Item item) {
-    _items.add(item);
+  void addItem(Item item, Vec pos) {
+    // Get the inventory for the tile.
+    var inventory = _itemsByTile.putIfAbsent(pos, () => new Inventory(null));
+    var result = inventory.tryAdd2(item);
+    // Inventory is unlimited, so should always succeed.
+    assert(result.remaining == 0);
   }
 
   /// Returns `true` if there is at least one item at [pos].
-  bool isItemAt(Vec pos) {
-    for (var item in _items) {
-      if (item.pos == pos) return true;
-    }
-
-    return false;
-  }
+  bool isItemAt(Vec pos) => _itemsByTile.containsKey(pos);
 
   /// Gets the [Item]s at [pos].
-  List<Item> itemsAt(Vec pos) =>
-      _items.where((item) => item.pos == pos).toList();
+  Iterable<Item> itemsAt(Vec pos) {
+    var inventory = _itemsByTile[pos];
+    if (inventory == null) return const [];
+    return inventory;
+  }
 
-  /// Removes [item] from the stage. Does nothing if the item is not on the
-  /// ground.
-  void removeItem(Item item) {
-    _items.remove(item);
+  /// Removes [item] from the stage at [pos].
+  ///
+  /// It is an error to call this if [item] is not on the ground at [pos].
+  void removeItem(Item item, Vec pos) {
+    var inventory = _itemsByTile[pos];
+    assert(inventory != null);
+
+    inventory.remove(item);
+
+    // Discard empty inventories. Note that [isItemAt] assumes this is done.
+    if (inventory.isEmpty) _itemsByTile.remove(pos);
+  }
+
+  /// Iterates over every item on the stage and returns the item and its
+  /// position.
+  void forEachItem(callback(Item item, Vec pos)) {
+    _itemsByTile.forEach((pos, inventory) {
+      for (var item in inventory) {
+        callback(item, pos);
+      }
+    });
   }
 
   void dirtyVisibility() {

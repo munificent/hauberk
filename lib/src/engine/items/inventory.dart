@@ -29,10 +29,10 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
   final int capacity;
 
   /// If the [Hero] had to unequip an item in order to equip another one, this
-  /// will refer to the index of the item that was unequipped.
+  /// will refer to the item that was unequipped.
   ///
-  /// If the hero isn't holding an unequipped item, returns `-1`.
-  int get lastUnequipped => _items.indexOf(_lastUnequipped);
+  /// If the hero isn't holding an unequipped item, returns `null`.
+  Item get lastUnequipped => _lastUnequipped;
   Item _lastUnequipped;
 
   int get length => _items.length;
@@ -73,7 +73,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
   // using this.
   bool tryAdd(Item item, {bool wasUnequipped: false}) {
     // TODO: Merge stacks.
-    if (_items.length >= capacity) return false;
+    if (capacity != null && _items.length >= capacity) return false;
 
     _items.add(item);
     _items.sort();
@@ -97,7 +97,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
     }
 
     // See if there is room to start a new stack with the rest.
-    if (_items.length >= capacity) {
+    if (capacity != null && _items.length >= capacity) {
       // There isn't room to pick up everything.
       return new AddItemResult(adding - item.count, item.count);
     }

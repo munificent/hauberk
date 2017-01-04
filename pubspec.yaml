@@ -4,11 +4,6 @@ dependencies:
   barback: any
   markdown: any
   malison: any
-  piecemeal: any
+  piecemeal: '^0.3.0'
 transformers:
 - hauberk/src/markdown_to_html
-
-dependency_overrides:
-  piecemeal:
-    path:
-      ../piecemeal

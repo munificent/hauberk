@@ -8,7 +8,7 @@ import '../items/item.dart';
 
 /// These actions are side effects from taking elemental damage.
 
-abstract class DestroyItemMixin extends Action {
+abstract class DestroyItemMixin implements Action {
   /// Tries to destroy [items] where each item with [flag] has a one in [chance]
   /// chance of being destroyed.
   ///

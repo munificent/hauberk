@@ -16,8 +16,8 @@ import 'item.dart';
 class TossAction extends ItemAction {
   final Vec _target;
 
-  TossAction(ItemLocation location, int index, this._target)
-      : super(location, index);
+  TossAction(ItemLocation location, Item item, this._target)
+      : super(location, item);
 
   ActionResult onPerform() {
     if (!item.canToss) return fail("{1} can't be thrown.", item);
@@ -25,7 +25,8 @@ class TossAction extends ItemAction {
     Item tossed;
     if (item.count == 1) {
       // Throwing the entire stack.
-      tossed = removeItem();
+      tossed = item;
+      removeItem();
     } else {
       // Throwing one item from a stack.
       tossed = item.splitStack(1);
@@ -92,8 +93,7 @@ class TossLosAction extends LosAction {
     }
 
     // Drop the item onto the ground.
-    _item.pos = pos;
-    game.stage.addItem(_item);
+    game.stage.addItem(_item, pos);
 
     // TODO: Secondary actions: potions explode etc.
   }
