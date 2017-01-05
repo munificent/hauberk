@@ -93,11 +93,8 @@ class ItemScreen extends Screen<Input> {
       terminal.drawGlyph(49, y, bar);
     }
 
-    terminal.writeAt(0, 2, _showingInventory ? "Inventory" : "Equipment");
-    _drawSide(terminal, _heroItems, 0, isHero: true);
-
-    terminal.writeAt(50, 2, _place.label);
-    _drawSide(terminal, _place.items(this), 50, isHero: false);
+    _drawHero(terminal, 0);
+    _drawPlace(terminal, 50);
 
     if (_place == _Place.crucible && completeRecipe != null) {
       terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.yellow);
@@ -110,16 +107,31 @@ class ItemScreen extends Screen<Input> {
     }
   }
 
-  void _drawSide(Terminal terminal, ItemCollection items, int x,
-      {bool isHero}) {
+  void _drawHero(Terminal terminal, int x) {
+    terminal.writeAt(x, 2, _showingInventory ? "Inventory" : "Equipment");
+
+    bool isSelectable(Item item) {
+      if (!_mode.selectingFromHero) return false;
+      return _mode.canSelectItem(this, item);
+    }
+
+    var canSelect = _mode.selectingFromHero || _mode.selectingFromPlace
+        ? isSelectable : null;
+
+    if (_showingInventory) {
+      drawItems(terminal, x, 4, _save.inventory, canSelect);
+    } else {
+      drawEquipment(terminal, x, 4, _save.equipment, canSelect);
+    }
+  }
+
+  void _drawPlace(Terminal terminal, int x) {
+    terminal.writeAt(x, 2, _place.label);
+
+    var items = _place.items(this);
     if (_mode.selectingFromHero || _mode.selectingFromPlace) {
       drawItems(terminal, x, 4, items, (item) {
-        if (isHero) {
-          if (!_mode.selectingFromHero) return false;
-        } else {
-          if (!_mode.selectingFromPlace) return false;
-        }
-
+        if (!_mode.selectingFromPlace) return false;
         return _mode.canSelectItem(this, item);
       });
     } else {

@@ -133,8 +133,8 @@ class Hero extends Actor {
   int get level => _level;
 
   int get armor {
-    int total = 0;
-    for (final item in equipment) {
+    var total = 0;
+    for (var item in equipment) {
       total += item.armor;
     }
 

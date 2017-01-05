@@ -113,10 +113,16 @@ class ItemDialog extends Screen<Input> {
 
     terminal.writeAt(0, terminal.height - 1, '$select$helpText', Color.gray);
 
-    drawItems(terminal, 0, 1, _getItems(), (item) {
-      if (_selectedItem != null) return item == _selectedItem;
-      return _command.canSelect(item);
-    });
+    if (_location == ItemLocation.equipment) {
+      drawEquipment(terminal, 0, 1, _gameScreen.game.hero.equipment, _canSelect);
+    } else {
+      drawItems(terminal, 0, 1, _getItems(), _canSelect);
+    }
+  }
+
+  bool _canSelect(Item item) {
+    if (_selectedItem != null) return item == _selectedItem;
+    return _command.canSelect(item);
   }
 
   void _selectItem(int index) {
@@ -152,6 +158,11 @@ class ItemDialog extends Screen<Input> {
   }
 }
 
+void drawEquipment(Terminal terminal, int x, int y, Equipment equipment,
+    [bool canSelect(Item item)]) {
+  _drawItems(terminal, x, y, equipment.slots, equipment.slotTypes, canSelect);
+}
+
 /// Draws a list of [items] on [terminal] at [x], [y].
 ///
 /// This is used both on the [ItemScreen] and in game for things like using and
@@ -172,9 +183,34 @@ class ItemDialog extends Screen<Input> {
 ///     a) = a Glimmering War Hammer of Wo... »29 992,106
 void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     [bool canSelect(Item item)]) {
+  _drawItems(terminal, x, y, items, null, canSelect);
+}
+
+void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
+    List<String> slotNames, bool canSelect(Item item)) {
+
   var i = 0;
+  var letter = 0;
   for (var item in items) {
-    var itemY = i + y;
+    var itemY = y + i;
+
+    // Clear the row.
+    terminal.writeAt(x, itemY,
+        "                                                 ");
+
+    // If there's no item in this equipment slot, show the item name.
+    if (item == null) {
+      // Null items should only appear in equipment.
+      assert(slotNames != null);
+
+      // When potentially selecting an item, don't show the slot name at all.
+      if (canSelect == null) {
+        terminal.writeAt(x, itemY, "     (${slotNames[i]})", Color.darkGray);
+      }
+
+      i++;
+      continue;
+    }
 
     var borderColor = Color.darkGray;
     var letterColor = Color.gray;
@@ -197,9 +233,9 @@ void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
       }
     }
 
-    terminal.writeAt(x, itemY,
-        " )                                               ", borderColor);
-    terminal.writeAt(x, itemY, "abcdefghijklmnopqrstuvwxyz"[i], letterColor);
+    terminal.writeAt(x, itemY, " )", borderColor);
+    terminal.writeAt(x, itemY, "abcdefghijklmnopqrstuvwxyz"[letter], letterColor);
+    letter++;
 
     if (enabled) {
       terminal.drawGlyph(x + 3, itemY, item.appearance);

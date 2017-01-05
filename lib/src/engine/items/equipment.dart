@@ -12,7 +12,6 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
   Equipment()
   : slotTypes = const [
       'weapon',
-      'bow',
       'ring',
       'necklace',
       'body',
@@ -22,7 +21,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
       'gloves',
       'boots'
     ],
-    slots = new List<Item>(11);
+    slots = new List<Item>(9);
 
   /// Gets the [Item] in the weapon slot, if any.
   Item get weapon => find('weapon');
@@ -104,7 +103,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
     // should prefer an empty slot before reusing an in-use one.
     for (var i = 0; i < slotTypes.length; i++) {
       if (slotTypes[i] == item.equipSlot) {
-        final unequipped = slots[i];
+        var unequipped = slots[i];
         slots[i] = item;
         return unequipped;
       }
@@ -116,7 +115,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
   void remove(Item item) {
     for (var i = 0; i < slots.length; i++) {
       if (slots[i] == item) {
-        slots[i] == null;
+        slots[i] = null;
         break;
       }
     }
@@ -130,7 +129,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
         if (index == 0) {
           final item = slots[i];
           slots[i] = null;
-          return item;
+    return item;
         } else {
           index--;
         }
