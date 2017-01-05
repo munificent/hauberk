@@ -19,8 +19,17 @@ class ItemLocation {
 abstract class ItemCollection extends Iterable<Item> {
   int get length;
   Item operator[](int index);
+  void remove(Item item);
   Item removeAt(int index);
+
+  /// Returns `true` if the entire stack of [item] will fit in this collection.
+  bool canAdd(Item item);
+
   bool tryAdd(Item item);
+  AddItemResult tryAdd2(Item item);
+
+  /// Called when the count of an item in the collection has changed.
+  void countChanged();
 }
 
 /// The collection of [Item]s held by an [Actor].
@@ -69,6 +78,24 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
     return item;
   }
 
+  bool canAdd(Item item) {
+    // If there's an empty slot, can always add it.
+    if (capacity == null || _items.length < capacity - 1) return true;
+
+    // See if we can merge it with other stacks.
+    var remaining = item.count;
+    for (var existing in _items) {
+      if (existing.canStack(item)) {
+        remaining -= existing.type.maxStack - existing.count;
+        if (remaining <= 0) return true;
+      }
+    }
+
+    // If we get here, there are no open slots and not enough stacks that can
+    // take the item.
+    return false;
+  }
+
   // TODO: Get rid of this and rename tryAdd2() to tryAdd() once everything is
   // using this.
   bool tryAdd(Item item, {bool wasUnequipped: false}) {
@@ -115,7 +142,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
   ///
   /// This should be called any time the count of an item stack in the hero's
   /// inventory is changed.
-  void optimizeStacks() {
+  void countChanged() {
     // Hacky. Just re-add everything from scratch.
     var items = _items.toList();
     _items.clear();

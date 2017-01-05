@@ -60,9 +60,9 @@ class Storage {
 
       // Clean up legacy heroes before item stacks.
       // TODO: Remove this once we don't need to worry about it anymore.
-      inventory.optimizeStacks();
-      home.optimizeStacks();
-      crucible.optimizeStacks();
+      inventory.countChanged();
+      home.countChanged();
+      crucible.countChanged();
 
       var experience = hero['experience'];
 

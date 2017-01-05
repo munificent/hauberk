@@ -108,7 +108,7 @@ class ItemDialog extends Screen<Input> {
 
     terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
 
-    var select = _selectedItem == null ? '[A-Z] Select item' : '[↕] Choose quantity';
+    var select = _selectedItem == null ? '[A-Z] Select item' : '[↕] Change quantity';
     var helpText = canSwitchLocations ? ', [Tab] Switch view' : '';
 
     terminal.writeAt(0, terminal.height - 1, '$select$helpText', Color.gray);

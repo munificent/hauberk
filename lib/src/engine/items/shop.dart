@@ -15,7 +15,14 @@ class Shop extends IterableMixin<Item> implements ItemCollection {
 
   Item operator[](int index) => _items[index];
 
+  void remove(Item item) {
+    // Do nothing.
+  }
+
   Item removeAt(int index) => _items[index].clone(1);
+
+  /// Any item can be "added" to a shop.
+  bool canAdd(Item item) => true;
 
   /// Any item can be "added" to a shop.
   ///
@@ -25,4 +32,10 @@ class Shop extends IterableMixin<Item> implements ItemCollection {
   // erroneous sale, but it means we have to deal with making sure there is
   // room for it.
   bool tryAdd(Item item) => true;
+  AddItemResult tryAdd2(Item item) => new AddItemResult(item.count, 0);
+
+  void countChanged() {
+    // Do nothing.
+    // TODO: Reset item counts to replenish stock?
+  }
 }

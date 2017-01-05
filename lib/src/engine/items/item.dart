@@ -86,6 +86,7 @@ class Item implements Comparable<Item>, Noun {
   Pronoun get pronoun => Pronoun.it;
 
   // TODO: Take affixes into account.
+  /// How much the one unit of the item can be bought and sold for.
   int get price => type.price;
 
   bool get isTreasure => type.isTreasure;
@@ -125,15 +126,24 @@ class Item implements Comparable<Item>, Noun {
   /// same count as this item.
   Item clone([int count]) => new Item(type, count ?? _count, prefix, suffix);
 
+  bool canStack(Item item) {
+    if (type != item.type) return false;
+
+    // Items with affixes don't stack.
+    // TODO: Should they?
+    if (prefix != null || item.prefix != null) return false;
+    if (suffix != null || item.suffix != null) return false;
+
+    return true;
+  }
+
   /// Try to combine [item] with this item into a single stack.
   ///
   /// Updates the counts of the two items. If completely successful, [item]
   /// will end up with a count of zero. If the items cannot be stacked, [item]'s
   /// count is unchanged.
   void stack(Item item) {
-    // Must be the same type and stackable.
-    if (type != item.type) return;
-    if (type.maxStack == 1) return;
+    if (!canStack(item)) return;
 
     // If we get here, we are trying to stack. We don't support stacking
     // items with affixes, and we should avoid that by not having any affixes

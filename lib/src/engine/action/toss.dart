@@ -30,7 +30,7 @@ class TossAction extends ItemAction {
     } else {
       // Throwing one item from a stack.
       tossed = item.splitStack(1);
-      if (location == ItemLocation.inventory) hero.inventory.optimizeStacks();
+      countChanged();
     }
 
     // Take the item and throw it.

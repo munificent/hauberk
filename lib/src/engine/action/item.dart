@@ -12,6 +12,9 @@ abstract class ItemAction extends Action {
 
   ItemAction(this.location, this.item);
 
+  // TODO: There's a lot of duplication in the code that calls this to handle
+  // splitting the stack in some cases or removing in others. Unify that here
+  // or maybe in Item or ItemCollection.
   /// Removes the item from its current location so it can be placed elsewhere.
   void removeItem() {
     switch (location) {
@@ -25,6 +28,25 @@ abstract class ItemAction extends Action {
 
       case ItemLocation.equipment:
         hero.equipment.remove(item);
+        break;
+    }
+  }
+
+  /// Called when the action has changed the count of [item].
+  void countChanged() {
+    switch (location) {
+      case ItemLocation.onGround:
+        // TODO: Need to optimize stacks on the ground too.
+        // If the hero picks up part of a floor stack, it should be reshuffled.
+//        game.stage.itemsAt(actor.pos).countChanged();
+        break;
+
+      case ItemLocation.inventory:
+        hero.inventory.countChanged();
+        break;
+
+      case ItemLocation.equipment:
+        hero.equipment.countChanged();
         break;
     }
   }
@@ -68,7 +90,7 @@ class DropAction extends ItemAction {
       removeItem();
     } else {
       dropped = item.splitStack(_count);
-      if (location == ItemLocation.inventory) hero.inventory.optimizeStacks();
+      countChanged();
     }
 
     if (location == ItemLocation.equipment) {
@@ -164,7 +186,7 @@ class UseAction extends ItemAction {
       // The stack is used up, delete it.
       removeItem();
     } else {
-      if (location == ItemLocation.inventory) hero.inventory.optimizeStacks();
+      countChanged();
     }
 
     return alternate(useAction);
