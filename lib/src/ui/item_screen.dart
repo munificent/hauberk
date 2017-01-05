@@ -4,9 +4,6 @@ import '../engine.dart';
 import 'input.dart';
 import 'item_dialog.dart';
 
-// TODO: Can simplify this a lot now that there are separate entrypoints for
-// each store and the inventory/equipment is always on the left.
-
 /// A screen where the hero can manage their items outside of the levels.
 ///
 /// Let's them transfer between their inventory, equipment, crucible, and home.
@@ -154,11 +151,13 @@ class ItemScreen extends Screen<Input> {
 
 /// A source of items not on the hero's person.
 class _Place {
-  static const home = const _Place('Home');
-  static const crucible = const _Place('Crucible');
+  static const home = const _Place();
+  static const crucible = const _CruciblePlace();
+
+  const _Place();
 
   /// The display label for the place.
-  final String label;
+  String get label => "Home";
 
   String get getVerb => "Get";
   String get putVerb => "Put";
@@ -166,16 +165,26 @@ class _Place {
   int get getKeyCode => KeyCode.g;
   int get putKeyCode => KeyCode.p;
 
-  const _Place(this.label);
-
   /// Gets the list of items from this place.
-  ItemCollection items(ItemScreen screen) {
-    switch (this) {
-      case _Place.home: return screen._save.home;
-      case _Place.crucible: return screen._save.crucible;
-    }
+  ItemCollection items(ItemScreen screen) => screen._save.home;
 
-    throw "unreachable";
+  bool canGet(ItemScreen screen, Item item) => true;
+  bool canPut(ItemScreen screen, Item item) => true;
+}
+
+class _CruciblePlace extends _Place {
+  String get label => "Crucible";
+
+  const _CruciblePlace();
+
+  ItemCollection items(ItemScreen screen) => screen._save.crucible;
+
+  bool canPut(ItemScreen screen, Item item) {
+    // Can only put items in the crucible if they fit a recipe.
+    var ingredients = items(screen).toList();
+    ingredients.add(item);
+    return screen._content.recipes.any(
+            (recipe) => recipe.allows(ingredients));
   }
 }
 
@@ -193,6 +202,15 @@ class _ShopPlace implements _Place {
   _ShopPlace(this._shop);
 
   ItemCollection items(ItemScreen screen) => _shop;
+
+  /// Have to have enough gold to buy it.
+  bool canGet(ItemScreen screen, Item item) {
+    // TODO: Take quantity into account?
+    return item.price <= screen._save.gold;
+  }
+
+  /// Can only sell things that have a price.
+  bool canPut(ItemScreen screen, Item item) => item.price > 0;
 }
 
 /// What the user is currently doing on the item screen.
@@ -293,22 +311,8 @@ class PutMode extends SelectMode {
   String message(ItemScreen screen) =>
       "${screen._place.putVerb} which item?";
 
-  bool canSelectItem(ItemScreen screen, Item item) {
-    // TODO: Move these checks into the Place.
-
-    // Can put anything in the home.
-    if (screen._place == _Place.home) return true;
-
-    // Can only put items in the crucible if they fit a recipe.
-    if (screen._place == _Place.crucible) {
-      var items = screen._place.items(screen).toList();
-      items.add(item);
-      return screen._content.recipes.any((recipe) => recipe.allows(items));
-    }
-
-    // Can only sell things that have a price.
-    return item.price > 0;
-  }
+  bool canSelectItem(ItemScreen screen, Item item) =>
+      screen._place.canPut(screen, item);
 
   bool selectItem(ItemScreen screen, int index) {
     var from = screen._heroItems;
@@ -345,17 +349,8 @@ class GetMode extends SelectMode {
   String message(ItemScreen screen) =>
       "${screen._place.getVerb} which item?";
 
-  bool canSelectItem(ItemScreen screen, Item item) {
-    // TODO: Prompt for count when appropriate.
-
-    var place = screen._place;
-    if (place is _ShopPlace) {
-      // Have to have enough gold to buy it.
-      if (screen._save.gold < item.price) return false;
-    }
-
-    return true;
-  }
+  bool canSelectItem(ItemScreen screen, Item item) =>
+      screen._place.canGet(screen, item);
 
   bool selectItem(ItemScreen screen, int index) {
     var from = screen._place.items(screen);
@@ -363,9 +358,10 @@ class GetMode extends SelectMode {
     if (index >= from.length) return false;
     var item = from[index];
 
+    // TODO: Prompt the user for a count if the item is a stack.
+
     var to = screen._heroItems;
 
-    // TODO: Handle item stacks.
     if (to.tryAdd(item)) {
       from.removeAt(index);
 
