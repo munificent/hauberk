@@ -97,7 +97,7 @@ class Dungeon {
     _connectRegions();
     _removeDeadEnds();
 
-    // TODO: Temp hack. Place strairs in a more logical way.
+    // TODO: Temp hack. Place stairs in a more logical way.
     var numStairs = rng.inclusive(2, 10);
     for (var i = 0; i < numStairs; i++) {
       var pos = stage.findOpenTile();
@@ -142,8 +142,7 @@ class Dungeon {
     if (itemType == null) return;
 
     var item = Affixes.createItem(itemType, depth);
-    item.pos = pos;
-    stage.items.add(item);
+    stage.addItem(item, pos);
   }
 
   void trySpawn(Vec pos, int depth) {
