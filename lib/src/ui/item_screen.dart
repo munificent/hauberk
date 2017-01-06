@@ -67,9 +67,7 @@ class ItemScreen extends Screen<Input> {
 
     if (_mode.keyDown(keyCode, this)) return true;
 
-    if (keyCode == KeyCode.space &&
-        completeRecipe != null &&
-        _place == _Place.crucible) {
+    if (keyCode == KeyCode.space && completeRecipe != null) {
       _save.crucible.clear();
       completeRecipe.result.spawnDrop(_save.crucible.tryAdd);
       refreshRecipe();
@@ -102,7 +100,7 @@ class ItemScreen extends Screen<Input> {
     _drawHero(terminal, 0);
     _drawPlace(terminal, 50);
 
-    if (_place == _Place.crucible && completeRecipe != null) {
+    if (completeRecipe != null) {
       terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.yellow);
 
       var itemCount = _place.items(this).length;
@@ -151,7 +149,7 @@ class ItemScreen extends Screen<Input> {
 
   /// Sees if the crucible currently contains a complete recipe.
   void refreshRecipe() {
-    for (final recipe in _content.recipes) {
+    for (var recipe in _content.recipes) {
       if (recipe.isComplete(_save.crucible)) {
         completeRecipe = recipe;
         return;
@@ -236,6 +234,9 @@ class _CruciblePlace extends _Place {
   ItemCollection items(ItemScreen screen) => screen._save.crucible;
 
   bool canPut(ItemScreen screen, Item item) {
+    // TODO: Should not allow a greater count of items than the recipe permits,
+    // since the extras will be lost when the item is forged.
+
     // Can only put items in the crucible if they fit a recipe.
     var ingredients = items(screen).toList();
     ingredients.add(item);
