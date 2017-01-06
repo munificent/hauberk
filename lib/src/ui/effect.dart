@@ -4,6 +4,7 @@ import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import '../engine/circle.dart';
 
 final _directionLines = {
   Direction.n: "|",
@@ -418,27 +419,27 @@ class HealEffect implements Effect {
 }
 
 class DetectEffect implements Effect {
+  static final _colors = [
+    Color.white,
+    Color.lightGold,
+    Color.gold,
+    Color.darkGold,
+    Color.darkOrange,
+  ];
+
   final Vec pos;
-  int life = 30;
+  int life = 20;
 
   DetectEffect(this.pos);
 
-  bool update(Game game) {
-    return --life >= 0;
-  }
+  bool update(Game game) => --life >= 0;
 
   void render(Game game, DrawGlyph drawGlyph) {
     var radius = life ~/ 4;
-    var glyph = new Glyph("*", Color.lightGold);
+    var glyph = new Glyph("*", _colors[radius]);
 
-    var bounds = new Rect(
-        pos.x - radius, pos.y - radius, radius * 2 + 1, radius * 2 + 1);
-
-    for (var pixel in bounds) {
-      var relative = pos - pixel;
-      if (relative < radius && relative > radius - 2) {
-        drawGlyph(pixel.x, pixel.y, glyph);
-      }
+    for (var pixel in new Circle(pos, radius).edge) {
+      drawGlyph(pixel.x, pixel.y, glyph);
     }
   }
 }

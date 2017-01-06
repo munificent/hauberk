@@ -40,7 +40,7 @@ class WalkAction extends Action {
 
     // See if the hero stepped on anything interesting.
     if (actor is Hero) {
-      for (var item in game.stage.itemsAt(pos)) {
+      for (var item in game.stage.itemsAt(pos).toList()) {
         hero.disturb();
 
         // Treasure is immediately, freely acquired.

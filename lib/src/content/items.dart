@@ -46,7 +46,7 @@ class Items {
 
     category(",", stack: 10, tag: "item");
     tossable(damage: 3, range: 8, element: Element.earth, breakage: 10);
-    item("Rock", 1, lightBrown);
+    item("Rock", 1, 1, lightBrown);
 
     treasures();
     pelts();
@@ -127,14 +127,17 @@ void treasures() {
 }
 
 void pelts() {
-  category("%", flags: "flammable");
-  item("Flower",        1, lightAqua); // TODO: Use in recipe.
-  item("Fur Pelt",      1, lightBrown);
-  item("Insect Wing",   1, purple);
-  item("Fox Pelt",      2, orange);
-  item("Red Feather",   2, red); // TODO: Use in recipe.
-  item("Black Feather", 2, darkGray);
-  item("Stinger",       2, gold);
+  // TODO: Should these appear on the floor?
+  category("%", stack: 20, flags: "flammable");
+  item("Flower",        1, 1, lightAqua); // TODO: Use in recipe.
+  item("Insect Wing",   1, 1, purple);
+  item("Red Feather",   2, 1, red); // TODO: Use in recipe.
+  item("Black Feather", 2, 1, darkGray);
+  item("Stinger",       2, 1, gold);
+
+  category("%", stack: 4, flags: "flammable");
+  item("Fur Pelt",      1, 1, lightBrown);
+  item("Fox Pelt",      2, 1, orange);
 }
 
 void potions() {
@@ -174,13 +177,14 @@ void potions() {
   // Speed.
   tagged("magic/potion/speed");
   tossable(damage: 1, range: 8, breakage: 100);
-  potion("of Quickness",  3,  20, lightGreen, () => new HasteAction(20, 1));
-  potion("of Alacrity",  18,  40, green,      () => new HasteAction(30, 2));
-  potion("of Speed",     34, 200, darkGreen,  () => new HasteAction(40, 3));
+  potion("of Quickness",  3, 3,  20, lightGreen, () => new HasteAction(20, 1));
+  potion("of Alacrity",  18, 3,  40, green,      () => new HasteAction(30, 2));
+  potion("of Speed",     34, 4, 200, darkGreen,  () => new HasteAction(40, 3));
 
   // dram, draught, elixir, philter
 
   // TODO: Make monsters drop these.
+  // TODO: These should do their ball attack when thrown too.
   tagged("magic/potion/bottled");
   tossable(damage: 1, range: 8, breakage: 100);
   bottled("Wind",         4,   30, white,       Element.air,         8, "blasts");
@@ -204,15 +208,21 @@ void scrolls() {
   // Teleportation.
   tagged("magic/scroll/teleportation");
   tossable(damage: 1, range: 4, breakage: 75);
-  scroll("of Sidestepping",   2,  9, lightPurple, () => new TeleportAction(6));
-  scroll("of Phasing",        6, 17, purple,      () => new TeleportAction(12));
-  scroll("of Teleportation", 15, 33, darkPurple,  () => new TeleportAction(24));
-  scroll("of Disappearing",  26, 47, darkBlue,    () => new TeleportAction(48));
+  scroll("of Sidestepping",   2, 2,  9, lightPurple, () => new TeleportAction(6));
+  scroll("of Phasing",        6, 3, 17, purple,      () => new TeleportAction(12));
+  scroll("of Teleportation", 15, 3, 33, darkPurple,  () => new TeleportAction(24));
+  scroll("of Disappearing",  26, 3, 47, darkBlue,    () => new TeleportAction(48));
 
   // Detection.
   tagged("magic/scroll/detection");
   tossable(damage: 1, range: 4, breakage: 75);
-  scroll("of Item Detection", 7, 27, lightOrange, () => new DetectItemsAction());
+  detection("of Find Nearby Escape",  1,  2,   20, lightYellow, [DetectType.exit], range: 20);
+  detection("of Find Nearby Items",   2,  2,   20, yellow, [DetectType.item], range: 20);
+  detection("of Detect Nearby",       3,  4,   20, darkYellow, [DetectType.exit, DetectType.item], range: 20);
+
+  detection("of Locate Escape",       5,  1,   20, lightOrange, [DetectType.exit]);
+  detection("of Item Detection",     20,  2,   27, orange, [DetectType.item]);
+  detection("of Detection",          30,  4,  240, darkOrange, [DetectType.exit, DetectType.item]);
 }
 
 void weapons() {
@@ -426,24 +436,24 @@ void tossable({int damage, Element element, int range, int breakage}) {
 }
 
 void treasure(String name, int depth, appearance, int price) {
-  item(name, depth, appearance, treasure: true, price: price);
+  item(name, depth, 1, appearance, treasure: true, price: price);
 }
 
-void potion(String name, int depth, int price, appearance, ItemUse use) {
+void potion(String name, int depth, int rarity, int price, appearance, ItemUse use) {
   if (name.startsWith("of")) name = "Potion[s] $name";
 
-  item(name, depth, appearance, price: price, use: use);
+  item(name, depth, rarity, appearance, price: price, use: use);
 }
 
 void healing(String name, int depth, int price, appearance, int amount,
     {bool curePoison: false}) {
-  potion(name, depth, price, appearance,
+  potion(name, depth, 2, price, appearance,
       () => new HealAction(amount, curePoison: curePoison));
 }
 
 void resistSalve(String name, int depth, int price, appearance,
     Element element, [String flags]) {
-  item("Salve[s] of $name Resistance", depth, appearance,
+  item("Salve[s] of $name Resistance", depth, 1, appearance,
       price: price, use: () => new ResistAction(40, element),
       flags: flags);
 }
@@ -452,16 +462,21 @@ void bottled(String name, int depth, int price, appearance, Element element,
     int damage, String verb, {String noun, String flags}) {
   if (noun == null) noun = "the ${name.toLowerCase()}";
 
-  item("Bottled $name", depth, appearance, price: price,
+  item("Bottled $name", depth, 2, appearance, price: price,
       use: () => new RingSelfAction(
           new RangedAttack(new Noun(noun), verb, damage, element, 6)),
       flags: flags);
 }
 
-void scroll(String name, int depth, int price, appearance, ItemUse use) {
+void detection(String name, int depth, int rarity, int price, appearance,
+    List<DetectType> types, {int range}) {
+  scroll(name, depth, rarity, price, appearance, () => new DetectAction(types, range));
+}
+
+void scroll(String name, int depth, int rarity, int price, appearance, ItemUse use) {
   if (name.startsWith("of")) name = "Scroll[s] $name";
 
-  item(name, depth, appearance, price: price, use: use);
+  item(name, depth, rarity, appearance, price: price, use: use);
 }
 
 void weapon(String name, int depth, int price, appearance, int damage,
@@ -470,7 +485,8 @@ void weapon(String name, int depth, int price, appearance, int damage,
   var toss = new RangedAttack(new Noun("the ${name.toLowerCase()}"),
       Log.conjugate(_verb, Pronoun.it), tossDamage, Element.none,
       tossRange != null ? tossRange : _tossRange);
-  item(name, depth, appearance,
+  // TODO: Individual rarities.
+  item(name, depth, 2, appearance,
       attack: attack(_verb, damage, Element.none),
       tossAttack: toss,
       price: price);
@@ -481,17 +497,19 @@ void ranged(String name, int depth, int price, appearance, String noun,
   var toss = new RangedAttack(new Noun("the ${name.toLowerCase()}"),
       Log.conjugate(_verb, Pronoun.it), tossDamage, Element.none,
       _tossRange);
-  item(name, depth, appearance,
+  // TODO: Individual rarities.
+  item(name, depth, 1, appearance,
       attack: new RangedAttack(new Noun(noun), "pierce[s]", damage, Element.none, range),
       tossAttack: toss,
       price: price);
 }
 
 void armor(String name, int depth, int price, appearance, int armor) {
-  item(name, depth, appearance, armor: armor, price: price);
+  // TODO: Individual rarities.
+  item(name, depth, 1, appearance, armor: armor, price: price);
 }
 
-void item(String name, int depth, appearance, {ItemUse use,
+void item(String name, int depth, int rarity, appearance, {ItemUse use,
     Attack attack, Attack tossAttack, int armor: 0, int price: 0,
     bool treasure: false, String flags}) {
   // If the appearance isn't an actual glyph, it should be a color function
@@ -521,7 +539,6 @@ void item(String name, int depth, appearance, {ItemUse use,
     }
   }
 
-  // TODO: Give items rarities.
-  Items.types.add(itemType.name, itemType, itemType.depth, 1, _tag);
+  Items.types.add(itemType.name, itemType, itemType.depth, rarity, _tag);
 }
 

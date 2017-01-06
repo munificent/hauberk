@@ -606,10 +606,10 @@ void reptiles() {
 
 void slugs() {
   group("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
-  breed("slug", 1, darkYellow, 14)
-      .attack("crawl[s] on", 5);
+  breed("giant slug", 1, darkYellow, 20)
+      .attack("crawl[s] on", 7);
 
-  breed("giant slug", 6, green, 20)
+  breed("suppurating slug", 6, green, 30)
       .attack("crawl[s] on", 7, Element.poison);
 }
 
