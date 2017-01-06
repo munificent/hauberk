@@ -116,7 +116,7 @@ class Stage {
   void addItem(Item item, Vec pos) {
     // Get the inventory for the tile.
     var inventory = _itemsByTile.putIfAbsent(pos, () => new Inventory(null));
-    var result = inventory.tryAdd2(item);
+    var result = inventory.tryAdd(item);
     // Inventory is unlimited, so should always succeed.
     assert(result.remaining == 0);
   }

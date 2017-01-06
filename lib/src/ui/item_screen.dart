@@ -180,11 +180,11 @@ class ItemScreen extends Screen<Input> {
 
     if (count == item.count) {
       // Moving the entire stack.
-      to.tryAdd2(item);
+      to.tryAdd(item);
       from.remove(item);
     } else {
       // Splitting the stack.
-      to.tryAdd2(item.splitStack(count));
+      to.tryAdd(item.splitStack(count));
       from.countChanged();
     }
 

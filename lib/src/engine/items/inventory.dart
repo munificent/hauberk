@@ -25,8 +25,7 @@ abstract class ItemCollection extends Iterable<Item> {
   /// Returns `true` if the entire stack of [item] will fit in this collection.
   bool canAdd(Item item);
 
-  bool tryAdd(Item item);
-  AddItemResult tryAdd2(Item item);
+  AddItemResult tryAdd(Item item);
 
   /// Called when the count of an item in the collection has changed.
   void countChanged();
@@ -96,21 +95,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
     return false;
   }
 
-  // TODO: Get rid of this and rename tryAdd2() to tryAdd() once everything is
-  // using this.
-  bool tryAdd(Item item, {bool wasUnequipped: false}) {
-    // TODO: Merge stacks.
-    if (capacity != null && _items.length >= capacity) return false;
-
-    _items.add(item);
-    _items.sort();
-
-    if (wasUnequipped) _lastUnequipped = item;
-
-    return true;
-  }
-
-  AddItemResult tryAdd2(Item item, {bool wasUnequipped: false}) {
+  AddItemResult tryAdd(Item item, {bool wasUnequipped: false}) {
     var adding = item.count;
 
     // Try to add it to existing stacks.
@@ -148,7 +133,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
     _items.clear();
 
     for (var item in items) {
-      var result = tryAdd2(item);
+      var result = tryAdd(item);
       assert(result.remaining == 0);
     }
   }

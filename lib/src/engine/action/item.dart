@@ -59,7 +59,7 @@ class PickUpAction extends Action {
   PickUpAction(this.item);
 
   ActionResult onPerform() {
-    var result = hero.inventory.tryAdd2(item);
+    var result = hero.inventory.tryAdd(item);
     if (result.added == 0) {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
     } else if (result.remaining == 0) {
@@ -128,7 +128,7 @@ class EquipAction extends ItemAction {
 
     // Add the previously equipped item to inventory.
     if (unequipped != null) {
-      var result = hero.inventory.tryAdd2(unequipped, wasUnequipped: true);
+      var result = hero.inventory.tryAdd(unequipped, wasUnequipped: true);
       if (result.remaining == 0) {
         log('{1} unequip[s] {2}.', actor, unequipped);
       } else {
@@ -152,7 +152,7 @@ class UnequipAction extends ItemAction {
 
   ActionResult onPerform() {
     removeItem();
-    var result = hero.inventory.tryAdd2(item, wasUnequipped: true);
+    var result = hero.inventory.tryAdd(item, wasUnequipped: true);
     if (result.remaining == 0) {
       return succeed('{1} unequip[s] {2}.', actor, item);
     }

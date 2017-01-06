@@ -86,24 +86,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
   /// Tries to add the item. This will only succeed if there is an empty slot
   /// that allows the item. Unlike [equip], this will not swap items. It is
   /// used by the [ItemScreen].
-  bool tryAdd(Item item) {
-    // Should not be able to equip stackable items. If we want to make, say,
-    // knives stackable, we'll have to add support for splitting stacks here.
-    assert(item.count == 1);
-
-    // TODO: Need to handle multiple slots of the same type. In that case,
-    // should prefer an empty slot before reusing an in-use one.
-    for (var i = 0; i < slotTypes.length; i++) {
-      if (slotTypes[i] == item.equipSlot && slots[i] == null) {
-        slots[i] = item;
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  AddItemResult tryAdd2(Item item) {
+  AddItemResult tryAdd(Item item) {
     // Should not be able to equip stackable items. If we want to make, say,
     // knives stackable, we'll have to add support for splitting stacks here.
     assert(item.count == 1);
