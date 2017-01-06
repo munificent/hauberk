@@ -1,0 +1,43 @@
+A good variety of consumables lets players find a lot of loot without giving
+them a pile of permanent goods. Here's some ideas:
+
+- Magic mapping at various distances from the player.
+- Detect monsters at various distances and maybe of various kinds.
+  "Detect evil, etc."
+- Curing various conditions: cold, blindness, dazzle, etc. Combinations thereof.
+- "Bomb-like" items that do real damage or a ball attack when tossed.
+- Time bombs that get dropped on the ground and explode after a few turns.
+- Bolt, ball, etc. attacks.
+- Temporary resists, individually and in various combinations and intensities.
+- If we add stats, potions to permanently raise stats or swap them.
+- Healing at various intensities.
+- More targeted kinds of teleportation?
+- Banish monsters.
+- Teleport other.
+- Recipe ingredients for improving equipment.
+- Causing conditions on monsters: cold, blind, confuse, sleep, etc. Various
+  distances, chance of success.
+- Detect stairs.
+- Frighten monsters.
+- Modify the level: stone to mud, create wall, create door, etc. Glyph of
+  warding?
+- Turn monster(s) to stone. They are "killed" but become impassable walls.
+  (Need to add digging to game to avoid hero getting stuck.)
+- See through walls.
+- Teleport item to hero.
+- Polymorph monster.
+- Polymorph item?
+- Create random item.
+- Gain experience.
+- Potions that raise fury, sustain it, and trade health for it.
+- Keys for locked doors and treasure chests?
+- Temporarily boost armor, dodge, strike, damage.
+
+See also the list of mage spells.
+
+Possibly have bad consumables, though it implies also bringing in item
+identification:
+
+- Cause damage to hero.
+- Summon monster.
+- Drain experience.

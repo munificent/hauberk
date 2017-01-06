@@ -180,6 +180,9 @@ class UseAction extends ItemAction {
       return fail("{1} can't be used.", item);
     }
 
+    // TODO: Some items should not be usable when certain conditions are active.
+    // For example, you cannot read scrolls when dazzled or blinded.
+
     var useAction = item.use();
 
     if (item.count == 0) {

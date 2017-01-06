@@ -160,6 +160,49 @@ class ItemScreen extends Screen<Input> {
 
     completeRecipe = null;
   }
+
+  /// The verb to use for transferring in the given direction.
+  String _verb(bool toHero) => toHero ? _place.getVerb : _place.putVerb;
+
+  bool _transfer(Item item, int count, {bool toHero}) {
+    ItemCollection from;
+    ItemCollection to;
+    if (toHero) {
+      from = _place.items(this);
+      to = _heroItems;
+    } else {
+      from = _heroItems;
+      to = _place.items(this);
+    }
+
+    if (!to.canAdd(item)) {
+      _error = "Not enough room for ${item.clone(count)}.";
+      return false;
+    }
+
+    if (count == item.count) {
+      // Moving the entire stack.
+      to.tryAdd2(item);
+      from.remove(item);
+    } else {
+      // Splitting the stack.
+      to.tryAdd2(item.splitStack(count));
+      from.countChanged();
+    }
+
+    if (_place is _ShopPlace) {
+      if (toHero) {
+        // Pay for purchased item.
+        _save.gold -= item.price * count;
+      } else {
+        // Get paid for sold item.
+        _save.gold += item.price * count;
+      }
+    } else if (_place == _Place.crucible) {
+      refreshRecipe();
+    }
+    return true;
+  }
 }
 
 /// A source of items not on the hero's person.
@@ -226,8 +269,8 @@ class _ShopPlace implements _Place {
 /// What the user is currently doing on the item screen.
 abstract class Mode {
   static final view = const ViewMode();
-  static final put = const PutMode();
-  static final get = const GetMode();
+  static final put = new SelectMode(toHero: false);
+  static final get = new SelectMode(toHero: true);
 
   const Mode();
 
@@ -254,56 +297,16 @@ abstract class Mode {
 
 // TODO: Add a mode to equip/unequip an item.
 
-/// Mode for "getting" an item from the home or crucible.
-class GetMode extends SelectMode {
-  const GetMode();
+/// Mode for selecting a quantity of some item to get or put.
+class CountMode extends Mode {
+  /// Whether the item is being transferred to or from the hero.
+  final bool _toHero;
 
-  bool get selectingFromPlace => true;
-
-  String message(ItemScreen screen) =>
-      "${screen._place.getVerb} which item?";
-
-  bool canSelectItem(ItemScreen screen, Item item) =>
-      screen._place.canGet(screen, item);
-
-  bool selectItem(ItemScreen screen, int index) {
-    var from = screen._place.items(screen);
-
-    if (index >= from.length) return false;
-    var item = from[index];
-    if (!canSelectItem(screen, item)) return false;
-
-    // Prompt the user for a count if the item is a stack.
-    if (item.count > 1) {
-      screen._mode = new GetCountMode(screen, item);
-      screen.dirty();
-      return false;
-    }
-
-    var to = screen._heroItems;
-    if (to.canAdd(item)) {
-      to.tryAdd2(item);
-      from.removeAt(index);
-
-      // If it's taken from a shop, pay for it.
-      if (screen._place is _ShopPlace) {
-        screen._save.gold -= item.price;
-      }
-
-      if (screen._place == _Place.crucible) screen.refreshRecipe();
-    } else {
-      screen._error = "Not enough room for $item.";
-    }
-
-    return true;
-  }
-}
-
-class GetCountMode extends Mode {
   final Item _item;
   int _count;
 
-  GetCountMode(ItemScreen screen, this._item) {
+  CountMode(ItemScreen screen, this._item, {bool toHero})
+      : _toHero = toHero {
     if (screen._place is _ShopPlace) {
       // Default to buying one item.
       _count = 1;
@@ -313,51 +316,22 @@ class GetCountMode extends Mode {
     }
   }
 
-  bool get selectingFromPlace => true;
-
-  void render(ItemScreen screen, Terminal terminal) {
-    var x = 0;
-    terminal.writeAt(x, 0, screen._place.getVerb);
-    x += screen._place.getVerb.length + 1;
-
-    var itemText = _item.clone(_count).toString();
-    terminal.writeAt(x, 0, itemText, Color.yellow);
-    x += itemText.length;
-
-    if (screen._place is _ShopPlace) {
-      terminal.writeAt(x, 0, " for ");
-      x += 5;
-
-      var price = (_item.price * _count).toString();
-      terminal.writeAt(x, 0, price, Color.gold);
-      x += price.length;
-
-      terminal.writeAt(x, 0, " gold");
-      x += 5;
-    }
-
-    terminal.writeAt(x, 0, "?");
-  }
+  bool get selectingFromHero => !_toHero;
+  bool get selectingFromPlace => _toHero;
 
   /// Highlight the item the user already selected.
   bool canSelectItem(ItemScreen screen, Item item) => item == _item;
 
-  String helpText(ItemScreen screen) {
-    if (_maxCount(screen) == 1) {
-      return '[OK] ${screen._place.getVerb}, [Esc] Cancel';
-    }
-
-    return '[OK] ${screen._place.getVerb}, [↕] Change quantity, [Esc] Cancel';
-  }
-
   bool handleInput(Input input, ItemScreen screen) {
     switch (input) {
       case Input.ok:
-        _getItem(screen);
+        screen._transfer(_item, _count, toHero: _toHero);
+        screen._mode = Mode.view;
+        screen.dirty();
         return true;
 
       case Input.cancel:
-        screen._mode = Mode.get;
+        screen._mode = Mode.view;
         screen.dirty();
         return true;
 
@@ -379,33 +353,36 @@ class GetCountMode extends Mode {
     return false;
   }
 
-  void _getItem(ItemScreen screen) {
-    var from = screen._place.items(screen);
-    var to = screen._heroItems;
-
-    if (to.canAdd(_item)) {
-      if (_count == _item.count) {
-        // Getting the entire stack.
-        to.tryAdd2(_item);
-        from.remove(_item);
-      } else {
-        // Splitting the stack.
-        to.tryAdd2(_item.splitStack(_count));
-        from.countChanged();
-      }
-
-      // If it's taken from a shop, pay for it.
-      if (screen._place is _ShopPlace) {
-        screen._save.gold -= _item.price * _count;
-      }
-
-      if (screen._place == _Place.crucible) screen.refreshRecipe();
-    } else {
-      screen._error = "Not enough room for ${_item.clone(_count)}.";
+  String helpText(ItemScreen screen) {
+    if (_maxCount(screen) == 1) {
+      return '[OK] ${screen._verb(_toHero)}, [Esc] Cancel';
     }
 
-    screen._mode = Mode.view;
-    screen.dirty();
+    return '[OK] ${screen._verb(_toHero)}, [↕] Change quantity, [Esc] Cancel';
+  }
+
+  void render(ItemScreen screen, Terminal terminal) {
+    var x = 0;
+    terminal.writeAt(x, 0, screen._verb(_toHero));
+    x += screen._verb(_toHero).length + 1;
+
+    var itemText = _item.clone(_count).toString();
+    terminal.writeAt(x, 0, itemText, Color.yellow);
+    x += itemText.length;
+
+    if (screen._place is _ShopPlace) {
+      terminal.writeAt(x, 0, " for ");
+      x += 5;
+
+      var price = (_item.price * _count).toString();
+      terminal.writeAt(x, 0, price, Color.gold);
+      x += price.length;
+
+      terminal.writeAt(x, 0, " gold");
+      x += 5;
+    }
+
+    terminal.writeAt(x, 0, "?");
   }
 
   int _maxCount(ItemScreen screen) {
@@ -420,40 +397,70 @@ class GetCountMode extends Mode {
   }
 }
 
-/// Mode for putting an item into the home, equipment, or crucible.
-class PutMode extends SelectMode {
-  const PutMode();
+/// A mode for selecting an item.
+class SelectMode extends Mode {
+  /// If true, a place item is being selected, otherwise a hero item is.
+  final bool _toHero;
 
-  bool get selectingFromHero => true;
+  const SelectMode({bool toHero}) : _toHero = toHero;
 
-  String message(ItemScreen screen) =>
-      "${screen._place.putVerb} which item?";
+  bool get selectingFromPlace => _toHero;
+  bool get selectingFromHero => !_toHero;
 
-  bool canSelectItem(ItemScreen screen, Item item) =>
-      screen._place.canPut(screen, item);
+  String message(ItemScreen screen) => "${screen._verb(_toHero)} which item?";
+
+  String helpText(ItemScreen screen) => '[A-Z] Choose item, [Esc] Cancel';
+
+  bool handleInput(Input input, ItemScreen screen) {
+    if (input == Input.cancel) {
+      screen._mode = Mode.view;
+      screen.dirty();
+      return true;
+    }
+
+    return false;
+  }
+
+  bool keyDown(int keyCode, ItemScreen screen) {
+    if (keyCode < KeyCode.a || keyCode > KeyCode.z) return false;
+
+    if (selectItem(screen, keyCode - KeyCode.a)) {
+      // Switch back to viewing after a successful action.
+      screen._mode = Mode.view;
+      screen.dirty();
+    }
+
+    return true;
+  }
+
+  bool canSelectItem(ItemScreen screen, Item item) {
+    if (_toHero) {
+      return screen._place.canGet(screen, item);
+    } else {
+      return screen._place.canPut(screen, item);
+    }
+  }
 
   bool selectItem(ItemScreen screen, int index) {
-    var from = screen._heroItems;
+    ItemCollection from;
+    if (_toHero) {
+      from = screen._place.items(screen);
+    } else {
+      from = screen._heroItems;
+    }
 
     if (index >= from.length) return false;
     var item = from[index];
     if (!canSelectItem(screen, item)) return false;
 
-    // TODO: Prompt the user for a count if the item is a stack.
-
-    var to = screen._place.items(screen);
-
-    if (to.tryAdd(item)) {
-      from.removeAt(index);
-    } else {
-      // TODO: Show an error message?
+    // Prompt the user for a count if the item is a stack.
+    if (item.count > 1) {
+      screen._mode = new CountMode(screen, item, toHero: _toHero);
+      screen.dirty();
+      return false;
     }
 
-    if (screen._place is _ShopPlace) {
-      screen._save.gold += item.price;
-    }
-
-    if (screen._place == _Place.crucible) screen.refreshRecipe();
+    screen._transfer(item, 1, toHero: _toHero);
     return true;
   }
 }
@@ -487,35 +494,4 @@ class ViewMode extends Mode {
     screen.dirty();
     return true;
   }
-}
-
-/// Base class for a mode that lets a user select an item.
-abstract class SelectMode extends Mode {
-  const SelectMode();
-
-  String helpText(ItemScreen screen) => '[A-Z] Choose item, [Esc] Cancel';
-
-  bool handleInput(Input input, ItemScreen screen) {
-    if (input == Input.cancel) {
-      screen._mode = Mode.view;
-      screen.dirty();
-      return true;
-    }
-
-    return false;
-  }
-
-  bool keyDown(int keyCode, ItemScreen screen) {
-    if (keyCode < KeyCode.a || keyCode > KeyCode.z) return false;
-
-    if (selectItem(screen, keyCode - KeyCode.a)) {
-      // Switch back to viewing after a successful action.
-      screen._mode = Mode.view;
-      screen.dirty();
-    }
-
-    return true;
-  }
-
-  bool selectItem(ItemScreen screen, int index);
 }
