@@ -639,7 +639,7 @@ void worms() {
   breed("giant earthworm", 2, lightRed, 20, speed: -2)
       .attack("crawl[s] on", 4);
 
-  breed("blood worm", 2, red, 4)
+  breed("blood worm", 2, red, 4, rarity: 2)
       .attack("crawl[s] on", 5)
       .flags("swarm");
 
@@ -674,15 +674,14 @@ void finishBuilder() {
   if (_builder == null) return;
 
   var breed = _builder.build();
-  // TODO: Give breeds rarity.
-  Monsters.breeds.add(breed.name, breed, breed.depth, 1, "monster");
+  Monsters.breeds.add(breed.name, breed, breed.depth, _builder.rarity, "monster");
   _builder = null;
 }
 
 _BreedBuilder breed(String name, int depth, Glyph appearance(char), int health,
-    {int speed: 0, int meander: 0}) {
+    {int rarity: 1, int speed: 0, int meander: 0}) {
   finishBuilder();
-  _builder = new _BreedBuilder(name, depth, appearance(_glyph), health);
+  _builder = new _BreedBuilder(name, depth, rarity, appearance(_glyph), health);
   _builder.speedOffset = speed;
   _builder.meanderOffset = meander;
   return _builder;
@@ -691,6 +690,7 @@ _BreedBuilder breed(String name, int depth, Glyph appearance(char), int health,
 class _BreedBuilder {
   final String name;
   final int depth;
+  final int rarity;
   final Object appearance;
   final int health;
   int tracking;
@@ -701,7 +701,7 @@ class _BreedBuilder {
   final List<Move> moves = [];
   final List<Drop> drops = [];
 
-  _BreedBuilder(this.name, this.depth, this.appearance, this.health) {
+  _BreedBuilder(this.name, this.depth, this.rarity, this.appearance, this.health) {
     tracking = _tracking;
     if (_groupFlags != null) _flags.addAll(_groupFlags.split(" "));
   }
