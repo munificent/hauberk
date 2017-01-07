@@ -22,7 +22,9 @@ class Tiles {
   static void initialize() {
     // Define the tile types.
     Tiles.floor = open("floor", gray('.'), darkGray('.'));
-    Tiles.wall = solid("wall", lightGray('#', Color.darkGray), darkGray('#'));
+    Tiles.wall = solid("wall",
+        lightGray(CharCode.mediumShade, Color.darkGray),
+        darkGray(CharCode.mediumShade));
 
     Tiles.table = obstacle("table",
       brown(CharCode.greekSmallLetterPi),
@@ -30,8 +32,12 @@ class Tiles {
 
     Tiles.lowWall = obstacle("low wall", gray('%', Color.darkGray), darkGray('%'));
 
-    Tiles.openDoor = open("open door", brown("'"), darkBrown("'"));
-    Tiles.closedDoor = solid("closed door", brown('+'), darkBrown('+'));
+    Tiles.openDoor = open("open door",
+        brown(CharCode.whiteCircle),
+        darkBrown(CharCode.whiteCircle));
+    Tiles.closedDoor = solid("closed door",
+        brown(CharCode.inverseWhiteCircle),
+        darkBrown(CharCode.inverseWhiteCircle));
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
 

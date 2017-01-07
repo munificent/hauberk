@@ -290,7 +290,7 @@ void weapons() {
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
   // Spears.
-  category(r"\", tag: "equipment/weapon/spear", verb: "stab[s]");
+  category("/", tag: "equipment/weapon/spear", verb: "stab[s]");
   tossable(breakage: 3, range: 11);
   weapon("Pointed Stick",  2,    0, brown,       5,  9);
   weapon("Spear",          7,  137, gray,       10, 15);
@@ -300,7 +300,7 @@ void weapons() {
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
-  category(r"\", tag: "equipment/weapon/axe", verb: "chop[s]");
+  category(CharCode.rightAngle, tag: "equipment/weapon/axe", verb: "chop[s]");
   tossable(breakage: 4);
   weapon("Hatchet",    6,  137, darkGray,   10, 12, 10);
   weapon("Axe",       12,  621, lightBrown, 16, 18, 9);

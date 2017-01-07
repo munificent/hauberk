@@ -75,9 +75,13 @@ main() {
   addTerminal('DOS Short', new html.CanvasElement(),
       (element) => new RetroTerminal.shortDos(width, height, element));
 
+  addTerminal('Hauberk', new html.CanvasElement(),
+          (element) => new RetroTerminal(width, height, "font.png",
+              canvas: element, charWidth: 9, charHeight: 13));
+
   // Load the user's font preference, if any.
   var font = html.window.localStorage['font'];
-  var fontIndex = 3;
+  var fontIndex = 4;
   for (var i = 0; i < terminals.length; i++) {
     if (terminals[i][0] == font) {
       fontIndex = i;
