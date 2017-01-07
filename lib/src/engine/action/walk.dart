@@ -7,17 +7,19 @@ import '../hero/hero.dart';
 import '../option.dart';
 
 class WalkAction extends Action {
-  final Vec offset;
+  final Direction dir;
+  final bool _isRunning;
 
-  WalkAction(this.offset);
+  WalkAction(this.dir, {bool running: false})
+      : _isRunning = running;
 
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
-    if (Vec.zero == offset) {
+    if (dir == Direction.none) {
       return alternate(new RestAction());
     }
 
-    final pos = actor.pos + offset;
+    var pos = actor.pos + dir;
 
     // See if there is an actor there.
     final target = game.stage.actorAt(pos);
@@ -58,12 +60,24 @@ class WalkAction extends Action {
           log('{1} [are|is] standing on {2}.', actor, item);
         }
       }
+
+      // If we ran next to an item, note it and disturb. That way we stop where
+      // the player can see it more easily.
+      if (_isRunning) {
+        for (var neighborDir in [dir.rotateLeft45, dir, dir.rotateRight45]) {
+          var neighbor = pos + neighborDir;
+          for (var item in hero.game.stage.itemsAt(neighbor)) {
+            hero.disturb();
+            hero.game.log.message('{1} [are|is] are next to {2}.', hero, item);
+          }
+        }
+      }
     }
 
     return succeed();
   }
 
-  String toString() => '$actor walks $offset';
+  String toString() => '$actor walks $dir';
 }
 
 class OpenDoorAction extends Action {

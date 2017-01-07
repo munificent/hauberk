@@ -405,7 +405,7 @@ class RunBehavior extends Behavior {
 
   Action getAction(Hero hero) {
     firstStep = false;
-    return new WalkAction(direction);
+    return new WalkAction(direction, running: true);
   }
 
   /// Advance one step while in a corridor.

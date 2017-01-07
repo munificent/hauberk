@@ -260,8 +260,16 @@ class AwakeState extends MonsterState {
     // If the monster can't walk, then it does melee or waits.
     if (breed.flags.contains("immobile")) {
       var toHero = game.hero.pos - pos;
-      if (toHero.kingLength == 1) return new WalkAction(toHero);
-      return new WalkAction(Direction.none);
+
+      if (toHero.kingLength != 1) return new WalkAction(Direction.none);
+
+      // Map the offset to a direction.
+      // TODO: Move this into piecemeal?
+      for (var dir in Direction.all) {
+        if (toHero == dir) return new WalkAction(dir);
+      }
+
+      throw "unreachable";
     }
 
     // The monster doesn't have a move to use, so they are going to attack.
@@ -419,7 +427,7 @@ class AwakeState extends MonsterState {
     return null;
   }
 
-  Vec _findMeleePath() {
+  Direction _findMeleePath() {
     // Try to pathfind towards the hero.
     var path = AStar.findPath(game.stage, pos, game.hero.pos,
         breed.tracking, canOpenDoors);
