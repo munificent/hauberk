@@ -1,9 +1,13 @@
+import 'dart:math' as math;
+
 class Histogram<T> {
   final Map<T, int> _counts = {};
 
-  void add(T object) {
+  int get max => _counts.values.fold(0, math.max);
+
+  int add(T object) {
     _counts.putIfAbsent(object, () => 0);
-    _counts[object]++;
+    return ++_counts[object];
   }
 
   int count(T object) {

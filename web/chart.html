@@ -1,0 +1,37 @@
+<html>
+<head>
+  <title>Generation Frequencies</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link href='http://fonts.googleapis.com/css?family=Metamorphous|Buenard' rel='stylesheet' type='text/css'>
+  <style>
+    svg {
+      background: #000;
+      color: #fff;
+    }
+
+    svg:hover path {
+      opacity: 0.5;
+    }
+
+    path {
+      fill: none;
+    }
+
+    svg:hover path:hover {
+      stroke-width: 2px;
+      opacity: 1.0;
+    }
+  </style>
+</head>
+<body>
+<form><p>
+  <label><input type="checkbox" id="breeds" checked>Breeds</label>
+  <label><input type="checkbox" id="items" checked>Items</label>
+</p></form>
+<svg xmlns="http://www.w3.org/2000/svg" width="3000px" viewBox="0 0 1000 200">
+</svg>
+
+<script type="application/dart" src="chart.dart"></script>
+<script src="packages/browser/dart.js"></script>
+</body>
+</html>
