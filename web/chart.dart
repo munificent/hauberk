@@ -19,7 +19,7 @@ final _colors = <String, String>{};
 final _breeds = new Set<String>();
 
 const tries = 1000;
-const height = 200;
+const chartHeight = 600;
 
 html.CheckboxInputElement get breedsCheckbox => html.querySelector("input#breeds") as html.CheckboxInputElement;
 html.CheckboxInputElement get itemsCheckbox => html.querySelector("input#items") as html.CheckboxInputElement;
@@ -76,9 +76,7 @@ void _generateMore() {
       var breed = Monsters.breeds.tryChoose(depth, "monster");
       if (breed == null) continue;
 
-      for (var i = 0; i < breed.numberInGroup; i++) {
-        add(breed.name, true);
-      }
+      add(breed.name, true);
     }
   }
 
@@ -88,6 +86,13 @@ void _generateMore() {
 void _redraw() {
   var buffer = new StringBuffer();
 
+//  _drawLineChart(buffer);
+  _drawStackedBars(buffer);
+
+  _element.setInnerHtml(buffer.toString());
+}
+
+void _drawLineChart(StringBuffer buffer) {
   var showBreeds = breedsCheckbox.checked;
   var showItems = itemsCheckbox.checked;
 
@@ -106,27 +111,83 @@ void _redraw() {
       highest = breedMax;
     }
 
-    _drawPath(buffer, label, highest);
-  }
+    buffer.write('<path ');
 
-  _element.setInnerHtml(buffer.toString());
+    var color = _colors[label];
+    if (color != null) {
+      buffer.write('stroke="$color"');
+    }
+
+    buffer.write(' d="');
+    for (var depth = 0; depth < Option.maxDepth; depth++) {
+      var histogram = _data[depth];
+
+      var y = chartHeight - chartHeight * histogram.count(label) ~/ highest;
+      buffer.write(depth == 0 ? 'M' : ' L');
+      buffer.write('${depth * 10 + 5} $y');
+    }
+    buffer.writeln('"><title>${label}</title></path>');
+  }
 }
 
-void _drawPath(StringBuffer buffer, String label, int highest) {
-  buffer.write('<path ');
+void _drawStackedBars(StringBuffer buffer) {
+  // TODO: Support items too.
+  var labels = _breeds.toList();
+  labels.sort((a, b) {
+    var aBreed = Monsters.breeds.find(a);
+    var bBreed = Monsters.breeds.find(b);
 
-  var color = _colors[label];
-  if (color != null) {
-    buffer.write('stroke="$color"');
-  }
+    if (aBreed.depth != bBreed.depth) {
+      return aBreed.depth.compareTo(bBreed.depth);
+    }
+    if (aBreed.experienceCents != bBreed.experienceCents) {
+      return aBreed.experienceCents.compareTo(bBreed.experienceCents);
+    }
 
-  buffer.write(' d="');
+    return aBreed.name.compareTo(bBreed.name);
+  });
+
   for (var depth = 0; depth < Option.maxDepth; depth++) {
     var histogram = _data[depth];
+    var total = 0;
+    for (var label in labels) {
+      total += histogram.count(label);
+    }
 
-    var y = height - (height * histogram.count(label) / highest).toInt();
-    buffer.write(depth == 0 ? 'M' : ' L');
-    buffer.write('${depth * 10 + 5} $y');
+    var x = depth * 10;
+    var y = chartHeight.toDouble();
+    var bottom = chartHeight.toDouble();
+    for (var label in labels) {
+      var count = histogram.count(label);
+      if (count == 0) continue;
+
+      var color = _colors[label];
+      if (color == null) color = '#fff';
+
+      var fraction = count / total;
+      var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
+      y -= fraction * chartHeight;
+      buffer.write('<rect fill="$color" x="$x" y="$y" width="10" height="${bottom - y}">');
+      buffer.write('<title>depth ${depth + 1}: $label (depth ${Monsters.breeds.find(label).depth}) $percent% ($count)</title></rect>');
+
+      bottom = y;
+    }
   }
-  buffer.writeln('"><title>${label}</title></path>');
+}
+
+Set<String> shownLabels() {
+  if (breedsCheckbox.checked) {
+    if (itemsCheckbox.checked) {
+      return _labels;
+    } else {
+      return _breeds;
+    }
+  } else {
+    if (itemsCheckbox.checked) {
+      return _labels.difference(_breeds);
+    } else {
+      // Nothing.
+      return new Set<String>();
+    }
+  }
 }
