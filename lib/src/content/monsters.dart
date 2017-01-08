@@ -362,39 +362,44 @@ void insects() {
 void insubstantials() {}
 
 void jellies() {
-  group("j", flags: "few fearless immobile");
-  breed("green slime", 1, green, 7)
-      .attack("crawl[s] on", 4)
-      .spawn(rate: 5);
+  group("j", speed: -1, flags: "fearless");
+  breed("green jelly", 1, green, 7)
+      .attack("crawl[s] on", 4);
+  // TODO: More elements.
 
-  breed("frosty slime", 4, white, 14)
+  group("j", flags: "few fearless immobile");
+  breed("green slime", 2, darkGreen, 7)
+      .attack("crawl[s] on", 4)
+      .spawn(rate: 4);
+
+  breed("frosty slime", 4, gray, 14)
       .attack("crawl[s] on", 5, Element.cold)
-      .spawn(rate: 5);
+      .spawn(rate: 4);
 
   breed("mud slime", 6, brown, 20)
       .attack("crawl[s] on", 8, Element.earth)
-      .spawn(rate: 5);
+      .spawn(rate: 4);
 
   breed("smoking slime", 15, red, 30)
       .attack("crawl[s] on", 10, Element.fire)
-      .spawn(rate: 5);
+      .spawn(rate: 4);
 
-  breed("sparkling slime", 20, lightPurple, 40)
+  breed("sparkling slime", 20, purple, 40)
       .attack("crawl[s] on", 12, Element.lightning)
-      .spawn(rate: 5);
+      .spawn(rate: 4);
 
-  breed("caustic slime", 25, yellow, 50)
+  breed("caustic slime", 25, darkYellow, 50)
       .attack("crawl[s] on", 13, Element.acid)
-      .spawn(rate: 5);
+      .spawn(rate: 4);
 
   breed("virulent slime", 35, darkGreen, 60)
       .attack("crawl[s] on", 14, Element.poison)
-      .spawn(rate: 5);
+      .spawn(rate: 4);
 
   // TODO: Fly?
-  breed("ectoplasm", 45, gray, 40)
+  breed("ectoplasm", 45, darkGray, 40)
       .attack("crawl[s] on", 15, Element.spirit)
-      .spawn(rate: 5);
+      .spawn(rate: 4);
 
   // TODO: Jellies. Unlike slimes, they can move but don't spawn.
 }
