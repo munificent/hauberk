@@ -1,4 +1,5 @@
 import 'package:malison/malison.dart';
+import 'package:malison/malison_web.dart';
 
 import '../debug.dart';
 import '../engine.dart';
