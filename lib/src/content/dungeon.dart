@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
@@ -331,24 +333,26 @@ class Dungeon {
   }
 
   void _removeDeadEnds() {
-    var done = false;
+    var toCheck = new Queue<Vec>.from(_maze);
+    while (toCheck.isNotEmpty) {
+      var pos = toCheck.removeFirst();
 
-    while (!done) {
-      done = true;
+      if (getTile(pos) == Tiles.wall) continue;
 
-      for (var pos in _maze) {
-        if (getTile(pos) == Tiles.wall) continue;
+      // If it only has one exit, it's a dead end.
+      var exits = 0;
+      for (var dir in Direction.cardinal) {
+        if (getTile(pos + dir).isTraversable) exits++;
+      }
 
-        // If it only has one exit, it's a dead end.
-        var exits = 0;
-        for (var dir in Direction.cardinal) {
-          if (getTile(pos + dir).isTraversable) exits++;
-        }
+      if (exits != 1) continue;
 
-        if (exits != 1) continue;
+      // It's a dead end.
+      setTile(pos, Tiles.wall);
 
-        done = false;
-        setTile(pos, Tiles.wall);
+      // Its neighbors may be dead ends now.
+      for (var dir in Direction.cardinal) {
+        toCheck.add(pos + dir);
       }
     }
   }
