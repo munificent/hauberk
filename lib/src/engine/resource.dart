@@ -135,14 +135,23 @@ class ResourceSet<T> {
 
       // Determine the weighted chance for each resource.
       var chances = new List<double>.filled(allowed.length, 0.0, growable: false);
-      var chance = 0.0;
+      var totalChance = 0.0;
       for (var i = 0; i < allowed.length; i++) {
         var resource = allowed[i];
-        chance += resource.frequency * _depthScale(depth, resource.depth);
-        chances[i] = chance;
+
+        var chance = resource.frequency * _depthScale(depth, resource.depth);
+
+        // The depth scale is so narrow at low levels that highly out of depth
+        // items can have a 0% chance of being generated due to floating point
+        // rounding. Since that breaks the query chooser, and because it's a
+        // little sad, always have some non-zero minimum chance.
+        chance = math.max(0.0000001, chance);
+
+        totalChance += chance;
+        chances[i] = totalChance;
       }
 
-      query = new _ResourceQuery<T>(depth, allowed, chances, chance);
+      query = new _ResourceQuery<T>(depth, allowed, chances, totalChance);
       _queries[key] = query;
     }
 
@@ -265,7 +274,6 @@ class _ResourceQuery<T> {
 
     while (true) {
       var middle = (first + last) ~/ 2;
-
       if (middle > 0 && t < chances[middle - 1]) {
         last = middle - 1;
       } else if (t < chances[middle]) {
