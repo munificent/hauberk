@@ -265,6 +265,8 @@ class TileType {
   TileType opensTo;
   TileType closesTo;
 
+  bool get isTraversable => isPassable || (opensTo != null);
+
   TileType(this.name, this.appearance,
       {this.isPassable, this.isTransparent, this.isExit});
 }
@@ -297,7 +299,7 @@ class Tile {
 
   bool isExplored = false;
   bool get isPassable => type.isPassable;
-  bool get isTraversable => type.isPassable || (type.opensTo != null);
+  bool get isTraversable => type.isTraversable;
   bool get isTransparent => type.isTransparent;
   bool get isExit => type.isExit;
 }

@@ -76,8 +76,8 @@ class Dungeon {
       throw new ArgumentError("The stage must be odd-sized.");
     }
 
-    fill(Tiles.wall);
     _regions = new Array2D(stage.width, stage.height);
+    fill(Tiles.wall);
 
     _addRooms();
 
@@ -127,6 +127,10 @@ class Dungeon {
 
   void setTile(Vec pos, TileType type) {
     stage[pos].type = type;
+
+    // If we're filling in a part of a room, don't try to connect a junction
+    // to it.
+    if (!type.isTraversable) _regions[pos] = null;
   }
 
   void fill(TileType tile) {
@@ -248,78 +252,70 @@ class Dungeon {
     _connectors.add(pos);
   }
 
+  /// Add junctions to the dungeon until each unconnected region is no longer
+  /// unconnected.
+  ///
+  /// This effectively computes a random spanning tree, with a few extra
+  /// random junctions so that the dungeon isn't tree-like.
   void _connectRegions() {
-    // Find all of the tiles that can connect two (or more) regions.
-    var connectorRegions = <Vec, Set<int>>{};
-    var allowed = bounds.inflate(-1);
-    for (var pos in _connectors) {
-      if (!allowed.contains(pos)) continue;
+    // Keep track of which regions can been merged together. This maps a
+    // region's original id to its merged one. When a set of regions are
+    // connected to each other, we give them all the lowest id as their new
+    // region id.
+    var mergedRegions = <int, int>{};
+    for (var i = 0; i <= _currentRegion; i++) {
+      mergedRegions[i] = i;
+    }
 
+    var allowedBounds = bounds.inflate(-1);
+
+    // Try each connector in random order.
+    _connectors.shuffle();
+    for (var pos in _connectors) {
+      if (!allowedBounds.contains(pos)) continue;
+
+      // Find the regions this connector touches.
+      var touchingJunction = false;
       var regions = new Set<int>();
       for (var dir in Direction.cardinal) {
         var region = _regions[pos + dir];
-        if (region != null) regions.add(region);
-      }
+        if (region == null) continue;
 
-      if (regions.length < 2) continue;
-
-      connectorRegions[pos] = regions;
-    }
-
-    var connectors = connectorRegions.keys.toList();
-
-    // Keep track of which regions have been merged. This maps an original
-    // region index to the one it has been merged to.
-    var merged = {};
-    var openRegions = new Set<int>();
-    for (var i = 0; i <= _currentRegion; i++) {
-      merged[i] = i;
-      openRegions.add(i);
-    }
-
-    // Keep connecting regions until we're down to one.
-    while (openRegions.length > 1) {
-      var connector = rng.item(connectors);
-
-      // Carve the connection.
-      _addJunction(connector);
-
-      // Merge the connected regions. We'll pick one region (arbitrarily) and
-      // map all of the other regions to its index.
-      var regions = connectorRegions[connector]
-          .map((region) => merged[region]);
-      var dest = regions.first;
-      var sources = regions.skip(1).toList();
-
-      // Merge all of the affected regions. We have to look at *all* of the
-      // regions because other regions may have previously been merged with
-      // some of the ones we're merging now.
-      for (var i = 0; i <= _currentRegion; i++) {
-        if (sources.contains(merged[i])) {
-          merged[i] = dest;
+        if (region == -1) {
+          // A tile directly adjacent to this one was already turned into a
+          // junction. Skip this one. We don't want to end up with doors right
+          // next to each other.
+          touchingJunction = true;
+          break;
         }
+
+        region = mergedRegions[region];
+        regions.add(region);
       }
 
-      // The sources are no longer in use.
-      openRegions.removeAll(sources);
+      // Don't place two connectors right next to each other.
+      if (touchingJunction) continue;
 
-      // Remove any connectors that aren't needed anymore.
-      connectors.removeWhere((pos) {
-        // Don't allow connectors right next to each other.
-        if (connector - pos < 2) return true;
+      if (regions.length >= 2) {
+        // This junction connects two unmerged regions, so merge them.
+        _addJunction(pos);
 
-        // If the connector no long spans different regions, we don't need it.
-        var regions = connectorRegions[pos].map((region) => merged[region])
-            .toSet();
+        // This becomes the new id.
+        var mergedTo = regions.first;
 
-        if (regions.length > 1) return false;
+        // And the remaining regions will be mapped to that.
+        var mergedFrom = regions.skip(1).toSet();
 
+        for (var i = 0; i <= _currentRegion; i++) {
+          if (mergedFrom.contains(mergedRegions[i])) {
+            mergedRegions[i] = mergedTo;
+          }
+        }
+      } else if (rng.oneIn(extraConnectorChance)) {
         // This connecter isn't needed, but connect it occasionally so that the
         // dungeon isn't singly-connected.
-        if (rng.oneIn(extraConnectorChance)) _addJunction(pos);
-
-        return true;
-      });
+        _addJunction(pos);
+      }
     }
   }
 
@@ -329,6 +325,9 @@ class Dungeon {
     } else {
       setTile(pos, Tiles.closedDoor);
     }
+
+    // Mark this tile as containing a junction.
+    _regions[pos] = -1;
   }
 
   void _removeDeadEnds() {
@@ -343,7 +342,7 @@ class Dungeon {
         // If it only has one exit, it's a dead end.
         var exits = 0;
         for (var dir in Direction.cardinal) {
-          if (getTile(pos + dir) != Tiles.wall) exits++;
+          if (getTile(pos + dir).isTraversable) exits++;
         }
 
         if (exits != 1) continue;
