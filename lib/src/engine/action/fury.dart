@@ -21,21 +21,20 @@ abstract class FuryAction extends Action {
 
   ActionResult performAttack();
 
-  /// Attempts to perform an attack on the [Actor] as [pos], if any.
+  /// Attempts to hit the [Actor] as [pos], if any.
   void attack(Vec pos) {
     var defender = game.stage.actorAt(pos);
     if (defender == null) return;
 
-    var attack = actor.getAttack(defender);
+    var hit = actor.createMeleeHit();
 
     // The more furious the warrior is, the stronger the attack will be (and the
     // more fury that will be spent). The attack multiplier increases more
     // quickly than the fury cost so that the player is rewarded for building
     // up fury and doing a single stronger attack.
-    var multiplier = 1.0 + hero.charge / 20;
-    attack = attack.multiplyDamage(multiplier);
+    hit.scaleDamage(1.0 + hero.charge / 20);
 
-    if (attack.perform(this, actor, defender)) _madeContact = true;
+    if (hit.perform(this, actor, defender)) _madeContact = true;
   }
 }
 

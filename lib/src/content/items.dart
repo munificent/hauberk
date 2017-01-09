@@ -464,7 +464,7 @@ void bottled(String name, int depth, int price, appearance, Element element,
 
   item("Bottled $name", depth, 2, appearance, price: price,
       use: () => new RingSelfAction(
-          new RangedAttack(new Noun(noun), verb, damage, element, 6)),
+          new Attack(new Noun(noun), verb, damage, 6, element)),
       flags: flags);
 }
 
@@ -482,24 +482,24 @@ void scroll(String name, int depth, int rarity, int price, appearance, ItemUse u
 void weapon(String name, int depth, int price, appearance, int damage,
       int tossDamage,
       [int tossRange]) {
-  var toss = new RangedAttack(new Noun("the ${name.toLowerCase()}"),
-      Log.conjugate(_verb, Pronoun.it), tossDamage, Element.none,
-      tossRange != null ? tossRange : _tossRange);
+  var noun = new Noun("the ${name.toLowerCase()}");
+  var verb = Log.conjugate(_verb, Pronoun.it);
+  var toss = new Attack(noun, verb, tossDamage, tossRange ?? _tossRange);
   // TODO: Individual rarities.
   item(name, depth, 2, appearance,
-      attack: attack(_verb, damage, Element.none),
+      attack: new Attack(null, _verb, damage),
       tossAttack: toss,
       price: price);
 }
 
 void ranged(String name, int depth, int price, appearance, String noun,
     int damage, int range, int tossDamage) {
-  var toss = new RangedAttack(new Noun("the ${name.toLowerCase()}"),
-      Log.conjugate(_verb, Pronoun.it), tossDamage, Element.none,
-      _tossRange);
+  var tossNoun = new Noun("the ${name.toLowerCase()}");
+  var verb = Log.conjugate(_verb, Pronoun.it);
+  var toss = new Attack(tossNoun, verb, tossDamage, _tossRange);
   // TODO: Individual rarities.
   item(name, depth, 1, appearance,
-      attack: new RangedAttack(new Noun(noun), "pierce[s]", damage, Element.none, range),
+      attack: new Attack(new Noun(noun), "pierce[s]", damage, range),
       tossAttack: toss,
       price: price);
 }
@@ -518,16 +518,17 @@ void item(String name, int depth, int rarity, appearance, {ItemUse use,
     appearance = appearance(_glyph);
   }
 
-  // Use the tags (if any) to figure out which slot it can be equipped in.
   if (tossAttack == null && _tossDamage != null) {
-    tossAttack = new RangedAttack(new Noun("the ${name.toLowerCase()}"), "hits",
-        _tossDamage, _tossElement, _tossRange);
+    var noun = new Noun("the ${name.toLowerCase()}");
+    tossAttack = new Attack(
+        noun, "hits", _tossDamage, _tossRange, _tossElement);
   }
 
   var itemType = new ItemType(name, appearance, depth, _sortIndex++, _equipSlot,
       _weaponType, use, attack, tossAttack, _breakage, armor, price, _maxStack,
       treasure: treasure);
 
+  // Use the tags (if any) to figure out which slot it can be equipped in.
   itemType.flags.addAll(_flags);
   if (flags != null) {
     for (var flag in flags.split(" ")) {

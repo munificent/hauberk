@@ -169,19 +169,41 @@ class Hero extends Actor {
 
   Action onGetAction() => _behavior.getAction(this);
 
-  Attack onGetAttack(Actor defender) {
-    var attack;
-
+  Hit onCreateMeleeHit() {
     // See if a melee weapon is equipped.
     var weapon = equipment.weapon;
-    if (weapon != null && !weapon.isRanged) {
-      attack = weapon.attack;
+
+    Hit hit;
+    if (weapon != null && !weapon.attack.isRanged) {
+      hit = weapon.attack.createHit();
     } else {
-      attack = new Attack('punch[es]', Option.heroPunchDamage);
+      hit = new Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
+    }
+
+    return hit;
+  }
+
+  Hit createRangedHit() {
+    var weapon = equipment.weapon;
+
+    // This should only be called when we know the hero has a ranged weapon
+    // equipped.
+    assert(weapon != null && weapon.attack.isRanged);
+
+    var hit = weapon.attack.createHit();
+    modifyHit(hit);
+    return hit;
+  }
+
+  /// Applies the hero-specific modifications to [hit].
+  void onModifyHit(Hit hit) {
+    // Let equipment modify it.
+    for (var item in equipment) {
+      item.modifyHit(hit);
     }
 
     // Let the class modify it.
-    return heroClass.modifyAttack(attack, defender);
+    heroClass.modifyHit(hit);
   }
 
   void defend() {

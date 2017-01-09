@@ -12,8 +12,8 @@ class AttackAction extends Action {
 
   ActionResult onPerform() {
     // Get all of the melee information from the participants.
-    var attack = actor.getAttack(defender);
-    attack.perform(this, actor, defender);
+    var hit = actor.createMeleeHit();
+    hit.perform(this, actor, defender);
     return ActionResult.success;
   }
 

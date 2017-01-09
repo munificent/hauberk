@@ -17,7 +17,7 @@ class RayAction extends Action with DestroyItemMixin {
   /// [_from] to this.
   final Vec _to;
 
-  final RangedAttack _attack;
+  final Hit _hit;
 
   /// The tiles that have already been touched by the effect. Used to make sure
   /// we don't hit the same tile multiple times.
@@ -31,25 +31,25 @@ class RayAction extends Action with DestroyItemMixin {
   final _rays = <double>[];
 
   /// A 45° cone of [attack] centered on the line from [from] to [to].
-  factory RayAction.cone(Vec from, Vec to, Attack attack) =>
-      new RayAction._(from, to, attack, 1 / 8);
+  factory RayAction.cone(Vec from, Vec to, Hit hit) =>
+      new RayAction._(from, to, hit, 1 / 8);
 
   /// A complete ring of [attack] radiating outwards from [center].
-  factory RayAction.ring(Vec center, Attack attack) =>
-      new RayAction._(center, center, attack, 1.0);
+  factory RayAction.ring(Vec center, Hit hit) =>
+      new RayAction._(center, center, hit, 1.0);
 
   /// Creates a [RayAction] radiating from [_from] centered on [_to] (which
   /// may be the same as [_from] if the ray is a full circle. It applies
-  /// [_attack] to each touched tile. The rays cover a chord whose width is
+  /// [_hit] to each touched tile. The rays cover a chord whose width is
   /// [fraction] which varies from 0 (an infinitely narrow line) to 1.0 (a full
   /// circle.
-  RayAction._(this._from, this._to, this._attack, double fraction) {
+  RayAction._(this._from, this._to, this._hit, double fraction) {
     // Don't hit the creator of the cone.
     _hitTiles.add(_from);
 
     // We "fill" the cone by tracing a number of rays. We need enough of them
     // to ensure there are no gaps when the cone is at its maximum extent.
-    var circumference = math.PI * 2 * _attack.range;
+    var circumference = math.PI * 2 * _hit.range;
     var numRays = (circumference * fraction).ceil();
 
     // Figure out the center angle of the cone.
@@ -80,14 +80,14 @@ class RayAction extends Action with DestroyItemMixin {
       // Don't hit the same tile twice.
       if (_hitTiles.contains(pos)) return false;
 
-      addEvent(EventType.cone, element: _attack.element, pos: pos);
+      addEvent(EventType.cone, element: _hit.element, pos: pos);
       _hitTiles.add(pos);
 
       // See if there is an actor there.
       var target = game.stage.actorAt(pos);
       if (target != null && target != actor) {
         // TODO: Modify damage based on range?
-        _attack.perform(this, actor, target, canMiss: false);
+        _hit.perform(this, actor, target, canMiss: false);
       }
 
       // Hit stuff on the floor too.
@@ -97,7 +97,7 @@ class RayAction extends Action with DestroyItemMixin {
     });
 
     _radius++;
-    if (_radius > _attack.range || _rays.isEmpty) return ActionResult.success;
+    if (_radius > _hit.range || _rays.isEmpty) return ActionResult.success;
 
     // Still going.
     return ActionResult.notDone;
@@ -105,7 +105,7 @@ class RayAction extends Action with DestroyItemMixin {
 
   /// Applies element-specific effects to items on the floor.
   void _hitFloor(Vec pos) {
-    switch (_attack.element) {
+    switch (_hit.element) {
       case Element.none:
         // No effect.
         break;
@@ -171,5 +171,7 @@ class RingSelfAction extends Action {
 
   RingSelfAction(this._attack);
 
-  ActionResult onPerform() => alternate(new RayAction.ring(actor.pos, _attack));
+  ActionResult onPerform() {
+    return alternate(new RayAction.ring(actor.pos, _attack.createHit()));
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../actor.dart';
+import '../attack.dart';
 import '../game.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
@@ -33,23 +34,28 @@ class TossAction extends ItemAction {
       countChanged();
     }
 
+    var hit = item.tossAttack.createHit();
+    // TODO: *Should* equipment modify thrown items?
+    actor.modifyHit(hit);
+
     // Take the item and throw it.
-    return alternate(new TossLosAction(_target, tossed));
+    return alternate(new TossLosAction(_target, tossed, hit));
   }
 }
 
 /// Action for handling the path of a thrown item while it's in flight.
 class TossLosAction extends LosAction {
   final Item _item;
+  final Hit _hit;
 
   /// `true` if the item has reached an [Actor] and failed to hit it. When this
   /// happens, the item will keep flying past its target until the end of its
   /// range.
   bool _missed = false;
 
-  int get range => _item.type.tossAttack.range;
+  int get range => _hit.range;
 
-  TossLosAction(Vec target, this._item)
+  TossLosAction(Vec target, this._item, this._hit)
       : super(target);
 
   void onStep(Vec pos) {
@@ -57,10 +63,8 @@ class TossLosAction extends LosAction {
   }
 
   bool onHitActor(Vec pos, Actor target) {
-    var attack = _item.type.tossAttack;
-
     // TODO: Range should affect strike.
-    if (!attack.perform(this, actor, target)) {
+    if (!_hit.perform(this, actor, target)) {
       // The item missed, so keep flying.
       _missed = true;
       return false;
@@ -88,7 +92,7 @@ class TossLosAction extends LosAction {
   void _endThrow(Vec pos) {
     // See if it breaks.
     if (rng.range(100) < _item.type.breakage) {
-      log("{1} breaks!", _item.type.tossAttack.noun);
+      log("{1} breaks!", _item);
       return;
     }
 

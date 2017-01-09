@@ -448,7 +448,8 @@ class GameScreen extends Screen<Input> {
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         Color.green);
     // TODO: Show the weapon and stats better.
-    _drawStat(terminal, 5, 'Weapon', hero.getAttack(null), Color.yellow);
+    var hit = hero.createMeleeHit();
+    _drawStat(terminal, 5, 'Weapon', hit.damageString, Color.yellow);
 
     terminal.writeAt(0, 7, hero.heroClass.name);
     if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);

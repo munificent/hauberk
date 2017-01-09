@@ -14,8 +14,6 @@ class Item implements Comparable<Item>, Noun {
 
   get appearance => type.appearance;
 
-  bool get isRanged => type.attack is RangedAttack;
-
   bool get canEquip => equipSlot != null;
   String get equipSlot => type.equipSlot;
 
@@ -31,23 +29,40 @@ class Item implements Comparable<Item>, Noun {
   }
 
   /// Whether the item can be thrown or not.
-  bool get canToss => type.tossAttack != null;
+  bool get canToss => type._tossAttack != null;
 
-  /// Gets the melee [Attack] for the item, taking into account any [Affixes]s
-  /// it has.
-  Attack get attack {
-    if (type.attack == null) return null;
+  /// The base attack for the item, ignoring its own affixes.
+  Attack get attack => type.attack;
 
-    var attack = type.attack;
-    if (prefix != null && prefix.attack != null) {
-      attack = attack.combine(prefix.attack);
-    }
+  Attack get tossAttack => type._tossAttack;
 
-    if (suffix != null && suffix.attack != null) {
-      attack = attack.combine(suffix.attack);
-    }
+  Element get element {
+    var result = Element.none;
+    if (attack != null) result = attack.element;
+    if (prefix != null && prefix.brand != Element.none) result = prefix.brand;
+    if (suffix != null && suffix.brand != Element.none) result = suffix.brand;
+    return result;
+  }
 
-    return attack;
+  int get strikeBonus {
+    var result = 0;
+    if (prefix != null) result += prefix.strikeBonus;
+    if (suffix != null) result += suffix.strikeBonus;
+    return result;
+  }
+
+  double get damageScale {
+    var result = 1.0;
+    if (prefix != null) result *= prefix.damageScale;
+    if (suffix != null) result *= suffix.damageScale;
+    return result;
+  }
+
+  int get damageBonus {
+    var result = 0;
+    if (prefix != null) result += prefix.damageBonus;
+    if (suffix != null) result += suffix.damageBonus;
+    return result;
   }
 
   /// The amount of protection provided by the item when equipped.
@@ -96,6 +111,15 @@ class Item implements Comparable<Item>, Noun {
   /// The number of items in this stack.
   int get count => _count;
   int _count = 1;
+
+  /// Apply any affix modifications to hit.
+  void modifyHit(Hit hit) {
+    hit.addStrike(strikeBonus);
+    hit.scaleDamage(damageScale);
+    hit.addDamage(damageBonus);
+    hit.brand(element);
+    // TODO: Range modifier.
+  }
 
   /// Gets the resistance this item confers to [element].
   int resistance(Element element) {
@@ -207,9 +231,8 @@ class ItemType {
   /// The item's [Attack] or `null` if the item is not an equippable weapon.
   final Attack attack;
 
-  /// The item's [RangedAttack] when thrown or `null` if the item can't be
-  /// thrown.
-  final RangedAttack tossAttack;
+  /// The item's attack when thrown or `null` if the item can't be thrown.
+  final Attack _tossAttack;
 
   /// The percent chance of the item breaking when thrown. `null` if the item
   /// can't be thrown.
@@ -233,7 +256,7 @@ class ItemType {
   final Set<String> flags = new Set();
 
   ItemType(this._name, this.appearance, this.depth, this.sortIndex,
-      this.equipSlot, this.weaponType, this.use, this.attack, this.tossAttack,
+      this.equipSlot, this.weaponType, this.use, this.attack, this._tossAttack,
       this.breakage, this.armor, this.price, this.maxStack, {treasure: false})
       : isTreasure = treasure;
 
@@ -245,13 +268,22 @@ class ItemType {
 class Affix {
   final String name;
 
-  final Attack attack;
+  final int strikeBonus;
+  final double damageScale;
+  final int damageBonus;
+  final Element brand;
 
   final int armor;
 
   final Map<Element, int> resists = {};
 
-  Affix(this.name, {this.attack, this.armor: 0}) {
+  Affix(this.name,
+      {int strikeBonus, double damageScale, int damageBonus, Element brand, int armor})
+      : strikeBonus = strikeBonus ?? 0,
+        damageScale = damageScale ?? 1.0,
+        damageBonus = damageBonus ?? 1,
+        brand = brand ?? Element.none,
+        armor = armor ?? 0 {
     for (var element in Element.all) {
       resists[element] = 0;
     }

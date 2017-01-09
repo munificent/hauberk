@@ -147,15 +147,14 @@ class Affixes {
 
   /// A weapon suffix for adding damage.
   static void damage(String tag, String name, int depth, int rarity, {int damage}) {
-    var affix = new Affix(name, attack: new Attack.modifier(damageBonus: damage));
+    var affix = new Affix(name, damageBonus: damage);
     _suffixes.add(name, affix, depth, rarity, tag);
   }
 
   /// A weapon prefix for giving an elemental brand.
   static void brand(String name, int depth, int rarity, Element element,
-      {num scale}) {
-    var affix = new Affix(name, attack: new Attack.modifier(
-        element: element, damageScale: scale));
+      {double scale}) {
+    var affix = new Affix(name, damageScale: scale, brand: element);
     _prefixes.add(name, affix, depth, rarity, "weapon");
   }
 }

@@ -259,7 +259,8 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     // TODO: Eventually need to handle equipment that gives both an armor and
     // attack bonus.
     if (item.attack != null) {
-      drawStat("»", item.attack.averageDamage.toInt(), Color.orange,
+      var hit = item.attack.createHit();
+      drawStat("»", hit.damageString, Color.orange,
           Color.darkOrange);
     } else if (item.armor != 0) {
       drawStat("•", item.armor, Color.green, Color.darkGreen);
@@ -393,7 +394,7 @@ class _TossItemCommand extends _ItemCommand {
       ItemLocation location) {
     // Now we need a target.
     dialog.ui.goTo(new TargetDialog(dialog._gameScreen,
-        item.type.tossAttack.range, (target) {
+        item.tossAttack.range, (target) {
       dialog._gameScreen.game.hero.setNextAction(
           new TossAction(location, item, target));
     }));

@@ -712,7 +712,7 @@ class _BreedBuilder {
   }
 
   _BreedBuilder attack(String verb, int damage, [Element element, Noun noun]) {
-    attacks.add(new Attack(verb, damage, element, noun));
+    attacks.add(new Attack(noun, verb, damage, 0, element));
     return this;
   }
 
@@ -803,11 +803,11 @@ class _BreedBuilder {
   _BreedBuilder spawn({num rate: 10}) => _addMove(new SpawnMove(rate));
 
   _BreedBuilder _bolt(String noun, String verb, Element element, num rate, int damage, int range) {
-    return _addMove(new BoltMove(rate, new RangedAttack(new Noun(noun), verb, damage, element, range)));
+    return _addMove(new BoltMove(rate, new Attack(new Noun(noun), verb, damage, range, element)));
   }
 
   _BreedBuilder _cone(String noun, String verb, Element element, num rate, int damage, int range) {
-    return _addMove(new ConeMove(rate, new RangedAttack(new Noun(noun), verb, damage, element, range)));
+    return _addMove(new ConeMove(rate, new Attack(new Noun(noun), verb, damage, range, element)));
   }
 
   _BreedBuilder _addMove(Move move) {

@@ -64,46 +64,51 @@ class HeroInfoDialog extends Screen<Input> {
 
       if (item.attack != null) {
         var attack = item.attack;
-
         terminal.writeAt(45, y, elementAbbreviation(attack.element),
             elementColor(attack.element));
 
-        terminal.writeAt(48, y, attack.baseDamage.toString().padLeft(3));
-
-        if (attack.damageScale > 1.0) {
-          terminal.writeAt(52, y, "x", Color.green);
-          terminal.writeAt(53, y, attack.damageScale.toStringAsFixed(1).padLeft(3), Color.lightGreen);
-        } else if (attack.damageScale < 1.0) {
-          terminal.writeAt(52, y, "x", Color.darkRed);
-          terminal.writeAt(53, y, (-attack.damageScale).toStringAsFixed(1).padLeft(3),
-              Color.red);
-        } else {
-          terminal.writeAt(52, y, "x1.0", Color.darkGray);
-        }
-
-        if (attack.damageBonus > 0) {
-          terminal.writeAt(57, y, "+", Color.green);
-          terminal.writeAt(58, y, attack.damageBonus.toString().padLeft(2), Color.lightGreen);
-        } else if (attack.damageBonus < 0) {
-          terminal.writeAt(57, y, "-", Color.darkRed);
-          terminal.writeAt(58, y, (-attack.damageBonus).toString().padLeft(2),
-              Color.red);
-        } else {
-          terminal.writeAt(58, y, " 0", Color.darkGray);
-        }
-
-        if (attack.strikeBonus > 0) {
-          terminal.writeAt(61, y, "+", Color.green);
-          terminal.writeAt(62, y, attack.strikeBonus.toString().padLeft(2), Color.lightGreen);
-        } else if (attack.strikeBonus < 0) {
-          terminal.writeAt(61, y, "-", Color.darkRed);
-          terminal.writeAt(62, y, (-attack.strikeBonus).toString().padLeft(2),
-              Color.red);
-        } else {
-          terminal.writeAt(62, y, " 0", Color.darkGray);
-        }
+        terminal.writeAt(48, y, attack.damage.toString().padLeft(3));
       } else {
-        terminal.writeAt(45, y, "-- ---  ---  --  --", Color.darkGray);
+        terminal.writeAt(45, y, "-- ---", Color.darkGray);
+      }
+
+      if (item.damageScale > 1.0) {
+        terminal.writeAt(52, y, "x", Color.green);
+        terminal.writeAt(53, y, item.damageScale.toStringAsFixed(1).padLeft(3), Color.lightGreen);
+      } else if (item.damageScale < 1.0) {
+        terminal.writeAt(52, y, "x", Color.darkRed);
+        terminal.writeAt(53, y, (-item.damageScale).toStringAsFixed(1).padLeft(3),
+            Color.red);
+      } else if (item.attack != null) {
+        terminal.writeAt(52, y, " ---", Color.darkGray);
+      } else {
+        terminal.writeAt(52, y, "x1.0", Color.darkGray);
+      }
+
+      if (item.damageBonus > 0) {
+        terminal.writeAt(57, y, "+", Color.green);
+        terminal.writeAt(58, y, item.damageBonus.toString().padLeft(2), Color.lightGreen);
+      } else if (item.damageBonus < 0) {
+        terminal.writeAt(57, y, "-", Color.darkRed);
+        terminal.writeAt(58, y, (-item.damageBonus).toString().padLeft(2),
+            Color.red);
+      } else if (item.attack != null) {
+        terminal.writeAt(58, y, " 0", Color.darkGray);
+      } else {
+        terminal.writeAt(58, y, "--", Color.darkGray);
+      }
+
+      if (item.strikeBonus > 0) {
+        terminal.writeAt(61, y, "+", Color.green);
+        terminal.writeAt(62, y, item.strikeBonus.toString().padLeft(2), Color.lightGreen);
+      } else if (item.strikeBonus < 0) {
+        terminal.writeAt(61, y, "-", Color.darkRed);
+        terminal.writeAt(62, y, (-item.strikeBonus).toString().padLeft(2),
+            Color.red);
+      } else if (item.attack != null) {
+        terminal.writeAt(62, y, " 0", Color.darkGray);
+      } else {
+        terminal.writeAt(62, y, "--", Color.darkGray);
       }
 
       if (item.baseArmor != 0) {

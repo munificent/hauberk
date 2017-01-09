@@ -1,12 +1,5 @@
 import 'package:malison/malison.dart';
 
-import '../engine.dart';
-
-/// Creates a new [Attack].
-Attack attack(String verb, int damage, [Element element, Noun noun]) {
-  return new Attack(verb, damage, element, noun);
-}
-
 Glyph black(char, [Color back = Color.black])       => new Glyph.fromDynamic(char, Color.black, back);
 Glyph white(char, [Color back = Color.black])       => new Glyph.fromDynamic(char, Color.white, back);
 Glyph lightGray(char, [Color back = Color.black])   => new Glyph.fromDynamic(char, Color.lightGray, back);

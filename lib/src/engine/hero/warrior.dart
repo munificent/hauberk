@@ -68,20 +68,18 @@ class Warrior extends HeroClass {
       masteries: masteryCounts);
   }
 
-  Attack modifyAttack(Attack attack, Actor defender) {
+  void modifyHit(Hit hit) {
     var weapon = hero.equipment.weapon;
     if (weapon != null) {
       // TODO: Should combat apply to ranged attacks?
-      attack = attack.addDamage(combat.level);
+      hit.addDamage(combat.level);
 
       var mastery = masteries[weapon.type.weaponType];
       if (mastery != null) {
-        attack = attack.multiplyDamage(1.0 + mastery.level * 0.1);
+        hit.scaleDamage(1.0 + mastery.level * 0.1);
       }
-
-      return attack;
     } else {
-      return attack.addDamage(fighting.level);
+      hit.addDamage(fighting.level);
     }
   }
 

@@ -30,9 +30,8 @@ abstract class HeroClass {
     _hero = hero;
   }
 
-  /// Gives the class a chance to modify the attack the hero is about to perform
-  /// on [defender].
-  Attack modifyAttack(Attack attack, Actor defender) => attack;
+  /// Gives the class a chance to modify the hit the hero is about to perform.
+  void modifyHit(Hit hit);
 
   /// Called when the [Hero] has taken [damage] from [attacker].
   void tookDamage(Action action, Actor attacker, int damage) {}

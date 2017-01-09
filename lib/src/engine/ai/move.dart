@@ -54,12 +54,12 @@ abstract class Move {
 }
 
 class BoltMove extends Move {
-  final RangedAttack attack;
+  final Attack attack;
 
   int get range => attack.range;
 
-  num get experience => attack.averageDamage *
-      Option.expElement[attack.element] * (1.0 + range / 20);
+  num get experience => attack.damage *
+      Option.expElement[attack.element] * (1.0 + range / 20.0);
 
   BoltMove(num rate, this.attack)
     : super(rate);
@@ -89,17 +89,17 @@ class BoltMove extends Move {
   }
 
   Action onGetAction(Monster monster) =>
-      new BoltAction(monster.game.hero.pos, attack);
+      new BoltAction(monster.game.hero.pos, attack.createHit());
 
   String toString() => "Bolt $attack rate: $rate";
 }
 
 class ConeMove extends Move {
-  final RangedAttack attack;
+  final Attack attack;
   int get range => attack.range;
 
-  num get experience => attack.averageDamage * 3.0 *
-      Option.expElement[attack.element] * (1.0 + range / 10);
+  num get experience => attack.damage * 3.0 *
+      Option.expElement[attack.element] * (1.0 + range / 10.0);
 
   ConeMove(num rate, this.attack)
     : super(rate);
@@ -125,7 +125,7 @@ class ConeMove extends Move {
   }
 
   Action onGetAction(Monster monster) =>
-      new RayAction.cone(monster.pos, monster.game.hero.pos, attack);
+      new RayAction.cone(monster.pos, monster.game.hero.pos, attack.createHit());
 
   String toString() => "Cone $attack rate: $rate";
 }

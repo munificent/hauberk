@@ -70,7 +70,7 @@ class Breed {
     var attackTotal = 0.0;
     for (var attack in attacks) {
       // TODO: Take range into account?
-      attackTotal += attack.averageDamage * Option.expElement[attack.element];
+      attackTotal += attack.damage * Option.expElement[attack.element];
     }
 
     attackTotal /= attacks.length;

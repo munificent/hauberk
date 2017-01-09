@@ -190,7 +190,7 @@ class Monster extends Actor {
     }
   }
 
-  Attack onGetAttack(Actor defender) => rng.item(breed.attacks);
+  Hit onCreateMeleeHit() => rng.item(breed.attacks).createHit();
 
   // TODO: Breed resistances.
   int onGetResistance(Element element) => 0;

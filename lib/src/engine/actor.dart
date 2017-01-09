@@ -133,18 +133,25 @@ abstract class Actor extends Thing {
 
   Action onGetAction();
 
-  /// Get an [Attack] for this [Actor] to attempt to hit [defender].
-  Attack getAttack(Actor defender) {
-    var attack = onGetAttack(defender);
-
-    // Hard to hit an actor you can't see.
-    if (isBlinded) attack = attack.addStrike(-5);
-
-    return attack;
+  /// Create a new [Hit] for this [Actor] to attempt to hit some defender.
+  Hit createMeleeHit() {
+    var hit = onCreateMeleeHit();
+    modifyHit(hit);
+    return hit;
   }
 
-  /// Get an [Attack] for this [Actor] to attempt to hit [defender].
-  Attack onGetAttack(Actor defender);
+  Hit onCreateMeleeHit();
+
+  /// Applies the hit modifications from the actor.
+  void modifyHit(Hit hit) {
+    // Hard to hit an actor you can't see.
+    if (isBlinded) hit.addStrike(-5);
+
+    // Let the subclass also modify it.
+    onModifyHit(hit);
+  }
+
+  void onModifyHit(Hit hit) {}
 
   /// This is called on the defender when some attacker is attempting to hit it.
   void defend();

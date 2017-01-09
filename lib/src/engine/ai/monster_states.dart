@@ -5,7 +5,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../debug.dart';
 import '../action/action.dart';
 import '../action/walk.dart';
-import '../attack.dart';
 import '../breed.dart';
 import '../game.dart';
 import '../log.dart';
@@ -287,7 +286,7 @@ class AwakeState extends MonsterState {
       // TODO: Handle other ranged damage moves.
       if (move is! BoltMove) continue;
 
-      rangedDamage += (move as BoltMove).attack.averageDamage / move.rate;
+      rangedDamage += (move as BoltMove).attack.damage / move.rate;
       rangedAttacks++;
 
       // TODO: Take elements into account?
@@ -301,8 +300,8 @@ class AwakeState extends MonsterState {
 
       for (var attack in breed.attacks) {
         // Monsters don't have any raw ranged attacks, just ranged moves.
-        assert(attack is! RangedAttack);
-        meleeDamage += attack.averageDamage;
+        assert(!attack.isRanged);
+        meleeDamage += attack.damage;
         meleeAttacks++;
 
         // TODO: Smart monsters should take hero resists into account.

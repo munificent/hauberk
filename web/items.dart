@@ -66,7 +66,7 @@ main() {
     if (item.attack == null) {
       text.write('<td>&mdash;</td>');
     } else {
-      text.write('<td>${item.attack.averageDamage}</td>');
+      text.write('<td>${item.attack.damage}</td>');
     }
 
     text.write('<td>${item.armor != 0 ? item.armor : "&mdash;"}</td>');
