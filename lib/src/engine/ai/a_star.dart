@@ -75,7 +75,10 @@ class AStar {
 
         // Given how far the current tile is, how far is each neighbor?
         var stepCost = Option.aStarFloorCost;
-        if (stage[neighbor].type.opensTo != null) {
+        if (neighbor == end) {
+          // This is our destination, so it's definitely the best step.
+          stepCost = 0;
+        } else if (stage[neighbor].type.opensTo != null) {
           if (canOpenDoors) {
             // One to open the door and one to enter the tile.
             stepCost = Option.aStarFloorCost * 2;
@@ -118,7 +121,7 @@ class AStar {
 
           // Insert it in sorted order (such that the best node is at the *end*
           // of the list for easy removal).
-          bool inserted = false;
+          var inserted = false;
           for (var i = open.length - 1; i >= 0; i--) {
             if (open[i].guess > guess) {
               open.insert(i + 1, path);
