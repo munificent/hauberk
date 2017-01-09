@@ -407,21 +407,21 @@ void jellies() {
 void kobolds() {
   group("k", speed: 2, meander: 4, flags: "cowardly");
   breed("forest sprite", 1, lightGreen, 8)
-      .attack("scratch[es]", 4)
+      .attack("scratch[es]", 3)
       .teleport(range: 6)
-      .drop(20, "magic");
+      .drop(40, "magic");
 
   breed("house sprite", 3, lightBlue, 15)
-      .attack("poke[s]", 8)
+      .attack("poke[s]", 5)
+      .stoneBolt(rate: 10, damage: 4)
       .teleport(range: 6)
-      .drop(20, "magic");
+      .drop(40, "magic");
 
   breed("mischievous sprite", 7, lightRed, 24)
-      .attack("stab[s]", 9)
+      .attack("stab[s]", 6)
       .sparkBolt(rate: 8, damage: 8)
-      .poisonBolt(rate: 15, damage: 10)
       .teleport(range: 8)
-      .drop(40, "magic");
+      .drop(60, "magic");
 
   breed("scurrilous imp", 4, lightRed, 18, meander: 4)
       .attack("club[s]", 4)
