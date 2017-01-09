@@ -64,6 +64,18 @@ class ResourceSet<T> {
     return resource.object;
   }
 
+  /// Returns whether the resource with [name] has [tagName] as one of its
+  /// immediate tags or one of their parents.
+  bool hasTag(String name, String tagName) {
+    var resource = _resources[name];
+    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+
+    var tag = _tags[tagName];
+    if (tag == null) throw new ArgumentError('Unknown tag "$tagName".');
+
+    return resource._tags.any((thisTag) => thisTag.contains(tag));
+  }
+
   /// Gets the names of the tags for the resource with [name].
   Iterable<String> getTags(String name) {
     var resource = _resources[name];

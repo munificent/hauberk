@@ -9,6 +9,9 @@ class Affixes {
   static final _prefixes = new ResourceSet<Affix>();
   static final _suffixes = new ResourceSet<Affix>();
 
+  static Iterable<Affix> get prefixes => _prefixes.all;
+  static Iterable<Affix> get suffixes => _suffixes.all;
+
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int depth) {
     // Untagged items don't have any affixes.
