@@ -23,7 +23,7 @@ List<String> _affixNames;
 
 final _colors = <String, String>{};
 
-const batchSize = 1000;
+const batchSize = 10000;
 const chartHeight = 600;
 
 String get shownData {

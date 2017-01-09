@@ -324,22 +324,22 @@ void bodyArmor() {
   // TODO: Make some armor throwable.
 
   category("(", tag: "equipment/armor/cloak");
-  armor("Cloak",                   3,   19, darkBlue,    2);
-  armor("Fur Cloak",               9,   42, lightBrown,  3);
+  armor("Cloak",                   3,   2, 19, darkBlue,    2);
+  armor("Fur Cloak",               5,   5, 42, lightBrown,  3);
 
   category("(", tag: "equipment/armor/body");
-  armor("Cloth Shirt",             2,   19, lightGray,   2);
-  armor("Leather Shirt",           5,  126, lightBrown,  5);
-  armor("Jerkin",                  7,  191, orange,      6);
-  armor("Leather Armor",          10,  377, brown,       8);
-  armor("Padded Armor",           14,  819, darkBrown,  11);
-  armor("Studded Leather Armor",  17, 1782, gray,       15);
-  armor("Mail Hauberk",           20, 2835, darkGray,   18);
-  armor("Scale Mail",             23, 4212, lightGray,  21);
+  armor("Cloth Shirt",             2,   1,   19, lightGray,   2);
+  armor("Leather Shirt",           5,   1,  126, lightBrown,  5);
+  armor("Jerkin",                  7,   1,  191, orange,      6);
+  armor("Leather Armor",          10,   1,  377, brown,       8);
+  armor("Padded Armor",           14,   1,  819, darkBrown,  11);
+  armor("Studded Leather Armor",  17,   1, 1782, gray,       15);
+  armor("Mail Hauberk",           20,   1, 2835, darkGray,   18);
+  armor("Scale Mail",             23,   1, 4212, lightGray,  21);
 
   category("(", tag: "equipment/armor/body/robe");
-  armor("Robe",                    2,   77, aqua,        4);
-  armor("Fur-lined Robe",          9,  191, darkAqua,    6);
+  armor("Robe",                    2,   1,   77, aqua,        4);
+  armor("Fur-lined Robe",          6,   3,  191, darkAqua,    6);
 
   /*
   Metal Lamellar Armor[s]
@@ -355,11 +355,11 @@ void bodyArmor() {
 
 void boots() {
   category("]", tag: "equipment/armor/boots");
-  armor("Pair[s] of Leather Sandals",       2,    6, lightBrown,  1);
-  armor("Pair[s] of Leather Shoes",         8,   19, brown,       2);
-  armor("Pair[s] of Leather Boots",        14,   77, darkBrown,   4);
-  armor("Pair[s] of Metal Shod Boots",     22,  274, gray,        7);
-  armor("Pair[s] of Greaves",              47, 1017, lightGray,  12);
+  armor("Pair[s] of Leather Sandals",       2, 4,    6, lightBrown,  1);
+  armor("Pair[s] of Leather Shoes",         8, 3,   19, brown,       2);
+  armor("Pair[s] of Leather Boots",        14, 3,   77, darkBrown,   4);
+  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, gray,        7);
+  armor("Pair[s] of Greaves",              47, 4, 1017, lightGray,  12);
 }
 
 void category(glyph, {String tag, String verb, String flags, int stack: 1}) {
@@ -498,15 +498,14 @@ void ranged(String name, int depth, int price, appearance, String noun,
   var verb = Log.conjugate(_verb, Pronoun.it);
   var toss = new Attack(tossNoun, verb, tossDamage, _tossRange);
   // TODO: Individual rarities.
-  item(name, depth, 1, appearance,
+  item(name, depth, 3, appearance,
       attack: new Attack(new Noun(noun), "pierce[s]", damage, range),
       tossAttack: toss,
       price: price);
 }
 
-void armor(String name, int depth, int price, appearance, int armor) {
-  // TODO: Individual rarities.
-  item(name, depth, 1, appearance, armor: armor, price: price);
+void armor(String name, int depth, int rarity, int price, appearance, int armor) {
+  item(name, depth, rarity, appearance, armor: armor, price: price);
 }
 
 void item(String name, int depth, int rarity, appearance, {ItemUse use,

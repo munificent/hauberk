@@ -151,7 +151,7 @@ class ResourceSet<T> {
       for (var i = 0; i < allowed.length; i++) {
         var resource = allowed[i];
 
-        var chance = resource.frequency * _depthScale(depth, resource.depth);
+        var chance = resource.frequency * _depthScale(resource.depth, depth);
 
         // The depth scale is so narrow at low levels that highly out of depth
         // items can have a 0% chance of being generated due to floating point
@@ -189,22 +189,18 @@ class ResourceSet<T> {
   /// things are.
   ///
   /// https://en.wikipedia.org/wiki/Normal_distribution
-  double _depthScale(int depth, int targetDepth) {
-    var distance = (depth - targetDepth).toDouble();
+  double _depthScale(int resourceDepth, int targetDepth) {
+    var relative = (resourceDepth - targetDepth).toDouble();
     double deviation;
-    if (distance <= 0.0) {
+    if (relative <= 0.0) {
       // As you get deeper in the dungeon, the probability curve widens so that
       // you still find weaker stuff fairly frequently.
       deviation = 0.2 + targetDepth * 0.3;
-
-      // But don't let it get *too* wide. We don't want the hero finding a lot
-      // of sticks at the bottom of the dungeon.
-      if (deviation > 20.0) deviation = 20.0;
     } else {
-      deviation = 0.4 + targetDepth * 0.1;
+      deviation = 0.7 + targetDepth * 0.1;
     }
 
-    return math.exp(-0.5 * distance * distance / (deviation * deviation));
+    return math.exp(-0.5 * relative * relative / (deviation * deviation));
   }
 }
 

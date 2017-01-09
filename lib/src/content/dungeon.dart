@@ -118,7 +118,7 @@ class Dungeon {
     // TODO: Tune this. Make it based on depth. Take density of open areas into
     // account?
     // TODO: Place monsters into rooms. Give them themes.
-    var numMonsters = rng.taper(40 + depth, 2);
+    var numMonsters = rng.taper(30 + depth, 2);
     for (int i = 0; i < numMonsters; i++) {
       var pos = stage.findOpenTile();
       trySpawn(pos, depth);
