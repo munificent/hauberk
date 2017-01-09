@@ -219,7 +219,7 @@ class Hero extends Actor {
 
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
-    _experienceCents += monster.experienceCents ~/ level;
+    _experienceCents += monster.experienceCents;
     _refreshLevel(log: true);
     heroClass.killedMonster(action, monster);
   }
