@@ -7,13 +7,13 @@ class Option {
   static final maxDepth = 100;
 
   /// The max health of a new hero.
-  static final heroHealthStart = 20;
+  static final heroHealthStart = 24;
 
   /// How much max health is increased when the hero levels up.
   static final heroHealthGain = 6;
 
   /// How much damage an unarmed hero does.
-  static final heroPunchDamage = 5;
+  static final heroPunchDamage = 3;
 
   /// The highest level the hero can reach.
   static final heroLevelMax = 50;

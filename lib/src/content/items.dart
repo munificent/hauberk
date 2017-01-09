@@ -150,13 +150,13 @@ void potions() {
   // Healing.
   tagged("magic/potion/healing");
   tossable(damage: 1, range: 8, breakage: 100);
-  healing("Soothing Balm",     1,   10, lightRed,     24);
-  healing("Mending Salve",     7,   40, red,          48);
-  healing("Healing Poultice", 12,   80, darkRed,      64, curePoison: true);
-  healing("of Amelioration",  24,  200, darkPurple,  120, curePoison: true);
-  healing("of Rejuvenation",  65,  500, purple,     1000, curePoison: true);
+  healing("Soothing Balm",     2, 1,   10, lightRed,     24);
+  healing("Mending Salve",     7, 1,   40, red,          48);
+  healing("Healing Poultice", 12, 1,   80, darkRed,      64, curePoison: true);
+  healing("of Amelioration",  24, 1,  200, darkPurple,  120, curePoison: true);
+  healing("of Rejuvenation",  65, 2,  500, purple,     1000, curePoison: true);
 
-  healing("Antidote",         15,   18, green,         0, curePoison: true);
+  healing("Antidote",          4, 2,   40, green,         0, curePoison: true);
 
   tagged("magic/potion/resistance");
   tossable(damage: 1, range: 8, breakage: 100);
@@ -328,18 +328,18 @@ void bodyArmor() {
   armor("Fur Cloak",               5,   5, 42, lightBrown,  3);
 
   category("(", tag: "equipment/armor/body");
-  armor("Cloth Shirt",             2,   1,   19, lightGray,   2);
-  armor("Leather Shirt",           5,   1,  126, lightBrown,  5);
-  armor("Jerkin",                  7,   1,  191, orange,      6);
-  armor("Leather Armor",          10,   1,  377, brown,       8);
-  armor("Padded Armor",           14,   1,  819, darkBrown,  11);
-  armor("Studded Leather Armor",  17,   1, 1782, gray,       15);
-  armor("Mail Hauberk",           20,   1, 2835, darkGray,   18);
-  armor("Scale Mail",             23,   1, 4212, lightGray,  21);
+  armor("Cloth Shirt",             2,   2,   19, lightGray,   2);
+  armor("Leather Shirt",           5,   2,  126, lightBrown,  5);
+  armor("Jerkin",                  7,   2,  191, orange,      6);
+  armor("Leather Armor",          10,   2,  377, brown,       8);
+  armor("Padded Armor",           14,   2,  819, darkBrown,  11);
+  armor("Studded Leather Armor",  17,   2, 1782, gray,       15);
+  armor("Mail Hauberk",           20,   2, 2835, darkGray,   18);
+  armor("Scale Mail",             23,   2, 4212, lightGray,  21);
 
   category("(", tag: "equipment/armor/body/robe");
-  armor("Robe",                    2,   1,   77, aqua,        4);
-  armor("Fur-lined Robe",          6,   3,  191, darkAqua,    6);
+  armor("Robe",                    2,   2,   77, aqua,        4);
+  armor("Fur-lined Robe",          6,   4,  191, darkAqua,    6);
 
   /*
   Metal Lamellar Armor[s]
@@ -445,15 +445,15 @@ void potion(String name, int depth, int rarity, int price, appearance, ItemUse u
   item(name, depth, rarity, appearance, price: price, use: use);
 }
 
-void healing(String name, int depth, int price, appearance, int amount,
+void healing(String name, int depth, int rarity, int price, appearance, int amount,
     {bool curePoison: false}) {
-  potion(name, depth, 2, price, appearance,
+  potion(name, depth, rarity, price, appearance,
       () => new HealAction(amount, curePoison: curePoison));
 }
 
 void resistSalve(String name, int depth, int price, appearance,
     Element element, [String flags]) {
-  item("Salve[s] of $name Resistance", depth, 1, appearance,
+  item("Salve[s] of $name Resistance", depth, 2, appearance,
       price: price, use: () => new ResistAction(40, element),
       flags: flags);
 }
