@@ -6,45 +6,34 @@ import 'package:hauberk/src/content/items.dart';
 import 'package:hauberk/src/content/monsters.dart';
 import 'package:hauberk/src/engine.dart';
 
+import 'histogram.dart';
+
+final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
+final breedDrops = <Breed, Histogram<String>>{};
+
 main() {
   var text = new StringBuffer();
   Items.initialize();
   Monsters.initialize();
   var breeds = Monsters.breeds.all.toList();
-  breeds.sort((a, b) => a.depth.compareTo(b.depth));
-
-  // Generate a bunch of drops.
-  var tries = 0;
-  var drops = {};
-
-  for (var breed in breeds) {
-    drops[breed.name] = {};
-  }
-
-  for (var i = 0; i < 100; i++) {
-    tries++;
-
-    for (var breed in breeds) {
-      breed.drop.spawnDrop((item) {
-        drops[breed.name].putIfAbsent(item.toString(), () => 0);
-        drops[breed.name][item.toString()]++;
-      });
-    }
-  }
+  breeds.sort((a, b) {
+    if (a.depth != b.depth) return a.depth.compareTo(b.depth);
+    return a.experienceCents.compareTo(b.experienceCents);
+  });
 
   text.write('''
     <thead>
     <tr>
       <td colspan="2">Breed</td>
       <td>Depth</td>
-      <td colspan="2">Health</td>
+      <td>Health</td>
       <td>Meander</td>
       <td>Speed</td>
       <td>Exp/Level</td>
       <td>Attacks</td>
       <td>Moves</td>
       <td>Flags</td>
-      <td>Drops</td>
+      <td width="30%">Drops</td>
     </tr>
     </thead>
     <tbody>
@@ -62,7 +51,6 @@ main() {
           <td>${breed.name}</td>
           <td>${breed.depth}</td>
           <td class="r">${breed.maxHealth}</td>
-          <td><span class="bar" style="width: ${breed.maxHealth / 10}px;"></span></td>
           <td class="r">${breed.meander}</td>
           <td class="r">${breed.speed}</td>
           <td class="r">$expPerLevel</td>
@@ -82,23 +70,32 @@ main() {
       text.write('$flag ');
     }
 
-    text.write('</td><td>');
-
-    var drop = drops[breed.name];
-    var items = drop.keys.toList();
-    items.sort((a, b) => drop[b].compareTo(drop[a]));
-
-    text.write(items.map((item) {
-      return "${(drop[item] / tries * 100).toStringAsFixed(1)}% $item";
-    }).join("<br>"));
-
-    text.write('</td></tr>');
+    text.write('</td><td><span class="drop" id="${breed.name}">(drops)</span></td>');
+    text.write('</tr>');
   }
   text.write('</tbody>');
 
-  var validator = new html.NodeValidatorBuilder.common();
-  validator.allowInlineStyles();
-
   html.querySelector('table').setInnerHtml(text.toString(),
       validator: validator);
+
+  for (var span in html.querySelectorAll('span.drop')) {
+    span.onClick.listen((_) {
+      moreDrops(span);
+    });
+  }
+}
+
+void moreDrops(html.Element span) {
+  var breed = Monsters.breeds.find(span.id);
+  var drops = breedDrops.putIfAbsent(breed, () => new Histogram());
+
+  for (var i = 0; i < 100; i++) {
+    breed.drop.spawnDrop((item) {
+      drops.add(item.toString());
+    });
+  }
+
+  span.innerHtml = drops.descending().map((name) {
+    return "$name (${drops.count(name)})";
+  }).join('<br>');
 }

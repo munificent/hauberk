@@ -47,6 +47,12 @@ class Attack {
   bool get isRanged => range > 0;
 
   Hit createHit() => new Hit._(this);
+
+  String toString() {
+    var result = "";
+    if (element != Element.none) result += "$element ";
+    return "$result $damage";
+  }
 }
 
 class Hit {
