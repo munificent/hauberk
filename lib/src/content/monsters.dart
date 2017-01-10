@@ -116,7 +116,7 @@ class Monsters {
       canines,        canids,
       dragons,        greaterDragons,
       eyes,           elementals,
-      flyingInsects,  felines,
+      faeFolk,        felines,
       goblins,        golems,
       humanoids,      hybrids,
       insects,        insubstantials,
@@ -195,18 +195,18 @@ void birds() {
 
 void canines() {
   group("c", tracking: 20, meander: 3, flags: "few");
-  breed("mangy cur", 2, yellow, 11)
+  breed("mangy cur", 2, yellow, 8)
       .attack("bite[s]", 4)
       .howl(range: 6)
       .drop(20, "Fur Pelt");
 
-  breed("wild dog", 4, gray, 16)
-      .attack("bite[s]", 4)
+  breed("wild dog", 4, gray, 14)
+      .attack("bite[s]", 6)
       .howl(range: 8)
       .drop(20, "Fur Pelt");
 
-  breed("mongrel", 7, orange, 28)
-      .attack("bite[s]", 6)
+  breed("mongrel", 7, orange, 20)
+      .attack("bite[s]", 8)
       .howl(range: 10)
       .drop(20, "Fur Pelt");
 }
@@ -274,7 +274,30 @@ void eyes() {
 
 void elementals() {}
 
-void flyingInsects() {}
+void faeFolk() {
+  // Sprites, pixies, fairies, elves, etc.
+
+  // TODO: Make them fly.
+  group("f", speed: 2, meander: 4, flags: "cowardly");
+  breed("forest sprite", 1, lightGreen, 8)
+      .attack("scratch[es]", 3)
+      .sparkBolt(rate: 7, damage: 4)
+      .teleport(rate: 7, range: 5)
+      .drop(40, "magic");
+
+  breed("house sprite", 3, lightBlue, 15)
+      .attack("poke[s]", 5)
+      .stoneBolt(rate: 10, damage: 4)
+      .teleport(rate: 7, range: 5)
+      .drop(40, "magic");
+
+  breed("mischievous sprite", 7, lightRed, 24)
+      .attack("stab[s]", 6)
+      .windBolt(rate: 8, damage: 8)
+      .teleport(range: 7)
+      .insult(rate: 6)
+      .drop(60, "magic");
+}
 
 void felines() {
   group("F");
@@ -406,23 +429,6 @@ void jellies() {
 
 void kobolds() {
   group("k", speed: 2, meander: 4, flags: "cowardly");
-  breed("forest sprite", 1, lightGreen, 8)
-      .attack("scratch[es]", 3)
-      .teleport(range: 6)
-      .drop(40, "magic");
-
-  breed("house sprite", 3, lightBlue, 15)
-      .attack("poke[s]", 5)
-      .stoneBolt(rate: 10, damage: 4)
-      .teleport(range: 6)
-      .drop(40, "magic");
-
-  breed("mischievous sprite", 7, lightRed, 24)
-      .attack("stab[s]", 6)
-      .sparkBolt(rate: 8, damage: 8)
-      .teleport(range: 8)
-      .drop(60, "magic");
-
   breed("scurrilous imp", 4, lightRed, 18, meander: 4)
       .attack("club[s]", 4)
       .insult()
@@ -568,7 +574,11 @@ void rodents() {
       .attack("scratch[es]", 3)
       .flags("group");
 
-  breed("plague rat", 4, darkGreen, 10, speed: 1)
+  breed("sickly rat", 3, darkGreen, 4, speed: 1)
+      .attack("bite[s]", 3, Element.poison)
+      .attack("scratch[es]", 3);
+
+  breed("plague rat", 6, green, 10, speed: 1)
       .attack("bite[s]", 4, Element.poison)
       .attack("scratch[es]", 3)
       .flags("group");
