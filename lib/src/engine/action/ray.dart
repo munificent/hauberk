@@ -44,9 +44,6 @@ class RayAction extends Action with DestroyItemMixin {
   /// [fraction] which varies from 0 (an infinitely narrow line) to 1.0 (a full
   /// circle.
   RayAction._(this._from, this._to, this._hit, double fraction) {
-    // Don't hit the creator of the cone.
-    _hitTiles.add(_from);
-
     // We "fill" the cone by tracing a number of rays. We need enough of them
     // to ensure there are no gaps when the cone is at its maximum extent.
     var circumference = math.PI * 2 * _hit.range;
@@ -173,5 +170,16 @@ class RingSelfAction extends Action {
 
   ActionResult onPerform() {
     return alternate(new RayAction.ring(actor.pos, _attack.createHit()));
+  }
+}
+
+class RingAtAction extends Action {
+  final Attack _attack;
+  final Vec _pos;
+
+  RingAtAction(this._attack, this._pos);
+
+  ActionResult onPerform() {
+    return alternate(new RayAction.ring(_pos, _attack.createHit()));
   }
 }

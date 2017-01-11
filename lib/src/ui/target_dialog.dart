@@ -21,47 +21,55 @@ class TargetDialog extends Screen<Input> {
   final SelectTarget _onSelect;
   final List<Monster> _monsters = <Monster>[];
 
+  bool _targetingFloor = false;
   int _animateOffset = 0;
-
-  /// The position of the currently targeted [Actor] or `null` if no actor is
-  /// targeted.
-  Vec get _target {
-    if (_gameScreen.target == null) return null;
-    return _gameScreen.target.pos;
-  }
 
   bool get isTransparent => true;
 
   TargetDialog(this._gameScreen, this._range, this._onSelect) {
-    // Default to targeting the nearest monster.
-    var nearest;
+    // Find the targetable monsters.
+    var hero = _gameScreen.game.hero;
     for (var actor in _gameScreen.game.stage.actors) {
       if (actor is! Monster) continue;
-      if (!_gameScreen.game.stage[actor.pos].visible) continue;
+      if (!actor.isVisible) continue;
 
       // Must be within range.
-      var hero = _gameScreen.game.hero;
       var toMonster = actor.pos - hero.pos;
       if (toMonster > _range) continue;
 
       _monsters.add(actor);
+    }
 
-      if (nearest == null || hero.pos - actor.pos < hero.pos - nearest.pos) {
-        nearest = actor;
+    if (_monsters.isEmpty) {
+      // No visible monsters, so switch to floor targeting.
+      _targetingFloor = true;
+      _gameScreen.targetFloor(_gameScreen.game.hero.pos);
+    } else {
+      // Default to targeting the nearest monster to the hero.
+      _targetNearest(_gameScreen.game.hero.pos);
+    }
+  }
+
+  bool _targetNearest(Vec pos) {
+    if (_monsters.isEmpty) return false;
+
+    Actor nearest;
+    for (var monster in _monsters) {
+      if (nearest == null || pos - monster.pos < pos - nearest.pos) {
+        nearest = monster;
       }
     }
 
-    if (nearest != null) {
-      _gameScreen.target = nearest;
-    }
+    _gameScreen.targetActor(nearest);
+    return true;
   }
 
   bool handleInput(Input input) {
     switch (input) {
       case Input.ok:
-        if (_target != null) {
+        if (_gameScreen.currentTarget != null) {
           ui.pop();
-          _onSelect(_target);
+          _onSelect(_gameScreen.currentTarget);
         }
         break;
 
@@ -78,6 +86,22 @@ class TargetDialog extends Screen<Input> {
     }
 
     return true;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (keyCode == KeyCode.tab && !_monsters.isEmpty) {
+      _targetingFloor = !_targetingFloor;
+      if (!_targetingFloor) {
+        // Target the nearest monster to the floor tile we were previously
+        // targeting.
+        _targetNearest(_gameScreen.currentTarget ?? _gameScreen.game.hero.pos);
+      } else {
+        _gameScreen.targetFloor(_gameScreen.currentTarget);
+      }
+      return true;
+    }
+
+    return false;
   }
 
   void update() {
@@ -119,15 +143,16 @@ class TargetDialog extends Screen<Input> {
           new Glyph.fromCharCode(glyph.char, color));
     }
 
-    if (_target == null) return;
+    var target = _gameScreen.currentTarget;
+    if (target == null) return;
 
     // Show the path that the bolt will trace, stopping when it hits an
     // obstacle.
     int i = _animateOffset ~/ _ticksPerFrame;
     var reachedTarget = false;
-    for (var pos in new Los(_gameScreen.game.hero.pos, _target)) {
+    for (var pos in new Los(_gameScreen.game.hero.pos, target)) {
       // Note if we made it to the target.
-      if (pos == _target) {
+      if (pos == target) {
         reachedTarget = true;
         break;
       }
@@ -144,19 +169,30 @@ class TargetDialog extends Screen<Input> {
     // Only show the reticle if the bolt will reach the target.
     if (reachedTarget) {
       var targetColor = Color.yellow;
-      var toTarget = _target - _gameScreen.game.hero.pos;
+      var toTarget = target - _gameScreen.game.hero.pos;
       if (toTarget > _range * 2 / 3) {
         targetColor = Color.darkYellow;
       }
 
-      _gameScreen.drawStageGlyph(terminal, _target.x - 1, _target.y,
+      _gameScreen.drawStageGlyph(terminal, target.x - 1, target.y,
           new Glyph('-', targetColor));
-      _gameScreen.drawStageGlyph(terminal, _target.x + 1, _target.y,
+      _gameScreen.drawStageGlyph(terminal, target.x + 1, target.y,
           new Glyph('-', targetColor));
-      _gameScreen.drawStageGlyph(terminal, _target.x, _target.y - 1,
+      _gameScreen.drawStageGlyph(terminal, target.x, target.y - 1,
           new Glyph('|', targetColor));
-      _gameScreen.drawStageGlyph(terminal, _target.x, _target.y + 1,
+      _gameScreen.drawStageGlyph(terminal, target.x, target.y + 1,
           new Glyph('|', targetColor));
+    }
+
+    if (_monsters.isEmpty) {
+      terminal.writeAt(0, terminal.height - 1,
+          "[↕↔] Choose tile, [Esc] Cancel", Color.gray);
+    } else if (_targetingFloor) {
+      terminal.writeAt(0, terminal.height - 1,
+          "[↕↔] Choose tile, [Tab] Target monsters, [Esc] Cancel", Color.gray);
+    } else {
+      terminal.writeAt(0, terminal.height - 1,
+          "[↕↔] Choose monster, [Tab] Target floor, [Esc] Cancel", Color.gray);
     }
   }
 
@@ -166,31 +202,41 @@ class TargetDialog extends Screen<Input> {
   /// this targets the nearest one. Otherwise, it wraps around and targets the
   /// *farthest* monster in the other half-place.
   void _changeTarget(Direction dir) {
-    var ahead = [];
-    var behind = [];
-
-    var perp = dir.rotateLeft90;
-    for (var monster in _monsters) {
-      var relative = monster.pos - _target;
-      var dotProduct = perp.x * relative.y - perp.y * relative.x;
-      if (dotProduct > 0) {
-        ahead.add(monster);
-      } else {
-        behind.add(monster);
+    if (_targetingFloor) {
+      var pos = _gameScreen.currentTarget + dir;
+      var tile = _gameScreen.game.stage[pos];
+      if ((_gameScreen.game.hero.pos - pos) <= _range &&
+          tile.isTransparent &&
+          tile.visible) {
+        _gameScreen.targetFloor(pos);
       }
-    }
+    } else {
+      var ahead = [];
+      var behind = [];
 
-    var nearest = _findLowest(ahead,
-        (monster) => (monster.pos - _target).lengthSquared);
-    if (nearest != null) {
-      _gameScreen.target = nearest;
-      return;
-    }
+      var perp = dir.rotateLeft90;
+      for (var monster in _monsters) {
+        var relative = monster.pos - _gameScreen.currentTarget;
+        var dotProduct = perp.x * relative.y - perp.y * relative.x;
+        if (dotProduct > 0) {
+          ahead.add(monster);
+        } else {
+          behind.add(monster);
+        }
+      }
 
-    var farthest = _findHighest(behind,
-        (monster) => (monster.pos - _target).lengthSquared);
-    if (farthest != null) {
-      _gameScreen.target = farthest;
+      var nearest = _findLowest(ahead, (monster) =>
+          (monster.pos - _gameScreen.currentTarget).lengthSquared);
+      if (nearest != null) {
+        _gameScreen.targetActor(nearest);
+        return;
+      }
+
+      var farthest = _findHighest(behind, (monster) =>
+          (monster.pos - _gameScreen.currentTarget).lengthSquared);
+      if (farthest != null) {
+        _gameScreen.targetActor(farthest);
+      }
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'package:piecemeal/piecemeal.dart';
+
 import '../action/action.dart';
 import '../attack.dart';
 import '../element.dart';
@@ -29,12 +31,12 @@ class Item implements Comparable<Item>, Noun {
   }
 
   /// Whether the item can be thrown or not.
-  bool get canToss => type._tossAttack != null;
+  bool get canToss => type.toss != null;
 
   /// The base attack for the item, ignoring its own affixes.
   Attack get attack => type.attack;
 
-  Attack get tossAttack => type._tossAttack;
+  Toss get toss => type.toss;
 
   Element get element {
     var result = Element.none;
@@ -200,6 +202,23 @@ class Item implements Comparable<Item>, Noun {
 }
 
 typedef Action ItemUse();
+typedef Action TossItemUse(Vec pos);
+
+/// Tracks information about a tossable [ItemType].
+class Toss {
+  /// The percent chance of the item breaking when thrown. `null` if the item
+  /// can't be thrown.
+  final int breakage;
+
+  /// The item's attack when thrown or `null` if the item can't be thrown.
+  final Attack attack;
+
+  /// The action created when the item is tossed and hits something, or `null`
+  /// if it just falls to the ground.
+  final TossItemUse use;
+
+  Toss(this.breakage, this.attack, this.use);
+}
 
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {
@@ -231,12 +250,8 @@ class ItemType {
   /// The item's [Attack] or `null` if the item is not an equippable weapon.
   final Attack attack;
 
-  /// The item's attack when thrown or `null` if the item can't be thrown.
-  final Attack _tossAttack;
-
-  /// The percent chance of the item breaking when thrown. `null` if the item
-  /// can't be thrown.
-  final int breakage;
+  /// The items toss information, or `null` if it can't be tossed.
+  final Toss toss;
 
   final int armor;
 
@@ -256,8 +271,8 @@ class ItemType {
   final Set<String> flags = new Set();
 
   ItemType(this._name, this.appearance, this.depth, this.sortIndex,
-      this.equipSlot, this.weaponType, this.use, this.attack, this._tossAttack,
-      this.breakage, this.armor, this.price, this.maxStack, {treasure: false})
+      this.equipSlot, this.weaponType, this.use, this.attack, this.toss,
+      this.armor, this.price, this.maxStack, {treasure: false})
       : isTreasure = treasure;
 
   String toString() => name;

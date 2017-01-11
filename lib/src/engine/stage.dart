@@ -104,6 +104,8 @@ class Stage {
     if (_currentActorIndex > index) _currentActorIndex--;
     _actors.removeAt(index);
 
+    if (_currentActorIndex >= _actors.length) _currentActorIndex = 0;
+
     _actorsByTile[actor.pos] = null;
   }
 

@@ -195,7 +195,7 @@ class ResourceSet<T> {
     if (relative <= 0.0) {
       // As you get deeper in the dungeon, the probability curve widens so that
       // you still find weaker stuff fairly frequently.
-      deviation = 0.2 + targetDepth * 0.3;
+      deviation = 1.0 + targetDepth * 0.2;
     } else {
       deviation = 0.7 + targetDepth * 0.1;
     }

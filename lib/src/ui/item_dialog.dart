@@ -394,7 +394,7 @@ class _TossItemCommand extends _ItemCommand {
       ItemLocation location) {
     // Now we need a target.
     dialog.ui.goTo(new TargetDialog(dialog._gameScreen,
-        item.tossAttack.range, (target) {
+        item.toss.attack.range, (target) {
       dialog._gameScreen.game.hero.setNextAction(
           new TossAction(location, item, target));
     }));

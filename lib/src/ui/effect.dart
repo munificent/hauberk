@@ -130,10 +130,10 @@ final _elementSequences = <Element, List<List<Glyph>>> {
     _glyphs("•", [Color.darkBrown])
   ],
   Element.fire: [
-    _glyphs("*", [Color.gold, Color.yellow]),
-    _glyphs("*", [Color.orange]),
-    _glyphs("•", [Color.red]),
-    _glyphs("•", [Color.darkRed, Color.red]),
+    _glyphs("▲^", [Color.gold, Color.yellow]),
+    _glyphs("*^", [Color.orange]),
+    _glyphs("^", [Color.red]),
+    _glyphs("^", [Color.darkRed, Color.red]),
     _glyphs(".", [Color.darkRed, Color.red])
   ],
   Element.water: [

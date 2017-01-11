@@ -23,6 +23,8 @@ Element _tossElement;
 /// Percent chance of objects in the current category breaking when thrown.
 int _breakage;
 
+TossItemUse _tossUse;
+
 /// Static class containing all of the [ItemType]s.
 class Items {
   static final types = new ResourceSet<ItemType>();
@@ -186,7 +188,7 @@ void potions() {
   // TODO: Make monsters drop these.
   // TODO: These should do their ball attack when thrown too.
   tagged("magic/potion/bottled");
-  tossable(damage: 1, range: 8, breakage: 100);
+  tossable(damage: 1, range: 12, breakage: 100);
   bottled("Wind",         4,   30, white,       Element.air,         8, "blasts");
   bottled("Ice",          7,   55, lightBlue,   Element.cold,       15, "freezes", flags: "-freezable");
   bottled("Fire",        11,   70, red,         Element.fire,       22, "burns");
@@ -426,13 +428,15 @@ void tagged(String tagPath) {
 /// Makes items in the current category throwable.
 ///
 /// This must be called *after* [category] is called.
-void tossable({int damage, Element element, int range, int breakage}) {
-  if (element == null) element = Element.none;
+void tossable({int damage, Element element, int range, int breakage,
+    TossItemUse use}) {
+  element ??= Element.none;
 
   _tossDamage = damage;
   _tossElement = element;
   _tossRange = range;
   _breakage = breakage;
+  _tossUse = use;
 }
 
 void treasure(String name, int depth, appearance, int price) {
@@ -460,11 +464,12 @@ void resistSalve(String name, int depth, int price, appearance,
 
 void bottled(String name, int depth, int price, appearance, Element element,
     int damage, String verb, {String noun, String flags}) {
-  if (noun == null) noun = "the ${name.toLowerCase()}";
+  noun ??= "the ${name.toLowerCase()}";
 
+  var attack = new Attack(new Noun(noun), verb, damage, 3, element);
   item("Bottled $name", depth, 2, appearance, price: price,
-      use: () => new RingSelfAction(
-          new Attack(new Noun(noun), verb, damage, 6, element)),
+      use: () => new RingSelfAction(attack),
+      tossUse: (pos) => new RingAtAction(attack, pos),
       flags: flags);
 }
 
@@ -509,6 +514,7 @@ void armor(String name, int depth, int rarity, int price, appearance, int armor)
 }
 
 void item(String name, int depth, int rarity, appearance, {ItemUse use,
+    TossItemUse tossUse,
     Attack attack, Attack tossAttack, int armor: 0, int price: 0,
     bool treasure: false, String flags}) {
   // If the appearance isn't an actual glyph, it should be a color function
@@ -523,8 +529,13 @@ void item(String name, int depth, int rarity, appearance, {ItemUse use,
         noun, "hits", _tossDamage, _tossRange, _tossElement);
   }
 
+  Toss toss;
+  if (tossAttack != null) {
+    toss = new Toss(_breakage, tossAttack, tossUse ?? _tossUse);
+  }
+
   var itemType = new ItemType(name, appearance, depth, _sortIndex++, _equipSlot,
-      _weaponType, use, attack, tossAttack, _breakage, armor, price, _maxStack,
+      _weaponType, use, attack, toss, armor, price, _maxStack,
       treasure: treasure);
 
   // Use the tags (if any) to figure out which slot it can be equipped in.

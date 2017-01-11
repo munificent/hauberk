@@ -34,7 +34,7 @@ class TossAction extends ItemAction {
       countChanged();
     }
 
-    var hit = item.tossAttack.createHit();
+    var hit = item.toss.attack.createHit();
     // TODO: *Should* equipment modify thrown items?
     actor.modifyHit(hit);
 
@@ -90,15 +90,22 @@ class TossLosAction extends LosAction {
   }
 
   void _endThrow(Vec pos) {
+    // TODO: I think there's a bug here somewhere. Sometimes, when you throw a
+    // bottled element at a monster, it seems to only do the toss damage of the
+    // bottle itself, and not the effect damage too.
+    // See if the item does something when it hits.
+    if (_item.toss.use != null) {
+      addAction(_item.toss.use(pos));
+      return;
+    }
+
     // See if it breaks.
-    if (rng.range(100) < _item.type.breakage) {
+    if (rng.range(100) < _item.toss.breakage) {
       log("{1} breaks!", _item);
       return;
     }
 
     // Drop the item onto the ground.
     game.stage.addItem(_item, pos);
-
-    // TODO: Secondary actions: potions explode etc.
   }
 }

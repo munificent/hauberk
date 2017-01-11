@@ -33,22 +33,53 @@ class GameScreen extends Screen<Input> {
   Rect _cameraBounds;
   Rect get cameraBounds => _cameraBounds;
 
-  /// The currently targeted actor, if any.
-  Actor get target {
-    // Make sure the target is still valid.
-    if (_target != null) {
-      if (!_target.isAlive || !_target.isVisible) _target = null;
-    }
+  Actor _targetActor;
+  Vec _target;
+
+  void targetActor(Actor value) {
+    if (_targetActor != value) dirty();
+
+    _targetActor = value;
+    _target = null;
+  }
+
+  /// Targets the floor at [pos].
+  void targetFloor(Vec pos) {
+    if (_targetActor != null || _target != pos) dirty();
+
+    _targetActor = null;
+    _target = pos;
+  }
+
+  /// Gets the currently targeted position.
+  ///
+  /// If targeting an actor, gets the actor's position.
+  Vec get currentTarget {
+    // If we're targeting an actor, use its position.
+    if (currentTargetActor != null) return currentTargetActor.pos;
+
+    // Forget the floor if we can't see it.
+    if (_target != null && !game.stage[_target].visible) _target = null;
 
     return _target;
   }
 
-  set target(Actor value) {
-    if (_target == value) return;
-    _target = value;
-    dirty();
+  /// The currently targeted actor, if any.
+  Actor get currentTargetActor {
+    // Forget the target if it dies or goes offscreen.
+    if (_targetActor != null) {
+      if (!_targetActor.isAlive || !_targetActor.isVisible) _targetActor = null;
+    }
+
+    if (_targetActor != null) return _targetActor;
+
+    // If we're targeting the floor, see if there is an actor there.
+    if (_target != null) {
+      return game.stage.actorAt(_target);
+    }
+
+    return null;
   }
-  Actor _target;
 
   GameScreen(this._save, this.game) {
     _positionCamera();
@@ -124,8 +155,7 @@ class GameScreen extends Screen<Input> {
             .firstWhere((command) => command.canUse(game), orElse: () => null);
         if (command is TargetCommand) {
           // If we still have a visible target, use it.
-          if (target != null && target.isAlive &&
-              game.stage[target.pos].visible) {
+          if (currentTarget != null) {
             _fireAtTarget();
           } else {
             // No current target, so ask for one.
@@ -196,7 +226,7 @@ class GameScreen extends Screen<Input> {
     var command = game.hero.heroClass.commands
         .firstWhere((command) => command.canUse(game)) as TargetCommand;
 
-    game.hero.setNextAction(command.getTargetAction(game, target.pos));
+    game.hero.setNextAction(command.getTargetAction(game, currentTarget));
   }
 
   void _fireTowards(Direction dir) {
@@ -208,32 +238,46 @@ class GameScreen extends Screen<Input> {
     if (command == null) {
       game.log.error("You don't have any commands you can perform.");
       dirty();
-      return;
-    }
-
-    if (command is DirectionCommand) {
+    } else if (command is DirectionCommand) {
       game.hero.setNextAction(command.getDirectionAction(game, dir));
-      return;
-    }
-
-    if (command is TargetCommand) {
+    } else if (command is TargetCommand) {
       var pos = game.hero.pos + dir;
 
-      // Target the monster that is in the fired direction.
+      // Target the monster that is in the fired direction, if any.
+      Vec previous;
       for (var step in new Los(game.hero.pos, pos)) {
-        // Stop if we hit a wall.
-        if (!game.stage[step].isTransparent) break;
-
-        // See if there is an actor there.
-        final actor = game.stage.actorAt(step);
+        // If we reached an actor, target it.
+        var actor = game.stage.actorAt(step);
         if (actor != null) {
-          target = actor;
+          targetActor(actor);
           break;
         }
+
+        // If we hit a wall, target the floor tile before it.
+        if (!game.stage[step].isTransparent) {
+          targetFloor(previous);
+          break;
+        }
+
+        // If we hit the end of the range, target the floor there.
+        if ((step - game.hero.pos) >= command.getRange(game)) {
+          targetFloor(step);
+          break;
+        }
+
+        previous = step;
       }
 
-      game.hero.setNextAction(command.getTargetAction(game, pos));
-      return;
+      if (currentTarget != null) {
+        game.hero.setNextAction(command.getTargetAction(game, currentTarget));
+      } else {
+        var tile = game.stage[game.hero.pos + dir].type.name;
+        game.log.error("There is a $tile} in the way.");
+        dirty();
+      }
+    } else {
+      // Unknown command type.
+      assert(false);
     }
   }
 
@@ -389,7 +433,7 @@ class GameScreen extends Screen<Input> {
       }
 
       // If the actor is being targeted, invert its colors.
-      if (target == actor) {
+      if (targetActor == actor) {
         glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
       }
 
@@ -471,13 +515,13 @@ class GameScreen extends Screen<Input> {
         var monster = visibleMonsters[i];
 
         var glyph = monster.appearance;
-        if (target == monster) {
+        if (targetActor == monster) {
           glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
         terminal.drawGlyph(0, y, glyph);
         terminal.writeAt(2, y, monster.breed.name,
-            (target == monster) ? Color.yellow : Color.white);
+            (targetActor == monster) ? Color.yellow : Color.white);
 
         _drawHealthBar(terminal, y + 1, monster);
       }
