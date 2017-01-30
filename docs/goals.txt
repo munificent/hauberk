@@ -1,0 +1,63 @@
+One way to figure out how to balance the game and fill in content is to think
+about what the player's near term goals are at various points during a full
+playthrough (aside from the ever-present "levelling"). This depends on what
+kinds of monsters they'll be dealing with at various depths, so coming up with
+this list is equivalent to deciding monsters, and vice versa.
+
+At a high level, I'm thinking much of the game blends a few goals:
+
+- Amass and maintain a stockpile of increasingly powerful consumables, the best
+  of which are saved for the final boss and other high level uniques.
+
+- Acquiring a set of equipment to cover as many resistances and conditions as
+  possible.
+
+- Getting gear to maximize speed and other combat boosts.
+
+- Maxing out level and skills. (And stats if we add them?)
+
+That's basically it. Level up, buff yourself with gear, build a trove of
+consumables, and you're ready to kill the boss.
+
+This assumes the player has complete lore knowledge of the game. If that's not
+the case, there's also a lot of *learning* about all of the different items and
+monsters.
+
+Here's a more detailed progression:
+
+- Get some basic armor in each slot.
+- Build up a stock of small healing, antidote, and escape items.
+
+...
+
+- Start transitioning to more powerful healing, etc. items how that max health
+  is higher.
+
+...
+
+- Max out level.
+- Ensure all resistances are covered, preferrably at power >=2.
+- Kill final boss.
+
+---
+
+One way to think about balacing monsters and items in the dungeon is by how they
+pair up. Different monster moves and behaviors lend themselves to different
+items to help defeat them. So a player's intermediate goals are often ensuring
+they have certain items and equipment before they reach a depth where certain
+styles of monsters show up.
+
+Here are some:
+
+- Obviously, you want resistances to elements before you run into strong attacks
+  with that element. This is especially true for elements with nasty side
+  effects.
+- You want strong armor (and high health) before running into monsters that
+  dish out a lot of damage.
+- You want to have some form of ranged attack before you encounter a lot of
+  shy monsters that avoid melee and focus on ranged moves.
+- You want to resist or cure poison before running into poisoners.
+- You want to resist or cure other conditions (sleep, confuse, etc.) before
+  running into monsters that cause them.
+- You want some kind of area attacks before running into lots of group monsters,
+  especially group monsters that try to avoid melee.

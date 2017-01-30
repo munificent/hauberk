@@ -29,3 +29,6 @@ Ideas for more things monsters can do to increase variety:
 - Split into two weaker monsters
 - Walk through walls (insubstantial)
 - Bore through walls
+- Area attacks that spread using flow
+- Area attacks that spread as a collection of randomly moving particles
+- Be invisible

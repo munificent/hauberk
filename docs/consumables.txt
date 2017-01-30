@@ -8,7 +8,7 @@ them a pile of permanent goods. Here's some ideas:
 - "Bomb-like" items that do real damage or a ball attack when tossed.
 - Time bombs that get dropped on the ground and explode after a few turns.
 - Bolt, ball, etc. attacks.
-- Temporary resists, individually and in various combinations and intensities.
++ Temporary resists, individually and in various combinations and intensities.
 - If we add stats, potions to permanently raise stats or swap them.
 - Healing at various intensities.
 - More targeted kinds of teleportation?

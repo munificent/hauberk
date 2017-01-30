@@ -1,0 +1,40 @@
+things decor can do
+- pushed
+- bashed 
+- burned
+- melted
+- opened and closed
+- contain items
+
+open door
+closed door
+drapes
+
+table
+workbench
+
+armor stand
+weapon stand
+potion rack
+treasure chest
+barrel
+keg
+crate
+
+chair
+throne
+stool
+
+statue
+fountain
+barred wall
+basin
+torture rack
+tombstone
+
+chains
+bones
+rubble
+stones
+mirror
+
