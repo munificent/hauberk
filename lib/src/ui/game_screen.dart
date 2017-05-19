@@ -483,10 +483,12 @@ class GameScreen extends Screen<Input> {
     terminal.writeAt(7, 1, hero.food.ceil().toString(), Color.orange);
 
     _drawStat(terminal, 2, 'Level', hero.level, Color.aqua);
-    var levelPercent = 100 * hero.experience ~/
-        (calculateLevelCost(hero.level + 1) -
-        calculateLevelCost(hero.level));
-    terminal.writeAt(16, 2, '$levelPercent%', Color.darkAqua);
+    if (hero.level < Option.heroLevelMax) {
+        var levelPercent = 100 * hero.experience ~/
+            (calculateLevelCost(hero.level + 1) -
+                    calculateLevelCost(hero.level));
+        terminal.writeAt(16, 2, '$levelPercent%', Color.darkAqua);
+    }
     _drawStat(terminal, 3, 'Gold', hero.gold, Color.gold);
     _drawStat(terminal, 4, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
