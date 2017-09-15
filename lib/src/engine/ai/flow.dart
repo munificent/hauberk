@@ -240,8 +240,10 @@ class Flow {
       }
 
       _distances[here] = distance + 1;
-      _open.add(here);
       _found.add(here);
+
+      // Keep exploring from here if we aren't at the max distance yet.
+      if (distance + 1 < _maxDistance) _open.add(here);
     }
   }
 
