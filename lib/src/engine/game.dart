@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
@@ -15,15 +16,45 @@ import 'stage.dart';
 
 /// Root class for the game engine. All game state is contained within this.
 class Game {
+  final Content _content;
+  final HeroSave _save;
+  final log = new Log();
+  final _actions = new Queue<Action>();
+
   final int depth;
   Stage get stage => _stage;
   Stage _stage;
-  final log = new Log();
-  final _actions = new Queue<Action>();
   Hero hero;
 
-  Game(Content content, HeroSave save, this.depth) {
-    _buildStage(content, save, depth);
+  Game(this._content, this._save, this.depth) {
+    // TODO: Vary size?
+    _stage = new Stage(101, 71, this);
+//    _stage = new Stage(60, 34, this);
+  }
+
+  Iterable<String> generate() sync* {
+    // TODO: Do something useful with depth.
+    yield* _content.buildStage(_stage, depth);
+
+    var heroPos = stage.findOpenTile();
+    hero = new Hero(this, heroPos, _save);
+    _stage.addActor(hero);
+
+    // TODO: Temp. Wizard light it.
+    /*
+    for (var pos in stage.bounds) {
+      for (var dir in Direction.all) {
+        if (stage.bounds.contains(pos + dir) &&
+            stage[pos + dir].isTransparent) {
+          stage[pos].visible = true;
+          break;
+        }
+      }
+    }
+    */
+
+    yield "Calculating visibility";
+    _stage.finishBuild();
   }
 
   GameResult update() {
@@ -109,41 +140,13 @@ class Game {
 //
 //    stage.spawnMonster(area.pickBreed(level), pos);
 //  }
-
-  // TODO: Move to separate class.
-  void _buildStage(Content content, HeroSave heroSave, int depth) {
-    // TODO: Do something useful with depth.
-    // TODO: Vary size?
-    _stage = new Stage(101, 71, this);
-
-    content.buildStage(_stage, depth);
-
-    var heroPos = stage.findOpenTile();
-    hero = new Hero(this, heroPos, heroSave);
-    _stage.addActor(hero);
-
-    // TODO: Temp. Wizard light it.
-    /*
-    for (var pos in stage.bounds) {
-      for (var dir in Direction.all) {
-        if (stage.bounds.contains(pos + dir) &&
-            stage[pos + dir].isTransparent) {
-          stage[pos].visible = true;
-          break;
-        }
-      }
-    }
-    */
-
-    _stage.finishBuild();
-  }
 }
 
 /// Defines the actual content for the game: the breeds, items, etc. that
 /// define the play experience.
 abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
-  void buildStage(Stage stage, int depth);
+  Iterable<String> buildStage(Stage stage, int depth);
 
   Affix findAffix(String name);
   ItemType tryFindItem(String name);

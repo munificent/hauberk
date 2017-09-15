@@ -7,6 +7,7 @@ import '../hues.dart';
 import 'game_screen.dart';
 import 'input.dart';
 import 'item_screen.dart';
+import 'loading_dialog.dart';
 import 'storage.dart';
 
 class SelectDepthScreen extends Screen<Input> {
@@ -36,8 +37,7 @@ class SelectDepthScreen extends Screen<Input> {
           return true;
 
       case Input.ok:
-        var game = new Game(content, save, selectedDepth);
-        ui.push(new GameScreen(save, game));
+          ui.push(new LoadingDialog(save, content, selectedDepth));
         return true;
 
       case Input.cancel:

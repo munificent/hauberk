@@ -37,10 +37,13 @@ class Dungeon {
   static const numRoomTries = 60;
   static const numRoomPositionTries = 20;
 
-  /// The inverse chance of adding a connector between two regions that have
-  /// already been joined. Increasing this leads to more redundantly connected
-  /// dungeons.
-  static const extraConnectorChance = 40;
+  /// The number of extra junctions to add to make the dungeon more than simply
+  /// connected.
+  static const maxCycles = 20;
+
+  /// How long the path around two sides of a junction must be to be worth
+  /// adding a cycle there.
+  static const minCyclePath = 20;
 
   final Stage stage;
   final int depth;
@@ -50,7 +53,7 @@ class Dungeon {
   /// Increasing this allows rooms to be larger.
   int get roomExtraSize => 2;
 
-  static const windingPercent = 30;
+  static const windingPercent = 80;
 
   final _rooms = <Rect, RoomType>{};
   final _connectors = <Vec>[];
@@ -65,7 +68,7 @@ class Dungeon {
 
   Dungeon(this.stage, this.depth);
 
-  void generate() {
+  Iterable<String> generate() sync* {
     // TODO: This occasionally generates dungeons with unreachable areas. I
     // think it's because of the limited connectors exposed by some room types.
     // Need to decide how to handle that.
@@ -81,8 +84,10 @@ class Dungeon {
     _regions = new Array2D(stage.width, stage.height);
     fill(Tiles.wall);
 
+    yield "Placing rooms";
     _addRooms();
 
+    yield "Carving passageways";
     // Fill in all of the empty space with mazes.
     for (var y = 1; y < bounds.height; y += 2) {
       for (var x = 1; x < bounds.width; x += 2) {
@@ -92,11 +97,18 @@ class Dungeon {
       }
     }
 
+    yield "Decorating rooms";
     _rooms.forEach((room, type) {
       type.place(this, room);
     });
 
+    yield "Connecting regions";
     _connectRegions();
+
+    yield "Adding extra connections";
+    _addCycles();
+
+    yield "Removing dead ends";
     _removeDeadEnds();
 
     // TODO: Temp hack. Place stairs in a more logical way.
@@ -106,7 +118,7 @@ class Dungeon {
       stage.tiles[pos].type = Tiles.stairs;
     }
 
-    // Place the items.
+    yield "Dropping loot";
     // TODO: Place into rooms. Give them themes, etc.
     var numItems = rng.taper(50 + depth * 2, 2);
     for (int i = 0; i < numItems; i++) {
@@ -114,7 +126,7 @@ class Dungeon {
       tryPlaceItem(pos, depth);
     }
 
-    // Place the monsters.
+    yield "Spawning monsters";
     // TODO: Tune this. Make it based on depth. Take density of open areas into
     // account?
     // TODO: Place monsters into rooms. Give them themes.
@@ -313,10 +325,6 @@ class Dungeon {
             mergedRegions[i] = mergedTo;
           }
         }
-      } else if (rng.oneIn(extraConnectorChance)) {
-        // This connecter isn't needed, but connect it occasionally so that the
-        // dungeon isn't singly-connected.
-        _addJunction(pos);
       }
     }
   }
@@ -330,6 +338,37 @@ class Dungeon {
 
     // Mark this tile as containing a junction.
     _regions[pos] = -1;
+  }
+
+  /// Open additional junctions that aren't necessary to make the dungeon
+  /// connected.
+  void _addCycles() {
+    var cycles = 0;
+
+    for (var pos in _connectors) {
+      // If it's already connected, ignore it.
+      if (getTile(pos) != Tiles.wall) continue;
+
+      var exits = Direction.cardinal
+          .map((dir) => pos + dir)
+          .where((neighbor) => getTile(neighbor) != Tiles.wall)
+          .toList();
+
+      // Only consider extra junctions that directly connect two open areas.
+      if (exits.length != 2) continue;
+
+      // Only add cycles if they add significant shortcuts.
+      // TODO: Instead of a hard cut-off, maybe shorter paths should just make
+      // cycles less common?
+      var path = AStar.findPath(stage, exits[0], exits[1],
+          maxLength: minCyclePath, canOpenDoors: true);
+      if (path.length != 0 && path.length < minCyclePath) continue;
+
+      _addJunction(pos);
+
+      cycles++;
+      if (cycles > maxCycles) break;
+    }
   }
 
   void _removeDeadEnds() {

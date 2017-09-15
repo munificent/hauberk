@@ -21,8 +21,8 @@ class AStar {
   /// steps from [start]. Returns the [Direction] of the first step from [start]
   /// along that path (or [Direction.none] if it determines there is no path
   /// possible.
-  static Direction findDirection(Stage stage, Vec start, Vec end, int maxLength,
-      bool canOpenDoors) {
+  static Direction findDirection(Stage stage, Vec start, Vec end, {int maxLength,
+      bool canOpenDoors = true}) {
     var path = _findPath(stage, start, end, maxLength, canOpenDoors);
     if (path == null) return Direction.none;
 
@@ -33,8 +33,8 @@ class AStar {
     return path.direction;
   }
 
-  static PathResult findPath(Stage stage, Vec start, Vec end, int maxLength,
-      bool canOpenDoors) {
+  static PathResult findPath(Stage stage, Vec start, Vec end, {int maxLength,
+      bool canOpenDoors = true}) {
     var path = _findPath(stage, start, end, maxLength, canOpenDoors);
     if (path == null) return new PathResult(Direction.none, 0);
 

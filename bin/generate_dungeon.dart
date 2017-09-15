@@ -16,6 +16,7 @@ main() {
     var count = 0;
     for (var i = 1; i <= Option.maxDepth; i++) {
       var game = new Game(content, save, 1);
+      for (var _ in game.generate());
 
       // Read some bit of game data so the JIT doesn't optimize the whole
       // program away as dead code.

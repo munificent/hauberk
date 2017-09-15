@@ -6,6 +6,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:hauberk/src/hues.dart';
 
 import 'histogram.dart';
 
@@ -14,6 +15,8 @@ html.CanvasElement canvas;
 var content = createContent();
 var heroClass = new Warrior();
 var save = new HeroSave("Hero", heroClass);
+Game _game;
+Terminal terminal;
 
 int get depth {
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
@@ -42,36 +45,19 @@ main() {
 }
 
 void generate() {
-  var game = new Game(content, save, depth);
+  _game = new Game(content, save, depth);
+  var stage = _game.stage;
 
-  var stage = game.stage;
-
-//  var terminal = new RetroTerminal(stage.width, stage.height, "font_16.png",
+  //  terminal = new RetroTerminal(stage.width, stage.height, "font_16.png",
 //      canvas: canvas, charWidth: 16, charHeight: 16);
-  var terminal = new RetroTerminal(stage.width, stage.height, "font_8.png",
+  terminal = new RetroTerminal(stage.width, stage.height, "font_8.png",
       canvas: canvas, charWidth: 8, charHeight: 8);
 
-  for (var y = 0; y < stage.height; y++) {
-    for (var x = 0; x < stage.width; x++) {
-      var glyph = stage.get(x, y).type.appearance[0] as Glyph;
-      terminal.drawGlyph(x, y, glyph);
-
-      var pos = new Vec(x, y);
-      var items = stage.itemsAt(pos);
-      if (items.isNotEmpty) {
-        terminal.drawGlyph(x, y, items.first.appearance as Glyph);
-      }
-
-      var actor = stage.actorAt(pos);
-      if (actor != null) {
-        if (actor.appearance is String) {
-          terminal.drawChar(x, y, CharCode.blackSmilingFace, Color.white);
-        } else {
-          terminal.drawGlyph(x, y, actor.appearance as Glyph);
-        }
-      }
-    }
+  for (var event in _game.generate()) {
+    print(event);
   }
+
+  render();
 
   var monsters = new Histogram<Breed>();
   for (var actor in stage.actors) {
@@ -173,4 +159,30 @@ void generate() {
   }
   html.querySelector('table[id=items]').setInnerHtml(tableContents.toString(),
       validator: validator);
+}
+
+void render() {
+  var stage = _game.stage;
+
+  for (var y = 0; y < stage.height; y++) {
+    for (var x = 0; x < stage.width; x++) {
+      var glyph = stage.get(x, y).type.appearance[0] as Glyph;
+      terminal.drawGlyph(x, y, glyph);
+
+      var pos = new Vec(x, y);
+      var items = stage.itemsAt(pos);
+      if (items.isNotEmpty) {
+        terminal.drawGlyph(x, y, items.first.appearance as Glyph);
+      }
+
+      var actor = stage.actorAt(pos);
+      if (actor != null) {
+        if (actor.appearance is String) {
+          terminal.drawChar(x, y, CharCode.at, ash);
+        } else {
+          terminal.drawGlyph(x, y, actor.appearance as Glyph);
+        }
+      }
+    }
+  }
 }
