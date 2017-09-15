@@ -3,6 +3,7 @@ import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'input.dart';
 import 'select_depth_screen.dart';
 import 'storage.dart';
@@ -95,17 +96,17 @@ class NewHeroScreen extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    terminal.writeAt(0, 0,
-        "What name shall the bards use to sing of your hero's adventures?");
+    terminal.writeAt(8, 18,
+        "What name shall the bards use to sing of your hero's adventures?", UIHue.text);
 
     if (name.isEmpty) {
-      terminal.writeAt(0, 2, defaultName, Color.black, Color.yellow);
+      terminal.writeAt(8, 20, defaultName, UIHue.selection);
     } else {
-      terminal.writeAt(0, 2, name);
-      terminal.writeAt(name.length, 2, " ", Color.black, Color.yellow);
+      terminal.writeAt(8, 20, name, UIHue.primary);
+      terminal.writeAt(8 + name.length, 20, " ", Color.black, UIHue.selection);
     }
 
     terminal.writeAt(0, terminal.height - 1,
-        '[A-Z] Enter name, [Del] Delete letter, [Enter] Create hero, [Esc] Cancel', Color.gray);
+        '[A-Z] Enter name, [Del] Delete letter, [Enter] Create hero, [Esc] Cancel', UIHue.helpText);
   }
 }

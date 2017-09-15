@@ -1,6 +1,7 @@
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
+import '../hues.dart';
 import 'input.dart';
 
 /// Modal dialog for letting the user confirm an action.
@@ -40,6 +41,6 @@ class ConfirmDialog extends Screen<Input> {
   bool update() => false;
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, '$message [Y]/[N]');
+    terminal.writeAt(0, 0, '$message [Y]/[N]', UIHue.text);
   }
 }

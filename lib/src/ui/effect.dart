@@ -5,6 +5,10 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import '../engine/circle.dart';
+import '../hues.dart';
+
+// TODO: Effects need to take background color into effect better: should be
+// black when over unexplored tiles, unlit over unlit, etc.
 
 final _directionLines = {
   Direction.n: "|",
@@ -38,7 +42,7 @@ void addEffects(List<Effect> effects, Event event) {
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
         effects
-            .add(new ParticleEffect(event.actor.x, event.actor.y, Color.red));
+            .add(new ParticleEffect(event.actor.x, event.actor.y, brickRed));
       }
       break;
 
@@ -47,11 +51,11 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.fear:
-      effects.add(new BlinkEffect(event.actor, Color.darkYellow));
+      effects.add(new BlinkEffect(event.actor, mustard));
       break;
 
     case EventType.courage:
-      effects.add(new BlinkEffect(event.actor, Color.yellow));
+      effects.add(new BlinkEffect(event.actor, gold));
       break;
 
     case EventType.detect:
@@ -67,11 +71,11 @@ void addEffects(List<Effect> effects, Event event) {
 
     case EventType.spawn:
       // TODO: Something more interesting.
-      effects.add(new FrameEffect(event.actor.pos, '*', Color.white));
+      effects.add(new FrameEffect(event.actor.pos, '*', ash));
       break;
 
     case EventType.howl:
-      var colors = [Color.white, Color.lightGray, Color.gray, Color.gray];
+      var colors = [ash, gunsmoke, steelGray, steelGray];
       var color = colors[(event.other * 3).toInt()];
       effects.add(new FrameEffect(event.pos, '.', color));
       break;
@@ -84,7 +88,7 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.stab:
       var line = _directionLines[event.dir];
       // TODO: Element color.
-      effects.add(new FrameEffect(event.pos, line, Color.white));
+      effects.add(new FrameEffect(event.pos, line, ash));
       break;
 
     case EventType.gold:
@@ -112,76 +116,77 @@ List<Glyph> _glyphs(String chars, List<Color> colors) {
   return results;
 }
 
+// TODO: Design custom sprites for these.
 final _elementSequences = <Element, List<List<Glyph>>> {
   Element.none: [
-    _glyphs("•", [Color.lightBrown]),
-    _glyphs("•", [Color.lightBrown]),
-    _glyphs("•", [Color.brown])
+    _glyphs("•", [sandal]),
+    _glyphs("•", [sandal]),
+    _glyphs("•", [persimmon])
   ],
   Element.air: [
-    _glyphs("Oo", [Color.white, Color.lightAqua]),
-    _glyphs(".", [Color.lightAqua]),
-    _glyphs(".", [Color.lightGray])
+    _glyphs("Oo", [ash, turquoise]),
+    _glyphs(".", [turquoise]),
+    _glyphs(".", [cornflower])
   ],
   Element.earth: [
-    _glyphs("*%", [Color.lightBrown, Color.gold]),
-    _glyphs("*%", [Color.brown, Color.darkOrange]),
-    _glyphs("•*", [Color.brown]),
-    _glyphs("•", [Color.darkBrown])
+    _glyphs("*%", [sandal, gold]),
+    _glyphs("*%", [persimmon, garnet]),
+    _glyphs("•*", [persimmon]),
+    _glyphs("•", [garnet])
   ],
   Element.fire: [
-    _glyphs("▲^", [Color.gold, Color.yellow]),
-    _glyphs("*^", [Color.orange]),
-    _glyphs("^", [Color.red]),
-    _glyphs("^", [Color.darkRed, Color.red]),
-    _glyphs(".", [Color.darkRed, Color.red])
+    _glyphs("▲^", [gold, buttermilk]),
+    _glyphs("*^", [carrot]),
+    _glyphs("^", [brickRed]),
+    _glyphs("^", [garnet, brickRed]),
+    _glyphs(".", [garnet, brickRed])
   ],
   Element.water: [
-    _glyphs("Oo", [Color.aqua, Color.lightBlue]),
-    _glyphs("o•~", [Color.blue]),
-    _glyphs("~", [Color.blue]),
-    _glyphs("~", [Color.darkBlue]),
-    _glyphs(".", [Color.darkBlue])
+    _glyphs("Oo", [turquoise, cornflower]),
+    _glyphs("o•~", [cerulean]),
+    _glyphs("~", [cerulean]),
+    _glyphs("~", [ultramarine]),
+    _glyphs(".", [ultramarine])
   ],
   Element.acid: [
-    _glyphs("Oo", [Color.yellow, Color.gold]),
-    _glyphs("o•~", [Color.darkYellow, Color.gold]),
-    _glyphs(":,", [Color.darkYellow, Color.darkGold]),
-    _glyphs(".", [Color.darkYellow])
+    _glyphs("Oo", [buttermilk, gold]),
+    _glyphs("o•~", [lima, gold]),
+    _glyphs(":,", [lima, mustard]),
+    _glyphs(".", [lima])
   ],
   Element.cold: [
-    _glyphs("*", [Color.white]),
-    _glyphs("+x", [Color.lightBlue, Color.white]),
-    _glyphs("+x", [Color.lightBlue, Color.lightGray]),
-    _glyphs(".", [Color.gray, Color.darkBlue])
+    _glyphs("*", [ash]),
+    _glyphs("+x", [turquoise, ash]),
+    _glyphs("+x", [cornflower, gunsmoke]),
+    _glyphs(".", [slate, ultramarine])
   ],
   Element.lightning: [
-    _glyphs("*", [Color.lightPurple]),
-    _glyphs(r"-|\/", [Color.purple, Color.white]),
-    _glyphs(".", [Color.black, Color.black, Color.black, Color.lightPurple])
+    _glyphs("*", [lilac]),
+    _glyphs(r"-|\/", [violet, ash]),
+    _glyphs(".", [midnight, midnight, midnight, lilac])
   ],
   Element.poison: [
-    _glyphs("Oo", [Color.yellow, Color.lightGreen]),
-    _glyphs("o•", [Color.green, Color.green, Color.darkYellow]),
-    _glyphs("•", [Color.darkGreen, Color.darkYellow]),
-    _glyphs(".", [Color.darkGreen])
+    _glyphs("Oo", [mint, lima]),
+    _glyphs("o•", [peaGreen, peaGreen, mustard]),
+    _glyphs("•", [sherwood, mustard]),
+    _glyphs(".", [sherwood])
   ],
   Element.dark: [
-    _glyphs("*%", [Color.black, Color.black, Color.lightGray]),
-    _glyphs("•", [Color.black, Color.black, Color.gray]),
-    _glyphs(".", [Color.black]),
-    _glyphs(".", [Color.black])
+    _glyphs("*%", [midnight, midnight, steelGray]),
+    _glyphs("•", [midnight, midnight, gunsmoke]),
+    _glyphs(".", [midnight]),
+    _glyphs(".", [midnight])
   ],
   Element.light: [
-    _glyphs("*", [Color.white]),
-    _glyphs("x+", [Color.white, Color.lightYellow]),
-    _glyphs(":;\"'`,", [Color.lightGray, Color.yellow]),
-    _glyphs(".", [Color.gray, Color.yellow])
+    _glyphs("*", [ash]),
+    _glyphs("x+", [ash, buttermilk]),
+    _glyphs(":;\"'`,", [buttermilk, gold]),
+    _glyphs(".", [gunsmoke, buttermilk])
   ],
   Element.spirit: [
-    _glyphs("Oo*+", [Color.lightPurple, Color.gray]),
-    _glyphs("o+", [Color.purple, Color.green]),
-    _glyphs("•.", [Color.darkPurple, Color.darkGreen, Color.darkGreen])
+    _glyphs("Oo*+", [lilac, gunsmoke]),
+    _glyphs("o+", [violet, peaGreen]),
+    _glyphs("•.", [indigo, sherwood, sherwood])
   ]
 };
 
@@ -283,7 +288,7 @@ class HitEffect implements Effect {
 
   void render(Game game, DrawGlyph drawGlyph) {
     var back = const [
-      Color.lightRed, Color.red, Color.darkRed, Color.black
+      salmon, brickRed, garnet, Color.black
     ][frame ~/ 6];
 
     drawGlyph(actor.x, actor.y,
@@ -335,10 +340,10 @@ class TeleportEffect implements Effect {
   final Vec target;
 
   static final _colors = [
-    Color.lightAqua,
-    Color.aqua,
-    Color.lightBlue,
-    Color.white
+    turquoise,
+    cornflower,
+    lilac,
+    ash
   ];
 
   TeleportEffect(Vec from, this.target) {
@@ -405,10 +410,10 @@ class HealEffect implements Effect {
 
     var back;
     switch ((frame ~/ 4) % 4) {
-      case 0: back = Color.black;      break;
-      case 1: back = Color.darkAqua;   break;
-      case 2: back = Color.aqua;       break;
-      case 3: back = Color.lightAqua;  break;
+      case 0: back = Color.black; break;
+      case 1: back = seaGreen; break;
+      case 2: back = cornflower; break;
+      case 3: back = turquoise; break;
     }
 
     drawGlyph(x - 1, y, new Glyph('-', back));
@@ -420,11 +425,11 @@ class HealEffect implements Effect {
 
 class DetectEffect implements Effect {
   static final _colors = [
-    Color.white,
-    Color.lightGold,
-    Color.gold,
-    Color.darkGold,
-    Color.darkOrange,
+    ash,
+    buttermilk,
+    gold,
+    mustard,
+    copper,
   ];
 
   final Vec pos;

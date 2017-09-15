@@ -1,16 +1,15 @@
 import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
+import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
-import 'package:hauberk/src/content/tiles.dart';
 
 import 'histogram.dart';
 
 html.CanvasElement canvas;
-html.CanvasRenderingContext2D context;
 
 var content = createContent();
 var heroClass = new Warrior();
@@ -23,7 +22,6 @@ int get depth {
 
 main() {
   canvas = html.querySelector("canvas") as html.CanvasElement;
-  context = canvas.context2D;
 
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
@@ -46,59 +44,31 @@ main() {
 void generate() {
   var game = new Game(content, save, depth);
 
-  context.fillStyle = '#000';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-
-  var size = 6;
   var stage = game.stage;
-  canvas.width = stage.width * size;
-  canvas.height = stage.height * size;
+
+//  var terminal = new RetroTerminal(stage.width, stage.height, "font_16.png",
+//      canvas: canvas, charWidth: 16, charHeight: 16);
+  var terminal = new RetroTerminal(stage.width, stage.height, "font_8.png",
+      canvas: canvas, charWidth: 8, charHeight: 8);
 
   for (var y = 0; y < stage.height; y++) {
     for (var x = 0; x < stage.width; x++) {
-      var fill = '#f00';
-      var type = stage.get(x, y).type;
-      if (type == Tiles.floor) {
-        fill = '#000';
-      } else if (type == Tiles.grass) {
-        fill = 'rgb(0, 40, 0)';
-      } else if (type == Tiles.wall) {
-        fill = '#aaa';
-      } else if (type == Tiles.table) {
-        fill = 'rgb(80, 55, 30)';
-      } else if (type == Tiles.lowWall) {
-        fill = '#666';
-      } else if (type == Tiles.openDoor) {
-        fill = 'rgb(160, 110, 60)';
-      } else if (type == Tiles.closedDoor) {
-        fill = 'rgb(160, 110, 60)';
-      } else if (type == Tiles.water) {
-        fill = 'hsl(220, 100%, 40%)';
-      } else if (type == Tiles.tree) {
-        fill = 'rgb(0, 100, 0)';
-      } else if (type == Tiles.treeAlt1) {
-        fill = 'rgb(0, 120, 0)';
-      } else if (type == Tiles.treeAlt2) {
-        fill = 'rgb(0, 140, 0)';
+      var glyph = stage.get(x, y).type.appearance[0] as Glyph;
+      terminal.drawGlyph(x, y, glyph);
+
+      var pos = new Vec(x, y);
+      var items = stage.itemsAt(pos);
+      if (items.isNotEmpty) {
+        terminal.drawGlyph(x, y, items.first.appearance as Glyph);
       }
 
-      context.fillStyle = fill;
-      context.fillRect(x * size, y * size, size - 0.25, size - 0.25);
-
-      var hasItem = stage.isItemAt(new Vec(x, y));
-      if (hasItem) {
-        context.fillStyle = 'rgb(240, 240, 0)';
-        context.fillRect(x * size + 2, y * size + 2, size - 4, size - 4);
-      }
-
-      var actor = stage.actorAt(new Vec(x, y));
+      var actor = stage.actorAt(pos);
       if (actor != null) {
-        if (actor is Hero) {
-          context.fillStyle = 'rgb(0, 100, 240)';
+        if (actor.appearance is String) {
+          terminal.drawChar(x, y, CharCode.blackSmilingFace, Color.white);
         } else {
-          context.fillStyle = 'rgb(160, 0, 0)';
+          terminal.drawGlyph(x, y, actor.appearance as Glyph);
         }
-        context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
       }
     }
   }

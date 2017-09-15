@@ -3,6 +3,7 @@ import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'input.dart';
 
 /// Modal dialog for letting the user select an adjacent open door to close it.
@@ -32,7 +33,7 @@ class CloseDoorDialog extends Screen<Input> {
   bool update() => false;
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, 'Close which door?');
+    terminal.writeAt(0, 0, 'Close which door?', UIHue.text);
   }
 
   void tryClose(Direction direction) {

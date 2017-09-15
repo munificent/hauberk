@@ -4,6 +4,7 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'input.dart';
 import 'item_dialog.dart';
 
@@ -85,15 +86,15 @@ class ItemScreen extends Screen<Input> {
   void render(Terminal terminal) {
     _mode.render(this, terminal);
 
-    var gold = priceString(_save.gold);
-    terminal.writeAt(82, 0, "Gold:");
-    terminal.writeAt(99 - gold.length, 0, gold, Color.gold);
+//    var gold = priceString(_save.gold);
+//    terminal.writeAt(82, 0, "Gold:");
+//    terminal.writeAt(99 - gold.length, 0, gold, Color.gold);
 
     terminal.writeAt(0, terminal.height - 1, "${_mode.helpText(this)}",
-        Color.gray);
+        UIHue.helpText);
 
     var bar = new Glyph.fromCharCode(
-        CharCode.boxDrawingsLightVertical, Color.darkGray);
+        CharCode.boxDrawingsLightVertical, steelGray);
     for (var y = 2; y < 30; y++) {
       terminal.drawGlyph(49, y, bar);
     }
@@ -102,22 +103,24 @@ class ItemScreen extends Screen<Input> {
     _drawPlace(terminal, 50);
 
     if (completeRecipe != null) {
-      terminal.writeAt(59, 2, "Press [Space] to forge item!", Color.yellow);
+      terminal.writeAt(59, 2, "Press [Space] to forge item!", UIHue.selection);
 
       var itemCount = _place.items(this).length;
       for (var i = 0; i < completeRecipe.produces.length; i++) {
         terminal.writeAt(50, itemCount + i + 4,
-            completeRecipe.produces.elementAt(i));
+            completeRecipe.produces.elementAt(i),
+            UIHue.text);
       }
     }
 
     if (_error != null) {
-      terminal.writeAt(10, 30, _error, Color.red);
+      terminal.writeAt(10, 30, _error, brickRed);
     }
   }
 
   void _drawHero(Terminal terminal, int x) {
-    terminal.writeAt(x, 2, _showingInventory ? "Inventory" : "Equipment");
+    terminal.writeAt(x, 2, _showingInventory ? "Inventory" : "Equipment",
+        UIHue.text);
 
     bool isSelectable(Item item) {
       if (!_mode.selectingFromHero) return false;
@@ -135,7 +138,7 @@ class ItemScreen extends Screen<Input> {
   }
 
   void _drawPlace(Terminal terminal, int x) {
-    terminal.writeAt(x, 2, _place.label);
+    terminal.writeAt(x, 2, _place.label, UIHue.text);
 
     var items = _place.items(this);
     if (_mode.selectingFromHero || _mode.selectingFromPlace) {

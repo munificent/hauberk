@@ -29,7 +29,7 @@ Angband drops a ton of loot, but:
 
 *  Needing to detect equipment to see if it's good changes the play experience.
    In Hauberk right now, if a piece of equipment drops that isn't better than
-   what you already have, you know it's totally useless to instantly, even
+   what you already have, you know it's totally useless to you instantly, even
    before picking it up.
 
    I always found churning through detection annoying in Angband, but maybe

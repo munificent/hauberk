@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'input.dart';
 
 class HeroInfoDialog extends Screen<Input> {
@@ -178,7 +179,7 @@ class HeroInfoDialog extends Screen<Input> {
     return const {
       Element.none: Color.gray,
       Element.air: Color.lightAqua,
-      Element.earth: Color.brown,
+      Element.earth: persimmon,
       Element.fire: Color.red,
       Element.water: Color.blue,
       Element.acid: Color.lightGreen,

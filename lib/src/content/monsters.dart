@@ -1,7 +1,7 @@
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
-import 'utils.dart';
+import '../hues.dart';
 import 'drops.dart';
 
 /// The last builder that was created. It gets implicitly finished when the
@@ -23,9 +23,8 @@ int _meander;
 /// Default flags for the current group.
 String _groupFlags;
 
-/// The current glyph. Any items defined will use this. Can be a string or
-/// a character code.
-var _glyph;
+/// Character for the current monster.
+String _character;
 
 /// Static class containing all of the [Monster] [Breed]s.
 class Monsters {
@@ -155,11 +154,11 @@ class Monsters {
 
 void arachnids() {
   group("a", flags: "fearless");
-  breed("brown spider", 1, brown, 3, meander: 8)
+  breed("brown spider", 1, persimmon, 3, meander: 8)
       .attack("bite[s]", 5, Element.poison)
       .drop(5, "Stinger");
 
-  breed("giant spider", 6, darkBlue, 20, meander: 5)
+  breed("giant spider", 6, ultramarine, 20, meander: 5)
       .attack("bite[s]", 5, Element.poison)
       .drop(10, "Stinger");
 }
@@ -168,25 +167,25 @@ void ancients() {}
 
 void bats() {
   group("b");
-  breed("brown bat", 2, lightBrown, 9, speed: 2, meander: 6)
+  breed("brown bat", 2, persimmon, 9, speed: 2, meander: 6)
       .attack("bite[s]", 4);
 
-  breed("giant bat", 4, lightBrown, 16, speed: 2, meander: 4)
+  breed("giant bat", 4, garnet, 16, speed: 2, meander: 4)
       .attack("bite[s]", 6);
 
-  breed("cave bat", 6, gray, 10, speed: 3, meander: 3)
+  breed("cave bat", 6, gunsmoke, 10, speed: 3, meander: 3)
       .attack("bite[s]", 6)
       .flags("group");
 }
 
 void birds() {
   group("B");
-  breed("crow", 4, darkGray, 9, speed: 2, meander: 4)
+  breed("crow", 4, steelGray, 9, speed: 2, meander: 4)
       .attack("bite[s]", 5)
       .drop(25, "Black Feather")
       .flags("group");
 
-  breed("raven", 6, gray, 12, meander: 1)
+  breed("raven", 6, slate, 12, meander: 1)
       .attack("bite[s]", 5)
       .attack("claw[s]", 4)
       .drop(20, "Black Feather")
@@ -195,17 +194,17 @@ void birds() {
 
 void canines() {
   group("c", tracking: 20, meander: 3, flags: "few");
-  breed("mangy cur", 2, yellow, 8)
+  breed("mangy cur", 2, buttermilk, 8)
       .attack("bite[s]", 4)
       .howl(range: 6)
       .drop(20, "Fur Pelt");
 
-  breed("wild dog", 4, gray, 14)
+  breed("wild dog", 4, gunsmoke, 14)
       .attack("bite[s]", 6)
       .howl(range: 8)
       .drop(20, "Fur Pelt");
 
-  breed("mongrel", 7, orange, 20)
+  breed("mongrel", 7, carrot, 20)
       .attack("bite[s]", 8)
       .howl(range: 10)
       .drop(20, "Fur Pelt");
@@ -216,7 +215,7 @@ void canids() {}
 void dragons() {
   // TODO: Tune. Give more attacks. Tune drops.
   group("d");
-  breed("red dragon", 50, red, 400)
+  breed("red dragon", 50, brickRed, 400)
       .attack("bite[s]", 80)
       .attack("claw[s]", 60)
       .fireCone(damage: 100)
@@ -229,40 +228,40 @@ void greaterDragons() {}
 
 void eyes() {
   group("e", flags: "immobile");
-  breed("lazy eye", 1, white, 10)
+  breed("lazy eye", 1, cornflower, 10)
       .attack("stare[s] at", 4)
       .sparkBolt(rate: 6, damage: 10, range: 6);
 
-  breed("mad eye", 5, lightRed, 20)
+  breed("mad eye", 5, salmon, 20)
       .attack("stare[s] at", 6)
       .windBolt(rate: 6, damage: 20);
 
-  breed("floating eye", 9, yellow, 30)
+  breed("floating eye", 9, buttermilk, 30)
       .attack("stare[s] at", 8)
       .sparkBolt(rate: 5, damage: 16)
       .teleport(rate: 8, range: 7);
 
-  breed("baleful eye", 20, orange, 50)
+  breed("baleful eye", 20, carrot, 50)
       .attack("gaze[s] into", 12)
       .fireBolt(rate: 4, damage: 20)
       .waterBolt(rate: 4, damage: 20)
       .teleport(rate: 8, range: 9);
 
-  breed("malevolent eye", 30, red, 70)
+  breed("malevolent eye", 30, brickRed, 70)
       .attack("gaze[s] into", 20)
       .lightBolt(rate: 4, damage: 20)
       .darkBolt(rate: 4, damage: 20)
       .fireCone(rate: 7, damage: 30)
       .teleport(rate: 8, range: 9);
 
-  breed("murderous eye", 40, darkRed, 90)
+  breed("murderous eye", 40, maroon, 90)
       .attack("gaze[s] into", 30)
       .acidBolt(rate: 7, damage: 50)
       .stoneBolt(rate: 7, damage: 50)
       .iceCone(rate: 7, damage: 40)
       .teleport(rate: 8, range: 9);
 
-  breed("watcher", 60, gray, 140)
+  breed("watcher", 60, gunsmoke, 140)
       .attack("see[s]", 50)
       .lightBolt(rate: 7, damage: 40)
       .lightCone(rate: 7, damage: 60)
@@ -279,19 +278,19 @@ void faeFolk() {
 
   // TODO: Make them fly.
   group("f", speed: 2, meander: 4, flags: "cowardly");
-  breed("forest sprite", 1, lightGreen, 8)
+  breed("forest sprite", 1, mint, 8)
       .attack("scratch[es]", 3)
       .sparkBolt(rate: 7, damage: 4)
       .teleport(rate: 7, range: 5)
       .drop(40, "magic");
 
-  breed("house sprite", 3, lightBlue, 15)
+  breed("house sprite", 3, cornflower, 15)
       .attack("poke[s]", 5)
       .stoneBolt(rate: 10, damage: 4)
       .teleport(rate: 7, range: 5)
       .drop(40, "magic");
 
-  breed("mischievous sprite", 7, lightRed, 24)
+  breed("mischievous sprite", 7, salmon, 24)
       .attack("stab[s]", 6)
       .windBolt(rate: 8, damage: 8)
       .teleport(range: 7)
@@ -309,13 +308,13 @@ void felines() {
 
 void goblins() {
   group("g", meander: 1, flags: "open-doors");
-  breed("goblin peon", 4, lightBrown, 20, meander: 2)
+  breed("goblin peon", 4, persimmon, 20, meander: 2)
       .attack("stab[s]", 5)
       .drop(10, "spear")
       .drop(5, "healing")
       .flags("few");
 
-  breed("goblin archer", 6, green, 22)
+  breed("goblin archer", 6, peaGreen, 22)
       .attack("stab[s]", 3)
       .arrow(rate: 3, damage: 4)
       .drop(20, "bow")
@@ -323,14 +322,14 @@ void goblins() {
       .drop(5, "healing")
       .flags("few");
 
-  breed("goblin fighter", 6, brown, 30)
+  breed("goblin fighter", 6, persimmon, 30)
       .attack("stab[s]", 7)
       .drop(15, "spear")
       .drop(10, "armor")
       .drop(5, "resistance")
       .drop(5, "healing");
 
-  breed("goblin warrior", 8, gray, 42)
+  breed("goblin warrior", 8, gunsmoke, 42)
       .attack("stab[s]", 10)
       .drop(20, "axe")
       .drop(20, "armor")
@@ -338,7 +337,7 @@ void goblins() {
       .drop(5, "healing")
       .flags("protective");
 
-  breed("goblin mage", 9, blue, 30)
+  breed("goblin mage", 9, ultramarine, 30)
       .attack("whip[s]", 7)
       .fireBolt(rate: 12, damage: 6)
       .sparkBolt(rate: 12, damage: 8)
@@ -346,7 +345,7 @@ void goblins() {
       .drop(10, "whip")
       .drop(20, "magic");
 
-  breed("goblin ranger", 12, darkGreen, 36)
+  breed("goblin ranger", 12, sherwood, 36)
       .attack("stab[s]", 10)
       .arrow(rate: 3, damage: 8)
       .drop(30, "bow")
@@ -354,7 +353,7 @@ void goblins() {
       .drop(20, "magic");
 
   // TODO: Always drop something good.
-  breed("Erlkonig, the Goblin Prince", 14, darkGray, 80)
+  breed("Erlkonig, the Goblin Prince", 14, steelGray, 80)
       .attack("hit[s]", 10)
       .attack("slash[es]", 14)
       .darkBolt(rate: 20, damage: 10)
@@ -372,12 +371,12 @@ void hybrids() {}
 
 void insects() {
   group("i", tracking: 3, meander: 8, flags: "fearless");
-  breed("giant cockroach[es]", 1, darkBrown, 4, speed: 3)
+  breed("giant cockroach[es]", 1, garnet, 4, speed: 3)
       .attack("crawl[s] on", 3)
       .spawn(rate: 4)
       .drop(10, "Insect Wing");
 
-  breed("giant centipede", 3, red, 16, speed: 3, meander: -4)
+  breed("giant centipede", 3, brickRed, 16, speed: 3, meander: -4)
       .attack("crawl[s] on", 4)
       .attack("bite[s]", 8);
 }
@@ -386,41 +385,41 @@ void insubstantials() {}
 
 void jellies() {
   group("j", speed: -1, flags: "fearless");
-  breed("green jelly", 1, green, 7)
+  breed("green jelly", 1, lima, 7)
       .attack("crawl[s] on", 4);
   // TODO: More elements.
 
   group("j", flags: "few fearless immobile");
-  breed("green slime", 2, darkGreen, 7)
+  breed("green slime", 2, peaGreen, 7)
       .attack("crawl[s] on", 4)
       .spawn(rate: 4);
 
-  breed("frosty slime", 4, gray, 14)
+  breed("frosty slime", 4, gunsmoke, 14)
       .attack("crawl[s] on", 5, Element.cold)
       .spawn(rate: 4);
 
-  breed("mud slime", 6, brown, 20)
+  breed("mud slime", 6, persimmon, 20)
       .attack("crawl[s] on", 8, Element.earth)
       .spawn(rate: 4);
 
-  breed("smoking slime", 15, red, 30)
+  breed("smoking slime", 15, brickRed, 30)
       .attack("crawl[s] on", 10, Element.fire)
       .spawn(rate: 4);
 
-  breed("sparkling slime", 20, purple, 40)
+  breed("sparkling slime", 20, violet, 40)
       .attack("crawl[s] on", 12, Element.lightning)
       .spawn(rate: 4);
 
-  breed("caustic slime", 25, darkYellow, 50)
+  breed("caustic slime", 25, mint, 50)
       .attack("crawl[s] on", 13, Element.acid)
       .spawn(rate: 4);
 
-  breed("virulent slime", 35, darkGreen, 60)
+  breed("virulent slime", 35, sherwood, 60)
       .attack("crawl[s] on", 14, Element.poison)
       .spawn(rate: 4);
 
   // TODO: Fly?
-  breed("ectoplasm", 45, darkGray, 40)
+  breed("ectoplasm", 45, steelGray, 40)
       .attack("crawl[s] on", 15, Element.spirit)
       .spawn(rate: 4);
 
@@ -429,7 +428,7 @@ void jellies() {
 
 void kobolds() {
   group("k", speed: 2, meander: 4, flags: "cowardly");
-  breed("scurrilous imp", 4, lightRed, 18, meander: 4)
+  breed("scurrilous imp", 4, salmon, 18, meander: 4)
       .attack("club[s]", 4)
       .insult()
       .haste()
@@ -437,20 +436,20 @@ void kobolds() {
       .drop(5, "speed")
       .flags("cowardly");
 
-  breed("vexing imp", 4, purple, 19, speed: 1, meander: 2)
+  breed("vexing imp", 4, violet, 19, speed: 1, meander: 2)
       .attack("scratch[es]", 4)
       .insult()
       .sparkBolt(rate: 5, damage: 6)
       .drop(10, "teleportation")
       .flags("cowardly");
 
-  breed("kobold", 5, red, 16, meander: 2)
+  breed("kobold", 5, brickRed, 16, meander: 2)
       .attack("poke[s]", 4)
       .teleport(rate: 6, range: 6)
       .drop(30, "magic")
       .flags("group");
 
-  breed("kobold shaman", 10, blue, 16, meander: 2)
+  breed("kobold shaman", 10, ultramarine, 16, meander: 2)
       .attack("hit[s]", 4)
       .teleport(rate: 5, range: 6)
       .waterBolt(rate: 5, damage: 6)
@@ -463,7 +462,7 @@ void kobolds() {
       .haste(rate: 7)
       .drop(40, "magic");
 
-  breed("kobold priest", 15, white, 25, meander: 2)
+  breed("kobold priest", 15, cerulean, 25, meander: 2)
       .attack("club[s]", 6)
       .heal(rate: 15, amount: 10)
       .fireBolt(rate: 10, damage: 8)
@@ -472,14 +471,14 @@ void kobolds() {
       .drop(30, "club")
       .drop(40, "magic");
 
-  breed("imp incanter", 11, lightPurple, 18, speed: 1, meander: 4)
+  breed("imp incanter", 11, lilac, 18, speed: 1, meander: 4)
       .attack("scratch[es]", 4)
       .insult()
       .fireBolt(rate: 5, damage: 10)
       .drop(20, "magic")
       .flags("cowardly");
 
-  breed("imp warlock", 14, darkPurple, 40, speed: 1, meander: 3)
+  breed("imp warlock", 14, indigo, 40, speed: 1, meander: 3)
       .attack("stab[s]", 5)
       .iceBolt(rate: 8, damage: 12)
       .fireBolt(rate: 8, damage: 12)
@@ -487,7 +486,7 @@ void kobolds() {
       .flags("cowardly");
 
   // TODO: Always drop something good.
-  breed("Feng", 20, orange, 60, speed: 1, meander: 3)
+  breed("Feng", 20, carrot, 60, speed: 1, meander: 3)
       .attack("stab[s]", 5)
       .teleport(rate: 5, range: 6)
       .teleport(rate: 50, range: 30)
@@ -516,7 +515,7 @@ void ogres() {}
 
 void people() {
   group("p", tracking: 14, flags: "open-doors");
-  breed("simpering knave", 2, orange, 15, meander: 3)
+  breed("simpering knave", 2, carrot, 15, meander: 3)
       .attack("hit[s]", 2)
       .attack("stab[s]", 4)
       .drop(30, "whip")
@@ -525,7 +524,7 @@ void people() {
       .drop(10, "magic")
       .flags("cowardly");
 
-  breed("decrepit mage", 3, purple, 16, meander: 2)
+  breed("decrepit mage", 3, violet, 16, meander: 2)
       .attack("hit[s]", 2)
       .sparkBolt(rate: 10, damage: 8)
       .drop(30, "magic")
@@ -534,7 +533,7 @@ void people() {
       .drop(10, "robe")
       .drop(10, "boots");
 
-  breed("unlucky ranger", 5, green, 20, meander: 2)
+  breed("unlucky ranger", 5, peaGreen, 20, meander: 2)
       .attack("slash[es]", 2)
       .arrow(rate: 4, damage: 2)
       .drop(15, "potion")
@@ -542,7 +541,7 @@ void people() {
       .drop(5, "sword")
       .drop(8, "body");
 
-  breed("drunken priest", 5, aqua, 18, meander: 4)
+  breed("drunken priest", 5, cerulean, 18, meander: 4)
       .attack("hit[s]", 8)
       .heal(rate: 15, amount: 8)
       .drop(15, "scroll")
@@ -555,7 +554,7 @@ void giants() {}
 
 void quadrupeds() {
   group("q");
-  breed("fox", 4, orange, 20, meander: 1)
+  breed("fox", 4, carrot, 20, meander: 1)
       .attack("bite[s]", 5)
       .attack("scratch[es]", 4)
       .drop(80, "Fox Pelt");
@@ -565,20 +564,20 @@ void quest() {}
 
 void rodents() {
   group("r", meander: 4);
-  breed("[mouse|mice]", 1, white, 6, speed: 1)
+  breed("[mouse|mice]", 1, sandal, 6, speed: 1)
       .attack("bite[s]", 3)
       .attack("scratch[es]", 2);
 
-  breed("sewer rat", 2, darkGray, 7, speed: 1, meander: -1)
+  breed("sewer rat", 2, steelGray, 7, speed: 1, meander: -1)
       .attack("bite[s]", 4)
       .attack("scratch[es]", 3)
       .flags("group");
 
-  breed("sickly rat", 3, darkGreen, 4, speed: 1)
+  breed("sickly rat", 3, peaGreen, 4, speed: 1)
       .attack("bite[s]", 3, Element.poison)
       .attack("scratch[es]", 3);
 
-  breed("plague rat", 6, green, 10, speed: 1)
+  breed("plague rat", 6, lima, 10, speed: 1)
       .attack("bite[s]", 4, Element.poison)
       .attack("scratch[es]", 3)
       .flags("group");
@@ -586,59 +585,59 @@ void rodents() {
 
 void reptiles() {
   group("R");
-  breed("frog", 1, green, 4, speed: 1, meander: 4)
+  breed("frog", 1, lima, 4, speed: 1, meander: 4)
       .attack("hop[s] on", 2);
 
   // TODO: Drop scales?
   group("R", meander: 1, flags: "fearless");
-  breed("lizard guard", 11, yellow, 26)
+  breed("lizard guard", 11, gold, 26)
       .attack("claw[s]", 8)
       .attack("bite[s]", 10);
 
-  breed("lizard protector", 15, darkYellow, 30)
+  breed("lizard protector", 15, lima, 30)
       .attack("claw[s]", 10)
       .attack("bite[s]", 14);
 
-  breed("armored lizard", 17, gray, 38)
+  breed("armored lizard", 17, gunsmoke, 38)
       .attack("claw[s]", 10)
       .attack("bite[s]", 15);
 
-  breed("scaled guardian", 19, darkGray, 50)
+  breed("scaled guardian", 19, steelGray, 50)
       .attack("claw[s]", 10)
       .attack("bite[s]", 15);
 
-  breed("saurian", 21, orange, 64)
+  breed("saurian", 21, carrot, 64)
       .attack("claw[s]", 12)
       .attack("bite[s]", 17);
 
   group("R", meander: 3);
-  breed("juvenile salamander", 7, lightRed, 24)
+  breed("juvenile salamander", 7, salmon, 24)
       .attack("bite[s]", 12, Element.fire)
       .fireCone(rate: 16, damage: 18, range: 6);
 
-  breed("salamander", 13, red, 40)
+  breed("salamander", 13, brickRed, 40)
       .attack("bite[s]", 16, Element.fire)
       .fireCone(rate: 16, damage: 24, range: 8);
 }
 
 void slugs() {
   group("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
-  breed("giant slug", 1, darkYellow, 20)
+  breed("giant slug", 1, mustard, 20)
       .attack("crawl[s] on", 7);
 
-  breed("suppurating slug", 6, green, 30)
+  breed("suppurating slug", 6, lima, 30)
       .attack("crawl[s] on", 7, Element.poison);
 }
 
 void snakes() {
   group("S", speed: 1, meander: 4);
-  breed("garter snake", 1, green, 7)
+  breed("garter snake", 1, lima, 7)
       .attack("bite[s]", 3);
 
-  breed("brown snake", 3, brown, 14)
+  breed("brown snake", 3, persimmon, 14)
       .attack("bite[s]", 4);
 
-  breed("cave snake", 7, gray, 35)
+  breed("cave snake", 7, gunsmoke, 35)
       .attack("bite[s]", 10);
 }
 
@@ -651,17 +650,17 @@ void vampires() {}
 
 void worms() {
   group("w", meander: 4, flags: "fearless");
-  breed("giant earthworm", 2, lightRed, 20, speed: -2)
+  breed("giant earthworm", 2, salmon, 20, speed: -2)
       .attack("crawl[s] on", 4);
 
-  breed("blood worm", 2, red, 4, rarity: 2)
+  breed("blood worm", 2, brickRed, 4, rarity: 2)
       .attack("crawl[s] on", 5)
       .flags("swarm");
 
-  breed("giant cave worm", 7, white, 36, speed: -2)
+  breed("giant cave worm", 7, sandal, 36, speed: -2)
       .attack("crawl[s] on", 8, Element.acid);
 
-  breed("fire worm", 10, orange, 6)
+  breed("fire worm", 10, carrot, 6)
       .attack("crawl[s] on", 5, Element.fire)
       .flags("swarm");
 }
@@ -675,10 +674,10 @@ void xorns() {}
 void zombies() {}
 void serpents() {}
 
-void group(glyph, {int meander, int speed, int tracking, String flags}) {
+void group(String character, {int meander, int speed, int tracking, String flags}) {
   finishBuilder();
 
-  _glyph = glyph;
+  _character = character;
   _meander = meander != null ? meander : 0;
   _speed = speed != null ? speed : 0;
   _tracking = tracking != null ? tracking : 10;
@@ -693,10 +692,18 @@ void finishBuilder() {
   _builder = null;
 }
 
-_BreedBuilder breed(String name, int depth, Glyph appearance(char), int health,
+_BreedBuilder breed(String name, int depth, appearance, int health,
     {int rarity: 1, int speed: 0, int meander: 0}) {
   finishBuilder();
-  _builder = new _BreedBuilder(name, depth, rarity, appearance(_glyph), health);
+
+  Glyph glyph;
+  if (appearance is Color) {
+    glyph = new Glyph(_character, appearance, midnight);
+  } else {
+    glyph = appearance(_character);
+  }
+
+  _builder = new _BreedBuilder(name, depth, rarity, glyph, health);
   _builder.speedOffset = speed;
   _builder.meanderOffset = meander;
   return _builder;

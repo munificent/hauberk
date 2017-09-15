@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'confirm_dialog.dart';
 import 'input.dart';
 import 'new_hero_screen.dart';
@@ -10,43 +11,44 @@ import 'storage.dart';
 
 
 const _chars = const [
-  r"______   ______                          _____                               _____",
-  r"\ .  /   \  . /                          \ . |                               \  .|",
-  r" | .|     |. |                            | .|                                |. |",
-  r" |. |_____| .|    _______   _____  _____  |. | _____      _______  ____  ____ | .|   ____",
-  r" |:::_____:::|    \::::::\  \:::|  \:::|  |::|/:::::\    /:::::::\ \:::|/::::\|::|  /::/",
-  r" |xx|     |xx|   _____ \xx|  |xx|   |xx|  |xx|    \xx\  |xx|___)xx| |xx|   \x||xx|_/x/",
-  r" |xx|     |xx|  /xxxxx\|xx|  |xx|   |xx|  |xx|     |xx| |xx|\xxxxx| |xx|      |xxxxxxx\",
-  r" |XX|     |XX| |XX(____|XX|  |XX\___|XX|  |XX|____/XXX| |XX|______  |XX|      |XX|  \XX\_",
-  r" |XX|     |XX|  \XXXXXX/\XX\  \XXXX/|XXX\/XXX/\XXXXXX/   \XXXXXXX/ /XXXX\    /XXXX\  \XXX\",
-  r" |XX|     |XX| ____________________________________________________________________________",
-  r" |XX|     |XX| |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",
-  r"_|XX|     |XX|_",
-  r"\XXX|     |XXX/",
-  r" \XX|     |XX/",
-  r"  \X|     |X/",
-  r"   \|     |/",
+  r"______ ______                     _____                          _____",
+  r"\ .  / \  . /                     \ . |                          \  .|",
+  r" | .|   |. |                       | .|                           |. |",
+  r" |. |___| .|   _____  _____ _____  |. | ___     ______  ____  ___ | .|  ____",
+  r" |:::___:::|   \::::\ \:::| \:::|  |::|/:::\   /::::::\ \:::|/:::\|::| /::/",
+  r" |xx|   |xx|  ___ \xx| |xx|  |xx|  |xx|  \xx\ |xx|__)xx| |xx|  \x||xx|/x/",
+  r" |xx|   |xx| /xxx\|xx| |xx|  |xx|  |xx|   |xx||xx|\xxxx| |xx|     |xxxxxx\",
+  r" |XX|   |XX||XX(__|XX| |XX\__|XX|  |XX|__/XXX||XX|_____  |XX|     |XX| \XX\_",
+  r" |XX|   |XX| \XXXX/\XX\ \XXX/|XXX\/XXX/\XXXX/  \XXXXXX/ /XXXX\   /XXXX\ \XXX\",
+  r" |XX|   |XX|_________________________________________________________________",
+  r" |XX|   |XX||XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",
+  r"_|XX|   |XX|_",
+  r"\XXX|   |XXX/",
+  r" \XX|   |XX/",
+  r"  \X|   |X/",
+  r"   \|   |/",
 ];
 
 const _charColors = const [
-  "LLLLLL   LLLLLL                          LLLLL                               LLLLL",
-  "ERRRRE   ERRRRE                          ERRRE                               ERRRE",
-  " ERRE     ERRE                            ERRE                                ERRE",
-  " ERRELLLLLERRE    LLLLLLL   LLLLL  LLLLL  ERRE LLLLL      LLLLLLL  LLLL  LLLL ERRE   LLLL",
-  " ERRREEEEERRRE    ERRRRRRL  ERRRE  ERRRE  ERREERRRRRL    LRRRRRRRL ERRRLLRRRRLERRE  LRRE",
-  " ERRE     ERRE   LLLLL ERRE  ERRE   ERRE  ERRE    ERRL  ERRELLLERRE ERRE   EREERRELLRE",
-  " EOOE     EOOE  LOOOOOEEOOE  EOOE   EOOE  EOOE     EOOE EOOEEOOOOOE EOOE      EOOOOOOOL",
-  " EGGE     EGGE EGGELLLLEGGE  EGGLLLLEGGE  EGGELLLLLGGGE EGGELLLLLL  EGGE      EGGE  EGGLL",
-  " EYYE     EYYE  EYYYYYYEEYYE  EYYYY/EYYYLLYYYEEYYYYYYE   EYYYYYYYE LYYYYL    LYYYYL  EYYYL",
-  " EYYE     EYYE LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
-  " EYYE     EYYE EYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYL",
-  "LEYYE     EYYEL",
-  "EYYYE     EYYYE",
-  " EYYE     EYYE",
-  "  EYE     EYE",
-  "   EE     EE",
+  "LLLLLL LLLLLL                     LLLLL                          LLLLL",
+  "ERRRRE ERRRRE                     ERRRE                          ERRRE",
+  " ERRE   ERRE                       ERRE                           ERRE",
+  " ERRELLLERRE   LLLLL  LLLLL LLLLL  ERRE LLL     LLLLLL  LLLL  LLL ERRE  LLLL",
+  " ERRREEERRRE   ERRRRL ERRRE ERRRE  ERREERRRL   LRRRRRRL ERRRLLRRRLERRE LRRE",
+  " ERRE   ERRE  LLL ERRE ERRE  ERRE  ERRE  ERRL ERRELLERRE ERRE  EREERRELRE",
+  " EOOE   EOOE LOOOEEOOE EOOE  EOOE  EOOE   EOOEEOOEEOOOOE EOOE     EOOOOOOL",
+  " EGGE   EGGEEGGELLEGGE EGGLLLEGGE  EGGELLLGGGEEGGELLLLL  EGGE     EGGE EGGLL",
+  " EYYE   EYYE EYYYYEEYYE EYYY/EYYYLLYYYEEYYYYE  EYYYYYYE LYYYYL   LYYYYL EYYYL",
+  " EYYE   EYYELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+  " EYYE   EYYEEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYL",
+  "LEYYE   EYYEL",
+  "EYYYE   EYYYE",
+  " EYYE   EYYE",
+  "  EYE   EYE",
+  "   EE   EE",
 ];
 
+// TODO: Change these to use hues.dart, or replace the art entirely.
 const _colors = const {
   "L": Color.lightGray,
   "E": Color.gray,
@@ -87,8 +89,9 @@ class MainMenuScreen extends Screen<Input> {
     switch (keyCode) {
       case KeyCode.d:
         if (selectedHero < storage.heroes.length) {
+          var name = storage.heroes[selectedHero].name;
           ui.push(new ConfirmDialog(
-              "Are you sure you want to delete this hero?", 'delete'));
+              "Are you sure you want to delete $name?", 'delete'));
         }
         return true;
 
@@ -113,36 +116,36 @@ class MainMenuScreen extends Screen<Input> {
     for (var y = 0; y < _chars.length; y++) {
       for (var x = 0; x < _chars[y].length; x++) {
         var color = _colors[_charColors[y][x]];
-        terminal.writeAt(x + 4, y + 1, _chars[y][x], color);
+        terminal.writeAt(x + 1, y + 1, _chars[y][x], color);
       }
     }
 
     terminal.writeAt(25, 18,
-        'Which hero shall you play?');
+        'Which hero shall you play?', UIHue.text);
     terminal.writeAt(0, terminal.height - 1,
         '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
-        Color.gray);
+        UIHue.helpText);
 
     if (storage.heroes.length == 0) {
       terminal.writeAt(25, 20, '(No heroes. Please create a new one.)',
-          Color.gray);
+          UIHue.helpText);
     }
 
     for (var i = 0; i < storage.heroes.length; i++) {
       var hero = storage.heroes[i];
 
-      var fore = Color.white;
-      var secondaryFore = Color.gray;
-      var back = Color.black;
+      var primary = UIHue.primary;
+      var secondary = UIHue.secondary;
       if (i == selectedHero) {
-        fore = Color.black;
-        secondaryFore = Color.white;
-        back = Color.yellow;
+        primary = UIHue.selection;
+        secondary = UIHue.selection;
+
+        terminal.drawChar(24, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
       }
 
-      terminal.writeAt(26, 20 + i, hero.name, fore, back);
-      terminal.writeAt(45, 20 + i, "Level ${hero.level}", secondaryFore);
-      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondaryFore);
+      terminal.writeAt(25, 20 + i, hero.name, primary);
+      terminal.writeAt(45, 20 + i, "Level ${hero.level}", secondary);
+      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondary);
     }
   }
 

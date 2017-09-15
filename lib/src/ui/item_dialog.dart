@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'game_screen.dart';
 import 'input.dart';
 import 'target_dialog.dart';
@@ -32,8 +33,9 @@ class ItemDialog extends Screen<Input> {
   ItemDialog.drop(this._gameScreen) : _command = new _DropItemCommand();
   ItemDialog.use(this._gameScreen) : _command = new _UseItemCommand();
   ItemDialog.toss(this._gameScreen) : _command = new _TossItemCommand();
-  ItemDialog.pickUp(this._gameScreen) :
-    _command = new _PickUpItemCommand(), _location = ItemLocation.onGround;
+  ItemDialog.pickUp(this._gameScreen)
+      : _command = new _PickUpItemCommand(),
+        _location = ItemLocation.onGround;
 
   bool handleInput(Input input) {
     switch (input) {
@@ -100,22 +102,25 @@ class ItemDialog extends Screen<Input> {
 
   void render(Terminal terminal) {
     if (_selectedItem == null) {
-      terminal.writeAt(0, 0, _command.query(_location));
+      terminal.writeAt(0, 0, _command.query(_location), UIHue.text);
     } else {
       var query = _command.queryCount(_location);
-      terminal.writeAt(0, 0, query);
-      terminal.writeAt(query.length + 1, 0, _count.toString(), Color.yellow);
+      terminal.writeAt(0, 0, query, UIHue.text);
+      terminal.writeAt(query.length + 1, 0, _count.toString(), UIHue.selection);
     }
 
     terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
 
-    var select = _selectedItem == null ? '[A-Z] Select item' : '[↕] Change quantity';
+    var select =
+        _selectedItem == null ? '[A-Z] Select item' : '[↕] Change quantity';
     var helpText = canSwitchLocations ? ', [Tab] Switch view' : '';
 
-    terminal.writeAt(0, terminal.height - 1, '$select$helpText', Color.gray);
+    terminal.writeAt(
+        0, terminal.height - 1, '$select$helpText', UIHue.helpText);
 
     if (_location == ItemLocation.equipment) {
-      drawEquipment(terminal, 0, 1, _gameScreen.game.hero.equipment, _canSelect);
+      drawEquipment(
+          terminal, 0, 1, _gameScreen.game.hero.equipment, _canSelect);
     } else {
       drawItems(terminal, 0, 1, _getItems(), _canSelect);
     }
@@ -143,8 +148,10 @@ class ItemDialog extends Screen<Input> {
 
   Iterable<Item> _getItems() {
     switch (_location) {
-      case ItemLocation.inventory: return _gameScreen.game.hero.inventory;
-      case ItemLocation.equipment: return _gameScreen.game.hero.equipment;
+      case ItemLocation.inventory:
+        return _gameScreen.game.hero.inventory;
+      case ItemLocation.equipment:
+        return _gameScreen.game.hero.equipment;
       case ItemLocation.onGround:
         return _gameScreen.game.stage.itemsAt(_gameScreen.game.hero.pos);
     }
@@ -155,7 +162,8 @@ class ItemDialog extends Screen<Input> {
   /// Rotates through the viewable locations the player can select an item from.
   void _advanceLocation() {
     var index = _command.allowedLocations.indexOf(_location);
-    _location = _command.allowedLocations[(index + 1) % _command.allowedLocations.length];
+    _location = _command
+        .allowedLocations[(index + 1) % _command.allowedLocations.length];
   }
 }
 
@@ -189,15 +197,14 @@ void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
 
 void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     List<String> slotNames, bool canSelect(Item item)) {
-
   var i = 0;
   var letter = 0;
   for (var item in items) {
     var itemY = y + i;
 
     // Clear the row.
-    terminal.writeAt(x, itemY,
-        "                                                 ");
+    terminal.writeAt(
+        x, itemY, "                                                 ");
 
     // If there's no item in this equipment slot, show the item name.
     if (item == null) {
@@ -206,36 +213,37 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
 
       // When potentially selecting an item, don't show the slot name at all.
       if (canSelect == null) {
-        terminal.writeAt(x, itemY, "     (${slotNames[i]})", Color.darkGray);
+        terminal.writeAt(x, itemY, "     (${slotNames[i]})", UIHue.helpText);
       }
 
       i++;
       continue;
     }
 
-    var borderColor = Color.darkGray;
-    var letterColor = Color.gray;
-    var textColor = Color.white;
-    var priceColor = Color.gray;
+    var borderColor = steelGray;
+    var letterColor = UIHue.secondary;
+    var textColor = UIHue.primary;
+//    var priceColor = Color.gray;
     var enabled = true;
 
     if (canSelect != null) {
       if (canSelect(item)) {
-        borderColor = Color.gray;
-        letterColor = Color.yellow;
-        textColor = Color.white;
-        priceColor = Color.gold;
+        borderColor = UIHue.secondary;
+        letterColor = UIHue.selection;
+        textColor = UIHue.primary;
+//        priceColor = Color.gold;
       } else {
         borderColor = Color.black;
         letterColor = Color.black;
-        textColor = Color.darkGray;
-        priceColor = Color.darkGray;
+        textColor = UIHue.disabled;
+//        priceColor = Color.darkGray;
         enabled = false;
       }
     }
 
     terminal.writeAt(x, itemY, " )", borderColor);
-    terminal.writeAt(x, itemY, "abcdefghijklmnopqrstuvwxyz"[letter], letterColor);
+    terminal.writeAt(
+        x, itemY, "abcdefghijklmnopqrstuvwxyz"[letter], letterColor);
     letter++;
 
     if (enabled) {
@@ -251,25 +259,24 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     drawStat(String symbol, Object stat, Color light, Color dark) {
       var string = stat.toString();
       terminal.writeAt(x + 40 - string.length, itemY, symbol,
-          enabled ? dark : Color.darkGray);
+          enabled ? dark : UIHue.disabled);
       terminal.writeAt(x + 41 - string.length, itemY, string,
-          enabled ? light : Color.darkGray);
+          enabled ? light : UIHue.disabled);
     }
 
     // TODO: Eventually need to handle equipment that gives both an armor and
     // attack bonus.
     if (item.attack != null) {
       var hit = item.attack.createHit();
-      drawStat("»", hit.damageString, Color.orange,
-          Color.darkOrange);
+      drawStat("»", hit.damageString, carrot, garnet);
     } else if (item.armor != 0) {
-      drawStat("•", item.armor, Color.green, Color.darkGreen);
+      drawStat("•", item.armor, peaGreen, sherwood);
     }
 
-    if (item.price != 0) {
-      var price = priceString(item.price);
-      terminal.writeAt(x + 49 - price.length, itemY, price, priceColor);
-    }
+//    if (item.price != 0) {
+//      var price = priceString(item.price);
+//      terminal.writeAt(x + 49 - price.length, itemY, price, priceColor);
+//    }
 
     i++;
   }
@@ -279,17 +286,20 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
 String priceString(int price) {
   var result = price.toString();
   if (price > 999999999) {
-    result = result.substring(0, result.length - 9) + "," +
+    result = result.substring(0, result.length - 9) +
+        "," +
         result.substring(result.length - 9);
   }
 
   if (price > 999999) {
-    result = result.substring(0, result.length - 6) + "," +
+    result = result.substring(0, result.length - 6) +
+        "," +
         result.substring(result.length - 6);
   }
 
   if (price > 999) {
-    result = result.substring(0, result.length - 3) + "," +
+    result = result.substring(0, result.length - 3) +
+        "," +
         result.substring(result.length - 3);
   }
 
@@ -301,10 +311,10 @@ abstract class _ItemCommand {
   /// Locations of items that can be used with this command. When a command
   /// allows multiple locations, players can switch between them.
   List<ItemLocation> get allowedLocations => const [
-    ItemLocation.inventory,
-    ItemLocation.equipment,
-    ItemLocation.onGround
-  ];
+        ItemLocation.inventory,
+        ItemLocation.equipment,
+        ItemLocation.onGround
+      ];
 
   /// If the player must select how many items in a stack, returns `true`.
   bool get needsCount;
@@ -321,22 +331,22 @@ abstract class _ItemCommand {
   bool canSelect(Item item);
 
   /// Called when a valid item has been selected.
-  void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location);
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location);
 }
 
 class _DropItemCommand extends _ItemCommand {
-  List<ItemLocation> get allowedLocations => const [
-    ItemLocation.inventory,
-    ItemLocation.equipment
-  ];
+  List<ItemLocation> get allowedLocations =>
+      const [ItemLocation.inventory, ItemLocation.equipment];
 
   bool get needsCount => true;
 
   String query(ItemLocation location) {
     switch (location) {
-      case ItemLocation.inventory: return 'Drop which item?';
-      case ItemLocation.equipment: return 'Unequip and drop which item?';
+      case ItemLocation.inventory:
+        return 'Drop which item?';
+      case ItemLocation.equipment:
+        return 'Unequip and drop which item?';
     }
 
     throw "unreachable";
@@ -346,9 +356,10 @@ class _DropItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => true;
 
-  void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location) {
-    dialog._gameScreen.game.hero.setNextAction(new DropAction(location, item, count));
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
+    dialog._gameScreen.game.hero
+        .setNextAction(new DropAction(location, item, count));
     dialog.ui.pop();
   }
 }
@@ -358,9 +369,12 @@ class _UseItemCommand extends _ItemCommand {
 
   String query(ItemLocation location) {
     switch (location) {
-      case ItemLocation.inventory: return 'Use or equip which item?';
-      case ItemLocation.equipment: return 'Unequip which item?';
-      case ItemLocation.onGround: return 'Pick up and use which item?';
+      case ItemLocation.inventory:
+        return 'Use or equip which item?';
+      case ItemLocation.equipment:
+        return 'Unequip which item?';
+      case ItemLocation.onGround:
+        return 'Pick up and use which item?';
     }
 
     throw "unreachable";
@@ -368,8 +382,8 @@ class _UseItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => item.canUse || item.canEquip;
 
-  void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location) {
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
     dialog._gameScreen.game.hero.setNextAction(new UseAction(location, item));
     dialog.ui.pop();
   }
@@ -380,9 +394,12 @@ class _TossItemCommand extends _ItemCommand {
 
   String query(ItemLocation location) {
     switch (location) {
-      case ItemLocation.inventory: return 'Throw which item?';
-      case ItemLocation.equipment: return 'Unequip and throw which item?';
-      case ItemLocation.onGround: return 'Pick up and throw which item?';
+      case ItemLocation.inventory:
+        return 'Throw which item?';
+      case ItemLocation.equipment:
+        return 'Unequip and throw which item?';
+      case ItemLocation.onGround:
+        return 'Pick up and throw which item?';
     }
 
     throw "unreachable";
@@ -390,21 +407,19 @@ class _TossItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => item.canToss;
 
-  void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location) {
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
     // Now we need a target.
-    dialog.ui.goTo(new TargetDialog(dialog._gameScreen,
-        item.toss.attack.range, (target) {
-      dialog._gameScreen.game.hero.setNextAction(
-          new TossAction(location, item, target));
+    dialog.ui.goTo(
+        new TargetDialog(dialog._gameScreen, item.toss.attack.range, (target) {
+      dialog._gameScreen.game.hero
+          .setNextAction(new TossAction(location, item, target));
     }));
   }
 }
 
 class _PickUpItemCommand extends _ItemCommand {
-  List<ItemLocation> get allowedLocations => const [
-    ItemLocation.onGround
-  ];
+  List<ItemLocation> get allowedLocations => const [ItemLocation.onGround];
 
   bool get needsCount => true;
 
@@ -414,12 +429,10 @@ class _PickUpItemCommand extends _ItemCommand {
 
   bool canSelect(Item item) => true;
 
-  void selectItem(ItemDialog dialog, Item item, int count,
-      ItemLocation location) {
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
     // Pick up item and return to the game
-    dialog._gameScreen.game.hero.setNextAction(
-      new PickUpAction(item)
-    );
+    dialog._gameScreen.game.hero.setNextAction(new PickUpAction(item));
     dialog.ui.pop();
   }
 }

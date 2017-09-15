@@ -4,7 +4,9 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
+import '../content.dart';
 import '../engine.dart';
+import '../hues.dart';
 import 'close_door_dialog.dart';
 import 'direction_dialog.dart';
 import 'effect.dart';
@@ -27,7 +29,7 @@ class GameScreen extends Screen<Input> {
   int _pause = 0;
 
   /// The size of the [Stage] view area.
-  final viewSize = new Vec(80, 34);
+  final viewSize = new Vec(60, 34);
 
   /// The portion of the [Stage] currently in view on screen.
   Rect _cameraBounds;
@@ -337,23 +339,21 @@ class GameScreen extends Screen<Input> {
     terminal.clear();
 
     var bar = new Glyph.fromCharCode(
-        CharCode.boxDrawingsLightVertical, Color.darkGray);
+        CharCode.boxDrawingsLightVertical, steelGray);
     for (var y = 0; y < terminal.height; y++) {
-      terminal.drawGlyph(80, y, bar);
+      terminal.drawGlyph(60, y, bar);
     }
 
     var hero = game.hero;
-    var heroColor = Color.white;
+    var heroColor = ash;
     if (hero.health.current < hero.health.max / 4) {
-      heroColor = Color.red;
+      heroColor = brickRed;
     } else if (hero.poison.isActive) {
-      heroColor = Color.green;
+      heroColor = peaGreen;
     } else if (hero.cold.isActive) {
-      heroColor = Color.lightBlue;
+      heroColor = cornflower;
     } else if (hero.health.current < hero.health.max / 2) {
-      heroColor = Color.lightRed;
-    } else {
-      heroColor = Color.white;
+      heroColor = salmon;
     }
 
     var visibleMonsters = <Monster>[];
@@ -361,8 +361,8 @@ class GameScreen extends Screen<Input> {
     _drawStage(terminal.rect(0, 0, viewSize.x, viewSize.y), heroColor,
         visibleMonsters);
 
-    _drawLog(terminal.rect(0, 34, 80, 6));
-    _drawSidebar(terminal.rect(81, 0, 20, 40), heroColor, visibleMonsters);
+    _drawLog(terminal.rect(0, 34, 60, 6));
+    _drawSidebar(terminal.rect(61, 0, 20, 40), heroColor, visibleMonsters);
   }
 
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the current view.
@@ -396,11 +396,38 @@ class GameScreen extends Screen<Input> {
       var chance = math.min(90, hero.dazzle.duration * 8);
       if (rng.range(100) > chance) return glyph;
 
-      var colors = [Color.aqua, Color.blue, Color.purple, Color.red,
-          Color.orange, Color.gold, Color.yellow, Color.green];
-        var char = (rng.range(100) > chance) ? glyph.char : CharCode.asterisk;
-        return new Glyph.fromCharCode(char, rng.item(colors));
-      }
+      const colors = const [
+        steelGray,
+        slate,
+        gunsmoke,
+        ash,
+        sandal,
+        persimmon,
+        copper,
+        garnet,
+        buttermilk,
+        gold,
+        carrot,
+        mint,
+        mustard,
+        lima,
+        peaGreen,
+        sherwood,
+        salmon,
+        brickRed,
+        maroon,
+        lilac,
+        violet,
+        indigo,
+        turquoise,
+        cornflower,
+        cerulean,
+        ultramarine,
+      ];
+
+      var char = (rng.range(100) > chance) ? glyph.char : CharCode.asterisk;
+      return new Glyph.fromCharCode(char, rng.item(colors));
+    }
 
     // Draw the tiles and items.
     for (var pos in _cameraBounds) {
@@ -429,7 +456,7 @@ class GameScreen extends Screen<Input> {
 
       var glyph = actor.appearance;
       if (glyph is! Glyph) {
-        glyph = new Glyph('@', heroColor);
+        glyph = new Glyph.fromCharCode(CharCode.at, heroColor, midnight);
       }
 
       // If the actor is being targeted, invert its colors.
@@ -458,17 +485,17 @@ class GameScreen extends Screen<Input> {
     for (final message in game.log.messages) {
       var color;
       switch (message.type) {
-        case LogType.message: color = Color.white; break;
-        case LogType.error: color = Color.red; break;
-        case LogType.quest: color = Color.purple; break;
-        case LogType.gain: color = Color.gold; break;
-        case LogType.help: color = Color.green; break;
+        case LogType.message: color = gunsmoke; break;
+        case LogType.error: color = brickRed; break;
+        case LogType.quest: color = violet; break;
+        case LogType.gain: color = gold; break;
+        case LogType.help: color = peaGreen; break;
       }
 
       terminal.writeAt(0, y, message.text, color);
       if (message.count > 1) {
         terminal.writeAt(message.text.length, y, ' (x${message.count})',
-            Color.gray);
+            steelGray);
       }
       y++;
     }
@@ -477,30 +504,30 @@ class GameScreen extends Screen<Input> {
   void _drawSidebar(Terminal terminal, Color heroColor,
       List<Monster> visibleMonsters) {
     var hero = game.hero;
-    _drawStat(terminal, 0, 'Health', hero.health.current, Color.red,
-        hero.health.max, Color.darkRed);
-    terminal.writeAt(0, 1, 'Food', Color.gray);
-    terminal.writeAt(7, 1, hero.food.ceil().toString(), Color.orange);
+    _drawStat(terminal, 0, 'Health', hero.health.current, brickRed,
+        hero.health.max, maroon);
+    terminal.writeAt(0, 1, 'Food', UIHue.helpText);
+    terminal.writeAt(7, 1, hero.food.ceil().toString(), persimmon);
 
-    _drawStat(terminal, 2, 'Level', hero.level, Color.aqua);
+    _drawStat(terminal, 2, 'Level', hero.level, cerulean);
     var levelPercent = 100 * hero.experience ~/
         (calculateLevelCost(hero.level + 1) -
         calculateLevelCost(hero.level));
-    terminal.writeAt(16, 2, '$levelPercent%', Color.darkAqua);
-    _drawStat(terminal, 3, 'Gold', hero.gold, Color.gold);
+    terminal.writeAt(16, 2, '$levelPercent%', ultramarine);
+    _drawStat(terminal, 3, 'Gold', hero.gold, gold);
     _drawStat(terminal, 4, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
-        Color.green);
+        peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit();
-    _drawStat(terminal, 5, 'Weapon', hit.damageString, Color.yellow);
+    _drawStat(terminal, 5, 'Weapon', hit.damageString, turquoise);
 
-    terminal.writeAt(0, 7, hero.heroClass.name);
+    terminal.writeAt(0, 7, hero.heroClass.name, UIHue.text);
     if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
 
     // Draw the nearby monsters.
     terminal.writeAt(0, 16, '@', heroColor);
-    terminal.writeAt(2, 16, _save.name);
+    terminal.writeAt(2, 16, _save.name, UIHue.text);
     _drawHealthBar(terminal, 17, hero);
 
     visibleMonsters.sort((a, b) {
@@ -521,14 +548,14 @@ class GameScreen extends Screen<Input> {
 
         terminal.drawGlyph(0, y, glyph);
         terminal.writeAt(2, y, monster.breed.name,
-            (targetActor == monster) ? Color.yellow : Color.white);
+            (targetActor == monster) ? UIHue.selection : UIHue.text);
 
         _drawHealthBar(terminal, y + 1, monster);
       }
     }
 
     // Draw the unseen items.
-    terminal.writeAt(0, 38, "Unfound items:", Color.gray);
+    terminal.writeAt(0, 38, "Unfound items:", UIHue.helpText);
     var unseen = <Item>[];
     game.stage.forEachItem((item, pos) {
       if (!game.stage[pos].isExplored) unseen.add(item);
@@ -552,7 +579,7 @@ class GameScreen extends Screen<Input> {
   /// Draws a labeled numeric stat.
   void _drawStat(Terminal terminal, int y, String label, value,
       Color valueColor, [max, Color maxColor]) {
-    terminal.writeAt(0, y, label, Color.gray);
+    terminal.writeAt(0, y, label, UIHue.helpText);
     var valueString = value.toString();
     terminal.writeAt(7, y, valueString, valueColor);
 
@@ -562,17 +589,17 @@ class GameScreen extends Screen<Input> {
   }
 
   static final _resistConditions = {
-    Element.air: ["A", Color.black, Color.lightAqua],
-    Element.earth: ["E", Color.black, Color.brown],
-    Element.fire: ["F", Color.black, Color.orange],
-    Element.water: ["W", Color.black, Color.blue],
-    Element.acid: ["A", Color.black, Color.darkYellow],
-    Element.cold: ["C", Color.black, Color.lightBlue],
-    Element.lightning: ["L", Color.black, Color.lightPurple],
-    Element.poison: ["P", Color.black, Color.green],
-    Element.dark: ["D", Color.black, Color.orange],
-    Element.light: ["L", Color.black, Color.orange],
-    Element.spirit: ["S", Color.black, Color.orange]
+    Element.air: ["A", Color.black, turquoise],
+    Element.earth: ["E", Color.black, persimmon],
+    Element.fire: ["F", Color.black, brickRed],
+    Element.water: ["W", Color.black, ultramarine],
+    Element.acid: ["A", Color.black, lima],
+    Element.cold: ["C", Color.black, cornflower],
+    Element.lightning: ["L", Color.black, lilac],
+    Element.poison: ["P", Color.black, peaGreen],
+    Element.dark: ["D", Color.black, steelGray],
+    Element.light: ["L", Color.black, buttermilk],
+    Element.spirit: ["S", Color.black, violet]
   };
 
   /// Draws a health bar for [actor].
@@ -581,26 +608,26 @@ class GameScreen extends Screen<Input> {
     var conditions = [];
 
     if (actor is Monster && actor.isAfraid) {
-      conditions.add(["!", Color.yellow]);
+      conditions.add(["!", sandal]);
     }
 
     if (actor.poison.isActive) {
       switch (actor.poison.intensity) {
-        case 1: conditions.add(["P", Color.darkGreen]); break;
-        case 2: conditions.add(["P", Color.green]); break;
-        default: conditions.add(["P", Color.lightGreen]); break;
+        case 1: conditions.add(["P", sherwood]); break;
+        case 2: conditions.add(["P", peaGreen]); break;
+        default: conditions.add(["P", mint]); break;
       }
     }
 
-    if (actor.cold.isActive) conditions.add(["C", Color.lightBlue]);
+    if (actor.cold.isActive) conditions.add(["C", cornflower]);
     switch (actor.haste.intensity) {
-      case 1: conditions.add(["S", Color.darkGold]); break;
-      case 2: conditions.add(["S", Color.gold]); break;
-      case 3: conditions.add(["S", Color.lightGold]); break;
+      case 1: conditions.add(["S", persimmon]); break;
+      case 2: conditions.add(["S", gold]); break;
+      case 3: conditions.add(["S", buttermilk]); break;
     }
 
-    if (actor.blindness.isActive) conditions.add(["B", Color.darkGray]);
-    if (actor.dazzle.isActive) conditions.add(["D", Color.lightPurple]);
+    if (actor.blindness.isActive) conditions.add(["B", steelGray]);
+    if (actor.dazzle.isActive) conditions.add(["D", lilac]);
 
     for (var element in Element.all) {
       if (actor.resistances[element].isActive) {
@@ -619,7 +646,7 @@ class GameScreen extends Screen<Input> {
     }
 
     _drawMeter(terminal, y, actor.health.current, actor.health.max,
-        Color.red, Color.darkRed);
+        brickRed, maroon);
   }
 
   /// Draws a progress bar to reflect [value]'s range between `0` and [max].
@@ -655,8 +682,8 @@ class GameScreen extends Screen<Input> {
   void _drawWarriorStats(Terminal terminal, Hero hero) {
     var warrior = hero.heroClass as Warrior;
 
-    terminal.writeAt(0, 8, "Fury", Color.gray);
-    _drawMeter(terminal, 8, hero.charge.toInt(), 100, Color.orange, Color.darkOrange);
+    terminal.writeAt(0, 8, "Fury", UIHue.helpText);
+    _drawMeter(terminal, 8, hero.charge.toInt(), 100, carrot, garnet);
 
     var y = 9;
 
@@ -664,9 +691,9 @@ class GameScreen extends Screen<Input> {
       // Hide stats until the hero has made progress on them.
       if (stat.level == 0 && stat.percentUntilNext == 0) return;
 
-      terminal.writeAt(0, y, name, Color.gray);
-      terminal.writeAt(13, y, stat.level.toString());
-      terminal.writeAt(16, y, "${stat.percentUntilNext}%", Color.darkGray);
+      terminal.writeAt(0, y, name, UIHue.helpText);
+      terminal.writeAt(13, y, stat.level.toString(), UIHue.text);
+      terminal.writeAt(16, y, "${stat.percentUntilNext}%", UIHue.secondary);
       y++;
     }
 

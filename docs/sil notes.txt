@@ -1,0 +1,110 @@
+http://www.amirrorclear.net/flowers/game/sil/Sil-130-Manual.pdf
+
+> There are no ‘stat potions’, so initial stats matter a lot more.
+
+There's something to said for characters not all having everything maxed out
+at the end.
+
+> Sil is unusual among roleplaying games in that the races are intentionally not
+> balanced against one another. Instead, they act like a difficulty level.
+
+Stats are used for lots of things. It makes me realize how much flavor they
+would add to Hauberk. For example, mages that don't put points into strength
+can't throw as far, wear armor as heavy, maybe even have fewer inventory slots.
+Stats might help make characters feel more unique.
+
+Treat them as differentiators and not simply another progress bar to max out.
+One option would to have a max total number of points that can be used to raise
+stats instead of a max per stat. That means as you near the limit, you have to
+choose which stats to prioritize.
+
+>     Greatsword (-2,3d5) [+1]
+>     Mail corslet (-1) [-3,2d4]
+>
+> This greatsword offers a +1 bonus to evasion, making you slightly harder to
+> strike. This represents your ability to parry with it. On the other hand, the
+> mail corslet is sufficiently cumbersome that it gives a penalty to accuracy as
+> well as a penalty to evasion.
+
+Having equipment modify substats like this would help them feel more different.
+
+> In addition, the defender’s evasion score is halved against archery (this can
+> stack with the halvings mentioned above). This makes evasion considerably less
+> useful against archery than against melee.
+
+It's hard to dodge an incoming arrow!
+
+> Finally, it is very dangerous to use your bow when there are enemies in melee
+> range. Firing your bow in such a circumstance will let your guard down,
+> allowing all adjacent enemies to make a free attack on you.
+
+Not sure how well that would work out, but it's pretty interesting. I think
+Hauberk's approach of forcing the player to switch weapons might be better.
+
+> Instead of damaging you directly, poison damage is added to your poison
+> counter. Each round, the poison counter is reduced by 20% and you suffer this
+> damage.
+
+So poison does a sort of logorithmic decay. Based on the counter. That's cool
+because it means a *lot* of poison also damages you faster.
+
+> Sil has a sophisticated morale model for its enemies. Other than mindless
+> creatures (which always just attack you) most enemies take stock of the
+> situation and retreat if needed. They have a morale level which changes
+> depending on the circumstances.
+
+This whole section is worth reading. It's similar to fear in Hauberk, though
+it uses more explicit hero and other properties to modify. Seems easier to tune.
+I really like:
+
+> Similar creatures in line of sight that are not fleeing (+1 each, or +4 for
+> leaders)
+>
+> Similar creatures in line of sight that are fleeing (–1 each, or –4 for
+> leaders)
+
+This seems like it would lead to nice emergent group behavior where monsters
+tend to flee or fight together.
+
+Between aggressive and afraid, it has another behavioral state:
+
+> Confident monsters may use tactics while attacking you (such as lurking in
+> rooms waiting for you).
+
+There are also two "sleeping" states: sleeping and unwary. The latter is:
+
+> They are awake and going about their business, but they do not know that you
+> are there. Their evasion is halved.
+
+When forging items, you can put some other yourself into it: drain a stat or
+burn experience.
+
+> You gain experience for encountering each individual enemy the first time you
+> see it (or if you kill it without ever seeing it).
+
+This way, you can gain experience while playing a sneaky character.
+Identification also grants experience.
+
+The "Charge" ability grants:
+
+> If you attack an opponent after having just moved towards that opponent (so
+> that your move and attack are in the same direction or at most 45° apart),
+> then your attack is calculated as if you had 3 more points of strength and
+> dexterity.
+
+The "Follow Through" ability:
+
+> If you kill an opponent, you get a free ‘follow-through’ attack on another
+> opponent adjacent to you.
+
+> Whirlwind Attack
+>
+> When you attack an enemy in an open area (no walls or rubble adjacent to you),
+> you get a free attack on all other enemies that are adjacent to you.
+
+> Sprinting
+>
+> You gain +1 speed if you move four or more squares in roughly the same
+> direction.
+
+Lots of other cool ideas in there for skills/abilities.

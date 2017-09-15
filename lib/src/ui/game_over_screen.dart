@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'input.dart';
 
 class GameOverScreen extends Screen<Input> {
@@ -25,6 +26,6 @@ class GameOverScreen extends Screen<Input> {
     terminal.writeAt(0, 0, log.messages.last.text);
     terminal.writeAt(0, terminal.height - 1,
         '[Esc] Return to quest menu',
-        Color.gray);
+        UIHue.helpText);
   }
 }

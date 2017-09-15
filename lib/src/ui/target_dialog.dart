@@ -3,6 +3,7 @@ import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
@@ -73,16 +74,34 @@ class TargetDialog extends Screen<Input> {
         }
         break;
 
-      case Input.cancel: ui.pop(); break;
+      case Input.cancel:
+        ui.pop();
+        break;
 
-      case Input.nw: _changeTarget(Direction.nw); break;
-      case Input.n: _changeTarget(Direction.n); break;
-      case Input.ne: _changeTarget(Direction.ne); break;
-      case Input.w: _changeTarget(Direction.w); break;
-      case Input.e: _changeTarget(Direction.e); break;
-      case Input.sw: _changeTarget(Direction.sw); break;
-      case Input.s: _changeTarget(Direction.s); break;
-      case Input.se: _changeTarget(Direction.se); break;
+      case Input.nw:
+        _changeTarget(Direction.nw);
+        break;
+      case Input.n:
+        _changeTarget(Direction.n);
+        break;
+      case Input.ne:
+        _changeTarget(Direction.ne);
+        break;
+      case Input.w:
+        _changeTarget(Direction.w);
+        break;
+      case Input.e:
+        _changeTarget(Direction.e);
+        break;
+      case Input.sw:
+        _changeTarget(Direction.sw);
+        break;
+      case Input.s:
+        _changeTarget(Direction.s);
+        break;
+      case Input.se:
+        _changeTarget(Direction.se);
+        break;
     }
 
     return true;
@@ -133,14 +152,14 @@ class TargetDialog extends Screen<Input> {
       }
 
       // Show the damage ranges.
-      var color = Color.yellow;
+      var color = gold;
       if (toPos > _range * 2 / 3) {
-        color = Color.darkYellow;
+        color = persimmon;
       }
 
       var glyph = tile.type.appearance[1] as Glyph;
-      _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
-          new Glyph.fromCharCode(glyph.char, color));
+      _gameScreen.drawStageGlyph(
+          terminal, pos.x, pos.y, new Glyph.fromCharCode(glyph.char, color));
     }
 
     var target = _gameScreen.currentTarget;
@@ -161,38 +180,43 @@ class TargetDialog extends Screen<Input> {
       if (!stage[pos].isTransparent) break;
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
-          new Glyph.fromCharCode(CharCode.bullet,
-              (i == 0) ? Color.yellow : Color.darkYellow));
+          new Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : persimmon));
       i = (i + _numFrames - 1) % _numFrames;
     }
 
     // Only show the reticle if the bolt will reach the target.
     if (reachedTarget) {
-      var targetColor = Color.yellow;
+      var targetColor = gold;
       var toTarget = target - _gameScreen.game.hero.pos;
       if (toTarget > _range * 2 / 3) {
-        targetColor = Color.darkYellow;
+        targetColor = persimmon;
       }
 
-      _gameScreen.drawStageGlyph(terminal, target.x - 1, target.y,
-          new Glyph('-', targetColor));
-      _gameScreen.drawStageGlyph(terminal, target.x + 1, target.y,
-          new Glyph('-', targetColor));
-      _gameScreen.drawStageGlyph(terminal, target.x, target.y - 1,
-          new Glyph('|', targetColor));
-      _gameScreen.drawStageGlyph(terminal, target.x, target.y + 1,
-          new Glyph('|', targetColor));
+      _gameScreen.drawStageGlyph(
+          terminal, target.x - 1, target.y, new Glyph('-', targetColor));
+      _gameScreen.drawStageGlyph(
+          terminal, target.x + 1, target.y, new Glyph('-', targetColor));
+      _gameScreen.drawStageGlyph(
+          terminal, target.x, target.y - 1, new Glyph('|', targetColor));
+      _gameScreen.drawStageGlyph(
+          terminal, target.x, target.y + 1, new Glyph('|', targetColor));
     }
 
     if (_monsters.isEmpty) {
-      terminal.writeAt(0, terminal.height - 1,
-          "[↕↔] Choose tile, [Esc] Cancel", Color.gray);
+      terminal.writeAt(0, terminal.height - 1, "[↕↔] Choose tile, [Esc] Cancel",
+          UIHue.helpText);
     } else if (_targetingFloor) {
-      terminal.writeAt(0, terminal.height - 1,
-          "[↕↔] Choose tile, [Tab] Target monsters, [Esc] Cancel", Color.gray);
+      terminal.writeAt(
+          0,
+          terminal.height - 1,
+          "[↕↔] Choose tile, [Tab] Target monsters, [Esc] Cancel",
+          UIHue.helpText);
     } else {
-      terminal.writeAt(0, terminal.height - 1,
-          "[↕↔] Choose monster, [Tab] Target floor, [Esc] Cancel", Color.gray);
+      terminal.writeAt(
+          0,
+          terminal.height - 1,
+          "[↕↔] Choose monster, [Tab] Target floor, [Esc] Cancel",
+          UIHue.helpText);
     }
   }
 
@@ -225,15 +249,15 @@ class TargetDialog extends Screen<Input> {
         }
       }
 
-      var nearest = _findLowest(ahead, (monster) =>
-          (monster.pos - _gameScreen.currentTarget).lengthSquared);
+      var nearest = _findLowest(ahead,
+          (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
       if (nearest != null) {
         _gameScreen.targetActor(nearest);
         return;
       }
 
-      var farthest = _findHighest(behind, (monster) =>
-          (monster.pos - _gameScreen.currentTarget).lengthSquared);
+      var farthest = _findHighest(behind,
+          (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
       if (farthest != null) {
         _gameScreen.targetActor(farthest);
       }

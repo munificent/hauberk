@@ -3,6 +3,7 @@ import 'package:malison/malison_web.dart';
 
 import '../debug.dart';
 import '../engine.dart';
+import '../hues.dart';
 import 'game_screen.dart';
 import 'input.dart';
 import 'item_screen.dart';
@@ -50,24 +51,26 @@ class SelectDepthScreen extends Screen<Input> {
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
 
+    // TODO: Shops, the crucible, and the home are disabled for now since
+    // I'm in the process of removing money.
     switch (keyCode) {
-      case KeyCode.c:
-        ui.push(new ItemScreen.crucible(content, save));
-        break;
-
-      case KeyCode.h:
-        ui.push(new ItemScreen.home(content, save));
-        return true;
-
-      case KeyCode.one: return tryEnterShop(0);
-      case KeyCode.two: return tryEnterShop(1);
-      case KeyCode.three: return tryEnterShop(2);
-      case KeyCode.four: return tryEnterShop(3);
-      case KeyCode.five: return tryEnterShop(4);
-      case KeyCode.six: return tryEnterShop(5);
-      case KeyCode.seven: return tryEnterShop(6);
-      case KeyCode.eight: return tryEnterShop(7);
-      case KeyCode.nine: return tryEnterShop(8);
+//      case KeyCode.c:
+//        ui.push(new ItemScreen.crucible(content, save));
+//        break;
+//
+//      case KeyCode.h:
+//        ui.push(new ItemScreen.home(content, save));
+//        return true;
+//
+//      case KeyCode.one: return tryEnterShop(0);
+//      case KeyCode.two: return tryEnterShop(1);
+//      case KeyCode.three: return tryEnterShop(2);
+//      case KeyCode.four: return tryEnterShop(3);
+//      case KeyCode.five: return tryEnterShop(4);
+//      case KeyCode.six: return tryEnterShop(5);
+//      case KeyCode.seven: return tryEnterShop(6);
+//      case KeyCode.eight: return tryEnterShop(7);
+//      case KeyCode.nine: return tryEnterShop(8);
     }
 
     return false;
@@ -81,45 +84,48 @@ class SelectDepthScreen extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, 'Greetings, ${save.name}, how deep shall you venture?');
+    terminal.writeAt(15, 14, 'Greetings, ${save.name}, how deep shall you venture?', UIHue.text);
     terminal.writeAt(0, terminal.height - 1,
         '[L] Enter dungeon, [↕] Change depth, [↔] Change depth',
-        Color.gray);
+        UIHue.helpText);
 
     // TODO: Do something prettier.
     for (var depth = 1; depth <= Option.maxDepth; depth++) {
       var x = (depth - 1) % 10;
       var y = (depth - 1) ~/ 10;
 
-      var fore = Color.white;
-      var back = Color.black;
+      var color = UIHue.primary;
       if (!Debug.enabled && depth > save.maxDepth + 1) {
-        fore = Color.darkGray;
+        color = UIHue.disabled;
       } else if (depth == selectedDepth) {
-        fore = Color.black;
-        back = Color.yellow;
+        color = UIHue.selection;
+        terminal.drawChar(14 + x * 5, 16 + y, CharCode.blackRightPointingPointer, color);
+        terminal.drawChar(18 + x * 5, 16 + y, CharCode.blackLeftPointingPointer, color);
       }
-      terminal.writeAt(17 + x * 6, 4 + y,
-          depth.toString().padLeft(3), fore, back);
+
+      terminal.writeAt(15 + x * 5, 16 + y,
+          depth.toString().padLeft(3), color);
     }
 
-    var y = 17;
-    drawMenuItem(String key, String label) {
-      terminal.writeAt(30, y, key, Color.gray);
-      terminal.writeAt(31, y, ")", Color.darkGray);
-      terminal.writeAt(33, y, label);
-      y++;
-    }
-
-    drawMenuItem("h", "Enter Home");
-    drawMenuItem("c", "Use Crucible");
-    y++;
-
-    var i = 1;
-    for (var shop in content.shops) {
-      drawMenuItem(i.toString(), shop.name);
-      i++;
-    }
+    // TODO: Shops, the crucible, and the home are disabled for now since
+    // I'm in the process of removing money.
+//    var y = 17;
+//    drawMenuItem(String key, String label) {
+//      terminal.writeAt(30, y, key, Color.gray);
+//      terminal.writeAt(31, y, ")", Color.darkGray);
+//      terminal.writeAt(33, y, label);
+//      y++;
+//    }
+//
+//    drawMenuItem("h", "Enter Home");
+//    drawMenuItem("c", "Use Crucible");
+//    y++;
+//
+//    var i = 1;
+//    for (var shop in content.shops) {
+//      drawMenuItem(i.toString(), shop.name);
+//      i++;
+//    }
   }
 
   void activate(Screen screen, result) {

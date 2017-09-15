@@ -1,14 +1,13 @@
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'affixes.dart';
-import 'utils.dart';
 
 int _sortIndex = 0;
 
-/// The current glyph. Any items defined will use this. Can be a string or
-/// a character code.
-var _glyph;
+/// The current glyph's character code. Any items defined will use this.
+int _glyph;
 
 String _tag;
 String _equipSlot;
@@ -46,11 +45,11 @@ class Items {
 
     // Unused: ; : ` % ^ < >
 
-    category(",", stack: 10, tag: "item");
+    category(CharCode.latinCapitalLetterCWithCedilla, stack: 10, tag: "item");
     tossable(damage: 3, range: 8, element: Element.earth, breakage: 10);
-    item("Rock", 1, 1, lightBrown);
+    item("Rock", 1, 1, persimmon);
 
-    treasures();
+//    treasures();
     pelts();
     potions();
     scrolls();
@@ -77,29 +76,35 @@ class Items {
     Kite Shield[s]
 
     */
+    // CharCode.latinSmallLetterUWithDiaeresis // skull
+    // CharCode.latinSmallLetterIWithDiaeresis // ring
+    // CharCode.latinSmallLetterIWithCircumflex // wand
+    // CharCode.latinCapitalLetterAWithRingAbove // gloves
+    // CharCode.latinCapitalLetterEWithAcute // helm
+    // CharCode.latinSmallLetterAe // shield
   }
 }
 
 void treasures() {
   // TODO: Make monsters and areas drop these.
   // Coins.
-  category("¢", tag: "treasure/coin");
+  category(CharCode.centSign, tag: "treasure/coin");
   // TODO: Figure out these should be quantified.
-  treasure("Copper Coins",    1, brown,           1);
-  treasure("Bronze Coins",    7, darkGold,        8);
-  treasure("Silver Coins",   11, gray,           20);
-  treasure("Electrum Coins", 20, lightGold,      50);
-  treasure("Gold Coins",     30, gold,           100);
-  treasure("Platinum Coins", 40, lightGray,      300);
+  treasure("Copper Coins",    1, copper,          1);
+  treasure("Bronze Coins",    7, persimmon,       8);
+  treasure("Silver Coins",   11, turquoise,      20);
+  treasure("Electrum Coins", 20, buttermilk,     50);
+  treasure("Gold Coins",     30, gold,          100);
+  treasure("Platinum Coins", 40, gunsmoke,      300);
 
   // Bars.
-  category(r"$", tag: "treasure/bar");
-  treasure("Copper Bar",     35, brown,          150);
-  treasure("Bronze Bar",     50, darkGold,       500);
-  treasure("Silver Bar",     60, gray,           800);
-  treasure("Electrum Bar",   70, lightGold,     1200);
-  treasure("Gold Bar",       80, gold,          2000);
-  treasure("Platinum Bar",   90, lightGray,     3000);
+  category(CharCode.dollarSign, tag: "treasure/bar");
+  treasure("Copper Bar",     35, copper,        150);
+  treasure("Bronze Bar",     50, persimmon,     500);
+  treasure("Silver Bar",     60, turquoise,     800);
+  treasure("Electrum Bar",   70, buttermilk,   1200);
+  treasure("Gold Bar",       80, gold,         2000);
+  treasure("Platinum Bar",   90, gunsmoke,     3000);
 
   // TODO: Could add more treasure using other currency symbols.
 
@@ -130,143 +135,166 @@ void treasures() {
 
 void pelts() {
   // TODO: Should these appear on the floor?
-  category("%", stack: 20, flags: "flammable");
-  item("Flower",        1, 1, lightAqua); // TODO: Use in recipe.
-  item("Insect Wing",   1, 1, purple);
-  item("Red Feather",   2, 1, red); // TODO: Use in recipe.
-  item("Black Feather", 2, 1, darkGray);
+  // TODO: Better pictogram than a pelt?
+  category(CharCode.latinSmallLetterEWithAcute, stack: 20, flags: "flammable");
+  item("Flower",        1, 1, cornflower); // TODO: Use in recipe.
+  item("Insect Wing",   1, 1, violet);
+  item("Red Feather",   2, 1, brickRed); // TODO: Use in recipe.
+  item("Black Feather", 2, 1, steelGray);
   item("Stinger",       2, 1, gold);
 
-  category("%", stack: 4, flags: "flammable");
-  item("Fur Pelt",      1, 1, lightBrown);
-  item("Fox Pelt",      2, 1, orange);
+  category(CharCode.latinSmallLetterEWithAcute, stack: 4, flags: "flammable");
+  item("Fur Pelt",      1, 1, persimmon);
+  item("Fox Pelt",      2, 1, copper);
 }
 
 void potions() {
-  category("!", stack: 10, flags: "freezable");
-
-  // TODO: Make these foods?
+  category(CharCode.latinSmallLetterCWithCedilla, stack: 10, flags: "freezable");
 
   // TODO: Potions should shatter when thrown. Some should perform an effect.
+
+  // TODO: Make these foods?
 
   // Healing.
   tagged("magic/potion/healing");
   tossable(damage: 1, range: 8, breakage: 100);
-  healing("Soothing Balm",     2, 1,   10, lightRed,     24);
-  healing("Mending Salve",     7, 1,   40, red,          48);
-  healing("Healing Poultice", 12, 1,   80, darkRed,      64, curePoison: true);
-  healing("of Amelioration",  24, 1,  200, darkPurple,  120, curePoison: true);
-  healing("of Rejuvenation",  65, 2,  500, purple,     1000, curePoison: true);
+  healing("Soothing Balm",     2, 1,   10, salmon,       24);
+  healing("Mending Salve",     7, 1,   40, brickRed,     48);
+  healing("Healing Poultice", 12, 1,   80, maroon,       64, curePoison: true);
+  healing("of Amelioration",  24, 1,  200, indigo,      120, curePoison: true);
+  healing("of Rejuvenation",  65, 2,  500, violet,     1000, curePoison: true);
 
-  healing("Antidote",          4, 2,   40, green,         0, curePoison: true);
+  healing("Antidote",          4, 2,   40, peaGreen,      0, curePoison: true);
 
+  category(CharCode.latinSmallLetterEWithCircumflex, stack: 10, flags: "freezable");
   tagged("magic/potion/resistance");
   tossable(damage: 1, range: 8, breakage: 100);
-  resistSalve("Heat",          5, 20, orange, Element.fire);
-  resistSalve("Cold",          6, 24, lightBlue, Element.cold, "-freezable");
-  resistSalve("Light",         7, 28, lightYellow, Element.light);
-  resistSalve("Wind",          8, 32, lightAqua, Element.air);
-  resistSalve("Electricity",   9, 36, lightPurple, Element.lightning);
-  resistSalve("Darkness",     10, 40, darkGray, Element.dark);
-  resistSalve("Earth",        13, 44, brown, Element.earth);
-  resistSalve("Water",        16, 48, blue, Element.water);
-  resistSalve("Acid",         19, 52, lightOrange, Element.acid);
-  resistSalve("Poison",       23, 56, green, Element.poison);
-  resistSalve("Death",        30, 60, purple, Element.spirit);
+  resistSalve("Heat",          5, 20, carrot, Element.fire);
+  resistSalve("Cold",          6, 24, cornflower, Element.cold, "-freezable");
+  resistSalve("Light",         7, 28, buttermilk, Element.light);
+  resistSalve("Wind",          8, 32, turquoise, Element.air);
+  resistSalve("Electricity",   9, 36, lilac, Element.lightning);
+  resistSalve("Darkness",     10, 40, slate, Element.dark);
+  resistSalve("Earth",        13, 44, persimmon, Element.earth);
+  resistSalve("Water",        16, 48, ultramarine, Element.water);
+  resistSalve("Acid",         19, 52, sandal, Element.acid); // TODO: Better color.
+  resistSalve("Poison",       23, 56, lima, Element.poison);
+  resistSalve("Death",        30, 60, violet, Element.spirit);
 
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
+
+  category(CharCode.latinSmallLetterEWithDiaeresis, stack: 10, flags: "freezable");
 
   // Speed.
   tagged("magic/potion/speed");
   tossable(damage: 1, range: 8, breakage: 100);
-  potion("of Quickness",  3, 3,  20, lightGreen, () => new HasteAction(20, 1));
-  potion("of Alacrity",  18, 3,  40, green,      () => new HasteAction(30, 2));
-  potion("of Speed",     34, 4, 200, darkGreen,  () => new HasteAction(40, 3));
+  potion("of Quickness",  3, 3,  20, lima,     () => new HasteAction(20, 1));
+  potion("of Alacrity",  18, 3,  40, peaGreen, () => new HasteAction(30, 2));
+  potion("of Speed",     34, 4, 200, sherwood, () => new HasteAction(40, 3));
 
   // dram, draught, elixir, philter
+
+  category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable");
 
   // TODO: Make monsters drop these.
   // TODO: These should do their ball attack when thrown too.
   tagged("magic/potion/bottled");
   tossable(damage: 1, range: 12, breakage: 100);
-  bottled("Wind",         4,   30, white,       Element.air,         8, "blasts");
-  bottled("Ice",          7,   55, lightBlue,   Element.cold,       15, "freezes", flags: "-freezable");
-  bottled("Fire",        11,   70, red,         Element.fire,       22, "burns");
-  bottled("Ocean",       12,  110, blue,        Element.water,      26, "drowns");
-  bottled("Earth",       13,  150, brown,       Element.earth,      28, "crushes");
-  bottled("Lightning",   16,  200, lightPurple, Element.lightning,  34, "shocks");
-  bottled("Acid",        18,  250, lightGreen,  Element.acid,       38, "corrodes");
-  bottled("Poison",      22,  330, darkGreen,   Element.poison,     42, "infects");
-  bottled("Shadow",      28,  440, black,       Element.dark,       48, "torments",
+  bottled("Wind",         4,   30, cornflower,  Element.air,         8, "blasts");
+  bottled("Ice",          7,   55, cerulean,    Element.cold,       15, "freezes", flags: "-freezable");
+  bottled("Fire",        11,   70, brickRed,    Element.fire,       22, "burns");
+  bottled("Ocean",       12,  110, ultramarine, Element.water,      26, "drowns");
+  bottled("Earth",       13,  150, persimmon,   Element.earth,      28, "crushes");
+  bottled("Lightning",   16,  200, lilac,       Element.lightning,  34, "shocks");
+  bottled("Acid",        18,  250, lima,        Element.acid,       38, "corrodes");
+  bottled("Poison",      22,  330, sherwood,    Element.poison,     42, "infects");
+  bottled("Shadow",      28,  440, steelGray,   Element.dark,       48, "torments",
       noun: "the darkness");
-  bottled("Radiance",    34,  600, white,       Element.light,      52, "sears");
-  bottled("Spirit",      40, 1000, darkGray,    Element.spirit,     58, "haunts");
+  bottled("Radiance",    34,  600, buttermilk,  Element.light,      52, "sears");
+  bottled("Spirit",      40, 1000, slate,       Element.spirit,     58, "haunts");
   // TODO: Potions that raise fury, sustain it, and that trade health for it.
 }
 
 void scrolls() {
-  category("?", stack: 20, flags: "flammable");
-
   // Teleportation.
+  category(CharCode.latinSmallLetterAWithCircumflex, stack: 20, flags: "flammable");
   tagged("magic/scroll/teleportation");
   tossable(damage: 1, range: 4, breakage: 75);
-  scroll("of Sidestepping",   2, 2,  9, lightPurple, () => new TeleportAction(6));
-  scroll("of Phasing",        6, 3, 17, purple,      () => new TeleportAction(12));
-  scroll("of Teleportation", 15, 3, 33, darkPurple,  () => new TeleportAction(24));
-  scroll("of Disappearing",  26, 3, 47, darkBlue,    () => new TeleportAction(48));
+  scroll("of Sidestepping",   2, 2,  9, lilac,       () => new TeleportAction(6));
+  scroll("of Phasing",        6, 3, 17, violet,      () => new TeleportAction(12));
+  scroll("of Teleportation", 15, 3, 33, indigo,      () => new TeleportAction(24));
+  scroll("of Disappearing",  26, 3, 47, ultramarine, () => new TeleportAction(48));
 
   // Detection.
+  category(CharCode.latinSmallLetterAWithDiaeresis, stack: 20, flags: "flammable");
   tagged("magic/scroll/detection");
   tossable(damage: 1, range: 4, breakage: 75);
-  detection("of Find Nearby Escape",  1,  2,   20, lightYellow, [DetectType.exit], range: 20);
-  detection("of Find Nearby Items",   2,  2,   20, yellow, [DetectType.item], range: 20);
-  detection("of Detect Nearby",       3,  4,   20, darkYellow, [DetectType.exit, DetectType.item], range: 20);
+  detection("of Find Nearby Escape",  1,  2,   20, buttermilk, [DetectType.exit], range: 20);
+  detection("of Find Nearby Items",   2,  2,   20, gold, [DetectType.item], range: 20);
+  detection("of Detect Nearby",       3,  4,   20, lima, [DetectType.exit, DetectType.item], range: 20);
 
-  detection("of Locate Escape",       5,  1,   20, lightOrange, [DetectType.exit]);
-  detection("of Item Detection",     20,  2,   27, orange, [DetectType.item]);
-  detection("of Detection",          30,  4,  240, darkOrange, [DetectType.exit, DetectType.item]);
+  detection("of Locate Escape",       5,  1,   20, sandal, [DetectType.exit]);
+  detection("of Item Detection",     20,  2,   27, carrot, [DetectType.item]);
+  detection("of Detection",          30,  4,  240, copper, [DetectType.exit, DetectType.item]);
+
+//  CharCode.latinSmallLetterAWithGrave // scroll
+//  CharCode.latinSmallLetterAWithRingAbove // scroll
 }
 
 void weapons() {
   // Bludgeons.
-  category(r"\", tag: "equipment/weapon/club", verb: "hit[s]");
+  category(CharCode.latinSmallLetterAWithAcute, tag: "equipment/weapon/club", verb: "hit[s]");
   tossable(breakage: 25, range: 7);
-  weapon("Stick",          1,    0, brown,       4,   3);
-  weapon("Cudgel",         3,    9, gray,        5,   4);
-  weapon("Club",           6,   21, lightBrown,  6,   5);
+  weapon("Stick",          1,    0, persimmon,   4,   3);
+  weapon("Cudgel",         3,    9, gunsmoke,    5,   4);
+  weapon("Club",           6,   21, garnet,      6,   5);
 
   // Staves.
-  category("_", tag: "equipment/weapon/staff", verb: "hit[s]");
+  category(CharCode.latinSmallLetterIWithAcute, tag: "equipment/weapon/staff", verb: "hit[s]");
   tossable(breakage: 35, range: 6);
-  weapon("Walking Stick",        2,    9, darkBrown,   5,   3);
-  weapon("Sta[ff|aves]",         5,   38, lightBrown,  7,   5);
-  weapon("Quartersta[ff|aves]", 11,  250, brown,      12,   8);
+  weapon("Walking Stick",        2,    9, persimmon,  5,   3);
+  weapon("Sta[ff|aves]",         5,   38, garnet,     7,   5);
+  weapon("Quartersta[ff|aves]", 11,  250, gunsmoke,  12,   8);
 
   // Hammers.
-  category("=", tag: "equipment/weapon/hammer", verb: "bash[es]");
+  category(CharCode.latinSmallLetterOWithAcute, tag: "equipment/weapon/hammer", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
-  weapon("Hammer",        27,  621, brown,      16, 12);
-  weapon("Mattock",       39, 1225, darkBrown,  20, 16);
-  weapon("War Hammer",    45, 2106, lightGray,  24, 20);
+  weapon("Hammer",        27,  621, persimmon,  16, 12);
+  weapon("Mattock",       39, 1225, garnet,     20, 16);
+  weapon("War Hammer",    45, 2106, gunsmoke,   24, 20);
 
-  category("=", tag: "equipment/weapon/mace", verb: "bash[es]");
+  // Maces.
+  category(CharCode.latinSmallLetterUWithAcute, tag: "equipment/weapon/mace", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
-  weapon("Morningstar",   24,  324, gray,       13, 11);
-  weapon("Mace",          33,  891, darkGray,   18, 16);
+  weapon("Morningstar",   24,  324, gunsmoke,   13, 11);
+  weapon("Mace",          33,  891, slate,      18, 16);
 
-  category("~", tag: "equipment/weapon/whip", verb: "whip[s]");
+  // Whips.
+  category(CharCode.latinSmallLetterNWithTilde, tag: "equipment/weapon/whip", verb: "whip[s]");
   tossable(breakage: 25, range: 5);
-  weapon("Whip",           4,    9, lightBrown,  5,  1);
-  weapon("Chain Whip",    15,   95, darkGray,    9,  2);
-  weapon("Flail",         27,  409, darkGray,   14,  4);
+  weapon("Whip",           4,    9, persimmon,   5,  1);
+  weapon("Chain Whip",    15,   95, gunsmoke,    9,  2);
+  weapon("Flail",         27,  409, slate,      14,  4);
 
-  category("|", tag: "equipment/weapon/sword", verb: "slash[es]");
+  // Knives.
+  category(CharCode.latinCapitalLetterNWithTilde, tag: "equipment/weapon/dagger", verb: "stab[s]");
+  tossable(breakage: 2, range: 10);
+  weapon("Kni[fe|ves]",    3,    9, steelGray,   5,  5);
+  weapon("Dirk",           4,   21, gunsmoke,    6,  6);
+  weapon("Dagger",         6,   63, cornflower,  8,  8);
+  weapon("Stiletto[es]",  10,  188, slate,      11, 11);
+  weapon("Rondel",        20,  409, turquoise,  14, 14);
+  weapon("Baselard",      30,  621, gold,       16, 16);
+  // Main-guache
+  // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
+
+  category(CharCode.feminineOrdinalIndicator, tag: "equipment/weapon/sword", verb: "slash[es]");
   tossable(breakage: 20, range: 6);
-  weapon("Rapier",         7,  188, gray,       11,  4);
-  weapon("Shortsword",    11,  324, darkGray,   13,  6);
-  weapon("Scimitar",      18,  748, lightGray,  17,  9);
-  weapon("Cutlass[es]",   24, 1417, lightGold,  21, 11);
-  weapon("Falchion",      38, 2374, white,      25, 15);
+  weapon("Rapier",         7,  188, steelGray,  11,  4);
+  weapon("Shortsword",    11,  324, slate,      13,  6);
+  weapon("Scimitar",      18,  748, gunsmoke,   17,  9);
+  weapon("Cutlass[es]",   24, 1417, buttermilk, 21, 11);
+  weapon("Falchion",      38, 2374, turquoise,  25, 15);
 
   /*
 
@@ -279,69 +307,60 @@ void weapons() {
 
   */
 
-  // Knives.
-  category("|", tag: "equipment/weapon/dagger", verb: "stab[s]");
-  tossable(breakage: 2, range: 10);
-  weapon("Kni[fe|ves]",    3,    9, gray,        5,  5);
-  weapon("Dirk",           4,   21, lightGray,   6,  6);
-  weapon("Dagger",         6,   63, white,       8,  8);
-  weapon("Stiletto[es]",  10,  188, darkGray,   11, 11);
-  weapon("Rondel",        20,  409, lightAqua,  14, 14);
-  weapon("Baselard",      30,  621, lightBlue,  16, 16);
-  // Main-guache
-  // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
-
   // Spears.
-  category("/", tag: "equipment/weapon/spear", verb: "stab[s]");
+  category(CharCode.masculineOrdinalIndicator, tag: "equipment/weapon/spear", verb: "stab[s]");
   tossable(breakage: 3, range: 11);
-  weapon("Pointed Stick",  2,    0, brown,       5,  9);
-  weapon("Spear",          7,  137, gray,       10, 15);
-  weapon("Angon",         14,  621, lightGray,  16, 20);
-  weapon("Lance",         28, 2106, white,      24, 28);
-  weapon("Partisan",      35, 6833, darkGray,   36, 40);
+  weapon("Pointed Stick",  2,    0, garnet,      5,  9);
+  weapon("Spear",          7,  137, persimmon,  10, 15);
+  weapon("Angon",         14,  621, gunsmoke,   16, 20);
+  weapon("Lance",         28, 2106, cornflower, 24, 28);
+  weapon("Partisan",      35, 6833, slate,      36, 40);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
-  category(CharCode.rightAngle, tag: "equipment/weapon/axe", verb: "chop[s]");
+  category(CharCode.invertedQuestionMark, tag: "equipment/weapon/axe", verb: "chop[s]");
   tossable(breakage: 4);
-  weapon("Hatchet",    6,  137, darkGray,   10, 12, 10);
-  weapon("Axe",       12,  621, lightBrown, 16, 18, 9);
-  weapon("Valaska",   24, 2664, gray,       26, 26, 8);
-  weapon("Battleaxe", 40, 4866, lightBlue,  32, 32, 7);
+  weapon("Hatchet",    6,  137, slate,      10, 12, 10);
+  weapon("Axe",       12,  621, persimmon,  16, 18, 9);
+  weapon("Valaska",   24, 2664, gunsmoke,   26, 26, 8);
+  weapon("Battleaxe", 40, 4866, steelGray,  32, 32, 7);
 
   // Sling. In a category itself because many bow affixes don't apply to it.
-  category("}", tag: "equipment/weapon/sling", verb: "hit[s]");
+  category(CharCode.reversedNotSign, tag: "equipment/weapon/sling", verb: "hit[s]");
   tossable(breakage: 15, range: 5);
-  ranged("Sling",          3,   20, darkBrown,  "the stone",  2, 10, 1);
+  ranged("Sling",          3,   20, persimmon,  "the stone",  2, 10, 1);
 
   // Bows.
-  category("}", tag: "equipment/weapon/bow", verb: "hit[s]");
+  category(CharCode.notSign, tag: "equipment/weapon/bow", verb: "hit[s]");
   tossable(breakage: 50, range: 5);
-  ranged("Short Bow",      5,  180, brown,      "the arrow",  4, 12, 2);
-  ranged("Longbow",       13,  600, lightBrown, "the arrow",  8, 14, 3);
-  ranged("Crossbow",      28, 2000, gray,       "the bolt",  12, 16, 4);
+  ranged("Short Bow",      5,  180, persimmon,  "the arrow",  4, 12, 2);
+  ranged("Longbow",       13,  600, garnet,     "the arrow",  8, 14, 3);
+  ranged("Crossbow",      28, 2000, gunsmoke,   "the bolt",  12, 16, 4);
 }
 
 void bodyArmor() {
   // TODO: Make some armor throwable.
+  category(CharCode.latinCapitalLetterAe, tag: "equipment/armor/cloak");
+  armor("Cloak",                   3,   2, 19, ultramarine, 2);
+  armor("Fur Cloak",               5,   5, 42, garnet, 3);
 
-  category("(", tag: "equipment/armor/cloak");
-  armor("Cloak",                   3,   2, 19, darkBlue,    2);
-  armor("Fur Cloak",               5,   5, 42, lightBrown,  3);
+  category(CharCode.latinSmallLetterOWithDiaeresis, tag: "equipment/armor/body");
+  armor("Cloth Shirt",             2,   2,   19, sandal,      2);
+  armor("Leather Shirt",           5,   2,  126, persimmon,   5);
+  armor("Jerkin",                  7,   2,  191, gunsmoke,    6);
+  armor("Leather Armor",          10,   2,  377, garnet,      8);
+  armor("Padded Armor",           14,   2,  819, steelGray,  11);
+  armor("Studded Leather Armor",  17,   2, 1782, slate,      15);
 
-  category("(", tag: "equipment/armor/body");
-  armor("Cloth Shirt",             2,   2,   19, lightGray,   2);
-  armor("Leather Shirt",           5,   2,  126, lightBrown,  5);
-  armor("Jerkin",                  7,   2,  191, orange,      6);
-  armor("Leather Armor",          10,   2,  377, brown,       8);
-  armor("Padded Armor",           14,   2,  819, darkBrown,  11);
-  armor("Studded Leather Armor",  17,   2, 1782, gray,       15);
-  armor("Mail Hauberk",           20,   2, 2835, darkGray,   18);
-  armor("Scale Mail",             23,   2, 4212, lightGray,  21);
+  category(CharCode.latinSmallLetterOWithGrave, tag: "equipment/armor/body");
+  armor("Mail Hauberk",           20,   2, 2835, steelGray,  18);
+  armor("Scale Mail",             23,   2, 4212, gunsmoke,   21);
 
-  category("(", tag: "equipment/armor/body/robe");
-  armor("Robe",                    2,   2,   77, aqua,        4);
-  armor("Fur-lined Robe",          6,   4,  191, darkAqua,    6);
+//  CharCode.latinSmallLetterUWithCircumflex // armor
+
+  category(CharCode.latinSmallLetterOWithCircumflex, tag: "equipment/armor/body/robe");
+  armor("Robe",                    2,   2,   77, cerulean,    4);
+  armor("Fur-lined Robe",          6,   4,  191, sherwood,    6);
 
   /*
   Metal Lamellar Armor[s]
@@ -356,17 +375,18 @@ void bodyArmor() {
 }
 
 void boots() {
-  category("]", tag: "equipment/armor/boots");
-  armor("Pair[s] of Leather Sandals",       2, 4,    6, lightBrown,  1);
-  armor("Pair[s] of Leather Shoes",         8, 3,   19, brown,       2);
-  armor("Pair[s] of Leather Boots",        14, 3,   77, darkBrown,   4);
-  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, gray,        7);
-  armor("Pair[s] of Greaves",              47, 4, 1017, lightGray,  12);
+  category(CharCode.latinSmallLetterIWithGrave, tag: "equipment/armor/boots");
+  armor("Pair[s] of Leather Sandals",       2, 4,    6, persimmon,   1);
+  armor("Pair[s] of Leather Shoes",         8, 3,   19, garnet,      2);
+
+  category(CharCode.latinCapitalLetterAWithDiaeresis, tag: "equipment/armor/boots");
+  armor("Pair[s] of Leather Boots",        14, 3,   77, persimmon,  4);
+  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, slate,      7);
+  armor("Pair[s] of Greaves",              47, 4, 1017, gunsmoke,  12);
 }
 
-void category(glyph, {String tag, String verb, String flags, int stack: 1}) {
+void category(int glyph, {String tag, String verb, String flags, int stack: 1}) {
   _glyph = glyph;
-
   _verb = verb;
   if (flags != null) {
     _flags = flags.split(" ");
@@ -519,7 +539,9 @@ void item(String name, int depth, int rarity, appearance, {ItemUse use,
     bool treasure: false, String flags}) {
   // If the appearance isn't an actual glyph, it should be a color function
   // that will be applied to the current glyph.
-  if (appearance is! Glyph) {
+  if (appearance is Color) {
+    appearance = new Glyph.fromCharCode(_glyph, appearance, midnight);
+  } else if (appearance is! Glyph) {
     appearance = appearance(_glyph);
   }
 

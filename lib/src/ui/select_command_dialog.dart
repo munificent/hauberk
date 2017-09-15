@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
+import '../hues.dart';
 import 'input.dart';
 
 class SelectCommandDialog extends Screen<Input> {
@@ -43,20 +44,20 @@ class SelectCommandDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, "Perform which command?");
+    terminal.writeAt(0, 0, "Perform which command?", UIHue.text);
 
     for (var i = 0; i < _commands.length; i++) {
-      var y = i + 1;
+      var y = i + 2;
       var command = _commands[i];
 
-      var borderColor = Color.darkGray;
-      var letterColor = Color.black;
-      var textColor = Color.darkGray;
+      var borderColor = UIHue.secondary;
+      var letterColor = midnight;
+      var textColor = UIHue.disabled;
 
       if (command.canUse(_game)) {
-        borderColor = Color.gray;
-        letterColor = Color.yellow;
-        textColor = Color.white;
+        borderColor = UIHue.primary;
+        letterColor = UIHue.selection;
+        textColor = UIHue.selection;
       }
 
       terminal.writeAt(0, y, '( )   ', borderColor);
@@ -64,7 +65,10 @@ class SelectCommandDialog extends Screen<Input> {
       terminal.writeAt(4, y, command.name, textColor);
     }
 
-    terminal.writeAt(0, terminal.height - 1,
-        '[A-Z] Select command, [1-9] Bind quick key, [Esc] Exit', Color.gray);
+    terminal.writeAt(
+        0,
+        terminal.height - 1,
+        '[A-Z] Select command, [1-9] Bind quick key, [Esc] Exit',
+        UIHue.helpText);
   }
 }

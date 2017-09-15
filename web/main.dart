@@ -9,7 +9,7 @@ import 'package:hauberk/src/debug.dart';
 import 'package:hauberk/src/ui/input.dart';
 import 'package:hauberk/src/ui/main_menu_screen.dart';
 
-const width = 100;
+const width = 80;
 const height = 40;
 
 final terminals = [];
@@ -79,6 +79,14 @@ main() {
   addTerminal('Hauberk', new html.CanvasElement(),
           (element) => new RetroTerminal(width, height, "font.png",
               canvas: element, charWidth: 9, charHeight: 13));
+
+  addTerminal('8x8', new html.CanvasElement(),
+          (element) => new RetroTerminal(width, height, "font_8.png",
+          canvas: element, charWidth: 8, charHeight: 8));
+
+  addTerminal('16x16', new html.CanvasElement(),
+          (element) => new RetroTerminal(width, height, "font_16.png",
+          canvas: element, charWidth: 16, charHeight: 16));
 
   // Load the user's font preference, if any.
   var font = html.window.localStorage['font'];
