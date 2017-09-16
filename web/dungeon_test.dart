@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
@@ -16,7 +17,7 @@ var content = createContent();
 var heroClass = new Warrior();
 var save = new HeroSave("Hero", heroClass);
 Game _game;
-Terminal terminal;
+RenderableTerminal terminal;
 
 int get depth {
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
@@ -44,7 +45,7 @@ main() {
   generate();
 }
 
-void generate() {
+Future generate() async {
   _game = new Game(content, save, depth);
   var stage = _game.stage;
 
@@ -55,6 +56,8 @@ void generate() {
 
   for (var event in _game.generate()) {
     print(event);
+    render();
+    await html.window.animationFrame;
   }
 
   render();
@@ -185,4 +188,6 @@ void render() {
       }
     }
   }
+
+  terminal.render();
 }
