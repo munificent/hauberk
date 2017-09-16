@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import 'blob.dart';
 import 'tiles.dart';
 
 class Dungeon2 {
@@ -26,14 +27,33 @@ class Dungeon2 {
     if (rng.oneIn(3)) {
       yield "Carving river";
       _addRiver();
-    }
-
-    // TODO: Temp hack so the hero can be placed.
-    for (var y = 1; y < 7; y++) {
-      for (var x = 1; x < 7; x++) {
-        setTile(x, y, Tiles.floor);
+    } else {
+      // TODO: Temp hack so the hero can be placed.
+      for (var y = 1; y < 7; y++) {
+        for (var x = 1; x < 7; x++) {
+          setTile(x, y, Tiles.floor);
+        }
       }
     }
+
+    if (rng.oneIn(5)) {
+      yield "Pouring big lake";
+      // TODO: 64 is pretty big. Might want to make these a little smaller, but
+      // not all the way down to 32.
+      _addLake(Blob.make64());
+    } else if (rng.oneIn(2)) {
+      yield "Pouring lake";
+      _addLake(Blob.make32());
+    }
+
+    var ponds = rng.taper(0, 3);
+    for (var i = 0; i < ponds; i++) {
+      yield "Pouring pond $i/$ponds";
+      _addLake(Blob.make16());
+    }
+
+    // TODO: Add grottoes other places than just on rivers.
+    yield* _addGrottoes();
   }
 
   void setTile(int x, int y, TileType type) {
@@ -41,6 +61,34 @@ class Dungeon2 {
   }
 
   bool isWall(int x, int y) => stage.get(x, y).type == Tiles.wall;
+
+  /// Returns `true` if the cell at [pos] has at least one adjacent tile with
+  /// type [tile].
+  bool hasCardinalNeighbor(Vec pos, TileType tile) {
+    for (var dir in Direction.cardinal) {
+      var neighbor = pos + dir;
+      if (!stage.bounds.inflate(-1).contains(neighbor)) continue;
+
+      // TODO: Allow passing in the tile types that can be grown into.
+      if (stage[neighbor].type == tile) return true;
+    }
+
+    return false;
+  }
+
+  /// Returns `true` if the cell at [pos] has at least one adjacent tile with
+  /// type [tile].
+  bool hasNeighbor(Vec pos, TileType tile) {
+    for (var dir in Direction.all) {
+      var neighbor = pos + dir;
+      if (!stage.bounds.inflate(-1).contains(neighbor)) continue;
+
+      // TODO: Allow passing in the tile types that can be grown into.
+      if (stage[neighbor].type == tile) return true;
+    }
+
+    return false;
+  }
 
   void _displace(RiverPoint start, RiverPoint end) {
     var h = start.x - end.x;
@@ -98,15 +146,153 @@ class Dungeon2 {
     // Midpoint displacement.
     // Consider also squig curves from: http://algorithmicbotany.org/papers/mountains.gi93.pdf.
     var start =
-        new RiverPoint(rng.float(width.toDouble()), -4.0, rng.float(1.0, 4.0));
+        new RiverPoint(rng.float(width.toDouble()), -4.0, rng.float(1.0, 3.0));
     var end = new RiverPoint(
-        rng.float(width.toDouble()), height + 4.0, rng.float(1.0, 4.0));
+        rng.float(width.toDouble()), height + 4.0, rng.float(1.0, 3.0));
     var mid = new RiverPoint(rng.float(width * 0.25, width * 0.75),
-        rng.float(height * 0.25, height * 0.75), rng.float(1.0, 4.0));
+        rng.float(height * 0.25, height * 0.75), rng.float(1.0, 3.0));
+
+    if (rng.oneIn(2)) {
+      // Horizontal instead of vertical.
+      start = new RiverPoint(start.y, start.x, start.radius);
+      end = new RiverPoint(end.y, end.x, end.radius);
+    }
+
+    // TODO: Branching tributaries?
+
     _displace(start, mid);
     _displace(mid, end);
 
     // TODO: Figure out how to handle the edge of the dungeon.
+  }
+
+  Iterable<String> _addGrottoes() sync* {
+    var count = rng.taper(2, 3);
+    for (var i = 0; i < 200; i++) {
+      var pos = rng.vecInRect(bounds.inflate(-1));
+      // TODO: Handle different shore types.
+      if (stage[pos].type == Tiles.grass &&
+          hasCardinalNeighbor(pos, Tiles.wall)) {
+        yield "Carving grotto";
+        // TODO: Different sizes and smoothness.
+        _growSeed([pos], 30, 3, Tiles.grass);
+        if (--count == 0) break;
+      }
+    }
+  }
+
+  void _addLake(Array2D<bool> cells) {
+    // Try to find a place to drop it.
+    for (var i = 0; i < 100; i++) {
+      var x = rng.range(0, width - cells.width);
+      var y = rng.range(0, height - cells.height);
+
+      // See if the lake overlaps anything.
+      var canPlace = true;
+      for (var pos in cells.bounds) {
+        if (cells[pos]) {
+          if (!isWall(pos.x + x, pos.y + y)) {
+            canPlace = false;
+            break;
+          }
+        }
+      }
+
+      if (!canPlace) continue;
+
+      // We found a spot, carve the water.
+      for (var pos in cells.bounds) {
+        if (cells[pos]) {
+          setTile(pos.x + x, pos.y + y, Tiles.water);
+        }
+      }
+
+      // Grow a shoreline.
+      var edges = <Vec>[];
+      var shoreBounds =
+          Rect.intersect(cells.bounds.offset(x, y).inflate(1), bounds);
+      for (var pos in shoreBounds) {
+        if (isWall(pos.x, pos.y) && hasNeighbor(pos, Tiles.water)) {
+          setTile(pos.x, pos.y, Tiles.grass);
+          edges.add(pos);
+        }
+      }
+
+      _growSeed(edges, edges.length, 4, Tiles.grass);
+      return;
+    }
+  }
+
+  /// Grows a randomly shaped blob starting at [start].
+  ///
+  /// Tries to add approximately [size] tiles of type [tile] that are directly
+  /// attached to the starting tile. Only grows through tiles of [allowed]
+  /// types. The larger [smoothing] is, the less jagged and spidery the blobs
+  /// will be.
+  void _growSeed(List<Vec> starts, int size, int smoothing, TileType tile) {
+    var edges = new Set<Vec>();
+
+    addNeighbors(Vec pos) {
+      for (var dir in Direction.cardinal) {
+        var neighbor = pos + dir;
+        if (!stage.bounds.inflate(-1).contains(neighbor)) continue;
+
+        // TODO: Allow passing in the tile types that can be grown into.
+        if (stage[neighbor].type != Tiles.wall) continue;
+        edges.add(neighbor);
+      }
+    }
+
+    scorePos(Vec pos) {
+      var score = 0;
+
+      // Count straight neighbors higher to discourage diagonal growth.
+      for (var dir in Direction.cardinal) {
+        var neighbor = pos + dir;
+        if (stage[neighbor].type == tile) score += 2;
+      }
+
+      for (var dir in Direction.intercardinal) {
+        var neighbor = pos + dir;
+        if (stage[neighbor].type == tile) score++;
+      }
+
+      return score;
+    }
+
+    starts.forEach(addNeighbors);
+
+    var count = rng.triangleInt(size, size ~/ 2);
+    var hack = 0;
+    while (edges.isNotEmpty && count > 0) {
+      if (hack++ > 1000) break;
+
+      var edgeList = edges.toList();
+      var best = <Vec>[];
+      var bestScore = -1;
+
+      // Pick a number of potential tiles to grow into and choose the least
+      // jagged option -- the one with the most neighbors that are already
+      // grown.
+      for (var i = 0; i < smoothing; i++) {
+        var pos = rng.item(edgeList);
+        var score = scorePos(pos);
+
+        if (score > bestScore) {
+          best = [pos];
+          bestScore = score;
+        } else if (score == bestScore) {
+          best.add(pos);
+        }
+      }
+
+      var pos = rng.item(best);
+      stage[pos].type = tile;
+      addNeighbors(pos);
+      edges.remove(pos);
+
+      count--;
+    }
   }
 }
 

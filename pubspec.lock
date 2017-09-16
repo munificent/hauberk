@@ -36,7 +36,7 @@ packages:
       name: malison
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.7.0"
   markdown:
     description:
       name: markdown
@@ -54,7 +54,7 @@ packages:
       name: piecemeal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.2"
   pool:
     description:
       name: pool
@@ -74,4 +74,4 @@ packages:
     source: hosted
     version: "1.7.0"
 sdks:
-  dart: ">=1.21.0-dev.1.0 <2.0.0"
+  dart: ">=1.24.0 <2.0.0"

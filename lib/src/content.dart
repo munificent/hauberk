@@ -2,6 +2,7 @@ import 'engine.dart';
 
 import 'content/affixes.dart';
 import 'content/dungeon.dart';
+import 'content/dungeon2.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
@@ -23,7 +24,7 @@ Content createContent() {
 
 class GameContent implements Content {
   Iterable<String> buildStage(Stage stage, int depth) {
-    return new Dungeon(stage, depth).generate();
+    return new Dungeon2(stage, depth).generate();
   }
 
   Affix findAffix(String name) => Affixes.find(name);
