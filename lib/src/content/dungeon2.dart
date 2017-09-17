@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import 'blob.dart';
+import 'room.dart';
 import 'tiles.dart';
 
 class Dungeon2 {
@@ -11,31 +12,25 @@ class Dungeon2 {
   final int depth;
 
   Rect get bounds => stage.bounds;
+  Rect get safeBounds => stage.bounds.inflate(-1);
+
   int get width => stage.width;
   int get height => stage.height;
 
   Dungeon2(this.stage, this.depth);
 
   Iterable<String> generate() sync* {
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        setTile(x, y, Tiles.wall);
-      }
-    }
+    fill(0, 0, width, height, Tiles.wall);
 
     // TODO: Change the odds based on depth.
     if (rng.oneIn(3)) {
       yield "Carving river";
       _addRiver();
-    } else {
-      // TODO: Temp hack so the hero can be placed.
-      for (var y = 1; y < 7; y++) {
-        for (var x = 1; x < 7; x++) {
-          setTile(x, y, Tiles.floor);
-        }
-      }
     }
 
+    // TODO: Rivers that flow into/from lakes?
+
+    // TODO: Change the odds based on depth.
     if (rng.oneIn(5)) {
       yield "Pouring big lake";
       // TODO: 64 is pretty big. Might want to make these a little smaller, but
@@ -52,12 +47,30 @@ class Dungeon2 {
       _addLake(Blob.make16());
     }
 
-    // TODO: Add grottoes other places than just on rivers.
-    yield* _addGrottoes();
+    // TODO: Add grottoes other places than just on shores.
+    // Add some old grottoes that eroded before the dungeon was built.
+    yield* _addGrottoes(rng.taper(2, 3));
+
+    yield* _addRooms();
+
+    // Add a few grottoes that have collapsed after rooms. Unlike the above,
+    // these may erode into rooms.
+    // TODO: It looks weird that these don't place grass on the room floor
+    // itself. Probably want to apply grass after everything is carved based on
+    // humidity or something.
+    yield* _addGrottoes(rng.taper(0, 3));
   }
 
   void setTile(int x, int y, TileType type) {
     stage.get(x, y).type = type;
+  }
+
+  void fill(int left, int top, int width, int height, TileType tile) {
+    for (var y = top; y < top + height; y++) {
+      for (var x = left; x < left + width; x++) {
+        setTile(x, y, tile);
+      }
+    }
   }
 
   bool isWall(int x, int y) => stage.get(x, y).type == Tiles.wall;
@@ -67,7 +80,7 @@ class Dungeon2 {
   bool hasCardinalNeighbor(Vec pos, TileType tile) {
     for (var dir in Direction.cardinal) {
       var neighbor = pos + dir;
-      if (!stage.bounds.inflate(-1).contains(neighbor)) continue;
+      if (!safeBounds.contains(neighbor)) continue;
 
       // TODO: Allow passing in the tile types that can be grown into.
       if (stage[neighbor].type == tile) return true;
@@ -81,7 +94,7 @@ class Dungeon2 {
   bool hasNeighbor(Vec pos, TileType tile) {
     for (var dir in Direction.all) {
       var neighbor = pos + dir;
-      if (!stage.bounds.inflate(-1).contains(neighbor)) continue;
+      if (!safeBounds.contains(neighbor)) continue;
 
       // TODO: Allow passing in the tile types that can be grown into.
       if (stage[neighbor].type == tile) return true;
@@ -166,10 +179,11 @@ class Dungeon2 {
     // TODO: Figure out how to handle the edge of the dungeon.
   }
 
-  Iterable<String> _addGrottoes() sync* {
-    var count = rng.taper(2, 3);
+  Iterable<String> _addGrottoes(int count) sync* {
+    if (count == 0) return;
+
     for (var i = 0; i < 200; i++) {
-      var pos = rng.vecInRect(bounds.inflate(-1));
+      var pos = rng.vecInRect(safeBounds);
       // TODO: Handle different shore types.
       if (stage[pos].type == Tiles.grass &&
           hasCardinalNeighbor(pos, Tiles.wall)) {
@@ -223,6 +237,49 @@ class Dungeon2 {
     }
   }
 
+  Iterable<String> _addRooms() sync* {
+    yield "Adding rooms";
+
+    // TODO: Choosing random room types looks kind of blah. It's weird to have
+    // blob rooms randomly scattered amongst other ones. Instead, it would
+    // be better to have "regions" in the dungeon that preferentially lean
+    // towards some room types.
+
+    // TODO: Distinguish between how many rooms to try to place, and the max
+    // to successfully generate.
+    var roomNumber = 1;
+    for (var i = 0; i < 1000; i++) {
+      var room = Room.create(depth);
+      var x = rng.inclusive(0, width - room.tiles.width);
+      var y = rng.inclusive(0, height - room.tiles.height);
+
+      if (!_canPlace(room, x, y)) continue;
+
+      // Place it.
+      yield "Placing room $roomNumber";
+      roomNumber++;
+
+      for (var pos in room.tiles.bounds) {
+        var tile = room.tiles[pos];
+        if (tile == null) continue;
+
+        setTile(pos.x + x, pos.y + y, tile);
+      }
+    }
+  }
+
+  bool _canPlace(Room room, int x, int y) {
+    for (var pos in room.tiles.bounds) {
+      // If the room doesn't care about the tile, it's fine.
+      if (room.tiles[pos] == null) continue;
+
+      // Otherwise, it must still be solid on the stage.
+      if (stage.get(pos.x + x, pos.y + y).type != Tiles.wall) return false;
+    }
+
+    return true;
+  }
+
   /// Grows a randomly shaped blob starting at [start].
   ///
   /// Tries to add approximately [size] tiles of type [tile] that are directly
@@ -235,7 +292,7 @@ class Dungeon2 {
     addNeighbors(Vec pos) {
       for (var dir in Direction.cardinal) {
         var neighbor = pos + dir;
-        if (!stage.bounds.inflate(-1).contains(neighbor)) continue;
+        if (!safeBounds.contains(neighbor)) continue;
 
         // TODO: Allow passing in the tile types that can be grown into.
         if (stage[neighbor].type != Tiles.wall) continue;
