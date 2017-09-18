@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -10,6 +11,8 @@ import 'tiles.dart';
 class Dungeon2 {
   final Stage stage;
   final int depth;
+
+  final List<Junction> _junctions = [];
 
   Rect get bounds => stage.bounds;
   Rect get safeBounds => stage.bounds.inflate(-1);
@@ -238,45 +241,117 @@ class Dungeon2 {
   }
 
   Iterable<String> _addRooms() sync* {
+    yield "Add starting room";
+    // TODO: Sometimes start at a natural feature.
+
+    var startRoom = Room.create(depth);
+    while (true) {
+      var x = rng.inclusive(0, width - startRoom.tiles.width);
+      var y = rng.inclusive(0, height - startRoom.tiles.height);
+
+      if (!_canPlace(startRoom, x, y)) continue;
+      // TODO: After a certain number of tries, should try a different room.
+
+      yield "Placing starting room";
+      _placeRoom(startRoom, x, y);
+      break;
+    }
+
     yield "Adding rooms";
 
-    // TODO: Choosing random room types looks kind of blah. It's weird to have
-    // blob rooms randomly scattered amongst other ones. Instead, it would
-    // be better to have "regions" in the dungeon that preferentially lean
-    // towards some room types.
-
-    // TODO: Distinguish between how many rooms to try to place, and the max
-    // to successfully generate.
+    // Keep growing as long as we have attachment points.
     var roomNumber = 1;
-    for (var i = 0; i < 1000; i++) {
-      var room = Room.create(depth);
-      var x = rng.inclusive(0, width - room.tiles.width);
-      var y = rng.inclusive(0, height - room.tiles.height);
+    while (_junctions.isNotEmpty) {
+      var junction = rng.take(_junctions);
+      var roomJunctionDir = junction.direction.rotate180;
+      // TODO: Add junctions to natural features so we can grow through them.
 
-      if (!_canPlace(room, x, y)) continue;
+      var placed = false;
+      // TODO: Tune this.
+      for (var i = 0; i < 20; i++) {
+        // TODO: Choosing random room types looks kind of blah. It's weird to
+        // have blob rooms randomly scattered amongst other ones. Instead, it
+        // would be better to have "regions" in the dungeon that preferentially
+        // lean towards some room types.
+        //
+        // Alternatively (or do both), have the room type chosen based on the
+        // preceding rooms that lead to this junction so that you don't have
+        // weird things like a closet leading to a great hall.
+        var room = Room.create(depth);
 
-      // Place it.
-      yield "Placing room $roomNumber";
-      roomNumber++;
+        for (var roomJunction in room.junctions) {
+          if (roomJunction.direction != roomJunctionDir) continue;
 
-      for (var pos in room.tiles.bounds) {
-        var tile = room.tiles[pos];
-        if (tile == null) continue;
+          // Calculate the room position by lining up the junctions.
+          var roomPos = junction.position - roomJunction.position;
 
-        setTile(pos.x + x, pos.y + y, tile);
+          if (!_canPlace(room, roomPos.x, roomPos.y)) continue;
+
+          yield "Placing room ${roomNumber++}";
+          _placeRoom(room, roomPos.x, roomPos.y);
+          // TODO: Different doors.
+          setTile(junction.position.x, junction.position.y, Tiles.openDoor);
+
+          placed = true;
+          break;
+        }
+
+        if (placed) break;
       }
     }
   }
 
   bool _canPlace(Room room, int x, int y) {
+    if (!bounds.containsRect(room.tiles.bounds.offset(x, y))) return false;
+
     for (var pos in room.tiles.bounds) {
       // If the room doesn't care about the tile, it's fine.
       if (room.tiles[pos] == null) continue;
 
       // Otherwise, it must still be solid on the stage.
       if (stage.get(pos.x + x, pos.y + y).type != Tiles.wall) return false;
+
+      // TODO: Allow rooms to interact with natural features some.
     }
 
+    return true;
+  }
+
+  void _placeRoom(Room room, int x, int y) {
+    for (var pos in room.tiles.bounds) {
+      var tile = room.tiles[pos];
+      if (tile == null) continue;
+
+      setTile(pos.x + x, pos.y + y, tile);
+    }
+
+    // Add its junctions unless they are already blocked.
+    var roomPos = new Vec(x, y);
+
+    for (var junction in room.junctions) {
+      if (!_isValidJunction(junction, roomPos)) continue;
+      _junctions
+          .add(new Junction(junction.direction, roomPos + junction.position));
+    }
+  }
+
+  bool _isValidJunction(Junction junction, Vec offset) {
+    var absolute = junction.position + offset;
+
+    isBlocked(Direction direction) {
+      var pos = absolute + direction;
+      if (!safeBounds.contains(pos)) return true;
+      return !isWall(pos.x, pos.y);
+    }
+
+    if (isBlocked(junction.direction)) return false;
+    if (isBlocked(junction.direction.rotateLeft45)) return false;
+    if (isBlocked(junction.direction.rotateRight45)) return false;
+    if (isBlocked(junction.direction.rotateLeft90)) return false;
+    if (isBlocked(junction.direction.rotateRight90)) return false;
+
+    // TODO: If a junction opens into another area, keep it for later for
+    // trying for extra connections.
     return true;
   }
 

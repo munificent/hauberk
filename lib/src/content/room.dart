@@ -6,6 +6,21 @@ import '../engine.dart';
 import 'blob.dart';
 import 'tiles.dart';
 
+class Junction {
+  /// Points from the first room towards where the new room should be attached.
+  ///
+  /// A room must have an opposing junction in order to match.
+  final Direction direction;
+
+  /// The location of the junction.
+  ///
+  /// For a placed room, this is in absolute coordinates. For a room yet to be
+  /// placed, it's relative to the room's tile array.
+  final Vec position;
+
+  Junction(this.direction, this.position);
+}
+
 class Room {
   static ResourceSet<RoomType> _allTypes = new ResourceSet();
 
@@ -54,30 +69,17 @@ class Room {
     }
 
     // Blob-shaped rooms.
-    _add(new BlobRoom(), 1);
+    // TODO: Get blobs working with junctions.
+//    _add(new BlobRoom(), 1);
 
-//    octagon(int w, int h, int slope, {int rarity: 1}) {
-//      // 4 * to make all octagonal rooms less common.
-//      add(new OctagonRoom(w, h, slope), 4 * rarity);
-//      if (w != h) add(new OctagonRoom(h, w, slope), 4 * rarity);
-//    }
-//
-//    octagon(5, 5, 1);
-//    octagon(5, 7, 1, rarity: 2);
-//    octagon(7, 7, 2);
-//    octagon(7, 9, 2, rarity: 2);
-//    octagon(9, 9, 2);
-//    octagon(9, 9, 3);
-//    octagon(9, 11, 2, rarity: 2);
-//    octagon(9, 11, 3, rarity: 2);
-//    octagon(11, 11, 3, rarity: 2);
-//
-//    TemplateRoom.initialize();
+    // TODO: Other room shapes: L, T, cross, etc.
+    // TODO: Passageways.
   }
 
   final Array2D<TileType> tiles;
+  final List<Junction> junctions;
 
-  Room(this.tiles);
+  Room(this.tiles, this.junctions);
 }
 
 abstract class RoomType {
@@ -93,6 +95,7 @@ class RectangleRoom extends RoomType {
   Room create() {
     // TODO: Cache this with the type?
     var tiles = new Array2D<TileType>(width + 2, height + 2, Tiles.floor);
+
     for (var y = 0; y < tiles.height; y++) {
       tiles.set(0, y, Tiles.wall);
       tiles.set(tiles.width - 1, y, Tiles.wall);
@@ -103,7 +106,41 @@ class RectangleRoom extends RoomType {
       tiles.set(x, tiles.height - 1, Tiles.wall);
     }
 
-    return new Room(tiles);
+    var junctions = <Junction>[];
+    _placeJunctions(width, (i) {
+      junctions.add(new Junction(Direction.n, new Vec(i + 1, 0)));
+    });
+
+    _placeJunctions(width, (i) {
+      junctions.add(new Junction(Direction.s, new Vec(i + 1, height + 1)));
+    });
+
+    _placeJunctions(height, (i) {
+      junctions.add(new Junction(Direction.w, new Vec(0, i + 1)));
+    });
+
+    _placeJunctions(height, (i) {
+      junctions.add(new Junction(Direction.e, new Vec(width + 1, i + 1)));
+    });
+
+    return new Room(tiles, junctions);
+  }
+
+  /// Walks along [length], invoking [callback] at values where a junction
+  /// should be placed.
+  ///
+  /// Ensures two junctions are not placed next to each other.
+  void _placeJunctions(int length, void Function(int) callback) {
+    var start = rng.oneIn(2) ? 0 : 1;
+    for (var i = start; i < length; i++) {
+      // TODO: Make chances tunable.
+      if (rng.range(100) < 40) {
+        callback(i);
+
+        // Don't allow two junctions right next to each other.
+        i++;
+      }
+    }
   }
 }
 
@@ -128,35 +165,7 @@ class BlobRoom extends RoomType {
       }
     }
 
-    return new Room(tiles);
+    // TODO: Place junctions.
+    return new Room(tiles, []);
   }
 }
-
-//class OctagonRoom extends RoomType {
-//  final int width;
-//  final int height;
-//  final int slope;
-//
-//  OctagonRoom(this.width, this.height, this.slope);
-//
-//  void place(Dungeon dungeon, Rect room) {
-//    for (var pos in room) {
-//      // Fill in the corners.
-//      if ((room.topLeft - pos).rookLength < slope ||
-//          (room.topRight - pos).rookLength < slope + 1 ||
-//          (room.bottomLeft - pos).rookLength < slope + 1 ||
-//          (room.bottomRight - pos).rookLength < slope + 2) {
-//        dungeon.setTile(pos, Tiles.wall);
-//      }
-//    }
-//
-//    // TODO: Decorate inside?
-//
-//    dungeon.addConnector(room.center.x, room.top - 1);
-//    dungeon.addConnector(room.center.x, room.bottom);
-//    dungeon.addConnector(room.left - 1, room.center.y);
-//    dungeon.addConnector(room.right, room.center.y);
-//
-//    decorate(dungeon, room);
-//  }
-//}
