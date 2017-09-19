@@ -6,12 +6,16 @@ import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/content/dungeon2.dart';
+import 'package:hauberk/src/content/room.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
 
 import 'histogram.dart';
 
-html.CanvasElement canvas;
+var depthSelect = html.querySelector("#depth") as html.SelectElement;
+var canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
+var stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
 
 var content = createContent();
 var heroClass = new Warrior();
@@ -20,14 +24,10 @@ Game _game;
 RenderableTerminal terminal;
 
 int get depth {
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
   return int.parse(depthSelect.value);
 }
 
 main() {
-  canvas = html.querySelector("canvas") as html.CanvasElement;
-
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
     depthSelect.append(
       new html.OptionElement(data: i.toString(), value: i.toString(),
@@ -39,6 +39,10 @@ main() {
   });
 
   canvas.onClick.listen((_) {
+    generate();
+  });
+
+  stateCanvas.onClick.listen((_) {
     generate();
   });
 
@@ -54,13 +58,16 @@ Future generate() async {
   terminal = new RetroTerminal(stage.width, stage.height, "font_8.png",
       canvas: canvas, charWidth: 8, charHeight: 8);
 
+  stateCanvas.width = stage.width * 8;
+  stateCanvas.height = stage.height * 8;
+
   for (var event in _game.generate()) {
     print(event);
     render();
     await html.window.animationFrame;
   }
 
-  render();
+  render(showStates: false);
 
   var monsters = new Histogram<Breed>();
   for (var actor in stage.actors) {
@@ -164,7 +171,7 @@ Future generate() async {
       validator: validator);
 }
 
-void render() {
+void render({bool showStates = true}) {
   var stage = _game.stage;
 
   for (var y = 0; y < stage.height; y++) {
@@ -190,4 +197,29 @@ void render() {
   }
 
   terminal.render();
+
+  if (!showStates) return;
+
+  var states = Dungeon2.currentStates;
+  var context = stateCanvas.context2D;
+  context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
+  for (var y = 0; y < states.height; y++) {
+    for (var x = 0; x < states.width; x++) {
+      var fill = const {
+        TileState.unused: 'rgba(0, 0, 0, 0.1)',
+        TileState.natural: 'rgba(0, 240, 0, 0.1)',
+        TileState.reached: 'rgba(0, 0, 240, 0.1)'
+      }[states.get(x, y)];
+
+      context.fillStyle = fill;
+      context.fillRect(x * 8, y * 8, 8, 8);
+    }
+  }
+
+  context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  var junctions = Dungeon2.currentJunctions;
+  for (var junction in junctions) {
+    context.fillRect(junction.position.x * 8 + 2,
+        junction.position.y * 8 + 2, 4, 4);
+  }
 }

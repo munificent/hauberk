@@ -3,11 +3,25 @@
   <title>Test Dungeons</title>
   <link rel="stylesheet" type="text/css" href="styles.css">
   <link href='http://fonts.googleapis.com/css?family=Metamorphous|Buenard' rel='stylesheet' type='text/css'>
+  <style>
+    p {
+      position: relative;
+    }
+
+    canvas {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  </style>
 </head>
 <body>
-<h1>Dungeon Test</h1>
+<!--<h1>Dungeon Test</h1>-->
 <p>Depth: <select id="depth"></select></p>
-<p><canvas width="640" height="320"></canvas></p>
+<p>
+  <canvas id="tiles" width="640" height="320"></canvas>
+  <canvas id="states" width="640" height="320"></canvas>
+</p>
 <h2>Monsters</h2>
 <table id="monsters">
 </table>

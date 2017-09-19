@@ -8,11 +8,28 @@ import 'blob.dart';
 import 'room.dart';
 import 'tiles.dart';
 
+enum TileState {
+  /// Nothing has been placed on the tile.
+  unused,
+
+  /// A natural formation is here, but the dungeon hasn't reached it yet.
+  natural,
+
+  /// The tile has been used and is reachable from the starting room.
+  reached
+}
+
 class Dungeon2 {
+  // TODO: Hack temp. Static so that dungeon_test can access these while it's
+  // being generated.
+  static Array2D<TileState> currentStates;
+  static List<Junction> currentJunctions;
+
   final Stage stage;
   final int depth;
 
   final List<Junction> _junctions = [];
+  final Array2D<TileState> _states;
 
   Rect get bounds => stage.bounds;
   Rect get safeBounds => stage.bounds.inflate(-1);
@@ -20,10 +37,19 @@ class Dungeon2 {
   int get width => stage.width;
   int get height => stage.height;
 
-  Dungeon2(this.stage, this.depth);
+  Dungeon2(this.stage, this.depth)
+      : _states = new Array2D(stage.width, stage.height, TileState.unused);
 
   Iterable<String> generate() sync* {
-    fill(0, 0, width, height, Tiles.wall);
+    currentStates = _states;
+    currentJunctions = _junctions;
+
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        // TODO: Stone?
+        setTile(x, y, Tiles.wall, TileState.unused);
+      }
+    }
 
     // TODO: Change the odds based on depth.
     if (rng.oneIn(3)) {
@@ -64,16 +90,9 @@ class Dungeon2 {
     yield* _addGrottoes(rng.taper(0, 3));
   }
 
-  void setTile(int x, int y, TileType type) {
+  void setTile(int x, int y, TileType type, TileState state) {
     stage.get(x, y).type = type;
-  }
-
-  void fill(int left, int top, int width, int height, TileType tile) {
-    for (var y = top; y < top + height; y++) {
-      for (var x = left; x < left + width; x++) {
-        setTile(x, y, tile);
-      }
-    }
+    _states.set(x, y, state);
   }
 
   bool isWall(int x, int y) => stage.get(x, y).type == Tiles.wall;
@@ -149,9 +168,9 @@ class Dungeon2 {
           // etc.
           var lengthSquared = xx * xx + yy * yy;
           if (lengthSquared <= radiusSquared) {
-            setTile(x, y, Tiles.water);
-          } else if (lengthSquared <= shoreSquared) {
-            if (isWall(x, y)) setTile(x, y, Tiles.grass);
+            setTile(x, y, Tiles.water, TileState.natural);
+          } else if (lengthSquared <= shoreSquared && isWall(x, y)) {
+            setTile(x, y, Tiles.grass, TileState.natural);
           }
         }
       }
@@ -178,6 +197,8 @@ class Dungeon2 {
 
     _displace(start, mid);
     _displace(mid, end);
+
+    // TODO: Need to add bridges.
 
     // TODO: Figure out how to handle the edge of the dungeon.
   }
@@ -220,7 +241,7 @@ class Dungeon2 {
       // We found a spot, carve the water.
       for (var pos in cells.bounds) {
         if (cells[pos]) {
-          setTile(pos.x + x, pos.y + y, Tiles.water);
+          setTile(pos.x + x, pos.y + y, Tiles.water, TileState.natural);
         }
       }
 
@@ -230,7 +251,7 @@ class Dungeon2 {
           Rect.intersect(cells.bounds.offset(x, y).inflate(1), bounds);
       for (var pos in shoreBounds) {
         if (isWall(pos.x, pos.y) && hasNeighbor(pos, Tiles.water)) {
-          setTile(pos.x, pos.y, Tiles.grass);
+          setTile(pos.x, pos.y, Tiles.grass, TileState.natural);
           edges.add(pos);
         }
       }
@@ -290,7 +311,8 @@ class Dungeon2 {
           yield "Placing room ${roomNumber++}";
           _placeRoom(room, roomPos.x, roomPos.y);
           // TODO: Different doors.
-          setTile(junction.position.x, junction.position.y, Tiles.openDoor);
+          setTile(junction.position.x, junction.position.y, Tiles.openDoor,
+              TileState.reached);
 
           placed = true;
           break;
@@ -304,55 +326,112 @@ class Dungeon2 {
   bool _canPlace(Room room, int x, int y) {
     if (!bounds.containsRect(room.tiles.bounds.offset(x, y))) return false;
 
+    var allowed = 0;
+    var feature = 0;
+
     for (var pos in room.tiles.bounds) {
       // If the room doesn't care about the tile, it's fine.
       if (room.tiles[pos] == null) continue;
 
       // Otherwise, it must still be solid on the stage.
-      if (stage.get(pos.x + x, pos.y + y).type != Tiles.wall) return false;
+      var state = _states.get(pos.x + x, pos.y + y);
+      var tile = stage.get(pos.x + x, pos.y + y).type;
 
-      // TODO: Allow rooms to interact with natural features some.
+      if (state == TileState.unused) {
+        allowed++;
+      } else if (state == TileState.natural) {
+        feature++;
+      } else if (tile == room.tiles[pos]) {
+        // Allow it if it wouldn't change the type. This lets room walls
+        // overlap.
+      } else {
+        return false;
+      }
     }
 
-    return true;
+    // Allow overlapping natural features somewhat, but not too much.
+    // TODO: Do we want to only allow certain room types to open into natural
+    // areas?
+    return allowed > feature * 2;
   }
 
   void _placeRoom(Room room, int x, int y) {
+    List<Vec> nature = [];
+
     for (var pos in room.tiles.bounds) {
       var tile = room.tiles[pos];
       if (tile == null) continue;
 
-      setTile(pos.x + x, pos.y + y, tile);
+      // Don't erase existing natural features.
+      var state = _states.get(pos.x + x, pos.y + y);
+      if (state == TileState.natural) {
+        if (tile.isTraversable) nature.add(pos.offset(x, y));
+        continue;
+      }
+
+      setTile(pos.x + x, pos.y + y, tile, TileState.reached);
     }
 
     // Add its junctions unless they are already blocked.
     var roomPos = new Vec(x, y);
 
     for (var junction in room.junctions) {
-      if (!_isValidJunction(junction, roomPos)) continue;
-      _junctions
-          .add(new Junction(junction.direction, roomPos + junction.position));
+      _tryAddJunction(roomPos + junction.position, junction.direction);
     }
+
+    // If the room opens up into a natural feature, that feature is reachable
+    // now.
+    if (nature != null) _reachNature(nature);
   }
 
-  bool _isValidJunction(Junction junction, Vec offset) {
-    var absolute = junction.position + offset;
-
+  void _tryAddJunction(Vec junctionPos, Direction junctionDir) {
     isBlocked(Direction direction) {
-      var pos = absolute + direction;
+      var pos = junctionPos + direction;
       if (!safeBounds.contains(pos)) return true;
       return !isWall(pos.x, pos.y);
     }
 
-    if (isBlocked(junction.direction)) return false;
-    if (isBlocked(junction.direction.rotateLeft45)) return false;
-    if (isBlocked(junction.direction.rotateRight45)) return false;
-    if (isBlocked(junction.direction.rotateLeft90)) return false;
-    if (isBlocked(junction.direction.rotateRight90)) return false;
+    if (isBlocked(Direction.none)) return;
+    if (isBlocked(junctionDir)) return;
+    if (isBlocked(junctionDir.rotateLeft45)) return;
+    if (isBlocked(junctionDir.rotateRight45)) return;
+    if (isBlocked(junctionDir.rotateLeft90)) return;
+    if (isBlocked(junctionDir.rotateRight90)) return;
 
-    // TODO: If a junction opens into another area, keep it for later for
-    // trying for extra connections.
-    return true;
+    _junctions.add(new Junction(junctionDir, junctionPos));
+  }
+
+  void _reachNature(List<Vec> tiles) {
+    var queue =
+        new Queue.from(tiles.where((pos) => stage[pos].type.isTraversable));
+    for (var pos in queue) {
+      _states[pos] = TileState.reached;
+    }
+
+    while (queue.isNotEmpty) {
+      var pos = queue.removeFirst();
+
+      for (var dir in Direction.all) {
+        var neighbor = pos + dir;
+        if (!bounds.contains(neighbor)) continue;
+
+        // If we hit the edge of the walkable natural area and we're facing a
+        // straight direction, try to place a junction there to allow building
+        // out from the area.
+        if (_states[neighbor] != TileState.natural) {
+          if (Direction.cardinal.contains(dir) && rng.range(100) < 30) {
+            _tryAddJunction(neighbor, dir);
+          }
+          continue;
+        }
+
+        // Don't go into impassable natural areas like water.
+        if (!stage[neighbor].type.isTraversable) continue;
+
+        _states[neighbor] = TileState.reached;
+        queue.add(neighbor);
+      }
+    }
   }
 
   /// Grows a randomly shaped blob starting at [start].
@@ -419,7 +498,8 @@ class Dungeon2 {
       }
 
       var pos = rng.item(best);
-      stage[pos].type = tile;
+      // TODO: Should be reached if start is reached.
+      setTile(pos.x, pos.y, tile, TileState.natural);
       addNeighbors(pos);
       edges.remove(pos);
 
