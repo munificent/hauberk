@@ -9,53 +9,38 @@ const _defaultBackUnlit = const Color(0x7, 0x6, 0x12);
 
 /// Static class containing all of the [TileType]s.
 class Tiles {
-  static TileType floor;
-  static TileType wall;
-  static TileType lowWall;
-  static TileType table;
-  static TileType openDoor;
-  static TileType closedDoor;
-  static TileType stairs;
-  static TileType water;
+  static TileType floor = _open("floor", CharCode.middleDot, slate);
+  static TileType rock = _solid("rock", CharCode.darkShade, gunsmoke, slate);
+  static TileType wall = _solid("wall", CharCode.mediumShade, gunsmoke, slate);
+  static TileType lowWall = _obstacle("low wall", CharCode.percent, gunsmoke);
+  static TileType table =
+      _obstacle("table", CharCode.greekSmallLetterPi, persimmon);
+  static TileType openDoor =
+      _open("open door", CharCode.whiteCircle, persimmon, garnet);
+  static TileType closedDoor =
+      _solid("closed door", CharCode.inverseWhiteCircle, persimmon, garnet);
+  // TODO: Different character that doesn't look like bridge?
+  static TileType stairs = _exit("stairs", CharCode.identicalTo, slate);
+  static TileType bridge = _open("bridge", CharCode.identicalTo, persimmon, garnet);
 
-  static TileType grass;
-  static TileType tallGrass;
-  static TileType tree;
-  static TileType treeAlt1;
-  static TileType treeAlt2;
+  // TODO: Allow flying monster to fly over it.
+  static TileType water =
+      _obstacle("water", CharCode.almostEqualTo, cerulean, ultramarine);
+
+  static TileType grass = _open("grass", CharCode.lightShade, peaGreen);
+  static TileType tallGrass =
+      _open("tall grass", CharCode.squareRoot, peaGreen);
+  static TileType tree =
+      _solid("tree", CharCode.blackUpPointingTriangle, peaGreen, sherwood);
+  static TileType treeAlt1 =
+      _solid("tree", CharCode.blackSpadeSuit, peaGreen, sherwood);
+  static TileType treeAlt2 =
+      _solid("tree", CharCode.blackClubSuit, peaGreen, sherwood);
 
   static void initialize() {
-    // Define the tile types.
-    Tiles.floor = _open("floor", CharCode.middleDot, slate);
-    Tiles.wall = _solid("wall", CharCode.mediumShade, gunsmoke, slate);
-
-    Tiles.table = _obstacle("table", CharCode.greekSmallLetterPi, persimmon);
-
-    Tiles.lowWall = _obstacle("low wall", CharCode.percent, gunsmoke);
-
-    Tiles.openDoor =
-        _open("open door", CharCode.whiteCircle, persimmon, garnet);
-    Tiles.closedDoor =
-        _solid("closed door", CharCode.inverseWhiteCircle, persimmon, garnet);
+    // Link doors together.
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
-
-    // TODO: Allow flying monster to fly over it.
-    Tiles.water =
-        _obstacle("water", CharCode.almostEqualTo, cerulean, ultramarine);
-
-    Tiles.stairs = _exit("stairs", CharCode.identicalTo, slate);
-
-    Tiles.grass = _open("grass", CharCode.lightShade, peaGreen);
-
-    Tiles.tallGrass = _open("tall grass", CharCode.squareRoot, peaGreen);
-
-    Tiles.tree = _solid(
-        "tree", CharCode.blackUpPointingTriangle, peaGreen, sherwood);
-    Tiles.treeAlt1 =
-        _solid("tree", CharCode.blackSpadeSuit, peaGreen, sherwood);
-    Tiles.treeAlt2 =
-        _solid("tree", CharCode.blackClubSuit, peaGreen, sherwood);
   }
 }
 

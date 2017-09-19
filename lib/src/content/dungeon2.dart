@@ -46,8 +46,7 @@ class Dungeon2 {
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        // TODO: Stone?
-        setTile(x, y, Tiles.wall, TileState.unused);
+        _set(x, y, Tiles.rock, TileState.unused);
       }
     }
 
@@ -75,6 +74,9 @@ class Dungeon2 {
       yield "Pouring pond $i/$ponds";
       _addLake(Blob.make16());
     }
+    // TODO: Lakes sometimes have unreachable islands in the middle. Should
+    // either fill those in, add bridges, give players a way to traverse water,
+    // or at least ensure nothing is spawned on them.
 
     // TODO: Add grottoes other places than just on shores.
     // Add some old grottoes that eroded before the dungeon was built.
@@ -87,25 +89,23 @@ class Dungeon2 {
     // TODO: It looks weird that these don't place grass on the room floor
     // itself. Probably want to apply grass after everything is carved based on
     // humidity or something.
+    // TODO: Should these be flood-filled for reachability?
     yield* _addGrottoes(rng.taper(0, 3));
   }
 
-  void setTile(int x, int y, TileType type, TileState state) {
+  void _set(int x, int y, TileType type, TileState state) {
     stage.get(x, y).type = type;
     _states.set(x, y, state);
   }
 
-  bool isWall(int x, int y) => stage.get(x, y).type == Tiles.wall;
-
   /// Returns `true` if the cell at [pos] has at least one adjacent tile with
   /// type [tile].
-  bool hasCardinalNeighbor(Vec pos, TileType tile) {
+  bool _hasCardinalNeighbor(Vec pos, List<TileType> tiles) {
     for (var dir in Direction.cardinal) {
       var neighbor = pos + dir;
       if (!safeBounds.contains(neighbor)) continue;
 
-      // TODO: Allow passing in the tile types that can be grown into.
-      if (stage[neighbor].type == tile) return true;
+      if (tiles.contains(stage[neighbor].type)) return true;
     }
 
     return false;
@@ -113,12 +113,11 @@ class Dungeon2 {
 
   /// Returns `true` if the cell at [pos] has at least one adjacent tile with
   /// type [tile].
-  bool hasNeighbor(Vec pos, TileType tile) {
+  bool _hasNeighbor(Vec pos, TileType tile) {
     for (var dir in Direction.all) {
       var neighbor = pos + dir;
       if (!safeBounds.contains(neighbor)) continue;
 
-      // TODO: Allow passing in the tile types that can be grown into.
       if (stage[neighbor].type == tile) return true;
     }
 
@@ -168,9 +167,9 @@ class Dungeon2 {
           // etc.
           var lengthSquared = xx * xx + yy * yy;
           if (lengthSquared <= radiusSquared) {
-            setTile(x, y, Tiles.water, TileState.natural);
-          } else if (lengthSquared <= shoreSquared && isWall(x, y)) {
-            setTile(x, y, Tiles.grass, TileState.natural);
+            _set(x, y, Tiles.water, TileState.natural);
+          } else if (lengthSquared <= shoreSquared && _isUnused(x, y)) {
+            _set(x, y, Tiles.grass, TileState.natural);
           }
         }
       }
@@ -210,7 +209,7 @@ class Dungeon2 {
       var pos = rng.vecInRect(safeBounds);
       // TODO: Handle different shore types.
       if (stage[pos].type == Tiles.grass &&
-          hasCardinalNeighbor(pos, Tiles.wall)) {
+          _hasCardinalNeighbor(pos, [Tiles.wall, Tiles.rock])) {
         yield "Carving grotto";
         // TODO: Different sizes and smoothness.
         _growSeed([pos], 30, 3, Tiles.grass);
@@ -229,7 +228,7 @@ class Dungeon2 {
       var canPlace = true;
       for (var pos in cells.bounds) {
         if (cells[pos]) {
-          if (!isWall(pos.x + x, pos.y + y)) {
+          if (!_isUnused(pos.x + x, pos.y + y)) {
             canPlace = false;
             break;
           }
@@ -241,7 +240,7 @@ class Dungeon2 {
       // We found a spot, carve the water.
       for (var pos in cells.bounds) {
         if (cells[pos]) {
-          setTile(pos.x + x, pos.y + y, Tiles.water, TileState.natural);
+          _set(pos.x + x, pos.y + y, Tiles.water, TileState.natural);
         }
       }
 
@@ -250,8 +249,8 @@ class Dungeon2 {
       var shoreBounds =
           Rect.intersect(cells.bounds.offset(x, y).inflate(1), bounds);
       for (var pos in shoreBounds) {
-        if (isWall(pos.x, pos.y) && hasNeighbor(pos, Tiles.water)) {
-          setTile(pos.x, pos.y, Tiles.grass, TileState.natural);
+        if (_isUnused(pos.x, pos.y) && _hasNeighbor(pos, Tiles.water)) {
+          _set(pos.x, pos.y, Tiles.grass, TileState.natural);
           edges.add(pos);
         }
       }
@@ -311,7 +310,7 @@ class Dungeon2 {
           yield "Placing room ${roomNumber++}";
           _placeRoom(room, roomPos.x, roomPos.y);
           // TODO: Different doors.
-          setTile(junction.position.x, junction.position.y, Tiles.openDoor,
+          _set(junction.position.x, junction.position.y, Tiles.openDoor,
               TileState.reached);
 
           placed = true;
@@ -369,7 +368,7 @@ class Dungeon2 {
         continue;
       }
 
-      setTile(pos.x + x, pos.y + y, tile, TileState.reached);
+      _set(pos.x + x, pos.y + y, tile, TileState.reached);
     }
 
     // Add its junctions unless they are already blocked.
@@ -388,7 +387,10 @@ class Dungeon2 {
     isBlocked(Direction direction) {
       var pos = junctionPos + direction;
       if (!safeBounds.contains(pos)) return true;
-      return !isWall(pos.x, pos.y);
+
+      var tile = stage[pos].type;
+      // TODO: Is there a more generic way we can handle this?
+      return tile != Tiles.wall && tile != Tiles.rock;
     }
 
     if (isBlocked(Direction.none)) return;
@@ -449,7 +451,8 @@ class Dungeon2 {
         if (!safeBounds.contains(neighbor)) continue;
 
         // TODO: Allow passing in the tile types that can be grown into.
-        if (stage[neighbor].type != Tiles.wall) continue;
+        var type = stage[neighbor].type;
+        if (type != Tiles.wall && type != Tiles.rock) continue;
         edges.add(neighbor);
       }
     }
@@ -499,13 +502,15 @@ class Dungeon2 {
 
       var pos = rng.item(best);
       // TODO: Should be reached if start is reached.
-      setTile(pos.x, pos.y, tile, TileState.natural);
+      _set(pos.x, pos.y, tile, TileState.natural);
       addNeighbors(pos);
       edges.remove(pos);
 
       count--;
     }
   }
+
+  bool _isUnused(int x, int y) => _states.get(x, y) == TileState.unused;
 }
 
 class RiverPoint {
