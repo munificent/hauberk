@@ -217,10 +217,11 @@ void render({bool showStates = true}) {
     }
   }
 
-  context.fillStyle = 'rgba(255, 255, 255, 0.5)';
-  var junctions = Dungeon2.currentJunctions;
-  for (var junction in junctions) {
-    context.fillRect(junction.position.x * 8 + 2,
-        junction.position.y * 8 + 2, 4, 4);
+  if (Dungeon2.currentJunctions != null) {
+    context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    for (var junction in Dungeon2.currentJunctions) {
+      context.fillRect(junction.position.x * 8 + 2,
+          junction.position.y * 8 + 2, 4, 4);
+    }
   }
 }
