@@ -198,11 +198,12 @@ void render({bool showStates = true}) {
 
   terminal.render();
 
-  if (!showStates) return;
-
   var states = Dungeon2.currentStates;
   var context = stateCanvas.context2D;
   context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
+
+  if (!showStates) return;
+
   for (var y = 0; y < states.height; y++) {
     for (var x = 0; x < states.width; x++) {
       var fill = const {

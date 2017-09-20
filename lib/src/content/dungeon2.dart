@@ -52,8 +52,7 @@ class Dungeon2 {
 
     // TODO: Change the odds based on depth.
     if (rng.oneIn(3)) {
-      yield "Carving river";
-      _addRiver();
+      yield* _addRiver();
     }
 
     // TODO: Rivers that flow into/from lakes?
@@ -124,7 +123,7 @@ class Dungeon2 {
     return false;
   }
 
-  void _displace(RiverPoint start, RiverPoint end) {
+  void _displace(RiverPoint start, RiverPoint end, Set<Vec> path) {
     var h = start.x - end.x;
     var v = start.y - end.y;
     var length = math.sqrt(h * h + v * v);
@@ -135,9 +134,14 @@ class Dungeon2 {
       var radius = (start.radius + end.radius) /
           2.0; //+ rng.float(length / 10.0) - length - 20.0;
       var mid = new RiverPoint(x, y, radius);
-      _displace(start, mid);
-      _displace(mid, end);
+      _displace(start, mid, path);
+      _displace(mid, end, path);
     } else {
+      // Keep track of the middle of the river. We'll use this for placing
+      // bridges.
+      var center = new Vec(start.x.toInt(), start.y.toInt());
+      if (safeBounds.contains(center)) path.add(center);
+
       var radius = start.radius;
       var shoreRadius = radius + rng.float(1.0, 3.0);
 
@@ -176,9 +180,10 @@ class Dungeon2 {
     }
   }
 
-  void _addRiver() {
+  Iterable<String> _addRiver() sync* {
     // Midpoint displacement.
     // Consider also squig curves from: http://algorithmicbotany.org/papers/mountains.gi93.pdf.
+    yield "Carving river";
     var start =
         new RiverPoint(rng.float(width.toDouble()), -4.0, rng.float(1.0, 3.0));
     var end = new RiverPoint(
@@ -186,20 +191,106 @@ class Dungeon2 {
     var mid = new RiverPoint(rng.float(width * 0.25, width * 0.75),
         rng.float(height * 0.25, height * 0.75), rng.float(1.0, 3.0));
 
-    if (rng.oneIn(2)) {
-      // Horizontal instead of vertical.
+    var horizontal = rng.oneIn(2);
+    if (horizontal) {
       start = new RiverPoint(start.y, start.x, start.radius);
       end = new RiverPoint(end.y, end.x, end.radius);
     }
 
     // TODO: Branching tributaries?
 
-    _displace(start, mid);
-    _displace(mid, end);
+    var path = new Set<Vec>();
+    _displace(start, mid, path);
+    _displace(mid, end, path);
 
-    // TODO: Need to add bridges.
+    // Try to place bridges.
+    yield "Finding bridges";
+    var bridges = <Rect>[];
+    for (var pos in path) {
+      // See if a horizontal bridge reaches both shores.
+      var westShore = -1;
+      for (var x = pos.x; x >= 0; x--) {
+        if (stage.get(x, pos.y).type == Tiles.grass) {
+          westShore = x + 1;
+          break;
+        }
+      }
 
-    // TODO: Figure out how to handle the edge of the dungeon.
+      var eastShore = -1;
+      for (var x = pos.x; x < width; x++) {
+        if (stage.get(x, pos.y).type == Tiles.grass) {
+          eastShore = x;
+          break;
+        }
+      }
+
+      if (westShore != -1 && eastShore != -1) {
+        bridges.add(new Rect(westShore, pos.y, eastShore - westShore, 1));
+      }
+
+      // See if a vertical bridge does.
+      var northShore = -1;
+      for (var y = pos.y; y >= 0; y--) {
+        if (stage.get(pos.x, y).type == Tiles.grass) {
+          northShore = y + 1;
+          break;
+        }
+      }
+
+      var southShore = -1;
+      for (var y = pos.y; y < height; y++) {
+        if (stage.get(pos.x, y).type == Tiles.grass) {
+          southShore = y;
+          break;
+        }
+      }
+
+      if (northShore != -1 && southShore != -1) {
+        bridges.add(new Rect(pos.x, northShore, 1, southShore - northShore));
+      }
+    }
+
+    // TODO: If there are no places we can put a bridge, the river can't be
+    // crossed. Is that OK?
+    yield "Placing bridges";
+    if (bridges.isNotEmpty) {
+      var placed = <Rect>[];
+
+      // Place a couple of bridges.
+      var count = math.min(bridges.length, rng.taper(1, 4));
+      for (var i = 0; i < count; i++) {
+        // Pick a couple of locations and take the shortest path across the
+        // river that doesn't touch an existing bridge.
+        Rect shortest;
+        for (var i = 0; i < 5; i++) {
+          var bridge = rng.item(bridges);
+
+          // Don't overlap an existing bridge.
+          if (placed.contains(bridge) ||
+              placed.any((previous) =>
+                  Rect.intersect(previous.inflate(1), bridge).isNotEmpty)) {
+            continue;
+          }
+
+          if (shortest == null || bridge.area < shortest.area)
+            shortest = bridge;
+        }
+
+        if (shortest == null) continue;
+
+        // TODO: It's possible for the bridge to not *cross* the river by going
+        // along a bend. Fix that?
+
+        for (var pos in shortest) {
+          _set(pos.x, pos.y, Tiles.bridge, TileState.natural);
+        }
+      }
+    }
+
+    // TODO: What about piers that extend into the river but don't cross?
+    // TODO: Bridges over lakes?
+
+    // TODO: Better tiles at edge of dungeon?
   }
 
   Iterable<String> _addGrottoes(int count) sync* {
@@ -310,7 +401,7 @@ class Dungeon2 {
           yield "Placing room ${roomNumber++}";
           _placeRoom(room, roomPos.x, roomPos.y);
           // TODO: Different doors.
-          _set(junction.position.x, junction.position.y, Tiles.openDoor,
+          _set(junction.position.x, junction.position.y, Tiles.closedDoor,
               TileState.reached);
 
           placed = true;
