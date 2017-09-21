@@ -1,6 +1,6 @@
 things decor can do
 - pushed
-- bashed 
+- bashed
 - burned
 - melted
 - opened and closed
@@ -38,3 +38,6 @@ rubble
 stones
 mirror
 
+hidden door
+secret passageway
+trap

@@ -53,43 +53,96 @@ abstract class Rooms implements DungeonBase {
     var roomNumber = 1;
     while (_junctions.isNotEmpty) {
       var junction = rng.take(_junctions);
-      var roomJunctionDir = junction.direction.rotate180;
-      // TODO: Add junctions to natural features so we can grow through them.
 
-      var placed = false;
+      // TODO: If the junction opens up into another room, see how much it
+      // shortens the path and consider placing it to add a cycle to the level.
+
       // TODO: Tune this.
-      for (var i = 0; i < 20; i++) {
-        // TODO: Choosing random room types looks kind of blah. It's weird to
-        // have blob rooms randomly scattered amongst other ones. Instead, it
-        // would be better to have "regions" in the dungeon that preferentially
-        // lean towards some room types.
-        //
-        // Alternatively (or do both), have the room type chosen based on the
-        // preceding rooms that lead to this junction so that you don't have
-        // weird things like a closet leading to a great hall.
-        var room = Room.create(depth);
-
-        for (var roomJunction in room.junctions) {
-          if (roomJunction.direction != roomJunctionDir) continue;
-
-          // Calculate the room position by lining up the junctions.
-          var roomPos = junction.position - roomJunction.position;
-
-          if (!_canPlace(room, roomPos.x, roomPos.y)) continue;
-
-          yield "Placing room ${roomNumber++}";
-          _placeRoom(room, roomPos.x, roomPos.y);
-          // TODO: Different doors.
-          setTile(junction.position.x, junction.position.y, Tiles.closedDoor,
-              TileState.reached);
-
-          placed = true;
+      for (var i = 0; i < 40; i++) {
+        // Try to place a hallway.
+        // TODO: Turns and branches in hallways.
+        var hallLength = rng.range(3, 8);
+        if (_canPlaceHallway(
+            junction.position, junction.direction, hallLength)) {
+          var endJunction = new Junction(junction.direction,
+              junction.position + junction.direction * hallLength);
+          if (_tryPlaceRoom(endJunction)) {
+            _placeHallway(junction.position, junction.direction, hallLength);
+            yield "Placed room ${roomNumber++}";
+            break;
+          }
+        } else if (_tryPlaceRoom(junction)) {
+          yield "Placed room ${roomNumber++}";
           break;
         }
-
-        if (placed) break;
       }
     }
+  }
+
+  bool _tryPlaceRoom(Junction junction) {
+    // TODO: Choosing random room types looks kind of blah. It's weird to
+    // have blob rooms randomly scattered amongst other ones. Instead, it
+    // would be better to have "regions" in the dungeon that preferentially
+    // lean towards some room types.
+    //
+    // Alternatively (or do both), have the room type chosen based on the
+    // preceding rooms that lead to this junction so that you don't have
+    // weird things like a closet leading to a great hall.
+    var room = Room.create(depth, junction);
+
+    var roomJunctions = room.junctions
+        .where((roomJunction) => roomJunction.direction == junction.direction.rotate180)
+        .toList();
+    roomJunctions.shuffle();
+
+    for (var roomJunction in roomJunctions) {
+      // Calculate the room position by lining up the junctions.
+      var roomPos = junction.position - roomJunction.position;
+
+      if (!_canPlace(room, roomPos.x, roomPos.y)) continue;
+
+      _placeRoom(room, roomPos.x, roomPos.y);
+      // TODO: Different doors.
+      setTile(junction.position.x, junction.position.y, Tiles.closedDoor,
+          TileState.reached);
+
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _canPlaceHallway(Vec start, Direction dir, int length) {
+    var pos = start;
+    for (var i = 0; i < length; i++) {
+      pos += dir;
+      if (!safeBounds.contains(pos)) return false;
+      if (getStateAt(pos) != TileState.unused) return false;
+
+      if (getStateAt(pos + dir.rotateLeft90) != TileState.unused) return false;
+      if (getStateAt(pos + dir.rotateRight90) != TileState.unused) return false;
+    }
+
+    return true;
+  }
+
+  void _placeHallway(Vec start, Direction dir, int length) {
+    var pos = start;
+    for (var i = 0; i <= length; i++) {
+      setTile(pos.x, pos.y, Tiles.floor, TileState.reached);
+
+      var left = pos + dir.rotateLeft90;
+      setTile(left.x, left.y, Tiles.wall, TileState.reached);
+
+      var right = pos + dir.rotateRight90;
+      setTile(right.x, right.y, Tiles.wall, TileState.reached);
+      pos += dir;
+    }
+
+    // TODO: Different doors.
+    setTile(start.x, start.y, Tiles.closedDoor, TileState.reached);
+    var end = start + dir * length;
+    setTile(end.x, end.y, Tiles.closedDoor, TileState.reached);
   }
 
   bool _canPlace(Room room, int x, int y) {
@@ -175,7 +228,7 @@ abstract class Rooms implements DungeonBase {
 
   void _reachNature(List<Vec> tiles) {
     var queue =
-    new Queue.from(tiles.where((pos) => getTileAt(pos).isTraversable));
+        new Queue.from(tiles.where((pos) => getTileAt(pos).isTraversable));
     for (var pos in queue) {
       setStateAt(pos, TileState.reached);
     }
@@ -214,7 +267,7 @@ class Room {
   // Relax that constraint?
   static int _nextNameId = 0;
 
-  static Room create(int depth) {
+  static Room create(int depth, [Junction junction]) {
     if (_allTypes.isEmpty) _initializeRoomTypes();
 
     // TODO: Take depth into account somehow.
@@ -230,27 +283,20 @@ class Room {
     _allTypes.defineTags("room");
 
     // Rectangular rooms of various sizes.
-    for (var width = 3; width <= 11; width++) {
-      for (var height = 3; height <= 11; height++) {
+    for (var width = 3; width <= 13; width++) {
+      for (var height = 3; height <= 13; height++) {
         // Don't make them too big.
-        if (width * height > 80) continue;
+        if (width * height > 120) continue;
 
         // Don't make them too oblong.
         if ((width - height).abs() > math.min(width, height)) continue;
 
-        // Middle-sized rooms are most common.
-        var rarity = 1;
-        if (math.max(width, height) <= 4) {
-          rarity = 3;
-        } else if (math.max(width, height) <= 5) {
-          rarity = 2;
-        } else if (math.min(width, height) >= 9) {
-          rarity = 3;
-        } else if (math.min(width, height) >= 7) {
-          rarity = 2;
-        }
+        // Prefer larger rooms. They tend to fail to get placed more often,
+        // so making them more common counter-acts that.
+        var rarity = (100 / math.sqrt(width * height)).toInt();
+        print("$width x $height = $rarity");
 
-        _add(new RectangleRoom(width, height), rarity * 10);
+        _add(new RectangleRoom(width, height), rarity);
       }
     }
 
@@ -292,6 +338,7 @@ class RectangleRoom extends RoomType {
       tiles.set(x, tiles.height - 1, Tiles.wall);
     }
 
+    // TODO: Consider placing the junctions symmetrically sometimes.
     var junctions = <Junction>[];
     _placeJunctions(width, (i) {
       junctions.add(new Junction(Direction.n, new Vec(i + 1, 0)));

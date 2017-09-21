@@ -1,0 +1,100 @@
+I wonder if there's a way to make the dungeon rooms, or at least subsets of
+them symmetric. That would help make it feel more deliberate, I think.
+
+Ignoring decorations for now...
+
+Within a room, a good first step is choosing to place the junctions
+symmetrically. But it would be good if the rooms off those junctions were also
+symmetric too, up to some point.
+
+Maybe something like:
+
+When a room is generated, it has a slight change of becoming a new symmetry
+center. If chosen, we pick a mirroring -- horizontal, vertical, or both. The
+junctions are placed on the room symmetrically.
+
+A junction can be along a line of symmetry -- right in the centerline -- or not.
+
+*   A non-center junction with only one axis of symmetry has a single sister
+    junction and a direction of mirroring. For example:
+
+          |
+        #####
+        1.|.2
+        #.|.#
+        #.|.#
+        #####
+          |
+
+    Here, junction 1 knows about 2 (and vice versa) and knows its room needs to
+    be mirrored horizontally. The child room itself doesn't need any symmetry.
+
+*   A center junction with one axis of symmetry also has a single sister and
+    direction of mirroring.
+
+          |
+        ##1##
+        #.|.#
+        #.|.#
+        #.|.#
+        ##2##
+          |
+
+    In addition, the room spawned off that junction must itself be centered
+    and symmetric. (In other words, the room, when flipped along its junction
+    must be identical.)
+
+*   A non-center junction with two axes of symmetry has three sisters for the
+    four corners. Each has a different direction of mirroring:
+
+          |
+        #####
+        1.|.2
+       ---+---
+        3.|.4
+        #####
+          |
+
+    Here, 1, 2, 3, and 4 are all sisters. When placing a room on 1, the same
+    room should be placed on 2 horizontally flipped, placed on 3 vertically
+    flipped, and placed on 4 flipped both ways.
+
+*   A center junction with two axes of symmetry is a little weird:
+
+          |
+        ##1##
+        #.|.#
+       ---+---
+        #.|.#
+        ##2##
+          |
+
+    The simplest solution is to ignore the other axis. We could have real
+    four-way symmetry here if the parent itself is four-way symmetric and
+    rotate the child room 90 degrees each way and put it at all four axes, but
+    that might not be worth the trouble.
+
+When picking a junction to place a room, we look to see if its a symmetric one
+(i.e. it has sisters). If it is, and the child room must be symmetric (because
+the junction is on a center line), we tell the room generator to generate a
+symmetric room. (Telling it pre-emptively instead of picking a random room and
+testing for symmetry avoids the many many failed rooms that aren't symmetric.)
+Otherwise, we let it make a normal room.
+
+Then we try to place the room both in the main junction's location and mirrored
+and off of the other sister junctions. If all succeed, we place all the rooms.
+Otherwise, we try again a few times. Eventually, if we fail to preserve
+symmetry, we can give up, break the symmetry and revert to treating each
+junction separately. Also probably want some chance of spontaneously breaking
+symmetry.
+
+When a child room is placed symmetrically, it propagates the symmetry. Each of
+its junctions become sister's of the sister child room's junctions. Instead of
+tracking a list of sister junctions, it's probably better to create a Symmetry
+object that represents the center point of the room, axes of symmetry, etc.
+and have the junctions point to that.
+
+Give the starting room a greater chance of becoming a symmetric room.
+
+Symmetric regions should have better stuff and stronger monsters. They should
+feel more "important" than scattered rooms, generally.

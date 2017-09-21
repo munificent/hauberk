@@ -4,8 +4,8 @@ import '../engine.dart';
 import '../hues.dart';
 
 // TODO: Move to hues.dart?
-const _unlitBlend = const Color(0x00, 0x01, 0x33);
-const _defaultBackUnlit = const Color(0x7, 0x6, 0x12);
+const _unlitBlend = const Color(0x02, 0x03, 0x25);
+const _defaultBackUnlit = const Color(0x07, 0x06, 0x12);
 
 /// Static class containing all of the [TileType]s.
 class Tiles {
@@ -56,12 +56,12 @@ List<Glyph> _makeGlyphs(int charCode, Color fore, [Color back]) {
     back = midnight;
     unlitBack = _defaultBackUnlit;
   } else {
-    unlitBack = back.blend(_unlitBlend, 50);
+    unlitBack = back.blend(_unlitBlend, 70);
   }
 
   var lit = new Glyph.fromCharCode(charCode, fore, back);
   var unlit =
-      new Glyph.fromCharCode(charCode, fore.blend(_unlitBlend, 50), unlitBack);
+      new Glyph.fromCharCode(charCode, fore.blend(_unlitBlend, 70), unlitBack);
 
   return [lit, unlit];
 }

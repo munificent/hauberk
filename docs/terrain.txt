@@ -24,6 +24,17 @@ Terrain:
 - lava
 - spider webs
 
+- types of water
+  - water
+  - mud
+  - slime (various elements?)
+  - blood
+  - pit (drops you down a level)
+  - void (eternal nothingness)
+  - ice
+  - fire
+  - lava
+  - poison
 
 Q: To what degree to level features span and supercede rooms versus being
    encapsulated by them?
