@@ -39,7 +39,7 @@ abstract class Rooms implements DungeonBase {
       var x = rng.inclusive(0, width - startRoom.tiles.width);
       var y = rng.inclusive(0, height - startRoom.tiles.height);
 
-      if (!_canPlace(startRoom, x, y)) continue;
+      if (!_canPlaceRoom(startRoom, x, y)) continue;
       // TODO: After a certain number of tries, should try a different room.
 
       yield "Placing starting room";
@@ -53,6 +53,11 @@ abstract class Rooms implements DungeonBase {
     var roomNumber = 1;
     while (_junctions.isNotEmpty) {
       var junction = rng.take(_junctions);
+
+      if (_tryCreateCycle(junction)) {
+        yield "Created cycle";
+        continue;
+      }
 
       // TODO: If the junction opens up into another room, see how much it
       // shortens the path and consider placing it to add a cycle to the level.
@@ -79,6 +84,31 @@ abstract class Rooms implements DungeonBase {
     }
   }
 
+  /// Checks if the junction is already next to an open area.
+  ///
+  /// If so, and the path around the junction is long enough, creates a doorway
+  /// to add a cycle to the dungeon.
+  bool _tryCreateCycle(Junction junction) {
+    if (!getTileAt(junction.position + junction.direction).isTraversable) {
+      return false;
+    }
+
+    // The junction is next to an already open area. Consider adding a cycle
+    // to the dungeon here if it cuts down on the path length significantly.
+    var from = junction.position - junction.direction;
+    var to = junction.position + junction.direction;
+
+    // TODO: For some reason AStar needs to be given a longer max path than
+    // we are looking for or it will very rarely find paths at the maximum
+    // length. Figure out why.
+    var path = AStar.findPath(stage, from, to,
+        maxLength: 30, canOpenDoors: true);
+    if (path.length != 0 && path.length < 20) return false;
+
+    _placeDoor(junction.position);
+    return true;
+  }
+
   bool _tryPlaceRoom(Junction junction) {
     // TODO: Choosing random room types looks kind of blah. It's weird to
     // have blob rooms randomly scattered amongst other ones. Instead, it
@@ -91,7 +121,8 @@ abstract class Rooms implements DungeonBase {
     var room = Room.create(depth, junction);
 
     var roomJunctions = room.junctions
-        .where((roomJunction) => roomJunction.direction == junction.direction.rotate180)
+        .where((roomJunction) =>
+            roomJunction.direction == junction.direction.rotate180)
         .toList();
     roomJunctions.shuffle();
 
@@ -99,13 +130,10 @@ abstract class Rooms implements DungeonBase {
       // Calculate the room position by lining up the junctions.
       var roomPos = junction.position - roomJunction.position;
 
-      if (!_canPlace(room, roomPos.x, roomPos.y)) continue;
+      if (!_canPlaceRoom(room, roomPos.x, roomPos.y)) continue;
 
       _placeRoom(room, roomPos.x, roomPos.y);
-      // TODO: Different doors.
-      setTile(junction.position.x, junction.position.y, Tiles.closedDoor,
-          TileState.reached);
-
+      _placeDoor(junction.position);
       return true;
     }
 
@@ -139,13 +167,11 @@ abstract class Rooms implements DungeonBase {
       pos += dir;
     }
 
-    // TODO: Different doors.
-    setTile(start.x, start.y, Tiles.closedDoor, TileState.reached);
-    var end = start + dir * length;
-    setTile(end.x, end.y, Tiles.closedDoor, TileState.reached);
+    _placeDoor(start);
+    _placeDoor(start + dir * length);
   }
 
-  bool _canPlace(Room room, int x, int y) {
+  bool _canPlaceRoom(Room room, int x, int y) {
     if (!bounds.containsRect(room.tiles.bounds.offset(x, y))) return false;
 
     var allowed = 0;
@@ -204,6 +230,21 @@ abstract class Rooms implements DungeonBase {
     // If the room opens up into a natural feature, that feature is reachable
     // now.
     if (nature != null) _reachNature(nature);
+  }
+
+  void _placeDoor(Vec pos) {
+    // TODO: Hidden passageways.
+    var tile = Tiles.closedDoor;
+    if (rng.oneIn(5)) {
+      tile = Tiles.openDoor;
+    } else if (rng.oneIn(4)) {
+      tile = Tiles.floor;
+    }
+    setTile(pos.x, pos.y, tile, TileState.reached);
+
+    // Since halls are placed after the room they connect to, they may overlap
+    // a room junction. Remove that since it's pointless.
+    _junctions.removeWhere((junction) => junction.position == pos);
   }
 
   void _tryAddJunction(Vec junctionPos, Direction junctionDir) {
@@ -294,8 +335,6 @@ class Room {
         // Prefer larger rooms. They tend to fail to get placed more often,
         // so making them more common counter-acts that.
         var rarity = (100 / math.sqrt(width * height)).toInt();
-        print("$width x $height = $rarity");
-
         _add(new RectangleRoom(width, height), rarity);
       }
     }
@@ -305,7 +344,6 @@ class Room {
 //    _add(new BlobRoom(), 1);
 
     // TODO: Other room shapes: L, T, cross, etc.
-    // TODO: Passageways.
   }
 
   final Array2D<TileType> tiles;

@@ -27,6 +27,8 @@ abstract class DungeonBase {
   Rect get bounds;
   Rect get safeBounds;
 
+  Stage get stage;
+
   TileType getTile(int x, int y);
   TileType getTileAt(Vec pos);
   void setTile(int x, int y, TileType type, TileState state);
