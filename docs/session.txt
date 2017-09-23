@@ -1,0 +1,35 @@
+I need to figure out what a single play session in the dungeon is about. Right
+now, it's aimless wandering while accruing some stuff and XP.
+
+When is the player allowed to leave the level? Do they need to find stairs or
+kill a boss?
+
+How do they get a sense that they are exploring *towards* something? Can we
+foreshadow what they might find? Level feeling from Angband was cool for that.
+Is there anything goal-directed about the way they wander the level?
+
+Foreshadowing in the dungeon could help:
+
+- If you get within a certain range of some monsters, randomly get a message
+  like "you hear an low growl to the north", etc.
+
+- When placing monsters, place some nearby accoutrements that hint at them.
+  Puddles of slime near slimes, burn marks near dragons, etc.
+
+- Consumables and spells of detection are always nice to let people know what's
+  out there. The late game in Angband is a lot of fun when you cast detect
+  monsters and see a huge pit of them.
+
+- If we do light with good simulated glow from it, odd-colored light might hint
+  at something unusual around the corner.
+
+- Regions in the dungeon should help. Seeing a bit of cavern or grass implies
+  there is more ahead and that it's not a single random patch.
+
+Maybe we could let the player leave whenever they want, but they only unlock
+access to the next depth if they achieve some goal -- kill boss, find stairs,
+etc.
+
+I think it's OK if the player doesn't know *what* they are headed towards. The
+mystery alone can draw them forward, as long as they have a sense that there is
+a good change they are headed towards *something* interesting.

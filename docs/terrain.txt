@@ -7,6 +7,9 @@ Themes:
 - wood
 - tower
 - castle
+- sewer
+- ossuary
+- bailey
 
 Terrain:
 - swamp, bog

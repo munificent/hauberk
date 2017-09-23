@@ -1,0 +1,57 @@
+The explore mechanic works OK for slow regeneration, but I've been thinking
+about healing items and food and related stuff. The goals I have in mind are:
+
+1. The player needs some way to recuperate the health lost during a battle.
+
+2. It shouldn't regenerate fast enough to be helpful *during* a battle.
+
+3. It should encourage the player to explore and not play too conservatively. In
+   particular, I want to avoid the Angband play style where you always fully
+   rest the second you're out of danger and you never go into battle at anything
+   but full health.
+
+4. Using some kind of items for this would give another kind of useful loot for
+   the player to look for.
+
+5. If the mechanics for managing regeneration are themselves
+   interesting/fun/strategic, that could be good.
+
+The current explore mechanic accomplishes the first three OK. Here's an idea to
+get all five:
+
+We introduce a food counter and food items. Food items add to the counter when
+consumed. Each turn reduces it and regenerates a little health. If your health
+is at its max, the counter still counts down.
+
+The last part is what makes this interesting. It gives you a disincentive to
+consume food when you've only lost a small amount of health -- you'll quickly
+top off and then the rest of the food is wasted. So you have to strategically
+choose when to eat so that you balance not wasting food while not walking around
+too wounded.
+
+Also, it gives a new category of items/resources for players to manage, which is
+sorely lacking.
+
+I don't plan to add starvation as a mechanic. It's fine to run around all day
+with your food counter at zero. I want players to feel they need to keep moving
+and exploring to progress, but I don't want them to feel like even an empty room
+is a hostile environment where every step takes them closer to death.
+
+Ancillary stuff we could hang off this:
+
+-   Sickness and vomiting as a mechanic. Throwing up would, uh, forcibly reset
+    your food counter.
+
+-   Monsters that drain your food counter.
+
+-   Spells and items that affect the rate that it drains.
+
+-   Spells and items that drain the food counter and use it for some reason.
+    For example, "berzerk" could burn it twice as fast and wear off when it hits
+    zero.
+
+-   Skills that turn monsters into edible corpses when killed.
+
+-   Constitution or disease could put a max limit on the food counter, such
+    that consuming an item tends to waste some of it. Or perhaps it just lowers
+    the amount that eating increases the counter.
