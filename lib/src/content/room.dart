@@ -334,7 +334,7 @@ class Room {
 
         // Prefer larger rooms. They tend to fail to get placed more often,
         // so making them more common counter-acts that.
-        var rarity = (100 / math.sqrt(width * height)).toInt();
+        var rarity = 100 ~/ math.sqrt(width * height);
         _add(new RectangleRoom(width, height), rarity);
       }
     }

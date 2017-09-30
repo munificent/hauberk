@@ -32,9 +32,11 @@ class Game {
 
   Iterable<String> generate() sync* {
     // TODO: Do something useful with depth.
-    yield* _content.buildStage(_stage, depth);
+    Vec heroPos;
+    yield* _content.buildStage(_stage, depth, (pos) {
+      heroPos = pos;
+    });
 
-    var heroPos = stage.findOpenTile();
     hero = new Hero(this, heroPos, _save);
     _stage.addActor(hero);
 
@@ -144,7 +146,8 @@ class Game {
 /// define the play experience.
 abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
-  Iterable<String> buildStage(Stage stage, int depth);
+  // TODO: Using a callback to set the hero position is kind of hokey.
+  Iterable<String> buildStage(Stage stage, int depth, Function(Vec) placeHero);
 
   Affix findAffix(String name);
   ItemType tryFindItem(String name);

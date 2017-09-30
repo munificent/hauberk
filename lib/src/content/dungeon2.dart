@@ -150,6 +150,8 @@ class Dungeon2 extends Object with Lakes, Rivers, Rooms {
 
   final Array2D<TileState> _states;
 
+  Vec _heroPos;
+
   Rect get bounds => stage.bounds;
   Rect get safeBounds => stage.bounds.inflate(-1);
 
@@ -159,7 +161,7 @@ class Dungeon2 extends Object with Lakes, Rivers, Rooms {
   Dungeon2(this.stage, this.depth)
       : _states = new Array2D(stage.width, stage.height, TileState.unused);
 
-  Iterable<String> generate() sync* {
+  Iterable<String> generate(Function(Vec) placeHero) sync* {
     currentStates = _states;
     currentJunctions = null;
 
@@ -187,6 +189,9 @@ class Dungeon2 extends Object with Lakes, Rivers, Rooms {
     // humidity or something.
     // TODO: Should these be flood-filled for reachability?
     yield* addGrottoes(rng.taper(0, 3));
+
+    _heroPos = stage.findOpenTile();
+    placeHero(_heroPos);
   }
 
   TileType getTile(int x, int y) => stage.get(x, y).type;
