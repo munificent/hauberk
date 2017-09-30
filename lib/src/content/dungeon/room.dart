@@ -104,7 +104,7 @@ class RoomBiome extends Biome {
 
     if (!_dungeon
         .getTileAt(junction.position + junction.direction)
-        .isTraversable) {
+        .isPassable) {
       return false;
     }
 
@@ -248,15 +248,18 @@ class RoomBiome extends Biome {
   }
 
   void _placeDoor(Vec pos) {
-    // TODO: Hidden passageways.
-    var tile = Tiles.closedDoor;
-    if (rng.oneIn(5)) {
-      tile = Tiles.openDoor;
-    } else if (rng.oneIn(4)) {
-      tile = Tiles.floor;
-    }
+//    var tile = Tiles.closedDoor;
+//    if (rng.oneIn(5)) {
+//      tile = Tiles.openDoor;
+//    } else if (rng.oneIn(4)) {
+//      tile = Tiles.floor;
+//    }
 
-    _dungeon.setTile(pos.x, pos.y, tile);
+    // Always place a closed door. Later phases look for that to recognize
+    // junctions.
+    // TODO: Replace some closed doors with open doors, floor, hidden doors,
+    // etc. in a later phase.
+    _dungeon.setTile(pos.x, pos.y, Tiles.closedDoor);
 
     // Since halls are placed after the room they connect to, they may overlap
     // a room junction. Remove that since it's pointless.

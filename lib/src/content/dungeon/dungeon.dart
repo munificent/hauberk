@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../tiles.dart';
 import 'blob.dart';
+import 'choke_points.dart';
 import 'grotto.dart';
 import 'lake.dart';
 import 'river.dart';
@@ -57,15 +58,33 @@ abstract class Biome {
 //  }
 //}
 
+class TileInfo {
+  int distance;
+
+  /// If this tile is for a junction (doorway, etc.) counts the number of
+  /// passable tiles that can only be reached from the starting room by going
+  /// through this tile.
+  ///
+  /// Will be 0 if this tile isn't a junction, or doesn't provide unique acces
+  /// to any tiles.
+  int reachableTiles = 0;
+
+  // TODO: Temp. For visualization.
+  int junctionId;
+  int regionId;
+}
+
 class Dungeon {
   // TODO: Hack temp. Static so that dungeon_test can access these while it's
   // being generated.
   static List<Junction> debugJunctions;
+  static Array2D<TileInfo> debugInfo;
 
   final Stage stage;
   final int depth;
 
   final List<Biome> _biomes = [];
+  final Array2D<TileInfo> _info;
 
   Vec _heroPos;
 
@@ -75,10 +94,12 @@ class Dungeon {
   int get width => stage.width;
   int get height => stage.height;
 
-  Dungeon(this.stage, this.depth);
+  Dungeon(this.stage, this.depth)
+      : _info = new Array2D.generated(stage.width, stage.height, () => new TileInfo());
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
     debugJunctions = null;
+    debugInfo = null;
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
@@ -95,6 +116,27 @@ class Dungeon {
     // If a biome didn't place the hero, do it now.
     if (_heroPos == null) _heroPos = stage.findOpenTile();
     placeHero(_heroPos);
+
+    yield "Populating dungeon";
+    _calculateInfo();
+
+    // TODO: Should we do a sanity check for traversable tiles that ended up
+    // unreachable?
+
+    // Pick a point far from the hero to place the exit stairs.
+    // TODO: Place the stairs in a more logical place like next to a wall, in a
+    // room, etc?
+    Vec stairPos;
+    for (var i = 0; i < 10; i++) {
+      var pos = stage.findOpenTile();
+      // TODO: If there are unconnected regions (usually from a river looping
+      // back onto the dungeon) then distance will be null and this may fail.
+      if (stairPos == null || _info[pos].distance > _info[stairPos].distance) {
+        stairPos = pos;
+      }
+    }
+
+    setTileAt(stairPos, Tiles.stairs);
   }
 
   TileType getTile(int x, int y) => stage.get(x, y).type;
@@ -111,6 +153,8 @@ class Dungeon {
 
   bool isRock(int x, int y) => stage.get(x, y).type == Tiles.rock;
   bool isRockAt(Vec pos) => stage[pos].type == Tiles.rock;
+
+  TileInfo infoAt(Vec pos) => _info[pos];
 
   /// Returns `true` if the cell at [pos] has at least one adjacent tile with
   /// type [tile].
@@ -256,5 +300,21 @@ class Dungeon {
     if (hasWater && rng.oneIn(3)) {
       _biomes.add(new GrottoBiome(rng.taper(1, 3)));
     }
+  }
+
+  /// Calculates a bunch of information about the dungeon used to intelligently
+  /// populate it.
+  void _calculateInfo() {
+    // Calculate how far every reachable tile is from the hero's starting point.
+    debugInfo = _info;
+    var flow = new Flow(stage, _heroPos, canOpenDoors: true, ignoreActors: true);
+    for (var pos in safeBounds) {
+      _info[pos].distance = flow.getDistance(pos);
+    }
+
+    // Figure out which junctions are chokepoints that provide unique access to
+    // some areas.
+    // TODO: Do something with the results of this.
+    new ChokePoints(this).calculate(_heroPos);
   }
 }

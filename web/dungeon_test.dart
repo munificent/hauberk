@@ -60,13 +60,16 @@ Future generate() async {
   stateCanvas.width = stage.width * 8;
   stateCanvas.height = stage.height * 8;
 
+  var frame = 0;
   for (var event in _game.generate()) {
     print(event);
     render();
-    await html.window.animationFrame;
+
+    frame++;
+    if (frame % 5 == 0) await html.window.animationFrame;
   }
 
-  render(showInfo: false);
+  render(showInfo: true);
 
   var monsters = new Histogram<Breed>();
   for (var actor in stage.actors) {
@@ -198,10 +201,35 @@ void render({bool showInfo = true}) {
   terminal.render();
 
   var context = stateCanvas.context2D;
+  context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
 
-  if (!showInfo) {
-    context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
-    return;
+  if (!showInfo) return;
+
+  if (Dungeon.debugInfo != null) {
+    for (var y = 0; y < stage.height; y++) {
+      for (var x = 0; x < stage.width; x++) {
+        var info = Dungeon.debugInfo.get(x, y);
+//        if (info.distance != null) {
+//          context.fillStyle = 'hsla(${info.distance * 8}, 100%, 50%, 0.1)';
+//          context.fillRect(x * 8, y * 8, 8, 8);
+//        }
+
+        if (info.regionId != null) {
+          context.fillStyle = 'hsla(${info.regionId * 13}, 100%, 50%, 0.3)';
+          context.fillRect(x * 8, y * 8, 8, 8);
+        }
+
+        if (info.junctionId != null) {
+          context.fillStyle = 'hsla(${info.junctionId * 13}, 100%, 50%, 0.6)';
+          context.fillRect(x * 8 + 1, y * 8 + 1, 6, 6);
+        }
+
+        if (info.reachableTiles != 0) {
+          context.fillStyle = 'rgb(255, 255, 255)';
+          context.fillText(info.reachableTiles.toString(), x * 8, y * 8 + 7);
+        }
+      }
+    }
   }
 
   if (Dungeon.debugJunctions != null) {
