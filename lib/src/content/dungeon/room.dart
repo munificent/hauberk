@@ -34,20 +34,8 @@ class RoomBiome extends Biome {
     Dungeon.debugJunctions = _junctions;
 
     yield "Add starting room";
-    // TODO: Sometimes start at a natural feature.
-
-    var startRoom = Room.create(_dungeon.depth);
-    while (true) {
-      var x = rng.inclusive(0, _dungeon.width - startRoom.tiles.width);
-      var y = rng.inclusive(0, _dungeon.height - startRoom.tiles.height);
-
-      if (!_canPlaceRoom(startRoom, x, y)) continue;
-      // TODO: After a certain number of tries, should try a different room.
-
-      yield "Placing starting room";
-      _placeRoom(startRoom, x, y);
-      break;
-    }
+    // TODO: Sometimes start at a natural feature?
+    _createStartingRoom();
 
     yield "Adding rooms";
 
@@ -84,6 +72,27 @@ class RoomBiome extends Biome {
         }
       }
     }
+  }
+
+  void _createStartingRoom() {
+    var startRoom = Room.create(_dungeon.depth);
+
+    int x, y;
+    do {
+      x = rng.inclusive(0, _dungeon.width - startRoom.tiles.width);
+      y = rng.inclusive(0, _dungeon.height - startRoom.tiles.height);
+
+      // TODO: After a certain number of tries, should try a different room.
+    } while (!_canPlaceRoom(startRoom, x, y));
+
+    _placeRoom(startRoom, x, y);
+
+    // Place the hero on an open tile in the starting room.
+    var openTiles = <Vec>[];
+    for (var pos in startRoom.tiles.bounds) {
+      if (startRoom.tiles[pos].isPassable) openTiles.add(pos.offset(x, y));
+    }
+    _dungeon.placeHero(rng.item(openTiles));
   }
 
   /// Checks if the junction is already next to an open area.

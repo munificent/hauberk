@@ -92,7 +92,8 @@ class Dungeon {
       yield* biome.generate(this);
     }
 
-    _heroPos = stage.findOpenTile();
+    // If a biome didn't place the hero, do it now.
+    if (_heroPos == null) _heroPos = stage.findOpenTile();
     placeHero(_heroPos);
   }
 
@@ -135,6 +136,11 @@ class Dungeon {
     }
 
     return false;
+  }
+
+  void placeHero(Vec pos) {
+    assert(_heroPos == null, "Should only place the hero once.");
+    _heroPos = pos;
   }
 
   /// Grows a randomly shaped blob starting at [start].

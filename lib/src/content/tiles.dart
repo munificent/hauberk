@@ -20,8 +20,10 @@ class Tiles {
   static TileType closedDoor =
       _solid("closed door", CharCode.inverseWhiteCircle, persimmon, garnet);
   // TODO: Different character that doesn't look like bridge?
-  static TileType stairs = _exit("stairs", CharCode.identicalTo, slate);
-  static TileType bridge = _open("bridge", CharCode.identicalTo, persimmon, garnet);
+  static TileType stairs =
+      _exit("stairs", CharCode.identicalTo, gunsmoke, slate);
+  static TileType bridge =
+      _open("bridge", CharCode.identicalTo, persimmon, garnet);
 
   // TODO: Allow flying monster to fly over it.
   static TileType water =
@@ -42,12 +44,6 @@ class Tiles {
     Tiles.openDoor.closesTo = Tiles.closedDoor;
     Tiles.closedDoor.opensTo = Tiles.openDoor;
   }
-}
-
-TileType tileType(
-    String name, bool isPassable, bool isTransparent, appearance) {
-  return new TileType(name, appearance,
-      isPassable: isPassable, isTransparent: isTransparent);
 }
 
 List<Glyph> _makeGlyphs(int charCode, Color fore, [Color back]) {

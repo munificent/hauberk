@@ -66,7 +66,7 @@ Future generate() async {
     await html.window.animationFrame;
   }
 
-  render(showStates: false);
+  render(showInfo: false);
 
   var monsters = new Histogram<Breed>();
   for (var actor in stage.actors) {
@@ -170,7 +170,7 @@ Future generate() async {
       validator: validator);
 }
 
-void render({bool showStates = true}) {
+void render({bool showInfo = true}) {
   var stage = _game.stage;
 
   for (var y = 0; y < stage.height; y++) {
@@ -199,61 +199,10 @@ void render({bool showStates = true}) {
 
   var context = stateCanvas.context2D;
 
-//  var regions = Dungeon2.regions;
-//  var shownIds = new Set<int>();
-//  if (regions != null) {
-//    context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
-//
-//    for (var y = 0; y < regions.height; y++) {
-//      for (var x = 0; x < regions.width; x++) {
-//        var region = regions.get(x, y);
-//        if (region == null || region == 0) continue;
-//
-//        String fill;
-//        if (region < 0) {
-//          fill = 'hsla(${-region * 13}, 100%, 50%, 0.6)';
-//        } else {
-//          fill = 'hsla(${region * 13}, 100%, 50%, 0.2)';
-//        }
-//
-//        context.fillStyle = fill;
-//        context.fillRect(x * 8, y * 8, 8, 8);
-//
-//        if (region >= 0 && !shownIds.contains(region)) {
-//          context.fillStyle = 'rgb(255, 255, 255)';
-//          context.fillText(region.toString(), x * 8, y * 8 + 8);
-//          shownIds.add(region);
-//        }
-//      }
-//    }
-//  }
-
-//  if (Dungeon2.region != null) {
-//    for (var y = 0; y < states.height; y++) {
-//      for (var x = 0; x < states.width; x++) {
-//        var i = (Dungeon2.region.get(x, y) * 359).toInt().clamp(0, 359);
-//
-//        var fill = 'hsla($i, 100%, 50%, 0.2)';
-//        context.fillStyle = fill;
-//        context.fillRect(x * 8, y * 8, 8, 8);
-//      }
-//    }
-//  }
-
-  if (!showStates) return;
-
-//  for (var y = 0; y < states.height; y++) {
-//    for (var x = 0; x < states.width; x++) {
-//      var fill = const {
-//        TileState.unused: 'rgba(0, 0, 0, 0.1)',
-//        TileState.natural: 'rgba(0, 240, 0, 0.1)',
-//        TileState.reached: 'rgba(0, 0, 240, 0.1)'
-//      }[states.get(x, y)];
-//
-//      context.fillStyle = fill;
-//      context.fillRect(x * 8, y * 8, 8, 8);
-//    }
-//  }
+  if (!showInfo) {
+    context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
+    return;
+  }
 
   if (Dungeon.debugJunctions != null) {
     context.fillStyle = 'rgba(255, 255, 255, 0.5)';
