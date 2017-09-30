@@ -3,8 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import 'engine.dart';
 
 import 'content/affixes.dart';
-import 'content/dungeon.dart';
-import 'content/dungeon2.dart';
+import 'package:hauberk/src/content/dungeon/dungeon.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
@@ -26,7 +25,7 @@ Content createContent() {
 
 class GameContent implements Content {
   Iterable<String> buildStage(Stage stage, int depth, Function(Vec) placeHero) {
-    return new Dungeon2(stage, depth).generate(placeHero);
+    return new Dungeon(stage, depth).generate(placeHero);
   }
 
   Affix findAffix(String name) => Affixes.find(name);

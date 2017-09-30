@@ -2,9 +2,9 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import 'stage_builder.dart';
-import 'tiles.dart';
+import '../../engine.dart';
+import '../stage_builder.dart';
+import '../tiles.dart';
 
 class Forest extends StageBuilder {
   /// A forest is a collection of grassy meadows surrounded by trees and

@@ -3,10 +3,10 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
+import '../../engine.dart';
+import '../tiles.dart';
 import 'blob.dart';
-import 'dungeon2.dart';
-import 'tiles.dart';
+import 'dungeon.dart';
 
 class Junction {
   /// Points from the first room towards where the new room should be attached.
@@ -23,21 +23,23 @@ class Junction {
   Junction(this.direction, this.position);
 }
 
-/// Mixin for [Dungeon2] that adds support for rooms.
-abstract class Rooms implements DungeonBase {
+class RoomBiome extends Biome {
+  final Dungeon _dungeon;
   final List<Junction> _junctions = [];
 
-  Iterable<String> addRooms() sync* {
+  RoomBiome(this._dungeon);
+
+  Iterable<String> generate(Dungeon dungeon) sync* {
     // TODO: Hack temp.
-    Dungeon2.currentJunctions = _junctions;
+    Dungeon.debugJunctions = _junctions;
 
     yield "Add starting room";
     // TODO: Sometimes start at a natural feature.
 
-    var startRoom = Room.create(depth);
+    var startRoom = Room.create(_dungeon.depth);
     while (true) {
-      var x = rng.inclusive(0, width - startRoom.tiles.width);
-      var y = rng.inclusive(0, height - startRoom.tiles.height);
+      var x = rng.inclusive(0, _dungeon.width - startRoom.tiles.width);
+      var y = rng.inclusive(0, _dungeon.height - startRoom.tiles.height);
 
       if (!_canPlaceRoom(startRoom, x, y)) continue;
       // TODO: After a certain number of tries, should try a different room.
@@ -89,7 +91,11 @@ abstract class Rooms implements DungeonBase {
   /// If so, and the path around the junction is long enough, creates a doorway
   /// to add a cycle to the dungeon.
   bool _tryCreateCycle(Junction junction) {
-    if (!getTileAt(junction.position + junction.direction).isTraversable) {
+    if (rng.range(100) < 20) return false;
+
+    if (!_dungeon
+        .getTileAt(junction.position + junction.direction)
+        .isTraversable) {
       return false;
     }
 
@@ -101,7 +107,7 @@ abstract class Rooms implements DungeonBase {
     // TODO: For some reason AStar needs to be given a longer max path than
     // we are looking for or it will very rarely find paths at the maximum
     // length. Figure out why.
-    var path = AStar.findPath(stage, from, to,
+    var path = AStar.findPath(_dungeon.stage, from, to,
         maxLength: 30, canOpenDoors: true);
     if (path.length != 0 && path.length < 20) return false;
 
@@ -118,7 +124,7 @@ abstract class Rooms implements DungeonBase {
     // Alternatively (or do both), have the room type chosen based on the
     // preceding rooms that lead to this junction so that you don't have
     // weird things like a closet leading to a great hall.
-    var room = Room.create(depth, junction);
+    var room = Room.create(_dungeon.depth, junction);
 
     var roomJunctions = room.junctions
         .where((roomJunction) =>
@@ -144,11 +150,10 @@ abstract class Rooms implements DungeonBase {
     var pos = start;
     for (var i = 0; i < length; i++) {
       pos += dir;
-      if (!safeBounds.contains(pos)) return false;
-      if (getStateAt(pos) != TileState.unused) return false;
-
-      if (getStateAt(pos + dir.rotateLeft90) != TileState.unused) return false;
-      if (getStateAt(pos + dir.rotateRight90) != TileState.unused) return false;
+      if (!_dungeon.safeBounds.contains(pos)) return false;
+      if (!_dungeon.isRockAt(pos)) return false;
+      if (!_dungeon.isRockAt(pos + dir.rotateLeft90)) return false;
+      if (!_dungeon.isRockAt(pos + dir.rotateRight90)) return false;
     }
 
     return true;
@@ -157,13 +162,13 @@ abstract class Rooms implements DungeonBase {
   void _placeHallway(Vec start, Direction dir, int length) {
     var pos = start;
     for (var i = 0; i <= length; i++) {
-      setTile(pos.x, pos.y, Tiles.floor, TileState.reached);
+      _dungeon.setTile(pos.x, pos.y, Tiles.floor);
 
       var left = pos + dir.rotateLeft90;
-      setTile(left.x, left.y, Tiles.wall, TileState.reached);
+      _dungeon.setTile(left.x, left.y, Tiles.wall);
 
       var right = pos + dir.rotateRight90;
-      setTile(right.x, right.y, Tiles.wall, TileState.reached);
+      _dungeon.setTile(right.x, right.y, Tiles.wall);
       pos += dir;
     }
 
@@ -172,23 +177,24 @@ abstract class Rooms implements DungeonBase {
   }
 
   bool _canPlaceRoom(Room room, int x, int y) {
-    if (!bounds.containsRect(room.tiles.bounds.offset(x, y))) return false;
+    if (!_dungeon.bounds.containsRect(room.tiles.bounds.offset(x, y))) {
+      return false;
+    }
 
     var allowed = 0;
-    var feature = 0;
+    var nature = 0;
 
     for (var pos in room.tiles.bounds) {
       // If the room doesn't care about the tile, it's fine.
       if (room.tiles[pos] == null) continue;
 
       // Otherwise, it must still be solid on the stage.
-      var state = getState(pos.x + x, pos.y + y);
-      var tile = getTile(pos.x + x, pos.y + y);
+      var tile = _dungeon.getTile(pos.x + x, pos.y + y);
 
-      if (state == TileState.unused) {
+      if (tile == Tiles.rock) {
         allowed++;
-      } else if (state == TileState.natural) {
-        feature++;
+      } else if (tile == Tiles.water || tile == Tiles.grass) {
+        nature++;
       } else if (tile == room.tiles[pos]) {
         // Allow it if it wouldn't change the type. This lets room walls
         // overlap.
@@ -200,7 +206,7 @@ abstract class Rooms implements DungeonBase {
     // Allow overlapping natural features somewhat, but not too much.
     // TODO: Do we want to only allow certain room types to open into natural
     // areas?
-    return allowed > feature * 2;
+    return allowed > nature * 2;
   }
 
   void _placeRoom(Room room, int x, int y) {
@@ -211,13 +217,13 @@ abstract class Rooms implements DungeonBase {
       if (tile == null) continue;
 
       // Don't erase existing natural features.
-      var state = getState(pos.x + x, pos.y + y);
-      if (state == TileState.natural) {
+      var existing = _dungeon.getTileAt(pos.offset(x, y));
+      if (existing != Tiles.rock) {
         if (tile.isTraversable) nature.add(pos.offset(x, y));
         continue;
       }
 
-      setTile(pos.x + x, pos.y + y, tile, TileState.reached);
+      _dungeon.setTile(pos.x + x, pos.y + y, tile);
     }
 
     // Add its junctions unless they are already blocked.
@@ -240,7 +246,8 @@ abstract class Rooms implements DungeonBase {
     } else if (rng.oneIn(4)) {
       tile = Tiles.floor;
     }
-    setTile(pos.x, pos.y, tile, TileState.reached);
+
+    _dungeon.setTile(pos.x, pos.y, tile);
 
     // Since halls are placed after the room they connect to, they may overlap
     // a room junction. Remove that since it's pointless.
@@ -250,9 +257,9 @@ abstract class Rooms implements DungeonBase {
   void _tryAddJunction(Vec junctionPos, Direction junctionDir) {
     isBlocked(Direction direction) {
       var pos = junctionPos + direction;
-      if (!safeBounds.contains(pos)) return true;
+      if (!_dungeon.safeBounds.contains(pos)) return true;
 
-      var tile = getTileAt(pos);
+      var tile = _dungeon.getTileAt(pos);
       // TODO: Is there a more generic way we can handle this?
       return tile != Tiles.wall && tile != Tiles.rock;
     }
@@ -268,10 +275,13 @@ abstract class Rooms implements DungeonBase {
   }
 
   void _reachNature(List<Vec> tiles) {
-    var queue =
-        new Queue.from(tiles.where((pos) => getTileAt(pos).isTraversable));
+    var queue = new Queue.from(
+        tiles.where((pos) => _dungeon.getTileAt(pos).isTraversable));
+    var visited = new Set<Vec>();
+
+    // TODO: Simplify.
     for (var pos in queue) {
-      setStateAt(pos, TileState.reached);
+      visited.add(pos);
     }
 
     while (queue.isNotEmpty) {
@@ -279,12 +289,16 @@ abstract class Rooms implements DungeonBase {
 
       for (var dir in Direction.all) {
         var neighbor = pos + dir;
-        if (!bounds.contains(neighbor)) continue;
+        if (!_dungeon.bounds.contains(neighbor)) continue;
 
-        // If we hit the edge of the walkable natural area and we're facing a
-        // straight direction, try to place a junction there to allow building
-        // out from the area.
-        if (getStateAt(neighbor) != TileState.natural) {
+        if (visited.contains(neighbor)) continue;
+
+        var tile = _dungeon.getTileAt(neighbor);
+
+        // Don't expand outside of the natural area.
+        if (tile != Tiles.grass && tile != Tiles.bridge) {
+          // If we're facing a straight direction, try to place a junction
+          // there to allow building out from the area.
           if (Direction.cardinal.contains(dir) && rng.range(100) < 30) {
             _tryAddJunction(neighbor, dir);
           }
@@ -292,10 +306,10 @@ abstract class Rooms implements DungeonBase {
         }
 
         // Don't go into impassable natural areas like water.
-        if (!getTileAt(neighbor).isTraversable) continue;
+        if (!_dungeon.getTileAt(neighbor).isTraversable) continue;
 
-        setStateAt(neighbor, TileState.reached);
         queue.add(neighbor);
+        visited.add(neighbor);
       }
     }
   }

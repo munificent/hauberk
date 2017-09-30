@@ -1,8 +1,8 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import '../tiles.dart';
 import 'dungeon.dart';
 import 'rooms.dart';
-import 'tiles.dart';
 
 class TemplateRoom extends RoomType {
   static void initialize() {
@@ -55,7 +55,7 @@ class TemplateRoom extends RoomType {
 
   TemplateRoom(this.lines);
 
-  void place(Dungeon dungeon, Rect room) {
+  void place(OldDungeon dungeon, Rect room) {
     // Render the tiles.
     var doorChoices = <Vec>[];
 

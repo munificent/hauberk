@@ -1,9 +1,9 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
+import '../../engine.dart';
+import '../tiles.dart';
 import 'dungeon.dart';
 import 'template_rooms.dart';
-import 'tiles.dart';
 
 abstract class RoomType {
   int get width;
@@ -72,9 +72,9 @@ abstract class RoomType {
   /// Also, add any connectors as are possible from the room.
   ///
   /// When this is called, [room] will already be cleared to all floor.
-  void place(Dungeon dungeon, Rect room);
+  void place(OldDungeon dungeon, Rect room);
 
-  void decorate(Dungeon dungeon, Rect room) {
+  void decorate(OldDungeon dungeon, Rect room) {
     if (rng.oneIn(2)) {
       var tables = rng.inclusive(1, 3);
       for (var i = 0; i < tables; i++) {
@@ -84,7 +84,7 @@ abstract class RoomType {
   }
 
   /// Tries to place a table in the room.
-  bool decorateTable(Dungeon dungeon, Rect room) {
+  bool decorateTable(OldDungeon dungeon, Rect room) {
     var pos = rng.vecInRect(room);
 
     if (dungeon.getTile(pos) != Tiles.floor) return false;
@@ -117,7 +117,7 @@ class RectangleRoom extends RoomType {
 
   RectangleRoom(this.width, this.height);
 
-  void place(Dungeon dungeon, Rect room) {
+  void place(OldDungeon dungeon, Rect room) {
     for (var x = room.left; x < room.right; x++) {
       dungeon.addConnector(x, room.top - 1);
       dungeon.addConnector(x, room.bottom);
@@ -139,7 +139,7 @@ class OctagonRoom extends RoomType {
 
   OctagonRoom(this.width, this.height, this.slope);
 
-  void place(Dungeon dungeon, Rect room) {
+  void place(OldDungeon dungeon, Rect room) {
     for (var pos in room) {
       // Fill in the corners.
       if ((room.topLeft - pos).rookLength < slope ||

@@ -2,11 +2,11 @@ import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import 'affixes.dart';
-import 'items.dart';
-import 'monsters.dart';
-import 'tiles.dart';
+import '../../engine.dart';
+import '../affixes.dart';
+import '../items.dart';
+import '../monsters.dart';
+import '../tiles.dart';
 import 'rooms.dart';
 
 /// The random dungeon generator.
@@ -33,7 +33,7 @@ import 'rooms.dart';
 ///
 /// The end result of this is a multiply-connected dungeon with rooms and lots
 /// of winding corridors.
-class Dungeon {
+class OldDungeon {
   static const numRoomTries = 60;
   static const numRoomPositionTries = 20;
 
@@ -66,7 +66,7 @@ class Dungeon {
   /// The index of the current region being carved.
   int _currentRegion = -1;
 
-  Dungeon(this.stage, this.depth);
+  OldDungeon(this.stage, this.depth);
 
   Iterable<String> generate() sync* {
     // TODO: This occasionally generates dungeons with unreachable areas. I

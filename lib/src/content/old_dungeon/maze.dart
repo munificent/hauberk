@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import 'tiles.dart';
+import '../../engine.dart';
+import '../tiles.dart';
 
 /// Unlike a regular [Dungeon], a Maze has walls of "zero" thickness. Used as
 /// an intermediate data structure for building Dungeons. The outer walls of
