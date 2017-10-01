@@ -43,7 +43,7 @@ class Tiles {
       _open("green jelly stain", CharCode.middleDot, lima);
   // TODO: Make this do stuff when walked through.
   static TileType spiderweb =
-      _open("spiderweb", CharCode.divisionSign, gunsmoke);
+      _open("spiderweb", CharCode.divisionSign, slate);
 
   static void initialize() {
     // Link doors together.

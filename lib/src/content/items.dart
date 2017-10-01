@@ -49,6 +49,10 @@ class Items {
     tossable(damage: 3, range: 8, element: Element.earth, breakage: 10);
     item("Rock", 1, 1, persimmon);
 
+    category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4, tag: "item");
+    tossable(damage: 2, range: 6, breakage: 30);
+    item("Skull", 1, 1, gunsmoke);
+
 //    treasures();
     pelts();
     potions();

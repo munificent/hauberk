@@ -155,8 +155,10 @@ class Monsters {
 void arachnids() {
   group("a", flags: "fearless");
   breed("brown spider", 1, persimmon, 3, meander: 8)
-      .attack("bite[s]", 5, Element.poison)
-      .drop(5, "Stinger");
+      .attack("bite[s]", 5);
+
+  breed("gray spider", 2, slate, 4, meander: 6)
+      .attack("bite[s]", 5, Element.poison);
 
   breed("giant spider", 6, ultramarine, 20, meander: 5)
       .attack("bite[s]", 5, Element.poison)
@@ -302,8 +304,7 @@ void felines() {
   group("F");
   breed("stray cat", 1, gold, 9, speed: 1, meander: 3)
       .attack("bite[s]", 5)
-      .attack("scratch[es]", 4)
-      .drop(10, "Fur Pelt");
+      .attack("scratch[es]", 4);
 }
 
 void goblins() {
@@ -371,10 +372,10 @@ void hybrids() {}
 
 void insects() {
   group("i", tracking: 3, meander: 8, flags: "fearless");
-  breed("giant cockroach[es]", 1, garnet, 4, speed: 3)
-      .attack("crawl[s] on", 3)
-      .spawn(rate: 4)
-      .drop(10, "Insect Wing");
+  // TODO: Spawn as eggs which can hatch into cockroaches?
+  breed("giant cockroach[es]", 1, garnet, 4)
+      .attack("crawl[s] on", 2)
+      .spawn(rate: 6);
 
   breed("giant centipede", 3, brickRed, 16, speed: 3, meander: -4)
       .attack("crawl[s] on", 4)

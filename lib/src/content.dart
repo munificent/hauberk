@@ -3,7 +3,8 @@ import 'package:piecemeal/piecemeal.dart';
 import 'engine.dart';
 
 import 'content/affixes.dart';
-import 'package:hauberk/src/content/dungeon/dungeon.dart';
+import 'content/dungeon/dungeon.dart';
+import 'content/encounters.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
@@ -19,6 +20,7 @@ Content createContent() {
   Recipes.initialize();
   Affixes.initialize();
   Shops.initialize();
+  Encounters.initialize();
 
   return new GameContent();
 }
