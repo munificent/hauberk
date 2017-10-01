@@ -54,7 +54,7 @@ packages:
       name: piecemeal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.3.3"
   pool:
     description:
       name: pool
@@ -74,4 +74,4 @@ packages:
     source: hosted
     version: "1.7.0"
 sdks:
-  dart: ">=1.24.0 <2.0.0"
+  dart: ">=1.24.0 <=2.0.0-edge.f1665714a5f0c9c1ee878f1ba6c83c4e12ac7424"

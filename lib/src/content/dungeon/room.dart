@@ -100,7 +100,7 @@ class RoomBiome extends Biome {
   /// If so, and the path around the junction is long enough, creates a doorway
   /// to add a cycle to the dungeon.
   bool _tryCreateCycle(Junction junction) {
-    if (rng.range(100) < 20) return false;
+    if (rng.percent(20)) return false;
 
     if (!_dungeon
         .getTileAt(junction.position + junction.direction)
@@ -311,7 +311,7 @@ class RoomBiome extends Biome {
         if (tile != Tiles.grass && tile != Tiles.bridge) {
           // If we're facing a straight direction, try to place a junction
           // there to allow building out from the area.
-          if (Direction.cardinal.contains(dir) && rng.range(100) < 30) {
+          if (Direction.cardinal.contains(dir) && rng.percent(30)) {
             _tryAddJunction(neighbor, dir);
           }
           continue;

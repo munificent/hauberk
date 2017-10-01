@@ -393,7 +393,7 @@ class GameScreen extends Screen<Input> {
       if (!hero.dazzle.isActive) return glyph;
 
       var chance = math.min(90, hero.dazzle.duration * 8);
-      if (rng.range(100) > chance) return glyph;
+      if (rng.percent(chance)) return glyph;
 
       const colors = const [
         steelGray,
@@ -424,7 +424,7 @@ class GameScreen extends Screen<Input> {
         ultramarine,
       ];
 
-      var char = (rng.range(100) > chance) ? glyph.char : CharCode.asterisk;
+      var char = rng.percent(chance) ? glyph.char : CharCode.asterisk;
       return new Glyph.fromCharCode(char, rng.item(colors));
     }
 
