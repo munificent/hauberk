@@ -39,6 +39,9 @@ class Tiles {
   static TileType treeAlt2 =
       _solid("tree", CharCode.blackClubSuit, peaGreen, sherwood);
 
+  static TileType greenJellyStain =
+      _open("green jelly stain", CharCode.middleDot, lima);
+
   static void initialize() {
     // Link doors together.
     Tiles.openDoor.closesTo = Tiles.closedDoor;

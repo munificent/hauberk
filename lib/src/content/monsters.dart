@@ -385,8 +385,8 @@ void insubstantials() {}
 
 void jellies() {
   group("j", speed: -1, flags: "fearless");
-  breed("green jelly", 1, lima, 7)
-      .attack("crawl[s] on", 4);
+  breed("green jelly", 1, lima, 5)
+      .attack("crawl[s] on", 3);
   // TODO: More elements.
 
   group("j", flags: "few fearless immobile");

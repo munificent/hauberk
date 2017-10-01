@@ -54,15 +54,15 @@ class RoomBiome extends Biome {
 
       // TODO: Tune this.
       for (var i = 0; i < 40; i++) {
-        // Try to place a hallway.
-        // TODO: Turns and branches in hallways.
-        var hallLength = rng.range(3, 8);
-        if (_canPlaceHallway(
-            junction.position, junction.direction, hallLength)) {
+        // Try to place a corridor.
+        // TODO: Turns and branches in corridors.
+        var length = rng.range(3, 8);
+        if (_canPlaceCorridor(
+            junction.position, junction.direction, length)) {
           var endJunction = new Junction(junction.direction,
-              junction.position + junction.direction * hallLength);
+              junction.position + junction.direction * length);
           if (_tryPlaceRoom(endJunction)) {
-            _placeHallway(junction.position, junction.direction, hallLength);
+            _placeCorridor(junction.position, junction.direction, length);
             yield "Placed room ${roomNumber++}";
             break;
           }
@@ -155,7 +155,7 @@ class RoomBiome extends Biome {
     return false;
   }
 
-  bool _canPlaceHallway(Vec start, Direction dir, int length) {
+  bool _canPlaceCorridor(Vec start, Direction dir, int length) {
     var pos = start;
     for (var i = 0; i < length; i++) {
       pos += dir;
@@ -168,7 +168,7 @@ class RoomBiome extends Biome {
     return true;
   }
 
-  void _placeHallway(Vec start, Direction dir, int length) {
+  void _placeCorridor(Vec start, Direction dir, int length) {
     var pos = start;
     for (var i = 0; i <= length; i++) {
       _dungeon.setTile(pos.x, pos.y, Tiles.floor);
@@ -226,13 +226,14 @@ class RoomBiome extends Biome {
       if (tile == null) continue;
 
       // Don't erase existing natural features.
-      var existing = _dungeon.getTileAt(pos.offset(x, y));
+      var absolute = pos.offset(x, y);
+      var existing = _dungeon.getTileAt(absolute);
       if (existing != Tiles.rock) {
-        if (tile.isTraversable) nature.add(pos.offset(x, y));
+        if (tile.isTraversable) nature.add(absolute);
         continue;
       }
 
-      _dungeon.setTile(pos.x + x, pos.y + y, tile);
+      _dungeon.setTileAt(absolute, tile);
     }
 
     // Add its junctions unless they are already blocked.
@@ -261,8 +262,8 @@ class RoomBiome extends Biome {
     // etc. in a later phase.
     _dungeon.setTile(pos.x, pos.y, Tiles.closedDoor);
 
-    // Since halls are placed after the room they connect to, they may overlap
-    // a room junction. Remove that since it's pointless.
+    // Since corridors are placed after the room they connect to, they may
+    // overlap a room junction. Remove that since it's pointless.
     _junctions.removeWhere((junction) => junction.position == pos);
   }
 

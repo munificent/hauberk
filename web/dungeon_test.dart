@@ -69,7 +69,7 @@ Future generate() async {
     if (frame % 5 == 0) await html.window.animationFrame;
   }
 
-  render(showInfo: true);
+  render(showInfo: false);
 
   var monsters = new Histogram<Breed>();
   for (var actor in stage.actors) {

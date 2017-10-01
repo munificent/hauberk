@@ -211,8 +211,10 @@ class Stage {
     return best;
   }
 
+  // TODO: Remove this and use encounters instead.
   void spawnMonster(Breed breed, Vec pos) {
     final monsters = <Actor>[];
+
     final count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 2);
 
     addMonster(Vec pos) {

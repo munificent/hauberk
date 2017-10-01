@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+import '../encounters.dart';
 import '../tiles.dart';
 import 'blob.dart';
 import 'choke_points.dart';
@@ -137,6 +138,16 @@ class Dungeon {
     }
 
     setTileAt(stairPos, Tiles.stairs);
+
+    // TODO: Tune this.
+    var numEncounters = 10;
+    for (var i = 0; i < numEncounters; i++) {
+      // TODO: Distribute them more evenly?
+      // TODO: Have biome affect density?
+      var pos = stage.findOpenTile();
+      var encounter = Encounter.choose();
+      encounter.spawn(this, pos);
+    }
   }
 
   TileType getTile(int x, int y) => stage.get(x, y).type;
@@ -255,6 +266,11 @@ class Dungeon {
 
       count--;
     }
+  }
+
+  void spawnMonster(Breed breed, Vec pos) {
+    var monster = breed.spawn(stage.game, pos);
+    stage.addActor(monster);
   }
 
   void _chooseBiomes() {
