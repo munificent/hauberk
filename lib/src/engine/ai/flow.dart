@@ -76,10 +76,10 @@ class Flow {
   /// Returns the nearest position to start that meets [predicate].
   ///
   /// If there are multiple equidistance positions, chooses one randomly. If
-  /// there are none, returns the starting position.
+  /// there are none, returns null.
   Vec nearestWhere(bool predicate(Vec pos)) {
     var results = _findAllNearestWhere(predicate);
-    if (results.isEmpty) return _start;
+    if (results.isEmpty) return null;
 
     return rng.item(results) + _offset;
   }

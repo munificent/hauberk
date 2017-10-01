@@ -86,6 +86,8 @@ class Stage {
   }
 
   void addActor(Actor actor) {
+    assert(_actorsByTile[actor.pos] == null);
+
     _actors.add(actor);
     _actorsByTile[actor.pos] = actor;
   }

@@ -31,6 +31,10 @@ class ResourceSet<T> {
     }
   }
 
+  void addUnnamed(T object, int depth, int rarity, [String tagNames]) {
+    return add(_resources.length.toString(), object, depth, rarity, tagNames);
+  }
+
   /// Given a string like "a/b/c d/e" defines tags for "a", "b", "c", "d", and
   /// "e" (if not already defined) and wires them up such that "c"'s parent is
   /// "b", "b"'s is "a", and "e"'s parent is "d".

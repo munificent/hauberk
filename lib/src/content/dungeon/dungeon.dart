@@ -86,6 +86,7 @@ class Dungeon {
 
   final List<Biome> _biomes = [];
   final Array2D<TileInfo> _info;
+  final List<Vec> _corridors = [];
 
   Vec _heroPos;
 
@@ -140,13 +141,12 @@ class Dungeon {
     setTileAt(stairPos, Tiles.stairs);
 
     // TODO: Tune this.
-    var numEncounters = 10;
+    var numEncounters = 20;
     for (var i = 0; i < numEncounters; i++) {
       // TODO: Distribute them more evenly?
       // TODO: Have biome affect density?
-      var pos = stage.findOpenTile();
-      var encounter = Encounter.choose();
-      encounter.spawn(this, pos);
+      var encounter = Encounters.choose(depth);
+      encounter.spawn(this);
     }
   }
 
@@ -273,6 +273,18 @@ class Dungeon {
     stage.addActor(monster);
   }
 
+  Vec findOpenCorridor() {
+    assert(_corridors.isNotEmpty, "Need to calculate info first.");
+
+    _corridors.shuffle();
+    for (var pos in _corridors) {
+      if (stage.actorAt(pos) == null) return pos;
+    }
+
+    // If we get here, the corridors are all full.
+    return stage.findOpenTile();
+  }
+
   void _chooseBiomes() {
     // TODO: Take depth into account?
     var hasWater = false;
@@ -332,5 +344,16 @@ class Dungeon {
     // some areas.
     // TODO: Do something with the results of this.
     new ChokePoints(this).calculate(_heroPos);
+
+    // Find all corridor tiles.
+    for (var pos in safeBounds) {
+      if (!getTileAt(pos).isPassable) continue;
+
+      var walls = Direction.all.where((dir) {
+        return !getTileAt(pos + dir).isTraversable;
+      }).length;
+
+      if (walls >= 6) _corridors.add(pos);
+    }
   }
 }

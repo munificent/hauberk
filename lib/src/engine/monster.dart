@@ -274,6 +274,8 @@ class Monster extends Actor {
           if (rng.oneIn(5)) return true;
           return !game.stage.isItemAt(pos);
         });
+
+        if (itemPos == null) itemPos = pos;
       }
 
       game.stage.addItem(item, itemPos);

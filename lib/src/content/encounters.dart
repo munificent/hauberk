@@ -5,44 +5,69 @@ import 'dungeon/dungeon.dart';
 import 'monsters.dart';
 import 'tiles.dart';
 
-enum EncounterLocation { anywhere, hugWalls }
+typedef Vec ChooseLocation(Dungeon dungeon);
 
-class Encounter {
-  static final List<Encounter> _encounters = [];
+final _spawnPattern = new RegExp(r"(.*) (\d+)-(\d+)");
+
+int _depth = 1;
+
+class Encounters {
+  static final ResourceSet<Encounter> _encounters = new ResourceSet();
 
   static void initialize() {
-    // TODO: Use a ResourceSet and/or make multiple tables based on biome, etc.
-    _encounters.add(new Encounter(
-        EncounterLocation.hugWalls,
-        new _StainDecorator(Tiles.greenJellyStain),
-        [new _Spawn(Monsters.breeds.find("green jelly"), 1, 5)]));
+    _encounters.defineTags("encounter");
+
+    _depth = 1;
+    _encounter(["green jelly 1-5"], locate: _hugWalls,
+        decorate: _stain(Tiles.greenJellyStain, 5));
+
+    _encounter(["brown spider"], locate: _preferCorridor,
+        decorate: _stain(Tiles.spiderweb, 3));
   }
 
-  static Encounter choose() {
-    if (_encounters.isEmpty) initialize();
+  static _Decorator _stain(TileType tile, int distance) =>
+      new _StainDecorator(tile, distance);
 
-    return rng.item(_encounters);
+  static void _encounter(List<String> spawns, {ChooseLocation locate,
+      _Decorator decorate, int rarity = 1}) {
+    var spawnObjects = <_Spawn>[];
+    for (var spawn in spawns) {
+      var match = _spawnPattern.firstMatch(spawn);
+
+      String breed;
+      int min;
+      int max;
+      if (match != null) {
+        breed = match[1];
+        min = int.parse(match[2]);
+        max = int.parse(match[3]);
+      } else {
+        breed = spawn;
+        min = 1;
+        max = 1;
+      }
+
+      spawnObjects.add(new _Spawn(Monsters.breeds.find(breed), min, max));
+    }
+
+    if (locate == null) locate = _anywhere;
+    _encounters.addUnnamed(new Encounter(locate, decorate, spawnObjects),
+        _depth, rarity, "encounter");
   }
 
-  final EncounterLocation _location;
+  static Encounter choose(int depth) =>
+      _encounters.tryChoose(depth, "encounter");
+}
+
+class Encounter {
+  final ChooseLocation _location;
   final _Decorator _decorator;
   final List<_Spawn> _spawns;
 
   Encounter(this._location, this._decorator, this._spawns);
 
-  void spawn(Dungeon dungeon, Vec encounterPos) {
-    switch (_location) {
-      case EncounterLocation.anywhere:
-        // Do nothing.
-        break;
-
-      case EncounterLocation.hugWalls:
-        encounterPos = _hugWalls(dungeon, encounterPos);
-        break;
-    }
-
-    // TODO: Temp.
-    dungeon.setTileAt(encounterPos, Tiles.tallGrass);
+  void spawn(Dungeon dungeon) {
+    var encounterPos = _location(dungeon);
 
     var monsterCount = 0;
     var flow = new Flow(dungeon.stage, encounterPos);
@@ -68,19 +93,39 @@ class Encounter {
       _decorator.decorate(dungeon, encounterPos, monsterCount);
     }
   }
+}
 
-  Vec _hugWalls(Dungeon dungeon, Vec pos) {
-    var flow = new Flow(dungeon.stage, pos, maxDistance: 15);
-    var moved = flow.nearestWhere((pos) {
-      for (var dir in Direction.cardinal) {
-        if (!dungeon.getTileAt(pos + dir).isTraversable) return true;
-      }
+Vec _anywhere(Dungeon dungeon) => dungeon.stage.findOpenTile();
 
-      return false;
-    });
+Vec _hugWalls(Dungeon dungeon) => _preferWalls(dungeon, 10, 4);
 
-    return moved ?? pos;
+Vec _preferCorridor(Dungeon dungeon) {
+  // Don't *always* go in corridors.
+  if (rng.oneIn(6)) return _hugWalls(dungeon);
+
+  return dungeon.findOpenCorridor();
+}
+
+Vec _preferWalls(Dungeon dungeon, int tries, int idealWalls) {
+  var bestWalls = -1;
+  Vec best;
+  for (var i = 0; i < tries; i++) {
+    var pos = dungeon.stage.findOpenTile();
+    var walls = Direction.all.where((dir) {
+      return !dungeon.getTileAt(pos + dir).isTraversable;
+    }).length;
+
+    // Early out as soon as we find a good enough spot.
+    if (walls >= idealWalls) return pos;
+
+    if (walls > bestWalls) {
+      best = pos;
+      bestWalls = walls;
+    }
   }
+
+  // Otherwise, take the best we could find.
+  return best;
 }
 
 class _Spawn {
@@ -97,16 +142,17 @@ abstract class _Decorator {
 
 class _StainDecorator extends _Decorator {
   final TileType _tile;
+  final int _distance;
 
-  _StainDecorator(this._tile);
+  _StainDecorator(this._tile, this._distance);
 
   void decorate(Dungeon dungeon, Vec start, int monsterCount) {
     // Make a bunch of wandering paths from the starting point, leaving stains
     // as they go.
     for (var i = 0; i < monsterCount * 2; i++) {
       var pos = start;
-      for (var j = 0; j < 4 + monsterCount ~/ 2; j++) {
-        if (rng.percent(60) && dungeon.getTileAt(pos).isPassable) {
+      for (var j = 0; j < _distance; j++) {
+        if (rng.percent(60) && dungeon.getTileAt(pos) == Tiles.floor) {
           dungeon.setTileAt(pos, _tile);
         }
 
