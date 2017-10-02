@@ -22,6 +22,7 @@ class Encounters {
     setDepth(1);
     monster("green jelly", 0, 5).hugWall().stain(Tiles.greenJellyStain, 5);
     monster("brown spider", 0, 2).preferCorridor().stain(Tiles.spiderweb, 3);
+    monster("forest sprite", 1, 3);
     monster("giant cockroach", 2, 5).hugCorner();
     monster("hapless adventurer");
 
@@ -32,6 +33,8 @@ class Encounters {
         .drop(30, "weapon", 1)
         .drop(30, "armor", 1)
         .drop(40, "magic", 1);
+
+    encounter().hugCorner().drop(100, "Rock");
 
     setDepth(2);
     monster("stray cat");

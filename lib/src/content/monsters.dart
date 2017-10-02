@@ -168,6 +168,7 @@ void arachnids() {
 void ancients() {}
 
 void bats() {
+  // TODO: Make them fly.
   group("b");
   breed("brown bat", 2, persimmon, 9, speed: 2, meander: 6)
       .attack("bite[s]", 4);
