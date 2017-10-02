@@ -516,6 +516,13 @@ void ogres() {}
 
 void people() {
   group("p", tracking: 14, flags: "open-doors");
+  breed("hapless adventurer", 1, buttermilk, 12, meander: 3)
+      .attack("hit[s]", 3)
+      .drop(40, "weapon")
+      .drop(30, "armor")
+      .drop(20, "magic")
+      .flags("cowardly");
+
   breed("simpering knave", 2, carrot, 15, meander: 3)
       .attack("hit[s]", 2)
       .attack("stab[s]", 4)

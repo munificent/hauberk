@@ -10,76 +10,36 @@ typedef Vec ChooseLocation(Dungeon dungeon);
 
 final _spawnPattern = new RegExp(r"(.*) (\d+)-(\d+)");
 
+final ResourceSet<Encounter> _encounters = new ResourceSet();
+
 int _depth = 1;
+_EncounterBuilder _builder;
 
 class Encounters {
-  static final ResourceSet<Encounter> _encounters = new ResourceSet();
-
   static void initialize() {
     _encounters.defineTags("encounter");
 
-    _depth = 1;
-    _encounter(["green jelly 0-5"],
-        locate: _hugWalls, decorate: _stain(Tiles.greenJellyStain, 5));
-
-    _encounter(["brown spider 0-2"],
-        locate: _preferCorridor, decorate: _stain(Tiles.spiderweb, 3));
-
-    _encounter(["giant cockroach 2-5"], locate: _hugWalls);
+    setDepth(1);
+    monster("green jelly", 0, 5).hugWall().stain(Tiles.greenJellyStain, 5);
+    monster("brown spider", 0, 2).preferCorridor().stain(Tiles.spiderweb, 3);
+    monster("giant cockroach", 2, 5).hugCorner();
+    monster("hapless adventurer");
 
     // TODO: Tune this?
-    _encounter([],
-        locate: _hugWalls,
-        drops: [
-          percentDrop(60, "Skull", 1),
-          percentDrop(30, "weapon", 1),
-          percentDrop(30, "armor", 1),
-          percentDrop(40, "magic", 1)
-        ]);
+    encounter()
+        .hugWall()
+        .drop(60, "Skull", 1)
+        .drop(30, "weapon", 1)
+        .drop(30, "armor", 1)
+        .drop(40, "magic", 1);
 
-    _depth = 2;
-    _single("stray cat");
+    setDepth(2);
+    monster("stray cat");
 
-    _depth = 3;
-    _encounter(["gray spider 0-1"],
-        locate: _preferCorridor, decorate: _stain(Tiles.spiderweb, 4));
-  }
+    setDepth(3);
+    monster("gray spider", 0, 1).preferCorridor().stain(Tiles.spiderweb, 4);
 
-  static _Decorator _stain(TileType tile, int distance) =>
-      new _StainDecorator(tile, distance);
-
-  static void _single(String breed, {int rarity = 1}) {
-    _encounter([breed], rarity: rarity);
-  }
-
-  static void _encounter(List<String> spawns,
-      {ChooseLocation locate,
-      _Decorator decorate,
-      int rarity = 1,
-      List<Drop> drops = const []}) {
-    var spawnObjects = <_Spawn>[];
-    for (var spawn in spawns) {
-      var match = _spawnPattern.firstMatch(spawn);
-
-      String breed;
-      int min;
-      int max;
-      if (match != null) {
-        breed = match[1];
-        min = int.parse(match[2]);
-        max = int.parse(match[3]);
-      } else {
-        breed = spawn;
-        min = 1;
-        max = 1;
-      }
-
-      spawnObjects.add(new _Spawn(Monsters.breeds.find(breed), min, max));
-    }
-
-    if (locate == null) locate = _anywhere;
-    _encounters.addUnnamed(new Encounter(locate, decorate, spawnObjects, drops),
-        _depth, rarity, "encounter");
+    _finishBuilder();
   }
 
   static Encounter choose(int depth) =>
@@ -144,17 +104,6 @@ class Encounter {
   }
 }
 
-Vec _anywhere(Dungeon dungeon) => dungeon.stage.findOpenTile();
-
-Vec _hugWalls(Dungeon dungeon) => _preferWalls(dungeon, 20, 4);
-
-Vec _preferCorridor(Dungeon dungeon) {
-  // Don't *always* go in corridors.
-  if (rng.oneIn(6)) return _hugWalls(dungeon);
-
-  return dungeon.findOpenCorridor();
-}
-
 Vec _preferWalls(Dungeon dungeon, int tries, int idealWalls) {
   var bestWalls = -1;
   Vec best;
@@ -178,6 +127,82 @@ Vec _preferWalls(Dungeon dungeon, int tries, int idealWalls) {
 
   // Otherwise, take the best we could find.
   return best;
+}
+
+void setDepth(int depth) {
+  _finishBuilder();
+  _depth = depth;
+}
+
+void _finishBuilder() {
+  if (_builder == null) return;
+
+  _builder.build();
+  _builder = null;
+}
+
+_EncounterBuilder monster(String name, [int minOrMax, int max]) =>
+    encounter().monster(name, minOrMax, max);
+
+_EncounterBuilder encounter() {
+  _finishBuilder();
+  _builder = new _EncounterBuilder();
+  return _builder;
+}
+
+class _EncounterBuilder {
+  _Decorator _decorator;
+  ChooseLocation _location = (dungeon) => dungeon.stage.findOpenTile();
+  final List<_Spawn> _spawns = [];
+  final List<Drop> _drops = [];
+
+  _EncounterBuilder monster(String name, [int minOrMax, int max]) {
+    if (minOrMax == null) {
+      minOrMax = 1;
+      max = 1;
+    } else if (max == null) {
+      max = minOrMax;
+      minOrMax = 1;
+    }
+
+    _spawns.add(new _Spawn(Monsters.breeds.find(name), minOrMax, max));
+    return this;
+  }
+
+  _EncounterBuilder drop(int chance, String name, [int depthOffset = 0]) {
+    _drops.add(percentDrop(chance, name, _depth + depthOffset));
+    return this;
+  }
+
+  _EncounterBuilder stain(TileType tile, int distance) {
+    _decorator = new _StainDecorator(tile, distance);
+    return this;
+  }
+
+  _EncounterBuilder hugWall() {
+    _location = (dungeon) => _preferWalls(dungeon, 20, 3);
+    return this;
+  }
+
+  _EncounterBuilder hugCorner() {
+    _location = (dungeon) => _preferWalls(dungeon, 20, 4);
+    return this;
+  }
+
+  _EncounterBuilder preferCorridor() {
+    _location = (dungeon) {
+      // Don't *always* go in corridors.
+      if (rng.oneIn(6)) return _preferWalls(dungeon, 20, 4);
+
+      return dungeon.findOpenCorridor();
+    };
+    return this;
+  }
+
+  void build() {
+    var encounter = new Encounter(_location, _decorator, _spawns, _drops);
+    _encounters.addUnnamed(encounter, _depth, 1, "encounter");
+  }
 }
 
 class _Spawn {
