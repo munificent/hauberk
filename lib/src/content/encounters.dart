@@ -22,9 +22,14 @@ class Encounters {
     setDepth(1);
     monster("green jelly", 0, 5).hugWall().stain(Tiles.greenJellyStain, 5);
     monster("brown spider", 0, 2).preferCorridor().stain(Tiles.spiderweb, 3);
-    monster("forest sprite", 1, 3);
+    monster("forest sprite", 1, 2);
     monster("giant cockroach", 2, 5).hugCorner();
     monster("hapless adventurer");
+    monster("giant slug");
+    monster("lazy eye").avoidWall();
+    monster("mouse", 1, 3).hugWall();
+    monster("frog").prefer(Tiles.grass);
+    monster("garter snake").prefer(Tiles.grass);
 
     // TODO: Tune this?
     encounter()
@@ -35,6 +40,7 @@ class Encounters {
         .drop(40, "magic", 1);
 
     encounter().hugCorner().drop(100, "Rock");
+    encounter().prefer(Tiles.grass).drop(100, "Rock");
 
     setDepth(2);
     monster("stray cat");
@@ -132,6 +138,40 @@ Vec _preferWalls(Dungeon dungeon, int tries, int idealWalls) {
   return best;
 }
 
+Vec _avoidWalls(Dungeon dungeon, int tries) {
+  var bestWalls = 100;
+  Vec best;
+  for (var i = 0; i < tries; i++) {
+    var pos = dungeon.stage.findOpenTile();
+    var walls = Direction.all.where((dir) {
+      return !dungeon.getTileAt(pos + dir).isPassable;
+    }).length;
+
+    // Early out as soon as we find a good enough spot.
+    if (walls == 0) return pos;
+
+    if (walls < bestWalls) {
+      best = pos;
+      bestWalls = walls;
+    }
+  }
+
+  // Otherwise, take the best we could find.
+  return best;
+}
+
+Vec _prefer(Dungeon dungeon, TileType tile, int tries) {
+  // TODO: This isn't very efficient. Probably better to build a cached set of
+  // all tile positions by type.
+  for (var i = 0; i < tries; i++) {
+    var pos = dungeon.stage.findOpenTile();
+    if (dungeon.getTileAt(pos) == tile) return pos;
+  }
+
+  // Pick any tile.
+  return dungeon.stage.findOpenTile();
+}
+
 void setDepth(int depth) {
   _finishBuilder();
   _depth = depth;
@@ -182,6 +222,11 @@ class _EncounterBuilder {
     return this;
   }
 
+  _EncounterBuilder avoidWall() {
+    _location = (dungeon) => _avoidWalls(dungeon, 20);
+    return this;
+  }
+
   _EncounterBuilder hugWall() {
     _location = (dungeon) => _preferWalls(dungeon, 20, 3);
     return this;
@@ -189,6 +234,11 @@ class _EncounterBuilder {
 
   _EncounterBuilder hugCorner() {
     _location = (dungeon) => _preferWalls(dungeon, 20, 4);
+    return this;
+  }
+
+  _EncounterBuilder prefer(TileType tile) {
+    _location = (dungeon) => _prefer(dungeon, tile, 40);
     return this;
   }
 

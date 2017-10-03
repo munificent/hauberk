@@ -184,20 +184,20 @@ class AsleepState extends MonsterState {
         return getNextStateAction(new AwakeState());
       }
 
-      Debug.logMonster(monster,
-      "Sleep: In LOS, failed oneIn(${distance + 1}).");
+      Debug.logMonster(
+          monster, "Sleep: In LOS, failed oneIn(${distance + 1}).");
       return new RestAction();
     }
 
     if (distance > 20) {
-      Debug.logMonster(monster,
-      "Sleep: Distance $distance is too far to hear");
+      Debug.logMonster(monster, "Sleep: Distance $distance is too far to hear");
       return new RestAction();
     }
 
     // Otherwise, if sound can travel to it from the hero, it may wake up.
     // TODO: Breed-specific hearing.
     // Sound attenuates based on the inverse square of the distance.
+    // TODO: This is very slow.
     var flowDistance = game.stage.getHeroDistanceTo(pos);
     var noise = 0;
     if (flowDistance != null) {
@@ -206,14 +206,18 @@ class AsleepState extends MonsterState {
 
     if (noise > rng.range(500)) {
       game.log.message('Something stirs in the darkness.');
-      Debug.logMonster(monster, "Sleep: Passed noise check, flow distance: "
-      "$flowDistance, noise: $noise");
+      Debug.logMonster(
+          monster,
+          "Sleep: Passed noise check, flow distance: "
+          "$flowDistance, noise: $noise");
       return getNextStateAction(new AwakeState());
     }
 
     // Keep sleeping.
-    Debug.logMonster(monster, "Sleep: Failed noise check, flow distance: "
-    "$flowDistance, noise: $noise");
+    Debug.logMonster(
+        monster,
+        "Sleep: Failed noise check, flow distance: "
+        "$flowDistance, noise: $noise");
     return new RestAction();
   }
 }
@@ -244,8 +248,8 @@ class AwakeState extends MonsterState {
       // The longer it goes without seeing the hero the more likely it will
       // fall asleep.
       if (_turnsSinceLastSawHero > rng.range(10, 20)) {
-        Debug.logMonster(monster,
-        "Haven't seen hero in $_turnsSinceLastSawHero, sleeping");
+        Debug.logMonster(
+            monster, "Haven't seen hero in $_turnsSinceLastSawHero, sleeping");
         return getNextStateAction(new AsleepState());
       }
     }
@@ -363,8 +367,8 @@ class AwakeState extends MonsterState {
       if (move.range > 0 && move.range < maxRange) maxRange = move.range;
     }
 
-    var flow = new Flow(game.stage, pos, maxDistance: maxRange,
-        canOpenDoors: canOpenDoors);
+    var flow = new Flow(game.stage, pos,
+        maxDistance: maxRange, canOpenDoors: canOpenDoors);
 
     bool isValidRangedPosition(Vec pos) {
       // Ignore tiles that are out of range.
@@ -461,8 +465,8 @@ class AfraidState extends MonsterState {
 
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
-    var flow = new Flow(game.stage, pos, maxDistance: breed.tracking,
-        canOpenDoors: monster.canOpenDoors);
+    var flow = new Flow(game.stage, pos,
+        maxDistance: breed.tracking, canOpenDoors: monster.canOpenDoors);
     var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
 
     if (dir != Direction.none) {

@@ -285,20 +285,20 @@ void faeFolk() {
       .attack("scratch[es]", 3)
       .sparkBolt(rate: 7, damage: 4)
       .teleport(rate: 7, range: 5)
-      .drop(40, "magic");
+      .drop(60, "magic");
 
   breed("house sprite", 3, cornflower, 15)
       .attack("poke[s]", 5)
       .stoneBolt(rate: 10, damage: 4)
       .teleport(rate: 7, range: 5)
-      .drop(40, "magic");
+      .drop(80, "magic");
 
   breed("mischievous sprite", 7, salmon, 24)
       .attack("stab[s]", 6)
       .windBolt(rate: 8, damage: 8)
       .teleport(range: 7)
       .insult(rate: 6)
-      .drop(60, "magic");
+      .drop(100, "magic");
 }
 
 void felines() {

@@ -141,7 +141,7 @@ class Dungeon {
     setTileAt(stairPos, Tiles.stairs);
 
     // TODO: Tune this.
-    var numEncounters = 20;
+    var numEncounters = 30;
     for (var i = 0; i < numEncounters; i++) {
       // TODO: Distribute them more evenly?
       // TODO: Have biome affect density?
