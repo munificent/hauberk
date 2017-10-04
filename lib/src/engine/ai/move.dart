@@ -58,11 +58,10 @@ class BoltMove extends Move {
 
   int get range => attack.range;
 
-  num get experience => attack.damage *
-      Option.expElement[attack.element] * (1.0 + range / 20.0);
+  num get experience =>
+      attack.damage * Option.expElement[attack.element] * (1.0 + range / 20.0);
 
-  BoltMove(num rate, this.attack)
-    : super(rate);
+  BoltMove(num rate, this.attack) : super(rate);
 
   bool shouldUse(Monster monster) {
     var target = monster.game.hero.pos;
@@ -98,11 +97,13 @@ class ConeMove extends Move {
   final Attack attack;
   int get range => attack.range;
 
-  num get experience => attack.damage * 3.0 *
-      Option.expElement[attack.element] * (1.0 + range / 10.0);
+  num get experience =>
+      attack.damage *
+      3.0 *
+      Option.expElement[attack.element] *
+      (1.0 + range / 10.0);
 
-  ConeMove(num rate, this.attack)
-    : super(rate);
+  ConeMove(num rate, this.attack) : super(rate);
 
   bool shouldUse(Monster monster) {
     var target = monster.game.hero.pos;
@@ -124,8 +125,8 @@ class ConeMove extends Move {
     return true;
   }
 
-  Action onGetAction(Monster monster) =>
-      new RayAction.cone(monster.pos, monster.game.hero.pos, attack.createHit());
+  Action onGetAction(Monster monster) => new RayAction.cone(
+      monster.pos, monster.game.hero.pos, attack.createHit());
 
   String toString() => "Cone $attack rate: $rate";
 }
@@ -141,7 +142,7 @@ class HealMove extends Move {
   bool shouldUse(Monster monster) {
     // Heal if it could heal the full amount, or it's getting close to death.
     return (monster.health.current / monster.health.max < 0.25) ||
-           (monster.health.max - monster.health.current >= _amount);
+        (monster.health.max - monster.health.current >= _amount);
   }
 
   Action onGetAction(Monster monster) {
@@ -229,8 +230,8 @@ class SpawnMove extends Move {
     // Look for an open adjacent tile.
     for (var dir in Direction.all) {
       var here = monster.pos + dir;
-      if (monster.game.stage[here].isPassable &&
-          monster.game.stage.actorAt(here) == null) return true;
+      if (monster.canOccupy(here) && monster.game.stage.actorAt(here) == null)
+        return true;
     }
 
     return false;
@@ -240,7 +241,7 @@ class SpawnMove extends Move {
     // Pick an open adjacent tile.
     var dirs = Direction.all.where((dir) {
       var here = monster.pos + dir;
-      return monster.game.stage[here].isPassable &&
+      return monster.canOccupy(here) &&
           monster.game.stage.actorAt(here) == null;
     }).toList();
 
@@ -260,7 +261,10 @@ class HowlMove extends Move {
   bool shouldUse(Monster monster) {
     // TODO: Is using flow here too slow?
     var flow = new Flow(monster.game.stage, monster.pos,
-        maxDistance: _range, canOpenDoors: false, ignoreActors: true);
+        maxDistance: _range,
+        canOpenDoors: false,
+        canFly: true,
+        ignoreActors: true);
 
     // See if there are any sleeping monsters nearby.
     for (var pos in new Circle(monster.pos, _range)) {

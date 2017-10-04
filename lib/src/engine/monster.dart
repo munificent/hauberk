@@ -44,6 +44,8 @@ class Monster extends Actor {
 
   bool get isAsleep => _state is AsleepState;
 
+  bool get canFly => breed.flags.contains("fly");
+
   /// Whether the monster wanted to melee or do a ranged attack the last time
   /// it took a step.
   bool wantsToMelee = true;
@@ -103,7 +105,7 @@ class Monster extends Actor {
     // Walk to the target.
     for (final step in new Los(pos, target)) {
       if (step == target) return true;
-      if (!game.stage[step].isTransparent) return false;
+      if (!game.stage[step].isFlyable) return false;
     }
 
     throw 'unreachable';
@@ -118,7 +120,7 @@ class Monster extends Actor {
     for (final step in new Los(pos, target)) {
       if (step == target) return true;
       if (game.stage.actorAt(step) != null) return false;
-      if (!game.stage[step].isTransparent) return false;
+      if (!game.stage[step].isFlyable) return false;
     }
 
     throw 'unreachable';
@@ -265,6 +267,9 @@ class Monster extends Actor {
     // Try to keep dropped items from overlapping.
     var flow = new Flow(game.stage, pos,
         canOpenDoors: false, ignoreActors: true);
+
+    // TODO: If a flying monster dies not adjacent to any walkable tiles, what
+    // happens with their drops?
 
     // Handle drops.
     breed.drop.spawnDrop((item) {

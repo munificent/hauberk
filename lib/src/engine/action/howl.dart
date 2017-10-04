@@ -15,7 +15,10 @@ class HowlAction extends Action {
   ActionResult onPerform() {
     if (_flow == null) {
       _flow = new Flow(actor.game.stage, actor.pos,
-          maxDistance: _range, canOpenDoors: false, ignoreActors: true);
+          maxDistance: _range,
+          canOpenDoors: false,
+          canFly: true,
+          ignoreActors: true);
 
       log("{1} howls!", actor);
     }

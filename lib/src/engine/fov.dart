@@ -84,7 +84,7 @@ class Fov {
         // If we know the entire row is in shadow, we don't need to be more
         // specific.
         if (!fullShadow) {
-          blocksLight = !_stage[pos].isTransparent;
+          blocksLight = !_stage[pos].isFlyable;
           projection = getProjection(col, row);
           visible = !_isInShadow(projection);
         }

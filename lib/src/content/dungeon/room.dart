@@ -164,7 +164,7 @@ class RoomBiome extends Biome {
     // Place the hero on an open tile in the starting room.
     var openTiles = <Vec>[];
     for (var pos in startRoom.tiles.bounds) {
-      if (startRoom.tiles[pos].isPassable) openTiles.add(pos.offset(x, y));
+      if (startRoom.tiles[pos].isWalkable) openTiles.add(pos.offset(x, y));
     }
     _dungeon.placeHero(rng.item(openTiles));
   }
@@ -178,7 +178,7 @@ class RoomBiome extends Biome {
 
     if (!_dungeon
         .getTileAt(junction.position + junction.direction)
-        .isPassable) {
+        .isWalkable) {
       return false;
     }
 

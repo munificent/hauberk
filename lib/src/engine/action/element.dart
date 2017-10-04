@@ -71,11 +71,10 @@ class BurnAction extends Action with DestroyItemMixin {
 class WindAction extends Action {
   ActionResult onPerform() {
     // Move the actor to a random reachable tile.
-    var flow = new Flow(game.stage, actor.pos, maxDistance: 2);
-    var positions = flow
-        .findAll()
-        .where((pos) => game.stage.actorAt(pos) == null)
-        .toList();
+    var flow = new Flow(game.stage, actor.pos,
+        maxDistance: actor.canFly ? 5 : 2, canFly: actor.canFly);
+    var positions =
+        flow.findAll().where((pos) => game.stage.actorAt(pos) == null).toList();
     if (positions.isEmpty) return ActionResult.failure;
 
     log("{1} [are|is] thrown by the wind!", actor);

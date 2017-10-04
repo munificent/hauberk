@@ -491,7 +491,7 @@ class RunBehavior extends Behavior {
   bool _shouldKeepRunning(Hero hero) {
     var stage = hero.game.stage;
     var pos = hero.pos + direction;
-    if (!stage[pos].isPassable) return false;
+    if (!stage[pos].isWalkable) return false;
 
     // Don't run into someone.
     if (stage.actorAt(pos) != null) return false;

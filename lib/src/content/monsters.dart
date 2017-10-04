@@ -168,8 +168,7 @@ void arachnids() {
 void ancients() {}
 
 void bats() {
-  // TODO: Make them fly.
-  group("b");
+  group("b", flags: "fly");
   breed("brown bat", 2, persimmon, 9, speed: 2, meander: 6)
       .attack("bite[s]", 4);
 
@@ -182,7 +181,7 @@ void bats() {
 }
 
 void birds() {
-  group("B");
+  group("B", flags: "fly");
   breed("crow", 4, steelGray, 9, speed: 2, meander: 4)
       .attack("bite[s]", 5)
       .drop(25, "Black Feather")
@@ -230,7 +229,7 @@ void dragons() {
 void greaterDragons() {}
 
 void eyes() {
-  group("e", flags: "immobile");
+  group("e", flags: "immobile fly");
   breed("lazy eye", 1, cornflower, 10)
       .attack("stare[s] at", 4)
       .sparkBolt(rate: 6, damage: 10, range: 6);
@@ -280,7 +279,7 @@ void faeFolk() {
   // Sprites, pixies, fairies, elves, etc.
 
   // TODO: Make them fly.
-  group("f", speed: 2, meander: 4, flags: "cowardly");
+  group("f", speed: 2, meander: 4, flags: "cowardly fly");
   breed("forest sprite", 1, mint, 8)
       .attack("scratch[es]", 3)
       .sparkBolt(rate: 7, damage: 4)

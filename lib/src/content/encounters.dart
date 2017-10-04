@@ -67,6 +67,7 @@ class Encounter {
     var encounterPos = _location(dungeon);
 
     var monsterCount = 0;
+    // TODO: Allow spawning flying monsters on flyable tiles.
     var flow = new Flow(dungeon.stage, encounterPos);
 
     for (var spawn in _spawns) {
@@ -144,7 +145,7 @@ Vec _avoidWalls(Dungeon dungeon, int tries) {
   for (var i = 0; i < tries; i++) {
     var pos = dungeon.stage.findOpenTile();
     var walls = Direction.all.where((dir) {
-      return !dungeon.getTileAt(pos + dir).isPassable;
+      return !dungeon.getTileAt(pos + dir).isWalkable;
     }).length;
 
     // Early out as soon as we find a good enough spot.

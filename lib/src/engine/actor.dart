@@ -96,6 +96,9 @@ abstract class Actor extends Thing {
 
   bool get canOpenDoors => true;
 
+  // TODO: Magical item to let the hero fly.
+  bool get canFly => false;
+
   /// Gets the actor's current speed, taking into any account any active
   /// [Condition]s.
   int get speed {
@@ -231,8 +234,10 @@ abstract class Actor extends Thing {
     if (pos.y < 0) return false;
     if (pos.y >= game.stage.height) return false;
 
-    if (game.stage[pos].isPassable) return true;
-    return game.stage[pos].isTraversable && canOpenDoors;
+    var tile = game.stage[pos];
+    if (tile.isWalkable) return true;
+    if (tile.isFlyable && canFly) return true;
+    return tile.isTraversable && canOpenDoors;
   }
 
   void finishTurn(Action action) {

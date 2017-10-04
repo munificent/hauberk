@@ -21,6 +21,7 @@ class Flow {
   final Vec _start;
   final int _maxDistance;
   final bool _canOpenDoors;
+  final bool _canFly;
   final bool _ignoreActors;
 
   Array2D<int> _distances;
@@ -44,9 +45,10 @@ class Flow {
   Vec get start => _start;
 
   Flow(this._stage, this._start, {int maxDistance, bool canOpenDoors,
-        bool ignoreActors})
+        bool canFly, bool ignoreActors})
       : _maxDistance = maxDistance,
         _canOpenDoors = canOpenDoors ?? false,
+        _canFly = canFly ?? false,
         _ignoreActors = ignoreActors ?? false {
     var width;
     var height;
@@ -227,8 +229,9 @@ class Flow {
 
       // Can't reach impassable tiles.
       var tile = _stage[here + _offset];
-      var canEnter = tile.isPassable ||
-                     (tile.isTraversable && _canOpenDoors);
+      var canEnter = tile.isWalkable ||
+                     tile.isFlyable && _canFly ||
+                     tile.isTraversable && _canOpenDoors;
 
       // Can't walk through other actors.
       if (!_ignoreActors &&

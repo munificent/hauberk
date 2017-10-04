@@ -72,7 +72,7 @@ class RayAction extends Action with DestroyItemMixin {
           _from.y + (math.cos(ray) * _radius).round());
 
       // Kill the ray if it's obstructed.
-      if (!game.stage[pos].isTransparent) return true;
+      if (!game.stage[pos].isFlyable) return true;
 
       // Don't hit the same tile twice.
       if (_hitTiles.contains(pos)) return false;

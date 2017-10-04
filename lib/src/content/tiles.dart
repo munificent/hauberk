@@ -87,23 +87,23 @@ List<Glyph> _makeGlyphs(Object char, Color fore, [Color back]) {
 /// Creates a passable, transparent tile.
 TileType _open(String name, Object char, Color fore, [Color back]) {
   return new TileType(name, _makeGlyphs(char, fore, back),
-      isPassable: true, isTransparent: true, isExit: false);
+      isWalkable: true, isFlyable: true, isExit: false);
 }
 
 /// Creates an impassable, opaque tile.
 TileType _solid(String name, Object char, Color fore, [Color back]) {
   return new TileType(name, _makeGlyphs(char, fore, back),
-      isPassable: false, isTransparent: false, isExit: false);
+      isWalkable: false, isFlyable: false, isExit: false);
 }
 
 /// Creates an impassable, transparent tile.
 TileType _obstacle(String name, Object char, Color fore, [Color back]) {
   return new TileType(name, _makeGlyphs(char, fore, back),
-      isPassable: false, isTransparent: true, isExit: false);
+      isWalkable: false, isFlyable: true, isExit: false);
 }
 
 /// Creates a passable, transparent exit tile.
 TileType _exit(String name, Object char, Color fore, [Color back]) {
   return new TileType(name, _makeGlyphs(char, fore, back),
-      isPassable: true, isTransparent: true, isExit: true);
+      isWalkable: true, isFlyable: true, isExit: true);
 }

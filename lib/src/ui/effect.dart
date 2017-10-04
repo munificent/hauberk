@@ -319,7 +319,7 @@ class ParticleEffect implements Effect {
 
     final pos = new Vec(x.toInt(), y.toInt());
     if (!game.stage.bounds.contains(pos)) return false;
-    if (!game.stage[pos].isPassable) return false;
+    if (!game.stage[pos].isWalkable) return false;
 
     return life-- > 0;
   }

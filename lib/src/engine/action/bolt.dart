@@ -30,7 +30,7 @@ abstract class LosAction extends Action {
     var pos = _los.current;
 
     // Stop if we hit a wall or went out of range.
-    if (!game.stage[pos].isTransparent || pos - actor.pos > range) {
+    if (!game.stage[pos].isFlyable || pos - actor.pos > range) {
       onEnd(_lastPos);
       return succeed();
     }

@@ -102,7 +102,8 @@ class Dungeon {
   int get height => stage.height;
 
   Dungeon(this.stage, this.depth)
-      : _info = new Array2D.generated(stage.width, stage.height, () => new TileInfo());
+      : _info = new Array2D.generated(
+            stage.width, stage.height, () => new TileInfo());
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
     debugJunctions = null;
@@ -123,6 +124,12 @@ class Dungeon {
     // If a biome didn't place the hero, do it now.
     if (_heroPos == null) _heroPos = stage.findOpenTile();
     placeHero(_heroPos);
+
+    // TODO: Placing the hero before placing decorations means the hero can end
+    // up on a decoration. That's bad. But we want to calculate the distance
+    // info before decorating... Maybe the info should be explicitly room-based
+    // instead of tile based and then just pick the hero's starting *room*
+    // first?
 
     yield "Populating dungeon";
     _calculateInfo();
@@ -346,7 +353,8 @@ class Dungeon {
   void _calculateInfo() {
     // Calculate how far every reachable tile is from the hero's starting point.
     debugInfo = _info;
-    var flow = new Flow(stage, _heroPos, canOpenDoors: true, ignoreActors: true);
+    var flow = new Flow(stage, _heroPos,
+        canOpenDoors: true, canFly: true, ignoreActors: true);
     for (var pos in safeBounds) {
       _info[pos].distance = flow.getDistance(pos);
     }
@@ -358,7 +366,7 @@ class Dungeon {
 
     // Find all corridor tiles.
     for (var pos in safeBounds) {
-      if (!getTileAt(pos).isPassable) continue;
+      if (!getTileAt(pos).isWalkable) continue;
 
       var walls = Direction.all.where((dir) {
         return !getTileAt(pos + dir).isTraversable;

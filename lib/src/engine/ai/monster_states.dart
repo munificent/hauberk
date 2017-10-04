@@ -368,7 +368,9 @@ class AwakeState extends MonsterState {
     }
 
     var flow = new Flow(game.stage, pos,
-        maxDistance: maxRange, canOpenDoors: canOpenDoors);
+        maxDistance: maxRange,
+        canOpenDoors: canOpenDoors,
+        canFly: monster.canFly);
 
     bool isValidRangedPosition(Vec pos) {
       // Ignore tiles that are out of range.
@@ -449,7 +451,7 @@ class AwakeState extends MonsterState {
   bool _hasLosFrom(Vec from) {
     for (var step in new Los(from, game.hero.pos)) {
       if (step == game.hero.pos) return true;
-      if (!game.stage[step].isTransparent) return false;
+      if (!game.stage[step].isFlyable) return false;
       var actor = game.stage.actorAt(step);
       if (actor != null && actor != this) return false;
     }
@@ -466,7 +468,9 @@ class AfraidState extends MonsterState {
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
     var flow = new Flow(game.stage, pos,
-        maxDistance: breed.tracking, canOpenDoors: monster.canOpenDoors);
+        maxDistance: breed.tracking,
+        canOpenDoors: monster.canOpenDoors,
+        canFly: monster.canFly);
     var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
 
     if (dir != Direction.none) {

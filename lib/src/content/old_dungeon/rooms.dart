@@ -106,7 +106,7 @@ abstract class RoomType {
       return false;
     }
 
-    dungeon.setTile(pos, Tiles.table);
+    dungeon.setTile(pos, Tiles.tableCenter);
     return true;
   }
 }

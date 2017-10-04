@@ -170,12 +170,13 @@ class Stage {
   }
 
   // TODO: This is hackish and may fail to terminate.
+  // TODO: Consider flyable tiles for flying monsters.
   /// Selects a random passable tile that does not have an [Actor] on it.
   Vec findOpenTile() {
     while (true) {
       var pos = rng.vecInRect(bounds);
 
-      if (!this[pos].isPassable) continue;
+      if (!this[pos].isWalkable) continue;
       if (actorAt(pos) != null) continue;
 
       return pos;
@@ -215,12 +216,12 @@ class Stage {
 
   // TODO: Remove this and use encounters instead.
   void spawnMonster(Breed breed, Vec pos) {
-    final monsters = <Actor>[];
+    var monsters = <Actor>[];
 
-    final count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 2);
+    var count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 2);
 
     addMonster(Vec pos) {
-      final monster = breed.spawn(game, pos);
+      var monster = breed.spawn(game, pos);
       addActor(monster);
       monsters.add(monster);
     }
@@ -231,11 +232,11 @@ class Stage {
     // If the monster appears in groups, place the rest of the groups.
     for (var i = 1; i < count; i++) {
       // Find every open tile that's neighboring a monster in the group.
-      final open = <Vec>[];
-      for (final monster in monsters) {
-        for (final dir in Direction.all) {
-          final neighbor = monster.pos + dir;
-          if (this[neighbor].isPassable && (actorAt(neighbor) == null)) {
+      var open = <Vec>[];
+      for (var monster in monsters) {
+        for (var dir in Direction.all) {
+          var neighbor = monster.pos + dir;
+          if (this[neighbor].isWalkable && (actorAt(neighbor) == null)) {
             open.add(neighbor);
           }
         }
@@ -258,23 +259,23 @@ class Stage {
     if (_heroPaths != null &&  game.hero.pos == _heroPaths.start) return;
 
     _heroPaths = new Flow(this, game.hero.pos,
-        canOpenDoors: true, ignoreActors: true);
+        canOpenDoors: true, canFly: true, ignoreActors: true);
   }
 }
 
 class TileType {
   final String name;
-  final bool isPassable;
-  final bool isTransparent;
+  final bool isWalkable;
+  final bool isFlyable;
   final bool isExit;
   final appearance;
   TileType opensTo;
   TileType closesTo;
 
-  bool get isTraversable => isPassable || (opensTo != null);
+  bool get isTraversable => isWalkable || (opensTo != null);
 
   TileType(this.name, this.appearance,
-      {this.isPassable, this.isTransparent, this.isExit});
+      {this.isWalkable, this.isFlyable, this.isExit});
 }
 
 class Tile {
@@ -304,8 +305,8 @@ class Tile {
   }
 
   bool isExplored = false;
-  bool get isPassable => type.isPassable;
+  bool get isWalkable => type.isWalkable;
   bool get isTraversable => type.isTraversable;
-  bool get isTransparent => type.isTransparent;
+  bool get isFlyable => type.isFlyable;
   bool get isExit => type.isExit;
 }

@@ -255,7 +255,7 @@ class GameScreen extends Screen<Input> {
         }
 
         // If we hit a wall, target the floor tile before it.
-        if (!game.stage[step].isTransparent) {
+        if (!game.stage[step].isFlyable) {
           targetFloor(previous);
           break;
         }
