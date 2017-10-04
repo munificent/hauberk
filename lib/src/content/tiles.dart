@@ -13,8 +13,6 @@ class Tiles {
   static TileType rock = _solid("rock", CharCode.darkShade, gunsmoke, slate);
   static TileType wall = _solid("wall", CharCode.mediumShade, gunsmoke, slate);
   static TileType lowWall = _obstacle("low wall", CharCode.percent, gunsmoke);
-  static TileType table =
-      _obstacle("table", CharCode.greekSmallLetterPi, persimmon);
   static TileType openDoor =
       _open("open door", CharCode.whiteCircle, persimmon, garnet);
   static TileType closedDoor =
@@ -39,6 +37,23 @@ class Tiles {
   static TileType treeAlt2 =
       _solid("tree", CharCode.blackClubSuit, peaGreen, sherwood);
 
+  static final TileType tableTopLeft = _obstacle("table", "┌", persimmon);
+  static final TileType tableTop = _obstacle("table", "─", persimmon);
+  static final TileType tableTopRight = _obstacle("table", "┐", persimmon);
+  static final TileType tableLeft = _obstacle("table", "│", persimmon);
+  static final TileType tableCenter = _obstacle("table", " ", persimmon);
+  static final TileType tableRight = _obstacle("table", "│", persimmon);
+  static final TileType tableBottomLeft = _obstacle("table", "╘", persimmon);
+  static final TileType tableBottom = _obstacle("table", "═", persimmon);
+  static final TileType tableBottomRight = _obstacle("table", "╛", persimmon);
+
+  static final TileType tableLegLeft = _obstacle("table", "╞", persimmon);
+  static final TileType tableLeg = _obstacle("table", "╤", persimmon);
+  static final TileType tableLegRight = _obstacle("table", "╡", persimmon);
+
+  // Make these "monsters" that can be pushed around.
+  static final TileType chair = _open("chair", "π", persimmon);
+
   static TileType greenJellyStain =
       _open("green jelly stain", CharCode.middleDot, lima);
   // TODO: Make this do stuff when walked through.
@@ -52,7 +67,8 @@ class Tiles {
   }
 }
 
-List<Glyph> _makeGlyphs(int charCode, Color fore, [Color back]) {
+List<Glyph> _makeGlyphs(Object char, Color fore, [Color back]) {
+  var charCode = char is int ? char : (char as String).codeUnitAt(0);
   Color unlitBack;
   if (back == null) {
     back = midnight;
@@ -69,25 +85,25 @@ List<Glyph> _makeGlyphs(int charCode, Color fore, [Color back]) {
 }
 
 /// Creates a passable, transparent tile.
-TileType _open(String name, int charCode, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(charCode, fore, back),
+TileType _open(String name, Object char, Color fore, [Color back]) {
+  return new TileType(name, _makeGlyphs(char, fore, back),
       isPassable: true, isTransparent: true, isExit: false);
 }
 
 /// Creates an impassable, opaque tile.
-TileType _solid(String name, int charCode, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(charCode, fore, back),
+TileType _solid(String name, Object char, Color fore, [Color back]) {
+  return new TileType(name, _makeGlyphs(char, fore, back),
       isPassable: false, isTransparent: false, isExit: false);
 }
 
 /// Creates an impassable, transparent tile.
-TileType _obstacle(String name, int charCode, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(charCode, fore, back),
+TileType _obstacle(String name, Object char, Color fore, [Color back]) {
+  return new TileType(name, _makeGlyphs(char, fore, back),
       isPassable: false, isTransparent: true, isExit: false);
 }
 
 /// Creates a passable, transparent exit tile.
-TileType _exit(String name, int charCode, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(charCode, fore, back),
+TileType _exit(String name, Object char, Color fore, [Color back]) {
+  return new TileType(name, _makeGlyphs(char, fore, back),
       isPassable: true, isTransparent: true, isExit: true);
 }

@@ -23,9 +23,17 @@ class Junction {
   Junction(this.direction, this.position);
 }
 
+class PlacedRoom {
+  final Vec pos;
+  final Room room;
+
+  PlacedRoom(this.pos, this.room);
+}
+
 class RoomBiome extends Biome {
   final Dungeon _dungeon;
   final List<Junction> _junctions = [];
+  final List<PlacedRoom> _rooms = [];
 
   RoomBiome(this._dungeon);
 
@@ -72,6 +80,72 @@ class RoomBiome extends Biome {
         }
       }
     }
+  }
+
+  Iterable<String> decorate(Dungeon dungeon) sync* {
+    for (var placed in _rooms) {
+      _tryPlaceTable(placed);
+    }
+
+    // TODO: "Zoo" monster pits with themed decorations and terrain to match
+    // (grass and trees for animal pits, etc.).
+  }
+
+  void _tryPlaceTable(PlacedRoom placed) {
+    if (placed.room.tiles.width < 8) return;
+    if (placed.room.tiles.height < 8) return;
+
+    for (var i = 0; i < 100; i++) {
+      var width = rng.inclusive(2, math.min(5, placed.room.tiles.width - 4));
+      var height = rng.inclusive(2, math.min(5, placed.room.tiles.height - 4));
+
+      var x = rng.range(2, placed.room.tiles.width - width - 1);
+      var y = rng.range(2, placed.room.tiles.height - height - 1);
+
+      if (_tryPlaceTableAt(placed, x, y, width, height)) break;
+    }
+  }
+
+  bool _tryPlaceTableAt(PlacedRoom placed, int x, int y, int width, int height) {
+    // Make sure the table isn't blocked.
+    for (var y1 = 0; y1 < height; y1++) {
+      for (var x1 = 0; x1 < width; x1++) {
+        var pos = placed.pos.offset(x + x1, y + y1);
+        if (_dungeon.getTileAt(pos) != Tiles.floor) return false;
+      }
+    }
+
+    for (var y1 = 0; y1 < height; y1++) {
+      for (var x1 = 0; x1 < width; x1++) {
+        var pos = placed.pos.offset(x + x1, y + y1);
+        _dungeon.setTileAt(pos, Tiles.tableCenter);
+      }
+    }
+
+    _dungeon.setTileAt(placed.pos.offset(x, y), Tiles.tableTopLeft);
+    _dungeon.setTileAt(placed.pos.offset(x + width - 1, y), Tiles.tableTopRight);
+    _dungeon.setTileAt(placed.pos.offset(x, y + height - 1), Tiles.tableBottomLeft);
+    _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + height - 1), Tiles.tableBottomRight);
+
+    for (var x1 = 1; x1 < width - 1; x1++) {
+      _dungeon.setTileAt(placed.pos.offset(x + x1, y), Tiles.tableTop);
+      _dungeon.setTileAt(placed.pos.offset(x + x1, y + height - 1), Tiles.tableBottom);
+    }
+
+    for (var y1 = 1; y1 < height - 1; y1++) {
+      _dungeon.setTileAt(placed.pos.offset(x, y + y1), Tiles.tableLeft);
+      _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + y1), Tiles.tableRight);
+    }
+
+    if (width <= 3 || rng.oneIn(2)) {
+      _dungeon.setTileAt(placed.pos.offset(x, y + height - 1), Tiles.tableLegLeft);
+      _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + height - 1), Tiles.tableLegRight);
+    } else {
+      _dungeon.setTileAt(placed.pos.offset(x + 1, y + height - 1), Tiles.tableLeg);
+      _dungeon.setTileAt(placed.pos.offset(x + width - 2, y + height - 1), Tiles.tableLeg);
+    }
+
+    return true;
   }
 
   void _createStartingRoom() {
@@ -246,6 +320,8 @@ class RoomBiome extends Biome {
     // If the room opens up into a natural feature, that feature is reachable
     // now.
     if (nature != null) _reachNature(nature);
+
+    _rooms.add(new PlacedRoom(new Vec(x, y), room));
   }
 
   void _placeDoor(Vec pos) {

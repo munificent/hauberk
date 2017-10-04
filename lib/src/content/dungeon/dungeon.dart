@@ -12,6 +12,7 @@ import 'room.dart';
 
 abstract class Biome {
   Iterable<String> generate(Dungeon dungeon);
+  Iterable<String> decorate(Dungeon dungeon) => const [];
 }
 
 // TODO: Figure out how we want to do the region stuff around water.
@@ -70,6 +71,10 @@ class TileInfo {
   /// to any tiles.
   int reachableTiles = 0;
 
+  /// If this tile is only reachable by going through a choke point junction,
+  /// this contains the position of the nearest choke point.
+  Vec chokePoint;
+
   // TODO: Temp. For visualization.
   int junctionId;
   int regionId;
@@ -121,6 +126,12 @@ class Dungeon {
 
     yield "Populating dungeon";
     _calculateInfo();
+
+    // Now that we know more global information, let the biomes use that to
+    // tweak themselves.
+    for (var biome in _biomes) {
+      yield* biome.decorate(this);
+    }
 
     // TODO: Should we do a sanity check for traversable tiles that ended up
     // unreachable?

@@ -141,6 +141,10 @@ class ChokePoints {
 
       allTiles += tiles;
       _dungeon.infoAt(junction.position).reachableTiles = tiles;
+
+      for (var tile in other.tiles) {
+        _dungeon.infoAt(tile).chokePoint = junction.position;
+      }
     }
 
     visited.removeLast();
