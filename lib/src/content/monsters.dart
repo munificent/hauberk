@@ -28,6 +28,8 @@ String _character;
 
 /// Static class containing all of the [Monster] [Breed]s.
 class Monsters {
+  // TODO: Now that monsters are spawned using encounters, they no longer need
+  // to have a level or be in a resource set.
   static final ResourceSet<Breed> breeds = new ResourceSet();
 
   static void initialize() {
@@ -395,7 +397,7 @@ void jellies() {
       .attack("crawl[s] on", 4)
       .spawn(rate: 4);
 
-  breed("frosty slime", 4, gunsmoke, 14)
+  breed("frosty slime", 4, ash, 14)
       .attack("crawl[s] on", 5, Element.cold)
       .spawn(rate: 4);
 
@@ -560,13 +562,7 @@ void people() {
 
 void giants() {}
 
-void quadrupeds() {
-  group("q");
-  breed("fox", 4, carrot, 20, meander: 1)
-      .attack("bite[s]", 5)
-      .attack("scratch[es]", 4)
-      .drop(80, "Fox Pelt");
-}
+void quadrupeds() {}
 
 void quest() {}
 

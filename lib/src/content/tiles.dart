@@ -54,8 +54,24 @@ class Tiles {
   // Make these "monsters" that can be pushed around.
   static final TileType chair = _open("chair", "π", persimmon);
 
+  static TileType brownJellyStain =
+      _open("brown jelly stain", CharCode.middleDot, persimmon);
+
+  static TileType grayJellyStain =
+      _open("gray jelly stain", CharCode.middleDot, steelGray);
+
   static TileType greenJellyStain =
       _open("green jelly stain", CharCode.middleDot, lima);
+
+  static TileType redJellyStain =
+      _open("red jelly stain", CharCode.middleDot, brickRed);
+
+  static TileType violetJellyStain =
+      _open("violet jelly stain", CharCode.middleDot, violet);
+
+  static TileType whiteJellyStain =
+      _open("white jelly stain", CharCode.middleDot, ash);
+
   // TODO: Make this do stuff when walked through.
   static TileType spiderweb =
       _open("spiderweb", CharCode.divisionSign, slate);

@@ -8,8 +8,6 @@ import 'tiles.dart';
 
 typedef Vec ChooseLocation(Dungeon dungeon);
 
-final _spawnPattern = new RegExp(r"(.*) (\d+)-(\d+)");
-
 final ResourceSet<Encounter> _encounters = new ResourceSet();
 
 int _depth = 1;
@@ -19,8 +17,10 @@ class Encounters {
   static void initialize() {
     _encounters.defineTags("encounter");
 
+    // TODO: Encounters with mixed monster types.
+
     setDepth(1);
-    monster("green jelly", 0, 5).hugWall().stain(Tiles.greenJellyStain, 5);
+    monster("green jelly", 0, 4).hugWall().stain(Tiles.greenJellyStain, 5);
     monster("brown spider", 0, 2).preferCorridor().stain(Tiles.spiderweb, 3);
     monster("forest sprite", 1, 2);
     monster("giant cockroach", 2, 5).hugCorner();
@@ -30,25 +30,237 @@ class Encounters {
     monster("mouse", 1, 3).hugWall();
     monster("frog").prefer(Tiles.grass);
     monster("garter snake").prefer(Tiles.grass);
-
-    // TODO: Tune this?
-    encounter()
-        .hugWall()
-        .drop(60, "Skull", 1)
-        .drop(30, "weapon", 1)
-        .drop(30, "armor", 1)
-        .drop(40, "magic", 1);
-
-    encounter().hugCorner().drop(100, "Rock");
-    encounter().prefer(Tiles.grass).drop(100, "Rock");
+    monster("stray cat");
 
     setDepth(2);
-    monster("stray cat");
+    monster("blood worm", 2, 4);
+    monster("brown bat", 1, 3).hugWall();
+    monster("giant earthworm").preferCorridor();
+    monster("gray spider").preferCorridor().stain(Tiles.spiderweb, 4);
+    // TODO: Too similar to green jelly.
+    monster("green slime", 0, 4).hugCorner().stain(Tiles.greenJellyStain, 5);
+    monster("mangy cur", 1, 3);
+    monster("sewer rat", 1, 5).hugWall();
+    monster("simpering knave");
 
     setDepth(3);
     monster("gray spider", 0, 1).preferCorridor().stain(Tiles.spiderweb, 4);
+    monster("brown snake").prefer(Tiles.grass);
+    monster("decrepit mage");
+    monster("giant centipede").preferCorridor();
+    monster("house sprite", 1, 2).avoidWall();
+    monster("sickly rat", 2, 5).hugWall();
+    monster("crow", 3, 7);
+
+    setDepth(4);
+    monster("frosty slime", 0, 4).hugCorner().stain(Tiles.whiteJellyStain, 5);
+    monster("giant bat").hugWall();
+    monster("goblin peon", 2, 4).avoidWall();
+    monster("drunken priest");
+
+    encounter().monster("kobold", 0, 2).monster("wild dog", 0, 3);
+    encounter().monster("scurrilous imp", 1, 2).monster("vexing imp", 1, 2);
+
+    setDepth(5);
+    monster("unlucky ranger");
+    monster("mad eye").avoidWall();
+    monster("cave bat", 2, 6).hugWall();
+
+    setDepth(6);
+    monster("mud slime", 0, 4).hugCorner().stain(Tiles.brownJellyStain, 5);
+    monster("giant spider", 0, 1).preferCorridor().stain(Tiles.spiderweb, 5);
+    monster("plague rat", 3, 6).hugWall();
+    monster("raven", 3, 6);
+    monster("suppurating slug");
+
+    encounter()
+        .monster("goblin fighter", 0, 2)
+        .monster("goblin archer", 0, 2)
+        .monster("goblin peon", 0, 2);
+
+    setDepth(7);
+    monster("cave snake").preferCorridor();
+    monster("giant cave worm").preferCorridor();
+    monster("juvenile salamander").avoidWall();
+    monster("mongrel", 2, 5);
+
+    encounter()
+        .monster("mischievous sprite", 1, 2)
+        .monster("house sprite", 1, 2);
+
+    setDepth(8);
+    encounter()
+        .monster("goblin warrior", 1, 3)
+        .monster("goblin fighter", 0, 1)
+        .monster("goblin archer", 0, 1)
+        .monster("goblin peon", 0, 1);
+
+    setDepth(9);
+    monster("floating eye").avoidWall();
+
+    encounter()
+        .monster("goblin mage")
+        .monster("goblin fighter", 0, 1)
+        .monster("goblin archer", 0, 1)
+        .monster("goblin peon", 2, 3);
+
+    setDepth(10);
+    monster("fire worm", 3, 7).hugWall();
+
+    encounter()
+        .monster("kobold shaman")
+        .monster("kobold", 1, 2)
+        .monster("wild dog", 0, 2);
+
+    setDepth(11);
+    monster("lizard guard", 1, 3);
+
+    encounter()
+        .monster("imp incanter")
+        .monster("scurrilous imp", 0, 2)
+        .monster("vexing imp", 0, 2);
+
+    setDepth(12);
+
+    encounter()
+        .monster("goblin ranger", 0, 2)
+        .monster("goblin mage", 0, 1)
+        .monster("goblin fighter", 0, 2)
+        .monster("goblin archer", 0, 1);
+
+    setDepth(13);
+    monster("salamander");
+
+    encounter()
+        .monster("kobold trickster")
+        .monster("kobold shaman", 0, 1)
+        .monster("kobold", 1, 2)
+        .monster("wild dog", 0, 1);
+
+    setDepth(14);
+    // TODO: Figure out how to handle uniques.
+    monster("Erlkonig, the Goblin Prince");
+
+    encounter()
+        .monster("imp warlock")
+        .monster("imp incanter", 1, 2)
+        .monster("scurrilous imp", 0, 2)
+        .monster("vexing imp", 0, 1);
+
+    setDepth(15);
+    monster("smoking slime", 0, 4).hugCorner().stain(Tiles.redJellyStain, 5);
+
+    encounter()
+        .monster("kobold priest")
+        .monster("kobold shaman", 0, 1)
+        .monster("kobold", 1, 2)
+        .monster("wild dog", 0, 1);
+
+    encounter()
+        .monster("lizard protector", 2, 3)
+        .monster("salamander", 1, 2);
+
+    setDepth(17);
+    encounter()
+        .monster("armored lizard", 2, 3)
+        .monster("lizard protector", 0, 2)
+        .monster("salamander", 0, 2);
+
+    setDepth(19);
+    encounter()
+        .monster("scaled guardian", 2, 3)
+        .monster("armored lizard", 0, 2)
+        .monster("lizard protector", 0, 2)
+        .monster("salamander", 0, 2);
+
+    setDepth(20);
+    monster("sparkling slime", 0, 4).hugCorner().stain(Tiles.violetJellyStain, 5);
+    monster("baleful eye").avoidWall();
+    // TODO: Figure out how to handle uniques.
+    monster("Feng");
+
+    setDepth(21);
+    encounter()
+        .monster("saurian", 2, 3)
+        .monster("scaled guardian", 1, 2)
+        .monster("armored lizard", 0, 2)
+        .monster("salamander", 0, 2);
+
+    setDepth(22);
+    setDepth(23);
+    setDepth(24);
+
+    setDepth(25);
+    monster("caustic slime", 0, 4).hugCorner().stain(Tiles.greenJellyStain, 5);
+
+    setDepth(26);
+    setDepth(27);
+    setDepth(28);
+    setDepth(29);
+
+    setDepth(30);
+    monster("malevolent eye").avoidWall();
+
+    setDepth(35);
+    monster("virulent slime", 0, 4).hugCorner().stain(Tiles.greenJellyStain, 5);
+
+    setDepth(36);
+    setDepth(37);
+    setDepth(38);
+    setDepth(39);
+
+    setDepth(40);
+    monster("murderous eye").avoidWall();
+
+    setDepth(41);
+    setDepth(42);
+    setDepth(43);
+    setDepth(44);
+
+    setDepth(45);
+    monster("ectoplasm", 0, 4).hugCorner().stain(Tiles.grayJellyStain, 5);
+
+    setDepth(46);
+    setDepth(47);
+    setDepth(48);
+    setDepth(49);
+
+    setDepth(50);
+    // TODO: Should have hoard of treasure around it.
+    monster("red dragon").avoidWall();
+
+    setDepth(51);
+    setDepth(52);
+    setDepth(53);
+    setDepth(54);
+    setDepth(55);
+    setDepth(56);
+    setDepth(57);
+    setDepth(58);
+    setDepth(59);
+
+    setDepth(60);
+    monster("watcher").avoidWall();
 
     _finishBuilder();
+
+    // Add generic stuff at every depth.
+    for (var i = 1; i <= 100; i++) {
+      setDepth(i);
+
+      // TODO: Tune this.
+      encounter()
+          .hugWall()
+          .drop(60, "Skull")
+          .drop(30, "weapon")
+          .drop(30, "armor")
+          .drop(30, "magic")
+          .drop(30, "magic");
+
+      // TODO: Rarer at greater depths?
+      encounter().hugCorner().drop(100, "Rock");
+      encounter().prefer(Tiles.grass).drop(100, "Rock");
+    }
   }
 
   static Encounter choose(int depth) =>
