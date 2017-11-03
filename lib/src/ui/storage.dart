@@ -87,18 +87,18 @@ class Storage {
 
       var maxDepth = hero['maxDepth'] ?? 0;
 
-      HeroClass heroClass;
-      switch (hero['class']['name']) {
-        case 'warrior':
-          heroClass = _loadWarrior(hero['class']);
-          break;
-        default:
-          throw 'Unknown hero class "${hero['class']['name']}".';
-      }
+      // TODO: Remove.
+//      HeroClass heroClass;
+//      switch (hero['class']['name']) {
+//        case 'warrior':
+//          heroClass = _loadWarrior(hero['class']);
+//          break;
+//        default:
+//          throw 'Unknown hero class "${hero['class']['name']}".';
+//      }
 
       var heroSave = new HeroSave.load(
           name,
-          heroClass,
           inventory,
           equipment,
           home,
@@ -148,13 +148,13 @@ class Storage {
     return new Item(type, count, prefix, suffix);
   }
 
-  HeroClass _loadWarrior(Map data) {
-    return new Warrior.load(
-        fighting: data['fighting'],
-        combat: data['combat'],
-        toughness: data['toughness'],
-        masteries: data['masteries'] as Map<String, int>);
-  }
+//  HeroClass _loadWarrior(Map data) {
+//    return new Warrior.load(
+//        fighting: data['fighting'],
+//        combat: data['combat'],
+//        toughness: data['toughness'],
+//        masteries: data['masteries'] as Map<String, int>);
+//  }
 
   void save() {
     var heroData = [];
@@ -179,11 +179,12 @@ class Storage {
         crucible.add(_saveItem(item));
       }
 
-      var heroClass = {};
-      if (hero.heroClass is Warrior) {
-        heroClass['name'] = 'warrior';
-        _saveWarrior(hero.heroClass, heroClass);
-      }
+      // TODO: Remove.
+//      var heroClass = {};
+//      if (hero.heroClass is Warrior) {
+//        heroClass['name'] = 'warrior';
+//        _saveWarrior(hero.heroClass, heroClass);
+//      }
 
       var attributes = {};
       for (var attribute in Attribute.all) {
@@ -192,7 +193,7 @@ class Storage {
 
       heroData.add({
         'name': hero.name,
-        'class': heroClass,
+//        'class': heroClass,
         'inventory': inventory,
         'equipment': equipment,
         'home': home,
@@ -229,16 +230,16 @@ class Storage {
     return itemData;
   }
 
-  void _saveWarrior(Warrior warrior, Map data) {
-    data['fighting'] = warrior.fighting.count;
-    data['combat'] = warrior.combat.count;
-    data['toughness'] = warrior.toughness.count;
-
-    var masteries = {};
-    warrior.masteries.forEach((name, stat) {
-      masteries[name] = stat.count;
-    });
-
-    data['masteries'] = masteries;
-  }
+//  void _saveWarrior(Warrior warrior, Map data) {
+//    data['fighting'] = warrior.fighting.count;
+//    data['combat'] = warrior.combat.count;
+//    data['toughness'] = warrior.toughness.count;
+//
+//    var masteries = {};
+//    warrior.masteries.forEach((name, stat) {
+//      masteries[name] = stat.count;
+//    });
+//
+//    data['masteries'] = masteries;
+//  }
 }

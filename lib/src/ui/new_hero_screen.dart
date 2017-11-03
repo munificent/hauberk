@@ -37,10 +37,7 @@ class NewHeroScreen extends Screen<Input> {
 
     switch (keyCode) {
       case KeyCode.enter:
-        // TODO: Other classes.
-        var heroClass = new Warrior();
-        var hero = content.createHero(name.isEmpty ? defaultName : name,
-            heroClass);
+        var hero = content.createHero(name.isEmpty ? defaultName : name);
         storage.heroes.add(hero);
         storage.save();
         ui.goTo(new SelectDepthScreen(content, hero, storage));

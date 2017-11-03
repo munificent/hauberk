@@ -159,10 +159,10 @@ void arachnids() {
   breed("brown spider", 1, persimmon, 3, meander: 8)
       .attack("bite[s]", 5);
 
-  breed("gray spider", 2, slate, 4, meander: 6)
+  breed("gray spider", 2, slate, 6, meander: 6)
       .attack("bite[s]", 5, Element.poison);
 
-  breed("giant spider", 6, ultramarine, 20, meander: 5)
+  breed("giant spider", 6, ultramarine, 40, meander: 5)
       .attack("bite[s]", 5, Element.poison)
       .drop(10, "Stinger");
 }
@@ -174,10 +174,10 @@ void bats() {
   breed("brown bat", 2, persimmon, 9, speed: 2, meander: 6)
       .attack("bite[s]", 4);
 
-  breed("giant bat", 4, garnet, 16, speed: 2, meander: 4)
+  breed("giant bat", 4, garnet, 24, speed: 2, meander: 4)
       .attack("bite[s]", 6);
 
-  breed("cave bat", 6, gunsmoke, 10, speed: 3, meander: 3)
+  breed("cave bat", 6, gunsmoke, 40, speed: 3, meander: 3)
       .attack("bite[s]", 6)
       .flags("group");
 }
@@ -189,7 +189,7 @@ void birds() {
       .drop(25, "Black Feather")
       .flags("group");
 
-  breed("raven", 6, slate, 12, meander: 1)
+  breed("raven", 6, slate, 22, meander: 1)
       .attack("bite[s]", 5)
       .attack("claw[s]", 4)
       .drop(20, "Black Feather")
@@ -198,17 +198,17 @@ void birds() {
 
 void canines() {
   group("c", tracking: 20, meander: 3, flags: "few");
-  breed("mangy cur", 2, buttermilk, 8)
+  breed("mangy cur", 2, buttermilk, 11)
       .attack("bite[s]", 4)
       .howl(range: 6)
       .drop(20, "Fur Pelt");
 
-  breed("wild dog", 4, gunsmoke, 14)
+  breed("wild dog", 4, gunsmoke, 20)
       .attack("bite[s]", 6)
       .howl(range: 8)
       .drop(20, "Fur Pelt");
 
-  breed("mongrel", 7, carrot, 20)
+  breed("mongrel", 7, carrot, 28)
       .attack("bite[s]", 8)
       .howl(range: 10)
       .drop(20, "Fur Pelt");
@@ -236,36 +236,36 @@ void eyes() {
       .attack("stare[s] at", 4)
       .sparkBolt(rate: 6, damage: 10, range: 6);
 
-  breed("mad eye", 5, salmon, 20)
+  breed("mad eye", 5, salmon, 40)
       .attack("stare[s] at", 6)
       .windBolt(rate: 6, damage: 20);
 
-  breed("floating eye", 9, buttermilk, 30)
+  breed("floating eye", 9, buttermilk, 60)
       .attack("stare[s] at", 8)
       .sparkBolt(rate: 5, damage: 16)
       .teleport(rate: 8, range: 7);
 
-  breed("baleful eye", 20, carrot, 50)
+  breed("baleful eye", 20, carrot, 80)
       .attack("gaze[s] into", 12)
       .fireBolt(rate: 4, damage: 20)
       .waterBolt(rate: 4, damage: 20)
       .teleport(rate: 8, range: 9);
 
-  breed("malevolent eye", 30, brickRed, 70)
+  breed("malevolent eye", 30, brickRed, 120)
       .attack("gaze[s] into", 20)
       .lightBolt(rate: 4, damage: 20)
       .darkBolt(rate: 4, damage: 20)
       .fireCone(rate: 7, damage: 30)
       .teleport(rate: 8, range: 9);
 
-  breed("murderous eye", 40, maroon, 90)
+  breed("murderous eye", 40, maroon, 180)
       .attack("gaze[s] into", 30)
       .acidBolt(rate: 7, damage: 50)
       .stoneBolt(rate: 7, damage: 50)
       .iceCone(rate: 7, damage: 40)
       .teleport(rate: 8, range: 9);
 
-  breed("watcher", 60, gunsmoke, 140)
+  breed("watcher", 60, gunsmoke, 300)
       .attack("see[s]", 50)
       .lightBolt(rate: 7, damage: 40)
       .lightCone(rate: 7, damage: 60)
@@ -282,7 +282,7 @@ void faeFolk() {
 
   // TODO: Make them fly.
   group("f", speed: 2, meander: 4, flags: "cowardly fly");
-  breed("forest sprite", 1, mint, 8)
+  breed("forest sprite", 1, mint, 6)
       .attack("scratch[es]", 3)
       .sparkBolt(rate: 7, damage: 4)
       .teleport(rate: 7, range: 5)

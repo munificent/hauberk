@@ -162,10 +162,10 @@ void potions() {
   // Healing.
   tagged("magic/potion/healing");
   tossable(damage: 1, range: 8, breakage: 100);
-  healing("Soothing Balm",     2, 1,   10, salmon,       24);
-  healing("Mending Salve",     7, 1,   40, brickRed,     48);
-  healing("Healing Poultice", 12, 1,   80, maroon,       64, curePoison: true);
-  healing("of Amelioration",  24, 1,  200, indigo,      120, curePoison: true);
+  healing("Soothing Balm",     2, 1,   10, salmon,       48);
+  healing("Mending Salve",     7, 1,   40, brickRed,    100);
+  healing("Healing Poultice", 12, 1,   80, maroon,      200, curePoison: true);
+  healing("of Amelioration",  24, 1,  200, indigo,      400, curePoison: true);
   healing("of Rejuvenation",  65, 2,  500, violet,     1000, curePoison: true);
 
   healing("Antidote",          4, 2,   40, peaGreen,      0, curePoison: true);
@@ -204,19 +204,18 @@ void potions() {
   // TODO: These should do their ball attack when thrown too.
   tagged("magic/potion/bottled");
   tossable(damage: 1, range: 12, breakage: 100);
-  bottled("Wind",         4,   30, cornflower,  Element.air,         8, "blasts");
-  bottled("Ice",          7,   55, cerulean,    Element.cold,       15, "freezes", flags: "-freezable");
-  bottled("Fire",        11,   70, brickRed,    Element.fire,       22, "burns");
-  bottled("Ocean",       12,  110, ultramarine, Element.water,      26, "drowns");
-  bottled("Earth",       13,  150, persimmon,   Element.earth,      28, "crushes");
-  bottled("Lightning",   16,  200, lilac,       Element.lightning,  34, "shocks");
-  bottled("Acid",        18,  250, lima,        Element.acid,       38, "corrodes");
-  bottled("Poison",      22,  330, sherwood,    Element.poison,     42, "infects");
-  bottled("Shadow",      28,  440, steelGray,   Element.dark,       48, "torments",
+  bottled("Wind",         4,   30, cornflower,  Element.air,        20, "blasts");
+  bottled("Ice",          7,   55, cerulean,    Element.cold,       30, "freezes", flags: "-freezable");
+  bottled("Fire",        11,   70, brickRed,    Element.fire,       44, "burns");
+  bottled("Ocean",       12,  110, ultramarine, Element.water,      52, "drowns");
+  bottled("Earth",       13,  150, persimmon,   Element.earth,      58, "crushes");
+  bottled("Lightning",   16,  200, lilac,       Element.lightning,  68, "shocks");
+  bottled("Acid",        18,  250, lima,        Element.acid,       72, "corrodes");
+  bottled("Poison",      22,  330, sherwood,    Element.poison,     90, "infects");
+  bottled("Shadow",      28,  440, steelGray,   Element.dark,      120, "torments",
       noun: "the darkness");
-  bottled("Radiance",    34,  600, buttermilk,  Element.light,      52, "sears");
-  bottled("Spirit",      40, 1000, slate,       Element.spirit,     58, "haunts");
-  // TODO: Potions that raise fury, sustain it, and that trade health for it.
+  bottled("Radiance",    34,  600, buttermilk,  Element.light,     140, "sears");
+  bottled("Spirit",      40, 1000, slate,       Element.spirit,    160, "haunts");
 }
 
 void scrolls() {
@@ -249,56 +248,56 @@ void weapons() {
   // Bludgeons.
   category(CharCode.latinSmallLetterAWithAcute, tag: "equipment/weapon/club", verb: "hit[s]");
   tossable(breakage: 25, range: 7);
-  weapon("Stick",          1,    0, persimmon,   4,   3);
-  weapon("Cudgel",         3,    9, gunsmoke,    5,   4);
-  weapon("Club",           6,   21, garnet,      6,   5);
+  weapon("Stick",          1,    0, persimmon,   8,   3);
+  weapon("Cudgel",         3,    9, gunsmoke,   10,   4);
+  weapon("Club",           6,   21, garnet,     12,   5);
 
   // Staves.
   category(CharCode.latinSmallLetterIWithAcute, tag: "equipment/weapon/staff", verb: "hit[s]");
   tossable(breakage: 35, range: 6);
-  weapon("Walking Stick",        2,    9, persimmon,  5,   3);
-  weapon("Sta[ff|aves]",         5,   38, garnet,     7,   5);
-  weapon("Quartersta[ff|aves]", 11,  250, gunsmoke,  12,   8);
+  weapon("Walking Stick",        2,    9, persimmon,  10,   3);
+  weapon("Sta[ff|aves]",         5,   38, garnet,     14,   5);
+  weapon("Quartersta[ff|aves]", 11,  250, gunsmoke,   24,   8);
 
   // Hammers.
   category(CharCode.latinSmallLetterOWithAcute, tag: "equipment/weapon/hammer", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
-  weapon("Hammer",        27,  621, persimmon,  16, 12);
-  weapon("Mattock",       39, 1225, garnet,     20, 16);
-  weapon("War Hammer",    45, 2106, gunsmoke,   24, 20);
+  weapon("Hammer",        27,  621, persimmon,  32, 12);
+  weapon("Mattock",       39, 1225, garnet,     40, 16);
+  weapon("War Hammer",    45, 2106, gunsmoke,   48, 20);
 
   // Maces.
   category(CharCode.latinSmallLetterUWithAcute, tag: "equipment/weapon/mace", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
-  weapon("Morningstar",   24,  324, gunsmoke,   13, 11);
-  weapon("Mace",          33,  891, slate,      18, 16);
+  weapon("Morningstar",   24,  324, gunsmoke,   26, 11);
+  weapon("Mace",          33,  891, slate,      36, 16);
 
   // Whips.
   category(CharCode.latinSmallLetterNWithTilde, tag: "equipment/weapon/whip", verb: "whip[s]");
   tossable(breakage: 25, range: 5);
-  weapon("Whip",           4,    9, persimmon,   5,  1);
-  weapon("Chain Whip",    15,   95, gunsmoke,    9,  2);
-  weapon("Flail",         27,  409, slate,      14,  4);
+  weapon("Whip",           4,    9, persimmon,  10,  1);
+  weapon("Chain Whip",    15,   95, gunsmoke,   18,  2);
+  weapon("Flail",         27,  409, slate,      28,  4);
 
   // Knives.
   category(CharCode.latinCapitalLetterNWithTilde, tag: "equipment/weapon/dagger", verb: "stab[s]");
   tossable(breakage: 2, range: 10);
-  weapon("Kni[fe|ves]",    3,    9, steelGray,   5,  5);
-  weapon("Dirk",           4,   21, gunsmoke,    6,  6);
-  weapon("Dagger",         6,   63, cornflower,  8,  8);
-  weapon("Stiletto[es]",  10,  188, slate,      11, 11);
-  weapon("Rondel",        20,  409, turquoise,  14, 14);
-  weapon("Baselard",      30,  621, gold,       16, 16);
+  weapon("Kni[fe|ves]",    3,    9, steelGray,  10, 10);
+  weapon("Dirk",           4,   21, gunsmoke,   12, 12);
+  weapon("Dagger",         6,   63, cornflower, 16, 16);
+  weapon("Stiletto[es]",  10,  188, slate,      22, 22);
+  weapon("Rondel",        20,  409, turquoise,  28, 28);
+  weapon("Baselard",      30,  621, gold,       32, 32);
   // Main-guache
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
   category(CharCode.feminineOrdinalIndicator, tag: "equipment/weapon/sword", verb: "slash[es]");
   tossable(breakage: 20, range: 6);
-  weapon("Rapier",         7,  188, steelGray,  11,  4);
-  weapon("Shortsword",    11,  324, slate,      13,  6);
-  weapon("Scimitar",      18,  748, gunsmoke,   17,  9);
-  weapon("Cutlass[es]",   24, 1417, buttermilk, 21, 11);
-  weapon("Falchion",      38, 2374, turquoise,  25, 15);
+  weapon("Rapier",         7,  188, steelGray,  22,  4);
+  weapon("Shortsword",    11,  324, slate,      26,  6);
+  weapon("Scimitar",      18,  748, gunsmoke,   34,  9);
+  weapon("Cutlass[es]",   24, 1417, buttermilk, 42, 11);
+  weapon("Falchion",      38, 2374, turquoise,  50, 15);
 
   /*
 
@@ -314,32 +313,32 @@ void weapons() {
   // Spears.
   category(CharCode.masculineOrdinalIndicator, tag: "equipment/weapon/spear", verb: "stab[s]");
   tossable(breakage: 3, range: 11);
-  weapon("Pointed Stick",  2,    0, garnet,      5,  9);
-  weapon("Spear",          7,  137, persimmon,  10, 15);
-  weapon("Angon",         14,  621, gunsmoke,   16, 20);
-  weapon("Lance",         28, 2106, cornflower, 24, 28);
-  weapon("Partisan",      35, 6833, slate,      36, 40);
+  weapon("Pointed Stick",  2,    0, garnet,     10,  9);
+  weapon("Spear",          7,  137, persimmon,  20, 15);
+  weapon("Angon",         14,  621, gunsmoke,   32, 20);
+  weapon("Lance",         28, 2106, cornflower, 48, 28);
+  weapon("Partisan",      35, 6833, slate,      72, 40);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
   category(CharCode.invertedQuestionMark, tag: "equipment/weapon/axe", verb: "chop[s]");
   tossable(breakage: 4);
-  weapon("Hatchet",    6,  137, slate,      10, 12, 10);
-  weapon("Axe",       12,  621, persimmon,  16, 18, 9);
-  weapon("Valaska",   24, 2664, gunsmoke,   26, 26, 8);
-  weapon("Battleaxe", 40, 4866, steelGray,  32, 32, 7);
+  weapon("Hatchet",    6,  137, slate,      20, 20, 10);
+  weapon("Axe",       12,  621, persimmon,  32, 24, 9);
+  weapon("Valaska",   24, 2664, gunsmoke,   52, 26, 8);
+  weapon("Battleaxe", 40, 4866, steelGray,  64, 28, 7);
 
   // Sling. In a category itself because many bow affixes don't apply to it.
   category(CharCode.reversedNotSign, tag: "equipment/weapon/sling", verb: "hit[s]");
   tossable(breakage: 15, range: 5);
-  ranged("Sling",          3,   20, persimmon,  "the stone",  2, 10, 1);
+  ranged("Sling",          3,   20, persimmon,  "the stone",  4, 10, 1);
 
   // Bows.
   category(CharCode.notSign, tag: "equipment/weapon/bow", verb: "hit[s]");
   tossable(breakage: 50, range: 5);
-  ranged("Short Bow",      5,  180, persimmon,  "the arrow",  4, 12, 2);
-  ranged("Longbow",       13,  600, garnet,     "the arrow",  8, 14, 3);
-  ranged("Crossbow",      28, 2000, gunsmoke,   "the bolt",  12, 16, 4);
+  ranged("Short Bow",      5,  180, persimmon,  "the arrow",  8, 12, 2);
+  ranged("Longbow",       13,  600, garnet,     "the arrow", 16, 14, 3);
+  ranged("Crossbow",      28, 2000, gunsmoke,   "the bolt",  24, 16, 4);
 }
 
 void bodyArmor() {

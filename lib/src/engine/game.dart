@@ -6,7 +6,6 @@ import 'action/action.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'hero/hero.dart';
-import 'hero/hero_class.dart';
 import 'items/item.dart';
 import 'items/recipe.dart';
 import 'items/shop.dart';
@@ -155,7 +154,7 @@ abstract class Content {
   List<Recipe> get recipes;
   List<Shop> get shops;
 
-  HeroSave createHero(String name, HeroClass heroClass);
+  HeroSave createHero(String name);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

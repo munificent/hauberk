@@ -145,7 +145,7 @@ class MainMenuScreen extends Screen<Input> {
 
       terminal.writeAt(25, 20 + i, hero.name, primary);
       terminal.writeAt(45, 20 + i, "Level ${hero.level}", secondary);
-      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondary);
+//      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondary);
     }
   }
 

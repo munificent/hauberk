@@ -36,8 +36,8 @@ class GameContent implements Content {
   List<Recipe> get recipes => Recipes.all;
   List<Shop> get shops => Shops.all;
 
-  HeroSave createHero(String name, HeroClass heroClass) {
-    var hero = new HeroSave(name, heroClass);
+  HeroSave createHero(String name) {
+    var hero = new HeroSave(name);
     for (var itemType in [
       Items.types.find("Mending Salve"),
       Items.types.find("Scroll of Sidestepping")

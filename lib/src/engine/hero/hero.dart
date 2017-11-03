@@ -13,7 +13,6 @@ import '../log.dart';
 import '../monster.dart';
 import '../option.dart';
 import 'attribute.dart';
-import 'hero_class.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -24,7 +23,7 @@ class HeroSave {
 
   int get level => calculateLevel(experienceCents);
 
-  HeroClass heroClass;
+//  HeroClass heroClass;
 
   Inventory inventory = new Inventory(Option.inventoryCapacity);
   Equipment equipment = new Equipment();
@@ -49,14 +48,14 @@ class HeroSave {
   /// The lowest depth that the hero has successfully explored and exited.
   int maxDepth = 0;
 
-  HeroSave(this.name, this.heroClass)
+  HeroSave(this.name)
       : attributes = {} {
     for (var attribute in Attribute.all) {
       attributes[attribute] = Attribute.initialValue;
     }
   }
 
-  HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
+  HeroSave.load(this.name, this.inventory, this.equipment,
       this.home, this.crucible, this.experienceCents, this.attributes,
       this.attributePoints,
       this.gold, this.maxDepth);
@@ -65,7 +64,6 @@ class HeroSave {
   /// [Hero] has successfully completed a [Stage] and his changes need to be
   /// "saved".
   void copyFrom(Hero hero) {
-    heroClass = hero.heroClass;
     inventory = hero.inventory;
     equipment = hero.equipment;
     experienceCents = hero._experienceCents;
@@ -86,8 +84,6 @@ class HeroSave {
 class Hero extends Actor {
   String get nounText => 'you';
   final Pronoun pronoun = Pronoun.you;
-
-  final HeroClass heroClass;
 
   final Inventory inventory;
   final Equipment equipment;
@@ -132,8 +128,7 @@ class Hero extends Actor {
   int _lastNoise = 0;
 
   Hero(Game game, Vec pos, HeroSave save)
-      : heroClass = save.heroClass.clone(),
-        inventory = save.inventory.clone(),
+      : inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
         attributes = new Map.from(save.attributes),
@@ -147,8 +142,6 @@ class Hero extends Actor {
     health.current = health.max;
 
     _refreshLevel(gain: false);
-
-    heroClass.bind(this);
 
     // Give the hero energy so we can act before all of the monsters.
     energy.energy = Energy.actionCost;
@@ -179,7 +172,8 @@ class Hero extends Actor {
       total += item.armor;
     }
 
-    total += heroClass.armor;
+    // TODO: Apply skills.
+//    total += heroClass.armor;
 
     return total;
   }
@@ -269,8 +263,9 @@ class Hero extends Actor {
       item.modifyHit(hit);
     }
 
+    // TODO: Apply skills.
     // Let the class modify it.
-    heroClass.modifyHit(hit);
+//    heroClass.modifyHit(hit);
   }
 
   void defend() {
@@ -281,14 +276,14 @@ class Hero extends Actor {
   int onGetResistance(Element element) => equipmentResistance(element);
 
   void onDamaged(Action action, Actor attacker, int damage) {
-    heroClass.tookDamage(action, attacker, damage);
+//    heroClass.tookDamage(action, attacker, damage);
   }
 
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
     _experienceCents += monster.experienceCents;
     _refreshLevel(gain: true);
-    heroClass.killedMonster(action, monster);
+//    heroClass.killedMonster(action, monster);
   }
 
   void onDied(Noun attackNoun) {
@@ -299,7 +294,8 @@ class Hero extends Actor {
     // Make some noise.
     _lastNoise = action.noise;
 
-    heroClass.finishedTurn(action);
+    // TODO: Passive skills?
+//    heroClass.finishedTurn(action);
   }
 
   void changePosition(Vec from, Vec to) {

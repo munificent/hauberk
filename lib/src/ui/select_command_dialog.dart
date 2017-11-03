@@ -13,7 +13,8 @@ class SelectCommandDialog extends Screen<Input> {
 
   SelectCommandDialog(Game game)
       : _game = game,
-        _commands = game.hero.heroClass.commands;
+  // TODO: Get working with skills.
+        _commands = const []; //game.hero.heroClass.commands;
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {

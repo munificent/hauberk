@@ -152,23 +152,24 @@ class GameScreen extends Screen<Input> {
       case Input.fire:
         // TODO: When there is more than one usable command, bring up the
         // SelectCommandDialog. Until then, just pick the first valid one.
-        var command = game.hero.heroClass.commands
-            .firstWhere((command) => command.canUse(game), orElse: () => null);
-        if (command is TargetCommand) {
-          // If we still have a visible target, use it.
-          if (currentTarget != null) {
-            _fireAtTarget();
-          } else {
-            // No current target, so ask for one.
-            ui.push(new TargetDialog(this, command.getRange(game),
-                (_) => _fireAtTarget()));
-          }
-        } else if (command is DirectionCommand) {
-          ui.push(new DirectionDialog(this, game));
-        } else {
-          game.log.error("You don't have any commands you can perform.");
-          dirty();
-        }
+        // TODO: Use skills here.
+//        var command = game.hero.heroClass.commands
+//            .firstWhere((command) => command.canUse(game), orElse: () => null);
+//        if (command is TargetCommand) {
+//          // If we still have a visible target, use it.
+//          if (currentTarget != null) {
+//            _fireAtTarget();
+//          } else {
+//            // No current target, so ask for one.
+//            ui.push(new TargetDialog(this, command.getRange(game),
+//                (_) => _fireAtTarget()));
+//          }
+//        } else if (command is DirectionCommand) {
+//          ui.push(new DirectionDialog(this, game));
+//        } else {
+//          game.log.error("You don't have any commands you can perform.");
+//          dirty();
+//        }
         break;
 
       case Input.swap:
@@ -224,17 +225,20 @@ class GameScreen extends Screen<Input> {
   void _fireAtTarget() {
     // TODO: When there is more than one usable command, bring up the
     // SelectCommandDialog. Until then, just pick the first valid one.
-    var command = game.hero.heroClass.commands
-        .firstWhere((command) => command.canUse(game)) as TargetCommand;
-
-    game.hero.setNextAction(command.getTargetAction(game, currentTarget));
+    // TODO: Get working with skills.
+//    var command = game.hero.heroClass.commands
+//        .firstWhere((command) => command.canUse(game)) as TargetCommand;
+//
+//    game.hero.setNextAction(command.getTargetAction(game, currentTarget));
   }
 
   void _fireTowards(Direction dir) {
     // TODO: When there is more than one usable command, bring up the
     // SelectCommandDialog. Until then, just pick the first valid one.
-    var command = game.hero.heroClass.commands
-        .firstWhere((command) => command.canUse(game), orElse: () => null);
+//    var command = game.hero.heroClass.commands
+//        .firstWhere((command) => command.canUse(game), orElse: () => null);
+    // TODO: Get working with skills.
+    Command command = null;
 
     if (command == null) {
       game.log.error("You don't have any commands you can perform.");
