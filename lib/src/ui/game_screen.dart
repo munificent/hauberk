@@ -293,6 +293,8 @@ class GameScreen extends Screen<Input> {
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
+    } else if (popped is HeroInfoDialog) {
+      game.hero.updateAttributes(result);
     } else if (popped is SelectCommandDialog && result is Command) {
       if (!result.canUse(game)) {
         // Refresh the log.
@@ -506,23 +508,26 @@ class GameScreen extends Screen<Input> {
     _drawStat(terminal, 0, 'Health', hero.health.current, brickRed,
         hero.health.max, maroon);
     terminal.writeAt(0, 1, 'Food', UIHue.helpText);
-    terminal.writeAt(7, 1, hero.food.ceil().toString(), persimmon);
+    terminal.writeAt(10, 1, hero.food.ceil().toString(), persimmon);
 
     _drawStat(terminal, 2, 'Level', hero.level, cerulean);
     var levelPercent = 100 * hero.experience ~/
         (calculateLevelCost(hero.level + 1) -
         calculateLevelCost(hero.level));
-    terminal.writeAt(16, 2, '$levelPercent%', ultramarine);
-    _drawStat(terminal, 3, 'Gold', hero.gold, gold);
-    _drawStat(terminal, 4, 'Armor',
+    terminal.writeAt(15, 2, '$levelPercent%', ultramarine);
+
+    var y = 4;
+    for (var attribute in Attribute.all) {
+      _drawStat(terminal, y, attribute.name, hero.attributes[attribute], ash);
+      y++;
+    }
+
+    _drawStat(terminal, 10, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
         peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit();
-    _drawStat(terminal, 5, 'Weapon', hit.damageString, turquoise);
-
-    terminal.writeAt(0, 7, hero.heroClass.name, UIHue.text);
-    if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
+    _drawStat(terminal, 11, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.
     terminal.writeAt(0, 16, '@', heroColor);
@@ -580,10 +585,10 @@ class GameScreen extends Screen<Input> {
       Color valueColor, [max, Color maxColor]) {
     terminal.writeAt(0, y, label, UIHue.helpText);
     var valueString = value.toString();
-    terminal.writeAt(7, y, valueString, valueColor);
+    terminal.writeAt(10, y, valueString, valueColor);
 
     if (max != null) {
-      terminal.writeAt(7 + valueString.length, y, ' / $max', maxColor);
+      terminal.writeAt(10 + valueString.length, y, ' / $max', maxColor);
     }
   }
 
@@ -678,38 +683,38 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void _drawWarriorStats(Terminal terminal, Hero hero) {
-    var warrior = hero.heroClass as Warrior;
-
-    terminal.writeAt(0, 8, "Fury", UIHue.helpText);
-    _drawMeter(terminal, 8, hero.charge.toInt(), 100, carrot, garnet);
-
-    var y = 9;
-
-    draw(String name, TrainedStat stat) {
-      // Hide stats until the hero has made progress on them.
-      if (stat.level == 0 && stat.percentUntilNext == 0) return;
-
-      terminal.writeAt(0, y, name, UIHue.helpText);
-      terminal.writeAt(13, y, stat.level.toString(), UIHue.text);
-      terminal.writeAt(16, y, "${stat.percentUntilNext}%", UIHue.secondary);
-      y++;
-    }
-
-    var weapon = hero.equipment.weapon;
-    if (weapon == null) {
-      draw("Fighting", warrior.fighting);
-    } else {
-      draw("Combat", warrior.combat);
-      var mastery = warrior.masteries[weapon.type.weaponType];
-      if (mastery != null) {
-        // Capitalize it.
-        var weaponType = weapon.type.weaponType;
-        weaponType = weaponType.substring(0, 1).toUpperCase() +
-            weaponType.substring(1);
-        draw("$weaponType Master", mastery);
-      }
-    }
-    draw("Toughness", warrior.toughness);
-  }
+//  void _drawWarriorStats(Terminal terminal, Hero hero) {
+//    var warrior = hero.heroClass as Warrior;
+//
+//    terminal.writeAt(0, 8, "Fury", UIHue.helpText);
+//    _drawMeter(terminal, 8, hero.charge.toInt(), 100, carrot, garnet);
+//
+//    var y = 9;
+//
+//    draw(String name, TrainedStat stat) {
+//      // Hide stats until the hero has made progress on them.
+//      if (stat.level == 0 && stat.percentUntilNext == 0) return;
+//
+//      terminal.writeAt(0, y, name, UIHue.helpText);
+//      terminal.writeAt(13, y, stat.level.toString(), UIHue.text);
+//      terminal.writeAt(16, y, "${stat.percentUntilNext}%", UIHue.secondary);
+//      y++;
+//    }
+//
+//    var weapon = hero.equipment.weapon;
+//    if (weapon == null) {
+//      draw("Fighting", warrior.fighting);
+//    } else {
+//      draw("Combat", warrior.combat);
+//      var mastery = warrior.masteries[weapon.type.weaponType];
+//      if (mastery != null) {
+//        // Capitalize it.
+//        var weaponType = weapon.type.weaponType;
+//        weaponType = weaponType.substring(0, 1).toUpperCase() +
+//            weaponType.substring(1);
+//        draw("$weaponType Master", mastery);
+//      }
+//    }
+//    draw("Toughness", warrior.toughness);
+//  }
 }

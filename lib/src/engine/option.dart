@@ -4,75 +4,71 @@ import 'element.dart';
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
 class Option {
-  static final maxDepth = 100;
+  static const maxDepth = 100;
 
-  /// The max health of a new hero.
-  static final heroHealthStart = 24;
-
-  /// How much max health is increased when the hero levels up.
-  static final heroHealthGain = 6;
+  static const attributePointsPerLevel = 2;
 
   /// How much damage an unarmed hero does.
-  static final heroPunchDamage = 3;
+  static const heroPunchDamage = 3;
 
   /// The highest level the hero can reach.
-  static final heroLevelMax = 50;
+  static const heroLevelMax = 50;
 
   /// How much each level costs. This is multiplied by the (zero-based) level
   /// (squared) to determine how much experience is required to reach that
   /// level.
-  static final heroLevelCost = 100;
+  static const heroLevelCost = 100;
 
   /// The amount of gold a new hero starts with.
-  static final heroGoldStart = 60;
+  static const heroGoldStart = 60;
 
   /// The maximum number of items the hero's [Inventory] can contain.
-  static final inventoryCapacity = 20;
+  static const inventoryCapacity = 20;
 
   /// The maximum number of items the hero's home [Inventory] can contain.
   /// Note: To make this is more than 26, the home screen UI will need to be
   /// changed.
-  static final homeCapacity = 20;
+  static const homeCapacity = 20;
 
   /// The maximum number of items the hero's crucible can contain.
-  static final crucibleCapacity = 8;
+  static const crucibleCapacity = 8;
 
   /// When calculating pathfinding, how much it "costs" to move one step on
   /// an open floor tile.
-  static final aStarFloorCost = 10;
+  static const aStarFloorCost = 10;
 
   /// When calculating pathfinding, how much it costs to move one step on a
   /// tile already occupied by an actor. For pathfinding, we consider occupied
   /// tiles as accessible but expensive. The idea is that by the time the
   /// pathfinding monster gets there, the occupier may have moved, so the tile
   /// is "sorta" empty, but still not as desirable as an actually empty tile.
-  static final aStarOccupiedCost = 60;
+  static const aStarOccupiedCost = 60;
 
   /// When calculating pathfinding, how much it costs cross a currently-closed
   /// door. Instead of considering them completely impassable, we just have them
   /// be expensive, because it still may be beneficial for the monster to get
   /// closer to the door (for when the hero opens it later).
-  static final aStarDoorCost = 80;
+  static const aStarDoorCost = 80;
 
   /// When applying the pathfinding heuristic, straight steps (NSEW) are
   /// considered a little cheaper than diagonal ones so that straighter paths
   /// are preferred over equivalent but uglier zig-zagging ones.
-  static final aStarStraightCost = 9;
+  static const aStarStraightCost = 9;
 
   /// How much noise different kinds of actions make.
-  static final noiseNormal = 10;
-  static final noiseHit    = 50;
-  static final noiseRest   =  1;
+  static const noiseNormal = 10;
+  static const noiseHit    = 50;
+  static const noiseRest   =  1;
 
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.
-  static final spawnMonsterChance = 50;
+  static const spawnMonsterChance = 50;
 
   /// The maximum distance at which a monster will attempt a bolt attack.
-  static final maxBoltDistance = 12;
+  static const maxBoltDistance = 12;
 
   /// The experience point multipliers for each breed flag.
-  static final expFlag = const {
+  static const expFlag = const {
     'fly': 1.3,
     'horde': 1.5,
     'swarm': 1.4,
@@ -89,7 +85,7 @@ class Option {
 
   /// The experience point multipliers for an attack or move using a given
   /// element.
-  static final expElement = const {
+  static const expElement = const {
     Element.none: 1.0,
     Element.air: 1.2,
     Element.earth: 1.2,
@@ -109,5 +105,5 @@ class Option {
   /// like so:
   ///
   ///     exp *= (expMeander - meander) / expMeander
-  static final expMeander = 30;
+  static const expMeander = 30;
 }

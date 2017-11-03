@@ -84,6 +84,8 @@ class RoomBiome extends Biome {
 
   Iterable<String> decorate(Dungeon dungeon) sync* {
     for (var placed in _rooms) {
+      // TODO: These are placed after the hero's location is chosen which means
+      // sometimes the hero gets spawned on top of a decoration. Fix.
       _tryPlaceTable(placed);
     }
 

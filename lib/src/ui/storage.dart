@@ -64,23 +64,50 @@ class Storage {
       home.countChanged();
       crucible.countChanged();
 
+      // Defaults are to support legacy saves.
+
       var experience = hero['experience'];
+
+      var heroAttributes = hero['attributes'];
+      var attributes = <Attribute, int>{};
+      if (heroAttributes != null) {
+        for (var attribute in Attribute.all) {
+          attributes[attribute] = heroAttributes[attribute.name] ?? 10;
+        }
+      } else {
+        // TODO: Remove this when no longer care about old pre-attribute saves.
+        for (var attribute in Attribute.all) {
+          attributes[attribute] = 10;
+        }
+      }
+
+      var attributePoints = hero['attributePoints'] ?? 0;
 
       var gold = hero['gold'];
 
-      var maxDepth = hero['maxDepth'];
-      // Older saves don't have this.
-      if (maxDepth == null) maxDepth = 0;
+      var maxDepth = hero['maxDepth'] ?? 0;
 
       HeroClass heroClass;
       switch (hero['class']['name']) {
-        case 'warrior': heroClass = _loadWarrior(hero['class']); break;
+        case 'warrior':
+          heroClass = _loadWarrior(hero['class']);
+          break;
         default:
           throw 'Unknown hero class "${hero['class']['name']}".';
       }
 
-      var heroSave = new HeroSave.load(name, heroClass, inventory, equipment,
-          home, crucible, experience, gold, maxDepth);
+      var heroSave = new HeroSave.load(
+          name,
+          heroClass,
+          inventory,
+          equipment,
+          home,
+          crucible,
+          experience,
+          attributes,
+          attributePoints,
+          gold,
+          maxDepth);
       heroes.add(heroSave);
     }
   }
@@ -158,6 +185,11 @@ class Storage {
         _saveWarrior(hero.heroClass, heroClass);
       }
 
+      var attributes = {};
+      for (var attribute in Attribute.all) {
+        attributes[attribute.name] = hero.attributes[attribute];
+      }
+
       heroData.add({
         'name': hero.name,
         'class': heroClass,
@@ -166,15 +198,15 @@ class Storage {
         'home': home,
         'crucible': crucible,
         'experience': hero.experienceCents,
+        'attributePoints': hero.attributePoints,
+        'attributes': attributes,
         'gold': hero.gold,
         'maxDepth': hero.maxDepth
       });
     }
 
     // TODO: Version.
-    var data = {
-      'heroes': heroData
-    };
+    var data = {'heroes': heroData};
 
     html.window.localStorage['heroes'] = JSON.encode(data);
     print('Saved.');

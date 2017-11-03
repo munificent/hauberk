@@ -12,6 +12,7 @@ import '../items/inventory.dart';
 import '../log.dart';
 import '../monster.dart';
 import '../option.dart';
+import 'attribute.dart';
 import 'hero_class.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
@@ -36,16 +37,29 @@ class HeroSave {
 
   int experienceCents = 0;
 
+  final Map<Attribute, int> attributes;
+
+  /// Available points that can be spent raising attributes.
+  int attributePoints = 12;
+
+  // TODO: Get rid of gold and shops if I'm sure we won't be using it.
   /// How much gold the hero has.
   int gold = Option.heroGoldStart;
 
   /// The lowest depth that the hero has successfully explored and exited.
   int maxDepth = 0;
 
-  HeroSave(this.name, this.heroClass);
+  HeroSave(this.name, this.heroClass)
+      : attributes = {} {
+    for (var attribute in Attribute.all) {
+      attributes[attribute] = Attribute.initialValue;
+    }
+  }
 
   HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
-      this.home, this.crucible, this.experienceCents, this.gold, this.maxDepth);
+      this.home, this.crucible, this.experienceCents, this.attributes,
+      this.attributePoints,
+      this.gold, this.maxDepth);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be
@@ -55,6 +69,15 @@ class HeroSave {
     inventory = hero.inventory;
     equipment = hero.equipment;
     experienceCents = hero._experienceCents;
+
+    // Are these needed? Can the player spend stat points in the dungeon?
+    // Are drains permanent?
+    for (var attribute in Attribute.all) {
+      attributes[attribute] = hero.attributes[attribute];
+    }
+
+    attributePoints = hero.attributePoints;
+
     gold = hero.gold;
   }
 }
@@ -72,6 +95,18 @@ class Hero extends Actor {
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
   int _experienceCents = 0;
+
+  final Map<Attribute, int> attributes;
+
+  // TODO: Take bonuses into account.
+  int get strength => attributes[Attribute.strength];
+  int get agility => attributes[Attribute.agility];
+  int get fortitude => attributes[Attribute.fortitude];
+  int get intellect => attributes[Attribute.intellect];
+  int get will => attributes[Attribute.will];
+
+  /// Available points that can be spent raising attributes.
+  int attributePoints;
 
   /// The hero's experience level.
   int _level = 1;
@@ -101,11 +136,17 @@ class Hero extends Actor {
         inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
+        attributes = new Map.from(save.attributes),
+        attributePoints = save.attributePoints,
         gold = save.gold,
-        super(game, pos.x, pos.y, Option.heroHealthStart) {
-    // Hero state is cloned so that if they die in the dungeon, they lose
+        super(game, pos.x, pos.y, 0) {
+    // Hero state is cloned above so that if they die in the dungeon, they lose
     // anything they found.
-    _refreshLevel(log: false);
+
+    health.max = Fortitude.maxHealth(fortitude);
+    health.current = health.max;
+
+    _refreshLevel(gain: false);
 
     heroClass.bind(this);
 
@@ -165,6 +206,32 @@ class Hero extends Actor {
     food += health.max * abundance * numExplored / game.stage.numExplorable;
   }
 
+  /// Updates the hero's attribute values to [attributes] and applies any other
+  /// changes caused by that.
+  void updateAttributes(Map<Attribute, int> attributes) {
+    // Update anything affected.
+    if (attributes[Attribute.fortitude] != fortitude) {
+      // Update max health.
+      var value = attributes[Attribute.fortitude];
+      var change = Fortitude.maxHealth(value) - health.max;
+      health.max = Fortitude.maxHealth(value);
+
+      if (change > 0) {
+        game.log.message("you feel healthier!");
+
+        // Increase the current health by a matching amount if it goes up.
+        health.current += change;
+      } else {
+        game.log.message("you feel less healthy.");
+      }
+    }
+
+    // Apply the changes.
+    for (var attribute in Attribute.all) {
+      this.attributes[attribute] = attributes[attribute];
+    }
+  }
+
   int onGetSpeed() => Energy.normalSpeed;
 
   Action onGetAction() => _behavior.getAction(this);
@@ -220,7 +287,7 @@ class Hero extends Actor {
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
     _experienceCents += monster.experienceCents;
-    _refreshLevel(log: true);
+    _refreshLevel(gain: true);
     heroClass.killedMonster(action, monster);
   }
 
@@ -273,17 +340,17 @@ class Hero extends Actor {
     if (_behavior is! ActionBehavior) waitForInput();
   }
 
-  void _refreshLevel({bool log: false}) {
+  void _refreshLevel({bool gain: false}) {
     int level = calculateLevel(_experienceCents);
 
     // See if the we levelled up.
     while (_level < level) {
       _level++;
-      health.max += Option.heroHealthGain;
-      health.current += Option.heroHealthGain;
 
-      if (log) {
+      if (gain) {
         game.log.gain('{1} [have|has] reached level $level.', this);
+
+        attributePoints += Option.attributePointsPerLevel;
       }
     }
   }
