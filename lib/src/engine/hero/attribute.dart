@@ -77,6 +77,23 @@ class Strength extends Attribute {
     return _lerpDouble(strength, 50, 60, 2.0, 2.1);
   }
 
+  /// Calculates the melee damage scaling factor based on the hero's strength
+  /// relative to the weapon's heft.
+  ///
+  /// Here, [strength] is the hero's strength *minus* the weapon's heft, so
+  /// may be a negative number.
+  static double scaleHeft(int strength) {
+    strength = strength.clamp(-20, 50);
+
+    if (strength < -10) return _lerpDouble(strength, -20, -10, 0.05, 0.3);
+
+    // Note that there is an immediate step down to 0.8 at -1.
+    if (strength < 0) return _lerpDouble(strength, -10, -1, 0.3, 0.8);
+
+    if (strength < 20) return _lerpDouble(strength, 0, 20, 1.0, 2.0);
+    return _lerpDouble(strength, 20, 50, 2.0, 3.0);
+  }
+
   String get name => "Strength";
 }
 

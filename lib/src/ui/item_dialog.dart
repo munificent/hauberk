@@ -273,6 +273,8 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
       drawStat("•", item.armor, peaGreen, sherwood);
     }
 
+    // TODO: Show heft and encumbrance.
+
 //    if (item.price != 0) {
 //      var price = priceString(item.price);
 //      terminal.writeAt(x + 49 - price.length, itemY, price, priceColor);

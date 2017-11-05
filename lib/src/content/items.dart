@@ -251,56 +251,56 @@ void weapons() {
   // Bludgeons.
   category(CharCode.latinSmallLetterAWithAcute, tag: "equipment/weapon/club", verb: "hit[s]");
   tossable(breakage: 25, range: 5);
-  weapon("Stick",          1,    0, persimmon,   8,   3);
-  weapon("Cudgel",         3,    9, gunsmoke,   10,   4);
-  weapon("Club",           6,   21, garnet,     12,   5);
+  weapon("Stick",          1,    0, persimmon,   8,   3, heft: 10);
+  weapon("Cudgel",         3,    9, gunsmoke,   10,   4, heft: 11);
+  weapon("Club",           6,   21, garnet,     12,   5, heft: 13);
 
   // Staves.
   category(CharCode.latinSmallLetterIWithAcute, tag: "equipment/weapon/staff", verb: "hit[s]");
   tossable(breakage: 35, range: 4);
-  weapon("Walking Stick",        2,    9, persimmon,  10,   3);
-  weapon("Sta[ff|aves]",         5,   38, garnet,     14,   5);
-  weapon("Quartersta[ff|aves]", 11,  250, gunsmoke,   24,   8);
+  weapon("Walking Stick",        2,    9, persimmon,  10,   3, heft: 12);
+  weapon("Sta[ff|aves]",         5,   38, garnet,     14,   5, heft: 14);
+  weapon("Quartersta[ff|aves]", 11,  250, gunsmoke,   24,   8, heft: 16);
 
   // Hammers.
   category(CharCode.latinSmallLetterOWithAcute, tag: "equipment/weapon/hammer", verb: "bash[es]");
   tossable(breakage: 15, range: 5);
-  weapon("Hammer",        27,  621, persimmon,  32, 12);
-  weapon("Mattock",       39, 1225, garnet,     40, 16);
-  weapon("War Hammer",    45, 2106, gunsmoke,   48, 20);
+  weapon("Hammer",        27,  621, persimmon,  32, 12, heft: 24);
+  weapon("Mattock",       39, 1225, garnet,     40, 16, heft: 28);
+  weapon("War Hammer",    45, 2106, gunsmoke,   48, 20, heft: 32);
 
   // Maces.
   category(CharCode.latinSmallLetterUWithAcute, tag: "equipment/weapon/mace", verb: "bash[es]");
   tossable(breakage: 15, range: 4);
-  weapon("Morningstar",   24,  324, gunsmoke,   26, 11);
-  weapon("Mace",          33,  891, slate,      36, 16);
+  weapon("Morningstar",   24,  324, gunsmoke,   26, 11, heft: 20);
+  weapon("Mace",          33,  891, slate,      36, 16, heft: 25);
 
   // Whips.
   category(CharCode.latinSmallLetterNWithTilde, tag: "equipment/weapon/whip", verb: "whip[s]");
   tossable(breakage: 25, range: 4);
-  weapon("Whip",           4,    9, persimmon,  10,  1);
-  weapon("Chain Whip",    15,   95, gunsmoke,   18,  2);
-  weapon("Flail",         27,  409, slate,      28,  4);
+  weapon("Whip",           4,    9, persimmon,  10,  1, heft: 12);
+  weapon("Chain Whip",    15,   95, gunsmoke,   18,  2, heft: 18);
+  weapon("Flail",         27,  409, slate,      28,  4, heft: 27);
 
   // Knives.
   category(CharCode.latinCapitalLetterNWithTilde, tag: "equipment/weapon/dagger", verb: "stab[s]");
   tossable(breakage: 2, range: 8);
-  weapon("Kni[fe|ves]",    3,    9, steelGray,  10, 10);
-  weapon("Dirk",           4,   21, gunsmoke,   12, 12);
-  weapon("Dagger",         6,   63, cornflower, 16, 16);
-  weapon("Stiletto[es]",  10,  188, slate,      22, 22);
-  weapon("Rondel",        20,  409, turquoise,  28, 28);
-  weapon("Baselard",      30,  621, gold,       32, 32);
+  weapon("Kni[fe|ves]",    3,    9, steelGray,  10, 10, heft: 10);
+  weapon("Dirk",           4,   21, gunsmoke,   12, 12, heft: 10);
+  weapon("Dagger",         6,   63, cornflower, 14, 14, heft: 11);
+  weapon("Stiletto[es]",  10,  188, slate,      16, 16, heft: 10);
+  weapon("Rondel",        20,  409, turquoise,  18, 18, heft: 11);
+  weapon("Baselard",      30,  621, gold,       20, 20, heft: 12);
   // Main-guache
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
   category(CharCode.feminineOrdinalIndicator, tag: "equipment/weapon/sword", verb: "slash[es]");
   tossable(breakage: 20, range: 5);
-  weapon("Rapier",         7,  188, steelGray,  22,  4);
-  weapon("Shortsword",    11,  324, slate,      26,  6);
-  weapon("Scimitar",      18,  748, gunsmoke,   34,  9);
-  weapon("Cutlass[es]",   24, 1417, buttermilk, 42, 11);
-  weapon("Falchion",      38, 2374, turquoise,  50, 15);
+  weapon("Rapier",         7,  188, steelGray,  22,  4, heft: 16);
+  weapon("Shortsword",    11,  324, slate,      26,  6, heft: 18);
+  weapon("Scimitar",      18,  748, gunsmoke,   34,  9, heft: 19);
+  weapon("Cutlass[es]",   24, 1417, buttermilk, 42, 11, heft: 22);
+  weapon("Falchion",      38, 2374, turquoise,  46, 15, heft: 24);
 
   /*
 
@@ -316,20 +316,23 @@ void weapons() {
   // Spears.
   category(CharCode.masculineOrdinalIndicator, tag: "equipment/weapon/spear", verb: "stab[s]");
   tossable(breakage: 0, range: 9);
-  weapon("Pointed Stick",  2,    0, garnet,     10,  9);
-  weapon("Spear",          7,  137, persimmon,  20, 15);
-  weapon("Angon",         14,  621, gunsmoke,   32, 20);
-  weapon("Lance",         28, 2106, cornflower, 48, 28);
-  weapon("Partisan",      35, 6833, slate,      72, 40);
+  weapon("Pointed Stick",  2,    0, garnet,     10,  9, heft: 11);
+  weapon("Spear",          7,  137, persimmon,  24, 15, heft: 17);
+  weapon("Angon",         14,  621, gunsmoke,   30, 20, heft: 19);
+  weapon("Lance",         28, 2106, cornflower, 40, 28, heft: 27);
+  weapon("Partisan",      35, 6833, slate,      50, 40, heft: 29);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
   category(CharCode.invertedQuestionMark, tag: "equipment/weapon/axe", verb: "chop[s]");
-  tossable(breakage: 0);
-  weapon("Hatchet",    6,  137, slate,      20, 20, 8);
-  weapon("Axe",       12,  621, persimmon,  32, 24, 7);
-  weapon("Valaska",   24, 2664, gunsmoke,   52, 26, 5);
-  weapon("Battleaxe", 40, 4866, steelGray,  64, 28, 4);
+  tossable(breakage: 0, range: 8);
+  weapon("Hatchet",    6,  137, slate,      18, 20, heft: 14);
+  tossable(breakage: 0, range: 7);
+  weapon("Axe",       12,  621, persimmon,  32, 24, heft: 22);
+  tossable(breakage: 0, range: 5);
+  weapon("Valaska",   24, 2664, gunsmoke,   52, 26, heft: 26);
+  tossable(breakage: 0, range: 4);
+  weapon("Battleaxe", 40, 4866, steelGray,  64, 28, heft: 30);
 
   // Sling. In a category itself because many bow affixes don't apply to it.
   category(CharCode.reversedNotSign, tag: "equipment/weapon/sling", verb: "hit[s]");
@@ -520,20 +523,21 @@ void scroll(String name, int depth, int rarity, int price, appearance, ItemUse u
 }
 
 void weapon(String name, int depth, int price, appearance, int damage,
-      int tossDamage,
-      [int tossRange]) {
+      int tossDamage, {int heft}) {
   var noun = new Noun("the ${name.toLowerCase()}");
   var verb = Log.conjugate(_verb, Pronoun.it);
-  var toss = new Attack(noun, verb, tossDamage, tossRange ?? _tossRange);
+  var toss = new Attack(noun, verb, tossDamage, _tossRange);
   // TODO: Individual rarities.
   item(name, depth, 2, appearance,
       attack: new Attack(null, _verb, damage),
       tossAttack: toss,
+      heft: heft,
       price: price);
 }
 
 void ranged(String name, int depth, int price, appearance, String noun,
     int damage, int range, int tossDamage) {
+  // TODO: Figure out how heft affects this.
   var tossNoun = new Noun("the ${name.toLowerCase()}");
   var verb = Log.conjugate(_verb, Pronoun.it);
   var toss = new Attack(tossNoun, verb, tossDamage, _tossRange);
@@ -553,7 +557,7 @@ void armor(String name, int depth, int rarity, int price, appearance, int armor,
 void item(String name, int depth, int rarity, appearance, {ItemUse use,
     TossItemUse tossUse,
     Attack attack, Attack tossAttack, int armor = 0, int price = 0,
-    bool treasure = false, String flags, int encumbrance = 0}) {
+    bool treasure = false, String flags, int encumbrance = 0, int heft = 1}) {
   // If the appearance isn't an actual glyph, it should be a color function
   // that will be applied to the current glyph.
   if (appearance is Color) {
@@ -575,7 +579,7 @@ void item(String name, int depth, int rarity, appearance, {ItemUse use,
 
   var itemType = new ItemType(name, appearance, depth, _sortIndex++, _equipSlot,
       _weaponType, use, attack, toss, armor, price, _maxStack,
-      encumbrance: encumbrance,
+      encumbrance: encumbrance, heft: heft,
       treasure: treasure);
 
   // Use the tags (if any) to figure out which slot it can be equipped in.

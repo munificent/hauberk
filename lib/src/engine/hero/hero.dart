@@ -194,6 +194,8 @@ class Hero extends Actor {
     return total;
   }
 
+  // TODO: If this changes or the equipped weapon changes, should check to see
+  // if weapon has too much heft for player and log.
   /// The total encumbrance of all equipment.
   int get encumbrance {
     var total = 0;
@@ -263,6 +265,11 @@ class Hero extends Actor {
     Hit hit;
     if (weapon != null && !weapon.attack.isRanged) {
       hit = weapon.attack.createHit();
+
+      // Take heft and strength into account.
+      var relativeStrength = strength - weapon.heft;
+      var scale = Strength.scaleHeft(relativeStrength);
+      hit.scaleDamage(scale);
     } else {
       hit = new Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
     }
@@ -288,11 +295,11 @@ class Hero extends Actor {
 
     switch (type) {
       case HitType.melee:
-        // TODO: Use strength to affect damage.
         break;
 
       case HitType.ranged:
         // TODO: Use strength to affect range.
+        // TODO: Take heft into account.
         break;
 
       case HitType.toss:

@@ -116,6 +116,10 @@ class Item implements Comparable<Item>, Noun {
   /// The penalty to the hero's strength when wearing this.
   int get encumbrance => type.encumbrance;
 
+  // TODO: Affixes that modify.
+  /// The amount of strength required to wield the item effectively.
+  int get heft => type.heft;
+
   /// The number of items in this stack.
   int get count => _count;
   int _count = 1;
@@ -270,6 +274,9 @@ class ItemType {
   /// The penalty to the hero's strength when wearing this.
   final int encumbrance;
 
+  /// The amount of strength required to wield the item effectively.
+  final int heft;
+
   /// True if this item is "treasure".
   ///
   /// That means it just has a gold value. As soon as the hero steps on it, it
@@ -295,6 +302,7 @@ class ItemType {
       this.price,
       this.maxStack,
       {this.encumbrance = 0,
+        this.heft = 1,
       treasure = false})
       : isTreasure = treasure;
 
