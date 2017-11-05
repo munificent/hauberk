@@ -46,11 +46,11 @@ class Items {
     // Unused: ; : ` % ^ < >
 
     category(CharCode.latinCapitalLetterCWithCedilla, stack: 10, tag: "item");
-    tossable(damage: 3, range: 8, element: Element.earth, breakage: 10);
+    tossable(damage: 3, range: 7, element: Element.earth, breakage: 10);
     item("Rock", 1, 1, persimmon);
 
     category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4, tag: "item");
-    tossable(damage: 2, range: 6, breakage: 30);
+    tossable(damage: 2, range: 5, breakage: 30);
     item("Skull", 1, 1, gunsmoke);
 
 //    treasures();
@@ -161,7 +161,7 @@ void potions() {
 
   // Healing.
   tagged("magic/potion/healing");
-  tossable(damage: 1, range: 8, breakage: 100);
+  tossable(damage: 1, range: 6, breakage: 100);
   healing("Soothing Balm",     2, 1,   10, salmon,       48);
   healing("Mending Salve",     7, 1,   40, brickRed,    100);
   healing("Healing Poultice", 12, 1,   80, maroon,      200, curePoison: true);
@@ -172,7 +172,7 @@ void potions() {
 
   category(CharCode.latinSmallLetterEWithCircumflex, stack: 10, flags: "freezable");
   tagged("magic/potion/resistance");
-  tossable(damage: 1, range: 8, breakage: 100);
+  tossable(damage: 1, range: 6, breakage: 100);
   resistSalve("Heat",          5, 20, carrot, Element.fire);
   resistSalve("Cold",          6, 24, cornflower, Element.cold, "-freezable");
   resistSalve("Light",         7, 28, buttermilk, Element.light);
@@ -191,7 +191,7 @@ void potions() {
 
   // Speed.
   tagged("magic/potion/speed");
-  tossable(damage: 1, range: 8, breakage: 100);
+  tossable(damage: 1, range: 6, breakage: 100);
   potion("of Quickness",  3, 3,  20, lima,     () => new HasteAction(20, 1));
   potion("of Alacrity",  18, 3,  40, peaGreen, () => new HasteAction(30, 2));
   potion("of Speed",     34, 4, 200, sherwood, () => new HasteAction(40, 3));
@@ -222,7 +222,7 @@ void scrolls() {
   // Teleportation.
   category(CharCode.latinSmallLetterAWithCircumflex, stack: 20, flags: "flammable");
   tagged("magic/scroll/teleportation");
-  tossable(damage: 1, range: 4, breakage: 75);
+  tossable(damage: 1, range: 3, breakage: 75);
   scroll("of Sidestepping",   2, 2,  9, lilac,       () => new TeleportAction(6));
   scroll("of Phasing",        6, 3, 17, violet,      () => new TeleportAction(12));
   scroll("of Teleportation", 15, 3, 33, indigo,      () => new TeleportAction(24));
@@ -231,7 +231,7 @@ void scrolls() {
   // Detection.
   category(CharCode.latinSmallLetterAWithDiaeresis, stack: 20, flags: "flammable");
   tagged("magic/scroll/detection");
-  tossable(damage: 1, range: 4, breakage: 75);
+  tossable(damage: 1, range: 3, breakage: 75);
   detection("of Find Nearby Escape",  1,  2,   20, buttermilk, [DetectType.exit], range: 20);
   detection("of Find Nearby Items",   2,  2,   20, gold, [DetectType.item], range: 20);
   detection("of Detect Nearby",       3,  4,   20, lima, [DetectType.exit, DetectType.item], range: 20);
@@ -247,14 +247,14 @@ void scrolls() {
 void weapons() {
   // Bludgeons.
   category(CharCode.latinSmallLetterAWithAcute, tag: "equipment/weapon/club", verb: "hit[s]");
-  tossable(breakage: 25, range: 7);
+  tossable(breakage: 25, range: 5);
   weapon("Stick",          1,    0, persimmon,   8,   3);
   weapon("Cudgel",         3,    9, gunsmoke,   10,   4);
   weapon("Club",           6,   21, garnet,     12,   5);
 
   // Staves.
   category(CharCode.latinSmallLetterIWithAcute, tag: "equipment/weapon/staff", verb: "hit[s]");
-  tossable(breakage: 35, range: 6);
+  tossable(breakage: 35, range: 4);
   weapon("Walking Stick",        2,    9, persimmon,  10,   3);
   weapon("Sta[ff|aves]",         5,   38, garnet,     14,   5);
   weapon("Quartersta[ff|aves]", 11,  250, gunsmoke,   24,   8);
@@ -268,20 +268,20 @@ void weapons() {
 
   // Maces.
   category(CharCode.latinSmallLetterUWithAcute, tag: "equipment/weapon/mace", verb: "bash[es]");
-  tossable(breakage: 15, range: 5);
+  tossable(breakage: 15, range: 4);
   weapon("Morningstar",   24,  324, gunsmoke,   26, 11);
   weapon("Mace",          33,  891, slate,      36, 16);
 
   // Whips.
   category(CharCode.latinSmallLetterNWithTilde, tag: "equipment/weapon/whip", verb: "whip[s]");
-  tossable(breakage: 25, range: 5);
+  tossable(breakage: 25, range: 4);
   weapon("Whip",           4,    9, persimmon,  10,  1);
   weapon("Chain Whip",    15,   95, gunsmoke,   18,  2);
   weapon("Flail",         27,  409, slate,      28,  4);
 
   // Knives.
   category(CharCode.latinCapitalLetterNWithTilde, tag: "equipment/weapon/dagger", verb: "stab[s]");
-  tossable(breakage: 2, range: 10);
+  tossable(breakage: 2, range: 8);
   weapon("Kni[fe|ves]",    3,    9, steelGray,  10, 10);
   weapon("Dirk",           4,   21, gunsmoke,   12, 12);
   weapon("Dagger",         6,   63, cornflower, 16, 16);
@@ -292,7 +292,7 @@ void weapons() {
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
   category(CharCode.feminineOrdinalIndicator, tag: "equipment/weapon/sword", verb: "slash[es]");
-  tossable(breakage: 20, range: 6);
+  tossable(breakage: 20, range: 5);
   weapon("Rapier",         7,  188, steelGray,  22,  4);
   weapon("Shortsword",    11,  324, slate,      26,  6);
   weapon("Scimitar",      18,  748, gunsmoke,   34,  9);
@@ -312,7 +312,7 @@ void weapons() {
 
   // Spears.
   category(CharCode.masculineOrdinalIndicator, tag: "equipment/weapon/spear", verb: "stab[s]");
-  tossable(breakage: 3, range: 11);
+  tossable(breakage: 0, range: 9);
   weapon("Pointed Stick",  2,    0, garnet,     10,  9);
   weapon("Spear",          7,  137, persimmon,  20, 15);
   weapon("Angon",         14,  621, gunsmoke,   32, 20);
@@ -322,11 +322,11 @@ void weapons() {
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
   category(CharCode.invertedQuestionMark, tag: "equipment/weapon/axe", verb: "chop[s]");
-  tossable(breakage: 4);
-  weapon("Hatchet",    6,  137, slate,      20, 20, 10);
-  weapon("Axe",       12,  621, persimmon,  32, 24, 9);
-  weapon("Valaska",   24, 2664, gunsmoke,   52, 26, 8);
-  weapon("Battleaxe", 40, 4866, steelGray,  64, 28, 7);
+  tossable(breakage: 0);
+  weapon("Hatchet",    6,  137, slate,      20, 20, 8);
+  weapon("Axe",       12,  621, persimmon,  32, 24, 7);
+  weapon("Valaska",   24, 2664, gunsmoke,   52, 26, 5);
+  weapon("Battleaxe", 40, 4866, steelGray,  64, 28, 4);
 
   // Sling. In a category itself because many bow affixes don't apply to it.
   category(CharCode.reversedNotSign, tag: "equipment/weapon/sling", verb: "hit[s]");

@@ -69,6 +69,14 @@ abstract class Attribute {
 // missile range
 // damage bonus
 class Strength extends Attribute {
+  static double tossRangeScale(int strength) {
+    if (strength <= 20) return _lerpDouble(strength, 1, 20, 0.1, 1.0);
+    if (strength <= 30) return _lerpDouble(strength, 20, 30, 1.0, 1.5);
+    if (strength <= 40) return _lerpDouble(strength, 30, 40, 1.5, 1.8);
+    if (strength <= 30) return _lerpDouble(strength, 40, 50, 1.8, 2.0);
+    return _lerpDouble(strength, 50, 60, 2.0, 2.1);
+  }
+
   String get name => "Strength";
 }
 
@@ -101,4 +109,15 @@ class Intellect extends Attribute {
 // max mana?
 class Will extends Attribute {
   String get name => "Will";
+}
+
+/// Remaps [value] within the range [min]-[max] to the output range
+/// [outMin]-[outMax].
+double _lerpDouble(int value, int min, int max, double outMin, double outMax) {
+  assert(value >= min);
+  assert(value <= max);
+  assert(min < max);
+
+  var t = (value - min) / (max - min);
+  return outMin + t * (outMax - outMin);
 }

@@ -55,6 +55,12 @@ class Attack {
   }
 }
 
+enum HitType {
+  melee,
+  ranged,
+  toss
+}
+
 class Hit {
   final Attack _attack;
 
@@ -63,8 +69,12 @@ class Hit {
   int _damageBonus = 0;
   Element _brand = Element.none;
 
-  int get range => _attack.range;
-  // TODO: Range bonus.
+  int get range {
+    if (_attack.range == 0) return 0;
+
+    return math.max(1, (_attack.range * _rangeScale).round());
+  }
+  double _rangeScale = 1.0;
 
   Element get element {
     if (_brand != Element.none) return _brand;
@@ -82,6 +92,10 @@ class Hit {
 
   Hit._(this._attack);
 
+  void addStrike(int bonus) {
+    _strikeBonus += bonus;
+  }
+
   void addDamage(int offset) {
     _damageBonus += offset;
   }
@@ -91,12 +105,12 @@ class Hit {
     if (element != Element.none) _brand = element;
   }
 
-  void addStrike(int bonus) {
-    _strikeBonus += bonus;
-  }
-
   void scaleDamage(double factor) {
     _damageScale *= factor;
+  }
+
+  void scaleRange(double factor) {
+    _rangeScale *= factor;
   }
 
   /// Performs a melee [Hit] from [attacker] to [defender] in the course of

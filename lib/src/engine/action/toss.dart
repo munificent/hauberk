@@ -15,9 +15,10 @@ import 'item.dart';
 /// interface. "Toss" is used just to avoid using "throw" in code, which is a
 /// reserved word.
 class TossAction extends ItemAction {
+  final Hit _hit;
   final Vec _target;
 
-  TossAction(ItemLocation location, Item item, this._target)
+  TossAction(ItemLocation location, Item item, this._hit, this._target)
       : super(location, item);
 
   ActionResult onPerform() {
@@ -34,12 +35,8 @@ class TossAction extends ItemAction {
       countChanged();
     }
 
-    var hit = item.toss.attack.createHit();
-    // TODO: *Should* equipment modify thrown items?
-    actor.modifyHit(hit);
-
     // Take the item and throw it.
-    return alternate(new TossLosAction(_target, tossed, hit));
+    return alternate(new TossLosAction(_target, tossed, _hit));
   }
 }
 
@@ -100,7 +97,7 @@ class TossLosAction extends LosAction {
     }
 
     // See if it breaks.
-    if (rng.range(100) < _item.toss.breakage) {
+    if (rng.percent(_item.toss.breakage)) {
       log("{1} breaks!", _item);
       return;
     }

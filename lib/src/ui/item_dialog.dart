@@ -409,11 +409,17 @@ class _TossItemCommand extends _ItemCommand {
 
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
+
+    // Create the hit now so range modifiers can be calculated before the
+    // target is chosen.
+    var hit = item.toss.attack.createHit();
+    dialog._gameScreen.game.hero.modifyHit(hit, HitType.toss);
+
     // Now we need a target.
     dialog.ui.goTo(
-        new TargetDialog(dialog._gameScreen, item.toss.attack.range, (target) {
+        new TargetDialog(dialog._gameScreen, hit.range, (target) {
       dialog._gameScreen.game.hero
-          .setNextAction(new TossAction(location, item, target));
+          .setNextAction(new TossAction(location, item, hit, target));
     }));
   }
 }

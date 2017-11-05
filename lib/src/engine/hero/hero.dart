@@ -252,12 +252,28 @@ class Hero extends Actor {
     assert(weapon != null && weapon.attack.isRanged);
 
     var hit = weapon.attack.createHit();
-    modifyHit(hit);
+    modifyHit(hit, HitType.ranged);
     return hit;
   }
 
   /// Applies the hero-specific modifications to [hit].
-  void onModifyHit(Hit hit) {
+  void onModifyHit(Hit hit, HitType type) {
+    // TODO: Use agility to affect strike.
+
+    switch (type) {
+      case HitType.melee:
+        // TODO: Use strength to affect damage.
+        break;
+
+      case HitType.ranged:
+        // TODO: Use strength to affect range.
+        break;
+
+      case HitType.toss:
+        hit.scaleRange(Strength.tossRangeScale(strength));
+        break;
+    }
+
     // Let equipment modify it.
     for (var item in equipment) {
       item.modifyHit(hit);
