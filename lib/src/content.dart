@@ -4,7 +4,7 @@ import 'engine.dart';
 
 import 'content/affixes.dart';
 import 'content/dungeon/dungeon.dart';
-import 'content/encounters.dart';
+import 'content/floor_drops.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
@@ -20,7 +20,7 @@ Content createContent() {
   Recipes.initialize();
   Affixes.initialize();
   Shops.initialize();
-  Encounters.initialize();
+  FloorDrops.initialize();
 
   return new GameContent();
 }

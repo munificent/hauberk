@@ -29,11 +29,12 @@ main() {
       <td>Health</td>
       <td>Meander</td>
       <td>Speed</td>
-      <td>Exp/Level</td>
+      <td>Exp/Lev</td>
+      <td>Count</td>
       <td>Attacks</td>
       <td>Moves</td>
       <td>Flags</td>
-      <td width="30%">Drops</td>
+      <td width="20%">Drops</td>
     </tr>
     </thead>
     <tbody>
@@ -42,7 +43,12 @@ main() {
   for (var breed in breeds) {
     var glyph = breed.appearance as Glyph;
 
-    var expPerLevel = (breed.experienceCents / breed.depth / 100).toStringAsFixed(2);
+    var expPerLevel =
+        (breed.experienceCents / breed.depth / 100).toStringAsFixed(2);
+    var count = breed.countMin.toString();
+    if (breed.countMax != breed.countMin)
+      count += "&thinsp;&ndash;&thinsp;${breed.countMax}";
+
     text.write('''
         <tr>
           <td>
@@ -54,6 +60,7 @@ main() {
           <td class="r">${breed.meander}</td>
           <td class="r">${breed.speed}</td>
           <td class="r">$expPerLevel</td>
+          <td class="r">$count</td>
           <td>
         ''');
 
@@ -70,13 +77,15 @@ main() {
       text.write('$flag ');
     }
 
-    text.write('</td><td><span class="drop" id="${breed.name}">(drops)</span></td>');
+    text.write(
+        '</td><td><span class="drop" id="${breed.name}">(drops)</span></td>');
     text.write('</tr>');
   }
   text.write('</tbody>');
 
-  html.querySelector('table').setInnerHtml(text.toString(),
-      validator: validator);
+  html
+      .querySelector('table')
+      .setInnerHtml(text.toString(), validator: validator);
 
   for (var span in html.querySelectorAll('span.drop')) {
     span.onClick.listen((_) {

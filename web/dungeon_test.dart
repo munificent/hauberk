@@ -85,7 +85,6 @@ Future generate() async {
       <td>Count</td>
       <td colspan="2">Breed</td>
       <td>Depth</td>
-      <td colspan="2">Health</td>
       <td>Exp.</td>
       <!--<td>Drops</td>-->
     </tr>
@@ -103,8 +102,6 @@ Future generate() async {
         </td>
         <td>${breed.name}</td>
         <td>${breed.depth}</td>
-        <td class="r">${breed.maxHealth}</td>
-        <td><span class="bar" style="width: ${breed.maxHealth}px;"></span></td>
         <td class="r">${(breed.experienceCents / 100).toStringAsFixed(2)}</td>
         <td>
       ''');

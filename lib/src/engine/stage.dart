@@ -2,12 +2,12 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'ai/flow.dart';
 import 'actor.dart';
-import 'breed.dart';
 import 'fov.dart';
 import 'game.dart';
 import 'hero/hero.dart';
 import 'items/inventory.dart';
 import 'items/item.dart';
+import 'monster.dart';
 
 /// The game's live play area.
 class Stage {
@@ -50,7 +50,7 @@ class Stage {
         _actorsByTile = new Array2D<Actor>(width, height),
         _fov = new Fov(game);
 
-  Tile operator[](Vec pos) => tiles[pos];
+  Tile operator [](Vec pos) => tiles[pos];
 
   /// Iterates over every item on the ground on the stage.
   Iterable<Item> get allItems sync* {
@@ -214,49 +214,12 @@ class Stage {
     return best;
   }
 
-  // TODO: Remove this and use encounters instead.
-  void spawnMonster(Breed breed, Vec pos) {
-    var monsters = <Actor>[];
-
-    var count = rng.triangleInt(breed.numberInGroup, breed.numberInGroup ~/ 2);
-
-    addMonster(Vec pos) {
-      var monster = breed.spawn(game, pos);
-      addActor(monster);
-      monsters.add(monster);
-    }
-
-    // Place the first monster.
-    addMonster(pos);
-
-    // If the monster appears in groups, place the rest of the groups.
-    for (var i = 1; i < count; i++) {
-      // Find every open tile that's neighboring a monster in the group.
-      var open = <Vec>[];
-      for (var monster in monsters) {
-        for (var dir in Direction.all) {
-          var neighbor = monster.pos + dir;
-          if (this[neighbor].isWalkable && (actorAt(neighbor) == null)) {
-            open.add(neighbor);
-          }
-        }
-      }
-
-      if (open.length == 0) {
-        // We filled the entire reachable area with monsters, so give up.
-        break;
-      }
-
-      addMonster(rng.item(open));
-    }
-  }
-
   /// Lazily calculates the paths from every reachable tile to the [Hero]. We
   /// use this to place better and stronger things farther from the Hero. Sound
   /// propagation is also based on this.
   void _refreshDistances() {
     // Don't recalculate if still valid.
-    if (_heroPaths != null &&  game.hero.pos == _heroPaths.start) return;
+    if (_heroPaths != null && game.hero.pos == _heroPaths.start) return;
 
     _heroPaths = new Flow(this, game.hero.pos,
         canOpenDoors: true, canFly: true, ignoreActors: true);
@@ -280,7 +243,7 @@ class TileType {
 
 class Tile {
   TileType type;
-  bool _visible  = false;
+  bool _visible = false;
 
   Tile();
 

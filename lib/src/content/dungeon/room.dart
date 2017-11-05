@@ -61,10 +61,10 @@ class RoomBiome extends Biome {
       // shortens the path and consider placing it to add a cycle to the level.
 
       // TODO: Tune this.
-      for (var i = 0; i < 40; i++) {
+      for (var i = 0; i < 60; i++) {
         // Try to place a corridor.
         // TODO: Turns and branches in corridors.
-        var length = rng.range(3, 8);
+        var length = rng.range(3, 10);
         if (_canPlaceCorridor(
             junction.position, junction.direction, length)) {
           var endJunction = new Junction(junction.direction,
@@ -84,9 +84,11 @@ class RoomBiome extends Biome {
 
   Iterable<String> decorate(Dungeon dungeon) sync* {
     for (var placed in _rooms) {
-      // TODO: These are placed after the hero's location is chosen which means
-      // sometimes the hero gets spawned on top of a decoration. Fix.
-      _tryPlaceTable(placed);
+      if (rng.oneIn(3)) {
+        // TODO: These are placed after the hero's location is chosen which
+        // means sometimes the hero gets spawned on top of a decoration. Fix.
+        _tryPlaceTable(placed);
+      }
     }
 
     // TODO: "Zoo" monster pits with themed decorations and terrain to match
@@ -97,7 +99,7 @@ class RoomBiome extends Biome {
     if (placed.room.tiles.width < 8) return;
     if (placed.room.tiles.height < 8) return;
 
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 30; i++) {
       var width = rng.inclusive(2, math.min(5, placed.room.tiles.width - 4));
       var height = rng.inclusive(2, math.min(5, placed.room.tiles.height - 4));
 

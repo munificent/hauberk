@@ -167,7 +167,8 @@ class OldDungeon {
     var breed = Monsters.breeds.tryChoose(depth, "monster");
     if (breed == null) return;
 
-    stage.spawnMonster(breed, pos);
+    // TODO: Gone.
+//    stage.spawnMonster(breed, pos: pos);
   }
 
   /// Implementation of the "growing tree" algorithm from here:

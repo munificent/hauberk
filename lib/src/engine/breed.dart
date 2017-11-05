@@ -11,6 +11,7 @@ import 'items/item.dart';
 import 'log.dart';
 import 'monster.dart';
 import 'option.dart';
+import 'stage.dart';
 
 /// A single kind of [Monster] in the game.
 class Breed {
@@ -26,7 +27,7 @@ class Breed {
   final int depth;
 
   final List<Attack> attacks;
-  final List<Move>   moves;
+  final List<Move> moves;
 
   final int maxHealth;
 
@@ -45,15 +46,39 @@ class Breed {
   /// The [Item]s this monster may drop when killed.
   final Drop drop;
 
+  final SpawnLocation location;
+
   final Set<String> flags;
+
+  /// The minimum number of this breed that are spawned when it is placed in
+  /// the dungeon.
+  final int countMin;
+
+  /// The minimum number of this breed that are spawned when it is placed in
+  /// the dungeon.
+  final int countMax;
+
+  /// Additional monsters that should be spawned when this one is spawned.
+  final List<Minion> minions = [];
 
   /// The name of the breed. If the breed's name has irregular pluralization
   /// like "bunn[y|ies]", this will be the original unparsed string.
   final String _name;
 
+  /// If this breed should stain some of the nearby floor tiles when spawned,
+  /// this is the type is should stain them with. Otherwise null.
+  final TileType stain;
+
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
-      this.drop, {
-      this.depth, this.maxHealth, this.tracking, this.meander, this.speed,
+      this.drop, this.location,
+      {this.depth,
+      this.maxHealth,
+      this.tracking,
+      this.meander,
+      this.speed,
+      this.countMin,
+      this.countMax,
+      this.stain,
       this.flags});
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
@@ -108,21 +133,63 @@ class Breed {
     return exp.toInt();
   }
 
-  /// When a [Monster] of this Breed is generated, how many of the same type
-  /// should be spawned together (roughly).
-  int get numberInGroup {
-    if (flags.contains('horde')) return 12;
-    if (flags.contains('swarm')) return 8;
-    if (flags.contains('pack')) return 6;
-    if (flags.contains('group')) return 4;
-    if (flags.contains('few')) return 2;
-    return 1;
-  }
-
   Monster spawn(Game game, Vec pos, [Monster parent]) {
     var generation = 1;
     if (parent != null) generation = parent.generation + 1;
 
     return new Monster(game, this, pos.x, pos.y, maxHealth, generation);
   }
+
+  /// Generate the list of monsters spawned by this breed.
+  ///
+  /// Takes into account this breed's count and minions.
+  List<Monster> spawnAll(Game game) {
+    var monsters = <Monster>[];
+
+    // This breed.
+    var count = rng.inclusive(countMin, countMax);
+    for (var i = 0; i < count; i++) {
+      monsters.add(new Monster(game, this, 0, 0, maxHealth, 1));
+    }
+
+    for (var minion in minions) {
+      count = rng.inclusive(minion.countMin, minion.countMax);
+      for (var i = 0; i < count; i++) {
+        monsters.add(
+            new Monster(game, minion.breed, 0, 0, minion.breed.maxHealth, 1));
+      }
+    }
+
+    return monsters;
+  }
+}
+
+// TODO: Should this affect how the monster moves during the game too?
+/// Where in the dungeon the breed prefers to spawn.
+enum SpawnLocation {
+  anywhere,
+
+  /// Away from walls.
+  open,
+
+  /// Adjacent to a wall.
+  wall,
+
+  /// Adjacent to multiple walls.
+  corner,
+
+  /// Inside a passageway.
+  corridor,
+
+  // TODO: Probably need something more sophisticated for biome-specific spawns.
+  /// On grass.
+  grass,
+}
+
+class Minion {
+  final Breed breed;
+  final int countMin;
+  final int countMax;
+
+  Minion(this.breed, this.countMin, this.countMax);
 }

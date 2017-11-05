@@ -1,7 +1,8 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../encounters.dart';
+import '../floor_drops.dart';
+import '../monsters.dart';
 import '../tiles.dart';
 import 'blob.dart';
 import 'choke_points.dart';
@@ -158,13 +159,22 @@ class Dungeon {
 
     setTileAt(stairPos, Tiles.stairs);
 
+    // Monsters.
+    var numSpawns = 40 + (depth ~/ 4);
+    numSpawns = rng.triangleInt(numSpawns, numSpawns ~/ 3);
+    for (var i = 0; i < numSpawns; i++) {
+      _spawnMonster(Monsters.breeds.tryChoose(depth, "monster"));
+    }
+
+    // Items.
     // TODO: Tune this.
-    var numEncounters = 30 + depth;
-    for (var i = 0; i < numEncounters; i++) {
+    var numItems = 6 + (depth ~/ 5);
+    numItems = rng.triangleInt(numItems, numItems ~/ 2);
+    for (var i = 0; i < numItems; i++) {
       // TODO: Distribute them more evenly?
       // TODO: Have biome affect density?
-      var encounter = Encounters.choose(depth);
-      encounter.spawn(this);
+      var drop = FloorDrops.choose(depth);
+      drop.spawn(this);
     }
   }
 
@@ -301,6 +311,144 @@ class Dungeon {
 
     // If we get here, the corridors are all full.
     return stage.findOpenTile();
+  }
+
+  void _spawnMonster(Breed breed) {
+    var pos = findSpawnTile(breed.location);
+    var corpse = rng.oneIn(8);
+
+    var monsters = breed.spawnAll(stage.game);
+
+    placeMonster(Monster monster, Vec pos) {
+      monster.pos = pos;
+
+      if (corpse) {
+        monster.placeDrops(showLog: false);
+      } else {
+        stage.addActor(monster);
+      }
+
+      if (monster.breed.stain != null) {
+        // TODO: Larger stains for stronger monsters?
+        _stain(monster.breed.stain, pos, 5, 2);
+      }
+    }
+
+    // TODO: Hack. Flow doesn't include the starting tile, so handle it here.
+    placeMonster(monsters[0], pos);
+
+    var flow = new Flow(stage, pos);
+    for (var monster in monsters.skip(1)) {
+      // TODO: Ideally, this would follow the location preference of the breed
+      // too, even for minions of different breeds.
+      var here = flow.nearestWhere((_) => true);
+
+      // If there are no open tiles, discard the remaining monsters.
+      if (here == null) break;
+
+      placeMonster(monster, here);
+    }
+  }
+
+  Vec findSpawnTile(SpawnLocation location) {
+    switch (location) {
+      case SpawnLocation.anywhere:
+        return stage.findOpenTile();
+
+      case SpawnLocation.corner:
+        return _preferWalls(20, 4);
+
+      case SpawnLocation.corridor:
+        print("corridor");
+        return _preferWalls(100, 6);
+
+      case SpawnLocation.grass:
+        return _preferTile(Tiles.grass, 40);
+
+      case SpawnLocation.open:
+        return _avoidWalls(20);
+
+      case SpawnLocation.wall:
+        return _preferWalls(20, 3);
+    }
+
+    throw "unreachable";
+  }
+
+  Vec _preferWalls(int tries, int idealWalls) {
+    var bestWalls = -1;
+    Vec best;
+    for (var i = 0; i < tries; i++) {
+      var pos = stage.findOpenTile();
+      var walls = Direction.all.where((dir) => !getTileAt(pos + dir).isTraversable).length;
+
+      // Don't try to crowd corridors.
+      if (walls >= 6 && !rng.oneIn(3)) continue;
+
+      // Early out as soon as we find a good enough spot.
+      if (walls >= idealWalls) return pos;
+
+      if (walls > bestWalls) {
+        best = pos;
+        bestWalls = walls;
+      }
+    }
+
+    // Otherwise, take the best we could find.
+    return best;
+  }
+
+  Vec _avoidWalls(int tries) {
+    var bestWalls = 100;
+    Vec best;
+    for (var i = 0; i < tries; i++) {
+      var pos = stage.findOpenTile();
+      var walls = Direction.all.where((dir) => !getTileAt(pos + dir).isWalkable).length;
+
+      // Early out as soon as we find a good enough spot.
+      if (walls == 0) return pos;
+
+      if (walls < bestWalls) {
+        best = pos;
+        bestWalls = walls;
+      }
+    }
+
+    // Otherwise, take the best we could find.
+    return best;
+  }
+
+  /// Tries to pick a random open tile with [type].
+  ///
+  /// If it fails to find one after [tries], returns any random open tile.
+  Vec _preferTile(TileType type, int tries) {
+    // TODO: This isn't very efficient. Probably better to build a cached set of
+    // all tile positions by type.
+    for (var i = 0; i < tries; i++) {
+      var pos = stage.findOpenTile();
+      if (getTileAt(pos) == type) return pos;
+    }
+
+    // Pick any tile.
+    return stage.findOpenTile();
+  }
+
+  void _stain(TileType tile, Vec start, int distance, int count) {
+    // Make a bunch of wandering paths from the starting point, leaving stains
+    // as they go.
+    for (var i = 0; i < count; i++) {
+      var pos = start;
+      for (var j = 0; j < distance; j++) {
+        if (rng.percent(60) && getTileAt(pos) == Tiles.floor) {
+          setTileAt(pos, tile);
+        }
+
+        var dirs = Direction.all
+            .where((dir) => getTileAt(pos + dir).isTraversable)
+            .toList();
+        pos += rng.item(dirs);
+      }
+    }
   }
 
   void _chooseBiomes() {

@@ -70,11 +70,6 @@ class Option {
   /// The experience point multipliers for each breed flag.
   static const expFlag = const {
     'fly': 1.3,
-    'horde': 1.5,
-    'swarm': 1.4,
-    'pack': 1.3,
-    'group': 1.2,
-    'few': 1.1,
     'open-doors': 1.1,
     'fearless': 1.2,
     'protective': 1.1,

@@ -264,6 +264,13 @@ class Monster extends Actor {
 
   /// Called when this Actor has been killed by [attackNoun].
   void onDied(Noun attackNoun) {
+    placeDrops(showLog: true);
+
+    game.stage.removeActor(this);
+    Debug.removeMonster(this);
+  }
+
+  void placeDrops({bool showLog}) {
     // Try to keep dropped items from overlapping.
     var flow = new Flow(game.stage, pos,
         canOpenDoors: false, ignoreActors: true);
@@ -284,11 +291,8 @@ class Monster extends Actor {
       }
 
       game.stage.addItem(item, itemPos);
-      log("{1} drop[s] {2}.", this, item);
+      if (showLog) log("{1} drop[s] {2}.", this, item);
     });
-
-    game.stage.removeActor(this);
-    Debug.removeMonster(this);
   }
 
   void onFinishTurn(Action action) {
