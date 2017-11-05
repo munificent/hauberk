@@ -75,6 +75,18 @@ class Flow {
     _distances[_open.first] = 0;
   }
 
+  Iterable<Vec> get allByDistance sync* {
+    for (var i = 0;; i++) {
+      // Lazily find the next open tile.
+      while (_open.isNotEmpty && i >= _found.length) _processNext();
+
+      // Stop when we run out.
+      if (_open.isEmpty && i >= _found.length) break;
+
+      yield _found[i] + _offset;
+    }
+  }
+
   /// Returns the nearest position to start that meets [predicate].
   ///
   /// If there are multiple equidistance positions, chooses one randomly. If

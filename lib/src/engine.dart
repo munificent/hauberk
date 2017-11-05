@@ -7,6 +7,7 @@ export 'engine/action/bolt.dart';
 export 'engine/action/condition.dart';
 export 'engine/action/detection.dart';
 export 'engine/action/element.dart';
+export 'engine/action/flow.dart';
 export 'engine/action/heal.dart';
 export 'engine/action/item.dart';
 export 'engine/action/ray.dart';

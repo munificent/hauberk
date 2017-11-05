@@ -173,11 +173,11 @@ class RingSelfAction extends Action {
   }
 }
 
-class RingAtAction extends Action {
+class RingFromAction extends Action {
   final Attack _attack;
   final Vec _pos;
 
-  RingAtAction(this._attack, this._pos);
+  RingFromAction(this._attack, this._pos);
 
   ActionResult onPerform() {
     return alternate(new RayAction.ring(_pos, _attack.createHit()));

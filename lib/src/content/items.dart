@@ -201,21 +201,20 @@ void potions() {
   category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable");
 
   // TODO: Make monsters drop these.
-  // TODO: These should do their ball attack when thrown too.
   tagged("magic/potion/bottled");
-  tossable(damage: 1, range: 12, breakage: 100);
-  bottled("Wind",         4,   30, cornflower,  Element.air,        20, "blasts");
+  tossable(damage: 1, range: 8, breakage: 100);
+  bottled("Wind",         4,   30, cornflower,  Element.air,        20, "blasts", flow: true, fly: true);
   bottled("Ice",          7,   55, cerulean,    Element.cold,       30, "freezes", flags: "-freezable");
-  bottled("Fire",        11,   70, brickRed,    Element.fire,       44, "burns");
-  bottled("Ocean",       12,  110, ultramarine, Element.water,      52, "drowns");
+  bottled("Fire",        11,   70, brickRed,    Element.fire,       44, "burns", flow: true, fly: true);
+  bottled("Ocean",       12,  110, ultramarine, Element.water,      52, "drowns", flow: true);
   bottled("Earth",       13,  150, persimmon,   Element.earth,      58, "crushes");
   bottled("Lightning",   16,  200, lilac,       Element.lightning,  68, "shocks");
-  bottled("Acid",        18,  250, lima,        Element.acid,       72, "corrodes");
-  bottled("Poison",      22,  330, sherwood,    Element.poison,     90, "infects");
+  bottled("Acid",        18,  250, lima,        Element.acid,       72, "corrodes", flow: true);
+  bottled("Poison",      22,  330, sherwood,    Element.poison,     90, "infects", flow: true, fly: true);
   bottled("Shadow",      28,  440, steelGray,   Element.dark,      120, "torments",
       noun: "the darkness");
   bottled("Radiance",    34,  600, buttermilk,  Element.light,     140, "sears");
-  bottled("Spirit",      40, 1000, slate,       Element.spirit,    160, "haunts");
+  bottled("Spirit",      40, 1000, slate,       Element.spirit,    160, "haunts", flow: true, fly: true);
 }
 
 void scrolls() {
@@ -486,14 +485,23 @@ void resistSalve(String name, int depth, int price, appearance,
 }
 
 void bottled(String name, int depth, int price, appearance, Element element,
-    int damage, String verb, {String noun, String flags}) {
+    int damage, String verb, {String noun, String flags, bool flow = false,
+      bool fly = false}) {
   noun ??= "the ${name.toLowerCase()}";
-
   var attack = new Attack(new Noun(noun), verb, damage, 3, element);
-  item("Bottled $name", depth, 2, appearance, price: price,
-      use: () => new RingSelfAction(attack),
-      tossUse: (pos) => new RingAtAction(attack, pos),
-      flags: flags);
+
+  if (flow) {
+    item("Bottled $name", depth, 2, appearance, price: price,
+        use: () => new FlowSelfAction(attack, fly: fly),
+        tossUse: (pos) => new FlowFromAction(attack, pos, fly: fly),
+        flags: flags);
+
+  } else {
+    item("Bottled $name", depth, 2, appearance, price: price,
+        use: () => new RingSelfAction(attack),
+        tossUse: (pos) => new RingFromAction(attack, pos),
+        flags: flags);
+  }
 }
 
 void detection(String name, int depth, int rarity, int price, appearance,
