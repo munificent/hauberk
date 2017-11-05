@@ -5,7 +5,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../debug.dart';
 import 'action/action.dart';
 import 'actor.dart';
-import 'ai/flow.dart';
 import 'ai/monster_states.dart';
 import 'ai/move.dart';
 import 'attack.dart';
@@ -264,35 +263,13 @@ class Monster extends Actor {
 
   /// Called when this Actor has been killed by [attackNoun].
   void onDied(Noun attackNoun) {
-    placeDrops(showLog: true);
+    var items = game.stage.placeDrops(pos, breed);
+    for (var item in items) {
+      log("{1} drop[s] {2}.", this, item);
+    }
 
     game.stage.removeActor(this);
     Debug.removeMonster(this);
-  }
-
-  void placeDrops({bool showLog}) {
-    // Try to keep dropped items from overlapping.
-    var flow = new Flow(game.stage, pos,
-        canOpenDoors: false, ignoreActors: true);
-
-    // TODO: If a flying monster dies not adjacent to any walkable tiles, what
-    // happens with their drops?
-
-    // Handle drops.
-    breed.drop.spawnDrop((item) {
-      var itemPos = pos;
-      if (game.stage.isItemAt(pos)) {
-        itemPos = flow.nearestWhere((pos) {
-          if (rng.oneIn(5)) return true;
-          return !game.stage.isItemAt(pos);
-        });
-
-        if (itemPos == null) itemPos = pos;
-      }
-
-      game.stage.addItem(item, itemPos);
-      if (showLog) log("{1} drop[s] {2}.", this, item);
-    });
   }
 
   void onFinishTurn(Action action) {

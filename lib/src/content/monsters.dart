@@ -477,8 +477,8 @@ void kobolds() {
     ..attack("club[s]", 4)
     ..insult()
     ..haste()
-    ..drop(10, "club")
-    ..drop(5, "speed")
+    ..drop(20, "club")
+    ..drop(20, "speed")
     ..flags("cowardly");
 
   breed("vexing imp", 4, violet, 19, speed: 1, meander: 2)
@@ -487,7 +487,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..insult()
     ..sparkBolt(rate: 5, damage: 6)
-    ..drop(10, "teleportation")
+    ..drop(30, "teleportation")
     ..flags("cowardly");
 
   family("k", speed: 1, meander: 3);
@@ -531,7 +531,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..insult()
     ..fireBolt(rate: 5, damage: 10)
-    ..drop(20, "magic")
+    ..drop(50, "magic")
     ..flags("cowardly");
 
   breed("imp warlock", 14, indigo, 40, speed: 1, meander: 3)
@@ -541,7 +541,8 @@ void kobolds() {
     ..attack("stab[s]", 5)
     ..iceBolt(rate: 8, damage: 12)
     ..fireBolt(rate: 8, damage: 12)
-    ..drop(20, "magic")
+    ..drop(30, "staff")
+    ..drop(50, "magic")
     ..flags("cowardly");
 
   // TODO: Always drop something good.
@@ -556,7 +557,12 @@ void kobolds() {
     ..teleport(rate: 50, range: 30)
     ..insult()
     ..lightningCone(rate: 8, damage: 12)
-    ..drop(20, "magic")
+    ..drop(50, "spear", 5)
+    ..drop(40, "armor", 5)
+    ..drop(40, "armor", 5)
+    ..drop(50, "magic", 5)
+    ..drop(50, "magic", 5)
+    ..drop(50, "magic", 5)
     ..flags("cowardly");
 
   // homonculous
@@ -581,43 +587,42 @@ void people() {
   family("p", tracking: 14, flags: "open-doors");
   breed("hapless adventurer", 1, buttermilk, 12, meander: 3)
     ..attack("hit[s]", 3)
-    ..drop(40, "weapon")
-    ..drop(30, "armor")
-    ..drop(20, "magic")
+    ..drop(50, "weapon")
+    ..drop(60, "armor")
+    ..drop(40, "magic")
     ..flags("cowardly");
 
   breed("simpering knave", 2, carrot, 15, meander: 3)
     ..attack("hit[s]", 2)
     ..attack("stab[s]", 4)
-    ..drop(30, "whip")
-    ..drop(20, "body")
-    ..drop(10, "boots")
-    ..drop(10, "magic")
+    ..drop(40, "whip")
+    ..drop(40, "armor")
+    ..drop(30, "magic")
     ..flags("cowardly");
 
   breed("decrepit mage", 3, violet, 16, meander: 2)
     ..attack("hit[s]", 2)
     ..sparkBolt(rate: 10, damage: 8)
-    ..drop(30, "magic")
-    ..drop(15, "dagger")
-    ..drop(15, "staff")
-    ..drop(10, "robe")
-    ..drop(10, "boots");
+    ..drop(60, "magic")
+    ..drop(30, "dagger")
+    ..drop(20, "staff")
+    ..drop(20, "robe")
+    ..drop(20, "boots");
 
   breed("unlucky ranger", 5, peaGreen, 20, meander: 2)
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
-    ..drop(15, "potion")
-    ..drop(10, "bow")
-    ..drop(5, "sword")
-    ..drop(8, "body");
+    ..drop(30, "potion")
+    ..drop(40, "bow")
+    ..drop(10, "sword")
+    ..drop(10, "body");
 
   breed("drunken priest", 5, cerulean, 18, meander: 4)
     ..attack("hit[s]", 8)
     ..heal(rate: 15, amount: 8)
-    ..drop(15, "scroll")
-    ..drop(7, "club")
-    ..drop(7, "robe")
+    ..drop(30, "scroll")
+    ..drop(20, "club")
+    ..drop(40, "robe")
     ..flags("fearless");
 }
 
@@ -986,7 +991,7 @@ class _BreedBuilder extends _BaseBuilder {
   }
 
   Breed build() {
-    var flags = new Set();
+    var flags = new Set<String>();
     if (_family._flags != null) flags.addAll(_family._flags.split(" "));
     if (_flags != null) flags.addAll(_flags.split(" "));
 

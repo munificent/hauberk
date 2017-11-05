@@ -296,11 +296,6 @@ class Dungeon {
     }
   }
 
-  void spawnMonster(Breed breed, Vec pos) {
-    var monster = breed.spawn(stage.game, pos);
-    stage.addActor(monster);
-  }
-
   Vec findOpenCorridor() {
     assert(_corridors.isNotEmpty, "Need to calculate info first.");
 
@@ -317,28 +312,30 @@ class Dungeon {
     var pos = findSpawnTile(breed.location);
     var corpse = rng.oneIn(8);
 
-    var monsters = breed.spawnAll(stage.game);
+    var breeds = breed.spawnAll(stage.game);
 
-    placeMonster(Monster monster, Vec pos) {
-      monster.pos = pos;
-
+    spawn(Breed breed, Vec pos) {
       if (corpse) {
-        monster.placeDrops(showLog: false);
+        stage.placeDrops(pos, breed);
       } else {
-        stage.addActor(monster);
+        stage.addActor(breed.spawn(stage.game, pos));
       }
 
-      if (monster.breed.stain != null) {
+      if (breed.stain != null) {
         // TODO: Larger stains for stronger monsters?
-        _stain(monster.breed.stain, pos, 5, 2);
+        _stain(breed.stain, pos, 5, 2);
       }
     }
 
     // TODO: Hack. Flow doesn't include the starting tile, so handle it here.
-    placeMonster(monsters[0], pos);
+    spawn(breeds[0], pos);
 
-    var flow = new Flow(stage, pos);
-    for (var monster in monsters.skip(1)) {
+    for (var breed in breeds.skip(1)) {
+      // TODO: Hack. Need to create a new flow each iteration because it doesn't
+      // handle actors being placed while the flow is being used -- it still
+      // thinks those tiles are available. Come up with a better way to place
+      // the monsters.
+      var flow = new Flow(stage, pos);
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
       var here = flow.nearestWhere((_) => true);
@@ -346,7 +343,7 @@ class Dungeon {
       // If there are no open tiles, discard the remaining monsters.
       if (here == null) break;
 
-      placeMonster(monster, here);
+      spawn(breed, here);
     }
   }
 

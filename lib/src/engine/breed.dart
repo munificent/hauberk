@@ -140,27 +140,27 @@ class Breed {
     return new Monster(game, this, pos.x, pos.y, maxHealth, generation);
   }
 
-  /// Generate the list of monsters spawned by this breed.
+  /// Generate the list of breeds spawned by this breed.
   ///
-  /// Takes into account this breed's count and minions.
-  List<Monster> spawnAll(Game game) {
-    var monsters = <Monster>[];
+  /// Each item in the list represents a breed that should spawn a single
+  /// monster. Takes into account this breed's count and minions.
+  List<Breed> spawnAll(Game game) {
+    var breeds = <Breed>[];
 
     // This breed.
     var count = rng.inclusive(countMin, countMax);
     for (var i = 0; i < count; i++) {
-      monsters.add(new Monster(game, this, 0, 0, maxHealth, 1));
+      breeds.add(this);
     }
 
     for (var minion in minions) {
       count = rng.inclusive(minion.countMin, minion.countMax);
       for (var i = 0; i < count; i++) {
-        monsters.add(
-            new Monster(game, minion.breed, 0, 0, minion.breed.maxHealth, 1));
+        breeds.add(minion.breed);
       }
     }
 
-    return monsters;
+    return breeds;
   }
 }
 

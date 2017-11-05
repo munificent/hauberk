@@ -2,6 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'ai/flow.dart';
 import 'actor.dart';
+import 'breed.dart';
 import 'fov.dart';
 import 'game.dart';
 import 'hero/hero.dart';
@@ -116,6 +117,34 @@ class Stage {
   }
 
   Actor actorAt(Vec pos) => _actorsByTile[pos];
+
+  List<Item> placeDrops(Vec pos, Breed breed) {
+    var items = <Item>[];
+
+    // Try to keep dropped items from overlapping.
+    var flow = new Flow(this, pos,
+        canOpenDoors: false, ignoreActors: true);
+
+    // TODO: If a flying monster dies not adjacent to any walkable tiles, what
+    // happens with their drops?
+
+    breed.drop.spawnDrop((item) {
+      items.add(item);
+      var itemPos = pos;
+      if (isItemAt(pos)) {
+        itemPos = flow.nearestWhere((pos) {
+          if (rng.oneIn(5)) return true;
+          return !isItemAt(pos);
+        });
+
+        if (itemPos == null) itemPos = pos;
+      }
+
+      addItem(item, itemPos);
+    });
+
+    return items;
+  }
 
   void addItem(Item item, Vec pos) {
     // Get the inventory for the tile.
