@@ -92,10 +92,10 @@ class Agility extends Attribute {
 // resist physical effects
 // affect food consumption?
 class Fortitude extends Attribute {
-  String get name => "Fortitude";
-
   static int maxHealth(int value) =>
       (math.pow(value, 1.5) - 0.5 * value + 30).toInt();
+
+  String get name => "Fortitude";
 }
 
 // spell power

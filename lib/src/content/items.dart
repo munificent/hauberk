@@ -57,8 +57,12 @@ class Items {
     pelts();
     potions();
     scrolls();
+    // TODO: Rings.
+    // TODO: Amulets.
     weapons();
     bodyArmor();
+    // TODO: Shields.
+    // TODO: Helmets.
     boots();
 
     /*
@@ -348,15 +352,15 @@ void bodyArmor() {
 
   category(CharCode.latinSmallLetterOWithDiaeresis, tag: "equipment/armor/body");
   armor("Cloth Shirt",             2,   2,   19, sandal,      2);
-  armor("Leather Shirt",           5,   2,  126, persimmon,   5);
-  armor("Jerkin",                  7,   2,  191, gunsmoke,    6);
-  armor("Leather Armor",          10,   2,  377, garnet,      8);
-  armor("Padded Armor",           14,   2,  819, steelGray,  11);
-  armor("Studded Leather Armor",  17,   2, 1782, slate,      15);
+  armor("Leather Shirt",           5,   2,  126, persimmon,   5, encumbrance: 1);
+  armor("Jerkin",                  7,   2,  191, gunsmoke,    6, encumbrance: 1);
+  armor("Leather Armor",          10,   2,  377, garnet,      8, encumbrance: 2);
+  armor("Padded Armor",           14,   2,  819, steelGray,  11, encumbrance: 3);
+  armor("Studded Leather Armor",  17,   2, 1782, slate,      15, encumbrance: 5);
 
   category(CharCode.latinSmallLetterOWithGrave, tag: "equipment/armor/body");
-  armor("Mail Hauberk",           20,   2, 2835, steelGray,  18);
-  armor("Scale Mail",             23,   2, 4212, gunsmoke,   21);
+  armor("Mail Hauberk",           20,   2, 2835, steelGray,  18, encumbrance: 6);
+  armor("Scale Mail",             23,   2, 4212, gunsmoke,   21, encumbrance: 8);
 
 //  CharCode.latinSmallLetterUWithCircumflex // armor
 
@@ -382,9 +386,9 @@ void boots() {
   armor("Pair[s] of Leather Shoes",         8, 3,   19, garnet,      2);
 
   category(CharCode.latinCapitalLetterAWithDiaeresis, tag: "equipment/armor/boots");
-  armor("Pair[s] of Leather Boots",        14, 3,   77, persimmon,  4);
-  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, slate,      7);
-  armor("Pair[s] of Greaves",              47, 4, 1017, gunsmoke,  12);
+  armor("Pair[s] of Leather Boots",        14, 3,   77, persimmon,  4, encumbrance: 1);
+  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, slate,      7, encumbrance: 2);
+  armor("Pair[s] of Greaves",              47, 4, 1017, gunsmoke,  12, encumbrance: 4);
 }
 
 void category(int glyph, {String tag, String verb, String flags, int stack: 1}) {
@@ -540,14 +544,16 @@ void ranged(String name, int depth, int price, appearance, String noun,
       price: price);
 }
 
-void armor(String name, int depth, int rarity, int price, appearance, int armor) {
-  item(name, depth, rarity, appearance, armor: armor, price: price);
+void armor(String name, int depth, int rarity, int price, appearance, int armor,
+    {int encumbrance = 0}) {
+  item(name, depth, rarity, appearance, armor: armor, price: price,
+      encumbrance: encumbrance);
 }
 
 void item(String name, int depth, int rarity, appearance, {ItemUse use,
     TossItemUse tossUse,
-    Attack attack, Attack tossAttack, int armor: 0, int price: 0,
-    bool treasure: false, String flags}) {
+    Attack attack, Attack tossAttack, int armor = 0, int price = 0,
+    bool treasure = false, String flags, int encumbrance = 0}) {
   // If the appearance isn't an actual glyph, it should be a color function
   // that will be applied to the current glyph.
   if (appearance is Color) {
@@ -569,6 +575,7 @@ void item(String name, int depth, int rarity, appearance, {ItemUse use,
 
   var itemType = new ItemType(name, appearance, depth, _sortIndex++, _equipSlot,
       _weaponType, use, attack, toss, armor, price, _maxStack,
+      encumbrance: encumbrance,
       treasure: treasure);
 
   // Use the tags (if any) to figure out which slot it can be equipped in.

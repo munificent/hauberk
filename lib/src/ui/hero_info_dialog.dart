@@ -9,7 +9,7 @@ class HeroInfoDialog extends Screen<Input> {
   final Map<Attribute, int> _attributes;
   final Hero _hero;
 
-  HeroInfoDialog(this._hero) : _attributes = new Map.from(_hero.attributes);
+  HeroInfoDialog(this._hero) : _attributes = new Map.from(_hero.naturalAttributes);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;

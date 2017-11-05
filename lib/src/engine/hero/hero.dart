@@ -71,7 +71,7 @@ class HeroSave {
     // Are these needed? Can the player spend stat points in the dungeon?
     // Are drains permanent?
     for (var attribute in Attribute.all) {
-      attributes[attribute] = hero.attributes[attribute];
+      attributes[attribute] = hero.naturalAttributes[attribute];
     }
 
     attributePoints = hero.attributePoints;
@@ -92,14 +92,30 @@ class Hero extends Actor {
   /// not floating point) precision.
   int _experienceCents = 0;
 
-  final Map<Attribute, int> attributes;
+  int attribute(Attribute type) {
+    if (type == Attribute.strength) return strength;
+    if (type == Attribute.agility) return agility;
+    if (type == Attribute.fortitude) return fortitude;
+    if (type == Attribute.intellect) return intellect;
+    if (type == Attribute.will) return will;
+
+    throw "unreachable";
+  }
+
+  final Map<Attribute, int> naturalAttributes;
 
   // TODO: Take bonuses into account.
-  int get strength => attributes[Attribute.strength];
-  int get agility => attributes[Attribute.agility];
-  int get fortitude => attributes[Attribute.fortitude];
-  int get intellect => attributes[Attribute.intellect];
-  int get will => attributes[Attribute.will];
+  int get strength => (naturalStrength - encumbrance).clamp(1, 60);
+  int get agility => naturalAgility;
+  int get fortitude => naturalFortitude;
+  int get intellect => naturalIntellect;
+  int get will => naturalWill;
+
+  int get naturalStrength => naturalAttributes[Attribute.strength];
+  int get naturalAgility => naturalAttributes[Attribute.agility];
+  int get naturalFortitude => naturalAttributes[Attribute.fortitude];
+  int get naturalIntellect => naturalAttributes[Attribute.intellect];
+  int get naturalWill => naturalAttributes[Attribute.will];
 
   /// Available points that can be spent raising attributes.
   int attributePoints;
@@ -131,7 +147,7 @@ class Hero extends Actor {
       : inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
-        attributes = new Map.from(save.attributes),
+        naturalAttributes = new Map.from(save.attributes),
         attributePoints = save.attributePoints,
         gold = save.gold,
         super(game, pos.x, pos.y, 0) {
@@ -174,6 +190,16 @@ class Hero extends Actor {
 
     // TODO: Apply skills.
 //    total += heroClass.armor;
+
+    return total;
+  }
+
+  /// The total encumbrance of all equipment.
+  int get encumbrance {
+    var total = 0;
+    for (var item in equipment) {
+      total += item.encumbrance;
+    }
 
     return total;
   }
@@ -222,7 +248,7 @@ class Hero extends Actor {
 
     // Apply the changes.
     for (var attribute in Attribute.all) {
-      this.attributes[attribute] = attributes[attribute];
+      this.naturalAttributes[attribute] = attributes[attribute];
     }
   }
 

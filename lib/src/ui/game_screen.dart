@@ -104,12 +104,24 @@ class GameScreen extends Screen<Input> {
         }
         break;
 
-      case Input.forfeit: ui.push(new ForfeitDialog(game)); break;
-      case Input.selectCommand: ui.push(new SelectCommandDialog(game)); break;
-      case Input.heroInfo: ui.push(new HeroInfoDialog(game.hero)); break;
-      case Input.drop: ui.push(new ItemDialog.drop(this)); break;
-      case Input.use: ui.push(new ItemDialog.use(this)); break;
-      case Input.toss: ui.push(new ItemDialog.toss(this)); break;
+      case Input.forfeit:
+        ui.push(new ForfeitDialog(game));
+        break;
+      case Input.selectCommand:
+        ui.push(new SelectCommandDialog(game));
+        break;
+      case Input.heroInfo:
+        ui.push(new HeroInfoDialog(game.hero));
+        break;
+      case Input.drop:
+        ui.push(new ItemDialog.drop(this));
+        break;
+      case Input.use:
+        ui.push(new ItemDialog.use(this));
+        break;
+      case Input.toss:
+        ui.push(new ItemDialog.toss(this));
+        break;
 
       case Input.rest:
         if (!game.hero.rest()) {
@@ -118,36 +130,90 @@ class GameScreen extends Screen<Input> {
         }
         break;
 
-      case Input.closeDoor: closeDoor(); break;
-      case Input.pickUp: pickUp(); break;
+      case Input.closeDoor:
+        closeDoor();
+        break;
+      case Input.pickUp:
+        pickUp();
+        break;
 
-      case Input.nw: action = new WalkAction(Direction.nw); break;
-      case Input.n: action = new WalkAction(Direction.n); break;
-      case Input.ne: action = new WalkAction(Direction.ne); break;
-      case Input.w: action = new WalkAction(Direction.w); break;
-      case Input.ok: action = new WalkAction(Direction.none); break;
-      case Input.e: action = new WalkAction(Direction.e); break;
-      case Input.sw: action = new WalkAction(Direction.sw); break;
-      case Input.s: action = new WalkAction(Direction.s); break;
-      case Input.se: action = new WalkAction(Direction.se); break;
+      case Input.nw:
+        action = new WalkAction(Direction.nw);
+        break;
+      case Input.n:
+        action = new WalkAction(Direction.n);
+        break;
+      case Input.ne:
+        action = new WalkAction(Direction.ne);
+        break;
+      case Input.w:
+        action = new WalkAction(Direction.w);
+        break;
+      case Input.ok:
+        action = new WalkAction(Direction.none);
+        break;
+      case Input.e:
+        action = new WalkAction(Direction.e);
+        break;
+      case Input.sw:
+        action = new WalkAction(Direction.sw);
+        break;
+      case Input.s:
+        action = new WalkAction(Direction.s);
+        break;
+      case Input.se:
+        action = new WalkAction(Direction.se);
+        break;
 
-      case Input.runNW: game.hero.run(Direction.nw); break;
-      case Input.runN: game.hero.run(Direction.n); break;
-      case Input.runNE: game.hero.run(Direction.ne); break;
-      case Input.runW: game.hero.run(Direction.w); break;
-      case Input.runE: game.hero.run(Direction.e); break;
-      case Input.runSW: game.hero.run(Direction.sw); break;
-      case Input.runS: game.hero.run(Direction.s); break;
-      case Input.runSE: game.hero.run(Direction.se); break;
+      case Input.runNW:
+        game.hero.run(Direction.nw);
+        break;
+      case Input.runN:
+        game.hero.run(Direction.n);
+        break;
+      case Input.runNE:
+        game.hero.run(Direction.ne);
+        break;
+      case Input.runW:
+        game.hero.run(Direction.w);
+        break;
+      case Input.runE:
+        game.hero.run(Direction.e);
+        break;
+      case Input.runSW:
+        game.hero.run(Direction.sw);
+        break;
+      case Input.runS:
+        game.hero.run(Direction.s);
+        break;
+      case Input.runSE:
+        game.hero.run(Direction.se);
+        break;
 
-      case Input.fireNW: _fireTowards(Direction.nw); break;
-      case Input.fireN: _fireTowards(Direction.n); break;
-      case Input.fireNE: _fireTowards(Direction.ne); break;
-      case Input.fireW: _fireTowards(Direction.w); break;
-      case Input.fireE: _fireTowards(Direction.e); break;
-      case Input.fireSW: _fireTowards(Direction.sw); break;
-      case Input.fireS: _fireTowards(Direction.s); break;
-      case Input.fireSE: _fireTowards(Direction.se); break;
+      case Input.fireNW:
+        _fireTowards(Direction.nw);
+        break;
+      case Input.fireN:
+        _fireTowards(Direction.n);
+        break;
+      case Input.fireNE:
+        _fireTowards(Direction.ne);
+        break;
+      case Input.fireW:
+        _fireTowards(Direction.w);
+        break;
+      case Input.fireE:
+        _fireTowards(Direction.e);
+        break;
+      case Input.fireSW:
+        _fireTowards(Direction.sw);
+        break;
+      case Input.fireS:
+        _fireTowards(Direction.s);
+        break;
+      case Input.fireSE:
+        _fireTowards(Direction.se);
+        break;
 
       case Input.fire:
         // TODO: When there is more than one usable command, bring up the
@@ -177,8 +243,8 @@ class GameScreen extends Screen<Input> {
           game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
-          action = new EquipAction(ItemLocation.inventory,
-              game.hero.inventory.lastUnequipped);
+          action = new EquipAction(
+              ItemLocation.inventory, game.hero.inventory.lastUnequipped);
         }
         break;
     }
@@ -304,8 +370,8 @@ class GameScreen extends Screen<Input> {
         // Refresh the log.
         dirty();
       } else if (result is TargetCommand) {
-        ui.push(new TargetDialog(this, result.getRange(game),
-            (_) => _fireAtTarget()));
+        ui.push(new TargetDialog(
+            this, result.getRange(game), (_) => _fireAtTarget()));
       } else if (result is DirectionCommand) {
         ui.push(new DirectionDialog(this, game));
       }
@@ -343,8 +409,8 @@ class GameScreen extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    var bar = new Glyph.fromCharCode(
-        CharCode.boxDrawingsLightVertical, steelGray);
+    var bar =
+        new Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
     for (var y = 0; y < terminal.height; y++) {
       terminal.drawGlyph(60, y, bar);
     }
@@ -382,17 +448,19 @@ class GameScreen extends Screen<Input> {
     var rangeWidth = math.max(0, game.stage.width - viewSize.x);
     var rangeHeight = math.max(0, game.stage.height - viewSize.y);
 
-    var cameraRange = new Rect(0, 0, rangeWidth,  rangeHeight);
+    var cameraRange = new Rect(0, 0, rangeWidth, rangeHeight);
 
     var camera = game.hero.pos - viewSize ~/ 2;
     camera = cameraRange.clamp(camera);
-    _cameraBounds = new Rect(camera.x, camera.y,
+    _cameraBounds = new Rect(
+        camera.x,
+        camera.y,
         math.min(viewSize.x, game.stage.width),
         math.min(viewSize.y, game.stage.height));
   }
 
-  void _drawStage(Terminal terminal, Color heroColor,
-      List<Monster> visibleMonsters) {
+  void _drawStage(
+      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
 
     dazzleGlyph(Glyph glyph) {
@@ -490,24 +558,34 @@ class GameScreen extends Screen<Input> {
     for (final message in game.log.messages) {
       var color;
       switch (message.type) {
-        case LogType.message: color = gunsmoke; break;
-        case LogType.error: color = brickRed; break;
-        case LogType.quest: color = violet; break;
-        case LogType.gain: color = gold; break;
-        case LogType.help: color = peaGreen; break;
+        case LogType.message:
+          color = gunsmoke;
+          break;
+        case LogType.error:
+          color = brickRed;
+          break;
+        case LogType.quest:
+          color = violet;
+          break;
+        case LogType.gain:
+          color = gold;
+          break;
+        case LogType.help:
+          color = peaGreen;
+          break;
       }
 
       terminal.writeAt(0, y, message.text, color);
       if (message.count > 1) {
-        terminal.writeAt(message.text.length, y, ' (x${message.count})',
-            steelGray);
+        terminal.writeAt(
+            message.text.length, y, ' (x${message.count})', steelGray);
       }
       y++;
     }
   }
 
-  void _drawSidebar(Terminal terminal, Color heroColor,
-      List<Monster> visibleMonsters) {
+  void _drawSidebar(
+      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
     _drawStat(terminal, 0, 'Health', hero.health.current, brickRed,
         hero.health.max, maroon);
@@ -515,20 +593,22 @@ class GameScreen extends Screen<Input> {
     terminal.writeAt(10, 1, hero.food.ceil().toString(), persimmon);
 
     _drawStat(terminal, 2, 'Level', hero.level, cerulean);
-    var levelPercent = 100 * hero.experience ~/
-        (calculateLevelCost(hero.level + 1) -
-        calculateLevelCost(hero.level));
+    var levelPercent = 100 *
+        hero.experience ~/
+        (calculateLevelCost(hero.level + 1) - calculateLevelCost(hero.level));
     terminal.writeAt(15, 2, '$levelPercent%', ultramarine);
 
     var y = 4;
     for (var attribute in Attribute.all) {
-      _drawStat(terminal, y, attribute.name, hero.attributes[attribute], ash);
+      terminal.writeAt(0, y, attribute.name, UIHue.helpText);
+      terminal.writeAt(10, y, hero.attribute(attribute).toString(), ash);
+      terminal.writeAt(
+          14, y, hero.naturalAttributes[attribute].toString(), steelGray);
       y++;
     }
 
     _drawStat(terminal, 10, 'Armor',
-        '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
-        peaGreen);
+        '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit();
     _drawStat(terminal, 11, 'Weapon', hit.damageString, turquoise);
@@ -585,8 +665,9 @@ class GameScreen extends Screen<Input> {
   }
 
   /// Draws a labeled numeric stat.
-  void _drawStat(Terminal terminal, int y, String label, value,
-      Color valueColor, [max, Color maxColor]) {
+  void _drawStat(
+      Terminal terminal, int y, String label, value, Color valueColor,
+      [max, Color maxColor]) {
     terminal.writeAt(0, y, label, UIHue.helpText);
     var valueString = value.toString();
     terminal.writeAt(10, y, valueString, valueColor);
@@ -621,17 +702,29 @@ class GameScreen extends Screen<Input> {
 
     if (actor.poison.isActive) {
       switch (actor.poison.intensity) {
-        case 1: conditions.add(["P", sherwood]); break;
-        case 2: conditions.add(["P", peaGreen]); break;
-        default: conditions.add(["P", mint]); break;
+        case 1:
+          conditions.add(["P", sherwood]);
+          break;
+        case 2:
+          conditions.add(["P", peaGreen]);
+          break;
+        default:
+          conditions.add(["P", mint]);
+          break;
       }
     }
 
     if (actor.cold.isActive) conditions.add(["C", cornflower]);
     switch (actor.haste.intensity) {
-      case 1: conditions.add(["S", persimmon]); break;
-      case 2: conditions.add(["S", gold]); break;
-      case 3: conditions.add(["S", buttermilk]); break;
+      case 1:
+        conditions.add(["S", persimmon]);
+        break;
+      case 2:
+        conditions.add(["S", gold]);
+        break;
+      case 3:
+        conditions.add(["S", buttermilk]);
+        break;
     }
 
     if (actor.blindness.isActive) conditions.add(["B", steelGray]);
@@ -653,8 +746,8 @@ class GameScreen extends Screen<Input> {
       x++;
     }
 
-    _drawMeter(terminal, y, actor.health.current, actor.health.max,
-        brickRed, maroon);
+    _drawMeter(
+        terminal, y, actor.health.current, actor.health.max, brickRed, maroon);
   }
 
   /// Draws a progress bar to reflect [value]'s range between `0` and [max].
@@ -662,8 +755,8 @@ class GameScreen extends Screen<Input> {
   /// exactly `0`, otherwise it will at least show a sliver. Likewise, the bar
   /// will only be full if [value] is exactly [max], otherwise at least one
   /// half unit will be missing.
-  void _drawMeter(Terminal terminal, int y, int value, int max,
-                 Color fore, Color back) {
+  void _drawMeter(
+      Terminal terminal, int y, int value, int max, Color fore, Color back) {
     var barWidth;
     if (value == max) {
       barWidth = 20;
