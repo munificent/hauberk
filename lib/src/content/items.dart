@@ -354,16 +354,16 @@ void bodyArmor() {
   armor("Fur Cloak",               5,   5, 42, garnet, 3);
 
   category(CharCode.latinSmallLetterOWithDiaeresis, tag: "equipment/armor/body");
-  armor("Cloth Shirt",             2,   2,   19, sandal,      2);
-  armor("Leather Shirt",           5,   2,  126, persimmon,   5, encumbrance: 1);
-  armor("Jerkin",                  7,   2,  191, gunsmoke,    6, encumbrance: 1);
-  armor("Leather Armor",          10,   2,  377, garnet,      8, encumbrance: 2);
-  armor("Padded Armor",           14,   2,  819, steelGray,  11, encumbrance: 3);
-  armor("Studded Leather Armor",  17,   2, 1782, slate,      15, encumbrance: 5);
+  armor("Cloth Shirt",             2,   2,   19, sandal,      3);
+  armor("Leather Shirt",           5,   2,  126, persimmon,   6, encumbrance: 1);
+  armor("Jerkin",                  7,   2,  191, gunsmoke,    8, encumbrance: 1);
+  armor("Leather Armor",          10,   2,  377, garnet,     11, encumbrance: 2);
+  armor("Padded Armor",           14,   2,  819, steelGray,  15, encumbrance: 3);
+  armor("Studded Leather Armor",  17,   2, 1782, slate,      22, encumbrance: 4);
 
   category(CharCode.latinSmallLetterOWithGrave, tag: "equipment/armor/body");
-  armor("Mail Hauberk",           20,   2, 2835, steelGray,  18, encumbrance: 6);
-  armor("Scale Mail",             23,   2, 4212, gunsmoke,   21, encumbrance: 8);
+  armor("Mail Hauberk",           20,   2, 2835, steelGray,  28, encumbrance: 5);
+  armor("Scale Mail",             23,   2, 4212, gunsmoke,   36, encumbrance: 7);
 
 //  CharCode.latinSmallLetterUWithCircumflex // armor
 
@@ -389,9 +389,9 @@ void boots() {
   armor("Pair[s] of Leather Shoes",         8, 3,   19, garnet,      2);
 
   category(CharCode.latinCapitalLetterAWithDiaeresis, tag: "equipment/armor/boots");
-  armor("Pair[s] of Leather Boots",        14, 3,   77, persimmon,  4, encumbrance: 1);
-  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, slate,      7, encumbrance: 2);
-  armor("Pair[s] of Greaves",              47, 4, 1017, gunsmoke,  12, encumbrance: 4);
+  armor("Pair[s] of Leather Boots",        14, 3,   77, persimmon,  6, encumbrance: 1);
+  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, slate,      8, encumbrance: 2);
+  armor("Pair[s] of Greaves",              47, 4, 1017, gunsmoke,  12, encumbrance: 3);
 }
 
 void category(int glyph, {String tag, String verb, String flags, int stack: 1}) {

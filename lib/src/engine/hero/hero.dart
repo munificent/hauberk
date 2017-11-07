@@ -194,6 +194,8 @@ class Hero extends Actor {
     return total;
   }
 
+  int get dodge => super.dodge + Agility.dodgeBonus(agility);
+
   // TODO: If this changes or the equipped weapon changes, should check to see
   // if weapon has too much heft for player and log.
   /// The total encumbrance of all equipment.
@@ -273,6 +275,8 @@ class Hero extends Actor {
     } else {
       hit = new Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
     }
+
+    hit.addStrike(Agility.strikeBonus(agility));
 
     return hit;
   }

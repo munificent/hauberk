@@ -64,7 +64,7 @@ enum HitType {
 class Hit {
   final Attack _attack;
 
-  int _strikeBonus = 0;
+  int _dodgeBonus = 0;
   double _damageScale = 1.0;
   int _damageBonus = 0;
   Element _brand = Element.none;
@@ -92,8 +92,12 @@ class Hit {
 
   Hit._(this._attack);
 
+  void addDodge(int bonus) {
+    _dodgeBonus += bonus;
+  }
+
   void addStrike(int bonus) {
-    _strikeBonus += bonus;
+    _dodgeBonus -= bonus;
   }
 
   void addDamage(int offset) {
@@ -126,12 +130,8 @@ class Hit {
 
     // See if the attack hits.
     if (canMiss) {
-      var dodge = defender.dodge + _strikeBonus;
+      var dodge = defender.dodge + _dodgeBonus;
       var strike = rng.inclusive(1, 100);
-
-      // There's always at least a 5% chance of missing and a 5% chance of
-      // hitting, regardless of all modifiers.
-      strike = strike.clamp(5, 95);
 
       if (strike < dodge) {
         action.log('{1} miss[es] {2}.', attackNoun, defender);

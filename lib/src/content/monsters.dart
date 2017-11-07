@@ -630,7 +630,16 @@ void giants() {}
 
 void quadrupeds() {}
 
-void quest() {}
+void quest() {
+  family("Q");
+  breed("Nameless Unmaker", 100, violet, 1000, speed: 2)
+    ..attack("crushe[s]", 250, Element.earth)
+    ..attack("blast[s]", 200, Element.lightning)
+    ..darkCone(damage: 500)
+    ..flags("fearless open-doors");
+  // TODO: Minions. Moves.
+  // TODO: Make unique.
+}
 
 void rodents() {
   family("r", meander: 4)..preferWall();
