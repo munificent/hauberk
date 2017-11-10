@@ -3,11 +3,11 @@ import 'dart:math' as math;
 import '../action/action.dart';
 import '../actor.dart';
 import '../attack.dart';
-import '../command/archery.dart';
 import '../command/lance.dart';
 import '../command/slash.dart';
 import '../command/stab.dart';
 import '../monster.dart';
+import '../skill/archery.dart';
 import 'command.dart';
 import 'hero_class.dart';
 
@@ -85,7 +85,7 @@ class Warrior extends HeroClass {
 
   void tookDamage(Action action, Actor attacker, int damage) {
     // Getting hit increases fury.
-    hero.charge = math.min(100, hero.charge + 200 * damage / hero.health.max);
+    hero.charge = math.min(100.0, hero.charge + 200 * damage / hero.health.max);
 
     // Indirect damage doesn't increase toughness.
     if (attacker == null) return;
@@ -129,7 +129,7 @@ class Warrior extends HeroClass {
 
   void finishedTurn(Action action) {
     // Fury decays over time.
-    hero.charge = (hero.charge * 0.9).floor();
+    hero.charge = (hero.charge * 0.9).floorToDouble();
   }
 }
 

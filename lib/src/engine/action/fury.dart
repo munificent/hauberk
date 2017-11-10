@@ -15,7 +15,7 @@ abstract class FuryAction extends Action {
     var result = performAttack();
 
     // Drain fury when the attack is done if it hit something.
-    if (result.done && _madeContact) hero.charge ~/= 2;
+    if (result.done && _madeContact) hero.charge /= 2.0;
     return result;
   }
 

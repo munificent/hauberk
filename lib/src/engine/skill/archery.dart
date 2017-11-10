@@ -4,6 +4,20 @@ import '../action/action.dart';
 import '../action/bolt.dart';
 import '../game.dart';
 import '../hero/command.dart';
+import 'skill.dart';
+
+class Archery extends Skill {
+  // TODO: Tune.
+  static int focusCost(int level) => lerpInt(level, 1, 20, 300, 1);
+
+  int get maxLevel => 20;
+
+  String get name => "Archery";
+
+  Skill get prerequisite => Skill.strength;
+
+  Command get command => new ArcheryCommand();
+}
 
 class ArcheryCommand extends TargetCommand {
   String get name => "Archery";
@@ -21,6 +35,7 @@ class ArcheryCommand extends TargetCommand {
 
   Action getTargetAction(Game game, Vec target) {
     var hit = game.hero.createRangedHit();
-    return new BoltAction(target, hit, canMiss: true);
+    var focus = Archery.focusCost(game.hero.skills[Skill.archery]);
+    return new FocusAction(focus, new BoltAction(target, hit, canMiss: true));
   }
 }

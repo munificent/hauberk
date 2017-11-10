@@ -111,3 +111,22 @@ class ActionResult {
   : succeeded = false,
     done = true;
 }
+
+class FocusAction extends Action {
+  /// The focus cost of the action.
+  final int _focus;
+
+  /// The action to perform if the hero has enough focus.
+  final Action _action;
+
+  FocusAction(this._focus, this._action);
+
+  ActionResult onPerform() {
+    if (hero.focus < _focus) {
+      return fail("You don't have enough focus to do this!");
+    }
+
+    hero.focus -= _focus;
+    return alternate(_action);
+  }
+}

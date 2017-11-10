@@ -595,11 +595,15 @@ class GameScreen extends Screen<Input> {
       y++;
     }
 
-    _drawStat(terminal, 10, 'Armor',
+    terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
+
+    _drawMeter(terminal, 10, hero.focus, Option.maxFocus, cerulean, ultramarine);
+
+    _drawStat(terminal, 12, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit();
-    _drawStat(terminal, 11, 'Weapon', hit.damageString, turquoise);
+    _drawStat(terminal, 13, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.
     terminal.writeAt(0, 16, '@', heroColor);

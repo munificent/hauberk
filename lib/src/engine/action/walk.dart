@@ -72,6 +72,8 @@ class WalkAction extends Action {
           }
         }
       }
+
+      hero.focus += 50;
     }
 
     return succeed();
@@ -116,6 +118,9 @@ class RestAction extends Action {
   ActionResult onPerform() {
     if (actor is Hero) {
       _eatFood();
+
+      // Have this amount increase over successive resting turns?
+      hero.focus += 100;
     } else if (!actor.isVisible) {
       // Monsters can rest if out of sight.
       actor.health.current++;

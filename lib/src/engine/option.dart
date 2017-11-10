@@ -8,6 +8,9 @@ class Option {
 
   static const skillPointsPerLevel = 3;
 
+  // TODO: Make variable based on will or something?
+  static const maxFocus = 1000;
+
   /// How much damage an unarmed hero does.
   static const heroPunchDamage = 3;
 

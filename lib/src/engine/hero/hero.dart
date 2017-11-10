@@ -12,8 +12,9 @@ import '../items/inventory.dart';
 import '../log.dart';
 import '../monster.dart';
 import '../option.dart';
+import '../skill/skill.dart';
+import '../skill/attribute.dart';
 import 'attribute.dart';
-import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -114,13 +115,17 @@ class Hero extends Actor {
   ///
   /// The hero gains food by exploring the level and can spend it while resting
   /// to regain health.
-  num food = 0.0;
+  double food = 0.0;
 
   /// The hero's current "charge".
   ///
   /// This is interpreted and managed differently for each class: "fury" for
   /// warriors, "mana" for mages, etc.
-  num charge = 0.0;
+  double charge = 0.0;
+
+  int _focus = 400;
+  int get focus => _focus;
+  set focus(int value) => _focus = value.clamp(0, Option.maxFocus);
 
   /// How much noise the Hero's last action made.
   int get lastNoise => _lastNoise;
@@ -147,7 +152,7 @@ class Hero extends Actor {
 
     // Start with some initial ability to rest so we aren't weakest at the very
     // beginning.
-    food = health.max;
+    food = health.max.toDouble();
   }
 
   // TODO: Hackish.
@@ -310,14 +315,14 @@ class Hero extends Actor {
   int onGetResistance(Element element) => equipmentResistance(element);
 
   void onDamaged(Action action, Actor attacker, int damage) {
-//    heroClass.tookDamage(action, attacker, damage);
+    // Getting hit loses focus.
+    focus -= Option.maxFocus * damage * 2 ~/ health.max;
   }
 
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
     _experienceCents += monster.experienceCents;
     _refreshLevel(gain: true);
-//    heroClass.killedMonster(action, monster);
   }
 
   void onDied(Noun attackNoun) {
