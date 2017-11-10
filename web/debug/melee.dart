@@ -40,11 +40,12 @@ main() {
     for (var x = 0; x <= columns.length; x++) {
       var save = new HeroSave("Hero");
 
-      save.attributes[Attribute.strength] = 20;
-      save.attributes[Attribute.agility] = 20;
-      save.attributes[Attribute.fortitude] = 20;
-      save.attributes[Attribute.intellect] = 20;
-      save.attributes[Attribute.will] = 20;
+      // TODO: Fix to use skills.
+//      save.attributes[Attribute.strength] = 20;
+//      save.attributes[Attribute.agility] = 20;
+//      save.attributes[Attribute.fortitude] = 20;
+//      save.attributes[Attribute.intellect] = 20;
+//      save.attributes[Attribute.will] = 20;
 
       rows.apply(y, save);
       columns.apply(x, save);
@@ -96,21 +97,24 @@ abstract class AttributeAxis implements Axis {
 class StrengthAxis extends AttributeAxis {
   String get name => "Strength";
   void apply(int cell, HeroSave save) {
-    save.attributes[Attribute.strength] = _attribute(cell);
+    // TODO: Fix to use skills.
+//    save.attributes[Attribute.strength] = _attribute(cell);
   }
 }
 
 class AgilityAxis extends AttributeAxis {
   String get name => "Agility";
   void apply(int cell, HeroSave save) {
-    save.attributes[Attribute.agility] = _attribute(cell);
+    // TODO: Fix to use skills.
+//    save.attributes[Attribute.agility] = _attribute(cell);
   }
 }
 
 class FortitudeAxis extends AttributeAxis {
   String get name => "Fortitude";
   void apply(int cell, HeroSave save) {
-    save.attributes[Attribute.fortitude] = _attribute(cell);
+    // TODO: Fix to use skills.
+//    save.attributes[Attribute.fortitude] = _attribute(cell);
   }
 }
 

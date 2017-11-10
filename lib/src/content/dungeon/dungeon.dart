@@ -356,7 +356,6 @@ class Dungeon {
         return _preferWalls(20, 4);
 
       case SpawnLocation.corridor:
-        print("corridor");
         return _preferWalls(100, 6);
 
       case SpawnLocation.grass:

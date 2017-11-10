@@ -42,11 +42,11 @@ that school and related ones, and a penalty in others.
 The schools are arranged in a wheel such that for any given primary school, it's
 two neighbors are the corresponding secondary schools, and the school directly
 across the wheel from the primary is its opposing school. The schools are
-ordered Alchemy, Divination, Enchanting, Necromancy, Sorcery, and Conjuring.
+ordered Alchemy, Sorcery, Divination, Enchanting, Necromancy, and Conjuring.
 
 The schools are:
 
-* Alchemy: The magic of artifacts
+* Alchemy: Changing inanimate objects
 
     * Fire Brand: cause weapon to do elemental fire damage for a while.
     * Ice Brand: cause weapon to do elemental cold damage for a while.
@@ -61,7 +61,7 @@ The schools are:
     * Combine Enchantment: attempts to transfer the damage, strike, and armor bonus from one piece of equipment to another.
     * Combine Potions: attempts to combine a number of similar potions into one stronger potion, i.e. Cure Light Wounds -> Cure Serious Wounds.
 
-* Divination: The magic of knowledge
+* Divination: Gaining knowledge
 
     * Detect Monsters: see all nearby monsters for a few turns.
     * Detect Treasure: see all nearby equipment.
@@ -78,7 +78,7 @@ The schools are:
     * Lore: shows full information for an item or artifact, including hidden powers.
     * Perception: shows detailed information about a monster including the max damage it can do in one round by each attack.
 
-* Enchanting: The magic of nature
+* Enchanting: Changing living things
 
     * Heal: restore HP.
     * Haste Self: increase character's speed.
@@ -92,7 +92,7 @@ The schools are:
     * Polymorph: changes the chosen monster into a monster of a randomly chosen race.
     * Terrify: monsters in line of sight become afraid and flee hero.
 
-* Necromancy: The magic of lifeforces
+* Necromancy: Manipulating lifeforce directly
 
     * Drain Life: takes HP from monster and gives to character.
     * Summon Undead: summons undead monsters to fight for the character.
@@ -106,7 +106,7 @@ The schools are:
     * Putrefy: when the targeted monster is slain, it will erupt into a ball of poisonous gas whose strength is based on the strength of the monster slain.
     * Transmutation: removes poisoned condition and cures health. Only works if poisoned.
 
-* Sorcery: The magic of raw forces
+* Sorcery: Raw elemental forces of nature
 
     * Lightning Bolt: attack monster with elemental lightning damage. Will arc to adjacent monsters if any.
     * Fire Ball: creates a fire ball at a chosen location. Damages all monsters within a few squares of the blast. May destroy flammable items on ground.
@@ -114,7 +114,7 @@ The schools are:
     * Gale: generates a wind which damages and pushes back adjacent enemies.
     * Icicle: fires an icicle at a chosen target. May freeze the target.
 
-* Conjuring: The magic of space
+* Conjuring: Moving things through space (and time?)
 
     * Flee: moves the player to a random nearby tile.
     * Escape: like Flee but with a greater radius.

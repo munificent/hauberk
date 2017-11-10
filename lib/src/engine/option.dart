@@ -6,7 +6,7 @@ import 'element.dart';
 class Option {
   static const maxDepth = 100;
 
-  static const attributePointsPerLevel = 2;
+  static const skillPointsPerLevel = 3;
 
   /// How much damage an unarmed hero does.
   static const heroPunchDamage = 3;

@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
@@ -75,11 +74,11 @@ void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
   var save = new HeroSave("Hero");
   game = new Game(content, save, 1);
 
-  save.attributes[Attribute.strength] = strength;
-  save.attributes[Attribute.agility] = agility;
-  save.attributes[Attribute.fortitude] = fortitude;
-  save.attributes[Attribute.intellect] = 20;
-  save.attributes[Attribute.will] = 20;
+//  save.attributes[Attribute.strength] = strength;
+//  save.attributes[Attribute.agility] = agility;
+//  save.attributes[Attribute.fortitude] = fortitude;
+//  save.attributes[Attribute.intellect] = 20;
+//  save.attributes[Attribute.will] = 20;
 
   for (var item in gear) {
     save.equipment.tryAdd(new Item(item, 1));

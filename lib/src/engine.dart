@@ -24,6 +24,7 @@ export 'engine/energy.dart';
 export 'engine/fov.dart';
 export 'engine/game.dart';
 export 'engine/hero/attribute.dart';
+export 'engine/hero/skill.dart';
 export 'engine/hero/hero.dart';
 export 'engine/hero/hero_class.dart';
 export 'engine/hero/command.dart';

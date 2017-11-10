@@ -13,6 +13,7 @@ import '../log.dart';
 import '../monster.dart';
 import '../option.dart';
 import 'attribute.dart';
+import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -22,8 +23,6 @@ class HeroSave {
   final String name;
 
   int get level => calculateLevel(experienceCents);
-
-//  HeroClass heroClass;
 
   Inventory inventory = new Inventory(Option.inventoryCapacity);
   Equipment equipment = new Equipment();
@@ -36,10 +35,10 @@ class HeroSave {
 
   int experienceCents = 0;
 
-  final Map<Attribute, int> attributes;
+  SkillSet skills;
 
-  /// Available points that can be spent raising attributes.
-  int attributePoints = 12;
+  /// Available points that can be spent raising skills.
+  int skillPoints = 12;
 
   // TODO: Get rid of gold and shops if I'm sure we won't be using it.
   /// How much gold the hero has.
@@ -49,15 +48,11 @@ class HeroSave {
   int maxDepth = 0;
 
   HeroSave(this.name)
-      : attributes = {} {
-    for (var attribute in Attribute.all) {
-      attributes[attribute] = Attribute.initialValue;
-    }
-  }
+      : skills = new SkillSet();
 
   HeroSave.load(this.name, this.inventory, this.equipment,
-      this.home, this.crucible, this.experienceCents, this.attributes,
-      this.attributePoints,
+      this.home, this.crucible, this.experienceCents, this.skillPoints,
+      this.skills,
       this.gold, this.maxDepth);
 
   /// Copies data from [hero] into this object. This should be called when the
@@ -67,16 +62,9 @@ class HeroSave {
     inventory = hero.inventory;
     equipment = hero.equipment;
     experienceCents = hero._experienceCents;
-
-    // Are these needed? Can the player spend stat points in the dungeon?
-    // Are drains permanent?
-    for (var attribute in Attribute.all) {
-      attributes[attribute] = hero.naturalAttributes[attribute];
-    }
-
-    attributePoints = hero.attributePoints;
-
+    skillPoints = hero.skillPoints;
     gold = hero.gold;
+    skills = hero.skills.clone();
   }
 }
 
@@ -102,23 +90,18 @@ class Hero extends Actor {
     throw "unreachable";
   }
 
-  final Map<Attribute, int> naturalAttributes;
+  int get strength => _attribute(Skill.strength, -encumbrance);
+  int get agility => _attribute(Skill.agility);
+  int get fortitude => _attribute(Skill.fortitude);
+  int get intellect => _attribute(Skill.intellect);
+  int get will => _attribute(Skill.will);
 
-  // TODO: Take bonuses into account.
-  int get strength => (naturalStrength - encumbrance).clamp(1, 60);
-  int get agility => naturalAgility;
-  int get fortitude => naturalFortitude;
-  int get intellect => naturalIntellect;
-  int get will => naturalWill;
+  int _attribute(Skill skill, [int bonus = 0]) => (10 + skills[skill] + bonus).clamp(1, 60);
 
-  int get naturalStrength => naturalAttributes[Attribute.strength];
-  int get naturalAgility => naturalAttributes[Attribute.agility];
-  int get naturalFortitude => naturalAttributes[Attribute.fortitude];
-  int get naturalIntellect => naturalAttributes[Attribute.intellect];
-  int get naturalWill => naturalAttributes[Attribute.will];
+  final SkillSet skills;
 
-  /// Available points that can be spent raising attributes.
-  int attributePoints;
+  /// Available points that can be spent raising skills.
+  int skillPoints;
 
   /// The hero's experience level.
   int _level = 1;
@@ -147,8 +130,8 @@ class Hero extends Actor {
       : inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
-        naturalAttributes = new Map.from(save.attributes),
-        attributePoints = save.attributePoints,
+        skillPoints = save.skillPoints,
+        skills = save.skills.clone(),
         gold = save.gold,
         super(game, pos.x, pos.y, 0) {
     // Hero state is cloned above so that if they die in the dungeon, they lose
@@ -230,15 +213,18 @@ class Hero extends Actor {
     food += health.max * abundance * numExplored / game.stage.numExplorable;
   }
 
-  /// Updates the hero's attribute values to [attributes] and applies any other
-  /// changes caused by that.
-  void updateAttributes(Map<Attribute, int> attributes) {
+  /// Updates the hero's skill levels to [skills] and apply any other changes
+  /// caused by that.
+  void updateSkills(SkillSet skills) {
+    var oldFortitude = fortitude;
+
     // Update anything affected.
-    if (attributes[Attribute.fortitude] != fortitude) {
+    this.skills.update(skills);
+
+    if (fortitude != oldFortitude) {
       // Update max health.
-      var value = attributes[Attribute.fortitude];
-      var change = Fortitude.maxHealth(value) - health.max;
-      health.max = Fortitude.maxHealth(value);
+      var change = Fortitude.maxHealth(fortitude) - health.max;
+      health.max = Fortitude.maxHealth(fortitude);
 
       if (change > 0) {
         game.log.message("you feel healthier!");
@@ -248,11 +234,6 @@ class Hero extends Actor {
       } else {
         game.log.message("you feel less healthy.");
       }
-    }
-
-    // Apply the changes.
-    for (var attribute in Attribute.all) {
-      this.naturalAttributes[attribute] = attributes[attribute];
     }
   }
 
@@ -399,7 +380,7 @@ class Hero extends Actor {
       if (gain) {
         game.log.gain('{1} [have|has] reached level $level.', this);
 
-        attributePoints += Option.attributePointsPerLevel;
+        skillPoints += Option.skillPointsPerLevel;
       }
     }
   }

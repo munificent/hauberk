@@ -334,6 +334,7 @@ void weapons() {
   tossable(breakage: 0, range: 4);
   weapon("Battleaxe", 40, 4866, steelGray,  64, 28, heft: 30);
 
+  // TODO: Remove? Needs a command to use and "archery" doesn't fit.
   // Sling. In a category itself because many bow affixes don't apply to it.
   category(CharCode.reversedNotSign, tag: "equipment/weapon/sling", verb: "hit[s]");
   tossable(breakage: 15, range: 5);

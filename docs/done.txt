@@ -84,7 +84,22 @@ So, for phase 1, what is the minimal set of stuff needed?
 - Skills. This is the fundamental system for character advancement, which is a
   key part of a playthrough. We don't need all the skills. Just enough to
   produce a strong enough hero to win. Definitely don't need skills that cover
-  all "class" archetypes.
+  all "class" archetypes. Probably:
+
+  - Archery so that bows can be used at all.
+  - Enough magic skills so that mental attributes have value. It should be
+    possible to win without heavily investing in strength.
+
+  - TODO: Consider unifying attribute and skill points? Hmm, doesn't feel very
+    fun. But it might make warriors (high attribute, low skill) a more
+    meaningful type of character without having to make up a bunch of warrior
+    skills. Basically, it would let players choose whether to focus on beefing
+    up stats or unique abilities.
+
+    Let's try it. This means "strength", etc. are attributes but also skills
+    that the player can increase, so that we can use the same UX for skills and
+    boosting attributes. This also lets us have skills that require certain
+    attributes as prereqs.
 
 - A few more monsters at greater depths.
 
@@ -100,5 +115,7 @@ For now, we don't need to worry about:
   needed.
 - Better water mechanics. What's there now is temporary, obviously, but it
   works.
+- More affixes. Could potentially disable them entirely for now, but adding
+  them later will require rebalancing monsters. That may be OK.
 
 ---

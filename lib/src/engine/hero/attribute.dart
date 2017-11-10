@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 /// Attribute have a natural range from 10 to 50. That's the range of values a
 /// stat may have before any equipment or statuses come into play. External
 /// effects increase the range to 0 to 60, so all stats have well-defined
@@ -40,12 +38,12 @@ import 'dart:math' as math;
 //   both maxes their level and finds attribute gain potions. We could balance
 //   that by having ways to permanently *spend* attributes such as using them to
 //   imbue equipment.
-abstract class Attribute {
-  static final strength = new Strength();
-  static final agility = new Agility();
-  static final fortitude = new Fortitude();
-  static final intellect = new Intellect();
-  static final will = new Will();
+class Attribute {
+  static final strength = new Attribute("Strength");
+  static final agility = new Attribute("Agility");
+  static final fortitude = new Attribute("Fortitude");
+  static final intellect = new Attribute("Intellect");
+  static final will = new Attribute("Will");
 
   static final all = [strength, agility, fortitude, intellect, will];
 
@@ -63,95 +61,7 @@ abstract class Attribute {
   /// bonuses come into play.
   static const naturalMax = 50;
 
-  String get name;
+  final String name;
+
+  Attribute(this.name);
 }
-
-// missile range
-// damage bonus
-class Strength extends Attribute {
-  static double tossRangeScale(int value) {
-    if (value <= 20) return _lerpDouble(value, 1, 20, 0.1, 1.0);
-    if (value <= 30) return _lerpDouble(value, 20, 30, 1.0, 1.5);
-    if (value <= 40) return _lerpDouble(value, 30, 40, 1.5, 1.8);
-    if (value <= 30) return _lerpDouble(value, 40, 50, 1.8, 2.0);
-    return _lerpDouble(value, 50, 60, 2.0, 2.1);
-  }
-
-  /// Calculates the melee damage scaling factor based on the hero's strength
-  /// relative to the weapon's heft.
-  ///
-  /// Here, [value] is the hero's strength *minus* the weapon's heft, so
-  /// may be a negative number.
-  static double scaleHeft(int value) {
-    value = value.clamp(-20, 50);
-
-    if (value < -10) return _lerpDouble(value, -20, -10, 0.05, 0.3);
-
-    // Note that there is an immediate step down to 0.8 at -1.
-    if (value < 0) return _lerpDouble(value, -10, -1, 0.3, 0.8);
-
-    if (value < 20) return _lerpDouble(value, 0, 20, 1.0, 2.0);
-    return _lerpDouble(value, 20, 50, 2.0, 3.0);
-  }
-
-  String get name => "Strength";
-}
-
-// strike bonus
-// dodge bonus
-// thief skills
-class Agility extends Attribute {
-  static int dodgeBonus(int value) {
-    if (value <= 10) return _lerpInt(value, 1, 10, -50, 0);
-    if (value <= 30) return _lerpInt(value, 10, 30, 0, 30);
-    return _lerpInt(value, 30, 60, 30, 60);
-  }
-
-  static int strikeBonus(int value) {
-    if (value <= 10) return _lerpInt(value, 1, 10, -30, 0);
-    if (value <= 30) return _lerpInt(value, 10, 30, 0, 20);
-    return _lerpInt(value, 30, 60, 20, 50);
-  }
-
-  String get name => "Agility";
-}
-
-// max health
-// poison duration
-// resist physical effects
-// affect food consumption?
-class Fortitude extends Attribute {
-  static int maxHealth(int value) =>
-      (math.pow(value, 1.5) - 0.5 * value + 30).toInt();
-
-  String get name => "Fortitude";
-}
-
-// spell power
-// resist mental effects
-// max mana?
-class Intellect extends Attribute {
-  String get name => "Intellect";
-}
-
-// resist "spiritual" effects
-// max mana?
-class Will extends Attribute {
-  String get name => "Will";
-}
-
-/// Remaps [value] within the range [min]-[max] to the output range
-/// [outMin]-[outMax].
-double _lerpDouble(int value, int min, int max, double outMin, double outMax) {
-  assert(value >= min);
-  assert(value <= max);
-  assert(min < max);
-
-  var t = (value - min) / (max - min);
-  return outMin + t * (outMax - outMin);
-}
-
-/// Remaps [value] within the range [min]-[max] to the output range
-/// [outMin]-[outMax].
-int _lerpInt(int value, int min, int max, int outMin, int outMax) =>
-    _lerpDouble(value, min, max, outMin.toDouble(), outMax.toDouble()).round();

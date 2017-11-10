@@ -15,6 +15,7 @@ import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item_dialog.dart';
 import 'select_command_dialog.dart';
+import 'skill_dialog.dart';
 import 'target_dialog.dart';
 
 class GameScreen extends Screen<Input> {
@@ -36,6 +37,8 @@ class GameScreen extends Screen<Input> {
 
   Actor _targetActor;
   Vec _target;
+
+  TargetCommand _lastTargetCommand;
 
   void targetActor(Actor value) {
     if (_targetActor != value) dirty();
@@ -109,6 +112,9 @@ class GameScreen extends Screen<Input> {
         break;
       case Input.selectCommand:
         ui.push(new SelectCommandDialog(game));
+        break;
+      case Input.editSkills:
+        ui.push(new SkillDialog(game.hero));
         break;
       case Input.heroInfo:
         ui.push(new HeroInfoDialog(game.hero));
@@ -216,26 +222,22 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.fire:
-        // TODO: When there is more than one usable command, bring up the
-        // SelectCommandDialog. Until then, just pick the first valid one.
-        // TODO: Use skills here.
-//        var command = game.hero.heroClass.commands
-//            .firstWhere((command) => command.canUse(game), orElse: () => null);
-//        if (command is TargetCommand) {
-//          // If we still have a visible target, use it.
-//          if (currentTarget != null) {
-//            _fireAtTarget();
-//          } else {
-//            // No current target, so ask for one.
-//            ui.push(new TargetDialog(this, command.getRange(game),
-//                (_) => _fireAtTarget()));
-//          }
+        if (_lastTargetCommand == null) {
+          game.log.error("No target skill selected.");
+          dirty();
+        } else {
+          // If we still have a visible target, use it.
+          if (currentTarget != null) {
+            _fireAtTarget(_lastTargetCommand);
+          } else {
+            // No current target, so ask for one.
+            ui.push(new TargetDialog(this, _lastTargetCommand.getRange(game),
+                (_) => _fireAtTarget(_lastTargetCommand)));
+          }
+        }
+        // TODO: Handle DirectionCommand.
 //        } else if (command is DirectionCommand) {
-//          ui.push(new DirectionDialog(this, game));
-//        } else {
-//          game.log.error("You don't have any commands you can perform.");
-//          dirty();
-//        }
+//        ui.push(new DirectionDialog(this, game));
         break;
 
       case Input.swap:
@@ -288,67 +290,55 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void _fireAtTarget() {
-    // TODO: When there is more than one usable command, bring up the
-    // SelectCommandDialog. Until then, just pick the first valid one.
-    // TODO: Get working with skills.
-//    var command = game.hero.heroClass.commands
-//        .firstWhere((command) => command.canUse(game)) as TargetCommand;
-//
-//    game.hero.setNextAction(command.getTargetAction(game, currentTarget));
+  void _fireAtTarget(TargetCommand command) {
+    _lastTargetCommand = command;
+    game.hero.setNextAction(command.getTargetAction(game, currentTarget));
   }
 
   void _fireTowards(Direction dir) {
-    // TODO: When there is more than one usable command, bring up the
-    // SelectCommandDialog. Until then, just pick the first valid one.
-//    var command = game.hero.heroClass.commands
-//        .firstWhere((command) => command.canUse(game), orElse: () => null);
-    // TODO: Get working with skills.
-    Command command = null;
+    // TODO: Handle DirectionCommands.
 
-    if (command == null) {
-      game.log.error("You don't have any commands you can perform.");
+    if (_lastTargetCommand == null) {
+      // TODO: Better error message.
+      game.log.error("No target skill selected.");
       dirty();
-    } else if (command is DirectionCommand) {
-      game.hero.setNextAction(command.getDirectionAction(game, dir));
-    } else if (command is TargetCommand) {
-      var pos = game.hero.pos + dir;
+      return;
+    }
 
-      // Target the monster that is in the fired direction, if any.
-      Vec previous;
-      for (var step in new Los(game.hero.pos, pos)) {
-        // If we reached an actor, target it.
-        var actor = game.stage.actorAt(step);
-        if (actor != null) {
-          targetActor(actor);
-          break;
-        }
+    var pos = game.hero.pos + dir;
 
-        // If we hit a wall, target the floor tile before it.
-        if (!game.stage[step].isFlyable) {
-          targetFloor(previous);
-          break;
-        }
-
-        // If we hit the end of the range, target the floor there.
-        if ((step - game.hero.pos) >= command.getRange(game)) {
-          targetFloor(step);
-          break;
-        }
-
-        previous = step;
+    // Target the monster that is in the fired direction, if any.
+    Vec previous;
+    for (var step in new Los(game.hero.pos, pos)) {
+      // If we reached an actor, target it.
+      var actor = game.stage.actorAt(step);
+      if (actor != null) {
+        targetActor(actor);
+        break;
       }
 
-      if (currentTarget != null) {
-        game.hero.setNextAction(command.getTargetAction(game, currentTarget));
-      } else {
-        var tile = game.stage[game.hero.pos + dir].type.name;
-        game.log.error("There is a $tile} in the way.");
-        dirty();
+      // If we hit a wall, target the floor tile before it.
+      if (!game.stage[step].isFlyable) {
+        targetFloor(previous);
+        break;
       }
+
+      // If we hit the end of the range, target the floor there.
+      if ((step - game.hero.pos) >= _lastTargetCommand.getRange(game)) {
+        targetFloor(step);
+        break;
+      }
+
+      previous = step;
+    }
+
+    if (currentTarget != null) {
+      game.hero.setNextAction(
+          _lastTargetCommand.getTargetAction(game, currentTarget));
     } else {
-      // Unknown command type.
-      assert(false);
+      var tile = game.stage[game.hero.pos + dir].type.name;
+      game.log.error("There is a $tile} in the way.");
+      dirty();
     }
   }
 
@@ -363,15 +353,15 @@ class GameScreen extends Screen<Input> {
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
-    } else if (popped is HeroInfoDialog) {
-      game.hero.updateAttributes(result);
+    } else if (popped is SkillDialog) {
+      game.hero.updateSkills(result);
     } else if (popped is SelectCommandDialog && result is Command) {
       if (!result.canUse(game)) {
         // Refresh the log.
         dirty();
       } else if (result is TargetCommand) {
         ui.push(new TargetDialog(
-            this, result.getRange(game), (_) => _fireAtTarget()));
+            this, result.getRange(game), (_) => _fireAtTarget(result)));
       } else if (result is DirectionCommand) {
         ui.push(new DirectionDialog(this, game));
       }
@@ -602,8 +592,6 @@ class GameScreen extends Screen<Input> {
     for (var attribute in Attribute.all) {
       terminal.writeAt(0, y, attribute.name, UIHue.helpText);
       terminal.writeAt(10, y, hero.attribute(attribute).toString(), ash);
-      terminal.writeAt(
-          14, y, hero.naturalAttributes[attribute].toString(), steelGray);
       y++;
     }
 

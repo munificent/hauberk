@@ -6,33 +6,19 @@ import '../hues.dart';
 import 'input.dart';
 
 class HeroInfoDialog extends Screen<Input> {
-  final Map<Attribute, int> _attributes;
   final Hero _hero;
 
-  HeroInfoDialog(this._hero) : _attributes = new Map.from(_hero.naturalAttributes);
+  HeroInfoDialog(this._hero);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
-
-    switch (keyCode) {
-      case KeyCode.s:
-        return _tryRaiseAttribute(Attribute.strength);
-      case KeyCode.a:
-        return _tryRaiseAttribute(Attribute.agility);
-      case KeyCode.f:
-        return _tryRaiseAttribute(Attribute.fortitude);
-      case KeyCode.i:
-        return _tryRaiseAttribute(Attribute.intellect);
-      case KeyCode.w:
-        return _tryRaiseAttribute(Attribute.will);
-    }
 
     return false;
   }
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
-      ui.pop(_attributes);
+      ui.pop();
       return true;
     }
 
@@ -173,30 +159,7 @@ class HeroInfoDialog extends Screen<Input> {
     var armorPercent = 100 - getArmorMultiplier(_hero.armor) * 100;
     terminal.writeAt(54, totalY, armorPercent.toInt().toString().padLeft(2) + "%");
 
-    y = 20;
-    for (var attribute in Attribute.all) {
-      terminal.writeAt(3, y, attribute.name, gunsmoke);
-      terminal.writeAt(13, y, _attributes[attribute].toString(), ash);
-      y++;
-    }
-
-    terminal.writeAt(3, 26, "Available", gunsmoke);
-    terminal.writeAt(13, 26, _hero.attributePoints.toString(), ash);
-
-    var helpText = ['[Esc] Exit'];
-    // TODO: This isn't the greatest UX, but it's good enough for now.
-    if (_hero.attributePoints > 0) {
-      if (_attributeTotal < Attribute.totalMax) {
-        for (var attribute in Attribute.all) {
-          if (_attributes[attribute] < Attribute.naturalMax) {
-            helpText.add("[${attribute.name[0]}] Raise ${attribute.name}");
-          }
-        }
-
-        // TODO: Don't all fit in help text bar. Fix.
-      }
-    }
-    terminal.writeAt(0, terminal.height - 1, helpText.join(', '), slate);
+    terminal.writeAt(0, terminal.height - 1, '[Esc] Exit', slate);
   }
 
   // TODO: Unify these colors and abbreviations with how the game
@@ -233,21 +196,5 @@ class HeroInfoDialog extends Screen<Input> {
       Element.light: Color.lightYellow,
       Element.spirit: Color.purple
     }[element];
-  }
-
-  // TODO: Make sure we don't take temporary state into account here.
-  int get _attributeTotal => Attribute.all.map((attribute) => _attributes[attribute]).reduce((a, b) => a + b);
-
-  bool _tryRaiseAttribute(Attribute attribute) {
-    if (_hero.attributePoints <= 0) return false;
-    if (_attributeTotal >= Attribute.totalMax) return false;
-
-    var value = _attributes[attribute];
-    if (value >= Attribute.naturalMax) return false;
-
-    dirty();
-    _attributes[attribute]++;
-    _hero.attributePoints--;
-    return true;
   }
 }

@@ -7,14 +7,17 @@ import 'input.dart';
 
 class SelectCommandDialog extends Screen<Input> {
   final Game _game;
-  final List<Command> _commands;
+  final List<Command> _commands = [];
 
   bool get isTransparent => true;
 
   SelectCommandDialog(Game game)
-      : _game = game,
-  // TODO: Get working with skills.
-        _commands = const []; //game.hero.heroClass.commands;
+      : _game = game {
+    for (var skill in _game.hero.skills.all) {
+      var command = skill.command;
+      if (command != null) _commands.add(command);
+    }
+  }
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {

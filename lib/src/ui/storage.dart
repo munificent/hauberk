@@ -67,35 +67,32 @@ class Storage {
       // Defaults are to support legacy saves.
 
       var experience = hero['experience'];
+      var skillPoints = hero['skillPoints'] ?? 0;
 
-      var heroAttributes = hero['attributes'];
+      var attributesJson = hero['attributes'];
       var attributes = <Attribute, int>{};
-      if (heroAttributes != null) {
+      if (attributesJson != null) {
         for (var attribute in Attribute.all) {
-          attributes[attribute] = heroAttributes[attribute.name] ?? 10;
+          attributes[attribute] = attributesJson[attribute.name] ?? 10;
         }
       } else {
-        // TODO: Remove this when no longer care about old pre-attribute saves.
+        // TODO: Remove this when we no longer care about old pre-attribute
+        // saves.
         for (var attribute in Attribute.all) {
           attributes[attribute] = 10;
         }
       }
 
-      var attributePoints = hero['attributePoints'] ?? 0;
+      var skillSet = new SkillSet();
+      var skills = hero['skills'];
+      if (skills != null) {
+        for (var name in skills.keys) {
+          skills[Skill.find(name)] = skills[name];
+        }
+      }
 
       var gold = hero['gold'];
-
       var maxDepth = hero['maxDepth'] ?? 0;
-
-      // TODO: Remove.
-//      HeroClass heroClass;
-//      switch (hero['class']['name']) {
-//        case 'warrior':
-//          heroClass = _loadWarrior(hero['class']);
-//          break;
-//        default:
-//          throw 'Unknown hero class "${hero['class']['name']}".';
-//      }
 
       var heroSave = new HeroSave.load(
           name,
@@ -104,8 +101,8 @@ class Storage {
           home,
           crucible,
           experience,
-          attributes,
-          attributePoints,
+          skillPoints,
+          skillSet,
           gold,
           maxDepth);
       heroes.add(heroSave);
@@ -148,14 +145,6 @@ class Storage {
     return new Item(type, count, prefix, suffix);
   }
 
-//  HeroClass _loadWarrior(Map data) {
-//    return new Warrior.load(
-//        fighting: data['fighting'],
-//        combat: data['combat'],
-//        toughness: data['toughness'],
-//        masteries: data['masteries'] as Map<String, int>);
-//  }
-
   void save() {
     var heroData = [];
     for (var hero in heroes) {
@@ -179,28 +168,20 @@ class Storage {
         crucible.add(_saveItem(item));
       }
 
-      // TODO: Remove.
-//      var heroClass = {};
-//      if (hero.heroClass is Warrior) {
-//        heroClass['name'] = 'warrior';
-//        _saveWarrior(hero.heroClass, heroClass);
-//      }
-
-      var attributes = {};
-      for (var attribute in Attribute.all) {
-        attributes[attribute.name] = hero.attributes[attribute];
-      }
+      var skills = {};
+      hero.skills.forEach((skill, level) {
+        skills[skill.name] = level;
+      });
 
       heroData.add({
         'name': hero.name,
-//        'class': heroClass,
         'inventory': inventory,
         'equipment': equipment,
         'home': home,
         'crucible': crucible,
         'experience': hero.experienceCents,
-        'attributePoints': hero.attributePoints,
-        'attributes': attributes,
+        'skillPoints': hero.skillPoints,
+        'skills': skills,
         'gold': hero.gold,
         'maxDepth': hero.maxDepth
       });
@@ -229,17 +210,4 @@ class Storage {
 
     return itemData;
   }
-
-//  void _saveWarrior(Warrior warrior, Map data) {
-//    data['fighting'] = warrior.fighting.count;
-//    data['combat'] = warrior.combat.count;
-//    data['toughness'] = warrior.toughness.count;
-//
-//    var masteries = {};
-//    warrior.masteries.forEach((name, stat) {
-//      masteries[name] = stat.count;
-//    });
-//
-//    data['masteries'] = masteries;
-//  }
 }
