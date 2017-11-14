@@ -147,17 +147,21 @@ class Dungeon {
     // Pick a point far from the hero to place the exit stairs.
     // TODO: Place the stairs in a more logical place like next to a wall, in a
     // room, etc?
-    Vec stairPos;
-    for (var i = 0; i < 10; i++) {
-      var pos = stage.findOpenTile();
-      // TODO: If there are unconnected regions (usually from a river looping
-      // back onto the dungeon) then distance will be null and this may fail.
-      if (stairPos == null || _info[pos].distance > _info[stairPos].distance) {
-        stairPos = pos;
+    var stairCount = rng.range(1, 4);
+    for (var i = 0; i < stairCount; i++) {
+      // TODO: Try to spread out stair positions?
+      Vec stairPos;
+      for (var i = 0; i < 4; i++) {
+        var pos = stage.findOpenTile();
+        // TODO: If there are unconnected regions (usually from a river looping
+        // back onto the dungeon) then distance will be null and this may fail.
+        if (stairPos == null || _info[pos].distance > _info[stairPos].distance) {
+          stairPos = pos;
+        }
       }
-    }
 
-    setTileAt(stairPos, Tiles.stairs);
+      setTileAt(stairPos, Tiles.stairs);
+    }
 
     // Monsters.
     var numSpawns = 40 + (depth ~/ 4);

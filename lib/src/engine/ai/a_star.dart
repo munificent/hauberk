@@ -22,8 +22,8 @@ class AStar {
   /// along that path (or [Direction.none] if it determines there is no path
   /// possible.
   static Direction findDirection(Stage stage, Vec start, Vec end, {int maxLength,
-      bool canOpenDoors = true}) {
-    var path = _findPath(stage, start, end, maxLength, canOpenDoors);
+      bool canOpenDoors = true, bool canFly = false}) {
+    var path = _findPath(stage, start, end, maxLength, canOpenDoors, canFly);
     if (path == null) return Direction.none;
 
     while (path.parent != null && path.parent.parent != null) {
@@ -34,8 +34,8 @@ class AStar {
   }
 
   static PathResult findPath(Stage stage, Vec start, Vec end, {int maxLength,
-      bool canOpenDoors = true}) {
-    var path = _findPath(stage, start, end, maxLength, canOpenDoors);
+      bool canOpenDoors = true, bool canFly = false}) {
+    var path = _findPath(stage, start, end, maxLength, canOpenDoors, canFly);
     if (path == null) return new PathResult(Direction.none, 0);
 
     var length = 1;
@@ -48,7 +48,7 @@ class AStar {
   }
 
   static _PathNode _findPath(Stage stage, Vec start, Vec end, int maxLength,
-      bool canOpenDoors) {
+      bool canOpenDoors, bool canFly) {
     // TODO: More optimal data structure.
     var startPath = new _PathNode(null, Direction.none,
         start, 0, heuristic(start, end));
@@ -71,7 +71,12 @@ class AStar {
         var neighbor = current.pos + dir;
 
         // Skip impassable tiles.
-        if (!stage[neighbor].isTraversable) continue;
+        var tile = stage[neighbor];
+        var canEnter = tile.isWalkable ||
+            tile.isFlyable && canFly ||
+            tile.isTraversable && canOpenDoors;
+
+        if (!canEnter) continue;
 
         // Given how far the current tile is, how far is each neighbor?
         var stepCost = Option.aStarFloorCost;

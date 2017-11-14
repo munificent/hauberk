@@ -69,25 +69,11 @@ class Storage {
       var experience = hero['experience'];
       var skillPoints = hero['skillPoints'] ?? 0;
 
-      var attributesJson = hero['attributes'];
-      var attributes = <Attribute, int>{};
-      if (attributesJson != null) {
-        for (var attribute in Attribute.all) {
-          attributes[attribute] = attributesJson[attribute.name] ?? 10;
-        }
-      } else {
-        // TODO: Remove this when we no longer care about old pre-attribute
-        // saves.
-        for (var attribute in Attribute.all) {
-          attributes[attribute] = 10;
-        }
-      }
-
       var skillSet = new SkillSet();
       var skills = hero['skills'];
       if (skills != null) {
         for (var name in skills.keys) {
-          skills[Skill.find(name)] = skills[name];
+          skillSet[Skill.find(name)] = skills[name];
         }
       }
 

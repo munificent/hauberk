@@ -435,7 +435,8 @@ class AwakeState extends MonsterState {
   Direction _findMeleePath() {
     // Try to pathfind towards the hero.
     var path = AStar.findPath(game.stage, pos, game.hero.pos,
-        maxLength: breed.tracking, canOpenDoors: canOpenDoors);
+        maxLength: breed.tracking, canOpenDoors: canOpenDoors,
+        canFly: monster.canFly);
 
     if (path.length == 0) return null;
 

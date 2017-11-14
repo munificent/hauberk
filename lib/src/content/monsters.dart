@@ -236,16 +236,16 @@ void greaterDragons() {}
 
 void eyes() {
   family("e", flags: "immobile fly")..preferOpen();
-  breed("lazy eye", 1, cornflower, 10)
-    ..attack("stare[s] at", 4)
-    ..sparkBolt(rate: 6, damage: 10, range: 6);
+  breed("lazy eye", 1, cornflower, 12)
+    ..attack("stare[s] at", 6)
+    ..sparkBolt(rate: 6, damage: 10, range: 8);
 
   breed("mad eye", 5, salmon, 40)
-    ..attack("stare[s] at", 6)
+    ..attack("stare[s] at", 8)
     ..windBolt(rate: 6, damage: 20);
 
   breed("floating eye", 9, buttermilk, 60)
-    ..attack("stare[s] at", 8)
+    ..attack("stare[s] at", 10)
     ..sparkBolt(rate: 5, damage: 16)
     ..teleport(rate: 8, range: 7);
 
@@ -290,21 +290,20 @@ void faeFolk() {
     ..count(2)
     ..attack("scratch[es]", 3)
     ..sparkBolt(rate: 7, damage: 4)
-    ..teleport(rate: 7, range: 5)
     ..drop(60, "magic");
 
   breed("house sprite", 3, cornflower, 15)
     ..count(2)
     ..attack("poke[s]", 5)
     ..stoneBolt(rate: 10, damage: 4)
-    ..teleport(rate: 7, range: 5)
+    ..teleport(rate: 7, range: 4)
     ..drop(80, "magic");
 
   breed("mischievous sprite", 7, salmon, 24)
     ..count(2)
     ..attack("stab[s]", 6)
     ..windBolt(rate: 8, damage: 8)
-    ..teleport(range: 7)
+    ..teleport(range: 5)
     ..insult(rate: 6)
     ..drop(100, "magic");
 }
@@ -318,74 +317,74 @@ void felines() {
 
 void goblins() {
   family("g", meander: 1, flags: "open-doors");
-  breed("goblin peon", 4, persimmon, 20, meander: 2)
+  breed("goblin peon", 4, sandal, 26, meander: 2)
     ..count(4)
-    ..attack("stab[s]", 5)
+    ..attack("stab[s]", 8)
     ..drop(10, "spear")
     ..drop(5, "healing");
 
-  breed("goblin archer", 6, peaGreen, 22)
+  breed("goblin archer", 6, peaGreen, 32)
     ..count(2)
     ..minion("goblin peon", 0, 2)
-    ..attack("stab[s]", 3)
-    ..arrow(rate: 3, damage: 4)
+    ..attack("stab[s]", 4)
+    ..arrow(rate: 3, damage: 8)
     ..drop(20, "bow")
     ..drop(10, "dagger")
     ..drop(5, "healing");
 
-  breed("goblin fighter", 6, persimmon, 30)
+  breed("goblin fighter", 6, persimmon, 58)
     ..count(2)
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
-    ..attack("stab[s]", 7)
+    ..attack("stab[s]", 12)
     ..drop(15, "spear")
     ..drop(10, "armor")
     ..drop(5, "resistance")
     ..drop(5, "healing");
 
-  breed("goblin warrior", 8, gunsmoke, 42)
+  breed("goblin warrior", 8, gunsmoke, 68)
     ..count(2)
     ..minion("goblin fighter", 0, 1)
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
-    ..attack("stab[s]", 10)
+    ..attack("stab[s]", 16)
     ..drop(20, "axe")
     ..drop(20, "armor")
     ..drop(5, "resistance")
     ..drop(5, "healing")
     ..flags("protective");
 
-  breed("goblin mage", 9, ultramarine, 30)
+  breed("goblin mage", 9, ultramarine, 50)
     ..minion("goblin fighter", 0, 1)
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 2)
     ..attack("whip[s]", 7)
-    ..fireBolt(rate: 12, damage: 6)
-    ..sparkBolt(rate: 12, damage: 8)
+    ..fireBolt(rate: 12, damage: 12)
+    ..sparkBolt(rate: 12, damage: 16)
     ..drop(10, "equipment")
     ..drop(10, "whip")
     ..drop(20, "magic");
 
-  breed("goblin ranger", 12, sherwood, 36)
+  breed("goblin ranger", 12, sherwood, 60)
     ..minion("goblin mage", 0, 1)
     ..minion("goblin fighter", 0, 1)
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 2)
     ..attack("stab[s]", 10)
-    ..arrow(rate: 3, damage: 8)
+    ..arrow(rate: 3, damage: 12)
     ..drop(30, "bow")
     ..drop(20, "armor")
     ..drop(20, "magic");
 
   // TODO: Always drop something good.
-  breed("Erlkonig, the Goblin Prince", 14, steelGray, 80)
+  breed("Erlkonig, the Goblin Prince", 14, steelGray, 120)
     ..minion("goblin mage", 1, 2)
     ..minion("goblin fighter", 1, 3)
     ..minion("goblin archer", 1, 3)
     ..minion("goblin peon", 2, 4)
     ..attack("hit[s]", 10)
     ..attack("slash[es]", 14)
-    ..darkBolt(rate: 20, damage: 10)
+    ..darkBolt(rate: 20, damage: 20)
     ..drop(60, "equipment")
     ..drop(60, "equipment")
     ..drop(40, "magic")
@@ -407,7 +406,7 @@ void insects() {
     ..attack("crawl[s] on", 2)
     ..spawn(rate: 6);
 
-  breed("giant centipede", 3, brickRed, 16, speed: 3, meander: -4)
+  breed("giant centipede", 3, brickRed, 28, speed: 3, meander: -4)
     ..preferCorridor()
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
@@ -427,7 +426,7 @@ void jellies() {
   family("j", flags: "fearless immobile")
     ..preferCorner()
     ..count(4);
-  breed("green slime", 2, peaGreen, 7)
+  breed("green slime", 2, peaGreen, 10)
     ..stain(Tiles.greenJellyStain)
     ..attack("crawl[s] on", 4)
     ..spawn(rate: 4);
@@ -585,14 +584,14 @@ void ogres() {}
 
 void people() {
   family("p", tracking: 14, flags: "open-doors");
-  breed("hapless adventurer", 1, buttermilk, 12, meander: 3)
+  breed("hapless adventurer", 1, buttermilk, 14, meander: 3)
     ..attack("hit[s]", 3)
     ..drop(50, "weapon")
     ..drop(60, "armor")
     ..drop(40, "magic")
     ..flags("cowardly");
 
-  breed("simpering knave", 2, carrot, 15, meander: 3)
+  breed("simpering knave", 2, carrot, 17, meander: 3)
     ..attack("hit[s]", 2)
     ..attack("stab[s]", 4)
     ..drop(40, "whip")
@@ -600,7 +599,7 @@ void people() {
     ..drop(30, "magic")
     ..flags("cowardly");
 
-  breed("decrepit mage", 3, violet, 16, meander: 2)
+  breed("decrepit mage", 3, violet, 20, meander: 2)
     ..attack("hit[s]", 2)
     ..sparkBolt(rate: 10, damage: 8)
     ..drop(60, "magic")
@@ -609,7 +608,7 @@ void people() {
     ..drop(20, "robe")
     ..drop(20, "boots");
 
-  breed("unlucky ranger", 5, peaGreen, 20, meander: 2)
+  breed("unlucky ranger", 5, peaGreen, 30, meander: 2)
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
     ..drop(30, "potion")
@@ -617,7 +616,7 @@ void people() {
     ..drop(10, "sword")
     ..drop(10, "body");
 
-  breed("drunken priest", 5, cerulean, 18, meander: 4)
+  breed("drunken priest", 5, cerulean, 34, meander: 4)
     ..attack("hit[s]", 8)
     ..heal(rate: 15, amount: 8)
     ..drop(30, "scroll")
@@ -642,25 +641,25 @@ void quest() {
 }
 
 void rodents() {
-  family("r", meander: 4)..preferWall();
-  breed("[mouse|mice]", 1, sandal, 6, speed: 1)
-    ..count(2, 5)
+  family("r", speed: 1, meander: 4)..preferWall();
+  breed("[mouse|mice]", 1, sandal, 6)
+    ..count(4, 8)
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
 
-  breed("sewer rat", 2, steelGray, 7, speed: 1, meander: -1)
+  breed("sewer rat", 2, steelGray, 8, meander: -1)
     ..count(2, 5)
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
 
-  breed("sickly rat", 3, peaGreen, 4, speed: 1)
-    ..attack("bite[s]", 3, Element.poison)
-    ..attack("scratch[es]", 3);
+  breed("sickly rat", 3, peaGreen, 4)
+    ..attack("bite[s]", 8, Element.poison)
+    ..attack("scratch[es]", 4);
 
-  breed("plague rat", 6, lima, 10, speed: 1)
+  breed("plague rat", 6, lima, 16)
     ..count(2, 4)
-    ..attack("bite[s]", 4, Element.poison)
-    ..attack("scratch[es]", 3);
+    ..attack("bite[s]", 15, Element.poison)
+    ..attack("scratch[es]", 8);
 }
 
 void reptiles() {
@@ -701,36 +700,36 @@ void reptiles() {
     ..attack("bite[s]", 17);
 
   family("R", meander: 3)..preferOpen();
-  breed("juvenile salamander", 7, salmon, 24)
-    ..attack("bite[s]", 12, Element.fire)
-    ..fireCone(rate: 16, damage: 18, range: 6);
+  breed("juvenile salamander", 7, salmon, 56)
+    ..attack("bite[s]", 14, Element.fire)
+    ..fireCone(rate: 16, damage: 30, range: 6);
 
-  breed("salamander", 13, brickRed, 40)
-    ..attack("bite[s]", 16, Element.fire)
-    ..fireCone(rate: 16, damage: 24, range: 8);
+  breed("salamander", 13, brickRed, 87)
+    ..attack("bite[s]", 18, Element.fire)
+    ..fireCone(rate: 16, damage: 50, range: 8);
 }
 
 void slugs() {
   family("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
   breed("giant slug", 1, mustard, 20)..attack("crawl[s] on", 7);
 
-  breed("suppurating slug", 6, lima, 30)
-    ..attack("crawl[s] on", 7, Element.poison);
+  breed("suppurating slug", 6, lima, 50)
+    ..attack("crawl[s] on", 10, Element.poison);
 }
 
 void snakes() {
   family("S", speed: 1, meander: 4);
-  breed("garter snake", 1, lima, 7)
+  breed("garter snake", 1, lima, 9)
     ..preferGrass()
     ..attack("bite[s]", 3);
 
-  breed("brown snake", 3, persimmon, 14)
+  breed("brown snake", 3, persimmon, 25)
     ..preferGrass()
     ..attack("bite[s]", 4);
 
-  breed("cave snake", 7, gunsmoke, 35)
+  breed("cave snake", 7, gunsmoke, 50)
     ..preferCorridor()
-    ..attack("bite[s]", 10);
+    ..attack("bite[s]", 16);
 }
 
 void troglodytes() {}
@@ -744,13 +743,13 @@ void worms() {
   family("w", meander: 4, flags: "fearless");
   breed("giant earthworm", 2, salmon, 20, speed: -2)
     ..preferCorridor()
-    ..attack("crawl[s] on", 4);
+    ..attack("crawl[s] on", 5);
 
   breed("blood worm", 2, brickRed, 4, rarity: 2)
     ..count(3, 8)
     ..attack("crawl[s] on", 5);
 
-  breed("giant cave worm", 7, sandal, 36, speed: -2)
+  breed("giant cave worm", 7, sandal, 80, speed: -2)
     ..preferCorridor()
     ..attack("crawl[s] on", 8, Element.acid);
 

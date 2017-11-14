@@ -26,7 +26,7 @@ class Game {
 
   Game(this._content, this._save, this.depth) {
     // TODO: Vary size?
-    _stage = new Stage(80, 80, this);
+    _stage = new Stage(70, 70, this);
   }
 
   Iterable<String> generate() sync* {

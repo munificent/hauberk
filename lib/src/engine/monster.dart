@@ -90,11 +90,11 @@ class Monster extends Actor {
   void useMove(Move move) {
     // Add some randomness to the rate. Since monsters very eagerly prefer to
     // use moves, this ensures they don't use them too predictably.
-    _recharges[move] += rng.range(move.rate, move.rate * 2);
+    _recharges[move] += rng.float(move.rate, move.rate * 1.3);
   }
 
   /// Returns `true` if [move] is recharged.
-  bool canUse(Move move) => _recharges[move] == 0;
+  bool canUse(Move move) => _recharges[move] == 0.0;
 
   /// Gets whether or not this monster has a line of sight to [target].
   ///
@@ -186,7 +186,7 @@ class Monster extends Actor {
       // Randomly charge the moves. This ensures the monster doesn't
       // immediately unload everything on the hero when first spotted.
       for (var move in breed.moves) {
-        _recharges[move] = rng.range(move.rate);
+        _recharges[move] = rng.float(move.rate);
       }
     }
   }
