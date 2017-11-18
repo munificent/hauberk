@@ -285,22 +285,22 @@ void weapons() {
   // Knives.
   category(CharCode.latinCapitalLetterNWithTilde, tag: "equipment/weapon/dagger", verb: "stab[s]");
   tossable(breakage: 2, range: 8);
-  weapon("Kni[fe|ves]",    3,    9, steelGray,  10, 10, heft: 10);
-  weapon("Dirk",           4,   21, gunsmoke,   12, 12, heft: 10);
-  weapon("Dagger",         6,   63, cornflower, 14, 14, heft: 11);
-  weapon("Stiletto[es]",  10,  188, slate,      16, 16, heft: 10);
-  weapon("Rondel",        20,  409, turquoise,  18, 18, heft: 11);
-  weapon("Baselard",      30,  621, gold,       20, 20, heft: 12);
+  weapon("Kni[fe|ves]",    3,    9, steelGray,   8,  8, heft: 10);
+  weapon("Dirk",           4,   21, gunsmoke,   10, 10, heft: 10);
+  weapon("Dagger",         6,   63, cornflower, 12, 12, heft: 11);
+  weapon("Stiletto[es]",  10,  188, slate,      14, 14, heft: 10);
+  weapon("Rondel",        20,  409, turquoise,  16, 16, heft: 11);
+  weapon("Baselard",      30,  621, gold,       18, 18, heft: 12);
   // Main-guache
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
   category(CharCode.feminineOrdinalIndicator, tag: "equipment/weapon/sword", verb: "slash[es]");
   tossable(breakage: 20, range: 5);
-  weapon("Rapier",         7,  188, steelGray,  22,  4, heft: 16);
-  weapon("Shortsword",    11,  324, slate,      26,  6, heft: 18);
-  weapon("Scimitar",      18,  748, gunsmoke,   34,  9, heft: 19);
-  weapon("Cutlass[es]",   24, 1417, buttermilk, 42, 11, heft: 22);
-  weapon("Falchion",      38, 2374, turquoise,  46, 15, heft: 24);
+  weapon("Rapier",         7,  188, steelGray,  20,  4, heft: 16);
+  weapon("Shortsword",    11,  324, slate,      22,  6, heft: 17);
+  weapon("Scimitar",      18,  748, gunsmoke,   24,  9, heft: 18);
+  weapon("Cutlass[es]",   24, 1417, buttermilk, 26, 11, heft: 19);
+  weapon("Falchion",      38, 2374, turquoise,  28, 15, heft: 20);
 
   /*
 
@@ -317,10 +317,10 @@ void weapons() {
   category(CharCode.masculineOrdinalIndicator, tag: "equipment/weapon/spear", verb: "stab[s]");
   tossable(breakage: 0, range: 9);
   weapon("Pointed Stick",  2,    0, garnet,     10,  9, heft: 11);
-  weapon("Spear",          7,  137, persimmon,  24, 15, heft: 17);
-  weapon("Angon",         14,  621, gunsmoke,   30, 20, heft: 19);
-  weapon("Lance",         28, 2106, cornflower, 40, 28, heft: 27);
-  weapon("Partisan",      35, 6833, slate,      50, 40, heft: 29);
+  weapon("Spear",          7,  137, persimmon,  16, 15, heft: 17);
+  weapon("Angon",         14,  621, gunsmoke,   20, 20, heft: 19);
+  weapon("Lance",         28, 2106, cornflower, 24, 28, heft: 27);
+  weapon("Partisan",      35, 6833, slate,      30, 40, heft: 29);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
@@ -328,11 +328,11 @@ void weapons() {
   tossable(breakage: 0, range: 8);
   weapon("Hatchet",    6,  137, slate,      18, 20, heft: 14);
   tossable(breakage: 0, range: 7);
-  weapon("Axe",       12,  621, persimmon,  32, 24, heft: 22);
+  weapon("Axe",       12,  621, persimmon,  25, 24, heft: 22);
   tossable(breakage: 0, range: 5);
-  weapon("Valaska",   24, 2664, gunsmoke,   52, 26, heft: 26);
+  weapon("Valaska",   24, 2664, gunsmoke,   32, 26, heft: 26);
   tossable(breakage: 0, range: 4);
-  weapon("Battleaxe", 40, 4866, steelGray,  64, 28, heft: 30);
+  weapon("Battleaxe", 40, 4866, steelGray,  39, 28, heft: 30);
 
   // TODO: Remove? Needs a command to use and "archery" doesn't fit.
   // Sling. In a category itself because many bow affixes don't apply to it.

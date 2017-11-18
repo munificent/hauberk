@@ -246,28 +246,28 @@ void eyes() {
 
   breed("floating eye", 9, buttermilk, 60)
     ..attack("stare[s] at", 10)
-    ..sparkBolt(rate: 5, damage: 16)
-    ..teleport(rate: 8, range: 7);
+    ..sparkBolt(rate: 4, damage: 16)
+    ..teleport(rate: 10, range: 7);
 
   breed("baleful eye", 20, carrot, 80)
     ..attack("gaze[s] into", 12)
     ..fireBolt(rate: 4, damage: 20)
     ..waterBolt(rate: 4, damage: 20)
-    ..teleport(rate: 8, range: 9);
+    ..teleport(rate: 10, range: 9);
 
   breed("malevolent eye", 30, brickRed, 120)
     ..attack("gaze[s] into", 20)
     ..lightBolt(rate: 4, damage: 20)
     ..darkBolt(rate: 4, damage: 20)
     ..fireCone(rate: 7, damage: 30)
-    ..teleport(rate: 8, range: 9);
+    ..teleport(rate: 10, range: 9);
 
   breed("murderous eye", 40, maroon, 180)
     ..attack("gaze[s] into", 30)
     ..acidBolt(rate: 7, damage: 50)
     ..stoneBolt(rate: 7, damage: 50)
     ..iceCone(rate: 7, damage: 40)
-    ..teleport(rate: 8, range: 9);
+    ..teleport(rate: 10, range: 9);
 
   breed("watcher", 60, gunsmoke, 300)
     ..attack("see[s]", 50)

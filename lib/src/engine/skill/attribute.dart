@@ -55,7 +55,7 @@ class Agility extends AttributeSkill {
 
 class Fortitude extends AttributeSkill {
   static int maxHealth(int value) =>
-      (math.pow(value, 1.5) - 0.5 * value + 30).toInt();
+      (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
 
   String get name => "Fortitude";
 }

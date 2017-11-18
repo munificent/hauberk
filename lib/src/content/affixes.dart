@@ -102,28 +102,28 @@ class Affixes {
 
   static void _brands() {
     // TODO: Should these grant resistance to their element too?
-    brand("Glimmering", 20, 3, Element.light, scale: 1.5);
-    brand("Shining", 32, 4, Element.light, scale: 2.0);
-    brand("Radiant", 48, 5, Element.light, scale: 2.5);
+    brand("Glimmering", 20, 3, Element.light, scale: 1.2);
+    brand("Shining", 32, 4, Element.light, scale: 1.4);
+    brand("Radiant", 48, 5, Element.light, scale: 1.6);
 
-    brand("Dim", 16, 3, Element.dark, scale: 1.5);
-    brand("Dark", 32, 4, Element.dark, scale: 2.0);
-    brand("Black", 56, 5, Element.dark, scale: 2.5);
+    brand("Dim", 16, 3, Element.dark, scale: 1.2);
+    brand("Dark", 32, 4, Element.dark, scale: 1.4);
+    brand("Black", 56, 5, Element.dark, scale: 1.6);
 
-    brand("Freezing", 20, 3, Element.cold, scale: 2.0);
+    brand("Freezing", 20, 3, Element.cold, scale: 1.5);
 
-    brand("Burning", 20, 3, Element.fire, scale: 1.5);
-    brand("Flaming", 40, 4, Element.fire, scale: 2.0);
-    brand("Searing", 60, 5, Element.fire, scale: 2.5);
+    brand("Burning", 20, 3, Element.fire, scale: 1.3);
+    brand("Flaming", 40, 4, Element.fire, scale: 1.6);
+    brand("Searing", 60, 5, Element.fire, scale: 1.8);
 
-    brand("Electric", 50, 5, Element.lightning, scale: 2.0);
-    brand("Shocking", 70, 5, Element.lightning, scale: 3.0);
+    brand("Electric", 50, 5, Element.lightning, scale: 1.4);
+    brand("Shocking", 70, 5, Element.lightning, scale: 1.8);
 
-    brand("Poisoned", 35, 5, Element.poison, scale: 1.5);
-    brand("Venomous", 70, 5, Element.poison, scale: 2.0);
+    brand("Poisoned", 35, 5, Element.poison, scale: 1.1);
+    brand("Venomous", 70, 5, Element.poison, scale: 1.3);
 
-    brand("Ghostly", 45, 5, Element.spirit, scale: 2.0);
-    brand("Spiritual", 80, 8, Element.spirit, scale: 3.0);
+    brand("Ghostly", 45, 5, Element.spirit, scale: 1.4);
+    brand("Spiritual", 80, 8, Element.spirit, scale: 1.7);
   }
 
   static void defineItemTag(String tag) {
