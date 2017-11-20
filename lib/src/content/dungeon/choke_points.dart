@@ -40,7 +40,7 @@ class _Junction {
 /// - Walk the tree from the region where the hero starts. Do a post-order
 ///   calculation of the number of tiles accessible by each junction and record
 ///   that in the dungeon's tile info.
-// TODO: Look "Tarjan's bridge-finding algorithm".
+// TODO: Look up "Tarjan's bridge-finding algorithm".
 class ChokePoints {
   final Dungeon _dungeon;
   final Array2D<int> _cells;

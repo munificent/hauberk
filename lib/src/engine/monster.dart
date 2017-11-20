@@ -263,7 +263,7 @@ class Monster extends Actor {
 
   /// Called when this Actor has been killed by [attackNoun].
   void onDied(Noun attackNoun) {
-    var items = game.stage.placeDrops(pos, breed);
+    var items = game.stage.placeDrops(pos, breed.drop);
     for (var item in items) {
       log("{1} drop[s] {2}.", this, item);
     }

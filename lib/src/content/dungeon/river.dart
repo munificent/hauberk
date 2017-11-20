@@ -6,6 +6,8 @@ import '../tiles.dart';
 import 'dungeon.dart';
 
 class RiverBiome extends Biome {
+  final Set<Vec> _cells = new Set();
+
   Iterable<String> generate(Dungeon dungeon) sync* {
     // TODO: Rivers that flow into/from lakes?
 
@@ -121,6 +123,8 @@ class RiverBiome extends Biome {
     // TODO: Bridges over lakes?
 
     // TODO: Better tiles at edge of dungeon?
+
+    dungeon.addPlace(new Place("aquatic", _cells.toList()));
   }
 
   void _displace(
@@ -171,10 +175,13 @@ class RiverBiome extends Biome {
           // TODO: Different types of river and shore: ice, slime, blood, lava,
           // etc.
           var lengthSquared = xx * xx + yy * yy;
+          var pos = new Vec(x, y);
           if (lengthSquared <= radiusSquared) {
-            dungeon.setTile(x, y, Tiles.water);
+            dungeon.setTileAt(pos, Tiles.water);
+            _cells.add(pos);
           } else if (lengthSquared <= shoreSquared && dungeon.isRock(x, y)) {
-            dungeon.setTile(x, y, Tiles.grass);
+            dungeon.setTileAt(pos, Tiles.grass);
+            _cells.add(pos);
           }
         }
       }

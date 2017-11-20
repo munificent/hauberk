@@ -1,8 +1,5 @@
-import 'package:piecemeal/piecemeal.dart';
-
 import '../engine.dart';
 import 'drops.dart';
-import 'dungeon/dungeon.dart';
 
 final ResourceSet<FloorDrop> _floorDrops = new ResourceSet();
 
@@ -28,17 +25,11 @@ class FloorDrops {
             percentDrop(30, "magic", i)
           ]));
 
-      // TODO: Rarer at greater depths?
       var rockRarity = 1 + i ~/ 10;
       floorDrop(
           depth: i,
           rarity: rockRarity,
           location: SpawnLocation.corner,
-          drop: parseDrop("Rock", i));
-      floorDrop(
-          depth: i,
-          rarity: rockRarity,
-          location: SpawnLocation.grass,
           drop: parseDrop("Rock", i));
     }
 
@@ -49,33 +40,10 @@ class FloorDrops {
 }
 
 class FloorDrop {
-  final SpawnLocation _location;
-  final Drop _drop;
+  final SpawnLocation location;
+  final Drop drop;
 
-  FloorDrop(this._location, this._drop);
-
-  void spawn(Dungeon dungeon) {
-    var encounterPos = dungeon.findSpawnTile(_location);
-
-    // TODO: Mostly copied from Monster.onDied(). Refactor.
-    // Try to keep dropped items from overlapping.
-    var flow = new Flow(dungeon.stage, encounterPos,
-        canOpenDoors: false, ignoreActors: true);
-
-    _drop.spawnDrop((item) {
-      var itemPos = encounterPos;
-      if (dungeon.stage.isItemAt(itemPos)) {
-        itemPos = flow.nearestWhere((pos) {
-          if (rng.oneIn(5)) return true;
-          return !dungeon.stage.isItemAt(pos);
-        });
-
-        if (itemPos == null) itemPos = encounterPos;
-      }
-
-      dungeon.stage.addItem(item, itemPos);
-    });
-  }
+  FloorDrop(this.location, this.drop);
 }
 
 void floorDrop({int depth, int rarity, SpawnLocation location, Drop drop}) {

@@ -26,6 +26,9 @@ class Monsters {
   static void initialize() {
     breeds.defineTags("monster");
 
+    // TODO: Temp. Is there a cleaner way to set these up?
+    breeds.defineTags("dungeon/corridor dungeon/room aquatic");
+
     // Here's approximately the level distributions for the different
     // broad categories on monsters. Monsters are very roughly lumped
     // together so that different depths tend to have a different
@@ -155,7 +158,7 @@ class Monsters {
 void arachnids() {
   // TODO: Should all spiders hide in corridors?
   family("a", flags: "fearless")
-    ..preferCorridor()
+    ..placeIn("corridor")
     ..stain(Tiles.spiderweb);
   breed("brown spider", 1, persimmon, 3, meander: 8)
     ..count(3)
@@ -407,7 +410,7 @@ void insects() {
     ..spawn(rate: 6);
 
   breed("giant centipede", 3, brickRed, 28, speed: 3, meander: -4)
-    ..preferCorridor()
+    ..placeIn("corridor")
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
 }
@@ -664,11 +667,11 @@ void rodents() {
 
 void reptiles() {
   family("R");
+  // TODO: Should be able to swim.
   breed("frog", 1, lima, 4, speed: 1, meander: 4)
-    ..preferGrass()
+    ..placeIn("aquatic")
     ..attack("hop[s] on", 2);
 
-  // TODO: Drop scales?
   family("R", meander: 1, flags: "fearless");
   breed("lizard guard", 11, gold, 26)
     ..attack("claw[s]", 8)
@@ -720,15 +723,15 @@ void slugs() {
 void snakes() {
   family("S", speed: 1, meander: 4);
   breed("garter snake", 1, lima, 9)
-    ..preferGrass()
+    ..placeIn("aquatic")
     ..attack("bite[s]", 3);
 
   breed("brown snake", 3, persimmon, 25)
-    ..preferGrass()
+    ..placeIn("aquatic")
     ..attack("bite[s]", 4);
 
   breed("cave snake", 7, gunsmoke, 50)
-    ..preferCorridor()
+    ..placeIn("corridor")
     ..attack("bite[s]", 16);
 }
 
@@ -742,7 +745,7 @@ void vampires() {}
 void worms() {
   family("w", meander: 4, flags: "fearless");
   breed("giant earthworm", 2, salmon, 20, speed: -2)
-    ..preferCorridor()
+    ..placeIn("corridor")
     ..attack("crawl[s] on", 5);
 
   breed("blood worm", 2, brickRed, 4, rarity: 2)
@@ -750,7 +753,7 @@ void worms() {
     ..attack("crawl[s] on", 5);
 
   breed("giant cave worm", 7, sandal, 80, speed: -2)
-    ..preferCorridor()
+    ..placeIn("corridor")
     ..attack("crawl[s] on", 8, Element.acid);
 
   breed("fire worm", 10, carrot, 6)
@@ -785,9 +788,22 @@ _FamilyBuilder family(String character,
 void buildBreed() {
   if (_builder == null) return;
 
+  // TODO: Is this tag still needed?
+  var tags = ["monster"];
+
+  tags.addAll(_builder._places);
+  tags.addAll(_family._places);
+
+  // TODO: We probably want to be able to opt out of this for special breeds
+  // that should never spawn natural and only appear as minions or in special
+  // rooms.
+  // Default to spawning in rooms.
+  if (_builder._places.isEmpty && _family._places.isEmpty) tags.add("room");
+
   var breed = _builder.build();
+  // TODO: join() here is dumb since Resource then splits it.
   Monsters.breeds
-    ..add(breed.name, breed, breed.depth, _builder._rarity, "monster");
+    ..add(breed.name, breed, breed.depth, _builder._rarity, tags.join(" "));
   _builder = null;
 }
 
@@ -814,6 +830,9 @@ class _BaseBuilder {
 
   SpawnLocation _location;
 
+  /// Names of places where this breed may spawn.
+  final List<String> _places = [];
+
   /// The default speed for breeds in the current family. If the breed
   /// specifies a speed, it offsets the family's speed.
   int _speed;
@@ -837,16 +856,14 @@ class _BaseBuilder {
     _location = SpawnLocation.corner;
   }
 
-  void preferCorridor() {
-    _location = SpawnLocation.corridor;
-  }
-
-  void preferGrass() {
-    _location = SpawnLocation.grass;
-  }
-
   void preferOpen() {
     _location = SpawnLocation.open;
+  }
+
+  void placeIn(String place1, [String place2]) {
+    // TODO: Don't stringly-type place names?
+    _places.add(place1);
+    if (place2 != null) _places.add(place2);
   }
 
   /// How many monsters of this kind are spawned.

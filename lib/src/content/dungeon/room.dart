@@ -247,6 +247,7 @@ class RoomBiome extends Biome {
   }
 
   void _placeCorridor(Vec start, Direction dir, int length) {
+    var cells = <Vec>[];
     var pos = start;
     for (var i = 0; i <= length; i++) {
       _dungeon.setTile(pos.x, pos.y, Tiles.floor);
@@ -256,11 +257,15 @@ class RoomBiome extends Biome {
 
       var right = pos + dir.rotateRight90;
       _dungeon.setTile(right.x, right.y, Tiles.wall);
+
+      if (i != 0 && i != length) cells.add(pos);
+
       pos += dir;
     }
 
     _placeDoor(start);
     _placeDoor(start + dir * length);
+    _dungeon.addPlace(new Place("corridor", cells));
   }
 
   bool _canPlaceRoom(Room room, int x, int y) {
@@ -299,6 +304,8 @@ class RoomBiome extends Biome {
   void _placeRoom(Room room, int x, int y) {
     List<Vec> nature = [];
 
+    var cells = <Vec>[];
+
     for (var pos in room.tiles.bounds) {
       var tile = room.tiles[pos];
       if (tile == null) continue;
@@ -312,6 +319,8 @@ class RoomBiome extends Biome {
       }
 
       _dungeon.setTileAt(absolute, tile);
+
+      if (tile.isWalkable) cells.add(absolute);
     }
 
     // Add its junctions unless they are already blocked.
@@ -326,6 +335,7 @@ class RoomBiome extends Biome {
     if (nature != null) _reachNature(nature);
 
     _rooms.add(new PlacedRoom(new Vec(x, y), room));
+    _dungeon.addPlace(new Place("room", cells));
   }
 
   void _placeDoor(Vec pos) {
@@ -521,6 +531,8 @@ class RectangleRoom extends RoomType {
     }
   }
 }
+
+// TODO: Maybe use blob rooms for things like worm pits?
 
 class BlobRoom extends RoomType {
   Room create() {

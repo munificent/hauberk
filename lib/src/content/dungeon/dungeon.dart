@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -81,6 +83,14 @@ class TileInfo {
   int regionId;
 }
 
+// TODO: Better name?
+class Place {
+  final String type;
+  final List<Vec> cells;
+
+  Place(this.type, this.cells);
+}
+
 class Dungeon {
   // TODO: Hack temp. Static so that dungeon_test can access these while it's
   // being generated.
@@ -93,6 +103,8 @@ class Dungeon {
   final List<Biome> _biomes = [];
   final Array2D<TileInfo> _info;
   final List<Vec> _corridors = [];
+
+  final List<Place> _places = [];
 
   Vec _heroPos;
 
@@ -155,7 +167,8 @@ class Dungeon {
         var pos = stage.findOpenTile();
         // TODO: If there are unconnected regions (usually from a river looping
         // back onto the dungeon) then distance will be null and this may fail.
-        if (stairPos == null || _info[pos].distance > _info[stairPos].distance) {
+        if (stairPos == null ||
+            _info[pos].distance > _info[stairPos].distance) {
           stairPos = pos;
         }
       }
@@ -163,22 +176,8 @@ class Dungeon {
       setTileAt(stairPos, Tiles.stairs);
     }
 
-    // Monsters.
-    var numSpawns = 40 + (depth ~/ 4);
-    numSpawns = rng.triangleInt(numSpawns, numSpawns ~/ 3);
-    for (var i = 0; i < numSpawns; i++) {
-      _spawnMonster(Monsters.breeds.tryChoose(depth, "monster"));
-    }
-
-    // Items.
-    // TODO: Tune this.
-    var numItems = 6 + (depth ~/ 5);
-    numItems = rng.triangleInt(numItems, numItems ~/ 2);
-    for (var i = 0; i < numItems; i++) {
-      // TODO: Distribute them more evenly?
-      // TODO: Have biome affect density?
-      var drop = FloorDrops.choose(depth);
-      drop.spawn(this);
+    for (var place in _places) {
+      _populatePlace(place);
     }
   }
 
@@ -225,6 +224,10 @@ class Dungeon {
     return false;
   }
 
+  void addPlace(Place place) {
+    _places.add(place);
+  }
+
   void placeHero(Vec pos) {
     assert(_heroPos == null, "Should only place the hero once.");
     _heroPos = pos;
@@ -236,7 +239,8 @@ class Dungeon {
   /// attached to the starting tile. Only grows through tiles of [allowed]
   /// types. The larger [smoothing] is, the less jagged and spidery the blobs
   /// will be.
-  void growSeed(List<Vec> starts, int size, int smoothing, TileType tile) {
+  void growSeed(List<Vec> starts, int size, int smoothing, TileType tile,
+      [List<Vec> cells]) {
     var edges = new Set<Vec>();
 
     addNeighbors(Vec pos) {
@@ -292,9 +296,11 @@ class Dungeon {
       }
 
       var pos = rng.item(best);
-      setTile(pos.x, pos.y, tile);
+      setTileAt(pos, tile);
       addNeighbors(pos);
       edges.remove(pos);
+
+      if (cells != null) cells.add(pos);
 
       count--;
     }
@@ -312,17 +318,62 @@ class Dungeon {
     return stage.findOpenTile();
   }
 
-  void _spawnMonster(Breed breed) {
-    var pos = findSpawnTile(breed.location);
-    var corpse = rng.oneIn(8);
+  void _populatePlace(Place place) {
+    // TODO: Special encounters that takes over the whole place. Like an
+    // alchemical laboratory that has rows of tables, lots of magic items, and
+    // evil wizards.
 
+    // TODO: Doing this here is kind of hacky.
+    place.cells.shuffle();
+
+    // Floor drops.
+    // TODO: Tune this. Take number of cells into account.
+    if (rng.percent(30)) {
+      var floorDrop = FloorDrops.choose(depth);
+      var pos =
+          _tryFindSpawnPos(place.cells, floorDrop.location, avoidActors: false);
+      if (pos != null) stage.placeDrops(pos, floorDrop.drop);
+    }
+
+    // TODO: Tune based on depth and place type?
+    // We want a roughly even difficulty across places of different sizes. That
+    // means more monsters in bigger places. However, monsters can easily cross
+    // an open space which means scaling linearly makes larger places more
+    // difficult -- it's easy for the hero to get swarmed. The exponential
+    // tapers that off a bit so that larger areas don't scale quite linearly.
+    var base = (math.pow(place.cells.length, 0.80) * 0.2);
+    var min = (base - 1 - base / 3).floor();
+    var max = base.ceil();
+
+    var spawnCount = rng.taper(rng.inclusive(min, max), 4);
+
+    while (spawnCount > 0) {
+      var breed = Monsters.breeds.tryChoose(depth, place.type);
+      var spawned = _spawnMonster(place, breed);
+
+      // Stop if we ran out of open tiles.
+      if (spawned == 0) break;
+
+      spawnCount -= spawned;
+    }
+  }
+
+  int _spawnMonster(Place place, Breed breed) {
+    var pos = _tryFindSpawnPos(place.cells, breed.location, avoidActors: true);
+
+    // If there are no remaining open tiles, abort.
+    if (pos == null) return 0;
+
+    var isCorpse = rng.oneIn(8);
     var breeds = breed.spawnAll(stage.game);
 
+    var spawned = 0;
     spawn(Breed breed, Vec pos) {
-      if (corpse) {
-        stage.placeDrops(pos, breed);
+      if (isCorpse) {
+        stage.placeDrops(pos, breed.drop);
       } else {
         stage.addActor(breed.spawn(stage.game, pos));
+        spawned++;
       }
 
       if (breed.stain != null) {
@@ -342,95 +393,69 @@ class Dungeon {
       var flow = new Flow(stage, pos);
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
-      var here = flow.nearestWhere((_) => true);
+      // TODO: Checking for hero pos here is hacky.
+      var here = flow.nearestWhere((p) => _heroPos != p);
 
       // If there are no open tiles, discard the remaining monsters.
       if (here == null) break;
 
       spawn(breed, here);
     }
+
+    return spawned;
   }
 
-  Vec findSpawnTile(SpawnLocation location) {
+  Vec _tryFindSpawnPos(List<Vec> cells, SpawnLocation location,
+      {bool avoidActors}) {
+    int minWalls;
+    int maxWalls;
+
     switch (location) {
       case SpawnLocation.anywhere:
-        return stage.findOpenTile();
-
-      case SpawnLocation.corner:
-        return _preferWalls(20, 4);
-
-      case SpawnLocation.corridor:
-        return _preferWalls(100, 6);
-
-      case SpawnLocation.grass:
-        return _preferTile(Tiles.grass, 40);
-
-      case SpawnLocation.open:
-        return _avoidWalls(20);
+        minWalls = 0;
+        maxWalls = 8;
+        break;
 
       case SpawnLocation.wall:
-        return _preferWalls(20, 3);
+        minWalls = 3;
+        maxWalls = 8;
+        break;
+
+      case SpawnLocation.corner:
+        minWalls = 4;
+        maxWalls = 8;
+        break;
+
+      case SpawnLocation.open:
+        minWalls = 0;
+        maxWalls = 0;
+        break;
     }
 
-    throw "unreachable";
-  }
+    Vec acceptable;
 
-  Vec _preferWalls(int tries, int idealWalls) {
-    var bestWalls = -1;
-    Vec best;
-    for (var i = 0; i < tries; i++) {
-      var pos = stage.findOpenTile();
-      var walls = Direction.all.where((dir) => !getTileAt(pos + dir).isTraversable).length;
+    for (var pos in cells) {
+      if (_heroPos == pos) continue;
 
-      // Don't try to crowd corridors.
-      if (walls >= 6 && !rng.oneIn(3)) continue;
+      // TODO: Handle placing flying/swimming monsters on non-walkable tiles.
+      if (!getTileAt(pos).isWalkable) continue;
 
-      // Early out as soon as we find a good enough spot.
-      if (walls >= idealWalls) return pos;
+      if (stage.actorAt(pos) != null) continue;
 
-      if (walls > bestWalls) {
-        best = pos;
-        bestWalls = walls;
+      var wallCount =
+          Direction.all.where((dir) => !getTileAt(pos + dir).isWalkable).length;
+
+      if (wallCount < minWalls || wallCount > maxWalls) {
+        // This position isn't ideal, but if we don't find anything else, we'll
+        // settle for it.
+        acceptable = pos;
+        continue;
       }
+
+      return pos;
     }
 
-    // Otherwise, take the best we could find.
-    return best;
-  }
-
-  Vec _avoidWalls(int tries) {
-    var bestWalls = 100;
-    Vec best;
-    for (var i = 0; i < tries; i++) {
-      var pos = stage.findOpenTile();
-      var walls = Direction.all.where((dir) => !getTileAt(pos + dir).isWalkable).length;
-
-      // Early out as soon as we find a good enough spot.
-      if (walls == 0) return pos;
-
-      if (walls < bestWalls) {
-        best = pos;
-        bestWalls = walls;
-      }
-    }
-
-    // Otherwise, take the best we could find.
-    return best;
-  }
-
-  /// Tries to pick a random open tile with [type].
-  ///
-  /// If it fails to find one after [tries], returns any random open tile.
-  Vec _preferTile(TileType type, int tries) {
-    // TODO: This isn't very efficient. Probably better to build a cached set of
-    // all tile positions by type.
-    for (var i = 0; i < tries; i++) {
-      var pos = stage.findOpenTile();
-      if (getTileAt(pos) == type) return pos;
-    }
-
-    // Pick any tile.
-    return stage.findOpenTile();
+    return acceptable;
   }
 
   void _stain(TileType tile, Vec start, int distance, int count) {

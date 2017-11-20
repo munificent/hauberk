@@ -177,13 +177,6 @@ enum SpawnLocation {
 
   /// Adjacent to multiple walls.
   corner,
-
-  /// Inside a passageway.
-  corridor,
-
-  // TODO: Probably need something more sophisticated for biome-specific spawns.
-  /// On grass.
-  grass,
 }
 
 class Minion {

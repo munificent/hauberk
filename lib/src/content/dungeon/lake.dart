@@ -32,9 +32,11 @@ class LakeBiome extends Biome {
       if (!canPlace) continue;
 
       // We found a spot, carve the water.
+      var cells = <Vec>[];
       for (var pos in _blob.bounds) {
         if (_blob[pos]) {
           dungeon.setTileAt(pos.offset(x, y), Tiles.water);
+          cells.add(pos);
         }
       }
 
@@ -46,10 +48,13 @@ class LakeBiome extends Biome {
         if (dungeon.isRockAt(pos) && dungeon.hasNeighbor(pos, Tiles.water)) {
           dungeon.setTileAt(pos, Tiles.grass);
           edges.add(pos);
+
+          cells.add(pos);
         }
       }
 
-      dungeon.growSeed(edges, edges.length, 4, Tiles.grass);
+      dungeon.growSeed(edges, edges.length, 4, Tiles.grass, cells);
+      dungeon.addPlace(new Place("aquatic", cells));
       return;
     }
   }
