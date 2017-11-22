@@ -79,7 +79,6 @@ abstract class MonsterState {
   Game get game => _monster.game;
   Vec get pos => _monster.pos;
   bool get isVisible => _monster.isVisible;
-  bool get canOpenDoors => _monster.canOpenDoors;
 
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     monster.log(message, noun1, noun2, noun3);
@@ -260,7 +259,7 @@ class AwakeState extends MonsterState {
         .toList();
     if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
 
-    // If the monster can't walk, then it does melee or waits.
+    // If the monster doesn't pursue, then it does melee or waits.
     if (breed.flags.contains("immobile")) {
       var toHero = game.hero.pos - pos;
 
@@ -367,10 +366,8 @@ class AwakeState extends MonsterState {
       if (move.range > 0 && move.range < maxRange) maxRange = move.range;
     }
 
-    var flow = new Flow(game.stage, pos,
-        maxDistance: maxRange,
-        canOpenDoors: canOpenDoors,
-        canFly: monster.canFly);
+    var flow = new Flow(game.stage, pos, monster.motilities,
+        maxDistance: maxRange);
 
     bool isValidRangedPosition(Vec pos) {
       // Ignore tiles that are out of range.
@@ -435,8 +432,8 @@ class AwakeState extends MonsterState {
   Direction _findMeleePath() {
     // Try to pathfind towards the hero.
     var path = AStar.findPath(game.stage, pos, game.hero.pos,
-        maxLength: breed.tracking, canOpenDoors: canOpenDoors,
-        canFly: monster.canFly);
+        monster.motilities,
+        maxLength: breed.tracking);
 
     if (path.length == 0) return null;
 
@@ -468,10 +465,8 @@ class AfraidState extends MonsterState {
 
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
-    var flow = new Flow(game.stage, pos,
-        maxDistance: breed.tracking,
-        canOpenDoors: monster.canOpenDoors,
-        canFly: monster.canFly);
+    var flow = new Flow(game.stage, pos, monster.motilities,
+        maxDistance: breed.tracking);
     var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
 
     if (dir != Direction.none) {

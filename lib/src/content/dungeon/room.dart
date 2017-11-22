@@ -65,8 +65,7 @@ class RoomBiome extends Biome {
         // Try to place a corridor.
         // TODO: Turns and branches in corridors.
         var length = rng.range(3, 10);
-        if (_canPlaceCorridor(
-            junction.position, junction.direction, length)) {
+        if (_canPlaceCorridor(junction.position, junction.direction, length)) {
           var endJunction = new Junction(junction.direction,
               junction.position + junction.direction * length);
           if (_tryPlaceRoom(endJunction)) {
@@ -110,7 +109,8 @@ class RoomBiome extends Biome {
     }
   }
 
-  bool _tryPlaceTableAt(PlacedRoom placed, int x, int y, int width, int height) {
+  bool _tryPlaceTableAt(
+      PlacedRoom placed, int x, int y, int width, int height) {
     // Make sure the table isn't blocked.
     for (var y1 = 0; y1 < height; y1++) {
       for (var x1 = 0; x1 < width; x1++) {
@@ -127,26 +127,35 @@ class RoomBiome extends Biome {
     }
 
     _dungeon.setTileAt(placed.pos.offset(x, y), Tiles.tableTopLeft);
-    _dungeon.setTileAt(placed.pos.offset(x + width - 1, y), Tiles.tableTopRight);
-    _dungeon.setTileAt(placed.pos.offset(x, y + height - 1), Tiles.tableBottomLeft);
-    _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + height - 1), Tiles.tableBottomRight);
+    _dungeon.setTileAt(
+        placed.pos.offset(x + width - 1, y), Tiles.tableTopRight);
+    _dungeon.setTileAt(
+        placed.pos.offset(x, y + height - 1), Tiles.tableBottomLeft);
+    _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + height - 1),
+        Tiles.tableBottomRight);
 
     for (var x1 = 1; x1 < width - 1; x1++) {
       _dungeon.setTileAt(placed.pos.offset(x + x1, y), Tiles.tableTop);
-      _dungeon.setTileAt(placed.pos.offset(x + x1, y + height - 1), Tiles.tableBottom);
+      _dungeon.setTileAt(
+          placed.pos.offset(x + x1, y + height - 1), Tiles.tableBottom);
     }
 
     for (var y1 = 1; y1 < height - 1; y1++) {
       _dungeon.setTileAt(placed.pos.offset(x, y + y1), Tiles.tableLeft);
-      _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + y1), Tiles.tableRight);
+      _dungeon.setTileAt(
+          placed.pos.offset(x + width - 1, y + y1), Tiles.tableRight);
     }
 
     if (width <= 3 || rng.oneIn(2)) {
-      _dungeon.setTileAt(placed.pos.offset(x, y + height - 1), Tiles.tableLegLeft);
-      _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + height - 1), Tiles.tableLegRight);
+      _dungeon.setTileAt(
+          placed.pos.offset(x, y + height - 1), Tiles.tableLegLeft);
+      _dungeon.setTileAt(placed.pos.offset(x + width - 1, y + height - 1),
+          Tiles.tableLegRight);
     } else {
-      _dungeon.setTileAt(placed.pos.offset(x + 1, y + height - 1), Tiles.tableLeg);
-      _dungeon.setTileAt(placed.pos.offset(x + width - 2, y + height - 1), Tiles.tableLeg);
+      _dungeon.setTileAt(
+          placed.pos.offset(x + 1, y + height - 1), Tiles.tableLeg);
+      _dungeon.setTileAt(
+          placed.pos.offset(x + width - 2, y + height - 1), Tiles.tableLeg);
     }
 
     return true;
@@ -194,8 +203,8 @@ class RoomBiome extends Biome {
     // TODO: For some reason AStar needs to be given a longer max path than
     // we are looking for or it will very rarely find paths at the maximum
     // length. Figure out why.
-    var path = AStar.findPath(_dungeon.stage, from, to,
-        maxLength: 30, canOpenDoors: true);
+    var path = AStar.findPath(_dungeon.stage, from, to, MotilitySet.walkAndDoor,
+        maxLength: 30);
     if (path.length != 0 && path.length < 20) return false;
 
     _placeDoor(junction.position);

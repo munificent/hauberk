@@ -48,6 +48,8 @@ class Breed {
 
   final SpawnLocation location;
 
+  final MotilitySet motilities;
+
   final Set<String> flags;
 
   /// The minimum number of this breed that are spawned when it is placed in
@@ -70,7 +72,7 @@ class Breed {
   final TileType stain;
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
-      this.drop, this.location,
+      this.drop, this.location, this.motilities,
       {this.depth,
       this.maxHealth,
       this.tracking,
@@ -126,6 +128,8 @@ class Breed {
     for (var flag in flags) {
       exp *= Option.expFlag[flag];
     }
+
+    // TODO: Modify by motility?
 
     // Meandering monsters are worth less.
     exp *= (Option.expMeander - meander) / Option.expMeander;

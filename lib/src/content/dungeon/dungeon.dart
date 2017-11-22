@@ -306,18 +306,6 @@ class Dungeon {
     }
   }
 
-  Vec findOpenCorridor() {
-    assert(_corridors.isNotEmpty, "Need to calculate info first.");
-
-    _corridors.shuffle();
-    for (var pos in _corridors) {
-      if (stage.actorAt(pos) == null) return pos;
-    }
-
-    // If we get here, the corridors are all full.
-    return stage.findOpenTile();
-  }
-
   void _populatePlace(Place place) {
     // TODO: Special encounters that takes over the whole place. Like an
     // alchemical laboratory that has rows of tables, lots of magic items, and
@@ -330,9 +318,10 @@ class Dungeon {
     // TODO: Tune this. Take number of cells into account.
     if (rng.percent(30)) {
       var floorDrop = FloorDrops.choose(depth);
-      var pos =
-          _tryFindSpawnPos(place.cells, floorDrop.location, avoidActors: false);
-      if (pos != null) stage.placeDrops(pos, floorDrop.drop);
+      var pos = _tryFindSpawnPos(
+          place.cells, MotilitySet.walk, floorDrop.location,
+          avoidActors: false);
+      if (pos != null) stage.placeDrops(pos, MotilitySet.walk, floorDrop.drop);
     }
 
     // TODO: Tune based on depth and place type?
@@ -359,7 +348,8 @@ class Dungeon {
   }
 
   int _spawnMonster(Place place, Breed breed) {
-    var pos = _tryFindSpawnPos(place.cells, breed.location, avoidActors: true);
+    var pos = _tryFindSpawnPos(place.cells, breed.motilities, breed.location,
+        avoidActors: true);
 
     // If there are no remaining open tiles, abort.
     if (pos == null) return 0;
@@ -370,7 +360,7 @@ class Dungeon {
     var spawned = 0;
     spawn(Breed breed, Vec pos) {
       if (isCorpse) {
-        stage.placeDrops(pos, breed.drop);
+        stage.placeDrops(pos, breed.motilities, breed.drop);
       } else {
         stage.addActor(breed.spawn(stage.game, pos));
         spawned++;
@@ -390,7 +380,7 @@ class Dungeon {
       // handle actors being placed while the flow is being used -- it still
       // thinks those tiles are available. Come up with a better way to place
       // the monsters.
-      var flow = new Flow(stage, pos);
+      var flow = new Flow(stage, pos, breed.motilities);
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
       // TODO: Checking for hero pos here is hacky.
@@ -405,7 +395,8 @@ class Dungeon {
     return spawned;
   }
 
-  Vec _tryFindSpawnPos(List<Vec> cells, SpawnLocation location,
+  Vec _tryFindSpawnPos(
+      List<Vec> cells, MotilitySet motilities, SpawnLocation location,
       {bool avoidActors}) {
     int minWalls;
     int maxWalls;
@@ -438,7 +429,7 @@ class Dungeon {
       if (_heroPos == pos) continue;
 
       // TODO: Handle placing flying/swimming monsters on non-walkable tiles.
-      if (!getTileAt(pos).isWalkable) continue;
+      if (!getTileAt(pos).canEnterAny(motilities)) continue;
 
       if (stage.actorAt(pos) != null) continue;
 
@@ -525,9 +516,10 @@ class Dungeon {
   /// populate it.
   void _calculateInfo() {
     // Calculate how far every reachable tile is from the hero's starting point.
+    // TODO: Is this the right motilities?
     debugInfo = _info;
-    var flow = new Flow(stage, _heroPos,
-        canOpenDoors: true, canFly: true, ignoreActors: true);
+    var flow =
+        new Flow(stage, _heroPos, MotilitySet.walkAndDoor, ignoreActors: true);
     for (var pos in safeBounds) {
       _info[pos].distance = flow.getDistance(pos);
     }

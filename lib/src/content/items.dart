@@ -498,10 +498,13 @@ void bottled(String name, int depth, int price, appearance, Element element,
   noun ??= "the ${name.toLowerCase()}";
   var attack = new Attack(new Noun(noun), verb, damage, 3, element);
 
+  var motilities = new MotilitySet([Motility.walk]);
+  if (fly) motilities.add(Motility.fly);
+
   if (flow) {
     item("Bottled $name", depth, 2, appearance, price: price,
-        use: () => new FlowSelfAction(attack, fly: fly),
-        tossUse: (pos) => new FlowFromAction(attack, pos, fly: fly),
+        use: () => new FlowSelfAction(attack, motilities),
+        tossUse: (pos) => new FlowFromAction(attack, pos, motilities),
         flags: flags);
 
   } else {

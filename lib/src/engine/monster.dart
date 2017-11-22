@@ -15,6 +15,7 @@ import 'game.dart';
 import 'hero/hero.dart';
 import 'log.dart';
 import 'los.dart';
+import 'stage.dart';
 
 class Monster extends Actor {
   final Breed breed;
@@ -43,7 +44,7 @@ class Monster extends Actor {
 
   bool get isAsleep => _state is AsleepState;
 
-  bool get canFly => breed.flags.contains("fly");
+  MotilitySet get motilities => breed.motilities;
 
   /// Whether the monster wanted to melee or do a ranged attack the last time
   /// it took a step.
@@ -125,8 +126,6 @@ class Monster extends Actor {
     throw 'unreachable';
   }
 
-  bool get canOpenDoors => breed.flags.contains('open-doors');
-
   int onGetSpeed() => Energy.normalSpeed + breed.speed;
 
   Action onGetAction() {
@@ -146,7 +145,7 @@ class Monster extends Actor {
 
     if (breed.flags.contains("fearless")) return;
 
-    // If it can't run, there's no point in being afraid.
+    // If it doesn't flee, there's no point in being afraid.
     if (breed.flags.contains("immobile")) return;
 
     _fear = math.max(0.0, _fear + offset);
@@ -263,7 +262,7 @@ class Monster extends Actor {
 
   /// Called when this Actor has been killed by [attackNoun].
   void onDied(Noun attackNoun) {
-    var items = game.stage.placeDrops(pos, breed.drop);
+    var items = game.stage.placeDrops(pos, breed.motilities, breed.drop);
     for (var item in items) {
       log("{1} drop[s] {2}.", this, item);
     }

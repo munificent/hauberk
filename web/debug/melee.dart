@@ -17,6 +17,7 @@ const simulationRounds = 20;
 
 Breed breed = new Breed("meat", Pronoun.it, null,
     [new Attack(null, "hits", 20)], [], null, SpawnLocation.anywhere,
+    MotilitySet.walk,
     speed: Energy.normalSpeed,
     meander: 0,
     maxHealth: 200, flags: new Set());

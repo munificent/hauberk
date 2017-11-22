@@ -176,7 +176,9 @@ void arachnids() {
 void ancients() {}
 
 void bats() {
-  family("b", flags: "fly")..preferWall();
+  family("b")
+    ..fly()
+    ..preferWall();
   breed("brown bat", 2, persimmon, 9, speed: 2, meander: 6)
     ..count(2, 4)
     ..attack("bite[s]", 4);
@@ -189,7 +191,9 @@ void bats() {
 }
 
 void birds() {
-  family("B", flags: "fly")..count(3, 6);
+  family("B")
+    ..fly()
+    ..count(3, 6);
   breed("crow", 4, steelGray, 9, speed: 2, meander: 4)
     ..attack("bite[s]", 5)
     ..drop(25, "Black Feather");
@@ -238,7 +242,9 @@ void dragons() {
 void greaterDragons() {}
 
 void eyes() {
-  family("e", flags: "immobile fly")..preferOpen();
+  family("e", flags: "immobile")
+    ..fly()
+    ..preferOpen();
   breed("lazy eye", 1, cornflower, 12)
     ..attack("stare[s] at", 6)
     ..sparkBolt(rate: 6, damage: 10, range: 8);
@@ -287,8 +293,9 @@ void elementals() {}
 void faeFolk() {
   // Sprites, pixies, fairies, elves, etc.
 
-  // TODO: Make them fly.
-  family("f", speed: 2, meander: 4, flags: "cowardly fly")..preferOpen();
+  family("f", speed: 2, meander: 4, flags: "cowardly")
+    ..fly()
+    ..preferOpen();
   breed("forest sprite", 1, mint, 6)
     ..count(2)
     ..attack("scratch[es]", 3)
@@ -319,7 +326,7 @@ void felines() {
 }
 
 void goblins() {
-  family("g", meander: 1, flags: "open-doors");
+  family("g", meander: 1)..openDoors();
   breed("goblin peon", 4, sandal, 26, meander: 2)
     ..count(4)
     ..attack("stab[s]", 8)
@@ -392,6 +399,9 @@ void goblins() {
     ..drop(60, "equipment")
     ..drop(40, "magic")
     ..flags("protective");
+
+  // TODO: Hobgoblins, bugbears, bogill.
+  // TODO: https://en.wikipedia.org/wiki/Moss_people
 }
 
 void golems() {}
@@ -586,7 +596,7 @@ void orcs() {}
 void ogres() {}
 
 void people() {
-  family("p", tracking: 14, flags: "open-doors");
+  family("p", tracking: 14)..openDoors();
   breed("hapless adventurer", 1, buttermilk, 14, meander: 3)
     ..attack("hit[s]", 3)
     ..drop(50, "weapon")
@@ -638,7 +648,8 @@ void quest() {
     ..attack("crushe[s]", 250, Element.earth)
     ..attack("blast[s]", 200, Element.lightning)
     ..darkCone(damage: 500)
-    ..flags("fearless open-doors");
+    ..flags("fearless")
+    ..openDoors();
   // TODO: Minions. Moves.
   // TODO: Make unique.
 }
@@ -669,6 +680,7 @@ void reptiles() {
   family("R");
   // TODO: Should be able to swim.
   breed("frog", 1, lima, 4, speed: 1, meander: 4)
+    ..swim()
     ..placeIn("aquatic")
     ..attack("hop[s] on", 2);
 
@@ -782,6 +794,9 @@ _FamilyBuilder family(String character,
   _family._tracking = tracking;
   _family._flags = flags;
 
+  // Default to walking.
+  _family._motilities.add(Motility.walk);
+
   return _family;
 }
 
@@ -828,6 +843,7 @@ _BreedBuilder breed(String name, int depth, appearance, int health,
 class _BaseBuilder {
   int _tracking;
 
+  final List<Motility> _motilities = [];
   SpawnLocation _location;
 
   /// Names of places where this breed may spawn.
@@ -879,6 +895,18 @@ class _BaseBuilder {
 
   void stain(TileType type) {
     _stain = type;
+  }
+
+  void fly() {
+    _motilities.add(Motility.fly);
+  }
+
+  void swim() {
+    _motilities.add(Motility.swim);
+  }
+
+  void openDoors() {
+    _motilities.add(Motility.door);
   }
 }
 
@@ -1020,6 +1048,9 @@ class _BreedBuilder extends _BaseBuilder {
     if (_family._flags != null) flags.addAll(_family._flags.split(" "));
     if (_flags != null) flags.addAll(_flags.split(" "));
 
+    var motilities = new MotilitySet(_family._motilities);
+    motilities.addAll(_motilities);
+
     var breed = new Breed(
         _name,
         Pronoun.it,
@@ -1028,6 +1059,7 @@ class _BreedBuilder extends _BaseBuilder {
         _moves,
         dropAllOf(_drops),
         _location ?? _family._location ?? SpawnLocation.anywhere,
+        motilities,
         depth: _depth,
         maxHealth: _health,
         tracking: (_tracking ?? 0) + (_family._tracking ?? 10),

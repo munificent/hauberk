@@ -14,6 +14,7 @@ import '../monster.dart';
 import '../option.dart';
 import '../skill/skill.dart';
 import '../skill/attribute.dart';
+import '../stage.dart';
 import 'attribute.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
@@ -130,6 +131,9 @@ class Hero extends Actor {
   /// How much noise the Hero's last action made.
   int get lastNoise => _lastNoise;
   int _lastNoise = 0;
+
+  // TODO: Equipment and items that let the hero swim, fly, etc.
+  MotilitySet get motilities => MotilitySet.walkAndDoor;
 
   Hero(Game game, Vec pos, HeroSave save)
       : inventory = save.inventory.clone(),

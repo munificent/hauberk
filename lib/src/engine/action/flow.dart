@@ -6,6 +6,7 @@ import '../ai/flow.dart';
 import '../attack.dart';
 import '../element.dart';
 import '../game.dart';
+import '../stage.dart';
 import 'action.dart';
 import 'element.dart';
 
@@ -19,16 +20,14 @@ class FlowAction extends Action with DestroyItemMixin {
   Flow _flow;
   List<Vec> _tiles;
 
-  /// Whether the flow should go over obstacles.
-  final bool _fly;
+  final MotilitySet _motilities;
 
-  FlowAction(this._from, this._hit, {bool fly})
-      : _fly = fly ?? false;
+  FlowAction(this._from, this._hit, this._motilities);
 
   ActionResult onPerform() {
     if (_tiles == null) {
       // TODO: Should water open doors? Should fire burn them?
-      _flow = new Flow(game.stage, _from, ignoreActors: true, canFly: _fly);
+      _flow = new Flow(game.stage, _from, _motilities, ignoreActors: true);
 
       var count = (math.PI * _hit.range * _hit.range).ceil();
       _tiles = _flow.allByDistance.take(count).toList();
@@ -114,8 +113,8 @@ class FlowAction extends Action with DestroyItemMixin {
   }
 
   void _destroyFloorItems(Vec pos, int chance, String flag, String message) {
-    var destroyed = destroyItems(
-        game.stage.itemsAt(pos), chance, flag, message);
+    var destroyed =
+        destroyItems(game.stage.itemsAt(pos), chance, flag, message);
     for (var item in destroyed) {
       game.stage.removeItem(item, pos);
     }
@@ -127,25 +126,24 @@ class FlowAction extends Action with DestroyItemMixin {
 /// This class mainly exists as an [Action] that [Item]s can use.
 class FlowSelfAction extends Action {
   final Attack _attack;
-  final bool _fly;
+  final MotilitySet _motilities;
 
-  FlowSelfAction(this._attack, {bool fly = false})
-      : _fly = fly;
+  FlowSelfAction(this._attack, this._motilities);
 
   ActionResult onPerform() {
-    return alternate(new FlowAction(actor.pos, _attack.createHit(), fly: _fly));
+    return alternate(
+        new FlowAction(actor.pos, _attack.createHit(), _motilities));
   }
 }
 
 class FlowFromAction extends Action {
   final Attack _attack;
   final Vec _pos;
-  final bool _fly;
+  final MotilitySet _motilities;
 
-  FlowFromAction(this._attack, this._pos, {bool fly = false})
-      : _fly = fly;
+  FlowFromAction(this._attack, this._pos, this._motilities);
 
   ActionResult onPerform() {
-    return alternate(new FlowAction(_pos, _attack.createHit(), fly: _fly));
+    return alternate(new FlowAction(_pos, _attack.createHit(), _motilities));
   }
 }

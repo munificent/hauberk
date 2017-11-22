@@ -21,9 +21,9 @@ class AStar {
   /// steps from [start]. Returns the [Direction] of the first step from [start]
   /// along that path (or [Direction.none] if it determines there is no path
   /// possible.
-  static Direction findDirection(Stage stage, Vec start, Vec end, {int maxLength,
-      bool canOpenDoors = true, bool canFly = false}) {
-    var path = _findPath(stage, start, end, maxLength, canOpenDoors, canFly);
+  static Direction findDirection(Stage stage, Vec start, Vec end,
+      MotilitySet motilities, {int maxLength}) {
+    var path = _findPath(stage, start, end, maxLength, motilities);
     if (path == null) return Direction.none;
 
     while (path.parent != null && path.parent.parent != null) {
@@ -33,9 +33,9 @@ class AStar {
     return path.direction;
   }
 
-  static PathResult findPath(Stage stage, Vec start, Vec end, {int maxLength,
-      bool canOpenDoors = true, bool canFly = false}) {
-    var path = _findPath(stage, start, end, maxLength, canOpenDoors, canFly);
+  static PathResult findPath(Stage stage, Vec start, Vec end,
+      MotilitySet motilities, {int maxLength}) {
+    var path = _findPath(stage, start, end, maxLength, motilities);
     if (path == null) return new PathResult(Direction.none, 0);
 
     var length = 1;
@@ -48,7 +48,7 @@ class AStar {
   }
 
   static _PathNode _findPath(Stage stage, Vec start, Vec end, int maxLength,
-      bool canOpenDoors, bool canFly) {
+      MotilitySet motilities) {
     // TODO: More optimal data structure.
     var startPath = new _PathNode(null, Direction.none,
         start, 0, heuristic(start, end));
@@ -72,11 +72,13 @@ class AStar {
 
         // Skip impassable tiles.
         var tile = stage[neighbor];
-        var canEnter = tile.isWalkable ||
-            tile.isFlyable && canFly ||
-            tile.isTraversable && canOpenDoors;
 
-        if (!canEnter) continue;
+        // Don't handle doors here. We'll handle those specially below because
+        // even monsters that can't open doors may still try to pathfind through
+        // them.
+        if (!tile.canEnter(Motility.door) && !tile.canEnterAny(motilities)) {
+          continue;
+        }
 
         // Given how far the current tile is, how far is each neighbor?
         var stepCost = Option.aStarFloorCost;
@@ -84,13 +86,13 @@ class AStar {
           // This is our destination, so it's definitely the best step.
           stepCost = 0;
         } else if (stage[neighbor].type.opensTo != null) {
-          if (canOpenDoors) {
+          if (motilities.contains(Motility.door)) {
             // One to open the door and one to enter the tile.
             stepCost = Option.aStarFloorCost * 2;
           } else {
             // Even though the monster can't open doors, we don't consider it
             // totally impassable because there's a chance the door will be
-            // opened by someone else.
+            // opened by someone else (like the hero).
             stepCost = Option.aStarDoorCost;
           }
         } else if (stage.actorAt(neighbor) != null) {

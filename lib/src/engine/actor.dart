@@ -7,6 +7,7 @@ import 'element.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'log.dart';
+import 'stage.dart';
 
 abstract class Thing implements Noun {
   Vec _pos;
@@ -94,10 +95,7 @@ abstract class Actor extends Thing {
 
   bool get needsInput => false;
 
-  bool get canOpenDoors => true;
-
-  // TODO: Magical item to let the hero fly.
-  bool get canFly => false;
+  MotilitySet get motilities;
 
   /// Gets the actor's current speed, taking into any account any active
   /// [Condition]s.
@@ -235,9 +233,7 @@ abstract class Actor extends Thing {
     if (pos.y >= game.stage.height) return false;
 
     var tile = game.stage[pos];
-    if (tile.isWalkable) return true;
-    if (tile.isFlyable && canFly) return true;
-    return tile.isTraversable && canOpenDoors;
+    return tile.canEnterAny(motilities);
   }
 
   void finishTurn(Action action) {

@@ -3,6 +3,7 @@ import '../circle.dart';
 import '../ai/flow.dart';
 import '../game.dart';
 import '../monster.dart';
+import '../stage.dart';
 
 /// Sends out a wave of sound, alerting nearby monsters.
 class HowlAction extends Action {
@@ -14,10 +15,8 @@ class HowlAction extends Action {
 
   ActionResult onPerform() {
     if (_flow == null) {
-      _flow = new Flow(actor.game.stage, actor.pos,
+      _flow = new Flow(actor.game.stage, actor.pos, MotilitySet.walkAndFly,
           maxDistance: _range,
-          canOpenDoors: false,
-          canFly: true,
           ignoreActors: true);
 
       log("{1} howls!", actor);

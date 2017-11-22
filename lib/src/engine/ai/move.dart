@@ -15,6 +15,7 @@ import '../attack.dart';
 import '../circle.dart';
 import '../monster.dart';
 import '../option.dart';
+import '../stage.dart';
 
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,
@@ -260,10 +261,8 @@ class HowlMove extends Move {
 
   bool shouldUse(Monster monster) {
     // TODO: Is using flow here too slow?
-    var flow = new Flow(monster.game.stage, monster.pos,
+    var flow = new Flow(monster.game.stage, monster.pos, MotilitySet.walkAndFly,
         maxDistance: _range,
-        canOpenDoors: false,
-        canFly: true,
         ignoreActors: true);
 
     // See if there are any sleeping monsters nearby.

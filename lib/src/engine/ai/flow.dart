@@ -20,8 +20,7 @@ class Flow {
   final Stage _stage;
   final Vec _start;
   final int _maxDistance;
-  final bool _canOpenDoors;
-  final bool _canFly;
+  final MotilitySet _motilities;
   final bool _ignoreActors;
 
   Array2D<int> _distances;
@@ -44,11 +43,9 @@ class Flow {
   /// Gets the starting position in stage coordinates.
   Vec get start => _start;
 
-  Flow(this._stage, this._start, {int maxDistance, bool canOpenDoors,
-        bool canFly, bool ignoreActors})
+  Flow(this._stage, this._start, this._motilities,
+      {int maxDistance, bool ignoreActors})
       : _maxDistance = maxDistance,
-        _canOpenDoors = canOpenDoors ?? false,
-        _canFly = canFly ?? false,
         _ignoreActors = ignoreActors ?? false {
     var width;
     var height;
@@ -211,7 +208,7 @@ class Flow {
           // If this step reached the target, mark the direction of the step.
           directions.add(dir.rotate180);
         } else if (_distances[here] >= 0 &&
-                   _distances[here] < _distances[pos]) {
+            _distances[here] < _distances[pos]) {
           walkBack(here);
         }
       }
@@ -241,13 +238,14 @@ class Flow {
 
       // Can't reach impassable tiles.
       var tile = _stage[here + _offset];
-      var canEnter = tile.isWalkable ||
-                     tile.isFlyable && _canFly ||
-                     tile.isTraversable && _canOpenDoors;
+      var canEnter = tile.canEnterAny(_motilities);
 
       // Can't walk through other actors.
-      if (!_ignoreActors &&
-          _stage.actorAt(here + _offset) != null) canEnter = false;
+      if (canEnter &&
+          !_ignoreActors &&
+          _stage.actorAt(here + _offset) != null) {
+        canEnter = false;
+      }
 
       if (!canEnter) {
         _distances[here] = _unreachable;
