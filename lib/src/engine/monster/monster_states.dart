@@ -9,7 +9,6 @@ import '../core/a_star.dart';
 import '../core/flow.dart';
 import '../core/game.dart';
 import '../core/log.dart';
-import '../los.dart';
 import '../monster/breed.dart';
 import '../monster/monster.dart';
 import 'move.dart';
@@ -447,7 +446,7 @@ class AwakeState extends MonsterState {
 
   /// Returns `true` if there is an open LOS from [from] to the hero.
   bool _hasLosFrom(Vec from) {
-    for (var step in new Los(from, game.hero.pos)) {
+    for (var step in new Line(from, game.hero.pos)) {
       if (step == game.hero.pos) return true;
       if (!game.stage[step].isFlyable) return false;
       var actor = game.stage.actorAt(step);

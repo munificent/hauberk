@@ -4,7 +4,6 @@ import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
-import '../engine/circle.dart';
 import '../hues.dart';
 
 // TODO: Effects need to take background color into effect better: should be

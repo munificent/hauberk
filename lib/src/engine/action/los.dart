@@ -1,7 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/actor.dart';
-import '../los.dart';
 import 'action.dart';
 
 /// Base class for an [Action] that traces a path from the actor along a [Los].
@@ -17,7 +16,7 @@ abstract class LosAction extends Action {
 
   ActionResult onPerform() {
     if (_los == null) {
-      _los = new Los(actor.pos, _target).iterator;
+      _los = new Line(actor.pos, _target).iterator;
       // Advance to the first tile.
       _los.moveNext();
 

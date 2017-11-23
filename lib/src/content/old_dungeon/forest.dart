@@ -101,7 +101,7 @@ class Forest extends StageBuilder {
   }
 
   void carvePath(Vec from, Vec to) {
-    for (var pos in new Los(from, to)) {
+    for (var pos in new Line(from, to)) {
       if (pos == to) break;
 
       // Make slightly wider passages.

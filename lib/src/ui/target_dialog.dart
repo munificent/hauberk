@@ -169,7 +169,7 @@ class TargetDialog extends Screen<Input> {
     // obstacle.
     int i = _animateOffset ~/ _ticksPerFrame;
     var reachedTarget = false;
-    for (var pos in new Los(_gameScreen.game.hero.pos, target)) {
+    for (var pos in new Line(_gameScreen.game.hero.pos, target)) {
       // Note if we made it to the target.
       if (pos == target) {
         reachedTarget = true;

@@ -1,3 +1,5 @@
+import 'package:piecemeal/piecemeal.dart';
+
 import '../../engine.dart';
 
 /// Sends out a wave of sound, alerting nearby monsters.

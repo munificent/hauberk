@@ -309,7 +309,7 @@ class GameScreen extends Screen<Input> {
 
     // Target the monster that is in the fired direction, if any.
     Vec previous;
-    for (var step in new Los(game.hero.pos, pos)) {
+    for (var step in new Line(game.hero.pos, pos)) {
       // If we reached an actor, target it.
       var actor = game.stage.actorAt(step);
       if (actor != null) {

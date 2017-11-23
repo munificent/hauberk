@@ -12,7 +12,6 @@ import '../core/game.dart';
 import '../core/log.dart';
 import '../core/stage.dart';
 import '../hero/hero.dart';
-import '../los.dart';
 import 'breed.dart';
 import 'monster_states.dart';
 import 'move.dart';
@@ -103,7 +102,7 @@ class Monster extends Actor {
   /// and the target.
   bool canView(Vec target) {
     // Walk to the target.
-    for (final step in new Los(pos, target)) {
+    for (final step in new Line(pos, target)) {
       if (step == target) return true;
       if (!game.stage[step].isFlyable) return false;
     }
@@ -117,7 +116,7 @@ class Monster extends Actor {
   /// and the target.
   bool canTarget(Vec target) {
     // Walk to the target.
-    for (final step in new Los(pos, target)) {
+    for (final step in new Line(pos, target)) {
       if (step == target) return true;
       if (game.stage.actorAt(step) != null) return false;
       if (!game.stage[step].isFlyable) return false;

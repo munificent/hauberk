@@ -6,13 +6,13 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.11.3"
+    version: "1.13.3"
   barback:
     description:
       name: barback
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.2+9"
+    version: "0.15.2+13"
   browser:
     description:
       name: browser
@@ -30,7 +30,7 @@ packages:
       name: collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.13.0"
+    version: "1.14.3"
   malison:
     description:
       name: malison
@@ -42,36 +42,36 @@ packages:
       name: markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.11.2"
+    version: "1.0.0"
   path:
     description:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1"
+    version: "1.5.1"
   piecemeal:
     description:
       name: piecemeal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3"
+    version: "0.3.4"
   pool:
     description:
       name: pool
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.4"
+    version: "1.3.3"
   source_span:
     description:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.1"
+    version: "1.4.0"
   stack_trace:
     description:
       name: stack_trace
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "1.9.1"
 sdks:
-  dart: ">=1.24.0 <=2.0.0-edge.f1665714a5f0c9c1ee878f1ba6c83c4e12ac7424"
+  dart: ">=1.24.0 <=2.0.0-edge.d5105da9cabff92c398d90d7c80fc23b5e38e012"
