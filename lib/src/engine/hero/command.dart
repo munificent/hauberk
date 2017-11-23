@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../game.dart';
+import '../core/game.dart';
 
 /// A command is a specific ability that the player can select for the hero to
 /// perform.

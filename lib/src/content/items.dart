@@ -3,6 +3,11 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'affixes.dart';
+import 'action/detection.dart';
+import 'action/flow.dart';
+import 'action/heal.dart';
+import 'action/ray.dart';
+import 'action/teleport.dart';
 
 int _sortIndex = 0;
 

@@ -8,14 +8,15 @@ import '../hues.dart';
 import 'input.dart';
 
 class SkillDialog extends Screen<Input> {
+  final Content _content;
   final SkillSet _skills;
   SkillTree _tree;
   final Hero _hero;
 
   int selectedSkill = 0;
 
-  SkillDialog(this._hero) : _skills = _hero.skills.clone() {
-    _tree = new SkillTree(_skills);
+  SkillDialog(this._content, this._hero) : _skills = _hero.skills.clone() {
+    _tree = new SkillTree(_skills, _content.skills);
   }
 
   bool handleInput(Input input) {
@@ -99,13 +100,13 @@ class SkillTree extends ListBase<SkillTreeRow> {
   final SkillSet _skills;
   final List<SkillTreeRow> _rows = [];
 
-  SkillTree(this._skills) {
+  SkillTree(this._skills, List<Skill> allSkills) {
     var root = new SkillTreeNode(null);
     var nodeMap = <Skill, SkillTreeNode>{null: root};
 
     // Note: Assumes the skill list always has prerequisites before the skills
     // that require them.
-    for (var skill in Skill.all) {
+    for (var skill in allSkills) {
       if (!_skills.isKnown(skill)) continue;
 
       // If the prerequisite isn't known (transitively), don't show the skill.

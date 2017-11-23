@@ -73,7 +73,7 @@ class Storage {
       var skills = hero['skills'];
       if (skills != null) {
         for (var name in skills.keys) {
-          skillSet[Skill.find(name)] = skills[name];
+          skillSet[content.findSkill(name)] = skills[name];
         }
       }
 

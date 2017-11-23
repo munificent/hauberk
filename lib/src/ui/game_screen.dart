@@ -114,7 +114,7 @@ class GameScreen extends Screen<Input> {
         ui.push(new SelectCommandDialog(game));
         break;
       case Input.editSkills:
-        ui.push(new SkillDialog(game.hero));
+        ui.push(new SkillDialog(game.content, game.hero));
         break;
       case Input.heroInfo:
         ui.push(new HeroInfoDialog(game.hero));
@@ -589,11 +589,16 @@ class GameScreen extends Screen<Input> {
     terminal.writeAt(15, 2, '$levelPercent%', ultramarine);
 
     var y = 4;
-    for (var attribute in Attribute.all) {
+    drawAttribute(Skill attribute) {
       terminal.writeAt(0, y, attribute.name, UIHue.helpText);
-      terminal.writeAt(10, y, hero.attribute(attribute).toString(), ash);
+      terminal.writeAt(10, y, hero.skills[attribute].toString(), ash);
       y++;
     }
+    drawAttribute(Skill.strength);
+    drawAttribute(Skill.agility);
+    drawAttribute(Skill.fortitude);
+    drawAttribute(Skill.intellect);
+    drawAttribute(Skill.will);
 
     terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
 

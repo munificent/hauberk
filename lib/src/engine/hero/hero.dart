@@ -2,20 +2,18 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../action/walk.dart';
-import '../actor.dart';
-import '../attack.dart';
-import '../element.dart';
-import '../energy.dart';
-import '../game.dart';
+import '../core/actor.dart';
+import '../core/attack.dart';
+import '../core/element.dart';
+import '../core/energy.dart';
+import '../core/game.dart';
+import '../core/log.dart';
+import '../core/option.dart';
+import '../core/stage.dart';
+import '../hero/skill.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
-import '../log.dart';
-import '../monster.dart';
-import '../option.dart';
-import '../skill/skill.dart';
-import '../skill/attribute.dart';
-import '../stage.dart';
-import 'attribute.dart';
+import '../monster/monster.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -81,16 +79,6 @@ class Hero extends Actor {
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
   int _experienceCents = 0;
-
-  int attribute(Attribute type) {
-    if (type == Attribute.strength) return strength;
-    if (type == Attribute.agility) return agility;
-    if (type == Attribute.fortitude) return fortitude;
-    if (type == Attribute.intellect) return intellect;
-    if (type == Attribute.will) return will;
-
-    throw "unreachable";
-  }
 
   int get strength => _attribute(Skill.strength, -encumbrance);
   int get agility => _attribute(Skill.agility);

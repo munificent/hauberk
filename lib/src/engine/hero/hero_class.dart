@@ -1,7 +1,7 @@
 import '../action/action.dart';
-import '../actor.dart';
-import '../attack.dart';
-import '../monster.dart';
+import '../core/actor.dart';
+import '../core/attack.dart';
+import '../monster/monster.dart';
 import 'hero.dart';
 import 'command.dart';
 

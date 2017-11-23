@@ -1,9 +1,9 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../attack.dart';
-import '../element.dart';
-import '../log.dart';
+import '../core/attack.dart';
+import '../core/element.dart';
+import '../core/log.dart';
 
 /// A thing that can be picked up.
 class Item implements Comparable<Item>, Noun {

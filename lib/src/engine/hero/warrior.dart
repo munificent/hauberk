@@ -1,13 +1,12 @@
 import 'dart:math' as math;
 
 import '../action/action.dart';
-import '../actor.dart';
-import '../attack.dart';
+import '../core/actor.dart';
+import '../core/attack.dart';
 import '../command/lance.dart';
 import '../command/slash.dart';
 import '../command/stab.dart';
-import '../monster.dart';
-import '../skill/archery.dart';
+import '../monster/monster.dart';
 import 'command.dart';
 import 'hero_class.dart';
 
@@ -19,7 +18,6 @@ class Warrior extends HeroClass {
   String get name => "Warrior";
 
   final List<Command> commands = [
-    new ArcheryCommand(),
     new LanceCommand(),
     new SlashCommand(),
     new StabCommand()

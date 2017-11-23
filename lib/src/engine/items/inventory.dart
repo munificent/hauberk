@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import '../actor.dart';
+import '../core/actor.dart';
 import '../hero/hero.dart';
 import 'item.dart';
 

@@ -3,6 +3,14 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'drops.dart';
+import 'move/bolt.dart';
+import 'move/cone.dart';
+import 'move/haste.dart';
+import 'move/heal.dart';
+import 'move/howl.dart';
+import 'move/insult.dart';
+import 'move/spawn.dart';
+import 'move/teleport.dart';
 import 'tiles.dart';
 
 /// The last builder that was created. It gets implicitly finished when the
@@ -299,12 +307,14 @@ void faeFolk() {
   breed("forest sprite", 1, mint, 6)
     ..count(2)
     ..attack("scratch[es]", 3)
+    ..insult(rate: 4)
     ..sparkBolt(rate: 7, damage: 4)
     ..drop(60, "magic");
 
   breed("house sprite", 3, cornflower, 15)
     ..count(2)
     ..attack("poke[s]", 5)
+    ..insult(rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
     ..teleport(rate: 7, range: 4)
     ..drop(80, "magic");
@@ -312,9 +322,9 @@ void faeFolk() {
   breed("mischievous sprite", 7, salmon, 24)
     ..count(2)
     ..attack("stab[s]", 6)
+    ..insult(rate: 4)
     ..windBolt(rate: 8, damage: 8)
     ..teleport(range: 5)
-    ..insult(rate: 6)
     ..drop(100, "magic");
 }
 
@@ -330,6 +340,7 @@ void goblins() {
   breed("goblin peon", 4, sandal, 26, meander: 2)
     ..count(4)
     ..attack("stab[s]", 8)
+    ..insult(rate: 8)
     ..drop(10, "spear")
     ..drop(5, "healing");
 
@@ -520,6 +531,7 @@ void kobolds() {
 
   breed("kobold trickster", 13, gold, 20, meander: 2)
     ..attack("hit[s]", 5)
+    ..insult()
     ..sparkBolt(rate: 5, damage: 8)
     ..teleport(rate: 5, range: 6)
     ..haste(rate: 7)
@@ -541,7 +553,7 @@ void kobolds() {
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
     ..attack("scratch[es]", 4)
-    ..insult()
+    ..insult(rate: 6)
     ..fireBolt(rate: 5, damage: 10)
     ..drop(50, "magic")
     ..flags("cowardly");
@@ -565,9 +577,9 @@ void kobolds() {
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
     ..attack("stab[s]", 5)
+    ..insult(rate: 7)
     ..teleport(rate: 5, range: 6)
     ..teleport(rate: 50, range: 30)
-    ..insult()
     ..lightningCone(rate: 8, damage: 12)
     ..drop(50, "spear", 5)
     ..drop(40, "armor", 5)

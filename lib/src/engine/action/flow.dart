@@ -2,13 +2,13 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../ai/flow.dart';
-import '../attack.dart';
-import '../element.dart';
-import '../game.dart';
-import '../stage.dart';
+import '../core/flow.dart';
+import '../core/attack.dart';
+import '../core/element.dart';
+import '../core/game.dart';
+import '../core/stage.dart';
 import 'action.dart';
-import 'element.dart';
+import 'item.dart';
 
 /// Creates a swath of damage that flows out from a point through reachable
 /// tiles.
@@ -118,32 +118,5 @@ class FlowAction extends Action with DestroyItemMixin {
     for (var item in destroyed) {
       game.stage.removeItem(item, pos);
     }
-  }
-}
-
-/// Creates an expanding ring of damage centered on the [Actor].
-///
-/// This class mainly exists as an [Action] that [Item]s can use.
-class FlowSelfAction extends Action {
-  final Attack _attack;
-  final MotilitySet _motilities;
-
-  FlowSelfAction(this._attack, this._motilities);
-
-  ActionResult onPerform() {
-    return alternate(
-        new FlowAction(actor.pos, _attack.createHit(), _motilities));
-  }
-}
-
-class FlowFromAction extends Action {
-  final Attack _attack;
-  final Vec _pos;
-  final MotilitySet _motilities;
-
-  FlowFromAction(this._attack, this._pos, this._motilities);
-
-  ActionResult onPerform() {
-    return alternate(new FlowAction(_pos, _attack.createHit(), _motilities));
   }
 }

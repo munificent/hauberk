@@ -9,6 +9,7 @@ import 'content/items.dart';
 import 'content/monsters.dart';
 import 'content/recipes.dart';
 import 'content/shops.dart';
+import 'content/skills.dart';
 import 'content/tiles.dart';
 
 Content createContent() {
@@ -32,7 +33,9 @@ class GameContent implements Content {
 
   Affix findAffix(String name) => Affixes.find(name);
   ItemType tryFindItem(String name) => Items.types.tryFind(name);
+  Skill findSkill(String name) => Skills.find(name);
 
+  List<Skill> get skills => Skills.all;
   List<Recipe> get recipes => Recipes.all;
   List<Shop> get shops => Shops.all;
 

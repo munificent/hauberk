@@ -1,13 +1,13 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../actor.dart';
-import '../attack.dart';
-import '../game.dart';
+import '../core/actor.dart';
+import '../core/attack.dart';
+import '../core/game.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
 import 'action.dart';
-import 'bolt.dart';
 import 'item.dart';
+import 'los.dart';
 
 /// [Action] for throwing an [Item].
 ///

@@ -2,9 +2,9 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'action.dart';
 import 'attack.dart';
-import '../game.dart';
+import '../core/game.dart';
+import '../core/option.dart';
 import '../hero/hero.dart';
-import '../option.dart';
 
 class WalkAction extends Action {
   final Direction dir;

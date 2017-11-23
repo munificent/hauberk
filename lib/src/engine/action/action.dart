@@ -2,13 +2,13 @@ import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../actor.dart';
-import '../element.dart';
-import '../game.dart';
+import '../core/actor.dart';
+import '../core/element.dart';
+import '../core/game.dart';
+import '../core/log.dart';
+import '../core/option.dart';
 import '../hero/hero.dart';
-import '../log.dart';
-import '../monster.dart';
-import '../option.dart';
+import '../monster/monster.dart';
 
 abstract class Action {
   Actor _actor;

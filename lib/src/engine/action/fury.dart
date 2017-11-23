@@ -1,9 +1,10 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import '../core/game.dart';
+import '../core/option.dart';
 import 'action.dart';
-import '../game.dart';
-import '../option.dart';
 
+// TODO: Remove.
 /// A [Warrior]'s [Action] that requires and spends fury to perform a powerful
 /// attack.
 abstract class FuryAction extends Action {

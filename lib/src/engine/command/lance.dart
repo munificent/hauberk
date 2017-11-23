@@ -2,7 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../action/fury.dart';
-import '../game.dart';
+import '../core/game.dart';
 import '../hero/command.dart';
 
 // TODO: When pole-arms exist, have a 2-tile stab for spears and a 3-tile stab
