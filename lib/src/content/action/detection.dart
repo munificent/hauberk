@@ -16,7 +16,8 @@ class DetectAction extends Action {
   /// for easy removal of the nearest distance.
   List<List<Vec>> _tilesByDistance;
 
-  DetectAction(Iterable<DetectType> types, [this._maxDistance]) : _types = types.toSet();
+  DetectAction(Iterable<DetectType> types, [this._maxDistance])
+      : _types = types.toSet();
 
   ActionResult onPerform() {
     if (_tilesByDistance == null) {
@@ -89,6 +90,7 @@ class DetectAction extends Action {
     var distances = distanceMap.keys.toList();
     distances.sort((a, b) => b.compareTo(a));
 
-    _tilesByDistance = distances.map((distance) => distanceMap[distance]).toList();
+    _tilesByDistance =
+        distances.map((distance) => distanceMap[distance]).toList();
   }
 }

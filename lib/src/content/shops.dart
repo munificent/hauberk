@@ -41,13 +41,8 @@ class Shops {
       "Crossbow"
     ]);
 
-    shop("Skullduggery and Bamboozelry", [
-      "Dirk",
-      "Dagger",
-      "Stiletto",
-      "Rondel",
-      "Baselard"
-    ]);
+    shop("Skullduggery and Bamboozelry",
+        ["Dirk", "Dagger", "Stiletto", "Rondel", "Baselard"]);
 
     shop("Garthag's Armoury", [
       "Cloak",

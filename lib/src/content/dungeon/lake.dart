@@ -43,7 +43,7 @@ class LakeBiome extends Biome {
       // Grow a shoreline.
       var edges = <Vec>[];
       var shoreBounds =
-      Rect.intersect(_blob.bounds.offset(x, y), dungeon.safeBounds);
+          Rect.intersect(_blob.bounds.offset(x, y), dungeon.safeBounds);
       for (var pos in shoreBounds) {
         if (dungeon.isRockAt(pos) && dungeon.hasNeighbor(pos, Tiles.water)) {
           dungeon.setTileAt(pos, Tiles.grass);

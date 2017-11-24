@@ -13,8 +13,8 @@ class Maze {
 
   /// Initializes a new solid (i.e. all cells closed) maze.
   Maze(int width, int height)
-      : _cells = new Array2D<_Cell>.generated(width + 1, height + 1,
-        () => new _Cell()) {
+      : _cells = new Array2D<_Cell>.generated(
+            width + 1, height + 1, () => new _Cell()) {
     // Pad by one for the outer bottom and right walls.
   }
 
@@ -125,8 +125,7 @@ class Maze {
   }
 
   /// Fills the [Cell] at [pos]. Closes any surrounding walls.
-  void fill(Vec pos)
-  {
+  void fill(Vec pos) {
     _cells[pos].isOpen = false;
     _cells[pos].isLeftWallOpen = false;
     _cells[pos].isTopWallOpen = false;
@@ -145,11 +144,20 @@ class Maze {
 
     // Cut the wall.
     switch (direction) {
-      case Direction.n: _cells[pos].isTopWallOpen = true; break;
-      case Direction.s: _cells[pos + direction].isTopWallOpen = true; break;
-      case Direction.w: _cells[pos].isLeftWallOpen = true; break;
-      case Direction.e: _cells[pos + direction].isLeftWallOpen = true; break;
-      default: assert(false);
+      case Direction.n:
+        _cells[pos].isTopWallOpen = true;
+        break;
+      case Direction.s:
+        _cells[pos + direction].isTopWallOpen = true;
+        break;
+      case Direction.w:
+        _cells[pos].isLeftWallOpen = true;
+        break;
+      case Direction.e:
+        _cells[pos + direction].isLeftWallOpen = true;
+        break;
+      default:
+        assert(false);
     }
   }
 

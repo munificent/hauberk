@@ -123,8 +123,7 @@ class Stage {
     // TODO: Is using the breed's motility correct? We probably don't want
     // drops going through doors.
     // Try to keep dropped items from overlapping.
-    var flow = new Flow(this, pos, motilities,
-        ignoreActors: true);
+    var flow = new Flow(this, pos, motilities, ignoreActors: true);
 
     drop.spawnDrop((item) {
       items.add(item);

@@ -204,7 +204,9 @@ class Monster extends Actor {
     var fear = 100.0 * damage / game.hero.health.max;
 
     _modifyFear(action, -fear);
-    Debug.logMonster(this, "Hit for ${damage} / ${game.hero.health.max} "
+    Debug.logMonster(
+        this,
+        "Hit for ${damage} / ${game.hero.health.max} "
         "decreases fear by ${fear} to $_fear");
 
     // Nearby monsters may witness it.
@@ -219,7 +221,9 @@ class Monster extends Actor {
     var fear = 50.0 * damage / health.max;
 
     _modifyFear(action, -fear);
-    Debug.logMonster(this, "Witness ${damage} / ${health.max} "
+    Debug.logMonster(
+        this,
+        "Witness ${damage} / ${health.max} "
         "decreases fear by ${fear} to $_fear");
   }
 
@@ -232,7 +236,9 @@ class Monster extends Actor {
     if (breed.flags.contains("berzerk")) fear *= -3.0;
 
     _modifyFear(action, fear);
-    Debug.logMonster(this, "Hit for ${damage} / ${health.max} "
+    Debug.logMonster(
+        this,
+        "Hit for ${damage} / ${health.max} "
         "increases fear by ${fear} to $_fear");
 
     // Nearby monsters may witness it.
@@ -255,7 +261,9 @@ class Monster extends Actor {
     }
 
     _modifyFear(action, fear);
-    Debug.logMonster(this, "Witness ${damage} / ${health.max} "
+    Debug.logMonster(
+        this,
+        "Witness ${damage} / ${health.max} "
         "increases fear by ${fear} to $_fear");
   }
 

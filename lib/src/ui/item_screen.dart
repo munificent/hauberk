@@ -33,11 +33,9 @@ class ItemScreen extends Screen<Input> {
 
   String _error;
 
-  ItemScreen.crucible(this._content, this._save)
-      : _place = _Place.crucible;
+  ItemScreen.crucible(this._content, this._save) : _place = _Place.crucible;
 
-  ItemScreen.home(this._content, this._save)
-      : _place = _Place.home;
+  ItemScreen.home(this._content, this._save) : _place = _Place.home;
 
   ItemScreen.shop(this._content, this._save, Shop shop)
       : _place = new _ShopPlace(shop);
@@ -90,11 +88,11 @@ class ItemScreen extends Screen<Input> {
 //    terminal.writeAt(82, 0, "Gold:");
 //    terminal.writeAt(99 - gold.length, 0, gold, Color.gold);
 
-    terminal.writeAt(0, terminal.height - 1, "${_mode.helpText(this)}",
-        UIHue.helpText);
+    terminal.writeAt(
+        0, terminal.height - 1, "${_mode.helpText(this)}", UIHue.helpText);
 
-    var bar = new Glyph.fromCharCode(
-        CharCode.boxDrawingsLightVertical, steelGray);
+    var bar =
+        new Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
     for (var y = 2; y < 30; y++) {
       terminal.drawGlyph(49, y, bar);
     }
@@ -108,8 +106,7 @@ class ItemScreen extends Screen<Input> {
       var itemCount = _place.items(this).length;
       for (var i = 0; i < completeRecipe.produces.length; i++) {
         terminal.writeAt(50, itemCount + i + 4,
-            completeRecipe.produces.elementAt(i),
-            UIHue.text);
+            completeRecipe.produces.elementAt(i), UIHue.text);
       }
     }
 
@@ -119,8 +116,8 @@ class ItemScreen extends Screen<Input> {
   }
 
   void _drawHero(Terminal terminal, int x) {
-    terminal.writeAt(x, 2, _showingInventory ? "Inventory" : "Equipment",
-        UIHue.text);
+    terminal.writeAt(
+        x, 2, _showingInventory ? "Inventory" : "Equipment", UIHue.text);
 
     bool isSelectable(Item item) {
       if (!_mode.selectingFromHero) return false;
@@ -128,7 +125,8 @@ class ItemScreen extends Screen<Input> {
     }
 
     var canSelect = _mode.selectingFromHero || _mode.selectingFromPlace
-        ? isSelectable : null;
+        ? isSelectable
+        : null;
 
     if (_showingInventory) {
       drawItems(terminal, x, 4, _save.inventory, canSelect);
@@ -244,8 +242,7 @@ class _CruciblePlace extends _Place {
     // Can only put items in the crucible if they fit a recipe.
     var ingredients = items(screen).toList();
     ingredients.add(item);
-    return screen._content.recipes.any(
-            (recipe) => recipe.allows(ingredients));
+    return screen._content.recipes.any((recipe) => recipe.allows(ingredients));
   }
 }
 
@@ -310,8 +307,7 @@ class CountMode extends Mode {
   final Item _item;
   int _count;
 
-  CountMode(ItemScreen screen, this._item, {bool toHero})
-      : _toHero = toHero {
+  CountMode(ItemScreen screen, this._item, {bool toHero}) : _toHero = toHero {
     if (screen._place is _ShopPlace) {
       // Default to buying one item.
       _count = 1;
@@ -478,8 +474,9 @@ class ViewMode extends Mode {
   String message(ItemScreen screen) => 'Which items do you want to look at?';
 
   String helpText(ItemScreen screen) {
-    var tab = screen._showingInventory ?
-        "Switch to equipment" : "Switch to inventory";
+    var tab = screen._showingInventory
+        ? "Switch to equipment"
+        : "Switch to inventory";
 
     return "[Tab] $tab, "
         "[${screen._place.getVerb[0]}] ${screen._place.getVerb}, "

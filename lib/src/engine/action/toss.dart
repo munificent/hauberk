@@ -52,8 +52,7 @@ class TossLosAction extends LosAction {
 
   int get range => _hit.range;
 
-  TossLosAction(Vec target, this._item, this._hit)
-      : super(target);
+  TossLosAction(Vec target, this._item, this._hit) : super(target);
 
   void onStep(Vec pos) {
     addEvent(EventType.toss, pos: pos, other: _item);

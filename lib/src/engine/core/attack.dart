@@ -56,11 +56,7 @@ class Attack {
   }
 }
 
-enum HitType {
-  melee,
-  ranged,
-  toss
-}
+enum HitType { melee, ranged, toss }
 
 class Hit {
   final Attack _attack;
@@ -75,6 +71,7 @@ class Hit {
 
     return math.max(1, (_attack.range * _rangeScale).round());
   }
+
   double _rangeScale = 1.0;
 
   Element get element {
@@ -184,16 +181,16 @@ class Hit {
     // Apply any element-specific effects.
     switch (element) {
       case Element.none:
-      // No effect.
+        // No effect.
         break;
 
       case Element.air:
-      // TODO: Should damage affect distance?
+        // TODO: Should damage affect distance?
         action.addAction(new WindAction(), defender);
         break;
 
       case Element.earth:
-      // TODO: Cuts?
+        // TODO: Cuts?
         break;
 
       case Element.fire:
@@ -201,11 +198,11 @@ class Hit {
         break;
 
       case Element.water:
-      // TODO: Push back.
+        // TODO: Push back.
         break;
 
       case Element.acid:
-      // TODO: Destroy items.
+        // TODO: Destroy items.
         break;
 
       case Element.cold:
@@ -213,7 +210,7 @@ class Hit {
         break;
 
       case Element.lightning:
-      // TODO: Break glass. Recharge some items?
+        // TODO: Break glass. Recharge some items?
         break;
 
       case Element.poison:
@@ -229,7 +226,7 @@ class Hit {
         break;
 
       case Element.spirit:
-      // TODO: Drain experience.
+        // TODO: Drain experience.
         break;
     }
   }

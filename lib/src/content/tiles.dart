@@ -73,8 +73,7 @@ class Tiles {
       _open("white jelly stain", CharCode.middleDot, ash);
 
   // TODO: Make this do stuff when walked through.
-  static TileType spiderweb =
-      _open("spiderweb", CharCode.divisionSign, slate);
+  static TileType spiderweb = _open("spiderweb", CharCode.divisionSign, slate);
 
   static void initialize() {
     // Link doors together.
@@ -102,41 +101,37 @@ List<Glyph> _makeGlyphs(Object char, Color fore, [Color back]) {
 
 /// Creates an impassable, opaque tile.
 TileType _door(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back),
-      [Motility.door],
+  return new TileType(name, _makeGlyphs(char, fore, back), [Motility.door],
       isExit: false);
 }
 
 /// Creates a passable, transparent exit tile.
 TileType _exit(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back),
-      [Motility.walk, Motility.fly],
+  return new TileType(
+      name, _makeGlyphs(char, fore, back), [Motility.walk, Motility.fly],
       isExit: true);
 }
 
 /// Creates an impassable, transparent tile.
 TileType _obstacle(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back),
-      [Motility.fly],
+  return new TileType(name, _makeGlyphs(char, fore, back), [Motility.fly],
       isExit: false);
 }
 
 /// Creates a passable, transparent tile.
 TileType _open(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back),
-      [Motility.walk, Motility.fly],
+  return new TileType(
+      name, _makeGlyphs(char, fore, back), [Motility.walk, Motility.fly],
       isExit: false);
 }
 
 /// Creates an impassable, opaque tile.
 TileType _solid(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back),
-      [],
-      isExit: false);
+  return new TileType(name, _makeGlyphs(char, fore, back), [], isExit: false);
 }
 
 TileType _water(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back),
-      [Motility.fly, Motility.swim],
+  return new TileType(
+      name, _makeGlyphs(char, fore, back), [Motility.fly, Motility.swim],
       isExit: false);
 }

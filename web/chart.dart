@@ -232,8 +232,10 @@ void _redraw(List<Histogram<String>> histograms, List<String> labels,
       var fraction = count / total;
       var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
       y -= fraction * chartHeight;
-      buffer.write('<rect fill="$color" x="$x" y="$y" width="10" height="${bottom - y}">');
-      buffer.write('<title>depth ${depth + 1}: ${describe(label)} $percent% ($count)</title></rect>');
+      buffer.write(
+          '<rect fill="$color" x="$x" y="$y" width="10" height="${bottom - y}">');
+      buffer.write(
+          '<title>depth ${depth + 1}: ${describe(label)} $percent% ($count)</title></rect>');
 
       bottom = y;
     }

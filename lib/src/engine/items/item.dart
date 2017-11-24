@@ -302,7 +302,7 @@ class ItemType {
       this.price,
       this.maxStack,
       {this.encumbrance = 0,
-        this.heft = 1,
+      this.heft = 1,
       treasure = false})
       : isTreasure = treasure;
 

@@ -156,7 +156,8 @@ class ResourceSet<T> {
       var allowed = _resources.values.where(predicate).toList(growable: false);
 
       // Determine the weighted chance for each resource.
-      var chances = new List<double>.filled(allowed.length, 0.0, growable: false);
+      var chances =
+          new List<double>.filled(allowed.length, 0.0, growable: false);
       var totalChance = 0.0;
       for (var i = 0; i < allowed.length; i++) {
         var resource = allowed[i];

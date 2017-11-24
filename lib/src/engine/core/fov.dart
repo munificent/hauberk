@@ -52,14 +52,38 @@ class Fov {
     // Figure out which direction to increment based on the octant. Octant 0
     // starts at 12 - 2 o'clock, and octants proceed clockwise from there.
     switch (octant) {
-      case 0: rowInc = new Vec(0, -1); colInc = new Vec( 1, 0); break;
-      case 1: rowInc = new Vec( 1, 0); colInc = new Vec(0, -1); break;
-      case 2: rowInc = new Vec( 1, 0); colInc = new Vec(0,  1); break;
-      case 3: rowInc = new Vec(0,  1); colInc = new Vec( 1, 0); break;
-      case 4: rowInc = new Vec(0,  1); colInc = new Vec(-1, 0); break;
-      case 5: rowInc = new Vec(-1, 0); colInc = new Vec(0,  1); break;
-      case 6: rowInc = new Vec(-1, 0); colInc = new Vec(0, -1); break;
-      case 7: rowInc = new Vec(0, -1); colInc = new Vec(-1, 0); break;
+      case 0:
+        rowInc = new Vec(0, -1);
+        colInc = new Vec(1, 0);
+        break;
+      case 1:
+        rowInc = new Vec(1, 0);
+        colInc = new Vec(0, -1);
+        break;
+      case 2:
+        rowInc = new Vec(1, 0);
+        colInc = new Vec(0, 1);
+        break;
+      case 3:
+        rowInc = new Vec(0, 1);
+        colInc = new Vec(1, 0);
+        break;
+      case 4:
+        rowInc = new Vec(0, 1);
+        colInc = new Vec(-1, 0);
+        break;
+      case 5:
+        rowInc = new Vec(-1, 0);
+        colInc = new Vec(0, 1);
+        break;
+      case 6:
+        rowInc = new Vec(-1, 0);
+        colInc = new Vec(0, -1);
+        break;
+      case 7:
+        rowInc = new Vec(0, -1);
+        colInc = new Vec(-1, 0);
+        break;
     }
 
     _shadows = <_Shadow>[];
@@ -149,8 +173,10 @@ class Fov {
     }
 
     // The new shadow is going here. See if it overlaps the previous or next.
-    var overlapsPrev = ((index > 0) && (_shadows[index - 1].end > shadow.start));
-    var overlapsNext = ((index < _shadows.length) && (_shadows[index].start < shadow.end));
+    var overlapsPrev =
+        ((index > 0) && (_shadows[index - 1].end > shadow.start));
+    var overlapsNext =
+        ((index < _shadows.length) && (_shadows[index].start < shadow.end));
 
     // Insert and unify with overlapping shadows.
     if (overlapsNext) {
@@ -175,8 +201,8 @@ class Fov {
 
     // See if we are now shadowing everything.
     return (_shadows.length == 1) &&
-           (_shadows[0].start == 0) &&
-           (_shadows[0].end == 1);
+        (_shadows[0].start == 0) &&
+        (_shadows[0].end == 1);
   }
 }
 

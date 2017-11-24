@@ -110,7 +110,7 @@ class SkillTree extends ListBase<SkillTreeRow> {
       if (!_skills.isKnown(skill)) continue;
 
       // If the prerequisite isn't known (transitively), don't show the skill.
-      if (!nodeMap.containsKey(skill.prerequisite));
+      if (!nodeMap.containsKey(skill.prerequisite)) ;
 
       var node = new SkillTreeNode(skill);
       nodeMap[skill] = node;

@@ -100,7 +100,7 @@ class RiverBiome extends Biome {
           // Don't overlap an existing bridge.
           if (placed.contains(bridge) ||
               placed.any((previous) =>
-              Rect.intersect(previous.inflate(1), bridge).isNotEmpty)) {
+                  Rect.intersect(previous.inflate(1), bridge).isNotEmpty)) {
             continue;
           }
 

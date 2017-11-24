@@ -31,8 +31,8 @@ class Blob {
   Array2D<bool> _dest;
 
   Blob._(int size, int smoothing, [Blob input])
-  : _cells = new Array2D(size, size, false),
-    _dest = new Array2D(size, size, false) {
+      : _cells = new Array2D(size, size, false),
+        _dest = new Array2D(size, size, false) {
     if (input != null) {
       // Generate noise based on the input blob but scaled up x2. Doing this
       // repeatedly lets us generate larger structure than you tend to get

@@ -115,6 +115,7 @@ main() {
   var validator = new html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
 
-  html.querySelector('table').setInnerHtml(text.toString(),
-      validator: validator);
+  html
+      .querySelector('table')
+      .setInnerHtml(text.toString(), validator: validator);
 }

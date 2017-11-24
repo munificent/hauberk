@@ -594,6 +594,7 @@ class GameScreen extends Screen<Input> {
       terminal.writeAt(10, y, hero.skills[attribute].toString(), ash);
       y++;
     }
+
     drawAttribute(Skill.strength);
     drawAttribute(Skill.agility);
     drawAttribute(Skill.fortitude);
@@ -602,7 +603,8 @@ class GameScreen extends Screen<Input> {
 
     terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
 
-    _drawMeter(terminal, 10, hero.focus, Option.maxFocus, cerulean, ultramarine);
+    _drawMeter(
+        terminal, 10, hero.focus, Option.maxFocus, cerulean, ultramarine);
 
     _drawStat(terminal, 12, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);

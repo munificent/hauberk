@@ -21,8 +21,9 @@ class AStar {
   /// steps from [start]. Returns the [Direction] of the first step from [start]
   /// along that path (or [Direction.none] if it determines there is no path
   /// possible.
-  static Direction findDirection(Stage stage, Vec start, Vec end,
-      MotilitySet motilities, {int maxLength}) {
+  static Direction findDirection(
+      Stage stage, Vec start, Vec end, MotilitySet motilities,
+      {int maxLength}) {
     var path = _findPath(stage, start, end, maxLength, motilities);
     if (path == null) return Direction.none;
 
@@ -33,8 +34,9 @@ class AStar {
     return path.direction;
   }
 
-  static PathResult findPath(Stage stage, Vec start, Vec end,
-      MotilitySet motilities, {int maxLength}) {
+  static PathResult findPath(
+      Stage stage, Vec start, Vec end, MotilitySet motilities,
+      {int maxLength}) {
     var path = _findPath(stage, start, end, maxLength, motilities);
     if (path == null) return new PathResult(Direction.none, 0);
 
@@ -47,11 +49,11 @@ class AStar {
     return new PathResult(path.direction, length);
   }
 
-  static _PathNode _findPath(Stage stage, Vec start, Vec end, int maxLength,
-      MotilitySet motilities) {
+  static _PathNode _findPath(
+      Stage stage, Vec start, Vec end, int maxLength, MotilitySet motilities) {
     // TODO: More optimal data structure.
-    var startPath = new _PathNode(null, Direction.none,
-        start, 0, heuristic(start, end));
+    var startPath =
+        new _PathNode(null, Direction.none, start, 0, heuristic(start, end));
     var open = <_PathNode>[startPath];
     var closed = new Set<Vec>();
 
@@ -162,7 +164,7 @@ class AStar {
     final numDiagonal = math.min(offset.x, offset.y);
     final numStraight = math.max(offset.x, offset.y) - numDiagonal;
     return (numDiagonal * Option.aStarFloorCost) +
-           (numStraight * Option.aStarStraightCost);
+        (numStraight * Option.aStarStraightCost);
   }
 }
 

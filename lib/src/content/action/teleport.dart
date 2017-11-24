@@ -12,8 +12,7 @@ class TeleportAction extends Action {
     final targets = [];
 
     final bounds = Rect.intersect(
-        new Rect.leftTopRightBottom(
-            actor.x - distance, actor.y - distance,
+        new Rect.leftTopRightBottom(actor.x - distance, actor.y - distance,
             actor.x + distance, actor.y + distance),
         game.stage.bounds);
 

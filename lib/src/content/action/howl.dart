@@ -13,8 +13,7 @@ class HowlAction extends Action {
   ActionResult onPerform() {
     if (_flow == null) {
       _flow = new Flow(actor.game.stage, actor.pos, MotilitySet.walkAndFly,
-          maxDistance: _range,
-          ignoreActors: true);
+          maxDistance: _range, ignoreActors: true);
 
       log("{1} howls!", actor);
     }

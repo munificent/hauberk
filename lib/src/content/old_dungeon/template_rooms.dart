@@ -7,8 +7,8 @@ import 'rooms.dart';
 class TemplateRoom extends RoomType {
   static void initialize() {
     for (var template in _templates) {
-      var lines = template.template
-          .split("\n").map((line) => line.trim()).toList();
+      var lines =
+          template.template.split("\n").map((line) => line.trim()).toList();
       lines.removeLast();
       RoomType.add(new TemplateRoom(lines), template.rarity * 6);
 
@@ -17,18 +17,22 @@ class TemplateRoom extends RoomType {
       // frequency.
 
       // Flip it horizontally.
-      RoomType.add(new TemplateRoom(lines
-          .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
-          .toList()), template.rarity * 6);
-
-      // Flip it vertically.
-      RoomType.add(new TemplateRoom(lines.reversed.toList()),
+      RoomType.add(
+          new TemplateRoom(lines
+              .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
+              .toList()),
           template.rarity * 6);
 
+      // Flip it vertically.
+      RoomType.add(
+          new TemplateRoom(lines.reversed.toList()), template.rarity * 6);
+
       // Flip it both ways.
-      RoomType.add(new TemplateRoom(lines.reversed
-          .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
-          .toList()), template.rarity * 6);
+      RoomType.add(
+          new TemplateRoom(lines.reversed
+              .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
+              .toList()),
+          template.rarity * 6);
 
       // Rotate it left.
       var rotated = <String>[];
@@ -42,9 +46,11 @@ class TemplateRoom extends RoomType {
       RoomType.add(new TemplateRoom(rotated), template.rarity * 6);
 
       // Rotate it right.
-      RoomType.add(new TemplateRoom(rotated.reversed
-          .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
-          .toList()), template.rarity * 6);
+      RoomType.add(
+          new TemplateRoom(rotated.reversed
+              .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
+              .toList()),
+          template.rarity * 6);
     }
   }
 
@@ -83,8 +89,8 @@ class TemplateRoom extends RoomType {
     if (doorChoices.isNotEmpty) {
       var door = rng.range(doorChoices.length);
       for (var i = 0; i < doorChoices.length; i++) {
-        dungeon.setTile(doorChoices[i],
-            i == door ? Tiles.closedDoor : Tiles.wall);
+        dungeon.setTile(
+            doorChoices[i], i == door ? Tiles.closedDoor : Tiles.wall);
       }
     }
 
@@ -95,17 +101,37 @@ class TemplateRoom extends RoomType {
       for (var x = 0; x < width; x++) {
         var pos = room.pos.offset(x, y);
         switch (line[x + 1]) {
-          case '1': dungeon.tryPlaceItem(pos, dungeon.depth); break;
-          case '2': dungeon.tryPlaceItem(pos, dungeon.depth + 4); break;
-          case '3': dungeon.tryPlaceItem(pos, dungeon.depth + 8); break;
-          case '4': dungeon.tryPlaceItem(pos, dungeon.depth + 16); break;
-          case '5': dungeon.tryPlaceItem(pos, dungeon.depth + 32); break;
+          case '1':
+            dungeon.tryPlaceItem(pos, dungeon.depth);
+            break;
+          case '2':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 4);
+            break;
+          case '3':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 8);
+            break;
+          case '4':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 16);
+            break;
+          case '5':
+            dungeon.tryPlaceItem(pos, dungeon.depth + 32);
+            break;
 
-          case 'a': dungeon.trySpawn(pos, dungeon.depth); break;
-          case 'b': dungeon.trySpawn(pos, dungeon.depth + 4); break;
-          case 'c': dungeon.trySpawn(pos, dungeon.depth + 8); break;
-          case 'd': dungeon.trySpawn(pos, dungeon.depth + 16); break;
-          case 'e': dungeon.trySpawn(pos, dungeon.depth + 32); break;
+          case 'a':
+            dungeon.trySpawn(pos, dungeon.depth);
+            break;
+          case 'b':
+            dungeon.trySpawn(pos, dungeon.depth + 4);
+            break;
+          case 'c':
+            dungeon.trySpawn(pos, dungeon.depth + 8);
+            break;
+          case 'd':
+            dungeon.trySpawn(pos, dungeon.depth + 16);
+            break;
+          case 'e':
+            dungeon.trySpawn(pos, dungeon.depth + 32);
+            break;
 
           case 'A':
             dungeon.tryPlaceItem(pos, dungeon.depth);
@@ -180,7 +206,6 @@ final _templates = [
       #.......#
       ##+#+#+##
       """),
-
   new _RoomTemplate("Moat", 30, r"""
       ###+#+#+###
       ##.......##
@@ -190,7 +215,6 @@ final _templates = [
       ##.......##
       ###+#+#+###
       """),
-
   new _RoomTemplate("Snake", 100, r"""
       ###+#+#+###
       #1..a.a..1#
@@ -204,7 +228,6 @@ final _templates = [
       #1..a.a..1#
       ###+#+#+###
       """),
-
   new _RoomTemplate("Castle", 1000, r"""
       #######################
       #.....................#

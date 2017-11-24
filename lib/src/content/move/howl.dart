@@ -13,8 +13,7 @@ class HowlMove extends Move {
   bool shouldUse(Monster monster) {
     // TODO: Is using flow here too slow?
     var flow = new Flow(monster.game.stage, monster.pos, MotilitySet.walkAndFly,
-        maxDistance: _range,
-        ignoreActors: true);
+        maxDistance: _range, ignoreActors: true);
 
     // See if there are any sleeping monsters nearby.
     for (var pos in new Circle(monster.pos, _range)) {

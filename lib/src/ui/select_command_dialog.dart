@@ -11,8 +11,7 @@ class SelectCommandDialog extends Screen<Input> {
 
   bool get isTransparent => true;
 
-  SelectCommandDialog(Game game)
-      : _game = game {
+  SelectCommandDialog(Game game) : _game = game {
     for (var skill in _game.hero.skills.all) {
       var command = skill.command;
       if (command != null) _commands.add(command);

@@ -68,12 +68,12 @@ abstract class Actor extends Thing {
 
   // All [Condition]s for the actor.
   Iterable<Condition> get conditions => <Condition>[
-    haste,
-    cold,
-    poison,
-    blindness,
-    dazzle
-  ]..addAll(resistances.values);
+        haste,
+        cold,
+        poison,
+        blindness,
+        dazzle
+      ]..addAll(resistances.values);
 
   Actor(this.game, int x, int y, int health)
       : health = new Stat(health),
@@ -182,7 +182,7 @@ abstract class Actor extends Thing {
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.
   bool takeDamage(Action action, int damage, Noun attackNoun,
-                  [Actor attacker]) {
+      [Actor attacker]) {
     health.current -= damage;
     onDamaged(action, attacker, damage);
 
@@ -271,6 +271,6 @@ class Stat {
   bool get isMax => _current == _max;
 
   Stat(int value)
-  : _current = value,
-    _max = value;
+      : _current = value,
+        _max = value;
 }

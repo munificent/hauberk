@@ -40,8 +40,8 @@ class Warrior extends HeroClass {
 
   Warrior();
 
-  Warrior.load({int fighting, int combat, int toughness,
-      Map<String, int> masteries}) {
+  Warrior.load(
+      {int fighting, int combat, int toughness, Map<String, int> masteries}) {
     this.fighting.increment(fighting);
     this.combat.increment(combat);
     this.toughness.increment(toughness);
@@ -60,10 +60,10 @@ class Warrior extends HeroClass {
     });
 
     return new Warrior.load(
-      fighting: fighting.count,
-      combat: combat.count,
-      toughness: toughness.count,
-      masteries: masteryCounts);
+        fighting: fighting.count,
+        combat: combat.count,
+        toughness: toughness.count,
+        masteries: masteryCounts);
   }
 
   void modifyHit(Hit hit) {
@@ -93,8 +93,10 @@ class Warrior extends HeroClass {
     damage = (damage * getArmorMultiplier(hero.armor - toughness.level) * 10)
         .floor();
     if (toughness.increment(damage)) {
-      action.game.log.gain('{1} [have|has] reached toughness level '
-          '${toughness.level}.', hero);
+      action.game.log.gain(
+          '{1} [have|has] reached toughness level '
+          '${toughness.level}.',
+          hero);
     }
   }
 
@@ -106,11 +108,13 @@ class Warrior extends HeroClass {
       stat = combat;
       name = "combat";
 
-      var mastery = masteries.putIfAbsent(weapon.type.weaponType,
-          _newMasteryStat);
+      var mastery =
+          masteries.putIfAbsent(weapon.type.weaponType, _newMasteryStat);
       if (mastery.increment(monster.breed.maxHealth)) {
-        action.game.log.gain("{1} [have|has] reached ${weapon.type.weaponType} "
-            "mastery level ${mastery.level}.", hero);
+        action.game.log.gain(
+            "{1} [have|has] reached ${weapon.type.weaponType} "
+            "mastery level ${mastery.level}.",
+            hero);
       }
     } else {
       stat = fighting;
@@ -120,8 +124,10 @@ class Warrior extends HeroClass {
     // Base it on the health of the monster to discourage the player from just
     // killing piles of weak monsters.
     if (stat.increment(monster.breed.maxHealth)) {
-      action.game.log.gain("{1} [have|has] reached $name level "
-          "${stat.level}.", hero);
+      action.game.log.gain(
+          "{1} [have|has] reached $name level "
+          "${stat.level}.",
+          hero);
     }
   }
 

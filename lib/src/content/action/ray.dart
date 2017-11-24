@@ -63,8 +63,7 @@ class RayAction extends Action with DestroyItemMixin {
   ActionResult onPerform() {
     // See which new tiles each ray hit now.
     _rays.removeWhere((ray) {
-      var pos = new Vec(
-          _from.x + (math.sin(ray) * _radius).round(),
+      var pos = new Vec(_from.x + (math.sin(ray) * _radius).round(),
           _from.y + (math.cos(ray) * _radius).round());
 
       // Kill the ray if it's obstructed.
@@ -148,8 +147,8 @@ class RayAction extends Action with DestroyItemMixin {
   }
 
   void _destroyFloorItems(Vec pos, int chance, String flag, String message) {
-    var destroyed = destroyItems(
-        game.stage.itemsAt(pos), chance, flag, message);
+    var destroyed =
+        destroyItems(game.stage.itemsAt(pos), chance, flag, message);
     for (var item in destroyed) {
       game.stage.removeItem(item, pos);
     }

@@ -15,7 +15,9 @@ class Affixes {
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int depth) {
     // Untagged items don't have any affixes.
-    if (Items.types.getTags(itemType.name).isEmpty) return new Item(itemType, 1);
+    if (Items.types.getTags(itemType.name).isEmpty){
+      return new Item(itemType, 1);
+    }
 
     // There's a chance of no affixes at all, based on the depth.
     // TODO: Allow some drops to modify this.
@@ -136,10 +138,12 @@ class Affixes {
   }
 
   static void _resistStrong(Element element, int depth, int rarity) {
-    _resist("of Protection from ${element.capitalized}", depth, rarity, element, 2);
+    _resist(
+        "of Protection from ${element.capitalized}", depth, rarity, element, 2);
   }
 
-  static void _resist(String name, int depth, int rarity, Element element, int power) {
+  static void _resist(
+      String name, int depth, int rarity, Element element, int power) {
     // Also boost armor a little.
     var affix = new Affix(name, armor: power);
     affix.resists[element] = power;
@@ -149,7 +153,8 @@ class Affixes {
   }
 
   /// A weapon suffix for adding damage.
-  static void damage(String tag, String name, int depth, int rarity, {int damage}) {
+  static void damage(String tag, String name, int depth, int rarity,
+      {int damage}) {
     var affix = new Affix(name, damageBonus: damage);
     _suffixes.add(name, affix, depth, rarity, tag);
   }

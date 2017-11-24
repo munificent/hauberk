@@ -47,8 +47,8 @@ abstract class Action {
     _actions.add(action);
   }
 
-  void addEvent(EventType type, {Actor actor, Element element, other,
-      Vec pos, Direction dir}) {
+  void addEvent(EventType type,
+      {Actor actor, Element element, other, Vec pos, Direction dir}) {
     _gameResult.events.add(new Event(type, actor, element, pos, dir, other));
   }
 
@@ -104,12 +104,11 @@ class ActionResult {
   /// `true` if the [Action] does not need any further processing.
   final bool done;
 
-  const ActionResult({this.succeeded, this.done})
-  : alternative = null;
+  const ActionResult({this.succeeded, this.done}) : alternative = null;
 
   const ActionResult.alternate(this.alternative)
-  : succeeded = false,
-    done = true;
+      : succeeded = false,
+        done = true;
 }
 
 class FocusAction extends Action {

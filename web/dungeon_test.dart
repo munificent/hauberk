@@ -27,9 +27,8 @@ int get depth {
 
 main() {
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(
-      new html.OptionElement(data: i.toString(), value: i.toString(),
-          selected: i == 1));
+    depthSelect.append(new html.OptionElement(
+        data: i.toString(), value: i.toString(), selected: i == 1));
   }
 
   depthSelect.onChange.listen((event) {
@@ -106,8 +105,8 @@ Future generate() async {
         <td>
       ''');
 
-    var attacks = breed.attacks.map(
-        (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} (${attack.damage})');
+    var attacks = breed.attacks.map((attack) =>
+        '${Log.conjugate(attack.verb, breed.pronoun)} (${attack.damage})');
     tableContents.write(attacks.join(', '));
 
     tableContents.write('</td><td>');
@@ -123,8 +122,9 @@ Future generate() async {
   var validator = new html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
 
-  html.querySelector('table[id=monsters]').setInnerHtml(tableContents.toString(),
-      validator: validator);
+  html
+      .querySelector('table[id=monsters]')
+      .setInnerHtml(tableContents.toString(), validator: validator);
 
   tableContents.clear();
   tableContents.write('''
@@ -165,8 +165,9 @@ Future generate() async {
     </tr>
     ''');
   }
-  html.querySelector('table[id=items]').setInnerHtml(tableContents.toString(),
-      validator: validator);
+  html
+      .querySelector('table[id=items]')
+      .setInnerHtml(tableContents.toString(), validator: validator);
 }
 
 void render({bool showInfo = true}) {
@@ -231,8 +232,8 @@ void render({bool showInfo = true}) {
   if (Dungeon.debugJunctions != null) {
     context.fillStyle = 'rgba(255, 255, 255, 0.5)';
     for (var junction in Dungeon.debugJunctions) {
-      context.fillRect(junction.position.x * 8 + 2,
-          junction.position.y * 8 + 2, 4, 4);
+      context.fillRect(
+          junction.position.x * 8 + 2, junction.position.y * 8 + 2, 4, 4);
     }
   }
 }

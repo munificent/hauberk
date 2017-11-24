@@ -10,8 +10,7 @@ class WalkAction extends Action {
   final Direction dir;
   final bool _isRunning;
 
-  WalkAction(this.dir, {bool running: false})
-      : _isRunning = running;
+  WalkAction(this.dir, {bool running: false}) : _isRunning = running;
 
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.

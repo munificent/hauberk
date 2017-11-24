@@ -52,9 +52,15 @@ class SlashAction extends FuryAction {
   ActionResult performAttack() {
     var dir;
     switch (_step ~/ _frameRate) {
-      case 0: dir = _dir.rotateLeft45; break;
-      case 1: dir = _dir; break;
-      case 2: dir = _dir.rotateRight45; break;
+      case 0:
+        dir = _dir.rotateLeft45;
+        break;
+      case 1:
+        dir = _dir;
+        break;
+      case 2:
+        dir = _dir.rotateRight45;
+        break;
     }
 
     // Show the effect and perform the attack on alternate frames. This ensures

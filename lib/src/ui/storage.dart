@@ -80,17 +80,8 @@ class Storage {
       var gold = hero['gold'];
       var maxDepth = hero['maxDepth'] ?? 0;
 
-      var heroSave = new HeroSave.load(
-          name,
-          inventory,
-          equipment,
-          home,
-          crucible,
-          experience,
-          skillPoints,
-          skillSet,
-          gold,
-          maxDepth);
+      var heroSave = new HeroSave.load(name, inventory, equipment, home,
+          crucible, experience, skillPoints, skillSet, gold, maxDepth);
       heroes.add(heroSave);
     }
   }

@@ -12,7 +12,7 @@ final allBreeds =
     new List<Histogram<String>>.generate(101, (_) => new Histogram());
 
 final allItems =
-new List<Histogram<String>>.generate(101, (_) => new Histogram());
+    new List<Histogram<String>>.generate(101, (_) => new Histogram());
 
 final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
 

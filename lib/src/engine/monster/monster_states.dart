@@ -365,8 +365,8 @@ class AwakeState extends MonsterState {
       if (move.range > 0 && move.range < maxRange) maxRange = move.range;
     }
 
-    var flow = new Flow(game.stage, pos, monster.motilities,
-        maxDistance: maxRange);
+    var flow =
+        new Flow(game.stage, pos, monster.motilities, maxDistance: maxRange);
 
     bool isValidRangedPosition(Vec pos) {
       // Ignore tiles that are out of range.
@@ -430,8 +430,8 @@ class AwakeState extends MonsterState {
 
   Direction _findMeleePath() {
     // Try to pathfind towards the hero.
-    var path = AStar.findPath(game.stage, pos, game.hero.pos,
-        monster.motilities,
+    var path = AStar.findPath(
+        game.stage, pos, game.hero.pos, monster.motilities,
         maxLength: breed.tracking);
 
     if (path.length == 0) return null;

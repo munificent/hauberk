@@ -191,8 +191,7 @@ class Log {
   ///
   /// If [force] is `true`, then a trailing "s" will be added to the end if
   /// [isFirst] is `false` and [text] doesn't have any formatting.
-  static String _categorize(String text,
-      {bool isFirst, bool force: false}) {
+  static String _categorize(String text, {bool isFirst, bool force: false}) {
     assert(isFirst != null);
 
     var optionalSuffix = new RegExp(r'\[(\w+?)\]');
@@ -249,10 +248,10 @@ class Noun {
 
 class Pronoun {
   // See http://en.wikipedia.org/wiki/English_personal_pronouns.
-  static final you  = const Pronoun('you',  'you',  'your');
-  static final she  = const Pronoun('she',  'her',  'her');
-  static final he   = const Pronoun('he',   'him',  'his');
-  static final it   = const Pronoun('it',   'it',   'its');
+  static final you = const Pronoun('you', 'you', 'your');
+  static final she = const Pronoun('she', 'her', 'her');
+  static final he = const Pronoun('he', 'him', 'his');
+  static final it = const Pronoun('it', 'it', 'its');
   static final they = const Pronoun('they', 'them', 'their');
 
   final String subjective;
@@ -294,4 +293,3 @@ class Message {
 
   Message(this.type, this.text);
 }
-

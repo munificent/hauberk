@@ -70,8 +70,7 @@ class Forest extends StageBuilder {
       for (var from in connected) {
         for (var i = 0; i < meadows.length; i++) {
           var distance = (from - meadows[i]).lengthSquared;
-          if (bestDistance == null ||
-              distance < bestDistance) {
+          if (bestDistance == null || distance < bestDistance) {
             bestFrom = from;
             bestToIndex = i;
             bestDistance = distance;

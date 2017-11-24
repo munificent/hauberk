@@ -177,8 +177,7 @@ class GameResult {
   /// should be shown to the user.
   bool get needsRefresh => madeProgress || events.length > 0;
 
-  GameResult()
-  : events = <Event>[];
+  GameResult() : events = <Event>[];
 }
 
 /// Describes a single "interesting" thing that occurred during a call to

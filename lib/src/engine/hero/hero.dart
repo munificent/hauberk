@@ -47,13 +47,19 @@ class HeroSave {
   /// The lowest depth that the hero has successfully explored and exited.
   int maxDepth = 0;
 
-  HeroSave(this.name)
-      : skills = new SkillSet();
+  HeroSave(this.name) : skills = new SkillSet();
 
-  HeroSave.load(this.name, this.inventory, this.equipment,
-      this.home, this.crucible, this.experienceCents, this.skillPoints,
+  HeroSave.load(
+      this.name,
+      this.inventory,
+      this.equipment,
+      this.home,
+      this.crucible,
+      this.experienceCents,
+      this.skillPoints,
       this.skills,
-      this.gold, this.maxDepth);
+      this.gold,
+      this.maxDepth);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be
@@ -86,7 +92,8 @@ class Hero extends Actor {
   int get intellect => _attribute(Skill.intellect);
   int get will => _attribute(Skill.will);
 
-  int _attribute(Skill skill, [int bonus = 0]) => (10 + skills[skill] + bonus).clamp(1, 60);
+  int _attribute(Skill skill, [int bonus = 0]) =>
+      (10 + skills[skill] + bonus).clamp(1, 60);
 
   final SkillSet skills;
 
@@ -347,8 +354,8 @@ class Hero extends Actor {
   /// Starts resting, if the hero has eaten and is able to regenerate.
   bool rest() {
     if (poison.isActive) {
-      game.log.error(
-          "You cannot rest while poison courses through your veins!");
+      game.log
+          .error("You cannot rest while poison courses through your veins!");
       return false;
     }
 
@@ -399,7 +406,7 @@ int calculateLevel(int experienceCents) {
 /// is greater than the maximum level.
 int calculateLevelCost(int level) {
   if (level > Option.heroLevelMax) return null;
- return (level - 1) * (level - 1) * Option.heroLevelCost;
+  return (level - 1) * (level - 1) * Option.heroLevelCost;
 }
 
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
@@ -485,7 +492,8 @@ class RunBehavior extends Behavior {
       //
       // If the player presses NE here, we want to run north and not get
       // confused by the east passage.
-      var dirs = [direction.rotateLeft45,
+      var dirs = [
+        direction.rotateLeft45,
         direction,
         direction.rotateRight45,
       ];

@@ -158,8 +158,7 @@ class DropAction extends ItemAction {
 /// [Equipment]. May cause a currently equipped Item to become unequipped. If
 /// there is no room in the Inventory for that Item, it will drop to the ground.
 class EquipAction extends ItemAction {
-  EquipAction(ItemLocation location, Item item)
-      : super(location, item);
+  EquipAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
     // If it's already equipped, unequip it.
@@ -183,8 +182,11 @@ class EquipAction extends ItemAction {
       } else {
         // No room in inventory, so drop it.
         game.stage.addItem(unequipped, actor.pos);
-        log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
-            "ground.", actor, unequipped);
+        log(
+            "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
+            "ground.",
+            actor,
+            unequipped);
       }
     }
 
@@ -196,8 +198,7 @@ class EquipAction extends ItemAction {
 /// [Inventory]. If there is no room in the inventory, it will drop to the
 /// ground.
 class UnequipAction extends ItemAction {
-  UnequipAction(ItemLocation location, Item item)
-      : super(location, item);
+  UnequipAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
     removeItem();
@@ -208,16 +209,18 @@ class UnequipAction extends ItemAction {
 
     // No room in inventory, so drop it.
     game.stage.addItem(item, actor.pos);
-    return succeed("{1} [don't|doesn't] have room for {2} and {2 he} drops to "
-        "the ground.", actor, item);
+    return succeed(
+        "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
+        "the ground.",
+        actor,
+        item);
   }
 }
 
 /// [Action] for using an [Item] from the [Hero]'s [Inventory] or the ground.
 /// If the Item is equippable, then using it means equipping it.
 class UseAction extends ItemAction {
-  UseAction(ItemLocation location, Item item)
-      : super(location, item);
+  UseAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
     // If it's equippable, then using it just equips it.

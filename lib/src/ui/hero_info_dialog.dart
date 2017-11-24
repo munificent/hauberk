@@ -30,7 +30,8 @@ class HeroInfoDialog extends Screen<Input> {
 
     // TODO: This is too wide now that the terminal is narrower. Make more
     // compact.
-    terminal.writeAt(27, 2, "┌─────Attack─────┐ ┌─Defense─┐ ┌─────Resistance─────┐", steelGray);
+    terminal.writeAt(27, 2,
+        "┌─────Attack─────┐ ┌─Defense─┐ ┌─────Resistance─────┐", steelGray);
     terminal.writeAt(33, 2, "Attack", slate);
     terminal.writeAt(48, 2, "Defense", slate);
     terminal.writeAt(64, 2, "Resistance", slate);
@@ -43,8 +44,8 @@ class HeroInfoDialog extends Screen<Input> {
     var i = 0;
     for (var element in Element.allButNone) {
       var x = 58 + i * 2;
-      terminal.writeAt(x, 3, elementAbbreviation(element),
-          elementColor(element));
+      terminal.writeAt(
+          x, 3, elementAbbreviation(element), elementColor(element));
 
       // Show the total resistance.
       var resistance = _hero.equipmentResistance(element);
@@ -82,10 +83,11 @@ class HeroInfoDialog extends Screen<Input> {
       }
 
       if (item.damageScale > 1.0) {
-        terminal.writeAt(34, y, item.damageScale.toStringAsFixed(1).padLeft(3), peaGreen);
+        terminal.writeAt(
+            34, y, item.damageScale.toStringAsFixed(1).padLeft(3), peaGreen);
       } else if (item.damageScale < 1.0) {
-        terminal.writeAt(34, y, (-item.damageScale).toStringAsFixed(1).padLeft(3),
-            brickRed);
+        terminal.writeAt(
+            34, y, (-item.damageScale).toStringAsFixed(1).padLeft(3), brickRed);
       } else if (item.attack != null) {
         terminal.writeAt(34, y, "---", slate);
       } else {
@@ -94,11 +96,12 @@ class HeroInfoDialog extends Screen<Input> {
 
       if (item.damageBonus > 0) {
         terminal.writeAt(38, y, "+", sherwood);
-        terminal.writeAt(39, y, item.damageBonus.toString().padLeft(2), peaGreen);
+        terminal.writeAt(
+            39, y, item.damageBonus.toString().padLeft(2), peaGreen);
       } else if (item.damageBonus < 0) {
         terminal.writeAt(38, y, "-", maroon);
-        terminal.writeAt(39, y, (-item.damageBonus).toString().padLeft(2),
-            brickRed);
+        terminal.writeAt(
+            39, y, (-item.damageBonus).toString().padLeft(2), brickRed);
       } else if (item.attack != null) {
         terminal.writeAt(39, y, " 0", slate);
       } else {
@@ -107,11 +110,12 @@ class HeroInfoDialog extends Screen<Input> {
 
       if (item.strikeBonus > 0) {
         terminal.writeAt(42, y, "+", sherwood);
-        terminal.writeAt(43, y, item.strikeBonus.toString().padLeft(2), peaGreen);
+        terminal.writeAt(
+            43, y, item.strikeBonus.toString().padLeft(2), peaGreen);
       } else if (item.strikeBonus < 0) {
         terminal.writeAt(42, y, "-", maroon);
-        terminal.writeAt(43, y, (-item.strikeBonus).toString().padLeft(2),
-            brickRed);
+        terminal.writeAt(
+            43, y, (-item.strikeBonus).toString().padLeft(2), brickRed);
       } else if (item.attack != null) {
         terminal.writeAt(43, y, " 0", slate);
       } else {
@@ -126,11 +130,12 @@ class HeroInfoDialog extends Screen<Input> {
 
       if (item.armorModifier > 0) {
         terminal.writeAt(54, y, "+", sherwood);
-        terminal.writeAt(55, y, item.armorModifier.toString().padLeft(2), peaGreen);
+        terminal.writeAt(
+            55, y, item.armorModifier.toString().padLeft(2), peaGreen);
       } else if (item.armorModifier < 0) {
         terminal.writeAt(54, y, "-", maroon);
-        terminal.writeAt(55, y, (-item.armorModifier).toString().padLeft(2),
-            brickRed);
+        terminal.writeAt(
+            55, y, (-item.armorModifier).toString().padLeft(2), brickRed);
       } else if (item.baseArmor != 0) {
         terminal.writeAt(55, y, " 0", slate);
       } else {
@@ -157,7 +162,8 @@ class HeroInfoDialog extends Screen<Input> {
 
     terminal.writeAt(50, totalY, _hero.armor.toString().padLeft(3));
     var armorPercent = 100 - getArmorMultiplier(_hero.armor) * 100;
-    terminal.writeAt(54, totalY, armorPercent.toInt().toString().padLeft(2) + "%");
+    terminal.writeAt(
+        54, totalY, armorPercent.toInt().toString().padLeft(2) + "%");
 
     terminal.writeAt(0, terminal.height - 1, '[Esc] Exit', slate);
   }

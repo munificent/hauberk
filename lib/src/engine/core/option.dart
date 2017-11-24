@@ -60,8 +60,8 @@ class Option {
 
   /// How much noise different kinds of actions make.
   static const noiseNormal = 10;
-  static const noiseHit    = 50;
-  static const noiseRest   =  1;
+  static const noiseHit = 50;
+  static const noiseRest = 1;
 
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.

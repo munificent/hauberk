@@ -40,8 +40,7 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.die:
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
-        effects
-            .add(new ParticleEffect(event.actor.x, event.actor.y, brickRed));
+        effects.add(new ParticleEffect(event.actor.x, event.actor.y, brickRed));
       }
       break;
 
@@ -116,7 +115,7 @@ List<Glyph> _glyphs(String chars, List<Color> colors) {
 }
 
 // TODO: Design custom sprites for these.
-final _elementSequences = <Element, List<List<Glyph>>> {
+final _elementSequences = <Element, List<List<Glyph>>>{
   Element.none: [
     _glyphs("•", [sandal]),
     _glyphs("•", [sandal]),
@@ -286,12 +285,10 @@ class HitEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    var back = const [
-      salmon, brickRed, garnet, Color.black
-    ][frame ~/ 6];
+    var back = const [salmon, brickRed, garnet, Color.black][frame ~/ 6];
 
-    drawGlyph(actor.x, actor.y,
-        new Glyph(' 123456789'[health], Color.black, back));
+    drawGlyph(
+        actor.x, actor.y, new Glyph(' 123456789'[health], Color.black, back));
   }
 }
 
@@ -338,12 +335,7 @@ class TeleportEffect implements Effect {
   int age = 0;
   final Vec target;
 
-  static final _colors = [
-    turquoise,
-    cornflower,
-    lilac,
-    ash
-  ];
+  static final _colors = [turquoise, cornflower, lilac, ash];
 
   TeleportEffect(Vec from, this.target) {
     x = from.x;
@@ -409,10 +401,18 @@ class HealEffect implements Effect {
 
     var back;
     switch ((frame ~/ 4) % 4) {
-      case 0: back = Color.black; break;
-      case 1: back = seaGreen; break;
-      case 2: back = cornflower; break;
-      case 3: back = turquoise; break;
+      case 0:
+        back = Color.black;
+        break;
+      case 1:
+        back = seaGreen;
+        break;
+      case 2:
+        back = cornflower;
+        break;
+      case 3:
+        back = turquoise;
+        break;
     }
 
     drawGlyph(x - 1, y, new Glyph('-', back));
