@@ -262,6 +262,8 @@ class Hero extends Actor {
   Hit createRangedHit() {
     var weapon = equipment.weapon;
 
+    // TODO: Figure out how heft affects this.
+
     // This should only be called when we know the hero has a ranged weapon
     // equipped.
     assert(weapon != null && weapon.attack.isRanged);
