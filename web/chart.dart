@@ -12,19 +12,20 @@ import 'histogram.dart';
 
 final _svg = html.querySelector("svg") as svg.SvgElement;
 
-final _breedCounts = new List.generate(Option.maxDepth, (_) => new Histogram());
+final _breedCounts = new List.generate(Option.maxDepth, (_) => new Histogram<String>());
 List<String> _breedNames;
 
-final _itemCounts = new List.generate(Option.maxDepth, (_) => new Histogram());
+final _itemCounts = new List.generate(Option.maxDepth, (_) => new Histogram<String>());
 List<String> _itemNames;
 
-final _affixCounts = new List.generate(Option.maxDepth, (_) => new Histogram());
+final _affixCounts = new List.generate(Option.maxDepth, (_) => new Histogram<String>());
 List<String> _affixNames;
 
 final _colors = <String, String>{};
 
-const batchSize = 10000;
-const chartHeight = 600;
+const batchSize = 1000;
+const chartWidth = 600;
+const barSize = 6;
 
 String get shownData {
   var select = html.querySelector("select") as html.SelectElement;
@@ -96,7 +97,10 @@ void _moreBreeds() {
       var breed = Monsters.breeds.tryChoose(depth, "monster");
       if (breed == null) continue;
 
-      histogram.add(breed.name);
+      // Take groups and minions into account
+      for (var spawn in breed.spawnAll()) {
+        histogram.add(spawn.name);
+      }
     }
   }
 
@@ -216,9 +220,9 @@ void _redraw(List<Histogram<String>> histograms, List<String> labels,
       total += histogram.count(label);
     }
 
-    var x = depth * 10;
-    var y = chartHeight.toDouble();
-    var bottom = chartHeight.toDouble();
+    var x = chartWidth.toDouble();
+    var y = depth * barSize;
+    var right = chartWidth.toDouble();
 
     for (var label in labels) {
       var count = histogram.count(label);
@@ -231,13 +235,13 @@ void _redraw(List<Histogram<String>> histograms, List<String> labels,
 
       var fraction = count / total;
       var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
-      y -= fraction * chartHeight;
+      x -= fraction * chartWidth;
       buffer.write(
-          '<rect fill="$color" x="$x" y="$y" width="10" height="${bottom - y}">');
+          '<rect fill="$color" x="$x" y="$y" width="${right - x}" height="$barSize">');
       buffer.write(
           '<title>depth ${depth + 1}: ${describe(label)} $percent% ($count)</title></rect>');
 
-      bottom = y;
+      right = x;
     }
   }
 

@@ -148,7 +148,7 @@ class Breed {
   ///
   /// Each item in the list represents a breed that should spawn a single
   /// monster. Takes into account this breed's count and minions.
-  List<Breed> spawnAll(Game game) {
+  List<Breed> spawnAll() {
     var breeds = <Breed>[];
 
     // This breed.

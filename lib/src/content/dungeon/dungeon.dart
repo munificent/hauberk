@@ -85,10 +85,11 @@ class TileInfo {
 
 // TODO: Better name?
 class Place {
+  final bool hasHero;
   final String type;
   final List<Vec> cells;
 
-  Place(this.type, this.cells);
+  Place(this.type, this.cells, {this.hasHero = false});
 }
 
 class Dungeon {
@@ -324,26 +325,29 @@ class Dungeon {
       if (pos != null) stage.placeDrops(pos, MotilitySet.walk, floorDrop.drop);
     }
 
-    // TODO: Tune based on depth and place type?
-    // We want a roughly even difficulty across places of different sizes. That
-    // means more monsters in bigger places. However, monsters can easily cross
-    // an open space which means scaling linearly makes larger places more
-    // difficult -- it's easy for the hero to get swarmed. The exponential
-    // tapers that off a bit so that larger areas don't scale quite linearly.
-    var base = (math.pow(place.cells.length, 0.80) * 0.2);
-    var min = (base - 1 - base / 3).floor();
-    var max = base.ceil();
+    // Don't spawn monsters in the hero's starting room.
+    if (!place.hasHero) {
+      // TODO: Tune based on depth and place type?
+      // We want a roughly even difficulty across places of different sizes. That
+      // means more monsters in bigger places. However, monsters can easily cross
+      // an open space which means scaling linearly makes larger places more
+      // difficult -- it's easy for the hero to get swarmed. The exponential
+      // tapers that off a bit so that larger areas don't scale quite linearly.
+      var base = (math.pow(place.cells.length, 0.80) * 0.15);
+      var min = (base - 1 - base / 3).floor();
+      var max = base.ceil();
 
-    var spawnCount = rng.taper(rng.inclusive(min, max), 4);
+      var spawnCount = rng.taper(rng.inclusive(min, max), 4);
 
-    while (spawnCount > 0) {
-      var breed = Monsters.breeds.tryChoose(depth, place.type);
-      var spawned = _spawnMonster(place, breed);
+      while (spawnCount > 0) {
+        var breed = Monsters.breeds.tryChoose(depth, place.type);
+        var spawned = _spawnMonster(place, breed);
 
-      // Stop if we ran out of open tiles.
-      if (spawned == 0) break;
+        // Stop if we ran out of open tiles.
+        if (spawned == 0) break;
 
-      spawnCount -= spawned;
+        spawnCount -= spawned;
+      }
     }
   }
 
@@ -355,7 +359,7 @@ class Dungeon {
     if (pos == null) return 0;
 
     var isCorpse = rng.oneIn(8);
-    var breeds = breed.spawnAll(stage.game);
+    var breeds = breed.spawnAll();
 
     var spawned = 0;
     spawn(Breed breed, Vec pos) {

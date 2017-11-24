@@ -172,7 +172,7 @@ class RoomBiome extends Biome {
       // TODO: After a certain number of tries, should try a different room.
     } while (!_canPlaceRoom(startRoom, x, y));
 
-    _placeRoom(startRoom, x, y);
+    _placeRoom(startRoom, x, y, isStarting: true);
 
     // Place the hero on an open tile in the starting room.
     var openTiles = <Vec>[];
@@ -310,7 +310,7 @@ class RoomBiome extends Biome {
     return allowed > nature * 2;
   }
 
-  void _placeRoom(Room room, int x, int y) {
+  void _placeRoom(Room room, int x, int y, {bool isStarting = false}) {
     List<Vec> nature = [];
 
     var cells = <Vec>[];
@@ -344,7 +344,7 @@ class RoomBiome extends Biome {
     if (nature != null) _reachNature(nature);
 
     _rooms.add(new PlacedRoom(new Vec(x, y), room));
-    _dungeon.addPlace(new Place("room", cells));
+    _dungeon.addPlace(new Place("room", cells, hasHero: isStarting));
   }
 
   void _placeDoor(Vec pos) {

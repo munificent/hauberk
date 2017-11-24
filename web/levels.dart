@@ -45,7 +45,7 @@ void spawnStuff() {
     var numSpawns = 30 + depth;
     for (var i = 0; i < numSpawns; i++) {
       var breed = Monsters.breeds.tryChoose(depth, "monster");
-      for (var breed in breed.spawnAll(game)) {
+      for (var breed in breed.spawnAll()) {
         breeds.add(breed.name);
       }
     }
@@ -53,7 +53,7 @@ void spawnStuff() {
     var numCorpses = 5 + (depth ~/ 2);
     for (var i = 0; i < numCorpses; i++) {
       var breed = Monsters.breeds.tryChoose(depth, "monster");
-      for (var breed in breed.spawnAll(game)) {
+      for (var breed in breed.spawnAll()) {
         breed.drop.spawnDrop((item) {
           items.add(item.toString());
         });

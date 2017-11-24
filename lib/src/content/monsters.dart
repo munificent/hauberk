@@ -168,13 +168,15 @@ void arachnids() {
   family("a", flags: "fearless")
     ..placeIn("corridor")
     ..stain(Tiles.spiderweb);
-  breed("brown spider", 1, persimmon, 3, meander: 8)
-    ..count(3)
+  breed("brown spider", 1, persimmon, 6, meander: 8)
     ..attack("bite[s]", 5);
 
-  breed("gray spider", 2, slate, 6, meander: 6)
-    ..count(2, 4)
+  breed("gray spider", 2, slate, 12, meander: 6)
     ..attack("bite[s]", 5, Element.poison);
+
+  breed("spiderling", 4, persimmon, 6, meander: 8)
+    ..count(2, 5)
+    ..attack("bite[s]", 5);
 
   breed("giant spider", 6, ultramarine, 40, meander: 5)
     ..attack("bite[s]", 5, Element.poison)
@@ -305,14 +307,12 @@ void faeFolk() {
     ..fly()
     ..preferOpen();
   breed("forest sprite", 1, mint, 6)
-    ..count(2)
     ..attack("scratch[es]", 3)
     ..insult(rate: 4)
     ..sparkBolt(rate: 7, damage: 4)
     ..drop(60, "magic");
 
   breed("house sprite", 3, cornflower, 15)
-    ..count(2)
     ..attack("poke[s]", 5)
     ..insult(rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
@@ -320,7 +320,6 @@ void faeFolk() {
     ..drop(80, "magic");
 
   breed("mischievous sprite", 7, salmon, 24)
-    ..count(2)
     ..attack("stab[s]", 6)
     ..insult(rate: 4)
     ..windBolt(rate: 8, damage: 8)
@@ -669,12 +668,12 @@ void quest() {
 void rodents() {
   family("r", speed: 1, meander: 4)..preferWall();
   breed("[mouse|mice]", 1, sandal, 6)
-    ..count(4, 8)
+    ..count(2, 5)
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
 
   breed("sewer rat", 2, steelGray, 8, meander: -1)
-    ..count(2, 5)
+    ..count(1, 4)
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
 
@@ -683,7 +682,7 @@ void rodents() {
     ..attack("scratch[es]", 4);
 
   breed("plague rat", 6, lima, 16)
-    ..count(2, 4)
+    ..count(1, 4)
     ..attack("bite[s]", 15, Element.poison)
     ..attack("scratch[es]", 8);
 }
