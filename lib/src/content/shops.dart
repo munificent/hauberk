@@ -13,8 +13,7 @@ class Shops {
       "Whip",
       "Dagger",
       "Hatchet",
-      "Axe",
-      "Sling",
+      "Axe"
     ]);
 
     shop("Dirk's Death Emporium", [

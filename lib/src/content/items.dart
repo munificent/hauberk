@@ -52,6 +52,7 @@ class Items {
     // TODO: Amulets.
     weapons();
     bodyArmor();
+    cloaks();
     // TODO: Shields.
     // TODO: Helmets.
     boots();
@@ -436,17 +437,8 @@ void weapons() {
     ..weapon(39, heft: 30)
     ..toss(damage: 28, range: 4);
 
-  // TODO: Remove? Needs a command to use and "archery" doesn't fit.
-  // Sling. In a category itself because many bow affixes don't apply to it.
-  category(CharCode.reversedNotSign, verb: "hit[s]")
-    ..tag("equipment/weapon/sling")
-    ..toss(breakage: 15, range: 5);
-  item("Sling", 3, 3, persimmon)
-    ..ranged("the stone", damage: 4, range: 10)
-    ..toss(damage: 1);
-
   // Bows.
-  category(CharCode.notSign, verb: "hit[s]")
+  category(CharCode.reversedNotSign, verb: "hit[s]")
     ..tag("equipment/weapon/bow")
     ..toss(breakage: 50, range: 5);
   item("Short Bow", 5, 3, persimmon)
@@ -462,10 +454,13 @@ void weapons() {
 
 void bodyArmor() {
   // TODO: Make some armor throwable.
-  category(CharCode.latinCapitalLetterAe)..tag("equipment/armor/cloak");
-  item("Cloak", 3, 2, ultramarine)..armor(2);
-  item("Fur Cloak", 5, 5, garnet)..armor(3);
+  // Robes.
+  category(CharCode.latinSmallLetterOWithCircumflex)
+    ..tag("equipment/armor/body/robe");
+  item("Robe", 2, 2, cerulean)..armor(4);
+  item("Fur-lined Robe", 6, 4, sherwood)..armor(6);
 
+  // Soft armor.
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body");
   item("Cloth Shirt", 2, 2, sandal)..armor(3);
@@ -475,16 +470,12 @@ void bodyArmor() {
   item("Padded Armor", 14, 2, steelGray)..armor(15, encumber: 3);
   item("Studded Leather Armor", 17, 2, slate)..armor(22, encumber: 4);
 
+  // Mail armor.
   category(CharCode.latinSmallLetterOWithGrave)..tag("equipment/armor/body");
   item("Mail Hauberk", 20, 2, steelGray)..armor(28, encumber: 5);
   item("Scale Mail", 23, 2, gunsmoke)..armor(36, encumber: 7);
 
 //  CharCode.latinSmallLetterUWithCircumflex // armor
-
-  category(CharCode.latinSmallLetterOWithCircumflex)
-    ..tag("equipment/armor/body/robe");
-  item("Robe", 2, 2, cerulean)..armor(4);
-  item("Fur-lined Robe", 6, 4, sherwood)..armor(6);
 
   /*
   Metal Lamellar Armor[s]
@@ -496,6 +487,12 @@ void bodyArmor() {
   Partial Plate Armor[s]
   Full Plate Armor[s]
   */
+}
+
+void cloaks() {
+  category(CharCode.latinCapitalLetterAe)..tag("equipment/armor/cloak");
+  item("Cloak", 3, 2, ultramarine)..armor(2);
+  item("Fur Cloak", 5, 5, garnet)..armor(3);
 }
 
 void boots() {
