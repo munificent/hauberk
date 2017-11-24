@@ -49,9 +49,10 @@ class Attack {
   Hit createHit() => new Hit._(this);
 
   String toString() {
-    var result = "";
-    if (element != Element.none) result += "$element ";
-    return "$result $damage";
+    var result = damage.toString();
+    if (element != Element.none) result = "$element $result";
+    if (range > 0) result += "@$range";
+    return result;
   }
 }
 

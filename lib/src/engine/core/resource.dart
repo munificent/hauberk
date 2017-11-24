@@ -19,7 +19,7 @@ class ResourceSet<T> {
       throw new ArgumentError('Already have a resource named "$name".');
     }
 
-    var resource = new _Resource(object, depth, 1.0 / rarity);
+    var resource = new _Resource(object, depth, rarity);
     _resources[name] = resource;
 
     if (tagNames != null) {
@@ -66,6 +66,12 @@ class ResourceSet<T> {
     var resource = _resources[name];
     if (resource == null) return null;
     return resource.object;
+  }
+
+  int rarity(String name) {
+    var resource = _resources[name];
+    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+    return resource.rarity;
   }
 
   /// Returns whether the resource with [name] has [tagName] as one of its
@@ -155,7 +161,8 @@ class ResourceSet<T> {
       for (var i = 0; i < allowed.length; i++) {
         var resource = allowed[i];
 
-        var chance = resource.frequency * _depthScale(resource.depth, depth);
+        var frequency = 1.0 / resource.rarity;
+        var chance = frequency * _depthScale(resource.depth, depth);
 
         // The depth scale is so narrow at low levels that highly out of depth
         // items can have a 0% chance of being generated due to floating point
@@ -212,11 +219,10 @@ class _Resource<T> {
   final T object;
   final int depth;
 
-  /// The reciprocal of the resource's rarity.
-  final double frequency;
+  final int rarity;
   final Set<_Tag<T>> _tags = new Set();
 
-  _Resource(this.object, this.depth, this.frequency);
+  _Resource(this.object, this.depth, this.rarity);
 }
 
 class _Tag<T> {
