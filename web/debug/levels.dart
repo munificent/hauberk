@@ -6,9 +6,12 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/monsters.dart';
 import 'package:hauberk/src/engine.dart';
 
-import 'histogram.dart';
+import '../histogram.dart';
 
 final allBreeds =
+    new List<Histogram<String>>.generate(101, (_) => new Histogram());
+
+final allSpawns =
     new List<Histogram<String>>.generate(101, (_) => new Histogram());
 
 final allItems =
@@ -40,55 +43,49 @@ int pickDepth(int depth, int numLevels) {
 void spawnStuff() {
   for (var depth = 1; depth <= 100; depth++) {
     var breeds = allBreeds[depth];
+    var spawns = allSpawns[depth];
     var items = allItems[depth];
 
     var numSpawns = 30 + depth;
     for (var i = 0; i < numSpawns; i++) {
       var breed = Monsters.breeds.tryChoose(depth, "monster");
-      for (var breed in breed.spawnAll()) {
-        breeds.add(breed.name);
+      breeds.add(breed.name);
+      for (var spawn in breed.spawnAll()) {
+        spawns.add(spawn.name);
       }
     }
 
     var numCorpses = 5 + (depth ~/ 2);
     for (var i = 0; i < numCorpses; i++) {
       var breed = Monsters.breeds.tryChoose(depth, "monster");
-      for (var breed in breed.spawnAll()) {
-        breed.drop.spawnDrop((item) {
+      if (breed == null) continue;
+
+      for (var spawn in breed.spawnAll()) {
+        spawn.drop.spawnDrop((item) {
           items.add(item.toString());
         });
       }
     }
-
-//    for (var i = 0; i < 100; i++) {
-//      var encounter = Encounters.choose(depth);
-//
-//      for (var spawn in encounter.spawns) {
-//        var count = rng.inclusive(spawn.min, spawn.max);
-//        if (count == 0) continue;
-//
-//        for (var i = 0; i < count; i++) {
-//          breeds.add(spawn.breed.name);
-//        }
-//      }
-//
-//      for (var drop in encounter.drops) {
-//        drop.spawnDrop((item) {
-//          items.add(item.toString());
-//        });
-//      }
-//    }
   }
 }
 
 void generateTable() {
   var text = new StringBuffer();
 
+  text.write('''<thead>
+    <tr>
+      <td>Depth</td>
+      <td>Breeds</td>
+      <td>Monsters</td>
+      <td>Items</td>
+    </tr>
+  </thead>''');
+
   for (var depth = 1; depth <= 100; depth++) {
     text.write('<tr><td>$depth</td>');
 
     renderColumn(Histogram<String> histogram) {
-      text.write('<td width="50%">');
+      text.write('<td width="34%">');
       var more = 0;
       for (var name in histogram.descending()) {
         var width = histogram.count(name);
@@ -109,6 +106,7 @@ void generateTable() {
     }
 
     renderColumn(allBreeds[depth]);
+    renderColumn(allSpawns[depth]);
     renderColumn(allItems[depth]);
 
     text.write('</tr>');

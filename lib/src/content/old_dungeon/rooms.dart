@@ -22,20 +22,20 @@ abstract class RoomType {
     return _allTypes.tryChoose(1, "room");
   }
 
-  static void add(RoomType type, int rarity) {
-    _allTypes.add("room_${_nextNameId++}", type, 1, rarity, "room");
+  static void add(RoomType type, double frequency) {
+    _allTypes.add("room_${_nextNameId++}", type, 1, frequency, "room");
   }
 
   static void _initializeRoomTypes() {
     _allTypes.defineTags("room");
 
-    rectangle(int w, int h, {int rarity: 1}) {
-      add(new RectangleRoom(w, h), rarity);
-      if (w != h) add(new RectangleRoom(h, w), rarity);
+    rectangle(int w, int h, {double frequency: 1.0}) {
+      add(new RectangleRoom(w, h), frequency);
+      if (w != h) add(new RectangleRoom(h, w), frequency);
     }
 
-    rectangle(3, 3, rarity: 2);
-    rectangle(3, 5, rarity: 2);
+    rectangle(3, 3, frequency: 0.5);
+    rectangle(3, 5, frequency: 0.5);
     rectangle(5, 5);
     rectangle(5, 7);
     rectangle(7, 7);
@@ -44,25 +44,24 @@ abstract class RoomType {
     rectangle(9, 9);
     rectangle(7, 11);
     rectangle(9, 11);
-    rectangle(11, 11, rarity: 2);
+    rectangle(11, 11, frequency: 0.5);
     rectangle(7, 13);
-    rectangle(9, 13, rarity: 2);
+    rectangle(9, 13, frequency: 0.5);
 
-    octagon(int w, int h, int slope, {int rarity: 1}) {
-      // 4 * to make all octagonal rooms less common.
-      add(new OctagonRoom(w, h, slope), 4 * rarity);
-      if (w != h) add(new OctagonRoom(h, w, slope), 4 * rarity);
+    octagon(int w, int h, int slope, {double frequency: 1.0}) {
+      add(new OctagonRoom(w, h, slope), frequency / 4.0);
+      if (w != h) add(new OctagonRoom(h, w, slope), frequency / 4.0);
     }
 
     octagon(5, 5, 1);
-    octagon(5, 7, 1, rarity: 2);
+    octagon(5, 7, 1, frequency: 0.5);
     octagon(7, 7, 2);
-    octagon(7, 9, 2, rarity: 2);
+    octagon(7, 9, 2, frequency: 0.5);
     octagon(9, 9, 2);
     octagon(9, 9, 3);
-    octagon(9, 11, 2, rarity: 2);
-    octagon(9, 11, 3, rarity: 2);
-    octagon(11, 11, 3, rarity: 2);
+    octagon(9, 11, 2, frequency: 0.5);
+    octagon(9, 11, 3, frequency: 0.5);
+    octagon(11, 11, 3, frequency: 0.5);
 
     TemplateRoom.initialize();
   }

@@ -442,8 +442,8 @@ class Room {
     return type.create();
   }
 
-  static void _add(RoomType type, int rarity) {
-    _allTypes.add("room_${_nextNameId++}", type, 1, rarity, "room");
+  static void _add(RoomType type, double frequency) {
+    _allTypes.add("room_${_nextNameId++}", type, 1, frequency, "room");
   }
 
   static void _initializeRoomTypes() {
@@ -460,8 +460,8 @@ class Room {
 
         // Prefer larger rooms. They tend to fail to get placed more often,
         // so making them more common counter-acts that.
-        var rarity = 100 ~/ math.sqrt(width * height);
-        _add(new RectangleRoom(width, height), rarity);
+        var frequency = math.sqrt(width * height);
+        _add(new RectangleRoom(width, height), frequency);
       }
     }
 

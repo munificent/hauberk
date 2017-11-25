@@ -18,7 +18,7 @@ import 'tiles.dart';
 /// don't need an explicit `build()` call at the end of each builder.
 _BreedBuilder _builder;
 
-_FamilyBuilder _family = new _FamilyBuilder();
+_FamilyBuilder _family = new _FamilyBuilder(null);
 
 /// While the breeds are being built, we store their minions as string names
 /// to avoid problems with circular references between breeds. Once all breeds
@@ -168,8 +168,7 @@ void arachnids() {
   family("a", flags: "fearless")
     ..placeIn("corridor")
     ..stain(Tiles.spiderweb);
-  breed("brown spider", 1, persimmon, 6, meander: 8)
-    ..attack("bite[s]", 5);
+  breed("brown spider", 1, persimmon, 6, meander: 8)..attack("bite[s]", 5);
 
   breed("gray spider", 2, slate, 12, meander: 6)
     ..attack("bite[s]", 5, Element.poison);
@@ -423,7 +422,7 @@ void hybrids() {}
 void insects() {
   family("i", tracking: 3, meander: 8, flags: "fearless");
   // TODO: Spawn as eggs which can hatch into cockroaches?
-  breed("giant cockroach[es]", 1, garnet, 4)
+  breed("giant cockroach[es]", 1, garnet, 4, frequency: 0.4)
     ..count(3, 5)
     ..preferCorner()
     ..attack("crawl[s] on", 2)
@@ -438,7 +437,7 @@ void insects() {
 void insubstantials() {}
 
 void jellies() {
-  family("j", speed: -1, flags: "fearless")
+  family("j", frequency: 0.7, speed: -1, flags: "fearless")
     ..preferWall()
     ..count(4);
   breed("green jelly", 1, lima, 5)
@@ -446,7 +445,7 @@ void jellies() {
     ..attack("crawl[s] on", 3);
   // TODO: More elements.
 
-  family("j", flags: "fearless immobile")
+  family("j", frequency: 0.6, flags: "fearless immobile")
     ..preferCorner()
     ..count(4);
   breed("green slime", 2, peaGreen, 10)
@@ -667,7 +666,7 @@ void quest() {
 
 void rodents() {
   family("r", speed: 1, meander: 4)..preferWall();
-  breed("[mouse|mice]", 1, sandal, 6)
+  breed("[mouse|mice]", 1, sandal, 6, frequency: 0.5)
     ..count(2, 5)
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
@@ -771,7 +770,7 @@ void worms() {
     ..placeIn("corridor")
     ..attack("crawl[s] on", 5);
 
-  breed("blood worm", 2, brickRed, 4, rarity: 2)
+  breed("blood worm", 2, brickRed, 4, frequency: 0.5)
     ..count(3, 8)
     ..attack("crawl[s] on", 5);
 
@@ -795,10 +794,10 @@ void zombies() {}
 void serpents() {}
 
 _FamilyBuilder family(String character,
-    {int meander, int speed, int tracking, String flags}) {
+    {double frequency, int meander, int speed, int tracking, String flags}) {
   buildBreed();
 
-  _family = new _FamilyBuilder();
+  _family = new _FamilyBuilder(frequency);
   _family._character = character;
   _family._meander = meander;
   _family._speed = speed;
@@ -829,13 +828,14 @@ void buildBreed() {
   var breed = _builder.build();
   // TODO: join() here is dumb since Resource then splits it.
   Monsters.breeds
-    ..add(breed.name, breed, breed.depth, _builder._rarity, tags.join(" "));
+    ..add(breed.name, breed, breed.depth,
+        _builder._frequency ?? _family._frequency ?? 1.0, tags.join(" "));
   _builder = null;
 }
 
 // TODO: Move more named params into builder methods?
 _BreedBuilder breed(String name, int depth, appearance, int health,
-    {int rarity: 1, int speed: 0, int meander: 0}) {
+    {double frequency, int speed: 0, int meander: 0}) {
   buildBreed();
 
   Glyph glyph;
@@ -845,13 +845,15 @@ _BreedBuilder breed(String name, int depth, appearance, int health,
     glyph = appearance(_family._character);
   }
 
-  _builder = new _BreedBuilder(name, depth, rarity, glyph, health);
+  _builder = new _BreedBuilder(name, depth, frequency, glyph, health);
   _builder._speed = speed;
   _builder._meander;
   return _builder;
 }
 
 class _BaseBuilder {
+  final double _frequency;
+
   int _tracking;
 
   final List<Motility> _motilities = [];
@@ -874,6 +876,8 @@ class _BaseBuilder {
   int _countMax;
 
   TileType _stain;
+
+  _BaseBuilder(this._frequency);
 
   void preferWall() {
     _location = SpawnLocation.wall;
@@ -924,12 +928,13 @@ class _BaseBuilder {
 class _FamilyBuilder extends _BaseBuilder {
   /// Character for the current monster.
   String _character;
+
+  _FamilyBuilder(double frequency) : super(frequency);
 }
 
 class _BreedBuilder extends _BaseBuilder {
   final String _name;
   final int _depth;
-  final int _rarity;
   final Object _appearance;
   final int _health;
   final List<Attack> _attacks = [];
@@ -938,7 +943,8 @@ class _BreedBuilder extends _BaseBuilder {
   final List<_NamedMinion> _minions = [];
 
   _BreedBuilder(
-      this._name, this._depth, this._rarity, this._appearance, this._health) {}
+      this._name, this._depth, double frequency, this._appearance, this._health)
+      : super(frequency) {}
 
   void minion(String name, [int minOrMax, int max]) {
     if (minOrMax == null) {

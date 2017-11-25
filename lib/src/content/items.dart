@@ -37,12 +37,12 @@ class Items {
     category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
       ..tag("item")
       ..toss(damage: 3, range: 7, element: Element.earth, breakage: 10);
-    item("Rock", 1, 1, persimmon);
+    item("Rock", 1, 1.0, persimmon);
 
     category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
       ..tag("item")
       ..toss(damage: 2, range: 5, breakage: 30);
-    item("Skull", 1, 1, gunsmoke);
+    item("Skull", 1, 1.0, gunsmoke);
 
 //    treasures();
     pelts();
@@ -139,15 +139,15 @@ void pelts() {
   // TODO: Should these appear on the floor?
   // TODO: Better pictogram than a pelt?
   category(CharCode.latinSmallLetterEWithAcute, stack: 20, flags: "flammable");
-  item("Flower", 1, 1, cornflower); // TODO: Use in recipe.
-  item("Insect Wing", 1, 1, violet);
-  item("Red Feather", 2, 1, brickRed); // TODO: Use in recipe.
-  item("Black Feather", 2, 1, steelGray);
-  item("Stinger", 2, 1, gold);
+  item("Flower", 1, 1.0, cornflower); // TODO: Use in recipe.
+  item("Insect Wing", 1, 1.0, violet);
+  item("Red Feather", 2, 1.0, brickRed); // TODO: Use in recipe.
+  item("Black Feather", 2, 1.0, steelGray);
+  item("Stinger", 2, 1.0, gold);
 
   category(CharCode.latinSmallLetterEWithAcute, stack: 4, flags: "flammable");
-  item("Fur Pelt", 1, 1, persimmon);
-  item("Fox Pelt", 2, 1, copper);
+  item("Fur Pelt", 1, 1.0, persimmon);
+  item("Fox Pelt", 2, 1.0, copper);
 }
 
 void potions() {
@@ -159,40 +159,42 @@ void potions() {
   category(CharCode.latinSmallLetterCWithCedilla, stack: 10, flags: "freezable")
     ..tag("magic/potion/healing")
     ..toss(damage: 1, range: 6, breakage: 100);
-  item("Soothing Balm", 2, 1, salmon)..heal(48);
-  item("Mending Salve", 7, 1, brickRed)..heal(100);
-  item("Healing Poultice", 12, 1, maroon)..heal(200, curePoison: true);
-  item("Potion[s] of Amelioration", 24, 1, indigo)..heal(400, curePoison: true);
-  item("Potion[s] of Rejuvenation", 65, 2, violet)
+  item("Soothing Balm", 2, 1.0, salmon)..heal(48);
+  item("Mending Salve", 7, 1.0, brickRed)..heal(100);
+  item("Healing Poultice", 12, 1.0, maroon)..heal(200, curePoison: true);
+  item("Potion[s] of Amelioration", 24, 1.0, indigo)
+    ..heal(400, curePoison: true);
+  item("Potion[s] of Rejuvenation", 65, 0.5, violet)
     ..heal(1000, curePoison: true);
 
-  item("Antidote", 4, 2, peaGreen)..heal(0, curePoison: true);
+  item("Antidote", 4, 0.5, peaGreen)..heal(0, curePoison: true);
 
   category(CharCode.latinSmallLetterEWithCircumflex,
       stack: 10, flags: "freezable")
     ..tag("magic/potion/resistance")
     ..toss(damage: 1, range: 6, breakage: 100);
-  item("Salve[s] of Heat Resistance", 5, 2, carrot)..resistSalve(Element.fire);
-  item("Salve[s] of Cold Resistance", 6, 2, cornflower)
+  item("Salve[s] of Heat Resistance", 5, 0.5, carrot)
+    ..resistSalve(Element.fire);
+  item("Salve[s] of Cold Resistance", 6, 0.5, cornflower)
     ..resistSalve(Element.cold)
     ..flags("-freezable");
-  item("Salve[s] of Light Resistance", 7, 2, buttermilk)
+  item("Salve[s] of Light Resistance", 7, 0.5, buttermilk)
     ..resistSalve(Element.light);
-  item("Salve[s] of Wind Resistance", 8, 2, turquoise)
+  item("Salve[s] of Wind Resistance", 8, 0.5, turquoise)
     ..resistSalve(Element.air);
-  item("Salve[s] of Lightning Resistance", 9, 2, lilac)
+  item("Salve[s] of Lightning Resistance", 9, 0.5, lilac)
     ..resistSalve(Element.lightning);
-  item("Salve[s] of Darkness Resistance", 10, 2, slate)
+  item("Salve[s] of Darkness Resistance", 10, 0.5, slate)
     ..resistSalve(Element.dark);
-  item("Salve[s] of Earth Resistance", 13, 2, persimmon)
+  item("Salve[s] of Earth Resistance", 13, 0.5, persimmon)
     ..resistSalve(Element.earth);
-  item("Salve[s] of Water Resistance", 16, 2, ultramarine)
+  item("Salve[s] of Water Resistance", 16, 0.5, ultramarine)
     ..resistSalve(Element.water);
-  item("Salve[s] of Acid Resistance", 19, 2, sandal)
+  item("Salve[s] of Acid Resistance", 19, 0.5, sandal)
     ..resistSalve(Element.acid); // TODO: Better color.
-  item("Salve[s] of Poison Resistance", 23, 2, lima)
+  item("Salve[s] of Poison Resistance", 23, 0.5, lima)
     ..resistSalve(Element.poison);
-  item("Salve[s] of Death Resistance", 30, 2, violet)
+  item("Salve[s] of Death Resistance", 30, 0.5, violet)
     ..resistSalve(Element.spirit);
 
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
@@ -202,10 +204,11 @@ void potions() {
       stack: 10, flags: "freezable")
     ..tag("magic/potion/speed")
     ..toss(damage: 1, range: 6, breakage: 100);
-  item("Potion[s] of Quickness", 3, 3, lima)..use(() => new HasteAction(20, 1));
-  item("Potion[s] of Alacrity", 18, 3, peaGreen)
+  item("Potion[s] of Quickness", 3, 0.3, lima)
+    ..use(() => new HasteAction(20, 1));
+  item("Potion[s] of Alacrity", 18, 0.3, peaGreen)
     ..use(() => new HasteAction(30, 2));
-  item("Potion[s] of Speed", 34, 4, sherwood)
+  item("Potion[s] of Speed", 34, 0.25, sherwood)
     ..use(() => new HasteAction(40, 3));
 
   // dram, draught, elixir, philter
@@ -214,28 +217,28 @@ void potions() {
   category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable")
     ..tag("magic/potion/bottled")
     ..toss(damage: 1, range: 8, breakage: 100);
-  item("Bottled Wind", 4, 2, cornflower)
+  item("Bottled Wind", 4, 0.5, cornflower)
     ..flow(Element.air, "the wind", "blasts", 20, fly: true);
-  item("Bottled Ice", 7, 2, cerulean)
+  item("Bottled Ice", 7, 0.5, cerulean)
     ..ball(Element.cold, "the cold", "freezes", 30)
     ..flags("-freezable");
-  item("Bottled Fire", 11, 2, brickRed)
+  item("Bottled Fire", 11, 0.5, brickRed)
     ..flow(Element.fire, "the fire", "burns", 44, fly: true);
-  item("Bottled Ocean", 12, 2, ultramarine)
+  item("Bottled Ocean", 12, 0.5, ultramarine)
     ..flow(Element.water, "the water", "drowns", 52);
-  item("Bottled Earth", 13, 2, persimmon)
+  item("Bottled Earth", 13, 0.5, persimmon)
     ..ball(Element.earth, "the dirt", "crushes", 58);
-  item("Bottled Lightning", 16, 2, lilac)
+  item("Bottled Lightning", 16, 0.5, lilac)
     ..ball(Element.lightning, "the lightning", "shocks", 68);
-  item("Bottled Acid", 18, 2, lima)
+  item("Bottled Acid", 18, 0.5, lima)
     ..flow(Element.acid, "the acid", "corrodes", 72);
-  item("Bottled Poison", 22, 2, sherwood)
+  item("Bottled Poison", 22, 0.5, sherwood)
     ..flow(Element.poison, "the poison", "infects", 90, fly: true);
-  item("Bottled Shadow", 28, 2, steelGray)
+  item("Bottled Shadow", 28, 0.5, steelGray)
     ..ball(Element.dark, "the darkness", "torments", 120);
-  item("Bottled Radiance", 34, 2, buttermilk)
+  item("Bottled Radiance", 34, 0.5, buttermilk)
     ..ball(Element.light, "light", "sears", 140);
-  item("Bottled Spirit", 40, 2, slate)
+  item("Bottled Spirit", 40, 0.5, slate)
     ..flow(Element.spirit, "the spirit", "haunts", 160, fly: true);
 }
 
@@ -245,12 +248,13 @@ void scrolls() {
       stack: 20, flags: "flammable")
     ..tag("magic/scroll/teleportation")
     ..toss(damage: 1, range: 3, breakage: 75);
-  item("Scroll[s] of Sidestepping", 2, 2, lilac)
+  item("Scroll[s] of Sidestepping", 2, 0.5, lilac)
     ..use(() => new TeleportAction(6));
-  item("Scroll[s] of Phasing", 6, 3, violet)..use(() => new TeleportAction(12));
-  item("Scroll[s] of Teleportation", 15, 3, indigo)
+  item("Scroll[s] of Phasing", 6, 0.3, violet)
+    ..use(() => new TeleportAction(12));
+  item("Scroll[s] of Teleportation", 15, 0.3, indigo)
     ..use(() => new TeleportAction(24));
-  item("Scroll[s] of Disappearing", 26, 3, ultramarine)
+  item("Scroll[s] of Disappearing", 26, 0.3, ultramarine)
     ..use(() => new TeleportAction(48));
 
   // Detection.
@@ -258,18 +262,18 @@ void scrolls() {
       stack: 20, flags: "flammable")
     ..tag("magic/scroll/detection")
     ..toss(damage: 1, range: 3, breakage: 75);
-  item("Scroll[s] of Find Nearby Escape", 1, 2, buttermilk)
+  item("Scroll[s] of Find Nearby Escape", 1, 0.5, buttermilk)
     ..detection([DetectType.exit], range: 20);
-  item("Scroll[s] of Find Nearby Items", 2, 2, gold)
+  item("Scroll[s] of Find Nearby Items", 2, 0.5, gold)
     ..detection([DetectType.item], range: 20);
-  item("Scroll[s] of Detect Nearby", 3, 4, lima)
+  item("Scroll[s] of Detect Nearby", 3, 0.25, lima)
     ..detection([DetectType.exit, DetectType.item], range: 20);
 
-  item("Scroll[s] of Locate Escape", 5, 1, sandal)
+  item("Scroll[s] of Locate Escape", 5, 1.0, sandal)
     ..detection([DetectType.exit]);
-  item("Scroll[s] of Item Detection", 20, 2, carrot)
+  item("Scroll[s] of Item Detection", 20, 0.5, carrot)
     ..detection([DetectType.item]);
-  item("Scroll[s] of Detection", 30, 4, copper)
+  item("Scroll[s] of Detection", 30, 0.25, copper)
     ..detection([DetectType.exit, DetectType.item]);
 
 //  CharCode.latinSmallLetterAWithGrave // scroll
@@ -281,13 +285,13 @@ void weapons() {
   category(CharCode.latinSmallLetterAWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/club")
     ..toss(breakage: 25, range: 5);
-  item("Stick", 1, 2, persimmon)
+  item("Stick", 1, 0.5, persimmon)
     ..weapon(8, heft: 10)
     ..toss(damage: 3);
-  item("Cudgel", 3, 2, gunsmoke)
+  item("Cudgel", 3, 0.5, gunsmoke)
     ..weapon(10, heft: 11)
     ..toss(damage: 4);
-  item("Club", 6, 2, garnet)
+  item("Club", 6, 0.5, garnet)
     ..weapon(12, heft: 13)
     ..toss(damage: 5);
 
@@ -295,13 +299,13 @@ void weapons() {
   category(CharCode.latinSmallLetterIWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/staff")
     ..toss(breakage: 35, range: 4);
-  item("Walking Stick", 2, 2, persimmon)
+  item("Walking Stick", 2, 0.5, persimmon)
     ..weapon(10, heft: 12)
     ..toss(damage: 3);
-  item("Sta[ff|aves]", 5, 2, garnet)
+  item("Sta[ff|aves]", 5, 0.5, garnet)
     ..weapon(14, heft: 14)
     ..toss(damage: 5);
-  item("Quartersta[ff|aves]", 11, 2, gunsmoke)
+  item("Quartersta[ff|aves]", 11, 0.5, gunsmoke)
     ..weapon(24, heft: 16)
     ..toss(damage: 8);
 
@@ -309,13 +313,13 @@ void weapons() {
   category(CharCode.latinSmallLetterOWithAcute, verb: "bash[es]")
     ..tag("equipment/weapon/hammer")
     ..toss(breakage: 15, range: 5);
-  item("Hammer", 27, 2, persimmon)
+  item("Hammer", 27, 0.5, persimmon)
     ..weapon(32, heft: 24)
     ..toss(damage: 12);
-  item("Mattock", 39, 2, garnet)
+  item("Mattock", 39, 0.5, garnet)
     ..weapon(40, heft: 28)
     ..toss(damage: 16);
-  item("War Hammer", 45, 2, gunsmoke)
+  item("War Hammer", 45, 0.5, gunsmoke)
     ..weapon(48, heft: 32)
     ..toss(damage: 20);
 
@@ -323,10 +327,10 @@ void weapons() {
   category(CharCode.latinSmallLetterUWithAcute, verb: "bash[es]")
     ..tag("equipment/weapon/mace")
     ..toss(breakage: 15, range: 4);
-  item("Morningstar", 24, 2, gunsmoke)
+  item("Morningstar", 24, 0.5, gunsmoke)
     ..weapon(26, heft: 20)
     ..toss(damage: 11);
-  item("Mace", 33, 2, slate)
+  item("Mace", 33, 0.5, slate)
     ..weapon(36, heft: 25)
     ..toss(damage: 16);
 
@@ -334,13 +338,13 @@ void weapons() {
   category(CharCode.latinSmallLetterNWithTilde, verb: "whip[s]")
     ..tag("equipment/weapon/whip")
     ..toss(breakage: 25, range: 4);
-  item("Whip", 4, 2, persimmon)
+  item("Whip", 4, 0.5, persimmon)
     ..weapon(10, heft: 12)
     ..toss(damage: 1);
-  item("Chain Whip", 15, 2, gunsmoke)
+  item("Chain Whip", 15, 0.5, gunsmoke)
     ..weapon(18, heft: 18)
     ..toss(damage: 2);
-  item("Flail", 27, 2, slate)
+  item("Flail", 27, 0.5, slate)
     ..weapon(28, heft: 27)
     ..toss(damage: 4);
 
@@ -348,22 +352,22 @@ void weapons() {
   category(CharCode.latinCapitalLetterNWithTilde, verb: "stab[s]")
     ..tag("equipment/weapon/dagger")
     ..toss(breakage: 2, range: 8);
-  item("Kni[fe|ves]", 3, 2, steelGray)
+  item("Kni[fe|ves]", 3, 0.5, steelGray)
     ..weapon(8, heft: 10)
     ..toss(damage: 8);
-  item("Dirk", 4, 2, gunsmoke)
+  item("Dirk", 4, 0.5, gunsmoke)
     ..weapon(10, heft: 10)
     ..toss(damage: 10);
-  item("Dagger", 6, 2, cornflower)
+  item("Dagger", 6, 0.5, cornflower)
     ..weapon(12, heft: 11)
     ..toss(damage: 12);
-  item("Stiletto[es]", 10, 2, slate)
+  item("Stiletto[es]", 10, 0.5, slate)
     ..weapon(14, heft: 10)
     ..toss(damage: 14);
-  item("Rondel", 20, 2, turquoise)
+  item("Rondel", 20, 0.5, turquoise)
     ..weapon(16, heft: 11)
     ..toss(damage: 16);
-  item("Baselard", 30, 2, gold)
+  item("Baselard", 30, 0.5, gold)
     ..weapon(18, heft: 12)
     ..toss(damage: 18);
   // Main-guache
@@ -372,19 +376,19 @@ void weapons() {
   category(CharCode.feminineOrdinalIndicator, verb: "slash[es]")
     ..tag("equipment/weapon/sword")
     ..toss(breakage: 20, range: 5);
-  item("Rapier", 7, 2, steelGray)
+  item("Rapier", 7, 0.5, steelGray)
     ..weapon(20, heft: 16)
     ..toss(damage: 4);
-  item("Shortsword", 11, 2, slate)
+  item("Shortsword", 11, 0.5, slate)
     ..weapon(22, heft: 17)
     ..toss(damage: 6);
-  item("Scimitar", 18, 2, gunsmoke)
+  item("Scimitar", 18, 0.5, gunsmoke)
     ..weapon(24, heft: 18)
     ..toss(damage: 9);
-  item("Cutlass[es]", 24, 2, buttermilk)
+  item("Cutlass[es]", 24, 0.5, buttermilk)
     ..weapon(26, heft: 19)
     ..toss(damage: 11);
-  item("Falchion", 38, 2, turquoise)
+  item("Falchion", 38, 0.5, turquoise)
     ..weapon(28, heft: 20)
     ..toss(damage: 15);
 
@@ -403,20 +407,20 @@ void weapons() {
   category(CharCode.masculineOrdinalIndicator, verb: "stab[s]")
     ..tag("equipment/weapon/spear")
     ..toss(range: 9);
-  item("Pointed Stick", 2, 2, garnet)
+  item("Pointed Stick", 2, 0.5, garnet)
     ..weapon(10, heft: 11)
     ..toss(damage: 9);
-  item("Spear", 7, 2, persimmon)
+  item("Spear", 7, 0.5, persimmon)
     ..weapon(16, heft: 17)
     ..toss(damage: 15);
-  item("Angon", 14, 2, gunsmoke)
+  item("Angon", 14, 0.5, gunsmoke)
     ..weapon(20, heft: 19)
     ..toss(damage: 20);
   // TODO: These should not be thrown. Lower range and damage.
-  item("Lance", 28, 2, cornflower)
+  item("Lance", 28, 0.5, cornflower)
     ..weapon(24, heft: 27)
     ..toss(damage: 28);
-  item("Partisan", 35, 2, slate)
+  item("Partisan", 35, 0.5, slate)
     ..weapon(30, heft: 29)
     ..toss(damage: 40);
 
@@ -424,16 +428,16 @@ void weapons() {
 
   category(CharCode.invertedQuestionMark, verb: "chop[s]")
     ..tag("equipment/weapon/axe");
-  item("Hatchet", 6, 2, slate)
+  item("Hatchet", 6, 0.5, slate)
     ..weapon(18, heft: 14)
     ..toss(damage: 20, range: 8);
-  item("Axe", 12, 2, persimmon)
+  item("Axe", 12, 0.5, persimmon)
     ..weapon(25, heft: 22)
     ..toss(damage: 24, range: 7);
-  item("Valaska", 24, 2, gunsmoke)
+  item("Valaska", 24, 0.5, gunsmoke)
     ..weapon(32, heft: 26)
     ..toss(damage: 26, range: 5);
-  item("Battleaxe", 40, 2, steelGray)
+  item("Battleaxe", 40, 0.5, steelGray)
     ..weapon(39, heft: 30)
     ..toss(damage: 28, range: 4);
 
@@ -441,13 +445,13 @@ void weapons() {
   category(CharCode.reversedNotSign, verb: "hit[s]")
     ..tag("equipment/weapon/bow")
     ..toss(breakage: 50, range: 5);
-  item("Short Bow", 5, 3, persimmon)
+  item("Short Bow", 5, 0.3, persimmon)
     ..ranged("the arrow", damage: 8, range: 12)
     ..toss(damage: 2);
-  item("Longbow", 13, 3, garnet)
+  item("Longbow", 13, 0.3, garnet)
     ..ranged("the arrow", damage: 16, range: 14)
     ..toss(damage: 3);
-  item("Crossbow", 28, 3, gunsmoke)
+  item("Crossbow", 28, 0.3, gunsmoke)
     ..ranged("the bolt", damage: 24, range: 16)
     ..toss(damage: 4);
 }
@@ -457,23 +461,23 @@ void bodyArmor() {
   // Robes.
   category(CharCode.latinSmallLetterOWithCircumflex)
     ..tag("equipment/armor/body/robe");
-  item("Robe", 2, 2, cerulean)..armor(4);
-  item("Fur-lined Robe", 6, 4, sherwood)..armor(6);
+  item("Robe", 2, 0.5, cerulean)..armor(4);
+  item("Fur-lined Robe", 6, 0.25, sherwood)..armor(6);
 
   // Soft armor.
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body");
-  item("Cloth Shirt", 2, 2, sandal)..armor(3);
-  item("Leather Shirt", 5, 2, persimmon)..armor(6, encumber: 1);
-  item("Jerkin", 7, 2, gunsmoke)..armor(8, encumber: 1);
-  item("Leather Armor", 10, 2, garnet)..armor(11, encumber: 2);
-  item("Padded Armor", 14, 2, steelGray)..armor(15, encumber: 3);
-  item("Studded Leather Armor", 17, 2, slate)..armor(22, encumber: 4);
+  item("Cloth Shirt", 2, 0.5, sandal)..armor(3);
+  item("Leather Shirt", 5, 0.5, persimmon)..armor(6, encumber: 1);
+  item("Jerkin", 7, 0.5, gunsmoke)..armor(8, encumber: 1);
+  item("Leather Armor", 10, 0.5, garnet)..armor(11, encumber: 2);
+  item("Padded Armor", 14, 0.5, steelGray)..armor(15, encumber: 3);
+  item("Studded Leather Armor", 17, 0.5, slate)..armor(22, encumber: 4);
 
   // Mail armor.
   category(CharCode.latinSmallLetterOWithGrave)..tag("equipment/armor/body");
-  item("Mail Hauberk", 20, 2, steelGray)..armor(28, encumber: 5);
-  item("Scale Mail", 23, 2, gunsmoke)..armor(36, encumber: 7);
+  item("Mail Hauberk", 20, 0.5, steelGray)..armor(28, encumber: 5);
+  item("Scale Mail", 23, 0.5, gunsmoke)..armor(36, encumber: 7);
 
 //  CharCode.latinSmallLetterUWithCircumflex // armor
 
@@ -491,20 +495,20 @@ void bodyArmor() {
 
 void cloaks() {
   category(CharCode.latinCapitalLetterAe)..tag("equipment/armor/cloak");
-  item("Cloak", 3, 2, ultramarine)..armor(2);
-  item("Fur Cloak", 5, 5, garnet)..armor(3);
+  item("Cloak", 3, 0.5, ultramarine)..armor(2);
+  item("Fur Cloak", 5, 0.2, garnet)..armor(3);
 }
 
 void boots() {
   category(CharCode.latinSmallLetterIWithGrave)..tag("equipment/armor/boots");
-  item("Pair[s] of Leather Sandals", 2, 4, persimmon)..armor(1);
-  item("Pair[s] of Leather Shoes", 8, 3, garnet)..armor(2);
+  item("Pair[s] of Leather Sandals", 2, 0.24, persimmon)..armor(1);
+  item("Pair[s] of Leather Shoes", 8, 0.3, garnet)..armor(2);
 
   category(CharCode.latinCapitalLetterAWithDiaeresis)
     ..tag("equipment/armor/boots");
-  item("Pair[s] of Leather Boots", 14, 3, persimmon)..armor(6, encumber: 1);
-  item("Pair[s] of Metal Shod Boots", 22, 3, slate)..armor(8, encumber: 2);
-  item("Pair[s] of Greaves", 47, 4, gunsmoke)..armor(12, encumber: 3);
+  item("Pair[s] of Leather Boots", 14, 0.3, persimmon)..armor(6, encumber: 1);
+  item("Pair[s] of Metal Shod Boots", 22, 0.3, slate)..armor(8, encumber: 2);
+  item("Pair[s] of Greaves", 47, 0.25, gunsmoke)..armor(12, encumber: 3);
 }
 
 _CategoryBuilder category(int glyph,
@@ -524,13 +528,13 @@ _CategoryBuilder category(int glyph,
   return _category;
 }
 
-_ItemBuilder item(String name, int depth, int rarity, appearance) {
+_ItemBuilder item(String name, int depth, double frequency, appearance) {
   buildItem();
 
   _builder = new _ItemBuilder();
   _builder._name = name;
   _builder._depth = depth;
-  _builder._rarity = rarity;
+  _builder._frequency = frequency;
   _builder._appearance = appearance;
 
   return _builder;
@@ -615,7 +619,7 @@ class _CategoryBuilder extends _BaseBuilder {
 class _ItemBuilder extends _BaseBuilder {
   // category too.
   Object _appearance;
-  int _rarity;
+  double _frequency;
   ItemUse _use;
   Attack _attack;
   int _encumbrance;
@@ -742,7 +746,7 @@ void buildItem() {
     }
   }
 
-  Items.types.add(itemType.name, itemType, itemType.depth, _builder._rarity,
+  Items.types.add(itemType.name, itemType, itemType.depth, _builder._frequency,
       _category._tag);
 
   _builder = null;

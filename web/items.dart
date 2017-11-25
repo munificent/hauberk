@@ -26,7 +26,7 @@ main() {
     <tr>
       <td colspan="2">Item</td>
       <td>Depth</td>
-      <td>Rarity</td>
+      <td>Freq.</td>
       <td>Equip.</td>
       <td>Weapon</td>
       <td>Attack</td>
@@ -56,7 +56,7 @@ main() {
       text.write('<td>${item.depth}</td>');
     }
 
-    text.write('<td>${Items.types.rarity(item.name)}</td>');
+    text.write('<td>${Items.types.frequency(item.name)}</td>');
 
     if (item.equipSlot == null) {
       text.write('<td>&mdash;</td>');

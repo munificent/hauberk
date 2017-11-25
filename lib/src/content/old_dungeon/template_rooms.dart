@@ -10,7 +10,7 @@ class TemplateRoom extends RoomType {
       var lines =
           template.template.split("\n").map((line) => line.trim()).toList();
       lines.removeLast();
-      RoomType.add(new TemplateRoom(lines), template.rarity * 6);
+      RoomType.add(new TemplateRoom(lines), template.frequency / 6.0);
 
       // Automatically generate all mirrors and rotations of templates too.
       // Because of this, we scale the rarity by six to cancel out the extra
@@ -21,18 +21,18 @@ class TemplateRoom extends RoomType {
           new TemplateRoom(lines
               .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
               .toList()),
-          template.rarity * 6);
+          template.frequency / 6.0);
 
       // Flip it vertically.
       RoomType.add(
-          new TemplateRoom(lines.reversed.toList()), template.rarity * 6);
+          new TemplateRoom(lines.reversed.toList()), template.frequency / 6.0);
 
       // Flip it both ways.
       RoomType.add(
           new TemplateRoom(lines.reversed
               .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
               .toList()),
-          template.rarity * 6);
+          template.frequency / 6.0);
 
       // Rotate it left.
       var rotated = <String>[];
@@ -43,14 +43,14 @@ class TemplateRoom extends RoomType {
         }
         rotated.add(new String.fromCharCodes(codes));
       }
-      RoomType.add(new TemplateRoom(rotated), template.rarity * 6);
+      RoomType.add(new TemplateRoom(rotated), template.frequency / 6.0);
 
       // Rotate it right.
       RoomType.add(
           new TemplateRoom(rotated.reversed
               .map((line) => new String.fromCharCodes(line.codeUnits.reversed))
               .toList()),
-          template.rarity * 6);
+          template.frequency / 6.0);
     }
   }
 
@@ -190,14 +190,14 @@ final _templateTiles = {
 
 class _RoomTemplate {
   final String name;
-  final int rarity;
+  final double frequency;
   final String template;
 
-  _RoomTemplate(this.name, this.rarity, this.template);
+  _RoomTemplate(this.name, this.frequency, this.template);
 }
 
 final _templates = [
-  new _RoomTemplate("Tiny treasure nook", 20, r"""
+  new _RoomTemplate("Tiny treasure nook", 0.05, r"""
       ##+#+#+##
       #.......#
       #.##?##.#
@@ -206,7 +206,7 @@ final _templates = [
       #.......#
       ##+#+#+##
       """),
-  new _RoomTemplate("Moat", 30, r"""
+  new _RoomTemplate("Moat", 0.03, r"""
       ###+#+#+###
       ##.......##
       #.........#
@@ -215,7 +215,7 @@ final _templates = [
       ##.......##
       ###+#+#+###
       """),
-  new _RoomTemplate("Snake", 100, r"""
+  new _RoomTemplate("Snake", 0.01, r"""
       ###+#+#+###
       #1..a.a..1#
       #.#######.#
@@ -228,7 +228,7 @@ final _templates = [
       #1..a.a..1#
       ###+#+#+###
       """),
-  new _RoomTemplate("Castle", 1000, r"""
+  new _RoomTemplate("Castle", 0.001, r"""
       #######################
       #.....................#
       #.....................#

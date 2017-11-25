@@ -14,12 +14,13 @@ class ResourceSet<T> {
 
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
-  void add(String name, T object, int depth, int rarity, [String tagNames]) {
+  void add(String name, T object, int depth, double frequency,
+      [String tagNames]) {
     if (_resources.containsKey(name)) {
       throw new ArgumentError('Already have a resource named "$name".');
     }
 
-    var resource = new _Resource(object, depth, rarity);
+    var resource = new _Resource(object, depth, frequency);
     _resources[name] = resource;
 
     if (tagNames != null) {
@@ -31,8 +32,9 @@ class ResourceSet<T> {
     }
   }
 
-  void addUnnamed(T object, int depth, int rarity, [String tagNames]) {
-    return add(_resources.length.toString(), object, depth, rarity, tagNames);
+  void addUnnamed(T object, int depth, double frequency, [String tagNames]) {
+    return add(
+        _resources.length.toString(), object, depth, frequency, tagNames);
   }
 
   /// Given a string like "a/b/c d/e" defines tags for "a", "b", "c", "d", and
@@ -68,10 +70,10 @@ class ResourceSet<T> {
     return resource.object;
   }
 
-  int rarity(String name) {
+  double frequency(String name) {
     var resource = _resources[name];
     if (resource == null) throw new ArgumentError('Unknown resource "$name".');
-    return resource.rarity;
+    return resource.frequency;
   }
 
   /// Returns whether the resource with [name] has [tagName] as one of its
@@ -162,8 +164,7 @@ class ResourceSet<T> {
       for (var i = 0; i < allowed.length; i++) {
         var resource = allowed[i];
 
-        var frequency = 1.0 / resource.rarity;
-        var chance = frequency * _depthScale(resource.depth, depth);
+        var chance = resource.frequency * _depthScale(resource.depth, depth);
 
         // The depth scale is so narrow at low levels that highly out of depth
         // items can have a 0% chance of being generated due to floating point
@@ -220,10 +221,10 @@ class _Resource<T> {
   final T object;
   final int depth;
 
-  final int rarity;
+  final double frequency;
   final Set<_Tag<T>> _tags = new Set();
 
-  _Resource(this.object, this.depth, this.rarity);
+  _Resource(this.object, this.depth, this.frequency);
 }
 
 class _Tag<T> {

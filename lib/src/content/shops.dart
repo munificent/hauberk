@@ -6,15 +6,8 @@ class Shops {
   static final List<Shop> all = [];
 
   static void initialize() {
-    shop("The General's General Store", [
-      "Club",
-      "Staff",
-      "Quarterstaff",
-      "Whip",
-      "Dagger",
-      "Hatchet",
-      "Axe"
-    ]);
+    shop("The General's General Store",
+        ["Club", "Staff", "Quarterstaff", "Whip", "Dagger", "Hatchet", "Axe"]);
 
     shop("Dirk's Death Emporium", [
       "Hammer",
