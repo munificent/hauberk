@@ -317,7 +317,8 @@ class Dungeon {
 
     // Floor drops.
     // TODO: Tune this. Take number of cells into account.
-    if (rng.percent(30)) {
+    var itemChance = place.hasHero ? 70 : 30;
+    if (rng.percent(itemChance)) {
       var floorDrop = FloorDrops.choose(depth);
       var pos = _tryFindSpawnPos(
           place.cells, MotilitySet.walk, floorDrop.location,

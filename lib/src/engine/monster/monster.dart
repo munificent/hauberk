@@ -181,10 +181,10 @@ class Monster extends Actor {
 
     // TODO: Move this into state?
     if (state is AwakeState) {
-      // Randomly charge the moves. This ensures the monster doesn't
+      // Don't start fully charged. This ensures the monster doesn't
       // immediately unload everything on the hero when first spotted.
       for (var move in breed.moves) {
-        _recharges[move] = rng.float(move.rate);
+        _recharges[move] = rng.float(move.rate / 2);
       }
     }
   }
