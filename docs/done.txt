@@ -1,0 +1,121 @@
+I seem to get stuck in a trap where I'm overwhelmed because I don't know what
+to work on and the game gets no closer to being done. Often, I tear stuff out
+or refactor things that end up later getting deleted. It feels like I'm taking
+a random walk through the design space and getting no useful feedback during
+the process, so I'm not even necessarily making progress.
+
+Part of it is when I'm not sure what to work on next, I try to play it and see
+what's not fun. But it's actually really hard to tell *why* it's not fun when
+entire systems aren't there.
+
+Another trap I get stuck in is, "I should add more content so I can see if this
+system is working." "No, I should get all the systems in place since changing
+a system unbalances everything."
+
+I believe the way out of that deadlock is to realize it's possible to add new
+systems and content that don't unbalance everything. Adding a new dangerous
+monster or move displaces other monsters and moves at that depth. Adding a new
+skill takes points away from other skills the player could have.
+
+The state I really want to be in is that I have a complete, OK game, and then
+I get to incrementally tweak and refine it and add new features. But I'm not
+there, so acting like I am (constantly rewriting new dungeon generators,
+deleting various game mechanics, etc.) probably isn't the right path.
+
+It's like I'm trying to get to a good complete game by focusing on good and
+incrementally fixing the "complete" part. But there's no way to evaluate where
+an incomplete game is good or not (beyond telling if the code itself is nice).
+That's not the right path. I should get to complete first, then ramp up good.
+
+In other words, make a shitty complete game, then make it good. Just like
+writing, don't polish the first chapter over and over.
+
+Here's a plan:
+
+## Phase 1 - Vertical slice
+
+- Stake out a minimal list of features/systems I think the game probably does
+  need.
+- Implement them. They don't have to be great, but just passable. The code can
+  be ugly.
+- Stake out a minimal list of content needed for a full playthrough. Again,
+  doesn't need all the bells and whistles. Monsters don't need all their cool
+  moves. Items don't need all their neat prefixes. Just enough so that you can
+  technically play to the end. Some depths may only have one monster.
+
+- Add winning, and the basic framework to play a complete game.
+
+This is the *first draft* of the game. Now is *not* the time to revise any of
+the above. Just barf it all out. No deleting.
+
+No adding fancy features to make it more fun. No non-essential features.
+
+## Phase 2 - Playable
+
+*Then* start playing it. Try to play all the way through with a minimum of
+changes. Do not add features. Avoid removing or changing features. Do tweak
+content to roughly balance it.
+
+The goal here is a bare bones but playable game. It might be boring but
+shouldn't be wildly unbalanced.
+
+## Phase 3 - Good mechanics
+
+Now we should have enough context to actually evaluate which game mechanics
+do and don't work. Remove or replace things that aren't fun. Try not to spend
+too much time on this.
+
+Delete dead code.
+
+## Phase 4 - Refine
+
+This is the payoff. Now we add new gameplay behavior and content to enrich the
+world and play experience. More monsters, equipment, items, effects, moves,
+tiles. More sophisticated level generation, etc. Tweaks to the user interface.
+
+Ideally, this phase then lasts forever.
+
+---
+
+So, for phase 1, what is the minimal set of stuff needed?
+
+- Stats. They affect all of the other combat and play mechanics.
+
+- Skills. This is the fundamental system for character advancement, which is a
+  key part of a playthrough. We don't need all the skills. Just enough to
+  produce a strong enough hero to win. Definitely don't need skills that cover
+  all "class" archetypes. Probably:
+
+  - Archery so that bows can be used at all.
+  - Enough magic skills so that mental attributes have value. It should be
+    possible to win without heavily investing in strength.
+
+  - TODO: Consider unifying attribute and skill points? Hmm, doesn't feel very
+    fun. But it might make warriors (high attribute, low skill) a more
+    meaningful type of character without having to make up a bunch of warrior
+    skills. Basically, it would let players choose whether to focus on beefing
+    up stats or unique abilities.
+
+    Let's try it. This means "strength", etc. are attributes but also skills
+    that the player can increase, so that we can use the same UX for skills and
+    boosting attributes. This also lets us have skills that require certain
+    attributes as prereqs.
+
+- A few more monsters at greater depths.
+
+- Final boss and winning.
+
+For now, we don't need to worry about:
+
+- Hunger. Maybe redo it in phase 3, but it's not causing any problems now.
+- Monster AI. The sleep/awake stuff is meh, but it's working.
+- More level gen stuff. The encounter stuff is still a work in progress as is
+  all the biome stuff. But it's not preventing someone from playing the game.
+- Lighting. The open river stuff encourages limited light ranges, but it's not
+  needed.
+- Better water mechanics. What's there now is temporary, obviously, but it
+  works.
+- More affixes. Could potentially disable them entirely for now, but adding
+  them later will require rebalancing monsters. That may be OK.
+
+---

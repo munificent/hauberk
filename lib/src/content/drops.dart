@@ -12,7 +12,7 @@ Drop parseDrop(String name, int depth) {
 }
 
 /// Creates a [Drop] that has a [chance]% chance of dropping [drop].
-Drop percentDrop(int chance, drop, int depth) {
+Drop percentDrop(int chance, String drop, int depth) {
   return new _PercentDrop(chance, parseDrop(drop, depth));
 }
 

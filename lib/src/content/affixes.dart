@@ -15,7 +15,9 @@ class Affixes {
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int depth) {
     // Untagged items don't have any affixes.
-    if (Items.types.getTags(itemType.name).isEmpty) return new Item(itemType, 1);
+    if (Items.types.getTags(itemType.name).isEmpty) {
+      return new Item(itemType, 1);
+    }
 
     // There's a chance of no affixes at all, based on the depth.
     // TODO: Allow some drops to modify this.
@@ -64,66 +66,66 @@ class Affixes {
   }
 
   static void _resists() {
-    _resistWeak(Element.air, 10, 2);
-    _resistWeak(Element.earth, 11, 2);
-    _resistWeak(Element.fire, 12, 2);
-    _resistWeak(Element.water, 13, 2);
-    _resistWeak(Element.acid, 14, 3);
-    _resistWeak(Element.cold, 15, 2);
-    _resistWeak(Element.lightning, 16, 3);
-    _resistWeak(Element.poison, 17, 4);
-    _resistWeak(Element.dark, 18, 4);
-    _resistWeak(Element.light, 19, 4);
-    _resistWeak(Element.spirit, 20, 5);
+    _resistWeak(Element.air, 10, 0.5);
+    _resistWeak(Element.earth, 11, 0.5);
+    _resistWeak(Element.fire, 12, 0.5);
+    _resistWeak(Element.water, 13, 0.5);
+    _resistWeak(Element.acid, 14, 0.3);
+    _resistWeak(Element.cold, 15, 0.5);
+    _resistWeak(Element.lightning, 16, 0.3);
+    _resistWeak(Element.poison, 17, 0.25);
+    _resistWeak(Element.dark, 18, 0.25);
+    _resistWeak(Element.light, 19, 0.25);
+    _resistWeak(Element.spirit, 20, 0.4);
 
-    _resistStrong(Element.air, 16, 4);
-    _resistStrong(Element.earth, 17, 4);
-    _resistStrong(Element.fire, 18, 4);
-    _resistStrong(Element.water, 19, 4);
-    _resistStrong(Element.acid, 20, 5);
-    _resistStrong(Element.cold, 21, 4);
-    _resistStrong(Element.lightning, 22, 6);
-    _resistStrong(Element.poison, 23, 7);
-    _resistStrong(Element.dark, 24, 7);
-    _resistStrong(Element.light, 25, 7);
-    _resistStrong(Element.spirit, 26, 8);
+    _resistStrong(Element.air, 16, 0.25);
+    _resistStrong(Element.earth, 17, 0.25);
+    _resistStrong(Element.fire, 18, 0.25);
+    _resistStrong(Element.water, 19, 0.25);
+    _resistStrong(Element.acid, 20, 0.2);
+    _resistStrong(Element.cold, 21, 0.25);
+    _resistStrong(Element.lightning, 22, 0.16);
+    _resistStrong(Element.poison, 23, 0.14);
+    _resistStrong(Element.dark, 24, 0.14);
+    _resistStrong(Element.light, 25, 0.14);
+    _resistStrong(Element.spirit, 26, 0.13);
   }
 
   static void _extraDamage() {
     // TODO: Should these scale damage?
-    damage("weapon", "of Harming", 8, 1, damage: 1);
-    damage("weapon", "of Wounding", 15, 1, damage: 2);
-    damage("weapon", "of Maiming", 35, 1, damage: 3);
-    damage("weapon", "of Slaying", 65, 1, damage: 5);
+    damage("weapon", "of Harming", 8, 1.0, damage: 1);
+    damage("weapon", "of Wounding", 15, 1.0, damage: 2);
+    damage("weapon", "of Maiming", 35, 1.0, damage: 3);
+    damage("weapon", "of Slaying", 65, 1.0, damage: 5);
 
-    damage("bow", "Ash", 10, 1, damage: 3);
-    damage("bow", "Yew", 20, 1, damage: 5);
+    damage("bow", "Ash", 10, 1.0, damage: 3);
+    damage("bow", "Yew", 20, 1.0, damage: 5);
   }
 
   static void _brands() {
     // TODO: Should these grant resistance to their element too?
-    brand("Glimmering", 20, 3, Element.light, scale: 1.5);
-    brand("Shining", 32, 4, Element.light, scale: 2.0);
-    brand("Radiant", 48, 5, Element.light, scale: 2.5);
+    brand("Glimmering", 20, 0.3, Element.light, scale: 1.2);
+    brand("Shining", 32, 0.25, Element.light, scale: 1.4);
+    brand("Radiant", 48, 0.2, Element.light, scale: 1.6);
 
-    brand("Dim", 16, 3, Element.dark, scale: 1.5);
-    brand("Dark", 32, 4, Element.dark, scale: 2.0);
-    brand("Black", 56, 5, Element.dark, scale: 2.5);
+    brand("Dim", 16, 0.3, Element.dark, scale: 1.2);
+    brand("Dark", 32, 0.25, Element.dark, scale: 1.4);
+    brand("Black", 56, 0.2, Element.dark, scale: 1.6);
 
-    brand("Freezing", 20, 3, Element.cold, scale: 2.0);
+    brand("Freezing", 20, 0.3, Element.cold, scale: 1.5);
 
-    brand("Burning", 20, 3, Element.fire, scale: 1.5);
-    brand("Flaming", 40, 4, Element.fire, scale: 2.0);
-    brand("Searing", 60, 5, Element.fire, scale: 2.5);
+    brand("Burning", 20, 0.3, Element.fire, scale: 1.3);
+    brand("Flaming", 40, 0.25, Element.fire, scale: 1.6);
+    brand("Searing", 60, 0.2, Element.fire, scale: 1.8);
 
-    brand("Electric", 50, 5, Element.lightning, scale: 2.0);
-    brand("Shocking", 70, 5, Element.lightning, scale: 3.0);
+    brand("Electric", 50, 0.2, Element.lightning, scale: 1.4);
+    brand("Shocking", 70, 0.2, Element.lightning, scale: 1.8);
 
-    brand("Poisoned", 35, 5, Element.poison, scale: 1.5);
-    brand("Venomous", 70, 5, Element.poison, scale: 2.0);
+    brand("Poisoned", 35, 0.2, Element.poison, scale: 1.1);
+    brand("Venomous", 70, 0.2, Element.poison, scale: 1.3);
 
-    brand("Ghostly", 45, 5, Element.spirit, scale: 2.0);
-    brand("Spiritual", 80, 8, Element.spirit, scale: 3.0);
+    brand("Ghostly", 45, 0.2, Element.spirit, scale: 1.4);
+    brand("Spiritual", 80, 0.15, Element.spirit, scale: 1.7);
   }
 
   static void defineItemTag(String tag) {
@@ -131,33 +133,36 @@ class Affixes {
     _suffixes.defineTags(tag);
   }
 
-  static void _resistWeak(Element element, int depth, int rarity) {
-    _resist("of Resist ${element.capitalized}", depth, rarity, element, 1);
+  static void _resistWeak(Element element, int depth, double frequency) {
+    _resist("of Resist ${element.capitalized}", depth, frequency, element, 1);
   }
 
-  static void _resistStrong(Element element, int depth, int rarity) {
-    _resist("of Protection from ${element.capitalized}", depth, rarity, element, 2);
+  static void _resistStrong(Element element, int depth, double frequency) {
+    _resist("of Protection from ${element.capitalized}", depth, frequency,
+        element, 2);
   }
 
-  static void _resist(String name, int depth, int rarity, Element element, int power) {
+  static void _resist(
+      String name, int depth, double frequency, Element element, int power) {
     // Also boost armor a little.
     var affix = new Affix(name, armor: power);
     affix.resists[element] = power;
 
     // TODO: Don't apply to all armor types?
-    _suffixes.add(name, affix, depth, rarity, "armor");
+    _suffixes.add(name, affix, depth, frequency, "armor");
   }
 
   /// A weapon suffix for adding damage.
-  static void damage(String tag, String name, int depth, int rarity, {int damage}) {
+  static void damage(String tag, String name, int depth, double frequency,
+      {int damage}) {
     var affix = new Affix(name, damageBonus: damage);
-    _suffixes.add(name, affix, depth, rarity, tag);
+    _suffixes.add(name, affix, depth, frequency, tag);
   }
 
   /// A weapon prefix for giving an elemental brand.
-  static void brand(String name, int depth, int rarity, Element element,
+  static void brand(String name, int depth, double frequency, Element element,
       {double scale}) {
     var affix = new Affix(name, damageScale: scale, brand: element);
-    _prefixes.add(name, affix, depth, rarity, "weapon");
+    _prefixes.add(name, affix, depth, frequency, "weapon");
   }
 }

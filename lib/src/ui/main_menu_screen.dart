@@ -9,7 +9,6 @@ import 'new_hero_screen.dart';
 import 'select_depth_screen.dart';
 import 'storage.dart';
 
-
 const _chars = const [
   r"______ ______                     _____                          _____",
   r"\ .  / \  . /                     \ . |                          \  .|",
@@ -69,13 +68,17 @@ class MainMenuScreen extends Screen<Input> {
 
   bool handleInput(Input input) {
     switch (input) {
-      case Input.n: _changeSelection(-1); return true;
-      case Input.s: _changeSelection(1); return true;
+      case Input.n:
+        _changeSelection(-1);
+        return true;
+      case Input.s:
+        _changeSelection(1);
+        return true;
 
       case Input.ok:
         if (selectedHero < storage.heroes.length) {
-          ui.push(new SelectDepthScreen(content, storage.heroes[selectedHero],
-              storage));
+          ui.push(new SelectDepthScreen(
+              content, storage.heroes[selectedHero], storage));
         }
         return true;
     }
@@ -120,15 +123,16 @@ class MainMenuScreen extends Screen<Input> {
       }
     }
 
-    terminal.writeAt(25, 18,
-        'Which hero shall you play?', UIHue.text);
-    terminal.writeAt(0, terminal.height - 1,
+    terminal.writeAt(25, 18, 'Which hero shall you play?', UIHue.text);
+    terminal.writeAt(
+        0,
+        terminal.height - 1,
         '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
         UIHue.helpText);
 
     if (storage.heroes.length == 0) {
-      terminal.writeAt(25, 20, '(No heroes. Please create a new one.)',
-          UIHue.helpText);
+      terminal.writeAt(
+          25, 20, '(No heroes. Please create a new one.)', UIHue.helpText);
     }
 
     for (var i = 0; i < storage.heroes.length; i++) {
@@ -140,12 +144,13 @@ class MainMenuScreen extends Screen<Input> {
         primary = UIHue.selection;
         secondary = UIHue.selection;
 
-        terminal.drawChar(24, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
+        terminal.drawChar(
+            24, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
       }
 
       terminal.writeAt(25, 20 + i, hero.name, primary);
       terminal.writeAt(45, 20 + i, "Level ${hero.level}", secondary);
-      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondary);
+//      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondary);
     }
   }
 

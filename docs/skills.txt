@@ -26,3 +26,104 @@ Sorcery - Reduces mana required to cast sorcery spells.
 Conjuring - Reduces mana required to cast conjuring spells.
 Stealth - Reduces sound made when walking.
 Assassination - Reduce sound made when attacking, increased damage to sleeping monsters.
+
+- Strength
+  - [Weapon] Mastery: Increases damage with weapons in one category.
+  - Archery: Enables using bows.
+- Agility
+  - Stealth: Reduce sound when walking.
+    - Assassination: Reduce sound when attacking. Increase damage to sleeping
+        monsters with ranged weapon.
+    - Backstabbing: Increase damage to sleeping monsters in melee.
+- Fortitude
+  - Stone Skin: Increases armor.
+- Intellect
+  - Alchemy: Reduce mana required for alchemy spells.
+    - Fire Brand: cause weapon to do elemental fire damage for a while.
+    - Ice Brand: cause weapon to do elemental cold damage for a while.
+    - Lightning Brand: cause weapon to do elemental lightning damage for a while.
+    - Acid Brand: cause weapon to do elemental acid damage for a while.
+    - Enchant Weapon: chance of increasing the bonus on a weapon permanently.
+    - Enchant Armor: chance of increasing the bonus on a weapon permanently.
+    - Recharge: chance of increasing the number of charges on a wand. May fail and break the item.
+    - Intensify: decreases the number of charges on a wand (or rod by increasing recharge time) and increases the power of the item. May fail and break the item.
+    - Transfer: transfers the magical powers of one piece of equipment to another.
+    - Circle of Protection: inscribes a circle in the ground around the alchemist. All adjacent monsters suffer strike and damage penalties.
+    - Combine Enchantment: attempts to transfer the damage, strike, and armor bonus from one piece of equipment to another.
+    - Combine Potions: attempts to combine a number of similar potions into one stronger potion, i.e. Cure Light Wounds -> Cure Serious Wounds.
+
+  - Divination: Reduce mana required to cast divination spells.
+    - Detect Monsters: see all nearby monsters for a few turns.
+    - Detect Treasure: see all nearby equipment.
+    - Detect Enchantment: see all nearby enchanted equipment.
+    - See Walls: see all nearby walls.
+    - Foresight: raises armor by allowing character to know when and how monster will attack.
+    - Examination: shows all of the info for the targeted creature.
+    - Find Traps: shows nearby traps. Will also detect traps on nearby chests.
+    - Unlock: unlocks the targeted door or chest. Will disarm chest if there is a known trap on it.
+    - All-seeing Eye: maps and lights the entire dungeon.
+    - Sense Weakness: senses any weaknesses in the targeted monster's defenses. Subsequent melee attack against that monster will do double damage.
+    - Call to Relics: will see all artifacts (if any) in the dungeon.
+    - Identify: shows basic information for an item.
+    - Lore: shows full information for an item or artifact, including hidden powers.
+    - Perception: shows detailed information about a monster including the max damage it can do in one round by each attack.
+  - Enchanting: Reduce mana required to cast enchanting spells.
+    - Heal: restore HP.
+    - Haste Self: increase character's speed.
+    - Antivenom: remove poisoned condition.
+    - Sleep: puts nearby monsters to sleep.
+    - Stone Skin: temporarily increases armor.
+    - Enrage: enrages chosen monster. The monster will only try to melee attack the hero.
+    - Mindsense: temporary ESP.
+    - Charm: confuses chosen monster.
+    - Hallucination: confuses all monsters in line of sight.
+    - Polymorph: changes the chosen monster into a monster of a randomly chosen race.
+    - Terrify: monsters in line of sight become afraid and flee hero.
+  - Necromancy: Reduce mana required to cast necromancy spells.
+    - Drain Life: takes HP from monster and gives to character.
+    - Summon Undead: summons undead monsters to fight for the character.
+    - Sense Life: shows nearby living things.
+    - Satisfy Hunger: satifies character's hunger.
+    - Eat Life: takes HP from monster and satisfies hunger.
+    - Soul Blast: sacrifices HP to create a bolt of lifeforce which damages targeted enemy.
+    - Soul Storm: sacrifices HP to damage nearby enemies.
+    - Weaken: slows targeted enemy.
+    - Weaken All: slows all nearby enemies.
+    - Putrefy: when the targeted monster is slain, it will erupt into a ball of poisonous gas whose strength is based on the strength of the monster slain.
+    - Transmutation: removes poisoned condition and cures health
+  - Sorcery: Reduce mana required to cast sorcery spells
+    - Lightning Bolt: attack monster with lightning damage, arcs to adjacent
+    - Fire Ball: create a fire ball at a chosen location
+    - Storm: create a lightning storm which damages all nearby enemies
+    - Gale: generate wind which damages and pushes back adjacent enemies
+    - Icicle: fire an icicle at a chosen target
+  - Conjuring: Reduce mana required to cast conjuring spells
+    - Flee: moves the player to a random nearby tile
+    - Escape: like Flee but with a greater radius
+    - Banish: teleports the targeted monster away randomly
+    - Magical Grasp: teleport the chosen visible item to the hero's inventory
+    - Conjure Food: create food in the hero's inventory
+    - Portal: open a one-way portal back to the town
+    - Teleport Self: teleport the hero to a chosen nearby tile
+    - Teleport Monster: teleport the targeted monster to a chosen nearby tile
+    - Conjure Potion: create potion that helps current condition
+    - Window Home: access hero's home inventory
+
+- Will
+
+
+
+- Divination: Gaining knowledge
+
+
+- Enchanting: Changing living things
+
+
+- Necromancy: Manipulating lifeforce directly
+
+
+- Sorcery: Raw elemental forces of nature
+
+
+- Conjuring: Moving things through space (and time?)
+

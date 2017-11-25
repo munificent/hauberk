@@ -140,7 +140,7 @@ class TargetDialog extends Screen<Input> {
         continue;
       }
 
-      if (!tile.isPassable) continue;
+      if (!tile.isWalkable && !tile.isFlyable) continue;
       if (stage.actorAt(pos) != null) continue;
       if (stage.isItemAt(pos)) continue;
 
@@ -169,7 +169,7 @@ class TargetDialog extends Screen<Input> {
     // obstacle.
     int i = _animateOffset ~/ _ticksPerFrame;
     var reachedTarget = false;
-    for (var pos in new Los(_gameScreen.game.hero.pos, target)) {
+    for (var pos in new Line(_gameScreen.game.hero.pos, target)) {
       // Note if we made it to the target.
       if (pos == target) {
         reachedTarget = true;
@@ -177,7 +177,7 @@ class TargetDialog extends Screen<Input> {
       }
 
       if (stage.actorAt(pos) != null) break;
-      if (!stage[pos].isTransparent) break;
+      if (!stage[pos].isFlyable) break;
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
           new Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : persimmon));
@@ -230,7 +230,7 @@ class TargetDialog extends Screen<Input> {
       var pos = _gameScreen.currentTarget + dir;
       var tile = _gameScreen.game.stage[pos];
       if ((_gameScreen.game.hero.pos - pos) <= _range &&
-          tile.isTransparent &&
+          tile.isFlyable &&
           tile.visible) {
         _gameScreen.targetFloor(pos);
       }

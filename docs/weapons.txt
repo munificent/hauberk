@@ -1,0 +1,22 @@
+Right now, weapons are basically a glorified number. Any weapon whose power is
+lower than yours is total junk.
+
+That's lame. Here's some ideas to make them interesting:
+
+- Different weapon types have different attack patterns. Axes hit a few
+  adjacent tiles. Spears hit a few in a row. Whips target a few tiles out.
+
+- Daggers do extra damage to sleeping monsters.
+
+- Bludgeons knockback.
+
+- Wands do no melee attack at all but are wielded by spellcasters to improve
+  skills. Or maybe they work like ranged weapons? Some of both?
+
+- Swords can be used to parry the next attack. Or maybe weapons that parry just
+  increase the player's dodge score?
+
+- Skills for weapon aptitude encourage players to focus on a single type.
+
+- If we don't want all actions to take the same amount of time, we could make
+  some weapons faster than others.

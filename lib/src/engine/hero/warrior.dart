@@ -1,13 +1,12 @@
 import 'dart:math' as math;
 
 import '../action/action.dart';
-import '../actor.dart';
-import '../attack.dart';
-import '../command/archery.dart';
+import '../core/actor.dart';
+import '../core/attack.dart';
 import '../command/lance.dart';
 import '../command/slash.dart';
 import '../command/stab.dart';
-import '../monster.dart';
+import '../monster/monster.dart';
 import 'command.dart';
 import 'hero_class.dart';
 
@@ -19,7 +18,6 @@ class Warrior extends HeroClass {
   String get name => "Warrior";
 
   final List<Command> commands = [
-    new ArcheryCommand(),
     new LanceCommand(),
     new SlashCommand(),
     new StabCommand()
@@ -42,8 +40,8 @@ class Warrior extends HeroClass {
 
   Warrior();
 
-  Warrior.load({int fighting, int combat, int toughness,
-      Map<String, int> masteries}) {
+  Warrior.load(
+      {int fighting, int combat, int toughness, Map<String, int> masteries}) {
     this.fighting.increment(fighting);
     this.combat.increment(combat);
     this.toughness.increment(toughness);
@@ -62,10 +60,10 @@ class Warrior extends HeroClass {
     });
 
     return new Warrior.load(
-      fighting: fighting.count,
-      combat: combat.count,
-      toughness: toughness.count,
-      masteries: masteryCounts);
+        fighting: fighting.count,
+        combat: combat.count,
+        toughness: toughness.count,
+        masteries: masteryCounts);
   }
 
   void modifyHit(Hit hit) {
@@ -85,7 +83,7 @@ class Warrior extends HeroClass {
 
   void tookDamage(Action action, Actor attacker, int damage) {
     // Getting hit increases fury.
-    hero.charge = math.min(100, hero.charge + 200 * damage / hero.health.max);
+    hero.charge = math.min(100.0, hero.charge + 200 * damage / hero.health.max);
 
     // Indirect damage doesn't increase toughness.
     if (attacker == null) return;
@@ -95,8 +93,10 @@ class Warrior extends HeroClass {
     damage = (damage * getArmorMultiplier(hero.armor - toughness.level) * 10)
         .floor();
     if (toughness.increment(damage)) {
-      action.game.log.gain('{1} [have|has] reached toughness level '
-          '${toughness.level}.', hero);
+      action.game.log.gain(
+          '{1} [have|has] reached toughness level '
+          '${toughness.level}.',
+          hero);
     }
   }
 
@@ -108,11 +108,13 @@ class Warrior extends HeroClass {
       stat = combat;
       name = "combat";
 
-      var mastery = masteries.putIfAbsent(weapon.type.weaponType,
-          _newMasteryStat);
+      var mastery =
+          masteries.putIfAbsent(weapon.type.weaponType, _newMasteryStat);
       if (mastery.increment(monster.breed.maxHealth)) {
-        action.game.log.gain("{1} [have|has] reached ${weapon.type.weaponType} "
-            "mastery level ${mastery.level}.", hero);
+        action.game.log.gain(
+            "{1} [have|has] reached ${weapon.type.weaponType} "
+            "mastery level ${mastery.level}.",
+            hero);
       }
     } else {
       stat = fighting;
@@ -122,14 +124,16 @@ class Warrior extends HeroClass {
     // Base it on the health of the monster to discourage the player from just
     // killing piles of weak monsters.
     if (stat.increment(monster.breed.maxHealth)) {
-      action.game.log.gain("{1} [have|has] reached $name level "
-          "${stat.level}.", hero);
+      action.game.log.gain(
+          "{1} [have|has] reached $name level "
+          "${stat.level}.",
+          hero);
     }
   }
 
   void finishedTurn(Action action) {
     // Fury decays over time.
-    hero.charge = (hero.charge * 0.9).floor();
+    hero.charge = (hero.charge * 0.9).floorToDouble();
   }
 }
 

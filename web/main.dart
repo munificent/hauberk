@@ -17,7 +17,6 @@ UserInterface<Input> ui;
 
 addTerminal(String name, html.Element element,
     RenderableTerminal terminalCallback(html.Element element)) {
-
   // Make the terminal.
   var terminal = terminalCallback(element);
   terminals.add([name, element, terminal]);
@@ -61,12 +60,18 @@ addTerminal(String name, html.Element element,
 main() {
   var content = createContent();
 
-  addTerminal('Courier', new html.CanvasElement(),
-      (element) => new CanvasTerminal(width, height,
+  addTerminal(
+      'Courier',
+      new html.CanvasElement(),
+      (element) => new CanvasTerminal(
+          width,
+          height,
           new Font('"Courier New"', size: 12, w: 8, h: 14, x: 1, y: 11),
           element));
 
-  addTerminal('Menlo', new html.CanvasElement(),
+  addTerminal(
+      'Menlo',
+      new html.CanvasElement(),
       (element) => new CanvasTerminal(width, height,
           new Font('Menlo', size: 12, w: 8, h: 13, x: 1, y: 11), element));
 
@@ -76,16 +81,22 @@ main() {
   addTerminal('DOS Short', new html.CanvasElement(),
       (element) => new RetroTerminal.shortDos(width, height, element));
 
-  addTerminal('Hauberk', new html.CanvasElement(),
-          (element) => new RetroTerminal(width, height, "font.png",
-              canvas: element, charWidth: 9, charHeight: 13));
+  addTerminal(
+      'Hauberk',
+      new html.CanvasElement(),
+      (element) => new RetroTerminal(width, height, "font.png",
+          canvas: element, charWidth: 9, charHeight: 13));
 
-  addTerminal('8x8', new html.CanvasElement(),
-          (element) => new RetroTerminal(width, height, "font_8.png",
+  addTerminal(
+      '8x8',
+      new html.CanvasElement(),
+      (element) => new RetroTerminal(width, height, "font_8.png",
           canvas: element, charWidth: 8, charHeight: 8));
 
-  addTerminal('16x16', new html.CanvasElement(),
-          (element) => new RetroTerminal(width, height, "font_16.png",
+  addTerminal(
+      '16x16',
+      new html.CanvasElement(),
+      (element) => new RetroTerminal(width, height, "font_16.png",
           canvas: element, charWidth: 16, charHeight: 16));
 
   // Load the user's font preference, if any.
@@ -116,6 +127,7 @@ main() {
   ui.keyPress.bind(Input.toss, KeyCode.t);
   ui.keyPress.bind(Input.selectCommand, KeyCode.s);
   ui.keyPress.bind(Input.heroInfo, KeyCode.a);
+  ui.keyPress.bind(Input.editSkills, KeyCode.s, shift: true);
 
   // Laptop directions.
   ui.keyPress.bind(Input.nw, KeyCode.i);

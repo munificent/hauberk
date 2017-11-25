@@ -2,7 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../action/fury.dart';
-import '../game.dart';
+import '../core/game.dart';
 import '../hero/command.dart';
 
 /// A melee attack that repeatedly stabs an adjacent monster.

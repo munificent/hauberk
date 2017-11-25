@@ -6,16 +6,8 @@ class Shops {
   static final List<Shop> all = [];
 
   static void initialize() {
-    shop("The General's General Store", [
-      "Club",
-      "Staff",
-      "Quarterstaff",
-      "Whip",
-      "Dagger",
-      "Hatchet",
-      "Axe",
-      "Sling",
-    ]);
+    shop("The General's General Store",
+        ["Club", "Staff", "Quarterstaff", "Whip", "Dagger", "Hatchet", "Axe"]);
 
     shop("Dirk's Death Emporium", [
       "Hammer",
@@ -41,13 +33,8 @@ class Shops {
       "Crossbow"
     ]);
 
-    shop("Skullduggery and Bamboozelry", [
-      "Dirk",
-      "Dagger",
-      "Stiletto",
-      "Rondel",
-      "Baselard"
-    ]);
+    shop("Skullduggery and Bamboozelry",
+        ["Dirk", "Dagger", "Stiletto", "Rondel", "Baselard"]);
 
     shop("Garthag's Armoury", [
       "Cloak",

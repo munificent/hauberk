@@ -2,17 +2,18 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../action/walk.dart';
-import '../actor.dart';
-import '../attack.dart';
-import '../element.dart';
-import '../energy.dart';
-import '../game.dart';
+import '../core/actor.dart';
+import '../core/attack.dart';
+import '../core/element.dart';
+import '../core/energy.dart';
+import '../core/game.dart';
+import '../core/log.dart';
+import '../core/option.dart';
+import '../core/stage.dart';
+import '../hero/skill.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
-import '../log.dart';
-import '../monster.dart';
-import '../option.dart';
-import 'hero_class.dart';
+import '../monster/monster.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -22,8 +23,6 @@ class HeroSave {
   final String name;
 
   int get level => calculateLevel(experienceCents);
-
-  HeroClass heroClass;
 
   Inventory inventory = new Inventory(Option.inventoryCapacity);
   Equipment equipment = new Equipment();
@@ -36,26 +35,42 @@ class HeroSave {
 
   int experienceCents = 0;
 
+  SkillSet skills;
+
+  /// Available points that can be spent raising skills.
+  int skillPoints = 12;
+
+  // TODO: Get rid of gold and shops if I'm sure we won't be using it.
   /// How much gold the hero has.
   int gold = Option.heroGoldStart;
 
   /// The lowest depth that the hero has successfully explored and exited.
   int maxDepth = 0;
 
-  HeroSave(this.name, this.heroClass);
+  HeroSave(this.name) : skills = new SkillSet();
 
-  HeroSave.load(this.name, this.heroClass, this.inventory, this.equipment,
-      this.home, this.crucible, this.experienceCents, this.gold, this.maxDepth);
+  HeroSave.load(
+      this.name,
+      this.inventory,
+      this.equipment,
+      this.home,
+      this.crucible,
+      this.experienceCents,
+      this.skillPoints,
+      this.skills,
+      this.gold,
+      this.maxDepth);
 
   /// Copies data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a [Stage] and his changes need to be
   /// "saved".
   void copyFrom(Hero hero) {
-    heroClass = hero.heroClass;
     inventory = hero.inventory;
     equipment = hero.equipment;
     experienceCents = hero._experienceCents;
+    skillPoints = hero.skillPoints;
     gold = hero.gold;
+    skills = hero.skills.clone();
   }
 }
 
@@ -64,14 +79,26 @@ class Hero extends Actor {
   String get nounText => 'you';
   final Pronoun pronoun = Pronoun.you;
 
-  final HeroClass heroClass;
-
   final Inventory inventory;
   final Equipment equipment;
 
   /// Experience is stored internally as hundredths of a point for higher (but
   /// not floating point) precision.
   int _experienceCents = 0;
+
+  int get strength => _attribute(Skill.strength, -encumbrance);
+  int get agility => _attribute(Skill.agility);
+  int get fortitude => _attribute(Skill.fortitude);
+  int get intellect => _attribute(Skill.intellect);
+  int get will => _attribute(Skill.will);
+
+  int _attribute(Skill skill, [int bonus = 0]) =>
+      (10 + skills[skill] + bonus).clamp(1, 60);
+
+  final SkillSet skills;
+
+  /// Available points that can be spent raising skills.
+  int skillPoints;
 
   /// The hero's experience level.
   int _level = 1;
@@ -84,37 +111,47 @@ class Hero extends Actor {
   ///
   /// The hero gains food by exploring the level and can spend it while resting
   /// to regain health.
-  num food = 0.0;
+  double food = 0.0;
 
   /// The hero's current "charge".
   ///
   /// This is interpreted and managed differently for each class: "fury" for
   /// warriors, "mana" for mages, etc.
-  num charge = 0.0;
+  double charge = 0.0;
+
+  int _focus = 400;
+  int get focus => _focus;
+  set focus(int value) => _focus = value.clamp(0, Option.maxFocus);
 
   /// How much noise the Hero's last action made.
   int get lastNoise => _lastNoise;
   int _lastNoise = 0;
 
+  // TODO: Equipment and items that let the hero swim, fly, etc.
+  MotilitySet get motilities => MotilitySet.walkAndDoor;
+
   Hero(Game game, Vec pos, HeroSave save)
-      : heroClass = save.heroClass.clone(),
-        inventory = save.inventory.clone(),
+      : inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
+        skillPoints = save.skillPoints,
+        skills = save.skills.clone(),
         gold = save.gold,
-        super(game, pos.x, pos.y, Option.heroHealthStart) {
-    // Hero state is cloned so that if they die in the dungeon, they lose
+        super(game, pos.x, pos.y, 0) {
+    // Hero state is cloned above so that if they die in the dungeon, they lose
     // anything they found.
-    _refreshLevel(log: false);
 
-    heroClass.bind(this);
+    health.max = Fortitude.maxHealth(fortitude);
+    health.current = health.max;
+
+    _refreshLevel(gain: false);
 
     // Give the hero energy so we can act before all of the monsters.
     energy.energy = Energy.actionCost;
 
     // Start with some initial ability to rest so we aren't weakest at the very
     // beginning.
-    food = health.max;
+    food = health.max.toDouble();
   }
 
   // TODO: Hackish.
@@ -138,7 +175,22 @@ class Hero extends Actor {
       total += item.armor;
     }
 
-    total += heroClass.armor;
+    // TODO: Apply skills.
+//    total += heroClass.armor;
+
+    return total;
+  }
+
+  int get dodge => super.dodge + Agility.dodgeBonus(agility);
+
+  // TODO: If this changes or the equipped weapon changes, should check to see
+  // if weapon has too much heft for player and log.
+  /// The total encumbrance of all equipment.
+  int get encumbrance {
+    var total = 0;
+    for (var item in equipment) {
+      total += item.encumbrance;
+    }
 
     return total;
   }
@@ -165,6 +217,30 @@ class Hero extends Actor {
     food += health.max * abundance * numExplored / game.stage.numExplorable;
   }
 
+  /// Updates the hero's skill levels to [skills] and apply any other changes
+  /// caused by that.
+  void updateSkills(SkillSet skills) {
+    var oldFortitude = fortitude;
+
+    // Update anything affected.
+    this.skills.update(skills);
+
+    if (fortitude != oldFortitude) {
+      // Update max health.
+      var change = Fortitude.maxHealth(fortitude) - health.max;
+      health.max = Fortitude.maxHealth(fortitude);
+
+      if (change > 0) {
+        game.log.message("you feel healthier!");
+
+        // Increase the current health by a matching amount if it goes up.
+        health.current += change;
+      } else {
+        game.log.message("you feel less healthy.");
+      }
+    }
+  }
+
   int onGetSpeed() => Energy.normalSpeed;
 
   Action onGetAction() => _behavior.getAction(this);
@@ -176,9 +252,16 @@ class Hero extends Actor {
     Hit hit;
     if (weapon != null && !weapon.attack.isRanged) {
       hit = weapon.attack.createHit();
+
+      // Take heft and strength into account.
+      var relativeStrength = strength - weapon.heft;
+      var scale = Strength.scaleHeft(relativeStrength);
+      hit.scaleDamage(scale);
     } else {
       hit = new Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
     }
+
+    hit.addStrike(Agility.strikeBonus(agility));
 
     return hit;
   }
@@ -186,24 +269,43 @@ class Hero extends Actor {
   Hit createRangedHit() {
     var weapon = equipment.weapon;
 
+    // TODO: Figure out how heft affects this.
+
     // This should only be called when we know the hero has a ranged weapon
     // equipped.
     assert(weapon != null && weapon.attack.isRanged);
 
     var hit = weapon.attack.createHit();
-    modifyHit(hit);
+    modifyHit(hit, HitType.ranged);
     return hit;
   }
 
   /// Applies the hero-specific modifications to [hit].
-  void onModifyHit(Hit hit) {
+  void onModifyHit(Hit hit, HitType type) {
+    // TODO: Use agility to affect strike.
+
+    switch (type) {
+      case HitType.melee:
+        break;
+
+      case HitType.ranged:
+        // TODO: Use strength to affect range.
+        // TODO: Take heft into account.
+        break;
+
+      case HitType.toss:
+        hit.scaleRange(Strength.tossRangeScale(strength));
+        break;
+    }
+
     // Let equipment modify it.
     for (var item in equipment) {
       item.modifyHit(hit);
     }
 
+    // TODO: Apply skills.
     // Let the class modify it.
-    heroClass.modifyHit(hit);
+//    heroClass.modifyHit(hit);
   }
 
   void defend() {
@@ -214,14 +316,14 @@ class Hero extends Actor {
   int onGetResistance(Element element) => equipmentResistance(element);
 
   void onDamaged(Action action, Actor attacker, int damage) {
-    heroClass.tookDamage(action, attacker, damage);
+    // Getting hit loses focus.
+    focus -= Option.maxFocus * damage * 2 ~/ health.max;
   }
 
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
     _experienceCents += monster.experienceCents;
-    _refreshLevel(log: true);
-    heroClass.killedMonster(action, monster);
+    _refreshLevel(gain: true);
   }
 
   void onDied(Noun attackNoun) {
@@ -232,7 +334,8 @@ class Hero extends Actor {
     // Make some noise.
     _lastNoise = action.noise;
 
-    heroClass.finishedTurn(action);
+    // TODO: Passive skills?
+//    heroClass.finishedTurn(action);
   }
 
   void changePosition(Vec from, Vec to) {
@@ -251,8 +354,8 @@ class Hero extends Actor {
   /// Starts resting, if the hero has eaten and is able to regenerate.
   bool rest() {
     if (poison.isActive) {
-      game.log.error(
-          "You cannot rest while poison courses through your veins!");
+      game.log
+          .error("You cannot rest while poison courses through your veins!");
       return false;
     }
 
@@ -273,17 +376,17 @@ class Hero extends Actor {
     if (_behavior is! ActionBehavior) waitForInput();
   }
 
-  void _refreshLevel({bool log: false}) {
+  void _refreshLevel({bool gain: false}) {
     int level = calculateLevel(_experienceCents);
 
     // See if the we levelled up.
     while (_level < level) {
       _level++;
-      health.max += Option.heroHealthGain;
-      health.current += Option.heroHealthGain;
 
-      if (log) {
+      if (gain) {
         game.log.gain('{1} [have|has] reached level $level.', this);
+
+        skillPoints += Option.skillPointsPerLevel;
       }
     }
   }
@@ -303,7 +406,7 @@ int calculateLevel(int experienceCents) {
 /// is greater than the maximum level.
 int calculateLevelCost(int level) {
   if (level > Option.heroLevelMax) return null;
- return (level - 1) * (level - 1) * Option.heroLevelCost;
+  return (level - 1) * (level - 1) * Option.heroLevelCost;
 }
 
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
@@ -389,7 +492,8 @@ class RunBehavior extends Behavior {
       //
       // If the player presses NE here, we want to run north and not get
       // confused by the east passage.
-      var dirs = [direction.rotateLeft45,
+      var dirs = [
+        direction.rotateLeft45,
         direction,
         direction.rotateRight45,
       ];
@@ -491,7 +595,7 @@ class RunBehavior extends Behavior {
   bool _shouldKeepRunning(Hero hero) {
     var stage = hero.game.stage;
     var pos = hero.pos + direction;
-    if (!stage[pos].isPassable) return false;
+    if (!stage[pos].isWalkable) return false;
 
     // Don't run into someone.
     if (stage.actorAt(pos) != null) return false;

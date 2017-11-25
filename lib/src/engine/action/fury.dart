@@ -1,9 +1,10 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import '../core/game.dart';
+import '../core/option.dart';
 import 'action.dart';
-import '../game.dart';
-import '../option.dart';
 
+// TODO: Remove.
 /// A [Warrior]'s [Action] that requires and spends fury to perform a powerful
 /// attack.
 abstract class FuryAction extends Action {
@@ -15,7 +16,7 @@ abstract class FuryAction extends Action {
     var result = performAttack();
 
     // Drain fury when the attack is done if it hit something.
-    if (result.done && _madeContact) hero.charge ~/= 2;
+    if (result.done && _madeContact) hero.charge /= 2.0;
     return result;
   }
 
@@ -51,9 +52,15 @@ class SlashAction extends FuryAction {
   ActionResult performAttack() {
     var dir;
     switch (_step ~/ _frameRate) {
-      case 0: dir = _dir.rotateLeft45; break;
-      case 1: dir = _dir; break;
-      case 2: dir = _dir.rotateRight45; break;
+      case 0:
+        dir = _dir.rotateLeft45;
+        break;
+      case 1:
+        dir = _dir;
+        break;
+      case 2:
+        dir = _dir.rotateRight45;
+        break;
     }
 
     // Show the effect and perform the attack on alternate frames. This ensures

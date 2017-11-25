@@ -11,7 +11,7 @@ import 'loading_dialog.dart';
 import 'storage.dart';
 
 class SelectDepthScreen extends Screen<Input> {
-  final Content  content;
+  final Content content;
   final HeroSave save;
   final Storage storage;
   int selectedDepth = 1;
@@ -21,23 +21,23 @@ class SelectDepthScreen extends Screen<Input> {
   bool handleInput(Input input) {
     switch (input) {
       case Input.w:
-          _changeDepth(selectedDepth - 1);
-          return true;
+        _changeDepth(selectedDepth - 1);
+        return true;
 
       case Input.e:
-          _changeDepth(selectedDepth + 1);
-          return true;
+        _changeDepth(selectedDepth + 1);
+        return true;
 
       case Input.n:
-          _changeDepth(selectedDepth - 10);
-          return true;
+        _changeDepth(selectedDepth - 10);
+        return true;
 
       case Input.s:
-          _changeDepth(selectedDepth + 10);
-          return true;
+        _changeDepth(selectedDepth + 10);
+        return true;
 
       case Input.ok:
-          ui.push(new LoadingDialog(save, content, selectedDepth));
+        ui.push(new LoadingDialog(save, content, selectedDepth));
         return true;
 
       case Input.cancel:
@@ -84,8 +84,11 @@ class SelectDepthScreen extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(15, 14, 'Greetings, ${save.name}, how deep shall you venture?', UIHue.text);
-    terminal.writeAt(0, terminal.height - 1,
+    terminal.writeAt(15, 14,
+        'Greetings, ${save.name}, how deep shall you venture?', UIHue.text);
+    terminal.writeAt(
+        0,
+        terminal.height - 1,
         '[L] Enter dungeon, [↕] Change depth, [↔] Change depth',
         UIHue.helpText);
 
@@ -99,12 +102,13 @@ class SelectDepthScreen extends Screen<Input> {
         color = UIHue.disabled;
       } else if (depth == selectedDepth) {
         color = UIHue.selection;
-        terminal.drawChar(14 + x * 5, 16 + y, CharCode.blackRightPointingPointer, color);
-        terminal.drawChar(18 + x * 5, 16 + y, CharCode.blackLeftPointingPointer, color);
+        terminal.drawChar(
+            14 + x * 5, 16 + y, CharCode.blackRightPointingPointer, color);
+        terminal.drawChar(
+            18 + x * 5, 16 + y, CharCode.blackLeftPointingPointer, color);
       }
 
-      terminal.writeAt(15 + x * 5, 16 + y,
-          depth.toString().padLeft(3), color);
+      terminal.writeAt(15 + x * 5, 16 + y, depth.toString().padLeft(3), color);
     }
 
     // TODO: Shops, the crucible, and the home are disabled for now since

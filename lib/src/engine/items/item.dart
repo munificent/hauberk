@@ -1,9 +1,9 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../attack.dart';
-import '../element.dart';
-import '../log.dart';
+import '../core/attack.dart';
+import '../core/element.dart';
+import '../core/log.dart';
 
 /// A thing that can be picked up.
 class Item implements Comparable<Item>, Noun {
@@ -110,6 +110,16 @@ class Item implements Comparable<Item>, Noun {
 
   Set<String> get flags => type.flags;
 
+  // TODO: Let affixes modify. Affixes like "ghostly" and "elven" reduce
+  // encumbrance. "Heavy" and "adamant" increase it (but also increase armor
+  // power).
+  /// The penalty to the hero's strength when wearing this.
+  int get encumbrance => type.encumbrance;
+
+  // TODO: Affixes that modify.
+  /// The amount of strength required to wield the item effectively.
+  int get heft => type.heft;
+
   /// The number of items in this stack.
   int get count => _count;
   int _count = 1;
@@ -174,8 +184,10 @@ class Item implements Comparable<Item>, Noun {
     // If we get here, we are trying to stack. We don't support stacking
     // items with affixes, and we should avoid that by not having any affixes
     // defined for stackable items. Validate that invariant here.
-    assert(prefix == null && suffix == null &&
-        item.prefix == null && item.suffix == null);
+    assert(prefix == null &&
+        suffix == null &&
+        item.prefix == null &&
+        item.suffix == null);
 
     var total = count + item.count;
     if (total <= type.maxStack) {
@@ -259,6 +271,12 @@ class ItemType {
   /// How much gold this item is worth.
   final int price;
 
+  /// The penalty to the hero's strength when wearing this.
+  final int encumbrance;
+
+  /// The amount of strength required to wield the item effectively.
+  final int heft;
+
   /// True if this item is "treasure".
   ///
   /// That means it just has a gold value. As soon as the hero steps on it, it
@@ -270,9 +288,22 @@ class ItemType {
 
   final Set<String> flags = new Set();
 
-  ItemType(this._name, this.appearance, this.depth, this.sortIndex,
-      this.equipSlot, this.weaponType, this.use, this.attack, this.toss,
-      this.armor, this.price, this.maxStack, {treasure: false})
+  ItemType(
+      this._name,
+      this.appearance,
+      this.depth,
+      this.sortIndex,
+      this.equipSlot,
+      this.weaponType,
+      this.use,
+      this.attack,
+      this.toss,
+      this.armor,
+      this.price,
+      this.maxStack,
+      {this.encumbrance = 0,
+      this.heft = 1,
+      treasure = false})
       : isTreasure = treasure;
 
   String toString() => name;
@@ -293,7 +324,11 @@ class Affix {
   final Map<Element, int> resists = {};
 
   Affix(this.name,
-      {int strikeBonus, double damageScale, int damageBonus, Element brand, int armor})
+      {int strikeBonus,
+      double damageScale,
+      int damageBonus,
+      Element brand,
+      int armor})
       : strikeBonus = strikeBonus ?? 0,
         damageScale = damageScale ?? 1.0,
         damageBonus = damageBonus ?? 1,

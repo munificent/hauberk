@@ -1,6 +1,7 @@
 import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content/items.dart';
 
@@ -25,11 +26,15 @@ main() {
     <tr>
       <td colspan="2">Item</td>
       <td>Depth</td>
+      <td>Freq.</td>
       <td>Equip.</td>
       <td>Weapon</td>
       <td>Attack</td>
       <td>Armor</td>
+      <td>Use</td>
       <td>Stack</td>
+      <td>Toss</td>
+      <td>Flags</td>
     </tr>
     </thead>
     <tbody>
@@ -51,6 +56,8 @@ main() {
       text.write('<td>${item.depth}</td>');
     }
 
+    text.write('<td>${Items.types.frequency(item.name)}</td>');
+
     if (item.equipSlot == null) {
       text.write('<td>&mdash;</td>');
     } else {
@@ -60,17 +67,47 @@ main() {
     if (item.weaponType == null) {
       text.write('<td>&mdash;</td>');
     } else {
-      text.write('<td>${item.weaponType}</td>');
+      text.write('<td>${item.weaponType} (${item.heft} heft)</td>');
     }
 
     if (item.attack == null) {
       text.write('<td>&mdash;</td>');
     } else {
-      text.write('<td>${item.attack.damage}</td>');
+      text.write('<td>${item.attack}</td>');
     }
 
-    text.write('<td>${item.armor != 0 ? item.armor : "&mdash;"}</td>');
+    if (item.armor == 0) {
+      text.write('<td>&mdash;</td>');
+    } else if (item.encumbrance == 0) {
+      text.write('<td>${item.armor}</td>');
+    } else {
+      text.write('<td>${item.armor} (${item.encumbrance} encumber)</td>');
+    }
+
+    if (item.use == null) {
+      text.write('<td>&mdash;</td>');
+    } else {
+      text.write('<td>${item.use().runtimeType}</td>');
+    }
+
     text.write('<td>${item.maxStack}</td>');
+
+    if (item.toss == null) {
+      text.write('<td>&mdash;</td>');
+    } else {
+      text.write('<td>${item.toss.attack}');
+      if (item.toss.use != null) {
+        text.write(' ${item.toss.use(Vec.zero).runtimeType} ');
+      }
+
+      if (item.toss.breakage != 0) {
+        text.write(' ${item.toss.breakage}%');
+      }
+
+      text.write('</td>');
+    }
+
+    text.write('<td>${item.flags.join(" ")}</td>');
     text.write('</tr>');
   }
   text.write('</tbody>');
@@ -78,6 +115,7 @@ main() {
   var validator = new html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
 
-  html.querySelector('table').setInnerHtml(text.toString(),
-      validator: validator);
+  html
+      .querySelector('table')
+      .setInnerHtml(text.toString(), validator: validator);
 }

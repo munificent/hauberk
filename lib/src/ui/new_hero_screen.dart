@@ -10,16 +10,74 @@ import 'storage.dart';
 
 // From: http://medieval.stormthecastle.com/medieval-names.htm.
 const _defaultNames = const [
-  "Merek", "Carac", "Ulric", "Tybalt", "Borin", "Sadon", "Terrowin", "Rowan",
-  "Forthwind", "Althalos", "Fendrel", "Brom", "Hadrian", "Crewe", "Bolbec",
-  "Fenwick", "Mowbray", "Drake", "Bryce", "Leofrick", "Letholdus", "Lief",
-  "Barda", "Rulf", "Robin", "Gavin", "Terrin", "Jarin", "Cedric", "Gavin",
-  "Josef", "Janshai", "Doran", "Asher", "Quinn", "Xalvador", "Favian",
-  "Destrian", "Dain", "Millicent", "Alys", "Ayleth", "Anastas", "Alianor",
-  "Cedany", "Ellyn", "Helewys", "Malkyn", "Peronell", "Thea", "Gloriana",
-  "Arabella", "Hildegard", "Brunhild", "Adelaide", "Beatrix", "Emeline",
-  "Mirabelle", "Helena", "Guinevere", "Isolde", "Maerwynn", "Catrain",
-  "Gussalen", "Enndolynn", "Krea", "Dimia", "Aleida"
+  "Merek",
+  "Carac",
+  "Ulric",
+  "Tybalt",
+  "Borin",
+  "Sadon",
+  "Terrowin",
+  "Rowan",
+  "Forthwind",
+  "Althalos",
+  "Fendrel",
+  "Brom",
+  "Hadrian",
+  "Crewe",
+  "Bolbec",
+  "Fenwick",
+  "Mowbray",
+  "Drake",
+  "Bryce",
+  "Leofrick",
+  "Letholdus",
+  "Lief",
+  "Barda",
+  "Rulf",
+  "Robin",
+  "Gavin",
+  "Terrin",
+  "Jarin",
+  "Cedric",
+  "Gavin",
+  "Josef",
+  "Janshai",
+  "Doran",
+  "Asher",
+  "Quinn",
+  "Xalvador",
+  "Favian",
+  "Destrian",
+  "Dain",
+  "Millicent",
+  "Alys",
+  "Ayleth",
+  "Anastas",
+  "Alianor",
+  "Cedany",
+  "Ellyn",
+  "Helewys",
+  "Malkyn",
+  "Peronell",
+  "Thea",
+  "Gloriana",
+  "Arabella",
+  "Hildegard",
+  "Brunhild",
+  "Adelaide",
+  "Beatrix",
+  "Emeline",
+  "Mirabelle",
+  "Helena",
+  "Guinevere",
+  "Isolde",
+  "Maerwynn",
+  "Catrain",
+  "Gussalen",
+  "Enndolynn",
+  "Krea",
+  "Dimia",
+  "Aleida"
 ];
 
 class NewHeroScreen extends Screen<Input> {
@@ -37,10 +95,7 @@ class NewHeroScreen extends Screen<Input> {
 
     switch (keyCode) {
       case KeyCode.enter:
-        // TODO: Other classes.
-        var heroClass = new Warrior();
-        var hero = content.createHero(name.isEmpty ? defaultName : name,
-            heroClass);
+        var hero = content.createHero(name.isEmpty ? defaultName : name);
         storage.heroes.add(hero);
         storage.save();
         ui.goTo(new SelectDepthScreen(content, hero, storage));
@@ -96,8 +151,11 @@ class NewHeroScreen extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    terminal.writeAt(8, 18,
-        "What name shall the bards use to sing of your hero's adventures?", UIHue.text);
+    terminal.writeAt(
+        8,
+        18,
+        "What name shall the bards use to sing of your hero's adventures?",
+        UIHue.text);
 
     if (name.isEmpty) {
       terminal.writeAt(8, 20, defaultName, UIHue.selection);
@@ -106,7 +164,10 @@ class NewHeroScreen extends Screen<Input> {
       terminal.writeAt(8 + name.length, 20, " ", Color.black, UIHue.selection);
     }
 
-    terminal.writeAt(0, terminal.height - 1,
-        '[A-Z] Enter name, [Del] Delete letter, [Enter] Create hero, [Esc] Cancel', UIHue.helpText);
+    terminal.writeAt(
+        0,
+        terminal.height - 1,
+        '[A-Z] Enter name, [Del] Delete letter, [Enter] Create hero, [Esc] Cancel',
+        UIHue.helpText);
   }
 }

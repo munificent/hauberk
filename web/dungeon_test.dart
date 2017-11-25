@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
@@ -5,32 +6,29 @@ import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/content/dungeon/dungeon.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
 
 import 'histogram.dart';
 
-html.CanvasElement canvas;
+var depthSelect = html.querySelector("#depth") as html.SelectElement;
+var canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
+var stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
 
 var content = createContent();
-var heroClass = new Warrior();
-var save = new HeroSave("Hero", heroClass);
+var save = new HeroSave("Hero");
 Game _game;
-Terminal terminal;
+RenderableTerminal terminal;
 
 int get depth {
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
   return int.parse(depthSelect.value);
 }
 
 main() {
-  canvas = html.querySelector("canvas") as html.CanvasElement;
-
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(
-      new html.OptionElement(data: i.toString(), value: i.toString(),
-          selected: i == 1));
+    depthSelect.append(new html.OptionElement(
+        data: i.toString(), value: i.toString(), selected: i == 1));
   }
 
   depthSelect.onChange.listen((event) {
@@ -41,10 +39,14 @@ main() {
     generate();
   });
 
+  stateCanvas.onClick.listen((_) {
+    generate();
+  });
+
   generate();
 }
 
-void generate() {
+Future generate() async {
   _game = new Game(content, save, depth);
   var stage = _game.stage;
 
@@ -53,11 +55,19 @@ void generate() {
   terminal = new RetroTerminal(stage.width, stage.height, "font_8.png",
       canvas: canvas, charWidth: 8, charHeight: 8);
 
+  stateCanvas.width = stage.width * 8;
+  stateCanvas.height = stage.height * 8;
+
+  var frame = 0;
   for (var event in _game.generate()) {
     print(event);
+    render();
+
+    frame++;
+    if (frame % 5 == 0) await html.window.animationFrame;
   }
 
-  render();
+  render(showInfo: false);
 
   var monsters = new Histogram<Breed>();
   for (var actor in stage.actors) {
@@ -74,7 +84,6 @@ void generate() {
       <td>Count</td>
       <td colspan="2">Breed</td>
       <td>Depth</td>
-      <td colspan="2">Health</td>
       <td>Exp.</td>
       <!--<td>Drops</td>-->
     </tr>
@@ -92,14 +101,12 @@ void generate() {
         </td>
         <td>${breed.name}</td>
         <td>${breed.depth}</td>
-        <td class="r">${breed.maxHealth}</td>
-        <td><span class="bar" style="width: ${breed.maxHealth}px;"></span></td>
         <td class="r">${(breed.experienceCents / 100).toStringAsFixed(2)}</td>
         <td>
       ''');
 
-    var attacks = breed.attacks.map(
-        (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} (${attack.damage})');
+    var attacks = breed.attacks.map((attack) =>
+        '${Log.conjugate(attack.verb, breed.pronoun)} (${attack.damage})');
     tableContents.write(attacks.join(', '));
 
     tableContents.write('</td><td>');
@@ -115,8 +122,9 @@ void generate() {
   var validator = new html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
 
-  html.querySelector('table[id=monsters]').setInnerHtml(tableContents.toString(),
-      validator: validator);
+  html
+      .querySelector('table[id=monsters]')
+      .setInnerHtml(tableContents.toString(), validator: validator);
 
   tableContents.clear();
   tableContents.write('''
@@ -157,11 +165,12 @@ void generate() {
     </tr>
     ''');
   }
-  html.querySelector('table[id=items]').setInnerHtml(tableContents.toString(),
-      validator: validator);
+  html
+      .querySelector('table[id=items]')
+      .setInnerHtml(tableContents.toString(), validator: validator);
 }
 
-void render() {
+void render({bool showInfo = true}) {
   var stage = _game.stage;
 
   for (var y = 0; y < stage.height; y++) {
@@ -183,6 +192,48 @@ void render() {
           terminal.drawGlyph(x, y, actor.appearance as Glyph);
         }
       }
+    }
+  }
+
+  terminal.render();
+
+  var context = stateCanvas.context2D;
+  context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
+
+  if (!showInfo) return;
+
+  if (Dungeon.debugInfo != null) {
+    for (var y = 0; y < stage.height; y++) {
+      for (var x = 0; x < stage.width; x++) {
+        var info = Dungeon.debugInfo.get(x, y);
+//        if (info.distance != null) {
+//          context.fillStyle = 'hsla(${info.distance * 8}, 100%, 50%, 0.1)';
+//          context.fillRect(x * 8, y * 8, 8, 8);
+//        }
+
+        if (info.regionId != null) {
+          context.fillStyle = 'hsla(${info.regionId * 13}, 100%, 50%, 0.3)';
+          context.fillRect(x * 8, y * 8, 8, 8);
+        }
+
+        if (info.junctionId != null) {
+          context.fillStyle = 'hsla(${info.junctionId * 13}, 100%, 50%, 0.6)';
+          context.fillRect(x * 8 + 1, y * 8 + 1, 6, 6);
+        }
+
+        if (info.reachableTiles != 0) {
+          context.fillStyle = 'rgb(255, 255, 255)';
+          context.fillText(info.reachableTiles.toString(), x * 8, y * 8 + 7);
+        }
+      }
+    }
+  }
+
+  if (Dungeon.debugJunctions != null) {
+    context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    for (var junction in Dungeon.debugJunctions) {
+      context.fillRect(
+          junction.position.x * 8 + 2, junction.position.y * 8 + 2, 4, 4);
     }
   }
 }

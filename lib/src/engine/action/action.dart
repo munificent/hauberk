@@ -2,13 +2,13 @@ import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../actor.dart';
-import '../element.dart';
-import '../game.dart';
+import '../core/actor.dart';
+import '../core/element.dart';
+import '../core/game.dart';
+import '../core/log.dart';
+import '../core/option.dart';
 import '../hero/hero.dart';
-import '../log.dart';
-import '../monster.dart';
-import '../option.dart';
+import '../monster/monster.dart';
 
 abstract class Action {
   Actor _actor;
@@ -47,8 +47,8 @@ abstract class Action {
     _actions.add(action);
   }
 
-  void addEvent(EventType type, {Actor actor, Element element, other,
-      Vec pos, Direction dir}) {
+  void addEvent(EventType type,
+      {Actor actor, Element element, other, Vec pos, Direction dir}) {
     _gameResult.events.add(new Event(type, actor, element, pos, dir, other));
   }
 
@@ -104,10 +104,28 @@ class ActionResult {
   /// `true` if the [Action] does not need any further processing.
   final bool done;
 
-  const ActionResult({this.succeeded, this.done})
-  : alternative = null;
+  const ActionResult({this.succeeded, this.done}) : alternative = null;
 
   const ActionResult.alternate(this.alternative)
-  : succeeded = false,
-    done = true;
+      : succeeded = false,
+        done = true;
+}
+
+class FocusAction extends Action {
+  /// The focus cost of the action.
+  final int _focus;
+
+  /// The action to perform if the hero has enough focus.
+  final Action _action;
+
+  FocusAction(this._focus, this._action);
+
+  ActionResult onPerform() {
+    if (hero.focus < _focus) {
+      return fail("You don't have enough focus to do this!");
+    }
+
+    hero.focus -= _focus;
+    return alternate(_action);
+  }
 }

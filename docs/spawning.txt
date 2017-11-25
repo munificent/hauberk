@@ -1,0 +1,35 @@
+Things to take into account when spawning items and monsters and decorations:
+
+- Distance from hero's starting point.
+- Whether the room is on an isolated path or not, and its distance.
+- Biome and terrain within the biome (water versus shore).
+- Depth.
+- Density. Some biomes may want to spawn stuff more than others.
+
+Different potential ways stuff can be spawned:
+
+- Simply pick a random item and drop it.
+
+- Pick a random monster and drop it.
+
+- Create an "encounter" that's a batch of monsters, items and decorations and
+  spawn that at a random location.
+
+- Smart encounters that try to place themselves in an area that makes sense for
+  the thing being spawned -- some monsters might hug walls, etc.
+
+- Encounters that take over and theme an entire room -- a laboratory gets
+  furniture, magic items, spellcasting monsters, etc.
+
+- Brogue-like "machines" where some larger scale narrative and placement goes
+  on. For example, locking away a room and placing the key elsewhere. Having a
+  treasure room protected by guards. An altar that triggers a summon, etc.
+
+Figuring out which we need and how they interact is the tricky part. Simpler is
+good because it can lead to more combinatorial complexity, and it's easier to
+maintain.
+
+The more complex ones can make the dungeon feel more meaningful but run the
+risk of it feeling *too* scripted and canned.
+
+The right answer is probably a mixture of a few of these.

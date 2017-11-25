@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import '../actor.dart';
+import '../core/actor.dart';
 import '../hero/hero.dart';
 import 'item.dart';
 
@@ -18,7 +18,7 @@ class ItemLocation {
 
 abstract class ItemCollection extends Iterable<Item> {
   int get length;
-  Item operator[](int index);
+  Item operator [](int index);
   void remove(Item item);
   Item removeAt(int index);
 
@@ -45,10 +45,9 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
 
   int get length => _items.length;
 
-  Item operator[](int index) => _items[index];
+  Item operator [](int index) => _items[index];
 
-  Inventory(this.capacity, [Iterable<Item> items])
-      : _items = <Item>[] {
+  Inventory(this.capacity, [Iterable<Item> items]) : _items = <Item>[] {
     if (items != null) _items.addAll(items);
   }
 

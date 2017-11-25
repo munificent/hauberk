@@ -36,7 +36,7 @@ Here's a more detailed progression:
 ...
 
 - Max out level.
-- Ensure all resistances are covered, preferrably at power >=2.
+- Ensure all resistances are covered, preferably at power >=2.
 - Kill final boss.
 
 ---

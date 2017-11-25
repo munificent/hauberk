@@ -4,7 +4,6 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
-import '../content.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'close_door_dialog.dart';
@@ -16,6 +15,7 @@ import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item_dialog.dart';
 import 'select_command_dialog.dart';
+import 'skill_dialog.dart';
 import 'target_dialog.dart';
 
 class GameScreen extends Screen<Input> {
@@ -37,6 +37,8 @@ class GameScreen extends Screen<Input> {
 
   Actor _targetActor;
   Vec _target;
+
+  TargetCommand _lastTargetCommand;
 
   void targetActor(Actor value) {
     if (_targetActor != value) dirty();
@@ -105,12 +107,27 @@ class GameScreen extends Screen<Input> {
         }
         break;
 
-      case Input.forfeit: ui.push(new ForfeitDialog(game)); break;
-      case Input.selectCommand: ui.push(new SelectCommandDialog(game)); break;
-      case Input.heroInfo: ui.push(new HeroInfoDialog(game.hero)); break;
-      case Input.drop: ui.push(new ItemDialog.drop(this)); break;
-      case Input.use: ui.push(new ItemDialog.use(this)); break;
-      case Input.toss: ui.push(new ItemDialog.toss(this)); break;
+      case Input.forfeit:
+        ui.push(new ForfeitDialog(game));
+        break;
+      case Input.selectCommand:
+        ui.push(new SelectCommandDialog(game));
+        break;
+      case Input.editSkills:
+        ui.push(new SkillDialog(game.content, game.hero));
+        break;
+      case Input.heroInfo:
+        ui.push(new HeroInfoDialog(game.hero));
+        break;
+      case Input.drop:
+        ui.push(new ItemDialog.drop(this));
+        break;
+      case Input.use:
+        ui.push(new ItemDialog.use(this));
+        break;
+      case Input.toss:
+        ui.push(new ItemDialog.toss(this));
+        break;
 
       case Input.rest:
         if (!game.hero.rest()) {
@@ -119,57 +136,108 @@ class GameScreen extends Screen<Input> {
         }
         break;
 
-      case Input.closeDoor: closeDoor(); break;
-      case Input.pickUp: pickUp(); break;
+      case Input.closeDoor:
+        closeDoor();
+        break;
+      case Input.pickUp:
+        pickUp();
+        break;
 
-      case Input.nw: action = new WalkAction(Direction.nw); break;
-      case Input.n: action = new WalkAction(Direction.n); break;
-      case Input.ne: action = new WalkAction(Direction.ne); break;
-      case Input.w: action = new WalkAction(Direction.w); break;
-      case Input.ok: action = new WalkAction(Direction.none); break;
-      case Input.e: action = new WalkAction(Direction.e); break;
-      case Input.sw: action = new WalkAction(Direction.sw); break;
-      case Input.s: action = new WalkAction(Direction.s); break;
-      case Input.se: action = new WalkAction(Direction.se); break;
+      case Input.nw:
+        action = new WalkAction(Direction.nw);
+        break;
+      case Input.n:
+        action = new WalkAction(Direction.n);
+        break;
+      case Input.ne:
+        action = new WalkAction(Direction.ne);
+        break;
+      case Input.w:
+        action = new WalkAction(Direction.w);
+        break;
+      case Input.ok:
+        action = new WalkAction(Direction.none);
+        break;
+      case Input.e:
+        action = new WalkAction(Direction.e);
+        break;
+      case Input.sw:
+        action = new WalkAction(Direction.sw);
+        break;
+      case Input.s:
+        action = new WalkAction(Direction.s);
+        break;
+      case Input.se:
+        action = new WalkAction(Direction.se);
+        break;
 
-      case Input.runNW: game.hero.run(Direction.nw); break;
-      case Input.runN: game.hero.run(Direction.n); break;
-      case Input.runNE: game.hero.run(Direction.ne); break;
-      case Input.runW: game.hero.run(Direction.w); break;
-      case Input.runE: game.hero.run(Direction.e); break;
-      case Input.runSW: game.hero.run(Direction.sw); break;
-      case Input.runS: game.hero.run(Direction.s); break;
-      case Input.runSE: game.hero.run(Direction.se); break;
+      case Input.runNW:
+        game.hero.run(Direction.nw);
+        break;
+      case Input.runN:
+        game.hero.run(Direction.n);
+        break;
+      case Input.runNE:
+        game.hero.run(Direction.ne);
+        break;
+      case Input.runW:
+        game.hero.run(Direction.w);
+        break;
+      case Input.runE:
+        game.hero.run(Direction.e);
+        break;
+      case Input.runSW:
+        game.hero.run(Direction.sw);
+        break;
+      case Input.runS:
+        game.hero.run(Direction.s);
+        break;
+      case Input.runSE:
+        game.hero.run(Direction.se);
+        break;
 
-      case Input.fireNW: _fireTowards(Direction.nw); break;
-      case Input.fireN: _fireTowards(Direction.n); break;
-      case Input.fireNE: _fireTowards(Direction.ne); break;
-      case Input.fireW: _fireTowards(Direction.w); break;
-      case Input.fireE: _fireTowards(Direction.e); break;
-      case Input.fireSW: _fireTowards(Direction.sw); break;
-      case Input.fireS: _fireTowards(Direction.s); break;
-      case Input.fireSE: _fireTowards(Direction.se); break;
+      case Input.fireNW:
+        _fireTowards(Direction.nw);
+        break;
+      case Input.fireN:
+        _fireTowards(Direction.n);
+        break;
+      case Input.fireNE:
+        _fireTowards(Direction.ne);
+        break;
+      case Input.fireW:
+        _fireTowards(Direction.w);
+        break;
+      case Input.fireE:
+        _fireTowards(Direction.e);
+        break;
+      case Input.fireSW:
+        _fireTowards(Direction.sw);
+        break;
+      case Input.fireS:
+        _fireTowards(Direction.s);
+        break;
+      case Input.fireSE:
+        _fireTowards(Direction.se);
+        break;
 
       case Input.fire:
-        // TODO: When there is more than one usable command, bring up the
-        // SelectCommandDialog. Until then, just pick the first valid one.
-        var command = game.hero.heroClass.commands
-            .firstWhere((command) => command.canUse(game), orElse: () => null);
-        if (command is TargetCommand) {
+        if (_lastTargetCommand == null) {
+          game.log.error("No target skill selected.");
+          dirty();
+        } else {
           // If we still have a visible target, use it.
           if (currentTarget != null) {
-            _fireAtTarget();
+            _fireAtTarget(_lastTargetCommand);
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, command.getRange(game),
-                (_) => _fireAtTarget()));
+            ui.push(new TargetDialog(this, _lastTargetCommand.getRange(game),
+                (_) => _fireAtTarget(_lastTargetCommand)));
           }
-        } else if (command is DirectionCommand) {
-          ui.push(new DirectionDialog(this, game));
-        } else {
-          game.log.error("You don't have any commands you can perform.");
-          dirty();
         }
+        // TODO: Handle DirectionCommand.
+//        } else if (command is DirectionCommand) {
+//        ui.push(new DirectionDialog(this, game));
         break;
 
       case Input.swap:
@@ -177,8 +245,8 @@ class GameScreen extends Screen<Input> {
           game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
-          action = new EquipAction(ItemLocation.inventory,
-              game.hero.inventory.lastUnequipped);
+          action = new EquipAction(
+              ItemLocation.inventory, game.hero.inventory.lastUnequipped);
         }
         break;
     }
@@ -222,64 +290,55 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void _fireAtTarget() {
-    // TODO: When there is more than one usable command, bring up the
-    // SelectCommandDialog. Until then, just pick the first valid one.
-    var command = game.hero.heroClass.commands
-        .firstWhere((command) => command.canUse(game)) as TargetCommand;
-
+  void _fireAtTarget(TargetCommand command) {
+    _lastTargetCommand = command;
     game.hero.setNextAction(command.getTargetAction(game, currentTarget));
   }
 
   void _fireTowards(Direction dir) {
-    // TODO: When there is more than one usable command, bring up the
-    // SelectCommandDialog. Until then, just pick the first valid one.
-    var command = game.hero.heroClass.commands
-        .firstWhere((command) => command.canUse(game), orElse: () => null);
+    // TODO: Handle DirectionCommands.
 
-    if (command == null) {
-      game.log.error("You don't have any commands you can perform.");
+    if (_lastTargetCommand == null) {
+      // TODO: Better error message.
+      game.log.error("No target skill selected.");
       dirty();
-    } else if (command is DirectionCommand) {
-      game.hero.setNextAction(command.getDirectionAction(game, dir));
-    } else if (command is TargetCommand) {
-      var pos = game.hero.pos + dir;
+      return;
+    }
 
-      // Target the monster that is in the fired direction, if any.
-      Vec previous;
-      for (var step in new Los(game.hero.pos, pos)) {
-        // If we reached an actor, target it.
-        var actor = game.stage.actorAt(step);
-        if (actor != null) {
-          targetActor(actor);
-          break;
-        }
+    var pos = game.hero.pos + dir;
 
-        // If we hit a wall, target the floor tile before it.
-        if (!game.stage[step].isTransparent) {
-          targetFloor(previous);
-          break;
-        }
-
-        // If we hit the end of the range, target the floor there.
-        if ((step - game.hero.pos) >= command.getRange(game)) {
-          targetFloor(step);
-          break;
-        }
-
-        previous = step;
+    // Target the monster that is in the fired direction, if any.
+    Vec previous;
+    for (var step in new Line(game.hero.pos, pos)) {
+      // If we reached an actor, target it.
+      var actor = game.stage.actorAt(step);
+      if (actor != null) {
+        targetActor(actor);
+        break;
       }
 
-      if (currentTarget != null) {
-        game.hero.setNextAction(command.getTargetAction(game, currentTarget));
-      } else {
-        var tile = game.stage[game.hero.pos + dir].type.name;
-        game.log.error("There is a $tile} in the way.");
-        dirty();
+      // If we hit a wall, target the floor tile before it.
+      if (!game.stage[step].isFlyable) {
+        targetFloor(previous);
+        break;
       }
+
+      // If we hit the end of the range, target the floor there.
+      if ((step - game.hero.pos) >= _lastTargetCommand.getRange(game)) {
+        targetFloor(step);
+        break;
+      }
+
+      previous = step;
+    }
+
+    if (currentTarget != null) {
+      game.hero.setNextAction(
+          _lastTargetCommand.getTargetAction(game, currentTarget));
     } else {
-      // Unknown command type.
-      assert(false);
+      var tile = game.stage[game.hero.pos + dir].type.name;
+      game.log.error("There is a $tile} in the way.");
+      dirty();
     }
   }
 
@@ -294,13 +353,15 @@ class GameScreen extends Screen<Input> {
     if (popped is ForfeitDialog && result) {
       // Forfeiting, so exit.
       ui.pop(false);
+    } else if (popped is SkillDialog) {
+      game.hero.updateSkills(result);
     } else if (popped is SelectCommandDialog && result is Command) {
       if (!result.canUse(game)) {
         // Refresh the log.
         dirty();
       } else if (result is TargetCommand) {
-        ui.push(new TargetDialog(this, result.getRange(game),
-            (_) => _fireAtTarget()));
+        ui.push(new TargetDialog(
+            this, result.getRange(game), (_) => _fireAtTarget(result)));
       } else if (result is DirectionCommand) {
         ui.push(new DirectionDialog(this, game));
       }
@@ -338,8 +399,8 @@ class GameScreen extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    var bar = new Glyph.fromCharCode(
-        CharCode.boxDrawingsLightVertical, steelGray);
+    var bar =
+        new Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
     for (var y = 0; y < terminal.height; y++) {
       terminal.drawGlyph(60, y, bar);
     }
@@ -377,24 +438,26 @@ class GameScreen extends Screen<Input> {
     var rangeWidth = math.max(0, game.stage.width - viewSize.x);
     var rangeHeight = math.max(0, game.stage.height - viewSize.y);
 
-    var cameraRange = new Rect(0, 0, rangeWidth,  rangeHeight);
+    var cameraRange = new Rect(0, 0, rangeWidth, rangeHeight);
 
     var camera = game.hero.pos - viewSize ~/ 2;
     camera = cameraRange.clamp(camera);
-    _cameraBounds = new Rect(camera.x, camera.y,
+    _cameraBounds = new Rect(
+        camera.x,
+        camera.y,
         math.min(viewSize.x, game.stage.width),
         math.min(viewSize.y, game.stage.height));
   }
 
-  void _drawStage(Terminal terminal, Color heroColor,
-      List<Monster> visibleMonsters) {
+  void _drawStage(
+      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
 
     dazzleGlyph(Glyph glyph) {
       if (!hero.dazzle.isActive) return glyph;
 
       var chance = math.min(90, hero.dazzle.duration * 8);
-      if (rng.range(100) > chance) return glyph;
+      if (rng.percent(chance)) return glyph;
 
       const colors = const [
         steelGray,
@@ -425,7 +488,7 @@ class GameScreen extends Screen<Input> {
         ultramarine,
       ];
 
-      var char = (rng.range(100) > chance) ? glyph.char : CharCode.asterisk;
+      var char = rng.percent(chance) ? glyph.char : CharCode.asterisk;
       return new Glyph.fromCharCode(char, rng.item(colors));
     }
 
@@ -485,46 +548,71 @@ class GameScreen extends Screen<Input> {
     for (final message in game.log.messages) {
       var color;
       switch (message.type) {
-        case LogType.message: color = gunsmoke; break;
-        case LogType.error: color = brickRed; break;
-        case LogType.quest: color = violet; break;
-        case LogType.gain: color = gold; break;
-        case LogType.help: color = peaGreen; break;
+        case LogType.message:
+          color = gunsmoke;
+          break;
+        case LogType.error:
+          color = brickRed;
+          break;
+        case LogType.quest:
+          color = violet;
+          break;
+        case LogType.gain:
+          color = gold;
+          break;
+        case LogType.help:
+          color = peaGreen;
+          break;
       }
 
       terminal.writeAt(0, y, message.text, color);
       if (message.count > 1) {
-        terminal.writeAt(message.text.length, y, ' (x${message.count})',
-            steelGray);
+        terminal.writeAt(
+            message.text.length, y, ' (x${message.count})', steelGray);
       }
       y++;
     }
   }
 
-  void _drawSidebar(Terminal terminal, Color heroColor,
-      List<Monster> visibleMonsters) {
+  void _drawSidebar(
+      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
     _drawStat(terminal, 0, 'Health', hero.health.current, brickRed,
         hero.health.max, maroon);
     terminal.writeAt(0, 1, 'Food', UIHue.helpText);
-    terminal.writeAt(7, 1, hero.food.ceil().toString(), persimmon);
+    terminal.writeAt(10, 1, hero.food.ceil().toString(), persimmon);
 
     _drawStat(terminal, 2, 'Level', hero.level, cerulean);
     if (hero.level < Option.heroLevelMax) {
       var levelPercent = 100 *
           hero.experience ~/
           (calculateLevelCost(hero.level + 1) - calculateLevelCost(hero.level));
-      terminal.writeAt(16, 2, '$levelPercent%', ultramarine);
+      terminal.writeAt(15, 2, '$levelPercent%', ultramarine);
     }
-    _drawStat(terminal, 3, 'Gold', hero.gold, gold);
-    _drawStat(terminal, 4, 'Armor',
+
+    var y = 4;
+    drawAttribute(Skill attribute) {
+      terminal.writeAt(0, y, attribute.name, UIHue.helpText);
+      terminal.writeAt(10, y, hero.skills[attribute].toString(), ash);
+      y++;
+    }
+
+    drawAttribute(Skill.strength);
+    drawAttribute(Skill.agility);
+    drawAttribute(Skill.fortitude);
+    drawAttribute(Skill.intellect);
+    drawAttribute(Skill.will);
+
+    terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
+
+    _drawMeter(
+        terminal, 10, hero.focus, Option.maxFocus, cerulean, ultramarine);
+
+    _drawStat(terminal, 12, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit();
-    _drawStat(terminal, 5, 'Weapon', hit.damageString, turquoise);
-
-    terminal.writeAt(0, 7, hero.heroClass.name, UIHue.text);
-    if (hero.heroClass is Warrior) _drawWarriorStats(terminal, hero);
+    _drawStat(terminal, 13, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.
     terminal.writeAt(0, 16, '@', heroColor);
@@ -578,14 +666,15 @@ class GameScreen extends Screen<Input> {
   }
 
   /// Draws a labeled numeric stat.
-  void _drawStat(Terminal terminal, int y, String label, value,
-      Color valueColor, [max, Color maxColor]) {
+  void _drawStat(
+      Terminal terminal, int y, String label, value, Color valueColor,
+      [max, Color maxColor]) {
     terminal.writeAt(0, y, label, UIHue.helpText);
     var valueString = value.toString();
-    terminal.writeAt(7, y, valueString, valueColor);
+    terminal.writeAt(10, y, valueString, valueColor);
 
     if (max != null) {
-      terminal.writeAt(7 + valueString.length, y, ' / $max', maxColor);
+      terminal.writeAt(10 + valueString.length, y, ' / $max', maxColor);
     }
   }
 
@@ -614,17 +703,29 @@ class GameScreen extends Screen<Input> {
 
     if (actor.poison.isActive) {
       switch (actor.poison.intensity) {
-        case 1: conditions.add(["P", sherwood]); break;
-        case 2: conditions.add(["P", peaGreen]); break;
-        default: conditions.add(["P", mint]); break;
+        case 1:
+          conditions.add(["P", sherwood]);
+          break;
+        case 2:
+          conditions.add(["P", peaGreen]);
+          break;
+        default:
+          conditions.add(["P", mint]);
+          break;
       }
     }
 
     if (actor.cold.isActive) conditions.add(["C", cornflower]);
     switch (actor.haste.intensity) {
-      case 1: conditions.add(["S", persimmon]); break;
-      case 2: conditions.add(["S", gold]); break;
-      case 3: conditions.add(["S", buttermilk]); break;
+      case 1:
+        conditions.add(["S", persimmon]);
+        break;
+      case 2:
+        conditions.add(["S", gold]);
+        break;
+      case 3:
+        conditions.add(["S", buttermilk]);
+        break;
     }
 
     if (actor.blindness.isActive) conditions.add(["B", steelGray]);
@@ -646,8 +747,8 @@ class GameScreen extends Screen<Input> {
       x++;
     }
 
-    _drawMeter(terminal, y, actor.health.current, actor.health.max,
-        brickRed, maroon);
+    _drawMeter(
+        terminal, y, actor.health.current, actor.health.max, brickRed, maroon);
   }
 
   /// Draws a progress bar to reflect [value]'s range between `0` and [max].
@@ -655,8 +756,8 @@ class GameScreen extends Screen<Input> {
   /// exactly `0`, otherwise it will at least show a sliver. Likewise, the bar
   /// will only be full if [value] is exactly [max], otherwise at least one
   /// half unit will be missing.
-  void _drawMeter(Terminal terminal, int y, int value, int max,
-                 Color fore, Color back) {
+  void _drawMeter(
+      Terminal terminal, int y, int value, int max, Color fore, Color back) {
     var barWidth;
     if (value == max) {
       barWidth = 20;
@@ -680,38 +781,38 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void _drawWarriorStats(Terminal terminal, Hero hero) {
-    var warrior = hero.heroClass as Warrior;
-
-    terminal.writeAt(0, 8, "Fury", UIHue.helpText);
-    _drawMeter(terminal, 8, hero.charge.toInt(), 100, carrot, garnet);
-
-    var y = 9;
-
-    draw(String name, TrainedStat stat) {
-      // Hide stats until the hero has made progress on them.
-      if (stat.level == 0 && stat.percentUntilNext == 0) return;
-
-      terminal.writeAt(0, y, name, UIHue.helpText);
-      terminal.writeAt(13, y, stat.level.toString(), UIHue.text);
-      terminal.writeAt(16, y, "${stat.percentUntilNext}%", UIHue.secondary);
-      y++;
-    }
-
-    var weapon = hero.equipment.weapon;
-    if (weapon == null) {
-      draw("Fighting", warrior.fighting);
-    } else {
-      draw("Combat", warrior.combat);
-      var mastery = warrior.masteries[weapon.type.weaponType];
-      if (mastery != null) {
-        // Capitalize it.
-        var weaponType = weapon.type.weaponType;
-        weaponType = weaponType.substring(0, 1).toUpperCase() +
-            weaponType.substring(1);
-        draw("$weaponType Master", mastery);
-      }
-    }
-    draw("Toughness", warrior.toughness);
-  }
+//  void _drawWarriorStats(Terminal terminal, Hero hero) {
+//    var warrior = hero.heroClass as Warrior;
+//
+//    terminal.writeAt(0, 8, "Fury", UIHue.helpText);
+//    _drawMeter(terminal, 8, hero.charge.toInt(), 100, carrot, garnet);
+//
+//    var y = 9;
+//
+//    draw(String name, TrainedStat stat) {
+//      // Hide stats until the hero has made progress on them.
+//      if (stat.level == 0 && stat.percentUntilNext == 0) return;
+//
+//      terminal.writeAt(0, y, name, UIHue.helpText);
+//      terminal.writeAt(13, y, stat.level.toString(), UIHue.text);
+//      terminal.writeAt(16, y, "${stat.percentUntilNext}%", UIHue.secondary);
+//      y++;
+//    }
+//
+//    var weapon = hero.equipment.weapon;
+//    if (weapon == null) {
+//      draw("Fighting", warrior.fighting);
+//    } else {
+//      draw("Combat", warrior.combat);
+//      var mastery = warrior.masteries[weapon.type.weaponType];
+//      if (mastery != null) {
+//        // Capitalize it.
+//        var weaponType = weapon.type.weaponType;
+//        weaponType = weaponType.substring(0, 1).toUpperCase() +
+//            weaponType.substring(1);
+//        draw("$weaponType Master", mastery);
+//      }
+//    }
+//    draw("Toughness", warrior.toughness);
+//  }
 }

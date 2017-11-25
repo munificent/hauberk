@@ -1,6 +1,9 @@
-import 'action.dart';
+import 'package:piecemeal/piecemeal.dart';
+
+import '../hero/hero.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
+import 'action.dart';
 
 /// Base class for an [Action] that works with an existing [Item] in the game.
 abstract class ItemAction extends Action {
@@ -48,6 +51,52 @@ abstract class ItemAction extends Action {
       case ItemLocation.equipment:
         hero.equipment.countChanged();
         break;
+    }
+  }
+}
+
+abstract class DestroyItemMixin implements Action {
+  /// Tries to destroy [items] where each item with [flag] has a one in [chance]
+  /// chance of being destroyed.
+  ///
+  /// Handles splitting stacks and logging errors. Returns the list of
+  /// completely destroyed items so they can be removed from whatever collection
+  /// contains them.
+  List<Item> destroyItems(
+      Iterable<Item> items, int chance, String flag, String message) {
+    var destroyed = <Item>[];
+
+    for (var item in items) {
+      if (!item.flags.contains(flag)) continue;
+
+      // See how much of the stack is destroyed.
+      var destroyedCount = 0;
+      for (var i = 0; i < item.count; i++) {
+        if (rng.oneIn(chance)) destroyedCount++;
+      }
+
+      if (destroyedCount == item.count) {
+        // TODO: Effect.
+        log("{1} $message!", item);
+        destroyed.add(item);
+      } else if (destroyedCount > 0) {
+        var destroyedPart = item.splitStack(destroyedCount);
+        // TODO: Effect.
+        log("{1} $message!", destroyedPart);
+      }
+    }
+
+    return destroyed;
+  }
+
+  void destroyInventory(int chance, String flag, String message) {
+    // TODO: If monsters have inventories, need to handle that here.
+    if (actor is! Hero) return;
+
+    // TODO: Do same thing for equipment slots if there are any destroyable
+    // equippable items.
+    for (var item in destroyItems(hero.inventory, chance, flag, message)) {
+      hero.inventory.remove(item);
     }
   }
 }
@@ -109,8 +158,7 @@ class DropAction extends ItemAction {
 /// [Equipment]. May cause a currently equipped Item to become unequipped. If
 /// there is no room in the Inventory for that Item, it will drop to the ground.
 class EquipAction extends ItemAction {
-  EquipAction(ItemLocation location, Item item)
-      : super(location, item);
+  EquipAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
     // If it's already equipped, unequip it.
@@ -134,8 +182,11 @@ class EquipAction extends ItemAction {
       } else {
         // No room in inventory, so drop it.
         game.stage.addItem(unequipped, actor.pos);
-        log("{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
-            "ground.", actor, unequipped);
+        log(
+            "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
+            "ground.",
+            actor,
+            unequipped);
       }
     }
 
@@ -147,8 +198,7 @@ class EquipAction extends ItemAction {
 /// [Inventory]. If there is no room in the inventory, it will drop to the
 /// ground.
 class UnequipAction extends ItemAction {
-  UnequipAction(ItemLocation location, Item item)
-      : super(location, item);
+  UnequipAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
     removeItem();
@@ -159,16 +209,18 @@ class UnequipAction extends ItemAction {
 
     // No room in inventory, so drop it.
     game.stage.addItem(item, actor.pos);
-    return succeed("{1} [don't|doesn't] have room for {2} and {2 he} drops to "
-        "the ground.", actor, item);
+    return succeed(
+        "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
+        "the ground.",
+        actor,
+        item);
   }
 }
 
 /// [Action] for using an [Item] from the [Hero]'s [Inventory] or the ground.
 /// If the Item is equippable, then using it means equipping it.
 class UseAction extends ItemAction {
-  UseAction(ItemLocation location, Item item)
-      : super(location, item);
+  UseAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
     // If it's equippable, then using it just equips it.

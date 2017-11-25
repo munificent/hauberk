@@ -13,7 +13,7 @@ class Shop extends IterableMixin<Item> implements ItemCollection {
 
   int get length => _items.length;
 
-  Item operator[](int index) => _items[index];
+  Item operator [](int index) => _items[index];
 
   void remove(Item item) {
     // Do nothing.

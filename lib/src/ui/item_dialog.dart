@@ -273,6 +273,8 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
       drawStat("•", item.armor, peaGreen, sherwood);
     }
 
+    // TODO: Show heft and encumbrance.
+
 //    if (item.price != 0) {
 //      var price = priceString(item.price);
 //      terminal.writeAt(x + 49 - price.length, itemY, price, priceColor);
@@ -409,11 +411,15 @@ class _TossItemCommand extends _ItemCommand {
 
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
+    // Create the hit now so range modifiers can be calculated before the
+    // target is chosen.
+    var hit = item.toss.attack.createHit();
+    dialog._gameScreen.game.hero.modifyHit(hit, HitType.toss);
+
     // Now we need a target.
-    dialog.ui.goTo(
-        new TargetDialog(dialog._gameScreen, item.toss.attack.range, (target) {
+    dialog.ui.goTo(new TargetDialog(dialog._gameScreen, hit.range, (target) {
       dialog._gameScreen.game.hero
-          .setNextAction(new TossAction(location, item, target));
+          .setNextAction(new TossAction(location, item, hit, target));
     }));
   }
 }

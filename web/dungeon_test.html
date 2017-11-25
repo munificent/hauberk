@@ -3,16 +3,38 @@
   <title>Test Dungeons</title>
   <link rel="stylesheet" type="text/css" href="styles.css">
   <link href='http://fonts.googleapis.com/css?family=Metamorphous|Buenard' rel='stylesheet' type='text/css'>
+  <style>
+    p {
+      position: relative;
+    }
+
+    canvas.overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  </style>
 </head>
 <body>
-<h1>Dungeon Test</h1>
-<p>Depth: <select id="depth"></select></p>
-<p><canvas width="640" height="320"></canvas></p>
-<h2>Monsters</h2>
-<table id="monsters">
-</table>
-<h2>Items</h2>
-<table id="items">
+<!--<h1>Dungeon Test</h1>-->
+<table>
+  <tr>
+    <td>
+      <p>Depth: <select id="depth"></select></p>
+      <p>
+      <canvas id="tiles" width="640" height="320"></canvas>
+      <canvas class="overlay" id="states" width="640" height="320"></canvas>
+      </p>
+    </td>
+    <td>
+      <h2>Monsters</h2>
+      <table id="monsters">
+      </table>
+      <h2>Items</h2>
+      <table id="items">
+      </table>
+    </td>
+  </tr>
 </table>
 <script type="application/dart" src="dungeon_test.dart"></script>
 <script src="packages/browser/dart.js"></script>

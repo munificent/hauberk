@@ -3,26 +3,15 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'affixes.dart';
+import 'action/detection.dart';
+import 'action/flow.dart';
+import 'action/heal.dart';
+import 'action/ray.dart';
+import 'action/teleport.dart';
 
 int _sortIndex = 0;
-
-/// The current glyph's character code. Any items defined will use this.
-int _glyph;
-
-String _tag;
-String _equipSlot;
-String _weaponType;
-String _verb;
-List<String> _flags;
-int _maxStack;
-int _tossDamage;
-int _tossRange;
-Element _tossElement;
-
-/// Percent chance of objects in the current category breaking when thrown.
-int _breakage;
-
-TossItemUse _tossUse;
+_CategoryBuilder _category;
+_ItemBuilder _builder;
 
 /// Static class containing all of the [ItemType]s.
 class Items {
@@ -45,16 +34,27 @@ class Items {
 
     // Unused: ; : ` % ^ < >
 
-    category(CharCode.latinCapitalLetterCWithCedilla, stack: 10, tag: "item");
-    tossable(damage: 3, range: 8, element: Element.earth, breakage: 10);
-    item("Rock", 1, 1, persimmon);
+    category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
+      ..tag("item")
+      ..toss(damage: 3, range: 7, element: Element.earth, breakage: 10);
+    item("Rock", 1, 1.0, persimmon);
+
+    category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
+      ..tag("item")
+      ..toss(damage: 2, range: 5, breakage: 30);
+    item("Skull", 1, 1.0, gunsmoke);
 
 //    treasures();
     pelts();
     potions();
     scrolls();
+    // TODO: Rings.
+    // TODO: Amulets.
     weapons();
     bodyArmor();
+    cloaks();
+    // TODO: Shields.
+    // TODO: Helmets.
     boots();
 
     /*
@@ -82,10 +82,13 @@ class Items {
     // CharCode.latinCapitalLetterAWithRingAbove // gloves
     // CharCode.latinCapitalLetterEWithAcute // helm
     // CharCode.latinSmallLetterAe // shield
+
+    buildItem();
   }
 }
 
 void treasures() {
+  /*
   // TODO: Make monsters and areas drop these.
   // Coins.
   category(CharCode.centSign, tag: "treasure/coin");
@@ -109,7 +112,6 @@ void treasures() {
   // TODO: Could add more treasure using other currency symbols.
 
   // TODO: Instead of treasure, make these recipe components.
-  /*
   // Gems
   category(r"$", "treasure/gem");
   tossable(damage: 2, range: 7, breakage: 5);
@@ -137,105 +139,142 @@ void pelts() {
   // TODO: Should these appear on the floor?
   // TODO: Better pictogram than a pelt?
   category(CharCode.latinSmallLetterEWithAcute, stack: 20, flags: "flammable");
-  item("Flower",        1, 1, cornflower); // TODO: Use in recipe.
-  item("Insect Wing",   1, 1, violet);
-  item("Red Feather",   2, 1, brickRed); // TODO: Use in recipe.
-  item("Black Feather", 2, 1, steelGray);
-  item("Stinger",       2, 1, gold);
+  item("Flower", 1, 1.0, cornflower); // TODO: Use in recipe.
+  item("Insect Wing", 1, 1.0, violet);
+  item("Red Feather", 2, 1.0, brickRed); // TODO: Use in recipe.
+  item("Black Feather", 2, 1.0, steelGray);
+  item("Stinger", 2, 1.0, gold);
 
   category(CharCode.latinSmallLetterEWithAcute, stack: 4, flags: "flammable");
-  item("Fur Pelt",      1, 1, persimmon);
-  item("Fox Pelt",      2, 1, copper);
+  item("Fur Pelt", 1, 1.0, persimmon);
+  item("Fox Pelt", 2, 1.0, copper);
 }
 
 void potions() {
-  category(CharCode.latinSmallLetterCWithCedilla, stack: 10, flags: "freezable");
-
-  // TODO: Potions should shatter when thrown. Some should perform an effect.
+  // TODO: Some potions should perform an effect when thrown.
 
   // TODO: Make these foods?
 
   // Healing.
-  tagged("magic/potion/healing");
-  tossable(damage: 1, range: 8, breakage: 100);
-  healing("Soothing Balm",     2, 1,   10, salmon,       24);
-  healing("Mending Salve",     7, 1,   40, brickRed,     48);
-  healing("Healing Poultice", 12, 1,   80, maroon,       64, curePoison: true);
-  healing("of Amelioration",  24, 1,  200, indigo,      120, curePoison: true);
-  healing("of Rejuvenation",  65, 2,  500, violet,     1000, curePoison: true);
+  category(CharCode.latinSmallLetterCWithCedilla, stack: 10, flags: "freezable")
+    ..tag("magic/potion/healing")
+    ..toss(damage: 1, range: 6, breakage: 100);
+  item("Soothing Balm", 2, 1.0, salmon)..heal(48);
+  item("Mending Salve", 7, 1.0, brickRed)..heal(100);
+  item("Healing Poultice", 12, 1.0, maroon)..heal(200, curePoison: true);
+  item("Potion[s] of Amelioration", 24, 1.0, indigo)
+    ..heal(400, curePoison: true);
+  item("Potion[s] of Rejuvenation", 65, 0.5, violet)
+    ..heal(1000, curePoison: true);
 
-  healing("Antidote",          4, 2,   40, peaGreen,      0, curePoison: true);
+  item("Antidote", 4, 0.5, peaGreen)..heal(0, curePoison: true);
 
-  category(CharCode.latinSmallLetterEWithCircumflex, stack: 10, flags: "freezable");
-  tagged("magic/potion/resistance");
-  tossable(damage: 1, range: 8, breakage: 100);
-  resistSalve("Heat",          5, 20, carrot, Element.fire);
-  resistSalve("Cold",          6, 24, cornflower, Element.cold, "-freezable");
-  resistSalve("Light",         7, 28, buttermilk, Element.light);
-  resistSalve("Wind",          8, 32, turquoise, Element.air);
-  resistSalve("Electricity",   9, 36, lilac, Element.lightning);
-  resistSalve("Darkness",     10, 40, slate, Element.dark);
-  resistSalve("Earth",        13, 44, persimmon, Element.earth);
-  resistSalve("Water",        16, 48, ultramarine, Element.water);
-  resistSalve("Acid",         19, 52, sandal, Element.acid); // TODO: Better color.
-  resistSalve("Poison",       23, 56, lima, Element.poison);
-  resistSalve("Death",        30, 60, violet, Element.spirit);
+  category(CharCode.latinSmallLetterEWithCircumflex,
+      stack: 10, flags: "freezable")
+    ..tag("magic/potion/resistance")
+    ..toss(damage: 1, range: 6, breakage: 100);
+  item("Salve[s] of Heat Resistance", 5, 0.5, carrot)
+    ..resistSalve(Element.fire);
+  item("Salve[s] of Cold Resistance", 6, 0.5, cornflower)
+    ..resistSalve(Element.cold)
+    ..flags("-freezable");
+  item("Salve[s] of Light Resistance", 7, 0.5, buttermilk)
+    ..resistSalve(Element.light);
+  item("Salve[s] of Wind Resistance", 8, 0.5, turquoise)
+    ..resistSalve(Element.air);
+  item("Salve[s] of Lightning Resistance", 9, 0.5, lilac)
+    ..resistSalve(Element.lightning);
+  item("Salve[s] of Darkness Resistance", 10, 0.5, slate)
+    ..resistSalve(Element.dark);
+  item("Salve[s] of Earth Resistance", 13, 0.5, persimmon)
+    ..resistSalve(Element.earth);
+  item("Salve[s] of Water Resistance", 16, 0.5, ultramarine)
+    ..resistSalve(Element.water);
+  item("Salve[s] of Acid Resistance", 19, 0.5, sandal)
+    ..resistSalve(Element.acid); // TODO: Better color.
+  item("Salve[s] of Poison Resistance", 23, 0.5, lima)
+    ..resistSalve(Element.poison);
+  item("Salve[s] of Death Resistance", 30, 0.5, violet)
+    ..resistSalve(Element.spirit);
 
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
 
-  category(CharCode.latinSmallLetterEWithDiaeresis, stack: 10, flags: "freezable");
-
   // Speed.
-  tagged("magic/potion/speed");
-  tossable(damage: 1, range: 8, breakage: 100);
-  potion("of Quickness",  3, 3,  20, lima,     () => new HasteAction(20, 1));
-  potion("of Alacrity",  18, 3,  40, peaGreen, () => new HasteAction(30, 2));
-  potion("of Speed",     34, 4, 200, sherwood, () => new HasteAction(40, 3));
+  category(CharCode.latinSmallLetterEWithDiaeresis,
+      stack: 10, flags: "freezable")
+    ..tag("magic/potion/speed")
+    ..toss(damage: 1, range: 6, breakage: 100);
+  item("Potion[s] of Quickness", 3, 0.3, lima)
+    ..use(() => new HasteAction(20, 1));
+  item("Potion[s] of Alacrity", 18, 0.3, peaGreen)
+    ..use(() => new HasteAction(30, 2));
+  item("Potion[s] of Speed", 34, 0.25, sherwood)
+    ..use(() => new HasteAction(40, 3));
 
   // dram, draught, elixir, philter
 
-  category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable");
-
   // TODO: Make monsters drop these.
-  // TODO: These should do their ball attack when thrown too.
-  tagged("magic/potion/bottled");
-  tossable(damage: 1, range: 12, breakage: 100);
-  bottled("Wind",         4,   30, cornflower,  Element.air,         8, "blasts");
-  bottled("Ice",          7,   55, cerulean,    Element.cold,       15, "freezes", flags: "-freezable");
-  bottled("Fire",        11,   70, brickRed,    Element.fire,       22, "burns");
-  bottled("Ocean",       12,  110, ultramarine, Element.water,      26, "drowns");
-  bottled("Earth",       13,  150, persimmon,   Element.earth,      28, "crushes");
-  bottled("Lightning",   16,  200, lilac,       Element.lightning,  34, "shocks");
-  bottled("Acid",        18,  250, lima,        Element.acid,       38, "corrodes");
-  bottled("Poison",      22,  330, sherwood,    Element.poison,     42, "infects");
-  bottled("Shadow",      28,  440, steelGray,   Element.dark,       48, "torments",
-      noun: "the darkness");
-  bottled("Radiance",    34,  600, buttermilk,  Element.light,      52, "sears");
-  bottled("Spirit",      40, 1000, slate,       Element.spirit,     58, "haunts");
-  // TODO: Potions that raise fury, sustain it, and that trade health for it.
+  category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable")
+    ..tag("magic/potion/bottled")
+    ..toss(damage: 1, range: 8, breakage: 100);
+  item("Bottled Wind", 4, 0.5, cornflower)
+    ..flow(Element.air, "the wind", "blasts", 20, fly: true);
+  item("Bottled Ice", 7, 0.5, cerulean)
+    ..ball(Element.cold, "the cold", "freezes", 30)
+    ..flags("-freezable");
+  item("Bottled Fire", 11, 0.5, brickRed)
+    ..flow(Element.fire, "the fire", "burns", 44, fly: true);
+  item("Bottled Ocean", 12, 0.5, ultramarine)
+    ..flow(Element.water, "the water", "drowns", 52);
+  item("Bottled Earth", 13, 0.5, persimmon)
+    ..ball(Element.earth, "the dirt", "crushes", 58);
+  item("Bottled Lightning", 16, 0.5, lilac)
+    ..ball(Element.lightning, "the lightning", "shocks", 68);
+  item("Bottled Acid", 18, 0.5, lima)
+    ..flow(Element.acid, "the acid", "corrodes", 72);
+  item("Bottled Poison", 22, 0.5, sherwood)
+    ..flow(Element.poison, "the poison", "infects", 90, fly: true);
+  item("Bottled Shadow", 28, 0.5, steelGray)
+    ..ball(Element.dark, "the darkness", "torments", 120);
+  item("Bottled Radiance", 34, 0.5, buttermilk)
+    ..ball(Element.light, "light", "sears", 140);
+  item("Bottled Spirit", 40, 0.5, slate)
+    ..flow(Element.spirit, "the spirit", "haunts", 160, fly: true);
 }
 
 void scrolls() {
   // Teleportation.
-  category(CharCode.latinSmallLetterAWithCircumflex, stack: 20, flags: "flammable");
-  tagged("magic/scroll/teleportation");
-  tossable(damage: 1, range: 4, breakage: 75);
-  scroll("of Sidestepping",   2, 2,  9, lilac,       () => new TeleportAction(6));
-  scroll("of Phasing",        6, 3, 17, violet,      () => new TeleportAction(12));
-  scroll("of Teleportation", 15, 3, 33, indigo,      () => new TeleportAction(24));
-  scroll("of Disappearing",  26, 3, 47, ultramarine, () => new TeleportAction(48));
+  category(CharCode.latinSmallLetterAWithCircumflex,
+      stack: 20, flags: "flammable")
+    ..tag("magic/scroll/teleportation")
+    ..toss(damage: 1, range: 3, breakage: 75);
+  item("Scroll[s] of Sidestepping", 2, 0.5, lilac)
+    ..use(() => new TeleportAction(6));
+  item("Scroll[s] of Phasing", 6, 0.3, violet)
+    ..use(() => new TeleportAction(12));
+  item("Scroll[s] of Teleportation", 15, 0.3, indigo)
+    ..use(() => new TeleportAction(24));
+  item("Scroll[s] of Disappearing", 26, 0.3, ultramarine)
+    ..use(() => new TeleportAction(48));
 
   // Detection.
-  category(CharCode.latinSmallLetterAWithDiaeresis, stack: 20, flags: "flammable");
-  tagged("magic/scroll/detection");
-  tossable(damage: 1, range: 4, breakage: 75);
-  detection("of Find Nearby Escape",  1,  2,   20, buttermilk, [DetectType.exit], range: 20);
-  detection("of Find Nearby Items",   2,  2,   20, gold, [DetectType.item], range: 20);
-  detection("of Detect Nearby",       3,  4,   20, lima, [DetectType.exit, DetectType.item], range: 20);
+  category(CharCode.latinSmallLetterAWithDiaeresis,
+      stack: 20, flags: "flammable")
+    ..tag("magic/scroll/detection")
+    ..toss(damage: 1, range: 3, breakage: 75);
+  item("Scroll[s] of Find Nearby Escape", 1, 0.5, buttermilk)
+    ..detection([DetectType.exit], range: 20);
+  item("Scroll[s] of Find Nearby Items", 2, 0.5, gold)
+    ..detection([DetectType.item], range: 20);
+  item("Scroll[s] of Detect Nearby", 3, 0.25, lima)
+    ..detection([DetectType.exit, DetectType.item], range: 20);
 
-  detection("of Locate Escape",       5,  1,   20, sandal, [DetectType.exit]);
-  detection("of Item Detection",     20,  2,   27, carrot, [DetectType.item]);
-  detection("of Detection",          30,  4,  240, copper, [DetectType.exit, DetectType.item]);
+  item("Scroll[s] of Locate Escape", 5, 1.0, sandal)
+    ..detection([DetectType.exit]);
+  item("Scroll[s] of Item Detection", 20, 0.5, carrot)
+    ..detection([DetectType.item]);
+  item("Scroll[s] of Detection", 30, 0.25, copper)
+    ..detection([DetectType.exit, DetectType.item]);
 
 //  CharCode.latinSmallLetterAWithGrave // scroll
 //  CharCode.latinSmallLetterAWithRingAbove // scroll
@@ -243,58 +282,115 @@ void scrolls() {
 
 void weapons() {
   // Bludgeons.
-  category(CharCode.latinSmallLetterAWithAcute, tag: "equipment/weapon/club", verb: "hit[s]");
-  tossable(breakage: 25, range: 7);
-  weapon("Stick",          1,    0, persimmon,   4,   3);
-  weapon("Cudgel",         3,    9, gunsmoke,    5,   4);
-  weapon("Club",           6,   21, garnet,      6,   5);
+  category(CharCode.latinSmallLetterAWithAcute, verb: "hit[s]")
+    ..tag("equipment/weapon/club")
+    ..toss(breakage: 25, range: 5);
+  item("Stick", 1, 0.5, persimmon)
+    ..weapon(8, heft: 10)
+    ..toss(damage: 3);
+  item("Cudgel", 3, 0.5, gunsmoke)
+    ..weapon(10, heft: 11)
+    ..toss(damage: 4);
+  item("Club", 6, 0.5, garnet)
+    ..weapon(12, heft: 13)
+    ..toss(damage: 5);
 
   // Staves.
-  category(CharCode.latinSmallLetterIWithAcute, tag: "equipment/weapon/staff", verb: "hit[s]");
-  tossable(breakage: 35, range: 6);
-  weapon("Walking Stick",        2,    9, persimmon,  5,   3);
-  weapon("Sta[ff|aves]",         5,   38, garnet,     7,   5);
-  weapon("Quartersta[ff|aves]", 11,  250, gunsmoke,  12,   8);
+  category(CharCode.latinSmallLetterIWithAcute, verb: "hit[s]")
+    ..tag("equipment/weapon/staff")
+    ..toss(breakage: 35, range: 4);
+  item("Walking Stick", 2, 0.5, persimmon)
+    ..weapon(10, heft: 12)
+    ..toss(damage: 3);
+  item("Sta[ff|aves]", 5, 0.5, garnet)
+    ..weapon(14, heft: 14)
+    ..toss(damage: 5);
+  item("Quartersta[ff|aves]", 11, 0.5, gunsmoke)
+    ..weapon(24, heft: 16)
+    ..toss(damage: 8);
 
   // Hammers.
-  category(CharCode.latinSmallLetterOWithAcute, tag: "equipment/weapon/hammer", verb: "bash[es]");
-  tossable(breakage: 15, range: 5);
-  weapon("Hammer",        27,  621, persimmon,  16, 12);
-  weapon("Mattock",       39, 1225, garnet,     20, 16);
-  weapon("War Hammer",    45, 2106, gunsmoke,   24, 20);
+  category(CharCode.latinSmallLetterOWithAcute, verb: "bash[es]")
+    ..tag("equipment/weapon/hammer")
+    ..toss(breakage: 15, range: 5);
+  item("Hammer", 27, 0.5, persimmon)
+    ..weapon(32, heft: 24)
+    ..toss(damage: 12);
+  item("Mattock", 39, 0.5, garnet)
+    ..weapon(40, heft: 28)
+    ..toss(damage: 16);
+  item("War Hammer", 45, 0.5, gunsmoke)
+    ..weapon(48, heft: 32)
+    ..toss(damage: 20);
 
   // Maces.
-  category(CharCode.latinSmallLetterUWithAcute, tag: "equipment/weapon/mace", verb: "bash[es]");
-  tossable(breakage: 15, range: 5);
-  weapon("Morningstar",   24,  324, gunsmoke,   13, 11);
-  weapon("Mace",          33,  891, slate,      18, 16);
+  category(CharCode.latinSmallLetterUWithAcute, verb: "bash[es]")
+    ..tag("equipment/weapon/mace")
+    ..toss(breakage: 15, range: 4);
+  item("Morningstar", 24, 0.5, gunsmoke)
+    ..weapon(26, heft: 20)
+    ..toss(damage: 11);
+  item("Mace", 33, 0.5, slate)
+    ..weapon(36, heft: 25)
+    ..toss(damage: 16);
 
   // Whips.
-  category(CharCode.latinSmallLetterNWithTilde, tag: "equipment/weapon/whip", verb: "whip[s]");
-  tossable(breakage: 25, range: 5);
-  weapon("Whip",           4,    9, persimmon,   5,  1);
-  weapon("Chain Whip",    15,   95, gunsmoke,    9,  2);
-  weapon("Flail",         27,  409, slate,      14,  4);
+  category(CharCode.latinSmallLetterNWithTilde, verb: "whip[s]")
+    ..tag("equipment/weapon/whip")
+    ..toss(breakage: 25, range: 4);
+  item("Whip", 4, 0.5, persimmon)
+    ..weapon(10, heft: 12)
+    ..toss(damage: 1);
+  item("Chain Whip", 15, 0.5, gunsmoke)
+    ..weapon(18, heft: 18)
+    ..toss(damage: 2);
+  item("Flail", 27, 0.5, slate)
+    ..weapon(28, heft: 27)
+    ..toss(damage: 4);
 
   // Knives.
-  category(CharCode.latinCapitalLetterNWithTilde, tag: "equipment/weapon/dagger", verb: "stab[s]");
-  tossable(breakage: 2, range: 10);
-  weapon("Kni[fe|ves]",    3,    9, steelGray,   5,  5);
-  weapon("Dirk",           4,   21, gunsmoke,    6,  6);
-  weapon("Dagger",         6,   63, cornflower,  8,  8);
-  weapon("Stiletto[es]",  10,  188, slate,      11, 11);
-  weapon("Rondel",        20,  409, turquoise,  14, 14);
-  weapon("Baselard",      30,  621, gold,       16, 16);
+  category(CharCode.latinCapitalLetterNWithTilde, verb: "stab[s]")
+    ..tag("equipment/weapon/dagger")
+    ..toss(breakage: 2, range: 8);
+  item("Kni[fe|ves]", 3, 0.5, steelGray)
+    ..weapon(8, heft: 10)
+    ..toss(damage: 8);
+  item("Dirk", 4, 0.5, gunsmoke)
+    ..weapon(10, heft: 10)
+    ..toss(damage: 10);
+  item("Dagger", 6, 0.5, cornflower)
+    ..weapon(12, heft: 11)
+    ..toss(damage: 12);
+  item("Stiletto[es]", 10, 0.5, slate)
+    ..weapon(14, heft: 10)
+    ..toss(damage: 14);
+  item("Rondel", 20, 0.5, turquoise)
+    ..weapon(16, heft: 11)
+    ..toss(damage: 16);
+  item("Baselard", 30, 0.5, gold)
+    ..weapon(18, heft: 12)
+    ..toss(damage: 18);
   // Main-guache
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
-  category(CharCode.feminineOrdinalIndicator, tag: "equipment/weapon/sword", verb: "slash[es]");
-  tossable(breakage: 20, range: 6);
-  weapon("Rapier",         7,  188, steelGray,  11,  4);
-  weapon("Shortsword",    11,  324, slate,      13,  6);
-  weapon("Scimitar",      18,  748, gunsmoke,   17,  9);
-  weapon("Cutlass[es]",   24, 1417, buttermilk, 21, 11);
-  weapon("Falchion",      38, 2374, turquoise,  25, 15);
+  category(CharCode.feminineOrdinalIndicator, verb: "slash[es]")
+    ..tag("equipment/weapon/sword")
+    ..toss(breakage: 20, range: 5);
+  item("Rapier", 7, 0.5, steelGray)
+    ..weapon(20, heft: 16)
+    ..toss(damage: 4);
+  item("Shortsword", 11, 0.5, slate)
+    ..weapon(22, heft: 17)
+    ..toss(damage: 6);
+  item("Scimitar", 18, 0.5, gunsmoke)
+    ..weapon(24, heft: 18)
+    ..toss(damage: 9);
+  item("Cutlass[es]", 24, 0.5, buttermilk)
+    ..weapon(26, heft: 19)
+    ..toss(damage: 11);
+  item("Falchion", 38, 0.5, turquoise)
+    ..weapon(28, heft: 20)
+    ..toss(damage: 15);
 
   /*
 
@@ -308,59 +404,82 @@ void weapons() {
   */
 
   // Spears.
-  category(CharCode.masculineOrdinalIndicator, tag: "equipment/weapon/spear", verb: "stab[s]");
-  tossable(breakage: 3, range: 11);
-  weapon("Pointed Stick",  2,    0, garnet,      5,  9);
-  weapon("Spear",          7,  137, persimmon,  10, 15);
-  weapon("Angon",         14,  621, gunsmoke,   16, 20);
-  weapon("Lance",         28, 2106, cornflower, 24, 28);
-  weapon("Partisan",      35, 6833, slate,      36, 40);
+  category(CharCode.masculineOrdinalIndicator, verb: "stab[s]")
+    ..tag("equipment/weapon/spear")
+    ..toss(range: 9);
+  item("Pointed Stick", 2, 0.5, garnet)
+    ..weapon(10, heft: 11)
+    ..toss(damage: 9);
+  item("Spear", 7, 0.5, persimmon)
+    ..weapon(16, heft: 17)
+    ..toss(damage: 15);
+  item("Angon", 14, 0.5, gunsmoke)
+    ..weapon(20, heft: 19)
+    ..toss(damage: 20);
+  // TODO: These should not be thrown. Lower range and damage.
+  item("Lance", 28, 0.5, cornflower)
+    ..weapon(24, heft: 27)
+    ..toss(damage: 28);
+  item("Partisan", 35, 0.5, slate)
+    ..weapon(30, heft: 29)
+    ..toss(damage: 40);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
-  category(CharCode.invertedQuestionMark, tag: "equipment/weapon/axe", verb: "chop[s]");
-  tossable(breakage: 4);
-  weapon("Hatchet",    6,  137, slate,      10, 12, 10);
-  weapon("Axe",       12,  621, persimmon,  16, 18, 9);
-  weapon("Valaska",   24, 2664, gunsmoke,   26, 26, 8);
-  weapon("Battleaxe", 40, 4866, steelGray,  32, 32, 7);
-
-  // Sling. In a category itself because many bow affixes don't apply to it.
-  category(CharCode.reversedNotSign, tag: "equipment/weapon/sling", verb: "hit[s]");
-  tossable(breakage: 15, range: 5);
-  ranged("Sling",          3,   20, persimmon,  "the stone",  2, 10, 1);
+  category(CharCode.invertedQuestionMark, verb: "chop[s]")
+    ..tag("equipment/weapon/axe");
+  item("Hatchet", 6, 0.5, slate)
+    ..weapon(18, heft: 14)
+    ..toss(damage: 20, range: 8);
+  item("Axe", 12, 0.5, persimmon)
+    ..weapon(25, heft: 22)
+    ..toss(damage: 24, range: 7);
+  item("Valaska", 24, 0.5, gunsmoke)
+    ..weapon(32, heft: 26)
+    ..toss(damage: 26, range: 5);
+  item("Battleaxe", 40, 0.5, steelGray)
+    ..weapon(39, heft: 30)
+    ..toss(damage: 28, range: 4);
 
   // Bows.
-  category(CharCode.notSign, tag: "equipment/weapon/bow", verb: "hit[s]");
-  tossable(breakage: 50, range: 5);
-  ranged("Short Bow",      5,  180, persimmon,  "the arrow",  4, 12, 2);
-  ranged("Longbow",       13,  600, garnet,     "the arrow",  8, 14, 3);
-  ranged("Crossbow",      28, 2000, gunsmoke,   "the bolt",  12, 16, 4);
+  category(CharCode.reversedNotSign, verb: "hit[s]")
+    ..tag("equipment/weapon/bow")
+    ..toss(breakage: 50, range: 5);
+  item("Short Bow", 5, 0.3, persimmon)
+    ..ranged("the arrow", damage: 8, range: 12)
+    ..toss(damage: 2);
+  item("Longbow", 13, 0.3, garnet)
+    ..ranged("the arrow", damage: 16, range: 14)
+    ..toss(damage: 3);
+  item("Crossbow", 28, 0.3, gunsmoke)
+    ..ranged("the bolt", damage: 24, range: 16)
+    ..toss(damage: 4);
 }
 
 void bodyArmor() {
   // TODO: Make some armor throwable.
-  category(CharCode.latinCapitalLetterAe, tag: "equipment/armor/cloak");
-  armor("Cloak",                   3,   2, 19, ultramarine, 2);
-  armor("Fur Cloak",               5,   5, 42, garnet, 3);
+  // Robes.
+  category(CharCode.latinSmallLetterOWithCircumflex)
+    ..tag("equipment/armor/body/robe");
+  item("Robe", 2, 0.5, cerulean)..armor(4);
+  item("Fur-lined Robe", 6, 0.25, sherwood)..armor(6);
 
-  category(CharCode.latinSmallLetterOWithDiaeresis, tag: "equipment/armor/body");
-  armor("Cloth Shirt",             2,   2,   19, sandal,      2);
-  armor("Leather Shirt",           5,   2,  126, persimmon,   5);
-  armor("Jerkin",                  7,   2,  191, gunsmoke,    6);
-  armor("Leather Armor",          10,   2,  377, garnet,      8);
-  armor("Padded Armor",           14,   2,  819, steelGray,  11);
-  armor("Studded Leather Armor",  17,   2, 1782, slate,      15);
+  // Soft armor.
+  category(CharCode.latinSmallLetterOWithDiaeresis)
+    ..tag("equipment/armor/body");
+  item("Cloth Shirt", 2, 0.5, sandal)..armor(3);
+  item("Leather Shirt", 5, 0.5, persimmon)..armor(6, encumber: 1);
+  item("Jerkin", 7, 0.5, gunsmoke)..armor(8, encumber: 1);
+  item("Leather Armor", 10, 0.5, garnet)..armor(11, encumber: 2);
+  item("Padded Armor", 14, 0.5, steelGray)..armor(15, encumber: 3);
+  item("Studded Leather Armor", 17, 0.5, slate)..armor(22, encumber: 4);
 
-  category(CharCode.latinSmallLetterOWithGrave, tag: "equipment/armor/body");
-  armor("Mail Hauberk",           20,   2, 2835, steelGray,  18);
-  armor("Scale Mail",             23,   2, 4212, gunsmoke,   21);
+  // Mail armor.
+  category(CharCode.latinSmallLetterOWithGrave)..tag("equipment/armor/body");
+  item("Mail Hauberk", 20, 0.5, steelGray)..armor(28, encumber: 5);
+  item("Scale Mail", 23, 0.5, gunsmoke)..armor(36, encumber: 7);
 
 //  CharCode.latinSmallLetterUWithCircumflex // armor
-
-  category(CharCode.latinSmallLetterOWithCircumflex, tag: "equipment/armor/body/robe");
-  armor("Robe",                    2,   2,   77, cerulean,    4);
-  armor("Fur-lined Robe",          6,   4,  191, sherwood,    6);
 
   /*
   Metal Lamellar Armor[s]
@@ -374,40 +493,94 @@ void bodyArmor() {
   */
 }
 
-void boots() {
-  category(CharCode.latinSmallLetterIWithGrave, tag: "equipment/armor/boots");
-  armor("Pair[s] of Leather Sandals",       2, 4,    6, persimmon,   1);
-  armor("Pair[s] of Leather Shoes",         8, 3,   19, garnet,      2);
-
-  category(CharCode.latinCapitalLetterAWithDiaeresis, tag: "equipment/armor/boots");
-  armor("Pair[s] of Leather Boots",        14, 3,   77, persimmon,  4);
-  armor("Pair[s] of Metal Shod Boots",     22, 3,  274, slate,      7);
-  armor("Pair[s] of Greaves",              47, 4, 1017, gunsmoke,  12);
+void cloaks() {
+  category(CharCode.latinCapitalLetterAe)..tag("equipment/armor/cloak");
+  item("Cloak", 3, 0.5, ultramarine)..armor(2);
+  item("Fur Cloak", 5, 0.2, garnet)..armor(3);
 }
 
-void category(int glyph, {String tag, String verb, String flags, int stack: 1}) {
-  _glyph = glyph;
-  _verb = verb;
+void boots() {
+  category(CharCode.latinSmallLetterIWithGrave)..tag("equipment/armor/boots");
+  item("Pair[s] of Leather Sandals", 2, 0.24, persimmon)..armor(1);
+  item("Pair[s] of Leather Shoes", 8, 0.3, garnet)..armor(2);
+
+  category(CharCode.latinCapitalLetterAWithDiaeresis)
+    ..tag("equipment/armor/boots");
+  item("Pair[s] of Leather Boots", 14, 0.3, persimmon)..armor(6, encumber: 1);
+  item("Pair[s] of Metal Shod Boots", 22, 0.3, slate)..armor(8, encumber: 2);
+  item("Pair[s] of Greaves", 47, 0.25, gunsmoke)..armor(12, encumber: 3);
+}
+
+_CategoryBuilder category(int glyph,
+    {String verb, String flags, int stack: 1}) {
+  buildItem();
+
+  _category = new _CategoryBuilder();
+
+  _category._glyph = glyph;
+  _category._verb = verb;
   if (flags != null) {
-    _flags = flags.split(" ");
-  } else {
-    _flags = const [];
+    _category.flags(flags);
   }
 
-  tagged(tag);
+  _category._maxStack = stack;
 
-  _maxStack = stack;
-
-  // Default to not throwable.
-  _tossDamage = null;
-  _tossRange = null;
-  _breakage = null;
+  return _category;
 }
 
-void tagged(String tagPath) {
-  _equipSlot = null;
-  _weaponType = null;
-  if (tagPath != null) {
+_ItemBuilder item(String name, int depth, double frequency, appearance) {
+  buildItem();
+
+  _builder = new _ItemBuilder();
+  _builder._name = name;
+  _builder._depth = depth;
+  _builder._frequency = frequency;
+  _builder._appearance = appearance;
+
+  return _builder;
+}
+
+class _BaseBuilder {
+  final List<String> _flags = [];
+
+  Element _tossElement;
+  int _tossDamage;
+  int _tossRange;
+  TossItemUse _tossUse;
+
+  /// Percent chance of objects in the current category breaking when thrown.
+  int _breakage;
+
+  void flags(String flags) {
+    if (flags == null) return;
+    _flags.addAll(flags.split(" "));
+  }
+
+  /// Makes items in the category throwable.
+  void toss({int damage, Element element, int range, int breakage}) {
+    _tossDamage = damage;
+    _tossElement = element;
+    _tossRange = range;
+    _breakage = breakage;
+  }
+
+  void tossUse(TossItemUse use) {
+    _tossUse = use;
+  }
+}
+
+class _CategoryBuilder extends _BaseBuilder {
+  /// The current glyph's character code. Any items defined will use this.
+  int _glyph;
+
+  String _equipSlot;
+  int _maxStack;
+
+  String _weaponType;
+  String _tag;
+  String _verb;
+
+  void tag(String tagPath) {
     // Define the tag path and store the leaf tag which is what gets used by
     // the item types.
     Items.types.defineTags("item/$tagPath");
@@ -440,130 +613,131 @@ void tagged(String tagPath) {
     // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
     // example, a "sword" item will match a "weapon" affix.
     Affixes.defineItemTag(tagPath);
-  } else {
-    _tag = null;
   }
 }
 
-/// Makes items in the current category throwable.
-///
-/// This must be called *after* [category] is called.
-void tossable({int damage, Element element, int range, int breakage,
-    TossItemUse use}) {
-  element ??= Element.none;
+class _ItemBuilder extends _BaseBuilder {
+  // category too.
+  Object _appearance;
+  double _frequency;
+  ItemUse _use;
+  Attack _attack;
+  int _encumbrance;
+  int _heft;
+  int _armor;
 
-  _tossDamage = damage;
-  _tossElement = element;
-  _tossRange = range;
-  _breakage = breakage;
-  _tossUse = use;
+  String _name;
+  int _depth;
+
+  void armor(int armor, {int encumber}) {
+    _armor = armor;
+    _encumbrance = encumber;
+  }
+
+  void weapon(int damage, {int heft}) {
+    // TODO: Individual rarities.
+    _attack = new Attack(null, _category._verb, damage);
+    _heft = heft;
+  }
+
+  void ranged(String noun, {int damage, int range}) {
+    _attack = new Attack(new Noun(noun), "pierce[s]", damage, range);
+    // TODO: Make this per-item once it does something.
+    _heft = 1;
+  }
+
+  void use(ItemUse use) {
+    _use = use;
+  }
+
+  void detection(List<DetectType> types, {int range}) {
+    use(() => new DetectAction(types, range));
+  }
+
+  void resistSalve(Element element) {
+    use(() => new ResistAction(40, element));
+  }
+
+  // TODO: Take list of conditions to cure?
+  void heal(int amount, {bool curePoison: false}) {
+    use(() => new HealAction(amount, curePoison: curePoison));
+  }
+
+  /// Sets a use and toss use that creates an expanding ring of elemental
+  /// damage.
+  void ball(Element element, String noun, String verb, int damage,
+      {int range}) {
+    var attack = new Attack(new Noun(noun), verb, damage, range ?? 3, element);
+
+    use(() => new RingSelfAction(attack));
+    tossUse((pos) => new RingFromAction(attack, pos));
+  }
+
+  /// Sets a use and toss use that creates an flow of elemental damage.
+  void flow(Element element, String noun, String verb, int damage,
+      {int range = 3, bool fly = false}) {
+    var attack = new Attack(new Noun(noun), verb, damage, 3, element);
+
+    var motilities = new MotilitySet([Motility.walk]);
+    if (fly) motilities.add(Motility.fly);
+
+    use(() => new FlowSelfAction(attack, motilities));
+    tossUse((pos) => new FlowFromAction(attack, pos, motilities));
+  }
 }
 
-void treasure(String name, int depth, appearance, int price) {
-  item(name, depth, 1, appearance, treasure: true, price: price);
-}
+void buildItem() {
+  if (_builder == null) return;
 
-void potion(String name, int depth, int rarity, int price, appearance, ItemUse use) {
-  if (name.startsWith("of")) name = "Potion[s] $name";
-
-  item(name, depth, rarity, appearance, price: price, use: use);
-}
-
-void healing(String name, int depth, int rarity, int price, appearance, int amount,
-    {bool curePoison: false}) {
-  potion(name, depth, rarity, price, appearance,
-      () => new HealAction(amount, curePoison: curePoison));
-}
-
-void resistSalve(String name, int depth, int price, appearance,
-    Element element, [String flags]) {
-  item("Salve[s] of $name Resistance", depth, 2, appearance,
-      price: price, use: () => new ResistAction(40, element),
-      flags: flags);
-}
-
-void bottled(String name, int depth, int price, appearance, Element element,
-    int damage, String verb, {String noun, String flags}) {
-  noun ??= "the ${name.toLowerCase()}";
-
-  var attack = new Attack(new Noun(noun), verb, damage, 3, element);
-  item("Bottled $name", depth, 2, appearance, price: price,
-      use: () => new RingSelfAction(attack),
-      tossUse: (pos) => new RingAtAction(attack, pos),
-      flags: flags);
-}
-
-void detection(String name, int depth, int rarity, int price, appearance,
-    List<DetectType> types, {int range}) {
-  scroll(name, depth, rarity, price, appearance, () => new DetectAction(types, range));
-}
-
-void scroll(String name, int depth, int rarity, int price, appearance, ItemUse use) {
-  if (name.startsWith("of")) name = "Scroll[s] $name";
-
-  item(name, depth, rarity, appearance, price: price, use: use);
-}
-
-void weapon(String name, int depth, int price, appearance, int damage,
-      int tossDamage,
-      [int tossRange]) {
-  var noun = new Noun("the ${name.toLowerCase()}");
-  var verb = Log.conjugate(_verb, Pronoun.it);
-  var toss = new Attack(noun, verb, tossDamage, tossRange ?? _tossRange);
-  // TODO: Individual rarities.
-  item(name, depth, 2, appearance,
-      attack: new Attack(null, _verb, damage),
-      tossAttack: toss,
-      price: price);
-}
-
-void ranged(String name, int depth, int price, appearance, String noun,
-    int damage, int range, int tossDamage) {
-  var tossNoun = new Noun("the ${name.toLowerCase()}");
-  var verb = Log.conjugate(_verb, Pronoun.it);
-  var toss = new Attack(tossNoun, verb, tossDamage, _tossRange);
-  // TODO: Individual rarities.
-  item(name, depth, 3, appearance,
-      attack: new Attack(new Noun(noun), "pierce[s]", damage, range),
-      tossAttack: toss,
-      price: price);
-}
-
-void armor(String name, int depth, int rarity, int price, appearance, int armor) {
-  item(name, depth, rarity, appearance, armor: armor, price: price);
-}
-
-void item(String name, int depth, int rarity, appearance, {ItemUse use,
-    TossItemUse tossUse,
-    Attack attack, Attack tossAttack, int armor: 0, int price: 0,
-    bool treasure: false, String flags}) {
   // If the appearance isn't an actual glyph, it should be a color function
   // that will be applied to the current glyph.
+  var appearance = _builder._appearance;
   if (appearance is Color) {
-    appearance = new Glyph.fromCharCode(_glyph, appearance, midnight);
+    appearance = new Glyph.fromCharCode(_category._glyph, appearance, midnight);
   } else if (appearance is! Glyph) {
-    appearance = appearance(_glyph);
-  }
-
-  if (tossAttack == null && _tossDamage != null) {
-    var noun = new Noun("the ${name.toLowerCase()}");
-    tossAttack = new Attack(
-        noun, "hits", _tossDamage, _tossRange, _tossElement);
+    appearance = appearance(_category._glyph);
   }
 
   Toss toss;
-  if (tossAttack != null) {
-    toss = new Toss(_breakage, tossAttack, tossUse ?? _tossUse);
+  var tossDamage = _builder._tossDamage ?? _category._tossDamage;
+  if (tossDamage != null) {
+    var noun = new Noun("the ${_builder._name.toLowerCase()}");
+    var verb = "hits";
+    if (_category._verb != null) {
+      verb = Log.conjugate(_category._verb, Pronoun.it);
+    }
+
+    var range = _builder._tossRange ?? _category._tossRange;
+    assert(range != null);
+    var element =
+        _builder._tossElement ?? _category._tossElement ?? Element.none;
+    var use = _builder._tossUse ?? _category._tossUse;
+    var breakage = _category._breakage ?? _builder._breakage ?? 0;
+
+    var tossAttack = new Attack(noun, verb, tossDamage, range, element);
+    toss = new Toss(breakage, tossAttack, use);
   }
 
-  var itemType = new ItemType(name, appearance, depth, _sortIndex++, _equipSlot,
-      _weaponType, use, attack, toss, armor, price, _maxStack,
-      treasure: treasure);
+  var itemType = new ItemType(
+      _builder._name,
+      appearance,
+      _builder._depth,
+      _sortIndex++,
+      _category._equipSlot,
+      _category._weaponType,
+      _builder._use,
+      _builder._attack,
+      toss,
+      _builder._armor ?? 0,
+      0,
+      _category._maxStack,
+      encumbrance: _builder._encumbrance ?? 0,
+      heft: _builder._heft ?? 0);
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
-  itemType.flags.addAll(_flags);
-  if (flags != null) {
-    for (var flag in flags.split(" ")) {
+  itemType.flags.addAll(_category._flags);
+  if (_builder._flags != null) {
+    for (var flag in _builder._flags) {
       if (flag.startsWith("-")) {
         itemType.flags.remove(flag.substring(1));
       } else {
@@ -572,6 +746,8 @@ void item(String name, int depth, int rarity, appearance, {ItemUse use,
     }
   }
 
-  Items.types.add(itemType.name, itemType, itemType.depth, rarity, _tag);
-}
+  Items.types.add(itemType.name, itemType, itemType.depth, _builder._frequency,
+      _category._tag);
 
+  _builder = null;
+}

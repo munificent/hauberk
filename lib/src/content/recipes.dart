@@ -14,74 +14,39 @@ class Recipes {
 }
 
 void healing() {
-  recipe("Healing Poultice", {
-    'Flower': 1,
-    'Soothing Balm': 1
-  });
+  recipe("Healing Poultice", {'Flower': 1, 'Soothing Balm': 1});
 
-  recipe('Antidote', {
-    'Soothing Balm': 1,
-    'Stinger': 1
-  });
+  recipe('Antidote', {'Soothing Balm': 1, 'Stinger': 1});
 
-  recipe('Soothing Balm', {
-    'Flower': 3
-  });
+  recipe('Soothing Balm', {'Flower': 3});
 
-  recipe('Mending Salve', {
-    'Soothing Balm': 3
-  });
+  recipe('Mending Salve', {'Soothing Balm': 3});
 
-  recipe('Healing Poultice', {
-    'Mending Salve': 3
-  });
+  recipe('Healing Poultice', {'Mending Salve': 3});
 
-  recipe('Potion of Amelioration', {
-    'Healing Poultice': 3
-  });
+  recipe('Potion of Amelioration', {'Healing Poultice': 3});
 
-  recipe('Potion of Rejuvenation', {
-    'Potion of Amelioration': 4
-  });
+  recipe('Potion of Rejuvenation', {'Potion of Amelioration': 4});
 }
 
 void teleportation() {
-  recipe('Scroll of Sidestepping', {
-    'Insect Wing': 1,
-    'Black Feather': 1
-  });
+  recipe('Scroll of Sidestepping', {'Insect Wing': 1, 'Black Feather': 1});
 
-  recipe('Scroll of Phasing', {
-    'Scroll of Sidestepping': 2
-  });
+  recipe('Scroll of Phasing', {'Scroll of Sidestepping': 2});
 
-  recipe('Scroll of Teleportation', {
-    'Scroll of Phasing': 2
-  });
+  recipe('Scroll of Teleportation', {'Scroll of Phasing': 2});
 
-  recipe('Scroll of Disappearing', {
-    'Scroll of Teleportation': 2
-  });
+  recipe('Scroll of Disappearing', {'Scroll of Teleportation': 2});
 }
 
 void armor() {
-  recipe('Fur Cloak', {
-    'Fox Pelt': 1
-  });
+  recipe('Fur Cloak', {'Fox Pelt': 1});
 
-  recipe('Fur Cloak', {
-    'Fur Pelt': 1
-  });
+  recipe('Fur Cloak', {'Fur Pelt': 1});
 
-  recipe('Fur-lined Robe', {
-    'Robe': 1,
-    'Fur Pelt': 2
-  });
+  recipe('Fur-lined Robe', {'Robe': 1, 'Fur Pelt': 2});
 
-  recipe('Fur-lined Robe', {
-    'Robe': 1,
-    'Fox Pelt': 1
-  });
+  recipe('Fur-lined Robe', {'Robe': 1, 'Fox Pelt': 1});
 }
 
 void recipe(drop, Map<String, int> ingredientNames) {

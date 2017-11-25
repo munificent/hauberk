@@ -3,41 +3,45 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'drops.dart';
+import 'move/bolt.dart';
+import 'move/cone.dart';
+import 'move/haste.dart';
+import 'move/heal.dart';
+import 'move/howl.dart';
+import 'move/insult.dart';
+import 'move/spawn.dart';
+import 'move/teleport.dart';
+import 'tiles.dart';
 
 /// The last builder that was created. It gets implicitly finished when the
-/// next group or breed starts, or at the end of initialization. This way, we
+/// next family or breed starts, or at the end of initialization. This way, we
 /// don't need an explicit `build()` call at the end of each builder.
 _BreedBuilder _builder;
 
-/// The default tracking for a breed that doesn't specify it.
-int _tracking;
+_FamilyBuilder _family = new _FamilyBuilder(null);
 
-/// The default speed for breeds in the current group. If the breed
-/// specifies a speed, it is added to this.
-int _speed;
-
-/// The default meander for breeds in the current group. If the breed
-/// specifies a meander, it is added to this.
-int _meander;
-
-/// Default flags for the current group.
-String _groupFlags;
-
-/// Character for the current monster.
-String _character;
+/// While the breeds are being built, we store their minions as string names
+/// to avoid problems with circular references between breeds. Once all breeds
+/// are defined, we go back and look up the actual breed object for each name.
+Map<Breed, List<_NamedMinion>> _minionNames = {};
 
 /// Static class containing all of the [Monster] [Breed]s.
 class Monsters {
+  // TODO: Now that monsters are spawned using encounters, they no longer need
+  // to have a level or be in a resource set.
   static final ResourceSet<Breed> breeds = new ResourceSet();
 
   static void initialize() {
     breeds.defineTags("monster");
 
+    // TODO: Temp. Is there a cleaner way to set these up?
+    breeds.defineTags("dungeon/corridor dungeon/room aquatic");
+
     // Here's approximately the level distributions for the different
     // broad categories on monsters. Monsters are very roughly lumped
     // together so that different depths tend to have a different
     // feel. This doesn't mean that all monsters of a category will
-    // fall in that range, just that they tend to. For every group,
+    // fall in that range, just that they tend to. For every family,
     // there will likely be some oddball out of range monsters, like
     // death molds.
 
@@ -110,39 +114,46 @@ class Monsters {
     // - Don't use both "u" and "U" for undead?
 
     var categories = [
-      arachnids,      ancients,
-      bats,           birds,
-      canines,        canids,
-      dragons,        greaterDragons,
-      eyes,           elementals,
-      faeFolk,        felines,
-      goblins,        golems,
-      humanoids,      hybrids,
-      insects,        insubstantials,
-      jellies,        // J unused
-      kobolds,        krakens,
-      lizardMen,      lichs,
-      mushrooms,      hydras,
-      nagas,          demons,
-      orcs,           ogres,
-      people,         giants,
-      quadrupeds,     quest,
-      rodents,        reptiles,
-      slugs,          snakes,
-      troglodytes,    trolls,
-      minorUndead,    majorUndead,
-      vines,          vampires,
-      worms,          wraiths,
-      skeletons,      xorns,
+      arachnids, ancients,
+      bats, birds,
+      canines, canids,
+      dragons, greaterDragons,
+      eyes, elementals,
+      faeFolk, felines,
+      goblins, golems,
+      humanoids, hybrids,
+      insects, insubstantials,
+      jellies, // J unused
+      kobolds, krakens,
+      lizardMen, lichs,
+      mushrooms, hydras,
+      nagas, demons,
+      orcs, ogres,
+      people, giants,
+      quadrupeds, quest,
+      rodents, reptiles,
+      slugs, snakes,
+      troglodytes, trolls,
+      minorUndead, majorUndead,
+      vines, vampires,
+      worms, wraiths,
+      skeletons, xorns,
       /* y and Y? */
-      zombies,        serpents
+      zombies, serpents
     ];
 
     for (var category in categories) {
       category();
     }
 
-    finishBuilder();
+    buildBreed();
+
+    // Now that all the breeds are defined, look up the minions and add them to
+    // each breed.
+    _minionNames.forEach((breed, minions) {
+      breed.minions.addAll(minions.map((named) => new Minion(
+          breeds.find(named.breed), named.countMin, named.countMax)));
+    });
 
     // TODO: Build a tag graph for breeds and then use it in places:
     // - Randomly generated themed dungeons that prefer monsters from a certain
@@ -153,120 +164,135 @@ class Monsters {
 }
 
 void arachnids() {
-  group("a", flags: "fearless");
-  breed("brown spider", 1, persimmon, 3, meander: 8)
-      .attack("bite[s]", 5, Element.poison)
-      .drop(5, "Stinger");
+  // TODO: Should all spiders hide in corridors?
+  family("a", flags: "fearless")
+    ..placeIn("corridor")
+    ..stain(Tiles.spiderweb);
+  breed("brown spider", 1, persimmon, 6, meander: 8)..attack("bite[s]", 5);
 
-  breed("giant spider", 6, ultramarine, 20, meander: 5)
-      .attack("bite[s]", 5, Element.poison)
-      .drop(10, "Stinger");
+  breed("gray spider", 2, slate, 12, meander: 6)
+    ..attack("bite[s]", 5, Element.poison);
+
+  breed("spiderling", 4, persimmon, 6, meander: 8)
+    ..count(2, 5)
+    ..attack("bite[s]", 5);
+
+  breed("giant spider", 6, ultramarine, 40, meander: 5)
+    ..attack("bite[s]", 5, Element.poison)
+    ..drop(10, "Stinger");
 }
 
 void ancients() {}
 
 void bats() {
-  group("b");
+  family("b")
+    ..fly()
+    ..preferWall();
   breed("brown bat", 2, persimmon, 9, speed: 2, meander: 6)
-      .attack("bite[s]", 4);
+    ..count(2, 4)
+    ..attack("bite[s]", 4);
 
-  breed("giant bat", 4, garnet, 16, speed: 2, meander: 4)
-      .attack("bite[s]", 6);
+  breed("giant bat", 4, garnet, 24, speed: 2, meander: 4).attack("bite[s]", 6);
 
-  breed("cave bat", 6, gunsmoke, 10, speed: 3, meander: 3)
-      .attack("bite[s]", 6)
-      .flags("group");
+  breed("cave bat", 6, gunsmoke, 40, speed: 3, meander: 3)
+    ..count(2, 5)
+    ..attack("bite[s]", 6);
 }
 
 void birds() {
-  group("B");
+  family("B")
+    ..fly()
+    ..count(3, 6);
   breed("crow", 4, steelGray, 9, speed: 2, meander: 4)
-      .attack("bite[s]", 5)
-      .drop(25, "Black Feather")
-      .flags("group");
+    ..attack("bite[s]", 5)
+    ..drop(25, "Black Feather");
 
-  breed("raven", 6, slate, 12, meander: 1)
-      .attack("bite[s]", 5)
-      .attack("claw[s]", 4)
-      .drop(20, "Black Feather")
-      .flags("protective");
+  breed("raven", 6, slate, 22, meander: 1)
+    ..attack("bite[s]", 5)
+    ..attack("claw[s]", 4)
+    ..drop(20, "Black Feather")
+    ..flags("protective");
 }
 
 void canines() {
-  group("c", tracking: 20, meander: 3, flags: "few");
-  breed("mangy cur", 2, buttermilk, 8)
-      .attack("bite[s]", 4)
-      .howl(range: 6)
-      .drop(20, "Fur Pelt");
+  family("c", tracking: 20, meander: 3);
+  breed("mangy cur", 2, buttermilk, 11)
+    ..count(4)
+    ..attack("bite[s]", 4)
+    ..howl(range: 6)
+    ..drop(20, "Fur Pelt");
 
-  breed("wild dog", 4, gunsmoke, 14)
-      .attack("bite[s]", 6)
-      .howl(range: 8)
-      .drop(20, "Fur Pelt");
+  breed("wild dog", 4, gunsmoke, 20)
+    ..count(4)
+    ..attack("bite[s]", 6)
+    ..howl(range: 8)
+    ..drop(20, "Fur Pelt");
 
-  breed("mongrel", 7, carrot, 20)
-      .attack("bite[s]", 8)
-      .howl(range: 10)
-      .drop(20, "Fur Pelt");
+  breed("mongrel", 7, carrot, 28)
+    ..count(2, 5)
+    ..attack("bite[s]", 8)
+    ..howl(range: 10)
+    ..drop(20, "Fur Pelt");
 }
 
 void canids() {}
 
 void dragons() {
   // TODO: Tune. Give more attacks. Tune drops.
-  group("d");
+  family("d")..preferOpen();
   breed("red dragon", 50, brickRed, 400)
-      .attack("bite[s]", 80)
-      .attack("claw[s]", 60)
-      .fireCone(damage: 100)
-      .dropMany(8, "treasure")
-      .dropMany(6, "magic")
-      .dropMany(5, "equipment");
+    ..attack("bite[s]", 80)
+    ..attack("claw[s]", 60)
+    ..fireCone(damage: 100)
+    ..dropMany(6, "magic")
+    ..dropMany(5, "equipment");
 }
 
 void greaterDragons() {}
 
 void eyes() {
-  group("e", flags: "immobile");
-  breed("lazy eye", 1, cornflower, 10)
-      .attack("stare[s] at", 4)
-      .sparkBolt(rate: 6, damage: 10, range: 6);
+  family("e", flags: "immobile")
+    ..fly()
+    ..preferOpen();
+  breed("lazy eye", 1, cornflower, 12)
+    ..attack("stare[s] at", 6)
+    ..sparkBolt(rate: 6, damage: 10, range: 8);
 
-  breed("mad eye", 5, salmon, 20)
-      .attack("stare[s] at", 6)
-      .windBolt(rate: 6, damage: 20);
+  breed("mad eye", 5, salmon, 40)
+    ..attack("stare[s] at", 8)
+    ..windBolt(rate: 6, damage: 20);
 
-  breed("floating eye", 9, buttermilk, 30)
-      .attack("stare[s] at", 8)
-      .sparkBolt(rate: 5, damage: 16)
-      .teleport(rate: 8, range: 7);
+  breed("floating eye", 9, buttermilk, 60)
+    ..attack("stare[s] at", 10)
+    ..sparkBolt(rate: 4, damage: 16)
+    ..teleport(rate: 10, range: 7);
 
-  breed("baleful eye", 20, carrot, 50)
-      .attack("gaze[s] into", 12)
-      .fireBolt(rate: 4, damage: 20)
-      .waterBolt(rate: 4, damage: 20)
-      .teleport(rate: 8, range: 9);
+  breed("baleful eye", 20, carrot, 80)
+    ..attack("gaze[s] into", 12)
+    ..fireBolt(rate: 4, damage: 20)
+    ..waterBolt(rate: 4, damage: 20)
+    ..teleport(rate: 10, range: 9);
 
-  breed("malevolent eye", 30, brickRed, 70)
-      .attack("gaze[s] into", 20)
-      .lightBolt(rate: 4, damage: 20)
-      .darkBolt(rate: 4, damage: 20)
-      .fireCone(rate: 7, damage: 30)
-      .teleport(rate: 8, range: 9);
+  breed("malevolent eye", 30, brickRed, 120)
+    ..attack("gaze[s] into", 20)
+    ..lightBolt(rate: 4, damage: 20)
+    ..darkBolt(rate: 4, damage: 20)
+    ..fireCone(rate: 7, damage: 30)
+    ..teleport(rate: 10, range: 9);
 
-  breed("murderous eye", 40, maroon, 90)
-      .attack("gaze[s] into", 30)
-      .acidBolt(rate: 7, damage: 50)
-      .stoneBolt(rate: 7, damage: 50)
-      .iceCone(rate: 7, damage: 40)
-      .teleport(rate: 8, range: 9);
+  breed("murderous eye", 40, maroon, 180)
+    ..attack("gaze[s] into", 30)
+    ..acidBolt(rate: 7, damage: 50)
+    ..stoneBolt(rate: 7, damage: 50)
+    ..iceCone(rate: 7, damage: 40)
+    ..teleport(rate: 10, range: 9);
 
-  breed("watcher", 60, gunsmoke, 140)
-      .attack("see[s]", 50)
-      .lightBolt(rate: 7, damage: 40)
-      .lightCone(rate: 7, damage: 60)
-      .darkBolt(rate: 7, damage: 50)
-      .darkCone(rate: 7, damage: 70);
+  breed("watcher", 60, gunsmoke, 300)
+    ..attack("see[s]", 50)
+    ..lightBolt(rate: 7, damage: 40)
+    ..lightCone(rate: 7, damage: 60)
+    ..darkBolt(rate: 7, damage: 50)
+    ..darkCone(rate: 7, damage: 70);
 
   // beholder, undead beholder, rotting beholder
 }
@@ -276,91 +302,115 @@ void elementals() {}
 void faeFolk() {
   // Sprites, pixies, fairies, elves, etc.
 
-  // TODO: Make them fly.
-  group("f", speed: 2, meander: 4, flags: "cowardly");
-  breed("forest sprite", 1, mint, 8)
-      .attack("scratch[es]", 3)
-      .sparkBolt(rate: 7, damage: 4)
-      .teleport(rate: 7, range: 5)
-      .drop(40, "magic");
+  family("f", speed: 2, meander: 4, flags: "cowardly")
+    ..fly()
+    ..preferOpen();
+  breed("forest sprite", 1, mint, 6)
+    ..attack("scratch[es]", 3)
+    ..insult(rate: 4)
+    ..sparkBolt(rate: 7, damage: 4)
+    ..drop(60, "magic");
 
   breed("house sprite", 3, cornflower, 15)
-      .attack("poke[s]", 5)
-      .stoneBolt(rate: 10, damage: 4)
-      .teleport(rate: 7, range: 5)
-      .drop(40, "magic");
+    ..attack("poke[s]", 5)
+    ..insult(rate: 4)
+    ..stoneBolt(rate: 10, damage: 4)
+    ..teleport(rate: 7, range: 4)
+    ..drop(80, "magic");
 
   breed("mischievous sprite", 7, salmon, 24)
-      .attack("stab[s]", 6)
-      .windBolt(rate: 8, damage: 8)
-      .teleport(range: 7)
-      .insult(rate: 6)
-      .drop(60, "magic");
+    ..attack("stab[s]", 6)
+    ..insult(rate: 4)
+    ..windBolt(rate: 8, damage: 8)
+    ..teleport(range: 5)
+    ..drop(100, "magic");
 }
 
 void felines() {
-  group("F");
+  family("F");
   breed("stray cat", 1, gold, 9, speed: 1, meander: 3)
-      .attack("bite[s]", 5)
-      .attack("scratch[es]", 4)
-      .drop(10, "Fur Pelt");
+    ..attack("bite[s]", 5)
+    ..attack("scratch[es]", 4);
 }
 
 void goblins() {
-  group("g", meander: 1, flags: "open-doors");
-  breed("goblin peon", 4, persimmon, 20, meander: 2)
-      .attack("stab[s]", 5)
-      .drop(10, "spear")
-      .drop(5, "healing")
-      .flags("few");
+  family("g", meander: 1)..openDoors();
+  breed("goblin peon", 4, sandal, 26, meander: 2)
+    ..count(4)
+    ..attack("stab[s]", 8)
+    ..insult(rate: 8)
+    ..drop(10, "spear")
+    ..drop(5, "healing");
 
-  breed("goblin archer", 6, peaGreen, 22)
-      .attack("stab[s]", 3)
-      .arrow(rate: 3, damage: 4)
-      .drop(20, "bow")
-      .drop(10, "dagger")
-      .drop(5, "healing")
-      .flags("few");
+  breed("goblin archer", 6, peaGreen, 32)
+    ..count(2)
+    ..minion("goblin peon", 0, 2)
+    ..attack("stab[s]", 4)
+    ..arrow(rate: 3, damage: 8)
+    ..drop(20, "bow")
+    ..drop(10, "dagger")
+    ..drop(5, "healing");
 
-  breed("goblin fighter", 6, persimmon, 30)
-      .attack("stab[s]", 7)
-      .drop(15, "spear")
-      .drop(10, "armor")
-      .drop(5, "resistance")
-      .drop(5, "healing");
+  breed("goblin fighter", 6, persimmon, 58)
+    ..count(2)
+    ..minion("goblin archer", 0, 1)
+    ..minion("goblin peon", 0, 3)
+    ..attack("stab[s]", 12)
+    ..drop(15, "spear")
+    ..drop(10, "armor")
+    ..drop(5, "resistance")
+    ..drop(5, "healing");
 
-  breed("goblin warrior", 8, gunsmoke, 42)
-      .attack("stab[s]", 10)
-      .drop(20, "axe")
-      .drop(20, "armor")
-      .drop(5, "resistance")
-      .drop(5, "healing")
-      .flags("protective");
+  breed("goblin warrior", 8, gunsmoke, 68)
+    ..count(2)
+    ..minion("goblin fighter", 0, 1)
+    ..minion("goblin archer", 0, 1)
+    ..minion("goblin peon", 0, 3)
+    ..attack("stab[s]", 16)
+    ..drop(20, "axe")
+    ..drop(20, "armor")
+    ..drop(5, "resistance")
+    ..drop(5, "healing")
+    ..flags("protective");
 
-  breed("goblin mage", 9, ultramarine, 30)
-      .attack("whip[s]", 7)
-      .fireBolt(rate: 12, damage: 6)
-      .sparkBolt(rate: 12, damage: 8)
-      .drop(10, "equipment")
-      .drop(10, "whip")
-      .drop(20, "magic");
+  breed("goblin mage", 9, ultramarine, 50)
+    ..minion("goblin fighter", 0, 1)
+    ..minion("goblin archer", 0, 1)
+    ..minion("goblin peon", 0, 2)
+    ..attack("whip[s]", 7)
+    ..fireBolt(rate: 12, damage: 12)
+    ..sparkBolt(rate: 12, damage: 16)
+    ..drop(10, "equipment")
+    ..drop(10, "whip")
+    ..drop(20, "magic");
 
-  breed("goblin ranger", 12, sherwood, 36)
-      .attack("stab[s]", 10)
-      .arrow(rate: 3, damage: 8)
-      .drop(30, "bow")
-      .drop(20, "armor")
-      .drop(20, "magic");
+  breed("goblin ranger", 12, sherwood, 60)
+    ..minion("goblin mage", 0, 1)
+    ..minion("goblin fighter", 0, 1)
+    ..minion("goblin archer", 0, 1)
+    ..minion("goblin peon", 0, 2)
+    ..attack("stab[s]", 10)
+    ..arrow(rate: 3, damage: 12)
+    ..drop(30, "bow")
+    ..drop(20, "armor")
+    ..drop(20, "magic");
 
   // TODO: Always drop something good.
-  breed("Erlkonig, the Goblin Prince", 14, steelGray, 80)
-      .attack("hit[s]", 10)
-      .attack("slash[es]", 14)
-      .darkBolt(rate: 20, damage: 10)
-      .drop(60, "equipment")
-      .drop(60, "equipment")
-      .drop(40, "magic")
-      .flags("protective");
+  breed("Erlkonig, the Goblin Prince", 14, steelGray, 120)
+    ..minion("goblin mage", 1, 2)
+    ..minion("goblin fighter", 1, 3)
+    ..minion("goblin archer", 1, 3)
+    ..minion("goblin peon", 2, 4)
+    ..attack("hit[s]", 10)
+    ..attack("slash[es]", 14)
+    ..darkBolt(rate: 20, damage: 20)
+    ..drop(60, "equipment")
+    ..drop(60, "equipment")
+    ..drop(40, "magic")
+    ..flags("protective");
+
+  // TODO: Hobgoblins, bugbears, bogill.
+  // TODO: https://en.wikipedia.org/wiki/Moss_people
 }
 
 void golems() {}
@@ -370,130 +420,172 @@ void humanoids() {}
 void hybrids() {}
 
 void insects() {
-  group("i", tracking: 3, meander: 8, flags: "fearless");
-  breed("giant cockroach[es]", 1, garnet, 4, speed: 3)
-      .attack("crawl[s] on", 3)
-      .spawn(rate: 4)
-      .drop(10, "Insect Wing");
+  family("i", tracking: 3, meander: 8, flags: "fearless");
+  // TODO: Spawn as eggs which can hatch into cockroaches?
+  breed("giant cockroach[es]", 1, garnet, 4, frequency: 0.4)
+    ..count(3, 5)
+    ..preferCorner()
+    ..attack("crawl[s] on", 2)
+    ..spawn(rate: 6);
 
-  breed("giant centipede", 3, brickRed, 16, speed: 3, meander: -4)
-      .attack("crawl[s] on", 4)
-      .attack("bite[s]", 8);
+  breed("giant centipede", 3, brickRed, 28, speed: 3, meander: -4)
+    ..placeIn("corridor")
+    ..attack("crawl[s] on", 4)
+    ..attack("bite[s]", 8);
 }
 
 void insubstantials() {}
 
 void jellies() {
-  group("j", speed: -1, flags: "fearless");
-  breed("green jelly", 1, lima, 7)
-      .attack("crawl[s] on", 4);
+  family("j", frequency: 0.7, speed: -1, flags: "fearless")
+    ..preferWall()
+    ..count(4);
+  breed("green jelly", 1, lima, 5)
+    ..stain(Tiles.greenJellyStain)
+    ..attack("crawl[s] on", 3);
   // TODO: More elements.
 
-  group("j", flags: "few fearless immobile");
-  breed("green slime", 2, peaGreen, 7)
-      .attack("crawl[s] on", 4)
-      .spawn(rate: 4);
+  family("j", frequency: 0.6, flags: "fearless immobile")
+    ..preferCorner()
+    ..count(4);
+  breed("green slime", 2, peaGreen, 10)
+    ..stain(Tiles.greenJellyStain)
+    ..attack("crawl[s] on", 4)
+    ..spawn(rate: 4);
 
-  breed("frosty slime", 4, gunsmoke, 14)
-      .attack("crawl[s] on", 5, Element.cold)
-      .spawn(rate: 4);
+  breed("frosty slime", 4, ash, 14)
+    ..stain(Tiles.whiteJellyStain)
+    ..attack("crawl[s] on", 5, Element.cold)
+    ..spawn(rate: 4);
 
   breed("mud slime", 6, persimmon, 20)
-      .attack("crawl[s] on", 8, Element.earth)
-      .spawn(rate: 4);
+    ..stain(Tiles.brownJellyStain)
+    ..attack("crawl[s] on", 8, Element.earth)
+    ..spawn(rate: 4);
 
   breed("smoking slime", 15, brickRed, 30)
-      .attack("crawl[s] on", 10, Element.fire)
-      .spawn(rate: 4);
+    ..stain(Tiles.redJellyStain)
+    ..attack("crawl[s] on", 10, Element.fire)
+    ..spawn(rate: 4);
 
   breed("sparkling slime", 20, violet, 40)
-      .attack("crawl[s] on", 12, Element.lightning)
-      .spawn(rate: 4);
+    ..stain(Tiles.violetJellyStain)
+    ..attack("crawl[s] on", 12, Element.lightning)
+    ..spawn(rate: 4);
 
+  // TODO: Erode nearby walls?
   breed("caustic slime", 25, mint, 50)
-      .attack("crawl[s] on", 13, Element.acid)
-      .spawn(rate: 4);
+    ..stain(Tiles.greenJellyStain)
+    ..attack("crawl[s] on", 13, Element.acid)
+    ..spawn(rate: 4);
 
   breed("virulent slime", 35, sherwood, 60)
-      .attack("crawl[s] on", 14, Element.poison)
-      .spawn(rate: 4);
+    ..stain(Tiles.greenJellyStain)
+    ..attack("crawl[s] on", 14, Element.poison)
+    ..spawn(rate: 4);
 
   // TODO: Fly?
   breed("ectoplasm", 45, steelGray, 40)
-      .attack("crawl[s] on", 15, Element.spirit)
-      .spawn(rate: 4);
-
-  // TODO: Jellies. Unlike slimes, they can move but don't spawn.
+    ..stain(Tiles.grayJellyStain)
+    ..attack("crawl[s] on", 15, Element.spirit)
+    ..spawn(rate: 4);
 }
 
 void kobolds() {
-  group("k", speed: 2, meander: 4, flags: "cowardly");
+  family("k", speed: 2, meander: 4, flags: "cowardly");
   breed("scurrilous imp", 4, salmon, 18, meander: 4)
-      .attack("club[s]", 4)
-      .insult()
-      .haste()
-      .drop(10, "club")
-      .drop(5, "speed")
-      .flags("cowardly");
+    ..count(2)
+    ..attack("club[s]", 4)
+    ..insult()
+    ..haste()
+    ..drop(20, "club")
+    ..drop(20, "speed")
+    ..flags("cowardly");
 
   breed("vexing imp", 4, violet, 19, speed: 1, meander: 2)
-      .attack("scratch[es]", 4)
-      .insult()
-      .sparkBolt(rate: 5, damage: 6)
-      .drop(10, "teleportation")
-      .flags("cowardly");
+    ..count(2)
+    ..minion("scurrilous imp", 0, 1)
+    ..attack("scratch[es]", 4)
+    ..insult()
+    ..sparkBolt(rate: 5, damage: 6)
+    ..drop(30, "teleportation")
+    ..flags("cowardly");
 
+  family("k", speed: 1, meander: 3);
   breed("kobold", 5, brickRed, 16, meander: 2)
-      .attack("poke[s]", 4)
-      .teleport(rate: 6, range: 6)
-      .drop(30, "magic")
-      .flags("group");
+    ..count(3)
+    ..minion("wild dog", 0, 3)
+    ..attack("poke[s]", 4)
+    ..teleport(rate: 6, range: 6)
+    ..drop(30, "magic");
 
   breed("kobold shaman", 10, ultramarine, 16, meander: 2)
-      .attack("hit[s]", 4)
-      .teleport(rate: 5, range: 6)
-      .waterBolt(rate: 5, damage: 6)
-      .drop(40, "magic");
+    ..count(2)
+    ..minion("wild dog", 0, 3)
+    ..attack("hit[s]", 4)
+    ..teleport(rate: 5, range: 6)
+    ..waterBolt(rate: 5, damage: 6)
+    ..drop(40, "magic");
 
   breed("kobold trickster", 13, gold, 20, meander: 2)
-      .attack("hit[s]", 5)
-      .sparkBolt(rate: 5, damage: 8)
-      .teleport(rate: 5, range: 6)
-      .haste(rate: 7)
-      .drop(40, "magic");
+    ..attack("hit[s]", 5)
+    ..insult()
+    ..sparkBolt(rate: 5, damage: 8)
+    ..teleport(rate: 5, range: 6)
+    ..haste(rate: 7)
+    ..drop(40, "magic");
 
   breed("kobold priest", 15, cerulean, 25, meander: 2)
-      .attack("club[s]", 6)
-      .heal(rate: 15, amount: 10)
-      .fireBolt(rate: 10, damage: 8)
-      .teleport(rate: 5, range: 6)
-      .haste(rate: 7)
-      .drop(30, "club")
-      .drop(40, "magic");
+    ..count(2)
+    ..minion("kobold", 1, 3)
+    ..attack("club[s]", 6)
+    ..heal(rate: 15, amount: 10)
+    ..fireBolt(rate: 10, damage: 8)
+    ..teleport(rate: 5, range: 6)
+    ..haste(rate: 7)
+    ..drop(30, "club")
+    ..drop(40, "magic");
 
   breed("imp incanter", 11, lilac, 18, speed: 1, meander: 4)
-      .attack("scratch[es]", 4)
-      .insult()
-      .fireBolt(rate: 5, damage: 10)
-      .drop(20, "magic")
-      .flags("cowardly");
+    ..count(2)
+    ..minion("kobold", 1, 3)
+    ..minion("wild dog", 0, 3)
+    ..attack("scratch[es]", 4)
+    ..insult(rate: 6)
+    ..fireBolt(rate: 5, damage: 10)
+    ..drop(50, "magic")
+    ..flags("cowardly");
 
   breed("imp warlock", 14, indigo, 40, speed: 1, meander: 3)
-      .attack("stab[s]", 5)
-      .iceBolt(rate: 8, damage: 12)
-      .fireBolt(rate: 8, damage: 12)
-      .drop(20, "magic")
-      .flags("cowardly");
+    ..minion("imp incanter", 1, 3)
+    ..minion("kobold", 1, 3)
+    ..minion("wild dog", 0, 3)
+    ..attack("stab[s]", 5)
+    ..iceBolt(rate: 8, damage: 12)
+    ..fireBolt(rate: 8, damage: 12)
+    ..drop(30, "staff")
+    ..drop(50, "magic")
+    ..flags("cowardly");
 
   // TODO: Always drop something good.
   breed("Feng", 20, carrot, 60, speed: 1, meander: 3)
-      .attack("stab[s]", 5)
-      .teleport(rate: 5, range: 6)
-      .teleport(rate: 50, range: 30)
-      .insult()
-      .lightningCone(rate: 8, damage: 12)
-      .drop(20, "magic")
-      .flags("cowardly");
+    ..minion("imp warlock", 1, 2)
+    ..minion("imp incanter", 1, 2)
+    ..minion("kobold priest", 1, 2)
+    ..minion("kobold", 1, 3)
+    ..minion("wild dog", 0, 3)
+    ..attack("stab[s]", 5)
+    ..insult(rate: 7)
+    ..teleport(rate: 5, range: 6)
+    ..teleport(rate: 50, range: 30)
+    ..lightningCone(rate: 8, damage: 12)
+    ..drop(50, "spear", 5)
+    ..drop(40, "armor", 5)
+    ..drop(40, "armor", 5)
+    ..drop(50, "magic", 5)
+    ..drop(50, "magic", 5)
+    ..drop(50, "magic", 5)
+    ..flags("cowardly");
 
   // homonculous
 }
@@ -514,131 +606,155 @@ void orcs() {}
 void ogres() {}
 
 void people() {
-  group("p", tracking: 14, flags: "open-doors");
-  breed("simpering knave", 2, carrot, 15, meander: 3)
-      .attack("hit[s]", 2)
-      .attack("stab[s]", 4)
-      .drop(30, "whip")
-      .drop(20, "body")
-      .drop(10, "boots")
-      .drop(10, "magic")
-      .flags("cowardly");
+  family("p", tracking: 14)..openDoors();
+  breed("hapless adventurer", 1, buttermilk, 14, meander: 3)
+    ..attack("hit[s]", 3)
+    ..drop(50, "weapon")
+    ..drop(60, "armor")
+    ..drop(40, "magic")
+    ..flags("cowardly");
 
-  breed("decrepit mage", 3, violet, 16, meander: 2)
-      .attack("hit[s]", 2)
-      .sparkBolt(rate: 10, damage: 8)
-      .drop(30, "magic")
-      .drop(15, "dagger")
-      .drop(15, "staff")
-      .drop(10, "robe")
-      .drop(10, "boots");
+  breed("simpering knave", 2, carrot, 17, meander: 3)
+    ..attack("hit[s]", 2)
+    ..attack("stab[s]", 4)
+    ..drop(40, "whip")
+    ..drop(40, "armor")
+    ..drop(30, "magic")
+    ..flags("cowardly");
 
-  breed("unlucky ranger", 5, peaGreen, 20, meander: 2)
-      .attack("slash[es]", 2)
-      .arrow(rate: 4, damage: 2)
-      .drop(15, "potion")
-      .drop(10, "bow")
-      .drop(5, "sword")
-      .drop(8, "body");
+  breed("decrepit mage", 3, violet, 20, meander: 2)
+    ..attack("hit[s]", 2)
+    ..sparkBolt(rate: 10, damage: 8)
+    ..drop(60, "magic")
+    ..drop(30, "dagger")
+    ..drop(20, "staff")
+    ..drop(20, "robe")
+    ..drop(20, "boots");
 
-  breed("drunken priest", 5, cerulean, 18, meander: 4)
-      .attack("hit[s]", 8)
-      .heal(rate: 15, amount: 8)
-      .drop(15, "scroll")
-      .drop(7, "club")
-      .drop(7, "robe")
-      .flags("fearless");
+  breed("unlucky ranger", 5, peaGreen, 30, meander: 2)
+    ..attack("slash[es]", 2)
+    ..arrow(rate: 4, damage: 2)
+    ..drop(30, "potion")
+    ..drop(40, "bow")
+    ..drop(10, "sword")
+    ..drop(10, "body");
+
+  breed("drunken priest", 5, cerulean, 34, meander: 4)
+    ..attack("hit[s]", 8)
+    ..heal(rate: 15, amount: 8)
+    ..drop(30, "scroll")
+    ..drop(20, "club")
+    ..drop(40, "robe")
+    ..flags("fearless");
 }
 
 void giants() {}
 
-void quadrupeds() {
-  group("q");
-  breed("fox", 4, carrot, 20, meander: 1)
-      .attack("bite[s]", 5)
-      .attack("scratch[es]", 4)
-      .drop(80, "Fox Pelt");
+void quadrupeds() {}
+
+void quest() {
+  family("Q");
+  breed("Nameless Unmaker", 100, violet, 1000, speed: 2)
+    ..attack("crushe[s]", 250, Element.earth)
+    ..attack("blast[s]", 200, Element.lightning)
+    ..darkCone(damage: 500)
+    ..flags("fearless")
+    ..openDoors();
+  // TODO: Minions. Moves.
+  // TODO: Make unique.
 }
 
-void quest() {}
-
 void rodents() {
-  group("r", meander: 4);
-  breed("[mouse|mice]", 1, sandal, 6, speed: 1)
-      .attack("bite[s]", 3)
-      .attack("scratch[es]", 2);
+  family("r", speed: 1, meander: 4)..preferWall();
+  breed("[mouse|mice]", 1, sandal, 6, frequency: 0.5)
+    ..count(2, 5)
+    ..attack("bite[s]", 3)
+    ..attack("scratch[es]", 2);
 
-  breed("sewer rat", 2, steelGray, 7, speed: 1, meander: -1)
-      .attack("bite[s]", 4)
-      .attack("scratch[es]", 3)
-      .flags("group");
+  breed("sewer rat", 2, steelGray, 8, meander: -1)
+    ..count(1, 4)
+    ..attack("bite[s]", 4)
+    ..attack("scratch[es]", 3);
 
-  breed("sickly rat", 3, peaGreen, 4, speed: 1)
-      .attack("bite[s]", 3, Element.poison)
-      .attack("scratch[es]", 3);
+  breed("sickly rat", 3, peaGreen, 4)
+    ..attack("bite[s]", 8, Element.poison)
+    ..attack("scratch[es]", 4);
 
-  breed("plague rat", 6, lima, 10, speed: 1)
-      .attack("bite[s]", 4, Element.poison)
-      .attack("scratch[es]", 3)
-      .flags("group");
+  breed("plague rat", 6, lima, 16)
+    ..count(1, 4)
+    ..attack("bite[s]", 15, Element.poison)
+    ..attack("scratch[es]", 8);
 }
 
 void reptiles() {
-  group("R");
+  family("R");
+  // TODO: Should be able to swim.
   breed("frog", 1, lima, 4, speed: 1, meander: 4)
-      .attack("hop[s] on", 2);
+    ..swim()
+    ..placeIn("aquatic")
+    ..attack("hop[s] on", 2);
 
-  // TODO: Drop scales?
-  group("R", meander: 1, flags: "fearless");
+  family("R", meander: 1, flags: "fearless");
   breed("lizard guard", 11, gold, 26)
-      .attack("claw[s]", 8)
-      .attack("bite[s]", 10);
+    ..attack("claw[s]", 8)
+    ..attack("bite[s]", 10);
 
   breed("lizard protector", 15, lima, 30)
-      .attack("claw[s]", 10)
-      .attack("bite[s]", 14);
+    ..minion("lizard guard", 0, 2)
+    ..attack("claw[s]", 10)
+    ..attack("bite[s]", 14);
 
   breed("armored lizard", 17, gunsmoke, 38)
-      .attack("claw[s]", 10)
-      .attack("bite[s]", 15);
+    ..minion("lizard guard", 0, 2)
+    ..attack("claw[s]", 10)
+    ..attack("bite[s]", 15);
 
   breed("scaled guardian", 19, steelGray, 50)
-      .attack("claw[s]", 10)
-      .attack("bite[s]", 15);
+    ..minion("lizard protector", 0, 2)
+    ..minion("lizard guard", 0, 1)
+    ..minion("salamander", 0, 1)
+    ..attack("claw[s]", 10)
+    ..attack("bite[s]", 15);
 
   breed("saurian", 21, carrot, 64)
-      .attack("claw[s]", 12)
-      .attack("bite[s]", 17);
+    ..minion("lizard protector", 0, 2)
+    ..minion("armored lizard", 0, 1)
+    ..minion("lizard guard", 0, 1)
+    ..minion("salamander", 0, 2)
+    ..attack("claw[s]", 12)
+    ..attack("bite[s]", 17);
 
-  group("R", meander: 3);
-  breed("juvenile salamander", 7, salmon, 24)
-      .attack("bite[s]", 12, Element.fire)
-      .fireCone(rate: 16, damage: 18, range: 6);
+  family("R", meander: 3)..preferOpen();
+  breed("juvenile salamander", 7, salmon, 56)
+    ..attack("bite[s]", 14, Element.fire)
+    ..fireCone(rate: 16, damage: 30, range: 6);
 
-  breed("salamander", 13, brickRed, 40)
-      .attack("bite[s]", 16, Element.fire)
-      .fireCone(rate: 16, damage: 24, range: 8);
+  breed("salamander", 13, brickRed, 87)
+    ..attack("bite[s]", 18, Element.fire)
+    ..fireCone(rate: 16, damage: 50, range: 8);
 }
 
 void slugs() {
-  group("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
-  breed("giant slug", 1, mustard, 20)
-      .attack("crawl[s] on", 7);
+  family("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
+  breed("giant slug", 1, mustard, 20)..attack("crawl[s] on", 7);
 
-  breed("suppurating slug", 6, lima, 30)
-      .attack("crawl[s] on", 7, Element.poison);
+  breed("suppurating slug", 6, lima, 50)
+    ..attack("crawl[s] on", 10, Element.poison);
 }
 
 void snakes() {
-  group("S", speed: 1, meander: 4);
-  breed("garter snake", 1, lima, 7)
-      .attack("bite[s]", 3);
+  family("S", speed: 1, meander: 4);
+  breed("garter snake", 1, lima, 9)
+    ..placeIn("aquatic")
+    ..attack("bite[s]", 3);
 
-  breed("brown snake", 3, persimmon, 14)
-      .attack("bite[s]", 4);
+  breed("brown snake", 3, persimmon, 25)
+    ..placeIn("aquatic")
+    ..attack("bite[s]", 4);
 
-  breed("cave snake", 7, gunsmoke, 35)
-      .attack("bite[s]", 10);
+  breed("cave snake", 7, gunsmoke, 50)
+    ..placeIn("corridor")
+    ..attack("bite[s]", 16);
 }
 
 void troglodytes() {}
@@ -649,20 +765,23 @@ void vines() {}
 void vampires() {}
 
 void worms() {
-  group("w", meander: 4, flags: "fearless");
+  family("w", meander: 4, flags: "fearless");
   breed("giant earthworm", 2, salmon, 20, speed: -2)
-      .attack("crawl[s] on", 4);
+    ..placeIn("corridor")
+    ..attack("crawl[s] on", 5);
 
-  breed("blood worm", 2, brickRed, 4, rarity: 2)
-      .attack("crawl[s] on", 5)
-      .flags("swarm");
+  breed("blood worm", 2, brickRed, 4, frequency: 0.5)
+    ..count(3, 8)
+    ..attack("crawl[s] on", 5);
 
-  breed("giant cave worm", 7, sandal, 36, speed: -2)
-      .attack("crawl[s] on", 8, Element.acid);
+  breed("giant cave worm", 7, sandal, 80, speed: -2)
+    ..placeIn("corridor")
+    ..attack("crawl[s] on", 8, Element.acid);
 
   breed("fire worm", 10, carrot, 6)
-      .attack("crawl[s] on", 5, Element.fire)
-      .flags("swarm");
+    ..count(2, 6)
+    ..preferWall()
+    ..attack("crawl[s] on", 5, Element.fire);
 }
 
 void wraiths() {}
@@ -674,170 +793,310 @@ void xorns() {}
 void zombies() {}
 void serpents() {}
 
-void group(String character, {int meander, int speed, int tracking, String flags}) {
-  finishBuilder();
+_FamilyBuilder family(String character,
+    {double frequency, int meander, int speed, int tracking, String flags}) {
+  buildBreed();
 
-  _character = character;
-  _meander = meander != null ? meander : 0;
-  _speed = speed != null ? speed : 0;
-  _tracking = tracking != null ? tracking : 10;
-  _groupFlags = flags;
+  _family = new _FamilyBuilder(frequency);
+  _family._character = character;
+  _family._meander = meander;
+  _family._speed = speed;
+  _family._tracking = tracking;
+  _family._flags = flags;
+
+  // Default to walking.
+  _family._motilities.add(Motility.walk);
+
+  return _family;
 }
 
-void finishBuilder() {
+void buildBreed() {
   if (_builder == null) return;
 
+  // TODO: Is this tag still needed?
+  var tags = ["monster"];
+
+  tags.addAll(_builder._places);
+  tags.addAll(_family._places);
+
+  // TODO: We probably want to be able to opt out of this for special breeds
+  // that should never spawn natural and only appear as minions or in special
+  // rooms.
+  // Default to spawning in rooms.
+  if (_builder._places.isEmpty && _family._places.isEmpty) tags.add("room");
+
   var breed = _builder.build();
-  Monsters.breeds.add(breed.name, breed, breed.depth, _builder.rarity, "monster");
+  // TODO: join() here is dumb since Resource then splits it.
+  Monsters.breeds
+    ..add(breed.name, breed, breed.depth,
+        _builder._frequency ?? _family._frequency ?? 1.0, tags.join(" "));
   _builder = null;
 }
 
+// TODO: Move more named params into builder methods?
 _BreedBuilder breed(String name, int depth, appearance, int health,
-    {int rarity: 1, int speed: 0, int meander: 0}) {
-  finishBuilder();
+    {double frequency, int speed: 0, int meander: 0}) {
+  buildBreed();
 
   Glyph glyph;
   if (appearance is Color) {
-    glyph = new Glyph(_character, appearance, midnight);
+    glyph = new Glyph(_family._character, appearance, midnight);
   } else {
-    glyph = appearance(_character);
+    glyph = appearance(_family._character);
   }
 
-  _builder = new _BreedBuilder(name, depth, rarity, glyph, health);
-  _builder.speedOffset = speed;
-  _builder.meanderOffset = meander;
+  _builder = new _BreedBuilder(name, depth, frequency, glyph, health);
+  _builder._speed = speed;
+  _builder._meander;
   return _builder;
 }
 
-class _BreedBuilder {
-  final String name;
-  final int depth;
-  final int rarity;
-  final Object appearance;
-  final int health;
-  int tracking;
-  int meanderOffset = 0;
-  int speedOffset = 0;
-  final Set<String> _flags = new Set();
-  final List<Attack> attacks = [];
-  final List<Move> moves = [];
-  final List<Drop> drops = [];
+class _BaseBuilder {
+  final double _frequency;
 
-  _BreedBuilder(this.name, this.depth, this.rarity, this.appearance, this.health) {
-    tracking = _tracking;
-    if (_groupFlags != null) _flags.addAll(_groupFlags.split(" "));
+  int _tracking;
+
+  final List<Motility> _motilities = [];
+  SpawnLocation _location;
+
+  /// Names of places where this breed may spawn.
+  final List<String> _places = [];
+
+  /// The default speed for breeds in the current family. If the breed
+  /// specifies a speed, it offsets the family's speed.
+  int _speed;
+
+  /// The default meander for breeds in the current family. If the breed
+  /// specifies a meander, it offset's the family's meander.
+  int _meander;
+
+  String _flags;
+
+  int _countMin;
+  int _countMax;
+
+  TileType _stain;
+
+  _BaseBuilder(this._frequency);
+
+  void preferWall() {
+    _location = SpawnLocation.wall;
   }
 
-  _BreedBuilder attack(String verb, int damage, [Element element, Noun noun]) {
-    attacks.add(new Attack(noun, verb, damage, 0, element));
-    return this;
+  void preferCorner() {
+    _location = SpawnLocation.corner;
   }
 
-  _BreedBuilder drop(int chance, String name, [int depthOffset = 0]) {
-    drops.add(percentDrop(chance, name, depth + depthOffset));
-    return this;
+  void preferOpen() {
+    _location = SpawnLocation.open;
   }
 
-  _BreedBuilder dropMany(int count, String name, [int depthOffset = 0]) {
-    drops.add(repeatDrop(count, name, depth + depthOffset));
-    return this;
+  void placeIn(String place1, [String place2]) {
+    // TODO: Don't stringly-type place names?
+    _places.add(place1);
+    if (place2 != null) _places.add(place2);
   }
 
-  _BreedBuilder flags(String flags) {
+  /// How many monsters of this kind are spawned.
+  void count(int minOrMax, [int max]) {
+    if (max == null) {
+      _countMin = 1;
+      _countMax = minOrMax;
+    } else {
+      _countMin = minOrMax;
+      _countMax = max;
+    }
+  }
+
+  void stain(TileType type) {
+    _stain = type;
+  }
+
+  void fly() {
+    _motilities.add(Motility.fly);
+  }
+
+  void swim() {
+    _motilities.add(Motility.swim);
+  }
+
+  void openDoors() {
+    _motilities.add(Motility.door);
+  }
+}
+
+class _FamilyBuilder extends _BaseBuilder {
+  /// Character for the current monster.
+  String _character;
+
+  _FamilyBuilder(double frequency) : super(frequency);
+}
+
+class _BreedBuilder extends _BaseBuilder {
+  final String _name;
+  final int _depth;
+  final Object _appearance;
+  final int _health;
+  final List<Attack> _attacks = [];
+  final List<Move> _moves = [];
+  final List<Drop> _drops = [];
+  final List<_NamedMinion> _minions = [];
+
+  _BreedBuilder(
+      this._name, this._depth, double frequency, this._appearance, this._health)
+      : super(frequency) {}
+
+  void minion(String name, [int minOrMax, int max]) {
+    if (minOrMax == null) {
+      minOrMax = 1;
+      max = 1;
+    } else if (max == null) {
+      max = minOrMax;
+      minOrMax = 1;
+    }
+
+    _minions.add(new _NamedMinion(name, minOrMax, max));
+  }
+
+  void attack(String verb, int damage, [Element element, Noun noun]) {
+    _attacks.add(new Attack(noun, verb, damage, 0, element));
+  }
+
+  void drop(int chance, String name, [int depthOffset = 0]) {
+    _drops.add(percentDrop(chance, name, _depth + depthOffset));
+  }
+
+  void dropMany(int count, String name, [int depthOffset = 0]) {
+    _drops.add(repeatDrop(count, name, _depth + depthOffset));
+  }
+
+  void flags(String flags) {
     // TODO: Allow negated flags.
-    _flags.addAll(flags.split(" "));
-    return this;
+    _flags = flags;
   }
 
-  _BreedBuilder heal({num rate: 5, int amount}) =>
-      _addMove(new HealMove(rate, amount));
+  void heal({num rate: 5, int amount}) => _addMove(new HealMove(rate, amount));
 
-  _BreedBuilder arrow({num rate: 5, int damage}) =>
+  void arrow({num rate: 5, int damage}) =>
       _bolt("the arrow", "hits", Element.none, damage, rate, 8);
 
-  _BreedBuilder windBolt({num rate: 5, int damage}) =>
+  void windBolt({num rate: 5, int damage}) =>
       _bolt("the wind", "blows", Element.air, damage, rate, 8);
 
-  _BreedBuilder stoneBolt({num rate: 5, int damage}) =>
+  void stoneBolt({num rate: 5, int damage}) =>
       _bolt("the stone", "hits", Element.earth, damage, rate, 8);
 
-  _BreedBuilder waterBolt({num rate: 5, int damage}) =>
+  void waterBolt({num rate: 5, int damage}) =>
       _bolt("the jet", "splashes", Element.water, damage, rate, 8);
 
-  _BreedBuilder sparkBolt({num rate: 5, int damage, int range: 8}) =>
+  void sparkBolt({num rate: 5, int damage, int range: 8}) =>
       _bolt("the spark", "zaps", Element.lightning, damage, rate, range);
 
-  _BreedBuilder iceBolt({num rate: 5, int damage, int range: 8}) =>
+  void iceBolt({num rate: 5, int damage, int range: 8}) =>
       _bolt("the ice", "freezes", Element.cold, damage, rate, range);
 
-  _BreedBuilder fireBolt({num rate: 5, int damage}) =>
+  void fireBolt({num rate: 5, int damage}) =>
       _bolt("the flame", "burns", Element.fire, damage, rate, 8);
 
-  _BreedBuilder lightningBolt({num rate: 5, int damage}) =>
+  void lightningBolt({num rate: 5, int damage}) =>
       _bolt("the lightning", "shocks", Element.lightning, damage, rate, 10);
 
-  _BreedBuilder acidBolt({num rate: 5, int damage, int range: 8}) =>
+  void acidBolt({num rate: 5, int damage, int range: 8}) =>
       _bolt("the acid", "burns", Element.acid, damage, rate, range);
 
-  _BreedBuilder darkBolt({num rate: 5, int damage}) =>
+  void darkBolt({num rate: 5, int damage}) =>
       _bolt("the darkness", "crushes", Element.dark, damage, rate, 10);
 
-  _BreedBuilder lightBolt({num rate: 5, int damage}) =>
+  void lightBolt({num rate: 5, int damage}) =>
       _bolt("the light", "sears", Element.light, damage, rate, 10);
 
-  _BreedBuilder poisonBolt({num rate: 5, int damage}) =>
+  void poisonBolt({num rate: 5, int damage}) =>
       _bolt("the poison", "engulfs", Element.poison, damage, rate, 8);
 
-  _BreedBuilder windCone({num rate: 5, int damage, int range: 10}) =>
+  void windCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the wind", "buffets", Element.air, rate, damage, range);
 
-  _BreedBuilder fireCone({num rate: 5, int damage, int range: 10}) =>
+  void fireCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the flame", "burns", Element.fire, rate, damage, range);
 
-  _BreedBuilder iceCone({num rate: 5, int damage, int range: 10}) =>
+  void iceCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the ice", "freezes", Element.cold, rate, damage, range);
 
-  _BreedBuilder lightningCone({num rate: 5, int damage, int range: 10}) =>
+  void lightningCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the lightning", "shocks", Element.lightning, rate, damage, range);
 
-  _BreedBuilder lightCone({num rate: 5, int damage, int range: 10}) =>
+  void lightCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the light", "sears", Element.light, rate, damage, range);
 
-  _BreedBuilder darkCone({num rate: 5, int damage, int range: 10}) =>
+  void darkCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the darkness", "crushes", Element.dark, rate, damage, range);
 
-  _BreedBuilder insult({num rate: 5}) => _addMove(new InsultMove(rate));
+  void insult({num rate: 5}) => _addMove(new InsultMove(rate));
 
-  _BreedBuilder howl({num rate: 10, int range: 10}) =>
+  void howl({num rate: 10, int range: 10}) =>
       _addMove(new HowlMove(rate, range));
 
-  _BreedBuilder haste({num rate: 5, int duration: 10, int speed: 1}) =>
+  void haste({num rate: 5, int duration: 10, int speed: 1}) =>
       _addMove(new HasteMove(rate, duration, speed));
 
-  _BreedBuilder teleport({num rate: 5, int range: 10}) =>
+  void teleport({num rate: 5, int range: 10}) =>
       _addMove(new TeleportMove(rate, range));
 
-  _BreedBuilder spawn({num rate: 10}) => _addMove(new SpawnMove(rate));
+  void spawn({num rate: 10}) => _addMove(new SpawnMove(rate));
 
-  _BreedBuilder _bolt(String noun, String verb, Element element, num rate, int damage, int range) {
-    return _addMove(new BoltMove(rate, new Attack(new Noun(noun), verb, damage, range, element)));
+  void _bolt(String noun, String verb, Element element, num rate, int damage,
+      int range) {
+    _addMove(new BoltMove(
+        rate, new Attack(new Noun(noun), verb, damage, range, element)));
   }
 
-  _BreedBuilder _cone(String noun, String verb, Element element, num rate, int damage, int range) {
-    return _addMove(new ConeMove(rate, new Attack(new Noun(noun), verb, damage, range, element)));
+  void _cone(String noun, String verb, Element element, num rate, int damage,
+      int range) {
+    _addMove(new ConeMove(
+        rate, new Attack(new Noun(noun), verb, damage, range, element)));
   }
 
-  _BreedBuilder _addMove(Move move) {
-    moves.add(move);
-    return this;
+  void _addMove(Move move) {
+    _moves.add(move);
   }
 
   Breed build() {
-    var breed = new Breed(name, Pronoun.it, appearance, attacks,
-        moves, dropAllOf(drops), depth: depth, maxHealth: health, tracking: tracking,
-        meander: _meander + meanderOffset,
-        speed: _speed + speedOffset, flags: _flags);
+    var flags = new Set<String>();
+    if (_family._flags != null) flags.addAll(_family._flags.split(" "));
+    if (_flags != null) flags.addAll(_flags.split(" "));
+
+    var motilities = new MotilitySet(_family._motilities);
+    motilities.addAll(_motilities);
+
+    var breed = new Breed(
+        _name,
+        Pronoun.it,
+        _appearance,
+        _attacks,
+        _moves,
+        dropAllOf(_drops),
+        _location ?? _family._location ?? SpawnLocation.anywhere,
+        motilities,
+        depth: _depth,
+        maxHealth: _health,
+        tracking: (_tracking ?? 0) + (_family._tracking ?? 10),
+        meander: (_meander ?? 0) + (_family._meander ?? 0),
+        speed: (_speed ?? 0) + (_family._speed ?? 0),
+        countMin: _countMin ?? _family._countMin ?? 1,
+        countMax: _countMax ?? _family._countMax ?? 1,
+        stain: _stain ?? _family._stain,
+        flags: flags);
+
+    _minionNames[breed] = _minions;
 
     return breed;
   }
+}
+
+class _NamedMinion {
+  final String breed;
+  final int countMin;
+  final int countMax;
+
+  _NamedMinion(this.breed, this.countMin, this.countMax);
 }

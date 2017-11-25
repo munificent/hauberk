@@ -1,9 +1,9 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../condition.dart';
-import '../element.dart';
+import '../core/condition.dart';
+import '../core/element.dart';
 import 'action.dart';
-import 'element.dart';
+import 'item.dart';
 
 /// Base class for an [Action] that applies (or extends/intensifies) a
 /// [Condition]. It handles cases where the condition is already in effect with

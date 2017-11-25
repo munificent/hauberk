@@ -1,10 +1,12 @@
 import '../action/action.dart';
-import '../actor.dart';
-import '../attack.dart';
-import '../monster.dart';
+import '../core/actor.dart';
+import '../core/attack.dart';
+import '../monster/monster.dart';
 import 'hero.dart';
 import 'command.dart';
 
+// TODO: Remove. Going with skills instead. Keep around for now to harvest
+// warrior TrainedStats as skills or as how different weapon types always work.
 /// Base class for a Hero's character class.
 ///
 /// Each class has its own unique behavior and game mechanics. To support this,

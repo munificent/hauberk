@@ -10,6 +10,12 @@ class HeroInfoDialog extends Screen<Input> {
 
   HeroInfoDialog(this._hero);
 
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    return false;
+  }
+
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop();
@@ -22,29 +28,32 @@ class HeroInfoDialog extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    terminal.writeAt(45, 2, "┌─────Attack──────┐ ┌─Defense─┐ ┌─────Resistance─────┐", Color.darkGray);
-    terminal.writeAt(51, 2, "Attack", Color.gray);
-    terminal.writeAt(67, 2, "Defense", Color.gray);
-    terminal.writeAt(83, 2, "Resistance", Color.gray);
-    terminal.writeAt(3, 3, "Equipment", Color.gray);
-    terminal.writeAt(45, 3, "El Dam Mult Add Hit Dge Arm Add", Color.gray);
+    // TODO: This is too wide now that the terminal is narrower. Make more
+    // compact.
+    terminal.writeAt(27, 2,
+        "┌─────Attack─────┐ ┌─Defense─┐ ┌─────Resistance─────┐", steelGray);
+    terminal.writeAt(33, 2, "Attack", slate);
+    terminal.writeAt(48, 2, "Defense", slate);
+    terminal.writeAt(64, 2, "Resistance", slate);
+    terminal.writeAt(3, 3, "Equipment", slate);
+    terminal.writeAt(27, 3, "El Dam Mul Add Hit Dge Arm Add", slate);
 
     var totalY = 5 + _hero.equipment.slots.length;
-    terminal.writeAt(38, totalY, "Total:", Color.gray);
+    terminal.writeAt(20, totalY, "Total:", slate);
 
     var i = 0;
     for (var element in Element.allButNone) {
-      var x = 77 + i * 2;
-      terminal.writeAt(x, 3, elementAbbreviation(element),
-          elementColor(element));
+      var x = 58 + i * 2;
+      terminal.writeAt(
+          x, 3, elementAbbreviation(element), elementColor(element));
 
       // Show the total resistance.
       var resistance = _hero.equipmentResistance(element);
-      var color = Color.gray;
+      var color = gunsmoke;
       if (resistance > 0) {
-        color = Color.lightGreen;
+        color = peaGreen;
       } else if (resistance < 0) {
-        color = Color.red;
+        color = brickRed;
       }
 
       terminal.writeAt(x, totalY, resistance.toString().padLeft(2), color);
@@ -55,7 +64,7 @@ class HeroInfoDialog extends Screen<Input> {
     for (var slot in _hero.equipment.slotTypes) {
       var item = _hero.equipment.find(slot);
       if (item == null) {
-        terminal.writeAt(3, y, "(${slot})", Color.darkGray);
+        terminal.writeAt(3, y, "(${slot})", slate);
         y++;
         continue;
       }
@@ -65,81 +74,83 @@ class HeroInfoDialog extends Screen<Input> {
 
       if (item.attack != null) {
         var attack = item.attack;
-        terminal.writeAt(45, y, elementAbbreviation(attack.element),
+        terminal.writeAt(27, y, elementAbbreviation(attack.element),
             elementColor(attack.element));
 
-        terminal.writeAt(48, y, attack.damage.toString().padLeft(3));
+        terminal.writeAt(30, y, attack.damage.toString().padLeft(3));
       } else {
-        terminal.writeAt(45, y, "-- ---", Color.darkGray);
+        terminal.writeAt(27, y, "-- ---", slate);
       }
 
       if (item.damageScale > 1.0) {
-        terminal.writeAt(52, y, "x", Color.green);
-        terminal.writeAt(53, y, item.damageScale.toStringAsFixed(1).padLeft(3), Color.lightGreen);
+        terminal.writeAt(
+            34, y, item.damageScale.toStringAsFixed(1).padLeft(3), peaGreen);
       } else if (item.damageScale < 1.0) {
-        terminal.writeAt(52, y, "x", Color.darkRed);
-        terminal.writeAt(53, y, (-item.damageScale).toStringAsFixed(1).padLeft(3),
-            Color.red);
+        terminal.writeAt(
+            34, y, (-item.damageScale).toStringAsFixed(1).padLeft(3), brickRed);
       } else if (item.attack != null) {
-        terminal.writeAt(52, y, " ---", Color.darkGray);
+        terminal.writeAt(34, y, "---", slate);
       } else {
-        terminal.writeAt(52, y, "x1.0", Color.darkGray);
+        terminal.writeAt(34, y, "1.0", slate);
       }
 
       if (item.damageBonus > 0) {
-        terminal.writeAt(57, y, "+", Color.green);
-        terminal.writeAt(58, y, item.damageBonus.toString().padLeft(2), Color.lightGreen);
+        terminal.writeAt(38, y, "+", sherwood);
+        terminal.writeAt(
+            39, y, item.damageBonus.toString().padLeft(2), peaGreen);
       } else if (item.damageBonus < 0) {
-        terminal.writeAt(57, y, "-", Color.darkRed);
-        terminal.writeAt(58, y, (-item.damageBonus).toString().padLeft(2),
-            Color.red);
+        terminal.writeAt(38, y, "-", maroon);
+        terminal.writeAt(
+            39, y, (-item.damageBonus).toString().padLeft(2), brickRed);
       } else if (item.attack != null) {
-        terminal.writeAt(58, y, " 0", Color.darkGray);
+        terminal.writeAt(39, y, " 0", slate);
       } else {
-        terminal.writeAt(58, y, "--", Color.darkGray);
+        terminal.writeAt(39, y, "--", slate);
       }
 
       if (item.strikeBonus > 0) {
-        terminal.writeAt(61, y, "+", Color.green);
-        terminal.writeAt(62, y, item.strikeBonus.toString().padLeft(2), Color.lightGreen);
+        terminal.writeAt(42, y, "+", sherwood);
+        terminal.writeAt(
+            43, y, item.strikeBonus.toString().padLeft(2), peaGreen);
       } else if (item.strikeBonus < 0) {
-        terminal.writeAt(61, y, "-", Color.darkRed);
-        terminal.writeAt(62, y, (-item.strikeBonus).toString().padLeft(2),
-            Color.red);
+        terminal.writeAt(42, y, "-", maroon);
+        terminal.writeAt(
+            43, y, (-item.strikeBonus).toString().padLeft(2), brickRed);
       } else if (item.attack != null) {
-        terminal.writeAt(62, y, " 0", Color.darkGray);
+        terminal.writeAt(43, y, " 0", slate);
       } else {
-        terminal.writeAt(62, y, "--", Color.darkGray);
+        terminal.writeAt(43, y, "--", slate);
       }
 
       if (item.baseArmor != 0) {
-        terminal.writeAt(69, y, item.baseArmor.toString().padLeft(3));
+        terminal.writeAt(50, y, item.baseArmor.toString().padLeft(3));
       } else {
-        terminal.writeAt(70, y, "--", Color.darkGray);
+        terminal.writeAt(51, y, "--", slate);
       }
 
       if (item.armorModifier > 0) {
-        terminal.writeAt(73, y, "+", Color.green);
-        terminal.writeAt(74, y, item.armorModifier.toString().padLeft(2), Color.lightGreen);
+        terminal.writeAt(54, y, "+", sherwood);
+        terminal.writeAt(
+            55, y, item.armorModifier.toString().padLeft(2), peaGreen);
       } else if (item.armorModifier < 0) {
-        terminal.writeAt(73, y, "-", Color.darkRed);
-        terminal.writeAt(74, y, (-item.armorModifier).toString().padLeft(2),
-            Color.red);
+        terminal.writeAt(54, y, "-", maroon);
+        terminal.writeAt(
+            55, y, (-item.armorModifier).toString().padLeft(2), brickRed);
       } else if (item.baseArmor != 0) {
-        terminal.writeAt(74, y, " 0", Color.darkGray);
+        terminal.writeAt(55, y, " 0", slate);
       } else {
-        terminal.writeAt(74, y, "--", Color.darkGray);
+        terminal.writeAt(55, y, "--", slate);
       }
 
       var i = 0;
       for (var element in Element.allButNone) {
-        var x = 77 + i * 2;
+        var x = 58 + i * 2;
         var resistance = item.resistance(element);
-        var color = Color.darkGray;
+        var color = slate;
         if (resistance > 0) {
-          color = Color.lightGreen;
+          color = peaGreen;
         } else if (resistance < 0) {
-          color = Color.red;
+          color = brickRed;
         }
 
         terminal.writeAt(x, y, resistance.toString().padLeft(2), color);
@@ -149,11 +160,12 @@ class HeroInfoDialog extends Screen<Input> {
       y++;
     }
 
-    terminal.writeAt(69, totalY, _hero.armor.toString().padLeft(3));
+    terminal.writeAt(50, totalY, _hero.armor.toString().padLeft(3));
     var armorPercent = 100 - getArmorMultiplier(_hero.armor) * 100;
-    terminal.writeAt(73, totalY, armorPercent.toInt().toString().padLeft(2) + "%");
+    terminal.writeAt(
+        54, totalY, armorPercent.toInt().toString().padLeft(2) + "%");
 
-    terminal.writeAt(0, terminal.height - 1, '[Esc] Exit', Color.gray);
+    terminal.writeAt(0, terminal.height - 1, '[Esc] Exit', slate);
   }
 
   // TODO: Unify these colors and abbreviations with how the game
