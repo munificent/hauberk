@@ -510,14 +510,15 @@ class GameScreen extends Screen<Input> {
     terminal.writeAt(7, 1, hero.food.ceil().toString(), persimmon);
 
     _drawStat(terminal, 2, 'Level', hero.level, cerulean);
-    var levelPercent = 100 * hero.experience ~/
-        (calculateLevelCost(hero.level + 1) -
-        calculateLevelCost(hero.level));
-    terminal.writeAt(16, 2, '$levelPercent%', ultramarine);
+    if (hero.level < Option.heroLevelMax) {
+      var levelPercent = 100 *
+          hero.experience ~/
+          (calculateLevelCost(hero.level + 1) - calculateLevelCost(hero.level));
+      terminal.writeAt(16, 2, '$levelPercent%', ultramarine);
+    }
     _drawStat(terminal, 3, 'Gold', hero.gold, gold);
     _drawStat(terminal, 4, 'Armor',
-        '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ',
-        peaGreen);
+        '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit();
     _drawStat(terminal, 5, 'Weapon', hit.damageString, turquoise);
