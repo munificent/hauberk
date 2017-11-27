@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import 'attack.dart';
+import 'combat.dart';
 import 'condition.dart';
 import 'element.dart';
 import 'energy.dart';
@@ -106,15 +106,16 @@ abstract class Actor extends Thing {
     return speed;
   }
 
-  /// The actor's dodge ability. This is the percentage chance of a melee
-  /// attack missing the actor.
-  int get dodge {
-    var dodge = 15;
+  /// Additional ways the actor can avoid a hit beyond dodging it.
+  Iterable<Defense> get defenses sync* {
+    var dodge = 20 + onGetDodge();
 
-    // Hard to block an attack you can't see coming.
-    if (isBlinded) dodge -= 5;
+    // Hard to dodge an attack you can't see coming.
+    if (isBlinded) dodge ~/= 2;
 
-    return dodge;
+    if (dodge != 0) yield new Defense(dodge, "{2} miss[es] {1}.");
+
+    yield* onGetDefenses();
   }
 
   /// The amount of protection against damage the actor has.
@@ -125,6 +126,12 @@ abstract class Actor extends Thing {
   }
 
   int onGetSpeed();
+
+  /// The actor's base dodge ability. This is the percentage chance of a melee
+  /// attack missing the actor.
+  int onGetDodge();
+
+  Iterable<Defense> onGetDefenses();
 
   Action getAction() {
     final action = onGetAction();
@@ -146,7 +153,19 @@ abstract class Actor extends Thing {
   /// Applies the hit modifications from the actor.
   void modifyHit(Hit hit, HitType type) {
     // Hard to hit an actor you can't see.
-    if (isBlinded) hit.addStrike(-5);
+    if (isBlinded) {
+      switch (type) {
+        case HitType.melee:
+          hit.scaleStrike(0.5);
+          break;
+        case HitType.ranged:
+          hit.scaleStrike(0.3);
+          break;
+        case HitType.toss:
+          hit.scaleStrike(0.2);
+          break;
+      }
+    }
 
     // Let the subclass also modify it.
     onModifyHit(hit, type);

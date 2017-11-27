@@ -9,7 +9,7 @@ export 'engine/action/toss.dart';
 export 'engine/action/walk.dart';
 export 'engine/core/a_star.dart';
 export 'engine/core/actor.dart';
-export 'engine/core/attack.dart';
+export 'engine/core/combat.dart';
 export 'engine/core/condition.dart';
 export 'engine/core/element.dart';
 export 'engine/core/energy.dart';

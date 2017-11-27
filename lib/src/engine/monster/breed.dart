@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
 import '../core/log.dart';
@@ -52,6 +52,12 @@ class Breed {
 
   final Set<String> flags;
 
+  /// Base chance for this breed to dodge an attack.
+  final int dodge;
+
+  /// Additional defenses this breed has.
+  final List<Defense> defenses = [];
+
   /// The minimum number of this breed that are spawned when it is placed in
   /// the dungeon.
   final int countMin;
@@ -77,17 +83,28 @@ class Breed {
       this.maxHealth,
       this.tracking,
       this.meander,
-      this.speed,
+      int speed,
+      int dodge,
       this.countMin,
       this.countMax,
       this.stain,
-      this.flags});
+      this.flags})
+      : speed = speed ?? 0,
+        dodge = dodge ?? 20;
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
   int get experienceCents {
     // The more health it has, the longer it can hurt the hero.
     var exp = maxHealth.toDouble();
+
+    // The more it can dodge, the longer it lives.
+    var totalDodge = dodge;
+    for (var defense in defenses) {
+      totalDodge += defense.amount;
+    }
+
+    exp *= 1.0 + totalDodge / 100.0;
 
     // Faster monsters are worth more.
     exp *= Energy.gains[Energy.normalSpeed + speed];

@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../hero/command.dart';
 
 /// An immutable unique skill a hero may learn.

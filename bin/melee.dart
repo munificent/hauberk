@@ -32,7 +32,6 @@ Breed breed = new Breed(
     null,
     SpawnLocation.anywhere,
     MotilitySet.walk,
-    speed: Energy.normalSpeed,
     meander: 0,
     maxHealth: 200,
     flags: new Set());

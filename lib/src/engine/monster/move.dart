@@ -1,5 +1,5 @@
 import '../action/action.dart';
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../monster/monster.dart';
 
 /// A [Move] is an action that a [Monster] can perform aside from the basic

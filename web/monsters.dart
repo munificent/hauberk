@@ -29,6 +29,7 @@ main() {
       <td>Health</td>
       <td>Meander</td>
       <td>Speed</td>
+      <td>Dodge</td>
       <td>Exp/Lev</td>
       <td>Count</td>
       <td>Attacks</td>
@@ -59,6 +60,15 @@ main() {
           <td class="r">${breed.maxHealth}</td>
           <td class="r">${breed.meander}</td>
           <td class="r">${breed.speed}</td>
+        ''');
+
+    text.write('<td>${breed.dodge}');
+    if (breed.defenses.isNotEmpty) {
+      text.write('+${breed.defenses.map((e) => e.amount).join("+")}');
+    }
+    text.write('</td>');
+
+    text.write('''
           <td class="r">$expPerLevel</td>
           <td class="r">$count</td>
           <td>

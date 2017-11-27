@@ -5,7 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../debug.dart';
 import '../action/action.dart';
 import '../core/actor.dart';
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
@@ -126,6 +126,10 @@ class Monster extends Actor {
   }
 
   int onGetSpeed() => Energy.normalSpeed + breed.speed;
+
+  int onGetDodge() => breed.dodge;
+
+  Iterable<Defense> onGetDefenses() => breed.defenses;
 
   Action onGetAction() {
     // Recharge moves.

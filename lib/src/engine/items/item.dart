@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/log.dart';
 

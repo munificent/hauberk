@@ -1,0 +1,103 @@
+The game mechanics around strike and dodge don't seem quite there yet. The
+immediate problem is that monster dodge values are currently flat and pretty
+low. This means a non-stupid player almost always gets the first blow, which
+almost always hits. That in turn means that once the hero gets a weapon that can
+one-hit-kill a monster, the monster's difficult instantly plummets. So, at least
+in the very early game, the threat level of monsters varies wildly based on when
+the hero finds a starting weapon.
+
+More vaguely, it might be nice if dodge ability was part of the flavor for
+monsters, so that some monsters were noticeably harder to hit than others.
+
+Defining a specific dodge value for each breed is an option, though I'm worried
+about the tuning cost of yet another statistic to author for every breed.
+
+I tried this approach:
+
+- Define a handful of size classes: tiny, small, medium, large, huge.
+- Each size class has a base dodge value where smaller monsters are harder to
+  hit.
+- That is then scaled by the monster's speed and whether or not it's immobile
+  or flies.
+
+The problem with that is that early game monsters tend to be smaller, but this
+made them paradoxically much *harder*.
+
+I don't think I have a clear picture about what I'm hoping to accomplish with
+strike/dodge. A few questions:
+
+A1. What is the mechanic trying to accomplish in gameplay?
+A2. How does it scale throughout the game? Is it relatively flat or do heroes
+    need to continually increase their strike ability to handle the fact that
+    monsters continually increase the dodge?
+A3. What does it represent in the world of the game?
+
+For A1, I had/have a few things in mind:
+
+B1. It somewhat balances out the otherwise too strong benefit of hitting first.
+    Since it's usually tactically easy for the player to ensure they get the
+    first hit, that would otherwise be overpowered.
+
+B2. It provides a defensive value that scales independently of damage. Since a
+    miss cancels out 100% of the damage, increasing dodge reduces the aggregate
+    damage an actor takes by an amount proportional to the damage. Though armor
+    is itself proportional too, so this isn't really useful.
+
+B3. Adds a little randomness to combat. A chance of doing zero damage basically
+    increases the random damage range so that combat is less of a war of
+    attrition.
+
+B4. I haven't taken advantage of this yet, but it's an opportunity to add flavor
+    to both monsters and hero development. A hero could improve their defensive
+    capabilities by absorbing more damage (heavy armor, high health) like a tank
+    or by avoiding it (high dodge) like a nimble ninja. Monsters could be hard
+    to kill because they are huge lumps of meat (giant) or because it's hard to
+    lay a hand on one (sprite).
+
+B1 is important, but difficult. You can balance out the first-move advantage
+more by increasing the baseline chance to miss for both monsters and heroes, but
+it tends to make combat more annoying when lots of blows miss.
+
+I don't think B2 has any point since armor scales as well.
+
+B3 is probably more important than I realize. We could improve this by also
+adding something like critical hits too.
+
+---
+
+OK, so here's a stab at answering the questions:
+
+A1. Mostly balancing out first-move advantage and adding flavor. Varying the
+    dodge value of various monsters also means that there is different relative
+    advantage to improve the hero's strike roll, or choosing other ways of
+    hurting the monster than melee.
+
+    For example, a hero that's focused on high strike and can hit anything they
+    want would not be afraid of nimble, tricky-to-touch monsters but is
+    relatively less able to deal with big tanks that are easy to hit anyway but
+    can suck up a lot of damage. A hero that has mediocre strike but deals a
+    lot of damage may find it not worth their time to try to kill smaller,
+    nimble monsters.
+
+A2. I think it should be fairly flat. Health is the main scaling factor. You
+    shouldn't need to have a +60 to strike in order to touch a giant late in
+    the game. It's a giant.
+
+    Equipment that grants strike bonuses are nice and useful, but not necessary.
+    Skills that increase strike are also useful, but not something that you
+    should *need* to level up to survive.
+
+    Non-melee heroes may beat the game with almost no strike bonuses.
+
+A3. My current idea is that it represents all of an actor's abilities to avoid
+    taking damage. That's being too small to hit, evading the blow, having it
+    glance off a shield, bounce off a dragon's scales, etc.
+
+Building on A3, it might be neat to actually call out each of those separately.
+So an actor provides a set of "shields": each one has a description and a dodge
+bonus. If a strike roll fails, we figure out which shield it hit and use that
+for the "miss" message.
+
+This also opens a way to add "parrying" as a hero skill -- it adds an extra
+"shield" for parrying with the current weapon.
+

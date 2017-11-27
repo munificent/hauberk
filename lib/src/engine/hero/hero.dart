@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../action/walk.dart';
 import '../core/actor.dart';
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
@@ -181,8 +181,6 @@ class Hero extends Actor {
     return total;
   }
 
-  int get dodge => super.dodge + Agility.dodgeBonus(agility);
-
   // TODO: If this changes or the equipped weapon changes, should check to see
   // if weapon has too much heft for player and log.
   /// The total encumbrance of all equipment.
@@ -242,6 +240,11 @@ class Hero extends Actor {
   }
 
   int onGetSpeed() => Energy.normalSpeed;
+
+  int onGetDodge() => 20 + Agility.dodgeBonus(agility);
+
+  // TODO: Shields, temporary bonuses, parrying, etc.
+  Iterable<Defense> onGetDefenses() => const [];
 
   Action onGetAction() => _behavior.getAction(this);
 

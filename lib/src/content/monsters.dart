@@ -168,14 +168,15 @@ void arachnids() {
   family("a", flags: "fearless")
     ..placeIn("corridor")
     ..stain(Tiles.spiderweb);
-  breed("brown spider", 1, persimmon, 6, meander: 8)..attack("bite[s]", 5);
+  breed("brown spider", 1, persimmon, 6, dodge: 30, meander: 8)
+    ..attack("bite[s]", 5);
 
-  breed("gray spider", 2, slate, 12, meander: 6)
+  breed("gray spider", 2, slate, 12, dodge: 30, meander: 6)
     ..attack("bite[s]", 5, Element.poison);
 
-  breed("spiderling", 4, persimmon, 6, meander: 8)
+  breed("spiderling", 4, persimmon, 3, dodge: 35, meander: 8)
     ..count(2, 5)
-    ..attack("bite[s]", 5);
+    ..attack("bite[s]", 5, Element.poison);
 
   breed("giant spider", 6, ultramarine, 40, meander: 5)
     ..attack("bite[s]", 5, Element.poison)
@@ -188,19 +189,22 @@ void bats() {
   family("b")
     ..fly()
     ..preferWall();
-  breed("brown bat", 2, persimmon, 9, speed: 2, meander: 6)
+  breed("brown bat", 2, persimmon, 2, speed: 1, meander: 6)
+    ..defense(20, "{1} flits out of the way.")
     ..count(2, 4)
-    ..attack("bite[s]", 4);
+    ..attack("bite[s]", 3);
 
-  breed("giant bat", 4, garnet, 24, speed: 2, meander: 4).attack("bite[s]", 6);
+  breed("giant bat", 4, garnet, 24, speed: 1, meander: 4).attack("bite[s]", 6);
 
-  breed("cave bat", 6, gunsmoke, 40, speed: 3, meander: 3)
+  breed("cave bat", 6, gunsmoke, 20, speed: 2, meander: 3)
+    ..defense(20, "{1} flits out of the way.")
     ..count(2, 5)
     ..attack("bite[s]", 6);
 }
 
 void birds() {
   family("B")
+    ..defense(10, "{1} flaps out of the way.")
     ..fly()
     ..count(3, 6);
   breed("crow", 4, steelGray, 9, speed: 2, meander: 4)
@@ -215,7 +219,7 @@ void birds() {
 }
 
 void canines() {
-  family("c", tracking: 20, meander: 3);
+  family("c", dodge: 25, tracking: 20, meander: 3);
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
     ..attack("bite[s]", 4)
@@ -239,7 +243,9 @@ void canids() {}
 
 void dragons() {
   // TODO: Tune. Give more attacks. Tune drops.
-  family("d")..preferOpen();
+  family("d")
+    ..defense(20, "{2} [is|are] deflected by its scales.")
+    ..preferOpen();
   breed("red dragon", 50, brickRed, 400)
     ..attack("bite[s]", 80)
     ..attack("claw[s]", 60)
@@ -252,6 +258,7 @@ void greaterDragons() {}
 
 void eyes() {
   family("e", flags: "immobile")
+    ..defense(10, "{1} blinks out of the way.")
     ..fly()
     ..preferOpen();
   breed("lazy eye", 1, cornflower, 12)
@@ -303,6 +310,7 @@ void faeFolk() {
   // Sprites, pixies, fairies, elves, etc.
 
   family("f", speed: 2, meander: 4, flags: "cowardly")
+    ..defense(10, "{1} flits out of the way.")
     ..fly()
     ..preferOpen();
   breed("forest sprite", 1, mint, 6)
@@ -422,8 +430,8 @@ void hybrids() {}
 void insects() {
   family("i", tracking: 3, meander: 8, flags: "fearless");
   // TODO: Spawn as eggs which can hatch into cockroaches?
-  breed("giant cockroach[es]", 1, garnet, 4, frequency: 0.4)
-    ..count(3, 5)
+  breed("giant cockroach[es]", 1, garnet, 1, frequency: 0.4)
+    ..count(1, 3)
     ..preferCorner()
     ..attack("crawl[s] on", 2)
     ..spawn(rate: 6);
@@ -607,7 +615,7 @@ void ogres() {}
 
 void people() {
   family("p", tracking: 14)..openDoors();
-  breed("hapless adventurer", 1, buttermilk, 14, meander: 3)
+  breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 3)
     ..attack("hit[s]", 3)
     ..drop(50, "weapon")
     ..drop(60, "armor")
@@ -631,7 +639,7 @@ void people() {
     ..drop(20, "robe")
     ..drop(20, "boots");
 
-  breed("unlucky ranger", 5, peaGreen, 30, meander: 2)
+  breed("unlucky ranger", 5, peaGreen, 30, dodge: 25, meander: 2)
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
     ..drop(30, "potion")
@@ -665,13 +673,13 @@ void quest() {
 }
 
 void rodents() {
-  family("r", speed: 1, meander: 4)..preferWall();
-  breed("[mouse|mice]", 1, sandal, 6, frequency: 0.5)
+  family("r", speed: 1, dodge: 30, meander: 4)..preferWall();
+  breed("[mouse|mice]", 1, sandal, 2, frequency: 0.5)
     ..count(2, 5)
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
 
-  breed("sewer rat", 2, steelGray, 8, meander: -1)
+  breed("sewer rat", 2, steelGray, 4, meander: -1)
     ..count(1, 4)
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
@@ -680,7 +688,7 @@ void rodents() {
     ..attack("bite[s]", 8, Element.poison)
     ..attack("scratch[es]", 4);
 
-  breed("plague rat", 6, lima, 16)
+  breed("plague rat", 6, lima, 8)
     ..count(1, 4)
     ..attack("bite[s]", 15, Element.poison)
     ..attack("scratch[es]", 8);
@@ -689,7 +697,7 @@ void rodents() {
 void reptiles() {
   family("R");
   // TODO: Should be able to swim.
-  breed("frog", 1, lima, 4, speed: 1, meander: 4)
+  breed("frog", 1, lima, 4, speed: 1, dodge: 30, meander: 4)
     ..swim()
     ..placeIn("aquatic")
     ..attack("hop[s] on", 2);
@@ -724,18 +732,18 @@ void reptiles() {
     ..attack("claw[s]", 12)
     ..attack("bite[s]", 17);
 
-  family("R", meander: 3)..preferOpen();
-  breed("juvenile salamander", 7, salmon, 56)
+  family("R", dodge: 30, meander: 3)..preferOpen();
+  breed("juvenile salamander", 7, salmon, 40)
     ..attack("bite[s]", 14, Element.fire)
     ..fireCone(rate: 16, damage: 30, range: 6);
 
-  breed("salamander", 13, brickRed, 87)
+  breed("salamander", 13, brickRed, 60)
     ..attack("bite[s]", 18, Element.fire)
     ..fireCone(rate: 16, damage: 50, range: 8);
 }
 
 void slugs() {
-  family("s", tracking: 2, flags: "fearless", meander: 1, speed: -3);
+  family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 1);
   breed("giant slug", 1, mustard, 20)..attack("crawl[s] on", 7);
 
   breed("suppurating slug", 6, lima, 50)
@@ -743,7 +751,7 @@ void slugs() {
 }
 
 void snakes() {
-  family("S", speed: 1, meander: 4);
+  family("S", speed: 1, dodge: 30, meander: 4);
   breed("garter snake", 1, lima, 9)
     ..placeIn("aquatic")
     ..attack("bite[s]", 3);
@@ -765,23 +773,24 @@ void vines() {}
 void vampires() {}
 
 void worms() {
-  family("w", meander: 4, flags: "fearless");
-  breed("giant earthworm", 2, salmon, 20, speed: -2)
-    ..placeIn("corridor")
-    ..attack("crawl[s] on", 5);
-
+  family("w", dodge: 25, meander: 4, flags: "fearless");
   breed("blood worm", 2, brickRed, 4, frequency: 0.5)
     ..count(3, 8)
     ..attack("crawl[s] on", 5);
-
-  breed("giant cave worm", 7, sandal, 80, speed: -2)
-    ..placeIn("corridor")
-    ..attack("crawl[s] on", 8, Element.acid);
 
   breed("fire worm", 10, carrot, 6)
     ..count(2, 6)
     ..preferWall()
     ..attack("crawl[s] on", 5, Element.fire);
+
+  family("w", dodge: 10, meander: 4, flags: "fearless");
+  breed("giant earthworm", 2, salmon, 20, speed: -2)
+    ..placeIn("corridor")
+    ..attack("crawl[s] on", 5);
+
+  breed("giant cave worm", 7, sandal, 80, speed: -2)
+    ..placeIn("corridor")
+    ..attack("crawl[s] on", 8, Element.acid);
 }
 
 void wraiths() {}
@@ -794,13 +803,19 @@ void zombies() {}
 void serpents() {}
 
 _FamilyBuilder family(String character,
-    {double frequency, int meander, int speed, int tracking, String flags}) {
+    {double frequency,
+    int meander,
+    int speed,
+    int dodge,
+    int tracking,
+    String flags}) {
   buildBreed();
 
   _family = new _FamilyBuilder(frequency);
   _family._character = character;
   _family._meander = meander;
   _family._speed = speed;
+  _family._dodge = dodge;
   _family._tracking = tracking;
   _family._flags = flags;
 
@@ -835,7 +850,7 @@ void buildBreed() {
 
 // TODO: Move more named params into builder methods?
 _BreedBuilder breed(String name, int depth, appearance, int health,
-    {double frequency, int speed: 0, int meander: 0}) {
+    {double frequency, int speed: 0, int dodge, int meander: 0}) {
   buildBreed();
 
   Glyph glyph;
@@ -869,6 +884,10 @@ class _BaseBuilder {
   /// The default meander for breeds in the current family. If the breed
   /// specifies a meander, it offset's the family's meander.
   int _meander;
+
+  int _dodge;
+
+  final List<Defense> _defenses = [];
 
   String _flags;
 
@@ -922,6 +941,10 @@ class _BaseBuilder {
 
   void openDoors() {
     _motilities.add(Motility.door);
+  }
+
+  void defense(int amount, String message) {
+    _defenses.add(new Defense(amount, message));
   }
 }
 
@@ -1068,6 +1091,9 @@ class _BreedBuilder extends _BaseBuilder {
     var motilities = new MotilitySet(_family._motilities);
     motilities.addAll(_motilities);
 
+    var dodge = _dodge ?? _family._dodge;
+    if (flags.contains("immobile")) dodge = 0;
+
     var breed = new Breed(
         _name,
         Pronoun.it,
@@ -1082,10 +1108,14 @@ class _BreedBuilder extends _BaseBuilder {
         tracking: (_tracking ?? 0) + (_family._tracking ?? 10),
         meander: (_meander ?? 0) + (_family._meander ?? 0),
         speed: (_speed ?? 0) + (_family._speed ?? 0),
+        dodge: dodge,
         countMin: _countMin ?? _family._countMin ?? 1,
         countMax: _countMax ?? _family._countMax ?? 1,
         stain: _stain ?? _family._stain,
         flags: flags);
+
+    breed.defenses.addAll(_family._defenses);
+    breed.defenses.addAll(_defenses);
 
     _minionNames[breed] = _minions;
 

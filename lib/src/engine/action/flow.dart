@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/flow.dart';
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/game.dart';
 import '../core/stage.dart';

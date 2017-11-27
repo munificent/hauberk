@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import '../action/action.dart';
 import '../core/actor.dart';
-import '../core/attack.dart';
+import '../core/combat.dart';
 import '../command/lance.dart';
 import '../command/slash.dart';
 import '../command/stab.dart';
