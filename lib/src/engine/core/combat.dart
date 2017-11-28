@@ -3,8 +3,6 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../action/condition.dart';
-import '../action/element.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'game.dart';
@@ -193,7 +191,11 @@ class Hit {
 
     // Any resistance cancels all side effects.
     if (resistance <= 0) {
-      _elementSideEffect(defender, action, damage);
+      var sideEffect = element.attackAction(damage);
+      if (sideEffect != null) {
+        action.addAction(sideEffect, defender);
+      }
+
       // TODO: Should we log a message to let the player know the side effect
       // was resisted?
     }
@@ -215,60 +217,6 @@ class Hit {
     var rolled = rng.triangleInt(damageCents, damageCents ~/ 2);
     rolled *= getArmorMultiplier(armor);
     return (rolled / 100).round();
-  }
-
-  void _elementSideEffect(Actor defender, Action action, int damage) {
-    // Apply any element-specific effects.
-    switch (element) {
-      case Element.none:
-        // No effect.
-        break;
-
-      case Element.air:
-        // TODO: Should damage affect distance?
-        action.addAction(new WindAction(), defender);
-        break;
-
-      case Element.earth:
-        // TODO: Cuts?
-        break;
-
-      case Element.fire:
-        action.addAction(new BurnAction(), defender);
-        break;
-
-      case Element.water:
-        // TODO: Push back.
-        break;
-
-      case Element.acid:
-        // TODO: Destroy items.
-        break;
-
-      case Element.cold:
-        action.addAction(new FreezeAction(damage), defender);
-        break;
-
-      case Element.lightning:
-        // TODO: Break glass. Recharge some items?
-        break;
-
-      case Element.poison:
-        action.addAction(new PoisonAction(damage), defender);
-        break;
-
-      case Element.dark:
-        action.addAction(new BlindAction(damage), defender);
-        break;
-
-      case Element.light:
-        action.addAction(new DazzleAction(damage), defender);
-        break;
-
-      case Element.spirit:
-        // TODO: Drain experience.
-        break;
-    }
   }
 }
 

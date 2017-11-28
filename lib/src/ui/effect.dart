@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
+// TODO: Directly importing this is a little hacky. Put "appearance" on Element?
+import '../content/elements.dart';
 import '../engine.dart';
 import '../hues.dart';
 
@@ -121,67 +123,67 @@ final _elementSequences = <Element, List<List<Glyph>>>{
     _glyphs("•", [sandal]),
     _glyphs("•", [persimmon])
   ],
-  Element.air: [
+  Elements.air: [
     _glyphs("Oo", [ash, turquoise]),
     _glyphs(".", [turquoise]),
     _glyphs(".", [cornflower])
   ],
-  Element.earth: [
+  Elements.earth: [
     _glyphs("*%", [sandal, gold]),
     _glyphs("*%", [persimmon, garnet]),
     _glyphs("•*", [persimmon]),
     _glyphs("•", [garnet])
   ],
-  Element.fire: [
+  Elements.fire: [
     _glyphs("▲^", [gold, buttermilk]),
     _glyphs("*^", [carrot]),
     _glyphs("^", [brickRed]),
     _glyphs("^", [garnet, brickRed]),
     _glyphs(".", [garnet, brickRed])
   ],
-  Element.water: [
+  Elements.water: [
     _glyphs("Oo", [turquoise, cornflower]),
     _glyphs("o•~", [cerulean]),
     _glyphs("~", [cerulean]),
     _glyphs("~", [ultramarine]),
     _glyphs(".", [ultramarine])
   ],
-  Element.acid: [
+  Elements.acid: [
     _glyphs("Oo", [buttermilk, gold]),
     _glyphs("o•~", [lima, gold]),
     _glyphs(":,", [lima, mustard]),
     _glyphs(".", [lima])
   ],
-  Element.cold: [
+  Elements.cold: [
     _glyphs("*", [ash]),
     _glyphs("+x", [turquoise, ash]),
     _glyphs("+x", [cornflower, gunsmoke]),
     _glyphs(".", [slate, ultramarine])
   ],
-  Element.lightning: [
+  Elements.lightning: [
     _glyphs("*", [lilac]),
     _glyphs(r"-|\/", [violet, ash]),
     _glyphs(".", [midnight, midnight, midnight, lilac])
   ],
-  Element.poison: [
+  Elements.poison: [
     _glyphs("Oo", [mint, lima]),
     _glyphs("o•", [peaGreen, peaGreen, mustard]),
     _glyphs("•", [sherwood, mustard]),
     _glyphs(".", [sherwood])
   ],
-  Element.dark: [
+  Elements.dark: [
     _glyphs("*%", [midnight, midnight, steelGray]),
     _glyphs("•", [midnight, midnight, gunsmoke]),
     _glyphs(".", [midnight]),
     _glyphs(".", [midnight])
   ],
-  Element.light: [
+  Elements.light: [
     _glyphs("*", [ash]),
     _glyphs("x+", [ash, buttermilk]),
     _glyphs(":;\"'`,", [buttermilk, gold]),
     _glyphs(".", [gunsmoke, buttermilk])
   ],
-  Element.spirit: [
+  Elements.spirit: [
     _glyphs("Oo*+", [lilac, gunsmoke]),
     _glyphs("o+", [violet, peaGreen]),
     _glyphs("•.", [indigo, sherwood, sherwood])

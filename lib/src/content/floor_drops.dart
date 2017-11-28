@@ -33,6 +33,12 @@ class FloorDrops {
           drop: parseDrop("Rock", i));
     }
 
+    floorDrop(
+        depth: 1,
+        frequency: 50.0,
+        location: SpawnLocation.anywhere,
+        drop: parseDrop("item", 1));
+
     // TODO: Other stuff.
   }
 

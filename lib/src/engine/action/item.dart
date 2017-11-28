@@ -55,52 +55,6 @@ abstract class ItemAction extends Action {
   }
 }
 
-abstract class DestroyItemMixin implements Action {
-  /// Tries to destroy [items] where each item with [flag] has a one in [chance]
-  /// chance of being destroyed.
-  ///
-  /// Handles splitting stacks and logging errors. Returns the list of
-  /// completely destroyed items so they can be removed from whatever collection
-  /// contains them.
-  List<Item> destroyItems(
-      Iterable<Item> items, int chance, String flag, String message) {
-    var destroyed = <Item>[];
-
-    for (var item in items) {
-      if (!item.flags.contains(flag)) continue;
-
-      // See how much of the stack is destroyed.
-      var destroyedCount = 0;
-      for (var i = 0; i < item.count; i++) {
-        if (rng.oneIn(chance)) destroyedCount++;
-      }
-
-      if (destroyedCount == item.count) {
-        // TODO: Effect.
-        log("{1} $message!", item);
-        destroyed.add(item);
-      } else if (destroyedCount > 0) {
-        var destroyedPart = item.splitStack(destroyedCount);
-        // TODO: Effect.
-        log("{1} $message!", destroyedPart);
-      }
-    }
-
-    return destroyed;
-  }
-
-  void destroyInventory(int chance, String flag, String message) {
-    // TODO: If monsters have inventories, need to handle that here.
-    if (actor is! Hero) return;
-
-    // TODO: Do same thing for equipment slots if there are any destroyable
-    // equippable items.
-    for (var item in destroyItems(hero.inventory, chance, flag, message)) {
-      hero.inventory.remove(item);
-    }
-  }
-}
-
 /// [Action] for picking up an [Item] off the ground.
 class PickUpAction extends Action {
   final Item item;
@@ -245,5 +199,80 @@ class UseAction extends ItemAction {
     }
 
     return alternate(useAction);
+  }
+}
+
+/// Base class for actions that permanently destroy items.
+abstract class DestroyAction extends Action {
+  final int _chance;
+  final String _flag;
+  final String _message;
+
+  DestroyAction(this._chance, this._flag, this._message);
+
+  /// Tries to destroy [items] where each item with [flag] has a one in [chance]
+  /// chance of being destroyed.
+  ///
+  /// Handles splitting stacks and logging errors. Returns the list of
+  /// completely destroyed items so they can be removed from whatever collection
+  /// contains them.
+  List<Item> _destroyItems(Iterable<Item> items) {
+    var destroyed = <Item>[];
+
+    for (var item in items) {
+      if (!item.flags.contains(_flag)) continue;
+
+      // See how much of the stack is destroyed.
+      var destroyedCount = 0;
+      for (var i = 0; i < item.count; i++) {
+        if (rng.oneIn(_chance)) destroyedCount++;
+      }
+
+      if (destroyedCount == item.count) {
+        // TODO: Effect.
+        log("{1} $_message!", item);
+        destroyed.add(item);
+      } else if (destroyedCount > 0) {
+        var destroyedPart = item.splitStack(destroyedCount);
+        // TODO: Effect.
+        log("{1} $_message!", destroyedPart);
+      }
+    }
+
+    return destroyed;
+  }
+}
+
+class DestroyOnFloorAction extends DestroyAction {
+  final Vec _pos;
+
+  DestroyOnFloorAction(this._pos, int chance, String flag, String message)
+      : super(chance, flag, message);
+
+  ActionResult onPerform() {
+    var destroyed = _destroyItems(game.stage.itemsAt(_pos));
+    for (var item in destroyed) {
+      game.stage.removeItem(item, _pos);
+    }
+
+    return ActionResult.success;
+  }
+}
+
+class DestroyInInventoryAction extends DestroyAction {
+  DestroyInInventoryAction(int chance, String flag, String message)
+      : super(chance, flag, message);
+
+  ActionResult onPerform() {
+    // TODO: If monsters have inventories, need to handle that here.
+    if (actor is! Hero) return ActionResult.success;
+
+    // TODO: Do same thing for equipment slots if there are any destroyable
+    // equippable items.
+    for (var item in _destroyItems(hero.inventory)) {
+      hero.inventory.remove(item);
+    }
+
+    return ActionResult.success;
   }
 }

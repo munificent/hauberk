@@ -4,7 +4,7 @@ import '../action/bolt.dart';
 
 class BoltMove extends RangedMove {
   num get experience =>
-      attack.damage * Option.expElement[attack.element] * (1.0 + range / 20.0);
+      attack.damage * attack.element.experience * (1.0 + range / 20.0);
 
   BoltMove(num rate, Attack attack) : super(rate, attack);
 

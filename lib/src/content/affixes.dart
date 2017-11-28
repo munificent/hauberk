@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
+import 'elements.dart';
 import 'items.dart';
 
 class Affixes {
@@ -66,29 +67,29 @@ class Affixes {
   }
 
   static void _resists() {
-    _resistWeak(Element.air, 10, 0.5);
-    _resistWeak(Element.earth, 11, 0.5);
-    _resistWeak(Element.fire, 12, 0.5);
-    _resistWeak(Element.water, 13, 0.5);
-    _resistWeak(Element.acid, 14, 0.3);
-    _resistWeak(Element.cold, 15, 0.5);
-    _resistWeak(Element.lightning, 16, 0.3);
-    _resistWeak(Element.poison, 17, 0.25);
-    _resistWeak(Element.dark, 18, 0.25);
-    _resistWeak(Element.light, 19, 0.25);
-    _resistWeak(Element.spirit, 20, 0.4);
+    _resistWeak(Elements.air, 10, 0.5);
+    _resistWeak(Elements.earth, 11, 0.5);
+    _resistWeak(Elements.fire, 12, 0.5);
+    _resistWeak(Elements.water, 13, 0.5);
+    _resistWeak(Elements.acid, 14, 0.3);
+    _resistWeak(Elements.cold, 15, 0.5);
+    _resistWeak(Elements.lightning, 16, 0.3);
+    _resistWeak(Elements.poison, 17, 0.25);
+    _resistWeak(Elements.dark, 18, 0.25);
+    _resistWeak(Elements.light, 19, 0.25);
+    _resistWeak(Elements.spirit, 20, 0.4);
 
-    _resistStrong(Element.air, 16, 0.25);
-    _resistStrong(Element.earth, 17, 0.25);
-    _resistStrong(Element.fire, 18, 0.25);
-    _resistStrong(Element.water, 19, 0.25);
-    _resistStrong(Element.acid, 20, 0.2);
-    _resistStrong(Element.cold, 21, 0.25);
-    _resistStrong(Element.lightning, 22, 0.16);
-    _resistStrong(Element.poison, 23, 0.14);
-    _resistStrong(Element.dark, 24, 0.14);
-    _resistStrong(Element.light, 25, 0.14);
-    _resistStrong(Element.spirit, 26, 0.13);
+    _resistStrong(Elements.air, 16, 0.25);
+    _resistStrong(Elements.earth, 17, 0.25);
+    _resistStrong(Elements.fire, 18, 0.25);
+    _resistStrong(Elements.water, 19, 0.25);
+    _resistStrong(Elements.acid, 20, 0.2);
+    _resistStrong(Elements.cold, 21, 0.25);
+    _resistStrong(Elements.lightning, 22, 0.16);
+    _resistStrong(Elements.poison, 23, 0.14);
+    _resistStrong(Elements.dark, 24, 0.14);
+    _resistStrong(Elements.light, 25, 0.14);
+    _resistStrong(Elements.spirit, 26, 0.13);
   }
 
   static void _extraDamage() {
@@ -104,28 +105,28 @@ class Affixes {
 
   static void _brands() {
     // TODO: Should these grant resistance to their element too?
-    brand("Glimmering", 20, 0.3, Element.light, scale: 1.2);
-    brand("Shining", 32, 0.25, Element.light, scale: 1.4);
-    brand("Radiant", 48, 0.2, Element.light, scale: 1.6);
+    brand("Glimmering", 20, 0.3, Elements.light, scale: 1.2);
+    brand("Shining", 32, 0.25, Elements.light, scale: 1.4);
+    brand("Radiant", 48, 0.2, Elements.light, scale: 1.6);
 
-    brand("Dim", 16, 0.3, Element.dark, scale: 1.2);
-    brand("Dark", 32, 0.25, Element.dark, scale: 1.4);
-    brand("Black", 56, 0.2, Element.dark, scale: 1.6);
+    brand("Dim", 16, 0.3, Elements.dark, scale: 1.2);
+    brand("Dark", 32, 0.25, Elements.dark, scale: 1.4);
+    brand("Black", 56, 0.2, Elements.dark, scale: 1.6);
 
-    brand("Freezing", 20, 0.3, Element.cold, scale: 1.5);
+    brand("Freezing", 20, 0.3, Elements.cold, scale: 1.5);
 
-    brand("Burning", 20, 0.3, Element.fire, scale: 1.3);
-    brand("Flaming", 40, 0.25, Element.fire, scale: 1.6);
-    brand("Searing", 60, 0.2, Element.fire, scale: 1.8);
+    brand("Burning", 20, 0.3, Elements.fire, scale: 1.3);
+    brand("Flaming", 40, 0.25, Elements.fire, scale: 1.6);
+    brand("Searing", 60, 0.2, Elements.fire, scale: 1.8);
 
-    brand("Electric", 50, 0.2, Element.lightning, scale: 1.4);
-    brand("Shocking", 70, 0.2, Element.lightning, scale: 1.8);
+    brand("Electric", 50, 0.2, Elements.lightning, scale: 1.4);
+    brand("Shocking", 70, 0.2, Elements.lightning, scale: 1.8);
 
-    brand("Poisoned", 35, 0.2, Element.poison, scale: 1.1);
-    brand("Venomous", 70, 0.2, Element.poison, scale: 1.3);
+    brand("Poisoned", 35, 0.2, Elements.poison, scale: 1.1);
+    brand("Venomous", 70, 0.2, Elements.poison, scale: 1.3);
 
-    brand("Ghostly", 45, 0.2, Element.spirit, scale: 1.4);
-    brand("Spiritual", 80, 0.15, Element.spirit, scale: 1.7);
+    brand("Ghostly", 45, 0.2, Elements.spirit, scale: 1.4);
+    brand("Spiritual", 80, 0.15, Elements.spirit, scale: 1.7);
   }
 
   static void defineItemTag(String tag) {
@@ -146,7 +147,7 @@ class Affixes {
       String name, int depth, double frequency, Element element, int power) {
     // Also boost armor a little.
     var affix = new Affix(name, armor: power);
-    affix.resists[element] = power;
+    affix.resist(element, power);
 
     // TODO: Don't apply to all armor types?
     _suffixes.add(name, affix, depth, frequency, "armor");

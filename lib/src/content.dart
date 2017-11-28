@@ -4,6 +4,7 @@ import 'engine.dart';
 
 import 'content/affixes.dart';
 import 'content/dungeon/dungeon.dart';
+import 'content/elements.dart';
 import 'content/floor_drops.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
@@ -35,6 +36,7 @@ class GameContent implements Content {
   ItemType tryFindItem(String name) => Items.types.tryFind(name);
   Skill findSkill(String name) => Skills.find(name);
 
+  List<Element> get elements => Elements.all;
   List<Skill> get skills => Skills.all;
   List<Recipe> get recipes => Recipes.all;
   List<Shop> get shops => Shops.all;

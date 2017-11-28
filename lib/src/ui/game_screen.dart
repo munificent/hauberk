@@ -4,6 +4,8 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
+// TODO: Directly importing this is a little hacky. Put "appearance" on Element?
+import '../content/elements.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'close_door_dialog.dart';
@@ -679,17 +681,17 @@ class GameScreen extends Screen<Input> {
   }
 
   static final _resistConditions = {
-    Element.air: ["A", Color.black, turquoise],
-    Element.earth: ["E", Color.black, persimmon],
-    Element.fire: ["F", Color.black, brickRed],
-    Element.water: ["W", Color.black, ultramarine],
-    Element.acid: ["A", Color.black, lima],
-    Element.cold: ["C", Color.black, cornflower],
-    Element.lightning: ["L", Color.black, lilac],
-    Element.poison: ["P", Color.black, peaGreen],
-    Element.dark: ["D", Color.black, steelGray],
-    Element.light: ["L", Color.black, buttermilk],
-    Element.spirit: ["S", Color.black, violet]
+    Elements.air: ["A", Color.black, turquoise],
+    Elements.earth: ["E", Color.black, persimmon],
+    Elements.fire: ["F", Color.black, brickRed],
+    Elements.water: ["W", Color.black, ultramarine],
+    Elements.acid: ["A", Color.black, lima],
+    Elements.cold: ["C", Color.black, cornflower],
+    Elements.lightning: ["L", Color.black, lilac],
+    Elements.poison: ["P", Color.black, peaGreen],
+    Elements.dark: ["D", Color.black, steelGray],
+    Elements.light: ["L", Color.black, buttermilk],
+    Elements.spirit: ["S", Color.black, violet]
   };
 
   /// Draws a health bar for [actor].
@@ -731,7 +733,7 @@ class GameScreen extends Screen<Input> {
     if (actor.blindness.isActive) conditions.add(["B", steelGray]);
     if (actor.dazzle.isActive) conditions.add(["D", lilac]);
 
-    for (var element in Element.all) {
+    for (var element in game.content.elements) {
       if (actor.resistances[element].isActive) {
         conditions.add(_resistConditions[element]);
       }

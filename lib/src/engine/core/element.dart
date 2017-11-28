@@ -1,82 +1,31 @@
+import 'package:piecemeal/piecemeal.dart';
+
+import '../action/action.dart';
+
 class Element {
-  static const all = const [
-    none,
-    air,
-    earth,
-    fire,
-    water,
-    acid,
-    cold,
-    lightning,
-    poison,
-    dark,
-    light,
-    spirit
-  ];
-
-  static const allButNone = const [
-    air,
-    earth,
-    fire,
-    water,
-    acid,
-    cold,
-    lightning,
-    poison,
-    dark,
-    light,
-    spirit
-  ];
-
-  static const none = const Element("none");
-  static const air = const Element("air");
-  static const earth = const Element("earth");
-  static const fire = const Element("fire");
-  static const water = const Element("water");
-  static const acid = const Element("acid");
-  static const cold = const Element("cold");
-  static const lightning = const Element("lightning");
-  static const poison = const Element("poison");
-  static const dark = const Element("dark");
-  static const light = const Element("light");
-  static const spirit = const Element("spirit");
-
-  static Element fromName(String name) {
-    switch (name) {
-      case "none":
-        return none;
-      case "air":
-        return air;
-      case "earth":
-        return earth;
-      case "fire":
-        return fire;
-      case "water":
-        return water;
-      case "acid":
-        return acid;
-      case "cold":
-        return cold;
-      case "lightning":
-        return lightning;
-      case "poison":
-        return poison;
-      case "dark":
-        return dark;
-      case "light":
-        return light;
-      case "spirit":
-        return spirit;
-      default:
-        throw new ArgumentError('Unknown element name "$name".');
-    }
-  }
+  static final none = new Element("none", "No", 1.0);
 
   final String name;
+  final String abbreviation;
+
+  /// The multiplier to a experience gained when killing a monster with a move
+  /// or attack using this element.
+  final double experience;
 
   String get capitalized => "${name[0].toUpperCase()}${name.substring(1)}";
 
-  const Element(this.name);
+  /// Creates a side-effect action to perform when an [Attack] of this element
+  /// hits an actor for [damage] or `null` if this element has no side effect.
+  final Action Function(int damage) attackAction;
+
+  /// Creates a side-effect action to perform when an area attack of this
+  /// element hits a tile or `null` if this element has no effect.
+  final Action Function(Vec pos) floorAction;
+
+  Element(this.name, this.abbreviation, this.experience,
+      {Action Function(int damage) attack, Action Function(Vec pos) floor})
+      : attackAction = attack ?? ((_) => null),
+        floorAction = floor ?? ((_) => null);
 
   String toString() => name;
 }

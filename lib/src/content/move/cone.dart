@@ -9,7 +9,7 @@ class ConeMove extends Move {
   num get experience =>
       attack.damage *
       3.0 *
-      Option.expElement[attack.element] *
+      attack.element.experience *
       (1.0 + range / 10.0);
 
   ConeMove(num rate, this.attack) : super(rate);

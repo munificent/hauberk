@@ -5,7 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 
 /// Creates a swath of damage that radiates out from a point.
-class RayAction extends Action with DestroyItemMixin {
+class RayAction extends Action {
   /// The centerpoint that the cone is radiating from.
   final Vec _from;
 
@@ -83,7 +83,8 @@ class RayAction extends Action with DestroyItemMixin {
       }
 
       // Hit stuff on the floor too.
-      _hitFloor(pos);
+      var action = _hit.element.floorAction(pos);
+      if (action != null) addAction(action);
 
       return false;
     });
@@ -93,65 +94,6 @@ class RayAction extends Action with DestroyItemMixin {
 
     // Still going.
     return ActionResult.notDone;
-  }
-
-  /// Applies element-specific effects to items on the floor.
-  void _hitFloor(Vec pos) {
-    switch (_hit.element) {
-      case Element.none:
-        // No effect.
-        break;
-
-      case Element.air:
-        // TODO: Teleport items.
-        break;
-
-      case Element.earth:
-        break;
-
-      case Element.fire:
-        _destroyFloorItems(pos, 3, "flammable", "burns up");
-        break;
-
-      case Element.water:
-        // TODO: Move items.
-        break;
-
-      case Element.acid:
-        // TODO: Destroy items.
-        break;
-
-      case Element.cold:
-        _destroyFloorItems(pos, 6, "freezable", "shatters");
-        break;
-
-      case Element.lightning:
-        // TODO: Break glass. Recharge some items?
-        break;
-
-      case Element.poison:
-        break;
-
-      case Element.dark:
-        // TODO: Blind.
-        break;
-
-      case Element.light:
-        break;
-
-      case Element.spirit:
-        break;
-    }
-
-    return null;
-  }
-
-  void _destroyFloorItems(Vec pos, int chance, String flag, String message) {
-    var destroyed =
-        destroyItems(game.stage.itemsAt(pos), chance, flag, message);
-    for (var item in destroyed) {
-      game.stage.removeItem(item, pos);
-    }
   }
 }
 

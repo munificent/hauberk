@@ -137,8 +137,8 @@ class Item implements Comparable<Item>, Noun {
   int resistance(Element element) {
     var resistance = 0;
 
-    if (prefix != null) resistance += prefix.resists[element];
-    if (suffix != null) resistance += suffix.resists[element];
+    if (prefix != null) resistance += prefix.resistance(element);
+    if (suffix != null) resistance += suffix.resistance(element);
 
     return resistance;
   }
@@ -321,7 +321,7 @@ class Affix {
 
   final int armor;
 
-  final Map<Element, int> resists = {};
+  final Map<Element, int> _resists = {};
 
   Affix(this.name,
       {int strikeBonus,
@@ -334,9 +334,15 @@ class Affix {
         damageBonus = damageBonus ?? 1,
         brand = brand ?? Element.none,
         armor = armor ?? 0 {
-    for (var element in Element.all) {
-      resists[element] = 0;
-    }
+  }
+
+  int resistance(Element element) {
+    if (!_resists.containsKey(element)) return 0;
+    return _resists[element];
+  }
+
+  void resist(Element element, int power) {
+    _resists[element] = power;
   }
 }
 

@@ -1,16 +1,12 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../core/flow.dart';
-import '../core/game.dart';
-import '../core/stage.dart';
-import 'action.dart';
-import 'item.dart';
+import '../../engine.dart';
 
 /// These actions are side effects from taking elemental damage.
 
-class BurnAction extends Action with DestroyItemMixin {
+class BurnAction extends Action {
   ActionResult onPerform() {
-    destroyInventory(5, "flammable", "burns up");
+    addAction(new DestroyInInventoryAction(5, "flammable", "burns up"), actor);
 
     // Being burned "cures" cold.
     if (actor.cold.isActive) {

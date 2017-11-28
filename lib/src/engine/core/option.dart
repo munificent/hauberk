@@ -1,5 +1,3 @@
-import 'element.dart';
-
 // TODO: Should this be in content?
 /// This contains all of the tunable game engine parameters. Tweaking these can
 /// massively affect all aspects of gameplay.
@@ -77,23 +75,6 @@ class Option {
     'cowardly': 0.8,
     'berzerk': 1.2,
     'immobile': 0.7
-  };
-
-  /// The experience point multipliers for an attack or move using a given
-  /// element.
-  static const expElement = const {
-    Element.none: 1.0,
-    Element.air: 1.2,
-    Element.earth: 1.2,
-    Element.fire: 1.1,
-    Element.water: 1.3,
-    Element.acid: 1.4,
-    Element.cold: 1.2,
-    Element.lightning: 1.1,
-    Element.poison: 2.0,
-    Element.dark: 1.5,
-    Element.light: 1.5,
-    Element.spirit: 3.0
   };
 
   /// The more a monster meanders, the less experience it's worth. This number

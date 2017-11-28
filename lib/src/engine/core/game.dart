@@ -154,8 +154,8 @@ abstract class Content {
   ItemType tryFindItem(String name);
 
   Skill findSkill(String name);
+  List<Element> get elements;
   List<Skill> get skills;
-
   List<Recipe> get recipes;
   List<Shop> get shops;
 

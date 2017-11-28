@@ -3,6 +3,7 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'drops.dart';
+import 'elements.dart';
 import 'move/bolt.dart';
 import 'move/cone.dart';
 import 'move/haste.dart';
@@ -172,14 +173,14 @@ void arachnids() {
     ..attack("bite[s]", 5);
 
   breed("gray spider", 2, slate, 12, dodge: 30, meander: 6)
-    ..attack("bite[s]", 5, Element.poison);
+    ..attack("bite[s]", 5, Elements.poison);
 
   breed("spiderling", 4, persimmon, 3, dodge: 35, meander: 8)
     ..count(2, 5)
-    ..attack("bite[s]", 5, Element.poison);
+    ..attack("bite[s]", 5, Elements.poison);
 
   breed("giant spider", 6, ultramarine, 40, meander: 5)
-    ..attack("bite[s]", 5, Element.poison)
+    ..attack("bite[s]", 5, Elements.poison)
     ..drop(10, "Stinger");
 }
 
@@ -463,39 +464,39 @@ void jellies() {
 
   breed("frosty slime", 4, ash, 14)
     ..stain(Tiles.whiteJellyStain)
-    ..attack("crawl[s] on", 5, Element.cold)
+    ..attack("crawl[s] on", 5, Elements.cold)
     ..spawn(rate: 4);
 
   breed("mud slime", 6, persimmon, 20)
     ..stain(Tiles.brownJellyStain)
-    ..attack("crawl[s] on", 8, Element.earth)
+    ..attack("crawl[s] on", 8, Elements.earth)
     ..spawn(rate: 4);
 
   breed("smoking slime", 15, brickRed, 30)
     ..stain(Tiles.redJellyStain)
-    ..attack("crawl[s] on", 10, Element.fire)
+    ..attack("crawl[s] on", 10, Elements.fire)
     ..spawn(rate: 4);
 
   breed("sparkling slime", 20, violet, 40)
     ..stain(Tiles.violetJellyStain)
-    ..attack("crawl[s] on", 12, Element.lightning)
+    ..attack("crawl[s] on", 12, Elements.lightning)
     ..spawn(rate: 4);
 
   // TODO: Erode nearby walls?
   breed("caustic slime", 25, mint, 50)
     ..stain(Tiles.greenJellyStain)
-    ..attack("crawl[s] on", 13, Element.acid)
+    ..attack("crawl[s] on", 13, Elements.acid)
     ..spawn(rate: 4);
 
   breed("virulent slime", 35, sherwood, 60)
     ..stain(Tiles.greenJellyStain)
-    ..attack("crawl[s] on", 14, Element.poison)
+    ..attack("crawl[s] on", 14, Elements.poison)
     ..spawn(rate: 4);
 
   // TODO: Fly?
   breed("ectoplasm", 45, steelGray, 40)
     ..stain(Tiles.grayJellyStain)
-    ..attack("crawl[s] on", 15, Element.spirit)
+    ..attack("crawl[s] on", 15, Elements.spirit)
     ..spawn(rate: 4);
 }
 
@@ -663,8 +664,8 @@ void quadrupeds() {}
 void quest() {
   family("Q");
   breed("Nameless Unmaker", 100, violet, 1000, speed: 2)
-    ..attack("crushe[s]", 250, Element.earth)
-    ..attack("blast[s]", 200, Element.lightning)
+    ..attack("crushe[s]", 250, Elements.earth)
+    ..attack("blast[s]", 200, Elements.lightning)
     ..darkCone(damage: 500)
     ..flags("fearless")
     ..openDoors();
@@ -685,12 +686,12 @@ void rodents() {
     ..attack("scratch[es]", 3);
 
   breed("sickly rat", 3, peaGreen, 4)
-    ..attack("bite[s]", 8, Element.poison)
+    ..attack("bite[s]", 8, Elements.poison)
     ..attack("scratch[es]", 4);
 
   breed("plague rat", 6, lima, 8)
     ..count(1, 4)
-    ..attack("bite[s]", 15, Element.poison)
+    ..attack("bite[s]", 15, Elements.poison)
     ..attack("scratch[es]", 8);
 }
 
@@ -734,11 +735,11 @@ void reptiles() {
 
   family("R", dodge: 30, meander: 3)..preferOpen();
   breed("juvenile salamander", 7, salmon, 40)
-    ..attack("bite[s]", 14, Element.fire)
+    ..attack("bite[s]", 14, Elements.fire)
     ..fireCone(rate: 16, damage: 30, range: 6);
 
   breed("salamander", 13, brickRed, 60)
-    ..attack("bite[s]", 18, Element.fire)
+    ..attack("bite[s]", 18, Elements.fire)
     ..fireCone(rate: 16, damage: 50, range: 8);
 }
 
@@ -747,7 +748,7 @@ void slugs() {
   breed("giant slug", 1, mustard, 20)..attack("crawl[s] on", 7);
 
   breed("suppurating slug", 6, lima, 50)
-    ..attack("crawl[s] on", 10, Element.poison);
+    ..attack("crawl[s] on", 10, Elements.poison);
 }
 
 void snakes() {
@@ -781,7 +782,7 @@ void worms() {
   breed("fire worm", 10, carrot, 6)
     ..count(2, 6)
     ..preferWall()
-    ..attack("crawl[s] on", 5, Element.fire);
+    ..attack("crawl[s] on", 5, Elements.fire);
 
   family("w", dodge: 10, meander: 4, flags: "fearless");
   breed("giant earthworm", 2, salmon, 20, speed: -2)
@@ -790,7 +791,7 @@ void worms() {
 
   breed("giant cave worm", 7, sandal, 80, speed: -2)
     ..placeIn("corridor")
-    ..attack("crawl[s] on", 8, Element.acid);
+    ..attack("crawl[s] on", 8, Elements.acid);
 }
 
 void wraiths() {}
@@ -1004,55 +1005,55 @@ class _BreedBuilder extends _BaseBuilder {
       _bolt("the arrow", "hits", Element.none, damage, rate, 8);
 
   void windBolt({num rate: 5, int damage}) =>
-      _bolt("the wind", "blows", Element.air, damage, rate, 8);
+      _bolt("the wind", "blows", Elements.air, damage, rate, 8);
 
   void stoneBolt({num rate: 5, int damage}) =>
-      _bolt("the stone", "hits", Element.earth, damage, rate, 8);
+      _bolt("the stone", "hits", Elements.earth, damage, rate, 8);
 
   void waterBolt({num rate: 5, int damage}) =>
-      _bolt("the jet", "splashes", Element.water, damage, rate, 8);
+      _bolt("the jet", "splashes", Elements.water, damage, rate, 8);
 
   void sparkBolt({num rate: 5, int damage, int range: 8}) =>
-      _bolt("the spark", "zaps", Element.lightning, damage, rate, range);
+      _bolt("the spark", "zaps", Elements.lightning, damage, rate, range);
 
   void iceBolt({num rate: 5, int damage, int range: 8}) =>
-      _bolt("the ice", "freezes", Element.cold, damage, rate, range);
+      _bolt("the ice", "freezes", Elements.cold, damage, rate, range);
 
   void fireBolt({num rate: 5, int damage}) =>
-      _bolt("the flame", "burns", Element.fire, damage, rate, 8);
+      _bolt("the flame", "burns", Elements.fire, damage, rate, 8);
 
   void lightningBolt({num rate: 5, int damage}) =>
-      _bolt("the lightning", "shocks", Element.lightning, damage, rate, 10);
+      _bolt("the lightning", "shocks", Elements.lightning, damage, rate, 10);
 
   void acidBolt({num rate: 5, int damage, int range: 8}) =>
-      _bolt("the acid", "burns", Element.acid, damage, rate, range);
+      _bolt("the acid", "burns", Elements.acid, damage, rate, range);
 
   void darkBolt({num rate: 5, int damage}) =>
-      _bolt("the darkness", "crushes", Element.dark, damage, rate, 10);
+      _bolt("the darkness", "crushes", Elements.dark, damage, rate, 10);
 
   void lightBolt({num rate: 5, int damage}) =>
-      _bolt("the light", "sears", Element.light, damage, rate, 10);
+      _bolt("the light", "sears", Elements.light, damage, rate, 10);
 
   void poisonBolt({num rate: 5, int damage}) =>
-      _bolt("the poison", "engulfs", Element.poison, damage, rate, 8);
+      _bolt("the poison", "engulfs", Elements.poison, damage, rate, 8);
 
   void windCone({num rate: 5, int damage, int range: 10}) =>
-      _cone("the wind", "buffets", Element.air, rate, damage, range);
+      _cone("the wind", "buffets", Elements.air, rate, damage, range);
 
   void fireCone({num rate: 5, int damage, int range: 10}) =>
-      _cone("the flame", "burns", Element.fire, rate, damage, range);
+      _cone("the flame", "burns", Elements.fire, rate, damage, range);
 
   void iceCone({num rate: 5, int damage, int range: 10}) =>
-      _cone("the ice", "freezes", Element.cold, rate, damage, range);
+      _cone("the ice", "freezes", Elements.cold, rate, damage, range);
 
   void lightningCone({num rate: 5, int damage, int range: 10}) =>
-      _cone("the lightning", "shocks", Element.lightning, rate, damage, range);
+      _cone("the lightning", "shocks", Elements.lightning, rate, damage, range);
 
   void lightCone({num rate: 5, int damage, int range: 10}) =>
-      _cone("the light", "sears", Element.light, rate, damage, range);
+      _cone("the light", "sears", Elements.light, rate, damage, range);
 
   void darkCone({num rate: 5, int damage, int range: 10}) =>
-      _cone("the darkness", "crushes", Element.dark, rate, damage, range);
+      _cone("the darkness", "crushes", Elements.dark, rate, damage, range);
 
   void insult({num rate: 5}) => _addMove(new InsultMove(rate));
 

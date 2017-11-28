@@ -78,7 +78,7 @@ abstract class Actor extends Thing {
   Actor(this.game, int x, int y, int health)
       : health = new Stat(health),
         super(new Vec(x, y)) {
-    for (var element in Element.all) {
+    for (var element in game.content.elements) {
       resistances[element] = new ResistCondition(element);
     }
 

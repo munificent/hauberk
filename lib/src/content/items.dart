@@ -3,11 +3,13 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'affixes.dart';
+import 'action/condition.dart';
 import 'action/detection.dart';
 import 'action/flow.dart';
 import 'action/heal.dart';
 import 'action/ray.dart';
 import 'action/teleport.dart';
+import 'elements.dart';
 
 int _sortIndex = 0;
 _CategoryBuilder _category;
@@ -36,7 +38,7 @@ class Items {
 
     category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
       ..tag("item")
-      ..toss(damage: 3, range: 7, element: Element.earth, breakage: 10);
+      ..toss(damage: 3, range: 7, element: Elements.earth, breakage: 10);
     item("Rock", 1, 1.0, persimmon);
 
     category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
@@ -174,28 +176,28 @@ void potions() {
     ..tag("magic/potion/resistance")
     ..toss(damage: 1, range: 6, breakage: 100);
   item("Salve[s] of Heat Resistance", 5, 0.5, carrot)
-    ..resistSalve(Element.fire);
+    ..resistSalve(Elements.fire);
   item("Salve[s] of Cold Resistance", 6, 0.5, cornflower)
-    ..resistSalve(Element.cold)
+    ..resistSalve(Elements.cold)
     ..flags("-freezable");
   item("Salve[s] of Light Resistance", 7, 0.5, buttermilk)
-    ..resistSalve(Element.light);
+    ..resistSalve(Elements.light);
   item("Salve[s] of Wind Resistance", 8, 0.5, turquoise)
-    ..resistSalve(Element.air);
+    ..resistSalve(Elements.air);
   item("Salve[s] of Lightning Resistance", 9, 0.5, lilac)
-    ..resistSalve(Element.lightning);
+    ..resistSalve(Elements.lightning);
   item("Salve[s] of Darkness Resistance", 10, 0.5, slate)
-    ..resistSalve(Element.dark);
+    ..resistSalve(Elements.dark);
   item("Salve[s] of Earth Resistance", 13, 0.5, persimmon)
-    ..resistSalve(Element.earth);
+    ..resistSalve(Elements.earth);
   item("Salve[s] of Water Resistance", 16, 0.5, ultramarine)
-    ..resistSalve(Element.water);
+    ..resistSalve(Elements.water);
   item("Salve[s] of Acid Resistance", 19, 0.5, sandal)
-    ..resistSalve(Element.acid); // TODO: Better color.
+    ..resistSalve(Elements.acid); // TODO: Better color.
   item("Salve[s] of Poison Resistance", 23, 0.5, lima)
-    ..resistSalve(Element.poison);
+    ..resistSalve(Elements.poison);
   item("Salve[s] of Death Resistance", 30, 0.5, violet)
-    ..resistSalve(Element.spirit);
+    ..resistSalve(Elements.spirit);
 
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
 
@@ -218,28 +220,28 @@ void potions() {
     ..tag("magic/potion/bottled")
     ..toss(damage: 1, range: 8, breakage: 100);
   item("Bottled Wind", 4, 0.5, cornflower)
-    ..flow(Element.air, "the wind", "blasts", 20, fly: true);
+    ..flow(Elements.air, "the wind", "blasts", 20, fly: true);
   item("Bottled Ice", 7, 0.5, cerulean)
-    ..ball(Element.cold, "the cold", "freezes", 30)
+    ..ball(Elements.cold, "the cold", "freezes", 30)
     ..flags("-freezable");
   item("Bottled Fire", 11, 0.5, brickRed)
-    ..flow(Element.fire, "the fire", "burns", 44, fly: true);
+    ..flow(Elements.fire, "the fire", "burns", 44, fly: true);
   item("Bottled Ocean", 12, 0.5, ultramarine)
-    ..flow(Element.water, "the water", "drowns", 52);
+    ..flow(Elements.water, "the water", "drowns", 52);
   item("Bottled Earth", 13, 0.5, persimmon)
-    ..ball(Element.earth, "the dirt", "crushes", 58);
+    ..ball(Elements.earth, "the dirt", "crushes", 58);
   item("Bottled Lightning", 16, 0.5, lilac)
-    ..ball(Element.lightning, "the lightning", "shocks", 68);
+    ..ball(Elements.lightning, "the lightning", "shocks", 68);
   item("Bottled Acid", 18, 0.5, lima)
-    ..flow(Element.acid, "the acid", "corrodes", 72);
+    ..flow(Elements.acid, "the acid", "corrodes", 72);
   item("Bottled Poison", 22, 0.5, sherwood)
-    ..flow(Element.poison, "the poison", "infects", 90, fly: true);
+    ..flow(Elements.poison, "the poison", "infects", 90, fly: true);
   item("Bottled Shadow", 28, 0.5, steelGray)
-    ..ball(Element.dark, "the darkness", "torments", 120);
+    ..ball(Elements.dark, "the darkness", "torments", 120);
   item("Bottled Radiance", 34, 0.5, buttermilk)
-    ..ball(Element.light, "light", "sears", 140);
+    ..ball(Elements.light, "light", "sears", 140);
   item("Bottled Spirit", 40, 0.5, slate)
-    ..flow(Element.spirit, "the spirit", "haunts", 160, fly: true);
+    ..flow(Elements.spirit, "the spirit", "haunts", 160, fly: true);
 }
 
 void scrolls() {

@@ -1,4 +1,5 @@
 import '../../engine.dart';
+import '../action/condition.dart';
 
 class HasteMove extends Move {
   final int _duration;
