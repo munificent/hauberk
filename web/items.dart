@@ -78,10 +78,10 @@ main() {
 
     if (item.armor == 0) {
       text.write('<td>&mdash;</td>');
-    } else if (item.encumbrance == 0) {
+    } else if (item.weight == 0) {
       text.write('<td>${item.armor}</td>');
     } else {
-      text.write('<td>${item.armor} (${item.encumbrance} encumber)</td>');
+      text.write('<td>${item.armor} (${item.weight} weight)</td>');
     }
 
     if (item.use == null) {

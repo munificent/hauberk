@@ -111,10 +111,10 @@ class Item implements Comparable<Item>, Noun {
   Set<String> get flags => type.flags;
 
   // TODO: Let affixes modify. Affixes like "ghostly" and "elven" reduce
-  // encumbrance. "Heavy" and "adamant" increase it (but also increase armor
+  // weight. "Heavy" and "adamant" increase it (but also increase armor
   // power).
   /// The penalty to the hero's strength when wearing this.
-  int get encumbrance => type.encumbrance;
+  int get weight => type.weight;
 
   // TODO: Affixes that modify.
   /// The amount of strength required to wield the item effectively.
@@ -272,7 +272,7 @@ class ItemType {
   final int price;
 
   /// The penalty to the hero's strength when wearing this.
-  final int encumbrance;
+  final int weight;
 
   /// The amount of strength required to wield the item effectively.
   final int heft;
@@ -301,7 +301,7 @@ class ItemType {
       this.armor,
       this.price,
       this.maxStack,
-      {this.encumbrance = 0,
+      {this.weight = 0,
       this.heft = 1,
       treasure = false})
       : isTreasure = treasure;

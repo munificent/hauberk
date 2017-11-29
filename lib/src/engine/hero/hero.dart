@@ -86,7 +86,7 @@ class Hero extends Actor {
   /// not floating point) precision.
   int _experienceCents = 0;
 
-  int get strength => _attribute(Skill.strength, -encumbrance);
+  int get strength => _attribute(Skill.strength, -weight);
   int get agility => _attribute(Skill.agility);
   int get fortitude => _attribute(Skill.fortitude);
   int get intellect => _attribute(Skill.intellect);
@@ -182,12 +182,12 @@ class Hero extends Actor {
   }
 
   // TODO: If this changes or the equipped weapon changes, should check to see
-  // if weapon has too much heft for player and log.
-  /// The total encumbrance of all equipment.
-  int get encumbrance {
+  // if weapon has too much weight for player and log.
+  /// The total weight of all equipment.
+  int get weight {
     var total = 0;
     for (var item in equipment) {
-      total += item.encumbrance;
+      total += item.weight;
     }
 
     return total;

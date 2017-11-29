@@ -45,10 +45,15 @@ class LoadingDialog extends Screen<Input> {
       _steps = _game.generate().iterator;
     }
 
-    if (_steps.moveNext()) {
-      dirty();
-    } else {
-      ui.goTo(new GameScreen(_save, _game));
+    var stopwatch = new Stopwatch()..start();
+
+    while (stopwatch.elapsedMilliseconds < 16) {
+      if (_steps.moveNext()) {
+        dirty();
+      } else {
+        ui.goTo(new GameScreen(_save, _game));
+        return;
+      }
     }
   }
 

@@ -470,16 +470,16 @@ void bodyArmor() {
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body");
   item("Cloth Shirt", 2, 0.5, sandal)..armor(3);
-  item("Leather Shirt", 5, 0.5, persimmon)..armor(6, encumber: 1);
-  item("Jerkin", 7, 0.5, gunsmoke)..armor(8, encumber: 1);
-  item("Leather Armor", 10, 0.5, garnet)..armor(11, encumber: 2);
-  item("Padded Armor", 14, 0.5, steelGray)..armor(15, encumber: 3);
-  item("Studded Leather Armor", 17, 0.5, slate)..armor(22, encumber: 4);
+  item("Leather Shirt", 5, 0.5, persimmon)..armor(6, weight: 1);
+  item("Jerkin", 7, 0.5, gunsmoke)..armor(8, weight: 1);
+  item("Leather Armor", 10, 0.5, garnet)..armor(11, weight: 2);
+  item("Padded Armor", 14, 0.5, steelGray)..armor(15, weight: 3);
+  item("Studded Leather Armor", 17, 0.5, slate)..armor(22, weight: 4);
 
   // Mail armor.
   category(CharCode.latinSmallLetterOWithGrave)..tag("equipment/armor/body");
-  item("Mail Hauberk", 20, 0.5, steelGray)..armor(28, encumber: 5);
-  item("Scale Mail", 23, 0.5, gunsmoke)..armor(36, encumber: 7);
+  item("Mail Hauberk", 20, 0.5, steelGray)..armor(28, weight: 5);
+  item("Scale Mail", 23, 0.5, gunsmoke)..armor(36, weight: 7);
 
 //  CharCode.latinSmallLetterUWithCircumflex // armor
 
@@ -508,9 +508,9 @@ void boots() {
 
   category(CharCode.latinCapitalLetterAWithDiaeresis)
     ..tag("equipment/armor/boots");
-  item("Pair[s] of Leather Boots", 14, 0.3, persimmon)..armor(6, encumber: 1);
-  item("Pair[s] of Metal Shod Boots", 22, 0.3, slate)..armor(8, encumber: 2);
-  item("Pair[s] of Greaves", 47, 0.25, gunsmoke)..armor(12, encumber: 3);
+  item("Pair[s] of Leather Boots", 14, 0.3, persimmon)..armor(6, weight: 1);
+  item("Pair[s] of Metal Shod Boots", 22, 0.3, slate)..armor(8, weight: 2);
+  item("Pair[s] of Greaves", 47, 0.25, gunsmoke)..armor(12, weight: 3);
 }
 
 _CategoryBuilder category(int glyph,
@@ -624,16 +624,16 @@ class _ItemBuilder extends _BaseBuilder {
   double _frequency;
   ItemUse _use;
   Attack _attack;
-  int _encumbrance;
+  int _weight;
   int _heft;
   int _armor;
 
   String _name;
   int _depth;
 
-  void armor(int armor, {int encumber}) {
+  void armor(int armor, {int weight}) {
     _armor = armor;
-    _encumbrance = encumber;
+    _weight = weight;
   }
 
   void weapon(int damage, {int heft}) {
@@ -733,7 +733,7 @@ void buildItem() {
       _builder._armor ?? 0,
       0,
       _category._maxStack,
-      encumbrance: _builder._encumbrance ?? 0,
+      weight: _builder._weight ?? 0,
       heft: _builder._heft ?? 0);
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
