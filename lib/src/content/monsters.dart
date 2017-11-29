@@ -262,17 +262,17 @@ void eyes() {
     ..defense(10, "{1} blinks out of the way.")
     ..fly()
     ..preferOpen();
-  breed("lazy eye", 1, cornflower, 12)
-    ..attack("stare[s] at", 6)
-    ..sparkBolt(rate: 6, damage: 10, range: 8);
+  breed("lazy eye", 5, cornflower, 12)
+    ..attack("stare[s] at", 8)
+    ..sparkBolt(rate: 6, damage: 12, range: 8);
 
-  breed("mad eye", 5, salmon, 40)
+  breed("mad eye", 9, salmon, 40)
     ..attack("stare[s] at", 8)
     ..windBolt(rate: 6, damage: 20);
 
-  breed("floating eye", 9, buttermilk, 60)
+  breed("floating eye", 15, buttermilk, 60)
     ..attack("stare[s] at", 10)
-    ..sparkBolt(rate: 4, damage: 16)
+    ..sparkBolt(rate: 4, damage: 24)
     ..teleport(rate: 10, range: 7);
 
   breed("baleful eye", 20, carrot, 80)
@@ -314,13 +314,13 @@ void faeFolk() {
     ..defense(10, "{1} flits out of the way.")
     ..fly()
     ..preferOpen();
-  breed("forest sprite", 1, mint, 6)
+  breed("forest sprite", 2, mint, 6)
     ..attack("scratch[es]", 3)
     ..insult(rate: 4)
     ..sparkBolt(rate: 7, damage: 4)
     ..drop(60, "magic");
 
-  breed("house sprite", 3, cornflower, 15)
+  breed("house sprite", 5, cornflower, 10)
     ..attack("poke[s]", 5)
     ..insult(rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
@@ -502,7 +502,7 @@ void jellies() {
 
 void kobolds() {
   family("k", speed: 2, meander: 4, flags: "cowardly");
-  breed("scurrilous imp", 4, salmon, 18, meander: 4)
+  breed("scurrilous imp", 1, salmon, 8, meander: 4)
     ..count(2)
     ..attack("club[s]", 4)
     ..insult()
@@ -511,7 +511,7 @@ void kobolds() {
     ..drop(20, "speed")
     ..flags("cowardly");
 
-  breed("vexing imp", 4, violet, 19, speed: 1, meander: 2)
+  breed("vexing imp", 2, violet, 10, speed: 1, meander: 2)
     ..count(2)
     ..minion("scurrilous imp", 0, 1)
     ..attack("scratch[es]", 4)
@@ -521,14 +521,14 @@ void kobolds() {
     ..flags("cowardly");
 
   family("k", speed: 1, meander: 3);
-  breed("kobold", 5, brickRed, 16, meander: 2)
+  breed("kobold", 3, brickRed, 12, meander: 2)
     ..count(3)
     ..minion("wild dog", 0, 3)
     ..attack("poke[s]", 4)
     ..teleport(rate: 6, range: 6)
     ..drop(30, "magic");
 
-  breed("kobold shaman", 10, ultramarine, 16, meander: 2)
+  breed("kobold shaman", 4, ultramarine, 16, meander: 2)
     ..count(2)
     ..minion("wild dog", 0, 3)
     ..attack("hit[s]", 4)
@@ -536,7 +536,7 @@ void kobolds() {
     ..waterBolt(rate: 5, damage: 6)
     ..drop(40, "magic");
 
-  breed("kobold trickster", 13, gold, 20, meander: 2)
+  breed("kobold trickster", 5, gold, 20, meander: 2)
     ..attack("hit[s]", 5)
     ..insult()
     ..sparkBolt(rate: 5, damage: 8)
@@ -544,7 +544,7 @@ void kobolds() {
     ..haste(rate: 7)
     ..drop(40, "magic");
 
-  breed("kobold priest", 15, cerulean, 25, meander: 2)
+  breed("kobold priest", 6, cerulean, 25, meander: 2)
     ..count(2)
     ..minion("kobold", 1, 3)
     ..attack("club[s]", 6)
@@ -555,7 +555,7 @@ void kobolds() {
     ..drop(30, "club")
     ..drop(40, "magic");
 
-  breed("imp incanter", 11, lilac, 18, speed: 1, meander: 4)
+  breed("imp incanter", 7, lilac, 18, speed: 1, meander: 4)
     ..count(2)
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
@@ -565,7 +565,7 @@ void kobolds() {
     ..drop(50, "magic")
     ..flags("cowardly");
 
-  breed("imp warlock", 14, indigo, 40, speed: 1, meander: 3)
+  breed("imp warlock", 8, indigo, 40, speed: 1, meander: 3)
     ..minion("imp incanter", 1, 3)
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
@@ -577,7 +577,7 @@ void kobolds() {
     ..flags("cowardly");
 
   // TODO: Always drop something good.
-  breed("Feng", 20, carrot, 60, speed: 1, meander: 3)
+  breed("Feng", 10, carrot, 60, speed: 1, meander: 3)
     ..minion("imp warlock", 1, 2)
     ..minion("imp incanter", 1, 2)
     ..minion("kobold priest", 1, 2)
@@ -745,10 +745,10 @@ void reptiles() {
 
 void slugs() {
   family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 1);
-  breed("giant slug", 1, mustard, 20)..attack("crawl[s] on", 7);
+  breed("giant slug", 3, mustard, 20)..attack("crawl[s] on", 8);
 
   breed("suppurating slug", 6, lima, 50)
-    ..attack("crawl[s] on", 10, Elements.poison);
+    ..attack("crawl[s] on", 12, Elements.poison);
 }
 
 void snakes() {
