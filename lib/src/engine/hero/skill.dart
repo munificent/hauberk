@@ -112,8 +112,8 @@ class Strength extends AttributeSkill {
     // Note that there is an immediate step down to 0.8 at -1.
     if (value < 0) return lerpDouble(value, -10, -1, 0.3, 0.8);
 
-    if (value < 20) return lerpDouble(value, 0, 20, 1.0, 2.0);
-    return lerpDouble(value, 20, 50, 2.0, 3.0);
+    if (value < 30) return lerpDouble(value, 0, 30, 1.0, 2.0);
+    return lerpDouble(value, 30, 50, 2.0, 3.0);
   }
 
   String get name => "Strength";
