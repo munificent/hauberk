@@ -418,13 +418,16 @@ void weapons() {
   item("Angon", 14, 0.5, gunsmoke)
     ..weapon(20, heft: 19)
     ..toss(damage: 20);
-  // TODO: These should not be thrown. Lower range and damage.
+
+  category(CharCode.masculineOrdinalIndicator, verb: "stab[s]")
+    ..tag("equipment/weapon/polearm")
+    ..toss(range: 4);
   item("Lance", 28, 0.5, cornflower)
     ..weapon(24, heft: 27)
-    ..toss(damage: 28);
+    ..toss(damage: 20);
   item("Partisan", 35, 0.5, slate)
     ..weapon(30, heft: 29)
-    ..toss(damage: 40);
+    ..toss(damage: 26);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 

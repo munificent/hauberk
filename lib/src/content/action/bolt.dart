@@ -7,14 +7,17 @@ import '../../engine.dart';
 class BoltAction extends LosAction {
   final Hit _hit;
   final bool _canMiss;
+  final int _range;
 
-  int get range => _hit.range;
+  int get range => _range ?? _hit.range;
 
-  BoltAction(Vec target, this._hit, {bool canMiss: false})
+  BoltAction(Vec target, this._hit, {bool canMiss = false, int range})
       : _canMiss = canMiss,
+        _range = range,
         super(target);
 
   void onStep(Vec pos) {
+    // TODO: Include direction.
     addEvent(EventType.bolt, element: _hit.element, pos: pos);
   }
 

@@ -3,32 +3,25 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../action/bolt.dart';
 import '../skills.dart';
+import 'mastery.dart';
 
-class Archery extends Skill {
+class Archery extends MasterySkill {
   // TODO: Tune.
   static int focusCost(int level) => lerpInt(level, 1, 20, 300, 1);
 
-  int get maxLevel => 20;
-
   String get name => "Archery";
-
-  Skill get prerequisite => Skill.strength;
+  String get weaponType => "bow";
 
   Command get command => new ArcheryCommand();
 }
 
-class ArcheryCommand extends TargetCommand {
+class ArcheryCommand extends MasteryCommand implements TargetCommand {
   String get name => "Archery";
+  String get weaponType => "bow";
 
   num getRange(Game game) {
     var hit = game.hero.createRangedHit();
     return hit.range;
-  }
-
-  bool canUse(Game game) {
-    // Get the equipped ranged weapon, if any.
-    var weapon = game.hero.equipment.weapon;
-    return weapon != null && weapon.attack.isRanged;
   }
 
   Action getTargetAction(Game game, Vec target) {

@@ -27,6 +27,9 @@ abstract class Skill {
   /// Gives the skill a chance to modify the hit the hero is about to perform.
   void modifyAttack(Hero hero, Hit hit, int level) {}
 
+  /// Gives the skill a chance to add new defenses to the hero.
+  Defense getDefense(Hero hero, int level) => null;
+
   /// Gives the skill a chance to modify the hit the hero is about to receive.
   void modifyDefense(Hit hit) {}
 

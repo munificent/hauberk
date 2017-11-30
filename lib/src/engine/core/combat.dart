@@ -127,40 +127,12 @@ class Hit {
     // attacker ("the wolf bites").
     var attackNoun = _attack.noun ?? attacker;
 
-    // See if the attack hits.
+    // See if any defense blocks the attack.
+    // TODO: Instead of a single "canMiss" flag, consider having each defense
+    // define the set of elements it can block and then apply them based on
+    // that.
     if (canMiss) {
-//      // Positive modifiers make it larger, which make it harder for the strike
-//      // roll to beat it.
-//      var dodge = defender.dodge * defender.dodgeScale;
-//
-//      // Strike modifiers make it smaller, which make it easier for the strike
-//      // roll to beat it.
-//      dodge = dodge / _strikeScale - _strikeBonus;
-//
-//      print("$attacker -> $defender | $dodge% strike: x$_strikeScale +$_strikeBonus, "
-//          "damage: ${_attack.damage} x$_damageScale +$_damageBonus");
-//
-//      var strike = rng.inclusive(1, 100);
-//
-//      if (dodge >= strike) {
-//        action.log('{1} miss[es] {2}.', attackNoun, defender);
-//        return false;
-//      }
-
       var strike = rng.inclusive(1, 100) * _strikeScale + _strikeBonus;
-
-      var b = new StringBuffer();
-      b.write("strike $strike");
-      if (_strikeScale != 1.0 || _strikeBonus != 0) {
-        b.write(" (");
-        if (_strikeScale != 1.0) b.write("x$_strikeScale");
-        if (_strikeBonus != 0) b.write("+$_strikeBonus");
-        b.write(")");
-      }
-
-      for (var defense in defender.defenses) {
-        b.write(" '${defense.message}':${defense.amount}");
-      }
 
       // Shuffle them so the message shown isn't biased by their order (just
       // their relative amounts).

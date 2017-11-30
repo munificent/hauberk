@@ -5,6 +5,7 @@ import '../skills.dart';
 import 'mastery.dart';
 
 class SpearMastery extends MasterySkill {
+  // TODO: Better name.
   String get name => "Spear Mastery";
   String get weaponType => "spear";
 
