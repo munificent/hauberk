@@ -40,7 +40,7 @@ class GameScreen extends Screen<Input> {
   Actor _targetActor;
   Vec _target;
 
-  TargetCommand _lastTargetCommand;
+  Command _lastCommand;
 
   void targetActor(Actor value) {
     if (_targetActor != value) dirty();
@@ -224,22 +224,23 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.fire:
-        if (_lastTargetCommand == null) {
-          game.log.error("No target skill selected.");
-          dirty();
-        } else {
-          // If we still have a visible target, use it.
+        if (_lastCommand != null && _lastCommand is TargetCommand) {
+          var targetCommand = _lastCommand as TargetCommand;
           if (currentTarget != null) {
-            _fireAtTarget(_lastTargetCommand);
+            // If we still have a visible target, use it.
+            _fireAtTarget(_lastCommand);
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, _lastTargetCommand.getRange(game),
-                (_) => _fireAtTarget(_lastTargetCommand)));
+            ui.push(new TargetDialog(this, targetCommand.getRange(game),
+                (_) => _fireAtTarget(targetCommand)));
           }
+        } else if (_lastCommand != null && _lastCommand is DirectionCommand) {
+          // Ask user to pick a direction.
+          ui.push(new DirectionDialog(this, game, _fireTowards));
+        } else {
+          game.log.error("No skill selected.");
+          dirty();
         }
-        // TODO: Handle DirectionCommand.
-//        } else if (command is DirectionCommand) {
-//        ui.push(new DirectionDialog(this, game));
         break;
 
       case Input.swap:
@@ -293,53 +294,54 @@ class GameScreen extends Screen<Input> {
   }
 
   void _fireAtTarget(TargetCommand command) {
-    _lastTargetCommand = command;
+    _lastCommand = command;
     game.hero.setNextAction(command.getTargetAction(game, currentTarget));
   }
 
   void _fireTowards(Direction dir) {
-    // TODO: Handle DirectionCommands.
+    if (_lastCommand == null) {} else if (_lastCommand is DirectionCommand) {
+      var directionCommand = _lastCommand as DirectionCommand;
+      game.hero.setNextAction(directionCommand.getDirectionAction(game, dir));
+    } else if (_lastCommand is TargetCommand) {
+      var targetCommand = _lastCommand as TargetCommand;
+      var pos = game.hero.pos + dir;
 
-    if (_lastTargetCommand == null) {
-      // TODO: Better error message.
-      game.log.error("No target skill selected.");
-      dirty();
-      return;
-    }
+      // Target the monster that is in the fired direction, if any.
+      Vec previous;
+      for (var step in new Line(game.hero.pos, pos)) {
+        // If we reached an actor, target it.
+        var actor = game.stage.actorAt(step);
+        if (actor != null) {
+          targetActor(actor);
+          break;
+        }
 
-    var pos = game.hero.pos + dir;
+        // If we hit a wall, target the floor tile before it.
+        if (!game.stage[step].isFlyable) {
+          targetFloor(previous);
+          break;
+        }
 
-    // Target the monster that is in the fired direction, if any.
-    Vec previous;
-    for (var step in new Line(game.hero.pos, pos)) {
-      // If we reached an actor, target it.
-      var actor = game.stage.actorAt(step);
-      if (actor != null) {
-        targetActor(actor);
-        break;
+        // If we hit the end of the range, target the floor there.
+        if ((step - game.hero.pos) >= targetCommand.getRange(game)) {
+          targetFloor(step);
+          break;
+        }
+
+        previous = step;
       }
 
-      // If we hit a wall, target the floor tile before it.
-      if (!game.stage[step].isFlyable) {
-        targetFloor(previous);
-        break;
+      if (currentTarget != null) {
+        game.hero
+            .setNextAction(targetCommand.getTargetAction(game, currentTarget));
+      } else {
+        var tile = game.stage[game.hero.pos + dir].type.name;
+        game.log.error("There is a $tile} in the way.");
+        dirty();
       }
-
-      // If we hit the end of the range, target the floor there.
-      if ((step - game.hero.pos) >= _lastTargetCommand.getRange(game)) {
-        targetFloor(step);
-        break;
-      }
-
-      previous = step;
-    }
-
-    if (currentTarget != null) {
-      game.hero.setNextAction(
-          _lastTargetCommand.getTargetAction(game, currentTarget));
     } else {
-      var tile = game.stage[game.hero.pos + dir].type.name;
-      game.log.error("There is a $tile} in the way.");
+      // TODO: Better error message.
+      game.log.error("No skill selected.");
       dirty();
     }
   }
@@ -365,10 +367,13 @@ class GameScreen extends Screen<Input> {
         ui.push(new TargetDialog(
             this, result.getRange(game), (_) => _fireAtTarget(result)));
       } else if (result is DirectionCommand) {
-        ui.push(new DirectionDialog(this, game));
+        selectDirection(dir) {
+          _lastCommand = result;
+          _fireTowards(dir);
+        }
+
+        ui.push(new DirectionDialog(this, game, selectDirection));
       }
-    } else if (popped is DirectionDialog && result != Direction.none) {
-      _fireTowards(result);
     }
   }
 

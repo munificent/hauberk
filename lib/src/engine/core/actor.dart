@@ -113,7 +113,7 @@ abstract class Actor extends Thing {
     // Hard to dodge an attack you can't see coming.
     if (isBlinded) dodge ~/= 2;
 
-    if (dodge != 0) yield new Defense(dodge, "{2} miss[es] {1}.");
+    if (dodge != 0) yield new Defense(dodge, "{1} dodge[s] {2}.");
 
     yield* onGetDefenses();
   }

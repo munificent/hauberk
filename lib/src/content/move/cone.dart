@@ -7,10 +7,7 @@ class ConeMove extends Move {
   int get range => attack.range;
 
   num get experience =>
-      attack.damage *
-      3.0 *
-      attack.element.experience *
-      (1.0 + range / 10.0);
+      attack.damage * 3.0 * attack.element.experience * (1.0 + range / 10.0);
 
   ConeMove(num rate, this.attack) : super(rate);
 

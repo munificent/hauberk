@@ -266,6 +266,10 @@ class Hero extends Actor {
 
     hit.addStrike(Agility.strikeBonus(agility));
 
+    for (var skill in skills.all) {
+      skill.modifyAttack(this, hit, skills[skill]);
+    }
+
     return hit;
   }
 

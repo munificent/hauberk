@@ -3,11 +3,7 @@ import 'dart:math' as math;
 import '../action/action.dart';
 import '../core/actor.dart';
 import '../core/combat.dart';
-import '../command/lance.dart';
-import '../command/slash.dart';
-import '../command/stab.dart';
 import '../monster/monster.dart';
-import 'command.dart';
 import 'hero_class.dart';
 
 /// A warrior is focused on combat. Players choosing them don't want to spend
@@ -16,12 +12,6 @@ import 'hero_class.dart';
 /// related to the ability.
 class Warrior extends HeroClass {
   String get name => "Warrior";
-
-  final List<Command> commands = [
-    new LanceCommand(),
-    new SlashCommand(),
-    new StabCommand()
-  ];
 
   int get armor => toughness.level;
 
@@ -34,36 +24,19 @@ class Warrior extends HeroClass {
   // Increases armor. Trained by taking damage.
   final toughness = new TrainedStat(400, 200);
 
-  // Each mastery increases damage when wielding a weapon of a given type.
-  final masteries = <String, TrainedStat>{};
-  TrainedStat _newMasteryStat() => new TrainedStat(200, 200);
-
   Warrior();
 
-  Warrior.load(
-      {int fighting, int combat, int toughness, Map<String, int> masteries}) {
+  Warrior.load({int fighting, int combat, int toughness}) {
     this.fighting.increment(fighting);
     this.combat.increment(combat);
     this.toughness.increment(toughness);
-
-    masteries.forEach((name, count) {
-      var stat = _newMasteryStat();
-      stat.increment(count);
-      this.masteries[name] = stat;
-    });
   }
 
   Warrior clone() {
-    var masteryCounts = <String, int>{};
-    masteries.forEach((name, stat) {
-      masteryCounts[name] = stat.count;
-    });
-
     return new Warrior.load(
         fighting: fighting.count,
         combat: combat.count,
-        toughness: toughness.count,
-        masteries: masteryCounts);
+        toughness: toughness.count);
   }
 
   void modifyHit(Hit hit) {
@@ -71,11 +44,6 @@ class Warrior extends HeroClass {
     if (weapon != null) {
       // TODO: Should combat apply to ranged attacks?
       hit.addDamage(combat.level);
-
-      var mastery = masteries[weapon.type.weaponType];
-      if (mastery != null) {
-        hit.scaleDamage(1.0 + mastery.level * 0.1);
-      }
     } else {
       hit.addDamage(fighting.level);
     }
@@ -107,15 +75,6 @@ class Warrior extends HeroClass {
     if (weapon != null) {
       stat = combat;
       name = "combat";
-
-      var mastery =
-          masteries.putIfAbsent(weapon.type.weaponType, _newMasteryStat);
-      if (mastery.increment(monster.breed.maxHealth)) {
-        action.game.log.gain(
-            "{1} [have|has] reached ${weapon.type.weaponType} "
-            "mastery level ${mastery.level}.",
-            hero);
-      }
     } else {
       stat = fighting;
       name = "fighting";

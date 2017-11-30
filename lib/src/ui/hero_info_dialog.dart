@@ -48,8 +48,7 @@ class HeroInfoDialog extends Screen<Input> {
       if (element == Element.none) continue;
 
       var x = 58 + i * 2;
-      terminal.writeAt(
-          x, 3, element.abbreviation, elementColor(element));
+      terminal.writeAt(x, 3, element.abbreviation, elementColor(element));
 
       // Show the total resistance.
       var resistance = _hero.equipmentResistance(element);
@@ -78,8 +77,8 @@ class HeroInfoDialog extends Screen<Input> {
 
       if (item.attack != null) {
         var attack = item.attack;
-        terminal.writeAt(27, y, attack.element.abbreviation,
-            elementColor(attack.element));
+        terminal.writeAt(
+            27, y, attack.element.abbreviation, elementColor(attack.element));
 
         terminal.writeAt(30, y, attack.damage.toString().padLeft(3));
       } else {

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import '../core/combat.dart';
 import '../hero/command.dart';
+import '../hero/hero.dart';
 
 /// An immutable unique skill a hero may learn.
 ///
@@ -24,7 +25,7 @@ abstract class Skill {
   Command get command => null;
 
   /// Gives the skill a chance to modify the hit the hero is about to perform.
-  void modifyAttack(Hit hit) {}
+  void modifyAttack(Hero hero, Hit hit, int level) {}
 
   /// Gives the skill a chance to modify the hit the hero is about to receive.
   void modifyDefense(Hit hit) {}

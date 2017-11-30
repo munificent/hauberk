@@ -333,8 +333,7 @@ class Affix {
         damageScale = damageScale ?? 1.0,
         damageBonus = damageBonus ?? 1,
         brand = brand ?? Element.none,
-        armor = armor ?? 0 {
-  }
+        armor = armor ?? 0 {}
 
   int resistance(Element element) {
     if (!_resists.containsKey(element)) return 0;

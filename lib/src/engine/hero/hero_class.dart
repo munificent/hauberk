@@ -3,7 +3,6 @@ import '../core/actor.dart';
 import '../core/combat.dart';
 import '../monster/monster.dart';
 import 'hero.dart';
-import 'command.dart';
 
 // TODO: Remove. Going with skills instead. Keep around for now to harvest
 // warrior TrainedStats as skills or as how different weapon types always work.
@@ -19,9 +18,6 @@ abstract class HeroClass {
   Hero _hero;
 
   String get name;
-
-  /// The [Command]s that the class enables.
-  List<Command> get commands;
 
   /// Gets the armor bonus conferred by this class.
   int get armor => 0;

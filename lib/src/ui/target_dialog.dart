@@ -7,9 +7,6 @@ import '../hues.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
-/// A callback invoked when a target has been selected.
-typedef SelectTarget(Vec target);
-
 // TODO: Support targeting floor tiles and not just actors.
 
 /// Modal dialog for letting the user select a target to perform a [Command] on.
@@ -19,7 +16,7 @@ class TargetDialog extends Screen<Input> {
 
   final GameScreen _gameScreen;
   final num _range;
-  final SelectTarget _onSelect;
+  final void Function(Vec target) _onSelect;
   final List<Monster> _monsters = <Monster>[];
 
   bool _targetingFloor = false;

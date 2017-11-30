@@ -14,48 +14,43 @@ class DirectionDialog extends Screen<Input> {
 
   final GameScreen _gameScreen;
   final Game _game;
+  final void Function(Direction direction) _onSelect;
 
   int _animateOffset = 0;
 
-  /// The selected [Direction].
-  Direction _direction = Direction.none;
-
   bool get isTransparent => true;
 
-  DirectionDialog(this._gameScreen, this._game);
+  DirectionDialog(this._gameScreen, this._game, this._onSelect);
 
   bool handleInput(Input input) {
     switch (input) {
-      case Input.ok:
-        ui.pop(_direction);
-        break;
       case Input.cancel:
-        ui.pop(Direction.none);
+        _select(Direction.none);
         break;
 
       case Input.nw:
-        ui.pop(Direction.nw);
+        _select(Direction.nw);
         break;
       case Input.n:
-        ui.pop(Direction.n);
+        _select(Direction.n);
         break;
       case Input.ne:
-        ui.pop(Direction.ne);
+        _select(Direction.ne);
         break;
       case Input.w:
-        ui.pop(Direction.w);
+        _select(Direction.w);
         break;
       case Input.e:
-        ui.pop(Direction.e);
+        _select(Direction.e);
         break;
       case Input.sw:
-        ui.pop(Direction.sw);
+        _select(Direction.sw);
         break;
       case Input.s:
-        ui.pop(Direction.s);
+        _select(Direction.s);
         break;
       case Input.se:
-        ui.pop(Direction.se);
+        _select(Direction.se);
         break;
     }
 
@@ -86,5 +81,10 @@ class DirectionDialog extends Screen<Input> {
     draw(5, Direction.sw, "/");
     draw(6, Direction.w, "-");
     draw(7, Direction.nw, r"\");
+  }
+
+  void _select(Direction dir) {
+    _onSelect(dir);
+    ui.pop(dir);
   }
 }
