@@ -181,7 +181,7 @@ void arachnids() {
 
   breed("giant spider", 6, ultramarine, 40, meander: 5)
     ..attack("bite[s]", 5, Elements.poison)
-    ..drop(10, "Stinger");
+    ..drop("Stinger", percent: 10);
 }
 
 void ancients() {}
@@ -210,12 +210,12 @@ void birds() {
     ..count(3, 6);
   breed("crow", 4, steelGray, 9, speed: 2, meander: 4)
     ..attack("bite[s]", 5)
-    ..drop(25, "Black Feather");
+    ..drop("Black Feather", percent: 25);
 
   breed("raven", 6, slate, 22, meander: 1)
     ..attack("bite[s]", 5)
     ..attack("claw[s]", 4)
-    ..drop(20, "Black Feather")
+    ..drop("Black Feather", percent: 20)
     ..flags("protective");
 }
 
@@ -225,19 +225,19 @@ void canines() {
     ..count(4)
     ..attack("bite[s]", 4)
     ..howl(range: 6)
-    ..drop(20, "Fur Pelt");
+    ..drop("Fur Pelt", percent: 20);
 
   breed("wild dog", 4, gunsmoke, 20)
     ..count(4)
     ..attack("bite[s]", 6)
     ..howl(range: 8)
-    ..drop(20, "Fur Pelt");
+    ..drop("Fur Pelt", percent: 20);
 
   breed("mongrel", 7, carrot, 28)
     ..count(2, 5)
     ..attack("bite[s]", 8)
     ..howl(range: 10)
-    ..drop(20, "Fur Pelt");
+    ..drop("Fur Pelt", percent: 20);
 }
 
 void canids() {}
@@ -251,8 +251,8 @@ void dragons() {
     ..attack("bite[s]", 80)
     ..attack("claw[s]", 60)
     ..fireCone(damage: 100)
-    ..dropMany(6, "magic")
-    ..dropMany(5, "equipment");
+    ..drop("magic", count: 6)
+    ..drop("equipment", count: 5);
 }
 
 void greaterDragons() {}
@@ -318,21 +318,21 @@ void faeFolk() {
     ..attack("scratch[es]", 3)
     ..insult(rate: 4)
     ..sparkBolt(rate: 7, damage: 4)
-    ..drop(60, "magic");
+    ..drop("magic", percent: 60);
 
   breed("house sprite", 5, cornflower, 10)
     ..attack("poke[s]", 5)
     ..insult(rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
     ..teleport(rate: 7, range: 4)
-    ..drop(80, "magic");
+    ..drop("magic", percent: 80);
 
   breed("mischievous sprite", 7, salmon, 24)
     ..attack("stab[s]", 6)
     ..insult(rate: 4)
     ..windBolt(rate: 8, damage: 8)
     ..teleport(range: 5)
-    ..drop(100, "magic");
+    ..drop("magic");
 }
 
 void felines() {
@@ -348,27 +348,27 @@ void goblins() {
     ..count(4)
     ..attack("stab[s]", 8)
     ..insult(rate: 8)
-    ..drop(10, "spear")
-    ..drop(5, "healing");
+    ..drop("spear", percent: 20)
+    ..drop("healing", percent: 10);
 
   breed("goblin archer", 6, peaGreen, 32)
     ..count(2)
     ..minion("goblin peon", 0, 2)
     ..attack("stab[s]", 4)
     ..arrow(rate: 3, damage: 8)
-    ..drop(20, "bow")
-    ..drop(10, "dagger")
-    ..drop(5, "healing");
+    ..drop("bow", percent: 30)
+    ..drop("dagger", percent: 15)
+    ..drop("healing", percent: 5);
 
   breed("goblin fighter", 6, persimmon, 58)
     ..count(2)
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
     ..attack("stab[s]", 12)
-    ..drop(15, "spear")
-    ..drop(10, "armor")
-    ..drop(5, "resistance")
-    ..drop(5, "healing");
+    ..drop("spear", percent: 20)
+    ..drop("armor", percent: 20)
+    ..drop("resistance", percent: 5)
+    ..drop("healing", percent: 5);
 
   breed("goblin warrior", 8, gunsmoke, 68)
     ..count(2)
@@ -376,10 +376,10 @@ void goblins() {
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
     ..attack("stab[s]", 16)
-    ..drop(20, "axe")
-    ..drop(20, "armor")
-    ..drop(5, "resistance")
-    ..drop(5, "healing")
+    ..drop("axe", percent: 20)
+    ..drop("armor", percent: 20)
+    ..drop("resistance", percent: 5)
+    ..drop("healing", percent: 5)
     ..flags("protective");
 
   breed("goblin mage", 9, ultramarine, 50)
@@ -389,9 +389,9 @@ void goblins() {
     ..attack("whip[s]", 7)
     ..fireBolt(rate: 12, damage: 12)
     ..sparkBolt(rate: 12, damage: 16)
-    ..drop(10, "equipment")
-    ..drop(10, "whip")
-    ..drop(20, "magic");
+    ..drop("robe", percent: 20)
+    ..drop("whip", percent: 10)
+    ..drop("magic", percent: 30);
 
   breed("goblin ranger", 12, sherwood, 60)
     ..minion("goblin mage", 0, 1)
@@ -400,9 +400,9 @@ void goblins() {
     ..minion("goblin peon", 0, 2)
     ..attack("stab[s]", 10)
     ..arrow(rate: 3, damage: 12)
-    ..drop(30, "bow")
-    ..drop(20, "armor")
-    ..drop(20, "magic");
+    ..drop("bow", percent: 30)
+    ..drop("armor", percent: 20)
+    ..drop("magic", percent: 20);
 
   // TODO: Always drop something good.
   breed("Erlkonig, the Goblin Prince", 14, steelGray, 120)
@@ -413,9 +413,8 @@ void goblins() {
     ..attack("hit[s]", 10)
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
-    ..drop(60, "equipment")
-    ..drop(60, "equipment")
-    ..drop(40, "magic")
+    ..drop("equipment", count: 2, depthOffset: 3)
+    ..drop("magic", count: 3, depthOffset: 4)
     ..flags("protective");
 
   // TODO: Hobgoblins, bugbears, bogill.
@@ -507,8 +506,8 @@ void kobolds() {
     ..attack("club[s]", 4)
     ..insult()
     ..haste()
-    ..drop(20, "club")
-    ..drop(20, "speed")
+    ..drop("club", percent: 20)
+    ..drop("speed", percent: 30)
     ..flags("cowardly");
 
   breed("vexing imp", 2, violet, 10, speed: 1, meander: 2)
@@ -517,7 +516,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..insult()
     ..sparkBolt(rate: 5, damage: 6)
-    ..drop(30, "teleportation")
+    ..drop("teleportation", percent: 30)
     ..flags("cowardly");
 
   family("k", speed: 1, meander: 3);
@@ -526,7 +525,7 @@ void kobolds() {
     ..minion("wild dog", 0, 3)
     ..attack("poke[s]", 4)
     ..teleport(rate: 6, range: 6)
-    ..drop(30, "magic");
+    ..drop("magic", percent: 30);
 
   breed("kobold shaman", 4, ultramarine, 16, meander: 2)
     ..count(2)
@@ -534,7 +533,7 @@ void kobolds() {
     ..attack("hit[s]", 4)
     ..teleport(rate: 5, range: 6)
     ..waterBolt(rate: 5, damage: 6)
-    ..drop(40, "magic");
+    ..drop("magic", percent: 40);
 
   breed("kobold trickster", 5, gold, 20, meander: 2)
     ..attack("hit[s]", 5)
@@ -542,7 +541,7 @@ void kobolds() {
     ..sparkBolt(rate: 5, damage: 8)
     ..teleport(rate: 5, range: 6)
     ..haste(rate: 7)
-    ..drop(40, "magic");
+    ..drop("magic", percent: 40);
 
   breed("kobold priest", 6, cerulean, 25, meander: 2)
     ..count(2)
@@ -552,8 +551,8 @@ void kobolds() {
     ..fireBolt(rate: 10, damage: 8)
     ..teleport(rate: 5, range: 6)
     ..haste(rate: 7)
-    ..drop(30, "club")
-    ..drop(40, "magic");
+    ..drop("club", percent: 40)
+    ..drop("magic", percent: 40);
 
   breed("imp incanter", 7, lilac, 18, speed: 1, meander: 4)
     ..count(2)
@@ -562,7 +561,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..insult(rate: 6)
     ..fireBolt(rate: 5, damage: 10)
-    ..drop(50, "magic")
+    ..drop("magic", percent: 50)
     ..flags("cowardly");
 
   breed("imp warlock", 8, indigo, 40, speed: 1, meander: 3)
@@ -572,8 +571,8 @@ void kobolds() {
     ..attack("stab[s]", 5)
     ..iceBolt(rate: 8, damage: 12)
     ..fireBolt(rate: 8, damage: 12)
-    ..drop(30, "staff")
-    ..drop(50, "magic")
+    ..drop("staff", percent: 40)
+    ..drop("magic", count: 2, percent: 60)
     ..flags("cowardly");
 
   // TODO: Always drop something good.
@@ -588,12 +587,9 @@ void kobolds() {
     ..teleport(rate: 5, range: 6)
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
-    ..drop(50, "spear", 5)
-    ..drop(40, "armor", 5)
-    ..drop(40, "armor", 5)
-    ..drop(50, "magic", 5)
-    ..drop(50, "magic", 5)
-    ..drop(50, "magic", 5)
+    ..drop("spear", percent: 80, depthOffset: 5)
+    ..drop("armor", count: 2, depthOffset: 5)
+    ..drop("magic", count: 3, depthOffset: 5)
     ..flags("cowardly");
 
   // homonculous
@@ -618,42 +614,42 @@ void people() {
   family("p", tracking: 14)..openDoors();
   breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 3)
     ..attack("hit[s]", 3)
-    ..drop(50, "weapon")
-    ..drop(60, "armor")
-    ..drop(40, "magic")
+    ..drop("weapon", percent: 50)
+    ..drop("armor", percent: 60)
+    ..drop("magic", percent: 30)
     ..flags("cowardly");
 
   breed("simpering knave", 2, carrot, 17, meander: 3)
     ..attack("hit[s]", 2)
     ..attack("stab[s]", 4)
-    ..drop(40, "whip")
-    ..drop(40, "armor")
-    ..drop(30, "magic")
+    ..drop("whip", percent: 30)
+    ..drop("armor", percent: 40)
+    ..drop("magic", percent: 20)
     ..flags("cowardly");
 
   breed("decrepit mage", 3, violet, 20, meander: 2)
     ..attack("hit[s]", 2)
     ..sparkBolt(rate: 10, damage: 8)
-    ..drop(60, "magic")
-    ..drop(30, "dagger")
-    ..drop(20, "staff")
-    ..drop(20, "robe")
-    ..drop(20, "boots");
+    ..drop("magic", percent: 60)
+    ..drop("dagger", percent: 10)
+    ..drop("staff", percent: 10)
+    ..drop("robe", percent: 20)
+    ..drop("boots", percent: 20);
 
   breed("unlucky ranger", 5, peaGreen, 30, dodge: 25, meander: 2)
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
-    ..drop(30, "potion")
-    ..drop(40, "bow")
-    ..drop(10, "sword")
-    ..drop(10, "body");
+    ..drop("potion", percent: 30)
+    ..drop("bow", percent: 40)
+    ..drop("sword", percent: 10)
+    ..drop("body", percent: 20);
 
   breed("drunken priest", 5, cerulean, 34, meander: 4)
     ..attack("hit[s]", 8)
     ..heal(rate: 15, amount: 8)
-    ..drop(30, "scroll")
-    ..drop(20, "club")
-    ..drop(40, "robe")
+    ..drop("scroll", percent: 30)
+    ..drop("club", percent: 20)
+    ..drop("robe", percent: 40)
     ..flags("fearless");
 }
 
@@ -986,12 +982,11 @@ class _BreedBuilder extends _BaseBuilder {
     _attacks.add(new Attack(noun, verb, damage, 0, element));
   }
 
-  void drop(int chance, String name, [int depthOffset = 0]) {
-    _drops.add(percentDrop(chance, name, _depth + depthOffset));
-  }
-
-  void dropMany(int count, String name, [int depthOffset = 0]) {
-    _drops.add(repeatDrop(count, name, _depth + depthOffset));
+  void drop(String name,
+      {int percent = 100, int count = 1, int depthOffset = 0}) {
+    var drop = percentDrop(percent, name, _depth + depthOffset);
+    if (count > 1) drop = repeatDrop(count, drop);
+    _drops.add(drop);
   }
 
   void flags(String flags) {

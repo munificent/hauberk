@@ -20,7 +20,8 @@ Drop percentDrop(int chance, String drop, int depth) {
 Drop dropAllOf(List<Drop> drops) => new _AllOfDrop(drops);
 
 Drop repeatDrop(int count, drop, [int level]) {
-  return new _RepeatDrop(count, parseDrop(drop, level));
+  if (drop is String) drop = parseDrop(drop, level);
+  return new _RepeatDrop(count, drop);
 }
 
 /// Drops an item of a given type.

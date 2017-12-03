@@ -78,7 +78,6 @@ class Items {
     Kite Shield[s]
 
     */
-    // CharCode.latinSmallLetterUWithDiaeresis // skull
     // CharCode.latinSmallLetterIWithDiaeresis // ring
     // CharCode.latinSmallLetterIWithCircumflex // wand
     // CharCode.latinCapitalLetterAWithRingAbove // gloves
@@ -140,6 +139,8 @@ void treasures() {
 void pelts() {
   // TODO: Should these appear on the floor?
   // TODO: Better pictogram than a pelt?
+  // TODO: These currently have no use. Either remove them, or add crafting
+  // back in.
   category(CharCode.latinSmallLetterEWithAcute, stack: 20, flags: "flammable");
   item("Flower", 1, 1.0, cornflower); // TODO: Use in recipe.
   item("Insect Wing", 1, 1.0, violet);
@@ -175,6 +176,7 @@ void potions() {
       stack: 10, flags: "freezable")
     ..tag("magic/potion/resistance")
     ..toss(damage: 1, range: 6, breakage: 100);
+  // TODO: Don't need to strictly have every single element here.
   item("Salve[s] of Heat Resistance", 5, 0.5, carrot)
     ..resistSalve(Elements.fire);
   item("Salve[s] of Cold Resistance", 6, 0.5, cornflower)
@@ -216,6 +218,7 @@ void potions() {
   // dram, draught, elixir, philter
 
   // TODO: Make monsters drop these.
+  // TODO: Don't need to strictly have every single element here.
   category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable")
     ..tag("magic/potion/bottled")
     ..toss(damage: 1, range: 8, breakage: 100);
@@ -283,6 +286,8 @@ void scrolls() {
 }
 
 void weapons() {
+  // https://en.wikipedia.org/wiki/List_of_mythological_objects#Weapons
+
   // Bludgeons.
   category(CharCode.latinSmallLetterAWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/club")
