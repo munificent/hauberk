@@ -10,10 +10,11 @@ import '../core/game.dart';
 import '../core/log.dart';
 import '../core/option.dart';
 import '../core/stage.dart';
-import '../hero/skill.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
 import '../monster/monster.dart';
+import 'attribute.dart';
+import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -86,14 +87,20 @@ class Hero extends Actor {
   /// not floating point) precision.
   int _experienceCents = 0;
 
-  int get strength => _attribute(Skill.strength, -weight);
-  int get agility => _attribute(Skill.agility);
-  int get fortitude => _attribute(Skill.fortitude);
-  int get intellect => _attribute(Skill.intellect);
-  int get will => _attribute(Skill.will);
+  Strength _strength;
+  Strength get strength => _strength ?? (_strength = new Strength(this));
 
-  int _attribute(Skill skill, [int bonus = 0]) =>
-      (10 + skills[skill] + bonus).clamp(1, 60);
+  Agility _agility;
+  Agility get agility => _agility ?? (_agility = new Agility(this));
+
+  Fortitude _fortitude;
+  Fortitude get fortitude => _fortitude ?? (_fortitude = new Fortitude(this));
+
+  Intellect _intellect;
+  Intellect get intellect => _intellect ?? (_intellect = new Intellect(this));
+
+  Will _will;
+  Will get will => _will ?? (_will = new Will(this));
 
   final SkillSet skills;
 
@@ -141,7 +148,7 @@ class Hero extends Actor {
     // Hero state is cloned above so that if they die in the dungeon, they lose
     // anything they found.
 
-    health.max = Fortitude.maxHealth(fortitude);
+    health.max = fortitude.maxHealth;
     health.current = health.max;
 
     _refreshLevel(gain: false);
@@ -225,8 +232,8 @@ class Hero extends Actor {
 
     if (fortitude != oldFortitude) {
       // Update max health.
-      var change = Fortitude.maxHealth(fortitude) - health.max;
-      health.max = Fortitude.maxHealth(fortitude);
+      var change = fortitude.maxHealth - health.max;
+      health.max = fortitude.maxHealth;
 
       if (change > 0) {
         game.log.message("you feel healthier!");
@@ -241,7 +248,7 @@ class Hero extends Actor {
 
   int onGetSpeed() => Energy.normalSpeed;
 
-  int onGetDodge() => 20 + Agility.dodgeBonus(agility);
+  int onGetDodge() => 20 + agility.dodgeBonus;
 
   // TODO: Shields, temporary bonuses, etc.
   Iterable<Defense> onGetDefenses() sync* {
@@ -262,14 +269,13 @@ class Hero extends Actor {
       hit = weapon.attack.createHit();
 
       // Take heft and strength into account.
-      var relativeStrength = strength - weapon.heft;
-      var scale = Strength.scaleHeft(relativeStrength);
+      var scale = strength.heftScale(weapon.heft);
       hit.scaleDamage(scale);
     } else {
       hit = new Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
     }
 
-    hit.addStrike(Agility.strikeBonus(agility));
+    hit.addStrike(agility.strikeBonus);
 
     for (var skill in skills.all) {
       skill.modifyAttack(this, hit, skills[skill]);
@@ -306,7 +312,7 @@ class Hero extends Actor {
         break;
 
       case HitType.toss:
-        hit.scaleRange(Strength.tossRangeScale(strength));
+        hit.scaleRange(strength.tossRangeScale);
         break;
     }
 
@@ -329,6 +335,8 @@ class Hero extends Actor {
 
   void onDamaged(Action action, Actor attacker, int damage) {
     // Getting hit loses focus.
+    // TODO: Should the hero lose focus if they dodge the attack? Seems like it
+    // would still break their attention. Maybe lose a fraction of the focus?
     focus -= Option.maxFocus * damage * 2 ~/ health.max;
   }
 

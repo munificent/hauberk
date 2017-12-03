@@ -7,6 +7,7 @@ import '../engine.dart';
 import '../hues.dart';
 import 'input.dart';
 
+// TODO: Allow accessing this outside of the dungeon.
 class SkillDialog extends Screen<Input> {
   final Content _content;
   final SkillSet _skills;
@@ -61,14 +62,57 @@ class SkillDialog extends Screen<Input> {
 
       terminal.writeAt(2, 2 + i, row.prefix, slate);
       terminal.writeAt(2 + row.prefix.length, 2 + i, row.skill.name, primary);
-      terminal.writeAt(30, 2 + i, _skills[row.skill].toString(), secondary);
+      terminal.writeAt(
+          26, 2 + i, _skills[row.skill].toString().padLeft(2), secondary);
     }
 
     terminal.drawChar(1, 2 + selectedSkill, CharCode.blackRightPointingPointer,
         UIHue.selection);
 
-    terminal.writeAt(2, 0, "Skill points:", UIHue.text);
-    terminal.writeAt(30, 0, _hero.skillPoints.toString(), UIHue.primary);
+    terminal.writeAt(2, 0, "Skills:", UIHue.text);
+
+    terminal.writeAt(2, terminal.height - 3, "Available points:", UIHue.text);
+    terminal.writeAt(26, terminal.height - 3,
+        _hero.skillPoints.toString().padLeft(2), UIHue.primary);
+
+    var skill = _tree[selectedSkill].skill;
+    var level = _skills[skill];
+
+    String error;
+    if (_hero.skillPoints == 0) {
+      error = "You don't have any skill points to spend.";
+    } else if (level == skill.maxLevel) {
+      error = "You've maxed out this skill.";
+    } else if (skill.prerequisite != null && _skills[skill.prerequisite] == 0) {
+      error = "You must learn ${skill.prerequisite.name} first.";
+    }
+
+    writeDescription(int y, String text) {
+      for (var line in Log.wordWrap(40, text)) {
+        terminal.writeAt(30, y++, line, UIHue.text);
+      }
+    }
+
+    terminal.writeAt(
+        30, 2, skill.name, error == null ? UIHue.selection : UIHue.disabled);
+    writeDescription(4, skill.description);
+
+    if (level > 0) {
+      terminal.writeAt(30, 16, "At current level $level:", UIHue.primary);
+      writeDescription(18, skill.levelDescription(level));
+    }
+
+    if (level < skill.maxLevel) {
+      terminal.writeAt(30, 24, "At next level ${level + 1}:", UIHue.primary);
+      writeDescription(26, skill.levelDescription(level + 1));
+    }
+
+    if (error != null) {
+      terminal.writeAt(30, 32, error, UIHue.text);
+    } else {
+      terminal.writeAt(
+          30, 32, "Press [→] to raise this skill.", UIHue.helpText);
+    }
 
     var helpText = ['[↕] Change selection'];
     if (_canRaiseSkill) helpText.add('[→] Raise skill');

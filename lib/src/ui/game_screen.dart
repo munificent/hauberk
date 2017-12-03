@@ -598,17 +598,17 @@ class GameScreen extends Screen<Input> {
     }
 
     var y = 4;
-    drawAttribute(Skill attribute, int value) {
-      terminal.writeAt(0, y, attribute.name, UIHue.helpText);
+    drawAttribute(String attribute, int value) {
+      terminal.writeAt(0, y, attribute, UIHue.helpText);
       terminal.writeAt(10, y, value.toString(), ash);
       y++;
     }
 
-    drawAttribute(Skill.strength, hero.strength);
-    drawAttribute(Skill.agility, hero.agility);
-    drawAttribute(Skill.fortitude, hero.fortitude);
-    drawAttribute(Skill.intellect, hero.intellect);
-    drawAttribute(Skill.will, hero.will);
+    drawAttribute("Strength", hero.strength.value);
+    drawAttribute("Agility", hero.agility.value);
+    drawAttribute("Fortitude", hero.fortitude.value);
+    drawAttribute("Intellect", hero.intellect.value);
+    drawAttribute("Will", hero.will.value);
 
     terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
 

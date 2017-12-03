@@ -1,0 +1,62 @@
+Trying to figure out what attributes Hauberk should have and what they should
+do. From Angband:
+
+Int/Wis (depending on whether mage or priest):
+- Number of spells per level
+- Amount of mana per level
+- Minimum spell fail chance
+
+Intelligence:
+- Ability to use magical devices like wands
+- Ability to disarm traps
+
+Wisdom:
+- Saving throw
+
+Strength:
+- Damage
+- To-hit
+- Wieldable weapon weight
+- Attacks per round
+- Total carrying capacity
+- Bonus to digging
+
+Dexterity:
+- To-hit
+- Armor class (basically dodge ability)
+- Chance to disarm traps
+- Chance to evade theft
+- Reduce chance of being stunned bashing
+
+Constitution:
+- HP per level
+- Ability to recover from poison, stunning, cuts
+
+Here's what I have in mind ("+" is implemented already):
+
+Strength:
++ Heft for which weapons can be wielded effectively.
++ Cancels out strength cost of weight from armor.
++ Modifies range when tossing items.
+- Modify damage? Heft may be enough to cover this.
+- Resist pushback or getting blown by air?
+
+Agility:
++ Dodge bonus.
++ Strike bonus.
+- Something to do with stealth?
+- Resist pushback or getting blown by air?
+
+Fortitude:
++ Maximum health.
+- Affect poison duration or intensity?
+
+Intellect:
+- Maximum focus.
+- Better searching for hidden stuff?
+- Better ability to resist some mental attacks like confusion, illusion, etc.?
+- Better ability to use scrolls?
+
+Will:
+- Amount of focus lost when hit.
+- Something to do with priest-type heroes?

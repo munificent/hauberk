@@ -1,21 +1,20 @@
-import 'dart:math' as math;
-
 import '../core/combat.dart';
-import '../hero/command.dart';
-import '../hero/hero.dart';
+import 'command.dart';
+import 'hero.dart';
 
 /// An immutable unique skill a hero may learn.
 ///
 /// This class does not contain how good a hero is at the skill. It is more the
 /// *kind* of skill.
 abstract class Skill {
-  static final strength = new Strength();
-  static final agility = new Agility();
-  static final fortitude = new Fortitude();
-  static final intellect = new Intellect();
-  static final will = new Will();
+  static final might = new Might();
+  static final flexibility = new Flexibility();
+  static final toughness = new Toughness();
+  static final learning = new Learning();
+  static final discipline = new Discipline();
 
   String get name;
+  String get description;
 
   int get maxLevel;
 
@@ -23,6 +22,8 @@ abstract class Skill {
 
   /// The [Command] this skill provides, or null if it is stricly passive.
   Command get command => null;
+
+  String levelDescription(int level);
 
   /// Gives the skill a chance to modify the hit the hero is about to perform.
   void modifyAttack(Hero hero, Hit hit, int level) {}
@@ -92,66 +93,36 @@ class SkillSet {
 /// one.
 abstract class AttributeSkill extends Skill {
   int get maxLevel => 40;
+
+  String get attribute;
+  String get description => "Increases $attribute.";
+
+  String levelDescription(int level) => "Increases $attribute by $level.";
 }
 
-class Strength extends AttributeSkill {
-  static double tossRangeScale(int value) {
-    if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
-    if (value <= 30) return lerpDouble(value, 20, 30, 1.0, 1.5);
-    if (value <= 40) return lerpDouble(value, 30, 40, 1.5, 1.8);
-    if (value <= 30) return lerpDouble(value, 40, 50, 1.8, 2.0);
-    return lerpDouble(value, 50, 60, 2.0, 2.1);
-  }
-
-  /// Calculates the melee damage scaling factor based on the hero's strength
-  /// relative to the weapon's heft.
-  ///
-  /// Here, [value] is the hero's strength *minus* the weapon's heft, so
-  /// may be a negative number.
-  static double scaleHeft(int value) {
-    value = value.clamp(-20, 50);
-
-    if (value < -10) return lerpDouble(value, -20, -10, 0.05, 0.3);
-
-    // Note that there is an immediate step down to 0.8 at -1.
-    if (value < 0) return lerpDouble(value, -10, -1, 0.3, 0.8);
-
-    if (value < 30) return lerpDouble(value, 0, 30, 1.0, 2.0);
-    return lerpDouble(value, 30, 50, 2.0, 3.0);
-  }
-
-  String get name => "Strength";
+class Might extends AttributeSkill {
+  String get name => "Might";
+  String get attribute => "strength";
 }
 
-class Agility extends AttributeSkill {
-  static int dodgeBonus(int value) {
-    if (value <= 10) return lerpInt(value, 1, 10, -50, 0);
-    if (value <= 30) return lerpInt(value, 10, 30, 0, 30);
-    return lerpInt(value, 30, 60, 30, 60);
-  }
-
-  static int strikeBonus(int value) {
-    if (value <= 10) return lerpInt(value, 1, 10, -30, 0);
-    if (value <= 30) return lerpInt(value, 10, 30, 0, 20);
-    return lerpInt(value, 30, 60, 20, 50);
-  }
-
-  String get name => "Agility";
+class Flexibility extends AttributeSkill {
+  String get name => "Flexibility";
+  String get attribute => "agility";
 }
 
-class Fortitude extends AttributeSkill {
-  static int maxHealth(int value) =>
-      (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
-
-  String get name => "Fortitude";
+class Toughness extends AttributeSkill {
+  String get name => "Toughness";
+  String get attribute => "fortitude";
 }
 
-class Intellect extends AttributeSkill {
-  String get name => "Intellect";
+class Learning extends AttributeSkill {
+  String get name => "Learning";
+  String get attribute => "intellect";
 }
 
-class Will extends AttributeSkill {
-  String get name => "Will";
+class Discipline extends AttributeSkill {
+  String get name => "Discipline";
+  String get attribute => "will";
 }
 
 /// Remaps [value] within the range [min]-[max] to the output range

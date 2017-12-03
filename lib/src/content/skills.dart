@@ -14,11 +14,11 @@ class Skills {
 
   /// All of the known skills.
   static final List<Skill> all = [
-    Skill.strength,
-    Skill.agility,
-    Skill.fortitude,
-    Skill.intellect,
-    Skill.will,
+    Skill.might,
+    Skill.flexibility,
+    Skill.toughness,
+    Skill.learning,
+    Skill.discipline,
     archery,
     axeMastery,
     spearMastery,

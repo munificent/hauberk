@@ -44,6 +44,26 @@ class Log {
     return "$quantity ${_categorize(text, isFirst: count == 1, force: true)}";
   }
 
+  static List<String> wordWrap(int width, String text) {
+    var lines = <String>[];
+    var start = 0;
+    int wordBreak;
+    for (var i = 0; i < text.length; i++) {
+      if (text[i] == ' ') wordBreak = i + 1;
+
+      if (i - start >= width) {
+        // No space to break at, so character wrap.
+        if (wordBreak == null) wordBreak = i;
+        lines.add(text.substring(start, wordBreak).trim());
+        start = wordBreak;
+        while (start < text.length && text[start] == ' ') start++;
+      }
+    }
+
+    lines.add(text.substring(start, text.length).trim());
+    return lines;
+  }
+
   static const maxMessages = 6;
 
   final Queue<Message> messages;

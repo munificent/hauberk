@@ -5,11 +5,22 @@ import '../skills.dart';
 import 'mastery.dart';
 
 class SpearMastery extends MasterySkill {
+  // TODO: Tune.
+  static double _spearScale(int level) => lerpDouble(level, 1, 20, 0.2, 1.0);
   // TODO: Better name.
   String get name => "Spear Mastery";
+  String get description =>
+      "Your diligent study of spears and polearms lets you attack at a "
+      "distance when wielding one.";
   String get weaponType => "spear";
 
   Command get command => new SpearCommand();
+
+  String levelDescription(int level) {
+    var damage = (_spearScale(level) * 100).toInt();
+    return "Distance spear attacks have $damage% of the damage of a regular "
+        "attack.";
+  }
 }
 
 class SpearCommand extends MasteryCommand implements DirectionCommand {
@@ -17,10 +28,14 @@ class SpearCommand extends MasteryCommand implements DirectionCommand {
   String get weaponType => "spear";
 
   Action getDirectionAction(Game game, Direction dir) {
-    // TODO: Tune.
-    var scale =
-        lerpDouble(game.hero.skills[Skills.spearMastery], 1, 20, 0.2, 1.0);
-    return new SpearAction(dir, 2, scale);
+    // See if the spear is a polearm.
+    // TODO: Should these have a separate weapon type?
+    var weapon = game.hero.equipment.weapon.type;
+    var isPolearm = weapon.name == "Lance" || weapon.name == "Partisan";
+
+    return new SpearAction(
+        dir, SpearMastery._spearScale(game.hero.skills[Skills.spearMastery]),
+        isPolearm: isPolearm);
   }
 }
 
@@ -30,13 +45,18 @@ class SpearAction extends MasteryAction {
   static const _frameRate = 2;
 
   final Direction _dir;
-  final int _length;
   int _step = 0;
+  final bool _isPolearm;
 
-  SpearAction(this._dir, this._length, double damageScale) : super(damageScale);
+  SpearAction(this._dir, double damageScale, {bool isPolearm})
+      : _isPolearm = isPolearm,
+        super(damageScale);
 
   ActionResult onPerform() {
     var pos = actor.pos + _dir * (_step ~/ _frameRate + 1);
+
+    // Polearms don't hit the adjacent tile, but do have longer range.
+    if (_isPolearm) pos += _dir;
 
     // Show the effect and perform the attack on alternate frames. This ensures
     // the effect gets a chance to be shown before the hit effect covers hit.
@@ -47,7 +67,7 @@ class SpearAction extends MasteryAction {
     }
 
     _step++;
-    return doneIf(_step == _frameRate * _length);
+    return doneIf(_step == _frameRate * 2);
   }
 
   String toString() => '$actor spears $_dir';

@@ -1,0 +1,63 @@
+Some constraints and goals around how focus interacts with melee:
+
+- A pure archery character should be able to unleash non-stop arrows, but get
+  fatigued quickly if they run into melee combat. A more balanced ranger like
+  character can dish out ranged attacks but recover quickly in mixed melee
+  combat.
+
+- A pure mage can unleash a lot of magical damage quickly but is rendered
+  useless if monsters get in close. A pure mage's spells are fantastically
+  powerful compared to other hero styles. The limitations around focus and melee
+  combat exist to balance that out some. If mages could put out those spells and
+  also not suffer in melee, they would be overpowered.
+
+- In order to get the most powerful spells, a hero must commit to that hero
+  style at the expense of other styles. The requirements need to be high.
+
+- A "battle mage" can do OK-but-not-great magical damage but is more resilient
+  to melee combat and can even reliably use magic while in close quarters. They
+  sacrifice some of the mage's more powerful spell potential by being less
+  screwed if monsters get in close.
+
+- A warrior, compared to magic-using types, can freely wade into melee without
+  as much worry.
+
+- There's maybe something interesting to explore around different hero styles
+  and how they interact with battle duration. Maybe some heroes can dump a ton
+  of damage into monsters quickly but if the battle isn't over by then, they
+  are spent and screwed. Others are more marathon fighters.
+
+Here's the mechanics I aleady have in place:
+
+- Focus is the primary resource that gets drained for commands that require
+  mental concentration. Archery, lock-picking, spells, etc. It recharges while
+  resting.
+
+- Unlike MP in other games, focus is also drained when taking damage. At first,
+  it drains very quickly. Getting hit "breaks your concentration".
+
+Given all that, here are a few ideas around mechanics and skills:
+
+- Training focus-spending skills lowers the amount of focus using the skill
+  costs.
+
+- Intellect determines maximum focus. It's sort of how much you can hold in
+  your head at one time. Some powerful spells consume so much focus that you
+  have to train intellect significantly in order to be able to cast the spell
+  at all. (This also implies you can't use these very powerful spells more than
+  once or so in a battle.)
+
+  If resting regains focus at a steady percentage of max focus, this also
+  implies that training intellect improves focus regeneration speed.
+
+- Will reduces the amount of focus lost when getting hit or otherwise
+  distracted. It's your ability to retain focused despite what's going on around
+  you. Instead of a separate ability, this could be a "Concentration" skill
+  under Intellect.
+
+- Spell school skills (divination, necromancy, etc.) lower the focus cost of
+  all spells in that school.
+
+- Spell skills get more powerful as you train them.
+
+- Spells/items to temporarily improve concentration/will.

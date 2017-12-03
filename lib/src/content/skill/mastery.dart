@@ -14,7 +14,7 @@ abstract class MasterySkill extends Skill {
   // TODO: Tune.
   int get maxLevel => 20;
 
-  Skill get prerequisite => Skill.strength;
+  Skill get prerequisite => Skill.might;
 
   String get weaponType;
 
