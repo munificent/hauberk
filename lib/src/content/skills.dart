@@ -7,13 +7,9 @@ import 'skill/sword.dart';
 import 'skill/whip.dart';
 
 class Skills {
-  static final archery = new Archery();
-  static final axeMastery = new AxeMastery();
-  static final spearMastery = new SpearMastery();
-  static final swordfighting = new Swordfighting();
-  static final whipMastery = new WhipMastery();
+  /// Skills listed here are used as prerequisites for other skills, so we need
+  /// a canonical instance to refer to.
   static final sorcery = new Sorcery();
-  static final icicle = new Icicle();
 
   /// All of the known skills.
   static final List<Skill> all = [
@@ -22,13 +18,13 @@ class Skills {
     Skill.toughness,
     Skill.education,
     Skill.discipline,
-    archery,
-    axeMastery,
-    spearMastery,
-    swordfighting,
-    whipMastery,
+    new Archery(),
+    new AxeMastery(),
+    new SpearMastery(),
+    new Swordfighting(),
+    new WhipMastery(),
     sorcery,
-    icicle,
+    new Icicle(),
   ];
 
   static final Map<String, Skill> _byName =

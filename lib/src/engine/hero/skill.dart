@@ -62,14 +62,14 @@ abstract class TargetSkill extends CommandSkill {
 
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].
-  Action getTargetAction(Game game, Vec target);
+  Action getTargetAction(Game game, int level, Vec target);
 }
 
 /// A skill that requires a direction to perform.
 abstract class DirectionSkill extends CommandSkill {
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].
-  Action getDirectionAction(Game game, Direction dir);
+  Action getDirectionAction(Game game, int level, Direction dir);
 }
 
 /// A collection of [Skill]s and the hero's level in them.

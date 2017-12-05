@@ -1,7 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../skills.dart';
 import 'mastery.dart';
 
 /// A slashing melee attack that hits a number of adjacent monsters.
@@ -13,7 +12,7 @@ class AxeMastery extends MasterySkill implements DirectionSkill {
   String get name => "Axe Mastery";
   String get description =>
       "Axes are not just for woodcutting. In the hands of a skilled user, "
-          "they can cut down a swath of nearby foes as well.";
+      "they can cut down a swath of nearby foes as well.";
   String get weaponType => "axe";
 
   String levelDescription(int level) {
@@ -21,9 +20,8 @@ class AxeMastery extends MasterySkill implements DirectionSkill {
     return "Slash attacks have $damage% of the damage of a regular attack.";
   }
 
-  Action getDirectionAction(Game game, Direction dir) {
-    return new SlashAction(
-        dir, AxeMastery._slashScale(game.hero.skills[Skills.axeMastery]));
+  Action getDirectionAction(Game game, int level, Direction dir) {
+    return new SlashAction(dir, AxeMastery._slashScale(level));
   }
 }
 

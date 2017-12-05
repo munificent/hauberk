@@ -50,10 +50,10 @@ class Icicle extends TargetSkill {
 
   num getRange(Game game) => 10;
 
-  Action getTargetAction(Game game, Vec target) {
+  Action getTargetAction(Game game, int level, Vec target) {
     // TODO: Damage based on level.
     var attack =
-    new Attack(new Noun("the icicle"), "pierce[s]", 20, 10, Elements.cold);
+        new Attack(new Noun("the icicle"), "pierce[s]", 20, 10, Elements.cold);
     // TODO: Hero modify hit?
     // TODO: Spend focus.
     return new BoltAction(target, attack.createHit());

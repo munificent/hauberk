@@ -2,7 +2,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../action/bolt.dart';
-import '../skills.dart';
 import 'mastery.dart';
 
 class Archery extends MasterySkill implements TargetSkill {
@@ -12,7 +11,7 @@ class Archery extends MasterySkill implements TargetSkill {
   String get name => "Archery";
   String get description =>
       "Kill your foe without risking harm to yourself by unleashing a volley "
-          "of arrows from far away.";
+      "of arrows from far away.";
 
   String get weaponType => "bow";
 
@@ -24,9 +23,9 @@ class Archery extends MasterySkill implements TargetSkill {
     return hit.range;
   }
 
-  Action getTargetAction(Game game, Vec target) {
+  Action getTargetAction(Game game, int level, Vec target) {
     var hit = game.hero.createRangedHit();
-    var focus = Archery.focusCost(game.hero.skills[Skills.archery]);
+    var focus = Archery.focusCost(level);
     return new FocusAction(focus, new BoltAction(target, hit, canMiss: true));
   }
 }

@@ -1,7 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../skills.dart';
 import 'mastery.dart';
 
 class SpearMastery extends MasterySkill implements DirectionSkill {
@@ -20,14 +19,13 @@ class SpearMastery extends MasterySkill implements DirectionSkill {
         "attack.";
   }
 
-  Action getDirectionAction(Game game, Direction dir) {
+  Action getDirectionAction(Game game, int level, Direction dir) {
     // See if the spear is a polearm.
     // TODO: Should these have a separate weapon type?
     var weapon = game.hero.equipment.weapon.type;
     var isPolearm = weapon.name == "Lance" || weapon.name == "Partisan";
 
-    return new SpearAction(
-        dir, SpearMastery._spearScale(game.hero.skills[Skills.spearMastery]),
+    return new SpearAction(dir, SpearMastery._spearScale(level),
         isPolearm: isPolearm);
   }
 }

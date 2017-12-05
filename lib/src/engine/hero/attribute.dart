@@ -60,8 +60,7 @@ class Fortitude {
 
   int get value => (10 + _hero.skills[Skill.toughness]).clamp(1, 60);
 
-  int get maxHealth =>
-      (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
+  int get maxHealth => (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
 
   Fortitude(this._hero);
 }

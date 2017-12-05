@@ -295,13 +295,15 @@ class GameScreen extends Screen<Input> {
 
   void _fireAtTarget(TargetSkill skill) {
     _lastSkill = skill;
-    game.hero.setNextAction(skill.getTargetAction(game, currentTarget));
+    game.hero.setNextAction(
+        skill.getTargetAction(game, game.hero.skills[skill], currentTarget));
   }
 
   void _fireTowards(Direction dir) {
     if (_lastSkill == null) {} else if (_lastSkill is DirectionSkill) {
       var directionSkill = _lastSkill as DirectionSkill;
-      game.hero.setNextAction(directionSkill.getDirectionAction(game, dir));
+      game.hero.setNextAction(directionSkill.getDirectionAction(
+          game, game.hero.skills[directionSkill], dir));
     } else if (_lastSkill is TargetSkill) {
       var targetSkill = _lastSkill as TargetSkill;
       var pos = game.hero.pos + dir;
@@ -332,8 +334,8 @@ class GameScreen extends Screen<Input> {
       }
 
       if (currentTarget != null) {
-        game.hero
-            .setNextAction(targetSkill.getTargetAction(game, currentTarget));
+        game.hero.setNextAction(targetSkill.getTargetAction(
+            game, game.hero.skills[targetSkill], currentTarget));
       } else {
         var tile = game.stage[game.hero.pos + dir].type.name;
         game.log.error("There is a $tile} in the way.");

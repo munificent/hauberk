@@ -2,7 +2,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../action/bolt.dart';
-import '../skills.dart';
 import 'mastery.dart';
 
 class WhipMastery extends MasterySkill implements TargetSkill {
@@ -13,7 +12,7 @@ class WhipMastery extends MasterySkill implements TargetSkill {
   String get name => "Whip Mastery";
   String get description =>
       "Whips and flails are difficult to use well, but deadly even at a "
-          "distance when mastered.";
+      "distance when mastered.";
   String get weaponType => "whip";
 
   String levelDescription(int level) {
@@ -24,13 +23,11 @@ class WhipMastery extends MasterySkill implements TargetSkill {
 
   num getRange(Game game) => 3;
 
-  Action getTargetAction(Game game, Vec target) {
+  Action getTargetAction(Game game, int level, Vec target) {
     var hit = game.hero.createMeleeHit();
-    hit.scaleDamage(
-        WhipMastery._whipScale(game.hero.skills[Skills.whipMastery]));
+    hit.scaleDamage(WhipMastery._whipScale(level));
 
     // TODO: Better effect.
     return new BoltAction(target, hit, range: getRange(game), canMiss: true);
   }
 }
-
