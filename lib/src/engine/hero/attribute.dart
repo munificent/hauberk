@@ -54,6 +54,7 @@ class Agility {
   Agility(this._hero);
 }
 
+// TODO: "Vitality"?
 class Fortitude {
   final Hero _hero;
 
@@ -68,7 +69,7 @@ class Fortitude {
 class Intellect {
   final Hero _hero;
 
-  int get value => (10 + _hero.skills[Skill.learning]).clamp(1, 60);
+  int get value => (10 + _hero.skills[Skill.education]).clamp(1, 60);
 
   Intellect(this._hero);
 }

@@ -61,3 +61,24 @@ Given all that, here are a few ideas around mechanics and skills:
 - Spell skills get more powerful as you train them.
 
 - Spells/items to temporarily improve concentration/will.
+
+---
+
+On second thought, that feels weird. Having intellect determine max focus means
+that an archer hero is incentivized to train intellect, which feels sort of
+strange.
+
+It also means the only way to make a spell "high level" is to have it drain a
+ton of focus. That makes it hard to have spells that are only available later
+in the game but that do a narrow targeted thing and should be usable multiple
+times in battle.
+
+Here's another option:
+
+- Max focus is fixed.
+
+- Spells have a "complexity". Like heft does for strength, it determines the
+  baseline for how much intellect the spell requires to be effective. The power
+  of the spell is scaled by the hero's intellect relative to its complexity.
+  (For spells where "power" isn't easily definable, it could affect the failure
+  chance instead.)

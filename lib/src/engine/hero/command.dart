@@ -25,7 +25,7 @@ abstract class Command {
 /// A command that requires a target position to perform.
 abstract class TargetCommand extends Command {
   /// The maximum range of the target from the hero.
-  num getRange(Game game) => 0;
+  num getRange(Game game);
 
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].

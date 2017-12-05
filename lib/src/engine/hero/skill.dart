@@ -10,7 +10,7 @@ abstract class Skill {
   static final might = new Might();
   static final flexibility = new Flexibility();
   static final toughness = new Toughness();
-  static final learning = new Learning();
+  static final education = new Education();
   static final discipline = new Discipline();
 
   String get name;
@@ -115,8 +115,10 @@ class Toughness extends AttributeSkill {
   String get attribute => "fortitude";
 }
 
-class Learning extends AttributeSkill {
-  String get name => "Learning";
+class Education extends AttributeSkill {
+  Education();
+
+  String get name => "Education";
   String get attribute => "intellect";
 }
 

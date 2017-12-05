@@ -1,0 +1,49 @@
+- Divination: detection, unlock, sense weakness
+- Enchanting: heal, haste, charm, polymorph
+- Necromancy: drain life, sense life, putrefy, summon undead
+- Sorcery: lightning bolt, fireball
+- Conjuring: flee, banish, conjure food, teleport, home
+
+I came up with these schools roughly by thinking about different kinds of spells
+and trying to bucket them by similarity. That might not make for the best
+gameplay experience.
+
+A different idea is that each school is a different answer to the question, "How
+do spells make the mage more effective?" The existing schools are something
+like:
+
+- Divination: By giving the mage access to important information.
+- Enchanting: By changing the mage's own body, or changing nearby monsters.
+- Necromancy: Kind of similar to above.
+- Sorcery: By dishing out damage.
+- Conjuring: By moving more effectively and creating items from scratch.
+
+Potential answers, and the kinds of spells they imply:
+
+- By gaining knowledge so decisions are better informed
+  - Detection, light
+- By dishing out damage directly.
+  - Fireball, lightning bolt
+- By turning monsters into assets.
+  - Explode corpse, charm
+- By making monsters less effective.
+  - Confuse, slow, polymorph
+- By making the mage more powerful.
+  - Haste, heal, stone skin
+- By changing the dungeon.
+  - Stone to mud, glyph of warding
+- By changing items.
+  - Fire brand
+- By creating items.
+  - Create food
+
+It would be cool to have enough schools so that a player could either specialize
+deeply on one, or be strong in two. That way each pair of schools also becomes
+an interesting build style.
+
+Open questions:
+
+- How does this interact with priest-like characters?
+- Does grouping spells by similar behavior actually lead to fun characters?
+  Would it make more sense for each school to have a variety of kinds of spells
+  so that each isn't too narrowly focused?

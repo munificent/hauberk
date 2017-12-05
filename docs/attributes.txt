@@ -40,6 +40,7 @@ Strength:
 + Modifies range when tossing items.
 - Modify damage? Heft may be enough to cover this.
 - Resist pushback or getting blown by air?
+- Modifies range of missile weapons.
 
 Agility:
 + Dodge bonus.
