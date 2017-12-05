@@ -5,7 +5,7 @@ import '../action/bolt.dart';
 import '../skills.dart';
 import 'mastery.dart';
 
-class Archery extends MasterySkill {
+class Archery extends MasterySkill implements TargetSkill {
   // TODO: Tune.
   static int focusCost(int level) => lerpInt(level, 1, 20, 300, 1);
 
@@ -16,15 +16,8 @@ class Archery extends MasterySkill {
 
   String get weaponType => "bow";
 
-  Command get command => new ArcheryCommand();
-
   String levelDescription(int level) =>
       "Firing an arrow costs ${focusCost(level)} focus.";
-}
-
-class ArcheryCommand extends MasteryCommand implements TargetCommand {
-  String get name => "Archery";
-  String get weaponType => "bow";
 
   num getRange(Game game) {
     var hit = game.hero.createRangedHit();

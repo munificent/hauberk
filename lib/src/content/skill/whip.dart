@@ -5,7 +5,7 @@ import '../action/bolt.dart';
 import '../skills.dart';
 import 'mastery.dart';
 
-class WhipMastery extends MasterySkill {
+class WhipMastery extends MasterySkill implements TargetSkill {
   // TODO: Tune.
   static double _whipScale(int level) => lerpDouble(level, 1, 20, 0.2, 0.7);
 
@@ -16,19 +16,11 @@ class WhipMastery extends MasterySkill {
           "distance when mastered.";
   String get weaponType => "whip";
 
-  Command get command => new WhipCommand();
-
   String levelDescription(int level) {
     var damage = (_whipScale(level) * 100).toInt();
     return "Ranged whip attacks have $damage% of the damage of a regular "
         "attack.";
   }
-}
-
-// TODO: Copy/paste from ArcheryCommand. Unify?
-class WhipCommand extends MasteryCommand implements TargetCommand {
-  String get name => "Whip";
-  String get weaponType => "whip";
 
   num getRange(Game game) => 3;
 
@@ -41,3 +33,4 @@ class WhipCommand extends MasteryCommand implements TargetCommand {
     return new BoltAction(target, hit, range: getRange(game), canMiss: true);
   }
 }
+

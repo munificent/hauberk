@@ -5,16 +5,15 @@ import '../engine.dart';
 import '../hues.dart';
 import 'input.dart';
 
-class SelectCommandDialog extends Screen<Input> {
+class SelectSkillDialog extends Screen<Input> {
   final Game _game;
-  final List<Command> _commands = [];
+  final List<CommandSkill> _skills = [];
 
   bool get isTransparent => true;
 
-  SelectCommandDialog(Game game) : _game = game {
+  SelectSkillDialog(Game game) : _game = game {
     for (var skill in _game.hero.skills.all) {
-      var command = skill.command;
-      if (command != null) _commands.add(command);
+      if (skill is CommandSkill) _skills.add(skill);
     }
   }
 
@@ -40,18 +39,18 @@ class SelectCommandDialog extends Screen<Input> {
   }
 
   void selectCommand(int index) {
-    if (index >= _commands.length) return;
-    if (!_commands[index].canUse(_game)) return;
+    if (index >= _skills.length) return;
+    if (!_skills[index].canUse(_game)) return;
 
-    ui.pop(_commands[index]);
+    ui.pop(_skills[index]);
   }
 
   void render(Terminal terminal) {
     terminal.writeAt(0, 0, "Perform which command?", UIHue.text);
 
-    for (var i = 0; i < _commands.length; i++) {
+    for (var i = 0; i < _skills.length; i++) {
       var y = i + 2;
-      var command = _commands[i];
+      var command = _skills[i];
 
       var borderColor = UIHue.secondary;
       var letterColor = midnight;

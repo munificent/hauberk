@@ -16,7 +16,7 @@ import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item_dialog.dart';
-import 'select_command_dialog.dart';
+import 'select_skill_dialog.dart';
 import 'skill_dialog.dart';
 import 'target_dialog.dart';
 
@@ -40,7 +40,7 @@ class GameScreen extends Screen<Input> {
   Actor _targetActor;
   Vec _target;
 
-  Command _lastCommand;
+  CommandSkill _lastSkill;
 
   void targetActor(Actor value) {
     if (_targetActor != value) dirty();
@@ -112,8 +112,8 @@ class GameScreen extends Screen<Input> {
       case Input.forfeit:
         ui.push(new ForfeitDialog(game));
         break;
-      case Input.selectCommand:
-        ui.push(new SelectCommandDialog(game));
+      case Input.selectSkill:
+        ui.push(new SelectSkillDialog(game));
         break;
       case Input.editSkills:
         ui.push(new SkillDialog(game.content, game.hero));
@@ -224,17 +224,17 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.fire:
-        if (_lastCommand != null && _lastCommand is TargetCommand) {
-          var targetCommand = _lastCommand as TargetCommand;
+        if (_lastSkill != null && _lastSkill is TargetSkill) {
+          var targetSkill = _lastSkill as TargetSkill;
           if (currentTarget != null) {
             // If we still have a visible target, use it.
-            _fireAtTarget(_lastCommand);
+            _fireAtTarget(_lastSkill);
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, targetCommand.getRange(game),
-                (_) => _fireAtTarget(targetCommand)));
+            ui.push(new TargetDialog(this, targetSkill.getRange(game),
+                (_) => _fireAtTarget(targetSkill)));
           }
-        } else if (_lastCommand != null && _lastCommand is DirectionCommand) {
+        } else if (_lastSkill != null && _lastSkill is DirectionSkill) {
           // Ask user to pick a direction.
           ui.push(new DirectionDialog(this, game, _fireTowards));
         } else {
@@ -293,17 +293,17 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void _fireAtTarget(TargetCommand command) {
-    _lastCommand = command;
-    game.hero.setNextAction(command.getTargetAction(game, currentTarget));
+  void _fireAtTarget(TargetSkill skill) {
+    _lastSkill = skill;
+    game.hero.setNextAction(skill.getTargetAction(game, currentTarget));
   }
 
   void _fireTowards(Direction dir) {
-    if (_lastCommand == null) {} else if (_lastCommand is DirectionCommand) {
-      var directionCommand = _lastCommand as DirectionCommand;
-      game.hero.setNextAction(directionCommand.getDirectionAction(game, dir));
-    } else if (_lastCommand is TargetCommand) {
-      var targetCommand = _lastCommand as TargetCommand;
+    if (_lastSkill == null) {} else if (_lastSkill is DirectionSkill) {
+      var directionSkill = _lastSkill as DirectionSkill;
+      game.hero.setNextAction(directionSkill.getDirectionAction(game, dir));
+    } else if (_lastSkill is TargetSkill) {
+      var targetSkill = _lastSkill as TargetSkill;
       var pos = game.hero.pos + dir;
 
       // Target the monster that is in the fired direction, if any.
@@ -323,7 +323,7 @@ class GameScreen extends Screen<Input> {
         }
 
         // If we hit the end of the range, target the floor there.
-        if ((step - game.hero.pos) >= targetCommand.getRange(game)) {
+        if ((step - game.hero.pos) >= targetSkill.getRange(game)) {
           targetFloor(step);
           break;
         }
@@ -333,7 +333,7 @@ class GameScreen extends Screen<Input> {
 
       if (currentTarget != null) {
         game.hero
-            .setNextAction(targetCommand.getTargetAction(game, currentTarget));
+            .setNextAction(targetSkill.getTargetAction(game, currentTarget));
       } else {
         var tile = game.stage[game.hero.pos + dir].type.name;
         game.log.error("There is a $tile} in the way.");
@@ -359,16 +359,16 @@ class GameScreen extends Screen<Input> {
       ui.pop(false);
     } else if (popped is SkillDialog) {
       game.hero.updateSkills(result);
-    } else if (popped is SelectCommandDialog && result is Command) {
+    } else if (popped is SelectSkillDialog && result is CommandSkill) {
       if (!result.canUse(game)) {
         // Refresh the log.
         dirty();
-      } else if (result is TargetCommand) {
+      } else if (result is TargetSkill) {
         ui.push(new TargetDialog(
             this, result.getRange(game), (_) => _fireAtTarget(result)));
-      } else if (result is DirectionCommand) {
+      } else if (result is DirectionSkill) {
         selectDirection(dir) {
-          _lastCommand = result;
+          _lastSkill = result;
           _fireTowards(dir);
         }
 

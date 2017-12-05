@@ -2,15 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 
-bool _hasWeapon(Hero hero, String weaponType) {
-  // Must have the right weapon equipped.
-  var weapon = hero.equipment.weapon;
-  if (weapon == null) return false;
-
-  return weapon.type.weaponType == weaponType;
-}
-
-abstract class MasterySkill extends Skill {
+abstract class MasterySkill extends CommandSkill {
   // TODO: Tune.
   int get maxLevel => 20;
 
@@ -19,17 +11,21 @@ abstract class MasterySkill extends Skill {
   String get weaponType;
 
   void modifyAttack(Hero hero, Hit hit, int level) {
-    if (!_hasWeapon(hero, weaponType)) return;
+    if (!_hasWeapon(hero)) return;
 
     // TODO: Tune.
     hit.scaleDamage(lerpDouble(level, 1, maxLevel, 1.05, 2.0));
   }
-}
 
-abstract class MasteryCommand extends Command {
-  String get weaponType;
+  bool canUse(Game game) => _hasWeapon(game.hero);
 
-  bool canUse(Game game) => _hasWeapon(game.hero, weaponType);
+  bool _hasWeapon(Hero hero) {
+    // Must have the right weapon equipped.
+    var weapon = hero.equipment.weapon;
+    if (weapon == null) return false;
+
+    return weapon.type.weaponType == weaponType;
+  }
 }
 
 abstract class MasteryAction extends Action {

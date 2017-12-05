@@ -4,7 +4,7 @@ import '../../engine.dart';
 import '../skills.dart';
 import 'mastery.dart';
 
-class SpearMastery extends MasterySkill {
+class SpearMastery extends MasterySkill implements DirectionSkill {
   // TODO: Tune.
   static double _spearScale(int level) => lerpDouble(level, 1, 20, 0.2, 1.0);
   // TODO: Better name.
@@ -14,18 +14,11 @@ class SpearMastery extends MasterySkill {
       "distance when wielding one.";
   String get weaponType => "spear";
 
-  Command get command => new SpearCommand();
-
   String levelDescription(int level) {
     var damage = (_spearScale(level) * 100).toInt();
     return "Distance spear attacks have $damage% of the damage of a regular "
         "attack.";
   }
-}
-
-class SpearCommand extends MasteryCommand implements DirectionCommand {
-  String get name => "Spear";
-  String get weaponType => "spear";
 
   Action getDirectionAction(Game game, Direction dir) {
     // See if the spear is a polearm.

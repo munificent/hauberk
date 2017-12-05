@@ -4,7 +4,8 @@ import '../../engine.dart';
 import '../skills.dart';
 import 'mastery.dart';
 
-class AxeMastery extends MasterySkill {
+/// A slashing melee attack that hits a number of adjacent monsters.
+class AxeMastery extends MasterySkill implements DirectionSkill {
   // TODO: Tune.
   static double _slashScale(int level) => lerpDouble(level, 1, 20, 0.2, 0.7);
 
@@ -15,18 +16,10 @@ class AxeMastery extends MasterySkill {
           "they can cut down a swath of nearby foes as well.";
   String get weaponType => "axe";
 
-  Command get command => new SlashCommand();
-
   String levelDescription(int level) {
     var damage = (_slashScale(level) * 100).toInt();
     return "Slash attacks have $damage% of the damage of a regular attack.";
   }
-}
-
-/// A slashing melee attack that hits a number of adjacent monsters.
-class SlashCommand extends MasteryCommand implements DirectionCommand {
-  String get name => "Slash";
-  String get weaponType => "axe";
 
   Action getDirectionAction(Game game, Direction dir) {
     return new SlashAction(

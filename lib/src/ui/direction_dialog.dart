@@ -7,7 +7,7 @@ import 'game_screen.dart';
 import 'input.dart';
 
 /// Modal dialog for letting the user select a [Direction] to perform a
-/// [Command] in.
+/// [DirectionSkill] in.
 class DirectionDialog extends Screen<Input> {
   static const _numFrames = 8;
   static const _ticksPerFrame = 5;
@@ -72,7 +72,7 @@ class DirectionDialog extends Screen<Input> {
           _game.hero.pos.y + dir.y, new Glyph(char, color));
     }
 
-    // TODO: Let command filter out valid directions.
+    // TODO: Let skill filter out valid directions.
     draw(0, Direction.n, "|");
     draw(1, Direction.ne, "/");
     draw(2, Direction.e, "-");

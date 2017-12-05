@@ -1,5 +1,8 @@
+import 'package:piecemeal/piecemeal.dart';
+
+import '../action/action.dart';
 import '../core/combat.dart';
-import 'command.dart';
+import '../core/game.dart';
 import 'hero.dart';
 
 /// An immutable unique skill a hero may learn.
@@ -20,9 +23,6 @@ abstract class Skill {
 
   Skill get prerequisite => null;
 
-  /// The [Command] this skill provides, or null if it is stricly passive.
-  Command get command => null;
-
   String levelDescription(int level);
 
   /// Gives the skill a chance to modify the hit the hero is about to perform.
@@ -37,6 +37,39 @@ abstract class Skill {
   // TODO: Requirements.
   // - Must be discovered by finding certain items. (I.e. a spellbook or
   //   weapon of a certain type.)
+}
+
+/// Additional interface for active skills that expose a command the player
+/// can invoke.
+///
+/// Some commands require additional data to be performed -- a target position
+/// or a direction. Those will implement one of the subclasses, [TargetSkill]
+/// or [DirectionSkill].
+abstract class CommandSkill extends Skill {
+  /// Override this to validate that the [Command] can be used right now. For
+  /// example, this is only `true` for the archery skill when the hero has a
+  /// ranged weapon equipped.
+  bool canUse(Game game);
+
+  // TODO: Add getAction() here when there are commands that don't require a
+  // target or direction.
+}
+
+/// A skill that requires a target position to perform.
+abstract class TargetSkill extends CommandSkill {
+  /// The maximum range of the target from the hero.
+  num getRange(Game game);
+
+  /// Override this to create the [Action] that the [Hero] should perform when
+  /// using this [Command].
+  Action getTargetAction(Game game, Vec target);
+}
+
+/// A skill that requires a direction to perform.
+abstract class DirectionSkill extends CommandSkill {
+  /// Override this to create the [Action] that the [Hero] should perform when
+  /// using this [Command].
+  Action getDirectionAction(Game game, Direction dir);
 }
 
 /// A collection of [Skill]s and the hero's level in them.

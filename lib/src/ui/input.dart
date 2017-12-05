@@ -23,8 +23,8 @@ class Input {
   static const toss = const Input("toss");
   static const swap = const Input("swap");
 
-  static const selectCommand = const Input("selectCommand");
   static const heroInfo = const Input("heroInfo");
+  static const selectSkill = const Input("selectSkill");
   static const editSkills = const Input("editSkills");
 
   /// Directional inputs.

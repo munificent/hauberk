@@ -18,7 +18,6 @@ export 'engine/core/log.dart';
 export 'engine/core/option.dart';
 export 'engine/core/resource.dart';
 export 'engine/core/stage.dart';
-export 'engine/hero/command.dart';
 export 'engine/hero/hero.dart';
 export 'engine/hero/hero_class.dart';
 export 'engine/hero/skill.dart';

@@ -30,7 +30,7 @@ class Sorcery extends SchoolSkill {
       "Harness the power of raw elemental forces of nature.";
 }
 
-class Icicle extends Skill {
+class Icicle extends TargetSkill {
   String get description => "Launches a spear-like icicle.";
 
   @override
@@ -45,19 +45,17 @@ class Icicle extends Skill {
 
   Skill get prerequisite => Skills.sorcery;
 
-  Command get command => new IcicleCommand();
-}
+  // TODO: Make sure has enough focus?
+  bool canUse(Game game) => true;
 
-class IcicleCommand extends TargetCommand {
   num getRange(Game game) => 10;
 
   Action getTargetAction(Game game, Vec target) {
     // TODO: Damage based on level.
     var attack =
-        new Attack(new Noun("the icicle"), "pierce[s]", 20, 10, Elements.cold);
+    new Attack(new Noun("the icicle"), "pierce[s]", 20, 10, Elements.cold);
     // TODO: Hero modify hit?
+    // TODO: Spend focus.
     return new BoltAction(target, attack.createHit());
   }
-
-  String get name => "Icicle";
 }
