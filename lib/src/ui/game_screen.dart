@@ -40,7 +40,7 @@ class GameScreen extends Screen<Input> {
   Actor _targetActor;
   Vec _target;
 
-  CommandSkill _lastSkill;
+  UsableSkill _lastSkill;
 
   void targetActor(Actor value) {
     if (_targetActor != value) dirty();
@@ -224,7 +224,7 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.fire:
-        if (_lastSkill != null && _lastSkill is TargetSkill) {
+        if (_lastSkill is TargetSkill) {
           var targetSkill = _lastSkill as TargetSkill;
           if (currentTarget != null) {
             // If we still have a visible target, use it.
@@ -234,9 +234,13 @@ class GameScreen extends Screen<Input> {
             ui.push(new TargetDialog(this, targetSkill.getRange(game),
                 (_) => _fireAtTarget(targetSkill)));
           }
-        } else if (_lastSkill != null && _lastSkill is DirectionSkill) {
+        } else if (_lastSkill is DirectionSkill) {
           // Ask user to pick a direction.
           ui.push(new DirectionDialog(this, game, _fireTowards));
+        } else if (_lastSkill is ActionSkill) {
+          var actionSkill = _lastSkill as ActionSkill;
+          game.hero.setNextAction(actionSkill.getAction(
+              game, game.hero.skills[actionSkill]));
         } else {
           game.log.error("No skill selected.");
           dirty();
@@ -300,7 +304,7 @@ class GameScreen extends Screen<Input> {
   }
 
   void _fireTowards(Direction dir) {
-    if (_lastSkill == null) {} else if (_lastSkill is DirectionSkill) {
+    if (_lastSkill is DirectionSkill) {
       var directionSkill = _lastSkill as DirectionSkill;
       game.hero.setNextAction(directionSkill.getDirectionAction(
           game, game.hero.skills[directionSkill], dir));
@@ -338,9 +342,12 @@ class GameScreen extends Screen<Input> {
             game, game.hero.skills[targetSkill], currentTarget));
       } else {
         var tile = game.stage[game.hero.pos + dir].type.name;
-        game.log.error("There is a $tile} in the way.");
+        game.log.error("There is a ${tile} in the way.");
         dirty();
       }
+    } else if (_lastSkill is ActionSkill) {
+      game.log.error("${_lastSkill.name} does not take a direction.");
+      dirty();
     } else {
       // TODO: Better error message.
       game.log.error("No skill selected.");
@@ -361,7 +368,7 @@ class GameScreen extends Screen<Input> {
       ui.pop(false);
     } else if (popped is SkillDialog) {
       game.hero.updateSkills(result);
-    } else if (popped is SelectSkillDialog && result is CommandSkill) {
+    } else if (popped is SelectSkillDialog && result is UsableSkill) {
       if (!result.canUse(game)) {
         // Refresh the log.
         dirty();
@@ -375,6 +382,10 @@ class GameScreen extends Screen<Input> {
         }
 
         ui.push(new DirectionDialog(this, game, selectDirection));
+      } else if (result is ActionSkill) {
+        _lastSkill = result;
+        game.hero.setNextAction(result.getAction(
+            game, game.hero.skills[result]));
       }
     }
   }

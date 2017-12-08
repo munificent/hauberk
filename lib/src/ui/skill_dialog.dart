@@ -3,6 +3,9 @@ import 'dart:collection';
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
+// TODO: Do we want to allow importing directly from content?
+import '../content/skill/spell.dart';
+
 import '../engine.dart';
 import '../hues.dart';
 import 'input.dart';
@@ -96,6 +99,27 @@ class SkillDialog extends Screen<Input> {
     terminal.writeAt(
         30, 2, skill.name, error == null ? UIHue.selection : UIHue.disabled);
     writeDescription(4, skill.description);
+
+    if (skill is SpellSkill) {
+      // TODO: Should show this for non-spell skills that also cost focus.
+      terminal.writeAt(30, 10, "Focus:", UIHue.text);
+      terminal.writeAt(50, 10, skill.adjustedFocusCost(_hero).toString(), UIHue.primary);
+
+      terminal.writeAt(30, 11, "Complexity:", UIHue.text);
+      terminal.writeAt(50, 11, skill.complexity.toString(), UIHue.primary);
+
+      if (level > 0) {
+        // TODO: These values don't take into account changes to hero attributes
+        // made while on the skill dialog.
+
+        // TODO: Should only show the one of these that applies to the spell.
+        terminal.writeAt(30, 12, "Effectiveness:", UIHue.text);
+        terminal.writeAt(50, 12, skill.effectiveness(_hero.game).toString(), UIHue.primary);
+
+        terminal.writeAt(30, 13, "Failure:", UIHue.text);
+        terminal.writeAt(50, 13, "${skill.failureChance(_hero.game)}%", UIHue.primary);
+      }
+    }
 
     if (level > 0) {
       terminal.writeAt(30, 16, "At current level $level:", UIHue.primary);

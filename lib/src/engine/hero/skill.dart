@@ -42,21 +42,23 @@ abstract class Skill {
 /// Additional interface for active skills that expose a command the player
 /// can invoke.
 ///
-/// Some commands require additional data to be performed -- a target position
+/// Some skills require additional data to be performed -- a target position
 /// or a direction. Those will implement one of the subclasses, [TargetSkill]
 /// or [DirectionSkill].
-abstract class CommandSkill extends Skill {
+abstract class UsableSkill extends Skill {
   /// Override this to validate that the [Command] can be used right now. For
   /// example, this is only `true` for the archery skill when the hero has a
   /// ranged weapon equipped.
-  bool canUse(Game game);
+  bool canUse(Game game) => true;
+}
 
-  // TODO: Add getAction() here when there are commands that don't require a
-  // target or direction.
+/// A skill that can be directly used to perform an action.
+abstract class ActionSkill extends UsableSkill {
+  Action getAction(Game game, int level);
 }
 
 /// A skill that requires a target position to perform.
-abstract class TargetSkill extends CommandSkill {
+abstract class TargetSkill extends UsableSkill {
   /// The maximum range of the target from the hero.
   num getRange(Game game);
 
@@ -66,7 +68,7 @@ abstract class TargetSkill extends CommandSkill {
 }
 
 /// A skill that requires a direction to perform.
-abstract class DirectionSkill extends CommandSkill {
+abstract class DirectionSkill extends UsableSkill {
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].
   Action getDirectionAction(Game game, int level, Direction dir);

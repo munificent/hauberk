@@ -2,7 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 
-abstract class MasterySkill extends CommandSkill {
+abstract class MasterySkill extends UsableSkill {
   // TODO: Tune.
   int get maxLevel => 20;
 

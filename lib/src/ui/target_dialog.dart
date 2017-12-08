@@ -10,7 +10,7 @@ import 'input.dart';
 // TODO: Support targeting floor tiles and not just actors.
 
 /// Modal dialog for letting the user select a target to perform a
-/// [CommandSkill] on.
+/// [UsableSkill] on.
 class TargetDialog extends Screen<Input> {
   static const _numFrames = 5;
   static const _ticksPerFrame = 5;

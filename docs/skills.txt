@@ -92,11 +92,11 @@ Assassination - Reduce sound made when attacking, increased damage to sleeping m
     - Putrefy: when the targeted monster is slain, it will erupt into a ball of poisonous gas whose strength is based on the strength of the monster slain.
     - Transmutation: removes poisoned condition and cures health
   - Sorcery: Reduce mana required to cast sorcery spells
+    - Icicle: fire an icicle at a chosen target
     - Lightning Bolt: attack monster with lightning damage, arcs to adjacent
     - Fire Ball: create a fire ball at a chosen location
     - Storm: create a lightning storm which damages all nearby enemies
     - Gale: generate wind which damages and pushes back adjacent enemies
-    - Icicle: fire an icicle at a chosen target
   - Conjuring: Reduce mana required to cast conjuring spells
     - Flee: moves the player to a random nearby tile
     - Escape: like Flee but with a greater radius

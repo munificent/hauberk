@@ -1,7 +1,7 @@
 import '../engine.dart';
 import 'skill/archery.dart';
 import 'skill/axe.dart';
-import 'skill/school.dart';
+import 'skill/sorcery.dart';
 import 'skill/spear.dart';
 import 'skill/sword.dart';
 import 'skill/whip.dart';
@@ -25,6 +25,7 @@ class Skills {
     new WhipMastery(),
     sorcery,
     new Icicle(),
+    new Windstorm(),
   ];
 
   static final Map<String, Skill> _byName =

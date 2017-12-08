@@ -5,15 +5,17 @@ import '../engine.dart';
 import '../hues.dart';
 import 'input.dart';
 
+// TODO: Would be good to show skill description and stuff here too.
+
 class SelectSkillDialog extends Screen<Input> {
   final Game _game;
-  final List<CommandSkill> _skills = [];
+  final List<UsableSkill> _skills = [];
 
   bool get isTransparent => true;
 
   SelectSkillDialog(Game game) : _game = game {
     for (var skill in _game.hero.skills.all) {
-      if (skill is CommandSkill) _skills.add(skill);
+      if (skill is UsableSkill) _skills.add(skill);
     }
   }
 
