@@ -97,6 +97,7 @@ Assassination - Reduce sound made when attacking, increased damage to sleeping m
     - Fire Ball: create a fire ball at a chosen location
     - Storm: create a lightning storm which damages all nearby enemies
     - Gale: generate wind which damages and pushes back adjacent enemies
+    - Stalagmites: creates stone spikes that damage nearby enemies then persist
   - Conjuring: Reduce mana required to cast conjuring spells
     - Flee: moves the player to a random nearby tile
     - Escape: like Flee but with a greater radius

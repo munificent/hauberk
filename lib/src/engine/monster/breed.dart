@@ -7,7 +7,7 @@ import '../core/energy.dart';
 import '../core/game.dart';
 import '../core/log.dart';
 import '../core/option.dart';
-import '../core/stage.dart';
+import '../core/tile.dart';
 import '../hero/hero.dart';
 import '../items/item.dart';
 import 'monster.dart';

@@ -10,7 +10,7 @@ import '../core/element.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
 import '../core/log.dart';
-import '../core/stage.dart';
+import '../core/tile.dart';
 import '../hero/hero.dart';
 import 'breed.dart';
 import 'monster_states.dart';

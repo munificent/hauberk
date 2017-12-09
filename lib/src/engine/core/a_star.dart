@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'option.dart';
 import 'stage.dart';
+import 'tile.dart';
 
 class PathResult {
   /// The direction to move on the first step of the path.

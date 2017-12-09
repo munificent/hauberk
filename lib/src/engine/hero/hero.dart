@@ -10,6 +10,7 @@ import '../core/game.dart';
 import '../core/log.dart';
 import '../core/option.dart';
 import '../core/stage.dart';
+import '../core/tile.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
 import '../monster/monster.dart';
