@@ -135,7 +135,7 @@ abstract class Actor extends Thing {
 
   Action getAction() {
     final action = onGetAction();
-    if (action != null) action.bind(this, true);
+    if (action != null) action.bind(this);
     return action;
   }
 

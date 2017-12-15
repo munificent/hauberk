@@ -1,0 +1,23 @@
+A tile has a flame counter to indicate how much longer it will continue to burn.
+When zero, the tile is not on fire. If fire occurs on the tile (like a fire
+spell) then it may set that counter, based on:
+
+- If the tile is of a flammable type, like a bridge, then the type indicates
+  what to set the counter to, and what to change the type to as it burns. So a
+  bridge would set the flame counter and would turn into a water tile after.
+
+- If the tile contains a flammable item, the item is destroyed and the counter
+  is set.
+
+- Some spells or items may directly add to the tile's flame counter. They
+  effectively pour fuel onto the tile.
+
+In the latter two cases, the type of the tile may prohibit or reduce the amount
+the flame counter can be increased. For example, water tiles can't have flame
+on them.
+
+Each turn of the game loop, we iterate over each flaming tile and decrement its
+flame counter. If it reaches zero, the flame goes out. Otherwise, for each
+neighbor of the flaming tile, there is a random chance of fire spreading to
+that tile using the same above conditions. The random chance is based on the
+flame counter so that fires with a lot of fuel are also more likely to spread.

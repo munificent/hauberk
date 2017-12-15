@@ -14,7 +14,10 @@ Ideas for more things monsters can do to increase variety:
 - Teleport to
 + Teleport away
 - Teleport other to
+- Teleport to preferred distance
+- Teleport other monster
 - Beam
+- Beam that sweeps theta like a laser?
 - Teleport hero
 - Confuse
 - Drain experience
@@ -32,3 +35,4 @@ Ideas for more things monsters can do to increase variety:
 - Area attacks that spread using flow
 - Area attacks that spread as a collection of randomly moving particles
 - Be invisible
+- "Frog tongue" that reaches out and pulls hero closer

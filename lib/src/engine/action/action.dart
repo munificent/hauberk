@@ -23,12 +23,12 @@ abstract class Action {
   Hero get hero => _actor as Hero;
   bool get consumesEnergy => _consumesEnergy;
 
-  void bind(Actor actor, bool consumesEnergy) {
+  void bind(Actor actor, {bool consumesEnergy}) {
     assert(_actor == null);
 
     _actor = actor;
     _game = actor.game;
-    _consumesEnergy = consumesEnergy;
+    _consumesEnergy = consumesEnergy ?? true;
   }
 
   ActionResult perform(Queue<Action> actions, GameResult gameResult) {
@@ -43,7 +43,7 @@ abstract class Action {
 
   /// Enqueue a secondary action that is a consequence of this one.
   void addAction(Action action, [Actor actor]) {
-    action.bind(actor == null ? _actor : actor, false);
+    action.bind(actor ?? _actor, consumesEnergy: false);
     _actions.add(action);
   }
 
@@ -77,7 +77,7 @@ abstract class Action {
   }
 
   ActionResult alternate(Action action) {
-    action.bind(_actor, _consumesEnergy);
+    action.bind(_actor, consumesEnergy: _consumesEnergy);
     return new ActionResult.alternate(action);
   }
 
