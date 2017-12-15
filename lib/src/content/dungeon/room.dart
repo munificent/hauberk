@@ -226,7 +226,7 @@ class RoomBiome extends Biome {
         .where((roomJunction) =>
             roomJunction.direction == junction.direction.rotate180)
         .toList();
-    roomJunctions.shuffle();
+    rng.shuffle(roomJunctions);
 
     for (var roomJunction in roomJunctions) {
       // Calculate the room position by lining up the junctions.

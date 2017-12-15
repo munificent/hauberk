@@ -137,7 +137,7 @@ class Hit {
       // Shuffle them so the message shown isn't biased by their order (just
       // their relative amounts).
       var defenses = defender.defenses.toList();
-      defenses.shuffle();
+      rng.shuffle(defenses);
       for (var defense in defenses) {
         strike -= defense.amount;
         if (strike < 0) {

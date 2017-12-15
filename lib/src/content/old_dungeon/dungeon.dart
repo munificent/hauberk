@@ -285,7 +285,7 @@ class OldDungeon {
     var allowedBounds = bounds.inflate(-1);
 
     // Try each connector in random order.
-    _connectors.shuffle();
+    rng.shuffle(_connectors);
     for (var pos in _connectors) {
       if (!allowedBounds.contains(pos)) continue;
 

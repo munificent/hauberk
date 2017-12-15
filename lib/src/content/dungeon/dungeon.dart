@@ -313,7 +313,7 @@ class Dungeon {
     // evil wizards.
 
     // TODO: Doing this here is kind of hacky.
-    place.cells.shuffle();
+    rng.shuffle(place.cells);
 
     // Floor drops.
     // TODO: Tune this. Take number of cells into account.
