@@ -20,7 +20,7 @@ class RayAction extends Action {
   final _hitTiles = new Set<Vec>();
 
   /// The cone incrementally spreads outward. This is how far we currently are.
-  var _radius = 1;
+  var _radius = 1.0;
 
   // We "fill" the cone by tracing a number of rays, each of which can get
   // obstructed. This is the angle of each ray still being traced.
@@ -28,7 +28,7 @@ class RayAction extends Action {
 
   /// A 45° cone of [attack] centered on the line from [from] to [to].
   factory RayAction.cone(Vec from, Vec to, Hit hit) =>
-      new RayAction._(from, to, hit, 1 / 8);
+      new RayAction._(from, to, hit, 1.0 / 8.0);
 
   /// A complete ring of [attack] radiating outwards from [center].
   factory RayAction.ring(Vec center, Hit hit) =>
@@ -45,18 +45,26 @@ class RayAction extends Action {
     var circumference = math.PI * 2 * _hit.range;
     var numRays = (circumference * fraction).ceil();
 
-    // Figure out the center angle of the cone.
-    var offset = _to - _from;
-    // TODO: Make atan2 getter on Vec?
-    var centerTheta = 0.0;
-    if (_from != _to) {
-      centerTheta = math.atan2(offset.x, offset.y);
-    }
+    if (fraction < 1.0) {
+      // Figure out the center angle of the cone.
+      var offset = _to - _from;
+      // TODO: Make atan2 getter on Vec?
+      var centerTheta = 0.0;
+      if (_from != _to) {
+        centerTheta = math.atan2(offset.x, offset.y);
+      }
 
-    // Create the rays.
-    for (var i = 0; i < numRays; i++) {
-      var range = (i / (numRays - 1)) - 0.5;
-      _rays.add(centerTheta + range * (math.PI * 2 * fraction));
+      // Create the rays centered on the line from [_from] to [_to].
+      for (var i = 0; i < numRays; i++) {
+        var theta = (i / (numRays - 1)) - 0.5;
+        _rays.add(centerTheta + theta * (math.PI * 2.0 * fraction));
+      }
+    } else {
+      // Create the rays all the way around the circle.
+      var thetaStep = math.PI * 2.0 / numRays;
+      for (var i = 0; i < numRays; i++) {
+        _rays.add(i * thetaStep);
+      }
     }
   }
 
@@ -70,10 +78,9 @@ class RayAction extends Action {
       if (!game.stage[pos].isFlyable) return true;
 
       // Don't hit the same tile twice.
-      if (_hitTiles.contains(pos)) return false;
+      if (!_hitTiles.add(pos)) return false;
 
       addEvent(EventType.cone, element: _hit.element, pos: pos);
-      _hitTiles.add(pos);
 
       // See if there is an actor there.
       var target = game.stage.actorAt(pos);
@@ -89,7 +96,7 @@ class RayAction extends Action {
       return false;
     });
 
-    _radius++;
+    _radius += 1.0;
     if (_radius > _hit.range || _rays.isEmpty) return ActionResult.success;
 
     // Still going.
