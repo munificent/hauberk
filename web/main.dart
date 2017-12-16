@@ -1,4 +1,5 @@
 import 'dart:html' as html;
+import 'dart:js';
 
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
@@ -15,10 +16,17 @@ const height = 40;
 final terminals = [];
 UserInterface<Input> ui;
 
-addTerminal(String name, html.Element element,
-    RenderableTerminal terminalCallback(html.Element element)) {
+addTerminal(
+    String name, int charSize) {
+  var element = new html.CanvasElement();
+  element.onClick.listen((_) {
+    fullscreen(element);
+  });
+
   // Make the terminal.
-  var terminal = terminalCallback(element);
+  var terminal = new RetroTerminal(width, height, "font_$charSize.png",
+      canvas: element, charWidth: charSize, charHeight: charSize);
+
   terminals.add([name, element, terminal]);
 
   if (Debug.enabled) {
@@ -60,48 +68,12 @@ addTerminal(String name, html.Element element,
 main() {
   var content = createContent();
 
-  addTerminal(
-      'Courier',
-      new html.CanvasElement(),
-      (element) => new CanvasTerminal(
-          width,
-          height,
-          new Font('"Courier New"', size: 12, w: 8, h: 14, x: 1, y: 11),
-          element));
-
-  addTerminal(
-      'Menlo',
-      new html.CanvasElement(),
-      (element) => new CanvasTerminal(width, height,
-          new Font('Menlo', size: 12, w: 8, h: 13, x: 1, y: 11), element));
-
-  addTerminal('DOS', new html.CanvasElement(),
-      (element) => new RetroTerminal.dos(width, height, element));
-
-  addTerminal('DOS Short', new html.CanvasElement(),
-      (element) => new RetroTerminal.shortDos(width, height, element));
-
-  addTerminal(
-      'Hauberk',
-      new html.CanvasElement(),
-      (element) => new RetroTerminal(width, height, "font.png",
-          canvas: element, charWidth: 9, charHeight: 13));
-
-  addTerminal(
-      '8x8',
-      new html.CanvasElement(),
-      (element) => new RetroTerminal(width, height, "font_8.png",
-          canvas: element, charWidth: 8, charHeight: 8));
-
-  addTerminal(
-      '16x16',
-      new html.CanvasElement(),
-      (element) => new RetroTerminal(width, height, "font_16.png",
-          canvas: element, charWidth: 16, charHeight: 16));
+  addTerminal("Small", 8);
+  addTerminal("Large", 16);
 
   // Load the user's font preference, if any.
   var font = html.window.localStorage['font'];
-  var fontIndex = 4;
+  var fontIndex = 1;
   for (var i = 0; i < terminals.length; i++) {
     if (terminals[i][0] == font) {
       fontIndex = i;
@@ -199,6 +171,27 @@ main() {
 
   ui.handlingInput = true;
   ui.running = true;
+}
+
+/// See: https://stackoverflow.com/a/29715395/9457
+void fullscreen(html.Element element) {
+  var jsElement = new JsObject.fromBrowserObject(element);
+
+  if (jsElement.hasProperty("requestFullscreen")) {
+    jsElement.callMethod("requestFullscreen");
+  } else {
+    var methods = [
+      'mozRequestFullScreen',
+      'webkitRequestFullscreen',
+      'msRequestFullscreen'
+    ];
+    for (var method in methods) {
+      if (jsElement.hasProperty(method)) {
+        jsElement.callMethod(method);
+        return;
+      }
+    }
+  }
 }
 
 void debugHover(html.Element debugBox, Vec pixel, Vec pos) {
