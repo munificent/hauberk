@@ -50,8 +50,6 @@ Future generate() async {
   _game = new Game(content, save, depth);
   var stage = _game.stage;
 
-  //  terminal = new RetroTerminal(stage.width, stage.height, "font_16.png",
-//      canvas: canvas, charWidth: 16, charHeight: 16);
   terminal = new RetroTerminal(stage.width, stage.height, "font_8.png",
       canvas: canvas, charWidth: 8, charHeight: 8);
 
@@ -176,22 +174,23 @@ void render({bool showInfo = true}) {
   for (var y = 0; y < stage.height; y++) {
     for (var x = 0; x < stage.width; x++) {
       var glyph = stage.get(x, y).type.appearance[0] as Glyph;
-      terminal.drawGlyph(x, y, glyph);
 
       var pos = new Vec(x, y);
       var items = stage.itemsAt(pos);
       if (items.isNotEmpty) {
-        terminal.drawGlyph(x, y, items.first.appearance as Glyph);
+        glyph = items.first.appearance as Glyph;
       }
 
       var actor = stage.actorAt(pos);
       if (actor != null) {
         if (actor.appearance is String) {
-          terminal.drawChar(x, y, CharCode.at, ash);
+          glyph = new Glyph.fromCharCode(CharCode.at, ash);
         } else {
-          terminal.drawGlyph(x, y, actor.appearance as Glyph);
+          glyph = actor.appearance as Glyph;
         }
       }
+
+      terminal.drawGlyph(x, y, glyph);
     }
   }
 
