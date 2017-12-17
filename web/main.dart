@@ -16,10 +16,9 @@ const height = 40;
 final terminals = [];
 UserInterface<Input> ui;
 
-addTerminal(
-    String name, int charSize) {
+addTerminal(String name, int charSize) {
   var element = new html.CanvasElement();
-  element.onClick.listen((_) {
+  element.onDoubleClick.listen((_) {
     fullscreen(element);
   });
 

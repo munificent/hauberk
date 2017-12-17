@@ -138,6 +138,9 @@ class Hero extends Actor {
   // TODO: Equipment and items that let the hero swim, fly, etc.
   MotilitySet get motilities => MotilitySet.walkAndDoor;
 
+  // TODO: Calculate from wielded light source and other equipment.
+  int get emanationLevel => 4;
+
   Hero(Game game, Vec pos, HeroSave save)
       : inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),

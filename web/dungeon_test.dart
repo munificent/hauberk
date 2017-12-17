@@ -173,7 +173,7 @@ void render({bool showInfo = true}) {
 
   for (var y = 0; y < stage.height; y++) {
     for (var x = 0; x < stage.width; x++) {
-      var glyph = stage.get(x, y).type.appearance[0] as Glyph;
+      var glyph = stage.get(x, y).type.appearance as Glyph;
 
       var pos = new Vec(x, y);
       var items = stage.itemsAt(pos);

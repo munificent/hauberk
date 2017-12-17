@@ -140,7 +140,7 @@ SimResult simulate(HeroSave save) {
     while (true) {
       var action = new AttackAction(monster);
       action.bind(hero);
-      action.perform(actions, gameResult);
+      action.perform(actions, [], gameResult);
 
       if (monster.health.current <= 0) {
         wins++;
@@ -149,7 +149,7 @@ SimResult simulate(HeroSave save) {
 
       action = new AttackAction(hero);
       action.bind(monster);
-      action.perform(actions, gameResult);
+      action.perform(actions, [], gameResult);
 
       if (hero.health.current <= 0) break;
     }

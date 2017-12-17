@@ -43,12 +43,16 @@ class GameContent implements Content {
 
   HeroSave createHero(String name) {
     var hero = new HeroSave(name);
-    for (var itemType in [
-      Items.types.find("Mending Salve"),
-      Items.types.find("Scroll of Sidestepping")
-    ]) {
-      hero.inventory.tryAdd(new Item(itemType, 1));
-    }
+
+    var initialItems = {
+      "Mending Salve": 3,
+      "Scroll of Sidestepping": 2,
+      "Glowing Vial": 4
+    };
+
+    initialItems.forEach((type, amount) {
+      hero.inventory.tryAdd(new Item(Items.types.find(type), amount));
+    });
 
     return hero;
   }

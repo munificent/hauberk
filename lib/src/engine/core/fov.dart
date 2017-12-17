@@ -2,89 +2,58 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import 'game.dart';
 import 'stage.dart';
 
-/// Calculates the [Hero]'s field of view of the dungeon.
+/// Calculates the [Hero]'s field of view of the dungeon -- which tiles are
+/// occluded by other tiles and which are not.
 class Fov {
-  final Game _game;
+  static final _octantCoordinates = [
+    [const Vec(0, -1), const Vec(1, 0)],
+    [const Vec(1, 0), const Vec(0, -1)],
+    [const Vec(1, 0), const Vec(0, 1)],
+    [const Vec(0, 1), const Vec(1, 0)],
+    [const Vec(0, 1), const Vec(-1, 0)],
+    [const Vec(-1, 0), const Vec(0, 1)],
+    [const Vec(-1, 0), const Vec(0, -1)],
+    [const Vec(0, -1), const Vec(-1, 0)],
+  ];
+
+  final Stage _stage;
 
   List<_Shadow> _shadows;
 
-  Fov(this._game);
-
-  Stage get _stage => _game.stage;
+  Fov(this._stage);
 
   /// Updates the visible flags in [stage] given the [Hero]'s [pos].
   void refresh(Vec pos) {
-    if (_game.hero.blindness.isActive) {
+    if (_stage.game.hero.blindness.isActive) {
       _hideAll();
       return;
     }
 
-    var numExplored = 0;
-
     // Sweep through the octants.
     for (var octant = 0; octant < 8; octant++) {
-      numExplored += _refreshOctant(pos, octant);
+      _refreshOctant(pos, octant);
     }
 
     // The starting position is always visible.
-    if (_stage[pos].setVisible(true)) numExplored++;
-
-    _game.hero.explore(numExplored);
+    _stage[pos].isOccluded = false;
   }
 
   void _hideAll() {
     for (var pos in _stage.bounds) {
-      _stage[pos].setVisible(false);
+      _stage[pos].isOccluded = true;
     }
 
-    // Hero know where they are.
-    _stage[_game.hero.pos].setVisible(true);
+    // The hero knows where they are.
+    _stage[_stage.game.hero.pos].isOccluded = false;
   }
 
-  int _refreshOctant(Vec start, int octant) {
-    var numExplored = 0;
-    var rowInc;
-    var colInc;
-
+  void _refreshOctant(Vec start, int octant) {
     // Figure out which direction to increment based on the octant. Octant 0
     // starts at 12 - 2 o'clock, and octants proceed clockwise from there.
-    switch (octant) {
-      case 0:
-        rowInc = new Vec(0, -1);
-        colInc = new Vec(1, 0);
-        break;
-      case 1:
-        rowInc = new Vec(1, 0);
-        colInc = new Vec(0, -1);
-        break;
-      case 2:
-        rowInc = new Vec(1, 0);
-        colInc = new Vec(0, 1);
-        break;
-      case 3:
-        rowInc = new Vec(0, 1);
-        colInc = new Vec(1, 0);
-        break;
-      case 4:
-        rowInc = new Vec(0, 1);
-        colInc = new Vec(-1, 0);
-        break;
-      case 5:
-        rowInc = new Vec(-1, 0);
-        colInc = new Vec(0, 1);
-        break;
-      case 6:
-        rowInc = new Vec(-1, 0);
-        colInc = new Vec(0, -1);
-        break;
-      case 7:
-        rowInc = new Vec(0, -1);
-        colInc = new Vec(-1, 0);
-        break;
-    }
+    var rowInc = _octantCoordinates[octant][0];
+    var colInc = _octantCoordinates[octant][1];
 
     _shadows = <_Shadow>[];
 
@@ -102,37 +71,33 @@ class Fov {
       if (!bounds.contains(pos)) break;
 
       for (var col = 0; col <= row; col++) {
-        var blocksLight = false;
-        var visible = false;
+        var blocksView = false;
+        var isOccluded = true;
         var projection = null;
 
         // If we know the entire row is in shadow, we don't need to be more
         // specific.
         if (!fullShadow) {
-          blocksLight = !_stage[pos].isFlyable;
+          blocksView = _stage[pos].blocksView;
           projection = getProjection(col, row);
-          visible = !_isInShadow(projection);
+          isOccluded = _isInShadow(projection);
         }
 
-        // Set the visibility of this tile.
-        if (_stage[pos].setVisible(visible)) numExplored++;
+        _stage[pos].isOccluded = isOccluded;
 
         // Add any opaque tiles to the shadow map.
-        if (blocksLight) {
+        if (blocksView) {
           fullShadow = _addShadow(projection);
         }
 
         // Move to the next column.
         pos += colInc;
 
-        // If we've traversed out of bounds, bail on this row.
-        // note: this improves performance, but works on the assumption that
-        // the starting tile of the FOV is in bounds.
+        // If we've traversed out of bounds, bail on this row. This improves
+        // performance, but assumes the starting tile of the FOV is in bounds.
         if (!bounds.contains(pos)) break;
       }
     }
-
-    return numExplored;
   }
 
   /// Creates a [Shadow] that corresponds to the projected silhouette of the

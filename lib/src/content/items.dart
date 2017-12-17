@@ -222,6 +222,9 @@ void potions() {
   category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable")
     ..tag("magic/potion/bottled")
     ..toss(damage: 1, range: 8, breakage: 100);
+  item("Glowing Vial", 2, 1.0, gold)
+    ..ball(Elements.light, "light", "sears", 3, range: 6);
+
   item("Bottled Wind", 4, 0.5, cornflower)
     ..flow(Elements.air, "the wind", "blasts", 20, fly: true);
   item("Bottled Ice", 7, 0.5, cerulean)

@@ -70,6 +70,9 @@ class Monster extends Actor {
   /// accomplish the same thing.
   int get armor => 0;
 
+  // TODO: Allow breeds to affect this.
+  int get emanationLevel => 0;
+
   Monster(Game game, this.breed, int x, int y, int maxHealth, this.generation)
       : super(game, x, y, maxHealth) {
     Debug.addMonster(this);
@@ -104,7 +107,7 @@ class Monster extends Actor {
     // Walk to the target.
     for (final step in new Line(pos, target)) {
       if (step == target) return true;
-      if (!game.stage[step].isFlyable) return false;
+      if (game.stage[step].blocksView) return false;
     }
 
     throw 'unreachable';
@@ -119,7 +122,7 @@ class Monster extends Actor {
     for (final step in new Line(pos, target)) {
       if (step == target) return true;
       if (game.stage.actorAt(step) != null) return false;
-      if (!game.stage[step].isFlyable) return false;
+      if (game.stage[step].blocksView) return false;
     }
 
     throw 'unreachable';
@@ -291,7 +294,7 @@ class Monster extends Actor {
 
     // If the monster is (or was) visible, don't let the hero rest through it
     // moving.
-    if (game.stage[from].visible || game.stage[to].visible) {
+    if (game.stage[from].isVisible || game.stage[to].isVisible) {
       game.hero.disturb();
     }
   }

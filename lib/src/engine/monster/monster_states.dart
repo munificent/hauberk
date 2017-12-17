@@ -448,7 +448,7 @@ class AwakeState extends MonsterState {
   bool _hasLosFrom(Vec from) {
     for (var step in new Line(from, game.hero.pos)) {
       if (step == game.hero.pos) return true;
-      if (!game.stage[step].isFlyable) return false;
+      if (game.stage[step].blocksView) return false;
       var actor = game.stage.actorAt(step);
       if (actor != null && actor != this) return false;
     }
@@ -459,17 +459,18 @@ class AwakeState extends MonsterState {
 
 class AfraidState extends MonsterState {
   Action getAction() {
-    // If we're already in the darkness, rest.
-    if (!game.stage[pos].visible) return new RestAction();
+    // If we're already hidden, rest.
+    if (game.stage[pos].isOccluded) return new RestAction();
 
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
     var flow = new Flow(game.stage, pos, monster.motilities,
         maxDistance: breed.tracking);
-    var dir = flow.directionToNearestWhere((pos) => !game.stage[pos].visible);
+    // TODO: Should monsters prefer darkness too?
+    var dir = flow.directionToNearestWhere((pos) => game.stage[pos].isOccluded);
 
     if (dir != Direction.none) {
-      Debug.logMonster(monster, "Fleeing $dir to darkness");
+      Debug.logMonster(monster, "Fleeing $dir out of sight");
       return new WalkAction(_meander(dir));
     }
 

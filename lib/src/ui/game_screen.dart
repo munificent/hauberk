@@ -65,7 +65,9 @@ class GameScreen extends Screen<Input> {
     if (currentTargetActor != null) return currentTargetActor.pos;
 
     // Forget the floor if we can't see it.
-    if (_target != null && !game.stage[_target].visible) _target = null;
+    // TODO: Should use isVisible? Can you still target a reachable tile in the
+    // dark?
+    if (_target != null && !game.stage[_target].isOccluded) _target = null;
 
     return _target;
   }
@@ -239,8 +241,8 @@ class GameScreen extends Screen<Input> {
           ui.push(new DirectionDialog(this, game, _fireTowards));
         } else if (_lastSkill is ActionSkill) {
           var actionSkill = _lastSkill as ActionSkill;
-          game.hero.setNextAction(actionSkill.getAction(
-              game, game.hero.skills[actionSkill]));
+          game.hero.setNextAction(
+              actionSkill.getAction(game, game.hero.skills[actionSkill]));
         } else {
           game.log.error("No skill selected.");
           dirty();
@@ -323,7 +325,7 @@ class GameScreen extends Screen<Input> {
         }
 
         // If we hit a wall, target the floor tile before it.
-        if (!game.stage[step].isFlyable) {
+        if (game.stage[step].blocksView) {
           targetFloor(previous);
           break;
         }
@@ -384,8 +386,8 @@ class GameScreen extends Screen<Input> {
         ui.push(new DirectionDialog(this, game, selectDirection));
       } else if (result is ActionSkill) {
         _lastSkill = result;
-        game.hero.setNextAction(result.getAction(
-            game, game.hero.skills[result]));
+        game.hero
+            .setNextAction(result.getAction(game, game.hero.skills[result]));
       }
     }
   }
@@ -469,89 +471,117 @@ class GameScreen extends Screen<Input> {
         math.min(viewSize.y, game.stage.height));
   }
 
+  static const _dazzleColors = const [
+    steelGray,
+    slate,
+    gunsmoke,
+    ash,
+    sandal,
+    persimmon,
+    copper,
+    garnet,
+    buttermilk,
+    gold,
+    carrot,
+    mint,
+    mustard,
+    lima,
+    peaGreen,
+    sherwood,
+    salmon,
+    brickRed,
+    maroon,
+    lilac,
+    violet,
+    indigo,
+    turquoise,
+    cornflower,
+    cerulean,
+    ultramarine,
+  ];
+
   void _drawStage(
       Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
-
-    dazzleGlyph(Glyph glyph) {
-      if (!hero.dazzle.isActive) return glyph;
-
-      var chance = math.min(90, hero.dazzle.duration * 8);
-      if (rng.percent(chance)) return glyph;
-
-      const colors = const [
-        steelGray,
-        slate,
-        gunsmoke,
-        ash,
-        sandal,
-        persimmon,
-        copper,
-        garnet,
-        buttermilk,
-        gold,
-        carrot,
-        mint,
-        mustard,
-        lima,
-        peaGreen,
-        sherwood,
-        salmon,
-        brickRed,
-        maroon,
-        lilac,
-        violet,
-        indigo,
-        turquoise,
-        cornflower,
-        cerulean,
-        ultramarine,
-      ];
-
-      var char = rng.percent(chance) ? glyph.char : CharCode.asterisk;
-      return new Glyph.fromCharCode(char, rng.item(colors));
-    }
 
     // Draw the tiles and items.
     for (var pos in _cameraBounds) {
       var tile = game.stage[pos];
       if (tile.isExplored) {
+        var tileGlyph = tile.type.appearance as Glyph;
+        var char = tileGlyph.char;
+        var lightFore = tileGlyph.fore;
+        var lightBack = tileGlyph.back;
+
+        var darkFore = lightFore.blend(nearBlack, 0.8);
+        var darkBack = lightBack.blend(nearBlack, 0.8);
+
         var items = game.stage.itemsAt(pos);
-        var glyph;
-        if (items.isEmpty) {
-          glyph = tile.type.appearance[tile.visible ? 0 : 1];
-        } else {
-          // TODO: If there are multiple items on the same tile, render them
-          // differently?
-          glyph = dazzleGlyph(items.first.appearance);
+        if (items.isNotEmpty) {
+          var itemGlyph = items.first.appearance;
+          char = itemGlyph.char;
+          lightFore = itemGlyph.fore;
+          darkFore = itemGlyph.fore;
         }
 
-        if (tile.visible) glyph = dazzleGlyph(glyph);
+        if (tile.isVisible) {
+          var actor = game.stage.actorAt(pos);
+          if (actor != null) {
+            var actorGlyph = actor.appearance;
+            if (actorGlyph is Glyph) {
+              char = actorGlyph.char;
+              lightFore = actorGlyph.fore;
+              darkFore = actorGlyph.fore;
+            } else {
+              // Hero.
+              char = CharCode.at;
+              lightFore = heroColor;
+              darkFore = heroColor;
+            }
+
+            // If the actor is being targeted, invert its colors.
+            if (targetActor == actor) {
+              lightBack = lightFore;
+              darkBack = darkFore;
+              lightFore = midnight;
+              darkFore = midnight;
+            }
+
+            if (actor is Monster) visibleMonsters.add(actor);
+          }
+        }
+
+        if (hero.dazzle.isActive) {
+          var chance = math.min(90, hero.dazzle.duration * 8);
+          if (!rng.percent(chance)) {
+            char = rng.percent(chance) ? char : CharCode.asterisk;
+            lightFore = rng.item(_dazzleColors);
+            darkFore = lightFore;
+          }
+        }
+
+        Color fore;
+        Color back;
+        if (tile.isVisible) {
+          var light = tile.illumination / 256;
+          fore = darkFore.blend(lightFore, light);
+          back = darkBack.blend(lightBack, light);
+        } else {
+          fore = darkFore;
+          back = darkBack.blend(Color.black, 0.5);
+        }
+
+        // TODO: Warm additive glow for brightest tiles. Maybe treat glow as
+        // a separate layer. Certain tiles, independent of their actual
+        // illumination, also have a glow value. (So, for example, a lit room
+        // might be illuminated all over, but only glow at the torch sconces).
+        // Glow would have a few tiles of surrounding fade, like light. But it
+        // also bleeds over walls and is additively applied to the rendered
+        // color. Sort of a faux HDR.
+
+        var glyph = new Glyph.fromCharCode(char, fore, back);
         drawStageGlyph(terminal, pos.x, pos.y, glyph);
       }
-    }
-
-    // TODO: Merge this with tiles and items now that we organize actors by
-    // position as well?
-    // Draw the actors.
-    for (var actor in game.stage.actors) {
-      if (!game.stage[actor.pos].visible) continue;
-
-      var glyph = actor.appearance;
-      if (glyph is! Glyph) {
-        glyph = new Glyph.fromCharCode(CharCode.at, heroColor, midnight);
-      }
-
-      // If the actor is being targeted, invert its colors.
-      if (targetActor == actor) {
-        glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
-      }
-
-      if (actor is! Hero) glyph = dazzleGlyph(glyph);
-
-      drawStageGlyph(terminal, actor.x, actor.y, glyph);
-
-      if (actor is Monster) visibleMonsters.add(actor);
     }
 
     // Draw the effects.

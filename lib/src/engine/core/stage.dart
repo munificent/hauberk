@@ -6,8 +6,8 @@ import '../items/item.dart';
 import '../monster/monster.dart';
 import 'actor.dart';
 import 'flow.dart';
-import 'fov.dart';
 import 'game.dart';
+import 'lighting.dart';
 import 'tile.dart';
 
 /// The game's live play area.
@@ -15,7 +15,8 @@ class Stage {
   final Game game;
 
   final _actors = <Actor>[];
-  final Fov _fov;
+  Lighting _lighting;
+
   int _currentActorIndex = 0;
 
   /// The total number of tiles the [Hero] can explore in the stage.
@@ -23,7 +24,9 @@ class Stage {
   int _numExplorable;
 
   int get width => tiles.width;
+
   int get height => tiles.height;
+
   Rect get bounds => tiles.bounds;
 
   Iterable<Actor> get actors => _actors;
@@ -40,16 +43,15 @@ class Stage {
   /// doesn't step on other actors.
   final Array2D<Actor> _actorsByTile;
 
-  bool _visibilityDirty = true;
-
   /// Tracks global pathfinding distances to the hero, ignoring other actors.
   Flow _heroPaths;
 
   Stage(int width, int height, Game game)
       : game = game,
         tiles = new Array2D<Tile>.generated(width, height, () => new Tile()),
-        _actorsByTile = new Array2D<Actor>(width, height),
-        _fov = new Fov(game);
+        _actorsByTile = new Array2D<Actor>(width, height) {
+    _lighting = new Lighting(this);
+  }
 
   Tile operator [](Vec pos) => tiles[pos];
 
@@ -61,6 +63,7 @@ class Stage {
   }
 
   Tile get(int x, int y) => tiles.get(x, y);
+
   void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
 
   /// Called after the level generator has finished laying out the stage.
@@ -83,7 +86,7 @@ class Stage {
       }
     }
 
-    _fov.refresh(game.hero.pos);
+    refreshView();
   }
 
   void addActor(Actor actor) {
@@ -185,15 +188,34 @@ class Stage {
     });
   }
 
-  void dirtyVisibility() {
-    _visibilityDirty = true;
+  /// Marks the tile illumination as needing recalculation.
+  ///
+  /// This should be called whenever a tile's emanation or opacity (from its
+  /// type) changes.
+  void dirtyTileLight() {
+    _lighting.dirtyTileLight();
   }
 
-  void refreshVisibility(Hero hero) {
-    if (_visibilityDirty) {
-      _fov.refresh(hero.pos);
-      _visibilityDirty = false;
-    }
+  /// Marks the actor illumination as needed recalculation.
+  ///
+  /// This should be called whenever an actor that emanates light moves or
+  /// when its emanation changes (for example, the [Hero] equipping a light
+  /// source).
+  void dirtyActorLight() {
+    _lighting.dirtyActorLight();
+  }
+
+  /// Marks the visibility as needing recalculation.
+  ///
+  /// This should be called whenever the [Hero] moves or when the opacity of
+  /// a tile changes.
+  void dirtyVisibility() {
+    _lighting.dirtyVisibility();
+  }
+
+  /// Recalculates any lighting or visibility state that needs it.
+  void refreshView() {
+    _lighting.refresh();
   }
 
   // TODO: This is hackish and may fail to terminate.

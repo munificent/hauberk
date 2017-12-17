@@ -103,7 +103,8 @@ class SkillDialog extends Screen<Input> {
     if (skill is SpellSkill) {
       // TODO: Should show this for non-spell skills that also cost focus.
       terminal.writeAt(30, 10, "Focus:", UIHue.text);
-      terminal.writeAt(50, 10, skill.adjustedFocusCost(_hero).toString(), UIHue.primary);
+      terminal.writeAt(
+          50, 10, skill.adjustedFocusCost(_hero).toString(), UIHue.primary);
 
       terminal.writeAt(30, 11, "Complexity:", UIHue.text);
       terminal.writeAt(50, 11, skill.complexity.toString(), UIHue.primary);
@@ -114,10 +115,12 @@ class SkillDialog extends Screen<Input> {
 
         // TODO: Should only show the one of these that applies to the spell.
         terminal.writeAt(30, 12, "Effectiveness:", UIHue.text);
-        terminal.writeAt(50, 12, skill.effectiveness(_hero.game).toString(), UIHue.primary);
+        terminal.writeAt(
+            50, 12, skill.effectiveness(_hero.game).toString(), UIHue.primary);
 
         terminal.writeAt(30, 13, "Failure:", UIHue.text);
-        terminal.writeAt(50, 13, "${skill.failureChance(_hero.game)}%", UIHue.primary);
+        terminal.writeAt(
+            50, 13, "${skill.failureChance(_hero.game)}%", UIHue.primary);
       }
     }
 

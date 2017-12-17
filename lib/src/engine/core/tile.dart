@@ -1,3 +1,5 @@
+import 'lighting.dart';
+
 /// Enum-like class defining ways that monsters can move over tiles.
 ///
 /// Each [TileType] has a set of motilities that determine which kind of
@@ -73,32 +75,62 @@ class TileType {
 }
 
 class Tile {
+  /// The tile's basic type.
+  ///
+  /// If you change this during the game, make sure to call
+  /// [Stage.dirtyTileLight] and [Stage.dirtyVisibility] if the tile's opacity
+  /// changed.
   TileType type;
-  bool _visible = false;
 
-  Tile();
+  /// Whether some other opaque tile is blocking the hero's view of this tile.
+  ///
+  /// This gets updated by [Fov] as the hero moves around.
+  bool isOccluded = false;
 
-  bool get visible => _visible;
-  void set visible(bool value) {
-    if (value) isExplored = true;
-    _visible = value;
+  /// Whether the tile can be seen through or blocks the hero's view beyond it.
+  ///
+  /// We assume any tile that an actor can fly over is also "open" enough to
+  /// be seen through. We don't use [isWalkable] because things like water
+  /// cannot be walked over but can be seen through.
+  bool get blocksView => !isFlyable;
+
+  /// Whether the hero can currently see the tile.
+  ///
+  /// To be visible, a tile must not be occluded or in the dark.
+  bool get isVisible => illumination > 0 && !isOccluded;
+
+  /// The total amount of light being cast onto this tile from various sources.
+  ///
+  /// This is a combination of the tile's [emanation], the propagated emanation
+  /// from nearby tiles, light from actors, etc.
+  int illumination = 0;
+
+  /// The amount of light the tile itself produces.
+  ///
+  /// If you set this, make sure to call `Stage.dirtyTileVisibility()`.
+  // TODO: Should any of this come from the type?
+  int _emanation = 0;
+  int get emanation => _emanation;
+  set emanation(int value) {
+    _emanation = value.clamp(0, Lighting.max);
   }
 
-  /// Sets the visibility of this tile to [visible].
-  ///
-  /// Returns `true` if this is the first time the tile has been made visible.
-  bool setVisible(bool visible) {
-    _visible = visible;
+  bool _isExplored = false;
+  bool get isExplored => _isExplored;
 
-    if (visible && !isExplored) {
-      isExplored = true;
-      return true;
+  /// Marks this tile as explored if the hero can see it and hasn't previously
+  /// explored it.
+  ///
+  /// Returns 1 if this tile was explored just now or 0 otherwise.
+  int updateExplored() {
+    if (isVisible && !_isExplored) {
+      _isExplored = true;
+      return 1;
     }
 
-    return false;
+    return 0;
   }
 
-  bool isExplored = false;
   bool get isWalkable => type.isWalkable;
   bool get isTraversable => type.isTraversable;
   bool get isFlyable => canEnter(Motility.fly);

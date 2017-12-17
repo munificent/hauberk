@@ -39,6 +39,8 @@ class SpearAction extends MasteryAction {
   int _step = 0;
   final bool _isPolearm;
 
+  bool get isImmediate => false;
+
   SpearAction(this._dir, double damageScale, {bool isPolearm})
       : _isPolearm = isPolearm,
         super(damageScale);

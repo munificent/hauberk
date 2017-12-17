@@ -164,7 +164,7 @@ bool fight(HeroSave save, int monsterHealth) {
   while (true) {
     var action = new AttackAction(monster);
     action.bind(hero);
-    action.perform(actions, gameResult);
+    action.perform(actions, [], gameResult);
 
     if (monster.health.current <= 0) {
 //      print("versus $monsterHealth -> win");
@@ -173,7 +173,7 @@ bool fight(HeroSave save, int monsterHealth) {
 
     action = new AttackAction(hero);
     action.bind(monster);
-    action.perform(actions, gameResult);
+    action.perform(actions, [], gameResult);
 
     if (hero.health.current <= 0) {
 //      print("versus $monsterHealth -> lose");

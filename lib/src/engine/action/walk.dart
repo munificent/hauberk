@@ -88,6 +88,7 @@ class OpenDoorAction extends Action {
 
   ActionResult onPerform() {
     game.stage[doorPos].type = game.stage[doorPos].type.opensTo;
+    game.stage.dirtyTileLight();
     game.stage.dirtyVisibility();
 
     return succeed('{1} open[s] the door.', actor);
@@ -106,6 +107,7 @@ class CloseDoorAction extends Action {
     }
 
     game.stage[doorPos].type = game.stage[doorPos].type.closesTo;
+    game.stage.dirtyTileLight();
     game.stage.dirtyVisibility();
 
     return succeed('{1} close[s] the door.', actor);

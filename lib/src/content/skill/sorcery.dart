@@ -51,7 +51,8 @@ class Icicle extends TargetSkill with SpellSkill {
 }
 
 class Windstorm extends ActionSkill with SpellSkill {
-  String get description => "Summons a blast of air, spreading out from the sorceror.";
+  String get description =>
+      "Summons a blast of air, spreading out from the sorceror.";
 
   @override
   String levelDescription(int level) {

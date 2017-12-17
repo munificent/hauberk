@@ -66,7 +66,8 @@ class Game {
       while (_actions.isNotEmpty) {
         var action = _actions.first;
 
-        var result = action.perform(_actions, gameResult);
+        var reactions = <Action>[];
+        var result = action.perform(_actions, reactions, gameResult);
 
         // Cascade through the alternates until we hit bottom.
         while (result.alternative != null) {
@@ -74,11 +75,16 @@ class Game {
           action = result.alternative;
           _actions.addFirst(action);
 
-          result = action.perform(_actions, gameResult);
+          result = action.perform(_actions, reactions, gameResult);
         }
 
-        stage.refreshVisibility(hero);
+        while (reactions.isNotEmpty) {
+          var reaction = reactions.removeLast();
+          var result = reaction.perform(_actions, reactions, gameResult);
+          assert(result.succeeded, "Reactions should never fail.");
+        }
 
+        stage.refreshView();
         gameResult.madeProgress = true;
 
         if (result.done) {

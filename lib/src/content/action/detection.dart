@@ -16,6 +16,8 @@ class DetectAction extends Action {
   /// for easy removal of the nearest distance.
   List<List<Vec>> _tilesByDistance;
 
+  bool get isImmediate => false;
+
   DetectAction(Iterable<DetectType> types, [this._maxDistance])
       : _types = types.toSet();
 
@@ -28,14 +30,16 @@ class DetectAction extends Action {
     if (_tilesByDistance.isEmpty) return ActionResult.success;
 
     for (var pos in _tilesByDistance.removeLast()) {
-      game.stage[pos].isExplored = true;
+      game.hero.explore(game.stage[pos].updateExplored());
+
       addEvent(EventType.detect, pos: pos);
     }
 
     return ActionResult.notDone;
   }
 
-  /// Finds all the tiles that should be detected and organizes
+  /// Finds all the tiles that should be detected and organizes them from
+  /// farthest to nearest.
   void _findTiles() {
     var distanceMap = <int, List<Vec>>{};
 

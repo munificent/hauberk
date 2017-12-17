@@ -16,6 +16,8 @@ class FlowAction extends Action {
 
   final MotilitySet _motilities;
 
+  bool get isImmediate => false;
+
   FlowAction(this._from, this._hit, this._motilities);
 
   ActionResult onPerform() {

@@ -33,6 +33,8 @@ class SlashAction extends MasteryAction {
   final Direction _dir;
   int _step = 0;
 
+  bool get isImmediate => false;
+
   SlashAction(this._dir, double damageScale) : super(damageScale);
 
   ActionResult onPerform() {

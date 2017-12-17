@@ -1,6 +1,9 @@
 import 'package:malison/malison.dart';
 
 // Basic palette.
+// TODO: Better name.
+const nearBlack = const Color(0x07, 0x06, 0x12);
+// TODO: These names aren't great.
 const midnight = const Color(0x13, 0x11, 0x1c);
 const steelGray = const Color(0x26, 0x26, 0x38);
 const slate = const Color(0x3f, 0x40, 0x72);

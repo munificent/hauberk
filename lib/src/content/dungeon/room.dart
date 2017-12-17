@@ -82,6 +82,8 @@ class RoomBiome extends Biome {
   }
 
   Iterable<String> decorate(Dungeon dungeon) sync* {
+    // TODO: Decorate some rooms with light.
+
     for (var placed in _rooms) {
       if (rng.oneIn(3)) {
         // TODO: These are placed after the hero's location is chosen which

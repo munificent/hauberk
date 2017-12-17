@@ -26,6 +26,8 @@ class RayAction extends Action {
   // obstructed. This is the angle of each ray still being traced.
   final _rays = <double>[];
 
+  bool get isImmediate => false;
+
   /// A 45° cone of [attack] centered on the line from [from] to [to].
   factory RayAction.cone(Vec from, Vec to, Hit hit) =>
       new RayAction._(from, to, hit, 1.0 / 8.0);

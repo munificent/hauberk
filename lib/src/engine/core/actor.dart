@@ -88,7 +88,7 @@ abstract class Actor extends Thing {
   bool get isAlive => health.current > 0;
 
   /// Whether or not the actor can be seen by the [Hero].
-  bool get isVisible => game.stage[pos].visible;
+  bool get isVisible => game.stage[pos].isVisible;
 
   /// Whether the actor's vision is currently impaired.
   bool get isBlinded => blindness.isActive || dazzle.isActive;
@@ -121,8 +121,16 @@ abstract class Actor extends Thing {
   /// The amount of protection against damage the actor has.
   int get armor;
 
+  /// The amount of light emanating from this actor.
+  ///
+  /// This is not a raw emanation value, but a "level" to be passed to
+  /// [Lighting.emanationForLevel()].
+  int get emanationLevel;
+
   void changePosition(Vec from, Vec to) {
     game.stage.moveActor(from, to);
+
+    if (emanationLevel > 0) game.stage.dirtyActorLight();
   }
 
   int onGetSpeed();

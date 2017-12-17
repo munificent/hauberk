@@ -19,6 +19,10 @@ class BurnAction extends Action {
 }
 
 class WindAction extends Action {
+  /// Not immediate to ensure an actor doesn't get blown into the path of a
+  /// yet-to-be-processed tile.
+  bool get isImmediate => false;
+
   ActionResult onPerform() {
     // Move the actor to a random reachable tile.
     var distance = actor.motilities.contains(Motility.fly) ? 6 : 3;
@@ -34,6 +38,21 @@ class WindAction extends Action {
     log("{1} [are|is] thrown by the wind!", actor);
     addEvent(EventType.wind, actor: actor, pos: actor.pos);
     actor.pos = rng.item(positions);
+
+    return ActionResult.success;
+  }
+}
+
+/// Permanently illuminates the given tile.
+class LightFloorAction extends Action {
+  final Vec _pos;
+
+  LightFloorAction(this._pos);
+
+  ActionResult onPerform() {
+    // TODO: Should this always light to full brightness?
+    game.stage[_pos].emanation = 255;
+    game.stage.dirtyTileLight();
 
     return ActionResult.success;
   }

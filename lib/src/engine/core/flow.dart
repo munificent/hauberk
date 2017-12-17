@@ -220,6 +220,11 @@ class Flow {
     return directions.toList();
   }
 
+  // TODO: Consider something similar to the half-Dijkstra's algorithm that we
+  // use for lighting with longer distance (sqrt(2)) for diagonal steps. That
+  // should help things like flow-based area effect spells look more circular
+  // and natural.
+
   /// Runs one iteration of the search.
   void _processNext() {
     // Should only call this while there's still work to do.

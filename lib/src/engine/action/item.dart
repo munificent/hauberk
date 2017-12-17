@@ -255,6 +255,8 @@ class DestroyOnFloorAction extends DestroyAction {
       game.stage.removeItem(item, _pos);
     }
 
+    // TODO: If the item takes effect when destroyed, do that here.
+
     return ActionResult.success;
   }
 }
@@ -272,6 +274,8 @@ class DestroyInInventoryAction extends DestroyAction {
     for (var item in _destroyItems(hero.inventory)) {
       hero.inventory.remove(item);
     }
+
+    // TODO: If the item takes effect when destroyed, do that here.
 
     return ActionResult.success;
   }

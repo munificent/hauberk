@@ -14,6 +14,7 @@ abstract class Action {
   Actor _actor;
   Game _game;
   Queue<Action> _actions;
+  List<Action> _reactions;
   GameResult _gameResult;
   bool _consumesEnergy;
 
@@ -23,6 +24,10 @@ abstract class Action {
   Hero get hero => _actor as Hero;
   bool get consumesEnergy => _consumesEnergy;
 
+  /// Whether this action can be immediately performed in the middle of an
+  /// ongoing action or should wait until the current action is finished.
+  bool get isImmediate => true;
+
   void bind(Actor actor, {bool consumesEnergy}) {
     assert(_actor == null);
 
@@ -31,10 +36,12 @@ abstract class Action {
     _consumesEnergy = consumesEnergy ?? true;
   }
 
-  ActionResult perform(Queue<Action> actions, GameResult gameResult) {
+  ActionResult perform(
+      Queue<Action> actions, List<Action> reactions, GameResult gameResult) {
     assert(_actor != null); // Action should be bound already.
 
     _actions = actions;
+    _reactions = reactions;
     _gameResult = gameResult;
     return onPerform();
   }
@@ -42,9 +49,19 @@ abstract class Action {
   ActionResult onPerform();
 
   /// Enqueue a secondary action that is a consequence of this one.
+  ///
+  /// If [action] is immediate (`isImmediate` returns true), then the action
+  /// will be performed in the current tick before the current action continues
+  /// to process. Otherwise, it will be enqueued and run once the current action
+  /// and any other enqueued actions are done.
   void addAction(Action action, [Actor actor]) {
     action.bind(actor ?? _actor, consumesEnergy: false);
-    _actions.add(action);
+
+    if (action.isImmediate) {
+      _reactions.add(action);
+    } else {
+      _actions.add(action);
+    }
   }
 
   void addEvent(EventType type,

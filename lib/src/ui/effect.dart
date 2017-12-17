@@ -219,7 +219,7 @@ class FrameEffect implements Effect {
   FrameEffect(this.pos, this.char, this.color, {this.life: 4});
 
   bool update(Game game) {
-    if (!game.stage[pos].visible) return false;
+    if (!game.stage[pos].isVisible) return false;
 
     return --life >= 0;
   }
@@ -238,7 +238,7 @@ class ItemEffect implements Effect {
   ItemEffect(this.pos, this.item);
 
   bool update(Game game) {
-    if (!game.stage[pos].visible) return false;
+    if (!game.stage[pos].isVisible) return false;
 
     return --_life >= 0;
   }
@@ -399,7 +399,7 @@ class HealEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    if (!game.stage.get(x, y).visible) return;
+    if (game.stage.get(x, y).isOccluded) return;
 
     var back;
     switch ((frame ~/ 4) % 4) {

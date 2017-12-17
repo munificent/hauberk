@@ -3,10 +3,6 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 
-// TODO: Move to hues.dart?
-const _unlitBlend = const Color(0x02, 0x03, 0x25);
-const _defaultBackUnlit = const Color(0x07, 0x06, 0x12);
-
 /// Static class containing all of the [TileType]s.
 class Tiles {
   static TileType floor = _open("floor", CharCode.middleDot, slate);
@@ -82,56 +78,48 @@ class Tiles {
   }
 }
 
-List<Glyph> _makeGlyphs(Object char, Color fore, [Color back]) {
+Glyph _makeGlyph(Object char, Color fore, [Color back]) {
   var charCode = char is int ? char : (char as String).codeUnitAt(0);
-  Color unlitBack;
   if (back == null) {
     back = midnight;
-    unlitBack = _defaultBackUnlit;
-  } else {
-    unlitBack = back.blend(_unlitBlend, 70);
-  }
+  } else {}
 
-  var lit = new Glyph.fromCharCode(charCode, fore, back);
-  var unlit =
-      new Glyph.fromCharCode(charCode, fore.blend(_unlitBlend, 70), unlitBack);
-
-  return [lit, unlit];
+  return new Glyph.fromCharCode(charCode, fore, back);
 }
 
 /// Creates an impassable, opaque tile.
 TileType _door(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back), [Motility.door],
+  return new TileType(name, _makeGlyph(char, fore, back), [Motility.door],
       isExit: false);
 }
 
 /// Creates a passable, transparent exit tile.
 TileType _exit(String name, Object char, Color fore, [Color back]) {
   return new TileType(
-      name, _makeGlyphs(char, fore, back), [Motility.walk, Motility.fly],
+      name, _makeGlyph(char, fore, back), [Motility.walk, Motility.fly],
       isExit: true);
 }
 
 /// Creates an impassable, transparent tile.
 TileType _obstacle(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back), [Motility.fly],
+  return new TileType(name, _makeGlyph(char, fore, back), [Motility.fly],
       isExit: false);
 }
 
 /// Creates a passable, transparent tile.
 TileType _open(String name, Object char, Color fore, [Color back]) {
   return new TileType(
-      name, _makeGlyphs(char, fore, back), [Motility.walk, Motility.fly],
+      name, _makeGlyph(char, fore, back), [Motility.walk, Motility.fly],
       isExit: false);
 }
 
 /// Creates an impassable, opaque tile.
 TileType _solid(String name, Object char, Color fore, [Color back]) {
-  return new TileType(name, _makeGlyphs(char, fore, back), [], isExit: false);
+  return new TileType(name, _makeGlyph(char, fore, back), [], isExit: false);
 }
 
 TileType _water(String name, Object char, Color fore, [Color back]) {
   return new TileType(
-      name, _makeGlyphs(char, fore, back), [Motility.fly, Motility.swim],
+      name, _makeGlyph(char, fore, back), [Motility.fly, Motility.swim],
       isExit: false);
 }

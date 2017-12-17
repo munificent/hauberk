@@ -31,10 +31,14 @@ class Elements {
 
   static final poison = new Element("poison", "Po", 2.0,
       attack: (damage) => new PoisonAction(damage));
+
+  // TODO: Remove tile emanation.
   static final dark = new Element("dark", "Dk", 1.5,
       attack: (damage) => new BlindAction(damage));
+
   static final light = new Element("light", "Li", 1.5,
-      attack: (damage) => new DazzleAction(damage));
+      attack: (damage) => new DazzleAction(damage),
+      floor: (pos) => new LightFloorAction(pos));
 
   // TODO: Drain experience.
   static final spirit = new Element("spirit", "Sp", 3.0);

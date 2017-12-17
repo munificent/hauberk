@@ -133,12 +133,12 @@ class TargetDialog extends Screen<Input> {
     var black = new Glyph(" ");
     for (var pos in _gameScreen.cameraBounds) {
       var tile = stage[pos];
-      if (!tile.visible) {
+      if (tile.isOccluded) {
         _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
         continue;
       }
 
-      if (!tile.isWalkable && !tile.isFlyable) continue;
+      if (!tile.isWalkable && tile.blocksView) continue;
       if (stage.actorAt(pos) != null) continue;
       if (stage.isItemAt(pos)) continue;
 
@@ -228,8 +228,8 @@ class TargetDialog extends Screen<Input> {
       var pos = _gameScreen.currentTarget + dir;
       var tile = _gameScreen.game.stage[pos];
       if ((_gameScreen.game.hero.pos - pos) <= _range &&
-          tile.isFlyable &&
-          tile.visible) {
+          !tile.blocksView &&
+          !tile.isOccluded) {
         _gameScreen.targetFloor(pos);
       }
     } else {

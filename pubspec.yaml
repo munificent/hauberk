@@ -3,7 +3,7 @@ dependencies:
   browser: any
   barback: any
   markdown: any
-  malison: '^0.7.0'
-  piecemeal: '^0.3.4'
+  malison: '^0.8.0'
+  piecemeal: '^0.3.6'
 transformers:
 - hauberk/src/markdown_to_html
