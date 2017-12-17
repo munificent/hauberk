@@ -108,7 +108,7 @@ abstract class Actor extends Thing {
 
   /// Additional ways the actor can avoid a hit beyond dodging it.
   Iterable<Defense> get defenses sync* {
-    var dodge = 20 + onGetDodge();
+    var dodge = baseDodge;
 
     // Hard to dodge an attack you can't see coming.
     if (isBlinded) dodge ~/= 2;
@@ -137,7 +137,7 @@ abstract class Actor extends Thing {
 
   /// The actor's base dodge ability. This is the percentage chance of a melee
   /// attack missing the actor.
-  int onGetDodge();
+  int get baseDodge;
 
   Iterable<Defense> onGetDefenses();
 

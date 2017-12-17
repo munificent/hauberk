@@ -130,7 +130,7 @@ class Monster extends Actor {
 
   int onGetSpeed() => Energy.normalSpeed + breed.speed;
 
-  int onGetDodge() => breed.dodge;
+  int get baseDodge => breed.dodge;
 
   Iterable<Defense> onGetDefenses() => breed.defenses;
 

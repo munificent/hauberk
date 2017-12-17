@@ -252,7 +252,7 @@ class Hero extends Actor {
 
   int onGetSpeed() => Energy.normalSpeed;
 
-  int onGetDodge() => 20 + agility.dodgeBonus;
+  int get baseDodge => 20 + agility.dodgeBonus;
 
   // TODO: Shields, temporary bonuses, etc.
   Iterable<Defense> onGetDefenses() sync* {
