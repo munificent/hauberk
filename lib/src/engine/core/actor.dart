@@ -100,7 +100,7 @@ abstract class Actor extends Thing {
   /// Gets the actor's current speed, taking into any account any active
   /// [Condition]s.
   int get speed {
-    var speed = onGetSpeed();
+    var speed = baseSpeed;
     speed += haste.intensity;
     speed -= cold.intensity;
     return speed;
@@ -133,7 +133,7 @@ abstract class Actor extends Thing {
     if (emanationLevel > 0) game.stage.actorEmanationChanged();
   }
 
-  int onGetSpeed();
+  int get baseSpeed;
 
   /// The actor's base dodge ability. This is the percentage chance of a melee
   /// attack missing the actor.

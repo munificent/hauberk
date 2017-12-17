@@ -128,7 +128,7 @@ class Monster extends Actor {
     throw 'unreachable';
   }
 
-  int onGetSpeed() => Energy.normalSpeed + breed.speed;
+  int get baseSpeed => Energy.normalSpeed + breed.speed;
 
   int get baseDodge => breed.dodge;
 

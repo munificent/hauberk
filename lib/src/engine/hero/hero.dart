@@ -250,7 +250,7 @@ class Hero extends Actor {
     }
   }
 
-  int onGetSpeed() => Energy.normalSpeed;
+  int get baseSpeed => Energy.normalSpeed;
 
   int get baseDodge => 20 + agility.dodgeBonus;
 
