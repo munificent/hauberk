@@ -11,6 +11,7 @@ class LoadingDialog extends Screen<Input> {
   final HeroSave _save;
   final Game _game;
   Iterator<String> _steps;
+  int _frame = 0;
 
   LoadingDialog(this._save, Content content, int depth)
       : _game = new Game(content, _save, depth);
@@ -55,14 +56,15 @@ class LoadingDialog extends Screen<Input> {
         return;
       }
     }
+
+    _frame = (_frame + 1) % 10;
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(20, 18, 'Generating level...', UIHue.text);
+    terminal.writeAt(30, 18, "Entering dungeon...", UIHue.text);
 
-    if (_steps != null) {
-      terminal.fill(20, 20, 30, 1);
-      terminal.writeAt(20, 20, _steps.current, UIHue.primary);
-    }
+    var offset = _frame ~/ 2;
+    var bar = ("/    " * 5).substring(offset, offset + 20);
+    terminal.writeAt(30, 20, bar, UIHue.primary);
   }
 }
