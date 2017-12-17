@@ -52,7 +52,7 @@ class LightFloorAction extends Action {
   ActionResult onPerform() {
     // TODO: Should this always light to full brightness?
     game.stage[_pos].emanation = 255;
-    game.stage.dirtyTileLight();
+    game.stage.tileEmanationChanged();
 
     return ActionResult.success;
   }

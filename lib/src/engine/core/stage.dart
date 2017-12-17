@@ -188,11 +188,15 @@ class Stage {
     });
   }
 
+  /// Marks the illumination and field-of-view as needing recalculation.
+  void tileOpacityChanged() {
+    _lighting.dirtyTileLight();
+    _lighting.dirtyActorLight();
+    _lighting.dirtyVisibility();
+  }
+
   /// Marks the tile illumination as needing recalculation.
-  ///
-  /// This should be called whenever a tile's emanation or opacity (from its
-  /// type) changes.
-  void dirtyTileLight() {
+  void tileEmanationChanged() {
     _lighting.dirtyTileLight();
   }
 
@@ -201,15 +205,14 @@ class Stage {
   /// This should be called whenever an actor that emanates light moves or
   /// when its emanation changes (for example, the [Hero] equipping a light
   /// source).
-  void dirtyActorLight() {
+  void actorEmanationChanged() {
     _lighting.dirtyActorLight();
   }
 
   /// Marks the visibility as needing recalculation.
   ///
-  /// This should be called whenever the [Hero] moves or when the opacity of
-  /// a tile changes.
-  void dirtyVisibility() {
+  /// This should be called whenever the [Hero] moves or their sight changes.
+  void heroVisibilityChanged() {
     _lighting.dirtyVisibility();
   }
 

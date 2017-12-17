@@ -130,7 +130,7 @@ abstract class Actor extends Thing {
   void changePosition(Vec from, Vec to) {
     game.stage.moveActor(from, to);
 
-    if (emanationLevel > 0) game.stage.dirtyActorLight();
+    if (emanationLevel > 0) game.stage.actorEmanationChanged();
   }
 
   int onGetSpeed();

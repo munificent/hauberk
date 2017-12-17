@@ -61,7 +61,7 @@ class BlindAction extends ConditionAction {
 
   void onActivate() {
     log("{1 his} vision dims!", actor);
-    game.stage.dirtyVisibility();
+    game.stage.heroVisibilityChanged();
   }
 
   void onExtend() => log("{1 his} vision dims!", actor);

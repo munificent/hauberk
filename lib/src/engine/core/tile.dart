@@ -78,8 +78,7 @@ class Tile {
   /// The tile's basic type.
   ///
   /// If you change this during the game, make sure to call
-  /// [Stage.dirtyTileLight] and [Stage.dirtyVisibility] if the tile's opacity
-  /// changed.
+  /// [Stage.tileOpacityChanged] if the tile's opacity changed.
   TileType type;
 
   /// Whether some other opaque tile is blocking the hero's view of this tile.
@@ -107,7 +106,7 @@ class Tile {
 
   /// The amount of light the tile itself produces.
   ///
-  /// If you set this, make sure to call `Stage.dirtyTileVisibility()`.
+  /// If you set this, make sure to call `Stage.tileEmanationChanged()`.
   // TODO: Should any of this come from the type?
   int _emanation = 0;
   int get emanation => _emanation;

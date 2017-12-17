@@ -106,7 +106,7 @@ class PoisonCondition extends Condition {
 class BlindnessCondition extends Condition {
   void onDeactivate() {
     actor.log("{1} can see clearly again.", actor);
-    if (actor == actor.game.hero) actor.game.stage.dirtyVisibility();
+    if (actor == actor.game.hero) actor.game.stage.heroVisibilityChanged();
   }
 }
 

@@ -88,8 +88,7 @@ class OpenDoorAction extends Action {
 
   ActionResult onPerform() {
     game.stage[doorPos].type = game.stage[doorPos].type.opensTo;
-    game.stage.dirtyTileLight();
-    game.stage.dirtyVisibility();
+    game.stage.tileOpacityChanged();
 
     return succeed('{1} open[s] the door.', actor);
   }
@@ -106,9 +105,9 @@ class CloseDoorAction extends Action {
       return fail("{1} [are|is] in the way!", blockingActor);
     }
 
+    // TODO: What should happen if items are on the tile?
     game.stage[doorPos].type = game.stage[doorPos].type.closesTo;
-    game.stage.dirtyTileLight();
-    game.stage.dirtyVisibility();
+    game.stage.tileOpacityChanged();
 
     return succeed('{1} close[s] the door.', actor);
   }
