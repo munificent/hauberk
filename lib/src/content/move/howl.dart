@@ -1,5 +1,3 @@
-import 'package:piecemeal/piecemeal.dart';
-
 import '../../engine.dart';
 import '../action/howl.dart';
 
@@ -11,19 +9,14 @@ class HowlMove extends Move {
   HowlMove(num rate, this._range) : super(rate);
 
   bool shouldUse(Monster monster) {
-    // TODO: Is using flow here too slow?
-    var flow = new Flow(monster.game.stage, monster.pos, MotilitySet.walkAndFly,
-        maxDistance: _range, ignoreActors: true);
-
     // See if there are any sleeping monsters nearby.
-    for (var pos in new Circle(monster.pos, _range)) {
-      if (!monster.game.stage.bounds.contains(pos)) continue;
-      if (flow.getDistance(pos) == null) continue;
-
-      var actor = monster.game.stage.actorAt(pos);
+    for (var actor in monster.game.stage.actors) {
+      if (actor == monster) continue;
 
       // If we found someone asleep randomly consider howling.
-      if (actor is Monster && actor.isAsleep) return rng.oneIn(2);
+      if (actor is Monster && (actor.pos - monster.pos) <= _range) {
+        return true;
+      }
     }
 
     return false;

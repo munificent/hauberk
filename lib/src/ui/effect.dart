@@ -74,12 +74,6 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(new FrameEffect(event.actor.pos, '*', ash));
       break;
 
-    case EventType.howl:
-      var colors = [ash, gunsmoke, steelGray, steelGray];
-      var color = colors[(event.other * 3).toInt()];
-      effects.add(new FrameEffect(event.pos, '.', color));
-      break;
-
     case EventType.wind:
       // TODO: Do something.
       break;

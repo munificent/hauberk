@@ -200,6 +200,7 @@ class Event {
   Event(this.type, this.actor, this.element, this.pos, this.dir, this.other);
 }
 
+// TODO: Move to content.
 /// A kind of [Event] that has occurred.
 class EventType {
   /// One step of a bolt.
@@ -234,9 +235,6 @@ class EventType {
 
   /// A new [Actor] was spawned by another.
   static const spawn = const EventType("spawn");
-
-  /// A tile has been hit by sound.
-  static const howl = const EventType("howl");
 
   /// An [Actor] was blown by wind.
   static const wind = const EventType("wind");
