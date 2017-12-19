@@ -27,10 +27,18 @@ abstract class ItemAction extends Action {
 
       case ItemLocation.inventory:
         hero.inventory.remove(item);
+
+        if (item.emanationLevel > 0) {
+          game.stage.actorEmanationChanged();
+        }
         break;
 
       case ItemLocation.equipment:
         hero.equipment.remove(item);
+
+        if (item.emanationLevel > 0) {
+          game.stage.actorEmanationChanged();
+        }
         break;
     }
   }
@@ -67,6 +75,11 @@ class PickUpAction extends Action {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
     } else if (result.remaining == 0) {
       game.stage.removeItem(item, actor.pos);
+
+      if (item.emanationLevel > 0) {
+        game.stage.actorEmanationChanged();
+      }
+
       return succeed('{1} pick[s] up {2}.', actor, item.clone(result.added));
     } else {
       log('{1} pick[s] up {2}.', actor, item.clone(result.added));

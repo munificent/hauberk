@@ -563,7 +563,11 @@ class GameScreen extends Screen<Input> {
         Color fore;
         Color back;
         if (tile.isVisible) {
-          var light = tile.illumination / 256;
+          // The light values actually range up to [Lighting.max], but we scale
+          // to a shorter range to make even partially illuminated tiles bright.
+          // Otherwise, the game is too gloomy looking.
+          var light = (tile.illumination / 128).clamp(0, 1);
+
           fore = darkFore.blend(lightFore, light);
           back = darkBack.blend(lightBack, light);
         } else {

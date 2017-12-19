@@ -34,23 +34,35 @@ class Lighting {
   static int emanationForLevel(int level) {
     switch (level) {
       case 1:
-        // A 3x3 "plus" shape.
-        return 96;
+        // Only the tile itself.
+        return 40;
 
       case 2:
-        // A 3x3 square.
-        return 128;
+        // A 3x3 "plus" shape.
+        return 56;
 
       case 3:
-        // A 5x5 diamond.
-        return 144;
+        // A 3x3 square.
+        return 72;
 
       case 4:
-        // A 5x5 circle.
-        return 192;
+        // A 5x5 diamond.
+        return 96;
 
       case 5:
+        // A 5x5 circle.
+        return 120;
+
+      case 6:
         // A 7x7 circle.
+        return 160;
+
+      case 7:
+        // A 9x9 circle.
+        return 200;
+
+      case 8:
+        // A 11x11 circle.
         return 240;
 
       default:
@@ -61,7 +73,7 @@ class Lighting {
   }
 
   /// How much brightness decreases each step in a cardinal direction.
-  static final _tileAttenuate = 256 ~/ 6;
+  static final _attenuate = 256 ~/ 6;
 
   /// How much brightness decreases each diagonal step.
   ///
@@ -73,19 +85,16 @@ class Lighting {
   ///
   /// Using 1.5 instead of a closer approximation to `sqrt(2)` because it makes
   /// fall-off look a little less squarish.
-  static final _tileDiagonalAttenuate = (_tileAttenuate * 1.5).ceil();
-
-  static final _actorAttenuate = 256 ~/ 4;
-  static final _actorDiagonalAttenuate = (_actorAttenuate * 1.5).ceil();
+  static final _diagonalAttenuate = (_attenuate * 1.5).ceil();
 
   final Stage _stage;
 
   /// The cached illumination on each tile from tile emanation values.
-  final Array2D<int> _tileLight;
+  final Array2D<int> _floorLight;
 
   /// The cached illumination on each tile from actor emanation.
   ///
-  /// We store this separately from [_tileLight] because there are many more
+  /// We store this separately from [_floorLight] because there are many more
   /// emanating tiles than actors but actors change (move) more frequently.
   /// Splitting these into two layers lets us recalculate one without
   /// invalidating the other.
@@ -94,18 +103,18 @@ class Lighting {
   final Fov _fov;
   final _LightQueue _queue = new _LightQueue();
 
-  bool _tileLightDirty = true;
+  bool _floorLightDirty = true;
   bool _actorLightDirty = true;
   bool _visibilityDirty = true;
 
   Lighting(Stage stage)
       : _stage = stage,
-        _tileLight = new Array2D(stage.width, stage.height, 0),
+        _floorLight = new Array2D(stage.width, stage.height, 0),
         _actorLight = new Array2D(stage.width, stage.height, 0),
         _fov = new Fov(stage);
 
-  void dirtyTileLight() {
-    _tileLightDirty = true;
+  void dirtyFloorLight() {
+    _floorLightDirty = true;
   }
 
   void dirtyActorLight() {
@@ -117,39 +126,51 @@ class Lighting {
   }
 
   void refresh() {
-    if (_tileLightDirty) _lightTiles();
+    if (_floorLightDirty) _lightFloor();
     if (_actorLightDirty) _lightActors();
     if (_visibilityDirty) _fov.refresh(_stage.game.hero.pos);
 
-    if (_tileLightDirty || _actorLightDirty || _visibilityDirty) {
+    if (_floorLightDirty || _actorLightDirty || _visibilityDirty) {
       _mergeLayers();
       _lightWalls();
       _updateExplored();
     }
 
-    _tileLightDirty = false;
+    _floorLightDirty = false;
     _actorLightDirty = false;
     _visibilityDirty = false;
   }
 
-  /// Recalculates [_tileLight] by propagating light from the emanating tiles.
-  void _lightTiles() {
+  /// Recalculates [_floorLight] by propagating light from the emanating tiles
+  /// and items on the ground.
+  void _lightFloor() {
     _queue.reset();
 
     for (var y = 0; y < _stage.height; y++) {
       for (var x = 0; x < _stage.width; x++) {
-        var tile = _stage.get(x, y);
+        var pos = new Vec(x, y);
+        var tile = _stage[pos];
 
-        if (tile.emanation > 0) {
-          _tileLight.set(x, y, tile.emanation);
-          _queue.add(new Vec(x, y), tile.emanation);
+        // Take the tile's light.
+        var emanation = tile.emanation;
+
+        // Add any light from items laying on the tile.
+        for (var item in _stage.itemsAt(pos)) {
+          if (item.emanationLevel == 0) continue;
+          emanation += emanationForLevel(item.emanationLevel);
+        }
+
+        if (emanation > 0) {
+          emanation = math.min(emanation, max);
+          _floorLight.set(x, y, emanation);
+          _queue.add(pos, emanation);
         } else {
-          _tileLight.set(x, y, 0);
+          _floorLight[pos] = 0;
         }
       }
     }
 
-    _process(_tileLight, _tileAttenuate, _tileDiagonalAttenuate);
+    _process(_floorLight);
   }
 
   /// Recalculates [_actorLight] by propagating light from the emanating actors.
@@ -159,13 +180,14 @@ class Lighting {
 
     for (var actor in _stage.actors) {
       var emanation = emanationForLevel(actor.emanationLevel);
+
       if (emanation > 0) {
         _actorLight[actor.pos] = emanation;
         _queue.add(actor.pos, emanation);
       }
     }
 
-    _process(_actorLight, _actorAttenuate, _actorDiagonalAttenuate);
+    _process(_actorLight);
   }
 
   /// Combines the light layers of opaque tiles into a single summed
@@ -179,7 +201,7 @@ class Lighting {
         if (tile.blocksView) continue;
 
         tile.illumination =
-            (_tileLight.get(x, y) + _actorLight.get(x, y)).clamp(0, max);
+            (_floorLight.get(x, y) + _actorLight.get(x, y)).clamp(0, max);
       }
     }
   }
@@ -249,10 +271,7 @@ class Lighting {
     _stage.game.hero.explore(numExplored);
   }
 
-  void _process(
-      Array2D<int> tiles, int straightAttenuate, int diagonalAttenuate) {
-    var minAttenuation = math.min(straightAttenuate, diagonalAttenuate);
-
+  void _process(Array2D<int> tiles) {
     while (true) {
       var pos = _queue.removeNext();
       if (pos == null) break;
@@ -280,20 +299,20 @@ class Lighting {
 
         // If the neighbor is too dim for light to propagate from it, don't
         // bother enqueuing it.
-        if (illumination <= minAttenuation) return;
+        if (illumination <= _attenuate) return;
 
         // Check the tile's neighbors.
         _queue.add(neighborPos, illumination);
       }
 
-      checkNeighbor(Direction.n, straightAttenuate);
-      checkNeighbor(Direction.s, straightAttenuate);
-      checkNeighbor(Direction.e, straightAttenuate);
-      checkNeighbor(Direction.w, straightAttenuate);
-      checkNeighbor(Direction.ne, diagonalAttenuate);
-      checkNeighbor(Direction.se, diagonalAttenuate);
-      checkNeighbor(Direction.nw, diagonalAttenuate);
-      checkNeighbor(Direction.sw, diagonalAttenuate);
+      checkNeighbor(Direction.n, _attenuate);
+      checkNeighbor(Direction.s, _attenuate);
+      checkNeighbor(Direction.e, _attenuate);
+      checkNeighbor(Direction.w, _attenuate);
+      checkNeighbor(Direction.ne, _diagonalAttenuate);
+      checkNeighbor(Direction.se, _diagonalAttenuate);
+      checkNeighbor(Direction.nw, _diagonalAttenuate);
+      checkNeighbor(Direction.sw, _diagonalAttenuate);
     }
   }
 }
@@ -333,13 +352,11 @@ class Lighting {
 ///
 /// [bucket queue]: https://en.wikipedia.org/wiki/Bucket_queue
 class _LightQueue {
-  static const _maxBrightness = 255;
-
-  final List<Queue<Vec>> _buckets = new List(_maxBrightness + 1);
-  int _bucket = 255;
+  final List<Queue<Vec>> _buckets = new List(Lighting.max + 1);
+  int _bucket = Lighting.max;
 
   void reset() {
-    _bucket = 255;
+    _bucket = Lighting.max;
   }
 
   void add(Vec pos, int brightness) {

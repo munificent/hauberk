@@ -53,6 +53,7 @@ class Items {
     // TODO: Rings.
     // TODO: Amulets.
     weapons();
+    lightSources();
     bodyArmor();
     cloaks();
     // TODO: Shields.
@@ -222,9 +223,6 @@ void potions() {
   category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable")
     ..tag("magic/potion/bottled")
     ..toss(damage: 1, range: 8, breakage: 100);
-  item("Glowing Vial", 2, 1.0, gold)
-    ..ball(Elements.light, "light", "sears", 3, range: 6);
-
   item("Bottled Wind", 4, 0.5, cornflower)
     ..flow(Elements.air, "the wind", "blasts", 20, fly: true);
   item("Bottled Ice", 7, 0.5, cerulean)
@@ -469,6 +467,30 @@ void weapons() {
     ..toss(damage: 4);
 }
 
+void lightSources() {
+  category(CharCode.notSign, verb: "hit[s]")
+    ..tag("item/light")
+    ..toss(breakage: 70);
+
+  // TODO: Ball of fire when hits toss target.
+  item("Candle", 1, 1.0, sandal)
+    ..stack(10)
+    ..toss(damage: 2, range: 4, element: Elements.fire)
+    ..light(2)
+    ..ball(Elements.light, "light", "sears", 1, range: 4);
+
+  item("Torch[es]", 3, 1.0, persimmon)
+    ..stack(4)
+    ..toss(damage: 6, range: 6, element: Elements.fire)
+    ..light(4)
+    ..ball(Elements.light, "light", "sears", 4, range: 8);
+
+  // TODO: Maybe allow this to be equipped and increase its radius when held?
+  item("Lantern", 10, 0.3, persimmon)
+    ..toss(damage: 5, range: 4, element: Elements.fire)
+    ..light(6);
+}
+
 void bodyArmor() {
   // TODO: Make some armor throwable.
   // Robes.
@@ -524,8 +546,7 @@ void boots() {
   item("Pair[s] of Greaves", 47, 0.25, gunsmoke)..armor(12, weight: 3);
 }
 
-_CategoryBuilder category(int glyph,
-    {String verb, String flags, int stack: 1}) {
+_CategoryBuilder category(int glyph, {String verb, String flags, int stack}) {
   buildItem();
 
   _category = new _CategoryBuilder();
@@ -556,13 +577,19 @@ _ItemBuilder item(String name, int depth, double frequency, appearance) {
 class _BaseBuilder {
   final List<String> _flags = [];
 
+  int _maxStack;
   Element _tossElement;
   int _tossDamage;
   int _tossRange;
   TossItemUse _tossUse;
+  int _emanation;
 
   /// Percent chance of objects in the current category breaking when thrown.
   int _breakage;
+
+  void stack(int stack) {
+    _maxStack = stack;
+  }
 
   void flags(String flags) {
     if (flags == null) return;
@@ -580,6 +607,10 @@ class _BaseBuilder {
   void tossUse(TossItemUse use) {
     _tossUse = use;
   }
+
+  void light(int level) {
+    _emanation = level;
+  }
 }
 
 class _CategoryBuilder extends _BaseBuilder {
@@ -587,7 +618,6 @@ class _CategoryBuilder extends _BaseBuilder {
   int _glyph;
 
   String _equipSlot;
-  int _maxStack;
 
   String _weaponType;
   String _tag;
@@ -647,9 +677,8 @@ class _ItemBuilder extends _BaseBuilder {
     _weight = weight;
   }
 
-  void weapon(int damage, {int heft}) {
-    // TODO: Individual rarities.
-    _attack = new Attack(null, _category._verb, damage);
+  void weapon(int damage, {int heft, Element element}) {
+    _attack = new Attack(null, _category._verb, damage, null, element);
     _heft = heft;
   }
 
@@ -743,9 +772,10 @@ void buildItem() {
       toss,
       _builder._armor ?? 0,
       0,
-      _category._maxStack,
+      _builder._maxStack ?? _category._maxStack ?? 1,
       weight: _builder._weight ?? 0,
-      heft: _builder._heft ?? 0);
+      heft: _builder._heft ?? 0,
+      emanation: _builder._emanation ?? _category._emanation);
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
   itemType.flags.addAll(_category._flags);

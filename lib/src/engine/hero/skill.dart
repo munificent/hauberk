@@ -164,10 +164,11 @@ class Discipline extends AttributeSkill {
 
 /// Remaps [value] within the range [min]-[max] to the output range
 /// [outMin]-[outMax].
-double lerpDouble(int value, int min, int max, double outMin, double outMax) {
-  assert(value >= min);
-  assert(value <= max);
+double lerpDouble(num value, num min, num max, double outMin, double outMax) {
   assert(min < max);
+
+  if (value <= min) return outMin;
+  if (value >= max) return outMax;
 
   var t = (value - min) / (max - min);
   return outMin + t * (outMax - outMin);

@@ -14,6 +14,7 @@ export 'engine/core/energy.dart';
 export 'engine/core/flow.dart';
 export 'engine/core/fov.dart';
 export 'engine/core/game.dart';
+export 'engine/core/lighting.dart';
 export 'engine/core/log.dart';
 export 'engine/core/option.dart';
 export 'engine/core/resource.dart';

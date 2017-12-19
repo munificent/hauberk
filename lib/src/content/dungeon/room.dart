@@ -100,6 +100,7 @@ class RoomBiome extends Biome {
     if (placed.room.tiles.width < 8) return;
     if (placed.room.tiles.height < 8) return;
 
+    // TODO: Place candles on tables.
     for (var i = 0; i < 30; i++) {
       var width = rng.inclusive(2, math.min(5, placed.room.tiles.width - 4));
       var height = rng.inclusive(2, math.min(5, placed.room.tiles.height - 4));

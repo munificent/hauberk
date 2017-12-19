@@ -48,7 +48,7 @@ class FlowAction extends Action {
       }
 
       // Hit stuff on the floor too.
-      var action = _hit.element.floorAction(pos);
+      var action = _hit.element.floorAction(pos, _hit, distance);
       if (action != null) addAction(action);
     }
 

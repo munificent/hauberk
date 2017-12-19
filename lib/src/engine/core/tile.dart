@@ -121,8 +121,8 @@ class Tile {
   /// explored it.
   ///
   /// Returns 1 if this tile was explored just now or 0 otherwise.
-  int updateExplored() {
-    if (isVisible && !_isExplored) {
+  int updateExplored({bool force = false}) {
+    if ((force || isVisible) && !_isExplored) {
       _isExplored = true;
       return 1;
     }

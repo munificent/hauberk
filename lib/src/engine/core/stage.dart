@@ -153,6 +153,9 @@ class Stage {
     var result = inventory.tryAdd(item);
     // Inventory is unlimited, so should always succeed.
     assert(result.remaining == 0);
+
+    // If a light source is dropped, we need to light the floor.
+    if (item.emanationLevel > 0) floorEmanationChanged();
   }
 
   /// Returns `true` if there is at least one item at [pos].
@@ -174,6 +177,9 @@ class Stage {
 
     inventory.remove(item);
 
+    // If a light source is picked up, we need to unlight the floor.
+    if (item.emanationLevel > 0) floorEmanationChanged();
+
     // Discard empty inventories. Note that [isItemAt] assumes this is done.
     if (inventory.isEmpty) _itemsByTile.remove(pos);
   }
@@ -190,14 +196,17 @@ class Stage {
 
   /// Marks the illumination and field-of-view as needing recalculation.
   void tileOpacityChanged() {
-    _lighting.dirtyTileLight();
+    _lighting.dirtyFloorLight();
     _lighting.dirtyActorLight();
     _lighting.dirtyVisibility();
   }
 
-  /// Marks the tile illumination as needing recalculation.
-  void tileEmanationChanged() {
-    _lighting.dirtyTileLight();
+  /// Marks the floor illumination as needing recalculation.
+  ///
+  /// This should be called when a tile's emanation changes, or a
+  /// light-emitting item is dropped or picked up.
+  void floorEmanationChanged() {
+    _lighting.dirtyFloorLight();
   }
 
   /// Marks the actor illumination as needed recalculation.

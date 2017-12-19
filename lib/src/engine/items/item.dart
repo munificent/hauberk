@@ -120,6 +120,9 @@ class Item implements Comparable<Item>, Noun {
   /// The amount of strength required to wield the item effectively.
   int get heft => type.heft;
 
+  // TODO: Affixes that modify.
+  int get emanationLevel => type.emanationLevel;
+
   /// The number of items in this stack.
   int get count => _count;
   int _count = 1;
@@ -277,6 +280,12 @@ class ItemType {
   /// The amount of strength required to wield the item effectively.
   final int heft;
 
+  /// The amount of light this items gives off when equipped.
+  ///
+  /// This isn't a raw emanation value, but a level to be passed to
+  /// [Lighting.emanationFromLevel()].
+  final int emanationLevel;
+
   /// True if this item is "treasure".
   ///
   /// That means it just has a gold value. As soon as the hero steps on it, it
@@ -303,8 +312,10 @@ class ItemType {
       this.maxStack,
       {this.weight = 0,
       this.heft = 1,
+      int emanation,
       treasure = false})
-      : isTreasure = treasure;
+      : emanationLevel = emanation ?? 0,
+        isTreasure = treasure;
 
   String toString() => name;
 }

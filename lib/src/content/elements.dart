@@ -11,7 +11,7 @@ class Elements {
   // TODO: Start fires on the ground.
   static final fire = new Element("fire", "Fi", 1.2,
       attack: (_) => new BurnAction(),
-      floor: (pos) =>
+      floor: (pos, hit, distance) =>
           new DestroyOnFloorAction(pos, 3, "flammable", "burns up"));
 
   // TODO: Push back attack action.
@@ -23,7 +23,7 @@ class Elements {
 
   static final cold = new Element("cold", "Co", 1.2,
       attack: (damage) => new FreezeAction(damage),
-      floor: (pos) =>
+      floor: (pos, hit, distance) =>
           new DestroyOnFloorAction(pos, 6, "freezable", "shatters"));
 
   // TODO: Break glass items. Recharge some items?
@@ -38,7 +38,7 @@ class Elements {
 
   static final light = new Element("light", "Li", 1.5,
       attack: (damage) => new DazzleAction(damage),
-      floor: (pos) => new LightFloorAction(pos));
+      floor: (pos, hit, distance) => new LightFloorAction(pos, hit, distance));
 
   // TODO: Drain experience.
   static final spirit = new Element("spirit", "Sp", 3.0);

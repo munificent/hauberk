@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -139,7 +141,17 @@ class Hero extends Actor {
   MotilitySet get motilities => MotilitySet.walkAndDoor;
 
   // TODO: Calculate from wielded light source and other equipment.
-  int get emanationLevel => 4;
+  int get emanationLevel {
+    // The player can always see the hero.
+    var level = 1;
+
+    // Find the brightest light source being carried.
+    for (var item in inventory) {
+      level = math.max(level, item.emanationLevel);
+    }
+
+    return level;
+  }
 
   Hero(Game game, Vec pos, HeroSave save)
       : inventory = save.inventory.clone(),

@@ -188,10 +188,18 @@ class Dungeon {
 
   void setTile(int x, int y, TileType type) {
     stage.get(x, y).type = type;
+
+    // TODO: Move this code somewhere better.
+    // Water has a slight change of phosphorescene.
+    if (type == Tiles.water && rng.percent(2)) stage.get(x, y).emanation = 128;
   }
 
   void setTileAt(Vec pos, TileType type) {
     stage[pos].type = type;
+
+    // TODO: Move this code somewhere better.
+    // Water has a slight change of phosphorescene.
+    if (type == Tiles.water && rng.percent(2)) stage[pos].emanation = 128;
   }
 
   bool isRock(int x, int y) => stage.get(x, y).type == Tiles.rock;

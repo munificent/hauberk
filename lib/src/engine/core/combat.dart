@@ -80,13 +80,14 @@ class Hit {
     return _attack.element;
   }
 
+  double get averageDamage => _attack.damage * _damageScale + _damageBonus;
+
   // TODO: This is just used for the game screen weapon display. Show the
   // bonuses and stuff more explicitly there and get rid of this.
   /// The average amount of damage this hit causes, with two decimal points of
   /// precision.
   String get damageString {
-    var damage = _attack.damage * _damageScale + _damageBonus;
-    return ((damage * 100).toInt() / 100).toString();
+    return ((averageDamage * 100).toInt() / 100).toString();
   }
 
   Hit._(this._attack);

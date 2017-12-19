@@ -1,0 +1,47 @@
+https://www.reddit.com/r/roguelikedev/comments/7kn5it/lighting_mechanics/drgcnjy/
+
+Totally agree on the tedium and urgency aspect. And I agree with the increase in
+the danger level. If adding light sources to the game just adds another
+aggressive "hunger clock", I don't think it's a good addition. It's just one
+more thing that the RNG can fail to give you that seals your doom.
+
+I do like light source visual effects in games. It's evocative.
+
+Having a too-small light radius is annoying. It does feel claustrophobic, but
+the fact that it makes you take your world step by step makes the game feel
+much, much slower. Your game isn't one of those long-form roguelikes (yet?) but
+even still, this sort of thing really changes the pacing in a way that I
+personally don't care for. I kind of like being able to zip around the dungeons
+and have the freedom to double-back. That can be achieved even with light
+sources if there are enough light sources available AND the radius is
+sufficiently large for it to not be too much of an issue.
+
+Like you, I do like the idea of light sources being boons that you can find. I
+think what I'd prefer in that vein, though, is that light is usually not an
+issue, but then some special circumstances makes it an issue. In other words,
+instead of the default being darkness and you have to work (and rely on the RNG)
+to make light, you could make the default be light (or very generous RNG light
+source drops), and have certain monsters or rooms or set-pieces create dark
+situations that it you need to explicitly light. I think of it like keys for
+chests; you might not be able to open all the chests you find, so finding keys
+is a boon. Similarly, you might not be able to reliably traverse dark areas you
+find, so finding a light source is a boon.
+
+I also like the idea of light sources helping to find secret passages, but
+again, it would be a pain for that to be a consumable resource that you have to
+expend - perhaps fruitlessly - as you walk around looking for that passage you
+know must be around there somewhere. If it were required to find the secret
+passage, that would be an arbitrarily limiting factor, which puts us at the
+RNG's mercy again, so it would be better if it were a bonus.
+
+Some other uses for light: Blinding enemies with a brilliant flash of light.
+Enemies that try to stay in the shadows so you will need to extinguish your main
+light source in order to encounter them. Enemies that get negatives to fight you
+in bright light. Enemies that cast darkness spells. Enemies that have
+regeneration while they are in the dark, so you have to try to keep them in the
+light while you fight them. Enemies that can "shadewalk", teleporting to any
+tile in shadow. Giant insect creatures that are docile but attracted
+aggressively towards light. Enemies that are invisible in shadow. Enemies that
+are invisible in light (but perhaps cast dim shadows). Traps that trigger when
+they detect a light source of enough intensity. Traps that trigger when a shadow
+crosses them.

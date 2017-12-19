@@ -46,13 +46,20 @@ class WindAction extends Action {
 /// Permanently illuminates the given tile.
 class LightFloorAction extends Action {
   final Vec _pos;
+  int _emanation;
 
-  LightFloorAction(this._pos);
+  LightFloorAction(this._pos, Hit hit, num distance) {
+    // The intensity fades from the center outward. Also, strong hits produce
+    // more light.
+    var min = (1.0 + hit.averageDamage.toInt() * 4.0).clamp(0.0, Lighting.max);
+    var max = (64.0 + hit.averageDamage * 16.0).clamp(0.0, Lighting.max);
+    _emanation =
+        lerpDouble(hit.range - distance, 0.0, hit.range, min, max).toInt();
+  }
 
   ActionResult onPerform() {
-    // TODO: Should this always light to full brightness?
-    game.stage[_pos].emanation = 255;
-    game.stage.tileEmanationChanged();
+    game.stage[_pos].emanation += _emanation;
+    game.stage.floorEmanationChanged();
 
     return ActionResult.success;
   }

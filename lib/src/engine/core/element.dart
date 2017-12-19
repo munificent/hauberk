@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
+import 'combat.dart';
 
 class Element {
   static final none = new Element("none", "No", 1.0);
@@ -20,12 +21,13 @@ class Element {
 
   /// Creates a side-effect action to perform when an area attack of this
   /// element hits a tile or `null` if this element has no effect.
-  final Action Function(Vec pos) floorAction;
+  final Action Function(Vec pos, Hit hit, num distance) floorAction;
 
   Element(this.name, this.abbreviation, this.experience,
-      {Action Function(int damage) attack, Action Function(Vec pos) floor})
+      {Action Function(int damage) attack,
+      Action Function(Vec pos, Hit hit, num distance) floor})
       : attackAction = attack ?? ((_) => null),
-        floorAction = floor ?? ((_) => null);
+        floorAction = floor ?? ((_, __, ___) => null);
 
   String toString() => name;
 }

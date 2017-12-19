@@ -45,7 +45,7 @@ class RayAction extends Action {
     // We "fill" the cone by tracing a number of rays. We need enough of them
     // to ensure there are no gaps when the cone is at its maximum extent.
     var circumference = math.PI * 2 * _hit.range;
-    var numRays = (circumference * fraction).ceil();
+    var numRays = (circumference * fraction * 2.0).ceil();
 
     if (fraction < 1.0) {
       // Figure out the center angle of the cone.
@@ -91,8 +91,11 @@ class RayAction extends Action {
         _hit.perform(this, actor, target, canMiss: false);
       }
 
+      // TODO: When using this for casting light, should really hit the hero's
+      // tile too.
+
       // Hit stuff on the floor too.
-      var action = _hit.element.floorAction(pos);
+      var action = _hit.element.floorAction(pos, _hit, (pos - _from).length);
       if (action != null) addAction(action);
 
       return false;
