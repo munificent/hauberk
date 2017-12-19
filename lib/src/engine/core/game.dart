@@ -8,10 +8,10 @@ import '../hero/skill.dart';
 import '../items/item.dart';
 import '../items/recipe.dart';
 import '../items/shop.dart';
+import '../stage/stage.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'log.dart';
-import 'stage.dart';
 
 /// Root class for the game engine. All game state is contained within this.
 class Game {

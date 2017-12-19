@@ -1,12 +1,12 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import '../core/actor.dart';
+import '../core/game.dart';
 import '../hero/hero.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
 import '../monster/monster.dart';
-import 'actor.dart';
 import 'flow.dart';
-import 'game.dart';
 import 'lighting.dart';
 import 'tile.dart';
 

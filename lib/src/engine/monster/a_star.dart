@@ -2,9 +2,9 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import 'option.dart';
-import 'stage.dart';
-import 'tile.dart';
+import '../core/option.dart';
+import '../stage/stage.dart';
+import '../stage/tile.dart';
 
 class PathResult {
   /// The direction to move on the first step of the path.

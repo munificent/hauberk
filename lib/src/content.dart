@@ -8,8 +8,8 @@ import 'content/elements.dart';
 import 'content/floor_drops.dart';
 import 'content/items.dart';
 import 'content/monsters.dart';
-import 'content/recipes.dart';
-import 'content/shops.dart';
+import 'content/old/recipes.dart';
+import 'content/old/shops.dart';
 import 'content/skills.dart';
 import 'content/tiles.dart';
 

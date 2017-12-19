@@ -1,5 +1,5 @@
-import '../engine.dart';
-import 'items.dart';
+import '../../engine.dart';
+import '../items.dart';
 
 /// Static class containing all of the [Shop]s.
 class Shops {

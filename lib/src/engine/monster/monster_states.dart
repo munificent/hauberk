@@ -5,12 +5,12 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../debug.dart';
 import '../action/action.dart';
 import '../action/walk.dart';
-import '../core/a_star.dart';
-import '../core/flow.dart';
 import '../core/game.dart';
 import '../core/log.dart';
 import '../monster/breed.dart';
 import '../monster/monster.dart';
+import '../stage/flow.dart';
+import 'a_star.dart';
 import 'move.dart';
 
 /// This defines the monster AI. AI is broken into a three level hierarchy.

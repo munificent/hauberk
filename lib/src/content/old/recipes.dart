@@ -1,6 +1,6 @@
-import '../engine.dart';
-import 'drops.dart';
-import 'items.dart';
+import '../../engine.dart';
+import '../drops.dart';
+import '../items.dart';
 
 /// Static class containing all of the [Recipe]s.
 class Recipes {

@@ -1,13 +1,13 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
+import '../stage/tile.dart';
 import 'combat.dart';
 import 'condition.dart';
 import 'element.dart';
 import 'energy.dart';
 import 'game.dart';
 import 'log.dart';
-import 'tile.dart';
 
 abstract class Thing implements Noun {
   Vec _pos;
