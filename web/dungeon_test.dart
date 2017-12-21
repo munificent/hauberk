@@ -65,6 +65,7 @@ Future generate() async {
     if (frame % 5 == 0) await html.window.animationFrame;
   }
 
+  _game.stage.refreshView();
   render(showInfo: false);
 
   var monsters = new Histogram<Breed>();
@@ -173,9 +174,14 @@ void render({bool showInfo = true}) {
 
   for (var y = 0; y < stage.height; y++) {
     for (var x = 0; x < stage.width; x++) {
-      var glyph = stage.get(x, y).type.appearance as Glyph;
-
       var pos = new Vec(x, y);
+      var tile = stage[pos];
+      var glyph = tile.type.appearance as Glyph;
+      var light = ((1.0 - tile.illumination / 128) * 0.8).clamp(0.0, 1.0);
+      glyph = new Glyph.fromCharCode(glyph.char,
+          glyph.fore.blend(nearBlack, light),
+          glyph.back.blend(nearBlack, light));
+
       var items = stage.itemsAt(pos);
       if (items.isNotEmpty) {
         glyph = items.first.appearance as Glyph;

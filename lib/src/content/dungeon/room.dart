@@ -97,18 +97,48 @@ class RoomBiome extends Biome {
   }
 
   void _tryPlaceTable(PlacedRoom placed) {
-    if (placed.room.tiles.width < 8) return;
-    if (placed.room.tiles.height < 8) return;
+    var roomWidth = placed.room.tiles.width - 2;
+    var roomHeight = placed.room.tiles.height - 2;
 
-    // TODO: Place candles on tables.
+    if (roomWidth < 6) return;
+    if (roomHeight < 6) return;
+
+    // Try a big centered table.
+    if (true || rng.percent(30)) {
+      var x = 2;
+      var y = 2;
+      var width = roomWidth - 2;
+      var height = roomHeight - 2;
+
+      if (width > 4 && height > 4) {
+        if (roomWidth < roomHeight || roomWidth == roomHeight && rng.oneIn(2)) {
+          width = 4 - (roomWidth % 2);
+          x = 1 + (roomWidth - width) ~/ 2;
+        } else {
+          height = 4 - (roomHeight % 2);
+          y = 1 + (roomHeight - height) ~/ 2;
+        }
+      }
+
+      if (_tryPlaceTableAt(placed, x, y, width, height)) return;
+    }
+
+    // Try a smaller centered table.
+    if (roomWidth > 5 && roomHeight > 5 && rng.percent(30)) {
+      var width = roomWidth - 4;
+      var height = roomHeight - 4;
+      if (_tryPlaceTableAt(placed, 3, 3, width, height)) return;
+    }
+
+    // Try a randomly placed table.
     for (var i = 0; i < 30; i++) {
-      var width = rng.inclusive(2, math.min(5, placed.room.tiles.width - 4));
-      var height = rng.inclusive(2, math.min(5, placed.room.tiles.height - 4));
+      var width = rng.inclusive(2, math.min(5, roomWidth - 2));
+      var height = rng.inclusive(2, math.min(5, roomHeight - 2));
 
-      var x = rng.range(2, placed.room.tiles.width - width - 1);
-      var y = rng.range(2, placed.room.tiles.height - height - 1);
+      var x = rng.range(2, roomWidth - width + 1);
+      var y = rng.range(2, roomHeight - height + 1);
 
-      if (_tryPlaceTableAt(placed, x, y, width, height)) break;
+      if (_tryPlaceTableAt(placed, x, y, width, height)) return;
     }
   }
 
@@ -122,10 +152,15 @@ class RoomBiome extends Biome {
       }
     }
 
-    for (var y1 = 0; y1 < height; y1++) {
-      for (var x1 = 0; x1 < width; x1++) {
+    for (var y1 = 1; y1 < height - 1; y1++) {
+      for (var x1 = 1; x1 < width - 1; x1++) {
         var pos = placed.pos.offset(x + x1, y + y1);
-        _dungeon.setTileAt(pos, Tiles.tableCenter);
+
+        if (rng.oneIn(3)) {
+          _dungeon.setTileAt(pos, Tiles.candle);
+        } else {
+          _dungeon.setTileAt(pos, Tiles.tableCenter);
+        }
       }
     }
 

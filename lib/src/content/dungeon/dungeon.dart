@@ -187,22 +187,24 @@ class Dungeon {
   TileType getTileAt(Vec pos) => stage[pos].type;
 
   void setTile(int x, int y, TileType type) {
-    stage.get(x, y).type = type;
-
-    // TODO: Move this code somewhere better.
-    // Water has a slight change of phosphorescene.
-    if (type == Tiles.water) {
-      stage.get(x, y).emanation = rng.percent(2) ? 128 : 1;
-    }
+    var tile = stage.get(x, y);
+    tile.type = type;
+    _tileEmanation(tile);
   }
 
   void setTileAt(Vec pos, TileType type) {
-    stage[pos].type = type;
+    var tile = stage[pos];
+    tile.type = type;
+    _tileEmanation(tile);
+  }
 
+  void _tileEmanation(Tile tile) {
     // TODO: Move this code somewhere better.
-    // Water has a slight change of phosphorescene.
-    if (type == Tiles.water) {
-      stage[pos].emanation = rng.percent(2) ? 128 : 1;
+    if (tile.type == Tiles.water) {
+      // Water has a slight phosphorescence with occasional sparkles.
+      tile.emanation = rng.percent(2) ? Lighting.emanationForLevel(5) : 1;
+    } else if (tile.type == Tiles.candle) {
+      tile.emanation = Lighting.emanationForLevel(5);
     }
   }
 
