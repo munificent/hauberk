@@ -201,12 +201,8 @@ class Monster extends Actor {
   // TODO: Breed resistances.
   int onGetResistance(Element element) => 0;
 
-  void defend() {
-    _state.defend();
-  }
-
   /// Inflicting damage decreases fear.
-  void onDamage(Action action, Actor defender, int damage) {
+  void onGiveDamage(Action action, Actor defender, int damage) {
     // The greater the power of the hit, the more emboldening it is.
     var fear = 100.0 * damage / game.hero.health.max;
 
@@ -235,7 +231,7 @@ class Monster extends Actor {
   }
 
   /// Taking damage increases fear.
-  void onDamaged(Action action, Actor attacker, int damage) {
+  void onTakeDamage(Action action, Actor attacker, int damage) {
     // The greater the power of the hit, the more frightening it is.
     var fear = 100.0 * damage / health.max;
 
@@ -323,7 +319,7 @@ class Monster extends Actor {
     var fearDecay = 5.0 + (pos - game.hero.pos).kingLength;
 
     // Fear decays more quickly if out of sight.
-    if (!isVisible) fearDecay = 5.0 + fearDecay * 2.0;
+    if (!isVisibleToHero) fearDecay = 5.0 + fearDecay * 2.0;
 
     // The closer the monster is to death, the less quickly it gets over fear.
     fearDecay = 2.0 + fearDecay * health.current / health.max;

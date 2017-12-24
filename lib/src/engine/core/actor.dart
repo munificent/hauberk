@@ -88,7 +88,7 @@ abstract class Actor extends Thing {
   bool get isAlive => health.current > 0;
 
   /// Whether or not the actor can be seen by the [Hero].
-  bool get isVisible => game.stage[pos].isVisible;
+  bool get isVisibleToHero => game.stage[pos].isVisible;
 
   /// Whether the actor's vision is currently impaired.
   bool get isBlinded => blindness.isActive || dazzle.isActive;
@@ -181,9 +181,6 @@ abstract class Actor extends Thing {
 
   void onModifyHit(Hit hit, HitType type) {}
 
-  /// This is called on the defender when some attacker is attempting to hit it.
-  void defend();
-
   /// The amount of resistance the actor currently has to [element].
   ///
   /// Every level of resist reduces the damage taken by an attack of that
@@ -211,12 +208,13 @@ abstract class Actor extends Thing {
   bool takeDamage(Action action, int damage, Noun attackNoun,
       [Actor attacker]) {
     health.current -= damage;
-    onDamaged(action, attacker, damage);
+    onTakeDamage(action, attacker, damage);
 
     if (health.current > 0) return false;
 
     action.addEvent(EventType.die, actor: this);
 
+    // TODO: Different verb for unliving monsters.
     action.log("{1} kill[s] {2}.", attackNoun, this);
     if (attacker != null) attacker.onKilled(action, this);
 
@@ -226,7 +224,7 @@ abstract class Actor extends Thing {
   }
 
   /// Called when this actor has successfully hit this [defender].
-  void onDamage(Action action, Actor defender, int damage) {
+  void onGiveDamage(Action action, Actor defender, int damage) {
     // Do nothing.
   }
 
@@ -234,7 +232,7 @@ abstract class Actor extends Thing {
   ///
   /// [attacker] may be `null` if the damage is not the direct result of an
   /// attack (for example, poison).
-  void onDamaged(Action action, Actor attacker, int damage) {
+  void onTakeDamage(Action action, Actor attacker, int damage) {
     // Do nothing.
   }
 
@@ -273,7 +271,7 @@ abstract class Actor extends Thing {
 
   /// Logs [message] if the actor is visible to the hero.
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    if (!isVisible) return;
+    if (!isVisibleToHero) return;
     game.log.message(message, noun1, noun2, noun3);
   }
 }

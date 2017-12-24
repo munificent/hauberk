@@ -76,7 +76,9 @@ class GameScreen extends Screen<Input> {
   Actor get currentTargetActor {
     // Forget the target if it dies or goes offscreen.
     if (_targetActor != null) {
-      if (!_targetActor.isAlive || !_targetActor.isVisible) _targetActor = null;
+      if (!_targetActor.isAlive || !_targetActor.isVisibleToHero) {
+        _targetActor = null;
+      }
     }
 
     if (_targetActor != null) return _targetActor;

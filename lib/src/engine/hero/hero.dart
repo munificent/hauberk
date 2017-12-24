@@ -349,7 +349,7 @@ class Hero extends Actor {
   // TODO: If class or race can affect this, add it in.
   int onGetResistance(Element element) => equipmentResistance(element);
 
-  void onDamaged(Action action, Actor attacker, int damage) {
+  void onTakeDamage(Action action, Actor attacker, int damage) {
     // Getting hit loses focus.
     // TODO: Should the hero lose focus if they dodge the attack? Seems like it
     // would still break their attention. Maybe lose a fraction of the focus?

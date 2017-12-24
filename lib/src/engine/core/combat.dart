@@ -159,7 +159,7 @@ class Hit {
       return true;
     }
 
-    attacker.onDamage(action, defender, damage);
+    attacker.onGiveDamage(action, defender, damage);
     if (defender.takeDamage(action, damage, attackNoun, attacker)) return true;
 
     // Any resistance cancels all side effects.

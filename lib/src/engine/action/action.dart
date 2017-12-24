@@ -74,12 +74,12 @@ abstract class Action {
   int get noise => Option.noiseNormal;
 
   void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    if (!_actor.isVisible) return;
+    if (!_actor.isVisibleToHero) return;
     _game.log.error(message, noun1, noun2, noun3);
   }
 
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    if (!_actor.isVisible) return;
+    if (!_actor.isVisibleToHero) return;
     _game.log.message(message, noun1, noun2, noun3);
   }
 

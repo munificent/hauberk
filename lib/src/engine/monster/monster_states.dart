@@ -77,13 +77,12 @@ abstract class MonsterState {
   Breed get breed => _monster.breed;
   Game get game => _monster.game;
   Vec get pos => _monster.pos;
-  bool get isVisible => _monster.isVisible;
+  bool get isVisibleToHero => _monster.isVisibleToHero;
 
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     monster.log(message, noun1, noun2, noun3);
   }
 
-  void defend() {}
   Action getAction();
 
   void changeState(MonsterState state) {
@@ -154,12 +153,6 @@ abstract class MonsterState {
 }
 
 class AsleepState extends MonsterState {
-  void defend() {
-    // Don't sleep through a beating!
-    Debug.logMonster(monster, "Wake on hit.");
-    monster.wakeUp();
-  }
-
   Action getAction() {
     var distance = (game.hero.pos - pos).kingLength;
 
@@ -174,7 +167,7 @@ class AsleepState extends MonsterState {
     }
 
     // If the monster can see the hero, there's a good chance it will wake up.
-    if (isVisible) {
+    if (isVisibleToHero) {
       // TODO: Breed-specific sight/alertness.
       if (rng.oneIn(distance + 1)) {
         log('{1} notice[s] {2}!', monster, game.hero);
@@ -238,7 +231,7 @@ class AwakeState extends MonsterState {
 
   Action getAction() {
     // See if things are quiet enough to fall asleep.
-    if (isVisible) {
+    if (isVisibleToHero) {
       _turnsSinceLastSawHero = 0;
     } else {
       _turnsSinceLastSawHero++;
@@ -365,9 +358,6 @@ class AwakeState extends MonsterState {
       if (move.range > 0 && move.range < maxRange) maxRange = move.range;
     }
 
-    var flow =
-        new Flow(game.stage, pos, monster.motilities, maxDistance: maxRange);
-
     bool isValidRangedPosition(Vec pos) {
       // Ignore tiles that are out of range.
       var toHero = pos - game.hero.pos;
@@ -416,6 +406,8 @@ class AwakeState extends MonsterState {
     if (best != null) return best;
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
+    var flow =
+        new Flow(game.stage, pos, monster.motilities, maxDistance: maxRange);
     var dir = flow.directionToBestWhere(isValidRangedPosition);
     if (dir != Direction.none) {
       Debug.logMonster(monster, "Ranged position $dir");

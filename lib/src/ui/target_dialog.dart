@@ -30,7 +30,7 @@ class TargetDialog extends Screen<Input> {
     var hero = _gameScreen.game.hero;
     for (var actor in _gameScreen.game.stage.actors) {
       if (actor is! Monster) continue;
-      if (!actor.isVisible) continue;
+      if (!actor.isVisibleToHero) continue;
 
       // Must be within range.
       var toMonster = actor.pos - hero.pos;

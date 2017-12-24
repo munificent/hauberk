@@ -127,7 +127,7 @@ class RestAction extends Action {
 
       // Have this amount increase over successive resting turns?
       hero.focus += 100;
-    } else if (!actor.isVisible) {
+    } else if (!actor.isVisibleToHero) {
       // Monsters can rest if out of sight.
       actor.health.current++;
     }

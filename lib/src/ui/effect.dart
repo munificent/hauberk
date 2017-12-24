@@ -255,7 +255,7 @@ class BlinkEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    if (!actor.isVisible) return;
+    if (!actor.isVisibleToHero) return;
 
     if ((life ~/ 8) % 2 == 0) {
       var glyph = actor.appearance;
