@@ -403,7 +403,7 @@ class Dungeon {
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
       // TODO: Checking for hero pos here is hacky.
-      var here = flow.nearestWhere((p) => _heroPos != p);
+      var here = flow.bestWhere((p) => _heroPos != p);
 
       // If there are no open tiles, discard the remaining monsters.
       if (here == null) break;
@@ -541,7 +541,7 @@ class Dungeon {
     var flow =
         new Flow(stage, _heroPos, MotilitySet.walkAndDoor, ignoreActors: true);
     for (var pos in safeBounds) {
-      _info[pos].distance = flow.getDistance(pos);
+      _info[pos].distance = flow.costAt(pos);
     }
 
     // Figure out which junctions are chokepoints that provide unique access to

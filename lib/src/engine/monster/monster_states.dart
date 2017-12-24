@@ -416,7 +416,7 @@ class AwakeState extends MonsterState {
     if (best != null) return best;
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
-    var dir = flow.directionToNearestWhere(isValidRangedPosition);
+    var dir = flow.directionToBestWhere(isValidRangedPosition);
     if (dir != Direction.none) {
       Debug.logMonster(monster, "Ranged position $dir");
       return dir;
@@ -467,7 +467,7 @@ class AfraidState extends MonsterState {
     var flow = new Flow(game.stage, pos, monster.motilities,
         maxDistance: breed.tracking);
     // TODO: Should monsters prefer darkness too?
-    var dir = flow.directionToNearestWhere((pos) => game.stage[pos].isOccluded);
+    var dir = flow.directionToBestWhere((pos) => game.stage[pos].isOccluded);
 
     if (dir != Direction.none) {
       Debug.logMonster(monster, "Fleeing $dir out of sight");

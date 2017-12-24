@@ -1,8 +1,8 @@
-import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+import 'bucket_queue.dart';
 import 'fov.dart';
 import 'stage.dart';
 
@@ -101,7 +101,7 @@ class Lighting {
   final Array2D<int> _actorLight;
 
   final Fov _fov;
-  final _LightQueue _queue = new _LightQueue();
+  final BucketQueue<Vec> _queue = new BucketQueue();
 
   bool _floorLightDirty = true;
   bool _actorLightDirty = true;
@@ -163,7 +163,7 @@ class Lighting {
         if (emanation > 0) {
           emanation = math.min(emanation, max);
           _floorLight.set(x, y, emanation);
-          _queue.add(pos, emanation);
+          _enqueue(pos, emanation);
         } else {
           _floorLight[pos] = 0;
         }
@@ -183,7 +183,7 @@ class Lighting {
 
       if (emanation > 0) {
         _actorLight[actor.pos] = emanation;
-        _queue.add(actor.pos, emanation);
+        _enqueue(actor.pos, emanation);
       }
     }
 
@@ -271,6 +271,13 @@ class Lighting {
     _stage.game.hero.explore(numExplored);
   }
 
+  /// Adds [pos] with [brightness] to the queue of lit tiles needing
+  /// propagation.
+  void _enqueue(Vec pos, int brightness) {
+    // The brightest light has the lowest cost.
+    _queue.add(pos, max - brightness);
+  }
+
   void _process(Array2D<int> tiles) {
     while (true) {
       var pos = _queue.removeNext();
@@ -302,7 +309,7 @@ class Lighting {
         if (illumination <= _attenuate) return;
 
         // Check the tile's neighbors.
-        _queue.add(neighborPos, illumination);
+        _enqueue(neighborPos, illumination);
       }
 
       checkNeighbor(Direction.n, _attenuate);
@@ -314,74 +321,5 @@ class Lighting {
       checkNeighbor(Direction.nw, _diagonalAttenuate);
       checkNeighbor(Direction.sw, _diagonalAttenuate);
     }
-  }
-}
-
-/// A priority queue to track which tiles still need to have their light
-/// propagation processed.
-///
-/// Light propagation is halfway between a simple breadth-first search and the
-/// full Dijkstra's algorithm. We can't use BFS because:
-///
-/// - Initial emanating tiles can have different brightness values.
-/// - Light propagation does not always decrease by the same amount. Diagonal
-///   neighbors attenuate faster than straight ones.
-///
-/// These two constraints mean that neighboring tiles are not strictly enqueued
-/// in first-in-first-out order. We may need to enqueue a brighter neighbor tile
-/// so that it is processed earlier than a previously-enqueued but dimmer tile.
-///
-/// We do make one simplification over Dijkstra's algorithm, though. When a
-/// tile is enqueued, we do *not* check to see if the tile is already enqueued
-/// and update it's priority if it is. This is a major slowdown of Dijkstra's
-/// algorithm unless you use something clever like a Fibonacci heap.
-///
-/// Since we visit tiles from brightest to darkest, the only time a tile can
-/// be queued more than once is if it was queued initially as an eminating tile
-/// and then we discovered that there is another nearby emanation source bright
-/// enough to beat the tile's own emanation.
-///
-/// In that case, we just let it be enqueued twice. The one we visit first will
-/// be the brightest one (since we visit in brightness order), so we are
-/// assured to propagate the right value. When we later visit the tile again,
-/// it will note that none of its neighbors get any brighter and stop.
-///
-/// Also, we constrain light levels to an integer from [0, 255]. That lets us
-/// use a [bucket queue] for the priority queue. That gives us very fast
-/// constant time performance for all operations.
-///
-/// [bucket queue]: https://en.wikipedia.org/wiki/Bucket_queue
-class _LightQueue {
-  final List<Queue<Vec>> _buckets = new List(Lighting.max + 1);
-  int _bucket = Lighting.max;
-
-  void reset() {
-    _bucket = Lighting.max;
-  }
-
-  void add(Vec pos, int brightness) {
-    assert(brightness <= _bucket);
-
-    var bucket = _buckets[brightness];
-    if (bucket == null) {
-      bucket = new Queue();
-      _buckets[brightness] = bucket;
-    }
-    bucket.add(pos);
-  }
-
-  /// Removes the brightest element from the queue or returns `null` if the
-  /// queue is empty.
-  Vec removeNext() {
-    // Advance past any empty buckets.
-    while (_bucket >= 0 &&
-        (_buckets[_bucket] == null || _buckets[_bucket].isEmpty)) {
-      _bucket--;
-    }
-
-    // If we ran out of buckets, the queue is empty.
-    if (_bucket < 0) return null;
-
-    return _buckets[_bucket].removeFirst();
   }
 }

@@ -47,7 +47,8 @@ class Tiles {
   static final TileType tableLeg = _obstacle("table", "╤", persimmon);
   static final TileType tableLegRight = _obstacle("table", "╡", persimmon);
 
-  static final TileType candle = _open("candle", CharCode.greaterThanOrEqualTo, sandal);
+  static final TileType candle =
+      _open("candle", CharCode.greaterThanOrEqualTo, sandal);
 
   // Make these "monsters" that can be pushed around.
   static final TileType chair = _open("chair", "π", persimmon);

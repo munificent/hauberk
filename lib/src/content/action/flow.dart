@@ -26,14 +26,14 @@ class FlowAction extends Action {
       _flow = new Flow(game.stage, _from, _motilities, ignoreActors: true);
 
       var count = (math.PI * _hit.range * _hit.range).ceil();
-      _tiles = _flow.allByDistance.take(count).toList();
+      _tiles = _flow.reachable.take(count).toList();
     }
 
     // Hit all tiles at the same distance.
-    var distance = _flow.getDistance(_tiles.first);
+    var distance = _flow.costAt(_tiles.first);
     int end;
     for (end = 0; end < _tiles.length; end++) {
-      if (_flow.getDistance(_tiles[end]) != distance) break;
+      if (_flow.costAt(_tiles[end]) != distance) break;
     }
 
     // TODO: Lot of copy/paste here from ray.dart. Unify.

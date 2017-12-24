@@ -178,7 +178,8 @@ void render({bool showInfo = true}) {
       var tile = stage[pos];
       var glyph = tile.type.appearance as Glyph;
       var light = ((1.0 - tile.illumination / 128) * 0.8).clamp(0.0, 1.0);
-      glyph = new Glyph.fromCharCode(glyph.char,
+      glyph = new Glyph.fromCharCode(
+          glyph.char,
           glyph.fore.blend(nearBlack, light),
           glyph.back.blend(nearBlack, light));
 

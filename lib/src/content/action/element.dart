@@ -32,7 +32,7 @@ class WindAction extends Action {
     var flow = new Flow(game.stage, actor.pos, actor.motilities,
         maxDistance: distance);
     var positions =
-        flow.findAll().where((pos) => game.stage.actorAt(pos) == null).toList();
+        flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();
     if (positions.isEmpty) return ActionResult.failure;
 
     log("{1} [are|is] thrown by the wind!", actor);

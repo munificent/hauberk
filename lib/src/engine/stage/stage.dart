@@ -133,7 +133,7 @@ class Stage {
       items.add(item);
       var itemPos = pos;
       if (isItemAt(pos)) {
-        itemPos = flow.nearestWhere((pos) {
+        itemPos = flow.bestWhere((pos) {
           if (rng.oneIn(5)) return true;
           return !isItemAt(pos);
         });
@@ -248,7 +248,7 @@ class Stage {
   /// position taking into account which tiles are traversable.
   int getHeroDistanceTo(Vec pos) {
     _refreshDistances();
-    return _heroPaths.getDistance(pos);
+    return _heroPaths.costAt(pos);
   }
 
   /// Randomly selects an open tile in the stage. Makes [tries] attempts and
@@ -265,7 +265,7 @@ class Stage {
 
     for (var i = 0; i < tries; i++) {
       var pos = findOpenTile();
-      var distance = _heroPaths.getDistance(pos);
+      var distance = _heroPaths.costAt(pos);
       if (distance > bestDistance) {
         best = pos;
         bestDistance = distance;
