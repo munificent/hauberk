@@ -104,7 +104,7 @@ class RoomBiome extends Biome {
     if (roomHeight < 6) return;
 
     // Try a big centered table.
-    if (true || rng.percent(30)) {
+    if (rng.percent(30)) {
       var x = 2;
       var y = 2;
       var width = roomWidth - 2;
