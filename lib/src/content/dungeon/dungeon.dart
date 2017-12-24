@@ -481,6 +481,7 @@ class Dungeon {
         var dirs = Direction.all
             .where((dir) => getTileAt(pos + dir).isTraversable)
             .toList();
+        if (dirs.isEmpty) return;
         pos += rng.item(dirs);
       }
     }
