@@ -718,7 +718,7 @@ class _ItemBuilder extends _BaseBuilder {
   /// Sets a use and toss use that creates an flow of elemental damage.
   void flow(Element element, String noun, String verb, int damage,
       {int range = 3, bool fly = false}) {
-    var attack = new Attack(new Noun(noun), verb, damage, 3, element);
+    var attack = new Attack(new Noun(noun), verb, damage, range, element);
 
     var motilities = new MotilitySet([Motility.walk]);
     if (fly) motilities.add(Motility.fly);
