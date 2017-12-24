@@ -9,8 +9,8 @@ import '../core/game.dart';
 import '../core/log.dart';
 import '../monster/breed.dart';
 import '../monster/monster.dart';
+import '../monster/monster_pathfinder.dart';
 import '../stage/flow.dart';
-import 'a_star.dart';
 import 'move.dart';
 
 /// This defines the monster AI. AI is broken into a three level hierarchy.
@@ -421,19 +421,66 @@ class AwakeState extends MonsterState {
   }
 
   Direction _findMeleePath() {
-    // Try to pathfind towards the hero.
-    var path = AStar.findPath(
-        game.stage, pos, game.hero.pos, monster.motilities,
-        maxLength: breed.tracking);
+    var losDir = _findLosWalkPath();
+    if (losDir != null) return losDir;
 
-    if (path.length == 0) return null;
+    return MonsterPathfinder.findDirection(game.stage, monster);
+  }
 
-    if (!monster.canOccupy(pos + path.direction)) return null;
+  /// Try to find a direction to walk towards the hero based on line-of-sight.
+  ///
+  /// We prefer this over A* when the monster does have a straight path to the
+  /// hero for two reasons:
+  ///
+  /// 1. It's faster. In open areas, A* wastes time examining the multiple
+  ///    identical paths to the hero.
+  ///
+  /// 2. It produces better walking directions. When the monster is diagonal
+  ///    to the hero, A* will always prefer an intercardinal move direction,
+  ///    even if the hero is almost a cardinal direction away. Bresenham will
+  ///    pick a direction that's closest to the direction pointing at the hero.
+  Direction _findLosWalkPath() {
+    // TODO: Need to verify that this does actually help performance.
+    Vec first;
+    var length = 1;
 
-    // Don't walk into another monster.
-    var actor = game.stage.actorAt(pos + path.direction);
-    if (actor != null && actor != game.hero) return null;
-    return path.direction;
+    for (var pos in new Line(pos, game.hero.pos)) {
+      first ??= pos;
+      var tile = game.stage[pos];
+
+      // TODO: Should not walk through doors since that might not be the
+      // fastest path.
+      if (!tile.canEnterAny(monster.motilities)) return null;
+
+      if (++length >= breed.tracking) return null;
+
+      if (pos == game.hero.pos) break;
+    }
+
+    var step = first - pos;
+    if (step.y == -1) {
+      if (step.x == -1) {
+        return Direction.nw;
+      } else if (step.x == 0) {
+        return Direction.n;
+      } else {
+        return Direction.ne;
+      }
+    } else if (step.y == 0) {
+      if (step.x == -1) {
+        return Direction.w;
+      } else {
+        return Direction.e;
+      }
+    } else {
+      if (step.x == -1) {
+        return Direction.sw;
+      } else if (step.x == 0) {
+        return Direction.s;
+      } else {
+        return Direction.se;
+      }
+    }
   }
 
   /// Returns `true` if there is an open LOS from [from] to the hero.

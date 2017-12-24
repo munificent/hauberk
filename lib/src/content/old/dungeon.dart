@@ -361,10 +361,10 @@ class OldDungeon {
       // Only add cycles if they add significant shortcuts.
       // TODO: Instead of a hard cut-off, maybe shorter paths should just make
       // cycles less common?
-      var path = AStar.findPath(
-          stage, exits[0], exits[1], MotilitySet.walkAndDoor,
-          maxLength: minCyclePath);
-      if (path.length != 0 && path.length < minCyclePath) continue;
+//      var path = AStar.findPath(
+//          stage, exits[0], exits[1], MotilitySet.walkAndDoor,
+//          maxLength: minCyclePath);
+//      if (path.length != 0 && path.length < minCyclePath) continue;
 
       _addJunction(pos);
 

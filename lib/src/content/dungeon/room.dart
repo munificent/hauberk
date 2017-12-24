@@ -238,12 +238,9 @@ class RoomBiome extends Biome {
     var from = junction.position - junction.direction;
     var to = junction.position + junction.direction;
 
-    // TODO: For some reason AStar needs to be given a longer max path than
-    // we are looking for or it will very rarely find paths at the maximum
-    // length. Figure out why.
-    var path = AStar.findPath(_dungeon.stage, from, to, MotilitySet.walkAndDoor,
-        maxLength: 30);
-    if (path.length != 0 && path.length < 20) return false;
+    // Don't add a cycle if there's already a path from one side to the other
+    // that isn't very long.
+    if (new CyclePathfinder(_dungeon.stage, from, to).search()) return false;
 
     _placeDoor(junction.position);
     return true;
@@ -605,4 +602,29 @@ class BlobRoom extends RoomType {
     // TODO: Place junctions.
     return new Room(tiles, []);
   }
+}
+
+/// Used to see if there is already a path between two points in the dungeon
+/// before adding an extra door between two areas.
+class CyclePathfinder extends Pathfinder<bool> {
+  // TODO: Allow different dungeons to tweak this.
+  static const _maxLength = 20;
+
+  CyclePathfinder(Stage stage, Vec start, Vec end) : super(stage, start, end);
+
+  bool processStep(Path path) {
+    if (path.length >= _maxLength) return false;
+
+    return null;
+  }
+
+  bool reachedGoal(Path path) => true;
+
+  int stepCost(Vec pos, Tile tile) {
+    if (tile.canEnterAny(MotilitySet.walkAndDoor)) return 1;
+
+    return null;
+  }
+
+  bool unreachableGoal() => false;
 }
