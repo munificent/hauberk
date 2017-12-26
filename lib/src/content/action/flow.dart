@@ -23,7 +23,10 @@ class FlowAction extends Action {
   ActionResult onPerform() {
     if (_tiles == null) {
       // TODO: Should water open doors? Should fire burn them?
-      _flow = new Flow(game.stage, _from, _motilities, ignoreActors: true);
+      // TODO: Use a different flow that makes diagonal moves more expensive to
+      // give more natural circular behavior?
+      _flow =
+          new MotilityFlow(game.stage, _from, _motilities, ignoreActors: true);
 
       var count = (math.PI * _hit.range * _hit.range).ceil();
       _tiles = _flow.reachable.take(count).toList();

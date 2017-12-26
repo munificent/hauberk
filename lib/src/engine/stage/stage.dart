@@ -5,9 +5,9 @@ import '../core/game.dart';
 import '../hero/hero.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
-import '../monster/monster.dart';
 import 'flow.dart';
 import 'lighting.dart';
+import 'sound.dart';
 import 'tile.dart';
 
 /// The game's live play area.
@@ -16,6 +16,7 @@ class Stage {
 
   final _actors = <Actor>[];
   Lighting _lighting;
+  Sound _sound;
 
   int _currentActorIndex = 0;
 
@@ -43,14 +44,12 @@ class Stage {
   /// doesn't step on other actors.
   final Array2D<Actor> _actorsByTile;
 
-  /// Tracks global pathfinding distances to the hero, ignoring other actors.
-  Flow _heroPaths;
-
   Stage(int width, int height, Game game)
       : game = game,
         tiles = new Array2D<Tile>.generated(width, height, () => new Tile()),
         _actorsByTile = new Array2D<Actor>(width, height) {
     _lighting = new Lighting(this);
+    _sound = new Sound(this);
   }
 
   Tile operator [](Vec pos) => tiles[pos];
@@ -127,7 +126,7 @@ class Stage {
     // TODO: Is using the breed's motility correct? We probably don't want
     // drops going through doors.
     // Try to keep dropped items from overlapping.
-    var flow = new Flow(this, pos, motilities, ignoreActors: true);
+    var flow = new MotilityFlow(this, pos, motilities, ignoreActors: true);
 
     drop.spawnDrop((item) {
       items.add(item);
@@ -199,6 +198,7 @@ class Stage {
     _lighting.dirtyFloorLight();
     _lighting.dirtyActorLight();
     _lighting.dirtyVisibility();
+    _sound.dirty();
   }
 
   /// Marks the floor illumination as needing recalculation.
@@ -244,47 +244,8 @@ class Stage {
     }
   }
 
-  /// Gets the number of tiles to walk from [pos] to the [Hero]'s current
-  /// position taking into account which tiles are traversable.
-  int getHeroDistanceTo(Vec pos) {
-    _refreshDistances();
-    return _heroPaths.costAt(pos);
-  }
-
-  /// Randomly selects an open tile in the stage. Makes [tries] attempts and
-  /// chooses the one most distance from some point. Assumes that [scent2] has
-  /// been filled with the distance information for the target point.
+  /// How audible the [Hero] is from [pos].
   ///
-  /// This is used during level creation to place stronger [Monster]s and
-  /// better treasure farther from the [Hero]'s starting location.
-  Vec findDistantOpenTile(int tries) {
-    _refreshDistances();
-
-    var bestDistance = -1;
-    var best;
-
-    for (var i = 0; i < tries; i++) {
-      var pos = findOpenTile();
-      var distance = _heroPaths.costAt(pos);
-      if (distance > bestDistance) {
-        best = pos;
-        bestDistance = distance;
-      }
-    }
-
-    return best;
-  }
-
-  /// Lazily calculates the paths from every reachable tile to the [Hero]. We
-  /// use this to place better and stronger things farther from the Hero. Sound
-  /// propagation is also based on this.
-  void _refreshDistances() {
-    // Don't recalculate if still valid.
-    if (_heroPaths != null && game.hero.pos == _heroPaths.start) return;
-
-    // TODO: Is this the right motility set?
-    _heroPaths = new Flow(this, game.hero.pos,
-        new MotilitySet([Motility.walk, Motility.fly, Motility.door]),
-        ignoreActors: true);
-  }
+  /// Returns a number from 1.0 (audible at full volume) and 0.0 (inaudible).
+  double heroLoudnessAt(Vec pos) => _sound.heroLoudnessAt(pos);
 }

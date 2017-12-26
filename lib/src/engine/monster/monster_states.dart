@@ -189,26 +189,26 @@ class AsleepState extends MonsterState {
     // TODO: Breed-specific hearing.
     // Sound attenuates based on the inverse square of the distance.
     // TODO: This is very slow.
-    var flowDistance = game.stage.getHeroDistanceTo(pos);
-    var noise = 0;
-    if (flowDistance != null) {
-      noise = game.hero.lastNoise * 100 ~/ (flowDistance * flowDistance);
-    }
-
-    if (noise > rng.range(500)) {
-      game.log.message('Something stirs in the darkness.');
-      Debug.logMonster(
-          monster,
-          "Sleep: Passed noise check, flow distance: "
-          "$flowDistance, noise: $noise");
-      return getNextStateAction(new AwakeState());
-    }
-
-    // Keep sleeping.
-    Debug.logMonster(
-        monster,
-        "Sleep: Failed noise check, flow distance: "
-        "$flowDistance, noise: $noise");
+//    var flowDistance = game.stage.getHeroDistanceTo(pos);
+//    var noise = 0;
+//    if (flowDistance != null) {
+//      noise = game.hero.lastNoise * 100 ~/ (flowDistance * flowDistance);
+//    }
+//
+//    if (noise > rng.range(500)) {
+//      game.log.message('Something stirs in the darkness.');
+//      Debug.logMonster(
+//          monster,
+//          "Sleep: Passed noise check, flow distance: "
+//          "$flowDistance, noise: $noise");
+//      return getNextStateAction(new AwakeState());
+//    }
+//
+//    // Keep sleeping.
+//    Debug.logMonster(
+//        monster,
+//        "Sleep: Failed noise check, flow distance: "
+//        "$flowDistance, noise: $noise");
     return new RestAction();
   }
 }
@@ -406,8 +406,8 @@ class AwakeState extends MonsterState {
     if (best != null) return best;
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
-    var flow =
-        new Flow(game.stage, pos, monster.motilities, maxDistance: maxRange);
+    var flow = new MotilityFlow(game.stage, pos, monster.motilities,
+        maxDistance: maxRange);
     var dir = flow.directionToBestWhere(isValidRangedPosition);
     if (dir != Direction.none) {
       Debug.logMonster(monster, "Ranged position $dir");
@@ -503,7 +503,7 @@ class AfraidState extends MonsterState {
 
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
-    var flow = new Flow(game.stage, pos, monster.motilities,
+    var flow = new MotilityFlow(game.stage, pos, monster.motilities,
         maxDistance: breed.tracking);
     // TODO: Should monsters prefer darkness too?
     var dir = flow.directionToBestWhere((pos) => game.stage[pos].isOccluded);

@@ -31,5 +31,6 @@ export 'engine/stage/flow.dart';
 export 'engine/stage/fov.dart';
 export 'engine/stage/lighting.dart';
 export 'engine/stage/pathfinder.dart';
+export 'engine/stage/sound.dart';
 export 'engine/stage/stage.dart';
 export 'engine/stage/tile.dart';

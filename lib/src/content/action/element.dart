@@ -29,7 +29,9 @@ class WindAction extends Action {
     // TODO: Using the actor's motilities here is a little weird. It means, for
     // example, that humans can be blown through doors and amphibians can be
     // blown into water. Is that what we want?
-    var flow = new Flow(game.stage, actor.pos, actor.motilities,
+    // TODO: Use a different flow that makes diagonal moves more expensive to
+    // give more natural circular behavior?
+    var flow = new MotilityFlow(game.stage, actor.pos, actor.motilities,
         maxDistance: distance);
     var positions =
         flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();

@@ -6,11 +6,6 @@ import 'bucket_queue.dart';
 import 'stage.dart';
 import 'tile.dart';
 
-// TODO: Instead of baking motilities, max distance, and ignore actors into
-// this one class, allow the cost function to be parameterized. Then use
-// different ones for the different places that this is used. (For example, for
-// flow spell effects, we probably want diagonal moves to be higher cost so
-// that it flows in a more circular way.)
 /// A lazy, generic pathfinder.
 ///
 /// It can be used to find the cost from a starting point to a goal, or
@@ -20,18 +15,19 @@ import 'tile.dart';
 /// as far as needed to answer the query. In practice, this means it often does
 /// less than 10% of the iterations of a full eager search.
 ///
+/// This abstract base class does not know the cost to enter a tile. Subclasses
+/// provide a method that determines that.
+///
 /// See:
 ///
 /// * http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
-class Flow {
+abstract class Flow {
   static const _unknown = -2;
   static const _unreachable = -1;
 
-  final Stage _stage;
+  final Stage stage;
   final Vec _start;
   final int _maxDistance;
-  final MotilitySet _motilities;
-  final bool _ignoreActors;
 
   Array2D<int> _costs;
 
@@ -53,10 +49,8 @@ class Flow {
   /// Gets the starting position in stage coordinates.
   Vec get start => _start;
 
-  Flow(this._stage, this._start, this._motilities,
-      {int maxDistance, bool ignoreActors})
-      : _maxDistance = maxDistance,
-        _ignoreActors = ignoreActors ?? false {
+  Flow(this.stage, this._start, {int maxDistance})
+      : _maxDistance = maxDistance {
     var width;
     var height;
 
@@ -65,13 +59,13 @@ class Flow {
     if (_maxDistance == null) {
       // Inset by one since we can assume the edges are impassable.
       _offset = new Vec(1, 1);
-      width = _stage.width - 2;
-      height = _stage.height - 2;
+      width = stage.width - 2;
+      height = stage.height - 2;
     } else {
       var left = math.max(1, _start.x - _maxDistance);
       var top = math.max(1, _start.y - _maxDistance);
-      var right = math.min(_stage.width - 1, _start.x + _maxDistance + 1);
-      var bottom = math.min(_stage.height - 1, _start.y + _maxDistance + 1);
+      var right = math.min(stage.width - 1, _start.x + _maxDistance + 1);
+      var bottom = math.min(stage.height - 1, _start.y + _maxDistance + 1);
       _offset = new Vec(left, top);
       width = right - left;
       height = bottom - top;
@@ -231,7 +225,7 @@ class Flow {
 
     var parentCost = _costs[start];
 
-    // Update the neighbor's costs.
+    // Propagate to neighboring tiles.
     for (var dir in Direction.all) {
       var here = start + dir;
 
@@ -240,12 +234,11 @@ class Flow {
       // Ignore tiles we've already reached.
       if (_costs[here] != _unknown) continue;
 
-      var tile = _stage[here + _offset];
-      var relative = _entryCost(parentCost, here + _offset, tile);
+      var tile = stage[here + _offset];
+      var relative = tileCost(parentCost, here + _offset, tile);
 
       if (relative == null) {
         _costs[here] = _unreachable;
-        continue;
       } else {
         var total = parentCost + relative;
         _costs[here] = total;
@@ -257,12 +250,28 @@ class Flow {
     return true;
   }
 
-  int _entryCost(int parentCost, Vec pos, Tile tile) {
+  /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
+  int tileCost(int parentCost, Vec pos, Tile tile);
+}
+
+/// A basic [Flow] implementation that flows through any tile permitting one of
+/// a given [MotilitySet].
+class MotilityFlow extends Flow {
+  final MotilitySet _motilities;
+  final bool _ignoreActors;
+
+  MotilityFlow(Stage stage, Vec start, this._motilities,
+      {int maxDistance, bool ignoreActors})
+      : _ignoreActors = ignoreActors ?? false,
+        super(stage, start, maxDistance: maxDistance);
+
+  /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
+  int tileCost(int parentCost, Vec pos, Tile tile) {
     // Can't enter impassable tiles.
     if (!tile.canEnterAny(_motilities)) return null;
 
     // Can't walk through other actors.
-    if (!_ignoreActors && _stage.actorAt(pos) != null) {
+    if (!_ignoreActors && stage.actorAt(pos) != null) {
       return null;
     }
 

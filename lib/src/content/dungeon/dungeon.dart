@@ -399,7 +399,7 @@ class Dungeon {
       // handle actors being placed while the flow is being used -- it still
       // thinks those tiles are available. Come up with a better way to place
       // the monsters.
-      var flow = new Flow(stage, pos, breed.motilities);
+      var flow = new MotilityFlow(stage, pos, breed.motilities);
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
       // TODO: Checking for hero pos here is hacky.
@@ -538,8 +538,8 @@ class Dungeon {
     // Calculate how far every reachable tile is from the hero's starting point.
     // TODO: Is this the right motilities?
     debugInfo = _info;
-    var flow =
-        new Flow(stage, _heroPos, MotilitySet.walkAndDoor, ignoreActors: true);
+    var flow = new MotilityFlow(stage, _heroPos, MotilitySet.walkAndDoor,
+        ignoreActors: true);
     for (var pos in safeBounds) {
       _info[pos].distance = flow.costAt(pos);
     }
