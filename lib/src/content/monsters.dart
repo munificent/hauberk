@@ -445,7 +445,7 @@ void insects() {
 void insubstantials() {}
 
 void jellies() {
-  family("j", frequency: 0.7, speed: -1, flags: "fearless")
+  family("j", frequency: 0.7, speed: -1, meander: 5, flags: "fearless")
     ..preferWall()
     ..count(4);
   breed("green jelly", 1, lima, 5)
@@ -670,7 +670,7 @@ void quest() {
 }
 
 void rodents() {
-  family("r", speed: 1, dodge: 30, meander: 4)..preferWall();
+  family("r", dodge: 30, meander: 4)..preferWall();
   breed("[mouse|mice]", 1, sandal, 2, frequency: 0.5)
     ..count(2, 5)
     ..attack("bite[s]", 3)
@@ -693,8 +693,7 @@ void rodents() {
 
 void reptiles() {
   family("R");
-  // TODO: Should be able to swim.
-  breed("frog", 1, lima, 4, speed: 1, dodge: 30, meander: 4)
+  breed("frog", 1, lima, 4, dodge: 30, meander: 4)
     ..swim()
     ..placeIn("aquatic")
     ..attack("hop[s] on", 2);
@@ -859,7 +858,7 @@ _BreedBuilder breed(String name, int depth, appearance, int health,
 
   _builder = new _BreedBuilder(name, depth, frequency, glyph, health);
   _builder._speed = speed;
-  _builder._meander;
+  _builder._meander = meander;
   return _builder;
 }
 
