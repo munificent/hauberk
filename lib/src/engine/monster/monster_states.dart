@@ -65,7 +65,6 @@ import 'move.dart';
 /// If it decides to go melee, it simply pathfinds to the hero and goes for it.
 /// In either case, the end result is walking one tile (or possibly standing
 /// in place.)
-
 abstract class MonsterState {
   Monster _monster;
 
@@ -84,15 +83,6 @@ abstract class MonsterState {
   }
 
   Action getAction();
-
-  void changeState(MonsterState state) {
-    _monster.changeState(state);
-  }
-
-  Action getNextStateAction(MonsterState state) {
-    _monster.changeState(state);
-    return state.getAction();
-  }
 
   /// Applies the monster's meandering to [dir].
   Direction _meander(Direction dir) {
@@ -121,10 +111,6 @@ abstract class MonsterState {
       dirs = [];
 
       // Otherwise, bias towards the direction the monster is headed.
-      for (var i = 0; i < 4; i++) {
-        dirs.add(dir);
-      }
-
       for (var i = 0; i < 3; i++) {
         dirs.add(dir.rotateLeft45);
         dirs.add(dir.rotateRight45);
@@ -137,7 +123,6 @@ abstract class MonsterState {
 
       dirs.add(dir.rotateLeft90.rotateLeft45);
       dirs.add(dir.rotateRight90.rotateRight45);
-      dirs.add(dir.rotate180);
     }
 
     dirs = dirs.where((dir) {
@@ -153,98 +138,11 @@ abstract class MonsterState {
 }
 
 class AsleepState extends MonsterState {
-  Action getAction() {
-    var distance = (game.hero.pos - pos).kingLength;
-
-    // TODO: Make this more cumulative over time. Getting in a drawn out fight
-    // next to a monster should definitely wake it up, not subject to a large
-    // number of random chances failing.
-
-    // Don't wake up it very far away.
-    if (distance > 30) {
-      Debug.logMonster(monster, "Sleep: Distance $distance is too far to see.");
-      return new RestAction();
-    }
-
-    // If the monster can see the hero, there's a good chance it will wake up.
-    if (isVisibleToHero) {
-      // TODO: Breed-specific sight/alertness.
-      if (rng.oneIn(distance + 1)) {
-        log('{1} notice[s] {2}!', monster, game.hero);
-        Debug.logMonster(monster, "Sleep: In LOS, awoke.");
-        return getNextStateAction(new AwakeState());
-      }
-
-      Debug.logMonster(
-          monster, "Sleep: In LOS, failed oneIn(${distance + 1}).");
-      return new RestAction();
-    }
-
-    if (distance > 20) {
-      Debug.logMonster(monster, "Sleep: Distance $distance is too far to hear");
-      return new RestAction();
-    }
-
-    // Otherwise, if sound can travel to it from the hero, it may wake up.
-    // TODO: Breed-specific hearing.
-    // Sound attenuates based on the inverse square of the distance.
-    // TODO: This is very slow.
-//    var flowDistance = game.stage.getHeroDistanceTo(pos);
-//    var noise = 0;
-//    if (flowDistance != null) {
-//      noise = game.hero.lastNoise * 100 ~/ (flowDistance * flowDistance);
-//    }
-//
-//    if (noise > rng.range(500)) {
-//      game.log.message('Something stirs in the darkness.');
-//      Debug.logMonster(
-//          monster,
-//          "Sleep: Passed noise check, flow distance: "
-//          "$flowDistance, noise: $noise");
-//      return getNextStateAction(new AwakeState());
-//    }
-//
-//    // Keep sleeping.
-//    Debug.logMonster(
-//        monster,
-//        "Sleep: Failed noise check, flow distance: "
-//        "$flowDistance, noise: $noise");
-    return new RestAction();
-  }
-}
-
-class AIChoice {
-  final num score;
-  final createAction;
-  final description;
-
-  AIChoice(this.score, this.description, this.createAction);
-
-  String toString() => "$score - $description";
+  Action getAction() => new RestAction();
 }
 
 class AwakeState extends MonsterState {
-  /// How many turns the monster has taken while awake since it last saw the
-  /// hero. If it goes too long, it will eventually get bored and fall back
-  /// asleep.
-  int _turnsSinceLastSawHero = 0;
-
   Action getAction() {
-    // See if things are quiet enough to fall asleep.
-    if (isVisibleToHero) {
-      _turnsSinceLastSawHero = 0;
-    } else {
-      _turnsSinceLastSawHero++;
-
-      // The longer it goes without seeing the hero the more likely it will
-      // fall asleep.
-      if (_turnsSinceLastSawHero > rng.range(10, 20)) {
-        Debug.logMonster(
-            monster, "Haven't seen hero in $_turnsSinceLastSawHero, sleeping");
-        return getNextStateAction(new AsleepState());
-      }
-    }
-
     // If there is a worthwhile move, use it.
     var moves = breed.moves
         .where((move) => monster.canUse(move) && move.shouldUse(monster))
@@ -386,9 +284,7 @@ class AwakeState extends MonsterState {
 
     if (isValidRangedPosition(pos)) {
       best = Direction.none;
-      // TODO: Need to decide whether ranged attacks use kingLength or Cartesian
-      // and then apply consistently.
-      bestDistance = (pos - game.hero.pos).lengthSquared;
+      bestDistance = (pos - game.hero.pos).kingLength;
     }
 
     for (var dir in Direction.all) {
@@ -396,7 +292,7 @@ class AwakeState extends MonsterState {
       if (!monster.canOccupy(pos)) continue;
       if (!isValidRangedPosition(pos)) continue;
 
-      var distance = (pos - game.hero.pos).lengthSquared;
+      var distance = (pos - game.hero.pos).kingLength;
       if (distance > bestDistance) {
         best = dir;
         bestDistance = distance;
@@ -498,6 +394,7 @@ class AwakeState extends MonsterState {
 
 class AfraidState extends MonsterState {
   Action getAction() {
+    // TODO: Take light and the breed's light preference into account.
     // If we're already hidden, rest.
     if (game.stage[pos].isOccluded) return new RestAction();
 
@@ -529,7 +426,9 @@ class AfraidState extends MonsterState {
     }
 
     // If we got here, we couldn't escape. Cornered!
-    Debug.logMonster(monster, "Cornered!");
-    return getNextStateAction(new AwakeState());
+    // TODO: Kind of hacky.
+    var state = new AwakeState();
+    monster.changeState(state);
+    return state.getAction();
   }
 }

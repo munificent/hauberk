@@ -8,7 +8,11 @@ import 'tile.dart';
 ///
 /// Used for monsters that hear the hero's actions.
 class Sound {
-  static final _maxDistance = 16;
+  static const restNoise = 0.05;
+  static const normalNoise = 0.25;
+  static const attackNoise = 1.0;
+
+  static const maxDistance = 16;
 
   final Stage _stage;
 
@@ -30,21 +34,21 @@ class Sound {
     _flow = null;
   }
 
-  /// Calculates the level of audibility between [a] and [b].
+  /// How far away the [Hero] is from [pos] in terms of sound flow, up to
+  /// [Sound.maxDistance].
   ///
-  /// Returns a number from 1.0 (audible at full volume) and 0.0 (inaudible).
-  double heroLoudnessAt(Vec pos) {
-    if ((_stage.game.hero.pos - pos).kingLength > _maxDistance) return 0.0;
+  /// Returns the auditory equivalent of the number of open tiles away the hero
+  /// is. (It may be fewer actual tiles if there are sound-deadening obstacles
+  /// in the way like doors or walls.
+  ///
+  /// Smaller numbers mean louder sound.
+  int heroAuditoryDistance(Vec pos) {
+    if ((_stage.game.hero.pos - pos).kingLength > maxDistance) {
+      return maxDistance;
+    }
 
     _refresh();
-    var cost = _flow.costAt(pos);
-    if (cost == null) return 0.0;
-
-    // In theory, this should be 1/distance^2 because sound attenuates with the
-    // inverse square. But since the dungeon is relatively flat and we assume
-    // sound bounces off the floor and ceiling, we'll say sound is more 2D and
-    // expands as a circle, not a sphere, hence inverse linear.
-    return 1.0 - cost / _maxDistance;
+    return _flow.costAt(pos) ?? maxDistance;
   }
 
   void _refresh() {
@@ -61,7 +65,7 @@ class _SoundFlow extends Flow {
 
   int tileCost(int parentCost, Vec pos, Tile tile) {
     // Stop propagating if we reach the max distance.
-    if (parentCost >= Sound._maxDistance) return null;
+    if (parentCost >= Sound.maxDistance) return null;
 
     // Don't flow off the edge of the dungeon. We have to check for this
     // explicitly because we do flow through walls.

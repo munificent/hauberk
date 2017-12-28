@@ -11,12 +11,15 @@ import '../core/energy.dart';
 import '../core/game.dart';
 import '../core/log.dart';
 import '../hero/hero.dart';
+import '../stage/lighting.dart';
 import '../stage/tile.dart';
 import 'breed.dart';
 import 'monster_states.dart';
 import 'move.dart';
 
 class Monster extends Actor {
+  static const _maxAlertness = 1.0;
+
   final Breed breed;
 
   /// The monster's generation.
@@ -40,14 +43,17 @@ class Monster extends Actor {
   final _recharges = <Move, num>{};
 
   bool get isAfraid => _state is AfraidState;
-
   bool get isAsleep => _state is AsleepState;
+  bool get isAwake => _state is AwakeState;
 
   MotilitySet get motilities => breed.motilities;
 
   /// Whether the monster wanted to melee or do a ranged attack the last time
   /// it took a step.
   bool wantsToMelee = true;
+
+  double _alertness = 0.0;
+  double get alertness => _alertness;
 
   /// How afraid of the hero the monster currently is. If it gets high enough,
   /// the monster will switch to the afraid state and try to flee.
@@ -140,12 +146,99 @@ class Monster extends Actor {
       _recharges[move] = math.max(0.0, _recharges[move] - 1.0);
     }
 
+    // Use the monster's senses to update its mood.
+    var awareness = 0.0;
+    awareness += _seeHero();
+    awareness += _hearHero();
+    // TODO: Smell?
+
+    var notice = awareness + _alertness * 0.2;
+
+    // Persist some of the awareness.
+    // TODO: The ratio here could be tuned by breeds where some have longer
+    // memories than others.
+    _alertness = _alertness * 0.8 + awareness * 0.2;
+    _alertness = _alertness.clamp(0.0, _maxAlertness);
+
+    _decayFear();
+    _fear = _fear.clamp(0.0, _frightenThreshold);
+
+    _updateState(notice);
     return _state.getAction();
   }
 
-  /// Modifies fear and then determines if it's has crossed the threshold to
+  void _updateState(double notice) {
+    // See if we want to change state.
+    if (isAsleep) {
+      if (_fear > _frightenThreshold) {
+        log("{1} is afraid!", this);
+
+        _resetCharges();
+        changeState(new AfraidState());
+      } else if (rng.float(1.4) <= notice) {
+        if (isVisibleToHero) {
+          log("{1} wakes up!", this);
+        } else {
+          log("Something stirs in the darkness.");
+        }
+
+        _alertness = _maxAlertness;
+        _resetCharges();
+        changeState(new AwakeState());
+      }
+    } else if (isAwake) {
+      if (_fear > _frightenThreshold) {
+        log("{1} is afraid!", this);
+        changeState(new AfraidState());
+      } else if (_alertness < 0.01) {
+        if (isVisibleToHero) {
+          log("{1} falls asleep!", this);
+        }
+
+        _alertness = 0.0;
+        changeState(new AsleepState());
+      }
+    } else if (isAfraid) {
+      if (_fear <= 0.0) {
+        log("{1} grows courageous!", this);
+        changeState(new AwakeState());
+      }
+    }
+  }
+
+  double _seeHero() {
+    if (breed.vision == 0) return 0.0;
+
+    var heroPos = game.hero.pos;
+    if (!canView(heroPos)) return 0.0;
+
+    // TODO: Don't check illumination for breeds that see in the dark.
+    var illumination = game.stage[heroPos].illumination / Lighting.max;
+    if (illumination == 0.0) return 0.0;
+
+    var distance = (heroPos - pos).kingLength;
+    if (distance >= breed.vision) return 0.0;
+
+    var visibility = (breed.vision - distance) / breed.vision;
+    return illumination * visibility;
+
+    // TODO: Can the monster see other changes? Other monsters moving?
+  }
+
+  double _hearHero() {
+    if (breed.hearing == 0) return 0.0;
+
+    // TODO: Hear other monsters?
+    var distance = game.stage.heroAuditoryDistance(pos);
+    if (distance >= breed.hearing) return 0.0;
+
+    var audibility = (breed.hearing - distance) / breed.hearing;
+    return game.hero.lastNoise * audibility;
+  }
+
+  /// Modifies fear and then determines if it has crossed the threshold to
   /// cause a state change.
-  void _modifyFear(Action action, double offset) {
+  void _modifyFear(double offset) {
     // Don't add effects if the monster already died.
     if (!isAlive) return;
 
@@ -155,45 +248,16 @@ class Monster extends Actor {
     if (breed.flags.contains("immobile")) return;
 
     _fear = math.max(0.0, _fear + offset);
-
-    if (_state is AwakeState && _fear > _frightenThreshold) {
-      // Clamp the fear. This is mainly to ensure that a bunch of monsters
-      // don't all get over their fear at the exact same time later. Since the
-      // threshold is randomized, this will make the delay before growing
-      // courageous random too.
-      _fear = _frightenThreshold;
-
-      log("{1} is afraid!", this);
-      changeState(new AfraidState());
-      action.addEvent(EventType.fear, actor: this);
-      return;
-    }
-
-    if (_state is AfraidState && _fear <= 0.0) {
-      log("{1} grows courageous!", this);
-      changeState(new AwakeState());
-      action.addEvent(EventType.courage, actor: this);
-    }
   }
 
-  /// Changes the monster to its awake state if sleeping.
+  /// Changes the monster to its awake state on its next turn, if sleeping.
   void wakeUp() {
-    if (_state is! AsleepState) return;
-    changeState(new AwakeState());
+    _alertness = _maxAlertness;
   }
 
   void changeState(MonsterState state) {
     _state = state;
     _state.bind(this);
-
-    // TODO: Move this into state?
-    if (state is AwakeState) {
-      // Don't start fully charged. This ensures the monster doesn't
-      // immediately unload everything on the hero when first spotted.
-      for (var move in breed.moves) {
-        _recharges[move] = rng.float(move.rate / 2);
-      }
-    }
   }
 
   Hit onCreateMeleeHit() => rng.item(breed.attacks).createHit();
@@ -206,7 +270,7 @@ class Monster extends Actor {
     // The greater the power of the hit, the more emboldening it is.
     var fear = 100.0 * damage / game.hero.health.max;
 
-    _modifyFear(action, -fear);
+    _modifyFear(-fear);
     Debug.logMonster(
         this,
         "Hit for ${damage} / ${game.hero.health.max} "
@@ -221,9 +285,11 @@ class Monster extends Actor {
   /// This is called when another monster in sight of this one has damaged the
   /// hero.
   void _viewHeroDamage(Action action, int damage) {
+    if (isAsleep) return;
+
     var fear = 50.0 * damage / health.max;
 
-    _modifyFear(action, -fear);
+    _modifyFear(-fear);
     Debug.logMonster(
         this,
         "Witness ${damage} / ${health.max} "
@@ -232,13 +298,15 @@ class Monster extends Actor {
 
   /// Taking damage increases fear.
   void onTakeDamage(Action action, Actor attacker, int damage) {
+    _alertness = _maxAlertness;
+
     // The greater the power of the hit, the more frightening it is.
     var fear = 100.0 * damage / health.max;
 
     // Getting hurt enrages it.
     if (breed.flags.contains("berzerk")) fear *= -3.0;
 
-    _modifyFear(action, fear);
+    _modifyFear(fear);
     Debug.logMonster(
         this,
         "Hit for ${damage} / ${health.max} "
@@ -253,6 +321,8 @@ class Monster extends Actor {
   /// This is called when another monster in sight of this one has taken
   /// damage.
   void _viewMonsterDamage(Action action, Monster monster, int damage) {
+    if (isAsleep) return;
+
     var fear = 50.0 * damage / health.max;
 
     if (breed.flags.contains("protective") && monster.breed == breed) {
@@ -263,7 +333,7 @@ class Monster extends Actor {
       fear *= -1.0;
     }
 
-    _modifyFear(action, fear);
+    _modifyFear(fear);
     Debug.logMonster(
         this,
         "Witness ${damage} / ${health.max} "
@@ -279,10 +349,6 @@ class Monster extends Actor {
 
     game.stage.removeActor(this);
     Debug.removeMonster(this);
-  }
-
-  void onFinishTurn(Action action) {
-    _decayFear(action);
   }
 
   void changePosition(Vec from, Vec to) {
@@ -303,8 +369,7 @@ class Monster extends Actor {
       if (other is! Monster) continue;
       var monster = other as Monster;
 
-      if (monster._state is AsleepState) continue;
-
+      // TODO: Take breed vision into account.
       var distance = (monster.pos - pos).kingLength;
       if (distance > 20) continue;
 
@@ -314,7 +379,7 @@ class Monster extends Actor {
 
   /// Fear decays over time, more quickly the farther the monster is from the
   /// hero.
-  void _decayFear(Action action) {
+  void _decayFear() {
     // TODO: Poison should slow the decay of fear.
     var fearDecay = 5.0 + (pos - game.hero.pos).kingLength;
 
@@ -324,7 +389,17 @@ class Monster extends Actor {
     // The closer the monster is to death, the less quickly it gets over fear.
     fearDecay = 2.0 + fearDecay * health.current / health.max;
 
-    _modifyFear(action, -fearDecay);
+    _modifyFear(-fearDecay);
     Debug.logMonster(this, "Decay fear by $fearDecay to $_fear");
+  }
+
+  /// Randomizes the monster's charges.
+  ///
+  /// Ensures the monster doesn't immediately unload everything on the hero
+  /// when first spotted.
+  void _resetCharges() {
+    for (var move in breed.moves) {
+      _recharges[move] = rng.float(move.rate / 2);
+    }
   }
 }

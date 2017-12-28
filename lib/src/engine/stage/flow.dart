@@ -271,9 +271,7 @@ class MotilityFlow extends Flow {
     if (!tile.canEnterAny(_motilities)) return null;
 
     // Can't walk through other actors.
-    if (!_ignoreActors && stage.actorAt(pos) != null) {
-      return null;
-    }
+    if (!_ignoreActors && stage.actorAt(pos) != null) return null;
 
     // TODO: Assumes cost == distance.
     // Can't reach if it's too far.

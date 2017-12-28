@@ -268,6 +268,8 @@ class Lighting {
       }
     }
 
+    // The hero can always tell what they're standing on, even in the dark.
+    numExplored += _stage[_stage.game.hero.pos].updateExplored(force: true);
     _stage.game.hero.explore(numExplored);
   }
 

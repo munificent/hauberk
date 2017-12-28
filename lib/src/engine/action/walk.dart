@@ -3,8 +3,8 @@ import 'package:piecemeal/piecemeal.dart';
 import 'action.dart';
 import 'attack.dart';
 import '../core/game.dart';
-import '../core/option.dart';
 import '../hero/hero.dart';
+import '../stage/sound.dart';
 
 class WalkAction extends Action {
   final Direction dir;
@@ -145,5 +145,5 @@ class RestAction extends Action {
     hero.health.current++;
   }
 
-  int get noise => Option.noiseRest;
+  double get noise => Sound.restNoise;
 }

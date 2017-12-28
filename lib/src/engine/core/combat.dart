@@ -142,6 +142,7 @@ class Hit {
       for (var defense in defenses) {
         strike -= defense.amount;
         if (strike < 0) {
+          // TODO: Should still affect monster alertness.
           action.log(defense.message, defender, attackNoun);
           return false;
         }
@@ -155,6 +156,7 @@ class Hit {
 
     if (damage == 0) {
       // Armor cancelled out all damage.
+      // TODO: Should still affect monster alertness.
       action.log('{1} do[es] no damage to {2}.', attackNoun, defender);
       return true;
     }

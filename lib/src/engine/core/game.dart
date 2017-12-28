@@ -28,7 +28,7 @@ class Game {
 
   Game(this.content, this._save, this.depth) {
     // TODO: Vary size?
-    _stage = new Stage(70, 70, this);
+    _stage = new Stage(60, 34, this);
   }
 
   Iterable<String> generate() sync* {
@@ -220,12 +220,6 @@ class EventType {
 
   /// An [Actor] was healed.
   static const heal = const EventType("heal");
-
-  /// An [Actor] was frightened.
-  static const fear = const EventType("fear");
-
-  /// An [Actor] regained their courage.
-  static const courage = const EventType("courage");
 
   /// Something in the level was detected.
   static const detect = const EventType("detect");

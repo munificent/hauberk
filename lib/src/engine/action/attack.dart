@@ -1,5 +1,5 @@
 import '../core/actor.dart';
-import '../core/option.dart';
+import '../stage/sound.dart';
 import 'action.dart';
 
 /// [Action] for a melee attack from one [Actor] to another.
@@ -15,7 +15,7 @@ class AttackAction extends Action {
     return ActionResult.success;
   }
 
-  int get noise => Option.noiseHit;
+  double get noise => Sound.attackNoise;
 
   String toString() => '$actor attacks $defender';
 }

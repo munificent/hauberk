@@ -6,9 +6,9 @@ import '../core/actor.dart';
 import '../core/element.dart';
 import '../core/game.dart';
 import '../core/log.dart';
-import '../core/option.dart';
 import '../hero/hero.dart';
 import '../monster/monster.dart';
+import '../stage/sound.dart';
 
 abstract class Action {
   Actor _actor;
@@ -71,7 +71,7 @@ abstract class Action {
 
   /// How much noise is produced by this action. Override to make certain
   /// actions quieter or louder.
-  int get noise => Option.noiseNormal;
+  double get noise => Sound.normalNoise;
 
   void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     if (!_actor.isVisibleToHero) return;

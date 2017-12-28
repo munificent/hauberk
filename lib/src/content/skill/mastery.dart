@@ -43,5 +43,5 @@ abstract class MasteryAction extends Action {
     hit.perform(this, actor, defender);
   }
 
-  int get noise => Option.noiseHit;
+  double get noise => Sound.attackNoise;
 }

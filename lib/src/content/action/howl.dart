@@ -14,7 +14,6 @@ class HowlAction extends Action {
 
       if (actor is Monster && (actor.pos - monster.pos) <= _range) {
         monster.wakeUp();
-        monster.log("{1} wakes up!", monster);
       }
     }
 

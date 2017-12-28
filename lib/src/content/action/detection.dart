@@ -30,7 +30,7 @@ class DetectAction extends Action {
     if (_tilesByDistance.isEmpty) return ActionResult.success;
 
     for (var pos in _tilesByDistance.removeLast()) {
-      game.hero.explore(game.stage[pos].updateExplored());
+      game.hero.explore(game.stage[pos].updateExplored(force: true));
 
       addEvent(EventType.detect, pos: pos);
     }

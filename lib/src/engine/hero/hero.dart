@@ -134,16 +134,15 @@ class Hero extends Actor {
   set focus(int value) => _focus = value.clamp(0, Option.maxFocus);
 
   /// How much noise the Hero's last action made.
-  int get lastNoise => _lastNoise;
-  int _lastNoise = 0;
+  double get lastNoise => _lastNoise;
+  double _lastNoise = 0.0;
 
   // TODO: Equipment and items that let the hero swim, fly, etc.
   MotilitySet get motilities => MotilitySet.walkAndDoor;
 
   // TODO: Calculate from wielded light source and other equipment.
   int get emanationLevel {
-    // The player can always see the hero.
-    var level = 1;
+    var level = 0;
 
     // Find the brightest light source being carried.
     for (var item in inventory) {

@@ -526,7 +526,8 @@ class GameScreen extends Screen<Input> {
           darkFore = itemGlyph.fore;
         }
 
-        if (tile.isVisible) {
+        // The hero is always visible, even in the dark.
+        if (tile.isVisible || pos == game.hero.pos) {
           var actor = game.stage.actorAt(pos);
           if (actor != null) {
             var actorGlyph = actor.appearance;

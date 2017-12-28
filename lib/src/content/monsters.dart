@@ -28,8 +28,6 @@ Map<Breed, List<_NamedMinion>> _minionNames = {};
 
 /// Static class containing all of the [Monster] [Breed]s.
 class Monsters {
-  // TODO: Now that monsters are spawned using encounters, they no longer need
-  // to have a level or be in a resource set.
   static final ResourceSet<Breed> breeds = new ResourceSet();
 
   static void initialize() {
@@ -161,6 +159,8 @@ class Monsters {
     //   tag.
     // - Encounters that pick a couple of monsters from the same tag.
     // - Themed rooms that are filled with a certain tag.
+
+    // TODO: Tune vision and hearing for breeds.
   }
 }
 

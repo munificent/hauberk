@@ -36,6 +36,12 @@ class Breed {
   /// Used to determine maximum pathfinding distance.
   final int tracking;
 
+  /// How many tiles away the monster can see the hero.
+  final int vision;
+
+  /// How many tiles away (as sound flows) the monster can hear the hero.
+  final int hearing;
+
   /// How much randomness the monster has when walking towards its target.
   final int meander;
 
@@ -82,6 +88,8 @@ class Breed {
       {this.depth,
       this.maxHealth,
       this.tracking,
+      int vision,
+      int hearing,
       this.meander,
       int speed,
       int dodge,
@@ -89,7 +97,9 @@ class Breed {
       this.countMax,
       this.stain,
       this.flags})
-      : speed = speed ?? 0,
+      : vision = vision ?? 16,
+        hearing = hearing ?? 16,
+        speed = speed ?? 0,
         dodge = dodge ?? 20;
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of

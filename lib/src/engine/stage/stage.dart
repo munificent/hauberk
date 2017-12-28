@@ -244,8 +244,11 @@ class Stage {
     }
   }
 
-  /// How audible the [Hero] is from [pos].
+  /// How far away the [Hero] is from [pos] in terms of sound flow, up to
+  /// [Sound.maxDistance].
   ///
-  /// Returns a number from 1.0 (audible at full volume) and 0.0 (inaudible).
-  double heroLoudnessAt(Vec pos) => _sound.heroLoudnessAt(pos);
+  /// Returns the auditory equivalent of the number of open tiles away the hero
+  /// is. (It may be fewer actual tiles if there are sound-deadening obstacles
+  /// in the way like doors or walls.
+  int heroAuditoryDistance(Vec pos) => _sound.heroAuditoryDistance(pos);
 }

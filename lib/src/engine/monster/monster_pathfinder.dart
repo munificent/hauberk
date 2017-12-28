@@ -19,9 +19,9 @@ class MonsterPathfinder extends Pathfinder<Direction> {
   /// is "sorta" empty, but still not as desirable as an actually empty tile.
   static const _occupiedCost = 60;
 
-  /// When calculating pathfinding, how much it costs cross a currently-closed
-  /// door. Instead of considering them completely impassable, we just have them
-  /// be expensive, because it still may be beneficial for the monster to get
+  /// When calculating pathfinding, how much it costs to cross a closed door.
+  /// Instead of considering them completely impassable, we just have them be
+  /// expensive, because it still may be beneficial for the monster to get
   /// closer to the door (for when the hero opens it later).
   static const _doorCost = 80;
 
@@ -72,13 +72,14 @@ class MonsterPathfinder extends Pathfinder<Direction> {
   int stepCost(Vec pos, Tile tile) {
     // TODO: Take illumination into account for monsters that dislike light or
     // darkness.
+    var firstStep = (pos - start).kingLength == 1;
 
     // Pathfind around other actors. We assume here that the monster AI does
     // not apply pathfinding when already next to the hero. Otherwise, this
     // will prevent them from actually attacking.
     if (stage.actorAt(pos) != null) {
       // Don't make a first step directly onto an actor.
-      if ((pos - start).kingLength == 1) return null;
+      if (firstStep) return null;
 
       // But if it's elsewhere along the path, don't consider the tile totally
       // blocked. By the time we get there, there's a good chance the actor
@@ -92,8 +93,11 @@ class MonsterPathfinder extends Pathfinder<Direction> {
       if (_monster.motilities.contains(Motility.door)) {
         // One to open the door and one to enter the tile.
         return _floorCost * 2;
+      } else if (firstStep) {
+        // Can't open the door.
+        return null;
       } else {
-        // Even though the monster can't open doors, we don't consider it
+        // Even though the monster can't open the door, we don't consider it
         // totally impassable because there's a chance the door will be
         // opened by someone else (like the hero).
         return _doorCost;

@@ -50,14 +50,6 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
       break;
 
-    case EventType.fear:
-      effects.add(new BlinkEffect(event.actor, mustard));
-      break;
-
-    case EventType.courage:
-      effects.add(new BlinkEffect(event.actor, gold));
-      break;
-
     case EventType.detect:
       effects.add(new DetectEffect(event.pos));
       break;
@@ -239,29 +231,6 @@ class ItemEffect implements Effect {
 
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(pos.x, pos.y, item.appearance);
-  }
-}
-
-/// Blinks the background color for an actor a couple of times.
-class BlinkEffect implements Effect {
-  final Actor actor;
-  final Color color;
-  int life = 8 * 3;
-
-  BlinkEffect(this.actor, this.color);
-
-  bool update(Game game) {
-    return --life >= 0;
-  }
-
-  void render(Game game, DrawGlyph drawGlyph) {
-    if (!actor.isVisibleToHero) return;
-
-    if ((life ~/ 8) % 2 == 0) {
-      var glyph = actor.appearance;
-      glyph = new Glyph.fromCharCode(glyph.char, glyph.fore, color);
-      drawGlyph(actor.pos.x, actor.pos.y, glyph);
-    }
   }
 }
 
