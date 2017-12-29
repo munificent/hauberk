@@ -500,7 +500,7 @@ void jellies() {
 }
 
 void kobolds() {
-  family("k", speed: 2, meander: 4, flags: "cowardly");
+  family("k", meander: 4, flags: "cowardly");
   breed("scurrilous imp", 1, salmon, 8, meander: 4)
     ..count(2)
     ..attack("club[s]", 4)
@@ -510,7 +510,7 @@ void kobolds() {
     ..drop("speed", percent: 30)
     ..flags("cowardly");
 
-  breed("vexing imp", 2, violet, 10, speed: 1, meander: 2)
+  breed("vexing imp", 2, violet, 10, meander: 2)
     ..count(2)
     ..minion("scurrilous imp", 0, 1)
     ..attack("scratch[es]", 4)
@@ -519,19 +519,18 @@ void kobolds() {
     ..drop("teleportation", percent: 30)
     ..flags("cowardly");
 
-  family("k", speed: 1, meander: 3);
+  family("k", meander: 3);
   breed("kobold", 3, brickRed, 12, meander: 2)
     ..count(3)
     ..minion("wild dog", 0, 3)
     ..attack("poke[s]", 4)
-    ..teleport(rate: 6, range: 6)
+    ..teleport(rate: 10, range: 6)
     ..drop("magic", percent: 30);
 
   breed("kobold shaman", 4, ultramarine, 16, meander: 2)
     ..count(2)
     ..minion("wild dog", 0, 3)
     ..attack("hit[s]", 4)
-    ..teleport(rate: 5, range: 6)
     ..waterBolt(rate: 5, damage: 6)
     ..drop("magic", percent: 40);
 
@@ -539,7 +538,7 @@ void kobolds() {
     ..attack("hit[s]", 5)
     ..insult()
     ..sparkBolt(rate: 5, damage: 8)
-    ..teleport(rate: 5, range: 6)
+    ..teleport(rate: 7, range: 6)
     ..haste(rate: 7)
     ..drop("magic", percent: 40);
 
@@ -549,12 +548,11 @@ void kobolds() {
     ..attack("club[s]", 6)
     ..heal(rate: 15, amount: 10)
     ..fireBolt(rate: 10, damage: 8)
-    ..teleport(rate: 5, range: 6)
     ..haste(rate: 7)
     ..drop("club", percent: 40)
     ..drop("magic", percent: 40);
 
-  breed("imp incanter", 7, lilac, 18, speed: 1, meander: 4)
+  breed("imp incanter", 7, lilac, 18, meander: 4)
     ..count(2)
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
@@ -564,7 +562,7 @@ void kobolds() {
     ..drop("magic", percent: 50)
     ..flags("cowardly");
 
-  breed("imp warlock", 8, indigo, 40, speed: 1, meander: 3)
+  breed("imp warlock", 8, indigo, 40, meander: 3)
     ..minion("imp incanter", 1, 3)
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
