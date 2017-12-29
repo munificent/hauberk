@@ -31,6 +31,11 @@ class FloorDrops {
           frequency: rockFrequency,
           location: SpawnLocation.corner,
           drop: parseDrop("Rock", i));
+
+      floorDrop(
+          depth: i,
+          frequency: 10.0,
+          drop: parseDrop("light", i));
     }
 
     floorDrop(
@@ -54,6 +59,6 @@ class FloorDrop {
 
 void floorDrop(
     {int depth, double frequency, SpawnLocation location, Drop drop}) {
-  var encounter = new FloorDrop(location, drop);
+  var encounter = new FloorDrop(location ?? SpawnLocation.anywhere, drop);
   _floorDrops.addUnnamed(encounter, depth, frequency ?? 1.0, "drop");
 }

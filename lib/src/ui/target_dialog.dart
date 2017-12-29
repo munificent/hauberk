@@ -155,7 +155,7 @@ class TargetDialog extends Screen<Input> {
         color = persimmon;
       }
 
-      var glyph = tile.type.appearance[1] as Glyph;
+      var glyph = tile.type.appearance as Glyph;
       _gameScreen.drawStageGlyph(
           terminal, pos.x, pos.y, new Glyph.fromCharCode(glyph.char, color));
     }

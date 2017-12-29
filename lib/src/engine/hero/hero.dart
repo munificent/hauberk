@@ -505,9 +505,10 @@ class RunBehavior extends Behavior {
   RunBehavior(this.direction);
 
   bool canPerform(Hero hero) {
-    if (firstStep) {
-      // On first step, always try to go in direction player pressed.
-    } else if (openLeft == null) {
+    // On first step, always try to go in direction player pressed.
+    if (firstStep) return true;
+
+    if (openLeft == null) {
       // On the second step, figure out if we're in a corridor and which way
       // it's going. If the hero is running straight (NSEW), allow up to a 90°
       // turn. This covers cases like:
@@ -628,11 +629,11 @@ class RunBehavior extends Behavior {
   ///
   /// Returns `false` if they should stop because they'd hit a wall or actor.
   bool _shouldKeepRunning(Hero hero) {
-    var stage = hero.game.stage;
     var pos = hero.pos + direction;
-    if (!stage[pos].isWalkable) return false;
+    if (!hero.canOccupy(pos)) return false;
 
     // Don't run into someone.
+    var stage = hero.game.stage;
     if (stage.actorAt(pos) != null) return false;
 
     // Don't run next to someone.

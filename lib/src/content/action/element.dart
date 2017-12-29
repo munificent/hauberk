@@ -54,7 +54,7 @@ class LightFloorAction extends Action {
     // The intensity fades from the center outward. Also, strong hits produce
     // more light.
     var min = (1.0 + hit.averageDamage.toInt() * 4.0).clamp(0.0, Lighting.max);
-    var max = (64.0 + hit.averageDamage * 16.0).clamp(0.0, Lighting.max);
+    var max = (128.0 + hit.averageDamage * 16.0).clamp(0.0, Lighting.max);
     _emanation =
         lerpDouble(hit.range - distance, 0.0, hit.range, min, max).toInt();
   }

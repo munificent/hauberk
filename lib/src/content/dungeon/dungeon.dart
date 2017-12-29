@@ -204,7 +204,7 @@ class Dungeon {
       // Water has a slight phosphorescence with occasional sparkles.
       tile.emanation = rng.percent(2) ? Lighting.emanationForLevel(5) : 1;
     } else if (tile.type == Tiles.candle) {
-      tile.emanation = Lighting.emanationForLevel(5);
+      tile.emanation = Lighting.emanationForLevel(8);
     }
   }
 
@@ -331,7 +331,7 @@ class Dungeon {
 
     // Floor drops.
     // TODO: Tune this. Take number of cells into account.
-    var itemChance = place.hasHero ? 70 : 30;
+    var itemChance = place.hasHero ? 90 : 40;
     if (rng.percent(itemChance)) {
       var floorDrop = FloorDrops.choose(depth);
       var pos = _tryFindSpawnPos(
@@ -348,7 +348,7 @@ class Dungeon {
       // an open space which means scaling linearly makes larger places more
       // difficult -- it's easy for the hero to get swarmed. The exponential
       // tapers that off a bit so that larger areas don't scale quite linearly.
-      var base = (math.pow(place.cells.length, 0.80) * 0.15);
+      var base = (math.pow(place.cells.length, 0.80) * 0.05);
       var min = (base - 1 - base / 3).floor();
       var max = base.ceil();
 
@@ -489,31 +489,11 @@ class Dungeon {
 
   void _chooseBiomes() {
     // TODO: Take depth into account?
-    var hasWater = false;
+    var hasWater = _tryRiver();
 
-    if (rng.oneIn(3)) {
-      _biomes.add(new RiverBiome());
-      hasWater = true;
-    }
-
-    if (hasWater && rng.oneIn(20) || !hasWater && rng.oneIn(10)) {
-      // TODO: 64 is pretty big. Might want to make these a little smaller, but
-      // not all the way down to 32.
-      _biomes.add(new LakeBiome(Blob.make64()));
-      hasWater = true;
-    }
-
-    if (hasWater && rng.oneIn(10) || !hasWater && rng.oneIn(5)) {
-      _biomes.add(new LakeBiome(Blob.make32()));
-      hasWater = true;
-    }
-
-    if (rng.oneIn(5)) {
-      var ponds = rng.taper(0, 3);
-      for (var i = 0; i < ponds; i++) {
-        _biomes.add(new LakeBiome(Blob.make16()));
-      }
-    }
+    if (_tryLake64(hasWater)) hasWater = true;
+    if (_tryLake32(hasWater)) hasWater = true;
+    if (_tryLakes16(hasWater)) hasWater = true;
 
     // TODO: Add grottoes other places than just on shores.
     // Add some old grottoes that eroded before the dungeon was built.
@@ -530,6 +510,46 @@ class Dungeon {
     if (hasWater && rng.oneIn(3)) {
       _biomes.add(new GrottoBiome(rng.taper(1, 3)));
     }
+  }
+
+  bool _tryRiver() {
+    if (!rng.oneIn(3)) return false;
+
+    _biomes.add(new RiverBiome());
+    return true;
+  }
+
+  bool _tryLake64(bool hasWater) {
+    if (width <= 64 || height <= 64) return false;
+
+    var odds = hasWater ? 20 : 10;
+    if (!rng.oneIn(odds)) return false;
+
+    // TODO: 64 is pretty big. Might want to make these a little smaller, but
+    // not all the way down to 32.
+    _biomes.add(new LakeBiome(Blob.make64()));
+    return true;
+  }
+
+  bool _tryLake32(bool hasWater) {
+    if (width <= 32 || height <= 32) return false;
+
+    var odds = hasWater ? 10 : 5;
+    if (!rng.oneIn(odds)) return false;
+
+    _biomes.add(new LakeBiome(Blob.make32()));
+    return true;
+  }
+
+  bool _tryLakes16(bool hasWater) {
+    if (!rng.oneIn(5)) return false;
+
+    var ponds = rng.taper(0, 3);
+    for (var i = 0; i < ponds; i++) {
+      _biomes.add(new LakeBiome(Blob.make16()));
+    }
+
+    return true;
   }
 
   /// Calculates a bunch of information about the dungeon used to intelligently

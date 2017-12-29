@@ -47,7 +47,7 @@ class GameContent implements Content {
     var initialItems = {
       "Mending Salve": 3,
       "Scroll of Sidestepping": 2,
-      "Candle": 3
+      "Tallow Candle": 4
     };
 
     initialItems.forEach((type, amount) {
