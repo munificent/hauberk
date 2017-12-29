@@ -204,6 +204,8 @@ class Dungeon {
       // Water has a slight phosphorescence with occasional sparkles.
       tile.emanation = rng.percent(2) ? Lighting.emanationForLevel(5) : 1;
     } else if (tile.type == Tiles.candle) {
+      tile.emanation = Lighting.emanationForLevel(6);
+    } else if (tile.type == Tiles.wallTorch) {
       tile.emanation = Lighting.emanationForLevel(8);
     }
   }

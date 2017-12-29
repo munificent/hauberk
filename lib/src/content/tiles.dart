@@ -50,6 +50,9 @@ class Tiles {
   static final TileType candle =
       _open("candle", CharCode.greaterThanOrEqualTo, sandal);
 
+  static final TileType wallTorch =
+      _solid("wall torch", CharCode.lessThanOrEqualTo, gold, slate);
+
   // Make these "monsters" that can be pushed around.
   static final TileType chair = _open("chair", "π", persimmon);
 

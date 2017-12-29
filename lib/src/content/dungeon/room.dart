@@ -94,6 +94,29 @@ class RoomBiome extends Biome {
 
     // TODO: "Zoo" monster pits with themed decorations and terrain to match
     // (grass and trees for animal pits, etc.).
+
+    // Try to place some torches around doors.
+    // TODO: Make these more strategic.
+    canPlaceTorchAt(int x, int y) {
+      if (dungeon.getTile(x, y) != Tiles.wall) return false;
+
+      return true;
+    }
+
+    for (var y = 1; y < dungeon.height - 1; y++) {
+      for (var x = 1; x < dungeon.width - 1; x++) {
+        if (!rng.oneIn(5)) continue;
+
+        if (dungeon.getTile(x, y) != Tiles.closedDoor) continue;
+        if (canPlaceTorchAt(x - 1, y) && canPlaceTorchAt(x + 1, y)) {
+          dungeon.setTile(x - 1, y, Tiles.wallTorch);
+          dungeon.setTile(x + 1, y, Tiles.wallTorch);
+        } else if (canPlaceTorchAt(x, y - 1) && canPlaceTorchAt(x, y + 1)) {
+          dungeon.setTile(x, y - 1, Tiles.wallTorch);
+          dungeon.setTile(x, y + 1, Tiles.wallTorch);
+        }
+      }
+    }
   }
 
   void _tryPlaceTable(PlacedRoom placed) {

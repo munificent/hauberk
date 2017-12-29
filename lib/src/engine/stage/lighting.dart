@@ -289,6 +289,9 @@ class Lighting {
 
       checkNeighbor(Vec dir, int attenuation) {
         var neighborPos = pos + dir;
+
+        if (!_stage.bounds.contains(neighborPos)) return;
+
         var neighborTile = _stage[neighborPos];
 
         // Don't illuminate opaque (we'll do this in a separate pass).
