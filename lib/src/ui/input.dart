@@ -22,6 +22,7 @@ class Input {
   static const pickUp = const Input("pickUp");
   static const toss = const Input("toss");
   static const swap = const Input("swap");
+  static const unequip = const Input("unequip");
 
   static const heroInfo = const Input("heroInfo");
   static const selectSkill = const Input("selectSkill");

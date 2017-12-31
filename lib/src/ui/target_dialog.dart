@@ -282,14 +282,14 @@ class TargetDialog extends Screen<Input> {
     }
 
     var nearest = _findLowest(ahead,
-            (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
+        (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
     if (nearest != null) {
       _gameScreen.targetActor(nearest);
       return;
     }
 
     var farthest = _findHighest(behind,
-            (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
+        (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
     if (farthest != null) {
       _gameScreen.targetActor(farthest);
     }
@@ -314,10 +314,13 @@ class TargetDialog extends Screen<Input> {
       // Note if we made it to the target.
       if (pos == target) return false;
 
-      var tile = stage[pos];
+      if (!stage.bounds.contains(pos)) return true;
 
+      var tile = stage[pos];
       if (tile.isExplored && tile.blocksView) return true;
     }
+
+    throw "unreachable";
   }
 }
 

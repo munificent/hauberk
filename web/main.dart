@@ -95,6 +95,7 @@ main() {
   ui.keyPress.bind(Input.use, KeyCode.u);
   ui.keyPress.bind(Input.pickUp, KeyCode.g);
   ui.keyPress.bind(Input.swap, KeyCode.x);
+  ui.keyPress.bind(Input.unequip, KeyCode.e);
   ui.keyPress.bind(Input.toss, KeyCode.t);
   ui.keyPress.bind(Input.selectSkill, KeyCode.s);
   ui.keyPress.bind(Input.heroInfo, KeyCode.a);

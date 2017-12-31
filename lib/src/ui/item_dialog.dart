@@ -36,6 +36,9 @@ class ItemDialog extends Screen<Input> {
   ItemDialog.pickUp(this._gameScreen)
       : _command = new _PickUpItemCommand(),
         _location = ItemLocation.onGround;
+  ItemDialog.unequip(this._gameScreen)
+      : _command = new _UseItemCommand(),
+        _location = ItemLocation.equipment;
 
   bool handleInput(Input input) {
     switch (input) {

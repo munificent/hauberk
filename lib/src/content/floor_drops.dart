@@ -36,9 +36,7 @@ class FloorDrops {
 
       var lightFrequency = math.max(2.0, 10.0 - i / 4);
       floorDrop(
-          depth: i,
-          frequency: lightFrequency,
-          drop: parseDrop("light", i));
+          depth: i, frequency: lightFrequency, drop: parseDrop("light", i));
     }
 
     floorDrop(

@@ -154,6 +154,9 @@ class GameScreen extends Screen<Input> {
       case Input.pickUp:
         pickUp();
         break;
+      case Input.unequip:
+        ui.push(new ItemDialog.unequip(this));
+        break;
 
       case Input.nw:
         action = new WalkAction(Direction.nw);
