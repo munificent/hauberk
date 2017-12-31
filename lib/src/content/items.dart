@@ -475,34 +475,34 @@ void lightSources() {
   // TODO: Ball of fire when hits toss target.
   item("Tallow Candle", 1, 1.0, sandal)
     ..stack(10)
-    ..toss(damage: 2, range: 4, element: Elements.fire)
+    ..toss(damage: 2, range: 8, element: Elements.fire)
     ..light(4)
     ..ball(Elements.light, "light", "sears", 1, range: 7);
 
   // TODO: Ball of fire when hits toss target.
   item("Wax Candle", 4, 1.0, ash)
     ..stack(10)
-    ..toss(damage: 3, range: 4, element: Elements.fire)
+    ..toss(damage: 3, range: 8, element: Elements.fire)
     ..light(5)
     ..ball(Elements.light, "light", "sears", 2, range: 9);
 
   // TODO: Larger ball of fire when hits toss target.
   item("Oil Lamp", 4, 1.0, garnet)
     ..stack(4)
-    ..toss(damage: 10, range: 4, element: Elements.fire)
+    ..toss(damage: 10, range: 8, element: Elements.fire)
     ..light(6)
     ..ball(Elements.light, "light", "sears", 2, range: 11);
 
   // TODO: Ball of fire when hits toss target.
   item("Torch[es]", 8, 1.0, persimmon)
     ..stack(4)
-    ..toss(damage: 6, range: 6, element: Elements.fire)
+    ..toss(damage: 6, range: 10, element: Elements.fire)
     ..light(7)
     ..ball(Elements.light, "light", "sears", 4, range: 15);
 
   // TODO: Maybe allow this to be equipped and increase its radius when held?
   item("Lantern", 15, 0.3, gold)
-    ..toss(damage: 5, range: 4, element: Elements.fire)
+    ..toss(damage: 5, range: 5, element: Elements.fire)
     ..light(8);
 }
 

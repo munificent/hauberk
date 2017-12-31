@@ -133,14 +133,23 @@ class TargetDialog extends Screen<Input> {
     var black = new Glyph(" ");
     for (var pos in _gameScreen.cameraBounds) {
       var tile = stage[pos];
-      if (tile.isOccluded) {
-        _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
+
+      // Don't leak information to the player about unknown tiles. Instead,
+      // treat them as potentially targetable.
+      if (tile.isExplored) {
+        // If the tile can't be reached, don't show it as targetable.
+        if (tile.isOccluded) {
+          _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
+          continue;
+        }
+
+        if (!tile.isWalkable && tile.blocksView) continue;
+        if (stage.actorAt(pos) != null) continue;
+        if (stage.isItemAt(pos)) continue;
+      } else if (_isKnownOccluded(pos)) {
+        // The player knows it can't be targeted.
         continue;
       }
-
-      if (!tile.isWalkable && tile.blocksView) continue;
-      if (stage.actorAt(pos) != null) continue;
-      if (stage.isItemAt(pos)) continue;
 
       // Must be in range.
       var toPos = pos - _gameScreen.game.hero.pos;
@@ -155,9 +164,17 @@ class TargetDialog extends Screen<Input> {
         color = persimmon;
       }
 
-      var glyph = tile.type.appearance as Glyph;
+      int charCode;
+      if (tile.isExplored) {
+        charCode = (tile.type.appearance as Glyph).char;
+      } else {
+        // Since the hero doesn't know what's on the tile, optimistically guess
+        // that it's some kind of floor.
+        charCode = CharCode.middleDot;
+      }
+
       _gameScreen.drawStageGlyph(
-          terminal, pos.x, pos.y, new Glyph.fromCharCode(glyph.char, color));
+          terminal, pos.x, pos.y, new Glyph.fromCharCode(charCode, color));
     }
 
     var target = _gameScreen.currentTarget;
@@ -174,8 +191,13 @@ class TargetDialog extends Screen<Input> {
         break;
       }
 
-      if (stage.actorAt(pos) != null) break;
-      if (!stage[pos].isFlyable) break;
+      var tile = stage[pos];
+
+      // Don't leak information about unexplored tiles.
+      if (tile.isExplored) {
+        if (stage.actorAt(pos) != null) break;
+        if (!tile.isFlyable) break;
+      }
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
           new Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : persimmon));
@@ -225,40 +247,76 @@ class TargetDialog extends Screen<Input> {
   /// *farthest* monster in the other half-place.
   void _changeTarget(Direction dir) {
     if (_targetingFloor) {
-      var pos = _gameScreen.currentTarget + dir;
-      var tile = _gameScreen.game.stage[pos];
-      if ((_gameScreen.game.hero.pos - pos) <= _range &&
-          !tile.blocksView &&
-          !tile.isOccluded) {
-        _gameScreen.targetFloor(pos);
-      }
+      _changeFloorTarget(dir);
     } else {
-      var ahead = [];
-      var behind = [];
+      _changeMonsterTarget(dir);
+    }
+  }
 
-      var perp = dir.rotateLeft90;
-      for (var monster in _monsters) {
-        var relative = monster.pos - _gameScreen.currentTarget;
-        var dotProduct = perp.x * relative.y - perp.y * relative.x;
-        if (dotProduct > 0) {
-          ahead.add(monster);
-        } else {
-          behind.add(monster);
-        }
-      }
+  void _changeFloorTarget(Direction dir) {
+    var pos = _gameScreen.currentTarget + dir;
 
-      var nearest = _findLowest(ahead,
-          (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
-      if (nearest != null) {
-        _gameScreen.targetActor(nearest);
-        return;
-      }
+    // Don't target out of range.
+    if (_gameScreen.game.hero.pos - pos > _range) return;
 
-      var farthest = _findHighest(behind,
-          (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
-      if (farthest != null) {
-        _gameScreen.targetActor(farthest);
+    // Don't target a tile the player knows can't be hit.
+    var tile = _gameScreen.game.stage[pos];
+    if (tile.isExplored && (tile.blocksView || tile.isOccluded)) return;
+
+    _gameScreen.targetFloor(pos);
+  }
+
+  void _changeMonsterTarget(Direction dir) {
+    var ahead = [];
+    var behind = [];
+
+    var perp = dir.rotateLeft90;
+    for (var monster in _monsters) {
+      var relative = monster.pos - _gameScreen.currentTarget;
+      var dotProduct = perp.x * relative.y - perp.y * relative.x;
+      if (dotProduct > 0) {
+        ahead.add(monster);
+      } else {
+        behind.add(monster);
       }
+    }
+
+    var nearest = _findLowest(ahead,
+            (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
+    if (nearest != null) {
+      _gameScreen.targetActor(nearest);
+      return;
+    }
+
+    var farthest = _findHighest(behind,
+            (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
+    if (farthest != null) {
+      _gameScreen.targetActor(farthest);
+    }
+  }
+
+  /// Returns `true` if there is at least one *explored* tile that block LOS to
+  /// [target].
+  ///
+  /// We need to ensure the targeting dialog doesn't leak information about
+  /// unexplored tiles. At the same time, we do want to let the player try to
+  /// target unexplored tiles because they may turn out to be reachable. (In
+  /// particular, it's useful to let them lob light sources into the dark.)
+  ///
+  /// This is used to determine which unexplored tiles should be treated as
+  /// targetable. We don't want to allow all unexplored tiles to be targeted
+  /// because that would include tiles behind known walls, so this filters out
+  /// any tile that is blocked by a known tile.
+  bool _isKnownOccluded(Vec target) {
+    var stage = _gameScreen.game.stage;
+
+    for (var pos in new Line(_gameScreen.game.hero.pos, target)) {
+      // Note if we made it to the target.
+      if (pos == target) return false;
+
+      var tile = stage[pos];
+
+      if (tile.isExplored && tile.blocksView) return true;
     }
   }
 }

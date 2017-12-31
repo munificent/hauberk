@@ -117,6 +117,8 @@ class RingSelfAction extends Action {
 
   RingSelfAction(this._attack);
 
+  bool get isImmediate => false;
+
   ActionResult onPerform() {
     return alternate(new RayAction.ring(actor.pos, _attack.createHit()));
   }
@@ -127,6 +129,8 @@ class RingFromAction extends Action {
   final Vec _pos;
 
   RingFromAction(this._attack, this._pos);
+
+  bool get isImmediate => false;
 
   ActionResult onPerform() {
     return alternate(new RayAction.ring(_pos, _attack.createHit()));
