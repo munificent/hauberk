@@ -70,7 +70,7 @@ main() {
     }
   });
 
-  _moreItems();
+  _generateMore();
 }
 
 void _generateMore() {

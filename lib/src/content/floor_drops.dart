@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../engine.dart';
 import 'drops.dart';
 
@@ -32,9 +34,10 @@ class FloorDrops {
           location: SpawnLocation.corner,
           drop: parseDrop("Rock", i));
 
+      var lightFrequency = math.max(2.0, 10.0 - i / 4);
       floorDrop(
           depth: i,
-          frequency: 10.0,
+          frequency: lightFrequency,
           drop: parseDrop("light", i));
     }
 

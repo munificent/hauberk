@@ -52,13 +52,6 @@ class _TagDrop implements Drop {
 
     // TODO: Item rarity?
 
-    // Compare the item's actual level to the original desired level. If the
-    // item is below that level, it increases the chances of an affix. (A weaker
-    // item deeper in the dungeon is more likely to be magic.) Likewise, an
-    // already-out-of-depth item is less likely to also be special.
-    // TODO: Get this working again.
-//    var depthOffset = itemType.depth - _depth;
-
     addItem(Affixes.createItem(itemType, _depth));
   }
 }

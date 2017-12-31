@@ -14,19 +14,28 @@ class Affixes {
   static Iterable<Affix> get suffixes => _suffixes.all;
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
-  static Item createItem(ItemType itemType, int depth) {
+  static Item createItem(ItemType itemType, int droppedDepth) {
     // Untagged items don't have any affixes.
     if (Items.types.getTags(itemType.name).isEmpty) {
       return new Item(itemType, 1);
     }
 
-    // There's a chance of no affixes at all, based on the depth.
-    // TODO: Allow some drops to modify this.
-    if (rng.range(100) >= depth) return new Item(itemType, 1);
+    // The deeper we go, the greater chance of an affix. However, finding a
+    // deeper item at a shallower depth reduces its chance of an affix (since
+    // the item is already better than expected). Conversely, a weaker item
+    // found deeper in the dungeon has a greater chance of an affix to
+    // compensate for its weakness.
+    var outOfDepth = itemType.depth - droppedDepth;
+    var depth = (droppedDepth - outOfDepth ~/ 2).clamp(1, 100);
+
+    // This generates a curve that starts out at 1% and slowly ramps upwards.
+    var chance = 1 + 0.006 * depth * depth + 0.2 * depth;
+
+    if (!rng.percent(chance.ceil())) return new Item(itemType, 1);
 
     // Give items a chance to boost their effective level when choosing a
     // affixes.
-    var affixDepth = math.max(depth, itemType.depth) + rng.taper(0, 2);
+    var affixDepth = math.max(droppedDepth, itemType.depth) + rng.taper(0, 2);
 
     var prefix = _chooseAffix(_prefixes, itemType, affixDepth);
     var suffix = _chooseAffix(_suffixes, itemType, affixDepth);
@@ -62,7 +71,6 @@ class Affixes {
     _resists();
     _extraDamage();
     _brands();
-
     // TODO: "of Accuracy" increases range of bows.
   }
 
