@@ -640,7 +640,7 @@ class GameScreen extends Screen<Input> {
     terminal.writeAt(10, 1, hero.food.ceil().toString(), persimmon);
 
     _drawStat(terminal, 2, 'Level', hero.level, cerulean);
-    if (hero.level < Option.heroLevelMax) {
+    if (hero.level < Hero.maxLevel) {
       var levelPercent = 100 *
           hero.experience ~/
           (calculateLevelCost(hero.level + 1) - calculateLevelCost(hero.level));

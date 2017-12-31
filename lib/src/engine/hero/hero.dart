@@ -80,6 +80,9 @@ class HeroSave {
 
 /// The main player-controlled [Actor]. The player's avatar in the game world.
 class Hero extends Actor {
+  /// The highest level the hero can reach.
+  static const maxLevel = 50;
+
   String get nounText => 'you';
   final Pronoun pronoun = Pronoun.you;
 
@@ -430,18 +433,18 @@ class Hero extends Actor {
 int calculateLevel(int experienceCents) {
   var experience = experienceCents ~/ 100;
 
-  for (var level = 1; level <= Option.heroLevelMax; level++) {
+  for (var level = 1; level <= Hero.maxLevel; level++) {
     if (experience < calculateLevelCost(level)) return level - 1;
   }
 
-  return Option.heroLevelMax;
+  return Hero.maxLevel;
 }
 
 /// Returns how much experience is needed to reach [level] or `null` if [level]
 /// is greater than the maximum level.
 int calculateLevelCost(int level) {
-  if (level > Option.heroLevelMax) return null;
-  return (level - 1) * (level - 1) * Option.heroLevelCost;
+  if (level > Hero.maxLevel) return null;
+  return (level - 1) * (level - 1) * 300;
 }
 
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
