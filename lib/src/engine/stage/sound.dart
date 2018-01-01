@@ -63,7 +63,7 @@ class Sound {
 class _SoundFlow extends Flow {
   _SoundFlow(Stage stage) : super(stage, stage.game.hero.pos);
 
-  int tileCost(int parentCost, Vec pos, Tile tile) {
+  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Stop propagating if we reach the max distance.
     if (parentCost >= Sound.maxDistance) return null;
 

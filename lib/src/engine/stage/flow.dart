@@ -226,16 +226,16 @@ abstract class Flow {
     var parentCost = _costs[start];
 
     // Propagate to neighboring tiles.
-    for (var dir in Direction.all) {
+    processNeighbor(Direction dir, bool isDiagonal) {
       var here = start + dir;
 
-      if (!_costs.bounds.contains(here)) continue;
+      if (!_costs.bounds.contains(here)) return;
 
       // Ignore tiles we've already reached.
-      if (_costs[here] != _unknown) continue;
+      if (_costs[here] != _unknown) return;
 
       var tile = stage[here + _offset];
-      var relative = tileCost(parentCost, here + _offset, tile);
+      var relative = tileCost(parentCost, here + _offset, tile, isDiagonal);
 
       if (relative == null) {
         _costs[here] = _unreachable;
@@ -247,11 +247,20 @@ abstract class Flow {
       }
     }
 
+    processNeighbor(Direction.n, false);
+    processNeighbor(Direction.s, false);
+    processNeighbor(Direction.e, false);
+    processNeighbor(Direction.w, false);
+    processNeighbor(Direction.nw, true);
+    processNeighbor(Direction.ne, true);
+    processNeighbor(Direction.sw, true);
+    processNeighbor(Direction.se, true);
+
     return true;
   }
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
-  int tileCost(int parentCost, Vec pos, Tile tile);
+  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal);
 }
 
 /// A basic [Flow] implementation that flows through any tile permitting one of
@@ -266,7 +275,7 @@ class MotilityFlow extends Flow {
         super(stage, start, maxDistance: maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
-  int tileCost(int parentCost, Vec pos, Tile tile) {
+  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Can't enter impassable tiles.
     if (!tile.canEnterAny(_motilities)) return null;
 

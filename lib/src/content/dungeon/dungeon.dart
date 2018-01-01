@@ -560,7 +560,7 @@ class Dungeon {
     // Calculate how far every reachable tile is from the hero's starting point.
     // TODO: Is this the right motilities?
     debugInfo = _info;
-    var flow = new MotilityFlow(stage, _heroPos, MotilitySet.walkAndDoor,
+    var flow = new MotilityFlow(stage, _heroPos, MotilitySet.doorAndWalk,
         ignoreActors: true);
     for (var pos in safeBounds) {
       _info[pos].distance = flow.costAt(pos);

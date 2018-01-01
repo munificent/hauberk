@@ -224,6 +224,9 @@ class EventType {
   /// Something in the level was detected.
   static const detect = const EventType("detect");
 
+  /// A floor tile was magically explored.
+  static const map = const EventType("map");
+
   /// An [Actor] teleported.
   static const teleport = const EventType("teleport");
 

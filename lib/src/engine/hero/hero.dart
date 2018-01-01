@@ -141,7 +141,7 @@ class Hero extends Actor {
   double _lastNoise = 0.0;
 
   // TODO: Equipment and items that let the hero swim, fly, etc.
-  MotilitySet get motilities => MotilitySet.walkAndDoor;
+  MotilitySet get motilities => MotilitySet.doorAndWalk;
 
   // TODO: Calculate from wielded light source and other equipment.
   int get emanationLevel {

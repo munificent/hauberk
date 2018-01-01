@@ -7,6 +7,7 @@ import 'action/condition.dart';
 import 'action/detection.dart';
 import 'action/flow.dart';
 import 'action/heal.dart';
+import 'action/mapping.dart';
 import 'action/ray.dart';
 import 'action/teleport.dart';
 import 'elements.dart';
@@ -249,6 +250,10 @@ void potions() {
 }
 
 void scrolls() {
+  // Consider adding "complexity" to items. Like heft but for intelligence, it's
+  // a required intellect level needed to use the item successfully. An item
+  // too complex for the user is likely to fail.
+
   // Teleportation.
   category(CharCode.latinSmallLetterAWithCircumflex,
       stack: 20, flags: "flammable")
@@ -282,7 +287,20 @@ void scrolls() {
   item("Scroll[s] of Detection", 30, 0.25, copper)
     ..detection([DetectType.exit, DetectType.item]);
 
-//  CharCode.latinSmallLetterAWithGrave // scroll
+  // Mapping.
+  category(CharCode.latinSmallLetterAWithGrave,
+      stack: 20, flags: "flammable")
+    ..tag("magic/scroll/mapping")
+    ..toss(damage: 1, range: 3, breakage: 75);
+  item("Adventurer's Map", 10, 0.25, sherwood)
+    ..mapping(16);
+  item("Explorer's Map", 30, 0.25, peaGreen)
+    ..mapping(32);
+  item("Cartographer's Map", 50, 0.25, mint)
+    ..mapping(64);
+  item("Wizard's Map", 70, 0.25, seaGreen)
+    ..mapping(200, illuminate: true);
+
 //  CharCode.latinSmallLetterAWithRingAbove // scroll
 }
 
@@ -713,6 +731,10 @@ class _ItemBuilder extends _BaseBuilder {
 
   void resistSalve(Element element) {
     use(() => new ResistAction(40, element));
+  }
+
+  void mapping(int distance, {bool illuminate}) {
+    use(() => new MappingAction(distance, illuminate: illuminate));
   }
 
   // TODO: Take list of conditions to cure?

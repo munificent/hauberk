@@ -26,9 +26,10 @@ class Motility {
 }
 
 class MotilitySet {
+  static final doorAndFly = new MotilitySet([Motility.door, Motility.fly]);
+  static final doorAndWalk = new MotilitySet([Motility.door, Motility.walk]);
+  static final flyAndWalk = new MotilitySet([Motility.fly, Motility.walk]);
   static final walk = new MotilitySet([Motility.walk]);
-  static final walkAndDoor = new MotilitySet([Motility.walk, Motility.door]);
-  static final walkAndFly = new MotilitySet([Motility.walk, Motility.fly]);
 
   int _bitMask = 0;
 

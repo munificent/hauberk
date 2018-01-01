@@ -54,6 +54,10 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(new DetectEffect(event.pos));
       break;
 
+    case EventType.map:
+      effects.add(new MapEffect(event.pos));
+      break;
+
     case EventType.teleport:
       var numParticles = (event.actor.pos - event.pos).kingLength * 2;
       for (var i = 0; i < numParticles; i++) {
@@ -410,6 +414,29 @@ class DetectEffect implements Effect {
     for (var pixel in new Circle(pos, radius).edge) {
       drawGlyph(pixel.x, pixel.y, glyph);
     }
+  }
+}
+
+class MapEffect implements Effect {
+  final _maxLife = rng.range(10, 20);
+
+  final Vec pos;
+  int life;
+
+  MapEffect(this.pos) {
+    life = _maxLife;
+  }
+
+  bool update(Game game) => --life >= 0;
+
+  void render(Game game, DrawGlyph drawGlyph) {
+    var glyph = game.stage[pos].type.appearance as Glyph;
+
+    glyph = new Glyph.fromCharCode(glyph.char,
+        glyph.fore.blend(gold, life / _maxLife),
+        glyph.back.blend(persimmon, life / _maxLife));
+
+    drawGlyph(pos.x, pos.y, glyph);
   }
 }
 
