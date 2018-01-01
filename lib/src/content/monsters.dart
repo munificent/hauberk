@@ -849,7 +849,7 @@ _BreedBuilder breed(String name, int depth, appearance, int health,
 
   Glyph glyph;
   if (appearance is Color) {
-    glyph = new Glyph(_family._character, appearance, midnight);
+    glyph = new Glyph(_family._character, appearance);
   } else {
     glyph = appearance(_family._character);
   }

@@ -846,39 +846,4 @@ class GameScreen extends Screen<Input> {
       terminal.drawGlyph(9 + x, y, new Glyph.fromCharCode(char, fore, back));
     }
   }
-
-//  void _drawWarriorStats(Terminal terminal, Hero hero) {
-//    var warrior = hero.heroClass as Warrior;
-//
-//    terminal.writeAt(0, 8, "Fury", UIHue.helpText);
-//    _drawMeter(terminal, 8, hero.charge.toInt(), 100, carrot, garnet);
-//
-//    var y = 9;
-//
-//    draw(String name, TrainedStat stat) {
-//      // Hide stats until the hero has made progress on them.
-//      if (stat.level == 0 && stat.percentUntilNext == 0) return;
-//
-//      terminal.writeAt(0, y, name, UIHue.helpText);
-//      terminal.writeAt(13, y, stat.level.toString(), UIHue.text);
-//      terminal.writeAt(16, y, "${stat.percentUntilNext}%", UIHue.secondary);
-//      y++;
-//    }
-//
-//    var weapon = hero.equipment.weapon;
-//    if (weapon == null) {
-//      draw("Fighting", warrior.fighting);
-//    } else {
-//      draw("Combat", warrior.combat);
-//      var mastery = warrior.masteries[weapon.type.weaponType];
-//      if (mastery != null) {
-//        // Capitalize it.
-//        var weaponType = weapon.type.weaponType;
-//        weaponType = weaponType.substring(0, 1).toUpperCase() +
-//            weaponType.substring(1);
-//        draw("$weaponType Master", mastery);
-//      }
-//    }
-//    draw("Toughness", warrior.toughness);
-//  }
 }

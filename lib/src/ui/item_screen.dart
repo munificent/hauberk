@@ -8,6 +8,9 @@ import '../hues.dart';
 import 'input.dart';
 import 'item_dialog.dart';
 
+// TODO: This is not currently accessible with the removal of money, shops, and
+// the home screen from the game. Should it be?
+
 /// A screen where the hero can manage their items outside of the levels.
 ///
 /// Let's them transfer between their inventory, equipment, crucible, and home.

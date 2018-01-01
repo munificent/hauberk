@@ -8,12 +8,12 @@ import '../hues.dart';
 import 'input.dart';
 
 class _DialogView {
-  static const equipmentStats = const _DialogView("equipmentStats");
+  static const equipment = const _DialogView("equipment");
   static const resistances = const _DialogView("resistances");
 
   // TODO: Move views to show stats and other hero info.
   static const all = const [
-    equipmentStats,
+    equipment,
     resistances,
   ];
 
@@ -26,7 +26,7 @@ class _DialogView {
 
 class HeroInfoDialog extends Screen<Input> {
   final Hero _hero;
-  _DialogView _view = _DialogView.equipmentStats;
+  _DialogView _view = _DialogView.equipment;
 
   HeroInfoDialog(this._hero);
 
@@ -55,7 +55,7 @@ class HeroInfoDialog extends Screen<Input> {
     terminal.clear();
 
     switch (_view) {
-      case _DialogView.equipmentStats:
+      case _DialogView.equipment:
         _renderEquipmentStats(terminal);
         break;
 
@@ -74,7 +74,7 @@ class HeroInfoDialog extends Screen<Input> {
           2,
           y,
           "───────────────────────────────────────────── "
-              "── ─────────── ──── ───── ──────",
+          "── ─────────── ──── ───── ──────",
           color);
     }
 
@@ -160,8 +160,7 @@ class HeroInfoDialog extends Screen<Input> {
     writeLine(4, steelGray);
     writeLine(totalY - 1, steelGray);
 
-    terminal.writeAt(
-        48, totalY, element.abbreviation, _elementColor(element));
+    terminal.writeAt(48, totalY, element.abbreviation, _elementColor(element));
     terminal.writeAt(51, totalY, baseDamage.toString().padLeft(2));
     writeScale(54, totalY, totalDamageScale);
     writeBonus(59, totalY, totalDamageBonus);
@@ -172,6 +171,7 @@ class HeroInfoDialog extends Screen<Input> {
     writeBonus(77, totalY, totalArmorBonus);
 
     // TODO: Show resulting average damage. Include stat bonuses and stuff too.
+    // TODO: Show heft, weight, encumbrance, etc.
   }
 
   void _renderResistances(Terminal terminal) {
@@ -180,7 +180,7 @@ class HeroInfoDialog extends Screen<Input> {
           2,
           y,
           "───────────────────────────────────────────── "
-              "── ── ── ── ── ── ── ── ── ── ──",
+          "── ── ── ── ── ── ── ── ── ── ──",
           color);
     }
 
@@ -237,7 +237,8 @@ class HeroInfoDialog extends Screen<Input> {
     }
   }
 
-  void _drawEquipmentTable(Terminal terminal, void Function(Item item, int y) callback) {
+  void _drawEquipmentTable(
+      Terminal terminal, void Function(Item item, int y) callback) {
     terminal.writeAt(2, 3, "Equipment", gold);
 
     var y = 5;

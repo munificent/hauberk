@@ -367,7 +367,7 @@ class HealEffect implements Effect {
     var back;
     switch ((frame ~/ 4) % 4) {
       case 0:
-        back = Color.black;
+        back = midnight;
         break;
       case 1:
         back = seaGreen;

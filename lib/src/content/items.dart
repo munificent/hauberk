@@ -750,7 +750,7 @@ void buildItem() {
   // that will be applied to the current glyph.
   var appearance = _builder._appearance;
   if (appearance is Color) {
-    appearance = new Glyph.fromCharCode(_category._glyph, appearance, midnight);
+    appearance = new Glyph.fromCharCode(_category._glyph, appearance);
   } else if (appearance is! Glyph) {
     appearance = appearance(_category._glyph);
   }

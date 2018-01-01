@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
@@ -104,15 +106,26 @@ class ItemDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    if (_selectedItem == null) {
-      terminal.writeAt(0, 0, _command.query(_location), UIHue.text);
-    } else {
-      var query = _command.queryCount(_location);
-      terminal.writeAt(0, 0, query, UIHue.text);
-      terminal.writeAt(query.length + 1, 0, _count.toString(), UIHue.selection);
+    // Draw a box for the contents.
+    var itemCount = _getItems().length;
+    var boxHeight = math.max(itemCount + 2, 3);
+    var bar = "│" + (" " * 41) + "│";
+    for (var y = 1; y < boxHeight + 1; y++) {
+      terminal.writeAt(0, y, bar, steelGray);
     }
 
-    terminal.rect(0, terminal.height - 2, terminal.width, 2).clear();
+    terminal.writeAt(
+        0, 0, "╒═════════════════════════════════════════╕", steelGray);
+    terminal.writeAt(
+        0, boxHeight, "└─────────────────────────────────────────┘", steelGray);
+
+    if (_selectedItem == null) {
+      terminal.writeAt(1, 0, _command.query(_location), UIHue.selection);
+    } else {
+      var query = _command.queryCount(_location);
+      terminal.writeAt(1, 0, query, UIHue.text);
+      terminal.writeAt(query.length + 2, 0, _count.toString(), UIHue.selection);
+    }
 
     var select =
         _selectedItem == null ? '[A-Z] Select item' : '[↕] Change quantity';
@@ -121,11 +134,30 @@ class ItemDialog extends Screen<Input> {
     terminal.writeAt(
         0, terminal.height - 1, '$select$helpText', UIHue.helpText);
 
-    if (_location == ItemLocation.equipment) {
-      drawEquipment(
-          terminal, 0, 1, _gameScreen.game.hero.equipment, _canSelect);
+    if (itemCount > 0) {
+      if (_location == ItemLocation.equipment) {
+        drawEquipment(
+            terminal, 1, 2, _gameScreen.game.hero.equipment, _canSelect);
+      } else {
+        drawItems(terminal, 1, 2, _getItems(), _canSelect);
+      }
     } else {
-      drawItems(terminal, 0, 1, _getItems(), _canSelect);
+      String message;
+      switch (_location) {
+        case ItemLocation.inventory:
+          message = "(Your backpack is empty.)";
+          break;
+
+        case ItemLocation.equipment:
+          assert(false, "Equipment list is never empty.");
+          break;
+
+        case ItemLocation.onGround:
+          message = "(There is nothing on the ground.)";
+          break;
+      }
+
+      terminal.writeAt(1, 2, message, UIHue.disabled);
     }
   }
 
@@ -137,6 +169,10 @@ class ItemDialog extends Screen<Input> {
   void _selectItem(int index) {
     var items = _getItems().toList();
     if (index >= items.length) return;
+
+    // Can't select an empty equipment slot.
+    if (items[index] == null) return;
+
     if (!_command.canSelect(items[index])) return;
 
     if (items[index].count > 1 && _command.needsCount) {
@@ -154,7 +190,7 @@ class ItemDialog extends Screen<Input> {
       case ItemLocation.inventory:
         return _gameScreen.game.hero.inventory;
       case ItemLocation.equipment:
-        return _gameScreen.game.hero.equipment;
+        return _gameScreen.game.hero.equipment.slots;
       case ItemLocation.onGround:
         return _gameScreen.game.stage.itemsAt(_gameScreen.game.hero.pos);
     }
@@ -205,20 +241,13 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
   for (var item in items) {
     var itemY = y + i;
 
-    // Clear the row.
-    terminal.writeAt(
-        x, itemY, "                                                 ");
-
-    // If there's no item in this equipment slot, show the item name.
+    // If there's no item in this equipment slot, show the slot name.
     if (item == null) {
       // Null items should only appear in equipment.
       assert(slotNames != null);
 
-      // When potentially selecting an item, don't show the slot name at all.
-      if (canSelect == null) {
-        terminal.writeAt(x, itemY, "     (${slotNames[i]})", UIHue.helpText);
-      }
-
+      terminal.writeAt(x, itemY, "    (${slotNames[i]})", UIHue.helpText);
+      letter++;
       i++;
       continue;
     }
@@ -226,7 +255,6 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     var borderColor = steelGray;
     var letterColor = UIHue.secondary;
     var textColor = UIHue.primary;
-//    var priceColor = Color.gray;
     var enabled = true;
 
     if (canSelect != null) {
@@ -234,12 +262,10 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
         borderColor = UIHue.secondary;
         letterColor = UIHue.selection;
         textColor = UIHue.primary;
-//        priceColor = Color.gold;
       } else {
         borderColor = Color.black;
         letterColor = Color.black;
         textColor = UIHue.disabled;
-//        priceColor = Color.darkGray;
         enabled = false;
       }
     }
@@ -250,14 +276,10 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     letter++;
 
     if (enabled) {
-      terminal.drawGlyph(x + 3, itemY, item.appearance);
+      terminal.drawGlyph(x + 2, itemY, item.appearance);
     }
 
-    var text = item.nounText;
-    if (text.length > 32) {
-      text = text.substring(0, 29) + "...";
-    }
-    terminal.writeAt(x + 5, itemY, text, textColor);
+    terminal.writeAt(x + 4, itemY, item.nounText, textColor);
 
     drawStat(String symbol, Object stat, Color light, Color dark) {
       var string = stat.toString();
@@ -277,38 +299,8 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     }
 
     // TODO: Show heft and weight.
-
-//    if (item.price != 0) {
-//      var price = priceString(item.price);
-//      terminal.writeAt(x + 49 - price.length, itemY, price, priceColor);
-//    }
-
     i++;
   }
-}
-
-/// Converts an integer to a comma-grouped string like "123,456".
-String priceString(int price) {
-  var result = price.toString();
-  if (price > 999999999) {
-    result = result.substring(0, result.length - 9) +
-        "," +
-        result.substring(result.length - 9);
-  }
-
-  if (price > 999999) {
-    result = result.substring(0, result.length - 6) +
-        "," +
-        result.substring(result.length - 6);
-  }
-
-  if (price > 999) {
-    result = result.substring(0, result.length - 3) +
-        "," +
-        result.substring(result.length - 3);
-  }
-
-  return result;
 }
 
 /// The action the user wants to perform on the selected item.
