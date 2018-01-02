@@ -37,7 +37,7 @@ class WalkAction extends Action {
       // If the hero runs into something in the dark, they can figure out what
       // it is.
       if (actor is Hero) {
-        game.hero.explore(game.stage[pos].updateExplored(force: true));
+        game.hero.explore(game.stage.explore(pos, force: true));
       }
 
       return fail('{1} hit[s] the ${tile.name}.', actor);

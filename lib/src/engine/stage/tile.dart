@@ -122,13 +122,14 @@ class Tile {
   /// explored it.
   ///
   /// Returns 1 if this tile was explored just now or 0 otherwise.
-  int updateExplored({bool force = false}) {
+  bool updateExplored({bool force}) {
+    force ??= false;
     if ((force || isVisible) && !_isExplored) {
       _isExplored = true;
-      return 1;
+      return true;
     }
 
-    return 0;
+    return false;
   }
 
   bool get isWalkable => type.isWalkable;

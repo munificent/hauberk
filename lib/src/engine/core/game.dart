@@ -3,11 +3,12 @@ import 'dart:collection';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../hero/hero.dart';
-import '../hero/skill.dart';
 import '../items/item.dart';
 import '../items/recipe.dart';
 import '../items/shop.dart';
+import '../hero/hero.dart';
+import '../hero/skill.dart';
+import '../monster/breed.dart';
 import '../stage/stage.dart';
 import 'actor.dart';
 import 'element.dart';
@@ -157,13 +158,15 @@ abstract class Content {
   Iterable<String> buildStage(Stage stage, int depth, Function(Vec) placeHero);
 
   Affix findAffix(String name);
+  Breed findBreed(String name);
   ItemType tryFindItem(String name);
 
   Skill findSkill(String name);
-  List<Element> get elements;
-  List<Skill> get skills;
-  List<Recipe> get recipes;
-  List<Shop> get shops;
+  Iterable<Breed> get breeds;
+  Iterable<Element> get elements;
+  Iterable<Skill> get skills;
+  Iterable<Recipe> get recipes;
+  Iterable<Shop> get shops;
 
   HeroSave createHero(String name);
 }

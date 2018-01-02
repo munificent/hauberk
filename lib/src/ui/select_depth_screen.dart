@@ -79,7 +79,7 @@ class SelectDepthScreen extends Screen<Input> {
   bool tryEnterShop(int index) {
     if (index >= content.shops.length) return false;
 
-    ui.push(new ItemScreen.shop(content, save, content.shops[index]));
+    ui.push(new ItemScreen.shop(content, save, content.shops.elementAt(index)));
     return true;
   }
 

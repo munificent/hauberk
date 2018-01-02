@@ -15,6 +15,7 @@ export 'engine/core/log.dart';
 export 'engine/core/option.dart';
 export 'engine/core/resource.dart';
 export 'engine/hero/hero.dart';
+export 'engine/hero/lore.dart';
 export 'engine/hero/skill.dart';
 export 'engine/items/equipment.dart';
 export 'engine/items/inventory.dart';

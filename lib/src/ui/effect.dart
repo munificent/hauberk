@@ -432,7 +432,8 @@ class MapEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var glyph = game.stage[pos].type.appearance as Glyph;
 
-    glyph = new Glyph.fromCharCode(glyph.char,
+    glyph = new Glyph.fromCharCode(
+        glyph.char,
         glyph.fore.blend(gold, life / _maxLife),
         glyph.back.blend(persimmon, life / _maxLife));
 

@@ -288,18 +288,13 @@ void scrolls() {
     ..detection([DetectType.exit, DetectType.item]);
 
   // Mapping.
-  category(CharCode.latinSmallLetterAWithGrave,
-      stack: 20, flags: "flammable")
+  category(CharCode.latinSmallLetterAWithGrave, stack: 20, flags: "flammable")
     ..tag("magic/scroll/mapping")
     ..toss(damage: 1, range: 3, breakage: 75);
-  item("Adventurer's Map", 10, 0.25, sherwood)
-    ..mapping(16);
-  item("Explorer's Map", 30, 0.25, peaGreen)
-    ..mapping(32);
-  item("Cartographer's Map", 50, 0.25, mint)
-    ..mapping(64);
-  item("Wizard's Map", 70, 0.25, seaGreen)
-    ..mapping(200, illuminate: true);
+  item("Adventurer's Map", 10, 0.25, sherwood)..mapping(16);
+  item("Explorer's Map", 30, 0.25, peaGreen)..mapping(32);
+  item("Cartographer's Map", 50, 0.25, mint)..mapping(64);
+  item("Wizard's Map", 70, 0.25, seaGreen)..mapping(200, illuminate: true);
 
 //  CharCode.latinSmallLetterAWithRingAbove // scroll
 }

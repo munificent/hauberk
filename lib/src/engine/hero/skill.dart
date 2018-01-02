@@ -5,6 +5,15 @@ import '../core/combat.dart';
 import '../core/game.dart';
 import 'hero.dart';
 
+// TODO: Could add classes back to the game on top of skills. Skills would have
+// a cost to level up, instead of always costing 1 skill point. Then different
+// classes could tune the costs. So, an "adventurer" would have flat costs for
+// everything, while a "sorceror" would learn skills in that school more cheaply
+// while paying more to learn combat skills.
+//
+// Might help get the player a little more attached to their character since
+// the creation process is a little more involved.
+
 /// An immutable unique skill a hero may learn.
 ///
 /// This class does not contain how good a hero is at the skill. It is more the

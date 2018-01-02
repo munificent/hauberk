@@ -7,35 +7,34 @@ import '../engine.dart';
 import '../hues.dart';
 import 'input.dart';
 
-class _DialogView {
-  static const equipment = const _DialogView("equipment");
-  static const resistances = const _DialogView("resistances");
+abstract class HeroInfoDialog extends Screen<Input> {
+  Hero _hero;
+  HeroInfoDialog _nextScreen;
 
-  // TODO: Move views to show stats and other hero info.
-  static const all = const [
-    equipment,
-    resistances,
-  ];
+  factory HeroInfoDialog(Hero hero) {
+    var screens = [
+      new _HeroEquipmentScreen(hero),
+      new _HeroResistancesScreen(hero),
+      new _HeroLoreScreen(hero)
+    ];
 
-  final String name;
+    for (var i = 0; i < screens.length; i++) {
+      screens[i]._nextScreen = screens[(i + 1) % screens.length];
+    }
 
-  const _DialogView(this.name);
+    return screens.first;
+  }
 
-  _DialogView get next => all[(all.indexOf(this) + 1) % all.length];
-}
+  HeroInfoDialog._(this._hero);
 
-class HeroInfoDialog extends Screen<Input> {
-  final Hero _hero;
-  _DialogView _view = _DialogView.equipment;
-
-  HeroInfoDialog(this._hero);
+  String get name;
+  String get extraHelp => null;
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
 
     if (keyCode == KeyCode.tab) {
-      _view = _view.next;
-      dirty();
+      ui.goTo(_nextScreen);
       return true;
     }
 
@@ -54,21 +53,62 @@ class HeroInfoDialog extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    switch (_view) {
-      case _DialogView.equipment:
-        _renderEquipmentStats(terminal);
-        break;
-
-      case _DialogView.resistances:
-        _renderResistances(terminal);
-        break;
+    var helpText = '[Esc] Exit, [Tab] View ${_nextScreen.name}';
+    if (extraHelp != null) {
+      helpText += ", $extraHelp";
     }
 
-    terminal.writeAt(
-        0, terminal.height - 1, '[Esc] Exit, [Tab] Next View', slate);
+    terminal.writeAt(0, terminal.height - 1, helpText, slate);
   }
 
-  void _renderEquipmentStats(Terminal terminal) {
+  void _drawEquipmentTable(
+      Terminal terminal, void Function(Item item, int y) callback) {
+    terminal.writeAt(2, 1, "Equipment", gold);
+
+    var y = 3;
+    for (var slot in _hero.equipment.slotTypes) {
+      var item = _hero.equipment.find(slot);
+      callback(item, y);
+
+      if (item == null) {
+        terminal.writeAt(2, y, "(${slot})", steelGray);
+        y += 2;
+        continue;
+      }
+
+      terminal.drawGlyph(0, y, item.appearance);
+      terminal.writeAt(2, y, item.nounText, ash);
+
+      y += 2;
+    }
+  }
+
+  Color _elementColor(Element element) {
+    return {
+      Element.none: gunsmoke,
+      Elements.air: Color.lightAqua,
+      Elements.earth: persimmon,
+      Elements.fire: Color.red,
+      Elements.water: Color.blue,
+      Elements.acid: Color.lightGreen,
+      Elements.cold: Color.lightBlue,
+      Elements.lightning: Color.lightPurple,
+      Elements.poison: Color.green,
+      Elements.dark: Color.gray,
+      Elements.light: Color.lightYellow,
+      Elements.spirit: Color.purple
+    }[element];
+  }
+}
+
+class _HeroEquipmentScreen extends HeroInfoDialog {
+  _HeroEquipmentScreen(Hero hero) : super._(hero);
+
+  String get name => "Equipment";
+
+  void render(Terminal terminal) {
+    super.render(terminal);
+
     writeLine(int y, Color color) {
       terminal.writeAt(
           2,
@@ -102,8 +142,8 @@ class HeroInfoDialog extends Screen<Input> {
       }
     }
 
-    terminal.writeAt(48, 2, "══════ Attack ═════ ══ Defend ══", steelGray);
-    terminal.writeAt(48, 3, "El Damage      Hit  Dodge Armor", slate);
+    terminal.writeAt(48, 0, "══════ Attack ═════ ══ Defend ══", steelGray);
+    terminal.writeAt(48, 1, "El Damage      Hit  Dodge Armor", slate);
 
     _drawEquipmentTable(terminal, (item, y) {
       writeLine(y - 1, midnight);
@@ -154,7 +194,7 @@ class HeroInfoDialog extends Screen<Input> {
       totalArmorBonus += item.armorModifier;
     }
 
-    var totalY = 23;
+    var totalY = 21;
     terminal.writeAt(41, totalY, "Totals", slate);
 
     writeLine(4, steelGray);
@@ -173,8 +213,16 @@ class HeroInfoDialog extends Screen<Input> {
     // TODO: Show resulting average damage. Include stat bonuses and stuff too.
     // TODO: Show heft, weight, encumbrance, etc.
   }
+}
 
-  void _renderResistances(Terminal terminal) {
+class _HeroResistancesScreen extends HeroInfoDialog {
+  _HeroResistancesScreen(Hero hero) : super._(hero);
+
+  String get name => "Resistances";
+
+  void render(Terminal terminal) {
+    super.render(terminal);
+
     writeLine(int y, Color color) {
       terminal.writeAt(
           2,
@@ -186,7 +234,7 @@ class HeroInfoDialog extends Screen<Input> {
 
     // TODO: This is too wide now that the terminal is narrower. Make more
     // compact.
-    terminal.writeAt(48, 2, "══════════ Resistances ═════════", steelGray);
+    terminal.writeAt(48, 0, "══════════ Resistances ═════════", steelGray);
 
     _drawEquipmentTable(terminal, (item, y) {
       writeLine(y - 1, midnight);
@@ -210,7 +258,7 @@ class HeroInfoDialog extends Screen<Input> {
       }
     });
 
-    var totalY = 23;
+    var totalY = 21;
     terminal.writeAt(41, totalY, "Totals", slate);
 
     writeLine(4, steelGray);
@@ -221,7 +269,7 @@ class HeroInfoDialog extends Screen<Input> {
       if (element == Element.none) continue;
 
       var x = 48 + i * 3;
-      terminal.writeAt(x, 3, element.abbreviation, _elementColor(element));
+      terminal.writeAt(x, 1, element.abbreviation, _elementColor(element));
 
       // Show the total resistance.
       var resistance = _hero.equipmentResistance(element);
@@ -236,43 +284,74 @@ class HeroInfoDialog extends Screen<Input> {
       i++;
     }
   }
+}
 
-  void _drawEquipmentTable(
-      Terminal terminal, void Function(Item item, int y) callback) {
-    terminal.writeAt(2, 3, "Equipment", gold);
+class _HeroLoreScreen extends HeroInfoDialog {
+  static const _rowCount = 16;
 
-    var y = 5;
-    for (var slot in _hero.equipment.slotTypes) {
-      var item = _hero.equipment.find(slot);
-      callback(item, y);
+  final List<Breed> _breeds;
+  int _scroll = 0;
 
-      if (item == null) {
-        terminal.writeAt(2, y, "(${slot})", steelGray);
-        y += 2;
-        continue;
+  _HeroLoreScreen(Hero hero)
+      : _breeds = hero.game.content.breeds.toList(),
+        super._(hero);
+
+  String get name => "Monster Lore";
+  String get extraHelp => "[↕] Scroll";
+
+  bool handleInput(Input input) {
+    if (input == Input.n) {
+      if (_scroll > 0) {
+        _scroll--;
+        dirty();
       }
-
-      terminal.drawGlyph(0, y, item.appearance);
-      terminal.writeAt(2, y, item.nounText, ash);
-
-      y += 2;
+      return true;
+    } else if (input == Input.s) {
+      if (_scroll < _breeds.length - _rowCount) {
+        _scroll++;
+        dirty();
+      }
+      return true;
     }
+
+    return super.handleInput(input);
   }
 
-  Color _elementColor(Element element) {
-    return {
-      Element.none: gunsmoke,
-      Elements.air: Color.lightAqua,
-      Elements.earth: persimmon,
-      Elements.fire: Color.red,
-      Elements.water: Color.blue,
-      Elements.acid: Color.lightGreen,
-      Elements.cold: Color.lightBlue,
-      Elements.lightning: Color.lightPurple,
-      Elements.poison: Color.green,
-      Elements.dark: Color.gray,
-      Elements.light: Color.lightYellow,
-      Elements.spirit: Color.purple
-    }[element];
+  void render(Terminal terminal) {
+    super.render(terminal);
+
+    writeLine(int y, Color color) {
+      terminal.writeAt(
+          2,
+          y,
+          "────────────────────────────────────────────────────────────────── "
+          "───── ─────",
+          color);
+    }
+
+    terminal.writeAt(2, 1, "Monsters", gold);
+    terminal.writeAt(69, 1, "Seen", slate);
+    terminal.writeAt(75, 1, "Slain", slate);
+
+    for (var i = 0; i < _rowCount; i++) {
+      var breed = _breeds[_scroll + i];
+      var y = i * 2 + 3;
+
+      var seen = _hero.lore.seen(breed);
+      var slain = _hero.lore.slain(breed);
+      if (seen > 0 || slain > 0) {
+        terminal.drawGlyph(0, y, breed.appearance);
+        terminal.writeAt(2, y, breed.name);
+
+        terminal.writeAt(69, y, seen.toString().padLeft(5));
+        terminal.writeAt(75, y, slain.toString().padLeft(5));
+      } else {
+        terminal.writeAt(2, y, "(undiscovered ${_scroll + i + 1})", steelGray);
+      }
+
+      writeLine(y + 1, midnight);
+    }
+
+    writeLine(2, steelGray);
   }
 }

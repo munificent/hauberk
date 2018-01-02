@@ -77,11 +77,13 @@ class Storage {
         }
       }
 
+      var lore = _loadLore(hero['lore']);
+
       var gold = hero['gold'];
       var maxDepth = hero['maxDepth'] ?? 0;
 
       var heroSave = new HeroSave.load(name, inventory, equipment, home,
-          crucible, experience, skillPoints, skillSet, gold, maxDepth);
+          crucible, experience, skillPoints, skillSet, lore, gold, maxDepth);
       heroes.add(heroSave);
     }
   }
@@ -122,6 +124,30 @@ class Storage {
     return new Item(type, count, prefix, suffix);
   }
 
+  Lore _loadLore(Map data) {
+    var slain = <Breed, int>{};
+    var seen = <Breed, int>{};
+
+    // TODO: Older saves before lore.
+    if (data != null) {
+      var slainMap = data['slain'];
+      if (slainMap != null) {
+        (slainMap as Map).forEach((breedName, count) {
+          slain[content.findBreed(breedName)] = count;
+        });
+      }
+
+      var seenMap = data['seen'];
+      if (seenMap != null) {
+        (seenMap as Map).forEach((breedName, count) {
+          seen[content.findBreed(breedName)] = count;
+        });
+      }
+    }
+
+    return new Lore.from(seen, slain);
+  }
+
   void save() {
     var heroData = [];
     for (var hero in heroes) {
@@ -150,6 +176,17 @@ class Storage {
         skills[skill.name] = level;
       });
 
+      var seen = {};
+      var slain = {};
+      var lore = {'seen': seen, 'slain': slain};
+      for (var breed in content.breeds) {
+        var count = hero.lore.seen(breed);
+        if (count != 0) seen[breed.name] = count;
+
+        count = hero.lore.slain(breed);
+        if (count != 0) slain[breed.name] = count;
+      }
+
       heroData.add({
         'name': hero.name,
         'inventory': inventory,
@@ -159,6 +196,7 @@ class Storage {
         'experience': hero.experienceCents,
         'skillPoints': hero.skillPoints,
         'skills': skills,
+        'lore': lore,
         'gold': hero.gold,
         'maxDepth': hero.maxDepth
       });

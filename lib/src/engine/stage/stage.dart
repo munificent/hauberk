@@ -5,6 +5,7 @@ import '../core/game.dart';
 import '../hero/hero.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
+import '../monster/monster.dart';
 import 'flow.dart';
 import 'lighting.dart';
 import 'sound.dart';
@@ -224,6 +225,26 @@ class Stage {
   void heroVisibilityChanged() {
     _lighting.dirtyVisibility();
   }
+
+  /// Marks this tile at [pos] as explored if the hero can see it and hasn't
+  /// previously explored it.
+  ///
+  /// Returns 1 if this tile was explored just now or 0 otherwise.
+  int exploreAt(int x, int y, {bool force}) {
+    var tile = tiles.get(x, y);
+    // make return bool, remove calls to this
+    if (tile.updateExplored(force: force)) {
+      if (tile.isVisible) {
+        var actor = actorAt(new Vec(x, y));
+        if (actor != null && actor is Monster) game.hero.seeMonster(actor);
+      }
+      return 1;
+    }
+
+    return 0;
+  }
+
+  int explore(Vec pos, {bool force}) => exploreAt(pos.x, pos.y, force: force);
 
   /// Recalculates any lighting or visibility state that needs it.
   void refreshView() {

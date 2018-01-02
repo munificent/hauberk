@@ -17,6 +17,7 @@ import '../monster/monster.dart';
 import '../stage/stage.dart';
 import '../stage/tile.dart';
 import 'attribute.dart';
+import 'lore.dart';
 import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
@@ -51,7 +52,12 @@ class HeroSave {
   /// The lowest depth that the hero has successfully explored and exited.
   int maxDepth = 0;
 
-  HeroSave(this.name) : skills = new SkillSet();
+  Lore get lore => _lore;
+  Lore _lore;
+
+  HeroSave(this.name)
+      : skills = new SkillSet(),
+        _lore = new Lore();
 
   HeroSave.load(
       this.name,
@@ -62,6 +68,7 @@ class HeroSave {
       this.experienceCents,
       this.skillPoints,
       this.skills,
+      this._lore,
       this.gold,
       this.maxDepth);
 
@@ -75,6 +82,7 @@ class HeroSave {
     skillPoints = hero.skillPoints;
     gold = hero.gold;
     skills = hero.skills.clone();
+    _lore = hero.lore.clone();
   }
 }
 
@@ -117,6 +125,11 @@ class Hero extends Actor {
   int _level = 1;
 
   int gold;
+
+  final Lore lore;
+
+  /// Monsters the hero has already seen. Makes sure we don't double count them.
+  final Set<Monster> _seenMonsters = new Set();
 
   Behavior _behavior;
 
@@ -162,6 +175,7 @@ class Hero extends Actor {
         skillPoints = save.skillPoints,
         skills = save.skills.clone(),
         gold = save.gold,
+        lore = save.lore.clone(),
         super(game, pos.x, pos.y, 0) {
     // Hero state is cloned above so that if they die in the dungeon, they lose
     // anything they found.
@@ -360,6 +374,7 @@ class Hero extends Actor {
 
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
+    lore.slay(monster);
     _experienceCents += monster.experienceCents;
     _refreshLevel(gain: true);
   }
@@ -412,6 +427,15 @@ class Hero extends Actor {
 
   void disturb() {
     if (_behavior is! ActionBehavior) waitForInput();
+  }
+
+  void seeMonster(Monster monster) {
+    if (_seenMonsters.add(monster)) {
+      // TODO: If we want to give the hero experience for seeing a monster too,
+      // (so that sneak play-style still lets the player gain levels), do that
+      // here.
+      lore.see(monster);
+    }
   }
 
   void _refreshLevel({bool gain: false}) {

@@ -33,13 +33,15 @@ class GameContent implements Content {
   }
 
   Affix findAffix(String name) => Affixes.find(name);
+  Breed findBreed(String name) => Monsters.breeds.find(name);
   ItemType tryFindItem(String name) => Items.types.tryFind(name);
   Skill findSkill(String name) => Skills.find(name);
 
-  List<Element> get elements => Elements.all;
-  List<Skill> get skills => Skills.all;
-  List<Recipe> get recipes => Recipes.all;
-  List<Shop> get shops => Shops.all;
+  Iterable<Breed> get breeds => Monsters.breeds.all;
+  Iterable<Element> get elements => Elements.all;
+  Iterable<Skill> get skills => Skills.all;
+  Iterable<Recipe> get recipes => Recipes.all;
+  Iterable<Shop> get shops => Shops.all;
 
   HeroSave createHero(String name) {
     var hero = new HeroSave(name);
