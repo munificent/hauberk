@@ -5,7 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../affixes.dart';
 import '../items.dart';
-import '../monsters.dart';
+import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'rooms.dart';
 

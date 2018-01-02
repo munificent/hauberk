@@ -1,5 +1,5 @@
 import 'package:hauberk/src/engine.dart';
-import 'package:hauberk/src/content/monsters.dart';
+import 'package:hauberk/src/content/monster/monsters.dart';
 
 const tries = 1000;
 

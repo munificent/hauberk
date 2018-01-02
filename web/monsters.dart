@@ -3,7 +3,7 @@ import 'dart:html' as html;
 import 'package:malison/malison.dart';
 
 import 'package:hauberk/src/content/items.dart';
-import 'package:hauberk/src/content/monsters.dart';
+import 'package:hauberk/src/content/monster/monsters.dart';
 import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';

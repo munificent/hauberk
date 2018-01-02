@@ -7,7 +7,7 @@ import 'content/dungeon/dungeon.dart';
 import 'content/elements.dart';
 import 'content/floor_drops.dart';
 import 'content/items.dart';
-import 'content/monsters.dart';
+import 'content/monster/monsters.dart';
 import 'content/old/recipes.dart';
 import 'content/old/shops.dart';
 import 'content/skills.dart';
