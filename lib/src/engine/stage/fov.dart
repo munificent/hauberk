@@ -37,16 +37,16 @@ class Fov {
     }
 
     // The starting position is always visible.
-    _stage[pos].isOccluded = false;
+    _stage.setOcclusion(pos, false);
   }
 
   void _hideAll() {
     for (var pos in _stage.bounds) {
-      _stage[pos].isOccluded = true;
+      _stage.setOcclusion(pos, true);
     }
 
     // The hero knows where they are.
-    _stage[_stage.game.hero.pos].isOccluded = false;
+    _stage.setOcclusion(_stage.game.hero.pos, false);
   }
 
   void _refreshOctant(Vec start, int octant) {
@@ -83,7 +83,7 @@ class Fov {
           isOccluded = _isInShadow(projection);
         }
 
-        _stage[pos].isOccluded = isOccluded;
+        _stage.setOcclusion(pos, isOccluded);
 
         // Add any opaque tiles to the shadow map.
         if (blocksView) {

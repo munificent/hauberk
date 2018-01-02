@@ -246,6 +246,14 @@ class Stage {
 
   int explore(Vec pos, {bool force}) => exploreAt(pos.x, pos.y, force: force);
 
+  void setOcclusion(Vec pos, bool isOccluded) {
+    tiles[pos].updateOcclusion(isOccluded);
+    if (!isOccluded) {
+      var actor = actorAt(pos);
+      if (actor != null && actor is Monster) game.hero.seeMonster(actor);
+    }
+  }
+
   /// Recalculates any lighting or visibility state that needs it.
   void refreshView() {
     _lighting.refresh();

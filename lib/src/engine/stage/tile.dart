@@ -85,7 +85,8 @@ class Tile {
   /// Whether some other opaque tile is blocking the hero's view of this tile.
   ///
   /// This gets updated by [Fov] as the hero moves around.
-  bool isOccluded = false;
+  bool _isOccluded = false;
+  bool get isOccluded => _isOccluded;
 
   /// Whether the tile can be seen through or blocks the hero's view beyond it.
   ///
@@ -121,7 +122,9 @@ class Tile {
   /// Marks this tile as explored if the hero can see it and hasn't previously
   /// explored it.
   ///
-  /// Returns 1 if this tile was explored just now or 0 otherwise.
+  /// This should not be called directly. Instead, call [Stage.explore()].
+  ///
+  /// Returns true if this tile was explored just now.
   bool updateExplored({bool force}) {
     force ??= false;
     if ((force || isVisible) && !_isExplored) {
@@ -130,6 +133,10 @@ class Tile {
     }
 
     return false;
+  }
+
+  void updateOcclusion(bool isOccluded) {
+    _isOccluded = isOccluded;
   }
 
   bool get isWalkable => type.isWalkable;
