@@ -2,11 +2,11 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'engine.dart';
 
-import 'content/affixes.dart';
 import 'content/dungeon/dungeon.dart';
 import 'content/elements.dart';
 import 'content/floor_drops.dart';
-import 'content/items.dart';
+import 'content/item/affixes.dart';
+import 'content/item/items.dart';
 import 'content/monster/monsters.dart';
 import 'content/old/recipes.dart';
 import 'content/old/shops.dart';

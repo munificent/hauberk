@@ -3,7 +3,7 @@ import 'dart:html' as html;
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
-import 'package:hauberk/src/content/items.dart';
+import 'package:hauberk/src/content/item/items.dart';
 
 main() {
   var text = new StringBuffer();

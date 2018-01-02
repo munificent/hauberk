@@ -5,7 +5,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
-import 'package:hauberk/src/content/items.dart';
+import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/engine.dart';
 
 html.CanvasElement canvas;

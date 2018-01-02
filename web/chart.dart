@@ -4,8 +4,8 @@ import 'dart:svg' as svg;
 import 'package:malison/malison.dart';
 
 import 'package:hauberk/src/engine.dart';
-import 'package:hauberk/src/content/affixes.dart';
-import 'package:hauberk/src/content/items.dart';
+import 'package:hauberk/src/content/item/affixes.dart';
+import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
 
 import 'histogram.dart';

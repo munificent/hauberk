@@ -14,13 +14,12 @@ void arachnids() {
   breed("gray spider", 2, slate, 12, dodge: 30, meander: 6)
     ..attack("bite[s]", 5, Elements.poison);
 
-  breed("spiderling", 4, persimmon, 3, dodge: 35, meander: 8)
+  breed("spiderling", 4, ash, 3, dodge: 35, meander: 8)
     ..count(2, 5)
     ..attack("bite[s]", 5, Elements.poison);
 
   breed("giant spider", 6, ultramarine, 40, meander: 5)
-    ..attack("bite[s]", 5, Elements.poison)
-    ..drop("Stinger", percent: 10);
+    ..attack("bite[s]", 5, Elements.poison);
 }
 
 void bats() {
@@ -465,7 +464,6 @@ void troglodytes() {}
 void minorUndead() {}
 
 void vines() {}
-
 
 void worms() {
   family("w", dodge: 25, meander: 4, flags: "fearless");

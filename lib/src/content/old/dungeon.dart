@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../affixes.dart';
-import '../items.dart';
+import '../item/affixes.dart';
+import '../item/items.dart';
 import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'rooms.dart';

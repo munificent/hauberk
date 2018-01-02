@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import 'elements.dart';
+import '../../engine.dart';
+import '../elements.dart';
 import 'items.dart';
 
 class Affixes {

@@ -1,6 +1,6 @@
 import '../../engine.dart';
 import '../drops.dart';
-import '../items.dart';
+import '../item/items.dart';
 
 /// Static class containing all of the [Recipe]s.
 class Recipes {
@@ -15,8 +15,6 @@ class Recipes {
 
 void healing() {
   recipe("Healing Poultice", {'Flower': 1, 'Soothing Balm': 1});
-
-  recipe('Antidote', {'Soothing Balm': 1, 'Stinger': 1});
 
   recipe('Soothing Balm', {'Flower': 3});
 

@@ -4,7 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
-import 'package:hauberk/src/content/items.dart';
+import 'package:hauberk/src/content/item/items.dart';
 
 /// This script is for tuning and balancing the way attributes and equipment
 /// affect melee combat.
