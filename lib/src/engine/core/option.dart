@@ -30,15 +30,6 @@ class Option {
   /// each turn.
   static const spawnMonsterChance = 50;
 
-  /// The experience point multipliers for each breed flag.
-  static const expFlag = const {
-    'fearless': 1.2,
-    'protective': 1.1,
-    'cowardly': 0.8,
-    'berzerk': 1.2,
-    'immobile': 0.7
-  };
-
   /// The more a monster meanders, the less experience it's worth. This number
   /// should be larger than the largest meander value, and affects experience
   /// like so:

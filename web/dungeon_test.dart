@@ -109,11 +109,7 @@ Future generate() async {
     tableContents.write(attacks.join(', '));
 
     tableContents.write('</td><td>');
-
-    for (var flag in breed.flags) {
-      tableContents.write('$flag ');
-    }
-
+    tableContents.write(breed.flags);
     tableContents.write('</td></tr>');
   }
   tableContents.write('</tbody>');

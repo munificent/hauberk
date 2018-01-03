@@ -287,8 +287,7 @@ void kobolds() {
     ..insult()
     ..haste()
     ..drop("club", percent: 20)
-    ..drop("speed", percent: 30)
-    ..flags("cowardly");
+    ..drop("speed", percent: 30);
 
   breed("vexing imp", 2, violet, 10, meander: 2)
     ..count(2)
@@ -296,8 +295,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..insult()
     ..sparkBolt(rate: 5, damage: 6)
-    ..drop("teleportation", percent: 30)
-    ..flags("cowardly");
+    ..drop("teleportation", percent: 30);
 
   family("k", meander: 3);
   breed("kobold", 3, brickRed, 12, meander: 2)
@@ -350,8 +348,7 @@ void kobolds() {
     ..iceBolt(rate: 8, damage: 12)
     ..fireBolt(rate: 8, damage: 12)
     ..drop("staff", percent: 40)
-    ..drop("magic", count: 2, percent: 60)
-    ..flags("cowardly");
+    ..drop("magic", count: 2, percent: 60);
 
   // TODO: Always drop something good.
   breed("Feng", 10, carrot, 60, speed: 1, meander: 3)
@@ -367,8 +364,7 @@ void kobolds() {
     ..lightningCone(rate: 8, damage: 12)
     ..drop("spear", percent: 80, depthOffset: 5)
     ..drop("armor", count: 2, depthOffset: 5)
-    ..drop("magic", count: 3, depthOffset: 5)
-    ..flags("cowardly");
+    ..drop("magic", count: 3, depthOffset: 5);
 
   // homonculous
 }

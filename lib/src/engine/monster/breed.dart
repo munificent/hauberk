@@ -56,7 +56,7 @@ class Breed {
 
   final MotilitySet motilities;
 
-  final Set<String> flags;
+  final BreedFlags flags;
 
   /// Base chance for this breed to dodge an attack.
   final int dodge;
@@ -96,11 +96,12 @@ class Breed {
       this.countMin,
       this.countMax,
       this.stain,
-      this.flags})
+      BreedFlags flags})
       : vision = vision ?? 16,
         hearing = hearing ?? 16,
         speed = speed ?? 0,
-        dodge = dodge ?? 20;
+        dodge = dodge ?? 20,
+        flags = flags ?? new BreedFlags();
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
@@ -152,9 +153,7 @@ class Breed {
     exp *= attackTotal + moveTotal;
 
     // Take into account flags.
-    for (var flag in flags) {
-      exp *= Option.expFlag[flag];
-    }
+    exp *= flags.experienceMultiplier;
 
     // TODO: Modify by motility?
 
@@ -216,4 +215,59 @@ class Minion {
   final int countMax;
 
   Minion(this.breed, this.countMin, this.countMax);
+}
+
+class BreedFlags {
+  final bool berzerk;
+  final bool cowardly;
+  final bool fearless;
+  final bool immobile;
+  final bool protective;
+
+  BreedFlags(
+      {this.berzerk,
+        this.cowardly,
+        this.fearless,
+        this.immobile,
+        this.protective});
+
+  /// The way this set of flags affects the experience gained when killing a
+  /// monster.
+  double get experienceMultiplier {
+    var scale = 1.0;
+
+    if (berzerk) scale *= 1.2;
+    if (cowardly) scale *= 0.8;
+    if (fearless) scale *= 1.2;
+    if (immobile) scale *= 0.7;
+    if (protective) scale *= 1.1;
+
+    return scale;
+  }
+
+  factory BreedFlags.fromSet(Set<String> names) {
+    names = names.toSet();
+
+    var flags = new BreedFlags(
+        berzerk: names.remove("berzerk"),
+        cowardly: names.remove("cowardly"),
+        fearless: names.remove("fearless"),
+        immobile: names.remove("immobile"),
+        protective: names.remove("protective"));
+
+    if (names.isNotEmpty) throw new ArgumentError('Unknown flags "${names.join(', ')}"');
+
+    return flags;
+  }
+
+  String toString() {
+    var names = [];
+    if (berzerk) names.add("berzerk");
+    if (cowardly) names.add("cowardly");
+    if (fearless) names.add("fearless");
+    if (immobile) names.add("immobile");
+    if (protective) names.add("protective");
+
+    return names.join(" ");
+  }
 }

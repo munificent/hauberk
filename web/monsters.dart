@@ -79,14 +79,9 @@ main() {
     text.write(attacks.join(', '));
 
     text.write('</td><td>');
-
     text.writeln(breed.moves.join(', '));
     text.write('</td><td>');
-
-    for (var flag in breed.flags) {
-      text.write('$flag ');
-    }
-
+    text.write(breed.flags);
     text.write(
         '</td><td><span class="drop" id="${breed.name}">(drops)</span></td>');
     text.write('</tr>');

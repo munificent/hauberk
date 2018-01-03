@@ -1,0 +1,47 @@
+A **furnishing** is a little blob of content that may be placeable within a room or other generated area of the dungeon. It has a few components:
+
+-   The **template** is a 2D grid of cells that defines the furnishing's
+    appearance and requirements. In code, the template is a string literal with
+    a character for each cell. Then there is one or more **styles** that defines
+    what each character means.
+
+    Each cell can be one of:
+
+    -   A **requirement.** It states what kind of tile must already exist at
+        that point in the dungeon in order to place the furnishing on top of it.
+        Requirements can be specific to certain tile types, or general such as
+        "must be open here" or "must be a wall".
+
+    -   A **tile.** A specific kind of tile. If the furnishing is successfully
+        placed, this is what gets put on the stage at that cell. A simple tile
+        specifies only a tile type. More complex ones may also specify drops
+        that are placed, or monsters that are spawned.
+
+        A single tile may also have one or more options that can be selected
+        from randomly. **TODO: Do we need this? Can nested furnishings cover
+        it?**
+
+-   A (possibly empty) list of inner furnishings. These are other furnishings
+    that may be randomly chosen and placed within this one's bounds if this one
+    is successfully placed. For example, a table may have inner furnishings for
+    candles or other decoration.
+
+In order to place a furnishing:
+
+1.  Pick a random furnishing. It's weighted by the depth, the rarity of the
+    furnishing and perhaps other dungeon theming.
+
+2.  Try to find a location to place it. Iterate over all of the coordinates
+    within the place's bounding box where the furnishing's bounding box could
+    fit. For each, look at the existing tiles and see if they meet every
+    corresponding cell's requirement.
+
+    It multiple locations meet the requirements, pick one randomly.
+
+3.  Pick a random style for the furnishing. The styles may have weights and
+    the theme may affect these too.
+
+4.  Place the furnishing. Go through its cells and set any tile types, drops,
+    and spawns appropriately.
+
+5.  If the furnishing has nested furnishings, recursively process those.

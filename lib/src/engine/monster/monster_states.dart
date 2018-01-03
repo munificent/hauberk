@@ -150,7 +150,7 @@ class AwakeState extends MonsterState {
     if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
 
     // If the monster doesn't pursue, then it does melee or waits.
-    if (breed.flags.contains("immobile")) {
+    if (breed.flags.immobile) {
       var toHero = game.hero.pos - pos;
 
       if (toHero.kingLength != 1) return new WalkAction(Direction.none);

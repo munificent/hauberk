@@ -87,7 +87,7 @@ class Monster extends Actor {
     /// Give this some random variation within monsters of the same breed so
     /// they don't all become frightened at the same time.
     _frightenThreshold = rng.range(60, 200).toDouble();
-    if (breed.flags.contains("cowardly")) _frightenThreshold *= 0.7;
+    if (breed.flags.cowardly) _frightenThreshold *= 0.7;
 
     // Initialize the recharges. These will be set to real values when the
     // monster wakes up.
@@ -242,10 +242,10 @@ class Monster extends Actor {
     // Don't add effects if the monster already died.
     if (!isAlive) return;
 
-    if (breed.flags.contains("fearless")) return;
+    if (breed.flags.fearless) return;
 
     // If it doesn't flee, there's no point in being afraid.
-    if (breed.flags.contains("immobile")) return;
+    if (breed.flags.immobile) return;
 
     _fear = math.max(0.0, _fear + offset);
   }
@@ -304,7 +304,7 @@ class Monster extends Actor {
     var fear = 100.0 * damage / health.max;
 
     // Getting hurt enrages it.
-    if (breed.flags.contains("berzerk")) fear *= -3.0;
+    if (breed.flags.berzerk) fear *= -3.0;
 
     _modifyFear(fear);
     Debug.logMonster(
@@ -325,10 +325,10 @@ class Monster extends Actor {
 
     var fear = 50.0 * damage / health.max;
 
-    if (breed.flags.contains("protective") && monster.breed == breed) {
+    if (breed.flags.protective && monster.breed == breed) {
       // Seeing its own kind get hurt enrages it.
       fear *= -2.0;
-    } else if (breed.flags.contains("berzerk")) {
+    } else if (breed.flags.berzerk) {
       // Seeing any monster get hurt enrages it.
       fear *= -1.0;
     }

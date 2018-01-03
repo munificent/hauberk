@@ -119,6 +119,7 @@ class _BaseBuilder {
 
   final List<Defense> _defenses = [];
 
+  // TODO: Make flags strongly typed here too?
   String _flags;
 
   int _countMin;
@@ -341,7 +342,7 @@ class _BreedBuilder extends _BaseBuilder {
         countMin: _countMin ?? _family._countMin ?? 1,
         countMax: _countMax ?? _family._countMax ?? 1,
         stain: _stain ?? _family._stain,
-        flags: flags);
+        flags: new BreedFlags.fromSet(flags));
 
     breed.defenses.addAll(_family._defenses);
     breed.defenses.addAll(_defenses);

@@ -1,0 +1,15 @@
+Here's an idea for how to get regions and stuff in the dungeon to feel locally
+consistent and to get a feel for "I'm heading towards an area of ___".
+
+We can have a grid of "theme" data for the stage. Biomes can seed that with
+base themes like "water".
+
+When a monster is spawned, it may prefer to be in certain themes. (Or,
+conversely, when choosing a monster to spawn, we take the theme of the place
+into account.) When a monster is placed, it may paint some of the surrounding
+area with its own theme. So spawning an undead monster will taint the nearby
+area. Later spawns in the region are more likely to also be undead.
+
+Floor drops and furnishings take theme into account in their weights. Likewise,
+a furnishing may also paint theme. A laboratory decoration paints a "magical"
+theme which makes magic-using monsters more likely to spawn.
