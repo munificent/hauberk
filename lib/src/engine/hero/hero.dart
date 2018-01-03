@@ -354,8 +354,6 @@ class Hero extends Actor {
     }
 
     // TODO: Apply skills.
-    // Let the class modify it.
-//    heroClass.modifyHit(hit);
   }
 
   void defend() {
@@ -374,9 +372,13 @@ class Hero extends Actor {
 
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
-    lore.slay(monster);
-    _experienceCents += monster.experienceCents;
-    _refreshLevel(gain: true);
+
+    // It only counts if the hero's seen the monster at least once.
+    if (_seenMonsters.contains(monster)) {
+      lore.slay(monster);
+      _experienceCents += monster.experienceCents;
+      _refreshLevel(gain: true);
+    }
   }
 
   void onDied(Noun attackNoun) {
@@ -388,7 +390,6 @@ class Hero extends Actor {
     _lastNoise = action.noise;
 
     // TODO: Passive skills?
-//    heroClass.finishedTurn(action);
   }
 
   void changePosition(Vec from, Vec to) {
