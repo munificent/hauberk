@@ -286,18 +286,52 @@ class _HeroResistancesScreen extends HeroInfoDialog {
   }
 }
 
+class SortBreedsBy {
+  /// The default order they are created in in the content.
+  static const appearance = const SortBreedsBy("ordered by appearance", "Sort by appearance");
+
+  /// Sort alphabetically by name.
+  static const alphabetical = const SortBreedsBy("ordered by name", "Sort by name");
+
+  /// Show only uniques.
+  static const uniques = const SortBreedsBy("uniques", "Show only uniques");
+
+  static const all = const [appearance, alphabetical, uniques];
+
+  final String description;
+  final String helpText;
+
+  const SortBreedsBy(this.description, this.helpText);
+
+  SortBreedsBy get next => all[(all.indexOf(this) + 1) % all.length];
+}
+
 class _HeroLoreScreen extends HeroInfoDialog {
   static const _rowCount = 16;
 
-  final List<Breed> _breeds;
+  final List<Breed> _breeds = [];
+  SortBreedsBy _sort = SortBreedsBy.appearance;
   int _scroll = 0;
 
-  _HeroLoreScreen(Hero hero)
-      : _breeds = hero.game.content.breeds.toList(),
-        super._(hero);
+  _HeroLoreScreen(Hero hero) : super._(hero) {
+    _listBreeds();
+  }
 
   String get name => "Monster Lore";
-  String get extraHelp => "[↕] Scroll";
+  String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (shift || alt) return false;
+
+    if (keyCode == KeyCode.s) {
+      _sort = _sort.next;
+      _listBreeds();
+      dirty();
+      return true;
+    }
+
+    return false;
+  }
 
   bool handleInput(Input input) {
     if (input == Input.n) {
@@ -330,21 +364,29 @@ class _HeroLoreScreen extends HeroInfoDialog {
     }
 
     terminal.writeAt(2, 1, "Monsters", gold);
+    terminal.writeAt(20, 1, "(${_sort.description})".padLeft(48), steelGray);
     terminal.writeAt(69, 1, "Seen", slate);
     terminal.writeAt(75, 1, "Slain", slate);
 
     for (var i = 0; i < _rowCount; i++) {
+      if (_scroll + i >= _breeds.length) break;
+
       var breed = _breeds[_scroll + i];
       var y = i * 2 + 3;
 
       var seen = _hero.lore.seen(breed);
       var slain = _hero.lore.slain(breed);
-      if (seen > 0 || slain > 0) {
+      if (seen > 0) {
         terminal.drawGlyph(0, y, breed.appearance);
         terminal.writeAt(2, y, breed.name);
 
-        terminal.writeAt(69, y, seen.toString().padLeft(5));
-        terminal.writeAt(75, y, slain.toString().padLeft(5));
+        if (breed.flags.unique) {
+          terminal.writeAt(69, y, "Yes".padLeft(5));
+          terminal.writeAt(75, y, (slain > 0 ? "Yes" : "No").padLeft(5));
+        } else {
+          terminal.writeAt(69, y, seen.toString().padLeft(5));
+          terminal.writeAt(75, y, slain.toString().padLeft(5));
+        }
       } else {
         terminal.writeAt(2, y, "(undiscovered ${_scroll + i + 1})", steelGray);
       }
@@ -353,5 +395,26 @@ class _HeroLoreScreen extends HeroInfoDialog {
     }
 
     writeLine(2, steelGray);
+  }
+
+  void _listBreeds() {
+    _breeds.clear();
+
+    switch (_sort) {
+      case SortBreedsBy.appearance:
+        _breeds.addAll(_hero.game.content.breeds);
+        break;
+
+      case SortBreedsBy.alphabetical:
+        _breeds.addAll(_hero.game.content.breeds);
+        _breeds.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        break;
+
+      case SortBreedsBy.uniques:
+        _breeds.addAll(
+            _hero.game.content.breeds.where((breed) => breed.flags.unique));
+        break;
+    }
   }
 }

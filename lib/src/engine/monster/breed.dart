@@ -223,13 +223,15 @@ class BreedFlags {
   final bool fearless;
   final bool immobile;
   final bool protective;
+  final bool unique;
 
   BreedFlags(
       {this.berzerk,
-        this.cowardly,
-        this.fearless,
-        this.immobile,
-        this.protective});
+      this.cowardly,
+      this.fearless,
+      this.immobile,
+      this.protective,
+      this.unique});
 
   /// The way this set of flags affects the experience gained when killing a
   /// monster.
@@ -253,9 +255,12 @@ class BreedFlags {
         cowardly: names.remove("cowardly"),
         fearless: names.remove("fearless"),
         immobile: names.remove("immobile"),
-        protective: names.remove("protective"));
+        protective: names.remove("protective"),
+        unique: names.remove("unique"));
 
-    if (names.isNotEmpty) throw new ArgumentError('Unknown flags "${names.join(', ')}"');
+    if (names.isNotEmpty) {
+      throw new ArgumentError('Unknown flags "${names.join(', ')}"');
+    }
 
     return flags;
   }
@@ -267,6 +272,7 @@ class BreedFlags {
     if (fearless) names.add("fearless");
     if (immobile) names.add("immobile");
     if (protective) names.add("protective");
+    if (unique) names.add("unique");
 
     return names.join(" ");
   }

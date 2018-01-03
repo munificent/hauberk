@@ -28,8 +28,9 @@ Content createContent() {
 }
 
 class GameContent implements Content {
-  Iterable<String> buildStage(Stage stage, int depth, Function(Vec) placeHero) {
-    return new Dungeon(stage, depth).generate(placeHero);
+  Iterable<String> buildStage(
+      Lore lore, Stage stage, int depth, Function(Vec) placeHero) {
+    return new Dungeon(lore, stage, depth).generate(placeHero);
   }
 
   Affix findAffix(String name) => Affixes.find(name);

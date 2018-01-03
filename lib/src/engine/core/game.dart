@@ -7,6 +7,7 @@ import '../items/item.dart';
 import '../items/recipe.dart';
 import '../items/shop.dart';
 import '../hero/hero.dart';
+import '../hero/lore.dart';
 import '../hero/skill.dart';
 import '../monster/breed.dart';
 import '../stage/stage.dart';
@@ -35,7 +36,7 @@ class Game {
   Iterable<String> generate() sync* {
     // TODO: Do something useful with depth.
     Vec heroPos;
-    yield* content.buildStage(_stage, depth, (pos) {
+    yield* content.buildStage(_save.lore, _stage, depth, (pos) {
       heroPos = pos;
     });
 
@@ -155,7 +156,8 @@ class Game {
 abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
   // TODO: Using a callback to set the hero position is kind of hokey.
-  Iterable<String> buildStage(Stage stage, int depth, Function(Vec) placeHero);
+  Iterable<String> buildStage(
+      Lore lore, Stage stage, int depth, Function(Vec) placeHero);
 
   Affix findAffix(String name);
   Breed findBreed(String name);

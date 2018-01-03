@@ -201,7 +201,7 @@ void goblins() {
     ..darkBolt(rate: 20, damage: 20)
     ..drop("equipment", count: 2, depthOffset: 3)
     ..drop("magic", count: 3, depthOffset: 4)
-    ..flags("protective");
+    ..flags("protective unique");
 
   // TODO: Hobgoblins, bugbears, bogill.
   // TODO: https://en.wikipedia.org/wiki/Moss_people
@@ -364,7 +364,8 @@ void kobolds() {
     ..lightningCone(rate: 8, damage: 12)
     ..drop("spear", percent: 80, depthOffset: 5)
     ..drop("armor", count: 2, depthOffset: 5)
-    ..drop("magic", count: 3, depthOffset: 5);
+    ..drop("magic", count: 3, depthOffset: 5)
+    ..flags("unique");
 
   // homonculous
 }
@@ -382,6 +383,14 @@ void orcs() {}
 
 void people() {
   family("p", tracking: 14)..openDoors();
+  breed("Harold the Misfortunate", 1, lilac, 10, frequency: 100.0, meander: 3)
+    ..attack("hit[s]", 3)
+    ..drop("weapon", percent: 50, depthOffset: 4)
+    ..drop("armor", percent: 60, depthOffset: 4)
+    ..drop("magic", percent: 30, depthOffset: 4)
+    ..flags("unique");
+  // TODO: Make more interesting.
+
   breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 3)
     ..attack("hit[s]", 3)
     ..drop("weapon", percent: 50)

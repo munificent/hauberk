@@ -78,10 +78,9 @@ void quest() {
     ..attack("crushe[s]", 250, Elements.earth)
     ..attack("blast[s]", 200, Elements.lightning)
     ..darkCone(damage: 500)
-    ..flags("fearless")
+    ..flags("fearless unique")
     ..openDoors();
   // TODO: Minions. Moves.
-  // TODO: Make unique.
 }
 
 void reptiles() {

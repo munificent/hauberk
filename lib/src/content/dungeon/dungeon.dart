@@ -98,6 +98,7 @@ class Dungeon {
   static List<Junction> debugJunctions;
   static Array2D<TileInfo> debugInfo;
 
+  final Lore _lore;
   final Stage stage;
   final int depth;
 
@@ -109,13 +110,17 @@ class Dungeon {
 
   Vec _heroPos;
 
+  /// The unique breeds that have already been place on the stage. Ensures we
+  /// don't spawn the same unique more than once.
+  var _spawnedUniques = new Set<Breed>();
+
   Rect get bounds => stage.bounds;
   Rect get safeBounds => stage.bounds.inflate(-1);
 
   int get width => stage.width;
   int get height => stage.height;
 
-  Dungeon(this.stage, this.depth)
+  Dungeon(this._lore, this.stage, this.depth)
       : _info = new Array2D.generated(
             stage.width, stage.height, () => new TileInfo());
 
@@ -358,6 +363,15 @@ class Dungeon {
 
       while (spawnCount > 0) {
         var breed = Monsters.breeds.tryChoose(depth, place.type);
+
+        // Don't place dead or redundant uniques.
+        if (breed.flags.unique) {
+          if (_lore.slain(breed) > 0) continue;
+          if (_spawnedUniques.contains(breed)) continue;
+
+          _spawnedUniques.add(breed);
+        }
+
         var spawned = _spawnMonster(place, breed);
 
         // Stop if we ran out of open tiles.
