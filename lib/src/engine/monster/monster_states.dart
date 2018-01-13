@@ -153,7 +153,7 @@ class AwakeState extends MonsterState {
     if (breed.flags.immobile) {
       var toHero = game.hero.pos - pos;
 
-      if (toHero.kingLength != 1) return new WalkAction(Direction.none);
+      if (toHero.kingLength != 1) return new RestAction();
 
       // Map the offset to a direction.
       // TODO: Move this into piecemeal?

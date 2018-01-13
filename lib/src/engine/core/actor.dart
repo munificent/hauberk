@@ -9,41 +9,8 @@ import 'energy.dart';
 import 'game.dart';
 import 'log.dart';
 
-abstract class Thing implements Noun {
-  Vec _pos;
-
-  Thing(this._pos);
-
-  Vec get pos => _pos;
-  void set pos(Vec value) {
-    if (value != _pos) {
-      changePosition(_pos, value);
-      _pos = value;
-    }
-  }
-
-  int get x => pos.x;
-  void set x(int value) {
-    pos = new Vec(value, y);
-  }
-
-  int get y => pos.y;
-  void set y(int value) {
-    pos = new Vec(x, value);
-  }
-
-  /// Called when the actor's position is about to change from [from] to [to].
-  void changePosition(Vec from, Vec to) {}
-
-  get appearance;
-  String get nounText;
-  Pronoun get pronoun => Pronoun.it;
-
-  String toString() => nounText;
-}
-
 /// An active entity in the game. Includes monsters and the hero.
-abstract class Actor extends Thing {
+abstract class Actor implements Noun {
   final Game game;
   final Stat health;
   final Energy energy = new Energy();
@@ -75,15 +42,40 @@ abstract class Actor extends Thing {
         dazzle
       ]..addAll(resistances.values);
 
+  Vec _pos;
+
+  Vec get pos => _pos;
+  void set pos(Vec value) {
+    if (value != _pos) {
+      changePosition(_pos, value);
+      _pos = value;
+    }
+  }
+
+  int get x => pos.x;
+  void set x(int value) {
+    pos = new Vec(value, y);
+  }
+
+  int get y => pos.y;
+  void set y(int value) {
+    pos = new Vec(x, value);
+  }
+
   Actor(this.game, int x, int y, int health)
-      : health = new Stat(health),
-        super(new Vec(x, y)) {
+      : _pos = new Vec(x, y),
+        health = new Stat(health) {
     for (var element in game.content.elements) {
       resistances[element] = new ResistCondition(element);
     }
 
     conditions.forEach((condition) => condition.bind(this));
   }
+
+  Object get appearance;
+
+  String get nounText;
+  Pronoun get pronoun => Pronoun.it;
 
   bool get isAlive => health.current > 0;
 
@@ -127,6 +119,7 @@ abstract class Actor extends Thing {
   /// [Lighting.emanationForLevel()].
   int get emanationLevel;
 
+  /// Called when the actor's position is about to change from [from] to [to].
   void changePosition(Vec from, Vec to) {
     game.stage.moveActor(from, to);
 
@@ -274,6 +267,8 @@ abstract class Actor extends Thing {
     if (!isVisibleToHero) return;
     game.log.message(message, noun1, noun2, noun3);
   }
+
+  String toString() => nounText;
 }
 
 class Stat {

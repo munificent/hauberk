@@ -696,7 +696,7 @@ class GameScreen extends Screen<Input> {
       if (i < visibleMonsters.length) {
         var monster = visibleMonsters[i];
 
-        var glyph = monster.appearance;
+        var glyph = monster.appearance as Glyph;
         if (targetActor == monster) {
           glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }

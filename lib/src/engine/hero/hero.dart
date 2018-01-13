@@ -139,12 +139,6 @@ class Hero extends Actor {
   /// to regain health.
   double food = 0.0;
 
-  /// The hero's current "charge".
-  ///
-  /// This is interpreted and managed differently for each class: "fury" for
-  /// warriors, "mana" for mages, etc.
-  double charge = 0.0;
-
   int _focus = 400;
   int get focus => _focus;
   set focus(int value) => _focus = value.clamp(0, Option.maxFocus);
