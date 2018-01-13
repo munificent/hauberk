@@ -71,23 +71,18 @@ class Fov {
       if (!bounds.contains(pos)) break;
 
       for (var col = 0; col <= row; col++) {
-        var blocksView = false;
-        var isOccluded = true;
-        var projection = null;
+        if (fullShadow) {
+          // If we know the entire row is in shadow, we don't need to be more
+          // specific.
+          _stage.setOcclusion(pos, true);
+        } else {
+          var projection = getProjection(col, row);
+          _stage.setOcclusion(pos, _isInShadow(projection));
 
-        // If we know the entire row is in shadow, we don't need to be more
-        // specific.
-        if (!fullShadow) {
-          blocksView = _stage[pos].blocksView;
-          projection = getProjection(col, row);
-          isOccluded = _isInShadow(projection);
-        }
-
-        _stage.setOcclusion(pos, isOccluded);
-
-        // Add any opaque tiles to the shadow map.
-        if (blocksView) {
-          fullShadow = _addShadow(projection);
+          // Add any opaque tiles to the shadow map.
+          if (_stage[pos].blocksView) {
+            fullShadow = _addShadow(projection);
+          }
         }
 
         // Move to the next column.
