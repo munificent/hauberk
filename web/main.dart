@@ -167,6 +167,8 @@ main() {
   ui.keyPress.bind(Input.rest, KeyCode.numpad5, shift: true);
   ui.keyPress.bind(Input.fire, KeyCode.numpad5, alt: true);
 
+  ui.keyPress.bind(Input.wizard, KeyCode.w, shift: true, alt: true);
+
   ui.push(new MainMenuScreen(content));
 
   ui.handlingInput = true;

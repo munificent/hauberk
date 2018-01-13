@@ -43,19 +43,6 @@ class Game {
     hero = new Hero(this, heroPos, _save);
     _stage.addActor(hero);
 
-    // TODO: Temp. Wizard light it.
-    /*
-    for (var pos in stage.bounds) {
-      for (var dir in Direction.all) {
-        if (stage.bounds.contains(pos + dir) &&
-            stage[pos + dir].isTransparent) {
-          stage[pos].visible = true;
-          break;
-        }
-      }
-    }
-    */
-
     yield "Calculating visibility";
     _stage.finishBuild();
   }

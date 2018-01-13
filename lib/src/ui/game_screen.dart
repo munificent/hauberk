@@ -19,6 +19,7 @@ import 'item_dialog.dart';
 import 'select_skill_dialog.dart';
 import 'skill_dialog.dart';
 import 'target_dialog.dart';
+import 'wizard_dialog.dart';
 
 class GameScreen extends Screen<Input> {
   final Game game;
@@ -268,6 +269,10 @@ class GameScreen extends Screen<Input> {
           action = new EquipAction(
               ItemLocation.inventory, game.hero.inventory.lastUnequipped);
         }
+        break;
+
+      case Input.wizard:
+        ui.push(new WizardDialog(game));
         break;
     }
 

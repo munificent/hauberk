@@ -64,6 +64,9 @@ class Input {
   static const fireW = const Input("fireW");
   static const fireNW = const Input("fireNW");
 
+  /// Open the wizard cheat menu.
+  static const wizard = const Input("wizard");
+
   final String name;
 
   const Input(this.name);
