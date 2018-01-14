@@ -195,6 +195,7 @@ class _BreedBuilder extends _BaseBuilder {
   final List<Move> _moves = [];
   final List<Drop> _drops = [];
   final List<_NamedMinion> _minions = [];
+  Pronoun _pronoun;
 
   _BreedBuilder(
       this._name, this._depth, double frequency, this._appearance, this._health)
@@ -226,6 +227,14 @@ class _BreedBuilder extends _BaseBuilder {
   void flags(String flags) {
     // TODO: Allow negated flags.
     _flags = flags;
+  }
+
+  void he() {
+    _pronoun = Pronoun.he;
+  }
+
+  void she() {
+    _pronoun = Pronoun.she;
   }
 
   void heal({num rate: 5, int amount}) => _addMove(new HealMove(rate, amount));
@@ -326,7 +335,7 @@ class _BreedBuilder extends _BaseBuilder {
 
     var breed = new Breed(
         _name,
-        Pronoun.it,
+        _pronoun ?? Pronoun.it,
         _appearance,
         _attacks,
         _moves,

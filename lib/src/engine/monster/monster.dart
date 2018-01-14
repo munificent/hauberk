@@ -69,7 +69,7 @@ class Monster extends Actor {
   String get nounText => 'the ${breed.name}';
   Pronoun get pronoun => breed.pronoun;
 
-  /// How much experience a level one [Hero] gains for killing this monster.
+  /// How much experience the [Hero] gains for killing this monster.
   int get experienceCents => breed.experienceCents;
 
   /// Instead of armor, we just scale up the health for different breeds to

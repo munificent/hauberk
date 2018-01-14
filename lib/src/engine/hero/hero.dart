@@ -369,7 +369,7 @@ class Hero extends Actor {
 
     // It only counts if the hero's seen the monster at least once.
     if (_seenMonsters.contains(monster)) {
-      lore.slay(monster);
+      lore.slay(monster.breed);
       _experienceCents += monster.experienceCents;
       _refreshLevel(gain: true);
     }
@@ -429,7 +429,7 @@ class Hero extends Actor {
       // TODO: If we want to give the hero experience for seeing a monster too,
       // (so that sneak play-style still lets the player gain levels), do that
       // here.
-      lore.see(monster);
+      lore.see(monster.breed);
     }
   }
 

@@ -1,5 +1,4 @@
 import '../monster/breed.dart';
-import '../monster/monster.dart';
 
 /// The history of interesting events the hero has experienced.
 class Lore {
@@ -17,14 +16,14 @@ class Lore {
 
   Lore.from(this._seen, this._slain);
 
-  void see(Monster monster) {
-    _seen.putIfAbsent(monster.breed, () => 0);
-    _seen[monster.breed]++;
+  void see(Breed breed) {
+    _seen.putIfAbsent(breed, () => 0);
+    _seen[breed]++;
   }
 
-  void slay(Monster monster) {
-    _slain.putIfAbsent(monster.breed, () => 0);
-    _slain[monster.breed]++;
+  void slay(Breed breed) {
+    _slain.putIfAbsent(breed, () => 0);
+    _slain[breed]++;
   }
 
   /// The number of monsters of [breed] that the hero has detected.

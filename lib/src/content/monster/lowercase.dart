@@ -192,6 +192,7 @@ void goblins() {
 
   // TODO: Always drop something good.
   breed("Erlkonig, the Goblin Prince", 14, steelGray, 120)
+    ..he()
     ..minion("goblin mage", 1, 2)
     ..minion("goblin fighter", 1, 3)
     ..minion("goblin archer", 1, 3)
@@ -352,6 +353,7 @@ void kobolds() {
 
   // TODO: Always drop something good.
   breed("Feng", 10, carrot, 60, speed: 1, meander: 3)
+    ..he()
     ..minion("imp warlock", 1, 2)
     ..minion("imp incanter", 1, 2)
     ..minion("kobold priest", 1, 2)
@@ -384,6 +386,7 @@ void orcs() {}
 void people() {
   family("p", tracking: 14)..openDoors();
   breed("Harold the Misfortunate", 1, lilac, 10, frequency: 100.0, meander: 3)
+    ..he()
     ..attack("hit[s]", 3)
     ..drop("weapon", percent: 50, depthOffset: 4)
     ..drop("armor", percent: 60, depthOffset: 4)
