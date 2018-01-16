@@ -531,7 +531,7 @@ class RunBehavior extends Behavior {
     if (firstStep) return true;
 
     if (openLeft == null) {
-      // On the second step, figure out if we're in a corridor and which way
+      // On the second step, figure out if we're in a passage and which way
       // it's going. If the hero is running straight (NSEW), allow up to a 90°
       // turn. This covers cases like:
       //
@@ -566,11 +566,11 @@ class RunBehavior extends Behavior {
       if (openDirs.isEmpty) return false;
 
       if (openDirs.length == 1) {
-        // Entering a corridor.
+        // Entering a passage.
         openLeft = false;
         openRight = false;
 
-        // The direction may change if the first step entered a corridor from
+        // The direction may change if the first step entered a passage from
         // around a corner.
         direction = openDirs.first;
       } else {
@@ -579,7 +579,7 @@ class RunBehavior extends Behavior {
         openRight = _isOpen(hero, direction.rotateRight90);
       }
     } else if (!openLeft && !openRight) {
-      if (!_runInCorridor(hero)) return false;
+      if (!_runInPassage(hero)) return false;
     } else {
       if (!_runInOpen(hero)) return false;
     }
@@ -592,12 +592,12 @@ class RunBehavior extends Behavior {
     return new WalkAction(direction, running: true);
   }
 
-  /// Advance one step while in a corridor.
+  /// Advance one step while in a passage.
   ///
   /// The hero will follow curves and turns as long as there is only one
   /// direction they can go. (This is more or less true, though right-angle
   /// turns need special handling.)
-  bool _runInCorridor(Hero hero) {
+  bool _runInPassage(Hero hero) {
     // Keep running as long as there's only one direction to go. Allow up to a
     // 90° turn while running.
     var openDirs = [

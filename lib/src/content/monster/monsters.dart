@@ -11,7 +11,7 @@ class Monsters {
     breeds.defineTags("monster");
 
     // TODO: Temp. Is there a cleaner way to set these up?
-    breeds.defineTags("dungeon/corridor dungeon/room aquatic");
+    breeds.defineTags("dungeon/passage dungeon/room aquatic");
 
     // Here's approximately the level distributions for the different
     // broad categories on monsters. Monsters are very roughly lumped

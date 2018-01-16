@@ -141,7 +141,7 @@ void snakes() {
     ..attack("bite[s]", 4);
 
   breed("cave snake", 7, gunsmoke, 50)
-    ..placeIn("corridor")
+    ..placeIn("passage")
     ..attack("bite[s]", 16);
 }
 

@@ -4,9 +4,9 @@ import '../tiles.dart';
 import 'builder.dart';
 
 void arachnids() {
-  // TODO: Should all spiders hide in corridors?
+  // TODO: Should all spiders hide in passages?
   family("a", flags: "fearless")
-    ..placeIn("corridor")
+    ..placeIn("passage")
     ..stain(Tiles.spiderweb);
   breed("brown spider", 1, persimmon, 6, dodge: 30, meander: 8)
     ..attack("bite[s]", 5);
@@ -220,7 +220,7 @@ void insects() {
     ..spawn(rate: 6);
 
   breed("giant centipede", 3, brickRed, 28, speed: 3, meander: -4)
-    ..placeIn("corridor")
+    ..placeIn("passage")
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
 }
@@ -475,7 +475,7 @@ void vines() {}
 
 void worms() {
   family("w", dodge: 25, meander: 4, flags: "fearless");
-  breed("blood worm", 2, brickRed, 4, frequency: 0.5)
+  breed("blood worm", 2, maroon, 4, frequency: 0.5)
     ..count(3, 8)
     ..attack("crawl[s] on", 5);
 
@@ -486,11 +486,11 @@ void worms() {
 
   family("w", dodge: 10, meander: 4, flags: "fearless");
   breed("giant earthworm", 2, salmon, 20, speed: -2)
-    ..placeIn("corridor")
+    ..placeIn("passage")
     ..attack("crawl[s] on", 5);
 
   breed("giant cave worm", 7, sandal, 80, speed: -2)
-    ..placeIn("corridor")
+    ..placeIn("passage")
     ..attack("crawl[s] on", 8, Elements.acid);
 }
 

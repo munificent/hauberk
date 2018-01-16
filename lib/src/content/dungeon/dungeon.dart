@@ -95,7 +95,7 @@ class Place {
 class Dungeon {
   // TODO: Hack temp. Static so that dungeon_test can access these while it's
   // being generated.
-  static List<Junction> debugJunctions;
+  static Iterable<Junction> debugJunctions;
   static Array2D<TileInfo> debugInfo;
 
   final Lore _lore;
@@ -104,7 +104,7 @@ class Dungeon {
 
   final List<Biome> _biomes = [];
   final Array2D<TileInfo> _info;
-  final List<Vec> _corridors = [];
+  final List<Vec> _passages = [];
 
   final List<Place> _places = [];
 
@@ -585,7 +585,7 @@ class Dungeon {
     // TODO: Do something with the results of this.
     new ChokePoints(this).calculate(_heroPos);
 
-    // Find all corridor tiles.
+    // Find all passage tiles.
     for (var pos in safeBounds) {
       if (!getTileAt(pos).isWalkable) continue;
 
@@ -593,7 +593,7 @@ class Dungeon {
         return !getTileAt(pos + dir).isTraversable;
       }).length;
 
-      if (walls >= 6) _corridors.add(pos);
+      if (walls >= 6) _passages.add(pos);
     }
   }
 }

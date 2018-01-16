@@ -82,8 +82,7 @@ class WizardDialog extends Screen<Input> {
       // If it is opaque, but it's next to a non-opaque tile (i.e. it's an edge
       // wall), explore it.
       for (var dir in Direction.all) {
-        if (stage.bounds.contains(pos + dir) &&
-            !stage[pos + dir].blocksView) {
+        if (stage.bounds.contains(pos + dir) && !stage[pos + dir].blocksView) {
           stage[pos].updateExplored(force: true);
           break;
         }

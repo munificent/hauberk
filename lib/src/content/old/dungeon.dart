@@ -29,10 +29,10 @@ import 'rooms.dart';
 ///    the dungeon isn't single connected.
 /// 5. The mazes will have a lot of dead ends. Finally, we remove those by
 ///    repeatedly filling in any open tile that's closed on three sides. When
-///    this is done, every corridor in a maze actually leads somewhere.
+///    this is done, every passage in a maze actually leads somewhere.
 ///
 /// The end result of this is a multiply-connected dungeon with rooms and lots
-/// of winding corridors.
+/// of winding passages.
 class OldDungeon {
   static const numRoomTries = 60;
   static const numRoomPositionTries = 20;

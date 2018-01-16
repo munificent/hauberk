@@ -20,6 +20,9 @@ class Junction {
   /// placed, it's relative to the room's tile array.
   final Vec position;
 
+  /// How many times we've tried to place something at this junction.
+  int tries = 0;
+
   Junction(this.direction, this.position);
 }
 
@@ -30,16 +33,46 @@ class PlacedRoom {
   PlacedRoom(this.pos, this.room);
 }
 
+class JunctionSet {
+  final Map<Vec, Junction> _byPosition = {};
+  final Queue<Junction> _queue = new Queue();
+
+  bool get isNotEmpty => _queue.isNotEmpty;
+
+  Junction at(Vec pos) => _byPosition[pos];
+
+  void add(Junction junction) {
+    if (_byPosition.containsKey(junction.position)) return;
+
+    _byPosition[junction.position] = junction;
+    _queue.add(junction);
+  }
+
+  Junction takeNext() {
+    var junction = _queue.removeFirst();
+    _byPosition.remove(junction.position);
+    return junction;
+  }
+
+  void removeAt(Vec pos) {
+    if (!_byPosition.containsKey(pos)) return;
+
+    var junction = _byPosition[pos];
+    _byPosition.remove(pos);
+    _queue.remove(junction);
+  }
+}
+
 class RoomBiome extends Biome {
   final Dungeon _dungeon;
-  final List<Junction> _junctions = [];
+  final JunctionSet _junctions = new JunctionSet();
   final List<PlacedRoom> _rooms = [];
 
   RoomBiome(this._dungeon);
 
   Iterable<String> generate(Dungeon dungeon) sync* {
     // TODO: Hack temp.
-    Dungeon.debugJunctions = _junctions;
+    Dungeon.debugJunctions = _junctions._queue;
 
     yield "Add starting room";
     // TODO: Sometimes start at a natural feature?
@@ -50,35 +83,120 @@ class RoomBiome extends Biome {
     // Keep growing as long as we have attachment points.
     var roomNumber = 1;
     while (_junctions.isNotEmpty) {
-      var junction = rng.take(_junctions);
+      var junction = _junctions.takeNext();
 
-      if (_tryCreateCycle(junction)) {
-        yield "Created cycle";
-        continue;
+      if (_tryPlacePassageRoom(junction)) {
+        yield "Room $roomNumber";
+        roomNumber++;
+      } else if (++junction.tries < 20) {
+        // Couldn't place it, so re-add to try the junction again.
+        _junctions.add(junction);
+      }
+    }
+  }
+
+  bool _tryPlacePassageRoom(Junction junction) {
+    // Make a meandering passage.
+    var pos = junction.position;
+    var dir = junction.direction;
+    var distanceThisDir = 0;
+    var passage = new Set<Vec>();
+    var newJunctions = <Junction>[];
+    var cycle = false;
+
+    maybeBranch(Direction dir) {
+      if (rng.percent(40)) newJunctions.add(new Junction(dir, pos + dir));
+    }
+
+    while (passage.length < 3 || rng.percent(95)) {
+      // Don't allow turning twice in a row.
+      if (distanceThisDir > 1 && rng.percent(30)) {
+        if (rng.oneIn(2)) {
+          dir = dir.rotateLeft90;
+          maybeBranch(dir.rotateRight90);
+        } else {
+          dir = dir.rotateRight90;
+          maybeBranch(dir.rotateLeft90);
+        }
+
+        maybeBranch(dir.rotate180);
+        distanceThisDir = 0;
       }
 
-      // TODO: If the junction opens up into another room, see how much it
-      // shortens the path and consider placing it to add a cycle to the level.
+      pos += dir;
+      if (!_dungeon.safeBounds.contains(pos)) return false;
 
-      // TODO: Tune this.
-      for (var i = 0; i < 60; i++) {
-        // Try to place a corridor.
-        // TODO: Turns and branches in corridors.
-        var length = rng.range(3, 10);
-        if (_canPlaceCorridor(junction.position, junction.direction, length)) {
-          var endJunction = new Junction(junction.direction,
-              junction.position + junction.direction * length);
-          if (_tryPlaceRoom(endJunction)) {
-            _placeCorridor(junction.position, junction.direction, length);
-            yield "Placed room ${roomNumber++}";
-            break;
-          }
-        } else if (_tryPlaceRoom(junction)) {
-          yield "Placed room ${roomNumber++}";
-          break;
+      // Don't let it loop back on itself.
+      if (passage.contains(pos)) return false;
+
+      var left = pos + dir.rotateLeft90;
+      var right = pos + dir.rotateRight90;
+
+      // If the passage connects up to an existing junction, consider adding a
+      // cycle.
+      // TODO: This search is slow.
+      var reachedJunction = _junctions.at(pos);
+      if (reachedJunction != null &&
+          reachedJunction.direction == dir.rotate180) {
+        // Avoid a short passage that's just two doors next to each other.
+        if (passage.length < 2) return false;
+
+        // Don't add a cycle if there's already a path from one side to the other
+        // that isn't very long.
+        if (new CyclePathfinder(
+                _dungeon.stage, junction.position, pos + dir, 20)
+            .search()) {
+          return false;
+        }
+
+        // Don't add too many cycles.
+        if (!rng.percent(1)) return false;
+
+        _junctions.removeAt(pos);
+        cycle = true;
+        break;
+      }
+
+      if (!_dungeon.safeBounds.contains(left)) return false;
+      if (_dungeon.getTileAt(left).isTraversable) return false;
+      if (passage.contains(left)) return false;
+
+      if (!_dungeon.safeBounds.contains(right)) return false;
+      if (_dungeon.getTileAt(right).isTraversable) return false;
+      if (passage.contains(right)) return false;
+
+      passage.add(pos);
+      distanceThisDir++;
+    }
+
+    // If we didn't connect to an existing junction, add a new room at the end
+    // of the passage. We require this to pass so that we avoid dead end
+    // passages.
+    if (!cycle) {
+      var endJunction = new Junction(dir, pos);
+      if (!_tryPlaceRoom(endJunction, passage)) return false;
+    }
+
+    for (var junction in newJunctions) {
+      _junctions.add(junction);
+    }
+
+    for (var pos in passage) {
+      _dungeon.setTileAt(pos, Tiles.floor);
+
+      for (var dir in Direction.all) {
+        var neighbor = pos + dir;
+        if (_dungeon.isRockAt(neighbor)) {
+          _dungeon.setTileAt(neighbor, Tiles.wall);
         }
       }
     }
+
+    _placeDoor(junction.position);
+    _placeDoor(pos);
+
+    _dungeon.addPlace(new Place("passage", passage.toList()));
+    return true;
   }
 
   Iterable<String> decorate(Dungeon dungeon) sync* {
@@ -231,7 +349,7 @@ class RoomBiome extends Biome {
       y = rng.inclusive(0, _dungeon.height - startRoom.tiles.height);
 
       // TODO: After a certain number of tries, should try a different room.
-    } while (!_canPlaceRoom(startRoom, x, y));
+    } while (!_canPlaceRoom(startRoom, x, y, new Set()));
 
     _placeRoom(startRoom, x, y, isStarting: true);
 
@@ -243,33 +361,7 @@ class RoomBiome extends Biome {
     _dungeon.placeHero(rng.item(openTiles));
   }
 
-  /// Checks if the junction is already next to an open area.
-  ///
-  /// If so, and the path around the junction is long enough, creates a doorway
-  /// to add a cycle to the dungeon.
-  bool _tryCreateCycle(Junction junction) {
-    if (rng.percent(20)) return false;
-
-    if (!_dungeon
-        .getTileAt(junction.position + junction.direction)
-        .isWalkable) {
-      return false;
-    }
-
-    // The junction is next to an already open area. Consider adding a cycle
-    // to the dungeon here if it cuts down on the path length significantly.
-    var from = junction.position - junction.direction;
-    var to = junction.position + junction.direction;
-
-    // Don't add a cycle if there's already a path from one side to the other
-    // that isn't very long.
-    if (new CyclePathfinder(_dungeon.stage, from, to).search()) return false;
-
-    _placeDoor(junction.position);
-    return true;
-  }
-
-  bool _tryPlaceRoom(Junction junction) {
+  bool _tryPlaceRoom(Junction junction, Set<Vec> passageTiles) {
     // TODO: Choosing random room types looks kind of blah. It's weird to
     // have blob rooms randomly scattered amongst other ones. Instead, it
     // would be better to have "regions" in the dungeon that preferentially
@@ -290,7 +382,7 @@ class RoomBiome extends Biome {
       // Calculate the room position by lining up the junctions.
       var roomPos = junction.position - roomJunction.position;
 
-      if (!_canPlaceRoom(room, roomPos.x, roomPos.y)) continue;
+      if (!_canPlaceRoom(room, roomPos.x, roomPos.y, passageTiles)) continue;
 
       _placeRoom(room, roomPos.x, roomPos.y);
       _placeDoor(junction.position);
@@ -300,42 +392,7 @@ class RoomBiome extends Biome {
     return false;
   }
 
-  bool _canPlaceCorridor(Vec start, Direction dir, int length) {
-    var pos = start;
-    for (var i = 0; i < length; i++) {
-      pos += dir;
-      if (!_dungeon.safeBounds.contains(pos)) return false;
-      if (!_dungeon.isRockAt(pos)) return false;
-      if (!_dungeon.isRockAt(pos + dir.rotateLeft90)) return false;
-      if (!_dungeon.isRockAt(pos + dir.rotateRight90)) return false;
-    }
-
-    return true;
-  }
-
-  void _placeCorridor(Vec start, Direction dir, int length) {
-    var cells = <Vec>[];
-    var pos = start;
-    for (var i = 0; i <= length; i++) {
-      _dungeon.setTile(pos.x, pos.y, Tiles.floor);
-
-      var left = pos + dir.rotateLeft90;
-      _dungeon.setTile(left.x, left.y, Tiles.wall);
-
-      var right = pos + dir.rotateRight90;
-      _dungeon.setTile(right.x, right.y, Tiles.wall);
-
-      if (i != 0 && i != length) cells.add(pos);
-
-      pos += dir;
-    }
-
-    _placeDoor(start);
-    _placeDoor(start + dir * length);
-    _dungeon.addPlace(new Place("corridor", cells));
-  }
-
-  bool _canPlaceRoom(Room room, int x, int y) {
+  bool _canPlaceRoom(Room room, int x, int y, Set<Vec> passageTiles) {
     if (!_dungeon.bounds.containsRect(room.tiles.bounds.offset(x, y))) {
       return false;
     }
@@ -346,6 +403,9 @@ class RoomBiome extends Biome {
     for (var pos in room.tiles.bounds) {
       // If the room doesn't care about the tile, it's fine.
       if (room.tiles[pos] == null) continue;
+
+      // If there is an incoming passage, the room can't overlap it.
+      if (passageTiles.contains(pos)) return false;
 
       // Otherwise, it must still be solid on the stage.
       var tile = _dungeon.getTile(pos.x + x, pos.y + y);
@@ -406,22 +466,15 @@ class RoomBiome extends Biome {
   }
 
   void _placeDoor(Vec pos) {
-//    var tile = Tiles.closedDoor;
-//    if (rng.oneIn(5)) {
-//      tile = Tiles.openDoor;
-//    } else if (rng.oneIn(4)) {
-//      tile = Tiles.floor;
-//    }
-
     // Always place a closed door. Later phases look for that to recognize
     // junctions.
     // TODO: Replace some closed doors with open doors, floor, hidden doors,
     // etc. in a later phase.
     _dungeon.setTile(pos.x, pos.y, Tiles.closedDoor);
 
-    // Since corridors are placed after the room they connect to, they may
+    // Since passages are placed after the room they connect to, they may
     // overlap a room junction. Remove that since it's pointless.
-    _junctions.removeWhere((junction) => junction.position == pos);
+    _junctions.removeAt(pos);
   }
 
   void _tryAddJunction(Vec junctionPos, Direction junctionDir) {
@@ -630,10 +683,10 @@ class BlobRoom extends RoomType {
 /// Used to see if there is already a path between two points in the dungeon
 /// before adding an extra door between two areas.
 class CyclePathfinder extends Pathfinder<bool> {
-  // TODO: Allow different dungeons to tweak this.
-  static const _maxLength = 20;
+  final int _maxLength;
 
-  CyclePathfinder(Stage stage, Vec start, Vec end) : super(stage, start, end);
+  CyclePathfinder(Stage stage, Vec start, Vec end, this._maxLength)
+      : super(stage, start, end);
 
   bool processStep(Path path) {
     if (path.length >= _maxLength) return false;
