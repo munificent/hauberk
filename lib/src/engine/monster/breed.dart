@@ -61,6 +61,9 @@ class Breed {
   /// Base chance for this breed to dodge an attack.
   final int dodge;
 
+  /// How much light the monster emanates.
+  final int emanationLevel;
+
   /// Additional defenses this breed has.
   final List<Defense> defenses = [];
 
@@ -93,6 +96,7 @@ class Breed {
       this.meander,
       int speed,
       int dodge,
+      int emanationLevel,
       this.countMin,
       this.countMax,
       this.stain,
@@ -101,6 +105,7 @@ class Breed {
         hearing = hearing ?? 16,
         speed = speed ?? 0,
         dodge = dodge ?? 20,
+        emanationLevel = emanationLevel ?? 0,
         flags = flags ?? new BreedFlags();
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of

@@ -120,7 +120,9 @@ void reptiles() {
     ..attack("claw[s]", 12)
     ..attack("bite[s]", 17);
 
-  family("R", dodge: 30, meander: 3)..preferOpen();
+  family("R", dodge: 30, meander: 3)
+    ..preferOpen()
+    ..emanate(3);
   breed("juvenile salamander", 7, salmon, 40)
     ..attack("bite[s]", 14, Elements.fire)
     ..fireCone(rate: 16, damage: 30, range: 6);

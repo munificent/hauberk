@@ -127,7 +127,13 @@ class _BaseBuilder {
 
   TileType _stain;
 
+  int _emanationLevel;
+
   _BaseBuilder(this._frequency);
+
+  void emanate(int level) {
+    _emanationLevel = level;
+  }
 
   void preferWall() {
     _location = SpawnLocation.wall;
@@ -348,6 +354,7 @@ class _BreedBuilder extends _BaseBuilder {
         meander: (_meander ?? 0) + (_family._meander ?? 0),
         speed: (_speed ?? 0) + (_family._speed ?? 0),
         dodge: dodge,
+        emanationLevel: _family._emanationLevel ?? _emanationLevel,
         countMin: _countMin ?? _family._countMin ?? 1,
         countMax: _countMax ?? _family._countMax ?? 1,
         stain: _stain ?? _family._stain,

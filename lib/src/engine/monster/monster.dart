@@ -76,8 +76,7 @@ class Monster extends Actor {
   /// accomplish the same thing.
   int get armor => 0;
 
-  // TODO: Allow breeds to affect this.
-  int get emanationLevel => 0;
+  int get emanationLevel => breed.emanationLevel;
 
   Monster(Game game, this.breed, int x, int y, int maxHealth, this.generation)
       : super(game, x, y, maxHealth) {

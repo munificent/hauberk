@@ -129,7 +129,9 @@ void felines() {
 }
 
 void goblins() {
-  family("g", meander: 1)..openDoors();
+  family("g", meander: 1)
+    ..openDoors()
+    ..emanate(2);
   breed("goblin peon", 4, sandal, 26, meander: 2)
     ..count(4)
     ..attack("stab[s]", 8)
@@ -253,11 +255,13 @@ void jellies() {
     ..spawn(rate: 4);
 
   breed("smoking slime", 15, brickRed, 30)
+    ..emanate(4)
     ..stain(Tiles.redJellyStain)
     ..attack("crawl[s] on", 10, Elements.fire)
     ..spawn(rate: 4);
 
   breed("sparkling slime", 20, violet, 40)
+    ..emanate(3)
     ..stain(Tiles.violetJellyStain)
     ..attack("crawl[s] on", 12, Elements.lightning)
     ..spawn(rate: 4);
@@ -384,7 +388,9 @@ void nagas() {}
 void orcs() {}
 
 void people() {
-  family("p", tracking: 14)..openDoors();
+  family("p", tracking: 14)
+    ..openDoors()
+    ..emanate(2);
   breed("Harold the Misfortunate", 1, lilac, 10, frequency: 100.0, meander: 3)
     ..he()
     ..attack("hit[s]", 3)
