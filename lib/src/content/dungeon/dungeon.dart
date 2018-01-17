@@ -9,6 +9,7 @@ import '../tiles.dart';
 import 'blob.dart';
 import 'choke_points.dart';
 import 'grotto.dart';
+import 'junction.dart';
 import 'lake.dart';
 import 'river.dart';
 import 'room.dart';
@@ -17,51 +18,6 @@ abstract class Biome {
   Iterable<String> generate(Dungeon dungeon);
   Iterable<String> decorate(Dungeon dungeon) => const [];
 }
-
-// TODO: Figure out how we want to do the region stuff around water.
-//class WaterBiome extends Biome {
-//  static const _maxDistance = 20;
-//
-//  Array2D<int> _tiles;
-//
-//    // Run breadth-first search to find out how far each tile is from water.
-//    // TODO: This leads to a sort of diamond-like region around the water. An
-//    // actual blur convolution might work better.
-//    var queue = new Queue<Vec>();
-//
-//    for (var pos in dungeon.bounds) {
-//      // TODO: Handle other kinds of water.
-//      if (dungeon.getTileAt(pos) == Tiles.water ||
-//          dungeon.getTileAt(pos) == Tiles.grass) {
-//        queue.add(pos);
-//        _tiles[pos] = 0;
-//      }
-//    }
-//
-//    while (queue.isNotEmpty) {
-//      var pos = queue.removeFirst();
-//      var distance = _tiles[pos] + 1;
-//      if (distance >= _maxDistance) continue;
-//
-//      for (var dir in Direction.cardinal) {
-//        var neighbor = pos + dir;
-//
-//        if (!dungeon.bounds.contains(neighbor)) continue;
-//        if (_tiles[neighbor] != _maxDistance) continue;
-//
-//        _tiles[neighbor] = distance;
-//        queue.add(neighbor);
-//      }
-//    }
-//  }
-//
-//  double intensity(int x, int y) {
-//    var distance = _tiles.get(x, y);
-//    if (distance == 0) return 1.0;
-//
-//    return ((20 - distance) / 20.0).clamp(0.0, 1.0);
-//  }
-//}
 
 class TileInfo {
   int distance;
@@ -101,6 +57,8 @@ class Dungeon {
   final Lore _lore;
   final Stage stage;
   final int depth;
+
+  final JunctionSet junctions = new JunctionSet();
 
   final List<Biome> _biomes = [];
   final Array2D<TileInfo> _info;

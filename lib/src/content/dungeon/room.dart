@@ -7,24 +7,7 @@ import '../../engine.dart';
 import '../tiles.dart';
 import 'blob.dart';
 import 'dungeon.dart';
-
-class Junction {
-  /// Points from the first room towards where the new room should be attached.
-  ///
-  /// A room must have an opposing junction in order to match.
-  final Direction direction;
-
-  /// The location of the junction.
-  ///
-  /// For a placed room, this is in absolute coordinates. For a room yet to be
-  /// placed, it's relative to the room's tile array.
-  final Vec position;
-
-  /// How many times we've tried to place something at this junction.
-  int tries = 0;
-
-  Junction(this.direction, this.position);
-}
+import 'junction.dart';
 
 class PlacedRoom {
   final Vec pos;
@@ -33,47 +16,13 @@ class PlacedRoom {
   PlacedRoom(this.pos, this.room);
 }
 
-class JunctionSet {
-  final Map<Vec, Junction> _byPosition = {};
-  final Queue<Junction> _queue = new Queue();
-
-  bool get isNotEmpty => _queue.isNotEmpty;
-
-  Junction at(Vec pos) => _byPosition[pos];
-
-  void add(Junction junction) {
-    if (_byPosition.containsKey(junction.position)) return;
-
-    _byPosition[junction.position] = junction;
-    _queue.add(junction);
-  }
-
-  Junction takeNext() {
-    var junction = _queue.removeFirst();
-    _byPosition.remove(junction.position);
-    return junction;
-  }
-
-  void removeAt(Vec pos) {
-    if (!_byPosition.containsKey(pos)) return;
-
-    var junction = _byPosition[pos];
-    _byPosition.remove(pos);
-    _queue.remove(junction);
-  }
-}
-
 class RoomBiome extends Biome {
   final Dungeon _dungeon;
-  final JunctionSet _junctions = new JunctionSet();
   final List<PlacedRoom> _rooms = [];
 
   RoomBiome(this._dungeon);
 
   Iterable<String> generate(Dungeon dungeon) sync* {
-    // TODO: Hack temp.
-    Dungeon.debugJunctions = _junctions._queue;
-
     yield "Add starting room";
     // TODO: Sometimes start at a natural feature?
     _createStartingRoom();
@@ -82,15 +31,15 @@ class RoomBiome extends Biome {
 
     // Keep growing as long as we have attachment points.
     var roomNumber = 1;
-    while (_junctions.isNotEmpty) {
-      var junction = _junctions.takeNext();
+    while (_dungeon.junctions.isNotEmpty) {
+      var junction = _dungeon.junctions.takeNext();
 
       if (_tryPlacePassageRoom(junction)) {
         yield "Room $roomNumber";
         roomNumber++;
       } else if (++junction.tries < 20) {
         // Couldn't place it, so re-add to try the junction again.
-        _junctions.add(junction);
+        _dungeon.junctions.add(junction);
       }
     }
   }
@@ -102,7 +51,7 @@ class RoomBiome extends Biome {
     var distanceThisDir = 0;
     var passage = new Set<Vec>();
     var newJunctions = <Junction>[];
-    var cycle = false;
+    var placeRoom = true;
 
     maybeBranch(Direction dir) {
       if (rng.percent(40)) newJunctions.add(new Junction(dir, pos + dir));
@@ -135,7 +84,7 @@ class RoomBiome extends Biome {
       // If the passage connects up to an existing junction, consider adding a
       // cycle.
       // TODO: This search is slow.
-      var reachedJunction = _junctions.at(pos);
+      var reachedJunction = _dungeon.junctions.at(pos);
       if (reachedJunction != null &&
           reachedJunction.direction == dir.rotate180) {
         // Avoid a short passage that's just two doors next to each other.
@@ -152,8 +101,28 @@ class RoomBiome extends Biome {
         // Don't add too many cycles.
         if (!rng.percent(1)) return false;
 
-        _junctions.removeAt(pos);
-        cycle = true;
+        _dungeon.junctions.removeAt(pos);
+        placeRoom = false;
+        break;
+      }
+
+      // If the passage connects to a natural area, stop there and then
+      // traverse through it.
+      if (_dungeon.getTileAt(pos) == Tiles.grass) {
+        // Avoid a short passage that's just two doors next to each other.
+        if (passage.length < 2) return false;
+
+        // Don't add a cycle if there's already a path from one side to the other
+        // that isn't very long.
+        if (new CyclePathfinder(
+                _dungeon.stage, junction.position, pos + dir, 20)
+            .search()) {
+          return false;
+        }
+
+        _reachNature([pos]);
+        pos -= dir;
+        placeRoom = false;
         break;
       }
 
@@ -172,13 +141,13 @@ class RoomBiome extends Biome {
     // If we didn't connect to an existing junction, add a new room at the end
     // of the passage. We require this to pass so that we avoid dead end
     // passages.
-    if (!cycle) {
+    if (placeRoom) {
       var endJunction = new Junction(dir, pos);
       if (!_tryPlaceRoom(endJunction, passage)) return false;
     }
 
     for (var junction in newJunctions) {
-      _junctions.add(junction);
+      _dungeon.junctions.add(junction);
     }
 
     for (var pos in passage) {
@@ -397,9 +366,6 @@ class RoomBiome extends Biome {
       return false;
     }
 
-    var allowed = 0;
-    var nature = 0;
-
     for (var pos in room.tiles.bounds) {
       // If the room doesn't care about the tile, it's fine.
       if (room.tiles[pos] == null) continue;
@@ -407,44 +373,25 @@ class RoomBiome extends Biome {
       // If there is an incoming passage, the room can't overlap it.
       if (passageTiles.contains(pos)) return false;
 
-      // Otherwise, it must still be solid on the stage.
+      // If some different tile has already been placed here, we can't place
+      // the room.
       var tile = _dungeon.getTile(pos.x + x, pos.y + y);
-
-      if (tile == Tiles.rock) {
-        allowed++;
-      } else if (tile == Tiles.water || tile == Tiles.grass) {
-        nature++;
-      } else if (tile == room.tiles[pos]) {
-        // Allow it if it wouldn't change the type. This lets room walls
-        // overlap.
-      } else {
+      if (tile != Tiles.rock && tile != room.tiles[pos]) {
         return false;
       }
     }
 
-    // Allow overlapping natural features somewhat, but not too much.
-    // TODO: Do we want to only allow certain room types to open into natural
-    // areas?
-    return allowed > nature * 2;
+    return true;
   }
 
   void _placeRoom(Room room, int x, int y, {bool isStarting = false}) {
-    List<Vec> nature = [];
-
     var cells = <Vec>[];
 
     for (var pos in room.tiles.bounds) {
       var tile = room.tiles[pos];
       if (tile == null) continue;
 
-      // Don't erase existing natural features.
       var absolute = pos.offset(x, y);
-      var existing = _dungeon.getTileAt(absolute);
-      if (existing != Tiles.rock) {
-        if (tile.isTraversable) nature.add(absolute);
-        continue;
-      }
-
       _dungeon.setTileAt(absolute, tile);
 
       if (tile.isWalkable) cells.add(absolute);
@@ -456,10 +403,6 @@ class RoomBiome extends Biome {
     for (var junction in room.junctions) {
       _tryAddJunction(roomPos + junction.position, junction.direction);
     }
-
-    // If the room opens up into a natural feature, that feature is reachable
-    // now.
-    if (nature != null) _reachNature(nature);
 
     _rooms.add(new PlacedRoom(new Vec(x, y), room));
     _dungeon.addPlace(new Place("room", cells, hasHero: isStarting));
@@ -474,7 +417,7 @@ class RoomBiome extends Biome {
 
     // Since passages are placed after the room they connect to, they may
     // overlap a room junction. Remove that since it's pointless.
-    _junctions.removeAt(pos);
+    _dungeon.junctions.removeAt(pos);
   }
 
   void _tryAddJunction(Vec junctionPos, Direction junctionDir) {
@@ -494,7 +437,7 @@ class RoomBiome extends Biome {
     if (isBlocked(junctionDir.rotateLeft90)) return;
     if (isBlocked(junctionDir.rotateRight90)) return;
 
-    _junctions.add(new Junction(junctionDir, junctionPos));
+    _dungeon.junctions.add(new Junction(junctionDir, junctionPos));
   }
 
   void _reachNature(List<Vec> tiles) {
