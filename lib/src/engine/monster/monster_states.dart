@@ -7,6 +7,7 @@ import '../action/action.dart';
 import '../action/walk.dart';
 import '../core/game.dart';
 import '../core/log.dart';
+import '../hero/hero.dart';
 import '../monster/breed.dart';
 import '../monster/monster.dart';
 import '../monster/monster_pathfinder.dart';
@@ -342,11 +343,14 @@ class AwakeState extends MonsterState {
 
     for (var pos in new Line(pos, game.hero.pos)) {
       first ??= pos;
-      var tile = game.stage[pos];
 
       // TODO: Should not walk through doors since that might not be the
       // fastest path.
-      if (!tile.canEnterAny(monster.motilities)) return null;
+      if (!monster.canOccupy(pos)) return null;
+
+      // Don't walk into other monsters.
+      var actor = game.stage.actorAt(pos);
+      if (actor != null && actor is! Hero) return null;
 
       if (++length >= breed.tracking) return null;
 

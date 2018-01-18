@@ -24,7 +24,7 @@ void potions() {
   item("Potion[s] of Rejuvenation", 65, 0.5, violet)
     ..heal(1000, curePoison: true);
 
-  item("Antidote", 2, 0.5, peaGreen)..heal(0, curePoison: true);
+  item("Antidote", 2, 1.0, peaGreen)..heal(0, curePoison: true);
 
   category(CharCode.latinSmallLetterEWithCircumflex,
       stack: 10, flags: "freezable")

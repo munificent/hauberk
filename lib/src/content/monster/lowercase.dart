@@ -14,7 +14,7 @@ void arachnids() {
   breed("gray spider", 2, slate, 12, dodge: 30, meander: 6)
     ..attack("bite[s]", 5, Elements.poison);
 
-  breed("spiderling", 4, ash, 3, dodge: 35, meander: 8)
+  breed("spiderling", 4, ash, 8, dodge: 35, meander: 8)
     ..count(2, 5)
     ..attack("bite[s]", 5, Elements.poison);
 
@@ -26,14 +26,14 @@ void bats() {
   family("b")
     ..fly()
     ..preferWall();
-  breed("brown bat", 2, persimmon, 2, speed: 1, meander: 6)
+  breed("brown bat", 2, persimmon, 10, speed: 1, meander: 6)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 4)
     ..attack("bite[s]", 3);
 
   breed("giant bat", 4, garnet, 24, speed: 1, meander: 4).attack("bite[s]", 6);
 
-  breed("cave bat", 6, gunsmoke, 20, speed: 2, meander: 3)
+  breed("cave bat", 6, gunsmoke, 30, speed: 2, meander: 3)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 5)
     ..attack("bite[s]", 6);
@@ -450,16 +450,16 @@ void rodents() {
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
 
-  breed("sewer rat", 2, steelGray, 4, meander: -1)
+  breed("sewer rat", 2, steelGray, 8, meander: -1)
     ..count(1, 4)
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
 
-  breed("sickly rat", 3, peaGreen, 4)
+  breed("sickly rat", 3, peaGreen, 16)
     ..attack("bite[s]", 8, Elements.poison)
     ..attack("scratch[es]", 4);
 
-  breed("plague rat", 6, lima, 8)
+  breed("plague rat", 6, lima,20)
     ..count(1, 4)
     ..attack("bite[s]", 15, Elements.poison)
     ..attack("scratch[es]", 8);
