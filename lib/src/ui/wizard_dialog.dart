@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'input.dart';
 
 /// Cheat menu.
@@ -44,17 +45,7 @@ class WizardDialog extends Screen<Input> {
 
   void render(Terminal terminal) {
     // Draw a box for the contents.
-    var boxHeight = _menuItems.length + 2;
-    var bar = "│" + (" " * 41) + "│";
-    for (var y = 1; y < boxHeight + 1; y++) {
-      terminal.writeAt(0, y, bar, steelGray);
-    }
-
-    terminal.writeAt(
-        0, 0, "╒═════════════════════════════════════════╕", steelGray);
-    terminal.writeAt(
-        0, boxHeight, "└─────────────────────────────────────────┘", steelGray);
-
+    Draw.frame(terminal, 0, 0, 43, _menuItems.length + 3);
     terminal.writeAt(1, 0, "Wizard Menu", UIHue.selection);
 
     var i = 0;

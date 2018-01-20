@@ -3,6 +3,21 @@ import 'dart:math' as math;
 import '../hero/hero.dart';
 import 'skill.dart';
 
+// TODO: Use these enums elsewhere?
+class Attribute {
+  static const strength = const Attribute("Strength");
+  static const agility = const Attribute("Agility");
+  static const fortitude = const Attribute("Fortitude");
+  static const intellect = const Attribute("Intellect");
+  static const will = const Attribute("Will");
+
+  static const all = const [strength, agility, fortitude, intellect, will];
+
+  final String name;
+
+  const Attribute(this.name);
+}
+
 class Strength {
   final Hero _hero;
 
@@ -12,7 +27,7 @@ class Strength {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
     if (value <= 30) return lerpDouble(value, 20, 30, 1.0, 1.5);
     if (value <= 40) return lerpDouble(value, 30, 40, 1.5, 1.8);
-    if (value <= 30) return lerpDouble(value, 40, 50, 1.8, 2.0);
+    if (value <= 50) return lerpDouble(value, 40, 50, 1.8, 2.0);
     return lerpDouble(value, 50, 60, 2.0, 2.1);
   }
 

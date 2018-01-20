@@ -17,7 +17,7 @@ var canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
 var stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
 
 var content = createContent();
-var save = new HeroSave("Hero");
+var save = content.createHero("hero");
 Game _game;
 RenderableTerminal terminal;
 

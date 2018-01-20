@@ -22,7 +22,8 @@ final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
 Game game;
 
 main() {
-  game = new Game(createContent(), new HeroSave("temp"), 1);
+  var content = createContent();
+  game = new Game(content, content.createHero("temp"), 1);
 
   spawnStuff();
   generateTable();

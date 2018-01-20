@@ -28,6 +28,7 @@ class Storage {
 
     for (final hero in data['heroes']) {
       var name = hero['name'];
+      var race = _loadRace(hero['race']);
 
       var items = <Item>[];
       for (var itemData in hero['inventory']) {
@@ -82,10 +83,30 @@ class Storage {
       var gold = hero['gold'];
       var maxDepth = hero['maxDepth'] ?? 0;
 
-      var heroSave = new HeroSave.load(name, inventory, equipment, home,
+      var heroSave = new HeroSave.load(name, race, inventory, equipment, home,
           crucible, experience, skillPoints, skillSet, lore, gold, maxDepth);
       heroes.add(heroSave);
     }
+  }
+
+  RaceAttributes _loadRace(Map data) {
+    // TODO: Temp to handle heros from before races.
+    if (data == null) {
+      return content.races.elementAt(1).rollAttributes();
+    }
+
+    var name = data['name'] as String;
+    var race = content.races.firstWhere((race) => race.name == name);
+
+    var attributeData = data['attributes'];
+    var attributes = <Attribute, int>{};
+
+    for (var attribute in Attribute.all) {
+      attributes[attribute] =
+          attributeData[attribute.name.toLowerCase()] as int;
+    }
+
+    return new RaceAttributes(race, attributes);
   }
 
   Item _loadItem(Map data) {
@@ -151,6 +172,12 @@ class Storage {
   void save() {
     var heroData = [];
     for (var hero in heroes) {
+      var raceAttributes = {};
+      for (var attribute in Attribute.all) {
+        raceAttributes[attribute.name.toLowerCase()] = hero.race.max(attribute);
+      }
+      var race = {'name': hero.race.name, 'attributes': raceAttributes};
+
       var inventory = [];
       for (var item in hero.inventory) {
         inventory.add(_saveItem(item));
@@ -189,6 +216,7 @@ class Storage {
 
       heroData.add({
         'name': hero.name,
+        'race': race,
         'inventory': inventory,
         'equipment': equipment,
         'home': home,

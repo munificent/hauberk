@@ -6,7 +6,7 @@ import 'package:hauberk/src/content.dart';
 
 main() {
   var content = createContent();
-  var save = new HeroSave("blah");
+  var save = content.createHero("blah");
 
   while (true) {
     var watch = new Stopwatch();

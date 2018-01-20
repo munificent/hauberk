@@ -145,12 +145,12 @@ class MainMenuScreen extends Screen<Input> {
         secondary = UIHue.selection;
 
         terminal.drawChar(
-            24, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
+            19, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
       }
 
-      terminal.writeAt(25, 20 + i, hero.name, primary);
-      terminal.writeAt(45, 20 + i, "Level ${hero.level}", secondary);
-//      terminal.writeAt(55, 20 + i, hero.heroClass.name, secondary);
+      terminal.writeAt(20, 20 + i, hero.name, primary);
+      terminal.writeAt(40, 20 + i, "Level ${hero.level}", secondary);
+      terminal.writeAt(50, 20 + i, hero.race.name, secondary);
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'input.dart';
 import 'hero_info_dialog.dart';
 
@@ -118,21 +119,13 @@ class HeroLoreDialog extends HeroInfoDialog {
   void _showMonster(Terminal terminal, Breed breed) {
     terminal = terminal.rect(0, terminal.height - 15, terminal.width, 14);
 
-    // Draw a box for the contents.
-    var bar = "│" + (" " * 78) + "│";
-    for (var y = 2; y < terminal.height - 1; y++) {
-      terminal.writeAt(0, y, bar, steelGray);
-    }
-
-    terminal.writeAt(0, 1, "╒" + "═" * 78 + "╕", steelGray);
-    terminal.writeAt(0, terminal.height - 1, "└" + "─" * 78 + "┘", steelGray);
-
+    Draw.frame(terminal, 0, 1, 80, terminal.height - 1);
     terminal.writeAt(1, 0, "┌─┐", steelGray);
     terminal.writeAt(1, 1, "╡ ╞", steelGray);
     terminal.writeAt(1, 2, "└─┘", steelGray);
 
     terminal.drawGlyph(2, 1, breed.appearance);
-    terminal.writeAt(4, 1, breed.name, UIHue.text);
+    terminal.writeAt(4, 1, breed.name, UIHue.selection);
 
     var description = _describeBreed(breed);
     var y = 4;

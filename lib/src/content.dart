@@ -10,6 +10,7 @@ import 'content/item/items.dart';
 import 'content/monster/monsters.dart';
 import 'content/old/recipes.dart';
 import 'content/old/shops.dart';
+import 'content/races.dart';
 import 'content/skills.dart';
 import 'content/tiles.dart';
 
@@ -40,12 +41,14 @@ class GameContent implements Content {
 
   Iterable<Breed> get breeds => Monsters.breeds.all;
   Iterable<Element> get elements => Elements.all;
+  List<Race> get races => Races.all;
   Iterable<Skill> get skills => Skills.all;
   Iterable<Recipe> get recipes => Recipes.all;
   Iterable<Shop> get shops => Shops.all;
 
-  HeroSave createHero(String name) {
-    var hero = new HeroSave(name);
+  HeroSave createHero(String name, [Race race]) {
+    race ??= Races.human;
+    var hero = new HeroSave(name, race);
 
     var initialItems = {
       "Mending Salve": 3,

@@ -8,6 +8,7 @@ import '../items/recipe.dart';
 import '../items/shop.dart';
 import '../hero/hero.dart';
 import '../hero/lore.dart';
+import '../hero/race.dart';
 import '../hero/skill.dart';
 import '../monster/breed.dart';
 import '../stage/stage.dart';
@@ -153,11 +154,12 @@ abstract class Content {
   Skill findSkill(String name);
   Iterable<Breed> get breeds;
   Iterable<Element> get elements;
+  List<Race> get races;
   Iterable<Skill> get skills;
   Iterable<Recipe> get recipes;
   Iterable<Shop> get shops;
 
-  HeroSave createHero(String name);
+  HeroSave createHero(String name, [Race race]);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

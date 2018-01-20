@@ -5,6 +5,7 @@ import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
 import 'target_dialog.dart';
@@ -108,16 +109,9 @@ class ItemDialog extends Screen<Input> {
   void render(Terminal terminal) {
     // Draw a box for the contents.
     var itemCount = _getItems().length;
-    var boxHeight = math.max(itemCount + 2, 3);
-    var bar = "│" + (" " * 41) + "│";
-    for (var y = 1; y < boxHeight + 1; y++) {
-      terminal.writeAt(0, y, bar, steelGray);
-    }
+    var boxHeight = math.max(itemCount, 1) + 2;
 
-    terminal.writeAt(
-        0, 0, "╒═════════════════════════════════════════╕", steelGray);
-    terminal.writeAt(
-        0, boxHeight, "└─────────────────────────────────────────┘", steelGray);
+    Draw.frame(terminal, 0, 0, 43, boxHeight);
 
     if (_selectedItem == null) {
       terminal.writeAt(1, 0, _command.query(_location), UIHue.selection);

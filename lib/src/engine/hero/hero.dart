@@ -18,6 +18,7 @@ import '../stage/stage.dart';
 import '../stage/tile.dart';
 import 'attribute.dart';
 import 'lore.dart';
+import 'race.dart';
 import 'skill.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
@@ -26,6 +27,8 @@ import 'skill.dart';
 /// dungeon). This class stores that state.
 class HeroSave {
   final String name;
+
+  final RaceAttributes race;
 
   int get level => calculateLevel(experienceCents);
 
@@ -55,12 +58,14 @@ class HeroSave {
   Lore get lore => _lore;
   Lore _lore;
 
-  HeroSave(this.name)
-      : skills = new SkillSet(),
+  HeroSave(this.name, Race race)
+      : race = race.rollAttributes(),
+        skills = new SkillSet(),
         _lore = new Lore();
 
   HeroSave.load(
       this.name,
+      this.race,
       this.inventory,
       this.equipment,
       this.home,
@@ -92,8 +97,9 @@ class Hero extends Actor {
   static const maxLevel = 50;
 
   String get nounText => 'you';
-  final Pronoun pronoun = Pronoun.you;
+  Pronoun get pronoun => Pronoun.you;
 
+  final RaceAttributes race;
   final Inventory inventory;
   final Equipment equipment;
 
@@ -163,7 +169,8 @@ class Hero extends Actor {
   }
 
   Hero(Game game, Vec pos, HeroSave save)
-      : inventory = save.inventory.clone(),
+      : race = save.race,
+        inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
         skillPoints = save.skillPoints,

@@ -459,7 +459,7 @@ void rodents() {
     ..attack("bite[s]", 8, Elements.poison)
     ..attack("scratch[es]", 4);
 
-  breed("plague rat", 6, lima,20)
+  breed("plague rat", 6, lima, 20)
     ..count(1, 4)
     ..attack("bite[s]", 15, Elements.poison)
     ..attack("scratch[es]", 8);

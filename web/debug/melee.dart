@@ -44,7 +44,7 @@ main() {
     table.rows.add(row);
 
     for (var x = 0; x <= columns.length; x++) {
-      var save = new HeroSave("Hero");
+      var save = content.createHero("temp");
 
       // TODO: Fix to use skills.
 //      save.attributes[Attribute.strength] = 20;
