@@ -123,7 +123,7 @@ class MainMenuScreen extends Screen<Input> {
       }
     }
 
-    terminal.writeAt(25, 18, 'Which hero shall you play?', UIHue.text);
+    terminal.writeAt(10, 18, 'Which hero shall you play?', UIHue.text);
     terminal.writeAt(
         0,
         terminal.height - 1,
@@ -132,7 +132,7 @@ class MainMenuScreen extends Screen<Input> {
 
     if (storage.heroes.length == 0) {
       terminal.writeAt(
-          25, 20, '(No heroes. Please create a new one.)', UIHue.helpText);
+          10, 20, '(No heroes. Please create a new one.)', UIHue.helpText);
     }
 
     for (var i = 0; i < storage.heroes.length; i++) {
@@ -145,12 +145,13 @@ class MainMenuScreen extends Screen<Input> {
         secondary = UIHue.selection;
 
         terminal.drawChar(
-            19, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
+            9, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
       }
 
-      terminal.writeAt(20, 20 + i, hero.name, primary);
-      terminal.writeAt(40, 20 + i, "Level ${hero.level}", secondary);
-      terminal.writeAt(50, 20 + i, hero.race.name, secondary);
+      terminal.writeAt(10, 20 + i, hero.name, primary);
+      terminal.writeAt(30, 20 + i, "Level ${hero.level}", secondary);
+      terminal.writeAt(40, 20 + i, hero.race.name, secondary);
+      terminal.writeAt(50, 20 + i, hero.heroClass.name, secondary);
     }
   }
 

@@ -17,6 +17,7 @@ import '../monster/monster.dart';
 import '../stage/stage.dart';
 import '../stage/tile.dart';
 import 'attribute.dart';
+import 'hero_class.dart';
 import 'lore.dart';
 import 'race.dart';
 import 'skill.dart';
@@ -29,6 +30,7 @@ class HeroSave {
   final String name;
 
   final RaceAttributes race;
+  final HeroClass heroClass;
 
   int get level => calculateLevel(experienceCents);
 
@@ -58,7 +60,7 @@ class HeroSave {
   Lore get lore => _lore;
   Lore _lore;
 
-  HeroSave(this.name, Race race)
+  HeroSave(this.name, Race race, this.heroClass)
       : race = race.rollAttributes(),
         skills = new SkillSet(),
         _lore = new Lore();
@@ -66,6 +68,7 @@ class HeroSave {
   HeroSave.load(
       this.name,
       this.race,
+      this.heroClass,
       this.inventory,
       this.equipment,
       this.home,

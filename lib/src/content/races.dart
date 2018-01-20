@@ -12,7 +12,7 @@ class Races {
           "deep in the bowels of the Earth, toiling away in darkness. Dwarves "
           "aren't just willing, but delight in it. Solid, impenetrable and, "
           "well, not very bright... perhaps it's no surprise that dwarves love "
-          "mines so much when they have so much in common.");
+          "mines since they have so much in common.");
   static final elf = _race("Elf",
       strength: 25,
       agility: 30,
@@ -62,7 +62,7 @@ class Races {
 
   // TODO: Other races.
 
-  /// All of the known skills.
+  /// All of the known races.
   static final List<Race> all = [
     dwarf,
     elf,

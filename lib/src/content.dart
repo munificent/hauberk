@@ -1,7 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import 'engine.dart';
-
+import 'content/classes.dart';
 import 'content/dungeon/dungeon.dart';
 import 'content/elements.dart';
 import 'content/floor_drops.dart';
@@ -13,6 +12,7 @@ import 'content/old/shops.dart';
 import 'content/races.dart';
 import 'content/skills.dart';
 import 'content/tiles.dart';
+import 'engine.dart';
 
 Content createContent() {
   // Note: The order is significant here. For example, monster drops will
@@ -40,16 +40,20 @@ class GameContent implements Content {
   Skill findSkill(String name) => Skills.find(name);
 
   Iterable<Breed> get breeds => Monsters.breeds.all;
+  List<HeroClass> get classes => Classes.all;
   Iterable<Element> get elements => Elements.all;
   List<Race> get races => Races.all;
   Iterable<Skill> get skills => Skills.all;
   Iterable<Recipe> get recipes => Recipes.all;
   Iterable<Shop> get shops => Shops.all;
 
-  HeroSave createHero(String name, [Race race]) {
+  HeroSave createHero(String name, [Race race, HeroClass heroClass]) {
     race ??= Races.human;
-    var hero = new HeroSave(name, race);
+    heroClass ??= Classes.adventurer;
 
+    var hero = new HeroSave(name, race, heroClass);
+
+    // TODO: Different items based on class and/or race?
     var initialItems = {
       "Mending Salve": 3,
       "Scroll of Sidestepping": 2,

@@ -16,6 +16,7 @@ export 'engine/core/option.dart';
 export 'engine/core/resource.dart';
 export 'engine/hero/attribute.dart';
 export 'engine/hero/hero.dart';
+export 'engine/hero/hero_class.dart';
 export 'engine/hero/lore.dart';
 export 'engine/hero/race.dart';
 export 'engine/hero/skill.dart';

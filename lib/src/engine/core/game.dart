@@ -7,6 +7,7 @@ import '../items/item.dart';
 import '../items/recipe.dart';
 import '../items/shop.dart';
 import '../hero/hero.dart';
+import '../hero/hero_class.dart';
 import '../hero/lore.dart';
 import '../hero/race.dart';
 import '../hero/skill.dart';
@@ -153,6 +154,7 @@ abstract class Content {
 
   Skill findSkill(String name);
   Iterable<Breed> get breeds;
+  List<HeroClass> get classes;
   Iterable<Element> get elements;
   List<Race> get races;
   Iterable<Skill> get skills;

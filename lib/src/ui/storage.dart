@@ -30,6 +30,15 @@ class Storage {
       var name = hero['name'];
       var race = _loadRace(hero['race']);
 
+      HeroClass heroClass;
+      if (hero['class'] == null) {
+        // TODO: Temp for characters before classes.
+        heroClass = content.classes[0];
+      } else {
+        var name = hero['class'] as String;
+        heroClass = content.classes.firstWhere((c) => c.name == name);
+      }
+
       var items = <Item>[];
       for (var itemData in hero['inventory']) {
         var item = _loadItem(itemData);
@@ -83,7 +92,7 @@ class Storage {
       var gold = hero['gold'];
       var maxDepth = hero['maxDepth'] ?? 0;
 
-      var heroSave = new HeroSave.load(name, race, inventory, equipment, home,
+      var heroSave = new HeroSave.load(name, race, heroClass, inventory, equipment, home,
           crucible, experience, skillPoints, skillSet, lore, gold, maxDepth);
       heroes.add(heroSave);
     }
@@ -92,7 +101,7 @@ class Storage {
   RaceAttributes _loadRace(Map data) {
     // TODO: Temp to handle heros from before races.
     if (data == null) {
-      return content.races.elementAt(1).rollAttributes();
+      return content.races.elementAt(4).rollAttributes();
     }
 
     var name = data['name'] as String;
@@ -217,6 +226,7 @@ class Storage {
       heroData.add({
         'name': hero.name,
         'race': race,
+        'class': hero.heroClass.name,
         'inventory': inventory,
         'equipment': equipment,
         'home': home,

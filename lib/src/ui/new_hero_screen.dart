@@ -98,9 +98,11 @@ class NewHeroScreen extends Screen<Input> {
   String _name = "";
   String _defaultName = rng.item(_defaultNames);
   int _race;
+  int _class;
 
   NewHeroScreen(this.content, this.storage) {
     _race = rng.range(content.races.length);
+    _class = rng.range(content.classes.length);
   }
 
   void render(Terminal terminal) {
@@ -165,8 +167,8 @@ class NewHeroScreen extends Screen<Input> {
         _field == _Field.race ? UIHue.selection : steelGray);
     terminal.writeAt(
         1, 0, "Race", _field == _Field.race ? UIHue.selection : UIHue.text);
-    var race = content.races[_race];
 
+    var race = content.races[_race];
     terminal.writeAt(1, 2, race.name, UIHue.primary);
 
     var y = 4;
@@ -190,8 +192,17 @@ class NewHeroScreen extends Screen<Input> {
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
         _field == _Field.heroClass ? UIHue.selection : steelGray);
-    terminal.writeAt(41, 10, "Class",
+    terminal.writeAt(1, 0, "Class",
         _field == _Field.heroClass ? UIHue.selection : UIHue.text);
+
+    var heroClass = content.classes[_class];
+    terminal.writeAt(1, 2, heroClass.name, UIHue.primary);
+
+    var y = 4;
+    for (var line in Log.wordWrap(38, heroClass.description)) {
+      terminal.writeAt(1, y, line, UIHue.text);
+      y++;
+    }
   }
 
   void _renderMenu(Terminal terminal) {
@@ -199,21 +210,22 @@ class NewHeroScreen extends Screen<Input> {
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
+    if (_field == _Field.name) return;
+
+    String label;
     var items = <String>[];
     int selected;
-    switch (_field) {
-      case _Field.name:
-        // Do nothing.
-        break;
-      case _Field.race:
-        terminal.writeAt(1, 0, "Choose a race:", UIHue.selection);
-        items.addAll(content.races.map((race) => race.name));
-        selected = _race;
-        break;
-      case _Field.heroClass:
-        terminal.writeAt(1, 0, "Choose a class:", UIHue.selection);
-        break;
+    if (_field == _Field.race) {
+      label = "race";
+      items.addAll(content.races.map((race) => race.name));
+      selected = _race;
+    } else {
+      label = "class";
+      items.addAll(content.classes.map((c) => c.name));
+      selected = _class;
     }
+
+    terminal.writeAt(1, 0, "Choose a $label:", UIHue.selection);
 
     var y = 2;
     for (var i = 0; i < items.length; i++) {
@@ -229,7 +241,6 @@ class NewHeroScreen extends Screen<Input> {
   }
 
   bool handleInput(Input input) {
-    // TODO: Handle selecting a class.
     if (_field == _Field.race) {
       switch (input) {
         case Input.n:
@@ -238,6 +249,16 @@ class NewHeroScreen extends Screen<Input> {
 
         case Input.s:
           _changeRace(1);
+          return true;
+      }
+    } else if (_field == _Field.heroClass) {
+      switch (input) {
+        case Input.n:
+          _changeClass(-1);
+          return true;
+
+        case Input.s:
+          _changeClass(1);
           return true;
       }
     }
@@ -288,7 +309,7 @@ class NewHeroScreen extends Screen<Input> {
       case KeyCode.space:
         if (_field == _Field.name) {
           // TODO: Handle modifiers.
-          _append(" ");
+          _appendToName(" ");
         }
         return true;
 
@@ -304,10 +325,10 @@ class NewHeroScreen extends Screen<Input> {
               charCode = 'a'.codeUnits[0] - 'A'.codeUnits[0] + charCode;
             }
 
-            _append(new String.fromCharCodes([charCode]));
+            _appendToName(new String.fromCharCodes([charCode]));
             return true;
           } else if (key >= KeyCode.zero && key <= KeyCode.nine) {
-            _append(new String.fromCharCodes([key]));
+            _appendToName(new String.fromCharCodes([key]));
             return true;
           }
         }
@@ -322,7 +343,7 @@ class NewHeroScreen extends Screen<Input> {
     dirty();
   }
 
-  void _append(String text) {
+  void _appendToName(String text) {
     _name += text;
     if (_name.length > _maxNameLength) {
       _name = _name.substring(0, _maxNameLength);
@@ -335,6 +356,14 @@ class NewHeroScreen extends Screen<Input> {
     var race = (_race + offset).clamp(0, content.races.length - 1);
     if (race != _race) {
       _race = race;
+      dirty();
+    }
+  }
+
+  void _changeClass(int offset) {
+    var heroClass = (_class + offset).clamp(0, content.classes.length - 1);
+    if (heroClass != _class) {
+      _class = heroClass;
       dirty();
     }
   }
