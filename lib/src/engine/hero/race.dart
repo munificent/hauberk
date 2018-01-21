@@ -9,7 +9,7 @@ class Race {
 
   final String description;
 
-  /// The average number of points a hero of this race will attain by the max
+  /// The base number of points a hero of this race will attain by the max
   /// level for each attribute.
   final Map<Attribute, int> attributes;
 
@@ -21,12 +21,16 @@ class Race {
     // Pick specific values for each attribute.
     var rolled = <Attribute, int>{};
     for (var attribute in attributes.keys) {
-      var average = attributes[attribute];
-      var value = rng.triangleInt(average, average ~/ 3) + rng.taper(0, 2);
+      var base = attributes[attribute];
+      var value = base;
+
+      // Randomly boost the max some.
+      value += rng.range(4);
+      while (value < 50 && rng.percent(base ~/ 2 + 30)) value++;
       rolled[attribute] = value;
     }
 
-    return new RaceAttributes(this, rolled);
+    return new RaceAttributes(this, rolled, rng.range(100000));
   }
 }
 
@@ -35,37 +39,55 @@ class Race {
 class RaceAttributes {
   final Race _race;
   final Map<Attribute, int> _max;
-  final Map<int, Map<Attribute, int>> _gains = {};
 
-  RaceAttributes(this._race, this._max) {
+  /// The attribute gains are distributed somewhat randomly across levels. This
+  /// seed ensures we use the same distribute every time for a given hero.
+  /// Otherwise, when saving and loading a hero, their stats could change.
+  final int seed;
+
+  /// The values of each attribute at every level.
+  ///
+  /// Indexes into the list are offset by one, so list element 0 represents
+  /// hero level 1.
+  final List<Map<Attribute, int>> _attributes = [];
+
+  RaceAttributes(this._race, this._max, this.seed) {
+    var min = <Attribute, int>{};
     var current = <Attribute, int>{};
-    var total = 0;
+    var totalMin = 0;
+    var totalMax = 0;
     for (var attribute in _max.keys) {
-      total += _max[attribute];
+      min[attribute] = 10 + _max[attribute] ~/ 15;
+      totalMin += min[attribute];
+      totalMax += _max[attribute];
       current[attribute] = 0;
     }
 
+    var random = new Rng(seed);
+
     // Distribute the total points evenly across the levels.
     var previous = 0;
-    for (var level = 2; level <= Hero.maxLevel; level++) {
-      var levelMap =
-          new Map<Attribute, int>.fromIterable(_max.keys, value: (_) => 0);
-      _gains[level] = levelMap;
+    for (var level = 0; level < Hero.maxLevel; level++) {
+      double lerp(int from, int to) {
+        var t = level / (Hero.maxLevel - 1);
+        return (1.0 - t) * from + t * to;
+      }
 
-      // Figure out how many points of any attribute are gained at this level.
-      var points = (total * (level / Hero.maxLevel)).toInt();
+      // Figure out how many total attribute points should have been
+      // distributed by this level.
+      var points = lerp(totalMin, totalMax).toInt();
       var gained = points - previous;
 
-      // Figure out which attributes are most in need of being raised.
+      // Distribute the points across the attributes.
       for (var point = 0; point < gained; point++) {
         // The "error" is how far a attribute's current value is from where it
         // should ideally be at this level. The attribute with the largest
         // error is the one who gets this point.
         var worstError = -100.0;
-        Attribute worstAttribute;
+        var worstAttributes = <Attribute>[];
 
         for (var attribute in _max.keys) {
-          var ideal = _max[attribute] * (level / Hero.maxLevel);
+          var ideal = lerp(min[attribute], _max[attribute]);
           var error = ideal - current[attribute];
 
           // TODO: If multiple attributes have the same error, this always
@@ -74,16 +96,19 @@ class RaceAttributes {
           // because this code needs to be deterministic so that gains don't
           // get reshuffled when loaded from storage.
           if (error > worstError) {
-            worstAttribute = attribute;
+            worstAttributes = [attribute];
             worstError = error;
+          } else if (error == worstError) {
+            worstAttributes.add(attribute);
           }
         }
 
         // Increment the attribute whose value is furthest from the ideal.
-        levelMap[worstAttribute]++;
-        current[worstAttribute]++;
+        var attribute = random.item(worstAttributes);
+        current[attribute]++;
       }
 
+      _attributes.add(new Map<Attribute, int>.from(current));
       previous = points;
     }
   }
@@ -93,6 +118,6 @@ class RaceAttributes {
   /// The maximum number of points of [attribute] the hero will gain.
   int max(Attribute attribute) => _max[attribute];
 
-  /// The number of points [attribute] increases at [level].
-  int gain(int level, Attribute attribute) => _gains[level][attribute];
+  int valueAtLevel(Attribute attribute, int level) =>
+      _attributes[level - 1][attribute];
 }

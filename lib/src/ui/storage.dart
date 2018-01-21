@@ -92,8 +92,20 @@ class Storage {
       var gold = hero['gold'];
       var maxDepth = hero['maxDepth'] ?? 0;
 
-      var heroSave = new HeroSave.load(name, race, heroClass, inventory, equipment, home,
-          crucible, experience, skillPoints, skillSet, lore, gold, maxDepth);
+      var heroSave = new HeroSave.load(
+          name,
+          race,
+          heroClass,
+          inventory,
+          equipment,
+          home,
+          crucible,
+          experience,
+          skillPoints,
+          skillSet,
+          lore,
+          gold,
+          maxDepth);
       heroes.add(heroSave);
     }
   }
@@ -111,11 +123,13 @@ class Storage {
     var attributes = <Attribute, int>{};
 
     for (var attribute in Attribute.all) {
-      attributes[attribute] =
-          attributeData[attribute.name.toLowerCase()] as int;
+      attributes[attribute] = attributeData[attribute.name] as int;
     }
 
-    return new RaceAttributes(race, attributes);
+    // TODO: 1234 is temp for characters without seed.
+    var seed = data['seed'] ?? 1234;
+
+    return new RaceAttributes(race, attributes, seed);
   }
 
   Item _loadItem(Map data) {
@@ -191,7 +205,7 @@ class Storage {
     for (var hero in heroes) {
       var raceAttributes = {};
       for (var attribute in Attribute.all) {
-        raceAttributes[attribute.name.toLowerCase()] = hero.race.max(attribute);
+        raceAttributes[attribute.name] = hero.race.max(attribute);
       }
       var race = {'name': hero.race.name, 'attributes': raceAttributes};
 
@@ -222,7 +236,11 @@ class Storage {
 
       var seen = {};
       var slain = {};
-      var lore = {'seen': seen, 'slain': slain, 'weapon_kills': hero.lore.killsByWeapon};
+      var lore = {
+        'seen': seen,
+        'slain': slain,
+        'weapon_kills': hero.lore.killsByWeapon
+      };
       for (var breed in content.breeds) {
         var count = hero.lore.seen(breed);
         if (count != 0) seen[breed.name] = count;

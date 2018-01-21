@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import '../hero/hero.dart';
 import 'skill.dart';
 
-// TODO: Use these enums elsewhere?
 class Attribute {
   static const strength = const Attribute("Strength");
   static const agility = const Attribute("Agility");
@@ -18,10 +17,24 @@ class Attribute {
   const Attribute(this.name);
 }
 
-class Strength {
+abstract class AttributeBase {
   final Hero _hero;
 
-  int get value => (10 + _hero.skills[Skill.might] - _hero.weight).clamp(1, 60);
+  AttributeBase(this._hero);
+
+  Attribute get _attribute;
+  int get _penalty => 0;
+
+  int get value =>
+      (_hero.race.valueAtLevel(_attribute, _hero.level) - _penalty)
+          .clamp(1, 60);
+}
+
+class Strength extends AttributeBase {
+  Strength(Hero hero) : super(hero);
+
+  Attribute get _attribute => Attribute.strength;
+  int get _penalty => _hero.weight;
 
   double get tossRangeScale {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
@@ -44,15 +57,16 @@ class Strength {
     if (relative < 30) return lerpDouble(relative, 0, 30, 1.0, 2.0);
     return lerpDouble(relative, 30, 50, 2.0, 3.0);
   }
-
-  Strength(this._hero);
 }
 
-class Agility {
-  final Hero _hero;
+class Agility extends AttributeBase {
+  Agility(Hero hero) : super(hero);
+
+  Attribute get _attribute => Attribute.agility;
 
   // TODO: Subtract encumbrance.
-  int get value => (10 + _hero.skills[Skill.flexibility]).clamp(1, 60);
+  int get value =>
+      _hero.race.valueAtLevel(Attribute.agility, _hero.level).clamp(1, 60);
 
   int get dodgeBonus {
     if (value <= 10) return lerpInt(value, 1, 10, -50, 0);
@@ -65,27 +79,21 @@ class Agility {
     if (value <= 30) return lerpInt(value, 10, 30, 0, 20);
     return lerpInt(value, 30, 60, 20, 50);
   }
-
-  Agility(this._hero);
 }
 
 // TODO: "Vitality"?
-class Fortitude {
-  final Hero _hero;
+class Fortitude extends AttributeBase {
+  Fortitude(Hero hero) : super(hero);
 
-  int get value => (10 + _hero.skills[Skill.toughness]).clamp(1, 60);
+  Attribute get _attribute => Attribute.fortitude;
 
   int get maxHealth => (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
-
-  Fortitude(this._hero);
 }
 
-class Intellect {
-  final Hero _hero;
+class Intellect extends AttributeBase {
+  Intellect(Hero hero) : super(hero);
 
-  int get value => (10 + _hero.skills[Skill.education]).clamp(1, 60);
-
-  Intellect(this._hero);
+  Attribute get _attribute => Attribute.intellect;
 
   /// Calculates the spell effectiveness scaling factor based on the hero's
   /// intellect relative to the spell's [complexity].
@@ -117,10 +125,8 @@ class Intellect {
   }
 }
 
-class Will {
-  final Hero _hero;
+class Will extends AttributeBase {
+  Will(Hero hero) : super(hero);
 
-  int get value => (10 + _hero.skills[Skill.discipline]).clamp(1, 60);
-
-  Will(this._hero);
+  Attribute get _attribute => Attribute.will;
 }

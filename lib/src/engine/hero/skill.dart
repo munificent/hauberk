@@ -5,26 +5,11 @@ import '../core/combat.dart';
 import '../core/game.dart';
 import 'hero.dart';
 
-// TODO: Could add classes back to the game on top of skills. Skills would have
-// a cost to level up, instead of always costing 1 skill point. Then different
-// classes could tune the costs. So, an "adventurer" would have flat costs for
-// everything, while a "sorceror" would learn skills in that school more cheaply
-// while paying more to learn combat skills.
-//
-// Might help get the player a little more attached to their character since
-// the creation process is a little more involved.
-
 /// An immutable unique skill a hero may learn.
 ///
 /// This class does not contain how good a hero is at the skill. It is more the
 /// *kind* of skill.
 abstract class Skill {
-  static final might = new Might();
-  static final flexibility = new Flexibility();
-  static final toughness = new Toughness();
-  static final education = new Education();
-  static final discipline = new Discipline();
-
   String get name;
   String get description;
 
@@ -135,44 +120,6 @@ class SkillSet {
   void forEach(void Function(Skill, int) callback) {
     _levels.forEach(callback);
   }
-}
-
-/// In order to increase the hero's base attributes, there is a skill for each
-/// one.
-abstract class AttributeSkill extends Skill {
-  int get maxLevel => 40;
-
-  String get attribute;
-  String get description => "Increases $attribute.";
-
-  String levelDescription(int level) => "Increases $attribute by $level.";
-}
-
-class Might extends AttributeSkill {
-  String get name => "Might";
-  String get attribute => "strength";
-}
-
-class Flexibility extends AttributeSkill {
-  String get name => "Flexibility";
-  String get attribute => "agility";
-}
-
-class Toughness extends AttributeSkill {
-  String get name => "Toughness";
-  String get attribute => "fortitude";
-}
-
-class Education extends AttributeSkill {
-  Education();
-
-  String get name => "Education";
-  String get attribute => "intellect";
-}
-
-class Discipline extends AttributeSkill {
-  String get name => "Discipline";
-  String get attribute => "will";
 }
 
 /// Remaps [value] within the range [min]-[max] to the output range

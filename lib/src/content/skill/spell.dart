@@ -13,8 +13,6 @@ abstract class SchoolSkill extends Skill {
   // TODO: Tune.
   int get maxLevel => 20;
 
-  Skill get prerequisite => Skill.education;
-
   @override
   String levelDescription(int level) {
     var percent = ((1.0 - focusScale(level)) * 100).toInt();

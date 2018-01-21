@@ -13,11 +13,6 @@ class Skills {
 
   /// All of the known skills.
   static final List<Skill> all = [
-    Skill.might,
-    Skill.flexibility,
-    Skill.toughness,
-    Skill.education,
-    Skill.discipline,
     new Archery(),
     new AxeMastery(),
     new SpearMastery(),

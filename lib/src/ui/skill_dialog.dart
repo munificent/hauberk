@@ -141,8 +141,7 @@ class SkillDialog extends Screen<Input> {
     } else if (skill is TrainedSkill) {
       // TODO: More useful description that explains how to train it.
       // TODO: Show how much training is needed to reach the next level.
-      terminal.writeAt(
-          30, 32, "This skill is trained.", UIHue.helpText);
+      terminal.writeAt(30, 32, "This skill is trained.", UIHue.helpText);
     } else {
       terminal.writeAt(
           30, 32, "Press [→] to raise this skill.", UIHue.helpText);

@@ -10,11 +10,5 @@ class Classes {
   // TODO: Specialist subclasses.
 
   /// All of the known classes.
-  static final List<HeroClass> all = [
-    adventurer,
-    warrior,
-    mage,
-    rogue,
-    priest
-  ];
+  static final List<HeroClass> all = [adventurer, warrior, mage, rogue, priest];
 }

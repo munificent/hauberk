@@ -180,7 +180,7 @@ class NewHeroScreen extends Screen<Input> {
     y = 18;
     for (var attribute in Attribute.all) {
       terminal.writeAt(2, y, attribute.name, UIHue.secondary);
-      var width = 25 * race.attributes[attribute] ~/ 35;
+      var width = 25 * race.attributes[attribute] ~/ 45;
       terminal.writeAt(12, y, " " * width, ash, brickRed);
       terminal.writeAt(12 + width, y, " " * (25 - width), ash, maroon);
       y += 2;

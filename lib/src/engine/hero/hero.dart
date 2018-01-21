@@ -188,7 +188,7 @@ class Hero extends Actor {
     health.max = fortitude.maxHealth;
     health.current = health.max;
 
-    _refreshLevel(gain: false);
+    _refreshLevel(log: false);
 
     // Give the hero energy so we can act before all of the monsters.
     energy.energy = Energy.actionCost;
@@ -384,7 +384,7 @@ class Hero extends Actor {
       // TODO: TrainedSkills for slaying different breed families.
 
       _experienceCents += monster.experienceCents;
-      _refreshLevel(gain: true);
+      _refreshLevel(log: true);
     }
 
     // If the hero killed a monster with a weapon, update the kill count.
@@ -467,17 +467,29 @@ class Hero extends Actor {
     }
   }
 
-  void _refreshLevel({bool gain: false}) {
+  void _refreshLevel({bool log: false}) {
     int level = calculateLevel(_experienceCents);
 
     // See if the we levelled up.
+    var previous = _level;
     while (_level < level) {
       _level++;
 
-      if (gain) {
-        game.log.gain('{1} [have|has] reached level $level.', this);
-
+      if (log) {
+        game.log.gain('You have reached level $level.');
         skillPoints += Option.skillPointsPerLevel;
+      }
+    }
+
+    // Show any gained attributes.
+    if (log && previous != _level) {
+      for (var attribute in Attribute.all) {
+        var gain = race.valueAtLevel(attribute, _level) -
+            race.valueAtLevel(attribute, previous);
+        if (gain != 0) {
+          game.log
+              .gain("Your ${attribute.name.toLowerCase()} increased by $gain.");
+        }
       }
     }
   }
