@@ -62,24 +62,26 @@ class RaceAttributes {
         // should ideally be at this level. The attribute with the largest
         // error is the one who gets this point.
         var worstError = -100.0;
-        List<Attribute> worstAttributes;
+        Attribute worstAttribute;
 
         for (var attribute in _max.keys) {
           var ideal = _max[attribute] * (level / Hero.maxLevel);
           var error = ideal - current[attribute];
 
+          // TODO: If multiple attributes have the same error, this always
+          // prefers the first one (i.e. Strength before Agility, etc.). Would
+          // be nice to mix that up. But note that we can't use rng() here
+          // because this code needs to be deterministic so that gains don't
+          // get reshuffled when loaded from storage.
           if (error > worstError) {
-            worstAttributes = [attribute];
+            worstAttribute = attribute;
             worstError = error;
-          } else if (error == worstError) {
-            worstAttributes.add(attribute);
           }
         }
 
         // Increment the attribute whose value is furthest from the ideal.
-        var attribute = rng.item(worstAttributes);
-        levelMap[attribute]++;
-        current[attribute]++;
+        levelMap[worstAttribute]++;
+        current[worstAttribute]++;
       }
 
       previous = points;
