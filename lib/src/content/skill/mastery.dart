@@ -1,12 +1,17 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 
-abstract class MasterySkill extends UsableSkill {
+// TODO: Trained skills for:
+// - Taking damage, which increases armor.
+// - Dodging attacks, which increases dodge.
+// - Slaying different breed families.
+
+abstract class MasterySkill extends UsableSkill implements TrainedSkill {
   // TODO: Tune.
   int get maxLevel => 20;
-
-  Skill get prerequisite => Skill.might;
 
   String get weaponType;
 
@@ -25,6 +30,14 @@ abstract class MasterySkill extends UsableSkill {
     if (weapon == null) return false;
 
     return weapon.type.weaponType == weaponType;
+  }
+
+  int levelForWeapon(String weaponType, int hits) {
+    if (weaponType != this.weaponType) return 0;
+
+    // TODO: Tune this. Should probably be on a curve.
+    // TODO: Should take HeroClass into account.
+    return math.min(hits ~/ 100, maxLevel);
   }
 }
 

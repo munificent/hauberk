@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
+import '../action/attack.dart';
 import '../action/walk.dart';
 import '../core/actor.dart';
 import '../core/combat.dart';
@@ -380,8 +381,31 @@ class Hero extends Actor {
     // It only counts if the hero's seen the monster at least once.
     if (_seenMonsters.contains(monster)) {
       lore.slay(monster.breed);
+      // TODO: TrainedSkills for slaying different breed families.
+
       _experienceCents += monster.experienceCents;
       _refreshLevel(gain: true);
+    }
+
+    // If the hero killed a monster with a weapon, update the kill count.
+    if (action is AttackAction) {
+      var weapon = equipment.weapon;
+      if (weapon != null) {
+        var type = weapon.type.weaponType;
+        lore.killUsing(type);
+
+        for (var skill in game.content.skills) {
+          if (skill is TrainedSkill) {
+            var level = skill.levelForWeapon(type, lore.killsUsing(type));
+            if (level != skills[skill]) {
+              skills[skill] = level;
+              game.log.gain("You have reached level $level in ${skill.name}.");
+            }
+          }
+        }
+      }
+      // TODO: Track unarmed hits?
+      // TODO: What about ranged weapon attacks (bows)?
     }
   }
 

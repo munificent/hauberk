@@ -34,6 +34,8 @@ class Icicle extends TargetSkill with SpellSkill {
 
   int get focusCost => 200;
 
+  bool canUse(Game game) => true;
+
   num getRange(Game game) => _range(game.hero.skills[this]);
 
   Action onGetTargetAction(Game game, int level, Vec target) {
@@ -69,6 +71,8 @@ class Windstorm extends ActionSkill with SpellSkill {
   int get complexity => 14;
 
   int get focusCost => 400;
+
+  bool canUse(Game game) => true;
 
   Action onGetAction(Game game, int level) {
     var attack = new Attack(new Noun("the wind"), "blast", _damage(level),

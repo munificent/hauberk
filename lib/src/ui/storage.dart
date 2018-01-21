@@ -157,6 +157,7 @@ class Storage {
   Lore _loadLore(Map data) {
     var slain = <Breed, int>{};
     var seen = <Breed, int>{};
+    var kills = <String, int>{};
 
     // TODO: Older saves before lore.
     if (data != null) {
@@ -173,9 +174,16 @@ class Storage {
           seen[content.findBreed(breedName)] = count;
         });
       }
+
+      var killMap = data['weapon_kills'];
+      if (killMap != null) {
+        (killMap as Map).forEach((type, count) {
+          kills[type] = count;
+        });
+      }
     }
 
-    return new Lore.from(seen, slain);
+    return new Lore.from(seen, slain, kills);
   }
 
   void save() {
@@ -214,7 +222,7 @@ class Storage {
 
       var seen = {};
       var slain = {};
-      var lore = {'seen': seen, 'slain': slain};
+      var lore = {'seen': seen, 'slain': slain, 'weapon_kills': hero.lore.killsByWeapon};
       for (var breed in content.breeds) {
         var count = hero.lore.seen(breed);
         if (count != 0) seen[breed.name] = count;

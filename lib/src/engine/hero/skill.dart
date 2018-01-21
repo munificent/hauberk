@@ -58,7 +58,7 @@ abstract class UsableSkill extends Skill {
   /// Override this to validate that the [Command] can be used right now. For
   /// example, this is only `true` for the archery skill when the hero has a
   /// ranged weapon equipped.
-  bool canUse(Game game) => true;
+  bool canUse(Game game);
 }
 
 /// A skill that can be directly used to perform an action.
@@ -81,6 +81,10 @@ abstract class DirectionSkill extends UsableSkill {
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].
   Action getDirectionAction(Game game, int level, Direction dir);
+}
+
+abstract class TrainedSkill extends Skill {
+  int levelForWeapon(String weaponType, int hits);
 }
 
 /// A collection of [Skill]s and the hero's level in them.
@@ -106,7 +110,7 @@ class SkillSet {
 
   /// Whether the hero can raise the level of this skill.
   bool canGain(Skill skill) {
-    if (!isKnown(skill)) return false;
+    if (!isDiscovered(skill)) return false;
     if (this[skill] >= skill.maxLevel) return false;
 
     // Must have some level of the prerequisite.
@@ -119,7 +123,7 @@ class SkillSet {
 
   /// Whether the hero is aware of the existence of this skill.
   // TODO: Set this.
-  bool isKnown(Skill skill) => true;
+  bool isDiscovered(Skill skill) => true;
 
   SkillSet clone() => new SkillSet._(new Map.from(_levels));
 

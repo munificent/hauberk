@@ -49,6 +49,8 @@ class SkillDialog extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
+    // TODO: Show trained skills more explicitly.
+
     for (var i = 0; i < _tree.length; i++) {
       var row = _tree[i];
 
@@ -136,6 +138,11 @@ class SkillDialog extends Screen<Input> {
 
     if (error != null) {
       terminal.writeAt(30, 32, error, UIHue.text);
+    } else if (skill is TrainedSkill) {
+      // TODO: More useful description that explains how to train it.
+      // TODO: Show how much training is needed to reach the next level.
+      terminal.writeAt(
+          30, 32, "This skill is trained.", UIHue.helpText);
     } else {
       terminal.writeAt(
           30, 32, "Press [→] to raise this skill.", UIHue.helpText);
@@ -155,7 +162,10 @@ class SkillDialog extends Screen<Input> {
   bool get _canRaiseSkill {
     if (_hero.skillPoints <= 0) return false;
 
-    return _skills.canGain(_tree[selectedSkill].skill);
+    var skill = _tree[selectedSkill].skill;
+    if (skill is TrainedSkill) return false;
+
+    return _skills.canGain(skill);
   }
 
   void _raiseSkill() {
@@ -178,7 +188,7 @@ class SkillTree extends ListBase<SkillTreeRow> {
     // Note: Assumes the skill list always has prerequisites before the skills
     // that require them.
     for (var skill in allSkills) {
-      if (!_skills.isKnown(skill)) continue;
+      if (!_skills.isDiscovered(skill)) continue;
 
       // If the prerequisite isn't known (transitively), don't show the skill.
       if (!nodeMap.containsKey(skill.prerequisite)) ;

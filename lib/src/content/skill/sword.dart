@@ -10,7 +10,7 @@ class Swordfighting extends MasterySkill {
   String get weaponType => "sword";
 
   String levelDescription(int level) =>
-      "Parrying increases defense by ${_parryDefense(level)}.";
+      "Parrying increases dodge by ${_parryDefense(level)}.";
 
   Defense getDefense(Hero hero, int level) =>
       new Defense(level ~/ 2 + 1, "{1} parr[y|ies] {2}.");
