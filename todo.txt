@@ -1,0 +1,7 @@
+- Move tryAdd() out of ItemCollection and Equipment? Only needed for home and
+  crucible, I think?
+- BoltMove does not pass its range to BoltAction. Probably OK since monster
+  won't choose move if out of range, but means action can go farther than
+  intended range.
+
+pub run builder_runner serve

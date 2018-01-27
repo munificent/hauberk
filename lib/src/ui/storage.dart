@@ -110,26 +110,26 @@ class Storage {
     }
   }
 
-  RaceAttributes _loadRace(Map data) {
+  RaceStats _loadRace(Map data) {
     // TODO: Temp to handle heros from before races.
     if (data == null) {
-      return content.races.elementAt(4).rollAttributes();
+      return content.races.elementAt(4).rollStats();
     }
 
     var name = data['name'] as String;
     var race = content.races.firstWhere((race) => race.name == name);
 
-    var attributeData = data['attributes'];
-    var attributes = <Attribute, int>{};
+    var statData = data['stats'];
+    var stats = <Stat, int>{};
 
-    for (var attribute in Attribute.all) {
-      attributes[attribute] = attributeData[attribute.name] as int;
+    for (var stat in Stat.all) {
+      stats[stat] = statData[stat.name] as int;
     }
 
     // TODO: 1234 is temp for characters without seed.
     var seed = data['seed'] ?? 1234;
 
-    return new RaceAttributes(race, attributes, seed);
+    return new RaceStats(race, stats, seed);
   }
 
   Item _loadItem(Map data) {
@@ -203,11 +203,11 @@ class Storage {
   void save() {
     var heroData = [];
     for (var hero in heroes) {
-      var raceAttributes = {};
-      for (var attribute in Attribute.all) {
-        raceAttributes[attribute.name] = hero.race.max(attribute);
+      var raceStats = {};
+      for (var stat in Stat.all) {
+        raceStats[stat.name] = hero.race.max(stat);
       }
-      var race = {'name': hero.race.name, 'attributes': raceAttributes};
+      var race = {'name': hero.race.name, 'stats': raceStats};
 
       var inventory = [];
       for (var item in hero.inventory) {

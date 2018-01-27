@@ -86,11 +86,11 @@ class Races {
       int will,
       String description}) {
     return new Race(name, description, {
-      Attribute.strength: strength,
-      Attribute.agility: agility,
-      Attribute.fortitude: fortitude,
-      Attribute.intellect: intellect,
-      Attribute.will: will,
+      Stat.strength: strength,
+      Stat.agility: agility,
+      Stat.fortitude: fortitude,
+      Stat.intellect: intellect,
+      Stat.will: will,
     });
   }
 }

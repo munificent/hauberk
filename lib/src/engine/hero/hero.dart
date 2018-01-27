@@ -17,11 +17,11 @@ import '../items/inventory.dart';
 import '../monster/monster.dart';
 import '../stage/stage.dart';
 import '../stage/tile.dart';
-import 'attribute.dart';
 import 'hero_class.dart';
 import 'lore.dart';
 import 'race.dart';
 import 'skill.dart';
+import 'stat.dart';
 
 /// When the player is playing the game inside a dungeon, he is using a [Hero].
 /// When outside of the dungeon on the menu screens, though, only a subset of
@@ -30,7 +30,7 @@ import 'skill.dart';
 class HeroSave {
   final String name;
 
-  final RaceAttributes race;
+  final RaceStats race;
   final HeroClass heroClass;
 
   int get level => calculateLevel(experienceCents);
@@ -62,7 +62,7 @@ class HeroSave {
   Lore _lore;
 
   HeroSave(this.name, Race race, this.heroClass)
-      : race = race.rollAttributes(),
+      : race = race.rollStats(),
         skills = new SkillSet(),
         _lore = new Lore();
 
@@ -103,7 +103,7 @@ class Hero extends Actor {
   String get nounText => 'you';
   Pronoun get pronoun => Pronoun.you;
 
-  final RaceAttributes race;
+  final RaceStats race;
   final Inventory inventory;
   final Equipment equipment;
 
@@ -469,14 +469,13 @@ class Hero extends Actor {
 
     // TODO: If fortitude goes up, should we increase current health too?
 
-    // Show any gained attributes.
+    // Show any gained stats.
     if (log && previous != _level) {
-      for (var attribute in Attribute.all) {
-        var gain = race.valueAtLevel(attribute, _level) -
-            race.valueAtLevel(attribute, previous);
+      for (var stat in Stat.all) {
+        var gain =
+            race.valueAtLevel(stat, _level) - race.valueAtLevel(stat, previous);
         if (gain != 0) {
-          game.log
-              .gain("Your ${attribute.name.toLowerCase()} increased by $gain.");
+          game.log.gain("Your ${stat.name.toLowerCase()} increased by $gain.");
         }
       }
     }

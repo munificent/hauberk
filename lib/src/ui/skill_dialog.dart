@@ -112,9 +112,6 @@ class SkillDialog extends Screen<Input> {
       terminal.writeAt(50, 11, skill.complexity.toString(), UIHue.primary);
 
       if (level > 0) {
-        // TODO: These values don't take into account changes to hero attributes
-        // made while on the skill dialog.
-
         // TODO: Should only show the one of these that applies to the spell.
         terminal.writeAt(30, 12, "Effectiveness:", UIHue.text);
         terminal.writeAt(

@@ -3,36 +3,38 @@ import 'dart:math' as math;
 import '../hero/hero.dart';
 import 'skill.dart';
 
-class Attribute {
-  static const strength = const Attribute("Strength");
-  static const agility = const Attribute("Agility");
-  static const fortitude = const Attribute("Fortitude");
-  static const intellect = const Attribute("Intellect");
-  static const will = const Attribute("Will");
+class Stat {
+  static const strength = const Stat("Strength");
+  static const agility = const Stat("Agility");
+  static const fortitude = const Stat("Fortitude");
+  static const intellect = const Stat("Intellect");
+  static const will = const Stat("Will");
 
   static const all = const [strength, agility, fortitude, intellect, will];
 
   final String name;
 
-  const Attribute(this.name);
+  const Stat(this.name);
 }
 
-abstract class AttributeBase {
+abstract class StatBase {
   final Hero _hero;
 
-  AttributeBase(this._hero);
+  StatBase(this._hero);
 
-  Attribute get _attribute;
+  String get name => _stat.name;
+
+  Stat get _stat;
   int get _penalty => 0;
 
-  int get value => (_hero.race.valueAtLevel(_attribute, _hero.level) - _penalty)
-      .clamp(1, 60);
+  int get value =>
+      (_hero.race.valueAtLevel(_stat, _hero.level) - _penalty).clamp(1, 60);
 }
 
-class Strength extends AttributeBase {
+class Strength extends StatBase {
   Strength(Hero hero) : super(hero);
 
-  Attribute get _attribute => Attribute.strength;
+  Stat get _stat => Stat.strength;
   int get _penalty => _hero.weight;
 
   double get tossRangeScale {
@@ -58,14 +60,14 @@ class Strength extends AttributeBase {
   }
 }
 
-class Agility extends AttributeBase {
+class Agility extends StatBase {
   Agility(Hero hero) : super(hero);
 
-  Attribute get _attribute => Attribute.agility;
+  Stat get _stat => Stat.agility;
 
   // TODO: Subtract encumbrance.
   int get value =>
-      _hero.race.valueAtLevel(Attribute.agility, _hero.level).clamp(1, 60);
+      _hero.race.valueAtLevel(Stat.agility, _hero.level).clamp(1, 60);
 
   int get dodgeBonus {
     if (value <= 10) return lerpInt(value, 1, 10, -50, 0);
@@ -81,18 +83,18 @@ class Agility extends AttributeBase {
 }
 
 // TODO: "Vitality"?
-class Fortitude extends AttributeBase {
+class Fortitude extends StatBase {
   Fortitude(Hero hero) : super(hero);
 
-  Attribute get _attribute => Attribute.fortitude;
+  Stat get _stat => Stat.fortitude;
 
   int get maxHealth => (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
 }
 
-class Intellect extends AttributeBase {
+class Intellect extends StatBase {
   Intellect(Hero hero) : super(hero);
 
-  Attribute get _attribute => Attribute.intellect;
+  Stat get _stat => Stat.intellect;
 
   /// Calculates the spell effectiveness scaling factor based on the hero's
   /// intellect relative to the spell's [complexity].
@@ -124,8 +126,8 @@ class Intellect extends AttributeBase {
   }
 }
 
-class Will extends AttributeBase {
+class Will extends StatBase {
   Will(Hero hero) : super(hero);
 
-  Attribute get _attribute => Attribute.will;
+  Stat get _stat => Stat.will;
 }

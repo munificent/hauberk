@@ -92,15 +92,15 @@ class WeaponAxis implements Axis {
   }
 }
 
-abstract class AttributeAxis implements Axis {
+abstract class StatAxis implements Axis {
   int get length => 20;
 
-  String label(int cell) => _attribute(cell).toString();
+  String label(int cell) => _stat(cell).toString();
 
-  int _attribute(int cell) => cell * 3 + 1;
+  int _stat(int cell) => cell * 3 + 1;
 }
 
-class StrengthAxis extends AttributeAxis {
+class StrengthAxis extends StatAxis {
   String get name => "Strength";
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
@@ -108,7 +108,7 @@ class StrengthAxis extends AttributeAxis {
   }
 }
 
-class AgilityAxis extends AttributeAxis {
+class AgilityAxis extends StatAxis {
   String get name => "Agility";
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
@@ -116,7 +116,7 @@ class AgilityAxis extends AttributeAxis {
   }
 }
 
-class FortitudeAxis extends AttributeAxis {
+class FortitudeAxis extends StatAxis {
   String get name => "Fortitude";
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.

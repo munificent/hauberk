@@ -6,15 +6,15 @@ import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/item/items.dart';
 
-/// This script is for tuning and balancing the way attributes and equipment
-/// affect melee combat.
+/// This script is for tuning and balancing the way stats and equipment affect
+/// melee combat.
 ///
-/// Given a hero -- its attributes and equipment -- it runs a number of
-/// simulated fights against monsters with varying starting health. Over time,
-/// it estimates the strongest monster that that hero has a 50% chance of
+/// Given a hero -- its stats and equipment -- it runs a number of simulated
+/// fights against monsters with varying starting health. Over time, it
+/// estimates the strongest monster that that hero has a 50% chance of
 /// defeating. By comparing that monster's health against the results from
-/// different configurations of heroes, you can get an approximate sense of
-/// how different configurations compare.
+/// different configurations of heroes, you can get an approximate sense of how
+/// different configurations compare.
 const simulationRounds = 20;
 
 Content content;
