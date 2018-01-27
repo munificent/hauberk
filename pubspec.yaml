@@ -5,5 +5,8 @@ dependencies:
   markdown: any
   malison: '^0.8.0'
   piecemeal: '^0.3.6'
+dev_dependencies:
+  build_runner: any
+  build_web_compilers: any
 transformers:
 - hauberk/src/markdown_to_html

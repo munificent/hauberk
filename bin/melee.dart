@@ -23,17 +23,7 @@ Game game;
 var actions = new Queue<Action>();
 var gameResult = new GameResult();
 
-Breed breed = new Breed(
-    "meat",
-    Pronoun.it,
-    null,
-    [new Attack(null, "hits", 20)],
-    [],
-    null,
-    SpawnLocation.anywhere,
-    MotilitySet.walk,
-    meander: 0,
-    maxHealth: 200);
+var breeds = <int, Breed>{};
 
 main(List<String> arguments) {
   content = createContent();
@@ -156,7 +146,13 @@ int runMatch(HeroSave save, int monsterHealth) {
 }
 
 bool fight(HeroSave save, int monsterHealth) {
-  var monster = new Monster(game, breed, 0, 0, monsterHealth, 1);
+  var breed = breeds.putIfAbsent(
+      monsterHealth,
+      () => new Breed("meat", Pronoun.it, null, [new Attack(null, "hits", 20)],
+          [], null, SpawnLocation.anywhere, MotilitySet.walk,
+          meander: 0, maxHealth: monsterHealth));
+
+  var monster = new Monster(game, breed, 0, 0, 1);
   var hero = new Hero(game, Vec.zero, save);
   game.hero = hero;
 
@@ -165,7 +161,7 @@ bool fight(HeroSave save, int monsterHealth) {
     action.bind(hero);
     action.perform(actions, [], gameResult);
 
-    if (monster.health.current <= 0) {
+    if (monster.health <= 0) {
 //      print("versus $monsterHealth -> win");
       return true;
     }
@@ -174,7 +170,7 @@ bool fight(HeroSave save, int monsterHealth) {
     action.bind(monster);
     action.perform(actions, [], gameResult);
 
-    if (hero.health.current <= 0) {
+    if (hero.health <= 0) {
 //      print("versus $monsterHealth -> lose");
       return false;
     }

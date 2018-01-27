@@ -25,9 +25,8 @@ abstract class AttributeBase {
   Attribute get _attribute;
   int get _penalty => 0;
 
-  int get value =>
-      (_hero.race.valueAtLevel(_attribute, _hero.level) - _penalty)
-          .clamp(1, 60);
+  int get value => (_hero.race.valueAtLevel(_attribute, _hero.level) - _penalty)
+      .clamp(1, 60);
 }
 
 class Strength extends AttributeBase {

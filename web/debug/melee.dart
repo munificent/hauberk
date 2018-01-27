@@ -132,7 +132,7 @@ SimResult simulate(HeroSave save) {
 
   var wins = 0;
   for (var i = 0; i < simulationRounds; i++) {
-    var monster = new Monster(game, breed, 0, 0, breed.maxHealth, 1);
+    var monster = new Monster(game, breed, 0, 0, 1);
     var hero = new Hero(game, Vec.zero, save);
     game.hero = hero;
 
@@ -141,7 +141,7 @@ SimResult simulate(HeroSave save) {
       action.bind(hero);
       action.perform(actions, [], gameResult);
 
-      if (monster.health.current <= 0) {
+      if (monster.health == 0) {
         wins++;
         break;
       }
@@ -150,7 +150,7 @@ SimResult simulate(HeroSave save) {
       action.bind(monster);
       action.perform(actions, [], gameResult);
 
-      if (hero.health.current <= 0) break;
+      if (hero.health == 0) break;
     }
   }
 

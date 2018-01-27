@@ -62,7 +62,7 @@ class _MonsterLog {
     var buffer = new StringBuffer();
 
     buffer.write(monster.breed.name);
-    buffer.write(" health: ${monster.health.current}/${monster.health.max}");
+    buffer.write(" health: ${monster.health}/${monster.maxHealth}");
     buffer.writeAll(log, "\n");
     return buffer.toString();
   }

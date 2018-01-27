@@ -12,7 +12,6 @@ import 'log.dart';
 /// An active entity in the game. Includes monsters and the hero.
 abstract class Actor implements Noun {
   final Game game;
-  final Stat health;
   final Energy energy = new Energy();
 
   /// Haste raises speed.
@@ -62,9 +61,15 @@ abstract class Actor implements Noun {
     pos = new Vec(x, value);
   }
 
-  Actor(this.game, int x, int y, int health)
-      : _pos = new Vec(x, y),
-        health = new Stat(health) {
+  int _health;
+  int get health => _health;
+  void set health(int value) {
+    _health = value.clamp(0, maxHealth);
+  }
+
+  Actor(this.game, int x, int y) : _pos = new Vec(x, y) {
+    _health = maxHealth;
+
     for (var element in game.content.elements) {
       resistances[element] = new ResistCondition(element);
     }
@@ -77,7 +82,7 @@ abstract class Actor implements Noun {
   String get nounText;
   Pronoun get pronoun => Pronoun.it;
 
-  bool get isAlive => health.current > 0;
+  bool get isAlive => health > 0;
 
   /// Whether or not the actor can be seen by the [Hero].
   bool get isVisibleToHero => game.stage[pos].isVisible;
@@ -88,6 +93,8 @@ abstract class Actor implements Noun {
   bool get needsInput => false;
 
   MotilitySet get motilities;
+
+  int get maxHealth;
 
   /// Gets the actor's current speed, taking into any account any active
   /// [Condition]s.
@@ -200,10 +207,10 @@ abstract class Actor implements Noun {
   /// `true` if the actor died.
   bool takeDamage(Action action, int damage, Noun attackNoun,
       [Actor attacker]) {
-    health.current -= damage;
+    health -= damage;
     onTakeDamage(action, attacker, damage);
 
-    if (health.current > 0) return false;
+    if (isAlive) return false;
 
     action.addEvent(EventType.die, actor: this);
 
@@ -269,28 +276,4 @@ abstract class Actor implements Noun {
   }
 
   String toString() => nounText;
-}
-
-class Stat {
-  int _current;
-  int _max;
-
-  int get current => _current;
-  void set current(int value) {
-    _current = value.clamp(0, _max);
-  }
-
-  int get max => _max;
-  void set max(int value) {
-    _max = value;
-
-    // Make sure current is still in bounds.
-    _current = _current.clamp(0, _max);
-  }
-
-  bool get isMax => _current == _max;
-
-  Stat(int value)
-      : _current = value,
-        _max = value;
 }

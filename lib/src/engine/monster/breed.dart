@@ -172,7 +172,7 @@ class Breed {
     var generation = 1;
     if (parent != null) generation = parent.generation + 1;
 
-    return new Monster(game, this, pos.x, pos.y, maxHealth, generation);
+    return new Monster(game, this, pos.x, pos.y, generation);
   }
 
   /// Generate the list of breeds spawned by this breed.

@@ -445,13 +445,13 @@ class GameScreen extends Screen<Input> {
 
     var hero = game.hero;
     var heroColor = ash;
-    if (hero.health.current < hero.health.max / 4) {
+    if (hero.health < hero.maxHealth / 4) {
       heroColor = brickRed;
     } else if (hero.poison.isActive) {
       heroColor = peaGreen;
     } else if (hero.cold.isActive) {
       heroColor = cornflower;
-    } else if (hero.health.current < hero.health.max / 2) {
+    } else if (hero.health < hero.maxHealth / 2) {
       heroColor = salmon;
     }
 
@@ -648,8 +648,8 @@ class GameScreen extends Screen<Input> {
   void _drawSidebar(
       Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
-    _drawStat(terminal, 0, 'Health', hero.health.current, brickRed,
-        hero.health.max, maroon);
+    _drawStat(
+        terminal, 0, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
     terminal.writeAt(0, 1, 'Food', UIHue.helpText);
     terminal.writeAt(10, 1, hero.food.ceil().toString(), persimmon);
 
@@ -818,8 +818,7 @@ class GameScreen extends Screen<Input> {
       x++;
     }
 
-    _drawMeter(
-        terminal, y, actor.health.current, actor.health.max, brickRed, maroon);
+    _drawMeter(terminal, y, actor.health, actor.maxHealth, brickRed, maroon);
   }
 
   /// Draws a progress bar to reflect [value]'s range between `0` and [max].

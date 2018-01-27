@@ -72,14 +72,16 @@ class Monster extends Actor {
   /// How much experience the [Hero] gains for killing this monster.
   int get experienceCents => breed.experienceCents;
 
+  int get maxHealth => breed.maxHealth;
+
   /// Instead of armor, we just scale up the health for different breeds to
   /// accomplish the same thing.
   int get armor => 0;
 
   int get emanationLevel => breed.emanationLevel;
 
-  Monster(Game game, this.breed, int x, int y, int maxHealth, this.generation)
-      : super(game, x, y, maxHealth) {
+  Monster(Game game, this.breed, int x, int y, this.generation)
+      : super(game, x, y) {
     Debug.addMonster(this);
     changeState(new AsleepState());
 
@@ -267,12 +269,12 @@ class Monster extends Actor {
   /// Inflicting damage decreases fear.
   void onGiveDamage(Action action, Actor defender, int damage) {
     // The greater the power of the hit, the more emboldening it is.
-    var fear = 100.0 * damage / game.hero.health.max;
+    var fear = 100.0 * damage / game.hero.maxHealth;
 
     _modifyFear(-fear);
     Debug.logMonster(
         this,
-        "Hit for ${damage} / ${game.hero.health.max} "
+        "Hit for ${damage} / ${game.hero.maxHealth} "
         "decreases fear by ${fear} to $_fear");
 
     // Nearby monsters may witness it.
@@ -286,13 +288,11 @@ class Monster extends Actor {
   void _viewHeroDamage(Action action, int damage) {
     if (isAsleep) return;
 
-    var fear = 50.0 * damage / health.max;
+    var fear = 50.0 * damage / maxHealth;
 
     _modifyFear(-fear);
     Debug.logMonster(
-        this,
-        "Witness ${damage} / ${health.max} "
-        "decreases fear by ${fear} to $_fear");
+        this, "Witness $damage / $maxHealth decreases fear by $fear to $_fear");
   }
 
   /// Taking damage increases fear.
@@ -300,16 +300,14 @@ class Monster extends Actor {
     _alertness = _maxAlertness;
 
     // The greater the power of the hit, the more frightening it is.
-    var fear = 100.0 * damage / health.max;
+    var fear = 100.0 * damage / maxHealth;
 
     // Getting hurt enrages it.
     if (breed.flags.berzerk) fear *= -3.0;
 
     _modifyFear(fear);
-    Debug.logMonster(
-        this,
-        "Hit for ${damage} / ${health.max} "
-        "increases fear by ${fear} to $_fear");
+    Debug.logMonster(this,
+        "Hit for ${damage} / $maxHealth increases fear by $fear to $_fear");
 
     // Nearby monsters may witness it.
     _updateWitnesses((witness) {
@@ -322,7 +320,7 @@ class Monster extends Actor {
   void _viewMonsterDamage(Action action, Monster monster, int damage) {
     if (isAsleep) return;
 
-    var fear = 50.0 * damage / health.max;
+    var fear = 50.0 * damage / maxHealth;
 
     if (breed.flags.protective && monster.breed == breed) {
       // Seeing its own kind get hurt enrages it.
@@ -334,9 +332,7 @@ class Monster extends Actor {
 
     _modifyFear(fear);
     Debug.logMonster(
-        this,
-        "Witness ${damage} / ${health.max} "
-        "increases fear by ${fear} to $_fear");
+        this, "Witness $damage / $maxHealth increases fear by $fear to $_fear");
   }
 
   /// Called when this Actor has been killed by [attackNoun].
@@ -392,7 +388,7 @@ class Monster extends Actor {
     if (!isVisibleToHero) fearDecay = 5.0 + fearDecay * 2.0;
 
     // The closer the monster is to death, the less quickly it gets over fear.
-    fearDecay = 2.0 + fearDecay * health.current / health.max;
+    fearDecay = 2.0 + fearDecay * health / maxHealth;
 
     _modifyFear(-fearDecay);
     Debug.logMonster(this, "Decay fear by $fearDecay to $_fear");

@@ -11,8 +11,8 @@ class HealMove extends Move {
 
   bool shouldUse(Monster monster) {
     // Heal if it could heal the full amount, or it's getting close to death.
-    return (monster.health.current / monster.health.max < 0.25) ||
-        (monster.health.max - monster.health.current >= _amount);
+    return (monster.health / monster.maxHealth < 0.25) ||
+        (monster.maxHealth - monster.health >= _amount);
   }
 
   Action onGetAction(Monster monster) {

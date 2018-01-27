@@ -109,7 +109,7 @@ class ItemDialog extends Screen<Input> {
   void render(Terminal terminal) {
     // Draw a box for the contents.
     var itemCount = _getItems().length;
-    var boxHeight = math.max(itemCount, 1) + 2;
+    var boxHeight = math.max(itemCount, 1) + 3;
 
     Draw.frame(terminal, 0, 0, 43, boxHeight);
 

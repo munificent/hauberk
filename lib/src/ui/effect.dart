@@ -247,7 +247,7 @@ class HitEffect implements Effect {
 
   HitEffect(Actor actor)
       : actor = actor,
-        health = 10 * actor.health.current ~/ actor.health.max;
+        health = 10 * actor.health ~/ actor.maxHealth;
 
   bool update(Game game) {
     return frame++ < _numFrames;

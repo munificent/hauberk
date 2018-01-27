@@ -149,6 +149,8 @@ class Hero extends Actor {
   /// to regain health.
   double food = 0.0;
 
+  int get maxHealth => fortitude.maxHealth;
+
   int _focus = 400;
   int get focus => _focus;
   set focus(int value) => _focus = value.clamp(0, Option.maxFocus);
@@ -181,21 +183,22 @@ class Hero extends Actor {
         skills = save.skills.clone(),
         gold = save.gold,
         lore = save.lore.clone(),
-        super(game, pos.x, pos.y, 0) {
+        super(game, pos.x, pos.y) {
     // Hero state is cloned above so that if they die in the dungeon, they lose
     // anything they found.
-
-    health.max = fortitude.maxHealth;
-    health.current = health.max;
-
-    _refreshLevel(log: false);
 
     // Give the hero energy so we can act before all of the monsters.
     energy.energy = Energy.actionCost;
 
+    _refreshLevel(log: false);
+
+    // Reset the health now that we know the level, which in turn affects
+    // fortitude.
+    health = maxHealth;
+
     // Start with some initial ability to rest so we aren't weakest at the very
     // beginning.
-    food = health.max.toDouble();
+    food = maxHealth.toDouble();
   }
 
   // TODO: Hackish.
@@ -256,31 +259,14 @@ class Hero extends Actor {
   void explore(int numExplored) {
     // TODO: Tune abundance by depth, with some randomness?
     const abundance = 12.0;
-    food += health.max * abundance * numExplored / game.stage.numExplorable;
+    food += maxHealth * abundance * numExplored / game.stage.numExplorable;
   }
 
   /// Updates the hero's skill levels to [skills] and apply any other changes
   /// caused by that.
   void updateSkills(SkillSet skills) {
-    var oldFortitude = fortitude;
-
     // Update anything affected.
     this.skills.update(skills);
-
-    if (fortitude != oldFortitude) {
-      // Update max health.
-      var change = fortitude.maxHealth - health.max;
-      health.max = fortitude.maxHealth;
-
-      if (change > 0) {
-        game.log.message("you feel healthier!");
-
-        // Increase the current health by a matching amount if it goes up.
-        health.current += change;
-      } else {
-        game.log.message("you feel less healthy.");
-      }
-    }
   }
 
   int get baseSpeed => Energy.normalSpeed;
@@ -372,7 +358,7 @@ class Hero extends Actor {
     // Getting hit loses focus.
     // TODO: Should the hero lose focus if they dodge the attack? Seems like it
     // would still break their attention. Maybe lose a fraction of the focus?
-    focus -= Option.maxFocus * damage * 2 ~/ health.max;
+    focus -= Option.maxFocus * damage * 2 ~/ maxHealth;
   }
 
   void onKilled(Action action, Actor defender) {
@@ -481,6 +467,8 @@ class Hero extends Actor {
       }
     }
 
+    // TODO: If fortitude goes up, should we increase current health too?
+
     // Show any gained attributes.
     if (log && previous != _level) {
       for (var attribute in Attribute.all) {
@@ -545,7 +533,7 @@ class ActionBehavior extends Behavior {
 class RestBehavior extends Behavior {
   bool canPerform(Hero hero) {
     // See if done resting.
-    if (hero.health.isMax) return false;
+    if (hero.health == hero.maxHealth) return false;
 
     if (hero.food <= 0) {
       hero.game.log.message("You must explore more before you can rest.");

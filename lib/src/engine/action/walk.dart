@@ -129,7 +129,7 @@ class RestAction extends Action {
       hero.focus += 100;
     } else if (!actor.isVisibleToHero) {
       // Monsters can rest if out of sight.
-      actor.health.current++;
+      actor.health++;
     }
 
     return succeed();
@@ -139,10 +139,10 @@ class RestAction extends Action {
   void _eatFood() {
     if (hero.food <= 0) return;
     if (hero.poison.isActive) return;
-    if (hero.health.isMax) return;
+    if (hero.health == hero.maxHealth) return;
 
     hero.food--;
-    hero.health.current++;
+    hero.health++;
   }
 
   double get noise => Sound.restNoise;
