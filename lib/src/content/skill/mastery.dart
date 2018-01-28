@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -9,7 +7,7 @@ import '../../engine.dart';
 // - Dodging attacks, which increases dodge.
 // - Slaying different breed families.
 
-abstract class MasterySkill extends UsableSkill implements TrainedSkill {
+abstract class MasteryDiscipline extends Discipline implements UsableSkill {
   // TODO: Tune.
   int get maxLevel => 20;
 
@@ -32,13 +30,12 @@ abstract class MasterySkill extends UsableSkill implements TrainedSkill {
     return weapon.type.weaponType == weaponType;
   }
 
-  int levelForWeapon(String weaponType, int hits) {
-    if (weaponType != this.weaponType) return 0;
+  int trained(Lore lore) => lore.killsUsing(weaponType);
 
-    // TODO: Tune this. Should probably be on a curve.
-    // TODO: Should take HeroClass into account.
-    return math.min(hits ~/ 100, maxLevel);
-  }
+  /// How much training is needed to reach [level].
+  // TODO: Tune this. Should probably be on a curve.
+  // TODO: Should take HeroClass into account.
+  int trainingNeeded(int level) => 14 * level;
 }
 
 abstract class MasteryAction extends Action {
@@ -46,7 +43,7 @@ abstract class MasteryAction extends Action {
 
   MasteryAction(this._damageScale);
 
-  /// Attempts to hit the [Actor] as [pos], if any.
+  /// Attempts to hit the [Actor] at [pos], if any.
   void attack(Vec pos) {
     var defender = game.stage.actorAt(pos);
     if (defender == null) return;

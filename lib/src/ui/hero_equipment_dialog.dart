@@ -100,7 +100,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
     var totalY = 21;
     terminal.writeAt(41, totalY, "Totals", slate);
 
-    writeLine(4, steelGray);
+    writeLine(2, steelGray);
     writeLine(totalY - 1, steelGray);
 
     terminal.writeAt(48, totalY, element.abbreviation, elementColor(element));

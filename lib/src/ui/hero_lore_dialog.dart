@@ -130,7 +130,7 @@ class HeroLoreDialog extends HeroInfoDialog {
     var description = _describeBreed(breed);
     var y = 4;
     for (var line in Log.wordWrap(terminal.width - 2, description)) {
-      terminal.writeAt(1, y, line);
+      terminal.writeAt(1, y, line, UIHue.text);
       y++;
     }
   }

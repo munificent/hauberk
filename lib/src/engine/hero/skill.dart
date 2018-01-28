@@ -4,6 +4,7 @@ import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
 import 'hero.dart';
+import 'lore.dart';
 
 /// An immutable unique skill a hero may learn.
 ///
@@ -68,8 +69,105 @@ abstract class DirectionSkill extends UsableSkill {
   Action getDirectionAction(Game game, int level, Direction dir);
 }
 
-abstract class TrainedSkill extends Skill {
-  int levelForWeapon(String weaponType, int hits);
+/// Disciplines are the primary [Skill]s of warriors.
+///
+/// A discipline is "trained", which means to perform an in-game action related
+/// to the discipline. For example, killing monsters with a sword trains the
+/// [Swordfighting] discipline.
+///
+/// The underlying data used to track progress in disciplines is stored in the
+/// hero's [Lore].
+abstract class Discipline extends Skill {
+  /// Determines what level this discipline is at given [lore].
+  int calculateLevel(Lore lore) {
+    var training = trained(lore);
+    for (var level = 1; level <= maxLevel; level++) {
+      if (training < trainingNeeded(level)) return level - 1;
+    }
+
+    return maxLevel;
+  }
+
+  /// How close the hero is to reaching the next level in this skill, in
+  /// percent, or `null` if this skill is at max level.
+  int percentUntilNext(Lore lore) {
+    var level = calculateLevel(lore);
+    if (level == maxLevel) return null;
+
+    var points = trained(lore);
+    var current = trainingNeeded(level);
+    var next = trainingNeeded(level + 1);
+    return 100 * (points - current) ~/ (next - current);
+  }
+
+  /// The quantity of training the hero has in this discipline.
+  int trained(Lore lore);
+
+  /// How much training is needed to reach [level].
+  int trainingNeeded(int level);
+}
+
+/// Spells are the primary skill for mages.
+// TODO: More docs.
+abstract class Spell extends Skill {
+  /// The amount of [Intellect] the hero must possess to use this spell
+  /// effectively.
+  int get complexity;
+
+  int get focusCost;
+
+  Skill get _school {
+    // It should be a direct or indirect prerequisite of this one.
+    var skill = prerequisite;
+    while (skill != null) {
+      if (skill is SchoolSkill) return skill;
+      skill = skill.prerequisite;
+    }
+
+    throw "Spell skill does not have a school as a prerequisite.";
+  }
+
+  int adjustedFocusCost(Hero hero) {
+    return (focusCost * SchoolSkill.focusScale(hero.skills[_school])).toInt();
+  }
+
+  double effectiveness(Game game) =>
+      game.hero.intellect.effectivenessScale(complexity);
+
+  int failureChance(Game game) => game.hero.intellect.failureChance(complexity);
+
+  Action getTargetAction(Game game, int level, Vec target) {
+    var action = onGetTargetAction(game, level, target);
+    return new FocusAction(adjustedFocusCost(game.hero), action);
+  }
+
+  Action onGetTargetAction(Game game, int level, Vec target) => null;
+
+  Action getAction(Game game, int level) {
+    var action = onGetAction(game, level);
+    return new FocusAction(adjustedFocusCost(game.hero), action);
+  }
+
+  Action onGetAction(Game game, int level) => null;
+}
+
+// TODO: Redo this now that all skills aren't treated the same.
+/// Base class for spell school skills.
+abstract class SchoolSkill extends Skill {
+  // TODO: Tune.
+  static double focusScale(int level) {
+    if (level == 0) return 1.0;
+    return lerpDouble(level, 1, 20, 1.0, 0.2);
+  }
+
+  // TODO: Tune.
+  int get maxLevel => 20;
+
+  @override
+  String levelDescription(int level) {
+    var percent = ((1.0 - focusScale(level)) * 100).toInt();
+    return "Reduce the focus cost of $name spells by $percent%.";
+  }
 }
 
 /// A collection of [Skill]s and the hero's level in them.

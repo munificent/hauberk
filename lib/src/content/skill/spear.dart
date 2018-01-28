@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import 'mastery.dart';
 
-class SpearMastery extends MasterySkill implements DirectionSkill {
+class SpearMastery extends MasteryDiscipline implements DirectionSkill {
   // TODO: Tune.
   static double _spearScale(int level) => lerpDouble(level, 1, 20, 0.2, 1.0);
   // TODO: Better name.
@@ -13,6 +13,7 @@ class SpearMastery extends MasterySkill implements DirectionSkill {
       "distance when wielding one.";
   String get weaponType => "spear";
 
+  // TODO: Document how much it improves damage for normal melee attacks.
   String levelDescription(int level) {
     var damage = (_spearScale(level) * 100).toInt();
     return "Distance spear attacks have $damage% of the damage of a regular "

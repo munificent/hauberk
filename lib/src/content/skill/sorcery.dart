@@ -6,7 +6,6 @@ import '../action/bolt.dart';
 import '../action/ray.dart';
 import '../elements.dart';
 import '../skills.dart';
-import 'spell.dart';
 
 class Sorcery extends SchoolSkill {
   String get name => "Sorcery";
@@ -15,7 +14,7 @@ class Sorcery extends SchoolSkill {
       "Harness the power of raw elemental forces of nature.";
 }
 
-class Icicle extends TargetSkill with SpellSkill {
+class Icicle extends Spell implements TargetSkill {
   String get description => "Launches a spear-like icicle.";
 
   @override
@@ -52,7 +51,7 @@ class Icicle extends TargetSkill with SpellSkill {
   int _range(int level) => 7 + level ~/ 4;
 }
 
-class Windstorm extends ActionSkill with SpellSkill {
+class Windstorm extends Spell implements ActionSkill {
   String get description =>
       "Summons a blast of air, spreading out from the sorceror.";
 

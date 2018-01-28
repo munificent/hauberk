@@ -385,7 +385,9 @@ class GameScreen extends Screen<Input> {
       // Forfeiting, so exit.
       ui.pop(false);
     } else if (popped is SkillDialog) {
-      game.hero.updateSkills(result);
+      // TODO: Once skills can be learned on the SkillDialog again, make this
+      // work.
+//      game.hero.updateSkills(result);
     } else if (popped is SelectSkillDialog && result is UsableSkill) {
       if (!result.canUse(game)) {
         // Refresh the log.

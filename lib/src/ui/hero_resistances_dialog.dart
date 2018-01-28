@@ -50,7 +50,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
     var totalY = 21;
     terminal.writeAt(41, totalY, "Totals", slate);
 
-    writeLine(4, steelGray);
+    writeLine(2, steelGray);
     writeLine(totalY - 1, steelGray);
 
     var i = 0;

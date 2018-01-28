@@ -48,6 +48,7 @@ class HeroSave {
 
   SkillSet skills;
 
+  // TODO: Get rid of this.
   /// Available points that can be spent raising skills.
   int skillPoints = 12;
 
@@ -128,6 +129,7 @@ class Hero extends Actor {
 
   final SkillSet skills;
 
+  // TODO: Get rid of this.
   /// Available points that can be spent raising skills.
   int skillPoints;
 
@@ -380,9 +382,10 @@ class Hero extends Actor {
         var type = weapon.type.weaponType;
         lore.killUsing(type);
 
+        // See if any discipline leveled up.
         for (var skill in game.content.skills) {
-          if (skill is TrainedSkill) {
-            var level = skill.levelForWeapon(type, lore.killsUsing(type));
+          if (skill is Discipline) {
+            var level = skill.calculateLevel(lore);
             if (level != skills[skill]) {
               skills[skill] = level;
               game.log.gain("You have reached level $level in ${skill.name}.");

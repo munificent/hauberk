@@ -4,7 +4,7 @@ import '../../engine.dart';
 import '../action/bolt.dart';
 import 'mastery.dart';
 
-class WhipMastery extends MasterySkill implements TargetSkill {
+class WhipMastery extends MasteryDiscipline implements TargetSkill {
   // TODO: Tune.
   static double _whipScale(int level) => lerpDouble(level, 1, 20, 0.2, 0.7);
 
@@ -15,6 +15,7 @@ class WhipMastery extends MasterySkill implements TargetSkill {
       "distance when mastered.";
   String get weaponType => "whip";
 
+  // TODO: Document how much it improves damage for normal melee attacks.
   String levelDescription(int level) {
     var damage = (_whipScale(level) * 100).toInt();
     return "Ranged whip attacks have $damage% of the damage of a regular "
