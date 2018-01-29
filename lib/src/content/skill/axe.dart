@@ -15,10 +15,10 @@ class AxeMastery extends MasteryDiscipline implements DirectionSkill {
       "they can cut down a swath of nearby foes as well.";
   String get weaponType => "axe";
 
-  // TODO: Document how much it improves damage for normal melee attacks.
   String levelDescription(int level) {
     var damage = (_slashScale(level) * 100).toInt();
-    return "Slash attacks have $damage% of the damage of a regular attack.";
+    return super.levelDescription(level) +
+        " Slash attacks inflict $damage% of the damage of a regular attack.";
   }
 
   Action getDirectionAction(Game game, int level, Direction dir) {

@@ -15,11 +15,11 @@ class WhipMastery extends MasteryDiscipline implements TargetSkill {
       "distance when mastered.";
   String get weaponType => "whip";
 
-  // TODO: Document how much it improves damage for normal melee attacks.
   String levelDescription(int level) {
     var damage = (_whipScale(level) * 100).toInt();
-    return "Ranged whip attacks have $damage% of the damage of a regular "
-        "attack.";
+    return super.levelDescription(level) +
+        " Ranged whip attacks inflict $damage% of the damage of a regular "
+            "attack.";
   }
 
   num getRange(Game game) => 3;

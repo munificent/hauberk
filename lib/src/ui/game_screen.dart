@@ -10,6 +10,7 @@ import '../engine.dart';
 import '../hues.dart';
 import 'close_door_dialog.dart';
 import 'direction_dialog.dart';
+import 'draw.dart';
 import 'effect.dart';
 import 'forfeit_dialog.dart';
 import 'game_over_screen.dart';
@@ -678,8 +679,8 @@ class GameScreen extends Screen<Input> {
 
     terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
 
-    _drawMeter(
-        terminal, 10, hero.focus, Option.maxFocus, cerulean, ultramarine);
+    Draw.meter(terminal, 9, 10, 10, hero.focus, Option.maxFocus, cerulean,
+        ultramarine);
 
     _drawStat(terminal, 12, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
@@ -820,36 +821,7 @@ class GameScreen extends Screen<Input> {
       x++;
     }
 
-    _drawMeter(terminal, y, actor.health, actor.maxHealth, brickRed, maroon);
-  }
-
-  /// Draws a progress bar to reflect [value]'s range between `0` and [max].
-  /// Has a couple of special tweaks: the bar will only be empty if [value] is
-  /// exactly `0`, otherwise it will at least show a sliver. Likewise, the bar
-  /// will only be full if [value] is exactly [max], otherwise at least one
-  /// half unit will be missing.
-  void _drawMeter(
-      Terminal terminal, int y, int value, int max, Color fore, Color back) {
-    var barWidth;
-    if (value == max) {
-      barWidth = 20;
-    } else if (max <= 1) {
-      // Corner case: if max is one, avoid dividing by zero.
-      barWidth = 0;
-    } else {
-      barWidth = (19 * value / (max - 1)).ceil().toInt();
-    }
-
-    for (var x = 0; x < 10; x++) {
-      var char;
-      if (x < barWidth ~/ 2) {
-        char = CharCode.fullBlock;
-      } else if (x < (barWidth + 1) ~/ 2) {
-        char = CharCode.leftHalfBlock;
-      } else {
-        char = CharCode.space;
-      }
-      terminal.drawGlyph(9 + x, y, new Glyph.fromCharCode(char, fore, back));
-    }
+    Draw.meter(
+        terminal, 9, y, 10, actor.health, actor.maxHealth, brickRed, maroon);
   }
 }

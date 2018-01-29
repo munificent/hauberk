@@ -13,10 +13,10 @@ class SpearMastery extends MasteryDiscipline implements DirectionSkill {
       "distance when wielding one.";
   String get weaponType => "spear";
 
-  // TODO: Document how much it improves damage for normal melee attacks.
   String levelDescription(int level) {
     var damage = (_spearScale(level) * 100).toInt();
-    return "Distance spear attacks have $damage% of the damage of a regular "
+    return super.levelDescription(level) +
+        " Distance spear attacks inflict $damage% of the damage of a regular "
         "attack.";
   }
 

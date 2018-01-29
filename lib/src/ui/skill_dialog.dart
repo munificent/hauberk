@@ -130,32 +130,34 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
     var skill = _skills[_selectedSkill];
     var level = _hero.skills[skill];
-    terminal.writeAt(1, 0, skill.name, UIHue.primary);
+    terminal.writeAt(1, 0, skill.name, UIHue.selection);
 
-    writeDescription(int y, String text) {
-      for (var line in Log.wordWrap(terminal.width - 2, text)) {
-        terminal.writeAt(1, y++, line, UIHue.text);
+    writeDescription(int x, int y, String text) {
+      for (var line in Log.wordWrap(terminal.width - 1 - x, text)) {
+        terminal.writeAt(x, y++, line, UIHue.text);
       }
     }
 
-    writeDescription(2, skill.description);
+    writeDescription(1, 2, skill.description);
 
+    terminal.writeAt(1, 8, "At current level $level:", UIHue.primary);
     if (level > 0) {
-      terminal.writeAt(1, 16, "At current level $level:", UIHue.primary);
-      writeDescription(18, skill.levelDescription(level));
+      writeDescription(3, 10, skill.levelDescription(level));
+    } else {
+      terminal.writeAt(3, 10, "(You haven't trained this yet.)", UIHue.text);
     }
 
     if (level < skill.maxLevel) {
-      terminal.writeAt(1, 24, "At next level ${level + 1}:", UIHue.primary);
-      writeDescription(26, skill.levelDescription(level + 1));
+      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
+      writeDescription(3, 18, skill.levelDescription(level + 1));
     }
 
     _renderSkillDetails(terminal, skill);
   }
 
   void _renderValue(Terminal terminal, int i, String label, Object value) {
-    terminal.writeAt(1, 10 + i, "$label:", UIHue.text);
-    terminal.writeAt(20, 10 + i, value.toString(), UIHue.primary);
+    terminal.writeAt(1, 30 + i, "$label:", UIHue.text);
+    terminal.writeAt(20, 30 + i, value.toString(), UIHue.primary);
   }
 
   String get _rowSeparator;
@@ -192,15 +194,22 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
   }
 
   void _renderSkillDetails(Terminal terminal, Discipline skill) {
-    var trained = skill.trained(_hero.lore);
-    _renderValue(terminal, 0, "Trained", trained);
+    var level = _skillSet[skill];
+    terminal.writeAt(1, 30, "Level", UIHue.secondary);
+    terminal.writeAt(10, 30, level.toString().padLeft(2), UIHue.text);
+    Draw.meter(terminal, 19, 30, 20, level, skill.maxLevel, brickRed, maroon);
 
+    terminal.writeAt(1, 32, "Next", UIHue.secondary);
     var percent = skill.percentUntilNext(_hero.lore);
     if (percent != null) {
-      var next = skill.trainingNeeded(_skillSet[skill] + 1);
-      _renderValue(terminal, 1, "Next", "$next ($percent%)");
+      var points = skill.trained(_hero.lore);
+      var current = skill.trainingNeeded(level);
+      var next = skill.trainingNeeded(level + 1);
+      terminal.writeAt(7, 32, next.toString().padLeft(5), UIHue.text);
+      terminal.writeAt(13, 32, "($percent%)".padLeft(5), UIHue.text);
+      Draw.meter(terminal, 19, 32, 20, points - current, next - current, brickRed, maroon);
     } else {
-      _renderValue(terminal, 1, "Next", "(at max)");
+      terminal.writeAt(10, 32, "(at max)", UIHue.text);
     }
   }
 }

@@ -9,9 +9,9 @@ class Swordfighting extends MasteryDiscipline {
       "The most elegant tool for the most refined of martial arts.";
   String get weaponType => "sword";
 
-  // TODO: Document how much it improves damage for normal melee attacks.
   String levelDescription(int level) =>
-      "Parrying increases dodge by ${_parryDefense(level)}.";
+      super.levelDescription(level) +
+      " Parrying increases dodge by ${_parryDefense(level)}.";
 
   Defense getDefense(Hero hero, int level) =>
       new Defense(level ~/ 2 + 1, "{1} parr[y|ies] {2}.");

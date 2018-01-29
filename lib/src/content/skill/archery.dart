@@ -18,6 +18,7 @@ class Archery extends MasteryDiscipline implements TargetSkill {
 
   String get weaponType => "bow";
 
+  // TODO: Does this boost attack damage?
   String levelDescription(int level) =>
       "Firing an arrow costs ${focusCost(level)} focus.";
 
