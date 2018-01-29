@@ -188,7 +188,7 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     var level = _skillSet[skill].toString().padLeft(3);
     terminal.writeAt(31, y, level, UIHue.text);
 
-    var percent = skill.percentUntilNext(_hero.lore);
+    var percent = skill.percentUntilNext(_hero.heroClass, _hero.lore);
     terminal.writeAt(
         35, y, percent == null ? "  --" : "$percent%".padLeft(4), UIHue.text);
   }
@@ -200,14 +200,15 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     Draw.meter(terminal, 19, 30, 20, level, skill.maxLevel, brickRed, maroon);
 
     terminal.writeAt(1, 32, "Next", UIHue.secondary);
-    var percent = skill.percentUntilNext(_hero.lore);
+    var percent = skill.percentUntilNext(_hero.heroClass, _hero.lore);
     if (percent != null) {
       var points = skill.trained(_hero.lore);
-      var current = skill.trainingNeeded(level);
-      var next = skill.trainingNeeded(level + 1);
+      var current = skill.trainingNeeded(_hero.heroClass, level);
+      var next = skill.trainingNeeded(_hero.heroClass, level + 1);
       terminal.writeAt(7, 32, next.toString().padLeft(5), UIHue.text);
       terminal.writeAt(13, 32, "($percent%)".padLeft(5), UIHue.text);
-      Draw.meter(terminal, 19, 32, 20, points - current, next - current, brickRed, maroon);
+      Draw.meter(terminal, 19, 32, 20, points - current, next - current,
+          brickRed, maroon);
     } else {
       terminal.writeAt(10, 32, "(at max)", UIHue.text);
     }

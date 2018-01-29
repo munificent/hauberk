@@ -161,7 +161,7 @@ abstract class Content {
   Iterable<Recipe> get recipes;
   Iterable<Shop> get shops;
 
-  HeroSave createHero(String name, [Race race]);
+  HeroSave createHero(String name, [Race race, HeroClass heroClass]);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

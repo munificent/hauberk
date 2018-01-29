@@ -105,6 +105,7 @@ class Hero extends Actor {
   Pronoun get pronoun => Pronoun.you;
 
   final RaceStats race;
+  final HeroClass heroClass;
   final Inventory inventory;
   final Equipment equipment;
 
@@ -178,6 +179,7 @@ class Hero extends Actor {
 
   Hero(Game game, Vec pos, HeroSave save)
       : race = save.race,
+        heroClass = save.heroClass,
         inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
@@ -385,7 +387,7 @@ class Hero extends Actor {
         // See if any discipline leveled up.
         for (var skill in game.content.skills) {
           if (skill is Discipline) {
-            var level = skill.calculateLevel(lore);
+            var level = skill.calculateLevel(heroClass, lore);
             if (level != skills[skill]) {
               skills[skill] = level;
               game.log.gain("You have reached level $level in ${skill.name}.");

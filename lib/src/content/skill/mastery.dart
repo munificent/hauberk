@@ -24,7 +24,8 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
 
   String levelDescription(int level) {
     var damage = ((_damageScale(level) - 1.0) * 100).toInt();
-    return "Melee attacks inflict $damage% more damage when using a $weaponType.";
+    return "Melee attacks inflict $damage% more damage when using a "
+        "$weaponType.";
   }
 
   bool canUse(Game game) => _hasWeapon(game.hero);
@@ -37,12 +38,13 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
     return weapon.type.weaponType == weaponType;
   }
 
+  // TODO: The fact that this only counts kills and not the difficulty of the
+  // monster means players are incentivized to grind weak monsters to raise
+  // this. Is that OK?
   int trained(Lore lore) => lore.killsUsing(weaponType);
 
   /// How much training is needed to reach [level].
-  // TODO: Tune this. Should probably be on a curve.
-  // TODO: Should take HeroClass into account.
-  int trainingNeeded(int level) => 14 * level;
+  int baseTrainingNeeded(int level) => 10 * level * level;
 }
 
 abstract class MasteryAction extends Action {

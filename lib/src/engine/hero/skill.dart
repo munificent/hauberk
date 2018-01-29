@@ -4,6 +4,7 @@ import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
 import 'hero.dart';
+import 'hero_class.dart';
 import 'lore.dart';
 
 /// An immutable unique skill a hero may learn.
@@ -79,10 +80,10 @@ abstract class DirectionSkill extends UsableSkill {
 /// hero's [Lore].
 abstract class Discipline extends Skill {
   /// Determines what level this discipline is at given [lore].
-  int calculateLevel(Lore lore) {
+  int calculateLevel(HeroClass heroClass, Lore lore) {
     var training = trained(lore);
     for (var level = 1; level <= maxLevel; level++) {
-      if (training < trainingNeeded(level)) return level - 1;
+      if (training < trainingNeeded(heroClass, level)) return level - 1;
     }
 
     return maxLevel;
@@ -90,21 +91,31 @@ abstract class Discipline extends Skill {
 
   /// How close the hero is to reaching the next level in this skill, in
   /// percent, or `null` if this skill is at max level.
-  int percentUntilNext(Lore lore) {
-    var level = calculateLevel(lore);
+  int percentUntilNext(HeroClass heroClass, Lore lore) {
+    var level = calculateLevel(heroClass, lore);
     if (level == maxLevel) return null;
 
     var points = trained(lore);
-    var current = trainingNeeded(level);
-    var next = trainingNeeded(level + 1);
+    var current = trainingNeeded(heroClass, level);
+    var next = trainingNeeded(heroClass, level + 1);
     return 100 * (points - current) ~/ (next - current);
   }
 
   /// The quantity of training the hero has in this discipline.
   int trained(Lore lore);
 
-  /// How much training is needed to reach [level].
-  int trainingNeeded(int level);
+  /// How much training is needed for a hero of [heroClass] to reach [level],
+  /// or `null` if the hero cannot train this skill.
+  int trainingNeeded(HeroClass heroClass, int level) {
+    var profiency = heroClass.proficiency(this);
+    if (profiency == 0.0) return null;
+
+    return (baseTrainingNeeded(level) / profiency).ceil();
+  }
+
+  /// How much training is needed for to reach [level], ignoring class
+  /// proficiency.
+  int baseTrainingNeeded(int level);
 }
 
 /// Spells are the primary skill for mages.
