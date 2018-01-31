@@ -232,7 +232,7 @@ class Storage {
       }
 
       var skills = {};
-      for (var skill in hero.skills.all) {
+      for (var skill in hero.skills.discovered) {
         skills[skill.name] = hero.skills[skill];
       }
 

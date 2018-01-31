@@ -235,7 +235,17 @@ class SpellDialog extends SkillTypeDialog<Spell> {
 
   void _renderSkillDetails(Terminal terminal, Spell skill) {
     var intellect = _hero.intellect.value;
-    var relative = intellect - skill.complexity;
+    var expertise = intellect - skill.complexity;
+
+    // TODO: Instead of a text description, show an actual little graph for
+    // each parameter and how it varies based on level/expertise?
+
+    if (expertise >= 0) {
+      terminal.writeAt(1, 8, "At expertise $expertise:", UIHue.primary);
+      _writeText(terminal, 3, 10, skill.expertiseDescription(_hero));
+    } else {
+      terminal.writeAt(1, 8, "(You need ${skill.complexity} intellect to cast this.)", brickRed);
+    }
 
     terminal.writeAt(1, 30, "Intellect:", UIHue.secondary);
     terminal.writeAt(14, 30, "$intellect".padLeft(2), UIHue.text);
@@ -246,11 +256,7 @@ class SpellDialog extends SkillTypeDialog<Spell> {
     terminal.writeAt(13, 33, "───", UIHue.secondary);
 
     terminal.writeAt(1, 34, "Expertise:", UIHue.secondary);
-    terminal.writeAt(14, 34, "$relative".padLeft(2), relative >= 0 ? peaGreen : brickRed);
-
-    if (relative < 0) {
-      terminal.writeAt(1, 36, "(This spell is too complex for you.)", maroon);
-    }
+    terminal.writeAt(14, 34, "$expertise".padLeft(2), expertise >= 0 ? peaGreen : brickRed);
   }
 }
 

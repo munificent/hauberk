@@ -279,7 +279,7 @@ class Hero extends Actor {
 
   // TODO: Shields, temporary bonuses, etc.
   Iterable<Defense> onGetDefenses() sync* {
-    for (var skill in skills.all) {
+    for (var skill in skills.acquired(this)) {
       var defense = skill.getDefense(this, skills[skill]);
       if (defense != null) yield defense;
     }
@@ -304,7 +304,7 @@ class Hero extends Actor {
 
     hit.addStrike(agility.strikeBonus);
 
-    for (var skill in skills.all) {
+    for (var skill in skills.acquired(this)) {
       skill.modifyAttack(this, hit, skills[skill]);
     }
 

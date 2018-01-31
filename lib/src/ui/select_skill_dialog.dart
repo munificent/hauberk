@@ -3,6 +3,7 @@ import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'input.dart';
 
 // TODO: Would be good to show skill description and stuff here too.
@@ -14,7 +15,7 @@ class SelectSkillDialog extends Screen<Input> {
   bool get isTransparent => true;
 
   SelectSkillDialog(Game game) : _game = game {
-    for (var skill in _game.hero.skills.all) {
+    for (var skill in _game.hero.skills.acquired(_game.hero)) {
       if (skill is UsableSkill) _skills.add(skill);
     }
   }
@@ -42,31 +43,39 @@ class SelectSkillDialog extends Screen<Input> {
 
   void selectCommand(int index) {
     if (index >= _skills.length) return;
-    if (!_skills[index].canUse(_game)) return;
+    if (_skills[index].unusableReason(_game) != null) return;
 
     ui.pop(_skills[index]);
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, "Perform which command?", UIHue.text);
+    // Draw a box for the contents.
+    Draw.frame(terminal, 0, 0, 50, _skills.length + 3);
+
+    terminal.writeAt(1, 0, "Perform which command?", UIHue.selection);
 
     for (var i = 0; i < _skills.length; i++) {
       var y = i + 2;
-      var command = _skills[i];
+      var skill = _skills[i];
 
       var borderColor = UIHue.secondary;
       var letterColor = midnight;
       var textColor = UIHue.disabled;
 
-      if (command.canUse(_game)) {
+      var reason = skill.unusableReason(_game);
+      if (reason == null) {
         borderColor = UIHue.primary;
         letterColor = UIHue.selection;
         textColor = UIHue.selection;
       }
 
-      terminal.writeAt(0, y, '( )   ', borderColor);
-      terminal.writeAt(1, y, 'abcdefghijklmnopqrstuvwxyz'[i], letterColor);
-      terminal.writeAt(4, y, command.name, textColor);
+      terminal.writeAt(1, y, '( )   ', borderColor);
+      terminal.writeAt(2, y, 'abcdefghijklmnopqrstuvwxyz'[i], letterColor);
+      terminal.writeAt(5, y, skill.name, textColor);
+
+      if (reason != null) {
+        terminal.writeAt(25, y, "($reason)", textColor);
+      }
     }
 
     terminal.writeAt(

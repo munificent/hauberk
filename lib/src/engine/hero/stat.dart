@@ -95,35 +95,6 @@ class Intellect extends StatBase {
   Intellect(Hero hero) : super(hero);
 
   Stat get _stat => Stat.intellect;
-
-  /// Calculates the spell effectiveness scaling factor based on the hero's
-  /// intellect relative to the spell's [complexity].
-  double effectivenessScale(int complexity) {
-    var relative = (value - complexity).clamp(-20, 50);
-
-    if (relative < -10) return lerpDouble(relative, -20, -10, 0.05, 0.3);
-
-    // Note that there is an immediate step down to 0.8 at -1.
-    if (relative < 0) return lerpDouble(relative, -10, -1, 0.3, 0.8);
-
-    if (relative < 30) return lerpDouble(relative, 0, 30, 1.0, 2.0);
-    return lerpDouble(relative, 30, 50, 2.0, 3.0);
-  }
-
-  /// The percent chance of a spell failing based on its complexity relative to
-  /// the hero's intellect.
-  int failureChance(int complexity) {
-    var relative = (value - complexity).clamp(-20, 50);
-
-    if (relative < -10) return lerpInt(relative, -20, -10, 100, 50);
-
-    // Note that there is an immediate step down to 20% at -1.
-    if (relative < 0) return lerpInt(relative, -10, -1, 50, 20);
-
-    if (relative < 30) return lerpInt(relative, 0, 20, 10, 0);
-
-    return 0;
-  }
 }
 
 class Will extends StatBase {

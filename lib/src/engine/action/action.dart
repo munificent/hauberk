@@ -144,7 +144,7 @@ class FocusAction extends Action {
 
   ActionResult onPerform() {
     if (hero.focus < _focus) {
-      return fail("You don't have enough focus to do this!");
+      return fail("You don't have enough focus to cast the spell.");
     }
 
     hero.focus -= _focus;

@@ -20,9 +20,15 @@ abstract class Skill {
 
   int get maxLevel;
 
+  // TODO: Remove?
   Skill get prerequisite => null;
 
-  String levelDescription(int level);
+  /// Whether this skill has been acquired if it is as [level].
+  ///
+  /// Each kind of skill has different rules for what it means to be acquired.
+  /// Trained skills must be leveled past zero, spells merely need to be
+  /// discovered and not too complex, etc.
+  bool isAcquired(Hero hero, int level);
 
   /// Gives the skill a chance to modify the hit the hero is about to perform.
   void modifyAttack(Hero hero, Hit hit, int level) {}
@@ -33,9 +39,6 @@ abstract class Skill {
   /// Gives the skill a chance to modify the hit the hero is about to receive.
   void modifyDefense(Hit hit) {}
 
-  // TODO: Requirements.
-  // - Must be discovered by finding certain items. (I.e. a spellbook or
-  //   weapon of a certain type.)
 }
 
 /// Additional interface for active skills that expose a command the player
@@ -44,11 +47,11 @@ abstract class Skill {
 /// Some skills require additional data to be performed -- a target position
 /// or a direction. Those will implement one of the subclasses, [TargetSkill]
 /// or [DirectionSkill].
-abstract class UsableSkill extends Skill {
-  /// Override this to validate that the [Command] can be used right now. For
-  /// example, this is only `true` for the archery skill when the hero has a
-  /// ranged weapon equipped.
-  bool canUse(Game game);
+abstract class UsableSkill implements Skill {
+  /// If the skill cannot currently be used (for example Archery when a bow is
+  /// not equipped), returns the reason why. Otherwise, returns `null` to
+  /// indicate the skill is usable.
+  String unusableReason(Game game) => null;
 }
 
 /// A skill that can be directly used to perform an action.
@@ -83,6 +86,10 @@ abstract class DirectionSkill extends UsableSkill {
 /// hero's [Lore].
 abstract class Discipline extends Skill {
   String get discoverMessage => "{1} can begin training in $name.";
+
+  bool isAcquired(Hero hero, int level) => level > 0;
+
+  String levelDescription(int level);
 
   /// Determines what level this discipline is at given [lore].
   int calculateLevel(HeroClass heroClass, Lore lore) {
@@ -124,9 +131,14 @@ abstract class Discipline extends Skill {
 }
 
 /// Spells are the primary skill for mages.
-// TODO: More docs.
-abstract class Spell extends Skill {
+///
+/// Spells do not need to be explicitly trained or learned. As soon as one is
+/// discovered, as long as it's not too complex, the hero can use it.
+abstract class Spell extends Skill implements UsableSkill {
   String get discoverMessage => '{1} can learn the spell "$name".';
+
+  /// Spells are not leveled.
+  int get maxLevel => 1;
 
   /// The amount of [Intellect] the hero must possess to use this spell
   /// effectively.
@@ -134,10 +146,16 @@ abstract class Spell extends Skill {
 
   int get focusCost;
 
-  double effectiveness(Game game) =>
-      game.hero.intellect.effectivenessScale(complexity);
+  String expertiseDescription(Hero hero) => onExpertiseDescription(expertise(hero));
 
-  int failureChance(Game game) => game.hero.intellect.failureChance(complexity);
+  String onExpertiseDescription(int expertise);
+
+  bool isAcquired(Hero hero, int level) => expertise(hero) >= 0;
+
+  String unusableReason(Game game) => null;
+
+  // TODO: Take bonuses into account.
+  int expertise(Hero hero) => hero.intellect.value - complexity;
 
   Action getTargetAction(Game game, int level, Vec target) {
     var action = onGetTargetAction(game, level, target);
@@ -154,25 +172,6 @@ abstract class Spell extends Skill {
   Action onGetAction(Game game, int level) => null;
 }
 
-// TODO: Redo this now that all skills aren't treated the same.
-/// Base class for spell school skills.
-abstract class SchoolSkill extends Skill {
-  // TODO: Tune.
-  static double focusScale(int level) {
-    if (level == 0) return 1.0;
-    return lerpDouble(level, 1, 20, 1.0, 0.2);
-  }
-
-  // TODO: Tune.
-  int get maxLevel => 20;
-
-  @override
-  String levelDescription(int level) {
-    var percent = ((1.0 - focusScale(level)) * 100).toInt();
-    return "Reduce the focus cost of $name spells by $percent%.";
-  }
-}
-
 /// A collection of [Skill]s and the hero's level in them.
 class SkillSet {
   /// The levels the hero has gained in each skill.
@@ -187,7 +186,11 @@ class SkillSet {
   int operator [](Skill skill) => _levels[skill] ?? 0;
 
   /// All the skills the hero knows about.
-  Iterable<Skill> get all => _levels.keys;
+  Iterable<Skill> get discovered => _levels.keys;
+
+  /// All the skills the hero actually has.
+  Iterable<Skill> acquired(Hero hero) =>
+      _levels.keys.where((skill) => skill.isAcquired(hero, _levels[skill]));
 
   /// Learns that [skill] exists.
   ///

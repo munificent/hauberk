@@ -390,10 +390,7 @@ class GameScreen extends Screen<Input> {
       // work.
 //      game.hero.updateSkills(result);
     } else if (popped is SelectSkillDialog && result is UsableSkill) {
-      if (!result.canUse(game)) {
-        // Refresh the log.
-        dirty();
-      } else if (result is TargetSkill) {
+      if (result is TargetSkill) {
         ui.push(new TargetDialog(
             this, result.getRange(game), (_) => _fireAtTarget(result)));
       } else if (result is DirectionSkill) {

@@ -28,7 +28,11 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
         "$weaponType.";
   }
 
-  bool canUse(Game game) => _hasWeapon(game.hero);
+  String unusableReason(Game game) {
+    if (_hasWeapon(game.hero)) return null;
+
+    return "No $weaponType equipped.";
+  }
 
   bool _hasWeapon(Hero hero) {
     // Must have the right weapon equipped.

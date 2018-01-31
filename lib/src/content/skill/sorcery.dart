@@ -10,12 +10,10 @@ class Icicle extends Spell implements TargetSkill {
   String get description => "Launches a spear-like icicle.";
 
   @override
-  String levelDescription(int level) {
+  String onExpertiseDescription(int expertise) {
     // TODO: Better description.
-    return "Does ${_damage(level)} damage and ${_range(level)} range.";
+    return "Does ${_damage(expertise)} damage and ${_range(expertise)} range.";
   }
-
-  int get maxLevel => 20;
 
   String get name => "Icicle";
 
@@ -23,7 +21,6 @@ class Icicle extends Spell implements TargetSkill {
 
   int get focusCost => 200;
 
-  bool canUse(Game game) => true;
 
   num getRange(Game game) => _range(game.hero.skills[this]);
 
@@ -32,13 +29,12 @@ class Icicle extends Spell implements TargetSkill {
         _range(level), Elements.cold);
 
     var hit = attack.createHit();
-    // TODO: Should the hero modify the hit?
-    hit.scaleDamage(effectiveness(game));
+    // TODO: Tune.
     return new BoltAction(target, hit);
   }
 
-  int _damage(int level) => 5 + level;
-  int _range(int level) => 7 + level ~/ 4;
+  int _damage(int expertise) => 5 + expertise ~/ 3;
+  int _range(int expertise) => 7 + expertise ~/ 6;
 }
 
 class Windstorm extends Spell implements ActionSkill {
@@ -46,12 +42,10 @@ class Windstorm extends Spell implements ActionSkill {
       "Summons a blast of air, spreading out from the sorceror.";
 
   @override
-  String levelDescription(int level) {
+  String onExpertiseDescription(int expertise) {
     // TODO: Better description.
-    return "Does ${_damage(level)} damage and ${_range(level)} range.";
+    return "Does ${_damage(expertise)} damage and ${_range(expertise)} range.";
   }
-
-  int get maxLevel => 20;
 
   String get name => "Windstorm";
 
@@ -66,11 +60,11 @@ class Windstorm extends Spell implements ActionSkill {
         _range(level), Elements.air);
 
     var hit = attack.createHit();
-    // TODO: Should the hero modify the hit?
-    hit.scaleDamage(effectiveness(game));
+    // TODO: Tune.
+    hit.addDamage(expertise(game.hero) ~/ 2);
     return new RayAction.ring(game.hero.pos, hit);
   }
 
-  int _damage(int level) => 4 + level;
-  int _range(int level) => 6 + level ~/ 3;
+  int _damage(int expertise) => 4 + expertise ~/ 4;
+  int _range(int expertise) => 6 + expertise ~/ 3;
 }
