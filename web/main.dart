@@ -16,15 +16,17 @@ const height = 40;
 final terminals = [];
 UserInterface<Input> ui;
 
-addTerminal(String name, int charSize) {
+addTerminal(String name, int w, [int h]) {
   var element = new html.CanvasElement();
   element.onDoubleClick.listen((_) {
     fullscreen(element);
   });
 
   // Make the terminal.
-  var terminal = new RetroTerminal(width, height, "font_$charSize.png",
-      canvas: element, charWidth: charSize, charHeight: charSize);
+  var file = "font_$w";
+  if (h != null) file += "_$h";
+  var terminal = new RetroTerminal(width, height, "$file.png",
+      canvas: element, charWidth: w, charHeight: h ?? w);
 
   terminals.add([name, element, terminal]);
 
@@ -69,6 +71,8 @@ main() {
 
   addTerminal("Small", 8);
   addTerminal("Large", 16);
+  addTerminal("Small Rect", 8, 10);
+  addTerminal("Large Rect", 16, 20);
 
   // Load the user's font preference, if any.
   var font = html.window.localStorage['font'];
