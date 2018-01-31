@@ -18,12 +18,8 @@ class Classes {
   static final List<HeroClass> all = [adventurer, warrior, mage];
 }
 
-HeroClass _class(
-  String name,
-  String description, {
-  double masteries = 1.0,
-  double spells = 1.0,
-}) {
+HeroClass _class(String name, String description,
+    {double masteries = 1.0, double spells = 1.0}) {
   var proficiencies = <Skill, double>{};
 
   for (var skill in Skills.all) {

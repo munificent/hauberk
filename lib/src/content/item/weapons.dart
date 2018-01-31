@@ -7,6 +7,7 @@ void weapons() {
   // https://en.wikipedia.org/wiki/List_of_mythological_objects#Weapons
 
   // Bludgeons.
+  // TODO: Club skill.
   category(CharCode.latinSmallLetterAWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/club")
     ..toss(breakage: 25, range: 5);
@@ -21,6 +22,7 @@ void weapons() {
     ..toss(damage: 5);
 
   // Staves.
+  // TODO: Staff skill.
   category(CharCode.latinSmallLetterIWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/staff")
     ..toss(breakage: 35, range: 4);
@@ -62,7 +64,8 @@ void weapons() {
   // Whips.
   category(CharCode.latinSmallLetterNWithTilde, verb: "whip[s]")
     ..tag("equipment/weapon/whip")
-    ..toss(breakage: 25, range: 4);
+    ..toss(breakage: 25, range: 4)
+    ..skill("Whip Mastery");
   item("Whip", 4, 0.5, persimmon)
     ..weapon(10, heft: 12)
     ..toss(damage: 1);
@@ -74,6 +77,7 @@ void weapons() {
     ..toss(damage: 4);
 
   // Knives.
+  // TODO: Dagger skill.
   category(CharCode.latinCapitalLetterNWithTilde, verb: "stab[s]")
     ..tag("equipment/weapon/dagger")
     ..toss(breakage: 2, range: 8);
@@ -100,7 +104,8 @@ void weapons() {
 
   category(CharCode.feminineOrdinalIndicator, verb: "slash[es]")
     ..tag("equipment/weapon/sword")
-    ..toss(breakage: 20, range: 5);
+    ..toss(breakage: 20, range: 5)
+    ..skill("Swordfighting");
   item("Rapier", 7, 0.5, steelGray)
     ..weapon(20, heft: 16)
     ..toss(damage: 4);
@@ -131,7 +136,8 @@ void weapons() {
   // Spears.
   category(CharCode.masculineOrdinalIndicator, verb: "stab[s]")
     ..tag("equipment/weapon/spear")
-    ..toss(range: 9);
+    ..toss(range: 9)
+    ..skill("Spear Mastery");
   item("Pointed Stick", 2, 0.5, garnet)
     ..weapon(10, heft: 11)
     ..toss(damage: 9);
@@ -144,7 +150,8 @@ void weapons() {
 
   category(CharCode.masculineOrdinalIndicator, verb: "stab[s]")
     ..tag("equipment/weapon/polearm")
-    ..toss(range: 4);
+    ..toss(range: 4)
+    ..skill("Spear Mastery");
   item("Lance", 28, 0.5, cornflower)
     ..weapon(24, heft: 27)
     ..toss(damage: 20);
@@ -155,7 +162,8 @@ void weapons() {
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
 
   category(CharCode.invertedQuestionMark, verb: "chop[s]")
-    ..tag("equipment/weapon/axe");
+    ..tag("equipment/weapon/axe")
+    ..skill("Axe Mastery");
   item("Hatchet", 6, 0.5, slate)
     ..weapon(18, heft: 14)
     ..toss(damage: 20, range: 8);
@@ -172,7 +180,8 @@ void weapons() {
   // Bows.
   category(CharCode.reversedNotSign, verb: "hit[s]")
     ..tag("equipment/weapon/bow")
-    ..toss(breakage: 50, range: 5);
+    ..toss(breakage: 50, range: 5)
+    ..skill("Archery");
   item("Short Bow", 5, 0.3, persimmon)
     ..ranged("the arrow", damage: 8, range: 12)
     ..toss(damage: 2);

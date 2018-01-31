@@ -17,6 +17,7 @@ class Items {
     pelts();
     potions();
     scrolls();
+    spellBooks();
     // TODO: Rings.
     // TODO: Amulets.
     // TODO: Wands.

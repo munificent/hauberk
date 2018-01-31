@@ -73,19 +73,31 @@ class PickUpAction extends Action {
     var result = hero.inventory.tryAdd(item);
     if (result.added == 0) {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
-    } else if (result.remaining == 0) {
+    }
+
+    log('{1} pick[s] up {2}.', actor, item.clone(result.added));
+
+    if (item.emanationLevel > 0) {
+      game.stage.actorEmanationChanged();
+    }
+
+    if (result.remaining == 0) {
       game.stage.removeItem(item, actor.pos);
-
-      if (item.emanationLevel > 0) {
-        game.stage.actorEmanationChanged();
-      }
-
-      return succeed('{1} pick[s] up {2}.', actor, item.clone(result.added));
     } else {
-      log('{1} pick[s] up {2}.', actor, item.clone(result.added));
-      return succeed("{1} [don't|doesn't] have room for {2}.", actor,
+      log("{1} [don't|doesn't] have room for {2}.", actor,
           item.clone(result.remaining));
     }
+
+    for (var skill in item.type.skills) {
+      if (hero.heroClass.proficiency(skill) != 0.0 &&
+          hero.skills.discover(skill)) {
+        // TODO: Tweak message based on whether hero can take advantage of
+        // skill or not?
+        gain(skill.discoverMessage, actor);
+      }
+    }
+
+    return ActionResult.success;
   }
 }
 

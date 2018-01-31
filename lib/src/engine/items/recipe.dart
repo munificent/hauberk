@@ -1,4 +1,5 @@
 import 'item.dart';
+import 'item_type.dart';
 
 /// A recipe defines a set of items that can be placed into the crucible and
 /// transmuted into something new.

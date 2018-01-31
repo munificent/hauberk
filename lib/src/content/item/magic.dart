@@ -150,3 +150,12 @@ void scrolls() {
 
 //  CharCode.latinSmallLetterAWithRingAbove // scroll
 }
+
+void spellBooks() {
+  category(CharCode.vulgarFractionOneHalf, stack: 3, flags: "flammable")
+    ..tag("magic/book/sorcery")
+    ..toss(damage: 1, range: 3, breakage: 25);
+  item('Spellbook "Elemental Primer"', 1, 0.5, maroon)..skills(["Icicle", "Windstorm"]);
+
+  // TODO: Spell books to discover spells.
+}

@@ -83,6 +83,11 @@ abstract class Action {
     _game.log.message(message, noun1, noun2, noun3);
   }
 
+  void gain(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    if (!_actor.isVisibleToHero) return;
+    _game.log.gain(message, noun1, noun2, noun3);
+  }
+
   ActionResult succeed([String message, Noun noun1, Noun noun2, Noun noun3]) {
     if (message != null) log(message, noun1, noun2, noun3);
     return ActionResult.success;

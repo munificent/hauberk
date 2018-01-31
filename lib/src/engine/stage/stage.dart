@@ -5,6 +5,7 @@ import '../core/game.dart';
 import '../hero/hero.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
+import '../items/item_type.dart';
 import '../monster/monster.dart';
 import 'flow.dart';
 import 'lighting.dart';

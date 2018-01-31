@@ -7,10 +7,6 @@ import 'skill/sword.dart';
 import 'skill/whip.dart';
 
 class Skills {
-  /// Skills listed here are used as prerequisites for other skills, so we need
-  /// a canonical instance to refer to.
-  static final sorcery = new Sorcery();
-
   /// All of the known skills.
   static final List<Skill> all = [
     new Archery(),
@@ -18,7 +14,6 @@ class Skills {
     new SpearMastery(),
     new Swordfighting(),
     new WhipMastery(),
-    sorcery,
     new Icicle(),
     new Windstorm(),
   ];

@@ -79,13 +79,15 @@ class Storage {
       var experience = hero['experience'];
       var skillPoints = hero['skillPoints'] ?? 0;
 
-      var skillSet = new SkillSet();
+      var skillMap = <Skill, int>{};
       var skills = hero['skills'];
       if (skills != null) {
         for (var name in skills.keys) {
-          skillSet[content.findSkill(name)] = skills[name];
+          skillMap[content.findSkill(name)] = skills[name];
         }
       }
+
+      var skillSet = new SkillSet(skillMap);
 
       var lore = _loadLore(hero['lore']);
 
@@ -230,9 +232,9 @@ class Storage {
       }
 
       var skills = {};
-      hero.skills.forEach((skill, level) {
-        skills[skill.name] = level;
-      });
+      for (var skill in hero.skills.all) {
+        skills[skill.name] = hero.skills[skill];
+      }
 
       var seen = {};
       var slain = {};

@@ -7,6 +7,7 @@ import '../action/flow.dart';
 import '../action/heal.dart';
 import '../action/mapping.dart';
 import '../action/ray.dart';
+import '../skills.dart';
 import 'affixes.dart';
 import 'items.dart';
 
@@ -43,6 +44,7 @@ _ItemBuilder item(String name, int depth, double frequency, appearance) {
 
 class _BaseBuilder {
   final List<String> _flags = [];
+  final List<Skill> _skills = [];
 
   int _maxStack;
   Element _tossElement;
@@ -77,6 +79,14 @@ class _BaseBuilder {
 
   void light(int level) {
     _emanation = level;
+  }
+
+  void skill(String skill) {
+    _skills.add(Skills.find(skill));
+  }
+
+  void skills(List<String> skills) {
+    _skills.addAll(skills.map(Skills.find));
   }
 }
 
@@ -259,6 +269,9 @@ void finishItem() {
       }
     }
   }
+
+  itemType.skills.addAll(_category._skills);
+  itemType.skills.addAll(_builder._skills);
 
   Items.types.add(itemType.name, itemType, itemType.depth, _builder._frequency,
       _category._tag);

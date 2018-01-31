@@ -9,6 +9,7 @@ import '../core/log.dart';
 import '../core/option.dart';
 import '../hero/hero.dart';
 import '../items/item.dart';
+import '../items/item_type.dart';
 import '../stage/tile.dart';
 import 'monster.dart';
 import 'move.dart';

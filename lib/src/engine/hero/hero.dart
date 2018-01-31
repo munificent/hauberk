@@ -388,8 +388,7 @@ class Hero extends Actor {
         for (var skill in game.content.skills) {
           if (skill is Discipline) {
             var level = skill.calculateLevel(heroClass, lore);
-            if (level != skills[skill]) {
-              skills[skill] = level;
+            if (skills.gain(skill, level)) {
               game.log.gain("You have reached level $level in ${skill.name}.");
             }
           }
@@ -455,6 +454,9 @@ class Hero extends Actor {
       // (so that sneak play-style still lets the player gain levels), do that
       // here.
       lore.see(monster.breed);
+
+      // TODO: When slaying disciplines are added, they should be discovered
+      // here.
     }
   }
 

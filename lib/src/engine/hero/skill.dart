@@ -15,6 +15,9 @@ abstract class Skill {
   String get name;
   String get description;
 
+  /// Message displayed when the hero first discovers this skill.
+  String get discoverMessage;
+
   int get maxLevel;
 
   Skill get prerequisite => null;
@@ -79,6 +82,8 @@ abstract class DirectionSkill extends UsableSkill {
 /// The underlying data used to track progress in disciplines is stored in the
 /// hero's [Lore].
 abstract class Discipline extends Skill {
+  String get discoverMessage => "{1} can begin training in $name.";
+
   /// Determines what level this discipline is at given [lore].
   int calculateLevel(HeroClass heroClass, Lore lore) {
     var training = trained(lore);
@@ -121,26 +126,13 @@ abstract class Discipline extends Skill {
 /// Spells are the primary skill for mages.
 // TODO: More docs.
 abstract class Spell extends Skill {
+  String get discoverMessage => '{1} can learn the spell "$name".';
+
   /// The amount of [Intellect] the hero must possess to use this spell
   /// effectively.
   int get complexity;
 
   int get focusCost;
-
-  Skill get _school {
-    // It should be a direct or indirect prerequisite of this one.
-    var skill = prerequisite;
-    while (skill != null) {
-      if (skill is SchoolSkill) return skill;
-      skill = skill.prerequisite;
-    }
-
-    throw "Spell skill does not have a school as a prerequisite.";
-  }
-
-  int adjustedFocusCost(Hero hero) {
-    return (focusCost * SchoolSkill.focusScale(hero.skills[_school])).toInt();
-  }
 
   double effectiveness(Game game) =>
       game.hero.intellect.effectivenessScale(complexity);
@@ -149,14 +141,14 @@ abstract class Spell extends Skill {
 
   Action getTargetAction(Game game, int level, Vec target) {
     var action = onGetTargetAction(game, level, target);
-    return new FocusAction(adjustedFocusCost(game.hero), action);
+    return new FocusAction(focusCost, action);
   }
 
   Action onGetTargetAction(Game game, int level, Vec target) => null;
 
   Action getAction(Game game, int level) {
     var action = onGetAction(game, level);
-    return new FocusAction(adjustedFocusCost(game.hero), action);
+    return new FocusAction(focusCost, action);
   }
 
   Action onGetAction(Game game, int level) => null;
@@ -183,24 +175,39 @@ abstract class SchoolSkill extends Skill {
 
 /// A collection of [Skill]s and the hero's level in them.
 class SkillSet {
+  /// The levels the hero has gained in each skill.
+  ///
+  /// If a skill is at level zero here, it means the hero has discovered the
+  /// skill, but not gained it. If not present in the map at all, the hero has
+  /// not discovered it.
   final Map<Skill, int> _levels;
 
-  SkillSet() : this._({});
-
-  SkillSet._(this._levels);
+  SkillSet([Map<Skill, int> skills]) : _levels = skills ?? {};
 
   int operator [](Skill skill) => _levels[skill] ?? 0;
 
-  void operator []=(Skill skill, int value) {
-    if (value == 0) {
-      _levels.remove(skill);
-    } else {
-      _levels[skill] = value;
-    }
+  /// All the skills the hero knows about.
+  Iterable<Skill> get all => _levels.keys;
+
+  /// Learns that [skill] exists.
+  ///
+  /// Returns `true` if the hero wasn't already aware of this skill.
+  bool discover(Skill skill) {
+    if (_levels.containsKey(skill)) return false;
+
+    _levels[skill] = 0;
+    return true;
   }
 
-  /// All the skills the hero has at least one level in.
-  Iterable<Skill> get all => _levels.keys;
+  bool gain(Skill skill, int level) {
+    if (_levels[skill] == level) return false;
+
+    // Don't discover the skill if not already known.
+    if (level == 0 && !_levels.containsKey(skill)) return false;
+
+    _levels[skill] = level;
+    return true;
+  }
 
   /// Whether the hero can raise the level of this skill.
   bool canGain(Skill skill) {
@@ -216,18 +223,13 @@ class SkillSet {
   }
 
   /// Whether the hero is aware of the existence of this skill.
-  // TODO: Set this.
-  bool isDiscovered(Skill skill) => true;
+  bool isDiscovered(Skill skill) => _levels.containsKey(skill);
 
-  SkillSet clone() => new SkillSet._(new Map.from(_levels));
+  SkillSet clone() => new SkillSet(new Map.from(_levels));
 
   void update(SkillSet other) {
     _levels.clear();
     _levels.addAll(other._levels);
-  }
-
-  void forEach(void Function(Skill, int) callback) {
-    _levels.forEach(callback);
   }
 }
 

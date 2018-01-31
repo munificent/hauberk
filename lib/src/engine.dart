@@ -23,6 +23,7 @@ export 'engine/hero/stat.dart';
 export 'engine/items/equipment.dart';
 export 'engine/items/inventory.dart';
 export 'engine/items/item.dart';
+export 'engine/items/item_type.dart';
 export 'engine/items/recipe.dart';
 export 'engine/items/shop.dart';
 export 'engine/monster/breed.dart';

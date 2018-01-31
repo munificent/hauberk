@@ -5,14 +5,6 @@ import '../../engine.dart';
 import '../action/bolt.dart';
 import '../action/ray.dart';
 import '../elements.dart';
-import '../skills.dart';
-
-class Sorcery extends SchoolSkill {
-  String get name => "Sorcery";
-
-  String get description =>
-      "Harness the power of raw elemental forces of nature.";
-}
 
 class Icicle extends Spell implements TargetSkill {
   String get description => "Launches a spear-like icicle.";
@@ -26,8 +18,6 @@ class Icicle extends Spell implements TargetSkill {
   int get maxLevel => 20;
 
   String get name => "Icicle";
-
-  Skill get prerequisite => Skills.sorcery;
 
   int get complexity => 11;
 
@@ -64,8 +54,6 @@ class Windstorm extends Spell implements ActionSkill {
   int get maxLevel => 20;
 
   String get name => "Windstorm";
-
-  Skill get prerequisite => Skills.sorcery;
 
   int get complexity => 14;
 

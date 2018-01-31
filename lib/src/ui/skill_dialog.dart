@@ -37,6 +37,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
   SkillTypeDialog(this._content, this._hero) : super._() {
     for (var skill in _content.skills) {
+      if (!_hero.skills.isDiscovered(skill)) continue;
       if (skill is T) _skills.add(skill);
     }
   }
@@ -45,6 +46,8 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
   // TODO: Eventually should clone skill set so we can cancel changes on dialog.
   SkillSet get _skillSet => _hero.skills;
+
+  String get _rowSeparator;
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (shift || alt) return false;
@@ -107,6 +110,12 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     _renderSkillListHeader(terminal);
     terminal.writeAt(2, 2, _rowSeparator, steelGray);
 
+    if (_skills.isEmpty) {
+      terminal.writeAt(2, 3, "(None known.)",
+          steelGray);
+      return;
+    }
+
     var i = 0;
     for (var skill in _skills) {
       var y = i * 2 + 3;
@@ -128,39 +137,21 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     terminal = terminal.rect(40, 0, terminal.width - 40, terminal.height - 1);
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
+    if (_skills.isEmpty) return;
+
     var skill = _skills[_selectedSkill];
-    var level = _hero.skills[skill];
     terminal.writeAt(1, 0, skill.name, UIHue.selection);
 
-    writeDescription(int x, int y, String text) {
-      for (var line in Log.wordWrap(terminal.width - 1 - x, text)) {
-        terminal.writeAt(x, y++, line, UIHue.text);
-      }
-    }
-
-    writeDescription(1, 2, skill.description);
-
-    terminal.writeAt(1, 8, "At current level $level:", UIHue.primary);
-    if (level > 0) {
-      writeDescription(3, 10, skill.levelDescription(level));
-    } else {
-      terminal.writeAt(3, 10, "(You haven't trained this yet.)", UIHue.text);
-    }
-
-    if (level < skill.maxLevel) {
-      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
-      writeDescription(3, 18, skill.levelDescription(level + 1));
-    }
+    _writeText(terminal, 1, 2, skill.description);
 
     _renderSkillDetails(terminal, skill);
   }
 
-  void _renderValue(Terminal terminal, int i, String label, Object value) {
-    terminal.writeAt(1, 30 + i, "$label:", UIHue.text);
-    terminal.writeAt(20, 30 + i, value.toString(), UIHue.primary);
+  void _writeText(Terminal terminal, int x, int y, String text) {
+    for (var line in Log.wordWrap(terminal.width - 1 - x, text)) {
+      terminal.writeAt(x, y++, line, UIHue.text);
+    }
   }
-
-  String get _rowSeparator;
 
   void _renderSkillListHeader(Terminal terminal);
 
@@ -195,11 +186,24 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
 
   void _renderSkillDetails(Terminal terminal, Discipline skill) {
     var level = _skillSet[skill];
-    terminal.writeAt(1, 30, "Level", UIHue.secondary);
+
+    terminal.writeAt(1, 8, "At current level $level:", UIHue.primary);
+    if (level > 0) {
+      _writeText(terminal, 3, 10, skill.levelDescription(level));
+    } else {
+      terminal.writeAt(3, 10, "(You haven't trained this yet.)", UIHue.text);
+    }
+
+    if (level < skill.maxLevel) {
+      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
+      _writeText(terminal, 3, 18, skill.levelDescription(level + 1));
+    }
+
+    terminal.writeAt(1, 30, "Level:", UIHue.secondary);
     terminal.writeAt(10, 30, level.toString().padLeft(2), UIHue.text);
     Draw.meter(terminal, 19, 30, 20, level, skill.maxLevel, brickRed, maroon);
 
-    terminal.writeAt(1, 32, "Next", UIHue.secondary);
+    terminal.writeAt(1, 32, "Next:", UIHue.secondary);
     var percent = skill.percentUntilNext(_hero.heroClass, _hero.lore);
     if (percent != null) {
       var points = skill.trained(_hero.lore);
@@ -217,29 +221,35 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
 
 class SpellDialog extends SkillTypeDialog<Spell> {
   String get _name => "Spells";
-  String get _rowSeparator => "─────────────────────────────────────";
+  String get _rowSeparator => "──────────────────────────────── ────";
 
   SpellDialog(Content content, Hero hero) : super(content, hero);
 
-  // TODO: Show whether or not the spell is known, etc.
-  void _renderSkillListHeader(Terminal terminal) {}
+  void _renderSkillListHeader(Terminal terminal) {
+    terminal.writeAt(35, 1, "Comp", UIHue.helpText);
+  }
 
-  void _renderSkillInList(Terminal terminal, int y, Spell skill) {}
+  void _renderSkillInList(Terminal terminal, int y, Spell skill) {
+    terminal.writeAt(35, y, skill.complexity.toString().padLeft(4), UIHue.text);
+  }
 
   void _renderSkillDetails(Terminal terminal, Spell skill) {
-    // TODO: Should show this for non-spell skills that also cost focus.
-    _renderValue(terminal, 0, "Focus", skill.adjustedFocusCost(_hero));
+    var intellect = _hero.intellect.value;
+    var relative = intellect - skill.complexity;
 
-    // TODO: Should show relative to Intellect too.
-    _renderValue(terminal, 1, "Complexity", skill.complexity);
+    terminal.writeAt(1, 30, "Intellect:", UIHue.secondary);
+    terminal.writeAt(14, 30, "$intellect".padLeft(2), UIHue.text);
 
-    var level = _skillSet[skill];
-    if (level > 0) {
-      // TODO: Should only show the one of these that applies to the spell.
-      _renderValue(
-          terminal, 2, "Effectiveness", skill.effectiveness(_hero.game));
-      _renderValue(
-          terminal, 3, "Failure", "${skill.failureChance(_hero.game)}%");
+    terminal.writeAt(1, 32, "Complexity: -", UIHue.secondary);
+    terminal.writeAt(14, 32, "${skill.complexity}".padLeft(2), UIHue.text);
+
+    terminal.writeAt(13, 33, "───", UIHue.secondary);
+
+    terminal.writeAt(1, 34, "Expertise:", UIHue.secondary);
+    terminal.writeAt(14, 34, "$relative".padLeft(2), relative >= 0 ? peaGreen : brickRed);
+
+    if (relative < 0) {
+      terminal.writeAt(1, 36, "(This spell is too complex for you.)", maroon);
     }
   }
 }

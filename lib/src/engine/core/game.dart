@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../items/item.dart';
+import '../items/item_type.dart';
 import '../items/recipe.dart';
 import '../items/shop.dart';
 import '../hero/hero.dart';

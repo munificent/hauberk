@@ -1,4 +1,4 @@
-packages
+.dart_tool/
 .packages
 build/
 gh-pages/
