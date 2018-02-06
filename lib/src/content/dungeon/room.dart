@@ -103,6 +103,7 @@ class RoomBiome extends Biome {
 
         _dungeon.junctions.removeAt(pos);
         placeRoom = false;
+        passage.add(pos);
         break;
       }
 
@@ -123,6 +124,7 @@ class RoomBiome extends Biome {
         _reachNature([pos]);
         pos -= dir;
         placeRoom = false;
+        passage.add(pos);
         break;
       }
 
@@ -137,6 +139,9 @@ class RoomBiome extends Biome {
       passage.add(pos);
       distanceThisDir++;
     }
+
+    // Last passage position will always become the door
+    passage.remove(passage.last);
 
     // If we didn't connect to an existing junction, add a new room at the end
     // of the passage. We require this to pass so that we avoid dead end
@@ -354,7 +359,6 @@ class RoomBiome extends Biome {
       if (!_canPlaceRoom(room, roomPos.x, roomPos.y, passageTiles)) continue;
 
       _placeRoom(room, roomPos.x, roomPos.y);
-      _placeDoor(junction.position);
       return true;
     }
 
@@ -366,17 +370,21 @@ class RoomBiome extends Biome {
       return false;
     }
 
-    for (var pos in room.tiles.bounds) {
+    for (var roomPos in room.tiles.bounds) {
+      var mapPos = new Vec(roomPos.x + x, roomPos.y + y);
+
       // If the room doesn't care about the tile, it's fine.
-      if (room.tiles[pos] == null) continue;
+      if (room.tiles[roomPos] == null) continue;
 
       // If there is an incoming passage, the room can't overlap it.
-      if (passageTiles.contains(pos)) return false;
+      if (passageTiles.contains(mapPos)) {
+        return false;
+      }
 
       // If some different tile has already been placed here, we can't place
       // the room.
-      var tile = _dungeon.getTile(pos.x + x, pos.y + y);
-      if (tile != Tiles.rock && tile != room.tiles[pos]) {
+      var tile = _dungeon.getTileAt(mapPos);
+      if (tile != Tiles.rock && tile != room.tiles[roomPos]) {
         return false;
       }
     }
