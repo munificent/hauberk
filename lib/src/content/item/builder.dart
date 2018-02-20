@@ -30,14 +30,14 @@ _CategoryBuilder category(int glyph, {String verb, String flags, int stack}) {
   return _category;
 }
 
-_ItemBuilder item(String name, int depth, double frequency, appearance) {
+_ItemBuilder item(String name, int depth, double frequency, Color color) {
   finishItem();
 
   _builder = new _ItemBuilder();
   _builder._name = name;
   _builder._depth = depth;
   _builder._frequency = frequency;
-  _builder._appearance = appearance;
+  _builder._color = color;
 
   return _builder;
 }
@@ -138,7 +138,7 @@ class _CategoryBuilder extends _BaseBuilder {
 
 class _ItemBuilder extends _BaseBuilder {
   // category too.
-  Object _appearance;
+  Color _color;
   double _frequency;
   ItemUse _use;
   Attack _attack;
@@ -212,14 +212,7 @@ class _ItemBuilder extends _BaseBuilder {
 void finishItem() {
   if (_builder == null) return;
 
-  // If the appearance isn't an actual glyph, it should be a color function
-  // that will be applied to the current glyph.
-  var appearance = _builder._appearance;
-  if (appearance is Color) {
-    appearance = new Glyph.fromCharCode(_category._glyph, appearance);
-  } else if (appearance is! Glyph) {
-    appearance = appearance(_category._glyph);
-  }
+  var appearance = new Glyph.fromCharCode(_category._glyph, _builder._color);
 
   Toss toss;
   var tossDamage = _builder._tossDamage ?? _category._tossDamage;
