@@ -33,8 +33,14 @@ class Toss {
 
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {
-  final String _name;
-  String get name => Log.singular(_name);
+  /// The pattern string used to generate quantified names for items of this
+  /// type: "Scroll[s] of Disappearing", etc.
+  final String quantifiableName;
+
+  /// The singular name of the item type: "Sword", "Scroll of Disappearing".
+  ///
+  /// This is used to identify the item type in drops, affixes, etc.
+  String get name => Log.singular(quantifiableName);
 
   final Object appearance;
 
@@ -97,7 +103,7 @@ class ItemType {
   final List<Skill> skills = [];
 
   ItemType(
-      this._name,
+      this.quantifiableName,
       this.appearance,
       this.depth,
       this.sortIndex,
