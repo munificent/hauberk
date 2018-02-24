@@ -111,8 +111,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     terminal.writeAt(2, 2, _rowSeparator, steelGray);
 
     if (_skills.isEmpty) {
-      terminal.writeAt(2, 3, "(None known.)",
-          steelGray);
+      terminal.writeAt(2, 3, "(None known.)", steelGray);
       return;
     }
 
@@ -121,10 +120,18 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
       var y = i * 2 + 3;
       terminal.writeAt(2, y + 1, _rowSeparator, midnight);
 
-      var color = i == _selectedSkill ? UIHue.selection : UIHue.primary;
-      terminal.writeAt(2, y, skill.name, color);
+      var nameColor = UIHue.primary;
+      var detailColor = UIHue.text;
+      if (i == _selectedSkill) {
+        nameColor = UIHue.selection;
+      } else if (!skill.isAcquired(_hero, _skillSet[skill])) {
+        nameColor = UIHue.disabled;
+        detailColor = UIHue.disabled;
+      }
 
-      _renderSkillInList(terminal, y, skill);
+      terminal.writeAt(2, y, skill.name, nameColor);
+
+      _renderSkillInList(terminal, y, detailColor, skill);
 
       i++;
     }
@@ -155,7 +162,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
   void _renderSkillListHeader(Terminal terminal);
 
-  void _renderSkillInList(Terminal terminal, int y, T skill);
+  void _renderSkillInList(Terminal terminal, int y, Color color, T skill);
 
   void _renderSkillDetails(Terminal terminal, T skill);
 
@@ -175,13 +182,14 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     terminal.writeAt(31, 1, "Lev Next", UIHue.helpText);
   }
 
-  void _renderSkillInList(Terminal terminal, int y, Discipline skill) {
+  void _renderSkillInList(
+      Terminal terminal, int y, Color color, Discipline skill) {
     var level = _skillSet[skill].toString().padLeft(3);
-    terminal.writeAt(31, y, level, UIHue.text);
+    terminal.writeAt(31, y, level, color);
 
     var percent = skill.percentUntilNext(_hero.heroClass, _hero.lore);
     terminal.writeAt(
-        35, y, percent == null ? "  --" : "$percent%".padLeft(4), UIHue.text);
+        35, y, percent == null ? "  --" : "$percent%".padLeft(4), color);
   }
 
   void _renderSkillDetails(Terminal terminal, Discipline skill) {
@@ -229,8 +237,8 @@ class SpellDialog extends SkillTypeDialog<Spell> {
     terminal.writeAt(35, 1, "Comp", UIHue.helpText);
   }
 
-  void _renderSkillInList(Terminal terminal, int y, Spell skill) {
-    terminal.writeAt(35, y, skill.complexity.toString().padLeft(4), UIHue.text);
+  void _renderSkillInList(Terminal terminal, int y, Color color, Spell skill) {
+    terminal.writeAt(35, y, skill.complexity.toString().padLeft(4), color);
   }
 
   void _renderSkillDetails(Terminal terminal, Spell skill) {
@@ -244,7 +252,8 @@ class SpellDialog extends SkillTypeDialog<Spell> {
       terminal.writeAt(1, 8, "At expertise $expertise:", UIHue.primary);
       _writeText(terminal, 3, 10, skill.expertiseDescription(_hero));
     } else {
-      terminal.writeAt(1, 8, "(You need ${skill.complexity} intellect to cast this.)", brickRed);
+      terminal.writeAt(1, 8,
+          "(You need ${skill.complexity} intellect to cast this.)", brickRed);
     }
 
     terminal.writeAt(1, 30, "Intellect:", UIHue.secondary);
@@ -256,7 +265,8 @@ class SpellDialog extends SkillTypeDialog<Spell> {
     terminal.writeAt(13, 33, "───", UIHue.secondary);
 
     terminal.writeAt(1, 34, "Expertise:", UIHue.secondary);
-    terminal.writeAt(14, 34, "$expertise".padLeft(2), expertise >= 0 ? peaGreen : brickRed);
+    terminal.writeAt(
+        14, 34, "$expertise".padLeft(2), expertise >= 0 ? peaGreen : brickRed);
   }
 }
 

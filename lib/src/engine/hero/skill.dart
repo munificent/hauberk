@@ -23,7 +23,7 @@ abstract class Skill {
   // TODO: Remove?
   Skill get prerequisite => null;
 
-  /// Whether this skill has been acquired if it is as [level].
+  /// Whether this skill has been acquired if it is at [level].
   ///
   /// Each kind of skill has different rules for what it means to be acquired.
   /// Trained skills must be leveled past zero, spells merely need to be
@@ -38,7 +38,6 @@ abstract class Skill {
 
   /// Gives the skill a chance to modify the hit the hero is about to receive.
   void modifyDefense(Hit hit) {}
-
 }
 
 /// Additional interface for active skills that expose a command the player
@@ -146,7 +145,8 @@ abstract class Spell extends Skill implements UsableSkill {
 
   int get focusCost;
 
-  String expertiseDescription(Hero hero) => onExpertiseDescription(expertise(hero));
+  String expertiseDescription(Hero hero) =>
+      onExpertiseDescription(expertise(hero));
 
   String onExpertiseDescription(int expertise);
 
