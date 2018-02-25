@@ -1,11 +1,10 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../../engine.dart';
+import '../../../engine.dart';
 
 // TODO: Trained skills for:
 // - Taking damage, which increases armor.
 // - Dodging attacks, which increases dodge.
-// - Slaying different breed families.
 
 abstract class MasteryDiscipline extends Discipline implements UsableSkill {
   // TODO: Tune.
@@ -15,7 +14,7 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
 
   double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.05, 2.0);
 
-  void modifyAttack(Hero hero, Hit hit, int level) {
+  void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {
     if (!_hasWeapon(hero)) return;
 
     // TODO: Tune.
@@ -47,6 +46,7 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
   // this. Is that OK?
   int trained(Lore lore) => lore.killsUsing(weaponType);
 
+  // TODO: Tune.
   /// How much training is needed to reach [level].
   int baseTrainingNeeded(int level) => 10 * level * level;
 }
@@ -61,7 +61,7 @@ abstract class MasteryAction extends Action {
     var defender = game.stage.actorAt(pos);
     if (defender == null) return;
 
-    var hit = actor.createMeleeHit();
+    var hit = actor.createMeleeHit(defender);
     hit.scaleDamage(_damageScale);
     hit.perform(this, actor, defender);
   }

@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../../engine.dart';
-import '../action/bolt.dart';
+import '../../../engine.dart';
+import '../../action/bolt.dart';
 import 'mastery.dart';
 
 // TODO: This doesn't work as a trained skill because it isn't a melee weapon.

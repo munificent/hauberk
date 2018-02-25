@@ -682,7 +682,7 @@ class GameScreen extends Screen<Input> {
     _drawStat(terminal, 12, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
     // TODO: Show the weapon and stats better.
-    var hit = hero.createMeleeHit();
+    var hit = hero.createMeleeHit(null);
     _drawStat(terminal, 13, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.

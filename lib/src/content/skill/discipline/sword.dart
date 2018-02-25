@@ -1,4 +1,4 @@
-import '../../engine.dart';
+import '../../../engine.dart';
 import 'mastery.dart';
 
 class Swordfighting extends MasteryDiscipline {

@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../../engine.dart';
-import '../action/bolt.dart';
+import '../../../engine.dart';
+import '../../action/bolt.dart';
 import 'mastery.dart';
 
 class WhipMastery extends MasteryDiscipline implements TargetSkill {
@@ -25,7 +25,8 @@ class WhipMastery extends MasteryDiscipline implements TargetSkill {
   num getRange(Game game) => 3;
 
   Action getTargetAction(Game game, int level, Vec target) {
-    var hit = game.hero.createMeleeHit();
+    var defender = game.stage.actorAt(target);
+    var hit = game.hero.createMeleeHit(defender);
     hit.scaleDamage(WhipMastery._whipScale(level));
 
     // TODO: Better effect.

@@ -21,7 +21,6 @@ class Icicle extends Spell implements TargetSkill {
 
   int get focusCost => 200;
 
-
   num getRange(Game game) => _range(game.hero.skills[this]);
 
   Action onGetTargetAction(Game game, int level, Vec target) {

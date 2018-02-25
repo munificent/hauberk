@@ -16,6 +16,9 @@ class Lore {
   /// given tag.
   final Map<String, int> _kills;
 
+  /// The breeds the hero has killed at least one of.
+  Iterable<Breed> get slainBreeds => _slain.keys;
+
   Lore() : this.from({}, {}, {});
 
   Lore.from(this._seen, this._slain, this._kills);

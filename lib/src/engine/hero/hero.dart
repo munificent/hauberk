@@ -287,7 +287,7 @@ class Hero extends Actor {
 
   Action onGetAction() => _behavior.getAction(this);
 
-  Hit onCreateMeleeHit() {
+  Hit onCreateMeleeHit(Actor defender) {
     // See if a melee weapon is equipped.
     var weapon = equipment.weapon;
 
@@ -305,7 +305,7 @@ class Hero extends Actor {
     hit.addStrike(agility.strikeBonus);
 
     for (var skill in skills.acquired(this)) {
-      skill.modifyAttack(this, hit, skills[skill]);
+      skill.modifyAttack(this, defender as Monster, hit, skills[skill]);
     }
 
     return hit;
@@ -455,8 +455,19 @@ class Hero extends Actor {
       // here.
       lore.see(monster.breed);
 
-      // TODO: When slaying disciplines are added, they should be discovered
-      // here.
+      // If this is the first time we've seen this breed, see if that unlocks
+      // a slaying skill for it.
+      if (lore.seen(monster.breed) == 1) {
+        for (var group in monster.breed.groups) {
+          if (group.slaySkill == null) continue;
+
+          if (heroClass.proficiency(group.slaySkill) == 0.0) continue;
+
+          if (skills.discover(group.slaySkill)) {
+            game.log.gain(group.slaySkill.discoverMessage, this);
+          }
+        }
+      }
     }
   }
 

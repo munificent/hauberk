@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
+import '../monster/monster.dart';
 import 'hero.dart';
 import 'hero_class.dart';
 import 'lore.dart';
@@ -30,8 +31,9 @@ abstract class Skill {
   /// discovered and not too complex, etc.
   bool isAcquired(Hero hero, int level);
 
-  /// Gives the skill a chance to modify the hit the hero is about to perform.
-  void modifyAttack(Hero hero, Hit hit, int level) {}
+  /// Gives the skill a chance to modify the [hit] the [hero] is about to
+  /// perform on [monster].
+  void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {}
 
   /// Gives the skill a chance to add new defenses to the hero.
   Defense getDefense(Hero hero, int level) => null;

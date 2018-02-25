@@ -6,6 +6,7 @@ void ancients() {}
 
 void birds() {
   family("B")
+    ..groups("animal")
     ..defense(10, "{1} flaps out of the way.")
     ..fly()
     ..count(3, 6);
@@ -30,6 +31,7 @@ void faeFolk() {
   // Sprites, pixies, fairies, elves, etc.
 
   family("F", speed: 2, meander: 4, flags: "cowardly")
+    ..groups("fae")
     ..defense(10, "{1} flits out of the way.")
     ..fly()
     ..preferOpen();
@@ -84,13 +86,13 @@ void quest() {
 }
 
 void reptiles() {
-  family("R");
+  family("R")..groups("animal");
   breed("frog", 1, lima, 4, dodge: 30, meander: 4)
     ..swim()
     ..placeIn("aquatic")
     ..attack("hop[s] on", 2);
 
-  family("R", meander: 1, flags: "fearless");
+  family("R", meander: 1, flags: "fearless")..groups("saurian");
   breed("lizard guard", 11, gold, 26)
     ..attack("claw[s]", 8)
     ..attack("bite[s]", 10);
@@ -121,6 +123,7 @@ void reptiles() {
     ..attack("bite[s]", 17);
 
   family("R", dodge: 30, meander: 3)
+    ..groups("animal")
     ..preferOpen()
     ..emanate(3);
   breed("juvenile salamander", 7, salmon, 40)
@@ -133,7 +136,7 @@ void reptiles() {
 }
 
 void snakes() {
-  family("S", speed: 1, dodge: 30, meander: 4);
+  family("S", speed: 1, dodge: 30, meander: 4)..groups("animal");
   breed("garter snake", 1, lima, 9)
     ..placeIn("aquatic")
     ..attack("bite[s]", 3);

@@ -149,14 +149,17 @@ abstract class Actor implements Noun {
 
   Action onGetAction();
 
-  /// Create a new [Hit] for this [Actor] to attempt to hit some defender.
-  Hit createMeleeHit() {
-    var hit = onCreateMeleeHit();
+  /// Create a new [Hit] for this [Actor] to attempt to hit [defender].
+  ///
+  /// Note that [defender] may be null if this hit is being created for
+  /// something like a bolt attack or whether the targeted actor isn't known.
+  Hit createMeleeHit(Actor defender) {
+    var hit = onCreateMeleeHit(defender);
     modifyHit(hit, HitType.melee);
     return hit;
   }
 
-  Hit onCreateMeleeHit();
+  Hit onCreateMeleeHit(Actor defender);
 
   /// Applies the hit modifications from the actor.
   void modifyHit(Hit hit, HitType type) {

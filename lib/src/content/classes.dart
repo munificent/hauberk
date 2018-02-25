@@ -1,5 +1,5 @@
 import '../engine.dart';
-import 'skill/mastery.dart';
+import 'skill/discipline/mastery.dart';
 import 'skills.dart';
 
 class Classes {

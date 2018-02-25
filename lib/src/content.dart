@@ -60,6 +60,7 @@ class GameContent implements Content {
       "Tallow Candle": 4
     };
 
+    // TODO: Need to discover skills for these items too.
     initialItems.forEach((type, amount) {
       hero.inventory.tryAdd(new Item(Items.types.find(type), amount));
     });

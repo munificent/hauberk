@@ -1,6 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../../engine.dart';
+import '../../../engine.dart';
 import 'mastery.dart';
 
 /// A slashing melee attack that hits a number of adjacent monsters.

@@ -15,11 +15,6 @@ class HeroLoreDialog extends HeroInfoDialog {
   int _scroll = 0;
 
   HeroLoreDialog(Hero hero) : super.base(hero) {
-    for (var breed in hero.game.content.breeds) {
-      hero.lore.see(breed);
-      hero.lore.slay(breed);
-    }
-
     _listBreeds();
   }
 
@@ -124,6 +119,13 @@ class HeroLoreDialog extends HeroInfoDialog {
     terminal.writeAt(1, 1, "╡ ╞", steelGray);
     terminal.writeAt(1, 2, "└─┘", steelGray);
 
+    var seen = hero.lore.seen(breed);
+    if (seen == 0) {
+      terminal.writeAt(
+          1, 4, "You have not seen this breed yet.", UIHue.disabled);
+      return;
+    }
+
     terminal.drawGlyph(2, 1, breed.appearance);
     terminal.writeAt(4, 1, breed.name, UIHue.selection);
 
@@ -151,15 +153,21 @@ class HeroLoreDialog extends HeroInfoDialog {
     // TODO: Breed descriptive text.
     // TODO: Multi-color output.
 
+    var noun = "monster";
+    if (breed.groups.isNotEmpty) {
+      // TODO: Handle more than two groups.
+      noun = breed.groups.map((group) => group.name).join(" ");
+    }
+
     if (breed.flags.unique) {
       if (lore.slain(breed) > 0) {
-        sentences.add("You have slain this unique monster.");
+        sentences.add("You have slain this unique $noun.");
       } else {
-        sentences.add("You have seen but not slain this unique monster.");
+        sentences.add("You have seen but not slain this unique $noun.");
       }
     } else {
       sentences.add("You have seen ${lore.seen(breed)} and slain "
-          "${lore.slain(breed)} of these monsters.");
+          "${lore.slain(breed)} of this ${noun}.");
     }
 
     var experience = (breed.experienceCents / 100).toStringAsFixed(2);

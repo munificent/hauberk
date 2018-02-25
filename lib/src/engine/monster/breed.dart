@@ -8,11 +8,20 @@ import '../core/game.dart';
 import '../core/log.dart';
 import '../core/option.dart';
 import '../hero/hero.dart';
+import '../hero/skill.dart';
 import '../items/item.dart';
 import '../items/item_type.dart';
 import '../stage/tile.dart';
 import 'monster.dart';
 import 'move.dart';
+
+class BreedGroup {
+  final String displayName;
+  final String name;
+  Discipline slaySkill;
+
+  BreedGroup(this.displayName, this.name);
+}
 
 /// A single kind of [Monster] in the game.
 class Breed {
@@ -86,6 +95,13 @@ class Breed {
   /// If this breed should stain some of the nearby floor tiles when spawned,
   /// this is the type is should stain them with. Otherwise null.
   final TileType stain;
+
+  /// The groups that the breed is a part of.
+  ///
+  /// Used to determine which kinds of slaying affect which monsters. For
+  /// display purposes in the lore screen, the last group in the list should
+  /// be noun-like while the others are adjectives, like `["undead", "bug"]`.
+  final List<BreedGroup> groups = [];
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, this.location, this.motilities,

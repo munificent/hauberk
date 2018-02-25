@@ -13,6 +13,19 @@ import '../move/spawn.dart';
 import '../move/teleport.dart';
 import 'monsters.dart';
 
+// TODO: Is there a better place to define these?
+final breedGroups = new Map<String, BreedGroup>.fromIterable([
+  new BreedGroup("Animals", "animal"),
+  new BreedGroup("Bugs", "bug"),
+  new BreedGroup("Dragons", "dragon"),
+  new BreedGroup("Fae Folk", "fae"),
+  new BreedGroup("Goblins", "goblin"),
+  new BreedGroup("Humans", "human"),
+  new BreedGroup("Jellies", "jelly"),
+  new BreedGroup("Kobolds", "kobold"),
+  new BreedGroup("Saurians", "saurian"),
+], key: (group) => group.name);
+
 /// The last builder that was created. It gets implicitly finished when the
 /// next family or breed starts, or at the end of initialization. This way, we
 /// don't need an explicit `build()` call at the end of each builder.
@@ -118,6 +131,7 @@ class _BaseBuilder {
   int _dodge;
 
   final List<Defense> _defenses = [];
+  final List<BreedGroup> _groups = [];
 
   // TODO: Make flags strongly typed here too?
   String _flags;
@@ -182,6 +196,14 @@ class _BaseBuilder {
 
   void defense(int amount, String message) {
     _defenses.add(new Defense(amount, message));
+  }
+
+  void groups(String names) {
+    for (var name in names.split(" ")) {
+      var group = breedGroups[name];
+      assert(group != null, "Unknown breed group '$name'.");
+      _groups.add(group);
+    }
   }
 }
 
@@ -362,6 +384,9 @@ class _BreedBuilder extends _BaseBuilder {
 
     breed.defenses.addAll(_family._defenses);
     breed.defenses.addAll(_defenses);
+
+    breed.groups.addAll(_family._groups);
+    breed.groups.addAll(_groups);
 
     _minionNames[breed] = _minions;
 

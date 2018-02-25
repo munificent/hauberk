@@ -261,7 +261,7 @@ class Monster extends Actor {
     _state.bind(this);
   }
 
-  Hit onCreateMeleeHit() => rng.item(breed.attacks).createHit();
+  Hit onCreateMeleeHit(Actor defender) => rng.item(breed.attacks).createHit();
 
   // TODO: Breed resistances.
   int onGetResistance(Element element) => 0;

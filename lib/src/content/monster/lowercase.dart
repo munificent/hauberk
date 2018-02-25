@@ -6,6 +6,7 @@ import 'builder.dart';
 void arachnids() {
   // TODO: Should all spiders hide in passages?
   family("a", flags: "fearless")
+    ..groups("bug")
     ..placeIn("passage")
     ..stain(Tiles.spiderweb);
   breed("brown spider", 1, persimmon, 6, dodge: 30, meander: 8)
@@ -24,6 +25,7 @@ void arachnids() {
 
 void bats() {
   family("b")
+    ..groups("animal")
     ..fly()
     ..preferWall();
   breed("brown bat", 2, persimmon, 10, speed: 1, meander: 6)
@@ -40,7 +42,7 @@ void bats() {
 }
 
 void canines() {
-  family("c", dodge: 25, tracking: 20, meander: 3);
+  family("c", dodge: 25, tracking: 20, meander: 3)..groups("animal");
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
     ..attack("bite[s]", 4)
@@ -63,6 +65,7 @@ void canines() {
 void dragons() {
   // TODO: Tune. Give more attacks. Tune drops.
   family("d")
+    ..groups("dragon")
     ..defense(20, "{2} [is|are] deflected by its scales.")
     ..preferOpen();
   breed("red dragon", 50, brickRed, 400)
@@ -122,7 +125,7 @@ void eyes() {
 }
 
 void felines() {
-  family("f");
+  family("f")..groups("animal");
   breed("stray cat", 1, gold, 9, speed: 1, meander: 3)
     ..attack("bite[s]", 5)
     ..attack("scratch[es]", 4);
@@ -130,6 +133,7 @@ void felines() {
 
 void goblins() {
   family("g", meander: 1)
+    ..groups("goblin")
     ..openDoors()
     ..emanate(2);
   breed("goblin peon", 4, sandal, 26, meander: 2)
@@ -213,7 +217,7 @@ void goblins() {
 void humanoids() {}
 
 void insects() {
-  family("i", tracking: 3, meander: 8, flags: "fearless");
+  family("i", tracking: 3, meander: 8, flags: "fearless")..groups("bug");
   // TODO: Spawn as eggs which can hatch into cockroaches?
   breed("giant cockroach[es]", 1, garnet, 1, frequency: 0.4)
     ..count(1, 3)
@@ -229,6 +233,7 @@ void insects() {
 
 void jellies() {
   family("j", frequency: 0.7, speed: -1, meander: 5, flags: "fearless")
+    ..groups("jelly")
     ..preferWall()
     ..count(4);
   breed("green jelly", 1, lima, 5)
@@ -237,6 +242,7 @@ void jellies() {
   // TODO: More elements.
 
   family("j", frequency: 0.6, flags: "fearless immobile")
+    ..groups("jelly")
     ..preferCorner()
     ..count(4);
   breed("green slime", 2, peaGreen, 10)
@@ -285,7 +291,7 @@ void jellies() {
 }
 
 void kobolds() {
-  family("k", meander: 4, flags: "cowardly");
+  family("k", meander: 4, flags: "cowardly")..groups("kobold");
   breed("scurrilous imp", 1, salmon, 8, meander: 4)
     ..count(2)
     ..attack("club[s]", 4)
@@ -302,7 +308,7 @@ void kobolds() {
     ..sparkBolt(rate: 5, damage: 6)
     ..drop("teleportation", percent: 30);
 
-  family("k", meander: 3);
+  family("k", meander: 3)..groups("kobold");
   breed("kobold", 3, brickRed, 12, meander: 2)
     ..count(3)
     ..minion("wild dog", 0, 3)
@@ -389,6 +395,7 @@ void orcs() {}
 
 void people() {
   family("p", tracking: 14)
+    ..groups("human")
     ..openDoors()
     ..emanate(2);
   breed("Harold the Misfortunate", 1, lilac, 10, frequency: 100.0, meander: 3)
@@ -444,7 +451,9 @@ void people() {
 void quadrupeds() {}
 
 void rodents() {
-  family("r", dodge: 30, meander: 4)..preferWall();
+  family("r", dodge: 30, meander: 4)
+    ..groups("animal")
+    ..preferWall();
   breed("[mouse|mice]", 1, sandal, 2, frequency: 0.5)
     ..count(2, 5)
     ..attack("bite[s]", 3)
@@ -466,7 +475,8 @@ void rodents() {
 }
 
 void slugs() {
-  family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 1);
+  family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 1)
+    ..groups("bug");
   breed("giant slug", 3, mustard, 20)..attack("crawl[s] on", 8);
 
   breed("suppurating slug", 6, lima, 50)
@@ -480,7 +490,7 @@ void minorUndead() {}
 void vines() {}
 
 void worms() {
-  family("w", dodge: 25, meander: 4, flags: "fearless");
+  family("w", dodge: 25, meander: 4, flags: "fearless")..groups("bug");
   breed("blood worm", 2, maroon, 4, frequency: 0.5)
     ..count(3, 8)
     ..attack("crawl[s] on", 5);

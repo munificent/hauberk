@@ -1,6 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../../engine.dart';
+import '../../../engine.dart';
 import 'mastery.dart';
 
 class SpearMastery extends MasteryDiscipline implements DirectionSkill {
