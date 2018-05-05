@@ -44,7 +44,7 @@ class RayAction extends Action {
   RayAction._(this._from, this._to, this._hit, double fraction) {
     // We "fill" the cone by tracing a number of rays. We need enough of them
     // to ensure there are no gaps when the cone is at its maximum extent.
-    var circumference = math.PI * 2 * _hit.range;
+    var circumference = math.pi * 2 * _hit.range;
     var numRays = (circumference * fraction * 2.0).ceil();
 
     if (fraction < 1.0) {
@@ -59,11 +59,11 @@ class RayAction extends Action {
       // Create the rays centered on the line from [_from] to [_to].
       for (var i = 0; i < numRays; i++) {
         var theta = (i / (numRays - 1)) - 0.5;
-        _rays.add(centerTheta + theta * (math.PI * 2.0 * fraction));
+        _rays.add(centerTheta + theta * (math.pi * 2.0 * fraction));
       }
     } else {
       // Create the rays all the way around the circle.
-      var thetaStep = math.PI * 2.0 / numRays;
+      var thetaStep = math.pi * 2.0 / numRays;
       for (var i = 0; i < numRays; i++) {
         _rays.add(i * thetaStep);
       }

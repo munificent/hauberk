@@ -1,4 +1,5 @@
 name: hauberk
+sdk: '^2.0.0'
 dependencies:
   browser: any
   barback: any

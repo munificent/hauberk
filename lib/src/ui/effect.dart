@@ -349,7 +349,7 @@ class TeleportEffect implements Effect {
     var velocity = new Vec((x * 10).toInt(), (y * 10).toInt());
     if (velocity < 5) return CharCode.bullet;
 
-    var angle = math.atan2(x, y) / (math.PI * 2) * 16 + 8;
+    var angle = math.atan2(x, y) / (math.pi * 2) * 16 + 8;
     return r"|\\--//||\\--//||".codeUnitAt(angle.floor());
   }
 }

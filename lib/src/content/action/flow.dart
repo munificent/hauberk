@@ -28,7 +28,7 @@ class FlowAction extends Action {
       _flow =
           new MotilityFlow(game.stage, _from, _motilities, ignoreActors: true);
 
-      var count = (math.PI * _hit.range * _hit.range).ceil();
+      var count = (math.pi * _hit.range * _hit.range).ceil();
       _tiles = _flow.reachable.take(count).toList();
     }
 
