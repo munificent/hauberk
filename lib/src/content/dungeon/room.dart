@@ -16,9 +16,21 @@ class PlacedRoom {
   PlacedRoom(this.pos, this.room);
 }
 
+// TODO: Define different ones of this to have different styles.
+class RoomStyle {
+  final int passagePercent = 100;
+  final int passageTurnPercent = 30;
+  final int passageBranchPercent = 40;
+  final int passageStopPercent = 1;
+  final int passageMinLength = 4;
+  final int junctionMaxTries = 50;
+}
+
 class RoomBiome extends Biome {
   final Dungeon _dungeon;
   final List<PlacedRoom> _rooms = [];
+
+  final RoomStyle _style = new RoomStyle();
 
   RoomBiome(this._dungeon);
 
@@ -34,16 +46,29 @@ class RoomBiome extends Biome {
     while (_dungeon.junctions.isNotEmpty) {
       var junction = _dungeon.junctions.takeNext();
 
-      if (_tryPlacePassageRoom(junction)) {
+      var success = false;
+      if (rng.percent(_style.passagePercent)) {
+        success = _tryPlacePassageRoom(junction);
+      } else {
+        // TODO: Only passages can connect to shore tiles, so dungeons with
+        // just rooms don't reach them. Should consider placing a door if a
+        // junction is next to shore.
+        success = _tryPlaceRoom(junction, new Set());
+        if (success) _placeDoor(junction.position);
+      }
+
+      if (success) {
         yield "Room $roomNumber";
         roomNumber++;
-      } else if (++junction.tries < 20) {
+      } else if (++junction.tries < _style.junctionMaxTries) {
         // Couldn't place it, so re-add to try the junction again.
         _dungeon.junctions.add(junction);
       }
     }
   }
 
+  /// Try to make a meandering passage starting at [junction] that ends in a
+  /// new room or connects to an existing junction.
   bool _tryPlacePassageRoom(Junction junction) {
     // Make a meandering passage.
     var pos = junction.position;
@@ -54,12 +79,15 @@ class RoomBiome extends Biome {
     var placeRoom = true;
 
     maybeBranch(Direction dir) {
-      if (rng.percent(40)) newJunctions.add(new Junction(dir, pos + dir));
+      if (rng.percent(_style.passageBranchPercent)) {
+        newJunctions.add(new Junction(dir, pos + dir));
+      }
     }
 
-    while (passage.length < 3 || rng.percent(95)) {
+    while (passage.length < _style.passageMinLength ||
+        !rng.percent(_style.passageStopPercent)) {
       // Don't allow turning twice in a row.
-      if (distanceThisDir > 1 && rng.percent(30)) {
+      if (distanceThisDir > 1 && rng.percent(_style.passageTurnPercent)) {
         if (rng.oneIn(2)) {
           dir = dir.rotateLeft90;
           maybeBranch(dir.rotateRight90);
@@ -504,6 +532,7 @@ class Room {
     _allTypes.defineTags("room");
 
     // Rectangular rooms of various sizes.
+    // TODO: Make tunable.
     for (var width = 3; width <= 13; width++) {
       for (var height = 3; height <= 13; height++) {
         // Don't make them too big.
