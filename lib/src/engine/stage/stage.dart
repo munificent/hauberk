@@ -237,7 +237,9 @@ class Stage {
     if (tile.updateExplored(force: force)) {
       if (tile.isVisible) {
         var actor = actorAt(new Vec(x, y));
-        if (actor != null && actor is Monster) game.hero.seeMonster(actor);
+        if (actor != null && actor is Monster) {
+          game.hero.seeMonster(actor);
+        }
       }
       return 1;
     }
@@ -248,10 +250,13 @@ class Stage {
   int explore(Vec pos, {bool force}) => exploreAt(pos.x, pos.y, force: force);
 
   void setOcclusion(Vec pos, bool isOccluded) {
-    tiles[pos].updateOcclusion(isOccluded);
+    var tile = tiles[pos];
+    tile.updateOcclusion(isOccluded);
     if (!isOccluded) {
       var actor = actorAt(pos);
-      if (actor != null && actor is Monster) game.hero.seeMonster(actor);
+      if (actor != null && actor is Monster && tile.isVisible) {
+        game.hero.seeMonster(actor);
+      }
     }
   }
 
