@@ -91,9 +91,13 @@ class PickUpAction extends Action {
     for (var skill in item.type.skills) {
       if (hero.heroClass.proficiency(skill) != 0.0 &&
           hero.skills.discover(skill)) {
-        // TODO: Tweak message based on whether hero can take advantage of
-        // skill or not?
-        gain(skill.discoverMessage, actor);
+        // See if the hero can immediately use it.
+        var level = skill.calculateLevel(hero);
+        if (hero.skills.gain(skill, level)) {
+          gain(skill.gainMessage(level), actor);
+        } else {
+          gain(skill.discoverMessage, actor);
+        }
       }
     }
 

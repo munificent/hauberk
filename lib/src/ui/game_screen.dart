@@ -656,7 +656,7 @@ class GameScreen extends Screen<Input> {
     _drawStat(terminal, 2, 'Level', hero.level, cerulean);
     if (hero.level < Hero.maxLevel) {
       var levelPercent = 100 *
-          hero.experience ~/
+          (hero.experience - calculateLevelCost(hero.level)) ~/
           (calculateLevelCost(hero.level + 1) - calculateLevelCost(hero.level));
       terminal.writeAt(15, 2, '$levelPercent%', ultramarine);
     }

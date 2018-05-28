@@ -124,7 +124,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
       var detailColor = UIHue.text;
       if (i == _selectedSkill) {
         nameColor = UIHue.selection;
-      } else if (!skill.isAcquired(_hero, _skillSet[skill])) {
+      } else if (!_skillSet.isAcquired(skill)) {
         nameColor = UIHue.disabled;
         detailColor = UIHue.disabled;
       }
@@ -167,6 +167,8 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
   void _renderSkillDetails(Terminal terminal, T skill);
 
   void _changeSelection(int offset) {
+    if (_skills.length == 0) return;
+
     _selectedSkill = (_selectedSkill + offset).clamp(0, _skills.length - 1);
     dirty();
   }
@@ -187,7 +189,7 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     var level = _skillSet[skill].toString().padLeft(3);
     terminal.writeAt(31, y, level, color);
 
-    var percent = skill.percentUntilNext(_hero.heroClass, _hero.lore);
+    var percent = skill.percentUntilNext(_hero);
     terminal.writeAt(
         35, y, percent == null ? "  --" : "$percent%".padLeft(4), color);
   }
@@ -212,7 +214,7 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     Draw.meter(terminal, 19, 30, 20, level, skill.maxLevel, brickRed, maroon);
 
     terminal.writeAt(1, 32, "Next:", UIHue.secondary);
-    var percent = skill.percentUntilNext(_hero.heroClass, _hero.lore);
+    var percent = skill.percentUntilNext(_hero);
     if (percent != null) {
       var points = skill.trained(_hero.lore);
       var current = skill.trainingNeeded(_hero.heroClass, level);
@@ -238,35 +240,36 @@ class SpellDialog extends SkillTypeDialog<Spell> {
   }
 
   void _renderSkillInList(Terminal terminal, int y, Color color, Spell skill) {
-    terminal.writeAt(35, y, skill.complexity.toString().padLeft(4), color);
+    terminal.writeAt(
+        35, y, skill.complexity(_hero.heroClass).toString().padLeft(4), color);
   }
 
   void _renderSkillDetails(Terminal terminal, Spell skill) {
-    var intellect = _hero.intellect.value;
-    var expertise = intellect - skill.complexity;
-
-    // TODO: Instead of a text description, show an actual little graph for
-    // each parameter and how it varies based on level/expertise?
-
-    if (expertise >= 0) {
-      terminal.writeAt(1, 8, "At expertise $expertise:", UIHue.primary);
-      _writeText(terminal, 3, 10, skill.expertiseDescription(_hero));
+    terminal.writeAt(1, 30, "Complexity:", UIHue.secondary);
+    if (_hero.skills.isAcquired(skill)) {
+      terminal.writeAt(13, 30,
+          skill.complexity(_hero.heroClass).toString().padLeft(3), UIHue.text);
     } else {
-      terminal.writeAt(1, 8,
-          "(You need ${skill.complexity} intellect to cast this.)", brickRed);
+      terminal.writeAt(13, 30,
+          skill.complexity(_hero.heroClass).toString().padLeft(3), brickRed);
+
+      var need = skill.complexity(_hero.heroClass) - _hero.intellect.value;
+      terminal.writeAt(17, 30, "Need $need more intellect", UIHue.secondary);
     }
 
-    terminal.writeAt(1, 30, "Intellect:", UIHue.secondary);
-    terminal.writeAt(14, 30, "$intellect".padLeft(2), UIHue.text);
-
-    terminal.writeAt(1, 32, "Complexity: -", UIHue.secondary);
-    terminal.writeAt(14, 32, "${skill.complexity}".padLeft(2), UIHue.text);
-
-    terminal.writeAt(13, 33, "───", UIHue.secondary);
-
-    terminal.writeAt(1, 34, "Expertise:", UIHue.secondary);
+    terminal.writeAt(1, 32, "Focus cost:", UIHue.secondary);
     terminal.writeAt(
-        14, 34, "$expertise".padLeft(2), expertise >= 0 ? peaGreen : brickRed);
+        13, 32, skill.focusCost(_hero).toString().padLeft(3), UIHue.text);
+
+    if (skill.damage != null) {
+      terminal.writeAt(1, 34, "Damage:", UIHue.secondary);
+      terminal.writeAt(13, 34, skill.damage.toString().padLeft(3), UIHue.text);
+    }
+
+    if (skill.range != null) {
+      terminal.writeAt(1, 36, "Range:", UIHue.secondary);
+      terminal.writeAt(13, 36, skill.range.toString().padLeft(3), UIHue.text);
+    }
   }
 }
 

@@ -15,12 +15,7 @@ class HeroClass {
   /// A proficiency of 1.0 is normal. Zero means "can't gain at all". Numbers
   /// larger than 1.0 make it easier to gain and less than 1.0 harder.
   double proficiency(Skill skill) => _proficiency[skill] ?? 1.0;
-
-  // TODO: Make this do something. (See docs/skills and classes.txt.)
-  // It should:
-  // - Scale how much experience is needed to level up.
-  // - Scale how much training is needed to improve a skill.
-  // - Scale the focus cost of spells.
-  // - Scale the gold cost of tricks.
-  // - Scale the piety cost of prayers and granted powers.
+  // TODO: Probably want more fine-grained control over how this affects
+  // various skills. For example, we'll probably want to tune focus cost and
+  // complexity for spells independently of each other.
 }

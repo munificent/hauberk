@@ -15,7 +15,7 @@ class SelectSkillDialog extends Screen<Input> {
   bool get isTransparent => true;
 
   SelectSkillDialog(Game game) : _game = game {
-    for (var skill in _game.hero.skills.acquired(_game.hero)) {
+    for (var skill in _game.hero.skills.acquired) {
       if (skill is UsableSkill) _skills.add(skill);
     }
   }

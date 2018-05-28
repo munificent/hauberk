@@ -16,20 +16,22 @@ abstract class Skill {
   String get name;
   String get description;
 
+  // TODO: Different messages for gain and lose?
+  /// Message displayed when the hero reaches [level] in the skill.
+  String gainMessage(int level);
+
   /// Message displayed when the hero first discovers this skill.
   String get discoverMessage;
 
   int get maxLevel;
 
-  // TODO: Remove?
+  // TODO: Not used right now. Might be useful for rogue skills.
+  /*
   Skill get prerequisite => null;
+  */
 
-  /// Whether this skill has been acquired if it is at [level].
-  ///
-  /// Each kind of skill has different rules for what it means to be acquired.
-  /// Trained skills must be leveled past zero, spells merely need to be
-  /// discovered and not too complex, etc.
-  bool isAcquired(Hero hero, int level);
+  /// Determines what level [hero] has in this skill.
+  int calculateLevel(Hero hero);
 
   /// Gives the skill a chance to modify the [hit] the [hero] is about to
   /// perform on [monster].
@@ -86,17 +88,16 @@ abstract class DirectionSkill extends UsableSkill {
 /// The underlying data used to track progress in disciplines is stored in the
 /// hero's [Lore].
 abstract class Discipline extends Skill {
-  String get discoverMessage => "{1} can begin training in $name.";
+  String gainMessage(int level) => "You have reached level $level in $name.";
 
-  bool isAcquired(Hero hero, int level) => level > 0;
+  String get discoverMessage => "{1} can begin training in $name.";
 
   String levelDescription(int level);
 
-  /// Determines what level this discipline is at given [lore].
-  int calculateLevel(HeroClass heroClass, Lore lore) {
-    var training = trained(lore);
+  int calculateLevel(Hero hero) {
+    var training = trained(hero.lore);
     for (var level = 1; level <= maxLevel; level++) {
-      if (training < trainingNeeded(heroClass, level)) return level - 1;
+      if (training < trainingNeeded(hero.heroClass, level)) return level - 1;
     }
 
     return maxLevel;
@@ -104,13 +105,13 @@ abstract class Discipline extends Skill {
 
   /// How close the hero is to reaching the next level in this skill, in
   /// percent, or `null` if this skill is at max level.
-  int percentUntilNext(HeroClass heroClass, Lore lore) {
-    var level = calculateLevel(heroClass, lore);
+  int percentUntilNext(Hero hero) {
+    var level = calculateLevel(hero);
     if (level == maxLevel) return null;
 
-    var points = trained(lore);
-    var current = trainingNeeded(heroClass, level);
-    var next = trainingNeeded(heroClass, level + 1);
+    var points = trained(hero.lore);
+    var current = trainingNeeded(hero.heroClass, level);
+    var next = trainingNeeded(hero.heroClass, level + 1);
     return 100 * (points - current) ~/ (next - current);
   }
 
@@ -136,42 +137,52 @@ abstract class Discipline extends Skill {
 /// Spells do not need to be explicitly trained or learned. As soon as one is
 /// discovered, as long as it's not too complex, the hero can use it.
 abstract class Spell extends Skill implements UsableSkill {
-  String get discoverMessage => '{1} can learn the spell "$name".';
+  String gainMessage(int level) => '{1} have learned the spell $name.';
+
+  String get discoverMessage => '{1} not wise enough to cast $name.';
 
   /// Spells are not leveled.
   int get maxLevel => 1;
 
   /// The amount of [Intellect] the hero must possess to use this spell
-  /// effectively.
-  int get complexity;
+  /// effectively, ignoring class proficiency.
+  int get baseComplexity;
 
-  int get focusCost;
+  /// The base focus cost to cast the spell, ignoring class proficiency.
+  int get baseFocusCost;
 
-  String expertiseDescription(Hero hero) =>
-      onExpertiseDescription(expertise(hero));
+  /// The base damage of the spell, or `null` if not relevant.
+  int get damage => null;
 
-  String onExpertiseDescription(int expertise);
+  /// The range of the spell, or `null` if not relevant.
+  int get range => null;
 
-  bool isAcquired(Hero hero, int level) => expertise(hero) >= 0;
+  int calculateLevel(Hero hero) {
+    // If the hero has enough intellect, they have it.
+    return hero.intellect.value >= complexity(hero.heroClass) ? 1 : 0;
+  }
+
+  int focusCost(Hero hero) =>
+      (baseFocusCost / hero.heroClass.proficiency(this)).round();
+
+  int complexity(HeroClass heroClass) =>
+      ((baseComplexity - 9) / heroClass.proficiency(this)).round() + 9;
 
   String unusableReason(Game game) => null;
 
-  // TODO: Take bonuses into account.
-  int expertise(Hero hero) => hero.intellect.value - complexity;
-
   Action getTargetAction(Game game, int level, Vec target) {
-    var action = onGetTargetAction(game, level, target);
-    return new FocusAction(focusCost, action);
+    var action = onGetTargetAction(game, target);
+    return new FocusAction(focusCost(game.hero), action);
   }
 
-  Action onGetTargetAction(Game game, int level, Vec target) => null;
+  Action onGetTargetAction(Game game, Vec target) => null;
 
   Action getAction(Game game, int level) {
-    var action = onGetAction(game, level);
-    return new FocusAction(focusCost, action);
+    var action = onGetAction(game);
+    return new FocusAction(focusCost(game.hero), action);
   }
 
-  Action onGetAction(Game game, int level) => null;
+  Action onGetAction(Game game) => null;
 }
 
 /// A collection of [Skill]s and the hero's level in them.
@@ -191,8 +202,8 @@ class SkillSet {
   Iterable<Skill> get discovered => _levels.keys;
 
   /// All the skills the hero actually has.
-  Iterable<Skill> acquired(Hero hero) =>
-      _levels.keys.where((skill) => skill.isAcquired(hero, _levels[skill]));
+  Iterable<Skill> get acquired =>
+      _levels.keys.where((skill) => _levels[skill] > 0);
 
   /// Learns that [skill] exists.
   ///
@@ -214,6 +225,7 @@ class SkillSet {
     return true;
   }
 
+  /* TODO: Not used right now. Might be useful for rogue skills.
   /// Whether the hero can raise the level of this skill.
   bool canGain(Skill skill) {
     if (!isDiscovered(skill)) return false;
@@ -226,9 +238,14 @@ class SkillSet {
 
     return true;
   }
+  */
 
   /// Whether the hero is aware of the existence of this skill.
   bool isDiscovered(Skill skill) => _levels.containsKey(skill);
+
+  /// Whether the hero knows of and has learned this skill.
+  bool isAcquired(Skill skill) =>
+      _levels.containsKey(skill) && _levels[skill] > 0;
 
   SkillSet clone() => new SkillSet(new Map.from(_levels));
 

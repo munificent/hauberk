@@ -120,7 +120,8 @@ class ChokePoints {
       var cell = _cells[pos];
       var info = _dungeon.infoAt(pos);
 
-      if (cell == null) {} else if (cell > 0) {
+      if (cell == null) {
+      } else if (cell > 0) {
         info.regionId = cell;
       } else if (cell < 0) {
         info.junctionId = -1 - cell;

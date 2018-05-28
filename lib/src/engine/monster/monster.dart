@@ -355,9 +355,8 @@ class Monster extends Actor {
       game.hero.disturb();
     }
 
-    // If the monster just entered an explored tile, make sure the hero has
-    // seen it.
-    if (!game.stage[from].isExplored && game.stage[to].isExplored) {
+    // If the monster came into view, make sure the hero has seen it.
+    if (!game.stage[from].isVisible && game.stage[to].isVisible) {
       game.hero.seeMonster(this);
     }
   }

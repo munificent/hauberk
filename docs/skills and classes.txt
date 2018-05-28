@@ -1,9 +1,9 @@
 Originally, I was going to have separate classes. Each would have its own
 unique mechanics around character development. Something along the lines of:
 
-    Warrior - "Trainings"?
+    Warrior - Disciplines
     - Increase in level
-    - Gained automatically be performed certain action
+    - Gained automatically by performing certain action
     - Some are passive and have no cost, others require fury or focus
 
     Mage - Spells
@@ -130,10 +130,10 @@ expose more actions.
 There are a few kinds of gainable abilities, and secondary stats related to
 them:
 
-- Martial arts (better name?). These are the "warrior skills". Each has a level.
-  The level is increased by training -- performing certain in-game actions. For
-  example, using a sword improves sword skill. Most martial arts provide passive
-  benefit, but some expose actions (sweep attacks, etc.).
+- Disciplines. These are the "warrior skills". Each has a level. The level is
+  increased by training -- performing certain in-game actions. For example,
+  using a sword improves sword skill. Most disciplines provide passive benefit,
+  but some expose actions (sweep attacks, etc.).
 
   The inner stats for these are the number of times certain actions have been
   performed -- using weapons of different types, taking damage, etc.

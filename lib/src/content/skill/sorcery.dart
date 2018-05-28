@@ -9,61 +9,42 @@ import '../elements.dart';
 class Icicle extends Spell implements TargetSkill {
   String get description => "Launches a spear-like icicle.";
 
-  @override
-  String onExpertiseDescription(int expertise) {
-    // TODO: Better description.
-    return "Does ${_damage(expertise)} damage and ${_range(expertise)} range.";
-  }
-
   String get name => "Icicle";
 
-  int get complexity => 11;
+  int get baseComplexity => 10;
 
-  int get focusCost => 200;
+  int get baseFocusCost => 200;
 
-  num getRange(Game game) => _range(game.hero.skills[this]);
+  int get damage => 7;
+  int get range => 8;
 
-  Action onGetTargetAction(Game game, int level, Vec target) {
-    var attack = new Attack(new Noun("the icicle"), "pierce", _damage(level),
-        _range(level), Elements.cold);
+  num getRange(Game game) => range;
 
-    var hit = attack.createHit();
-    // TODO: Tune.
-    return new BoltAction(target, hit);
+  Action onGetTargetAction(Game game, Vec target) {
+    var attack = new Attack(
+        new Noun("the icicle"), "pierce", damage, range, Elements.cold);
+    return new BoltAction(target, attack.createHit());
   }
-
-  int _damage(int expertise) => 5 + expertise ~/ 3;
-  int _range(int expertise) => 7 + expertise ~/ 6;
 }
 
 class Windstorm extends Spell implements ActionSkill {
   String get description =>
       "Summons a blast of air, spreading out from the sorceror.";
 
-  @override
-  String onExpertiseDescription(int expertise) {
-    // TODO: Better description.
-    return "Does ${_damage(expertise)} damage and ${_range(expertise)} range.";
-  }
-
   String get name => "Windstorm";
 
-  int get complexity => 14;
+  int get baseComplexity => 14;
 
-  int get focusCost => 400;
+  int get baseFocusCost => 400;
+
+  int get damage => 5;
+  int get range => 6;
 
   bool canUse(Game game) => true;
 
-  Action onGetAction(Game game, int level) {
-    var attack = new Attack(new Noun("the wind"), "blast", _damage(level),
-        _range(level), Elements.air);
-
-    var hit = attack.createHit();
-    // TODO: Tune.
-    hit.addDamage(expertise(game.hero) ~/ 2);
-    return new RayAction.ring(game.hero.pos, hit);
+  Action onGetAction(Game game) {
+    var attack =
+        new Attack(new Noun("the wind"), "blast", damage, range, Elements.air);
+    return new RayAction.ring(game.hero.pos, attack.createHit());
   }
-
-  int _damage(int expertise) => 4 + expertise ~/ 4;
-  int _range(int expertise) => 6 + expertise ~/ 3;
 }

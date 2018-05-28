@@ -266,12 +266,16 @@ class Hero extends Actor {
     food += maxHealth * abundance * numExplored / game.stage.numExplorable;
   }
 
+  // TODO: Not currently used since skills are not explicitly learned in the
+  // UI. Re-enable when we add rogue skills?
+  /*
   /// Updates the hero's skill levels to [skills] and apply any other changes
   /// caused by that.
   void updateSkills(SkillSet skills) {
     // Update anything affected.
     this.skills.update(skills);
   }
+  */
 
   int get baseSpeed => Energy.normalSpeed;
 
@@ -279,7 +283,7 @@ class Hero extends Actor {
 
   // TODO: Shields, temporary bonuses, etc.
   Iterable<Defense> onGetDefenses() sync* {
-    for (var skill in skills.acquired(this)) {
+    for (var skill in skills.acquired) {
       var defense = skill.getDefense(this, skills[skill]);
       if (defense != null) yield defense;
     }
@@ -304,7 +308,7 @@ class Hero extends Actor {
 
     hit.addStrike(agility.strikeBonus);
 
-    for (var skill in skills.acquired(this)) {
+    for (var skill in skills.acquired) {
       skill.modifyAttack(this, defender as Monster, hit, skills[skill]);
     }
 
@@ -371,8 +375,6 @@ class Hero extends Actor {
     // It only counts if the hero's seen the monster at least once.
     if (_seenMonsters.contains(monster)) {
       lore.slay(monster.breed);
-      // TODO: TrainedSkills for slaying different breed families.
-
       _experienceCents += monster.experienceCents;
       _refreshLevel(log: true);
     }
@@ -384,13 +386,11 @@ class Hero extends Actor {
         var type = weapon.type.weaponType;
         lore.killUsing(type);
 
-        // See if any discipline leveled up.
+        // See if any skill leveled up.
         for (var skill in game.content.skills) {
-          if (skill is Discipline) {
-            var level = skill.calculateLevel(heroClass, lore);
-            if (skills.gain(skill, level)) {
-              game.log.gain("You have reached level $level in ${skill.name}.");
-            }
+          var level = skill.calculateLevel(this);
+          if (skills.gain(skill, level)) {
+            game.log.gain(skill.gainMessage(level), this);
           }
         }
       }
@@ -449,6 +449,8 @@ class Hero extends Actor {
   }
 
   void seeMonster(Monster monster) {
+    // TODO: Blindness and dazzle.
+
     if (_seenMonsters.add(monster)) {
       // TODO: If we want to give the hero experience for seeing a monster too,
       // (so that sneak play-style still lets the player gain levels), do that
@@ -487,13 +489,21 @@ class Hero extends Actor {
 
     // TODO: If fortitude goes up, should we increase current health too?
 
-    // Show any gained stats.
     if (log && previous != _level) {
+      // Show any gained stats.
       for (var stat in Stat.all) {
         var gain =
             race.valueAtLevel(stat, _level) - race.valueAtLevel(stat, previous);
         if (gain != 0) {
           game.log.gain("Your ${stat.name.toLowerCase()} increased by $gain.");
+        }
+      }
+
+      // Show any learned skills. (Gaining intellect learns spells.)
+      for (var skill in skills.discovered) {
+        var level = skill.calculateLevel(this);
+        if (skills.gain(skill, level)) {
+          game.log.gain(skill.gainMessage(level), this);
         }
       }
     }
@@ -551,6 +561,7 @@ class RestBehavior extends Behavior {
   bool canPerform(Hero hero) {
     // See if done resting.
     if (hero.health == hero.maxHealth) return false;
+    // TODO: Keep resting if focus is not at max?
 
     if (hero.food <= 0) {
       hero.game.log.message("You must explore more before you can rest.");
