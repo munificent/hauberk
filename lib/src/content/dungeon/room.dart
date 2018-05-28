@@ -168,7 +168,7 @@ class RoomBiome extends Biome {
       distanceThisDir++;
     }
 
-    // Last passage position will always become the door
+    // The last passage position will always become the door.
     passage.remove(passage.last);
 
     // If we didn't connect to an existing junction, add a new room at the end
@@ -399,7 +399,7 @@ class RoomBiome extends Biome {
     }
 
     for (var roomPos in room.tiles.bounds) {
-      var mapPos = new Vec(roomPos.x + x, roomPos.y + y);
+      var mapPos = roomPos.offset(x, y);
 
       // If the room doesn't care about the tile, it's fine.
       if (room.tiles[roomPos] == null) continue;
