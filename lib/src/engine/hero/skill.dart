@@ -158,6 +158,8 @@ abstract class Spell extends Skill implements UsableSkill {
   int get range => null;
 
   int calculateLevel(Hero hero) {
+    if (hero.heroClass.proficiency(this) == 0.0) return 0;
+
     // If the hero has enough intellect, they have it.
     return hero.intellect.value >= complexity(hero.heroClass) ? 1 : 0;
   }

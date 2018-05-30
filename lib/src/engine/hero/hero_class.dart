@@ -1,3 +1,4 @@
+import '../items/item_type.dart';
 import 'skill.dart';
 
 /// The hero's class.
@@ -8,7 +9,10 @@ class HeroClass {
 
   final Map<Skill, double> _proficiency;
 
-  HeroClass(this.name, this.description, this._proficiency);
+  /// Generates items a hero of this class should start with.
+  final Drop startingItems;
+
+  HeroClass(this.name, this.description, this._proficiency, this.startingItems);
 
   /// How good heroes of this class are at gaining a given skill.
   ///

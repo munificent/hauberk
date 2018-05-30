@@ -53,7 +53,6 @@ class GameContent implements Content {
 
     var hero = new HeroSave(name, race, heroClass);
 
-    // TODO: Different items based on class and/or race?
     var initialItems = {
       "Mending Salve": 3,
       "Scroll of Sidestepping": 2,
@@ -64,6 +63,8 @@ class GameContent implements Content {
     initialItems.forEach((type, amount) {
       hero.inventory.tryAdd(new Item(Items.types.find(type), amount));
     });
+
+    heroClass.startingItems.spawnDrop(hero.inventory.tryAdd);
 
     return hero;
   }

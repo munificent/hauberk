@@ -88,19 +88,7 @@ class PickUpAction extends Action {
           item.clone(result.remaining));
     }
 
-    for (var skill in item.type.skills) {
-      if (hero.heroClass.proficiency(skill) != 0.0 &&
-          hero.skills.discover(skill)) {
-        // See if the hero can immediately use it.
-        var level = skill.calculateLevel(hero);
-        if (hero.skills.gain(skill, level)) {
-          gain(skill.gainMessage(level), actor);
-        } else {
-          gain(skill.discoverMessage, actor);
-        }
-      }
-    }
-
+    hero.gainItemSkills(item);
     return ActionResult.success;
   }
 }

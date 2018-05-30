@@ -203,6 +203,13 @@ class Hero extends Actor {
     // Start with some initial ability to rest so we aren't weakest at the very
     // beginning.
     food = maxHealth.toDouble();
+
+    // Acquire any skills from the starting items.
+    // TODO: Doing this here is hacky. It only really comes into play for
+    // starting items.
+    for (var item in inventory) {
+      gainItemSkills(item);
+    }
   }
 
   // TODO: Hackish.
@@ -276,6 +283,22 @@ class Hero extends Actor {
     this.skills.update(skills);
   }
   */
+
+  /// Discover or acquire any skills associated with [item].
+  void gainItemSkills(Item item) {
+    for (var skill in item.type.skills) {
+      if (heroClass.proficiency(skill) != 0.0 &&
+          skills.discover(skill)) {
+        // See if the hero can immediately use it.
+        var level = skill.calculateLevel(this);
+        if (skills.gain(skill, level)) {
+          game.log.gain(skill.gainMessage(level), this);
+        } else {
+          game.log.gain(skill.discoverMessage, this);
+        }
+      }
+    }
+  }
 
   int get baseSpeed => Energy.normalSpeed;
 
