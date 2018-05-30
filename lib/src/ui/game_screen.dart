@@ -676,8 +676,8 @@ class GameScreen extends Screen<Input> {
 
     terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
 
-    Draw.meter(terminal, 9, 10, 10, hero.focus, Option.maxFocus, cerulean,
-        ultramarine);
+    Draw.meter(terminal, 9, 10, 10, hero.focus, hero.intellect.maxFocus,
+        cerulean, ultramarine);
 
     _drawStat(terminal, 12, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);

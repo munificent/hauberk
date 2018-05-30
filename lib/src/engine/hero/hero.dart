@@ -14,6 +14,7 @@ import '../core/log.dart';
 import '../core/option.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
+import '../items/item.dart';
 import '../monster/monster.dart';
 import '../stage/stage.dart';
 import '../stage/tile.dart';
@@ -156,7 +157,7 @@ class Hero extends Actor {
 
   int _focus = 400;
   int get focus => _focus;
-  set focus(int value) => _focus = value.clamp(0, Option.maxFocus);
+  set focus(int value) => _focus = value.clamp(0, intellect.maxFocus);
 
   /// How much noise the Hero's last action made.
   double get lastNoise => _lastNoise;
@@ -389,7 +390,8 @@ class Hero extends Actor {
     // Getting hit loses focus.
     // TODO: Should the hero lose focus if they dodge the attack? Seems like it
     // would still break their attention. Maybe lose a fraction of the focus?
-    focus -= Option.maxFocus * damage * 2 ~/ maxHealth;
+    // TODO: Scale based on will.
+    focus -= intellect.maxFocus * damage * 2 ~/ maxHealth;
   }
 
   void onKilled(Action action, Actor defender) {

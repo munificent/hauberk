@@ -95,6 +95,8 @@ class Intellect extends StatBase {
   Intellect(Hero hero) : super(hero);
 
   Stat get _stat => Stat.intellect;
+
+  int get maxFocus => (math.pow(value, 1.3) * 2).ceil();
 }
 
 class Will extends StatBase {

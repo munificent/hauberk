@@ -13,9 +13,9 @@ class Icicle extends Spell implements TargetSkill {
 
   int get baseComplexity => 10;
 
-  int get baseFocusCost => 200;
+  int get baseFocusCost => 8;
 
-  int get damage => 7;
+  int get damage => 8;
   int get range => 8;
 
   num getRange(Game game) => range;
@@ -35,9 +35,9 @@ class Windstorm extends Spell implements ActionSkill {
 
   int get baseComplexity => 14;
 
-  int get baseFocusCost => 400;
+  int get baseFocusCost => 26;
 
-  int get damage => 5;
+  int get damage => 6;
   int get range => 6;
 
   bool canUse(Game game) => true;
