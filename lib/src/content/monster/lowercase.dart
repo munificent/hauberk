@@ -9,17 +9,17 @@ void arachnids() {
     ..groups("bug")
     ..placeIn("passage")
     ..stain(Tiles.spiderweb);
-  breed("brown spider", 1, persimmon, 6, dodge: 30, meander: 8)
-    ..attack("bite[s]", 5);
-
-  breed("gray spider", 2, slate, 12, dodge: 30, meander: 6)
+  breed("brown spider", 5, persimmon, 6, dodge: 30, meander: 8)
     ..attack("bite[s]", 5, Elements.poison);
 
-  breed("spiderling", 4, ash, 8, dodge: 35, meander: 8)
+  breed("gray spider", 7, slate, 12, dodge: 30, meander: 6)
+    ..attack("bite[s]", 5, Elements.poison);
+
+  breed("spiderling", 9, ash, 8, dodge: 35, meander: 8)
     ..count(2, 5)
     ..attack("bite[s]", 5, Elements.poison);
 
-  breed("giant spider", 6, ultramarine, 40, meander: 5)
+  breed("giant spider", 12, ultramarine, 40, meander: 5)
     ..attack("bite[s]", 5, Elements.poison);
 }
 
@@ -28,7 +28,7 @@ void bats() {
     ..groups("animal")
     ..fly()
     ..preferWall();
-  breed("brown bat", 2, persimmon, 10, speed: 1, meander: 6)
+  breed("brown bat", 1, persimmon, 10, speed: 1, meander: 6)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 4)
     ..attack("bite[s]", 3);
@@ -398,7 +398,7 @@ void people() {
     ..groups("human")
     ..openDoors()
     ..emanate(2);
-  breed("Harold the Misfortunate", 1, lilac, 10, frequency: 100.0, meander: 3)
+  breed("Harold the Misfortunate", 1, lilac, 10, meander: 3)
     ..he()
     ..attack("hit[s]", 3)
     ..drop("weapon", percent: 50, depthOffset: 4)
@@ -491,8 +491,8 @@ void vines() {}
 
 void worms() {
   family("w", dodge: 25, meander: 4, flags: "fearless")..groups("bug");
-  breed("blood worm", 2, maroon, 4, frequency: 0.5)
-    ..count(3, 8)
+  breed("blood worm", 1, maroon, 4, frequency: 0.5)
+    ..count(2, 5)
     ..attack("crawl[s] on", 5);
 
   breed("fire worm", 10, carrot, 6)
