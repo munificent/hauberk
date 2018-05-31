@@ -1,7 +1,7 @@
 import '../engine.dart';
 import 'drops.dart';
 import 'skill/discipline/mastery.dart';
-import 'skills.dart';
+import 'skill/skills.dart';
 
 class Classes {
   // TODO: Better starting items?

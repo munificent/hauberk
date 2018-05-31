@@ -139,7 +139,7 @@ abstract class Discipline extends Skill {
 abstract class Spell extends Skill implements UsableSkill {
   String gainMessage(int level) => '{1} have learned the spell $name.';
 
-  String get discoverMessage => '{1} not wise enough to cast $name.';
+  String get discoverMessage => '{1} are not wise enough to cast $name.';
 
   /// Spells are not leveled.
   int get maxLevel => 1;
@@ -171,6 +171,8 @@ abstract class Spell extends Skill implements UsableSkill {
       ((baseComplexity - 9) / heroClass.proficiency(this)).round() + 9;
 
   String unusableReason(Game game) => null;
+
+  num getRange(Game game) => range;
 
   Action getTargetAction(Game game, int level, Vec target) {
     var action = onGetTargetAction(game, target);

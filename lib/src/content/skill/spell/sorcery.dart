@@ -1,10 +1,10 @@
 import 'package:piecemeal/src/vec.dart';
 
-import '../../engine.dart';
+import '../../../engine.dart';
 
-import '../action/bolt.dart';
-import '../action/ray.dart';
-import '../elements.dart';
+import '../../action/bolt.dart';
+import '../../action/ray.dart';
+import '../../elements.dart';
 
 class Icicle extends Spell implements TargetSkill {
   String get description => "Launches a spear-like icicle.";
@@ -17,8 +17,6 @@ class Icicle extends Spell implements TargetSkill {
 
   int get damage => 8;
   int get range => 8;
-
-  num getRange(Game game) => range;
 
   Action onGetTargetAction(Game game, Vec target) {
     var attack = new Attack(
@@ -39,8 +37,6 @@ class Windstorm extends Spell implements ActionSkill {
 
   int get damage => 6;
   int get range => 6;
-
-  bool canUse(Game game) => true;
 
   Action onGetAction(Game game) {
     var attack =

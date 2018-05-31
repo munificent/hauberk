@@ -7,7 +7,7 @@ import '../action/flow.dart';
 import '../action/heal.dart';
 import '../action/mapping.dart';
 import '../action/ray.dart';
-import '../skills.dart';
+import '../skill/skills.dart';
 import 'affixes.dart';
 import 'items.dart';
 

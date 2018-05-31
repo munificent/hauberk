@@ -1,0 +1,63 @@
+- monsters
+  - down to all depths
+  - uniques
+  - quest
+- items
+  - helmets
+  - heavy armor
+  - gloves
+  - shields
+  - rings
+  - amulets
+  - wands
+  - staves
+  - spellbooks
+- equipment
+  - affixes
+    - improve spells
+    - stat gain
+  - gems
+- redo rest mechanic
+  - food items
+  - hunger
+- elements and moves
+  - effects for all elements
+    - life draining?
+    - equipment damage for acid?
+    - pushback
+  - blindness?
+  - confusion?
+  - (see moves.txt)
+- classes
+  - rogue
+    - skills
+    - money
+  - priest
+    - piety
+    - granted powers
+    - prayers
+  - mage
+    - more spell schools
+    - more spells
+  - subclasses
+- dungeon
+  - themed rooms
+  - vaults or other special rooms
+  - more biomes
+  - different wall, water, etc. types
+  - tweak light
+    - more lit rooms, less gloom
+  - temporary terrain features: ice, fire, ward, etc.
+  - digging?
+  - better "narrative" flow
+    - base room types on reachability
+    - cuts
+    - foreshadowing messages
+  - different generation parameter styles (more windy passages, etc.)
+- crafting?
+  - limit recipes to certain classes like alchemist and smith?
+- awards?
+  - exploring all dungeon
+  - killing all monsters
+  - finding all items
+- help docs

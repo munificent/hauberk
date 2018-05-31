@@ -10,7 +10,7 @@ import 'content/monster/monsters.dart';
 import 'content/old/recipes.dart';
 import 'content/old/shops.dart';
 import 'content/races.dart';
-import 'content/skills.dart';
+import 'content/skill/skills.dart';
 import 'content/tiles.dart';
 import 'engine.dart';
 

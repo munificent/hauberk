@@ -1,12 +1,14 @@
-import '../engine.dart';
-import 'monster/builder.dart';
-import 'skill/discipline/archery.dart';
-import 'skill/discipline/axe.dart';
-import 'skill/discipline/slay.dart';
-import 'skill/discipline/spear.dart';
-import 'skill/discipline/sword.dart';
-import 'skill/discipline/whip.dart';
-import 'skill/sorcery.dart';
+import '../../engine.dart';
+import '../monster/builder.dart';
+import 'discipline/archery.dart';
+import 'discipline/axe.dart';
+import 'discipline/slay.dart';
+import 'discipline/spear.dart';
+import 'discipline/sword.dart';
+import 'discipline/whip.dart';
+import 'spell/conjuring.dart';
+import 'spell/divination.dart';
+import 'spell/sorcery.dart';
 
 class Skills {
   /// All of the known skills.
@@ -37,8 +39,17 @@ class Skills {
       skills.add(slay);
     }
 
-    // Sorcery spells.
-    skills.addAll([new Icicle(), new Windstorm()]);
+    // Spells.
+    skills.addAll([
+      // Divination.
+      new SenseItems(),
+      // Conjuring.
+      new Flee(),
+      new Escape(),
+      // Sorcery.
+      new Icicle(),
+      new Windstorm()
+    ]);
 
     return skills;
   }
