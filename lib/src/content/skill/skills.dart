@@ -46,6 +46,7 @@ class Skills {
       // Conjuring.
       new Flee(),
       new Escape(),
+      new Disappear(),
       // Sorcery.
       new Icicle(),
       new BrilliantBeam(),
