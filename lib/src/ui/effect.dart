@@ -25,6 +25,10 @@ final _directionLines = {
 /// Adds an [Effect]s that should be displayed when [event] happens.
 void addEffects(List<Effect> effects, Event event) {
   switch (event.type) {
+    case EventType.pause:
+      // Do nothing.
+      break;
+
     case EventType.bolt:
     case EventType.cone:
       // TODO: Use something better for arrows.
@@ -133,10 +137,11 @@ final _elementSequences = <Element, List<List<Glyph>>>{
   ],
   Elements.water: [
     _glyphs("Oo", [turquoise, cornflower]),
-    _glyphs("o•~", [cerulean]),
-    _glyphs("~", [cerulean]),
+    _glyphs("o•^", [cornflower, cerulean]),
+    _glyphs("•^", [cerulean, ultramarine]),
+    _glyphs("^~", [cerulean, ultramarine]),
     _glyphs("~", [ultramarine]),
-    _glyphs(".", [ultramarine])
+    _glyphs(".", [ultramarine, indigo])
   ],
   Elements.acid: [
     _glyphs("Oo", [buttermilk, gold]),
@@ -191,12 +196,12 @@ class ElementEffect implements Effect {
       : _sequence = _elementSequences[element];
 
   bool update(Game game) {
-    if (rng.oneIn(_age + 1)) _age++;
-    return _age <= _sequence.length;
+    if (rng.oneIn(_age + 2)) _age++;
+    return _age < _sequence.length;
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(_pos.x, _pos.y, rng.item(_sequence[_age - 1]));
+    drawGlyph(_pos.x, _pos.y, rng.item(_sequence[_age]));
   }
 }
 

@@ -48,7 +48,8 @@ class Skills {
       new Escape(),
       // Sorcery.
       new Icicle(),
-      new Windstorm()
+      new Windstorm(),
+      new TidalWave()
     ]);
 
     return skills;

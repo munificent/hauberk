@@ -4,6 +4,31 @@ import '../../engine.dart';
 
 /// These actions are side effects from taking elemental damage.
 
+abstract class ElementAction extends Action {
+  void hitTile(Hit hit, Vec pos, num distance) {
+    // Open doors if the given motility lets us go through them.
+    // TODO: Set on fire if fire element?
+    var tile = game.stage[pos];
+    if (tile.type.opensTo != null) {
+      tile.type = tile.type.opensTo;
+      game.stage.tileOpacityChanged();
+    }
+
+    addEvent(EventType.cone, element: hit.element, pos: pos);
+
+    // See if there is an actor there.
+    var target = game.stage.actorAt(pos);
+    if (target != null && target != actor) {
+      // TODO: Modify damage based on range?
+      hit.perform(this, actor, target, canMiss: false);
+    }
+
+    // Hit stuff on the floor too.
+    var action = hit.element.floorAction(pos, hit, distance);
+    if (action != null) addAction(action);
+  }
+}
+
 class BurnAction extends Action {
   ActionResult onPerform() {
     addAction(new DestroyInInventoryAction(5, "flammable", "burns up"), actor);

@@ -1,12 +1,11 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+import 'element.dart';
 
 /// Creates a swath of damage that flows out from a point through reachable
 /// tiles.
-class FlowAction extends Action {
+class FlowAction extends ElementAction {
   /// The centerpoint that the flow is radiating from.
   final Vec _from;
   final Hit _hit;
@@ -15,21 +14,32 @@ class FlowAction extends Action {
   List<Vec> _tiles;
 
   final MotilitySet _motilities;
+  final int _slowness;
 
   bool get isImmediate => false;
 
-  FlowAction(this._from, this._hit, this._motilities);
+  var _frame = 0;
+
+  FlowAction(this._from, this._hit, this._motilities, {int slowness})
+      : _slowness = slowness ?? 1;
 
   ActionResult onPerform() {
+    // Only animate 1/slowness frames.
+    _frame = (_frame + 1) % _slowness;
+    if (_frame != 0) {
+      addEvent(EventType.pause);
+      return ActionResult.notDone;
+    }
+
     if (_tiles == null) {
-      // TODO: Should water open doors? Should fire burn them?
       // TODO: Use a different flow that makes diagonal moves more expensive to
       // give more natural circular behavior?
       _flow =
           new MotilityFlow(game.stage, _from, _motilities, ignoreActors: true);
 
-      var count = (math.pi * _hit.range * _hit.range).ceil();
-      _tiles = _flow.reachable.take(count).toList();
+      _tiles = _flow.reachable
+          .takeWhile((pos) => _flow.costAt(pos) <= _hit.range)
+          .toList();
     }
 
     // Hit all tiles at the same distance.
@@ -39,20 +49,8 @@ class FlowAction extends Action {
       if (_flow.costAt(_tiles[end]) != distance) break;
     }
 
-    // TODO: Lot of copy/paste here from ray.dart. Unify.
     for (var pos in _tiles.sublist(0, end)) {
-      addEvent(EventType.cone, element: _hit.element, pos: pos);
-
-      // See if there is an actor there.
-      var target = game.stage.actorAt(pos);
-      if (target != null && target != actor) {
-        // TODO: Modify damage based on range?
-        _hit.perform(this, actor, target, canMiss: false);
-      }
-
-      // Hit stuff on the floor too.
-      var action = _hit.element.floorAction(pos, _hit, distance);
-      if (action != null) addAction(action);
+      hitTile(_hit, pos, distance);
     }
 
     _tiles = _tiles.sublist(end);

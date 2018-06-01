@@ -196,9 +196,9 @@ class _ItemBuilder extends _BaseBuilder {
     tossUse((pos) => new RingFromAction(attack, pos));
   }
 
-  /// Sets a use and toss use that creates an flow of elemental damage.
+  /// Sets a use and toss use that creates a flow of elemental damage.
   void flow(Element element, String noun, String verb, int damage,
-      {int range = 3, bool fly = false}) {
+      {int range = 5, bool fly = false}) {
     var attack = new Attack(new Noun(noun), verb, damage, range, element);
 
     var motilities = new MotilitySet([Motility.walk]);

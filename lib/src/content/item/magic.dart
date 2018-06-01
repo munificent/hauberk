@@ -156,7 +156,8 @@ void spellBooks() {
     ..tag("magic/book/sorcery")
     ..toss(damage: 1, range: 3, breakage: 25);
   item('Spellbook "Elemental Primer"', 1, 0.5, maroon)
-    ..skills(["Sense Items", "Flee", "Escape", "Icicle", "Windstorm"]);
+    ..skills(
+        ["Sense Items", "Flee", "Escape", "Icicle", "Windstorm", "Tidal Wave"]);
 
   // TODO: More spell books and reorganize spells.
 }

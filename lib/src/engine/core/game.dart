@@ -199,6 +199,8 @@ class Event {
 // TODO: Move to content.
 /// A kind of [Event] that has occurred.
 class EventType {
+  static const pause = const EventType("pause");
+
   /// One step of a bolt.
   static const bolt = const EventType("bolt");
 

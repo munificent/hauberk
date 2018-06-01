@@ -3,9 +3,10 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+import 'element.dart';
 
 /// Creates a swath of damage that radiates out from a point.
-class RayAction extends Action {
+class RayAction extends ElementAction {
   /// The centerpoint that the cone is radiating from.
   final Vec _from;
 
@@ -71,6 +72,9 @@ class RayAction extends Action {
   }
 
   ActionResult onPerform() {
+    // TODO: When using this for casting light, should really hit the hero's
+    // tile too.
+
     // See which new tiles each ray hit now.
     _rays.removeWhere((ray) {
       var pos = new Vec(_from.x + (math.sin(ray) * _radius).round(),
@@ -82,22 +86,7 @@ class RayAction extends Action {
       // Don't hit the same tile twice.
       if (!_hitTiles.add(pos)) return false;
 
-      addEvent(EventType.cone, element: _hit.element, pos: pos);
-
-      // See if there is an actor there.
-      var target = game.stage.actorAt(pos);
-      if (target != null && target != actor) {
-        // TODO: Modify damage based on range?
-        _hit.perform(this, actor, target, canMiss: false);
-      }
-
-      // TODO: When using this for casting light, should really hit the hero's
-      // tile too.
-
-      // Hit stuff on the floor too.
-      var action = _hit.element.floorAction(pos, _hit, (pos - _from).length);
-      if (action != null) addAction(action);
-
+      hitTile(_hit, pos, (pos - _from).length);
       return false;
     });
 
