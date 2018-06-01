@@ -82,21 +82,12 @@ class Item implements Comparable<Item>, Noun {
   }
 
   String get nounText {
-    final name = new StringBuffer();
+    var name = type.quantifiableName;
 
-    if (prefix != null) {
-      name.write(prefix.name);
-      name.write(' ');
-    }
+    if (prefix != null) name = "${prefix.name} $name";
+    if (suffix != null) name = "$name ${suffix.name}";
 
-    name.write(Log.quantify(type.quantifiableName, count));
-
-    if (suffix != null) {
-      name.write(' ');
-      name.write(suffix.name);
-    }
-
-    return name.toString();
+    return Log.quantify(name, count);
   }
 
   Pronoun get pronoun => Pronoun.it;

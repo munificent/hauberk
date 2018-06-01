@@ -23,7 +23,7 @@ class Items {
     // TODO: Wands.
     weapons();
     lightSources();
-    helmets();
+    helms();
     bodyArmor();
     cloaks();
     gloves();

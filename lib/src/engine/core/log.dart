@@ -32,7 +32,7 @@ class Log {
       if (text.startsWith("(a) ")) {
         quantity = "a";
         text = text.substring(4);
-      } else if ("aeiou".contains(text[0])) {
+      } else if ("aeiouAEIOU".contains(text[0])) {
         quantity = "an";
       } else {
         quantity = "a";
