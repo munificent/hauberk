@@ -48,6 +48,7 @@ class Skills {
       new Escape(),
       // Sorcery.
       new Icicle(),
+      new BrilliantBeam(),
       new Windstorm(),
       new TidalWave()
     ]);

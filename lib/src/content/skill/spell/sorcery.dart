@@ -22,19 +22,37 @@ class Icicle extends Spell implements TargetSkill {
   }
 }
 
+class BrilliantBeam extends Spell implements TargetSkill {
+  String get name => "Brilliant Beam";
+  String get description =>
+      "Emits a blinding beam of radiance.";
+  int get baseComplexity => 14;
+  int get baseFocusCost => 20;
+  int get damage => 10;
+  int get range => 12;
+
+  Action onGetTargetAction(Game game, Vec target) {
+    var attack =
+    new Attack(new Noun("the light"), "sear", damage, range, Elements.light);
+    return new RayAction.cone(
+        game.hero.pos, target, attack.createHit());
+  }
+}
+
 class Windstorm extends Spell implements ActionSkill {
   String get name => "Windstorm";
   String get description =>
       "Summons a blast of air, spreading out from the sorceror.";
-  int get baseComplexity => 14;
+  int get baseComplexity => 18;
   int get baseFocusCost => 26;
-  int get damage => 6;
+  int get damage => 10;
   int get range => 6;
 
   Action onGetAction(Game game) {
     var attack =
         new Attack(new Noun("the wind"), "blast", damage, range, Elements.air);
-    return new RayAction.ring(game.hero.pos, attack.createHit());
+    return new FlowAction(
+        game.hero.pos, attack.createHit(), MotilitySet.flyAndWalk);
   }
 }
 
@@ -48,9 +66,9 @@ class TidalWave extends Spell implements ActionSkill {
 
   Action onGetAction(Game game) {
     var attack = new Attack(
-        new Noun("the wind"), "blast", damage, range, Elements.water);
-    return new FlowAction(
-        game.hero.pos, attack.createHit(), MotilitySet.doorAndWalk,
+        new Noun("the wave"), "inundate", damage, range, Elements.water);
+    return new FlowAction(game.hero.pos, attack.createHit(),
+        new MotilitySet([Motility.walk, Motility.door, Motility.swim]),
         slowness: 2);
   }
 }
