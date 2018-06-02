@@ -147,11 +147,16 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  /// How much "food" the hero has.
+  /// How full the hero is.
   ///
-  /// The hero gains food by exploring the level and can spend it while resting
-  /// to regain health.
-  double food = 0.0;
+  /// The hero raises this by eating food. It reduces constantly. The hero can
+  /// only rest while its non-zero.
+  ///
+  /// It starts half-full, presumably the hero had a nice meal before heading
+  /// off to adventure.
+  int get stomach => _stomach;
+  set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
+  int _stomach = Option.heroMaxStomach ~/ 2;
 
   int get maxHealth => fortitude.maxHealth;
 
@@ -200,10 +205,6 @@ class Hero extends Actor {
     // Reset the health now that we know the level, which in turn affects
     // fortitude.
     health = maxHealth;
-
-    // Start with some initial ability to rest so we aren't weakest at the very
-    // beginning.
-    food = maxHealth.toDouble();
 
     // Acquire any skills from the starting items.
     // TODO: Doing this here is hacky. It only really comes into play for
@@ -264,14 +265,6 @@ class Hero extends Actor {
     // TODO: Unify this with onDefend().
 
     return resistance;
-  }
-
-  /// Increases the hero's food by an appropriate amount after having explored
-  /// [numExplored] additional tiles.
-  void explore(int numExplored) {
-    // TODO: Tune abundance by depth, with some randomness?
-    const abundance = 12.0;
-    food += maxHealth * abundance * numExplored / game.stage.numExplorable;
   }
 
   // TODO: Not currently used since skills are not explicitly learned in the
@@ -432,6 +425,9 @@ class Hero extends Actor {
     // Make some noise.
     _lastNoise = action.noise;
 
+    // Always digesting.
+    stomach = math.max(0, stomach - 1);
+
     // TODO: Passive skills?
   }
 
@@ -456,8 +452,8 @@ class Hero extends Actor {
       return false;
     }
 
-    if (food == 0) {
-      game.log.error("You must explore more before you can rest.");
+    if (stomach == 0) {
+      game.log.error("You are too hungry to rest.");
       return false;
     }
 
@@ -588,8 +584,8 @@ class RestBehavior extends Behavior {
     if (hero.health == hero.maxHealth) return false;
     // TODO: Keep resting if focus is not at max?
 
-    if (hero.food <= 0) {
-      hero.game.log.message("You must explore more before you can rest.");
+    if (hero.stomach == 0) {
+      hero.game.log.message("You must eat before you can rest.");
       return false;
     }
 

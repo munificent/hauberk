@@ -3,6 +3,7 @@ import 'package:malison/malison.dart';
 import '../../engine.dart';
 import '../action/condition.dart';
 import '../action/detection.dart';
+import '../action/eat.dart';
 import '../action/flow.dart';
 import '../action/heal.dart';
 import '../action/mapping.dart';
@@ -167,6 +168,10 @@ class _ItemBuilder extends _BaseBuilder {
 
   void use(ItemUse use) {
     _use = use;
+  }
+
+  void food(int amount) {
+    use(() => new EatAction(amount));
   }
 
   void detection(List<DetectType> types, {int range}) {

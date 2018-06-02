@@ -651,7 +651,7 @@ class GameScreen extends Screen<Input> {
     _drawStat(
         terminal, 0, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
     terminal.writeAt(0, 1, 'Food', UIHue.helpText);
-    terminal.writeAt(10, 1, hero.food.ceil().toString(), persimmon);
+    terminal.writeAt(10, 1, hero.stomach.toString(), persimmon);
 
     _drawStat(terminal, 2, 'Level', hero.level, cerulean);
     if (hero.level < Hero.maxLevel) {

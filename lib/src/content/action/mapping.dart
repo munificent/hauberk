@@ -29,7 +29,7 @@ class MappingAction extends Action {
       }
 
       for (var pos in _tilesByDistance[_currentDistance]) {
-        var explored = game.stage.explore(pos, force: true);
+        game.stage.explore(pos, force: true);
         addEvent(EventType.map, pos: pos);
 
         if (_illuminate) {
@@ -39,10 +39,8 @@ class MappingAction extends Action {
 
         // Update the neighbors too mainly so that walls get explored.
         for (var dir in Direction.all) {
-          explored += game.stage.explore(pos + dir, force: true);
+          game.stage.explore(pos + dir, force: true);
         }
-
-        game.hero.explore(explored);
       }
 
       _currentDistance++;

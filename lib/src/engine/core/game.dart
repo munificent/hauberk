@@ -46,7 +46,7 @@ class Game {
     _stage.addActor(hero);
 
     yield "Calculating visibility";
-    _stage.finishBuild();
+    _stage.refreshView();
   }
 
   GameResult update() {

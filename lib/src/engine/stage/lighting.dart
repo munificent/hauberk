@@ -261,16 +261,14 @@ class Lighting {
   }
 
   void _updateExplored() {
-    var numExplored = 0;
     for (var y = 0; y < _stage.height; y++) {
       for (var x = 0; x < _stage.width; x++) {
-        numExplored += _stage.exploreAt(x, y);
+        _stage.exploreAt(x, y);
       }
     }
 
     // The hero can always tell what they're standing on, even in the dark.
-    numExplored += _stage.explore(_stage.game.hero.pos, force: true);
-    _stage.game.hero.explore(numExplored);
+    _stage.explore(_stage.game.hero.pos, force: true);
   }
 
   /// Adds [pos] with [brightness] to the queue of lit tiles needing

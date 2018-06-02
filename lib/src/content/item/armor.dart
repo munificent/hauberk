@@ -5,7 +5,7 @@ import 'builder.dart';
 
 void helms() {
   category(CharCode.latinCapitalLetterEWithAcute)
-    ..tag("equipment/armor/body/helm")
+    ..tag("equipment/armor/helm")
     ..toss(damage: 3, range: 5, breakage: 10);
   item("Leather Cap", 4, 0.5, persimmon)..armor(2, weight: 2);
   item("Chainmail Coif", 7, 0.5, steelGray)..armor(3, weight: 3);
@@ -17,7 +17,7 @@ void helms() {
 void bodyArmor() {
   // Robes.
   category(CharCode.latinSmallLetterOWithCircumflex)
-    ..tag("equipment/armor/body/robe");
+    ..tag("equipment/armor/body");
   item("Robe", 2, 0.5, cerulean)..armor(4);
   item("Fur-lined Robe", 6, 0.25, sherwood)..armor(6);
 

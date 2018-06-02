@@ -82,6 +82,13 @@ void pelts() {
   item("Fox Pelt", 2, 1.0, copper);
 }
 
+void food() {
+  category(CharCode.invertedExclamationMark, flags: "flammable")..tag("item/food");
+  item("Loaf of Bread", 1, 1.0, sandal)..stack(6)..food(200);
+  // TODO: More foods. Some should also cure minor conditions, or maybe cause them.
+  // Meat glyph: CharCode.vulgarFractionOneQuarter
+}
+
 void lightSources() {
   category(CharCode.notSign, verb: "hit[s]")
     ..tag("item/light")

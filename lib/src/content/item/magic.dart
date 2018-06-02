@@ -10,8 +10,6 @@ import 'builder.dart';
 void potions() {
   // TODO: Some potions should perform an effect when thrown.
 
-  // TODO: Make these foods?
-
   // Healing.
   category(CharCode.latinSmallLetterCWithCedilla, stack: 10, flags: "freezable")
     ..tag("magic/potion/healing")
@@ -102,9 +100,9 @@ void potions() {
 }
 
 void scrolls() {
-  // Consider adding "complexity" to items. Like heft but for intelligence, it's
-  // a required intellect level needed to use the item successfully. An item
-  // too complex for the user is likely to fail.
+  // TODO: Consider adding "complexity" to items. Like heft but for intellect,
+  // it's a required intellect level needed to use the item successfully. An
+  // item too complex for the user is likely to fail.
 
   // Teleportation.
   category(CharCode.latinSmallLetterAWithCircumflex,

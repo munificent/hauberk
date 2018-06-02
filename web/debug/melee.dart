@@ -25,7 +25,8 @@ Breed breed = new Breed(
     SpawnLocation.anywhere,
     MotilitySet.walk,
     meander: 0,
-    maxHealth: 200);
+    maxHealth: 200,
+    flags: new BreedFlags.fromSet(new Set()));
 
 main() {
   content = createContent();

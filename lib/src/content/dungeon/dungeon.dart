@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../floor_drops.dart';
+import '../item/items.dart';
 import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'blob.dart';
@@ -49,6 +50,10 @@ class Place {
 }
 
 class Dungeon {
+  // TODO: Generate magical shrine/chests that let the player choose from one
+  // of a few items. This should help reduce the number of useless-for-this-hero
+  // items that are dropped.
+
   // TODO: Hack temp. Static so that dungeon_test can access these while it's
   // being generated.
   static Iterable<Junction> debugJunctions;
@@ -142,6 +147,16 @@ class Dungeon {
 
     for (var place in _places) {
       _populatePlace(place);
+    }
+
+    // Scatter some food.
+    // TODO: Place these more intelligently.
+    var numFoods = rng.range(5, 10);
+    for (var i = 0; i < numFoods; i++) {
+      var pos = stage.findOpenTile();
+
+      var item = new Item(Items.types.tryChoose(depth, "food"), 1);
+      stage.addItem(item, pos);
     }
   }
 

@@ -15,6 +15,8 @@ class Items {
     litter();
     treasure();
     pelts();
+    food();
+    lightSources();
     potions();
     scrolls();
     spellBooks();
@@ -22,7 +24,6 @@ class Items {
     // TODO: Amulets.
     // TODO: Wands.
     weapons();
-    lightSources();
     helms();
     bodyArmor();
     cloaks();

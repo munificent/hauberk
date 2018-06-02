@@ -22,10 +22,6 @@ class Stage {
 
   int _currentActorIndex = 0;
 
-  /// The total number of tiles the [Hero] can explore in the stage.
-  int get numExplorable => _numExplorable;
-  int _numExplorable;
-
   int get width => tiles.width;
 
   int get height => tiles.height;
@@ -66,29 +62,6 @@ class Stage {
   Tile get(int x, int y) => tiles.get(x, y);
 
   void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
-
-  /// Called after the level generator has finished laying out the stage.
-  void finishBuild() {
-    // Count the explorable tiles. We assume the level is fully reachable, so
-    // any traversable tile or tile next to a traversable one is explorable.
-    _numExplorable = 0;
-    for (var pos in bounds.inflate(-1)) {
-      var tile = this[pos];
-      if (tile.isTraversable) {
-        _numExplorable++;
-      } else {
-        // See if it's next to an traversable one.
-        for (var dir in Direction.all) {
-          if (this[pos + dir].isTraversable) {
-            _numExplorable++;
-            break;
-          }
-        }
-      }
-    }
-
-    refreshView();
-  }
 
   void addActor(Actor actor) {
     assert(_actorsByTile[actor.pos] == null);
@@ -229,11 +202,8 @@ class Stage {
 
   /// Marks this tile at [pos] as explored if the hero can see it and hasn't
   /// previously explored it.
-  ///
-  /// Returns 1 if this tile was explored just now or 0 otherwise.
-  int exploreAt(int x, int y, {bool force}) {
+  void exploreAt(int x, int y, {bool force}) {
     var tile = tiles.get(x, y);
-    // make return bool, remove calls to this
     if (tile.updateExplored(force: force)) {
       if (tile.isVisible) {
         var actor = actorAt(new Vec(x, y));
@@ -241,13 +211,12 @@ class Stage {
           game.hero.seeMonster(actor);
         }
       }
-      return 1;
     }
-
-    return 0;
   }
 
-  int explore(Vec pos, {bool force}) => exploreAt(pos.x, pos.y, force: force);
+  void explore(Vec pos, {bool force}) {
+    exploreAt(pos.x, pos.y, force: force);
+  }
 
   void setOcclusion(Vec pos, bool isOccluded) {
     var tile = tiles[pos];

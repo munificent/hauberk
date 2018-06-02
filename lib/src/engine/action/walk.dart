@@ -37,7 +37,7 @@ class WalkAction extends Action {
       // If the hero runs into something in the dark, they can figure out what
       // it is.
       if (actor is Hero) {
-        game.hero.explore(game.stage.explore(pos, force: true));
+        game.stage.explore(pos, force: true);
       }
 
       return fail('{1} hit[s] the ${tile.name}.', actor);
@@ -123,10 +123,15 @@ class CloseDoorAction extends Action {
 class RestAction extends Action {
   ActionResult onPerform() {
     if (actor is Hero) {
-      _eatFood();
+      if (hero.stomach > 0 && !hero.poison.isActive) {
+        // TODO: Does this scale well when the hero has very high max health?
+        // Might need to go up by more than one point then.
+        hero.health++;
+      }
 
       // TODO: Have this amount increase over successive resting turns?
       // TODO: What should affect this rate?
+      // TODO: Can the hero regain focus when hungry?
       hero.focus += 10;
     } else if (!actor.isVisibleToHero) {
       // Monsters can rest if out of sight.
@@ -134,16 +139,6 @@ class RestAction extends Action {
     }
 
     return succeed();
-  }
-
-  /// Regenerates health when the hero rests, if possible.
-  void _eatFood() {
-    if (hero.food <= 0) return;
-    if (hero.poison.isActive) return;
-    if (hero.health == hero.maxHealth) return;
-
-    hero.food--;
-    hero.health++;
   }
 
   double get noise => Sound.restNoise;

@@ -17,9 +17,6 @@
     - improve spells
     - stat gain
   - gems
-- redo rest mechanic
-  - food items
-  - hunger
 - elements and moves
   - effects for all elements
     - life draining?

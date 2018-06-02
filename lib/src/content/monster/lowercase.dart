@@ -501,7 +501,7 @@ void worms() {
     ..attack("crawl[s] on", 5, Elements.fire);
 
   family("w", dodge: 10, meander: 4, flags: "fearless");
-  breed("giant earthworm", 2, salmon, 20, speed: -2)
+  breed("giant earthworm", 3, salmon, 20, speed: -2)
     ..placeIn("passage")
     ..attack("crawl[s] on", 5);
 

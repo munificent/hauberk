@@ -17,6 +17,9 @@ final allSpawns =
 final allItems =
     new List<Histogram<String>>.generate(101, (_) => new Histogram());
 
+final allAffixes =
+    new List<Histogram<String>>.generate(101, (_) => new Histogram());
+
 final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 Game game;
@@ -46,6 +49,7 @@ void spawnStuff() {
     var breeds = allBreeds[depth];
     var spawns = allSpawns[depth];
     var items = allItems[depth];
+    var affixes = allAffixes[depth];
 
     var numSpawns = 30 + depth;
     for (var i = 0; i < numSpawns; i++) {
@@ -64,6 +68,9 @@ void spawnStuff() {
       for (var spawn in breed.spawnAll()) {
         spawn.drop.spawnDrop((item) {
           items.add(item.toString());
+
+          if (item.prefix != null) affixes.add(item.prefix.toString());
+          if (item.suffix != null) affixes.add(item.suffix.toString());
         });
       }
     }
@@ -79,6 +86,7 @@ void generateTable() {
       <td>Breeds</td>
       <td>Monsters</td>
       <td>Items</td>
+      <td>Affixes</td>
     </tr>
   </thead>''');
 
@@ -86,7 +94,7 @@ void generateTable() {
     text.write('<tr><td>$depth</td>');
 
     renderColumn(Histogram<String> histogram) {
-      text.write('<td width="34%">');
+      text.write('<td width="25%">');
       var more = 0;
       for (var name in histogram.descending()) {
         var width = histogram.count(name);
@@ -109,6 +117,7 @@ void generateTable() {
     renderColumn(allBreeds[depth]);
     renderColumn(allSpawns[depth]);
     renderColumn(allItems[depth]);
+    renderColumn(allAffixes[depth]);
 
     text.write('</tr>');
   }

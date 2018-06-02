@@ -56,7 +56,8 @@ class GameContent implements Content {
     var initialItems = {
       "Mending Salve": 3,
       "Scroll of Sidestepping": 2,
-      "Tallow Candle": 4
+      "Tallow Candle": 4,
+      "Loaf of Bread": 5
     };
 
     // TODO: Need to discover skills for these items too.
