@@ -17,7 +17,7 @@ void helms() {
 void bodyArmor() {
   // Robes.
   category(CharCode.latinSmallLetterOWithCircumflex)
-    ..tag("equipment/armor/body");
+    ..tag("equipment/armor/body/robe");
   item("Robe", 2, 0.5, cerulean)..armor(4);
   item("Fur-lined Robe", 6, 0.25, sherwood)..armor(6);
 

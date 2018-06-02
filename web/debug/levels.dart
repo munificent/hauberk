@@ -67,10 +67,10 @@ void spawnStuff() {
 
       for (var spawn in breed.spawnAll()) {
         spawn.drop.spawnDrop((item) {
-          items.add(item.toString());
+          items.add(item.type.name);
 
-          if (item.prefix != null) affixes.add(item.prefix.toString());
-          if (item.suffix != null) affixes.add(item.suffix.toString());
+          if (item.prefix != null) affixes.add("${item.prefix.name} ___");
+          if (item.suffix != null) affixes.add("___ ${item.suffix.name}");
         });
       }
     }
@@ -101,7 +101,10 @@ void generateTable() {
         if (width < 1) {
           more++;
           continue;
+        } if (width > 100) {
+          width = 100;
         }
+
         text.write('<div class="bar" style="width: ${width}px;"></div>');
         text.write(" $name");
         text.write("<br>");
