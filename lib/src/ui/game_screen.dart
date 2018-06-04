@@ -648,24 +648,28 @@ class GameScreen extends Screen<Input> {
   void _drawSidebar(
       Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
-    _drawStat(
-        terminal, 0, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
-    terminal.writeAt(0, 1, 'Food', UIHue.helpText);
-    terminal.writeAt(10, 1, hero.stomach.toString(), persimmon);
+    terminal.writeAt(0, 0, hero.name, UIHue.primary);
+    terminal.writeAt(0, 1, hero.race.name, UIHue.text);
+    terminal.writeAt(0, 2, hero.heroClass.name, UIHue.text);
 
-    _drawStat(terminal, 2, 'Level', hero.level, cerulean);
+    _drawStat(
+        terminal, 4, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
+    terminal.writeAt(0, 5, 'Food', UIHue.helpText);
+    terminal.writeAt(10, 5, hero.stomach.toString(), persimmon);
+
+    _drawStat(terminal, 6, 'Level', hero.level, cerulean);
     if (hero.level < Hero.maxLevel) {
       var levelPercent = 100 *
           (hero.experience - calculateLevelCost(hero.level)) ~/
           (calculateLevelCost(hero.level + 1) - calculateLevelCost(hero.level));
-      terminal.writeAt(15, 2, '$levelPercent%', ultramarine);
+      terminal.writeAt(15, 6, '$levelPercent%', ultramarine);
     }
 
-    var y = 4;
+    var x = 0;
     drawStat(StatBase stat) {
-      terminal.writeAt(0, y, stat.name, UIHue.helpText);
-      terminal.writeAt(10, y, stat.value.toString(), ash);
-      y++;
+      terminal.writeAt(x, 8, stat.name.substring(0, 3), UIHue.helpText);
+      terminal.writeAt(x, 9, stat.value.toString().padLeft(3), UIHue.text);
+      x += 4;
     }
 
     drawStat(hero.strength);
@@ -674,16 +678,16 @@ class GameScreen extends Screen<Input> {
     drawStat(hero.intellect);
     drawStat(hero.will);
 
-    terminal.writeAt(0, 10, 'Focus', UIHue.helpText);
+    terminal.writeAt(0, 11, 'Focus', UIHue.helpText);
 
-    Draw.meter(terminal, 9, 10, 10, hero.focus, hero.intellect.maxFocus,
+    Draw.meter(terminal, 9, 11, 10, hero.focus, hero.intellect.maxFocus,
         cerulean, ultramarine);
 
-    _drawStat(terminal, 12, 'Armor',
+    _drawStat(terminal, 13, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit(null);
-    _drawStat(terminal, 13, 'Weapon', hit.damageString, turquoise);
+    _drawStat(terminal, 14, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.
     terminal.writeAt(0, 16, '@', heroColor);
@@ -724,7 +728,7 @@ class GameScreen extends Screen<Input> {
     // Show the "best" ones first.
     unseen.sort();
 
-    var x = 0;
+    x = 0;
     var lastGlyph;
     for (var item in unseen.reversed) {
       if (item.appearance != lastGlyph) {

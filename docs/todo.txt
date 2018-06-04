@@ -68,7 +68,11 @@
   - exploring all dungeon
   - killing all monsters
   - finding all items
-- end game
+- ui
+  - show proficiencies on new hero screen
+  - help docs
+  - animated tiles for water, lava, fire, etc.
+- gameplay
   - victory
   - perma-death
-- help docs
+  - don't award new levels until leaving dungeon?

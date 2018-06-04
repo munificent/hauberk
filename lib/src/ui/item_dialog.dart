@@ -308,6 +308,8 @@ class ItemDialog extends Screen<Input> {
       // TODO: Encumbrance.
     }
 
+    // TODO: Show spells for spellbooks.
+
     writeSection("Resistances");
     var x = 3;
     for (var element in _gameScreen.game.content.elements) {

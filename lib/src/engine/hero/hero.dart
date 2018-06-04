@@ -105,8 +105,12 @@ class Hero extends Actor {
   String get nounText => 'you';
   Pronoun get pronoun => Pronoun.you;
 
+  // TODO: Instead of copying all of these immutable values out of HeroSave,
+  // move them to a separate shared object.
+  final String name;
   final RaceStats race;
   final HeroClass heroClass;
+
   final Inventory inventory;
   final Equipment equipment;
 
@@ -184,7 +188,8 @@ class Hero extends Actor {
   }
 
   Hero(Game game, Vec pos, HeroSave save)
-      : race = save.race,
+      : name = save.name,
+        race = save.race,
         heroClass = save.heroClass,
         inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
