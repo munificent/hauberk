@@ -29,7 +29,7 @@ void bodyArmor() {
   item("Jerkin", 7, 0.5, gunsmoke)..armor(8, weight: 1);
   item("Leather Armor", 10, 0.5, garnet)..armor(11, weight: 2);
   item("Padded Armor", 14, 0.5, steelGray)..armor(15, weight: 3);
-  item("Studded Leather Armor", 17, 0.5, slate)..armor(22, weight: 4);
+  item("Studded Armor", 17, 0.5, slate)..armor(22, weight: 4);
 
   // Mail armor.
   category(CharCode.latinSmallLetterOWithGrave)..tag("equipment/armor/body");
@@ -61,7 +61,7 @@ void gloves() {
     ..tag("equipment/armor/gloves")
     ..toss(damage: 5, range: 4, breakage: 20);
   // TODO: Encumbrance.
-  item("Pair[s] of Leather Gloves", 4, 0.5, sandal)..armor(2);
+  item("Pair[s] of Gloves", 4, 0.5, sandal)..armor(2);
   item("Set[s] of Bracers", 17, 0.5, garnet)..armor(3, weight: 1);
   item("Pair[s] of Gauntlets", 23, 0.5, steelGray)..armor(4, weight: 2);
 }
@@ -80,12 +80,12 @@ void shields() {
 
 void boots() {
   category(CharCode.latinSmallLetterIWithGrave)..tag("equipment/armor/boots");
-  item("Pair[s] of Leather Sandals", 2, 0.24, persimmon)..armor(1);
-  item("Pair[s] of Leather Shoes", 8, 0.3, garnet)..armor(2);
+  item("Pair[s] of Sandals", 2, 0.24, persimmon)..armor(1);
+  item("Pair[s] of Shoes", 8, 0.3, garnet)..armor(2);
 
   category(CharCode.latinCapitalLetterAWithDiaeresis)
     ..tag("equipment/armor/boots");
-  item("Pair[s] of Leather Boots", 14, 0.3, persimmon)..armor(6, weight: 1);
-  item("Pair[s] of Metal Shod Boots", 22, 0.3, slate)..armor(8, weight: 2);
+  item("Pair[s] of Boots", 14, 0.3, persimmon)..armor(6, weight: 1);
+  item("Pair[s] of Plated Boots", 22, 0.3, slate)..armor(8, weight: 2);
   item("Pair[s] of Greaves", 47, 0.25, gunsmoke)..armor(12, weight: 3);
 }

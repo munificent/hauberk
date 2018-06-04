@@ -1,8 +1,6 @@
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
-// TODO: Directly importing this is a little hacky. Put "appearance" on Element?
-import '../content/elements.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'hero_equipment_dialog.dart';
@@ -84,22 +82,5 @@ abstract class HeroInfoDialog extends Screen<Input> {
 
       y += 2;
     }
-  }
-
-  Color elementColor(Element element) {
-    return {
-      Element.none: gunsmoke,
-      Elements.air: Color.lightAqua,
-      Elements.earth: persimmon,
-      Elements.fire: Color.red,
-      Elements.water: Color.blue,
-      Elements.acid: Color.lightGreen,
-      Elements.cold: Color.lightBlue,
-      Elements.lightning: Color.lightPurple,
-      Elements.poison: Color.green,
-      Elements.dark: Color.gray,
-      Elements.light: Color.lightYellow,
-      Elements.spirit: Color.purple
-    }[element];
   }
 }

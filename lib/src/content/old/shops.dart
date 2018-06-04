@@ -44,15 +44,15 @@ class Shops {
       "Jerkin",
       "Leather Armor",
       "Padded Armor",
-      "Studded Leather Armor",
+      "Studded Armor",
       "Mail Hauberk",
       "Scale Mail",
       "Robe",
       "Fur-lined Robe",
-      "Pair of Leather Sandals",
-      "Pair of Leather Shoes",
-      "Pair of Leather Boots",
-      "Pair of Metal Shod Boots",
+      "Pair of Sandals",
+      "Pair of Shoes",
+      "Pair of Boots",
+      "Pair of Plated Boots",
       "Pair of Greaves"
     ]);
 

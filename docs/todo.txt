@@ -16,6 +16,7 @@
   - affixes
     - improve spells
     - stat gain
+    - reduce weight, heft, encumbrance
   - gems
 - elements and moves
   - effects for all elements
@@ -36,6 +37,9 @@
   - mage
     - more spell schools
     - more spells
+  - warrior
+    - toughness
+    - other passive disciplines
   - subclasses
 - dungeon
   - themed rooms
@@ -53,8 +57,18 @@
   - different generation parameter styles (more windy passages, etc.)
 - crafting?
   - limit recipes to certain classes like alchemist and smith?
+  - maybe make crafting another skill category that is not owned by a single
+    class
+    - then each main class type will have a subclass that leans towards crafting
+      - mage -> alchemist
+      - warrior -> smith
+      - priest -> shaman
+      - rogue -> tinker
 - awards?
   - exploring all dungeon
   - killing all monsters
   - finding all items
+- end game
+  - victory
+  - perma-death
 - help docs

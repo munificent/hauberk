@@ -132,9 +132,9 @@ class ItemScreen extends Screen<Input> {
         : null;
 
     if (_showingInventory) {
-      drawItems(terminal, x, 4, _save.inventory, canSelect);
+      drawItems(terminal, x, 4, _save.inventory, canSelect: canSelect);
     } else {
-      drawEquipment(terminal, x, 4, _save.equipment, canSelect);
+      drawEquipment(terminal, x, 4, _save.equipment, canSelect: canSelect);
     }
   }
 
@@ -143,7 +143,7 @@ class ItemScreen extends Screen<Input> {
 
     var items = _place.items(this);
     if (_mode.selectingFromHero || _mode.selectingFromPlace) {
-      drawItems(terminal, x, 4, items, (item) {
+      drawItems(terminal, x, 4, items, canSelect: (item) {
         if (!_mode.selectingFromPlace) return false;
         return _mode.canSelectItem(this, item);
       });

@@ -28,6 +28,12 @@ class ItemDialog extends Screen<Input> {
   /// The number of items the player selected.
   int _count;
 
+  /// Whether the shift key is currently pressed.
+  bool _shiftDown = false;
+
+  /// The current item being inspected or `null` if there is none.
+  Item _inspectedItem;
+
   bool get isTransparent => true;
 
   /// True if the item dialog supports tabbing between item lists.
@@ -87,7 +93,13 @@ class ItemDialog extends Screen<Input> {
   }
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
-    if (shift || alt) return false;
+    if (keyCode == KeyCode.shift) {
+      _shiftDown = true;
+      dirty();
+      return true;
+    }
+
+    if (alt) return false;
 
     // Can't switch view or select an item while selecting a count.
     if (_selectedItem != null) return false;
@@ -97,8 +109,18 @@ class ItemDialog extends Screen<Input> {
       return true;
     }
 
-    if (keyCode == KeyCode.tab && canSwitchLocations) {
+    if (!shift && keyCode == KeyCode.tab && canSwitchLocations) {
       _advanceLocation();
+      dirty();
+      return true;
+    }
+
+    return false;
+  }
+
+  bool keyUp(int keyCode, {bool shift, bool alt}) {
+    if (keyCode == KeyCode.shift) {
+      _shiftDown = false;
       dirty();
       return true;
     }
@@ -114,15 +136,26 @@ class ItemDialog extends Screen<Input> {
     Draw.frame(terminal, 0, 0, 43, boxHeight);
 
     if (_selectedItem == null) {
-      terminal.writeAt(1, 0, _command.query(_location), UIHue.selection);
+      if (_shiftDown) {
+        terminal.writeAt(1, 0, "Inspect which item?", UIHue.selection);
+      } else {
+        terminal.writeAt(1, 0, _command.query(_location), UIHue.selection);
+      }
     } else {
       var query = _command.queryCount(_location);
       terminal.writeAt(1, 0, query, UIHue.text);
       terminal.writeAt(query.length + 2, 0, _count.toString(), UIHue.selection);
     }
 
-    var select =
-        _selectedItem == null ? '[A-Z] Select item' : '[↕] Change quantity';
+    var select = '[↕] Change quantity';
+    if (_selectedItem == null) {
+      if (_shiftDown) {
+        select = '[A-Z] Inspect item';
+      } else {
+        select = '[A-Z] Select item, [Shift] Inspect';
+      }
+    }
+
     var helpText = canSwitchLocations ? ', [Tab] Switch view' : '';
 
     terminal.writeAt(
@@ -130,10 +163,15 @@ class ItemDialog extends Screen<Input> {
 
     if (itemCount > 0) {
       if (_location == ItemLocation.equipment) {
-        drawEquipment(
-            terminal, 1, 2, _gameScreen.game.hero.equipment, _canSelect);
+        drawEquipment(terminal, 1, 2, _gameScreen.game.hero.equipment,
+            canSelect: _canSelect,
+            capitals: _shiftDown,
+            inspected: _inspectedItem);
       } else {
-        drawItems(terminal, 1, 2, _getItems(), _canSelect);
+        drawItems(terminal, 1, 2, _getItems(),
+            canSelect: _canSelect,
+            capitals: _shiftDown,
+            inspected: _inspectedItem);
       }
     } else {
       String message;
@@ -153,9 +191,187 @@ class ItemDialog extends Screen<Input> {
 
       terminal.writeAt(1, 2, message, UIHue.disabled);
     }
+
+    if (_inspectedItem != null) {
+      _renderInspected(terminal.rect(43, 0, 37, 20));
+    }
+  }
+
+  void _renderInspected(Terminal terminal) {
+    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
+
+    terminal.drawGlyph(1, 0, _inspectedItem.appearance);
+    terminal.writeAt(3, 0, _inspectedItem.nounText, UIHue.primary);
+
+    var y = 2;
+
+    writeSection(String label) {
+      // Put a blank line between sections.
+      if (y != 2) y++;
+      terminal.writeAt(1, y, "$label:", UIHue.selection);
+      y++;
+    }
+
+    writeLabel(String label) {
+      terminal.writeAt(3, y, "$label:", UIHue.text);
+    }
+
+    // TODO: Mostly copied from hero_equipment_dialog. Unify.
+    writeScale(int x, int y, double scale) {
+      var string = scale.toStringAsFixed(1);
+
+      var xColor = UIHue.disabled;
+      var numberColor = UIHue.disabled;
+      if (scale > 1.0) {
+        xColor = sherwood;
+        numberColor = peaGreen;
+      } else if (scale < 1.0) {
+        xColor = maroon;
+        numberColor = brickRed;
+      }
+
+      terminal.writeAt(x, y, "x", xColor);
+      terminal.writeAt(x + 1, y, string, numberColor);
+    }
+
+    // TODO: Mostly copied from hero_equipment_dialog. Unify.
+    writeBonus(int x, int y, int bonus) {
+      var string = bonus.abs().toString();
+
+      if (bonus > 0) {
+        terminal.writeAt(x + 2 - string.length, y, "+", sherwood);
+        terminal.writeAt(x + 3 - string.length, y, string, peaGreen);
+      } else if (bonus < 0) {
+        terminal.writeAt(x + 2 - string.length, y, "-", maroon);
+        terminal.writeAt(x + 3 - string.length, y, string, brickRed);
+      } else {
+        terminal.writeAt(x + 2 - string.length, y, "+", UIHue.disabled);
+        terminal.writeAt(x + 3 - string.length, y, string, UIHue.disabled);
+      }
+    }
+
+    writeStat(String label, Object value) {
+      if (value == null) return;
+
+      writeLabel(label);
+      terminal.writeAt(16, y, value.toString(), UIHue.primary);
+      y++;
+    }
+
+    // TODO: Handle armor that gives attack bonuses even though the item
+    // itself has no attack.
+    if (_inspectedItem.attack != null) {
+      writeSection("Attack");
+
+      writeLabel("Damage");
+      if (_inspectedItem.element != Element.none) {
+        terminal.writeAt(13, y, _inspectedItem.element.abbreviation,
+            elementColor(_inspectedItem.element));
+      }
+
+      terminal.writeAt(
+          16, y, _inspectedItem.attack.damage.toString(), UIHue.text);
+      writeScale(20, y, _inspectedItem.damageScale);
+      writeBonus(24, y, _inspectedItem.damageBonus);
+      terminal.writeAt(28, y, "=", UIHue.secondary);
+
+      var damage = _inspectedItem.attack.damage * _inspectedItem.damageScale +
+          _inspectedItem.damageBonus;
+      terminal.writeAt(30, y, damage.toStringAsFixed(2).padLeft(6), carrot);
+      y++;
+
+      if (_inspectedItem.strikeBonus != 0) {
+        writeLabel("Strike");
+        writeBonus(16, y, _inspectedItem.strikeBonus);
+        y++;
+      }
+
+      if (_inspectedItem.attack.isRanged) {
+        writeStat("Range", _inspectedItem.attack.range);
+      }
+
+      writeStat("Heft", _inspectedItem.heft);
+    }
+
+    if (_inspectedItem.armor != 0) {
+      writeSection("Defense");
+      writeLabel("Armor");
+      terminal.writeAt(16, y, _inspectedItem.baseArmor.toString(), UIHue.text);
+      writeBonus(20, y, _inspectedItem.armorModifier);
+      terminal.writeAt(28, y, "=", UIHue.secondary);
+
+      var armor = _inspectedItem.armor.toString().padLeft(6);
+      terminal.writeAt(30, y, armor, peaGreen);
+      y++;
+
+      writeStat("Weight", _inspectedItem.weight);
+      // TODO: Encumbrance.
+    }
+
+    writeSection("Resistances");
+    var x = 3;
+    for (var element in _gameScreen.game.content.elements) {
+      if (element == Element.none) continue;
+      var resistance = _inspectedItem.resistance(element);
+      writeBonus(x - 1, y, resistance);
+      terminal.writeAt(x, y + 1, element.abbreviation,
+          resistance == 0 ? UIHue.disabled : elementColor(element));
+      x += 3;
+    }
+    y += 2;
+
+    // TODO: Show the stats from each affix.
+
+    var description = <String>[];
+
+    // TODO: General description.
+    // TODO: Equip slot.
+    // TODO: Use.
+
+    writeSection("Description");
+    if (_inspectedItem.toss != null) {
+      var toss = _inspectedItem.toss;
+
+      var element = "";
+      if (toss.attack.element != Element.none) {
+        element = " ${toss.attack.element.name}";
+      }
+
+      description.add("It can be thrown for ${toss.attack.damage}$element"
+          " damage up to range ${toss.attack.range}.");
+
+      if (toss.breakage != 0) {
+        description
+            .add("It has a ${toss.breakage}% chance of breaking when thrown.");
+      }
+
+      // TODO: Describe toss use.
+    }
+
+    if (_inspectedItem.emanationLevel > 0) {
+      description.add("It emanates ${_inspectedItem.emanationLevel} light.");
+    }
+
+    const flagDescriptions = const {
+      "flammable": "It can be destroyed by fire.",
+      "freezable": "It can be destroyed by cold.",
+    };
+
+    for (var flag in _inspectedItem.flags) {
+      description.add(flagDescriptions[flag]);
+    }
+
+    for (var line in Log.wordWrap(terminal.width - 4, description.join(" "))) {
+      terminal.writeAt(2, y, line, UIHue.text);
+      y++;
+    }
+
+    // TODO: Max stack size?
   }
 
   bool _canSelect(Item item) {
+    if (_shiftDown) return true;
+
     if (_selectedItem != null) return item == _selectedItem;
     return _command.canSelect(item);
   }
@@ -167,15 +383,20 @@ class ItemDialog extends Screen<Input> {
     // Can't select an empty equipment slot.
     if (items[index] == null) return;
 
-    if (!_command.canSelect(items[index])) return;
-
-    if (items[index].count > 1 && _command.needsCount) {
-      _selectedItem = items[index];
-      _count = _selectedItem.count;
+    if (_shiftDown) {
+      _inspectedItem = items[index];
       dirty();
     } else {
-      // Either we don't need a count or there's only one item.
-      _command.selectItem(this, items[index], 1, _location);
+      if (!_command.canSelect(items[index])) return;
+
+      if (items[index].count > 1 && _command.needsCount) {
+        _selectedItem = items[index];
+        _count = _selectedItem.count;
+        dirty();
+      } else {
+        // Either we don't need a count or there's only one item.
+        _command.selectItem(this, items[index], 1, _location);
+      }
     }
   }
 
@@ -201,8 +422,9 @@ class ItemDialog extends Screen<Input> {
 }
 
 void drawEquipment(Terminal terminal, int x, int y, Equipment equipment,
-    [bool canSelect(Item item)]) {
-  _drawItems(terminal, x, y, equipment.slots, equipment.slotTypes, canSelect);
+    {bool canSelect(Item item), bool capitals, Item inspected}) {
+  _drawItems(terminal, x, y, equipment.slots, equipment.slotTypes, canSelect,
+      capitals: capitals, inspected: inspected);
 }
 
 /// Draws a list of [items] on [terminal] at [x], [y].
@@ -224,12 +446,18 @@ void drawEquipment(Terminal terminal, int x, int y, Equipment equipment,
 ///     01234567890123456789012345678901234567890123456789
 ///     a) = a Glimmering War Hammer of Wo... »29 992,106
 void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
-    [bool canSelect(Item item)]) {
-  _drawItems(terminal, x, y, items, null, canSelect);
+    {bool canSelect(Item item), bool capitals, Item inspected}) {
+  _drawItems(terminal, x, y, items, null, canSelect,
+      capitals: capitals, inspected: inspected);
 }
 
 void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
-    List<String> slotNames, bool canSelect(Item item)) {
+    List<String> slotNames, bool canSelect(Item item),
+    {bool capitals, Item inspected}) {
+  capitals ??= false;
+  var letters =
+      capitals ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz";
+
   var i = 0;
   var letter = 0;
   for (var item in items) {
@@ -265,8 +493,7 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     }
 
     terminal.writeAt(x, itemY, " )", borderColor);
-    terminal.writeAt(
-        x, itemY, "abcdefghijklmnopqrstuvwxyz"[letter], letterColor);
+    terminal.writeAt(x, itemY, letters[letter], letterColor);
     letter++;
 
     if (enabled) {
@@ -290,6 +517,11 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
       drawStat("»", hit.damageString, carrot, garnet);
     } else if (item.armor != 0) {
       drawStat("•", item.armor, peaGreen, sherwood);
+    }
+
+    if (item != null && item == inspected) {
+      terminal.drawChar(
+          42, itemY, CharCode.blackRightPointingPointer, UIHue.selection);
     }
 
     // TODO: Show heft and weight.

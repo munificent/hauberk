@@ -101,7 +101,8 @@ void generateTable() {
         if (width < 1) {
           more++;
           continue;
-        } if (width > 100) {
+        }
+        if (width > 100) {
           width = 100;
         }
 

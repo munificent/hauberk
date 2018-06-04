@@ -24,18 +24,16 @@ class Icicle extends Spell implements TargetSkill {
 
 class BrilliantBeam extends Spell implements TargetSkill {
   String get name => "Brilliant Beam";
-  String get description =>
-      "Emits a blinding beam of radiance.";
+  String get description => "Emits a blinding beam of radiance.";
   int get baseComplexity => 14;
   int get baseFocusCost => 20;
   int get damage => 10;
   int get range => 12;
 
   Action onGetTargetAction(Game game, Vec target) {
-    var attack =
-    new Attack(new Noun("the light"), "sear", damage, range, Elements.light);
-    return new RayAction.cone(
-        game.hero.pos, target, attack.createHit());
+    var attack = new Attack(
+        new Noun("the light"), "sear", damage, range, Elements.light);
+    return new RayAction.cone(game.hero.pos, target, attack.createHit());
   }
 }
 

@@ -83,14 +83,17 @@ void pelts() {
 }
 
 void food() {
-  category(CharCode.invertedExclamationMark, flags: "flammable")..tag("item/food");
-  item("Loaf of Bread", 1, 1.0, sandal)..stack(6)..food(200);
+  category(CharCode.invertedExclamationMark, flags: "flammable")
+    ..tag("item/food");
+  item("Loa[f|ves] of Bread", 1, 1.0, sandal)
+    ..stack(6)
+    ..food(200);
   // TODO: More foods. Some should also cure minor conditions, or maybe cause them.
   // Meat glyph: CharCode.vulgarFractionOneQuarter
 }
 
 void lightSources() {
-  category(CharCode.notSign, verb: "hit[s]")
+  category(CharCode.notSign, verb: "hit[s]", flags: "flammable")
     ..tag("item/light")
     ..toss(breakage: 70);
 
@@ -124,6 +127,7 @@ void lightSources() {
 
   // TODO: Maybe allow this to be equipped and increase its radius when held?
   item("Lantern", 15, 0.3, gold)
+    ..flags("-flammable")
     ..toss(damage: 5, range: 5, element: Elements.fire)
     ..light(8);
 }

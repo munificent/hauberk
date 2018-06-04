@@ -1,5 +1,9 @@
 import 'package:malison/malison.dart';
 
+import 'engine.dart';
+// TODO: Directly importing this is a little hacky. Put "appearance" on Element?
+import 'content/elements.dart';
+
 // Basic palette.
 // TODO: Better name.
 const nearBlack = const Color(0x07, 0x06, 0x12);
@@ -48,4 +52,21 @@ class UIHue {
   static const disabled = steelGray;
   static const primary = ash;
   static const secondary = steelGray;
+}
+
+Color elementColor(Element element) {
+  return {
+    Element.none: gunsmoke,
+    Elements.air: Color.lightAqua,
+    Elements.earth: persimmon,
+    Elements.fire: Color.red,
+    Elements.water: Color.blue,
+    Elements.acid: Color.lightGreen,
+    Elements.cold: Color.lightBlue,
+    Elements.lightning: Color.lightPurple,
+    Elements.poison: Color.green,
+    Elements.dark: Color.gray,
+    Elements.light: Color.lightYellow,
+    Elements.spirit: Color.purple
+  }[element];
 }
