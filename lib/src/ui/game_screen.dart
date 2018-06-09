@@ -618,25 +618,28 @@ class GameScreen extends Screen<Input> {
 
     for (final message in game.log.messages) {
       var color;
+      var messagesLength = game.log.messages.length - 1;
+
       switch (message.type) {
         case LogType.message:
-          color = gunsmoke;
+          color = (y == messagesLength) ? gunsmoke : gunsmokeDimmed;
           break;
         case LogType.error:
-          color = brickRed;
+          color = (y == messagesLength) ? brickRed : brickRedDimmed;
           break;
         case LogType.quest:
-          color = violet;
+          color = (y == messagesLength) ? violet : violetDimmed;
           break;
         case LogType.gain:
-          color = gold;
+          color = (y == messagesLength) ? gold : goldDimmed;
           break;
         case LogType.help:
-          color = peaGreen;
+          color = (y == messagesLength) ? peaGreen : peaGreenDimmed;
           break;
       }
 
       terminal.writeAt(0, y, message.text, color);
+
       if (message.count > 1) {
         terminal.writeAt(
             message.text.length, y, ' (x${message.count})', steelGray);
