@@ -12,20 +12,18 @@ class Energy {
   static final gains = const [
     15, // 1/4 normal speed
     20, // 1/3 normal speed
-    25,
+    24, // 2/5 normal speed
     30, // 1/2 normal speed
-    40,
-    50,
+    40, // 2/3 normal speed
+    50, // 5/6 normal speed
     60, // normal speed
-    80,
-    100,
+    80, // 4/3 normal speed
+    100, // 5/3 normal speed
     120, // 2x normal speed
-    150,
+    150, // 3/2 normal speed
     180, // 3x normal speed
     240 // 4x normal speed
   ];
-
-  static num ticksAtSpeed(int speed) => actionCost / gains[normalSpeed + speed];
 
   int energy = 0;
 

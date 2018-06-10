@@ -10,9 +10,10 @@ class Elements {
 
   // TODO: Start fires on the ground.
   static final fire = new Element("fire", "Fi", 1.2,
-      attack: (_) => new BurnAction(),
+      emanates: true,
+      attack: (_) => new BurnActorAction(),
       floor: (pos, hit, distance) =>
-          new DestroyOnFloorAction(pos, 3, "flammable", "burns up"));
+          new BurnFloorAction(pos, hit.averageDamage.toInt()));
 
   // TODO: Push back attack action.
   // TODO: Move items on floor.

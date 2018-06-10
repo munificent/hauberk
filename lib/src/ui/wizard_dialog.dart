@@ -86,7 +86,7 @@ class WizardDialog extends Screen<Input> {
     for (var pos in stage.bounds) {
       // If the tile isn't opaque, explore it.
       if (!stage[pos].blocksView) {
-        stage[pos].emanation = 255;
+        stage[pos].addEmanation(255);
       }
     }
 

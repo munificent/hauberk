@@ -80,6 +80,9 @@ class RayAction extends ElementAction {
       var pos = new Vec(_from.x + (math.sin(ray) * _radius).round(),
           _from.y + (math.cos(ray) * _radius).round());
 
+      // TODO: Support rays that hit closed doors but do not go past them. That
+      // would let fire attacks set closed doors on fire.
+
       // Kill the ray if it's obstructed.
       if (!game.stage[pos].isFlyable) return true;
 

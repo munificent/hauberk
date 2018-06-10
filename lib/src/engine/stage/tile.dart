@@ -1,3 +1,4 @@
+import '../core/element.dart';
 import 'lighting.dart';
 
 /// Enum-like class defining ways that monsters can move over tiles.
@@ -57,7 +58,9 @@ class MotilitySet {
 class TileType {
   final String name;
   final bool isExit;
+  final int emanation;
   final appearance;
+
   TileType opensTo;
   TileType closesTo;
 
@@ -67,8 +70,9 @@ class TileType {
   bool get isWalkable => canEnter(Motility.walk);
 
   TileType(this.name, this.appearance, Iterable<Motility> motilities,
-      {this.isExit})
-      : motilities = new MotilitySet(motilities);
+      {int emanation, this.isExit})
+      : emanation = emanation ?? 0,
+        motilities = new MotilitySet(motilities);
 
   bool canEnter(Motility motility) => this.motilities.contains(motility);
   bool canEnterAny(MotilitySet motilities) =>
@@ -106,14 +110,19 @@ class Tile {
   /// from nearby tiles, light from actors, etc.
   int illumination = 0;
 
-  /// The amount of light the tile itself produces.
+  /// The amount of light the tile produces.
   ///
-  /// If you set this, make sure to call `Stage.tileEmanationChanged()`.
-  // TODO: Should any of this come from the type?
-  int _emanation = 0;
-  int get emanation => _emanation;
-  set emanation(int value) {
-    _emanation = value.clamp(0, Lighting.max);
+  /// Includes "native" emanation from the tile itself along with light that
+  /// has been applied to it.
+  int get emanation => (type.emanation + _appliedEmanation).clamp(0, Lighting.max);
+
+  /// The extra emanation applied to this tile independent of its type from
+  /// things like light spells.
+  int _appliedEmanation = 0;
+
+  /// If you call this, make sure to call [Stage.tileEmanationChanged()].
+  void addEmanation(int offset) {
+    _appliedEmanation = (_appliedEmanation + offset).clamp(0, Lighting.max);
   }
 
   bool _isExplored = false;
@@ -138,6 +147,13 @@ class Tile {
   void updateOcclusion(bool isOccluded) {
     _isOccluded = isOccluded;
   }
+
+  /// The element of the substance occupying this file: fire, water, poisonous
+  /// gas, etc.
+  Element element = Element.none;
+
+  /// How much of [_element] is occupying the tile.
+  int substance = 0;
 
   bool get isWalkable => type.isWalkable;
   bool get isTraversable => type.isTraversable;

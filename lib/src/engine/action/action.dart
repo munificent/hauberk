@@ -12,6 +12,7 @@ import '../stage/sound.dart';
 
 abstract class Action {
   Actor _actor;
+  Vec _pos;
   Game _game;
   Queue<Action> _actions;
   List<Action> _reactions;
@@ -29,16 +30,26 @@ abstract class Action {
   bool get isImmediate => true;
 
   void bind(Actor actor, {bool consumesEnergy}) {
-    assert(_actor == null);
+    _bind(actor, null, actor.game, consumesEnergy);
+  }
+
+  /// Binds an action created passively by the dungeon.
+  void bindPassive(Game game, Vec pos) {
+    _bind(null, pos, game, false);
+  }
+
+  void _bind(Actor actor, Vec pos, Game game, bool consumesEnergy) {
+    assert(_game == null, "Can only bind once.");
 
     _actor = actor;
-    _game = actor.game;
+    _pos = pos ?? actor.pos;
+    _game = game;
     _consumesEnergy = consumesEnergy ?? true;
   }
 
   ActionResult perform(
       Queue<Action> actions, List<Action> reactions, GameResult gameResult) {
-    assert(_actor != null); // Action should be bound already.
+    assert(_game != null); // Action should be bound already.
 
     _actions = actions;
     _reactions = reactions;
@@ -55,7 +66,7 @@ abstract class Action {
   /// to process. Otherwise, it will be enqueued and run once the current action
   /// and any other enqueued actions are done.
   void addAction(Action action, [Actor actor]) {
-    action.bind(actor ?? _actor, consumesEnergy: false);
+    action._bind(actor ?? _actor, _pos, _game, false);
 
     if (action.isImmediate) {
       _reactions.add(action);
@@ -74,17 +85,17 @@ abstract class Action {
   double get noise => Sound.normalNoise;
 
   void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    if (!_actor.isVisibleToHero) return;
+    if (!game.stage[_pos].isVisible) return;
     _game.log.error(message, noun1, noun2, noun3);
   }
 
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    if (!_actor.isVisibleToHero) return;
+    if (!game.stage[_pos].isVisible) return;
     _game.log.message(message, noun1, noun2, noun3);
   }
 
   void gain(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    if (!_actor.isVisibleToHero) return;
+    if (!game.stage[_pos].isVisible) return;
     _game.log.gain(message, noun1, noun2, noun3);
   }
 

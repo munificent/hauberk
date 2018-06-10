@@ -1,8 +1,9 @@
+/// These actions are side effects from taking elemental damage.
 import 'package:piecemeal/piecemeal.dart';
 
+import '../elements.dart';
+import '../tiles.dart';
 import '../../engine.dart';
-
-/// These actions are side effects from taking elemental damage.
 
 abstract class ElementAction extends Action {
   void hitTile(Hit hit, Vec pos, num distance) {
@@ -29,7 +30,9 @@ abstract class ElementAction extends Action {
   }
 }
 
-class BurnAction extends Action {
+/// Side-effect action when an actor has been hit with an [Elements.fire]
+/// attack.
+class BurnActorAction extends Action {
   ActionResult onPerform() {
     addAction(new DestroyInInventoryAction(5, "flammable", "burns up"), actor);
 
@@ -39,6 +42,60 @@ class BurnAction extends Action {
       return succeed("The fire warms {1} back up.", actor);
     }
 
+    return ActionResult.success;
+  }
+}
+
+/// Side-effect action when an [Elements.fire] area attack sweeps over a tile.
+class BurnFloorAction extends Action {
+  final Vec _pos;
+  final int _damage;
+
+  BurnFloorAction(this._pos, this._damage);
+
+  ActionResult onPerform() {
+    addAction(new DestroyOnFloorAction(_pos, 3, "flammable", "burns up"));
+
+    // Try to set the tile on fire.
+    var tile = game.stage[_pos];
+    var ignition = Tiles.ignition(tile.type);
+    if (ignition > 0 && _damage > rng.range(ignition)) {
+      var fuel = Tiles.fuel(tile.type);
+      tile.substance = rng.range(fuel ~/ 2, fuel);
+
+      // Higher damage instantly burns off some of the fuel, leaving less to
+      // burn over time.
+      tile.substance -= _damage ~/ 4;
+      if (tile.substance == 0) tile.substance = 1;
+
+      tile.element = Elements.fire;
+      game.stage.floorEmanationChanged();
+    }
+
+    return ActionResult.success;
+  }
+}
+
+/// Action created by the [Elements.fire] substance each turn a tile continues
+/// to burn.
+class BurningFloorAction extends Action {
+  final Vec _pos;
+
+  BurningFloorAction(this._pos);
+
+  ActionResult onPerform() {
+    // See if there is an actor there.
+    var target = game.stage.actorAt(_pos);
+    if (target != null) {
+      // TODO: What should the damage be?
+      var hit = new Attack(new Noun("fire"), "burns", 10, 0, Elements.fire)
+          .createHit();
+      // TODO: Modify damage based on range?
+      hit.perform(this, null, target, canMiss: false);
+    }
+
+    // Try to burn items.
+    addAction(new DestroyOnFloorAction(_pos, 3, "flammable", "burns up"));
     return ActionResult.success;
   }
 }
@@ -85,7 +142,7 @@ class LightFloorAction extends Action {
   }
 
   ActionResult onPerform() {
-    game.stage[_pos].emanation += _emanation;
+    game.stage[_pos].addEmanation(_emanation);
     game.stage.floorEmanationChanged();
 
     return ActionResult.success;

@@ -1,5 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import 'content/action/element.dart';
 import 'content/classes.dart';
 import 'content/dungeon/dungeon.dart';
 import 'content/elements.dart';
@@ -68,5 +69,89 @@ class GameContent implements Content {
     heroClass.startingItems.spawnDrop(hero.inventory.tryAdd);
 
     return hero;
+  }
+
+  // TODO: Putting this right here in content is kind of lame. Is there a
+  // better place for it?
+  Action updateSubstance(Stage stage, Vec pos) {
+    // TODO: More interactions:
+    // fire:
+    // - burns fuel (amount) and goes out when it hits zero
+    // - if tile is not burning but is burnable and has nearby fire, random
+    //   chance of catching fire
+    // - burns actors (set on fire?)
+    // - changes tiles -> table to ashes, etc.
+    // water:
+    // - diffuses
+    //   - will put out fire
+    // - tile has absorption rate that reduces amount each turn
+    // - move actors?
+    // - move items
+    // - make tile non-walkable
+    // poison:
+    // - diffuses like gas
+    // - disappates
+    // - does not diffuse into fire or water
+    // - poisons actors
+    // cold:
+    // - does not spread much, if at all
+    // - slowly thaws
+    // - freezes actors
+    var tile = stage[pos];
+
+    neighborElement(int x, int y, Element element) {
+      var neighbor = stage.get(pos.x + x, pos.y + y);
+      if (neighbor.substance == 0) return 0;
+      return neighbor.element == element ? 1 : 0;
+    }
+
+    if (tile.substance == 0) {
+      // TODO: Water first.
+
+      // See if this tile catches fire.
+      var ignition = Tiles.ignition(tile.type);
+      if (ignition > 0) {
+        // The more neighboring tiles on fire, the greater the chance of this
+        // one catching fire.
+        var fire = 0;
+        fire += neighborElement(-1, 0, Elements.fire) * 3;
+        fire += neighborElement(1, 0, Elements.fire) * 3;
+        fire += neighborElement(0, -1, Elements.fire) * 3;
+        fire += neighborElement(0, 1, Elements.fire) * 3;
+        fire += neighborElement(-1, -1, Elements.fire) * 2;
+        fire += neighborElement(-1, 1, Elements.fire) * 2;
+        fire += neighborElement(1, -1, Elements.fire) * 2;
+        fire += neighborElement(1, 1, Elements.fire) * 2;
+
+        // TODO: Subtract neighboring cold?
+
+        if (fire > rng.range(50 + ignition)) {
+          var fuel = Tiles.fuel(tile.type);
+          tile.substance = rng.range(fuel ~/ 2, fuel);
+          tile.element = Elements.fire;
+          stage.floorEmanationChanged();
+        }
+      }
+      // TODO: Poison.
+      // TODO: Cold?
+    } else {
+      if (tile.element == Elements.fire) {
+        // Consume fuel.
+        tile.substance--;
+
+        if (tile.substance == 0) {
+          tile.type = rng.item(Tiles.burnResult(tile.type));
+          stage.floorEmanationChanged();
+        } else {
+          return new BurningFloorAction(pos);
+        }
+      }
+
+      // TODO: Poison.
+      // TODO: Cold.
+      // TODO: Water.
+    }
+
+    return null;
   }
 }

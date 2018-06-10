@@ -44,8 +44,8 @@ class Stage {
 
   Stage(int width, int height, Game game)
       : game = game,
-        tiles = new Array2D<Tile>.generated(width, height, () => new Tile()),
-        _actorsByTile = new Array2D<Actor>(width, height) {
+        tiles = new Array2D.generated(width, height, () => new Tile()),
+        _actorsByTile = new Array2D(width, height) {
     _lighting = new Lighting(this);
     _sound = new Sound(this);
   }

@@ -33,7 +33,7 @@ class MappingAction extends Action {
         addEvent(EventType.map, pos: pos);
 
         if (_illuminate) {
-          game.stage[pos].emanation = 255;
+          game.stage[pos].addEmanation(255);
           game.stage.floorEmanationChanged();
         }
 

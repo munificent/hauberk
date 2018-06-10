@@ -106,6 +106,9 @@ class MonsterPathfinder extends Pathfinder<Direction> {
 
     if (tile.canEnterAny(_monster.motilities)) return _floorCost;
 
+    // TODO: Don't enter substances unless immune. Monsters shouldn't walk into
+    // fire!
+
     // Can't go here.
     return null;
   }

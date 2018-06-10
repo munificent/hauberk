@@ -9,6 +9,9 @@ class Element {
   final String name;
   final String abbreviation;
 
+  /// Whether this element emanates light when a substance on the ground.
+  final bool emanates;
+
   /// The multiplier to a experience gained when killing a monster with a move
   /// or attack using this element.
   final double experience;
@@ -24,9 +27,11 @@ class Element {
   final Action Function(Vec pos, Hit hit, num distance) floorAction;
 
   Element(this.name, this.abbreviation, this.experience,
-      {Action Function(int damage) attack,
+      {bool emanates,
+      Action Function(int damage) attack,
       Action Function(Vec pos, Hit hit, num distance) floor})
-      : attackAction = attack ?? ((_) => null),
+      : emanates = emanates ?? false,
+        attackAction = attack ?? ((_) => null),
         floorAction = floor ?? ((_, __, ___) => null);
 
   String toString() => name;

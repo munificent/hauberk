@@ -164,6 +164,8 @@ class Monster extends Actor {
     _decayFear();
     _fear = _fear.clamp(0.0, _frightenThreshold);
 
+    // TODO: If standing in substance, should try to get out if harmful.
+
     _updateState(notice);
     return _state.getAction();
   }

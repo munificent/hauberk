@@ -15,6 +15,7 @@ import '../monster/breed.dart';
 import '../stage/stage.dart';
 import 'actor.dart';
 import 'element.dart';
+import 'energy.dart';
 import 'log.dart';
 
 /// Root class for the game engine. All game state is contained within this.
@@ -25,7 +26,27 @@ class Game {
   final log = new Log();
   final _actions = new Queue<Action>();
 
+  /// The energy that tracks when the substances are ready to update.
+  final _substanceEnergy = new Energy();
+
+  /// Substances work like a cellular automata. A normal cellular automata
+  /// updates all cells simultaneously using double buffering. That wouldn't
+  /// play nice with the game's action system, which likes to process each
+  /// single action and its consequences to completion before moving to the
+  /// next one.
+  ///
+  /// To handle that, we instead update substance cells one at a time. To avoid
+  /// visible skew and artifacts from updating sequentially through the dungeon,
+  /// we shuffle the cells and update them in random order. This is that order.
+  final List<Vec> _substanceUpdateOrder = [];
+
+  /// While the game is processing substance tiles, this is the index of the
+  /// current tile's position in [_substanceUpdateOrder]. Otherwise, this is
+  /// `null`.
+  int _substanceIndex;
+
   final int depth;
+
   Stage get stage => _stage;
   Stage _stage;
   Hero hero;
@@ -33,6 +54,9 @@ class Game {
   Game(this.content, this._save, this.depth) {
     // TODO: Vary size?
     _stage = new Stage(100, 60, this);
+
+    _substanceUpdateOrder.addAll(_stage.bounds.inflate(-1));
+    rng.shuffle(_substanceUpdateOrder);
   }
 
   Iterable<String> generate() sync* {
@@ -93,6 +117,12 @@ class Game {
         if (gameResult.events.length > 0) return gameResult;
       }
 
+      // If we are in the middle of updating substances, keep working through
+      // them.
+      if (_substanceIndex != null) {
+        _updateSubstances();
+      }
+
       // If we get here, all pending actions are done, so advance to the next
       // tick until an actor moves.
       while (_actions.isEmpty) {
@@ -115,10 +145,32 @@ class Game {
         // Each time we wrap around, process "idle" things that are ongoing and
         // speed independent.
         if (actor == hero) {
+          if (_substanceEnergy.gain(Energy.normalSpeed)) {
+            _substanceEnergy.spend();
+            _substanceIndex = 0;
+            _updateSubstances();
+          }
 //          trySpawnMonster();
         }
       }
     }
+  }
+
+  void _updateSubstances() {
+    while (_substanceIndex < _substanceUpdateOrder.length) {
+      var pos = _substanceUpdateOrder[_substanceIndex];
+      var action = content.updateSubstance(stage, pos);
+      _substanceIndex++;
+
+      if (action != null) {
+        action.bindPassive(this, pos);
+        _actions.add(action);
+        return;
+      }
+    }
+
+    // If we reach the end, we are done with them for now.
+    _substanceIndex = null;
   }
 
   // TODO: Decide if we want to keep this. Now that there is hunger forcing the
@@ -149,19 +201,30 @@ abstract class Content {
       Lore lore, Stage stage, int depth, Function(Vec) placeHero);
 
   Affix findAffix(String name);
+
   Breed findBreed(String name);
+
   ItemType tryFindItem(String name);
 
   Skill findSkill(String name);
+
   Iterable<Breed> get breeds;
+
   List<HeroClass> get classes;
+
   Iterable<Element> get elements;
+
   List<Race> get races;
+
   Iterable<Skill> get skills;
+
   Iterable<Recipe> get recipes;
+
   Iterable<Shop> get shops;
 
   HeroSave createHero(String name, [Race race, HeroClass heroClass]);
+
+  Action updateSubstance(Stage stage, Vec pos);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

@@ -178,13 +178,9 @@ class Dungeon {
 
   void _tileEmanation(Tile tile) {
     // TODO: Move this code somewhere better.
-    if (tile.type == Tiles.water) {
-      // Water has a slight phosphorescence with occasional sparkles.
-      tile.emanation = rng.percent(2) ? Lighting.emanationForLevel(5) : 1;
-    } else if (tile.type == Tiles.candle) {
-      tile.emanation = Lighting.emanationForLevel(6);
-    } else if (tile.type == Tiles.wallTorch) {
-      tile.emanation = Lighting.emanationForLevel(8);
+    // Water has occasional sparkles.
+    if (tile.type == Tiles.water && rng.percent(2)) {
+      tile.addEmanation(Lighting.emanationForLevel(5));
     }
   }
 

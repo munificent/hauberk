@@ -20,6 +20,9 @@ class FlowAction extends ElementAction {
 
   var _frame = 0;
 
+  // TODO: Support motilities that can flow into closed doors but not out of
+  // them. That would let fire flow attacks that can set closed doors on fire.
+
   FlowAction(this._from, this._hit, this._motilities, {int slowness})
       : _slowness = slowness ?? 1;
 

@@ -160,6 +160,11 @@ class Lighting {
           emanation += emanationForLevel(item.emanationLevel);
         }
 
+        if (tile.element.emanates && tile.substance > 0) {
+          // TODO: Different levels for different substances?
+          emanation += emanationForLevel(7);
+        }
+
         if (emanation > 0) {
           emanation = math.min(emanation, max);
           _floorLight.set(x, y, emanation);

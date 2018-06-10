@@ -32,6 +32,8 @@ class GameScreen extends Screen<Input> {
   /// coming back from a dialog where the player chose an action for the hero.
   int _pause = 0;
 
+  bool _hasAnimatedTile = false;
+
   /// The size of the [Stage] view area.
   final viewSize = new Vec(60, 34);
 
@@ -414,6 +416,11 @@ class GameScreen extends Screen<Input> {
       return;
     }
 
+    // TODO: Re-rendering the entire screen when only animated tiles have
+    // changed is pretty rough on CPU usage. Maybe optimize to only redraw the
+    // animated tiles if that's all that happened in a turn?
+    if (_hasAnimatedTile) dirty();
+
     if (_effects.length > 0) dirty();
 
     var result = game.update();
@@ -436,6 +443,8 @@ class GameScreen extends Screen<Input> {
 
   void render(Terminal terminal) {
     terminal.clear();
+
+    _hasAnimatedTile = false;
 
     var bar =
         new Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
@@ -516,6 +525,14 @@ class GameScreen extends Screen<Input> {
     ultramarine,
   ];
 
+  static final _fireChars = [CharCode.blackUpPointingTriangle, CharCode.caret];
+  static final _fireColors = [
+    [gold, copper],
+    [buttermilk, carrot],
+    [persimmon, brickRed],
+    [brickRed, garnet]
+  ];
+
   void _drawStage(
       Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
@@ -528,6 +545,16 @@ class GameScreen extends Screen<Input> {
         var char = tileGlyph.char;
         var lightFore = tileGlyph.fore;
         var lightBack = tileGlyph.back;
+
+        if (tile.substance != 0) {
+          // TODO: Different elements.
+          char = rng.item(_fireChars);
+          var color = rng.item(_fireColors);
+          lightFore = color[0];
+          lightBack = color[1];
+
+          _hasAnimatedTile = true;
+        }
 
         var darkFore = lightFore.blend(nearBlack, 0.8);
         var darkBack = lightBack.blend(nearBlack, 0.8);

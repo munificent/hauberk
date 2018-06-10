@@ -752,6 +752,9 @@ class RunBehavior extends Behavior {
     if (stage.actorAt(pos + direction.rotateRight45) != null) return false;
     if (stage.actorAt(pos + direction.rotateRight90) != null) return false;
 
+    // Don't run into a substance.
+    if (stage[pos].substance > 0) return false;
+
     return true;
   }
 
