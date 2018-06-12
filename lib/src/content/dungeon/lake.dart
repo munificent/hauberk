@@ -35,8 +35,9 @@ class LakeBiome extends Biome {
       var cells = <Vec>[];
       for (var pos in _blob.bounds) {
         if (_blob[pos]) {
-          dungeon.setTileAt(pos.offset(x, y), Tiles.water);
-          cells.add(pos);
+          var absolute = pos.offset(x, y);
+          dungeon.setTileAt(absolute, Tiles.water);
+          cells.add(absolute);
         }
       }
 
