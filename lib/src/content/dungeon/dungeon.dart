@@ -148,16 +148,6 @@ class Dungeon {
     for (var place in _places) {
       _populatePlace(place);
     }
-
-    // Scatter some food.
-    // TODO: Place these more intelligently.
-    var numFoods = rng.range(5, 10);
-    for (var i = 0; i < numFoods; i++) {
-      var pos = stage.findOpenTile();
-
-      var item = new Item(Items.types.tryChoose(depth, "food"), 1);
-      stage.addItem(item, pos);
-    }
   }
 
   TileType getTile(int x, int y) => stage.get(x, y).type;
@@ -316,39 +306,81 @@ class Dungeon {
       if (pos != null) stage.placeDrops(pos, MotilitySet.walk, floorDrop.drop);
     }
 
+    _placeMonsters(place);
+  }
+
+  static final _placeDensity = {
+    "aquatic": 0.07,
+    "passage": 0.04,
+    "room": 0.05
+  };
+
+  void _placeMonsters(Place place) {
     // Don't spawn monsters in the hero's starting room.
-    if (!place.hasHero) {
-      // TODO: Tune based on depth and place type?
-      // We want a roughly even difficulty across places of different sizes. That
-      // means more monsters in bigger places. However, monsters can easily cross
-      // an open space which means scaling linearly makes larger places more
-      // difficult -- it's easy for the hero to get swarmed. The exponential
-      // tapers that off a bit so that larger areas don't scale quite linearly.
-      var base = (math.pow(place.cells.length, 0.80) * 0.05);
-      var min = (base - 1 - base / 3).floor();
-      var max = base.ceil();
+    if (place.hasHero) return;
 
-      var spawnCount = rng.taper(rng.inclusive(min, max), 4);
+    // TODO: Tune based on depth?
+    // Calculate the average number of monsters for a place with this many
+    // cells.
+    //
+    // We want a roughly even difficulty across places of different sizes. That
+    // means more monsters in bigger places. However, monsters can easily cross
+    // an open space which means scaling linearly makes larger places more
+    // difficult -- it's easy for the hero to get swarmed. The exponential
+    // tapers that off a bit so that larger areas don't scale quite linearly.
+    var density = _placeDensity[place.type];
+    var base = math.pow(place.cells.length, 0.80) * density;
 
-      while (spawnCount > 0) {
-        var breed = Monsters.breeds.tryChoose(depth, place.type);
+    // From the average, roll an actual number using a normal distribution
+    // centered on the base number. The distribution gets wider as the base
+    // gets larger.
+    var spawns = base + _normal() * (base / 2);
 
-        // Don't place dead or redundant uniques.
-        if (breed.flags.unique) {
-          if (_lore.slain(breed) > 0) continue;
-          if (_spawnedUniques.contains(breed)) continue;
+    // The actual number is floating point. For small places, it will likely be
+    // less than 1. Handle that floating point reside by treat it as the chance,
+    // out of 1.0, of having one additional monster. For example, 4.2 means
+    // there will be 4 monsters, with a 20% chance of 5.
+    var spawnCount = spawns.floor();
+    if (rng.float(1.0) < spawns - spawnCount) spawnCount++;
 
-          _spawnedUniques.add(breed);
-        }
+    while (spawnCount > 0) {
+      var breed = Monsters.breeds.tryChoose(depth, place.type);
 
-        var spawned = _spawnMonster(place, breed);
+      // Don't place dead or redundant uniques.
+      if (breed.flags.unique) {
+        if (_lore.slain(breed) > 0) continue;
+        if (_spawnedUniques.contains(breed)) continue;
 
-        // Stop if we ran out of open tiles.
-        if (spawned == 0) break;
-
-        spawnCount -= spawned;
+        _spawnedUniques.add(breed);
       }
+
+      var spawned = _spawnMonster(place, breed);
+
+      // Stop if we ran out of open tiles.
+      if (spawned == null) break;
+
+      spawnCount -= spawned;
     }
+  }
+
+  /// Calculate a random number with a normal distribution.
+  ///
+  /// Note that this means results may be less than -1.0 or greater than 1.0.
+  ///
+  /// Uses https://en.wikipedia.org/wiki/Marsaglia_polar_method.
+  double _normal() {
+    // TODO: Move into piecemeal.
+    double u, v, lengthSquared;
+
+    do
+    {
+      u = rng.float(-1.0, 1.0);
+      v = rng.float(-1.0, 1.0);
+      lengthSquared = u * u + v * v;
+    }
+    while (lengthSquared >= 1.0);
+
+    return u * math.sqrt(-2.0 * math.log(lengthSquared) / lengthSquared);
   }
 
   int _spawnMonster(Place place, Breed breed) {
@@ -356,7 +388,7 @@ class Dungeon {
         avoidActors: true);
 
     // If there are no remaining open tiles, abort.
-    if (pos == null) return 0;
+    if (pos == null) return null;
 
     var isCorpse = rng.oneIn(8);
     var breeds = breed.spawnAll();
@@ -432,7 +464,6 @@ class Dungeon {
     for (var pos in cells) {
       if (_heroPos == pos) continue;
 
-      // TODO: Handle placing flying/swimming monsters on non-walkable tiles.
       if (!getTileAt(pos).canEnterAny(motilities)) continue;
 
       if (stage.actorAt(pos) != null) continue;

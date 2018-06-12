@@ -27,8 +27,9 @@ void bats() {
   family("b")
     ..groups("animal")
     ..fly()
+    ..placeIn("room", "passage")
     ..preferWall();
-  breed("brown bat", 1, persimmon, 10, speed: 1, meander: 6)
+  breed("brown bat", 1, persimmon, 3, frequency: 0.5, speed: 1, meander: 6)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 4)
     ..attack("bite[s]", 3);
@@ -42,7 +43,9 @@ void bats() {
 }
 
 void canines() {
-  family("c", dodge: 25, tracking: 20, meander: 3)..groups("animal");
+  family("c", dodge: 25, tracking: 20, meander: 3)
+    ..placeIn("room", "passage")
+    ..groups("animal");
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
     ..attack("bite[s]", 4)
@@ -125,7 +128,9 @@ void eyes() {
 }
 
 void felines() {
-  family("f")..groups("animal");
+  family("f")
+    ..placeIn("room", "passage")
+    ..groups("animal");
   breed("stray cat", 1, gold, 9, speed: 1, meander: 3)
     ..attack("bite[s]", 5)
     ..attack("scratch[es]", 4);
@@ -217,7 +222,9 @@ void goblins() {
 void humanoids() {}
 
 void insects() {
-  family("i", tracking: 3, meander: 8, flags: "fearless")..groups("bug");
+  family("i", tracking: 3, meander: 8, flags: "fearless")
+    ..placeIn("room", "passage")
+    ..groups("bug");
   // TODO: Spawn as eggs which can hatch into cockroaches?
   breed("giant cockroach[es]", 1, garnet, 1, frequency: 0.4)
     ..count(1, 3)
@@ -225,8 +232,7 @@ void insects() {
     ..attack("crawl[s] on", 2)
     ..spawn(rate: 6);
 
-  breed("giant centipede", 3, brickRed, 28, speed: 3, meander: -4)
-    ..placeIn("passage")
+  breed("giant centipede", 3, brickRed, 14, speed: 2, meander: -4)
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
 }
@@ -297,7 +303,7 @@ void kobolds() {
     ..attack("club[s]", 4)
     ..insult()
     ..haste()
-    ..drop("club", percent: 20)
+    ..drop("club", percent: 40)
     ..drop("speed", percent: 30);
 
   breed("vexing imp", 2, violet, 10, meander: 2)
@@ -306,7 +312,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..insult()
     ..sparkBolt(rate: 5, damage: 6)
-    ..drop("teleportation", percent: 30);
+    ..drop("teleportation", percent: 50);
 
   family("k", meander: 3)..groups("kobold");
   breed("kobold", 3, brickRed, 12, meander: 2)
@@ -314,13 +320,15 @@ void kobolds() {
     ..minion("wild dog", 0, 3)
     ..attack("poke[s]", 4)
     ..teleport(rate: 10, range: 6)
-    ..drop("magic", percent: 30);
+    ..drop("equipment", percent: 20)
+    ..drop("magic", percent: 40);
 
   breed("kobold shaman", 4, ultramarine, 16, meander: 2)
     ..count(2)
     ..minion("wild dog", 0, 3)
     ..attack("hit[s]", 4)
     ..waterBolt(rate: 5, damage: 6)
+    ..drop("robe", percent: 20)
     ..drop("magic", percent: 40);
 
   breed("kobold trickster", 5, gold, 20, meander: 2)
@@ -329,6 +337,7 @@ void kobolds() {
     ..sparkBolt(rate: 5, damage: 8)
     ..teleport(rate: 7, range: 6)
     ..haste(rate: 7)
+    ..drop("magic", percent: 20)
     ..drop("magic", percent: 40);
 
   breed("kobold priest", 6, cerulean, 25, meander: 2)
@@ -339,6 +348,7 @@ void kobolds() {
     ..fireBolt(rate: 10, damage: 8)
     ..haste(rate: 7)
     ..drop("club", percent: 40)
+    ..drop("robe", percent: 20)
     ..drop("magic", percent: 40);
 
   breed("imp incanter", 7, lilac, 18, meander: 4)
@@ -348,6 +358,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..insult(rate: 6)
     ..fireBolt(rate: 5, damage: 10)
+    ..drop("robe", percent: 20)
     ..drop("magic", percent: 50)
     ..flags("cowardly");
 
@@ -359,6 +370,7 @@ void kobolds() {
     ..iceBolt(rate: 8, damage: 12)
     ..fireBolt(rate: 8, damage: 12)
     ..drop("staff", percent: 40)
+    ..drop("robe", percent: 20)
     ..drop("magic", count: 2, percent: 60);
 
   // TODO: Always drop something good.
@@ -452,9 +464,10 @@ void quadrupeds() {}
 
 void rodents() {
   family("r", dodge: 30, meander: 4)
+    ..placeIn("room", "passage")
     ..groups("animal")
     ..preferWall();
-  breed("[mouse|mice]", 1, sandal, 2, frequency: 0.5)
+  breed("[mouse|mice]", 1, sandal, 2, frequency: 0.7)
     ..count(2, 5)
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
@@ -476,6 +489,7 @@ void rodents() {
 
 void slugs() {
   family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 1)
+    ..placeIn("passage")
     ..groups("bug");
   breed("giant slug", 3, mustard, 20)..attack("crawl[s] on", 8);
 
@@ -490,7 +504,9 @@ void minorUndead() {}
 void vines() {}
 
 void worms() {
-  family("w", dodge: 25, meander: 4, flags: "fearless")..groups("bug");
+  family("w", dodge: 25, meander: 4, flags: "fearless")
+    ..placeIn("passage")
+    ..groups("bug");
   breed("blood worm", 1, maroon, 4, frequency: 0.5)
     ..count(2, 5)
     ..attack("crawl[s] on", 5);
@@ -501,12 +517,9 @@ void worms() {
     ..attack("crawl[s] on", 5, Elements.fire);
 
   family("w", dodge: 10, meander: 4, flags: "fearless");
-  breed("giant earthworm", 3, salmon, 20, speed: -2)
-    ..placeIn("passage")
-    ..attack("crawl[s] on", 5);
+  breed("giant earthworm", 3, salmon, 20, speed: -2)..attack("crawl[s] on", 5);
 
   breed("giant cave worm", 7, sandal, 80, speed: -2)
-    ..placeIn("passage")
     ..attack("crawl[s] on", 8, Elements.acid);
 }
 

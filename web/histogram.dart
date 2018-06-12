@@ -5,6 +5,8 @@ class Histogram<T> {
 
   int get max => _counts.values.fold(0, math.max);
 
+  int get total => _counts.values.fold(0, (a, b) => a + b);
+
   int add(T object) {
     _counts.putIfAbsent(object, () => 0);
     return ++_counts[object];

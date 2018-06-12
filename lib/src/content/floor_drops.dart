@@ -27,16 +27,21 @@ class FloorDrops {
             percentDrop(30, "magic", i)
           ]));
 
-      var rockFrequency = 10.0 / (1.0 + i);
       floorDrop(
           depth: i,
-          frequency: rockFrequency,
+          frequency: lerpDouble(i, 1, 100, 10.0, 1.0),
+          drop: parseDrop("food", i));
+
+      floorDrop(
+          depth: i,
+          frequency: lerpDouble(i, 1, 100, 5.0, 0.01),
           location: SpawnLocation.corner,
           drop: parseDrop("Rock", i));
 
-      var lightFrequency = math.max(2.0, 10.0 - i / 4);
       floorDrop(
-          depth: i, frequency: lightFrequency, drop: parseDrop("light", i));
+          depth: i,
+          frequency: lerpDouble(i, 1, 100, 2.0, 0.1),
+          drop: parseDrop("light", i));
     }
 
     floorDrop(
