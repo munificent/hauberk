@@ -367,7 +367,7 @@ class GameScreen extends Screen<Input> {
         dirty();
       }
     } else if (_lastSkill is ActionSkill) {
-      game.log.error("${_lastSkill.name} does not take a direction.");
+      game.log.error("${_lastSkill.useName} does not take a direction.");
       dirty();
     } else {
       // TODO: Better error message.
@@ -391,7 +391,7 @@ class GameScreen extends Screen<Input> {
       // TODO: Once skills can be learned on the SkillDialog again, make this
       // work.
 //      game.hero.updateSkills(result);
-    } else if (popped is SelectSkillDialog && result is UsableSkill) {
+    } else if (popped is SelectSkillDialog && result != null) {
       if (result is TargetSkill) {
         ui.push(new TargetDialog(
             this, result.getRange(game), (_) => _fireAtTarget(result)));

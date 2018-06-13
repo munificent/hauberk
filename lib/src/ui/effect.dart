@@ -78,6 +78,11 @@ void addEffects(List<Effect> effects, Event event) {
       // TODO: Do something.
       break;
 
+    case EventType.knockBack:
+    // TODO: Something more interesting.
+      effects.add(new FrameEffect(event.pos, "*", buttermilk));
+      break;
+
     case EventType.slash:
     case EventType.stab:
       var line = _directionLines[event.dir];
@@ -211,7 +216,7 @@ class FrameEffect implements Effect {
   final Color color;
   int life;
 
-  FrameEffect(this.pos, this.char, this.color, {this.life: 4});
+  FrameEffect(this.pos, this.char, this.color, {this.life = 4});
 
   bool update(Game game) {
     if (!game.stage[pos].isVisible) return false;

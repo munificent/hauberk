@@ -2,7 +2,7 @@ import '../../../engine.dart';
 import 'mastery.dart';
 
 class Swordfighting extends MasteryDiscipline {
-  static int _parryDefense(int level) => level ~/ 2 + 1;
+  static int _parryDefense(int level) => lerpInt(level, 1, 20, 1, 10);
 
   String get name => "Swordfighting";
   String get description =>
@@ -14,5 +14,5 @@ class Swordfighting extends MasteryDiscipline {
       " Parrying increases dodge by ${_parryDefense(level)}.";
 
   Defense getDefense(Hero hero, int level) =>
-      new Defense(level ~/ 2 + 1, "{1} parr[y|ies] {2}.");
+      new Defense(_parryDefense(level), "{1} parr[y|ies] {2}.");
 }

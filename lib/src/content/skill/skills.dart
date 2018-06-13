@@ -2,6 +2,7 @@ import '../../engine.dart';
 import '../monster/builder.dart';
 import 'discipline/archery.dart';
 import 'discipline/axe.dart';
+import 'discipline/club.dart';
 import 'discipline/slay.dart';
 import 'discipline/spear.dart';
 import 'discipline/sword.dart';
@@ -27,6 +28,7 @@ class Skills {
       // Masteries.
       new Archery(),
       new AxeMastery(),
+      new ClubMastery(),
       new SpearMastery(),
       new Swordfighting(),
       new WhipMastery()

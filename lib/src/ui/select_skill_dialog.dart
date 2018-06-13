@@ -71,7 +71,7 @@ class SelectSkillDialog extends Screen<Input> {
 
       terminal.writeAt(1, y, '( )   ', borderColor);
       terminal.writeAt(2, y, 'abcdefghijklmnopqrstuvwxyz'[i], letterColor);
-      terminal.writeAt(5, y, skill.name, textColor);
+      terminal.writeAt(5, y, skill.useName, textColor);
 
       if (reason != null) {
         terminal.writeAt(25, y, "($reason)", textColor);

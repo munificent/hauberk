@@ -36,8 +36,6 @@ class Lore {
   void killUsing(String weaponType) {
     _kills.putIfAbsent(weaponType, () => 0);
     _kills[weaponType]++;
-
-    print("kill $weaponType = ${_kills[weaponType]}");
   }
 
   Map<String, int> get killsByWeapon => new Map<String, int>.from(_kills);

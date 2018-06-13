@@ -5,9 +5,10 @@ import 'mastery.dart';
 
 class SpearMastery extends MasteryDiscipline implements DirectionSkill {
   // TODO: Tune.
-  static double _spearScale(int level) => lerpDouble(level, 1, 20, 0.2, 1.0);
+  static double _spearScale(int level) => lerpDouble(level, 1, 10, 0.3, 1.0);
   // TODO: Better name.
   String get name => "Spear Mastery";
+  String get useName => "Spear Attack";
   String get description =>
       "Your diligent study of spears and polearms lets you attack at a "
       "distance when wielding one.";

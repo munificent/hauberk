@@ -6,10 +6,12 @@ import 'mastery.dart';
 /// A slashing melee attack that hits a number of adjacent monsters.
 class AxeMastery extends MasteryDiscipline implements DirectionSkill {
   // TODO: Tune.
-  static double _slashScale(int level) => lerpDouble(level, 1, 20, 0.2, 0.7);
+  static double _slashScale(int level) => lerpDouble(level, 1, 10, 0.2, 0.8);
 
   // TODO: Better name.
   String get name => "Axe Mastery";
+  String get useName => "Axe Sweep";
+
   String get description =>
       "Axes are not just for woodcutting. In the hands of a skilled user, "
       "they can cut down a swath of nearby foes as well.";

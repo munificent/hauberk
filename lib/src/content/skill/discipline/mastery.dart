@@ -52,18 +52,18 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
 }
 
 abstract class MasteryAction extends Action {
-  final double _damageScale;
+  final double damageScale;
 
-  MasteryAction(this._damageScale);
+  MasteryAction(this.damageScale);
 
   /// Attempts to hit the [Actor] at [pos], if any.
-  void attack(Vec pos) {
+  int attack(Vec pos) {
     var defender = game.stage.actorAt(pos);
-    if (defender == null) return;
+    if (defender == null) return null;
 
     var hit = actor.createMeleeHit(defender);
-    hit.scaleDamage(_damageScale);
-    hit.perform(this, actor, defender);
+    hit.scaleDamage(damageScale);
+    return hit.perform(this, actor, defender);
   }
 
   double get noise => Sound.attackNoise;

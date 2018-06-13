@@ -297,10 +297,13 @@ class EventType {
   /// An [Actor] was blown by wind.
   static const wind = const EventType("wind");
 
-  /// A warrior's slash attack hits a tile.
+  /// A club's bash attack moves an actor.
+  static const knockBack = const EventType("knockBack");
+
+  /// An axe's slash attack hits a tile.
   static const slash = const EventType("slash");
 
-  /// A warrior's stab attack hits a tile.
+  /// A spear's stab attack hits a tile.
   static const stab = const EventType("stab");
 
   /// The hero picks up gold worth [other].

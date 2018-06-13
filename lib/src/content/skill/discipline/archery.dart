@@ -8,7 +8,7 @@ import 'mastery.dart';
 // Decide if this should be a trained skill (warrior) or an explicitly leveled
 // one (rogue).
 class Archery extends MasteryDiscipline implements TargetSkill {
-  // TODO: Tune.
+  // TODO: Should this still use focus now that max focus is based on intellect?
   static int focusCost(int level) => lerpInt(level, 1, 20, 300, 1);
 
   String get name => "Archery";

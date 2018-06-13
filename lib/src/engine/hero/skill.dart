@@ -16,6 +16,12 @@ abstract class Skill {
   String get name;
   String get description;
 
+  /// The name shown when using the skill.
+  ///
+  /// By default, this is the same as the name of the skill, but it differs
+  /// for some.
+  String get useName => name;
+
   // TODO: Different messages for gain and lose?
   /// Message displayed when the hero reaches [level] in the skill.
   String gainMessage(int level);

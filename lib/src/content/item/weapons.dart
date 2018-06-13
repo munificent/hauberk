@@ -7,9 +7,9 @@ void weapons() {
   // https://en.wikipedia.org/wiki/List_of_mythological_objects#Weapons
 
   // Bludgeons.
-  // TODO: Club skill.
   category(CharCode.latinSmallLetterAWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/club")
+    ..skill("Club Mastery")
     ..toss(breakage: 25, range: 5);
   item("Stick", 1, 0.5, persimmon)
     ..weapon(8, heft: 10)
@@ -22,7 +22,7 @@ void weapons() {
     ..toss(damage: 5);
 
   // Staves.
-  // TODO: Staff skill.
+  // TODO: Staff skill. Distance attack + pushback?
   category(CharCode.latinSmallLetterIWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/staff")
     ..toss(breakage: 35, range: 4);

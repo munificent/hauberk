@@ -6,10 +6,11 @@ import 'mastery.dart';
 
 class WhipMastery extends MasteryDiscipline implements TargetSkill {
   // TODO: Tune.
-  static double _whipScale(int level) => lerpDouble(level, 1, 20, 0.2, 0.7);
+  static double _whipScale(int level) => lerpDouble(level, 1, 10, 0.3, 1.0);
 
   // TODO: Better name.
   String get name => "Whip Mastery";
+  String get useName => "Whip Crack";
   String get description =>
       "Whips and flails are difficult to use well, but deadly even at a "
       "distance when mastered.";

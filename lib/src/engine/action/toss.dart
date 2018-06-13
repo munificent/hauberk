@@ -60,7 +60,7 @@ class TossLosAction extends LosAction {
 
   bool onHitActor(Vec pos, Actor target) {
     // TODO: Range should affect strike.
-    if (!_hit.perform(this, actor, target)) {
+    if (_hit.perform(this, actor, target) == null) {
       // The item missed, so keep flying.
       _missed = true;
       return false;

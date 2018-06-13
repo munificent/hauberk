@@ -120,8 +120,9 @@ class Hit {
   /// Performs a melee [Hit] from [attacker] to [defender] in the course of
   /// [action].
   ///
-  /// Returns `true` if the attack connected.
-  bool perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
+  /// Returns the amount of damage done if the attack connected or `null` if
+  /// it missed.
+  int perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
     canMiss = canMiss ?? true;
 
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
@@ -144,7 +145,7 @@ class Hit {
         if (strike < 0) {
           // TODO: Should still affect monster alertness.
           action.log(defense.message, defender, attackNoun);
-          return false;
+          return null;
         }
       }
     }
@@ -158,14 +159,16 @@ class Hit {
       // Armor cancelled out all damage.
       // TODO: Should still affect monster alertness.
       action.log('{1} do[es] no damage to {2}.', attackNoun, defender);
-      return true;
+      return 0;
     }
 
     if (attacker != null) {
       attacker.onGiveDamage(action, defender, damage);
     }
 
-    if (defender.takeDamage(action, damage, attackNoun, attacker)) return true;
+    if (defender.takeDamage(action, damage, attackNoun, attacker)) {
+      return damage;
+    }
 
     // Any resistance cancels all side effects.
     if (resistance <= 0) {
@@ -181,7 +184,7 @@ class Hit {
     // TODO: Pass in and use element.
     action.addEvent(EventType.hit, actor: defender, other: damage);
     action.log('{1} ${_attack.verb} {2}.', attackNoun, defender);
-    return true;
+    return damage;
   }
 
   int _rollDamage(int armor, int resistance) {
