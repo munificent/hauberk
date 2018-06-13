@@ -4,7 +4,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../floor_drops.dart';
-import '../item/items.dart';
 import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'blob.dart';

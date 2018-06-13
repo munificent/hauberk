@@ -29,13 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.7"
-  barback:
-    dependency: "direct main"
-    description:
-      name: barback
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.15.2+16"
   bazel_worker:
     dependency: transitive
     description:
@@ -260,13 +253,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0"
-  markdown:
-    dependency: "direct main"
-    description:
-      name: markdown
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.1"
   matcher:
     dependency: transitive
     description:
@@ -429,4 +415,4 @@ packages:
     source: hosted
     version: "2.1.13"
 sdks:
-  dart: ">=2.0.0-dev.50 <=2.0.0-edge.ec47e524bc9604e8af546f44a439e42f817b70a7"
+  dart: ">=2.0.0-dev.50 <=2.0.0-edge.14dfd82d69153887b64b379339b9bd94c4453bd3"
