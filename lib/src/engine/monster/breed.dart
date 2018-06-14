@@ -6,7 +6,6 @@ import '../core/combat.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
 import '../core/log.dart';
-import '../core/option.dart';
 import '../hero/hero.dart';
 import '../hero/skill.dart';
 import '../items/item.dart';
@@ -52,7 +51,7 @@ class Breed {
   /// How many tiles away (as sound flows) the monster can hear the hero.
   final int hearing;
 
-  /// How much randomness the monster has when walking towards its target.
+  /// Percent chance of choosing a non-optimal direction when walking.
   final int meander;
 
   /// The breed's speed, relative to normal. Ranges from `-6` (slowest) to `6`
@@ -178,9 +177,10 @@ class Breed {
     exp *= flags.experienceMultiplier;
 
     // TODO: Modify by motility?
+    // TODO: Modify by count?
 
     // Meandering monsters are worth less.
-    exp *= (Option.expMeander - meander) / Option.expMeander;
+    exp *= 1.0 - meander * 0.002;
 
     return exp.toInt();
   }
@@ -261,8 +261,8 @@ class BreedFlags {
     var scale = 1.0;
 
     if (berzerk) scale *= 1.2;
-    if (cowardly) scale *= 0.8;
-    if (fearless) scale *= 1.2;
+    if (cowardly) scale *= 0.9;
+    if (fearless) scale *= 1.1;
     if (immobile) scale *= 0.7;
     if (protective) scale *= 1.1;
 

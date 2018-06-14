@@ -86,7 +86,7 @@ void finishBreed() {
 
 // TODO: Move more named params into builder methods?
 _BreedBuilder breed(String name, int depth, appearance, int health,
-    {double frequency, int speed: 0, int dodge, int meander: 0}) {
+    {double frequency, int speed: 0, int dodge, int meander}) {
   finishBreed();
 
   Glyph glyph;
@@ -373,7 +373,7 @@ class _BreedBuilder extends _BaseBuilder {
         depth: _depth,
         maxHealth: _health,
         tracking: (_tracking ?? 0) + (_family._tracking ?? 10),
-        meander: (_meander ?? 0) + (_family._meander ?? 0),
+        meander: _meander ?? _family._meander ?? 0,
         speed: (_speed ?? 0) + (_family._speed ?? 0),
         dodge: dodge,
         emanationLevel: _family._emanationLevel ?? _emanationLevel,

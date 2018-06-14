@@ -36,3 +36,5 @@ Ideas for more things monsters can do to increase variety:
 - Area attacks that spread as a collection of randomly moving particles
 - Be invisible
 - "Frog tongue" that reaches out and pulls hero closer
+- Knockback
+- Stun

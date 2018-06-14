@@ -87,22 +87,22 @@ abstract class MonsterState {
 
   /// Applies the monster's meandering to [dir].
   Direction _meander(Direction dir) {
-    var chance = 10;
-
-    // Monsters are (mostly) smart enough to not meander when they're about to
-    // melee. A small chance of meandering is still useful to get a monster out
-    // of a doorway sometimes.
-    if (pos + dir == game.hero.pos) chance = 20;
-
     var meander = breed.meander;
 
-    // Being blinded makes the monster stumble around.
     if (monster.isBlinded) {
-      var duration = monster.dazzle.duration + monster.blindness.duration;
-      meander += math.min(6, duration ~/ 4);
+      // Being blinded makes the monster stumble around.
+      meander += 50;
+    } else if (pos + dir == game.hero.pos) {
+      // Monsters are (mostly) smart enough to not meander when they're about
+      // to melee. A small chance of meandering is still useful to get a
+      // monster out of a doorway sometimes.
+      meander ~/= 4;
     }
 
-    if (rng.range(chance) >= meander) return dir;
+    // Should always have a chance to go the right direction.
+    meander = math.min(meander, 90);
+
+    if (!rng.percent(meander)) return dir;
 
     List<Direction> dirs;
     if (dir == Direction.none) {

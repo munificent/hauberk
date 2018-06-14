@@ -28,11 +28,4 @@ class Option {
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.
   static const spawnMonsterChance = 50;
-
-  /// The more a monster meanders, the less experience it's worth. This number
-  /// should be larger than the largest meander value, and affects experience
-  /// like so:
-  ///
-  ///     exp *= (expMeander - meander) / expMeander
-  static const expMeander = 30;
 }
