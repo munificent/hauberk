@@ -1,4 +1,5 @@
 import '../../hues.dart';
+import '../action/missive.dart';
 import '../elements.dart';
 import '../tiles.dart';
 import 'builder.dart';
@@ -144,7 +145,7 @@ void goblins() {
   breed("goblin peon", 4, sandal, 26, meander: 20)
     ..count(4)
     ..attack("stab[s]", 8)
-    ..insult(rate: 8)
+    ..missive(Missive.insult, rate: 8)
     ..drop("spear", percent: 20)
     ..drop("healing", percent: 10);
 
@@ -301,7 +302,7 @@ void kobolds() {
   breed("scurrilous imp", 1, salmon, 8, meander: 20)
     ..count(2)
     ..attack("club[s]", 4)
-    ..insult()
+    ..missive(Missive.insult)
     ..haste()
     ..drop("club", percent: 40)
     ..drop("speed", percent: 30);
@@ -310,7 +311,7 @@ void kobolds() {
     ..count(2)
     ..minion("scurrilous imp", 0, 1)
     ..attack("scratch[es]", 4)
-    ..insult()
+    ..missive(Missive.insult)
     ..sparkBolt(rate: 5, damage: 6)
     ..drop("teleportation", percent: 50);
 
@@ -333,7 +334,7 @@ void kobolds() {
 
   breed("kobold trickster", 5, gold, 20)
     ..attack("hit[s]", 5)
-    ..insult()
+    ..missive(Missive.insult)
     ..sparkBolt(rate: 5, damage: 8)
     ..teleport(rate: 7, range: 6)
     ..haste(rate: 7)
@@ -356,7 +357,7 @@ void kobolds() {
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
     ..attack("scratch[es]", 4)
-    ..insult(rate: 6)
+    ..missive(Missive.insult, rate: 6)
     ..fireBolt(rate: 5, damage: 10)
     ..drop("robe", percent: 20)
     ..drop("magic", percent: 50)
@@ -382,7 +383,7 @@ void kobolds() {
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
     ..attack("stab[s]", 5)
-    ..insult(rate: 7)
+    ..missive(Missive.insult, rate: 7)
     ..teleport(rate: 5, range: 6)
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
@@ -410,9 +411,10 @@ void people() {
     ..groups("human")
     ..openDoors()
     ..emanate(2);
-  breed("Harold the Misfortunate", 1, lilac, 10)
+  breed("Harold the Misfortunate", 1, lilac, 20)
     ..he()
     ..attack("hit[s]", 3)
+    ..missive(Missive.clumsy)
     ..drop("weapon", percent: 50, depthOffset: 4)
     ..drop("armor", percent: 60, depthOffset: 4)
     ..drop("magic", percent: 30, depthOffset: 4)
@@ -421,6 +423,7 @@ void people() {
 
   breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 30)
     ..attack("hit[s]", 3)
+    ..missive(Missive.clumsy, rate: 12)
     ..drop("weapon", percent: 50)
     ..drop("armor", percent: 60)
     ..drop("magic", percent: 30)
@@ -446,6 +449,7 @@ void people() {
   breed("unlucky ranger", 5, peaGreen, 30, dodge: 25, meander: 20)
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
+    ..missive(Missive.clumsy, rate: 10)
     ..drop("potion", percent: 30)
     ..drop("bow", percent: 40)
     ..drop("sword", percent: 10)
@@ -454,6 +458,7 @@ void people() {
   breed("drunken priest", 5, cerulean, 34, meander: 40)
     ..attack("hit[s]", 8)
     ..heal(rate: 15, amount: 8)
+    ..missive(Missive.clumsy)
     ..drop("scroll", percent: 30)
     ..drop("club", percent: 20)
     ..drop("robe", percent: 40)

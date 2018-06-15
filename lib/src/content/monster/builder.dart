@@ -1,6 +1,7 @@
 import 'package:malison/malison.dart';
 
 import '../../engine.dart';
+import '../action/missive.dart';
 import '../drops.dart';
 import '../elements.dart';
 import '../move/bolt.dart';
@@ -8,7 +9,7 @@ import '../move/cone.dart';
 import '../move/haste.dart';
 import '../move/heal.dart';
 import '../move/howl.dart';
-import '../move/insult.dart';
+import '../move/missive.dart';
 import '../move/spawn.dart';
 import '../move/teleport.dart';
 import 'monsters.dart';
@@ -321,7 +322,8 @@ class _BreedBuilder extends _BaseBuilder {
   void darkCone({num rate: 5, int damage, int range: 10}) =>
       _cone("the darkness", "crushes", Elements.dark, rate, damage, range);
 
-  void insult({num rate: 5}) => _addMove(new InsultMove(rate));
+  void missive(Missive missive, {num rate: 5}) =>
+      _addMove(new MissiveMove(missive, rate));
 
   void howl({num rate: 10, int range: 10}) =>
       _addMove(new HowlMove(rate, range));

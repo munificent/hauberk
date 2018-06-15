@@ -35,5 +35,5 @@ class SpawnMove extends Move {
     return new SpawnAction(monster.pos + rng.item(dirs), monster.breed);
   }
 
-  String toString() => "Spawn";
+  String toString() => "Spawn rate: $rate";
 }

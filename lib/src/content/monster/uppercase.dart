@@ -1,4 +1,5 @@
 import '../../hues.dart';
+import '../action/missive.dart';
 import '../elements.dart';
 import 'builder.dart';
 
@@ -37,20 +38,20 @@ void faeFolk() {
     ..preferOpen();
   breed("forest sprite", 2, mint, 6)
     ..attack("scratch[es]", 3)
-    ..insult(rate: 4)
+    ..missive(Missive.insult, rate: 4)
     ..sparkBolt(rate: 7, damage: 4)
     ..drop("magic", percent: 60);
 
   breed("house sprite", 5, cornflower, 10)
     ..attack("poke[s]", 5)
-    ..insult(rate: 4)
+    ..missive(Missive.insult, rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
     ..teleport(rate: 7, range: 4)
     ..drop("magic", percent: 80);
 
   breed("mischievous sprite", 7, salmon, 24)
     ..attack("stab[s]", 6)
-    ..insult(rate: 4)
+    ..missive(Missive.insult, rate: 4)
     ..windBolt(rate: 8, damage: 8)
     ..teleport(range: 5)
     ..drop("magic");

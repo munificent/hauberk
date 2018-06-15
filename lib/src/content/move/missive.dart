@@ -1,8 +1,10 @@
 import '../../engine.dart';
-import '../action/insult.dart';
+import '../action/missive.dart';
 
-class InsultMove extends Move {
-  InsultMove(num rate) : super(rate);
+class MissiveMove extends Move {
+  final Missive _missive;
+
+  MissiveMove(this._missive, num rate) : super(rate);
 
   num get experience => 0.0;
 
@@ -17,7 +19,8 @@ class InsultMove extends Move {
     return monster.canView(target);
   }
 
-  Action onGetAction(Monster monster) => new InsultAction(monster.game.hero);
+  Action onGetAction(Monster monster) =>
+      new MissiveAction(monster.game.hero, _missive);
 
-  String toString() => "Insult rate: $rate";
+  String toString() => "$_missive rate: $rate";
 }
