@@ -79,16 +79,19 @@ class Affixes {
     affixCategory("armor");
 
     // TODO: Different ones for each kind of armor with different bonuses?
-    affix("Elven _", 40, 1.0)
-      ..weight(-2)
-      ..armor(2)
-      ..resist(Elements.light);
-
-    affix("Dwarven _", 30, 1.0)
-      ..weight(2)
-      ..armor(4)
-      ..resist(Elements.earth)
-      ..resist(Elements.dark);
+    // TODO: Commented out for now because it causes a name collision. Should
+    // we allow different prefixes with the same name for different kinds of
+    // equipment?
+//    affix("Elven _", 40, 1.0)
+//      ..weight(-2)
+//      ..armor(2)
+//      ..resist(Elements.light);
+//
+//    affix("Dwarven _", 30, 1.0)
+//      ..weight(2)
+//      ..armor(4)
+//      ..resist(Elements.earth)
+//      ..resist(Elements.dark);
 
     affix("_ of Resist Air", 10, 0.5)..resist(Elements.air);
     affix("_ of Resist Earth", 11, 0.5)..resist(Elements.earth);
