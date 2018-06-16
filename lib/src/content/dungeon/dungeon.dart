@@ -15,8 +15,8 @@ import 'river.dart';
 import 'room.dart';
 
 abstract class Biome {
-  Iterable<String> generate(Dungeon dungeon);
-  Iterable<String> decorate(Dungeon dungeon) => const [];
+  Iterable<String> generate();
+  Iterable<String> decorate() => const [];
 }
 
 class TileInfo {
@@ -66,7 +66,7 @@ class Dungeon {
 
   final List<Biome> _biomes = [];
   final Array2D<TileInfo> _info;
-  final List<Vec> _passages = [];
+//  final List<Vec> _passages = [];
 
   final List<Place> _places = [];
 
@@ -99,7 +99,7 @@ class Dungeon {
     _chooseBiomes();
 
     for (var biome in _biomes) {
-      yield* biome.generate(this);
+      yield* biome.generate();
     }
 
     // If a biome didn't place the hero, do it now.
@@ -118,7 +118,7 @@ class Dungeon {
     // Now that we know more global information, let the biomes use that to
     // tweak themselves.
     for (var biome in _biomes) {
-      yield* biome.decorate(this);
+      yield* biome.decorate();
     }
 
     // TODO: Should we do a sanity check for traversable tiles that ended up
@@ -308,11 +308,7 @@ class Dungeon {
     _placeMonsters(place);
   }
 
-  static final _placeDensity = {
-    "aquatic": 0.07,
-    "passage": 0.04,
-    "room": 0.05
-  };
+  static final _placeDensity = {"aquatic": 0.07, "passage": 0.04, "room": 0.05};
 
   void _placeMonsters(Place place) {
     // Don't spawn monsters in the hero's starting room.
@@ -371,13 +367,11 @@ class Dungeon {
     // TODO: Move into piecemeal.
     double u, v, lengthSquared;
 
-    do
-    {
+    do {
       u = rng.float(-1.0, 1.0);
       v = rng.float(-1.0, 1.0);
       lengthSquared = u * u + v * v;
-    }
-    while (lengthSquared >= 1.0);
+    } while (lengthSquared >= 1.0);
 
     return u * math.sqrt(-2.0 * math.log(lengthSquared) / lengthSquared);
   }
@@ -512,7 +506,7 @@ class Dungeon {
 
     // TODO: Add grottoes other places than just on shores.
     // Add some old grottoes that eroded before the dungeon was built.
-    if (hasWater) _biomes.add(new GrottoBiome(rng.taper(2, 3)));
+    if (hasWater) _biomes.add(new GrottoBiome(this, rng.taper(2, 3)));
 
     _biomes.add(new RoomBiome(this));
 
@@ -523,14 +517,14 @@ class Dungeon {
     // humidity or something.
     // TODO: Should these be flood-filled for reachability?
     if (hasWater && rng.oneIn(3)) {
-      _biomes.add(new GrottoBiome(rng.taper(1, 3)));
+      _biomes.add(new GrottoBiome(this, rng.taper(1, 3)));
     }
   }
 
   bool _tryRiver() {
     if (!rng.oneIn(3)) return false;
 
-    _biomes.add(new RiverBiome());
+    _biomes.add(new RiverBiome(this));
     return true;
   }
 
@@ -542,7 +536,7 @@ class Dungeon {
 
     // TODO: 64 is pretty big. Might want to make these a little smaller, but
     // not all the way down to 32.
-    _biomes.add(new LakeBiome(Blob.make64()));
+    _biomes.add(new LakeBiome(this, Blob.make64()));
     return true;
   }
 
@@ -552,7 +546,7 @@ class Dungeon {
     var odds = hasWater ? 10 : 5;
     if (!rng.oneIn(odds)) return false;
 
-    _biomes.add(new LakeBiome(Blob.make32()));
+    _biomes.add(new LakeBiome(this, Blob.make32()));
     return true;
   }
 
@@ -561,7 +555,7 @@ class Dungeon {
 
     var ponds = rng.taper(0, 3);
     for (var i = 0; i < ponds; i++) {
-      _biomes.add(new LakeBiome(Blob.make16()));
+      _biomes.add(new LakeBiome(this, Blob.make16()));
     }
 
     return true;
@@ -579,20 +573,20 @@ class Dungeon {
       _info[pos].distance = flow.costAt(pos);
     }
 
-    // Figure out which junctions are chokepoints that provide unique access to
-    // some areas.
-    // TODO: Do something with the results of this.
-    new ChokePoints(this).calculate(_heroPos);
-
-    // Find all passage tiles.
-    for (var pos in safeBounds) {
-      if (!getTileAt(pos).isWalkable) continue;
-
-      var walls = Direction.all.where((dir) {
-        return !getTileAt(pos + dir).isTraversable;
-      }).length;
-
-      if (walls >= 6) _passages.add(pos);
-    }
+//    // Figure out which junctions are chokepoints that provide unique access to
+//    // some areas.
+//    // TODO: Do something with the results of this.
+//    new ChokePoints(this).calculate(_heroPos);
+//
+//    // Find all passage tiles.
+//    for (var pos in safeBounds) {
+//      if (!getTileAt(pos).isWalkable) continue;
+//
+//      var walls = Direction.all.where((dir) {
+//        return !getTileAt(pos + dir).isTraversable;
+//      }).length;
+//
+//      if (walls >= 6) _passages.add(pos);
+//    }
   }
 }

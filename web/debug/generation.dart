@@ -96,10 +96,12 @@ void generateTable() {
     for (var name in histogram.descending()) {
       var count = histogram.count(name);
       var width = 100 * count ~/ max;
-      var percent = (100 * count / histogram.total).toStringAsFixed(2).padLeft(5, "0");
+      var percent =
+          (100 * count / histogram.total).toStringAsFixed(2).padLeft(5, "0");
       var chance = (count / generated).toStringAsFixed(1).padLeft(6);
 
-      text.write('<span style="font-family: monospace;">$percent% $chance </span>');
+      text.write(
+          '<span style="font-family: monospace;">$percent% $chance </span>');
       text.write('<div class="bar" style="width: ${width}px;"></div> $name');
       text.write('<br>');
     }

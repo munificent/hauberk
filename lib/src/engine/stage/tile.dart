@@ -114,7 +114,8 @@ class Tile {
   ///
   /// Includes "native" emanation from the tile itself along with light that
   /// has been applied to it.
-  int get emanation => (type.emanation + _appliedEmanation).clamp(0, Lighting.max);
+  int get emanation =>
+      (type.emanation + _appliedEmanation).clamp(0, Lighting.max);
 
   /// The extra emanation applied to this tile independent of its type from
   /// things like light spells.

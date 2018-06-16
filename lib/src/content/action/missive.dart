@@ -2,10 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 
-enum Missive {
-  clumsy,
-  insult
-}
+enum Missive { clumsy, insult }
 
 final _messages = {
   Missive.clumsy: [

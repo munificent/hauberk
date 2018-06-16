@@ -79,7 +79,7 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.knockBack:
-    // TODO: Something more interesting.
+      // TODO: Something more interesting.
       effects.add(new FrameEffect(event.pos, "*", buttermilk));
       break;
 

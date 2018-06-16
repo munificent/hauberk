@@ -4,25 +4,26 @@ import '../tiles.dart';
 import 'dungeon.dart';
 
 class LakeBiome extends Biome {
+  final Dungeon _dungeon;
   final Array2D<bool> _blob;
 
-  LakeBiome(this._blob);
+  LakeBiome(this._dungeon, this._blob);
 
-  Iterable<String> generate(Dungeon dungeon) sync* {
+  Iterable<String> generate() sync* {
     // TODO: Lakes sometimes have unreachable islands in the middle. Should
     // either fill those in, add bridges, give players a way to traverse water,
     // or at least ensure nothing is spawned on them.
 
     // Try to find a place to drop the lake.
     for (var i = 0; i < 100; i++) {
-      var x = rng.range(0, dungeon.width - _blob.width);
-      var y = rng.range(0, dungeon.height - _blob.height);
+      var x = rng.range(0, _dungeon.width - _blob.width);
+      var y = rng.range(0, _dungeon.height - _blob.height);
 
       // See if the lake overlaps anything.
       var canPlace = true;
       for (var pos in _blob.bounds) {
         if (_blob[pos]) {
-          if (!dungeon.isRockAt(pos.offset(x, y))) {
+          if (!_dungeon.isRockAt(pos.offset(x, y))) {
             canPlace = false;
             break;
           }
@@ -36,7 +37,7 @@ class LakeBiome extends Biome {
       for (var pos in _blob.bounds) {
         if (_blob[pos]) {
           var absolute = pos.offset(x, y);
-          dungeon.setTileAt(absolute, Tiles.water);
+          _dungeon.setTileAt(absolute, Tiles.water);
           cells.add(absolute);
         }
       }
@@ -44,18 +45,18 @@ class LakeBiome extends Biome {
       // Grow a shoreline.
       var edges = <Vec>[];
       var shoreBounds =
-          Rect.intersect(_blob.bounds.offset(x, y), dungeon.safeBounds);
+          Rect.intersect(_blob.bounds.offset(x, y), _dungeon.safeBounds);
       for (var pos in shoreBounds) {
-        if (dungeon.isRockAt(pos) && dungeon.hasNeighbor(pos, Tiles.water)) {
-          dungeon.setTileAt(pos, Tiles.grass);
+        if (_dungeon.isRockAt(pos) && _dungeon.hasNeighbor(pos, Tiles.water)) {
+          _dungeon.setTileAt(pos, Tiles.grass);
           edges.add(pos);
 
           cells.add(pos);
         }
       }
 
-      dungeon.growSeed(edges, edges.length, 4, Tiles.grass, cells);
-      dungeon.addPlace(new Place("aquatic", cells));
+      _dungeon.growSeed(edges, edges.length, 4, Tiles.grass, cells);
+      _dungeon.addPlace(new Place("aquatic", cells));
       return;
     }
   }

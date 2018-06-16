@@ -6,21 +6,24 @@ import '../tiles.dart';
 import 'dungeon.dart';
 
 class RiverBiome extends Biome {
+  final Dungeon _dungeon;
   final Set<Vec> _cells = new Set();
 
-  Iterable<String> generate(Dungeon dungeon) sync* {
+  RiverBiome(this._dungeon);
+
+  Iterable<String> generate() sync* {
     // TODO: Rivers that flow into/from lakes?
 
     // Midpoint displacement.
     // Consider also squig curves from: http://algorithmicbotany.org/papers/mountains.gi93.pdf.
     yield "Carving river";
     var start = new _RiverPoint(
-        rng.float(dungeon.width.toDouble()), -4.0, rng.float(1.0, 3.0));
-    var end = new _RiverPoint(rng.float(dungeon.width.toDouble()),
-        dungeon.height + 4.0, rng.float(1.0, 3.0));
+        rng.float(_dungeon.width.toDouble()), -4.0, rng.float(1.0, 3.0));
+    var end = new _RiverPoint(rng.float(_dungeon.width.toDouble()),
+        _dungeon.height + 4.0, rng.float(1.0, 3.0));
     var mid = new _RiverPoint(
-        rng.float(dungeon.width * 0.25, dungeon.width * 0.75),
-        rng.float(dungeon.height * 0.25, dungeon.height * 0.75),
+        rng.float(_dungeon.width * 0.25, _dungeon.width * 0.75),
+        rng.float(_dungeon.height * 0.25, _dungeon.height * 0.75),
         rng.float(1.0, 3.0));
 
     var horizontal = rng.oneIn(2);
@@ -32,8 +35,8 @@ class RiverBiome extends Biome {
     // TODO: Branching tributaries?
 
     var path = new Set<Vec>();
-    _displace(dungeon, start, mid, path);
-    _displace(dungeon, mid, end, path);
+    _displace(_dungeon, start, mid, path);
+    _displace(_dungeon, mid, end, path);
 
     // Try to place bridges.
     yield "Finding bridges";
@@ -42,15 +45,15 @@ class RiverBiome extends Biome {
       // See if a horizontal bridge reaches both shores.
       var westShore = -1;
       for (var x = pos.x; x >= 0; x--) {
-        if (dungeon.getTile(x, pos.y) == Tiles.grass) {
+        if (_dungeon.getTile(x, pos.y) == Tiles.grass) {
           westShore = x + 1;
           break;
         }
       }
 
       var eastShore = -1;
-      for (var x = pos.x; x < dungeon.width; x++) {
-        if (dungeon.getTile(x, pos.y) == Tiles.grass) {
+      for (var x = pos.x; x < _dungeon.width; x++) {
+        if (_dungeon.getTile(x, pos.y) == Tiles.grass) {
           eastShore = x;
           break;
         }
@@ -63,15 +66,15 @@ class RiverBiome extends Biome {
       // See if a vertical bridge does.
       var northShore = -1;
       for (var y = pos.y; y >= 0; y--) {
-        if (dungeon.getTile(pos.x, y) == Tiles.grass) {
+        if (_dungeon.getTile(pos.x, y) == Tiles.grass) {
           northShore = y + 1;
           break;
         }
       }
 
       var southShore = -1;
-      for (var y = pos.y; y < dungeon.height; y++) {
-        if (dungeon.getTile(pos.x, y) == Tiles.grass) {
+      for (var y = pos.y; y < _dungeon.height; y++) {
+        if (_dungeon.getTile(pos.x, y) == Tiles.grass) {
           southShore = y;
           break;
         }
@@ -114,7 +117,7 @@ class RiverBiome extends Biome {
         // along a bend. Fix that?
 
         for (var pos in shortest) {
-          dungeon.setTile(pos.x, pos.y, Tiles.bridge);
+          _dungeon.setTile(pos.x, pos.y, Tiles.bridge);
         }
       }
     }
@@ -124,7 +127,7 @@ class RiverBiome extends Biome {
 
     // TODO: Better tiles at edge of dungeon?
 
-    dungeon.addPlace(new Place("aquatic", _cells.toList()));
+    _dungeon.addPlace(new Place("aquatic", _cells.toList()));
   }
 
   void _displace(
