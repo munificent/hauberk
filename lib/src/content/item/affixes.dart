@@ -7,8 +7,6 @@ import '../elements.dart';
 import 'builder.dart';
 import 'items.dart';
 
-String _tag;
-
 class Affixes {
   static final prefixes = new ResourceSet<Affix>();
   static final suffixes = new ResourceSet<Affix>();
