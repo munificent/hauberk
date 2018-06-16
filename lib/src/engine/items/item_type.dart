@@ -130,6 +130,8 @@ class ItemType {
 class Affix {
   final String name;
 
+  final double heftScale;
+  final int weightBonus;
   final int strikeBonus;
   final double damageScale;
   final int damageBonus;
@@ -140,12 +142,16 @@ class Affix {
   final Map<Element, int> _resists = {};
 
   Affix(this.name,
-      {int strikeBonus,
+      {double heftScale,
+      int weightBonus,
+      int strikeBonus,
       double damageScale,
       int damageBonus,
       Element brand,
       int armor})
-      : strikeBonus = strikeBonus ?? 0,
+      : heftScale = heftScale ?? 1.0,
+        weightBonus = weightBonus ?? 0,
+        strikeBonus = strikeBonus ?? 0,
         damageScale = damageScale ?? 1.0,
         damageBonus = damageBonus ?? 1,
         brand = brand ?? Element.none,
@@ -159,4 +165,6 @@ class Affix {
   void resist(Element element, int power) {
     _resists[element] = power;
   }
+
+  String toString() => name;
 }

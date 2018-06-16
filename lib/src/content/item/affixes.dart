@@ -4,14 +4,14 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../elements.dart';
+import 'builder.dart';
 import 'items.dart';
 
-class Affixes {
-  static final _prefixes = new ResourceSet<Affix>();
-  static final _suffixes = new ResourceSet<Affix>();
+String _tag;
 
-  static Iterable<Affix> get prefixes => _prefixes.all;
-  static Iterable<Affix> get suffixes => _suffixes.all;
+class Affixes {
+  static final prefixes = new ResourceSet<Affix>();
+  static final suffixes = new ResourceSet<Affix>();
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int droppedDepth) {
@@ -26,7 +26,7 @@ class Affixes {
     // found deeper in the dungeon has a greater chance of an affix to
     // compensate for its weakness.
     var outOfDepth = itemType.depth - droppedDepth;
-    var depth = (droppedDepth - outOfDepth ~/ 2).clamp(1, 100);
+    var depth = math.max(1, droppedDepth - outOfDepth ~/ 3);
 
     // This generates a curve that starts out at 1% and slowly ramps upwards.
     var chance = 1 + 0.006 * depth * depth + 0.2 * depth;
@@ -37,8 +37,8 @@ class Affixes {
     // affixes.
     var affixDepth = math.max(droppedDepth, itemType.depth) + rng.taper(0, 2);
 
-    var prefix = _chooseAffix(_prefixes, itemType, affixDepth);
-    var suffix = _chooseAffix(_suffixes, itemType, affixDepth);
+    var prefix = _chooseAffix(prefixes, itemType, affixDepth);
+    var suffix = _chooseAffix(suffixes, itemType, affixDepth);
 
     // Decide if the item may have just a prefix, just a suffix, or (rarely)
     // both. This is mainly to make dual-affix items less common since they
@@ -56,10 +56,10 @@ class Affixes {
   }
 
   static Affix find(String name) {
-    var type = _prefixes.tryFind(name);
+    var type = prefixes.tryFind(name);
     if (type != null) return type;
 
-    return _suffixes.find(name);
+    return suffixes.find(name);
   }
 
   static Affix _chooseAffix(
@@ -72,106 +72,187 @@ class Affixes {
     _extraDamage();
     _brands();
     // TODO: "of Accuracy" increases range of bows.
+
+    finishAffix();
   }
 
   static void _resists() {
-    _resistWeak(Elements.air, 10, 0.5);
-    _resistWeak(Elements.earth, 11, 0.5);
-    _resistWeak(Elements.fire, 12, 0.5);
-    _resistWeak(Elements.water, 13, 0.5);
-    _resistWeak(Elements.acid, 14, 0.3);
-    _resistWeak(Elements.cold, 15, 0.5);
-    _resistWeak(Elements.lightning, 16, 0.3);
-    _resistWeak(Elements.poison, 17, 0.25);
-    _resistWeak(Elements.dark, 18, 0.25);
-    _resistWeak(Elements.light, 19, 0.25);
-    _resistWeak(Elements.spirit, 20, 0.4);
+    // TODO: Don't apply to all armor types?
+    affixCategory("armor");
 
-    _resistStrong(Elements.air, 16, 0.25);
-    _resistStrong(Elements.earth, 17, 0.25);
-    _resistStrong(Elements.fire, 18, 0.25);
-    _resistStrong(Elements.water, 19, 0.25);
-    _resistStrong(Elements.acid, 20, 0.2);
-    _resistStrong(Elements.cold, 21, 0.25);
-    _resistStrong(Elements.lightning, 22, 0.16);
-    _resistStrong(Elements.poison, 23, 0.14);
-    _resistStrong(Elements.dark, 24, 0.14);
-    _resistStrong(Elements.light, 25, 0.14);
-    _resistStrong(Elements.spirit, 26, 0.13);
+    // TODO: Different ones for each kind of armor with different bonuses?
+    affix("Elven _", 40, 1.0)
+      ..weight(-2)
+      ..armor(2)
+      ..resist(Elements.light);
+
+    affix("Dwarven _", 30, 1.0)
+      ..weight(2)
+      ..armor(4)
+      ..resist(Elements.earth)
+      ..resist(Elements.dark);
+
+    affix("_ of Resist Air", 10, 0.5)..resist(Elements.air);
+    affix("_ of Resist Earth", 11, 0.5)..resist(Elements.earth);
+    affix("_ of Resist Fire", 12, 0.5)..resist(Elements.fire);
+    affix("_ of Resist Water", 13, 0.5)..resist(Elements.water);
+    affix("_ of Resist Acid", 14, 0.3)..resist(Elements.acid);
+    affix("_ of Resist Cold", 15, 0.5)..resist(Elements.cold);
+    affix("_ of Resist Lightning", 16, 0.3)..resist(Elements.lightning);
+    affix("_ of Resist Poison", 17, 0.25)..resist(Elements.poison);
+    affix("_ of Resist Dark", 18, 0.25)..resist(Elements.dark);
+    affix("_ of Resist Light", 19, 0.25)..resist(Elements.light);
+    affix("_ of Resist Spirit", 20, 0.4)..resist(Elements.spirit);
+
+    affix("_ of Resist Nature", 40, 0.3)
+      ..resist(Elements.air)
+      ..resist(Elements.earth)
+      ..resist(Elements.fire)
+      ..resist(Elements.water)
+      ..resist(Elements.cold)
+      ..resist(Elements.lightning);
+
+    affix("_ of Resist Destruction", 40, 0.3)
+      ..resist(Elements.acid)
+      ..resist(Elements.fire)
+      ..resist(Elements.lightning)
+      ..resist(Elements.poison);
+
+    affix("_ of Resist Evil", 60, 0.3)
+      ..resist(Elements.acid)
+      ..resist(Elements.poison)
+      ..resist(Elements.dark)
+      ..resist(Elements.spirit);
+
+    affix("_ of Resistance", 70, 0.3)
+      ..resist(Elements.air)
+      ..resist(Elements.earth)
+      ..resist(Elements.fire)
+      ..resist(Elements.water)
+      ..resist(Elements.acid)
+      ..resist(Elements.cold)
+      ..resist(Elements.lightning)
+      ..resist(Elements.poison)
+      ..resist(Elements.dark)
+      ..resist(Elements.light)
+      ..resist(Elements.spirit);
+
+    affix("_ of Protection from Air", 16, 0.25)..resist(Elements.air, 2);
+    affix("_ of Protection from Earth", 17, 0.25)..resist(Elements.earth, 2);
+    affix("_ of Protection from Fire", 18, 0.25)..resist(Elements.fire, 2);
+    affix("_ of Protection from Water", 19, 0.25)..resist(Elements.water, 2);
+    affix("_ of Protection from Acid", 20, 0.2)..resist(Elements.acid, 2);
+    affix("_ of Protection from Cold", 21, 0.25)..resist(Elements.cold, 2);
+    affix("_ of Protection from Lightning", 22, 0.16)
+      ..resist(Elements.lightning, 2);
+    affix("_ of Protection from Poison", 23, 0.14)..resist(Elements.poison, 2);
+    affix("_ of Protection from Dark", 24, 0.14)..resist(Elements.dark, 2);
+    affix("_ of Protection from Light", 25, 0.14)..resist(Elements.light, 2);
+    affix("_ of Protection from Spirit", 26, 0.13)..resist(Elements.spirit, 2);
   }
 
   static void _extraDamage() {
-    // TODO: Should these scale damage?
-    damage("weapon", "of Harming", 8, 1.0, damage: 1);
-    damage("weapon", "of Wounding", 15, 1.0, damage: 2);
-    damage("weapon", "of Maiming", 35, 1.0, damage: 3);
-    damage("weapon", "of Slaying", 65, 1.0, damage: 5);
+    // TODO: Exclude bows?
+    affixCategory("weapon");
+    affix("_ of Harming", 1, 1.0)
+      ..heft(1.05)
+      ..damage(bonus: 1);
+    affix("_ of Wounding", 10, 1.0)
+      ..heft(1.07)
+      ..damage(bonus: 3);
+    affix("_ of Maiming", 25, 1.0)
+      ..heft(1.09)
+      ..damage(scale: 1.2, bonus: 3);
+    affix("_ of Slaying", 45, 1.0)
+      ..heft(1.11)
+      ..damage(scale: 1.4, bonus: 5);
 
-    damage("bow", "Ash", 10, 1.0, damage: 3);
-    damage("bow", "Yew", 20, 1.0, damage: 5);
+    affix("Elven _", 40, 1.0)
+      ..heft(0.7)
+      ..damage(scale: 1.3)
+      ..resist(Elements.light);
+
+    affix("Dwarven _", 40, 1.0)
+      ..heft(1.2)
+      ..damage(scale: 1.5, bonus: 4)
+      ..resist(Elements.earth)
+      ..resist(Elements.dark);
+
+    affixCategory("bow");
+    affix("Ash _", 10, 1.0)
+      ..heft(0.8)
+      ..damage(bonus: 3);
+    affix("Yew _", 20, 1.0)
+      ..heft(0.8)
+      ..damage(bonus: 5);
   }
 
   static void _brands() {
-    // TODO: Should these grant resistance to their element too?
-    brand("Glimmering", 20, 0.3, Elements.light, scale: 1.2);
-    brand("Shining", 32, 0.25, Elements.light, scale: 1.4);
-    brand("Radiant", 48, 0.2, Elements.light, scale: 1.6);
+    affixCategory("weapon");
 
-    brand("Dim", 16, 0.3, Elements.dark, scale: 1.2);
-    brand("Dark", 32, 0.25, Elements.dark, scale: 1.4);
-    brand("Black", 56, 0.2, Elements.dark, scale: 1.6);
+    affix("Glimmering _", 20, 0.3)
+      ..damage(scale: 1.2)
+      ..brand(Elements.light);
+    affix("Shining _", 32, 0.25)
+      ..damage(scale: 1.4)
+      ..brand(Elements.light);
+    affix("Radiant _", 48, 0.2)
+      ..damage(scale: 1.6)
+      ..brand(Elements.light, resist: 2);
 
-    brand("Freezing", 20, 0.3, Elements.cold, scale: 1.5);
+    affix("Dim _", 16, 0.3)
+      ..damage(scale: 1.2)
+      ..brand(Elements.dark);
+    affix("Dark _", 32, 0.25)
+      ..damage(scale: 1.4)
+      ..brand(Elements.dark);
+    affix("Black _", 56, 0.2)
+      ..damage(scale: 1.6)
+      ..brand(Elements.dark, resist: 2);
 
-    brand("Burning", 20, 0.3, Elements.fire, scale: 1.3);
-    brand("Flaming", 40, 0.25, Elements.fire, scale: 1.6);
-    brand("Searing", 60, 0.2, Elements.fire, scale: 1.8);
+    affix("Chilling _", 20, 0.3)
+      ..damage(scale: 1.4)
+      ..brand(Elements.cold);
+    affix("Freezing _", 40, 0.25)
+      ..damage(scale: 1.6)
+      ..brand(Elements.cold, resist: 2);
 
-    brand("Electric", 50, 0.2, Elements.lightning, scale: 1.4);
-    brand("Shocking", 70, 0.2, Elements.lightning, scale: 1.8);
+    affix("Burning _", 20, 0.3)
+      ..damage(scale: 1.3)
+      ..brand(Elements.fire);
+    affix("Flaming _", 40, 0.25)
+      ..damage(scale: 1.6)
+      ..brand(Elements.fire);
+    affix("Searing _", 60, 0.2)
+      ..damage(scale: 1.8)
+      ..brand(Elements.fire, resist: 2);
 
-    brand("Poisoned", 35, 0.2, Elements.poison, scale: 1.1);
-    brand("Venomous", 70, 0.2, Elements.poison, scale: 1.3);
+    affix("Electric _", 50, 0.2)
+      ..damage(scale: 1.4)
+      ..brand(Elements.lightning);
+    affix("Shocking _", 70, 0.2)
+      ..damage(scale: 1.8)
+      ..brand(Elements.lightning, resist: 2);
 
-    brand("Ghostly", 45, 0.2, Elements.spirit, scale: 1.4);
-    brand("Spiritual", 80, 0.15, Elements.spirit, scale: 1.7);
+    affix("Poisonous _", 35, 0.2)
+      ..damage(scale: 1.1)
+      ..brand(Elements.poison);
+    affix("Venomous _", 70, 0.2)
+      ..damage(scale: 1.3)
+      ..brand(Elements.poison, resist: 2);
+
+    affix("Ghostly _", 45, 0.2)
+      ..heft(0.7)
+      ..damage(scale: 1.4)
+      ..brand(Elements.spirit);
+    affix("Spiritual _", 80, 0.15)
+      ..heft(0.7)
+      ..damage(scale: 1.7)
+      ..brand(Elements.spirit, resist: 2);
   }
 
   static void defineItemTag(String tag) {
-    _prefixes.defineTags(tag);
-    _suffixes.defineTags(tag);
-  }
-
-  static void _resistWeak(Element element, int depth, double frequency) {
-    _resist("of Resist ${element.capitalized}", depth, frequency, element, 1);
-  }
-
-  static void _resistStrong(Element element, int depth, double frequency) {
-    _resist("of Protection from ${element.capitalized}", depth, frequency,
-        element, 2);
-  }
-
-  static void _resist(
-      String name, int depth, double frequency, Element element, int power) {
-    // Also boost armor a little.
-    var affix = new Affix(name, armor: power);
-    affix.resist(element, power);
-
-    // TODO: Don't apply to all armor types?
-    _suffixes.add(name, affix, depth, frequency, "armor");
-  }
-
-  /// A weapon suffix for adding damage.
-  static void damage(String tag, String name, int depth, double frequency,
-      {int damage}) {
-    var affix = new Affix(name, damageBonus: damage);
-    _suffixes.add(name, affix, depth, frequency, tag);
-  }
-
-  /// A weapon prefix for giving an elemental brand.
-  static void brand(String name, int depth, double frequency, Element element,
-      {double scale}) {
-    var affix = new Affix(name, damageScale: scale, brand: element);
-    _prefixes.add(name, affix, depth, frequency, "weapon");
+    prefixes.defineTags(tag);
+    suffixes.defineTags(tag);
   }
 }

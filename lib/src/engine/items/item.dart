@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
@@ -104,11 +106,24 @@ class Item implements Comparable<Item>, Noun {
   // weight. "Heavy" and "adamant" increase it (but also increase armor
   // power).
   /// The penalty to the hero's strength when wearing this.
-  int get weight => type.weight;
+  int get weight {
+    var result = type.weight;
 
-  // TODO: Affixes that modify.
+    if (prefix != null) result += prefix.weightBonus;
+    if (suffix != null) result += suffix.weightBonus;
+
+    return math.max(0, result);
+  }
+
   /// The amount of strength required to wield the item effectively.
-  int get heft => type.heft;
+  int get heft {
+    var result = type.heft.toDouble();
+
+    if (prefix != null) result *= prefix.heftScale;
+    if (suffix != null) result *= suffix.heftScale;
+
+    return result.round();
+  }
 
   // TODO: Affixes that modify.
   int get emanationLevel => type.emanationLevel;

@@ -25,17 +25,17 @@ abstract class StatBase {
   String get name => _stat.name;
 
   Stat get _stat;
-  int get _penalty => 0;
+  int get _offset => 0;
 
   int get value =>
-      (_hero.race.valueAtLevel(_stat, _hero.level) - _penalty).clamp(1, 60);
+      (_hero.race.valueAtLevel(_stat, _hero.level) + _offset).clamp(1, 60);
 }
 
 class Strength extends StatBase {
   Strength(Hero hero) : super(hero);
 
   Stat get _stat => Stat.strength;
-  int get _penalty => _hero.weight;
+  int get _offset => -_hero.weight;
 
   double get tossRangeScale {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
@@ -66,8 +66,6 @@ class Agility extends StatBase {
   Stat get _stat => Stat.agility;
 
   // TODO: Subtract encumbrance.
-  int get value =>
-      _hero.race.valueAtLevel(Stat.agility, _hero.level).clamp(1, 60);
 
   int get dodgeBonus {
     if (value <= 10) return lerpInt(value, 1, 10, -50, 0);

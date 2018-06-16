@@ -130,7 +130,7 @@ void _moreAffixes() {
     var histogram = _affixCounts[depth - 1];
 
     for (var i = 0; i < batchSize; i++) {
-      var itemType = Items.types.tryChoose(depth, "item");
+      var itemType = Items.types.tryChoose(depth, "equipment");
       if (itemType == null) continue;
 
       // Don't count items that can't have affixes.
@@ -202,11 +202,15 @@ void _drawItems() {
 void _drawAffixes() {
   if (_affixNames == null) {
     _affixNames = ["(none)"];
-    _affixNames.addAll(Affixes.prefixes.map((affix) => "${affix.name} _"));
-    _affixNames.addAll(Affixes.suffixes.map((affix) => "_ ${affix.name}"));
+    _affixNames.addAll(Affixes.prefixes.all.map((affix) => "${affix.name} _"));
+    _affixNames.addAll(Affixes.suffixes.all.map((affix) => "_ ${affix.name}"));
 
     // TODO: Sort by depth and rarity?
     _affixNames.sort();
+
+    for (var i = 0; i < _affixNames.length; i++) {
+      _colors[_affixNames[i]] = 'hsl(${i * 17 % 360}, 50%, 50%)';
+    }
   }
 
   _redraw(_affixCounts, _affixNames, (label) => label);
@@ -231,16 +235,11 @@ void _redraw(List<Histogram<String>> histograms, List<String> labels,
       var count = histogram.count(label);
       if (count == 0) continue;
 
-      var color = _colors[label];
-      if (color == null) {
-        color = 'hsl(${label.hashCode % 360}, 70%, 50%)';
-      }
-
       var fraction = count / total;
       var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
       x -= fraction * chartWidth;
       buffer.write(
-          '<rect fill="$color" x="$x" y="$y" width="${right - x}" height="$barSize">');
+          '<rect fill="${_colors[label]}" x="$x" y="$y" width="${right - x}" height="$barSize">');
       buffer.write(
           '<title>depth ${depth + 1}: ${describe(label)} $percent% ($count)</title></rect>');
 

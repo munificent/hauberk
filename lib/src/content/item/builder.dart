@@ -14,7 +14,9 @@ import 'items.dart';
 
 int _sortIndex = 0;
 _CategoryBuilder _category;
-_ItemBuilder _builder;
+_ItemBuilder _item;
+String _affixTag;
+_AffixBuilder _affix;
 
 _CategoryBuilder category(int glyph, {String verb, String flags, int stack}) {
   finishItem();
@@ -34,13 +36,35 @@ _CategoryBuilder category(int glyph, {String verb, String flags, int stack}) {
 _ItemBuilder item(String name, int depth, double frequency, Color color) {
   finishItem();
 
-  _builder = new _ItemBuilder();
-  _builder._name = name;
-  _builder._depth = depth;
-  _builder._frequency = frequency;
-  _builder._color = color;
+  _item = new _ItemBuilder();
+  _item._name = name;
+  _item._depth = depth;
+  _item._frequency = frequency;
+  _item._color = color;
 
-  return _builder;
+  return _item;
+}
+
+void affixCategory(String tag) {
+  finishAffix();
+  _affixTag = tag;
+}
+
+_AffixBuilder affix(String name, int depth, double frequency) {
+  finishAffix();
+
+  bool isPrefix;
+  if (name.endsWith(" _")) {
+    name = name.substring(0, name.length - 2);
+    isPrefix = true;
+  } else if (name.startsWith("_ ")) {
+    name = name.substring(2);
+    isPrefix = false;
+  } else {
+    throw 'Affix "$name" must start or end with "_".';
+  }
+
+  return _affix = new _AffixBuilder(name, isPrefix, depth, frequency);
 }
 
 class _BaseBuilder {
@@ -214,52 +238,102 @@ class _ItemBuilder extends _BaseBuilder {
   }
 }
 
-void finishItem() {
-  if (_builder == null) return;
+class _AffixBuilder {
+  final String _name;
+  final bool _isPrefix;
+  final int _depth;
+  final double _frequency;
 
-  var appearance = new Glyph.fromCharCode(_category._glyph, _builder._color);
+  double _heftScale;
+  int _weightBonus;
+  int _strikeBonus;
+  double _damageScale;
+  int _damageBonus;
+  Element _brand;
+  int _armor;
+
+  final Map<Element, int> _resists = {};
+
+  _AffixBuilder(this._name, this._isPrefix, this._depth, this._frequency);
+
+  void heft(double scale) {
+    _heftScale = scale;
+  }
+
+  void weight(int bonus) {
+    _weightBonus = bonus;
+  }
+
+  void strike(int bonus) {
+    _strikeBonus = bonus;
+  }
+
+  void damage({double scale, int bonus}) {
+    _damageScale = scale;
+    _damageBonus = bonus;
+  }
+
+  void brand(Element element, {int resist}) {
+    _brand = element;
+
+    // By default, branding also grants resistance.
+    _resists[element] = resist ?? 1;
+  }
+
+  void armor(int armor) {
+    _armor = armor;
+  }
+
+  void resist(Element element, [int power]) {
+    _resists[element] = power ?? 1;
+  }
+}
+
+void finishItem() {
+  if (_item == null) return;
+
+  var appearance = new Glyph.fromCharCode(_category._glyph, _item._color);
 
   Toss toss;
-  var tossDamage = _builder._tossDamage ?? _category._tossDamage;
+  var tossDamage = _item._tossDamage ?? _category._tossDamage;
   if (tossDamage != null) {
-    var noun = new Noun("the ${_builder._name.toLowerCase()}");
+    var noun = new Noun("the ${_item._name.toLowerCase()}");
     var verb = "hits";
     if (_category._verb != null) {
       verb = Log.conjugate(_category._verb, Pronoun.it);
     }
 
-    var range = _builder._tossRange ?? _category._tossRange;
+    var range = _item._tossRange ?? _category._tossRange;
     assert(range != null);
-    var element =
-        _builder._tossElement ?? _category._tossElement ?? Element.none;
-    var use = _builder._tossUse ?? _category._tossUse;
-    var breakage = _category._breakage ?? _builder._breakage ?? 0;
+    var element = _item._tossElement ?? _category._tossElement ?? Element.none;
+    var use = _item._tossUse ?? _category._tossUse;
+    var breakage = _category._breakage ?? _item._breakage ?? 0;
 
     var tossAttack = new Attack(noun, verb, tossDamage, range, element);
     toss = new Toss(breakage, tossAttack, use);
   }
 
   var itemType = new ItemType(
-      _builder._name,
+      _item._name,
       appearance,
-      _builder._depth,
+      _item._depth,
       _sortIndex++,
       _category._equipSlot,
       _category._weaponType,
-      _builder._use,
-      _builder._attack,
+      _item._use,
+      _item._attack,
       toss,
-      _builder._armor ?? 0,
+      _item._armor ?? 0,
       0,
-      _builder._maxStack ?? _category._maxStack ?? 1,
-      weight: _builder._weight ?? 0,
-      heft: _builder._heft ?? 0,
-      emanation: _builder._emanation ?? _category._emanation);
+      _item._maxStack ?? _category._maxStack ?? 1,
+      weight: _item._weight ?? 0,
+      heft: _item._heft ?? 0,
+      emanation: _item._emanation ?? _category._emanation);
 
   // Use the tags (if any) to figure out which slot it can be equipped in.
   itemType.flags.addAll(_category._flags);
-  if (_builder._flags != null) {
-    for (var flag in _builder._flags) {
+  if (_item._flags != null) {
+    for (var flag in _item._flags) {
       if (flag.startsWith("-")) {
         itemType.flags.remove(flag.substring(1));
       } else {
@@ -269,10 +343,29 @@ void finishItem() {
   }
 
   itemType.skills.addAll(_category._skills);
-  itemType.skills.addAll(_builder._skills);
+  itemType.skills.addAll(_item._skills);
 
-  Items.types.add(itemType.name, itemType, itemType.depth, _builder._frequency,
+  Items.types.add(itemType.name, itemType, itemType.depth, _item._frequency,
       _category._tag);
 
-  _builder = null;
+  _item = null;
+}
+
+void finishAffix() {
+  if (_affix == null) return;
+
+  var affix = new Affix(_affix._name,
+      heftScale: _affix._heftScale,
+      weightBonus: _affix._weightBonus,
+      strikeBonus: _affix._strikeBonus,
+      damageScale: _affix._damageScale,
+      damageBonus: _affix._damageBonus,
+      brand: _affix._brand,
+      armor: _affix._armor);
+
+  _affix._resists.forEach(affix.resist);
+
+  (_affix._isPrefix ? Affixes.prefixes : Affixes.suffixes)
+      .add(_affix._name, affix, _affix._depth, _affix._frequency, _affixTag);
+  _affix = null;
 }
