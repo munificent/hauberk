@@ -127,7 +127,7 @@ class RiverBiome extends Biome {
 
     // TODO: Better tiles at edge of dungeon?
 
-    _dungeon.addPlace(new Place("aquatic", _cells.toList()));
+    _dungeon.addPlace(new AquaticPlace(_cells.toList()));
   }
 
   void _displace(

@@ -6,16 +6,9 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../tiles.dart';
 import 'blob.dart';
-import 'decorator.dart';
 import 'dungeon.dart';
 import 'junction.dart';
-
-class PlacedRoom {
-  final Vec pos;
-  final Room room;
-
-  PlacedRoom(this.pos, this.room);
-}
+import 'room_place.dart';
 
 // TODO: Define different ones of this to have different styles.
 class RoomStyle {
@@ -35,7 +28,6 @@ class RoomStyle {
 
 class RoomBiome extends Biome {
   final Dungeon _dungeon;
-  final List<PlacedRoom> _rooms = [];
 
   final RoomStyle _style = new RoomStyle();
 
@@ -73,8 +65,6 @@ class RoomBiome extends Biome {
       }
     }
   }
-
-  Iterable<String> decorate() => new Decorator(_dungeon, _rooms).decorate();
 
   /// Try to make a meandering passage starting at [junction] that ends in a
   /// new room or connects to an existing junction.
@@ -206,7 +196,7 @@ class RoomBiome extends Biome {
     _placeDoor(junction.position);
     _placeDoor(pos);
 
-    _dungeon.addPlace(new Place("passage", passage.toList()));
+    _dungeon.addPlace(new PassagePlace(passage.toList()));
     return true;
   }
 
@@ -308,8 +298,7 @@ class RoomBiome extends Biome {
       _tryAddJunction(roomPos + junction.position, junction.direction);
     }
 
-    _rooms.add(new PlacedRoom(new Vec(x, y), room));
-    _dungeon.addPlace(new Place("room", cells, hasHero: isStarting));
+    _dungeon.addPlace(new RoomPlace(roomPos, room, cells, hasHero: isStarting));
   }
 
   void _placeDoor(Vec pos) {

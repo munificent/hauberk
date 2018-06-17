@@ -7,7 +7,6 @@ import '../floor_drops.dart';
 import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'blob.dart';
-import 'choke_points.dart';
 import 'grotto.dart';
 import 'junction.dart';
 import 'lake.dart';
@@ -16,6 +15,7 @@ import 'room.dart';
 
 abstract class Biome {
   Iterable<String> generate();
+
   Iterable<String> decorate() => const [];
 }
 
@@ -40,12 +40,19 @@ class TileInfo {
 }
 
 // TODO: Better name?
-class Place {
+abstract class Place {
   final bool hasHero;
   final String type;
   final List<Vec> cells;
 
   Place(this.type, this.cells, {this.hasHero = false});
+
+  void decorate(Dungeon dungeon) {}
+}
+
+class AquaticPlace extends Place {
+  AquaticPlace(List<Vec> cells)
+      : super("aquatic", cells);
 }
 
 class Dungeon {
@@ -66,6 +73,7 @@ class Dungeon {
 
   final List<Biome> _biomes = [];
   final Array2D<TileInfo> _info;
+
 //  final List<Vec> _passages = [];
 
   final List<Place> _places = [];
@@ -77,9 +85,11 @@ class Dungeon {
   var _spawnedUniques = new Set<Breed>();
 
   Rect get bounds => stage.bounds;
+
   Rect get safeBounds => stage.bounds.inflate(-1);
 
   int get width => stage.width;
+
   int get height => stage.height;
 
   Dungeon(this._lore, this.stage, this.depth)
@@ -115,16 +125,20 @@ class Dungeon {
     yield "Populating dungeon";
     _calculateInfo();
 
-    // Now that we know more global information, let the biomes use that to
+    // Now that we know more global information, let the places use that to
     // tweak themselves.
-    for (var biome in _biomes) {
-      yield* biome.decorate();
+    for (var place in _places) {
+      place.decorate(this);
     }
 
     // TODO: Should we do a sanity check for traversable tiles that ended up
     // unreachable?
 
     // Pick a point far from the hero to place the exit stairs.
+
+    // TODO: This is less necessary now that room styles place stairs sometimes.
+    // We do need to ensure at least one stair gets placed, though.
+
     // TODO: Place the stairs in a more logical place like next to a wall, in a
     // room, etc?
     var stairCount = rng.range(2, 4);
@@ -174,6 +188,7 @@ class Dungeon {
   }
 
   bool isRock(int x, int y) => stage.get(x, y).type == Tiles.rock;
+
   bool isRockAt(Vec pos) => stage[pos].type == Tiles.rock;
 
   TileInfo infoAt(Vec pos) => _info[pos];

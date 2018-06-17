@@ -56,7 +56,7 @@ class LakeBiome extends Biome {
       }
 
       _dungeon.growSeed(edges, edges.length, 4, Tiles.grass, cells);
-      _dungeon.addPlace(new Place("aquatic", cells));
+      _dungeon.addPlace(new AquaticPlace(cells));
       return;
     }
   }
