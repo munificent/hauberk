@@ -21,10 +21,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
           color);
     }
 
-    // TODO: This is too wide now that the terminal is narrower. Make more
-    // compact.
     terminal.writeAt(48, 0, "══════════ Resistances ═════════", steelGray);
-
     drawEquipmentTable(terminal, (item, y) {
       writeLine(y - 1, midnight);
 

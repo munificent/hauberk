@@ -354,13 +354,8 @@ class ItemDialog extends Screen<Input> {
       description.add("It emanates ${_inspectedItem.emanationLevel} light.");
     }
 
-    const flagDescriptions = const {
-      "flammable": "It can be destroyed by fire.",
-      "freezable": "It can be destroyed by cold.",
-    };
-
-    for (var flag in _inspectedItem.flags) {
-      description.add(flagDescriptions[flag]);
+    for (var element in _inspectedItem.type.destroyChance.keys) {
+      description.add("It can be destroyed by ${element.name.toLowerCase()}.");
     }
 
     for (var line in Log.wordWrap(terminal.width - 4, description.join(" "))) {

@@ -7,8 +7,6 @@ import '../hues.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
-// TODO: Support targeting floor tiles and not just actors.
-
 /// Modal dialog for letting the user select a target to perform a
 /// [UsableSkill] on.
 class TargetDialog extends Screen<Input> {

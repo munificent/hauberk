@@ -97,7 +97,12 @@ class ItemType {
   /// The maximum number of items of this type that a single stack may contain.
   final int maxStack;
 
-  final Set<String> flags = new Set();
+  /// Percent chance of this item being destroyed when hit with a given element.
+  final Map<Element, int> destroyChance = {};
+
+  /// If the item burns when on the ground, how much fuel it adds to the
+  /// burning tile.
+  final int fuel;
 
   /// The [Skill]s discovered when picking up an item of this type.
   final List<Skill> skills = [];
@@ -118,8 +123,10 @@ class ItemType {
       {this.weight = 0,
       this.heft = 1,
       int emanation,
+      int fuel,
       bool treasure})
       : emanationLevel = emanation ?? 0,
+        fuel = fuel ?? 0,
         isTreasure = treasure ?? false;
 
   String toString() => name;

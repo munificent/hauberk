@@ -18,17 +18,13 @@ _ItemBuilder _item;
 String _affixTag;
 _AffixBuilder _affix;
 
-_CategoryBuilder category(int glyph, {String verb, String flags, int stack}) {
+_CategoryBuilder category(int glyph, {String verb, int stack}) {
   finishItem();
 
   _category = new _CategoryBuilder();
   _category._glyph = glyph;
   _category._verb = verb;
   _category._maxStack = stack;
-
-  if (flags != null) {
-    _category.flags(flags);
-  }
 
   return _category;
 }
@@ -68,8 +64,8 @@ _AffixBuilder affix(String name, int depth, double frequency) {
 }
 
 class _BaseBuilder {
-  final List<String> _flags = [];
   final List<Skill> _skills = [];
+  final Map<Element, int> _destroyChance = {};
 
   int _maxStack;
   Element _tossElement;
@@ -77,17 +73,13 @@ class _BaseBuilder {
   int _tossRange;
   TossItemUse _tossUse;
   int _emanation;
+  int _fuel;
 
   /// Percent chance of objects in the current category breaking when thrown.
   int _breakage;
 
   void stack(int stack) {
     _maxStack = stack;
-  }
-
-  void flags(String flags) {
-    if (flags == null) return;
-    _flags.addAll(flags.split(" "));
   }
 
   /// Makes items in the category throwable.
@@ -104,6 +96,12 @@ class _BaseBuilder {
 
   void light(int level) {
     _emanation = level;
+  }
+
+  void destroy(Element element, {int chance, int fuel}) {
+    _destroyChance[element] = chance;
+    // TODO: Per-element fuel.
+    _fuel = fuel;
   }
 
   void skill(String skill) {
@@ -328,19 +326,11 @@ void finishItem() {
       _item._maxStack ?? _category._maxStack ?? 1,
       weight: _item._weight ?? 0,
       heft: _item._heft ?? 0,
-      emanation: _item._emanation ?? _category._emanation);
+      emanation: _item._emanation ?? _category._emanation,
+      fuel: _item._fuel ?? _category._fuel);
 
-  // Use the tags (if any) to figure out which slot it can be equipped in.
-  itemType.flags.addAll(_category._flags);
-  if (_item._flags != null) {
-    for (var flag in _item._flags) {
-      if (flag.startsWith("-")) {
-        itemType.flags.remove(flag.substring(1));
-      } else {
-        itemType.flags.add(flag);
-      }
-    }
-  }
+  itemType.destroyChance.addAll(_category._destroyChance);
+  itemType.destroyChance.addAll(_item._destroyChance);
 
   itemType.skills.addAll(_category._skills);
   itemType.skills.addAll(_item._skills);

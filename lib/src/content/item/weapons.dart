@@ -1,6 +1,7 @@
 import 'package:malison/malison.dart';
 
 import '../../hues.dart';
+import '../elements.dart';
 import 'builder.dart';
 
 void weapons() {
@@ -13,13 +14,16 @@ void weapons() {
     ..toss(breakage: 25, range: 5);
   item("Stick", 1, 0.5, persimmon)
     ..weapon(8, heft: 10)
-    ..toss(damage: 3);
+    ..toss(damage: 3)
+    ..destroy(Elements.fire, chance: 10, fuel: 10);
   item("Cudgel", 3, 0.5, gunsmoke)
     ..weapon(10, heft: 11)
-    ..toss(damage: 4);
+    ..toss(damage: 4)
+    ..destroy(Elements.fire, chance: 5, fuel: 10);
   item("Club", 6, 0.5, garnet)
     ..weapon(12, heft: 13)
-    ..toss(damage: 5);
+    ..toss(damage: 5)
+    ..destroy(Elements.fire, chance: 2, fuel: 10);
 
   // Staves.
   // TODO: Staff skill. Distance attack + pushback?
@@ -28,13 +32,16 @@ void weapons() {
     ..toss(breakage: 35, range: 4);
   item("Walking Stick", 2, 0.5, persimmon)
     ..weapon(10, heft: 12)
-    ..toss(damage: 3);
+    ..toss(damage: 3)
+    ..destroy(Elements.fire, chance: 5, fuel: 15);
   item("Sta[ff|aves]", 5, 0.5, garnet)
     ..weapon(14, heft: 14)
-    ..toss(damage: 5);
+    ..toss(damage: 5)
+    ..destroy(Elements.fire, chance: 2, fuel: 15);
   item("Quartersta[ff|aves]", 11, 0.5, gunsmoke)
     ..weapon(24, heft: 16)
-    ..toss(damage: 8);
+    ..toss(damage: 8)
+    ..destroy(Elements.fire, chance: 2, fuel: 15);
 
   // Hammers.
   category(CharCode.latinSmallLetterOWithAcute, verb: "bash[es]")
@@ -68,7 +75,8 @@ void weapons() {
     ..skill("Whip Mastery");
   item("Whip", 4, 0.5, persimmon)
     ..weapon(10, heft: 12)
-    ..toss(damage: 1);
+    ..toss(damage: 1)
+    ..destroy(Elements.fire, chance: 10, fuel: 5);
   item("Chain Whip", 15, 0.5, gunsmoke)
     ..weapon(18, heft: 18)
     ..toss(damage: 2);
@@ -140,7 +148,8 @@ void weapons() {
     ..skill("Spear Mastery");
   item("Pointed Stick", 2, 0.5, garnet)
     ..weapon(10, heft: 11)
-    ..toss(damage: 9);
+    ..toss(damage: 9)
+    ..destroy(Elements.fire, chance: 7, fuel: 12);
   item("Spear", 7, 0.5, persimmon)
     ..weapon(16, heft: 17)
     ..toss(damage: 15);
@@ -184,11 +193,14 @@ void weapons() {
     ..skill("Archery");
   item("Short Bow", 5, 0.3, persimmon)
     ..ranged("the arrow", damage: 8, range: 12)
-    ..toss(damage: 2);
+    ..toss(damage: 2)
+    ..destroy(Elements.fire, chance: 15, fuel: 10);
   item("Longbow", 13, 0.3, garnet)
     ..ranged("the arrow", damage: 16, range: 14)
-    ..toss(damage: 3);
+    ..toss(damage: 3)
+    ..destroy(Elements.fire, chance: 7, fuel: 13);
   item("Crossbow", 28, 0.3, gunsmoke)
     ..ranged("the bolt", damage: 24, range: 16)
-    ..toss(damage: 4);
+    ..toss(damage: 4)
+    ..destroy(Elements.fire, chance: 4, fuel: 14);
 }

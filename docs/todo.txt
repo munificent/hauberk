@@ -73,6 +73,7 @@
   - help docs
   - animated tiles for water, lava, fire, etc.
 - gameplay
+  - home?
   - victory
   - perma-death
   - don't award new levels until leaving dungeon?

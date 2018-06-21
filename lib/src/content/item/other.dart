@@ -71,20 +71,23 @@ void pelts() {
   // TODO: Better pictogram than a pelt?
   // TODO: These currently have no use. Either remove them, or add crafting
   // back in.
-  category(CharCode.latinSmallLetterEWithAcute, stack: 20, flags: "flammable");
+  category(CharCode.latinSmallLetterEWithAcute, stack: 20)
+    ..destroy(Elements.fire, chance: 40, fuel: 1);
   item("Flower", 1, 1.0, cornflower); // TODO: Use in recipe.
   item("Insect Wing", 1, 1.0, violet);
   item("Red Feather", 2, 1.0, brickRed); // TODO: Use in recipe.
   item("Black Feather", 2, 1.0, steelGray);
 
-  category(CharCode.latinSmallLetterEWithAcute, stack: 4, flags: "flammable");
+  category(CharCode.latinSmallLetterEWithAcute, stack: 4)
+    ..destroy(Elements.fire, chance: 20, fuel: 3);
   item("Fur Pelt", 1, 1.0, persimmon);
   item("Fox Pelt", 2, 1.0, copper);
 }
 
 void food() {
-  category(CharCode.invertedExclamationMark, flags: "flammable")
-    ..tag("item/food");
+  category(CharCode.invertedExclamationMark)
+    ..tag("item/food")
+    ..destroy(Elements.fire, chance: 20, fuel: 3);
   item("Loa[f|ves] of Bread", 1, 1.0, sandal)
     ..stack(6)
     ..food(200);
@@ -93,7 +96,7 @@ void food() {
 }
 
 void lightSources() {
-  category(CharCode.notSign, verb: "hit[s]", flags: "flammable")
+  category(CharCode.notSign, verb: "hit[s]")
     ..tag("item/light")
     ..toss(breakage: 70);
 
@@ -102,6 +105,7 @@ void lightSources() {
     ..stack(10)
     ..toss(damage: 2, range: 8, element: Elements.fire)
     ..light(4)
+    ..destroy(Elements.fire, chance: 40, fuel: 20)
     ..ball(Elements.light, "light", "sears", 1, range: 10);
 
   // TODO: Ball of fire when hits toss target.
@@ -109,6 +113,7 @@ void lightSources() {
     ..stack(10)
     ..toss(damage: 3, range: 8, element: Elements.fire)
     ..light(5)
+    ..destroy(Elements.fire, chance: 40, fuel: 25)
     ..ball(Elements.light, "light", "sears", 2, range: 12);
 
   // TODO: Larger ball of fire when hits toss target.
@@ -116,6 +121,7 @@ void lightSources() {
     ..stack(4)
     ..toss(damage: 10, range: 8, element: Elements.fire)
     ..light(6)
+    ..destroy(Elements.fire, chance: 50, fuel: 40)
     ..ball(Elements.light, "light", "sears", 2, range: 14);
 
   // TODO: Ball of fire when hits toss target.
@@ -123,11 +129,11 @@ void lightSources() {
     ..stack(4)
     ..toss(damage: 6, range: 10, element: Elements.fire)
     ..light(7)
+    ..destroy(Elements.fire, chance: 60, fuel: 60)
     ..ball(Elements.light, "light", "sears", 4, range: 18);
 
   // TODO: Maybe allow this to be equipped and increase its radius when held?
   item("Lantern", 15, 0.3, gold)
-    ..flags("-flammable")
     ..toss(damage: 5, range: 5, element: Elements.fire)
     ..light(8);
 }

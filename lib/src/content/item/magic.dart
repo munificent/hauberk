@@ -11,9 +11,10 @@ void potions() {
   // TODO: Some potions should perform an effect when thrown.
 
   // Healing.
-  category(CharCode.latinSmallLetterCWithCedilla, stack: 10, flags: "freezable")
+  category(CharCode.latinSmallLetterCWithCedilla, stack: 10)
     ..tag("magic/potion/healing")
-    ..toss(damage: 1, range: 6, breakage: 100);
+    ..toss(damage: 1, range: 6, breakage: 100)
+  ..destroy(Elements.cold, chance: 20);
   item("Soothing Balm", 2, 1.0, salmon)..heal(48);
   item("Mending Salve", 7, 1.0, brickRed)..heal(100);
   item("Healing Poultice", 12, 1.0, maroon)..heal(200, curePoison: true);
@@ -25,15 +26,16 @@ void potions() {
   item("Antidote", 2, 1.0, peaGreen)..heal(0, curePoison: true);
 
   category(CharCode.latinSmallLetterEWithCircumflex,
-      stack: 10, flags: "freezable")
+      stack: 10)
     ..tag("magic/potion/resistance")
-    ..toss(damage: 1, range: 6, breakage: 100);
+    ..toss(damage: 1, range: 6, breakage: 100)
+    ..destroy(Elements.cold, chance: 20);
   // TODO: Don't need to strictly have every single element here.
   item("Salve[s] of Heat Resistance", 5, 0.5, carrot)
     ..resistSalve(Elements.fire);
+  // TODO: Make not freezable?
   item("Salve[s] of Cold Resistance", 6, 0.5, cornflower)
-    ..resistSalve(Elements.cold)
-    ..flags("-freezable");
+    ..resistSalve(Elements.cold);
   item("Salve[s] of Light Resistance", 7, 0.5, buttermilk)
     ..resistSalve(Elements.light);
   item("Salve[s] of Wind Resistance", 8, 0.5, turquoise)
@@ -57,9 +59,10 @@ void potions() {
 
   // Speed.
   category(CharCode.latinSmallLetterEWithDiaeresis,
-      stack: 10, flags: "freezable")
+      stack: 10)
     ..tag("magic/potion/speed")
-    ..toss(damage: 1, range: 6, breakage: 100);
+    ..toss(damage: 1, range: 6, breakage: 100)
+    ..destroy(Elements.cold, chance: 20);
   item("Potion[s] of Quickness", 3, 0.3, lima)
     ..use(() => new HasteAction(20, 1));
   item("Potion[s] of Alacrity", 18, 0.3, peaGreen)
@@ -69,16 +72,16 @@ void potions() {
 
   // dram, draught, elixir, philter
 
-  // TODO: Make monsters drop these.
   // TODO: Don't need to strictly have every single element here.
-  category(CharCode.latinSmallLetterEWithGrave, stack: 10, flags: "freezable")
+  category(CharCode.latinSmallLetterEWithGrave, stack: 10)
     ..tag("magic/potion/bottled")
-    ..toss(damage: 1, range: 8, breakage: 100);
+    ..toss(damage: 1, range: 8, breakage: 100)
+    ..destroy(Elements.cold, chance: 15);
   item("Bottled Wind", 4, 0.5, cornflower)
     ..flow(Elements.air, "the wind", "blasts", 20, fly: true);
+  // TODO: Make not freezable?
   item("Bottled Ice", 7, 0.5, cerulean)
-    ..ball(Elements.cold, "the cold", "freezes", 30)
-    ..flags("-freezable");
+    ..ball(Elements.cold, "the cold", "freezes", 30);
   item("Bottled Fire", 11, 0.5, brickRed)
     ..flow(Elements.fire, "the fire", "burns", 44, fly: true);
   item("Bottled Ocean", 12, 0.5, ultramarine)
@@ -106,9 +109,10 @@ void scrolls() {
 
   // Teleportation.
   category(CharCode.latinSmallLetterAWithCircumflex,
-      stack: 20, flags: "flammable")
+      stack: 20)
     ..tag("magic/scroll/teleportation")
-    ..toss(damage: 1, range: 3, breakage: 75);
+    ..toss(damage: 1, range: 3, breakage: 75)
+    ..destroy(Elements.fire, chance: 20, fuel: 5);
   item("Scroll[s] of Sidestepping", 2, 0.5, lilac)
     ..use(() => new TeleportAction(6));
   item("Scroll[s] of Phasing", 6, 0.3, violet)
@@ -120,9 +124,10 @@ void scrolls() {
 
   // Detection.
   category(CharCode.latinSmallLetterAWithDiaeresis,
-      stack: 20, flags: "flammable")
+      stack: 20)
     ..tag("magic/scroll/detection")
-    ..toss(damage: 1, range: 3, breakage: 75);
+    ..toss(damage: 1, range: 3, breakage: 75)
+    ..destroy(Elements.fire, chance: 20, fuel: 5);
   item("Scroll[s] of Find Nearby Escape", 1, 0.5, buttermilk)
     ..detection([DetectType.exit], range: 20);
   item("Scroll[s] of Find Nearby Items", 2, 0.5, gold)
@@ -138,9 +143,10 @@ void scrolls() {
     ..detection([DetectType.exit, DetectType.item]);
 
   // Mapping.
-  category(CharCode.latinSmallLetterAWithGrave, stack: 20, flags: "flammable")
+  category(CharCode.latinSmallLetterAWithGrave, stack: 20)
     ..tag("magic/scroll/mapping")
-    ..toss(damage: 1, range: 3, breakage: 75);
+    ..toss(damage: 1, range: 3, breakage: 75)
+    ..destroy(Elements.fire, chance: 15, fuel: 5);
   item("Adventurer's Map", 10, 0.25, sherwood)..mapping(16);
   item("Explorer's Map", 30, 0.25, peaGreen)..mapping(32);
   item("Cartographer's Map", 50, 0.25, mint)..mapping(64);
@@ -150,9 +156,10 @@ void scrolls() {
 }
 
 void spellBooks() {
-  category(CharCode.vulgarFractionOneHalf, stack: 3, flags: "flammable")
+  category(CharCode.vulgarFractionOneHalf, stack: 3)
     ..tag("magic/book/sorcery")
-    ..toss(damage: 1, range: 3, breakage: 25);
+    ..toss(damage: 1, range: 3, breakage: 25)
+    ..destroy(Elements.fire, chance: 5, fuel: 10);
   item('Spellbook "Elemental Primer"', 1, 0.5, maroon)
     ..skills([
       "Sense Items",

@@ -9,6 +9,9 @@ class Element {
   final String name;
   final String abbreviation;
 
+  /// Text displayed when an item is destroyed by this element.
+  final String destroyMessage;
+
   /// Whether this element emanates light when a substance on the ground.
   final bool emanates;
 
@@ -28,9 +31,11 @@ class Element {
 
   Element(this.name, this.abbreviation, this.experience,
       {bool emanates,
+      String destroyMessage,
       Action Function(int damage) attack,
       Action Function(Vec pos, Hit hit, num distance) floor})
       : emanates = emanates ?? false,
+        destroyMessage = destroyMessage ?? "",
         attackAction = attack ?? ((_) => null),
         floorAction = floor ?? ((_, __, ___) => null);
 

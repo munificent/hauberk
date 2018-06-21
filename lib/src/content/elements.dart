@@ -8,9 +8,9 @@ class Elements {
       new Element("air", "Ai", 1.2, attack: (_) => new WindAction());
   static final earth = new Element("earth", "Ea", 1.1);
 
-  // TODO: Start fires on the ground.
   static final fire = new Element("fire", "Fi", 1.2,
       emanates: true,
+      destroyMessage: "burns up",
       attack: (_) => new BurnActorAction(),
       floor: (pos, hit, distance) =>
           new BurnFloorAction(pos, hit.averageDamage.toInt()));
@@ -23,9 +23,9 @@ class Elements {
   static final acid = new Element("acid", "Ac", 1.4);
 
   static final cold = new Element("cold", "Co", 1.2,
-      attack: (damage) => new FreezeAction(damage),
-      floor: (pos, hit, distance) =>
-          new DestroyOnFloorAction(pos, 6, "freezable", "shatters"));
+      destroyMessage: "shatters",
+      attack: (damage) => new FreezeActorAction(damage),
+      floor: (pos, hit, distance) => new FreezeFloorAction(pos));
 
   // TODO: Break glass items. Recharge some items?
   static final lightning = new Element("lightning", "Ln", 1.1);

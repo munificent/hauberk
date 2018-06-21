@@ -32,9 +32,9 @@ abstract class ElementAction extends Action {
 
 /// Side-effect action when an actor has been hit with an [Elements.fire]
 /// attack.
-class BurnActorAction extends Action {
+class BurnActorAction extends Action with DestroyActionMixin {
   ActionResult onPerform() {
-    addAction(new DestroyInInventoryAction(5, "flammable", "burns up"), actor);
+    destroyHeldItems(Elements.fire);
 
     // Being burned "cures" cold.
     if (actor.cold.isActive) {
@@ -47,26 +47,26 @@ class BurnActorAction extends Action {
 }
 
 /// Side-effect action when an [Elements.fire] area attack sweeps over a tile.
-class BurnFloorAction extends Action {
+class BurnFloorAction extends Action with DestroyActionMixin {
   final Vec _pos;
   final int _damage;
 
   BurnFloorAction(this._pos, this._damage);
 
   ActionResult onPerform() {
-    addAction(new DestroyOnFloorAction(_pos, 3, "flammable", "burns up"));
+    var itemFuel = destroyFloorItems(_pos, Elements.fire);
 
     // Try to set the tile on fire.
     var tile = game.stage[_pos];
     var ignition = Tiles.ignition(tile.type);
-    if (ignition > 0 && _damage > rng.range(ignition)) {
-      var fuel = Tiles.fuel(tile.type);
+    if (itemFuel > 0 || ignition > 0 && _damage > rng.range(ignition)) {
+      var fuel = Tiles.fuel(tile.type) + itemFuel;
       tile.substance = rng.range(fuel ~/ 2, fuel);
 
       // Higher damage instantly burns off some of the fuel, leaving less to
       // burn over time.
       tile.substance -= _damage ~/ 4;
-      if (tile.substance == 0) tile.substance = 1;
+      if (tile.substance <= 0) tile.substance = 1;
 
       tile.element = Elements.fire;
       game.stage.floorEmanationChanged();
@@ -78,7 +78,7 @@ class BurnFloorAction extends Action {
 
 /// Action created by the [Elements.fire] substance each turn a tile continues
 /// to burn.
-class BurningFloorAction extends Action {
+class BurningFloorAction extends Action with DestroyActionMixin {
   final Vec _pos;
 
   BurningFloorAction(this._pos);
@@ -95,7 +95,22 @@ class BurningFloorAction extends Action {
     }
 
     // Try to burn items.
-    addAction(new DestroyOnFloorAction(_pos, 3, "flammable", "burns up"));
+    game.stage[_pos].substance += destroyFloorItems(_pos, Elements.fire);
+    return ActionResult.success;
+  }
+}
+
+/// Side-effect action when an [Elements.cold] area attack sweeps over a tile.
+class FreezeFloorAction extends Action with DestroyActionMixin {
+  final Vec _pos;
+
+  FreezeFloorAction(this._pos);
+
+  ActionResult onPerform() {
+    destroyFloorItems(_pos, Elements.cold);
+
+    // TODO: Put out fire.
+
     return ActionResult.success;
   }
 }

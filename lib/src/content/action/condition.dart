@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+import '../elements.dart';
 
 class HasteAction extends ConditionAction {
   final int _duration;
@@ -17,15 +18,15 @@ class HasteAction extends ConditionAction {
   void onIntensify() => log("{1} move[s] even faster.", actor);
 }
 
-class FreezeAction extends ConditionAction {
+class FreezeActorAction extends ConditionAction with DestroyActionMixin {
   final int _damage;
 
-  FreezeAction(this._damage);
+  FreezeActorAction(this._damage);
 
   Condition get condition => actor.cold;
 
   ActionResult onPerform() {
-    addAction(new DestroyInInventoryAction(8, "freezable", "shatters"), actor);
+    destroyHeldItems(Elements.cold);
     return super.onPerform();
   }
 

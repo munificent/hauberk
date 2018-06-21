@@ -100,8 +100,6 @@ class Item implements Comparable<Item>, Noun {
 
   bool get isTreasure => type.isTreasure;
 
-  Set<String> get flags => type.flags;
-
   // TODO: Let affixes modify. Affixes like "ghostly" and "elven" reduce
   // weight. "Heavy" and "adamant" increase it (but also increase armor
   // power).

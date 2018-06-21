@@ -34,7 +34,6 @@ main() {
       <td>Use</td>
       <td>Stack</td>
       <td>Toss</td>
-      <td>Flags</td>
     </tr>
     </thead>
     <tbody>
@@ -107,7 +106,6 @@ main() {
       text.write('</td>');
     }
 
-    text.write('<td>${item.flags.join(" ")}</td>');
     text.write('</tr>');
   }
   text.write('</tbody>');

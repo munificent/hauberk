@@ -61,7 +61,6 @@ class GameContent implements Content {
       "Loaf of Bread": 5
     };
 
-    // TODO: Need to discover skills for these items too.
     initialItems.forEach((type, amount) {
       hero.inventory.tryAdd(new Item(Items.types.find(type), amount));
     });
@@ -139,8 +138,13 @@ class GameContent implements Content {
         // Consume fuel.
         tile.substance--;
 
-        if (tile.substance == 0) {
-          tile.type = rng.item(Tiles.burnResult(tile.type));
+        if (tile.substance <= 0) {
+          // If the floor itself burns, change its type. If it's only burning
+          // because of items on it, don't.
+          if (Tiles.ignition(tile.type) > 0) {
+            tile.type = rng.item(Tiles.burnResult(tile.type));
+          }
+
           stage.floorEmanationChanged();
         } else {
           return new BurningFloorAction(pos);

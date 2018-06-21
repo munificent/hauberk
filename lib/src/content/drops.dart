@@ -50,8 +50,6 @@ class _TagDrop implements Drop {
     var itemType = Items.types.tryChoose(_depth, _tag);
     if (itemType == null) return;
 
-    // TODO: Item rarity?
-
     addItem(Affixes.createItem(itemType, _depth));
   }
 }

@@ -12,6 +12,8 @@ import '../stage/sound.dart';
 
 abstract class Action {
   Actor _actor;
+  // TODO: Now that Action has this, should Action subclasses that need a
+  // position use it?
   Vec _pos;
   Game _game;
   Queue<Action> _actions;

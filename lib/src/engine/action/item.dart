@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
+import '../core/element.dart';
 import '../hero/hero.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
@@ -220,80 +223,78 @@ class UseAction extends ItemAction {
 }
 
 /// Base class for actions that permanently destroy items.
-abstract class DestroyAction extends Action {
-  final int _chance;
-  final String _flag;
-  final String _message;
+abstract class DestroyActionMixin implements Action {
+  // TODO: Take damage into account when choosing the odds?
 
-  DestroyAction(this._chance, this._flag, this._message);
-
-  /// Tries to destroy [items] where each item with [flag] has a one in [chance]
-  /// chance of being destroyed.
+  /// Tries to destroy [items] with [element].
   ///
-  /// Handles splitting stacks and logging errors. Returns the list of
-  /// completely destroyed items so they can be removed from whatever collection
-  /// contains them.
-  List<Item> _destroyItems(Iterable<Item> items) {
-    var destroyed = <Item>[];
+  /// Handles splitting stacks and logging errors. Returns the total fuel
+  /// produced by all destroyed items.
+  int _destroy(Element element, Iterable<Item> items, bool isHeld,
+      void Function(Item) removeItem) {
+    var fuel = 0;
 
-    for (var item in items) {
-      if (!item.flags.contains(_flag)) continue;
+    // Copy items to avoid concurrent modification.
+    for (var item in items.toList()) {
+      // TODO: Having to handle missing keys here is lame.
+      var chance = item.type.destroyChance[element] ?? 0;
+
+      // Holding an item makes it less likely to be destroyed.
+      if (isHeld) chance = math.min(30, chance ~/ 2);
+
+      if (chance == 0) continue;
 
       // See how much of the stack is destroyed.
       var destroyedCount = 0;
       for (var i = 0; i < item.count; i++) {
-        if (rng.oneIn(_chance)) destroyedCount++;
+        if (rng.percent(chance)) destroyedCount++;
       }
 
       if (destroyedCount == item.count) {
         // TODO: Effect.
-        log("{1} $_message!", item);
-        destroyed.add(item);
+        log("{1} ${element.destroyMessage}!", item);
+        removeItem(item);
       } else if (destroyedCount > 0) {
         var destroyedPart = item.splitStack(destroyedCount);
         // TODO: Effect.
-        log("{1} $_message!", destroyedPart);
+        log("{1} ${element.destroyMessage}!", destroyedPart);
       }
+
+      fuel += item.type.fuel * destroyedCount;
     }
 
-    return destroyed;
+    return fuel;
   }
-}
 
-class DestroyOnFloorAction extends DestroyAction {
-  final Vec _pos;
+  /// Attempts to destroy items on the floor that can be destroyed by [element].
+  int destroyFloorItems(Vec pos, Element element) {
+    var fuel = _destroy(element, game.stage.itemsAt(pos), false, (item) {
+      game.stage.removeItem(item, pos);
+      // TODO: If the item takes effect when destroyed, do that here.
+    });
 
-  DestroyOnFloorAction(this._pos, int chance, String flag, String message)
-      : super(chance, flag, message);
-
-  ActionResult onPerform() {
-    var destroyed = _destroyItems(game.stage.itemsAt(_pos));
-    for (var item in destroyed) {
-      game.stage.removeItem(item, _pos);
-    }
-
-    // TODO: If the item takes effect when destroyed, do that here.
-
-    return ActionResult.success;
+    return fuel;
   }
-}
 
-class DestroyInInventoryAction extends DestroyAction {
-  DestroyInInventoryAction(int chance, String flag, String message)
-      : super(chance, flag, message);
-
-  ActionResult onPerform() {
+  /// Attempts to destroy items the actor is holding that can be destroyed by
+  /// [element].
+  int destroyHeldItems(Element element) {
     // TODO: If monsters have inventories, need to handle that here.
-    if (actor is! Hero) return ActionResult.success;
+    if (actor is! Hero) return 0;
 
-    // TODO: Do same thing for equipment slots if there are any destroyable
-    // equippable items.
-    for (var item in _destroyItems(hero.inventory)) {
+    // Any resistance prevents destruction.
+    if (actor.resistance(element) > 0) return 0;
+
+    var fuel = _destroy(element, hero.inventory, true, (item) {
       hero.inventory.remove(item);
-    }
+      // TODO: If the item takes effect when destroyed, do that here.
+    });
 
-    // TODO: If the item takes effect when destroyed, do that here.
+    fuel += _destroy(element, hero.equipment, true, (item) {
+      hero.equipment.remove(item);
+      // TODO: If the item takes effect when destroyed, do that here.
+    });
 
-    return ActionResult.success;
+    return fuel;
   }
 }
