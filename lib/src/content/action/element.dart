@@ -90,7 +90,6 @@ class BurningFloorAction extends Action with DestroyActionMixin {
       // TODO: What should the damage be?
       var hit = new Attack(new Noun("fire"), "burns", 10, 0, Elements.fire)
           .createHit();
-      // TODO: Modify damage based on range?
       hit.perform(this, null, target, canMiss: false);
     }
 
@@ -110,6 +109,52 @@ class FreezeFloorAction extends Action with DestroyActionMixin {
     destroyFloorItems(_pos, Elements.cold);
 
     // TODO: Put out fire.
+
+    return ActionResult.success;
+  }
+}
+
+/// Side-effect action when an [Elements.poison] area attack sweeps over a tile.
+class PoisonFloorAction extends Action with DestroyActionMixin {
+  final Vec _pos;
+  final int _damage;
+
+  PoisonFloorAction(this._pos, this._damage);
+
+  ActionResult onPerform() {
+    var tile = game.stage[_pos];
+
+    // Fire beats poison.
+    if (tile.element == Elements.fire && tile.substance > 0) {
+      return ActionResult.success;
+    }
+
+    // Try to fill the tile with poison gas.
+    if (tile.canEnter(Motility.fly)) {
+      tile.element = Elements.poison;
+      tile.substance = (tile.substance + _damage * 16).clamp(0, 255);
+    }
+
+    return ActionResult.success;
+  }
+}
+
+/// Action created by the [Elements.poison] substance each turn a tile contains
+/// poisonous gas.
+class PoisonedFloorAction extends Action with DestroyActionMixin {
+  final Vec _pos;
+
+  PoisonedFloorAction(this._pos);
+
+  ActionResult onPerform() {
+    // See if there is an actor there.
+    var target = game.stage.actorAt(_pos);
+    if (target != null) {
+      // TODO: What should the damage be?
+      var hit = new Attack(new Noun("poison"), "chokes", 4, 0, Elements.poison)
+          .createHit();
+      hit.perform(this, null, target, canMiss: false);
+    }
 
     return ActionResult.success;
   }

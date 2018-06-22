@@ -560,13 +560,18 @@ class GameScreen extends Screen<Input> {
         // The hero is always visible, even in the dark.
         if (tile.isVisible || pos == game.hero.pos) {
           if (tile.substance != 0) {
-            // TODO: Different elements.
-            char = rng.item(_fireChars);
-            var color = rng.item(_fireColors);
-            lightFore = color[0];
-            lightBack = color[1];
+            if (tile.element == Elements.fire) {
+              char = rng.item(_fireChars);
+              var color = rng.item(_fireColors);
+              lightFore = color[0];
+              lightBack = color[1];
 
-            _hasAnimatedTile = true;
+              _hasAnimatedTile = true;
+            } else if (tile.element == Elements.poison) {
+              var amount = 0.1 + (tile.substance / 255) * 0.9;
+              lightBack = lightBack.blend(lima, amount);
+              darkBack = darkBack.blend(lima, amount);
+            }
           }
 
           var actor = game.stage.actorAt(pos);

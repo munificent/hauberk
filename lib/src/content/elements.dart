@@ -31,7 +31,9 @@ class Elements {
   static final lightning = new Element("lightning", "Ln", 1.1);
 
   static final poison = new Element("poison", "Po", 2.0,
-      attack: (damage) => new PoisonAction(damage));
+      attack: (damage) => new PoisonAction(damage),
+      floor: (pos, hit, distance) =>
+      new PoisonFloorAction(pos, hit.averageDamage.toInt()));
 
   // TODO: Remove tile emanation.
   static final dark = new Element("dark", "Dk", 1.5,
