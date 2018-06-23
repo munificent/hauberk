@@ -180,7 +180,7 @@ class GameContent implements Content {
     var poison = tile.element == Elements.poison ? tile.substance * 4 : 0;
     var open = 4;
 
-    int neighbor(int x, int y) {
+    void neighbor(int x, int y) {
       var neighbor = stage.get(pos.x + x, pos.y + y);
 
       if (neighbor.canEnter(Motility.fly)) {

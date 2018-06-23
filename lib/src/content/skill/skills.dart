@@ -53,6 +53,7 @@ class Skills {
       new Icicle(),
       new BrilliantBeam(),
       new Windstorm(),
+      new FireBarrier(),
       new TidalWave()
     ]);
 

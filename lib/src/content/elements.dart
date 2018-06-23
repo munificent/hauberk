@@ -12,8 +12,8 @@ class Elements {
       emanates: true,
       destroyMessage: "burns up",
       attack: (_) => new BurnActorAction(),
-      floor: (pos, hit, distance) =>
-          new BurnFloorAction(pos, hit.averageDamage.toInt()));
+      floor: (pos, hit, distance, fuel) =>
+          new BurnFloorAction(pos, hit.averageDamage.toInt(), fuel));
 
   // TODO: Push back attack action.
   // TODO: Move items on floor.
@@ -25,15 +25,15 @@ class Elements {
   static final cold = new Element("cold", "Co", 1.2,
       destroyMessage: "shatters",
       attack: (damage) => new FreezeActorAction(damage),
-      floor: (pos, hit, distance) => new FreezeFloorAction(pos));
+      floor: (pos, hit, distance, _) => new FreezeFloorAction(pos));
 
   // TODO: Break glass items. Recharge some items?
   static final lightning = new Element("lightning", "Ln", 1.1);
 
   static final poison = new Element("poison", "Po", 2.0,
       attack: (damage) => new PoisonAction(damage),
-      floor: (pos, hit, distance) =>
-      new PoisonFloorAction(pos, hit.averageDamage.toInt()));
+      floor: (pos, hit, distance, _) =>
+          new PoisonFloorAction(pos, hit.averageDamage.toInt()));
 
   // TODO: Remove tile emanation.
   static final dark = new Element("dark", "Dk", 1.5,
@@ -41,7 +41,8 @@ class Elements {
 
   static final light = new Element("light", "Li", 1.5,
       attack: (damage) => new DazzleAction(damage),
-      floor: (pos, hit, distance) => new LightFloorAction(pos, hit, distance));
+      floor: (pos, hit, distance, _) =>
+          new LightFloorAction(pos, hit, distance));
 
   // TODO: Drain experience.
   static final spirit = new Element("spirit", "Sp", 3.0);

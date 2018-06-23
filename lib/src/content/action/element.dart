@@ -6,7 +6,7 @@ import '../tiles.dart';
 import '../../engine.dart';
 
 abstract class ElementAction extends Action {
-  void hitTile(Hit hit, Vec pos, num distance) {
+  void hitTile(Hit hit, Vec pos, num distance, [int fuel = 0]) {
     // Open doors if the given motility lets us go through them.
     // TODO: Set on fire if fire element?
     var tile = game.stage[pos];
@@ -25,7 +25,7 @@ abstract class ElementAction extends Action {
     }
 
     // Hit stuff on the floor too.
-    var action = hit.element.floorAction(pos, hit, distance);
+    var action = hit.element.floorAction(pos, hit, distance, fuel);
     if (action != null) addAction(action);
   }
 }
@@ -50,17 +50,18 @@ class BurnActorAction extends Action with DestroyActionMixin {
 class BurnFloorAction extends Action with DestroyActionMixin {
   final Vec _pos;
   final int _damage;
+  final int _fuel;
 
-  BurnFloorAction(this._pos, this._damage);
+  BurnFloorAction(this._pos, this._damage, this._fuel);
 
   ActionResult onPerform() {
-    var itemFuel = destroyFloorItems(_pos, Elements.fire);
+    var fuel = _fuel + destroyFloorItems(_pos, Elements.fire);
 
     // Try to set the tile on fire.
     var tile = game.stage[_pos];
     var ignition = Tiles.ignition(tile.type);
-    if (itemFuel > 0 || ignition > 0 && _damage > rng.range(ignition)) {
-      var fuel = Tiles.fuel(tile.type) + itemFuel;
+    if (fuel > 0 || ignition > 0 && _damage > rng.range(ignition)) {
+      fuel += Tiles.fuel(tile.type);
       tile.substance = rng.range(fuel ~/ 2, fuel);
 
       // Higher damage instantly burns off some of the fuel, leaving less to

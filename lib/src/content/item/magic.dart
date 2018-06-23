@@ -169,6 +169,7 @@ void spellBooks() {
       "Icicle",
       "Brilliant Beam",
       "Windstorm",
+      "Fire Barrier",
       "Tidal Wave"
     ]);
 

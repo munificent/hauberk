@@ -27,17 +27,17 @@ class Element {
 
   /// Creates a side-effect action to perform when an area attack of this
   /// element hits a tile or `null` if this element has no effect.
-  final Action Function(Vec pos, Hit hit, num distance) floorAction;
+  final Action Function(Vec pos, Hit hit, num distance, int fuel) floorAction;
 
   Element(this.name, this.abbreviation, this.experience,
       {bool emanates,
       String destroyMessage,
       Action Function(int damage) attack,
-      Action Function(Vec pos, Hit hit, num distance) floor})
+      Action Function(Vec pos, Hit hit, num distance, int fuel) floor})
       : emanates = emanates ?? false,
         destroyMessage = destroyMessage ?? "",
         attackAction = attack ?? ((_) => null),
-        floorAction = floor ?? ((_, __, ___) => null);
+        floorAction = floor ?? ((_, __, ___, ____) => null);
 
   String toString() => name;
 }

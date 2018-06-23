@@ -2,6 +2,7 @@ import 'package:piecemeal/src/vec.dart';
 
 import '../../../engine.dart';
 
+import '../../action/barrier.dart';
 import '../../action/bolt.dart';
 import '../../action/flow.dart';
 import '../../action/ray.dart';
@@ -51,6 +52,22 @@ class Windstorm extends Spell implements ActionSkill {
         new Attack(new Noun("the wind"), "blast", damage, range, Elements.air);
     return new FlowAction(
         game.hero.pos, attack.createHit(), MotilitySet.flyAndWalk);
+  }
+}
+
+class FireBarrier extends Spell implements TargetSkill {
+  String get name => "Fire Barrier";
+  String get description =>
+      "Creates a wall of fire.";
+  int get baseComplexity => 30;
+  int get baseFocusCost => 60;
+  int get damage => 10;
+  int get range => 8;
+
+  Action onGetTargetAction(Game game, Vec target) {
+    var attack = new Attack(new Noun("the fire"), "burn", damage, range, Elements.fire);
+    return new BarrierAction(
+        game.hero.pos, target, attack.createHit());
   }
 }
 
