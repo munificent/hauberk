@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../tiles.dart';
 import 'dungeon.dart';
+import 'furnishings.dart';
 import 'room.dart';
 
 class RoomPlace extends Place {
@@ -101,122 +100,36 @@ abstract class RoomStyle {
 
 class PlainRoom extends RoomStyle {
   void decorate(RoomPlace place, Dungeon dungeon) {
-    // Nothing.
+    // Furnish the room.
+    // TODO: Furnishings for other place types.
+    var tries = 0;
+    for (var i = 0; i < 5 && tries < 40; i++) {
+      var furnishing = Furnishings.choose();
+      var allowed = <Vec>[];
+      var width = place._room.tiles.width - furnishing.cells.width + 1;
+      var height = place._room.tiles.height - furnishing.cells.height + 1;
+      for (var y = 0; y < height; y++) {
+        for (var x = 0; x < width; x++) {
+          var pos = place._pos.offset(x, y);
+          if (furnishing.canPlace(dungeon, pos)) {
+            allowed.add(pos);
+          }
+        }
+      }
 
-    // TODO: Move this out of plain and have separate room styles for ones with
-    // tables.
-    if (rng.oneIn(3)) {
-      // TODO: These are placed after the hero's location is chosen which
-      // means sometimes the hero gets spawned on top of a decoration. Fix.
-      _tryPlaceTable(place, dungeon);
+      if (allowed.isEmpty) {
+        i--;
+      } else {
+        furnishing.place(dungeon, rng.item(allowed));
+      }
+
+      tries++;
     }
 
     // TODO: "Zoo" monster pits with themed decorations and terrain to match
     // (grass and trees for animal pits, etc.).
 
     _tryPlaceDoorTorches(place, dungeon);
-  }
-
-  void _tryPlaceTable(RoomPlace place, Dungeon dungeon) {
-    var roomWidth = place._room.tiles.width - 2;
-    var roomHeight = place._room.tiles.height - 2;
-
-    if (roomWidth < 6) return;
-    if (roomHeight < 6) return;
-
-    // Try a big centered table.
-    if (rng.percent(30)) {
-      var x = 2;
-      var y = 2;
-      var width = roomWidth - 2;
-      var height = roomHeight - 2;
-
-      if (width > 4 && height > 4) {
-        if (roomWidth < roomHeight || roomWidth == roomHeight && rng.oneIn(2)) {
-          width = 4 - (roomWidth % 2);
-          x = 1 + (roomWidth - width) ~/ 2;
-        } else {
-          height = 4 - (roomHeight % 2);
-          y = 1 + (roomHeight - height) ~/ 2;
-        }
-      }
-
-      if (_tryPlaceTableAt(place, dungeon, x, y, width, height)) return;
-    }
-
-    // Try a smaller centered table.
-    if (roomWidth > 5 && roomHeight > 5 && rng.percent(30)) {
-      var width = roomWidth - 4;
-      var height = roomHeight - 4;
-      if (_tryPlaceTableAt(place, dungeon, 3, 3, width, height)) return;
-    }
-
-    // Try a randomly placed table.
-    for (var i = 0; i < 30; i++) {
-      var width = rng.inclusive(2, math.min(5, roomWidth - 2));
-      var height = rng.inclusive(2, math.min(5, roomHeight - 2));
-
-      var x = rng.range(2, roomWidth - width + 1);
-      var y = rng.range(2, roomHeight - height + 1);
-
-      if (_tryPlaceTableAt(place, dungeon, x, y, width, height)) return;
-    }
-  }
-
-  bool _tryPlaceTableAt(
-      RoomPlace place, Dungeon dungeon, int x, int y, int width, int height) {
-    // Make sure the table isn't blocked.
-    for (var y1 = 0; y1 < height; y1++) {
-      for (var x1 = 0; x1 < width; x1++) {
-        var pos = place._pos.offset(x + x1, y + y1);
-        if (dungeon.getTileAt(pos) != Tiles.floor) return false;
-      }
-    }
-
-    for (var y1 = 1; y1 < height - 1; y1++) {
-      for (var x1 = 1; x1 < width - 1; x1++) {
-        var pos = place._pos.offset(x + x1, y + y1);
-
-        if (rng.oneIn(3)) {
-          dungeon.setTileAt(pos, Tiles.candle);
-        } else {
-          dungeon.setTileAt(pos, Tiles.tableCenter);
-        }
-      }
-    }
-
-    dungeon.setTileAt(place._pos.offset(x, y), Tiles.tableTopLeft);
-    dungeon.setTileAt(place._pos.offset(x + width - 1, y), Tiles.tableTopRight);
-    dungeon.setTileAt(
-        place._pos.offset(x, y + height - 1), Tiles.tableBottomLeft);
-    dungeon.setTileAt(place._pos.offset(x + width - 1, y + height - 1),
-        Tiles.tableBottomRight);
-
-    for (var x1 = 1; x1 < width - 1; x1++) {
-      dungeon.setTileAt(place._pos.offset(x + x1, y), Tiles.tableTop);
-      dungeon.setTileAt(
-          place._pos.offset(x + x1, y + height - 1), Tiles.tableBottom);
-    }
-
-    for (var y1 = 1; y1 < height - 1; y1++) {
-      dungeon.setTileAt(place._pos.offset(x, y + y1), Tiles.tableLeft);
-      dungeon.setTileAt(
-          place._pos.offset(x + width - 1, y + y1), Tiles.tableRight);
-    }
-
-    if (width <= 3 || rng.oneIn(2)) {
-      dungeon.setTileAt(
-          place._pos.offset(x, y + height - 1), Tiles.tableLegLeft);
-      dungeon.setTileAt(place._pos.offset(x + width - 1, y + height - 1),
-          Tiles.tableLegRight);
-    } else {
-      dungeon.setTileAt(
-          place._pos.offset(x + 1, y + height - 1), Tiles.tableLeg);
-      dungeon.setTileAt(
-          place._pos.offset(x + width - 2, y + height - 1), Tiles.tableLeg);
-    }
-
-    return true;
   }
 
   /// Try to place some torches around doors.

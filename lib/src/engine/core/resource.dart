@@ -14,6 +14,8 @@ class ResourceSet<T> {
 
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
+  int get length => _resources.length;
+
   void add(String name, T object, int depth, double frequency,
       [String tagNames]) {
     if (_resources.containsKey(name)) {

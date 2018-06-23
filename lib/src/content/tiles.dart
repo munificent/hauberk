@@ -20,6 +20,7 @@ class Tiles {
   static TileType closedDoor = _door(
       "closed door", CharCode.inverseWhiteCircle, persimmon,
       back: garnet);
+
   // TODO: Different character that doesn't look like bridge?
   static TileType stairs =
       _exit("stairs", CharCode.identicalTo, gunsmoke, back: slate);
@@ -45,9 +46,8 @@ class Tiles {
   static final TileType tableTopLeft = _obstacle("table", "┌", persimmon);
   static final TileType tableTop = _obstacle("table", "─", persimmon);
   static final TileType tableTopRight = _obstacle("table", "┐", persimmon);
-  static final TileType tableLeft = _obstacle("table", "│", persimmon);
+  static final TileType tableSide = _obstacle("table", "│", persimmon);
   static final TileType tableCenter = _obstacle("table", " ", persimmon);
-  static final TileType tableRight = _obstacle("table", "│", persimmon);
   static final TileType tableBottomLeft = _obstacle("table", "╘", persimmon);
   static final TileType tableBottom = _obstacle("table", "═", persimmon);
   static final TileType tableBottomRight = _obstacle("table", "╛", persimmon);
@@ -62,6 +62,9 @@ class Tiles {
   static final TileType wallTorch = _solid(
       "wall torch", CharCode.lessThanOrEqualTo, gold,
       back: slate, emanation: 8);
+
+  static final TileType statue =
+      _obstacle("statue", "P", ash, back: slate);
 
   // Make these "monsters" that can be pushed around.
   static final TileType chair = _open("chair", "π", persimmon);
@@ -109,9 +112,8 @@ class Tiles {
     tableTopLeft: 20,
     tableTop: 20,
     tableTopRight: 20,
-    tableLeft: 20,
+    tableSide: 20,
     tableCenter: 20,
-    tableRight: 20,
     tableBottomLeft: 20,
     tableBottom: 20,
     tableBottomRight: 20,
@@ -138,9 +140,8 @@ class Tiles {
     tableTopLeft: 60,
     tableTop: 60,
     tableTopRight: 60,
-    tableLeft: 60,
+    tableSide: 60,
     tableCenter: 60,
-    tableRight: 60,
     tableBottomLeft: 60,
     tableBottom: 60,
     tableBottomRight: 60,

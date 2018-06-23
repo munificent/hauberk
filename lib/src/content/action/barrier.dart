@@ -1,7 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../elements.dart';
 import 'element.dart';
 
 /// Creates a swath of damage that radiates out from a point.
