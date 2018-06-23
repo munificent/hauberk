@@ -473,9 +473,6 @@ class Furnishings {
   }
 
   static void _singleFurnishing(String applied, List<String> lines) {
-    print(applied);
-    print(lines.join("\n"));
-
     var cells = new Array2D<Cell>(lines.first.length, lines.length);
     for (var y = 0; y < lines.length; y++) {
       for (var x = 0; x < lines.first.length; x++) {

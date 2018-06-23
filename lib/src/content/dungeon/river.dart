@@ -17,20 +17,23 @@ class RiverBiome extends Biome {
     // Midpoint displacement.
     // Consider also squig curves from: http://algorithmicbotany.org/papers/mountains.gi93.pdf.
     yield "Carving river";
-    var start = new _RiverPoint(
-        rng.float(_dungeon.width.toDouble()), -4.0, rng.float(1.0, 3.0));
-    var end = new _RiverPoint(rng.float(_dungeon.width.toDouble()),
-        _dungeon.height + 4.0, rng.float(1.0, 3.0));
+    _RiverPoint start, end;
+    if (rng.oneIn(2)) {
+      start = new _RiverPoint(
+          rng.float(_dungeon.width.toDouble()), -4.0, rng.float(1.0, 3.0));
+      end = new _RiverPoint(rng.float(_dungeon.width.toDouble()),
+          _dungeon.height + 4.0, rng.float(1.0, 3.0));
+    } else {
+      start = new _RiverPoint(
+          -4.0, rng.float(_dungeon.height.toDouble()), rng.float(1.0, 3.0));
+      end = new _RiverPoint(_dungeon.width + 4.0,
+          rng.float(_dungeon.height.toDouble()), rng.float(1.0, 3.0));
+    }
+
     var mid = new _RiverPoint(
         rng.float(_dungeon.width * 0.25, _dungeon.width * 0.75),
         rng.float(_dungeon.height * 0.25, _dungeon.height * 0.75),
         rng.float(1.0, 3.0));
-
-    var horizontal = rng.oneIn(2);
-    if (horizontal) {
-      start = new _RiverPoint(start.y, start.x, start.radius);
-      end = new _RiverPoint(end.y, end.x, end.radius);
-    }
 
     // TODO: Branching tributaries?
 
