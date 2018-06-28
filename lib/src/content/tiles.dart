@@ -20,6 +20,7 @@ class Tiles {
   static TileType closedDoor = _door(
       "closed door", CharCode.inverseWhiteCircle, persimmon,
       back: garnet);
+  // TODO: maleSign = barred wall
 
   // TODO: Different character that doesn't look like bridge?
   static TileType stairs =
@@ -62,6 +63,12 @@ class Tiles {
   static final TileType wallTorch = _solid(
       "wall torch", CharCode.lessThanOrEqualTo, gold,
       back: slate, emanation: 8);
+
+  // TODO: Make these do something.
+  static final TileType barrel = _solid(
+      "barrel", CharCode.topHalfIntegral, persimmon);
+  static final TileType chest = _solid(
+      "chest", CharCode.bottomHalfIntegral, persimmon);
 
   static final TileType statue =
       _obstacle("statue", "P", ash, back: slate);

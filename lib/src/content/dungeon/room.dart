@@ -12,7 +12,7 @@ import 'room_place.dart';
 
 // TODO: Define different ones of this to have different styles.
 class RoomStyle {
-  final int passagePercent = 100;
+  final int passagePercent = 80;
   final int passageTurnPercent = 30;
   final int passageBranchPercent = 40;
   final int passageStopPercent = 10;
@@ -73,7 +73,7 @@ class RoomBiome extends Biome {
     var pos = junction.position;
     var dir = junction.direction;
     var distanceThisDir = 0;
-    var passage = new Set<Vec>();
+    var passage = [pos].toSet();
     var newJunctions = <Junction>[];
     var placeRoom = true;
 
@@ -167,6 +167,8 @@ class RoomBiome extends Biome {
       distanceThisDir++;
     }
 
+    var cells = passage.toList();
+
     // The last passage position will always become the door.
     passage.remove(passage.last);
 
@@ -196,7 +198,7 @@ class RoomBiome extends Biome {
     _placeDoor(junction.position);
     _placeDoor(pos);
 
-    _dungeon.addPlace(new PassagePlace(passage.toList()));
+    _dungeon.addPlace(new PassagePlace(cells));
     return true;
   }
 
@@ -211,7 +213,7 @@ class RoomBiome extends Biome {
       // TODO: After a certain number of tries, should try a different room.
     } while (!_canPlaceRoom(startRoom, x, y, new Set()));
 
-    _placeRoom(startRoom, x, y, isStarting: true);
+    _placeRoom(startRoom, x, y);
 
     // Place the hero on an open tile in the starting room.
     var openTiles = <Vec>[];
@@ -244,7 +246,7 @@ class RoomBiome extends Biome {
 
       if (!_canPlaceRoom(room, roomPos.x, roomPos.y, passageTiles)) continue;
 
-      _placeRoom(room, roomPos.x, roomPos.y);
+      _placeRoom(room, roomPos.x, roomPos.y, junction.position);
       return true;
     }
 
@@ -278,8 +280,10 @@ class RoomBiome extends Biome {
     return true;
   }
 
-  void _placeRoom(Room room, int x, int y, {bool isStarting = false}) {
+  void _placeRoom(Room room, int x, int y, [Vec junction]) {
     var cells = <Vec>[];
+
+    if (junction != null) cells.add(junction);
 
     for (var pos in room.tiles.bounds) {
       var tile = room.tiles[pos];
@@ -298,7 +302,7 @@ class RoomBiome extends Biome {
       _tryAddJunction(roomPos + junction.position, junction.direction);
     }
 
-    _dungeon.addPlace(new RoomPlace(roomPos, room, cells, hasHero: isStarting));
+    _dungeon.addPlace(new RoomPlace(room, cells, hasHero: junction == null));
   }
 
   void _placeDoor(Vec pos) {

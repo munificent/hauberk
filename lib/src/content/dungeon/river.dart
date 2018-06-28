@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../tiles.dart';
 import 'dungeon.dart';
+import 'place.dart';
 
 class RiverBiome extends Biome {
   final Dungeon _dungeon;

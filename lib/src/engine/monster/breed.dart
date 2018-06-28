@@ -214,6 +214,8 @@ class Breed {
 
     return breeds;
   }
+
+  String toString() => name;
 }
 
 // TODO: Should this affect how the monster moves during the game too?

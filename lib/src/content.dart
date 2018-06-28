@@ -2,11 +2,11 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'content/action/element.dart';
 import 'content/classes.dart';
+import 'content/decor/decor.dart';
 import 'content/dungeon/dungeon.dart';
-import 'content/dungeon/furnishings.dart';
 import 'content/elements.dart';
-import 'content/floor_drops.dart';
 import 'content/item/affixes.dart';
+import 'content/item/floor_drops.dart';
 import 'content/item/items.dart';
 import 'content/monster/monsters.dart';
 import 'content/old/recipes.dart';
@@ -26,7 +26,7 @@ Content createContent() {
   Affixes.initialize();
   Shops.initialize();
   FloorDrops.initialize();
-  Furnishings.initialize();
+  Decor.initialize();
 
   return new GameContent();
 }

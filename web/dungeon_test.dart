@@ -12,6 +12,8 @@ import 'package:hauberk/src/hues.dart';
 
 import 'histogram.dart';
 
+final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
+
 var depthSelect = html.querySelector("#depth") as html.SelectElement;
 var canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
 var stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
@@ -20,6 +22,7 @@ var content = createContent();
 var save = content.createHero("hero");
 Game _game;
 RenderableTerminal terminal;
+Vec hoverPos;
 
 int get depth {
   return int.parse(depthSelect.value);
@@ -43,7 +46,48 @@ main() {
     generate();
   });
 
+  stateCanvas.onMouseMove.listen((event) {
+    hover(new Vec(event.offset.x ~/ 8, event.offset.y ~/ 8));
+  });
+
   generate();
+}
+
+void hover(Vec pos) {
+  if (pos == hoverPos) return;
+  hoverPos = pos;
+
+  var buffer = new StringBuffer();
+  var dungeon = Dungeon.last;
+  if (dungeon.bounds.contains(pos)) {
+    var actor = dungeon.stage.actorAt(pos);
+    if (actor != null) {
+      buffer.writeln("<p>$actor</p>");
+    }
+
+    for (var item in dungeon.stage.itemsAt(pos)) {
+      buffer.writeln("<p>$item</p>");
+    }
+
+    buffer.write("<p>${dungeon.stage[pos].type.name}</p>");
+
+    var place = dungeon.placeAt(pos);
+    if (place != null) {
+      buffer.writeln("<h3>${place.cells.first}</h3>");
+      buffer.writeln("<ul>");
+      var total = place.totalStrength.toStringAsFixed(2);
+      place.themes.forEach((theme, strength) {
+        var percent = 100 * strength ~/ place.totalStrength;
+        buffer.writeln("<li>${percent.toString().padLeft(3)}% $theme "
+            "(${strength.toStringAsFixed(2)}/$total)</li>");
+      });
+      buffer.writeln("</ul>");
+    }
+  }
+
+  html
+      .querySelector('div[id=hover]')
+      .setInnerHtml(buffer.toString(), validator: validator);
 }
 
 Future generate() async {
@@ -57,8 +101,8 @@ Future generate() async {
   stateCanvas.height = stage.height * 8;
 
   var frame = 0;
-  for (var event in _game.generate()) {
-    print(event);
+  for (var _ in _game.generate()) {
+//    print(event);
     render();
 
     frame++;
@@ -96,7 +140,8 @@ Future generate() async {
       <tr>
         <td>${monsters.count(breed)}</td>
         <td>
-          <pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
+          <pre><span style="color: ${glyph.fore.cssColor}">${new String
+        .fromCharCodes([glyph.char])}</span></pre>
         </td>
         <td>${breed.name}</td>
         <td>${breed.depth}</td>
@@ -113,9 +158,6 @@ Future generate() async {
     tableContents.write('</td></tr>');
   }
   tableContents.write('</tbody>');
-
-  var validator = new html.NodeValidatorBuilder.common();
-  validator.allowInlineStyles();
 
   html
       .querySelector('table[id=monsters]')
@@ -203,40 +245,37 @@ void render({bool showInfo = true}) {
   var context = stateCanvas.context2D;
   context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
 
-  if (!showInfo) return;
+//  if (!showInfo) return;
 
-  if (Dungeon.debugInfo != null) {
-    for (var y = 0; y < stage.height; y++) {
-      for (var x = 0; x < stage.width; x++) {
-        var info = Dungeon.debugInfo.get(x, y);
-//        if (info.distance != null) {
-//          context.fillStyle = 'hsla(${info.distance * 8}, 100%, 50%, 0.1)';
-//          context.fillRect(x * 8, y * 8, 8, 8);
-//        }
+  const themeColors = const {
+    "laboratory": const [255.0, 0.0, 255.0],
+    "aquatic": const [0.0, 0.0, 255.0],
+    "passage": const [255.0, 0.0, 0.0],
+    "room": const [0.0, 0.0, 0.0],
+    "chamber": const [255.0, 255.0, 255.0],
+    "storeroom": const [128.0, 128.0, 0.0],
+    "closet": const [128.0, 128.0, 0.0],
+    "hall": const [255.0, 255.0, 0.0],
+    "great-hall": const [255.0, 255.0, 0.0],
+    "workshop": const [0.0, 255.0, 0.0],
+  };
 
-        if (info.regionId != null) {
-          context.fillStyle = 'hsla(${info.regionId * 13}, 100%, 50%, 0.3)';
-          context.fillRect(x * 8, y * 8, 8, 8);
-        }
+  for (var place in Dungeon.debugPlaces) {
+    var r = 0.0;
+    var g = 0.0;
+    var b = 0.0;
+    place.themes.forEach((theme, strength) {
+      if (!themeColors.containsKey(theme)) return;
+      var amount = strength / place.totalStrength;
+      r += themeColors[theme][0] * amount;
+      g += themeColors[theme][1] * amount;
+      b += themeColors[theme][2] * amount;
+    });
 
-        if (info.junctionId != null) {
-          context.fillStyle = 'hsla(${info.junctionId * 13}, 100%, 50%, 0.6)';
-          context.fillRect(x * 8 + 1, y * 8 + 1, 6, 6);
-        }
+    context.fillStyle = 'rgba(${r.toInt()}, ${g.toInt()}, ${b.toInt()}, 0.2)';
 
-        if (info.reachableTiles != 0) {
-          context.fillStyle = 'rgb(255, 255, 255)';
-          context.fillText(info.reachableTiles.toString(), x * 8, y * 8 + 7);
-        }
-      }
-    }
-  }
-
-  if (Dungeon.debugJunctions != null) {
-    context.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    for (var junction in Dungeon.debugJunctions) {
-      context.fillRect(
-          junction.position.x * 8 + 2, junction.position.y * 8 + 2, 4, 4);
+    for (var cell in place.cells) {
+      context.fillRect(cell.x * 8, cell.y * 8, 8, 8);
     }
   }
 }

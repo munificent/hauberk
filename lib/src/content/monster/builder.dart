@@ -2,8 +2,8 @@ import 'package:malison/malison.dart';
 
 import '../../engine.dart';
 import '../action/missive.dart';
-import '../drops.dart';
 import '../elements.dart';
+import '../item/drops.dart';
 import '../move/bolt.dart';
 import '../move/cone.dart';
 import '../move/haste.dart';
@@ -79,9 +79,8 @@ void finishBreed() {
 
   var breed = _builder.build();
   // TODO: join() here is dumb since Resource then splits it.
-  Monsters.breeds
-    ..add(breed.name, breed, breed.depth,
-        _builder._frequency ?? _family._frequency ?? 1.0, tags.join(" "));
+  Monsters.breeds.add(breed.name, breed, breed.depth,
+      _builder._frequency ?? _family._frequency ?? 1.0, tags.join(" "));
   _builder = null;
 }
 
@@ -162,10 +161,10 @@ class _BaseBuilder {
     _location = SpawnLocation.open;
   }
 
-  void placeIn(String place1, [String place2]) {
-    // TODO: Don't stringly-type place names?
+  void placeIn(String place1, [String place2, String place3]) {
     _places.add(place1);
     if (place2 != null) _places.add(place2);
+    if (place3 != null) _places.add(place3);
   }
 
   /// How many monsters of this kind are spawned.

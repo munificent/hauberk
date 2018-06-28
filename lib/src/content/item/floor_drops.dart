@@ -1,4 +1,5 @@
-import '../engine.dart';
+import '../../engine.dart';
+import '../themes.dart';
 import 'drops.dart';
 
 final ResourceSet<FloorDrop> _floorDrops = new ResourceSet();
@@ -6,10 +7,10 @@ final ResourceSet<FloorDrop> _floorDrops = new ResourceSet();
 /// Items that are spawned on the ground when a dungeon is first generated.
 class FloorDrops {
   static void initialize() {
-    _floorDrops.defineTags("drop");
+    Themes.defineTags("drop", _floorDrops);
 
     // Add generic stuff at every depth.
-    for (var i = 1; i <= 100; i++) {
+    for (var i = 1; i <= Option.maxDepth; i++) {
       // TODO: Tune this.
       floorDrop(
           depth: i,
@@ -26,6 +27,14 @@ class FloorDrops {
           ]));
 
       floorDrop(
+          theme: "laboratory",
+          depth: i,
+          frequency: 20.0,
+          location: SpawnLocation.wall,
+          drop: percentDrop(30, "magic", i));
+
+      floorDrop(
+          theme: "food",
           depth: i,
           frequency: lerpDouble(i, 1, 100, 10.0, 1.0),
           drop: parseDrop("food", i));
@@ -51,7 +60,8 @@ class FloorDrops {
     // TODO: Other stuff.
   }
 
-  static FloorDrop choose(int depth) => _floorDrops.tryChoose(depth, "drop");
+  static FloorDrop choose(String theme, int depth) =>
+      _floorDrops.tryChoose(depth, theme);
 }
 
 class FloorDrop {
@@ -62,7 +72,14 @@ class FloorDrop {
 }
 
 void floorDrop(
-    {int depth, double frequency, SpawnLocation location, Drop drop}) {
-  var encounter = new FloorDrop(location ?? SpawnLocation.anywhere, drop);
-  _floorDrops.addUnnamed(encounter, depth, frequency ?? 1.0, "drop");
+    {String theme,
+    int depth,
+    double frequency,
+    SpawnLocation location,
+    Drop drop}) {
+  theme ??= "drop";
+  frequency ??= 1.0;
+  location ??= SpawnLocation.anywhere;
+  var floorDrop = new FloorDrop(location, drop);
+  _floorDrops.addUnnamed(floorDrop, depth, frequency, theme);
 }

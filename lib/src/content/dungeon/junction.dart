@@ -2,8 +2,6 @@ import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
 
-import 'dungeon.dart';
-
 class Junction {
   /// Points from the first room towards where the new room should be attached.
   ///
@@ -27,11 +25,6 @@ class JunctionSet {
   final Queue<Junction> _queue = new Queue();
 
   bool get isNotEmpty => _queue.isNotEmpty;
-
-  JunctionSet() {
-    // TODO: Hack temp.
-    Dungeon.debugJunctions = _queue;
-  }
 
   Junction at(Vec pos) => _byPosition[pos];
 

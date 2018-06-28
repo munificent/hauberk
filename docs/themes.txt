@@ -13,3 +13,343 @@ area. Later spawns in the region are more likely to also be undead.
 Floor drops and furnishings take theme into account in their weights. Likewise,
 a furnishing may also paint theme. A laboratory decoration paints a "magical"
 theme which makes magic-using monsters more likely to spawn.
+
+---
+
+OK, so what are the actual real gameplay experience goals around themes and
+furnishing and stuff?
+
+1. To have some foreshadowing where the contents of one room hint to the player
+   about biomes, monsters, and treasure that they'll find as they continue.
+
+2. To make it feel like the dungeon was created by intelligent entities where
+   different regions have some larger logic and consistency and each room isn't
+   its own island.
+
+3. To make it feel like monsters actually inhabit the dungeon by having breeds
+   make sense for the surrounding decoration.
+
+4. Likewise, to have some sense of larger flow between breeds in one area and
+   nearby ones.
+
+5. To fill rooms with decorations that help evoke and reinforce the fantasy
+   setting and give a sense of place.
+
+6. To put in decorations that make rooms more tactically interesting for combat.
+
+7. To generate a combinatorial explosion of decorations and themes so that it
+   does feel like once you've seen the ten room templates, you've seen them all.
+
+8. To increase the perceived richness and variety of dungeons.
+
+The last four are about making each individual place more interesting. The first
+four are about structure that spans multiple places. I've been assuming I'd use
+the same mechanism for both, but now that I think about that, it's not strictly
+necessary.
+
+I'm mostly focused on monsters and decor, but floor items play into this too.
+
+The challenges I've been struggling with are:
+
+- How specific are the themes and what are they? Is "chair" a theme? "kobold
+  chieftain"? "laboratory?" "dead end room?"
+
+  For placing breeds, I think you want pretty specific themes so that a boss
+  monster has similar henchmen nearby.
+
+  But for the rooms themselves, all we know at the beginning is the size and
+  number of junctions. Many decorations like tables and chairs aren't
+  particularly specific in and of themselves.
+
+- What order to I generate things in? Choosing a decoration, breed, or item
+  should take the themes into account, but it can also affect the themes. So
+  what are the seeds that it starts from and what order do they grow?
+
+  So far, I've been looking at room dimensions to put a few very basic themes,
+  then trying to use those to place decorations, and then (not implemented yet)
+  using that for picking breeds.
+
+  Right now, it feels really difficult to come up with themes for mostly-blank
+  rooms, and the self-reinforcing nature causes weird problems. For example,
+  once a room gets a fountain -- which makes it more aquatic -- it tends to
+  attract more fountains.
+
+One tempting approach is to have a long list of specific room themes -- throne
+room, laboratory, storeroom, etc. Simply pick one for each room and then choose
+decorations and breeds that fit that.
+
+But I'm fairly certain that doing so will lead to very boring predictable
+dungeons once you've seen each of the room types. Ideally, I'd do something
+more bottom-up, emergent, and combinatorial.
+
+Breeds might help. Even with a fixed set of room themes, if a breed affects the
+breeds chosen for neighboring rooms, you still get a bit more of a combination
+of experiences.
+
+I wonder if it's enough to simply sometimes choose two themes for a room and/or
+to randomly sometimes pick out-of-theme furnishings and breeds.
+
+OK, so here's something to try:
+
+1.  Generate the biomes as usual.
+
+2.  For each room, from largest to smallest.
+
+    Pick a theme for the room. Use the dimensions, number of exits, and themes
+    of neighboring rooms to influence this choice. For example, a small room
+    with one exit that is a larger room with the "throneroom" theme is more
+    likely to be a treasure room.
+
+    Occasionally pick two themes for the room.
+
+3.  Each furnishing has a list of themes it can be found in. Go through each
+    room and pick appropriate furnishings. Occasionally pick out-of-theme ones.
+
+4.  Each breed has a list of themes where it can be found. Go through each room
+    from largest to smallest and place spawns. If an out of depth breed is
+    spawned, mark the room itself as out of depth and mark adjacent rooms as
+    having that boss breed nearby.
+
+    If a room has been marked with a nearby boss, sometimes try to choose
+    matching breeds.
+
+5.  Place floor items taking the room's out-of-depthness and theme into account.
+
+---
+
+Hmm, that feels kind of hand-wavey.
+
+Maybe another way think about the goals is:
+
+1. Foreshadowing. Hints to the player about something dramatic to come: a boss
+   fight, interesting biome, unusual room, or exciting treasure. Gives them a
+   more informed choice about whether to press ahead, choose a different path,
+   rest and recuperate, etc.
+
+2. Narrative flow across multiple places. You defeat the boss which gives
+   access to rooms full of treasure. A hidden passageway opens up to a secret
+   treasure. A weird door unlocks a strange realm. A series of increasingly
+   strong minions serve as gatekeepers to the ultimate boss.
+
+   Increases the player's emotional investment in the outcome of a session. The
+   sense that the game is telling them something.
+
+3. Thematic coherence. Wizards in laboratories with potions, rats in storerooms
+   with food. Demons in torture chambers with whips. Makes level feel more real,
+   but, more pragmatically, it gives the player some control over the monsters
+   and treasures they encounter. Don't want to deal with frogs and snakes? Stay
+   away from the river.
+
+Gameplay isn't the end-all be-all, but I do think it's useful to couch themes
+in terms of how they affect the actual play experience. Right now, opening a
+door feels like a totally random roll of the dice, which isn't fun because it
+forces the player to make an uninformed choice.
+
+1 and 2 here are specifically about giving the player some more information
+about where they are going.
+
+To accomplish 1 and 2, we need some structure larger than a single place. Part
+of 1 may be just having themes bleed through the place graph like we do for
+the aquatic theme and water biomes.
+
+We could do something similar for monsters. When placing an out-of-depth or
+unique monster, bleed its type out into the nearby places and preferentially
+spawn minions of that monster's breed. We might want to expand the notion of
+minion so that we aren't always directly spawning a monster and minions at the
+same time as well.
+
+2 is more complex, because it's more than just "nearby places are similar". For
+that, one idea is to define a number of "narratives". Each takes looks for a
+subset of the place graph with a certain shape (connectivity, place dimensions)
+and assigns roles to each place. Those roles then affect how the places are
+populated.
+
+Narrative examples:
+
+*   "Treasure guardian". Looks for a large room with one or more dead-end rooms
+    connected to it. Places a boss (out of depth or unique) monster in the large
+    room and then extra treasure in the dead end rooms.
+
+*   "Secret treasure". Looks for a dead-end room far from the starting room.
+    Makes its door hidden and then puts extra treasure in the room.
+
+*   "Entrace to the underworld". Looks for a large number of rooms that are
+    connected to the starting room through one single path. Marks the entrance
+    to that path (hidden door, special door, etc.) and then themes all of the
+    reachable rooms similar to each other and different from the rest of the
+    dungeon.
+
+*   "Gatekeepers". Looks for a room that can only be reached by a single path
+    from the starting room. Places successively strong monsters of the same
+    style along that path.
+
+*   "Shortcut". Looks for a room that can be reached along two paths, one
+    shorter than the other. Puts a hidden door along the shorter path and a
+    stronger monster on the longer.
+
+Some of these are probably too specific. We might not need that many. A single
+dungeon could contain more than one of these, or none. Possibly overlapping.
+
+OK, so the data we want to make this works is something like:
+
+*   A set of breeds. Each breed has:
+
+    *   Zero or more minions: other weaker breeds that often occur when this
+        breed appears.
+
+    *   One or more themes that define the "flavor" or "kind" of monster it is.
+        Themes are organized hierarchically. So, a cat might have:
+
+        animal/feline
+        magic/familiar
+        nature/forest
+
+        And a kobold wizard might have:
+
+        humanoid/goblin/kobold
+        magic/wizard
+
+*   A set of narratives.
+
+*   A set of decor. Like furnishings, each is a template that can be stamped
+    out. Each also has a list of themes that it is associated with.
+
+*   A set of floor drops. Each has a list of themes.
+
+So maybe the process looks something like:
+
+1.  Generate the biomes as usual. Calculate connectivity between places.
+
+2.  Apply and spread themes from the biomes. Each place has a list of themes
+    and weights for each theme. Biomes can seed this with themes, which then
+    bleed out to neighboring places.
+
+3.  Apply narratives. A random number of times, pick a random narrative and look
+    for a set of places to apply it to on the graph. When a match is found,
+    "placing it" means, concretely, for each affected place:
+
+    * Mark it with one or more breeds.
+    * Give it a monster weight -- the number of / chance of spawning monsters
+      in this place. Higher weight means more of or more likely.
+    * Give it an item weight, same but for items.
+    * Mark how out of depth the monsters should be.
+    * Mark how out of depth the items should be.
+
+    For example, "treasure guardian" would give the boss room a higher weight
+    for monsters, and make them out of depth. The treasure rooms would have the
+    same breed (for them consistency), low monster weight, and high item weight
+    and out of depth-ness.
+
+4.  Populate with breeds. For each place, a number of time based on the place's
+    size and monster weight (at least once):
+
+    1.  Pick a random breed based on depth + the place's monster out of depth.
+        Prefer breeds that agree with one of the room's biome themes, if any.
+        Probably something like a random chance to discard a breed that doesn't
+        agree with the biome, weighted by the biome theme's strength.
+
+    2.  Add the breed's minions to the place and/or spread to nearby places.
+        Maybe a short random walk through the place graph or something.
+
+        TODO: Should it transitively walk the minion graph? Do we place a
+        minion's minions too? Might be nice.
+
+5.  Decorate the places. A certain number of times:
+
+    1.  Pick a random place weighted by its size.
+
+    2.  Pick a theme from one of its breeds. Like picking items, the theme
+        choice has a random chance to walk up the hierarchy to more general ones
+        so that things aren't overly constrained.
+
+        TODO: Possibly pick a theme directly from the biome themes too?
+
+    3.  Pick a random decor that has that theme. Apply it.
+
+5.  Populate the places. For each place.
+
+    1.  Spawn a number of monsters based on the size of the place and the
+        monster weight using the place's list of breeds.
+
+    2.  Spawn a number of floor drops. Again take item weight, item out of
+        depth, and themes into account.
+
+The little dance where we pick breeds, decorate, then go back and spawn monsters
+is to deal with two tensions:
+
+1. We want to pick monsters before decor because monsters are more usefully
+   specific when it comes to theming. It's easier to say "dwarves tend to imply
+   tables and a smithing furnace" than "a chair implies...". A lot of decor is
+   too vague to be actionable, where monsters are very precise tangible things.
+
+2. We need to make sure placing decor doesn't strand monsters in impassable
+   tiles.
+
+So we pick the breeds to get 1, then decorate the empty place, then use those
+same breeds to spawn and place monsters.
+
+---
+
+Started hacking on the above, but it's really complex and feels kind of weird.
+Treating breeds as implicit room themes didn't feel as natural as I hoped.
+Here's a simpler idea:
+
+1.  Generate the biomes as usual. Calculate connectivity between places.
+
+2.  Let biomes apply themes to places. Each biome has its own logic. For
+    aquatic, it just bleeds the themes outward from the aquatic places.
+
+    The room places are more complex. Have a bunch of room themes: "laboratory",
+    "closet", "throne room", etc. Each has some requirements around size,
+    aspect ratio, connectivity, etc. For each room, pick a weighted random
+    theme that fits the requirements. Probably have depth come into play too.
+
+    Many rooms may just get a generic "room" theme which permits lots of
+    monsters. Everything doesn't have to be strongly flavored. Possibly pick
+    two room themes for some rooms (or allow bleeding to cover this).
+
+    For some themes, spread that around a bit.
+
+    Also consider multi-room theme groups. So, for example, a large room with
+    a couple of dead-end rooms connected to it could get a "boss" theme and
+    then turn the dead-end rooms into treasure chambers.
+
+    Maybe do the narrative stuff above too where we paint monster density, item
+    density, and out-of-depthness onto places.
+
+    Basically, there's a bunch of different heuristics and ways we can paint
+    one or more theme weights onto places.
+
+3.  Decorate the places. A certain number of times:
+
+    1.  Pick a random place weighted by its size.
+
+    2.  Pick one of its themes by weight. Like picking items, the theme choice
+        has a random chance to walk up the hierarchy to more general ones so
+        that things aren't overly constrained.
+
+    3.  Pick a random decor that has that theme. Apply it.
+
+4.  Populate with monsters. For each place, a number of time based on the
+    place's size and monster weight (at least once):
+
+    1.  Pick one of its themes by weight.
+
+    2.  Pick a random breed based on depth + the place's monster out of depth
+        that allows that theme.
+
+    3.  Spawn the breed and its minions. Minions have some random chance to
+        escape to neighboring places.
+
+5.  Populate with items. For each place:
+
+    1.  Spawn a number of floor drops. Again take item weight, item out of
+        depth, and themes into account.
+
+That's pretty straightforward, I think. It doesn't strongly tie a monster to
+nearby rooms and treasure. For example, a boss guarding a separate treasure
+room won't produce treasure in that other room that matches the boss. Aside
+from minions wandering a bit, there aren't real "guardian" types.
+
+So there's room to refine this, but let's start with the above and see how it
+goes.

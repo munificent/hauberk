@@ -1,4 +1,5 @@
 import '../../engine.dart';
+import '../themes.dart';
 import 'builder.dart';
 import 'lowercase.dart';
 import 'uppercase.dart';
@@ -8,10 +9,7 @@ class Monsters {
   static final ResourceSet<Breed> breeds = new ResourceSet();
 
   static void initialize() {
-    breeds.defineTags("monster");
-
-    // TODO: Temp. Is there a cleaner way to set these up?
-    breeds.defineTags("dungeon/passage dungeon/room aquatic");
+    Themes.defineTags("monster", breeds);
 
     // Here's approximately the level distributions for the different
     // broad categories on monsters. Monsters are very roughly lumped

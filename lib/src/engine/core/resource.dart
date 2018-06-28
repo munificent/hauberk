@@ -10,11 +10,10 @@ class ResourceSet<T> {
   final Map<_QueryKey, _ResourceQuery<T>> _queries = {};
 
   bool get isEmpty => _resources.isEmpty;
+
   bool get isNotEmpty => _resources.isNotEmpty;
 
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
-
-  int get length => _resources.length;
 
   void add(String name, T object, int depth, double frequency,
       [String tagNames]) {
@@ -97,33 +96,40 @@ class ResourceSet<T> {
     return resource._tags.map((tag) => tag.name);
   }
 
+  bool tagExists(String tagName) => _tags.containsKey(tagName);
+
   /// Chooses a random resource in [tagName] for [depth].
   ///
-  /// Includes all resources of child tags of [tagName]. For example, given tag
+  /// All resources of child tags of [tagName]. For example, given tag
   /// path "equipment/weapon/sword", if [tagName] is "weapon", this will permit
-  /// resources tagged "weapon" or "sword", but not "equipment" or other child
-  /// tags of "equipment" (unless the random chance to walk up to it succeeded).
+  /// resources tagged "weapon" or "sword", with equal probability.
   ///
-  /// There is also a random chance that this will walk "up" and include
-  /// resources from a parent tag of [tagName].
+  /// Resources of in parent tags are also possible, but with less probability.
+  /// So in the above example, anything tagged "equipment" is included but rare.
   ///
   /// May return `null` if there are no resources with [tagName].
   T tryChoose(int depth, String tagName) {
     assert(tagName != null);
-    var tag = _tags[tagName];
-    assert(tag != null);
+    var goalTag = _tags[tagName];
+    assert(goalTag != null);
 
-    // Possibly choose from a parent tag.
-    while (tag.parent != null && rng.oneIn(10)) {
-      tag = tag.parent;
-    }
+    return _runQuery(goalTag.name, depth, (resource) {
+      var tag = goalTag;
+      var scale = 1.0;
 
-    return _runQuery(tag.name, depth, (resource) {
-      for (var resourceTag in resource._tags) {
-        if (resourceTag.contains(tag)) return true;
+      // Walk up the tag chain, including parent tags.
+      while (tag != null) {
+        for (var resourceTag in resource._tags) {
+          if (resourceTag.contains(tag)) return scale;
+        }
+
+        // Parent tags are less likely than the preferred tag.
+        tag = tag.parent;
+        // TODO: Allow callers to tune this?
+        scale /= 10.0;
       }
 
-      return false;
+      return 0.0;
     });
   }
 
@@ -145,28 +151,28 @@ class ResourceSet<T> {
 
     return _runQuery("${tagNames.join('|')} (match)", depth, (resource) {
       for (var resourceTag in resource._tags) {
-        if (tagObjects.any((tag) => tag.contains(resourceTag))) return true;
+        if (tagObjects.any((tag) => tag.contains(resourceTag))) return 1.0;
       }
 
-      return false;
+      return 0.0;
     });
   }
 
-  T _runQuery(String name, int depth, bool predicate(_Resource<T> resource)) {
+  T _runQuery(String name, int depth, double scale(_Resource<T> resource)) {
     // Reuse a cached query, if possible.
     var key = new _QueryKey(name, depth);
     var query = _queries[key];
     if (query == null) {
-      var allowed = _resources.values.where(predicate).toList(growable: false);
+      var resources = <_Resource<T>>[];
+      var chances = <double>[];
+      var totalChance = 0.0;
 
       // Determine the weighted chance for each resource.
-      var chances =
-          new List<double>.filled(allowed.length, 0.0, growable: false);
-      var totalChance = 0.0;
-      for (var i = 0; i < allowed.length; i++) {
-        var resource = allowed[i];
+      for (var resource in _resources.values) {
+        var chance = scale(resource);
+        if (chance == 0.0) continue;
 
-        var chance = resource.frequency * _depthScale(resource.depth, depth);
+        chance *= resource.frequency * _depthScale(resource.depth, depth);
 
         // The depth scale is so narrow at low levels that highly out of depth
         // items can have a 0% chance of being generated due to floating point
@@ -175,10 +181,11 @@ class ResourceSet<T> {
         chance = math.max(0.0000001, chance);
 
         totalChance += chance;
-        chances[i] = totalChance;
+        resources.add(resource);
+        chances.add(totalChance);
       }
 
-      query = new _ResourceQuery<T>(depth, allowed, chances, totalChance);
+      query = new _ResourceQuery<T>(depth, resources, chances, totalChance);
       _queries[key] = query;
     }
 
@@ -253,10 +260,13 @@ class _QueryKey {
   _QueryKey(this.name, this.depth);
 
   int get hashCode => name.hashCode ^ depth.hashCode;
+
   bool operator ==(other) {
     assert(other is _QueryKey);
     return name == other.name && depth == other.depth;
   }
+
+  String toString() => "$name ($depth)";
 }
 
 /// A stored query that let us quickly choose a random weighted resource for
@@ -303,6 +313,17 @@ class _ResourceQuery<T> {
       } else {
         first = middle + 1;
       }
+    }
+  }
+
+  void dump(_QueryKey key) {
+    print(key);
+    for (var i = 0; i < resources.length; i++) {
+      var chance = chances[i];
+      if (i > 0) chance -= chances[i - 1];
+      var percent =
+          (100.0 * chance / totalChance).toStringAsFixed(5).padLeft(8);
+      print("$percent% ${resources[i].object}");
     }
   }
 }

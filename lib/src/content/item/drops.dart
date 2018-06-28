@@ -1,8 +1,8 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import 'item/affixes.dart';
-import 'item/items.dart';
+import '../../engine.dart';
+import 'affixes.dart';
+import 'items.dart';
 
 Drop parseDrop(String name, int depth) {
   var itemType = Items.types.tryFind(name);

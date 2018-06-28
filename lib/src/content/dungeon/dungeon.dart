@@ -3,20 +3,21 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../floor_drops.dart';
+import '../decor/decor.dart';
+import '../item/floor_drops.dart';
 import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'blob.dart';
 import 'grotto.dart';
 import 'junction.dart';
 import 'lake.dart';
+import 'place.dart';
 import 'river.dart';
 import 'room.dart';
 
+// TODO: Eliminate biome as a class and just have dungeon call it directly?
 abstract class Biome {
   Iterable<String> generate();
-
-  Iterable<String> decorate() => const [];
 }
 
 class TileInfo {
@@ -39,22 +40,8 @@ class TileInfo {
   int regionId;
 }
 
-// TODO: Better name?
-abstract class Place {
-  final bool hasHero;
-  final String type;
-  final List<Vec> cells;
-
-  Place(this.type, this.cells, {this.hasHero = false});
-
-  void decorate(Dungeon dungeon) {}
-}
-
-class AquaticPlace extends Place {
-  AquaticPlace(List<Vec> cells)
-      : super("aquatic", cells);
-}
-
+// TODO: Rename to something generic like "Generator" and then use "Dungeon"
+// to refer to the "rooms and passages" biome.
 class Dungeon {
   // TODO: Generate magical shrine/chests that let the player choose from one
   // of a few items. This should help reduce the number of useless-for-this-hero
@@ -62,8 +49,8 @@ class Dungeon {
 
   // TODO: Hack temp. Static so that dungeon_test can access these while it's
   // being generated.
-  static Iterable<Junction> debugJunctions;
-  static Array2D<TileInfo> debugInfo;
+  static Dungeon last;
+  static List<Place> debugPlaces;
 
   final Lore _lore;
   final Stage stage;
@@ -74,9 +61,8 @@ class Dungeon {
   final List<Biome> _biomes = [];
   final Array2D<TileInfo> _info;
 
-//  final List<Vec> _passages = [];
-
   final List<Place> _places = [];
+  final PlaceGraph _placeGraph = new PlaceGraph();
 
   Vec _heroPos;
 
@@ -97,8 +83,8 @@ class Dungeon {
             stage.width, stage.height, () => new TileInfo());
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
-    debugJunctions = null;
-    debugInfo = null;
+    last = this;
+    debugPlaces = _places;
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
@@ -115,6 +101,7 @@ class Dungeon {
     // If a biome didn't place the hero, do it now.
     if (_heroPos == null) _heroPos = stage.findOpenTile();
     placeHero(_heroPos);
+    // TODO: Pick place to put hero in. Then below, pick pos for hero.
 
     // TODO: Placing the hero before placing decorations means the hero can end
     // up on a decoration. That's bad. But we want to calculate the distance
@@ -122,25 +109,45 @@ class Dungeon {
     // instead of tile based and then just pick the hero's starting *room*
     // first?
 
-    yield "Populating dungeon";
+    yield "Placing decor";
+    // Apply and spread themes from the biomes.
     _calculateInfo();
+    _places.sort((a, b) => b.cells.length.compareTo(a.cells.length));
+    _placeGraph.findConnections(this, _places);
 
-    // Now that we know more global information, let the places use that to
-    // tweak themselves.
     for (var place in _places) {
-      place.decorate(this);
+      place.applyThemes();
+    }
+
+    for (var i = 0; i < 1000; i++) {
+      var pos = rng.vecInRect(safeBounds);
+      var place = placeAt(pos);
+      if (place == null) continue;
+
+      // Furnish the room.
+      var theme = place.chooseTheme();
+      var decor = Decor.choose(theme);
+      if (decor == null) continue;
+
+      var allowed = <Vec>[];
+
+      for (var cell in place.cells) {
+        var offset = cell.offset(-1, -1);
+        if (decor.canPlace(this, offset)) {
+          allowed.add(offset);
+        }
+      }
+
+      if (allowed.isNotEmpty) {
+        decor.place(this, rng.item(allowed));
+      }
     }
 
     // TODO: Should we do a sanity check for traversable tiles that ended up
     // unreachable?
 
     // Pick a point far from the hero to place the exit stairs.
-
-    // TODO: This is less necessary now that room styles place stairs sometimes.
-    // We do need to ensure at least one stair gets placed, though.
-
-    // TODO: Place the stairs in a more logical place like next to a wall, in a
-    // room, etc?
+    // TODO: Use room places and themes for placing stairs.
     var stairCount = rng.range(2, 4);
     for (var i = 0; i < stairCount; i++) {
       // TODO: Try to spread out stair positions?
@@ -159,9 +166,15 @@ class Dungeon {
     }
 
     for (var place in _places) {
-      _populatePlace(place);
+      // TODO: Doing this here is kind of hacky.
+      rng.shuffle(place.cells);
+
+      _placeMonsters(place);
+      _placeItems(place);
     }
   }
+
+  Place placeAt(Vec pos) => _placeGraph.placeAt(pos);
 
   TileType getTile(int x, int y) => stage.get(x, y).type;
 
@@ -301,60 +314,14 @@ class Dungeon {
     }
   }
 
-  void _populatePlace(Place place) {
-    // TODO: Special encounters that takes over the whole place. Like an
-    // alchemical laboratory that has rows of tables, lots of magic items, and
-    // evil wizards.
-
-    // TODO: Doing this here is kind of hacky.
-    rng.shuffle(place.cells);
-
-    // Floor drops.
-    // TODO: Tune this. Take number of cells into account.
-    var itemChance = place.hasHero ? 90 : 40;
-    if (rng.percent(itemChance)) {
-      var floorDrop = FloorDrops.choose(depth);
-      var pos = _tryFindSpawnPos(
-          place.cells, MotilitySet.walk, floorDrop.location,
-          avoidActors: false);
-      if (pos != null) stage.placeDrops(pos, MotilitySet.walk, floorDrop.drop);
-    }
-
-    _placeMonsters(place);
-  }
-
-  static final _placeDensity = {"aquatic": 0.07, "passage": 0.04, "room": 0.05};
-
   void _placeMonsters(Place place) {
     // Don't spawn monsters in the hero's starting room.
     if (place.hasHero) return;
 
-    // TODO: Tune based on depth?
-    // Calculate the average number of monsters for a place with this many
-    // cells.
-    //
-    // We want a roughly even difficulty across places of different sizes. That
-    // means more monsters in bigger places. However, monsters can easily cross
-    // an open space which means scaling linearly makes larger places more
-    // difficult -- it's easy for the hero to get swarmed. The exponential
-    // tapers that off a bit so that larger areas don't scale quite linearly.
-    var density = _placeDensity[place.type];
-    var base = math.pow(place.cells.length, 0.80) * density;
-
-    // From the average, roll an actual number using a normal distribution
-    // centered on the base number. The distribution gets wider as the base
-    // gets larger.
-    var spawns = base + _normal() * (base / 2);
-
-    // The actual number is floating point. For small places, it will likely be
-    // less than 1. Handle that floating point reside by treat it as the chance,
-    // out of 1.0, of having one additional monster. For example, 4.2 means
-    // there will be 4 monsters, with a 20% chance of 5.
-    var spawnCount = spawns.floor();
-    if (rng.float(1.0) < spawns - spawnCount) spawnCount++;
-
+    var spawnCount = _rollCount(place, place.monsterDensity);
     while (spawnCount > 0) {
-      var breed = Monsters.breeds.tryChoose(depth, place.type);
+      var theme = place.chooseTheme();
+      var breed = Monsters.breeds.tryChoose(depth, theme);
 
       // Don't place dead or redundant uniques.
       if (breed.flags.unique) {
@@ -371,6 +338,54 @@ class Dungeon {
 
       spawnCount -= spawned;
     }
+  }
+
+  void _placeItems(Place place) {
+    var density = place.itemDensity;
+
+    // Increase the odds of the hero immediately finding something.
+    if (place.hasHero) density *= 1.2;
+
+    var dropCount = _rollCount(place, density);
+    for (var i = 0; i < dropCount; i++) {
+      var theme = place.chooseTheme();
+
+      var floorDrop = FloorDrops.choose(theme, depth);
+      var pos = _tryFindSpawnPos(
+          place.cells, MotilitySet.walk, floorDrop.location,
+          avoidActors: false);
+      if (pos == null) break;
+
+      stage.placeDrops(pos, MotilitySet.walk, floorDrop.drop);
+    }
+  }
+
+  /// Rolls how many of something should be dropped in [place], taking the
+  /// place's size and [density] into account.
+  int _rollCount(Place place, double density) {
+    // TODO: Tune based on depth?
+    // Calculate the average number of monsters for a place with this many
+    // cells.
+    //
+    // We want a roughly even difficulty across places of different sizes. That
+    // means more monsters in bigger places. However, monsters can easily cross
+    // an open space which means scaling linearly makes larger places more
+    // difficult -- it's easy for the hero to get swarmed. The exponential
+    // tapers that off a bit so that larger areas don't scale quite linearly.
+    var base = math.pow(place.cells.length, 0.80) * density;
+
+    // From the average, roll an actual number using a normal distribution
+    // centered on the base number. The distribution gets wider as the base
+    // gets larger.
+    var floatCount = base + _normal() * (base / 2);
+
+    // The actual number is floating point. For small places, it will likely be
+    // less than 1. Handle that floating point reside by treat it as the chance,
+    // out of 1.0, of having one additional monster. For example, 4.2 means
+    // there will be 4 monsters, with a 20% chance of 5.
+    var count = floatCount.floor();
+    if (rng.float(1.0) < floatCount - count) count++;
+    return count;
   }
 
   /// Calculate a random number with a normal distribution.
@@ -479,14 +494,11 @@ class Dungeon {
       var wallCount =
           Direction.all.where((dir) => !getTileAt(pos + dir).isWalkable).length;
 
-      if (wallCount < minWalls || wallCount > maxWalls) {
-        // This position isn't ideal, but if we don't find anything else, we'll
-        // settle for it.
-        acceptable = pos;
-        continue;
-      }
+      if (wallCount >= minWalls && wallCount <= maxWalls) return pos;
 
-      return pos;
+      // This position isn't ideal, but if we don't find anything else, we'll
+      // settle for it.
+      acceptable = pos;
     }
 
     return acceptable;
@@ -512,13 +524,14 @@ class Dungeon {
   }
 
   void _chooseBiomes() {
-    // TODO: Take depth into account?
+    // TODO: Take depth into account.
     var hasWater = _tryRiver();
 
     if (_tryLake64(hasWater)) hasWater = true;
     if (_tryLake32(hasWater)) hasWater = true;
     if (_tryLakes16(hasWater)) hasWater = true;
 
+    // TODO: Grottoes don't add cells to the appropriate place.
     // TODO: Add grottoes other places than just on shores.
     // Add some old grottoes that eroded before the dungeon was built.
     if (hasWater) _biomes.add(new GrottoBiome(this, rng.taper(2, 3)));
@@ -581,7 +594,6 @@ class Dungeon {
   void _calculateInfo() {
     // Calculate how far every reachable tile is from the hero's starting point.
     // TODO: Is this the right motilities?
-    debugInfo = _info;
     var flow = new MotilityFlow(stage, _heroPos, MotilitySet.doorAndWalk,
         ignoreActors: true);
     for (var pos in safeBounds) {
