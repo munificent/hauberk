@@ -100,13 +100,16 @@ Future generate() async {
   stateCanvas.width = stage.width * 8;
   stateCanvas.height = stage.height * 8;
 
-  var frame = 0;
+  var start = new DateTime.now();
   for (var _ in _game.generate()) {
 //    print(event);
     render();
 
-    frame++;
-    if (frame % 5 == 0) await html.window.animationFrame;
+    var elapsed = new DateTime.now().difference(start);
+    if (elapsed.inMilliseconds > 60) {
+      await html.window.animationFrame;
+      start = new DateTime.now();
+    }
   }
 
   _game.stage.refreshView();

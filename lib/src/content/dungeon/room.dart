@@ -18,10 +18,15 @@ class RoomStyle {
   final int passageStopPercent = 10;
   final int passageMinLength = 4;
 
-  /// The shortest existing path between two points required to allow an
-  /// additional shortcut passage to connect them. Making this longer requires
-  /// cycles to be more of a shortcut, and makes them rarer.
-  final int passageShortcutLength = 10;
+  /// A passage that connects to an existing place, by definition, adds a cycle
+  /// to the dungeon. We don't want to do that if there is always a similar
+  /// path between those two points. A cycle should only be added if it connects
+  /// two very disparate regions (in terms of reachability).
+  ///
+  /// To get that, we only place a cyclic passage if the shortest existing
+  /// route between the two points is longer than the new passage's length times
+  /// this scale. Making this smaller adds more cycles.
+  final int passageShortcutScale = 10;
 
   final int junctionMaxTries = 50;
 }
@@ -110,23 +115,12 @@ class RoomBiome extends Biome {
 
       // If the passage connects up to an existing junction, consider adding a
       // cycle.
-      // TODO: This search is slow.
       var reachedJunction = _dungeon.junctions.at(pos);
       if (reachedJunction != null &&
           reachedJunction.direction == dir.rotate180) {
-        // Avoid a short passage that's just two doors next to each other.
-        if (passage.length < 2) return false;
-
-        // Don't add a cycle if there's already a path from one side to the other
-        // that isn't much longer.
-        if (new CyclePathfinder(_dungeon.stage, junction.position, pos + dir,
-                passage.length + _style.passageShortcutLength)
-            .search()) {
+        if (!_isValidShortcut(junction.position, pos + dir, passage.length)) {
           return false;
         }
-
-        // Don't add too many cycles.
-        if (!rng.percent(1)) return false;
 
         _dungeon.junctions.removeAt(pos);
         placeRoom = false;
@@ -137,14 +131,7 @@ class RoomBiome extends Biome {
       // If the passage connects to a natural area, stop there and then
       // traverse through it.
       if (_dungeon.getTileAt(pos) == Tiles.grass) {
-        // Avoid a short passage that's just two doors next to each other.
-        if (passage.length < 2) return false;
-
-        // Don't add a cycle if there's already a path from one side to the other
-        // that isn't very long.
-        if (new CyclePathfinder(
-                _dungeon.stage, junction.position, pos + dir, 20)
-            .search()) {
+        if (!_isValidShortcut(junction.position, pos + dir, passage.length)) {
           return false;
         }
 
@@ -202,6 +189,21 @@ class RoomBiome extends Biome {
     return true;
   }
 
+  /// Returns `true` if a passage with [length] from [from] to [to] is
+  /// significantly shorter than the current shortest path between those points.
+  ///
+  /// Used to avoid placing pointless redundant paths in the dungeon.
+  bool _isValidShortcut(Vec from, Vec to, int length) {
+    // Avoid a short passage that's just two doors next to each other.
+    if (length < 2) return false;
+
+    var pathfinder = new CyclePathfinder(
+        _dungeon.stage, from, to, length * _style.passageShortcutScale);
+
+    // TODO: This search is very slow.
+    return !pathfinder.search();
+  }
+
   void _createStartingRoom() {
     var startRoom = Room.create(_dungeon.depth);
 
@@ -220,7 +222,6 @@ class RoomBiome extends Biome {
     for (var pos in startRoom.tiles.bounds) {
       if (startRoom.tiles[pos].isWalkable) openTiles.add(pos.offset(x, y));
     }
-    _dungeon.placeHero(rng.item(openTiles));
   }
 
   bool _tryPlaceRoom(Junction junction, Set<Vec> passageTiles) {

@@ -20,26 +20,6 @@ abstract class Biome {
   Iterable<String> generate();
 }
 
-class TileInfo {
-  int distance;
-
-  /// If this tile is for a junction (doorway, etc.) counts the number of
-  /// passable tiles that can only be reached from the starting room by going
-  /// through this tile.
-  ///
-  /// Will be 0 if this tile isn't a junction, or doesn't provide unique acces
-  /// to any tiles.
-  int reachableTiles = 0;
-
-  /// If this tile is only reachable by going through a choke point junction,
-  /// this contains the position of the nearest choke point.
-  Vec chokePoint;
-
-  // TODO: Temp. For visualization.
-  int junctionId;
-  int regionId;
-}
-
 // TODO: Rename to something generic like "Generator" and then use "Dungeon"
 // to refer to the "rooms and passages" biome.
 class Dungeon {
@@ -59,12 +39,9 @@ class Dungeon {
   final JunctionSet junctions = new JunctionSet();
 
   final List<Biome> _biomes = [];
-  final Array2D<TileInfo> _info;
 
   final List<Place> _places = [];
   final PlaceGraph _placeGraph = new PlaceGraph();
-
-  Vec _heroPos;
 
   /// The unique breeds that have already been place on the stage. Ensures we
   /// don't spawn the same unique more than once.
@@ -78,9 +55,7 @@ class Dungeon {
 
   int get height => stage.height;
 
-  Dungeon(this._lore, this.stage, this.depth)
-      : _info = new Array2D.generated(
-            stage.width, stage.height, () => new TileInfo());
+  Dungeon(this._lore, this.stage, this.depth);
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
     last = this;
@@ -98,20 +73,9 @@ class Dungeon {
       yield* biome.generate();
     }
 
-    // If a biome didn't place the hero, do it now.
-    if (_heroPos == null) _heroPos = stage.findOpenTile();
-    placeHero(_heroPos);
-    // TODO: Pick place to put hero in. Then below, pick pos for hero.
+    yield "Applying themes";
 
-    // TODO: Placing the hero before placing decorations means the hero can end
-    // up on a decoration. That's bad. But we want to calculate the distance
-    // info before decorating... Maybe the info should be explicitly room-based
-    // instead of tile based and then just pick the hero's starting *room*
-    // first?
-
-    yield "Placing decor";
     // Apply and spread themes from the biomes.
-    _calculateInfo();
     _places.sort((a, b) => b.cells.length.compareTo(a.cells.length));
     _placeGraph.findConnections(this, _places);
 
@@ -119,12 +83,12 @@ class Dungeon {
       place.applyThemes();
     }
 
+    yield "Placing decor";
     for (var i = 0; i < 1000; i++) {
       var pos = rng.vecInRect(safeBounds);
       var place = placeAt(pos);
       if (place == null) continue;
 
-      // Furnish the room.
       var theme = place.chooseTheme();
       var decor = Decor.choose(theme);
       if (decor == null) continue;
@@ -140,29 +104,18 @@ class Dungeon {
 
       if (allowed.isNotEmpty) {
         decor.place(this, rng.item(allowed));
+        yield "Placed decor";
       }
     }
 
     // TODO: Should we do a sanity check for traversable tiles that ended up
     // unreachable?
 
-    // Pick a point far from the hero to place the exit stairs.
     // TODO: Use room places and themes for placing stairs.
     var stairCount = rng.range(2, 4);
     for (var i = 0; i < stairCount; i++) {
-      // TODO: Try to spread out stair positions?
-      Vec stairPos;
-      for (var i = 0; i < 3; i++) {
-        var pos = stage.findOpenTile();
-        // TODO: If there are unconnected regions (usually from a river looping
-        // back onto the dungeon) then distance will be null and this may fail.
-        if (stairPos == null ||
-            _info[pos].distance > _info[stairPos].distance) {
-          stairPos = pos;
-        }
-      }
-
-      setTileAt(stairPos, Tiles.stairs);
+      var pos = stage.findOpenTile();
+      setTileAt(pos, Tiles.stairs);
     }
 
     for (var place in _places) {
@@ -172,6 +125,16 @@ class Dungeon {
       _placeMonsters(place);
       _placeItems(place);
     }
+
+    // Place the hero in the starting place.
+    var startPlace = _places.firstWhere((place) => place.hasHero);
+    // TODO: Because every dungeon has a room biome, we assume there is a place
+    // that's marked to have the hero. If that's not the case, we'll need to
+    // pick a place here.
+
+    placeHero(_tryFindSpawnPos(
+        startPlace.cells, MotilitySet.walk, SpawnLocation.open,
+        avoidActors: true));
   }
 
   Place placeAt(Vec pos) => _placeGraph.placeAt(pos);
@@ -204,8 +167,6 @@ class Dungeon {
 
   bool isRockAt(Vec pos) => stage[pos].type == Tiles.rock;
 
-  TileInfo infoAt(Vec pos) => _info[pos];
-
   /// Returns `true` if the cell at [pos] has at least one adjacent tile with
   /// type [tile].
   bool hasCardinalNeighbor(Vec pos, List<TileType> tiles) {
@@ -234,11 +195,6 @@ class Dungeon {
 
   void addPlace(Place place) {
     _places.add(place);
-  }
-
-  void placeHero(Vec pos) {
-    assert(_heroPos == null, "Should only place the hero once.");
-    _heroPos = pos;
   }
 
   /// Grows a randomly shaped blob starting at [start].
@@ -442,8 +398,7 @@ class Dungeon {
       var flow = new MotilityFlow(stage, pos, breed.motilities);
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
-      // TODO: Checking for hero pos here is hacky.
-      var here = flow.bestWhere((p) => _heroPos != p);
+      var here = flow.reachable.firstWhere((_) => true, orElse: () => null);
 
       // If there are no open tiles, discard the remaining monsters.
       if (here == null) break;
@@ -485,8 +440,6 @@ class Dungeon {
     Vec acceptable;
 
     for (var pos in cells) {
-      if (_heroPos == pos) continue;
-
       if (!getTileAt(pos).canEnterAny(motilities)) continue;
 
       if (stage.actorAt(pos) != null) continue;
@@ -587,33 +540,5 @@ class Dungeon {
     }
 
     return true;
-  }
-
-  /// Calculates a bunch of information about the dungeon used to intelligently
-  /// populate it.
-  void _calculateInfo() {
-    // Calculate how far every reachable tile is from the hero's starting point.
-    // TODO: Is this the right motilities?
-    var flow = new MotilityFlow(stage, _heroPos, MotilitySet.doorAndWalk,
-        ignoreActors: true);
-    for (var pos in safeBounds) {
-      _info[pos].distance = flow.costAt(pos);
-    }
-
-//    // Figure out which junctions are chokepoints that provide unique access to
-//    // some areas.
-//    // TODO: Do something with the results of this.
-//    new ChokePoints(this).calculate(_heroPos);
-//
-//    // Find all passage tiles.
-//    for (var pos in safeBounds) {
-//      if (!getTileAt(pos).isWalkable) continue;
-//
-//      var walls = Direction.all.where((dir) {
-//        return !getTileAt(pos + dir).isTraversable;
-//      }).length;
-//
-//      if (walls >= 6) _passages.add(pos);
-//    }
   }
 }
