@@ -33,7 +33,7 @@ class Tiles {
   static final TileType water =
       _water("water", CharCode.almostEqualTo, cerulean, back: ultramarine);
   static final TileType steppingStone =
-      _water("stepping stone", "•", gunsmoke, back: ultramarine);
+      _open("stepping stone", "•", gunsmoke, back: ultramarine);
 
   static final TileType dirt = _open("dirt", CharCode.middleDot, garnet);
   static final TileType dirt2 =
@@ -71,9 +71,9 @@ class Tiles {
 
   // TODO: Make these do something.
   static final TileType barrel =
-      _solid("barrel", CharCode.topHalfIntegral, persimmon);
+      _obstacle("barrel", CharCode.topHalfIntegral, persimmon);
   static final TileType chest =
-      _solid("chest", CharCode.bottomHalfIntegral, persimmon);
+      _obstacle("chest", CharCode.bottomHalfIntegral, persimmon);
 
   static final TileType statue = _obstacle("statue", "P", ash, back: slate);
 
