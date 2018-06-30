@@ -180,14 +180,16 @@ class Storage {
       var slainMap = data['slain'];
       if (slainMap != null) {
         (slainMap as Map).forEach((breedName, count) {
-          slain[content.findBreed(breedName)] = count;
+          var breed = content.tryFindBreed(breedName);
+          if (breed != null) slain[breed] = count;
         });
       }
 
       var seenMap = data['seen'];
       if (seenMap != null) {
         (seenMap as Map).forEach((breedName, count) {
-          seen[content.findBreed(breedName)] = count;
+          var breed = content.tryFindBreed(breedName);
+          if (breed != null) seen[breed] = count;
         });
       }
 

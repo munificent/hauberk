@@ -38,7 +38,7 @@ class GameContent implements Content {
   }
 
   Affix findAffix(String name) => Affixes.find(name);
-  Breed findBreed(String name) => Monsters.breeds.find(name);
+  Breed tryFindBreed(String name) => Monsters.breeds.tryFind(name);
   ItemType tryFindItem(String name) => Items.types.tryFind(name);
   Skill findSkill(String name) => Skills.find(name);
 

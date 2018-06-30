@@ -202,7 +202,7 @@ abstract class Content {
 
   Affix findAffix(String name);
 
-  Breed findBreed(String name);
+  Breed tryFindBreed(String name);
 
   ItemType tryFindItem(String name);
 
