@@ -30,18 +30,27 @@ compiled JS.
 I usually run the game in Dartium, so if you see any bugs in the compiled-to-JS
 version please do file an issue.
 
-## Getting involved
+## Contributions
 
-I'd love to have more people involved. You're more than welcome to contribute
-to Hauberk itself. There's lots to be done, both code and game content
-(monsters, items, recipes, areas, etc.).
+One of the things I enjoy most about open source is collaborating with other
+people, and I'd love to have more contributions. But, the reality of my life
+right now is that my [other main open source project][wren] already has more
+activity than I can handle given that I am also [writing a book][book] and have
+a wife, kids, pets, and full-time job.
 
-If you'd like to hack some code, search through the codebase for "TODO". I sprinkle those in liberally to mark things that need fixing or are open to extension. If you find one that catches your eye, let me know and I can fill you in on the details, or just send a pull request.
+[wren]: https://github.com/munificent/wren
+[book]: http://www.craftinginterpreters.com/
 
-I also had in mind that this codebase could be used as a springboard for other
-games. Feel free to fork Hauberk and make it into your own thing in any way
-you choose. It uses a very permissive [MIT license][], so you can do pretty much
-whatever you want with it.
+So, for my sanity's sake, this project is mostly "read-only". You are welcome to
+file bug reports for issues you notice, but I probably won't have the time to
+take many pull requests.
+
+I'd be delighted if you used this codebase as a springboard for your own game.
+Feel free to fork and make it into your own thing in any way you choose. It uses
+a very permissive [MIT license][], so you can do pretty much whatever you want
+with it.
+
+Thanks for understanding.
 
 [roguelike]: http://en.wikipedia.org/wiki/Roguelike
 [dart]: http://dartlang.org
