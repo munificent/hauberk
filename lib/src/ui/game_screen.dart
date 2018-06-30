@@ -650,6 +650,8 @@ class GameScreen extends Screen<Input> {
 
     for (final message in game.log.messages) {
       var color;
+      var messagesLength = game.log.messages.length - 1;
+
       switch (message.type) {
         case LogType.message:
           color = gunsmoke;
@@ -668,7 +670,12 @@ class GameScreen extends Screen<Input> {
           break;
       }
 
+      if (y != messagesLength) {
+        color = color.blend(Color.black, 0.5);
+      }
+
       terminal.writeAt(0, y, message.text, color);
+
       if (message.count > 1) {
         terminal.writeAt(
             message.text.length, y, ' (x${message.count})', steelGray);
