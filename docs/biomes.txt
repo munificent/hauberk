@@ -1,0 +1,15 @@
+There's no real reason to be conservative about what kinds of terrain and
+biomes that appear in the dungeon. Want a big room that contains a teeming
+jungle? Why not? It's *magic*.
+
+We should embrace the genre. The dungeon isn't literally a Medieval stonework
+jail. It's a sprawling supernatural creation, a magical universe unto itself.
+
+It's good to have regions that obey their own internal logic -- churches
+containing priests, laboratories full of potions, selkies in lakes, etc. That
+gives the player a sense of place, builds expectations, and helps them navigate
+those regions.
+
+But there's no need to say "a ___ wouldn't appear in a real dungeon". You know
+what else didn't appear in real dungeons in the Middle Ages? *Dragons.* Yet here
+we are.

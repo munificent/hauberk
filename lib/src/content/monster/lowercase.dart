@@ -240,6 +240,11 @@ void insects() {
   breed("giant centipede", 3, brickRed, 14, speed: 2, meander: 20)
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
+
+  breed("firefly", 8, carrot, 20, speed: 2, meander: 70)
+    ..placeIn("aquatic")
+    ..count(3, 8)
+    ..attack("bite[s]", 12, Elements.fire);
 }
 
 void jellies() {

@@ -2,6 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../dungeon/dungeon.dart';
+import 'aquatic.dart';
 import 'builder.dart';
 
 class Decor {
@@ -354,19 +355,9 @@ class Decor {
     ..≈≈I
     ?..≈#""");
 
-    // Grass.
-    category(1.0, themes: "aquatic");
-    furnishing(Symmetry.rotate90, "*", """
-    ≈≈
-    ≈*""");
+    // TODO: Fireplaces for kitchens and halls.
 
-    furnishing(Symmetry.rotate90, "*", """
-    ≈
-    *""");
-
-    category(0.2, themes: "aquatic");
-    furnishing(Symmetry.rotate90, "*", """
-    *""");
+    aquatic();
   }
 
   final Array2D<Cell> cells;
@@ -399,16 +390,22 @@ class Decor {
 class Cell {
   final TileType _apply;
   final Motility _motility;
-  final TileType _require;
+  final List<TileType> _require = [];
 
-  Cell({TileType apply, Motility motility, TileType require})
+  Cell(
+      {TileType apply,
+      Motility motility,
+      TileType require,
+      List<TileType> requireAny})
       : _apply = apply,
-        _motility = motility,
-        _require = require;
+        _motility = motility {
+    if (require != null) _require.add(require);
+    if (requireAny != null) _require.addAll(requireAny);
+  }
 
   bool meetsRequirement(TileType tile) {
     if (_motility != null && !tile.canEnter(_motility)) return false;
-    if (_require != null && tile != _require) return false;
+    if (_require.isNotEmpty && !_require.contains(tile)) return false;
     return true;
   }
 

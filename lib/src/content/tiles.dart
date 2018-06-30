@@ -5,43 +5,48 @@ import '../hues.dart';
 
 /// Static class containing all of the [TileType]s.
 class Tiles {
-  static TileType floor = _open("floor", CharCode.middleDot, slate);
-  static TileType burntFloor =
+  static final TileType floor = _open("floor", CharCode.middleDot, slate);
+  static final TileType burntFloor =
       _open("burnt floor", CharCode.greekSmallLetterPhi, steelGray);
-  static TileType burntFloor2 =
+  static final TileType burntFloor2 =
       _open("burnt floor", CharCode.greekSmallLetterEpsilon, steelGray);
-  static TileType rock =
+  static final TileType rock =
       _solid("rock", CharCode.darkShade, gunsmoke, back: slate);
-  static TileType wall =
+  static final TileType wall =
       _solid("wall", CharCode.mediumShade, gunsmoke, back: slate);
-  static TileType lowWall = _obstacle("low wall", CharCode.percent, gunsmoke);
-  static TileType openDoor =
+  static final TileType lowWall =
+      _obstacle("low wall", CharCode.percent, gunsmoke);
+  static final TileType openDoor =
       _open("open door", CharCode.whiteCircle, persimmon, back: garnet);
-  static TileType closedDoor = _door(
+  static final TileType closedDoor = _door(
       "closed door", CharCode.inverseWhiteCircle, persimmon,
       back: garnet);
+
   // TODO: maleSign = barred wall
 
   // TODO: Different character that doesn't look like bridge?
-  static TileType stairs =
+  static final TileType stairs =
       _exit("stairs", CharCode.identicalTo, gunsmoke, back: slate);
-  static TileType bridge =
+  static final TileType bridge =
       _open("bridge", CharCode.identicalTo, persimmon, back: garnet);
 
-  static TileType water =
+  static final TileType water =
       _water("water", CharCode.almostEqualTo, cerulean, back: ultramarine);
+  static final TileType steppingStone =
+      _water("stepping stone", "•", gunsmoke, back: ultramarine);
 
-  static TileType dirt = _open("dirt", CharCode.middleDot, garnet);
-  static TileType dirt2 = _open("dirt2", CharCode.greekSmallLetterPhi, garnet);
-  static TileType grass = _open("grass", CharCode.lightShade, peaGreen);
-  static TileType tallGrass =
+  static final TileType dirt = _open("dirt", CharCode.middleDot, garnet);
+  static final TileType dirt2 =
+      _open("dirt2", CharCode.greekSmallLetterPhi, garnet);
+  static final TileType grass = _open("grass", CharCode.lightShade, peaGreen);
+  static final TileType tallGrass =
       _open("tall grass", CharCode.squareRoot, peaGreen);
-  static TileType tree = _solid(
+  static final TileType tree = _solid(
       "tree", CharCode.blackUpPointingTriangle, peaGreen,
       back: sherwood);
-  static TileType treeAlt1 =
+  static final TileType treeAlt1 =
       _solid("tree", CharCode.blackSpadeSuit, peaGreen, back: sherwood);
-  static TileType treeAlt2 =
+  static final TileType treeAlt2 =
       _solid("tree", CharCode.blackClubSuit, peaGreen, back: sherwood);
 
   static final TileType tableTopLeft = _obstacle("table", "┌", persimmon);
@@ -65,37 +70,37 @@ class Tiles {
       back: slate, emanation: 8);
 
   // TODO: Make these do something.
-  static final TileType barrel = _solid(
-      "barrel", CharCode.topHalfIntegral, persimmon);
-  static final TileType chest = _solid(
-      "chest", CharCode.bottomHalfIntegral, persimmon);
+  static final TileType barrel =
+      _solid("barrel", CharCode.topHalfIntegral, persimmon);
+  static final TileType chest =
+      _solid("chest", CharCode.bottomHalfIntegral, persimmon);
 
-  static final TileType statue =
-      _obstacle("statue", "P", ash, back: slate);
+  static final TileType statue = _obstacle("statue", "P", ash, back: slate);
 
   // Make these "monsters" that can be pushed around.
   static final TileType chair = _open("chair", "π", persimmon);
 
-  static TileType brownJellyStain =
+  static final TileType brownJellyStain =
       _open("brown jelly stain", CharCode.middleDot, persimmon);
 
-  static TileType grayJellyStain =
+  static final TileType grayJellyStain =
       _open("gray jelly stain", CharCode.middleDot, steelGray);
 
-  static TileType greenJellyStain =
+  static final TileType greenJellyStain =
       _open("green jelly stain", CharCode.middleDot, lima);
 
-  static TileType redJellyStain =
+  static final TileType redJellyStain =
       _open("red jelly stain", CharCode.middleDot, brickRed);
 
-  static TileType violetJellyStain =
+  static final TileType violetJellyStain =
       _open("violet jelly stain", CharCode.middleDot, violet);
 
-  static TileType whiteJellyStain =
+  static final TileType whiteJellyStain =
       _open("white jelly stain", CharCode.middleDot, ash);
 
   // TODO: Make this do stuff when walked through.
-  static TileType spiderweb = _open("spiderweb", CharCode.divisionSign, slate);
+  static final TileType spiderweb =
+      _open("spiderweb", CharCode.divisionSign, slate);
 
   static void initialize() {
     // Link doors together.

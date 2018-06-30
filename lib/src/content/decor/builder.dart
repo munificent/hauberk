@@ -37,6 +37,8 @@ final Map<String, Cell> _applyCells = {
   "%": new Cell(apply: Tiles.barrel, motility: Motility.walk),
   "&": new Cell(apply: Tiles.chest, motility: Motility.walk),
   "*": new Cell(apply: Tiles.tallGrass, require: Tiles.grass),
+  "=": new Cell(apply: Tiles.bridge, require: Tiles.water),
+  "•": new Cell(apply: Tiles.steppingStone, require: Tiles.water),
 };
 
 final Map<String, Cell> _requireCells = {
@@ -56,6 +58,9 @@ final Map<String, Cell> _requireCells = {
   "╡": new Cell(require: Tiles.tableLegRight),
   "π": new Cell(require: Tiles.chair),
   "≈": new Cell(require: Tiles.water),
+  "'": new Cell(requireAny: [Tiles.grass, Tiles.tallGrass]),
+  "•": new Cell(require: Tiles.steppingStone),
+  "o": new Cell(require: Tiles.steppingStone),
 };
 
 final _mirrorHorizontal = [
