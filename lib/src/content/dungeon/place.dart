@@ -23,7 +23,8 @@ abstract class Place {
 
   double totalStrength = 0.0;
 
-  Place(this.cells, this.monsterDensity, this.itemDensity, {this.hasHero = false});
+  Place(this.cells, this.monsterDensity, this.itemDensity,
+      {this.hasHero = false});
 
   void bind(PlaceGraph graph) {
     assert(_graph == null, "Can only bind once.");

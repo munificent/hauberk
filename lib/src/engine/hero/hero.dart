@@ -549,7 +549,7 @@ int calculateLevel(int experienceCents) {
 /// is greater than the maximum level.
 int calculateLevelCost(int level) {
   if (level > Hero.maxLevel) return null;
-  return (level - 1) * (level - 1) * 300;
+  return math.pow(level - 1, 3).toInt() * 200;
 }
 
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for

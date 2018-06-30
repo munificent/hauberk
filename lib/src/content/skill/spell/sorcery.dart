@@ -57,17 +57,16 @@ class Windstorm extends Spell implements ActionSkill {
 
 class FireBarrier extends Spell implements TargetSkill {
   String get name => "Fire Barrier";
-  String get description =>
-      "Creates a wall of fire.";
+  String get description => "Creates a wall of fire.";
   int get baseComplexity => 30;
   int get baseFocusCost => 60;
   int get damage => 10;
   int get range => 8;
 
   Action onGetTargetAction(Game game, Vec target) {
-    var attack = new Attack(new Noun("the fire"), "burn", damage, range, Elements.fire);
-    return new BarrierAction(
-        game.hero.pos, target, attack.createHit());
+    var attack =
+        new Attack(new Noun("the fire"), "burn", damage, range, Elements.fire);
+    return new BarrierAction(game.hero.pos, target, attack.createHit());
   }
 }
 

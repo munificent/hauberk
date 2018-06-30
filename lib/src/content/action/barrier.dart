@@ -59,7 +59,8 @@ class BarrierAction extends ElementAction {
         if (!going) return false;
 
         tryOffset(double h, double v) {
-          var offset = new Vec((_h * _distance + h).round(), (_v * _distance + v).round());
+          var offset = new Vec(
+              (_h * _distance + h).round(), (_v * _distance + v).round());
           var pos = _center + offset * sign;
           if (!game.stage[pos].canEnter(Motility.fly)) return false;
 

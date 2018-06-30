@@ -39,6 +39,7 @@ room
 
 other words for kinds of rooms:
 
+lair
 alcove
 antechamber
 arcade

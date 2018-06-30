@@ -129,16 +129,18 @@ void reptiles() {
     ..emanate(3);
   breed("juvenile salamander", 7, salmon, 40)
     ..attack("bite[s]", 14, Elements.fire)
-    ..fireCone(rate: 16, damage: 30, range: 6);
-
+    ..fireCone(rate: 16, damage: 20, range: 4);
   breed("salamander", 13, brickRed, 60)
     ..attack("bite[s]", 18, Elements.fire)
-    ..fireCone(rate: 16, damage: 50, range: 8);
+    ..fireCone(rate: 16, damage: 30, range: 5);
+  breed("three-headed salamander", 23, maroon, 90)
+    ..attack("bite[s]", 24, Elements.fire)
+    ..fireCone(rate: 10, damage: 30, range: 5);
 }
 
 void snakes() {
-  family("S", speed: 1, dodge: 30, meander: 30)..groups("animal");
-  breed("garter snake", 1, lima, 9)
+  family("S", dodge: 30, meander: 30)..groups("animal");
+  breed("water snake", 1, lima, 9)
     ..placeIn("aquatic")
     ..attack("bite[s]", 3);
 

@@ -34,6 +34,7 @@ main() {
       <td>Count</td>
       <td>Attacks</td>
       <td>Moves</td>
+      <td>Tags</td>
       <td>Flags</td>
       <td width="20%">Drops</td>
     </tr>
@@ -53,7 +54,8 @@ main() {
     text.write('''
         <tr>
           <td>
-            <pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
+            <pre><span style="color: ${glyph.fore.cssColor}">${new String
+        .fromCharCodes([glyph.char])}</span></pre>
           </td>
           <td>${breed.name}</td>
           <td>${breed.depth}</td>
@@ -68,22 +70,21 @@ main() {
     }
     text.write('</td>');
 
-    text.write('''
-          <td class="r">$expPerLevel</td>
-          <td class="r">$count</td>
-          <td>
-        ''');
+    text.write('<td class="r">$expPerLevel</td>');
+    text.write('<td class="r">$count</td>');
 
+    text.write('<td>');
     var attacks = breed.attacks.map(
         (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} $attack');
-    text.write(attacks.join(', '));
+    text.write(attacks.join('<br>'));
+    text.write('</td>');
 
-    text.write('</td><td>');
-    text.writeln(breed.moves.join(', '));
-    text.write('</td><td>');
-    text.write(breed.flags);
-    text.write(
-        '</td><td><span class="drop" id="${breed.name}">(drops)</span></td>');
+    text.writeln('<td>${breed.moves.join("<br>")}</td>');
+
+    var tags = Monsters.breeds.getTags(breed.name).toList()..remove("monster");
+    text.write('<td>${tags.join(", ")}</td>');
+    text.write('<td>${breed.flags}</td>');
+    text.write('<td><span class="drop" id="${breed.name}">(drops)</span></td>');
     text.write('</tr>');
   }
   text.write('</tbody>');

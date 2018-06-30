@@ -14,7 +14,7 @@ void potions() {
   category(CharCode.latinSmallLetterCWithCedilla, stack: 10)
     ..tag("magic/potion/healing")
     ..toss(damage: 1, range: 6, breakage: 100)
-  ..destroy(Elements.cold, chance: 20);
+    ..destroy(Elements.cold, chance: 20);
   item("Soothing Balm", 2, 1.0, salmon)..heal(48);
   item("Mending Salve", 7, 1.0, brickRed)..heal(100);
   item("Healing Poultice", 12, 1.0, maroon)..heal(200, curePoison: true);
@@ -25,8 +25,7 @@ void potions() {
 
   item("Antidote", 2, 1.0, peaGreen)..heal(0, curePoison: true);
 
-  category(CharCode.latinSmallLetterEWithCircumflex,
-      stack: 10)
+  category(CharCode.latinSmallLetterEWithCircumflex, stack: 10)
     ..tag("magic/potion/resistance")
     ..toss(damage: 1, range: 6, breakage: 100)
     ..destroy(Elements.cold, chance: 20);
@@ -58,8 +57,7 @@ void potions() {
   // TODO: "Insulation", "the Elements" and other multi-element resistances.
 
   // Speed.
-  category(CharCode.latinSmallLetterEWithDiaeresis,
-      stack: 10)
+  category(CharCode.latinSmallLetterEWithDiaeresis, stack: 10)
     ..tag("magic/potion/speed")
     ..toss(damage: 1, range: 6, breakage: 100)
     ..destroy(Elements.cold, chance: 20);
@@ -108,8 +106,7 @@ void scrolls() {
   // item too complex for the user is likely to fail.
 
   // Teleportation.
-  category(CharCode.latinSmallLetterAWithCircumflex,
-      stack: 20)
+  category(CharCode.latinSmallLetterAWithCircumflex, stack: 20)
     ..tag("magic/scroll/teleportation")
     ..toss(damage: 1, range: 3, breakage: 75)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
@@ -123,8 +120,7 @@ void scrolls() {
     ..use(() => new TeleportAction(48));
 
   // Detection.
-  category(CharCode.latinSmallLetterAWithDiaeresis,
-      stack: 20)
+  category(CharCode.latinSmallLetterAWithDiaeresis, stack: 20)
     ..tag("magic/scroll/detection")
     ..toss(damage: 1, range: 3, breakage: 75)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
