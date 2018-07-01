@@ -22,7 +22,9 @@ class Tiles {
       "closed door", CharCode.inverseWhiteCircle, persimmon,
       back: garnet);
 
-  // TODO: maleSign = barred wall
+//  TODO: maleSign = open square door
+//  TODO: femaleSign = closed square door
+//  TODO: eighthNote = barred wall
 
   // TODO: Different character that doesn't look like bridge?
   static final TileType stairs =
@@ -70,10 +72,14 @@ class Tiles {
       back: slate, emanation: 8);
 
   // TODO: Make these do something.
-  static final TileType barrel =
-      _obstacle("barrel", CharCode.topHalfIntegral, persimmon);
-  static final TileType chest =
-      _obstacle("chest", CharCode.bottomHalfIntegral, persimmon);
+  static final TileType openChest =
+      _obstacle("open chest", CharCode.topHalfIntegral, persimmon);
+  static final TileType closedChest =
+      _obstacle("closed chest", CharCode.bottomHalfIntegral, persimmon);
+  static final TileType closedBarrel =
+      _obstacle("closet barrel", CharCode.degreeSign, persimmon);
+  static final TileType openBarrel =
+      _obstacle("open barrel", CharCode.bulletOperator, persimmon);
 
   static final TileType statue = _obstacle("statue", "P", ash, back: slate);
 
@@ -132,8 +138,10 @@ class Tiles {
     tableLegLeft: 20,
     tableLeg: 20,
     tableLegRight: 20,
-    barrel: 15,
-    chest: 40,
+    openChest: 40,
+    closedChest: 80,
+    openBarrel: 15,
+    closedBarrel: 40,
     candle: 1,
     chair: 10,
     spiderweb: 1
@@ -162,8 +170,10 @@ class Tiles {
     tableLegLeft: 60,
     tableLeg: 60,
     tableLegRight: 60,
-    barrel: 40,
-    chest: 80,
+    openChest: 70,
+    closedChest: 80,
+    openBarrel: 30,
+    closedBarrel: 40,
     candle: 60,
     chair: 40,
     spiderweb: 20

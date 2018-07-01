@@ -262,6 +262,7 @@ class Decor {
 
     // TODO: Other decorations on tables.
 
+    // TODO: Some fraction of the time, should place open barrels and chests.
     // Barrels.
     category(1.0, themes: "kitchen larder pantry storeroom");
     furnishing(Symmetry.rotate90, "%", """
