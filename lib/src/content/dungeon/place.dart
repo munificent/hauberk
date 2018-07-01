@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:piecemeal/piecemeal.dart';
 
 import 'dungeon.dart';
@@ -16,7 +14,7 @@ abstract class Place {
   // adjustment. So if an out of depth monster is spawned, it increases the
   // level of the place for subsequent floor drops.
 
-  PlaceGraph _graph;
+  Dungeon _dungeon;
 
   /// The themes this place contains and the strength of each.
   final Map<String, double> themes = {};
@@ -26,9 +24,9 @@ abstract class Place {
   Place(this.cells, this.monsterDensity, this.itemDensity,
       {this.hasHero = false});
 
-  void bind(PlaceGraph graph) {
-    assert(_graph == null, "Can only bind once.");
-    _graph = graph;
+  void bind(Dungeon dungeon) {
+    assert(_dungeon == null, "Can only bind once.");
+    _dungeon = dungeon;
   }
 
   void applyThemes();
@@ -38,7 +36,7 @@ abstract class Place {
     themes[theme] += strength;
     totalStrength += strength;
 
-    if (spread) _graph.spreadTheme(this, theme, strength);
+    if (spread) _dungeon.spreadTheme(this, theme, strength);
   }
 
   /// Randomly chooses one of the place's themes, weighted by their strength.
@@ -62,67 +60,3 @@ class AquaticPlace extends Place {
   }
 }
 
-/// Calculates and stores the connections between places.
-class PlaceGraph {
-  Array2D<Place> _cells;
-
-  Place placeAt(Vec pos) {
-    if (_cells == null) return null;
-    return _cells[pos];
-  }
-
-  void findConnections(Dungeon dungeon, List<Place> places) {
-    // TODO: Should dungeon directly store the place for each cell instead of
-    // calculating it here?
-    // Store the place that owns each tile.
-    _cells = new Array2D<Place>(dungeon.width, dungeon.height);
-    for (var place in places) {
-      for (var cell in place.cells) {
-        _cells[cell] = place;
-      }
-    }
-
-    // Find adjacent places.
-    for (var pos in dungeon.bounds.inflate(-1)) {
-      var from = _cells[pos];
-      if (from == null) continue;
-
-      for (var direction in Direction.cardinal) {
-        var to = _cells[pos + direction];
-        if (to != null && to != from) {
-          from.neighbors.add(to);
-          to.neighbors.add(from);
-        }
-      }
-    }
-
-    for (var place in places) {
-      place.bind(this);
-    }
-  }
-
-  void spreadTheme(Place start, String theme, double strength) {
-    var visited = {start: strength};
-    var queue = new Queue<Place>();
-    queue.add(start);
-
-    while (queue.isNotEmpty) {
-      var here = queue.removeFirst();
-      // TODO: Attenuate less based on place size or type? It might be nice if
-      // passages didn't attenuate as much as rooms.
-      var strength = visited[here] / 2.0;
-      if (strength < 0.3) continue;
-
-      for (var neighbor in here.neighbors) {
-        if (visited.containsKey(neighbor)) continue;
-
-        neighbor.themes.putIfAbsent(theme, () => 0.0);
-        neighbor.themes[theme] += strength;
-        neighbor.totalStrength += strength;
-
-        visited[neighbor] = strength;
-        queue.add(neighbor);
-      }
-    }
-  }
-}

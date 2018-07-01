@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -41,7 +42,7 @@ class Dungeon {
   final List<Biome> _biomes = [];
 
   final List<Place> _places = [];
-  final PlaceGraph _placeGraph = new PlaceGraph();
+  final Array2D<Place> _cells;
 
   /// The unique breeds that have already been place on the stage. Ensures we
   /// don't spawn the same unique more than once.
@@ -55,7 +56,8 @@ class Dungeon {
 
   int get height => stage.height;
 
-  Dungeon(this._lore, this.stage, this.depth);
+  Dungeon(this._lore, this.stage, this.depth)
+    : _cells = new Array2D(stage.width, stage.height);
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
     last = this;
@@ -77,7 +79,7 @@ class Dungeon {
 
     // Apply and spread themes from the biomes.
     _places.sort((a, b) => b.cells.length.compareTo(a.cells.length));
-    _placeGraph.findConnections(this, _places);
+    _findConnections(this, _places);
 
     for (var place in _places) {
       place.applyThemes();
@@ -133,11 +135,14 @@ class Dungeon {
     // pick a place here.
 
     placeHero(_tryFindSpawnPos(
-        startPlace.cells, MotilitySet.walk, SpawnLocation.open,
+        startPlace, MotilitySet.walk, SpawnLocation.open,
         avoidActors: true));
   }
 
-  Place placeAt(Vec pos) => _placeGraph.placeAt(pos);
+  Place placeAt(Vec pos) {
+    if (_cells == null) return null;
+    return _cells[pos];
+  }
 
   TileType getTile(int x, int y) => stage.get(x, y).type;
 
@@ -195,6 +200,55 @@ class Dungeon {
 
   void addPlace(Place place) {
     _places.add(place);
+    place.bind(this);
+  }
+
+  void _findConnections(Dungeon dungeon, List<Place> places) {
+    // Store the place that owns each tile.
+    for (var place in places) {
+      for (var cell in place.cells) {
+        _cells[cell] = place;
+      }
+    }
+
+    // Find adjacent places.
+    for (var pos in dungeon.bounds.inflate(-1)) {
+      var from = _cells[pos];
+      if (from == null) continue;
+
+      for (var direction in Direction.cardinal) {
+        var to = _cells[pos + direction];
+        if (to != null && to != from) {
+          from.neighbors.add(to);
+          to.neighbors.add(from);
+        }
+      }
+    }
+  }
+
+  void spreadTheme(Place start, String theme, double strength) {
+    var visited = {start: strength};
+    var queue = new Queue<Place>();
+    queue.add(start);
+
+    while (queue.isNotEmpty) {
+      var here = queue.removeFirst();
+      // TODO: Attenuate less based on place size or type? It might be nice if
+      // passages didn't attenuate as much as rooms.
+      var strength = visited[here] / 2.0;
+      if (strength < 0.3) continue;
+
+      for (var neighbor in here.neighbors) {
+        if (visited.containsKey(neighbor)) continue;
+
+        neighbor.themes.putIfAbsent(theme, () => 0.0);
+        neighbor.themes[theme] += strength;
+        neighbor.totalStrength += strength;
+
+        visited[neighbor] = strength;
+        queue.add(neighbor);
+      }
+    }
   }
 
   /// Grows a randomly shaped blob starting at [start].
@@ -308,7 +362,7 @@ class Dungeon {
 
       var floorDrop = FloorDrops.choose(theme, depth);
       var pos = _tryFindSpawnPos(
-          place.cells, MotilitySet.walk, floorDrop.location,
+          place, MotilitySet.walk, floorDrop.location,
           avoidActors: false);
       if (pos == null) break;
 
@@ -363,7 +417,7 @@ class Dungeon {
   }
 
   int _spawnMonster(Place place, Breed breed) {
-    var pos = _tryFindSpawnPos(place.cells, breed.motilities, breed.location,
+    var pos = _tryFindSpawnPos(place, breed.motilities, breed.location,
         avoidActors: true);
 
     // If there are no remaining open tiles, abort.
@@ -410,7 +464,7 @@ class Dungeon {
   }
 
   Vec _tryFindSpawnPos(
-      List<Vec> cells, MotilitySet motilities, SpawnLocation location,
+      Place place, MotilitySet motilities, SpawnLocation location,
       {bool avoidActors}) {
     int minWalls;
     int maxWalls;
@@ -438,8 +492,7 @@ class Dungeon {
     }
 
     Vec acceptable;
-
-    for (var pos in cells) {
+    for (var pos in place.cells) {
       if (!getTileAt(pos).canEnterAny(motilities)) continue;
 
       if (stage.actorAt(pos) != null) continue;
