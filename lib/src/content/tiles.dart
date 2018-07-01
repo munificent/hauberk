@@ -132,6 +132,8 @@ class Tiles {
     tableLegLeft: 20,
     tableLeg: 20,
     tableLegRight: 20,
+    barrel: 15,
+    chest: 40,
     candle: 1,
     chair: 10,
     spiderweb: 1
@@ -160,6 +162,8 @@ class Tiles {
     tableLegLeft: 60,
     tableLeg: 60,
     tableLegRight: 60,
+    barrel: 40,
+    chest: 80,
     candle: 60,
     chair: 40,
     spiderweb: 20
