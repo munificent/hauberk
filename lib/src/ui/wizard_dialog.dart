@@ -15,8 +15,9 @@ class WizardDialog extends Screen<Input> {
   bool get isTransparent => true;
 
   WizardDialog(this._game) {
-    _menuItems["Map dungeon"] = _mapDungeon;
-    _menuItems["Illuminate dungeon"] = _illuminateDungeon;
+    _menuItems["Map Dungeon"] = _mapDungeon;
+    _menuItems["Illuminate Dungeon"] = _illuminateDungeon;
+    _menuItems["Drop Item"] = _dropItem;
   }
 
   bool handleInput(Input input) {
@@ -43,9 +44,13 @@ class WizardDialog extends Screen<Input> {
     return true;
   }
 
+  void activate(Screen popped, result) {
+    ui.pop();
+  }
+
   void render(Terminal terminal) {
     // Draw a box for the contents.
-    Draw.frame(terminal, 0, 0, 43, _menuItems.length + 3);
+    Draw.frame(terminal, 0, 0, 25, _menuItems.length + 3);
     terminal.writeAt(1, 0, "Wizard Menu", UIHue.selection);
 
     var i = 0;
@@ -93,4 +98,95 @@ class WizardDialog extends Screen<Input> {
     stage.floorEmanationChanged();
     stage.refreshView();
   }
+
+  void _dropItem() {
+    ui.push(new WizardDropDialog(_game));
+  }
+}
+
+/// Cheat menu.
+class WizardDropDialog extends Screen<Input> {
+  final Game _game;
+  String _pattern = "";
+
+  WizardDropDialog(this._game);
+
+  bool get isTransparent => true;
+
+  bool handleInput(Input input) {
+    if (input == Input.ok) {
+      for (var itemType in _matchedItems) {
+        var item = new Item(itemType, itemType.maxStack);
+        _game.stage.addItem(item, _game.hero.pos);
+        _game.log.cheat("Dropped {1}.", item);
+      }
+
+      ui.pop();
+      return true;
+    } else if (input == Input.cancel) {
+      ui.pop();
+      return true;
+    }
+
+    return false;
+  }
+
+  bool keyDown(int keyCode, {bool shift, bool alt}) {
+    if (alt) return false;
+
+    switch (keyCode) {
+      case KeyCode.delete:
+        if (_pattern.isNotEmpty) {
+          _pattern = _pattern.substring(0, _pattern.length - 1);
+          dirty();
+        }
+        return true;
+
+      case KeyCode.space:
+        _pattern += " ";
+        dirty();
+        return true;
+
+      default:
+        if (keyCode == null) break;
+
+        if (keyCode >= KeyCode.a && keyCode <= KeyCode.z ||
+            keyCode >= KeyCode.zero && keyCode <= KeyCode.nine) {
+          _pattern += new String.fromCharCodes([keyCode]).toLowerCase();
+          dirty();
+          return true;
+        }
+        break;
+    }
+
+    return false;
+  }
+
+  void render(Terminal terminal) {
+    // Draw a box for the contents.
+    Draw.frame(terminal, 25, 0, 43, 39);
+    terminal.writeAt(26, 0, "Drop what?", UIHue.selection);
+
+    terminal.writeAt(26, 2, "Name:", UIHue.primary);
+    terminal.writeAt(32, 2, _pattern, UIHue.selection);
+    terminal.writeAt(
+        32 + _pattern.length, 2, " ", UIHue.selection, UIHue.selection);
+
+    var y = 4;
+    for (var item in _matchedItems) {
+      if (!item.name.toLowerCase().contains(_pattern.toLowerCase())) continue;
+
+      terminal.drawGlyph(26, y, item.appearance);
+      terminal.writeAt(28, y, item.name, UIHue.primary);
+
+      y++;
+      if (y >= 38) break;
+    }
+
+    terminal.writeAt(
+        0, terminal.height - 1, "[Return] Drop, [Esc] Exit", UIHue.helpText);
+  }
+
+  Iterable<ItemType> get _matchedItems => _game.content.items.where(
+      (item) => item.name.toLowerCase().contains(_pattern.toLowerCase()));
 }

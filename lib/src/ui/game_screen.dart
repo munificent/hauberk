@@ -668,6 +668,9 @@ class GameScreen extends Screen<Input> {
         case LogType.help:
           color = peaGreen;
           break;
+        case LogType.cheat:
+          color = seaGreen;
+          break;
       }
 
       if (y != messagesLength) {

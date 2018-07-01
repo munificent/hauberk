@@ -45,6 +45,7 @@ class GameContent implements Content {
   Iterable<Breed> get breeds => Monsters.breeds.all;
   List<HeroClass> get classes => Classes.all;
   Iterable<Element> get elements => Elements.all;
+  Iterable<ItemType> get items => Items.types.all;
   List<Race> get races => Races.all;
   Iterable<Skill> get skills => Skills.all;
   Iterable<Recipe> get recipes => Recipes.all;

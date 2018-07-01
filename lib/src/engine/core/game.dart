@@ -214,6 +214,8 @@ abstract class Content {
 
   Iterable<Element> get elements;
 
+  Iterable<ItemType> get items;
+
   List<Race> get races;
 
   Iterable<Skill> get skills;

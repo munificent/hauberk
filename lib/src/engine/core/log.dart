@@ -90,6 +90,10 @@ class Log {
     add(LogType.help, message, noun1, noun2, noun3);
   }
 
+  void cheat(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+    add(LogType.cheat, message, noun1, noun2, noun3);
+  }
+
   void add(LogType type, String message, [Noun noun1, Noun noun2, Noun noun3]) {
     message = _format(message, noun1, noun2, noun3);
 
@@ -296,6 +300,9 @@ class LogType {
 
   /// Help or tutorial messages.
   static const help = const LogType._("help");
+
+  /// Help or tutorial messages.
+  static const cheat = const LogType._("cheat");
 
   final String _name;
   const LogType._(this._name);
