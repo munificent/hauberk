@@ -35,13 +35,15 @@ class RoomBiome extends Biome {
   final RoomStyle _style = new RoomStyle();
   final JunctionSet _junctions = new JunctionSet();
 
+  /// The set of existing nature tiles that the rooms have connected to already.
+  final Set<Vec> _reachedNatureTiles = new Set();
+
   RoomBiome(this._dungeon);
 
   Iterable<String> generate() sync* {
     RoomTypes.initialize();
 
     yield "Add starting room";
-    // TODO: Sometimes start at a natural feature?
     _createStartingRoom();
 
     yield "Adding rooms";
@@ -50,27 +52,47 @@ class RoomBiome extends Biome {
     var roomNumber = 1;
     while (_junctions.isNotEmpty) {
       var junction = _junctions.takeNext();
-
-      var success = false;
-      if (RoomTypes.allowsPassage(junction.theme) &&
-          rng.percent(_style.passagePercent)) {
-        success = _tryPlacePassageRoom(junction);
-      } else {
-        // TODO: Only passages can connect to shore tiles, so dungeons with
-        // just rooms don't reach them. Should consider placing a door if a
-        // junction is next to shore.
-        success = _tryPlaceRoom(junction, new Set());
-        if (success) _placeDoor(junction.position);
-      }
-
-      if (success) {
+      if (_tryJunction(junction)) {
         yield "Room $roomNumber";
         roomNumber++;
-      } else if (++junction.tries < _style.junctionMaxTries) {
-        // Couldn't place it, so re-add to try the junction again.
-        _junctions.add(junction);
       }
     }
+  }
+
+  /// Attempts to place something at [junction]. Returns `true` if successful.
+  bool _tryJunction(Junction junction) {
+    // Try a passage.
+    if (RoomTypes.allowsPassage(junction.theme) &&
+        rng.percent(_style.passagePercent) &&
+        _tryPlacePassageRoom(junction)) {
+      return true;
+    }
+
+    // See if there is nature on the other side. Use "3" as the path length to
+    // avoid the early exit in [_isValidShortcut] for very short paths.
+    var from = junction.position - junction.direction;
+    var to = junction.position + junction.direction;
+    if (_dungeon.getTileAt(to) == Tiles.grass &&
+        _isValidShortcut(from, to, 3)) {
+      _placeDoor(junction.position);
+      _reachNature(to);
+      return true;
+    }
+
+    if (_dungeon.getTileAt(to) != Tiles.rock) return false;
+
+    // Try a room.
+    if (_tryPlaceRoom(junction, new Set())) {
+      _placeDoor(junction.position);
+      return true;
+    }
+
+    if (++junction.tries < _style.junctionMaxTries) {
+      // Couldn't place it, so re-add to try the junction again.
+      _junctions.add(junction);
+    }
+
+    return false;
   }
 
   /// Try to make a meandering passage starting at [junction] that ends in a
@@ -139,14 +161,16 @@ class RoomBiome extends Biome {
           return false;
         }
 
-        _reachNature([pos]);
+        _reachNature(pos);
         pos -= dir;
         placeRoom = false;
         passage.add(pos);
         break;
       }
 
-      // Don't allow it to brush against the edge of anything else.
+      // Don't allow it to brush against the edge of anything else. We check
+      // this after handling shortcuts and nature because in those cases, we
+      // do allow open diagonal tiles.
       var left = pos + dir.rotateLeft90;
       var right = pos + dir.rotateRight90;
 
@@ -276,7 +300,7 @@ class RoomBiome extends Biome {
 
       var tile = _dungeon.getTileAt(pos);
       // TODO: Is there a more generic way we can handle this?
-      return tile != Tiles.wall && tile != Tiles.rock;
+      return tile != Tiles.wall && tile != Tiles.rock && tile != Tiles.grass;
     }
 
     if (isBlocked(Direction.none)) return;
@@ -289,16 +313,15 @@ class RoomBiome extends Biome {
     _junctions.add(new Junction(theme, junctionDir, junctionPos));
   }
 
-  void _reachNature(List<Vec> tiles) {
-    var queue = new Queue.from(
-        tiles.where((pos) => _dungeon.getTileAt(pos).isTraversable));
-    var visited = new Set<Vec>();
+  void _reachNature(Vec start) {
+    if (_reachedNatureTiles.contains(start)) return;
 
-    // TODO: Simplify.
-    for (var pos in queue) {
-      visited.add(pos);
-    }
+    var queue = new Queue.from([start]);
+    _reachedNatureTiles.add(start);
 
+    // Breadth-first search over the reachable nature tiles.
+    // TODO: Can we use Place for this? See if the start tile is in a different
+    // place and, if so, iterate its cells?
     while (queue.isNotEmpty) {
       var pos = queue.removeFirst();
 
@@ -306,7 +329,7 @@ class RoomBiome extends Biome {
         var neighbor = pos + dir;
         if (!_dungeon.bounds.contains(neighbor)) continue;
 
-        if (visited.contains(neighbor)) continue;
+        if (_reachedNatureTiles.contains(neighbor)) continue;
 
         var tile = _dungeon.getTileAt(neighbor);
 
@@ -320,11 +343,8 @@ class RoomBiome extends Biome {
           continue;
         }
 
-        // Don't go into impassable natural areas like water.
-        if (!_dungeon.getTileAt(neighbor).isTraversable) continue;
-
         queue.add(neighbor);
-        visited.add(neighbor);
+        _reachedNatureTiles.add(neighbor);
       }
     }
   }

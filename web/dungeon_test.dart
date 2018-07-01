@@ -60,6 +60,8 @@ void hover(Vec pos) {
   var buffer = new StringBuffer();
   var dungeon = Dungeon.last;
   if (dungeon.bounds.contains(pos)) {
+    buffer.write("<h2>Hover $pos</h2>");
+
     var actor = dungeon.stage.actorAt(pos);
     if (actor != null) {
       buffer.writeln("<p>$actor</p>");
@@ -73,14 +75,19 @@ void hover(Vec pos) {
 
     var place = dungeon.placeAt(pos);
     if (place != null) {
-      buffer.writeln("<h3>${place.cells.first}</h3>");
+      var themes = place.themes.keys.toList();
+      themes.sort((a, b) => place.themes[b].compareTo(place.themes[a]));
+
+      buffer.writeln("<h3>${themes.first} ${place.cells.first}</h3>");
       buffer.writeln("<ul>");
+
       var total = place.totalStrength.toStringAsFixed(2);
-      place.themes.forEach((theme, strength) {
+      for (var theme in themes) {
+        var strength = place.themes[theme];
         var percent = 100 * strength ~/ place.totalStrength;
         buffer.writeln("<li>${percent.toString().padLeft(3)}% $theme "
             "(${strength.toStringAsFixed(2)}/$total)</li>");
-      });
+      }
       buffer.writeln("</ul>");
     }
   }
