@@ -24,7 +24,7 @@ class ResourceSet<T> {
     var resource = new _Resource(object, depth, frequency);
     _resources[name] = resource;
 
-    if (tagNames != null) {
+    if (tagNames != null && tagNames != "") {
       for (var tagName in tagNames.split(" ")) {
         var tag = _tags[tagName];
         if (tag == null) throw new ArgumentError('Unknown tag "$name".');

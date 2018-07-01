@@ -10,7 +10,6 @@ import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'blob.dart';
 import 'grotto.dart';
-import 'junction.dart';
 import 'lake.dart';
 import 'place.dart';
 import 'river.dart';
@@ -36,8 +35,6 @@ class Dungeon {
   final Lore _lore;
   final Stage stage;
   final int depth;
-
-  final JunctionSet junctions = new JunctionSet();
 
   final List<Biome> _biomes = [];
 

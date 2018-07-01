@@ -9,7 +9,7 @@ class Monsters {
   static final ResourceSet<Breed> breeds = new ResourceSet();
 
   static void initialize() {
-    Themes.defineTags("monster", breeds);
+    Themes.defineTags(breeds, "monster");
 
     // Here's approximately the level distributions for the different
     // broad categories on monsters. Monsters are very roughly lumped

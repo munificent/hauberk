@@ -59,4 +59,3 @@ class AquaticPlace extends Place {
     addTheme("aquatic", 2.0 + cells.length / 200.0);
   }
 }
-

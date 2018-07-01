@@ -7,7 +7,7 @@ final ResourceSet<FloorDrop> _floorDrops = new ResourceSet();
 /// Items that are spawned on the ground when a dungeon is first generated.
 class FloorDrops {
   static void initialize() {
-    Themes.defineTags("drop", _floorDrops);
+    Themes.defineTags(_floorDrops, "drop");
 
     // Add generic stuff at every depth.
     for (var i = 1; i <= Option.maxDepth; i++) {
