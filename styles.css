@@ -47,8 +47,8 @@ p {
 
 code {
   font: 16px/16px monospace;
-  color: hsl(30, 20%, 40%);
-  background: hsl(35, 10%, 66%);
+  color: hsl(30, 20%, 30%);
+  background: hsl(30, 20%, 66%);
   padding: 0 4px;
   border-radius: 2px;
   border-bottom: solid 1px hsl(35, 10%, 50%);
