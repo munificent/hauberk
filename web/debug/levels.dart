@@ -6,7 +6,7 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
 import 'package:hauberk/src/engine.dart';
 
-import '../histogram.dart';
+import 'histogram.dart';
 
 final allBreeds =
     new List<Histogram<String>>.generate(101, (_) => new Histogram());

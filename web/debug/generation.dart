@@ -3,7 +3,7 @@ import 'dart:html' as html;
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
 
-import '../histogram.dart';
+import 'histogram.dart';
 
 Histogram<String> monsters = new Histogram();
 Histogram<String> items = new Histogram();

@@ -101,7 +101,7 @@ Future generate() async {
   _game = new Game(content, save, depth);
   var stage = _game.stage;
 
-  terminal = new RetroTerminal(stage.width, stage.height, "font_8.png",
+  terminal = new RetroTerminal(stage.width, stage.height, "../font_8.png",
       canvas: canvas, charWidth: 8, charHeight: 8);
 
   stateCanvas.width = stage.width * 8;
