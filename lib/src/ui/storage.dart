@@ -26,89 +26,95 @@ class Storage {
 
     // TODO: Check version.
 
-    for (final hero in data['heroes']) {
-      var name = hero['name'];
-      var race = _loadRace(hero['race']);
+    for (var hero in data['heroes']) {
+      try {
+        var name = hero['name'];
+        var race = _loadRace(hero['race']);
 
-      HeroClass heroClass;
-      if (hero['class'] == null) {
-        // TODO: Temp for characters before classes.
-        heroClass = content.classes[0];
-      } else {
-        var name = hero['class'] as String;
-        heroClass = content.classes.firstWhere((c) => c.name == name);
-      }
-
-      var items = <Item>[];
-      for (var itemData in hero['inventory']) {
-        var item = _loadItem(itemData);
-        if (item != null) items.add(item);
-      }
-      var inventory = new Inventory(Option.inventoryCapacity, items);
-
-      var equipment = new Equipment();
-      for (var itemData in hero['equipment']) {
-        var item = _loadItem(itemData);
-        // TODO: If there are multiple slots of the same type, this may
-        // shuffle items around.
-        if (item != null) equipment.equip(item);
-      }
-
-      items = [];
-      for (var itemData in hero['home']) {
-        var item = _loadItem(itemData);
-        if (item != null) items.add(item);
-      }
-      var home = new Inventory(Option.homeCapacity, items);
-
-      items = [];
-      for (var itemData in hero['crucible']) {
-        var item = _loadItem(itemData);
-        if (item != null) items.add(item);
-      }
-      var crucible = new Inventory(Option.crucibleCapacity, items);
-
-      // Clean up legacy heroes before item stacks.
-      // TODO: Remove this once we don't need to worry about it anymore.
-      inventory.countChanged();
-      home.countChanged();
-      crucible.countChanged();
-
-      // Defaults are to support legacy saves.
-
-      var experience = hero['experience'];
-      var skillPoints = hero['skillPoints'] ?? 0;
-
-      var skillMap = <Skill, int>{};
-      var skills = hero['skills'];
-      if (skills != null) {
-        for (var name in skills.keys) {
-          skillMap[content.findSkill(name)] = skills[name];
+        HeroClass heroClass;
+        if (hero['class'] == null) {
+          // TODO: Temp for characters before classes.
+          heroClass = content.classes[0];
+        } else {
+          var name = hero['class'] as String;
+          heroClass = content.classes.firstWhere((c) => c.name == name);
         }
+
+        var items = <Item>[];
+        for (var itemData in hero['inventory']) {
+          var item = _loadItem(itemData);
+          if (item != null) items.add(item);
+        }
+        var inventory = new Inventory(Option.inventoryCapacity, items);
+
+        var equipment = new Equipment();
+        for (var itemData in hero['equipment']) {
+          var item = _loadItem(itemData);
+          // TODO: If there are multiple slots of the same type, this may
+          // shuffle items around.
+          if (item != null) equipment.equip(item);
+        }
+
+        items = [];
+        for (var itemData in hero['home']) {
+          var item = _loadItem(itemData);
+          if (item != null) items.add(item);
+        }
+        var home = new Inventory(Option.homeCapacity, items);
+
+        items = [];
+        for (var itemData in hero['crucible']) {
+          var item = _loadItem(itemData);
+          if (item != null) items.add(item);
+        }
+        var crucible = new Inventory(Option.crucibleCapacity, items);
+
+        // Clean up legacy heroes before item stacks.
+        // TODO: Remove this once we don't need to worry about it anymore.
+        inventory.countChanged();
+        home.countChanged();
+        crucible.countChanged();
+
+        // Defaults are to support legacy saves.
+
+        var experience = hero['experience'];
+        var skillPoints = hero['skillPoints'] ?? 0;
+
+        var skillMap = <Skill, int>{};
+        var skills = hero['skills'];
+        if (skills != null) {
+          for (var name in skills.keys) {
+            skillMap[content.findSkill(name)] = skills[name];
+          }
+        }
+
+        var skillSet = new SkillSet(skillMap);
+
+        var lore = _loadLore(hero['lore']);
+
+        var gold = hero['gold'];
+        var maxDepth = hero['maxDepth'] ?? 0;
+
+        var heroSave = new HeroSave.load(
+            name,
+            race,
+            heroClass,
+            inventory,
+            equipment,
+            home,
+            crucible,
+            experience,
+            skillPoints,
+            skillSet,
+            lore,
+            gold,
+            maxDepth);
+        heroes.add(heroSave);
+      } catch (error) {
+        print("Could not load hero. Data:");
+        print(hero);
+        print("Error:\n$error");
       }
-
-      var skillSet = new SkillSet(skillMap);
-
-      var lore = _loadLore(hero['lore']);
-
-      var gold = hero['gold'];
-      var maxDepth = hero['maxDepth'] ?? 0;
-
-      var heroSave = new HeroSave.load(
-          name,
-          race,
-          heroClass,
-          inventory,
-          equipment,
-          home,
-          crucible,
-          experience,
-          skillPoints,
-          skillSet,
-          lore,
-          gold,
-          maxDepth);
-      heroes.add(heroSave);
     }
   }
 
