@@ -3,6 +3,8 @@ sdk: '^2.0.0'
 dependencies:
   browser: any
   malison: '^0.9.0'
+  markdown: any
+  path: any
   piecemeal: '^0.3.6'
 dev_dependencies:
   build_runner: any
