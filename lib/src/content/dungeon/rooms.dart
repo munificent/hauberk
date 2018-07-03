@@ -7,11 +7,120 @@ import '../themes.dart';
 import '../tiles.dart';
 import 'dungeon.dart';
 import 'junction.dart';
-import 'room_place.dart';
+import 'place.dart';
+
+class RoomPlace extends Place {
+  final RoomType _type;
+
+  RoomPlace(this._type, List<Vec> cells, {bool hasHero = false})
+      : super(cells, 0.05, 0.05, hasHero: hasHero);
+
+  /// Picks a theme based on the shape and size of the room.
+  void applyThemes() {
+    addTheme(_type.theme, 2.0, spread: _type.spread);
+    // TODO: Make theme affect monster and item density.
+  }
+}
+
+class PassagePlace extends Place {
+  PassagePlace(List<Vec> cells) : super(cells, 0.04, 0.02);
+
+  void applyThemes() {
+    addTheme("passage", 5.0, spread: false);
+  }
+}
+
+// TODO: Delete. Figure out what to do with stair room and wall torch code.
+//class PlainRoom extends RoomStyle {
+//  void decorate(RoomPlace place, Dungeon dungeon) {
+//    _tryPlaceDoorTorches(place, dungeon);
+//  }
+//
+//  /// Try to place some torches around doors.
+//  void _tryPlaceDoorTorches(RoomPlace place, Dungeon dungeon) {
+//    // TODO: Make these more strategic.
+//    canPlaceTorchAt(int x, int y) {
+//      if (dungeon.getTile(x, y) != Tiles.wall) return false;
+//
+//      return true;
+//    }
+//
+//    for (var junction in place._room.junctions) {
+//      var pos = junction.position + place._pos;
+//
+//      if (dungeon.getTileAt(pos) != Tiles.closedDoor) continue;
+//      if (!rng.oneIn(5)) continue;
+//
+//      if (canPlaceTorchAt(pos.x - 1, pos.y) &&
+//          canPlaceTorchAt(pos.x + 1, pos.y)) {
+//        dungeon.setTile(pos.x - 1, pos.y, Tiles.wallTorch);
+//        dungeon.setTile(pos.x + 1, pos.y, Tiles.wallTorch);
+//      } else if (canPlaceTorchAt(pos.x, pos.y - 1) &&
+//          canPlaceTorchAt(pos.x, pos.y + 1)) {
+//        dungeon.setTile(pos.x, pos.y - 1, Tiles.wallTorch);
+//        dungeon.setTile(pos.x, pos.y + 1, Tiles.wallTorch);
+//      }
+//    }
+//  }
+//}
+//
+//class SmallStairRoom extends RoomStyle {
+//  void decorate(RoomPlace place, Dungeon dungeon) {
+//    var bounds =
+//        place._room.tiles.bounds.inflate(-1).offset(place._pos.x, place._pos.y);
+//
+//    // Place the stairs in the middle.
+//    var stairs = rng.vecInRect(bounds.inflate(-1));
+//    dungeon.setTileAt(stairs, Tiles.stairs);
+//
+//    if (rng.oneIn(3)) _addTorches(bounds, place, dungeon);
+//  }
+//
+//  void _addTorches(Rect bounds, RoomPlace place, Dungeon dungeon) {
+//    // Find out which corners permit torches.
+//    var left = bounds.left;
+//    var right = bounds.right - 1;
+//    var top = bounds.top;
+//    var bottom = bounds.bottom - 1;
+//
+//    var canTopLeft = dungeon.getTile(left - 1, top) == Tiles.wall &&
+//        dungeon.getTile(left, top - 1) == Tiles.wall;
+//
+//    var canTopRight = dungeon.getTile(right + 1, top) == Tiles.wall &&
+//        dungeon.getTile(right, top - 1) == Tiles.wall;
+//
+//    var canBottomLeft = dungeon.getTile(left - 1, bottom) == Tiles.wall &&
+//        dungeon.getTile(left, bottom + 1) == Tiles.wall;
+//
+//    var canBottomRight = dungeon.getTile(right + 1, bottom) == Tiles.wall &&
+//        dungeon.getTile(right, bottom + 1) == Tiles.wall;
+//
+//    // Place torches in the corners when we can do adjacent pairs.
+//    if (canTopLeft && canTopRight) {
+//      dungeon.setTile(left, top, Tiles.wallTorch);
+//      dungeon.setTile(right, top, Tiles.wallTorch);
+//    }
+//
+//    if (canBottomLeft && canBottomRight) {
+//      dungeon.setTile(left, bottom, Tiles.wallTorch);
+//      dungeon.setTile(right, bottom, Tiles.wallTorch);
+//    }
+//
+//    if (canTopLeft && canBottomLeft) {
+//      dungeon.setTile(left, top, Tiles.wallTorch);
+//      dungeon.setTile(left, bottom, Tiles.wallTorch);
+//    }
+//
+//    if (canTopRight && canBottomRight) {
+//      dungeon.setTile(right, top, Tiles.wallTorch);
+//      dungeon.setTile(right, bottom, Tiles.wallTorch);
+//    }
+//  }
+//}
 
 // TODO: Define different ones of this to have different styles.
 class RoomStyle {
-  final int passagePercent = 60;
+  final int passagePercent = 90;
   final int passageTurnPercent = 30;
   final int passageBranchPercent = 40;
   final int passageStopPercent = 10;
@@ -30,15 +139,18 @@ class RoomStyle {
   final int junctionMaxTries = 50;
 }
 
-class RoomBiome extends Biome {
+/// A biome that generates a graph of connected rooms and passages.
+///
+/// This is the main biome that generates the majority of dungeon content.
+class RoomsBiome extends Biome {
   final Dungeon _dungeon;
   final RoomStyle _style = new RoomStyle();
   final JunctionSet _junctions = new JunctionSet();
 
-  /// The set of existing nature tiles that the rooms have connected to already.
-  final Set<Vec> _reachedNatureTiles = new Set();
+  /// The tiles in other biomes that the rooms have connected to already.
+  final Set<Vec> _reached = new Set();
 
-  RoomBiome(this._dungeon);
+  RoomsBiome(this._dungeon);
 
   Iterable<String> generate() sync* {
     RoomTypes.initialize();
@@ -68,14 +180,12 @@ class RoomBiome extends Biome {
       return true;
     }
 
-    // See if there is nature on the other side. Use "3" as the path length to
-    // avoid the early exit in [_isValidShortcut] for very short paths.
+    // See if there is another biome on the other side.
     var from = junction.position - junction.direction;
     var to = junction.position + junction.direction;
-    if (_dungeon.getTileAt(to) == Tiles.grass &&
-        _isValidShortcut(from, to, 3)) {
+    if (_isOtherBiome(to) && _isShortcut(from, to, 1)) {
       _placeDoor(junction.position);
-      _reachNature(to);
+      _reachOtherBiome(to);
       return true;
     }
 
@@ -108,7 +218,6 @@ class RoomBiome extends Biome {
     var distanceThisDir = 0;
     var passage = [pos].toSet();
     var newJunctions = <Junction>[];
-    var placeRoom = true;
 
     maybeBranch(Direction dir) {
       if (rng.percent(_style.passageBranchPercent)) {
@@ -137,6 +246,7 @@ class RoomBiome extends Biome {
 
       // Don't let it loop back on itself.
       if (passage.contains(pos)) return false;
+      passage.add(pos);
 
       // TODO: Only allow a shortcut to a valid child room?
       // If the passage connects up to an existing junction, consider adding a
@@ -144,28 +254,34 @@ class RoomBiome extends Biome {
       var reachedJunction = _junctions.at(pos);
       if (reachedJunction != null &&
           reachedJunction.direction == dir.rotate180) {
-        if (!_isValidShortcut(junction.position, pos + dir, passage.length)) {
+        // TODO: Could allow shorter passages if we don't place a door. The
+        // length check is mainly to avoid doors next to each other.
+        if (passage.length <= 2 ||
+            !_isShortcut(junction.position, pos + dir, passage.length)) {
           return false;
         }
 
         _junctions.removeAt(pos);
-        placeRoom = false;
-        passage.add(pos);
-        break;
+        _placePassage(pos, junction, passage, newJunctions);
+        return true;
       }
 
-      // If the passage connects to a natural area, stop there and then
-      // traverse through it.
-      if (_dungeon.getTileAt(pos) == Tiles.grass) {
-        if (!_isValidShortcut(junction.position, pos + dir, passage.length)) {
+      // If the passage connects to another biome, stop there and then traverse
+      // through it.
+      if (_isOtherBiome(pos)) {
+        if (passage.length <= 3 ||
+            !_isShortcut(junction.position, pos + dir, passage.length)) {
           return false;
         }
 
-        _reachNature(pos);
+        _reachOtherBiome(pos);
+
+        // Don't include the step into the other biome itself.
+        passage.remove(pos);
         pos -= dir;
-        placeRoom = false;
-        passage.add(pos);
-        break;
+
+        _placePassage(pos, junction, passage, newJunctions);
+        return true;
       }
 
       // Don't allow it to brush against the edge of anything else. We check
@@ -181,11 +297,8 @@ class RoomBiome extends Biome {
       if (_dungeon.getTileAt(right).isTraversable) return false;
       if (passage.contains(right)) return false;
 
-      passage.add(pos);
       distanceThisDir++;
     }
-
-    var cells = passage.toList();
 
     // The last passage position will always become the door.
     passage.remove(passage.last);
@@ -193,11 +306,15 @@ class RoomBiome extends Biome {
     // If we didn't connect to an existing junction, add a new room at the end
     // of the passage. We require this to pass so that we avoid dead end
     // passages.
-    if (placeRoom) {
-      var endJunction = new Junction("passage", dir, pos);
-      if (!_tryPlaceRoom(endJunction, passage)) return false;
-    }
+    var endJunction = new Junction("passage", dir, pos);
+    if (!_tryPlaceRoom(endJunction, passage)) return false;
 
+    _placePassage(pos, junction, passage, newJunctions);
+    return true;
+  }
+
+  void _placePassage(Vec pos, Junction junction, Set<Vec> passage,
+      List<Junction> newJunctions) {
     for (var junction in newJunctions) {
       _junctions.add(junction);
     }
@@ -216,18 +333,14 @@ class RoomBiome extends Biome {
     _placeDoor(junction.position);
     _placeDoor(pos);
 
-    _dungeon.addPlace(new PassagePlace(cells));
-    return true;
+    _dungeon.addPlace(new PassagePlace(passage.toList()));
   }
 
   /// Returns `true` if a passage with [length] from [from] to [to] is
   /// significantly shorter than the current shortest path between those points.
   ///
   /// Used to avoid placing pointless redundant paths in the dungeon.
-  bool _isValidShortcut(Vec from, Vec to, int length) {
-    // Avoid a short passage that's just two doors next to each other.
-    if (length < 2) return false;
-
+  bool _isShortcut(Vec from, Vec to, int length) {
     var pathfinder = new CyclePathfinder(
         _dungeon.stage, from, to, length * _style.passageShortcutScale);
 
@@ -313,11 +426,16 @@ class RoomBiome extends Biome {
     _junctions.add(new Junction(theme, junctionDir, junctionPos));
   }
 
-  void _reachNature(Vec start) {
-    if (_reachedNatureTiles.contains(start)) return;
+  bool _isOtherBiome(Vec pos) {
+    var place = _dungeon.placeAt(pos);
+    return place != null && place is! RoomPlace && place is! PassagePlace;
+  }
+
+  void _reachOtherBiome(Vec start) {
+    if (_reached.contains(start)) return;
 
     var queue = new Queue.from([start]);
-    _reachedNatureTiles.add(start);
+    _reached.add(start);
 
     // Breadth-first search over the reachable nature tiles.
     // TODO: Can we use Place for this? See if the start tile is in a different
@@ -329,7 +447,7 @@ class RoomBiome extends Biome {
         var neighbor = pos + dir;
         if (!_dungeon.bounds.contains(neighbor)) continue;
 
-        if (_reachedNatureTiles.contains(neighbor)) continue;
+        if (_reached.contains(neighbor)) continue;
 
         var tile = _dungeon.getTileAt(neighbor);
 
@@ -344,7 +462,7 @@ class RoomBiome extends Biome {
         }
 
         queue.add(neighbor);
-        _reachedNatureTiles.add(neighbor);
+        _reached.add(neighbor);
       }
     }
   }
@@ -387,7 +505,7 @@ class Room {
     return true;
   }
 
-  void place(RoomBiome biome, int x, int y, [Vec junction]) {
+  void place(RoomsBiome biome, int x, int y, [Vec junction]) {
     var cells = <Vec>[];
 
     if (junction != null) cells.add(junction);

@@ -78,7 +78,11 @@ void hover(Vec pos) {
       var themes = place.themes.keys.toList();
       themes.sort((a, b) => place.themes[b].compareTo(place.themes[a]));
 
-      buffer.writeln("<h3>${themes.first} ${place.cells.first}</h3>");
+      if (themes.isNotEmpty) {
+        buffer.writeln("<h3>${themes.first} ${place.cells.first}</h3>");
+      } else {
+        buffer.writeln("<h3>(no theme) ${place.cells.first}</h3>");
+      }
       buffer.writeln("<ul>");
 
       var total = place.totalStrength.toStringAsFixed(2);

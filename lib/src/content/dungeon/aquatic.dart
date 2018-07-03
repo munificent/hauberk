@@ -1,17 +1,111 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../tiles.dart';
 import 'dungeon.dart';
 import 'place.dart';
+import 'dart:math' as math;
 
-class RiverBiome extends Biome {
+abstract class AquaticBiome extends Biome {
   final Dungeon _dungeon;
+
+  AquaticBiome(this._dungeon);
+
+  void _makePlace(int grottoes, List<Vec> cells) {
+    for (var i = 0; i < grottoes; i++) {
+      for (var i = 0; i < 200; i++) {
+        var pos = rng.item(cells);
+        // TODO: Handle different shore types.
+        if (_dungeon.getTileAt(pos) == Tiles.grass &&
+            _dungeon.hasCardinalNeighbor(pos, [Tiles.wall, Tiles.rock])) {
+          // TODO: Different sizes and smoothness.
+          _erode([pos], 30, 3, Tiles.grass, cells);
+          break;
+        }
+      }
+    }
+
+    _dungeon.addPlace(new AquaticPlace(cells));
+  }
+
+  /// Grows a randomly shaped blob starting at [start].
+  ///
+  /// Tries to add approximately [size] tiles of type [tile] that are directly
+  /// attached to the starting tile. Only grows through tiles of [allowed]
+  /// types. The larger [smoothing] is, the less jagged and spidery the blobs
+  /// will be.
+  void _erode(List<Vec> starts, int size, int smoothing, TileType tile,
+      [List<Vec> cells]) {
+    var edges = new Set<Vec>();
+
+    addNeighbors(Vec pos) {
+      for (var dir in Direction.cardinal) {
+        var neighbor = pos + dir;
+        if (!_dungeon.safeBounds.contains(neighbor)) continue;
+
+        // TODO: Allow passing in the tile types that can be grown into.
+        var type = _dungeon.getTileAt(neighbor);
+        if (type != Tiles.wall && type != Tiles.rock) continue;
+        edges.add(neighbor);
+      }
+    }
+
+    scorePos(Vec pos) {
+      var score = 0;
+
+      // Count straight neighbors higher to discourage diagonal growth.
+      for (var dir in Direction.cardinal) {
+        var neighbor = pos + dir;
+        if (_dungeon.getTileAt(neighbor) == tile) score += 2;
+      }
+
+      for (var dir in Direction.intercardinal) {
+        var neighbor = pos + dir;
+        if (_dungeon.getTileAt(neighbor) == tile) score++;
+      }
+
+      return score;
+    }
+
+    starts.forEach(addNeighbors);
+
+    var count = rng.triangleInt(size, size ~/ 2);
+    while (edges.isNotEmpty && count > 0) {
+      var edgeList = edges.toList();
+      var best = <Vec>[];
+      var bestScore = -1;
+
+      // Pick a number of potential tiles to grow into and choose the least
+      // jagged option -- the one with the most neighbors that are already
+      // grown.
+      for (var i = 0; i < smoothing; i++) {
+        var pos = rng.item(edgeList);
+        var score = scorePos(pos);
+
+        if (score > bestScore) {
+          best = [pos];
+          bestScore = score;
+        } else if (score == bestScore) {
+          best.add(pos);
+        }
+      }
+
+      var pos = rng.item(best);
+      _dungeon.setTileAt(pos, tile);
+      addNeighbors(pos);
+      edges.remove(pos);
+
+      if (cells != null) cells.add(pos);
+
+      count--;
+    }
+  }
+}
+
+class RiverBiome extends AquaticBiome {
   final Set<Vec> _cells = new Set();
 
-  RiverBiome(this._dungeon);
+  RiverBiome(Dungeon dungeon) : super(dungeon);
 
   Iterable<String> generate() sync* {
     // TODO: Rivers that flow into/from lakes?
@@ -32,7 +126,7 @@ class RiverBiome extends Biome {
     yield "Placing bridges";
     _placeBridges();
 
-    _dungeon.addPlace(new AquaticPlace(_cells.toList()));
+    _makePlace(rng.taper(2, 4), _cells.toList());
   }
 
   /// Makes a random end- or midpoint for the river. If [side] is a cardinal
@@ -120,12 +214,12 @@ class RiverBiome extends Biome {
     // correct cross the river instead of just connecting the same side to
     // itself.
     var shortStart =
-        _cells.firstWhere((pos) => _dungeon.getTileAt(pos) == Tiles.grass);
+    _cells.firstWhere((pos) => _dungeon.getTileAt(pos) == Tiles.grass);
     var flow = new MotilityFlow(_dungeon.stage, shortStart, MotilitySet.walk);
     var shore1 = flow.reachable.toSet();
     var shore2 = _cells
         .where((pos) =>
-            _dungeon.getTileAt(pos) == Tiles.grass && !shore1.contains(pos))
+    _dungeon.getTileAt(pos) == Tiles.grass && !shore1.contains(pos))
         .toSet();
 
     // TODO: Could do this lazily if it's a perf problem.
@@ -185,7 +279,7 @@ class RiverBiome extends Biome {
         // Don't overlap an existing bridge.
         if (placed.contains(bridge) ||
             placed.any((previous) =>
-                Rect.intersect(previous.inflate(1), bridge).isNotEmpty)) {
+            Rect.intersect(previous.inflate(1), bridge).isNotEmpty)) {
           continue;
         }
 
@@ -213,4 +307,63 @@ class _RiverPoint {
       : radius = radius ?? rng.float(1.0, 3.0);
 
   String toString() => "$x,$y ($radius)";
+}
+
+class LakeBiome extends AquaticBiome {
+  final Array2D<bool> _blob;
+
+  LakeBiome(Dungeon dungeon, this._blob) : super(dungeon);
+
+  Iterable<String> generate() sync* {
+    // TODO: Lakes sometimes have unreachable islands in the middle. Should
+    // either fill those in, add bridges, give players a way to traverse water,
+    // or at least ensure nothing is spawned on them.
+
+    // Try to find a place to drop the lake.
+    for (var i = 0; i < 100; i++) {
+      var x = rng.range(0, _dungeon.width - _blob.width);
+      var y = rng.range(0, _dungeon.height - _blob.height);
+
+      // See if the lake overlaps anything.
+      var canPlace = true;
+      for (var pos in _blob.bounds) {
+        if (_blob[pos]) {
+          if (!_dungeon.isRockAt(pos.offset(x, y))) {
+            canPlace = false;
+            break;
+          }
+        }
+      }
+
+      if (!canPlace) continue;
+
+      // We found a spot, carve the water.
+      var cells = <Vec>[];
+      for (var pos in _blob.bounds) {
+        if (_blob[pos]) {
+          var absolute = pos.offset(x, y);
+          _dungeon.setTileAt(absolute, Tiles.water);
+          cells.add(absolute);
+        }
+      }
+
+      // Grow a shoreline.
+      var edges = <Vec>[];
+      var shoreBounds =
+          Rect.intersect(_blob.bounds.offset(x, y), _dungeon.safeBounds);
+      for (var pos in shoreBounds) {
+        if (_dungeon.isRockAt(pos) && _dungeon.hasNeighbor(pos, Tiles.water)) {
+          _dungeon.setTileAt(pos, Tiles.grass);
+          edges.add(pos);
+
+          cells.add(pos);
+        }
+      }
+
+      // Carve out the entire shoreline.
+      _erode(edges, edges.length, 4, Tiles.grass, cells);
+      _makePlace(rng.countFromFloat(edges.length / 80.0), cells);
+      return;
+    }
+  }
 }

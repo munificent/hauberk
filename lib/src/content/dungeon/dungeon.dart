@@ -8,12 +8,10 @@ import '../decor/decor.dart';
 import '../item/floor_drops.dart';
 import '../monster/monsters.dart';
 import '../tiles.dart';
+import 'aquatic.dart';
 import 'blob.dart';
-import 'grotto.dart';
-import 'lake.dart';
 import 'place.dart';
-import 'river.dart';
-import 'room.dart';
+import 'rooms.dart';
 
 // TODO: Eliminate biome as a class and just have dungeon call it directly?
 abstract class Biome {
@@ -198,18 +196,16 @@ class Dungeon {
   void addPlace(Place place) {
     _places.add(place);
     place.bind(this);
+
+    for (var cell in place.cells) {
+      assert(_cells[cell] == null, "Places should not overlap.");
+      _cells[cell] = place;
+    }
   }
 
   void _findConnections(Dungeon dungeon, List<Place> places) {
-    // Store the place that owns each tile.
-    for (var place in places) {
-      for (var cell in place.cells) {
-        _cells[cell] = place;
-      }
-    }
-
     // Find adjacent places.
-    for (var pos in dungeon.bounds.inflate(-1)) {
+    for (var pos in dungeon.safeBounds) {
       var from = _cells[pos];
       if (from == null) continue;
 
@@ -245,79 +241,6 @@ class Dungeon {
         visited[neighbor] = strength;
         queue.add(neighbor);
       }
-    }
-  }
-
-  /// Grows a randomly shaped blob starting at [start].
-  ///
-  /// Tries to add approximately [size] tiles of type [tile] that are directly
-  /// attached to the starting tile. Only grows through tiles of [allowed]
-  /// types. The larger [smoothing] is, the less jagged and spidery the blobs
-  /// will be.
-  void growSeed(List<Vec> starts, int size, int smoothing, TileType tile,
-      [List<Vec> cells]) {
-    var edges = new Set<Vec>();
-
-    addNeighbors(Vec pos) {
-      for (var dir in Direction.cardinal) {
-        var neighbor = pos + dir;
-        if (!safeBounds.contains(neighbor)) continue;
-
-        // TODO: Allow passing in the tile types that can be grown into.
-        var type = getTileAt(neighbor);
-        if (type != Tiles.wall && type != Tiles.rock) continue;
-        edges.add(neighbor);
-      }
-    }
-
-    scorePos(Vec pos) {
-      var score = 0;
-
-      // Count straight neighbors higher to discourage diagonal growth.
-      for (var dir in Direction.cardinal) {
-        var neighbor = pos + dir;
-        if (getTileAt(neighbor) == tile) score += 2;
-      }
-
-      for (var dir in Direction.intercardinal) {
-        var neighbor = pos + dir;
-        if (getTileAt(neighbor) == tile) score++;
-      }
-
-      return score;
-    }
-
-    starts.forEach(addNeighbors);
-
-    var count = rng.triangleInt(size, size ~/ 2);
-    while (edges.isNotEmpty && count > 0) {
-      var edgeList = edges.toList();
-      var best = <Vec>[];
-      var bestScore = -1;
-
-      // Pick a number of potential tiles to grow into and choose the least
-      // jagged option -- the one with the most neighbors that are already
-      // grown.
-      for (var i = 0; i < smoothing; i++) {
-        var pos = rng.item(edgeList);
-        var score = scorePos(pos);
-
-        if (score > bestScore) {
-          best = [pos];
-          bestScore = score;
-        } else if (score == bestScore) {
-          best.add(pos);
-        }
-      }
-
-      var pos = rng.item(best);
-      setTileAt(pos, tile);
-      addNeighbors(pos);
-      edges.remove(pos);
-
-      if (cells != null) cells.add(pos);
-
-      count--;
     }
   }
 
@@ -384,33 +307,7 @@ class Dungeon {
     // From the average, roll an actual number using a normal distribution
     // centered on the base number. The distribution gets wider as the base
     // gets larger.
-    var floatCount = base + _normal() * (base / 2);
-
-    // The actual number is floating point. For small places, it will likely be
-    // less than 1. Handle that floating point reside by treat it as the chance,
-    // out of 1.0, of having one additional monster. For example, 4.2 means
-    // there will be 4 monsters, with a 20% chance of 5.
-    var count = floatCount.floor();
-    if (rng.float(1.0) < floatCount - count) count++;
-    return count;
-  }
-
-  /// Calculate a random number with a normal distribution.
-  ///
-  /// Note that this means results may be less than -1.0 or greater than 1.0.
-  ///
-  /// Uses https://en.wikipedia.org/wiki/Marsaglia_polar_method.
-  double _normal() {
-    // TODO: Move into piecemeal.
-    double u, v, lengthSquared;
-
-    do {
-      u = rng.float(-1.0, 1.0);
-      v = rng.float(-1.0, 1.0);
-      lengthSquared = u * u + v * v;
-    } while (lengthSquared >= 1.0);
-
-    return u * math.sqrt(-2.0 * math.log(lengthSquared) / lengthSquared);
+    return rng.countFromFloat(base + rng.normal() * (base / 2));
   }
 
   int _spawnMonster(Place place, Breed breed) {
@@ -534,22 +431,7 @@ class Dungeon {
     if (_tryLake32(hasWater)) hasWater = true;
     if (_tryLakes16(hasWater)) hasWater = true;
 
-    // TODO: Grottoes don't add cells to the appropriate place.
-    // TODO: Add grottoes other places than just on shores.
-    // Add some old grottoes that eroded before the dungeon was built.
-    if (hasWater) _biomes.add(new GrottoBiome(this, rng.taper(2, 3)));
-
-    _biomes.add(new RoomBiome(this));
-
-    // Add a few grottoes that have collapsed after rooms. Unlike the above,
-    // these may erode into rooms.
-    // TODO: It looks weird that these don't place grass on the room floor
-    // itself. Probably want to apply grass after everything is carved based on
-    // humidity or something.
-    // TODO: Should these be flood-filled for reachability?
-    if (hasWater && rng.oneIn(3)) {
-      _biomes.add(new GrottoBiome(this, rng.taper(1, 3)));
-    }
+    _biomes.add(new RoomsBiome(this));
   }
 
   bool _tryRiver() {
