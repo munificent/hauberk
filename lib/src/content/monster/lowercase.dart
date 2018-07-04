@@ -241,7 +241,7 @@ void insects() {
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
 
-  breed("firefly", 8, carrot, 20, speed: 2, meander: 70)
+  breed("firefly", 8, carrot, 10, speed: 1, meander: 70)
     ..placeIn("aquatic")
     ..count(3, 8)
     ..attack("bite[s]", 12, Elements.fire);

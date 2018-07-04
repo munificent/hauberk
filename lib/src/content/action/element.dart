@@ -169,12 +169,11 @@ class WindAction extends Action {
   ActionResult onPerform() {
     // Move the actor to a random reachable tile.
     var distance = actor.motilities.contains(Motility.fly) ? 6 : 3;
-    // TODO: Using the actor's motilities here is a little weird. It means, for
-    // example, that humans can be blown through doors and amphibians can be
-    // blown into water. Is that what we want?
-    // TODO: Use a different flow that makes diagonal moves more expensive to
-    // give more natural circular behavior?
-    var flow = new MotilityFlow(game.stage, actor.pos, actor.motilities,
+
+    // Don't blow through doors.
+    var motilities = actor.motilities;
+    motilities -= Motility.door;
+    var flow = new MotilityFlow(game.stage, actor.pos, motilities,
         maxDistance: distance);
     var positions =
         flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();

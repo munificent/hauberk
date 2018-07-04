@@ -77,7 +77,7 @@ class Tiles {
   static final TileType closedChest =
       _obstacle("closed chest", CharCode.bottomHalfIntegral, persimmon);
   static final TileType closedBarrel =
-      _obstacle("closet barrel", CharCode.degreeSign, persimmon);
+      _obstacle("closed barrel", CharCode.degreeSign, persimmon);
   static final TileType openBarrel =
       _obstacle("open barrel", CharCode.bulletOperator, persimmon);
 

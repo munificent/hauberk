@@ -148,9 +148,9 @@ void snakes() {
     ..placeIn("aquatic")
     ..attack("bite[s]", 4);
 
-  breed("cave snake", 7, gunsmoke, 50)
+  breed("cave snake", 8, gunsmoke, 40)
     ..placeIn("passage")
-    ..attack("bite[s]", 16);
+    ..attack("bite[s]", 10);
 }
 
 void trolls() {}

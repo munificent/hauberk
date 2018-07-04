@@ -32,7 +32,7 @@ class ItemDialog extends Screen<Input> {
   bool _shiftDown = false;
 
   /// The current item being inspected or `null` if there is none.
-  Item _inspectedItem;
+  Item _inspected;
 
   bool get isTransparent => true;
 
@@ -40,11 +40,15 @@ class ItemDialog extends Screen<Input> {
   bool get canSwitchLocations => _command.allowedLocations.length > 1;
 
   ItemDialog.drop(this._gameScreen) : _command = new _DropItemCommand();
+
   ItemDialog.use(this._gameScreen) : _command = new _UseItemCommand();
+
   ItemDialog.toss(this._gameScreen) : _command = new _TossItemCommand();
+
   ItemDialog.pickUp(this._gameScreen)
       : _command = new _PickUpItemCommand(),
         _location = ItemLocation.onGround;
+
   ItemDialog.unequip(this._gameScreen)
       : _command = new _UseItemCommand(),
         _location = ItemLocation.equipment;
@@ -164,14 +168,10 @@ class ItemDialog extends Screen<Input> {
     if (itemCount > 0) {
       if (_location == ItemLocation.equipment) {
         drawEquipment(terminal, 1, 2, _gameScreen.game.hero.equipment,
-            canSelect: _canSelect,
-            capitals: _shiftDown,
-            inspected: _inspectedItem);
+            canSelect: _canSelect, capitals: _shiftDown, inspected: _inspected);
       } else {
         drawItems(terminal, 1, 2, _getItems(),
-            canSelect: _canSelect,
-            capitals: _shiftDown,
-            inspected: _inspectedItem);
+            canSelect: _canSelect, capitals: _shiftDown, inspected: _inspected);
       }
     } else {
       String message;
@@ -192,7 +192,7 @@ class ItemDialog extends Screen<Input> {
       terminal.writeAt(1, 2, message, UIHue.disabled);
     }
 
-    if (_inspectedItem != null) {
+    if (_inspected != null) {
       _renderInspected(terminal.rect(43, 0, 37, 20));
     }
   }
@@ -200,9 +200,10 @@ class ItemDialog extends Screen<Input> {
   void _renderInspected(Terminal terminal) {
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
-    terminal.drawGlyph(1, 0, _inspectedItem.appearance);
-    terminal.writeAt(3, 0, _inspectedItem.nounText, UIHue.primary);
+    terminal.drawGlyph(1, 0, _inspected.appearance);
+    terminal.writeAt(3, 0, _inspected.nounText, UIHue.primary);
 
+    var hero = _gameScreen.game.hero;
     var y = 2;
 
     writeSection(String label) {
@@ -260,51 +261,55 @@ class ItemDialog extends Screen<Input> {
 
     // TODO: Handle armor that gives attack bonuses even though the item
     // itself has no attack.
-    if (_inspectedItem.attack != null) {
+    if (_inspected.attack != null) {
       writeSection("Attack");
 
       writeLabel("Damage");
-      if (_inspectedItem.element != Element.none) {
-        terminal.writeAt(13, y, _inspectedItem.element.abbreviation,
-            elementColor(_inspectedItem.element));
+      if (_inspected.element != Element.none) {
+        terminal.writeAt(13, y, _inspected.element.abbreviation,
+            elementColor(_inspected.element));
       }
 
-      terminal.writeAt(
-          16, y, _inspectedItem.attack.damage.toString(), UIHue.text);
-      writeScale(20, y, _inspectedItem.damageScale);
-      writeBonus(24, y, _inspectedItem.damageBonus);
+      terminal.writeAt(16, y, _inspected.attack.damage.toString(), UIHue.text);
+      writeScale(20, y, _inspected.damageScale);
+      writeBonus(24, y, _inspected.damageBonus);
       terminal.writeAt(28, y, "=", UIHue.secondary);
 
-      var damage = _inspectedItem.attack.damage * _inspectedItem.damageScale +
-          _inspectedItem.damageBonus;
+      var damage = _inspected.attack.damage * _inspected.damageScale +
+          _inspected.damageBonus;
       terminal.writeAt(30, y, damage.toStringAsFixed(2).padLeft(6), carrot);
       y++;
 
-      if (_inspectedItem.strikeBonus != 0) {
+      if (_inspected.strikeBonus != 0) {
         writeLabel("Strike");
-        writeBonus(16, y, _inspectedItem.strikeBonus);
+        writeBonus(16, y, _inspected.strikeBonus);
         y++;
       }
 
-      if (_inspectedItem.attack.isRanged) {
-        writeStat("Range", _inspectedItem.attack.range);
+      if (_inspected.attack.isRanged) {
+        writeStat("Range", _inspected.attack.range);
       }
 
-      writeStat("Heft", _inspectedItem.heft);
+      writeLabel("Heft");
+      var strongEnough = hero.strength.value >= _inspected.heft;
+      var color = strongEnough ? UIHue.primary : brickRed;
+      terminal.writeAt(16, y, _inspected.heft.toString(), color);
+      writeScale(20, y, hero.strength.heftScale(_inspected.heft));
+      y++;
     }
 
-    if (_inspectedItem.armor != 0) {
+    if (_inspected.armor != 0) {
       writeSection("Defense");
       writeLabel("Armor");
-      terminal.writeAt(16, y, _inspectedItem.baseArmor.toString(), UIHue.text);
-      writeBonus(20, y, _inspectedItem.armorModifier);
+      terminal.writeAt(16, y, _inspected.baseArmor.toString(), UIHue.text);
+      writeBonus(20, y, _inspected.armorModifier);
       terminal.writeAt(28, y, "=", UIHue.secondary);
 
-      var armor = _inspectedItem.armor.toString().padLeft(6);
+      var armor = _inspected.armor.toString().padLeft(6);
       terminal.writeAt(30, y, armor, peaGreen);
       y++;
 
-      writeStat("Weight", _inspectedItem.weight);
+      writeStat("Weight", _inspected.weight);
       // TODO: Encumbrance.
     }
 
@@ -314,7 +319,7 @@ class ItemDialog extends Screen<Input> {
     var x = 3;
     for (var element in _gameScreen.game.content.elements) {
       if (element == Element.none) continue;
-      var resistance = _inspectedItem.resistance(element);
+      var resistance = _inspected.resistance(element);
       writeBonus(x - 1, y, resistance);
       terminal.writeAt(x, y + 1, element.abbreviation,
           resistance == 0 ? UIHue.disabled : elementColor(element));
@@ -331,8 +336,8 @@ class ItemDialog extends Screen<Input> {
     // TODO: Use.
 
     writeSection("Description");
-    if (_inspectedItem.toss != null) {
-      var toss = _inspectedItem.toss;
+    if (_inspected.toss != null) {
+      var toss = _inspected.toss;
 
       var element = "";
       if (toss.attack.element != Element.none) {
@@ -350,11 +355,11 @@ class ItemDialog extends Screen<Input> {
       // TODO: Describe toss use.
     }
 
-    if (_inspectedItem.emanationLevel > 0) {
-      description.add("It emanates ${_inspectedItem.emanationLevel} light.");
+    if (_inspected.emanationLevel > 0) {
+      description.add("It emanates ${_inspected.emanationLevel} light.");
     }
 
-    for (var element in _inspectedItem.type.destroyChance.keys) {
+    for (var element in _inspected.type.destroyChance.keys) {
       description.add("It can be destroyed by ${element.name.toLowerCase()}.");
     }
 
@@ -381,7 +386,7 @@ class ItemDialog extends Screen<Input> {
     if (items[index] == null) return;
 
     if (_shiftDown) {
-      _inspectedItem = items[index];
+      _inspected = items[index];
       dirty();
     } else {
       if (!_command.canSelect(items[index])) return;

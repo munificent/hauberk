@@ -182,10 +182,10 @@ class _ItemBuilder extends _BaseBuilder {
     _heft = heft;
   }
 
-  void ranged(String noun, {int damage, int range}) {
+  void ranged(String noun, {int heft, int damage, int range}) {
     _attack = new Attack(new Noun(noun), "pierce[s]", damage, range);
     // TODO: Make this per-item once it does something.
-    _heft = 1;
+    _heft = heft;
   }
 
   void use(ItemUse use) {
@@ -229,7 +229,7 @@ class _ItemBuilder extends _BaseBuilder {
     var attack = new Attack(new Noun(noun), verb, damage, range, element);
 
     var motilities = new MotilitySet([Motility.walk]);
-    if (fly) motilities.add(Motility.fly);
+    if (fly) motilities += Motility.fly;
 
     use(() => new FlowSelfAction(attack, motilities));
     tossUse((pos) => new FlowFromAction(attack, pos, motilities));

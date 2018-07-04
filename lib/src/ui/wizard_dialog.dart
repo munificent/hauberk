@@ -114,16 +114,7 @@ class WizardDropDialog extends Screen<Input> {
   bool get isTransparent => true;
 
   bool handleInput(Input input) {
-    if (input == Input.ok) {
-      for (var itemType in _matchedItems) {
-        var item = new Item(itemType, itemType.maxStack);
-        _game.stage.addItem(item, _game.hero.pos);
-        _game.log.cheat("Dropped {1}.", item);
-      }
-
-      ui.pop();
-      return true;
-    } else if (input == Input.cancel) {
+    if (input == Input.cancel) {
       ui.pop();
       return true;
     }
@@ -135,6 +126,16 @@ class WizardDropDialog extends Screen<Input> {
     if (alt) return false;
 
     switch (keyCode) {
+      case KeyCode.enter:
+        for (var itemType in _matchedItems) {
+          var item = new Item(itemType, itemType.maxStack);
+          _game.stage.addItem(item, _game.hero.pos);
+          _game.log.cheat("Dropped {1}.", item);
+        }
+
+        ui.pop();
+        return true;
+
       case KeyCode.delete:
         if (_pattern.isNotEmpty) {
           _pattern = _pattern.substring(0, _pattern.length - 1);

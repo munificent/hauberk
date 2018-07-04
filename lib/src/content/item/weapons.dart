@@ -192,15 +192,15 @@ void weapons() {
     ..toss(breakage: 50, range: 5)
     ..skill("Archery");
   item("Short Bow", 5, 0.3, persimmon)
-    ..ranged("the arrow", damage: 8, range: 12)
+    ..ranged("the arrow", heft: 10, damage: 8, range: 12)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);
   item("Longbow", 13, 0.3, garnet)
-    ..ranged("the arrow", damage: 16, range: 14)
+    ..ranged("the arrow", heft: 16, damage: 16, range: 14)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 7, fuel: 13);
   item("Crossbow", 28, 0.3, gunsmoke)
-    ..ranged("the bolt", damage: 24, range: 16)
+    ..ranged("the bolt", heft: 24, damage: 24, range: 16)
     ..toss(damage: 4)
     ..destroy(Elements.fire, chance: 4, fuel: 14);
 }

@@ -7,7 +7,7 @@ import 'lighting.dart';
 /// movement is needed to enter the tile. Monsters and the hero have a set of
 /// motilities that determine which ways they are able to move. In order to
 /// move into a tile, the actor must have one of the tile's motilities.
-class Motility {
+class Motility extends MotilitySet {
   // TODO: Should these be in content, engine, or a mixture of both?
   static final Motility door = new Motility("door");
   static final Motility fly = new Motility("fly");
@@ -19,9 +19,8 @@ class Motility {
   static int _nextBit = 1;
 
   final String name;
-  final int _bit = _nextBit;
 
-  Motility(this.name) {
+  Motility(this.name) : super._(_nextBit) {
     _nextBit <<= 1;
   }
 }
@@ -34,23 +33,30 @@ class MotilitySet {
 
   int _bitMask = 0;
 
-  MotilitySet([Iterable<Motility> iterable]) {
+  factory MotilitySet([Iterable<Motility> iterable]) {
+    var mask = 0;
     if (iterable != null) {
       for (var motility in iterable) {
-        add(motility);
+        mask += motility._bitMask;
       }
     }
+
+    return new MotilitySet._(mask);
   }
 
-  void add(Motility motility) {
-    _bitMask = _bitMask | motility._bit;
-  }
+  MotilitySet._(this._bitMask);
 
-  void addAll(Iterable<Motility> motilities) {
-    motilities.forEach(add);
-  }
+  /// Creates a new MotilitySet containing all of the motilities of this and
+  /// [other].
+  MotilitySet operator +(MotilitySet other) =>
+      new MotilitySet._(_bitMask | other._bitMask);
 
-  bool contains(Motility motility) => _bitMask & motility._bit != 0;
+  /// Creates a new MotilitySet containing all of the motilities of this
+  /// except for the motilities in [other].
+  MotilitySet operator -(MotilitySet other) =>
+      new MotilitySet._(_bitMask & ~other._bitMask);
+
+  bool contains(Motility motility) => _bitMask & motility._bitMask != 0;
 
   bool overlaps(MotilitySet other) => _bitMask & other._bitMask != 0;
 }
@@ -67,6 +73,7 @@ class TileType {
   final MotilitySet motilities;
 
   bool get isTraversable => canEnter(Motility.walk) || (opensTo != null);
+
   bool get isWalkable => canEnter(Motility.walk);
 
   TileType(this.name, this.appearance, Iterable<Motility> motilities,
@@ -75,6 +82,7 @@ class TileType {
         motilities = new MotilitySet(motilities);
 
   bool canEnter(Motility motility) => this.motilities.contains(motility);
+
   bool canEnterAny(MotilitySet motilities) =>
       this.motilities.overlaps(motilities);
 }
@@ -90,6 +98,7 @@ class Tile {
   ///
   /// This gets updated by [Fov] as the hero moves around.
   bool _isOccluded = false;
+
   bool get isOccluded => _isOccluded;
 
   /// Whether the tile can be seen through or blocks the hero's view beyond it.
@@ -127,6 +136,7 @@ class Tile {
   }
 
   bool _isExplored = false;
+
   bool get isExplored => _isExplored;
 
   /// Marks this tile as explored if the hero can see it and hasn't previously
@@ -157,10 +167,14 @@ class Tile {
   int substance = 0;
 
   bool get isWalkable => type.isWalkable;
+
   bool get isTraversable => type.isTraversable;
+
   bool get isFlyable => canEnter(Motility.fly);
+
   bool get isExit => type.isExit;
 
   bool canEnter(Motility motility) => type.canEnter(motility);
+
   bool canEnterAny(MotilitySet motilities) => type.canEnterAny(motilities);
 }

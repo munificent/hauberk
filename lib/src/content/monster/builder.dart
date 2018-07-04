@@ -356,8 +356,9 @@ class _BreedBuilder extends _BaseBuilder {
     if (_family._flags != null) flags.addAll(_family._flags.split(" "));
     if (_flags != null) flags.addAll(_flags.split(" "));
 
-    var motilities = new MotilitySet(_family._motilities);
-    motilities.addAll(_motilities);
+    var motilityList = _family._motilities.toList();
+    motilityList.addAll(_motilities);
+    var motilities = new MotilitySet(motilityList);
 
     var dodge = _dodge ?? _family._dodge;
     if (flags.contains("immobile")) dodge = 0;

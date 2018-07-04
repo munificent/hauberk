@@ -346,6 +346,11 @@ class Hero extends Actor {
     assert(weapon != null && weapon.attack.isRanged);
 
     var hit = weapon.attack.createHit();
+
+    // Take heft and strength into account.
+    var scale = strength.heftScale(weapon.heft);
+    hit.scaleDamage(scale);
+
     modifyHit(hit, HitType.ranged);
     return hit;
   }

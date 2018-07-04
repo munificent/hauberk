@@ -164,7 +164,13 @@ class EquipAction extends ItemAction {
       }
     }
 
-    return succeed('{1} equip[s] {2}.', actor, equipped);
+    log("{1} equip[s] {2}.", actor, equipped);
+
+    if (equipped.heft > hero.strength.value) {
+      error("{1} [are|is] not strong enough to effectively wield it.", actor);
+    }
+
+    return ActionResult.success;
   }
 }
 
