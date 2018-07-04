@@ -77,7 +77,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
         continue;
       }
 
-      terminal.drawGlyph(0, y, item.appearance);
+      terminal.drawGlyph(0, y, item.appearance as Glyph);
       terminal.writeAt(2, y, item.nounText, ash);
 
       y += 2;

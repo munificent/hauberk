@@ -177,7 +177,7 @@ class WizardDropDialog extends Screen<Input> {
     for (var item in _matchedItems) {
       if (!item.name.toLowerCase().contains(_pattern.toLowerCase())) continue;
 
-      terminal.drawGlyph(26, y, item.appearance);
+      terminal.drawGlyph(26, y, item.appearance as Glyph);
       terminal.writeAt(28, y, item.name, UIHue.primary);
 
       y++;

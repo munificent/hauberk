@@ -434,7 +434,7 @@ class RoomsBiome extends Biome {
   void _reachOtherBiome(Vec start) {
     if (_reached.contains(start)) return;
 
-    var queue = Queue.from([start]);
+    var queue = Queue<Vec>.from([start]);
     _reached.add(start);
 
     // Breadth-first search over the reachable nature tiles.

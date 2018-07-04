@@ -38,7 +38,7 @@ addTerminal(String name, int w, [int h]) {
     var lastPos;
     element.onMouseMove.listen((event) {
       // TODO: This is broken now that maps scroll. :(
-      var pixel = Vec(event.offset.x - 4, event.offset.y - 4);
+      var pixel = Vec(event.offset.x.toInt() - 4, event.offset.y.toInt() - 4);
       var pos = terminal.pixelToChar(pixel);
       var absolute = pixel + Vec(element.offsetLeft, element.offsetTop);
       if (pos != lastPos) debugHover(debugBox, absolute, pos);
@@ -52,7 +52,7 @@ addTerminal(String name, int w, [int h]) {
   button.onClick.listen((_) {
     for (var i = 0; i < terminals.length; i++) {
       if (terminals[i][0] == name) {
-        html.querySelector("#game").append(terminals[i][1]);
+        html.querySelector("#game").append(terminals[i][1] as html.Node);
       } else {
         terminals[i][1].remove();
       }
@@ -84,9 +84,9 @@ main() {
     }
   }
 
-  html.querySelector("#game").append(terminals[fontIndex][1]);
+  html.querySelector("#game").append(terminals[fontIndex][1] as html.Node);
 
-  ui = UserInterface<Input>(terminals[fontIndex][2]);
+  ui = UserInterface<Input>(terminals[fontIndex][2] as RenderableTerminal);
 
   // Set up the keyPress.
   ui.keyPress.bind(Input.ok, KeyCode.enter);

@@ -195,7 +195,7 @@ class Hit {
     var damage = (_attack.damage * _damageScale + _damageBonus) * resistScale;
     var damageCents = (damage * 100).toInt();
 
-    var rolled = rng.triangleInt(damageCents, damageCents ~/ 2);
+    var rolled = rng.triangleInt(damageCents, damageCents ~/ 2).toDouble();
     rolled *= getArmorMultiplier(armor);
     return (rolled / 100).round();
   }

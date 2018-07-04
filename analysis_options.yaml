@@ -1,2 +1,6 @@
 analyzer:
-  strong-mode: true
+#  strong-mode:
+# Close, but still false positives around clamp().
+#   implicit-casts: false
+# Too many false positives.
+#   implicit-dynamic: false

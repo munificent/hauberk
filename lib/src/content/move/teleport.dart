@@ -7,7 +7,7 @@ class TeleportMove extends Move {
 
   num get experience => _range * 0.7;
 
-  TeleportMove(int cost, this._range) : super(cost);
+  TeleportMove(num rate, this._range) : super(rate);
 
   bool shouldUse(Monster monster) {
     if (monster.isAfraid) return true;

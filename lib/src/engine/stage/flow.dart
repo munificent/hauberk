@@ -51,8 +51,8 @@ abstract class Flow {
 
   Flow(this.stage, this._start, {int maxDistance})
       : _maxDistance = maxDistance {
-    var width;
-    var height;
+    int width;
+    int height;
 
     // TODO: Distinguish between maxDistance and maxCost. Once cost is no longer
     // unit for every step, the two can diverge.

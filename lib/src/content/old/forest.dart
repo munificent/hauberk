@@ -25,7 +25,7 @@ class Forest extends StageBuilder {
     fill(Tiles.tree);
 
     // Randomly position the meadows.
-    var meadows = [];
+    var meadows = <Vec>[];
     for (var i = 0; i < numMeadows; i++) {
       var x = rng.range(0, stage.width);
       var y = rng.range(0, stage.height);
@@ -39,9 +39,9 @@ class Forest extends StageBuilder {
     // http://en.wikipedia.org/wiki/Lloyd%27s_algorithm
     for (var i = 0; i < voronoiIterations; i++) {
       // For each cell in the stage, determine which point it's nearest to.
-      var regions = List.generate(numMeadows, (i) => [meadows[i]]);
+      var regions = List<List<Vec>>.generate(numMeadows, (i) => [meadows[i]]);
       for (var cell in stage.bounds) {
-        var nearest;
+        int nearest;
         var nearestDistanceSquared = 99999999;
         for (var i = 0; i < numMeadows; i++) {
           var offset = meadows[i] - cell;
@@ -64,9 +64,9 @@ class Forest extends StageBuilder {
     // Connect all of the points together.
     var connected = [meadows.removeLast()];
     while (meadows.isNotEmpty) {
-      var bestFrom;
-      var bestToIndex;
-      var bestDistance;
+      Vec bestFrom;
+      int bestToIndex;
+      int bestDistance;
       for (var from in connected) {
         for (var i = 0; i < meadows.length; i++) {
           var distance = (from - meadows[i]).lengthSquared;

@@ -23,7 +23,7 @@ class WhipMastery extends MasteryDiscipline implements TargetSkill {
         "attack.";
   }
 
-  num getRange(Game game) => 3;
+  int getRange(Game game) => 3;
 
   Action getTargetAction(Game game, int level, Vec target) {
     var defender = game.stage.actorAt(target);

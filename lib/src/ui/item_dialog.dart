@@ -200,7 +200,7 @@ class ItemDialog extends Screen<Input> {
   void _renderInspected(Terminal terminal) {
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
-    terminal.drawGlyph(1, 0, _inspected.appearance);
+    terminal.drawGlyph(1, 0, _inspected.appearance as Glyph);
     terminal.writeAt(3, 0, _inspected.nounText, UIHue.primary);
 
     var hero = _gameScreen.game.hero;
@@ -499,7 +499,7 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
     letter++;
 
     if (enabled) {
-      terminal.drawGlyph(x + 2, itemY, item.appearance);
+      terminal.drawGlyph(x + 2, itemY, item.appearance as Glyph);
     }
 
     terminal.writeAt(x + 4, itemY, item.nounText, textColor);

@@ -85,17 +85,11 @@ void finishBreed() {
 }
 
 // TODO: Move more named params into builder methods?
-_BreedBuilder breed(String name, int depth, appearance, int health,
+_BreedBuilder breed(String name, int depth, Color color, int health,
     {double frequency, int speed = 0, int dodge, int meander}) {
   finishBreed();
 
-  Glyph glyph;
-  if (appearance is Color) {
-    glyph = Glyph(_family._character, appearance);
-  } else {
-    glyph = appearance(_family._character);
-  }
-
+  var glyph = Glyph(_family._character, color);
   _builder = _BreedBuilder(name, depth, frequency, glyph, health);
   _builder._speed = speed;
   _builder._meander = meander;
@@ -268,58 +262,76 @@ class _BreedBuilder extends _BaseBuilder {
   void heal({num rate = 5, int amount}) => _addMove(HealMove(rate, amount));
 
   void arrow({num rate = 5, int damage}) =>
-      _bolt("the arrow", "hits", Element.none, damage, rate, 8);
+      _bolt("the arrow", "hits", Element.none,
+          rate: rate, damage: damage, range: 8);
 
   void windBolt({num rate = 5, int damage}) =>
-      _bolt("the wind", "blows", Elements.air, damage, rate, 8);
+      _bolt("the wind", "blows", Elements.air,
+          rate: rate, damage: damage, range: 8);
 
   void stoneBolt({num rate = 5, int damage}) =>
-      _bolt("the stone", "hits", Elements.earth, damage, rate, 8);
+      _bolt("the stone", "hits", Elements.earth,
+          rate: rate, damage: damage, range: 8);
 
   void waterBolt({num rate = 5, int damage}) =>
-      _bolt("the jet", "splashes", Elements.water, damage, rate, 8);
+      _bolt("the jet", "splashes", Elements.water,
+          rate: rate, damage: damage, range: 8);
 
   void sparkBolt({num rate = 5, int damage, int range = 8}) =>
-      _bolt("the spark", "zaps", Elements.lightning, damage, rate, range);
+      _bolt("the spark", "zaps", Elements.lightning,
+          rate: rate, damage: damage, range: range);
 
   void iceBolt({num rate = 5, int damage, int range = 8}) =>
-      _bolt("the ice", "freezes", Elements.cold, damage, rate, range);
+      _bolt("the ice", "freezes", Elements.cold,
+          rate: rate, damage: damage, range: range);
 
   void fireBolt({num rate = 5, int damage}) =>
-      _bolt("the flame", "burns", Elements.fire, damage, rate, 8);
+      _bolt("the flame", "burns", Elements.fire,
+          rate: rate, damage: damage, range: 8);
 
   void lightningBolt({num rate = 5, int damage}) =>
-      _bolt("the lightning", "shocks", Elements.lightning, damage, rate, 10);
+      _bolt("the lightning", "shocks", Elements.lightning,
+          rate: rate, damage: damage, range: 10);
 
   void acidBolt({num rate = 5, int damage, int range = 8}) =>
-      _bolt("the acid", "burns", Elements.acid, damage, rate, range);
+      _bolt("the acid", "burns", Elements.acid,
+          rate: rate, damage: damage, range: range);
 
   void darkBolt({num rate = 5, int damage}) =>
-      _bolt("the darkness", "crushes", Elements.dark, damage, rate, 10);
+      _bolt("the darkness", "crushes", Elements.dark,
+          rate: rate, damage: damage, range: 10);
 
   void lightBolt({num rate = 5, int damage}) =>
-      _bolt("the light", "sears", Elements.light, damage, rate, 10);
+      _bolt("the light", "sears", Elements.light,
+          rate: rate, damage: damage, range: 10);
 
   void poisonBolt({num rate = 5, int damage}) =>
-      _bolt("the poison", "engulfs", Elements.poison, damage, rate, 8);
+      _bolt("the poison", "engulfs", Elements.poison,
+          rate: rate, damage: damage, range: 8);
 
   void windCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the wind", "buffets", Elements.air, rate, damage, range);
+      _cone("the wind", "buffets", Elements.air,
+          rate: rate, damage: damage, range: range);
 
   void fireCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the flame", "burns", Elements.fire, rate, damage, range);
+      _cone("the flame", "burns", Elements.fire,
+          rate: rate, damage: damage, range: range);
 
   void iceCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the ice", "freezes", Elements.cold, rate, damage, range);
+      _cone("the ice", "freezes", Elements.cold,
+          rate: rate, damage: damage, range: range);
 
   void lightningCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the lightning", "shocks", Elements.lightning, rate, damage, range);
+      _cone("the lightning", "shocks", Elements.lightning,
+          rate: rate, damage: damage, range: range);
 
   void lightCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the light", "sears", Elements.light, rate, damage, range);
+      _cone("the light", "sears", Elements.light,
+          rate: rate, damage: damage, range: range);
 
   void darkCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the darkness", "crushes", Elements.dark, rate, damage, range);
+      _cone("the darkness", "crushes", Elements.dark,
+          rate: rate, damage: damage, range: range);
 
   void missive(Missive missive, {num rate = 5}) =>
       _addMove(MissiveMove(missive, rate));
@@ -334,13 +346,13 @@ class _BreedBuilder extends _BaseBuilder {
 
   void spawn({num rate = 10}) => _addMove(SpawnMove(rate));
 
-  void _bolt(String noun, String verb, Element element, num rate, int damage,
-      int range) {
+  void _bolt(String noun, String verb, Element element,
+      {num rate, int damage, int range}) {
     _addMove(BoltMove(rate, Attack(Noun(noun), verb, damage, range, element)));
   }
 
-  void _cone(String noun, String verb, Element element, num rate, int damage,
-      int range) {
+  void _cone(String noun, String verb, Element element,
+      {num rate, int damage, int range}) {
     _addMove(ConeMove(rate, Attack(Noun(noun), verb, damage, range, element)));
   }
 

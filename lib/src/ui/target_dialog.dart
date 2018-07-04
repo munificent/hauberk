@@ -265,8 +265,8 @@ class TargetDialog extends Screen<Input> {
   }
 
   void _changeMonsterTarget(Direction dir) {
-    var ahead = [];
-    var behind = [];
+    var ahead = <Monster>[];
+    var behind = <Monster>[];
 
     var perp = dir.rotateLeft90;
     for (var monster in _monsters) {
@@ -326,11 +326,11 @@ class TargetDialog extends Screen<Input> {
 ///
 /// The score for an item is determined by calling [callback] on it. Returns
 /// `null` if the [collection] is `null` or empty.
-_findLowest(Iterable collection, num callback(item)) {
+T _findLowest<T>(Iterable<T> collection, num Function(T) callback) {
   if (collection == null) return null;
 
-  var bestItem;
-  var bestScore;
+  T bestItem;
+  num bestScore;
 
   for (var item in collection) {
     var score = callback(item);
@@ -347,11 +347,11 @@ _findLowest(Iterable collection, num callback(item)) {
 ///
 /// The score for an item is determined by calling [callback] on it. Returns
 /// `null` if the [collection] is `null` or empty.
-_findHighest(Iterable collection, num callback(item)) {
+T _findHighest<T>(Iterable<T> collection, num Function(T) callback) {
   if (collection == null) return null;
 
-  var bestItem;
-  var bestScore;
+  T bestItem;
+  num bestScore;
 
   for (var item in collection) {
     var score = callback(item);

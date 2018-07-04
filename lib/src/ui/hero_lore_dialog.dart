@@ -89,7 +89,7 @@ class HeroLoreDialog extends HeroInfoDialog {
       var seen = hero.lore.seen(breed);
       var slain = hero.lore.slain(breed);
       if (seen > 0) {
-        terminal.drawGlyph(0, y, breed.appearance);
+        terminal.drawGlyph(0, y, breed.appearance as Glyph);
         terminal.writeAt(2, y, breed.name, fore);
 
         terminal.writeAt(63, y, breed.depth.toString().padLeft(5), fore);
@@ -126,7 +126,7 @@ class HeroLoreDialog extends HeroInfoDialog {
       return;
     }
 
-    terminal.drawGlyph(2, 1, breed.appearance);
+    terminal.drawGlyph(2, 1, breed.appearance as Glyph);
     terminal.writeAt(4, 1, breed.name, UIHue.selection);
 
     var description = _describeBreed(breed);
@@ -205,7 +205,7 @@ class HeroLoreDialog extends HeroInfoDialog {
       var aChar = (a.appearance as Glyph).char;
       var bChar = (b.appearance as Glyph).char;
 
-      isUpper(c) => c >= CharCode.aUpper && c <= CharCode.zUpper;
+      isUpper(int c) => c >= CharCode.aUpper && c <= CharCode.zUpper;
 
       // Sort lowercase letters first even though they come later in character
       // code.

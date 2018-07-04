@@ -51,7 +51,7 @@ class Draw {
     if (barWidth == width * 2 && value < max) barWidth = width * 2 - 1;
 
     for (var i = 0; i < width; i++) {
-      var char;
+      int char;
       if (i < barWidth ~/ 2) {
         char = CharCode.fullBlock;
       } else if (i < (barWidth + 1) ~/ 2) {

@@ -36,7 +36,7 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.toss:
-      effects.add(ItemEffect(event.pos, event.other));
+      effects.add(ItemEffect(event.pos, event.other as Item));
       break;
 
     case EventType.hit:
@@ -91,7 +91,7 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.gold:
-      effects.add(TreasureEffect(event.pos, event.other));
+      effects.add(TreasureEffect(event.pos, event.other as Item));
       break;
   }
 }
@@ -244,7 +244,7 @@ class ItemEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(pos.x, pos.y, item.appearance);
+    drawGlyph(pos.x, pos.y, item.appearance as Glyph);
   }
 }
 
@@ -354,7 +354,7 @@ class TeleportEffect implements Effect {
 
   /// Chooses a "line" character based on the vector [x], [y]. It will try to
   /// pick a line that follows the vector.
-  _getChar(num x, num y) {
+  int _getChar(num x, num y) {
     var velocity = Vec((x * 10).toInt(), (y * 10).toInt());
     if (velocity < 5) return CharCode.bullet;
 
@@ -377,7 +377,7 @@ class HealEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     if (game.stage.get(x, y).isOccluded) return;
 
-    var back;
+    Color back;
     switch ((frame ~/ 4) % 4) {
       case 0:
         back = midnight;
@@ -471,6 +471,6 @@ class TreasureEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(_x, _y, _item.appearance);
+    drawGlyph(_x, _y, _item.appearance as Glyph);
   }
 }

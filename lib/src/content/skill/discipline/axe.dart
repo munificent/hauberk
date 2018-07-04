@@ -41,7 +41,7 @@ class SlashAction extends MasteryAction {
   SlashAction(this._dir, double damageScale) : super(damageScale);
 
   ActionResult onPerform() {
-    var dir;
+    Direction dir;
     switch (_step ~/ _frameRate) {
       case 0:
         dir = _dir.rotateLeft45;

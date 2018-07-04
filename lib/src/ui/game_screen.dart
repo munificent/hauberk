@@ -39,6 +39,7 @@ class GameScreen extends Screen<Input> {
 
   /// The portion of the [Stage] currently in view on screen.
   Rect _cameraBounds;
+
   Rect get cameraBounds => _cameraBounds;
 
   Actor _targetActor;
@@ -106,8 +107,7 @@ class GameScreen extends Screen<Input> {
   }
 
   bool handleInput(Input input) {
-    var action;
-
+    Action action;
     switch (input) {
       case Input.quit:
         // TODO: Should confirm first.
@@ -245,7 +245,7 @@ class GameScreen extends Screen<Input> {
           var targetSkill = _lastSkill as TargetSkill;
           if (currentTarget != null) {
             // If we still have a visible target, use it.
-            _fireAtTarget(_lastSkill);
+            _fireAtTarget(_lastSkill as TargetSkill);
           } else {
             // No current target, so ask for one.
             ui.push(TargetDialog(this, targetSkill.getRange(game),
@@ -286,9 +286,9 @@ class GameScreen extends Screen<Input> {
 
   void closeDoor() {
     // See how many adjacent open doors there are.
-    final doors = [];
-    for (final direction in Direction.all) {
-      final pos = game.hero.pos + direction;
+    var doors = <Vec>[];
+    for (var direction in Direction.all) {
+      var pos = game.hero.pos + direction;
       if (game.stage[pos].type.closesTo != null) {
         doors.add(pos);
       }
@@ -384,7 +384,7 @@ class GameScreen extends Screen<Input> {
       _pause = 10;
     }
 
-    if (popped is ForfeitDialog && result) {
+    if (popped is ForfeitDialog && (result as bool)) {
       // Forfeiting, so exit.
       ui.pop(false);
     } else if (popped is SkillDialog) {
@@ -396,12 +396,10 @@ class GameScreen extends Screen<Input> {
         ui.push(TargetDialog(
             this, result.getRange(game), (_) => _fireAtTarget(result)));
       } else if (result is DirectionSkill) {
-        selectDirection(dir) {
+        ui.push(DirectionDialog(this, game, (dir) {
           _lastSkill = result;
           _fireTowards(dir);
-        }
-
-        ui.push(DirectionDialog(this, game, selectDirection));
+        }));
       } else if (result is ActionSkill) {
         _lastSkill = result;
         game.hero
@@ -550,7 +548,7 @@ class GameScreen extends Screen<Input> {
 
         var items = game.stage.itemsAt(pos);
         if (items.isNotEmpty) {
-          var itemGlyph = items.first.appearance;
+          var itemGlyph = items.first.appearance as Glyph;
           char = itemGlyph.char;
           lightFore = itemGlyph.fore;
           darkFore = itemGlyph.fore;
@@ -647,8 +645,8 @@ class GameScreen extends Screen<Input> {
   void _drawLog(Terminal terminal) {
     var y = 0;
 
-    for (final message in game.log.messages) {
-      var color;
+    for (var message in game.log.messages) {
+      Color color;
       var messagesLength = game.log.messages.length - 1;
 
       switch (message.type) {
@@ -773,7 +771,7 @@ class GameScreen extends Screen<Input> {
     var lastGlyph;
     for (var item in unseen.reversed) {
       if (item.appearance != lastGlyph) {
-        terminal.drawGlyph(x, 39, item.appearance);
+        terminal.drawGlyph(x, 39, item.appearance as Glyph);
         x++;
         if (x >= terminal.width) break;
         lastGlyph = item.appearance;
@@ -811,56 +809,56 @@ class GameScreen extends Screen<Input> {
   /// Draws a health bar for [actor].
   void _drawHealthBar(Terminal terminal, int y, Actor actor) {
     // Show conditions.
-    var conditions = [];
+    var x = 2;
+
+    drawCondition(String char, Color fore, [Color back]) {
+      // Don't overlap other stuff.
+      if (x > 8) return;
+
+      terminal.writeAt(x, y, char, fore, back);
+      x++;
+    }
 
     if (actor is Monster && actor.isAfraid) {
-      conditions.add(["!", sandal]);
+      drawCondition("!", sandal);
     }
 
     if (actor.poison.isActive) {
       switch (actor.poison.intensity) {
         case 1:
-          conditions.add(["P", sherwood]);
+          drawCondition("P", sherwood);
           break;
         case 2:
-          conditions.add(["P", peaGreen]);
+          drawCondition("P", peaGreen);
           break;
         default:
-          conditions.add(["P", mint]);
+          drawCondition("P", mint);
           break;
       }
     }
 
-    if (actor.cold.isActive) conditions.add(["C", cornflower]);
+    if (actor.cold.isActive) drawCondition("C", cornflower);
     switch (actor.haste.intensity) {
       case 1:
-        conditions.add(["S", persimmon]);
+        drawCondition("S", persimmon);
         break;
       case 2:
-        conditions.add(["S", gold]);
+        drawCondition("S", gold);
         break;
       case 3:
-        conditions.add(["S", buttermilk]);
+        drawCondition("S", buttermilk);
         break;
     }
 
-    if (actor.blindness.isActive) conditions.add(["B", steelGray]);
-    if (actor.dazzle.isActive) conditions.add(["D", lilac]);
+    if (actor.blindness.isActive) drawCondition("B", steelGray);
+    if (actor.dazzle.isActive) drawCondition("D", lilac);
 
     for (var element in game.content.elements) {
       if (actor.resistances[element].isActive) {
-        conditions.add(_resistConditions[element]);
+        var condition = _resistConditions[element];
+        drawCondition(condition[0] as String, condition[1] as Color,
+            condition[2] as Color);
       }
-    }
-
-    var x = 2;
-    for (var condition in conditions.take(6)) {
-      if (condition.length == 3) {
-        terminal.writeAt(x, y, condition[0], condition[1], condition[2]);
-      } else {
-        terminal.writeAt(x, y, condition[0], condition[1]);
-      }
-      x++;
     }
 
     Draw.meter(

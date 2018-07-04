@@ -133,7 +133,7 @@ class SelectDepthScreen extends Screen<Input> {
   }
 
   void activate(Screen screen, result) {
-    if (screen is GameScreen && result) {
+    if (screen is GameScreen && (result as bool)) {
       // Left successfully, so save.
       storage.save();
       Debug.exitLevel();

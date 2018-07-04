@@ -28,8 +28,8 @@ class Storage {
 
     for (var hero in data['heroes']) {
       try {
-        var name = hero['name'];
-        var race = _loadRace(hero['race']);
+        var name = hero['name'] as String;
+        var race = _loadRace(hero['race'] as Map<String, dynamic>);
 
         HeroClass heroClass;
         if (hero['class'] == null) {
@@ -42,14 +42,14 @@ class Storage {
 
         var items = <Item>[];
         for (var itemData in hero['inventory']) {
-          var item = _loadItem(itemData);
+          var item = _loadItem(itemData as Map<String, dynamic>);
           if (item != null) items.add(item);
         }
         var inventory = Inventory(Option.inventoryCapacity, items);
 
         var equipment = Equipment();
         for (var itemData in hero['equipment']) {
-          var item = _loadItem(itemData);
+          var item = _loadItem(itemData as Map<String, dynamic>);
           // TODO: If there are multiple slots of the same type, this may
           // shuffle items around.
           if (item != null) equipment.equip(item);
@@ -57,14 +57,14 @@ class Storage {
 
         items = [];
         for (var itemData in hero['home']) {
-          var item = _loadItem(itemData);
+          var item = _loadItem(itemData as Map<String, dynamic>);
           if (item != null) items.add(item);
         }
         var home = Inventory(Option.homeCapacity, items);
 
         items = [];
         for (var itemData in hero['crucible']) {
-          var item = _loadItem(itemData);
+          var item = _loadItem(itemData as Map<String, dynamic>);
           if (item != null) items.add(item);
         }
         var crucible = Inventory(Option.crucibleCapacity, items);
@@ -77,23 +77,23 @@ class Storage {
 
         // Defaults are to support legacy saves.
 
-        var experience = hero['experience'];
-        var skillPoints = hero['skillPoints'] ?? 0;
+        var experience = hero['experience'] as int;
+        var skillPoints = hero['skillPoints'] as int ?? 0;
 
         var skillMap = <Skill, int>{};
-        var skills = hero['skills'];
+        var skills = hero['skills'] as Map<String, dynamic>;
         if (skills != null) {
           for (var name in skills.keys) {
-            skillMap[content.findSkill(name)] = skills[name];
+            skillMap[content.findSkill(name)] = skills[name] as int;
           }
         }
 
         var skillSet = SkillSet(skillMap);
 
-        var lore = _loadLore(hero['lore']);
+        var lore = _loadLore(hero['lore'] as Map<String, dynamic>);
 
-        var gold = hero['gold'];
-        var maxDepth = hero['maxDepth'] ?? 0;
+        var gold = hero['gold'] as int;
+        var maxDepth = hero['maxDepth'] as int ?? 0;
 
         var heroSave = HeroSave.load(
             name,
@@ -118,7 +118,7 @@ class Storage {
     }
   }
 
-  RaceStats _loadRace(Map data) {
+  RaceStats _loadRace(Map<String, dynamic> data) {
     // TODO: Temp to handle heros from before races.
     if (data == null) {
       return content.races.elementAt(4).rollStats();
@@ -135,13 +135,13 @@ class Storage {
     }
 
     // TODO: 1234 is temp for characters without seed.
-    var seed = data['seed'] ?? 1234;
+    var seed = data['seed'] as int ?? 1234;
 
     return RaceStats(race, stats, seed);
   }
 
-  Item _loadItem(Map data) {
-    var type = content.tryFindItem(data['type']);
+  Item _loadItem(Map<String, dynamic> data) {
+    var type = content.tryFindItem(data['type'] as String);
     if (type == null) {
       print("Couldn't find item type \"${data['type']}\", discarding item.");
       return null;
@@ -150,16 +150,16 @@ class Storage {
     var count = 1;
     // Existing save files don't store count, so allow it to be missing.
     if (data.containsKey('count')) {
-      count = data['count'];
+      count = data['count'] as int;
     }
 
     Affix prefix;
     if (data.containsKey('prefix')) {
       // TODO: Older save from back when affixes had types.
       if (data['prefix'] is Map) {
-        prefix = content.findAffix(data['prefix']['name']);
+        prefix = content.findAffix(data['prefix']['name'] as String);
       } else {
-        prefix = content.findAffix(data['prefix']);
+        prefix = content.findAffix(data['prefix'] as String);
       }
     }
 
@@ -167,42 +167,42 @@ class Storage {
     if (data.containsKey('suffix')) {
       // TODO: Older save from back when affixes had types.
       if (data['suffix'] is Map) {
-        suffix = content.findAffix(data['suffix']['name']);
+        suffix = content.findAffix(data['suffix']['name'] as String);
       } else {
-        suffix = content.findAffix(data['suffix']);
+        suffix = content.findAffix(data['suffix'] as String);
       }
     }
 
     return Item(type, count, prefix, suffix);
   }
 
-  Lore _loadLore(Map data) {
+  Lore _loadLore(Map<String, dynamic> data) {
     var slain = <Breed, int>{};
     var seen = <Breed, int>{};
     var kills = <String, int>{};
 
     // TODO: Older saves before lore.
     if (data != null) {
-      var slainMap = data['slain'];
+      var slainMap = data['slain'] as Map<String, dynamic>;
       if (slainMap != null) {
-        (slainMap as Map).forEach((breedName, count) {
+        slainMap.forEach((breedName, count) {
           var breed = content.tryFindBreed(breedName);
-          if (breed != null) slain[breed] = count;
+          if (breed != null) slain[breed] = count as int;
         });
       }
 
-      var seenMap = data['seen'];
+      var seenMap = data['seen'] as Map<String, dynamic>;
       if (seenMap != null) {
-        (seenMap as Map).forEach((breedName, count) {
+        seenMap.forEach((breedName, count) {
           var breed = content.tryFindBreed(breedName);
-          if (breed != null) seen[breed] = count;
+          if (breed != null) seen[breed] = count as int;
         });
       }
 
-      var killMap = data['weapon_kills'];
+      var killMap = data['weapon_kills'] as Map<String, dynamic>;
       if (killMap != null) {
-        (killMap as Map).forEach((type, count) {
-          kills[type] = count;
+        killMap.forEach((type, count) {
+          kills[type] = count as int;
         });
       }
     }

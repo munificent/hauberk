@@ -9,9 +9,9 @@ class TeleportAction extends Action {
   TeleportAction(this.distance);
 
   ActionResult onPerform() {
-    final targets = [];
+    var targets = <Vec>[];
 
-    final bounds = Rect.intersect(
+    var bounds = Rect.intersect(
         Rect.leftTopRightBottom(actor.x - distance, actor.y - distance,
             actor.x + distance, actor.y + distance),
         game.stage.bounds);
@@ -31,7 +31,7 @@ class TeleportAction extends Action {
     var best = rng.item(targets);
 
     for (var tries = 0; tries < 10; tries++) {
-      final pos = rng.item(targets);
+      var pos = rng.item(targets);
       if (pos - actor.pos > best - actor.pos) best = pos;
     }
 

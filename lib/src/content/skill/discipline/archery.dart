@@ -22,7 +22,7 @@ class Archery extends MasteryDiscipline implements TargetSkill {
   String levelDescription(int level) =>
       "Firing an arrow costs ${focusCost(level)} focus.";
 
-  num getRange(Game game) {
+  int getRange(Game game) {
     var hit = game.hero.createRangedHit();
     return hit.range;
   }

@@ -71,7 +71,7 @@ abstract class ActionSkill extends UsableSkill {
 /// A skill that requires a target position to perform.
 abstract class TargetSkill extends UsableSkill {
   /// The maximum range of the target from the hero.
-  num getRange(Game game);
+  int getRange(Game game);
 
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].
@@ -178,7 +178,7 @@ abstract class Spell extends Skill implements UsableSkill {
 
   String unusableReason(Game game) => null;
 
-  num getRange(Game game) => range;
+  int getRange(Game game) => range;
 
   Action getTargetAction(Game game, int level, Vec target) {
     var action = onGetTargetAction(game, target);

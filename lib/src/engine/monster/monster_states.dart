@@ -230,15 +230,13 @@ class AwakeState extends MonsterState {
     // Now that we know what the monster *wants* to do, reconcile it with what
     // they're able to do.
     var meleeDir = _findMeleePath();
+    var rangedDir = rangedAttacks > 0 ? _findRangedPath() : null;
 
-    var rangedDir;
-    if (rangedAttacks > 0) rangedDir = _findRangedPath();
-
-    var walkDir;
+    Direction walkDir;
     if (monster.wantsToMelee) {
-      walkDir = meleeDir != null ? meleeDir : rangedDir;
+      walkDir = meleeDir ?? rangedDir;
     } else {
-      walkDir = rangedDir != null ? rangedDir : meleeDir;
+      walkDir = rangedDir ?? meleeDir;
     }
 
     if (walkDir == null) walkDir = Direction.none;
@@ -280,7 +278,7 @@ class AwakeState extends MonsterState {
     // a tolerable position, the monster will hill-climb to get into a local
     // optimal position (which basically means as far from the hero as possible
     // while still in range).
-    var best;
+    Direction best;
     var bestDistance = 0;
 
     if (isValidRangedPosition(pos)) {

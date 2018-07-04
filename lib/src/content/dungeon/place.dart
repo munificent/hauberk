@@ -31,7 +31,7 @@ abstract class Place {
 
   void applyThemes();
 
-  void addTheme(String theme, double strength, {spread = true}) {
+  void addTheme(String theme, double strength, {bool spread = true}) {
     themes.putIfAbsent(theme, () => 0.0);
     themes[theme] += strength;
     totalStrength += strength;
