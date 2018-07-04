@@ -31,6 +31,6 @@ class WhipMastery extends MasteryDiscipline implements TargetSkill {
     hit.scaleDamage(WhipMastery._whipScale(level));
 
     // TODO: Better effect.
-    return new BoltAction(target, hit, range: getRange(game), canMiss: true);
+    return BoltAction(target, hit, range: getRange(game), canMiss: true);
   }
 }

@@ -83,7 +83,7 @@ class Monster extends Actor {
   Monster(Game game, this.breed, int x, int y, this.generation)
       : super(game, x, y) {
     Debug.addMonster(this);
-    changeState(new AsleepState());
+    changeState(AsleepState());
 
     /// Give this some random variation within monsters of the same breed so
     /// they don't all become frightened at the same time.
@@ -112,7 +112,7 @@ class Monster extends Actor {
   /// and the target.
   bool canView(Vec target) {
     // Walk to the target.
-    for (final step in new Line(pos, target)) {
+    for (final step in Line(pos, target)) {
       if (step == target) return true;
       if (game.stage[step].blocksView) return false;
     }
@@ -126,7 +126,7 @@ class Monster extends Actor {
   /// and the target.
   bool canTarget(Vec target) {
     // Walk to the target.
-    for (final step in new Line(pos, target)) {
+    for (final step in Line(pos, target)) {
       if (step == target) return true;
       if (game.stage.actorAt(step) != null) return false;
       if (game.stage[step].blocksView) return false;
@@ -177,7 +177,7 @@ class Monster extends Actor {
         log("{1} is afraid!", this);
 
         _resetCharges();
-        changeState(new AfraidState());
+        changeState(AfraidState());
       } else if (rng.float(1.4) <= notice) {
         if (isVisibleToHero) {
           log("{1} wakes up!", this);
@@ -187,24 +187,24 @@ class Monster extends Actor {
 
         _alertness = _maxAlertness;
         _resetCharges();
-        changeState(new AwakeState());
+        changeState(AwakeState());
       }
     } else if (isAwake) {
       if (_fear > _frightenThreshold) {
         log("{1} is afraid!", this);
-        changeState(new AfraidState());
+        changeState(AfraidState());
       } else if (_alertness < 0.01) {
         if (isVisibleToHero) {
           log("{1} falls asleep!", this);
         }
 
         _alertness = 0.0;
-        changeState(new AsleepState());
+        changeState(AsleepState());
       }
     } else if (isAfraid) {
       if (_fear <= 0.0) {
         log("{1} grows courageous!", this);
-        changeState(new AwakeState());
+        changeState(AwakeState());
       }
     }
   }

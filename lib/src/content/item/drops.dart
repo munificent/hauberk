@@ -6,22 +6,22 @@ import 'items.dart';
 
 Drop parseDrop(String name, int depth) {
   var itemType = Items.types.tryFind(name);
-  if (itemType != null) return new _ItemDrop(itemType, depth);
+  if (itemType != null) return _ItemDrop(itemType, depth);
 
-  return new _TagDrop(name, depth);
+  return _TagDrop(name, depth);
 }
 
 /// Creates a [Drop] that has a [chance]% chance of dropping [drop].
 Drop percentDrop(int chance, String drop, int depth) {
-  return new _PercentDrop(chance, parseDrop(drop, depth));
+  return _PercentDrop(chance, parseDrop(drop, depth));
 }
 
 /// Creates a [Drop] that drops all of [drops].
-Drop dropAllOf(List<Drop> drops) => new _AllOfDrop(drops);
+Drop dropAllOf(List<Drop> drops) => _AllOfDrop(drops);
 
 Drop repeatDrop(int count, drop, [int level]) {
   if (drop is String) drop = parseDrop(drop, level);
-  return new _RepeatDrop(count, drop);
+  return _RepeatDrop(count, drop);
 }
 
 /// Drops an item of a given type.

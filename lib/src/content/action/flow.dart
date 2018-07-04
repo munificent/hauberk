@@ -37,8 +37,7 @@ class FlowAction extends ElementAction {
     if (_tiles == null) {
       // TODO: Use a different flow that makes diagonal moves more expensive to
       // give more natural circular behavior?
-      _flow =
-          new MotilityFlow(game.stage, _from, _motilities, ignoreActors: true);
+      _flow = MotilityFlow(game.stage, _from, _motilities, ignoreActors: true);
 
       _tiles = _flow.reachable
           .takeWhile((pos) => _flow.costAt(pos) <= _hit.range)
@@ -73,8 +72,7 @@ class FlowSelfAction extends Action {
   FlowSelfAction(this._attack, this._motilities);
 
   ActionResult onPerform() {
-    return alternate(
-        new FlowAction(actor.pos, _attack.createHit(), _motilities));
+    return alternate(FlowAction(actor.pos, _attack.createHit(), _motilities));
   }
 }
 
@@ -86,6 +84,6 @@ class FlowFromAction extends Action {
   FlowFromAction(this._attack, this._pos, this._motilities);
 
   ActionResult onPerform() {
-    return alternate(new FlowAction(_pos, _attack.createHit(), _motilities));
+    return alternate(FlowAction(_pos, _attack.createHit(), _motilities));
   }
 }

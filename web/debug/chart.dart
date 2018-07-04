@@ -12,16 +12,13 @@ import 'histogram.dart';
 
 final _svg = html.querySelector("svg") as svg.SvgElement;
 
-final _breedCounts =
-    new List.generate(Option.maxDepth, (_) => new Histogram<String>());
+final _breedCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
 List<String> _breedNames;
 
-final _itemCounts =
-    new List.generate(Option.maxDepth, (_) => new Histogram<String>());
+final _itemCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
 List<String> _itemNames;
 
-final _affixCounts =
-    new List.generate(Option.maxDepth, (_) => new Histogram<String>());
+final _affixCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
 List<String> _affixNames;
 
 final _colors = <String, String>{};
@@ -218,7 +215,7 @@ void _drawAffixes() {
 
 void _redraw(List<Histogram<String>> histograms, List<String> labels,
     String describe(String label)) {
-  var buffer = new StringBuffer();
+  var buffer = StringBuffer();
 
   for (var depth = 0; depth < Option.maxDepth; depth++) {
     var histogram = histograms[depth];

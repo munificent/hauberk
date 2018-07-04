@@ -9,5 +9,5 @@ class SenseItems extends Spell implements ActionSkill {
   int get baseFocusCost => 18;
   int get range => 20;
 
-  Action onGetAction(Game game) => new DetectAction([DetectType.item], range);
+  Action onGetAction(Game game) => DetectAction([DetectType.item], range);
 }

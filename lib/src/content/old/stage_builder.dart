@@ -23,7 +23,7 @@ abstract class StageBuilder {
   void fill(TileType tile) {
     for (var y = 0; y < stage.height; y++) {
       for (var x = 0; x < stage.width; x++) {
-        setTile(new Vec(x, y), tile);
+        setTile(Vec(x, y), tile);
       }
     }
   }

@@ -41,7 +41,7 @@ class ItemScreen extends Screen<Input> {
   ItemScreen.home(this._content, this._save) : _place = _Place.home;
 
   ItemScreen.shop(this._content, this._save, Shop shop)
-      : _place = new _ShopPlace(shop);
+      : _place = _ShopPlace(shop);
 
   bool handleInput(Input input) {
     if (_mode.handleInput(input, this)) return true;
@@ -94,8 +94,7 @@ class ItemScreen extends Screen<Input> {
     terminal.writeAt(
         0, terminal.height - 1, "${_mode.helpText(this)}", UIHue.helpText);
 
-    var bar =
-        new Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
+    var bar = Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
     for (var y = 2; y < 30; y++) {
       terminal.drawGlyph(49, y, bar);
     }
@@ -210,8 +209,8 @@ class ItemScreen extends Screen<Input> {
 
 /// A source of items not on the hero's person.
 class _Place {
-  static const home = const _Place();
-  static const crucible = const _CruciblePlace();
+  static const home = _Place();
+  static const crucible = _CruciblePlace();
 
   const _Place();
 
@@ -274,8 +273,8 @@ class _ShopPlace implements _Place {
 /// What the user is currently doing on the item screen.
 abstract class Mode {
   static final view = const ViewMode();
-  static final put = new SelectMode(toHero: false);
-  static final get = new SelectMode(toHero: true);
+  static final put = SelectMode(toHero: false);
+  static final get = SelectMode(toHero: true);
 
   const Mode();
 
@@ -459,7 +458,7 @@ class SelectMode extends Mode {
 
     // Prompt the user for a count if the item is a stack.
     if (item.count > 1) {
-      screen._mode = new CountMode(screen, item, toHero: _toHero);
+      screen._mode = CountMode(screen, item, toHero: _toHero);
       screen.dirty();
       return false;
     }

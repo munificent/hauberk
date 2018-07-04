@@ -25,7 +25,7 @@ abstract class AquaticBiome extends Biome {
       }
     }
 
-    _dungeon.addPlace(new AquaticPlace(cells));
+    _dungeon.addPlace(AquaticPlace(cells));
   }
 
   /// Grows a randomly shaped blob starting at [start].
@@ -36,7 +36,7 @@ abstract class AquaticBiome extends Biome {
   /// will be.
   void _erode(List<Vec> starts, int size, int smoothing, TileType tile,
       [List<Vec> cells]) {
-    var edges = new Set<Vec>();
+    var edges = Set<Vec>();
 
     addNeighbors(Vec pos) {
       for (var dir in Direction.cardinal) {
@@ -103,7 +103,7 @@ abstract class AquaticBiome extends Biome {
 }
 
 class RiverBiome extends AquaticBiome {
-  final Set<Vec> _cells = new Set();
+  final Set<Vec> _cells = Set();
 
   RiverBiome(Dungeon dungeon) : super(dungeon);
 
@@ -138,15 +138,15 @@ class RiverBiome extends AquaticBiome {
 
     switch (side) {
       case Direction.none:
-        return new _RiverPoint(x, y);
+        return _RiverPoint(x, y);
       case Direction.n:
-        return new _RiverPoint(x, -2.0);
+        return _RiverPoint(x, -2.0);
       case Direction.s:
-        return new _RiverPoint(x, _dungeon.height + 2.0);
+        return _RiverPoint(x, _dungeon.height + 2.0);
       case Direction.e:
-        return new _RiverPoint(_dungeon.width + 2.0, y);
+        return _RiverPoint(_dungeon.width + 2.0, y);
       case Direction.w:
-        return new _RiverPoint(-2.0, y);
+        return _RiverPoint(-2.0, y);
     }
 
     throw "unreachable";
@@ -163,7 +163,7 @@ class RiverBiome extends AquaticBiome {
       var x = (start.x + end.x) / 2.0 + rng.float(length / 2.0) - length / 4.0;
       var y = (start.y + end.y) / 2.0 + rng.float(length / 2.0) - length / 4.0;
       var radius = (start.radius + end.radius) / 2.0;
-      var mid = new _RiverPoint(x, y, radius);
+      var mid = _RiverPoint(x, y, radius);
       _displace(dungeon, start, mid);
       _displace(dungeon, mid, end);
       return;
@@ -197,7 +197,7 @@ class RiverBiome extends AquaticBiome {
         // TODO: Different types of river and shore: ice, slime, blood, lava,
         // etc.
         var lengthSquared = xx * xx + yy * yy;
-        var pos = new Vec(x, y);
+        var pos = Vec(x, y);
         if (lengthSquared <= radiusSquared) {
           dungeon.setTileAt(pos, Tiles.water);
           _cells.add(pos);
@@ -215,7 +215,7 @@ class RiverBiome extends AquaticBiome {
     // itself.
     var shortStart =
         _cells.firstWhere((pos) => _dungeon.getTileAt(pos) == Tiles.grass);
-    var flow = new MotilityFlow(_dungeon.stage, shortStart, MotilitySet.walk);
+    var flow = MotilityFlow(_dungeon.stage, shortStart, MotilitySet.walk);
     var shore1 = flow.reachable.toSet();
     var shore2 = _cells
         .where((pos) =>
@@ -241,16 +241,16 @@ class RiverBiome extends AquaticBiome {
         Rect bridge;
         switch (dir) {
           case Direction.n:
-            bridge = new Rect.column(here.x, here.y, pos.y - here.y);
+            bridge = Rect.column(here.x, here.y, pos.y - here.y);
             break;
           case Direction.s:
-            bridge = new Rect.column(pos.x, pos.y, here.y - pos.y);
+            bridge = Rect.column(pos.x, pos.y, here.y - pos.y);
             break;
           case Direction.e:
-            bridge = new Rect.row(pos.x, pos.y, here.x - pos.x);
+            bridge = Rect.row(pos.x, pos.y, here.x - pos.x);
             break;
           case Direction.w:
-            bridge = new Rect.row(here.x, here.y, pos.x - here.x);
+            bridge = Rect.row(here.x, here.y, pos.x - here.x);
             break;
         }
         bridges.add(bridge);

@@ -56,7 +56,7 @@ class Sound {
     if (_flow != null && _stage.game.hero.pos == _flow.start) return;
 
     // TODO: Is this the right motility set?
-    _flow = new _SoundFlow(_stage);
+    _flow = _SoundFlow(_stage);
   }
 }
 

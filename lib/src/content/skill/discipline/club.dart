@@ -24,7 +24,7 @@ class ClubMastery extends MasteryDiscipline implements DirectionSkill {
   }
 
   Action getDirectionAction(Game game, int level, Direction dir) {
-    return new BashAction(dir, ClubMastery._bashScale(level));
+    return BashAction(dir, ClubMastery._bashScale(level));
   }
 }
 

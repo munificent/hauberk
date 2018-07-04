@@ -9,7 +9,7 @@ class Flee extends Spell implements ActionSkill {
   int get baseFocusCost => 6;
   int get range => 8;
 
-  Action onGetAction(Game game) => new TeleportAction(range);
+  Action onGetAction(Game game) => TeleportAction(range);
 }
 
 class Escape extends Spell implements ActionSkill {
@@ -19,7 +19,7 @@ class Escape extends Spell implements ActionSkill {
   int get baseFocusCost => 14;
   int get range => 16;
 
-  Action onGetAction(Game game) => new TeleportAction(range);
+  Action onGetAction(Game game) => TeleportAction(range);
 }
 
 class Disappear extends Spell implements ActionSkill {
@@ -29,7 +29,7 @@ class Disappear extends Spell implements ActionSkill {
   int get baseFocusCost => 40;
   int get range => 100;
 
-  Action onGetAction(Game game) => new TeleportAction(range);
+  Action onGetAction(Game game) => TeleportAction(range);
 }
 
 // TODO: These spells are all kind of similar and boring. Might be good if they

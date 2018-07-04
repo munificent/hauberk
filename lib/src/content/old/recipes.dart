@@ -66,5 +66,5 @@ void recipe(drop, Map<String, int> ingredientNames) {
       "and chance of a successful forging."
     ];
   }
-  Recipes.all.add(new Recipe(ingredients, drop, produces));
+  Recipes.all.add(Recipe(ingredients, drop, produces));
 }

@@ -33,7 +33,7 @@ class BoltMove extends RangedMove {
   }
 
   Action onGetAction(Monster monster) =>
-      new BoltAction(monster.game.hero.pos, attack.createHit());
+      BoltAction(monster.game.hero.pos, attack.createHit());
 
   String toString() => "Bolt $attack rate: $rate";
 }

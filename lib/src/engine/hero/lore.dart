@@ -38,7 +38,7 @@ class Lore {
     _kills[weaponType]++;
   }
 
-  Map<String, int> get killsByWeapon => new Map<String, int>.from(_kills);
+  Map<String, int> get killsByWeapon => Map<String, int>.from(_kills);
 
   /// The number of monsters of [breed] that the hero has detected.
   int seen(Breed breed) => _seen[breed] ?? 0;
@@ -49,6 +49,6 @@ class Lore {
   /// The number of times the hero has hit a monster using a weapon with [tag].
   int killsUsing(String tag) => _kills[tag] ?? 0;
 
-  Lore clone() => new Lore.from(new Map<Breed, int>.from(_seen),
-      new Map<Breed, int>.from(_slain), new Map<String, int>.from(_kills));
+  Lore clone() => Lore.from(Map<Breed, int>.from(_seen),
+      Map<Breed, int>.from(_slain), Map<String, int>.from(_kills));
 }

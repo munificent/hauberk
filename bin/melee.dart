@@ -20,8 +20,8 @@ const simulationRounds = 20;
 Content content;
 Game game;
 
-var actions = new Queue<Action>();
-var gameResult = new GameResult();
+var actions = Queue<Action>();
+var gameResult = GameResult();
 
 var breeds = <int, Breed>{};
 
@@ -68,7 +68,7 @@ main(List<String> arguments) {
 void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
     [Map<String, int> results]) {
   var save = content.createHero("blah");
-  game = new Game(content, save, 1);
+  game = Game(content, save, 1);
 
 //  save.attributes[Attribute.strength] = strength;
 //  save.attributes[Attribute.agility] = agility;
@@ -77,7 +77,7 @@ void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
 //  save.attributes[Attribute.will] = 20;
 
   for (var item in gear) {
-    save.equipment.tryAdd(new Item(item, 1));
+    save.equipment.tryAdd(Item(item, 1));
   }
 
   var match = findMatch(save);
@@ -148,16 +148,16 @@ int runMatch(HeroSave save, int monsterHealth) {
 bool fight(HeroSave save, int monsterHealth) {
   var breed = breeds.putIfAbsent(
       monsterHealth,
-      () => new Breed("meat", Pronoun.it, null, [new Attack(null, "hits", 20)],
-          [], null, SpawnLocation.anywhere, MotilitySet.walk,
+      () => Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
+          null, SpawnLocation.anywhere, MotilitySet.walk,
           meander: 0, maxHealth: monsterHealth));
 
-  var monster = new Monster(game, breed, 0, 0, 1);
-  var hero = new Hero(game, Vec.zero, save);
+  var monster = Monster(game, breed, 0, 0, 1);
+  var hero = Hero(game, Vec.zero, save);
   game.hero = hero;
 
   while (true) {
-    var action = new AttackAction(monster);
+    var action = AttackAction(monster);
     action.bind(hero);
     action.perform(actions, [], gameResult);
 
@@ -166,7 +166,7 @@ bool fight(HeroSave save, int monsterHealth) {
       return true;
     }
 
-    action = new AttackAction(hero);
+    action = AttackAction(hero);
     action.bind(monster);
     action.perform(actions, [], gameResult);
 

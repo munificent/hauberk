@@ -16,7 +16,7 @@ class HealMove extends Move {
   }
 
   Action onGetAction(Monster monster) {
-    return new HealAction(_amount);
+    return HealAction(_amount);
   }
 
   String toString() => "Heal $_amount rate: $rate";

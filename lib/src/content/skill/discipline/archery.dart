@@ -30,6 +30,6 @@ class Archery extends MasteryDiscipline implements TargetSkill {
   Action getTargetAction(Game game, int level, Vec target) {
     var hit = game.hero.createRangedHit();
     var focus = Archery.focusCost(level);
-    return new FocusAction(focus, new BoltAction(target, hit, canMiss: true));
+    return FocusAction(focus, BoltAction(target, hit, canMiss: true));
   }
 }

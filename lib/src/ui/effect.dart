@@ -32,46 +32,46 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.bolt:
     case EventType.cone:
       // TODO: Use something better for arrows.
-      effects.add(new ElementEffect(event.pos, event.element));
+      effects.add(ElementEffect(event.pos, event.element));
       break;
 
     case EventType.toss:
-      effects.add(new ItemEffect(event.pos, event.other));
+      effects.add(ItemEffect(event.pos, event.other));
       break;
 
     case EventType.hit:
-      effects.add(new HitEffect(event.actor));
+      effects.add(HitEffect(event.actor));
       break;
 
     case EventType.die:
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
-        effects.add(new ParticleEffect(event.actor.x, event.actor.y, brickRed));
+        effects.add(ParticleEffect(event.actor.x, event.actor.y, brickRed));
       }
       break;
 
     case EventType.heal:
-      effects.add(new HealEffect(event.actor.pos.x, event.actor.pos.y));
+      effects.add(HealEffect(event.actor.pos.x, event.actor.pos.y));
       break;
 
     case EventType.detect:
-      effects.add(new DetectEffect(event.pos));
+      effects.add(DetectEffect(event.pos));
       break;
 
     case EventType.map:
-      effects.add(new MapEffect(event.pos));
+      effects.add(MapEffect(event.pos));
       break;
 
     case EventType.teleport:
       var numParticles = (event.actor.pos - event.pos).kingLength * 2;
       for (var i = 0; i < numParticles; i++) {
-        effects.add(new TeleportEffect(event.pos, event.actor.pos));
+        effects.add(TeleportEffect(event.pos, event.actor.pos));
       }
       break;
 
     case EventType.spawn:
       // TODO: Something more interesting.
-      effects.add(new FrameEffect(event.actor.pos, '*', ash));
+      effects.add(FrameEffect(event.actor.pos, '*', ash));
       break;
 
     case EventType.wind:
@@ -80,18 +80,18 @@ void addEffects(List<Effect> effects, Event event) {
 
     case EventType.knockBack:
       // TODO: Something more interesting.
-      effects.add(new FrameEffect(event.pos, "*", buttermilk));
+      effects.add(FrameEffect(event.pos, "*", buttermilk));
       break;
 
     case EventType.slash:
     case EventType.stab:
       var line = _directionLines[event.dir];
       // TODO: Element color.
-      effects.add(new FrameEffect(event.pos, line, ash));
+      effects.add(FrameEffect(event.pos, line, ash));
       break;
 
     case EventType.gold:
-      effects.add(new TreasureEffect(event.pos, event.other));
+      effects.add(TreasureEffect(event.pos, event.other));
       break;
   }
 }
@@ -108,7 +108,7 @@ List<Glyph> _glyphs(String chars, List<Color> colors) {
   var results = <Glyph>[];
   for (var char in chars.codeUnits) {
     for (var color in colors) {
-      results.add(new Glyph.fromCharCode(char, color));
+      results.add(Glyph.fromCharCode(char, color));
     }
   }
 
@@ -225,7 +225,7 @@ class FrameEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(pos.x, pos.y, new Glyph(char, color));
+    drawGlyph(pos.x, pos.y, Glyph(char, color));
   }
 }
 
@@ -266,8 +266,7 @@ class HitEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var back = const [salmon, brickRed, garnet, Color.black][frame ~/ 6];
 
-    drawGlyph(
-        actor.x, actor.y, new Glyph(' 123456789'[health], Color.black, back));
+    drawGlyph(actor.x, actor.y, Glyph(' 123456789'[health], Color.black, back));
   }
 }
 
@@ -292,7 +291,7 @@ class ParticleEffect implements Effect {
     x += h;
     y += v;
 
-    final pos = new Vec(x.toInt(), y.toInt());
+    final pos = Vec(x.toInt(), y.toInt());
     if (!game.stage.bounds.contains(pos)) return false;
     if (!game.stage[pos].isFlyable) return false;
 
@@ -300,7 +299,7 @@ class ParticleEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(x.toInt(), y.toInt(), new Glyph('*', color));
+    drawGlyph(x.toInt(), y.toInt(), Glyph('*', color));
   }
 }
 
@@ -340,23 +339,23 @@ class TeleportEffect implements Effect {
     y += v;
 
     age++;
-    return (new Vec(x.toInt(), y.toInt()) - target) > 1;
+    return (Vec(x.toInt(), y.toInt()) - target) > 1;
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    var pos = new Vec(x.toInt(), y.toInt());
+    var pos = Vec(x.toInt(), y.toInt());
     if (!game.stage.bounds.contains(pos)) return;
 
     var char = _getChar(h, v);
     var color = rng.item(_colors);
 
-    drawGlyph(pos.x, pos.y, new Glyph.fromCharCode(char, color));
+    drawGlyph(pos.x, pos.y, Glyph.fromCharCode(char, color));
   }
 
   /// Chooses a "line" character based on the vector [x], [y]. It will try to
   /// pick a line that follows the vector.
   _getChar(num x, num y) {
-    var velocity = new Vec((x * 10).toInt(), (y * 10).toInt());
+    var velocity = Vec((x * 10).toInt(), (y * 10).toInt());
     if (velocity < 5) return CharCode.bullet;
 
     var angle = math.atan2(x, y) / (math.pi * 2) * 16 + 8;
@@ -394,10 +393,10 @@ class HealEffect implements Effect {
         break;
     }
 
-    drawGlyph(x - 1, y, new Glyph('-', back));
-    drawGlyph(x + 1, y, new Glyph('-', back));
-    drawGlyph(x, y - 1, new Glyph('|', back));
-    drawGlyph(x, y + 1, new Glyph('|', back));
+    drawGlyph(x - 1, y, Glyph('-', back));
+    drawGlyph(x + 1, y, Glyph('-', back));
+    drawGlyph(x, y - 1, Glyph('|', back));
+    drawGlyph(x, y + 1, Glyph('|', back));
   }
 }
 
@@ -419,9 +418,9 @@ class DetectEffect implements Effect {
 
   void render(Game game, DrawGlyph drawGlyph) {
     var radius = life ~/ 4;
-    var glyph = new Glyph("*", _colors[radius]);
+    var glyph = Glyph("*", _colors[radius]);
 
-    for (var pixel in new Circle(pos, radius).edge) {
+    for (var pixel in Circle(pos, radius).edge) {
       drawGlyph(pixel.x, pixel.y, glyph);
     }
   }
@@ -442,7 +441,7 @@ class MapEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var glyph = game.stage[pos].type.appearance as Glyph;
 
-    glyph = new Glyph.fromCharCode(
+    glyph = Glyph.fromCharCode(
         glyph.char,
         glyph.fore.blend(gold, life / _maxLife),
         glyph.back.blend(persimmon, life / _maxLife));

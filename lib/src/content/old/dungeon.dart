@@ -78,10 +78,10 @@ class OldDungeon {
     // escape.
 
     if (stage.width % 2 == 0 || stage.height % 2 == 0) {
-      throw new ArgumentError("The stage must be odd-sized.");
+      throw ArgumentError("The stage must be odd-sized.");
     }
 
-    _regions = new Array2D(stage.width, stage.height);
+    _regions = Array2D(stage.width, stage.height);
     fill(Tiles.wall);
 
     yield "Placing rooms";
@@ -91,7 +91,7 @@ class OldDungeon {
     // Fill in all of the empty space with mazes.
     for (var y = 1; y < bounds.height; y += 2) {
       for (var x = 1; x < bounds.width; x += 2) {
-        var pos = new Vec(x, y);
+        var pos = Vec(x, y);
         if (getTile(pos) != Tiles.wall) continue;
         _growMaze(pos);
       }
@@ -150,7 +150,7 @@ class OldDungeon {
   void fill(TileType tile) {
     for (var y = 0; y < stage.height; y++) {
       for (var x = 0; x < stage.width; x++) {
-        setTile(new Vec(x, y), tile);
+        setTile(Vec(x, y), tile);
       }
     }
   }
@@ -244,7 +244,7 @@ class OldDungeon {
       var x = rng.range((bounds.width - width) ~/ 2) * 2 + 1;
       var y = rng.range((bounds.height - height) ~/ 2) * 2 + 1;
 
-      var room = new Rect(x, y, width, height);
+      var room = Rect(x, y, width, height);
 
       var overlaps = false;
       for (var other in _rooms.keys) {
@@ -261,7 +261,7 @@ class OldDungeon {
   }
 
   void addConnector(int x, int y) {
-    var pos = new Vec(x, y);
+    var pos = Vec(x, y);
     if (!bounds.inflate(-1).contains(pos)) return;
 
     _connectors.add(pos);
@@ -291,7 +291,7 @@ class OldDungeon {
 
       // Find the regions this connector touches.
       var touchingJunction = false;
-      var regions = new Set<int>();
+      var regions = Set<int>();
       for (var dir in Direction.cardinal) {
         var region = _regions[pos + dir];
         if (region == null) continue;
@@ -374,7 +374,7 @@ class OldDungeon {
   }
 
   void _removeDeadEnds() {
-    var toCheck = new Queue<Vec>.from(_maze);
+    var toCheck = Queue<Vec>.from(_maze);
     while (toCheck.isNotEmpty) {
       var pos = toCheck.removeFirst();
 

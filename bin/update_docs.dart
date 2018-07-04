@@ -5,7 +5,7 @@ import 'package:markdown/markdown.dart';
 import 'package:path/path.dart' as p;
 
 final hauberkDir = p.dirname(p.dirname(p.fromUri(Platform.script)));
-final docDir = new Directory(p.join(hauberkDir, "doc"));
+final docDir = Directory(p.join(hauberkDir, "doc"));
 
 /// Regenerates the documentation HTML files from the Markdown sources.
 void main(List<String> arguments) {
@@ -13,12 +13,12 @@ void main(List<String> arguments) {
   var template = readFile(templatePath);
 
   if (arguments.contains("--watch")) {
-    var templateReadTime = new DateTime.now();
+    var templateReadTime = DateTime.now();
 
-    new Timer.periodic(new Duration(seconds: 2), (_) {
+    Timer.periodic(Duration(seconds: 2), (_) {
       if (modTime(templatePath).isAfter(templateReadTime)) {
         template = readFile(templatePath);
-        templateReadTime = new DateTime.now();
+        templateReadTime = DateTime.now();
       }
 
       buildDocs(templatePath, template);
@@ -48,13 +48,13 @@ void buildDocs(String templatePath, String template, {bool force = false}) {
 }
 
 DateTime modTime(String path) {
-  return new File(p.join(hauberkDir, path)).lastModifiedSync();
+  return File(p.join(hauberkDir, path)).lastModifiedSync();
 }
 
 String readFile(String path) {
-  return new File(p.join(hauberkDir, path)).readAsStringSync();
+  return File(p.join(hauberkDir, path)).readAsStringSync();
 }
 
 void writeFile(String path, String contents) {
-  new File(p.join(hauberkDir, path)).writeAsStringSync(contents);
+  File(p.join(hauberkDir, path)).writeAsStringSync(contents);
 }

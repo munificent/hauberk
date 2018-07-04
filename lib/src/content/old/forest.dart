@@ -29,7 +29,7 @@ class Forest extends StageBuilder {
     for (var i = 0; i < numMeadows; i++) {
       var x = rng.range(0, stage.width);
       var y = rng.range(0, stage.height);
-      meadows.add(new Vec(x, y));
+      meadows.add(Vec(x, y));
     }
 
     // Space them out more evenly by moving each point to the centroid of its
@@ -39,7 +39,7 @@ class Forest extends StageBuilder {
     // http://en.wikipedia.org/wiki/Lloyd%27s_algorithm
     for (var i = 0; i < voronoiIterations; i++) {
       // For each cell in the stage, determine which point it's nearest to.
-      var regions = new List.generate(numMeadows, (i) => [meadows[i]]);
+      var regions = List.generate(numMeadows, (i) => [meadows[i]]);
       for (var cell in stage.bounds) {
         var nearest;
         var nearestDistanceSquared = 99999999;
@@ -100,7 +100,7 @@ class Forest extends StageBuilder {
   }
 
   void carvePath(Vec from, Vec to) {
-    for (var pos in new Line(from, to)) {
+    for (var pos in Line(from, to)) {
       if (pos == to) break;
 
       // Make slightly wider passages.
@@ -111,7 +111,7 @@ class Forest extends StageBuilder {
   }
 
   void carveCircle(Vec center, int radius) {
-    var bounds = new Rect.leftTopRightBottom(
+    var bounds = Rect.leftTopRightBottom(
         math.max(1, center.x - radius),
         math.max(1, center.y - radius),
         math.min(center.x + radius, stage.width - 1),

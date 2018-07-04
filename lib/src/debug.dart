@@ -16,7 +16,7 @@ class Debug {
 
   static void addMonster(Monster monster) {
     if (!enabled) return;
-    _monsters[monster] = new _MonsterLog(monster);
+    _monsters[monster] = _MonsterLog(monster);
   }
 
   static void removeMonster(Monster monster) {
@@ -49,7 +49,7 @@ class Debug {
 
 class _MonsterLog {
   final Monster monster;
-  final Queue<String> log = new Queue<String>();
+  final Queue<String> log = Queue<String>();
 
   _MonsterLog(this.monster);
 
@@ -59,7 +59,7 @@ class _MonsterLog {
   }
 
   String toString() {
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
 
     buffer.write(monster.breed.name);
     buffer.write(" health: ${monster.health}/${monster.maxHealth}");

@@ -69,7 +69,7 @@ class DirectionDialog extends Screen<Input> {
           : Color.darkYellow;
 
       _gameScreen.drawStageGlyph(terminal, _game.hero.pos.x + dir.x,
-          _game.hero.pos.y + dir.y, new Glyph(char, color));
+          _game.hero.pos.y + dir.y, Glyph(char, color));
     }
 
     // TODO: Let skill filter out valid directions.

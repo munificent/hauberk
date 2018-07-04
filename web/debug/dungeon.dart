@@ -12,7 +12,7 @@ import 'package:hauberk/src/hues.dart';
 
 import 'histogram.dart';
 
-final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
+final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 var depthSelect = html.querySelector("#depth") as html.SelectElement;
 var canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
@@ -30,7 +30,7 @@ int get depth {
 
 main() {
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(new html.OptionElement(
+    depthSelect.append(html.OptionElement(
         data: i.toString(), value: i.toString(), selected: i == 1));
   }
 
@@ -47,7 +47,7 @@ main() {
   });
 
   stateCanvas.onMouseMove.listen((event) {
-    hover(new Vec(event.offset.x ~/ 8, event.offset.y ~/ 8));
+    hover(Vec(event.offset.x ~/ 8, event.offset.y ~/ 8));
   });
 
   generate();
@@ -57,7 +57,7 @@ void hover(Vec pos) {
   if (pos == hoverPos) return;
   hoverPos = pos;
 
-  var buffer = new StringBuffer();
+  var buffer = StringBuffer();
   var dungeon = Dungeon.last;
   if (dungeon.bounds.contains(pos)) {
     buffer.write("<h2>Hover $pos</h2>");
@@ -102,31 +102,31 @@ void hover(Vec pos) {
 }
 
 Future generate() async {
-  _game = new Game(content, save, depth);
+  _game = Game(content, save, depth);
   var stage = _game.stage;
 
-  terminal = new RetroTerminal(stage.width, stage.height, "../font_8.png",
+  terminal = RetroTerminal(stage.width, stage.height, "../font_8.png",
       canvas: canvas, charWidth: 8, charHeight: 8);
 
   stateCanvas.width = stage.width * 8;
   stateCanvas.height = stage.height * 8;
 
-  var start = new DateTime.now();
+  var start = DateTime.now();
   for (var _ in _game.generate()) {
 //    print(event);
     render();
 
-    var elapsed = new DateTime.now().difference(start);
+    var elapsed = DateTime.now().difference(start);
     if (elapsed.inMilliseconds > 60) {
       await html.window.animationFrame;
-      start = new DateTime.now();
+      start = DateTime.now();
     }
   }
 
   _game.stage.refreshView();
   render(showInfo: false);
 
-  var monsters = new Histogram<Breed>();
+  var monsters = Histogram<Breed>();
   for (var actor in stage.actors) {
     if (actor is Monster) {
       var breed = actor.breed;
@@ -134,7 +134,7 @@ Future generate() async {
     }
   }
 
-  var tableContents = new StringBuffer();
+  var tableContents = StringBuffer();
   tableContents.write('''
     <thead>
     <tr>
@@ -154,7 +154,8 @@ Future generate() async {
       <tr>
         <td>${monsters.count(breed)}</td>
         <td>
-          <pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
+          <pre><span style="color: ${glyph
+            .fore.cssColor}">${String.fromCharCodes([glyph.char])}</span></pre>
         </td>
         <td>${breed.name}</td>
         <td>${breed.depth}</td>
@@ -191,7 +192,7 @@ Future generate() async {
     <tbody>
     ''');
 
-  var items = new Histogram<String>();
+  var items = Histogram<String>();
   for (var item in stage.allItems) {
     items.add(item.toString());
   }
@@ -225,14 +226,12 @@ void render({bool showInfo = true}) {
 
   for (var y = 0; y < stage.height; y++) {
     for (var x = 0; x < stage.width; x++) {
-      var pos = new Vec(x, y);
+      var pos = Vec(x, y);
       var tile = stage[pos];
       var glyph = tile.type.appearance as Glyph;
 
       var light = ((1.0 - tile.illumination / 128) * 0.5).clamp(0.0, 1.0);
-      glyph = new Glyph.fromCharCode(
-          glyph.char,
-          glyph.fore.blend(nearBlack, light),
+      glyph = Glyph.fromCharCode(glyph.char, glyph.fore.blend(nearBlack, light),
           glyph.back.blend(nearBlack, light));
 
       var items = stage.itemsAt(pos);
@@ -243,7 +242,7 @@ void render({bool showInfo = true}) {
       var actor = stage.actorAt(pos);
       if (actor != null) {
         if (actor.appearance is String) {
-          glyph = new Glyph.fromCharCode(CharCode.at, ash);
+          glyph = Glyph.fromCharCode(CharCode.at, ash);
         } else {
           glyph = actor.appearance as Glyph;
         }
@@ -260,17 +259,17 @@ void render({bool showInfo = true}) {
 
 //  if (!showInfo) return;
 
-  const themeColors = const {
-    "laboratory": const [255.0, 0.0, 255.0],
-    "aquatic": const [0.0, 0.0, 255.0],
-    "passage": const [255.0, 0.0, 0.0],
-    "room": const [0.0, 0.0, 0.0],
-    "chamber": const [255.0, 255.0, 255.0],
-    "storeroom": const [128.0, 128.0, 0.0],
-    "closet": const [128.0, 128.0, 0.0],
-    "hall": const [255.0, 255.0, 0.0],
-    "great-hall": const [255.0, 255.0, 0.0],
-    "workshop": const [0.0, 255.0, 0.0],
+  const themeColors = {
+    "laboratory": [255.0, 0.0, 255.0],
+    "aquatic": [0.0, 0.0, 255.0],
+    "passage": [255.0, 0.0, 0.0],
+    "room": [0.0, 0.0, 0.0],
+    "chamber": [255.0, 255.0, 255.0],
+    "storeroom": [128.0, 128.0, 0.0],
+    "closet": [128.0, 128.0, 0.0],
+    "hall": [255.0, 255.0, 0.0],
+    "great-hall": [255.0, 255.0, 0.0],
+    "workshop": [0.0, 255.0, 0.0],
   };
 
   for (var place in Dungeon.debugPlaces) {

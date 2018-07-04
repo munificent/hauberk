@@ -7,7 +7,7 @@ import 'weapons.dart';
 
 /// Static class containing all of the [ItemType]s.
 class Items {
-  static final types = new ResourceSet<ItemType>();
+  static final types = ResourceSet<ItemType>();
 
   static void initialize() {
     types.defineTags("item");

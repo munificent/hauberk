@@ -100,7 +100,7 @@ class WizardDialog extends Screen<Input> {
   }
 
   void _dropItem() {
-    ui.push(new WizardDropDialog(_game));
+    ui.push(WizardDropDialog(_game));
   }
 }
 
@@ -128,7 +128,7 @@ class WizardDropDialog extends Screen<Input> {
     switch (keyCode) {
       case KeyCode.enter:
         for (var itemType in _matchedItems) {
-          var item = new Item(itemType, itemType.maxStack);
+          var item = Item(itemType, itemType.maxStack);
           _game.stage.addItem(item, _game.hero.pos);
           _game.log.cheat("Dropped {1}.", item);
         }
@@ -153,7 +153,7 @@ class WizardDropDialog extends Screen<Input> {
 
         if (keyCode >= KeyCode.a && keyCode <= KeyCode.z ||
             keyCode >= KeyCode.zero && keyCode <= KeyCode.nine) {
-          _pattern += new String.fromCharCodes([keyCode]).toLowerCase();
+          _pattern += String.fromCharCodes([keyCode]).toLowerCase();
           dirty();
           return true;
         }

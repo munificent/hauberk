@@ -14,5 +14,5 @@ class Swordfighting extends MasteryDiscipline {
       " Parrying increases dodge by ${_parryDefense(level)}.";
 
   Defense getDefense(Hero hero, int level) =>
-      new Defense(_parryDefense(level), "{1} parr[y|ies] {2}.");
+      Defense(_parryDefense(level), "{1} parr[y|ies] {2}.");
 }

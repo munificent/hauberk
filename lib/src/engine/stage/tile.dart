@@ -9,10 +9,10 @@ import 'lighting.dart';
 /// move into a tile, the actor must have one of the tile's motilities.
 class Motility extends MotilitySet {
   // TODO: Should these be in content, engine, or a mixture of both?
-  static final Motility door = new Motility("door");
-  static final Motility fly = new Motility("fly");
-  static final Motility swim = new Motility("swim");
-  static final Motility walk = new Motility("walk");
+  static final Motility door = Motility("door");
+  static final Motility fly = Motility("fly");
+  static final Motility swim = Motility("swim");
+  static final Motility walk = Motility("walk");
 
   /// Each motility object has a bit value that is used by MotilitySet to store
   /// a set of motilities efficiently.
@@ -26,10 +26,10 @@ class Motility extends MotilitySet {
 }
 
 class MotilitySet {
-  static final doorAndFly = new MotilitySet([Motility.door, Motility.fly]);
-  static final doorAndWalk = new MotilitySet([Motility.door, Motility.walk]);
-  static final flyAndWalk = new MotilitySet([Motility.fly, Motility.walk]);
-  static final walk = new MotilitySet([Motility.walk]);
+  static final doorAndFly = MotilitySet([Motility.door, Motility.fly]);
+  static final doorAndWalk = MotilitySet([Motility.door, Motility.walk]);
+  static final flyAndWalk = MotilitySet([Motility.fly, Motility.walk]);
+  static final walk = MotilitySet([Motility.walk]);
 
   int _bitMask = 0;
 
@@ -41,7 +41,7 @@ class MotilitySet {
       }
     }
 
-    return new MotilitySet._(mask);
+    return MotilitySet._(mask);
   }
 
   MotilitySet._(this._bitMask);
@@ -49,12 +49,12 @@ class MotilitySet {
   /// Creates a new MotilitySet containing all of the motilities of this and
   /// [other].
   MotilitySet operator +(MotilitySet other) =>
-      new MotilitySet._(_bitMask | other._bitMask);
+      MotilitySet._(_bitMask | other._bitMask);
 
   /// Creates a new MotilitySet containing all of the motilities of this
   /// except for the motilities in [other].
   MotilitySet operator -(MotilitySet other) =>
-      new MotilitySet._(_bitMask & ~other._bitMask);
+      MotilitySet._(_bitMask & ~other._bitMask);
 
   bool contains(Motility motility) => _bitMask & motility._bitMask != 0;
 
@@ -79,7 +79,7 @@ class TileType {
   TileType(this.name, this.appearance, Iterable<Motility> motilities,
       {int emanation, this.isExit})
       : emanation = emanation ?? 0,
-        motilities = new MotilitySet(motilities);
+        motilities = MotilitySet(motilities);
 
   bool canEnter(Motility motility) => this.motilities.contains(motility);
 

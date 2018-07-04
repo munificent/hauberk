@@ -14,9 +14,9 @@ abstract class HeroInfoDialog extends Screen<Input> {
 
   factory HeroInfoDialog(Hero hero) {
     var screens = [
-      new HeroEquipmentDialog(hero),
-      new HeroResistancesDialog(hero),
-      new HeroLoreDialog(hero)
+      HeroEquipmentDialog(hero),
+      HeroResistancesDialog(hero),
+      HeroLoreDialog(hero)
     ];
 
     for (var i = 0; i < screens.length; i++) {

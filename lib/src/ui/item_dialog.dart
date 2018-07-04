@@ -39,18 +39,18 @@ class ItemDialog extends Screen<Input> {
   /// True if the item dialog supports tabbing between item lists.
   bool get canSwitchLocations => _command.allowedLocations.length > 1;
 
-  ItemDialog.drop(this._gameScreen) : _command = new _DropItemCommand();
+  ItemDialog.drop(this._gameScreen) : _command = _DropItemCommand();
 
-  ItemDialog.use(this._gameScreen) : _command = new _UseItemCommand();
+  ItemDialog.use(this._gameScreen) : _command = _UseItemCommand();
 
-  ItemDialog.toss(this._gameScreen) : _command = new _TossItemCommand();
+  ItemDialog.toss(this._gameScreen) : _command = _TossItemCommand();
 
   ItemDialog.pickUp(this._gameScreen)
-      : _command = new _PickUpItemCommand(),
+      : _command = _PickUpItemCommand(),
         _location = ItemLocation.onGround;
 
   ItemDialog.unequip(this._gameScreen)
-      : _command = new _UseItemCommand(),
+      : _command = _UseItemCommand(),
         _location = ItemLocation.equipment;
 
   bool handleInput(Input input) {
@@ -584,7 +584,7 @@ class _DropItemCommand extends _ItemCommand {
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     dialog._gameScreen.game.hero
-        .setNextAction(new DropAction(location, item, count));
+        .setNextAction(DropAction(location, item, count));
     dialog.ui.pop();
   }
 }
@@ -609,7 +609,7 @@ class _UseItemCommand extends _ItemCommand {
 
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
-    dialog._gameScreen.game.hero.setNextAction(new UseAction(location, item));
+    dialog._gameScreen.game.hero.setNextAction(UseAction(location, item));
     dialog.ui.pop();
   }
 }
@@ -640,9 +640,9 @@ class _TossItemCommand extends _ItemCommand {
     dialog._gameScreen.game.hero.modifyHit(hit, HitType.toss);
 
     // Now we need a target.
-    dialog.ui.goTo(new TargetDialog(dialog._gameScreen, hit.range, (target) {
+    dialog.ui.goTo(TargetDialog(dialog._gameScreen, hit.range, (target) {
       dialog._gameScreen.game.hero
-          .setNextAction(new TossAction(location, item, hit, target));
+          .setNextAction(TossAction(location, item, hit, target));
     }));
   }
 }
@@ -661,7 +661,7 @@ class _PickUpItemCommand extends _ItemCommand {
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     // Pick up item and return to the game
-    dialog._gameScreen.game.hero.setNextAction(new PickUpAction(item));
+    dialog._gameScreen.game.hero.setNextAction(PickUpAction(item));
     dialog.ui.pop();
   }
 }

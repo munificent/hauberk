@@ -68,7 +68,7 @@ class Log {
 
   final Queue<Message> messages;
 
-  Log() : messages = new Queue<Message>();
+  Log() : messages = Queue<Message>();
 
   void message(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     add(LogType.message, message, noun1, noun2, noun3);
@@ -108,7 +108,7 @@ class Log {
     }
 
     // It's a new message.
-    messages.add(new Message(type, message));
+    messages.add(Message(type, message));
     if (messages.length > maxMessages) messages.removeFirst();
   }
 
@@ -215,11 +215,11 @@ class Log {
   ///
   /// If [force] is `true`, then a trailing "s" will be added to the end if
   /// [isFirst] is `false` and [text] doesn't have any formatting.
-  static String _categorize(String text, {bool isFirst, bool force: false}) {
+  static String _categorize(String text, {bool isFirst, bool force = false}) {
     assert(isFirst != null);
 
-    var optionalSuffix = new RegExp(r'\[(\w+?)\]');
-    var irregular = new RegExp(r'\[([^|]+)\|([^\]]+)\]');
+    var optionalSuffix = RegExp(r'\[(\w+?)\]');
+    var irregular = RegExp(r'\[([^|]+)\|([^\]]+)\]');
 
     // If it's a regular word in second category, just add an "s".
     if (force && !isFirst && !text.contains("[")) return "${text}s";
@@ -287,22 +287,22 @@ class Pronoun {
 
 class LogType {
   /// Normal log messages.
-  static const message = const LogType._("message");
+  static const message = LogType._("message");
 
   /// Messages when the player tries an invalid action.
-  static const error = const LogType._("error");
+  static const error = LogType._("error");
 
   /// Messages related to the hero's quest.
-  static const quest = const LogType._("quest");
+  static const quest = LogType._("quest");
 
   /// Messages when the hero levels up or gains powers.
-  static const gain = const LogType._("gain");
+  static const gain = LogType._("gain");
 
   /// Help or tutorial messages.
-  static const help = const LogType._("help");
+  static const help = LogType._("help");
 
   /// Help or tutorial messages.
-  static const cheat = const LogType._("cheat");
+  static const cheat = LogType._("cheat");
 
   final String _name;
   const LogType._(this._name);

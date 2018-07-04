@@ -41,13 +41,12 @@ abstract class Pathfinder<T> {
 
   /// Perform an A* search from [start] trying to reach [end].
   T search() {
-    var paths = new BucketQueue<Path>();
+    var paths = BucketQueue<Path>();
 
     // The set of tiles we have completely explored already.
-    Array2D<bool> closedArray =
-        new Array2D<bool>(stage.width, stage.height, false);
+    Array2D<bool> closedArray = Array2D<bool>(stage.width, stage.height, false);
 
-    var startPath = new Path(Direction.none, start, 0, 0);
+    var startPath = Path(Direction.none, start, 0, 0);
     paths.add(startPath, priority(startPath, end));
 
     while (true) {
@@ -82,7 +81,7 @@ abstract class Pathfinder<T> {
         var cost = stepCost(neighbor, stage[neighbor]);
         if (cost == null) continue;
 
-        var newPath = new Path(
+        var newPath = Path(
             path.startDirection == Direction.none ? dir : path.startDirection,
             neighbor,
             path.length + 1,

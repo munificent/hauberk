@@ -8,25 +8,21 @@ import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';
 
-final allBreeds =
-    new List<Histogram<String>>.generate(101, (_) => new Histogram());
+final allBreeds = List<Histogram<String>>.generate(101, (_) => Histogram());
 
-final allSpawns =
-    new List<Histogram<String>>.generate(101, (_) => new Histogram());
+final allSpawns = List<Histogram<String>>.generate(101, (_) => Histogram());
 
-final allItems =
-    new List<Histogram<String>>.generate(101, (_) => new Histogram());
+final allItems = List<Histogram<String>>.generate(101, (_) => Histogram());
 
-final allAffixes =
-    new List<Histogram<String>>.generate(101, (_) => new Histogram());
+final allAffixes = List<Histogram<String>>.generate(101, (_) => Histogram());
 
-final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
+final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 Game game;
 
 main() {
   var content = createContent();
-  game = new Game(content, content.createHero("temp"), 1);
+  game = Game(content, content.createHero("temp"), 1);
 
   spawnStuff();
   generateTable();
@@ -78,7 +74,7 @@ void spawnStuff() {
 }
 
 void generateTable() {
-  var text = new StringBuffer();
+  var text = StringBuffer();
 
   text.write('''<thead>
     <tr>

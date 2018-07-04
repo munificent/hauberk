@@ -17,7 +17,7 @@ final terminals = [];
 UserInterface<Input> ui;
 
 addTerminal(String name, int w, [int h]) {
-  var element = new html.CanvasElement();
+  var element = html.CanvasElement();
   element.onDoubleClick.listen((_) {
     fullscreen(element);
   });
@@ -25,29 +25,29 @@ addTerminal(String name, int w, [int h]) {
   // Make the terminal.
   var file = "font_$w";
   if (h != null) file += "_$h";
-  var terminal = new RetroTerminal(width, height, "$file.png",
+  var terminal = RetroTerminal(width, height, "$file.png",
       canvas: element, charWidth: w, charHeight: h ?? w);
 
   terminals.add([name, element, terminal]);
 
   if (Debug.enabled) {
-    var debugBox = new html.PreElement();
+    var debugBox = html.PreElement();
     debugBox.id = "debug";
     html.document.body.children.add(debugBox);
 
     var lastPos;
     element.onMouseMove.listen((event) {
       // TODO: This is broken now that maps scroll. :(
-      var pixel = new Vec(event.offset.x - 4, event.offset.y - 4);
+      var pixel = Vec(event.offset.x - 4, event.offset.y - 4);
       var pos = terminal.pixelToChar(pixel);
-      var absolute = pixel + new Vec(element.offsetLeft, element.offsetTop);
+      var absolute = pixel + Vec(element.offsetLeft, element.offsetTop);
       if (pos != lastPos) debugHover(debugBox, absolute, pos);
       lastPos = pos;
     });
   }
 
   // Make a button for it.
-  var button = new html.ButtonElement();
+  var button = html.ButtonElement();
   button.innerHtml = name;
   button.onClick.listen((_) {
     for (var i = 0; i < terminals.length; i++) {
@@ -86,7 +86,7 @@ main() {
 
   html.querySelector("#game").append(terminals[fontIndex][1]);
 
-  ui = new UserInterface<Input>(terminals[fontIndex][2]);
+  ui = UserInterface<Input>(terminals[fontIndex][2]);
 
   // Set up the keyPress.
   ui.keyPress.bind(Input.ok, KeyCode.enter);
@@ -173,7 +173,7 @@ main() {
 
   ui.keyPress.bind(Input.wizard, KeyCode.w, shift: true, alt: true);
 
-  ui.push(new MainMenuScreen(content));
+  ui.push(MainMenuScreen(content));
 
   ui.handlingInput = true;
   ui.running = true;
@@ -181,7 +181,7 @@ main() {
 
 /// See: https://stackoverflow.com/a/29715395/9457
 void fullscreen(html.Element element) {
-  var jsElement = new JsObject.fromBrowserObject(element);
+  var jsElement = JsObject.fromBrowserObject(element);
 
   if (jsElement.hasProperty("requestFullscreen")) {
     jsElement.callMethod("requestFullscreen");

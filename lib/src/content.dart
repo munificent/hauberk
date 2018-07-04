@@ -28,13 +28,13 @@ Content createContent() {
   FloorDrops.initialize();
   Decor.initialize();
 
-  return new GameContent();
+  return GameContent();
 }
 
 class GameContent implements Content {
   Iterable<String> buildStage(
       Lore lore, Stage stage, int depth, Function(Vec) placeHero) {
-    return new Dungeon(lore, stage, depth).generate(placeHero);
+    return Dungeon(lore, stage, depth).generate(placeHero);
   }
 
   Affix findAffix(String name) => Affixes.find(name);
@@ -55,7 +55,7 @@ class GameContent implements Content {
     race ??= Races.human;
     heroClass ??= Classes.adventurer;
 
-    var hero = new HeroSave(name, race, heroClass);
+    var hero = HeroSave(name, race, heroClass);
 
     var initialItems = {
       "Mending Salve": 3,
@@ -65,7 +65,7 @@ class GameContent implements Content {
     };
 
     initialItems.forEach((type, amount) {
-      hero.inventory.tryAdd(new Item(Items.types.find(type), amount));
+      hero.inventory.tryAdd(Item(Items.types.find(type), amount));
     });
 
     heroClass.startingItems.spawnDrop(hero.inventory.tryAdd);
@@ -125,12 +125,12 @@ class GameContent implements Content {
 
           stage.floorEmanationChanged();
         } else {
-          return new BurningFloorAction(pos);
+          return BurningFloorAction(pos);
         }
       } else if (tile.element == Elements.poison) {
         _spreadPoison(stage, pos, tile);
 
-        if (tile.substance > 0) return new PoisonedFloorAction(pos);
+        if (tile.substance > 0) return PoisonedFloorAction(pos);
       }
 
       // TODO: Cold.

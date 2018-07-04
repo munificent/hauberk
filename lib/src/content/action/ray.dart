@@ -18,7 +18,7 @@ class RayAction extends ElementAction {
 
   /// The tiles that have already been touched by the effect. Used to make sure
   /// we don't hit the same tile multiple times.
-  final _hitTiles = new Set<Vec>();
+  final _hitTiles = Set<Vec>();
 
   /// The cone incrementally spreads outward. This is how far we currently are.
   var _radius = 1.0;
@@ -31,11 +31,11 @@ class RayAction extends ElementAction {
 
   /// A 45° cone of [attack] centered on the line from [from] to [to].
   factory RayAction.cone(Vec from, Vec to, Hit hit) =>
-      new RayAction._(from, to, hit, 1.0 / 8.0);
+      RayAction._(from, to, hit, 1.0 / 8.0);
 
   /// A complete ring of [attack] radiating outwards from [center].
   factory RayAction.ring(Vec center, Hit hit) =>
-      new RayAction._(center, center, hit, 1.0);
+      RayAction._(center, center, hit, 1.0);
 
   /// Creates a [RayAction] radiating from [_from] centered on [_to] (which
   /// may be the same as [_from] if the ray is a full circle. It applies
@@ -77,7 +77,7 @@ class RayAction extends ElementAction {
 
     // See which new tiles each ray hit now.
     _rays.removeWhere((ray) {
-      var pos = new Vec(_from.x + (math.sin(ray) * _radius).round(),
+      var pos = Vec(_from.x + (math.sin(ray) * _radius).round(),
           _from.y + (math.cos(ray) * _radius).round());
 
       // TODO: Support rays that hit closed doors but do not go past them. That
@@ -112,7 +112,7 @@ class RingSelfAction extends Action {
   bool get isImmediate => false;
 
   ActionResult onPerform() {
-    return alternate(new RayAction.ring(actor.pos, _attack.createHit()));
+    return alternate(RayAction.ring(actor.pos, _attack.createHit()));
   }
 }
 
@@ -125,6 +125,6 @@ class RingFromAction extends Action {
   bool get isImmediate => false;
 
   ActionResult onPerform() {
-    return alternate(new RayAction.ring(_pos, _attack.createHit()));
+    return alternate(RayAction.ring(_pos, _attack.createHit()));
   }
 }

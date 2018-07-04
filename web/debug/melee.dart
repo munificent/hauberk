@@ -15,33 +15,24 @@ Content content;
 
 const simulationRounds = 20;
 
-Breed breed = new Breed(
-    "meat",
-    Pronoun.it,
-    null,
-    [new Attack(null, "hits", 20)],
-    [],
-    null,
-    SpawnLocation.anywhere,
-    MotilitySet.walk,
-    meander: 0,
-    maxHealth: 200,
-    flags: new BreedFlags.fromSet(new Set()));
+Breed breed = Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
+    null, SpawnLocation.anywhere, MotilitySet.walk,
+    meander: 0, maxHealth: 200, flags: BreedFlags.fromSet(Set()));
 
 main() {
   content = createContent();
 
-  var rows = new AgilityAxis();
-  var columns = new StrengthAxis();
+  var rows = AgilityAxis();
+  var columns = StrengthAxis();
 
-  var table = new Table(rows.name, columns.name);
+  var table = Table(rows.name, columns.name);
 
   for (var x = 0; x <= columns.length; x++) {
     table.columns.add(columns.label(x));
   }
 
   for (var y = 0; y < rows.length; y++) {
-    var row = new Row(rows.label(y));
+    var row = Row(rows.label(y));
     table.rows.add(row);
 
     for (var x = 0; x <= columns.length; x++) {
@@ -58,7 +49,7 @@ main() {
       columns.apply(x, save);
 
       if (save.inventory.isEmpty) {
-        save.equipment.tryAdd(new Item(Items.types.find("Scimitar"), 1));
+        save.equipment.tryAdd(Item(Items.types.find("Scimitar"), 1));
       }
 
       var results = simulate(save);
@@ -89,7 +80,7 @@ class WeaponAxis implements Axis {
   String label(int cell) => _weapons[cell].name;
 
   void apply(int cell, HeroSave save) {
-    save.equipment.tryAdd(new Item(_weapons[cell], 1));
+    save.equipment.tryAdd(Item(_weapons[cell], 1));
   }
 }
 
@@ -126,19 +117,19 @@ class FortitudeAxis extends StatAxis {
 }
 
 SimResult simulate(HeroSave save) {
-  var game = new Game(content, save, 1);
+  var game = Game(content, save, 1);
 
-  var actions = new Queue<Action>();
-  var gameResult = new GameResult();
+  var actions = Queue<Action>();
+  var gameResult = GameResult();
 
   var wins = 0;
   for (var i = 0; i < simulationRounds; i++) {
-    var monster = new Monster(game, breed, 0, 0, 1);
-    var hero = new Hero(game, Vec.zero, save);
+    var monster = Monster(game, breed, 0, 0, 1);
+    var hero = Hero(game, Vec.zero, save);
     game.hero = hero;
 
     while (true) {
-      var action = new AttackAction(monster);
+      var action = AttackAction(monster);
       action.bind(hero);
       action.perform(actions, [], gameResult);
 
@@ -147,7 +138,7 @@ SimResult simulate(HeroSave save) {
         break;
       }
 
-      action = new AttackAction(hero);
+      action = AttackAction(hero);
       action.bind(monster);
       action.perform(actions, [], gameResult);
 
@@ -155,7 +146,7 @@ SimResult simulate(HeroSave save) {
     }
   }
 
-  return new SimResult(simulationRounds, wins);
+  return SimResult(simulationRounds, wins);
 }
 
 class Table {
@@ -178,7 +169,7 @@ class Table {
       }
     }
 
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
     buffer.write("<thead><tr><td>$rowHeader \\ $columnHeader</td>");
     for (var column in columns) {
       buffer.write("<td style='text-align: right;' id='$column'>$column</td>");
@@ -202,7 +193,7 @@ class Table {
       buffer.write("</tr>");
     }
 
-    var validator = new html.NodeValidatorBuilder.common();
+    var validator = html.NodeValidatorBuilder.common();
     validator.allowInlineStyles();
 
     html

@@ -44,10 +44,10 @@ class Stage {
 
   Stage(int width, int height, Game game)
       : game = game,
-        tiles = new Array2D.generated(width, height, () => new Tile()),
-        _actorsByTile = new Array2D(width, height) {
-    _lighting = new Lighting(this);
-    _sound = new Sound(this);
+        tiles = Array2D.generated(width, height, () => Tile()),
+        _actorsByTile = Array2D(width, height) {
+    _lighting = Lighting(this);
+    _sound = Sound(this);
   }
 
   Tile operator [](Vec pos) => tiles[pos];
@@ -101,7 +101,7 @@ class Stage {
     // TODO: Is using the breed's motility correct? We probably don't want
     // drops going through doors.
     // Try to keep dropped items from overlapping.
-    var flow = new MotilityFlow(this, pos, motilities, ignoreActors: true);
+    var flow = MotilityFlow(this, pos, motilities, ignoreActors: true);
 
     drop.spawnDrop((item) {
       items.add(item);
@@ -123,7 +123,7 @@ class Stage {
 
   void addItem(Item item, Vec pos) {
     // Get the inventory for the tile.
-    var inventory = _itemsByTile.putIfAbsent(pos, () => new Inventory(null));
+    var inventory = _itemsByTile.putIfAbsent(pos, () => Inventory(null));
     var result = inventory.tryAdd(item);
     // Inventory is unlimited, so should always succeed.
     assert(result.remaining == 0);
@@ -206,7 +206,7 @@ class Stage {
     var tile = tiles.get(x, y);
     if (tile.updateExplored(force: force)) {
       if (tile.isVisible) {
-        var actor = actorAt(new Vec(x, y));
+        var actor = actorAt(Vec(x, y));
         if (actor != null && actor is Monster) {
           game.hero.seeMonster(actor);
         }

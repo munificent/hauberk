@@ -101,7 +101,7 @@ class Lighting {
   final Array2D<int> _actorLight;
 
   final Fov _fov;
-  final BucketQueue<Vec> _queue = new BucketQueue();
+  final BucketQueue<Vec> _queue = BucketQueue();
 
   bool _floorLightDirty = true;
   bool _actorLightDirty = true;
@@ -109,9 +109,9 @@ class Lighting {
 
   Lighting(Stage stage)
       : _stage = stage,
-        _floorLight = new Array2D(stage.width, stage.height, 0),
-        _actorLight = new Array2D(stage.width, stage.height, 0),
-        _fov = new Fov(stage);
+        _floorLight = Array2D(stage.width, stage.height, 0),
+        _actorLight = Array2D(stage.width, stage.height, 0),
+        _fov = Fov(stage);
 
   void dirtyFloorLight() {
     _floorLightDirty = true;
@@ -148,7 +148,7 @@ class Lighting {
 
     for (var y = 0; y < _stage.height; y++) {
       for (var x = 0; x < _stage.width; x++) {
-        var pos = new Vec(x, y);
+        var pos = Vec(x, y);
         var tile = _stage[pos];
 
         // Take the tile's light.

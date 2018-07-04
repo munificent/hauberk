@@ -61,12 +61,10 @@ void potions() {
     ..tag("magic/potion/speed")
     ..toss(damage: 1, range: 6, breakage: 100)
     ..destroy(Elements.cold, chance: 20);
-  item("Potion[s] of Quickness", 3, 0.3, lima)
-    ..use(() => new HasteAction(20, 1));
+  item("Potion[s] of Quickness", 3, 0.3, lima)..use(() => HasteAction(20, 1));
   item("Potion[s] of Alacrity", 18, 0.3, peaGreen)
-    ..use(() => new HasteAction(30, 2));
-  item("Potion[s] of Speed", 34, 0.25, sherwood)
-    ..use(() => new HasteAction(40, 3));
+    ..use(() => HasteAction(30, 2));
+  item("Potion[s] of Speed", 34, 0.25, sherwood)..use(() => HasteAction(40, 3));
 
   // dram, draught, elixir, philter
 
@@ -111,13 +109,12 @@ void scrolls() {
     ..toss(damage: 1, range: 3, breakage: 75)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
   item("Scroll[s] of Sidestepping", 2, 0.5, lilac)
-    ..use(() => new TeleportAction(6));
-  item("Scroll[s] of Phasing", 6, 0.3, violet)
-    ..use(() => new TeleportAction(12));
+    ..use(() => TeleportAction(6));
+  item("Scroll[s] of Phasing", 6, 0.3, violet)..use(() => TeleportAction(12));
   item("Scroll[s] of Teleportation", 15, 0.3, indigo)
-    ..use(() => new TeleportAction(24));
+    ..use(() => TeleportAction(24));
   item("Scroll[s] of Disappearing", 26, 0.3, ultramarine)
-    ..use(() => new TeleportAction(48));
+    ..use(() => TeleportAction(48));
 
   // Detection.
   category(CharCode.latinSmallLetterAWithDiaeresis, stack: 20)

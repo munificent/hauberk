@@ -182,14 +182,14 @@ abstract class Spell extends Skill implements UsableSkill {
 
   Action getTargetAction(Game game, int level, Vec target) {
     var action = onGetTargetAction(game, target);
-    return new FocusAction(focusCost(game.hero), action);
+    return FocusAction(focusCost(game.hero), action);
   }
 
   Action onGetTargetAction(Game game, Vec target) => null;
 
   Action getAction(Game game, int level) {
     var action = onGetAction(game);
-    return new FocusAction(focusCost(game.hero), action);
+    return FocusAction(focusCost(game.hero), action);
   }
 
   Action onGetAction(Game game) => null;
@@ -257,7 +257,7 @@ class SkillSet {
   bool isAcquired(Skill skill) =>
       _levels.containsKey(skill) && _levels[skill] > 0;
 
-  SkillSet clone() => new SkillSet(new Map.from(_levels));
+  SkillSet clone() => SkillSet(Map.from(_levels));
 
   void update(SkillSet other) {
     _levels.clear();

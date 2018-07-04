@@ -55,7 +55,7 @@ class MappingAction extends Action {
     _tilesByDistance = [[]];
     _tilesByDistance[0].add(actor.pos);
 
-    var flow = new MappingFlow(game.stage, actor.pos, _maxDistance);
+    var flow = MappingFlow(game.stage, actor.pos, _maxDistance);
 
     for (var pos in flow.reachable) {
       var distance = flow.costAt(pos);

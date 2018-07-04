@@ -4,13 +4,13 @@ import '../hero/hero.dart';
 import 'skill.dart';
 
 class Stat {
-  static const strength = const Stat("Strength");
-  static const agility = const Stat("Agility");
-  static const fortitude = const Stat("Fortitude");
-  static const intellect = const Stat("Intellect");
-  static const will = const Stat("Will");
+  static const strength = Stat("Strength");
+  static const agility = Stat("Agility");
+  static const fortitude = Stat("Fortitude");
+  static const intellect = Stat("Intellect");
+  static const will = Stat("Will");
 
-  static const all = const [strength, agility, fortitude, intellect, will];
+  static const all = [strength, agility, fortitude, intellect, will];
 
   final String name;
 

@@ -8,14 +8,14 @@ import 'builder.dart';
 import 'items.dart';
 
 class Affixes {
-  static final prefixes = new ResourceSet<Affix>();
-  static final suffixes = new ResourceSet<Affix>();
+  static final prefixes = ResourceSet<Affix>();
+  static final suffixes = ResourceSet<Affix>();
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int droppedDepth) {
     // Untagged items don't have any affixes.
     if (Items.types.getTags(itemType.name).isEmpty) {
-      return new Item(itemType, 1);
+      return Item(itemType, 1);
     }
 
     // The deeper we go, the greater chance of an affix. However, finding a
@@ -29,7 +29,7 @@ class Affixes {
     // This generates a curve that starts out at 1% and slowly ramps upwards.
     var chance = 1 + 0.006 * depth * depth + 0.2 * depth;
 
-    if (!rng.percent(chance.ceil())) return new Item(itemType, 1);
+    if (!rng.percent(chance.ceil())) return Item(itemType, 1);
 
     // Give items a chance to boost their effective level when choosing a
     // affixes.
@@ -44,12 +44,12 @@ class Affixes {
     switch (rng.range(5)) {
       case 0:
       case 1:
-        return new Item(itemType, 1, prefix, null);
+        return Item(itemType, 1, prefix, null);
       case 2:
       case 3:
-        return new Item(itemType, 1, null, suffix);
+        return Item(itemType, 1, null, suffix);
       default:
-        return new Item(itemType, 1, prefix, suffix);
+        return Item(itemType, 1, prefix, suffix);
     }
   }
 

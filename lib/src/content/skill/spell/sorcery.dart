@@ -17,9 +17,9 @@ class Icicle extends Spell implements TargetSkill {
   int get range => 8;
 
   Action onGetTargetAction(Game game, Vec target) {
-    var attack = new Attack(
-        new Noun("the icicle"), "pierce", damage, range, Elements.cold);
-    return new BoltAction(target, attack.createHit());
+    var attack =
+        Attack(Noun("the icicle"), "pierce", damage, range, Elements.cold);
+    return BoltAction(target, attack.createHit());
   }
 }
 
@@ -32,9 +32,9 @@ class BrilliantBeam extends Spell implements TargetSkill {
   int get range => 12;
 
   Action onGetTargetAction(Game game, Vec target) {
-    var attack = new Attack(
-        new Noun("the light"), "sear", damage, range, Elements.light);
-    return new RayAction.cone(game.hero.pos, target, attack.createHit());
+    var attack =
+        Attack(Noun("the light"), "sear", damage, range, Elements.light);
+    return RayAction.cone(game.hero.pos, target, attack.createHit());
   }
 }
 
@@ -48,9 +48,8 @@ class Windstorm extends Spell implements ActionSkill {
   int get range => 6;
 
   Action onGetAction(Game game) {
-    var attack =
-        new Attack(new Noun("the wind"), "blast", damage, range, Elements.air);
-    return new FlowAction(
+    var attack = Attack(Noun("the wind"), "blast", damage, range, Elements.air);
+    return FlowAction(
         game.hero.pos, attack.createHit(), MotilitySet.flyAndWalk);
   }
 }
@@ -64,9 +63,8 @@ class FireBarrier extends Spell implements TargetSkill {
   int get range => 8;
 
   Action onGetTargetAction(Game game, Vec target) {
-    var attack =
-        new Attack(new Noun("the fire"), "burn", damage, range, Elements.fire);
-    return new BarrierAction(game.hero.pos, target, attack.createHit());
+    var attack = Attack(Noun("the fire"), "burn", damage, range, Elements.fire);
+    return BarrierAction(game.hero.pos, target, attack.createHit());
   }
 }
 
@@ -79,10 +77,10 @@ class TidalWave extends Spell implements ActionSkill {
   int get range => 15;
 
   Action onGetAction(Game game) {
-    var attack = new Attack(
-        new Noun("the wave"), "inundate", damage, range, Elements.water);
-    return new FlowAction(game.hero.pos, attack.createHit(),
-        new MotilitySet([Motility.walk, Motility.door, Motility.swim]),
+    var attack =
+        Attack(Noun("the wave"), "inundate", damage, range, Elements.water);
+    return FlowAction(game.hero.pos, attack.createHit(),
+        MotilitySet([Motility.walk, Motility.door, Motility.swim]),
         slowness: 2);
   }
 }

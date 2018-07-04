@@ -137,7 +137,7 @@ class EquipAction extends ItemAction {
   ActionResult onPerform() {
     // If it's already equipped, unequip it.
     if (location == ItemLocation.equipment) {
-      return alternate(new UnequipAction(location, item));
+      return alternate(UnequipAction(location, item));
     }
 
     if (!hero.equipment.canEquip(item)) {
@@ -205,7 +205,7 @@ class UseAction extends ItemAction {
   ActionResult onPerform() {
     // If it's equippable, then using it just equips it.
     if (item.canEquip) {
-      return alternate(new EquipAction(location, item));
+      return alternate(EquipAction(location, item));
     }
 
     if (!item.canUse) {

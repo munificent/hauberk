@@ -15,7 +15,7 @@ class BarrierAction extends ElementAction {
 
   /// The tiles that have already been touched by the effect. Used to make sure
   /// we don't hit the same tile multiple times.
-  final _hitTiles = new Set<Vec>();
+  final _hitTiles = Set<Vec>();
 
   /// The barrier incrementally spreads outward. This is how far we currently
   /// are.
@@ -41,7 +41,7 @@ class BarrierAction extends ElementAction {
     h /= length;
     v /= length;
 
-    return new BarrierAction._(to, h, v, hit);
+    return BarrierAction._(to, h, v, hit);
   }
 
   /// Creates a [RayAction] radiating from [_from] centered on [_to] (which
@@ -59,8 +59,8 @@ class BarrierAction extends ElementAction {
         if (!going) return false;
 
         tryOffset(double h, double v) {
-          var offset = new Vec(
-              (_h * _distance + h).round(), (_v * _distance + v).round());
+          var offset =
+              Vec((_h * _distance + h).round(), (_v * _distance + v).round());
           var pos = _center + offset * sign;
           if (!game.stage[pos].canEnter(Motility.fly)) return false;
 

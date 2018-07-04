@@ -139,7 +139,7 @@ abstract class MonsterState {
 }
 
 class AsleepState extends MonsterState {
-  Action getAction() => new RestAction();
+  Action getAction() => RestAction();
 }
 
 class AwakeState extends MonsterState {
@@ -154,12 +154,12 @@ class AwakeState extends MonsterState {
     if (breed.flags.immobile) {
       var toHero = game.hero.pos - pos;
 
-      if (toHero.kingLength != 1) return new RestAction();
+      if (toHero.kingLength != 1) return RestAction();
 
       // Map the offset to a direction.
       // TODO: Move this into piecemeal?
       for (var dir in Direction.all) {
-        if (toHero == dir) return new WalkAction(dir);
+        if (toHero == dir) return WalkAction(dir);
       }
 
       throw "unreachable";
@@ -243,7 +243,7 @@ class AwakeState extends MonsterState {
 
     if (walkDir == null) walkDir = Direction.none;
 
-    return new WalkAction(_meander(walkDir));
+    return WalkAction(_meander(walkDir));
   }
 
   /// Tries to find a path a desirable position for using a ranged [Move].
@@ -303,7 +303,7 @@ class AwakeState extends MonsterState {
     if (best != null) return best;
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
-    var flow = new MotilityFlow(game.stage, pos, monster.motilities,
+    var flow = MotilityFlow(game.stage, pos, monster.motilities,
         maxDistance: maxRange);
     var dir = flow.directionToBestWhere(isValidRangedPosition);
     if (dir != Direction.none) {
@@ -341,7 +341,7 @@ class AwakeState extends MonsterState {
     Vec first;
     var length = 1;
 
-    for (var pos in new Line(pos, game.hero.pos)) {
+    for (var pos in Line(pos, game.hero.pos)) {
       first ??= pos;
 
       // TODO: Should not walk through doors since that might not be the
@@ -385,7 +385,7 @@ class AwakeState extends MonsterState {
 
   /// Returns `true` if there is an open LOS from [from] to the hero.
   bool _hasLosFrom(Vec from) {
-    for (var step in new Line(from, game.hero.pos)) {
+    for (var step in Line(from, game.hero.pos)) {
       if (step == game.hero.pos) return true;
       if (game.stage[step].blocksView) return false;
       var actor = game.stage.actorAt(step);
@@ -400,18 +400,18 @@ class AfraidState extends MonsterState {
   Action getAction() {
     // TODO: Take light and the breed's light preference into account.
     // If we're already hidden, rest.
-    if (game.stage[pos].isOccluded) return new RestAction();
+    if (game.stage[pos].isOccluded) return RestAction();
 
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
-    var flow = new MotilityFlow(game.stage, pos, monster.motilities,
+    var flow = MotilityFlow(game.stage, pos, monster.motilities,
         maxDistance: breed.tracking);
     // TODO: Should monsters prefer darkness too?
     var dir = flow.directionToBestWhere((pos) => game.stage[pos].isOccluded);
 
     if (dir != Direction.none) {
       Debug.logMonster(monster, "Fleeing $dir out of sight");
-      return new WalkAction(_meander(dir));
+      return WalkAction(_meander(dir));
     }
 
     // If we couldn't find a hidden tile, at least try to get some distance.
@@ -426,12 +426,12 @@ class AfraidState extends MonsterState {
     if (farther.isNotEmpty) {
       dir = rng.item(farther.toList());
       Debug.logMonster(monster, "Fleeing $dir away from hero");
-      return new WalkAction(_meander(dir));
+      return WalkAction(_meander(dir));
     }
 
     // If we got here, we couldn't escape. Cornered!
     // TODO: Kind of hacky.
-    var state = new AwakeState();
+    var state = AwakeState();
     monster.changeState(state);
     return state.getAction();
   }

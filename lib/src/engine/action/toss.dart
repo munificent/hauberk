@@ -36,7 +36,7 @@ class TossAction extends ItemAction {
     }
 
     // Take the item and throw it.
-    return alternate(new TossLosAction(_target, tossed, _hit));
+    return alternate(TossLosAction(_target, tossed, _hit));
   }
 }
 

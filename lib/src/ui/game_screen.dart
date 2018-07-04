@@ -35,7 +35,7 @@ class GameScreen extends Screen<Input> {
   bool _hasAnimatedTile = false;
 
   /// The size of the [Stage] view area.
-  final viewSize = new Vec(60, 34);
+  final viewSize = Vec(60, 34);
 
   /// The portion of the [Stage] currently in view on screen.
   Rect _cameraBounds;
@@ -124,25 +124,25 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.forfeit:
-        ui.push(new ForfeitDialog(game));
+        ui.push(ForfeitDialog(game));
         break;
       case Input.selectSkill:
-        ui.push(new SelectSkillDialog(game));
+        ui.push(SelectSkillDialog(game));
         break;
       case Input.editSkills:
-        ui.push(new SkillDialog(game.content, game.hero));
+        ui.push(SkillDialog(game.content, game.hero));
         break;
       case Input.heroInfo:
-        ui.push(new HeroInfoDialog(game.hero));
+        ui.push(HeroInfoDialog(game.hero));
         break;
       case Input.drop:
-        ui.push(new ItemDialog.drop(this));
+        ui.push(ItemDialog.drop(this));
         break;
       case Input.use:
-        ui.push(new ItemDialog.use(this));
+        ui.push(ItemDialog.use(this));
         break;
       case Input.toss:
-        ui.push(new ItemDialog.toss(this));
+        ui.push(ItemDialog.toss(this));
         break;
 
       case Input.rest:
@@ -159,35 +159,35 @@ class GameScreen extends Screen<Input> {
         pickUp();
         break;
       case Input.unequip:
-        ui.push(new ItemDialog.unequip(this));
+        ui.push(ItemDialog.unequip(this));
         break;
 
       case Input.nw:
-        action = new WalkAction(Direction.nw);
+        action = WalkAction(Direction.nw);
         break;
       case Input.n:
-        action = new WalkAction(Direction.n);
+        action = WalkAction(Direction.n);
         break;
       case Input.ne:
-        action = new WalkAction(Direction.ne);
+        action = WalkAction(Direction.ne);
         break;
       case Input.w:
-        action = new WalkAction(Direction.w);
+        action = WalkAction(Direction.w);
         break;
       case Input.ok:
-        action = new WalkAction(Direction.none);
+        action = WalkAction(Direction.none);
         break;
       case Input.e:
-        action = new WalkAction(Direction.e);
+        action = WalkAction(Direction.e);
         break;
       case Input.sw:
-        action = new WalkAction(Direction.sw);
+        action = WalkAction(Direction.sw);
         break;
       case Input.s:
-        action = new WalkAction(Direction.s);
+        action = WalkAction(Direction.s);
         break;
       case Input.se:
-        action = new WalkAction(Direction.se);
+        action = WalkAction(Direction.se);
         break;
 
       case Input.runNW:
@@ -248,12 +248,12 @@ class GameScreen extends Screen<Input> {
             _fireAtTarget(_lastSkill);
           } else {
             // No current target, so ask for one.
-            ui.push(new TargetDialog(this, targetSkill.getRange(game),
+            ui.push(TargetDialog(this, targetSkill.getRange(game),
                 (_) => _fireAtTarget(targetSkill)));
           }
         } else if (_lastSkill is DirectionSkill) {
           // Ask user to pick a direction.
-          ui.push(new DirectionDialog(this, game, _fireTowards));
+          ui.push(DirectionDialog(this, game, _fireTowards));
         } else if (_lastSkill is ActionSkill) {
           var actionSkill = _lastSkill as ActionSkill;
           game.hero.setNextAction(
@@ -269,13 +269,13 @@ class GameScreen extends Screen<Input> {
           game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
-          action = new EquipAction(
+          action = EquipAction(
               ItemLocation.inventory, game.hero.inventory.lastUnequipped);
         }
         break;
 
       case Input.wizard:
-        ui.push(new WizardDialog(game));
+        ui.push(WizardDialog(game));
         break;
     }
 
@@ -298,9 +298,9 @@ class GameScreen extends Screen<Input> {
       game.log.error('You are not next to an open door.');
       dirty();
     } else if (doors.length == 1) {
-      game.hero.setNextAction(new CloseDoorAction(doors[0]));
+      game.hero.setNextAction(CloseDoorAction(doors[0]));
     } else {
-      ui.push(new CloseDoorDialog(game));
+      ui.push(CloseDoorDialog(game));
     }
   }
 
@@ -308,10 +308,10 @@ class GameScreen extends Screen<Input> {
     var items = game.stage.itemsAt(game.hero.pos);
     if (items.length > 1) {
       // Show item dialog if there are multiple things to pick up.
-      ui.push(new ItemDialog.pickUp(this));
+      ui.push(ItemDialog.pickUp(this));
     } else if (items.length == 1) {
       // Otherwise attempt to pick the one item.
-      game.hero.setNextAction(new PickUpAction(items.first));
+      game.hero.setNextAction(PickUpAction(items.first));
     } else {
       game.log.error('There is nothing here.');
       dirty();
@@ -335,7 +335,7 @@ class GameScreen extends Screen<Input> {
 
       // Target the monster that is in the fired direction, if any.
       Vec previous;
-      for (var step in new Line(game.hero.pos, pos)) {
+      for (var step in Line(game.hero.pos, pos)) {
         // If we reached an actor, target it.
         var actor = game.stage.actorAt(step);
         if (actor != null) {
@@ -393,7 +393,7 @@ class GameScreen extends Screen<Input> {
 //      game.hero.updateSkills(result);
     } else if (popped is SelectSkillDialog && result != null) {
       if (result is TargetSkill) {
-        ui.push(new TargetDialog(
+        ui.push(TargetDialog(
             this, result.getRange(game), (_) => _fireAtTarget(result)));
       } else if (result is DirectionSkill) {
         selectDirection(dir) {
@@ -401,7 +401,7 @@ class GameScreen extends Screen<Input> {
           _fireTowards(dir);
         }
 
-        ui.push(new DirectionDialog(this, game, selectDirection));
+        ui.push(DirectionDialog(this, game, selectDirection));
       } else if (result is ActionSkill) {
         _lastSkill = result;
         game.hero
@@ -427,7 +427,7 @@ class GameScreen extends Screen<Input> {
 
     // See if the hero died.
     if (!game.hero.isAlive) {
-      ui.goTo(new GameOverScreen(game.log));
+      ui.goTo(GameOverScreen(game.log));
       return;
     }
 
@@ -446,8 +446,7 @@ class GameScreen extends Screen<Input> {
 
     _hasAnimatedTile = false;
 
-    var bar =
-        new Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
+    var bar = Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
     for (var y = 0; y < terminal.height; y++) {
       terminal.drawGlyph(60, y, bar);
     }
@@ -485,18 +484,18 @@ class GameScreen extends Screen<Input> {
     var rangeWidth = math.max(0, game.stage.width - viewSize.x);
     var rangeHeight = math.max(0, game.stage.height - viewSize.y);
 
-    var cameraRange = new Rect(0, 0, rangeWidth, rangeHeight);
+    var cameraRange = Rect(0, 0, rangeWidth, rangeHeight);
 
     var camera = game.hero.pos - viewSize ~/ 2;
     camera = cameraRange.clamp(camera);
-    _cameraBounds = new Rect(
+    _cameraBounds = Rect(
         camera.x,
         camera.y,
         math.min(viewSize.x, game.stage.width),
         math.min(viewSize.y, game.stage.height));
   }
 
-  static const _dazzleColors = const [
+  static const _dazzleColors = [
     steelGray,
     slate,
     gunsmoke,
@@ -632,7 +631,7 @@ class GameScreen extends Screen<Input> {
         // also bleeds over walls and is additively applied to the rendered
         // color. Sort of a faux HDR.
 
-        var glyph = new Glyph.fromCharCode(char, fore, back);
+        var glyph = Glyph.fromCharCode(char, fore, back);
         drawStageGlyph(terminal, pos.x, pos.y, glyph);
       }
     }
@@ -749,7 +748,7 @@ class GameScreen extends Screen<Input> {
 
         var glyph = monster.appearance as Glyph;
         if (targetActor == monster) {
-          glyph = new Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
+          glyph = Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
         terminal.drawGlyph(0, y, glyph);

@@ -57,7 +57,7 @@ class CloseDoorDialog extends Screen<Input> {
   void tryClose(Direction direction) {
     final pos = game.hero.pos + direction;
     if (game.stage[pos].type.closesTo != null) {
-      game.hero.setNextAction(new CloseDoorAction(pos));
+      game.hero.setNextAction(CloseDoorAction(pos));
       ui.pop();
     } else {
       game.log.error('There is not an open door there.');

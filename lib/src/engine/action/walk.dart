@@ -10,12 +10,12 @@ class WalkAction extends Action {
   final Direction dir;
   final bool _isRunning;
 
-  WalkAction(this.dir, {bool running: false}) : _isRunning = running;
+  WalkAction(this.dir, {bool running = false}) : _isRunning = running;
 
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
     if (dir == Direction.none) {
-      return alternate(new RestAction());
+      return alternate(RestAction());
     }
 
     var pos = actor.pos + dir;
@@ -23,13 +23,13 @@ class WalkAction extends Action {
     // See if there is an actor there.
     final target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
-      return alternate(new AttackAction(target));
+      return alternate(AttackAction(target));
     }
 
     // See if it's a door.
     var tile = game.stage[pos].type;
     if (tile.opensTo != null) {
-      return alternate(new OpenDoorAction(pos));
+      return alternate(OpenDoorAction(pos));
     }
 
     // See if we can walk there.

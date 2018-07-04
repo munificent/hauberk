@@ -5,11 +5,11 @@ import 'package:hauberk/src/content.dart';
 
 import 'histogram.dart';
 
-Histogram<String> monsters = new Histogram();
-Histogram<String> items = new Histogram();
-Histogram<String> affixes = new Histogram();
+Histogram<String> monsters = Histogram();
+Histogram<String> items = Histogram();
+Histogram<String> affixes = Histogram();
 
-final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
+final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 HeroSave save = content.createHero("hero");
 Content content = createContent();
@@ -25,14 +25,14 @@ int get depth {
 main() {
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(new html.OptionElement(
+    depthSelect.append(html.OptionElement(
         data: i.toString(), value: i.toString(), selected: i == 1));
   }
 
   depthSelect.onChange.listen((_) {
-    monsters = new Histogram();
-    items = new Histogram();
-    affixes = new Histogram();
+    monsters = Histogram();
+    items = Histogram();
+    affixes = Histogram();
     generated = 0;
 
     generate();
@@ -49,7 +49,7 @@ main() {
 }
 
 void generate() {
-  game = new Game(content, save, depth);
+  game = Game(content, save, depth);
 
   for (var event in game.generate()) {
     print(event);
@@ -79,7 +79,7 @@ void generate() {
 }
 
 void generateTable() {
-  var text = new StringBuffer();
+  var text = StringBuffer();
 
   text.write('''<thead>
     <tr>

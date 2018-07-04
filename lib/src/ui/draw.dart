@@ -59,7 +59,7 @@ class Draw {
       } else {
         char = CharCode.space;
       }
-      terminal.drawGlyph(x + i, y, new Glyph.fromCharCode(char, fore, back));
+      terminal.drawGlyph(x + i, y, Glyph.fromCharCode(char, fore, back));
     }
   }
 }

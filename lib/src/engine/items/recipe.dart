@@ -31,7 +31,7 @@ class Recipe {
   /// [items] ingredients. Returns `null` if [items] contains any ingredients
   /// that are not used by this recipe.
   Map<ItemType, int> _missingIngredients(Iterable<Item> items) {
-    var missing = new Map<ItemType, int>.from(ingredients);
+    var missing = Map<ItemType, int>.from(ingredients);
     for (var item in items) {
       if (!missing.containsKey(item.type)) return null;
       missing[item.type] -= item.count;

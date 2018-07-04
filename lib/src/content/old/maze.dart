@@ -9,12 +9,12 @@ import '../tiles.dart';
 class Maze {
   final Array2D<_Cell> _cells;
 
-  Rect get bounds => new Rect(0, 0, _cells.width - 1, _cells.height - 1);
+  Rect get bounds => Rect(0, 0, _cells.width - 1, _cells.height - 1);
 
   /// Initializes a new solid (i.e. all cells closed) maze.
   Maze(int width, int height)
-      : _cells = new Array2D<_Cell>.generated(
-            width + 1, height + 1, () => new _Cell()) {
+      : _cells =
+            Array2D<_Cell>.generated(width + 1, height + 1, () => _Cell()) {
     // Pad by one for the outer bottom and right walls.
   }
 
@@ -171,10 +171,10 @@ class Maze {
       if (_cells[pos].isOpen) carve((pos * 2) + 1);
 
       // Open the left wall.
-      if (_cells[pos].isLeftWallOpen) carve((pos * 2) + new Vec(0, 1));
+      if (_cells[pos].isLeftWallOpen) carve((pos * 2) + Vec(0, 1));
 
       // Open the top wall.
-      if (_cells[pos].isTopWallOpen) carve((pos * 2) + new Vec(1, 0));
+      if (_cells[pos].isTopWallOpen) carve((pos * 2) + Vec(1, 0));
     }
   }
 }

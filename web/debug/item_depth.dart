@@ -19,7 +19,7 @@ main() {
 
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(new html.OptionElement(
+    depthSelect.append(html.OptionElement(
         data: i.toString(), value: i.toString(), selected: i == 1));
   }
 
@@ -35,8 +35,8 @@ String percent(int count) {
 }
 
 void generate() {
-  var items = new Histogram<String>();
-  var affixes = new Histogram<String>();
+  var items = Histogram<String>();
+  var affixes = Histogram<String>();
 
   for (var i = 0; i < tries; i++) {
     var itemType = Items.types.tryChoose(depth, "item");
@@ -50,7 +50,7 @@ void generate() {
     if (item.suffix != null) affixes.add("___ ${item.suffix.name}");
   }
 
-  var tableContents = new StringBuffer();
+  var tableContents = StringBuffer();
   tableContents.write('''
     <thead>
     <tr>
@@ -79,7 +79,7 @@ void generate() {
     ''');
   }
 
-  var validator = new html.NodeValidatorBuilder.common();
+  var validator = html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
 
   html

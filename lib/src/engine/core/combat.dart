@@ -44,7 +44,7 @@ class Attack {
 
   bool get isRanged => range > 0;
 
-  Hit createHit() => new Hit._(this);
+  Hit createHit() => Hit._(this);
 
   String toString() {
     var result = damage.toString();

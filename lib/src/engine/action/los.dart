@@ -19,7 +19,7 @@ abstract class LosAction extends Action {
 
   ActionResult onPerform() {
     if (_los == null) {
-      _los = new Line(actor.pos, _target).iterator;
+      _los = Line(actor.pos, _target).iterator;
       // Advance to the first tile.
       _los.moveNext();
 

@@ -6,7 +6,7 @@ import 'uppercase.dart';
 
 /// Static class containing all of the [Monster] [Breed]s.
 class Monsters {
-  static final ResourceSet<Breed> breeds = new ResourceSet();
+  static final ResourceSet<Breed> breeds = ResourceSet();
 
   static void initialize() {
     Themes.defineTags(breeds, "monster");

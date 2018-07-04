@@ -11,7 +11,7 @@ class Decor {
     return all.tryChoose(1, theme);
   }
 
-  static final ResourceSet<Decor> all = new ResourceSet();
+  static final ResourceSet<Decor> all = ResourceSet();
 
   static void initialize() {
     // TODO: Make sure themes here line up with room themes.

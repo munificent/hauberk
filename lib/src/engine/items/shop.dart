@@ -31,7 +31,7 @@ class Shop extends IterableMixin<Item> implements ItemCollection {
   // TODO: Add the item to the shop? This would let the player buy back an
   // erroneous sale, but it means we have to deal with making sure there is
   // room for it.
-  AddItemResult tryAdd(Item item) => new AddItemResult(item.count, 0);
+  AddItemResult tryAdd(Item item) => AddItemResult(item.count, 0);
 
   void countChanged() {
     // Do nothing.

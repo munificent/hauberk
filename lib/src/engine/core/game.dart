@@ -23,11 +23,11 @@ class Game {
   final Content content;
 
   final HeroSave _save;
-  final log = new Log();
-  final _actions = new Queue<Action>();
+  final log = Log();
+  final _actions = Queue<Action>();
 
   /// The energy that tracks when the substances are ready to update.
-  final _substanceEnergy = new Energy();
+  final _substanceEnergy = Energy();
 
   /// Substances work like a cellular automata. A normal cellular automata
   /// updates all cells simultaneously using double buffering. That wouldn't
@@ -53,7 +53,7 @@ class Game {
 
   Game(this.content, this._save, this.depth) {
     // TODO: Vary size?
-    _stage = new Stage(100, 60, this);
+    _stage = Stage(100, 60, this);
 
     _substanceUpdateOrder.addAll(_stage.bounds.inflate(-1));
     rng.shuffle(_substanceUpdateOrder);
@@ -66,7 +66,7 @@ class Game {
       heroPos = pos;
     });
 
-    hero = new Hero(this, heroPos, _save);
+    hero = Hero(this, heroPos, _save);
     _stage.addActor(hero);
 
     yield "Calculating visibility";
@@ -74,7 +74,7 @@ class Game {
   }
 
   GameResult update() {
-    final gameResult = new GameResult();
+    final gameResult = GameResult();
 
     while (true) {
       // Process any ongoing or pending actions.
@@ -264,52 +264,52 @@ class Event {
 // TODO: Move to content.
 /// A kind of [Event] that has occurred.
 class EventType {
-  static const pause = const EventType("pause");
+  static const pause = EventType("pause");
 
   /// One step of a bolt.
-  static const bolt = const EventType("bolt");
+  static const bolt = EventType("bolt");
 
   /// The leading edge of a cone.
-  static const cone = const EventType("cone");
+  static const cone = EventType("cone");
 
   /// A thrown item in flight.
-  static const toss = const EventType("toss");
+  static const toss = EventType("toss");
 
   /// An [Actor] was hit.
-  static const hit = const EventType("hit");
+  static const hit = EventType("hit");
 
   /// An [Actor] died.
-  static const die = const EventType("die");
+  static const die = EventType("die");
 
   /// An [Actor] was healed.
-  static const heal = const EventType("heal");
+  static const heal = EventType("heal");
 
   /// Something in the level was detected.
-  static const detect = const EventType("detect");
+  static const detect = EventType("detect");
 
   /// A floor tile was magically explored.
-  static const map = const EventType("map");
+  static const map = EventType("map");
 
   /// An [Actor] teleported.
-  static const teleport = const EventType("teleport");
+  static const teleport = EventType("teleport");
 
   /// A new [Actor] was spawned by another.
-  static const spawn = const EventType("spawn");
+  static const spawn = EventType("spawn");
 
   /// An [Actor] was blown by wind.
-  static const wind = const EventType("wind");
+  static const wind = EventType("wind");
 
   /// A club's bash attack moves an actor.
-  static const knockBack = const EventType("knockBack");
+  static const knockBack = EventType("knockBack");
 
   /// An axe's slash attack hits a tile.
-  static const slash = const EventType("slash");
+  static const slash = EventType("slash");
 
   /// A spear's stab attack hits a tile.
-  static const stab = const EventType("stab");
+  static const stab = EventType("stab");
 
   /// The hero picks up gold worth [other].
-  static const gold = const EventType("gold");
+  static const gold = EventType("gold");
 
   final String _name;
 

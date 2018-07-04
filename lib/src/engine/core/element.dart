@@ -4,7 +4,7 @@ import '../action/action.dart';
 import 'combat.dart';
 
 class Element {
-  static final none = new Element("none", "No", 1.0);
+  static final none = Element("none", "No", 1.0);
 
   final String name;
   final String abbreviation;

@@ -16,7 +16,7 @@ class Skills {
   static final List<Skill> all = _generateSkills();
 
   static final Map<String, Skill> _byName =
-      new Map.fromIterable(all, key: (skill) => skill.name);
+      Map.fromIterable(all, key: (skill) => skill.name);
 
   static Skill find(String name) {
     assert(_byName.containsKey(name));
@@ -26,17 +26,17 @@ class Skills {
   static List<Skill> _generateSkills() {
     var skills = <Skill>[
       // Masteries.
-      new Archery(),
-      new AxeMastery(),
-      new ClubMastery(),
-      new SpearMastery(),
-      new Swordfighting(),
-      new WhipMastery()
+      Archery(),
+      AxeMastery(),
+      ClubMastery(),
+      SpearMastery(),
+      Swordfighting(),
+      WhipMastery()
     ];
 
     // Slays.
     for (var group in breedGroups.values) {
-      var slay = new SlayDiscipline(group);
+      var slay = SlayDiscipline(group);
       group.slaySkill = slay;
       skills.add(slay);
     }
@@ -44,17 +44,17 @@ class Skills {
     // Spells.
     skills.addAll([
       // Divination.
-      new SenseItems(),
+      SenseItems(),
       // Conjuring.
-      new Flee(),
-      new Escape(),
-      new Disappear(),
+      Flee(),
+      Escape(),
+      Disappear(),
       // Sorcery.
-      new Icicle(),
-      new BrilliantBeam(),
-      new Windstorm(),
-      new FireBarrier(),
-      new TidalWave()
+      Icicle(),
+      BrilliantBeam(),
+      Windstorm(),
+      FireBarrier(),
+      TidalWave()
     ]);
 
     return skills;

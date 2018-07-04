@@ -12,22 +12,22 @@ import 'log.dart';
 /// An active entity in the game. Includes monsters and the hero.
 abstract class Actor implements Noun {
   final Game game;
-  final Energy energy = new Energy();
+  final Energy energy = Energy();
 
   /// Haste raises speed.
-  final Condition haste = new HasteCondition();
+  final Condition haste = HasteCondition();
 
   /// Cold lowers speed.
-  final Condition cold = new ColdCondition();
+  final Condition cold = ColdCondition();
 
   /// Poison inflicts damage each turn.
-  final Condition poison = new PoisonCondition();
+  final Condition poison = PoisonCondition();
 
   /// Makes it hard for the actor to see.
-  final Condition blindness = new BlindnessCondition();
+  final Condition blindness = BlindnessCondition();
 
   /// Makes it hard for the actor to see.
-  final Condition dazzle = new BlindnessCondition();
+  final Condition dazzle = BlindnessCondition();
 
   // Temporary resistance to elements.
   final resistances = <Element, ResistCondition>{};
@@ -53,12 +53,12 @@ abstract class Actor implements Noun {
 
   int get x => pos.x;
   void set x(int value) {
-    pos = new Vec(value, y);
+    pos = Vec(value, y);
   }
 
   int get y => pos.y;
   void set y(int value) {
-    pos = new Vec(x, value);
+    pos = Vec(x, value);
   }
 
   int _health;
@@ -67,11 +67,11 @@ abstract class Actor implements Noun {
     _health = value.clamp(0, maxHealth);
   }
 
-  Actor(this.game, int x, int y) : _pos = new Vec(x, y) {
+  Actor(this.game, int x, int y) : _pos = Vec(x, y) {
     _health = maxHealth;
 
     for (var element in game.content.elements) {
-      resistances[element] = new ResistCondition(element);
+      resistances[element] = ResistCondition(element);
     }
 
     conditions.forEach((condition) => condition.bind(this));
@@ -112,7 +112,7 @@ abstract class Actor implements Noun {
     // Hard to dodge an attack you can't see coming.
     if (isBlinded) dodge ~/= 2;
 
-    if (dodge != 0) yield new Defense(dodge, "{1} dodge[s] {2}.");
+    if (dodge != 0) yield Defense(dodge, "{1} dodge[s] {2}.");
 
     yield* onGetDefenses();
   }

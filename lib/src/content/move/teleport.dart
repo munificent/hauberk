@@ -21,7 +21,7 @@ class TeleportMove extends Move {
     return true;
   }
 
-  Action onGetAction(Monster monster) => new TeleportAction(_range);
+  Action onGetAction(Monster monster) => TeleportAction(_range);
 
   String toString() => "Teleport $_range";
 }

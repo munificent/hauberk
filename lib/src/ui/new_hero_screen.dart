@@ -10,7 +10,7 @@ import 'select_depth_screen.dart';
 import 'storage.dart';
 
 // From: http://medieval.stormthecastle.com/medieval-names.htm.
-const _defaultNames = const [
+const _defaultNames = [
   "Merek",
   "Carac",
   "Ulric",
@@ -276,7 +276,7 @@ class NewHeroScreen extends Screen<Input> {
             content.races[_race], content.classes[_class]);
         storage.heroes.add(hero);
         storage.save();
-        ui.goTo(new SelectDepthScreen(content, hero, storage));
+        ui.goTo(SelectDepthScreen(content, hero, storage));
         return true;
 
       case KeyCode.tab:
@@ -325,10 +325,10 @@ class NewHeroScreen extends Screen<Input> {
               charCode = 'a'.codeUnits[0] - 'A'.codeUnits[0] + charCode;
             }
 
-            _appendToName(new String.fromCharCodes([charCode]));
+            _appendToName(String.fromCharCodes([charCode]));
             return true;
           } else if (key >= KeyCode.zero && key <= KeyCode.nine) {
-            _appendToName(new String.fromCharCodes([key]));
+            _appendToName(String.fromCharCodes([key]));
             return true;
           }
         }

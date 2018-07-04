@@ -6,7 +6,7 @@ import 'package:piecemeal/piecemeal.dart';
 import 'package:hauberk/src/content/item/items.dart';
 
 main() {
-  var text = new StringBuffer();
+  var text = StringBuffer();
   Items.initialize();
   var items = Items.types.all.toList();
 
@@ -44,7 +44,8 @@ main() {
     text.write('''
         <tr>
           <td>
-<pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
+<pre><span style="color: ${glyph
+            .fore.cssColor}">${String.fromCharCodes([glyph.char])}</span></pre>
           </td>
           <td>${item.name}</td>
         ''');
@@ -110,7 +111,7 @@ main() {
   }
   text.write('</tbody>');
 
-  var validator = new html.NodeValidatorBuilder.common();
+  var validator = html.NodeValidatorBuilder.common();
   validator.allowInlineStyles();
 
   html

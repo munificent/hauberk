@@ -45,9 +45,9 @@ class Storage {
           var item = _loadItem(itemData);
           if (item != null) items.add(item);
         }
-        var inventory = new Inventory(Option.inventoryCapacity, items);
+        var inventory = Inventory(Option.inventoryCapacity, items);
 
-        var equipment = new Equipment();
+        var equipment = Equipment();
         for (var itemData in hero['equipment']) {
           var item = _loadItem(itemData);
           // TODO: If there are multiple slots of the same type, this may
@@ -60,14 +60,14 @@ class Storage {
           var item = _loadItem(itemData);
           if (item != null) items.add(item);
         }
-        var home = new Inventory(Option.homeCapacity, items);
+        var home = Inventory(Option.homeCapacity, items);
 
         items = [];
         for (var itemData in hero['crucible']) {
           var item = _loadItem(itemData);
           if (item != null) items.add(item);
         }
-        var crucible = new Inventory(Option.crucibleCapacity, items);
+        var crucible = Inventory(Option.crucibleCapacity, items);
 
         // Clean up legacy heroes before item stacks.
         // TODO: Remove this once we don't need to worry about it anymore.
@@ -88,14 +88,14 @@ class Storage {
           }
         }
 
-        var skillSet = new SkillSet(skillMap);
+        var skillSet = SkillSet(skillMap);
 
         var lore = _loadLore(hero['lore']);
 
         var gold = hero['gold'];
         var maxDepth = hero['maxDepth'] ?? 0;
 
-        var heroSave = new HeroSave.load(
+        var heroSave = HeroSave.load(
             name,
             race,
             heroClass,
@@ -137,7 +137,7 @@ class Storage {
     // TODO: 1234 is temp for characters without seed.
     var seed = data['seed'] ?? 1234;
 
-    return new RaceStats(race, stats, seed);
+    return RaceStats(race, stats, seed);
   }
 
   Item _loadItem(Map data) {
@@ -173,7 +173,7 @@ class Storage {
       }
     }
 
-    return new Item(type, count, prefix, suffix);
+    return Item(type, count, prefix, suffix);
   }
 
   Lore _loadLore(Map data) {
@@ -207,7 +207,7 @@ class Storage {
       }
     }
 
-    return new Lore.from(seen, slain, kills);
+    return Lore.from(seen, slain, kills);
   }
 
   void save() {

@@ -17,50 +17,50 @@ double _frequency = 1.0;
 String _themes;
 
 final Map<String, Cell> _applyCells = {
-  "┌": new Cell(apply: Tiles.tableTopLeft, motility: Motility.walk),
-  "─": new Cell(apply: Tiles.tableTop, motility: Motility.walk),
-  "┐": new Cell(apply: Tiles.tableTopRight, motility: Motility.walk),
-  "-": new Cell(apply: Tiles.tableCenter, motility: Motility.walk),
-  "│": new Cell(apply: Tiles.tableSide, motility: Motility.walk),
-  "╘": new Cell(apply: Tiles.tableBottomLeft, motility: Motility.walk),
-  "═": new Cell(apply: Tiles.tableBottom, motility: Motility.walk),
-  "╛": new Cell(apply: Tiles.tableBottomRight, motility: Motility.walk),
-  "╞": new Cell(apply: Tiles.tableLegLeft, motility: Motility.walk),
-  "╤": new Cell(apply: Tiles.tableLeg, motility: Motility.walk),
-  "╡": new Cell(apply: Tiles.tableLegRight, motility: Motility.walk),
-  "π": new Cell(apply: Tiles.chair, motility: Motility.walk),
-  "i": new Cell(apply: Tiles.candle, require: Tiles.tableCenter),
-  "I": new Cell(apply: Tiles.wallTorch, require: Tiles.wall),
-  "l": new Cell(apply: Tiles.wallTorch, motility: Motility.walk),
-  "P": new Cell(apply: Tiles.statue, motility: Motility.walk),
-  "≈": new Cell(apply: Tiles.water, motility: Motility.walk),
-  "%": new Cell(apply: Tiles.closedBarrel, motility: Motility.walk),
-  "&": new Cell(apply: Tiles.closedChest, motility: Motility.walk),
-  "*": new Cell(apply: Tiles.tallGrass, require: Tiles.grass),
-  "=": new Cell(apply: Tiles.bridge, require: Tiles.water),
-  "•": new Cell(apply: Tiles.steppingStone, require: Tiles.water),
+  "┌": Cell(apply: Tiles.tableTopLeft, motility: Motility.walk),
+  "─": Cell(apply: Tiles.tableTop, motility: Motility.walk),
+  "┐": Cell(apply: Tiles.tableTopRight, motility: Motility.walk),
+  "-": Cell(apply: Tiles.tableCenter, motility: Motility.walk),
+  "│": Cell(apply: Tiles.tableSide, motility: Motility.walk),
+  "╘": Cell(apply: Tiles.tableBottomLeft, motility: Motility.walk),
+  "═": Cell(apply: Tiles.tableBottom, motility: Motility.walk),
+  "╛": Cell(apply: Tiles.tableBottomRight, motility: Motility.walk),
+  "╞": Cell(apply: Tiles.tableLegLeft, motility: Motility.walk),
+  "╤": Cell(apply: Tiles.tableLeg, motility: Motility.walk),
+  "╡": Cell(apply: Tiles.tableLegRight, motility: Motility.walk),
+  "π": Cell(apply: Tiles.chair, motility: Motility.walk),
+  "i": Cell(apply: Tiles.candle, require: Tiles.tableCenter),
+  "I": Cell(apply: Tiles.wallTorch, require: Tiles.wall),
+  "l": Cell(apply: Tiles.wallTorch, motility: Motility.walk),
+  "P": Cell(apply: Tiles.statue, motility: Motility.walk),
+  "≈": Cell(apply: Tiles.water, motility: Motility.walk),
+  "%": Cell(apply: Tiles.closedBarrel, motility: Motility.walk),
+  "&": Cell(apply: Tiles.closedChest, motility: Motility.walk),
+  "*": Cell(apply: Tiles.tallGrass, require: Tiles.grass),
+  "=": Cell(apply: Tiles.bridge, require: Tiles.water),
+  "•": Cell(apply: Tiles.steppingStone, require: Tiles.water),
 };
 
 final Map<String, Cell> _requireCells = {
-  "?": new Cell(),
-  ".": new Cell(motility: Motility.walk),
-  "#": new Cell(require: Tiles.wall),
-  "┌": new Cell(require: Tiles.tableTopLeft),
-  "─": new Cell(require: Tiles.tableTop),
-  "┐": new Cell(require: Tiles.tableTopRight),
-  "-": new Cell(require: Tiles.tableCenter),
-  "│": new Cell(require: Tiles.tableSide),
-  "╘": new Cell(require: Tiles.tableBottomLeft),
-  "═": new Cell(require: Tiles.tableBottom),
-  "╛": new Cell(require: Tiles.tableBottomRight),
-  "╞": new Cell(require: Tiles.tableLegLeft),
-  "╤": new Cell(require: Tiles.tableLeg),
-  "╡": new Cell(require: Tiles.tableLegRight),
-  "π": new Cell(require: Tiles.chair),
-  "≈": new Cell(require: Tiles.water),
-  "'": new Cell(requireAny: [Tiles.grass, Tiles.tallGrass]),
-  "•": new Cell(require: Tiles.steppingStone),
-  "o": new Cell(require: Tiles.steppingStone),
+  "?": Cell(),
+  ".": Cell(motility: Motility.walk),
+  "#": Cell(require: Tiles.wall),
+  "┌": Cell(require: Tiles.tableTopLeft),
+  "─": Cell(require: Tiles.tableTop),
+  "┐": Cell(require: Tiles.tableTopRight),
+  "-": Cell(require: Tiles.tableCenter),
+  "│": Cell(require: Tiles.tableSide),
+  "╘": Cell(require: Tiles.tableBottomLeft),
+  "═": Cell(require: Tiles.tableBottom),
+  "╛": Cell(require: Tiles.tableBottomRight),
+  "╞": Cell(require: Tiles.tableLegLeft),
+  "╤": Cell(require: Tiles.tableLeg),
+  "╡": Cell(require: Tiles.tableLegRight),
+  "π": Cell(require: Tiles.chair),
+  "≈": Cell(require: Tiles.water),
+  "'": Cell(requireAny: [Tiles.grass, Tiles.tallGrass]),
+  "•": Cell(require: Tiles.steppingStone),
+  "o": Cell(require: Tiles.steppingStone),
 };
 
 final _mirrorHorizontal = [
@@ -158,7 +158,7 @@ void furnishing(Symmetry symmetry, String applied, String template) {
 }
 
 String _mapString(String input, String Function(String) map) {
-  var buffer = new StringBuffer();
+  var buffer = StringBuffer();
   for (var i = 0; i < input.length; i++) {
     buffer.write(map(input[i]));
   }
@@ -199,7 +199,7 @@ String _rotateChar90(String input) {
 }
 
 void _singleFurnishing(String applied, List<String> lines) {
-  var cells = new Array2D<Cell>(lines.first.length, lines.length);
+  var cells = Array2D<Cell>(lines.first.length, lines.length);
   for (var y = 0; y < lines.length; y++) {
     for (var x = 0; x < lines.first.length; x++) {
       var char = lines[y][x];
@@ -215,6 +215,6 @@ void _singleFurnishing(String applied, List<String> lines) {
     }
   }
 
-  var furnishing = new Decor(cells);
+  var furnishing = Decor(cells);
   Decor.all.addUnnamed(furnishing, 1, _frequency, _themes);
 }

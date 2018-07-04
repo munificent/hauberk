@@ -166,7 +166,7 @@ class Item implements Comparable<Item>, Noun {
   ///
   /// If [count] is given, the clone has that count. Otherwise, it has the
   /// same count as this item.
-  Item clone([int count]) => new Item(type, count ?? _count, prefix, suffix);
+  Item clone([int count]) => Item(type, count ?? _count, prefix, suffix);
 
   bool canStack(Item item) {
     if (type != item.type) return false;

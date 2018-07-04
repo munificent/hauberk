@@ -24,7 +24,7 @@ class AxeMastery extends MasteryDiscipline implements DirectionSkill {
   }
 
   Action getDirectionAction(Game game, int level, Direction dir) {
-    return new SlashAction(dir, AxeMastery._slashScale(level));
+    return SlashAction(dir, AxeMastery._slashScale(level));
   }
 }
 

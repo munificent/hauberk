@@ -31,7 +31,7 @@ class MonsterPathfinder extends Pathfinder<Direction> {
   static const _diagonalCost = 11;
 
   static Direction findDirection(Stage stage, Monster monster) {
-    return new MonsterPathfinder(stage, monster).search();
+    return MonsterPathfinder(stage, monster).search();
   }
 
   final Monster _monster;

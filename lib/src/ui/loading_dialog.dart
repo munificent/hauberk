@@ -14,7 +14,7 @@ class LoadingDialog extends Screen<Input> {
   int _frame = 0;
 
   LoadingDialog(this._save, Content content, int depth)
-      : _game = new Game(content, _save, depth);
+      : _game = Game(content, _save, depth);
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
@@ -46,13 +46,13 @@ class LoadingDialog extends Screen<Input> {
       _steps = _game.generate().iterator;
     }
 
-    var stopwatch = new Stopwatch()..start();
+    var stopwatch = Stopwatch()..start();
 
     while (stopwatch.elapsedMilliseconds < 16) {
       if (_steps.moveNext()) {
         dirty();
       } else {
-        ui.goTo(new GameScreen(_save, _game));
+        ui.goTo(GameScreen(_save, _game));
         return;
       }
     }

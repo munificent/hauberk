@@ -128,7 +128,7 @@ class TargetDialog extends Screen<Input> {
     var stage = _gameScreen.game.stage;
 
     // Show the range field.
-    var black = new Glyph(" ");
+    var black = Glyph(" ");
     for (var pos in _gameScreen.cameraBounds) {
       var tile = stage[pos];
 
@@ -172,7 +172,7 @@ class TargetDialog extends Screen<Input> {
       }
 
       _gameScreen.drawStageGlyph(
-          terminal, pos.x, pos.y, new Glyph.fromCharCode(charCode, color));
+          terminal, pos.x, pos.y, Glyph.fromCharCode(charCode, color));
     }
 
     var target = _gameScreen.currentTarget;
@@ -182,7 +182,7 @@ class TargetDialog extends Screen<Input> {
     // obstacle.
     int i = _animateOffset ~/ _ticksPerFrame;
     var reachedTarget = false;
-    for (var pos in new Line(_gameScreen.game.hero.pos, target)) {
+    for (var pos in Line(_gameScreen.game.hero.pos, target)) {
       // Note if we made it to the target.
       if (pos == target) {
         reachedTarget = true;
@@ -198,7 +198,7 @@ class TargetDialog extends Screen<Input> {
       }
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
-          new Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : persimmon));
+          Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : persimmon));
       i = (i + _numFrames - 1) % _numFrames;
     }
 
@@ -211,13 +211,13 @@ class TargetDialog extends Screen<Input> {
       }
 
       _gameScreen.drawStageGlyph(
-          terminal, target.x - 1, target.y, new Glyph('-', targetColor));
+          terminal, target.x - 1, target.y, Glyph('-', targetColor));
       _gameScreen.drawStageGlyph(
-          terminal, target.x + 1, target.y, new Glyph('-', targetColor));
+          terminal, target.x + 1, target.y, Glyph('-', targetColor));
       _gameScreen.drawStageGlyph(
-          terminal, target.x, target.y - 1, new Glyph('|', targetColor));
+          terminal, target.x, target.y - 1, Glyph('|', targetColor));
       _gameScreen.drawStageGlyph(
-          terminal, target.x, target.y + 1, new Glyph('|', targetColor));
+          terminal, target.x, target.y + 1, Glyph('|', targetColor));
     }
 
     if (_monsters.isEmpty) {
@@ -308,7 +308,7 @@ class TargetDialog extends Screen<Input> {
   bool _isKnownOccluded(Vec target) {
     var stage = _gameScreen.game.stage;
 
-    for (var pos in new Line(_gameScreen.game.hero.pos, target)) {
+    for (var pos in Line(_gameScreen.game.hero.pos, target)) {
       // Note if we made it to the target.
       if (pos == target) return false;
 

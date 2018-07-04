@@ -122,7 +122,7 @@ class Breed {
         speed = speed ?? 0,
         dodge = dodge ?? 20,
         emanationLevel = emanationLevel ?? 0,
-        flags = flags ?? new BreedFlags();
+        flags = flags ?? BreedFlags();
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
@@ -189,7 +189,7 @@ class Breed {
     var generation = 1;
     if (parent != null) generation = parent.generation + 1;
 
-    return new Monster(game, this, pos.x, pos.y, generation);
+    return Monster(game, this, pos.x, pos.y, generation);
   }
 
   /// Generate the list of breeds spawned by this breed.
@@ -274,7 +274,7 @@ class BreedFlags {
   factory BreedFlags.fromSet(Set<String> names) {
     names = names.toSet();
 
-    var flags = new BreedFlags(
+    var flags = BreedFlags(
         berzerk: names.remove("berzerk"),
         cowardly: names.remove("cowardly"),
         fearless: names.remove("fearless"),
@@ -283,7 +283,7 @@ class BreedFlags {
         unique: names.remove("unique"));
 
     if (names.isNotEmpty) {
-      throw new ArgumentError('Unknown flags "${names.join(', ')}"');
+      throw ArgumentError('Unknown flags "${names.join(', ')}"');
     }
 
     return flags;

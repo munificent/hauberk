@@ -21,7 +21,7 @@ _AffixBuilder _affix;
 _CategoryBuilder category(int glyph, {String verb, int stack}) {
   finishItem();
 
-  _category = new _CategoryBuilder();
+  _category = _CategoryBuilder();
   _category._glyph = glyph;
   _category._verb = verb;
   _category._maxStack = stack;
@@ -32,7 +32,7 @@ _CategoryBuilder category(int glyph, {String verb, int stack}) {
 _ItemBuilder item(String name, int depth, double frequency, Color color) {
   finishItem();
 
-  _item = new _ItemBuilder();
+  _item = _ItemBuilder();
   _item._name = name;
   _item._depth = depth;
   _item._frequency = frequency;
@@ -60,7 +60,7 @@ _AffixBuilder affix(String name, int depth, double frequency) {
     throw 'Affix "$name" must start or end with "_".';
   }
 
-  return _affix = new _AffixBuilder(name, isPrefix, depth, frequency);
+  return _affix = _AffixBuilder(name, isPrefix, depth, frequency);
 }
 
 class _BaseBuilder {
@@ -130,7 +130,7 @@ class _CategoryBuilder extends _BaseBuilder {
     var tags = tagPath.split("/");
     _tag = tags.last;
 
-    const tagEquipSlots = const [
+    const tagEquipSlots = [
       'weapon',
       'ring',
       'necklace',
@@ -178,12 +178,12 @@ class _ItemBuilder extends _BaseBuilder {
   }
 
   void weapon(int damage, {int heft, Element element}) {
-    _attack = new Attack(null, _category._verb, damage, null, element);
+    _attack = Attack(null, _category._verb, damage, null, element);
     _heft = heft;
   }
 
   void ranged(String noun, {int heft, int damage, int range}) {
-    _attack = new Attack(new Noun(noun), "pierce[s]", damage, range);
+    _attack = Attack(Noun(noun), "pierce[s]", damage, range);
     // TODO: Make this per-item once it does something.
     _heft = heft;
   }
@@ -193,46 +193,46 @@ class _ItemBuilder extends _BaseBuilder {
   }
 
   void food(int amount) {
-    use(() => new EatAction(amount));
+    use(() => EatAction(amount));
   }
 
   void detection(List<DetectType> types, {int range}) {
-    use(() => new DetectAction(types, range));
+    use(() => DetectAction(types, range));
   }
 
   void resistSalve(Element element) {
-    use(() => new ResistAction(40, element));
+    use(() => ResistAction(40, element));
   }
 
   void mapping(int distance, {bool illuminate}) {
-    use(() => new MappingAction(distance, illuminate: illuminate));
+    use(() => MappingAction(distance, illuminate: illuminate));
   }
 
   // TODO: Take list of conditions to cure?
-  void heal(int amount, {bool curePoison: false}) {
-    use(() => new HealAction(amount, curePoison: curePoison));
+  void heal(int amount, {bool curePoison = false}) {
+    use(() => HealAction(amount, curePoison: curePoison));
   }
 
   /// Sets a use and toss use that creates an expanding ring of elemental
   /// damage.
   void ball(Element element, String noun, String verb, int damage,
       {int range}) {
-    var attack = new Attack(new Noun(noun), verb, damage, range ?? 3, element);
+    var attack = Attack(Noun(noun), verb, damage, range ?? 3, element);
 
-    use(() => new RingSelfAction(attack));
-    tossUse((pos) => new RingFromAction(attack, pos));
+    use(() => RingSelfAction(attack));
+    tossUse((pos) => RingFromAction(attack, pos));
   }
 
   /// Sets a use and toss use that creates a flow of elemental damage.
   void flow(Element element, String noun, String verb, int damage,
       {int range = 5, bool fly = false}) {
-    var attack = new Attack(new Noun(noun), verb, damage, range, element);
+    var attack = Attack(Noun(noun), verb, damage, range, element);
 
-    var motilities = new MotilitySet([Motility.walk]);
+    var motilities = MotilitySet([Motility.walk]);
     if (fly) motilities += Motility.fly;
 
-    use(() => new FlowSelfAction(attack, motilities));
-    tossUse((pos) => new FlowFromAction(attack, pos, motilities));
+    use(() => FlowSelfAction(attack, motilities));
+    tossUse((pos) => FlowFromAction(attack, pos, motilities));
   }
 }
 
@@ -290,12 +290,12 @@ class _AffixBuilder {
 void finishItem() {
   if (_item == null) return;
 
-  var appearance = new Glyph.fromCharCode(_category._glyph, _item._color);
+  var appearance = Glyph.fromCharCode(_category._glyph, _item._color);
 
   Toss toss;
   var tossDamage = _item._tossDamage ?? _category._tossDamage;
   if (tossDamage != null) {
-    var noun = new Noun("the ${_item._name.toLowerCase()}");
+    var noun = Noun("the ${_item._name.toLowerCase()}");
     var verb = "hits";
     if (_category._verb != null) {
       verb = Log.conjugate(_category._verb, Pronoun.it);
@@ -307,11 +307,11 @@ void finishItem() {
     var use = _item._tossUse ?? _category._tossUse;
     var breakage = _category._breakage ?? _item._breakage ?? 0;
 
-    var tossAttack = new Attack(noun, verb, tossDamage, range, element);
-    toss = new Toss(breakage, tossAttack, use);
+    var tossAttack = Attack(noun, verb, tossDamage, range, element);
+    toss = Toss(breakage, tossAttack, use);
   }
 
-  var itemType = new ItemType(
+  var itemType = ItemType(
       _item._name,
       appearance,
       _item._depth,
@@ -344,7 +344,7 @@ void finishItem() {
 void finishAffix() {
   if (_affix == null) return;
 
-  var affix = new Affix(_affix._name,
+  var affix = Affix(_affix._name,
       heftScale: _affix._heftScale,
       weightBonus: _affix._weightBonus,
       strikeBonus: _affix._strikeBonus,

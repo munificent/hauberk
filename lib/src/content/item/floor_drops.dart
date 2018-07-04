@@ -2,7 +2,7 @@ import '../../engine.dart';
 import '../themes.dart';
 import 'drops.dart';
 
-final ResourceSet<FloorDrop> _floorDrops = new ResourceSet();
+final ResourceSet<FloorDrop> _floorDrops = ResourceSet();
 
 /// Items that are spawned on the ground when a dungeon is first generated.
 class FloorDrops {
@@ -80,6 +80,6 @@ void floorDrop(
   theme ??= "drop";
   frequency ??= 1.0;
   location ??= SpawnLocation.anywhere;
-  var floorDrop = new FloorDrop(location, drop);
+  var floorDrop = FloorDrop(location, drop);
   _floorDrops.addUnnamed(floorDrop, depth, frequency, theme);
 }

@@ -36,5 +36,5 @@ HeroClass _class(String name, String description, Drop startingItems,
     proficiencies[skill] = proficiency;
   }
 
-  return new HeroClass(name, description, proficiencies, startingItems);
+  return HeroClass(name, description, proficiencies, startingItems);
 }

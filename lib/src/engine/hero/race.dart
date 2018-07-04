@@ -30,7 +30,7 @@ class Race {
       rolled[stat] = value;
     }
 
-    return new RaceStats(this, rolled, rng.range(100000));
+    return RaceStats(this, rolled, rng.range(100000));
   }
 }
 
@@ -62,7 +62,7 @@ class RaceStats {
       current[stat] = 0;
     }
 
-    var random = new Rng(seed);
+    var random = Rng(seed);
 
     // Distribute the total points evenly across the levels.
     var previous = 0;
@@ -102,7 +102,7 @@ class RaceStats {
         current[stat]++;
       }
 
-      _stats.add(new Map<Stat, int>.from(current));
+      _stats.add(Map<Stat, int>.from(current));
       previous = points;
     }
   }

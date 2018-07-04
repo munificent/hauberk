@@ -89,8 +89,7 @@ class BurningFloorAction extends Action with DestroyActionMixin {
     var target = game.stage.actorAt(_pos);
     if (target != null) {
       // TODO: What should the damage be?
-      var hit = new Attack(new Noun("fire"), "burns", 10, 0, Elements.fire)
-          .createHit();
+      var hit = Attack(Noun("fire"), "burns", 10, 0, Elements.fire).createHit();
       hit.perform(this, null, target, canMiss: false);
     }
 
@@ -152,8 +151,8 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
     var target = game.stage.actorAt(_pos);
     if (target != null) {
       // TODO: What should the damage be?
-      var hit = new Attack(new Noun("poison"), "chokes", 4, 0, Elements.poison)
-          .createHit();
+      var hit =
+          Attack(Noun("poison"), "chokes", 4, 0, Elements.poison).createHit();
       hit.perform(this, null, target, canMiss: false);
     }
 
@@ -173,8 +172,8 @@ class WindAction extends Action {
     // Don't blow through doors.
     var motilities = actor.motilities;
     motilities -= Motility.door;
-    var flow = new MotilityFlow(game.stage, actor.pos, motilities,
-        maxDistance: distance);
+    var flow =
+        MotilityFlow(game.stage, actor.pos, motilities, maxDistance: distance);
     var positions =
         flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();
     if (positions.isEmpty) return ActionResult.failure;

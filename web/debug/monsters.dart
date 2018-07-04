@@ -8,11 +8,11 @@ import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';
 
-final validator = new html.NodeValidatorBuilder.common()..allowInlineStyles();
+final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 final breedDrops = <Breed, Histogram<String>>{};
 
 main() {
-  var text = new StringBuffer();
+  var text = StringBuffer();
   Items.initialize();
   Monsters.initialize();
   var breeds = Monsters.breeds.all.toList();
@@ -54,7 +54,8 @@ main() {
     text.write('''
         <tr>
           <td>
-            <pre><span style="color: ${glyph.fore.cssColor}">${new String.fromCharCodes([glyph.char])}</span></pre>
+            <pre><span style="color: ${glyph
+            .fore.cssColor}">${String.fromCharCodes([glyph.char])}</span></pre>
           </td>
           <td>${breed.name}</td>
           <td>${breed.depth}</td>
@@ -101,7 +102,7 @@ main() {
 
 void moreDrops(html.Element span) {
   var breed = Monsters.breeds.find(span.id);
-  var drops = breedDrops.putIfAbsent(breed, () => new Histogram());
+  var drops = breedDrops.putIfAbsent(breed, () => Histogram());
 
   for (var i = 0; i < 100; i++) {
     breed.drop.spawnDrop((item) {

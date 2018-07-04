@@ -20,7 +20,7 @@ class MissiveMove extends Move {
   }
 
   Action onGetAction(Monster monster) =>
-      new MissiveAction(monster.game.hero, _missive);
+      MissiveAction(monster.game.hero, _missive);
 
   String toString() => "$_missive rate: $rate";
 }

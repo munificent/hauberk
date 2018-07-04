@@ -35,7 +35,7 @@ class BucketQueue<T> {
     // Find the bucket, or create it if needed.
     var bucket = _buckets[cost];
     if (bucket == null) {
-      bucket = new Queue();
+      bucket = Queue();
       _buckets[cost] = bucket;
     }
 

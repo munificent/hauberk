@@ -18,16 +18,16 @@ class ResourceSet<T> {
   void add(String name, T object, int depth, double frequency,
       [String tagNames]) {
     if (_resources.containsKey(name)) {
-      throw new ArgumentError('Already have a resource named "$name".');
+      throw ArgumentError('Already have a resource named "$name".');
     }
 
-    var resource = new _Resource(object, depth, frequency);
+    var resource = _Resource(object, depth, frequency);
     _resources[name] = resource;
 
     if (tagNames != null && tagNames != "") {
       for (var tagName in tagNames.split(" ")) {
         var tag = _tags[tagName];
-        if (tag == null) throw new ArgumentError('Unknown tag "$name".');
+        if (tag == null) throw ArgumentError('Unknown tag "$name".');
         resource._tags.add(tag);
       }
     }
@@ -48,7 +48,7 @@ class ResourceSet<T> {
       for (var name in path.split("/")) {
         tag = _tags[name];
         if (tag == null) {
-          tag = new _Tag<T>(name, parent);
+          tag = _Tag<T>(name, parent);
           _tags[name] = tag;
         }
 
@@ -60,7 +60,7 @@ class ResourceSet<T> {
   /// Returns the resource with [name].
   T find(String name) {
     var resource = _resources[name];
-    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+    if (resource == null) throw ArgumentError('Unknown resource "$name".');
     return resource.object;
   }
 
@@ -73,7 +73,7 @@ class ResourceSet<T> {
 
   double frequency(String name) {
     var resource = _resources[name];
-    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+    if (resource == null) throw ArgumentError('Unknown resource "$name".');
     return resource.frequency;
   }
 
@@ -81,10 +81,10 @@ class ResourceSet<T> {
   /// immediate tags or one of their parents.
   bool hasTag(String name, String tagName) {
     var resource = _resources[name];
-    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+    if (resource == null) throw ArgumentError('Unknown resource "$name".');
 
     var tag = _tags[tagName];
-    if (tag == null) throw new ArgumentError('Unknown tag "$tagName".');
+    if (tag == null) throw ArgumentError('Unknown tag "$tagName".');
 
     return resource._tags.any((thisTag) => thisTag.contains(tag));
   }
@@ -92,7 +92,7 @@ class ResourceSet<T> {
   /// Gets the names of the tags for the resource with [name].
   Iterable<String> getTags(String name) {
     var resource = _resources[name];
-    if (resource == null) throw new ArgumentError('Unknown resource "$name".');
+    if (resource == null) throw ArgumentError('Unknown resource "$name".');
     return resource._tags.map((tag) => tag.name);
   }
 
@@ -142,7 +142,7 @@ class ResourceSet<T> {
   T tryChooseMatching(int depth, Iterable<String> tags) {
     var tagObjects = tags.map((name) {
       var tag = _tags[name];
-      if (tag == null) throw new ArgumentError('Unknown tag "$name".');
+      if (tag == null) throw ArgumentError('Unknown tag "$name".');
       return tag;
     });
 
@@ -160,7 +160,7 @@ class ResourceSet<T> {
 
   T _runQuery(String name, int depth, double scale(_Resource<T> resource)) {
     // Reuse a cached query, if possible.
-    var key = new _QueryKey(name, depth);
+    var key = _QueryKey(name, depth);
     var query = _queries[key];
     if (query == null) {
       var resources = <_Resource<T>>[];
@@ -185,7 +185,7 @@ class ResourceSet<T> {
         chances.add(totalChance);
       }
 
-      query = new _ResourceQuery<T>(depth, resources, chances, totalChance);
+      query = _ResourceQuery<T>(depth, resources, chances, totalChance);
       _queries[key] = query;
     }
 
@@ -231,7 +231,7 @@ class _Resource<T> {
   final int depth;
 
   final double frequency;
-  final Set<_Tag<T>> _tags = new Set();
+  final Set<_Tag<T>> _tags = Set();
 
   _Resource(this.object, this.depth, this.frequency);
 }

@@ -79,7 +79,7 @@ abstract class Action {
 
   void addEvent(EventType type,
       {Actor actor, Element element, other, Vec pos, Direction dir}) {
-    _gameResult.events.add(new Event(type, actor, element, pos, dir, other));
+    _gameResult.events.add(Event(type, actor, element, pos, dir, other));
   }
 
   /// How much noise is produced by this action. Override to make certain
@@ -113,7 +113,7 @@ abstract class Action {
 
   ActionResult alternate(Action action) {
     action.bind(_actor, consumesEnergy: _consumesEnergy);
-    return new ActionResult.alternate(action);
+    return ActionResult.alternate(action);
   }
 
   /// Returns [success] if [done] is `true`, otherwise returns [notDone].

@@ -32,7 +32,7 @@ class SpawnMove extends Move {
           monster.game.stage.actorAt(here) == null;
     }).toList();
 
-    return new SpawnAction(monster.pos + rng.item(dirs), monster.breed);
+    return SpawnAction(monster.pos + rng.item(dirs), monster.breed);
   }
 
   String toString() => "Spawn rate: $rate";

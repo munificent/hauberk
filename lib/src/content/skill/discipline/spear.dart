@@ -27,7 +27,7 @@ class SpearMastery extends MasteryDiscipline implements DirectionSkill {
     var weapon = game.hero.equipment.weapon.type;
     var isPolearm = weapon.name == "Lance" || weapon.name == "Partisan";
 
-    return new SpearAction(dir, SpearMastery._spearScale(level),
+    return SpearAction(dir, SpearMastery._spearScale(level),
         isPolearm: isPolearm);
   }
 }

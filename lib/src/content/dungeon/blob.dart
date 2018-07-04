@@ -5,25 +5,25 @@ class Blob {
 
   /// Generate a blob inside a 16x16 bounding box.
   static Array2D<bool> make16() {
-    var blob = new Blob._(8, 1);
-    blob = new Blob._(16, 3, blob);
+    var blob = Blob._(8, 1);
+    blob = Blob._(16, 3, blob);
     return blob._cells;
   }
 
   /// Generate a blob inside a 32x32 bounding box.
   static Array2D<bool> make32() {
-    var blob = new Blob._(8, 1);
-    blob = new Blob._(16, 2, blob);
-    blob = new Blob._(32, 5, blob);
+    var blob = Blob._(8, 1);
+    blob = Blob._(16, 2, blob);
+    blob = Blob._(32, 5, blob);
     return blob._cells;
   }
 
   /// Generate a blob inside a 64x64 bounding box.
   static Array2D<bool> make64() {
-    var blob = new Blob._(8, 2);
-    blob = new Blob._(16, 2, blob);
-    blob = new Blob._(32, 2, blob);
-    blob = new Blob._(64, 6, blob);
+    var blob = Blob._(8, 2);
+    blob = Blob._(16, 2, blob);
+    blob = Blob._(32, 2, blob);
+    blob = Blob._(64, 6, blob);
     return blob._cells;
   }
 
@@ -31,8 +31,8 @@ class Blob {
   Array2D<bool> _dest;
 
   Blob._(int size, int smoothing, [Blob input])
-      : _cells = new Array2D(size, size, false),
-        _dest = new Array2D(size, size, false) {
+      : _cells = Array2D(size, size, false),
+        _dest = Array2D(size, size, false) {
     if (input != null) {
       // Generate noise based on the input blob but scaled up x2. Doing this
       // repeatedly lets us generate larger structure than you tend to get

@@ -21,7 +21,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
           'gloves',
           'boots'
         ],
-        slots = new List<Item>(9);
+        slots = List<Item>(9);
 
   /// Gets the [Item] in the weapon slot, if any.
   Item get weapon => find('weapon');
@@ -48,7 +48,7 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
   /// the dungeon so that any inventory changes that happen there are discarded
   /// if the hero dies.
   Equipment clone() {
-    var equipment = new Equipment();
+    var equipment = Equipment();
     for (var i = 0; i < slotTypes.length; i++) {
       if (slots[i] != null) {
         equipment.slots[i] = slots[i].clone();
@@ -96,11 +96,11 @@ class Equipment extends IterableBase<Item> implements ItemCollection {
     for (var i = 0; i < slotTypes.length; i++) {
       if (slotTypes[i] == item.equipSlot && slots[i] == null) {
         slots[i] = item;
-        return new AddItemResult(item.count, 0);
+        return AddItemResult(item.count, 0);
       }
     }
 
-    return new AddItemResult(0, item.count);
+    return AddItemResult(0, item.count);
   }
 
   void countChanged() {

@@ -85,7 +85,7 @@ class Races {
       int intellect,
       int will,
       String description}) {
-    return new Race(name, description, {
+    return Race(name, description, {
       Stat.strength: strength,
       Stat.agility: agility,
       Stat.fortitude: fortitude,

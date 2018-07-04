@@ -7,7 +7,7 @@ main() {
   Monsters.initialize();
 
   for (var i = 0; i < 20; i++) {
-    var watch = new Stopwatch();
+    var watch = Stopwatch();
     watch.start();
     var generated = trial();
     watch.stop();

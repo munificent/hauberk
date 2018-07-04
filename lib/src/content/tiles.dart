@@ -204,18 +204,18 @@ Glyph _makeGlyph(Object char, Color fore, [Color back]) {
     back = midnight;
   } else {}
 
-  return new Glyph.fromCharCode(charCode, fore, back);
+  return Glyph.fromCharCode(charCode, fore, back);
 }
 
 /// Creates an impassable, opaque tile.
 TileType _door(String name, Object char, Color fore, {Color back}) {
-  return new TileType(name, _makeGlyph(char, fore, back), [Motility.door],
+  return TileType(name, _makeGlyph(char, fore, back), [Motility.door],
       isExit: false);
 }
 
 /// Creates a passable, transparent exit tile.
 TileType _exit(String name, Object char, Color fore, {Color back}) {
-  return new TileType(
+  return TileType(
       name, _makeGlyph(char, fore, back), [Motility.walk, Motility.fly],
       isExit: true);
 }
@@ -223,13 +223,13 @@ TileType _exit(String name, Object char, Color fore, {Color back}) {
 /// Creates an impassable, transparent tile.
 TileType _obstacle(String name, Object char, Color fore,
     {Color back, int emanation}) {
-  return new TileType(name, _makeGlyph(char, fore, back), [Motility.fly],
+  return TileType(name, _makeGlyph(char, fore, back), [Motility.fly],
       emanation: Lighting.emanationForLevel(emanation ?? 0), isExit: false);
 }
 
 /// Creates a passable, transparent tile.
 TileType _open(String name, Object char, Color fore, {Color back}) {
-  return new TileType(
+  return TileType(
       name, _makeGlyph(char, fore, back), [Motility.walk, Motility.fly],
       isExit: false);
 }
@@ -237,12 +237,12 @@ TileType _open(String name, Object char, Color fore, {Color back}) {
 /// Creates an impassable, opaque tile.
 TileType _solid(String name, Object char, Color fore,
     {Color back, int emanation}) {
-  return new TileType(name, _makeGlyph(char, fore, back), [],
+  return TileType(name, _makeGlyph(char, fore, back), [],
       emanation: Lighting.emanationForLevel(emanation ?? 0), isExit: false);
 }
 
 TileType _water(String name, Object char, Color fore, {Color back}) {
-  return new TileType(
+  return TileType(
       name, _makeGlyph(char, fore, back), [Motility.fly, Motility.swim],
       emanation: 1, isExit: false);
 }

@@ -35,7 +35,7 @@ abstract class Flow {
   Vec _offset;
 
   /// The cells whose neighbors still remain to be processed.
-  final _open = new BucketQueue<Vec>();
+  final _open = BucketQueue<Vec>();
 
   /// The list of reachable cells that have been found so far, in order of
   /// increasing distance.
@@ -44,7 +44,7 @@ abstract class Flow {
   final _found = <Vec>[];
 
   /// Gets the bounds of the [Flow] in stage coordinates.
-  Rect get bounds => new Rect.posAndSize(_offset, _costs.size);
+  Rect get bounds => Rect.posAndSize(_offset, _costs.size);
 
   /// Gets the starting position in stage coordinates.
   Vec get start => _start;
@@ -58,7 +58,7 @@ abstract class Flow {
     // unit for every step, the two can diverge.
     if (_maxDistance == null) {
       // Inset by one since we can assume the edges are impassable.
-      _offset = new Vec(1, 1);
+      _offset = Vec(1, 1);
       width = stage.width - 2;
       height = stage.height - 2;
     } else {
@@ -66,12 +66,12 @@ abstract class Flow {
       var top = math.max(1, _start.y - _maxDistance);
       var right = math.min(stage.width - 1, _start.x + _maxDistance + 1);
       var bottom = math.min(stage.height - 1, _start.y + _maxDistance + 1);
-      _offset = new Vec(left, top);
+      _offset = Vec(left, top);
       width = right - left;
       height = bottom - top;
     }
 
-    _costs = new Array2D<int>(width, height, _unknown);
+    _costs = Array2D<int>(width, height, _unknown);
 
     // Seed it with the starting position.
     var start = _start - _offset;
@@ -189,8 +189,8 @@ abstract class Flow {
   ///
   /// Returns an empty list if none of the goals can be reached.
   List<Direction> _directionsTo(List<Vec> goals) {
-    var walked = new Set<Vec>();
-    var directions = new Set<Direction>();
+    var walked = Set<Vec>();
+    var directions = Set<Direction>();
 
     // Starting at [pos], recursively walk along all paths that proceed towards
     // [start].

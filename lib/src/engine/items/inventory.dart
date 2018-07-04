@@ -8,9 +8,9 @@ import 'item.dart';
 /// the [Hero] in their [Inventory] or [Equipment]. This enum describes which
 /// of those is the case.
 class ItemLocation {
-  static const onGround = const ItemLocation("on ground");
-  static const inventory = const ItemLocation("inventory");
-  static const equipment = const ItemLocation("equipment");
+  static const onGround = ItemLocation("on ground");
+  static const inventory = ItemLocation("inventory");
+  static const equipment = ItemLocation("equipment");
 
   final String name;
   const ItemLocation(this.name);
@@ -56,7 +56,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
   /// discarded if the hero dies.
   Inventory clone() {
     var items = _items.map((item) => item.clone());
-    return new Inventory(capacity, items);
+    return Inventory(capacity, items);
   }
 
   /// Removes all items from the inventory.
@@ -94,7 +94,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
     return false;
   }
 
-  AddItemResult tryAdd(Item item, {bool wasUnequipped: false}) {
+  AddItemResult tryAdd(Item item, {bool wasUnequipped = false}) {
     var adding = item.count;
 
     // Try to add it to existing stacks.
@@ -103,14 +103,14 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
 
       // If we completely stacked it, we're done.
       if (item.count == 0) {
-        return new AddItemResult(adding, 0);
+        return AddItemResult(adding, 0);
       }
     }
 
     // See if there is room to start a new stack with the rest.
     if (capacity != null && _items.length >= capacity) {
       // There isn't room to pick up everything.
-      return new AddItemResult(adding - item.count, item.count);
+      return AddItemResult(adding - item.count, item.count);
     }
 
     // Add a new stack.
@@ -118,7 +118,7 @@ class Inventory extends IterableMixin<Item> implements ItemCollection {
     _items.sort();
 
     if (wasUnequipped) _lastUnequipped = item;
-    return new AddItemResult(adding, 0);
+    return AddItemResult(adding, 0);
   }
 
   /// Re-sorts multiple stacks of the same item to pack them into the minimum

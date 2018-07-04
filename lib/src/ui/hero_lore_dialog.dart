@@ -262,18 +262,18 @@ class HeroLoreDialog extends HeroInfoDialog {
 class _Sort {
   /// The default order they are created in in the content.
   static const appearance =
-      const _Sort("ordered by appearance", "Sort by appearance");
+      _Sort("ordered by appearance", "Sort by appearance");
 
   /// Sort by depth.
-  static const depth = const _Sort("ordered by depth", "Sort by depth");
+  static const depth = _Sort("ordered by depth", "Sort by depth");
 
   /// Sort alphabetically by name.
-  static const name = const _Sort("ordered by name", "Sort by name");
+  static const name = _Sort("ordered by name", "Sort by name");
 
   /// Show only uniques.
-  static const uniques = const _Sort("uniques", "Show only uniques");
+  static const uniques = _Sort("uniques", "Show only uniques");
 
-  static const all = const [appearance, depth, name, uniques];
+  static const all = [appearance, depth, name, uniques];
 
   final String description;
   final String helpText;

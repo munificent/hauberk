@@ -37,7 +37,7 @@ class SelectDepthScreen extends Screen<Input> {
         return true;
 
       case Input.ok:
-        ui.push(new LoadingDialog(save, content, selectedDepth));
+        ui.push(LoadingDialog(save, content, selectedDepth));
         return true;
 
       case Input.cancel:
@@ -79,7 +79,7 @@ class SelectDepthScreen extends Screen<Input> {
   bool tryEnterShop(int index) {
     if (index >= content.shops.length) return false;
 
-    ui.push(new ItemScreen.shop(content, save, content.shops.elementAt(index)));
+    ui.push(ItemScreen.shop(content, save, content.shops.elementAt(index)));
     return true;
   }
 

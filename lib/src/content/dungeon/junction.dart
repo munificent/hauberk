@@ -25,7 +25,7 @@ class Junction {
 
 class JunctionSet {
   final Map<Vec, Junction> _byPosition = {};
-  final Queue<Junction> _queue = new Queue();
+  final Queue<Junction> _queue = Queue();
 
   bool get isNotEmpty => _queue.isNotEmpty;
 

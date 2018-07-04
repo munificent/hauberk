@@ -8,7 +8,7 @@ abstract class Place {
   double itemDensity;
   final List<Vec> cells;
 
-  final Set<Place> neighbors = new Set();
+  final Set<Place> neighbors = Set();
 
   // TODO: In addition to painting themes on places, also paint level
   // adjustment. So if an out of depth monster is spawned, it increases the

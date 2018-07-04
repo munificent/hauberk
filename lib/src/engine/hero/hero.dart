@@ -36,14 +36,14 @@ class HeroSave {
 
   int get level => calculateLevel(experienceCents);
 
-  Inventory inventory = new Inventory(Option.inventoryCapacity);
-  Equipment equipment = new Equipment();
+  Inventory inventory = Inventory(Option.inventoryCapacity);
+  Equipment equipment = Equipment();
 
   /// Items in the hero's home.
-  Inventory home = new Inventory(Option.homeCapacity);
+  Inventory home = Inventory(Option.homeCapacity);
 
   /// Items in the hero's crucible.
-  Inventory crucible = new Inventory(Option.crucibleCapacity);
+  Inventory crucible = Inventory(Option.crucibleCapacity);
 
   int experienceCents = 0;
 
@@ -65,8 +65,8 @@ class HeroSave {
 
   HeroSave(this.name, Race race, this.heroClass)
       : race = race.rollStats(),
-        skills = new SkillSet(),
-        _lore = new Lore();
+        skills = SkillSet(),
+        _lore = Lore();
 
   HeroSave.load(
       this.name,
@@ -119,19 +119,19 @@ class Hero extends Actor {
   int _experienceCents = 0;
 
   Strength _strength;
-  Strength get strength => _strength ?? (_strength = new Strength(this));
+  Strength get strength => _strength ?? (_strength = Strength(this));
 
   Agility _agility;
-  Agility get agility => _agility ?? (_agility = new Agility(this));
+  Agility get agility => _agility ?? (_agility = Agility(this));
 
   Fortitude _fortitude;
-  Fortitude get fortitude => _fortitude ?? (_fortitude = new Fortitude(this));
+  Fortitude get fortitude => _fortitude ?? (_fortitude = Fortitude(this));
 
   Intellect _intellect;
-  Intellect get intellect => _intellect ?? (_intellect = new Intellect(this));
+  Intellect get intellect => _intellect ?? (_intellect = Intellect(this));
 
   Will _will;
-  Will get will => _will ?? (_will = new Will(this));
+  Will get will => _will ?? (_will = Will(this));
 
   final SkillSet skills;
 
@@ -147,7 +147,7 @@ class Hero extends Actor {
   final Lore lore;
 
   /// Monsters the hero has already seen. Makes sure we don't double count them.
-  final Set<Monster> _seenMonsters = new Set();
+  final Set<Monster> _seenMonsters = Set();
 
   Behavior _behavior;
 
@@ -324,7 +324,7 @@ class Hero extends Actor {
       var scale = strength.heftScale(weapon.heft);
       hit.scaleDamage(scale);
     } else {
-      hit = new Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
+      hit = Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
     }
 
     hit.addStrike(agility.strikeBonus);
@@ -450,7 +450,7 @@ class Hero extends Actor {
   }
 
   void setNextAction(Action action) {
-    _behavior = new ActionBehavior(action);
+    _behavior = ActionBehavior(action);
   }
 
   /// Starts resting, if the hero has eaten and is able to regenerate.
@@ -466,12 +466,12 @@ class Hero extends Actor {
       return false;
     }
 
-    _behavior = new RestBehavior();
+    _behavior = RestBehavior();
     return true;
   }
 
   void run(Direction direction) {
-    _behavior = new RunBehavior(direction);
+    _behavior = RunBehavior(direction);
   }
 
   void disturb() {
@@ -503,7 +503,7 @@ class Hero extends Actor {
     }
   }
 
-  void _refreshLevel({bool log: false}) {
+  void _refreshLevel({bool log = false}) {
     int level = calculateLevel(_experienceCents);
 
     // See if the we levelled up.
@@ -601,7 +601,7 @@ class RestBehavior extends Behavior {
     return true;
   }
 
-  Action getAction(Hero hero) => new RestAction();
+  Action getAction(Hero hero) => RestAction();
 }
 
 /// Automatic running.
@@ -681,7 +681,7 @@ class RunBehavior extends Behavior {
 
   Action getAction(Hero hero) {
     firstStep = false;
-    return new WalkAction(direction, running: true);
+    return WalkAction(direction, running: true);
   }
 
   /// Advance one step while in a passage.

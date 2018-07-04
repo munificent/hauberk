@@ -9,7 +9,7 @@ abstract class RoomType {
   int get width;
   int get height;
 
-  static ResourceSet<RoomType> _allTypes = new ResourceSet();
+  static ResourceSet<RoomType> _allTypes = ResourceSet();
 
   // TODO: Hacky. ResourceSet assumes resources are named and have unique names.
   // Relax that constraint?
@@ -29,9 +29,9 @@ abstract class RoomType {
   static void _initializeRoomTypes() {
     _allTypes.defineTags("room");
 
-    rectangle(int w, int h, {double frequency: 1.0}) {
-      add(new RectangleRoom(w, h), frequency);
-      if (w != h) add(new RectangleRoom(h, w), frequency);
+    rectangle(int w, int h, {double frequency = 1.0}) {
+      add(RectangleRoom(w, h), frequency);
+      if (w != h) add(RectangleRoom(h, w), frequency);
     }
 
     rectangle(3, 3, frequency: 0.5);
@@ -48,9 +48,9 @@ abstract class RoomType {
     rectangle(7, 13);
     rectangle(9, 13, frequency: 0.5);
 
-    octagon(int w, int h, int slope, {double frequency: 1.0}) {
-      add(new OctagonRoom(w, h, slope), frequency / 4.0);
-      if (w != h) add(new OctagonRoom(h, w, slope), frequency / 4.0);
+    octagon(int w, int h, int slope, {double frequency = 1.0}) {
+      add(OctagonRoom(w, h, slope), frequency / 4.0);
+      if (w != h) add(OctagonRoom(h, w, slope), frequency / 4.0);
     }
 
     octagon(5, 5, 1);

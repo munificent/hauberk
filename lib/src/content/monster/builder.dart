@@ -15,16 +15,16 @@ import '../move/teleport.dart';
 import 'monsters.dart';
 
 // TODO: Is there a better place to define these?
-final breedGroups = new Map<String, BreedGroup>.fromIterable([
-  new BreedGroup("Animals", "animal"),
-  new BreedGroup("Bugs", "bug"),
-  new BreedGroup("Dragons", "dragon"),
-  new BreedGroup("Fae Folk", "fae"),
-  new BreedGroup("Goblins", "goblin"),
-  new BreedGroup("Humans", "human"),
-  new BreedGroup("Jellies", "jelly"),
-  new BreedGroup("Kobolds", "kobold"),
-  new BreedGroup("Saurians", "saurian"),
+final breedGroups = Map<String, BreedGroup>.fromIterable([
+  BreedGroup("Animals", "animal"),
+  BreedGroup("Bugs", "bug"),
+  BreedGroup("Dragons", "dragon"),
+  BreedGroup("Fae Folk", "fae"),
+  BreedGroup("Goblins", "goblin"),
+  BreedGroup("Humans", "human"),
+  BreedGroup("Jellies", "jelly"),
+  BreedGroup("Kobolds", "kobold"),
+  BreedGroup("Saurians", "saurian"),
 ], key: (group) => group.name);
 
 /// The last builder that was created. It gets implicitly finished when the
@@ -32,7 +32,7 @@ final breedGroups = new Map<String, BreedGroup>.fromIterable([
 /// don't need an explicit `build()` call at the end of each builder.
 _BreedBuilder _builder;
 
-_FamilyBuilder _family = new _FamilyBuilder(null);
+_FamilyBuilder _family = _FamilyBuilder(null);
 
 /// While the breeds are being built, we store their minions as string names
 /// to avoid problems with circular references between breeds. Once all breeds
@@ -48,7 +48,7 @@ _FamilyBuilder family(String character,
     String flags}) {
   finishBreed();
 
-  _family = new _FamilyBuilder(frequency);
+  _family = _FamilyBuilder(frequency);
   _family._character = character;
   _family._meander = meander;
   _family._speed = speed;
@@ -86,17 +86,17 @@ void finishBreed() {
 
 // TODO: Move more named params into builder methods?
 _BreedBuilder breed(String name, int depth, appearance, int health,
-    {double frequency, int speed: 0, int dodge, int meander}) {
+    {double frequency, int speed = 0, int dodge, int meander}) {
   finishBreed();
 
   Glyph glyph;
   if (appearance is Color) {
-    glyph = new Glyph(_family._character, appearance);
+    glyph = Glyph(_family._character, appearance);
   } else {
     glyph = appearance(_family._character);
   }
 
-  _builder = new _BreedBuilder(name, depth, frequency, glyph, health);
+  _builder = _BreedBuilder(name, depth, frequency, glyph, health);
   _builder._speed = speed;
   _builder._meander = meander;
   return _builder;
@@ -104,7 +104,7 @@ _BreedBuilder breed(String name, int depth, appearance, int health,
 
 void linkMinions() {
   _minionNames.forEach((breed, minions) {
-    breed.minions.addAll(minions.map((named) => new Minion(
+    breed.minions.addAll(minions.map((named) => Minion(
         Monsters.breeds.find(named.breed), named.countMin, named.countMax)));
   });
 }
@@ -195,7 +195,7 @@ class _BaseBuilder {
   }
 
   void defense(int amount, String message) {
-    _defenses.add(new Defense(amount, message));
+    _defenses.add(Defense(amount, message));
   }
 
   void groups(String names) {
@@ -238,11 +238,11 @@ class _BreedBuilder extends _BaseBuilder {
       minOrMax = 1;
     }
 
-    _minions.add(new _NamedMinion(name, minOrMax, max));
+    _minions.add(_NamedMinion(name, minOrMax, max));
   }
 
   void attack(String verb, int damage, [Element element, Noun noun]) {
-    _attacks.add(new Attack(noun, verb, damage, 0, element));
+    _attacks.add(Attack(noun, verb, damage, 0, element));
   }
 
   void drop(String name,
@@ -265,86 +265,83 @@ class _BreedBuilder extends _BaseBuilder {
     _pronoun = Pronoun.she;
   }
 
-  void heal({num rate: 5, int amount}) => _addMove(new HealMove(rate, amount));
+  void heal({num rate = 5, int amount}) => _addMove(HealMove(rate, amount));
 
-  void arrow({num rate: 5, int damage}) =>
+  void arrow({num rate = 5, int damage}) =>
       _bolt("the arrow", "hits", Element.none, damage, rate, 8);
 
-  void windBolt({num rate: 5, int damage}) =>
+  void windBolt({num rate = 5, int damage}) =>
       _bolt("the wind", "blows", Elements.air, damage, rate, 8);
 
-  void stoneBolt({num rate: 5, int damage}) =>
+  void stoneBolt({num rate = 5, int damage}) =>
       _bolt("the stone", "hits", Elements.earth, damage, rate, 8);
 
-  void waterBolt({num rate: 5, int damage}) =>
+  void waterBolt({num rate = 5, int damage}) =>
       _bolt("the jet", "splashes", Elements.water, damage, rate, 8);
 
-  void sparkBolt({num rate: 5, int damage, int range: 8}) =>
+  void sparkBolt({num rate = 5, int damage, int range = 8}) =>
       _bolt("the spark", "zaps", Elements.lightning, damage, rate, range);
 
-  void iceBolt({num rate: 5, int damage, int range: 8}) =>
+  void iceBolt({num rate = 5, int damage, int range = 8}) =>
       _bolt("the ice", "freezes", Elements.cold, damage, rate, range);
 
-  void fireBolt({num rate: 5, int damage}) =>
+  void fireBolt({num rate = 5, int damage}) =>
       _bolt("the flame", "burns", Elements.fire, damage, rate, 8);
 
-  void lightningBolt({num rate: 5, int damage}) =>
+  void lightningBolt({num rate = 5, int damage}) =>
       _bolt("the lightning", "shocks", Elements.lightning, damage, rate, 10);
 
-  void acidBolt({num rate: 5, int damage, int range: 8}) =>
+  void acidBolt({num rate = 5, int damage, int range = 8}) =>
       _bolt("the acid", "burns", Elements.acid, damage, rate, range);
 
-  void darkBolt({num rate: 5, int damage}) =>
+  void darkBolt({num rate = 5, int damage}) =>
       _bolt("the darkness", "crushes", Elements.dark, damage, rate, 10);
 
-  void lightBolt({num rate: 5, int damage}) =>
+  void lightBolt({num rate = 5, int damage}) =>
       _bolt("the light", "sears", Elements.light, damage, rate, 10);
 
-  void poisonBolt({num rate: 5, int damage}) =>
+  void poisonBolt({num rate = 5, int damage}) =>
       _bolt("the poison", "engulfs", Elements.poison, damage, rate, 8);
 
-  void windCone({num rate: 5, int damage, int range: 10}) =>
+  void windCone({num rate = 5, int damage, int range = 10}) =>
       _cone("the wind", "buffets", Elements.air, rate, damage, range);
 
-  void fireCone({num rate: 5, int damage, int range: 10}) =>
+  void fireCone({num rate = 5, int damage, int range = 10}) =>
       _cone("the flame", "burns", Elements.fire, rate, damage, range);
 
-  void iceCone({num rate: 5, int damage, int range: 10}) =>
+  void iceCone({num rate = 5, int damage, int range = 10}) =>
       _cone("the ice", "freezes", Elements.cold, rate, damage, range);
 
-  void lightningCone({num rate: 5, int damage, int range: 10}) =>
+  void lightningCone({num rate = 5, int damage, int range = 10}) =>
       _cone("the lightning", "shocks", Elements.lightning, rate, damage, range);
 
-  void lightCone({num rate: 5, int damage, int range: 10}) =>
+  void lightCone({num rate = 5, int damage, int range = 10}) =>
       _cone("the light", "sears", Elements.light, rate, damage, range);
 
-  void darkCone({num rate: 5, int damage, int range: 10}) =>
+  void darkCone({num rate = 5, int damage, int range = 10}) =>
       _cone("the darkness", "crushes", Elements.dark, rate, damage, range);
 
-  void missive(Missive missive, {num rate: 5}) =>
-      _addMove(new MissiveMove(missive, rate));
+  void missive(Missive missive, {num rate = 5}) =>
+      _addMove(MissiveMove(missive, rate));
 
-  void howl({num rate: 10, int range: 10}) =>
-      _addMove(new HowlMove(rate, range));
+  void howl({num rate = 10, int range = 10}) => _addMove(HowlMove(rate, range));
 
-  void haste({num rate: 5, int duration: 10, int speed: 1}) =>
-      _addMove(new HasteMove(rate, duration, speed));
+  void haste({num rate = 5, int duration = 10, int speed = 1}) =>
+      _addMove(HasteMove(rate, duration, speed));
 
-  void teleport({num rate: 5, int range: 10}) =>
-      _addMove(new TeleportMove(rate, range));
+  void teleport({num rate = 5, int range = 10}) =>
+      _addMove(TeleportMove(rate, range));
 
-  void spawn({num rate: 10}) => _addMove(new SpawnMove(rate));
+  void spawn({num rate = 10}) => _addMove(SpawnMove(rate));
 
   void _bolt(String noun, String verb, Element element, num rate, int damage,
       int range) {
-    _addMove(new BoltMove(
-        rate, new Attack(new Noun(noun), verb, damage, range, element)));
+    _addMove(BoltMove(rate, Attack(Noun(noun), verb, damage, range, element)));
   }
 
   void _cone(String noun, String verb, Element element, num rate, int damage,
       int range) {
-    _addMove(new ConeMove(
-        rate, new Attack(new Noun(noun), verb, damage, range, element)));
+    _addMove(ConeMove(rate, Attack(Noun(noun), verb, damage, range, element)));
   }
 
   void _addMove(Move move) {
@@ -352,18 +349,18 @@ class _BreedBuilder extends _BaseBuilder {
   }
 
   Breed build() {
-    var flags = new Set<String>();
+    var flags = Set<String>();
     if (_family._flags != null) flags.addAll(_family._flags.split(" "));
     if (_flags != null) flags.addAll(_flags.split(" "));
 
     var motilityList = _family._motilities.toList();
     motilityList.addAll(_motilities);
-    var motilities = new MotilitySet(motilityList);
+    var motilities = MotilitySet(motilityList);
 
     var dodge = _dodge ?? _family._dodge;
     if (flags.contains("immobile")) dodge = 0;
 
-    var breed = new Breed(
+    var breed = Breed(
         _name,
         _pronoun ?? Pronoun.it,
         _appearance,
@@ -382,7 +379,7 @@ class _BreedBuilder extends _BaseBuilder {
         countMin: _countMin ?? _family._countMin ?? 1,
         countMax: _countMax ?? _family._countMax ?? 1,
         stain: _stain ?? _family._stain,
-        flags: new BreedFlags.fromSet(flags));
+        flags: BreedFlags.fromSet(flags));
 
     breed.defenses.addAll(_family._defenses);
     breed.defenses.addAll(_defenses);

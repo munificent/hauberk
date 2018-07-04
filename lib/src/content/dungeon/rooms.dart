@@ -144,11 +144,11 @@ class RoomStyle {
 /// This is the main biome that generates the majority of dungeon content.
 class RoomsBiome extends Biome {
   final Dungeon _dungeon;
-  final RoomStyle _style = new RoomStyle();
-  final JunctionSet _junctions = new JunctionSet();
+  final RoomStyle _style = RoomStyle();
+  final JunctionSet _junctions = JunctionSet();
 
   /// The tiles in other biomes that the rooms have connected to already.
-  final Set<Vec> _reached = new Set();
+  final Set<Vec> _reached = Set();
 
   RoomsBiome(this._dungeon);
 
@@ -192,7 +192,7 @@ class RoomsBiome extends Biome {
     if (_dungeon.getTileAt(to) != Tiles.rock) return false;
 
     // Try a room.
-    if (_tryPlaceRoom(junction, new Set())) {
+    if (_tryPlaceRoom(junction, Set())) {
       _placeDoor(junction.position);
       return true;
     }
@@ -221,7 +221,7 @@ class RoomsBiome extends Biome {
 
     maybeBranch(Direction dir) {
       if (rng.percent(_style.passageBranchPercent)) {
-        newJunctions.add(new Junction("passage", dir, pos + dir));
+        newJunctions.add(Junction("passage", dir, pos + dir));
       }
     }
 
@@ -306,7 +306,7 @@ class RoomsBiome extends Biome {
     // If we didn't connect to an existing junction, add a new room at the end
     // of the passage. We require this to pass so that we avoid dead end
     // passages.
-    var endJunction = new Junction("passage", dir, pos);
+    var endJunction = Junction("passage", dir, pos);
     if (!_tryPlaceRoom(endJunction, passage)) return false;
 
     _placePassage(pos, junction, passage, newJunctions);
@@ -333,7 +333,7 @@ class RoomsBiome extends Biome {
     _placeDoor(junction.position);
     _placeDoor(pos);
 
-    _dungeon.addPlace(new PassagePlace(passage.toList()));
+    _dungeon.addPlace(PassagePlace(passage.toList()));
   }
 
   /// Returns `true` if a passage with [length] from [from] to [to] is
@@ -341,7 +341,7 @@ class RoomsBiome extends Biome {
   ///
   /// Used to avoid placing pointless redundant paths in the dungeon.
   bool _isShortcut(Vec from, Vec to, int length) {
-    var pathfinder = new CyclePathfinder(
+    var pathfinder = CyclePathfinder(
         _dungeon.stage, from, to, length * _style.passageShortcutScale);
 
     // TODO: This search is very slow.
@@ -357,7 +357,7 @@ class RoomsBiome extends Biome {
       y = rng.inclusive(0, _dungeon.height - startRoom.tiles.height);
 
       // TODO: After a certain number of tries, should try a different room.
-    } while (!startRoom.canPlaceAt(_dungeon, x, y, new Set()));
+    } while (!startRoom.canPlaceAt(_dungeon, x, y, Set()));
 
     startRoom.place(this, x, y);
   }
@@ -423,7 +423,7 @@ class RoomsBiome extends Biome {
     if (isBlocked(junctionDir.rotateLeft90)) return;
     if (isBlocked(junctionDir.rotateRight90)) return;
 
-    _junctions.add(new Junction(theme, junctionDir, junctionPos));
+    _junctions.add(Junction(theme, junctionDir, junctionPos));
   }
 
   bool _isOtherBiome(Vec pos) {
@@ -434,7 +434,7 @@ class RoomsBiome extends Biome {
   void _reachOtherBiome(Vec start) {
     if (_reached.contains(start)) return;
 
-    var queue = new Queue.from([start]);
+    var queue = Queue.from([start]);
     _reached.add(start);
 
     // Breadth-first search over the reachable nature tiles.
@@ -521,20 +521,19 @@ class Room {
     }
 
     // Add its junctions unless they are already blocked.
-    var roomPos = new Vec(x, y);
+    var roomPos = Vec(x, y);
 
     for (var junction in junctions) {
       biome._tryAddJunction(
           type.theme, roomPos + junction.position, junction.direction);
     }
 
-    biome._dungeon
-        .addPlace(new RoomPlace(type, cells, hasHero: junction == null));
+    biome._dungeon.addPlace(RoomPlace(type, cells, hasHero: junction == null));
   }
 }
 
 class RoomTypes {
-  static final ResourceSet<RoomType> _resources = new ResourceSet();
+  static final ResourceSet<RoomType> _resources = ResourceSet();
 
   static bool allowsPassage(String type) =>
       type == "nature" ||
@@ -551,35 +550,35 @@ class RoomTypes {
 
     // TODO: Tune frequencies.
     add(
-        new RectangleRoom("great-hall",
+        RectangleRoom("great-hall",
             spread: true, minWide: 8, maxWide: 16, minNarrow: 6, maxNarrow: 10),
         from: "chamber hall nature passage starting");
     add(
-        new RectangleRoom("kitchen",
+        RectangleRoom("kitchen",
             minWide: 4, maxWide: 7, minNarrow: 6, maxNarrow: 12),
         from: "great-hall");
-    add(new RectangleRoom("larder", maxWide: 6, maxNarrow: 5), from: "kitchen");
-    add(new RectangleRoom("pantry", maxWide: 5, maxNarrow: 4),
+    add(RectangleRoom("larder", maxWide: 6, maxNarrow: 5), from: "kitchen");
+    add(RectangleRoom("pantry", maxWide: 5, maxNarrow: 4),
         from: "kitchen larder storeroom");
 
-    add(new RectangleRoom("chamber", minWide: 4, maxWide: 8, maxNarrow: 7),
+    add(RectangleRoom("chamber", minWide: 4, maxWide: 8, maxNarrow: 7),
         from: "chamber great-hall hall nature passage");
 
-    add(new RectangleRoom("closet", maxWide: 5, maxNarrow: 4),
+    add(RectangleRoom("closet", maxWide: 5, maxNarrow: 4),
         from: "chamber laboratory storeroom");
 
     add(
-        new RectangleRoom("laboratory",
+        RectangleRoom("laboratory",
             spread: true, minWide: 4, maxWide: 10, maxNarrow: 8),
         from: "hall laboratory passage");
 
     add(
-        new RectangleRoom("storeroom",
+        RectangleRoom("storeroom",
             spread: true, minWide: 4, maxWide: 10, minNarrow: 4, maxNarrow: 10),
         from: "hall");
 
     add(
-        new RectangleRoom("hall",
+        RectangleRoom("hall",
             minWide: 6, maxWide: 16, minNarrow: 2, maxNarrow: 4),
         from: "nature passage starting storeroom");
     // TODO: Custom classes for certain rooms:
@@ -632,7 +631,7 @@ class RectangleRoom extends RoomType {
       height = temp;
     }
 
-    var tiles = new Array2D<TileType>(width + 2, height + 2, Tiles.floor);
+    var tiles = Array2D<TileType>(width + 2, height + 2, Tiles.floor);
 
     for (var y = 0; y < tiles.height; y++) {
       tiles.set(0, y, Tiles.wall);
@@ -647,24 +646,22 @@ class RectangleRoom extends RoomType {
     // TODO: Consider placing the junctions symmetrically sometimes.
     var junctions = <Junction>[];
     _placeJunctions(width, (i) {
-      junctions.add(new Junction(theme, Direction.n, new Vec(i + 1, 0)));
+      junctions.add(Junction(theme, Direction.n, Vec(i + 1, 0)));
     });
 
     _placeJunctions(width, (i) {
-      junctions
-          .add(new Junction(theme, Direction.s, new Vec(i + 1, height + 1)));
+      junctions.add(Junction(theme, Direction.s, Vec(i + 1, height + 1)));
     });
 
     _placeJunctions(height, (i) {
-      junctions.add(new Junction(theme, Direction.w, new Vec(0, i + 1)));
+      junctions.add(Junction(theme, Direction.w, Vec(0, i + 1)));
     });
 
     _placeJunctions(height, (i) {
-      junctions
-          .add(new Junction(theme, Direction.e, new Vec(width + 1, i + 1)));
+      junctions.add(Junction(theme, Direction.e, Vec(width + 1, i + 1)));
     });
 
-    return new Room(this, tiles, junctions);
+    return Room(this, tiles, junctions);
   }
 
   /// Walks along [length], invoking [callback] at values where a junction

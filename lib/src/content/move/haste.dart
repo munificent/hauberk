@@ -14,7 +14,7 @@ class HasteMove extends Move {
     return !monster.haste.isActive;
   }
 
-  Action onGetAction(Monster monster) => new HasteAction(_duration, _speed);
+  Action onGetAction(Monster monster) => HasteAction(_duration, _speed);
 
   String toString() => "Haste $_speed for $_duration turns rate: $rate";
 }

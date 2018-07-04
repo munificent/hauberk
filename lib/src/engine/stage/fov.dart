@@ -110,7 +110,7 @@ class Fov {
     // The bottom edge of row 0 is 1 wide.
     var bottomRight = (col + 1) / (row + 1);
 
-    return new _Shadow(topLeft, bottomRight);
+    return _Shadow(topLeft, bottomRight);
   }
 
   bool _isInShadow(_Shadow projection) {

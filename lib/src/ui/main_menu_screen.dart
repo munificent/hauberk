@@ -9,7 +9,7 @@ import 'new_hero_screen.dart';
 import 'select_depth_screen.dart';
 import 'storage.dart';
 
-const _chars = const [
+const _chars = [
   r"______ ______                     _____                          _____",
   r"\ .  / \  . /                     \ . |                          \  .|",
   r" | .|   |. |                       | .|                           |. |",
@@ -28,7 +28,7 @@ const _chars = const [
   r"   \|   |/",
 ];
 
-const _charColors = const [
+const _charColors = [
   "LLLLLL LLLLLL                     LLLLL                          LLLLL",
   "ERRRRE ERRRRE                     ERRRE                          ERRRE",
   " ERRE   ERRE                       ERRE                           ERRE",
@@ -48,7 +48,7 @@ const _charColors = const [
 ];
 
 // TODO: Change these to use hues.dart, or replace the art entirely.
-const _colors = const {
+const _colors = {
   "L": Color.lightGray,
   "E": Color.gray,
   "R": Color.red,
@@ -64,7 +64,7 @@ class MainMenuScreen extends Screen<Input> {
 
   MainMenuScreen(Content content)
       : content = content,
-        storage = new Storage(content);
+        storage = Storage(content);
 
   bool handleInput(Input input) {
     switch (input) {
@@ -77,7 +77,7 @@ class MainMenuScreen extends Screen<Input> {
 
       case Input.ok:
         if (selectedHero < storage.heroes.length) {
-          ui.push(new SelectDepthScreen(
+          ui.push(SelectDepthScreen(
               content, storage.heroes[selectedHero], storage));
         }
         return true;
@@ -93,13 +93,13 @@ class MainMenuScreen extends Screen<Input> {
       case KeyCode.d:
         if (selectedHero < storage.heroes.length) {
           var name = storage.heroes[selectedHero].name;
-          ui.push(new ConfirmDialog(
+          ui.push(ConfirmDialog(
               "Are you sure you want to delete $name?", 'delete'));
         }
         return true;
 
       case KeyCode.n:
-        ui.push(new NewHeroScreen(content, storage));
+        ui.push(NewHeroScreen(content, storage));
         return true;
     }
 

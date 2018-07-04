@@ -92,7 +92,7 @@ class PoisonCondition extends Condition {
     // TODO: Apply resistances. If resistance lowers intensity to zero, end
     // condition and log message.
 
-    if (!actor.takeDamage(action, intensity, new Noun("the poison"))) {
+    if (!actor.takeDamage(action, intensity, Noun("the poison"))) {
       actor.log("{1} [are|is] hurt by poison!", actor);
     }
   }

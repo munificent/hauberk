@@ -22,7 +22,7 @@ class HowlMove extends Move {
     return false;
   }
 
-  Action onGetAction(Monster monster) => new HowlAction(_range);
+  Action onGetAction(Monster monster) => HowlAction(_range);
 
   String toString() => "Howl $_range";
 }

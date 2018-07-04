@@ -5,7 +5,7 @@ class HealAction extends Action {
   final int amount;
   final bool curePoison;
 
-  HealAction(this.amount, {this.curePoison: false});
+  HealAction(this.amount, {this.curePoison = false});
 
   ActionResult onPerform() {
     var changed = false;

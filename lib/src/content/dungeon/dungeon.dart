@@ -41,7 +41,7 @@ class Dungeon {
 
   /// The unique breeds that have already been place on the stage. Ensures we
   /// don't spawn the same unique more than once.
-  var _spawnedUniques = new Set<Breed>();
+  var _spawnedUniques = Set<Breed>();
 
   Rect get bounds => stage.bounds;
 
@@ -52,7 +52,7 @@ class Dungeon {
   int get height => stage.height;
 
   Dungeon(this._lore, this.stage, this.depth)
-      : _cells = new Array2D(stage.width, stage.height);
+      : _cells = Array2D(stage.width, stage.height);
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
     last = this;
@@ -220,7 +220,7 @@ class Dungeon {
 
   void spreadTheme(Place start, String theme, double strength) {
     var visited = {start: strength};
-    var queue = new Queue<Place>();
+    var queue = Queue<Place>();
     queue.add(start);
 
     while (queue.isNotEmpty) {
@@ -341,7 +341,7 @@ class Dungeon {
       // handle actors being placed while the flow is being used -- it still
       // thinks those tiles are available. Come up with a better way to place
       // the monsters.
-      var flow = new MotilityFlow(stage, pos, breed.motilities);
+      var flow = MotilityFlow(stage, pos, breed.motilities);
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
       var here = flow.reachable.firstWhere((_) => true, orElse: () => null);
@@ -429,13 +429,13 @@ class Dungeon {
     if (_tryLake32(hasWater)) hasWater = true;
     if (_tryLakes16(hasWater)) hasWater = true;
 
-    _biomes.add(new RoomsBiome(this));
+    _biomes.add(RoomsBiome(this));
   }
 
   bool _tryRiver() {
     if (!rng.oneIn(3)) return false;
 
-    _biomes.add(new RiverBiome(this));
+    _biomes.add(RiverBiome(this));
     return true;
   }
 
@@ -447,7 +447,7 @@ class Dungeon {
 
     // TODO: 64 is pretty big. Might want to make these a little smaller, but
     // not all the way down to 32.
-    _biomes.add(new LakeBiome(this, Blob.make64()));
+    _biomes.add(LakeBiome(this, Blob.make64()));
     return true;
   }
 
@@ -457,7 +457,7 @@ class Dungeon {
     var odds = hasWater ? 10 : 5;
     if (!rng.oneIn(odds)) return false;
 
-    _biomes.add(new LakeBiome(this, Blob.make32()));
+    _biomes.add(LakeBiome(this, Blob.make32()));
     return true;
   }
 
@@ -466,7 +466,7 @@ class Dungeon {
 
     var ponds = rng.taper(0, 3);
     for (var i = 0; i < ponds; i++) {
-      _biomes.add(new LakeBiome(this, Blob.make16()));
+      _biomes.add(LakeBiome(this, Blob.make16()));
     }
 
     return true;

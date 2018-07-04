@@ -12,8 +12,8 @@ abstract class SkillDialog extends Screen<Input> {
 
   factory SkillDialog(Content content, Hero hero) {
     var screens = [
-      new DisciplineDialog(content, hero),
-      new SpellDialog(content, hero),
+      DisciplineDialog(content, hero),
+      SpellDialog(content, hero),
     ];
 
     for (var i = 0; i < screens.length; i++) {

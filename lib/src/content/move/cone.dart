@@ -31,8 +31,8 @@ class ConeMove extends Move {
     return true;
   }
 
-  Action onGetAction(Monster monster) => new RayAction.cone(
-      monster.pos, monster.game.hero.pos, attack.createHit());
+  Action onGetAction(Monster monster) =>
+      RayAction.cone(monster.pos, monster.game.hero.pos, attack.createHit());
 
   String toString() => "Cone $attack rate: $rate";
 }

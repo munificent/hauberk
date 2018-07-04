@@ -83,7 +83,7 @@ class Shops {
 void shop(String name, List<String> itemTypes) {
   var items = itemTypes.map((typeName) {
     var itemType = Items.types.find(typeName);
-    return new Item(itemType, itemType.maxStack);
+    return Item(itemType, itemType.maxStack);
   }).toList();
-  Shops.all.add(new Shop(name, items));
+  Shops.all.add(Shop(name, items));
 }
