@@ -52,7 +52,7 @@ class Dungeon {
   int get height => stage.height;
 
   Dungeon(this._lore, this.stage, this.depth)
-    : _cells = new Array2D(stage.width, stage.height);
+      : _cells = new Array2D(stage.width, stage.height);
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
     last = this;
@@ -129,8 +129,7 @@ class Dungeon {
     // that's marked to have the hero. If that's not the case, we'll need to
     // pick a place here.
 
-    placeHero(_tryFindSpawnPos(
-        startPlace, MotilitySet.walk, SpawnLocation.open,
+    placeHero(_tryFindSpawnPos(startPlace, MotilitySet.walk, SpawnLocation.open,
         avoidActors: true));
   }
 
@@ -281,8 +280,7 @@ class Dungeon {
       var theme = place.chooseTheme();
 
       var floorDrop = FloorDrops.choose(theme, depth);
-      var pos = _tryFindSpawnPos(
-          place, MotilitySet.walk, floorDrop.location,
+      var pos = _tryFindSpawnPos(place, MotilitySet.walk, floorDrop.location,
           avoidActors: false);
       if (pos == null) break;
 

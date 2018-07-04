@@ -214,12 +214,12 @@ class RiverBiome extends AquaticBiome {
     // correct cross the river instead of just connecting the same side to
     // itself.
     var shortStart =
-    _cells.firstWhere((pos) => _dungeon.getTileAt(pos) == Tiles.grass);
+        _cells.firstWhere((pos) => _dungeon.getTileAt(pos) == Tiles.grass);
     var flow = new MotilityFlow(_dungeon.stage, shortStart, MotilitySet.walk);
     var shore1 = flow.reachable.toSet();
     var shore2 = _cells
         .where((pos) =>
-    _dungeon.getTileAt(pos) == Tiles.grass && !shore1.contains(pos))
+            _dungeon.getTileAt(pos) == Tiles.grass && !shore1.contains(pos))
         .toSet();
 
     // TODO: Could do this lazily if it's a perf problem.
@@ -279,7 +279,7 @@ class RiverBiome extends AquaticBiome {
         // Don't overlap an existing bridge.
         if (placed.contains(bridge) ||
             placed.any((previous) =>
-            Rect.intersect(previous.inflate(1), bridge).isNotEmpty)) {
+                Rect.intersect(previous.inflate(1), bridge).isNotEmpty)) {
           continue;
         }
 
