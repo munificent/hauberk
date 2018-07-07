@@ -94,7 +94,8 @@ main() {
   ui.keyPress.bind(Input.forfeit, KeyCode.f, shift: true);
   ui.keyPress.bind(Input.quit, KeyCode.q);
 
-  ui.keyPress.bind(Input.closeDoor, KeyCode.c);
+  ui.keyPress.bind(Input.open, KeyCode.c, shift: true);
+  ui.keyPress.bind(Input.close, KeyCode.c);
   ui.keyPress.bind(Input.drop, KeyCode.d);
   ui.keyPress.bind(Input.use, KeyCode.u);
   ui.keyPress.bind(Input.pickUp, KeyCode.g);

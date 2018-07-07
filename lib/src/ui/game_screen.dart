@@ -8,7 +8,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../content/elements.dart';
 import '../engine.dart';
 import '../hues.dart';
-import 'close_door_dialog.dart';
 import 'direction_dialog.dart';
 import 'draw.dart';
 import 'effect.dart';
@@ -152,7 +151,10 @@ class GameScreen extends Screen<Input> {
         }
         break;
 
-      case Input.closeDoor:
+      case Input.open:
+        open();
+        break;
+      case Input.close:
         closeDoor();
         break;
       case Input.pickUp:
@@ -253,7 +255,7 @@ class GameScreen extends Screen<Input> {
           }
         } else if (_lastSkill is DirectionSkill) {
           // Ask user to pick a direction.
-          ui.push(DirectionDialog(this, game, _fireTowards));
+          ui.push(SkillDirectionDialog(this, _fireTowards));
         } else if (_lastSkill is ActionSkill) {
           var actionSkill = _lastSkill as ActionSkill;
           game.hero.setNextAction(
@@ -284,6 +286,28 @@ class GameScreen extends Screen<Input> {
     return true;
   }
 
+  void open() {
+    // See how many adjacent closed doors there are.
+    // TODO: Handle chests.
+    var doors = <Vec>[];
+    for (var direction in Direction.all) {
+      var pos = game.hero.pos + direction;
+      if (game.stage[pos].type.opensTo != null) {
+        doors.add(pos);
+      }
+    }
+
+    if (doors.isEmpty) {
+      game.log.error('You are not next to a closed door.');
+      dirty();
+    } else if (doors.length == 1) {
+      // TODO: This leaks information if the hero is next to unexplored tiles.
+      game.hero.setNextAction(OpenDoorAction(doors[0]));
+    } else {
+      ui.push(OpenDialog(this));
+    }
+  }
+
   void closeDoor() {
     // See how many adjacent open doors there are.
     var doors = <Vec>[];
@@ -294,13 +318,14 @@ class GameScreen extends Screen<Input> {
       }
     }
 
-    if (doors.length == 0) {
+    if (doors.isEmpty) {
       game.log.error('You are not next to an open door.');
       dirty();
     } else if (doors.length == 1) {
+      // TODO: This leaks information if the hero is next to unexplored tiles.
       game.hero.setNextAction(CloseDoorAction(doors[0]));
     } else {
-      ui.push(CloseDoorDialog(game));
+      ui.push(CloseDoorDialog(this));
     }
   }
 
@@ -325,6 +350,9 @@ class GameScreen extends Screen<Input> {
   }
 
   void _fireTowards(Direction dir) {
+    // If the user canceled, don't fire.
+    if (dir == Direction.none) return;
+
     if (_lastSkill is DirectionSkill) {
       var directionSkill = _lastSkill as DirectionSkill;
       game.hero.setNextAction(directionSkill.getDirectionAction(
@@ -396,7 +424,7 @@ class GameScreen extends Screen<Input> {
         ui.push(TargetDialog(
             this, result.getRange(game), (_) => _fireAtTarget(result)));
       } else if (result is DirectionSkill) {
-        ui.push(DirectionDialog(this, game, (dir) {
+        ui.push(SkillDirectionDialog(this, (dir) {
           _lastSkill = result;
           _fireTowards(dir);
         }));
