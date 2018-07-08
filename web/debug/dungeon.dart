@@ -257,7 +257,7 @@ void render({bool showInfo = true}) {
   var context = stateCanvas.context2D;
   context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
 
-//  if (!showInfo) return;
+  if (!showInfo) return;
 
   const themeColors = {
     "laboratory": [255.0, 0.0, 255.0],

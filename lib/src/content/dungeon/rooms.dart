@@ -12,8 +12,9 @@ import 'place.dart';
 class RoomPlace extends Place {
   final RoomType _type;
 
-  RoomPlace(this._type, List<Vec> cells, {bool hasHero = false})
-      : super(cells, 0.05, 0.05, hasHero: hasHero);
+  RoomPlace(this._type, List<Vec> cells,
+      {bool hasHero = false, bool emanates = false})
+      : super(cells, 0.05, 0.05, hasHero: hasHero, emanates: emanates);
 
   /// Picks a theme based on the shape and size of the room.
   void applyThemes() {
@@ -528,7 +529,13 @@ class Room {
           type.theme, roomPos + junction.position, junction.direction);
     }
 
-    biome._dungeon.addPlace(RoomPlace(type, cells, hasHero: junction == null));
+    // Rooms are likely to be lit near the surface, but by depth 30, lit rooms
+    // become rare.
+    // TODO: Take theme into account. Great halls should be more likely to be
+    // lit than closets.
+    var emanates = rng.percent(lerpInt(biome._dungeon.depth, 1, 30, 80, 10));
+    biome._dungeon.addPlace(
+        RoomPlace(type, cells, hasHero: junction == null, emanates: emanates));
   }
 }
 

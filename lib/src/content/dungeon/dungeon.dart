@@ -105,6 +105,18 @@ class Dungeon {
       }
     }
 
+    // Some places are naturally fully illuminated.
+    for (var place in _places) {
+      if (place.emanates) {
+        for (var cell in place.cells) {
+          var tile = stage[cell];
+          if (tile.type.motilities.contains(Motility.fly)) {
+            tile.addEmanation(128);
+          }
+        }
+      }
+    }
+
     // TODO: Should we do a sanity check for traversable tiles that ended up
     // unreachable?
 

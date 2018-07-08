@@ -4,7 +4,7 @@ import '../../engine.dart';
 import 'element.dart';
 
 /// Creates a swath of damage that radiates out from a point.
-class BarrierAction extends ElementAction {
+class BarrierAction extends Action with ElementActionMixin {
   /// The center of the barrier.
   final Vec _center;
 

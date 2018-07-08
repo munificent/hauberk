@@ -5,7 +5,7 @@ import '../elements.dart';
 import '../tiles.dart';
 import '../../engine.dart';
 
-abstract class ElementAction extends Action {
+abstract class ElementActionMixin implements Action {
   void hitTile(Hit hit, Vec pos, num distance, [int fuel = 0]) {
     // Open doors if the given motility lets us go through them.
     // TODO: Set on fire if fire element?

@@ -6,6 +6,7 @@ import '../action/detection.dart';
 import '../action/eat.dart';
 import '../action/flow.dart';
 import '../action/heal.dart';
+import '../action/illuminate.dart';
 import '../action/mapping.dart';
 import '../action/ray.dart';
 import '../skill/skills.dart';
@@ -92,10 +93,6 @@ class _BaseBuilder {
 
   void tossUse(TossItemUse use) {
     _tossUse = use;
-  }
-
-  void light(int level) {
-    _emanation = level;
   }
 
   void destroy(Element element, {int chance, int fuel}) {
@@ -233,6 +230,12 @@ class _ItemBuilder extends _BaseBuilder {
 
     use(() => FlowSelfAction(attack, motilities));
     tossUse((pos) => FlowFromAction(attack, pos, motilities));
+  }
+
+  void lightSource({int level, int range}) {
+    _emanation = level;
+
+    if (range != null) use(() => IlluminateSelfAction(range, level + 1));
   }
 }
 

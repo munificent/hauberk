@@ -5,7 +5,7 @@ import 'element.dart';
 
 /// Creates a swath of damage that flows out from a point through reachable
 /// tiles.
-class FlowAction extends ElementAction {
+class FlowAction extends Action with ElementActionMixin {
   /// The centerpoint that the flow is radiating from.
   final Vec _from;
   final Hit _hit;

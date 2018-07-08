@@ -26,6 +26,11 @@ class Lighting {
   /// which assumes a maximum light level.
   static const max = 255;
 
+  /// The maximum illumination of a tile itself, excluding light from nearby
+  /// actors. We clamp this lower so that you can still see the glow from a lit
+  /// actor even in a maximally lit area.
+  static const floorMax = 192;
+
   /// Given an emanation "level", returns the quantity of light produced.
   ///
   /// The levels are tuned higher-level echelons where each value corresponds
@@ -166,7 +171,7 @@ class Lighting {
         }
 
         if (emanation > 0) {
-          emanation = math.min(emanation, max);
+          emanation = math.min(emanation, floorMax);
           _floorLight.set(x, y, emanation);
           _enqueue(pos, emanation);
         } else {

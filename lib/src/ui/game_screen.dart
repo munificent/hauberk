@@ -637,25 +637,25 @@ class GameScreen extends Screen<Input> {
         Color fore;
         Color back;
         if (tile.isVisible) {
-          // The light values actually range up to [Lighting.max], but we scale
-          // to a shorter range to make even partially illuminated tiles bright.
-          // Otherwise, the game is too gloomy looking.
-          var light = (tile.illumination / 128).clamp(0, 1);
+          // We ramp the brightness up to the maximum floor lighting.
+          var light = (tile.illumination / Lighting.floorMax).clamp(0, 1);
 
           fore = darkFore.blend(lightFore, light);
           back = darkBack.blend(lightBack, light);
+
+          // Then, if the lighting is above that, it means we have an emanating
+          // actor on a bright tile. Show a little warm glow to make that more
+          // visible.
+          if (tile.illumination > Lighting.floorMax) {
+            var glow = ((tile.illumination - Lighting.floorMax) /
+                (Lighting.max - Lighting.floorMax));
+            fore = fore.add(gold, glow * 0.25);
+            back = back.add(gold, glow * 0.1);
+          }
         } else {
           fore = darkFore;
           back = darkBack.blend(Color.black, 0.5);
         }
-
-        // TODO: Warm additive glow for brightest tiles. Maybe treat glow as
-        // a separate layer. Certain tiles, independent of their actual
-        // illumination, also have a glow value. (So, for example, a lit room
-        // might be illuminated all over, but only glow at the torch sconces).
-        // Glow would have a few tiles of surrounding fade, like light. But it
-        // also bleeds over walls and is additively applied to the rendered
-        // color. Sort of a faux HDR.
 
         var glyph = Glyph.fromCharCode(char, fore, back);
         drawStageGlyph(terminal, pos.x, pos.y, glyph);

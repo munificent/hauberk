@@ -4,6 +4,7 @@ import 'dungeon.dart';
 
 abstract class Place {
   final bool hasHero;
+  final bool emanates;
   double monsterDensity;
   double itemDensity;
   final List<Vec> cells;
@@ -22,7 +23,7 @@ abstract class Place {
   double totalStrength = 0.0;
 
   Place(this.cells, this.monsterDensity, this.itemDensity,
-      {this.hasHero = false});
+      {this.hasHero = false, this.emanates = false});
 
   void bind(Dungeon dungeon) {
     assert(_dungeon == null, "Can only bind once.");

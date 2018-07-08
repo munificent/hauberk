@@ -5,16 +5,14 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import 'element.dart';
 
-/// Creates a swath of damage that radiates out from a point.
-class RayAction extends ElementAction {
+/// Base class for an action that touches a conical or circular swath of tiles.
+abstract class RayActionBase extends Action {
   /// The centerpoint that the cone is radiating from.
   final Vec _from;
 
   /// The tile being targeted. The arc of the cone will center on a line from
   /// [_from] to this.
   final Vec _to;
-
-  final Hit _hit;
 
   /// The tiles that have already been touched by the effect. Used to make sure
   /// we don't hit the same tile multiple times.
@@ -23,29 +21,23 @@ class RayAction extends ElementAction {
   /// The cone incrementally spreads outward. This is how far we currently are.
   var _radius = 1.0;
 
-  // We "fill" the cone by tracing a number of rays, each of which can get
-  // obstructed. This is the angle of each ray still being traced.
+  /// We "fill" the cone by tracing a number of rays, each of which can get
+  /// obstructed. This is the angle of each ray still being traced.
   final _rays = <double>[];
 
   bool get isImmediate => false;
 
-  /// A 45° cone of [attack] centered on the line from [from] to [to].
-  factory RayAction.cone(Vec from, Vec to, Hit hit) =>
-      RayAction._(from, to, hit, 1.0 / 8.0);
+  int get range;
 
-  /// A complete ring of [attack] radiating outwards from [center].
-  factory RayAction.ring(Vec center, Hit hit) =>
-      RayAction._(center, center, hit, 1.0);
-
-  /// Creates a [RayAction] radiating from [_from] centered on [_to] (which
+  /// Creates a [RayActionBase] radiating from [_from] centered on [_to] (which
   /// may be the same as [_from] if the ray is a full circle. It applies
   /// [_hit] to each touched tile. The rays cover a chord whose width is
   /// [fraction] which varies from 0 (an infinitely narrow line) to 1.0 (a full
   /// circle.
-  RayAction._(this._from, this._to, this._hit, double fraction) {
+  RayActionBase(this._from, this._to, double fraction) {
     // We "fill" the cone by tracing a number of rays. We need enough of them
     // to ensure there are no gaps when the cone is at its maximum extent.
-    var circumference = math.pi * 2 * _hit.range;
+    var circumference = math.pi * 2 * range;
     var numRays = (circumference * fraction * 2.0).ceil();
 
     if (fraction < 1.0) {
@@ -72,6 +64,12 @@ class RayAction extends ElementAction {
   }
 
   ActionResult onPerform() {
+    if (_radius == 0.0) {
+      reachStartTile(_from);
+      _radius += 1.0;
+      return ActionResult.notDone;
+    }
+
     // TODO: When using this for casting light, should really hit the hero's
     // tile too.
 
@@ -89,15 +87,41 @@ class RayAction extends ElementAction {
       // Don't hit the same tile twice.
       if (!_hitTiles.add(pos)) return false;
 
-      hitTile(_hit, pos, (pos - _from).length);
+      reachTile(pos, (pos - _from).length);
       return false;
     });
 
     _radius += 1.0;
-    if (_radius > _hit.range || _rays.isEmpty) return ActionResult.success;
+    if (_radius > range || _rays.isEmpty) return ActionResult.success;
 
     // Still going.
     return ActionResult.notDone;
+  }
+
+  void reachStartTile(Vec pos) {}
+
+  void reachTile(Vec pos, num distance);
+}
+
+/// Creates a swath of damage that radiates out from a point.
+class RayAction extends RayActionBase with ElementActionMixin {
+  final Hit _hit;
+
+  int get range => _hit.range;
+
+  /// A 45° cone of [hit] centered on the line from [from] to [to].
+  factory RayAction.cone(Vec from, Vec to, Hit hit) =>
+      RayAction._(hit, from, to, 1.0 / 8.0);
+
+  /// A complete ring of [hit] radiating outwards from [center].
+  factory RayAction.ring(Vec center, Hit hit) =>
+      RayAction._(hit, center, center, 1.0);
+
+  RayAction._(this._hit, Vec from, Vec to, double fraction)
+  : super(from, to, fraction);
+
+  void reachTile(Vec pos, num distance) {
+    hitTile(_hit, pos, distance);
   }
 }
 
