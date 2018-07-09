@@ -93,6 +93,10 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.gold:
       effects.add(TreasureEffect(event.pos, event.other as Item));
       break;
+
+    case EventType.openBarrel:
+      effects.add(FrameEffect(event.pos, '*', sandal));
+      break;
   }
 }
 

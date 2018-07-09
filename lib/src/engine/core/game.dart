@@ -311,6 +311,8 @@ class EventType {
   /// The hero picks up gold worth [other].
   static const gold = EventType("gold");
 
+  static const openBarrel = EventType("openBarrel");
+
   final String _name;
 
   const EventType(this._name);

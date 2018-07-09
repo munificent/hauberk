@@ -32,6 +32,11 @@ class WalkAction extends Action {
       return alternate(OpenDoorAction(pos));
     }
 
+    // If the tile responds to being walked into, do it.
+    if (tile.onWalkInto != null) {
+      return alternate(tile.onWalkInto(pos));
+    }
+
     // See if we can walk there.
     if (!actor.canOccupy(pos)) {
       // If the hero runs into something in the dark, they can figure out what

@@ -1,7 +1,9 @@
 import 'package:malison/malison.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'action/tile.dart';
 
 /// Static class containing all of the [TileType]s.
 class Tiles {
@@ -76,8 +78,9 @@ class Tiles {
       _obstacle("open chest", CharCode.topHalfIntegral, persimmon);
   static final TileType closedChest =
       _obstacle("closed chest", CharCode.bottomHalfIntegral, persimmon);
-  static final TileType closedBarrel =
-      _obstacle("closed barrel", CharCode.degreeSign, persimmon);
+  static final TileType closedBarrel = _walkInto(
+      "closed barrel", CharCode.degreeSign, persimmon,
+      action: (pos) => OpenBarrelAction(pos));
   static final TileType openBarrel =
       _obstacle("open barrel", CharCode.bulletOperator, persimmon);
 
@@ -209,40 +212,46 @@ Glyph _makeGlyph(Object char, Color fore, [Color back]) {
 
 /// Creates an impassable, opaque tile.
 TileType _door(String name, Object char, Color fore, {Color back}) {
-  return TileType(name, _makeGlyph(char, fore, back), [Motility.door],
-      isExit: false);
+  return TileType(
+      name, _makeGlyph(char, fore, back), MotilitySet([Motility.door]));
 }
 
 /// Creates a passable, transparent exit tile.
 TileType _exit(String name, Object char, Color fore, {Color back}) {
-  return TileType(
-      name, _makeGlyph(char, fore, back), [Motility.walk, Motility.fly],
+  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.flyAndWalk,
       isExit: true);
 }
 
 /// Creates an impassable, transparent tile.
 TileType _obstacle(String name, Object char, Color fore,
     {Color back, int emanation}) {
-  return TileType(name, _makeGlyph(char, fore, back), [Motility.fly],
-      emanation: Lighting.emanationForLevel(emanation ?? 0), isExit: false);
+  return TileType(
+      name, _makeGlyph(char, fore, back), MotilitySet([Motility.fly]),
+      emanation: Lighting.emanationForLevel(emanation ?? 0));
+}
+
+/// Creates a transparent tile with a special action when walked into.
+TileType _walkInto(String name, Object char, Color fore,
+    {Color back, Action Function(Vec) action}) {
+  return TileType(
+      name, _makeGlyph(char, fore, back), MotilitySet([Motility.fly]),
+      onWalkInto: action);
 }
 
 /// Creates a passable, transparent tile.
 TileType _open(String name, Object char, Color fore, {Color back}) {
-  return TileType(
-      name, _makeGlyph(char, fore, back), [Motility.walk, Motility.fly],
-      isExit: false);
+  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.flyAndWalk);
 }
 
 /// Creates an impassable, opaque tile.
 TileType _solid(String name, Object char, Color fore,
     {Color back, int emanation}) {
-  return TileType(name, _makeGlyph(char, fore, back), [],
-      emanation: Lighting.emanationForLevel(emanation ?? 0), isExit: false);
+  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.none,
+      emanation: Lighting.emanationForLevel(emanation ?? 0));
 }
 
 TileType _water(String name, Object char, Color fore, {Color back}) {
-  return TileType(
-      name, _makeGlyph(char, fore, back), [Motility.fly, Motility.swim],
-      emanation: 1, isExit: false);
+  return TileType(name, _makeGlyph(char, fore, back),
+      MotilitySet([Motility.fly, Motility.swim]),
+      emanation: 1);
 }

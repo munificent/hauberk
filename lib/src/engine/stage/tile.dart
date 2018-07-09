@@ -1,3 +1,6 @@
+import 'package:piecemeal/piecemeal.dart';
+
+import '../action/action.dart';
 import '../core/element.dart';
 import 'lighting.dart';
 
@@ -29,6 +32,7 @@ class MotilitySet {
   static final doorAndFly = MotilitySet([Motility.door, Motility.fly]);
   static final doorAndWalk = MotilitySet([Motility.door, Motility.walk]);
   static final flyAndWalk = MotilitySet([Motility.fly, Motility.walk]);
+  static final none = MotilitySet([]);
   static final walk = MotilitySet([Motility.walk]);
 
   int _bitMask = 0;
@@ -72,14 +76,17 @@ class TileType {
 
   final MotilitySet motilities;
 
+  final Action Function(Vec) onWalkInto;
+
   bool get isTraversable => canEnter(Motility.walk) || (opensTo != null);
 
   bool get isWalkable => canEnter(Motility.walk);
 
-  TileType(this.name, this.appearance, Iterable<Motility> motilities,
-      {int emanation, this.isExit})
-      : emanation = emanation ?? 0,
-        motilities = MotilitySet(motilities);
+  TileType(this.name, this.appearance, MotilitySet motilities,
+      {int emanation, bool isExit, this.onWalkInto})
+      : isExit = isExit ?? false,
+        emanation = emanation ?? 0,
+        motilities = motilities;
 
   bool canEnter(Motility motility) => this.motilities.contains(motility);
 

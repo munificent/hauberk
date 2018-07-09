@@ -98,21 +98,32 @@ class Stage {
   List<Item> placeDrops(Vec pos, MotilitySet motilities, Drop drop) {
     var items = <Item>[];
 
-    // TODO: Is using the breed's motility correct? We probably don't want
-    // drops going through doors.
     // Try to keep dropped items from overlapping.
     var flow = MotilityFlow(this, pos, motilities, ignoreActors: true);
 
     drop.spawnDrop((item) {
       items.add(item);
-      var itemPos = pos;
-      if (isItemAt(pos)) {
-        itemPos = flow.bestWhere((pos) {
-          if (rng.oneIn(5)) return true;
-          return !isItemAt(pos);
-        });
 
-        if (itemPos == null) itemPos = pos;
+      // Prefer to not place under monsters or stack with other items.
+      var itemPos = flow.bestWhere((pos) {
+        // Some chance to place on occupied tiles.
+        if (rng.oneIn(5)) return true;
+
+        return actorAt(pos) == null && !isItemAt(pos);
+      });
+
+      // If that doesn't work, pick any nearby tile.
+      if (itemPos == null) {
+        var allowed = flow.reachable.take(10).toList();
+        if (allowed.isNotEmpty) {
+          itemPos = rng.item(allowed);
+        } else {
+          // Nowhere to place it.
+          // TODO: If the starting position doesn't allow the motility (as in
+          // when opening a barrel), this does the wrong thing. What should we
+          // do then?
+          itemPos = pos;
+        }
       }
 
       addItem(item, itemPos);
