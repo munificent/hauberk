@@ -5,112 +5,92 @@ import '../engine.dart';
 import '../hues.dart';
 import 'action/tile.dart';
 
+// Note: Not using lambdas for these because that prevents [Tiles.openDoor] and
+// [Tiles.closedDoor] from having their types inferred.
+Action _closeDoor(Vec pos) => CloseDoorAction(pos, Tiles.closedDoor);
+
+Action _openDoor(Vec pos) => OpenDoorAction(pos, Tiles.openDoor);
+
 /// Static class containing all of the [TileType]s.
 class Tiles {
-  static final TileType floor = _open("floor", CharCode.middleDot, slate);
-  static final TileType burntFloor =
-      _open("burnt floor", CharCode.greekSmallLetterPhi, steelGray);
-  static final TileType burntFloor2 =
-      _open("burnt floor", CharCode.greekSmallLetterEpsilon, steelGray);
-  static final TileType rock =
-      _solid("rock", CharCode.darkShade, gunsmoke, back: slate);
-  static final TileType wall =
-      _solid("wall", CharCode.mediumShade, gunsmoke, back: slate);
-  static final TileType lowWall =
-      _obstacle("low wall", CharCode.percent, gunsmoke);
-  static final TileType openDoor = _open(
-      "open door", CharCode.whiteCircle, persimmon,
-      back: garnet, onClose: (pos) => CloseDoorAction(pos, Tiles.closedDoor));
-  static final TileType closedDoor = _door(
-      "closed door", CharCode.inverseWhiteCircle, persimmon,
-      back: garnet, onOpen: (pos) => OpenDoorAction(pos, Tiles.openDoor));
+  static final floor = tile("floor", "·", slate).open();
+  static final burntFloor = tile("burnt floor", "φ", steelGray).open();
+  static final burntFloor2 = tile("burnt floor", "ε", steelGray).open();
+  static final rock = tile("rock", "▓", gunsmoke, slate).solid();
+  static final wall = tile("wall", "▒", gunsmoke, slate).solid();
+  static final lowWall = tile("low wall", "%", gunsmoke).obstacle();
+  static final openDoor =
+      tile("open door", "○", persimmon, garnet).onClose(_closeDoor).open();
+  static final closedDoor =
+      tile("closed door", "◙", persimmon, garnet).onOpen(_openDoor).door();
 
 //  TODO: maleSign = open square door
 //  TODO: femaleSign = closed square door
 //  TODO: eighthNote = barred wall
 
   // TODO: Different character that doesn't look like bridge?
-  static final TileType stairs =
-      _exit("stairs", CharCode.identicalTo, gunsmoke, back: slate);
-  static final TileType bridge =
-      _open("bridge", CharCode.identicalTo, persimmon, back: garnet);
+  static final stairs = tile("stairs", "≡", gunsmoke, slate).exit().open();
+  static final bridge = tile("bridge", "≡", persimmon, garnet).open();
 
-  static final TileType water =
-      _water("water", CharCode.almostEqualTo, cerulean, back: ultramarine);
-  static final TileType steppingStone =
-      _open("stepping stone", "•", gunsmoke, back: ultramarine);
+  static final water = tile("water", "≈", cerulean, ultramarine).water();
+  static final steppingStone =
+      tile("stepping stone", "•", gunsmoke, ultramarine).open();
 
-  static final TileType dirt = _open("dirt", CharCode.middleDot, garnet);
-  static final TileType dirt2 =
-      _open("dirt2", CharCode.greekSmallLetterPhi, garnet);
-  static final TileType grass = _open("grass", CharCode.lightShade, peaGreen);
-  static final TileType tallGrass =
-      _open("tall grass", CharCode.squareRoot, peaGreen);
-  static final TileType tree = _solid(
-      "tree", CharCode.blackUpPointingTriangle, peaGreen,
-      back: sherwood);
-  static final TileType treeAlt1 =
-      _solid("tree", CharCode.blackSpadeSuit, peaGreen, back: sherwood);
-  static final TileType treeAlt2 =
-      _solid("tree", CharCode.blackClubSuit, peaGreen, back: sherwood);
+  static final dirt = tile("dirt", "·", garnet).open();
+  static final dirt2 = tile("dirt2", "φ", garnet).open();
+  static final grass = tile("grass", "░", peaGreen).open();
+  static final tallGrass = tile("tall grass", "√", peaGreen).open();
+  static final tree = tile("tree", "▲", peaGreen, sherwood).solid();
+  static final treeAlt1 = tile("tree", "♠", peaGreen, sherwood).solid();
+  static final treeAlt2 = tile("tree", "♣", peaGreen, sherwood).solid();
 
-  static final TileType tableTopLeft = _obstacle("table", "┌", persimmon);
-  static final TileType tableTop = _obstacle("table", "─", persimmon);
-  static final TileType tableTopRight = _obstacle("table", "┐", persimmon);
-  static final TileType tableSide = _obstacle("table", "│", persimmon);
-  static final TileType tableCenter = _obstacle("table", " ", persimmon);
-  static final TileType tableBottomLeft = _obstacle("table", "╘", persimmon);
-  static final TileType tableBottom = _obstacle("table", "═", persimmon);
-  static final TileType tableBottomRight = _obstacle("table", "╛", persimmon);
+  static final tableTopLeft = tile("table", "┌", persimmon).obstacle();
+  static final tableTop = tile("table", "─", persimmon).obstacle();
+  static final tableTopRight = tile("table", "┐", persimmon).obstacle();
+  static final tableSide = tile("table", "│", persimmon).obstacle();
+  static final tableCenter = tile("table", " ", persimmon).obstacle();
+  static final tableBottomLeft = tile("table", "╘", persimmon).obstacle();
+  static final tableBottom = tile("table", "═", persimmon).obstacle();
+  static final tableBottomRight = tile("table", "╛", persimmon).obstacle();
 
-  static final TileType tableLegLeft = _obstacle("table", "╞", persimmon);
-  static final TileType tableLeg = _obstacle("table", "╤", persimmon);
-  static final TileType tableLegRight = _obstacle("table", "╡", persimmon);
+  static final tableLegLeft = tile("table", "╞", persimmon).obstacle();
+  static final tableLeg = tile("table", "╤", persimmon).obstacle();
+  static final tableLegRight = tile("table", "╡", persimmon).obstacle();
 
-  static final TileType candle =
-      _obstacle("candle", CharCode.greaterThanOrEqualTo, sandal, emanation: 6);
+  static final candle = tile("candle", "≥", sandal).emanate(6).obstacle();
 
-  static final TileType wallTorch = _solid(
-      "wall torch", CharCode.lessThanOrEqualTo, gold,
-      back: slate, emanation: 8);
+  static final wallTorch =
+      tile("wall torch", "≤", gold, slate).emanate(8).solid();
 
   // TODO: Make these do something.
-  static final TileType openChest =
-      _obstacle("open chest", CharCode.topHalfIntegral, persimmon);
-  static final TileType closedChest =
-      _obstacle("closed chest", CharCode.bottomHalfIntegral, persimmon);
-  static final TileType closedBarrel = _obstacle(
-      "closed barrel", CharCode.degreeSign, persimmon,
-      onOpen: (pos) => OpenBarrelAction(pos));
-  static final TileType openBarrel =
-      _obstacle("open barrel", CharCode.bulletOperator, persimmon);
+  static final openChest = tile("open chest", "⌠", persimmon).obstacle();
+  static final closedChest = tile("closed chest", "⌡", persimmon).obstacle();
+  static final closedBarrel = tile("closed barrel", "°", persimmon)
+      .onOpen((pos) => OpenBarrelAction(pos))
+      .obstacle();
+  static final openBarrel = tile("open barrel", "∙", persimmon).obstacle();
 
-  static final TileType statue = _obstacle("statue", "P", ash, back: slate);
+  static final statue = tile("statue", "P", ash, slate).obstacle();
 
   // Make these "monsters" that can be pushed around.
-  static final TileType chair = _open("chair", "π", persimmon);
+  static final chair = tile("chair", "π", persimmon).open();
 
-  static final TileType brownJellyStain =
-      _open("brown jelly stain", CharCode.middleDot, persimmon);
+  static final brownJellyStain =
+      tile("brown jelly stain", "·", persimmon).open();
 
-  static final TileType grayJellyStain =
-      _open("gray jelly stain", CharCode.middleDot, steelGray);
+  static final grayJellyStain = tile("gray jelly stain", "·", steelGray).open();
 
-  static final TileType greenJellyStain =
-      _open("green jelly stain", CharCode.middleDot, lima);
+  static final greenJellyStain = tile("green jelly stain", "·", lima).open();
 
-  static final TileType redJellyStain =
-      _open("red jelly stain", CharCode.middleDot, brickRed);
+  static final redJellyStain = tile("red jelly stain", "·", brickRed).open();
 
-  static final TileType violetJellyStain =
-      _open("violet jelly stain", CharCode.middleDot, violet);
+  static final violetJellyStain =
+      tile("violet jelly stain", "·", violet).open();
 
-  static final TileType whiteJellyStain =
-      _open("white jelly stain", CharCode.middleDot, ash);
+  static final whiteJellyStain = tile("white jelly stain", "·", ash).open();
 
   // TODO: Make this do stuff when walked through.
-  static final TileType spiderweb =
-      _open("spiderweb", CharCode.divisionSign, slate);
+  static final spiderweb = tile("spiderweb", "÷", slate).open();
 
   /// The amount of heat required for [tile] to catch fire or 0 if the tile
   /// cannot be ignited.
@@ -196,51 +176,63 @@ class Tiles {
   };
 }
 
-Glyph _makeGlyph(Object char, Color fore, [Color back]) {
-  var charCode = char is int ? char : (char as String).codeUnitAt(0);
-  if (back == null) {
-    back = midnight;
-  } else {}
-
-  return Glyph.fromCharCode(charCode, fore, back);
+TileBuilder tile(String name, Object char, Color fore, [Color back]) {
+  return TileBuilder(name, char, fore, back);
 }
 
-/// Creates an impassable, opaque tile.
-TileType _door(String name, Object char, Color fore,
-    {Color back, Action Function(Vec) onOpen}) {
-  return TileType(name, _makeGlyph(char, fore, back), Motility.door,
-      onOpen: onOpen);
-}
+class TileBuilder {
+  final String name;
+  final Glyph glyph;
 
-/// Creates a passable, transparent exit tile.
-TileType _exit(String name, Object char, Color fore, {Color back}) {
-  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.flyAndWalk,
-      isExit: true);
-}
+  Action Function(Vec) _onClose;
+  Action Function(Vec) _onOpen;
+  bool _isExit = false;
+  int _emanationLevel = 0;
 
-/// Creates an impassable, transparent tile.
-TileType _obstacle(String name, Object char, Color fore,
-    {Color back, int emanation, Action Function(Vec) onOpen}) {
-  return TileType(name, _makeGlyph(char, fore, back), Motility.fly,
-      emanation: Lighting.emanationForLevel(emanation ?? 0), onOpen: onOpen);
-}
+  factory TileBuilder(String name, Object char, Color fore, [Color back]) {
+    back ??= midnight;
+    var charCode = char is int ? char : (char as String).codeUnitAt(0);
 
-/// Creates a passable, transparent tile.
-TileType _open(String name, Object char, Color fore,
-    {Color back, Action Function(Vec) onClose}) {
-  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.flyAndWalk,
-      onClose: onClose);
-}
+    return TileBuilder._(name, Glyph.fromCharCode(charCode, fore, back));
+  }
 
-/// Creates an impassable, opaque tile.
-TileType _solid(String name, Object char, Color fore,
-    {Color back, int emanation}) {
-  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.none,
-      emanation: Lighting.emanationForLevel(emanation ?? 0));
-}
+  TileBuilder._(this.name, this.glyph);
 
-TileType _water(String name, Object char, Color fore, {Color back}) {
-  return TileType(name, _makeGlyph(char, fore, back),
-      MotilitySet([Motility.fly, Motility.swim]),
-      emanation: 1);
+  TileBuilder emanate(int level) {
+    _emanationLevel = level;
+    return this;
+  }
+
+  TileBuilder exit() {
+    _isExit = true;
+    return this;
+  }
+
+  TileBuilder onClose(Action Function(Vec) onClose) {
+    _onClose = onClose;
+    return this;
+  }
+
+  TileBuilder onOpen(Action Function(Vec) onOpen) {
+    _onOpen = onOpen;
+    return this;
+  }
+
+  TileType door() => _motility(Motility.door);
+
+  TileType obstacle() => _motility(Motility.fly);
+
+  TileType open() => _motility(MotilitySet.flyAndWalk);
+
+  TileType solid() => _motility(MotilitySet.none);
+
+  TileType water() => _motility(MotilitySet([Motility.fly, Motility.swim]));
+
+  TileType _motility(MotilitySet motilities) {
+    return TileType(name, glyph, motilities,
+        emanation: Lighting.emanationForLevel(_emanationLevel),
+        isExit: _isExit,
+        onClose: _onClose,
+        onOpen: _onOpen);
+  }
 }
