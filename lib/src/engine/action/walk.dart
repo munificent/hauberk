@@ -5,6 +5,7 @@ import 'attack.dart';
 import '../core/game.dart';
 import '../hero/hero.dart';
 import '../stage/sound.dart';
+import '../stage/tile.dart';
 
 class WalkAction extends Action {
   final Direction dir;
@@ -26,15 +27,10 @@ class WalkAction extends Action {
       return alternate(AttackAction(target));
     }
 
-    // See if it's a door.
+    // See if it can be opened.
     var tile = game.stage[pos].type;
-    if (tile.opensTo != null) {
-      return alternate(OpenDoorAction(pos));
-    }
-
-    // If the tile responds to being walked into, do it.
-    if (tile.onWalkInto != null) {
-      return alternate(tile.onWalkInto(pos));
+    if (tile.canOpen) {
+      return alternate(tile.onOpen(pos));
     }
 
     // See if we can walk there.
@@ -93,12 +89,13 @@ class WalkAction extends Action {
 }
 
 class OpenDoorAction extends Action {
-  final Vec doorPos;
+  final Vec pos;
+  final TileType openDoor;
 
-  OpenDoorAction(this.doorPos);
+  OpenDoorAction(this.pos, this.openDoor);
 
   ActionResult onPerform() {
-    game.stage[doorPos].type = game.stage[doorPos].type.opensTo;
+    game.stage[pos].type = openDoor;
     game.stage.tileOpacityChanged();
 
     return succeed('{1} open[s] the door.', actor);
@@ -107,8 +104,9 @@ class OpenDoorAction extends Action {
 
 class CloseDoorAction extends Action {
   final Vec doorPos;
+  final TileType closedDoor;
 
-  CloseDoorAction(this.doorPos);
+  CloseDoorAction(this.doorPos, this.closedDoor);
 
   ActionResult onPerform() {
     var blockingActor = game.stage.actorAt(doorPos);
@@ -117,7 +115,7 @@ class CloseDoorAction extends Action {
     }
 
     // TODO: What should happen if items are on the tile?
-    game.stage[doorPos].type = game.stage[doorPos].type.closesTo;
+    game.stage[doorPos].type = closedDoor;
     game.stage.tileOpacityChanged();
 
     return succeed('{1} close[s] the door.', actor);

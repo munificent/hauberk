@@ -7,12 +7,10 @@ import '../../engine.dart';
 
 abstract class ElementActionMixin implements Action {
   void hitTile(Hit hit, Vec pos, num distance, [int fuel = 0]) {
-    // Open doors if the given motility lets us go through them.
-    // TODO: Set on fire if fire element?
+    // Open tiles if the given motility lets us go through them.
     var tile = game.stage[pos];
-    if (tile.type.opensTo != null) {
-      tile.type = tile.type.opensTo;
-      game.stage.tileOpacityChanged();
+    if (tile.type.canOpen) {
+      addAction(tile.type.onOpen(pos));
     }
 
     addEvent(EventType.cone, element: hit.element, pos: pos);

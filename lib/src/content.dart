@@ -19,7 +19,6 @@ import 'engine.dart';
 Content createContent() {
   // Note: The order is significant here. For example, monster drops will
   // reference items, which need to have already been created.
-  Tiles.initialize();
   Items.initialize();
   Monsters.initialize();
   Recipes.initialize();

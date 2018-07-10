@@ -110,7 +110,7 @@ class Dungeon {
       if (place.emanates) {
         for (var cell in place.cells) {
           var tile = stage[cell];
-          if (tile.type.motilities.contains(Motility.fly)) {
+          if (tile.isFlyable) {
             tile.addEmanation(128);
           }
         }

@@ -18,11 +18,12 @@ class Tiles {
       _solid("wall", CharCode.mediumShade, gunsmoke, back: slate);
   static final TileType lowWall =
       _obstacle("low wall", CharCode.percent, gunsmoke);
-  static final TileType openDoor =
-      _open("open door", CharCode.whiteCircle, persimmon, back: garnet);
+  static final TileType openDoor = _open(
+      "open door", CharCode.whiteCircle, persimmon,
+      back: garnet, onClose: (pos) => CloseDoorAction(pos, Tiles.closedDoor));
   static final TileType closedDoor = _door(
       "closed door", CharCode.inverseWhiteCircle, persimmon,
-      back: garnet);
+      back: garnet, onOpen: (pos) => OpenDoorAction(pos, Tiles.openDoor));
 
 //  TODO: maleSign = open square door
 //  TODO: femaleSign = closed square door
@@ -78,9 +79,9 @@ class Tiles {
       _obstacle("open chest", CharCode.topHalfIntegral, persimmon);
   static final TileType closedChest =
       _obstacle("closed chest", CharCode.bottomHalfIntegral, persimmon);
-  static final TileType closedBarrel = _walkInto(
+  static final TileType closedBarrel = _obstacle(
       "closed barrel", CharCode.degreeSign, persimmon,
-      action: (pos) => OpenBarrelAction(pos));
+      onOpen: (pos) => OpenBarrelAction(pos));
   static final TileType openBarrel =
       _obstacle("open barrel", CharCode.bulletOperator, persimmon);
 
@@ -110,12 +111,6 @@ class Tiles {
   // TODO: Make this do stuff when walked through.
   static final TileType spiderweb =
       _open("spiderweb", CharCode.divisionSign, slate);
-
-  static void initialize() {
-    // Link doors together.
-    Tiles.openDoor.closesTo = Tiles.closedDoor;
-    Tiles.closedDoor.opensTo = Tiles.openDoor;
-  }
 
   /// The amount of heat required for [tile] to catch fire or 0 if the tile
   /// cannot be ignited.
@@ -211,9 +206,10 @@ Glyph _makeGlyph(Object char, Color fore, [Color back]) {
 }
 
 /// Creates an impassable, opaque tile.
-TileType _door(String name, Object char, Color fore, {Color back}) {
-  return TileType(
-      name, _makeGlyph(char, fore, back), MotilitySet([Motility.door]));
+TileType _door(String name, Object char, Color fore,
+    {Color back, Action Function(Vec) onOpen}) {
+  return TileType(name, _makeGlyph(char, fore, back), Motility.door,
+      onOpen: onOpen);
 }
 
 /// Creates a passable, transparent exit tile.
@@ -224,23 +220,16 @@ TileType _exit(String name, Object char, Color fore, {Color back}) {
 
 /// Creates an impassable, transparent tile.
 TileType _obstacle(String name, Object char, Color fore,
-    {Color back, int emanation}) {
-  return TileType(
-      name, _makeGlyph(char, fore, back), MotilitySet([Motility.fly]),
-      emanation: Lighting.emanationForLevel(emanation ?? 0));
-}
-
-/// Creates a transparent tile with a special action when walked into.
-TileType _walkInto(String name, Object char, Color fore,
-    {Color back, Action Function(Vec) action}) {
-  return TileType(
-      name, _makeGlyph(char, fore, back), MotilitySet([Motility.fly]),
-      onWalkInto: action);
+    {Color back, int emanation, Action Function(Vec) onOpen}) {
+  return TileType(name, _makeGlyph(char, fore, back), Motility.fly,
+      emanation: Lighting.emanationForLevel(emanation ?? 0), onOpen: onOpen);
 }
 
 /// Creates a passable, transparent tile.
-TileType _open(String name, Object char, Color fore, {Color back}) {
-  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.flyAndWalk);
+TileType _open(String name, Object char, Color fore,
+    {Color back, Action Function(Vec) onClose}) {
+  return TileType(name, _makeGlyph(char, fore, back), MotilitySet.flyAndWalk,
+      onClose: onClose);
 }
 
 /// Creates an impassable, opaque tile.

@@ -75,7 +75,7 @@ class _SoundFlow extends Flow {
     if (pos.y >= stage.height - 1) return null;
 
     // Closed doors block some but not all sound.
-    if (tile.type.opensTo != null) return 8;
+    if (tile.isClosedDoor) return 8;
 
     // Walls almost block all sound, but a 1-thick wall does let a little
     // through.

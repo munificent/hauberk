@@ -152,42 +152,42 @@ class SkillDirectionDialog extends DirectionDialog {
   }
 }
 
-/// Asks the user to select an adjacent open door to close.
-class CloseDoorDialog extends DirectionDialog {
-  String get question => "Close which door?";
-  String get helpText => "Choose door";
+/// Asks the user to select an adjacent tile to close.
+class CloseDialog extends DirectionDialog {
+  String get question => "Close what?";
+  String get helpText => "Choose direction";
 
-  CloseDoorDialog(GameScreen gameScreen) : super(gameScreen);
+  CloseDialog(GameScreen gameScreen) : super(gameScreen);
 
-  bool canTarget(Tile tile) => tile.type.closesTo != null;
+  bool canTarget(Tile tile) => tile.type.canClose;
 
   bool tryDirection(Direction direction) {
     var pos = game.hero.pos + direction;
-    if (game.stage[pos].type.closesTo != null) {
-      game.hero.setNextAction(CloseDoorAction(pos));
+    var tile = game.stage[pos].type;
+    if (tile.canClose) {
+      game.hero.setNextAction(tile.onClose(pos));
       return true;
     } else {
-      game.log.error('There is no open door there.');
+      game.log.error('There is nothing to close there.');
       return false;
     }
   }
 }
 
-/// Asks the user to select an adjacent close door or other openable tile to
-/// open it.
+/// Asks the user to select an adjacent tile to open.
 class OpenDialog extends DirectionDialog {
   String get question => "Open what?";
   String get helpText => "Choose direction";
 
   OpenDialog(GameScreen gameScreen) : super(gameScreen);
 
-  // TODO: Handle chests.
-  bool canTarget(Tile tile) => tile.type.opensTo != null;
+  bool canTarget(Tile tile) => tile.type.canOpen;
 
   bool tryDirection(Direction direction) {
     var pos = game.hero.pos + direction;
-    if (game.stage[pos].type.opensTo != null) {
-      game.hero.setNextAction(OpenDoorAction(pos));
+    var tile = game.stage[pos].type;
+    if (tile.canOpen) {
+      game.hero.setNextAction(tile.onOpen(pos));
       return true;
     } else {
       game.log.error('There is nothing to open there.');

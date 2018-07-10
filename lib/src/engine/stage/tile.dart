@@ -50,6 +50,11 @@ class MotilitySet {
 
   MotilitySet._(this._bitMask);
 
+  bool operator ==(other) {
+    if (other is MotilitySet) return _bitMask == other._bitMask;
+    return false;
+  }
+
   /// Creates a new MotilitySet containing all of the motilities of this and
   /// [other].
   MotilitySet operator +(MotilitySet other) =>
@@ -71,19 +76,25 @@ class TileType {
   final int emanation;
   final appearance;
 
-  TileType opensTo;
-  TileType closesTo;
+  bool get canClose => onClose != null;
+  bool get canOpen => onOpen != null;
 
   final MotilitySet motilities;
 
-  final Action Function(Vec) onWalkInto;
+  /// If the tile can be "opened", this is the function that produces an open
+  /// action for it. Otherwise `null`.
+  final Action Function(Vec) onClose;
 
-  bool get isTraversable => canEnter(Motility.walk) || (opensTo != null);
+  /// If the tile can be "opened", this is the function that produces an open
+  /// action for it. Otherwise `null`.
+  final Action Function(Vec) onOpen;
+
+  bool get isTraversable => canEnterAny(MotilitySet.doorAndWalk);
 
   bool get isWalkable => canEnter(Motility.walk);
 
   TileType(this.name, this.appearance, MotilitySet motilities,
-      {int emanation, bool isExit, this.onWalkInto})
+      {int emanation, bool isExit, this.onClose, this.onOpen})
       : isExit = isExit ?? false,
         emanation = emanation ?? 0,
         motilities = motilities;
@@ -178,6 +189,8 @@ class Tile {
   bool get isTraversable => type.isTraversable;
 
   bool get isFlyable => canEnter(Motility.fly);
+
+  bool get isClosedDoor => type.motilities == Motility.door;
 
   bool get isExit => type.isExit;
 

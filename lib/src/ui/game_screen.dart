@@ -289,20 +289,21 @@ class GameScreen extends Screen<Input> {
   void open() {
     // See how many adjacent closed doors there are.
     // TODO: Handle chests.
-    var doors = <Vec>[];
+    var openable = <Vec>[];
     for (var direction in Direction.all) {
       var pos = game.hero.pos + direction;
-      if (game.stage[pos].type.opensTo != null) {
-        doors.add(pos);
+      if (game.stage[pos].type.canOpen) {
+        openable.add(pos);
       }
     }
 
-    if (doors.isEmpty) {
-      game.log.error('You are not next to a closed door.');
+    if (openable.isEmpty) {
+      game.log.error('You are not next to anything to open.');
       dirty();
-    } else if (doors.length == 1) {
+    } else if (openable.length == 1) {
+      var pos = openable.first;
       // TODO: This leaks information if the hero is next to unexplored tiles.
-      game.hero.setNextAction(OpenDoorAction(doors[0]));
+      game.hero.setNextAction(game.stage[pos].type.onOpen(pos));
     } else {
       ui.push(OpenDialog(this));
     }
@@ -310,22 +311,23 @@ class GameScreen extends Screen<Input> {
 
   void closeDoor() {
     // See how many adjacent open doors there are.
-    var doors = <Vec>[];
+    var closeable = <Vec>[];
     for (var direction in Direction.all) {
       var pos = game.hero.pos + direction;
-      if (game.stage[pos].type.closesTo != null) {
-        doors.add(pos);
+      if (game.stage[pos].type.canClose) {
+        closeable.add(pos);
       }
     }
 
-    if (doors.isEmpty) {
+    if (closeable.isEmpty) {
       game.log.error('You are not next to an open door.');
       dirty();
-    } else if (doors.length == 1) {
+    } else if (closeable.length == 1) {
+      var pos = closeable.first;
       // TODO: This leaks information if the hero is next to unexplored tiles.
-      game.hero.setNextAction(CloseDoorAction(doors[0]));
+      game.hero.setNextAction(game.stage[pos].type.onClose(pos));
     } else {
-      ui.push(CloseDoorDialog(this));
+      ui.push(CloseDialog(this));
     }
   }
 
