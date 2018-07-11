@@ -744,13 +744,10 @@ class RunBehavior extends Behavior {
   /// Returns `false` if they should stop because they'd hit a wall or actor.
   bool _shouldKeepRunning(Hero hero) {
     var pos = hero.pos + direction;
-    if (!hero.canOccupy(pos)) return false;
-
-    // Don't run into someone.
-    var stage = hero.game.stage;
-    if (stage.actorAt(pos) != null) return false;
+    if (!hero.canEnter(pos)) return false;
 
     // Don't run next to someone.
+    var stage = hero.game.stage;
     if (stage.actorAt(pos + direction.rotateLeft90) != null) return false;
     if (stage.actorAt(pos + direction.rotateLeft45) != null) return false;
     if (stage.actorAt(pos + direction) != null) return false;

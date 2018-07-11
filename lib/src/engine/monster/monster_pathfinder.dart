@@ -70,6 +70,10 @@ class MonsterPathfinder extends Pathfinder<Direction> {
   }
 
   int stepCost(Vec pos, Tile tile) {
+    // Don't enter tiles that are on fire, etc.
+    // TODO: Take resistance and immunity into account.
+    if (tile.substance != 0) return null;
+
     // TODO: Take illumination into account for monsters that dislike light or
     // darkness.
     var firstStep = (pos - start).kingLength == 1;
@@ -105,9 +109,6 @@ class MonsterPathfinder extends Pathfinder<Direction> {
     }
 
     if (tile.canEnterAny(_monster.motilities)) return _floorCost;
-
-    // TODO: Don't enter substances unless immune. Monsters shouldn't walk into
-    // fire!
 
     // Can't go here.
     return null;

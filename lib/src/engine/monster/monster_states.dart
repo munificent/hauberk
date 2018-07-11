@@ -74,9 +74,13 @@ abstract class MonsterState {
   }
 
   Monster get monster => _monster;
+
   Breed get breed => _monster.breed;
+
   Game get game => _monster.game;
+
   Vec get pos => _monster.pos;
+
   bool get isVisibleToHero => _monster.isVisibleToHero;
 
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
@@ -128,7 +132,7 @@ abstract class MonsterState {
 
     dirs = dirs.where((dir) {
       var here = pos + dir;
-      if (!monster.canOccupy(here)) return false;
+      if (!monster.willOccupy(here)) return false;
       var actor = game.stage.actorAt(here);
       return actor == null || actor == game.hero;
     }).toList();
@@ -144,6 +148,11 @@ class AsleepState extends MonsterState {
 
 class AwakeState extends MonsterState {
   Action getAction() {
+    // If on a burning etc. tile, try to get out.
+    // TODO: Should consider moves like teleport that will help it escape.
+    var escape = _escapeSubstance();
+    if (escape != Direction.none) return WalkAction(escape);
+
     // If there is a worthwhile move, use it.
     var moves = breed.moves
         .where((move) => monster.canUse(move) && move.shouldUse(monster))
@@ -239,9 +248,25 @@ class AwakeState extends MonsterState {
       walkDir = rangedDir ?? meleeDir;
     }
 
+    walkDir = meleeDir;
+
     if (walkDir == null) walkDir = Direction.none;
 
     return WalkAction(_meander(walkDir));
+  }
+
+  /// If the monster is currently on a substance tile, find the nearest path
+  /// out of the substance.
+  ///
+  /// Otherwise, returns [Direction.none].
+  Direction _escapeSubstance() {
+    // If we're not on a bad tile, don't worry.
+    if (game.stage[monster.pos].substance == 0) return Direction.none;
+
+    // Otherwise, we'll need to actually pathfind to reach a good vantage point.
+    var flow = MotilityFlow(game.stage, pos, monster.motilities,
+        avoidSubstances: true);
+    return flow.directionToBestWhere((pos) => game.stage[pos].substance == 0);
   }
 
   /// Tries to find a path a desirable position for using a ranged [Move].
@@ -288,7 +313,7 @@ class AwakeState extends MonsterState {
 
     for (var dir in Direction.all) {
       var pos = monster.pos + dir;
-      if (!monster.canOccupy(pos)) continue;
+      if (!monster.willEnter(pos)) continue;
       if (!isValidRangedPosition(pos)) continue;
 
       var distance = (pos - game.hero.pos).kingLength;
@@ -302,7 +327,7 @@ class AwakeState extends MonsterState {
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
     var flow = MotilityFlow(game.stage, pos, monster.motilities,
-        maxDistance: maxRange);
+        maxDistance: maxRange, avoidSubstances: true);
     var dir = flow.directionToBestWhere(isValidRangedPosition);
     if (dir != Direction.none) {
       Debug.logMonster(monster, "Ranged position $dir");
@@ -341,6 +366,10 @@ class AwakeState extends MonsterState {
 
     for (var pos in Line(pos, game.hero.pos)) {
       first ??= pos;
+
+      // Don't walk into fire, etc.
+      // TODO: Take immunity into account.
+      if (game.stage[pos].substance > 0) return null;
 
       // TODO: Should not walk through doors since that might not be the
       // fastest path.
@@ -403,7 +432,7 @@ class AfraidState extends MonsterState {
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
     var flow = MotilityFlow(game.stage, pos, monster.motilities,
-        maxDistance: breed.tracking);
+        maxDistance: breed.tracking, avoidSubstances: true);
     // TODO: Should monsters prefer darkness too?
     var dir = flow.directionToBestWhere((pos) => game.stage[pos].isOccluded);
 
@@ -416,8 +445,7 @@ class AfraidState extends MonsterState {
     var heroDistance = (pos - game.hero.pos).kingLength;
     var farther = Direction.all.where((dir) {
       var here = pos + dir;
-      if (!monster.canOccupy(here)) return false;
-      if (game.stage.actorAt(here) != null) return false;
+      if (!monster.willEnter(here)) return false;
       return (here - game.hero.pos).kingLength > heroDistance;
     });
 

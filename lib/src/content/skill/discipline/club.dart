@@ -57,9 +57,7 @@ class BashAction extends MasteryAction {
       var chance = 300 * _damage ~/ defender.maxHealth;
       chance = chance.clamp(5, 100);
 
-      if (game.stage.actorAt(dest) == null &&
-          defender.canOccupy(dest) &&
-          rng.percent(chance)) {
+      if (defender.canEnter(dest) && rng.percent(chance)) {
         defender.pos = dest;
         defender.energy.energy = 0;
         log("{1} is knocked back!", defender);

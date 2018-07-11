@@ -267,11 +267,13 @@ abstract class Flow {
 /// a given [MotilitySet].
 class MotilityFlow extends Flow {
   final MotilitySet _motilities;
-  final bool _ignoreActors;
+  final bool _avoidActors;
+  final bool _avoidSubstances;
 
   MotilityFlow(Stage stage, Vec start, this._motilities,
-      {int maxDistance, bool ignoreActors})
-      : _ignoreActors = ignoreActors ?? false,
+      {int maxDistance, bool avoidActors, bool avoidSubstances})
+      : _avoidActors = avoidActors ?? true,
+        _avoidSubstances = avoidSubstances ?? false,
         super(stage, start, maxDistance: maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
@@ -279,8 +281,11 @@ class MotilityFlow extends Flow {
     // Can't enter impassable tiles.
     if (!tile.canEnterAny(_motilities)) return null;
 
+    // TODO: Should take resistances and immunity into account.
+    if (_avoidSubstances && tile.substance > 0) return null;
+
     // Can't walk through other actors.
-    if (!_ignoreActors && stage.actorAt(pos) != null) return null;
+    if (!_avoidActors && stage.actorAt(pos) != null) return null;
 
     // TODO: Assumes cost == distance.
     // Can't reach if it's too far.

@@ -37,7 +37,7 @@ class FlowAction extends Action with ElementActionMixin {
     if (_tiles == null) {
       // TODO: Use a different flow that makes diagonal moves more expensive to
       // give more natural circular behavior?
-      _flow = MotilityFlow(game.stage, _from, _motilities, ignoreActors: true);
+      _flow = MotilityFlow(game.stage, _from, _motilities, avoidActors: false);
 
       _tiles = _flow.reachable
           .takeWhile((pos) => _flow.costAt(pos) <= _hit.range)

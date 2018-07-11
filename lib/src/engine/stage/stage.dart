@@ -99,7 +99,7 @@ class Stage {
     var items = <Item>[];
 
     // Try to keep dropped items from overlapping.
-    var flow = MotilityFlow(this, pos, motilities, ignoreActors: true);
+    var flow = MotilityFlow(this, pos, motilities, avoidActors: false);
 
     drop.spawnDrop((item) {
       items.add(item);

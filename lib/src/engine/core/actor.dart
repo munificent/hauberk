@@ -254,6 +254,7 @@ abstract class Actor implements Noun {
     // Do nothing.
   }
 
+  /// Whether it's possible for the actor to ever be on the tile at [pos].
   bool canOccupy(Vec pos) {
     if (pos.x < 0) return false;
     if (pos.x >= game.stage.width) return false;
@@ -263,6 +264,23 @@ abstract class Actor implements Noun {
     var tile = game.stage[pos];
     return tile.canEnterAny(motilities);
   }
+
+  /// Whether the actor ever desires to be on the tile at [pos].
+  ///
+  /// Takes into account that actors do not want to step into burning tiles,
+  /// but does not care if the tile is occupied.
+  bool willOccupy(Vec pos) => canOccupy(pos) && game.stage[pos].substance == 0;
+
+  /// Whether the actor can enter the tile at [pos] right now.
+  ///
+  /// This is true if the actor can occupy [pos] and no other actor already is.
+  bool canEnter(Vec pos) => canOccupy(pos) && game.stage.actorAt(pos) == null;
+
+  /// Whether the actor desires to enter the tile at [pos].
+  ///
+  /// Takes into account that actors do not want to step into burning tiles.
+  bool willEnter(Vec pos) => canEnter(pos) && game.stage[pos].substance == 0;
+  // TODO: Take resistance and immunities into account.
 
   void finishTurn(Action action) {
     energy.spend();

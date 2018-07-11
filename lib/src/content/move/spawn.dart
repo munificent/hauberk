@@ -16,9 +16,7 @@ class SpawnMove extends Move {
 
     // Look for an open adjacent tile.
     for (var dir in Direction.all) {
-      var here = monster.pos + dir;
-      if (monster.canOccupy(here) && monster.game.stage.actorAt(here) == null)
-        return true;
+      if (monster.willEnter(monster.pos + dir)) return true;
     }
 
     return false;
@@ -26,11 +24,9 @@ class SpawnMove extends Move {
 
   Action onGetAction(Monster monster) {
     // Pick an open adjacent tile.
-    var dirs = Direction.all.where((dir) {
-      var here = monster.pos + dir;
-      return monster.canOccupy(here) &&
-          monster.game.stage.actorAt(here) == null;
-    }).toList();
+    var dirs = Direction.all
+        .where((dir) => monster.willEnter(monster.pos + dir))
+        .toList();
 
     return SpawnAction(monster.pos + rng.item(dirs), monster.breed);
   }
