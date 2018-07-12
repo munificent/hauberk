@@ -49,8 +49,7 @@ class Windstorm extends Spell implements ActionSkill {
 
   Action onGetAction(Game game) {
     var attack = Attack(Noun("the wind"), "blast", damage, range, Elements.air);
-    return FlowAction(
-        game.hero.pos, attack.createHit(), MotilitySet.flyAndWalk);
+    return FlowAction(game.hero.pos, attack.createHit(), Motility.flyAndWalk);
   }
 }
 
@@ -80,7 +79,7 @@ class TidalWave extends Spell implements ActionSkill {
     var attack =
         Attack(Noun("the wave"), "inundate", damage, range, Elements.water);
     return FlowAction(game.hero.pos, attack.createHit(),
-        MotilitySet([Motility.walk, Motility.door, Motility.swim]),
+        Motility.walk | Motility.door | Motility.swim,
         slowness: 2);
   }
 }

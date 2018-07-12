@@ -141,7 +141,7 @@ class Dungeon {
     // that's marked to have the hero. If that's not the case, we'll need to
     // pick a place here.
 
-    placeHero(_tryFindSpawnPos(startPlace, MotilitySet.walk, SpawnLocation.open,
+    placeHero(_tryFindSpawnPos(startPlace, Motility.walk, SpawnLocation.open,
         avoidActors: true));
   }
 
@@ -292,11 +292,11 @@ class Dungeon {
       var theme = place.chooseTheme();
 
       var floorDrop = FloorDrops.choose(theme, depth);
-      var pos = _tryFindSpawnPos(place, MotilitySet.walk, floorDrop.location,
+      var pos = _tryFindSpawnPos(place, Motility.walk, floorDrop.location,
           avoidActors: false);
       if (pos == null) break;
 
-      stage.placeDrops(pos, MotilitySet.walk, floorDrop.drop);
+      stage.placeDrops(pos, Motility.walk, floorDrop.drop);
     }
   }
 
@@ -321,7 +321,7 @@ class Dungeon {
   }
 
   int _spawnMonster(Place place, Breed breed) {
-    var pos = _tryFindSpawnPos(place, breed.motilities, breed.location,
+    var pos = _tryFindSpawnPos(place, breed.motility, breed.location,
         avoidActors: true);
 
     // If there are no remaining open tiles, abort.
@@ -333,7 +333,7 @@ class Dungeon {
     var spawned = 0;
     spawn(Breed breed, Vec pos) {
       if (isCorpse) {
-        stage.placeDrops(pos, breed.motilities, breed.drop);
+        stage.placeDrops(pos, breed.motility, breed.drop);
       } else {
         stage.addActor(breed.spawn(stage.game, pos));
         spawned++;
@@ -353,7 +353,8 @@ class Dungeon {
       // handle actors being placed while the flow is being used -- it still
       // thinks those tiles are available. Come up with a better way to place
       // the monsters.
-      var flow = MotilityFlow(stage, pos, breed.motilities);
+      var flow = MotilityFlow(stage, pos, breed.motility);
+
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
       var here = flow.reachable.firstWhere((_) => true, orElse: () => null);
@@ -367,8 +368,7 @@ class Dungeon {
     return spawned;
   }
 
-  Vec _tryFindSpawnPos(
-      Place place, MotilitySet motilities, SpawnLocation location,
+  Vec _tryFindSpawnPos(Place place, Motility motility, SpawnLocation location,
       {bool avoidActors}) {
     int minWalls;
     int maxWalls;
@@ -397,7 +397,7 @@ class Dungeon {
 
     Vec acceptable;
     for (var pos in place.cells) {
-      if (!getTileAt(pos).canEnterAny(motilities)) continue;
+      if (!getTileAt(pos).canEnter(motility)) continue;
 
       if (stage.actorAt(pos) != null) continue;
 

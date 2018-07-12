@@ -215,7 +215,7 @@ class RiverBiome extends AquaticBiome {
     // itself.
     var shortStart =
         _cells.firstWhere((pos) => _dungeon.getTileAt(pos) == Tiles.grass);
-    var flow = MotilityFlow(_dungeon.stage, shortStart, MotilitySet.walk);
+    var flow = MotilityFlow(_dungeon.stage, shortStart, Motility.walk);
     var shore1 = flow.reachable.toSet();
     var shore2 = _cells
         .where((pos) =>

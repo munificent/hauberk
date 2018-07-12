@@ -13,7 +13,7 @@ class FlowAction extends Action with ElementActionMixin {
   Flow _flow;
   List<Vec> _tiles;
 
-  final MotilitySet _motilities;
+  final Motility _motility;
   final int _slowness;
 
   bool get isImmediate => false;
@@ -23,7 +23,7 @@ class FlowAction extends Action with ElementActionMixin {
   // TODO: Support motilities that can flow into closed doors but not out of
   // them. That would let fire flow attacks that can set closed doors on fire.
 
-  FlowAction(this._from, this._hit, this._motilities, {int slowness})
+  FlowAction(this._from, this._hit, this._motility, {int slowness})
       : _slowness = slowness ?? 1;
 
   ActionResult onPerform() {
@@ -37,7 +37,7 @@ class FlowAction extends Action with ElementActionMixin {
     if (_tiles == null) {
       // TODO: Use a different flow that makes diagonal moves more expensive to
       // give more natural circular behavior?
-      _flow = MotilityFlow(game.stage, _from, _motilities, avoidActors: false);
+      _flow = MotilityFlow(game.stage, _from, _motility, avoidActors: false);
 
       _tiles = _flow.reachable
           .takeWhile((pos) => _flow.costAt(pos) <= _hit.range)
@@ -67,23 +67,23 @@ class FlowAction extends Action with ElementActionMixin {
 /// This class mainly exists as an [Action] that [Item]s can use.
 class FlowSelfAction extends Action {
   final Attack _attack;
-  final MotilitySet _motilities;
+  final Motility _motility;
 
-  FlowSelfAction(this._attack, this._motilities);
+  FlowSelfAction(this._attack, this._motility);
 
   ActionResult onPerform() {
-    return alternate(FlowAction(actor.pos, _attack.createHit(), _motilities));
+    return alternate(FlowAction(actor.pos, _attack.createHit(), _motility));
   }
 }
 
 class FlowFromAction extends Action {
   final Attack _attack;
   final Vec _pos;
-  final MotilitySet _motilities;
+  final Motility _motility;
 
-  FlowFromAction(this._attack, this._pos, this._motilities);
+  FlowFromAction(this._attack, this._pos, this._motility);
 
   ActionResult onPerform() {
-    return alternate(FlowAction(_pos, _attack.createHit(), _motilities));
+    return alternate(FlowAction(_pos, _attack.createHit(), _motility));
   }
 }

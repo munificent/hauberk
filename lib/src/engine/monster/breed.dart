@@ -63,7 +63,7 @@ class Breed {
 
   final SpawnLocation location;
 
-  final MotilitySet motilities;
+  final Motility motility;
 
   final BreedFlags flags;
 
@@ -103,7 +103,7 @@ class Breed {
   final List<BreedGroup> groups = [];
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
-      this.drop, this.location, this.motilities,
+      this.drop, this.location, this.motility,
       {this.depth,
       this.maxHealth,
       this.tracking,

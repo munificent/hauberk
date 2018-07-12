@@ -118,7 +118,7 @@ class RayAction extends RayActionBase with ElementActionMixin {
       RayAction._(hit, center, center, 1.0);
 
   RayAction._(this._hit, Vec from, Vec to, double fraction)
-  : super(from, to, fraction);
+      : super(from, to, fraction);
 
   void reachTile(Vec pos, num distance) {
     hitTile(_hit, pos, distance);

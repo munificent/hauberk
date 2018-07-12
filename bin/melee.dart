@@ -149,7 +149,7 @@ bool fight(HeroSave save, int monsterHealth) {
   var breed = breeds.putIfAbsent(
       monsterHealth,
       () => Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
-          null, SpawnLocation.anywhere, MotilitySet.walk,
+          null, SpawnLocation.anywhere, Motility.walk,
           meander: 0, maxHealth: monsterHealth));
 
   var monster = Monster(game, breed, 0, 0, 1);

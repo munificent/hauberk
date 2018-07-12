@@ -21,7 +21,7 @@ class OpenBarrelAction extends Action {
       log("The barrel is empty.", actor);
     } else {
       var drop = parseDrop("food", game.depth);
-      game.stage.placeDrops(_pos, MotilitySet.walk, drop);
+      game.stage.placeDrops(_pos, Motility.walk, drop);
 
       log("{1} open[s] the barrel.", actor);
     }

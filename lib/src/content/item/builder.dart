@@ -225,11 +225,11 @@ class _ItemBuilder extends _BaseBuilder {
       {int range = 5, bool fly = false}) {
     var attack = Attack(Noun(noun), verb, damage, range, element);
 
-    var motilities = MotilitySet([Motility.walk]);
-    if (fly) motilities += Motility.fly;
+    var motility = Motility.walk;
+    if (fly) motility |= Motility.fly;
 
-    use(() => FlowSelfAction(attack, motilities));
-    tossUse((pos) => FlowFromAction(attack, pos, motilities));
+    use(() => FlowSelfAction(attack, motility));
+    tossUse((pos) => FlowFromAction(attack, pos, motility));
   }
 
   void lightSource({int level, int range}) {

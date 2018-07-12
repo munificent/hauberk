@@ -128,7 +128,7 @@ class PoisonFloorAction extends Action with DestroyActionMixin {
     }
 
     // Try to fill the tile with poison gas.
-    if (tile.canEnter(Motility.fly)) {
+    if (tile.isFlyable) {
       tile.element = Elements.poison;
       tile.substance = (tile.substance + _damage * 16).clamp(0, 255);
     }
@@ -164,14 +164,13 @@ class WindAction extends Action {
   bool get isImmediate => false;
 
   ActionResult onPerform() {
-    // Move the actor to a random reachable tile.
-    var distance = actor.motilities.contains(Motility.fly) ? 6 : 3;
+    // Move the actor to a random reachable tile. Flying actors get blown more.
+    var distance = actor.motility.overlaps(Motility.fly) ? 6 : 3;
 
     // Don't blow through doors.
-    var motilities = actor.motilities;
-    motilities -= Motility.door;
+    var motility = actor.motility - Motility.door;
     var flow =
-        MotilityFlow(game.stage, actor.pos, motilities, maxDistance: distance);
+        MotilityFlow(game.stage, actor.pos, motility, maxDistance: distance);
     var positions =
         flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();
     if (positions.isEmpty) return ActionResult.failure;

@@ -83,7 +83,7 @@ class MappingFlow extends Flow {
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
   int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Can't enter impassable tiles.
-    if (!tile.canEnterAny(MotilitySet.doorAndFly)) return null;
+    if (!tile.canEnter(Motility.doorAndFly)) return null;
 
     // TODO: Assumes cost == distance.
     // Can't reach if it's too far.

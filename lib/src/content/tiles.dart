@@ -222,14 +222,14 @@ class TileBuilder {
 
   TileType obstacle() => _motility(Motility.fly);
 
-  TileType open() => _motility(MotilitySet.flyAndWalk);
+  TileType open() => _motility(Motility.flyAndWalk);
 
-  TileType solid() => _motility(MotilitySet.none);
+  TileType solid() => _motility(Motility.none);
 
-  TileType water() => _motility(MotilitySet([Motility.fly, Motility.swim]));
+  TileType water() => _motility(Motility.fly | Motility.swim);
 
-  TileType _motility(MotilitySet motilities) {
-    return TileType(name, glyph, motilities,
+  TileType _motility(Motility motility) {
+    return TileType(name, glyph, motility,
         emanation: Lighting.emanationForLevel(_emanationLevel),
         isExit: _isExit,
         onClose: _onClose,

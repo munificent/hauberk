@@ -4,70 +4,45 @@ import '../action/action.dart';
 import '../core/element.dart';
 import 'lighting.dart';
 
-/// Enum-like class defining ways that monsters can move over tiles.
+/// Bitmask-like class defining ways that actors can move over tiles.
 ///
 /// Each [TileType] has a set of motilities that determine which kind of
 /// movement is needed to enter the tile. Monsters and the hero have a set of
 /// motilities that determine which ways they are able to move. In order to
 /// move into a tile, the actor must have one of the tile's motilities.
-class Motility extends MotilitySet {
+class Motility {
+  static final none = Motility._(0);
+
   // TODO: Should these be in content, engine, or a mixture of both?
-  static final Motility door = Motility("door");
-  static final Motility fly = Motility("fly");
-  static final Motility swim = Motility("swim");
-  static final Motility walk = Motility("walk");
+  static final door = Motility._(1);
+  static final fly = Motility._(2);
+  static final swim = Motility._(4);
+  static final walk = Motility._(8);
 
-  /// Each motility object has a bit value that is used by MotilitySet to store
-  /// a set of motilities efficiently.
-  static int _nextBit = 1;
-
-  final String name;
-
-  Motility(this.name) : super._(_nextBit) {
-    _nextBit <<= 1;
-  }
-}
-
-class MotilitySet {
-  static final doorAndFly = MotilitySet([Motility.door, Motility.fly]);
-  static final doorAndWalk = MotilitySet([Motility.door, Motility.walk]);
-  static final flyAndWalk = MotilitySet([Motility.fly, Motility.walk]);
-  static final none = MotilitySet([]);
-  static final walk = MotilitySet([Motility.walk]);
+  static final doorAndFly = Motility.door | Motility.fly;
+  static final doorAndWalk = Motility.door | Motility.walk;
+  static final flyAndWalk = Motility.fly | Motility.walk;
 
   int _bitMask = 0;
 
-  factory MotilitySet([Iterable<Motility> iterable]) {
-    var mask = 0;
-    if (iterable != null) {
-      for (var motility in iterable) {
-        mask += motility._bitMask;
-      }
-    }
-
-    return MotilitySet._(mask);
-  }
-
-  MotilitySet._(this._bitMask);
+  Motility._(this._bitMask);
 
   bool operator ==(other) {
-    if (other is MotilitySet) return _bitMask == other._bitMask;
+    if (other is Motility) return _bitMask == other._bitMask;
     return false;
   }
 
   /// Creates a new MotilitySet containing all of the motilities of this and
   /// [other].
-  MotilitySet operator +(MotilitySet other) =>
-      MotilitySet._(_bitMask | other._bitMask);
+  Motility operator |(Motility other) => Motility._(_bitMask | other._bitMask);
 
   /// Creates a new MotilitySet containing all of the motilities of this
   /// except for the motilities in [other].
-  MotilitySet operator -(MotilitySet other) =>
-      MotilitySet._(_bitMask & ~other._bitMask);
+  Motility operator -(Motility other) => Motility._(_bitMask & ~other._bitMask);
 
-  bool contains(Motility motility) => _bitMask & motility._bitMask != 0;
+  bool overlaps(Motility other) => _bitMask & other._bitMask != 0;
 
-  bool overlaps(MotilitySet other) => _bitMask & other._bitMask != 0;
+  String toString() => _bitMask.toString();
 }
 
 class TileType {
@@ -79,7 +54,7 @@ class TileType {
   bool get canClose => onClose != null;
   bool get canOpen => onOpen != null;
 
-  final MotilitySet motilities;
+  final Motility motility;
 
   /// If the tile can be "opened", this is the function that produces an open
   /// action for it. Otherwise `null`.
@@ -89,20 +64,18 @@ class TileType {
   /// action for it. Otherwise `null`.
   final Action Function(Vec) onOpen;
 
-  bool get isTraversable => canEnterAny(MotilitySet.doorAndWalk);
+  bool get isTraversable => canEnter(Motility.doorAndWalk);
 
   bool get isWalkable => canEnter(Motility.walk);
 
-  TileType(this.name, this.appearance, MotilitySet motilities,
+  TileType(this.name, this.appearance, Motility motility,
       {int emanation, bool isExit, this.onClose, this.onOpen})
       : isExit = isExit ?? false,
         emanation = emanation ?? 0,
-        motilities = motilities;
+        motility = motility;
 
-  bool canEnter(Motility motility) => this.motilities.contains(motility);
-
-  bool canEnterAny(MotilitySet motilities) =>
-      this.motilities.overlaps(motilities);
+  /// Whether an actor with [motility] is able to enter this tile.
+  bool canEnter(Motility motility) => this.motility.overlaps(motility);
 }
 
 class Tile {
@@ -150,7 +123,8 @@ class Tile {
 
   /// If you call this, make sure to call [Stage.tileEmanationChanged()].
   void addEmanation(int offset) {
-    _appliedEmanation = (_appliedEmanation + offset).clamp(0, Lighting.floorMax);
+    _appliedEmanation =
+        (_appliedEmanation + offset).clamp(0, Lighting.floorMax);
   }
 
   bool _isExplored = false;
@@ -190,11 +164,9 @@ class Tile {
 
   bool get isFlyable => canEnter(Motility.fly);
 
-  bool get isClosedDoor => type.motilities == Motility.door;
+  bool get isClosedDoor => type.motility == Motility.door;
 
   bool get isExit => type.isExit;
 
   bool canEnter(Motility motility) => type.canEnter(motility);
-
-  bool canEnterAny(MotilitySet motilities) => type.canEnterAny(motilities);
 }

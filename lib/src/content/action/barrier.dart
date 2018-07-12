@@ -62,7 +62,7 @@ class BarrierAction extends Action with ElementActionMixin {
           var offset =
               Vec((_h * _distance + h).round(), (_v * _distance + v).round());
           var pos = _center + offset * sign;
-          if (!game.stage[pos].canEnter(Motility.fly)) return false;
+          if (!game.stage[pos].isFlyable) return false;
 
           if (_hitTiles.add(pos)) {
             // TODO: Tune fuel.

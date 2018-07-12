@@ -706,7 +706,7 @@ class CyclePathfinder extends Pathfinder<bool> {
   bool reachedGoal(Path path) => true;
 
   int stepCost(Vec pos, Tile tile) {
-    if (tile.canEnterAny(MotilitySet.doorAndWalk)) return 1;
+    if (tile.canEnter(Motility.doorAndWalk)) return 1;
 
     return null;
   }

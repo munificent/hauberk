@@ -264,8 +264,8 @@ class AwakeState extends MonsterState {
     if (game.stage[monster.pos].substance == 0) return Direction.none;
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
-    var flow = MotilityFlow(game.stage, pos, monster.motilities,
-        avoidSubstances: true);
+    var flow =
+        MotilityFlow(game.stage, pos, monster.motility, avoidSubstances: true);
     return flow.directionToBestWhere((pos) => game.stage[pos].substance == 0);
   }
 
@@ -326,7 +326,7 @@ class AwakeState extends MonsterState {
     if (best != null) return best;
 
     // Otherwise, we'll need to actually pathfind to reach a good vantage point.
-    var flow = MotilityFlow(game.stage, pos, monster.motilities,
+    var flow = MotilityFlow(game.stage, pos, monster.motility,
         maxDistance: maxRange, avoidSubstances: true);
     var dir = flow.directionToBestWhere(isValidRangedPosition);
     if (dir != Direction.none) {
@@ -431,7 +431,7 @@ class AfraidState extends MonsterState {
 
     // TODO: Should not walk past hero to get to escape!
     // Run to the nearest place the hero can't see.
-    var flow = MotilityFlow(game.stage, pos, monster.motilities,
+    var flow = MotilityFlow(game.stage, pos, monster.motility,
         maxDistance: breed.tracking, avoidSubstances: true);
     // TODO: Should monsters prefer darkness too?
     var dir = flow.directionToBestWhere((pos) => game.stage[pos].isOccluded);

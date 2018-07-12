@@ -95,11 +95,11 @@ class Stage {
 
   Actor actorAt(Vec pos) => _actorsByTile[pos];
 
-  List<Item> placeDrops(Vec pos, MotilitySet motilities, Drop drop) {
+  List<Item> placeDrops(Vec pos, Motility motility, Drop drop) {
     var items = <Item>[];
 
     // Try to keep dropped items from overlapping.
-    var flow = MotilityFlow(this, pos, motilities, avoidActors: false);
+    var flow = MotilityFlow(this, pos, motility, avoidActors: false);
 
     drop.spawnDrop((item) {
       items.add(item);

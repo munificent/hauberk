@@ -92,7 +92,7 @@ abstract class Actor implements Noun {
 
   bool get needsInput => false;
 
-  MotilitySet get motilities;
+  Motility get motility;
 
   int get maxHealth;
 
@@ -262,7 +262,7 @@ abstract class Actor implements Noun {
     if (pos.y >= game.stage.height) return false;
 
     var tile = game.stage[pos];
-    return tile.canEnterAny(motilities);
+    return tile.canEnter(motility);
   }
 
   /// Whether the actor ever desires to be on the tile at [pos].

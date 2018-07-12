@@ -94,7 +94,7 @@ class MonsterPathfinder extends Pathfinder<Direction> {
 
     // Handle closed doors specially.
     if (tile.isClosedDoor) {
-      if (_monster.motilities.contains(Motility.door)) {
+      if (_monster.motility.overlaps(Motility.door)) {
         // One to open the door and one to enter the tile.
         return _floorCost * 2;
       } else if (firstStep) {
@@ -108,7 +108,7 @@ class MonsterPathfinder extends Pathfinder<Direction> {
       }
     }
 
-    if (tile.canEnterAny(_monster.motilities)) return _floorCost;
+    if (tile.canEnter(_monster.motility)) return _floorCost;
 
     // Can't go here.
     return null;

@@ -176,7 +176,7 @@ class GameContent implements Content {
   }
 
   void _spreadPoison(Stage stage, Vec pos, Tile tile) {
-    if (!tile.canEnter(Motility.fly)) return;
+    if (!tile.isFlyable) return;
 
     // Average the poison with this tile and its neighbors.
     var poison = tile.element == Elements.poison ? tile.substance * 4 : 0;
@@ -185,7 +185,7 @@ class GameContent implements Content {
     void neighbor(int x, int y) {
       var neighbor = stage.get(pos.x + x, pos.y + y);
 
-      if (neighbor.canEnter(Motility.fly)) {
+      if (neighbor.isFlyable) {
         open++;
         if (neighbor.element == Elements.poison) poison += neighbor.substance;
       }

@@ -56,9 +56,6 @@ _FamilyBuilder family(String character,
   _family._tracking = tracking;
   _family._flags = flags;
 
-  // Default to walking.
-  _family._motilities.add(Motility.walk);
-
   return _family;
 }
 
@@ -108,7 +105,9 @@ class _BaseBuilder {
 
   int _tracking;
 
-  final List<Motility> _motilities = [];
+  // Default to walking.
+  // TODO: Are there monsters that cannot walk?
+  Motility _motility = Motility.walk;
   SpawnLocation _location;
 
   /// Names of places where this breed may spawn.
@@ -177,15 +176,15 @@ class _BaseBuilder {
   }
 
   void fly() {
-    _motilities.add(Motility.fly);
+    _motility |= Motility.fly;
   }
 
   void swim() {
-    _motilities.add(Motility.swim);
+    _motility |= Motility.swim;
   }
 
   void openDoors() {
-    _motilities.add(Motility.door);
+    _motility |= Motility.door;
   }
 
   void defense(int amount, String message) {
@@ -365,10 +364,6 @@ class _BreedBuilder extends _BaseBuilder {
     if (_family._flags != null) flags.addAll(_family._flags.split(" "));
     if (_flags != null) flags.addAll(_flags.split(" "));
 
-    var motilityList = _family._motilities.toList();
-    motilityList.addAll(_motilities);
-    var motilities = MotilitySet(motilityList);
-
     var dodge = _dodge ?? _family._dodge;
     if (flags.contains("immobile")) dodge = 0;
 
@@ -380,7 +375,7 @@ class _BreedBuilder extends _BaseBuilder {
         _moves,
         dropAllOf(_drops),
         _location ?? _family._location ?? SpawnLocation.anywhere,
-        motilities,
+        _family._motility | _motility,
         depth: _depth,
         maxHealth: _health,
         tracking: (_tracking ?? 0) + (_family._tracking ?? 10),
