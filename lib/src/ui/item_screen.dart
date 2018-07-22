@@ -370,7 +370,7 @@ class CountMode extends Mode {
     x += screen._verb(_toHero).length + 1;
 
     var itemText = _item.clone(_count).toString();
-    terminal.writeAt(x, 0, itemText, Color.yellow);
+    terminal.writeAt(x, 0, itemText, UIHue.selection);
     x += itemText.length;
 
     if (screen._place is _ShopPlace) {
@@ -378,7 +378,7 @@ class CountMode extends Mode {
       x += 5;
 
       var price = (_item.price * _count).toString();
-      terminal.writeAt(x, 0, price, Color.gold);
+      terminal.writeAt(x, 0, price, gold);
       x += price.length;
 
       terminal.writeAt(x, 0, " gold");

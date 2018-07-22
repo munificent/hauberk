@@ -15,20 +15,11 @@ I use the latest dev channel release of Dart, which you can get from
 Once you have Dart installed and its `bin/` directory on your `PATH`, then:
 
 1. Clone this repo.
-2. From the root directory of it, run: `$ pub serve`
+2. From the root directory of it, run: `$ make serve`
 3. In your browser, open: `http://localhost:8080`
 
-Pub will automatically compile the game to JavaScript if you hit that URL with
-a production browser. Leave pub serve running, and whenever you change the Dart
-code, it will notice that and recompile the JS on the fly.
-
-You can iterate even faster and have a much better debugging experience if you
-browse to the server using [Dartium][], which comes with the Dart SDK. Just hit
-the same URL and it is smart enough to serve the raw Dart code instead of the
-compiled JS.
-
-I usually run the game in Dartium, so if you see any bugs in the compiled-to-JS
-version please do file an issue.
+This runs a development server that automatically compiles the Dart source to
+JavaScript on the fly as you work on it.
 
 ## Contributions
 
@@ -54,8 +45,7 @@ Thanks for understanding.
 
 [roguelike]: http://en.wikipedia.org/wiki/Roguelike
 [dart]: http://dartlang.org
-[splash]: http://i.imgur.com/qWq2UU7.gif
-[dungeon]: http://i.imgur.com/0Lrc3dn.gif
-[sdk]: https://www.dartlang.org/tools/download.html
-[dartium]: https://www.dartlang.org/tools/dartium/
+[splash]: https://i.imgur.com/qBRLNU5.png
+[dungeon]: https://i.imgur.com/AbaPbvU.png
+[sdk]: https://webdev.dartlang.org/tools/sdk
 [mit license]: https://github.com/munificent/hauberk/blob/master/COPYRIGHT

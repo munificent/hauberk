@@ -37,7 +37,7 @@ const _charColors = [
   " ERRE   ERRE  LLL ERRE ERRE  ERRE  ERRE  ERRL ERRELLERRE ERRE  EREERRELRE",
   " EOOE   EOOE LOOOEEOOE EOOE  EOOE  EOOE   EOOEEOOEEOOOOE EOOE     EOOOOOOL",
   " EGGE   EGGEEGGELLEGGE EGGLLLEGGE  EGGELLLGGGEEGGELLLLL  EGGE     EGGE EGGLL",
-  " EYYE   EYYE EYYYYEEYYE EYYY/EYYYLLYYYEEYYYYE  EYYYYYYE LYYYYL   LYYYYL EYYYL",
+  " EYYE   EYYE EYYYYEEYYE EYYYEEYYYLLYYYEEYYYYE  EYYYYYYE LYYYYL   LYYYYL EYYYL",
   " EYYE   EYYELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
   " EYYE   EYYEEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYL",
   "LEYYE   EYYEL",
@@ -47,14 +47,13 @@ const _charColors = [
   "   EE   EE",
 ];
 
-// TODO: Change these to use hues.dart, or replace the art entirely.
 const _colors = {
-  "L": Color.lightGray,
-  "E": Color.gray,
-  "R": Color.red,
-  "O": Color.orange,
-  "G": Color.gold,
-  "Y": Color.yellow
+  "L": gunsmoke,
+  "E": slate,
+  "R": brickRed,
+  "O": copper,
+  "G": carrot,
+  "Y": gold
 };
 
 class MainMenuScreen extends Screen<Input> {
