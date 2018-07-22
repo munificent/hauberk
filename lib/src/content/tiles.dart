@@ -64,7 +64,9 @@ class Tiles {
 
   // TODO: Make these do something.
   static final openChest = tile("open chest", "⌠", persimmon).obstacle();
-  static final closedChest = tile("closed chest", "⌡", persimmon).obstacle();
+  static final closedChest = tile("closed chest", "⌡", persimmon)
+      .onOpen((pos) => OpenChestAction(pos))
+      .obstacle();
   static final closedBarrel = tile("closed barrel", "°", persimmon)
       .onOpen((pos) => OpenBarrelAction(pos))
       .obstacle();
