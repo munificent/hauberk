@@ -43,7 +43,9 @@ class Monster extends Actor {
   final _recharges = <Move, num>{};
 
   bool get isAfraid => _state is AfraidState;
+
   bool get isAsleep => _state is AsleepState;
+
   bool get isAwake => _state is AwakeState;
 
   Motility get motility => breed.motility;
@@ -53,6 +55,7 @@ class Monster extends Actor {
   bool wantsToMelee = true;
 
   double _alertness = 0.0;
+
   double get alertness => _alertness;
 
   /// How afraid of the hero the monster currently is. If it gets high enough,
@@ -67,6 +70,7 @@ class Monster extends Actor {
   get appearance => breed.appearance;
 
   String get nounText => 'the ${breed.name}';
+
   Pronoun get pronoun => breed.pronoun;
 
   /// How much experience the [Hero] gains for killing this monster.
@@ -84,7 +88,6 @@ class Monster extends Actor {
       : super(game, x, y) {
     health = maxHealth;
 
-    Debug.addMonster(this);
     changeState(AsleepState());
 
     /// Give this some random variation within monsters of the same breed so
@@ -166,6 +169,11 @@ class Monster extends Actor {
     _decayFear();
     _fear = _fear.clamp(0.0, _frightenThreshold);
 
+    Debug.monsterStat(this, "aware", awareness);
+    Debug.monsterStat(this, "alert", _alertness);
+    Debug.monsterStat(this, "notice", notice);
+    Debug.monsterStat(this, "fear", _fear / _frightenThreshold);
+
     // TODO: If standing in substance, should try to get out if harmful.
 
     _updateState(notice);
@@ -212,32 +220,52 @@ class Monster extends Actor {
   }
 
   double _seeHero() {
-    if (breed.vision == 0) return 0.0;
+    if (breed.vision == 0) {
+      Debug.monsterStat(this, "see", 0.0, "sightless");
+      return 0.0;
+    }
 
     var heroPos = game.hero.pos;
-    if (!canView(heroPos)) return 0.0;
+    if (!canView(heroPos)) {
+      Debug.monsterStat(this, "see", 0.0, "out of sight");
+      return 0.0;
+    }
 
     // TODO: Don't check illumination for breeds that see in the dark.
     var illumination = game.stage[heroPos].illumination / Lighting.max;
-    if (illumination == 0.0) return 0.0;
+    if (illumination == 0.0) {
+      Debug.monsterStat(this, "see", 0.0, "hero in dark");
+      return 0.0;
+    }
 
     var distance = (heroPos - pos).kingLength;
-    if (distance >= breed.vision) return 0.0;
+    if (distance >= breed.vision) {
+      Debug.monsterStat(this, "see", 0.0, "too far");
+      return 0.0;
+    }
 
     var visibility = (breed.vision - distance) / breed.vision;
+    Debug.monsterStat(this, "see", illumination * visibility);
     return illumination * visibility;
 
     // TODO: Can the monster see other changes? Other monsters moving?
   }
 
   double _hearHero() {
-    if (breed.hearing == 0) return 0.0;
+    if (breed.hearing == 0) {
+      Debug.monsterStat(this, "hear", 0.0, "deaf");
+      return 0.0;
+    }
 
     // TODO: Hear other monsters?
     var distance = game.stage.heroAuditoryDistance(pos);
-    if (distance >= breed.hearing) return 0.0;
+    if (distance >= breed.hearing) {
+      Debug.monsterStat(this, "hear", 0.0, "too far ($distance) to hear");
+      return 0.0;
+    }
 
     var audibility = (breed.hearing - distance) / breed.hearing;
+    Debug.monsterStat(this, "hear", game.hero.lastNoise * audibility);
     return game.hero.lastNoise * audibility;
   }
 
@@ -276,10 +304,8 @@ class Monster extends Actor {
     var fear = 100.0 * damage / game.hero.maxHealth;
 
     _modifyFear(-fear);
-    Debug.logMonster(
-        this,
-        "Hit for ${damage} / ${game.hero.maxHealth} "
-        "decreases fear by ${fear} to $_fear");
+    Debug.monsterReason(this, "fear",
+        "hit for ${damage}/${game.hero.maxHealth} decrease by ${fear}");
 
     // Nearby monsters may witness it.
     _updateWitnesses((witness) {
@@ -295,8 +321,8 @@ class Monster extends Actor {
     var fear = 50.0 * damage / maxHealth;
 
     _modifyFear(-fear);
-    Debug.logMonster(
-        this, "Witness $damage / $maxHealth decreases fear by $fear to $_fear");
+    Debug.monsterReason(
+        this, "fear", "witness $damage/$maxHealth decrease by $fear");
   }
 
   /// Taking damage increases fear.
@@ -310,8 +336,8 @@ class Monster extends Actor {
     if (breed.flags.berzerk) fear *= -3.0;
 
     _modifyFear(fear);
-    Debug.logMonster(this,
-        "Hit for ${damage} / $maxHealth increases fear by $fear to $_fear");
+    Debug.monsterReason(
+        this, "fear", "hit for $damage/$maxHealth increases by $fear");
 
     // Nearby monsters may witness it.
     _updateWitnesses((witness) {
@@ -335,8 +361,8 @@ class Monster extends Actor {
     }
 
     _modifyFear(fear);
-    Debug.logMonster(
-        this, "Witness $damage / $maxHealth increases fear by $fear to $_fear");
+    Debug.monsterReason(
+        this, "fear", "witness $damage/$maxHealth increase by $fear");
   }
 
   /// Called when this Actor has been killed by [attackNoun].
@@ -349,7 +375,6 @@ class Monster extends Actor {
     }
 
     game.stage.removeActor(this);
-    Debug.removeMonster(this);
   }
 
   void changePosition(Vec from, Vec to) {
@@ -396,7 +421,6 @@ class Monster extends Actor {
     fearDecay = 2.0 + fearDecay * health / maxHealth;
 
     _modifyFear(-fearDecay);
-    Debug.logMonster(this, "Decay fear by $fearDecay to $_fear");
   }
 
   /// Randomizes the monster's charges.

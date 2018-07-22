@@ -17,17 +17,17 @@ class ConeMove extends Move {
     // Don't fire if out of range.
     var toTarget = target - monster.pos;
     if (toTarget > range) {
-      Debug.logMonster(monster, "Cone move too far.");
+      Debug.monsterLog(monster, "cone move too far");
       return false;
     }
 
     // TODO: Should minimize friendly fire.
     if (!monster.canView(target)) {
-      Debug.logMonster(monster, "Cone move can't target.");
+      Debug.monsterLog(monster, "cone move can't target");
       return false;
     }
 
-    Debug.logMonster(monster, "Cone move OK.");
+    Debug.monsterLog(monster, "cone move OK");
     return true;
   }
 

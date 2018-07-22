@@ -6,6 +6,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
 import '../content/elements.dart';
+import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'direction_dialog.dart';
@@ -103,6 +104,8 @@ class GameScreen extends Screen<Input> {
 
   GameScreen(this._save, this.game) {
     _positionCamera();
+
+    Debug.bindGameScreen(this);
   }
 
   bool handleInput(Input input) {
@@ -277,7 +280,9 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.wizard:
-        ui.push(WizardDialog(game));
+        if (Debug.enabled) {
+          ui.push(WizardDialog(game));
+        }
         break;
     }
 
@@ -567,7 +572,9 @@ class GameScreen extends Screen<Input> {
     // Draw the tiles and items.
     for (var pos in _cameraBounds) {
       var tile = game.stage[pos];
-      if (tile.isExplored) {
+      var actor = game.stage.actorAt(pos);
+
+      if (tile.isExplored || Debug.showAllMonsters && actor != null) {
         var tileGlyph = tile.type.appearance as Glyph;
         var char = tileGlyph.char;
         var lightFore = tileGlyph.fore;
@@ -585,7 +592,9 @@ class GameScreen extends Screen<Input> {
         }
 
         // The hero is always visible, even in the dark.
-        if (tile.isVisible || pos == game.hero.pos) {
+        if (tile.isVisible ||
+            pos == game.hero.pos ||
+            Debug.showAllMonsters && actor != null) {
           if (tile.substance != 0) {
             if (tile.element == Elements.fire) {
               char = rng.item(_fireChars);

@@ -7,14 +7,29 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/debug.dart';
+import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/ui/input.dart';
 import 'package:hauberk/src/ui/main_menu_screen.dart';
 
 const width = 80;
 const height = 40;
 
-final terminals = [];
+final terminals = <TerminalView>[];
 UserInterface<Input> ui;
+TerminalView currentView;
+
+final Set<Monster> _debugMonsters = Set();
+
+class TerminalView {
+  final String name;
+  final html.Element element;
+  final RenderableTerminal terminal;
+  final int charWidth;
+  final int charHeight;
+
+  TerminalView(this.name, this.element, this.terminal,
+      {this.charWidth, this.charHeight});
+}
 
 addTerminal(String name, int w, [int h]) {
   var element = html.CanvasElement();
@@ -28,21 +43,25 @@ addTerminal(String name, int w, [int h]) {
   var terminal = RetroTerminal(width, height, "$file.png",
       canvas: element, charWidth: w, charHeight: h ?? w);
 
-  terminals.add([name, element, terminal]);
+  terminals.add(
+      TerminalView(name, element, terminal, charWidth: w, charHeight: h ?? w));
 
   if (Debug.enabled) {
-    var debugBox = html.PreElement();
-    debugBox.id = "debug";
-    html.document.body.children.add(debugBox);
-
-    var lastPos;
-    element.onMouseMove.listen((event) {
-      // TODO: This is broken now that maps scroll. :(
-      var pixel = Vec(event.offset.x.toInt() - 4, event.offset.y.toInt() - 4);
+    // Clicking a monster toggles its debug pane.
+    element.onClick.listen((event) {
+      var pixel = Vec(event.offset.x.toInt(), event.offset.y.toInt());
       var pos = terminal.pixelToChar(pixel);
-      var absolute = pixel + Vec(element.offsetLeft, element.offsetTop);
-      if (pos != lastPos) debugHover(debugBox, absolute, pos);
-      lastPos = pos;
+
+      var actor = Debug.gameScreen.game.stage.actorAt(pos);
+      if (actor is Monster) {
+        if (_debugMonsters.contains(actor)) {
+          _debugMonsters.remove(actor);
+        } else {
+          _debugMonsters.add(actor);
+        }
+
+        _refreshDebugBoxes();
+      }
     });
   }
 
@@ -51,13 +70,16 @@ addTerminal(String name, int w, [int h]) {
   button.innerHtml = name;
   button.onClick.listen((_) {
     for (var i = 0; i < terminals.length; i++) {
-      if (terminals[i][0] == name) {
-        html.querySelector("#game").append(terminals[i][1] as html.Node);
+      if (terminals[i].name == name) {
+        currentView = terminals[i];
+        html.querySelector("#game").append(currentView.element);
       } else {
-        terminals[i][1].remove();
+        terminals[i].element.remove();
       }
     }
     ui.setTerminal(terminal);
+
+    if (Debug.enabled) _refreshDebugBoxes();
 
     // Remember the preference.
     html.window.localStorage['font'] = name;
@@ -78,15 +100,16 @@ main() {
   var font = html.window.localStorage['font'];
   var fontIndex = 1;
   for (var i = 0; i < terminals.length; i++) {
-    if (terminals[i][0] == font) {
+    if (terminals[i].name == font) {
       fontIndex = i;
       break;
     }
   }
 
-  html.querySelector("#game").append(terminals[fontIndex][1] as html.Node);
+  currentView = terminals[fontIndex];
+  html.querySelector("#game").append(currentView.element);
 
-  ui = UserInterface<Input>(terminals[fontIndex][2] as RenderableTerminal);
+  ui = UserInterface<Input>(currentView.terminal);
 
   // Set up the keyPress.
   ui.keyPress.bind(Input.ok, KeyCode.enter);
@@ -178,6 +201,12 @@ main() {
 
   ui.handlingInput = true;
   ui.running = true;
+
+  if (Debug.enabled) {
+    html.document.body.onKeyDown.listen((_) {
+      _refreshDebugBoxes();
+    });
+  }
 }
 
 /// See: https://stackoverflow.com/a/29715395/9457
@@ -201,15 +230,36 @@ void fullscreen(html.Element element) {
   }
 }
 
-void debugHover(html.Element debugBox, Vec pixel, Vec pos) {
-  var info = Debug.getMonsterInfoAt(pos);
-  if (info == null) {
-    debugBox.style.display = "none";
-    return;
+void _refreshDebugBoxes() {
+  for (var debugBox in html.querySelectorAll(".debug")) {
+    html.document.body.children.remove(debugBox);
   }
 
-  debugBox.style.display = "inline-block";
-  debugBox.style.left = "${pixel.x + 10}";
-  debugBox.style.top = "${pixel.y}";
-  debugBox.text = info;
+  var gameScreen = Debug.gameScreen;
+
+  _debugMonsters.removeWhere((monster) => !monster.isAlive);
+  for (var monster in _debugMonsters) {
+    if (gameScreen.cameraBounds.contains(monster.pos)) {
+      var screenPos = monster.pos - gameScreen.cameraBounds.topLeft;
+
+      var info = Debug.monsterInfo(monster);
+      if (info == null) continue;
+
+      var debugBox = html.PreElement();
+      debugBox.className = "debug";
+      debugBox.style.display = "inline-block";
+
+      var x = (screenPos.x + 1) * currentView.charWidth +
+          currentView.element.offset.left.toInt() +
+          4;
+      var y = (screenPos.y) * currentView.charHeight +
+          currentView.element.offset.top.toInt() +
+          2;
+      debugBox.style.left = x.toString();
+      debugBox.style.top = y.toString();
+      debugBox.text = info;
+
+      html.document.body.children.add(debugBox);
+    }
+  }
 }

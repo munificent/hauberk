@@ -330,13 +330,13 @@ class AwakeState extends MonsterState {
         maxDistance: maxRange, avoidSubstances: true);
     var dir = flow.directionToBestWhere(isValidRangedPosition);
     if (dir != Direction.none) {
-      Debug.logMonster(monster, "Ranged position $dir");
+      Debug.monsterLog(monster, "ranged position $dir");
       return dir;
     }
 
     // If we get here, couldn't find to a ranged position at all. We may be
     // cornered, or the hero may be surrounded.
-    Debug.logMonster(monster, "No good ranged position");
+    Debug.monsterLog(monster, "no good ranged position");
     return null;
   }
 
@@ -437,7 +437,7 @@ class AfraidState extends MonsterState {
     var dir = flow.directionToBestWhere((pos) => game.stage[pos].isOccluded);
 
     if (dir != Direction.none) {
-      Debug.logMonster(monster, "Fleeing $dir out of sight");
+      Debug.monsterLog(monster, "fleeing $dir out of sight");
       return WalkAction(_meander(dir));
     }
 
@@ -451,7 +451,7 @@ class AfraidState extends MonsterState {
 
     if (farther.isNotEmpty) {
       dir = rng.item(farther.toList());
-      Debug.logMonster(monster, "Fleeing $dir away from hero");
+      Debug.monsterLog(monster, "fleeing $dir away from hero");
       return WalkAction(_meander(dir));
     }
 

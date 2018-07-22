@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
+import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
@@ -17,6 +20,7 @@ class WizardDialog extends Screen<Input> {
   WizardDialog(this._game) {
     _menuItems["Map Dungeon"] = _mapDungeon;
     _menuItems["Illuminate Dungeon"] = _illuminateDungeon;
+    _menuItems["Toggle Show All Monsters"] = _toggleShowAllMonsters;
     _menuItems["Drop Item"] = _dropItem;
   }
 
@@ -44,13 +48,11 @@ class WizardDialog extends Screen<Input> {
     return true;
   }
 
-  void activate(Screen popped, result) {
-    ui.pop();
-  }
-
   void render(Terminal terminal) {
     // Draw a box for the contents.
-    Draw.frame(terminal, 0, 0, 25, _menuItems.length + 3);
+    var width = _menuItems.keys
+        .fold<int>(0, (width, name) => math.max(width, name.length));
+    Draw.frame(terminal, 0, 0, width + 4, _menuItems.length + 3);
     terminal.writeAt(1, 0, "Wizard Menu", UIHue.selection);
 
     var i = 0;
@@ -97,6 +99,12 @@ class WizardDialog extends Screen<Input> {
 
     stage.floorEmanationChanged();
     stage.refreshView();
+  }
+
+  void _toggleShowAllMonsters() {
+    Debug.showAllMonsters = !Debug.showAllMonsters;
+    _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
+    ui.pop();
   }
 
   void _dropItem() {

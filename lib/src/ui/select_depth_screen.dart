@@ -136,7 +136,6 @@ class SelectDepthScreen extends Screen<Input> {
     if (screen is GameScreen && (result as bool)) {
       // Left successfully, so save.
       storage.save();
-      Debug.exitLevel();
     } else if (screen is ItemScreen) {
       // Always save when leaving the item screen.
       storage.save();
