@@ -15,6 +15,8 @@ class Debug {
   /// If true, all monsters are rendered, regardless of in-game visibility.
   static bool showAllMonsters = false;
 
+  static bool showAuditoryDistance = false;
+
   static final Map<Monster, _MonsterLog> _monsters = {};
 
   /// The current game screen.

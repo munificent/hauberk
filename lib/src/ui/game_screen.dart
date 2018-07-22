@@ -574,7 +574,9 @@ class GameScreen extends Screen<Input> {
       var tile = game.stage[pos];
       var actor = game.stage.actorAt(pos);
 
-      if (tile.isExplored || Debug.showAllMonsters && actor != null) {
+      if (tile.isExplored ||
+          Debug.showAllMonsters && actor != null ||
+          Debug.showAuditoryDistance) {
         var tileGlyph = tile.type.appearance as Glyph;
         var char = tileGlyph.char;
         var lightFore = tileGlyph.fore;
@@ -666,6 +668,12 @@ class GameScreen extends Screen<Input> {
         } else {
           fore = darkFore;
           back = darkBack.blend(Color.black, 0.5);
+        }
+
+        if (Debug.showAuditoryDistance) {
+          var volume =
+              1.0 - game.stage.heroAuditoryDistance(pos) / Sound.maxDistance;
+          if (volume > 0.0) back = back.blend(peaGreen, volume);
         }
 
         var glyph = Glyph.fromCharCode(char, fore, back);

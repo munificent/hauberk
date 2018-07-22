@@ -21,6 +21,7 @@ class WizardDialog extends Screen<Input> {
     _menuItems["Map Dungeon"] = _mapDungeon;
     _menuItems["Illuminate Dungeon"] = _illuminateDungeon;
     _menuItems["Toggle Show All Monsters"] = _toggleShowAllMonsters;
+    _menuItems["Toggle Auditory Distance"] = _toggleAuditoryDistance;
     _menuItems["Drop Item"] = _dropItem;
   }
 
@@ -104,6 +105,12 @@ class WizardDialog extends Screen<Input> {
   void _toggleShowAllMonsters() {
     Debug.showAllMonsters = !Debug.showAllMonsters;
     _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
+    ui.pop();
+  }
+
+  void _toggleAuditoryDistance() {
+    Debug.showAuditoryDistance = !Debug.showAuditoryDistance;
+    _game.log.cheat("Show auditory distance = ${Debug.showAuditoryDistance}");
     ui.pop();
   }
 
