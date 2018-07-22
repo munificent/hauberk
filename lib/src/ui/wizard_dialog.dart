@@ -21,7 +21,7 @@ class WizardDialog extends Screen<Input> {
     _menuItems["Map Dungeon"] = _mapDungeon;
     _menuItems["Illuminate Dungeon"] = _illuminateDungeon;
     _menuItems["Toggle Show All Monsters"] = _toggleShowAllMonsters;
-    _menuItems["Toggle Auditory Distance"] = _toggleAuditoryDistance;
+    _menuItems["Toggle Show Hero Volume"] = _toggleShowHeroVolume;
     _menuItems["Drop Item"] = _dropItem;
   }
 
@@ -108,9 +108,9 @@ class WizardDialog extends Screen<Input> {
     ui.pop();
   }
 
-  void _toggleAuditoryDistance() {
-    Debug.showAuditoryDistance = !Debug.showAuditoryDistance;
-    _game.log.cheat("Show auditory distance = ${Debug.showAuditoryDistance}");
+  void _toggleShowHeroVolume() {
+    Debug.showHeroVolume = !Debug.showHeroVolume;
+    _game.log.cheat("Show hero volume = ${Debug.showHeroVolume}");
     ui.pop();
   }
 

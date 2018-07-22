@@ -136,10 +136,18 @@ class _BaseBuilder {
 
   int _emanationLevel;
 
+  int _vision;
+  int _hearing;
+
   _BaseBuilder(this._frequency);
 
   void emanate(int level) {
     _emanationLevel = level;
+  }
+
+  void sense({int see, int hear}) {
+    _vision = see;
+    _hearing = hear;
   }
 
   void preferWall() {
@@ -379,6 +387,8 @@ class _BreedBuilder extends _BaseBuilder {
         depth: _depth,
         maxHealth: _health,
         tracking: (_tracking ?? 0) + (_family._tracking ?? 10),
+        vision: _vision ?? _family._vision,
+        hearing: _hearing ?? _family._hearing,
         meander: _meander ?? _family._meander ?? 0,
         speed: (_speed ?? 0) + (_family._speed ?? 0),
         dodge: dodge,

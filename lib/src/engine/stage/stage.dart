@@ -259,11 +259,7 @@ class Stage {
     }
   }
 
-  /// How far away the [Hero] is from [pos] in terms of sound flow, up to
+  /// How loud the hero is from [pos] in terms of sound flow, up to
   /// [Sound.maxDistance].
-  ///
-  /// Returns the auditory equivalent of the number of open tiles away the hero
-  /// is. (It may be fewer actual tiles if there are sound-deadening obstacles
-  /// in the way like doors or walls.
-  int heroAuditoryDistance(Vec pos) => _sound.heroAuditoryDistance(pos);
+  double heroVolume(Vec pos) => _sound.heroVolume(pos);
 }

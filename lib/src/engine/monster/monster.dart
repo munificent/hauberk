@@ -160,10 +160,11 @@ class Monster extends Actor {
 
     var notice = awareness + _alertness * 0.2;
 
-    // Persist some of the awareness.
+    // Persist some of the awareness. Note that the historical and current
+    // awareness don't sum to 1.0. This is so that alertness gradually fades.
     // TODO: The ratio here could be tuned by breeds where some have longer
     // memories than others.
-    _alertness = _alertness * 0.8 + awareness * 0.2;
+    _alertness = _alertness * 0.75 + awareness * 0.2;
     _alertness = _alertness.clamp(0.0, _maxAlertness);
 
     _decayFear();
@@ -258,15 +259,13 @@ class Monster extends Actor {
     }
 
     // TODO: Hear other monsters?
-    var distance = game.stage.heroAuditoryDistance(pos);
-    if (distance >= breed.hearing) {
-      Debug.monsterStat(this, "hear", 0.0, "too far ($distance) to hear");
-      return 0.0;
-    }
-
-    var audibility = (breed.hearing - distance) / breed.hearing;
-    Debug.monsterStat(this, "hear", game.hero.lastNoise * audibility);
-    return game.hero.lastNoise * audibility;
+    // Hearing is simply the amount of noise the hero made, scaled by the
+    // hero's volume level from here and the breed's normalized hearing ability.
+    var volume =
+        game.stage.heroVolume(pos) * game.hero.lastNoise * breed.hearing / 10;
+    Debug.monsterStat(
+        this, "hear", volume, "noise ${game.hero.lastNoise}, volume $volume");
+    return volume;
   }
 
   /// Modifies fear and then determines if it has crossed the threshold to

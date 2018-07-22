@@ -34,6 +34,23 @@ class Sound {
     _flow = null;
   }
 
+  /// How loud the hero is from [pos] in terms of sound flow, up to
+  /// [Sound.maxDistance].
+  ///
+  /// Returns a number between 0.0 (completely inaudible) to 1.0 (maximum
+  /// volume). Does not take hero noise into account. This is how well the hero
+  /// can be heard in general.
+  double heroVolume(Vec pos) {
+    // Normalize the flow distance.
+    var distance = _heroAuditoryDistance(pos);
+    var volume = (Sound.maxDistance - distance) / Sound.maxDistance;
+
+    // Sound attenuates with the square of the distance. This is realistic but
+    // also means that even hard-of-hearing monsters will hero the hero once
+    // they are very close.
+    return volume * volume;
+  }
+
   /// How far away the [Hero] is from [pos] in terms of sound flow, up to
   /// [Sound.maxDistance].
   ///
@@ -42,7 +59,7 @@ class Sound {
   /// in the way like doors or walls.
   ///
   /// Smaller numbers mean louder sound.
-  int heroAuditoryDistance(Vec pos) {
+  int _heroAuditoryDistance(Vec pos) {
     if ((_stage.game.hero.pos - pos).kingLength > maxDistance) {
       return maxDistance;
     }

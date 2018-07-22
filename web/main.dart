@@ -236,7 +236,10 @@ void fullscreen(html.Element element) {
   }
 }
 
-void _refreshDebugBoxes() {
+void _refreshDebugBoxes() async {
+  // Hack: Give the engine a chance to update.
+  await html.window.animationFrame;
+
   for (var debugBox in html.querySelectorAll(".debug")) {
     html.document.body.children.remove(debugBox);
   }

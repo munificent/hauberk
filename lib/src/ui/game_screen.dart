@@ -576,7 +576,7 @@ class GameScreen extends Screen<Input> {
 
       if (tile.isExplored ||
           Debug.showAllMonsters && actor != null ||
-          Debug.showAuditoryDistance) {
+          Debug.showHeroVolume) {
         var tileGlyph = tile.type.appearance as Glyph;
         var char = tileGlyph.char;
         var lightFore = tileGlyph.fore;
@@ -670,9 +670,8 @@ class GameScreen extends Screen<Input> {
           back = darkBack.blend(Color.black, 0.5);
         }
 
-        if (Debug.showAuditoryDistance) {
-          var volume =
-              1.0 - game.stage.heroAuditoryDistance(pos) / Sound.maxDistance;
+        if (Debug.showHeroVolume) {
+          var volume = game.stage.heroVolume(pos);
           if (volume > 0.0) back = back.blend(peaGreen, volume);
         }
 

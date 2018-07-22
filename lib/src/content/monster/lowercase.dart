@@ -8,6 +8,7 @@ void arachnids() {
   // TODO: Should all spiders hide in passages?
   family("a", flags: "fearless")
     ..groups("bug")
+    ..sense(see: 4, hear: 2)
     ..placeIn("passage")
     ..stain(Tiles.spiderweb);
   breed("brown spider", 5, persimmon, 6, dodge: 30, meander: 40)
@@ -27,6 +28,7 @@ void arachnids() {
 void bats() {
   family("b")
     ..groups("animal")
+    ..sense(see: 2, hear: 8)
     ..fly()
     ..placeIn("room", "passage")
     ..preferOpen();
@@ -45,8 +47,9 @@ void bats() {
 
 void canines() {
   family("c", dodge: 25, tracking: 20, meander: 25)
-    ..placeIn("room", "passage")
-    ..groups("animal");
+    ..groups("animal")
+    ..sense(see: 5, hear: 10)
+    ..placeIn("room", "passage");
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
     ..attack("bite[s]", 4)
@@ -70,6 +73,7 @@ void dragons() {
   // TODO: Tune. Give more attacks. Tune drops.
   family("d")
     ..groups("dragon")
+    ..sense(see: 16, hear: 10)
     ..defense(20, "{2} [is|are] deflected by its scales.")
     ..preferOpen();
   breed("red dragon", 50, brickRed, 400)
@@ -82,6 +86,7 @@ void dragons() {
 
 void eyes() {
   family("e", flags: "immobile")
+    ..sense(see: 16, hear: 1)
     ..placeIn("laboratory")
     ..defense(10, "{1} blinks out of the way.")
     ..fly()
@@ -131,6 +136,7 @@ void eyes() {
 
 void felines() {
   family("f")
+    ..sense(see: 10, hear: 8)
     ..placeIn("room", "passage")
     ..groups("animal");
   breed("stray cat", 1, gold, 9, speed: 1, meander: 30)
@@ -140,6 +146,7 @@ void felines() {
 
 void goblins() {
   family("g", meander: 10)
+    ..sense(see: 8, hear: 4)
     ..groups("goblin")
     ..openDoors()
     ..emanate(2);
@@ -227,8 +234,9 @@ void humanoids() {}
 
 void insects() {
   family("i", tracking: 3, meander: 40, flags: "fearless")
-    ..placeIn("room", "passage")
-    ..groups("bug");
+    ..groups("bug")
+    ..sense(see: 5, hear: 2)
+    ..placeIn("room", "passage");
   // TODO: Spawn as eggs which can hatch into cockroaches?
   breed("giant cockroach[es]", 1, garnet, 1, frequency: 0.4)
     ..placeIn("food", "storage")
@@ -250,6 +258,7 @@ void insects() {
 void jellies() {
   family("j", frequency: 0.7, speed: -1, meander: 30, flags: "fearless")
     ..groups("jelly")
+    ..sense(see: 3, hear: 1)
     ..placeIn("laboratory")
     ..preferWall()
     ..count(4);
@@ -260,6 +269,7 @@ void jellies() {
 
   family("j", frequency: 0.6, flags: "fearless immobile")
     ..groups("jelly")
+    ..sense(see: 2, hear: 1)
     ..placeIn("laboratory")
     ..preferCorner()
     ..count(4);
@@ -309,7 +319,9 @@ void jellies() {
 }
 
 void kobolds() {
-  family("k", meander: 15, flags: "cowardly")..groups("kobold");
+  family("k", meander: 15, flags: "cowardly")
+    ..groups("kobold")
+    ..sense(see: 10, hear: 4);
   breed("scurrilous imp", 1, salmon, 8, meander: 20)
     ..count(2)
     ..attack("club[s]", 4)
@@ -423,6 +435,7 @@ void orcs() {}
 void people() {
   family("p", tracking: 14, meander: 10)
     ..groups("human")
+    ..sense(see: 10, hear: 5)
     ..openDoors()
     ..emanate(2);
   breed("Harold the Misfortunate", 1, lilac, 20)
@@ -484,8 +497,9 @@ void quadrupeds() {}
 
 void rodents() {
   family("r", dodge: 30, meander: 30)
-    ..placeIn("food", "passage")
     ..groups("animal")
+    ..sense(see: 4, hear: 6)
+    ..placeIn("food", "passage")
     ..preferWall();
   breed("[mouse|mice]", 1, sandal, 2, frequency: 0.7)
     ..count(2, 5)
@@ -509,8 +523,9 @@ void rodents() {
 
 void slugs() {
   family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 30)
-    ..placeIn("passage")
-    ..groups("bug");
+    ..groups("bug")
+    ..sense(see: 3, hear: 1)
+    ..placeIn("passage");
   breed("giant slug", 3, mustard, 20)..attack("crawl[s] on", 8);
 
   breed("suppurating slug", 6, lima, 50)
@@ -525,8 +540,9 @@ void vines() {}
 
 void worms() {
   family("w", dodge: 15, meander: 40, flags: "fearless")
-    ..placeIn("passage")
-    ..groups("bug");
+    ..groups("bug")
+    ..sense(see: 0, hear: 3)
+    ..placeIn("passage");
   breed("blood worm", 1, maroon, 4, frequency: 0.5)
     ..count(2, 5)
     ..attack("crawl[s] on", 5);

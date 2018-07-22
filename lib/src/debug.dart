@@ -15,7 +15,7 @@ class Debug {
   /// If true, all monsters are rendered, regardless of in-game visibility.
   static bool showAllMonsters = false;
 
-  static bool showAuditoryDistance = false;
+  static bool showHeroVolume = false;
 
   static final Map<Monster, _MonsterLog> _monsters = {};
 
@@ -115,7 +115,7 @@ class _MonsterLog {
       }
 
       if (values.isNotEmpty) {
-        bar += " ${(values.last * 100).toStringAsFixed(2).padLeft(6)}%";
+        bar += " ${values.last.toStringAsFixed(4).padLeft(6)}";
       }
 
       if (statReason[name] != null) {

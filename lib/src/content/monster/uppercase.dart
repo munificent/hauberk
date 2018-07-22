@@ -8,6 +8,7 @@ void ancients() {}
 void birds() {
   family("B")
     ..groups("animal")
+    ..sense(see: 8, hear: 6)
     ..defense(10, "{1} flaps out of the way.")
     ..fly()
     ..count(3, 6);
@@ -33,6 +34,7 @@ void faeFolk() {
 
   family("F", speed: 2, meander: 30, flags: "cowardly")
     ..groups("fae")
+    ..sense(see: 10, hear: 8)
     ..defense(10, "{1} flits out of the way.")
     ..fly()
     ..preferOpen();
@@ -78,6 +80,7 @@ void giants() {}
 void quest() {
   family("Q");
   breed("Nameless Unmaker", 100, violet, 1000, speed: 2)
+    ..sense(see: 16, hear: 16)
     ..attack("crushe[s]", 250, Elements.earth)
     ..attack("blast[s]", 200, Elements.lightning)
     ..darkCone(damage: 500)
@@ -89,11 +92,14 @@ void quest() {
 void reptiles() {
   family("R")..groups("animal");
   breed("frog", 1, lima, 4, dodge: 30, meander: 30)
+    ..sense(see: 6, hear: 4)
     ..swim()
     ..placeIn("aquatic")
     ..attack("hop[s] on", 2);
 
-  family("R", meander: 10, flags: "fearless")..groups("saurian");
+  family("R", meander: 10, flags: "fearless")
+    ..groups("saurian")
+    ..sense(see: 10, hear: 5);
   breed("lizard guard", 11, gold, 26)
     ..attack("claw[s]", 8)
     ..attack("bite[s]", 10);
@@ -125,6 +131,7 @@ void reptiles() {
 
   family("R", dodge: 30, meander: 20)
     ..groups("animal")
+    ..sense(see: 6, hear: 5)
     ..preferOpen()
     ..emanate(3);
   breed("juvenile salamander", 7, salmon, 40)
@@ -139,7 +146,8 @@ void reptiles() {
 }
 
 void snakes() {
-  family("S", dodge: 30, meander: 30)..groups("animal");
+  family("S", dodge: 30, meander: 30)..groups("animal")
+    ..sense(see: 4, hear: 7);
   breed("water snake", 1, lima, 9)
     ..placeIn("aquatic")
     ..attack("bite[s]", 3);

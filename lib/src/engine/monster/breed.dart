@@ -117,8 +117,8 @@ class Breed {
       this.countMax,
       this.stain,
       BreedFlags flags})
-      : vision = vision ?? 16,
-        hearing = hearing ?? 16,
+      : vision = vision ?? 8,
+        hearing = hearing ?? 10,
         speed = speed ?? 0,
         dodge = dodge ?? 20,
         emanationLevel = emanationLevel ?? 0,
