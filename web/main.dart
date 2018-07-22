@@ -49,12 +49,16 @@ addTerminal(String name, int w, [int h]) {
   if (Debug.enabled) {
     // Clicking a monster toggles its debug pane.
     element.onClick.listen((event) {
+      var gameScreen = Debug.gameScreen;
+      if (gameScreen == null) return;
+
       var pixel = Vec(event.offset.x.toInt(), event.offset.y.toInt());
       var pos = terminal.pixelToChar(pixel);
 
-      if (Debug.gameScreen == null) return;
+      var absolute = pos + gameScreen.cameraBounds.topLeft;
+      if (!gameScreen.cameraBounds.contains(absolute)) return;
 
-      var actor = Debug.gameScreen.game.stage.actorAt(pos);
+      var actor = Debug.gameScreen.game.stage.actorAt(absolute);
       if (actor is Monster) {
         if (_debugMonsters.contains(actor)) {
           _debugMonsters.remove(actor);
