@@ -78,7 +78,6 @@ class Storage {
         // Defaults are to support legacy saves.
 
         var experience = hero['experience'] as int;
-        var skillPoints = hero['skillPoints'] as int ?? 0;
 
         var skillMap = <Skill, int>{};
         var skills = hero['skills'] as Map<String, dynamic>;
@@ -104,7 +103,6 @@ class Storage {
             home,
             crucible,
             experience,
-            skillPoints,
             skillSet,
             lore,
             gold,
@@ -217,7 +215,12 @@ class Storage {
       for (var stat in Stat.all) {
         raceStats[stat.name] = hero.race.max(stat);
       }
-      var race = {'name': hero.race.name, 'stats': raceStats};
+
+      var race = {
+        'name': hero.race.name,
+        'seed': hero.race.seed,
+        'stats': raceStats
+      };
 
       var inventory = [];
       for (var item in hero.inventory) {
@@ -268,7 +271,6 @@ class Storage {
         'home': home,
         'crucible': crucible,
         'experience': hero.experienceCents,
-        'skillPoints': hero.skillPoints,
         'skills': skills,
         'lore': lore,
         'gold': hero.gold,

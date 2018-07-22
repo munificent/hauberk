@@ -3,6 +3,43 @@ import 'dart:math' as math;
 import '../hero/hero.dart';
 import 'skill.dart';
 
+/// A derived property of the hero that needs to log a message when it changes.
+///
+/// If some property of the hero cannot be recalcuted based on other state,
+/// then it is stored directly in the hero: experience points, equipment, etc.
+///
+/// If a property is calculated based on other state but doesn't notify the
+/// user when it changes, then it can just be a getter: weight, stomach, etc.
+///
+/// The remaining properties use this. It stores the previously-calculated
+/// value so that we can tell when a recalculation has actually changed it.
+class Property<T extends num> {
+  T _value;
+
+  /// The current value without any modification.
+  T get baseValue => _value;
+
+  /// The current modified value.
+  T get value => modify(_value);
+
+  /// A subclass can override this to modify the observed value. The updating
+  /// and notifications are based on the raw base value.
+  T modify(T base) => base;
+
+  /// Stores the new base [value]. If [value] is different from the current
+  /// base value, calls [onChange], passing in the previous value. Does not take
+  /// any modification into account.
+  void update(T value, Function(T) onChange) {
+    if (_value == value) return;
+
+    var previous = _value;
+    _value = value;
+
+    // Don't notify when first initialized.
+    if (previous != null) onChange(previous);
+  }
+}
+
 class Stat {
   static const strength = Stat("Strength");
   static const agility = Stat("Agility");
@@ -10,32 +47,58 @@ class Stat {
   static const intellect = Stat("Intellect");
   static const will = Stat("Will");
 
-  static const all = [strength, agility, fortitude, intellect, will];
+  static const all = [
+    strength,
+    agility,
+    fortitude,
+    intellect,
+    will,
+  ];
 
   final String name;
 
   const Stat(this.name);
 }
 
-abstract class StatBase {
-  final Hero _hero;
-
-  StatBase(this._hero);
+abstract class StatBase extends Property<int> {
+  Hero _hero;
 
   String get name => _stat.name;
 
   Stat get _stat;
-  int get _offset => 0;
 
-  int get value =>
-      (_hero.race.valueAtLevel(_stat, _hero.level) + _offset).clamp(1, 60);
+  String get _gainAdjective;
+
+  String get _loseAdjective;
+
+  void bindHero(Hero hero) {
+    assert(_hero == null);
+    _hero = hero;
+  }
+
+  void refresh() {
+    var newValue = _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, 60);
+    update(newValue, (previous) {
+      var gain = newValue - previous;
+      if (gain > 0) {
+        _hero.game.log
+            .gain("You feel $_gainAdjective! Your $name increased by $gain.");
+      } else {
+        _hero.game.log.error(
+            "You feel $_loseAdjective! Your $name decreased by ${-gain}.");
+      }
+    });
+  }
 }
 
 class Strength extends StatBase {
-  Strength(Hero hero) : super(hero);
-
   Stat get _stat => Stat.strength;
-  int get _offset => -_hero.weight;
+
+  String get _gainAdjective => "mighty";
+
+  String get _loseAdjective => "weak";
+
+  int modify(int base) => (base - _hero.weight).clamp(1, 60);
 
   double get tossRangeScale {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
@@ -61,9 +124,11 @@ class Strength extends StatBase {
 }
 
 class Agility extends StatBase {
-  Agility(Hero hero) : super(hero);
-
   Stat get _stat => Stat.agility;
+
+  String get _gainAdjective => "dextrous";
+
+  String get _loseAdjective => "clumsy";
 
   // TODO: Subtract encumbrance.
 
@@ -82,23 +147,29 @@ class Agility extends StatBase {
 
 // TODO: "Vitality"?
 class Fortitude extends StatBase {
-  Fortitude(Hero hero) : super(hero);
-
   Stat get _stat => Stat.fortitude;
+
+  String get _gainAdjective => "tough";
+
+  String get _loseAdjective => "sickly";
 
   int get maxHealth => (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
 }
 
 class Intellect extends StatBase {
-  Intellect(Hero hero) : super(hero);
-
   Stat get _stat => Stat.intellect;
+
+  String get _gainAdjective => "smart";
+
+  String get _loseAdjective => "stupid";
 
   int get maxFocus => (math.pow(value, 1.3) * 2).ceil();
 }
 
 class Will extends StatBase {
-  Will(Hero hero) : super(hero);
-
   Stat get _stat => Stat.will;
+
+  String get _gainAdjective => "invincible";
+
+  String get _loseAdjective => "foolish";
 }

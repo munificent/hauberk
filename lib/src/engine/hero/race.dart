@@ -40,8 +40,8 @@ class RaceStats {
   final Map<Stat, int> _max;
 
   /// The stat gains are distributed somewhat randomly across levels. This seed
-  /// ensures we use the same distribute every time for a given hero. Otherwise,
-  /// when saving and loading a hero, their stats could change.
+  /// ensures we use the same distribution every time for a given hero.
+  /// Otherwise, when saving and loading a hero, their stats could change.
   final int seed;
 
   /// The values of each stat at every level.

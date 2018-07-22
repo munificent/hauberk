@@ -82,6 +82,8 @@ class Monster extends Actor {
 
   Monster(Game game, this.breed, int x, int y, this.generation)
       : super(game, x, y) {
+    health = maxHealth;
+
     Debug.addMonster(this);
     changeState(AsleepState());
 

@@ -68,8 +68,6 @@ abstract class Actor implements Noun {
   }
 
   Actor(this.game, int x, int y) : _pos = Vec(x, y) {
-    _health = maxHealth;
-
     for (var element in game.content.elements) {
       resistances[element] = ResistCondition(element);
     }

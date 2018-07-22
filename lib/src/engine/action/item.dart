@@ -80,6 +80,7 @@ class PickUpAction extends Action {
 
     log('{1} pick[s] up {2}.', actor, item.clone(result.added));
 
+    // TODO: Use refreshProperties()?
     if (item.emanationLevel > 0) {
       game.stage.actorEmanationChanged();
     }
@@ -92,6 +93,7 @@ class PickUpAction extends Action {
     }
 
     hero.gainItemSkills(item);
+    hero.refreshProperties();
     return ActionResult.success;
   }
 }
@@ -117,13 +119,13 @@ class DropAction extends ItemAction {
     }
 
     if (location == ItemLocation.equipment) {
-      succeed('{1} take[s] off and drop[s] {2}.', actor, dropped);
+      log('{1} take[s] off and drop[s] {2}.', actor, dropped);
+      hero.refreshProperties();
     } else {
-      succeed('{1} drop[s] {2}.', actor, dropped);
+      log('{1} drop[s] {2}.', actor, dropped);
     }
 
     game.stage.addItem(dropped, actor.pos);
-
     return ActionResult.success;
   }
 }
@@ -165,11 +167,7 @@ class EquipAction extends ItemAction {
     }
 
     log("{1} equip[s] {2}.", actor, equipped);
-
-    if (equipped.heft > hero.strength.value) {
-      error("{1} [are|is] not strong enough to effectively wield it.", actor);
-    }
-
+    hero.refreshProperties();
     return ActionResult.success;
   }
 }
@@ -184,16 +182,19 @@ class UnequipAction extends ItemAction {
     removeItem();
     var result = hero.inventory.tryAdd(item, wasUnequipped: true);
     if (result.remaining == 0) {
-      return succeed('{1} unequip[s] {2}.', actor, item);
+      log('{1} unequip[s] {2}.', actor, item);
+    } else {
+      // No room in inventory, so drop it.
+      game.stage.addItem(item, actor.pos);
+      log(
+          "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
+              "the ground.",
+          actor,
+          item);
     }
 
-    // No room in inventory, so drop it.
-    game.stage.addItem(item, actor.pos);
-    return succeed(
-        "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
-        "the ground.",
-        actor,
-        item);
+    hero.refreshProperties();
+    return ActionResult.success;
   }
 }
 
@@ -224,6 +225,7 @@ class UseAction extends ItemAction {
       countChanged();
     }
 
+    // TODO: If using an item can change hero properties, refresh them.
     return alternate(useAction);
   }
 }
@@ -296,11 +298,14 @@ abstract class DestroyActionMixin implements Action {
       // TODO: If the item takes effect when destroyed, do that here.
     });
 
+    var anyEquipmentDestroyed = false;
     fuel += _destroy(element, hero.equipment, true, (item) {
       hero.equipment.remove(item);
       // TODO: If the item takes effect when destroyed, do that here.
+      anyEquipmentDestroyed = true;
     });
 
+    if (anyEquipmentDestroyed) hero.refreshProperties();
     return fuel;
   }
 }

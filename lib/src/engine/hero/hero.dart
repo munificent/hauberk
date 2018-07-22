@@ -49,10 +49,6 @@ class HeroSave {
 
   SkillSet skills;
 
-  // TODO: Get rid of this.
-  /// Available points that can be spent raising skills.
-  int skillPoints = 12;
-
   // TODO: Get rid of gold and shops if I'm sure we won't be using it.
   /// How much gold the hero has.
   int gold = Option.heroGoldStart;
@@ -77,7 +73,6 @@ class HeroSave {
       this.home,
       this.crucible,
       this.experienceCents,
-      this.skillPoints,
       this.skills,
       this._lore,
       this.gold,
@@ -90,7 +85,6 @@ class HeroSave {
     inventory = hero.inventory;
     equipment = hero.equipment;
     experienceCents = hero._experienceCents;
-    skillPoints = hero.skillPoints;
     gold = hero.gold;
     skills = hero.skills.clone();
     _lore = hero.lore.clone();
@@ -118,29 +112,16 @@ class Hero extends Actor {
   /// not floating point) precision.
   int _experienceCents = 0;
 
-  Strength _strength;
-  Strength get strength => _strength ?? (_strength = Strength(this));
+  final strength = Strength();
+  final agility = Agility();
+  final fortitude = Fortitude();
+  final intellect = Intellect();
+  final will = Will();
 
-  Agility _agility;
-  Agility get agility => _agility ?? (_agility = Agility(this));
-
-  Fortitude _fortitude;
-  Fortitude get fortitude => _fortitude ?? (_fortitude = Fortitude(this));
-
-  Intellect _intellect;
-  Intellect get intellect => _intellect ?? (_intellect = Intellect(this));
-
-  Will _will;
-  Will get will => _will ?? (_will = Will(this));
+  /// Damage scale based on the current weapon, equipment, and stats.
+  final Property<double> _heftScale = Property();
 
   final SkillSet skills;
-
-  // TODO: Get rid of this.
-  /// Available points that can be spent raising skills.
-  int skillPoints;
-
-  /// The hero's experience level.
-  int _level = 1;
 
   int gold;
 
@@ -194,21 +175,24 @@ class Hero extends Actor {
         inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
         _experienceCents = save.experienceCents,
-        skillPoints = save.skillPoints,
         skills = save.skills.clone(),
         gold = save.gold,
         lore = save.lore.clone(),
         super(game, pos.x, pos.y) {
     // Hero state is cloned above so that if they die in the dungeon, they lose
     // anything they found.
+    strength.bindHero(this);
+    agility.bindHero(this);
+    fortitude.bindHero(this);
+    intellect.bindHero(this);
+    will.bindHero(this);
 
-    // Give the hero energy so we can act before all of the monsters.
+    // Give the hero energy so they can act before all of the monsters.
     energy.energy = Energy.actionCost;
 
-    _refreshLevel(log: false);
+    refreshProperties();
 
-    // Reset the health now that we know the level, which in turn affects
-    // fortitude.
+    // Set the health now that we know the level, which determines fortitude.
     health = maxHealth;
 
     // Acquire any skills from the starting items.
@@ -232,7 +216,9 @@ class Hero extends Actor {
 
   int get experience => _experienceCents ~/ 100;
 
-  int get level => _level;
+  /// The hero's experience level.
+  int get level => _level.value;
+  final _level = Property<int>();
 
   int get armor {
     var total = 0;
@@ -241,13 +227,10 @@ class Hero extends Actor {
     }
 
     // TODO: Apply skills.
-//    total += heroClass.armor;
 
     return total;
   }
 
-  // TODO: If this changes or the equipped weapon changes, should check to see
-  // if weapon has too much weight for player and log.
   /// The total weight of all equipment.
   int get weight {
     var total = 0;
@@ -283,6 +266,9 @@ class Hero extends Actor {
   }
   */
 
+  // TODO: The set of skills discovered from items should probably be stored in
+  // lore. Then the skill levels can be stored using Property and refreshed
+  // like other properties.
   /// Discover or acquire any skills associated with [item].
   void gainItemSkills(Item item) {
     for (var skill in item.type.skills) {
@@ -321,8 +307,7 @@ class Hero extends Actor {
       hit = weapon.attack.createHit();
 
       // Take heft and strength into account.
-      var scale = strength.heftScale(weapon.heft);
-      hit.scaleDamage(scale);
+      hit.scaleDamage(_heftScale.value);
     } else {
       hit = Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
     }
@@ -339,8 +324,6 @@ class Hero extends Actor {
   Hit createRangedHit() {
     var weapon = equipment.weapon;
 
-    // TODO: Figure out how heft affects this.
-
     // This should only be called when we know the hero has a ranged weapon
     // equipped.
     assert(weapon != null && weapon.attack.isRanged);
@@ -348,8 +331,7 @@ class Hero extends Actor {
     var hit = weapon.attack.createHit();
 
     // Take heft and strength into account.
-    var scale = strength.heftScale(weapon.heft);
-    hit.scaleDamage(scale);
+    hit.scaleDamage(_heftScale.value);
 
     modifyHit(hit, HitType.ranged);
     return hit;
@@ -403,7 +385,7 @@ class Hero extends Actor {
     if (_seenMonsters.contains(monster)) {
       lore.slay(monster.breed);
       _experienceCents += monster.experienceCents;
-      _refreshLevel(log: true);
+      refreshProperties();
     }
 
     // If the hero killed a monster with a weapon, update the kill count.
@@ -503,38 +485,45 @@ class Hero extends Actor {
     }
   }
 
-  void _refreshLevel({bool log = false}) {
-    int level = calculateLevel(_experienceCents);
+  /// Refreshes all hero state whose change should be logged.
+  ///
+  /// For example, if the hero equips a helm that increases intellect, we want
+  /// to log that. Likewise, if they level up and their strength increases. Or
+  /// maybe a ghost drains their experience, which lowers their level, which
+  /// reduces dexterity.
+  ///
+  /// To track that, any calculated property whose change should be noted is
+  /// wrapped in a [Property] and updated here. Note that order that these are
+  /// updated matters. Properties must be updated after the properties they
+  /// depend on.
+  void refreshProperties() {
+    var level = calculateLevel(_experienceCents);
+    _level.update(level, (previous) {
+      game.log.gain('You have reached level $level.');
+      // TODO: Different message if level went down.
+    });
 
-    // See if the we levelled up.
-    var previous = _level;
-    while (_level < level) {
-      _level++;
+    strength.refresh();
+    agility.refresh();
+    fortitude.refresh();
+    intellect.refresh();
+    will.refresh();
 
-      if (log) {
-        game.log.gain('You have reached level $level.');
-        skillPoints += Option.skillPointsPerLevel;
+    var heft = strength.heftScale(equipment.weapon?.heft ?? 0);
+    _heftScale.update(heft, (previous) {
+      // TODO: Reword these if there is no weapon equipped?
+      if (heft < 1.0 && previous >= 1.0) {
+        game.log.error("You are too weak to effectively wield your weapon.");
+      } else if (heft >= 1.0 && previous < 1.0) {
+        game.log.message("You feel comfortable wielding your weapon.");
       }
-    }
+    });
 
-    // TODO: If fortitude goes up, should we increase current health too?
-
-    if (log && previous != _level) {
-      // Show any gained stats.
-      for (var stat in Stat.all) {
-        var gain =
-            race.valueAtLevel(stat, _level) - race.valueAtLevel(stat, previous);
-        if (gain != 0) {
-          game.log.gain("Your ${stat.name.toLowerCase()} increased by $gain.");
-        }
-      }
-
-      // Show any learned skills. (Gaining intellect learns spells.)
-      for (var skill in skills.discovered) {
-        var level = skill.calculateLevel(this);
-        if (skills.gain(skill, level)) {
-          game.log.gain(skill.gainMessage(level), this);
-        }
+    // Show any learned skills. (Gaining intellect learns spells.)
+    for (var skill in skills.discovered) {
+      var level = skill.calculateLevel(this);
+      if (skills.gain(skill, level)) {
+        game.log.gain(skill.gainMessage(level), this);
       }
     }
   }
