@@ -52,6 +52,8 @@ addTerminal(String name, int w, [int h]) {
       var pixel = Vec(event.offset.x.toInt(), event.offset.y.toInt());
       var pos = terminal.pixelToChar(pixel);
 
+      if (Debug.gameScreen == null) return;
+
       var actor = Debug.gameScreen.game.stage.actorAt(pos);
       if (actor is Monster) {
         if (_debugMonsters.contains(actor)) {
