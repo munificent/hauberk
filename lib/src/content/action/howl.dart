@@ -8,12 +8,14 @@ class HowlAction extends Action {
 
   ActionResult onPerform() {
     log("{1} howls!", actor);
+    addEvent(EventType.howl, actor: actor);
 
-    for (var actor in monster.game.stage.actors) {
-      if (actor == monster) continue;
-
-      if (actor is Monster && (actor.pos - monster.pos) <= _range) {
-        monster.wakeUp();
+    for (var other in monster.game.stage.actors) {
+      if (other != actor &&
+          other is Monster &&
+          (other.pos - monster.pos) <= _range) {
+        // TODO: Take range into account when attenuating volume?
+        other.hear(game.stage.volumeBetween(actor.pos, other.pos));
       }
     }
 

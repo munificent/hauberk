@@ -21,7 +21,6 @@ Content content;
 Game game;
 
 var actions = Queue<Action>();
-var gameResult = GameResult();
 
 var breeds = <int, Breed>{};
 
@@ -159,7 +158,7 @@ bool fight(HeroSave save, int monsterHealth) {
   while (true) {
     var action = AttackAction(monster);
     action.bind(hero);
-    action.perform(actions, [], gameResult);
+    action.perform();
 
     if (monster.health <= 0) {
 //      print("versus $monsterHealth -> win");
@@ -168,7 +167,7 @@ bool fight(HeroSave save, int monsterHealth) {
 
     action = AttackAction(hero);
     action.bind(monster);
-    action.perform(actions, [], gameResult);
+    action.perform();
 
     if (hero.health <= 0) {
 //      print("versus $monsterHealth -> lose");

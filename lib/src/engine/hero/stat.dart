@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import '../hero/hero.dart';
-import 'skill.dart';
+import '../core/lerp.dart';
 
 /// A derived property of the hero that needs to log a message when it changes.
 ///

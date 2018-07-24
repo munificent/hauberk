@@ -74,6 +74,18 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(FrameEffect(event.actor.pos, '*', ash));
       break;
 
+    case EventType.howl:
+      effects.add(HowlEffect(event.actor));
+      break;
+
+    case EventType.awaken:
+      effects.add(BlinkEffect(event.actor, Glyph('!', ash)));
+      break;
+
+    case EventType.frighten:
+      effects.add(BlinkEffect(event.actor, Glyph("!", gold)));
+      break;
+
     case EventType.wind:
       // TODO: Do something.
       break;
@@ -476,5 +488,60 @@ class TreasureEffect implements Effect {
 
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(_x, _y, _item.appearance as Glyph);
+  }
+}
+
+class HowlEffect implements Effect {
+  static final bang = Glyph("!", seaGreen);
+  static final slash = Glyph("/", turquoise);
+  static final backslash = Glyph("\\", turquoise);
+  static final dash = Glyph("-", seaGreen);
+  static final less = Glyph("<", seaGreen);
+  static final greater = Glyph(">", seaGreen);
+
+  final Actor _actor;
+  int _age = 0;
+
+  HowlEffect(this._actor);
+
+  bool update(Game game) {
+    return ++_age < 24;
+  }
+
+  void render(Game game, DrawGlyph drawGlyph) {
+    var pos = _actor.pos;
+
+    if ((_age ~/ 6) % 2 == 0) {
+      drawGlyph(pos.x, pos.y, bang);
+      drawGlyph(pos.x - 1, pos.y, greater);
+      drawGlyph(pos.x + 1, pos.y, less);
+    } else {
+      drawGlyph(pos.x - 1, pos.y - 1, backslash);
+      drawGlyph(pos.x - 1, pos.y + 1, slash);
+      drawGlyph(pos.x + 1, pos.y - 1, slash);
+      drawGlyph(pos.x + 1, pos.y + 1, backslash);
+      drawGlyph(pos.x - 1, pos.y, dash);
+      drawGlyph(pos.x + 1, pos.y, dash);
+    }
+  }
+}
+
+class BlinkEffect implements Effect {
+  final Actor _actor;
+  final Glyph _glyph;
+  int _age = 0;
+
+  BlinkEffect(this._actor, this._glyph);
+
+  bool update(Game game) {
+    return ++_age < 24;
+  }
+
+  void render(Game game, DrawGlyph drawGlyph) {
+    var pos = _actor.pos;
+
+    if ((_age ~/ 6) % 2 == 1) {
+      drawGlyph(pos.x, pos.y, _glyph);
+    }
   }
 }

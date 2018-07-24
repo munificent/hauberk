@@ -9,6 +9,7 @@ import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
+import '../core/lerp.dart';
 import '../core/log.dart';
 import '../hero/hero.dart';
 import '../stage/lighting.dart';
@@ -158,8 +159,6 @@ class Monster extends Actor {
     awareness += _hearHero();
     // TODO: Smell?
 
-    var notice = awareness + _alertness * 0.2;
-
     // Persist some of the awareness. Note that the historical and current
     // awareness don't sum to 1.0. This is so that alertness gradually fades.
     // TODO: The ratio here could be tuned by breeds where some have longer
@@ -169,6 +168,8 @@ class Monster extends Actor {
 
     _decayFear();
     _fear = _fear.clamp(0.0, _frightenThreshold);
+
+    var notice = math.max(awareness, _alertness);
 
     Debug.monsterStat(this, "aware", awareness);
     Debug.monsterStat(this, "alert", _alertness);
@@ -186,15 +187,20 @@ class Monster extends Actor {
     if (isAsleep) {
       if (_fear > _frightenThreshold) {
         log("{1} is afraid!", this);
+        game.addEvent(EventType.frighten, actor: this);
 
         _resetCharges();
         changeState(AfraidState());
-      } else if (rng.float(1.4) <= notice) {
+      } else if (rng.percent(_awakenPercent(notice))) {
         if (isVisibleToHero) {
           log("{1} wakes up!", this);
         } else {
           log("Something stirs in the darkness.");
         }
+
+        // TODO: Probably shouldn't add event if monster woke up because they
+        // were hit.
+        game.addEvent(EventType.awaken, actor: this);
 
         _alertness = _maxAlertness;
         _resetCharges();
@@ -203,8 +209,9 @@ class Monster extends Actor {
     } else if (isAwake) {
       if (_fear > _frightenThreshold) {
         log("{1} is afraid!", this);
+        game.addEvent(EventType.frighten, actor: this);
         changeState(AfraidState());
-      } else if (_alertness < 0.01) {
+      } else if (notice < 0.01) {
         if (isVisibleToHero) {
           log("{1} falls asleep!", this);
         }
@@ -218,6 +225,17 @@ class Monster extends Actor {
         changeState(AwakeState());
       }
     }
+  }
+
+  /// The percent chance of waking up at [notice].
+  int _awakenPercent(double notice) {
+    // At boundaries, either always or never wake up.
+    if (notice < 0.1) return 0;
+    if (notice > 0.8) return 100;
+
+    // Between them, gradually increasing chance of waking up.
+    var normal = lerpDouble(notice, 0.1, 0.8, 0.0, 1.0);
+    return lerpDouble(normal * normal * normal, 0.0, 1.0, 5.0, 100.0).round();
   }
 
   double _seeHero() {
@@ -282,9 +300,10 @@ class Monster extends Actor {
     _fear = math.max(0.0, _fear + offset);
   }
 
-  /// Changes the monster to its awake state on its next turn, if sleeping.
-  void wakeUp() {
-    _alertness = _maxAlertness;
+  /// Adds an audible signal at [volume] to the monster's alertness.
+  void hear(double volume) {
+    _alertness += volume * breed.hearing;
+    _alertness = _alertness.clamp(0.0, _maxAlertness);
   }
 
   void changeState(MonsterState state) {

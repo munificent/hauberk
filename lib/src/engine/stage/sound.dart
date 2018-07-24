@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import 'flow.dart';
+import 'pathfinder.dart';
 import 'stage.dart';
 import 'tile.dart';
 
@@ -40,15 +41,13 @@ class Sound {
   /// Returns a number between 0.0 (completely inaudible) to 1.0 (maximum
   /// volume). Does not take hero noise into account. This is how well the hero
   /// can be heard in general.
-  double heroVolume(Vec pos) {
-    // Normalize the flow distance.
-    var distance = _heroAuditoryDistance(pos);
-    var volume = (Sound.maxDistance - distance) / Sound.maxDistance;
+  double heroVolume(Vec pos) => _volume(_heroAuditoryDistance(pos));
 
-    // Sound attenuates with the square of the distance. This is realistic but
-    // also means that even hard-of-hearing monsters will hero the hero once
-    // they are very close.
-    return volume * volume;
+  double volumeBetween(Vec from, Vec to) {
+    if ((to - from).kingLength > maxDistance) return 0.0;
+
+    var distance = _SoundPathfinder(_stage, from, to).search();
+    return _volume(distance);
   }
 
   /// How far away the [Hero] is from [pos] in terms of sound flow, up to
@@ -66,6 +65,17 @@ class Sound {
 
     _refresh();
     return _flow.costAt(pos) ?? maxDistance;
+  }
+
+  /// Converts [auditoryDistance] to a volume.
+  double _volume(int auditoryDistance) {
+    // Normalize.
+    var volume = (Sound.maxDistance - auditoryDistance) / Sound.maxDistance;
+
+    // Sound attenuates with the square of the distance. This is realistic but
+    // also means that even hard-of-hearing monsters will hero the hero once
+    // they are very close.
+    return volume * volume;
   }
 
   void _refresh() {
@@ -91,14 +101,38 @@ class _SoundFlow extends Flow {
     if (pos.y < 1) return null;
     if (pos.y >= stage.height - 1) return null;
 
-    // Closed doors block some but not all sound.
-    if (tile.isClosedDoor) return 8;
-
-    // Walls almost block all sound, but a 1-thick wall does let a little
-    // through.
-    if (!tile.isFlyable) return 10;
-
-    // Open tiles don't block any.
-    return 1;
+    return _tileCost(tile);
   }
+}
+
+class _SoundPathfinder extends Pathfinder<int> {
+  _SoundPathfinder(Stage stage, Vec from, Vec to) : super(stage, from, to);
+
+  int processStep(Path path) {
+    if (path.cost > Sound.maxDistance) return Sound.maxDistance;
+    return null;
+  }
+
+  int stepCost(Vec pos, Tile tile) {
+    return _tileCost(tile);
+  }
+
+  int reachedGoal(Path path) => path.cost;
+
+  /// There's no path to the goal so, just pick the path that gets nearest to
+  /// it and hope for the best. (Maybe someone will open a door later or
+  /// something.)
+  int unreachableGoal() => Sound.maxDistance;
+}
+
+int _tileCost(Tile tile) {
+  // Closed doors block some but not all sound.
+  if (tile.isClosedDoor) return 8;
+
+  // Walls almost block all sound, but a 1-thick wall does let a little
+  // through.
+  if (!tile.isFlyable) return 10;
+
+  // Open tiles don't block any.
+  return 1;
 }

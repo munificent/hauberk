@@ -154,8 +154,9 @@ Future generate() async {
       <tr>
         <td>${monsters.count(breed)}</td>
         <td>
-          <pre><span style="color: ${glyph
-            .fore.cssColor}">${String.fromCharCodes([glyph.char])}</span></pre>
+          <pre><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
+      glyph.char
+    ])}</span></pre>
         </td>
         <td>${breed.name}</td>
         <td>${breed.depth}</td>

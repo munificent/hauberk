@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:html' as html;
 import 'dart:math' as math;
 
@@ -119,9 +118,6 @@ class FortitudeAxis extends StatAxis {
 SimResult simulate(HeroSave save) {
   var game = Game(content, save, 1);
 
-  var actions = Queue<Action>();
-  var gameResult = GameResult();
-
   var wins = 0;
   for (var i = 0; i < simulationRounds; i++) {
     var monster = Monster(game, breed, 0, 0, 1);
@@ -131,7 +127,7 @@ SimResult simulate(HeroSave save) {
     while (true) {
       var action = AttackAction(monster);
       action.bind(hero);
-      action.perform(actions, [], gameResult);
+      action.perform();
 
       if (monster.health == 0) {
         wins++;
@@ -140,7 +136,7 @@ SimResult simulate(HeroSave save) {
 
       action = AttackAction(hero);
       action.bind(monster);
-      action.perform(actions, [], gameResult);
+      action.perform();
 
       if (hero.health == 0) break;
     }

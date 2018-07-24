@@ -24,7 +24,12 @@ class Game {
 
   final HeroSave _save;
   final log = Log();
+
   final _actions = Queue<Action>();
+  final _reactions = <Action>[];
+
+  /// The events that have occurred since the last call to [update()].
+  final _events = List<Event>();
 
   /// The energy that tracks when the substances are ready to update.
   final _substanceEnergy = Energy();
@@ -74,15 +79,14 @@ class Game {
   }
 
   GameResult update() {
-    final gameResult = GameResult();
+    var madeProgress = false;
 
     while (true) {
       // Process any ongoing or pending actions.
       while (_actions.isNotEmpty) {
         var action = _actions.first;
 
-        var reactions = <Action>[];
-        var result = action.perform(_actions, reactions, gameResult);
+        var result = action.perform();
 
         // Cascade through the alternates until we hit bottom.
         while (result.alternative != null) {
@@ -90,17 +94,17 @@ class Game {
           action = result.alternative;
           _actions.addFirst(action);
 
-          result = action.perform(_actions, reactions, gameResult);
+          result = action.perform();
         }
 
-        while (reactions.isNotEmpty) {
-          var reaction = reactions.removeLast();
-          var result = reaction.perform(_actions, reactions, gameResult);
+        while (_reactions.isNotEmpty) {
+          var reaction = _reactions.removeLast();
+          var result = reaction.perform();
           assert(result.succeeded, "Reactions should never fail.");
         }
 
         stage.refreshView();
-        gameResult.madeProgress = true;
+        madeProgress = true;
 
         if (result.done) {
           _actions.removeFirst();
@@ -111,10 +115,10 @@ class Game {
           }
 
           // Refresh every time the hero takes a turn.
-          if (action.actor == hero) return gameResult;
+          if (action.actor == hero) return makeResult(madeProgress);
         }
 
-        if (gameResult.events.length > 0) return gameResult;
+        if (_events.isNotEmpty) return makeResult(madeProgress);
       }
 
       // If we are in the middle of updating substances, keep working through
@@ -129,12 +133,14 @@ class Game {
         var actor = stage.currentActor;
 
         // If we are still waiting for input for the actor, just return (again).
-        if (actor.energy.canTakeTurn && actor.needsInput) return gameResult;
+        if (actor.energy.canTakeTurn && actor.needsInput) {
+          return makeResult(madeProgress);
+        }
 
         if (actor.energy.canTakeTurn || actor.energy.gain(actor.speed)) {
           // If the actor can move now, but needs input from the user, just
           // return so we can wait for it.
-          if (actor.needsInput) return gameResult;
+          if (actor.needsInput) return makeResult(madeProgress);
 
           _actions.add(actor.getAction());
         } else {
@@ -156,6 +162,26 @@ class Game {
     }
   }
 
+  void addAction(Action action) {
+    if (action.isImmediate) {
+      _reactions.add(action);
+    } else {
+      _actions.add(action);
+    }
+  }
+
+  void addEvent(EventType type,
+      {Actor actor, Element element, other, Vec pos, Direction dir}) {
+    _events.add(Event(type, actor, element, pos, dir, other));
+  }
+
+  GameResult makeResult(bool madeProgress) {
+    var result = GameResult(madeProgress);
+    result.events.addAll(_events);
+    _events.clear();
+    return result;
+  }
+
   void _updateSubstances() {
     while (_substanceIndex < _substanceUpdateOrder.length) {
       var pos = _substanceUpdateOrder[_substanceIndex];
@@ -173,8 +199,8 @@ class Game {
     _substanceIndex = null;
   }
 
-  // TODO: Decide if we want to keep this. Now that there is hunger forcing the
-  // player to explore, it doesn't seem strictly necessary.
+// TODO: Decide if we want to keep this. Now that there is hunger forcing the
+// player to explore, it doesn't seem strictly necessary.
   /// Over time, new monsters will appear in unexplored areas of the dungeon.
   /// This is to encourage players to not waste time: the more they linger, the
   /// more dangerous the remaining areas become.
@@ -233,18 +259,18 @@ abstract class Content {
 /// the UI what happened during that update and what it needs to do.
 class GameResult {
   /// The "interesting" events that occurred in this update.
-  final List<Event> events;
+  final events = <Event>[];
 
   /// Whether or not any game state has changed. If this is `false`, then no
   /// game processing has occurred (i.e. the game is stuck waiting for user
   /// input for the [Hero]).
-  bool madeProgress = false;
+  final bool madeProgress;
 
   /// Returns `true` if the game state has progressed to the point that a change
   /// should be shown to the user.
   bool get needsRefresh => madeProgress || events.length > 0;
 
-  GameResult() : events = <Event>[];
+  GameResult(this.madeProgress);
 }
 
 /// Describes a single "interesting" thing that occurred during a call to
@@ -295,6 +321,15 @@ class EventType {
 
   /// A new [Actor] was spawned by another.
   static const spawn = EventType("spawn");
+
+  /// An [Actor] howls.
+  static const howl = EventType("howl");
+
+  /// An [Actor] wakes up.
+  static const awaken = EventType("awaken");
+
+  /// An [Actor] becomes afraid.
+  static const frighten = EventType("frighten");
 
   /// An [Actor] was blown by wind.
   static const wind = EventType("wind");

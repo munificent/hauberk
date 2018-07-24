@@ -262,4 +262,6 @@ class Stage {
   /// How loud the hero is from [pos] in terms of sound flow, up to
   /// [Sound.maxDistance].
   double heroVolume(Vec pos) => _sound.heroVolume(pos);
+
+  double volumeBetween(Vec from, Vec to) => _sound.volumeBetween(from, to);
 }

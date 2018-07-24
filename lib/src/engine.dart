@@ -11,6 +11,7 @@ export 'engine/core/condition.dart';
 export 'engine/core/element.dart';
 export 'engine/core/energy.dart';
 export 'engine/core/game.dart';
+export 'engine/core/lerp.dart';
 export 'engine/core/log.dart';
 export 'engine/core/option.dart';
 export 'engine/core/resource.dart';

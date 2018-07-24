@@ -9,12 +9,17 @@ class HowlMove extends Move {
   HowlMove(num rate, this._range) : super(rate);
 
   bool shouldUse(Monster monster) {
+    // Don't wake up others unless the hero is around.
+    if (!monster.isVisibleToHero) return false;
+
     // See if there are any sleeping monsters nearby.
     for (var actor in monster.game.stage.actors) {
       if (actor == monster) continue;
 
-      // If we found someone asleep randomly consider howling.
-      if (actor is Monster && (actor.pos - monster.pos) <= _range) {
+      // If we found someone asleep, howl.
+      if (actor is Monster &&
+          actor.isAsleep &&
+          (actor.pos - monster.pos) <= _range) {
         return true;
       }
     }

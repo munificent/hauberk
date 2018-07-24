@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/actor.dart';
@@ -12,19 +10,22 @@ import '../stage/sound.dart';
 
 abstract class Action {
   Actor _actor;
+
   // TODO: Now that Action has this, should Action subclasses that need a
   // position use it?
   Vec _pos;
   Game _game;
-  Queue<Action> _actions;
-  List<Action> _reactions;
-  GameResult _gameResult;
+
   bool _consumesEnergy;
 
   Game get game => _game;
+
   Actor get actor => _actor;
+
   Monster get monster => _actor as Monster;
+
   Hero get hero => _actor as Hero;
+
   bool get consumesEnergy => _consumesEnergy;
 
   /// Whether this action can be immediately performed in the middle of an
@@ -49,13 +50,9 @@ abstract class Action {
     _consumesEnergy = consumesEnergy ?? true;
   }
 
-  ActionResult perform(
-      Queue<Action> actions, List<Action> reactions, GameResult gameResult) {
-    assert(_game != null); // Action should be bound already.
+  ActionResult perform() {
+    assert(_game != null, "Action should be bound already.");
 
-    _actions = actions;
-    _reactions = reactions;
-    _gameResult = gameResult;
     return onPerform();
   }
 
@@ -69,17 +66,13 @@ abstract class Action {
   /// and any other enqueued actions are done.
   void addAction(Action action, [Actor actor]) {
     action._bind(actor ?? _actor, _pos, _game, false);
-
-    if (action.isImmediate) {
-      _reactions.add(action);
-    } else {
-      _actions.add(action);
-    }
+    _game.addAction(action);
   }
 
   void addEvent(EventType type,
       {Actor actor, Element element, other, Vec pos, Direction dir}) {
-    _gameResult.events.add(Event(type, actor, element, pos, dir, other));
+    _game.addEvent(type,
+        actor: actor, element: element, pos: pos, dir: dir, other: other);
   }
 
   /// How much noise is produced by this action. Override to make certain

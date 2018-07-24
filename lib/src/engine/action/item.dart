@@ -188,7 +188,7 @@ class UnequipAction extends ItemAction {
       game.stage.addItem(item, actor.pos);
       log(
           "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
-              "the ground.",
+          "the ground.",
           actor,
           item);
     }

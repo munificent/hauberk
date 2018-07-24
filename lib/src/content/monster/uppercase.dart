@@ -146,7 +146,8 @@ void reptiles() {
 }
 
 void snakes() {
-  family("S", dodge: 30, meander: 30)..groups("animal")
+  family("S", dodge: 30, meander: 30)
+    ..groups("animal")
     ..sense(see: 4, hear: 7);
   breed("water snake", 1, lima, 9)
     ..placeIn("aquatic")
