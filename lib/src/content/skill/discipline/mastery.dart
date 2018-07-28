@@ -2,9 +2,10 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
 
-// TODO: Trained skills for:
-// - Taking damage, which increases armor.
+// TODO: More disciplines:
 // - Dodging attacks, which increases dodge.
+// - Fury. Increases damage when health is low. Trained by killing monsters
+//   when near death.
 
 abstract class MasteryDiscipline extends Discipline implements UsableSkill {
   // TODO: Tune.
@@ -41,14 +42,19 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
     return weapon.type.weaponType == weaponType;
   }
 
-  // TODO: The fact that this only counts kills and not the difficulty of the
-  // monster means players are incentivized to grind weak monsters to raise
-  // this. Is that OK?
-  int trained(Lore lore) => lore.killsUsing(weaponType);
+  void killMonster(Hero hero, Action action, Monster monster) {
+    // Have to have killed the monster by hitting it.
+    if (action is! AttackAction) return;
+
+    var weapon = hero.equipment.weapon;
+    if (weapon == null) return;
+
+    hero.skills.earnPoints(this, (monster.experienceCents / 1000).ceil());
+    hero.refreshSkill(this);
+  }
 
   // TODO: Tune.
-  /// How much training is needed to reach [level].
-  int baseTrainingNeeded(int level) => 10 * level * level;
+  int baseTrainingNeeded(int level) => 100 * level * level * level;
 }
 
 abstract class MasteryAction extends Action {

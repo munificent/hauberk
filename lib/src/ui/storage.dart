@@ -79,15 +79,25 @@ class Storage {
 
         var experience = hero['experience'] as int;
 
-        var skillMap = <Skill, int>{};
+        var levels = <Skill, int>{};
+        var points = <Skill, int>{};
         var skills = hero['skills'] as Map<String, dynamic>;
         if (skills != null) {
           for (var name in skills.keys) {
-            skillMap[content.findSkill(name)] = skills[name] as int;
+            var skill = content.findSkill(name);
+            // Handle old storage without points.
+            // TODO: Remove when no longer needed.
+            if (skills[name] is int) {
+              levels[skill] = skills[name] as int;
+              points[skill] = 0;
+            } else {
+              levels[skill] = skills[name]['level'] as int;
+              points[skill] = skills[name]['points'] as int;
+            }
           }
         }
 
-        var skillSet = SkillSet(skillMap);
+        var skillSet = SkillSet.from(levels, points);
 
         var lore = _loadLore(hero['lore'] as Map<String, dynamic>);
 
@@ -108,10 +118,10 @@ class Storage {
             gold,
             maxDepth);
         heroes.add(heroSave);
-      } catch (error) {
+      } catch (error, trace) {
         print("Could not load hero. Data:");
-        print(hero);
-        print("Error:\n$error");
+        print(json.encode(hero));
+        print("Error:\n$error\n$trace");
       }
     }
   }
@@ -177,7 +187,6 @@ class Storage {
   Lore _loadLore(Map<String, dynamic> data) {
     var slain = <Breed, int>{};
     var seen = <Breed, int>{};
-    var kills = <String, int>{};
 
     // TODO: Older saves before lore.
     if (data != null) {
@@ -196,16 +205,9 @@ class Storage {
           if (breed != null) seen[breed] = count as int;
         });
       }
-
-      var killMap = data['weapon_kills'] as Map<String, dynamic>;
-      if (killMap != null) {
-        killMap.forEach((type, count) {
-          kills[type] = count as int;
-        });
-      }
     }
 
-    return Lore.from(seen, slain, kills);
+    return Lore.from(seen, slain);
   }
 
   void save() {
@@ -244,16 +246,15 @@ class Storage {
 
       var skills = {};
       for (var skill in hero.skills.discovered) {
-        skills[skill.name] = hero.skills[skill];
+        skills[skill.name] = {
+          'level': hero.skills.level(skill),
+          'points': hero.skills.points(skill)
+        };
       }
 
       var seen = {};
       var slain = {};
-      var lore = {
-        'seen': seen,
-        'slain': slain,
-        'weapon_kills': hero.lore.killsByWeapon
-      };
+      var lore = {'seen': seen, 'slain': slain};
       for (var breed in content.breeds) {
         var count = hero.lore.seen(breed);
         if (count != 0) seen[breed.name] = count;

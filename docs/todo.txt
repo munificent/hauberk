@@ -1,7 +1,13 @@
 - monsters
-  - down to all depths
+  - lots more
+    - elementals
+    - undead
+  - tuning
   - uniques
   - quest
+  - "ego monsters" -- affixes for monsters
+  - tune monster perception
+  - element resistance and immunity
 - items
   - helmets
   - heavy armor
@@ -21,7 +27,7 @@
 - elements and moves
   - effects for all elements
     - life draining?
-    - equipment damage for acid?
+    - equipment wear for acid?
     - pushback
   - blindness?
   - confusion?
@@ -38,22 +44,45 @@
     - more spell schools
     - more spells
   - warrior
-    - toughness
-    - other passive disciplines
-  - subclasses
+    - hand-to-hand combat
+    - more disciplines
+  - earned titles
+    - like tactics ogre, "subclass" professions that have to be unlocked by
+      playing within restriction
 - dungeon
-  - themed rooms
+  - more room types
+    - custom great hall shapes
+    - barracks
+    - religious rooms
+    - torture chambers
+    - jails
+    - jelly pits, zoos, conservatories, etc.
+    - boss rooms
+  - more decor
+    - fireplaces
+    - curtains?
+    - armor and weapon stands
+    - blast marks and other signs of aging or history
   - vaults or other special rooms
   - more biomes
+    - caves
+    - catacombs
+    - forest
+    - keep (packed rooms separated by walls)
+  - traps
+  - secret doors
+  - openable chests
   - different wall, water, etc. types
-  - tweak light
-    - more lit rooms, less gloom
-  - temporary terrain features: ice, fire, ward, etc.
-  - digging?
+  - more substances
+    - water
+    - ice/cold?
+    - glyph of warding-type stuff?
+  - digging
   - better "narrative" flow
     - base room types on reachability
     - cuts
     - foreshadowing messages
+    - put minions around boss rooms
   - different generation parameter styles (more windy passages, etc.)
 - crafting?
   - limit recipes to certain classes like alchemist and smith?
@@ -69,9 +98,13 @@
   - killing all monsters
   - finding all items
 - ui
+  - rationalize palette
   - show proficiencies on new hero screen
   - help docs
-  - animated tiles for water, lava, fire, etc.
+  - animated tiles for water, lava, etc.
+  - "examine command"
+  - monster descriptions
+  - better hero creation screen with clearer flow
 - gameplay
   - home?
   - victory

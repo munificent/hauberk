@@ -18,6 +18,15 @@ class SlayDiscipline extends Discipline {
 
   double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.05, 2.0);
 
+  void killMonster(Hero hero, Action action, Monster monster) {
+    if (!monster.breed.groups.contains(_group)) return;
+
+    hero.skills.earnPoints(this, (monster.experienceCents / 1000).ceil());
+    // TODO: Having to call this manually every place we call earnPoints()
+    // is lame. Fix?
+    hero.refreshSkill(this);
+  }
+
   void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {
     if (monster == null) return;
 
@@ -33,22 +42,6 @@ class SlayDiscipline extends Discipline {
         "${_group.displayName.toLowerCase()}.";
   }
 
-  // TODO: The fact that this only counts kills and not the difficulty of the
-  // monster means players are incentivized to grind weak monsters to raise
-  // this. Is that OK?
-  int trained(Lore lore) {
-    var count = 0;
-
-    for (var breed in lore.slainBreeds) {
-      if (breed.groups.contains(_group)) {
-        count += lore.slain(breed);
-      }
-    }
-
-    return count;
-  }
-
   // TODO: Tune.
-  /// How much training is needed to reach [level].
-  int baseTrainingNeeded(int level) => 10 * level * level;
+  int baseTrainingNeeded(int level) => 100 * level * level * level;
 }

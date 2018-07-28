@@ -2,6 +2,7 @@ import '../../engine.dart';
 import '../monster/builder.dart';
 import 'discipline/archery.dart';
 import 'discipline/axe.dart';
+import 'discipline/battle_hardening.dart';
 import 'discipline/club.dart';
 import 'discipline/slay.dart';
 import 'discipline/spear.dart';
@@ -24,15 +25,17 @@ class Skills {
   }
 
   static List<Skill> _generateSkills() {
-    var skills = <Skill>[
-      // Masteries.
+    var skills = <Skill>[BattleHardening()];
+
+    // Masteries.
+    skills.addAll([
       Archery(),
       AxeMastery(),
       ClubMastery(),
       SpearMastery(),
       Swordfighting(),
       WhipMastery()
-    ];
+    ]);
 
     // Slays.
     for (var group in breedGroups.values) {

@@ -65,6 +65,7 @@ abstract class Condition {
     _intensity = 0;
   }
 
+  // TODO: Instead of modifying the given action, should this create a reaction?
   void onUpdate(Action action) {}
 
   void onDeactivate();

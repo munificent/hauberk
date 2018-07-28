@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -12,8 +14,13 @@ import 'lore.dart';
 ///
 /// This class does not contain how good a hero is at the skill. It is more the
 /// *kind* of skill.
-abstract class Skill {
+abstract class Skill implements Comparable<Skill> {
+  static int _nextSortOrder = 0;
+
+  final int _sortOrder = _nextSortOrder++;
+
   String get name;
+
   String get description;
 
   /// The name shown when using the skill.
@@ -37,17 +44,32 @@ abstract class Skill {
   */
 
   /// Determines what level [hero] has in this skill.
-  int calculateLevel(Hero hero);
+  int calculateLevel(Hero hero) =>
+      onCalculateLevel(hero, hero.skills.points(this));
+
+  int onCalculateLevel(Hero hero, int points);
+
+  /// Called when the hero takes damage.
+  void takeDamage(Hero hero, int damage) {}
+
+  /// Called when the hero kills [monster].
+  void killMonster(Hero hero, Action action, Monster monster) {}
 
   /// Gives the skill a chance to modify the [hit] the [hero] is about to
   /// perform on [monster].
   void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {}
 
+  /// Adds or subtracts to the hero's base armor.
+  int modifyArmor(Hero hero, int level) => 0;
+
   /// Gives the skill a chance to add new defenses to the hero.
   Defense getDefense(Hero hero, int level) => null;
 
   /// Gives the skill a chance to modify the hit the hero is about to receive.
-  void modifyDefense(Hit hit) {}
+// TODO: Not currently used.
+//  void modifyDefense(Hit hit) {}
+
+  int compareTo(Skill other) => _sortOrder.compareTo(other._sortOrder);
 }
 
 /// Additional interface for active skills that expose a command the player
@@ -100,8 +122,8 @@ abstract class Discipline extends Skill {
 
   String levelDescription(int level);
 
-  int calculateLevel(Hero hero) {
-    var training = trained(hero.lore);
+  int onCalculateLevel(Hero hero, int points) {
+    var training = hero.skills.points(this);
     for (var level = 1; level <= maxLevel; level++) {
       if (training < trainingNeeded(hero.heroClass, level)) return level - 1;
     }
@@ -115,14 +137,11 @@ abstract class Discipline extends Skill {
     var level = calculateLevel(hero);
     if (level == maxLevel) return null;
 
-    var points = trained(hero.lore);
+    var points = hero.skills.points(this);
     var current = trainingNeeded(hero.heroClass, level);
     var next = trainingNeeded(hero.heroClass, level + 1);
     return 100 * (points - current) ~/ (next - current);
   }
-
-  /// The quantity of training the hero has in this discipline.
-  int trained(Lore lore);
 
   /// How much training is needed for a hero of [heroClass] to reach [level],
   /// or `null` if the hero cannot train this skill.
@@ -163,7 +182,7 @@ abstract class Spell extends Skill implements UsableSkill {
   /// The range of the spell, or `null` if not relevant.
   int get range => null;
 
-  int calculateLevel(Hero hero) {
+  int onCalculateLevel(Hero hero, int points) {
     if (hero.heroClass.proficiency(this) == 0.0) return 0;
 
     // If the hero has enough intellect, they have it.
@@ -195,7 +214,7 @@ abstract class Spell extends Skill implements UsableSkill {
   Action onGetAction(Game game) => null;
 }
 
-/// A collection of [Skill]s and the hero's level in them.
+/// A collection of [Skill]s and the hero's progress in them.
 class SkillSet {
   /// The levels the hero has gained in each skill.
   ///
@@ -204,16 +223,32 @@ class SkillSet {
   /// not discovered it.
   final Map<Skill, int> _levels;
 
-  SkillSet([Map<Skill, int> skills]) : _levels = skills ?? {};
+  /// How many points the hero has earned towards the next level of each skill.
+  final Map<Skill, int> _points;
 
-  int operator [](Skill skill) => _levels[skill] ?? 0;
+  SkillSet()
+      : _levels = {},
+        _points = {};
+
+  SkillSet.from(this._levels, this._points);
 
   /// All the skills the hero knows about.
-  Iterable<Skill> get discovered => _levels.keys;
+  Iterable<Skill> get discovered => _levels.keys.toList()..sort();
 
   /// All the skills the hero actually has.
   Iterable<Skill> get acquired =>
       _levels.keys.where((skill) => _levels[skill] > 0);
+
+  /// Gets the current level of [skill] or 0 if the skill isn't known.
+  int level(Skill skill) => _levels[skill] ?? 0;
+
+  /// Gets the current points in [skill] or 0 if the skill isn't known.
+  int points(Skill skill) => _points[skill] ?? 0;
+
+  void earnPoints(Skill skill, int points) {
+    points += this.points(skill);
+    _points[skill] = points;
+  }
 
   /// Learns that [skill] exists.
   ///
@@ -226,6 +261,8 @@ class SkillSet {
   }
 
   bool gain(Skill skill, int level) {
+    level = math.min(level, skill.maxLevel);
+
     if (_levels[skill] == level) return false;
 
     // Don't discover the skill if not already known.
@@ -257,10 +294,13 @@ class SkillSet {
   bool isAcquired(Skill skill) =>
       _levels.containsKey(skill) && _levels[skill] > 0;
 
-  SkillSet clone() => SkillSet(Map.from(_levels));
+  SkillSet clone() => SkillSet.from(Map.from(_levels), Map.from(_points));
 
   void update(SkillSet other) {
     _levels.clear();
     _levels.addAll(other._levels);
+
+    _points.clear();
+    _points.addAll(other._points);
   }
 }

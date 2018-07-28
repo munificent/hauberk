@@ -10,10 +10,10 @@ import 'input.dart';
 abstract class SkillDialog extends Screen<Input> {
   SkillDialog _nextScreen;
 
-  factory SkillDialog(Content content, Hero hero) {
+  factory SkillDialog(Hero hero) {
     var screens = [
-      DisciplineDialog(content, hero),
-      SpellDialog(content, hero),
+      DisciplineDialog(hero),
+      SpellDialog(hero),
     ];
 
     for (var i = 0; i < screens.length; i++) {
@@ -29,15 +29,13 @@ abstract class SkillDialog extends Screen<Input> {
 }
 
 abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
-  final Content _content;
   final Hero _hero;
   final List<T> _skills = [];
 
   int _selectedSkill = 0;
 
-  SkillTypeDialog(this._content, this._hero) : super._() {
-    for (var skill in _content.skills) {
-      if (!_hero.skills.isDiscovered(skill)) continue;
+  SkillTypeDialog(this._hero) : super._() {
+    for (var skill in _hero.skills.discovered) {
       if (skill is T) _skills.add(skill);
     }
   }
@@ -175,9 +173,10 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 }
 
 class DisciplineDialog extends SkillTypeDialog<Discipline> {
-  DisciplineDialog(Content content, Hero hero) : super(content, hero);
+  DisciplineDialog(Hero hero) : super(hero);
 
   String get _name => "Disciplines";
+
   String get _rowSeparator => "──────────────────────────── ─── ────";
 
   void _renderSkillListHeader(Terminal terminal) {
@@ -186,7 +185,7 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
 
   void _renderSkillInList(
       Terminal terminal, int y, Color color, Discipline skill) {
-    var level = _skillSet[skill].toString().padLeft(3);
+    var level = _skillSet.level(skill).toString().padLeft(3);
     terminal.writeAt(31, y, level, color);
 
     var percent = skill.percentUntilNext(_hero);
@@ -195,13 +194,14 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
   }
 
   void _renderSkillDetails(Terminal terminal, Discipline skill) {
-    var level = _skillSet[skill];
+    var level = _skillSet.level(skill);
 
     terminal.writeAt(1, 8, "At current level $level:", UIHue.primary);
     if (level > 0) {
       _writeText(terminal, 3, 10, skill.levelDescription(level));
     } else {
-      terminal.writeAt(3, 10, "(You haven't trained this yet.)", UIHue.text);
+      terminal.writeAt(
+          3, 10, "(You haven't trained this yet.)", UIHue.disabled);
     }
 
     if (level < skill.maxLevel) {
@@ -210,30 +210,30 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     }
 
     terminal.writeAt(1, 30, "Level:", UIHue.secondary);
-    terminal.writeAt(10, 30, level.toString().padLeft(2), UIHue.text);
-    Draw.meter(terminal, 19, 30, 20, level, skill.maxLevel, brickRed, maroon);
+    terminal.writeAt(9, 30, level.toString().padLeft(4), UIHue.text);
+    Draw.meter(terminal, 14, 30, 25, level, skill.maxLevel, brickRed, maroon);
 
     terminal.writeAt(1, 32, "Next:", UIHue.secondary);
     var percent = skill.percentUntilNext(_hero);
     if (percent != null) {
-      var points = skill.trained(_hero.lore);
+      var points = _hero.skills.points(skill);
       var current = skill.trainingNeeded(_hero.heroClass, level);
       var next = skill.trainingNeeded(_hero.heroClass, level + 1);
-      terminal.writeAt(7, 32, next.toString().padLeft(5), UIHue.text);
-      terminal.writeAt(13, 32, "($percent%)".padLeft(5), UIHue.text);
-      Draw.meter(terminal, 19, 32, 20, points - current, next - current,
+      terminal.writeAt(9, 32, "$percent%".padLeft(4), UIHue.text);
+      Draw.meter(terminal, 14, 32, 25, points - current, next - current,
           brickRed, maroon);
     } else {
-      terminal.writeAt(10, 32, "(at max)", UIHue.text);
+      terminal.writeAt(14, 32, "(At max level.)", UIHue.disabled);
     }
   }
 }
 
 class SpellDialog extends SkillTypeDialog<Spell> {
   String get _name => "Spells";
+
   String get _rowSeparator => "──────────────────────────────── ────";
 
-  SpellDialog(Content content, Hero hero) : super(content, hero);
+  SpellDialog(Hero hero) : super(hero);
 
   void _renderSkillListHeader(Terminal terminal) {
     terminal.writeAt(35, 1, "Comp", UIHue.helpText);

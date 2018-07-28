@@ -66,6 +66,7 @@ class OpenChestAction extends _OpenTileAction {
   TileType get _openTile => Tiles.openChest;
 
   // TODO: Drop more than one item sometimes.
+  // TODO: Better drop. Drops way too many skulls at low levels.
   String get _drop => "item";
 
   int get _minDepthEmptyChance => 20;

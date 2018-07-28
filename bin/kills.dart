@@ -38,7 +38,7 @@ main() {
     exp += averages[depth];
     kills++;
     totalKills++;
-    while (level < Hero.maxLevel && exp >= calculateLevelCost(level + 1)) {
+    while (level < Hero.maxLevel && exp >= experienceLevelCost(level + 1)) {
       level++;
       print("killed $kills more to reach $level");
       kills = 0;

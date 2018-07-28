@@ -82,6 +82,14 @@ void gloves() {
     ..tag("equipment/armor/gloves")
     ..toss(damage: 5, range: 4, breakage: 20);
   // TODO: Encumbrance.
+  // Here's an idea to get mages wearing light armor and no gloves: Give weapons
+  // and usable items the equivalent of heft for agility. (Need a name.) If
+  // their agility is too low, the weapon gets a negative strike bonus. But
+  // also *affix power is reduced*. Thus, if a mage is too encumbered by gloves,
+  // their wand no longer makes spells more powerful.
+  //
+  // Could probably do the same for heft. A battleaxe of fire doesn't do a lot
+  // of fire damage if you can't lift it.
   item("Pair[s] of Gloves", 4, 0.5, sandal)
     ..armor(2)
     ..destroy(Elements.fire, chance: 7, fuel: 2);

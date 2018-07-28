@@ -132,7 +132,7 @@ class GameScreen extends Screen<Input> {
         ui.push(SelectSkillDialog(game));
         break;
       case Input.editSkills:
-        ui.push(SkillDialog(game.content, game.hero));
+        ui.push(SkillDialog(game.hero));
         break;
       case Input.heroInfo:
         ui.push(HeroInfoDialog(game.hero));
@@ -262,7 +262,7 @@ class GameScreen extends Screen<Input> {
         } else if (_lastSkill is ActionSkill) {
           var actionSkill = _lastSkill as ActionSkill;
           game.hero.setNextAction(
-              actionSkill.getAction(game, game.hero.skills[actionSkill]));
+              actionSkill.getAction(game, game.hero.skills.level(actionSkill)));
         } else {
           game.log.error("No skill selected.");
           dirty();
@@ -352,8 +352,8 @@ class GameScreen extends Screen<Input> {
 
   void _fireAtTarget(TargetSkill skill) {
     _lastSkill = skill;
-    game.hero.setNextAction(
-        skill.getTargetAction(game, game.hero.skills[skill], currentTarget));
+    game.hero.setNextAction(skill.getTargetAction(
+        game, game.hero.skills.level(skill), currentTarget));
   }
 
   void _fireTowards(Direction dir) {
@@ -363,7 +363,7 @@ class GameScreen extends Screen<Input> {
     if (_lastSkill is DirectionSkill) {
       var directionSkill = _lastSkill as DirectionSkill;
       game.hero.setNextAction(directionSkill.getDirectionAction(
-          game, game.hero.skills[directionSkill], dir));
+          game, game.hero.skills.level(directionSkill), dir));
     } else if (_lastSkill is TargetSkill) {
       var targetSkill = _lastSkill as TargetSkill;
       var pos = game.hero.pos + dir;
@@ -395,7 +395,7 @@ class GameScreen extends Screen<Input> {
 
       if (currentTarget != null) {
         game.hero.setNextAction(targetSkill.getTargetAction(
-            game, game.hero.skills[targetSkill], currentTarget));
+            game, game.hero.skills.level(targetSkill), currentTarget));
       } else {
         var tile = game.stage[game.hero.pos + dir].type.name;
         game.log.error("There is a ${tile} in the way.");
@@ -437,8 +437,8 @@ class GameScreen extends Screen<Input> {
         }));
       } else if (result is ActionSkill) {
         _lastSkill = result;
-        game.hero
-            .setNextAction(result.getAction(game, game.hero.skills[result]));
+        game.hero.setNextAction(
+            result.getAction(game, game.hero.skills.level(result)));
       }
     }
   }
@@ -745,8 +745,9 @@ class GameScreen extends Screen<Input> {
     _drawStat(terminal, 6, 'Level', hero.level, cerulean);
     if (hero.level < Hero.maxLevel) {
       var levelPercent = 100 *
-          (hero.experience - calculateLevelCost(hero.level)) ~/
-          (calculateLevelCost(hero.level + 1) - calculateLevelCost(hero.level));
+          (hero.experience - experienceLevelCost(hero.level)) ~/
+          (experienceLevelCost(hero.level + 1) -
+              experienceLevelCost(hero.level));
       terminal.writeAt(15, 6, '$levelPercent%', ultramarine);
     }
 

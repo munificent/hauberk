@@ -44,6 +44,7 @@ abstract class Actor implements Noun {
   Vec _pos;
 
   Vec get pos => _pos;
+
   void set pos(Vec value) {
     if (value != _pos) {
       changePosition(_pos, value);
@@ -52,17 +53,21 @@ abstract class Actor implements Noun {
   }
 
   int get x => pos.x;
+
   void set x(int value) {
     pos = Vec(value, y);
   }
 
   int get y => pos.y;
+
   void set y(int value) {
     pos = Vec(x, value);
   }
 
   int _health;
+
   int get health => _health;
+
   void set health(int value) {
     _health = value.clamp(0, maxHealth);
   }
@@ -78,6 +83,7 @@ abstract class Actor implements Noun {
   Object get appearance;
 
   String get nounText;
+
   Pronoun get pronoun => Pronoun.it;
 
   bool get isAlive => health > 0;
@@ -278,6 +284,7 @@ abstract class Actor implements Noun {
   ///
   /// Takes into account that actors do not want to step into burning tiles.
   bool willEnter(Vec pos) => canEnter(pos) && game.stage[pos].substance == 0;
+
   // TODO: Take resistance and immunities into account.
 
   void finishTurn(Action action) {

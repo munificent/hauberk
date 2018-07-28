@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
-import '../action/attack.dart';
 import '../core/actor.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
@@ -34,7 +33,7 @@ class HeroSave {
   final RaceStats race;
   final HeroClass heroClass;
 
-  int get level => calculateLevel(experienceCents);
+  int get level => experienceLevel(experienceCents);
 
   Inventory inventory = Inventory(Option.inventoryCapacity);
   Equipment equipment = Equipment();
@@ -226,7 +225,9 @@ class Hero extends Actor {
       total += item.armor;
     }
 
-    // TODO: Apply skills.
+    for (var skill in skills.acquired) {
+      total += skill.modifyArmor(this, skills.level(skill));
+    }
 
     return total;
   }
@@ -291,7 +292,7 @@ class Hero extends Actor {
   // TODO: Shields, temporary bonuses, etc.
   Iterable<Defense> onGetDefenses() sync* {
     for (var skill in skills.acquired) {
-      var defense = skill.getDefense(this, skills[skill]);
+      var defense = skill.getDefense(this, skills.level(skill));
       if (defense != null) yield defense;
     }
   }
@@ -315,7 +316,7 @@ class Hero extends Actor {
     hit.addStrike(agility.strikeBonus);
 
     for (var skill in skills.acquired) {
-      skill.modifyAttack(this, defender as Monster, hit, skills[skill]);
+      skill.modifyAttack(this, defender as Monster, hit, skills.level(skill));
     }
 
     return hit;
@@ -376,36 +377,28 @@ class Hero extends Actor {
     // would still break their attention. Maybe lose a fraction of the focus?
     // TODO: Scale based on will.
     focus -= intellect.maxFocus * damage * 2 ~/ maxHealth;
+
+    // TODO: Would be better to do skills.discovered, but right now this also
+    // discovers BattleHardening.
+    for (var skill in game.content.skills) {
+      skill.takeDamage(this, damage);
+    }
   }
 
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
 
     // It only counts if the hero's seen the monster at least once.
-    if (_seenMonsters.contains(monster)) {
-      lore.slay(monster.breed);
-      _experienceCents += monster.experienceCents;
-      refreshProperties();
+    if (!_seenMonsters.contains(monster)) return;
+
+    lore.slay(monster.breed);
+
+    for (var skill in skills.discovered) {
+      skill.killMonster(this, action, monster);
     }
 
-    // If the hero killed a monster with a weapon, update the kill count.
-    if (action is AttackAction) {
-      var weapon = equipment.weapon;
-      if (weapon != null) {
-        var type = weapon.type.weaponType;
-        lore.killUsing(type);
-
-        // See if any skill leveled up.
-        for (var skill in game.content.skills) {
-          var level = skill.calculateLevel(this);
-          if (skills.gain(skill, level)) {
-            game.log.gain(skill.gainMessage(level), this);
-          }
-        }
-      }
-      // TODO: Track unarmed hits?
-      // TODO: What about ranged weapon attacks (bows)?
-    }
+    _experienceCents += monster.experienceCents;
+    refreshProperties();
   }
 
   void onDied(Noun attackNoun) {
@@ -497,7 +490,7 @@ class Hero extends Actor {
   /// updated matters. Properties must be updated after the properties they
   /// depend on.
   void refreshProperties() {
-    var level = calculateLevel(_experienceCents);
+    var level = experienceLevel(_experienceCents);
     _level.update(level, (previous) {
       game.log.gain('You have reached level $level.');
       // TODO: Different message if level went down.
@@ -519,21 +512,28 @@ class Hero extends Actor {
       }
     });
 
-    // Show any learned skills. (Gaining intellect learns spells.)
-    for (var skill in skills.discovered) {
-      var level = skill.calculateLevel(this);
-      if (skills.gain(skill, level)) {
-        game.log.gain(skill.gainMessage(level), this);
-      }
+    // See if any skills changed. (Gaining intellect learns spells.)
+    _refreshSkills();
+  }
+
+  /// See if any known skills have leveled up.
+  void _refreshSkills() {
+    skills.discovered.forEach(refreshSkill);
+  }
+
+  void refreshSkill(Skill skill) {
+    var level = skill.calculateLevel(this);
+    if (skills.gain(skill, level)) {
+      game.log.gain(skill.gainMessage(level), this);
     }
   }
 }
 
-int calculateLevel(int experienceCents) {
+int experienceLevel(int experienceCents) {
   var experience = experienceCents ~/ 100;
 
   for (var level = 1; level <= Hero.maxLevel; level++) {
-    if (experience < calculateLevelCost(level)) return level - 1;
+    if (experience < experienceLevelCost(level)) return level - 1;
   }
 
   return Hero.maxLevel;
@@ -541,7 +541,7 @@ int calculateLevel(int experienceCents) {
 
 /// Returns how much experience is needed to reach [level] or `null` if [level]
 /// is greater than the maximum level.
-int calculateLevelCost(int level) {
+int experienceLevelCost(int level) {
   if (level > Hero.maxLevel) return null;
   return math.pow(level - 1, 3).toInt() * 200;
 }

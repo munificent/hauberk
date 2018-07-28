@@ -4,6 +4,7 @@ import 'skill/discipline/mastery.dart';
 import 'skill/skills.dart';
 
 class Classes {
+  // TODO: Tune battle-hardening.
   // TODO: Better starting items?
   static final adventurer = _class("Adventurer", "TODO", parseDrop("item", 1),
       masteries: 0.5, spells: 0.2);
