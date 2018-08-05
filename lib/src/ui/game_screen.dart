@@ -351,6 +351,12 @@ class GameScreen extends Screen<Input> {
   }
 
   void _fireAtTarget(TargetSkill skill) {
+    if (currentTarget == game.hero.pos && !skill.canTargetSelf) {
+      game.log.error("You can't target yourself.");
+      dirty();
+      return;
+    }
+
     _lastSkill = skill;
     game.hero.setNextAction(skill.getTargetAction(
         game, game.hero.skills.level(skill), currentTarget));

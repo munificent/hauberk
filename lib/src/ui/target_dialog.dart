@@ -23,6 +23,8 @@ class TargetDialog extends Screen<Input> {
 
   bool get isTransparent => true;
 
+  // TODO: Prevent targeting self if skill doesn't allow it?
+
   TargetDialog(this._gameScreen, this._range, this._onSelect) {
     // Find the targetable monsters.
     var hero = _gameScreen.game.hero;

@@ -8,7 +8,7 @@ import '../../action/flow.dart';
 import '../../action/ray.dart';
 import '../../elements.dart';
 
-class Icicle extends Spell implements TargetSkill {
+class Icicle extends Spell with TargetSkill {
   String get name => "Icicle";
   String get description => "Launches a spear-like icicle.";
   int get baseComplexity => 10;
@@ -23,7 +23,7 @@ class Icicle extends Spell implements TargetSkill {
   }
 }
 
-class BrilliantBeam extends Spell implements TargetSkill {
+class BrilliantBeam extends Spell with TargetSkill {
   String get name => "Brilliant Beam";
   String get description => "Emits a blinding beam of radiance.";
   int get baseComplexity => 14;
@@ -53,7 +53,7 @@ class Windstorm extends Spell implements ActionSkill {
   }
 }
 
-class FireBarrier extends Spell implements TargetSkill {
+class FireBarrier extends Spell with TargetSkill {
   String get name => "Fire Barrier";
   String get description => "Creates a wall of fire.";
   int get baseComplexity => 30;

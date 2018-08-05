@@ -14,8 +14,9 @@ abstract class LosAction extends Action {
 
   bool get isImmediate => false;
 
-  // TODO: This creates an infinite loop if the target is the actor's position.
-  LosAction(this._target);
+  LosAction(this._target) {
+    assert(actor.pos != _target, "Can't target actor.");
+  }
 
   ActionResult onPerform() {
     if (_los == null) {

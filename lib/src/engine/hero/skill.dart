@@ -86,12 +86,14 @@ abstract class UsableSkill implements Skill {
 }
 
 /// A skill that can be directly used to perform an action.
-abstract class ActionSkill extends UsableSkill {
+abstract class ActionSkill implements UsableSkill {
   Action getAction(Game game, int level);
 }
 
 /// A skill that requires a target position to perform.
-abstract class TargetSkill extends UsableSkill {
+abstract class TargetSkill implements UsableSkill {
+  bool get canTargetSelf => false;
+
   /// The maximum range of the target from the hero.
   int getRange(Game game);
 
@@ -101,7 +103,7 @@ abstract class TargetSkill extends UsableSkill {
 }
 
 /// A skill that requires a direction to perform.
-abstract class DirectionSkill extends UsableSkill {
+abstract class DirectionSkill implements UsableSkill {
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].
   Action getDirectionAction(Game game, int level, Direction dir);

@@ -4,7 +4,7 @@ import '../../../engine.dart';
 import '../../action/bolt.dart';
 import 'mastery.dart';
 
-class WhipMastery extends MasteryDiscipline implements TargetSkill {
+class WhipMastery extends MasteryDiscipline with TargetSkill {
   // TODO: Tune.
   static double _whipScale(int level) => lerpDouble(level, 1, 10, 0.3, 1.0);
 
