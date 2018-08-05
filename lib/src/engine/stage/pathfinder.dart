@@ -44,7 +44,7 @@ abstract class Pathfinder<T> {
     var paths = BucketQueue<Path>();
 
     // The set of tiles we have completely explored already.
-    Array2D<bool> closedArray = Array2D<bool>(stage.width, stage.height, false);
+    var explored = Set<Vec>();
 
     var startPath = Path(Direction.none, start, 0, 0);
     paths.add(startPath, priority(startPath, end));
@@ -66,17 +66,16 @@ abstract class Pathfinder<T> {
       // previously queued item.
       //
       // See: https://www.redblobgames.com/pathfinding/a-star/implementation.html#algorithm
-      if (closedArray[path.pos]) continue;
-      closedArray[path.pos] = true;
+      if (explored.add(path.pos)) continue;
 
       var result = processStep(path);
       if (result != null) return result;
 
-      // Find the starting paths the monster can take.
+      // Find the steps we can take.
       for (var dir in Direction.all) {
         var neighbor = path.pos + dir;
 
-        if (closedArray[neighbor]) continue;
+        if (explored.contains(neighbor)) continue;
 
         var cost = stepCost(neighbor, stage[neighbor]);
         if (cost == null) continue;

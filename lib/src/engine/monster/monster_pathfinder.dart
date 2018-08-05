@@ -119,5 +119,11 @@ class MonsterPathfinder extends Pathfinder<Direction> {
   /// There's no path to the goal so, just pick the path that gets nearest to
   /// it and hope for the best. (Maybe someone will open a door later or
   /// something.)
-  Direction unreachableGoal() => _nearest.startDirection;
+  Direction unreachableGoal() {
+    // If the monster was totally blocked in, there is no path.
+    if (_nearest == null) return null;
+
+    // Take the first step along the best path.
+    return _nearest.startDirection;
+  }
 }

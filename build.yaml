@@ -1,3 +1,4 @@
+# Don't minify so we get somewhat more useful stack traces on crashes.
 targets:
   $default:
     builders:
