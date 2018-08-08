@@ -14,9 +14,7 @@ abstract class LosAction extends Action {
 
   bool get isImmediate => false;
 
-  LosAction(this._target) {
-    assert(actor.pos != _target, "Can't target actor.");
-  }
+  LosAction(this._target);
 
   ActionResult onPerform() {
     if (_los == null) {

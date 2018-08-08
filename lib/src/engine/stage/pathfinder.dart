@@ -66,7 +66,7 @@ abstract class Pathfinder<T> {
       // previously queued item.
       //
       // See: https://www.redblobgames.com/pathfinding/a-star/implementation.html#algorithm
-      if (explored.add(path.pos)) continue;
+      if (!explored.add(path.pos)) continue;
 
       var result = processStep(path);
       if (result != null) return result;

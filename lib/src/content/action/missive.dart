@@ -6,7 +6,7 @@ enum Missive { clumsy, insult }
 
 final _messages = {
   Missive.clumsy: [
-    "{1} forget[s] what {1 his} was doing.",
+    "{1} forget[s] what {1 he} was doing.",
     "{1} lurch[es] around.",
     "{1} stumble[s] awkwardly.",
     "{1} trip[s] over {1 his} own feet!",
