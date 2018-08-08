@@ -49,6 +49,8 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
     var weapon = hero.equipment.weapon;
     if (weapon == null) return;
 
+    if (weapon.type.weaponType != weaponType) return;
+
     hero.skills.earnPoints(this, (monster.experienceCents / 1000).ceil());
     hero.refreshSkill(this);
   }

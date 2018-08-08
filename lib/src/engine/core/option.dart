@@ -12,7 +12,7 @@ class Option {
   /// The amount of gold a new hero starts with.
   static const heroGoldStart = 60;
 
-  static const heroMaxStomach = 600;
+  static const heroMaxStomach = 400;
 
   /// The maximum number of items the hero's [Inventory] can contain.
   static const inventoryCapacity = 20;

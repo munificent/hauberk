@@ -410,7 +410,10 @@ class Hero extends Actor {
     _lastNoise = action.noise;
 
     // Always digesting.
-    stomach = math.max(0, stomach - 1);
+    if (stomach > 0) {
+      stomach--;
+      if (stomach == 0) game.log.message("You are getting hungry.");
+    }
 
     // TODO: Passive skills?
   }
@@ -433,6 +436,11 @@ class Hero extends Actor {
     if (poison.isActive) {
       game.log
           .error("You cannot rest while poison courses through your veins!");
+      return false;
+    }
+
+    if (health == maxHealth) {
+      game.log.message("You are fully rested.");
       return false;
     }
 
@@ -543,5 +551,5 @@ int experienceLevel(int experienceCents) {
 /// is greater than the maximum level.
 int experienceLevelCost(int level) {
   if (level > Hero.maxLevel) return null;
-  return math.pow(level - 1, 3).toInt() * 200;
+  return math.pow(level - 1, 3).toInt() * 100;
 }

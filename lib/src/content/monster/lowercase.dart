@@ -26,20 +26,20 @@ void arachnids() {
 }
 
 void bats() {
-  family("b")
+  family("b", speed: 1)
     ..groups("animal")
     ..sense(see: 2, hear: 8)
     ..fly()
     ..placeIn("room", "passage")
     ..preferOpen();
-  breed("brown bat", 1, persimmon, 3, frequency: 0.5, speed: 1, meander: 50)
+  breed("brown bat", 1, persimmon, 3, frequency: 0.5, meander: 50)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 4)
     ..attack("bite[s]", 3);
 
-  breed("giant bat", 4, garnet, 24, speed: 1, meander: 30).attack("bite[s]", 6);
+  breed("giant bat", 4, garnet, 24, meander: 30).attack("bite[s]", 6);
 
-  breed("cave bat", 6, gunsmoke, 30, speed: 2, meander: 40)
+  breed("cave bat", 6, gunsmoke, 30, meander: 40)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 5)
     ..attack("bite[s]", 6);

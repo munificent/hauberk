@@ -500,6 +500,8 @@ class GameScreen extends Screen<Input> {
       heroColor = cornflower;
     } else if (hero.health < hero.maxHealth / 2) {
       heroColor = salmon;
+    } else if (hero.stomach == 0) {
+      heroColor = sandal;
     }
 
     var visibleMonsters = <Monster>[];
@@ -746,7 +748,8 @@ class GameScreen extends Screen<Input> {
     _drawStat(
         terminal, 4, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
     terminal.writeAt(0, 5, 'Food', UIHue.helpText);
-    terminal.writeAt(10, 5, hero.stomach.toString(), persimmon);
+    Draw.meter(terminal, 9, 5, 10, hero.stomach, Option.heroMaxStomach,
+        persimmon, garnet);
 
     _drawStat(terminal, 6, 'Level', hero.level, cerulean);
     if (hero.level < Hero.maxLevel) {
