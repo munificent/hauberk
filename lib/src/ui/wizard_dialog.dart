@@ -23,6 +23,7 @@ class WizardDialog extends Screen<Input> {
     _menuItems["Toggle Show All Monsters"] = _toggleShowAllMonsters;
     _menuItems["Toggle Show Hero Volume"] = _toggleShowHeroVolume;
     _menuItems["Drop Item"] = _dropItem;
+    _menuItems["Gain Level"] = _gainLevel;
   }
 
   bool handleInput(Input input) {
@@ -116,6 +117,17 @@ class WizardDialog extends Screen<Input> {
 
   void _dropItem() {
     ui.push(WizardDropDialog(_game));
+  }
+
+  void _gainLevel() {
+    if (_game.hero.level == Hero.maxLevel) {
+      _game.log.cheat("Already at max level.");
+    } else {
+      _game.hero.experience = experienceLevelCost(_game.hero.level + 1);
+      _game.hero.refreshProperties();
+    }
+
+    dirty();
   }
 }
 

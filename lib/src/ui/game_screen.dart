@@ -282,6 +282,9 @@ class GameScreen extends Screen<Input> {
       case Input.wizard:
         if (Debug.enabled) {
           ui.push(WizardDialog(game));
+        } else {
+          game.log.cheat("No cheating in non-debug builds. Cheater.");
+          dirty();
         }
         break;
     }

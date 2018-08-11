@@ -214,6 +214,11 @@ class Hero extends Actor {
   }
 
   int get experience => _experienceCents ~/ 100;
+  // TODO: Using this is a little sketchy since accessing experience
+  // trunctates. If you `experience += ...`, you are discarding some.
+  void set experience(int value) {
+    _experienceCents = value * 100;
+  }
 
   /// The hero's experience level.
   int get level => _level.value;

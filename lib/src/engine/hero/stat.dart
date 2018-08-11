@@ -41,6 +41,8 @@ class Property<T extends num> {
 }
 
 class Stat {
+  static const max = 60;
+
   static const strength = Stat("Strength");
   static const agility = Stat("Agility");
   static const fortitude = Stat("Fortitude");
@@ -77,7 +79,7 @@ abstract class StatBase extends Property<int> {
   }
 
   void refresh() {
-    var newValue = _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, 60);
+    var newValue = _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
     update(newValue, (previous) {
       var gain = newValue - previous;
       if (gain > 0) {
@@ -98,7 +100,13 @@ class Strength extends StatBase {
 
   String get _loseAdjective => "weak";
 
-  int modify(int base) => (base - _hero.weight).clamp(1, 60);
+  int modify(int base) {
+    // Gracefully handle debug and test code that uses this without binding a
+    // hero.
+    if (_hero == null) return base;
+
+    return (base - _hero.weight).clamp(1, Stat.max);
+  }
 
   double get tossRangeScale {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
@@ -153,7 +161,7 @@ class Fortitude extends StatBase {
 
   String get _loseAdjective => "sickly";
 
-  int get maxHealth => (math.pow(value, 1.4) - 0.5 * value + 30).toInt();
+  int get maxHealth => (math.pow(value, 1.4) + 1.23 * value + 18).toInt();
 }
 
 class Intellect extends StatBase {

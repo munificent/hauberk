@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
@@ -16,7 +18,9 @@ class SelectDepthScreen extends Screen<Input> {
   final Storage storage;
   int selectedDepth = 1;
 
-  SelectDepthScreen(this.content, this.save, this.storage);
+  SelectDepthScreen(this.content, this.save, this.storage) {
+    selectedDepth = math.min(Option.maxDepth, save.maxDepth + 1);
+  }
 
   bool handleInput(Input input) {
     switch (input) {
