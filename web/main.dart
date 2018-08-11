@@ -8,6 +8,7 @@ import 'package:piecemeal/piecemeal.dart';
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/debug.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:hauberk/src/ui/game_screen.dart';
 import 'package:hauberk/src/ui/input.dart';
 import 'package:hauberk/src/ui/main_menu_screen.dart';
 
@@ -49,7 +50,7 @@ addTerminal(String name, int w, [int h]) {
   if (Debug.enabled) {
     // Clicking a monster toggles its debug pane.
     element.onClick.listen((event) {
-      var gameScreen = Debug.gameScreen;
+      var gameScreen = Debug.gameScreen as GameScreen;
       if (gameScreen == null) return;
 
       var pixel = Vec(event.offset.x.toInt(), event.offset.y.toInt());
@@ -58,7 +59,7 @@ addTerminal(String name, int w, [int h]) {
       var absolute = pos + gameScreen.cameraBounds.topLeft;
       if (!gameScreen.cameraBounds.contains(absolute)) return;
 
-      var actor = Debug.gameScreen.game.stage.actorAt(absolute);
+      var actor = gameScreen.game.stage.actorAt(absolute);
       if (actor is Monster) {
         if (_debugMonsters.contains(actor)) {
           _debugMonsters.remove(actor);
@@ -244,7 +245,7 @@ void _refreshDebugBoxes() async {
     html.document.body.children.remove(debugBox);
   }
 
-  var gameScreen = Debug.gameScreen;
+  var gameScreen = Debug.gameScreen as GameScreen;
 
   _debugMonsters.removeWhere((monster) => !monster.isAlive);
   for (var monster in _debugMonsters) {

@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:math' as math;
 
 import 'engine.dart';
-import 'ui/game_screen.dart';
 
 /// A class for storing debugging information.
 ///
@@ -20,10 +19,12 @@ class Debug {
   static final Map<Monster, _MonsterLog> _monsters = {};
 
   /// The current game screen.
-  static GameScreen _gameScreen;
-  static GameScreen get gameScreen => _gameScreen;
+  ///
+  /// Typed as Object so that this library isn't coupled to the UI.
+  static Object _gameScreen;
+  static Object get gameScreen => _gameScreen;
 
-  static void bindGameScreen(GameScreen screen) {
+  static void bindGameScreen(Object screen) {
     _gameScreen = screen;
     _monsters.clear();
   }
