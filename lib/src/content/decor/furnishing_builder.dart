@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../tiles.dart';
 import 'decor.dart';
+import 'furnishing.dart';
 
 enum Symmetry {
   none,

@@ -1,4 +1,4 @@
-import 'builder.dart';
+import 'furnishing_builder.dart';
 
 void aquatic() {
   // Grass.
