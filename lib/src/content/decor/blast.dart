@@ -8,6 +8,7 @@ import 'decor.dart';
 
 class Blast extends Decor {
   static final _tileMap = {
+    Tiles.floor: [Tiles.burntFloor, Tiles.burntFloor2],
     Tiles.tableTopLeft: [
       Tiles.tableTopLeft,
       Tiles.burntFloor,
