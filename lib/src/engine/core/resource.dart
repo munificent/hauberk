@@ -27,7 +27,7 @@ class ResourceSet<T> {
     if (tagNames != null && tagNames != "") {
       for (var tagName in tagNames.split(" ")) {
         var tag = _tags[tagName];
-        if (tag == null) throw ArgumentError('Unknown tag "$name".');
+        if (tag == null) throw ArgumentError('Unknown tag "$tagName".');
         resource._tags.add(tag);
       }
     }

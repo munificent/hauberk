@@ -83,7 +83,6 @@ final _rotate = [
 void category(double frequency, {String themes}) {
   _frequency = frequency;
   _themes = themes;
-  Decor.all.defineTags(_themes);
 }
 
 void furnishing(Symmetry symmetry, String applied, String template) {
@@ -215,6 +214,6 @@ void _singleFurnishing(String applied, List<String> lines) {
     }
   }
 
-  var furnishing = Decor(cells);
+  var furnishing = Furnishing(cells);
   Decor.all.addUnnamed(furnishing, 1, _frequency, _themes);
 }

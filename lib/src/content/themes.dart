@@ -16,5 +16,6 @@ class Themes {
     resources.defineTags("${root}room/food/pantry");
     resources.defineTags("${root}room/chamber");
     resources.defineTags("${root}room/laboratory");
+    resources.defineTags("${root}room/workshop");
   }
 }

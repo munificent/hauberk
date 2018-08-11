@@ -121,11 +121,11 @@ class PassagePlace extends Place {
 
 // TODO: Define different ones of this to have different styles.
 class RoomStyle {
-  final int passagePercent = 90;
   final int passageTurnPercent = 30;
   final int passageBranchPercent = 40;
   final int passageStopPercent = 10;
   final int passageMinLength = 4;
+  final int passageTries = 20;
 
   /// A passage that connects to an existing place, by definition, adds a cycle
   /// to the dungeon. We don't want to do that if there is always a similar
@@ -137,7 +137,7 @@ class RoomStyle {
   /// this scale. Making this smaller adds more cycles.
   final int passageShortcutScale = 10;
 
-  final int junctionMaxTries = 50;
+  final int junctionMaxTries = 10;
 }
 
 /// A biome that generates a graph of connected rooms and passages.
@@ -175,10 +175,10 @@ class RoomsBiome extends Biome {
   /// Attempts to place something at [junction]. Returns `true` if successful.
   bool _tryJunction(Junction junction) {
     // Try a passage.
-    if (RoomTypes.allowsPassage(junction.theme) &&
-        rng.percent(_style.passagePercent) &&
-        _tryPlacePassageRoom(junction)) {
-      return true;
+    for (var i = 0; i < _style.passageTries; i++) {
+      if (_tryPlacePassageRoom(junction)) {
+        return true;
+      }
     }
 
     // See if there is another biome on the other side.
@@ -208,11 +208,9 @@ class RoomsBiome extends Biome {
 
   /// Try to make a meandering passage starting at [junction] that ends in a
   /// new room or connects to an existing junction.
+  ///
+  /// Propagates the theme of the room this passage is attached to.
   bool _tryPlacePassageRoom(Junction junction) {
-    // TODO: Instead of always using "passage" as the room type, could either
-    // propagate the parent type, or define different flavors of passage to
-    // control which kinds of rooms allow corridors between them.
-
     // Make a meandering passage.
     var pos = junction.position;
     var dir = junction.direction;
@@ -222,7 +220,7 @@ class RoomsBiome extends Biome {
 
     maybeBranch(Direction dir) {
       if (rng.percent(_style.passageBranchPercent)) {
-        newJunctions.add(Junction("passage", dir, pos + dir));
+        newJunctions.add(Junction(junction.theme, dir, pos + dir));
       }
     }
 
@@ -307,7 +305,7 @@ class RoomsBiome extends Biome {
     // If we didn't connect to an existing junction, add a new room at the end
     // of the passage. We require this to pass so that we avoid dead end
     // passages.
-    var endJunction = Junction("passage", dir, pos);
+    var endJunction = Junction(junction.theme, dir, pos);
     if (!_tryPlaceRoom(endJunction, passage)) return false;
 
     _placePassage(pos, junction, passage, newJunctions);
@@ -542,11 +540,6 @@ class Room {
 class RoomTypes {
   static final ResourceSet<RoomType> _resources = ResourceSet();
 
-  static bool allowsPassage(String type) =>
-      type == "nature" ||
-      type == "passage" ||
-      _resources.hasTag(type, "passage");
-
   static void initialize() {
     if (_resources.isNotEmpty) return;
 
@@ -559,25 +552,27 @@ class RoomTypes {
     add(
         RectangleRoom("great-hall",
             spread: true, minWide: 8, maxWide: 16, minNarrow: 6, maxNarrow: 10),
-        from: "chamber hall nature passage starting");
+        from: "chamber hall nature starting");
     add(
         RectangleRoom("kitchen",
             minWide: 4, maxWide: 7, minNarrow: 6, maxNarrow: 12),
         from: "great-hall");
-    add(RectangleRoom("larder", maxWide: 6, maxNarrow: 5), from: "kitchen");
+    add(RectangleRoom("larder", maxWide: 6, maxNarrow: 5),
+        frequency: 0.2, from: "kitchen");
     add(RectangleRoom("pantry", maxWide: 5, maxNarrow: 4),
-        from: "kitchen larder storeroom");
+        frequency: 0.1, from: "kitchen larder storeroom");
 
     add(RectangleRoom("chamber", minWide: 4, maxWide: 8, maxNarrow: 7),
-        from: "chamber great-hall hall nature passage");
+        from: "chamber great-hall hall nature");
 
     add(RectangleRoom("closet", maxWide: 5, maxNarrow: 4),
+        frequency: 0.2,
         from: "chamber laboratory storeroom");
 
     add(
         RectangleRoom("laboratory",
             spread: true, minWide: 4, maxWide: 10, maxNarrow: 8),
-        from: "hall laboratory passage");
+        from: "hall laboratory");
 
     add(
         RectangleRoom("storeroom",
