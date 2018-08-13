@@ -664,6 +664,8 @@ class GameScreen extends Screen<Input> {
           // We ramp the brightness up to the maximum floor lighting.
           var light = (tile.illumination / Lighting.floorMax).clamp(0, 1);
 
+          // TODO: Need to tweak this so it's clearer which tiles are visible
+          // versus just dark.
           fore = darkFore.blend(lightFore, light);
           back = darkBack.blend(lightBack, light);
 

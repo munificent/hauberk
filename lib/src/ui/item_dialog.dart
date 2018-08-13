@@ -1,13 +1,11 @@
-import 'dart:math' as math;
-
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
-import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
+import 'item_view.dart';
 import 'target_dialog.dart';
 
 /// Modal dialog for letting the user perform an [Action] on an [Item]
@@ -133,30 +131,17 @@ class ItemDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    if (_getItems().slots.isNotEmpty) {
-      drawItems(terminal, 0, _getItems(),
-          canSelect: _canSelect, capitals: _shiftDown, inspected: _inspected);
-    } else {
-      String message;
-      switch (_location) {
-        case ItemLocation.inventory:
-          message = "(Your backpack is empty.)";
-          break;
+    terminal.fill(0, 0, 40, 2);
 
-        case ItemLocation.equipment:
-          assert(false, "Equipment list is never empty.");
-          break;
-
-        case ItemLocation.onGround:
-          message = "(There is nothing on the ground.)";
-          break;
-      }
-
-      terminal.writeAt(1, 2, message, UIHue.disabled);
-    }
+    drawItems(terminal, 0, _getItems(),
+        canSelect: _canSelect,
+        isDialog: true,
+        capitals: _shiftDown,
+        inspected: _inspected);
 
     if (_inspected != null) {
-      _renderInspected(terminal.rect(40, 0, 40, 20));
+      drawInspector(
+          terminal.rect(40, 0, 40, 20), _gameScreen.game.hero, _inspected);
     }
 
     if (_selectedItem == null) {
@@ -184,180 +169,6 @@ class ItemDialog extends Screen<Input> {
 
     terminal.writeAt(
         0, terminal.height - 1, '$select$helpText', UIHue.helpText);
-  }
-
-  void _renderInspected(Terminal terminal) {
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
-
-    terminal.drawGlyph(1, 0, _inspected.appearance as Glyph);
-    terminal.writeAt(3, 0, _inspected.nounText, UIHue.primary);
-
-    var hero = _gameScreen.game.hero;
-    var y = 2;
-
-    writeSection(String label) {
-      // Put a blank line between sections.
-      if (y != 2) y++;
-      terminal.writeAt(1, y, "$label:", UIHue.selection);
-      y++;
-    }
-
-    writeLabel(String label) {
-      terminal.writeAt(3, y, "$label:", UIHue.text);
-    }
-
-    // TODO: Mostly copied from hero_equipment_dialog. Unify.
-    writeScale(int x, int y, double scale) {
-      var string = scale.toStringAsFixed(1);
-
-      var xColor = UIHue.disabled;
-      var numberColor = UIHue.disabled;
-      if (scale > 1.0) {
-        xColor = sherwood;
-        numberColor = peaGreen;
-      } else if (scale < 1.0) {
-        xColor = maroon;
-        numberColor = brickRed;
-      }
-
-      terminal.writeAt(x, y, "x", xColor);
-      terminal.writeAt(x + 1, y, string, numberColor);
-    }
-
-    // TODO: Mostly copied from hero_equipment_dialog. Unify.
-    writeBonus(int x, int y, int bonus) {
-      var string = bonus.abs().toString();
-
-      if (bonus > 0) {
-        terminal.writeAt(x + 2 - string.length, y, "+", sherwood);
-        terminal.writeAt(x + 3 - string.length, y, string, peaGreen);
-      } else if (bonus < 0) {
-        terminal.writeAt(x + 2 - string.length, y, "-", maroon);
-        terminal.writeAt(x + 3 - string.length, y, string, brickRed);
-      } else {
-        terminal.writeAt(x + 2 - string.length, y, "+", UIHue.disabled);
-        terminal.writeAt(x + 3 - string.length, y, string, UIHue.disabled);
-      }
-    }
-
-    writeStat(String label, Object value) {
-      if (value == null) return;
-
-      writeLabel(label);
-      terminal.writeAt(16, y, value.toString(), UIHue.primary);
-      y++;
-    }
-
-    // TODO: Handle armor that gives attack bonuses even though the item
-    // itself has no attack.
-    if (_inspected.attack != null) {
-      writeSection("Attack");
-
-      writeLabel("Damage");
-      if (_inspected.element != Element.none) {
-        terminal.writeAt(13, y, _inspected.element.abbreviation,
-            elementColor(_inspected.element));
-      }
-
-      terminal.writeAt(16, y, _inspected.attack.damage.toString(), UIHue.text);
-      writeScale(20, y, _inspected.damageScale);
-      writeBonus(24, y, _inspected.damageBonus);
-      terminal.writeAt(28, y, "=", UIHue.secondary);
-
-      var damage = _inspected.attack.damage * _inspected.damageScale +
-          _inspected.damageBonus;
-      terminal.writeAt(30, y, damage.toStringAsFixed(2).padLeft(6), carrot);
-      y++;
-
-      if (_inspected.strikeBonus != 0) {
-        writeLabel("Strike");
-        writeBonus(16, y, _inspected.strikeBonus);
-        y++;
-      }
-
-      if (_inspected.attack.isRanged) {
-        writeStat("Range", _inspected.attack.range);
-      }
-
-      writeLabel("Heft");
-      var strongEnough = hero.strength.value >= _inspected.heft;
-      var color = strongEnough ? UIHue.primary : brickRed;
-      terminal.writeAt(16, y, _inspected.heft.toString(), color);
-      writeScale(20, y, hero.strength.heftScale(_inspected.heft));
-      y++;
-    }
-
-    if (_inspected.armor != 0) {
-      writeSection("Defense");
-      writeLabel("Armor");
-      terminal.writeAt(16, y, _inspected.baseArmor.toString(), UIHue.text);
-      writeBonus(20, y, _inspected.armorModifier);
-      terminal.writeAt(28, y, "=", UIHue.secondary);
-
-      var armor = _inspected.armor.toString().padLeft(6);
-      terminal.writeAt(30, y, armor, peaGreen);
-      y++;
-
-      writeStat("Weight", _inspected.weight);
-      // TODO: Encumbrance.
-    }
-
-    // TODO: Show spells for spellbooks.
-
-    writeSection("Resistances");
-    var x = 3;
-    for (var element in _gameScreen.game.content.elements) {
-      if (element == Element.none) continue;
-      var resistance = _inspected.resistance(element);
-      writeBonus(x - 1, y, resistance);
-      terminal.writeAt(x, y + 1, element.abbreviation,
-          resistance == 0 ? UIHue.disabled : elementColor(element));
-      x += 3;
-    }
-    y += 2;
-
-    // TODO: Show the stats from each affix.
-
-    var description = <String>[];
-
-    // TODO: General description.
-    // TODO: Equip slot.
-    // TODO: Use.
-
-    writeSection("Description");
-    if (_inspected.toss != null) {
-      var toss = _inspected.toss;
-
-      var element = "";
-      if (toss.attack.element != Element.none) {
-        element = " ${toss.attack.element.name}";
-      }
-
-      description.add("It can be thrown for ${toss.attack.damage}$element"
-          " damage up to range ${toss.attack.range}.");
-
-      if (toss.breakage != 0) {
-        description
-            .add("It has a ${toss.breakage}% chance of breaking when thrown.");
-      }
-
-      // TODO: Describe toss use.
-    }
-
-    if (_inspected.emanationLevel > 0) {
-      description.add("It emanates ${_inspected.emanationLevel} light.");
-    }
-
-    for (var element in _inspected.type.destroyChance.keys) {
-      description.add("It can be destroyed by ${element.name.toLowerCase()}.");
-    }
-
-    for (var line in Log.wordWrap(terminal.width - 4, description.join(" "))) {
-      terminal.writeAt(2, y, line, UIHue.text);
-      y++;
-    }
-
-    // TODO: Max stack size?
   }
 
   bool _canSelect(Item item) {
@@ -409,115 +220,6 @@ class ItemDialog extends Screen<Input> {
     var index = _command.allowedLocations.indexOf(_location);
     _location = _command
         .allowedLocations[(index + 1) % _command.allowedLocations.length];
-  }
-}
-
-/// Draws a collection of [items] on [terminal] at [x], [y].
-///
-/// This is used both on the [ItemScreen] and in game for things like using and
-/// dropping items.
-///
-/// Items can be drawn in one of three states:
-///
-/// * If [canSelect] is `null`, then item list is just being viewed and no
-///   items in particular are highlighted.
-/// * If [canSelect] returns `true`, the item is highlighted as being
-///   selectable.
-/// * If [canSelect] returns `false`, the item cannot be selected and is
-///   grayed out.
-///
-/// An item row looks like this:
-///               1         2         3         4
-///     01234567890123456789012345678901234567890123456789
-///     a) = a Glimmering War Hammer of Wo... »29 992,106
-void drawItems(Terminal terminal, int x, ItemCollection items,
-    {bool canSelect(Item item), bool capitals, Item inspected}) {
-  terminal = terminal.rect(x, 0, 40, terminal.height);
-
-  // TODO: Do full height on item screen.
-  // Draw a box for the contents.
-  var itemCount = items.slots.length;
-  var boxHeight = math.max(itemCount, 1) + 3;
-
-  Draw.frame(terminal, 0, 0, terminal.width, boxHeight);
-
-  terminal.writeAt(
-      terminal.width - items.name.length - 1, 0, items.name, UIHue.text);
-
-  capitals ??= false;
-  var letters =
-      capitals ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz";
-
-  var i = 0;
-  var letter = 0;
-  for (var item in items.slots) {
-    var y = i + 2;
-
-    // If there's no item in this equipment slot, show the slot name.
-    if (item == null) {
-      // Null items should only appear in equipment.
-      assert(items.slotTypes != null);
-
-      terminal.writeAt(1, y, "    (${items.slotTypes[i]})", UIHue.helpText);
-      letter++;
-      i++;
-      continue;
-    }
-
-    var borderColor = steelGray;
-    var letterColor = UIHue.secondary;
-    var textColor = UIHue.primary;
-    var enabled = true;
-
-    if (canSelect != null) {
-      if (canSelect(item)) {
-        borderColor = UIHue.secondary;
-        letterColor = UIHue.selection;
-        textColor = UIHue.primary;
-      } else {
-        borderColor = Color.black;
-        letterColor = Color.black;
-        textColor = UIHue.disabled;
-        enabled = false;
-      }
-    }
-
-    terminal.writeAt(1, y, " )", borderColor);
-    terminal.writeAt(1, y, letters[letter], letterColor);
-    letter++;
-
-    if (enabled) {
-      terminal.drawGlyph(3, y, item.appearance as Glyph);
-    }
-
-    terminal.writeAt(5, y, item.nounText, textColor);
-
-    drawStat(String symbol, Object stat, Color light, Color dark) {
-      var string = stat.toString();
-      terminal.writeAt(terminal.width - string.length - 2, y, symbol,
-          enabled ? dark : UIHue.disabled);
-      terminal.writeAt(terminal.width - string.length - 1, y, string,
-          enabled ? light : UIHue.disabled);
-    }
-
-    // TODO: Eventually need to handle equipment that gives both an armor and
-    // attack bonus.
-    if (item.attack != null) {
-      var hit = item.attack.createHit();
-      drawStat("»", hit.damageString, carrot, garnet);
-    } else if (item.armor != 0) {
-      drawStat("•", item.armor, peaGreen, sherwood);
-    }
-
-    if (item != null && item == inspected) {
-      terminal.drawChar(
-          2, y, CharCode.blackRightPointingPointer, UIHue.selection);
-      terminal.drawChar(terminal.width - 1, y,
-          CharCode.blackRightPointingPointer, UIHue.selection);
-    }
-
-    // TODO: Show heft and weight.
-    i++;
   }
 }
 

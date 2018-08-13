@@ -8,19 +8,27 @@ import 'item.dart';
 /// the [Hero] in their [Inventory] or [Equipment]. This enum describes which
 /// of those is the case.
 class ItemLocation {
-  static const onGround = ItemLocation("on ground");
-  static const inventory = ItemLocation("inventory");
-  static const equipment = ItemLocation("equipment");
+  static const onGround =
+      ItemLocation("On Ground", "There is nothing on the ground.");
+  static const inventory = ItemLocation("Inventory", "Your backpack is empty.");
+  static const equipment = ItemLocation("Equipment", "<not used>");
+  static const home = ItemLocation("Home", "There is nothing in your home.");
+  static const crucible = ItemLocation("Crucible", "The crucible is waiting.");
+  static const shop = ItemLocation("Shop", "All sold out!");
 
   final String name;
-  const ItemLocation(this.name);
+  final String emptyDescription;
+
+  const ItemLocation(this.name, this.emptyDescription);
 }
 
 abstract class ItemCollection implements Iterable<Item> {
-  /// The display name of the collection.
-  String get name;
+  ItemLocation get location;
+
+  String get name => location.name;
 
   int get length;
+
   Item operator [](int index);
 
   /// If the item collection has named slots, returns their names.
@@ -34,6 +42,7 @@ abstract class ItemCollection implements Iterable<Item> {
   Iterable<Item> get slots => this;
 
   void remove(Item item);
+
   Item removeAt(int index);
 
   /// Returns `true` if the entire stack of [item] will fit in this collection.
@@ -47,10 +56,10 @@ abstract class ItemCollection implements Iterable<Item> {
 
 /// The collection of [Item]s held by an [Actor].
 class Inventory extends IterableMixin<Item> with ItemCollection {
-  String get name => capacity == null ? "On Ground" : "Inventory";
+  final ItemLocation location;
 
   final List<Item> _items;
-  final int capacity;
+  final int _capacity;
 
   /// If the [Hero] had to unequip an item in order to equip another one, this
   /// will refer to the item that was unequipped.
@@ -63,7 +72,8 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
 
   Item operator [](int index) => _items[index];
 
-  Inventory(this.capacity, [Iterable<Item> items]) : _items = <Item>[] {
+  Inventory(this.location, [this._capacity, Iterable<Item> items])
+      : _items = <Item>[] {
     if (items != null) _items.addAll(items);
   }
 
@@ -72,7 +82,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   /// discarded if the hero dies.
   Inventory clone() {
     var items = _items.map((item) => item.clone());
-    return Inventory(capacity, items);
+    return Inventory(location, _capacity, items);
   }
 
   /// Removes all items from the inventory.
@@ -94,7 +104,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
 
   bool canAdd(Item item) {
     // If there's an empty slot, can always add it.
-    if (capacity == null || _items.length < capacity - 1) return true;
+    if (_capacity == null || _items.length < _capacity - 1) return true;
 
     // See if we can merge it with other stacks.
     var remaining = item.count;
@@ -124,7 +134,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     }
 
     // See if there is room to start a new stack with the rest.
-    if (capacity != null && _items.length >= capacity) {
+    if (_capacity != null && _items.length >= _capacity) {
       // There isn't room to pick up everything.
       return AddItemResult(adding - item.count, item.count);
     }

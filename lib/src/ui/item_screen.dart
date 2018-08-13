@@ -6,7 +6,7 @@ import 'package:malison/malison_web.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'input.dart';
-import 'item_dialog.dart';
+import 'item_view.dart';
 
 // TODO: This is not currently accessible with the removal of money, shops, and
 // the home screen from the game. Should it be?
@@ -94,13 +94,8 @@ class ItemScreen extends Screen<Input> {
     terminal.writeAt(
         0, terminal.height - 1, "${_mode.helpText(this)}", UIHue.helpText);
 
-    var bar = Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
-    for (var y = 2; y < 30; y++) {
-      terminal.drawGlyph(49, y, bar);
-    }
-
     _drawHero(terminal, 0);
-    _drawPlace(terminal, 50);
+    _drawPlace(terminal, 40);
 
     if (completeRecipe != null) {
       terminal.writeAt(59, 2, "Press [Space] to forge item!", UIHue.selection);
@@ -118,9 +113,6 @@ class ItemScreen extends Screen<Input> {
   }
 
   void _drawHero(Terminal terminal, int x) {
-    terminal.writeAt(
-        x, 2, _showingInventory ? "Inventory" : "Equipment", UIHue.text);
-
     bool isSelectable(Item item) {
       if (!_mode.selectingFromHero) return false;
       return _mode.canSelectItem(this, item);
@@ -130,16 +122,12 @@ class ItemScreen extends Screen<Input> {
         ? isSelectable
         : null;
 
-    if (_showingInventory) {
-      drawItems(terminal, x, _save.inventory, canSelect: canSelect);
-    } else {
-      drawItems(terminal, x, _save.equipment, canSelect: canSelect);
-    }
+    drawItems(
+        terminal, x, _showingInventory ? _save.inventory : _save.equipment,
+        canSelect: canSelect);
   }
 
   void _drawPlace(Terminal terminal, int x) {
-    terminal.writeAt(x, 2, _place.label, UIHue.text);
-
     var items = _place.items(this);
     if (_mode.selectingFromHero || _mode.selectingFromPlace) {
       drawItems(terminal, x, items, canSelect: (item) {
@@ -218,15 +206,18 @@ class _Place {
   String get label => "Home";
 
   String get getVerb => "Get";
+
   String get putVerb => "Put";
 
   int get getKeyCode => KeyCode.g;
+
   int get putKeyCode => KeyCode.p;
 
   /// Gets the list of items from this place.
   ItemCollection items(ItemScreen screen) => screen._save.home;
 
   bool canGet(ItemScreen screen, Item item) => true;
+
   bool canPut(ItemScreen screen, Item item) => true;
 }
 
@@ -254,9 +245,11 @@ class _ShopPlace implements _Place {
   String get label => _shop.name;
 
   String get getVerb => "Buy";
+
   String get putVerb => "Sell";
 
   int get getKeyCode => KeyCode.b;
+
   int get putKeyCode => KeyCode.s;
 
   _ShopPlace(this._shop);
@@ -285,7 +278,7 @@ abstract class Mode {
   bool get selectingFromPlace => false;
 
   void render(ItemScreen screen, Terminal terminal) {
-    terminal.writeAt(0, 0, message(screen));
+    terminal.writeAt(0, 0, message(screen), UIHue.selection);
   }
 
   String message(ItemScreen screen) => throw "Unused";
@@ -296,6 +289,7 @@ abstract class Mode {
   bool canSelectItem(ItemScreen screen, Item item) => false;
 
   bool handleInput(Input input, ItemScreen screen) => false;
+
   bool keyDown(int keyCode, ItemScreen screen) => false;
 }
 
@@ -320,6 +314,7 @@ class CountMode extends Mode {
   }
 
   bool get selectingFromHero => !_toHero;
+
   bool get selectingFromPlace => _toHero;
 
   /// Highlight the item the user already selected.
@@ -408,6 +403,7 @@ class SelectMode extends Mode {
   const SelectMode({bool toHero}) : _toHero = toHero;
 
   bool get selectingFromPlace => _toHero;
+
   bool get selectingFromHero => !_toHero;
 
   String message(ItemScreen screen) => "${screen._verb(_toHero)} which item?";

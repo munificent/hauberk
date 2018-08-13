@@ -62,9 +62,9 @@ class SelectDepthScreen extends Screen<Input> {
 //        ui.push(new ItemScreen.crucible(content, save));
 //        break;
 //
-//      case KeyCode.h:
-//        ui.push(new ItemScreen.home(content, save));
-//        return true;
+      case KeyCode.h:
+        ui.push(new ItemScreen.home(content, save));
+        return true;
 //
 //      case KeyCode.one: return tryEnterShop(0);
 //      case KeyCode.two: return tryEnterShop(1);
@@ -88,7 +88,7 @@ class SelectDepthScreen extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(15, 14,
+    terminal.writeAt(15, 4,
         'Greetings, ${save.name}, how deep shall you venture?', UIHue.text);
     terminal.writeAt(
         0,
@@ -107,28 +107,27 @@ class SelectDepthScreen extends Screen<Input> {
       } else if (depth == selectedDepth) {
         color = UIHue.selection;
         terminal.drawChar(
-            14 + x * 5, 16 + y, CharCode.blackRightPointingPointer, color);
+            14 + x * 5, 6 + y, CharCode.blackRightPointingPointer, color);
         terminal.drawChar(
-            18 + x * 5, 16 + y, CharCode.blackLeftPointingPointer, color);
+            18 + x * 5, 6 + y, CharCode.blackLeftPointingPointer, color);
       }
 
-      terminal.writeAt(15 + x * 5, 16 + y, depth.toString().padLeft(3), color);
+      terminal.writeAt(15 + x * 5, 6 + y, depth.toString().padLeft(3), color);
     }
 
-    // TODO: Shops, the crucible, and the home are disabled for now since
-    // I'm in the process of removing money.
-//    var y = 17;
-//    drawMenuItem(String key, String label) {
-//      terminal.writeAt(30, y, key, Color.gray);
-//      terminal.writeAt(31, y, ")", Color.darkGray);
-//      terminal.writeAt(33, y, label);
-//      y++;
-//    }
-//
-//    drawMenuItem("h", "Enter Home");
+    // TODO: Shops and the crucible are disabled for now.
+    var y = 18;
+    drawMenuItem(String key, String label) {
+      terminal.writeAt(30, y, key, Color.gray);
+      terminal.writeAt(31, y, ")", Color.darkGray);
+      terminal.writeAt(33, y, label);
+      y++;
+    }
+
+    drawMenuItem("h", "Enter Home");
 //    drawMenuItem("c", "Use Crucible");
-//    y++;
-//
+    y++;
+
 //    var i = 1;
 //    for (var shop in content.shops) {
 //      drawMenuItem(i.toString(), shop.name);

@@ -4,6 +4,8 @@ import 'inventory.dart';
 import 'item.dart';
 
 class Shop extends IterableMixin<Item> with ItemCollection {
+  ItemLocation get location => ItemLocation.shop;
+
   final String name;
   final List<Item> _items;
 

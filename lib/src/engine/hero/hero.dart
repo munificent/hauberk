@@ -35,14 +35,16 @@ class HeroSave {
 
   int get level => experienceLevel(experienceCents);
 
-  Inventory inventory = Inventory(Option.inventoryCapacity);
+  Inventory inventory =
+      Inventory(ItemLocation.inventory, Option.inventoryCapacity);
   Equipment equipment = Equipment();
 
   /// Items in the hero's home.
-  Inventory home = Inventory(Option.homeCapacity);
+  Inventory home = Inventory(ItemLocation.home, Option.homeCapacity);
 
   /// Items in the hero's crucible.
-  Inventory crucible = Inventory(Option.crucibleCapacity);
+  Inventory crucible =
+      Inventory(ItemLocation.crucible, Option.crucibleCapacity);
 
   int experienceCents = 0;
 
@@ -96,6 +98,7 @@ class Hero extends Actor {
   static const maxLevel = 50;
 
   String get nounText => 'you';
+
   Pronoun get pronoun => Pronoun.you;
 
   // TODO: Instead of copying all of these immutable values out of HeroSave,
@@ -139,13 +142,16 @@ class Hero extends Actor {
   /// It starts half-full, presumably the hero had a nice meal before heading
   /// off to adventure.
   int get stomach => _stomach;
+
   set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
   int _stomach = Option.heroMaxStomach ~/ 2;
 
   int get maxHealth => fortitude.maxHealth;
 
   int _focus = 400;
+
   int get focus => _focus;
+
   set focus(int value) => _focus = value.clamp(0, intellect.maxFocus);
 
   /// How much noise the Hero's last action made.
@@ -214,6 +220,7 @@ class Hero extends Actor {
   }
 
   int get experience => _experienceCents ~/ 100;
+
   // TODO: Using this is a little sketchy since accessing experience
   // trunctates. If you `experience += ...`, you are discarding some.
   void set experience(int value) {

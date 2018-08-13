@@ -43,6 +43,9 @@ abstract class ItemAction extends Action {
           game.stage.actorEmanationChanged();
         }
         break;
+
+      default:
+        throw StateError("Invalid location.");
     }
   }
 
@@ -62,6 +65,9 @@ abstract class ItemAction extends Action {
       case ItemLocation.equipment:
         hero.equipment.countChanged();
         break;
+
+      default:
+        throw StateError("Invalid location.");
     }
   }
 }

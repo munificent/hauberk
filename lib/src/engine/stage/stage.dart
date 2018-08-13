@@ -134,7 +134,8 @@ class Stage {
 
   void addItem(Item item, Vec pos) {
     // Get the inventory for the tile.
-    var inventory = _itemsByTile.putIfAbsent(pos, () => Inventory(null));
+    var inventory =
+        _itemsByTile.putIfAbsent(pos, () => Inventory(ItemLocation.onGround));
     var result = inventory.tryAdd(item);
     // Inventory is unlimited, so should always succeed.
     assert(result.remaining == 0);
@@ -147,7 +148,8 @@ class Stage {
   bool isItemAt(Vec pos) => _itemsByTile.containsKey(pos);
 
   /// Gets the [Item]s at [pos].
-  Inventory itemsAt(Vec pos) => _itemsByTile[pos] ?? Inventory(null);
+  Inventory itemsAt(Vec pos) =>
+      _itemsByTile[pos] ?? Inventory(ItemLocation.onGround);
 
   /// Removes [item] from the stage at [pos].
   ///

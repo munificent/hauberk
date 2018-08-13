@@ -45,7 +45,8 @@ class Storage {
           var item = _loadItem(itemData as Map<String, dynamic>);
           if (item != null) items.add(item);
         }
-        var inventory = Inventory(Option.inventoryCapacity, items);
+        var inventory =
+            Inventory(ItemLocation.inventory, Option.inventoryCapacity, items);
 
         var equipment = Equipment();
         for (var itemData in hero['equipment']) {
@@ -60,14 +61,15 @@ class Storage {
           var item = _loadItem(itemData as Map<String, dynamic>);
           if (item != null) items.add(item);
         }
-        var home = Inventory(Option.homeCapacity, items);
+        var home = Inventory(ItemLocation.home, Option.homeCapacity, items);
 
         items = [];
         for (var itemData in hero['crucible']) {
           var item = _loadItem(itemData as Map<String, dynamic>);
           if (item != null) items.add(item);
         }
-        var crucible = Inventory(Option.crucibleCapacity, items);
+        var crucible =
+            Inventory(ItemLocation.crucible, Option.crucibleCapacity, items);
 
         // Clean up legacy heroes before item stacks.
         // TODO: Remove this once we don't need to worry about it anymore.
