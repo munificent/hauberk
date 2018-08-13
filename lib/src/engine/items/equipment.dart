@@ -5,7 +5,9 @@ import 'item.dart';
 
 /// The collection of wielded [Item]s held by the [Hero]. Unlike [Inventory],
 /// the [Equipment] holds each Item in a categorized slot.
-class Equipment extends IterableBase<Item> implements ItemCollection {
+class Equipment extends IterableBase<Item> with ItemCollection {
+  String get name => "Equipment";
+
   final List<String> slotTypes;
   final List<Item> slots;
 

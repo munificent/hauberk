@@ -147,11 +147,7 @@ class Stage {
   bool isItemAt(Vec pos) => _itemsByTile.containsKey(pos);
 
   /// Gets the [Item]s at [pos].
-  Iterable<Item> itemsAt(Vec pos) {
-    var inventory = _itemsByTile[pos];
-    if (inventory == null) return const [];
-    return inventory;
-  }
+  Inventory itemsAt(Vec pos) => _itemsByTile[pos] ?? Inventory(null);
 
   /// Removes [item] from the stage at [pos].
   ///

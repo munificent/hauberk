@@ -133,11 +133,31 @@ class ItemDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    // Draw a box for the contents.
-    var itemCount = _getItems().length;
-    var boxHeight = math.max(itemCount, 1) + 3;
+    if (_getItems().slots.isNotEmpty) {
+      drawItems(terminal, 0, _getItems(),
+          canSelect: _canSelect, capitals: _shiftDown, inspected: _inspected);
+    } else {
+      String message;
+      switch (_location) {
+        case ItemLocation.inventory:
+          message = "(Your backpack is empty.)";
+          break;
 
-    Draw.frame(terminal, 0, 0, 43, boxHeight);
+        case ItemLocation.equipment:
+          assert(false, "Equipment list is never empty.");
+          break;
+
+        case ItemLocation.onGround:
+          message = "(There is nothing on the ground.)";
+          break;
+      }
+
+      terminal.writeAt(1, 2, message, UIHue.disabled);
+    }
+
+    if (_inspected != null) {
+      _renderInspected(terminal.rect(40, 0, 40, 20));
+    }
 
     if (_selectedItem == null) {
       if (_shiftDown) {
@@ -164,37 +184,6 @@ class ItemDialog extends Screen<Input> {
 
     terminal.writeAt(
         0, terminal.height - 1, '$select$helpText', UIHue.helpText);
-
-    if (itemCount > 0) {
-      if (_location == ItemLocation.equipment) {
-        drawEquipment(terminal, 1, 2, _gameScreen.game.hero.equipment,
-            canSelect: _canSelect, capitals: _shiftDown, inspected: _inspected);
-      } else {
-        drawItems(terminal, 1, 2, _getItems(),
-            canSelect: _canSelect, capitals: _shiftDown, inspected: _inspected);
-      }
-    } else {
-      String message;
-      switch (_location) {
-        case ItemLocation.inventory:
-          message = "(Your backpack is empty.)";
-          break;
-
-        case ItemLocation.equipment:
-          assert(false, "Equipment list is never empty.");
-          break;
-
-        case ItemLocation.onGround:
-          message = "(There is nothing on the ground.)";
-          break;
-      }
-
-      terminal.writeAt(1, 2, message, UIHue.disabled);
-    }
-
-    if (_inspected != null) {
-      _renderInspected(terminal.rect(43, 0, 37, 20));
-    }
   }
 
   void _renderInspected(Terminal terminal) {
@@ -379,7 +368,7 @@ class ItemDialog extends Screen<Input> {
   }
 
   void _selectItem(int index) {
-    var items = _getItems().toList();
+    var items = _getItems().slots.toList();
     if (index >= items.length) return;
 
     // Can't select an empty equipment slot.
@@ -402,12 +391,12 @@ class ItemDialog extends Screen<Input> {
     }
   }
 
-  Iterable<Item> _getItems() {
+  ItemCollection _getItems() {
     switch (_location) {
       case ItemLocation.inventory:
         return _gameScreen.game.hero.inventory;
       case ItemLocation.equipment:
-        return _gameScreen.game.hero.equipment.slots;
+        return _gameScreen.game.hero.equipment;
       case ItemLocation.onGround:
         return _gameScreen.game.stage.itemsAt(_gameScreen.game.hero.pos);
     }
@@ -423,13 +412,7 @@ class ItemDialog extends Screen<Input> {
   }
 }
 
-void drawEquipment(Terminal terminal, int x, int y, Equipment equipment,
-    {bool canSelect(Item item), bool capitals, Item inspected}) {
-  _drawItems(terminal, x, y, equipment.slots, equipment.slotTypes, canSelect,
-      capitals: capitals, inspected: inspected);
-}
-
-/// Draws a list of [items] on [terminal] at [x], [y].
+/// Draws a collection of [items] on [terminal] at [x], [y].
 ///
 /// This is used both on the [ItemScreen] and in game for things like using and
 /// dropping items.
@@ -447,30 +430,35 @@ void drawEquipment(Terminal terminal, int x, int y, Equipment equipment,
 ///               1         2         3         4
 ///     01234567890123456789012345678901234567890123456789
 ///     a) = a Glimmering War Hammer of Wo... »29 992,106
-void drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
+void drawItems(Terminal terminal, int x, ItemCollection items,
     {bool canSelect(Item item), bool capitals, Item inspected}) {
-  _drawItems(terminal, x, y, items, null, canSelect,
-      capitals: capitals, inspected: inspected);
-}
+  terminal = terminal.rect(x, 0, 40, terminal.height);
 
-void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
-    List<String> slotNames, bool canSelect(Item item),
-    {bool capitals, Item inspected}) {
+  // TODO: Do full height on item screen.
+  // Draw a box for the contents.
+  var itemCount = items.slots.length;
+  var boxHeight = math.max(itemCount, 1) + 3;
+
+  Draw.frame(terminal, 0, 0, terminal.width, boxHeight);
+
+  terminal.writeAt(
+      terminal.width - items.name.length - 1, 0, items.name, UIHue.text);
+
   capitals ??= false;
   var letters =
       capitals ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz";
 
   var i = 0;
   var letter = 0;
-  for (var item in items) {
-    var itemY = y + i;
+  for (var item in items.slots) {
+    var y = i + 2;
 
     // If there's no item in this equipment slot, show the slot name.
     if (item == null) {
       // Null items should only appear in equipment.
-      assert(slotNames != null);
+      assert(items.slotTypes != null);
 
-      terminal.writeAt(x, itemY, "    (${slotNames[i]})", UIHue.helpText);
+      terminal.writeAt(1, y, "    (${items.slotTypes[i]})", UIHue.helpText);
       letter++;
       i++;
       continue;
@@ -494,21 +482,21 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
       }
     }
 
-    terminal.writeAt(x, itemY, " )", borderColor);
-    terminal.writeAt(x, itemY, letters[letter], letterColor);
+    terminal.writeAt(1, y, " )", borderColor);
+    terminal.writeAt(1, y, letters[letter], letterColor);
     letter++;
 
     if (enabled) {
-      terminal.drawGlyph(x + 2, itemY, item.appearance as Glyph);
+      terminal.drawGlyph(3, y, item.appearance as Glyph);
     }
 
-    terminal.writeAt(x + 4, itemY, item.nounText, textColor);
+    terminal.writeAt(5, y, item.nounText, textColor);
 
     drawStat(String symbol, Object stat, Color light, Color dark) {
       var string = stat.toString();
-      terminal.writeAt(x + 40 - string.length, itemY, symbol,
+      terminal.writeAt(terminal.width - string.length - 2, y, symbol,
           enabled ? dark : UIHue.disabled);
-      terminal.writeAt(x + 41 - string.length, itemY, string,
+      terminal.writeAt(terminal.width - string.length - 1, y, string,
           enabled ? light : UIHue.disabled);
     }
 
@@ -523,7 +511,9 @@ void _drawItems(Terminal terminal, int x, int y, Iterable<Item> items,
 
     if (item != null && item == inspected) {
       terminal.drawChar(
-          42, itemY, CharCode.blackRightPointingPointer, UIHue.selection);
+          2, y, CharCode.blackRightPointingPointer, UIHue.selection);
+      terminal.drawChar(terminal.width - 1, y,
+          CharCode.blackRightPointingPointer, UIHue.selection);
     }
 
     // TODO: Show heft and weight.

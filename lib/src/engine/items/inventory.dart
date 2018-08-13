@@ -16,9 +16,23 @@ class ItemLocation {
   const ItemLocation(this.name);
 }
 
-abstract class ItemCollection extends Iterable<Item> {
+abstract class ItemCollection implements Iterable<Item> {
+  /// The display name of the collection.
+  String get name;
+
   int get length;
   Item operator [](int index);
+
+  /// If the item collection has named slots, returns their names.
+  ///
+  /// Otherwise returns `null`. It's only valid to access this if [slots]
+  /// returns `null` for some index.
+  List<String> get slotTypes => const [];
+
+  /// If the item collection may have empty slots in it (equipment) this returns
+  /// the sequence of items and slots.
+  Iterable<Item> get slots => this;
+
   void remove(Item item);
   Item removeAt(int index);
 
@@ -32,7 +46,9 @@ abstract class ItemCollection extends Iterable<Item> {
 }
 
 /// The collection of [Item]s held by an [Actor].
-class Inventory extends IterableMixin<Item> implements ItemCollection {
+class Inventory extends IterableMixin<Item> with ItemCollection {
+  String get name => capacity == null ? "On Ground" : "Inventory";
+
   final List<Item> _items;
   final int capacity;
 

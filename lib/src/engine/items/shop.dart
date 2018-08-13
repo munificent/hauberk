@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'inventory.dart';
 import 'item.dart';
 
-class Shop extends IterableMixin<Item> implements ItemCollection {
+class Shop extends IterableMixin<Item> with ItemCollection {
   final String name;
   final List<Item> _items;
 
