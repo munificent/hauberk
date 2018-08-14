@@ -79,7 +79,8 @@ abstract class StatBase extends Property<int> {
   }
 
   void refresh() {
-    var newValue = _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
+    var newValue =
+        _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
     update(newValue, (previous) {
       var gain = newValue - previous;
       if (gain > 0) {

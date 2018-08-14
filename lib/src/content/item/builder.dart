@@ -30,14 +30,16 @@ _CategoryBuilder category(int glyph, {String verb, int stack}) {
   return _category;
 }
 
-_ItemBuilder item(String name, int depth, double frequency, Color color) {
+_ItemBuilder item(String name, int depth, Color color,
+    {double frequency, int price}) {
   finishItem();
 
   _item = _ItemBuilder();
   _item._name = name;
   _item._depth = depth;
-  _item._frequency = frequency;
   _item._color = color;
+  _item._frequency = frequency ?? 1.0;
+  _item._price = price ?? 0;
 
   return _item;
 }
@@ -157,9 +159,9 @@ class _CategoryBuilder extends _BaseBuilder {
 }
 
 class _ItemBuilder extends _BaseBuilder {
-  // category too.
   Color _color;
   double _frequency;
+  int _price;
   ItemUse _use;
   Attack _attack;
   int _weight;
@@ -325,7 +327,7 @@ void finishItem() {
       _item._attack,
       toss,
       _item._armor ?? 0,
-      0,
+      _item._price,
       _item._maxStack ?? _category._maxStack ?? 1,
       weight: _item._weight ?? 0,
       heft: _item._heft ?? 0,

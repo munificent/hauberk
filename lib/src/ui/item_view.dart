@@ -9,8 +9,8 @@ import 'draw.dart';
 
 /// Draws a collection of [items] on [terminal] at [left].
 ///
-/// This is used both on the [ItemScreen] and in game for things like using and
-/// dropping items.
+/// This is used both on the [ItemScreen] and in game for things like using
+/// and dropping items.
 ///
 /// Items can be drawn in one of three states:
 ///
@@ -21,14 +21,18 @@ import 'draw.dart';
 /// * If [canSelect] returns `false`, the item cannot be selected and is
 ///   grayed out.
 void drawItems(Terminal terminal, int left, ItemCollection items,
-    {bool canSelect(Item item), bool isDialog, bool capitals, Item inspected}) {
+    {bool canSelect(Item item),
+    int getPrice(Item item),
+    bool isDialog,
+    bool capitals,
+    Item inspected}) {
   isDialog ??= false;
 
   terminal = terminal.rect(left, 2, 40, terminal.height - 2);
 
   // Draw a box for the contents.
   var itemCount = items.slots.length;
-  var boxHeight = isDialog ? math.max(itemCount, 1) + 3 : terminal.height;
+  var boxHeight = isDialog ? math.max(itemCount, 1) + 3 : terminal.height - 1;
   Draw.frame(terminal, 0, 0, terminal.width, boxHeight);
 
   terminal.writeAt(1, 0, items.name, UIHue.text);
@@ -41,6 +45,18 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
   capitals ??= false;
   var letters =
       capitals ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz";
+
+  // Shift the stats over to make room for prices, if needed.
+  var statRight = terminal.width - 1;
+  if (getPrice != null) {
+    for (var item in items) {
+      var price = getPrice(item);
+      if (price != null) {
+        statRight =
+            math.min(statRight, terminal.width - formatMoney(price).length - 3);
+      }
+    }
+  }
 
   var i = 0;
   var letter = 0;
@@ -86,11 +102,19 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
 
     terminal.writeAt(5, y, item.nounText, textColor);
 
+    if (getPrice != null && getPrice(item) != null) {
+      var price = formatMoney(getPrice(item));
+      terminal.writeAt(terminal.width - price.length - 1, y, price,
+          enabled ? gold : UIHue.disabled);
+      terminal.writeAt(terminal.width - price.length - 2, y, "\$",
+          enabled ? persimmon : UIHue.disabled);
+    }
+
     drawStat(String symbol, Object stat, Color light, Color dark) {
       var string = stat.toString();
-      terminal.writeAt(terminal.width - string.length - 2, y, symbol,
+      terminal.writeAt(statRight - string.length - 1, y, symbol,
           enabled ? dark : UIHue.disabled);
-      terminal.writeAt(terminal.width - string.length - 1, y, string,
+      terminal.writeAt(statRight - string.length, y, string,
           enabled ? light : UIHue.disabled);
     }
 
@@ -285,4 +309,27 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
   }
 
   // TODO: Max stack size?
+}
+
+String formatMoney(int price) {
+  var result = price.toString();
+  if (price > 999999999) {
+    result = result.substring(0, result.length - 9) +
+        "," +
+        result.substring(result.length - 9);
+  }
+
+  if (price > 999999) {
+    result = result.substring(0, result.length - 6) +
+        "," +
+        result.substring(result.length - 6);
+  }
+
+  if (price > 999) {
+    result = result.substring(0, result.length - 3) +
+        "," +
+        result.substring(result.length - 3);
+  }
+
+  return result;
 }

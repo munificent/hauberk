@@ -12,15 +12,15 @@ void weapons() {
     ..tag("equipment/weapon/club")
     ..skill("Club Mastery")
     ..toss(breakage: 25, range: 5);
-  item("Stick", 1, 0.5, persimmon)
+  item("Stick", 1, persimmon, frequency: 0.5, price: 2)
     ..weapon(8, heft: 10)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 10, fuel: 10);
-  item("Cudgel", 3, 0.5, gunsmoke)
+  item("Cudgel", 3, gunsmoke, frequency: 0.5, price: 20)
     ..weapon(10, heft: 11)
     ..toss(damage: 4)
     ..destroy(Elements.fire, chance: 5, fuel: 10);
-  item("Club", 6, 0.5, garnet)
+  item("Club", 6, garnet, frequency: 0.5, price: 40)
     ..weapon(12, heft: 13)
     ..toss(damage: 5)
     ..destroy(Elements.fire, chance: 2, fuel: 10);
@@ -30,15 +30,15 @@ void weapons() {
   category(CharCode.latinSmallLetterIWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/staff")
     ..toss(breakage: 35, range: 4);
-  item("Walking Stick", 2, 0.5, persimmon)
+  item("Walking Stick", 2, persimmon, frequency: 0.5, price: 20)
     ..weapon(10, heft: 12)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 5, fuel: 15);
-  item("Sta[ff|aves]", 5, 0.5, garnet)
+  item("Sta[ff|aves]", 5, garnet, frequency: 0.5, price: 50)
     ..weapon(14, heft: 14)
     ..toss(damage: 5)
     ..destroy(Elements.fire, chance: 2, fuel: 15);
-  item("Quartersta[ff|aves]", 11, 0.5, gunsmoke)
+  item("Quartersta[ff|aves]", 11, gunsmoke, frequency: 0.5, price: 80)
     ..weapon(24, heft: 16)
     ..toss(damage: 8)
     ..destroy(Elements.fire, chance: 2, fuel: 15);
@@ -47,13 +47,13 @@ void weapons() {
   category(CharCode.latinSmallLetterOWithAcute, verb: "bash[es]")
     ..tag("equipment/weapon/hammer")
     ..toss(breakage: 15, range: 5);
-  item("Hammer", 27, 0.5, persimmon)
+  item("Hammer", 27, persimmon, frequency: 0.5, price: 120)
     ..weapon(32, heft: 24)
     ..toss(damage: 12);
-  item("Mattock", 39, 0.5, garnet)
+  item("Mattock", 39, garnet, frequency: 0.5, price: 240)
     ..weapon(40, heft: 28)
     ..toss(damage: 16);
-  item("War Hammer", 45, 0.5, gunsmoke)
+  item("War Hammer", 45, gunsmoke, frequency: 0.5, price: 400)
     ..weapon(48, heft: 32)
     ..toss(damage: 20);
 
@@ -61,10 +61,10 @@ void weapons() {
   category(CharCode.latinSmallLetterUWithAcute, verb: "bash[es]")
     ..tag("equipment/weapon/mace")
     ..toss(breakage: 15, range: 4);
-  item("Morningstar", 24, 0.5, gunsmoke)
+  item("Morningstar", 24, gunsmoke, frequency: 0.5, price: 130)
     ..weapon(26, heft: 20)
     ..toss(damage: 11);
-  item("Mace", 33, 0.5, slate)
+  item("Mace", 33, slate, frequency: 0.5, price: 310)
     ..weapon(36, heft: 25)
     ..toss(damage: 16);
 
@@ -73,14 +73,14 @@ void weapons() {
     ..tag("equipment/weapon/whip")
     ..toss(breakage: 25, range: 4)
     ..skill("Whip Mastery");
-  item("Whip", 4, 0.5, persimmon)
+  item("Whip", 4, persimmon, frequency: 0.5, price: 40)
     ..weapon(10, heft: 12)
     ..toss(damage: 1)
     ..destroy(Elements.fire, chance: 10, fuel: 5);
-  item("Chain Whip", 15, 0.5, gunsmoke)
+  item("Chain Whip", 15, gunsmoke, frequency: 0.5, price: 230)
     ..weapon(18, heft: 18)
     ..toss(damage: 2);
-  item("Flail", 27, 0.5, slate)
+  item("Flail", 27, slate, frequency: 0.5, price: 350)
     ..weapon(28, heft: 27)
     ..toss(damage: 4);
 
@@ -89,22 +89,22 @@ void weapons() {
   category(CharCode.latinCapitalLetterNWithTilde, verb: "stab[s]")
     ..tag("equipment/weapon/dagger")
     ..toss(breakage: 2, range: 8);
-  item("Kni[fe|ves]", 3, 0.5, steelGray)
+  item("Kni[fe|ves]", 3, steelGray, frequency: 0.5, price: 20)
     ..weapon(8, heft: 10)
     ..toss(damage: 8);
-  item("Dirk", 4, 0.5, gunsmoke)
+  item("Dirk", 4, gunsmoke, frequency: 0.5, price: 30)
     ..weapon(10, heft: 10)
     ..toss(damage: 10);
-  item("Dagger", 6, 0.5, cornflower)
+  item("Dagger", 6, cornflower, frequency: 0.5, price: 50)
     ..weapon(12, heft: 11)
     ..toss(damage: 12);
-  item("Stiletto[es]", 10, 0.5, slate)
+  item("Stiletto[es]", 10, slate, frequency: 0.5, price: 80)
     ..weapon(14, heft: 10)
     ..toss(damage: 14);
-  item("Rondel", 20, 0.5, turquoise)
+  item("Rondel", 20, turquoise, frequency: 0.5, price: 130)
     ..weapon(16, heft: 11)
     ..toss(damage: 16);
-  item("Baselard", 30, 0.5, gold)
+  item("Baselard", 30, gold, frequency: 0.5, price: 200)
     ..weapon(18, heft: 12)
     ..toss(damage: 18);
   // Main-guache
@@ -114,19 +114,19 @@ void weapons() {
     ..tag("equipment/weapon/sword")
     ..toss(breakage: 20, range: 5)
     ..skill("Swordfighting");
-  item("Rapier", 7, 0.5, steelGray)
+  item("Rapier", 7, steelGray, frequency: 0.5, price: 140)
     ..weapon(20, heft: 16)
     ..toss(damage: 4);
-  item("Shortsword", 11, 0.5, slate)
+  item("Shortsword", 11, slate, frequency: 0.5, price: 230)
     ..weapon(22, heft: 17)
     ..toss(damage: 6);
-  item("Scimitar", 18, 0.5, gunsmoke)
+  item("Scimitar", 18, gunsmoke, frequency: 0.5, price: 370)
     ..weapon(24, heft: 18)
     ..toss(damage: 9);
-  item("Cutlass[es]", 24, 0.5, buttermilk)
+  item("Cutlass[es]", 24, buttermilk, frequency: 0.5, price: 520)
     ..weapon(26, heft: 19)
     ..toss(damage: 11);
-  item("Falchion", 38, 0.5, turquoise)
+  item("Falchion", 38, turquoise, frequency: 0.5, price: 750)
     ..weapon(28, heft: 20)
     ..toss(damage: 15);
 
@@ -146,14 +146,14 @@ void weapons() {
     ..tag("equipment/weapon/spear")
     ..toss(range: 9)
     ..skill("Spear Mastery");
-  item("Pointed Stick", 2, 0.5, garnet)
+  item("Pointed Stick", 2, garnet, frequency: 0.5, price: 10)
     ..weapon(10, heft: 11)
     ..toss(damage: 9)
     ..destroy(Elements.fire, chance: 7, fuel: 12);
-  item("Spear", 7, 0.5, persimmon)
+  item("Spear", 7, persimmon, frequency: 0.5, price: 160)
     ..weapon(16, heft: 17)
     ..toss(damage: 15);
-  item("Angon", 14, 0.5, gunsmoke)
+  item("Angon", 14, gunsmoke, frequency: 0.5, price: 340)
     ..weapon(20, heft: 19)
     ..toss(damage: 20);
 
@@ -161,10 +161,10 @@ void weapons() {
     ..tag("equipment/weapon/polearm")
     ..toss(range: 4)
     ..skill("Spear Mastery");
-  item("Lance", 28, 0.5, cornflower)
+  item("Lance", 28, cornflower, frequency: 0.5, price: 550)
     ..weapon(24, heft: 27)
     ..toss(damage: 20);
-  item("Partisan", 35, 0.5, slate)
+  item("Partisan", 35, slate, frequency: 0.5, price: 850)
     ..weapon(30, heft: 29)
     ..toss(damage: 26);
 
@@ -173,16 +173,16 @@ void weapons() {
   category(CharCode.invertedQuestionMark, verb: "chop[s]")
     ..tag("equipment/weapon/axe")
     ..skill("Axe Mastery");
-  item("Hatchet", 6, 0.5, slate)
+  item("Hatchet", 6, slate, frequency: 0.5, price: 90)
     ..weapon(18, heft: 14)
     ..toss(damage: 20, range: 8);
-  item("Axe", 12, 0.5, persimmon)
+  item("Axe", 12, persimmon, frequency: 0.5, price: 210)
     ..weapon(25, heft: 22)
     ..toss(damage: 24, range: 7);
-  item("Valaska", 24, 0.5, gunsmoke)
+  item("Valaska", 24, gunsmoke, frequency: 0.5, price: 330)
     ..weapon(32, heft: 26)
     ..toss(damage: 26, range: 5);
-  item("Battleaxe", 40, 0.5, steelGray)
+  item("Battleaxe", 40, steelGray, frequency: 0.5, price: 550)
     ..weapon(39, heft: 30)
     ..toss(damage: 28, range: 4);
 
@@ -191,15 +191,15 @@ void weapons() {
     ..tag("equipment/weapon/bow")
     ..toss(breakage: 50, range: 5)
     ..skill("Archery");
-  item("Short Bow", 5, 0.3, persimmon)
+  item("Short Bow", 5, persimmon, frequency: 0.3, price: 150)
     ..ranged("the arrow", heft: 10, damage: 8, range: 12)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);
-  item("Longbow", 13, 0.3, garnet)
+  item("Longbow", 13, garnet, frequency: 0.3, price: 250)
     ..ranged("the arrow", heft: 16, damage: 16, range: 14)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 7, fuel: 13);
-  item("Crossbow", 28, 0.3, gunsmoke)
+  item("Crossbow", 28, gunsmoke, frequency: 0.3, price: 600)
     ..ranged("the bolt", heft: 24, damage: 24, range: 16)
     ..toss(damage: 4)
     ..destroy(Elements.fire, chance: 4, fuel: 14);

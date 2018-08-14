@@ -7,6 +7,8 @@ import 'mastery.dart';
 // TODO: This doesn't work as a trained skill because it isn't a melee weapon.
 // Decide if this should be a trained skill (warrior) or an explicitly leveled
 // one (rogue).
+// TODO: This is currently broken. You can't level up the discipline without
+// using it, and you can't use it until you've leveled it up.
 class Archery extends MasteryDiscipline with TargetSkill {
   // TODO: Should this still use focus now that max focus is based on intellect?
   static int focusCost(int level) => lerpInt(level, 1, 20, 300, 1);

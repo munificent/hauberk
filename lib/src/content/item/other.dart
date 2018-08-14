@@ -8,12 +8,12 @@ void litter() {
   category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
     ..tag("item")
     ..toss(damage: 3, range: 7, element: Elements.earth, breakage: 10);
-  item("Rock", 1, 1.0, persimmon);
+  item("Rock", 1, persimmon, frequency: 1.0);
 
   category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
     ..tag("item")
     ..toss(damage: 2, range: 5, breakage: 30);
-  item("Skull", 1, 1.0, gunsmoke);
+  item("Skull", 1, gunsmoke, frequency: 1.0);
 }
 
 void treasure() {
@@ -73,25 +73,25 @@ void pelts() {
   // back in.
   category(CharCode.latinSmallLetterEWithAcute, stack: 20)
     ..destroy(Elements.fire, chance: 40, fuel: 1);
-  item("Flower", 1, 1.0, cornflower); // TODO: Use in recipe.
-  item("Insect Wing", 1, 1.0, violet);
-  item("Red Feather", 2, 1.0, brickRed); // TODO: Use in recipe.
-  item("Black Feather", 2, 1.0, steelGray);
+  item("Flower", 1, cornflower, frequency: 1.0); // TODO: Use in recipe.
+  item("Insect Wing", 1, violet, frequency: 1.0);
+  item("Red Feather", 2, brickRed, frequency: 1.0); // TODO: Use in recipe.
+  item("Black Feather", 2, steelGray, frequency: 1.0);
 
   category(CharCode.latinSmallLetterEWithAcute, stack: 4)
     ..destroy(Elements.fire, chance: 20, fuel: 3);
-  item("Fur Pelt", 1, 1.0, persimmon);
-  item("Fox Pelt", 2, 1.0, copper);
+  item("Fur Pelt", 1, persimmon, frequency: 1.0);
+  item("Fox Pelt", 2, copper, frequency: 1.0);
 }
 
 void food() {
   category(CharCode.invertedExclamationMark)
     ..tag("item/food")
     ..destroy(Elements.fire, chance: 20, fuel: 3);
-  item("Loa[f|ves] of Bread", 1, 1.0, sandal)
+  item("Loa[f|ves] of Bread", 1, sandal, frequency: 1.0, price: 4)
     ..stack(6)
     ..food(200);
-  // TODO: More foods. Some should also cure minor conditions, or maybe cause them.
+  // TODO: More foods. Some should also cure minor conditions or cause them.
   // Meat glyph: CharCode.vulgarFractionOneQuarter
 }
 
@@ -101,35 +101,35 @@ void lightSources() {
     ..toss(breakage: 70);
 
   // TODO: Ball of fire when hits toss target.
-  item("Tallow Candle", 1, 1.0, sandal)
+  item("Tallow Candle", 1, sandal, frequency: 1.0, price: 6)
     ..stack(10)
     ..toss(damage: 2, range: 8, element: Elements.fire)
     ..lightSource(level: 2, range: 8)
     ..destroy(Elements.fire, chance: 40, fuel: 20);
 
   // TODO: Ball of fire when hits toss target.
-  item("Wax Candle", 4, 1.0, ash)
+  item("Wax Candle", 4, ash, frequency: 1.0, price: 8)
     ..stack(10)
     ..toss(damage: 3, range: 8, element: Elements.fire)
     ..lightSource(level: 3, range: 10)
     ..destroy(Elements.fire, chance: 40, fuel: 25);
 
   // TODO: Larger ball of fire when hits toss target.
-  item("Oil Lamp", 4, 1.0, garnet)
+  item("Oil Lamp", 4, garnet, frequency: 1.0, price: 18)
     ..stack(4)
     ..toss(damage: 10, range: 8, element: Elements.fire)
     ..lightSource(level: 4, range: 13)
     ..destroy(Elements.fire, chance: 50, fuel: 40);
 
   // TODO: Ball of fire when hits toss target.
-  item("Torch[es]", 8, 1.0, persimmon)
+  item("Torch[es]", 8, persimmon, frequency: 1.0, price: 16)
     ..stack(4)
     ..toss(damage: 6, range: 10, element: Elements.fire)
     ..lightSource(level: 5, range: 18)
     ..destroy(Elements.fire, chance: 60, fuel: 60);
 
   // TODO: Maybe allow this to be equipped and increase its radius when held?
-  item("Lantern", 15, 0.3, gold)
+  item("Lantern", 15, gold, frequency: 0.3, price: 78)
     ..toss(damage: 5, range: 5, element: Elements.fire)
     ..lightSource(level: 6);
 }

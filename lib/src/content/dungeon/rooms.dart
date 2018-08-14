@@ -566,8 +566,7 @@ class RoomTypes {
         from: "chamber great-hall hall nature");
 
     add(RectangleRoom("closet", maxWide: 5, maxNarrow: 4),
-        frequency: 0.2,
-        from: "chamber laboratory storeroom");
+        frequency: 0.2, from: "chamber laboratory storeroom");
 
     add(
         RectangleRoom("laboratory",

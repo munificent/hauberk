@@ -8,9 +8,6 @@ import '../hues.dart';
 import 'input.dart';
 import 'item_view.dart';
 
-// TODO: This is not currently accessible with the removal of money, shops, and
-// the home screen from the game. Should it be?
-
 /// A screen where the hero can manage their items outside of the levels.
 ///
 /// Let's them transfer between their inventory, equipment, crucible, and home.
@@ -87,9 +84,10 @@ class ItemScreen extends Screen<Input> {
   void render(Terminal terminal) {
     _mode.render(this, terminal);
 
-//    var gold = priceString(_save.gold);
-//    terminal.writeAt(82, 0, "Gold:");
-//    terminal.writeAt(99 - gold.length, 0, gold, Color.gold);
+    var heroGold = formatMoney(_save.gold);
+    terminal.writeAt(63, 0, "Gold:", UIHue.text);
+    terminal.writeAt(79 - heroGold.length - 1, 0, "\$", persimmon);
+    terminal.writeAt(79 - heroGold.length, 0, heroGold, gold);
 
     terminal.writeAt(
         0, terminal.height - 1, "${_mode.helpText(this)}", UIHue.helpText);
@@ -124,18 +122,19 @@ class ItemScreen extends Screen<Input> {
 
     drawItems(
         terminal, x, _showingInventory ? _save.inventory : _save.equipment,
-        canSelect: canSelect);
+        getPrice: _place.putPrice, canSelect: canSelect);
   }
 
   void _drawPlace(Terminal terminal, int x) {
     var items = _place.items(this);
     if (_mode.selectingFromHero || _mode.selectingFromPlace) {
-      drawItems(terminal, x, items, canSelect: (item) {
+      drawItems(terminal, x, items, getPrice: _place.getPrice,
+          canSelect: (item) {
         if (!_mode.selectingFromPlace) return false;
         return _mode.canSelectItem(this, item);
       });
     } else {
-      drawItems(terminal, x, items);
+      drawItems(terminal, x, items, getPrice: _place.getPrice);
     }
   }
 
@@ -183,10 +182,10 @@ class ItemScreen extends Screen<Input> {
     if (_place is _ShopPlace) {
       if (toHero) {
         // Pay for purchased item.
-        _save.gold -= item.price * count;
+        _save.gold -= _place.getPrice(item) * count;
       } else {
         // Get paid for sold item.
-        _save.gold += item.price * count;
+        _save.gold += _place.putPrice(item) * count;
       }
     } else if (_place == _Place.crucible) {
       refreshRecipe();
@@ -219,6 +218,14 @@ class _Place {
   bool canGet(ItemScreen screen, Item item) => true;
 
   bool canPut(ItemScreen screen, Item item) => true;
+
+  /// How much it costs to get the item from this place, or `null` if there is
+  /// no cost.
+  int getPrice(Item item) => null;
+
+  /// How much it costs to put the item into this place, or `null` if there is
+  /// no cost.
+  int putPrice(Item item) => null;
 }
 
 class _CruciblePlace extends _Place {
@@ -257,10 +264,15 @@ class _ShopPlace implements _Place {
   ItemCollection items(ItemScreen screen) => _shop;
 
   /// Must have enough gold to buy at least one of it.
-  bool canGet(ItemScreen screen, Item item) => item.price <= screen._save.gold;
+  bool canGet(ItemScreen screen, Item item) =>
+      getPrice(item) <= screen._save.gold;
 
   /// Can only sell things that have a price.
-  bool canPut(ItemScreen screen, Item item) => item.price > 0;
+  bool canPut(ItemScreen screen, Item item) => putPrice(item) > 0;
+
+  int getPrice(Item item) => item.price;
+
+  int putPrice(Item item) => (item.price * 0.75).floor();
 }
 
 /// What the user is currently doing on the item screen.
@@ -372,9 +384,9 @@ class CountMode extends Mode {
       terminal.writeAt(x, 0, " for ");
       x += 5;
 
-      var price = (_item.price * _count).toString();
-      terminal.writeAt(x, 0, price, gold);
-      x += price.length;
+      var priceString = formatMoney(_itemPrice(screen) * _count);
+      terminal.writeAt(x, 0, priceString, gold);
+      x += priceString.length;
 
       terminal.writeAt(x, 0, " gold");
       x += 5;
@@ -388,11 +400,14 @@ class CountMode extends Mode {
 
     // Don't allow buying more than the hero can afford.
     if (screen._place is _ShopPlace) {
-      maxCount = math.min(maxCount, screen._save.gold ~/ _item.price);
+      maxCount = math.min(maxCount, screen._save.gold ~/ _itemPrice(screen));
     }
 
     return maxCount;
   }
+
+  int _itemPrice(ItemScreen screen) =>
+      _toHero ? screen._place.getPrice(_item) : screen._place.putPrice(_item);
 }
 
 /// A mode for selecting an item.

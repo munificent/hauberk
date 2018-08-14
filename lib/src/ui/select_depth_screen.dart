@@ -63,18 +63,27 @@ class SelectDepthScreen extends Screen<Input> {
 //        break;
 //
       case KeyCode.h:
-        ui.push(new ItemScreen.home(content, save));
+        ui.push(ItemScreen.home(content, save));
         return true;
-//
-//      case KeyCode.one: return tryEnterShop(0);
-//      case KeyCode.two: return tryEnterShop(1);
-//      case KeyCode.three: return tryEnterShop(2);
-//      case KeyCode.four: return tryEnterShop(3);
-//      case KeyCode.five: return tryEnterShop(4);
-//      case KeyCode.six: return tryEnterShop(5);
-//      case KeyCode.seven: return tryEnterShop(6);
-//      case KeyCode.eight: return tryEnterShop(7);
-//      case KeyCode.nine: return tryEnterShop(8);
+
+      case KeyCode.one:
+        return tryEnterShop(0);
+      case KeyCode.two:
+        return tryEnterShop(1);
+      case KeyCode.three:
+        return tryEnterShop(2);
+      case KeyCode.four:
+        return tryEnterShop(3);
+      case KeyCode.five:
+        return tryEnterShop(4);
+      case KeyCode.six:
+        return tryEnterShop(5);
+      case KeyCode.seven:
+        return tryEnterShop(6);
+      case KeyCode.eight:
+        return tryEnterShop(7);
+      case KeyCode.nine:
+        return tryEnterShop(8);
     }
 
     return false;
@@ -115,24 +124,24 @@ class SelectDepthScreen extends Screen<Input> {
       terminal.writeAt(15 + x * 5, 6 + y, depth.toString().padLeft(3), color);
     }
 
-    // TODO: Shops and the crucible are disabled for now.
     var y = 18;
     drawMenuItem(String key, String label) {
-      terminal.writeAt(30, y, key, Color.gray);
-      terminal.writeAt(31, y, ")", Color.darkGray);
-      terminal.writeAt(33, y, label);
+      terminal.writeAt(20, y, key, Color.gray);
+      terminal.writeAt(21, y, ")", Color.darkGray);
+      terminal.writeAt(23, y, label);
       y++;
     }
 
     drawMenuItem("h", "Enter Home");
+    // TODO: The crucible is disabled for now.
 //    drawMenuItem("c", "Use Crucible");
     y++;
 
-//    var i = 1;
-//    for (var shop in content.shops) {
-//      drawMenuItem(i.toString(), shop.name);
-//      i++;
-//    }
+    var i = 1;
+    for (var shop in content.shops) {
+      drawMenuItem(i.toString(), shop.name);
+      i++;
+    }
   }
 
   void activate(Screen screen, result) {
