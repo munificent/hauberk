@@ -40,36 +40,36 @@ class Storage {
           heroClass = content.classes.firstWhere((c) => c.name == name);
         }
 
-        var items = <Item>[];
-        for (var itemData in hero['inventory']) {
-          var item = _loadItem(itemData as Map<String, dynamic>);
-          if (item != null) items.add(item);
-        }
-        var inventory =
-            Inventory(ItemLocation.inventory, Option.inventoryCapacity, items);
+        var inventoryItems = _loadItems(hero['inventory']);
+        var inventory = Inventory(
+            ItemLocation.inventory, Option.inventoryCapacity, inventoryItems);
 
         var equipment = Equipment();
-        for (var itemData in hero['equipment']) {
-          var item = _loadItem(itemData as Map<String, dynamic>);
+        for (var item in _loadItems(hero['equipment'])) {
           // TODO: If there are multiple slots of the same type, this may
           // shuffle items around.
-          if (item != null) equipment.equip(item);
+          equipment.equip(item);
         }
 
-        items = [];
-        for (var itemData in hero['home']) {
-          var item = _loadItem(itemData as Map<String, dynamic>);
-          if (item != null) items.add(item);
-        }
-        var home = Inventory(ItemLocation.home, Option.homeCapacity, items);
+        var homeItems = _loadItems(hero['home']);
+        var home = Inventory(ItemLocation.home, Option.homeCapacity, homeItems);
 
-        items = [];
-        for (var itemData in hero['crucible']) {
-          var item = _loadItem(itemData as Map<String, dynamic>);
-          if (item != null) items.add(item);
+        var crucibleItems = _loadItems(hero['crucible']);
+        var crucible = Inventory(
+            ItemLocation.crucible, Option.crucibleCapacity, crucibleItems);
+
+        // TODO: What if shops are added or changed?
+        var shops = <Shop, Inventory>{};
+        if (hero.containsKey('shops')) {
+          hero['shops'].forEach((name, shopData) {
+            var shop = content.shops[name];
+            if (shop != null) {
+              shops[shop] = shop.load(_loadItems(shopData));
+            } else {
+              print("Couldn't find shop '$name'.");
+            }
+          });
         }
-        var crucible =
-            Inventory(ItemLocation.crucible, Option.crucibleCapacity, items);
 
         // Clean up legacy heroes before item stacks.
         // TODO: Remove this once we don't need to worry about it anymore.
@@ -114,6 +114,7 @@ class Storage {
             equipment,
             home,
             crucible,
+            shops,
             experience,
             skillSet,
             lore,
@@ -148,6 +149,16 @@ class Storage {
     var seed = data['seed'] as int ?? 1234;
 
     return RaceStats(race, stats, seed);
+  }
+
+  List<Item> _loadItems(List<dynamic> data) {
+    var items = <Item>[];
+    for (var itemData in data) {
+      var item = _loadItem(itemData as Map<String, dynamic>);
+      if (item != null) items.add(item);
+    }
+
+    return items;
   }
 
   Item _loadItem(Map<String, dynamic> data) {
@@ -226,25 +237,15 @@ class Storage {
         'stats': raceStats
       };
 
-      var inventory = [];
-      for (var item in hero.inventory) {
-        inventory.add(_saveItem(item));
-      }
+      var inventory = _saveItems(hero.inventory);
+      var equipment = _saveItems(hero.equipment);
+      var home = _saveItems(hero.home);
+      var crucible = _saveItems(hero.crucible);
 
-      var equipment = [];
-      for (var item in hero.equipment) {
-        equipment.add(_saveItem(item));
-      }
-
-      var home = [];
-      for (var item in hero.home) {
-        home.add(_saveItem(item));
-      }
-
-      var crucible = [];
-      for (var item in hero.crucible) {
-        crucible.add(_saveItem(item));
-      }
+      var shops = {};
+      hero.shops.forEach((shop, inventory) {
+        shops[shop.name] = _saveItems(inventory);
+      });
 
       var skills = {};
       for (var skill in hero.skills.discovered) {
@@ -273,6 +274,7 @@ class Storage {
         'equipment': equipment,
         'home': home,
         'crucible': crucible,
+        'shops': shops,
         'experience': hero.experienceCents,
         'skills': skills,
         'lore': lore,
@@ -286,6 +288,14 @@ class Storage {
 
     html.window.localStorage['heroes'] = json.encode(data);
     print('Saved.');
+  }
+
+  List _saveItems(Iterable<Item> items) {
+    var list = [];
+    for (var item in items) {
+      list.add(_saveItem(item));
+    }
+    return list;
   }
 
   Map _saveItem(Item item) {

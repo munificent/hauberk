@@ -108,7 +108,9 @@ class MainMenuScreen extends Screen<Input> {
   void activate(Screen screen, result) {
     if (screen is ConfirmDialog && result == 'delete') {
       storage.heroes.removeAt(selectedHero);
-      if (selectedHero >= storage.heroes.length) selectedHero--;
+      if (selectedHero > 0 && selectedHero >= storage.heroes.length) {
+        selectedHero--;
+      }
       storage.save();
       dirty();
     }

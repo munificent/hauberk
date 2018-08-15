@@ -25,6 +25,9 @@ class Option {
   /// The maximum number of items the hero's crucible can contain.
   static const crucibleCapacity = 8;
 
+  /// The maximum number of items a shop can contain.
+  static const shopCapacity = 24;
+
   /// The chance of trying to spawn a new monster in the unexplored dungeon
   /// each turn.
   static const spawnMonsterChance = 50;

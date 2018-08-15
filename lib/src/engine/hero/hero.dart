@@ -13,6 +13,7 @@ import '../core/option.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
+import '../items/shop.dart';
 import '../monster/monster.dart';
 import '../stage/stage.dart';
 import '../stage/tile.dart';
@@ -46,6 +47,9 @@ class HeroSave {
   Inventory crucible =
       Inventory(ItemLocation.crucible, Option.crucibleCapacity);
 
+  /// The current inventories of all the shops.
+  final Map<Shop, Inventory> shops;
+
   int experienceCents = 0;
 
   SkillSet skills;
@@ -62,6 +66,7 @@ class HeroSave {
 
   HeroSave(this.name, Race race, this.heroClass)
       : race = race.rollStats(),
+        shops = {},
         skills = SkillSet(),
         _lore = Lore();
 
@@ -73,6 +78,7 @@ class HeroSave {
       this.equipment,
       this.home,
       this.crucible,
+      this.shops,
       this.experienceCents,
       this.skills,
       this._lore,

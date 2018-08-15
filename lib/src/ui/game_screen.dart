@@ -118,6 +118,13 @@ class GameScreen extends Screen<Input> {
 
           // Remember that this depth was reached.
           _save.maxDepth = math.max(_save.maxDepth, game.depth);
+
+          // Update shops.
+          // TODO: Take how long the hero was in the dungeon into account.
+          _save.shops.forEach((shop, inventory) {
+            shop.update(inventory);
+          });
+
           ui.pop(true);
         } else {
           game.log.error('You cannot exit from here.');

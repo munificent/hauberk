@@ -90,9 +90,11 @@ class SelectDepthScreen extends Screen<Input> {
   }
 
   bool tryEnterShop(int index) {
-    if (index >= content.shops.length) return false;
+    var shops = save.shops.keys.toList();
 
-    ui.push(ItemScreen.shop(content, save, content.shops.elementAt(index)));
+    if (index >= shops.length) return false;
+
+    ui.push(ItemScreen.shop(content, save, save.shops[shops[index]]));
     return true;
   }
 
@@ -138,7 +140,7 @@ class SelectDepthScreen extends Screen<Input> {
     y++;
 
     var i = 1;
-    for (var shop in content.shops) {
+    for (var shop in content.shops.values) {
       drawMenuItem(i.toString(), shop.name);
       i++;
     }

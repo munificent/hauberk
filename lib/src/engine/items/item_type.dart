@@ -132,6 +132,7 @@ class ItemType {
   String toString() => name;
 }
 
+// TODO: Affixes should modify price.
 /// A modifier that can be applied to an [Item] to change its capabilities.
 /// For example, in a "Dagger of Wounding", the "of Wounding" part is an affix.
 class Affix {

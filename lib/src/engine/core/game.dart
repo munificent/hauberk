@@ -248,7 +248,7 @@ abstract class Content {
 
   Iterable<Recipe> get recipes;
 
-  Iterable<Shop> get shops;
+  Map<String, Shop> get shops;
 
   HeroSave createHero(String name, [Race race, HeroClass heroClass]);
 

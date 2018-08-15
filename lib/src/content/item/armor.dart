@@ -136,7 +136,7 @@ void boots() {
     ..tag("equipment/armor/boots");
   item("Pair[s] of Boots", 14, persimmon, frequency: 0.3, price: 70)
     ..armor(6, weight: 1);
-  item("Pair[s] of Plated Boots", 22, slate, frequency: 0.3)
+  item("Pair[s] of Plated Boots", 22, slate, frequency: 0.3, price: 250)
     ..armor(8, weight: 2);
   item("Pair[s] of Greaves", 47, gunsmoke, frequency: 0.25, price: 350)
     ..armor(12, weight: 3);

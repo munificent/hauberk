@@ -8,9 +8,9 @@ import 'content/elements.dart';
 import 'content/item/affixes.dart';
 import 'content/item/floor_drops.dart';
 import 'content/item/items.dart';
+import 'content/item/shops.dart';
 import 'content/monster/monsters.dart';
 import 'content/old/recipes.dart';
-import 'content/old/shops.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
 import 'content/tiles.dart';
@@ -48,7 +48,7 @@ class GameContent implements Content {
   List<Race> get races => Races.all;
   Iterable<Skill> get skills => Skills.all;
   Iterable<Recipe> get recipes => Recipes.all;
-  Iterable<Shop> get shops => Shops.all;
+  Map<String, Shop> get shops => Shops.all;
 
   HeroSave createHero(String name, [Race race, HeroClass heroClass]) {
     race ??= Races.human;
@@ -68,6 +68,11 @@ class GameContent implements Content {
     });
 
     heroClass.startingItems.spawnDrop(hero.inventory.tryAdd);
+
+    // Populate the shops.
+    for (var shop in shops.values) {
+      hero.shops[shop] = shop.create();
+    }
 
     return hero;
   }

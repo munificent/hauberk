@@ -8,9 +8,11 @@ import '../hues.dart';
 import 'input.dart';
 import 'item_view.dart';
 
+// TODO: Support inspecting items.
 /// A screen where the hero can manage their items outside of the levels.
 ///
-/// Let's them transfer between their inventory, equipment, crucible, and home.
+/// Lets them transfer between their inventory, equipment, crucible, and home.
+/// Allows buying and selling from shops.
 class ItemScreen extends Screen<Input> {
   final Content _content;
   final HeroSave _save;
@@ -37,7 +39,7 @@ class ItemScreen extends Screen<Input> {
 
   ItemScreen.home(this._content, this._save) : _place = _Place.home;
 
-  ItemScreen.shop(this._content, this._save, Shop shop)
+  ItemScreen.shop(this._content, this._save, Inventory shop)
       : _place = _ShopPlace(shop);
 
   bool handleInput(Input input) {
@@ -126,6 +128,7 @@ class ItemScreen extends Screen<Input> {
   }
 
   void _drawPlace(Terminal terminal, int x) {
+    // TODO: How does the shop name get shown?
     var items = _place.items(this);
     if (_mode.selectingFromHero || _mode.selectingFromPlace) {
       drawItems(terminal, x, items, getPrice: _place.getPrice,
@@ -201,9 +204,6 @@ class _Place {
 
   const _Place();
 
-  /// The display label for the place.
-  String get label => "Home";
-
   String get getVerb => "Get";
 
   String get putVerb => "Put";
@@ -229,8 +229,6 @@ class _Place {
 }
 
 class _CruciblePlace extends _Place {
-  String get label => "Crucible";
-
   const _CruciblePlace();
 
   ItemCollection items(ItemScreen screen) => screen._save.crucible;
@@ -247,9 +245,7 @@ class _CruciblePlace extends _Place {
 }
 
 class _ShopPlace implements _Place {
-  final Shop _shop;
-
-  String get label => _shop.name;
+  final Inventory _shop;
 
   String get getVerb => "Buy";
 

@@ -1,42 +1,39 @@
-import 'dart:collection';
+import 'package:piecemeal/piecemeal.dart';
 
+import '../../engine.dart';
 import 'inventory.dart';
-import 'item.dart';
 
-class Shop extends IterableMixin<Item> with ItemCollection {
-  ItemLocation get location => ItemLocation.shop;
+class Shop {
+  final Drop _drop;
 
   final String name;
-  final List<Item> _items;
 
-  Shop(this.name, this._items);
+  Shop(this.name, this._drop);
 
-  Iterator<Item> get iterator => _items.iterator;
+  Inventory create() {
+    var inventory = Inventory(ItemLocation.shop(name), Option.shopCapacity);
 
-  int get length => _items.length;
+    for (var i = 0; i < 10; i++) {
+      update(inventory);
+    }
 
-  Item operator [](int index) => _items[index];
-
-  void remove(Item item) {
-    // Do nothing.
+    return inventory;
   }
 
-  Item removeAt(int index) => _items[index].clone(1);
+  Inventory load(Iterable<Item> items) {
+    return Inventory(ItemLocation.shop(name), Option.shopCapacity, items);
+  }
 
-  /// Any item can be "added" to a shop.
-  bool canAdd(Item item) => true;
+  void update(Inventory inventory) {
+    for (var i = 0; i < 5; i++) {
+      // Possibly remove an item. Try to keep the shop ~75% full.
+      var deleteChance = inventory.length / (Option.shopCapacity * 0.75);
+      if (rng.float() < deleteChance) {
+        inventory.removeAt(rng.range(inventory.length));
+      }
 
-  /// Any item can be "added" to a shop.
-  ///
-  /// This just means the item is sold and the hero gains some gold. The item
-  /// itself does not appear in the shop.
-  // TODO: Add the item to the shop? This would let the player buy back an
-  // erroneous sale, but it means we have to deal with making sure there is
-  // room for it.
-  AddItemResult tryAdd(Item item) => AddItemResult(item.count, 0);
-
-  void countChanged() {
-    // Do nothing.
-    // TODO: Reset item counts to replenish stock?
+      // Try to add an item.
+      _drop.spawnDrop((item) => inventory.tryAdd(item));
+    }
   }
 }

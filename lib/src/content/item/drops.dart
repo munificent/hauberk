@@ -19,6 +19,9 @@ Drop percentDrop(int chance, String drop, int depth) {
 /// Creates a [Drop] that drops all of [drops].
 Drop dropAllOf(List<Drop> drops) => _AllOfDrop(drops);
 
+/// Creates a [Drop] that drops one of [drops] based on their frequency.
+Drop dropOneOf(Map<String, double> drops) => _OneOfDrop(drops);
+
 Drop repeatDrop(int count, drop, [int level]) {
   if (drop is String) drop = parseDrop(drop, level);
   return _RepeatDrop(count, drop);
@@ -75,6 +78,30 @@ class _AllOfDrop implements Drop {
 
   void spawnDrop(AddItem addItem) {
     for (var drop in _drops) drop.spawnDrop(addItem);
+  }
+}
+
+/// A [Drop] that drops one of a set of child drops.
+class _OneOfDrop implements Drop {
+  final ResourceSet<ItemType> _items = ResourceSet();
+
+  _OneOfDrop(Map<String, double> drops) {
+    _items.defineTags("item");
+
+    drops.forEach((name, frequency) {
+      var itemType = Items.types.find(name);
+      // TODO: Allow passing in depth?
+      _items.add(name, itemType, 1, frequency, "item");
+    });
+  }
+
+  void spawnDrop(AddItem addItem) {
+    // TODO: Allow passing in depth?
+    var itemType = _items.tryChoose(1, "item");
+    if (itemType == null) return;
+
+    // TODO: Allow passing in depth?
+    addItem(Affixes.createItem(itemType, 1));
   }
 }
 

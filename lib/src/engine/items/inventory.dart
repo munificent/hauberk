@@ -9,17 +9,20 @@ import 'item.dart';
 /// of those is the case.
 class ItemLocation {
   static const onGround =
-      ItemLocation("On Ground", "There is nothing on the ground.");
-  static const inventory = ItemLocation("Inventory", "Your backpack is empty.");
-  static const equipment = ItemLocation("Equipment", "<not used>");
-  static const home = ItemLocation("Home", "There is nothing in your home.");
-  static const crucible = ItemLocation("Crucible", "The crucible is waiting.");
-  static const shop = ItemLocation("Shop", "All sold out!");
+      ItemLocation._("On Ground", "There is nothing on the ground.");
+  static const inventory =
+      ItemLocation._("Inventory", "Your backpack is empty.");
+  static const equipment = ItemLocation._("Equipment", "<not used>");
+  static const home = ItemLocation._("Home", "There is nothing in your home.");
+  static const crucible =
+      ItemLocation._("Crucible", "The crucible is waiting.");
 
   final String name;
   final String emptyDescription;
 
-  const ItemLocation(this.name, this.emptyDescription);
+  const ItemLocation._(this.name, this.emptyDescription);
+
+  ItemLocation.shop(this.name) : emptyDescription = "All sold out!";
 }
 
 abstract class ItemCollection implements Iterable<Item> {
