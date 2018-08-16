@@ -16,7 +16,6 @@ abstract class _OpenTileAction extends Action {
 
   // TODO: Do something more sophisticated. Take into account the theme where
   // the tile is.
-  String get _drop;
 
   int get _minDepthEmptyChance;
 
@@ -32,14 +31,15 @@ abstract class _OpenTileAction extends Action {
         _minDepthEmptyChance, _maxDepthEmptyChance))) {
       log("The $_name is empty.", actor);
     } else {
-      var drop = parseDrop(_drop, game.depth);
-      game.stage.placeDrops(_pos, Motility.walk, drop);
+      game.stage.placeDrops(_pos, Motility.walk, _createDrop());
 
       log("{1} open[s] the $_name.", actor);
     }
 
     return ActionResult.success;
   }
+
+  Drop _createDrop();
 }
 
 /// Open a barrel and place its drops.
@@ -50,11 +50,12 @@ class OpenBarrelAction extends _OpenTileAction {
 
   TileType get _openTile => Tiles.openBarrel;
 
-  String get _drop => "food";
-
   int get _minDepthEmptyChance => 40;
 
   int get _maxDepthEmptyChance => 10;
+
+  // TODO: More sophisticated drop.
+  Drop _createDrop() => parseDrop("food", game.depth);
 }
 
 /// Open a chest and place its drops.
@@ -65,11 +66,14 @@ class OpenChestAction extends _OpenTileAction {
 
   TileType get _openTile => Tiles.openChest;
 
-  // TODO: Drop more than one item sometimes.
-  // TODO: Better drop. Drops way too many skulls at low levels.
-  String get _drop => "item";
-
   int get _minDepthEmptyChance => 20;
 
   int get _maxDepthEmptyChance => 2;
+
+  // TODO: Drop more than one item sometimes.
+  Drop _createDrop() => dropOneOf({
+        parseDrop("treasure", game.depth): 0.5,
+        parseDrop("magic", game.depth): 0.2,
+        parseDrop("equipment", game.depth): 0.3
+      });
 }

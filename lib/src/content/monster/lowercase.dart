@@ -80,7 +80,8 @@ void dragons() {
     ..attack("bite[s]", 80)
     ..attack("claw[s]", 60)
     ..fireCone(damage: 100)
-    ..drop("magic", count: 6)
+    ..drop("treasure", count: 8)
+    ..drop("magic", count: 4)
     ..drop("equipment", count: 5);
 }
 
@@ -154,6 +155,7 @@ void goblins() {
     ..count(4)
     ..attack("stab[s]", 8)
     ..missive(Missive.insult, rate: 8)
+    ..drop("treasure", percent: 30)
     ..drop("spear", percent: 20)
     ..drop("healing", percent: 10);
 
@@ -162,6 +164,7 @@ void goblins() {
     ..minion("goblin peon", 0, 2)
     ..attack("stab[s]", 4)
     ..arrow(rate: 3, damage: 8)
+    ..drop("treasure", percent: 30)
     ..drop("bow", percent: 30)
     ..drop("dagger", percent: 15)
     ..drop("healing", percent: 5);
@@ -171,6 +174,7 @@ void goblins() {
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
     ..attack("stab[s]", 12)
+    ..drop("treasure", percent: 30)
     ..drop("spear", percent: 20)
     ..drop("armor", percent: 20)
     ..drop("resistance", percent: 5)
@@ -182,6 +186,7 @@ void goblins() {
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
     ..attack("stab[s]", 16)
+    ..drop("treasure", percent: 35)
     ..drop("axe", percent: 20)
     ..drop("armor", percent: 20)
     ..drop("resistance", percent: 5)
@@ -196,6 +201,7 @@ void goblins() {
     ..attack("whip[s]", 7)
     ..fireBolt(rate: 12, damage: 12)
     ..sparkBolt(rate: 12, damage: 16)
+    ..drop("treasure", percent: 30)
     ..drop("robe", percent: 20)
     ..drop("whip", percent: 10)
     ..drop("magic", percent: 30);
@@ -207,6 +213,7 @@ void goblins() {
     ..minion("goblin peon", 0, 2)
     ..attack("stab[s]", 10)
     ..arrow(rate: 3, damage: 12)
+    ..drop("treasure", percent: 20)
     ..drop("bow", percent: 30)
     ..drop("armor", percent: 20)
     ..drop("magic", percent: 20);
@@ -222,6 +229,7 @@ void goblins() {
     ..attack("hit[s]", 10)
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
+    ..drop("treasure", count: 3)
     ..drop("equipment", count: 2, depthOffset: 3)
     ..drop("magic", count: 3, depthOffset: 4)
     ..flags("protective unique");
@@ -327,6 +335,7 @@ void kobolds() {
     ..attack("club[s]", 4)
     ..missive(Missive.insult)
     ..haste()
+    ..drop("treasure", percent: 20)
     ..drop("club", percent: 40)
     ..drop("speed", percent: 30);
 
@@ -336,6 +345,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult)
     ..sparkBolt(rate: 5, damage: 6)
+    ..drop("treasure", percent: 25)
     ..drop("teleportation", percent: 50);
 
   family("k", meander: 20)..groups("kobold");
@@ -353,6 +363,7 @@ void kobolds() {
     ..minion("wild dog", 0, 3)
     ..attack("hit[s]", 4)
     ..waterBolt(rate: 5, damage: 6)
+    ..drop("treasure", percent: 25)
     ..drop("robe", percent: 20)
     ..drop("magic", percent: 40);
 
@@ -362,6 +373,7 @@ void kobolds() {
     ..sparkBolt(rate: 5, damage: 8)
     ..teleport(rate: 7, range: 6)
     ..haste(rate: 7)
+    ..drop("treasure", percent: 45)
     ..drop("magic", percent: 20)
     ..drop("magic", percent: 40);
 
@@ -372,6 +384,7 @@ void kobolds() {
     ..heal(rate: 15, amount: 10)
     ..fireBolt(rate: 10, damage: 8)
     ..haste(rate: 7)
+    ..drop("treasure", percent: 35)
     ..drop("club", percent: 40)
     ..drop("robe", percent: 20)
     ..drop("magic", percent: 40);
@@ -384,6 +397,7 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult, rate: 6)
     ..fireBolt(rate: 5, damage: 10)
+    ..drop("treasure", percent: 25)
     ..drop("robe", percent: 20)
     ..drop("magic", percent: 50)
     ..flags("cowardly");
@@ -396,6 +410,7 @@ void kobolds() {
     ..attack("stab[s]", 5)
     ..iceBolt(rate: 8, damage: 12)
     ..fireBolt(rate: 8, damage: 12)
+    ..drop("treasure", percent: 35)
     ..drop("staff", percent: 40)
     ..drop("robe", percent: 20)
     ..drop("magic", count: 2, percent: 60);
@@ -413,6 +428,7 @@ void kobolds() {
     ..teleport(rate: 5, range: 6)
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
+    ..drop("treasure", count: 2)
     ..drop("spear", percent: 80, depthOffset: 5)
     ..drop("armor", count: 2, depthOffset: 5)
     ..drop("magic", count: 3, depthOffset: 5)
@@ -442,6 +458,7 @@ void people() {
     ..he()
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy)
+    ..drop("treasure", percent: 80)
     ..drop("weapon", percent: 50, depthOffset: 4)
     ..drop("armor", percent: 60, depthOffset: 4)
     ..drop("magic", percent: 30, depthOffset: 4)
@@ -451,6 +468,7 @@ void people() {
   breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 30)
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy, rate: 12)
+    ..drop("treasure", percent: 25)
     ..drop("weapon", percent: 50)
     ..drop("armor", percent: 60)
     ..drop("magic", percent: 30)
@@ -459,6 +477,7 @@ void people() {
   breed("simpering knave", 2, carrot, 17)
     ..attack("hit[s]", 2)
     ..attack("stab[s]", 4)
+    ..drop("treasure", percent: 25)
     ..drop("whip", percent: 30)
     ..drop("armor", percent: 40)
     ..drop("magic", percent: 20)
@@ -468,6 +487,7 @@ void people() {
     ..placeIn("laboratory")
     ..attack("hit[s]", 2)
     ..sparkBolt(rate: 10, damage: 8)
+    ..drop("treasure", percent: 25)
     ..drop("magic", percent: 60)
     ..drop("dagger", percent: 10)
     ..drop("staff", percent: 10)
@@ -478,6 +498,7 @@ void people() {
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
     ..missive(Missive.clumsy, rate: 10)
+    ..drop("treasure", percent: 25)
     ..drop("potion", percent: 30)
     ..drop("bow", percent: 40)
     ..drop("sword", percent: 10)
@@ -487,6 +508,7 @@ void people() {
     ..attack("hit[s]", 8)
     ..heal(rate: 15, amount: 8)
     ..missive(Missive.clumsy)
+    ..drop("treasure", percent: 45)
     ..drop("scroll", percent: 30)
     ..drop("club", percent: 20)
     ..drop("robe", percent: 40)

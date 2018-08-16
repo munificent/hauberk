@@ -27,12 +27,15 @@ main() {
       <td colspan="2">Item</td>
       <td>Depth</td>
       <td>Freq.</td>
+      <td>Stack</td>
+      <td>Price</td>
       <td>Equip.</td>
       <td>Weapon</td>
       <td>Attack</td>
       <td>Armor</td>
+      <td>Weight</td>
+      <td>Heft</td>
       <td>Use</td>
-      <td>Stack</td>
       <td>Toss</td>
     </tr>
     </thead>
@@ -51,47 +54,31 @@ main() {
           <td>${item.name}</td>
         ''');
 
-    if (item.depth == null) {
-      text.write('<td>&mdash;</td>');
-    } else {
-      text.write('<td>${item.depth}</td>');
+    writeCell(Object value, Object defaultValue) {
+      if (value == defaultValue) {
+        text.write('<td>&mdash;</td>');
+      } else {
+        text.write('<td>$value</td>');
+      }
     }
 
-    text.write('<td>${Items.types.frequency(item.name)}</td>');
+    writeCell(item.depth, null);
+    writeCell(Items.types.frequency(item.name), "none");
+    writeCell(item.maxStack, "none");
+    writeCell(item.price, "none");
 
-    if (item.equipSlot == null) {
-      text.write('<td>&mdash;</td>');
-    } else {
-      text.write('<td>${item.equipSlot}</td>');
-    }
-
-    if (item.weaponType == null) {
-      text.write('<td>&mdash;</td>');
-    } else {
-      text.write('<td>${item.weaponType} (${item.heft} heft)</td>');
-    }
-
-    if (item.attack == null) {
-      text.write('<td>&mdash;</td>');
-    } else {
-      text.write('<td>${item.attack}</td>');
-    }
-
-    if (item.armor == 0) {
-      text.write('<td>&mdash;</td>');
-    } else if (item.weight == 0) {
-      text.write('<td>${item.armor}</td>');
-    } else {
-      text.write('<td>${item.armor} (${item.weight} weight)</td>');
-    }
+    writeCell(item.equipSlot, null);
+    writeCell(item.weaponType, null);
+    writeCell(item.attack, null);
+    writeCell(item.armor, 0);
+    writeCell(item.heft, 0);
+    writeCell(item.weight, 0);
 
     if (item.use == null) {
       text.write('<td>&mdash;</td>');
     } else {
       text.write('<td>${item.use().runtimeType}</td>');
     }
-
-    text.write('<td>${item.maxStack}</td>');
 
     if (item.toss == null) {
       text.write('<td>&mdash;</td>');

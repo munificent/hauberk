@@ -17,29 +17,25 @@ void litter() {
 }
 
 void treasure() {
-// TODO: Figure out what to do with these now that there is no money. Use them
-// as runes for enchanting equipment?
-/*
-  // TODO: Make monsters and areas drop these.
   // Coins.
-  category(CharCode.centSign, tag: "treasure/coin");
-  // TODO: Figure out these should be quantified.
-  treasure("Copper Coins",    1, copper,          1);
-  treasure("Bronze Coins",    7, persimmon,       8);
-  treasure("Silver Coins",   11, turquoise,      20);
-  treasure("Electrum Coins", 20, buttermilk,     50);
-  treasure("Gold Coins",     30, gold,          100);
-  treasure("Platinum Coins", 40, gunsmoke,      300);
+  category(CharCode.centSign)..tag("treasure/coin")..treasure();
+  item("Copper Coins", 1, copper, price: 1);
+  item("Bronze Coins", 7, persimmon, price: 8);
+  item("Silver Coins", 11, turquoise, price: 20);
+  item("Electrum Coins", 20, buttermilk, price: 50);
+  item("Gold Coins", 30, gold, price: 100);
+  item("Platinum Coins", 40, gunsmoke, price: 300);
 
   // Bars.
-  category(CharCode.dollarSign, tag: "treasure/bar");
-  treasure("Copper Bar",     35, copper,        150);
-  treasure("Bronze Bar",     50, persimmon,     500);
-  treasure("Silver Bar",     60, turquoise,     800);
-  treasure("Electrum Bar",   70, buttermilk,   1200);
-  treasure("Gold Bar",       80, gold,         2000);
-  treasure("Platinum Bar",   90, gunsmoke,     3000);
+  category(CharCode.dollarSign)..tag("treasure/bar")..treasure();
+  item("Copper Bar", 35, copper, price: 150);
+  item("Bronze Bar", 50, persimmon, price: 500);
+  item("Silver Bar", 60, turquoise, price: 800);
+  item("Electrum Bar", 70, buttermilk, price: 1200);
+  item("Gold Bar", 80, gold, price: 2000);
+  item("Platinum Bar", 90, gunsmoke, price: 3000);
 
+/*
   // TODO: Could add more treasure using other currency symbols.
 
   // TODO: Instead of treasure, make these recipe components.

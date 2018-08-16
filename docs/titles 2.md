@@ -202,3 +202,73 @@ Stuff like:
   - Positive: Cast as many different spells as possible.
   - Negative: None?
   - Reward: Slight proficiency improvement to all spells.
+
+---
+
+More title names lifted from the old Angband class levels:
+
+Novice
+Apprentice
+Trickster
+Illusionist
+Spellbinder
+Evoker
+Conjurer
+Warlock
+Sorcerer
+Arch-Mage
+
+Believer
+Acolyte
+Adept
+Evangelist
+Priest
+Curate
+Canon
+Bishop
+Prophet
+Patriarch
+
+Vagabond
+Cutpurse
+Footpad
+Robber
+Burglar
+Filcher
+Sharper
+Rogue
+Thief
+Master Thief
+
+Runner
+Strider
+Scout
+Courser
+Tracker
+Guide
+Explorer
+Pathfinder
+Ranger
+Ranger Lord
+
+Gallant
+Keeper
+Protector
+Defender
+Warder
+Knight
+Guardian
+Chevalier
+Paladin
+Paladin Lord
+
+Rookie
+Soldier
+Swordsman
+Swashbuckler
+Veteran
+Myrmidon
+Commando
+Champion
+Hero
+Lord

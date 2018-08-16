@@ -121,6 +121,7 @@ class _CategoryBuilder extends _BaseBuilder {
   String _weaponType;
   String _tag;
   String _verb;
+  bool _isTreasure = false;
 
   void tag(String tagPath) {
     // Define the tag path and store the leaf tag which is what gets used by
@@ -155,6 +156,10 @@ class _CategoryBuilder extends _BaseBuilder {
     // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
     // example, a "sword" item will match a "weapon" affix.
     Affixes.defineItemTag(tagPath);
+  }
+
+  void treasure() {
+    _isTreasure = true;
   }
 }
 
@@ -332,7 +337,8 @@ void finishItem() {
       weight: _item._weight ?? 0,
       heft: _item._heft ?? 0,
       emanation: _item._emanation ?? _category._emanation,
-      fuel: _item._fuel ?? _category._fuel);
+      fuel: _item._fuel ?? _category._fuel,
+      treasure: _category._isTreasure);
 
   itemType.destroyChance.addAll(_category._destroyChance);
   itemType.destroyChance.addAll(_item._destroyChance);

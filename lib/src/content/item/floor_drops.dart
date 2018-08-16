@@ -18,12 +18,13 @@ class FloorDrops {
           location: SpawnLocation.wall,
           drop: dropAllOf([
             percentDrop(60, "Skull", i),
+            percentDrop(40, "treasure", i),
             percentDrop(30, "weapon", i),
             percentDrop(30, "armor", i),
             percentDrop(30, "armor", i),
-            percentDrop(30, "magic", i),
-            percentDrop(30, "magic", i),
-            percentDrop(30, "magic", i)
+            percentDrop(20, "magic", i),
+            percentDrop(20, "magic", i),
+            percentDrop(20, "magic", i)
           ]));
 
       floorDrop(
@@ -44,6 +45,11 @@ class FloorDrops {
           frequency: lerpDouble(i, 1, 100, 5.0, 0.01),
           location: SpawnLocation.corner,
           drop: parseDrop("Rock", i));
+
+      floorDrop(
+          depth: i,
+          frequency: 10.0,
+          drop: parseDrop("treasure", i));
 
       floorDrop(
           depth: i,

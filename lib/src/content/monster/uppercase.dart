@@ -14,11 +14,13 @@ void birds() {
     ..count(3, 6);
   breed("crow", 4, steelGray, 9, speed: 2, meander: 30)
     ..attack("bite[s]", 5)
+    ..drop("treasure", percent: 10)
     ..drop("Black Feather", percent: 25);
 
   breed("raven", 6, slate, 22, meander: 15)
     ..attack("bite[s]", 5)
     ..attack("claw[s]", 4)
+    ..drop("treasure", percent: 10)
     ..drop("Black Feather", percent: 20)
     ..flags("protective");
 }
@@ -42,6 +44,7 @@ void faeFolk() {
     ..attack("scratch[es]", 3)
     ..missive(Missive.insult, rate: 4)
     ..sparkBolt(rate: 7, damage: 4)
+    ..drop("treasure", percent: 10)
     ..drop("magic", percent: 60);
 
   breed("house sprite", 5, cornflower, 10)
@@ -49,6 +52,7 @@ void faeFolk() {
     ..missive(Missive.insult, rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
     ..teleport(rate: 7, range: 4)
+    ..drop("treasure", percent: 10)
     ..drop("magic", percent: 80);
 
   breed("mischievous sprite", 7, salmon, 24)
@@ -56,6 +60,7 @@ void faeFolk() {
     ..missive(Missive.insult, rate: 4)
     ..windBolt(rate: 8, damage: 8)
     ..teleport(range: 5)
+    ..drop("treasure", percent: 10)
     ..drop("magic");
 }
 
@@ -85,7 +90,8 @@ void quest() {
     ..attack("blast[s]", 200, Elements.lightning)
     ..darkCone(damage: 500)
     ..flags("fearless unique")
-    ..openDoors();
+    ..openDoors()
+    ..drop("treasure", count: 10);
   // TODO: Minions. Moves.
 }
 
@@ -102,24 +108,36 @@ void reptiles() {
     ..sense(see: 10, hear: 5);
   breed("lizard guard", 11, gold, 26)
     ..attack("claw[s]", 8)
-    ..attack("bite[s]", 10);
+    ..attack("bite[s]", 10)
+    ..drop("treasure", percent: 30)
+    ..drop("armor", percent: 30)
+    ..drop("spear", percent: 20);
 
   breed("lizard protector", 15, lima, 30)
     ..minion("lizard guard", 0, 2)
     ..attack("claw[s]", 10)
-    ..attack("bite[s]", 14);
+    ..attack("bite[s]", 14)
+    ..drop("treasure", percent: 30)
+    ..drop("armor", percent: 30)
+    ..drop("spear", percent: 20);
 
   breed("armored lizard", 17, gunsmoke, 38)
     ..minion("lizard guard", 0, 2)
     ..attack("claw[s]", 10)
-    ..attack("bite[s]", 15);
+    ..attack("bite[s]", 15)
+    ..drop("treasure", percent: 30)
+    ..drop("armor", percent: 50)
+    ..drop("spear", percent: 20);
 
   breed("scaled guardian", 19, steelGray, 50)
     ..minion("lizard protector", 0, 2)
     ..minion("lizard guard", 0, 1)
     ..minion("salamander", 0, 1)
     ..attack("claw[s]", 10)
-    ..attack("bite[s]", 15);
+    ..attack("bite[s]", 15)
+    ..drop("treasure", percent: 40)
+    ..drop("armor", percent: 30)
+    ..drop("weapon", percent: 20);
 
   breed("saurian", 21, carrot, 64)
     ..minion("lizard protector", 0, 2)
@@ -127,7 +145,10 @@ void reptiles() {
     ..minion("lizard guard", 0, 1)
     ..minion("salamander", 0, 2)
     ..attack("claw[s]", 12)
-    ..attack("bite[s]", 17);
+    ..attack("bite[s]", 17)
+    ..drop("treasure", percent: 50)
+    ..drop("armor", percent: 30)
+    ..drop("weapon", percent: 20);
 
   family("R", dodge: 30, meander: 20)
     ..groups("animal")

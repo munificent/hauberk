@@ -20,7 +20,7 @@ Drop percentDrop(int chance, String drop, int depth) {
 Drop dropAllOf(List<Drop> drops) => _AllOfDrop(drops);
 
 /// Creates a [Drop] that drops one of [drops] based on their frequency.
-Drop dropOneOf(Map<String, double> drops) => _OneOfDrop(drops);
+Drop dropOneOf(Map<Drop, double> drops) => _OneOfDrop(drops);
 
 Drop repeatDrop(int count, drop, [int level]) {
   if (drop is String) drop = parseDrop(drop, level);
@@ -83,25 +83,23 @@ class _AllOfDrop implements Drop {
 
 /// A [Drop] that drops one of a set of child drops.
 class _OneOfDrop implements Drop {
-  final ResourceSet<ItemType> _items = ResourceSet();
+  final ResourceSet<Drop> _drop = ResourceSet();
 
-  _OneOfDrop(Map<String, double> drops) {
-    _items.defineTags("item");
+  _OneOfDrop(Map<Drop, double> drops) {
+    _drop.defineTags("drop");
 
-    drops.forEach((name, frequency) {
-      var itemType = Items.types.find(name);
+    drops.forEach((drop, frequency) {
       // TODO: Allow passing in depth?
-      _items.add(name, itemType, 1, frequency, "item");
+      _drop.addUnnamed(drop, 1, frequency, "drop");
     });
   }
 
   void spawnDrop(AddItem addItem) {
     // TODO: Allow passing in depth?
-    var itemType = _items.tryChoose(1, "item");
-    if (itemType == null) return;
+    var drop = _drop.tryChoose(1, "drop");
+    if (drop == null) return;
 
-    // TODO: Allow passing in depth?
-    addItem(Affixes.createItem(itemType, 1));
+    drop.spawnDrop(addItem);
   }
 }
 
