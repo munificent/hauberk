@@ -452,15 +452,17 @@ class SelectMode extends Mode {
   }
 
   bool selectItem(ItemScreen screen, int index) {
-    ItemCollection from;
+    Iterable<Item> from;
     if (_toHero) {
-      from = screen._place.items(screen);
+      from = screen._place.items(screen).slots;
     } else {
-      from = screen._heroItems;
+      from = screen._heroItems.slots;
     }
 
     if (index >= from.length) return false;
-    var item = from[index];
+    var item = from.elementAt(index);
+    if (item == null) return false;
+
     if (!canSelectItem(screen, item)) return false;
 
     // Prompt the user for a count if the item is a stack.

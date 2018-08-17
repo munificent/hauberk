@@ -658,7 +658,7 @@ class GameScreen extends Screen<Input> {
 
         if (hero.dazzle.isActive) {
           var chance = math.min(90, hero.dazzle.duration * 8);
-          if (!rng.percent(chance)) {
+          if (rng.percent(chance)) {
             char = rng.percent(chance) ? char : CharCode.asterisk;
             lightFore = rng.item(_dazzleColors);
             darkFore = lightFore;

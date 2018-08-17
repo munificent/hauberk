@@ -94,15 +94,20 @@ class Item implements Comparable<Item>, Noun {
 
   Pronoun get pronoun => Pronoun.it;
 
-  // TODO: Take affixes into account.
   /// How much the one unit of the item can be bought and sold for.
-  int get price => type.price;
+  int get price {
+    var price = type.price.toDouble();
+    if (prefix != null) price *= prefix.priceScale;
+    if (suffix != null) price *= suffix.priceScale;
+
+    if (prefix != null) price += prefix.priceBonus;
+    if (suffix != null) price += suffix.priceBonus;
+
+    return price.ceil();
+  }
 
   bool get isTreasure => type.isTreasure;
 
-  // TODO: Let affixes modify. Affixes like "ghostly" and "elven" reduce
-  // weight. "Heavy" and "adamant" increase it (but also increase armor
-  // power).
   /// The penalty to the hero's strength when wearing this.
   int get weight {
     var result = type.weight;

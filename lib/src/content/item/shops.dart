@@ -90,6 +90,10 @@ class Shops {
       "Bottled Fire": 1.0,
       "Bottled Ocean": 1.0,
       "Bottled Earth": 1.0,
+    });
+
+    shop("The Droll Magery", {
+      "Spellbook \"Elemental Primer\"": 1.0,
       "Scroll of Sidestepping": 1.0,
       "Scroll of Phasing": 1.0,
       "Scroll of Item Detection": 1.0,
@@ -97,7 +101,6 @@ class Shops {
   }
 
 /*
-  The Droll Magery
   Glur's Rare Artifacts
   */
 }

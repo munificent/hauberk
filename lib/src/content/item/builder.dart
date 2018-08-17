@@ -259,6 +259,8 @@ class _AffixBuilder {
   int _damageBonus;
   Element _brand;
   int _armor;
+  int _priceBonus;
+  double _priceScale;
 
   final Map<Element, int> _resists = {};
 
@@ -294,6 +296,11 @@ class _AffixBuilder {
 
   void resist(Element element, [int power]) {
     _resists[element] = power ?? 1;
+  }
+
+  void price(int bonus, double scale) {
+    _priceBonus = bonus;
+    _priceScale = scale;
   }
 }
 
@@ -362,11 +369,13 @@ void finishAffix() {
       damageScale: _affix._damageScale,
       damageBonus: _affix._damageBonus,
       brand: _affix._brand,
-      armor: _affix._armor);
+      armor: _affix._armor,
+      priceBonus: _affix._priceBonus,
+      priceScale: _affix._priceScale);
 
   _affix._resists.forEach(affix.resist);
 
-  (_affix._isPrefix ? Affixes.prefixes : Affixes.suffixes)
-      .add(_affix._name, affix, _affix._depth, _affix._frequency, _affixTag);
+  var affixes = _affix._isPrefix ? Affixes.prefixes : Affixes.suffixes;
+  affixes.add(_affix._name, affix, _affix._depth, _affix._frequency, _affixTag);
   _affix = null;
 }

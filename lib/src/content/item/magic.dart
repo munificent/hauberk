@@ -164,7 +164,7 @@ void spellBooks() {
     ..tag("magic/book/sorcery")
     ..toss(damage: 1, range: 3, breakage: 25)
     ..destroy(Elements.fire, chance: 5, fuel: 10);
-  item('Spellbook "Elemental Primer"', 1, maroon, frequency: 0.5, price: 100)
+  item('Spellbook "Elemental Primer"', 1, maroon, frequency: 0.05, price: 100)
     ..skills([
       "Sense Items",
       "Flee",

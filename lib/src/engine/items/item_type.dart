@@ -144,10 +144,12 @@ class Affix {
   final double damageScale;
   final int damageBonus;
   final Element brand;
-
   final int armor;
 
   final Map<Element, int> _resists = {};
+
+  final int priceBonus;
+  final double priceScale;
 
   Affix(this.name,
       {double heftScale,
@@ -156,14 +158,18 @@ class Affix {
       double damageScale,
       int damageBonus,
       Element brand,
-      int armor})
+      int armor,
+      int priceBonus,
+      double priceScale})
       : heftScale = heftScale ?? 1.0,
         weightBonus = weightBonus ?? 0,
         strikeBonus = strikeBonus ?? 0,
         damageScale = damageScale ?? 1.0,
         damageBonus = damageBonus ?? 1,
         brand = brand ?? Element.none,
-        armor = armor ?? 0 {}
+        armor = armor ?? 0,
+        priceBonus = priceBonus ?? 0,
+        priceScale = priceScale ?? 1.0 {}
 
   int resistance(Element element) {
     if (!_resists.containsKey(element)) return 0;
