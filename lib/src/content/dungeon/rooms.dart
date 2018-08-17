@@ -151,6 +151,15 @@ class RoomsBiome extends Biome {
   /// The tiles in other biomes that the rooms have connected to already.
   final Set<Vec> _reached = Set();
 
+  /// The pairs of points that we've run a pathfind between to look for a
+  /// shortcut and where the path was too short to be a shortcut.
+  ///
+  /// We cache these because we often end up trying the same pairs of nodes
+  /// over and over. If there is already a short path between them on the
+  /// first try, it's not going to get any longer as the dungeon grows, so
+  /// there is no need to recalculate it.
+  final _failedShortcuts = Map<Vec, Set<Vec>>();
+
   RoomsBiome(this._dungeon);
 
   Iterable<String> generate() sync* {
@@ -340,11 +349,17 @@ class RoomsBiome extends Biome {
   ///
   /// Used to avoid placing pointless redundant paths in the dungeon.
   bool _isShortcut(Vec from, Vec to, int length) {
+    // If we've already checked and the path between these nodes isn't a
+    // shortcut, don't try again.
+    var cache = _failedShortcuts[from];
+    if (cache != null && cache.contains(to)) return false;
+
     var pathfinder = CyclePathfinder(
         _dungeon.stage, from, to, length * _style.passageShortcutScale);
 
-    // TODO: This search is very slow.
-    return !pathfinder.search();
+    var result = !pathfinder.search();
+    if (!result) _failedShortcuts.putIfAbsent(from, () => Set()).add(to);
+    return result;
   }
 
   void _createStartingRoom() {
