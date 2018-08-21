@@ -296,7 +296,7 @@ class Furnishing extends Decor {
     ??.??""");
 
     // Chests.
-    category(1.0, themes: "chamber closet storeroom");
+    category(1.0, themes: "chamber storeroom treasure-room");
     furnishing(Symmetry.rotate90, "&", """
     ##
     #&""");

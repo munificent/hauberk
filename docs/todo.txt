@@ -9,6 +9,7 @@
   - tune monster perception
   - element resistance and immunity
 - items
+  - more food
   - helmets
   - heavy armor
   - gloves
@@ -18,12 +19,15 @@
   - wands
   - staves
   - spellbooks
-- equipment
   - affixes
     - improve spells
     - stat gain
     - reduce weight, heft, encumbrance
   - gems
+  - two-arm mechanics
+    - dual wielding
+    - two-armed weapons
+    - equipping light sources
 - elements and moves
   - effects for all elements
     - life draining?
@@ -34,8 +38,8 @@
   - (see moves.txt)
 - classes
   - rogue
-    - skills
-    - money
+    - tricks
+    - equipment
   - priest
     - piety
     - granted powers

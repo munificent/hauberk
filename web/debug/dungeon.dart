@@ -263,9 +263,10 @@ void render({bool showInfo = true}) {
   const themeColors = {
     "laboratory": [255.0, 0.0, 255.0],
     "aquatic": [0.0, 0.0, 255.0],
-    "passage": [255.0, 0.0, 0.0],
+    "passage": [0.0, 255.0, 255.0],
     "room": [0.0, 0.0, 0.0],
     "chamber": [255.0, 255.0, 255.0],
+    "boss-chamber": [255.0, 0.0, 0.0],
     "storeroom": [128.0, 128.0, 0.0],
     "closet": [128.0, 128.0, 0.0],
     "hall": [255.0, 255.0, 0.0],

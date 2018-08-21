@@ -5,11 +5,14 @@ import 'dungeon.dart';
 abstract class Place {
   final bool hasHero;
   final bool emanates;
-  double monsterDensity;
-  double itemDensity;
   final List<Vec> cells;
 
   final Set<Place> neighbors = Set();
+
+  double monsterDensity;
+  int monsterDepthOffset = 0;
+  double itemDensity;
+  int itemDepthOffset = 0;
 
   // TODO: In addition to painting themes on places, also paint level
   // adjustment. So if an out of depth monster is spawned, it increases the

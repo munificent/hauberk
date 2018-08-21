@@ -11,7 +11,7 @@ Is there anything goal-directed about the way they wander the level?
 Foreshadowing in the dungeon could help:
 
 - If you get within a certain range of some monsters, randomly get a message
-  like "you hear an low growl to the north", etc.
+  like "you hear a low growl to the north", etc.
 
 - When placing monsters, place some nearby accoutrements that hint at them.
   Puddles of slime near slimes, burn marks near dragons, etc.
@@ -32,4 +32,4 @@ etc.
 
 I think it's OK if the player doesn't know *what* they are headed towards. The
 mystery alone can draw them forward, as long as they have a sense that there is
-a good change they are headed towards *something* interesting.
+a good chance they are headed towards *something* interesting.

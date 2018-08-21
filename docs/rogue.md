@@ -67,6 +67,11 @@ rogue's agility. The skills are as follows:
   thief lays complicated traps and sets them off when monsters approach. Or uses
   items to snare other items from the dungeon.
 
+* **See in the dark:** Years of hiding in shadows and prowling at night give the
+  rogue an enhanced ability to see in minimal light. Increases view distance
+  beyond the limits of the light source. Combines nicely with stealth and hiding
+  in shadows, since walking around with a light tends to make one less stealthy.
+
 ## Subclasses
 
 * Thief

@@ -81,7 +81,7 @@ class Dungeon {
     }
 
     yield "Placing decor";
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 400; i++) {
       var pos = rng.vecInRect(safeBounds);
       var place = placeAt(pos);
       if (place == null) continue;
@@ -262,7 +262,8 @@ class Dungeon {
     var spawnCount = _rollCount(place, place.monsterDensity);
     while (spawnCount > 0) {
       var theme = place.chooseTheme();
-      var breed = Monsters.breeds.tryChoose(depth, theme);
+      var breed =
+          Monsters.breeds.tryChoose(depth + place.monsterDepthOffset, theme);
 
       // Don't place dead or redundant uniques.
       if (breed.flags.unique) {
@@ -291,7 +292,7 @@ class Dungeon {
     for (var i = 0; i < dropCount; i++) {
       var theme = place.chooseTheme();
 
-      var floorDrop = FloorDrops.choose(theme, depth);
+      var floorDrop = FloorDrops.choose(theme, depth + place.itemDepthOffset);
       var pos = _tryFindSpawnPos(place, Motility.walk, floorDrop.location,
           avoidActors: false);
       if (pos == null) break;
