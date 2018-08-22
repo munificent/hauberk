@@ -14,8 +14,8 @@ import 'draw.dart';
 ///
 /// Items can be drawn in one of three states:
 ///
-/// * If [canSelect] is `null`, then item list is just being viewed and no
-///   items in particular are highlighted.
+/// * If [canSelect] is `null` or returns `null`, then item list is just being
+///   viewed and no items in particular are highlighted.
 /// * If [canSelect] returns `true`, the item is highlighted as being
 ///   selectable.
 /// * If [canSelect] returns `false`, the item cannot be selected and is
@@ -28,7 +28,7 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
     Item inspected}) {
   isDialog ??= false;
 
-  terminal = terminal.rect(left, 2, 40, terminal.height - 2);
+  terminal = terminal.rect(left, 2, 46, terminal.height - 2);
 
   // Draw a box for the contents.
   var itemCount = items.slots.length;
@@ -79,17 +79,16 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
     var textColor = UIHue.primary;
     var enabled = true;
 
-    if (canSelect != null) {
-      if (canSelect(item)) {
-        borderColor = UIHue.secondary;
-        letterColor = UIHue.selection;
-        textColor = UIHue.primary;
-      } else {
-        borderColor = Color.black;
-        letterColor = Color.black;
-        textColor = UIHue.disabled;
-        enabled = false;
-      }
+    var canSelectItem = canSelect != null ? canSelect(item) : null;
+    if (canSelectItem == true) {
+      borderColor = UIHue.secondary;
+      letterColor = UIHue.selection;
+      textColor = UIHue.primary;
+    } else if (canSelectItem == false) {
+      borderColor = Color.black;
+      letterColor = Color.black;
+      textColor = UIHue.disabled;
+      enabled = false;
     }
 
     terminal.writeAt(1, y, " )", borderColor);
@@ -140,6 +139,8 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
 }
 
 void drawInspector(Terminal terminal, Hero hero, Item item) {
+  terminal = terminal.rect(46, 0, 34, 20);
+
   Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
   terminal.drawGlyph(1, 0, item.appearance as Glyph);
@@ -155,7 +156,7 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
   }
 
   writeLabel(String label) {
-    terminal.writeAt(3, y, "$label:", UIHue.text);
+    terminal.writeAt(1, y, "$label:", UIHue.text);
   }
 
   // TODO: Mostly copied from hero_equipment_dialog. Unify.
@@ -196,7 +197,7 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
     if (value == null) return;
 
     writeLabel(label);
-    terminal.writeAt(16, y, value.toString(), UIHue.primary);
+    terminal.writeAt(12, y, value.toString(), UIHue.primary);
     y++;
   }
 
@@ -208,21 +209,21 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
     writeLabel("Damage");
     if (item.element != Element.none) {
       terminal.writeAt(
-          13, y, item.element.abbreviation, elementColor(item.element));
+          10, y, item.element.abbreviation, elementColor(item.element));
     }
 
-    terminal.writeAt(16, y, item.attack.damage.toString(), UIHue.text);
-    writeScale(20, y, item.damageScale);
-    writeBonus(24, y, item.damageBonus);
-    terminal.writeAt(28, y, "=", UIHue.secondary);
+    terminal.writeAt(12, y, item.attack.damage.toString(), UIHue.text);
+    writeScale(16, y, item.damageScale);
+    writeBonus(20, y, item.damageBonus);
+    terminal.writeAt(25, y, "=", UIHue.secondary);
 
     var damage = item.attack.damage * item.damageScale + item.damageBonus;
-    terminal.writeAt(30, y, damage.toStringAsFixed(2).padLeft(6), carrot);
+    terminal.writeAt(27, y, damage.toStringAsFixed(2).padLeft(6), carrot);
     y++;
 
     if (item.strikeBonus != 0) {
       writeLabel("Strike");
-      writeBonus(16, y, item.strikeBonus);
+      writeBonus(12, y, item.strikeBonus);
       y++;
     }
 
@@ -230,23 +231,28 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
       writeStat("Range", item.attack.range);
     }
 
-    writeLabel("Heft");
-    var strongEnough = hero.strength.value >= item.heft;
-    var color = strongEnough ? UIHue.primary : brickRed;
-    terminal.writeAt(16, y, item.heft.toString(), color);
-    writeScale(20, y, hero.strength.heftScale(item.heft));
-    y++;
+    // TODO: Temp hack. The ItemScreen doesn't have access to a Hero so passes
+    // in null. We should hoist the hero state that is needed in and out of
+    // game up to HeroSave and pass that in instead of Hero.
+    if (hero != null) {
+      writeLabel("Heft");
+      var strongEnough = hero.strength.value >= item.heft;
+      var color = strongEnough ? UIHue.primary : brickRed;
+      terminal.writeAt(12, y, item.heft.toString(), color);
+      writeScale(16, y, hero.strength.heftScale(item.heft));
+      y++;
+    }
   }
 
   if (item.armor != 0) {
     writeSection("Defense");
     writeLabel("Armor");
-    terminal.writeAt(16, y, item.baseArmor.toString(), UIHue.text);
-    writeBonus(20, y, item.armorModifier);
-    terminal.writeAt(28, y, "=", UIHue.secondary);
+    terminal.writeAt(12, y, item.baseArmor.toString(), UIHue.text);
+    writeBonus(16, y, item.armorModifier);
+    terminal.writeAt(25, y, "=", UIHue.secondary);
 
     var armor = item.armor.toString().padLeft(6);
-    terminal.writeAt(30, y, armor, peaGreen);
+    terminal.writeAt(27, y, armor, peaGreen);
     y++;
 
     writeStat("Weight", item.weight);
@@ -256,7 +262,7 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
   // TODO: Show spells for spellbooks.
 
   writeSection("Resistances");
-  var x = 3;
+  var x = 1;
   for (var element in Elements.all) {
     if (element == Element.none) continue;
     var resistance = item.resistance(element);
@@ -303,8 +309,8 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
     description.add("It can be destroyed by ${element.name.toLowerCase()}.");
   }
 
-  for (var line in Log.wordWrap(terminal.width - 4, description.join(" "))) {
-    terminal.writeAt(2, y, line, UIHue.text);
+  for (var line in Log.wordWrap(terminal.width - 2, description.join(" "))) {
+    terminal.writeAt(1, y, line, UIHue.text);
     y++;
   }
 

@@ -63,7 +63,7 @@ class SelectDepthScreen extends Screen<Input> {
 //        break;
 //
       case KeyCode.h:
-        ui.push(ItemScreen.home(content, save));
+        ui.push(ItemScreen.home(save));
         return true;
 
       case KeyCode.one:
@@ -94,7 +94,7 @@ class SelectDepthScreen extends Screen<Input> {
 
     if (index >= shops.length) return false;
 
-    ui.push(ItemScreen.shop(content, save, save.shops[shops[index]]));
+    ui.push(ItemScreen.shop(save, save.shops[shops[index]]));
     return true;
   }
 
