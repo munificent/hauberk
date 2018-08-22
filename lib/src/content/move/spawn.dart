@@ -5,7 +5,11 @@ import '../action/spawn.dart';
 
 /// Spawns a new [Monster] of the same [Breed] adjacent to this one.
 class SpawnMove extends Move {
-  SpawnMove(num rate) : super(rate);
+  final bool _preferStraight;
+
+  SpawnMove(num rate, {bool preferStraight})
+      : _preferStraight = preferStraight,
+        super(rate);
 
   num get experience => 6.0;
 
@@ -24,9 +28,41 @@ class SpawnMove extends Move {
 
   Action onGetAction(Monster monster) {
     // Pick an open adjacent tile.
-    var dirs = Direction.all
-        .where((dir) => monster.willEnter(monster.pos + dir))
-        .toList();
+    var dirs = <Direction>[];
+
+    // If we want to spawn in straight-ish lines, bias the directions towards
+    // ones that continue existing lines.
+    if (_preferStraight) {
+      for (var dir in Direction.all) {
+        if (!monster.willEnter(monster.pos + dir)) continue;
+
+        checkNeighbor(Direction neighbor) {
+          var other = monster.game.stage.actorAt(monster.pos + dir);
+          return other != null &&
+              other is Monster &&
+              other.breed == monster.breed;
+        }
+
+        if (checkNeighbor(dir.rotate180)) {
+          dirs.addAll([dir, dir, dir, dir, dir]);
+        }
+
+        if (checkNeighbor(dir.rotate180.rotateLeft45)) {
+          dirs.add(dir);
+        }
+
+        if (checkNeighbor(dir.rotate180.rotateRight45)) {
+          dirs.add(dir);
+        }
+      }
+    }
+
+    if (dirs.isEmpty) {
+      for (var dir in Direction.all) {
+        if (!monster.willEnter(monster.pos + dir)) continue;
+        dirs.add(dir);
+      }
+    }
 
     return SpawnAction(monster.pos + rng.item(dirs), monster.breed);
   }

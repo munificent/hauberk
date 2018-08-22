@@ -24,6 +24,7 @@ final breedGroups = Map<String, BreedGroup>.fromIterable([
   BreedGroup("Humans", "human"),
   BreedGroup("Jellies", "jelly"),
   BreedGroup("Kobolds", "kobold"),
+  BreedGroup("Plants", "plant"),
   BreedGroup("Saurians", "saurian"),
 ], key: (group) => group.name);
 
@@ -272,6 +273,10 @@ class _BreedBuilder extends _BaseBuilder {
       _bolt("the arrow", "hits", Element.none,
           rate: rate, damage: damage, range: 8);
 
+  void whip({num rate = 5, int damage, int range = 2}) =>
+      _bolt(null, "whips", Element.none,
+          rate: rate, damage: damage, range: range);
+
   void windBolt({num rate = 5, int damage}) =>
       _bolt("the wind", "blows", Elements.air,
           rate: rate, damage: damage, range: 8);
@@ -351,11 +356,13 @@ class _BreedBuilder extends _BaseBuilder {
   void teleport({num rate = 5, int range = 10}) =>
       _addMove(TeleportMove(rate, range));
 
-  void spawn({num rate = 10}) => _addMove(SpawnMove(rate));
+  void spawn({num rate = 10, bool preferStraight}) =>
+      _addMove(SpawnMove(rate, preferStraight: preferStraight));
 
   void _bolt(String noun, String verb, Element element,
       {num rate, int damage, int range}) {
-    _addMove(BoltMove(rate, Attack(Noun(noun), verb, damage, range, element)));
+    var nounObject = noun != null ? Noun(noun) : null;
+    _addMove(BoltMove(rate, Attack(nounObject, verb, damage, range, element)));
   }
 
   void _cone(String noun, String verb, Element element,

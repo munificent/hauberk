@@ -558,7 +558,24 @@ void troglodytes() {}
 
 void minorUndead() {}
 
-void vines() {}
+void vines() {
+  family("v", flags: "fearless immobile")
+    ..groups("plant")
+    ..sense(see: 10, hear: 10);
+  breed("choker", 16, peaGreen, 40)
+    ..attack("strangle", 12)
+    ..placeIn("passage");
+  breed("nightshade", 19, lilac, 50)
+    ..whip(rate: 3, damage: 10)
+    ..attack("touch[es]", 12, Elements.poison);
+  breed("creeper", 22, lima, 60)
+    ..spawn(preferStraight: true)
+    ..whip(rate: 3, damage: 10)
+    ..attack("strangle", 8);
+  breed("strangler", 26, sherwood, 80)
+    ..attack("strangle", 14)
+    ..placeIn("passage");
+}
 
 void worms() {
   family("w", dodge: 15, meander: 40, flags: "fearless")
