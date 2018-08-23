@@ -50,6 +50,7 @@ void canines() {
     ..groups("animal")
     ..sense(see: 5, hear: 10)
     ..placeIn("room", "passage");
+
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
     ..attack("bite[s]", 4)
@@ -67,6 +68,37 @@ void canines() {
     ..attack("bite[s]", 8)
     ..howl(range: 10)
     ..drop("Fur Pelt", percent: 20);
+
+  breed("wolf", 26, ash, 60)
+    ..count(3, 6)
+    ..attack("bite[s]", 12)
+    ..howl(range: 10);
+
+  breed("varg", 30, slate, 80)
+    ..count(2, 6)
+    ..attack("bite[s]", 16)
+    ..howl(range: 10);
+
+  // TODO: Drops.
+  breed("Skoll", 36, gold, 200)
+    ..flags("unique")
+    ..minion("varg", 3, 5)
+    ..attack("bite[s]", 20)
+    ..howl(range: 10);
+
+  breed("Hati", 40, cerulean, 250)
+    ..flags("unique")
+    ..minion("varg", 3, 5)
+    ..attack("bite[s]", 23)
+    ..howl(range: 10);
+
+  breed("Fenrir", 44, steelGray, 300)
+    ..flags("unique")
+    ..minion("varg", 3, 5)
+    ..minion("Skoll")
+    ..minion("Hati")
+    ..attack("bite[s]", 26)
+    ..howl(range: 10);
 }
 
 void dragons() {
@@ -76,10 +108,46 @@ void dragons() {
     ..sense(see: 16, hear: 10)
     ..defense(20, "{2} [is|are] deflected by its scales.")
     ..preferOpen();
-  breed("red dragon", 50, brickRed, 400)
-    ..attack("bite[s]", 80)
-    ..attack("claw[s]", 60)
+  // TODO: Juvenile and elder dragons.
+  // TODO: Minions?
+  breed("green dragon", 60, lima, 350)
+    ..attack("bite[s]", 30)
+    ..attack("claw[s]", 25)
+    ..drop("treasure", count: 7)
+    ..drop("magic", count: 4)
+    ..drop("equipment", count: 4);
+  breed("blue dragon", 65, ash, 400)
+    ..attack("bite[s]", 30)
+    ..attack("claw[s]", 25)
+    ..waterCone(damage: 70)
+    ..drop("treasure", count: 8)
+    ..drop("magic", count: 4)
+    ..drop("equipment", count: 5);
+  breed("white dragon", 70, ash, 500)
+    ..attack("bite[s]", 30)
+    ..attack("claw[s]", 25)
+    ..iceCone(damage: 80)
+    ..drop("treasure", count: 8)
+    ..drop("magic", count: 4)
+    ..drop("equipment", count: 5);
+  breed("purple dragon", 75, violet, 600)
+    ..attack("bite[s]", 30)
+    ..attack("claw[s]", 25)
+    ..lightningCone(damage: 100)
+    ..drop("treasure", count: 8)
+    ..drop("magic", count: 4)
+    ..drop("equipment", count: 5);
+  breed("red dragon", 75, brickRed, 600)
+    ..attack("bite[s]", 30)
+    ..attack("claw[s]", 25)
     ..fireCone(damage: 100)
+    ..drop("treasure", count: 8)
+    ..drop("magic", count: 4)
+    ..drop("equipment", count: 5);
+  breed("gold dragon", 80, gold, 700)
+    ..attack("bite[s]", 32)
+    ..attack("claw[s]", 27)
+    ..lightCone(damage: 120)
     ..drop("treasure", count: 8)
     ..drop("magic", count: 4)
     ..drop("equipment", count: 5);
@@ -565,6 +633,7 @@ void vines() {
   breed("choker", 16, peaGreen, 40)
     ..attack("strangle", 12)
     ..placeIn("passage");
+  // TODO: Touch to confuse?
   breed("nightshade", 19, lilac, 50)
     ..whip(rate: 3, damage: 10)
     ..attack("touch[es]", 12, Elements.poison);

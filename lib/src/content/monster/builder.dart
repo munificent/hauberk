@@ -345,6 +345,10 @@ class _BreedBuilder extends _BaseBuilder {
       _cone("the darkness", "crushes", Elements.dark,
           rate: rate, damage: damage, range: range);
 
+  void waterCone({num rate = 5, int damage, int range = 10}) =>
+      _cone("the water", "blasts", Elements.water,
+          rate: rate, damage: damage, range: range);
+
   void missive(Missive missive, {num rate = 5}) =>
       _addMove(MissiveMove(missive, rate));
 
