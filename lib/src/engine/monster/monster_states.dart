@@ -95,7 +95,7 @@ abstract class MonsterState {
 
     if (monster.isBlinded) {
       // Being blinded makes the monster stumble around.
-      meander += 50;
+      meander += (monster.sightReliance * 50).toInt();
     } else if (pos + dir == game.hero.pos) {
       // Monsters are (mostly) smart enough to not meander when they're about
       // to melee. A small chance of meandering is still useful to get a

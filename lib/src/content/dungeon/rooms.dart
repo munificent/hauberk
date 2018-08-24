@@ -39,8 +39,8 @@ class PassagePlace extends Place {
 class RoomStyle {
   final int passageTurnPercent = 30;
   final int passageBranchPercent = 40;
-  final int passageStopPercent = 10;
-  final int passageMinLength = 4;
+  final int passageMinLength = 5;
+  final int passageMaxLength = 80;
   final int passageTries = 20;
 
   /// A passage that connects to an existing place, by definition, adds a cycle
@@ -53,7 +53,7 @@ class RoomStyle {
   /// this scale. Making this smaller adds more cycles.
   final int passageShortcutScale = 10;
 
-  final int junctionMaxTries = 10;
+  final int junctionMaxTries = 3;
 }
 
 /// A biome that generates a graph of connected rooms and passages.
@@ -147,8 +147,9 @@ class RoomsBiome extends Biome {
       }
     }
 
-    while (passage.length < _style.passageMinLength ||
-        !rng.percent(_style.passageStopPercent)) {
+    var length =
+        rng.inclusive(_style.passageMinLength, _style.passageMaxLength);
+    while (passage.length < length) {
       // Don't allow turning twice in a row.
       if (distanceThisDir > 1 && rng.percent(_style.passageTurnPercent)) {
         if (rng.oneIn(2)) {

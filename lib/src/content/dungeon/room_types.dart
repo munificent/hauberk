@@ -39,7 +39,7 @@ class RoomTypes {
         from: "chamber great-hall hall nature");
 
     add(RectangleRoom("closet", maxWide: 5, maxNarrow: 4),
-        frequency: 0.2, from: "chamber laboratory storeroom");
+        frequency: 0.1, from: "chamber laboratory storeroom");
 
     add(
         RectangleRoom("laboratory",
@@ -60,9 +60,9 @@ class RoomTypes {
         RectangleRoom("boss-chamber",
             monsterDensity: 2.0,
             monsterDepthOffset: 5,
-            minWide: 5,
+            minWide: 8,
             maxWide: 16,
-            minNarrow: 4,
+            minNarrow: 6,
             maxNarrow: 10),
         frequency: 0.3,
         from: "great-hall passage");
@@ -72,8 +72,11 @@ class RoomTypes {
             monsterDensity: 0.5,
             itemDensity: 10.0,
             itemDepthOffset: 5,
-            maxWide: 5,
-            maxNarrow: 4),
+            minWide: 4,
+            maxWide: 12,
+            minNarrow: 4,
+            maxNarrow: 10),
+        frequency: 0.3,
         from: "boss-chamber");
 
     // TODO: Custom classes for certain rooms:

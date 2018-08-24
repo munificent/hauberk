@@ -127,5 +127,5 @@ void lightSources() {
   // TODO: Maybe allow this to be equipped and increase its radius when held?
   item("Lantern", 15, gold, frequency: 0.3, price: 78)
     ..toss(damage: 5, range: 5, element: Elements.fire)
-    ..lightSource(level: 6);
+    ..lightSource(level: 6, range: 24);
 }

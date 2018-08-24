@@ -81,7 +81,8 @@ class Dungeon {
     }
 
     yield "Placing decor";
-    for (var i = 0; i < 400; i++) {
+    var decorCount = width * height ~/ 20;
+    for (var i = 0; i < decorCount; i++) {
       var pos = rng.vecInRect(safeBounds);
       var place = placeAt(pos);
       if (place == null) continue;

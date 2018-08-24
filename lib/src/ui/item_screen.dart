@@ -260,6 +260,7 @@ class _HomeGetScreen extends ItemScreen {
 }
 
 /// Base class for inventory and equipment screens.
+// TODO: Show confirmation of put item.
 abstract class _HeroScreen extends ItemScreen {
   String get _helpText => "[Tab] Switch to $nextScreenName, "
       "[A-Z] Select item, [Shift] Inspect item, [Esc] Cancel";
@@ -270,6 +271,8 @@ abstract class _HeroScreen extends ItemScreen {
       : super._(save, sink);
 
   ItemScreen nextScreen();
+
+  bool canSelect(Item item) => true;
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
@@ -376,6 +379,7 @@ class _ShopBuyScreen extends ItemScreen {
 }
 
 // TODO: Require confirmation when selling an item?
+// TODO: Show confirmation of sold item.
 /// Mixin for screens that sell a hero's item to a shop.
 abstract class _SellMixin implements ItemScreen {
   bool canSelect(Item item) => _itemPrice(item) > 0;

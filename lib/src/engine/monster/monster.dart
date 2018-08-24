@@ -85,6 +85,13 @@ class Monster extends Actor {
 
   int get emanationLevel => breed.emanationLevel;
 
+  /// How much the monster relies on sight to sense the hero, from 0.0 to 1.0.
+  double get sightReliance {
+    var senses = breed.vision + breed.hearing;
+    if (senses == 0) return 0.0;
+    return breed.vision / senses;
+  }
+
   Monster(Game game, this.breed, int x, int y, this.generation)
       : super(game, x, y) {
     health = maxHealth;

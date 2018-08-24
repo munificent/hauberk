@@ -1,3 +1,5 @@
+import 'package:piecemeal/piecemeal.dart';
+
 import '../../debug.dart';
 import '../../engine.dart';
 import '../action/bolt.dart';
@@ -9,6 +11,12 @@ class BoltMove extends RangedMove {
   BoltMove(num rate, Attack attack) : super(rate, attack);
 
   bool shouldUse(Monster monster) {
+    if (monster.isBlinded && rng.float(1.0) < monster.sightReliance) {
+      var chance =
+          lerpDouble(monster.sightReliance, 0.0, 1.0, 0.0, 90.0).toInt();
+      if (rng.percent(chance)) return false;
+    }
+
     var target = monster.game.hero.pos;
 
     // Don't fire if out of range.

@@ -53,7 +53,7 @@ class FloorDrops {
 
       floorDrop(
           depth: i,
-          frequency: lerpDouble(i, 1, 100, 2.0, 0.1),
+          frequency: lerpDouble(i, 1, 100, 4.0, 0.1),
           drop: parseDrop("light", i));
     }
 

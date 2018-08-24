@@ -160,13 +160,14 @@ void eyes() {
     ..defense(10, "{1} blinks out of the way.")
     ..fly()
     ..preferOpen();
+
   breed("lazy eye", 5, cornflower, 12)
     ..attack("stare[s] at", 8)
     ..sparkBolt(rate: 6, damage: 12, range: 8);
 
   breed("mad eye", 9, salmon, 40)
     ..attack("stare[s] at", 8)
-    ..windBolt(rate: 6, damage: 20);
+    ..windBolt(rate: 6, damage: 15);
 
   breed("floating eye", 15, buttermilk, 60)
     ..attack("stare[s] at", 10)
@@ -188,17 +189,17 @@ void eyes() {
 
   breed("murderous eye", 40, maroon, 180)
     ..attack("gaze[s] into", 30)
-    ..acidBolt(rate: 7, damage: 50)
-    ..stoneBolt(rate: 7, damage: 50)
-    ..iceCone(rate: 7, damage: 40)
+    ..acidBolt(rate: 7, damage: 40)
+    ..stoneBolt(rate: 7, damage: 40)
+    ..iceCone(rate: 7, damage: 30)
     ..teleport(rate: 10, range: 9);
 
   breed("watcher", 60, gunsmoke, 300)
     ..attack("see[s]", 50)
     ..lightBolt(rate: 7, damage: 40)
-    ..lightCone(rate: 7, damage: 60)
+    ..lightCone(rate: 7, damage: 30)
     ..darkBolt(rate: 7, damage: 50)
-    ..darkCone(rate: 7, damage: 70);
+    ..darkCone(rate: 7, damage: 40);
 
   // beholder, undead beholder, rotting beholder
 }
@@ -316,7 +317,7 @@ void insects() {
   // TODO: Spawn as eggs which can hatch into cockroaches?
   breed("giant cockroach[es]", 1, garnet, 1, frequency: 0.4)
     ..placeIn("food", "storage")
-    ..count(1, 3)
+    ..count(2, 5)
     ..preferCorner()
     ..attack("crawl[s] on", 2)
     ..spawn(rate: 6);

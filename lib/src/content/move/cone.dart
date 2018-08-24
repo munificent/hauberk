@@ -1,3 +1,5 @@
+import 'package:piecemeal/piecemeal.dart';
+
 import '../../debug.dart';
 import '../../engine.dart';
 import '../action/ray.dart';
@@ -12,6 +14,12 @@ class ConeMove extends Move {
   ConeMove(num rate, this.attack) : super(rate);
 
   bool shouldUse(Monster monster) {
+    if (monster.isBlinded && rng.float(1.0) < monster.sightReliance) {
+      var chance =
+      lerpDouble(monster.sightReliance, 0.0, 1.0, 0.0, 70.0).toInt();
+      if (rng.percent(chance)) return false;
+    }
+
     var target = monster.game.hero.pos;
 
     // Don't fire if out of range.
