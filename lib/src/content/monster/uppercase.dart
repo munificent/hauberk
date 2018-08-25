@@ -3,6 +3,7 @@ import '../action/missive.dart';
 import '../elements.dart';
 import 'builder.dart';
 
+// TODO: Describe other monsters.
 void ancients() {}
 
 void birds() {

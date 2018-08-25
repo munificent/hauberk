@@ -102,6 +102,8 @@ class Breed {
   /// be noun-like while the others are adjectives, like `["undead", "bug"]`.
   final List<BreedGroup> groups = [];
 
+  final String description;
+
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, this.location, this.motility,
       {this.depth,
@@ -116,7 +118,8 @@ class Breed {
       this.countMin,
       this.countMax,
       this.stain,
-      BreedFlags flags})
+      BreedFlags flags,
+      this.description})
       : vision = vision ?? 8,
         hearing = hearing ?? 10,
         speed = speed ?? 0,

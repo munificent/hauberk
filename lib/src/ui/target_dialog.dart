@@ -240,11 +240,6 @@ class TargetDialog extends Screen<Input> {
     }
   }
 
-  /// Target the nearest monster in [dir] from the current target. Precisely,
-  /// draws a line perpendicular to [dir] and divides the monsters into two
-  /// half-planes. If the half-plane towards [dir] contains any monsters, then
-  /// this targets the nearest one. Otherwise, it wraps around and targets the
-  /// *farthest* monster in the other half-place.
   void _changeTarget(Direction dir) {
     if (_targetingFloor) {
       _changeFloorTarget(dir);
@@ -266,6 +261,11 @@ class TargetDialog extends Screen<Input> {
     _gameScreen.targetFloor(pos);
   }
 
+  /// Target the nearest monster in [dir] from the current target. Precisely,
+  /// draws a line perpendicular to [dir] and divides the monsters into two
+  /// half-planes. If the half-plane towards [dir] contains any monsters, then
+  /// this targets the nearest one. Otherwise, it wraps around and targets the
+  /// *farthest* monster in the other half-place.
   void _changeMonsterTarget(Direction dir) {
     var ahead = <Monster>[];
     var behind = <Monster>[];

@@ -4,6 +4,7 @@ import '../elements.dart';
 import '../tiles.dart';
 import 'builder.dart';
 
+// TODO: Describe other monsters.
 void arachnids() {
   // TODO: Should all spiders hide in passages?
   family("a", flags: "fearless")
@@ -13,6 +14,8 @@ void arachnids() {
     ..stain(Tiles.spiderweb);
   breed("brown spider", 5, persimmon, 6, dodge: 30, meander: 40)
     ..attack("bite[s]", 5, Elements.poison);
+  describe("""Like a large dog, if the dog had eight articulated legs, eight
+  glittering eyes, and wanted nothing more than to kill you.""");
 
   breed("gray spider", 7, slate, 12, dodge: 30, meander: 30)
     ..attack("bite[s]", 5, Elements.poison);
@@ -321,6 +324,8 @@ void insects() {
     ..preferCorner()
     ..attack("crawl[s] on", 2)
     ..spawn(rate: 6);
+  describe("""It's not quite as easy to squash one of these when it's as long as
+      your arm.""");
 
   breed("giant centipede", 3, brickRed, 14, speed: 2, meander: 20)
     ..attack("crawl[s] on", 4)

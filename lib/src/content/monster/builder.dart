@@ -14,6 +14,8 @@ import '../move/spawn.dart';
 import '../move/teleport.dart';
 import 'monsters.dart';
 
+final collapseNewlines = RegExp(r"\n\s*");
+
 // TODO: Is there a better place to define these?
 final breedGroups = Map<String, BreedGroup>.fromIterable([
   BreedGroup("Animals", "animal"),
@@ -92,6 +94,11 @@ _BreedBuilder breed(String name, int depth, Color color, int health,
   _builder._speed = speed;
   _builder._meander = meander;
   return _builder;
+}
+
+void describe(String description) {
+  description = description.replaceAll(collapseNewlines, " ");
+  _builder._description = description;
 }
 
 void linkMinions() {
@@ -226,6 +233,7 @@ class _BreedBuilder extends _BaseBuilder {
   final List<Drop> _drops = [];
   final List<_NamedMinion> _minions = [];
   Pronoun _pronoun;
+  String _description;
 
   _BreedBuilder(
       this._name, this._depth, double frequency, this._appearance, this._health)
@@ -407,7 +415,8 @@ class _BreedBuilder extends _BaseBuilder {
         countMin: _countMin ?? _family._countMin ?? 1,
         countMax: _countMax ?? _family._countMax ?? 1,
         stain: _stain ?? _family._stain,
-        flags: BreedFlags.fromSet(flags));
+        flags: BreedFlags.fromSet(flags),
+        description: _description);
 
     breed.defenses.addAll(_family._defenses);
     breed.defenses.addAll(_defenses);

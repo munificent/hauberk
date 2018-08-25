@@ -122,15 +122,24 @@ class HeroLoreDialog extends HeroInfoDialog {
     var seen = hero.lore.seen(breed);
     if (seen == 0) {
       terminal.writeAt(
-          1, 4, "You have not seen this breed yet.", UIHue.disabled);
+          1, 3, "You have not seen this breed yet.", UIHue.disabled);
       return;
     }
 
     terminal.drawGlyph(2, 1, breed.appearance as Glyph);
     terminal.writeAt(4, 1, breed.name, UIHue.selection);
 
+    var y = 3;
+    if (breed.description != null) {
+      for (var line in Log.wordWrap(terminal.width - 2, breed.description)) {
+        terminal.writeAt(1, y, line, UIHue.text);
+        y++;
+      }
+
+      y++;
+    }
+
     var description = _describeBreed(breed);
-    var y = 4;
     for (var line in Log.wordWrap(terminal.width - 2, description)) {
       terminal.writeAt(1, y, line, UIHue.text);
       y++;
