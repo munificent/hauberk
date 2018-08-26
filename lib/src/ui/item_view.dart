@@ -209,7 +209,7 @@ void drawInspector(Terminal terminal, Hero hero, Item item) {
     writeLabel("Damage");
     if (item.element != Element.none) {
       terminal.writeAt(
-          10, y, item.element.abbreviation, elementColor(item.element));
+          9, y, item.element.abbreviation, elementColor(item.element));
     }
 
     terminal.writeAt(12, y, item.attack.damage.toString(), UIHue.text);

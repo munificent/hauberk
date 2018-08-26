@@ -860,18 +860,18 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  static final _resistConditions = {
-    Elements.air: ["A", Color.black, turquoise],
-    Elements.earth: ["E", Color.black, persimmon],
-    Elements.fire: ["F", Color.black, brickRed],
-    Elements.water: ["W", Color.black, ultramarine],
-    Elements.acid: ["A", Color.black, lima],
-    Elements.cold: ["C", Color.black, cornflower],
-    Elements.lightning: ["L", Color.black, lilac],
-    Elements.poison: ["P", Color.black, peaGreen],
-    Elements.dark: ["D", Color.black, steelGray],
-    Elements.light: ["L", Color.black, buttermilk],
-    Elements.spirit: ["S", Color.black, violet]
+  static final _resistLetters = {
+    Elements.air: "A",
+    Elements.earth: "E",
+    Elements.fire: "F",
+    Elements.water: "W",
+    Elements.acid: "A",
+    Elements.cold: "C",
+    Elements.lightning: "L",
+    Elements.poison: "P",
+    Elements.dark: "D",
+    Elements.light: "L",
+    Elements.spirit: "S"
   };
 
   /// Draws a health bar for [actor].
@@ -923,9 +923,8 @@ class GameScreen extends Screen<Input> {
 
     for (var element in game.content.elements) {
       if (actor.resistances[element].isActive) {
-        var condition = _resistConditions[element];
-        drawCondition(condition[0] as String, condition[1] as Color,
-            condition[2] as Color);
+        drawCondition(
+            _resistLetters[element], Color.black, elementColor(element));
       }
     }
 

@@ -26,8 +26,8 @@ class Shop {
 
   void update(Inventory inventory) {
     for (var i = 0; i < 5; i++) {
-      // Possibly remove an item. Try to keep the shop ~75% full.
-      var deleteChance = inventory.length / (Option.shopCapacity * 0.75);
+      // Possibly remove an item. Try to keep the shop ~50% full.
+      var deleteChance = inventory.length / (Option.shopCapacity * 0.50);
       if (rng.float() < deleteChance) {
         inventory.removeAt(rng.range(inventory.length));
       }

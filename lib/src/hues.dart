@@ -57,16 +57,16 @@ class UIHue {
 Color elementColor(Element element) {
   return {
     Element.none: gunsmoke,
-    Elements.air: Color.lightAqua,
+    Elements.air: turquoise,
     Elements.earth: persimmon,
-    Elements.fire: Color.red,
-    Elements.water: Color.blue,
-    Elements.acid: Color.lightGreen,
-    Elements.cold: Color.lightBlue,
-    Elements.lightning: Color.lightPurple,
-    Elements.poison: Color.green,
-    Elements.dark: Color.gray,
-    Elements.light: Color.lightYellow,
-    Elements.spirit: Color.purple
+    Elements.fire: brickRed,
+    Elements.water: ultramarine,
+    Elements.acid: lima,
+    Elements.cold: cornflower,
+    Elements.lightning: lilac,
+    Elements.poison: peaGreen,
+    Elements.dark: steelGray,
+    Elements.light: buttermilk,
+    Elements.spirit: violet
   }[element];
 }

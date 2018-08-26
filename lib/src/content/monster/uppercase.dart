@@ -17,6 +17,8 @@ void birds() {
     ..attack("bite[s]", 5)
     ..drop("treasure", percent: 10)
     ..drop("Black Feather", percent: 25);
+  describe(""""What harm can a stupid little crow do?" you think as it and its
+      murderous friends dive towards your eyes, claws extended.""");
 
   breed("raven", 6, slate, 22, meander: 15)
     ..attack("bite[s]", 5)
@@ -24,6 +26,7 @@ void birds() {
     ..drop("treasure", percent: 10)
     ..drop("Black Feather", percent: 20)
     ..flags("protective");
+  describe("""It's black eyes gleam with a malevolent intelligence.""");
 }
 
 void canids() {}
@@ -65,7 +68,9 @@ void faeFolk() {
     ..drop("magic");
 }
 
-void golems() {}
+void golems() {
+  // TODO: Animated dolls, poppets, and marionettes.
+}
 
 void hybrids() {}
 
@@ -156,12 +161,15 @@ void reptiles() {
     ..sense(see: 6, hear: 5)
     ..preferOpen()
     ..emanate(3);
+
   breed("juvenile salamander", 7, salmon, 40)
     ..attack("bite[s]", 14, Elements.fire)
     ..fireCone(rate: 16, damage: 20, range: 4);
+
   breed("salamander", 13, brickRed, 60)
     ..attack("bite[s]", 18, Elements.fire)
     ..fireCone(rate: 16, damage: 30, range: 5);
+
   breed("three-headed salamander", 23, maroon, 90)
     ..attack("bite[s]", 24, Elements.fire)
     ..fireCone(rate: 10, damage: 30, range: 5);
