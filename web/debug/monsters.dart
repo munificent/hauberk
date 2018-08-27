@@ -18,7 +18,7 @@ main() {
   var breeds = Monsters.breeds.all.toList();
   breeds.sort((a, b) {
     if (a.depth != b.depth) return a.depth.compareTo(b.depth);
-    return a.experienceCents.compareTo(b.experienceCents);
+    return a.experience.compareTo(b.experience);
   });
 
   text.write('''
@@ -30,7 +30,7 @@ main() {
       <td>Meander</td>
       <td>Speed</td>
       <td>Dodge</td>
-      <td>Exp/Lev</td>
+      <td>Exp</td>
       <td>Count</td>
       <td>Attacks</td>
       <td>Moves</td>
@@ -45,8 +45,6 @@ main() {
   for (var breed in breeds) {
     var glyph = breed.appearance as Glyph;
 
-    var expPerLevel =
-        (breed.experienceCents / breed.depth / 100).toStringAsFixed(2);
     var count = breed.countMin.toString();
     if (breed.countMax != breed.countMin)
       count += "&thinsp;&ndash;&thinsp;${breed.countMax}";
@@ -70,8 +68,7 @@ main() {
       text.write('+${breed.defenses.map((e) => e.amount).join("+")}');
     }
     text.write('</td>');
-
-    text.write('<td class="r">$expPerLevel</td>');
+    text.write('<td class="r">${breed.experience}</td>');
     text.write('<td class="r">$count</td>');
 
     text.write('<td>');

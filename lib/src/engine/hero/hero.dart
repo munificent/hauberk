@@ -34,7 +34,7 @@ class HeroSave {
   final RaceStats race;
   final HeroClass heroClass;
 
-  int get level => experienceLevel(experienceCents);
+  int get level => experienceLevel(experience);
 
   Inventory inventory =
       Inventory(ItemLocation.inventory, Option.inventoryCapacity);
@@ -50,7 +50,7 @@ class HeroSave {
   /// The current inventories of all the shops.
   final Map<Shop, Inventory> shops;
 
-  int experienceCents = 0;
+  int experience = 0;
 
   SkillSet skills;
 
@@ -79,7 +79,7 @@ class HeroSave {
       this.home,
       this.crucible,
       this.shops,
-      this.experienceCents,
+      this.experience,
       this.skills,
       this._lore,
       this.gold,
@@ -91,7 +91,7 @@ class HeroSave {
   void copyFrom(Hero hero) {
     inventory = hero.inventory;
     equipment = hero.equipment;
-    experienceCents = hero._experienceCents;
+    experience = hero.experience;
     gold = hero.gold;
     skills = hero.skills.clone();
     _lore = hero.lore.clone();
@@ -116,9 +116,7 @@ class Hero extends Actor {
   final Inventory inventory;
   final Equipment equipment;
 
-  /// Experience is stored internally as hundredths of a point for higher (but
-  /// not floating point) precision.
-  int _experienceCents = 0;
+  int experience = 0;
 
   final strength = Strength();
   final agility = Agility();
@@ -185,7 +183,7 @@ class Hero extends Actor {
         heroClass = save.heroClass,
         inventory = save.inventory.clone(),
         equipment = save.equipment.clone(),
-        _experienceCents = save.experienceCents,
+        experience = save.experience,
         skills = save.skills.clone(),
         gold = save.gold,
         lore = save.lore.clone(),
@@ -223,14 +221,6 @@ class Hero extends Actor {
     }
 
     return _behavior == null;
-  }
-
-  int get experience => _experienceCents ~/ 100;
-
-  // TODO: Using this is a little sketchy since accessing experience
-  // trunctates. If you `experience += ...`, you are discarding some.
-  void set experience(int value) {
-    _experienceCents = value * 100;
   }
 
   /// The hero's experience level.
@@ -415,7 +405,7 @@ class Hero extends Actor {
       skill.killMonster(this, action, monster);
     }
 
-    _experienceCents += monster.experienceCents;
+    experience += monster.experience;
     refreshProperties();
   }
 
@@ -516,7 +506,7 @@ class Hero extends Actor {
   /// updated matters. Properties must be updated after the properties they
   /// depend on.
   void refreshProperties() {
-    var level = experienceLevel(_experienceCents);
+    var level = experienceLevel(experience);
     _level.update(level, (previous) {
       game.log.gain('You have reached level $level.');
       // TODO: Different message if level went down.
@@ -555,9 +545,7 @@ class Hero extends Actor {
   }
 }
 
-int experienceLevel(int experienceCents) {
-  var experience = experienceCents ~/ 100;
-
+int experienceLevel(int experience) {
   for (var level = 1; level <= Hero.maxLevel; level++) {
     if (experience < experienceLevelCost(level)) return level - 1;
   }
@@ -569,5 +557,5 @@ int experienceLevel(int experienceCents) {
 /// is greater than the maximum level.
 int experienceLevelCost(int level) {
   if (level > Hero.maxLevel) return null;
-  return math.pow(level - 1, 3).toInt() * 100;
+  return math.pow(level - 1, 3).toInt() * 1000;
 }

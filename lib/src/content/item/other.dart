@@ -18,7 +18,9 @@ void litter() {
 
 void treasure() {
   // Coins.
-  category(CharCode.centSign)..tag("treasure/coin")..treasure();
+  category(CharCode.centSign)
+    ..tag("treasure/coin")
+    ..treasure();
   item("Copper Coins", 1, copper, price: 1);
   item("Bronze Coins", 7, persimmon, price: 8);
   item("Silver Coins", 11, turquoise, price: 20);
@@ -27,7 +29,9 @@ void treasure() {
   item("Platinum Coins", 40, gunsmoke, price: 300);
 
   // Bars.
-  category(CharCode.dollarSign)..tag("treasure/bar")..treasure();
+  category(CharCode.dollarSign)
+    ..tag("treasure/bar")
+    ..treasure();
   item("Copper Bar", 35, copper, price: 150);
   item("Bronze Bar", 50, persimmon, price: 500);
   item("Silver Bar", 60, turquoise, price: 800);

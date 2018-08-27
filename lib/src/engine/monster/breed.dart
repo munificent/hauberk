@@ -1,10 +1,9 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/combat.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
+import '../core/lerp.dart';
 import '../core/log.dart';
 import '../hero/hero.dart';
 import '../hero/skill.dart';
@@ -129,7 +128,10 @@ class Breed {
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
-  int get experienceCents {
+  ///
+  /// The basic idea is that experience roughly correlates to how much damage
+  /// the monster can dish out to the hero before it dies.
+  int get experience {
     // The more health it has, the longer it can hurt the hero.
     var exp = maxHealth.toDouble();
 
@@ -141,11 +143,10 @@ class Breed {
 
     exp *= 1.0 + totalDodge / 100.0;
 
-    // Faster monsters are worth more.
+    // Faster monsters can hit the hero more often.
     exp *= Energy.gains[Energy.normalSpeed + speed];
 
-    // Average the attacks (since they are selected randomly) and factor them
-    // in.
+    // Average the attacks, since they are selected randomly.
     var attackTotal = 0.0;
     for (var attack in attacks) {
       // TODO: Take range into account?
@@ -154,21 +155,15 @@ class Breed {
 
     attackTotal /= attacks.length;
 
+    // Average the moves.
     var moveTotal = 0.0;
     var moveRateTotal = 0.0;
     for (var move in moves) {
       // Scale by the move rate. The less frequently a move can be performed,
       // the less it affects experience.
       moveTotal += move.experience / move.rate;
-
-      // Magify the rate to roughly account for the fact that a move may not be
-      // applicable all the time.
-      moveRateTotal += 1 / (move.rate * 2);
+      moveRateTotal += 1 / move.rate;
     }
-
-    // A monster can only do one thing each turn, so even if the move rates
-    // are better than than, limit it.
-    moveRateTotal = math.min(1.0, moveRateTotal);
 
     // Time spent using moves is not time spent attacking.
     attackTotal *= (1.0 - moveRateTotal);
@@ -177,15 +172,20 @@ class Breed {
     exp *= attackTotal + moveTotal;
 
     // Take into account flags.
-    exp *= flags.experienceMultiplier;
+    exp *= flags.experienceScale;
 
     // TODO: Modify by motility?
     // TODO: Modify by count?
 
     // Meandering monsters are worth less.
-    exp *= 1.0 - meander * 0.002;
+    exp *= lerpDouble(meander, 0.0, 100.0, 1.0, 0.8);
 
-    return exp.toInt();
+    // Scale it down arbitrarily to keep the numbers reasonable. This is tuned
+    // so that the weakest monsters can still have some variance in experience
+    // when rounded to an integer.
+    exp /= 40;
+
+    return exp.ceil();
   }
 
   Monster spawn(Game game, Vec pos, [Monster parent]) {
@@ -262,12 +262,12 @@ class BreedFlags {
 
   /// The way this set of flags affects the experience gained when killing a
   /// monster.
-  double get experienceMultiplier {
+  double get experienceScale {
     var scale = 1.0;
 
-    if (berzerk) scale *= 1.2;
+    if (berzerk) scale *= 1.1;
     if (cowardly) scale *= 0.9;
-    if (fearless) scale *= 1.1;
+    if (fearless) scale *= 1.05;
     if (immobile) scale *= 0.7;
     if (protective) scale *= 1.1;
 

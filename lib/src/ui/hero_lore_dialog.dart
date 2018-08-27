@@ -179,8 +179,7 @@ class HeroLoreDialog extends HeroInfoDialog {
           "${lore.slain(breed)} of this ${noun}.");
     }
 
-    var experience = (breed.experienceCents / 100).toStringAsFixed(2);
-    sentences.add("$pronoun is worth $experience experience.");
+    sentences.add("$pronoun is worth ${breed.experience} experience.");
 
     if (lore.slain(breed) > 0) {
       sentences.add("$pronoun has ${breed.maxHealth} health.");

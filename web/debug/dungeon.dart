@@ -160,7 +160,7 @@ Future generate() async {
         </td>
         <td>${breed.name}</td>
         <td>${breed.depth}</td>
-        <td class="r">${(breed.experienceCents / 100).toStringAsFixed(2)}</td>
+        <td class="r">${breed.experience}</td>
         <td>
       ''');
 

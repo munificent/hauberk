@@ -46,10 +46,7 @@ class FloorDrops {
           location: SpawnLocation.corner,
           drop: parseDrop("Rock", i));
 
-      floorDrop(
-          depth: i,
-          frequency: 10.0,
-          drop: parseDrop("treasure", i));
+      floorDrop(depth: i, frequency: 10.0, drop: parseDrop("treasure", i));
 
       floorDrop(
           depth: i,

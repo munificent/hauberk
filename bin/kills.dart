@@ -16,9 +16,7 @@ main() {
   for (var depth = 1; depth <= 100; depth++) {
     if (breedsByDepth.containsKey(depth)) {
       var breeds = breedsByDepth[depth];
-      exp = breeds.fold(0.0, (a, b) => a + b.experienceCents);
-      exp /= breeds.length;
-      exp /= 100.0;
+      exp = breeds.fold(0.0, (a, b) => a + b.experience) / breeds.length;
       print("${depth.toString().padLeft(3)}: $exp (${breeds.length} breeds)");
     } else {
       print("${depth.toString().padLeft(3)}: (no breeds)");

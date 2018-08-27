@@ -157,8 +157,8 @@ void _drawBreeds() {
         return aBreed.depth.compareTo(bBreed.depth);
       }
 
-      if (aBreed.experienceCents != bBreed.experienceCents) {
-        return aBreed.experienceCents.compareTo(bBreed.experienceCents);
+      if (aBreed.experience != bBreed.experience) {
+        return aBreed.experience.compareTo(bBreed.experience);
       }
 
       return aBreed.name.compareTo(bBreed.name);

@@ -21,7 +21,7 @@ class SlayDiscipline extends Discipline {
   void killMonster(Hero hero, Action action, Monster monster) {
     if (!monster.breed.groups.contains(_group)) return;
 
-    hero.skills.earnPoints(this, (monster.experienceCents / 1000).ceil());
+    hero.skills.earnPoints(this, (monster.experience / 1000).ceil());
     // TODO: Having to call this manually every place we call earnPoints()
     // is lame. Fix?
     hero.refreshSkill(this);

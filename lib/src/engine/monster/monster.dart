@@ -75,7 +75,7 @@ class Monster extends Actor {
   Pronoun get pronoun => breed.pronoun;
 
   /// How much experience the [Hero] gains for killing this monster.
-  int get experienceCents => breed.experienceCents;
+  int get experience => breed.experience;
 
   int get maxHealth => breed.maxHealth;
 

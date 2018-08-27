@@ -275,7 +275,7 @@ class Storage {
         'home': home,
         'crucible': crucible,
         'shops': shops,
-        'experience': hero.experienceCents,
+        'experience': hero.experience,
         'skills': skills,
         'lore': lore,
         'gold': hero.gold,

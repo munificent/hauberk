@@ -15,8 +15,8 @@ class Element {
   /// Whether this element emanates light when a substance on the ground.
   final bool emanates;
 
-  /// The multiplier to a experience gained when killing a monster with a move
-  /// or attack using this element.
+  /// The multiplier to experience gained when killing a monster with a move or
+  /// attack using this element.
   final double experience;
 
   String get capitalized => "${name[0].toUpperCase()}${name.substring(1)}";

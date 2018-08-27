@@ -38,8 +38,7 @@ abstract class ItemScreen extends Screen<Input> {
 
 //  ItemScreen.crucible(this._content, this._save) : _place = _Place.crucible;
 
-  factory ItemScreen.home(HeroSave save) =>
-      _HomeViewScreen(save);
+  factory ItemScreen.home(HeroSave save) => _HomeViewScreen(save);
 
   factory ItemScreen.shop(HeroSave save, Inventory shop) =>
       _ShopViewScreen(save, shop);
@@ -222,8 +221,7 @@ class _HomeViewScreen extends ItemScreen {
   String get _helpText =>
       "[G] Get item, [P] Put item, [Shift] Inspect item, [Esc] Leave";
 
-  _HomeViewScreen(HeroSave save)
-      : super._(save, null);
+  _HomeViewScreen(HeroSave save) : super._(save, null);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
@@ -255,8 +253,7 @@ class _HomeGetScreen extends ItemScreen {
 
   ItemCollection get _items => _save.home;
 
-  _HomeGetScreen(HeroSave save)
-      : super._(save, _InventorySink(save));
+  _HomeGetScreen(HeroSave save) : super._(save, _InventorySink(save));
 }
 
 /// Base class for inventory and equipment screens.
@@ -267,8 +264,7 @@ abstract class _HeroScreen extends ItemScreen {
 
   String get nextScreenName;
 
-  _HeroScreen(HeroSave save, _ItemSink sink)
-      : super._(save, sink);
+  _HeroScreen(HeroSave save, _ItemSink sink) : super._(save, sink);
 
   ItemScreen nextScreen();
 
@@ -294,8 +290,7 @@ class _InventoryScreen extends _HeroScreen {
 
   String get nextScreenName => "equipment";
 
-  _InventoryScreen(HeroSave save, _ItemSink sink)
-      : super(save, sink);
+  _InventoryScreen(HeroSave save, _ItemSink sink) : super(save, sink);
 
   ItemScreen nextScreen() => _EquipmentScreen(_save, _sink);
 }
@@ -306,8 +301,7 @@ class _EquipmentScreen extends _HeroScreen {
 
   String get nextScreenName => "inventory";
 
-  _EquipmentScreen(HeroSave save, _ItemSink sink)
-      : super(save, sink);
+  _EquipmentScreen(HeroSave save, _ItemSink sink) : super(save, sink);
 
   ItemScreen nextScreen() => _InventoryScreen(_save, _sink);
 }
@@ -323,8 +317,7 @@ class _ShopViewScreen extends ItemScreen {
   String get _helpText =>
       "[B] Buy item, [S] Sell item, [Shift] Inspect item, [Esc] Leave";
 
-  _ShopViewScreen(HeroSave save, this._shop)
-      : super._(save, null);
+  _ShopViewScreen(HeroSave save, this._shop) : super._(save, null);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
@@ -395,16 +388,14 @@ abstract class _SellMixin implements ItemScreen {
 
 /// Screen to sell an item from the inventory.
 class _InventorySellScreen extends _InventoryScreen with _SellMixin {
-  _InventorySellScreen(HeroSave save, _ItemSink sink)
-      : super(save, sink);
+  _InventorySellScreen(HeroSave save, _ItemSink sink) : super(save, sink);
 
   ItemScreen nextScreen() => _EquipmentSellScreen(_save, _sink);
 }
 
 /// Screen to sell an item from the equipment.
 class _EquipmentSellScreen extends _EquipmentScreen with _SellMixin {
-  _EquipmentSellScreen(HeroSave save, _ItemSink sink)
-      : super(save, sink);
+  _EquipmentSellScreen(HeroSave save, _ItemSink sink) : super(save, sink);
 
   ItemScreen nextScreen() => _InventorySellScreen(_save, _sink);
 }
