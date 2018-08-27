@@ -11,10 +11,7 @@ class BattleHardening extends Discipline {
   String get name => "Battle Hardening";
 
   void takeDamage(Hero hero, int damage) {
-    if (hero.skills.discover(this)) {
-      // TODO: Copy/pasting log code here is lame.
-      hero.game.log.gain(discoverMessage, hero);
-    }
+    hero.discoverSkill(this);
 
     // A point is one tenth of the hero's health.
     var points = (10 * damage / hero.maxHealth).ceil();

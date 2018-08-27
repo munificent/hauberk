@@ -486,9 +486,7 @@ class Hero extends Actor {
 
           if (heroClass.proficiency(group.slaySkill) == 0.0) continue;
 
-          if (skills.discover(group.slaySkill)) {
-            game.log.gain(group.slaySkill.discoverMessage, this);
-          }
+          discoverSkill(group.slaySkill);
         }
       }
     }
@@ -535,6 +533,14 @@ class Hero extends Actor {
   /// See if any known skills have leveled up.
   void _refreshSkills() {
     skills.discovered.forEach(refreshSkill);
+  }
+
+  /// Ensures the hero has discovered [skill] and logs if it is the first time
+  /// it's been seen.
+  void discoverSkill(Skill skill) {
+    if (!skills.discover(skill)) return;
+
+    game.log.gain(skill.discoverMessage, this);
   }
 
   void refreshSkill(Skill skill) {
