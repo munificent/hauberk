@@ -140,7 +140,7 @@ class ItemDialog extends Screen<Input> {
         inspected: _inspected);
 
     if (_inspected != null) {
-      drawInspector(terminal, _gameScreen.game.hero, _inspected);
+      drawInspector(terminal, _gameScreen.game.hero.save, _inspected);
     }
 
     if (_selectedItem == null) {

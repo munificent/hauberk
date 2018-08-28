@@ -138,7 +138,7 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
   }
 }
 
-void drawInspector(Terminal terminal, Hero hero, Item item) {
+void drawInspector(Terminal terminal, HeroSave hero, Item item) {
   terminal = terminal.rect(46, 0, 34, 20);
 
   Draw.frame(terminal, 0, 0, terminal.width, terminal.height);

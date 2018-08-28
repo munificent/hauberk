@@ -77,6 +77,7 @@ abstract class StatBase extends Property<int> {
   void bindHero(HeroSave hero) {
     assert(_hero == null);
     _hero = hero;
+    _value = _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
   }
 
   void refresh(Game game) {
@@ -102,13 +103,7 @@ class Strength extends StatBase {
 
   String get _loseAdjective => "weak";
 
-  int modify(int base) {
-    // Gracefully handle debug and test code that uses this without binding a
-    // hero.
-    if (_hero == null) return base;
-
-    return (base - _hero.weight).clamp(1, Stat.max);
-  }
+  int modify(int base) => (base - _hero.weight).clamp(1, Stat.max);
 
   double get tossRangeScale {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);

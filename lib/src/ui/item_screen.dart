@@ -9,7 +9,6 @@ import 'input.dart';
 import 'item_view.dart';
 
 abstract class ItemScreen extends Screen<Input> {
-  // TODO: Remove?
   final HeroSave _save;
 
   /// The place items are being transferred to or `null` if this is just a
@@ -148,8 +147,7 @@ abstract class ItemScreen extends Screen<Input> {
         inspected: _inspected);
 
     if (_inspected != null) {
-      // TODO: Hero.
-      drawInspector(terminal, null, _inspected);
+      drawInspector(terminal, _save, _inspected);
     }
 
 //    if (completeRecipe != null) {
