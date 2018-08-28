@@ -20,7 +20,7 @@ main() {
       }
     }
 
-    save.copyFrom(hero);
+    save.takeFrom(hero);
     var bar = "*" * hero.level;
     print("${level.toString().padLeft(3)} "
         "${hero.level.toString().padLeft(3)} $bar");

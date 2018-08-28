@@ -10,7 +10,7 @@ import 'input.dart';
 abstract class SkillDialog extends Screen<Input> {
   SkillDialog _nextScreen;
 
-  factory SkillDialog(Hero hero) {
+  factory SkillDialog(HeroSave hero) {
     var screens = [
       DisciplineDialog(hero),
       SpellDialog(hero),
@@ -29,7 +29,7 @@ abstract class SkillDialog extends Screen<Input> {
 }
 
 abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
-  final Hero _hero;
+  final HeroSave _hero;
   final List<T> _skills = [];
 
   int _selectedSkill = 0;
@@ -173,7 +173,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 }
 
 class DisciplineDialog extends SkillTypeDialog<Discipline> {
-  DisciplineDialog(Hero hero) : super(hero);
+  DisciplineDialog(HeroSave hero) : super(hero);
 
   String get _name => "Disciplines";
 
@@ -233,7 +233,7 @@ class SpellDialog extends SkillTypeDialog<Spell> {
 
   String get _rowSeparator => "──────────────────────────────── ────";
 
-  SpellDialog(Hero hero) : super(hero);
+  SpellDialog(HeroSave hero) : super(hero);
 
   void _renderSkillListHeader(Terminal terminal) {
     terminal.writeAt(35, 1, "Comp", UIHue.helpText);

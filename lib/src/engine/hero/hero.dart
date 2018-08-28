@@ -13,130 +13,28 @@ import '../core/option.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
-import '../items/shop.dart';
 import '../monster/monster.dart';
-import '../stage/stage.dart';
 import '../stage/tile.dart';
 import 'behavior.dart';
-import 'hero_class.dart';
+import 'hero_save.dart';
 import 'lore.dart';
-import 'race.dart';
 import 'skill.dart';
 import 'stat.dart';
-
-/// When the player is playing the game inside a dungeon, he is using a [Hero].
-/// When outside of the dungeon on the menu screens, though, only a subset of
-/// the hero's data persists (for example, there is no position when not in a
-/// dungeon). This class stores that state.
-class HeroSave {
-  final String name;
-
-  final RaceStats race;
-  final HeroClass heroClass;
-
-  int get level => experienceLevel(experience);
-
-  Inventory inventory =
-      Inventory(ItemLocation.inventory, Option.inventoryCapacity);
-  Equipment equipment = Equipment();
-
-  /// Items in the hero's home.
-  Inventory home = Inventory(ItemLocation.home, Option.homeCapacity);
-
-  /// Items in the hero's crucible.
-  Inventory crucible =
-      Inventory(ItemLocation.crucible, Option.crucibleCapacity);
-
-  /// The current inventories of all the shops.
-  final Map<Shop, Inventory> shops;
-
-  int experience = 0;
-
-  SkillSet skills;
-
-  // TODO: Get rid of gold and shops if I'm sure we won't be using it.
-  /// How much gold the hero has.
-  int gold = Option.heroGoldStart;
-
-  /// The lowest depth that the hero has successfully explored and exited.
-  int maxDepth = 0;
-
-  Lore get lore => _lore;
-  Lore _lore;
-
-  HeroSave(this.name, Race race, this.heroClass)
-      : race = race.rollStats(),
-        shops = {},
-        skills = SkillSet(),
-        _lore = Lore();
-
-  HeroSave.load(
-      this.name,
-      this.race,
-      this.heroClass,
-      this.inventory,
-      this.equipment,
-      this.home,
-      this.crucible,
-      this.shops,
-      this.experience,
-      this.skills,
-      this._lore,
-      this.gold,
-      this.maxDepth);
-
-  /// Copies data from [hero] into this object. This should be called when the
-  /// [Hero] has successfully completed a [Stage] and his changes need to be
-  /// "saved".
-  void copyFrom(Hero hero) {
-    inventory = hero.inventory;
-    equipment = hero.equipment;
-    experience = hero.experience;
-    gold = hero.gold;
-    skills = hero.skills.clone();
-    _lore = hero.lore.clone();
-  }
-}
 
 /// The main player-controlled [Actor]. The player's avatar in the game world.
 class Hero extends Actor {
   /// The highest level the hero can reach.
   static const maxLevel = 50;
 
-  String get nounText => 'you';
-
-  Pronoun get pronoun => Pronoun.you;
-
-  // TODO: Instead of copying all of these immutable values out of HeroSave,
-  // move them to a separate shared object.
-  final String name;
-  final RaceStats race;
-  final HeroClass heroClass;
-
-  final Inventory inventory;
-  final Equipment equipment;
-
-  int experience = 0;
-
-  final strength = Strength();
-  final agility = Agility();
-  final fortitude = Fortitude();
-  final intellect = Intellect();
-  final will = Will();
-
-  /// Damage scale based on the current weapon, equipment, and stats.
-  final Property<double> _heftScale = Property();
-
-  final SkillSet skills;
-
-  int gold;
-
-  final Lore lore;
+  final HeroSave save;
 
   /// Monsters the hero has already seen. Makes sure we don't double count them.
   final Set<Monster> _seenMonsters = Set();
 
   Behavior _behavior;
+
+  /// Damage scale based on the current weapon, equipment, and stats.
+  final Property<double> _heftScale = Property();
 
   /// How full the hero is.
   ///
@@ -150,8 +48,6 @@ class Hero extends Actor {
   set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
   int _stomach = Option.heroMaxStomach ~/ 2;
 
-  int get maxHealth => fortitude.maxHealth;
-
   int _focus = 400;
 
   int get focus => _focus;
@@ -162,40 +58,42 @@ class Hero extends Actor {
   double get lastNoise => _lastNoise;
   double _lastNoise = 0.0;
 
+  String get nounText => 'you';
+
+  Pronoun get pronoun => Pronoun.you;
+
+  Inventory get inventory => save.inventory;
+
+  Equipment get equipment => save.equipment;
+
+  int get experience => save.experience;
+
+  set experience(int value) => save.experience = value;
+
+  SkillSet get skills => save.skills;
+
+  int get gold => save.gold;
+
+  set gold(int value) => save.gold = value;
+
+  Lore get lore => save.lore;
+
+  int get maxHealth => fortitude.maxHealth;
+
+  Strength get strength => save.strength;
+  Agility get agility => save.agility;
+  Fortitude get fortitude => save.fortitude;
+  Intellect get intellect => save.intellect;
+  Will get will => save.will;
+
   // TODO: Equipment and items that let the hero swim, fly, etc.
   Motility get motility => Motility.doorAndWalk;
 
-  // TODO: Calculate from wielded light source and other equipment.
-  int get emanationLevel {
-    var level = 0;
-
-    // Find the brightest light source being carried.
-    for (var item in inventory) {
-      level = math.max(level, item.emanationLevel);
-    }
-
-    return level;
-  }
+  int get emanationLevel => save.emanationLevel;
 
   Hero(Game game, Vec pos, HeroSave save)
-      : name = save.name,
-        race = save.race,
-        heroClass = save.heroClass,
-        inventory = save.inventory.clone(),
-        equipment = save.equipment.clone(),
-        experience = save.experience,
-        skills = save.skills.clone(),
-        gold = save.gold,
-        lore = save.lore.clone(),
+      : save = save.clone(),
         super(game, pos.x, pos.y) {
-    // Hero state is cloned above so that if they die in the dungeon, they lose
-    // anything they found.
-    strength.bindHero(this);
-    agility.bindHero(this);
-    fortitude.bindHero(this);
-    intellect.bindHero(this);
-    will.bindHero(this);
-
     // Give the hero energy so they can act before all of the monsters.
     energy.energy = Energy.actionCost;
 
@@ -227,28 +125,10 @@ class Hero extends Actor {
   int get level => _level.value;
   final _level = Property<int>();
 
-  int get armor {
-    var total = 0;
-    for (var item in equipment) {
-      total += item.armor;
-    }
-
-    for (var skill in skills.acquired) {
-      total += skill.modifyArmor(this, skills.level(skill));
-    }
-
-    return total;
-  }
+  int get armor => save.armor;
 
   /// The total weight of all equipment.
-  int get weight {
-    var total = 0;
-    for (var item in equipment) {
-      total += item.weight;
-    }
-
-    return total;
-  }
+  int get weight => save.weight;
 
   /// Gets the total permament resistance provided by all equipment.
   int equipmentResistance(Element element) {
@@ -281,9 +161,9 @@ class Hero extends Actor {
   /// Discover or acquire any skills associated with [item].
   void gainItemSkills(Item item) {
     for (var skill in item.type.skills) {
-      if (heroClass.proficiency(skill) != 0.0 && skills.discover(skill)) {
+      if (save.heroClass.proficiency(skill) != 0.0 && skills.discover(skill)) {
         // See if the hero can immediately use it.
-        var level = skill.calculateLevel(this);
+        var level = skill.calculateLevel(save);
         if (skills.gain(skill, level)) {
           game.log.gain(skill.gainMessage(level), this);
         } else {
@@ -484,7 +364,7 @@ class Hero extends Actor {
         for (var group in monster.breed.groups) {
           if (group.slaySkill == null) continue;
 
-          if (heroClass.proficiency(group.slaySkill) == 0.0) continue;
+          if (save.heroClass.proficiency(group.slaySkill) == 0.0) continue;
 
           discoverSkill(group.slaySkill);
         }
@@ -510,11 +390,11 @@ class Hero extends Actor {
       // TODO: Different message if level went down.
     });
 
-    strength.refresh();
-    agility.refresh();
-    fortitude.refresh();
-    intellect.refresh();
-    will.refresh();
+    strength.refresh(game);
+    agility.refresh(game);
+    fortitude.refresh(game);
+    intellect.refresh(game);
+    will.refresh(game);
 
     var heft = strength.heftScale(equipment.weapon?.heft ?? 0);
     _heftScale.update(heft, (previous) {
@@ -544,7 +424,7 @@ class Hero extends Actor {
   }
 
   void refreshSkill(Skill skill) {
-    var level = skill.calculateLevel(this);
+    var level = skill.calculateLevel(save);
     if (skills.gain(skill, level)) {
       game.log.gain(skill.gainMessage(level), this);
     }

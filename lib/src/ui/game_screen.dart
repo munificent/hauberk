@@ -114,7 +114,7 @@ class GameScreen extends Screen<Input> {
       case Input.quit:
         // TODO: Should confirm first.
         if (game.stage[game.hero.pos].isExit) {
-          _save.copyFrom(game.hero);
+          _save.takeFrom(game.hero);
 
           // Remember that this depth was reached.
           _save.maxDepth = math.max(_save.maxDepth, game.depth);
@@ -139,7 +139,7 @@ class GameScreen extends Screen<Input> {
         ui.push(SelectSkillDialog(game));
         break;
       case Input.editSkills:
-        ui.push(SkillDialog(game.hero));
+        ui.push(SkillDialog(game.hero.save));
         break;
       case Input.heroInfo:
         ui.push(HeroInfoDialog(game.hero));
@@ -753,9 +753,9 @@ class GameScreen extends Screen<Input> {
   void _drawSidebar(
       Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
     var hero = game.hero;
-    terminal.writeAt(0, 0, hero.name, UIHue.primary);
-    terminal.writeAt(0, 1, hero.race.name, UIHue.text);
-    terminal.writeAt(0, 2, hero.heroClass.name, UIHue.text);
+    terminal.writeAt(0, 0, hero.save.name, UIHue.primary);
+    terminal.writeAt(0, 1, hero.save.race.name, UIHue.text);
+    terminal.writeAt(0, 2, hero.save.heroClass.name, UIHue.text);
 
     _drawStat(
         terminal, 4, 'Health', hero.health, brickRed, hero.maxHealth, maroon);

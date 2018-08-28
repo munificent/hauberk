@@ -64,7 +64,7 @@ class Simulator {
       }
     }
 
-    save.copyFrom(hero);
+    save.takeFrom(hero);
   }
 
   void _getItem(Item item) {

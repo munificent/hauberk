@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
-import '../hero/hero.dart';
+import '../hero/hero_save.dart';
+import '../core/game.dart';
 import '../core/lerp.dart';
 
 /// A derived property of the hero that needs to log a message when it changes.
@@ -63,7 +64,7 @@ class Stat {
 }
 
 abstract class StatBase extends Property<int> {
-  Hero _hero;
+  HeroSave _hero;
 
   String get name => _stat.name;
 
@@ -73,21 +74,21 @@ abstract class StatBase extends Property<int> {
 
   String get _loseAdjective;
 
-  void bindHero(Hero hero) {
+  void bindHero(HeroSave hero) {
     assert(_hero == null);
     _hero = hero;
   }
 
-  void refresh() {
+  void refresh(Game game) {
     var newValue =
         _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
     update(newValue, (previous) {
       var gain = newValue - previous;
       if (gain > 0) {
-        _hero.game.log
+        game.log
             .gain("You feel $_gainAdjective! Your $name increased by $gain.");
       } else {
-        _hero.game.log.error(
+        game.log.error(
             "You feel $_loseAdjective! Your $name decreased by ${-gain}.");
       }
     });

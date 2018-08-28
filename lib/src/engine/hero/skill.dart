@@ -8,6 +8,7 @@ import '../core/game.dart';
 import '../monster/monster.dart';
 import 'hero.dart';
 import 'hero_class.dart';
+import 'hero_save.dart';
 import 'lore.dart';
 
 /// An immutable unique skill a hero may learn.
@@ -44,10 +45,10 @@ abstract class Skill implements Comparable<Skill> {
   */
 
   /// Determines what level [hero] has in this skill.
-  int calculateLevel(Hero hero) =>
+  int calculateLevel(HeroSave hero) =>
       onCalculateLevel(hero, hero.skills.points(this));
 
-  int onCalculateLevel(Hero hero, int points);
+  int onCalculateLevel(HeroSave hero, int points);
 
   /// Called when the hero takes damage.
   void takeDamage(Hero hero, int damage) {}
@@ -60,7 +61,7 @@ abstract class Skill implements Comparable<Skill> {
   void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {}
 
   /// Adds or subtracts to the hero's base armor.
-  int modifyArmor(Hero hero, int level) => 0;
+  int modifyArmor(HeroSave hero, int level) => 0;
 
   /// Gives the skill a chance to add new defenses to the hero.
   Defense getDefense(Hero hero, int level) => null;
@@ -124,7 +125,7 @@ abstract class Discipline extends Skill {
 
   String levelDescription(int level);
 
-  int onCalculateLevel(Hero hero, int points) {
+  int onCalculateLevel(HeroSave hero, int points) {
     var training = hero.skills.points(this);
     for (var level = 1; level <= maxLevel; level++) {
       if (training < trainingNeeded(hero.heroClass, level)) return level - 1;
@@ -135,7 +136,7 @@ abstract class Discipline extends Skill {
 
   /// How close the hero is to reaching the next level in this skill, in
   /// percent, or `null` if this skill is at max level.
-  int percentUntilNext(Hero hero) {
+  int percentUntilNext(HeroSave hero) {
     var level = calculateLevel(hero);
     if (level == maxLevel) return null;
 
@@ -184,14 +185,14 @@ abstract class Spell extends Skill implements UsableSkill {
   /// The range of the spell, or `null` if not relevant.
   int get range => null;
 
-  int onCalculateLevel(Hero hero, int points) {
+  int onCalculateLevel(HeroSave hero, int points) {
     if (hero.heroClass.proficiency(this) == 0.0) return 0;
 
     // If the hero has enough intellect, they have it.
     return hero.intellect.value >= complexity(hero.heroClass) ? 1 : 0;
   }
 
-  int focusCost(Hero hero) =>
+  int focusCost(HeroSave hero) =>
       (baseFocusCost / hero.heroClass.proficiency(this)).round();
 
   int complexity(HeroClass heroClass) =>
@@ -203,14 +204,14 @@ abstract class Spell extends Skill implements UsableSkill {
 
   Action getTargetAction(Game game, int level, Vec target) {
     var action = onGetTargetAction(game, target);
-    return FocusAction(focusCost(game.hero), action);
+    return FocusAction(focusCost(game.hero.save), action);
   }
 
   Action onGetTargetAction(Game game, Vec target) => null;
 
   Action getAction(Game game, int level) {
     var action = onGetAction(game);
-    return FocusAction(focusCost(game.hero), action);
+    return FocusAction(focusCost(game.hero.save), action);
   }
 
   Action onGetAction(Game game) => null;
