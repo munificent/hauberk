@@ -10187,9 +10187,10 @@
         t6 = M.Skill;
         t7 = P.int;
         t8 = B.Breed;
-        hero = new G.HeroSave($name, race.rollStats$0(), heroClass, t1, t2, t3, t4, t5, 0, new M.SkillSet(P.LinkedHashMap_LinkedHashMap$_empty(t6, t7), P.LinkedHashMap_LinkedHashMap$_empty(t6, t7)), 60, 0, new V.Lore(P.LinkedHashMap_LinkedHashMap$_empty(t8, t7), P.LinkedHashMap_LinkedHashMap$_empty(t8, t7)));
+        hero = new K.HeroSave($name, race.rollStats$0(), heroClass, t1, t2, t3, t4, t5, 0, new M.SkillSet(P.LinkedHashMap_LinkedHashMap$_empty(t6, t7), P.LinkedHashMap_LinkedHashMap$_empty(t6, t7)), 60, 0, new V.Lore(P.LinkedHashMap_LinkedHashMap$_empty(t8, t7), P.LinkedHashMap_LinkedHashMap$_empty(t8, t7)), new D.Strength(), new D.Agility(), new D.Fortitude(), new D.Intellect(), new D.Will());
+        hero._bindStats$0();
         P.LinkedHashMap_LinkedHashMap$_literal(["Mending Salve", 3, "Scroll of Sidestepping", 2, "Tallow Candle", 4, "Loaf of Bread", 5], P.String, t7).forEach$1(0, new T.GameContent_createHero_closure(hero));
-        heroClass.startingItems.spawnDrop$1(hero.inventory.get$tryAdd());
+        heroClass.startingItems.spawnDrop$1(hero._inventory.get$tryAdd());
         for (t1 = $.$get$Shops_all(), t1 = t1.get$values(t1), t1 = t1.get$iterator(t1); t1.moveNext$0();) {
           t2 = t1.get$current();
           t5.$indexSet(0, t2, t2.create$0());
@@ -10280,14 +10281,15 @@
         t1.poison = poison;
         tile.element = t3;
         tile.substance = H.intTypeCheck(C.JSInt_methods.clamp$2(poison - 1, 0, 255));
-      }
+      },
+      $isContent: 1
     },
     GameContent_createHero_closure: {
       "^": "Closure:96;hero",
       call$2: function(type, amount) {
         H.stringTypeCheck(type);
         H.intTypeCheck(amount);
-        this.hero.inventory.tryAdd$1(new R.Item($.$get$Items_types().find$1(0, type), null, null, amount));
+        this.hero._inventory.tryAdd$1(new R.Item($.$get$Items_types().find$1(0, type), null, null, amount));
       }
     },
     GameContent__tryToIgniteTile_neighbor: {
@@ -14094,7 +14096,7 @@
           biome._tryAddJunction$3(t6, roomPos.$add(0, junction.position), junction.direction);
         }
         t2 = $.$get$rng();
-        t3 = C.JSNumber_methods.round$0(E.lerpDouble(t5.depth, 1, 30, 80, 10));
+        t3 = C.JSNumber_methods.round$0(E.lerpDouble(t5.depth, 1, 50, 100, 0));
         t5.addPlace$1(new Q.RoomPlace(t4, t1, t2.range$1(100) < t3, cells, P.LinkedHashSet_LinkedHashSet(null, null, null, D.Place), 0.05, 0, 0.05, 0, P.LinkedHashMap_LinkedHashMap$_empty(P.String, P.double), 0));
       },
       place$3: function(biome, x, y) {
@@ -14370,19 +14372,30 @@
       $._item = null;
     },
     finishAffix: function() {
-      var t1, t2, t3, t4, t5, t6, t7, t8, affix, affixes;
+      var t1, affixes, displayName, fullName, index, t2, t3, t4, t5, t6, t7, t8, t9, affix;
       t1 = $._affix;
       if (t1 == null)
         return;
-      t2 = t1._builder$_name;
-      t3 = t1._heftScale;
+      affixes = t1._isPrefix ? $.$get$Affixes_prefixes() : $.$get$Affixes_suffixes();
+      displayName = t1._builder$_name;
+      fullName = displayName + " (" + H.S($._affixTag) + ")";
+      for (index = 1; affixes.tryFind$1(fullName) != null;) {
+        ++index;
+        fullName = displayName + " (" + H.S($._affixTag) + " " + index + ")";
+      }
+      t1 = $._affix;
+      t2 = t1._heftScale;
+      t3 = t1._weightBonus;
       t4 = t1._damageScale;
       t5 = t1._damageBonus;
       t6 = t1._builder$_brand;
-      t7 = t1._priceBonus;
-      t8 = t1._priceScale;
+      t7 = t1._armor;
+      t8 = t1._priceBonus;
+      t9 = t1._priceScale;
+      if (t2 == null)
+        t2 = 1;
       if (t3 == null)
-        t3 = 1;
+        t3 = 0;
       if (t4 == null)
         t4 = 1;
       if (t5 == null)
@@ -14392,12 +14405,13 @@
       if (t7 == null)
         t7 = 0;
       if (t8 == null)
-        t8 = 1;
-      affix = new L.Affix(t2, t3, 0, 0, t4, t5, t6, 0, P.LinkedHashMap_LinkedHashMap$_empty(G.Element, P.int), t7, t8);
+        t8 = 0;
+      if (t9 == null)
+        t9 = 1;
+      affix = new L.Affix(fullName, displayName, t2, t3, 0, t4, t5, t6, t7, P.LinkedHashMap_LinkedHashMap$_empty(G.Element, P.int), t8, t9);
       t1._builder$_resists.forEach$1(0, affix.get$resist());
       t1 = $._affix;
-      affixes = t1._isPrefix ? $.$get$Affixes_prefixes() : $.$get$Affixes_suffixes();
-      affixes.add$5(0, t1._builder$_name, affix, t1._builder$_depth, t1._frequency, $._affixTag);
+      affixes.add$5(0, fullName, affix, t1._builder$_depth, t1._frequency, $._affixTag);
       $._affix = null;
     },
     _BaseBuilder: {
@@ -15672,8 +15686,11 @@
         return "Battle Hardening";
       },
       takeDamage$2: function(hero, damage) {
+        var t1, points;
         hero.discoverSkill$1(this);
-        hero.skills.earnPoints$2(this, C.JSDouble_methods.ceil$0(10 * damage / hero.fortitude.get$maxHealth()));
+        t1 = hero.save;
+        points = C.JSDouble_methods.ceil$0(10 * damage / t1.fortitude.get$maxHealth());
+        t1.skills.earnPoints$2(this, points);
         hero.refreshSkill$1(this);
       },
       modifyArmor$2: function(hero, level) {
@@ -15683,7 +15700,7 @@
         return "Increases armor by " + level + ".";
       },
       baseTrainingNeeded$1: function(level) {
-        return C.JSNumber_methods.ceil$0(60 * Math.pow(1.5, level));
+        return C.JSNumber_methods.ceil$0(60 * Math.pow(level, 1.5));
       }
     }
   }], ["", "package:hauberk/src/content/skill/discipline/club.dart",, A, {
@@ -15770,21 +15787,22 @@
         return "No " + this.get$weaponType() + " equipped.";
       },
       _hasWeapon$1: function(hero) {
-        var weapon = hero.equipment.find$1(0, "weapon");
+        var weapon = hero.save._equipment.find$1(0, "weapon");
         if (weapon == null)
           return false;
         return weapon.type.weaponType === this.get$weaponType();
       },
       killMonster$3: function(hero, action, monster) {
-        var weapon;
+        var t1, weapon;
         if (!(action instanceof S.AttackAction))
           return;
-        weapon = hero.equipment.find$1(0, "weapon");
+        t1 = hero.save;
+        weapon = t1._equipment.find$1(0, "weapon");
         if (weapon == null)
           return;
         if (weapon.type.weaponType !== this.get$weaponType())
           return;
-        hero.skills.earnPoints$2(this, C.JSDouble_methods.ceil$0(monster.breed.get$experience() / 1000));
+        t1.skills.earnPoints$2(this, C.JSDouble_methods.ceil$0(monster.breed.get$experience() / 1000));
         hero.refreshSkill$1(this);
       },
       baseTrainingNeeded$1: function(level) {
@@ -15827,7 +15845,7 @@
         var t1 = monster.breed;
         if (!C.JSArray_methods.contains$1(t1.groups, this._group))
           return;
-        hero.skills.earnPoints$2(this, C.JSDouble_methods.ceil$0(t1.get$experience() / 1000));
+        hero.save.skills.earnPoints$2(this, C.JSDouble_methods.ceil$0(t1.get$experience() / 1000));
         hero.refreshSkill$1(this);
       },
       modifyAttack$4: function(hero, monster, hit, level) {
@@ -15866,7 +15884,7 @@
       },
       getDirectionAction$3: function(game, level, dir) {
         var t1, isPolearm;
-        t1 = game.hero.equipment.find$1(0, "weapon").type.quantifiableName;
+        t1 = game.hero.save._equipment.find$1(0, "weapon").type.quantifiableName;
         isPolearm = O.Log__categorize(t1, false, true) === "Lance" || O.Log__categorize(t1, false, true) === "Partisan";
         return new Z.SpearAction(dir, 0, isPolearm, E.lerpDouble(level, 1, 10, 0.3, 1));
       },
@@ -16501,7 +16519,7 @@
         t3 = this._action$_focus;
         if (t2 < t3)
           return this.fail$1("You don't have enough focus to cast the spell.");
-        t4 = t1.intellect;
+        t4 = t1.save.intellect;
         t4 = t4.modify$1(t4._value);
         H.checkNum(t4);
         t1._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 - t3, 0, C.JSNumber_methods.ceil$0(Math.pow(t4, 1.3) * 2)));
@@ -16572,13 +16590,13 @@
             break;
           case C.ItemLocation_wMy:
             t1 = this.item;
-            C.JSArray_methods.remove$1(H.interceptedTypeCast(this._action$_actor, "$isHero").inventory._inventory$_items, t1);
+            C.JSArray_methods.remove$1(H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory._inventory$_items, t1);
             if (t1.type.emanationLevel > 0)
               this._action$_game._stage._lighting._actorLightDirty = true;
             break;
           case C.ItemLocation_A8D:
             t1 = this.item;
-            H.interceptedTypeCast(this._action$_actor, "$isHero").equipment.remove$1(0, t1);
+            H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment.remove$1(0, t1);
             if (t1.type.emanationLevel > 0)
               this._action$_game._stage._lighting._actorLightDirty = true;
             break;
@@ -16591,10 +16609,10 @@
           case C.ItemLocation_46y:
             break;
           case C.ItemLocation_wMy:
-            H.interceptedTypeCast(this._action$_actor, "$isHero").inventory.countChanged$0();
+            H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.countChanged$0();
             break;
           case C.ItemLocation_A8D:
-            H.interceptedTypeCast(this._action$_actor, "$isHero").equipment;
+            H.interceptedTypeCast(this._action$_actor, "$isHero").save;
             break;
           default:
             throw H.wrapException(P.StateError$("Invalid location."));
@@ -16606,7 +16624,7 @@
       onPerform$0: function() {
         var t1, result, t2, t3;
         t1 = this.item;
-        result = H.interceptedTypeCast(this._action$_actor, "$isHero").inventory.tryAdd$1(t1);
+        result = H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.tryAdd$1(t1);
         t2 = result.added;
         if (t2 === 0)
           return this.fail$3("{1} [don't|doesn't] have room for {2}.", this._action$_actor, t1);
@@ -16655,12 +16673,12 @@
         if (t1 === C.ItemLocation_A8D)
           return this.alternate$1(new R.UnequipAction(t1, this.item));
         t1 = this.item;
-        if (!H.interceptedTypeCast(this._action$_actor, "$isHero").equipment.canEquip$1(t1))
+        if (!H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment.canEquip$1(t1))
           return this.fail$3("{1} cannot equip {2}.", this._action$_actor, t1);
         this.removeItem$0(0);
-        unequipped = H.interceptedTypeCast(this._action$_actor, "$isHero").equipment.equip$1(t1);
+        unequipped = H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment.equip$1(t1);
         if (unequipped != null) {
-          result = H.interceptedTypeCast(this._action$_actor, "$isHero").inventory.tryAdd$2$wasUnequipped(unequipped, true);
+          result = H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.tryAdd$2$wasUnequipped(unequipped, true);
           t2 = this._action$_actor;
           if (result.remaining === 0)
             this.log$3("{1} unequip[s] {2}.", t2, unequipped);
@@ -16680,7 +16698,7 @@
         var t1, result, t2;
         this.removeItem$0(0);
         t1 = this.item;
-        result = H.interceptedTypeCast(this._action$_actor, "$isHero").inventory.tryAdd$2$wasUnequipped(t1, true);
+        result = H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.tryAdd$2$wasUnequipped(t1, true);
         t2 = this._action$_actor;
         if (result.remaining === 0)
           this.log$3("{1} unequip[s] {2}.", t2, t1);
@@ -16772,9 +16790,9 @@
           return 0;
         if (t2.resistance$1(element) > 0)
           return 0;
-        fuel = this._destroy$4(element, H.interceptedTypeCast(this._action$_actor, "$isHero").inventory, true, new R.DestroyActionMixin_destroyHeldItems_closure(this));
+        fuel = this._destroy$4(element, H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory, true, new R.DestroyActionMixin_destroyHeldItems_closure(this));
         t1.anyEquipmentDestroyed = false;
-        t2 = this._destroy$4(element, H.interceptedTypeCast(this._action$_actor, "$isHero").equipment, true, new R.DestroyActionMixin_destroyHeldItems_closure0(t1, this));
+        t2 = this._destroy$4(element, H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment, true, new R.DestroyActionMixin_destroyHeldItems_closure0(t1, this));
         if (t1.anyEquipmentDestroyed)
           H.interceptedTypeCast(this._action$_actor, "$isHero").refreshProperties$0();
         return fuel + t2;
@@ -16789,13 +16807,13 @@
     DestroyActionMixin_destroyHeldItems_closure: {
       "^": "Closure:11;$this",
       call$1: function(item) {
-        C.JSArray_methods.remove$1(H.interceptedTypeCast(this.$this._action$_actor, "$isHero").inventory._inventory$_items, item);
+        C.JSArray_methods.remove$1(H.interceptedTypeCast(this.$this._action$_actor, "$isHero").save._inventory._inventory$_items, item);
       }
     },
     DestroyActionMixin_destroyHeldItems_closure0: {
       "^": "Closure:11;_box_0,$this",
       call$1: function(item) {
-        H.interceptedTypeCast(this.$this._action$_actor, "$isHero").equipment.remove$1(0, item);
+        H.interceptedTypeCast(this.$this._action$_actor, "$isHero").save._equipment.remove$1(0, item);
         this._box_0.anyEquipmentDestroyed = true;
       }
     }
@@ -16934,7 +16952,7 @@
               max = C.JSNumber_methods.ceil$0(item.get$price() * 1.5);
               t4 = $.$get$rng();
               value = t4._random.nextInt$1(max - min) + min;
-              t4 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+              t4 = H.interceptedTypeCast(this._action$_actor, "$isHero").save;
               t5 = t4.gold;
               if (typeof t5 !== "number")
                 return t5.$add();
@@ -16965,7 +16983,7 @@
             }
           t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
           t2 = t1._focus;
-          t3 = t1.intellect;
+          t3 = t1.save.intellect;
           t3 = t3.modify$1(t3._value);
           H.checkNum(t3);
           t1._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 + 2, 0, C.JSNumber_methods.ceil$0(Math.pow(t3, 1.3) * 2)));
@@ -17011,7 +17029,7 @@
           }
           t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
           t2 = t1._focus;
-          t3 = t1.intellect;
+          t3 = t1.save.intellect;
           t3 = t3.modify$1(t3._value);
           H.checkNum(t3);
           t1._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 + 10, 0, C.JSNumber_methods.ceil$0(Math.pow(t3, 1.3) * 2)));
@@ -18124,7 +18142,7 @@
     RestBehavior: {
       "^": "Behavior;",
       canPerform$1: function(hero) {
-        if (hero._health === hero.fortitude.get$maxHealth())
+        if (hero._health === hero.save.fortitude.get$maxHealth())
           return false;
         if (hero._stomach === 0) {
           hero.game.log.add$5(0, C.LogType_message, "You must eat before you can rest.", null, null, null);
@@ -18278,11 +18296,8 @@
         return;
       return C.JSNumber_methods.toInt$0(Math.pow(level - 1, 3)) * 1000;
     },
-    HeroSave: {
-      "^": "Object;name>,race,heroClass,inventory,equipment,home,crucible,shops,experience,skills,gold,maxDepth,_lore"
-    },
     Hero: {
-      "^": "Actor;name>,race,heroClass,inventory,equipment,experience,strength,agility,fortitude,intellect,will,_hero$_heftScale,skills,gold,lore,_seenMonsters,0_behavior,_stomach,_focus,_lastNoise,_level,game,energy,haste,cold,poison,blindness,dazzle,resistances,_pos,0_health",
+      "^": "Actor;save,_seenMonsters,0_behavior,_hero$_heftScale,_stomach,_focus,_lastNoise,_level,game,energy,haste,cold,poison,blindness,dazzle,resistances,_pos,0_health",
       get$nounText: function() {
         return "you";
       },
@@ -18290,29 +18305,21 @@
         return C.Pronoun_you_you_your;
       },
       get$maxHealth: function() {
-        return this.fortitude.get$maxHealth();
+        return this.save.fortitude.get$maxHealth();
       },
       get$motility: function() {
         return $.$get$Motility_doorAndWalk();
       },
       get$emanationLevel: function() {
-        var t1, level;
-        for (t1 = this.inventory._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), level = 0; t1.moveNext$0();)
-          level = Math.max(level, t1.__interceptors$_current.type.emanationLevel);
-        return level;
+        return this.save.get$emanationLevel();
       },
       Hero$3: function(game, pos, save) {
         var t1;
-        this.strength._hero = this;
-        this.agility._hero = this;
-        t1 = this.fortitude;
-        t1._hero = this;
-        this.intellect._hero = this;
-        this.will._hero = this;
         this.energy.energy = 240;
         this.refreshProperties$0();
-        this._health = H.intTypeCheck(C.JSInt_methods.clamp$2(t1.get$maxHealth(), 0, this.get$maxHealth()));
-        for (t1 = this.inventory._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();)
+        t1 = this.save;
+        this._health = H.intTypeCheck(C.JSInt_methods.clamp$2(t1.fortitude.get$maxHealth(), 0, this.get$maxHealth()));
+        for (t1 = t1._inventory._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();)
           this.gainItemSkills$1(t1.__interceptors$_current);
       },
       get$appearance: function(_) {
@@ -18325,42 +18332,20 @@
         return this._behavior == null;
       },
       get$armor: function() {
-        var t1, t2, total, t3, t4, t5;
-        for (t1 = this.equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator, total = 0; t1.moveNext$0();) {
-          t3 = t2.get$current();
-          total += t3.type.armor + t3.get$armorModifier();
-        }
-        for (t1 = this.skills, t2 = t1.get$acquired(), t3 = J.get$iterator$ax(t2._iterable), t2 = new H.WhereIterator(t3, t2._f, [H.getTypeArgumentByIndex(t2, 0)]), t1 = t1._levels; t2.moveNext$0();) {
-          t4 = t3.get$current();
-          t5 = t1.$index(0, t4);
-          total += t4.modifyArmor$2(this, t5 == null ? 0 : t5);
-        }
-        return total;
-      },
-      get$weight: function() {
-        var t1, t2, total;
-        for (t1 = this.equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator, total = 0; t1.moveNext$0();)
-          total += t2.get$current().get$weight();
-        return total;
-      },
-      equipmentResistance$1: function(element) {
-        var t1, t2, resistance;
-        for (t1 = this.equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator, resistance = 0; t1.moveNext$0();)
-          resistance += t2.get$current().resistance$1(element);
-        return resistance;
+        return this.save.get$armor();
       },
       gainItemSkills$1: function(item) {
-        var t1, t2, t3, t4, t5, t6, _i, skill, t7, level;
-        for (t1 = item.type.skills, t2 = t1.length, t3 = this.heroClass, t4 = this.skills, t5 = this.game, t6 = t4._points, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+        var t1, t2, t3, t4, t5, _i, skill, t6, level;
+        for (t1 = item.type.skills, t2 = t1.length, t3 = this.save, t4 = t3.heroClass, t5 = this.game, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
           skill = t1[_i];
-          t3.toString;
+          t4.toString;
           H.interceptedTypeCheck(skill, "$isSkill");
-          t7 = t3._proficiency.$index(0, skill);
-          if ((t7 == null ? 1 : t7) !== 0 && t4.discover$1(skill)) {
+          t6 = t4._proficiency.$index(0, skill);
+          if ((t6 == null ? 1 : t6) !== 0 && t3.skills.discover$1(skill)) {
             skill.toString;
-            t7 = t6.$index(0, skill);
-            level = skill.onCalculateLevel$2(this, t7 == null ? 0 : t7);
-            if (t4.gain$2(skill, level))
+            t6 = t3.skills._points.$index(0, skill);
+            level = skill.onCalculateLevel$2(t3, t6 == null ? 0 : t6);
+            if (t3.skills.gain$2(skill, level))
               t5.log.add$5(0, C.LogType_gain, skill.gainMessage$1(level), this, null, null);
             else
               t5.log.add$5(0, C.LogType_gain, skill.get$discoverMessage(), this, null, null);
@@ -18371,7 +18356,7 @@
         return 6;
       },
       get$baseDodge: function() {
-        return 20 + this.agility.get$dodgeBonus();
+        return 20 + this.save.agility.get$dodgeBonus();
       },
       onGetDefenses$0: function() {
         var $async$self = this;
@@ -18386,7 +18371,7 @@
               switch ($async$goto) {
                 case 0:
                   // Function start
-                  t1 = $async$self.skills, t2 = t1.get$acquired(), t3 = J.get$iterator$ax(t2._iterable), t2 = new H.WhereIterator(t3, t2._f, [H.getTypeArgumentByIndex(t2, 0)]), t1 = t1._levels;
+                  t1 = $async$self.save, t2 = t1.skills.get$acquired(), t3 = J.get$iterator$ax(t2._iterable), t2 = new H.WhereIterator(t3, t2._f, [H.getTypeArgumentByIndex(t2, 0)]);
                 case 2:
                   // for condition
                   if (!t2.moveNext$0()) {
@@ -18395,7 +18380,7 @@
                     break;
                   }
                   t4 = t3.get$current();
-                  t5 = t1.$index(0, t4);
+                  t5 = t1.skills._levels.$index(0, t4);
                   defense = t4.getDefense$2($async$self, t5 == null ? 0 : t5);
                   $async$goto = defense != null ? 4 : 5;
                   break;
@@ -18425,31 +18410,32 @@
         return this._behavior.getAction$1(this);
       },
       onCreateMeleeHit$1: function(defender) {
-        var weapon, t1, hit, t2, t3, t4, t5;
-        weapon = this.equipment.find$1(0, "weapon");
+        var t1, weapon, t2, hit, t3, t4, t5;
+        t1 = this.save;
+        weapon = t1._equipment.find$1(0, "weapon");
         if (weapon != null && weapon.type.attack.range <= 0) {
-          t1 = weapon.type.attack;
-          t1.toString;
-          hit = new U.Hit(t1, 0, 1, 1, 0, $.$get$Element_none(), 1);
-          t1 = this._hero$_heftScale;
-          t1 = t1.modify$1(t1._value);
-          if (typeof t1 !== "number")
-            return H.iae(t1);
-          hit._combat$_damageScale = t1;
+          t2 = weapon.type.attack;
+          t2.toString;
+          hit = new U.Hit(t2, 0, 1, 1, 0, $.$get$Element_none(), 1);
+          t2 = this._hero$_heftScale;
+          t2 = t2.modify$1(t2._value);
+          if (typeof t2 !== "number")
+            return H.iae(t2);
+          hit._combat$_damageScale = t2;
         } else
           hit = new U.Hit(U.Attack$(this, "punch[es]", 3, null, null), 0, 1, 1, 0, $.$get$Element_none(), 1);
-        hit._strikeBonus += this.agility.get$strikeBonus();
-        for (t1 = this.skills, t2 = t1.get$acquired(), t3 = J.get$iterator$ax(t2._iterable), t2 = new H.WhereIterator(t3, t2._f, [H.getTypeArgumentByIndex(t2, 0)]), t1 = t1._levels; t2.moveNext$0();) {
+        hit._strikeBonus += t1.agility.get$strikeBonus();
+        for (t2 = t1.skills.get$acquired(), t3 = J.get$iterator$ax(t2._iterable), t2 = new H.WhereIterator(t3, t2._f, [H.getTypeArgumentByIndex(t2, 0)]); t2.moveNext$0();) {
           t4 = t3.get$current();
           H.interceptedTypeCast(defender, "$isMonster");
-          t5 = t1.$index(0, t4);
+          t5 = t1.skills._levels.$index(0, t4);
           t4.modifyAttack$4(this, defender, hit, t5 == null ? 0 : t5);
         }
         return hit;
       },
       createRangedHit$0: function() {
         var t1, hit;
-        t1 = this.equipment.find$1(0, "weapon").type.attack;
+        t1 = this.save._equipment.find$1(0, "weapon").type.attack;
         t1.toString;
         hit = new U.Hit(t1, 0, 1, 1, 0, $.$get$Element_none(), 1);
         t1 = this._hero$_heftScale;
@@ -18468,10 +18454,10 @@
           case C.HitType_1:
             break;
           case C.HitType_2:
-            hit._rangeScale *= this.strength.get$tossRangeScale();
+            hit._rangeScale *= this.save.strength.get$tossRangeScale();
             break;
         }
-        for (t1 = this.equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator; t1.moveNext$0();) {
+        for (t1 = this.save._equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator; t1.moveNext$0();) {
           t3 = t2.get$current();
           hit._strikeBonus += t3.get$strikeBonus();
           hit._combat$_damageScale *= t3.get$damageScale();
@@ -18483,35 +18469,37 @@
         }
       },
       onGetResistance$1: function(element) {
-        return this.equipmentResistance$1(element);
+        return this.save.equipmentResistance$1(element);
       },
       onTakeDamage$3: function(action, attacker, damage) {
-        var t1, t2, t3, _i;
+        var t1, t2, t3, t4, _i;
         t1 = this._focus;
-        t2 = this.intellect;
-        t3 = t2.modify$1(t2._value);
+        t2 = this.save;
+        t3 = t2.intellect;
+        t4 = t3.modify$1(t3._value);
+        H.checkNum(t4);
+        t2 = C.JSInt_methods.$tdiv(C.JSNumber_methods.ceil$0(Math.pow(t4, 1.3) * 2) * damage * 2, t2.fortitude.get$maxHealth());
+        t3 = t3.modify$1(t3._value);
         H.checkNum(t3);
-        t3 = C.JSInt_methods.$tdiv(C.JSNumber_methods.ceil$0(Math.pow(t3, 1.3) * 2) * damage * 2, this.fortitude.get$maxHealth());
-        t2 = t2.modify$1(t2._value);
-        H.checkNum(t2);
-        this._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t1 - t3, 0, C.JSNumber_methods.ceil$0(Math.pow(t2, 1.3) * 2)));
+        this._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t1 - t2, 0, C.JSNumber_methods.ceil$0(Math.pow(t3, 1.3) * 2)));
         for (this.game.content, t1 = $.$get$Skills_all(), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i)
           t1[_i].takeDamage$2(this, damage);
       },
       onKilled$2: function(action, defender) {
-        var t1, t2, t3, _i;
+        var t1, t2, t3, t4, _i;
         H.interceptedTypeCast(defender, "$isMonster");
         if (!this._seenMonsters.contains$1(0, defender))
           return;
-        t1 = defender.breed;
-        this.lore.slay$1(t1);
-        for (t2 = this.skills.get$discovered(), t3 = t2.length, _i = 0; _i < t2.length; t2.length === t3 || (0, H.throwConcurrentModificationError)(t2), ++_i)
-          t2[_i].killMonster$3(this, action, defender);
-        t2 = this.experience;
-        t1 = t1.get$experience();
-        if (typeof t2 !== "number")
-          return t2.$add();
-        this.experience = t2 + t1;
+        t1 = this.save;
+        t2 = defender.breed;
+        t1._lore.slay$1(t2);
+        for (t3 = t1.skills.get$discovered(), t4 = t3.length, _i = 0; _i < t3.length; t3.length === t4 || (0, H.throwConcurrentModificationError)(t3), ++_i)
+          t3[_i].killMonster$3(this, action, defender);
+        t3 = t1.experience;
+        t2 = t2.get$experience();
+        if (typeof t3 !== "number")
+          return t3.$add();
+        t1.experience = t3 + t2;
         this.refreshProperties$0();
       },
       onDied$1: function(attackNoun) {
@@ -18537,7 +18525,7 @@
           this.game.log.add$5(0, C.LogType_error, "You cannot rest while poison courses through your veins!", null, null, null);
           return false;
         }
-        if (this._health === this.fortitude.get$maxHealth()) {
+        if (this._health === this.save.fortitude.get$maxHealth()) {
           this.game.log.add$5(0, C.LogType_message, "You are fully rested.", null, null, null);
           return false;
         }
@@ -18551,16 +18539,16 @@
       seeMonster$1: function(monster) {
         var t1, t2, t3, _i, group, t4;
         if (this._seenMonsters.add$1(0, monster)) {
-          t1 = this.lore;
+          t1 = this.save;
           t2 = monster.breed;
-          t1.see$1(t2);
-          if (t1.seen$1(t2) === 1)
-            for (t1 = t2.groups, t2 = t1.length, t3 = this.heroClass, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
-              group = t1[_i];
+          t1._lore.see$1(t2);
+          if (t1._lore.seen$1(t2) === 1)
+            for (t2 = t2.groups, t3 = t2.length, t1 = t1.heroClass, _i = 0; _i < t2.length; t2.length === t3 || (0, H.throwConcurrentModificationError)(t2), ++_i) {
+              group = t2[_i];
               if (group.get$slaySkill() == null)
                 continue;
               t4 = group.get$slaySkill();
-              t4 = t3._proficiency.$index(0, t4);
+              t4 = t1._proficiency.$index(0, t4);
               if ((t4 == null ? 1 : t4) === 0)
                 continue;
               this.discoverSkill$1(group.get$slaySkill());
@@ -18568,51 +18556,58 @@
         }
       },
       refreshProperties$0: function() {
-        var level, t1, t2, heft;
-        level = G.experienceLevel(this.experience);
+        var t1, level, t2, t3, heft;
+        t1 = this.save;
+        level = G.experienceLevel(t1.experience);
         this._level.update$2(0, level, new G.Hero_refreshProperties_closure(this, level));
-        t1 = this.strength;
-        t1.refresh$0();
-        this.agility.refresh$0();
-        this.fortitude.refresh$0();
-        this.intellect.refresh$0();
-        this.will.refresh$0();
-        t2 = this.equipment.find$1(0, "weapon");
-        t2 = t2 == null ? null : t2.get$heft();
-        heft = t1.heftScale$1(t2 == null ? 0 : t2);
+        t2 = t1.strength;
+        t3 = this.game;
+        t2.refresh$1(t3);
+        t1.agility.refresh$1(t3);
+        t1.fortitude.refresh$1(t3);
+        t1.intellect.refresh$1(t3);
+        t1.will.refresh$1(t3);
+        t3 = t1._equipment.find$1(0, "weapon");
+        t3 = t3 == null ? null : t3.get$heft();
+        heft = t2.heftScale$1(t3 == null ? 0 : t3);
         this._hero$_heftScale.update$2(0, heft, new G.Hero_refreshProperties_closure0(this, heft));
-        C.JSArray_methods.forEach$1(this.skills.get$discovered(), this.get$refreshSkill());
+        C.JSArray_methods.forEach$1(t1.skills.get$discovered(), this.get$refreshSkill());
       },
       discoverSkill$1: function(skill) {
-        if (!this.skills.discover$1(skill))
+        if (!this.save.skills.discover$1(skill))
           return;
         this.game.log.add$5(0, C.LogType_gain, skill.get$discoverMessage(), this, null, null);
       },
       refreshSkill$1: [function(skill) {
         var t1, level;
         H.interceptedTypeCheck(skill, "$isSkill");
+        t1 = this.save;
         skill.toString;
-        t1 = this.skills;
-        level = skill.onCalculateLevel$2(this, t1.points$1(0, skill));
-        if (t1.gain$2(skill, level))
+        level = skill.onCalculateLevel$2(t1, t1.skills.points$1(0, skill));
+        if (t1.skills.gain$2(skill, level))
           this.game.log.add$5(0, C.LogType_gain, skill.gainMessage$1(level), this, null, null);
       }, "call$1", "get$refreshSkill", 4, 0, 86],
       static: {
         Hero$: function(game, pos, save) {
           var t1, t2, t3, t4, t5, t6, t7, t8, t9;
           t1 = P.LinkedHashSet_LinkedHashSet(null, null, null, B.Monster);
-          t2 = save.inventory.clone$0(0);
-          t3 = save.equipment.clone$0(0);
-          t4 = save.experience;
-          t5 = save.skills.clone$0(0);
-          t6 = save.gold;
-          t7 = save._lore.clone$0(0);
-          t8 = pos.x;
-          t9 = pos.y;
-          t1 = new G.Hero(save.name, save.race, save.heroClass, t2, t3, t4, new D.Strength(), new D.Agility(), new D.Fortitude(), new D.Intellect(), new D.Will(), new D.Property([P.double]), t5, t6, t7, t1, 200, 400, 0, new D.Property([P.int]), game, new Y.Energy(0), new E.HasteCondition(0, 0), new E.ColdCondition(0, 0), new E.PoisonCondition(0, 0), new E.BlindnessCondition(0, 0), new E.BlindnessCondition(0, 0), P.LinkedHashMap_LinkedHashMap$_empty(G.Element, E.ResistCondition), new L.Vec(t8, t9));
-          t1.Actor$3(game, t8, t9);
-          t1.Hero$3(game, pos, save);
-          return t1;
+          t2 = P.int;
+          t3 = save._inventory.clone$0(0);
+          t4 = save._equipment.clone$0(0);
+          t5 = save.experience;
+          t6 = save.skills;
+          t7 = M.Skill;
+          t8 = P.LinkedHashMap_LinkedHashMap$from(t6._levels, t7, t2);
+          t7 = P.LinkedHashMap_LinkedHashMap$from(t6._points, t7, t2);
+          t6 = save._lore;
+          t9 = B.Breed;
+          t9 = K.HeroSave$load(save.name, save.race, save.heroClass, t3, t4, save._home, save._crucible, save.shops, t5, new M.SkillSet(t8, t7), new V.Lore(P.LinkedHashMap_LinkedHashMap$from(t6._seen, t9, t2), P.LinkedHashMap_LinkedHashMap$from(t6._slain, t9, t2)), save.gold, save.maxDepth);
+          t6 = pos.x;
+          t7 = pos.y;
+          t2 = new G.Hero(t9, t1, new D.Property([P.double]), 200, 400, 0, new D.Property([t2]), game, new Y.Energy(0), new E.HasteCondition(0, 0), new E.ColdCondition(0, 0), new E.PoisonCondition(0, 0), new E.BlindnessCondition(0, 0), new E.BlindnessCondition(0, 0), P.LinkedHashMap_LinkedHashMap$_empty(G.Element, E.ResistCondition), new L.Vec(t6, t7));
+          t2.Actor$3(game, t6, t7);
+          t2.Hero$3(game, pos, save);
+          return t2;
         }
       }
     },
@@ -18642,6 +18637,61 @@
         return t1 == null ? 1 : t1;
       }
     }
+  }], ["", "package:hauberk/src/engine/hero/hero_save.dart",, K, {
+    "^": "",
+    HeroSave: {
+      "^": "Object;name>,race,heroClass,_inventory,_equipment,_home,_crucible,shops,experience,skills,gold,maxDepth,_lore,strength,agility,fortitude,intellect,will",
+      get$emanationLevel: function() {
+        var t1, level;
+        for (t1 = this._inventory._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), level = 0; t1.moveNext$0();)
+          level = Math.max(level, t1.__interceptors$_current.type.emanationLevel);
+        return level;
+      },
+      get$armor: function() {
+        var t1, t2, total, t3, t4;
+        for (t1 = this._equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator, total = 0; t1.moveNext$0();) {
+          t3 = t2.get$current();
+          total += t3.type.armor + t3.get$armorModifier();
+        }
+        for (t1 = this.skills.get$acquired(), t2 = J.get$iterator$ax(t1._iterable), t1 = new H.WhereIterator(t2, t1._f, [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();) {
+          t3 = t2.get$current();
+          t4 = this.skills._levels.$index(0, t3);
+          total += t3.modifyArmor$2(this, t4 == null ? 0 : t4);
+        }
+        return total;
+      },
+      get$weight: function() {
+        var t1, t2, total;
+        for (t1 = this._equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator, total = 0; t1.moveNext$0();)
+          total += t2.get$current().get$weight();
+        return total;
+      },
+      equipmentResistance$1: function(element) {
+        var t1, t2, resistance;
+        for (t1 = this._equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator, resistance = 0; t1.moveNext$0();)
+          resistance += t2.get$current().resistance$1(element);
+        return resistance;
+      },
+      _bindStats$0: function() {
+        this.strength.bindHero$1(this);
+        this.agility.bindHero$1(this);
+        this.fortitude.bindHero$1(this);
+        this.intellect.bindHero$1(this);
+        this.will.bindHero$1(this);
+      },
+      static: {
+        HeroSave$load: function($name, race, heroClass, _inventory, _equipment, _home, _crucible, shops, experience, skills, _lore, gold, maxDepth) {
+          var t1;
+          O.Inventory$(C.ItemLocation_wMy, 24, null);
+          E.Equipment$();
+          O.Inventory$(C.ItemLocation_ukJ, 26, null);
+          O.Inventory$(C.ItemLocation_vOz, 8, null);
+          t1 = new K.HeroSave($name, race, heroClass, _inventory, _equipment, _home, _crucible, shops, experience, skills, gold, maxDepth, _lore, new D.Strength(), new D.Agility(), new D.Fortitude(), new D.Intellect(), new D.Will());
+          t1._bindStats$0();
+          return t1;
+        }
+      }
+    }
   }], ["", "package:hauberk/src/engine/hero/lore.dart",, V, {
     "^": "",
     Lore: {
@@ -18663,12 +18713,6 @@
       slain$1: function(breed) {
         var t1 = this._slain.$index(0, breed);
         return t1 == null ? 0 : t1;
-      },
-      clone$0: function(_) {
-        var t1, t2;
-        t1 = B.Breed;
-        t2 = P.int;
-        return new V.Lore(P.LinkedHashMap_LinkedHashMap$from(this._seen, t1, t2), P.LinkedHashMap_LinkedHashMap$from(this._slain, t1, t2));
       }
     },
     Lore_see_closure: {
@@ -18842,24 +18886,23 @@
         return "{1} can begin training in " + this.get$name(this) + ".";
       },
       onCalculateLevel$2: function(hero, points) {
-        var training, level, t1;
+        var training, t1, level, t2;
         training = hero.skills.points$1(0, this);
-        for (level = 1; level <= this.get$maxLevel(); ++level) {
-          t1 = this.trainingNeeded$2(hero.heroClass, level);
-          if (typeof t1 !== "number")
-            return H.iae(t1);
-          if (training < t1)
+        for (t1 = hero.heroClass, level = 1; level <= this.get$maxLevel(); ++level) {
+          t2 = this.trainingNeeded$2(t1, level);
+          if (typeof t2 !== "number")
+            return H.iae(t2);
+          if (training < t2)
             return level - 1;
         }
         return this.get$maxLevel();
       },
       percentUntilNext$1: function(hero) {
-        var t1, level, points, current, next;
-        t1 = hero.skills;
-        level = this.onCalculateLevel$2(hero, t1.points$1(0, this));
+        var level, points, t1, current, next;
+        level = this.onCalculateLevel$2(hero, hero.skills.points$1(0, this));
         if (level === this.get$maxLevel())
           return;
-        points = t1.points$1(0, this);
+        points = hero.skills.points$1(0, this);
         t1 = hero.heroClass;
         current = this.trainingNeeded$2(t1, level);
         next = this.trainingNeeded$2(t1, level + 1);
@@ -18919,14 +18962,14 @@
       },
       getTargetAction$3: function(game, level, target) {
         var action = this.onGetTargetAction$2(game, target);
-        return new V.FocusAction(this.focusCost$1(game.hero), action);
+        return new V.FocusAction(this.focusCost$1(game.hero.save), action);
       },
       onGetTargetAction$2: function(game, target) {
         return;
       },
       getAction$2: function(game, level) {
         var action = this.onGetAction$1(game);
-        return new V.FocusAction(this.focusCost$1(game.hero), action);
+        return new V.FocusAction(this.focusCost$1(game.hero.save), action);
       },
       onGetAction$1: function(game) {
         return;
@@ -18983,12 +19026,6 @@
         H.interceptedTypeCheck(skill, "$isSkill");
         t1 = this._levels;
         return t1.containsKey$1(0, skill) && J.$gt$n(t1.$index(0, skill), 0);
-      },
-      clone$0: function(_) {
-        var t1, t2;
-        t1 = M.Skill;
-        t2 = P.int;
-        return new M.SkillSet(P.LinkedHashMap_LinkedHashMap$from(this._levels, t1, t2), P.LinkedHashMap_LinkedHashMap$from(this._points, t1, t2));
       }
     },
     SkillSet_acquired_closure: {
@@ -19024,36 +19061,42 @@
       get$name: function(_) {
         return this.get$_stat().name;
       },
-      refresh$0: function() {
+      bindHero$1: function(hero) {
+        var t1, t2, t3;
+        this._hero = hero;
+        t1 = this.get$_stat();
+        t2 = hero.race._stats;
+        t3 = G.experienceLevel(this._hero.experience) - 1;
+        if (t3 < 0 || t3 >= t2.length)
+          return H.ioore(t2, t3);
+        this._value = H.intTypeCheck(J.clamp$2$n(t2[t3].$index(0, t1), 1, 60));
+      },
+      refresh$1: function(game) {
         var t1, t2, t3;
         t1 = this._hero.race;
         t2 = this.get$_stat();
-        t3 = this._hero._level;
-        t3 = t3.modify$1(t3._value);
         t1 = t1._stats;
-        if (typeof t3 !== "number")
-          return t3.$sub();
-        --t3;
+        t3 = G.experienceLevel(this._hero.experience) - 1;
         if (t3 < 0 || t3 >= t1.length)
           return H.ioore(t1, t3);
         t2 = H.intTypeCheck(J.clamp$2$n(t1[t3].$index(0, t2), 1, 60));
-        this.update$2(0, t2, new D.StatBase_refresh_closure(this, t2));
+        this.update$2(0, t2, new D.StatBase_refresh_closure(this, t2, game));
       },
       $asProperty: function() {
         return [P.int];
       }
     },
     StatBase_refresh_closure: {
-      "^": "Closure:6;$this,newValue",
+      "^": "Closure:6;$this,newValue,game",
       call$1: function(previous) {
         var gain, t1, t2;
         gain = this.newValue - H.intTypeCheck(previous);
-        t1 = this.$this;
-        t2 = t1._hero;
+        t1 = this.game;
+        t2 = this.$this;
         if (gain > 0)
-          t2.game.log.add$5(0, C.LogType_gain, "You feel " + t1.get$_gainAdjective() + "! Your " + t1.get$_stat().name + " increased by " + H.S(gain) + ".", null, null, null);
+          t1.log.add$5(0, C.LogType_gain, "You feel " + t2.get$_gainAdjective() + "! Your " + t2.get$_stat().name + " increased by " + H.S(gain) + ".", null, null, null);
         else
-          t2.game.log.add$5(0, C.LogType_error, "You feel " + t1.get$_loseAdjective() + "! Your " + t1.get$_stat().name + " decreased by " + H.S(-gain) + ".", null, null, null);
+          t1.log.add$5(0, C.LogType_error, "You feel " + t2.get$_loseAdjective() + "! Your " + t2.get$_stat().name + " decreased by " + H.S(-gain) + ".", null, null, null);
       }
     },
     Strength: {
@@ -19070,43 +19113,24 @@
       modify$1: function(base) {
         var t1;
         H.intTypeCheck(base);
-        t1 = this._hero;
-        if (t1 == null)
-          return base;
-        t1 = t1.get$weight();
+        t1 = this._hero.get$weight();
         if (typeof base !== "number")
           return base.$sub();
         return H.intTypeCheck(C.JSInt_methods.clamp$2(base - t1, 1, 60));
       },
       get$tossRangeScale: function() {
-        var t1 = this.modify$1(this._value);
-        if (typeof t1 !== "number")
-          return t1.$le();
-        if (t1 <= 20)
+        if (this.modify$1(this._value) <= 20)
           return E.lerpDouble(this.modify$1(this._value), 1, 20, 0.1, 1);
-        t1 = this.modify$1(this._value);
-        if (typeof t1 !== "number")
-          return t1.$le();
-        if (t1 <= 30)
+        if (this.modify$1(this._value) <= 30)
           return E.lerpDouble(this.modify$1(this._value), 20, 30, 1, 1.5);
-        t1 = this.modify$1(this._value);
-        if (typeof t1 !== "number")
-          return t1.$le();
-        if (t1 <= 40)
+        if (this.modify$1(this._value) <= 40)
           return E.lerpDouble(this.modify$1(this._value), 30, 40, 1.5, 1.8);
-        t1 = this.modify$1(this._value);
-        if (typeof t1 !== "number")
-          return t1.$le();
-        if (t1 <= 50)
+        if (this.modify$1(this._value) <= 50)
           return E.lerpDouble(this.modify$1(this._value), 40, 50, 1.8, 2);
         return E.lerpDouble(this.modify$1(this._value), 50, 60, 2, 2.1);
       },
       heftScale$1: function(heft) {
-        var t1, relative;
-        t1 = this.modify$1(this._value);
-        if (typeof t1 !== "number")
-          return t1.$sub();
-        relative = C.JSInt_methods.clamp$2(t1 - heft, -20, 50);
+        var relative = C.JSInt_methods.clamp$2(this.modify$1(this._value) - heft, -20, 50);
         if (relative < -10)
           return E.lerpDouble(relative, -20, -10, 0.05, 0.3);
         if (relative < 0)
@@ -19503,10 +19527,10 @@
         $name = this.type.quantifiableName;
         t1 = this.prefix;
         if (t1 != null)
-          $name = t1.name + " " + H.S($name);
+          $name = t1.displayName + " " + H.S($name);
         t1 = this.suffix;
         if (t1 != null)
-          $name = H.S($name) + " " + t1.name;
+          $name = H.S($name) + " " + t1.displayName;
         t1 = this._count;
         t2 = t1 === 1;
         if (t2)
@@ -19692,7 +19716,7 @@
       }
     },
     Affix: {
-      "^": "Object;name>,heftScale,weightBonus,strikeBonus,damageScale,damageBonus,brand,armor,_resists,priceBonus,priceScale",
+      "^": "Object;name>,displayName,heftScale,weightBonus,strikeBonus,damageScale,damageBonus,brand,armor,_resists,priceBonus,priceScale",
       resistance$1: function(element) {
         var t1 = this._resists;
         if (!t1.containsKey$1(0, element))
@@ -20155,9 +20179,9 @@
       onGiveDamage$3: function(action, defender, damage) {
         var t1, fear;
         t1 = this.game;
-        fear = 100 * damage / t1.hero.fortitude.get$maxHealth();
+        fear = 100 * damage / t1.hero.save.fortitude.get$maxHealth();
         this._modifyFear$1(-fear);
-        E.Debug_monsterReason(this, "fear", "hit for " + damage + "/" + t1.hero.fortitude.get$maxHealth() + " decrease by " + H.S(fear));
+        E.Debug_monsterReason(this, "fear", "hit for " + damage + "/" + t1.hero.save.fortitude.get$maxHealth() + " decrease by " + H.S(fear));
         this._updateWitnesses$1(new B.Monster_onGiveDamage_closure(action, damage));
       },
       _viewHeroDamage$2: function(action, damage) {
@@ -22660,13 +22684,13 @@
             t3 = t1.hero._pos;
             if (t2.tiles.$index(0, t3).type.isExit) {
               t2 = this._game_screen$_save;
-              t3 = t1.hero;
-              t2.inventory = t3.inventory;
-              t2.equipment = t3.equipment;
+              t3 = t1.hero.save;
+              t2._inventory = t3._inventory;
+              t2._equipment = t3._equipment;
               t2.experience = t3.experience;
               t2.gold = t3.gold;
-              t2.skills = t3.skills.clone$0(0);
-              t2._lore = t3.lore.clone$0(0);
+              t2.skills = t3.skills;
+              t2._lore = t3._lore;
               t2.maxDepth = Math.max(t2.maxDepth, t1.depth);
               t2.shops.forEach$1(0, new R.GameScreen_handleInput_closure());
               this._ui.pop$1(true);
@@ -22685,11 +22709,12 @@
             action = null;
             break;
           case C.Input_editSkills:
-            this._ui.push$1(R.SkillDialog_SkillDialog(this.game.hero));
+            this._ui.push$1(R.SkillDialog_SkillDialog(this.game.hero.save));
             action = null;
             break;
           case C.Input_heroInfo:
-            this._ui.push$1(M.HeroInfoDialog_HeroInfoDialog(this.game.hero));
+            t1 = this.game;
+            this._ui.push$1(M.HeroInfoDialog_HeroInfoDialog(t1.content, t1.hero.save));
             action = null;
             break;
           case C.Input_drop:
@@ -22840,7 +22865,7 @@
               t3 = this.game;
               if (!!t2.$isActionSkill) {
                 t2 = t3.hero;
-                t2._behavior = new X.ActionBehavior(t1.getAction$2(t3, t2.skills.level$1(t1)));
+                t2._behavior = new X.ActionBehavior(t1.getAction$2(t3, t2.save.skills.level$1(t1)));
               } else {
                 t3.log.add$5(0, C.LogType_error, "No skill selected.", null, null, null);
                 this.dirty$0();
@@ -22850,7 +22875,7 @@
             break;
           case C.Input_swap:
             t1 = this.game;
-            t2 = t1.hero.inventory._lastUnequipped;
+            t2 = t1.hero.save._inventory._lastUnequipped;
             if (t2 == null) {
               t1.log.add$5(0, C.LogType_error, "You aren't holding an unequipped item to swap.", null, null, null);
               this.dirty$0();
@@ -22951,7 +22976,7 @@
         }
         this._lastSkill = skill;
         t2 = t1.hero;
-        t2._behavior = new X.ActionBehavior(skill.getTargetAction$3(t1, t2.skills.level$1(skill), this.get$currentTarget(this)));
+        t2._behavior = new X.ActionBehavior(skill.getTargetAction$3(t1, t2.save.skills.level$1(skill), this.get$currentTarget(this)));
       },
       _fireTowards$1: [function(dir) {
         var t1, t2, t3, pos, previous, step, t4, t5, t6, t7, t8;
@@ -22962,7 +22987,7 @@
         if (!!t2.$isDirectionSkill) {
           t2 = this.game;
           t3 = t2.hero;
-          t3._behavior = new X.ActionBehavior(t1.getDirectionAction$3(t2, t3.skills.level$1(t1), dir));
+          t3._behavior = new X.ActionBehavior(t1.getDirectionAction$3(t2, t3.save.skills.level$1(t1), dir));
         } else if (!!t2.$isTargetSkill) {
           t2 = this.game;
           pos = t2.hero._pos.$add(0, dir);
@@ -23018,7 +23043,7 @@
           t3 = this.get$currentTarget(this);
           t4 = t2.hero;
           if (t3 != null)
-            t4._behavior = new X.ActionBehavior(t1.getTargetAction$3(t2, t4.skills.level$1(t1), this.get$currentTarget(this)));
+            t4._behavior = new X.ActionBehavior(t1.getTargetAction$3(t2, t4.save.skills.level$1(t1), this.get$currentTarget(this)));
           else {
             t1 = t2._stage;
             t4 = t4._pos.$add(0, dir);
@@ -23054,7 +23079,7 @@
             else if (!!t2.$isActionSkill) {
               this._lastSkill = result;
               t2 = t1.hero;
-              t2._behavior = new X.ActionBehavior(result.getAction$2(t1, t2.skills.level$1(result)));
+              t2._behavior = new X.ActionBehavior(result.getAction$2(t1, t2.save.skills.level$1(result)));
             }
           }
       },
@@ -23101,7 +23126,7 @@
           t1.setGlyph$3(60, y, bar);
         hero = this.game.hero;
         t1 = hero._health;
-        t2 = hero.fortitude;
+        t2 = hero.save.fortitude;
         t3 = t2.get$maxHealth();
         if (typeof t1 !== "number")
           return t1.$lt();
@@ -23113,13 +23138,23 @@
           heroColor = C.Color_64_163_229;
         else {
           t1 = hero._health;
-          t2 = t2.get$maxHealth();
+          t3 = t2.get$maxHealth();
           if (typeof t1 !== "number")
             return t1.$lt();
-          if (t1 < t2 / 2)
+          if (t1 < t3 / 2)
             heroColor = C.Color_255_122_105;
-          else
-            heroColor = hero._stomach === 0 ? C.Color_189_144_108 : C.Color_226_223_240;
+          else {
+            if (hero._stomach === 0) {
+              t1 = hero._health;
+              t2 = t2.get$maxHealth();
+              if (typeof t1 !== "number")
+                return t1.$lt();
+              t2 = t1 < t2;
+              t1 = t2;
+            } else
+              t1 = false;
+            heroColor = t1 ? C.Color_189_144_108 : C.Color_226_223_240;
+          }
         }
         visibleMonsters = H.setRuntimeTypeInfo([], [B.Monster]);
         t1 = this.viewSize;
@@ -23372,56 +23407,56 @@
         }
       },
       _drawSidebar$3: function(terminal, heroColor, visibleMonsters) {
-        var _box_0, t1, hero, t2, t3, t4, t5, t6, drawStat, i, y, monster, glyph, unseen, lastGlyph, lastGlyph0;
+        var _box_0, t1, hero, t2, t3, t4, t5, t6, t7, drawStat, i, y, monster, glyph, unseen, lastGlyph, lastGlyph0;
         _box_0 = {};
         H.assertSubtype(visibleMonsters, "$isList", [B.Monster], "$asList");
         t1 = this.game;
         hero = t1.hero;
-        terminal.writeAt$4(0, 0, hero.name, C.Color_226_223_240);
-        terminal.writeAt$4(0, 1, hero.race._race.name, C.Color_132_126_135);
-        terminal.writeAt$4(0, 2, hero.heroClass.name, C.Color_132_126_135);
-        t2 = hero._health;
-        t3 = hero.fortitude;
-        this._drawStat$7(terminal, 4, "Health", t2, C.Color_204_35_57, t3.get$maxHealth(), C.Color_84_0_39);
+        t2 = hero.save;
+        terminal.writeAt$4(0, 0, t2.name, C.Color_226_223_240);
+        terminal.writeAt$4(0, 1, t2.race._race.name, C.Color_132_126_135);
+        terminal.writeAt$4(0, 2, t2.heroClass.name, C.Color_132_126_135);
+        t3 = t2.fortitude;
+        this._drawStat$7(terminal, 4, "Health", hero._health, C.Color_204_35_57, t3.get$maxHealth(), C.Color_84_0_39);
         terminal.writeAt$4(0, 5, "Food", C.Color_38_38_56);
         R.Draw_meter(terminal, 9, 5, 10, hero._stomach, 400, C.Color_142_82_55, C.Color_64_31_36);
-        t2 = hero._level;
-        this._drawStat$5(terminal, 6, "Level", t2.modify$1(t2._value), C.Color_21_87_194);
-        t4 = t2.modify$1(t2._value);
-        if (typeof t4 !== "number")
-          return t4.$lt();
-        if (t4 < 50) {
-          t4 = hero.experience;
-          t5 = G.experienceLevelCost(t2.modify$1(t2._value));
-          if (typeof t4 !== "number")
-            return t4.$sub();
+        t4 = hero._level;
+        this._drawStat$5(terminal, 6, "Level", t4.modify$1(t4._value), C.Color_21_87_194);
+        t5 = t4.modify$1(t4._value);
+        if (typeof t5 !== "number")
+          return t5.$lt();
+        if (t5 < 50) {
+          t5 = t2.experience;
+          t6 = G.experienceLevelCost(t4.modify$1(t4._value));
           if (typeof t5 !== "number")
-            return H.iae(t5);
-          t6 = t2.modify$1(t2._value);
+            return t5.$sub();
           if (typeof t6 !== "number")
-            return t6.$add();
-          t6 = G.experienceLevelCost(t6 + 1);
-          t2 = G.experienceLevelCost(t2.modify$1(t2._value));
-          if (typeof t6 !== "number")
-            return t6.$sub();
-          if (typeof t2 !== "number")
-            return H.iae(t2);
-          terminal.writeAt$4(15, 6, "" + C.JSInt_methods.$tdiv(100 * (t4 - t5), t6 - t2) + "%", C.Color_26_46_150);
+            return H.iae(t6);
+          t7 = t4.modify$1(t4._value);
+          if (typeof t7 !== "number")
+            return t7.$add();
+          t7 = G.experienceLevelCost(t7 + 1);
+          t4 = G.experienceLevelCost(t4.modify$1(t4._value));
+          if (typeof t7 !== "number")
+            return t7.$sub();
+          if (typeof t4 !== "number")
+            return H.iae(t4);
+          terminal.writeAt$4(15, 6, "" + C.JSInt_methods.$tdiv(100 * (t5 - t6), t7 - t4) + "%", C.Color_26_46_150);
         }
         _box_0.x = 0;
         drawStat = new R.GameScreen__drawSidebar_drawStat(_box_0, terminal);
-        drawStat.call$1(hero.strength);
-        drawStat.call$1(hero.agility);
+        drawStat.call$1(t2.strength);
+        drawStat.call$1(t2.agility);
         drawStat.call$1(t3);
-        t2 = hero.intellect;
-        drawStat.call$1(t2);
-        drawStat.call$1(hero.will);
+        t3 = t2.intellect;
+        drawStat.call$1(t3);
+        drawStat.call$1(t2.will);
         terminal.writeAt$4(0, 11, "Focus", C.Color_38_38_56);
-        t3 = hero._focus;
-        t2 = t2.modify$1(t2._value);
-        H.checkNum(t2);
-        R.Draw_meter(terminal, 9, 11, 10, t3, C.JSNumber_methods.ceil$0(Math.pow(t2, 1.3) * 2), C.Color_21_87_194, C.Color_26_46_150);
-        this._drawStat$5(terminal, 13, "Armor", "" + C.JSNumber_methods.toInt$0(100 - U.getArmorMultiplier(hero.get$armor()) * 100) + "% ", C.Color_22_117_38);
+        t4 = hero._focus;
+        t3 = t3.modify$1(t3._value);
+        H.checkNum(t3);
+        R.Draw_meter(terminal, 9, 11, 10, t4, C.JSNumber_methods.ceil$0(Math.pow(t3, 1.3) * 2), C.Color_21_87_194, C.Color_26_46_150);
+        this._drawStat$5(terminal, 13, "Armor", "" + C.JSNumber_methods.toInt$0(100 - U.getArmorMultiplier(t2.get$armor()) * 100) + "% ", C.Color_22_117_38);
         this._drawStat$5(terminal, 14, "Weapon", hero.createMeleeHit$1(null).get$damageString(), C.Color_129_231_235);
         terminal.writeAt$4(0, 16, "@", heroColor);
         terminal.writeAt$4(2, 16, this._game_screen$_save.name, C.Color_132_126_135);
@@ -23605,12 +23640,12 @@
   }], ["", "package:hauberk/src/ui/hero_equipment_dialog.dart",, M, {
     "^": "",
     HeroEquipmentDialog: {
-      "^": "HeroInfoDialog;hero,0_nextScreen,0_ui",
+      "^": "HeroInfoDialog;content,hero,0_hero_info_dialog$_nextScreen,0_ui",
       get$name: function(_) {
         return "Equipment";
       },
       render$1: function(terminal) {
-        var writeLine, writeScale, writeBonus, element, t1, baseDamage, totalDamageScale, totalDamageBonus, totalStrikeBonus, totalArmor, totalArmorBonus, _i, slot, item, t2, t3;
+        var writeLine, writeScale, writeBonus, element, t1, t2, baseDamage, totalDamageScale, totalDamageBonus, totalStrikeBonus, totalArmor, totalArmorBonus, _i, slot, item, t3, t4;
         this.super$HeroInfoDialog$render(terminal);
         writeLine = new M.HeroEquipmentDialog_render_writeLine(terminal);
         writeScale = new M.HeroEquipmentDialog_render_writeScale(terminal);
@@ -23619,21 +23654,21 @@
         terminal.writeAt$4(48, 1, "El Damage      Hit  Dodge Armor", C.Color_63_64_114);
         this.drawEquipmentTable$2(terminal, new M.HeroEquipmentDialog_render_closure(writeLine, terminal, writeScale, writeBonus));
         element = $.$get$Element_none();
-        for (t1 = this.hero.equipment.slotTypes, baseDamage = 3, totalDamageScale = 1, totalDamageBonus = 0, totalStrikeBonus = 0, totalArmor = 0, totalArmorBonus = 0, _i = 0; _i < 9; ++_i) {
-          slot = t1[_i];
-          item = this.hero.equipment.find$1(0, slot);
+        for (t1 = this.hero, t2 = t1._equipment.slotTypes, baseDamage = 3, totalDamageScale = 1, totalDamageBonus = 0, totalStrikeBonus = 0, totalArmor = 0, totalArmorBonus = 0, _i = 0; _i < 9; ++_i) {
+          slot = t2[_i];
+          item = t1._equipment.find$1(0, slot);
           if (item == null)
             continue;
-          t2 = item.type;
-          t3 = t2.attack;
-          if (t3 != null) {
-            element = t3.element;
-            baseDamage = t3.damage;
+          t3 = item.type;
+          t4 = t3.attack;
+          if (t4 != null) {
+            element = t4.element;
+            baseDamage = t4.damage;
           }
           totalDamageScale *= item.get$damageScale();
           totalDamageBonus += item.get$damageBonus();
           totalStrikeBonus += item.get$strikeBonus();
-          totalArmor += t2.armor;
+          totalArmor += t3.armor;
           totalArmorBonus += item.get$armorModifier();
         }
         terminal.writeAt$4(41, 21, "Totals", C.Color_63_64_114);
@@ -23710,14 +23745,14 @@
     }
   }], ["", "package:hauberk/src/ui/hero_info_dialog.dart",, M, {
     "^": "",
-    HeroInfoDialog_HeroInfoDialog: function(hero) {
+    HeroInfoDialog_HeroInfoDialog: function($content, hero) {
       var t1, screens, i, i0;
-      t1 = new E.HeroLoreDialog(H.setRuntimeTypeInfo([], [B.Breed]), C._Sort_JQf, 0, 0, hero);
+      t1 = new E.HeroLoreDialog(H.setRuntimeTypeInfo([], [B.Breed]), C._Sort_JQf, 0, 0, $content, hero);
       t1._listBreeds$0();
-      screens = [new M.HeroEquipmentDialog(hero), new Z.HeroResistancesDialog(hero), t1];
+      screens = [new M.HeroEquipmentDialog($content, hero), new Z.HeroResistancesDialog($content, hero), t1];
       for (i = 0; i < 3; i = i0) {
         i0 = i + 1;
-        screens[i]._nextScreen = screens[i0 % 3];
+        screens[i]._hero_info_dialog$_nextScreen = screens[i0 % 3];
       }
       return C.JSArray_methods.get$first(screens);
     },
@@ -23730,7 +23765,7 @@
         if (shift || alt)
           return false;
         if (keyCode === 9) {
-          this._ui.goTo$1(this._nextScreen);
+          this._ui.goTo$1(this._hero_info_dialog$_nextScreen);
           return true;
         }
         return false;
@@ -23745,26 +23780,26 @@
       render$1: ["super$HeroInfoDialog$render", function(terminal) {
         var t1, helpText;
         terminal.fill$4(0, 0, 0, terminal.get$width(terminal), terminal.get$height(terminal));
-        t1 = this._nextScreen;
+        t1 = this._hero_info_dialog$_nextScreen;
         helpText = "[Esc] Exit, [Tab] View " + t1.get$name(t1);
         if (this.get$extraHelp() != null)
           helpText += ", " + H.S(this.get$extraHelp());
         terminal.writeAt$4(0, terminal._display._glyphs.bounds.size.y - 1, helpText, C.Color_63_64_114);
       }],
       drawEquipmentTable$2: function(terminal, callback) {
-        var t1, t2, y, _i, slot, item;
+        var t1, t2, t3, y, _i, slot, item;
         H.functionTypeCheck(callback, {func: 1, ret: -1, args: [R.Item, P.int]});
         terminal.writeAt$4(2, 1, "Equipment", C.Color_222_156_33);
-        for (t1 = this.hero.equipment.slotTypes, t2 = terminal._display, y = 3, _i = 0; _i < 9; ++_i) {
-          slot = t1[_i];
-          item = this.hero.equipment.find$1(0, slot);
+        for (t1 = this.hero, t2 = t1._equipment.slotTypes, t3 = terminal._display, y = 3, _i = 0; _i < 9; ++_i) {
+          slot = t2[_i];
+          item = t1._equipment.find$1(0, slot);
           callback.call$2(item, y);
           if (item == null) {
             terminal.writeAt$4(2, y, "(" + slot + ")", C.Color_38_38_56);
             y += 2;
             continue;
           }
-          t2.setGlyph$3(0, y, item.type.appearance);
+          t3.setGlyph$3(0, y, item.type.appearance);
           terminal.writeAt$4(2, y, item.get$nounText(), C.Color_226_223_240);
           y += 2;
         }
@@ -23776,7 +23811,7 @@
   }], ["", "package:hauberk/src/ui/hero_lore_dialog.dart",, E, {
     "^": "",
     HeroLoreDialog: {
-      "^": "HeroInfoDialog;_breeds,_sort,_selection,_scroll,hero,0_nextScreen,0_ui",
+      "^": "HeroInfoDialog;_breeds,_sort,_selection,_scroll,content,hero,0_hero_info_dialog$_nextScreen,0_ui",
       get$name: function(_) {
         return "Monster Lore";
       },
@@ -23813,52 +23848,52 @@
         return this.super$HeroInfoDialog$handleInput(input);
       },
       render$1: function(terminal) {
-        var writeLine, t1, t2, i, y, index, t3, breed, fore, t4;
+        var writeLine, t1, t2, t3, i, y, index, t4, breed, fore, t5;
         this.super$HeroInfoDialog$render(terminal);
         writeLine = new E.HeroLoreDialog_render_writeLine(terminal);
         terminal.writeAt$4(2, 1, "Monsters", C.Color_222_156_33);
         terminal.writeAt$4(20, 1, C.JSString_methods.padLeft$1("(" + this._sort.description + ")", 42), C.Color_38_38_56);
         terminal.writeAt$4(63, 1, "Depth Seen Slain", C.Color_63_64_114);
-        for (t1 = this._breeds, t2 = terminal._display, i = 0; i < 11; ++i) {
+        for (t1 = this.hero, t2 = this._breeds, t3 = terminal._display, i = 0; i < 11; ++i) {
           y = i * 2 + 3;
           writeLine.call$2(y + 1, C.Color_19_17_28);
           index = this._scroll + i;
-          t3 = t1.length;
-          if (index >= t3)
+          t4 = t2.length;
+          if (index >= t4)
             continue;
           if (index < 0)
-            return H.ioore(t1, index);
-          breed = t1[index];
+            return H.ioore(t2, index);
+          breed = t2[index];
           if (index === this._selection) {
             terminal.writeAt$4(1, y, "\u25ba", C.Color_222_156_33);
             fore = C.Color_222_156_33;
           } else
             fore = C.Color_132_126_135;
-          t3 = this.hero.lore._seen.$index(0, breed);
-          if (t3 == null)
-            t3 = 0;
-          t4 = this.hero.lore._slain.$index(0, breed);
+          t4 = t1._lore._seen.$index(0, breed);
           if (t4 == null)
             t4 = 0;
-          if (t3 > 0) {
-            t2.setGlyph$3(0, y, breed.appearance);
+          t5 = t1._lore._slain.$index(0, breed);
+          if (t5 == null)
+            t5 = 0;
+          if (t4 > 0) {
+            t3.setGlyph$3(0, y, breed.appearance);
             terminal.writeAt$4(2, y, O.Log__categorize(breed._breed$_name, false, true), fore);
             terminal.writeAt$4(63, y, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(breed.depth), 5), fore);
             if (breed.flags.unique) {
               terminal.writeAt$4(69, y, C.JSString_methods.padLeft$1("Yes", 5), fore);
-              terminal.writeAt$4(75, y, C.JSString_methods.padLeft$1(t4 > 0 ? "Yes" : "No", 5), fore);
+              terminal.writeAt$4(75, y, C.JSString_methods.padLeft$1(t5 > 0 ? "Yes" : "No", 5), fore);
             } else {
-              terminal.writeAt$4(69, y, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(t3), 5), fore);
-              terminal.writeAt$4(75, y, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(t4), 5), fore);
+              terminal.writeAt$4(69, y, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(t4), 5), fore);
+              terminal.writeAt$4(75, y, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(t5), 5), fore);
             }
           } else
             terminal.writeAt$4(2, y, "(undiscovered " + (this._scroll + i + 1) + ")", C.Color_38_38_56);
         }
         writeLine.call$2(2, C.Color_38_38_56);
-        t2 = this._selection;
-        if (t2 < 0 || t2 >= t1.length)
-          return H.ioore(t1, t2);
-        this._showMonster$2(terminal, t1[t2]);
+        t1 = this._selection;
+        if (t1 < 0 || t1 >= t2.length)
+          return H.ioore(t2, t1);
+        this._showMonster$2(terminal, t2[t1]);
       },
       _showMonster$2: function(terminal, breed) {
         var t1, t2, t3, y, _i, description;
@@ -23871,7 +23906,7 @@
         terminal.writeAt$4(1, 0, "\u250c\u2500\u2510", C.Color_38_38_56);
         terminal.writeAt$4(1, 1, "\u2561 \u255e", C.Color_38_38_56);
         terminal.writeAt$4(1, 2, "\u2514\u2500\u2518", C.Color_38_38_56);
-        if (this.hero.lore.seen$1(breed) === 0) {
+        if (this.hero._lore.seen$1(breed) === 0) {
           terminal.writeAt$4(1, 3, "You have not seen this breed yet.", C.Color_38_38_56);
           return;
         }
@@ -23915,7 +23950,7 @@
         t1 = P.String;
         sentences = H.setRuntimeTypeInfo([], [t1]);
         pronoun = breed.pronoun.subjective;
-        lore = this.hero.lore;
+        lore = this.hero._lore;
         t2 = breed.groups;
         if (t2.length !== 0) {
           t3 = H.getTypeArgumentByIndex(t2, 0);
@@ -23948,17 +23983,12 @@
         } else
           selectedBreed = null;
         C.JSArray_methods.set$length(t1, 0);
-        t2 = this._sort;
-        t3 = this.hero;
-        if (t2 === C._Sort_gc6) {
-          t3.game.content;
+        if (this._sort === C._Sort_gc6) {
           t2 = $.$get$Monsters_breeds().get$all();
           t3 = H.getRuntimeTypeArgument(t2, "Iterable", 0);
           C.JSArray_methods.addAll$1(t1, new H.WhereIterable(t2, H.functionTypeCheck(new E.HeroLoreDialog__listBreeds_closure(), {func: 1, ret: P.bool, args: [t3]}), [t3]));
-        } else {
-          t3.game.content;
+        } else
           C.JSArray_methods.addAll$1(t1, $.$get$Monsters_breeds().get$all());
-        }
         compareDepth = new E.HeroLoreDialog__listBreeds_compareDepth();
         t2 = [{func: 1, ret: P.int, args: [B.Breed, B.Breed]}];
         _box_0.comparisons = H.setRuntimeTypeInfo([], t2);
@@ -24069,12 +24099,12 @@
   }], ["", "package:hauberk/src/ui/hero_resistances_dialog.dart",, Z, {
     "^": "",
     HeroResistancesDialog: {
-      "^": "HeroInfoDialog;hero,0_nextScreen,0_ui",
+      "^": "HeroInfoDialog;content,hero,0_hero_info_dialog$_nextScreen,0_ui",
       get$name: function(_) {
         return "Resistances";
       },
       render$1: function(terminal) {
-        var writeLine, t1, i, _i, element, t2, x, resistance, color;
+        var writeLine, t1, t2, i, _i, element, t3, x, resistance, color;
         this.super$HeroInfoDialog$render(terminal);
         writeLine = new Z.HeroResistancesDialog_render_writeLine(terminal);
         terminal.writeAt$4(48, 0, "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 Resistances \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550", C.Color_38_38_56);
@@ -24082,14 +24112,14 @@
         terminal.writeAt$4(41, 21, "Totals", C.Color_63_64_114);
         writeLine.call$2(2, C.Color_38_38_56);
         writeLine.call$2(20, C.Color_38_38_56);
-        for (this.hero.game.content, t1 = $.$get$Elements_all(), i = 0, _i = 0; _i < 12; ++_i) {
+        for (t1 = $.$get$Elements_all(), t2 = this.hero, i = 0, _i = 0; _i < 12; ++_i) {
           element = t1[_i];
-          t2 = $.$get$Element_none();
-          if (element == null ? t2 == null : element === t2)
+          t3 = $.$get$Element_none();
+          if (element == null ? t3 == null : element === t3)
             continue;
           x = 48 + i * 3;
           terminal.writeAt$4(x, 1, element.abbreviation, B.elementColor(element));
-          resistance = this.hero.equipmentResistance$1(element);
+          resistance = t2.equipmentResistance$1(element);
           if (resistance > 0)
             color = C.Color_22_117_38;
           else
@@ -24112,7 +24142,7 @@
         this.writeLine.call$2(y - 1, C.Color_19_17_28);
         if (item == null)
           return;
-        for (this.$this.hero.game.content, t1 = $.$get$Elements_all(), t2 = this.terminal, i = 0, _i = 0; _i < 12; ++_i) {
+        for (t1 = $.$get$Elements_all(), t2 = this.terminal, i = 0, _i = 0; _i < 12; ++_i) {
           element = t1[_i];
           t3 = $.$get$Element_none();
           if (element == null ? t3 == null : element === t3)
@@ -24232,7 +24262,7 @@
         Y.drawItems(terminal, 0, this._getItems$0(), this.get$_item_dialog$_canSelect(), this._item_dialog$_shiftDown, null, this._item_dialog$_inspected, true);
         t1 = this._item_dialog$_inspected;
         if (t1 != null)
-          Y.drawInspector(terminal, this._item_dialog$_gameScreen.game.hero, t1);
+          Y.drawInspector(terminal, this._item_dialog$_gameScreen.game.hero.save, t1);
         if (this._selectedItem == null)
           if (this._item_dialog$_shiftDown)
             terminal.writeAt$4(1, 0, "Inspect which item?", C.Color_222_156_33);
@@ -24297,9 +24327,9 @@
       _getItems$0: function() {
         switch (this._item_dialog$_location) {
           case C.ItemLocation_wMy:
-            return this._item_dialog$_gameScreen.game.hero.inventory;
+            return this._item_dialog$_gameScreen.game.hero.save._inventory;
           case C.ItemLocation_A8D:
-            return this._item_dialog$_gameScreen.game.hero.equipment;
+            return this._item_dialog$_gameScreen.game.hero.save._equipment;
           case C.ItemLocation_46y:
             var t1 = this._item_dialog$_gameScreen.game;
             return t1._stage.itemsAt$1(t1.hero._pos);
@@ -24518,19 +24548,20 @@
         }
       },
       render$1: ["super$ItemScreen$render", function(terminal) {
-        var heroGold, t1, t2, help;
+        var t1, heroGold, t2, t3, help;
         terminal.writeAt$4(0, 0, this._shiftDown ? "Inspect which item?" : this.get$_headerText(), C.Color_222_156_33);
-        heroGold = Y.formatMoney(this._save.gold);
+        t1 = this._save;
+        heroGold = Y.formatMoney(t1.gold);
         terminal.writeAt$4(31, 0, "Gold:", C.Color_132_126_135);
-        t1 = 45 - heroGold.length;
-        terminal.writeAt$4(t1 - 1, 0, "$", C.Color_142_82_55);
-        terminal.writeAt$4(t1, 0, heroGold, C.Color_222_156_33);
-        t1 = this.get$_items();
-        t2 = this.get$_itemPrice();
-        Y.drawItems(terminal, 0, t1, this.get$_canSelect(), this._shiftDown, t2, this._inspected, null);
-        t1 = this._inspected;
-        if (t1 != null)
-          Y.drawInspector(terminal, null, t1);
+        t2 = 45 - heroGold.length;
+        terminal.writeAt$4(t2 - 1, 0, "$", C.Color_142_82_55);
+        terminal.writeAt$4(t2, 0, heroGold, C.Color_222_156_33);
+        t2 = this.get$_items();
+        t3 = this.get$_itemPrice();
+        Y.drawItems(terminal, 0, t2, this.get$_canSelect(), this._shiftDown, t3, this._inspected, null);
+        t2 = this._inspected;
+        if (t2 != null)
+          Y.drawInspector(terminal, t1, t2);
         help = this._shiftDown ? "[A-Z] Inspect item" : this.get$_helpText();
         terminal.writeAt$4(0, terminal._display._glyphs.bounds.size.y - 1, help, C.Color_38_38_56);
       }],
@@ -24568,7 +24599,7 @@
     _HomeViewScreen: {
       "^": "ItemScreen;_save,_sink,_shiftDown,0_inspected,0_ui",
       get$_items: function() {
-        return this._save.home;
+        return this._save._home;
       },
       get$_headerText: function() {
         return "Welcome home!";
@@ -24606,7 +24637,7 @@
         return "[A-Z] Select item, [Shift] Inspect item, [Esc] Cancel";
       },
       get$_items: function() {
-        return this._save.home;
+        return this._save._home;
       }
     },
     _HeroScreen: {
@@ -24632,7 +24663,7 @@
     _InventoryScreen: {
       "^": "_HeroScreen;_save,_sink,_shiftDown,0_inspected,0_ui",
       get$_items: function() {
-        return this._save.inventory;
+        return this._save._inventory;
       },
       get$nextScreenName: function() {
         return "equipment";
@@ -24644,7 +24675,7 @@
     _EquipmentScreen: {
       "^": "_HeroScreen;_save,_sink,_shiftDown,0_inspected,0_ui",
       get$_items: function() {
-        return this._save.equipment;
+        return this._save._equipment;
       },
       get$nextScreenName: function() {
         return "inventory";
@@ -24880,7 +24911,7 @@
         return "Put";
       },
       get$items: function() {
-        return this._save.home;
+        return this._save._home;
       }
     },
     _InventorySink: {
@@ -24889,7 +24920,7 @@
         return "Get";
       },
       get$items: function() {
-        return this._save.inventory;
+        return this._save._inventory;
       }
     },
     _ShopSink: {
@@ -25073,18 +25104,14 @@
         t2 = t2.range;
         if (t2 > 0)
           writeStat.call$2("Range", t2);
-        if (hero != null) {
-          writeLabel.call$1("Heft");
-          t2 = hero.strength;
-          t3 = t2.modify$1(t2._value);
-          t4 = item.get$heft();
-          if (typeof t3 !== "number")
-            return t3.$ge();
-          color = t3 >= t4 ? C.Color_226_223_240 : C.Color_204_35_57;
-          _box_0.terminal.writeAt$4(12, _box_0.y, C.JSInt_methods.toString$0(item.get$heft()), color);
-          writeScale.call$3(16, _box_0.y, t2.heftScale$1(item.get$heft()));
-          ++_box_0.y;
-        }
+        writeLabel.call$1("Heft");
+        t2 = hero.strength;
+        t3 = t2.modify$1(t2._value);
+        t4 = item.get$heft();
+        color = t3 >= t4 ? C.Color_226_223_240 : C.Color_204_35_57;
+        _box_0.terminal.writeAt$4(12, _box_0.y, C.JSInt_methods.toString$0(item.get$heft()), color);
+        writeScale.call$3(16, _box_0.y, t2.heftScale$1(item.get$heft()));
+        ++_box_0.y;
       }
       t2 = t1.armor;
       if (t2 + item.get$armorModifier() !== 0) {
@@ -25741,6 +25768,12 @@
           case C.Input_s:
             this._changeDepth$1(this.selectedDepth + 10);
             return true;
+          case C.Input_editSkills:
+            this._ui.push$1(R.SkillDialog_SkillDialog(this.save));
+            break;
+          case C.Input_heroInfo:
+            this._ui.push$1(M.HeroInfoDialog_HeroInfoDialog(this.content, this.save));
+            break;
           case C.Input_ok:
             t1 = this._ui;
             t2 = this.save;
@@ -25771,6 +25804,9 @@
         if (shift || alt)
           return false;
         switch (keyCode) {
+          case 83:
+            this._ui.push$1(R.SkillDialog_SkillDialog(this.save));
+            break;
           case 72:
             this._ui.push$1(new F._HomeViewScreen(this.save, null, false));
             return true;
@@ -25831,6 +25867,8 @@
         }
         _box_0.y = 18;
         drawMenuItem = new B.SelectDepthScreen_render_drawMenuItem(_box_0, terminal);
+        drawMenuItem.call$2("a", "About Hero");
+        drawMenuItem.call$2("s", "Hero Skills");
         drawMenuItem.call$2("h", "Enter Home");
         ++_box_0.y;
         for (t1 = $.$get$Shops_all(), t1 = t1.get$values(t1), t1 = t1.get$iterator(t1), i = 1; t1.moveNext$0();) {
@@ -25890,7 +25928,7 @@
       },
       SelectSkillDialog$1: function(game) {
         var t1, t2, t3, t4;
-        for (t1 = this._select_skill_dialog$_game.hero.skills.get$acquired(), t2 = J.get$iterator$ax(t1._iterable), t1 = new H.WhereIterator(t2, t1._f, [H.getTypeArgumentByIndex(t1, 0)]), t3 = this._select_skill_dialog$_skills; t1.moveNext$0();) {
+        for (t1 = this._select_skill_dialog$_game.hero.save.skills.get$acquired(), t2 = J.get$iterator$ax(t1._iterable), t1 = new H.WhereIterator(t2, t1._f, [H.getTypeArgumentByIndex(t1, 0)]), t3 = this._select_skill_dialog$_skills; t1.moveNext$0();) {
           t4 = t2.get$current();
           if (!!J.getInterceptor$(t4).$isUsableSkill)
             C.JSArray_methods.add$1(t3, t4);
@@ -25982,7 +26020,7 @@
       screens = [t2, t3];
       for (i = 0; i < 2; i = i0) {
         i0 = i + 1;
-        screens[i]._skill_dialog$_nextScreen = screens[i0 % 2];
+        screens[i]._nextScreen = screens[i0 % 2];
       }
       return C.JSArray_methods.get$first(screens);
     },
@@ -26006,7 +26044,7 @@
         if (shift || alt)
           return false;
         if (keyCode === 9) {
-          this._ui.goTo$1(this._skill_dialog$_nextScreen);
+          this._ui.goTo$1(this._nextScreen);
           return true;
         }
         return false;
@@ -26030,8 +26068,8 @@
         terminal.fill$4(0, 0, 0, terminal.get$width(terminal), terminal.get$height(terminal));
         this._renderSkillList$1(terminal);
         this._renderSkill$1(terminal);
-        helpText = "[Esc] Exit, [Tab] View " + this._skill_dialog$_nextScreen.get$_skill_dialog$_name();
-        terminal.writeAt$4(0, terminal._display._glyphs.bounds.size.y - 1, helpText, C.Color_63_64_114);
+        helpText = "[Esc] Exit, [Tab] View " + this._nextScreen.get$_skill_dialog$_name();
+        terminal.writeAt$4(0, terminal._display._glyphs.bounds.size.y - 1, helpText, C.Color_38_38_56);
       },
       _renderSkillList$1: function(terminal) {
         var t1, t2, t3, i, _i, skill, y, nameColor, detailColor, t4;
@@ -26114,7 +26152,7 @@
       }
     },
     DisciplineDialog: {
-      "^": "SkillTypeDialog;_skill_dialog$_hero,_skill_dialog$_skills,_selectedSkill,0_skill_dialog$_nextScreen,0_ui",
+      "^": "SkillTypeDialog;_skill_dialog$_hero,_skill_dialog$_skills,_selectedSkill,0_nextScreen,0_ui",
       get$_skill_dialog$_name: function() {
         return "Disciplines";
       },
@@ -26133,20 +26171,19 @@
         terminal.writeAt$4(35, y, percent == null ? "  --" : C.JSString_methods.padLeft$1(H.S(percent) + "%", 4), color);
       },
       _renderSkillDetails$2: function(terminal, skill) {
-        var t1, t2, level, t3, percent, points, current, next;
+        var t1, level, t2, percent, points, current, next;
         H.interceptedTypeCheck(skill, "$isDiscipline");
         t1 = this._skill_dialog$_hero;
-        t2 = t1.skills;
-        level = t2.level$1(skill);
+        level = t1.skills.level$1(skill);
         terminal.writeAt$4(1, 8, "At current level " + level + ":", C.Color_226_223_240);
         if (level > 0)
           this._writeText$4(terminal, 3, 10, skill.levelDescription$1(level));
         else
           terminal.writeAt$4(3, 10, "(You haven't trained this yet.)", C.Color_38_38_56);
         if (level < skill.get$maxLevel()) {
-          t3 = level + 1;
-          terminal.writeAt$4(1, 16, "At next level " + t3 + ":", C.Color_226_223_240);
-          this._writeText$4(terminal, 3, 18, skill.levelDescription$1(t3));
+          t2 = level + 1;
+          terminal.writeAt$4(1, 16, "At next level " + t2 + ":", C.Color_226_223_240);
+          this._writeText$4(terminal, 3, 18, skill.levelDescription$1(t2));
         }
         terminal.writeAt$4(1, 30, "Level:", C.Color_38_38_56);
         terminal.writeAt$4(9, 30, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(level), 4), C.Color_132_126_135);
@@ -26154,7 +26191,7 @@
         terminal.writeAt$4(1, 32, "Next:", C.Color_38_38_56);
         percent = skill.percentUntilNext$1(t1);
         if (percent != null) {
-          points = t2.points$1(0, skill);
+          points = t1.skills.points$1(0, skill);
           t1 = t1.heroClass;
           current = skill.trainingNeeded$2(t1, level);
           next = skill.trainingNeeded$2(t1, level + 1);
@@ -26175,7 +26212,7 @@
       }
     },
     SpellDialog: {
-      "^": "SkillTypeDialog;_skill_dialog$_hero,_skill_dialog$_skills,_selectedSkill,0_skill_dialog$_nextScreen,0_ui",
+      "^": "SkillTypeDialog;_skill_dialog$_hero,_skill_dialog$_skills,_selectedSkill,0_nextScreen,0_ui",
       get$_skill_dialog$_name: function() {
         return "Spells";
       },
@@ -26193,10 +26230,10 @@
         H.interceptedTypeCheck(skill, "$isSpell");
         terminal.writeAt$4(1, 30, "Complexity:", C.Color_38_38_56);
         t1 = this._skill_dialog$_hero;
+        t2 = t1.heroClass;
         if (t1.skills.isAcquired$1(skill))
-          terminal.writeAt$4(13, 30, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(skill.complexity$1(t1.heroClass)), 3), C.Color_132_126_135);
+          terminal.writeAt$4(13, 30, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(skill.complexity$1(t2)), 3), C.Color_132_126_135);
         else {
-          t2 = t1.heroClass;
           terminal.writeAt$4(13, 30, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(skill.complexity$1(t2)), 3), C.Color_204_35_57);
           t2 = skill.complexity$1(t2);
           t3 = t1.intellect;
@@ -26228,7 +26265,7 @@
     Storage: {
       "^": "Object;content,heroes",
       _load$0: function() {
-        var hero, $name, race, heroClass, name0, inventoryItems, inventory, equipment, item, homeItems, $home, crucibleItems, crucible, shops, experience, levels, points, skills, name1, skill, skillSet, lore, gold, maxDepth, heroSave, error, trace, storage, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, _i, maxDepth0, exception;
+        var hero, $name, race, heroClass, name0, inventoryItems, inventory, equipment, item, homeItems, $home, crucibleItems, crucible, shops, experience, levels, points, skills, name1, skill, skillSet, lore, gold, maxDepth, heroSave, error, trace, storage, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, _i, maxDepth0, heroSave0, exception;
         if (window.location.search === "?clear") {
           this.save$0(0);
           return;
@@ -26306,7 +26343,9 @@
             t11 = new Array(9);
             t11.fixed$length = Array;
             H.setRuntimeTypeInfo(t11, t3);
-            heroSave = new G.HeroSave($name, race, t10, inventory, equipment, $home, crucible, shops, experience, skillSet, gold, maxDepth, lore);
+            heroSave0 = new K.HeroSave($name, race, t10, inventory, equipment, $home, crucible, shops, experience, skillSet, gold, maxDepth, lore, new D.Strength(), new D.Agility(), new D.Fortitude(), new D.Intellect(), new D.Will());
+            heroSave0._bindStats$0();
+            heroSave = heroSave0;
             C.JSArray_methods.add$1(t2, heroSave);
           } catch (exception) {
             error = H.unwrapException(exception);
@@ -26395,10 +26434,10 @@
             raceStats.$indexSet(0, stat.name, t8.$index(0, stat));
           }
           race = P.LinkedHashMap_LinkedHashMap$_literal(["name", t7._race.name, "seed", t7.seed, "stats", raceStats], t3, t4);
-          inventory = this._saveItems$1(hero.inventory);
-          equipment = this._saveItems$1(hero.equipment);
-          $home = this._saveItems$1(hero.home);
-          crucible = this._saveItems$1(hero.crucible);
+          inventory = this._saveItems$1(hero._inventory);
+          equipment = this._saveItems$1(hero._equipment);
+          $home = this._saveItems$1(hero._home);
+          crucible = this._saveItems$1(hero._crucible);
           shops = P.LinkedHashMap__makeEmpty();
           hero.shops.forEach$1(0, new S.Storage_save_closure(this, shops));
           skills = P.LinkedHashMap__makeEmpty();
@@ -28203,7 +28242,7 @@
       t1 = R.category(162, null, null);
       t1.tag$1(0, "treasure/coin");
       t1._isTreasure = true;
-      R.item("Copper Coins", 1, C.Color_122_44_24, null, 1);
+      R.item("Copper Coins", 1, C.Color_122_44_24, null, 4);
       R.item("Bronze Coins", 7, C.Color_142_82_55, null, 8);
       R.item("Silver Coins", 11, C.Color_129_231_235, null, 20);
       R.item("Electrum Coins", 20, C.Color_255_238_168, null, 50);
@@ -28802,7 +28841,7 @@
       t16._hearing = 8;
       t16.placeIn$2("room", "passage");
       t16.groups$1("animal");
-      t16 = R.breed("stray cat", 1, C.Color_222_156_33, 9, null, null, 30, 1)._attacks;
+      t16 = R.breed("stray cat", 1, C.Color_222_156_33, 11, null, null, 30, 1)._attacks;
       C.JSArray_methods.add$1(t16, U.Attack$(null, "bite[s]", 5, 0, null));
       C.JSArray_methods.add$1(t16, U.Attack$(null, "scratch[es]", 4, 0, null));
       t16 = R.family("g", null, null, null, 10, null, null);
@@ -28815,14 +28854,14 @@
       t15 = t15._bitMask;
       t16._motility = new Q.Motility(t1 | t15);
       t16._emanationLevel = 2;
-      t16 = R.breed("goblin peon", 4, C.Color_189_144_108, 26, null, null, 20, 0);
+      t16 = R.breed("goblin peon", 4, C.Color_189_144_108, 30, null, null, 20, 0);
       t16.count$1(4);
       C.JSArray_methods.add$1(t16._attacks, U.Attack$(null, "stab[s]", 8, 0, null));
       C.JSArray_methods.add$1(t16._moves, new R.MissiveMove(C.Missive_1, 8));
       t16.drop$2$percent("treasure", 30);
       t16.drop$2$percent("spear", 20);
       t16.drop$2$percent("healing", 10);
-      t16 = R.breed("goblin archer", 6, C.Color_22_117_38, 32, null, null, null, 0);
+      t16 = R.breed("goblin archer", 6, C.Color_22_117_38, 36, null, null, null, 0);
       t16.count$1(2);
       t16.minion$3("goblin peon", 0, 2);
       C.JSArray_methods.add$1(t16._attacks, U.Attack$(null, "stab[s]", 4, 0, null));
@@ -28909,7 +28948,7 @@
       t16 = R.breed("giant centipede", 3, C.Color_204_35_57, 14, null, null, 20, 2)._attacks;
       C.JSArray_methods.add$1(t16, U.Attack$(null, "crawl[s] on", 4, 0, null));
       C.JSArray_methods.add$1(t16, U.Attack$(null, "bite[s]", 8, 0, null));
-      t16 = R.breed("firefly", 8, C.Color_179_74_4, 10, null, null, 70, 1);
+      t16 = R.breed("firefly", 8, C.Color_179_74_4, 6, null, null, 70, 1);
       t16.placeIn$1("aquatic");
       t16.count$2(3, 8);
       C.JSArray_methods.add$1(t16._attacks, U.Attack$(null, "bite[s]", 12, 0, t3));
@@ -28986,7 +29025,7 @@
       t18.groups$1("kobold");
       t18._vision = 10;
       t18._hearing = 4;
-      t18 = R.breed("scurrilous imp", 1, C.Color_255_122_105, 8, null, null, 20, 0);
+      t18 = R.breed("scurrilous imp", 1, C.Color_255_122_105, 12, null, null, 20, 0);
       t18.count$1(2);
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "club[s]", 4, 0, null));
       t17 = t18._moves;
@@ -28995,7 +29034,7 @@
       t18.drop$2$percent("treasure", 20);
       t18.drop$2$percent("club", 40);
       t18.drop$2$percent("speed", 30);
-      t18 = R.breed("vexing imp", 2, C.Color_86_30_138, 10, null, null, null, 0);
+      t18 = R.breed("vexing imp", 2, C.Color_86_30_138, 16, null, null, null, 0);
       t18.count$1(2);
       t18.minion$3("scurrilous imp", 0, 1);
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "scratch[es]", 4, 0, null));
@@ -29004,23 +29043,24 @@
       t18.drop$2$percent("treasure", 25);
       t18.drop$2$percent("teleportation", 50);
       R.family("k", null, null, null, 20, null, null).groups$1("kobold");
-      t18 = R.breed("kobold", 3, C.Color_204_35_57, 12, null, null, null, 0);
+      t18 = R.breed("kobold", 3, C.Color_204_35_57, 20, null, null, null, 0);
       t18.count$1(3);
       t18.minion$3("wild dog", 0, 3);
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "poke[s]", 4, 0, null));
       C.JSArray_methods.add$1(t18._moves, new S.TeleportMove(6, 10));
+      t18.drop$2$percent("treasure", 25);
       t18.drop$2$percent("equipment", 20);
       t18.drop$2$percent("magic", 40);
-      t18 = R.breed("kobold shaman", 4, C.Color_26_46_150, 16, null, null, null, 0);
+      t18 = R.breed("kobold shaman", 4, C.Color_26_46_150, 20, null, null, null, 0);
       t18.placeIn$1("laboratory");
       t18.count$1(2);
       t18.minion$3("wild dog", 0, 3);
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "hit[s]", 4, 0, null));
-      t18._bolt$6$damage$range$rate("the jet", "splashes", t7, 6, 8, 5);
+      t18._bolt$6$damage$range$rate("the jet", "splashes", t7, 8, 8, 10);
       t18.drop$2$percent("treasure", 25);
       t18.drop$2$percent("robe", 20);
       t18.drop$2$percent("magic", 40);
-      t18 = R.breed("kobold trickster", 5, C.Color_222_156_33, 20, null, null, null, 0);
+      t18 = R.breed("kobold trickster", 5, C.Color_222_156_33, 24, null, null, null, 0);
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "hit[s]", 5, 0, null));
       t17 = t18._moves;
       C.JSArray_methods.add$1(t17, new R.MissiveMove(C.Missive_1, 5));
@@ -29030,19 +29070,18 @@
       t18.drop$2$percent("treasure", 45);
       t18.drop$2$percent("magic", 20);
       t18.drop$2$percent("magic", 40);
-      t18 = R.breed("kobold priest", 6, C.Color_21_87_194, 25, null, null, null, 0);
+      t18 = R.breed("kobold priest", 6, C.Color_21_87_194, 30, null, null, null, 0);
       t18.count$1(2);
       t18.minion$3("kobold", 1, 3);
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "club[s]", 6, 0, null));
       t17 = t18._moves;
       C.JSArray_methods.add$1(t17, new O.HealMove(10, 15));
-      t18._bolt$6$damage$range$rate("the flame", "burns", t3, 8, 8, 10);
       C.JSArray_methods.add$1(t17, new X.HasteMove(10, 1, 7));
       t18.drop$2$percent("treasure", 35);
       t18.drop$2$percent("club", 40);
       t18.drop$2$percent("robe", 20);
       t18.drop$2$percent("magic", 40);
-      t18 = R.breed("imp incanter", 7, C.Color_189_106_235, 18, null, null, null, 0);
+      t18 = R.breed("imp incanter", 7, C.Color_189_106_235, 33, null, null, null, 0);
       t18.placeIn$1("laboratory");
       t18.count$1(2);
       t18.minion$3("kobold", 1, 3);
@@ -29050,11 +29089,11 @@
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "scratch[es]", 4, 0, null));
       C.JSArray_methods.add$1(t18._moves, new R.MissiveMove(C.Missive_1, 6));
       t18._bolt$6$damage$range$rate("the flame", "burns", t3, 10, 8, 5);
-      t18.drop$2$percent("treasure", 25);
+      t18.drop$2$percent("treasure", 35);
       t18.drop$2$percent("robe", 20);
       t18.drop$2$percent("magic", 50);
       t18._flags = "cowardly";
-      t18 = R.breed("imp warlock", 8, C.Color_56_16_125, 40, null, null, null, 0);
+      t18 = R.breed("imp warlock", 8, C.Color_56_16_125, 46, null, null, null, 0);
       t18.placeIn$1("laboratory");
       t18.minion$3("imp incanter", 1, 3);
       t18.minion$3("kobold", 1, 3);
@@ -29066,7 +29105,7 @@
       t18.drop$2$percent("staff", 40);
       t18.drop$2$percent("robe", 20);
       t18.drop$3$count$percent("magic", 2, 60);
-      t18 = R.breed("Feng", 10, C.Color_179_74_4, 60, null, null, 10, 1);
+      t18 = R.breed("Feng", 10, C.Color_179_74_4, 80, null, null, 10, 1);
       t18._pronoun = C.Pronoun_he_him_his;
       t18.minion$3("imp warlock", 1, 2);
       t18.minion$3("imp incanter", 1, 2);
@@ -29079,7 +29118,7 @@
       C.JSArray_methods.add$1(t17, new S.TeleportMove(6, 5));
       C.JSArray_methods.add$1(t17, new S.TeleportMove(30, 50));
       C.JSArray_methods.add$1(t17, new Y.ConeMove(U.Attack$(new O.Noun("the lightning"), "shocks", 12, 10, t10), 8));
-      t18.drop$2$count("treasure", 2);
+      t18.drop$3$count$depthOffset("treasure", 3, 5);
       t18.drop$3$depthOffset$percent("spear", 5, 80);
       t18.drop$3$count$depthOffset("armor", 2, 5);
       t18.drop$3$count$depthOffset("magic", 3, 5);
@@ -29090,7 +29129,7 @@
       t18._hearing = 5;
       t18._motility = new Q.Motility(t18._motility._bitMask | t15);
       t18._emanationLevel = 2;
-      t18 = R.breed("Harold the Misfortunate", 1, C.Color_189_106_235, 20, null, null, null, 0);
+      t18 = R.breed("Harold the Misfortunate", 1, C.Color_189_106_235, 30, null, null, null, 0);
       t18._pronoun = C.Pronoun_he_him_his;
       C.JSArray_methods.add$1(t18._attacks, U.Attack$(null, "hit[s]", 3, 0, null));
       C.JSArray_methods.add$1(t18._moves, new R.MissiveMove(C.Missive_0, 5));
@@ -29161,7 +29200,7 @@
       t18 = t18._attacks;
       C.JSArray_methods.add$1(t18, U.Attack$(null, "bite[s]", 4, 0, null));
       C.JSArray_methods.add$1(t18, U.Attack$(null, "scratch[es]", 3, 0, null));
-      t18 = R.breed("sickly rat", 3, C.Color_22_117_38, 16, null, null, null, 0)._attacks;
+      t18 = R.breed("sickly rat", 3, C.Color_22_117_38, 10, null, null, null, 0)._attacks;
       C.JSArray_methods.add$1(t18, U.Attack$(null, "bite[s]", 8, 0, t5));
       C.JSArray_methods.add$1(t18, U.Attack$(null, "scratch[es]", 4, 0, null));
       t18 = R.breed("plague rat", 6, C.Color_131_158_13, 20, null, null, null, 0);
@@ -29383,6 +29422,138 @@
       S.recipe("Fur-lined Robe", P.LinkedHashMap_LinkedHashMap$_literal(["Robe", 1, "Fur Pelt", 2], t4, t8));
       S.recipe("Fur-lined Robe", P.LinkedHashMap_LinkedHashMap$_literal(["Robe", 1, "Fox Pelt", 1], t4, t8));
       R.finishAffix();
+      $._affixTag = "body";
+      t8 = R.affix("Elven _", 40, 1);
+      t8._priceBonus = 400;
+      t8._priceScale = 2;
+      t8._weightBonus = -2;
+      t8._armor = 2;
+      t8.resist$1(t11);
+      t8 = R.affix("Elven _", 60, 0.3);
+      t8._priceBonus = 600;
+      t8._priceScale = 3;
+      t8._weightBonus = -3;
+      t8._armor = 4;
+      t8.resist$1(t11);
+      R.finishAffix();
+      $._affixTag = "cloak";
+      t8 = R.affix("Elven _", 40, 1);
+      t8._priceBonus = 300;
+      t8._priceScale = 2;
+      t8._weightBonus = -1;
+      t8._armor = 3;
+      t8.resist$1(t11);
+      t8 = R.affix("Elven _", 60, 0.3);
+      t8._priceBonus = 500;
+      t8._priceScale = 3;
+      t8._weightBonus = -2;
+      t8._armor = 5;
+      t8.resist$1(t11);
+      R.finishAffix();
+      $._affixTag = "boots";
+      t8 = R.affix("Elven _", 40, 1);
+      t8._priceBonus = 400;
+      t8._priceScale = 2.5;
+      t8._weightBonus = -2;
+      t8._armor = 2;
+      R.finishAffix();
+      $._affixTag = "helm";
+      t8 = R.affix("Elven _", 40, 1);
+      t8._priceBonus = 400;
+      t8._priceScale = 2;
+      t8._weightBonus = -1;
+      t8._armor = 1;
+      t8.resist$1(t11);
+      t8 = R.affix("Elven _", 60, 0.3);
+      t8._priceBonus = 600;
+      t8._priceScale = 3;
+      t8._weightBonus = -1;
+      t8._armor = 2;
+      t8.resist$1(t11);
+      t8 = R.affix("Elven _", 40, 1);
+      t8._priceBonus = 300;
+      t8._priceScale = 1.6;
+      t8._heftScale = 0.8;
+      t8._damageScale = 1.3;
+      t8._damageBonus = null;
+      t8.resist$1(t11);
+      t8 = R.affix("Elven _", 50, 0.5);
+      t8._priceBonus = 500;
+      t8._priceScale = 2.2;
+      t8._heftScale = 0.6;
+      t8._damageScale = 1.5;
+      t8._damageBonus = null;
+      t8.resist$1(t11);
+      R.finishAffix();
+      $._affixTag = "body";
+      t8 = R.affix("Dwarven _", 30, 1);
+      t8._priceBonus = 400;
+      t8._priceScale = 2;
+      t8._weightBonus = 2;
+      t8._armor = 4;
+      t8.resist$1(t2);
+      t8.resist$1(t13);
+      t8 = R.affix("Dwarven _", 40, 0.5);
+      t8._priceBonus = 600;
+      t8._priceScale = 3;
+      t8._weightBonus = 2;
+      t8._armor = 6;
+      t8.resist$1(t2);
+      t8.resist$1(t13);
+      R.finishAffix();
+      $._affixTag = "helm";
+      t8 = R.affix("Dwarven _", 50, 1);
+      t8._priceBonus = 300;
+      t8._priceScale = 2;
+      t8._weightBonus = 1;
+      t8._armor = 3;
+      t8.resist$1(t13);
+      t8 = R.affix("Dwarven _", 60, 0.5);
+      t8._priceBonus = 500;
+      t8._priceScale = 3;
+      t8._weightBonus = 1;
+      t8._armor = 4;
+      t8.resist$1(t13);
+      R.finishAffix();
+      $._affixTag = "gloves";
+      t8 = R.affix("Dwarven _", 50, 1);
+      t8._priceBonus = 300;
+      t8._priceScale = 2;
+      t8._weightBonus = 1;
+      t8._armor = 3;
+      t8.resist$1(t2);
+      R.finishAffix();
+      $._affixTag = "boots";
+      t8 = R.affix("Dwarven _", 50, 1);
+      t8._priceBonus = 300;
+      t8._priceScale = 2;
+      t8._weightBonus = 1;
+      t8._armor = 3;
+      t8.resist$1(t2);
+      t8 = R.affix("Dwarven _", 60, 0.3);
+      t8._priceBonus = 500;
+      t8._priceScale = 3;
+      t8._weightBonus = 2;
+      t8._armor = 5;
+      t8.resist$1(t13);
+      t8.resist$1(t2);
+      t8 = R.affix("Dwarven _", 40, 1);
+      t8._priceBonus = 200;
+      t8._priceScale = 2.2;
+      t8._heftScale = 1.2;
+      t8._damageScale = 1.5;
+      t8._damageBonus = 4;
+      t8.resist$1(t2);
+      t8.resist$1(t13);
+      t8 = R.affix("Dwarven _", 40, 1);
+      t8._priceBonus = 400;
+      t8._priceScale = 2.4;
+      t8._heftScale = 1.3;
+      t8._damageScale = 1.7;
+      t8._damageBonus = 5;
+      t8.resist$1(t2);
+      t8.resist$1(t13);
+      R.finishAffix();
       $._affixTag = "armor";
       t8 = R.affix("_ of Resist Air", 10, 0.5);
       t8._priceBonus = 200;
@@ -29473,14 +29644,14 @@
       t12._priceBonus = 500;
       t12._priceScale = 1.4;
       t12.resist$2(t2, 2);
-      t12 = R.affix("_ of Protection from Fire", 18, 0.25);
-      t12._priceBonus = 500;
-      t12._priceScale = 1.5;
-      t12.resist$2(t3, 2);
-      t12 = R.affix("_ of Protection from Water", 19, 0.25);
-      t12._priceBonus = 500;
-      t12._priceScale = 1.4;
-      t12.resist$2(t7, 2);
+      t2 = R.affix("_ of Protection from Fire", 18, 0.25);
+      t2._priceBonus = 500;
+      t2._priceScale = 1.5;
+      t2.resist$2(t3, 2);
+      t2 = R.affix("_ of Protection from Water", 19, 0.25);
+      t2._priceBonus = 500;
+      t2._priceScale = 1.4;
+      t2.resist$2(t7, 2);
       t7 = R.affix("_ of Protection from Acid", 20, 0.2);
       t7._priceBonus = 500;
       t7._priceScale = 1.5;
@@ -29513,7 +29684,7 @@
       $._affixTag = "weapon";
       t14 = R.affix("_ of Harming", 1, 1);
       t14._priceBonus = 100;
-      t14._priceScale = 1.1;
+      t14._priceScale = 1.2;
       t14._heftScale = 1.05;
       t14._damageScale = null;
       t14._damageBonus = 1;
@@ -29535,21 +29706,6 @@
       t14._heftScale = 1.11;
       t14._damageScale = 1.4;
       t14._damageBonus = 5;
-      t14 = R.affix("Elven _", 40, 1);
-      t14._priceBonus = 300;
-      t14._priceScale = 1.6;
-      t14._heftScale = 0.7;
-      t14._damageScale = 1.3;
-      t14._damageBonus = null;
-      t14.resist$1(t11);
-      t14 = R.affix("Dwarven _", 40, 1);
-      t14._priceBonus = 200;
-      t14._priceScale = 2.2;
-      t14._heftScale = 1.2;
-      t14._damageScale = 1.5;
-      t14._damageBonus = 4;
-      t14.resist$1(t2);
-      t14.resist$1(t13);
       R.finishAffix();
       $._affixTag = "bow";
       t14 = R.affix("Ash _", 10, 1);
@@ -29873,7 +30029,7 @@
       $.ui.keyPress.bind$3$alt(C.Input_fire, 101, true);
       $.ui.keyPress.bind$4$alt$shift(C.Input_wizard, 87, true, true);
       t3 = $.ui;
-      t2 = new S.Storage($content, H.setRuntimeTypeInfo([], [G.HeroSave]));
+      t2 = new S.Storage($content, H.setRuntimeTypeInfo([], [K.HeroSave]));
       t2._load$0();
       t3.push$1(new B.MainMenuScreen($content, t2, 0));
       $.ui.set$handlingInput(true);
