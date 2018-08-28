@@ -132,11 +132,18 @@ class ItemType {
   String toString() => name;
 }
 
-// TODO: Affixes should modify price.
 /// A modifier that can be applied to an [Item] to change its capabilities.
 /// For example, in a "Dagger of Wounding", the "of Wounding" part is an affix.
 class Affix {
+  /// The full unique name of the affixes.
+  ///
+  /// It's possible for different affixes to have the same name but different
+  /// values or applying to different equipment. For storage, we need to know
+  /// which one it actually is, which this distinguishes.
   final String name;
+
+  /// The short, shown name of the affix.
+  final String displayName;
 
   final double heftScale;
   final int weightBonus;
@@ -151,7 +158,7 @@ class Affix {
   final int priceBonus;
   final double priceScale;
 
-  Affix(this.name,
+  Affix(this.name, this.displayName,
       {double heftScale,
       int weightBonus,
       int strikeBonus,

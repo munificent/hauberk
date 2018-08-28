@@ -131,15 +131,15 @@ class _CategoryBuilder extends _BaseBuilder {
     _tag = tags.last;
 
     const tagEquipSlots = [
-      'weapon',
-      'ring',
-      'necklace',
-      'body',
-      'cloak',
-      'shield',
-      'helm',
-      'gloves',
-      'boots'
+      "weapon",
+      "ring",
+      "necklace",
+      "body",
+      "cloak",
+      "shield",
+      "helm",
+      "gloves",
+      "boots"
     ];
 
     for (var equipSlot in tagEquipSlots) {
@@ -362,7 +362,19 @@ void finishItem() {
 void finishAffix() {
   if (_affix == null) return;
 
-  var affix = Affix(_affix._name,
+  var affixes = _affix._isPrefix ? Affixes.prefixes : Affixes.suffixes;
+
+  var displayName = _affix._name;
+  var fullName = "$displayName ($_affixTag)";
+  var index = 1;
+
+  // Generate a unique name for it.
+  while (affixes.tryFind(fullName) != null) {
+    index++;
+    fullName = "$displayName ($_affixTag $index)";
+  }
+
+  var affix = Affix(fullName, displayName,
       heftScale: _affix._heftScale,
       weightBonus: _affix._weightBonus,
       strikeBonus: _affix._strikeBonus,
@@ -375,7 +387,6 @@ void finishAffix() {
 
   _affix._resists.forEach(affix.resist);
 
-  var affixes = _affix._isPrefix ? Affixes.prefixes : Affixes.suffixes;
-  affixes.add(_affix._name, affix, _affix._depth, _affix._frequency, _affixTag);
+  affixes.add(fullName, affix, _affix._depth, _affix._frequency, _affixTag);
   _affix = null;
 }

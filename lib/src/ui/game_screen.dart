@@ -510,7 +510,7 @@ class GameScreen extends Screen<Input> {
       heroColor = cornflower;
     } else if (hero.health < hero.maxHealth / 2) {
       heroColor = salmon;
-    } else if (hero.stomach == 0) {
+    } else if (hero.stomach == 0 && hero.health < hero.maxHealth) {
       heroColor = sandal;
     }
 

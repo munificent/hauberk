@@ -86,8 +86,8 @@ class Item implements Comparable<Item>, Noun {
   String get nounText {
     var name = type.quantifiableName;
 
-    if (prefix != null) name = "${prefix.name} $name";
-    if (suffix != null) name = "$name ${suffix.name}";
+    if (prefix != null) name = "${prefix.displayName} $name";
+    if (suffix != null) name = "$name ${suffix.displayName}";
 
     return Log.quantify(name, count);
   }

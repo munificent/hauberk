@@ -65,8 +65,8 @@ void spawnStuff() {
         spawn.drop.spawnDrop((item) {
           items.add(item.type.name);
 
-          if (item.prefix != null) affixes.add("${item.prefix.name} ___");
-          if (item.suffix != null) affixes.add("___ ${item.suffix.name}");
+          if (item.prefix != null) affixes.add("${item.prefix.name} _");
+          if (item.suffix != null) affixes.add("_ ${item.suffix.name}");
         });
       }
     }

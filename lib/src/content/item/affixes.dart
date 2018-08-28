@@ -66,37 +66,142 @@ class Affixes {
   }
 
   static void initialize() {
+    _elven();
+    _dwarven();
     _resists();
     _extraDamage();
     _brands();
     // TODO: "of Accuracy" increases range of bows.
+    // TODO: "Heavy" and "adamant" increase weight and armor.
 
     finishAffix();
+  }
+
+  static void _elven() {
+    affixCategory("body");
+    affix("Elven _", 40, 1.0)
+      ..price(400, 2.0)
+      ..weight(-2)
+      ..armor(2)
+      ..resist(Elements.light);
+    affix("Elven _", 60, 0.3)
+      ..price(600, 3.0)
+      ..weight(-3)
+      ..armor(4)
+      ..resist(Elements.light);
+
+    affixCategory("cloak");
+    affix("Elven _", 40, 1.0)
+      ..price(300, 2.0)
+      ..weight(-1)
+      ..armor(3)
+      ..resist(Elements.light);
+    affix("Elven _", 60, 0.3)
+      ..price(500, 3.0)
+      ..weight(-2)
+      ..armor(5)
+      ..resist(Elements.light);
+
+    affixCategory("boots");
+    affix("Elven _", 40, 1.0)
+      ..price(400, 2.5)
+      ..weight(-2)
+      ..armor(2);
+    // TODO: Increase dodge.
+
+    affixCategory("helm");
+    affix("Elven _", 40, 1.0)
+      ..price(400, 2.0)
+      ..weight(-1)
+      ..armor(1)
+      ..resist(Elements.light);
+    // TODO: Emanate.
+    affix("Elven _", 60, 0.3)
+      ..price(600, 3.0)
+      ..weight(-1)
+      ..armor(2)
+      ..resist(Elements.light);
+    // TODO: Emanate.
+
+    affix("Elven _", 40, 1.0)
+      ..price(300, 1.6)
+      ..heft(0.8)
+      ..damage(scale: 1.3)
+      ..resist(Elements.light);
+    affix("Elven _", 50, 0.5)
+      ..price(500, 2.2)
+      ..heft(0.6)
+      ..damage(scale: 1.5)
+      ..resist(Elements.light);
+    // TODO: Emanate.
+  }
+
+  static void _dwarven() {
+    // TODO: These prices need tuning.
+    affixCategory("body");
+    affix("Dwarven _", 30, 1.0)
+      ..price(400, 2.0)
+      ..weight(2)
+      ..armor(4)
+      ..resist(Elements.earth)
+      ..resist(Elements.dark);
+    affix("Dwarven _", 40, 0.5)
+      ..price(600, 3.0)
+      ..weight(2)
+      ..armor(6)
+      ..resist(Elements.earth)
+      ..resist(Elements.dark);
+
+    affixCategory("helm");
+    affix("Dwarven _", 50, 1.0)
+      ..price(300, 2.0)
+      ..weight(1)
+      ..armor(3)
+      ..resist(Elements.dark);
+    affix("Dwarven _", 60, 0.5)
+      ..price(500, 3.0)
+      ..weight(1)
+      ..armor(4)
+      ..resist(Elements.dark);
+
+    affixCategory("gloves");
+    affix("Dwarven _", 50, 1.0)
+      ..price(300, 2.0)
+      ..weight(1)
+      // TODO: Encumbrance.
+      ..armor(3)
+      ..resist(Elements.earth);
+
+    affixCategory("boots");
+    affix("Dwarven _", 50, 1.0)
+      ..price(300, 2.0)
+      ..weight(1)
+      ..armor(3)
+      ..resist(Elements.earth);
+    affix("Dwarven _", 60, 0.3)
+      ..price(500, 3.0)
+      ..weight(2)
+      ..armor(5)
+      ..resist(Elements.dark)
+      ..resist(Elements.earth);
+
+    affix("Dwarven _", 40, 1.0)
+      ..price(200, 2.2)
+      ..heft(1.2)
+      ..damage(scale: 1.5, bonus: 4)
+      ..resist(Elements.earth)
+      ..resist(Elements.dark);
+    affix("Dwarven _", 40, 1.0)
+      ..price(400, 2.4)
+      ..heft(1.3)
+      ..damage(scale: 1.7, bonus: 5)
+      ..resist(Elements.earth)
+      ..resist(Elements.dark);
   }
 
   static void _resists() {
     // TODO: Don't apply to all armor types?
     affixCategory("armor");
-
-    // TODO: These prices need tuning.
-
-    // TODO: Different ones for each kind of armor with different bonuses?
-    // TODO: Commented out for now because it causes a name collision. Should
-    // we allow different prefixes with the same name for different kinds of
-    // equipment?
-//    affix("Elven _", 40, 1.0)
-//      ..weight(-2)
-//      ..armor(2)
-//      ..resist(Elements.light);
-//
-//    affix("Dwarven _", 30, 1.0)
-//      ..weight(2)
-//      ..armor(4)
-//      ..resist(Elements.earth)
-//      ..resist(Elements.dark);
-
-    // TODO: "Heavy" and "adamant" increase weight and armor.
-
     affix("_ of Resist Air", 10, 0.5)
       ..price(200, 1.2)
       ..resist(Elements.air);
@@ -207,7 +312,7 @@ class Affixes {
     // TODO: Exclude bows?
     affixCategory("weapon");
     affix("_ of Harming", 1, 1.0)
-      ..price(100, 1.1)
+      ..price(100, 1.2)
       ..heft(1.05)
       ..damage(bonus: 1);
     affix("_ of Wounding", 10, 1.0)
@@ -222,19 +327,6 @@ class Affixes {
       ..price(200, 2.0)
       ..heft(1.11)
       ..damage(scale: 1.4, bonus: 5);
-
-    affix("Elven _", 40, 1.0)
-      ..price(300, 1.6)
-      ..heft(0.7)
-      ..damage(scale: 1.3)
-      ..resist(Elements.light);
-
-    affix("Dwarven _", 40, 1.0)
-      ..price(200, 2.2)
-      ..heft(1.2)
-      ..damage(scale: 1.5, bonus: 4)
-      ..resist(Elements.earth)
-      ..resist(Elements.dark);
 
     affixCategory("bow");
     affix("Ash _", 10, 1.0)

@@ -55,25 +55,22 @@ void generate() {
     print(event);
   }
 
+  addItem(Item item) {
+    items.add(item.type.name);
+
+    if (item.prefix != null) affixes.add("${item.prefix.name} _");
+    if (item.suffix != null) affixes.add("_ ${item.suffix.name}");
+  }
+
   for (var actor in game.stage.actors) {
     if (actor is Monster) {
       monsters.add(actor.breed.name);
 
-      actor.breed.drop.spawnDrop((item) {
-        items.add(item.type.name);
-
-        if (item.prefix != null) affixes.add("${item.prefix.name} ___");
-        if (item.suffix != null) affixes.add("___ ${item.suffix.name}");
-      });
+      actor.breed.drop.spawnDrop(addItem);
     }
   }
 
-  for (var item in game.stage.allItems) {
-    items.add(item.type.name);
-
-    if (item.prefix != null) affixes.add("${item.prefix.name} ___");
-    if (item.suffix != null) affixes.add("___ ${item.suffix.name}");
-  }
+  game.stage.allItems.forEach(addItem);
 
   generated++;
 }
