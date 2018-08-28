@@ -5,7 +5,7 @@ import '../hues.dart';
 import 'hero_info_dialog.dart';
 
 class HeroEquipmentDialog extends HeroInfoDialog {
-  HeroEquipmentDialog(Hero hero) : super.base(hero);
+  HeroEquipmentDialog(Content content, HeroSave hero) : super.base(content, hero);
 
   String get name => "Equipment";
 

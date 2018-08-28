@@ -130,20 +130,6 @@ class Hero extends Actor {
   /// The total weight of all equipment.
   int get weight => save.weight;
 
-  /// Gets the total permament resistance provided by all equipment.
-  int equipmentResistance(Element element) {
-    // TODO: If class or race can affect this, add it in.
-    var resistance = 0;
-
-    for (var item in equipment) {
-      resistance += item.resistance(element);
-    }
-
-    // TODO: Unify this with onDefend().
-
-    return resistance;
-  }
-
   // TODO: Not currently used since skills are not explicitly learned in the
   // UI. Re-enable when we add rogue skills?
   /*
@@ -257,7 +243,7 @@ class Hero extends Actor {
   }
 
   // TODO: If class or race can affect this, add it in.
-  int onGetResistance(Element element) => equipmentResistance(element);
+  int onGetResistance(Element element) => save.equipmentResistance(element);
 
   void onTakeDamage(Action action, Actor attacker, int damage) {
     // Getting hit loses focus.

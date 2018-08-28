@@ -7,9 +7,11 @@ import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'game_screen.dart';
+import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item_screen.dart';
 import 'loading_dialog.dart';
+import 'skill_dialog.dart';
 import 'storage.dart';
 
 class SelectDepthScreen extends Screen<Input> {
@@ -40,6 +42,14 @@ class SelectDepthScreen extends Screen<Input> {
         _changeDepth(selectedDepth + 10);
         return true;
 
+      case Input.editSkills:
+        ui.push(SkillDialog(save));
+        break;
+
+      case Input.heroInfo:
+        ui.push(HeroInfoDialog(content, save));
+        break;
+
       case Input.ok:
         ui.push(LoadingDialog(save, content, selectedDepth));
         return true;
@@ -62,6 +72,10 @@ class SelectDepthScreen extends Screen<Input> {
 //        ui.push(new ItemScreen.crucible(content, save));
 //        break;
 //
+      case KeyCode.s:
+        ui.push(SkillDialog(save));
+        break;
+
       case KeyCode.h:
         ui.push(ItemScreen.home(save));
         return true;
@@ -134,6 +148,8 @@ class SelectDepthScreen extends Screen<Input> {
       y++;
     }
 
+    drawMenuItem("a", "About Hero");
+    drawMenuItem("s", "Hero Skills");
     drawMenuItem("h", "Enter Home");
     // TODO: The crucible is disabled for now.
 //    drawMenuItem("c", "Use Crucible");

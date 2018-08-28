@@ -5,7 +5,7 @@ import '../hues.dart';
 import 'hero_info_dialog.dart';
 
 class HeroResistancesDialog extends HeroInfoDialog {
-  HeroResistancesDialog(Hero hero) : super.base(hero);
+  HeroResistancesDialog(Content content, HeroSave hero) : super.base(content, hero);
 
   String get name => "Resistances";
 
@@ -28,7 +28,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
       if (item == null) return;
 
       var i = 0;
-      for (var element in hero.game.content.elements) {
+      for (var element in content.elements) {
         if (element == Element.none) continue;
 
         var x = 48 + i * 3;
@@ -51,7 +51,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
     writeLine(totalY - 1, steelGray);
 
     var i = 0;
-    for (var element in hero.game.content.elements) {
+    for (var element in content.elements) {
       if (element == Element.none) continue;
 
       var x = 48 + i * 3;

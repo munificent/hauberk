@@ -14,11 +14,12 @@ class HeroLoreDialog extends HeroInfoDialog {
   int _selection = 0;
   int _scroll = 0;
 
-  HeroLoreDialog(Hero hero) : super.base(hero) {
+  HeroLoreDialog(Content content, HeroSave hero) : super.base(content, hero) {
     _listBreeds();
   }
 
   String get name => "Monster Lore";
+
   String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
@@ -203,10 +204,9 @@ class HeroLoreDialog extends HeroInfoDialog {
     _breeds.clear();
 
     if (_sort == _Sort.uniques) {
-      _breeds.addAll(
-          hero.game.content.breeds.where((breed) => breed.flags.unique));
+      _breeds.addAll(content.breeds.where((breed) => breed.flags.unique));
     } else {
-      _breeds.addAll(hero.game.content.breeds);
+      _breeds.addAll(content.breeds);
     }
 
     compareGlyph(Breed a, Breed b) {

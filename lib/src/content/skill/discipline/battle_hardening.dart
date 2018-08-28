@@ -24,5 +24,5 @@ class BattleHardening extends Discipline {
 
   String levelDescription(int level) => "Increases armor by $level.";
 
-  int baseTrainingNeeded(int level) => (60 * math.pow(1.5, level)).ceil();
+  int baseTrainingNeeded(int level) => (60 * math.pow(level, 1.5)).ceil();
 }

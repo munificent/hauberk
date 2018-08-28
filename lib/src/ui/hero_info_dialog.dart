@@ -9,14 +9,15 @@ import 'hero_resistances_dialog.dart';
 import 'input.dart';
 
 abstract class HeroInfoDialog extends Screen<Input> {
-  Hero hero;
+  final Content content;
+  final HeroSave hero;
   HeroInfoDialog _nextScreen;
 
-  factory HeroInfoDialog(Hero hero) {
+  factory HeroInfoDialog(Content content, HeroSave hero) {
     var screens = [
-      HeroEquipmentDialog(hero),
-      HeroResistancesDialog(hero),
-      HeroLoreDialog(hero)
+      HeroEquipmentDialog(content, hero),
+      HeroResistancesDialog(content, hero),
+      HeroLoreDialog(content, hero)
     ];
 
     for (var i = 0; i < screens.length; i++) {
@@ -26,7 +27,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
     return screens.first;
   }
 
-  HeroInfoDialog.base(this.hero);
+  HeroInfoDialog.base(this.content, this.hero);
 
   String get name;
   String get extraHelp => null;

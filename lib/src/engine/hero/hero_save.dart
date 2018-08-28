@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import '../core/element.dart';
 import '../core/option.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
@@ -149,6 +150,20 @@ class HeroSave {
       _lore.clone(),
       gold,
       maxDepth);
+
+  /// Gets the total permament resistance provided by all equipment.
+  int equipmentResistance(Element element) {
+    // TODO: If class or race can affect this, add it in.
+    var resistance = 0;
+
+    for (var item in equipment) {
+      resistance += item.resistance(element);
+    }
+
+    // TODO: Unify this with onDefend().
+
+    return resistance;
+  }
 
   void _bindStats() {
     strength.bindHero(this);

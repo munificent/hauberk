@@ -142,7 +142,7 @@ class GameScreen extends Screen<Input> {
         ui.push(SkillDialog(game.hero.save));
         break;
       case Input.heroInfo:
-        ui.push(HeroInfoDialog(game.hero));
+        ui.push(HeroInfoDialog(game.content, game.hero.save));
         break;
       case Input.drop:
         ui.push(ItemDialog.drop(this));
