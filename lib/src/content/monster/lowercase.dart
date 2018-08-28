@@ -212,7 +212,7 @@ void felines() {
     ..sense(see: 10, hear: 8)
     ..placeIn("room", "passage")
     ..groups("animal");
-  breed("stray cat", 1, gold, 9, speed: 1, meander: 30)
+  breed("stray cat", 1, gold, 11, speed: 1, meander: 30)
     ..attack("bite[s]", 5)
     ..attack("scratch[es]", 4);
 }
@@ -223,7 +223,7 @@ void goblins() {
     ..groups("goblin")
     ..openDoors()
     ..emanate(2);
-  breed("goblin peon", 4, sandal, 26, meander: 20)
+  breed("goblin peon", 4, sandal, 30, meander: 20)
     ..count(4)
     ..attack("stab[s]", 8)
     ..missive(Missive.insult, rate: 8)
@@ -231,7 +231,7 @@ void goblins() {
     ..drop("spear", percent: 20)
     ..drop("healing", percent: 10);
 
-  breed("goblin archer", 6, peaGreen, 32)
+  breed("goblin archer", 6, peaGreen, 36)
     ..count(2)
     ..minion("goblin peon", 0, 2)
     ..attack("stab[s]", 4)
@@ -331,7 +331,7 @@ void insects() {
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
 
-  breed("firefly", 8, carrot, 10, speed: 1, meander: 70)
+  breed("firefly", 8, carrot, 6, speed: 1, meander: 70)
     ..placeIn("aquatic")
     ..count(3, 8)
     ..attack("bite[s]", 12, Elements.fire);
@@ -404,7 +404,7 @@ void kobolds() {
   family("k", meander: 15, flags: "cowardly")
     ..groups("kobold")
     ..sense(see: 10, hear: 4);
-  breed("scurrilous imp", 1, salmon, 8, meander: 20)
+  breed("scurrilous imp", 1, salmon, 12, meander: 20)
     ..count(2)
     ..attack("club[s]", 4)
     ..missive(Missive.insult)
@@ -413,7 +413,7 @@ void kobolds() {
     ..drop("club", percent: 40)
     ..drop("speed", percent: 30);
 
-  breed("vexing imp", 2, violet, 10)
+  breed("vexing imp", 2, violet, 16)
     ..count(2)
     ..minion("scurrilous imp", 0, 1)
     ..attack("scratch[es]", 4)
@@ -423,25 +423,26 @@ void kobolds() {
     ..drop("teleportation", percent: 50);
 
   family("k", meander: 20)..groups("kobold");
-  breed("kobold", 3, brickRed, 12)
+  breed("kobold", 3, brickRed, 20)
     ..count(3)
     ..minion("wild dog", 0, 3)
     ..attack("poke[s]", 4)
     ..teleport(rate: 10, range: 6)
+    ..drop("treasure", percent: 25)
     ..drop("equipment", percent: 20)
     ..drop("magic", percent: 40);
 
-  breed("kobold shaman", 4, ultramarine, 16)
+  breed("kobold shaman", 4, ultramarine, 20)
     ..placeIn("laboratory")
     ..count(2)
     ..minion("wild dog", 0, 3)
     ..attack("hit[s]", 4)
-    ..waterBolt(rate: 5, damage: 6)
+    ..waterBolt(rate: 10, damage: 8)
     ..drop("treasure", percent: 25)
     ..drop("robe", percent: 20)
     ..drop("magic", percent: 40);
 
-  breed("kobold trickster", 5, gold, 20)
+  breed("kobold trickster", 5, gold, 24)
     ..attack("hit[s]", 5)
     ..missive(Missive.insult)
     ..sparkBolt(rate: 5, damage: 8)
@@ -451,19 +452,18 @@ void kobolds() {
     ..drop("magic", percent: 20)
     ..drop("magic", percent: 40);
 
-  breed("kobold priest", 6, cerulean, 25)
+  breed("kobold priest", 6, cerulean, 30)
     ..count(2)
     ..minion("kobold", 1, 3)
     ..attack("club[s]", 6)
     ..heal(rate: 15, amount: 10)
-    ..fireBolt(rate: 10, damage: 8)
     ..haste(rate: 7)
     ..drop("treasure", percent: 35)
     ..drop("club", percent: 40)
     ..drop("robe", percent: 20)
     ..drop("magic", percent: 40);
 
-  breed("imp incanter", 7, lilac, 18)
+  breed("imp incanter", 7, lilac, 33)
     ..placeIn("laboratory")
     ..count(2)
     ..minion("kobold", 1, 3)
@@ -471,12 +471,12 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult, rate: 6)
     ..fireBolt(rate: 5, damage: 10)
-    ..drop("treasure", percent: 25)
+    ..drop("treasure", percent: 35)
     ..drop("robe", percent: 20)
     ..drop("magic", percent: 50)
     ..flags("cowardly");
 
-  breed("imp warlock", 8, indigo, 40)
+  breed("imp warlock", 8, indigo, 46)
     ..placeIn("laboratory")
     ..minion("imp incanter", 1, 3)
     ..minion("kobold", 1, 3)
@@ -490,7 +490,7 @@ void kobolds() {
     ..drop("magic", count: 2, percent: 60);
 
   // TODO: Always drop something good.
-  breed("Feng", 10, carrot, 60, speed: 1, meander: 10)
+  breed("Feng", 10, carrot, 80, speed: 1, meander: 10)
     ..he()
     ..minion("imp warlock", 1, 2)
     ..minion("imp incanter", 1, 2)
@@ -502,7 +502,7 @@ void kobolds() {
     ..teleport(rate: 5, range: 6)
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
-    ..drop("treasure", count: 2)
+    ..drop("treasure", count: 3, depthOffset: 5)
     ..drop("spear", percent: 80, depthOffset: 5)
     ..drop("armor", count: 2, depthOffset: 5)
     ..drop("magic", count: 3, depthOffset: 5)
@@ -528,7 +528,7 @@ void people() {
     ..sense(see: 10, hear: 5)
     ..openDoors()
     ..emanate(2);
-  breed("Harold the Misfortunate", 1, lilac, 20)
+  breed("Harold the Misfortunate", 1, lilac, 30)
     ..he()
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy)
@@ -607,7 +607,7 @@ void rodents() {
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
 
-  breed("sickly rat", 3, peaGreen, 16)
+  breed("sickly rat", 3, peaGreen, 10)
     ..attack("bite[s]", 8, Elements.poison)
     ..attack("scratch[es]", 4);
 

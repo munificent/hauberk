@@ -457,11 +457,10 @@ class Room {
           type.theme, roomPos + junction.position, junction.direction);
     }
 
-    // Rooms are likely to be lit near the surface, but by depth 30, lit rooms
-    // become rare.
+    // Rooms are more likely to be lit near the surface.
     // TODO: Take theme into account. Great halls should be more likely to be
     // lit than closets.
-    var emanates = rng.percent(lerpInt(biome._dungeon.depth, 1, 30, 80, 10));
+    var emanates = rng.percent(lerpInt(biome._dungeon.depth, 1, 50, 100, 00));
     biome._dungeon.addPlace(
         RoomPlace(type, cells, hasHero: junction == null, emanates: emanates));
   }

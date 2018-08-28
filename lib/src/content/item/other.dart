@@ -21,7 +21,7 @@ void treasure() {
   category(CharCode.centSign)
     ..tag("treasure/coin")
     ..treasure();
-  item("Copper Coins", 1, copper, price: 1);
+  item("Copper Coins", 1, copper, price: 4);
   item("Bronze Coins", 7, persimmon, price: 8);
   item("Silver Coins", 11, turquoise, price: 20);
   item("Electrum Coins", 20, buttermilk, price: 50);
