@@ -88,11 +88,25 @@ void food() {
   category(CharCode.invertedExclamationMark)
     ..tag("item/food")
     ..destroy(Elements.fire, chance: 20, fuel: 3);
-  item("Loa[f|ves] of Bread", 1, sandal, frequency: 1.0, price: 4)
+  item("Stale Biscuit", 1, sandal, frequency: 1.0)
+    ..stack(6)
+    ..food(100);
+  item("Loa[f|ves] of Bread", 3, persimmon, frequency: 1.0, price: 4)
     ..stack(6)
     ..food(200);
+
+  category(CharCode.vulgarFractionOneQuarter)
+    ..tag("item/food")
+    ..destroy(Elements.fire, chance: 15, fuel: 2);
+  item("Chunk[s] of Meat", 6, garnet, frequency: 1.0, price: 10)
+    ..stack(4)
+    ..food(400);
+  // TODO: Chance of poisoning.
+  // TODO: Make some monsters drop this.
+  item("Piece[s] of Jerky", 10, persimmon, frequency: 1.0, price: 20)
+    ..stack(12)
+    ..food(600);
   // TODO: More foods. Some should also cure minor conditions or cause them.
-  // Meat glyph: CharCode.vulgarFractionOneQuarter
 }
 
 void lightSources() {

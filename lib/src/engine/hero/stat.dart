@@ -17,15 +17,12 @@ import '../core/lerp.dart';
 class Property<T extends num> {
   T _value;
 
-  /// The current value without any modification.
-  T get baseValue => _value;
-
   /// The current modified value.
-  T get value => modify(_value);
+  T get value => _modify(_value);
 
   /// A subclass can override this to modify the observed value. The updating
   /// and notifications are based on the raw base value.
-  T modify(T base) => base;
+  T _modify(T base) => base;
 
   /// Stores the new base [value]. If [value] is different from the current
   /// base value, calls [onChange], passing in the previous value. Does not take
@@ -74,6 +71,11 @@ abstract class StatBase extends Property<int> {
 
   String get _loseAdjective;
 
+  int _modify(int base) =>
+      (base + _statOffset + _hero.statBonus(_stat)).clamp(1, Stat.max);
+
+  int get _statOffset => 0;
+
   void bindHero(HeroSave hero) {
     assert(_hero == null);
     _hero = hero;
@@ -103,7 +105,7 @@ class Strength extends StatBase {
 
   String get _loseAdjective => "weak";
 
-  int modify(int base) => (base - _hero.weight).clamp(1, Stat.max);
+  int get _statOffset => -_hero.weight;
 
   double get tossRangeScale {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);

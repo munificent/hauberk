@@ -231,17 +231,12 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
       writeStat("Range", item.attack.range);
     }
 
-    // TODO: Temp hack. The ItemScreen doesn't have access to a Hero so passes
-    // in null. We should hoist the hero state that is needed in and out of
-    // game up to HeroSave and pass that in instead of Hero.
-    if (hero != null) {
-      writeLabel("Heft");
-      var strongEnough = hero.strength.value >= item.heft;
-      var color = strongEnough ? UIHue.primary : brickRed;
-      terminal.writeAt(12, y, item.heft.toString(), color);
-      writeScale(16, y, hero.strength.heftScale(item.heft));
-      y++;
-    }
+    writeLabel("Heft");
+    var strongEnough = hero.strength.value >= item.heft;
+    var color = strongEnough ? UIHue.primary : brickRed;
+    terminal.writeAt(12, y, item.heft.toString(), color);
+    writeScale(16, y, hero.strength.heftScale(item.heft));
+    y++;
   }
 
   if (item.armor != 0) {
@@ -273,8 +268,6 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
   }
   y += 2;
 
-  // TODO: Show the stats from each affix.
-
   var description = <String>[];
 
   // TODO: General description.
@@ -282,6 +275,19 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
   // TODO: Use.
 
   writeSection("Description");
+
+  for (var stat in Stat.all) {
+    var bonus = 0;
+    if (item.prefix != null) bonus += item.prefix.statBonus(stat);
+    if (item.suffix != null) bonus += item.suffix.statBonus(stat);
+
+    if (bonus < 0) {
+      description.add("It lowers your ${stat.name} by ${-bonus}.");
+    } else if (bonus > 0) {
+      description.add("It raises your ${stat.name} by $bonus.");
+    }
+  }
+
   if (item.toss != null) {
     var toss = item.toss;
 

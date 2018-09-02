@@ -4,6 +4,7 @@ import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/log.dart';
+import 'affix.dart';
 import 'item_type.dart';
 
 /// A thing that can be picked up.

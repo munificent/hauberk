@@ -73,6 +73,7 @@ class Affixes {
     _brands();
     // TODO: "of Accuracy" increases range of bows.
     // TODO: "Heavy" and "adamant" increase weight and armor.
+    // TODO: More stat bonus affixes.
 
     finishAffix();
   }
@@ -114,15 +115,18 @@ class Affixes {
       ..price(400, 2.0)
       ..weight(-1)
       ..armor(1)
+      ..intellect(1)
       ..resist(Elements.light);
     // TODO: Emanate.
     affix("Elven _", 60, 0.3)
       ..price(600, 3.0)
       ..weight(-1)
       ..armor(2)
+      ..intellect(2)
       ..resist(Elements.light);
     // TODO: Emanate.
 
+    affixCategory("shield");
     affix("Elven _", 40, 1.0)
       ..price(300, 1.6)
       ..heft(0.8)
@@ -132,8 +136,8 @@ class Affixes {
       ..price(500, 2.2)
       ..heft(0.6)
       ..damage(scale: 1.5)
+      ..will(1)
       ..resist(Elements.light);
-    // TODO: Emanate.
   }
 
   static void _dwarven() {
@@ -162,6 +166,8 @@ class Affixes {
       ..price(500, 3.0)
       ..weight(1)
       ..armor(4)
+      ..strength(1)
+      ..fortitude(1)
       ..resist(Elements.dark);
 
     affixCategory("gloves");
@@ -170,6 +176,7 @@ class Affixes {
       ..weight(1)
       // TODO: Encumbrance.
       ..armor(3)
+      ..strength(1)
       ..resist(Elements.earth);
 
     affixCategory("boots");
@@ -182,9 +189,11 @@ class Affixes {
       ..price(500, 3.0)
       ..weight(2)
       ..armor(5)
+      ..fortitude(1)
       ..resist(Elements.dark)
       ..resist(Elements.earth);
 
+    affixCategory("shield");
     affix("Dwarven _", 40, 1.0)
       ..price(200, 2.2)
       ..heft(1.2)
@@ -195,6 +204,7 @@ class Affixes {
       ..price(400, 2.4)
       ..heft(1.3)
       ..damage(scale: 1.7, bonus: 5)
+      ..fortitude(1)
       ..resist(Elements.earth)
       ..resist(Elements.dark);
   }

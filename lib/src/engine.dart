@@ -22,6 +22,7 @@ export 'engine/hero/lore.dart';
 export 'engine/hero/race.dart';
 export 'engine/hero/skill.dart';
 export 'engine/hero/stat.dart';
+export 'engine/items/affix.dart';
 export 'engine/items/equipment.dart';
 export 'engine/items/inventory.dart';
 export 'engine/items/item.dart';

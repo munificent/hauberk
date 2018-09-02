@@ -212,6 +212,14 @@ class RoomsBiome extends Biome {
       // do allow open diagonal tiles.
       var left = pos + dir.rotateLeft90;
       var right = pos + dir.rotateRight90;
+      // TODO: This still seems to allow turns to brush against corners, like:
+      //
+      //      #.#
+      //     ##.#
+      //     ...###
+      //     ###...
+      //       #.##
+      //       #.#
 
       if (!_dungeon.safeBounds.contains(left)) return false;
       if (_dungeon.getTileAt(left).isTraversable) return false;

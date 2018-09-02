@@ -263,6 +263,7 @@ class _AffixBuilder {
   double _priceScale;
 
   final Map<Element, int> _resists = {};
+  final Map<Stat, int> _statBonuses = {};
 
   _AffixBuilder(this._name, this._isPrefix, this._depth, this._frequency);
 
@@ -296,6 +297,26 @@ class _AffixBuilder {
 
   void resist(Element element, [int power]) {
     _resists[element] = power ?? 1;
+  }
+
+  void strength(int bonus) {
+    _statBonuses[Stat.strength] = bonus;
+  }
+
+  void agility(int bonus) {
+    _statBonuses[Stat.agility] = bonus;
+  }
+
+  void fortitude(int bonus) {
+    _statBonuses[Stat.fortitude] = bonus;
+  }
+
+  void intellect(int bonus) {
+    _statBonuses[Stat.intellect] = bonus;
+  }
+
+  void will(int bonus) {
+    _statBonuses[Stat.will] = bonus;
   }
 
   void price(int bonus, double scale) {
@@ -386,6 +407,7 @@ void finishAffix() {
       priceScale: _affix._priceScale);
 
   _affix._resists.forEach(affix.resist);
+  _affix._statBonuses.forEach(affix.setStatBonus);
 
   affixes.add(fullName, affix, _affix._depth, _affix._frequency, _affixTag);
   _affix = null;

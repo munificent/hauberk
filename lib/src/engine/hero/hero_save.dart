@@ -165,6 +165,19 @@ class HeroSave {
     return resistance;
   }
 
+  /// Gets the total modifiers to [stat] provided by all equipment.
+  int statBonus(Stat stat) {
+    var bonus = 0;
+
+    // Let equipment modify it.
+    for (var item in equipment) {
+      if (item.prefix != null) bonus += item.prefix.statBonus(stat);
+      if (item.suffix != null) bonus += item.suffix.statBonus(stat);
+    }
+
+    return bonus;
+  }
+
   void _bindStats() {
     strength.bindHero(this);
     agility.bindHero(this);

@@ -76,6 +76,7 @@ abstract class Pathfinder<T> {
         var neighbor = path.pos + dir;
 
         if (explored.contains(neighbor)) continue;
+        if (!stage.bounds.contains(neighbor)) continue;
 
         var cost = stepCost(neighbor, stage[neighbor]);
         if (cost == null) continue;

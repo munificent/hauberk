@@ -12,7 +12,7 @@ void weapons() {
     ..tag("equipment/weapon/club")
     ..skill("Club Mastery")
     ..toss(breakage: 25, range: 5);
-  item("Stick", 1, persimmon, frequency: 0.5, price: 2)
+  item("Stick", 1, persimmon, frequency: 0.5)
     ..weapon(8, heft: 6)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 10, fuel: 10);
@@ -30,7 +30,7 @@ void weapons() {
   category(CharCode.latinSmallLetterIWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/staff")
     ..toss(breakage: 35, range: 4);
-  item("Walking Stick", 2, persimmon, frequency: 0.5, price: 20)
+  item("Walking Stick", 2, persimmon, frequency: 0.5, price: 10)
     ..weapon(10, heft: 9)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 5, fuel: 15);
