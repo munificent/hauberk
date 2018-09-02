@@ -454,7 +454,7 @@ class Dungeon {
   }
 
   bool _tryRiver() {
-//    if (!rng.oneIn(3)) return false;
+    if (!rng.oneIn(3)) return false;
 
     _biomes.add(RiverBiome(this));
     return true;
