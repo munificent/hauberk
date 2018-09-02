@@ -12,15 +12,15 @@ class Furnishing extends Decor {
   static void initialize() {
     // TODO: Make sure themes here line up with room themes.
     // Counters.
-    category(1.0, themes: "kitchen laboratory");
-    furnishing(Symmetry.mirrorHorizontal, "─┐-│╤╛", """
+    category(1.0, apply: "┌─┐-│╘╤═╛╞╡", themes: "kitchen laboratory");
+    furnishing(Symmetry.mirrorHorizontal, """
     ?...
     #─┐.
     #-│.
     #╤╛.
     ?...""");
 
-    furnishing(Symmetry.mirrorHorizontal, "─┐-│╤╛", """
+    furnishing(Symmetry.mirrorHorizontal, """
     ?...
     #─┐.
     #-│.
@@ -28,7 +28,7 @@ class Furnishing extends Decor {
     #╤╛.
     ?...""");
 
-    furnishing(Symmetry.mirrorHorizontal, "─┐-│╤╛", """
+    furnishing(Symmetry.mirrorHorizontal, """
     ?...
     #─┐.
     #-│.
@@ -37,63 +37,63 @@ class Furnishing extends Decor {
     #╤╛.
     ?...""");
 
-    furnishing(Symmetry.none, "┌─┐│-", """
+    furnishing(Symmetry.none, """
     .....
     .┌─┐.
     .│-│.
     ?###?""");
 
-    furnishing(Symmetry.none, "┌─┐│-", """
+    furnishing(Symmetry.none, """
     ......
     .┌──┐.
     .│--│.
     ?####?""");
 
-    furnishing(Symmetry.none, "┌─┐│-", """
+    furnishing(Symmetry.none, """
     .......
     .┌───┐.
     .│---│.
     ?#####?""");
 
-    furnishing(Symmetry.none, "│-╞═╡", """
+    furnishing(Symmetry.none, """
     ?###?
     .│-│.
     .╞═╡.
     .....""");
 
-    furnishing(Symmetry.none, "│-╞═╡", """
+    furnishing(Symmetry.none, """
     ?####?
     .│--│.
     .╞══╡.
     ......""");
 
-    furnishing(Symmetry.none, "│-╞═╡", """
+    furnishing(Symmetry.none, """
     ?#####?
     .│---│.
     .╞═══╡.
     .......""");
 
     // Separating counters.
-    category(0.05, themes: "workshop");
-    furnishing(Symmetry.none, "─┐┌╤╛╘", """
+    category(0.05, apply: "┌─┐-│╘╤═╛╞╡", themes: "workshop");
+    furnishing(Symmetry.none, """
     ?.....?
     #─┐.┌─#
     #╤╛.╘╤#
     ?.....?""");
 
-    furnishing(Symmetry.none, "─┐┌╤╛╘═", """
+    furnishing(Symmetry.none, """
     ?.......?
     #──┐.┌──#
     #═╤╛.╘╤═#
     ?.......?""");
 
-    furnishing(Symmetry.none, "─┐┌╤╛╘═", """
+    furnishing(Symmetry.none, """
     ?.........?
     #───┐.┌───#
     #══╤╛.╘╤══#
     ?.........?""");
 
-    furnishing(Symmetry.none, "│╞╡┌┐", """
+    furnishing(Symmetry.none, """
     ?##?
     .││.
     .╞╡.
@@ -102,7 +102,7 @@ class Furnishing extends Decor {
     .││.
     ?##?""");
 
-    furnishing(Symmetry.none, "│╞╡┌┐", """
+    furnishing(Symmetry.none, """
     ?##?
     .││.
     .││.
@@ -113,7 +113,7 @@ class Furnishing extends Decor {
     .││.
     ?##?""");
 
-    furnishing(Symmetry.none, "│╞╡┌┐", """
+    furnishing(Symmetry.none, """
     ?##?
     .││.
     .││.
@@ -127,50 +127,50 @@ class Furnishing extends Decor {
     ?##?""");
 
     // Tables.
-    category(0.1, themes: "great-hall");
-    furnishing(Symmetry.none, "┌─┐│-╞═╡", """
+    category(0.1, apply: "┌─┐-│╘╤═╛╞╡", themes: "great-hall");
+    furnishing(Symmetry.none, """
     .....
     .┌─┐.
     .│-│.
     .╞═╡.
     .....""");
 
-    furnishing(Symmetry.none, "┌─┐│-╞═╡", """
+    furnishing(Symmetry.none, """
     ......
     .┌──┐.
     .│--│.
     .╞══╡.
     ......""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     .......
     .┌───┐.
     .│---│.
     .╘╤═╤╛.
     .......""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     ........
     .┌────┐.
     .│----│.
     .╘╤══╤╛.
     ........""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     .........
     .┌─────┐.
     .│-----│.
     .╘╤═══╤╛.
     .........""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     ..........
     .┌──────┐.
     .│------│.
     .╘╤════╤╛.
     ..........""");
 
-    furnishing(Symmetry.none, "┌─┐│-╞═╡", """
+    furnishing(Symmetry.none, """
     .....
     .┌─┐.
     .│-│.
@@ -178,7 +178,7 @@ class Furnishing extends Decor {
     .╞═╡.
     .....""");
 
-    furnishing(Symmetry.none, "┌─┐│-╞═╡", """
+    furnishing(Symmetry.none, """
     ......
     .┌──┐.
     .│--│.
@@ -186,7 +186,7 @@ class Furnishing extends Decor {
     .╞══╡.
     ......""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     .......
     .┌───┐.
     .│---│.
@@ -194,7 +194,7 @@ class Furnishing extends Decor {
     .╘╤═╤╛.
     .......""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     ........
     .┌────┐.
     .│----│.
@@ -202,7 +202,7 @@ class Furnishing extends Decor {
     .╘╤══╤╛.
     ........""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     .........
     .┌─────┐.
     .│-----│.
@@ -210,7 +210,7 @@ class Furnishing extends Decor {
     .╘╤═══╤╛.
     .........""");
 
-    furnishing(Symmetry.none, "┌─┐│-╘╤═╛", """
+    furnishing(Symmetry.none, """
     ..........
     .┌──────┐.
     .│------│.
@@ -224,133 +224,233 @@ class Furnishing extends Decor {
     // TODO: Instead of spawning these freely, make them sub-furnishings of the
     // appropriate furnishings.
     // TODO: Other themes.
-    category(1.0, themes: "great-hall laboratory");
-    furnishing(Symmetry.mirrorBoth, "π", """
+    category(1.0, apply: "π", themes: "great-hall laboratory");
+    furnishing(Symmetry.mirrorBoth, """
     ...
     .π.
     ..┌""");
 
-    furnishing(Symmetry.rotate90, "π", """
+    furnishing(Symmetry.rotate90, """
     ...
     .π.
     .┌?""");
 
-    furnishing(Symmetry.mirrorHorizontal, "π", """
+    furnishing(Symmetry.mirrorHorizontal, """
     ..╞
     .π.
     ...""");
 
-    furnishing(Symmetry.rotate90, "π", """
+    furnishing(Symmetry.rotate90, """
     ?═?
     .π.
     ...""");
 
-    furnishing(Symmetry.none, "π", """
+    furnishing(Symmetry.none, """
     ?╤?
     .π.
     ...""");
 
     // Candles.
     // TODO: Other themes.
-    category(4.0, themes: "great-hall laboratory");
-    furnishing(Symmetry.none, "i", """
+    category(4.0, apply: "i", themes: "great-hall laboratory");
+    furnishing(Symmetry.none, """
     i""");
 
     // TODO: Other decorations on tables.
 
     // TODO: Some fraction of the time, should place open barrels and chests.
     // Barrels.
-    category(1.0, themes: "kitchen larder pantry storeroom");
-    furnishing(Symmetry.rotate90, "%", """
+    category(1.0, apply: "%", themes: "kitchen larder pantry storeroom");
+    furnishing(Symmetry.rotate90, """
     ##
     #%""");
 
-    furnishing(Symmetry.rotate90, "%", """
+    furnishing(Symmetry.rotate90, """
     ?.?
     .%.
     ?.?""");
 
-    furnishing(Symmetry.rotate90, "%", """
+    furnishing(Symmetry.rotate90, """
     ###
     #%%""");
 
-    furnishing(Symmetry.rotate90, "%", """
+    furnishing(Symmetry.rotate90, """
     ###
     #%%
     #%.""");
 
-    furnishing(Symmetry.rotate90, "%", """
+    furnishing(Symmetry.rotate90, """
     ?##?
     .%%.
     ?..?""");
 
-    furnishing(Symmetry.rotate90, "%", """
+    furnishing(Symmetry.rotate90, """
     ?###?
     .%%%.
     ?...?""");
 
-    furnishing(Symmetry.rotate90, "%", """
+    furnishing(Symmetry.rotate90, """
     ?###?
     .%%%.
     ?.%.?
     ??.??""");
 
     // Chests.
-    category(1.0, themes: "chamber storeroom treasure-room");
-    furnishing(Symmetry.rotate90, "&", """
+    category(1.0, apply: "&", themes: "chamber storeroom treasure-room");
+    furnishing(Symmetry.rotate90, """
     ##
     #&""");
 
-    furnishing(Symmetry.rotate90, "&", """
+    furnishing(Symmetry.rotate90, """
     ?#?
     .&.
     ?.?""");
 
     // Fountains.
     // TODO: Can these be found anywhere else?
-    category(0.03, themes: "aquatic");
-    furnishing(Symmetry.none, "≈P", """
+    category(0.03, apply: "≈PIl", themes: "aquatic");
+    furnishing(Symmetry.none, """
     .....
     .≈≈≈.
     .≈P≈.
     .≈≈≈.
     .....""");
 
-    furnishing(Symmetry.rotate90, "≈P", """
+    furnishing(Symmetry.rotate90, """
     #####
     .≈P≈.
     .≈≈≈.
     .....""");
 
-    furnishing(Symmetry.rotate90, "≈PI", """
+    furnishing(Symmetry.rotate90, """
     ##I##
     .≈P≈.
     .≈≈≈.
     .....""");
 
-    furnishing(Symmetry.rotate90, "≈PI", """
+    furnishing(Symmetry.rotate90, """
     #I#I#
     .≈P≈.
     .≈≈≈.
     .....""");
 
-    furnishing(Symmetry.rotate90, "≈PI", """
+    furnishing(Symmetry.rotate90, """
     ##I#I##
     .≈≈P≈≈.
     ..≈≈≈..
     ?.....?""");
 
-    furnishing(Symmetry.rotate90, "≈Pl", """
+    furnishing(Symmetry.rotate90, """
     #######
     .l≈P≈l.
     ..≈≈≈..
     ?.....?""");
 
-    furnishing(Symmetry.rotate90, "≈PI", """
+    furnishing(Symmetry.rotate90, """
     ##I##
     .≈≈P#
     ..≈≈I
     ?..≈#""");
+
+    // Streams.
+    category(10.0, apply: "≈≡", themes: "aquatic");
+    furnishing(Symmetry.rotate90, """
+    #...#
+    #≈≡≈#
+    #...#""");
+
+    furnishing(Symmetry.rotate90, """
+    #....#
+    #≈≈≡≈#
+    #....#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.....#
+    #≈≈≡≈≈#
+    #.....#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.....#
+    #≈≡≈≡≈#
+    #.....#""");
+
+    furnishing(Symmetry.rotate90, """
+    #......#
+    #......#
+    #≈≈≡≈≈≈#
+    #......#
+    #......#""");
+
+    furnishing(Symmetry.rotate90, """
+    #......#
+    #......#
+    #≈≡≈≈≡≈#
+    #......#
+    #......#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.......#
+    #≈≈≈≡≈≈≈#
+    #.......#
+    #.......#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.......#
+    #.......#
+    #≈≈≡≈≡≈≈#
+    #.......#
+    #.......#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.......#
+    #.......#
+    #≈≡≈≈≈≡≈#
+    #.......#
+    #.......#""");
+
+    furnishing(Symmetry.rotate90, """
+    #........#
+    #........#
+    #≈≈≈≡≈≈≈≈#
+    #........#
+    #........#""");
+
+    furnishing(Symmetry.rotate90, """
+    #........#
+    #........#
+    #≈≈≡≈≈≡≈≈#
+    #........#
+    #........#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.........#
+    #.........#
+    #≈≈≈≈≡≈≈≈≈#
+    #.........#
+    #.........#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.........#
+    #.........#
+    #≈≈≡≈≈≈≡≈≈#
+    #.........#
+    #.........#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.........#
+    #.........#
+    #≈≈≈≈≡≈≈≈≈#
+    #≈≈≈≈≡≈≈≈≈#
+    #.........#
+    #.........#""");
+
+    furnishing(Symmetry.rotate90, """
+    #.........#
+    #.........#
+    #≈≈≡≈≈≈≡≈≈#
+    #≈≈≡≈≈≈≡≈≈#
+    #.........#
+    #.........#""");
 
     // TODO: Fireplaces for kitchens and halls.
 

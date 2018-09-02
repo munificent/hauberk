@@ -16,6 +16,7 @@ enum Symmetry {
 
 double _frequency = 1.0;
 String _themes;
+String _apply;
 
 final Map<String, Cell> _applyCells = {
   "┌": Cell(apply: Tiles.tableTopLeft, motility: Motility.walk),
@@ -39,6 +40,7 @@ final Map<String, Cell> _applyCells = {
   "&": Cell(apply: Tiles.closedChest, motility: Motility.walk),
   "*": Cell(apply: Tiles.tallGrass, require: Tiles.grass),
   "=": Cell(apply: Tiles.bridge, require: Tiles.water),
+  "≡": Cell(apply: Tiles.bridge, motility: Motility.walk),
   "•": Cell(apply: Tiles.steppingStone, require: Tiles.water),
 };
 
@@ -81,18 +83,19 @@ final _rotate = [
   "─│═│",
 ];
 
-void category(double frequency, {String themes}) {
+void category(double frequency, {String themes, String apply}) {
   _frequency = frequency;
   _themes = themes;
+  _apply = apply;
 }
 
-void furnishing(Symmetry symmetry, String applied, String template) {
+void furnishing(Symmetry symmetry, String template) {
   var lines = template.split("\n").map((line) => line.trim()).toList();
-  _singleFurnishing(applied, lines);
+  _singleFurnishing(_apply, lines);
 
   if (symmetry == Symmetry.mirrorHorizontal ||
       symmetry == Symmetry.mirrorBoth) {
-    var mirrorApplied = _mapString(applied, _mirrorCharHorizontal);
+    var mirrorApplied = _mapString(_apply, _mirrorCharHorizontal);
     var mirrorLines = lines.toList();
     for (var i = 0; i < lines.length; i++) {
       mirrorLines[i] = _mapString(
@@ -104,7 +107,7 @@ void furnishing(Symmetry symmetry, String applied, String template) {
   }
 
   if (symmetry == Symmetry.mirrorVertical || symmetry == Symmetry.mirrorBoth) {
-    var mirrorApplied = _mapString(applied, _mirrorCharVertical);
+    var mirrorApplied = _mapString(_apply, _mirrorCharVertical);
     var mirrorLines = lines.toList();
     for (var i = 0; i < lines.length; i++) {
       mirrorLines[lines.length - i - 1] =
@@ -117,7 +120,7 @@ void furnishing(Symmetry symmetry, String applied, String template) {
   if (symmetry == Symmetry.mirrorBoth ||
       symmetry == Symmetry.rotate180 ||
       symmetry == Symmetry.rotate90) {
-    var mirrorApplied = _mapString(applied, _mirrorCharBoth);
+    var mirrorApplied = _mapString(_apply, _mirrorCharBoth);
 
     var mirrorLines = lines.toList();
     for (var i = 0; i < lines.length; i++) {
@@ -130,7 +133,7 @@ void furnishing(Symmetry symmetry, String applied, String template) {
 
   if (symmetry == Symmetry.rotate90) {
     // Rotate 90°.
-    var rotateApplied = _mapString(applied, _rotateChar90);
+    var rotateApplied = _mapString(_apply, _rotateChar90);
 
     var rotateLines = <String>[];
     for (var x = 0; x < lines[0].length; x++) {

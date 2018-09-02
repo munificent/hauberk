@@ -81,28 +81,28 @@ class Dungeon {
     }
 
     yield "Placing decor";
-    var decorCount = width * height ~/ 20;
-    for (var i = 0; i < decorCount; i++) {
-      var pos = rng.vecInRect(safeBounds);
-      var place = placeAt(pos);
-      if (place == null) continue;
+    for (var place in _places) {
+      var density = place.cells.length * place.decorDensity;
+      var decorCount = randomRound(rng.float(density * 0.8, density * 1.2));
 
-      var theme = place.chooseTheme();
-      var decor = Decor.choose(theme);
-      if (decor == null) continue;
+      for (var i = 0; i < decorCount; i++) {
+        var theme = place.chooseTheme();
+        var decor = Decor.choose(theme);
+        if (decor == null) continue;
 
-      var allowed = <Vec>[];
+        var allowed = <Vec>[];
 
-      for (var cell in place.cells) {
-        var offset = cell.offset(-1, -1);
-        if (decor.canPlace(this, offset)) {
-          allowed.add(offset);
+        for (var cell in place.cells) {
+          var offset = cell.offset(-1, -1);
+          if (decor.canPlace(this, offset)) {
+            allowed.add(offset);
+          }
         }
-      }
 
-      if (allowed.isNotEmpty) {
-        decor.place(this, rng.item(allowed));
-        yield "Placed decor";
+        if (allowed.isNotEmpty) {
+          decor.place(this, rng.item(allowed));
+          yield "Placed decor";
+        }
       }
     }
 
@@ -144,6 +144,13 @@ class Dungeon {
 
     placeHero(_tryFindSpawnPos(startPlace, Motility.walk, SpawnLocation.open,
         avoidActors: true));
+  }
+
+  // TODO: Move to piecemeal.
+  int randomRound(double value) {
+    var result = value.floor();
+    if (rng.float(1.0) < value - result) result++;
+    return result;
   }
 
   Place placeAt(Vec pos) {
@@ -447,7 +454,7 @@ class Dungeon {
   }
 
   bool _tryRiver() {
-    if (!rng.oneIn(3)) return false;
+//    if (!rng.oneIn(3)) return false;
 
     _biomes.add(RiverBiome(this));
     return true;

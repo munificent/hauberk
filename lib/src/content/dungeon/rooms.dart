@@ -16,6 +16,8 @@ class RoomPlace extends Place {
       {bool hasHero = false, bool emanates = false})
       : super(cells, 0.05, 0.05, hasHero: hasHero, emanates: emanates);
 
+  double get decorDensity => 0.1;
+
   /// Picks a theme based on the shape and size of the room.
   void applyThemes() {
     addTheme(_type.theme, 2.0, spread: _type.spread);
@@ -29,6 +31,9 @@ class RoomPlace extends Place {
 
 class PassagePlace extends Place {
   PassagePlace(List<Vec> cells) : super(cells, 0.04, 0.02);
+
+  // TODO: Change this if we add any passage decor.
+  double get decorDensity => 0.0;
 
   void applyThemes() {
     addTheme("passage", 5.0, spread: false);

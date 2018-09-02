@@ -14,6 +14,9 @@ abstract class Place {
   double itemDensity;
   int itemDepthOffset = 0;
 
+  // The number of decor to attempt to place for each cell.
+  double get decorDensity;
+
   // TODO: In addition to painting themes on places, also paint level
   // adjustment. So if an out of depth monster is spawned, it increases the
   // level of the place for subsequent floor drops.
@@ -58,6 +61,8 @@ abstract class Place {
 
 class AquaticPlace extends Place {
   AquaticPlace(List<Vec> cells) : super(cells, 0.07, 0.02);
+
+  double get decorDensity => 2.0;
 
   void applyThemes() {
     addTheme("aquatic", 2.0 + cells.length / 200.0);

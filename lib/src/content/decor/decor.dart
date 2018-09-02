@@ -11,7 +11,7 @@ abstract class Decor {
     Themes.defineTags(all);
     Furnishing.initialize();
 
-    all.addUnnamed(Blast(), 1, 10.0, "laboratory");
+    all.addUnnamed(Blast(), 1, 0.01, "laboratory");
   }
 
   static Decor choose(String theme) {
