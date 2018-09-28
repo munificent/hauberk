@@ -58,9 +58,9 @@ class Game {
   Stage _stage;
   Hero hero;
 
-  Game(this.content, this._save, this.depth) {
+  Game(this.content, this._save, this.depth, {int width, int height}) {
     // TODO: Vary size?
-    _stage = Stage(80, 60, this);
+    _stage = Stage(width ?? 80, height ?? 60, this);
 
     _substanceUpdateOrder.addAll(_stage.bounds.inflate(-1));
     rng.shuffle(_substanceUpdateOrder);
