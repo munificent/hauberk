@@ -28,6 +28,8 @@ final breedGroups = Map<String, BreedGroup>.fromIterable([
   BreedGroup("Kobolds", "kobold"),
   BreedGroup("Plants", "plant"),
   BreedGroup("Saurians", "saurian"),
+  BreedGroup("Skeletons", "skeleton"),
+  BreedGroup("Undead", "undead"),
 ], key: (group) => group.name);
 
 /// The last builder that was created. It gets implicitly finished when the

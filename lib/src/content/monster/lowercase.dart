@@ -302,7 +302,7 @@ void goblins() {
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
     ..drop("treasure", count: 3)
-    ..drop("equipment", count: 2, depthOffset: 3)
+    ..drop("equipment", count: 2, depthOffset: 8)
     ..drop("magic", count: 3, depthOffset: 4)
     ..flags("protective unique");
 
@@ -615,6 +615,20 @@ void rodents() {
     ..count(1, 4)
     ..attack("bite[s]", 15, Elements.poison)
     ..attack("scratch[es]", 8);
+
+  breed("giant rat", 8, carrot, 50)
+    ..attack("bite[s]", 12)
+    ..attack("scratch[es]", 8);
+
+  breed("The Rat King", 8, maroon, 70)
+    ..he()
+    ..attack("bite[s]", 16)
+    ..attack("scratch[es]", 10)
+    ..minion("sewer rat", 3, 5)
+    ..minion("plague rat", 3, 5)
+    ..drop("treasure", count: 3)
+    ..drop("item", percent: 50, depthOffset: 10)
+    ..flags("unique");
 }
 
 void slugs() {
@@ -626,6 +640,10 @@ void slugs() {
 
   breed("suppurating slug", 6, lima, 50)
     ..attack("crawl[s] on", 12, Elements.poison);
+
+  // TODO: Leave a trail.
+  breed("acidic slug", 9, mustard, 70)
+    ..attack("crawl[s] on", 16, Elements.acid);
 }
 
 void troglodytes() {}
@@ -673,6 +691,18 @@ void worms() {
     ..attack("crawl[s] on", 8, Elements.acid);
 }
 
-void skeletons() {}
+void skeletons() {
+  family("x", meander: 20)
+    ..groups("undead skeleton")
+    ..sense(see: 4, hear: 4);
+  // TODO: Some kind of special move/attack?
+  // TODO: Special room/trap where these get spawned and come up from the
+  // ground?
+  breed("bony hand", 3, ash, 12)
+    ..attack("grab", 5);
+
+  breed("decapitated skull", 7, gunsmoke, 26, speed: -1)
+    ..attack("bite", 9);
+}
 
 void zombies() {}
