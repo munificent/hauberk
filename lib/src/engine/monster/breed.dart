@@ -21,6 +21,33 @@ class BreedGroup {
   BreedGroup(this.displayName, this.name);
 }
 
+/// A lazy named reference to a Breed.
+///
+/// This allows cyclic references while the breeds are still being defined.
+class BreedRef {
+  static final List<BreedRef> _unresolved = [];
+
+  static void resolve(Breed Function(String) resolver) {
+    for (var ref in _unresolved) {
+      assert(ref._breed == null, "Already resolved.");
+      ref._breed = resolver(ref._name);
+    }
+
+    _unresolved.clear();
+  }
+
+  final String _name;
+  Breed _breed;
+  Breed get breed {
+    assert(_breed != null, "Breed is not resolved yet.");
+    return _breed;
+  }
+
+  BreedRef(this._name) {
+    _unresolved.add(this);
+  }
+}
+
 /// A single kind of [Monster] in the game.
 class Breed {
   final Pronoun pronoun;
@@ -211,7 +238,7 @@ class Breed {
     for (var minion in minions) {
       count = rng.inclusive(minion.countMin, minion.countMax);
       for (var i = 0; i < count; i++) {
-        breeds.add(minion.breed);
+        breeds.add(minion.breed.breed);
       }
     }
 
@@ -237,11 +264,11 @@ enum SpawnLocation {
 }
 
 class Minion {
-  final Breed breed;
+  final BreedRef breed;
   final int countMin;
   final int countMax;
 
-  Minion(this.breed, this.countMin, this.countMax);
+  Minion(String breed, this.countMin, this.countMax) : breed = BreedRef(breed);
 }
 
 class BreedFlags {

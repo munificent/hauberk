@@ -457,8 +457,6 @@ class AfraidState extends MonsterState {
 
     // If we got here, we couldn't escape. Cornered!
     // TODO: Kind of hacky.
-    var state = AwakeState();
-    monster.changeState(state);
-    return state.getAction();
+    return monster.awaken().getAction();
   }
 }

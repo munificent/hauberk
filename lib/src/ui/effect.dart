@@ -74,6 +74,11 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(FrameEffect(event.actor.pos, '*', ash));
       break;
 
+    case EventType.polymorph:
+      // TODO: Something more interesting.
+      effects.add(FrameEffect(event.actor.pos, '*', ash));
+      break;
+
     case EventType.howl:
       effects.add(HowlEffect(event.actor));
       break;
@@ -282,7 +287,7 @@ class HitEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var back = const [salmon, brickRed, garnet, Color.black][frame ~/ 6];
 
-    drawGlyph(actor.x, actor.y, Glyph(' 123456789'[health], Color.black, back));
+    drawGlyph(actor.x, actor.y, Glyph(' 123456789*'[health], Color.black, back));
   }
 }
 

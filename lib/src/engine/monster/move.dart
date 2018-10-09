@@ -25,8 +25,12 @@ abstract class Move {
   Move(this.rate);
 
   /// Returns `true` if the monster would reasonably perform this move right
-  /// now.
+  /// now during its turn.
   bool shouldUse(Monster monster) => true;
+
+  /// Returns `true` if the monster would reasonably perform this move in
+  /// response to taking [damage].
+  bool shouldUseOnDamage(Monster monster, int damage) => false;
 
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.

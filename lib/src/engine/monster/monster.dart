@@ -21,7 +21,18 @@ import 'move.dart';
 class Monster extends Actor {
   static const _maxAlertness = 1.0;
 
-  final Breed breed;
+  Breed _breed;
+  Breed get breed => _breed;
+  set breed(Breed value) {
+    _breed = value;
+
+    // Keep the health in bounds.
+    health = health.clamp(0, value.maxHealth);
+
+    // The new breed may have different moves.
+    _recharges.clear();
+    _resetCharges();
+  }
 
   /// The monster's generation.
   ///
@@ -92,11 +103,11 @@ class Monster extends Actor {
     return breed.vision / senses;
   }
 
-  Monster(Game game, this.breed, int x, int y, this.generation)
+  Monster(Game game, this._breed, int x, int y, this.generation)
       : super(game, x, y) {
     health = maxHealth;
 
-    changeState(AsleepState());
+    _changeState(AsleepState());
 
     /// Give this some random variation within monsters of the same breed so
     /// they don't all become frightened at the same time.
@@ -197,7 +208,7 @@ class Monster extends Actor {
         game.addEvent(EventType.frighten, actor: this);
 
         _resetCharges();
-        changeState(AfraidState());
+        _changeState(AfraidState());
       } else if (rng.percent(_awakenPercent(notice))) {
         if (isVisibleToHero) {
           log("{1} wakes up!", this);
@@ -211,25 +222,25 @@ class Monster extends Actor {
 
         _alertness = _maxAlertness;
         _resetCharges();
-        changeState(AwakeState());
+        _changeState(AwakeState());
       }
     } else if (isAwake) {
       if (_fear > _frightenThreshold) {
         log("{1} is afraid!", this);
         game.addEvent(EventType.frighten, actor: this);
-        changeState(AfraidState());
+        _changeState(AfraidState());
       } else if (notice < 0.01) {
         if (isVisibleToHero) {
           log("{1} falls asleep!", this);
         }
 
         _alertness = 0.0;
-        changeState(AsleepState());
+        _changeState(AsleepState());
       }
     } else if (isAfraid) {
       if (_fear <= 0.0) {
         log("{1} grows courageous!", this);
-        changeState(AwakeState());
+        _changeState(AwakeState());
       }
     }
   }
@@ -313,7 +324,13 @@ class Monster extends Actor {
     _alertness = _alertness.clamp(0.0, _maxAlertness);
   }
 
-  void changeState(MonsterState state) {
+  MonsterState awaken() {
+    var state = AwakeState();
+    _changeState(state);
+    return state;
+  }
+
+  void _changeState(MonsterState state) {
     _state = state;
     _state.bind(this);
   }
@@ -368,6 +385,14 @@ class Monster extends Actor {
     _updateWitnesses((witness) {
       witness._viewMonsterDamage(action, this, damage);
     });
+
+    // See if the monster does anything when hit.
+    var moves = breed.moves
+        .where((move) => move.shouldUseOnDamage(this, damage))
+        .toList();
+    if (moves.isNotEmpty) {
+      action.addAction(rng.item(moves).getAction(this), this);
+    }
   }
 
   /// This is called when another monster in sight of this one has taken

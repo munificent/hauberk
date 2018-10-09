@@ -324,6 +324,9 @@ class EventType {
   /// A new [Actor] was spawned by another.
   static const spawn = EventType("spawn");
 
+  /// [Actor] has polymorphed into another breed.
+  static const polymorph = EventType("polymorph");
+
   /// An [Actor] howls.
   static const howl = EventType("howl");
 

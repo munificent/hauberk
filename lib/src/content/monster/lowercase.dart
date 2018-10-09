@@ -692,17 +692,43 @@ void worms() {
 }
 
 void skeletons() {
-  family("x", meander: 20)
+  family("x", meander: 30)
     ..groups("undead skeleton")
     ..sense(see: 4, hear: 4);
-  // TODO: Some kind of special move/attack?
   // TODO: Special room/trap where these get spawned and come up from the
   // ground?
-  breed("bony hand", 3, ash, 12)
-    ..attack("grab", 5);
+  breed("bony hand", 3, slate, 12, frequency: 0.3, meander: 40, speed: -1)
+    ..attack("claw[s]", 5);
 
-  breed("decapitated skull", 7, gunsmoke, 26, speed: -1)
-    ..attack("bite", 9);
+  breed("bony arm", 4, gunsmoke, 18, frequency: 0.3, meander: 40)
+    ..attack("claw[s]", 7);
+
+  breed("severed skull", 7, sandal, 20, frequency: 0.3, meander: 40, speed: -2)
+    ..attack("bite[s]", 9);
+
+  breed("decapitated skeleton", 10, ash, 30, frequency: 0.5, meander: 60)
+    ..openDoors()
+    ..attack("claw[s]", 7);
+
+  breed("armless skeleton", 12, ash, 25, frequency: 0.3)
+    ..attack("bite[s]", 9)
+    ..attack("kick[s]", 7);
+
+  breed("one-armed skeleton", 13, ash, 30, frequency: 0.4)
+    ..openDoors()
+    ..attack("claw[s]", 7)
+    ..amputate("armless skeleton", "bony arm", "{1}'s arm falls off!")
+    ..amputate("armless skeleton", "bony hand", "{1}'s hand falls off!");
+
+  breed("skeleton", 15, ash, 40)
+    ..openDoors()
+    ..attack("claw[s]", 7)
+    ..attack("bite[s]", 9)
+    ..amputate("decapitated skeleton", "severed skull", "{1}'s head pops off!")
+    ..amputate("one-armed skeleton", "bony arm", "{1}'s arm falls off!")
+    ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!");
+
+  // TODO: Stronger skeletons.
 }
 
 void zombies() {}

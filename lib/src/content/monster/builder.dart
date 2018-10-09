@@ -4,6 +4,7 @@ import '../../engine.dart';
 import '../action/missive.dart';
 import '../elements.dart';
 import '../item/drops.dart';
+import '../move/amputate.dart';
 import '../move/bolt.dart';
 import '../move/cone.dart';
 import '../move/haste.dart';
@@ -38,11 +39,6 @@ final breedGroups = Map<String, BreedGroup>.fromIterable([
 _BreedBuilder _builder;
 
 _FamilyBuilder _family = _FamilyBuilder(null);
-
-/// While the breeds are being built, we store their minions as string names
-/// to avoid problems with circular references between breeds. Once all breeds
-/// are defined, we go back and look up the actual breed object for each name.
-Map<Breed, List<_NamedMinion>> _minionNames = {};
 
 _FamilyBuilder family(String character,
     {double frequency,
@@ -101,13 +97,6 @@ _BreedBuilder breed(String name, int depth, Color color, int health,
 void describe(String description) {
   description = description.replaceAll(collapseNewlines, " ");
   _builder._description = description;
-}
-
-void linkMinions() {
-  _minionNames.forEach((breed, minions) {
-    breed.minions.addAll(minions.map((named) => Minion(
-        Monsters.breeds.find(named.breed), named.countMin, named.countMax)));
-  });
 }
 
 class _BaseBuilder {
@@ -233,7 +222,7 @@ class _BreedBuilder extends _BaseBuilder {
   final List<Attack> _attacks = [];
   final List<Move> _moves = [];
   final List<Drop> _drops = [];
-  final List<_NamedMinion> _minions = [];
+  final List<Minion> _minions = [];
   Pronoun _pronoun;
   String _description;
 
@@ -250,7 +239,7 @@ class _BreedBuilder extends _BaseBuilder {
       minOrMax = 1;
     }
 
-    _minions.add(_NamedMinion(name, minOrMax, max));
+    _minions.add(Minion(name, minOrMax, max));
   }
 
   void attack(String verb, int damage, [Element element, Noun noun]) {
@@ -373,6 +362,9 @@ class _BreedBuilder extends _BaseBuilder {
   void spawn({num rate = 10, bool preferStraight}) =>
       _addMove(SpawnMove(rate, preferStraight: preferStraight));
 
+  void amputate(String body, String part, String message) =>
+      _addMove(AmputateMove(BreedRef(body), BreedRef(part), message));
+
   void _bolt(String noun, String verb, Element element,
       {num rate, int damage, int range}) {
     var nounObject = noun != null ? Noun(noun) : null;
@@ -426,16 +418,8 @@ class _BreedBuilder extends _BaseBuilder {
     breed.groups.addAll(_family._groups);
     breed.groups.addAll(_groups);
 
-    _minionNames[breed] = _minions;
+    breed.minions.addAll(_minions);
 
     return breed;
   }
-}
-
-class _NamedMinion {
-  final String breed;
-  final int countMin;
-  final int countMax;
-
-  _NamedMinion(this.breed, this.countMin, this.countMax);
 }

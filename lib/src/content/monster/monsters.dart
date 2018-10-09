@@ -142,10 +142,7 @@ class Monsters {
 
     finishBreed();
 
-    // Now that all the breeds are defined, look up the minions and add them to
-    // each breed.
-    linkMinions();
-
-    // TODO: Tune vision and hearing for breeds.
+    // Now that all the breeds are defined, link up the cyclic references.
+    BreedRef.resolve(breeds.find);
   }
 }
