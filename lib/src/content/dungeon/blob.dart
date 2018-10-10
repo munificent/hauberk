@@ -59,8 +59,11 @@ class Blob {
 
     for (var i = 0; i < smoothing; i++) {
       for (var pos in _cells.bounds.inflate(-1)) {
-        var walls = Direction.all.where((dir) => _cells[pos + dir]).length;
+        var walls = 0;
         if (_cells[pos]) walls++;
+        for (var dir in Direction.all) {
+          if (_cells[pos + dir]) walls++;
+        }
 
         _dest[pos] = walls >= 5;
       }

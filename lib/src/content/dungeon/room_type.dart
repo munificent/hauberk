@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../tiles.dart';
 import 'architecture.dart';
+import 'blob.dart';
 import 'junction.dart';
 import 'rooms.dart';
 
@@ -79,6 +80,71 @@ class RectangleRoom extends RoomType {
         i++;
       }
     }
+  }
+}
+
+class BlobRoom extends RoomType {
+  BlobRoom(String theme) : super(theme);
+
+  Room create(Architecture architecture) {
+    // TODO: This is quite slow. Consider reusing blob rooms that couldn't be
+    // successfully placed in one location.
+    Array2D<bool> blob;
+    if (rng.oneIn(4)) {
+      blob = Blob.make32();
+    } else {
+      blob = Blob.make16();
+    }
+
+    // Note: Assumes the blob never has open cells at the very edge.
+    var tiles = new Array2D<TileType>(blob.width, blob.height);
+    for (var pos in tiles.bounds.inflate(-1)) {
+      if (blob[pos]) {
+        tiles[pos] = Tiles.floor;
+
+        // If this cell is at the edge of the blob, ensure there is a ring of
+        // wall around it.
+        for (var dir in Direction.all) {
+          var neighbor = pos + dir;
+          if (tiles[neighbor] != Tiles.floor) {
+            // TODO: Instead of walls, should do rock.
+            tiles[neighbor] = Tiles.wall;
+          }
+        }
+      }
+    }
+
+    var junctions = <Junction>[];
+    for (var pos in tiles.bounds.inflate(-1)) {
+      if (tiles[pos] != Tiles.wall) continue;
+
+      for (var dir in Direction.cardinal) {
+        // Must point past the edge of the room.
+        var ahead = pos + dir;
+        if (tiles.bounds.contains(ahead) && tiles[ahead] != null) continue;
+
+        // And come from the floor.
+        var back = pos - dir;
+        if (!tiles.bounds.contains(back) || tiles[back] != Tiles.floor) {
+          continue;
+        }
+
+        // With walls on either side.
+        var left = pos + dir.rotateLeft90;
+        if (!tiles.bounds.contains(left) || tiles[left] != Tiles.wall) {
+          continue;
+        }
+
+        var right = pos + dir.rotateRight90;
+        if (!tiles.bounds.contains(right) || tiles[right] != Tiles.wall) {
+          continue;
+        }
+
+        junctions.add(Junction(architecture, dir, pos));
+      }
+    }
+
+    return new Room(this, tiles, junctions);
   }
 }
 
@@ -195,29 +261,3 @@ class CyclePathfinder extends Pathfinder<bool> {
 //  }
 //}
 
-// TODO: Maybe use blob rooms for things like worm pits?
-//class BlobRoom extends RoomType {
-//  Room create(RoomTheme theme) {
-//    // TODO: Other size blobs.
-//    var blob = Blob.make16();
-//    // Note: Assumes the blob never has open cells at the very edge.
-//    var tiles = new Array2D<TileType>(blob.width, blob.height);
-//    for (var pos in tiles.bounds.inflate(-1)) {
-//      if (blob[pos]) {
-//        tiles[pos] = Tiles.floor;
-//
-//        // If this cell is at the edge of the blob, ensure there is a ring of
-//        // wall around it.
-//        for (var dir in Direction.all) {
-//          var neighbor = pos + dir;
-//          if (tiles[neighbor] != Tiles.floor) {
-//            tiles[neighbor] = Tiles.wall;
-//          }
-//        }
-//      }
-//    }
-//
-//    // TODO: Place junctions.
-//    return new Room(theme, tiles, []);
-//  }
-//}
