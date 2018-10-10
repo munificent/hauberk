@@ -2,9 +2,10 @@ import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
 
+import 'architecture.dart';
+
 class Junction {
-  /// The theme of the initial room this junction is attached to.
-  final String theme;
+  final Architecture architecture;
 
   /// Points from the first room towards where the new room should be attached.
   ///
@@ -20,7 +21,7 @@ class Junction {
   /// How many times we've tried to place something at this junction.
   int tries = 0;
 
-  Junction(this.theme, this.direction, this.position);
+  Junction(this.architecture, this.direction, this.position);
 }
 
 class JunctionSet {

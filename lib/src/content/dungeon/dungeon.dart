@@ -80,31 +80,32 @@ class Dungeon {
       place.applyThemes();
     }
 
-    yield "Placing decor";
-    for (var place in _places) {
-      var density = place.cells.length * place.decorDensity;
-      var decorCount = randomRound(rng.float(density * 0.8, density * 1.2));
-
-      for (var i = 0; i < decorCount; i++) {
-        var theme = place.chooseTheme();
-        var decor = Decor.choose(theme);
-        if (decor == null) continue;
-
-        var allowed = <Vec>[];
-
-        for (var cell in place.cells) {
-          var offset = cell.offset(-1, -1);
-          if (decor.canPlace(this, offset)) {
-            allowed.add(offset);
-          }
-        }
-
-        if (allowed.isNotEmpty) {
-          decor.place(this, rng.item(allowed));
-          yield "Placed decor";
-        }
-      }
-    }
+    // TODO: Get this working again with new themes.
+//    yield "Placing decor";
+//    for (var place in _places) {
+//      var density = place.cells.length * place.decorDensity;
+//      var decorCount = randomRound(rng.float(density * 0.8, density * 1.2));
+//
+//      for (var i = 0; i < decorCount; i++) {
+//        var theme = place.chooseTheme();
+//        var decor = Decor.choose(theme);
+//        if (decor == null) continue;
+//
+//        var allowed = <Vec>[];
+//
+//        for (var cell in place.cells) {
+//          var offset = cell.offset(-1, -1);
+//          if (decor.canPlace(this, offset)) {
+//            allowed.add(offset);
+//          }
+//        }
+//
+//        if (allowed.isNotEmpty) {
+//          decor.place(this, rng.item(allowed));
+//          yield "Placed decor";
+//        }
+//      }
+//    }
 
     // Some places are naturally fully illuminated.
     for (var place in _places) {
@@ -271,7 +272,7 @@ class Dungeon {
     while (spawnCount > 0) {
       var theme = place.chooseTheme();
       var breed =
-          Monsters.breeds.tryChoose(depth + place.monsterDepthOffset, theme);
+          Monsters.breeds.tryChoose(depth, theme);
 
       // Don't place dead or redundant uniques.
       if (breed.flags.unique) {
@@ -300,7 +301,7 @@ class Dungeon {
     for (var i = 0; i < dropCount; i++) {
       var theme = place.chooseTheme();
 
-      var floorDrop = FloorDrops.choose(theme, depth + place.itemDepthOffset);
+      var floorDrop = FloorDrops.choose(theme, depth);
       var pos = _tryFindSpawnPos(place, Motility.walk, floorDrop.location,
           avoidActors: false);
       if (pos == null) break;

@@ -4,10 +4,11 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../tiles.dart';
+import 'architecture.dart';
 import 'dungeon.dart';
 import 'junction.dart';
 import 'place.dart';
-import 'room_types.dart';
+import 'room_type.dart';
 
 class RoomPlace extends Place {
   final RoomType _type;
@@ -20,12 +21,7 @@ class RoomPlace extends Place {
 
   /// Picks a theme based on the shape and size of the room.
   void applyThemes() {
-    addTheme(_type.theme, 2.0, spread: _type.spread);
-
-    monsterDensity *= _type.monsterDensity;
-    monsterDepthOffset += _type.monsterDepthOffset;
-    itemDensity *= _type.itemDensity;
-    itemDepthOffset += _type.itemDepthOffset;
+    addTheme(_type.theme, 2.0);
   }
 }
 
@@ -40,33 +36,12 @@ class PassagePlace extends Place {
   }
 }
 
-// TODO: Define different ones of this to have different styles.
-class RoomStyle {
-  final int passageTurnPercent = 30;
-  final int passageBranchPercent = 40;
-  final int passageMinLength = 5;
-  final int passageMaxLength = 80;
-  final int passageTries = 20;
-
-  /// A passage that connects to an existing place, by definition, adds a cycle
-  /// to the dungeon. We don't want to do that if there is always a similar
-  /// path between those two points. A cycle should only be added if it connects
-  /// two very disparate regions (in terms of reachability).
-  ///
-  /// To get that, we only place a cyclic passage if the shortest existing
-  /// route between the two points is longer than the new passage's length times
-  /// this scale. Making this smaller adds more cycles.
-  final int passageShortcutScale = 10;
-
-  final int junctionMaxTries = 3;
-}
-
 /// A biome that generates a graph of connected rooms and passages.
 ///
 /// This is the main biome that generates the majority of dungeon content.
 class RoomsBiome extends Biome {
   final Dungeon _dungeon;
-  final RoomStyle _style = RoomStyle();
+  final Architecture _architecture;
   final JunctionSet _junctions = JunctionSet();
 
   /// The tiles in other biomes that the rooms have connected to already.
@@ -81,7 +56,8 @@ class RoomsBiome extends Biome {
   /// there is no need to recalculate it.
   final _failedShortcuts = Map<Vec, Set<Vec>>();
 
-  RoomsBiome(this._dungeon);
+  RoomsBiome(this._dungeon)
+      : _architecture = Architecture.choose(_dungeon.depth);
 
   Iterable<String> generate() sync* {
     yield "Add starting room";
@@ -103,7 +79,7 @@ class RoomsBiome extends Biome {
   /// Attempts to place something at [junction]. Returns `true` if successful.
   bool _tryJunction(Junction junction) {
     // Try a passage.
-    for (var i = 0; i < _style.passageTries; i++) {
+    for (var i = 0; i < junction.architecture.passageTries; i++) {
       if (_tryPlacePassageRoom(junction)) {
         return true;
       }
@@ -126,7 +102,7 @@ class RoomsBiome extends Biome {
       return true;
     }
 
-    if (++junction.tries < _style.junctionMaxTries) {
+    if (++junction.tries < junction.architecture.junctionMaxTries) {
       // Couldn't place it, so re-add to try the junction again.
       _junctions.add(junction);
     }
@@ -147,16 +123,17 @@ class RoomsBiome extends Biome {
     var newJunctions = <Junction>[];
 
     maybeBranch(Direction dir) {
-      if (rng.percent(_style.passageBranchPercent)) {
-        newJunctions.add(Junction(junction.theme, dir, pos + dir));
+      if (rng.percent(junction.architecture.passageBranchPercent)) {
+        newJunctions.add(Junction(junction.architecture, dir, pos + dir));
       }
     }
 
-    var length =
-        rng.inclusive(_style.passageMinLength, _style.passageMaxLength);
+    var length = rng.inclusive(junction.architecture.passageMinLength,
+        junction.architecture.passageMaxLength);
     while (passage.length < length) {
       // Don't allow turning twice in a row.
-      if (distanceThisDir > 1 && rng.percent(_style.passageTurnPercent)) {
+      if (distanceThisDir > 1 &&
+          rng.percent(junction.architecture.passageTurnPercent)) {
         if (rng.oneIn(2)) {
           dir = dir.rotateLeft90;
           maybeBranch(dir.rotateRight90);
@@ -242,7 +219,7 @@ class RoomsBiome extends Biome {
     // If we didn't connect to an existing junction, add a new room at the end
     // of the passage. We require this to pass so that we avoid dead end
     // passages.
-    var endJunction = Junction(junction.theme, dir, pos);
+    var endJunction = Junction(junction.architecture, dir, pos);
     if (!_tryPlaceRoom(endJunction, passage)) return false;
 
     _placePassage(pos, junction, passage, newJunctions);
@@ -283,7 +260,7 @@ class RoomsBiome extends Biome {
     if (cache != null && cache.contains(to)) return false;
 
     var pathfinder = CyclePathfinder(
-        _dungeon.stage, from, to, length * _style.passageShortcutScale);
+        _dungeon.stage, from, to, length * _architecture.passageShortcutScale);
 
     var result = !pathfinder.search();
     if (!result) _failedShortcuts.putIfAbsent(from, () => Set()).add(to);
@@ -305,7 +282,7 @@ class RoomsBiome extends Biome {
   }
 
   bool _tryPlaceRoom(Junction junction, Set<Vec> passageTiles) {
-    var room = _tryCreateRoom(_dungeon.depth, junction.theme);
+    var room = _tryCreateRoom(_dungeon.depth, junction.architecture);
     if (room == null) return false;
 
     var roomJunctions = room.junctions
@@ -329,13 +306,14 @@ class RoomsBiome extends Biome {
     return false;
   }
 
-  Room _tryCreateRoom(int depth, [String from]) {
-    from ??= "starting";
+  Room _tryCreateRoom(int depth, [Architecture architecture]) {
+    architecture = pickArchitecture(architecture);
 
-    var type = RoomTypes.tryChoose(depth, from);
+    // TODO: Use tags.
+    var type = architecture.roomTypes.tryChoose(depth, "room");
     if (type == null) return null;
 
-    return type.create();
+    return type.create(architecture);
   }
 
   void _placeDoor(Vec pos) {
@@ -348,7 +326,8 @@ class RoomsBiome extends Biome {
     _junctions.removeAt(pos);
   }
 
-  void _tryAddJunction(String theme, Vec junctionPos, Direction junctionDir) {
+  void _tryAddJunction(
+      Architecture architecture, Vec junctionPos, Direction junctionDir) {
     isBlocked(Direction direction) {
       var pos = junctionPos + direction;
       if (!_dungeon.safeBounds.contains(pos)) return true;
@@ -365,7 +344,7 @@ class RoomsBiome extends Biome {
     if (isBlocked(junctionDir.rotateLeft90)) return;
     if (isBlocked(junctionDir.rotateRight90)) return;
 
-    _junctions.add(Junction(theme, junctionDir, junctionPos));
+    _junctions.add(Junction(architecture, junctionDir, junctionPos));
   }
 
   bool _isOtherBiome(Vec pos) {
@@ -398,7 +377,7 @@ class RoomsBiome extends Biome {
           // If we're facing a straight direction, try to place a junction
           // there to allow building out from the area.
           if (Direction.cardinal.contains(dir) && rng.percent(30)) {
-            _tryAddJunction("nature", neighbor, dir);
+            _tryAddJunction(pickArchitecture(), neighbor, dir);
           }
           continue;
         }
@@ -407,6 +386,15 @@ class RoomsBiome extends Biome {
         _reached.add(neighbor);
       }
     }
+  }
+
+  Architecture pickArchitecture([Architecture from]) {
+    var architecture = from ?? _architecture;
+
+    // Sometimes switch to a different architecture.
+    if (rng.oneIn(10)) architecture = Architecture.choose(_dungeon.depth);
+
+    return architecture;
   }
 }
 
@@ -466,8 +454,8 @@ class Room {
     var roomPos = Vec(x, y);
 
     for (var junction in junctions) {
-      biome._tryAddJunction(
-          type.theme, roomPos + junction.position, junction.direction);
+      biome._tryAddJunction(junction.architecture, roomPos + junction.position,
+          junction.direction);
     }
 
     // Rooms are more likely to be lit near the surface.

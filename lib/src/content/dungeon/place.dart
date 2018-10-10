@@ -10,9 +10,7 @@ abstract class Place {
   final Set<Place> neighbors = Set();
 
   double monsterDensity;
-  int monsterDepthOffset = 0;
   double itemDensity;
-  int itemDepthOffset = 0;
 
   // The number of decor to attempt to place for each cell.
   double get decorDensity;

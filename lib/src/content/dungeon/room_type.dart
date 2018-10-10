@@ -1,155 +1,30 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../themes.dart';
 import '../tiles.dart';
+import 'architecture.dart';
 import 'junction.dart';
 import 'rooms.dart';
 
-class RoomTypes {
-  static RoomType tryChoose(int depth, String theme) {
-    if (_resources.isEmpty) _initialize();
-
-    return _resources.tryChoose(depth, theme);
-  }
-
-  static final ResourceSet<RoomType> _resources = ResourceSet();
-
-  static void _initialize() {
-    Themes.defineTags(_resources);
-
-    // Special tag to mark rooms that can be starting rooms.
-    _resources.defineTags("starting");
-
-    // TODO: Tune frequencies.
-    add(
-        RectangleRoom("great-hall",
-            spread: true, minWide: 8, maxWide: 16, minNarrow: 6, maxNarrow: 10),
-        from: "chamber hall nature starting");
-    add(
-        RectangleRoom("kitchen",
-            minWide: 4, maxWide: 7, minNarrow: 6, maxNarrow: 12),
-        from: "great-hall");
-    add(RectangleRoom("larder", maxWide: 6, maxNarrow: 5),
-        frequency: 0.2, from: "kitchen");
-    add(RectangleRoom("pantry", maxWide: 5, maxNarrow: 4),
-        frequency: 0.1, from: "kitchen larder storeroom");
-
-    add(RectangleRoom("chamber", minWide: 4, maxWide: 8, maxNarrow: 7),
-        from: "chamber great-hall hall nature");
-
-    add(RectangleRoom("closet", maxWide: 5, maxNarrow: 4),
-        frequency: 0.1, from: "chamber laboratory storeroom");
-
-    add(
-        RectangleRoom("laboratory",
-            spread: true, minWide: 4, maxWide: 10, maxNarrow: 8),
-        from: "hall laboratory");
-
-    add(
-        RectangleRoom("storeroom",
-            spread: true, minWide: 4, maxWide: 10, minNarrow: 4, maxNarrow: 10),
-        from: "hall");
-
-    add(
-        RectangleRoom("hall",
-            minWide: 6, maxWide: 16, minNarrow: 2, maxNarrow: 4),
-        from: "nature passage starting storeroom");
-
-    add(
-        RectangleRoom("boss-chamber",
-            monsterDensity: 2.0,
-            monsterDepthOffset: 5,
-            minWide: 8,
-            maxWide: 16,
-            minNarrow: 6,
-            maxNarrow: 10),
-        frequency: 0.3,
-        from: "great-hall passage");
-
-    add(
-        RectangleRoom("treasure-room",
-            monsterDensity: 0.5,
-            itemDensity: 10.0,
-            itemDepthOffset: 5,
-            minWide: 4,
-            maxWide: 12,
-            minNarrow: 4,
-            maxNarrow: 10),
-        frequency: 0.3,
-        from: "boss-chamber");
-
-    // TODO: Custom classes for certain rooms:
-    // - Great halls should usually have a big centered table, symmetric doors.
-    // - Halls should have evenly placed doors.
-    // - Etc.
-    // TODO: Secret passages from closets.
-  }
-
-  /// Adds [type] to the set of room types. A room of this type can be created
-  /// and attached to any existing room whose type is one of the
-  /// space-separated names in [from].
-  static void add(RoomType type, {double frequency, String from}) {
-    // TODO: Different room types at different depths.
-    _resources.add(type.theme, type, 1, frequency ?? 1.0, from);
-  }
-}
-
 abstract class RoomType {
-  // TODO: Use "theme" and "type" consistently.
   final String theme;
-  final bool spread;
-  final double monsterDensity;
-  final int monsterDepthOffset;
-  final double itemDensity;
-  final int itemDepthOffset;
 
-  RoomType(this.theme,
-      {double monsterDensity,
-      int monsterDepthOffset,
-      double itemDensity,
-      int itemDepthOffset,
-      bool spread})
-      : spread = spread ?? false,
-        monsterDensity = monsterDensity ?? 1.0,
-        monsterDepthOffset = monsterDepthOffset ?? 0,
-        itemDensity = itemDensity ?? 1.0,
-        itemDepthOffset = itemDepthOffset ?? 0;
+  RoomType(this.theme);
 
-  Room create();
+  // TODO: Should arch be passed in or part of the room type itself?
+  Room create(Architecture architecture);
 }
 
 /// A simple rectangular room type with junctions randomly spaced around it.
 class RectangleRoom extends RoomType {
-  final int minWide;
-  final int maxWide;
-  final int minNarrow;
-  final int maxNarrow;
+  final int _maxDimension;
 
-  RectangleRoom(String theme,
-      {double monsterDensity,
-      int monsterDepthOffset,
-      double itemDensity,
-      int itemDepthOffset,
-      bool spread,
-      int minWide,
-      int maxWide,
-      int minNarrow,
-      int maxNarrow})
-      : minWide = minWide ?? 3,
-        maxWide = maxWide ?? 8,
-        minNarrow = minNarrow ?? 3,
-        maxNarrow = maxNarrow ?? 8,
-        super(theme,
-            monsterDensity: monsterDensity,
-            monsterDepthOffset: monsterDepthOffset,
-            itemDensity: itemDensity,
-            itemDepthOffset: itemDepthOffset,
-            spread: spread);
+  RectangleRoom(String theme, this._maxDimension) : super(theme);
 
-  Room create() {
-    var width = rng.inclusive(minWide, maxWide);
-    var height = rng.inclusive(minNarrow, maxNarrow);
+  Room create(Architecture architecture) {
+    // TODO: Constrain aspect ratio?
+    var width = rng.inclusive(3, _maxDimension);
+    var height = rng.inclusive(3, _maxDimension);
     if (rng.oneIn(2)) {
       var temp = width;
       width = height;
@@ -171,19 +46,19 @@ class RectangleRoom extends RoomType {
     // TODO: Consider placing the junctions symmetrically sometimes.
     var junctions = <Junction>[];
     _placeJunctions(width, (i) {
-      junctions.add(Junction(theme, Direction.n, Vec(i + 1, 0)));
+      junctions.add(Junction(architecture, Direction.n, Vec(i + 1, 0)));
     });
 
     _placeJunctions(width, (i) {
-      junctions.add(Junction(theme, Direction.s, Vec(i + 1, height + 1)));
+      junctions.add(Junction(architecture, Direction.s, Vec(i + 1, height + 1)));
     });
 
     _placeJunctions(height, (i) {
-      junctions.add(Junction(theme, Direction.w, Vec(0, i + 1)));
+      junctions.add(Junction(architecture, Direction.w, Vec(0, i + 1)));
     });
 
     _placeJunctions(height, (i) {
-      junctions.add(Junction(theme, Direction.e, Vec(width + 1, i + 1)));
+      junctions.add(Junction(architecture, Direction.e, Vec(width + 1, i + 1)));
     });
 
     return Room(this, tiles, junctions);

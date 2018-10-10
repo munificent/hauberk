@@ -159,7 +159,6 @@ void dragons() {
 void eyes() {
   family("e", flags: "immobile")
     ..sense(see: 16, hear: 1)
-    ..placeIn("laboratory")
     ..defense(10, "{1} blinks out of the way.")
     ..fly()
     ..preferOpen();
@@ -266,7 +265,6 @@ void goblins() {
     ..flags("protective");
 
   breed("goblin mage", 9, ultramarine, 50)
-    ..placeIn("laboratory")
     ..minion("goblin fighter", 0, 1)
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 2)
@@ -292,7 +290,6 @@ void goblins() {
 
   // TODO: Always drop something good.
   breed("Erlkonig, the Goblin Prince", 14, steelGray, 120)
-    ..placeIn("great-hall")
     ..he()
     ..minion("goblin mage", 1, 2)
     ..minion("goblin fighter", 1, 3)
@@ -319,7 +316,6 @@ void insects() {
     ..placeIn("room", "passage");
   // TODO: Spawn as eggs which can hatch into cockroaches?
   breed("giant cockroach[es]", 1, garnet, 1, frequency: 0.4)
-    ..placeIn("food", "storage")
     ..count(2, 5)
     ..preferCorner()
     ..attack("crawl[s] on", 2)
@@ -341,7 +337,6 @@ void jellies() {
   family("j", frequency: 0.7, speed: -1, meander: 30, flags: "fearless")
     ..groups("jelly")
     ..sense(see: 3, hear: 1)
-    ..placeIn("laboratory")
     ..preferWall()
     ..count(4);
   breed("green jelly", 1, lima, 5)
@@ -352,7 +347,6 @@ void jellies() {
   family("j", frequency: 0.6, flags: "fearless immobile")
     ..groups("jelly")
     ..sense(see: 2, hear: 1)
-    ..placeIn("laboratory")
     ..preferCorner()
     ..count(4);
   breed("green slime", 2, peaGreen, 10)
@@ -433,7 +427,6 @@ void kobolds() {
     ..drop("magic", percent: 40);
 
   breed("kobold shaman", 4, ultramarine, 20)
-    ..placeIn("laboratory")
     ..count(2)
     ..minion("wild dog", 0, 3)
     ..attack("hit[s]", 4)
@@ -464,7 +457,6 @@ void kobolds() {
     ..drop("magic", percent: 40);
 
   breed("imp incanter", 7, lilac, 33)
-    ..placeIn("laboratory")
     ..count(2)
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
@@ -477,7 +469,6 @@ void kobolds() {
     ..flags("cowardly");
 
   breed("imp warlock", 8, indigo, 46)
-    ..placeIn("laboratory")
     ..minion("imp incanter", 1, 3)
     ..minion("kobold", 1, 3)
     ..minion("wild dog", 0, 3)
@@ -558,7 +549,6 @@ void people() {
     ..flags("cowardly");
 
   breed("decrepit mage", 3, violet, 20, meander: 30)
-    ..placeIn("laboratory")
     ..attack("hit[s]", 2)
     ..sparkBolt(rate: 10, damage: 8)
     ..drop("treasure", percent: 25)
