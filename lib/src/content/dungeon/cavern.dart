@@ -39,36 +39,12 @@ class Cavern {
   Cavern(this.stage);
 
   Iterable<String> generate(Function(Vec) placeHero) sync* {
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        _setTile(x, y, Tiles.grass);
-      }
+    for (var pos in stage.bounds) {
+      _setTileAt(pos, Tiles.rock);
     }
 
-    for (var x = 0; x < width; x++) {
-      _setTile(x, 0, Tiles.rock);
-      _setTile(x, height - 1, Tiles.rock);
-    }
-
-    for (var y = 0; y < height; y++) {
-      _setTile(0, y, Tiles.rock);
-      _setTile(width - 1, y, Tiles.rock);
-    }
-
-    for (var i = 0; i < 100; i++) {
-      var cave = rng.oneIn(10) ? Blob.make32() : Blob.make16();
-      for (var j = 0; j < 400; j++) {
-        // Blobs tend to have unused space on the sides, so allow the position
-        // to leak past the edge.
-        var x = rng.range(-8, width - cave.width + 16);
-        var y = rng.range(-8, height - cave.height + 16);
-
-        if (_tryPlaceCave(cave, x, y)) {
-          yield "cave";
-          break;
-        }
-      }
-    }
+//    yield* _placeCaves();
+    yield* _cellularAutomata();
 
     var caveTiles = <Vec>[];
     var openTiles = <Vec>[];
@@ -134,6 +110,68 @@ class Cavern {
       }
 
       yield "$pos";
+    }
+  }
+
+  Iterable<String> _placeCaves() sync* {
+    for (var pos in stage.bounds.inflate(-1)) {
+      _setTileAt(pos, Tiles.grass);
+    }
+
+    for (var i = 0; i < 100; i++) {
+      var cave = rng.oneIn(10) ? Blob.make32() : Blob.make16();
+      for (var j = 0; j < 400; j++) {
+        // Blobs tend to have unused space on the sides, so allow the position
+        // to leak past the edge.
+        var x = rng.range(-8, width - cave.width + 16);
+        var y = rng.range(-8, height - cave.height + 16);
+
+        if (_tryPlaceCave(cave, x, y)) {
+          yield "cave";
+          break;
+        }
+      }
+    }
+  }
+
+  Iterable<String> _cellularAutomata() sync* {
+    var cells1 = Array2D<bool>(stage.width - 2, stage.height - 2);
+    var cells2 = Array2D<bool>(stage.width - 2, stage.height - 2);
+
+    for (var pos in cells1.bounds) {
+      ;
+      var distance = (pos - cells1.bounds.center).length;
+      var density = lerpDouble(
+          distance, 0, cells1.bounds.center.length, 0.3, 0.6);
+//      var density = lerpDouble(pos.x, 0, cells1.width, 0.2, 0.5);
+      cells1[pos] = rng.float(1.0) < density;
+    }
+
+    for (var i = 0; i < 5; i++) {
+      for (var pos in cells1.bounds) {
+        var walls = 0;
+        for (var dir in Direction.all) {
+          var here = pos + dir;
+          if (!cells1.bounds.contains(here) || cells1[here]) walls++;
+        }
+
+        if (cells1[pos]) {
+          // Survival threshold.
+          cells2[pos] = walls >= 3;
+        } else {
+          // Birth threshold.
+          cells2[pos] = walls >= 5;
+        }
+      }
+
+      var temp = cells1;
+      cells1 = cells2;
+      cells2 = temp;
+      yield "Round";
+    }
+
+    for (var pos in cells1.bounds) {
+      _setTile(pos.x + 1, pos.y + 1, cells1[pos] ? Tiles.grass : Tiles.floor);
     }
   }
 
