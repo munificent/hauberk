@@ -13,6 +13,21 @@ Action _openDoor(Vec pos) => OpenDoorAction(pos, Tiles.openDoor);
 
 /// Static class containing all of the [TileType]s.
 class Tiles {
+  // Temporary tile types used during stage building.
+
+  /// A currently open tile that could be filled by the passage generator.
+  static final fillable = tile("fillable", "%", violet).open();
+
+  /// An open tile that must stay open. These are explicit floor tiles generated
+  /// by architectures.
+  static final unfillable = tile("unfillable", ".", violet).open();
+
+  /// A solid tile that has been filled in the passage generator.
+  static final filled = tile("filled", "%", mint).solid();
+
+  /// An open tile that the passage generator knows must remain open.
+  static final unfilled = tile("unfilled", ".", mint).open();
+
   static final floor = tile("floor", "·", slate).open();
   static final burntFloor = tile("burnt floor", "φ", steelGray).open();
   static final burntFloor2 = tile("burnt floor", "ε", steelGray).open();
