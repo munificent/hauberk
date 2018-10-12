@@ -49,6 +49,8 @@ abstract class Flow {
   /// Gets the starting position in stage coordinates.
   Vec get start => _start;
 
+  bool get includeDiagonals => true;
+
   Flow(this.stage, this._start, {int maxDistance})
       : _maxDistance = maxDistance {
     int width;
@@ -251,10 +253,12 @@ abstract class Flow {
     processNeighbor(Direction.s, false);
     processNeighbor(Direction.e, false);
     processNeighbor(Direction.w, false);
-    processNeighbor(Direction.nw, true);
-    processNeighbor(Direction.ne, true);
-    processNeighbor(Direction.sw, true);
-    processNeighbor(Direction.se, true);
+    if (includeDiagonals) {
+      processNeighbor(Direction.nw, true);
+      processNeighbor(Direction.ne, true);
+      processNeighbor(Direction.sw, true);
+      processNeighbor(Direction.se, true);
+    }
 
     return true;
   }
