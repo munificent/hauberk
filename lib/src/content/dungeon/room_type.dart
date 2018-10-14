@@ -51,7 +51,8 @@ class RectangleRoom extends RoomType {
     });
 
     _placeJunctions(width, (i) {
-      junctions.add(Junction(architecture, Direction.s, Vec(i + 1, height + 1)));
+      junctions
+          .add(Junction(architecture, Direction.s, Vec(i + 1, height + 1)));
     });
 
     _placeJunctions(height, (i) {
@@ -260,4 +261,3 @@ class CyclePathfinder extends Pathfinder<bool> {
 //    }
 //  }
 //}
-

@@ -287,7 +287,8 @@ class HitEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var back = const [salmon, brickRed, garnet, Color.black][frame ~/ 6];
 
-    drawGlyph(actor.x, actor.y, Glyph(' 123456789*'[health], Color.black, back));
+    drawGlyph(
+        actor.x, actor.y, Glyph(' 123456789*'[health], Color.black, back));
   }
 }
 

@@ -22,9 +22,7 @@ class Architecture {
     _all.addUnnamed(architecture, 1, 1.0, "architecture");
 
     // Goblin warren.
-    architecture = Architecture._(
-      passageTries: 0
-    );
+    architecture = Architecture._(passageTries: 0);
     architecture.roomTypes.addUnnamed(RectangleRoom("room", 6), 1, 1.0, "room");
     _all.addUnnamed(architecture, 1, 1.0, "architecture");
 
@@ -34,8 +32,7 @@ class Architecture {
         passageBranchPercent: 50,
         passageMinLength: 3,
         passageMaxLength: 10,
-        passageTries: 10
-    );
+        passageTries: 10);
     architecture.roomTypes.addUnnamed(BlobRoom("room"), 1, 1.0, "room");
     _all.addUnnamed(architecture, 1, 1.0, "architecture");
   }

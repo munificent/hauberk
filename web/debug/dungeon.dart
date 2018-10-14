@@ -266,7 +266,7 @@ void render({bool showInfo = true}) {
   var context = stateCanvas.context2D;
   context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
 
-//  if (!showInfo) return;
+  if (!showInfo) return;
 
   if (Architect.debugOwners != null) {
     for (var pos in Architect.debugOwners.bounds) {

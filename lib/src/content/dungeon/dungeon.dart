@@ -271,8 +271,7 @@ class Dungeon {
     var spawnCount = _rollCount(place, place.monsterDensity);
     while (spawnCount > 0) {
       var theme = place.chooseTheme();
-      var breed =
-          Monsters.breeds.tryChoose(depth, theme);
+      var breed = Monsters.breeds.tryChoose(depth, theme);
 
       // Don't place dead or redundant uniques.
       if (breed.flags.unique) {

@@ -5,7 +5,8 @@ import '../hues.dart';
 import 'hero_info_dialog.dart';
 
 class HeroResistancesDialog extends HeroInfoDialog {
-  HeroResistancesDialog(Content content, HeroSave hero) : super.base(content, hero);
+  HeroResistancesDialog(Content content, HeroSave hero)
+      : super.base(content, hero);
 
   String get name => "Resistances";
 

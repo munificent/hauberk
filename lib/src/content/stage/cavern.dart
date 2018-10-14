@@ -1,7 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-
 import 'architect.dart';
 
 /// Uses a cellular automata to carve out rounded open cavernous areas.
@@ -9,28 +10,18 @@ class Cavern extends Architecture {
   // TODO: Fields to tune density distribution, thresholds, and number of
   // rounds of smoothing.
 
-  Iterable<String> build() sync* {
+  Iterable<String> build(Region region) sync* {
     // True is wall, false is floor, null is untouchable tiles that belong to
     // other architectures.
     var cells1 = Array2D<bool>(width, height);
     var cells2 = Array2D<bool>(width, height);
-
-    // TODO: Diagonals too?
-    // TODO: Radial from center?
-    // TODO: If this is the last architecture placed, it should fill the whole
-    // area.
-    var directions = Direction.cardinal.toList();
-    directions.add(Direction.none);
-
-    var region = rng.item(directions);
-    print(region);
 
     for (var pos in cells1.bounds) {
       if (!canCarve(pos)) continue;
       cells1[pos] = rng.float(1.0) < _density(region, pos);
     }
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 4; i++) {
       for (var pos in cells1.bounds) {
         // Don't touch unavailable cells.
         if (cells1[pos] == null) continue;
@@ -61,22 +52,38 @@ class Cavern extends Architecture {
     }
   }
 
-  double _density(Direction region, Vec pos) {
+  double _density(Region region, Vec pos) {
     // TODO: Vary density randomly some.
     const min = 0.3;
     const max = 0.7;
 
     switch (region) {
-      case Direction.none:
+      case Region.everywhere:
         return 0.45;
-      case Direction.n:
+      case Region.n:
         return lerpDouble(pos.y, 0, height, min, max);
-      case Direction.s:
+      case Region.ne:
+        var distance = math.max(width - pos.x - 1, pos.y);
+        var range = math.min(width, height);
+        return lerpDouble(distance, 0, range, min, max);
+      case Region.e:
+        return lerpDouble(pos.x, 0, width, min, max);
+      case Region.se:
+        var distance = math.max(width - pos.x - 1, height - pos.y - 1);
+        var range = math.min(width, height);
+        return lerpDouble(distance, 0, range, min, max);
+      case Region.s:
         return lerpDouble(pos.y, 0, height, max, min);
-      case Direction.e:
-        return lerpDouble(pos.x, 0, height, min, max);
-      case Direction.w:
-        return lerpDouble(pos.x, 0, height, max, min);
+      case Region.sw:
+        var distance = math.max(pos.x, height - pos.y - 1);
+        var range = math.min(width, height);
+        return lerpDouble(distance, 0, range, min, max);
+      case Region.w:
+        return lerpDouble(pos.x, 0, width, max, min);
+      case Region.nw:
+        var distance = math.max(pos.x, pos.y);
+        var range = math.min(width, height);
+        return lerpDouble(distance, 0, range, min, max);
     }
 
     throw "unreachable";

@@ -11,14 +11,14 @@ import 'cavern.dart';
 class Architect {
   static Array2D<Architecture> debugOwners;
 
-  static final ResourceSet<ArchitecturalStyle> styles = ResourceSet();
+  static final ResourceSet<ArchitecturalStyle> _styles = ResourceSet();
 
   static void _initializeStyles() {
-    styles.defineTags("style");
+    _styles.defineTags("style");
 
     // TODO: Define more.
-    styles.addUnnamed(ArchitecturalStyle(1, () => Catacomb()), 1, 1.0, "style");
-    styles.addUnnamed(ArchitecturalStyle(1, () => Cavern()), 1, 1.0, "style");
+    _styles.addUnnamed(ArchitecturalStyle(() => Catacomb()), 1, 1.0, "style");
+    _styles.addUnnamed(ArchitecturalStyle(() => Cavern()), 1, 1.0, "style");
   }
 
   final Lore _lore;
@@ -28,7 +28,7 @@ class Architect {
 
   Architect(this._lore, this.stage, this._depth)
       : _owners = Array2D(stage.width, stage.height) {
-    if (styles.isEmpty) _initializeStyles();
+    if (_styles.isEmpty) _initializeStyles();
 
     debugOwners = _owners;
   }
@@ -55,14 +55,26 @@ class Architect {
       stage[pos].type = Tiles.fillable;
     }
 
-    // Build out the different architectures.
-    // TODO: Take order into account.
-    // TODO: Remember styles to decorate later.
-    var styleCount = rng.inclusive(1, 2);
+    // Pick one or more unique architectures.
+    var styles = <ArchitecturalStyle>[];
+    var styleCount = rng.inclusive(1, 3);
     for (var i = 0; i < styleCount; i++) {
-      var style = styles.tryChoose(_depth, "style");
-      var architect = style.create(this);
-      yield* architect.build();
+      var style = _styles.tryChoose(_depth, "style");
+      if (!styles.contains(style)) styles.add(style);
+    }
+
+    // Pick unique regions for each. The last one always gets "everywhere" to
+    // ensure the entire stage is covered.
+    var possibleRegions = Region.directions.toList();
+    var regions = <Region>[];
+    for (var i = 0; i < styles.length - 1; i++) {
+      regions.add(rng.take(possibleRegions));
+    }
+    regions.add(Region.everywhere);
+
+    for (var i = 0; i < styles.length; i++) {
+      var architect = styles[i].create(this);
+      yield* architect.build(regions[i]);
     }
 
     for (var pos in stage.bounds.trace()) {
@@ -156,12 +168,9 @@ class Architect {
 }
 
 class ArchitecturalStyle {
-  /// Which order architectures are run. Lower numbers first.
-  final int order;
-
   final Architecture Function() _factory;
 
-  ArchitecturalStyle(this.order, this._factory);
+  ArchitecturalStyle(this._factory);
 
   Architecture create(Architect architect) {
     var architecture = _factory();
@@ -175,7 +184,7 @@ class ArchitecturalStyle {
 abstract class Architecture {
   Architect _architect;
 
-  Iterable<String> build();
+  Iterable<String> build(Region region);
 
   Rect get bounds => _architect.stage.bounds;
 
@@ -220,4 +229,23 @@ class _CardinalFlow extends Flow {
 
     return 1;
   }
+}
+
+class Region {
+  final String name;
+
+  /// Cover the whole stage.
+  static const everywhere = Region("everywhere");
+  static const n = Region("n");
+  static const ne = Region("ne");
+  static const e = Region("e");
+  static const se = Region("se");
+  static const s = Region("s");
+  static const sw = Region("sw");
+  static const w = Region("w");
+  static const nw = Region("nw");
+
+  static const directions = [n, ne, e, se, s, sw, w, nw];
+
+  const Region(this.name);
 }
