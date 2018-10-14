@@ -6,6 +6,7 @@ import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/content/stage/architect.dart';
 import 'package:hauberk/src/content/dungeon/dungeon.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
@@ -23,6 +24,8 @@ var save = content.createHero("hero");
 Game _game;
 RenderableTerminal terminal;
 Vec hoverPos;
+
+final Map<Architecture, int> hues = {};
 
 int get depth {
   return int.parse(depthSelect.value);
@@ -57,52 +60,54 @@ void hover(Vec pos) {
   if (pos == hoverPos) return;
   hoverPos = pos;
 
-  var buffer = StringBuffer();
-  var dungeon = Dungeon.last;
-  if (dungeon.bounds.contains(pos)) {
-    buffer.write("<h2>Hover $pos</h2>");
-
-    var actor = dungeon.stage.actorAt(pos);
-    if (actor != null) {
-      buffer.writeln("<p>$actor</p>");
-    }
-
-    for (var item in dungeon.stage.itemsAt(pos)) {
-      buffer.writeln("<p>$item</p>");
-    }
-
-    buffer.write("<p>${dungeon.stage[pos].type.name}</p>");
-
-    var place = dungeon.placeAt(pos);
-    if (place != null) {
-      var themes = place.themes.keys.toList();
-      themes.sort((a, b) => place.themes[b].compareTo(place.themes[a]));
-
-      if (themes.isNotEmpty) {
-        buffer.writeln("<h3>${themes.first} ${place.cells.first}</h3>");
-      } else {
-        buffer.writeln("<h3>(no theme) ${place.cells.first}</h3>");
-      }
-      buffer.writeln("<ul>");
-
-      var total = place.totalStrength.toStringAsFixed(2);
-      for (var theme in themes) {
-        var strength = place.themes[theme];
-        var percent = 100 * strength ~/ place.totalStrength;
-        buffer.writeln("<li>${percent.toString().padLeft(3)}% $theme "
-            "(${strength.toStringAsFixed(2)}/$total)</li>");
-      }
-      buffer.writeln("</ul>");
-    }
-  }
-
-  html
-      .querySelector('div[id=hover]')
-      .setInnerHtml(buffer.toString(), validator: validator);
+//  var buffer = StringBuffer();
+//  var dungeon = Dungeon.last;
+//  if (dungeon.bounds.contains(pos)) {
+//    buffer.write("<h2>Hover $pos</h2>");
+//
+//    var actor = dungeon.stage.actorAt(pos);
+//    if (actor != null) {
+//      buffer.writeln("<p>$actor</p>");
+//    }
+//
+//    for (var item in dungeon.stage.itemsAt(pos)) {
+//      buffer.writeln("<p>$item</p>");
+//    }
+//
+//    buffer.write("<p>${dungeon.stage[pos].type.name}</p>");
+//
+//    var place = dungeon.placeAt(pos);
+//    if (place != null) {
+//      var themes = place.themes.keys.toList();
+//      themes.sort((a, b) => place.themes[b].compareTo(place.themes[a]));
+//
+//      if (themes.isNotEmpty) {
+//        buffer.writeln("<h3>${themes.first} ${place.cells.first}</h3>");
+//      } else {
+//        buffer.writeln("<h3>(no theme) ${place.cells.first}</h3>");
+//      }
+//      buffer.writeln("<ul>");
+//
+//      var total = place.totalStrength.toStringAsFixed(2);
+//      for (var theme in themes) {
+//        var strength = place.themes[theme];
+//        var percent = 100 * strength ~/ place.totalStrength;
+//        buffer.writeln("<li>${percent.toString().padLeft(3)}% $theme "
+//            "(${strength.toStringAsFixed(2)}/$total)</li>");
+//      }
+//      buffer.writeln("</ul>");
+//    }
+//  }
+//
+//  html
+//      .querySelector('div[id=hover]')
+//      .setInnerHtml(buffer.toString(), validator: validator);
 }
 
 Future generate() async {
+  hues.clear();
   _game = Game(content, save, depth);
+  var thisGame = _game;
   var stage = _game.stage;
 
   terminal = RetroTerminal(stage.width, stage.height, "../font_8.png",
@@ -121,6 +126,9 @@ Future generate() async {
       await html.window.animationFrame;
       start = DateTime.now();
     }
+
+    // Bail if another generate is called.
+    if (_game != thisGame) return;
   }
 
   _game.stage.refreshView();
@@ -258,38 +266,16 @@ void render({bool showInfo = true}) {
   var context = stateCanvas.context2D;
   context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
 
-  if (!showInfo) return;
+//  if (!showInfo) return;
 
-  const themeColors = {
-    "laboratory": [255.0, 0.0, 255.0],
-    "aquatic": [0.0, 0.0, 255.0],
-    "passage": [0.0, 255.0, 255.0],
-    "room": [0.0, 0.0, 0.0],
-    "chamber": [255.0, 255.0, 255.0],
-    "boss-chamber": [255.0, 0.0, 0.0],
-    "storeroom": [128.0, 128.0, 0.0],
-    "closet": [128.0, 128.0, 0.0],
-    "hall": [255.0, 255.0, 0.0],
-    "great-hall": [255.0, 255.0, 0.0],
-    "workshop": [0.0, 255.0, 0.0],
-  };
+  if (Architect.debugOwners != null) {
+    for (var pos in Architect.debugOwners.bounds) {
+      var architecture = Architect.debugOwners[pos];
+      if (architecture == null) continue;
 
-  for (var place in Dungeon.debugPlaces) {
-    var r = 0.0;
-    var g = 0.0;
-    var b = 0.0;
-    place.themes.forEach((theme, strength) {
-      if (!themeColors.containsKey(theme)) return;
-      var amount = strength / place.totalStrength;
-      r += themeColors[theme][0] * amount;
-      g += themeColors[theme][1] * amount;
-      b += themeColors[theme][2] * amount;
-    });
-
-    context.fillStyle = 'rgba(${r.toInt()}, ${g.toInt()}, ${b.toInt()}, 0.2)';
-
-    for (var cell in place.cells) {
-      context.fillRect(cell.x * 8, cell.y * 8, 8, 8);
+      var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
+      context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)';
+      context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
     }
   }
 }

@@ -81,31 +81,31 @@ class Dungeon {
     }
 
     // TODO: Get this working again with new themes.
-//    yield "Placing decor";
-//    for (var place in _places) {
-//      var density = place.cells.length * place.decorDensity;
-//      var decorCount = randomRound(rng.float(density * 0.8, density * 1.2));
-//
-//      for (var i = 0; i < decorCount; i++) {
-//        var theme = place.chooseTheme();
-//        var decor = Decor.choose(theme);
-//        if (decor == null) continue;
-//
-//        var allowed = <Vec>[];
-//
-//        for (var cell in place.cells) {
-//          var offset = cell.offset(-1, -1);
-//          if (decor.canPlace(this, offset)) {
-//            allowed.add(offset);
-//          }
-//        }
-//
-//        if (allowed.isNotEmpty) {
-//          decor.place(this, rng.item(allowed));
-//          yield "Placed decor";
-//        }
-//      }
-//    }
+    yield "Placing decor";
+    for (var place in _places) {
+      var density = place.cells.length * place.decorDensity;
+      var decorCount = randomRound(rng.float(density * 0.8, density * 1.2));
+
+      for (var i = 0; i < decorCount; i++) {
+        var theme = place.chooseTheme();
+        var decor = Decor.choose(theme);
+        if (decor == null) continue;
+
+        var allowed = <Vec>[];
+
+        for (var cell in place.cells) {
+          var offset = cell.offset(-1, -1);
+          if (decor.canPlace(this, offset)) {
+            allowed.add(offset);
+          }
+        }
+
+        if (allowed.isNotEmpty) {
+          decor.place(this, rng.item(allowed));
+          yield "Placed decor";
+        }
+      }
+    }
 
     // Some places are naturally fully illuminated.
     for (var place in _places) {

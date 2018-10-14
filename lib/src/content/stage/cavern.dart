@@ -2,8 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 
-import '../tiles.dart';
-import 'architecture.dart';
+import 'architect.dart';
 
 /// Uses a cellular automata to carve out rounded open cavernous areas.
 class Cavern extends Architecture {
@@ -11,24 +10,35 @@ class Cavern extends Architecture {
   // rounds of smoothing.
 
   Iterable<String> build() sync* {
-    var cells1 = Array2D<bool>(stage.width - 2, stage.height - 2);
-    var cells2 = Array2D<bool>(stage.width - 2, stage.height - 2);
+    // True is wall, false is floor, null is untouchable tiles that belong to
+    // other architectures.
+    var cells1 = Array2D<bool>(width, height);
+    var cells2 = Array2D<bool>(width, height);
+
+    // TODO: Diagonals too?
+    // TODO: Radial from center?
+    // TODO: If this is the last architecture placed, it should fill the whole
+    // area.
+    var directions = Direction.cardinal.toList();
+    directions.add(Direction.none);
+
+    var region = rng.item(directions);
+    print(region);
 
     for (var pos in cells1.bounds) {
-      ;
-      var distance = (pos - cells1.bounds.center).length;
-      var density =
-          lerpDouble(distance, 0, cells1.bounds.center.length, 0.3, 0.6);
-//      var density = lerpDouble(pos.x, 0, cells1.width, 0.2, 0.5);
-      cells1[pos] = rng.float(1.0) < density;
+      if (!canCarve(pos)) continue;
+      cells1[pos] = rng.float(1.0) < _density(region, pos);
     }
 
     for (var i = 0; i < 5; i++) {
       for (var pos in cells1.bounds) {
+        // Don't touch unavailable cells.
+        if (cells1[pos] == null) continue;
+
         var walls = 0;
         for (var dir in Direction.all) {
           var here = pos + dir;
-          if (!cells1.bounds.contains(here) || cells1[here]) walls++;
+          if (!cells1.bounds.contains(here) || cells1[here] != false) walls++;
         }
 
         if (cells1[pos]) {
@@ -47,7 +57,28 @@ class Cavern extends Architecture {
     }
 
     for (var pos in cells1.bounds) {
-      setFloor(pos.x + 1, pos.y + 1, !cells1[pos]);
+      if (cells1[pos] == false) carve(pos.x, pos.y);
     }
+  }
+
+  double _density(Direction region, Vec pos) {
+    // TODO: Vary density randomly some.
+    const min = 0.3;
+    const max = 0.7;
+
+    switch (region) {
+      case Direction.none:
+        return 0.45;
+      case Direction.n:
+        return lerpDouble(pos.y, 0, height, min, max);
+      case Direction.s:
+        return lerpDouble(pos.y, 0, height, max, min);
+      case Direction.e:
+        return lerpDouble(pos.x, 0, height, min, max);
+      case Direction.w:
+        return lerpDouble(pos.x, 0, height, max, min);
+    }
+
+    throw "unreachable";
   }
 }

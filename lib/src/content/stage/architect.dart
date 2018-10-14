@@ -1,14 +1,16 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+
 // TODO: Move into this directory.
 import '../tiles.dart';
-import 'architecture.dart';
 import 'catacomb.dart';
 import 'cavern.dart';
 
 /// The main class that orchestrates painting and populating the stage.
 class Architect {
+  static Array2D<Architecture> debugOwners;
+
   static final ResourceSet<ArchitecturalStyle> styles = ResourceSet();
 
   static void _initializeStyles() {
@@ -22,9 +24,28 @@ class Architect {
   final Lore _lore;
   final Stage stage;
   final int _depth;
+  final Array2D<Architecture> _owners;
 
-  Architect(this._lore, this.stage, this._depth) {
+  Architect(this._lore, this.stage, this._depth)
+      : _owners = Array2D(stage.width, stage.height) {
     if (styles.isEmpty) _initializeStyles();
+
+    debugOwners = _owners;
+  }
+
+  /// Marks the tile at [x], [y] as open floor for [architecture].
+  void _carve(Architecture architecture, int x, int y) {
+    assert(_owners.get(x, y) == null || _owners.get(x, y) == architecture);
+
+    stage.get(x, y).type = Tiles.unfillable;
+
+    _owners.set(x, y, architecture);
+    for (var dir in Direction.all) {
+      var here = dir.offset(x, y);
+      if (_owners.bounds.contains(here)) {
+        _owners[here] = architecture;
+      }
+    }
   }
 
   Iterable<String> buildStage(Function(Vec) placeHero) sync* {
@@ -34,15 +55,19 @@ class Architect {
       stage[pos].type = Tiles.fillable;
     }
 
+    // Build out the different architectures.
+    // TODO: Take order into account.
+    // TODO: Remember styles to decorate later.
+    var styleCount = rng.inclusive(1, 2);
+    for (var i = 0; i < styleCount; i++) {
+      var style = styles.tryChoose(_depth, "style");
+      var architect = style.create(this);
+      yield* architect.build();
+    }
+
     for (var pos in stage.bounds.trace()) {
       stage[pos].type = Tiles.rock;
     }
-
-    // Build out the different architectures.
-    // TODO: Pick multiple styles.
-    var style = styles.tryChoose(_depth, "style");
-    var architect = style.create(this);
-    yield* architect.build();
 
     // Fill in the remaining fillable tiles and keep everything connected.
     yield* _fillPassages();
@@ -127,6 +152,59 @@ class Architect {
 
       yield "$pos";
     }
+  }
+}
+
+class ArchitecturalStyle {
+  /// Which order architectures are run. Lower numbers first.
+  final int order;
+
+  final Architecture Function() _factory;
+
+  ArchitecturalStyle(this.order, this._factory);
+
+  Architecture create(Architect architect) {
+    var architecture = _factory();
+    architecture._architect = architect;
+    return architecture;
+  }
+}
+
+/// Each architecture is a separate algorithm and some tuning parameters for it
+/// that generates part of a stage.
+abstract class Architecture {
+  Architect _architect;
+
+  Iterable<String> build();
+
+  Rect get bounds => _architect.stage.bounds;
+
+  int get width => _architect.stage.width;
+
+  int get height => _architect.stage.height;
+
+  /// Marks the tile at [x], [y] as open floor for this architecture.
+  void carve(int x, int y) {
+    _architect._carve(this, x, y);
+  }
+
+  /// Whether this architecture can carve the tile at [pos].
+  bool canCarve(Vec pos) {
+    if (!_architect.stage.bounds.contains(pos)) return false;
+
+    // Can't already be in use.
+    if (_architect._owners[pos] != null) return false;
+
+    // Need at least one tile of padding between other architectures.
+    for (var dir in Direction.all) {
+      var here = pos + dir;
+      if (!_architect.stage.bounds.contains(here)) continue;
+
+      var owner = _architect._owners[here];
+      if (owner != null && owner != this) return false;
+    }
+
+    return true;
   }
 }
 

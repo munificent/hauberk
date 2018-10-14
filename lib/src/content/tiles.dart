@@ -16,17 +16,17 @@ class Tiles {
   // Temporary tile types used during stage building.
 
   /// A currently open tile that could be filled by the passage generator.
-  static final fillable = tile("fillable", "%", violet).open();
+  static final fillable = tile("fillable", "?", violet).open();
 
   /// An open tile that must stay open. These are explicit floor tiles generated
   /// by architectures.
   static final unfillable = tile("unfillable", ".", violet).open();
 
   /// A solid tile that has been filled in the passage generator.
-  static final filled = tile("filled", "%", mint).solid();
+  static final filled = tile("filled", "▓", lilac).solid();
 
   /// An open tile that the passage generator knows must remain open.
-  static final unfilled = tile("unfilled", ".", mint).open();
+  static final unfilled = tile("unfilled", ".", lilac).open();
 
   static final floor = tile("floor", "·", slate).open();
   static final burntFloor = tile("burnt floor", "φ", steelGray).open();

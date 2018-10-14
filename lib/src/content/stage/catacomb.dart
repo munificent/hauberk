@@ -2,8 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Move blob.dart.
 import '../dungeon/blob.dart';
-import '../tiles.dart';
-import 'architecture.dart';
+import 'architect.dart';
 
 /// Places a number of random blobs.
 class Catacomb extends Architecture {
@@ -29,22 +28,13 @@ class Catacomb extends Architecture {
 
   bool _tryPlaceCave(Array2D<bool> cave, int x, int y) {
     for (var pos in cave.bounds) {
-      var here = pos.offset(x, y);
-
       if (cave[pos]) {
-        if (!stage.bounds.contains(here)) return false;
-        if (!isAvailable(here)) return false;
-
-        for (var dir in Direction.all) {
-          var neighbor = here + dir;
-          if (!stage.bounds.contains(neighbor)) return false;
-          if (!isAvailable(neighbor)) return false;
-        }
+        if (!canCarve(pos.offset(x, y))) return false;
       }
     }
 
     for (var pos in cave.bounds) {
-      if (cave[pos]) setFloor(pos.x + x, pos.y + y);
+      if (cave[pos]) carve(pos.x + x, pos.y + y);
     }
 
     return true;

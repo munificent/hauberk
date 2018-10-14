@@ -3,7 +3,6 @@ import 'package:piecemeal/piecemeal.dart';
 import 'content/action/element.dart';
 import 'content/classes.dart';
 import 'content/decor/decor.dart';
-import 'content/dungeon/dungeon.dart';
 import 'content/elements.dart';
 import 'content/item/affixes.dart';
 import 'content/item/floor_drops.dart';
@@ -13,6 +12,7 @@ import 'content/monster/monsters.dart';
 import 'content/old/recipes.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
+import 'content/stage/architect.dart';
 import 'content/tiles.dart';
 import 'engine.dart';
 
@@ -33,7 +33,7 @@ Content createContent() {
 class GameContent implements Content {
   Iterable<String> buildStage(
       Lore lore, Stage stage, int depth, Function(Vec) placeHero) {
-    return Dungeon(lore, stage, depth).generate(placeHero);
+    return Architect(lore, stage, depth).buildStage(placeHero);
   }
 
   Affix findAffix(String name) => Affixes.find(name);
