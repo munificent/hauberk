@@ -1,6 +1,6 @@
 import 'dart:html' as html;
 
-import 'package:hauberk/src/content/dungeon/blob.dart';
+import 'package:hauberk/src/content/stage/blob.dart';
 
 html.CanvasElement canvas;
 html.CanvasRenderingContext2D context;

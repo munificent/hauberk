@@ -7,9 +7,9 @@ import '../../engine.dart';
 import '../decor/decor.dart';
 import '../item/floor_drops.dart';
 import '../monster/monsters.dart';
+import '../stage/blob.dart';
 import '../tiles.dart';
 import 'aquatic.dart';
-import 'blob.dart';
 import 'place.dart';
 import 'rooms.dart';
 

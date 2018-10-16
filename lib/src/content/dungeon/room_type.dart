@@ -1,9 +1,9 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+import '../stage/blob.dart';
 import '../tiles.dart';
 import 'architecture.dart';
-import 'blob.dart';
 import 'junction.dart';
 import 'rooms.dart';
 

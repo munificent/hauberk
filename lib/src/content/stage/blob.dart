@@ -1,5 +1,8 @@
 import 'package:piecemeal/piecemeal.dart';
 
+// TODO: This is fairly slow and tends to waste a lot of space since it doesn't
+// fill the bounds very well. Consider just using cellular automata smoothed
+// noise or something different.
 class Blob {
   // TODO: This may generate unconnected regions. Decide if that's OK or not.
 

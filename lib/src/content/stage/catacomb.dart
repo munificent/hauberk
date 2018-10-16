@@ -1,8 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
-// TODO: Move blob.dart.
-import '../dungeon/blob.dart';
 import 'architect.dart';
+import 'blob.dart';
 
 /// Places a number of random blobs.
 class Catacomb extends Architecture {
