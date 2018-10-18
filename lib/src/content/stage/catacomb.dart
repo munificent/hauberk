@@ -11,6 +11,8 @@ class Catacomb extends Architecture {
     for (var i = 0; i < 40; i++) {
       var cave = rng.oneIn(10) ? Blob.make32() : Blob.make16();
       for (var j = 0; j < 400; j++) {
+        // TODO: dungeon.dart has similar code for placing the starting room.
+        // Unify.
         // TODO: This puts pretty hard boundaries around the region. Is there
         // a way to more softly distribute the caves?
         var xMin = -8;

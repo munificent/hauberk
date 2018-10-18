@@ -5,6 +5,7 @@ import '../../engine.dart';
 import '../tiles.dart';
 import 'catacomb.dart';
 import 'cavern.dart';
+import 'dungeon.dart';
 import 'lake.dart';
 import 'painter.dart';
 import 'river.dart';
@@ -39,8 +40,13 @@ class Architect {
     _caves.defineTags("style");
 
     // TODO: Define more.
-    _caves.addUnnamed(ArchitecturalStyle(() => Catacomb()), 1, 1.0, "style");
+    _caves.addUnnamed(ArchitecturalStyle(() => Catacomb()), 1, 2.0, "style");
     _caves.addUnnamed(ArchitecturalStyle(() => Cavern()), 1, 1.0, "style");
+    // TODO: Do we want to build this out after water is placed? Should water
+    // be allowed to overlap it? Doing it after water might give it a more
+    // interesting look. (Perhaps even sometimes run caverns or catacombs after
+    // water?
+    _caves.addUnnamed(ArchitecturalStyle(() => Dungeon()), 1, 10.0, "style");
 
     // TODO: Rivers.
     // TODO: Different liquid types.
@@ -144,13 +150,11 @@ class Architect {
   }
 
   /// Marks the tile at [x], [y] as open floor for [architecture].
-  void _carve(Architecture architecture, int x, int y, TileType type) {
-    if (stage.get(x, y).type == Tiles.aquatic) return;
-
+  void _carve(Architecture architecture, int x, int y) {
     assert(_owners.get(x, y) == null || _owners.get(x, y) == architecture);
     assert(stage.get(x, y).type == Tiles.fillable);
 
-    stage.get(x, y).type = type ?? Tiles.unfillable;
+    stage.get(x, y).type = Tiles.unfillable;
 
     _owners.set(x, y, architecture);
     for (var dir in Direction.all) {
@@ -292,8 +296,7 @@ abstract class Architecture {
   int get height => _architect.stage.height;
 
   /// Marks the tile at [x], [y] as open floor for this architecture.
-  void carve(int x, int y, [TileType type]) =>
-      _architect._carve(this, x, y, type);
+  void carve(int x, int y) => _architect._carve(this, x, y);
 
   /// Whether this architecture can carve the tile at [pos].
   bool canCarve(Vec pos) => _architect._canCarve(this, pos);
@@ -301,6 +304,13 @@ abstract class Architecture {
   void placeWater(Vec pos) {
     _architect.stage[pos].type = Tiles.aquatic;
     _architect._owners[pos] = null;
+  }
+
+  /// Marks the tile at [pos] as not allowing a passage to be dug through it.
+  void preventPassage(Vec pos) {
+    assert(_architect._owners[pos] == null || _architect._owners[pos] == this);
+
+    _architect.stage[pos].type = Tiles.filled;
   }
 }
 

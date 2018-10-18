@@ -7,7 +7,8 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/stage/architect.dart';
-import 'package:hauberk/src/content/dungeon/dungeon.dart';
+import 'package:hauberk/src/content/stage/dungeon.dart';
+//import 'package:hauberk/src/content/dungeon/dungeon.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
 
@@ -276,6 +277,29 @@ void render({bool showInfo = true}) {
       var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
       context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)';
       context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
+    }
+  }
+
+  context.fillStyle = 'hsla(0, 100%, 100%, 0.4)';
+  if (Dungeon.debugJunctions != null) {
+    for (var pos in _game.stage.bounds) {
+      var junction = Dungeon.debugJunctions[pos];
+      if (junction == null) continue;
+
+      switch (junction.direction) {
+        case Direction.n:
+          context.fillRect(pos.x * 8 + 3, pos.y * 8, 2, 4);
+          break;
+        case Direction.s:
+          context.fillRect(pos.x * 8 + 3, pos.y * 8 + 4, 2, 4);
+          break;
+        case Direction.e:
+          context.fillRect(pos.x * 8 + 4, pos.y * 8 + 3, 4, 2);
+          break;
+        case Direction.w:
+          context.fillRect(pos.x * 8, pos.y * 8 + 3, 4, 2);
+          break;
+      }
     }
   }
 }

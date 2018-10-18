@@ -1,6 +1,10 @@
 import 'dart:html' as html;
 
+import 'package:piecemeal/piecemeal.dart';
+
 import 'package:hauberk/src/content/stage/blob.dart';
+
+const cellSize = 8;
 
 html.CanvasElement canvas;
 html.CanvasRenderingContext2D context;
@@ -17,13 +21,14 @@ main() {
 }
 
 void render() {
-  var blob = Blob.make64();
-  const cell = 8;
-
-  canvas.width = blob.width * cell;
-  canvas.height = blob.height * cell;
   context.clearRect(0, 0, canvas.width, canvas.height);
 
+  _drawBlob(Blob.make64(), 0);
+  _drawBlob(Blob.make32(), 65);
+  _drawBlob(Blob.make16(), 98);
+}
+
+void _drawBlob(Array2D<bool> blob, int left) {
   for (var y = 0; y < blob.height; y++) {
     for (var x = 0; x < blob.width; x++) {
       if (blob.get(x, y)) {
@@ -32,7 +37,7 @@ void render() {
         context.fillStyle = 'rgb(240, 240, 240)';
       }
 
-      context.fillRect(x * cell, y * cell, cell, cell);
+      context.fillRect((left + x) * cellSize, y * cellSize, cellSize, cellSize);
     }
   }
 }
