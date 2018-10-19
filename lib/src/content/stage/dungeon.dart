@@ -6,6 +6,11 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import 'architect.dart';
 
+// TODO: Rename to "Keep". Give at an optional max number of rooms so that it
+// can be used to generate small concentrated areas on the stage. Create a
+// separate "Dungeon" that works like Catacomb but uses rooms instead of blobs
+// so that you get passages between them.
+
 /// Places a number of connected rooms.
 class Dungeon extends Architecture {
   static JunctionSet debugJunctions;
@@ -15,19 +20,24 @@ class Dungeon extends Architecture {
 
   final JunctionSet _junctions = JunctionSet();
 
-  Iterable<String> build(Region region) sync* {
+  Iterable<String> build() sync* {
     debugJunctions = _junctions;
 
-    var room = _createRoom();
-    for (var i = 0; i < 100; i++) {
-      var pos = _startLocation(region, room);
-      if (_tryPlaceRoom(room, pos.x, pos.y)) break;
+    // If we are covering the whole area, attempt to place multiple rooms.
+    // That way, if there disconnected areas (like a river cutting through the
+    // stage, we can still hopefully cover it all.
+    var startingRooms = region == Region.everywhere ? 20 : 1;
+    for (var i = 0; i < startingRooms; i++) {
+      yield* _growDungeon();
     }
+  }
 
+  Iterable<String> _growDungeon() sync* {
+    if (!_tryPlaceStartingRoom()) return;
+
+    // Expand outward from it.
     while (_junctions.isNotEmpty) {
       var junction = _junctions.takeNext();
-
-      if (!_regionContains(region, junction.position)) continue;
 
       // Make sure the junction is still valid. If other stuff has been placed
       // in its way since then, discard it.
@@ -41,48 +51,50 @@ class Dungeon extends Architecture {
       }
 
       // TODO: Make tunable.
-      if (junction.tries < 10) _junctions.add(junction);
+      if (junction.tries < 5) _junctions.add(junction);
     }
   }
 
+  bool _tryPlaceStartingRoom() {
+    var room = _createRoom();
+    for (var i = 0; i < 100; i++) {
+      var pos = _startLocation(room);
+      if (_tryPlaceRoom(room, pos.x, pos.y)) return true;
+    }
+
+    return false;
+  }
+
   /// Pick a random location for [room] in [region].
-  Vec _startLocation(Region region, Array2D<RoomTile> room) {
+  Vec _startLocation(Array2D<RoomTile> room) {
     var xMin = 1;
     var xMax = width - room.width - 1;
     var yMin = 1;
     var yMax = height - room.height - 1;
 
     switch (region) {
-      case Region.everywhere:
-      // Do nothing.
-        break;
+      case Region.nw:
       case Region.n:
-        yMax = height ~/ 2 - room.height;
-        break;
       case Region.ne:
-        xMin = width ~/ 2;
-        yMax = height ~/ 2 - room.height;
-        break;
-      case Region.e:
-        xMin = width ~/ 2;
-        break;
-      case Region.se:
-        xMin = width ~/ 2;
-        yMin = height ~/ 2;
-        break;
-      case Region.s:
-        yMin = height ~/ 2;
+        yMax = (height * 0.25).toInt() - room.height;
         break;
       case Region.sw:
-        xMax = width ~/ 2 - room.width;
-        yMin = height ~/ 2;
+      case Region.s:
+      case Region.se:
+        yMin = (height * 0.75).toInt();
         break;
-      case Region.w:
-        xMax = width ~/ 2 - room.width;
-        break;
+    }
+
+    switch (region) {
       case Region.nw:
-        xMax = width ~/ 2 - room.width;
-        yMax = height ~/ 2 - room.height;
+      case Region.w:
+      case Region.sw:
+        xMax = (width * 0.25).toInt() - room.width;
+        break;
+      case Region.ne:
+      case Region.e:
+      case Region.se:
+        xMin = (width * 0.75).toInt();
         break;
     }
 
@@ -90,49 +102,44 @@ class Dungeon extends Architecture {
   }
 
   /// Determines whether [pos] is within [region], with some randomness.
-  bool _regionContains(Region region, Vec pos) {
-    const min = 0.0;
+  bool _regionContains(Vec pos) {
+    const min = -3.0;
     const max = 2.0;
+
+    diagonal(int xDistance, yDistance) =>
+        lerpDouble(xDistance + yDistance, 0, width + height, 2.0, -3.0);
 
     var density = 0.0;
     switch (region) {
       case Region.everywhere:
         return true;
       case Region.n:
-        density = lerpDouble(pos.y, 0, height, min, max);
+        density = lerpDouble(pos.y, 0, height, max, min);
         break;
       case Region.ne:
-        var distance = math.max(width - pos.x - 1, pos.y);
-        var range = math.min(width, height);
-        density = lerpDouble(distance, 0, range, min, max);
+        density = diagonal(width - pos.x - 1, pos.y);
         break;
       case Region.e:
         density = lerpDouble(pos.x, 0, width, min, max);
         break;
       case Region.se:
-        var distance = math.max(width - pos.x - 1, height - pos.y - 1);
-        var range = math.min(width, height);
-        density = lerpDouble(distance, 0, range, min, max);
+        density = diagonal(width - pos.x - 1, height - pos.y - 1);
         break;
       case Region.s:
-        density = lerpDouble(pos.y, 0, height, max, min);
+        density = lerpDouble(pos.y, 0, height, min, max);
         break;
       case Region.sw:
-        var distance = math.max(pos.x, height - pos.y - 1);
-        var range = math.min(width, height);
-        density = lerpDouble(distance, 0, range, min, max);
+        density = diagonal(pos.x, height - pos.y - 1);
         break;
       case Region.w:
         density = lerpDouble(pos.x, 0, width, max, min);
         break;
       case Region.nw:
-        var distance = math.max(pos.x, pos.y);
-        var range = math.min(width, height);
-        density = lerpDouble(distance, 0, range, min, max);
+        density = diagonal(pos.x, pos.y);
         break;
     }
 
-    return rng.float(1.0) > density;
+    return rng.float(1.0) < density;
   }
 
   bool _tryAttachRoom(Junction junction) {
@@ -162,6 +169,8 @@ class Dungeon extends Architecture {
       if (tile == RoomTile.floor && !canCarve(pos.offset(x, y))) return false;
     }
 
+    var junctions = <Junction>[];
+
     for (var pos in room.bounds) {
       var here = pos.offset(x, y);
 
@@ -179,13 +188,21 @@ class Dungeon extends Architecture {
         case RoomTile.junctionS:
         case RoomTile.junctionE:
         case RoomTile.junctionW:
-          // Remove any existing junctions since they now clash with the room.
-          _junctions.removeAt(here);
-          // TODO: Should we shuffle the room's junctions so that the clockwise
-          // order doesn't bias the generator?
-          _junctions.add(Junction(here, room[pos].direction));
+          // Don't grow outside of the chosen region.
+          if (_regionContains(here)) {
+            junctions.add(Junction(here, room[pos].direction));
+          }
           break;
       }
+    }
+
+    // Shuffle the junctions so that the order we traverse the room tiles
+    // doesn't bias the room growth.
+    rng.shuffle(junctions);
+    for (var junction in junctions) {
+      // Remove any existing junctions since they now clash with the room.
+      _junctions.removeAt(junction.position);
+      _junctions.add(junction);
     }
 
     return true;
@@ -247,7 +264,8 @@ class RoomTile {
   /// Room floor.
   static const floor = RoomTile("floor", Direction.none);
 
-  /// Room wall that cannot have a junction or passage through it.
+  /// Room wall that cannot have a junction or passage through it. Used to
+  /// prevent entrances to rooms in corners, which looks weird.
   static const wall = RoomTile("wall", Direction.none);
 
   static const junctionN = RoomTile("junctionN", Direction.n);
@@ -291,11 +309,19 @@ class Junction {
   Junction(this.position, this.direction);
 }
 
-class JunctionSet {
-  final Map<Vec, Junction> _byPosition = {};
-  final Queue<Junction> _queue = Queue();
+enum TakeFrom {
+  newest,
+  oldest,
+  random
+}
 
-  bool get isNotEmpty => _queue.isNotEmpty;
+class JunctionSet {
+  // TODO: Let the architectural style control this.
+  final TakeFrom _takeFrom = rng.item(TakeFrom.values);
+  final Map<Vec, Junction> _byPosition = {};
+  final List<Junction> _junctions = [];
+
+  bool get isNotEmpty => _junctions.isNotEmpty;
 
   Junction operator [](Vec pos) => _byPosition[pos];
 
@@ -303,14 +329,25 @@ class JunctionSet {
     assert(_byPosition[junction.position] == null);
 
     _byPosition[junction.position] = junction;
-    _queue.add(junction);
+    _junctions.add(junction);
   }
 
   Junction takeNext() {
-    // TODO: Filling them in bread-first order tends to make nicely packed
-    // sets of rooms. Picking a random junction is a little more organic and
-    // tends to leave more gaps.
-    var junction = _queue.removeFirst();
+    Junction junction;
+    switch (_takeFrom) {
+      case TakeFrom.newest:
+        junction = _junctions.removeLast();
+        break;
+
+      case TakeFrom.oldest:
+        junction = _junctions.removeAt(0);
+        break;
+
+      case TakeFrom.random:
+        junction = rng.take(_junctions);
+        break;
+    }
+
     _byPosition.remove(junction.position);
     junction.tries++;
 
@@ -319,6 +356,6 @@ class JunctionSet {
 
   void removeAt(Vec pos) {
     var junction = _byPosition.remove(pos);
-    if (junction != null) _queue.remove(junction);
+    if (junction != null) _junctions.remove(junction);
   }
 }

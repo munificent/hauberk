@@ -6,7 +6,7 @@ import 'architect.dart';
 
 /// Uses a cellular automata to carve out rounded open cavernous areas.
 class River extends Architecture {
-  Iterable<String> build(Region region) sync* {
+  Iterable<String> build() sync* {
     // TODO: Branching tributaries?
 
     // Pick the start and end points. Rivers always flow from one edge of the

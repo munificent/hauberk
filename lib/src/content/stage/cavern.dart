@@ -10,7 +10,7 @@ class Cavern extends Architecture {
   // TODO: Fields to tune density distribution, thresholds, and number of
   // rounds of smoothing.
 
-  Iterable<String> build(Region region) sync* {
+  Iterable<String> build() sync* {
     // True is wall, false is floor, null is untouchable tiles that belong to
     // other architectures.
     var cells1 = Array2D<bool>(width, height);

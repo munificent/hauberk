@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -10,6 +12,7 @@ import 'lake.dart';
 import 'painter.dart';
 import 'river.dart';
 
+// TODO: Consider regions that are randomly placed blobs in the middle too.
 class Region {
   final String name;
 
@@ -33,26 +36,27 @@ class Region {
 class Architect {
   static Array2D<Architecture> debugOwners;
 
-  static final ResourceSet<ArchitecturalStyle> _caves = ResourceSet();
-  static final ResourceSet<ArchitecturalStyle> _waters = ResourceSet();
+  static final ResourceSet<ArchitecturalStyle> _styles = ResourceSet();
 
   static void _initializeStyles() {
-    _caves.defineTags("style");
+    _styles.defineTags("style");
 
     // TODO: Define more.
-    _caves.addUnnamed(ArchitecturalStyle(() => Catacomb()), 1, 2.0, "style");
-    _caves.addUnnamed(ArchitecturalStyle(() => Cavern()), 1, 1.0, "style");
+    _styles.addUnnamed(ArchitecturalStyle(() => Catacomb()), 1, 2.0, "style");
+    _styles.addUnnamed(ArchitecturalStyle(() => Cavern()), 1, 1.0, "style");
     // TODO: Do we want to build this out after water is placed? Should water
     // be allowed to overlap it? Doing it after water might give it a more
     // interesting look. (Perhaps even sometimes run caverns or catacombs after
     // water?
-    _caves.addUnnamed(ArchitecturalStyle(() => Dungeon()), 1, 10.0, "style");
+    _styles.addUnnamed(ArchitecturalStyle(() => Dungeon()), 1, 10.0, "style");
+    // TODO: Forest style that uses cavern-like CA to open an organic-shaped
+    // area and then fills it with grass and trees. (Maybe just a specific
+    // painter for Cavern?
 
-    // TODO: Rivers.
-    // TODO: Different liquid types.
-    _waters.defineTags("style");
-    _waters.addUnnamed(ArchitecturalStyle(() => Lake()), 1, 1.0, "style");
-    _waters.addUnnamed(ArchitecturalStyle(() => River()), 1, 1.0, "style");
+    // TODO: Different liquid types including some that are dry.
+    // TODO: Shore or islands?
+    _styles.addUnnamed(ArchitecturalStyle(() => Lake(), isAquatic: true), 1, 1.0, "style");
+    _styles.addUnnamed(ArchitecturalStyle(() => River(), isAquatic: true), 1, 1.0, "style");
   }
 
   final Lore _lore;
@@ -62,7 +66,7 @@ class Architect {
 
   Architect(this._lore, this.stage, this._depth)
       : _owners = Array2D(stage.width, stage.height) {
-    if (_caves.isEmpty) _initializeStyles();
+    if (_styles.isEmpty) _initializeStyles();
 
     debugOwners = _owners;
   }
@@ -74,27 +78,31 @@ class Architect {
       stage[pos].type = Tiles.fillable;
     }
 
-    // Carve natural caverns.
-    var caves = _pickStyles(_caves, 1, 3);
+    var styles = _pickStyles();
 
-    // Pick unique regions for each. The last one always gets "everywhere" to
-    // ensure the entire stage is covered.
+    int lastNonAquatic;
+    for (var i = styles.length - 1; i >= 0; i--) {
+      if (!styles[i]._isAquatic) {
+        lastNonAquatic = i;
+        break;
+      }
+    }
+
+    // Pick unique regions for each style. The last non-aquatic one always
+    // gets "everywhere" to ensure the entire stage is covered.
     var possibleRegions = Region.directions.toList();
     var regions = <Region>[];
-    for (var i = 0; i < caves.length - 1; i++) {
-      regions.add(rng.take(possibleRegions));
-    }
-    regions.add(Region.everywhere);
-
-    for (var i = 0; i < caves.length; i++) {
-      var architect = caves[i].create(this);
-      yield* architect.build(regions[i]);
+    for (var i = 0; i < styles.length; i++) {
+      if (i == lastNonAquatic || styles[i]._isAquatic) {
+        regions.add(Region.everywhere);
+      } else {
+        regions.add(rng.take(possibleRegions));
+      }
     }
 
-    // Add water features.
-    var waters = _pickStyles(_waters, 0, 2);
-    for (var water in waters) {
-      yield* water.create(this).build(Region.everywhere);
+    for (var i = 0; i < styles.length; i++) {
+      var architect = styles[i].create(this, regions[i]);
+      yield* architect.build();
     }
 
     for (var pos in stage.bounds.trace()) {
@@ -105,7 +113,17 @@ class Architect {
     // Fill in the remaining fillable tiles and keep everything connected.
     yield* _fillPassages();
 
+    // TODO: Add shortcuts.
+
     // TODO: Decorate and populate.
+    // TODO: Instead of bleeding themes around, here's a simpler idea:
+    // 1. Choose a random place to spawn a monster/item.
+    // 2. Do a random walk from there to a result tile.
+    // 3. Use the result tile's architecture/style/whatever to generate the
+    //    monster/item.
+    // 4. Place it in the original random location.
+    // This way, you can get nearby styles and foreshadowing without a lot of
+    // complex calculation.
 
     // Paint the tiles.
     // TODO: Associate different painters with different owners.
@@ -137,12 +155,20 @@ class Architect {
     placeHero(stage.findOpenTile());
   }
 
-  List<ArchitecturalStyle> _pickStyles(
-      ResourceSet<ArchitecturalStyle> styles, int min, int max) {
+  List<ArchitecturalStyle> _pickStyles() {
     var result = <ArchitecturalStyle>[];
-    var count = rng.inclusive(min, max);
-    for (var i = 0; i < count; i++) {
-      var style = styles.tryChoose(_depth, "style");
+
+    // TODO: Change count range based on depth?
+    var count = math.min(rng.taper(1, 10), 5);
+    var hasNonAquatic = false;
+
+    while (!hasNonAquatic || result.length < count) {
+      var style = _styles.tryChoose(_depth, "style");
+
+      // Make sure there's at least one walkable style.
+      if (!style._isAquatic) hasNonAquatic = true;
+
+      // TODO: Retry in this case?
       if (!result.contains(style)) result.add(style);
     }
 
@@ -170,6 +196,9 @@ class Architect {
 
     // Can't already be in use.
     if (_owners[pos] != null) return false;
+
+    // Or water.
+    if (stage[pos].type == Tiles.aquatic) return false;
 
     // Need at least one tile of padding between other architectures.
     for (var dir in Direction.all) {
@@ -272,12 +301,15 @@ class Architect {
 
 class ArchitecturalStyle {
   final Architecture Function() _factory;
+  final bool _isAquatic;
 
-  ArchitecturalStyle(this._factory);
+  ArchitecturalStyle(this._factory, {bool isAquatic})
+      : _isAquatic = isAquatic ?? false;
 
-  Architecture create(Architect architect) {
+  Architecture create(Architect architect, Region region) {
     var architecture = _factory();
     architecture._architect = architect;
+    architecture._region = region;
     return architecture;
   }
 }
@@ -286,14 +318,17 @@ class ArchitecturalStyle {
 /// that generates part of a stage.
 abstract class Architecture {
   Architect _architect;
+  Region _region;
 
-  Iterable<String> build(Region region);
+  Iterable<String> build();
 
   Rect get bounds => _architect.stage.bounds;
 
   int get width => _architect.stage.width;
 
   int get height => _architect.stage.height;
+
+  Region get region => _region;
 
   /// Marks the tile at [x], [y] as open floor for this architecture.
   void carve(int x, int y) => _architect._carve(this, x, y);
@@ -310,7 +345,9 @@ abstract class Architecture {
   void preventPassage(Vec pos) {
     assert(_architect._owners[pos] == null || _architect._owners[pos] == this);
 
-    _architect.stage[pos].type = Tiles.filled;
+    if (_architect.stage[pos].type == Tiles.fillable) {
+      _architect.stage[pos].type = Tiles.filled;
+    }
   }
 }
 

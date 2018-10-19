@@ -28,7 +28,7 @@ class Tiles {
   /// An open tile that the passage generator knows must remain open.
   static final unfilled = tile("unfilled", ".", lilac).open();
 
-  static final aquatic = tile("aquatic", "~", lilac).open();
+  static final aquatic = tile("aquatic", "≈", lilac).open();
 
   static final floor = tile("floor", "·", slate).open();
   static final burntFloor = tile("burnt floor", "φ", steelGray).open();
