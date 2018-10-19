@@ -55,8 +55,10 @@ class Architect {
 
     // TODO: Different liquid types including some that are dry.
     // TODO: Shore or islands?
-    _styles.addUnnamed(ArchitecturalStyle(() => Lake(), isAquatic: true), 1, 1.0, "style");
-    _styles.addUnnamed(ArchitecturalStyle(() => River(), isAquatic: true), 1, 1.0, "style");
+    _styles.addUnnamed(
+        ArchitecturalStyle(() => Lake(), isAquatic: true), 1, 1.0, "style");
+    _styles.addUnnamed(
+        ArchitecturalStyle(() => River(), isAquatic: true), 1, 1.0, "style");
   }
 
   final Lore _lore;

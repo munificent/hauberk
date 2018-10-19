@@ -309,11 +309,7 @@ class Junction {
   Junction(this.position, this.direction);
 }
 
-enum TakeFrom {
-  newest,
-  oldest,
-  random
-}
+enum TakeFrom { newest, oldest, random }
 
 class JunctionSet {
   // TODO: Let the architectural style control this.
