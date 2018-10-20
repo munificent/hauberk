@@ -111,9 +111,11 @@ class Architect {
       stage[pos].type = _Tiles.solid;
     }
 
-    // TODO: Who owns passages? How are they styled?
     // Fill in the remaining fillable tiles and keep everything connected.
-    yield* _fillPassages();
+    var unownedPassages = <Vec>[];
+    yield* _fillPassages(unownedPassages);
+
+    yield* _claimPassages(unownedPassages);
 
     // TODO: Add shortcuts.
 
@@ -163,6 +165,9 @@ class Architect {
     // TODO: Change count range based on depth?
     var count = math.min(rng.taper(1, 10), 5);
     var hasNonAquatic = false;
+
+    // TODO: Temp.
+    count = 3;
 
     while (!hasNonAquatic || result.length < count) {
       var style = _styles.tryChoose(_depth, "style");
@@ -226,7 +231,7 @@ class Architect {
 
   /// Takes all of the remaining fillable tiles and fills them randomly with
   /// solid tiles or open tiles, making sure to preserve reachability.
-  Iterable<String> _fillPassages() sync* {
+  Iterable<String> _fillPassages(List<Vec> unownedPassages) sync* {
     // TODO: There might be faster way to do this using Tarjan's articulation
     // point algorithm. Something like:
     // 1. Find all articulation points. Mark them unfilled. These must be
@@ -291,7 +296,7 @@ class Architect {
       if (reachedOpen != open.length - 1) {
         // Filling this tile would cause something to be unreachable, so it must
         // be a passage.
-        _Tiles.makePassage(tile);
+        _makePassage(unownedPassages, pos);
       } else {
         // Optimization: Since we've already calculated the reachability to
         // everything, we can also eagerly fill in fillable regions that are
@@ -302,6 +307,69 @@ class Architect {
       }
 
       yield "$pos";
+    }
+  }
+
+  void _makePassage(List<Vec> unownedPassages, Vec pos) {
+    var tile = stage[pos];
+
+    // Filling this tile would cause something to be unreachable, so it must
+    // be a passage.
+    if (tile.type == _Tiles.solid) {
+      tile.type = _Tiles.passage;
+    } else if (tile.type == _Tiles.solidWet) {
+      tile.type = _Tiles.passageWet;
+    } else {
+      assert(false, "Unexpected tile type.");
+    }
+
+    var owner = _owners[pos];
+    if (owner == null) {
+      unownedPassages.add(pos);
+    } else {
+      // The passage is within the edge of an architecture, so extend the
+      // boundary around it too.
+      _claimNeighbors(pos, owner);
+    }
+  }
+
+  /// Find owners for all passage tiles that don't currently have one.
+  ///
+  /// This works by finding the passage tiles that have a neighboring owner and
+  /// spreading that owner to this one. It does that repeatedly until all tiles
+  /// are claimed.
+  Iterable<String> _claimPassages(List<Vec> unownedPassages) sync* {
+    while (true) {
+      var stillUnowned = <Vec>[];
+      for (var pos in unownedPassages) {
+        var neighbors = <Architecture>[];
+        for (var dir in Direction.all) {
+          var owner = _owners[pos + dir];
+          if (owner != null) neighbors.add(owner);
+        }
+
+        if (neighbors.isNotEmpty) {
+          var owner = rng.item(neighbors);
+          _owners[pos] = owner;
+          _claimNeighbors(pos, owner);
+        } else {
+          stillUnowned.add(pos);
+        }
+      }
+
+      if (stillUnowned.isEmpty) break;
+      unownedPassages = stillUnowned;
+
+      yield "Claim";
+    }
+  }
+
+  /// Claims any neighboring tiles of [pos] for [owner] if they don't already
+  /// have an owner.
+  void _claimNeighbors(Vec pos, Architecture owner) {
+    for (var dir in Direction.all) {
+      var here = pos + dir;
+      if (_owners[here] == null) _owners[here] = owner;
     }
   }
 }
@@ -350,7 +418,9 @@ abstract class Architecture {
 
   /// Marks the tile at [pos] as not allowing a passage to be dug through it.
   void preventPassage(Vec pos) {
-    assert(_architect._owners[pos] == null || _architect._owners[pos] == this);
+    assert(_architect._owners[pos] == null ||
+        _architect._owners[pos] == this ||
+        _architect.stage[pos].type == _Tiles.unformedWet);
 
     if (_architect.stage[pos].type == _Tiles.unformed) {
       _architect.stage[pos].type = _Tiles.solid;
@@ -393,16 +463,6 @@ class _Tiles {
     } else {
       assert(tile.type == _Tiles.solid || tile.type == _Tiles.solidWet,
           "Unexpected tile type.");
-    }
-  }
-
-  static void makePassage(Tile tile) {
-    if (tile.type == _Tiles.solid) {
-      tile.type = _Tiles.passage;
-    } else if (tile.type == _Tiles.solidWet) {
-      tile.type = _Tiles.passageWet;
-    } else {
-      assert(false, "Unexpected tile type.");
     }
   }
 }
