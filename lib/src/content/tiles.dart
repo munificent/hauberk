@@ -13,23 +13,6 @@ Action _openDoor(Vec pos) => OpenDoorAction(pos, Tiles.openDoor);
 
 /// Static class containing all of the [TileType]s.
 class Tiles {
-  // Temporary tile types used during stage building.
-
-  /// A currently open tile that could be filled by the passage generator.
-  static final fillable = tile("fillable", "?", violet).open();
-
-  /// An open tile that must stay open. These are explicit floor tiles generated
-  /// by architectures.
-  static final unfillable = tile("unfillable", ".", violet).open();
-
-  /// A solid tile that has been filled in the passage generator.
-  static final filled = tile("filled", "▓", lilac).solid();
-
-  /// An open tile that the passage generator knows must remain open.
-  static final unfilled = tile("unfilled", ".", lilac).open();
-
-  static final aquatic = tile("aquatic", "≈", lilac).open();
-
   static final floor = tile("floor", "·", slate).open();
   static final burntFloor = tile("burnt floor", "φ", steelGray).open();
   static final burntFloor2 = tile("burnt floor", "ε", steelGray).open();
@@ -110,6 +93,10 @@ class Tiles {
 
   // TODO: Make this do stuff when walked through.
   static final spiderweb = tile("spiderweb", "÷", slate).open();
+
+  static _TileBuilder tile(String name, Object char, Color fore,
+          [Color back]) =>
+      _TileBuilder(name, char, fore, back);
 
   /// The amount of heat required for [tile] to catch fire or 0 if the tile
   /// cannot be ignited.
@@ -195,11 +182,7 @@ class Tiles {
   };
 }
 
-TileBuilder tile(String name, Object char, Color fore, [Color back]) {
-  return TileBuilder(name, char, fore, back);
-}
-
-class TileBuilder {
+class _TileBuilder {
   final String name;
   final Glyph glyph;
 
@@ -208,31 +191,31 @@ class TileBuilder {
   bool _isExit = false;
   int _emanationLevel = 0;
 
-  factory TileBuilder(String name, Object char, Color fore, [Color back]) {
+  factory _TileBuilder(String name, Object char, Color fore, [Color back]) {
     back ??= midnight;
     var charCode = char is int ? char : (char as String).codeUnitAt(0);
 
-    return TileBuilder._(name, Glyph.fromCharCode(charCode, fore, back));
+    return _TileBuilder._(name, Glyph.fromCharCode(charCode, fore, back));
   }
 
-  TileBuilder._(this.name, this.glyph);
+  _TileBuilder._(this.name, this.glyph);
 
-  TileBuilder emanate(int level) {
+  _TileBuilder emanate(int level) {
     _emanationLevel = level;
     return this;
   }
 
-  TileBuilder exit() {
+  _TileBuilder exit() {
     _isExit = true;
     return this;
   }
 
-  TileBuilder onClose(Action Function(Vec) onClose) {
+  _TileBuilder onClose(Action Function(Vec) onClose) {
     _onClose = onClose;
     return this;
   }
 
-  TileBuilder onOpen(Action Function(Vec) onOpen) {
+  _TileBuilder onOpen(Action Function(Vec) onOpen) {
     _onOpen = onOpen;
     return this;
   }

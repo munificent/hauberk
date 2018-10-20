@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-
+import '../../hues.dart';
 import '../tiles.dart';
 import 'catacomb.dart';
 import 'cavern.dart';
@@ -77,7 +77,7 @@ class Architect {
     // Initialize the stage with an edge of solid and everything else open but
     // fillable.
     for (var pos in stage.bounds) {
-      stage[pos].type = Tiles.fillable;
+      stage[pos].type = _Tiles.unformed;
     }
 
     var styles = _pickStyles();
@@ -108,7 +108,7 @@ class Architect {
     }
 
     for (var pos in stage.bounds.trace()) {
-      stage[pos].type = Tiles.filled;
+      stage[pos].type = _Tiles.solid;
     }
 
     // TODO: Who owns passages? How are they styled?
@@ -129,29 +129,29 @@ class Architect {
 
     // Paint the tiles.
     // TODO: Associate different painters with different owners.
-    var tilesByOwner = <Architecture, List<Vec>>{};
-    for (var pos in stage.bounds) {
-      var owner = _owners[pos];
-      if (owner == null) {
-        // TODO: Define a painter for the no-owner tiles.
-        var tile = stage[pos];
-        if (tile.type == Tiles.filled) {
-          tile.type = Tiles.rock;
-        } else if (tile.type == Tiles.unfilled) {
-          // TODO: Turn unfilled tiles into bridges when surrounded by water.
-          tile.type = Tiles.floor;
-        }
-      } else {
-        tilesByOwner.putIfAbsent(owner, () => []).add(pos);
-      }
-    }
-
-    var painter = Painter();
-    tilesByOwner.forEach((architecture, tiles) {
-      for (var pos in tiles) {
-        stage[pos].type = painter.paint(pos, stage[pos].type);
-      }
-    });
+//    var tilesByOwner = <Architecture, List<Vec>>{};
+//    for (var pos in stage.bounds) {
+//      var owner = _owners[pos];
+//      if (owner == null) {
+//        // TODO: Define a painter for the no-owner tiles.
+//        var tile = stage[pos];
+//        if (tile.type == _Tiles.solid) {
+//          tile.type = Tiles.rock;
+//        } else if (tile.type == _Tiles.passage) {
+//          // TODO: Turn unfilled tiles into bridges when surrounded by water.
+//          tile.type = Tiles.floor;
+//        }
+//      } else {
+//        tilesByOwner.putIfAbsent(owner, () => []).add(pos);
+//      }
+//    }
+//
+//    var painter = Painter();
+//    tilesByOwner.forEach((architecture, tiles) {
+//      for (var pos in tiles) {
+//        stage[pos].type = painter.paint(pos, stage[pos].type);
+//      }
+//    });
 
     // TODO: Temp.
     placeHero(stage.findOpenTile());
@@ -180,14 +180,17 @@ class Architect {
   /// Marks the tile at [x], [y] as open floor for [architecture].
   void _carve(Architecture architecture, int x, int y) {
     assert(_owners.get(x, y) == null || _owners.get(x, y) == architecture);
-    assert(stage.get(x, y).type == Tiles.fillable);
+    assert(stage.get(x, y).type == _Tiles.unformed);
 
-    stage.get(x, y).type = Tiles.unfillable;
+    stage.get(x, y).type = _Tiles.open;
 
+    // Claim all neighboring dry tiles too. This way the architecture can paint
+    // the surrounding solid tiles however it wants.
     _owners.set(x, y, architecture);
     for (var dir in Direction.all) {
       var here = dir.offset(x, y);
-      if (_owners.bounds.contains(here)) {
+      if (_owners.bounds.contains(here) &&
+          stage[here].type != _Tiles.unformedWet) {
         _owners[here] = architecture;
       }
     }
@@ -200,12 +203,19 @@ class Architect {
     if (_owners[pos] != null) return false;
 
     // Or water.
-    if (stage[pos].type == Tiles.aquatic) return false;
+    if (stage[pos].type == _Tiles.unformedWet) return false;
 
-    // Need at least one tile of padding between other architectures.
+    // Need at least one tile of padding between other dry architectures so that
+    // this one can have a ring of solid tiles around itself without impinging
+    // on the other architecture. This means that there will be at least two
+    // solid tiles between two open tiles of different architectures, one owned
+    // by each. That way, if they style their walls differently, one doesn't
+    // bleed into the other.
     for (var dir in Direction.all) {
       var here = pos + dir;
       if (!stage.bounds.contains(here)) continue;
+
+      if (stage[here].type == _Tiles.unformedWet) continue;
 
       var owner = _owners[here];
       if (owner != null && owner != architecture) return false;
@@ -224,29 +234,30 @@ class Architect {
     // 2. Pick a random remaining non-articulation point and mark it filled. We
     //    know this is safe to do.
     // 3. As long as non-articulation points remain, go to 1.
-    var unfillable = <Vec>[];
-    var fillable = <Vec>[];
+    var open = <Vec>[];
+    var unformed = <Vec>[];
     for (var pos in stage.bounds.inflate(-1)) {
       var tile = stage[pos].type;
-      if (tile == Tiles.unfillable) {
-        unfillable.add(pos);
-      } else if (tile == Tiles.fillable || tile == Tiles.aquatic) {
-        fillable.add(pos);
+      if (tile == _Tiles.open) {
+        open.add(pos);
+      } else if (!_Tiles.isFormed(tile)) {
+        unformed.add(pos);
       }
     }
 
-    rng.shuffle(unfillable);
-    rng.shuffle(fillable);
+    rng.shuffle(open);
+    rng.shuffle(unformed);
 
-    var start = unfillable.first;
+    var start = open.first;
 
-    for (var pos in fillable) {
-      // We may have already processed it.
+    for (var pos in unformed) {
       var tile = stage[pos];
-      if (tile.type != Tiles.fillable && tile.type != Tiles.aquatic) continue;
+
+      // We may have already processed it.
+      if (_Tiles.isFormed(tile.type)) continue;
 
       // Try to fill this tile.
-      tile.type = tile.type == Tiles.fillable ? Tiles.filled : Tiles.water;
+      _Tiles.fill(tile);
 
       // TODO: There is probably a tighter way to optimize this by taking
       // cardinal and intercardinal directions into account.
@@ -267,32 +278,26 @@ class Architect {
       if (solidNeighbors >= 7) continue;
 
       // See if we can still reach all the unfillable tiles.
-      var reachedCave = 0;
+      var reachedOpen = 0;
       var flow = _CardinalFlow(stage, start);
       for (var reached in flow.reachable) {
-        if (stage[reached].type == Tiles.unfillable) {
-          reachedCave++;
+        if (stage[reached].type == _Tiles.open) {
+          reachedOpen++;
         }
       }
 
       // Make sure we can reach every other open area from the starting one.
       // -1 to not count the starting tile.
-      if (reachedCave != unfillable.length - 1) {
-        // Filling this tile would cause something to be unreachable, so mark
-        // it open.
-        tile.type = Tiles.unfilled;
+      if (reachedOpen != open.length - 1) {
+        // Filling this tile would cause something to be unreachable, so it must
+        // be a passage.
+        _Tiles.makePassage(tile);
       } else {
         // Optimization: Since we've already calculated the reachability to
         // everything, we can also eagerly fill in fillable regions that are
         // already cut off from the caves and passages.
         for (var pos in stage.bounds.inflate(-1)) {
-          if (flow.costAt(pos) == null) {
-            if (stage[pos].type == Tiles.fillable) {
-              stage[pos].type = Tiles.filled;
-            } else if (stage[pos].type == Tiles.aquatic) {
-              stage[pos].type = Tiles.water;
-            }
-          }
+          if (flow.costAt(pos) == null) _Tiles.fill(stage[pos]);
         }
       }
 
@@ -339,16 +344,65 @@ abstract class Architecture {
   bool canCarve(Vec pos) => _architect._canCarve(this, pos);
 
   void placeWater(Vec pos) {
-    _architect.stage[pos].type = Tiles.aquatic;
-    _architect._owners[pos] = null;
+    _architect.stage[pos].type = _Tiles.unformedWet;
+    _architect._owners[pos] = this;
   }
 
   /// Marks the tile at [pos] as not allowing a passage to be dug through it.
   void preventPassage(Vec pos) {
     assert(_architect._owners[pos] == null || _architect._owners[pos] == this);
 
-    if (_architect.stage[pos].type == Tiles.fillable) {
-      _architect.stage[pos].type = Tiles.filled;
+    if (_architect.stage[pos].type == _Tiles.unformed) {
+      _architect.stage[pos].type = _Tiles.solid;
+    }
+  }
+}
+
+/// Temporary tile types used during stage generation.
+class _Tiles {
+  /// An unformed tile that can be turned into aquatic, passage, or solid.
+  static final unformed = Tiles.tile("unformed", "?", slate).open();
+
+  /// An unformed tile that can be turned into water of some kind when "filled"
+  /// or a bridge when used as a passage.
+  static final unformedWet = Tiles.tile("unformed wet", "≈", slate).open();
+
+  /// An open floor tile generated by an architecture.
+  static final open = Tiles.tile("open", "·", gunsmoke).open();
+
+  /// A solid tile that has been filled in the passage generator.
+  static final solid = Tiles.tile("solid", "#", gunsmoke).solid();
+
+  /// An open tile that the passage generator knows must remain open.
+  static final passage = Tiles.tile("passage", "-", gunsmoke).open();
+
+  /// An untraversable wet tile that has been filled in the passage generator.
+  static final solidWet = Tiles.tile("solid wet", "≈", cornflower).solid();
+
+  /// A traversable wet tile that the passage generator knows must remain open.
+  static final passageWet = Tiles.tile("wet passage", "-", cornflower).open();
+
+  static bool isFormed(TileType type) =>
+      type != unformed && type != unformedWet;
+
+  static void fill(Tile tile) {
+    if (tile.type == _Tiles.unformed) {
+      tile.type = _Tiles.solid;
+    } else if (tile.type == _Tiles.unformedWet) {
+      tile.type = _Tiles.solidWet;
+    } else {
+      assert(tile.type == _Tiles.solid || tile.type == _Tiles.solidWet,
+          "Unexpected tile type.");
+    }
+  }
+
+  static void makePassage(Tile tile) {
+    if (tile.type == _Tiles.solid) {
+      tile.type = _Tiles.passage;
+    } else if (tile.type == _Tiles.solidWet) {
+      tile.type = _Tiles.passageWet;
+    } else {
+      assert(false, "Unexpected tile type.");
     }
   }
 }
