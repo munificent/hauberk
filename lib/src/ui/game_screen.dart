@@ -34,6 +34,8 @@ class GameScreen extends Screen<Input> {
 
   bool _hasAnimatedTile = false;
 
+  int _frame = 0;
+
   /// The size of the [Stage] view area.
   final viewSize = Vec(60, 34);
 
@@ -460,6 +462,8 @@ class GameScreen extends Screen<Input> {
   }
 
   void update() {
+    _frame++;
+
     if (_pause > 0) {
       _pause--;
       return;
@@ -595,7 +599,24 @@ class GameScreen extends Screen<Input> {
       if (tile.isExplored ||
           Debug.showAllMonsters && actor != null ||
           Debug.showHeroVolume) {
-        var tileGlyph = tile.type.appearance as Glyph;
+        Glyph tileGlyph;
+        if (tile.type.appearance is Glyph) {
+          tileGlyph = tile.type.appearance;
+        } else {
+          var glyphs = tile.type.appearance as List<Glyph>;
+
+          // Ping pong back and forth.
+          var period = glyphs.length * 2 - 2;
+          var phase = pos.x * pos.x * 17 + pos.y * pos.y * 39;
+          var frame = (_frame ~/ 8 + phase) % period;
+          if (frame >= glyphs.length) {
+            frame = glyphs.length - (frame - glyphs.length) - 1;
+          }
+
+          tileGlyph = glyphs[frame];
+          _hasAnimatedTile = true;
+        }
+
         var char = tileGlyph.char;
         var lightFore = tileGlyph.fore;
         var lightBack = tileGlyph.back;

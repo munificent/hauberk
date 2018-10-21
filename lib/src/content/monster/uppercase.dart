@@ -66,6 +66,8 @@ void faeFolk() {
     ..teleport(range: 5)
     ..drop("treasure", percent: 10)
     ..drop("magic");
+
+  // TODO: https://en.wikipedia.org/wiki/Puck_(folklore)
 }
 
 void golems() {

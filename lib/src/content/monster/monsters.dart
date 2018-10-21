@@ -11,6 +11,9 @@ class Monsters {
   static void initialize() {
     Themes.defineTags(breeds, "monster");
 
+    // TODO: https://en.wikipedia.org/wiki/P%C3%BAca
+    // TODO: https://en.wikipedia.org/wiki/Kelpie
+
     // Here's approximately the level distributions for the different
     // broad categories on monsters. Monsters are very roughly lumped
     // together so that different depths tend to have a different
