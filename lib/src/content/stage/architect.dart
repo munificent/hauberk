@@ -114,10 +114,11 @@ class Architect {
     // Fill in the remaining fillable tiles and keep everything connected.
     var unownedPassages = <Vec>[];
     yield* _fillPassages(unownedPassages);
-
     yield* _claimPassages(unownedPassages);
 
     // TODO: Add shortcuts.
+
+    // TODO: Place stairs.
 
     // TODO: Decorate and populate.
     // TODO: Instead of bleeding themes around, here's a simpler idea:
@@ -129,16 +130,7 @@ class Architect {
     // This way, you can get nearby styles and foreshadowing without a lot of
     // complex calculation.
 
-    // Paint the tiles.
-    for (var pos in stage.bounds) {
-      var tile = stage[pos];
-      var owner = _owners[pos];
-      if (owner == null) {
-        tile.type = Painter.base.paint(tile.type);
-      } else {
-        tile.type = owner.painter.paint(tile.type);
-      }
-    }
+    _paintTiles();
 
     // TODO: Temp.
     placeHero(stage.findOpenTile());
@@ -227,7 +219,7 @@ class Architect {
       var tile = stage[pos].type;
       if (tile == TempTiles.open) {
         open.add(pos);
-      } else if (!TempTiles.isFormed(tile)) {
+      } else if (!_isFormed(tile)) {
         unformed.add(pos);
       }
     }
@@ -241,10 +233,10 @@ class Architect {
       var tile = stage[pos];
 
       // We may have already processed it.
-      if (TempTiles.isFormed(tile.type)) continue;
+      if (_isFormed(tile.type)) continue;
 
       // Try to fill this tile.
-      TempTiles.fill(tile);
+      _fill(tile);
 
       // TODO: There is probably a tighter way to optimize this by taking
       // cardinal and intercardinal directions into account.
@@ -284,7 +276,7 @@ class Architect {
         // everything, we can also eagerly fill in fillable regions that are
         // already cut off from the caves and passages.
         for (var pos in stage.bounds.inflate(-1)) {
-          if (flow.costAt(pos) == null) TempTiles.fill(stage[pos]);
+          if (flow.costAt(pos) == null) _fill(stage[pos]);
         }
       }
 
@@ -354,6 +346,34 @@ class Architect {
       if (_owners[here] == null) _owners[here] = owner;
     }
   }
+
+  /// Turn the temporary tiles into real tiles based on each architecutre's
+  /// painters.
+  void _paintTiles() {
+    for (var pos in stage.bounds) {
+      var tile = stage[pos];
+      var owner = _owners[pos];
+      if (owner == null) {
+        tile.type = Painter.base.paint(tile.type);
+      } else {
+        tile.type = owner.painter.paint(tile.type);
+      }
+    }
+  }
+
+  void _fill(Tile tile) {
+    if (tile.type == TempTiles.unformed) {
+      tile.type = TempTiles.solid;
+    } else if (tile.type == TempTiles.unformedWet) {
+      tile.type = TempTiles.solidWet;
+    } else {
+      assert(tile.type == TempTiles.solid || tile.type == TempTiles.solidWet,
+          "Unexpected tile type.");
+    }
+  }
+
+  bool _isFormed(TileType type) =>
+      type != TempTiles.unformed && type != TempTiles.unformedWet;
 }
 
 class ArchitecturalStyle {
@@ -435,20 +455,6 @@ class TempTiles {
 
   /// A traversable wet tile that the passage generator knows must remain open.
   static final passageWet = Tiles.tile("wet passage", "-", cornflower).open();
-
-  static bool isFormed(TileType type) =>
-      type != unformed && type != unformedWet;
-
-  static void fill(Tile tile) {
-    if (tile.type == TempTiles.unformed) {
-      tile.type = TempTiles.solid;
-    } else if (tile.type == TempTiles.unformedWet) {
-      tile.type = TempTiles.solidWet;
-    } else {
-      assert(tile.type == TempTiles.solid || tile.type == TempTiles.solidWet,
-          "Unexpected tile type.");
-    }
-  }
 }
 
 class _CardinalFlow extends Flow {

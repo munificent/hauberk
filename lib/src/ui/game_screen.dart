@@ -607,6 +607,8 @@ class GameScreen extends Screen<Input> {
 
           // Ping pong back and forth.
           var period = glyphs.length * 2 - 2;
+
+          // Calculate a "random" but consistent phase for each position.
           var phase = pos.x * pos.x * 17 + pos.y * pos.y * 39;
           var frame = (_frame ~/ 8 + phase) % period;
           if (frame >= glyphs.length) {

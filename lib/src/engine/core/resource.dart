@@ -100,7 +100,7 @@ class ResourceSet<T> {
 
   /// Chooses a random resource in [tagName] for [depth].
   ///
-  /// All resources of child tags of [tagName]. For example, given tag
+  /// Includes all resources of child tags of [tagName]. For example, given tag
   /// path "equipment/weapon/sword", if [tagName] is "weapon", this will permit
   /// resources tagged "weapon" or "sword", with equal probability.
   ///
