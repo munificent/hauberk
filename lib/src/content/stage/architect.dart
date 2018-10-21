@@ -10,6 +10,7 @@ import 'cavern.dart';
 import 'dungeon.dart';
 import 'lake.dart';
 import 'painter.dart';
+import 'reachability.dart';
 import 'river.dart';
 
 // TODO: Consider regions that are randomly placed blobs in the middle too.
@@ -113,7 +114,9 @@ class Architect {
 
     // Fill in the remaining fillable tiles and keep everything connected.
     var unownedPassages = <Vec>[];
+
     yield* _fillPassages(unownedPassages);
+
     yield* _claimPassages(unownedPassages);
 
     // TODO: Add shortcuts.
@@ -213,21 +216,30 @@ class Architect {
     // 2. Pick a random remaining non-articulation point and mark it filled. We
     //    know this is safe to do.
     // 3. As long as non-articulation points remain, go to 1.
-    var open = <Vec>[];
+    var openCount = 0;
+    var start = Vec.zero;
+    var startDistance = 99999;
+
     var unformed = <Vec>[];
     for (var pos in stage.bounds.inflate(-1)) {
       var tile = stage[pos].type;
       if (tile == TempTiles.open) {
-        open.add(pos);
+        openCount++;
+
+        // Prefer a starting tile near the center.
+        var distance = (pos - stage.bounds.center).rookLength;
+        if (distance < startDistance) {
+          start = pos;
+          startDistance = distance;
+        }
       } else if (!_isFormed(tile)) {
         unformed.add(pos);
       }
     }
 
-    rng.shuffle(open);
     rng.shuffle(unformed);
 
-    var start = open.first;
+    var reachability = Reachability(stage, start);
 
     for (var pos in unformed) {
       var tile = stage[pos];
@@ -237,6 +249,11 @@ class Architect {
 
       // Try to fill this tile.
       _fill(tile);
+
+      // Optimization: If it's already been cut off, we know it can be filled.
+      if (!reachability.isReachable(pos)) continue;
+
+      reachability.fill(pos);
 
       // TODO: There is probably a tighter way to optimize this by taking
       // cardinal and intercardinal directions into account.
@@ -258,26 +275,19 @@ class Architect {
 
       // See if we can still reach all the unfillable tiles.
       var reachedOpen = 0;
-      var flow = _CardinalFlow(stage, start);
-      for (var reached in flow.reachable) {
-        if (stage[reached].type == TempTiles.open) {
+      for (var here in stage.bounds) {
+        if (reachability.isReachable(here) &&
+            stage[here].type == TempTiles.open) {
           reachedOpen++;
         }
       }
 
       // Make sure we can reach every other open area from the starting one.
-      // -1 to not count the starting tile.
-      if (reachedOpen != open.length - 1) {
+      if (reachedOpen != openCount) {
         // Filling this tile would cause something to be unreachable, so it must
         // be a passage.
         _makePassage(unownedPassages, pos);
-      } else {
-        // Optimization: Since we've already calculated the reachability to
-        // everything, we can also eagerly fill in fillable regions that are
-        // already cut off from the caves and passages.
-        for (var pos in stage.bounds.inflate(-1)) {
-          if (flow.costAt(pos) == null) _fill(stage[pos]);
-        }
+        reachability.undoFill();
       }
 
       yield "$pos";
@@ -455,18 +465,4 @@ class TempTiles {
 
   /// A traversable wet tile that the passage generator knows must remain open.
   static final passageWet = Tiles.tile("wet passage", "-", cornflower).open();
-}
-
-class _CardinalFlow extends Flow {
-  bool get includeDiagonals => false;
-
-  _CardinalFlow(Stage stage, Vec start) : super(stage, start);
-
-  /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
-  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
-    // Can't enter impassable tiles.
-    if (!tile.canEnter(Motility.walk)) return null;
-
-    return 1;
-  }
 }

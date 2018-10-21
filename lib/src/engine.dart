@@ -33,6 +33,7 @@ export 'engine/monster/breed.dart';
 export 'engine/monster/monster.dart';
 export 'engine/monster/monster_pathfinder.dart';
 export 'engine/monster/move.dart';
+export 'engine/stage/bucket_queue.dart';
 export 'engine/stage/flow.dart';
 export 'engine/stage/fov.dart';
 export 'engine/stage/lighting.dart';

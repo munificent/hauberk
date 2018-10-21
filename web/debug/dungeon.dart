@@ -239,7 +239,14 @@ void render({bool showInfo = true}) {
     for (var x = 0; x < stage.width; x++) {
       var pos = Vec(x, y);
       var tile = stage[pos];
-      var glyph = tile.type.appearance as Glyph;
+
+      Glyph glyph;
+      if (tile.type.appearance is Glyph) {
+        glyph = tile.type.appearance as Glyph;
+      } else {
+        var glyphs = tile.type.appearance as List<Glyph>;
+        glyph = rng.item(glyphs);
+      }
 
       var light = ((1.0 - tile.illumination / 128) * 0.5).clamp(0.0, 1.0);
       glyph = Glyph.fromCharCode(glyph.char, glyph.fore.blend(nearBlack, light),

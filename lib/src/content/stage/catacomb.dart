@@ -8,7 +8,7 @@ class Catacomb extends Architecture {
   // TODO: Fields to tune numbers below.
 
   Iterable<String> build() sync* {
-    for (var i = 0; i < 40; i++) {
+    for (var i = 0; i < 100; i++) {
       var cave = rng.oneIn(10) ? Blob.make32() : Blob.make16();
       for (var j = 0; j < 400; j++) {
         // TODO: dungeon.dart has similar code for placing the starting room.
