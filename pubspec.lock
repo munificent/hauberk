@@ -238,7 +238,7 @@ packages:
       name: malison
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.1"
+    version: "0.10.1+1"
   markdown:
     dependency: "direct main"
     description:
@@ -294,7 +294,7 @@ packages:
       name: piecemeal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.8"
+    version: "0.4.0"
   plugin:
     dependency: transitive
     description:

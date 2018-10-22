@@ -27,8 +27,7 @@ class Cavern extends Architecture {
         if (cells1[pos] == null) continue;
 
         var walls = 0;
-        for (var dir in Direction.all) {
-          var here = pos + dir;
+        for (var here in pos.neighbors) {
           if (!cells1.bounds.contains(here) || cells1[here] != false) walls++;
         }
 

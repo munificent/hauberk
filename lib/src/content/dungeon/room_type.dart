@@ -105,8 +105,7 @@ class BlobRoom extends RoomType {
 
         // If this cell is at the edge of the blob, ensure there is a ring of
         // wall around it.
-        for (var dir in Direction.all) {
-          var neighbor = pos + dir;
+        for (var neighbor in pos.neighbors) {
           if (tiles[neighbor] != Tiles.floor) {
             // TODO: Instead of walls, should do rock.
             tiles[neighbor] = Tiles.wall;

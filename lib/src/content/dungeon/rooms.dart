@@ -235,8 +235,7 @@ class RoomsBiome extends Biome {
     for (var pos in passage) {
       _dungeon.setTileAt(pos, Tiles.floor);
 
-      for (var dir in Direction.all) {
-        var neighbor = pos + dir;
+      for (var neighbor in pos.neighbors) {
         if (_dungeon.isRockAt(neighbor)) {
           _dungeon.setTileAt(neighbor, Tiles.wall);
         }

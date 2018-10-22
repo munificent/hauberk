@@ -64,8 +64,8 @@ class Blob {
       for (var pos in _cells.bounds.inflate(-1)) {
         var walls = 0;
         if (_cells[pos]) walls++;
-        for (var dir in Direction.all) {
-          if (_cells[pos + dir]) walls++;
+        for (var neighbor in pos.neighbors) {
+          if (_cells[neighbor]) walls++;
         }
 
         _dest[pos] = walls >= 5;

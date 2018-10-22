@@ -43,9 +43,7 @@ class Reachability {
     while (queue.isNotEmpty) {
       var pos = queue.removeFirst();
       var distance = _distances[pos];
-      for (var dir in Direction.cardinal) {
-        var neighbor = pos + dir;
-
+      for (var neighbor in pos.cardinalNeighbors) {
         var neighborDistance = _distances[neighbor];
         if (neighborDistance == _unreachable) continue;
 
@@ -103,9 +101,7 @@ class Reachability {
   // affected tile.
   bool _hasOtherPath(Set<Vec> affected, Vec pos) {
     var distance = _distances[pos];
-    for (var dir in Direction.cardinal) {
-      var neighbor = pos + dir;
-
+    for (var neighbor in pos.cardinalNeighbors) {
       if (!stage.bounds.contains(neighbor)) continue;
 
       // If there is an unaffected neighbor whose distance is one step shorter
@@ -129,8 +125,7 @@ class Reachability {
       // affected set.
       if (here == start) continue;
 
-      for (var dir in Direction.cardinal) {
-        var neighbor = here + dir;
+      for (var neighbor in here.cardinalNeighbors) {
         if (_distances[neighbor] >= 0 && !affected.contains(neighbor)) {
           border.add(neighbor);
         }
@@ -155,9 +150,7 @@ class Reachability {
       var parentDistance = _distances[pos];
 
       // Propagate to neighboring tiles.
-      for (var dir in Direction.cardinal) {
-        var here = pos + dir;
-
+      for (var here in pos.cardinalNeighbors) {
         if (!_distances.bounds.contains(here)) continue;
 
         // Ignore tiles we've already reached.

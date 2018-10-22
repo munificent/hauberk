@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
-import 'package:piecemeal/piecemeal.dart';
 
 import '../debug.dart';
 import '../engine.dart';
@@ -81,8 +80,8 @@ class WizardDialog extends Screen<Input> {
 
       // If it is opaque, but it's next to a non-opaque tile (i.e. it's an edge
       // wall), explore it.
-      for (var dir in Direction.all) {
-        if (stage.bounds.contains(pos + dir) && !stage[pos + dir].blocksView) {
+      for (var neighbor in pos.neighbors) {
+        if (stage.bounds.contains(neighbor) && !stage[neighbor].blocksView) {
           stage[pos].updateExplored(force: true);
           break;
         }

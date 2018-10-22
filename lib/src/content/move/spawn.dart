@@ -19,8 +19,8 @@ class SpawnMove extends Move {
     if (!monster.isVisibleToHero) return false;
 
     // Look for an open adjacent tile.
-    for (var dir in Direction.all) {
-      if (monster.willEnter(monster.pos + dir)) return true;
+    for (var neighbor in monster.pos.neighbors) {
+      if (monster.willEnter(neighbor)) return true;
     }
 
     return false;

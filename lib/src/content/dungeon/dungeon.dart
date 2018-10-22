@@ -84,7 +84,7 @@ class Dungeon {
     yield "Placing decor";
     for (var place in _places) {
       var density = place.cells.length * place.decorDensity;
-      var decorCount = randomRound(rng.float(density * 0.8, density * 1.2));
+      var decorCount = rng.round(rng.float(density * 0.8, density * 1.2));
 
       for (var i = 0; i < decorCount; i++) {
         var theme = place.chooseTheme();
@@ -147,13 +147,6 @@ class Dungeon {
         avoidActors: true));
   }
 
-  // TODO: Move to piecemeal.
-  int randomRound(double value) {
-    var result = value.floor();
-    if (rng.float(1.0) < value - result) result++;
-    return result;
-  }
-
   Place placeAt(Vec pos) {
     if (_cells == null) return null;
     return _cells[pos];
@@ -190,8 +183,7 @@ class Dungeon {
   /// Returns `true` if the cell at [pos] has at least one adjacent tile with
   /// type [tile].
   bool hasCardinalNeighbor(Vec pos, List<TileType> tiles) {
-    for (var dir in Direction.cardinal) {
-      var neighbor = pos + dir;
+    for (var neighbor in pos.cardinalNeighbors) {
       if (!safeBounds.contains(neighbor)) continue;
 
       if (tiles.contains(stage[neighbor].type)) return true;
@@ -203,8 +195,7 @@ class Dungeon {
   /// Returns `true` if the cell at [pos] has at least one adjacent tile with
   /// type [tile].
   bool hasNeighbor(Vec pos, TileType tile) {
-    for (var dir in Direction.all) {
-      var neighbor = pos + dir;
+    for (var neighbor in pos.neighbors) {
       if (!safeBounds.contains(neighbor)) continue;
 
       if (stage[neighbor].type == tile) return true;
@@ -229,8 +220,8 @@ class Dungeon {
       var from = _cells[pos];
       if (from == null) continue;
 
-      for (var direction in Direction.cardinal) {
-        var to = _cells[pos + direction];
+      for (var neighbor in pos.cardinalNeighbors) {
+        var to = _cells[neighbor];
         if (to != null && to != from) {
           from.neighbors.add(to);
           to.neighbors.add(from);
@@ -410,8 +401,9 @@ class Dungeon {
 
       if (stage.actorAt(pos) != null) continue;
 
-      var wallCount =
-          Direction.all.where((dir) => !getTileAt(pos + dir).isWalkable).length;
+      var wallCount = pos.neighbors
+          .where((neighbor) => !getTileAt(neighbor).isWalkable)
+          .length;
 
       if (wallCount >= minWalls && wallCount <= maxWalls) return pos;
 

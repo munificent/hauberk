@@ -152,7 +152,6 @@ class Architect {
       // Make sure there's at least one walkable style.
       if (!style._isAquatic) hasNonAquatic = true;
 
-      // TODO: Retry in this case?
       if (!result.contains(style)) result.add(style);
     }
 
@@ -193,8 +192,7 @@ class Architect {
     // solid tiles between two open tiles of different architectures, one owned
     // by each. That way, if they style their walls differently, one doesn't
     // bleed into the other.
-    for (var dir in Direction.all) {
-      var here = pos + dir;
+    for (var here in pos.neighbors) {
       if (!stage.bounds.contains(here)) continue;
 
       if (stage[here].type == TempTiles.unformedWet) continue;
@@ -261,8 +259,8 @@ class Architect {
       // Simple optimization: A tile with 0, 1, 7, or 8 solid tiles next to it
       // can't possibly break a path.
       var solidNeighbors = 0;
-      for (var dir in Direction.all) {
-        if (!stage[pos + dir].type.isTraversable) {
+      for (var neighbor in pos.neighbors) {
+        if (!stage[neighbor].type.isTraversable) {
           solidNeighbors++;
         }
       }
@@ -327,8 +325,8 @@ class Architect {
       var stillUnowned = <Vec>[];
       for (var pos in unownedPassages) {
         var neighbors = <Architecture>[];
-        for (var dir in Direction.all) {
-          var owner = _owners[pos + dir];
+        for (var neighbor in pos.neighbors) {
+          var owner = _owners[neighbor];
           if (owner != null) neighbors.add(owner);
         }
 
@@ -351,9 +349,8 @@ class Architect {
   /// Claims any neighboring tiles of [pos] for [owner] if they don't already
   /// have an owner.
   void _claimNeighbors(Vec pos, Architecture owner) {
-    for (var dir in Direction.all) {
-      var here = pos + dir;
-      if (_owners[here] == null) _owners[here] = owner;
+    for (var neighbor in pos.neighbors) {
+      if (_owners[neighbor] == null) _owners[neighbor] = owner;
     }
   }
 

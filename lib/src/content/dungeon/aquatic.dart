@@ -39,8 +39,7 @@ abstract class AquaticBiome extends Biome {
     var edges = Set<Vec>();
 
     addNeighbors(Vec pos) {
-      for (var dir in Direction.cardinal) {
-        var neighbor = pos + dir;
+      for (var neighbor in pos.cardinalNeighbors) {
         if (!_dungeon.safeBounds.contains(neighbor)) continue;
 
         // TODO: Allow passing in the tile types that can be grown into.

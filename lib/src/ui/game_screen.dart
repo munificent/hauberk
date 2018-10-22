@@ -307,8 +307,7 @@ class GameScreen extends Screen<Input> {
     // See how many adjacent closed doors there are.
     // TODO: Handle chests.
     var openable = <Vec>[];
-    for (var direction in Direction.all) {
-      var pos = game.hero.pos + direction;
+    for (var pos in game.hero.pos.neighbors) {
       if (game.stage[pos].type.canOpen) {
         openable.add(pos);
       }
@@ -329,8 +328,7 @@ class GameScreen extends Screen<Input> {
   void closeDoor() {
     // See how many adjacent open doors there are.
     var closeable = <Vec>[];
-    for (var direction in Direction.all) {
-      var pos = game.hero.pos + direction;
+    for (var pos in game.hero.pos.neighbors) {
       if (game.stage[pos].type.canClose) {
         closeable.add(pos);
       }

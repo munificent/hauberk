@@ -38,8 +38,8 @@ class MappingAction extends Action {
         }
 
         // Update the neighbors too mainly so that walls get explored.
-        for (var dir in Direction.all) {
-          game.stage.explore(pos + dir, force: true);
+        for (var neighbor in pos.neighbors) {
+          game.stage.explore(neighbor, force: true);
         }
       }
 

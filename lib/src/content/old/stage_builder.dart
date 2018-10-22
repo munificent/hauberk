@@ -46,9 +46,8 @@ abstract class StageBuilder {
       // if we are directly next to a floor.
       var floors = 0;
 
-      for (var dir in Direction.all) {
-        var tile = getTile(pos + dir);
-        if (tile == floor) floors++;
+      for (var here in pos.neighbors) {
+        if (getTile(here) == floor) floors++;
       }
 
       // Prefer to erode tiles near more floor tiles so the erosion isn't too

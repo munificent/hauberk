@@ -443,8 +443,7 @@ class AfraidState extends MonsterState {
 
     // If we couldn't find a hidden tile, at least try to get some distance.
     var heroDistance = (pos - game.hero.pos).kingLength;
-    var farther = Direction.all.where((dir) {
-      var here = pos + dir;
+    var farther = pos.neighbors.where((here) {
       if (!monster.willEnter(here)) return false;
       return (here - game.hero.pos).kingLength > heroDistance;
     });
