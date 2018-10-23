@@ -1,9 +1,9 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../dungeon/dungeon.dart';
+import '../stage/architect.dart';
 import '../themes.dart';
-import 'blast.dart';
+//import 'blast.dart';
 import 'furnishing.dart';
 
 abstract class Decor {
@@ -11,7 +11,8 @@ abstract class Decor {
     Themes.defineTags(all);
     Furnishing.initialize();
 
-    all.addUnnamed(Blast(), 1, 0.01, "laboratory");
+    // TODO: Doesn't look great. Remove or redo.
+//    all.addUnnamed(Blast(), 1, 0.01, "laboratory");
   }
 
   static Decor choose(String theme) {
@@ -22,7 +23,8 @@ abstract class Decor {
 
   static final ResourceSet<Decor> all = ResourceSet();
 
-  bool canPlace(Dungeon dungeon, Vec pos);
+  bool canPlace(TilePainter painter, Vec pos);
 
-  void place(Dungeon dungeon, Vec pos);
+  /// Adds this decor at [pos].
+  void place(TilePainter painter, Vec pos);
 }

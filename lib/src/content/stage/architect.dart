@@ -5,6 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../../hues.dart';
 import '../tiles.dart';
+import '../decor/decor.dart';
 import 'catacomb.dart';
 import 'cavern.dart';
 import 'dungeon.dart';
@@ -42,24 +43,26 @@ class Architect {
   static void _initializeStyles() {
     _styles.defineTags("style");
 
+    addStyle(String theme, int depth, double frequency,
+        Architecture Function() _factory,
+        {bool isAquatic}) {
+      _styles.addUnnamed(
+          ArchitecturalStyle(theme, _factory), depth, frequency, "style");
+    }
+
     // TODO: Define more.
-    _styles.addUnnamed(ArchitecturalStyle(() => Catacomb()), 1, 2.0, "style");
-    _styles.addUnnamed(ArchitecturalStyle(() => Cavern()), 1, 1.0, "style");
-    // TODO: Do we want to build this out after water is placed? Should water
-    // be allowed to overlap it? Doing it after water might give it a more
-    // interesting look. (Perhaps even sometimes run caverns or catacombs after
-    // water?
-    _styles.addUnnamed(ArchitecturalStyle(() => Dungeon()), 1, 10.0, "style");
+    addStyle("glowing-moss", 1, 2.0, () => Catacomb());
+    addStyle("glowing-moss", 1, 1.0, () => Cavern());
+
+    addStyle("dungeon", 1, 10.0, () => Dungeon());
     // TODO: Forest style that uses cavern-like CA to open an organic-shaped
     // area and then fills it with grass and trees. (Maybe just a specific
     // painter for Cavern?
 
     // TODO: Different liquid types including some that are dry.
     // TODO: Shore or islands?
-    _styles.addUnnamed(
-        ArchitecturalStyle(() => Lake(), isAquatic: true), 1, 1.0, "style");
-    _styles.addUnnamed(
-        ArchitecturalStyle(() => River(), isAquatic: true), 1, 1.0, "style");
+    addStyle("water", 1, 1.0, () => Lake(), isAquatic: true);
+    addStyle("water", 1, 1.0, () => River(), isAquatic: true);
   }
 
   final Lore _lore;
@@ -120,10 +123,10 @@ class Architect {
     yield* _claimPassages(unownedPassages);
 
     // TODO: Add shortcuts.
-
+    // TODO: Place doors.
     // TODO: Place stairs.
 
-    // TODO: Decorate and populate.
+    // TODO: Populate.
     // TODO: Instead of bleeding themes around, here's a simpler idea:
     // 1. Choose a random place to spawn a monster/item.
     // 2. Do a random walk from there to a result tile.
@@ -134,6 +137,9 @@ class Architect {
     // complex calculation.
 
     _paintTiles();
+
+    // TODO: Should this happen before or after painting?
+    yield* _placeDecor();
 
     // TODO: Temp.
     placeHero(stage.findOpenTile());
@@ -354,6 +360,47 @@ class Architect {
     }
   }
 
+  Iterable<String> _placeDecor() sync* {
+    var tilesByOwner = <Architecture, List<Vec>>{};
+    for (var pos in stage.bounds) {
+      var owner = _owners[pos];
+      if (owner != null) {
+        tilesByOwner.putIfAbsent(owner, () => []).add(pos);
+      }
+    }
+
+    for (var entry in tilesByOwner.entries) {
+      var architecture = entry.key;
+      var tiles = entry.value;
+
+      var painter = TilePainter._(architecture);
+
+      // TODO: Let architecture/theme control density.
+      var decorTiles = rng.round(tiles.length * 0.1);
+      decorTiles = rng.float(decorTiles * 0.8, decorTiles * 1.2).ceil();
+
+      var tries = 0;
+      while (tries++ < decorTiles && painter._painted < decorTiles) {
+        var decor = Decor.choose(architecture.theme);
+        if (decor == null) continue;
+
+        var allowed = <Vec>[];
+
+        for (var tile in tiles) {
+          var offset = tile.offset(-1, -1);
+          if (decor.canPlace(painter, offset)) {
+            allowed.add(offset);
+          }
+        }
+
+        if (allowed.isNotEmpty) {
+          decor.place(painter, rng.item(allowed));
+          yield "Placed decor";
+        }
+      }
+    }
+  }
+
   /// Turn the temporary tiles into real tiles based on each architecutre's
   /// painters.
   void _paintTiles() {
@@ -384,17 +431,43 @@ class Architect {
 }
 
 class ArchitecturalStyle {
+  final String _theme;
   final Architecture Function() _factory;
   final bool _isAquatic;
 
-  ArchitecturalStyle(this._factory, {bool isAquatic})
+  ArchitecturalStyle(this._theme, this._factory, {bool isAquatic})
       : _isAquatic = isAquatic ?? false;
 
   Architecture create(Architect architect, Region region) {
     var architecture = _factory();
     architecture._architect = architect;
+    architecture._style = this;
     architecture._region = region;
     return architecture;
+  }
+}
+
+// TODO: Figure out how this interacts with Painter.
+class TilePainter {
+  final Architecture _architecture;
+  int _painted = 0;
+
+  TilePainter._(this._architecture);
+
+  Rect get bounds => _architecture._architect.stage.bounds;
+
+  bool ownsTile(Vec pos) =>
+      _architecture._architect._owners[pos] == _architecture;
+
+  TileType getTile(Vec pos) {
+    assert(ownsTile(pos));
+    return _architecture._architect.stage[pos].type;
+  }
+
+  void setTile(Vec pos, TileType type) {
+    assert(_architecture._architect._owners[pos] == _architecture);
+    _architecture._architect.stage[pos].type = type;
+    _painted++;
   }
 }
 
@@ -402,6 +475,7 @@ class ArchitecturalStyle {
 /// that generates part of a stage.
 abstract class Architecture {
   Architect _architect;
+  ArchitecturalStyle _style;
   Region _region;
 
   Iterable<String> build();
@@ -415,6 +489,8 @@ abstract class Architecture {
   Region get region => _region;
 
   Painter get painter => Painter.base;
+
+  String get theme => _style._theme;
 
   /// Marks the tile at [x], [y] as open floor for this architecture.
   void carve(int x, int y) => _architect._carve(this, x, y);

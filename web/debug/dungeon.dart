@@ -245,7 +245,9 @@ void render({bool showInfo = true}) {
         glyph = tile.type.appearance as Glyph;
       } else {
         var glyphs = tile.type.appearance as List<Glyph>;
-        glyph = rng.item(glyphs);
+        // Calculate a "random" but consistent phase for each position.
+        var phase = x * x * 17 + pos.y * pos.y * 39;
+        glyph = glyphs[phase % glyphs.length];
       }
 
       var light = ((1.0 - tile.illumination / 128) * 0.5).clamp(0.0, 1.0);

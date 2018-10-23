@@ -32,6 +32,10 @@ class Tiles {
   static final stairs = tile("stairs", "≡", gunsmoke, slate).exit().open();
   static final bridge = tile("bridge", "≡", persimmon, garnet).open();
 
+  // TODO: Stop glowing when stepped on?
+  static final glowingMoss =
+      Tiles.tile("moss", "░", seaGreen).emanate(6).open();
+
   static final water = tile("water", "≈", cerulean, ultramarine).water();
   static final steppingStone =
       tile("stepping stone", "•", gunsmoke, ultramarine).open();
@@ -106,6 +110,7 @@ class Tiles {
     openDoor: 30,
     closedDoor: 30,
     bridge: 50,
+    glowingMoss: 10,
     grass: 3,
     tallGrass: 3,
     tree: 40,
@@ -138,6 +143,7 @@ class Tiles {
     openDoor: 70,
     closedDoor: 70,
     bridge: 50,
+    glowingMoss: 20,
     grass: 30,
     tallGrass: 50,
     tree: 100,

@@ -14,23 +14,12 @@ enum Symmetry {
   rotate180,
 }
 
-double _frequency = 1.0;
+double _categoryFrequency;
+double _furnishingFrequency;
 String _themes;
-String _apply;
+Map<String, Cell> _categoryCells;
 
 final Map<String, Cell> _applyCells = {
-  "┌": Cell(apply: Tiles.tableTopLeft, motility: Motility.walk),
-  "─": Cell(apply: Tiles.tableTop, motility: Motility.walk),
-  "┐": Cell(apply: Tiles.tableTopRight, motility: Motility.walk),
-  "-": Cell(apply: Tiles.tableCenter, motility: Motility.walk),
-  "│": Cell(apply: Tiles.tableSide, motility: Motility.walk),
-  "╘": Cell(apply: Tiles.tableBottomLeft, motility: Motility.walk),
-  "═": Cell(apply: Tiles.tableBottom, motility: Motility.walk),
-  "╛": Cell(apply: Tiles.tableBottomRight, motility: Motility.walk),
-  "╞": Cell(apply: Tiles.tableLegLeft, motility: Motility.walk),
-  "╤": Cell(apply: Tiles.tableLeg, motility: Motility.walk),
-  "╡": Cell(apply: Tiles.tableLegRight, motility: Motility.walk),
-  "π": Cell(apply: Tiles.chair, motility: Motility.walk),
   "i": Cell(apply: Tiles.candle, require: Tiles.tableCenter),
   "I": Cell(apply: Tiles.wallTorch, require: Tiles.wall),
   "l": Cell(apply: Tiles.wallTorch, motility: Motility.walk),
@@ -41,13 +30,13 @@ final Map<String, Cell> _applyCells = {
   "*": Cell(apply: Tiles.tallGrass, require: Tiles.grass),
   "=": Cell(apply: Tiles.bridge, require: Tiles.water),
   "≡": Cell(apply: Tiles.bridge, motility: Motility.walk),
-  "•": Cell(apply: Tiles.steppingStone, require: Tiles.water),
+  "•": Cell(apply: Tiles.steppingStone, require: Tiles.water)
 };
 
 final Map<String, Cell> _requireCells = {
   "?": Cell(),
   ".": Cell(motility: Motility.walk),
-  "#": Cell(require: Tiles.wall),
+  "#": Cell(requireAny: [Tiles.wall, Tiles.rock]),
   "┌": Cell(require: Tiles.tableTopLeft),
   "─": Cell(require: Tiles.tableTop),
   "┐": Cell(require: Tiles.tableTopRight),
@@ -83,19 +72,21 @@ final _rotate = [
   "─│═│",
 ];
 
-void category(double frequency, {String themes, String apply}) {
-  _frequency = frequency;
+void category({String themes, double frequency, Map<String, Cell> cells}) {
   _themes = themes;
-  _apply = apply;
+  _categoryFrequency = frequency;
+  _categoryCells = cells;
 }
 
-void furnishing(Symmetry symmetry, String template) {
+void furnishing({double frequency, Symmetry symmetry, String template}) {
+  _furnishingFrequency = frequency;
+  symmetry ??= Symmetry.none;
+
   var lines = template.split("\n").map((line) => line.trim()).toList();
-  _singleFurnishing(_apply, lines);
+  _singleFurnishing(lines);
 
   if (symmetry == Symmetry.mirrorHorizontal ||
       symmetry == Symmetry.mirrorBoth) {
-    var mirrorApplied = _mapString(_apply, _mirrorCharHorizontal);
     var mirrorLines = lines.toList();
     for (var i = 0; i < lines.length; i++) {
       mirrorLines[i] = _mapString(
@@ -103,38 +94,33 @@ void furnishing(Symmetry symmetry, String template) {
           _mirrorCharHorizontal);
     }
 
-    _singleFurnishing(mirrorApplied, mirrorLines);
+    _singleFurnishing(mirrorLines);
   }
 
   if (symmetry == Symmetry.mirrorVertical || symmetry == Symmetry.mirrorBoth) {
-    var mirrorApplied = _mapString(_apply, _mirrorCharVertical);
     var mirrorLines = lines.toList();
     for (var i = 0; i < lines.length; i++) {
       mirrorLines[lines.length - i - 1] =
           _mapString(lines[i], _mirrorCharVertical);
     }
 
-    _singleFurnishing(mirrorApplied, mirrorLines);
+    _singleFurnishing(mirrorLines);
   }
 
   if (symmetry == Symmetry.mirrorBoth ||
       symmetry == Symmetry.rotate180 ||
       symmetry == Symmetry.rotate90) {
-    var mirrorApplied = _mapString(_apply, _mirrorCharBoth);
-
     var mirrorLines = lines.toList();
     for (var i = 0; i < lines.length; i++) {
       mirrorLines[lines.length - i - 1] = _mapString(
           String.fromCharCodes(lines[i].codeUnits.reversed), _mirrorCharBoth);
     }
 
-    _singleFurnishing(mirrorApplied, mirrorLines);
+    _singleFurnishing(mirrorLines);
   }
 
   if (symmetry == Symmetry.rotate90) {
     // Rotate 90°.
-    var rotateApplied = _mapString(_apply, _rotateChar90);
-
     var rotateLines = <String>[];
     for (var x = 0; x < lines[0].length; x++) {
       var line = "";
@@ -144,11 +130,9 @@ void furnishing(Symmetry symmetry, String template) {
       rotateLines.add(line);
     }
 
-    _singleFurnishing(rotateApplied, rotateLines);
+    _singleFurnishing(rotateLines);
 
     // Rotate 270° by mirroring the 90°.
-    var mirrorApplied = _mapString(rotateApplied, _mirrorCharBoth);
-
     var mirrorLines = rotateLines.toList();
     for (var i = 0; i < rotateLines.length; i++) {
       mirrorLines[rotateLines.length - i - 1] = _mapString(
@@ -156,9 +140,11 @@ void furnishing(Symmetry symmetry, String template) {
           _mirrorCharBoth);
     }
 
-    _singleFurnishing(mirrorApplied, mirrorLines);
+    _singleFurnishing(mirrorLines);
   }
 }
+
+Cell applyOpen(TileType type) => Cell(apply: type, motility: Motility.walk);
 
 String _mapString(String input, String Function(String) map) {
   var buffer = StringBuffer();
@@ -201,13 +187,15 @@ String _rotateChar90(String input) {
   return input;
 }
 
-void _singleFurnishing(String applied, List<String> lines) {
+void _singleFurnishing(List<String> lines) {
   var cells = Array2D<Cell>(lines.first.length, lines.length);
   for (var y = 0; y < lines.length; y++) {
     for (var x = 0; x < lines.first.length; x++) {
       var char = lines[y][x];
       Cell cell;
-      if (applied.contains(char)) {
+      if (_categoryCells != null && _categoryCells.containsKey(char)) {
+        cell = _categoryCells[char];
+      } else if (_applyCells.containsKey(char)) {
         cell = _applyCells[char];
       } else {
         cell = _requireCells[char];
@@ -219,5 +207,6 @@ void _singleFurnishing(String applied, List<String> lines) {
   }
 
   var furnishing = Furnishing(cells);
-  Decor.all.addUnnamed(furnishing, 1, _frequency, _themes);
+  Decor.all.addUnnamed(furnishing, 1,
+      _categoryFrequency ?? _furnishingFrequency ?? 1.0, _themes);
 }

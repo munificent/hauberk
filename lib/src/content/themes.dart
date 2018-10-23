@@ -4,8 +4,11 @@ import '../engine.dart';
 /// items that are spawned on them.
 class Themes {
   static void defineTags<T>(ResourceSet<T> resources, [String root]) {
-    // TODO: Remove?
     root = (root == null) ? "" : "$root/";
+    resources.defineTags("${root}cave/glowing-moss");
+    resources.defineTags("${root}built/dungeon/room");
+
+    // TODO: Redo these.
     resources.defineTags("${root}nature/aquatic");
     resources.defineTags("${root}passage");
     resources.defineTags("${root}room/storage/closet");

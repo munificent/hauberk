@@ -1,255 +1,22 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../dungeon/dungeon.dart';
-import 'aquatic.dart';
+import '../stage/architect.dart';
+
+// TODO: Get working again.
+//import 'aquatic.dart';
+import 'cave.dart';
 import 'decor.dart';
-import 'furnishing_builder.dart';
+import 'room.dart';
 
 /// A template-based decor that applies a set of tiles if it matches a set of
 /// existing tiles.
 class Furnishing extends Decor {
   static void initialize() {
-    // TODO: Make sure themes here line up with room themes.
-    // Counters.
-    category(1.0, apply: "┌─┐-│╘╤═╛╞╡", themes: "kitchen laboratory");
-    furnishing(Symmetry.mirrorHorizontal, """
-    ?...
-    #─┐.
-    #-│.
-    #╤╛.
-    ?...""");
+    caveDecor();
+    roomDecor();
 
-    furnishing(Symmetry.mirrorHorizontal, """
-    ?...
-    #─┐.
-    #-│.
-    #-│.
-    #╤╛.
-    ?...""");
-
-    furnishing(Symmetry.mirrorHorizontal, """
-    ?...
-    #─┐.
-    #-│.
-    #-│.
-    #-│.
-    #╤╛.
-    ?...""");
-
-    furnishing(Symmetry.none, """
-    .....
-    .┌─┐.
-    .│-│.
-    ?###?""");
-
-    furnishing(Symmetry.none, """
-    ......
-    .┌──┐.
-    .│--│.
-    ?####?""");
-
-    furnishing(Symmetry.none, """
-    .......
-    .┌───┐.
-    .│---│.
-    ?#####?""");
-
-    furnishing(Symmetry.none, """
-    ?###?
-    .│-│.
-    .╞═╡.
-    .....""");
-
-    furnishing(Symmetry.none, """
-    ?####?
-    .│--│.
-    .╞══╡.
-    ......""");
-
-    furnishing(Symmetry.none, """
-    ?#####?
-    .│---│.
-    .╞═══╡.
-    .......""");
-
-    // Separating counters.
-    category(0.05, apply: "┌─┐-│╘╤═╛╞╡", themes: "workshop");
-    furnishing(Symmetry.none, """
-    ?.....?
-    #─┐.┌─#
-    #╤╛.╘╤#
-    ?.....?""");
-
-    furnishing(Symmetry.none, """
-    ?.......?
-    #──┐.┌──#
-    #═╤╛.╘╤═#
-    ?.......?""");
-
-    furnishing(Symmetry.none, """
-    ?.........?
-    #───┐.┌───#
-    #══╤╛.╘╤══#
-    ?.........?""");
-
-    furnishing(Symmetry.none, """
-    ?##?
-    .││.
-    .╞╡.
-    ....
-    .┌┐.
-    .││.
-    ?##?""");
-
-    furnishing(Symmetry.none, """
-    ?##?
-    .││.
-    .││.
-    .╞╡.
-    ....
-    .┌┐.
-    .││.
-    .││.
-    ?##?""");
-
-    furnishing(Symmetry.none, """
-    ?##?
-    .││.
-    .││.
-    .││.
-    .╞╡.
-    ....
-    .┌┐.
-    .││.
-    .││.
-    .││.
-    ?##?""");
-
-    // Tables.
-    category(0.1, apply: "┌─┐-│╘╤═╛╞╡", themes: "great-hall");
-    furnishing(Symmetry.none, """
-    .....
-    .┌─┐.
-    .│-│.
-    .╞═╡.
-    .....""");
-
-    furnishing(Symmetry.none, """
-    ......
-    .┌──┐.
-    .│--│.
-    .╞══╡.
-    ......""");
-
-    furnishing(Symmetry.none, """
-    .......
-    .┌───┐.
-    .│---│.
-    .╘╤═╤╛.
-    .......""");
-
-    furnishing(Symmetry.none, """
-    ........
-    .┌────┐.
-    .│----│.
-    .╘╤══╤╛.
-    ........""");
-
-    furnishing(Symmetry.none, """
-    .........
-    .┌─────┐.
-    .│-----│.
-    .╘╤═══╤╛.
-    .........""");
-
-    furnishing(Symmetry.none, """
-    ..........
-    .┌──────┐.
-    .│------│.
-    .╘╤════╤╛.
-    ..........""");
-
-    furnishing(Symmetry.none, """
-    .....
-    .┌─┐.
-    .│-│.
-    .│-│.
-    .╞═╡.
-    .....""");
-
-    furnishing(Symmetry.none, """
-    ......
-    .┌──┐.
-    .│--│.
-    .│--│.
-    .╞══╡.
-    ......""");
-
-    furnishing(Symmetry.none, """
-    .......
-    .┌───┐.
-    .│---│.
-    .│---│.
-    .╘╤═╤╛.
-    .......""");
-
-    furnishing(Symmetry.none, """
-    ........
-    .┌────┐.
-    .│----│.
-    .│----│.
-    .╘╤══╤╛.
-    ........""");
-
-    furnishing(Symmetry.none, """
-    .........
-    .┌─────┐.
-    .│-----│.
-    .│-----│.
-    .╘╤═══╤╛.
-    .........""");
-
-    furnishing(Symmetry.none, """
-    ..........
-    .┌──────┐.
-    .│------│.
-    .│------│.
-    .╘╤════╤╛.
-    ..........""");
-
-    // TODO: More table sizes? Shapes?
-
-    // Chairs.
-    // TODO: Instead of spawning these freely, make them sub-furnishings of the
-    // appropriate furnishings.
-    // TODO: Other themes.
-    category(1.0, apply: "π", themes: "great-hall laboratory");
-    furnishing(Symmetry.mirrorBoth, """
-    ...
-    .π.
-    ..┌""");
-
-    furnishing(Symmetry.rotate90, """
-    ...
-    .π.
-    .┌?""");
-
-    furnishing(Symmetry.mirrorHorizontal, """
-    ..╞
-    .π.
-    ...""");
-
-    furnishing(Symmetry.rotate90, """
-    ?═?
-    .π.
-    ...""");
-
-    furnishing(Symmetry.none, """
-    ?╤?
-    .π.
-    ...""");
-
+    /*
     // Candles.
     // TODO: Other themes.
     category(4.0, apply: "i", themes: "great-hall laboratory");
@@ -455,18 +222,23 @@ class Furnishing extends Decor {
     // TODO: Fireplaces for kitchens and halls.
 
     aquatic();
+    */
   }
 
   final Array2D<Cell> _cells;
 
   Furnishing(this._cells);
 
-  bool canPlace(Dungeon dungeon, Vec pos) {
+  bool canPlace(TilePainter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {
-        if (!_cells
-            .get(x, y)
-            .meetsRequirement(dungeon.getTile(pos.x + x, pos.y + y))) {
+        var absolute = pos.offset(x, y);
+
+        // Should skip these checks for cells that have no requirement.
+        if (!painter.bounds.contains(absolute)) return false;
+        if (!painter.ownsTile(absolute)) return false;
+
+        if (!_cells.get(x, y).meetsRequirement(painter.getTile(absolute))) {
           return false;
         }
       }
@@ -475,10 +247,10 @@ class Furnishing extends Decor {
     return true;
   }
 
-  void place(Dungeon dungeon, Vec pos) {
+  void place(TilePainter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {
-        _cells.get(x, y).apply(dungeon, pos.offset(x, y));
+        _cells.get(x, y).apply(painter, pos.offset(x, y));
       }
     }
   }
@@ -506,7 +278,7 @@ class Cell {
     return true;
   }
 
-  void apply(Dungeon dungeon, Vec pos) {
-    if (_apply != null) dungeon.setTileAt(pos, _apply);
+  void apply(TilePainter painter, Vec pos) {
+    if (_apply != null) painter.setTile(pos, _apply);
   }
 }

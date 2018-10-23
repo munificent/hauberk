@@ -10,16 +10,7 @@ import 'architect.dart';
 /// Takes generic tiles and paints them with a specific style or theme.
 class Painter {
   static final base = Painter({
-    TempTiles.open: [
-      // TODO: Should distribute these in a better manner. This tends to be too
-      // clumpy. Want something more like blue noise.
-      Tiles.floor,
-      Tiles.floor,
-      Tiles.floor,
-      Tiles.floor,
-      Tiles.floor,
-      _glowingMoss
-    ],
+    TempTiles.open: [Tiles.floor],
     TempTiles.solid: [Tiles.rock],
     TempTiles.passage: [Tiles.floor],
     TempTiles.solidWet:
@@ -33,9 +24,6 @@ class Painter {
     TempTiles.passage: [Tiles.floor],
   });
 
-  static final _glowingMoss =
-      Tiles.tile("moss", "░", seaGreen).emanate(6).open();
-
   final Map<TileType, List<TileType>> _types;
 
   Painter(this._types);
@@ -44,6 +32,8 @@ class Painter {
     if (_types.containsKey(type)) {
       return rng.item(_types[type]);
     }
+
+    if (this == base) return type;
 
     return base.paint(type);
   }
