@@ -5,8 +5,9 @@ import '../engine.dart';
 class Themes {
   static void defineTags<T>(ResourceSet<T> resources, [String root]) {
     root = (root == null) ? "" : "$root/";
-    resources.defineTags("${root}cave/glowing-moss");
     resources.defineTags("${root}built/dungeon/room");
+    resources.defineTags("${root}cave/glowing-moss");
+    resources.defineTags("${root}water");
 
     // TODO: Redo these.
     resources.defineTags("${root}nature/aquatic");

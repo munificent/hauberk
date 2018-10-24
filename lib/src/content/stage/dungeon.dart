@@ -78,7 +78,7 @@ class Dungeon extends Architecture {
       case Region.nw:
       case Region.n:
       case Region.ne:
-        yMax = (height * 0.25).toInt() - room.height;
+        yMax = math.max(1, (height * 0.25).toInt() - room.height);
         break;
       case Region.sw:
       case Region.s:
@@ -91,7 +91,7 @@ class Dungeon extends Architecture {
       case Region.nw:
       case Region.w:
       case Region.sw:
-        xMax = (width * 0.25).toInt() - room.width;
+        xMax = math.max(1, (width * 0.25).toInt() - room.width);
         break;
       case Region.ne:
       case Region.e:

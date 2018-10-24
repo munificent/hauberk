@@ -23,8 +23,8 @@ abstract class Decor {
 
   static final ResourceSet<Decor> all = ResourceSet();
 
-  bool canPlace(TilePainter painter, Vec pos);
+  bool canPlace(DecorPainter painter, Vec pos);
 
   /// Adds this decor at [pos].
-  void place(TilePainter painter, Vec pos);
+  void place(DecorPainter painter, Vec pos);
 }

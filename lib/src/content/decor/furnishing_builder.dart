@@ -20,7 +20,6 @@ String _themes;
 Map<String, Cell> _categoryCells;
 
 final Map<String, Cell> _applyCells = {
-  "i": Cell(apply: Tiles.candle, require: Tiles.tableCenter),
   "I": Cell(apply: Tiles.wallTorch, require: Tiles.wall),
   "l": Cell(apply: Tiles.wallTorch, motility: Motility.walk),
   "P": Cell(apply: Tiles.statue, motility: Motility.walk),
@@ -51,8 +50,6 @@ final Map<String, Cell> _requireCells = {
   "π": Cell(require: Tiles.chair),
   "≈": Cell(require: Tiles.water),
   "'": Cell(requireAny: [Tiles.grass, Tiles.tallGrass]),
-  "•": Cell(require: Tiles.steppingStone),
-  "o": Cell(require: Tiles.steppingStone),
 };
 
 final _mirrorHorizontal = [
@@ -77,6 +74,12 @@ void category({String themes, double frequency, Map<String, Cell> cells}) {
   _categoryFrequency = frequency;
   _categoryCells = cells;
 }
+
+Cell applyOpen(TileType type) => Cell(apply: type, motility: Motility.walk);
+
+Cell apply(TileType type, {TileType over}) => Cell(apply: type, require: over);
+
+Cell require(TileType type) => Cell(require: type);
 
 void furnishing({double frequency, Symmetry symmetry, String template}) {
   _furnishingFrequency = frequency;
@@ -143,8 +146,6 @@ void furnishing({double frequency, Symmetry symmetry, String template}) {
     _singleFurnishing(mirrorLines);
   }
 }
-
-Cell applyOpen(TileType type) => Cell(apply: type, motility: Motility.walk);
 
 String _mapString(String input, String Function(String) map) {
   var buffer = StringBuffer();

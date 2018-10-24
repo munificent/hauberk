@@ -14,6 +14,7 @@ void roomDecor() {
     "╞": applyOpen(Tiles.tableLegLeft),
     "╤": applyOpen(Tiles.tableLeg),
     "╡": applyOpen(Tiles.tableLegRight),
+    "i": applyOpen(Tiles.candle),
   };
 
   // Counters.
@@ -28,8 +29,23 @@ void roomDecor() {
   furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
     ?...
     #─┐.
+    #i│.
+    #╤╛.
+    ?...""");
+
+  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+    ?...
+    #─┐.
     #-│.
     #-│.
+    #╤╛.
+    ?...""");
+
+  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+    ?...
+    #─┐.
+    #i│.
+    #i│.
     #╤╛.
     ?...""");
 
@@ -42,10 +58,34 @@ void roomDecor() {
     #╤╛.
     ?...""");
 
+  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+    ?...
+    #─┐.
+    #-│.
+    #i│.
+    #-│.
+    #╤╛.
+    ?...""");
+
+  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+    ?...
+    #─┐.
+    #i│.
+    #-│.
+    #i│.
+    #╤╛.
+    ?...""");
+
   furnishing(template: """
     .....
     .┌─┐.
     .│-│.
+    ?###?""");
+
+  furnishing(template: """
+    .....
+    .┌─┐.
+    .│i│.
     ?###?""");
 
   furnishing(template: """
@@ -55,14 +95,38 @@ void roomDecor() {
     ?####?""");
 
   furnishing(template: """
+    ......
+    .┌──┐.
+    .│ii│.
+    ?####?""");
+
+  furnishing(template: """
     .......
     .┌───┐.
     .│---│.
     ?#####?""");
 
   furnishing(template: """
+    .......
+    .┌───┐.
+    .│-i-│.
+    ?#####?""");
+
+  furnishing(template: """
+    .......
+    .┌───┐.
+    .│i-i│.
+    ?#####?""");
+
+  furnishing(template: """
     ?###?
     .│-│.
+    .╞═╡.
+    .....""");
+
+  furnishing(template: """
+    ?###?
+    .│i│.
     .╞═╡.
     .....""");
 
@@ -73,13 +137,31 @@ void roomDecor() {
     ......""");
 
   furnishing(template: """
+    ?####?
+    .│ii│.
+    .╞══╡.
+    ......""");
+
+  furnishing(template: """
     ?#####?
     .│---│.
     .╞═══╡.
     .......""");
 
+  furnishing(template: """
+    ?#####?
+    .│-i-│.
+    .╞═══╡.
+    .......""");
+
+  furnishing(template: """
+    ?#####?
+    .│i-i│.
+    .╞═══╡.
+    .......""");
+
   // Separating counters.
-  category(themes: "room", frequency: 0.3, cells: tableCells);
+  category(themes: "room", cells: tableCells);
   furnishing(template: """
     ?.....?
     #─┐.┌─#
@@ -142,9 +224,23 @@ void roomDecor() {
     .....""");
 
   furnishing(template: """
+    .....
+    .┌─┐.
+    .│i│.
+    .╞═╡.
+    .....""");
+
+  furnishing(template: """
     ......
     .┌──┐.
     .│--│.
+    .╞══╡.
+    ......""");
+
+  furnishing(template: """
+    ......
+    .┌──┐.
+    .│ii│.
     .╞══╡.
     ......""");
 
@@ -156,9 +252,30 @@ void roomDecor() {
     .......""");
 
   furnishing(template: """
+    .......
+    .┌───┐.
+    .│-i-│.
+    .╘╤═╤╛.
+    .......""");
+
+  furnishing(template: """
+    .......
+    .┌───┐.
+    .│i-i│.
+    .╘╤═╤╛.
+    .......""");
+
+  furnishing(template: """
     ........
     .┌────┐.
     .│----│.
+    .╘╤══╤╛.
+    ........""");
+
+  furnishing(template: """
+    ........
+    .┌────┐.
+    .│i--i│.
     .╘╤══╤╛.
     ........""");
 
@@ -170,9 +287,30 @@ void roomDecor() {
     .........""");
 
   furnishing(template: """
+    .........
+    .┌─────┐.
+    .│--i--│.
+    .╘╤═══╤╛.
+    .........""");
+
+  furnishing(template: """
+    .........
+    .┌─────┐.
+    .│-i-i-│.
+    .╘╤═══╤╛.
+    .........""");
+
+  furnishing(template: """
     ..........
     .┌──────┐.
     .│------│.
+    .╘╤════╤╛.
+    ..........""");
+
+  furnishing(template: """
+    ..........
+    .┌──────┐.
+    .│-i--i-│.
     .╘╤════╤╛.
     ..........""");
 
@@ -185,10 +323,26 @@ void roomDecor() {
     .....""");
 
   furnishing(template: """
+    .....
+    .┌─┐.
+    .│i│.
+    .│i│.
+    .╞═╡.
+    .....""");
+
+  furnishing(template: """
     ......
     .┌──┐.
     .│--│.
     .│--│.
+    .╞══╡.
+    ......""");
+
+  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+    ......
+    .┌──┐.
+    .│i-│.
+    .│-i│.
     .╞══╡.
     ......""");
 
@@ -201,10 +355,42 @@ void roomDecor() {
     .......""");
 
   furnishing(template: """
+    .......
+    .┌───┐.
+    .│-i-│.
+    .│-i-│.
+    .╘╤═╤╛.
+    .......""");
+
+  furnishing(template: """
+    .......
+    .┌───┐.
+    .│-i-│.
+    .│i-i│.
+    .╘╤═╤╛.
+    .......""");
+
+  furnishing(template: """
+    .......
+    .┌───┐.
+    .│i-i│.
+    .│-i-│.
+    .╘╤═╤╛.
+    .......""");
+
+  furnishing(template: """
     ........
     .┌────┐.
     .│----│.
     .│----│.
+    .╘╤══╤╛.
+    ........""");
+
+  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+    ........
+    .┌────┐.
+    .│i---│.
+    .│---i│.
     .╘╤══╤╛.
     ........""");
 
@@ -217,6 +403,22 @@ void roomDecor() {
     .........""");
 
   furnishing(template: """
+    .........
+    .┌─────┐.
+    .│--i--│.
+    .│-i-i-│.
+    .╘╤═══╤╛.
+    .........""");
+
+  furnishing(template: """
+    .........
+    .┌─────┐.
+    .│i---i│.
+    .│--i--│.
+    .╘╤═══╤╛.
+    .........""");
+
+  furnishing(template: """
     ..........
     .┌──────┐.
     .│------│.
@@ -224,12 +426,17 @@ void roomDecor() {
     .╘╤════╤╛.
     ..........""");
 
+  furnishing(template: """
+    ..........
+    .┌──────┐.
+    .│-i--i-│.
+    .│-i--i-│.
+    .╘╤════╤╛.
+    ..........""");
+
   // TODO: More table sizes? Shapes?
 
   // Chairs.
-  // TODO: Instead of spawning these freely, make them sub-furnishings of the
-  // appropriate furnishings.
-  // TODO: Other themes.
   category(themes: "room", cells: {
     "π": applyOpen(Tiles.chair),
   });

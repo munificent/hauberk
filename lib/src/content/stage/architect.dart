@@ -47,7 +47,10 @@ class Architect {
         Architecture Function() _factory,
         {bool isAquatic}) {
       _styles.addUnnamed(
-          ArchitecturalStyle(theme, _factory), depth, frequency, "style");
+          ArchitecturalStyle(theme, _factory, isAquatic: isAquatic),
+          depth,
+          frequency,
+          "style");
     }
 
     // TODO: Define more.
@@ -123,6 +126,12 @@ class Architect {
     yield* _claimPassages(unownedPassages);
 
     // TODO: Add shortcuts.
+    // TODO: Here's an idea for shortcuts. After carving rooms, randomly pick
+    // some of them and divide them with temporary walls. Then build passages
+    // as normal. Since the entire room is no longer connected to itself, the
+    // passage generator will generate multiple paths to each side of it. Then
+    // remove those dividers.
+
     // TODO: Place doors.
     // TODO: Place stairs.
 
@@ -373,7 +382,7 @@ class Architect {
       var architecture = entry.key;
       var tiles = entry.value;
 
-      var painter = TilePainter._(architecture);
+      var painter = DecorPainter._(architecture);
 
       // TODO: Let architecture/theme control density.
       var decorTiles = rng.round(tiles.length * 0.1);
@@ -387,9 +396,8 @@ class Architect {
         var allowed = <Vec>[];
 
         for (var tile in tiles) {
-          var offset = tile.offset(-1, -1);
-          if (decor.canPlace(painter, offset)) {
-            allowed.add(offset);
+          if (decor.canPlace(painter, tile)) {
+            allowed.add(tile);
           }
         }
 
@@ -448,11 +456,11 @@ class ArchitecturalStyle {
 }
 
 // TODO: Figure out how this interacts with Painter.
-class TilePainter {
+class DecorPainter {
   final Architecture _architecture;
   int _painted = 0;
 
-  TilePainter._(this._architecture);
+  DecorPainter._(this._architecture);
 
   Rect get bounds => _architecture._architect.stage.bounds;
 

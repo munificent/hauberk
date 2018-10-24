@@ -8,6 +8,7 @@ import '../stage/architect.dart';
 import 'cave.dart';
 import 'decor.dart';
 import 'room.dart';
+import 'water.dart';
 
 /// A template-based decor that applies a set of tiles if it matches a set of
 /// existing tiles.
@@ -15,6 +16,7 @@ class Furnishing extends Decor {
   static void initialize() {
     caveDecor();
     roomDecor();
+    waterDecor();
 
     /*
     // Candles.
@@ -220,8 +222,6 @@ class Furnishing extends Decor {
     #.........#""");
 
     // TODO: Fireplaces for kitchens and halls.
-
-    aquatic();
     */
   }
 
@@ -229,7 +229,7 @@ class Furnishing extends Decor {
 
   Furnishing(this._cells);
 
-  bool canPlace(TilePainter painter, Vec pos) {
+  bool canPlace(DecorPainter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {
         var absolute = pos.offset(x, y);
@@ -247,7 +247,7 @@ class Furnishing extends Decor {
     return true;
   }
 
-  void place(TilePainter painter, Vec pos) {
+  void place(DecorPainter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {
         _cells.get(x, y).apply(painter, pos.offset(x, y));
@@ -278,7 +278,7 @@ class Cell {
     return true;
   }
 
-  void apply(TilePainter painter, Vec pos) {
+  void apply(DecorPainter painter, Vec pos) {
     if (_apply != null) painter.setTile(pos, _apply);
   }
 }

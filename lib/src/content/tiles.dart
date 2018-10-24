@@ -36,7 +36,9 @@ class Tiles {
   static final glowingMoss =
       Tiles.tile("moss", "░", seaGreen).emanate(6).open();
 
-  static final water = tile("water", "≈", cerulean, ultramarine).water();
+  static final water = tile("water", "≈", cerulean, ultramarine)
+      .animate(10, 0.4, ultramarine, nearBlack)
+      .water();
   static final steppingStone =
       tile("stepping stone", "•", gunsmoke, ultramarine).open();
 
@@ -190,7 +192,7 @@ class Tiles {
 
 class _TileBuilder {
   final String name;
-  final Glyph glyph;
+  final List<Glyph> glyphs;
 
   Action Function(Vec) _onClose;
   Action Function(Vec) _onOpen;
@@ -204,7 +206,21 @@ class _TileBuilder {
     return _TileBuilder._(name, Glyph.fromCharCode(charCode, fore, back));
   }
 
-  _TileBuilder._(this.name, this.glyph);
+  _TileBuilder._(this.name, Glyph glyph) : glyphs = [glyph];
+
+  _TileBuilder animate(int count, double maxMix, Color fore, Color back) {
+    var glyph = glyphs.first;
+    for (var i = 1; i < count; i++) {
+      var mixedFore =
+          glyph.fore.blend(fore, lerpDouble(i, 0, count, 0.0, maxMix));
+      var mixedBack =
+          glyph.back.blend(back, lerpDouble(i, 0, count, 0.0, maxMix));
+
+      glyphs.add(Glyph.fromCharCode(glyph.char, mixedFore, mixedBack));
+    }
+
+    return this;
+  }
 
   _TileBuilder emanate(int level) {
     _emanationLevel = level;
@@ -237,7 +253,7 @@ class _TileBuilder {
   TileType water() => _motility(Motility.fly | Motility.swim);
 
   TileType _motility(Motility motility) {
-    return TileType(name, glyph, motility,
+    return TileType(name, glyphs.length == 1 ? glyphs.first : glyphs, motility,
         emanation: Lighting.emanationForLevel(_emanationLevel),
         isExit: _isExit,
         onClose: _onClose,
