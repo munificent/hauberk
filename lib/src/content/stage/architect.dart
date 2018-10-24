@@ -3,16 +3,11 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../../hues.dart';
 import '../tiles.dart';
 import '../decor/decor.dart';
-import 'catacomb.dart';
-import 'cavern.dart';
-import 'dungeon.dart';
-import 'lake.dart';
+import 'architectural_style.dart';
 import 'painter.dart';
 import 'reachability.dart';
-import 'river.dart';
 
 // TODO: Consider regions that are randomly placed blobs in the middle too.
 class Region {
@@ -38,36 +33,6 @@ class Region {
 class Architect {
   static Array2D<Architecture> debugOwners;
 
-  static final ResourceSet<ArchitecturalStyle> _styles = ResourceSet();
-
-  static void _initializeStyles() {
-    _styles.defineTags("style");
-
-    addStyle(String theme, int depth, double frequency,
-        Architecture Function() _factory,
-        {bool isAquatic}) {
-      _styles.addUnnamed(
-          ArchitecturalStyle(theme, _factory, isAquatic: isAquatic),
-          depth,
-          frequency,
-          "style");
-    }
-
-    // TODO: Define more.
-    addStyle("glowing-moss", 1, 2.0, () => Catacomb());
-    addStyle("glowing-moss", 1, 1.0, () => Cavern());
-
-    addStyle("dungeon", 1, 10.0, () => Dungeon());
-    // TODO: Forest style that uses cavern-like CA to open an organic-shaped
-    // area and then fills it with grass and trees. (Maybe just a specific
-    // painter for Cavern?
-
-    // TODO: Different liquid types including some that are dry.
-    // TODO: Shore or islands?
-    addStyle("water", 1, 1.0, () => Lake(), isAquatic: true);
-    addStyle("water", 1, 1.0, () => River(), isAquatic: true);
-  }
-
   final Lore _lore;
   final Stage stage;
   final int _depth;
@@ -75,8 +40,6 @@ class Architect {
 
   Architect(this._lore, this.stage, this._depth)
       : _owners = Array2D(stage.width, stage.height) {
-    if (_styles.isEmpty) _initializeStyles();
-
     debugOwners = _owners;
   }
 
@@ -84,14 +47,14 @@ class Architect {
     // Initialize the stage with an edge of solid and everything else open but
     // fillable.
     for (var pos in stage.bounds) {
-      stage[pos].type = TempTiles.unformed;
+      stage[pos].type = Tiles.unformed;
     }
 
     var styles = _pickStyles();
 
     int lastNonAquatic;
     for (var i = styles.length - 1; i >= 0; i--) {
-      if (!styles[i]._isAquatic) {
+      if (!styles[i].isAquatic) {
         lastNonAquatic = i;
         break;
       }
@@ -102,7 +65,7 @@ class Architect {
     var possibleRegions = Region.directions.toList();
     var regions = <Region>[];
     for (var i = 0; i < styles.length; i++) {
-      if (i == lastNonAquatic || styles[i]._isAquatic) {
+      if (i == lastNonAquatic || styles[i].isAquatic) {
         regions.add(Region.everywhere);
       } else {
         regions.add(rng.take(possibleRegions));
@@ -115,7 +78,7 @@ class Architect {
     }
 
     for (var pos in stage.bounds.trace()) {
-      stage[pos].type = TempTiles.solid;
+      stage[pos].type = Tiles.solid;
     }
 
     // Fill in the remaining fillable tiles and keep everything connected.
@@ -162,10 +125,10 @@ class Architect {
     var hasNonAquatic = false;
 
     while (!hasNonAquatic || result.length < count) {
-      var style = _styles.tryChoose(_depth, "style");
+      var style = ArchitecturalStyle.all.tryChoose(_depth, "style");
 
       // Make sure there's at least one walkable style.
-      if (!style._isAquatic) hasNonAquatic = true;
+      if (!style.isAquatic) hasNonAquatic = true;
 
       if (!result.contains(style)) result.add(style);
     }
@@ -176,9 +139,9 @@ class Architect {
   /// Marks the tile at [x], [y] as open floor for [architecture].
   void _carve(Architecture architecture, int x, int y) {
     assert(_owners.get(x, y) == null || _owners.get(x, y) == architecture);
-    assert(stage.get(x, y).type == TempTiles.unformed);
+    assert(stage.get(x, y).type == Tiles.unformed);
 
-    stage.get(x, y).type = TempTiles.open;
+    stage.get(x, y).type = Tiles.open;
 
     // Claim all neighboring dry tiles too. This way the architecture can paint
     // the surrounding solid tiles however it wants.
@@ -186,7 +149,7 @@ class Architect {
     for (var dir in Direction.all) {
       var here = dir.offset(x, y);
       if (_owners.bounds.contains(here) &&
-          stage[here].type != TempTiles.unformedWet) {
+          stage[here].type != Tiles.unformedWet) {
         _owners[here] = architecture;
       }
     }
@@ -199,7 +162,7 @@ class Architect {
     if (_owners[pos] != null) return false;
 
     // Or water.
-    if (stage[pos].type == TempTiles.unformedWet) return false;
+    if (stage[pos].type == Tiles.unformedWet) return false;
 
     // Need at least one tile of padding between other dry architectures so that
     // this one can have a ring of solid tiles around itself without impinging
@@ -210,7 +173,7 @@ class Architect {
     for (var here in pos.neighbors) {
       if (!stage.bounds.contains(here)) continue;
 
-      if (stage[here].type == TempTiles.unformedWet) continue;
+      if (stage[here].type == Tiles.unformedWet) continue;
 
       var owner = _owners[here];
       if (owner != null && owner != architecture) return false;
@@ -236,7 +199,7 @@ class Architect {
     var unformed = <Vec>[];
     for (var pos in stage.bounds.inflate(-1)) {
       var tile = stage[pos].type;
-      if (tile == TempTiles.open) {
+      if (tile == Tiles.open) {
         openCount++;
 
         // Prefer a starting tile near the center.
@@ -290,7 +253,7 @@ class Architect {
       var reachedOpen = 0;
       for (var here in stage.bounds) {
         if (reachability.isReachable(here) &&
-            stage[here].type == TempTiles.open) {
+            stage[here].type == Tiles.open) {
           reachedOpen++;
         }
       }
@@ -312,10 +275,10 @@ class Architect {
 
     // Filling this tile would cause something to be unreachable, so it must
     // be a passage.
-    if (tile.type == TempTiles.solid) {
-      tile.type = TempTiles.passage;
-    } else if (tile.type == TempTiles.solidWet) {
-      tile.type = TempTiles.passageWet;
+    if (tile.type == Tiles.solid) {
+      tile.type = Tiles.passage;
+    } else if (tile.type == Tiles.solidWet) {
+      tile.type = Tiles.passageWet;
     } else {
       assert(false, "Unexpected tile type.");
     }
@@ -424,35 +387,18 @@ class Architect {
   }
 
   void _fill(Tile tile) {
-    if (tile.type == TempTiles.unformed) {
-      tile.type = TempTiles.solid;
-    } else if (tile.type == TempTiles.unformedWet) {
-      tile.type = TempTiles.solidWet;
+    if (tile.type == Tiles.unformed) {
+      tile.type = Tiles.solid;
+    } else if (tile.type == Tiles.unformedWet) {
+      tile.type = Tiles.solidWet;
     } else {
-      assert(tile.type == TempTiles.solid || tile.type == TempTiles.solidWet,
+      assert(tile.type == Tiles.solid || tile.type == Tiles.solidWet,
           "Unexpected tile type.");
     }
   }
 
   bool _isFormed(TileType type) =>
-      type != TempTiles.unformed && type != TempTiles.unformedWet;
-}
-
-class ArchitecturalStyle {
-  final String _theme;
-  final Architecture Function() _factory;
-  final bool _isAquatic;
-
-  ArchitecturalStyle(this._theme, this._factory, {bool isAquatic})
-      : _isAquatic = isAquatic ?? false;
-
-  Architecture create(Architect architect, Region region) {
-    var architecture = _factory();
-    architecture._architect = architect;
-    architecture._style = this;
-    architecture._region = region;
-    return architecture;
-  }
+      type != Tiles.unformed && type != Tiles.unformedWet;
 }
 
 // TODO: Figure out how this interacts with Painter.
@@ -498,7 +444,13 @@ abstract class Architecture {
 
   Painter get painter => Painter.base;
 
-  String get theme => _style._theme;
+  String get theme => _style.theme;
+
+  void bind(ArchitecturalStyle style, Architect architect, Region region) {
+    _architect = architect;
+    _style = style;
+    _region = region;
+  }
 
   /// Marks the tile at [x], [y] as open floor for this architecture.
   void carve(int x, int y) => _architect._carve(this, x, y);
@@ -507,43 +459,20 @@ abstract class Architecture {
   bool canCarve(Vec pos) => _architect._canCarve(this, pos);
 
   void placeWater(Vec pos) {
-    _architect.stage[pos].type = TempTiles.unformedWet;
+    _architect.stage[pos].type = Tiles.unformedWet;
     _architect._owners[pos] = this;
+
+    // TODO: Should water own the walls that surround it (if not already owned)?
   }
 
   /// Marks the tile at [pos] as not allowing a passage to be dug through it.
   void preventPassage(Vec pos) {
     assert(_architect._owners[pos] == null ||
         _architect._owners[pos] == this ||
-        _architect.stage[pos].type == TempTiles.unformedWet);
+        _architect.stage[pos].type == Tiles.unformedWet);
 
-    if (_architect.stage[pos].type == TempTiles.unformed) {
-      _architect.stage[pos].type = TempTiles.solid;
+    if (_architect.stage[pos].type == Tiles.unformed) {
+      _architect.stage[pos].type = Tiles.solid;
     }
   }
-}
-
-/// Temporary tile types used during stage generation.
-class TempTiles {
-  /// An unformed tile that can be turned into aquatic, passage, or solid.
-  static final unformed = Tiles.tile("unformed", "?", slate).open();
-
-  /// An unformed tile that can be turned into water of some kind when "filled"
-  /// or a bridge when used as a passage.
-  static final unformedWet = Tiles.tile("unformed wet", "≈", slate).open();
-
-  /// An open floor tile generated by an architecture.
-  static final open = Tiles.tile("open", "·", gunsmoke).open();
-
-  /// A solid tile that has been filled in the passage generator.
-  static final solid = Tiles.tile("solid", "#", gunsmoke).solid();
-
-  /// An open tile that the passage generator knows must remain open.
-  static final passage = Tiles.tile("passage", "-", gunsmoke).open();
-
-  /// An untraversable wet tile that has been filled in the passage generator.
-  static final solidWet = Tiles.tile("solid wet", "≈", cornflower).solid();
-
-  /// A traversable wet tile that the passage generator knows must remain open.
-  static final passageWet = Tiles.tile("wet passage", "-", cornflower).open();
 }

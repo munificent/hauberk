@@ -2,23 +2,22 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../tiles.dart';
-import 'architect.dart';
 
 // TODO: The way this works isn't very flexible. Come up with something better.
 /// Takes generic tiles and paints them with a specific style or theme.
 class Painter {
   static final base = Painter({
-    TempTiles.open: [Tiles.floor],
-    TempTiles.solid: [Tiles.rock],
-    TempTiles.passage: [Tiles.floor],
-    TempTiles.solidWet: [Tiles.water],
-    TempTiles.passageWet: [Tiles.bridge]
+    Tiles.open: [Tiles.floor],
+    Tiles.solid: [Tiles.rock],
+    Tiles.passage: [Tiles.floor],
+    Tiles.solidWet: [Tiles.water],
+    Tiles.passageWet: [Tiles.bridge]
   });
 
   static final stoneWall = Painter({
-    TempTiles.open: [Tiles.floor],
-    TempTiles.solid: [Tiles.wall],
-    TempTiles.passage: [Tiles.floor],
+    Tiles.open: [Tiles.floor],
+    Tiles.solid: [Tiles.wall],
+    Tiles.passage: [Tiles.floor],
   });
 
   final Map<TileType, List<TileType>> _types;
