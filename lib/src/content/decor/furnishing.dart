@@ -1,10 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../stage/architect.dart';
-
-// TODO: Get working again.
-//import 'aquatic.dart';
+import '../stage/decorator.dart';
 import 'cave.dart';
 import 'decor.dart';
 import 'room.dart';

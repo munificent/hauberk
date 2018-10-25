@@ -8,6 +8,7 @@ import 'river.dart';
 
 class ArchitecturalStyle {
   static final ResourceSet<ArchitecturalStyle> _all = ResourceSet();
+
   static ResourceSet<ArchitecturalStyle> get all {
     if (_all.isEmpty) _initialize();
     return _all;
@@ -16,14 +17,12 @@ class ArchitecturalStyle {
   static void _initialize() {
     _all.defineTags("style");
 
-    addStyle(String theme, int depth, double frequency,
+    addStyle(String decorTheme, int depth, double frequency,
         Architecture Function() _factory,
         {bool isAquatic}) {
-      _all.addUnnamed(
-          ArchitecturalStyle(theme, _factory, isAquatic: isAquatic),
-          depth,
-          frequency,
-          "style");
+      var style =
+          ArchitecturalStyle(decorTheme, _factory, isAquatic: isAquatic);
+      _all.addUnnamed(style, depth, frequency, "style");
     }
 
     // TODO: Define more.
@@ -41,11 +40,11 @@ class ArchitecturalStyle {
     addStyle("water", 1, 1.0, () => River(), isAquatic: true);
   }
 
-  final String theme;
+  final String decorTheme;
   final Architecture Function() _factory;
   final bool isAquatic;
 
-  ArchitecturalStyle(this.theme, this._factory, {bool isAquatic})
+  ArchitecturalStyle(this.decorTheme, this._factory, {bool isAquatic})
       : isAquatic = isAquatic ?? false;
 
   Architecture create(Architect architect, Region region) {

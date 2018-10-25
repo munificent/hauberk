@@ -1,14 +1,16 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../stage/architect.dart';
-import '../themes.dart';
 //import 'blast.dart';
+import '../stage/decorator.dart';
 import 'furnishing.dart';
 
 abstract class Decor {
   static void initialize() {
-    Themes.defineTags(all);
+    all.defineTags("decor/built/dungeon/room");
+    all.defineTags("decor/cave/glowing-moss");
+    all.defineTags("decor/water");
+
     Furnishing.initialize();
 
     // TODO: Doesn't look great. Remove or redo.

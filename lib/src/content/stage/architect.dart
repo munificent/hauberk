@@ -4,8 +4,8 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../tiles.dart';
-import '../decor/decor.dart';
 import 'architectural_style.dart';
+import 'decorator.dart';
 import 'painter.dart';
 import 'reachability.dart';
 
@@ -125,14 +125,14 @@ class Architect {
     // This way, you can get nearby styles and foreshadowing without a lot of
     // complex calculation.
 
-    _paintTiles();
-
-    // TODO: Should this happen before or after painting?
-    yield* _placeDecor();
+    var decorator = Decorator(this);
+    yield* decorator.decorate();
 
     // TODO: Temp.
     placeHero(stage.findOpenTile());
   }
+
+  Architecture ownerAt(Vec pos) => _owners[pos];
 
   List<ArchitecturalStyle> _pickStyles() {
     var result = <ArchitecturalStyle>[];
@@ -140,6 +140,8 @@ class Architect {
     // TODO: Change count range based on depth?
     var count = math.min(rng.taper(1, 10), 5);
     var hasNonAquatic = false;
+
+    count = 3;
 
     while (!hasNonAquatic || result.length < count) {
       var style = ArchitecturalStyle.all.tryChoose(_depth, "style");
@@ -440,60 +442,6 @@ class Architect {
     }
   }
 
-  Iterable<String> _placeDecor() sync* {
-    var tilesByOwner = <Architecture, List<Vec>>{};
-    for (var pos in stage.bounds) {
-      var owner = _owners[pos];
-      if (owner != null) {
-        tilesByOwner.putIfAbsent(owner, () => []).add(pos);
-      }
-    }
-
-    for (var entry in tilesByOwner.entries) {
-      var architecture = entry.key;
-      var tiles = entry.value;
-
-      var painter = DecorPainter._(architecture);
-
-      // TODO: Let architecture/theme control density.
-      var decorTiles = rng.round(tiles.length * 0.1);
-      decorTiles = rng.float(decorTiles * 0.8, decorTiles * 1.2).ceil();
-
-      var tries = 0;
-      while (tries++ < decorTiles && painter._painted < decorTiles) {
-        var decor = Decor.choose(architecture.theme);
-        if (decor == null) continue;
-
-        var allowed = <Vec>[];
-
-        for (var tile in tiles) {
-          if (decor.canPlace(painter, tile)) {
-            allowed.add(tile);
-          }
-        }
-
-        if (allowed.isNotEmpty) {
-          decor.place(painter, rng.item(allowed));
-          yield "Placed decor";
-        }
-      }
-    }
-  }
-
-  /// Turn the temporary tiles into real tiles based on each architecutre's
-  /// painters.
-  void _paintTiles() {
-    for (var pos in stage.bounds) {
-      var tile = stage[pos];
-      var owner = _owners[pos];
-      if (owner == null) {
-        tile.type = Painter.base.paint(tile.type);
-      } else {
-        tile.type = owner.painter.paint(tile.type);
-      }
-    }
-  }
-
   void _fill(Tile tile) {
     if (tile.type == Tiles.unformed) {
       tile.type = Tiles.solid;
@@ -518,30 +466,6 @@ class Architect {
   bool _isSolidAt(Vec pos) {
     var type = stage[pos].type;
     return type == Tiles.solid || type == Tiles.solidWet;
-  }
-}
-
-// TODO: Figure out how this interacts with Painter.
-class DecorPainter {
-  final Architecture _architecture;
-  int _painted = 0;
-
-  DecorPainter._(this._architecture);
-
-  Rect get bounds => _architecture._architect.stage.bounds;
-
-  bool ownsTile(Vec pos) =>
-      _architecture._architect._owners[pos] == _architecture;
-
-  TileType getTile(Vec pos) {
-    assert(ownsTile(pos));
-    return _architecture._architect.stage[pos].type;
-  }
-
-  void setTile(Vec pos, TileType type) {
-    assert(_architecture._architect._owners[pos] == _architecture);
-    _architecture._architect.stage[pos].type = type;
-    _painted++;
   }
 }
 
@@ -571,7 +495,7 @@ abstract class Architecture {
 
   Painter get painter => Painter.base;
 
-  String get theme => _style.theme;
+  String get decorTheme => _style.decorTheme;
 
   void bind(ArchitecturalStyle style, Architect architect, Region region) {
     _architect = architect;
