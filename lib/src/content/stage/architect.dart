@@ -85,20 +85,37 @@ class Architect {
     var unownedPassages = <Vec>[];
 
     yield* _fillPassages(unownedPassages);
-
+    yield* _addShortcuts(unownedPassages);
     yield* _claimPassages(unownedPassages);
-
-    // TODO: Add shortcuts.
-    // TODO: Here's an idea for shortcuts. After carving rooms, randomly pick
-    // some of them and divide them with temporary walls. Then build passages
-    // as normal. Since the entire room is no longer connected to itself, the
-    // passage generator will generate multiple paths to each side of it. Then
-    // remove those dividers.
 
     // TODO: Place doors.
     // TODO: Place stairs.
 
     // TODO: Populate.
+
+    // To populate, use brogue's heat map idea. Something like:
+    // 1. Create an empty density monster and item map.
+    // 2. Do a BFS from the hero's starting location.
+    // 3. At each visited tile:
+    //    1. Use the tile's owner and theme to determine its base density.
+    //    2. Modify that based on distance so that farther tiles get a little
+    //       more density.
+    // 4. Pick a number of monsters to spawn.
+    // 5. For each monster:
+    //    1. Pick a number from zero to the total density.
+    //    2. Find the tile that corresponds to that. That's where the monster
+    //       will spawn.
+    //    3. Do a random walk a certain distance. Use the owner/theme from there
+    //       to pick a group to spawn.
+    //    4. Spawn the monster and place it.
+    //    5. Lower the density of the surrounding tiles some (and update the
+    //       total).
+    //    6. Increase the item density of the surrounding tiles some so that
+    //       items are more likely near monsters.
+    // 6. Do something similar for item tiles.
+    // Possibly find articulation points in the stage and increase the density
+    // of tiles that lie beyond those. Ditto for secret doors, etc.
+
     // TODO: Instead of bleeding themes around, here's a simpler idea:
     // 1. Choose a random place to spawn a monster/item.
     // 2. Do a random walk from there to a result tile.
@@ -185,13 +202,6 @@ class Architect {
   /// Takes all of the remaining fillable tiles and fills them randomly with
   /// solid tiles or open tiles, making sure to preserve reachability.
   Iterable<String> _fillPassages(List<Vec> unownedPassages) sync* {
-    // TODO: There might be faster way to do this using Tarjan's articulation
-    // point algorithm. Something like:
-    // 1. Find all articulation points. Mark them unfilled. These must be
-    //    passages.
-    // 2. Pick a random remaining non-articulation point and mark it filled. We
-    //    know this is safe to do.
-    // 3. As long as non-articulation points remain, go to 1.
     var openCount = 0;
     var start = Vec.zero;
     var startDistance = 99999;
@@ -252,8 +262,7 @@ class Architect {
       // See if we can still reach all the unfillable tiles.
       var reachedOpen = 0;
       for (var here in stage.bounds) {
-        if (reachability.isReachable(here) &&
-            stage[here].type == Tiles.open) {
+        if (reachability.isReachable(here) && stage[here].type == Tiles.open) {
           reachedOpen++;
         }
       }
@@ -268,6 +277,105 @@ class Architect {
 
       yield "$pos";
     }
+  }
+
+  Iterable<String> _addShortcuts(List<Vec> unownedPassages) sync* {
+    var possibleStarts = <_Path>[];
+    for (var pos in stage.bounds.inflate(-1)) {
+      if (!_isOpenAt(pos)) continue;
+
+      for (var dir in Direction.cardinal) {
+        // Needs to be in an open area going into a solid area, like:
+        //
+        //     .#
+        //     >#
+        //     .#
+        // TODO: Could loosen this somewhat. Should we let shortcuts start from
+        // passages? Corners?
+        if (!_isOpenAt(pos + dir.rotateLeft90)) continue;
+        if (!_isSolidAt(pos + dir.rotateLeft45)) continue;
+        if (!_isSolidAt(pos + dir)) continue;
+        if (!_isSolidAt(pos + dir.rotateRight45)) continue;
+        if (!_isOpenAt(pos + dir.rotateRight90)) continue;
+
+        possibleStarts.add(_Path(pos, dir));
+      }
+    }
+
+    rng.shuffle(possibleStarts);
+
+    var shortcuts = 0;
+
+    // TODO: Vary this?
+    var maxShortcuts = rng.range(5, 40);
+
+    for (var path in possibleStarts) {
+      if (!_tryShortcut(unownedPassages, path.pos, path.dir)) continue;
+
+      yield "Shortcut";
+      shortcuts++;
+      if (shortcuts >= maxShortcuts) break;
+    }
+  }
+
+  /// Tries to place a shortcut from [start] going towards [heading].
+  ///
+  /// The [start] position is the open tile next to the wall where the shortcut
+  /// will begin.
+  ///
+  /// Returns `true` if a shortcut was added.
+  bool _tryShortcut(List<Vec> unownedPassages, Vec start, Direction heading) {
+    // A shortcut can start here, so try to walk it until it hits another open
+    // area.
+    var tiles = <Vec>[];
+    var pos = start + heading;
+
+    while (true) {
+      tiles.add(pos);
+
+      var next = pos + heading;
+      if (!stage.bounds.contains(next)) return false;
+
+      if (_isOpenAt(next)) {
+        if (_isShortcut(start, next, tiles.length)) {
+          for (var pos in tiles) {
+            _makePassage(unownedPassages, pos);
+          }
+          return true;
+        }
+
+        // We found a path, but it's not worth it.
+        return false;
+      }
+
+      // If the passage runs into an opening on the side, it's weird, so don't
+      // put a shortcut.
+      if (!_isSolidAt(next + heading.rotateLeft90)) return false;
+      if (!_isSolidAt(next + heading.rotateRight90)) return false;
+
+      // Don't make shortcuts that are too long.
+      if (rng.percent(tiles.length * 10)) return false;
+
+      // TODO: Consider having the path turn randomly.
+
+      // Keep going.
+      pos = next;
+    }
+  }
+
+  /// Returns `true` if a passage with [length] from [from] to [to] is
+  /// significantly shorter than the current shortest path between those points.
+  ///
+  /// Used to avoid placing pointless shortcuts on the stage.
+  bool _isShortcut(Vec from, Vec to, int passageLength) {
+    // If the current path from [from] to [to] is this long or longer, then
+    // the shortcut is worth adding.
+    var longLength = passageLength * 2 + rng.range(8, 16);
+
+    var pathfinder = _LengthPathfinder(stage, from, to, longLength);
+
+    // If there is an existing path that's short enough, this isn't a shortcut.
+    return !pathfinder.search();
   }
 
   void _makePassage(List<Vec> unownedPassages, Vec pos) {
@@ -399,6 +507,18 @@ class Architect {
 
   bool _isFormed(TileType type) =>
       type != Tiles.unformed && type != Tiles.unformedWet;
+
+  bool _isOpenAt(Vec pos) {
+    var type = stage[pos].type;
+    return type == Tiles.open ||
+        type == Tiles.passage ||
+        type == Tiles.passageWet;
+  }
+
+  bool _isSolidAt(Vec pos) {
+    var type = stage[pos].type;
+    return type == Tiles.solid || type == Tiles.solidWet;
+  }
 }
 
 // TODO: Figure out how this interacts with Painter.
@@ -423,6 +543,13 @@ class DecorPainter {
     _architecture._architect.stage[pos].type = type;
     _painted++;
   }
+}
+
+class _Path {
+  final Vec pos;
+  final Direction dir;
+
+  _Path(this.pos, this.dir);
 }
 
 /// Each architecture is a separate algorithm and some tuning parameters for it
@@ -475,4 +602,32 @@ abstract class Architecture {
       _architect.stage[pos].type = Tiles.solid;
     }
   }
+}
+
+/// Used to see if there is already a path between two points in the dungeon
+/// before adding an extra passage between two open areas.
+///
+/// Returns `true` if it can find an existing path shorter or as short as the
+/// given max length.
+class _LengthPathfinder extends Pathfinder<bool> {
+  final int _maxLength;
+
+  _LengthPathfinder(Stage stage, Vec start, Vec end, this._maxLength)
+      : super(stage, start, end);
+
+  bool processStep(Path path) {
+    if (path.length >= _maxLength) return false;
+
+    return null;
+  }
+
+  bool reachedGoal(Path path) => true;
+
+  int stepCost(Vec pos, Tile tile) {
+    if (tile.canEnter(Motility.doorAndWalk)) return 1;
+
+    return null;
+  }
+
+  bool unreachableGoal() => false;
 }
