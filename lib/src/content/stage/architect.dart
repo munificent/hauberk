@@ -33,12 +33,12 @@ class Region {
 class Architect {
   static Array2D<Architecture> debugOwners;
 
-  final Lore _lore;
+  final Lore lore;
   final Stage stage;
-  final int _depth;
+  final int depth;
   final Array2D<Architecture> _owners;
 
-  Architect(this._lore, this.stage, this._depth)
+  Architect(this.lore, this.stage, this.depth)
       : _owners = Array2D(stage.width, stage.height) {
     debugOwners = _owners;
   }
@@ -88,43 +88,6 @@ class Architect {
     yield* _addShortcuts(unownedPassages);
     yield* _claimPassages(unownedPassages);
 
-    // TODO: Place doors.
-    // TODO: Place stairs.
-
-    // TODO: Populate.
-
-    // To populate, use brogue's heat map idea. Something like:
-    // 1. Create an empty density monster and item map.
-    // 2. Do a BFS from the hero's starting location.
-    // 3. At each visited tile:
-    //    1. Use the tile's owner and theme to determine its base density.
-    //    2. Modify that based on distance so that farther tiles get a little
-    //       more density.
-    // 4. Pick a number of monsters to spawn.
-    // 5. For each monster:
-    //    1. Pick a number from zero to the total density.
-    //    2. Find the tile that corresponds to that. That's where the monster
-    //       will spawn.
-    //    3. Do a random walk a certain distance. Use the owner/theme from there
-    //       to pick a group to spawn.
-    //    4. Spawn the monster and place it.
-    //    5. Lower the density of the surrounding tiles some (and update the
-    //       total).
-    //    6. Increase the item density of the surrounding tiles some so that
-    //       items are more likely near monsters.
-    // 6. Do something similar for item tiles.
-    // Possibly find articulation points in the stage and increase the density
-    // of tiles that lie beyond those. Ditto for secret doors, etc.
-
-    // TODO: Instead of bleeding themes around, here's a simpler idea:
-    // 1. Choose a random place to spawn a monster/item.
-    // 2. Do a random walk from there to a result tile.
-    // 3. Use the result tile's architecture/style/whatever to generate the
-    //    monster/item.
-    // 4. Place it in the original random location.
-    // This way, you can get nearby styles and foreshadowing without a lot of
-    // complex calculation.
-
     var decorator = Decorator(this);
     yield* decorator.decorate();
 
@@ -144,7 +107,7 @@ class Architect {
     count = 3;
 
     while (!hasNonAquatic || result.length < count) {
-      var style = ArchitecturalStyle.all.tryChoose(_depth, "style");
+      var style = ArchitecturalStyle.all.tryChoose(depth, "style");
 
       // Make sure there's at least one walkable style.
       if (!style.isAquatic) hasNonAquatic = true;
@@ -495,7 +458,7 @@ abstract class Architecture {
 
   Painter get painter => Painter.base;
 
-  String get decorTheme => _style.decorTheme;
+  ArchitecturalStyle get style => _style;
 
   void bind(ArchitecturalStyle style, Architect architect, Region region) {
     _architect = architect;

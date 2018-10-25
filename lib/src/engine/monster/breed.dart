@@ -6,20 +6,11 @@ import '../core/game.dart';
 import '../core/lerp.dart';
 import '../core/log.dart';
 import '../hero/hero.dart';
-import '../hero/skill.dart';
 import '../items/item.dart';
 import '../items/item_type.dart';
 import '../stage/tile.dart';
 import 'monster.dart';
 import 'move.dart';
-
-class BreedGroup {
-  final String displayName;
-  final String name;
-  Discipline slaySkill;
-
-  BreedGroup(this.displayName, this.name);
-}
 
 /// A lazy named reference to a Breed.
 ///
@@ -126,7 +117,7 @@ class Breed {
   /// Used to determine which kinds of slaying affect which monsters. For
   /// display purposes in the lore screen, the last group in the list should
   /// be noun-like while the others are adjectives, like `["undead", "bug"]`.
-  final List<BreedGroup> groups = [];
+  final List<String> groups = [];
 
   final String description;
 

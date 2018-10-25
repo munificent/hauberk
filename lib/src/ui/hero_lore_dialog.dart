@@ -166,7 +166,7 @@ class HeroLoreDialog extends HeroInfoDialog {
     var noun = "monster";
     if (breed.groups.isNotEmpty) {
       // TODO: Handle more than two groups.
-      noun = breed.groups.map((group) => group.name).join(" ");
+      noun = breed.groups.map((group) => group).join(" ");
     }
 
     if (breed.flags.unique) {

@@ -1,5 +1,4 @@
 import '../../engine.dart';
-import '../monster/builder.dart';
 import 'discipline/archery.dart';
 import 'discipline/axe.dart';
 import 'discipline/battle_hardening.dart';
@@ -38,11 +37,19 @@ class Skills {
     ]);
 
     // Slays.
-    for (var group in breedGroups.values) {
-      var slay = SlayDiscipline(group);
-      group.slaySkill = slay;
-      skills.add(slay);
-    }
+    skills.addAll([
+      SlayDiscipline("Animals", "animal"),
+      SlayDiscipline("Bugs", "bug"),
+      SlayDiscipline("Dragons", "dragon"),
+      SlayDiscipline("Fae Folk", "fae"),
+      SlayDiscipline("Goblins", "goblin"),
+      SlayDiscipline("Humans", "human"),
+      SlayDiscipline("Jellies", "jelly"),
+      SlayDiscipline("Kobolds", "kobold"),
+      SlayDiscipline("Plants", "plant"),
+      SlayDiscipline("Saurians", "saurian"),
+      SlayDiscipline("Undead", "undead"),
+    ]);
 
     // Spells.
     skills.addAll([

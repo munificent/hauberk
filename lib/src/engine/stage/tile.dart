@@ -22,6 +22,7 @@ class Motility {
   static final doorAndFly = Motility.door | Motility.fly;
   static final doorAndWalk = Motility.door | Motility.walk;
   static final flyAndWalk = Motility.fly | Motility.walk;
+  static final all = door | fly | swim | walk;
 
   int _bitMask = 0;
 
@@ -52,6 +53,7 @@ class TileType {
   final appearance;
 
   bool get canClose => onClose != null;
+
   bool get canOpen => onOpen != null;
 
   final Motility motility;

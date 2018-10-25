@@ -17,22 +17,6 @@ import 'monsters.dart';
 
 final collapseNewlines = RegExp(r"\n\s*");
 
-// TODO: Is there a better place to define these?
-final breedGroups = Map<String, BreedGroup>.fromIterable([
-  BreedGroup("Animals", "animal"),
-  BreedGroup("Bugs", "bug"),
-  BreedGroup("Dragons", "dragon"),
-  BreedGroup("Fae Folk", "fae"),
-  BreedGroup("Goblins", "goblin"),
-  BreedGroup("Humans", "human"),
-  BreedGroup("Jellies", "jelly"),
-  BreedGroup("Kobolds", "kobold"),
-  BreedGroup("Plants", "plant"),
-  BreedGroup("Saurians", "saurian"),
-  BreedGroup("Skeletons", "skeleton"),
-  BreedGroup("Undead", "undead"),
-], key: (group) => group.name);
-
 /// The last builder that was created. It gets implicitly finished when the
 /// next family or breed starts, or at the end of initialization. This way, we
 /// don't need an explicit `build()` call at the end of each builder.
@@ -64,18 +48,14 @@ void finishBreed() {
   if (_builder == null) return;
 
   // TODO: Is this tag still needed?
-  var tags = ["monster"];
+  var tags = <String>[];
+  tags.addAll(_family._groups);
+  tags.addAll(_builder._groups);
 
-  tags.addAll(_builder._places);
-  tags.addAll(_family._places);
-
-  // TODO: We probably want to be able to opt out of this for special breeds
-  // that should never spawn natural and only appear as minions or in special
-  // rooms.
-  // Default to spawning in rooms.
-  if (_builder._places.isEmpty && _family._places.isEmpty) tags.add("room");
+  if (tags.isEmpty) tags.add("monster");
 
   var breed = _builder.build();
+
   // TODO: join() here is dumb since Resource then splits it.
   Monsters.breeds.add(breed.name, breed, breed.depth,
       _builder._frequency ?? _family._frequency ?? 1.0, tags.join(" "));
@@ -107,10 +87,8 @@ class _BaseBuilder {
   // Default to walking.
   // TODO: Are there monsters that cannot walk?
   Motility _motility = Motility.walk;
+  // TODO: Get this working again.
   SpawnLocation _location;
-
-  /// Names of places where this breed may spawn.
-  final List<String> _places = [];
 
   /// The default speed for breeds in the current family. If the breed
   /// specifies a speed, it offsets the family's speed.
@@ -123,7 +101,7 @@ class _BaseBuilder {
   int _dodge;
 
   final List<Defense> _defenses = [];
-  final List<BreedGroup> _groups = [];
+  final List<String> _groups = [];
 
   // TODO: Make flags strongly typed here too?
   String _flags;
@@ -161,12 +139,6 @@ class _BaseBuilder {
     _location = SpawnLocation.open;
   }
 
-  void placeIn(String place1, [String place2, String place3]) {
-    _places.add(place1);
-    if (place2 != null) _places.add(place2);
-    if (place3 != null) _places.add(place3);
-  }
-
   /// How many monsters of this kind are spawned.
   void count(int minOrMax, [int max]) {
     if (max == null) {
@@ -199,11 +171,7 @@ class _BaseBuilder {
   }
 
   void groups(String names) {
-    for (var name in names.split(" ")) {
-      var group = breedGroups[name];
-      assert(group != null, "Unknown breed group '$name'.");
-      _groups.add(group);
-    }
+    _groups.addAll(names.split(" "));
   }
 }
 

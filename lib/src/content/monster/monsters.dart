@@ -1,5 +1,4 @@
 import '../../engine.dart';
-import '../themes.dart';
 import 'builder.dart';
 import 'lowercase.dart';
 import 'uppercase.dart';
@@ -9,7 +8,34 @@ class Monsters {
   static final ResourceSet<Breed> breeds = ResourceSet();
 
   static void initialize() {
-    Themes.defineTags(breeds, "monster");
+    // Define the tag path and store the leaf tag which is what gets used by
+    // the item types.
+    var groups = [
+      "natural/animal/bird",
+      "natural/animal/herp/salamander",
+      "natural/animal/herp/snake",
+      "natural/animal/mammal/bat",
+      "natural/animal/mammal/canine",
+      "natural/animal/mammal/feline",
+      "natural/animal/mammal/rodent",
+      "natural/bug/fly",
+      "natural/bug/slug",
+      "natural/bug/spider",
+      "natural/bug/worm",
+      "natural/plant/vine",
+      "mythical/beast/dragon",
+      "magical/eye",
+      "humanoid/hob/fae",
+      "humanoid/hob/goblin",
+      "magical/jelly",
+      "humanoid/hob/kobold",
+      "humanoid/human",
+      "humanoid/saurian",
+      "undead/skeleton",
+    ];
+    for (var group in groups) {
+      breeds.defineTags("monster/$group");
+    }
 
     // TODO: https://en.wikipedia.org/wiki/P%C3%BAca
     // TODO: https://en.wikipedia.org/wiki/Kelpie

@@ -347,12 +347,10 @@ class Hero extends Actor {
       // If this is the first time we've seen this breed, see if that unlocks
       // a slaying skill for it.
       if (lore.seen(monster.breed) == 1) {
-        for (var group in monster.breed.groups) {
-          if (group.slaySkill == null) continue;
-
-          if (save.heroClass.proficiency(group.slaySkill) == 0.0) continue;
-
-          discoverSkill(group.slaySkill);
+        // TODO: Would be better to do skills.discovered, but right now this also
+        // discovers BattleHardening.
+        for (var skill in game.content.skills) {
+          skill.seeBreed(this, monster.breed);
         }
       }
     }
@@ -404,6 +402,8 @@ class Hero extends Actor {
   /// Ensures the hero has discovered [skill] and logs if it is the first time
   /// it's been seen.
   void discoverSkill(Skill skill) {
+    if (save.heroClass.proficiency(skill) == 0.0) return;
+
     if (!skills.discover(skill)) return;
 
     game.log.gain(skill.discoverMessage, this);

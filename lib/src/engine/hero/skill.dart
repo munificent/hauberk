@@ -5,6 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
+import '../monster/breed.dart';
 import '../monster/monster.dart';
 import 'hero.dart';
 import 'hero_class.dart';
@@ -52,6 +53,9 @@ abstract class Skill implements Comparable<Skill> {
 
   /// Called when the hero takes damage.
   void takeDamage(Hero hero, int damage) {}
+
+  /// Called the first time the hero has seen a monster of [breed].
+  void seeBreed(Hero hero, Breed breed) {}
 
   /// Called when the hero kills [monster].
   void killMonster(Hero hero, Action action, Monster monster) {}

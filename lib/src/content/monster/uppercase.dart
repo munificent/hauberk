@@ -8,7 +8,7 @@ void ancients() {}
 
 void birds() {
   family("B")
-    ..groups("animal")
+    ..groups("bird")
     ..sense(see: 8, hear: 6)
     ..defense(10, "{1} flaps out of the way.")
     ..fly()
@@ -104,11 +104,10 @@ void quest() {
 }
 
 void reptiles() {
-  family("R")..groups("animal");
+  family("R")..groups("herp");
   breed("frog", 1, lima, 4, dodge: 30, meander: 30)
     ..sense(see: 6, hear: 4)
     ..swim()
-    ..placeIn("aquatic")
     ..attack("hop[s] on", 2);
 
   family("R", meander: 10, flags: "fearless")
@@ -159,7 +158,7 @@ void reptiles() {
     ..drop("weapon", percent: 20);
 
   family("R", dodge: 30, meander: 20)
-    ..groups("animal")
+    ..groups("salamander")
     ..sense(see: 6, hear: 5)
     ..preferOpen()
     ..emanate(3);
@@ -179,18 +178,15 @@ void reptiles() {
 
 void snakes() {
   family("S", dodge: 30, meander: 30)
-    ..groups("animal")
+    ..groups("snake")
     ..sense(see: 4, hear: 7);
   breed("water snake", 1, lima, 9)
-    ..placeIn("aquatic")
     ..attack("bite[s]", 3);
 
   breed("brown snake", 3, persimmon, 25)
-    ..placeIn("aquatic")
     ..attack("bite[s]", 4);
 
   breed("cave snake", 8, gunsmoke, 40)
-    ..placeIn("passage")
     ..attack("bite[s]", 10);
 }
 

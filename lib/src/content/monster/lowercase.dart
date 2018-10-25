@@ -8,9 +8,8 @@ import 'builder.dart';
 void arachnids() {
   // TODO: Should all spiders hide in passages?
   family("a", flags: "fearless")
-    ..groups("bug")
+    ..groups("spider")
     ..sense(see: 4, hear: 2)
-    ..placeIn("passage")
     ..stain(Tiles.spiderweb);
   breed("brown spider", 5, persimmon, 6, dodge: 30, meander: 40)
     ..attack("bite[s]", 5, Elements.poison);
@@ -30,10 +29,9 @@ void arachnids() {
 
 void bats() {
   family("b", speed: 1)
-    ..groups("animal")
+    ..groups("bat")
     ..sense(see: 2, hear: 8)
     ..fly()
-    ..placeIn("room", "passage")
     ..preferOpen();
   breed("brown bat", 1, persimmon, 3, frequency: 0.5, meander: 50)
     ..defense(20, "{1} flits out of the way.")
@@ -50,9 +48,8 @@ void bats() {
 
 void canines() {
   family("c", dodge: 25, tracking: 20, meander: 25)
-    ..groups("animal")
-    ..sense(see: 5, hear: 10)
-    ..placeIn("room", "passage");
+    ..groups("canine")
+    ..sense(see: 5, hear: 10);
 
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
@@ -158,6 +155,7 @@ void dragons() {
 
 void eyes() {
   family("e", flags: "immobile")
+    ..groups("eye")
     ..sense(see: 16, hear: 1)
     ..defense(10, "{1} blinks out of the way.")
     ..fly()
@@ -209,8 +207,7 @@ void eyes() {
 void felines() {
   family("f")
     ..sense(see: 10, hear: 8)
-    ..placeIn("room", "passage")
-    ..groups("animal");
+    ..groups("feline");
   breed("stray cat", 1, gold, 11, speed: 1, meander: 30)
     ..attack("bite[s]", 5)
     ..attack("scratch[es]", 4);
@@ -312,8 +309,7 @@ void humanoids() {}
 void insects() {
   family("i", tracking: 3, meander: 40, flags: "fearless")
     ..groups("bug")
-    ..sense(see: 5, hear: 2)
-    ..placeIn("room", "passage");
+    ..sense(see: 5, hear: 2);
   // TODO: Spawn as eggs which can hatch into cockroaches?
   breed("giant cockroach[es]", 1, garnet, 1, frequency: 0.4)
     ..count(2, 5)
@@ -327,8 +323,10 @@ void insects() {
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
 
+  family("i", tracking: 3, meander: 40, flags: "fearless")
+    ..groups("fly")
+    ..sense(see: 5, hear: 2);
   breed("firefly", 8, carrot, 6, speed: 1, meander: 70)
-    ..placeIn("aquatic")
     ..count(3, 8)
     ..attack("bite[s]", 12, Elements.fire);
 }
@@ -583,9 +581,8 @@ void quadrupeds() {}
 
 void rodents() {
   family("r", dodge: 30, meander: 30)
-    ..groups("animal")
+    ..groups("rodent")
     ..sense(see: 4, hear: 6)
-    ..placeIn("food", "passage")
     ..preferWall();
   breed("[mouse|mice]", 1, sandal, 2, frequency: 0.7)
     ..count(2, 5)
@@ -623,9 +620,8 @@ void rodents() {
 
 void slugs() {
   family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 30)
-    ..groups("bug")
-    ..sense(see: 3, hear: 1)
-    ..placeIn("passage");
+    ..groups("slug")
+    ..sense(see: 3, hear: 1);
   breed("giant slug", 3, mustard, 20)..attack("crawl[s] on", 8);
 
   breed("suppurating slug", 6, lima, 50)
@@ -642,11 +638,10 @@ void minorUndead() {}
 
 void vines() {
   family("v", flags: "fearless immobile")
-    ..groups("plant")
+    ..groups("vine")
     ..sense(see: 10, hear: 10);
   breed("choker", 16, peaGreen, 40)
-    ..attack("strangle", 12)
-    ..placeIn("passage");
+    ..attack("strangle", 12);
   // TODO: Touch to confuse?
   breed("nightshade", 19, lilac, 50)
     ..whip(rate: 3, damage: 10)
@@ -656,15 +651,13 @@ void vines() {
     ..whip(rate: 3, damage: 10)
     ..attack("strangle", 8);
   breed("strangler", 26, sherwood, 80)
-    ..attack("strangle", 14)
-    ..placeIn("passage");
+    ..attack("strangle", 14);
 }
 
 void worms() {
   family("w", dodge: 15, meander: 40, flags: "fearless")
-    ..groups("bug")
-    ..sense(see: 0, hear: 3)
-    ..placeIn("passage");
+    ..groups("worm")
+    ..sense(see: 0, hear: 3);
   breed("blood worm", 1, maroon, 4, frequency: 0.5)
     ..count(2, 5)
     ..attack("crawl[s] on", 5);
@@ -683,7 +676,7 @@ void worms() {
 
 void skeletons() {
   family("x", meander: 30)
-    ..groups("undead skeleton")
+    ..groups("skeleton")
     ..sense(see: 4, hear: 4);
   // TODO: Special room/trap where these get spawned and come up from the
   // ground?
