@@ -92,7 +92,7 @@ class _OneOfDrop implements Drop {
 
     drops.forEach((drop, frequency) {
       // TODO: Allow passing in depth?
-      _drop.addUnnamed(drop, 1, frequency, "drop");
+      _drop.add(drop, frequency: frequency, tags: "drop");
     });
   }
 

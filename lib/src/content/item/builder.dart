@@ -374,8 +374,11 @@ void finishItem() {
   itemType.skills.addAll(_category._skills);
   itemType.skills.addAll(_item._skills);
 
-  Items.types.add(itemType.name, itemType, itemType.depth, _item._frequency,
-      _category._tag);
+  Items.types.add(itemType,
+      name: itemType.name,
+      depth: itemType.depth,
+      frequency: _item._frequency,
+      tags: _category._tag);
 
   _item = null;
 }
@@ -409,6 +412,10 @@ void finishAffix() {
   _affix._resists.forEach(affix.resist);
   _affix._statBonuses.forEach(affix.setStatBonus);
 
-  affixes.add(fullName, affix, _affix._depth, _affix._frequency, _affixTag);
+  affixes.add(affix,
+      name: fullName,
+      depth: _affix._depth,
+      frequency: _affix._frequency,
+      tags: _affixTag);
   _affix = null;
 }

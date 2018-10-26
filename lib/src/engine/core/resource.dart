@@ -15,27 +15,40 @@ class ResourceSet<T> {
 
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
-  void add(String name, T object, int depth, double frequency,
-      [String tagNames]) {
+  void add(T object, {String name, int depth, double frequency, String tags}) {
+    _add(object, name, depth, depth, frequency, tags);
+  }
+
+  void addRanged(T object,
+      {String name,
+      int minDepth,
+      int maxDepth,
+      double frequency,
+      String tags}) {
+    _add(object, name, minDepth, maxDepth, frequency, tags);
+  }
+
+  void _add(T object, String name, int minDepth, int maxDepth, double frequency,
+      String tags) {
+    name ??= _resources.length.toString();
+    minDepth ??= 1;
+    maxDepth ??= minDepth;
+    frequency ??= 1.0;
+
     if (_resources.containsKey(name)) {
       throw ArgumentError('Already have a resource named "$name".');
     }
 
-    var resource = _Resource(object, depth, frequency);
+    var resource = _Resource(object, minDepth, maxDepth, frequency);
     _resources[name] = resource;
 
-    if (tagNames != null && tagNames != "") {
-      for (var tagName in tagNames.split(" ")) {
+    if (tags != null && tags != "") {
+      for (var tagName in tags.split(" ")) {
         var tag = _tags[tagName];
         if (tag == null) throw ArgumentError('Unknown tag "$tagName".');
         resource._tags.add(tag);
       }
     }
-  }
-
-  void addUnnamed(T object, int depth, double frequency, [String tagNames]) {
-    return add(
-        _resources.length.toString(), object, depth, frequency, tagNames);
   }
 
   /// Given a string like "a/b/c d/e" defines tags for "a", "b", "c", "d", and
@@ -172,7 +185,8 @@ class ResourceSet<T> {
         var chance = scale(resource);
         if (chance == 0.0) continue;
 
-        chance *= resource.frequency * _depthScale(resource.depth, depth);
+        chance *= resource.frequency *
+            _depthScale(resource.minDepth, resource.maxDepth, depth);
 
         // The depth scale is so narrow at low levels that highly out of depth
         // items can have a 0% chance of being generated due to floating point
@@ -211,29 +225,38 @@ class ResourceSet<T> {
   /// things are.
   ///
   /// https://en.wikipedia.org/wiki/Normal_distribution
-  double _depthScale(int resourceDepth, int targetDepth) {
-    var relative = (resourceDepth - targetDepth).toDouble();
-    double deviation;
-    if (relative <= 0.0) {
+  double _depthScale(
+      int resourceMinDepth, int resourceMaxDepth, int targetDepth) {
+    if (targetDepth < resourceMinDepth) {
+      var relative = resourceMinDepth - targetDepth;
+      var deviation = 0.7 + targetDepth * 0.1;
+      return math.exp(-0.5 * relative * relative / (deviation * deviation));
+    } else if (targetDepth > resourceMaxDepth) {
+      var relative = targetDepth - resourceMaxDepth;
+
       // As you get deeper in the dungeon, the probability curve widens so that
       // you still find weaker stuff fairly frequently.
-      deviation = 1.0 + targetDepth * 0.2;
-    } else {
-      deviation = 0.7 + targetDepth * 0.1;
-    }
+      var deviation = 1.0 + targetDepth * 0.2;
 
-    return math.exp(-0.5 * relative * relative / (deviation * deviation));
+      return math.exp(-0.5 * relative * relative / (deviation * deviation));
+    } else {
+      // Within the resource's depth range.
+      return 1.0;
+    }
   }
 }
 
 class _Resource<T> {
   final T object;
-  final int depth;
+  final int minDepth;
+  final int maxDepth;
 
   final double frequency;
   final Set<_Tag<T>> _tags = Set();
 
-  _Resource(this.object, this.depth, this.frequency);
+  _Resource(this.object, this.minDepth, this.maxDepth, this.frequency) {
+    if (minDepth == null) throw "!";
+  }
 }
 
 class _Tag<T> {

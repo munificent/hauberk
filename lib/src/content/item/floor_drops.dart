@@ -84,5 +84,5 @@ void floorDrop(
   frequency ??= 1.0;
   location ??= SpawnLocation.anywhere;
   var floorDrop = FloorDrop(location, drop);
-  _floorDrops.addUnnamed(floorDrop, depth, frequency, theme);
+  _floorDrops.add(floorDrop, depth: depth, frequency: frequency, tags: theme);
 }

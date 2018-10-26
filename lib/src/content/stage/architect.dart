@@ -104,8 +104,6 @@ class Architect {
     var count = math.min(rng.taper(1, 10), 5);
     var hasNonAquatic = false;
 
-    count = 3;
-
     while (!hasNonAquatic || result.length < count) {
       var style = ArchitecturalStyle.all.tryChoose(depth, "style");
 

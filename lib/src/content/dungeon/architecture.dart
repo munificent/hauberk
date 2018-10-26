@@ -17,14 +17,13 @@ class Architecture {
     // TODO: Make a nicer API.
     // Default.
     var architecture = Architecture._();
-    architecture.roomTypes
-        .addUnnamed(RectangleRoom("room", 10), 1, 1.0, "room");
-    _all.addUnnamed(architecture, 1, 1.0, "architecture");
+    architecture.roomTypes.add(RectangleRoom("room", 10), tags: "room");
+    _all.add(architecture, tags: "architecture");
 
     // Goblin warren.
     architecture = Architecture._(passageTries: 0);
-    architecture.roomTypes.addUnnamed(RectangleRoom("room", 6), 1, 1.0, "room");
-    _all.addUnnamed(architecture, 1, 1.0, "architecture");
+    architecture.roomTypes.add(RectangleRoom("room", 6), tags: "room");
+    _all.add(architecture, tags: "architecture");
 
     // Caverns.
     architecture = Architecture._(
@@ -33,8 +32,8 @@ class Architecture {
         passageMinLength: 3,
         passageMaxLength: 10,
         passageTries: 10);
-    architecture.roomTypes.addUnnamed(BlobRoom("room"), 1, 1.0, "room");
-    _all.addUnnamed(architecture, 1, 1.0, "architecture");
+    architecture.roomTypes.add(BlobRoom("room"), tags: "room");
+    _all.add(architecture, tags: "architecture");
   }
 
   final int passageTurnPercent;

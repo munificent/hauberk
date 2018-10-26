@@ -57,8 +57,11 @@ void finishBreed() {
   var breed = _builder.build();
 
   // TODO: join() here is dumb since Resource then splits it.
-  Monsters.breeds.add(breed.name, breed, breed.depth,
-      _builder._frequency ?? _family._frequency ?? 1.0, tags.join(" "));
+  Monsters.breeds.add(breed,
+      name: breed.name,
+      depth: breed.depth,
+      frequency: _builder._frequency ?? _family._frequency,
+      tags: tags.join(" "));
   _builder = null;
 }
 
@@ -87,6 +90,7 @@ class _BaseBuilder {
   // Default to walking.
   // TODO: Are there monsters that cannot walk?
   Motility _motility = Motility.walk;
+
   // TODO: Get this working again.
   SpawnLocation _location;
 

@@ -11,10 +11,6 @@ abstract class RoomType {
 
   static ResourceSet<RoomType> _allTypes = ResourceSet();
 
-  // TODO: Hacky. ResourceSet assumes resources are named and have unique names.
-  // Relax that constraint?
-  static int _nextNameId = 0;
-
   static RoomType choose(int depth) {
     if (_allTypes.isEmpty) _initializeRoomTypes();
 
@@ -23,7 +19,7 @@ abstract class RoomType {
   }
 
   static void add(RoomType type, double frequency) {
-    _allTypes.add("room_${_nextNameId++}", type, 1, frequency, "room");
+    _allTypes.add(type, frequency: frequency, tags: "room");
   }
 
   static void _initializeRoomTypes() {

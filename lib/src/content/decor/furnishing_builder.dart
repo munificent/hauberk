@@ -208,6 +208,7 @@ void _singleFurnishing(List<String> lines) {
   }
 
   var furnishing = Furnishing(cells);
-  Decor.all.addUnnamed(furnishing, 1,
-      _categoryFrequency ?? _furnishingFrequency ?? 1.0, _themes);
+  Decor.all.add(furnishing,
+      frequency: _categoryFrequency ?? _furnishingFrequency ?? 1.0,
+      tags: _themes);
 }

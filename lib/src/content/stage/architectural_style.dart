@@ -18,7 +18,8 @@ class ArchitecturalStyle {
     _all.defineTags("style");
 
     addStyle(
-        {int depth,
+        {int min,
+        int max,
         double frequency,
         String decor,
         String monsters,
@@ -30,30 +31,36 @@ class ArchitecturalStyle {
       var style = ArchitecturalStyle(
           decor, monsters.split(" "), monsterDensity, create,
           isAquatic: isAquatic);
-      _all.addUnnamed(style, depth, frequency, "style");
+      _all.addRanged(style,
+          minDepth: min, maxDepth: max, frequency: frequency, tags: "style");
     }
+
+    // Generic default dungeon style.
+    addStyle(
+        min: 1,
+        max: 100,
+        frequency: 10.0,
+        decor: "dungeon",
+        create: () => Dungeon());
 
     // TODO: Monster groups are all temp.
     // TODO: Define more.
+    // TODO: Tweak level ranges.
     addStyle(
-        depth: 1,
+        min: 1,
+        max: 100,
         frequency: 2.0,
         decor: "glowing-moss",
         monsters: "jelly bug",
         create: () => Catacomb());
     addStyle(
-        depth: 1,
+        min: 1,
+        max: 100,
         frequency: 1.0,
         decor: "glowing-moss",
         monsters: "goblin",
         create: () => Cavern());
 
-    addStyle(
-        depth: 1,
-        frequency: 10.0,
-        decor: "dungeon",
-        monsters: "fae",
-        create: () => Dungeon());
     // TODO: Forest style that uses cavern-like CA to open an organic-shaped
     // area and then fills it with grass and trees. (Maybe just a specific
     // painter for Cavern?
@@ -61,16 +68,16 @@ class ArchitecturalStyle {
     // TODO: Different liquid types including some that are dry.
     // TODO: Shore or islands?
     addStyle(
-        depth: 1,
-        frequency: 1.0,
+        min: 1,
+        max: 100,
         decor: "water",
         monsters: "animal",
         isAquatic: true,
         monsterDensity: 0.0,
         create: () => Lake());
     addStyle(
-        depth: 1,
-        frequency: 1.0,
+        min: 1,
+        max: 100,
         decor: "water",
         monsters: "animal",
         monsterDensity: 0.0,
