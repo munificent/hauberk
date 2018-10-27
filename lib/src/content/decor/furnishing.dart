@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import '../stage/decorator.dart';
+import '../stage/painter.dart';
 import 'cave.dart';
 import 'decor.dart';
 import 'room.dart';
@@ -226,7 +226,7 @@ class Furnishing extends Decor {
 
   Furnishing(this._cells);
 
-  bool canPlace(DecorPainter painter, Vec pos) {
+  bool canPlace(Painter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {
         var absolute = pos.offset(x, y);
@@ -244,7 +244,7 @@ class Furnishing extends Decor {
     return true;
   }
 
-  void place(DecorPainter painter, Vec pos) {
+  void place(Painter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {
         _cells.get(x, y).apply(painter, pos.offset(x, y));
@@ -275,7 +275,7 @@ class Cell {
     return true;
   }
 
-  void apply(DecorPainter painter, Vec pos) {
+  void apply(Painter painter, Vec pos) {
     if (_apply != null) painter.setTile(pos, _apply);
   }
 }

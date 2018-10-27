@@ -2,7 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 //import 'blast.dart';
-import '../stage/decorator.dart';
+import '../stage/painter.dart';
 import 'furnishing.dart';
 
 abstract class Decor {
@@ -20,13 +20,13 @@ abstract class Decor {
   static Decor choose(String theme) {
     if (!all.tagExists(theme)) return null;
     // TODO: Use depth.
-    return all.tryChoose(1, theme);
+    return all.tryChoose(1, theme, includeParents: false);
   }
 
   static final ResourceSet<Decor> all = ResourceSet();
 
-  bool canPlace(DecorPainter painter, Vec pos);
+  bool canPlace(Painter painter, Vec pos);
 
   /// Adds this decor at [pos].
-  void place(DecorPainter painter, Vec pos);
+  void place(Painter painter, Vec pos);
 }

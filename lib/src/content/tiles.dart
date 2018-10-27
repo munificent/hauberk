@@ -31,6 +31,9 @@ class Tiles {
   /// An open tile that the passage generator knows must remain open.
   static final passage = tile("passage", "-", gunsmoke).open();
 
+  /// The end of a passage.
+  static final doorway = tile("doorway", "○", gunsmoke).open();
+
   /// An untraversable wet tile that has been filled in the passage generator.
   static final solidWet = tile("solid wet", "≈", cornflower).solid();
 

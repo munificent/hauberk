@@ -61,22 +61,23 @@ void hover(Vec pos) {
   if (pos == hoverPos) return;
   hoverPos = pos;
 
-//  var buffer = StringBuffer();
+  var buffer = StringBuffer();
 //  var dungeon = Dungeon.last;
-//  if (dungeon.bounds.contains(pos)) {
-//    buffer.write("<h2>Hover $pos</h2>");
-//
-//    var actor = dungeon.stage.actorAt(pos);
-//    if (actor != null) {
-//      buffer.writeln("<p>$actor</p>");
-//    }
-//
-//    for (var item in dungeon.stage.itemsAt(pos)) {
-//      buffer.writeln("<p>$item</p>");
-//    }
-//
-//    buffer.write("<p>${dungeon.stage[pos].type.name}</p>");
-//
+  var stage = _game.stage;
+  if (stage.bounds.contains(pos)) {
+    buffer.write("<h2>Hover $pos</h2>");
+
+    var actor = stage.actorAt(pos);
+    if (actor != null) {
+      buffer.writeln("<p>$actor</p>");
+    }
+
+    for (var item in stage.itemsAt(pos)) {
+      buffer.writeln("<p>$item</p>");
+    }
+
+    buffer.write("<p>${stage[pos].type.name}</p>");
+
 //    var place = dungeon.placeAt(pos);
 //    if (place != null) {
 //      var themes = place.themes.keys.toList();
@@ -98,11 +99,11 @@ void hover(Vec pos) {
 //      }
 //      buffer.writeln("</ul>");
 //    }
-//  }
-//
-//  html
-//      .querySelector('div[id=hover]')
-//      .setInnerHtml(buffer.toString(), validator: validator);
+  }
+
+  html
+      .querySelector('div[id=hover]')
+      .setInnerHtml(buffer.toString(), validator: validator);
 }
 
 Future generate() async {

@@ -4,7 +4,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import 'architect.dart';
-import 'painter.dart';
 
 // TODO: Rename to "Keep". Give at an optional max number of rooms so that it
 // can be used to generate small concentrated areas on the stage. Create a
@@ -20,7 +19,7 @@ class Dungeon extends Architecture {
 
   final JunctionSet _junctions = JunctionSet();
 
-  Painter get painter => Painter.stoneWall;
+  String get paintStyle => "stone";
 
   Iterable<String> build() sync* {
     debugJunctions = _junctions;

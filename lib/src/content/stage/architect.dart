@@ -6,7 +6,6 @@ import '../../engine.dart';
 import '../tiles.dart';
 import 'architectural_style.dart';
 import 'decorator.dart';
-import 'painter.dart';
 import 'reachability.dart';
 
 // TODO: Consider regions that are randomly placed blobs in the middle too.
@@ -454,7 +453,7 @@ abstract class Architecture {
 
   Region get region => _region;
 
-  Painter get painter => Painter.base;
+  String get paintStyle => "rock";
 
   ArchitecturalStyle get style => _style;
 

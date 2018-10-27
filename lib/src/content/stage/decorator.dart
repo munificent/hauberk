@@ -5,12 +5,18 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../decor/decor.dart';
 import '../monster/monsters.dart';
+import '../tiles.dart';
 import 'architect.dart';
 import 'painter.dart';
 
 class Decorator {
   final Architect _architect;
   Vec _heroPos;
+
+  /// The tiles organized by which architect owns them.
+  ///
+  /// Includes a null key for the tiles with no owner.
+  final Map<Architecture, List<Vec>> _tilesByArchitecture = {};
 
   /// The unique breeds that have already been placed on the stage. Ensures we
   /// don't spawn the same unique more than once.
@@ -22,15 +28,28 @@ class Decorator {
 
   Stage get _stage => _architect.stage;
 
+  /// Gets the list of tiles owned by [architecture].
+  List<Vec> tilesFor(Architecture architecture) =>
+      _tilesByArchitecture[architecture];
+
   Iterable<String> decorate() sync* {
+    _findDoorways();
+
+    for (var pos in _stage.bounds) {
+      var owner = _architect.ownerAt(pos);
+      _tilesByArchitecture.putIfAbsent(owner, () => []).add(pos);
+    }
+
+    // TODO: Consider calculating the "humidity" of each tile by flowing
+    // outward from wet tiles. Then use that to place puddles, smoke, ice, or
+    // other things that hint at the liquid in the level.
+
     _paintTiles();
 
     // TODO: Should this happen before or after painting?
     yield* _placeDecor();
 
     // TODO: Place stairs.
-
-    // TODO: Place doors.
 
     // TODO: Instead of bleeding themes around, here's a simpler idea:
     // 1. Choose a random place to spawn a monster/item.
@@ -49,41 +68,90 @@ class Decorator {
     // TODO: Items.
   }
 
+  /// Marks doorway tiles on the endpoints of passages.
+  void _findDoorways() {
+
+    var doorways = <Vec>[];
+    for (var pos in _stage.bounds.inflate(-1)) {
+      var tile = _stage[pos].type;
+
+      // Must be a passage.
+      if (tile != Tiles.passage) continue;
+
+      for (var dir in Direction.cardinal) {
+        // Must lead into an open area.
+        if (_stage[pos + dir].type != Tiles.open) continue;
+
+        // From another open area or passage.
+        var behind = _stage[pos + dir.rotate180].type;
+        if (behind != Tiles.open &&
+            behind != Tiles.passage &&
+            behind != Tiles.doorway) {
+          continue;
+        }
+
+        // With walls on both sides.
+        if (_stage[pos + dir.rotateLeft90].type != Tiles.solid) continue;
+        if (_stage[pos + dir.rotateRight90].type != Tiles.solid) continue;
+
+        // It's a doorway.
+        _stage[pos].type = Tiles.doorway;
+        doorways.add(pos);
+        break;
+      }
+    }
+
+    // The passage generator can generate passages of length 2. The previous
+    // code correctly turns both tiles into doorways. That ends up looking
+    // funny if both become doors. So go through and randomly turn doorways
+    // back to passages if they are adjacent to another doorway.
+    rng.shuffle(doorways);
+    for (var doorway in doorways) {
+      // May have already been turned back into a passage.
+      if (_stage[doorway].type != Tiles.doorway) continue;
+
+      for (var neighbor in doorway.cardinalNeighbors) {
+        if (_stage[neighbor].type == Tiles.doorway) {
+          _stage[rng.oneIn(2) ? doorway : neighbor].type = Tiles.passage;
+        }
+      }
+    }
+  }
+
   /// Turn the temporary tiles into real tiles based on each architecutre's
   /// painters.
   void _paintTiles() {
-    for (var pos in _architect.stage.bounds) {
-      var tile = _stage[pos];
-      var owner = _architect.ownerAt(pos);
-      if (owner == null) {
-        tile.type = Painter.base.paint(tile.type);
-      } else {
-        tile.type = owner.painter.paint(tile.type);
+    for (var entry in _tilesByArchitecture.entries) {
+      var architecture = entry.key;
+      var paintStyle = PaintStyle.find("rock");
+      if (architecture != null) {
+        paintStyle = PaintStyle.find(architecture.paintStyle);
+      }
+
+      var painter = Painter(this, _architect, architecture);
+      for (var pos in entry.value) {
+        painter.setTile(pos, paintStyle.paintTile(painter, pos));
       }
     }
   }
 
   Iterable<String> _placeDecor() sync* {
-    var tilesByOwner = <Architecture, List<Vec>>{};
-    for (var pos in _stage.bounds) {
-      var owner = _architect.ownerAt(pos);
-      if (owner != null) {
-        tilesByOwner.putIfAbsent(owner, () => []).add(pos);
-      }
-    }
-
-    for (var entry in tilesByOwner.entries) {
+    for (var entry in _tilesByArchitecture.entries) {
       var architecture = entry.key;
+      if (architecture == null) continue;
+
       var tiles = entry.value;
 
-      var painter = DecorPainter._(_architect, architecture);
+      // TODO: Let the paint style affect the decor too. So, for example, the
+      // decor places a table and the paint style changes the material of it.
+      var painter = Painter(this, _architect, architecture);
 
-      // TODO: Let architecture/theme control density.
-      var decorTiles = rng.round(tiles.length * 0.1);
+      var decorTiles =
+          rng.round(tiles.length * architecture.style.decorDensity);
       decorTiles = rng.float(decorTiles * 0.8, decorTiles * 1.2).ceil();
 
       var tries = 0;
-      while (tries++ < decorTiles && painter._painted < decorTiles) {
+      while (tries++ < decorTiles && painter.paintedCount < decorTiles) {
         var decor = Decor.choose(architecture.style.decorTheme);
         if (decor == null) continue;
 
@@ -223,30 +291,6 @@ class Decorator {
 //      }
 //    }
 //  }
-}
-
-// TODO: Figure out how this interacts with Painter.
-class DecorPainter {
-  final Architect _architect;
-  final Architecture _architecture;
-  int _painted = 0;
-
-  DecorPainter._(this._architect, this._architecture);
-
-  Rect get bounds => _architect.stage.bounds;
-
-  bool ownsTile(Vec pos) => _architect.ownerAt(pos) == _architecture;
-
-  TileType getTile(Vec pos) {
-    assert(ownsTile(pos));
-    return _architect.stage[pos].type;
-  }
-
-  void setTile(Vec pos, TileType type) {
-    assert(_architect.ownerAt(pos) == _architecture);
-    _architect.stage[pos].type = type;
-    _painted++;
-  }
 }
 
 class DensityMap {

@@ -121,7 +121,9 @@ class ResourceSet<T> {
   /// So in the above example, anything tagged "equipment" is included but rare.
   ///
   /// May return `null` if there are no resources with [tagName].
-  T tryChoose(int depth, String tagName) {
+  T tryChoose(int depth, String tagName, {bool includeParents}) {
+    includeParents ??= true;
+
     assert(tagName != null);
     var goalTag = _tags[tagName];
     assert(goalTag != null);
@@ -135,6 +137,8 @@ class ResourceSet<T> {
         for (var resourceTag in resource._tags) {
           if (resourceTag.contains(tag)) return scale;
         }
+
+        if (!includeParents) break;
 
         // Parent tags are less likely than the preferred tag.
         tag = tag.parent;

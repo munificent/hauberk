@@ -22,6 +22,7 @@ class ArchitecturalStyle {
         int max,
         double frequency,
         String decor,
+        double decorDensity,
         String monsters,
         double monsterDensity,
         Architecture Function() create,
@@ -29,7 +30,7 @@ class ArchitecturalStyle {
       monsters ??= "monster";
 
       var style = ArchitecturalStyle(
-          decor, monsters.split(" "), monsterDensity, create,
+          decor, decorDensity, monsters.split(" "), monsterDensity, create,
           isAquatic: isAquatic);
       _all.addRanged(style,
           minDepth: min, maxDepth: max, frequency: frequency, tags: "style");
@@ -51,6 +52,7 @@ class ArchitecturalStyle {
         max: 100,
         frequency: 2.0,
         decor: "glowing-moss",
+        decorDensity: 0.2,
         monsters: "jelly bug",
         create: () => Catacomb());
     addStyle(
@@ -58,6 +60,7 @@ class ArchitecturalStyle {
         max: 100,
         frequency: 1.0,
         decor: "glowing-moss",
+        decorDensity: 0.3,
         monsters: "goblin",
         create: () => Cavern());
 
@@ -71,6 +74,7 @@ class ArchitecturalStyle {
         min: 1,
         max: 100,
         decor: "water",
+        decorDensity: 0.01,
         monsters: "animal",
         isAquatic: true,
         monsterDensity: 0.0,
@@ -79,6 +83,7 @@ class ArchitecturalStyle {
         min: 1,
         max: 100,
         decor: "water",
+        decorDensity: 0.01,
         monsters: "animal",
         monsterDensity: 0.0,
         isAquatic: true,
@@ -86,15 +91,17 @@ class ArchitecturalStyle {
   }
 
   final String decorTheme;
+  final double decorDensity;
   final List<String> monsterGroups;
   final double monsterDensity;
   final Architecture Function() _factory;
   final bool isAquatic;
 
-  ArchitecturalStyle(
-      this.decorTheme, this.monsterGroups, double monsterDensity, this._factory,
+  ArchitecturalStyle(this.decorTheme, double decorDensity, this.monsterGroups,
+      double monsterDensity, this._factory,
       {bool isAquatic})
-      : monsterDensity = monsterDensity ?? 1.0,
+      : decorDensity = decorDensity ?? 0.1,
+        monsterDensity = monsterDensity ?? 1.0,
         isAquatic = isAquatic ?? false;
 
   Architecture create(Architect architect, Region region) {
