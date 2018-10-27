@@ -607,7 +607,7 @@ class GameScreen extends Screen<Input> {
           var period = glyphs.length * 2 - 2;
 
           // Calculate a "random" but consistent phase for each position.
-          var phase = pos.x * pos.x * 17 + pos.y * pos.y * 39;
+          var phase = hashPoint(pos.x, pos.y);
           var frame = (_frame ~/ 8 + phase) % period;
           if (frame >= glyphs.length) {
             frame = glyphs.length - (frame - glyphs.length) - 1;

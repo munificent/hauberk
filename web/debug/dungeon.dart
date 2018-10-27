@@ -246,7 +246,7 @@ void render({bool showInfo = true}) {
       } else {
         var glyphs = tile.type.appearance as List<Glyph>;
         // Calculate a "random" but consistent phase for each position.
-        var phase = x * x * 17 + pos.y * pos.y * 39;
+        var phase = hashPoint(x, y);
         glyph = glyphs[phase % glyphs.length];
       }
 
