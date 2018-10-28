@@ -3,7 +3,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../tiles.dart';
 import 'dungeon.dart';
-import 'template_rooms.dart';
 
 abstract class RoomType {
   int get width;
@@ -58,8 +57,6 @@ abstract class RoomType {
     octagon(9, 11, 2, frequency: 0.5);
     octagon(9, 11, 3, frequency: 0.5);
     octagon(11, 11, 3, frequency: 0.5);
-
-    TemplateRoom.initialize();
   }
 
   /// Fill in the bounds of [room] with this room's individual style.
