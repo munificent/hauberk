@@ -210,7 +210,14 @@ class Keep extends Architecture {
   }
 
   Array2D<RoomTile> _createRoom() {
-    // TODO: Different room types and shapes.
+    if (rng.oneIn(3)) {
+      return _createAngledRoom();
+    } else {
+      return _createRectangleRoom();
+    }
+  }
+
+  Array2D<RoomTile> _createRectangleRoom() {
     // Make a randomly-sized room but keep the aspect ratio reasonable.
     var short = rng.inclusive(3, 8);
     var long = rng.inclusive(short, math.min(12, short + 4));
@@ -223,6 +230,44 @@ class Keep extends Architecture {
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
         tiles.set(x + 1, y + 1, RoomTile.floor);
+      }
+    }
+
+    _calculateEdges(tiles);
+    return tiles;
+  }
+
+  Array2D<RoomTile> _createAngledRoom() {
+    // Make a randomly-sized room but keep the aspect ratio reasonable.
+    var short = rng.inclusive(4, 9);
+    var long = rng.inclusive(short, math.min(12, short + 4));
+
+    var horizontal = rng.oneIn(2);
+    var width = horizontal ? long : short;
+    var height = horizontal ? short : long;
+
+    var cutWidth = rng.inclusive(2, width - 2);
+    var cutHeight = rng.inclusive(2, height - 2);
+
+    var isTop = rng.oneIn(2);
+    var isLeft = rng.oneIn(2);
+
+    // Open the whole rect.
+    var tiles = Array2D<RoomTile>(width + 2, height + 2, RoomTile.unused);
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        tiles.set(x + 1, y + 1, RoomTile.floor);
+      }
+    }
+
+    // Fill in the cut.
+    var xMin = isLeft ? 0 : width - cutWidth;
+    var xMax = isLeft ? cutWidth : width;
+    var yMin = isTop ? 0 : height - cutHeight;
+    var yMax = isTop ? cutHeight : height;
+    for (var y = yMin; y < yMax; y++) {
+      for (var x = xMin; x < xMax; x++) {
+        tiles.set(x + 1, y + 1, RoomTile.unused);
       }
     }
 
@@ -251,7 +296,7 @@ class Keep extends Architecture {
       } else if (cardinalFloors.length > 1) {
         // Don't allow junctions at inside corners.
       } else if (hasCornerFloor) {
-        // Don't allow junctions at outside corners.
+        // Don't allow passages at outside corners.
         room[pos] = RoomTile.wall;
       }
     }
