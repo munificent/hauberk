@@ -51,7 +51,13 @@ class Decorator {
     // TODO: Should this happen before or after painting?
     yield* _placeDecor();
 
-    // TODO: Place stairs.
+    // Place stairs.
+    // TODO: Choose more interesting places for them.
+    var stairCount = rng.range(2, 4);
+    for (var i = 0; i < stairCount; i++) {
+      var pos = _stage.findOpenTile();
+      _stage[pos].type = Tiles.stairs;
+    }
 
     // TODO: Instead of bleeding themes around, here's a simpler idea:
     // 1. Choose a random place to spawn a monster/item.
@@ -192,7 +198,8 @@ class Decorator {
       densityMap[pos] = density.toInt();
     }
 
-    // TODO: Tune this.
+    // TODO: Tune this. Maybe pick a total health based on depth and the number
+    // of open tiles and generate monsters until that's reached?
     var monsterCount = 100;
     var monsters = 0;
 
@@ -202,6 +209,9 @@ class Decorator {
       // If there are no remaining open tiles, abort.
       if (pos == null) break;
 
+      // TODO: Do a random walk from [pos] and use the resulting tile for the
+      // group. That way, there is some bleed and foreshadowing between
+      // architectures.
       var architecture = _architect.ownerAt(pos);
       var group = rng.item(architecture.style.monsterGroups);
       var breed = Monsters.breeds.tryChoose(_architect.depth, group);
@@ -323,7 +333,8 @@ class Decorator {
       densityMap[pos] = density.toInt();
     }
 
-    // TODO: Tune this.
+    // TODO: Tune this. Maybe pick a total gold value x number of open tiles
+    // and generate items until that is reached?
     var itemCount = 200;
     var items = 0;
 
