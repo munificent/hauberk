@@ -23,23 +23,20 @@ class ArchitecturalStyle {
         double decorDensity,
         String monsters,
         double monsterDensity,
+        double itemDensity,
         Architecture Function() create,
         bool isAquatic}) {
       monsters ??= "monster";
 
-      var style = ArchitecturalStyle(
-          decor, decorDensity, monsters.split(" "), monsterDensity, create,
+      var style = ArchitecturalStyle(decor, decorDensity, monsters.split(" "),
+          monsterDensity, itemDensity, create,
           isAquatic: isAquatic);
       _all.addRanged(style, minDepth: min, maxDepth: max, frequency: frequency);
     }
 
     // Generic default dungeon style.
     addStyle(
-        min: 1,
-        max: 100,
-        frequency: 10.0,
-        decor: "keep",
-        create: () => Keep());
+        min: 1, max: 100, frequency: 10.0, decor: "keep", create: () => Keep());
 
     // TODO: Define more.
     // TODO: Tweak level ranges.
@@ -91,14 +88,16 @@ class ArchitecturalStyle {
   final double decorDensity;
   final List<String> monsterGroups;
   final double monsterDensity;
+  final double itemDensity;
   final Architecture Function() _factory;
   final bool isAquatic;
 
   ArchitecturalStyle(this.decorTheme, double decorDensity, this.monsterGroups,
-      double monsterDensity, this._factory,
+      double monsterDensity, double itemDensity, this._factory,
       {bool isAquatic})
       : decorDensity = decorDensity ?? 0.1,
         monsterDensity = monsterDensity ?? 1.0,
+        itemDensity = itemDensity ?? 1.0,
         isAquatic = isAquatic ?? false;
 
   Architecture create(Architect architect, Region region) {

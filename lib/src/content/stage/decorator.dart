@@ -2,8 +2,10 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+import '../../debug.dart';
 import '../../engine.dart';
 import '../decor/decor.dart';
+import '../item/floor_drops.dart';
 import '../monster/monsters.dart';
 import '../tiles.dart';
 import 'architect.dart';
@@ -64,8 +66,7 @@ class Decorator {
     _heroPos = _stage.findOpenTile();
 
     yield* _spawnMonsters();
-
-    // TODO: Items.
+    yield* _dropItems();
   }
 
   /// Marks doorway tiles on the endpoints of passages.
@@ -172,7 +173,10 @@ class Decorator {
   }
 
   Iterable<String> _spawnMonsters() sync* {
+    // Build a density map for where monsters should spawn.
     var densityMap = DensityMap(_stage.width, _stage.height);
+    Debug.densityMap = densityMap;
+
     var flow = MotilityFlow(_stage, _heroPos, Motility.all);
 
     for (var pos in _stage.bounds.inflate(-1)) {
@@ -189,7 +193,7 @@ class Decorator {
     }
 
     // TODO: Tune this.
-    var monsterCount = 200;
+    var monsterCount = 100;
     var monsters = 0;
 
     while (monsters < monsterCount) {
@@ -214,13 +218,15 @@ class Decorator {
       }
 
       var spawned = _spawnMonster(densityMap, pos, breed);
-      yield "Spawn monster";
+      yield "Spawned monster";
 
       // Stop if we ran out of open tiles.
       if (spawned == null) break;
 
       monsters += spawned;
     }
+
+    Debug.densityMap = null;
   }
 
   int _spawnMonster(DensityMap density, Vec pos, Breed breed) {
@@ -235,11 +241,9 @@ class Decorator {
         _architect.stage.addActor(breed.spawn(_architect.stage.game, pos));
         spawned++;
 
-        // Don't place another monster here.
-        density[pos] = 0;
-
-        // TODO: Subtract density from nearby tiles to avoid clustering
-        // monsters.
+        // Don't cluster monsters too much.
+        // TODO: Increase distance for stronger monsters?
+        density.reduceAround(_stage, pos, Motility.all, 5);
       }
 
       // TODO: Get this working again. Instead of setting the tile type, we may
@@ -291,6 +295,57 @@ class Decorator {
 //      }
 //    }
 //  }
+
+  Iterable<String> _dropItems() sync* {
+    // Build a density map for where items should drop.
+    var densityMap = DensityMap(_stage.width, _stage.height);
+    Debug.densityMap = densityMap;
+
+    var flow = MotilityFlow(_stage, _heroPos, Motility.doorAndWalk);
+
+    for (var pos in _stage.bounds.inflate(-1)) {
+      var architecture = _architect.ownerAt(pos);
+      if (architecture == null) continue;
+
+      var distance = flow.costAt(pos);
+      if (distance == null) continue;
+
+      // Don't place items on doors.
+      if (!_stage[pos].isWalkable) continue;
+
+      // TODO: Increase density in an area right around the hero so there's a
+      // chance of finding something as soon as they show up.
+
+      var density = 10 + math.sqrt(distance + 1);
+      // TODO: Increase density if we go past articulation points, secret doors,
+      // strong monsters, etc.
+      density *= architecture.style.itemDensity;
+      densityMap[pos] = density.toInt();
+    }
+
+    // TODO: Tune this.
+    var itemCount = 200;
+    var items = 0;
+
+    while (items < itemCount) {
+      var pos = densityMap.choose();
+
+      // If there are no remaining open tiles, abort.
+      if (pos == null) break;
+
+      // TODO: Style-specific drop types.
+//      var architecture = _architect.ownerAt(pos);
+      var floorDrop = FloorDrops.choose("drop", _architect.depth);
+
+      _architect.stage.placeDrops(pos, Motility.walk, floorDrop.drop);
+      densityMap.reduceAround(_stage, pos, Motility.doorAndWalk, 10);
+
+      items++;
+      yield "Spawned item";
+    }
+
+    Debug.densityMap = null;
+  }
 }
 
 class DensityMap {
@@ -321,5 +376,15 @@ class DensityMap {
     }
 
     throw "unreachable";
+  }
+
+  void reduceAround(Stage stage, Vec start, Motility motility, int range) {
+    this[start] = 0;
+
+    var flow = MotilityFlow(stage, start, motility, maxDistance: range);
+    for (var pos in flow.reachable) {
+      var scale = flow.costAt(pos) / range;
+      this[pos] = (this[pos] * scale).toInt();
+    }
   }
 }

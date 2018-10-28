@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
@@ -7,7 +8,9 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/stage/architect.dart';
+import 'package:hauberk/src/content/stage/decorator.dart';
 import 'package:hauberk/src/content/stage/keep.dart';
+import 'package:hauberk/src/debug.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
 
@@ -279,14 +282,33 @@ void render({bool showInfo = true}) {
 
   if (!showInfo) return;
 
-  if (Architect.debugOwners != null) {
-    for (var pos in Architect.debugOwners.bounds) {
-      var architecture = Architect.debugOwners[pos];
-      if (architecture == null) continue;
+//  if (Architect.debugOwners != null) {
+//    for (var pos in Architect.debugOwners.bounds) {
+//      var architecture = Architect.debugOwners[pos];
+//      if (architecture == null) continue;
+//
+//      var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
+//      context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)';
+//      context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
+//    }
+//  }
 
-      var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
-      context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)';
-      context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
+  if (Debug.densityMap != null) {
+    var densityMap = Debug.densityMap as DensityMap;
+
+    var max = 0;
+    for (var pos in _game.stage.bounds) {
+      max = math.max(max, densityMap[pos]);
+    }
+
+    if (max > 0) {
+      for (var pos in _game.stage.bounds) {
+        var density = densityMap[pos] / max;
+        if (density == 0) continue;
+
+        context.fillStyle = 'rgba(255,255,0,$density)';
+        context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
+      }
     }
   }
 

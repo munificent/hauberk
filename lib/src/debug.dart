@@ -16,6 +16,11 @@ class Debug {
 
   static bool showHeroVolume = false;
 
+  /// The current density map being used.
+  ///
+  /// Typed as Object so that this library isn't coupled to the UI.
+  static Object densityMap;
+
   static final Map<Monster, _MonsterLog> _monsters = {};
 
   /// The current game screen.

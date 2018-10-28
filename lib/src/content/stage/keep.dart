@@ -210,6 +210,10 @@ class Keep extends Architecture {
   }
 
   Array2D<RoomTile> _createRoom() {
+    // TODO: More room shapes:
+    // - Octangle (angled corners).
+    // - Plus
+    // - T
     if (rng.oneIn(3)) {
       return _createAngledRoom();
     } else {
