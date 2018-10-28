@@ -7,7 +7,7 @@ import 'furnishing.dart';
 
 abstract class Decor {
   static void initialize() {
-    all.defineTags("built/dungeon/room");
+    all.defineTags("built/keep/room");
     all.defineTags("cave/glowing-moss");
     all.defineTags("water");
 

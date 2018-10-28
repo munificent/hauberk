@@ -5,13 +5,13 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import 'architect.dart';
 
-// TODO: Rename to "Keep". Give at an optional max number of rooms so that it
+// TODO: Give at an optional max number of rooms so that it
 // can be used to generate small concentrated areas on the stage. Create a
 // separate "Dungeon" that works like Catacomb but uses rooms instead of blobs
 // so that you get passages between them.
 
 /// Places a number of connected rooms.
-class Dungeon extends Architecture {
+class Keep extends Architecture {
   static JunctionSet debugJunctions;
 
   // TODO: Fields to tune numbers below.
@@ -29,11 +29,11 @@ class Dungeon extends Architecture {
     // stage, we can still hopefully cover it all.
     var startingRooms = region == Region.everywhere ? 20 : 1;
     for (var i = 0; i < startingRooms; i++) {
-      yield* _growDungeon();
+      yield* _growRooms();
     }
   }
 
-  Iterable<String> _growDungeon() sync* {
+  Iterable<String> _growRooms() sync* {
     if (!_tryPlaceStartingRoom()) return;
 
     // Expand outward from it.

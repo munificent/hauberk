@@ -1,0 +1,140 @@
+Terrain ideas shamelessly cribbed from UnAngband:
+
+https://github.com/DGoldDragon28/Unangband/blob/master/lib/edit/terrain.txt
+
+- rubble with hidden items
+- tripwires
+- trapped doors
+- covered terrain that obscures monsters standing on it
+- chasm
+- broken door
+- traps
+  - tripwire
+  - murder hole
+  - rune
+  - hex
+  - loose rock
+  - pit
+  - spring-loaded
+  - spiked pit
+  - poisoned spiked pit
+  - deadfall
+- wall
+  - earth
+  - cracked ice
+  - transparent ice
+  - blood-stained wall
+  - slime-covered wall
+- rock
+  - quartz
+  - sandstone
+  - limestone
+  - earth
+- liquid
+  - boiling mud
+  - burning oil
+  - waterfall (and acid, lava, etc.)
+  - frozen waterfall
+  - stagnant water
+  - water hidden under ice
+  - poisonous water
+  - salt water
+- bridge
+  - stone bridge
+  - rope bridge
+  - chain bridge
+  - wooden bridge
+  - ice bridge
+  - vine bridge
+- ice chasm
+- acid
+- gas
+  - smoke
+  - steam
+  - acid
+  - storm cloud
+- floor
+  - broken magma over crust
+  - sand
+  - sandy trail
+  - deep sand
+  - quicksand
+  - mud
+  - blood-stained floor
+  - slimy trail
+  - wet floor
+  - burnt floor
+  - melted floor
+  - wooden deck
+  - tiled floor
+  - writing-covered floor
+- vent that emits gas
+- shimmering portal
+- dust
+- wall of fire
+- shaft of light
+- surreal painting
+- glowing glyph
+- broken wood
+- wooden cage
+- iron cage
+- broken chest
+- altar
+  - broken
+  - wooden
+  - stone
+  - blood-stained
+  - dusty
+  - corroded
+  - ashen
+  - golden
+  - iron
+  - bone
+  - glass
+- fountain
+  - broken
+  - empty
+  - clear
+  - cloudy
+  - bubbling
+  - misty
+  - smoky
+- brazier
+- pebbles
+- plants
+  - impassable thorns
+  - thicket
+  - tree trunk
+  - tree
+  - herbs
+  - bush
+  - thorns
+  - brambles
+  - poisonous thorns
+  - vines
+- snow
+- curtain
+- open curtain
+- giant spider web
+- dusty cobwebs
+- cupboard
+- mirror
+- fireplace
+- weapon rack
+- basin
+
+- midden
+- coffers
+- pile of wood
+
+- water-filled well
+- stone well
+- empty well
+- shrine
+
+- open gate
+- linked chain
+- open lever
+- sliding granite wall
+- crumbling floor
+- cracked floor

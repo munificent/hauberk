@@ -7,8 +7,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/stage/architect.dart';
-import 'package:hauberk/src/content/stage/dungeon.dart';
-//import 'package:hauberk/src/content/dungeon/dungeon.dart';
+import 'package:hauberk/src/content/stage/keep.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
 
@@ -108,7 +107,7 @@ void hover(Vec pos) {
 
 Future generate() async {
   hues.clear();
-  Dungeon.debugJunctions = null;
+  Keep.debugJunctions = null;
   _game = Game(content, save, depth);
   var thisGame = _game;
   var stage = _game.stage;
@@ -292,9 +291,9 @@ void render({bool showInfo = true}) {
   }
 
   context.fillStyle = 'hsla(0, 100%, 100%, 0.4)';
-  if (Dungeon.debugJunctions != null) {
+  if (Keep.debugJunctions != null) {
     for (var pos in _game.stage.bounds) {
-      var junction = Dungeon.debugJunctions[pos];
+      var junction = Keep.debugJunctions[pos];
       if (junction == null) continue;
 
       switch (junction.direction) {

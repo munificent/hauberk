@@ -90,8 +90,7 @@ class Architect {
     var decorator = Decorator(this);
     yield* decorator.decorate();
 
-    // TODO: Temp.
-    placeHero(stage.findOpenTile());
+    placeHero(decorator.heroPos);
   }
 
   Architecture ownerAt(Vec pos) => _owners[pos];

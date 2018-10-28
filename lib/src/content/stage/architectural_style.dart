@@ -2,7 +2,7 @@ import '../../engine.dart';
 import 'architect.dart';
 import 'catacomb.dart';
 import 'cavern.dart';
-import 'dungeon.dart';
+import 'keep.dart';
 import 'lake.dart';
 import 'river.dart';
 
@@ -38,8 +38,8 @@ class ArchitecturalStyle {
         min: 1,
         max: 100,
         frequency: 10.0,
-        decor: "dungeon",
-        create: () => Dungeon());
+        decor: "keep",
+        create: () => Keep());
 
     // TODO: Monster groups are all temp.
     // TODO: Define more.
