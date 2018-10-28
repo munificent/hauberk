@@ -15,8 +15,6 @@ class ArchitecturalStyle {
   }
 
   static void _initialize() {
-    _all.defineTags("style");
-
     addStyle(
         {int min,
         int max,
@@ -32,8 +30,7 @@ class ArchitecturalStyle {
       var style = ArchitecturalStyle(
           decor, decorDensity, monsters.split(" "), monsterDensity, create,
           isAquatic: isAquatic);
-      _all.addRanged(style,
-          minDepth: min, maxDepth: max, frequency: frequency, tags: "style");
+      _all.addRanged(style, minDepth: min, maxDepth: max, frequency: frequency);
     }
 
     // Generic default dungeon style.

@@ -70,7 +70,6 @@ class Decorator {
 
   /// Marks doorway tiles on the endpoints of passages.
   void _findDoorways() {
-
     var doorways = <Vec>[];
     for (var pos in _stage.bounds.inflate(-1)) {
       var tile = _stage[pos].type;
@@ -152,7 +151,8 @@ class Decorator {
 
       var tries = 0;
       while (tries++ < decorTiles && painter.paintedCount < decorTiles) {
-        var decor = Decor.choose(architecture.style.decorTheme);
+        var decor =
+            Decor.choose(_architect.depth, architecture.style.decorTheme);
         if (decor == null) continue;
 
         var allowed = <Vec>[];
@@ -193,7 +193,7 @@ class Decorator {
     var monsters = 0;
 
     while (monsters < monsterCount) {
-      var pos = densityMap.pickRandom();
+      var pos = densityMap.choose();
 
       // If there are no remaining open tiles, abort.
       if (pos == null) break;
@@ -307,7 +307,10 @@ class DensityMap {
     _density[pos] = value;
   }
 
-  Vec pickRandom() {
+  /// Picks a random tile from the map, weighed by the density of each tile.
+  ///
+  /// Returns `null` if no tiles have any density.
+  Vec choose() {
     if (_total == 0) return null;
 
     var n = rng.range(_total);

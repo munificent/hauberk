@@ -7,9 +7,9 @@ import 'furnishing.dart';
 
 abstract class Decor {
   static void initialize() {
-    all.defineTags("decor/built/dungeon/room");
-    all.defineTags("decor/cave/glowing-moss");
-    all.defineTags("decor/water");
+    all.defineTags("built/dungeon/room");
+    all.defineTags("cave/glowing-moss");
+    all.defineTags("water");
 
     Furnishing.initialize();
 
@@ -17,10 +17,9 @@ abstract class Decor {
 //    all.addUnnamed(Blast(), 1, 0.01, "laboratory");
   }
 
-  static Decor choose(String theme) {
+  static Decor choose(int depth, String theme) {
     if (!all.tagExists(theme)) return null;
-    // TODO: Use depth.
-    return all.tryChoose(1, theme, includeParents: false);
+    return all.tryChoose(depth, theme);
   }
 
   static final ResourceSet<Decor> all = ResourceSet();

@@ -104,7 +104,7 @@ class Architect {
     var hasNonAquatic = false;
 
     while (!hasNonAquatic || result.length < count) {
-      var style = ArchitecturalStyle.all.tryChoose(depth, "style");
+      var style = ArchitecturalStyle.all.tryChoose(depth);
 
       // Make sure there's at least one walkable style.
       if (!style.isAquatic) hasNonAquatic = true;
