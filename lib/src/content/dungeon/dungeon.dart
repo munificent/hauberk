@@ -460,7 +460,7 @@ class Dungeon {
 
     // TODO: 64 is pretty big. Might want to make these a little smaller, but
     // not all the way down to 32.
-    _biomes.add(LakeBiome(this, Blob.make64()));
+    _biomes.add(LakeBiome(this, Blob.make(64)));
     return true;
   }
 
@@ -470,7 +470,7 @@ class Dungeon {
     var odds = hasWater ? 10 : 5;
     if (!rng.oneIn(odds)) return false;
 
-    _biomes.add(LakeBiome(this, Blob.make32()));
+    _biomes.add(LakeBiome(this, Blob.make(32)));
     return true;
   }
 
@@ -479,7 +479,7 @@ class Dungeon {
 
     var ponds = rng.taper(0, 3);
     for (var i = 0; i < ponds; i++) {
-      _biomes.add(LakeBiome(this, Blob.make16()));
+      _biomes.add(LakeBiome(this, Blob.make(16)));
     }
 
     return true;

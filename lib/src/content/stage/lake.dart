@@ -8,7 +8,7 @@ class Lake extends Architecture {
   Iterable<String> build() sync* {
     var lakeCount = rng.inclusive(1, 2);
     for (var i = 0; i < lakeCount; i++) {
-      _placeLake(rng.oneIn(3) ? Blob.make16() : Blob.make32());
+      _placeLake(Blob.make(rng.range(16, 32)));
       yield "Placing lake";
     }
   }

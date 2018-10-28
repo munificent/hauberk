@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import 'architect.dart';
@@ -5,20 +7,49 @@ import 'blob.dart';
 
 /// Places a number of random blobs.
 class Catacomb extends Architecture {
-  // TODO: Fields to tune numbers below.
+  /// How many chambers it tries to place.
+  final int _chambers;
+
+  /// The minimum chamber size.
+  final int _minSize;
+
+  /// The maximum chamber size.
+  final int _maxSize;
+
+  Catacomb({int chambers, int minSize, int maxSize})
+      : _chambers = chambers ?? 100,
+        _minSize = minSize ?? 8,
+        _maxSize = maxSize ?? 32;
 
   Iterable<String> build() sync* {
-    for (var i = 0; i < 100; i++) {
-      var cave = rng.oneIn(10) ? Blob.make32() : Blob.make16();
+    // Randomize the number of chambers a bit.
+    var tries = rng.triangleInt(_chambers, _chambers ~/ 2);
+
+    // Don't try to make chambers bigger than the stage.
+    var maxSize = _maxSize.toDouble();
+    maxSize = math.min(maxSize, height.toDouble());
+    maxSize = math.min(maxSize, width.toDouble());
+    maxSize = math.sqrt(maxSize);
+
+    // Make sure the size range isn't backwards.
+    var minSize = math.sqrt(_minSize);
+    minSize = math.min(minSize, maxSize);
+
+    for (var i = 0; i < tries; i++) {
+      // Square the size to skew the distribution so that larges ones are
+      // rarer than smaller ones.
+      var size = math.pow(rng.float(minSize, maxSize), 2.0).toInt();
+      var cave = Blob.make(size);
+
       for (var j = 0; j < 400; j++) {
         // TODO: dungeon.dart has similar code for placing the starting room.
         // Unify.
         // TODO: This puts pretty hard boundaries around the region. Is there
         // a way to more softly distribute the caves?
-        var xMin = -8;
-        var xMax = width - cave.width + 8;
-        var yMin = -8;
-        var yMax = height - cave.height + 8;
+        var xMin = 1;
+        var xMax = width - cave.width;
+        var yMin = 1;
+        var yMax = height - cave.height;
 
         switch (region) {
           case Region.everywhere:

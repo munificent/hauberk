@@ -41,16 +41,16 @@ class ArchitecturalStyle {
         decor: "keep",
         create: () => Keep());
 
-    // TODO: Monster groups are all temp.
     // TODO: Define more.
     // TODO: Tweak level ranges.
+    // TODO: Move catacomb styles with different tile types and tuned params.
     addStyle(
         min: 1,
         max: 100,
         frequency: 2.0,
         decor: "glowing-moss",
         decorDensity: 0.2,
-        monsters: "jelly bug",
+        monsters: "animal bat bug natural",
         create: () => Catacomb());
     addStyle(
         min: 1,
@@ -58,7 +58,7 @@ class ArchitecturalStyle {
         frequency: 1.0,
         decor: "glowing-moss",
         decorDensity: 0.3,
-        monsters: "goblin",
+        monsters: "animal bat bug natural",
         create: () => Cavern());
 
     // TODO: Forest style that uses cavern-like CA to open an organic-shaped
@@ -72,7 +72,7 @@ class ArchitecturalStyle {
         max: 100,
         decor: "water",
         decorDensity: 0.01,
-        monsters: "animal",
+        monsters: "animal herp",
         isAquatic: true,
         monsterDensity: 0.0,
         create: () => Lake());
@@ -81,7 +81,7 @@ class ArchitecturalStyle {
         max: 100,
         decor: "water",
         decorDensity: 0.01,
-        monsters: "animal",
+        monsters: "animal herp",
         monsterDensity: 0.0,
         isAquatic: true,
         create: () => River());

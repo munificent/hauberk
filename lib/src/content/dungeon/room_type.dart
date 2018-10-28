@@ -92,9 +92,9 @@ class BlobRoom extends RoomType {
     // successfully placed in one location.
     Array2D<bool> blob;
     if (rng.oneIn(4)) {
-      blob = Blob.make32();
+      blob = Blob.make(32);
     } else {
-      blob = Blob.make16();
+      blob = Blob.make(16);
     }
 
     // Note: Assumes the blob never has open cells at the very edge.
