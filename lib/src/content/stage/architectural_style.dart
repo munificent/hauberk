@@ -2,6 +2,7 @@ import '../../engine.dart';
 import 'architect.dart';
 import 'catacomb.dart';
 import 'cavern.dart';
+import 'dungeon.dart';
 import 'keep.dart';
 import 'lake.dart';
 import 'river.dart';
@@ -43,6 +44,15 @@ class ArchitecturalStyle {
         decorDensity: 0.05,
         create: () => Keep());
 
+    // Generic default dungeon style.
+    addStyle(
+        min: 1,
+        max: 100,
+        frequency: 5.0,
+        decor: "dungeon",
+        decorDensity: 0.05,
+        create: () => Dungeon());
+
     // TODO: Define more.
     // TODO: Tweak level ranges.
     // TODO: Move catacomb styles with different tile types and tuned params.
@@ -50,9 +60,9 @@ class ArchitecturalStyle {
         min: 1,
         max: 100,
         frequency: 2.0,
-        decor: "glowing-moss",
-        decorDensity: 0.2,
-        monsters: "animal bat bug natural",
+        decor: "catacomb",
+        decorDensity: 0.02,
+        monsters: "bat bug humanoid natural",
         create: () => Catacomb());
     addStyle(
         min: 1,

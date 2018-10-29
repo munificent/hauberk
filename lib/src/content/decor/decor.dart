@@ -3,15 +3,23 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 //import 'blast.dart';
 import '../stage/painter.dart';
-import 'furnishing.dart';
+import 'cave.dart';
+import 'catacomb.dart';
+import 'room.dart';
+import 'water.dart';
 
 abstract class Decor {
   static void initialize() {
-    all.defineTags("built/keep/room");
+    all.defineTags("built/room/dungeon");
+    all.defineTags("built/room/keep");
+    all.defineTags("catacomb");
     all.defineTags("cave/glowing-moss");
     all.defineTags("water");
 
-    Furnishing.initialize();
+    caveDecor();
+    catacombDecor();
+    roomDecor();
+    waterDecor();
 
     // TODO: Doesn't look great. Remove or redo.
 //    all.addUnnamed(Blast(), 1, 0.01, "laboratory");

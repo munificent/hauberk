@@ -2,18 +2,12 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../stage/painter.dart';
-import 'cave.dart';
 import 'decor.dart';
-import 'room.dart';
-import 'water.dart';
 
 /// A template-based decor that applies a set of tiles if it matches a set of
 /// existing tiles.
 class Furnishing extends Decor {
   static void initialize() {
-    caveDecor();
-    roomDecor();
-    waterDecor();
 
     /*
     // Fountains.
@@ -162,7 +156,7 @@ class Furnishing extends Decor {
     #.........#
     #.........#""");
 
-    // TODO: Fireplaces for kitchens and halls.
+    // TODO: Fireplaces.
     */
   }
 

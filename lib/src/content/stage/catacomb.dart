@@ -22,6 +22,10 @@ class Catacomb extends Architecture {
         _maxSize = maxSize ?? 32;
 
   Iterable<String> build() sync* {
+    // TODO: Number of chambers should take dungeon size and region into
+    // account. What we're really going for is a certain density of open tiles
+    // to create.
+
     // Randomize the number of chambers a bit.
     var tries = rng.triangleInt(_chambers, _chambers ~/ 2);
 
@@ -85,8 +89,6 @@ class Catacomb extends Architecture {
             break;
         }
 
-        // Blobs tend to have unused space on the sides, so allow the position
-        // to leak past the edge.
         var x = rng.range(xMin, xMax);
         var y = rng.range(yMin, yMax);
 

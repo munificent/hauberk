@@ -18,7 +18,7 @@ void roomDecor() {
   };
 
   // Counters.
-  category(themes: "room", cells: tableCells);
+  category(themes: "keep", cells: tableCells);
   furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
     ?...
     #─┐.
@@ -161,7 +161,7 @@ void roomDecor() {
     .......""");
 
   // Separating counters.
-  category(themes: "room", cells: tableCells);
+  category(themes: "keep", cells: tableCells);
   furnishing(template: """
     ?.....?
     #─┐.┌─#
@@ -214,7 +214,7 @@ void roomDecor() {
     ?##?""");
 
   // Tables.
-  category(themes: "room", cells: tableCells);
+  category(themes: "keep", cells: tableCells);
 
   furnishing(template: """
     .....
@@ -437,7 +437,7 @@ void roomDecor() {
   // TODO: More table sizes? Shapes?
 
   // Chairs.
-  category(themes: "room", cells: {
+  category(themes: "built", cells: {
     "π": applyOpen(Tiles.chair),
   });
 
@@ -476,7 +476,7 @@ void roomDecor() {
 
   // TODO: Some fraction of the time, should place open barrels and chests.
   // Barrels.
-  category(themes: "room", frequency: 0.7, cells: {
+  category(themes: "built", frequency: 0.7, cells: {
     "%": applyOpen(Tiles.closedBarrel)
   });
 
@@ -509,7 +509,7 @@ void roomDecor() {
     ?...?""");
 
   // Chests.
-  category(themes: "room", frequency: 0.5, cells: {
+  category(themes: "built", frequency: 0.5, cells: {
     "&": applyOpen(Tiles.closedChest)
   });
 
