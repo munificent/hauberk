@@ -16,62 +16,6 @@ class Furnishing extends Decor {
     waterDecor();
 
     /*
-    // Candles.
-    // TODO: Other themes.
-    category(4.0, apply: "i", themes: "great-hall laboratory");
-    furnishing(Symmetry.none, """
-    i""");
-
-    // TODO: Other decorations on tables.
-
-    // TODO: Some fraction of the time, should place open barrels and chests.
-    // Barrels.
-    category(1.0, apply: "%", themes: "kitchen larder pantry storeroom");
-    furnishing(Symmetry.rotate90, """
-    ##
-    #%""");
-
-    furnishing(Symmetry.rotate90, """
-    ?.?
-    .%.
-    ?.?""");
-
-    furnishing(Symmetry.rotate90, """
-    ###
-    #%%""");
-
-    furnishing(Symmetry.rotate90, """
-    ###
-    #%%
-    #%.""");
-
-    furnishing(Symmetry.rotate90, """
-    ?##?
-    .%%.
-    ?..?""");
-
-    furnishing(Symmetry.rotate90, """
-    ?###?
-    .%%%.
-    ?...?""");
-
-    furnishing(Symmetry.rotate90, """
-    ?###?
-    .%%%.
-    ?.%.?
-    ??.??""");
-
-    // Chests.
-    category(1.0, apply: "&", themes: "chamber storeroom treasure-room");
-    furnishing(Symmetry.rotate90, """
-    ##
-    #&""");
-
-    furnishing(Symmetry.rotate90, """
-    ?#?
-    .&.
-    ?.?""");
-
     // Fountains.
     // TODO: Can these be found anywhere else?
     category(0.03, apply: "≈PIl", themes: "aquatic");

@@ -36,7 +36,12 @@ class ArchitecturalStyle {
 
     // Generic default dungeon style.
     addStyle(
-        min: 1, max: 100, frequency: 10.0, decor: "keep", create: () => Keep());
+        min: 1,
+        max: 100,
+        frequency: 10.0,
+        decor: "keep",
+        decorDensity: 0.05,
+        create: () => Keep());
 
     // TODO: Define more.
     // TODO: Tweak level ranges.

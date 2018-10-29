@@ -473,4 +473,52 @@ void roomDecor() {
     π
     .
     #""");
+
+  // TODO: Some fraction of the time, should place open barrels and chests.
+  // Barrels.
+  category(themes: "room", frequency: 0.7, cells: {
+    "%": applyOpen(Tiles.closedBarrel)
+  });
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ##
+    #%""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ?.?
+    .%.
+    ?.?""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ###
+    #%%""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ###
+    #%%
+    #%.""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ?##?
+    .%%.
+    ?..?""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ?###?
+    .%%%.
+    ?...?""");
+
+  // Chests.
+  category(themes: "room", frequency: 0.5, cells: {
+    "&": applyOpen(Tiles.closedChest)
+  });
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ##
+    #&""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    ?#?
+    .&.
+    ?.?""");
 }
