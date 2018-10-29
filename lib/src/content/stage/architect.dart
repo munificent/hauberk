@@ -195,41 +195,22 @@ class Architect {
       if (_isFormed(tile.type)) continue;
 
       // Try to fill this tile.
-      _fill(tile);
+      if (tile.type == Tiles.unformed) {
+        tile.type = Tiles.solid;
+      } else if (tile.type == Tiles.unformedWet) {
+        tile.type = Tiles.solidWet;
+      } else {
+        assert(tile.type == Tiles.solid || tile.type == Tiles.solidWet,
+            "Unexpected tile type.");
+      }
 
       // Optimization: If it's already been cut off, we know it can be filled.
       if (!reachability.isReachable(pos)) continue;
 
       reachability.fill(pos);
 
-      // TODO: There is probably a tighter way to optimize this by taking
-      // cardinal and intercardinal directions into account.
-
-      // Simple optimization: A tile with 0, 1, 7, or 8 solid tiles next to it
-      // can't possibly break a path.
-      var solidNeighbors = 0;
-      for (var neighbor in pos.neighbors) {
-        if (!stage[neighbor].type.isTraversable) {
-          solidNeighbors++;
-        }
-      }
-
-      // If there is zero or one solid neighbor, you can walk around the tile.
-      if (solidNeighbors <= 1) continue;
-
-      // If there are seven or eight solid neighbors, it's already a cul-de-sac.
-      if (solidNeighbors >= 7) continue;
-
       // See if we can still reach all the unfillable tiles.
-      var reachedOpen = 0;
-      for (var here in stage.bounds) {
-        if (reachability.isReachable(here) && stage[here].type == Tiles.open) {
-          reachedOpen++;
-        }
-      }
-
-      // Make sure we can reach every other open area from the starting one.
-      if (reachedOpen != openCount) {
+      if (reachability.reachedOpenCount != openCount) {
         // Filling this tile would cause something to be unreachable, so it must
         // be a passage.
         _makePassage(unownedPassages, pos);
@@ -398,17 +379,6 @@ class Architect {
   void _claimNeighbors(Vec pos, Architecture owner) {
     for (var neighbor in pos.neighbors) {
       if (_owners[neighbor] == null) _owners[neighbor] = owner;
-    }
-  }
-
-  void _fill(Tile tile) {
-    if (tile.type == Tiles.unformed) {
-      tile.type = Tiles.solid;
-    } else if (tile.type == Tiles.unformedWet) {
-      tile.type = Tiles.solidWet;
-    } else {
-      assert(tile.type == Tiles.solid || tile.type == Tiles.solidWet,
-          "Unexpected tile type.");
     }
   }
 

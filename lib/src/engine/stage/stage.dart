@@ -150,6 +150,8 @@ class Stage {
   /// Gets the [Item]s at [pos].
   Inventory itemsAt(Vec pos) =>
       _itemsByTile[pos] ?? Inventory(ItemLocation.onGround);
+  // TODO: This is kind of slow, probably from creating the inventory each time.
+  // Use a const one for the empty case?
 
   /// Removes [item] from the stage at [pos].
   ///

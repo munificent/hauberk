@@ -75,9 +75,12 @@ class _DoorPaintStyle extends PaintStyle {
     // TODO: Take depth into account. Locked doors, trapped, etc.
     if (painter.getTile(pos) == Tiles.doorway) {
       switch (rng.range(3)) {
-        case 0: return Tiles.openDoor;
-        case 1: return Tiles.closedDoor;
-        case 2: return Tiles.floor;
+        case 0:
+          return Tiles.openDoor;
+        case 1:
+          return Tiles.closedDoor;
+        case 2:
+          return Tiles.floor;
       }
     }
 

@@ -640,8 +640,7 @@ void vines() {
   family("v", flags: "fearless immobile")
     ..groups("vine")
     ..sense(see: 10, hear: 10);
-  breed("choker", 16, peaGreen, 40)
-    ..attack("strangle", 12);
+  breed("choker", 16, peaGreen, 40)..attack("strangle", 12);
   // TODO: Touch to confuse?
   breed("nightshade", 19, lilac, 50)
     ..whip(rate: 3, damage: 10)
@@ -650,8 +649,7 @@ void vines() {
     ..spawn(preferStraight: true)
     ..whip(rate: 3, damage: 10)
     ..attack("strangle", 8);
-  breed("strangler", 26, sherwood, 80)
-    ..attack("strangle", 14);
+  breed("strangler", 26, sherwood, 80)..attack("strangle", 14);
 }
 
 void worms() {

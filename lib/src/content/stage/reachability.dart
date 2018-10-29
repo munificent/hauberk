@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+import '../tiles.dart';
 
 /// An incrementally-updated bread-first search distance map.
 ///
@@ -17,12 +18,18 @@ class Reachability {
   final Vec _start;
 
   final Array2D<int> _distances;
+  final VecSet _affected;
 
-  Map<Vec, int> _beforeFill;
+  /// The number of unfillable tiles that are currently reachable.
+  int _reachedOpenCount = 0;
+  int get reachedOpenCount => _reachedOpenCount;
+
+  List<_FillStep> _beforeFill;
 
   Reachability(this.stage, this._start)
-      : _distances = Array2D<int>(stage.width, stage.height, _unknown) {
-    _distances[_start] = 0;
+      : _distances = Array2D<int>(stage.width, stage.height, _unknown),
+        _affected = new VecSet(stage.width, stage.height) {
+    _setDistance(_start, 0);
     _process([_start]);
   }
 
@@ -34,11 +41,11 @@ class Reachability {
   /// any affected tiles.
   void fill(Vec pos) {
     var queue = Queue<Vec>();
-    var affected = Set<Vec>();
+    _affected.clear();
     queue.add(pos);
-    affected.add(pos);
+    _affected.add(pos);
 
-    _beforeFill = {pos: _distances[pos]};
+    _beforeFill = [_FillStep(pos, _distances[pos])];
 
     while (queue.isNotEmpty) {
       var pos = queue.removeFirst();
@@ -51,35 +58,35 @@ class Reachability {
         if (_distances[neighbor] != distance + 1) continue;
 
         // Don't get stuck in cycles.
-        if (affected.contains(neighbor)) continue;
+        if (_affected.contains(neighbor)) continue;
 
         // Ignore tiles that we can get to from another path.
-        if (_hasOtherPath(affected, neighbor)) continue;
+        if (_hasOtherPath(neighbor)) continue;
 
         queue.add(neighbor);
-        affected.add(neighbor);
+        _affected.add(neighbor);
 
-        _beforeFill[neighbor] = _distances[neighbor];
+        _beforeFill.add(_FillStep(neighbor, neighborDistance));
       }
     }
 
     // The starting tile is now blocked.
-    _distances[pos] = _unreachable;
+    _setDistance(pos, _unreachable);
 
-    var border = _findBorder(affected, pos);
+    var border = _findBorder(pos);
     if (border.isEmpty) {
       // There are no other border tiles that are reachable, so the whole
       // affected area has been cut off.
-      for (var pos in affected) {
-        _distances[pos] = _unreachable;
+      for (var pos in _affected) {
+        _setDistance(pos, _unreachable);
       }
     } else {
       // Clear the distances for the affected tiles.
-      for (var here in affected) {
-        _distances[here] = _unknown;
+      for (var here in _affected) {
+        _setDistance(here, _unknown);
       }
 
-      _distances[pos] = _unreachable;
+      _setDistance(pos, _unreachable);
 
       // Recalculate the affected tiles.
       _process(border);
@@ -88,25 +95,23 @@ class Reachability {
 
   /// Revert the previous call to [fill].
   void undoFill() {
-    // TODO: Use something faster than a Map for this? A List of entries would
-    // work fine.
-    _beforeFill.forEach((pos, distance) {
-      _distances[pos] = distance;
-    });
+    for (var step in _beforeFill) {
+      _setDistance(step.pos, step.distance);
+    }
 
     _beforeFill = null;
   }
 
   // Returns true if there is a path to [pos] that doesn't go through an
   // affected tile.
-  bool _hasOtherPath(Set<Vec> affected, Vec pos) {
+  bool _hasOtherPath(Vec pos) {
     var distance = _distances[pos];
     for (var neighbor in pos.cardinalNeighbors) {
       if (!stage.bounds.contains(neighbor)) continue;
 
       // If there is an unaffected neighbor whose distance is one step shorter
       // that this one, we can go through that neighbor to get here.
-      if (!affected.contains(neighbor) &&
+      if (!_affected.contains(neighbor) &&
           _distances[neighbor] == distance - 1) {
         return true;
       }
@@ -117,16 +122,16 @@ class Reachability {
 
   /// Find all of the tiles around the affected tiles that do have a distance.
   /// We'll recalculate the affected tiles using paths from those.
-  Set<Vec> _findBorder(Set<Vec> affected, Vec start) {
+  Set<Vec> _findBorder(Vec start) {
     var border = Set<Vec>();
-    for (var here in affected) {
+    for (var here in _affected) {
       // Don't consider the initial filled tile.
       // TODO: This is kind of hokey. Would be better to eliminate pos from
       // affected set.
       if (here == start) continue;
 
       for (var neighbor in here.cardinalNeighbors) {
-        if (_distances[neighbor] >= 0 && !affected.contains(neighbor)) {
+        if (_distances[neighbor] >= 0 && !_affected.contains(neighbor)) {
           border.add(neighbor);
         }
       }
@@ -158,12 +163,30 @@ class Reachability {
 
         if (stage[here].isWalkable) {
           var distance = parentDistance + 1;
-          _distances[here] = distance;
+          _setDistance(here, distance);
           frontier.add(here, distance);
         } else {
-          _distances[here] = _unreachable;
+          _setDistance(here, _unreachable);
         }
       }
     }
   }
+
+  void _setDistance(Vec pos, int distance) {
+    // If we're on an open tile, update the running count.
+    if (stage[pos].type == Tiles.open) {
+      if (_distances[pos] >= 0) _reachedOpenCount--;
+      if (distance >= 0) _reachedOpenCount++;
+    }
+
+    _distances[pos] = distance;
+  }
+}
+
+/// An atomic change to the distance map, so that it can be undone.
+class _FillStep {
+  final Vec pos;
+  final int distance;
+
+  _FillStep(this.pos, this.distance);
 }

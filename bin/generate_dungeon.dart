@@ -1,3 +1,5 @@
+import 'package:piecemeal/piecemeal.dart';
+
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
 
@@ -14,13 +16,16 @@ main() {
 
     // Generate a dungeon at each level.
     var count = 0;
-    for (var i = 1; i <= Option.maxDepth; i++) {
+    for (var i = 1; i <= 10; i++) {
+      rng.setSeed(i);
+
       var game = Game(content, save, 1);
       for (var _ in game.generate());
 
       // Read some bit of game data so the JIT doesn't optimize the whole
       // program away as dead code.
       if (game.hero.pos.x >= -1) count++;
+      print(i);
     }
 
     watch.stop();

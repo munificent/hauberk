@@ -180,14 +180,11 @@ void snakes() {
   family("S", dodge: 30, meander: 30)
     ..groups("snake")
     ..sense(see: 4, hear: 7);
-  breed("water snake", 1, lima, 9)
-    ..attack("bite[s]", 3);
+  breed("water snake", 1, lima, 9)..attack("bite[s]", 3);
 
-  breed("brown snake", 3, persimmon, 25)
-    ..attack("bite[s]", 4);
+  breed("brown snake", 3, persimmon, 25)..attack("bite[s]", 4);
 
-  breed("cave snake", 8, gunsmoke, 40)
-    ..attack("bite[s]", 10);
+  breed("cave snake", 8, gunsmoke, 40)..attack("bite[s]", 10);
 }
 
 void trolls() {}

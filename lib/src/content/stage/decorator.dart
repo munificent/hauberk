@@ -146,7 +146,10 @@ class Decorator {
       var architecture = entry.key;
       if (architecture == null) continue;
 
-      var tiles = entry.value;
+      // Shuffle the tiles so that when we pick the first matching tile, it
+      // isn't biased.
+      var tiles = entry.value.toList();
+      rng.shuffle(tiles);
 
       // TODO: Let the paint style affect the decor too. So, for example, the
       // decor places a table and the paint style changes the material of it.
@@ -162,17 +165,22 @@ class Decorator {
             Decor.choose(_architect.depth, architecture.style.decorTheme);
         if (decor == null) continue;
 
-        var allowed = <Vec>[];
+        for (var i = 0; i < tiles.length; i++) {
+          var tile = tiles[i];
+          if (!decor.canPlace(painter, tile)) continue;
 
-        for (var tile in tiles) {
-          if (decor.canPlace(painter, tile)) {
-            allowed.add(tile);
-          }
-        }
+          decor.place(painter, tile);
 
-        if (allowed.isNotEmpty) {
-          decor.place(painter, rng.item(allowed));
+          // Move the tile index later in the array so we don't retry it as
+          // often. In particular, this avoids problems in cases where a decor
+          // can be placed on top of itself (like moss) and where it would keep
+          // hitting the same tile over and over.
+          var j = rng.range(i, tiles.length);
+          tiles[i] = tiles[j];
+          tiles[j] = tile;
+
           yield "Placed decor";
+          break;
         }
       }
     }
@@ -365,7 +373,7 @@ class DensityMap {
 
   DensityMap(int width, int height) : _density = Array2D(width, height, 0);
 
-  operator [](Vec pos) => _density[pos];
+  int operator [](Vec pos) => _density[pos];
 
   operator []=(Vec pos, int value) {
     var old = _density[pos];
