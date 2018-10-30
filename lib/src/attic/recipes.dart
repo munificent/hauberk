@@ -1,3 +1,6 @@
+// Old recipe stuff. Bring back if crafting comes back.
+
+/*
 import '../../engine.dart';
 import '../item/drops.dart';
 import '../item/items.dart';
@@ -68,3 +71,4 @@ void recipe(drop, Map<String, int> ingredientNames) {
   }
   Recipes.all.add(Recipe(ingredients, drop, produces));
 }
+*/

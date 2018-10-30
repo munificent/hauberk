@@ -8,6 +8,10 @@ import 'catacomb.dart';
 import 'room.dart';
 import 'water.dart';
 
+// TODO: Generate magical shrine/chests that let the player choose from one
+// of a few items. This should help reduce the number of useless-for-this-hero
+// items that are dropped.
+
 abstract class Decor {
   static void initialize() {
     all.defineTags("built/room/dungeon");

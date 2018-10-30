@@ -1,3 +1,6 @@
+// Generates perfect mazes.
+
+/*
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -184,3 +187,4 @@ class _Cell {
   bool isLeftWallOpen = false;
   bool isTopWallOpen = false;
 }
+*/

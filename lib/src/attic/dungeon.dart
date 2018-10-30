@@ -1,3 +1,7 @@
+// Rooms and mazes dungeon generator. Might be useful as a labyrinth-like
+// architecture.
+
+/*
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
@@ -420,3 +424,5 @@ class OldDungeon {
     _regions[pos] = _currentRegion;
   }
 }
+
+*/

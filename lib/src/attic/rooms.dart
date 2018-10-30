@@ -1,3 +1,8 @@
+// Rooms and passages generator.
+//
+// Unlike the keep and dungeon style, this explicitly builds branching passages.
+
+/*
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
@@ -490,3 +495,132 @@ class CyclePathfinder extends Pathfinder<bool> {
 
   bool unreachableGoal() => false;
 }
+
+abstract class RoomType {
+  final String theme;
+
+  RoomType(this.theme);
+
+  // TODO: Should arch be passed in or part of the room type itself?
+  Room create(Architecture architecture);
+}
+
+/// A simple rectangular room type with junctions randomly spaced around it.
+class RectangleRoom extends RoomType {
+  final int _maxDimension;
+
+  RectangleRoom(String theme, this._maxDimension) : super(theme);
+
+  Room create(Architecture architecture) {
+    // TODO: Constrain aspect ratio?
+    var width = rng.inclusive(3, _maxDimension);
+    var height = rng.inclusive(3, _maxDimension);
+    if (rng.oneIn(2)) {
+      var temp = width;
+      width = height;
+      height = temp;
+    }
+
+    var tiles = Array2D<TileType>(width + 2, height + 2, Tiles.floor);
+
+    for (var y = 0; y < tiles.height; y++) {
+      tiles.set(0, y, Tiles.wall);
+      tiles.set(tiles.width - 1, y, Tiles.wall);
+    }
+
+    for (var x = 0; x < tiles.width; x++) {
+      tiles.set(x, 0, Tiles.wall);
+      tiles.set(x, tiles.height - 1, Tiles.wall);
+    }
+
+    // TODO: Consider placing the junctions symmetrically sometimes.
+    var junctions = <Junction>[];
+    _placeJunctions(width, (i) {
+      junctions.add(Junction(architecture, Direction.n, Vec(i + 1, 0)));
+    });
+
+    _placeJunctions(width, (i) {
+      junctions
+          .add(Junction(architecture, Direction.s, Vec(i + 1, height + 1)));
+    });
+
+    _placeJunctions(height, (i) {
+      junctions.add(Junction(architecture, Direction.w, Vec(0, i + 1)));
+    });
+
+    _placeJunctions(height, (i) {
+      junctions.add(Junction(architecture, Direction.e, Vec(width + 1, i + 1)));
+    });
+
+    return Room(this, tiles, junctions);
+  }
+
+  /// Walks along [length], invoking [callback] at values where a junction
+  /// should be placed.
+  ///
+  /// Ensures two junctions are not placed next to each other.
+  void _placeJunctions(int length, void Function(int) callback) {
+    var start = rng.oneIn(2) ? 0 : 1;
+    for (var i = start; i < length; i++) {
+      // TODO: Make chances tunable.
+      if (rng.percent(40)) {
+        callback(i);
+
+        // Don't allow two junctions right next to each other.
+        i++;
+      }
+    }
+  }
+}
+
+class Junction {
+  final Architecture architecture;
+
+  /// Points from the first room towards where the new room should be attached.
+  ///
+  /// A room must have an opposing junction in order to match.
+  final Direction direction;
+
+  /// The location of the junction.
+  ///
+  /// For a placed room, this is in absolute coordinates. For a room yet to be
+  /// placed, it's relative to the room's tile array.
+  final Vec position;
+
+  /// How many times we've tried to place something at this junction.
+  int tries = 0;
+
+  Junction(this.architecture, this.direction, this.position);
+}
+
+class JunctionSet {
+  final Map<Vec, Junction> _byPosition = {};
+  final Queue<Junction> _queue = Queue();
+
+  bool get isNotEmpty => _queue.isNotEmpty;
+
+  Junction at(Vec pos) => _byPosition[pos];
+
+  void add(Junction junction) {
+    if (_byPosition.containsKey(junction.position)) return;
+
+    _byPosition[junction.position] = junction;
+    _queue.add(junction);
+  }
+
+  Junction takeNext() {
+    var junction = _queue.removeFirst();
+    _byPosition.remove(junction.position);
+    return junction;
+  }
+
+  void removeAt(Vec pos) {
+    if (!_byPosition.containsKey(pos)) return;
+
+    var junction = _byPosition[pos];
+    _byPosition.remove(pos);
+    _queue.remove(junction);
+  }
+}
+
+*/

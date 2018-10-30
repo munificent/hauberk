@@ -5,7 +5,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../items/affix.dart';
 import '../items/item_type.dart';
-import '../items/recipe.dart';
 import '../items/shop.dart';
 import '../hero/hero.dart';
 import '../hero/hero_class.dart';
@@ -247,8 +246,6 @@ abstract class Content {
   List<Race> get races;
 
   Iterable<Skill> get skills;
-
-  Iterable<Recipe> get recipes;
 
   Map<String, Shop> get shops;
 

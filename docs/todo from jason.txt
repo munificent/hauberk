@@ -1,0 +1,33 @@
+Barrels. Too many. Should usually contain a food item. Sometime low level monsters.
+
+Backpacks, Bags, Belt Pouches, Bags of Holding, etc. with various capacities.
+
+At least some Chests and Doors should be locked. Some should also be trapped.
+This will give Rogues one of their main advantages.
+
+Some monsters are extra large and take up more than one tile. Have a 'Great
+Worm' for example that moves like a 'snake' game.
+
+Sounds effects! An original soundtrack!!!
+
+High level and unique weapons and armor 'glow' but need a Detect Magic scroll or
+something to determine stats.
+
+Critical hits and misses.
+
+Change Unfound Items to Found Items.
+
+Kill All Monsters/Open All Barrels/Chest = Clear Level Bonus
+
+When you enter a new level with a unique you get a 'feeling'.
+
+Destroy Item
+Review Memory (Log)
+Toggle Auto-Pickup
+
+I don't understand how light items really work
+
+Not enough monster types
+Not enough food
+Too many potions and scrolls
+Very generally speaking monster seem a little too 'easy'

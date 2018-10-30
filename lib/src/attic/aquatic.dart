@@ -1,3 +1,8 @@
+// Unlike the current lake and river code, this puts shorelines around them.
+// Also, has some erosion code.
+
+/*
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -366,3 +371,5 @@ class LakeBiome extends AquaticBiome {
     }
   }
 }
+
+*/

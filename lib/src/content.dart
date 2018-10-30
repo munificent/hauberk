@@ -9,7 +9,6 @@ import 'content/item/floor_drops.dart';
 import 'content/item/items.dart';
 import 'content/item/shops.dart';
 import 'content/monster/monsters.dart';
-import 'content/old/recipes.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
 import 'content/stage/architect.dart';
@@ -21,7 +20,6 @@ Content createContent() {
   // reference items, which need to have already been created.
   Items.initialize();
   Monsters.initialize();
-  Recipes.initialize();
   Affixes.initialize();
   Shops.initialize();
   FloorDrops.initialize();
@@ -47,7 +45,6 @@ class GameContent implements Content {
   Iterable<ItemType> get items => Items.types.all;
   List<Race> get races => Races.all;
   Iterable<Skill> get skills => Skills.all;
-  Iterable<Recipe> get recipes => Recipes.all;
   Map<String, Shop> get shops => Shops.all;
 
   HeroSave createHero(String name, [Race race, HeroClass heroClass]) {

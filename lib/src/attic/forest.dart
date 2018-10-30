@@ -1,3 +1,6 @@
+// Forest dungeon generator. Might be useful as an architecture.
+
+/*
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -122,3 +125,4 @@ class Forest extends StageBuilder {
     }
   }
 }
+*/
