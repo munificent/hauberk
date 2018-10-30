@@ -161,9 +161,9 @@ void eyes() {
     ..fly()
     ..preferOpen();
 
-  breed("lazy eye", 5, cornflower, 12)
+  breed("lazy eye", 5, cornflower, 20)
     ..attack("stare[s] at", 8)
-    ..sparkBolt(rate: 6, damage: 12, range: 8);
+    ..sparkBolt(rate: 5, damage: 12, range: 8);
 
   breed("mad eye", 9, salmon, 40)
     ..attack("stare[s] at", 8)
@@ -217,8 +217,7 @@ void goblins() {
   family("g", meander: 10)
     ..sense(see: 8, hear: 4)
     ..groups("goblin")
-    ..openDoors()
-    ..emanate(2);
+    ..openDoors();
   breed("goblin peon", 4, sandal, 30, meander: 20)
     ..count(4)
     ..attack("stab[s]", 8)
