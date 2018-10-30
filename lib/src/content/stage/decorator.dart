@@ -208,7 +208,7 @@ class Decorator {
 
     // TODO: Tune this. Maybe pick a total health based on depth and the number
     // of open tiles and generate monsters until that's reached?
-    var monsterCount = 100;
+    var monsterCount = 100 + _architect.depth * 2;
     var monsters = 0;
 
     while (monsters < monsterCount) {
@@ -343,7 +343,7 @@ class Decorator {
 
     // TODO: Tune this. Maybe pick a total gold value x number of open tiles
     // and generate items until that is reached?
-    var itemCount = 200;
+    var itemCount = 50 + _architect.depth;
     var items = 0;
 
     while (items < itemCount) {
