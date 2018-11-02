@@ -162,16 +162,8 @@ class AwakeState extends MonsterState {
     // If the monster doesn't pursue, then it does melee or waits.
     if (breed.flags.immobile) {
       var toHero = game.hero.pos - pos;
-
       if (toHero.kingLength != 1) return RestAction();
-
-      // Map the offset to a direction.
-      // TODO: Move this into piecemeal?
-      for (var dir in Direction.all) {
-        if (toHero == dir) return WalkAction(dir);
-      }
-
-      throw "unreachable";
+      return WalkAction(toHero.nearestDirection);
     }
 
     // The monster doesn't have a move to use, so they are going to attack.
