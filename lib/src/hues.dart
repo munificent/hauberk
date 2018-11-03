@@ -5,8 +5,6 @@ import 'engine.dart';
 import 'content/elements.dart';
 
 // Basic palette.
-// TODO: Better name.
-const nearBlack = Color(0x07, 0x06, 0x12);
 // TODO: These names aren't great.
 const midnight = Color(0x13, 0x11, 0x1c);
 const steelGray = Color(0x26, 0x26, 0x38);

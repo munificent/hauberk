@@ -77,21 +77,6 @@ class Lighting {
     }
   }
 
-  /// How much brightness decreases each step in a cardinal direction.
-  static final _attenuate = 256 ~/ 6;
-
-  /// How much brightness decreases each diagonal step.
-  ///
-  /// The "1.5" scale is to roughly approximate the `sqrt(2)` Cartesian length
-  /// of the diagonal. This gives the fall-off a more circular appearance. This
-  /// is a little weird because distance in terms of game mechanics (i.e. how
-  /// many steps you have to take to get from point A to B) treats diagonals as
-  /// the same length as straight lines, but it looks nicer.
-  ///
-  /// Using 1.5 instead of a closer approximation to `sqrt(2)` because it makes
-  /// fall-off look a little less squarish.
-  static final _diagonalAttenuate = (_attenuate * 1.5).ceil();
-
   final Stage _stage;
 
   /// The cached illumination on each tile from tile emanation values.
@@ -160,10 +145,15 @@ class Lighting {
         var emanation = tile.emanation;
 
         // Add any light from items laying on the tile.
+        var itemEmanation = 0;
         for (var item in _stage.itemsAt(pos)) {
-          if (item.emanationLevel == 0) continue;
-          emanation += emanationForLevel(item.emanationLevel);
+          itemEmanation = math.max(itemEmanation, item.emanationLevel);
         }
+
+        // Reduce emanation since floor lighting has less attenuation than
+        // actor lighting. We don't want torches to glow farther on the floor
+        // than when held.
+        emanation += emanationForLevel(itemEmanation) ~/ 2;
 
         if (tile.element.emanates && tile.substance > 0) {
           // TODO: Different levels for different substances?
@@ -180,7 +170,7 @@ class Lighting {
       }
     }
 
-    _process(_floorLight);
+    _process(_floorLight, 256 ~/ 12);
   }
 
   /// Recalculates [_actorLight] by propagating light from the emanating actors.
@@ -197,7 +187,7 @@ class Lighting {
       }
     }
 
-    _process(_actorLight);
+    _process(_actorLight, 256 ~/ 6);
   }
 
   /// Combines the light layers of opaque tiles into a single summed
@@ -288,7 +278,19 @@ class Lighting {
     _queue.add(pos, max - brightness);
   }
 
-  void _process(Array2D<int> tiles) {
+  void _process(Array2D<int> tiles, int attenuate) {
+    // How much brightness decreases each diagonal step.
+    //
+    // The "1.5" scale is to roughly approximate the `sqrt(2)` Cartesian length
+    // of the diagonal. This gives the fall-off a more circular appearance. This
+    // is a little weird because distance in terms of game mechanics (i.e. how
+    // many steps you have to take to get from point A to B) treats diagonals as
+    // the same length as straight lines, but it looks nicer.
+    //
+    // Using 1.5 instead of a closer approximation to `sqrt(2)` because it makes
+    // fall-off look a little less squarish.
+    var diagonalAttenuate = (attenuate * 1.5).ceil();
+
     while (true) {
       var pos = _queue.removeNext();
       if (pos == null) break;
@@ -319,20 +321,20 @@ class Lighting {
 
         // If the neighbor is too dim for light to propagate from it, don't
         // bother enqueuing it.
-        if (illumination <= _attenuate) return;
+        if (illumination <= attenuate) return;
 
         // Check the tile's neighbors.
         _enqueue(neighborPos, illumination);
       }
 
-      checkNeighbor(Direction.n, _attenuate);
-      checkNeighbor(Direction.s, _attenuate);
-      checkNeighbor(Direction.e, _attenuate);
-      checkNeighbor(Direction.w, _attenuate);
-      checkNeighbor(Direction.ne, _diagonalAttenuate);
-      checkNeighbor(Direction.se, _diagonalAttenuate);
-      checkNeighbor(Direction.nw, _diagonalAttenuate);
-      checkNeighbor(Direction.sw, _diagonalAttenuate);
+      checkNeighbor(Direction.n, attenuate);
+      checkNeighbor(Direction.s, attenuate);
+      checkNeighbor(Direction.e, attenuate);
+      checkNeighbor(Direction.w, attenuate);
+      checkNeighbor(Direction.ne, diagonalAttenuate);
+      checkNeighbor(Direction.se, diagonalAttenuate);
+      checkNeighbor(Direction.nw, diagonalAttenuate);
+      checkNeighbor(Direction.sw, diagonalAttenuate);
     }
   }
 }

@@ -618,18 +618,16 @@ class GameScreen extends Screen<Input> {
         }
 
         var char = tileGlyph.char;
-        var lightFore = tileGlyph.fore;
-        var lightBack = tileGlyph.back;
-
-        var darkFore = lightFore.blend(nearBlack, 0.8);
-        var darkBack = lightBack.blend(nearBlack, 0.8);
+        var fore = tileGlyph.fore;
+        var back = tileGlyph.back;
+        var isThing = false;
 
         var items = game.stage.itemsAt(pos);
         if (items.isNotEmpty) {
           var itemGlyph = items.first.appearance as Glyph;
           char = itemGlyph.char;
-          lightFore = itemGlyph.fore;
-          darkFore = itemGlyph.fore;
+          fore = itemGlyph.fore;
+          isThing = true;
         }
 
         // The hero is always visible, even in the dark.
@@ -640,14 +638,13 @@ class GameScreen extends Screen<Input> {
             if (tile.element == Elements.fire) {
               char = rng.item(_fireChars);
               var color = rng.item(_fireColors);
-              lightFore = color[0];
-              lightBack = color[1];
+              fore = color[0];
+              back = color[1];
 
               _hasAnimatedTile = true;
             } else if (tile.element == Elements.poison) {
               var amount = 0.1 + (tile.substance / 255) * 0.9;
-              lightBack = lightBack.blend(lima, amount);
-              darkBack = darkBack.blend(lima, amount);
+              back = back.blend(lima, amount);
             }
           }
 
@@ -656,24 +653,21 @@ class GameScreen extends Screen<Input> {
             var actorGlyph = actor.appearance;
             if (actorGlyph is Glyph) {
               char = actorGlyph.char;
-              lightFore = actorGlyph.fore;
-              darkFore = actorGlyph.fore;
+              fore = actorGlyph.fore;
             } else {
               // Hero.
               char = CharCode.at;
-              lightFore = heroColor;
-              darkFore = heroColor;
+              fore = heroColor;
             }
 
             // If the actor is being targeted, invert its colors.
             if (targetActor == actor) {
-              lightBack = lightFore;
-              darkBack = darkFore;
-              lightFore = midnight;
-              darkFore = midnight;
+              back = fore;
+              fore = midnight;
             }
 
             if (actor is Monster) visibleMonsters.add(actor);
+            isThing = true;
           }
         }
 
@@ -681,34 +675,52 @@ class GameScreen extends Screen<Input> {
           var chance = math.min(90, hero.dazzle.duration * 8);
           if (rng.percent(chance)) {
             char = rng.percent(chance) ? char : CharCode.asterisk;
-            lightFore = rng.item(_dazzleColors);
-            darkFore = lightFore;
+            fore = rng.item(_dazzleColors);
           }
         }
 
-        Color fore;
-        Color back;
+        // Apply lighting and visibility to the tile.
         if (tile.isVisible) {
-          // We ramp the brightness up to the maximum floor lighting.
-          var light = (tile.illumination / Lighting.floorMax).clamp(0, 1);
+          // If we ramp the lighting so that only maximum lighting is fully
+          // illuminated, then the dungeon looks much too gloomy. Instead,
+          // anything above 50% lit is shown at full brightness. We square the
+          // value to ramp things down more quickly below that, and we allow
+          // brightness to go a little past 1.0 so that things above 128 have
+          // a little more glow.
+          var light = (tile.visibility / 128);
+          light = (light * light).clamp(0.0, 1.1);
 
-          // TODO: Need to tweak this so it's clearer which tiles are visible
-          // versus just dark.
-          fore = darkFore.blend(lightFore, light);
-          back = darkBack.blend(lightBack, light);
+          const shadow = Color(0x04, 0x03, 0xa);
 
-          // Then, if the lighting is above that, it means we have an emanating
-          // actor on a bright tile. Show a little warm glow to make that more
-          // visible.
-          if (tile.illumination > Lighting.floorMax) {
-            var glow = ((tile.illumination - Lighting.floorMax) /
-                (Lighting.max - Lighting.floorMax));
-            fore = fore.add(gold, glow * 0.25);
-            back = back.add(gold, glow * 0.1);
+          // Show tiles containing interesting things more brightly.
+          if (isThing) {
+            fore = shadow.blend(fore, light * 0.3 + 0.7);
+          } else {
+            fore = shadow.blend(fore, light * 0.7 + 0.3);
+          }
+
+          if (back == midnight) {
+            // Hackish. If the background color is the default dark color, then
+            // boost it *past* its max value to add some extra glow when well
+            // lit.
+            back = shadow.blend(back, light * 1.6 + 0.2);
+          } else {
+            back = shadow.blend(back, light * 0.8 + 0.2);
           }
         } else {
-          fore = darkFore;
-          back = darkBack.blend(Color.black, 0.5);
+          const blueShadow = Color(0x00, 0x00, 0xe);
+
+          // Show tiles containing interesting things more brightly.
+          fore = blueShadow.blend(fore, isThing ? 0.7 : 0.2);
+
+          if (back == midnight) {
+            // If the background color is the default dark color, then go all
+            // the way to black. This makes it easier for the player to tell
+            // which tiles are not visible.
+            back = Color.black;
+          } else {
+            back = blueShadow.blend(back, 0.1);
+          }
         }
 
         if (Debug.showHeroVolume) {

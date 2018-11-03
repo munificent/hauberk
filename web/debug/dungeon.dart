@@ -254,8 +254,10 @@ void render({bool showInfo = true}) {
       }
 
       var light = ((1.0 - tile.illumination / 128) * 0.5).clamp(0.0, 1.0);
-      glyph = Glyph.fromCharCode(glyph.char, glyph.fore.blend(nearBlack, light),
-          glyph.back.blend(nearBlack, light));
+      glyph = Glyph.fromCharCode(
+          glyph.char,
+          glyph.fore.blend(Color.black, light),
+          glyph.back.blend(Color.black, light));
 
       var items = stage.itemsAt(pos);
       if (items.isNotEmpty) {

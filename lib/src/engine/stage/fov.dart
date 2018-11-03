@@ -2,11 +2,14 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+import '../core/math.dart';
 import 'stage.dart';
 
 /// Calculates the [Hero]'s field of view of the dungeon -- which tiles are
 /// occluded by other tiles and which are not.
 class Fov {
+  static const _maxViewDistance = 24;
+
   static final _octantCoordinates = [
     [const Vec(0, -1), const Vec(1, 0)],
     [const Vec(1, 0), const Vec(0, -1)],
@@ -37,16 +40,16 @@ class Fov {
     }
 
     // The starting position is always visible.
-    _stage.setOcclusion(pos, false);
+    _stage.setVisibility(pos, false, 0);
   }
 
   void _hideAll() {
     for (var pos in _stage.bounds) {
-      _stage.setOcclusion(pos, true);
+      _stage.setVisibility(pos, true, 0);
     }
 
     // The hero knows where they are.
-    _stage.setOcclusion(_stage.game.hero.pos, false);
+    _stage.setVisibility(_stage.game.hero.pos, false, 0);
   }
 
   void _refreshOctant(Vec start, int octant) {
@@ -70,14 +73,32 @@ class Fov {
       // starting tile of the FOV is in bounds.
       if (!bounds.contains(pos)) break;
 
+      // If we've reached a tile that is past the maximum view distance, we
+      // know the rest of the tiles in the column will be too since they are
+      // always farther.
+      var pastMaxDistance = false;
+
       for (var col = 0; col <= row; col++) {
-        if (fullShadow) {
+        var fallOff = 255;
+
+        if (fullShadow || pastMaxDistance) {
           // If we know the entire row is in shadow, we don't need to be more
           // specific.
-          _stage.setOcclusion(pos, true);
+          _stage.setVisibility(pos, true, fallOff);
         } else {
+          fallOff = 0;
+          var distance = (start - pos).length;
+          if (distance > _maxViewDistance) {
+            fallOff = 255;
+            pastMaxDistance = true;
+          } else {
+            var normalized = distance / _maxViewDistance;
+            normalized = normalized * normalized;
+            fallOff = (normalized * 255).toInt();
+          }
+
           var projection = getProjection(col, row);
-          _stage.setOcclusion(pos, _isInShadow(projection));
+          _stage.setVisibility(pos, _isInShadow(projection), fallOff);
 
           // Add any opaque tiles to the shadow map.
           if (_stage[pos].blocksView) {

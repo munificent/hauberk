@@ -63,10 +63,10 @@ class Tiles {
 
   // TODO: Stop glowing when stepped on?
   static final glowingMoss =
-      Tiles.tile("moss", "░", seaGreen).emanate(6).open();
+      Tiles.tile("moss", "░", seaGreen).emanate(128).open();
 
   static final water = tile("water", "≈", cerulean, ultramarine)
-      .animate(10, 0.4, ultramarine, nearBlack)
+      .animate(10, 0.5, ultramarine, midnight)
       .water();
   static final steppingStone =
       tile("stepping stone", "•", gunsmoke, ultramarine).open();
@@ -92,10 +92,10 @@ class Tiles {
   static final tableLeg = tile("table", "╤", persimmon).obstacle();
   static final tableLegRight = tile("table", "╡", persimmon).obstacle();
 
-  static final candle = tile("candle", "≥", sandal).emanate(6).obstacle();
+  static final candle = tile("candle", "≥", sandal).emanate(128).obstacle();
 
   static final wallTorch =
-      tile("wall torch", "≤", gold, slate).emanate(8).solid();
+      tile("wall torch", "≤", gold, slate).emanate(192).solid();
 
   // TODO: Make these do something.
   static final openChest = tile("open chest", "⌠", persimmon).obstacle();
@@ -226,7 +226,7 @@ class _TileBuilder {
   Action Function(Vec) _onClose;
   Action Function(Vec) _onOpen;
   bool _isExit = false;
-  int _emanationLevel = 0;
+  int _emanation = 0;
 
   factory _TileBuilder(String name, Object char, Color fore, [Color back]) {
     back ??= midnight;
@@ -251,8 +251,8 @@ class _TileBuilder {
     return this;
   }
 
-  _TileBuilder emanate(int level) {
-    _emanationLevel = level;
+  _TileBuilder emanate(int emanation) {
+    _emanation = emanation;
     return this;
   }
 
@@ -283,7 +283,7 @@ class _TileBuilder {
 
   TileType _motility(Motility motility) {
     return TileType(name, glyphs.length == 1 ? glyphs.first : glyphs, motility,
-        emanation: Lighting.emanationForLevel(_emanationLevel),
+        emanation: _emanation,
         isExit: _isExit,
         onClose: _onClose,
         onOpen: _onOpen);

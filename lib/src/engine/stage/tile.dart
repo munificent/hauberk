@@ -94,6 +94,9 @@ class Tile {
 
   bool get isOccluded => _isOccluded;
 
+  /// How much visibility is reduced by distance fall-off.
+  int _fallOff = 0;
+
   /// Whether the tile can be seen through or blocks the hero's view beyond it.
   ///
   /// We assume any tile that an actor can fly over is also "open" enough to
@@ -103,8 +106,14 @@ class Tile {
 
   /// Whether the hero can currently see the tile.
   ///
-  /// To be visible, a tile must not be occluded or in the dark.
-  bool get isVisible => illumination > 0 && !isOccluded;
+  /// To be visible, a tile must not be occluded, in the dark, or too far away.
+  bool get isVisible => !isOccluded && visibility >= 0;
+
+  /// How visible the tile is to the player.
+  ///
+  /// If zero or less, the player can't see it because it's too dark or far
+  /// away.
+  int get visibility => illumination - _fallOff;
 
   /// The total amount of light being cast onto this tile from various sources.
   ///
@@ -149,8 +158,9 @@ class Tile {
     return false;
   }
 
-  void updateOcclusion(bool isOccluded) {
+  void updateVisibility(bool isOccluded, int fallOff) {
     _isOccluded = isOccluded;
+    _fallOff = fallOff;
   }
 
   /// The element of the substance occupying this file: fire, water, poisonous
