@@ -21,6 +21,8 @@ List<String> _itemNames;
 final _affixCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
 List<String> _affixNames;
 
+final _monsterDepthCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
+
 final _colors = <String, String>{};
 
 const batchSize = 1000;
@@ -45,6 +47,10 @@ main() {
     _colors[breed.name] = (breed.appearance as Glyph).fore.cssColor;
   }
 
+  for (var i = -100; i <= 100; i++) {
+    _colors[i.toString()] = "hsl(${(i + 100) * 10 % 360}, 70%, 40%)";
+  }
+
   _svg.onClick.listen((_) => _generateMore());
 
   var select = html.querySelector("select") as html.SelectElement;
@@ -60,6 +66,10 @@ main() {
 
       case "affixes":
         _drawAffixes();
+        break;
+
+      case "monster-depths":
+        _drawMonsterDepths();
         break;
 
       default:
@@ -82,6 +92,10 @@ void _generateMore() {
 
     case "affixes":
       _moreAffixes();
+      break;
+
+    case "monster-depths":
+      _moreMonsterDepths();
       break;
 
     default:
@@ -144,6 +158,21 @@ void _moreAffixes() {
   }
 
   _drawAffixes();
+}
+
+void _moreMonsterDepths() {
+  for (var depth = 1; depth <= Option.maxDepth; depth++) {
+    var histogram = _monsterDepthCounts[depth - 1];
+
+    for (var i = 0; i < batchSize; i++) {
+      var breed = Monsters.breeds.tryChoose(depth, "monster");
+      if (breed == null) continue;
+
+      histogram.add((breed.depth - depth).toString());
+    }
+  }
+
+  _drawMonsterDepths();
 }
 
 void _drawBreeds() {
@@ -211,6 +240,20 @@ void _drawAffixes() {
   }
 
   _redraw(_affixCounts, _affixNames, (label) => label);
+}
+
+void _drawMonsterDepths() {
+  var labels = <String>[];
+  for (var i = -100; i <= 100; i++) {
+    labels.add("$i");
+  }
+
+  _redraw(_monsterDepthCounts, labels, (label) {
+    var relative = int.parse(label);
+    if (relative == 0) return "same";
+    if (relative < 0) return "${-relative} shallower monster";
+    return "$label deeper monster";
+  });
 }
 
 void _redraw(List<Histogram<String>> histograms, List<String> labels,

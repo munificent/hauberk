@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
-import '../core/math.dart';
 import 'stage.dart';
 
 /// Calculates the [Hero]'s field of view of the dungeon -- which tiles are

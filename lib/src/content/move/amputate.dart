@@ -8,8 +8,7 @@ import '../action/polymorph.dart';
 /// For example, a skeleton can amputate into a decapitated skeleton and a
 /// skull.
 class AmputateMove extends Move {
-  // TODO: Take spawned part into account?
-  num get experience => 1.1;
+  num get experience => _body.breed.maxHealth * 0.5;
 
   /// The breed the remaining body turns into.
   final BreedRef _body;

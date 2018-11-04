@@ -232,14 +232,15 @@ class ResourceSet<T> {
       int resourceMinDepth, int resourceMaxDepth, int targetDepth) {
     if (targetDepth < resourceMinDepth) {
       var relative = resourceMinDepth - targetDepth;
-      var deviation = 0.7 + targetDepth * 0.1;
+      var deviation = 0.6 + targetDepth * 0.2;
+
       return math.exp(-0.5 * relative * relative / (deviation * deviation));
     } else if (targetDepth > resourceMaxDepth) {
       var relative = targetDepth - resourceMaxDepth;
 
       // As you get deeper in the dungeon, the probability curve widens so that
       // you still find weaker stuff fairly frequently.
-      var deviation = 1.0 + targetDepth * 0.2;
+      var deviation = 1.0 + targetDepth * 0.1;
 
       return math.exp(-0.5 * relative * relative / (deviation * deviation));
     } else {
