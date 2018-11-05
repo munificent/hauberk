@@ -31,7 +31,7 @@ abstract class Decor {
 
   static Decor choose(int depth, String theme) {
     if (!all.tagExists(theme)) return null;
-    return all.tryChoose(depth, theme);
+    return all.tryChoose(depth, tag: theme);
   }
 
   static final ResourceSet<Decor> all = ResourceSet();

@@ -64,7 +64,7 @@ class FloorDrops {
   }
 
   static FloorDrop choose(String theme, int depth) =>
-      _floorDrops.tryChoose(depth, theme);
+      _floorDrops.tryChoose(depth, tag: theme);
 }
 
 class FloorDrop {

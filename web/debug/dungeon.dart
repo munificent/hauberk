@@ -284,16 +284,16 @@ void render({bool showInfo = true}) {
 
   if (!showInfo) return;
 
-//  if (Architect.debugOwners != null) {
-//    for (var pos in Architect.debugOwners.bounds) {
-//      var architecture = Architect.debugOwners[pos];
-//      if (architecture == null) continue;
-//
-//      var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
-//      context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)';
-//      context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
-//    }
-//  }
+  if (Architect.debugOwners != null) {
+    for (var pos in Architect.debugOwners.bounds) {
+      var architecture = Architect.debugOwners[pos];
+      if (architecture == null) continue;
+
+      var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
+      context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)';
+      context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
+    }
+  }
 
   if (Debug.densityMap != null) {
     var densityMap = Debug.densityMap as DensityMap;

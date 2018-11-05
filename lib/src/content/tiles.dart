@@ -11,6 +11,11 @@ Action _closeDoor(Vec pos) => CloseDoorAction(pos, Tiles.closedDoor);
 
 Action _openDoor(Vec pos) => OpenDoorAction(pos, Tiles.openDoor);
 
+Action _closeBarredDoor(Vec pos) =>
+    CloseDoorAction(pos, Tiles.closedBarredDoor);
+
+Action _openBarredDoor(Vec pos) => OpenDoorAction(pos, Tiles.openBarredDoor);
+
 /// Static class containing all of the [TileType]s.
 class Tiles {
   // Temporary tile types used during stage generation.
@@ -53,9 +58,16 @@ class Tiles {
   static final closedDoor =
       tile("closed door", "◙", persimmon, garnet).onOpen(_openDoor).door();
 
-//  TODO: maleSign = open square door
+//  TODO: maleSign = open square door ♂
 //  TODO: femaleSign = closed square door
-//  TODO: eighthNote = barred wall
+  static final openBarredDoor = tile("open barred door", "♂", gunsmoke, slate)
+      .onClose(_closeBarredDoor)
+      .open();
+  // TODO: Should be able to see through but not fly through.
+  static final closedBarredDoor =
+      tile("closed barred door", "♪", gunsmoke, slate)
+          .onOpen(_openBarredDoor)
+          .transparentDoor();
 
   // TODO: Different character that doesn't look like bridge?
   static final stairs = tile("stairs", "≡", gunsmoke, slate).exit().open();
@@ -272,6 +284,8 @@ class _TileBuilder {
   }
 
   TileType door() => _motility(Motility.door);
+
+  TileType transparentDoor() => _motility(Motility.fly | Motility.door);
 
   TileType obstacle() => _motility(Motility.fly);
 

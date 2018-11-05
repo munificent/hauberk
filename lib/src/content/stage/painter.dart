@@ -21,6 +21,8 @@ class Painter {
 
   int get paintedCount => _painted;
 
+  int get depth => _architect.depth;
+
   bool ownsTile(Vec pos) => _architect.ownerAt(pos) == _architecture;
 
   TileType getTile(Vec pos) {
@@ -32,6 +34,12 @@ class Painter {
     _architect.stage[pos].type = type;
     _painted++;
   }
+
+  bool hasActor(Vec pos) => _architect.stage.actorAt(pos) != null;
+
+  void spawnMonster(Vec pos, Breed breed) {
+    _decorator.spawnMonster(pos, breed);
+  }
 }
 
 /// Each style is a custom "look" that translates the semantic temporary
@@ -39,7 +47,10 @@ class Painter {
 class PaintStyle {
   static final Map<String, PaintStyle> _all = {
     "rock": PaintStyle({}),
-    "stone": _DoorPaintStyle()
+    "stone": _DoorPaintStyle(),
+    "stone-jail": PaintStyle({
+      Tiles.doorway: Tiles.closedBarredDoor
+    }),
   };
 
   static Map<TileType, TileType> _defaultTypes = {

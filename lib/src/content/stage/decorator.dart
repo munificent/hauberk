@@ -187,6 +187,17 @@ class Decorator {
   }
 
   Iterable<String> _spawnMonsters() sync* {
+    // Let the architectures that control their own monsters go.
+    var spawned = Set<Architecture>();
+    _tilesByArchitecture.forEach((architecture, tiles) {
+      if (architecture == null) return;
+
+      var painter = Painter(this, _architect, architecture);
+      if (architecture.spawnMonsters(painter)) {
+        spawned.add(architecture);
+      }
+    });
+
     // Build a density map for where monsters should spawn.
     var densityMap = DensityMap(_stage.width, _stage.height);
     Debug.densityMap = densityMap;
@@ -196,6 +207,7 @@ class Decorator {
     for (var pos in _stage.bounds.inflate(-1)) {
       var architecture = _architect.ownerAt(pos);
       if (architecture == null) continue;
+      if (spawned.contains(architecture)) continue;
 
       var distance = flow.costAt(pos);
       if (distance == null) continue;
@@ -222,7 +234,7 @@ class Decorator {
       // architectures.
       var architecture = _architect.ownerAt(pos);
       var group = rng.item(architecture.style.monsterGroups);
-      var breed = Monsters.breeds.tryChoose(_architect.depth, group);
+      var breed = Monsters.breeds.tryChoose(_architect.depth, tag: group);
 
       // Don't place a breed whose motility doesn't match the tile.
       if (!_stage[pos].canEnter(breed.motility)) continue;
@@ -247,6 +259,10 @@ class Decorator {
     Debug.densityMap = null;
   }
 
+  void spawnMonster(Vec pos, Breed breed) {
+    _spawnMonster(null, pos, breed);
+  }
+
   int _spawnMonster(DensityMap density, Vec pos, Breed breed) {
     var isCorpse = rng.oneIn(8);
     var breeds = breed.spawnAll();
@@ -261,7 +277,7 @@ class Decorator {
 
         // Don't cluster monsters too much.
         // TODO: Increase distance for stronger monsters?
-        density.reduceAround(_stage, pos, Motility.all, 5);
+        if (density != null) density.reduceAround(_stage, pos, Motility.all, 5);
       }
 
       // TODO: Get this working again. Instead of setting the tile type, we may

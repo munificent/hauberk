@@ -5,6 +5,7 @@ import 'cavern.dart';
 import 'dungeon.dart';
 import 'keep.dart';
 import 'lake.dart';
+import 'pit.dart';
 import 'river.dart';
 
 class ArchitecturalStyle {
@@ -17,8 +18,8 @@ class ArchitecturalStyle {
 
   static void _initialize() {
     addStyle(
-        {int min,
-        int max,
+        {int min = 1,
+        int max = 100,
         double frequency,
         String decor,
         double decorDensity,
@@ -26,19 +27,17 @@ class ArchitecturalStyle {
         double monsterDensity,
         double itemDensity,
         Architecture Function() create,
-        bool isAquatic}) {
+        bool canFill}) {
       monsters ??= "monster";
 
       var style = ArchitecturalStyle(decor, decorDensity, monsters.split(" "),
           monsterDensity, itemDensity, create,
-          isAquatic: isAquatic);
+          canFill: canFill);
       _all.addRanged(style, minDepth: min, maxDepth: max, frequency: frequency);
     }
 
     // Generic default dungeon style.
     addStyle(
-        min: 1,
-        max: 100,
         frequency: 10.0,
         decor: "keep",
         decorDensity: 0.05,
@@ -46,8 +45,6 @@ class ArchitecturalStyle {
 
     // Generic default dungeon style.
     addStyle(
-        min: 1,
-        max: 100,
         frequency: 5.0,
         decor: "dungeon",
         decorDensity: 0.05,
@@ -57,16 +54,12 @@ class ArchitecturalStyle {
     // TODO: Tweak level ranges.
     // TODO: Move catacomb styles with different tile types and tuned params.
     addStyle(
-        min: 1,
-        max: 100,
         frequency: 2.0,
         decor: "catacomb",
         decorDensity: 0.02,
         monsters: "bat bug humanoid natural",
         create: () => Catacomb());
     addStyle(
-        min: 1,
-        max: 100,
         frequency: 1.0,
         decor: "glowing-moss",
         decorDensity: 0.3,
@@ -80,23 +73,41 @@ class ArchitecturalStyle {
     // TODO: Different liquid types including some that are dry.
     // TODO: Shore or islands?
     addStyle(
-        min: 1,
-        max: 100,
         decor: "water",
         decorDensity: 0.01,
         monsters: "animal herp",
-        isAquatic: true,
+        canFill: false,
         monsterDensity: 0.0,
         create: () => Lake());
     addStyle(
-        min: 1,
-        max: 100,
         decor: "water",
         decorDensity: 0.01,
         monsters: "animal herp",
         monsterDensity: 0.0,
-        isAquatic: true,
+        canFill: false,
         create: () => River());
+
+    // Pits.
+    pit(String monsterGroup, {int min, int max}) {
+      addStyle(
+          min: min,
+          max: max,
+          frequency: 0.2,
+          // TODO: Different decor?
+          decor: "glowing-moss",
+          decorDensity: 0.05,
+          canFill: false,
+          create: () => Pit(monsterGroup));
+    }
+
+    pit("bug", min: 1, max: 40);
+    pit("jelly", min: 5, max: 50);
+    pit("bat", min: 10, max: 40);
+    pit("rodent", min: 1, max: 50);
+    pit("snake", min: 8, max: 60);
+    pit("plant", min: 15, max: 40);
+    pit("eye", min: 20, max: 100);
+    pit("dragon", min: 60, max: 100);
   }
 
   final String decorTheme;
@@ -105,15 +116,15 @@ class ArchitecturalStyle {
   final double monsterDensity;
   final double itemDensity;
   final Architecture Function() _factory;
-  final bool isAquatic;
+  final bool canFill;
 
   ArchitecturalStyle(this.decorTheme, double decorDensity, this.monsterGroups,
       double monsterDensity, double itemDensity, this._factory,
-      {bool isAquatic})
+      {bool canFill})
       : decorDensity = decorDensity ?? 0.1,
         monsterDensity = monsterDensity ?? 1.0,
         itemDensity = itemDensity ?? 1.0,
-        isAquatic = isAquatic ?? false;
+        canFill = canFill ?? true;
 
   Architecture create(Architect architect, Region region) {
     var architecture = _factory();

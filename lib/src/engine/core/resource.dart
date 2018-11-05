@@ -122,25 +122,32 @@ class ResourceSet<T> {
   ///
   /// If no tag is given, chooses from all resources based only on depth.
   ///
-  /// May return `null` if there are no resources with [tagName].
-  T tryChoose(int depth, [String tagName]) {
-    if (tagName == null) return _runQuery("", depth, (_) => 1.0);
+  /// May return `null` if there are no resources with [tag].
+  T tryChoose(int depth, {String tag, bool includeParents}) {
+    includeParents ??= true;
 
-    var goalTag = _tags[tagName];
+    if (tag == null) return _runQuery("", depth, (_) => 1.0);
+
+    var goalTag = _tags[tag];
     assert(goalTag != null);
 
-    return _runQuery(goalTag.name, depth, (resource) {
-      var tag = goalTag;
+    var label = goalTag.name;
+    if (!includeParents) label += " (only)";
+
+    return _runQuery(label, depth, (resource) {
+      var thisTag = goalTag;
       var scale = 1.0;
 
       // Walk up the tag chain, including parent tags.
-      while (tag != null) {
+      while (thisTag != null) {
         for (var resourceTag in resource._tags) {
-          if (resourceTag.contains(tag)) return scale;
+          if (resourceTag.contains(thisTag)) return scale;
         }
 
+        if (!includeParents) break;
+
         // Parent tags are less likely than the preferred tag.
-        tag = tag.parent;
+        thisTag = thisTag.parent;
         // TODO: Allow callers to tune this?
         scale /= 10.0;
       }

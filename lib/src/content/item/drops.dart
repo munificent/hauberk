@@ -52,7 +52,7 @@ class _TagDrop implements Drop {
   _TagDrop(this._tag, this._depth);
 
   void spawnDrop(AddItem addItem) {
-    var itemType = Items.types.tryChoose(_depth, _tag);
+    var itemType = Items.types.tryChoose(_depth, tag: _tag);
     if (itemType == null) return;
 
     addItem(Affixes.createItem(itemType, _depth));
@@ -88,17 +88,15 @@ class _OneOfDrop implements Drop {
   final ResourceSet<Drop> _drop = ResourceSet();
 
   _OneOfDrop(Map<Drop, double> drops) {
-    _drop.defineTags("drop");
-
     drops.forEach((drop, frequency) {
       // TODO: Allow passing in depth?
-      _drop.add(drop, frequency: frequency, tags: "drop");
+      _drop.add(drop, frequency: frequency);
     });
   }
 
   void spawnDrop(AddItem addItem) {
     // TODO: Allow passing in depth?
-    var drop = _drop.tryChoose(1, "drop");
+    var drop = _drop.tryChoose(1);
     if (drop == null) return;
 
     drop.spawnDrop(addItem);

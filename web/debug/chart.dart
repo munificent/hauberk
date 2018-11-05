@@ -108,7 +108,7 @@ void _moreBreeds() {
     var histogram = _breedCounts[depth - 1];
 
     for (var i = 0; i < batchSize; i++) {
-      var breed = Monsters.breeds.tryChoose(depth, "monster");
+      var breed = Monsters.breeds.tryChoose(depth);
       if (breed == null) continue;
 
       // Take groups and minions into account
@@ -126,7 +126,7 @@ void _moreItems() {
     var histogram = _itemCounts[depth - 1];
 
     for (var i = 0; i < batchSize; i++) {
-      var itemType = Items.types.tryChoose(depth, "item");
+      var itemType = Items.types.tryChoose(depth);
       if (itemType == null) continue;
 
       histogram.add(itemType.name);
@@ -141,7 +141,7 @@ void _moreAffixes() {
     var histogram = _affixCounts[depth - 1];
 
     for (var i = 0; i < batchSize; i++) {
-      var itemType = Items.types.tryChoose(depth, "equipment");
+      var itemType = Items.types.tryChoose(depth, tag: "equipment");
       if (itemType == null) continue;
 
       // Don't count items that can't have affixes.
@@ -165,7 +165,7 @@ void _moreMonsterDepths() {
     var histogram = _monsterDepthCounts[depth - 1];
 
     for (var i = 0; i < batchSize; i++) {
-      var breed = Monsters.breeds.tryChoose(depth, "monster");
+      var breed = Monsters.breeds.tryChoose(depth);
       if (breed == null) continue;
 
       histogram.add((breed.depth - depth).toString());

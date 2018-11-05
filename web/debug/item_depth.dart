@@ -39,7 +39,7 @@ void generate() {
   var affixes = Histogram<String>();
 
   for (var i = 0; i < tries; i++) {
-    var itemType = Items.types.tryChoose(depth, "item");
+    var itemType = Items.types.tryChoose(depth);
     if (itemType == null) continue;
 
     // TODO: Pass in levelOffset.

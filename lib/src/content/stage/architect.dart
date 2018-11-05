@@ -6,6 +6,7 @@ import '../../engine.dart';
 import '../tiles.dart';
 import 'architectural_style.dart';
 import 'decorator.dart';
+import 'painter.dart';
 import 'reachability.dart';
 
 // TODO: Consider regions that are randomly placed blobs in the middle too.
@@ -51,10 +52,10 @@ class Architect {
 
     var styles = _pickStyles();
 
-    int lastNonAquatic;
+    int lastFillable;
     for (var i = styles.length - 1; i >= 0; i--) {
-      if (!styles[i].isAquatic) {
-        lastNonAquatic = i;
+      if (styles[i].canFill) {
+        lastFillable = i;
         break;
       }
     }
@@ -64,7 +65,7 @@ class Architect {
     var possibleRegions = Region.directions.toList();
     var regions = <Region>[];
     for (var i = 0; i < styles.length; i++) {
-      if (i == lastNonAquatic || styles[i].isAquatic) {
+      if (i == lastFillable || !styles[i].canFill) {
         regions.add(Region.everywhere);
       } else {
         regions.add(rng.take(possibleRegions));
@@ -100,13 +101,13 @@ class Architect {
 
     // TODO: Change count range based on depth?
     var count = math.min(rng.taper(1, 10), 5);
-    var hasNonAquatic = false;
+    var hasFillable = false;
 
-    while (!hasNonAquatic || result.length < count) {
+    while (!hasFillable || result.length < count) {
       var style = ArchitecturalStyle.all.tryChoose(depth);
 
-      // Make sure there's at least one walkable style.
-      if (!style.isAquatic) hasNonAquatic = true;
+      // Make sure there's at least one style that can fill the entire stage.
+      if (style.canFill) hasFillable = true;
 
       if (!result.contains(style)) result.add(style);
     }
@@ -431,6 +432,10 @@ abstract class Architecture {
     _style = style;
     _region = region;
   }
+
+  /// Override this if the architecture wants to handle spawning monsters in its
+  /// tiles itself.
+  bool spawnMonsters(Painter painter) => false;
 
   /// Marks the tile at [x], [y] as open floor for this architecture.
   void carve(int x, int y) => _architect._carve(this, x, y);
