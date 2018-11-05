@@ -19,7 +19,7 @@ int trial() {
   var generated = 0;
   for (var depth = 1; depth <= Option.maxDepth; depth++) {
     for (var i = 0; i < tries; i++) {
-      var breed = Monsters.breeds.tryChoose(depth, "monster");
+      var breed = Monsters.breeds.tryChoose(depth);
       if (breed == null) continue;
 
       generated++;

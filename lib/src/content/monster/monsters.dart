@@ -24,6 +24,7 @@ class Monsters {
       "natural/bug/worm",
       "natural/plant/vine",
       "mythical/beast/dragon",
+      "mythical/beast/hybrid",
       "magical/eye",
       "humanoid/hob/fae",
       "humanoid/hob/goblin",

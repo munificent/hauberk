@@ -3,11 +3,12 @@ import '../../engine.dart';
 /// Alert nearby sleeping monsters.
 class HowlAction extends Action {
   final int _range;
+  final String _verb;
 
-  HowlAction(this._range);
+  HowlAction(this._range, String verb) : _verb = verb ?? "howls";
 
   ActionResult onPerform() {
-    log("{1} howls!", actor);
+    log("{1} $_verb!", actor);
     addEvent(EventType.howl, actor: actor);
 
     for (var other in monster.game.stage.actors) {

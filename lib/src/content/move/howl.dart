@@ -3,10 +3,11 @@ import '../action/howl.dart';
 
 class HowlMove extends Move {
   final int _range;
+  final String _verb;
 
   num get experience => _range * 0.5;
 
-  HowlMove(num rate, this._range) : super(rate);
+  HowlMove(num rate, this._range, this._verb) : super(rate);
 
   bool shouldUse(Monster monster) {
     // Don't wake up others unless the hero is around.
@@ -27,7 +28,7 @@ class HowlMove extends Move {
     return false;
   }
 
-  Action onGetAction(Monster monster) => HowlAction(_range);
+  Action onGetAction(Monster monster) => HowlAction(_range, _verb);
 
   String toString() => "Howl $_range";
 }

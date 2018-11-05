@@ -74,7 +74,26 @@ void golems() {
   // TODO: Animated dolls, poppets, and marionettes.
 }
 
-void hybrids() {}
+void hybrids() {
+  family("H")
+    ..groups("hybrid")
+    ..sense(see: 10, hear: 12);
+
+  // TODO: Cause disease when scratched?
+  breed("harpy", 25, lilac, 50, speed: 2)
+    ..fly()
+    ..count(2, 5)
+    ..attack("bite[s]", 10)
+    ..attack("scratch[es]", 15)
+    ..howl(verb: "screeches")
+    ..missive(Missive.screech);
+
+  breed("griffin", 35, gold, 200)
+    ..attack("bite[s]", 20)
+    ..attack("scratch[es]", 15);
+
+  // TODO: https://en.wikipedia.org/wiki/List_of_hybrid_creatures_in_folklore
+}
 
 void insubstantials() {}
 
@@ -163,17 +182,17 @@ void reptiles() {
     ..preferOpen()
     ..emanate(3);
 
-  breed("juvenile salamander", 7, salmon, 40)
+  breed("juvenile salamander", 7, salmon, 20)
     ..attack("bite[s]", 14, Elements.fire)
     ..fireCone(rate: 16, damage: 20, range: 4);
 
-  breed("salamander", 13, brickRed, 60)
+  breed("salamander", 13, brickRed, 30)
     ..attack("bite[s]", 18, Elements.fire)
     ..fireCone(rate: 16, damage: 30, range: 5);
 
   breed("three-headed salamander", 23, maroon, 90)
     ..attack("bite[s]", 24, Elements.fire)
-    ..fireCone(rate: 10, damage: 30, range: 5);
+    ..fireCone(rate: 10, damage: 20, range: 5);
 }
 
 void snakes() {

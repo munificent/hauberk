@@ -2,7 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 
-enum Missive { clumsy, insult }
+enum Missive { clumsy, insult, screech }
 
 final _messages = {
   Missive.clumsy: [
@@ -18,6 +18,11 @@ final _messages = {
     "{1} make[s] faces at {2}!",
     "{1} laugh[s] at {2}!",
     "{1} sneer[s] at {2}!",
+  ],
+  Missive.screech: [
+    "{1} screeches at {2}!",
+    "{1} taunts {2}!",
+    "{1} cackles at {2}!"
   ]
 };
 

@@ -108,6 +108,7 @@ void dragons() {
     ..sense(see: 16, hear: 10)
     ..defense(20, "{2} [is|are] deflected by its scales.")
     ..preferOpen();
+
   // TODO: Juvenile and elder dragons.
   // TODO: Minions?
   breed("green dragon", 60, lima, 350)
@@ -602,7 +603,7 @@ void rodents() {
     ..attack("bite[s]", 15, Elements.poison)
     ..attack("scratch[es]", 8);
 
-  breed("giant rat", 8, carrot, 50)
+  breed("giant rat", 8, carrot, 40)
     ..attack("bite[s]", 12)
     ..attack("scratch[es]", 8);
 
@@ -686,19 +687,28 @@ void skeletons() {
   breed("severed skull", 7, sandal, 20, frequency: 0.3, meander: 40, speed: -2)
     ..attack("bite[s]", 9);
 
-  breed("decapitated skeleton", 10, ash, 30, frequency: 0.5, meander: 60)
+  breed("decapitated skeleton", 10, buttermilk, 30, frequency: 0.5, meander: 60)
+    ..sense(see: 0, hear: 0)
     ..openDoors()
-    ..attack("claw[s]", 7);
+    ..attack("claw[s]", 7)
+    ..drop("treasure", percent: 30)
+    ..drop("weapon", percent: 20)
+    ..drop("armor", percent: 20);
 
-  breed("armless skeleton", 12, ash, 25, frequency: 0.3)
+  breed("armless skeleton", 12, mint, 25, frequency: 0.3)
     ..attack("bite[s]", 9)
-    ..attack("kick[s]", 7);
+    ..attack("kick[s]", 7)
+    ..drop("treasure", percent: 30)
+    ..drop("armor", percent: 20);
 
-  breed("one-armed skeleton", 13, ash, 30, frequency: 0.4)
+  breed("one-armed skeleton", 13, lima, 30, frequency: 0.4)
     ..openDoors()
     ..attack("claw[s]", 7)
     ..amputate("armless skeleton", "bony arm", "{1}'s arm falls off!")
-    ..amputate("armless skeleton", "bony hand", "{1}'s hand falls off!");
+    ..amputate("armless skeleton", "bony hand", "{1}'s hand falls off!")
+    ..drop("treasure", percent: 30)
+    ..drop("weapon", percent: 10)
+    ..drop("armor", percent: 20);
 
   breed("skeleton", 15, ash, 40)
     ..openDoors()
@@ -706,7 +716,33 @@ void skeletons() {
     ..attack("bite[s]", 9)
     ..amputate("decapitated skeleton", "severed skull", "{1}'s head pops off!")
     ..amputate("one-armed skeleton", "bony arm", "{1}'s arm falls off!")
-    ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!");
+    ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!")
+    ..drop("treasure", percent: 40)
+    ..drop("weapon", percent: 30)
+    ..drop("armor", percent: 30);
+
+  breed("skeleton warrior", 17, salmon, 50)
+    ..openDoors()
+    ..attack("slash[es]", 13)
+    ..attack("stab[s]", 10)
+    ..amputate("decapitated skeleton", "severed skull", "{1}'s head pops off!")
+    ..amputate("one-armed skeleton", "bony arm", "{1}'s arm falls off!")
+    ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!")
+    ..drop("treasure", percent: 50)
+    ..drop("weapon", percent: 50)
+    ..drop("armor", percent: 50);
+
+  breed("robed skeleton", 19, lilac, 50)
+    ..openDoors()
+    ..attack("slash[es]", 13)
+    ..attack("stab[s]", 10)
+    ..lightningBolt(rate: 8, damage: 15)
+    ..amputate("decapitated skeleton", "severed skull", "{1}'s head pops off!")
+    ..amputate("one-armed skeleton", "bony arm", "{1}'s arm falls off!")
+    ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!")
+    ..drop("treasure", percent: 50)
+    ..drop("magic", percent: 50)
+    ..drop("armor", percent: 50);
 
   // TODO: Stronger skeletons.
 }

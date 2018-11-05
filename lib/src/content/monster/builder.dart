@@ -323,7 +323,8 @@ class _BreedBuilder extends _BaseBuilder {
   void missive(Missive missive, {num rate = 5}) =>
       _addMove(MissiveMove(missive, rate));
 
-  void howl({num rate = 10, int range = 10}) => _addMove(HowlMove(rate, range));
+  void howl({num rate = 10, int range = 10, String verb}) =>
+      _addMove(HowlMove(rate, range, verb));
 
   void haste({num rate = 5, int duration = 10, int speed = 1}) =>
       _addMove(HasteMove(rate, duration, speed));
