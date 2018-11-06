@@ -25,6 +25,7 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
     int getPrice(Item item),
     bool isDialog,
     bool capitals,
+    bool shrinkToFit,
     Item inspected}) {
   isDialog ??= false;
 
@@ -32,7 +33,7 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
 
   // Draw a box for the contents.
   var itemCount = items.slots.length;
-  var boxHeight = isDialog ? math.max(itemCount, 1) + 3 : terminal.height - 1;
+  var boxHeight = (isDialog ? math.max(itemCount, 1) : 26) + 3;
   Draw.frame(terminal, 0, 0, terminal.width, boxHeight);
 
   terminal.writeAt(1, 0, items.name, UIHue.text);

@@ -24,8 +24,8 @@ abstract class ItemScreen extends Screen<Input> {
 //  /// If the crucible contains a complete recipe, this will be it. Otherwise,
 //  /// this will be `null`.
 //  Recipe completeRecipe;
-//
-//  String _error;
+
+  String _error;
 
   ItemCollection get _items;
 
@@ -51,6 +51,8 @@ abstract class ItemScreen extends Screen<Input> {
   bool canSelect(Item item) => null;
 
   bool handleInput(Input input) {
+    _error = null;
+
     if (input == Input.cancel) {
       ui.pop();
       return true;
@@ -60,10 +62,7 @@ abstract class ItemScreen extends Screen<Input> {
   }
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
-//    if (_error != null) {
-//      _error = null;
-//      dirty();
-//    }
+    _error = null;
 
     if (keyCode == KeyCode.shift) {
       _shiftDown = true;
@@ -126,8 +125,9 @@ abstract class ItemScreen extends Screen<Input> {
     _inspected = null;
 
     if (popped is _CountScreen && result != null) {
-      _transfer(popped._item, result);
-      ui.pop();
+      if (_transfer(popped._item, result)) {
+        ui.pop();
+      }
     }
   }
 
@@ -160,9 +160,9 @@ abstract class ItemScreen extends Screen<Input> {
 //      }
 //    }
 
-//    if (_error != null) {
-//      terminal.writeAt(10, 30, _error, brickRed);
-//    }
+    if (_error != null) {
+      terminal.writeAt(0, 32, _error, brickRed);
+    }
 
     var help = _shiftDown ? "[A-Z] Inspect item" : _helpText;
     terminal.writeAt(0, terminal.height - 1, help, UIHue.helpText);
@@ -182,9 +182,8 @@ abstract class ItemScreen extends Screen<Input> {
     var to = _sink.items;
 
     if (!to.canAdd(item)) {
-      // TODO
-//      _error = "Not enough room for ${item.clone(count)}.";
-      print("no enough room");
+      _error = "Not enough room for ${item.clone(count)}.";
+      dirty();
       return false;
     }
 
@@ -252,6 +251,8 @@ class _HomeGetScreen extends ItemScreen {
   ItemCollection get _items => _save.home;
 
   _HomeGetScreen(HeroSave save) : super._(save, _InventorySink(save));
+
+  bool canSelect(Item item) => true;
 }
 
 /// Base class for inventory and equipment screens.

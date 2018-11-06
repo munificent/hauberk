@@ -107,7 +107,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
 
   bool canAdd(Item item) {
     // If there's an empty slot, can always add it.
-    if (_capacity == null || _items.length < _capacity - 1) return true;
+    if (_capacity == null || _items.length < _capacity) return true;
 
     // See if we can merge it with other stacks.
     var remaining = item.count;
