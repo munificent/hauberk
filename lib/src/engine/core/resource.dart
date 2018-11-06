@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+import 'math.dart';
+
 class ResourceSet<T> {
   final Map<String, _Tag<T>> _tags = {};
   final Map<String, _Resource<T>> _resources = {};
@@ -16,30 +18,34 @@ class ResourceSet<T> {
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
   void add(T object, {String name, int depth, double frequency, String tags}) {
-    _add(object, name, depth, depth, frequency, tags);
+    _add(object, name, depth, depth, frequency, frequency, tags);
   }
 
   void addRanged(T object,
       {String name,
-      int minDepth,
-      int maxDepth,
-      double frequency,
+      int start,
+      int end,
+      double startFrequency,
+      double endFrequency,
       String tags}) {
-    _add(object, name, minDepth, maxDepth, frequency, tags);
+    _add(object, name, start, end, startFrequency, endFrequency, tags);
   }
 
-  void _add(T object, String name, int minDepth, int maxDepth, double frequency,
-      String tags) {
+  void _add(T object, String name, int startDepth, int endDepth,
+      double startFrequency, double endFrequency, String tags) {
     name ??= _resources.length.toString();
-    minDepth ??= 1;
-    maxDepth ??= minDepth;
-    frequency ??= 1.0;
+    startDepth ??= 1;
+    endDepth ??= startDepth;
+
+    startFrequency ??= 1.0;
+    endFrequency ??= startFrequency;
 
     if (_resources.containsKey(name)) {
       throw ArgumentError('Already have a resource named "$name".');
     }
 
-    var resource = _Resource(object, minDepth, maxDepth, frequency);
+    var resource =
+        _Resource(object, startDepth, endDepth, startFrequency, endFrequency);
     _resources[name] = resource;
 
     if (tags != null && tags != "") {
@@ -82,12 +88,6 @@ class ResourceSet<T> {
     var resource = _resources[name];
     if (resource == null) return null;
     return resource.object;
-  }
-
-  double frequency(String name) {
-    var resource = _resources[name];
-    if (resource == null) throw ArgumentError('Unknown resource "$name".');
-    return resource.frequency;
   }
 
   /// Returns whether the resource with [name] has [tagName] as one of its
@@ -195,8 +195,8 @@ class ResourceSet<T> {
         var chance = scale(resource);
         if (chance == 0.0) continue;
 
-        chance *= resource.frequency *
-            _depthScale(resource.minDepth, resource.maxDepth, depth);
+        chance *=
+            resource.frequencyAtDepth(depth) * resource.chanceAtDepth(depth);
 
         // The depth scale is so narrow at low levels that highly out of depth
         // items can have a 0% chance of being generated due to floating point
@@ -215,19 +215,45 @@ class ResourceSet<T> {
 
     return query.choose();
   }
+}
 
-  /// Gets the probability adjustment for choosing a resource with [depth] at
-  /// a goal of [targetDepth].
+class _Resource<T> {
+  final T object;
+  final int startDepth;
+  final int endDepth;
+
+  final double startFrequency;
+  final double endFrequency;
+
+  final Set<_Tag<T>> _tags = Set();
+
+  _Resource(this.object, this.startDepth, this.endDepth, this.startFrequency,
+      this.endFrequency) {
+    if (startDepth == null) throw "!";
+  }
+
+  /// The resource's frequency at [depth].
+  ///
+  /// Between the [startDepth] and [endDepth], this linearly interpolates
+  /// between [startFrequency] and [endFrequency]. Outside of that range, it
+  /// uses either the start or end.
+  double frequencyAtDepth(int depth) {
+    if (startDepth == endDepth) return startFrequency;
+    return lerpDouble(
+        depth, startDepth, endDepth, startFrequency, endFrequency);
+  }
+
+  /// Gets the probability adjustment for choosing this resource at [depth].
   ///
   /// This is based on a normal distribution, with some tweaks. Unlike the
   /// real normal distribution, this does *not* ensure that all probabilities
   /// sum to zero. We don't need to since we normalize separately.
   ///
-  /// Instead, this always returns `1.0` for the most probable [depth], which is
-  /// when it's equal to [targetDepth]. On either side of that, we have a bell
-  /// curve. The curve widens as you go deeper in the dungeon. This reflects
-  /// the fact that encountering a depth 4 monster at depth 1 is a lot more
-  /// dangerous than a depth 54 monster at depth 51.
+  /// Instead, this always returns `1.0` for depths within the resource's
+  /// [startDepth] and [endDepth]. On either side of that, we have a bell curve.
+  /// The curve widens as you go deeper in the dungeon. This reflects the fact
+  /// that encountering a depth 4 monster at depth 1 is a lot more dangerous
+  /// than a depth 54 monster at depth 51.
   ///
   /// The curve is also asymmetric. It widens out more quickly on the left.
   /// This means that as you venture deeper, weaker things you've already seen
@@ -235,38 +261,24 @@ class ResourceSet<T> {
   /// things are.
   ///
   /// https://en.wikipedia.org/wiki/Normal_distribution
-  double _depthScale(
-      int resourceMinDepth, int resourceMaxDepth, int targetDepth) {
-    if (targetDepth < resourceMinDepth) {
-      var relative = resourceMinDepth - targetDepth;
-      var deviation = 0.6 + targetDepth * 0.2;
+  double chanceAtDepth(int depth) {
+    if (depth < startDepth) {
+      var relative = startDepth - depth;
+      var deviation = 0.6 + depth * 0.2;
 
       return math.exp(-0.5 * relative * relative / (deviation * deviation));
-    } else if (targetDepth > resourceMaxDepth) {
-      var relative = targetDepth - resourceMaxDepth;
+    } else if (depth > endDepth) {
+      var relative = depth - endDepth;
 
       // As you get deeper in the dungeon, the probability curve widens so that
       // you still find weaker stuff fairly frequently.
-      var deviation = 1.0 + targetDepth * 0.1;
+      var deviation = 1.0 + depth * 0.1;
 
       return math.exp(-0.5 * relative * relative / (deviation * deviation));
     } else {
       // Within the resource's depth range.
       return 1.0;
     }
-  }
-}
-
-class _Resource<T> {
-  final T object;
-  final int minDepth;
-  final int maxDepth;
-
-  final double frequency;
-  final Set<_Tag<T>> _tags = Set();
-
-  _Resource(this.object, this.minDepth, this.maxDepth, this.frequency) {
-    if (minDepth == null) throw "!";
   }
 }
 

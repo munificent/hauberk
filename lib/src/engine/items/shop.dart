@@ -33,7 +33,7 @@ class Shop {
       }
 
       // Try to add an item.
-      _drop.spawnDrop((item) => inventory.tryAdd(item));
+      _drop.spawnDrop(1, inventory.tryAdd);
 
       // TODO: Make this smarter. Don't have more than one full stack of any
       // kind of item. Don't have more than a couple identical pieces of

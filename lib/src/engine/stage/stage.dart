@@ -101,7 +101,7 @@ class Stage {
     // Try to keep dropped items from overlapping.
     var flow = MotilityFlow(this, pos, motility, avoidActors: false);
 
-    drop.spawnDrop((item) {
+    drop.spawnDrop(game.depth, (item) {
       items.add(item);
 
       // Prefer to not place under monsters or stack with other items.

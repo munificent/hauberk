@@ -18,8 +18,8 @@ class ArchitecturalStyle {
 
   static void _initialize() {
     addStyle(
-        {int min = 1,
-        int max = 100,
+        {int start = 1,
+        int end = 100,
         double frequency,
         String decor,
         double decorDensity,
@@ -33,7 +33,8 @@ class ArchitecturalStyle {
       var style = ArchitecturalStyle(decor, decorDensity, monsters.split(" "),
           monsterDensity, itemDensity, create,
           canFill: canFill);
-      _all.addRanged(style, minDepth: min, maxDepth: max, frequency: frequency);
+      // TODO: Ramp frequencies?
+      _all.addRanged(style, start: start, end: end, startFrequency: frequency);
     }
 
     // Generic default dungeon style.
@@ -88,10 +89,10 @@ class ArchitecturalStyle {
         create: () => River());
 
     // Pits.
-    pit(String monsterGroup, {int min, int max}) {
+    pit(String monsterGroup, {int start, int end}) {
       addStyle(
-          min: min,
-          max: max,
+          start: start,
+          end: end,
           frequency: 0.2,
           // TODO: Different decor?
           decor: "glowing-moss",
@@ -100,14 +101,14 @@ class ArchitecturalStyle {
           create: () => Pit(monsterGroup));
     }
 
-    pit("bug", min: 1, max: 40);
-    pit("jelly", min: 5, max: 50);
-    pit("bat", min: 10, max: 40);
-    pit("rodent", min: 1, max: 50);
-    pit("snake", min: 8, max: 60);
-    pit("plant", min: 15, max: 40);
-    pit("eye", min: 20, max: 100);
-    pit("dragon", min: 60, max: 100);
+    pit("bug", start: 1, end: 40);
+    pit("jelly", start: 5, end: 50);
+    pit("bat", start: 10, end: 40);
+    pit("rodent", start: 1, end: 50);
+    pit("snake", start: 8, end: 60);
+    pit("plant", start: 15, end: 40);
+    pit("eye", start: 20, end: 100);
+    pit("dragon", start: 60, end: 100);
   }
 
   final String decorTheme;

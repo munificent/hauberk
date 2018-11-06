@@ -62,7 +62,7 @@ void spawnStuff() {
       if (breed == null) continue;
 
       for (var spawn in breed.spawnAll()) {
-        spawn.drop.spawnDrop((item) {
+        spawn.drop.spawnDrop(depth, (item) {
           items.add(item.type.name);
 
           if (item.prefix != null) affixes.add("${item.prefix.name} _");

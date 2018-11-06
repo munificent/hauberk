@@ -66,7 +66,7 @@ void generate() {
     if (actor is Monster) {
       monsters.add(actor.breed.name);
 
-      actor.breed.drop.spawnDrop(addItem);
+      actor.breed.drop.spawnDrop(depth, addItem);
     }
   }
 

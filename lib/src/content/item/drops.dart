@@ -6,7 +6,7 @@ import 'items.dart';
 
 // TODO: Instead of storing the depth in the drop, pass it in. This way, if
 // weaker monsters appear deep in the dungeon, they can drop better stuff.
-Drop parseDrop(String name, int depth) {
+Drop parseDrop(String name, [int depth]) {
   var itemType = Items.types.tryFind(name);
   if (itemType != null) return _ItemDrop(itemType, depth);
 
@@ -14,7 +14,7 @@ Drop parseDrop(String name, int depth) {
 }
 
 /// Creates a [Drop] that has a [chance]% chance of dropping [drop].
-Drop percentDrop(int chance, String drop, int depth) {
+Drop percentDrop(int chance, String drop, [int depth]) {
   return _PercentDrop(chance, parseDrop(drop, depth));
 }
 
@@ -24,20 +24,24 @@ Drop dropAllOf(List<Drop> drops) => _AllOfDrop(drops);
 /// Creates a [Drop] that drops one of [drops] based on their frequency.
 Drop dropOneOf(Map<Drop, double> drops) => _OneOfDrop(drops);
 
-Drop repeatDrop(int count, drop, [int level]) {
-  if (drop is String) drop = parseDrop(drop, level);
+Drop repeatDrop(int count, drop, [int depth]) {
+  if (drop is String) drop = parseDrop(drop, depth);
   return _RepeatDrop(count, drop);
 }
 
 /// Drops an item of a given type.
 class _ItemDrop implements Drop {
   final ItemType _type;
+
+  /// The depth to use for selecting affixes.
+  ///
+  /// If `null`, uses the current depth when the drop is generated.
   final int _depth;
 
   _ItemDrop(this._type, this._depth);
 
-  void spawnDrop(AddItem addItem) {
-    addItem(Affixes.createItem(_type, _depth));
+  void spawnDrop(int depth, AddItem addItem) {
+    addItem(Affixes.createItem(_type, _depth ?? depth));
   }
 }
 
@@ -47,15 +51,17 @@ class _TagDrop implements Drop {
   final String _tag;
 
   /// The average depth of the drop.
+  ///
+  /// If `null`, uses the current depth when the drop is generated.
   final int _depth;
 
   _TagDrop(this._tag, this._depth);
 
-  void spawnDrop(AddItem addItem) {
-    var itemType = Items.types.tryChoose(_depth, tag: _tag);
+  void spawnDrop(int depth, AddItem addItem) {
+    var itemType = Items.types.tryChoose(_depth ?? depth, tag: _tag);
     if (itemType == null) return;
 
-    addItem(Affixes.createItem(itemType, _depth));
+    addItem(Affixes.createItem(itemType, _depth ?? depth));
   }
 }
 
@@ -66,9 +72,9 @@ class _PercentDrop implements Drop {
 
   _PercentDrop(this._chance, this._drop);
 
-  void spawnDrop(AddItem addItem) {
+  void spawnDrop(int depth, AddItem addItem) {
     if (rng.range(100) >= _chance) return;
-    _drop.spawnDrop(addItem);
+    _drop.spawnDrop(depth, addItem);
   }
 }
 
@@ -78,8 +84,8 @@ class _AllOfDrop implements Drop {
 
   _AllOfDrop(this._drops);
 
-  void spawnDrop(AddItem addItem) {
-    for (var drop in _drops) drop.spawnDrop(addItem);
+  void spawnDrop(int depth, AddItem addItem) {
+    for (var drop in _drops) drop.spawnDrop(depth, addItem);
   }
 }
 
@@ -94,12 +100,12 @@ class _OneOfDrop implements Drop {
     });
   }
 
-  void spawnDrop(AddItem addItem) {
+  void spawnDrop(int depth, AddItem addItem) {
     // TODO: Allow passing in depth?
     var drop = _drop.tryChoose(1);
     if (drop == null) return;
 
-    drop.spawnDrop(addItem);
+    drop.spawnDrop(depth, addItem);
   }
 }
 
@@ -110,14 +116,14 @@ class _RepeatDrop implements Drop {
 
   _RepeatDrop(this._count, this._drop);
 
-  void spawnDrop(AddItem addItem) {
+  void spawnDrop(int depth, AddItem addItem) {
     var taper = 5;
     if (_count > 3) taper = 4;
     if (_count > 6) taper = 3;
 
     var count = rng.triangleInt(_count, _count ~/ 2) + rng.taper(0, taper);
     for (var i = 0; i < count; i++) {
-      _drop.spawnDrop(addItem);
+      _drop.spawnDrop(depth, addItem);
     }
   }
 }

@@ -26,7 +26,6 @@ main() {
     <tr>
       <td colspan="2">Item</td>
       <td>Depth</td>
-      <td>Freq.</td>
       <td>Stack</td>
       <td>Price</td>
       <td>Equip.</td>
@@ -63,7 +62,6 @@ main() {
     }
 
     writeCell(item.depth, null);
-    writeCell(Items.types.frequency(item.name), "none");
     writeCell(item.maxStack, "none");
     writeCell(item.price, "none");
 

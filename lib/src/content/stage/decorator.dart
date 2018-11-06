@@ -369,8 +369,7 @@ class Decorator {
       if (pos == null) break;
 
       // TODO: Style-specific drop types.
-//      var architecture = _architect.ownerAt(pos);
-      var floorDrop = FloorDrops.choose("drop", _architect.depth);
+      var floorDrop = FloorDrops.choose(_architect.depth);
 
       _architect.stage.placeDrops(pos, Motility.walk, floorDrop.drop);
       densityMap.reduceAround(_stage, pos, Motility.doorAndWalk, 10);

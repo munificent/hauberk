@@ -12,7 +12,7 @@ typedef Action TossItemUse(Vec pos);
 typedef void AddItem(Item item);
 
 abstract class Drop {
-  void spawnDrop(AddItem addItem);
+  void spawnDrop(int depth, AddItem addItem);
 }
 
 /// Tracks information about a tossable [ItemType].

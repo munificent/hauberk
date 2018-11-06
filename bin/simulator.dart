@@ -20,14 +20,15 @@ class Simulator {
   final save = content.createHero("Fred", content.races[4], content.classes[1]);
 
   Game game;
+  int depth;
 
   Hero get hero => game.hero;
 
   final Map<Breed, Kill> kills = {};
 
   void run() {
-    for (var depth = 1; depth <= Option.maxDepth; depth++) {
-      _exploreDepth(depth);
+    for (depth = 1; depth <= Option.maxDepth; depth++) {
+      _exploreDepth();
     }
 
     print("Breed                                    kills hits/kill");
@@ -42,7 +43,7 @@ class Simulator {
     }
   }
 
-  void _exploreDepth(int depth) {
+  void _exploreDepth() {
     game = Game(content, save, depth);
 
     for (var _ in game.generate());
@@ -117,7 +118,7 @@ class Simulator {
 
     kill.kills++;
 
-    monster.breed.drop.spawnDrop(_getItem);
+    monster.breed.drop.spawnDrop(depth, _getItem);
   }
 
   void _log(Object message) {

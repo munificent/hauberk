@@ -5,6 +5,7 @@ import 'package:malison/malison.dart';
 
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content/item/affixes.dart';
+import 'package:hauberk/src/content/item/floor_drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
 
@@ -23,6 +24,8 @@ List<String> _affixNames;
 
 final _monsterDepthCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
 
+final _floorDropCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
+
 final _colors = <String, String>{};
 
 const batchSize = 1000;
@@ -38,6 +41,7 @@ main() {
   Items.initialize();
   Affixes.initialize();
   Monsters.initialize();
+  FloorDrops.initialize();
 
   for (var itemType in Items.types.all) {
     _colors[itemType.name] = (itemType.appearance as Glyph).fore.cssColor;
@@ -72,6 +76,10 @@ main() {
         _drawMonsterDepths();
         break;
 
+      case "floor-drops":
+        _drawFloorDrops();
+        break;
+
       default:
         throw "Unknown select value '$shownData'.";
     }
@@ -96,6 +104,10 @@ void _generateMore() {
 
     case "monster-depths":
       _moreMonsterDepths();
+      break;
+
+    case "floor-drops":
+      _moreFloorDrops();
       break;
 
     default:
@@ -175,6 +187,21 @@ void _moreMonsterDepths() {
   _drawMonsterDepths();
 }
 
+void _moreFloorDrops() {
+  for (var depth = 1; depth <= Option.maxDepth; depth++) {
+    var histogram = _floorDropCounts[depth - 1];
+
+    for (var i = 0; i < batchSize; i++) {
+      var drop = FloorDrops.choose(depth);
+      drop.drop.spawnDrop(depth, (item) {
+        histogram.add(item.type.name);
+      });
+    }
+  }
+
+  _drawFloorDrops();
+}
+
 void _drawBreeds() {
   if (_breedNames == null) {
     _breedNames = Monsters.breeds.all.map((breed) => breed.name).toList();
@@ -201,24 +228,7 @@ void _drawBreeds() {
 }
 
 void _drawItems() {
-  if (_itemNames == null) {
-    _itemNames = Items.types.all.map((type) => type.name).toList();
-    _itemNames.sort((a, b) {
-      var aType = Items.types.find(a);
-      var bType = Items.types.find(b);
-
-      if (aType.depth != bType.depth) {
-        return aType.depth.compareTo(bType.depth);
-      }
-
-      if (aType.price != bType.price) {
-        return aType.price.compareTo(bType.price);
-      }
-
-      return aType.name.compareTo(bType.name);
-    });
-  }
-
+  _initializeItemNames();
   _redraw(_itemCounts, _itemNames, (label) {
     var type = Items.types.find(label);
     return '$label (depth ${type.depth})';
@@ -254,6 +264,34 @@ void _drawMonsterDepths() {
     if (relative < 0) return "${-relative} shallower monster";
     return "$label deeper monster";
   });
+}
+
+void _drawFloorDrops() {
+  _initializeItemNames();
+  _redraw(_floorDropCounts, _itemNames, (label) {
+    var type = Items.types.find(label);
+    return '$label (depth ${type.depth})';
+  });
+}
+
+void _initializeItemNames() {
+  if (_itemNames == null) {
+    _itemNames = Items.types.all.map((type) => type.name).toList();
+    _itemNames.sort((a, b) {
+      var aType = Items.types.find(a);
+      var bType = Items.types.find(b);
+
+      if (aType.depth != bType.depth) {
+        return aType.depth.compareTo(bType.depth);
+      }
+
+      if (aType.price != bType.price) {
+        return aType.price.compareTo(bType.price);
+      }
+
+      return aType.name.compareTo(bType.name);
+    });
+  }
 }
 
 void _redraw(List<Histogram<String>> histograms, List<String> labels,
