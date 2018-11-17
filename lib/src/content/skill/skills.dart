@@ -19,7 +19,10 @@ class Skills {
       Map.fromIterable(all, key: (skill) => skill.name);
 
   static Skill find(String name) {
-    assert(_byName.containsKey(name));
+    if (!_byName.containsKey(name)) {
+      throw ArgumentError("Unknown skill '$name'.");
+    }
+
     return _byName[name];
   }
 
