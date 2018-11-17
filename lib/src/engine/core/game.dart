@@ -101,6 +101,13 @@ class Game {
         while (_reactions.isNotEmpty) {
           var reaction = _reactions.removeLast();
           var result = reaction.perform();
+
+          // Cascade through the alternates until we hit bottom.
+          while (result.alternative != null) {
+            reaction = result.alternative;
+            result = reaction.perform();
+          }
+
           assert(result.succeeded, "Reactions should never fail.");
         }
 
