@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>Test Dungeons</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css">
+  <link href='http://fonts.googleapis.com/css?family=Metamorphous|Buenard' rel='stylesheet' type='text/css'>
+  <style>
+    p {
+      position: relative;
+    }
+
+    canvas.overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+<table>
+  <tr>
+    <td>
+      <p>Depth: <select id="depth"></select></p>
+      <p>
+      <canvas id="tiles" width="640" height="320"></canvas>
+      <canvas class="overlay" id="states" width="640" height="320"></canvas>
+      </p>
+    </td>
+    <td>
+      <div id="hover"></div>
+      <h2>Monsters</h2>
+      <table id="monsters">
+      </table>
+      <h2>Items</h2>
+      <table id="items">
+      </table>
+    </td>
+  </tr>
+</table>
+<script type="application/javascript" src="dungeon.dart.js"></script>
+</body>
+</html>

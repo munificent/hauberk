@@ -1,0 +1,39 @@
+<html>
+<head>
+  <title>Generation Frequencies</title>
+  <style>
+    svg {
+      background: #000;
+      color: #fff;
+    }
+
+    svg:hover path {
+      opacity: 0.5;
+    }
+
+    path {
+      fill: none;
+    }
+
+    svg:hover path:hover {
+      stroke-width: 2px;
+      opacity: 1.0;
+    }
+  </style>
+</head>
+<body>
+<p>
+<select name="content">
+  <option value="breeds">Breeds</option>
+  <option value="item-types">Item Types</option>
+  <option value="affixes">Affixes</option>
+  <option value="monster-depths">Monster Depths</option>
+  <option value="floor-drops" selected>Floor Drops</option>
+</select>
+</p>
+<svg xmlns="http://www.w3.org/2000/svg" width="95%" viewBox="0 0 600 600">
+</svg>
+
+<script type="application/javascript" src="chart.dart.js"></script>
+</body>
+</html>
