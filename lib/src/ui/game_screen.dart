@@ -12,6 +12,7 @@ import '../hues.dart';
 import 'direction_dialog.dart';
 import 'draw.dart';
 import 'effect.dart';
+import 'exit_screen.dart';
 import 'forfeit_dialog.dart';
 import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
@@ -114,20 +115,8 @@ class GameScreen extends Screen<Input> {
     Action action;
     switch (input) {
       case Input.quit:
-        // TODO: Should confirm first.
         if (game.stage[game.hero.pos].isExit) {
-          _save.takeFrom(game.hero);
-
-          // Remember that this depth was reached.
-          _save.maxDepth = math.max(_save.maxDepth, game.depth);
-
-          // Update shops.
-          // TODO: Take how long the hero was in the dungeon into account.
-          _save.shops.forEach((shop, inventory) {
-            shop.update(inventory);
-          });
-
-          ui.pop(true);
+          ui.push(ExitScreen(_save, game));
         } else {
           game.log.error('You cannot exit from here.');
           dirty();
@@ -428,6 +417,11 @@ class GameScreen extends Screen<Input> {
   }
 
   void activate(Screen popped, result) {
+    if (popped is ExitScreen) {
+      ui.pop(true);
+      return;
+    }
+
     if (!game.hero.needsInput) {
       // The player is coming back from a screen where they selected an action
       // for the hero. Give them a bit to visually reorient themselves before
@@ -831,7 +825,7 @@ class GameScreen extends Screen<Input> {
 
     // Draw the nearby monsters.
     terminal.writeAt(0, 16, '@', heroColor);
-    terminal.writeAt(2, 16, _save.name, UIHue.text);
+    terminal.writeAt(2, 16, hero.save.name, UIHue.text);
     _drawHealthBar(terminal, 17, hero);
 
     visibleMonsters.sort((a, b) {

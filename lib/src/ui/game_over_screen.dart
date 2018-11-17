@@ -24,7 +24,6 @@ class GameOverScreen extends Screen<Input> {
     terminal.clear();
 
     terminal.writeAt(0, 0, log.messages.last.text);
-    terminal.writeAt(
-        0, terminal.height - 1, '[Esc] Return to quest menu', UIHue.helpText);
+    terminal.writeAt(0, terminal.height - 1, '[Esc] Try again', UIHue.helpText);
   }
 }

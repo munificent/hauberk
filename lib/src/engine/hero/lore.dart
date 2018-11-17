@@ -15,6 +15,9 @@ class Lore {
   /// The breeds the hero has killed at least one of.
   Iterable<Breed> get slainBreeds => _slain.keys;
 
+  /// The total number of monsters slain.
+  int get allSlain => _slain.values.fold(0, (a, b) => a + b);
+
   Lore() : this.from({}, {});
 
   Lore.from(this._seen, this._slain);
