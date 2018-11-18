@@ -8,7 +8,9 @@ build: docs
 	rm -rf gh-pages
 	git clone --single-branch -b gh-pages \
 			https://github.com/munificent/hauberk.git gh-pages
+	mkdir -p gh-pages/debug
 	cp build/* gh-pages
+	cp build/debug/* gh-pages/debug
 
 docs:
 	dart bin/update_docs.dart
