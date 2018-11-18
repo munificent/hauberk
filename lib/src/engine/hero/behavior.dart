@@ -133,7 +133,7 @@ class RunBehavior extends Behavior {
 
   Action getAction(Hero hero) {
     firstStep = false;
-    return WalkAction(direction, running: true);
+    return WalkAction(direction);
   }
 
   /// Advance one step while in a passage.

@@ -9,9 +9,7 @@ import '../stage/tile.dart';
 
 class WalkAction extends Action {
   final Direction dir;
-  final bool _isRunning;
-
-  WalkAction(this.dir, {bool running = false}) : _isRunning = running;
+  WalkAction(this.dir);
 
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
@@ -64,18 +62,6 @@ class WalkAction extends Action {
           addEvent(EventType.gold, actor: actor, pos: actor.pos, other: item);
         } else {
           log('{1} [are|is] standing on {2}.', actor, item);
-        }
-      }
-
-      // If we ran next to an item, note it and disturb. That way we stop where
-      // the player can see it more easily.
-      if (_isRunning) {
-        for (var neighborDir in [dir.rotateLeft45, dir, dir.rotateRight45]) {
-          var neighbor = pos + neighborDir;
-          for (var item in hero.game.stage.itemsAt(neighbor)) {
-            hero.disturb();
-            hero.game.log.message('{1} [are|is] are next to {2}.', hero, item);
-          }
         }
       }
 

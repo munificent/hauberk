@@ -744,7 +744,7 @@ class GameScreen extends Screen<Input> {
 
       switch (message.type) {
         case LogType.message:
-          color = gunsmoke;
+          color = ash;
           break;
         case LogType.error:
           color = brickRed;
