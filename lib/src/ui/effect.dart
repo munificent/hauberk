@@ -40,12 +40,13 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.hit:
-      effects.add(HitEffect(event.actor));
+      effects.add(DamageEffect(event.actor, event.element, event.other as int));
       break;
 
     case EventType.die:
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
+        // TODO: Different blood colors for different breeds.
         effects.add(ParticleEffect(event.actor.x, event.actor.y, brickRed));
       }
       break;
@@ -121,6 +122,7 @@ typedef void DrawGlyph(int x, int y, Glyph glyph);
 
 abstract class Effect {
   bool update(Game game);
+
   void render(Game game, DrawGlyph drawGlyph);
 }
 
@@ -269,27 +271,27 @@ class ItemEffect implements Effect {
   }
 }
 
-class HitEffect implements Effect {
+class DamageEffect implements Effect {
   final Actor actor;
-  final int health;
-  int frame = 0;
+  final Element element;
+  final int _blinks;
+  int _frame = 0;
 
-  static final _numFrames = 23;
+  DamageEffect(this.actor, this.element, int damage)
+      : _blinks = math.sqrt(damage / 5).ceil();
 
-  HitEffect(Actor actor)
-      : actor = actor,
-        health = 10 * actor.health ~/ actor.maxHealth;
-
-  bool update(Game game) {
-    return frame++ < _numFrames;
-  }
+  bool update(Game game) => ++_frame < _blinks * _framesPerBlink;
 
   void render(Game game, DrawGlyph drawGlyph) {
-    var back = const [salmon, brickRed, garnet, Color.black][frame ~/ 6];
-
-    drawGlyph(
-        actor.x, actor.y, Glyph(' 123456789*'[health], Color.black, back));
+    var frame = _frame % _framesPerBlink;
+    if (frame < _framesPerBlink ~/ 2) {
+      drawGlyph(actor.x, actor.y, Glyph("*", elementColor(element)));
+    }
   }
+
+  /// Blink faster as the number of blinks increases so that the effect doesn't
+  /// get gratuitously long.
+  int get _framesPerBlink => lerpInt(_blinks, 1, 10, 16, 8);
 }
 
 class ParticleEffect implements Effect {
@@ -321,7 +323,7 @@ class ParticleEffect implements Effect {
   }
 
   void render(Game game, DrawGlyph drawGlyph) {
-    drawGlyph(x.toInt(), y.toInt(), Glyph('*', color));
+    drawGlyph(x.toInt(), y.toInt(), Glyph('•', color));
   }
 }
 

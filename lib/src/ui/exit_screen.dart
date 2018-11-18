@@ -143,7 +143,7 @@ class _AnimatedValue {
       : current = 0;
 
   bool update() {
-    if (current == value) return false;
+    if (current >= value) return false;
 
     if (value > 200) {
       current += rng.round(value / 200);
