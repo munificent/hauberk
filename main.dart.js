@@ -18396,8 +18396,8 @@
       addEvent$6$actor$dir$element$other$pos: function(type, actor, dir, element, other, pos) {
         C.JSArray_methods.add$1(this._action$_game._events, new D.Event0(type, actor, element, other, pos, dir));
       },
-      addEvent$3$actor$other: function(type, actor, other) {
-        return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, null, other, null);
+      addEvent$4$actor$element$other: function(type, actor, element, other) {
+        return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, element, other, null);
       },
       addEvent$2$actor: function(type, actor) {
         return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, null, null, null);
@@ -18419,6 +18419,9 @@
       },
       addEvent$2$pos: function(type, pos) {
         return this.addEvent$6$actor$dir$element$other$pos(type, null, null, null, null, pos);
+      },
+      addEvent$3$actor$other: function(type, actor, other) {
+        return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, null, other, null);
       },
       get$noise: function() {
         return 0.25;
@@ -18905,20 +18908,20 @@
   }], ["", "package:hauberk/src/engine/action/walk.dart",, B, {
     "^": "",
     WalkAction: {
-      "^": "Action;dir>,_isRunning,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;dir>,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
-        var t1, pos, t2, tile, t3, _i, item, t4, min, max, value, t5, neighbor;
+        var t1, pos, tile, t2, _i, item, t3, min, max, value, t4;
         t1 = this.dir;
         if (t1 === C.Direction_0_0)
           return this.alternate$1(new B.RestAction());
         pos = this._action$_actor._pos.$add(0, t1);
-        t2 = this._action$_game._stage._actorsByTile.$index(0, pos);
-        if (t2 != null && t2 !== this._action$_actor)
-          return this.alternate$1(new S.AttackAction(t2));
+        t1 = this._action$_game._stage._actorsByTile.$index(0, pos);
+        if (t1 != null && t1 !== this._action$_actor)
+          return this.alternate$1(new S.AttackAction(t1));
         tile = this._action$_game._stage.tiles.$index(0, pos).type;
-        t2 = tile.onOpen;
-        if (t2 != null)
-          return this.alternate$1(t2.call$1(pos));
+        t1 = tile.onOpen;
+        if (t1 != null)
+          return this.alternate$1(t1.call$1(pos));
         if (!this._action$_actor.canOccupy$1(pos)) {
           if (this._action$_actor instanceof G.Hero)
             this._action$_game._stage.exploreAt$3$force(pos.x, pos.y, true);
@@ -18926,45 +18929,29 @@
         }
         this._action$_actor.set$pos(pos);
         if (this._action$_actor instanceof G.Hero) {
-          for (t2 = this._action$_game._stage.itemsAt$1(pos), t2 = P.List_List$from(t2, true, H.getRuntimeTypeArgument(t2, "IterableMixin", 0)), t3 = t2.length, _i = 0; _i < t2.length; t2.length === t3 || (0, H.throwConcurrentModificationError)(t2), ++_i) {
-            item = t2[_i];
-            t4 = H.interceptedTypeCast(this._action$_actor, "$isHero");
-            if (!(t4._behavior instanceof X.ActionBehavior))
-              t4._behavior = null;
+          for (t1 = this._action$_game._stage.itemsAt$1(pos), t1 = P.List_List$from(t1, true, H.getRuntimeTypeArgument(t1, "IterableMixin", 0)), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+            item = t1[_i];
+            t3 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+            if (!(t3._behavior instanceof X.ActionBehavior))
+              t3._behavior = null;
             if (J.get$type$z(item).isTreasure) {
               min = C.JSNumber_methods.ceil$0(item.get$price() * 0.5);
               max = C.JSNumber_methods.ceil$0(item.get$price() * 1.5);
-              t4 = $.$get$rng();
-              value = t4._random.nextInt$1(max - min) + min;
-              t4 = H.interceptedTypeCast(this._action$_actor, "$isHero").save;
-              t5 = t4.gold;
-              if (typeof t5 !== "number")
-                return t5.$add();
-              t4.gold = t5 + value;
+              t3 = $.$get$rng();
+              value = t3._random.nextInt$1(max - min) + min;
+              t3 = H.interceptedTypeCast(this._action$_actor, "$isHero").save;
+              t4 = t3.gold;
+              if (typeof t4 !== "number")
+                return t4.$add();
+              t3.gold = t4 + value;
               this.log$3("{1} pick[s] up {2} worth " + value + " gold.", H.interceptedTypeCast(this._action$_actor, "$isHero"), item);
               this._action$_game._stage.removeItem$2(item, pos);
-              t5 = this._action$_actor;
-              t4 = t5._pos;
-              C.JSArray_methods.add$1(this._action$_game._events, new D.Event0(C.EventType_gold, t5, null, item, t4, null));
+              t4 = this._action$_actor;
+              t3 = t4._pos;
+              C.JSArray_methods.add$1(this._action$_game._events, new D.Event0(C.EventType_gold, t4, null, item, t3, null));
             } else
               this.log$3("{1} [are|is] standing on {2}.", this._action$_actor, item);
           }
-          if (this._isRunning)
-            for (t1 = [t1.get$rotateLeft45(), t1, t1.get$rotateRight45()], t2 = [R.Item], _i = 0; _i < 3; ++_i) {
-              neighbor = pos.$add(0, t1[_i]);
-              t3 = H.interceptedTypeCast(this._action$_actor, "$isHero").game._stage._itemsByTile.$index(0, neighbor);
-              if (t3 == null)
-                t3 = new O.Inventory(C.ItemLocation_46y, H.setRuntimeTypeInfo([], t2), null);
-              t3 = t3._inventory$_items;
-              t3 = new J.ArrayIterator(t3, t3.length, 0, [H.getTypeArgumentByIndex(t3, 0)]);
-              for (; t3.moveNext$0();) {
-                t4 = t3.__interceptors$_current;
-                t5 = H.interceptedTypeCast(this._action$_actor, "$isHero");
-                if (!(t5._behavior instanceof X.ActionBehavior))
-                  t5._behavior = null;
-                t5.game.log.add$5(0, C.LogType_message, "{1} [are|is] are next to {2}.", t5, t4, null);
-              }
-            }
           t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
           t2 = t1._focus;
           t3 = t1.save.intellect;
@@ -19350,8 +19337,8 @@
           if (sideEffect != null)
             action.addAction$2(sideEffect, defender);
         }
-        action.addEvent$3$actor$other(C.EventType_hit, defender, damage);
-        action.log$3("{1} " + H.S(t1.verb) + " {2}.", attackNoun, defender);
+        action.addEvent$4$actor$element$other(C.EventType_hit, defender, this.get$element(), damage);
+        action.log$3("{1} " + H.S(t1.verb) + " {2} for " + damage + " damage.", attackNoun, defender);
         return damage;
       },
       perform$3: function(action, attacker, defender) {
@@ -20298,7 +20285,7 @@
       getAction$1: function(hero) {
         H.interceptedTypeCheck(hero, "$isHero");
         this.firstStep = false;
-        return new B.WalkAction(this.direction, true);
+        return new B.WalkAction(this.direction);
       },
       _runInPassage$1: function(hero) {
         var t1, t2, t3, openDirs;
@@ -22541,7 +22528,7 @@
         var $escape, t1, t2, moves, toHero, t3, t4, rangedDamage, rangedAttacks, _i, move, meleeDamage, meleeAttacks, caution, meleeDir;
         $escape = this._escapeSubstance$0();
         if ($escape !== C.Direction_0_0)
-          return new B.WalkAction($escape, false);
+          return new B.WalkAction($escape);
         t1 = this._monster._breed.moves;
         t2 = H.getTypeArgumentByIndex(t1, 0);
         moves = P.List_List$from(new H.WhereIterable(t1, H.functionTypeCheck(new M.AwakeState_getAction_closure(this), {func: 1, ret: P.bool, args: [t2]}), [t2]), true, t2);
@@ -22561,7 +22548,7 @@
           toHero = t1.game.hero._pos.$sub(0, t1._pos);
           if (toHero.get$kingLength() !== 1)
             return new B.RestAction();
-          return new B.WalkAction(toHero.get$nearestDirection(), false);
+          return new B.WalkAction(toHero.get$nearestDirection());
         }
         t1.wantsToMelee = true;
         for (t3 = t2.moves, t4 = t3.length, rangedDamage = 0, rangedAttacks = 0, _i = 0; _i < t4; ++_i) {
@@ -22595,7 +22582,7 @@
         meleeDir = this._findMeleePath$0();
         rangedAttacks > 0;
         this._monster.wantsToMelee;
-        return new B.WalkAction(this._monster_states$_meander$1(meleeDir == null ? C.Direction_0_0 : meleeDir), false);
+        return new B.WalkAction(this._monster_states$_meander$1(meleeDir == null ? C.Direction_0_0 : meleeDir));
       },
       _escapeSubstance$0: function() {
         var t1, t2;
@@ -22715,7 +22702,7 @@
         dir = N.MotilityFlow$(t2, t3, t1.motility, null, true, t1.tracking).directionToBestWhere$1(new M.AfraidState_getAction_closure(this));
         if (dir !== C.Direction_0_0) {
           E.Debug_monsterLog(this._monster, "fleeing " + H.S(dir) + " out of sight");
-          return new B.WalkAction(this._monster_states$_meander$1(dir), false);
+          return new B.WalkAction(this._monster_states$_meander$1(dir));
         }
         t1 = this._monster;
         heroDistance = t1._pos.$sub(0, t1.game.hero._pos).get$kingLength();
@@ -22733,7 +22720,7 @@
             return H.ioore(t2, t1);
           dir = t2[t1];
           E.Debug_monsterLog(this._monster, "fleeing " + H.S(dir) + " away from hero");
-          return new B.WalkAction(this._monster_states$_meander$1(dir), false);
+          return new B.WalkAction(this._monster_states$_meander$1(dir));
         }
         t1 = this._monster;
         state = new M.AwakeState();
@@ -24232,7 +24219,7 @@
   }], ["", "package:hauberk/src/ui/effect.dart",, K, {
     "^": "",
     addEffects: function(effects, $event) {
-      var t1, t2, i, theta, radius, t3, numParticles, t4, line;
+      var t1, t2, t3, i, theta, radius, numParticles, t4, line;
       H.assertSubtype(effects, "$isList", [K.Effect], "$asList");
       switch ($event.type) {
         case C.EventType_pause:
@@ -24248,10 +24235,11 @@
           break;
         case C.EventType_hit:
           t1 = $event.actor;
-          t2 = t1._health;
-          if (typeof t2 !== "number")
-            return H.iae(t2);
-          C.JSArray_methods.add$1(effects, new K.HitEffect(t1, C.JSInt_methods.$tdiv(10 * t2, t1.get$maxHealth()), 0));
+          t2 = $event.element;
+          t3 = H.intTypeCast($event.other);
+          if (typeof t3 !== "number")
+            return t3.$div();
+          C.JSArray_methods.add$1(effects, new K.DamageEffect(t1, t2, C.JSNumber_methods.ceil$0(Math.sqrt(t3 / 5)), 0));
           break;
         case C.EventType_die:
           for (i = 0; i < 10; ++i) {
@@ -24404,25 +24392,20 @@
       },
       $isEffect: 1
     },
-    HitEffect: {
-      "^": "Object;actor,health,frame",
+    DamageEffect: {
+      "^": "Object;actor,element,_blinks,_effect$_frame",
       update$1: function(_, game) {
-        return this.frame++ < 23;
+        var t1 = this._blinks;
+        return ++this._effect$_frame < t1 * C.JSNumber_methods.round$0(K.lerpDouble(t1, 1, 10, 16, 8));
       },
       render$2: function(game, drawGlyph) {
-        var t1, $back, t2, t3;
+        var t1;
         H.functionTypeCheck(drawGlyph, {func: 1, ret: -1, args: [P.int, P.int, L.Glyph]});
-        t1 = C.JSInt_methods._tdivFast$1(this.frame, 6);
-        if (t1 >= 4)
-          return H.ioore(C.List_ukV, t1);
-        $back = C.List_ukV[t1];
-        t1 = this.actor._pos;
-        t2 = t1.x;
-        t1 = t1.y;
-        t3 = this.health;
-        if (t3 < 0 || t3 >= 11)
-          return H.ioore(" 123456789*", t3);
-        drawGlyph.call$3(t2, t1, L.Glyph$(" 123456789*"[t3], C.Color_0_0_0, $back));
+        t1 = this._blinks;
+        if (C.JSInt_methods.$mod(this._effect$_frame, C.JSNumber_methods.round$0(K.lerpDouble(t1, 1, 10, 16, 8))) < C.JSInt_methods._tdivFast$1(C.JSNumber_methods.round$0(K.lerpDouble(t1, 1, 10, 16, 8)), 2)) {
+          t1 = this.actor._pos;
+          drawGlyph.call$3(t1.x, t1.y, L.Glyph$("*", B.elementColor(this.element), null));
+        }
       },
       $isEffect: 1
     },
@@ -24448,7 +24431,7 @@
         return this.life-- > 0;
       },
       render$2: function(game, drawGlyph) {
-        H.functionTypeCheck(drawGlyph, {func: 1, ret: -1, args: [P.int, P.int, L.Glyph]}).call$3(J.toInt$0$n(this.x), C.JSNumber_methods.toInt$0(this.y), L.Glyph$("*", this.color, null));
+        H.functionTypeCheck(drawGlyph, {func: 1, ret: -1, args: [P.int, P.int, L.Glyph]}).call$3(J.toInt$0$n(this.x), C.JSNumber_methods.toInt$0(this.y), L.Glyph$("\u2022", this.color, null));
       },
       $isEffect: 1
     },
@@ -24809,7 +24792,7 @@
         var t1, t2;
         t1 = this.current;
         t2 = this.value;
-        if (t1 === t2)
+        if (t1 >= t2)
           return false;
         if (t2 > 200) {
           t1 += $.$get$rng().round$1(0, t2 / 200);
@@ -25024,31 +25007,31 @@
             action = null;
             break;
           case C.Input_nw:
-            action = new B.WalkAction(C.Direction_m1_m1, false);
+            action = new B.WalkAction(C.Direction_m1_m1);
             break;
           case C.Input_n:
-            action = new B.WalkAction(C.Direction_0_m1, false);
+            action = new B.WalkAction(C.Direction_0_m1);
             break;
           case C.Input_ne:
-            action = new B.WalkAction(C.Direction_1_m1, false);
+            action = new B.WalkAction(C.Direction_1_m1);
             break;
           case C.Input_w:
-            action = new B.WalkAction(C.Direction_m1_0, false);
+            action = new B.WalkAction(C.Direction_m1_0);
             break;
           case C.Input_ok:
-            action = new B.WalkAction(C.Direction_0_0, false);
+            action = new B.WalkAction(C.Direction_0_0);
             break;
           case C.Input_e:
-            action = new B.WalkAction(C.Direction_1_0, false);
+            action = new B.WalkAction(C.Direction_1_0);
             break;
           case C.Input_sw:
-            action = new B.WalkAction(C.Direction_m1_1, false);
+            action = new B.WalkAction(C.Direction_m1_1);
             break;
           case C.Input_s:
-            action = new B.WalkAction(C.Direction_0_1, false);
+            action = new B.WalkAction(C.Direction_0_1);
             break;
           case C.Input_se:
-            action = new B.WalkAction(C.Direction_1_1, false);
+            action = new B.WalkAction(C.Direction_1_1);
             break;
           case C.Input_runNW:
             this.game.hero._behavior = new X.RunBehavior(true, C.Direction_m1_m1);
@@ -25646,7 +25629,7 @@
           t6 = t1._table;
           switch (t3.type) {
             case C.LogType_message:
-              color = C.Color_132_126_135;
+              color = C.Color_226_223_240;
               break;
             case C.LogType_error:
               color = C.Color_204_35_57;
@@ -30858,7 +30841,7 @@
       t5._destroyChance.$indexSet(0, t3, 12);
       t5._fuel = 8;
       R.category(246, null, null).tag$1(0, "equipment/armor/body");
-      t5 = R.item("Cloth Shirt", 2, C.Color_189_144_108, 0.5, 40);
+      t5 = R.item("Cloth Shirt", 2, C.Color_226_223_240, 0.5, 40);
       t5._armor = 3;
       t5._weight = null;
       t5._destroyChance.$indexSet(0, t3, 15);
@@ -32351,7 +32334,6 @@
   C.TakeFrom_2 = new Z.TakeFrom(2, "TakeFrom.random");
   C.List_swd = H.setRuntimeTypeInfo(Isolate.makeConstantList([C.TakeFrom_0, C.TakeFrom_1, C.TakeFrom_2]), [Z.TakeFrom]);
   C.List_tBY = H.setRuntimeTypeInfo(Isolate.makeConstantList(["weapon", "ring", "necklace", "body", "cloak", "shield", "helm", "gloves", "boots"]), [P.String]);
-  C.List_ukV = H.setRuntimeTypeInfo(Isolate.makeConstantList([C.Color_255_122_105, C.Color_204_35_57, C.Color_64_31_36, C.Color_0_0_0]), [L.Color]);
   C.List_wSV = H.setRuntimeTypeInfo(Isolate.makeConstantList(["bind", "if", "ref", "repeat", "syntax"]), [P.String]);
   C.List_yrN = H.setRuntimeTypeInfo(Isolate.makeConstantList(["A::href", "AREA::href", "BLOCKQUOTE::cite", "BODY::background", "COMMAND::icon", "DEL::cite", "FORM::action", "IMG::src", "INPUT::src", "INS::cite", "Q::cite", "VIDEO::poster"]), [P.String]);
   C.Stat_Strength = new D.Stat("Strength");
