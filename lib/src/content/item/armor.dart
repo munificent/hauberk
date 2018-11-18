@@ -33,7 +33,7 @@ void bodyArmor() {
   // Soft armor.
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body");
-  item("Cloth Shirt", 2, sandal, frequency: 0.5, price: 40)
+  item("Cloth Shirt", 2, ash, frequency: 0.5, price: 40)
     ..armor(3)
     ..destroy(Elements.fire, chance: 15, fuel: 4);
   item("Leather Shirt", 5, persimmon, frequency: 0.5, price: 90)
