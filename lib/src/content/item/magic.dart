@@ -1,9 +1,7 @@
 import 'package:malison/malison.dart';
 
 import '../../hues.dart';
-import '../action/condition.dart';
 import '../action/detection.dart';
-import '../action/teleport.dart';
 import '../elements.dart';
 import 'builder.dart';
 
@@ -65,11 +63,11 @@ void potions() {
     ..toss(damage: 1, range: 6, breakage: 100)
     ..destroy(Elements.cold, chance: 20);
   item("Potion[s] of Quickness", 3, lima, frequency: 0.3, price: 25)
-    ..use(() => HasteAction(20, 1));
+    ..haste(20, 1);
   item("Potion[s] of Alacrity", 18, peaGreen, frequency: 0.3, price: 60)
-    ..use(() => HasteAction(30, 2));
+    ..haste(30, 2);
   item("Potion[s] of Speed", 34, sherwood, frequency: 0.25, price: 150)
-    ..use(() => HasteAction(40, 3));
+    ..haste(40, 3);
 
   // dram, draught, elixir, philter
 
@@ -114,13 +112,13 @@ void scrolls() {
     ..toss(damage: 1, range: 3, breakage: 75)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
   item("Scroll[s] of Sidestepping", 2, lilac, frequency: 0.5, price: 16)
-    ..use(() => TeleportAction(6));
+    ..teleport(6);
   item("Scroll[s] of Phasing", 6, violet, frequency: 0.3, price: 28)
-    ..use(() => TeleportAction(12));
+    ..teleport(12);
   item("Scroll[s] of Teleportation", 15, indigo, frequency: 0.3, price: 52)
-    ..use(() => TeleportAction(24));
+    ..teleport(24);
   item("Scroll[s] of Disappearing", 26, ultramarine, frequency: 0.3, price: 74)
-    ..use(() => TeleportAction(48));
+    ..teleport(48);
 
   // Detection.
   category(CharCode.latinSmallLetterAWithDiaeresis, stack: 20)

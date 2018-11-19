@@ -202,6 +202,13 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     y++;
   }
 
+  writeText(String text) {
+    for (var line in Log.wordWrap(terminal.width - 2, text)) {
+      terminal.writeAt(1, y, line, UIHue.text);
+      y++;
+    }
+  }
+
   // TODO: Handle armor that gives attack bonuses even though the item
   // itself has no attack.
   if (item.attack != null) {
@@ -257,26 +264,30 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
 
   // TODO: Show spells for spellbooks.
 
-  writeSection("Resistances");
-  var x = 1;
-  for (var element in Elements.all) {
-    if (element == Element.none) continue;
-    var resistance = item.resistance(element);
-    writeBonus(x - 1, y, resistance);
-    terminal.writeAt(x, y + 1, element.abbreviation,
-        resistance == 0 ? UIHue.disabled : elementColor(element));
-    x += 3;
+  if (item.canEquip) {
+    writeSection("Resistances");
+    var x = 1;
+    for (var element in Elements.all) {
+      if (element == Element.none) continue;
+      var resistance = item.resistance(element);
+      writeBonus(x - 1, y, resistance);
+      terminal.writeAt(x, y + 1, element.abbreviation,
+          resistance == 0 ? UIHue.disabled : elementColor(element));
+      x += 3;
+    }
+    y += 2;
   }
-  y += 2;
 
-  var description = <String>[];
-
-  // TODO: General description.
-  // TODO: Equip slot.
-  // TODO: Use.
+  if (item.canUse) {
+    writeSection("Use");
+    writeText(item.type.use.description);
+  }
 
   writeSection("Description");
 
+  var description = <String>[];
+  // TODO: General description.
+  // TODO: Equip slot.
   for (var stat in Stat.all) {
     var bonus = 0;
     if (item.prefix != null) bonus += item.prefix.statBonus(stat);
@@ -316,10 +327,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     description.add("It can be destroyed by ${element.name.toLowerCase()}.");
   }
 
-  for (var line in Log.wordWrap(terminal.width - 2, description.join(" "))) {
-    terminal.writeAt(1, y, line, UIHue.text);
-    y++;
-  }
+  writeText(description.join(" "));
 
   // TODO: Max stack size?
 }

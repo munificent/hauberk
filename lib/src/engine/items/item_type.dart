@@ -7,12 +7,18 @@ import '../core/log.dart';
 import '../hero/skill.dart';
 import 'item.dart';
 
-typedef Action ItemUse();
 typedef Action TossItemUse(Vec pos);
 typedef void AddItem(Item item);
 
 abstract class Drop {
   void spawnDrop(int depth, AddItem addItem);
+}
+
+class ItemUse {
+  final String description;
+  final Action Function() createAction;
+
+  ItemUse(this.description, this.createAction);
 }
 
 /// Tracks information about a tossable [ItemType].

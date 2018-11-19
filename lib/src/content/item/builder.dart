@@ -9,6 +9,7 @@ import '../action/heal.dart';
 import '../action/illuminate.dart';
 import '../action/mapping.dart';
 import '../action/ray.dart';
+import '../action/teleport.dart';
 import '../skill/skills.dart';
 import 'affixes.dart';
 import 'items.dart';
@@ -192,38 +193,73 @@ class _ItemBuilder extends _BaseBuilder {
     _heft = heft;
   }
 
-  void use(ItemUse use) {
-    _use = use;
+  void use(String description, Action Function() createAction) {
+    _use = ItemUse(description, createAction);
   }
 
   void food(int amount) {
-    use(() => EatAction(amount));
+    use("Provides $amount turns of food.", () => EatAction(amount));
   }
 
   void detection(List<DetectType> types, {int range}) {
-    use(() => DetectAction(types, range));
+    // TODO: Hokey. Do something more general if more DetectTypes are added.
+    var typeDescription = "exits and items";
+    if (types.length == 1) {
+      if (types[0] == DetectType.exit) {
+        typeDescription = "exits";
+      } else {
+        typeDescription = "items";
+      }
+    }
+
+    use("Detects $typeDescription up to $range steps away.",
+        () => DetectAction(types, range));
   }
 
   void resistSalve(Element element) {
-    use(() => ResistAction(40, element));
+    use("Grantes resistance to $element for 40 turns.",
+        () => ResistAction(40, element));
   }
 
   void mapping(int distance, {bool illuminate}) {
-    use(() => MappingAction(distance, illuminate: illuminate));
+    illuminate ??= false;
+
+    var description =
+        "Imparts knowledge of the dungeon up to $distance steps from the hero.";
+    if (illuminate) {
+      description += " Illuminates the dungeon.";
+    }
+
+    use(description, () => MappingAction(distance, illuminate: illuminate));
+  }
+
+  void haste(int duration, int amount) {
+    use("Raises speed by $amount for $duration turns.",
+        () => HasteAction(amount, duration));
+  }
+
+  void teleport(int distance) {
+    use("Attempts to teleport up to $distance steps away.",
+        () => TeleportAction(distance));
   }
 
   // TODO: Take list of conditions to cure?
   void heal(int amount, {bool curePoison = false}) {
-    use(() => HealAction(amount, curePoison: curePoison));
+    use("Instantly heals $amount lost health.",
+        () => HealAction(amount, curePoison: curePoison));
   }
 
   /// Sets a use and toss use that creates an expanding ring of elemental
   /// damage.
   void ball(Element element, String noun, String verb, int damage,
       {int range}) {
-    var attack = Attack(Noun(noun), verb, damage, range ?? 3, element);
+    range ??= 3;
+    var attack = Attack(Noun(noun), verb, damage, range, element);
 
-    use(() => RingSelfAction(attack));
+    use(
+        "Unleashes a ball of $element that inflicts $damage damage out to "
+        "$range steps from the hero.",
+        () => RingSelfAction(attack));
     tossUse((pos) => RingFromAction(attack, pos));
   }
 
@@ -235,14 +271,18 @@ class _ItemBuilder extends _BaseBuilder {
     var motility = Motility.walk;
     if (fly) motility |= Motility.fly;
 
-    use(() => FlowSelfAction(attack, motility));
+    use("Unleashes a flow of $element that inflicts $damage damage out to "
+        "$range steps from the hero.", () => FlowSelfAction(attack, motility));
     tossUse((pos) => FlowFromAction(attack, pos, motility));
   }
 
   void lightSource({int level, int range}) {
     _emanation = level;
 
-    if (range != null) use(() => IlluminateSelfAction(range, level + 1));
+    if (range != null) {
+      use("Illuminates out to a range of $range.",
+          () => IlluminateSelfAction(range, level + 1));
+    }
   }
 }
 

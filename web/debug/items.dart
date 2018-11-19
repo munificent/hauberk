@@ -75,7 +75,7 @@ main() {
     if (item.use == null) {
       text.write('<td>&mdash;</td>');
     } else {
-      text.write('<td>${item.use().runtimeType}</td>');
+      text.write('<td>${item.use.description}</td>');
     }
 
     if (item.toss == null) {

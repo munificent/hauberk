@@ -29,7 +29,7 @@ class Item implements Comparable<Item>, Noun {
     // TODO: Some kinds of usable items shouldn't be consumed, like rods in
     // Angband.
     _count--;
-    return type.use();
+    return type.use.createAction();
   }
 
   /// Whether the item can be thrown or not.
@@ -151,7 +151,7 @@ class Item implements Comparable<Item>, Noun {
     // TODO: Range modifier.
   }
 
-  /// Gets the resistance this item confers to [element].
+  /// Gets the resistance this item confers to [element] when equipped.
   int resistance(Element element) {
     var resistance = 0;
 
