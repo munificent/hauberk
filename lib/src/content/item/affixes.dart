@@ -29,7 +29,7 @@ class Affixes {
     // This generates a curve that starts out at 1% and slowly ramps upwards.
     var chance = 1 + 0.006 * depth * depth + 0.2 * depth;
 
-    if (!rng.percent(chance.ceil())) return Item(itemType, 1);
+    if (rng.float(100.0) > chance) return Item(itemType, 1);
 
     // Give items a chance to boost their effective level when choosing a
     // affixes.
@@ -38,19 +38,18 @@ class Affixes {
     var prefix = _chooseAffix(prefixes, itemType, affixDepth);
     var suffix = _chooseAffix(suffixes, itemType, affixDepth);
 
-    // Decide if the item may have just a prefix, just a suffix, or (rarely)
-    // both. This is mainly to make dual-affix items less common since they
-    // look a bit funny.
-    switch (rng.range(5)) {
-      case 0:
-      case 1:
-        return Item(itemType, 1, prefix, null);
-      case 2:
-      case 3:
-        return Item(itemType, 1, null, suffix);
-      default:
-        return Item(itemType, 1, prefix, suffix);
+    // If the item has both a prefix and suffix, only one tends to win. This
+    // makes dual-affix items rarer since they are more powerful (they only
+    // take a single equipment slot) and also look kind of funny.
+    if (prefix != null && suffix != null && !rng.oneIn(5)) {
+      if (rng.oneIn(2)) {
+        prefix = null;
+      } else {
+        suffix = null;
+      }
     }
+
+    return Item(itemType, 1, prefix, suffix);
   }
 
   static Affix find(String name) {

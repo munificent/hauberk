@@ -98,11 +98,17 @@ class Item implements Comparable<Item>, Noun {
   /// How much the one unit of the item can be bought and sold for.
   int get price {
     var price = type.price.toDouble();
-    if (prefix != null) price *= prefix.priceScale;
-    if (suffix != null) price *= suffix.priceScale;
 
-    if (prefix != null) price += prefix.priceBonus;
-    if (suffix != null) price += suffix.priceBonus;
+    // If an item has both a prefix and a suffix, it's even more expensive
+    // since that makes the item more powerful.
+    var affixScale = 1.0;
+    if (prefix != null && suffix != null) affixScale = 1.5;
+
+    if (prefix != null) price *= prefix.priceScale * affixScale;
+    if (suffix != null) price *= suffix.priceScale * affixScale;
+
+    if (prefix != null) price += prefix.priceBonus * affixScale;
+    if (suffix != null) price += suffix.priceBonus * affixScale;
 
     return price.ceil();
   }
