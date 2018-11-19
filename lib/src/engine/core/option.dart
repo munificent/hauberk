@@ -24,7 +24,4 @@ class Option {
 
   /// The maximum number of items the hero's crucible can contain.
   static const crucibleCapacity = 8;
-
-  /// The maximum number of items a shop can contain.
-  static const shopCapacity = 26;
 }

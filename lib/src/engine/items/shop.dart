@@ -4,6 +4,9 @@ import '../../engine.dart';
 import 'inventory.dart';
 
 class Shop {
+  /// The maximum number of items a shop can contain.
+  static const capacity = 26;
+
   final Drop _drop;
 
   final String name;
@@ -11,33 +14,42 @@ class Shop {
   Shop(this.name, this._drop);
 
   Inventory create() {
-    var inventory = Inventory(ItemLocation.shop(name), Option.shopCapacity);
+    var inventory = Inventory(ItemLocation.shop(name), capacity);
     update(inventory);
     return inventory;
   }
 
   Inventory load(Iterable<Item> items) {
-    return Inventory(ItemLocation.shop(name), Option.shopCapacity, items);
+    return Inventory(ItemLocation.shop(name), capacity, items);
   }
 
   void update(Inventory inventory) {
-    // Decide how many items we want to have.
-    var desiredSize =
-        rng.float(Option.shopCapacity * 0.3, Option.shopCapacity * 0.7).toInt();
+    // Remove some.
+    var remainCount = rng.float(capacity * 0.2, capacity * 0.4).toInt();
 
-    // If there are too many, delete some.
-    while (inventory.length > desiredSize) {
+    while (inventory.length > remainCount) {
       inventory.removeAt(rng.range(inventory.length));
     }
 
-    // If there aren't enough, add some.
-    while (inventory.length < desiredSize) {
+    // Add some.
+    var count = rng.float(capacity * 0.3, capacity * 0.7).toInt();
+
+    while (inventory.length < count) {
       // Try to add an item.
       _drop.spawnDrop(1, inventory.tryAdd);
 
-      // TODO: Make this smarter. Don't have more than one full stack of any
-      // kind of item. Don't have more than a couple identical pieces of
-      // equipment.
+      // Remove duplicates.
+      for (var i = 1; i < inventory.length; i++) {
+        var previous = inventory[i - 1];
+        var item = inventory[i];
+
+        if (previous.type == item.type &&
+            previous.prefix == item.prefix &&
+            previous.suffix == item.suffix) {
+          inventory.removeAt(i);
+          i--;
+        }
+      }
     }
   }
 }
