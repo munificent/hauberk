@@ -238,10 +238,6 @@ class Hero extends Actor {
     // TODO: Apply skills.
   }
 
-  void defend() {
-    disturb();
-  }
-
   // TODO: If class or race can affect this, add it in.
   int onGetResistance(Element element) => save.equipmentResistance(element);
 

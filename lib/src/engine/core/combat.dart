@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
+import '../hero/hero.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'game.dart';
@@ -128,6 +129,9 @@ class Hit {
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
     // attacker ("the wolf bites").
     var attackNoun = _attack.noun ?? attacker;
+
+    // Don't sleep through being attacked.
+    if (defender is Hero) defender.disturb();
 
     // See if any defense blocks the attack.
     // TODO: Instead of a single "canMiss" flag, consider having each defense
