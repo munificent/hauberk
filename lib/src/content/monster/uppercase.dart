@@ -15,8 +15,7 @@ void birds() {
     ..count(3, 6);
   breed("crow", 4, steelGray, 9, speed: 2, meander: 30)
     ..attack("bite[s]", 5)
-    ..drop("treasure", percent: 10)
-    ..drop("Black Feather", percent: 25);
+    ..drop("treasure", percent: 10);
   describe(""""What harm can a stupid little crow do?" you think as it and its
       murderous friends dive towards your eyes, claws extended.""");
 
@@ -24,7 +23,6 @@ void birds() {
     ..attack("bite[s]", 5)
     ..attack("claw[s]", 4)
     ..drop("treasure", percent: 10)
-    ..drop("Black Feather", percent: 20)
     ..flags("protective");
   describe("""It's black eyes gleam with a malevolent intelligence.""");
 }

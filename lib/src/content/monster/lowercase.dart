@@ -54,20 +54,17 @@ void canines() {
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
     ..attack("bite[s]", 4)
-    ..howl(range: 6)
-    ..drop("Fur Pelt", percent: 20);
+    ..howl(range: 6);
 
   breed("wild dog", 4, gunsmoke, 20)
     ..count(4)
     ..attack("bite[s]", 6)
-    ..howl(range: 8)
-    ..drop("Fur Pelt", percent: 20);
+    ..howl(range: 8);
 
   breed("mongrel", 7, carrot, 28)
     ..count(2, 5)
     ..attack("bite[s]", 8)
-    ..howl(range: 10)
-    ..drop("Fur Pelt", percent: 20);
+    ..howl(range: 10);
 
   breed("wolf", 26, ash, 60)
     ..count(3, 6)
