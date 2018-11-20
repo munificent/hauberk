@@ -54,7 +54,7 @@ class TossLosAction extends LosAction {
 
   TossLosAction(Vec target, this._item, this._hit) : super(target);
 
-  void onStep(Vec pos) {
+  void onStep(Vec previous, Vec pos) {
     addEvent(EventType.toss, pos: pos, other: _item);
   }
 

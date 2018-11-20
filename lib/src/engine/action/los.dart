@@ -33,7 +33,7 @@ abstract class LosAction extends Action {
       return succeed();
     }
 
-    onStep(pos);
+    onStep(_lastPos, pos);
 
     // See if there is an actor there.
     var target = game.stage.actorAt(pos);
@@ -50,7 +50,7 @@ abstract class LosAction extends Action {
   }
 
   /// Override this to handle the LOS reaching an open tile.
-  void onStep(Vec pos);
+  void onStep(Vec previous, Vec pos);
 
   /// Override this to handle the LOS hitting an [Actor].
   ///

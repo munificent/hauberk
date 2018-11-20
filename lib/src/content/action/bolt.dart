@@ -16,9 +16,12 @@ class BoltAction extends LosAction {
         _range = range,
         super(target);
 
-  void onStep(Vec pos) {
+  void onStep(Vec previous, Vec pos) {
     // TODO: Include direction.
-    addEvent(EventType.bolt, element: _hit.element, pos: pos);
+    addEvent(EventType.bolt,
+        element: _hit.element,
+        pos: pos,
+        dir: (pos - previous).nearestDirection);
   }
 
   bool onHitActor(Vec pos, Actor target) {

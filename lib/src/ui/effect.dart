@@ -30,8 +30,26 @@ void addEffects(List<Effect> effects, Event event) {
       break;
 
     case EventType.bolt:
+      // TODO: Assumes all none-element bolts are arrows. Do something better?
+      if (event.element == Element.none) {
+        var char = const {
+          Direction.none: "•",
+          Direction.n: "|",
+          Direction.ne: "/",
+          Direction.e: "-",
+          Direction.se: "\\",
+          Direction.s: "|",
+          Direction.sw: "/",
+          Direction.w: "-",
+          Direction.nw: "\\",
+        }[event.dir];
+        effects.add(FrameEffect(event.pos, char, sandal, life: 2));
+      } else {
+        effects.add(ElementEffect(event.pos, event.element));
+      }
+      break;
+
     case EventType.cone:
-      // TODO: Use something better for arrows.
       effects.add(ElementEffect(event.pos, event.element));
       break;
 
