@@ -246,7 +246,7 @@ class GameScreen extends Screen<Input> {
       case Input.fire:
         if (_lastSkill is TargetSkill) {
           var targetSkill = _lastSkill as TargetSkill;
-          if (currentTarget != null) {
+          if (currentTargetActor != null) {
             // If we still have a visible target, use it.
             _fireAtTarget(_lastSkill as TargetSkill);
           } else {
