@@ -98,8 +98,7 @@ class PickUpAction extends Action {
           item.clone(result.remaining));
     }
 
-    hero.gainItemSkills(item);
-    hero.refreshProperties();
+    hero.pickUp(item);
     return ActionResult.success;
   }
 }
@@ -231,7 +230,12 @@ class UseAction extends ItemAction {
       countChanged();
     }
 
+    // Using it from the ground counts as picking it up.
+    if (location == ItemLocation.onGround) hero.pickUp(item);
+
+    hero.lore.useItem(item);
     // TODO: If using an item can change hero properties, refresh them.
+
     return alternate(useAction);
   }
 }

@@ -4,39 +4,51 @@ import 'package:malison/malison_web.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'hero_equipment_dialog.dart';
-import 'hero_lore_dialog.dart';
+import 'hero_item_lore_dialog.dart';
+import 'hero_monster_lore_dialog.dart';
 import 'hero_resistances_dialog.dart';
 import 'input.dart';
 
 abstract class HeroInfoDialog extends Screen<Input> {
+  static final List<HeroInfoDialog> _screens = [];
+
   final Content content;
   final HeroSave hero;
-  HeroInfoDialog _nextScreen;
 
   factory HeroInfoDialog(Content content, HeroSave hero) {
-    var screens = [
-      HeroEquipmentDialog(content, hero),
-      HeroResistancesDialog(content, hero),
-      HeroLoreDialog(content, hero)
-    ];
-
-    for (var i = 0; i < screens.length; i++) {
-      screens[i]._nextScreen = screens[(i + 1) % screens.length];
+    if (_screens.isEmpty) {
+      _screens.addAll([
+        HeroEquipmentDialog(content, hero),
+        HeroResistancesDialog(content, hero),
+        HeroMonsterLoreDialog(content, hero),
+        HeroItemLoreDialog(content, hero)
+        // TODO: Affixes.
+      ]);
     }
 
-    return screens.first;
+    return _screens.first;
   }
 
   HeroInfoDialog.base(this.content, this.hero);
 
   String get name;
+
   String get extraHelp => null;
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
-    if (shift || alt) return false;
+    if (alt) return false;
 
     if (keyCode == KeyCode.tab) {
-      ui.goTo(_nextScreen);
+      var index = _screens.indexOf(this);
+
+      if (shift) {
+        index += _screens.length - 1;
+      } else {
+        index++;
+      }
+
+      var screen = _screens[index % _screens.length];
+      ui.goTo(screen);
       return true;
     }
 
@@ -55,7 +67,8 @@ abstract class HeroInfoDialog extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    var helpText = '[Esc] Exit, [Tab] View ${_nextScreen.name}';
+    var nextScreen = _screens[(_screens.indexOf(this) + 1) % _screens.length];
+    var helpText = '[Esc] Exit, [Tab] View ${nextScreen.name}';
     if (extraHelp != null) {
       helpText += ", $extraHelp";
     }

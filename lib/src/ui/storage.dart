@@ -198,11 +198,22 @@ class Storage {
   }
 
   Lore _loadLore(Map<String, dynamic> data) {
+    var seenBreeds = <Breed, int>{};
     var slain = <Breed, int>{};
-    var seen = <Breed, int>{};
+    var foundItems = <ItemType, int>{};
+    var foundAffixes = <Affix, int>{};
+    var usedItems = <ItemType, int>{};
 
     // TODO: Older saves before lore.
     if (data != null) {
+      var seenMap = data['seen'] as Map<String, dynamic>;
+      if (seenMap != null) {
+        seenMap.forEach((breedName, count) {
+          var breed = content.tryFindBreed(breedName);
+          if (breed != null) seenBreeds[breed] = count as int;
+        });
+      }
+
       var slainMap = data['slain'] as Map<String, dynamic>;
       if (slainMap != null) {
         slainMap.forEach((breedName, count) {
@@ -211,16 +222,32 @@ class Storage {
         });
       }
 
-      var seenMap = data['seen'] as Map<String, dynamic>;
-      if (seenMap != null) {
-        seenMap.forEach((breedName, count) {
-          var breed = content.tryFindBreed(breedName);
-          if (breed != null) seen[breed] = count as int;
+      var foundItemMap = data['foundItems'] as Map<String, dynamic>;
+      if (foundItemMap != null) {
+        foundItemMap.forEach((itemName, count) {
+          var itemType = content.tryFindItem(itemName);
+          if (itemType != null) foundItems[itemType] = count as int;
+        });
+      }
+
+      var foundAffixMap = data['foundAffixes'] as Map<String, dynamic>;
+      if (foundAffixMap != null) {
+        foundAffixMap.forEach((affixName, count) {
+          var affix = content.findAffix(affixName);
+          if (affix != null) foundAffixes[affix] = count as int;
+        });
+      }
+
+      var usedItemMap = data['usedItems'] as Map<String, dynamic>;
+      if (usedItemMap != null) {
+        usedItemMap.forEach((itemName, count) {
+          var itemType = content.tryFindItem(itemName);
+          if (itemType != null) usedItems[itemType] = count as int;
         });
       }
     }
 
-    return Lore.from(seen, slain);
+    return Lore.from(seenBreeds, slain, foundItems, foundAffixes, usedItems);
   }
 
   void save() {
@@ -259,7 +286,7 @@ class Storage {
       var slain = {};
       var lore = {'seen': seen, 'slain': slain};
       for (var breed in content.breeds) {
-        var count = hero.lore.seen(breed);
+        var count = hero.lore.seenBreed(breed);
         if (count != 0) seen[breed.name] = count;
 
         count = hero.lore.slain(breed);

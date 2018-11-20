@@ -6,7 +6,7 @@ import 'draw.dart';
 import 'input.dart';
 import 'hero_info_dialog.dart';
 
-class HeroLoreDialog extends HeroInfoDialog {
+class HeroMonsterLoreDialog extends HeroInfoDialog {
   static const _rowCount = 11;
 
   final List<Breed> _breeds = [];
@@ -14,7 +14,8 @@ class HeroLoreDialog extends HeroInfoDialog {
   int _selection = 0;
   int _scroll = 0;
 
-  HeroLoreDialog(Content content, HeroSave hero) : super.base(content, hero) {
+  HeroMonsterLoreDialog(Content content, HeroSave hero)
+      : super.base(content, hero) {
     _listBreeds();
   }
 
@@ -23,9 +24,7 @@ class HeroLoreDialog extends HeroInfoDialog {
   String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
-    if (shift || alt) return false;
-
-    if (keyCode == KeyCode.s) {
+    if (!shift && !alt && keyCode == KeyCode.s) {
       _sort = _sort.next;
       _listBreeds();
       dirty();
@@ -87,7 +86,7 @@ class HeroLoreDialog extends HeroInfoDialog {
         terminal.writeAt(1, y, "►", fore);
       }
 
-      var seen = hero.lore.seen(breed);
+      var seen = hero.lore.seenBreed(breed);
       var slain = hero.lore.slain(breed);
       if (seen > 0) {
         terminal.drawGlyph(0, y, breed.appearance as Glyph);
@@ -120,7 +119,7 @@ class HeroLoreDialog extends HeroInfoDialog {
     terminal.writeAt(1, 1, "╡ ╞", steelGray);
     terminal.writeAt(1, 2, "└─┘", steelGray);
 
-    var seen = hero.lore.seen(breed);
+    var seen = hero.lore.seenBreed(breed);
     if (seen == 0) {
       terminal.writeAt(
           1, 3, "You have not seen this breed yet.", UIHue.disabled);
@@ -176,7 +175,7 @@ class HeroLoreDialog extends HeroInfoDialog {
         sentences.add("You have seen but not slain this unique $noun.");
       }
     } else {
-      sentences.add("You have seen ${lore.seen(breed)} and slain "
+      sentences.add("You have seen ${lore.seenBreed(breed)} and slain "
           "${lore.slain(breed)} of this ${noun}.");
     }
 

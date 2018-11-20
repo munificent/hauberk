@@ -106,7 +106,7 @@ class Hero extends Actor {
     // TODO: Doing this here is hacky. It only really comes into play for
     // starting items.
     for (var item in inventory) {
-      gainItemSkills(item);
+      _gainItemSkills(item);
     }
   }
 
@@ -145,7 +145,7 @@ class Hero extends Actor {
   // lore. Then the skill levels can be stored using Property and refreshed
   // like other properties.
   /// Discover or acquire any skills associated with [item].
-  void gainItemSkills(Item item) {
+  void _gainItemSkills(Item item) {
     for (var skill in item.type.skills) {
       if (save.heroClass.proficiency(skill) != 0.0 && skills.discover(skill)) {
         // See if the hero can immediately use it.
@@ -338,11 +338,11 @@ class Hero extends Actor {
       // TODO: If we want to give the hero experience for seeing a monster too,
       // (so that sneak play-style still lets the player gain levels), do that
       // here.
-      lore.see(monster.breed);
+      lore.seeBreed(monster.breed);
 
       // If this is the first time we've seen this breed, see if that unlocks
       // a slaying skill for it.
-      if (lore.seen(monster.breed) == 1) {
+      if (lore.seenBreed(monster.breed) == 1) {
         // TODO: Would be better to do skills.discovered, but right now this also
         // discovers BattleHardening.
         for (var skill in game.content.skills) {
@@ -388,6 +388,20 @@ class Hero extends Actor {
 
     // See if any skills changed. (Gaining intellect learns spells.)
     _refreshSkills();
+  }
+
+  /// Called when the hero holds an item.
+  ///
+  /// This can be in response to picking it up, or equipping or using it
+  /// straight from the ground.
+  void pickUp(Item item) {
+    // TODO: If the user repeatedly picks up and drops the same item, it gets
+    // counted every time. Maybe want to put a (serialized) flag on items for
+    // whether they have been picked up or not.
+    lore.findItem(item);
+
+    _gainItemSkills(item);
+    refreshProperties();
   }
 
   /// See if any known skills have leveled up.
