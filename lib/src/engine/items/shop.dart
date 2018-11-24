@@ -32,9 +32,10 @@ class Shop {
     }
 
     // Add some.
+    var tries = 0;
     var count = rng.float(capacity * 0.3, capacity * 0.7).toInt();
 
-    while (inventory.length < count) {
+    while (inventory.length < count && tries++ < 100) {
       // Try to add an item.
       _drop.spawnDrop(1, inventory.tryAdd);
 
