@@ -106,7 +106,7 @@ nav a {
   text-decoration: none;
 }
 
-pre {
+pre, code.term {
   font: 14px/14px monospace;
   background-color: #000;
   letter-spacing: 1px;

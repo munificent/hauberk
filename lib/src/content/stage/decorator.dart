@@ -359,7 +359,7 @@ class Decorator {
 
     // TODO: Tune this. Maybe pick a total gold value x number of open tiles
     // and generate items until that is reached?
-    var itemCount = 50 + _architect.depth;
+    var itemCount = 30 + _architect.depth;
     var items = 0;
 
     while (items < itemCount) {

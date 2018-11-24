@@ -6,7 +6,6 @@ import 'package:piecemeal/piecemeal.dart';
 import 'package:hauberk/src/content/item/items.dart';
 
 main() {
-  var text = StringBuffer();
   Items.initialize();
   var items = Items.types.all.toList();
 
@@ -21,86 +20,126 @@ main() {
     return a.depth.compareTo(b.depth);
   });
 
-  text.write('''
-    <thead>
-    <tr>
-      <td colspan="2">Item</td>
-      <td>Depth</td>
-      <td>Stack</td>
-      <td>Price</td>
-      <td>Equip.</td>
-      <td>Weapon</td>
-      <td>Attack</td>
-      <td>Armor</td>
-      <td>Weight</td>
-      <td>Heft</td>
-      <td>Use</td>
-      <td>Toss</td>
-    </tr>
-    </thead>
-    <tbody>
-    ''');
+  var table = Table();
+  table.column("Item");
+  table.column("Depth");
+  table.column("Stack");
+  table.column("Price");
+  table.column("Equip.");
+  table.column("Weapon");
+  table.column("Attack");
+  table.column("Armor", defaultValue: 0);
+  table.column("Weight", defaultValue: 0);
+  table.column("Heft", defaultValue: 0);
+  table.column("Toss");
+  table.column("Use");
 
   for (var item in items) {
+    var cells = <Object>[];
+
     var glyph = item.appearance as Glyph;
-    text.write('''
-        <tr>
-          <td>
-<pre><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
+    cells.add('''
+<code class="term"><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
       glyph.char
-    ])}</span></pre>
-          </td>
-          <td>${item.name}</td>
-        ''');
+    ])}</span></code>&nbsp;${item.name}
+    ''');
 
-    writeCell(Object value, Object defaultValue) {
-      if (value == defaultValue) {
-        text.write('<td>&mdash;</td>');
-      } else {
-        text.write('<td>$value</td>');
-      }
-    }
-
-    writeCell(item.depth, null);
-    writeCell(item.maxStack, "none");
-    writeCell(item.price, "none");
-
-    writeCell(item.equipSlot, null);
-    writeCell(item.weaponType, null);
-    writeCell(item.attack, null);
-    writeCell(item.armor, 0);
-    writeCell(item.heft, 0);
-    writeCell(item.weight, 0);
-
-    if (item.use == null) {
-      text.write('<td>&mdash;</td>');
-    } else {
-      text.write('<td>${item.use.description}</td>');
-    }
+    cells.add(item.depth);
+    cells.add(item.maxStack);
+    cells.add(item.price);
+    cells.add(item.equipSlot);
+    cells.add(item.weaponType);
+    cells.add(item.attack);
+    cells.add(item.armor);
+    cells.add(item.weight);
+    cells.add(item.heft);
 
     if (item.toss == null) {
-      text.write('<td>&mdash;</td>');
+      cells.add(null);
     } else {
-      text.write('<td>${item.toss.attack}');
+      var toss = item.toss.attack.toString();
       if (item.toss.use != null) {
-        text.write(' ${item.toss.use(Vec.zero).runtimeType} ');
+        toss += ' ${item.toss.use(Vec.zero).runtimeType} ';
       }
 
       if (item.toss.breakage != 0) {
-        text.write(' ${item.toss.breakage}%');
+        toss += ' ${item.toss.breakage}%';
       }
 
-      text.write('</td>');
+      cells.add(toss);
     }
 
-    text.write('</tr>');
+    if (item.use == null) {
+      cells.add(null);
+    } else {
+      cells.add(item.use.description);
+    }
+
+    table.row(cells);
   }
-  text.write('</tbody>');
 
-  var validator = html.NodeValidatorBuilder.common();
-  validator.allowInlineStyles();
+  table.render("table");
+}
 
-  html
-      .querySelector('table')
-      .setInnerHtml(text.toString(), validator: validator);
+class Table {
+  final List<Column> _columns = [];
+  final List<Row> _rows = [];
+
+  void column(String name, {Object defaultValue}) {
+    _columns.add(Column(name, defaultValue));
+  }
+
+  void row(List<Object> cells) {
+    _rows.add(Row(cells));
+  }
+
+  render(String selector) {
+    var buffer = StringBuffer();
+
+    buffer.write('<thead>\n<tr>');
+
+    for (var column in _columns) {
+      buffer.write('<td>');
+      buffer.write(column.name);
+      buffer.writeln('</td>');
+    }
+
+    buffer.write('</tr>\n</thead>\n<tbody>');
+
+    for (var row in _rows) {
+      buffer.write('<tr>');
+      for (var cell in row._cells) {
+        buffer.write('<td>');
+        if (cell == null) {
+          buffer.write('&mdash;');
+        } else {
+          buffer.write(cell);
+        }
+        buffer.write('</td>');
+      }
+      buffer.write('</tr>');
+    }
+
+    buffer.write('</tbody>');
+
+    var validator = html.NodeValidatorBuilder.common();
+    validator.allowInlineStyles();
+
+    html
+        .querySelector(selector)
+        .setInnerHtml(buffer.toString(), validator: validator);
+  }
+}
+
+class Column {
+  final String name;
+  final Object defaultValue;
+
+  Column(this.name, this.defaultValue);
+}
+
+class Row {
+  final List<Object> _cells;
+
+  Row(this._cells);
 }
