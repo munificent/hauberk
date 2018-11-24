@@ -38,6 +38,8 @@ class Architect {
   final int depth;
   final Array2D<Architecture> _owners;
 
+  int _carvedTiles = 0;
+
   Architect(this.lore, this.stage, this.depth)
       : _owners = Array2D(stage.width, stage.height) {
     debugOwners = _owners;
@@ -121,6 +123,7 @@ class Architect {
     assert(stage.get(x, y).type == Tiles.unformed);
 
     stage.get(x, y).type = Tiles.open;
+    _carvedTiles++;
 
     // Claim all neighboring dry tiles too. This way the architecture can paint
     // the surrounding solid tiles however it wants.
@@ -424,6 +427,14 @@ abstract class Architecture {
   Region get region => _region;
 
   String get paintStyle => "rock";
+
+  /// Gets the ratio of carved tiles to carvable tiles.
+  ///
+  /// This tells you how much of the stage has been opened up by architectures.
+  double get carvedDensity {
+    var possible = (width - 2) * (height - 2);
+    return _architect._carvedTiles / possible;
+  }
 
   ArchitecturalStyle get style => _style;
 

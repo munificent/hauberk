@@ -1,5 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import '../tiles.dart';
 import 'architect.dart';
 import 'room.dart';
 
@@ -8,25 +9,21 @@ import 'room.dart';
 
 /// Places a number of random rooms.
 class Dungeon extends Architecture {
-  /// How many rooms it tries to place.
-  final int _rooms;
+  /// How much open space it tries to carve.
+  final double _density;
 
   String get paintStyle => "stone";
 
-  Dungeon({int rooms})
-      : _rooms = rooms ?? 50;
+  Dungeon({double density})
+      : _density = density ?? 0.3;
 
   Iterable<String> build() sync* {
-    // Randomize the number of rooms a bit.
-    var tries = rng.triangleInt(_rooms, _rooms ~/ 2);
-
-    // TODO: Number of rooms should take dungeon size and region into account.
-    // What we're really going for is a certain density of open tiles to create.
-
-    for (var i = 0; i < tries; i++) {
+    var failed = 0;
+    while (carvedDensity < _density && failed < 100) {
       var room = Room.create();
 
-      for (var j = 0; j < 400; j++) {
+      var placed = false;
+      for (var i = 0; i < 400; i++) {
         // TODO: This puts pretty hard boundaries around the region. Is there
         // a way to more softly distribute the rooms?
         var xMin = 1;
@@ -68,14 +65,20 @@ class Dungeon extends Architecture {
             break;
         }
 
+        // TODO: Instead of purely random, it would be good if it tried to
+        // place rooms as far from other rooms as possible to maximize passage
+        // length and more evenly distribute them.
         var x = rng.range(xMin, xMax);
         var y = rng.range(yMin, yMax);
 
         if (_tryPlaceRoom(room, x, y)) {
           yield "room";
+          placed = true;
           break;
         }
       }
+
+      if (!placed) failed++;
     }
   }
 

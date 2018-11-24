@@ -7,8 +7,8 @@ import 'blob.dart';
 
 /// Places a number of random blobs.
 class Catacomb extends Architecture {
-  /// How many chambers it tries to place.
-  final int _chambers;
+  /// How much open space it tries to carve.
+  final double _density;
 
   /// The minimum chamber size.
   final int _minSize;
@@ -16,19 +16,12 @@ class Catacomb extends Architecture {
   /// The maximum chamber size.
   final int _maxSize;
 
-  Catacomb({int chambers, int minSize, int maxSize})
-      : _chambers = chambers ?? 100,
+  Catacomb({double density, int minSize, int maxSize})
+      : _density = density ?? 0.3,
         _minSize = minSize ?? 8,
         _maxSize = maxSize ?? 32;
 
   Iterable<String> build() sync* {
-    // TODO: Number of chambers should take dungeon size and region into
-    // account. What we're really going for is a certain density of open tiles
-    // to create.
-
-    // Randomize the number of chambers a bit.
-    var tries = rng.triangleInt(_chambers, _chambers ~/ 2);
-
     // Don't try to make chambers bigger than the stage.
     var maxSize = _maxSize.toDouble();
     maxSize = math.min(maxSize, height.toDouble());
@@ -39,13 +32,15 @@ class Catacomb extends Architecture {
     var minSize = math.sqrt(_minSize);
     minSize = math.min(minSize, maxSize);
 
-    for (var i = 0; i < tries; i++) {
+    var failed = 0;
+    while (carvedDensity < _density && failed < 100) {
       // Square the size to skew the distribution so that larges ones are
       // rarer than smaller ones.
       var size = math.pow(rng.float(minSize, maxSize), 2.0).toInt();
       var cave = Blob.make(size);
 
-      for (var j = 0; j < 400; j++) {
+      var placed = false;
+      for (var i = 0; i < 400; i++) {
         // TODO: dungeon.dart has similar code for placing the starting room.
         // Unify.
         // TODO: This puts pretty hard boundaries around the region. Is there
@@ -57,7 +52,7 @@ class Catacomb extends Architecture {
 
         switch (region) {
           case Region.everywhere:
-            // Do nothing.
+          // Do nothing.
             break;
           case Region.n:
             yMax = height ~/ 2 - cave.height;
@@ -94,9 +89,12 @@ class Catacomb extends Architecture {
 
         if (_tryPlaceCave(cave, x, y)) {
           yield "cave";
+          placed = true;
           break;
         }
       }
+
+      if (!placed) failed++;
     }
   }
 
