@@ -135,19 +135,28 @@ class ResourceSet<T> {
     if (!includeParents) label += " (only)";
 
     return _runQuery(label, depth, (resource) {
-      var thisTag = goalTag;
-      var scale = 1.0;
+      // Include any resources that are directly tagged with a parent of the
+      // goal tag. So if the goal is "built/room/dungeon", a resource tagged
+      // "room" is considered as good as "dungeon".
+      for (var resourceTag in resource._tags) {
+        for (var thisTag = goalTag;
+            thisTag != null;
+            thisTag = thisTag.parent) {
+          print("look at parent $thisTag of $resourceTag for $goalTag");
+          if (thisTag == resourceTag) return 1.0;
+        }
+      }
 
-      // Walk up the tag chain, including parent tags.
-      while (thisTag != null) {
+      // Resources in sibling trees are included with lower probability based
+      // on how far their common ancestor is. So if the goal is
+      // "equipment/weapon/sword", then "equipment/weapon/dagger" has a 1/10
+      // chance, and "equipment/armor" has 1/100.
+      var scale = 1.0;
+      for (var thisTag = goalTag; thisTag != null; thisTag = thisTag.parent) {
         for (var resourceTag in resource._tags) {
           if (resourceTag.contains(thisTag)) return scale;
         }
 
-        if (!includeParents) break;
-
-        // Parent tags are less likely than the preferred tag.
-        thisTag = thisTag.parent;
         // TODO: Allow callers to tune this?
         scale /= 10.0;
       }
@@ -295,6 +304,11 @@ class _Tag<T> {
     }
 
     return false;
+  }
+
+  String toString() {
+    if (parent == null) return name;
+    return "$parent/$name";
   }
 }
 
