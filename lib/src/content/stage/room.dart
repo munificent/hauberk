@@ -5,21 +5,28 @@ import 'package:piecemeal/piecemeal.dart';
 /// Generates random rooms.
 class Room {
   static Array2D<RoomTile> create() {
+    // TODO: Instead of picking from these randomly, different architectural
+    // styles should prefer certain room shapes.
     // TODO: More room shapes:
-    // - Octangle (angled corners).
     // - Plus
     // - T
-    if (rng.oneIn(3)) {
-      return _angled();
-    } else {
-      return _rectangle();
+    switch (rng.inclusive(10)) {
+      case 0:
+        return _diamond();
+      case 1:
+        return _octagon();
+      case 2:
+      case 3:
+        return _angled();
+      default:
+        return _rectangle();
     }
   }
 
   static Array2D<RoomTile> _rectangle() {
     // Make a randomly-sized room but keep the aspect ratio reasonable.
-    var short = rng.inclusive(3, 8);
-    var long = rng.inclusive(short, math.min(12, short + 4));
+    var short = rng.inclusive(3, 10);
+    var long = rng.inclusive(short, math.min(16, short + 4));
 
     var horizontal = rng.oneIn(2);
     var width = horizontal ? long : short;
@@ -38,8 +45,8 @@ class Room {
 
   static Array2D<RoomTile> _angled() {
     // Make a randomly-sized room but keep the aspect ratio reasonable.
-    var short = rng.inclusive(4, 9);
-    var long = rng.inclusive(short, math.min(12, short + 4));
+    var short = rng.inclusive(4, 10);
+    var long = rng.inclusive(short, math.min(16, short + 4));
 
     var horizontal = rng.oneIn(2);
     var width = horizontal ? long : short;
@@ -67,6 +74,35 @@ class Room {
     for (var y = yMin; y < yMax; y++) {
       for (var x = xMin; x < xMax; x++) {
         tiles.set(x + 1, y + 1, RoomTile.unused);
+      }
+    }
+
+    _calculateEdges(tiles);
+    return tiles;
+  }
+
+  static Array2D<RoomTile> _diamond() {
+    var size = rng.inclusive(5, 17);
+    return _angledCorners(size, size ~/ 2);
+  }
+
+  static Array2D<RoomTile> _octagon() {
+    var size = rng.inclusive(6, 13);
+    var corner = rng.inclusive(2, size ~/ 2 - 1);
+
+    return _angledCorners(size, corner);
+  }
+
+  static Array2D<RoomTile> _angledCorners(int size, int corner) {
+    var tiles = Array2D<RoomTile>(size + 2, size + 2, RoomTile.unused);
+    for (var y = 0; y < size; y++) {
+      for (var x = 0; x < size; x++) {
+        if (x + y < corner) continue;
+        if (size - x - 1 + y < corner) continue;
+        if (x + size - y - 1 < corner) continue;
+        if (size - x - 1 + size - y - 1 < corner) continue;
+
+        tiles.set(x + 1, y + 1, RoomTile.floor);
       }
     }
 

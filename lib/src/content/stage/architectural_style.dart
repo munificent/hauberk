@@ -41,14 +41,14 @@ class ArchitecturalStyle {
     addStyle(
         frequency: 10.0,
         decor: "dungeon",
-        decorDensity: 0.05,
+        decorDensity: 0.1,
         create: () => Dungeon());
 
     // Generic default dungeon style.
     addStyle(
         frequency: 5.0,
         decor: "keep",
-        decorDensity: 0.05,
+        decorDensity: 0.1,
         create: () => Keep());
 
     // TODO: Define more.

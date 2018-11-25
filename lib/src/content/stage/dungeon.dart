@@ -1,6 +1,5 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../tiles.dart';
 import 'architect.dart';
 import 'room.dart';
 
