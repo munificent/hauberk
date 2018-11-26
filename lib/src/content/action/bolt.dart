@@ -17,7 +17,6 @@ class BoltAction extends LosAction {
         super(target);
 
   void onStep(Vec previous, Vec pos) {
-    // TODO: Include direction.
     addEvent(EventType.bolt,
         element: _hit.element,
         pos: pos,

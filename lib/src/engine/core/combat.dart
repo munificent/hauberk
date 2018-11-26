@@ -35,6 +35,10 @@ class Attack {
 
   final int damage;
 
+  // TODO: Some kind of minimum range would be good to prevent players from
+  // using bows at close range and to make bows a little less powerful. However,
+  // doing that requires figuring out what happens if a monster is within the
+  // minimum range and the hero fires *past* it.
   final int range;
 
   final Element element;
@@ -124,7 +128,7 @@ class Hit {
   /// Returns the amount of damage done if the attack connected or `null` if
   /// it missed.
   int perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
-    canMiss = canMiss ?? true;
+    canMiss ??= true;
 
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
     // attacker ("the wolf bites").
@@ -147,7 +151,6 @@ class Hit {
       for (var defense in defenses) {
         strike -= defense.amount;
         if (strike < 0) {
-          // TODO: Should still affect monster alertness.
           action.log(defense.message, defender, attackNoun);
           return null;
         }

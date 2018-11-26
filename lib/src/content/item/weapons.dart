@@ -174,16 +174,16 @@ void weapons() {
     ..tag("equipment/weapon/axe")
     ..skill("Axe Mastery");
   item("Hatchet", 6, slate, frequency: 0.5, price: 90)
-    ..weapon(18, heft: 10)
+    ..weapon(12, heft: 10)
     ..toss(damage: 20, range: 8);
   item("Axe", 12, persimmon, frequency: 0.5, price: 210)
-    ..weapon(25, heft: 14)
+    ..weapon(15, heft: 14)
     ..toss(damage: 24, range: 7);
   item("Valaska", 24, gunsmoke, frequency: 0.5, price: 330)
-    ..weapon(32, heft: 19)
+    ..weapon(19, heft: 19)
     ..toss(damage: 26, range: 5);
   item("Battleaxe", 40, steelGray, frequency: 0.5, price: 550)
-    ..weapon(39, heft: 30)
+    ..weapon(25, heft: 30)
     ..toss(damage: 28, range: 4);
 
   // Bows.
@@ -192,15 +192,15 @@ void weapons() {
     ..toss(breakage: 50, range: 5)
     ..skill("Archery");
   item("Short Bow", 5, persimmon, frequency: 0.3, price: 150)
-    ..ranged("the arrow", heft: 11, damage: 8, range: 12)
+    ..ranged("the arrow", heft: 12, damage: 4, range: 8)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);
   item("Longbow", 13, garnet, frequency: 0.3, price: 250)
-    ..ranged("the arrow", heft: 20, damage: 16, range: 14)
+    ..ranged("the arrow", heft: 18, damage: 8, range: 12)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 7, fuel: 13);
   item("Crossbow", 28, gunsmoke, frequency: 0.3, price: 600)
-    ..ranged("the bolt", heft: 24, damage: 24, range: 16)
+    ..ranged("the bolt", heft: 24, damage: 12, range: 16)
     ..toss(damage: 4)
     ..destroy(Elements.fire, chance: 4, fuel: 14);
 }

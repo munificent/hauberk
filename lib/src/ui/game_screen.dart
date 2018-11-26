@@ -251,8 +251,7 @@ class GameScreen extends Screen<Input> {
             _fireAtTarget(_lastSkill as TargetSkill);
           } else {
             // No current target, so ask for one.
-            ui.push(TargetDialog(this, targetSkill.getRange(game),
-                (_) => _fireAtTarget(targetSkill)));
+            _openTargetDialog(targetSkill);
           }
         } else if (_lastSkill is DirectionSkill) {
           // Ask user to pick a direction.
@@ -349,6 +348,11 @@ class GameScreen extends Screen<Input> {
     }
   }
 
+  void _openTargetDialog(TargetSkill skill) {
+    ui.push(
+        TargetDialog(this, skill.getRange(game), (_) => _fireAtTarget(skill)));
+  }
+
   void _fireAtTarget(TargetSkill skill) {
     if (currentTarget == game.hero.pos && !skill.canTargetSelf) {
       game.log.error("You can't target yourself.");
@@ -438,8 +442,7 @@ class GameScreen extends Screen<Input> {
 //      game.hero.updateSkills(result);
     } else if (popped is SelectSkillDialog && result != null) {
       if (result is TargetSkill) {
-        ui.push(TargetDialog(
-            this, result.getRange(game), (_) => _fireAtTarget(result)));
+        _openTargetDialog(result);
       } else if (result is DirectionSkill) {
         ui.push(SkillDirectionDialog(this, (dir) {
           _lastSkill = result;
@@ -655,7 +658,7 @@ class GameScreen extends Screen<Input> {
             }
 
             // If the actor is being targeted, invert its colors.
-            if (targetActor == actor) {
+            if (_targetActor == actor) {
               back = fore;
               fore = midnight;
             }
@@ -840,13 +843,13 @@ class GameScreen extends Screen<Input> {
         var monster = visibleMonsters[i];
 
         var glyph = monster.appearance as Glyph;
-        if (targetActor == monster) {
+        if (_targetActor == monster) {
           glyph = Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
         terminal.drawGlyph(0, y, glyph);
         terminal.writeAt(2, y, monster.breed.name,
-            (targetActor == monster) ? UIHue.selection : UIHue.text);
+            (_targetActor == monster) ? UIHue.selection : UIHue.text);
 
         _drawHealthBar(terminal, y + 1, monster);
       }

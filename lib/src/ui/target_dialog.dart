@@ -14,7 +14,7 @@ class TargetDialog extends Screen<Input> {
   static const _ticksPerFrame = 5;
 
   final GameScreen _gameScreen;
-  final num _range;
+  final int _range;
   final void Function(Vec target) _onSelect;
   final List<Monster> _monsters = <Monster>[];
 
@@ -130,7 +130,6 @@ class TargetDialog extends Screen<Input> {
     var stage = _gameScreen.game.stage;
 
     // Show the range field.
-    var black = Glyph(" ");
     for (var pos in _gameScreen.cameraBounds) {
       var tile = stage[pos];
 
@@ -138,10 +137,7 @@ class TargetDialog extends Screen<Input> {
       // treat them as potentially targetable.
       if (tile.isExplored) {
         // If the tile can't be reached, don't show it as targetable.
-        if (tile.isOccluded) {
-          _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
-          continue;
-        }
+        if (tile.isOccluded) continue;
 
         if (!tile.isWalkable && tile.blocksView) continue;
         if (stage.actorAt(pos) != null) continue;
@@ -153,16 +149,7 @@ class TargetDialog extends Screen<Input> {
 
       // Must be in range.
       var toPos = pos - _gameScreen.game.hero.pos;
-      if (toPos > _range) {
-        _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, black);
-        continue;
-      }
-
-      // Show the damage ranges.
-      var color = gold;
-      if (toPos > _range * 2 / 3) {
-        color = persimmon;
-      }
+      if (toPos > _range) continue;
 
       int charCode;
       if (tile.isExplored) {
@@ -174,7 +161,7 @@ class TargetDialog extends Screen<Input> {
       }
 
       _gameScreen.drawStageGlyph(
-          terminal, pos.x, pos.y, Glyph.fromCharCode(charCode, color));
+          terminal, pos.x, pos.y, Glyph.fromCharCode(charCode, gold));
     }
 
     var target = _gameScreen.currentTarget;
@@ -200,26 +187,23 @@ class TargetDialog extends Screen<Input> {
       }
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
-          Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : persimmon));
+          Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : steelGray));
       i = (i + _numFrames - 1) % _numFrames;
     }
 
-    // Only show the reticle if the bolt will reach the target.
-    if (reachedTarget) {
-      var targetColor = gold;
-      var toTarget = target - _gameScreen.game.hero.pos;
-      if (toTarget > _range * 2 / 3) {
-        targetColor = persimmon;
-      }
-
+    // Highlight the reticle if the bolt will reach the target.
+    var reticleColor = reachedTarget ? gold : steelGray;
+    _gameScreen.drawStageGlyph(
+        terminal, target.x - 1, target.y, Glyph('-', reticleColor));
+    _gameScreen.drawStageGlyph(
+        terminal, target.x + 1, target.y, Glyph('-', reticleColor));
+    _gameScreen.drawStageGlyph(
+        terminal, target.x, target.y - 1, Glyph('|', reticleColor));
+    _gameScreen.drawStageGlyph(
+        terminal, target.x, target.y + 1, Glyph('|', reticleColor));
+    if (!reachedTarget) {
       _gameScreen.drawStageGlyph(
-          terminal, target.x - 1, target.y, Glyph('-', targetColor));
-      _gameScreen.drawStageGlyph(
-          terminal, target.x + 1, target.y, Glyph('-', targetColor));
-      _gameScreen.drawStageGlyph(
-          terminal, target.x, target.y - 1, Glyph('|', targetColor));
-      _gameScreen.drawStageGlyph(
-          terminal, target.x, target.y + 1, Glyph('|', targetColor));
+          terminal, target.x, target.y, Glyph('X', reticleColor));
     }
 
     if (_monsters.isEmpty) {
@@ -252,7 +236,8 @@ class TargetDialog extends Screen<Input> {
     var pos = _gameScreen.currentTarget + dir;
 
     // Don't target out of range.
-    if (_gameScreen.game.hero.pos - pos > _range) return;
+    var toPos = pos - _gameScreen.game.hero.pos;
+    if (toPos > _range) return;
 
     // Don't target a tile the player knows can't be hit.
     var tile = _gameScreen.game.stage[pos];
