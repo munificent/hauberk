@@ -437,7 +437,7 @@ void roomDecor() {
   // TODO: More table sizes? Shapes?
 
   // Chairs.
-  category(themes: "built", cells: {
+  category(themes: "built", frequency: 3.0, cells: {
     "π": applyOpen(Tiles.chair),
   });
 

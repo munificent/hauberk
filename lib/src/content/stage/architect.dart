@@ -118,11 +118,11 @@ class Architect {
   }
 
   /// Marks the tile at [x], [y] as open floor for [architecture].
-  void _carve(Architecture architecture, int x, int y) {
+  void _carve(Architecture architecture, int x, int y, TileType tile) {
     assert(_owners.get(x, y) == null || _owners.get(x, y) == architecture);
     assert(stage.get(x, y).type == Tiles.unformed);
 
-    stage.get(x, y).type = Tiles.open;
+    stage.get(x, y).type = tile ?? Tiles.open;
     _carvedTiles++;
 
     // Claim all neighboring dry tiles too. This way the architecture can paint
@@ -448,8 +448,11 @@ abstract class Architecture {
   /// tiles itself.
   bool spawnMonsters(Painter painter) => false;
 
-  /// Marks the tile at [x], [y] as open floor for this architecture.
-  void carve(int x, int y) => _architect._carve(this, x, y);
+  /// Sets the tile at [x], [y] to [tile] and owned by this architecture.
+  ///
+  /// If [tile] is omitted, uses [Tiles.open].
+  void carve(int x, int y, [TileType tile]) =>
+      _architect._carve(this, x, y, tile);
 
   /// Whether this architecture can carve the tile at [pos].
   bool canCarve(Vec pos) => _architect._canCarve(this, pos);

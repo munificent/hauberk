@@ -145,9 +145,9 @@ class Keep extends Architecture {
     var room = Room.create();
 
     // Try to find a junction that can mate with this one.
-    var connectingTile = RoomTile.junctionFor(junction.direction.rotate180);
+    var direction = junction.direction.rotate180;
     var junctions =
-        room.bounds.where((pos) => room[pos] == connectingTile).toList();
+        room.bounds.where((pos) => room[pos].direction == direction).toList();
     rng.shuffle(junctions);
 
     for (var pos in junctions) {
@@ -164,34 +164,26 @@ class Keep extends Architecture {
       var here = pos.offset(x, y);
       var tile = room[pos];
 
-      if (tile != RoomTile.unused && !bounds.contains(here)) return false;
-      if (tile == RoomTile.floor && !canCarve(pos.offset(x, y))) return false;
+      if (!tile.isUnused && !bounds.contains(here)) return false;
+      if (tile.isTile && !canCarve(pos.offset(x, y))) return false;
     }
 
     var junctions = <Junction>[];
 
     for (var pos in room.bounds) {
       var here = pos.offset(x, y);
+      var tile = room[pos];
 
-      switch (room[pos]) {
-        case RoomTile.floor:
-          carve(here.x, here.y);
-          break;
-
-        case RoomTile.wall:
-          preventPassage(here);
-          _junctions.removeAt(here);
-          break;
-
-        case RoomTile.junctionN:
-        case RoomTile.junctionS:
-        case RoomTile.junctionE:
-        case RoomTile.junctionW:
-          // Don't grow outside of the chosen region.
-          if (_regionContains(here)) {
-            junctions.add(Junction(here, room[pos].direction));
-          }
-          break;
+      if (tile.isJunction) {
+        // Don't grow outside of the chosen region.
+        if (_regionContains(here)) {
+          junctions.add(Junction(here, tile.direction));
+        }
+      } else if (tile.isTile) {
+        carve(here.x, here.y, tile.tile);
+      } else if (tile.isWall) {
+        preventPassage(here);
+        _junctions.removeAt(here);
       }
     }
 

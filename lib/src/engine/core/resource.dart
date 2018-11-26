@@ -142,7 +142,6 @@ class ResourceSet<T> {
         for (var thisTag = goalTag;
             thisTag != null;
             thisTag = thisTag.parent) {
-          print("look at parent $thisTag of $resourceTag for $goalTag");
           if (thisTag == resourceTag) return 1.0;
         }
       }

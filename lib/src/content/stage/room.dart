@@ -2,6 +2,9 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+import '../../engine.dart';
+import '../tiles.dart';
+
 /// Generates random rooms.
 class Room {
   static Array2D<RoomTile> create() {
@@ -106,6 +109,14 @@ class Room {
       }
     }
 
+    // TODO: Temp. This is just a proof of concept of placing non-floor tiles
+    // using RoomTile.
+    var torch = RoomTile.tile(Tiles.wallTorch);
+    tiles.set(size ~/ 2 + 1, size ~/ 2 + 1, torch);
+    tiles.set((size - 1) ~/ 2 + 1, size ~/ 2 + 1, torch);
+    tiles.set(size ~/ 2 + 1, (size - 1) ~/ 2 + 1, torch);
+    tiles.set((size - 1) ~/ 2 + 1, (size - 1) ~/ 2 + 1, torch);
+
     _calculateEdges(tiles);
     return tiles;
   }
@@ -114,12 +125,12 @@ class Room {
   /// as appropriate.
   static void _calculateEdges(Array2D<RoomTile> room) {
     for (var pos in room.bounds) {
-      if (room[pos] != RoomTile.unused) continue;
+      if (!room[pos].isUnused) continue;
 
       isFloor(Direction dir) {
         var here = pos + dir;
         if (!room.bounds.contains(here)) return false;
-        return room[here] == RoomTile.floor;
+        return room[here].isTile;
       }
 
       var cardinalFloors = Direction.cardinal.where(isFloor).toList();
@@ -127,7 +138,7 @@ class Room {
 
       if (cardinalFloors.length == 1) {
         // Place junctions next to floors.
-        room[pos] = RoomTile.junctionFor(cardinalFloors.single.rotate180);
+        room[pos] = RoomTile.junction(cardinalFloors.single.rotate180);
       } else if (cardinalFloors.length > 1) {
         // Don't allow junctions at inside corners.
       } else if (hasCornerFloor) {
@@ -140,37 +151,29 @@ class Room {
 
 class RoomTile {
   /// Not part of the room.
-  static const unused = RoomTile("unused", Direction.none);
+  static final unused = RoomTile.junction(Direction.none);
 
   /// Room floor.
-  static const floor = RoomTile("floor", Direction.none);
+  static final floor = RoomTile.tile(Tiles.open);
 
   /// Room wall that cannot have a junction or passage through it. Used to
   /// prevent entrances to rooms in corners, which looks weird.
-  static const wall = RoomTile("wall", Direction.none);
+  static final wall = RoomTile.tile(Tiles.solid);
 
-  static const junctionN = RoomTile("junctionN", Direction.n);
-  static const junctionS = RoomTile("junctionS", Direction.s);
-  static const junctionE = RoomTile("junctionE", Direction.e);
-  static const junctionW = RoomTile("junctionW", Direction.w);
-
-  static RoomTile junctionFor(Direction dir) {
-    switch (dir) {
-      case Direction.n:
-        return junctionN;
-      case Direction.s:
-        return junctionS;
-      case Direction.e:
-        return junctionE;
-      case Direction.w:
-        return junctionW;
-      default:
-        throw "Invalid direction.";
-    }
-  }
-
-  final String name;
+  final TileType tile;
   final Direction direction;
 
-  const RoomTile(this.name, this.direction);
+  RoomTile.junction(this.direction) : tile = null;
+  RoomTile.tile(this.tile) : direction = Direction.none;
+
+  const RoomTile._(this.tile, this.direction);
+
+  bool get isUnused => tile == null && direction == Direction.none;
+
+  /// Whether the room tile is a floor or other specific tile type.
+  bool get isTile => !isUnused && !isWall && !isJunction;
+
+  bool get isWall => tile == Tiles.solid;
+
+  bool get isJunction => direction != Direction.none;
 }

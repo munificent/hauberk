@@ -84,6 +84,9 @@ class Catacomb extends Architecture {
             break;
         }
 
+        if (xMin >= xMax) continue;
+        if (yMin >= yMax) continue;
+
         var x = rng.range(xMin, xMax);
         var y = rng.range(yMin, yMax);
 

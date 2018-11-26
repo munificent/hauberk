@@ -87,22 +87,18 @@ class Dungeon extends Architecture {
       var here = pos.offset(x, y);
       var tile = room[pos];
 
-      if (tile != RoomTile.unused && !bounds.contains(here)) return false;
-      if (tile == RoomTile.floor && !canCarve(pos.offset(x, y))) return false;
+      if (!tile.isUnused && !bounds.contains(here)) return false;
+      if (tile.isTile && !canCarve(pos.offset(x, y))) return false;
     }
 
     for (var pos in room.bounds) {
       var here = pos.offset(x, y);
+      var tile = room[pos];
 
-      switch (room[pos]) {
-        case RoomTile.floor:
-          carve(here.x, here.y);
-          break;
-
-        case RoomTile.wall:
-          preventPassage(here);
-          break;
-
+      if (tile.isTile) {
+        carve(here.x, here.y, tile.tile);
+      } else if (tile.isWall) {
+        preventPassage(here);
       }
     }
 
