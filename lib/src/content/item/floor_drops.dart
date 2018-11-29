@@ -16,20 +16,19 @@ class FloorDrops {
         startFrequency: 2.0,
         location: SpawnLocation.wall,
         drop: dropAllOf([
-          percentDrop(60, "Skull"),
-          percentDrop(40, "treasure"),
-          percentDrop(30, "weapon"),
-          percentDrop(30, "armor"),
-          percentDrop(30, "armor"),
-          percentDrop(20, "magic"),
-          percentDrop(20, "magic"),
-          percentDrop(20, "magic")
+          percentDrop(50, "Skull"),
+          percentDrop(30, "treasure"),
+          percentDrop(20, "weapon"),
+          percentDrop(20, "armor"),
+          percentDrop(20, "armor"),
+          percentDrop(15, "magic"),
+          percentDrop(15, "magic")
         ]));
 
     floorDrop(
-        startFrequency: 20.0,
+        startFrequency: 10.0,
         location: SpawnLocation.wall,
-        drop: percentDrop(30, "magic"));
+        drop: parseDrop("magic"));
 
     floorDrop(startFrequency: 10.0, endFrequency: 1.0, drop: parseDrop("food"));
 

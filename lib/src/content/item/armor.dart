@@ -26,7 +26,7 @@ void bodyArmor() {
   item("Robe", 2, cerulean, frequency: 0.5, price: 20)
     ..armor(4)
     ..destroy(Elements.fire, chance: 15, fuel: 8);
-  item("Fur-lined Robe", 6, sherwood, frequency: 0.25, price: 80)
+  item("Fur-lined Robe", 6, sherwood, frequency: 0.25, price: 110)
     ..armor(6)
     ..destroy(Elements.fire, chance: 12, fuel: 8);
 
@@ -76,7 +76,7 @@ void cloaks() {
   item("Cloak", 3, ultramarine, frequency: 0.5, price: 70)
     ..armor(2, weight: 1)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
-  item("Fur Cloak", 5, garnet, frequency: 0.2, price: 140)
+  item("Fur Cloak", 9, garnet, frequency: 0.2, price: 140)
     ..armor(3, weight: 1)
     ..destroy(Elements.fire, chance: 16, fuel: 5);
 }
@@ -94,12 +94,12 @@ void gloves() {
   //
   // Could probably do the same for heft. A battleaxe of fire doesn't do a lot
   // of fire damage if you can't lift it.
-  item("Pair[s] of Gloves", 4, sandal, frequency: 0.5, price: 170)
-    ..armor(2)
+  item("Pair[s] of Gloves", 8, sandal, frequency: 0.5, price: 170)
+    ..armor(1)
     ..destroy(Elements.fire, chance: 7, fuel: 2);
   item("Set[s] of Bracers", 17, garnet, frequency: 0.5, price: 480)
-    ..armor(3, weight: 1);
-  item("Pair[s] of Gauntlets", 23, steelGray, frequency: 0.5, price: 800)
+    ..armor(2, weight: 1);
+  item("Pair[s] of Gauntlets", 34, steelGray, frequency: 0.5, price: 800)
     ..armor(4, weight: 2);
 }
 
@@ -108,10 +108,10 @@ void shields() {
     ..tag("equipment/armor/shield")
     ..toss(damage: 5, range: 8, breakage: 10);
   // TODO: Encumbrance.
-  item("Small Leather Shield", 3, garnet, frequency: 0.5, price: 170)
+  item("Small Leather Shield", 5, garnet, frequency: 0.5, price: 170)
     ..armor(3, weight: 2)
     ..destroy(Elements.fire, chance: 7, fuel: 14);
-  item("Wooden Targe", 8, sandal, frequency: 0.5, price: 250)
+  item("Wooden Targe", 11, sandal, frequency: 0.5, price: 250)
     ..armor(4, weight: 4)
     ..destroy(Elements.fire, chance: 14, fuel: 20);
   item("Large Leather Shield", 17, persimmon, frequency: 0.5, price: 320)

@@ -191,7 +191,7 @@ void weapons() {
     ..tag("equipment/weapon/bow")
     ..toss(breakage: 50, range: 5)
     ..skill("Archery");
-  item("Short Bow", 5, persimmon, frequency: 0.3, price: 150)
+  item("Short Bow", 6, persimmon, frequency: 0.3, price: 120)
     ..ranged("the arrow", heft: 12, damage: 4, range: 8)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);

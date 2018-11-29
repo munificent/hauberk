@@ -25,27 +25,24 @@ num _itemScale(ItemType item) {
 //  <option value="heft">Heft</option>
 //  <option value="weight">Weight</option>
   switch (_scaleBySelect.value) {
-    case "none": return 1.0;
-    case "depth": return item.depth;
-    case "price": return item.price;
-    case "heft": return item.heft;
-    case "weight": return item.weight;
+    case "none":
+      return 1.0;
+    case "depth":
+      return item.depth;
+    case "price":
+      return item.price;
+    case "heft":
+      return item.heft;
+    case "weight":
+      return item.weight;
     default:
       throw "Unknown select value '${_scaleBySelect.value}'.";
   }
 }
 
 void _makeTable() {
-  var table = Table<ItemType>("table", (a, b) {
-    if (a.depth == null && b.depth == null) {
-      return a.sortIndex.compareTo(b.sortIndex);
-    }
-
-    if (a.depth == null) return -1;
-    if (b.depth == null) return 1;
-
-    return a.depth.compareTo(b.depth);
-  });
+  var table =
+      Table<ItemType>("table", (a, b) => a.sortIndex.compareTo(b.sortIndex));
   table.column("Item");
   table.column("Depth");
   table.column("Stack");

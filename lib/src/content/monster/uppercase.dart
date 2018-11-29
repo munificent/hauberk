@@ -13,13 +13,13 @@ void birds() {
     ..defense(10, "{1} flaps out of the way.")
     ..fly()
     ..count(3, 6);
-  breed("crow", 4, steelGray, 9, speed: 2, meander: 30)
+  breed("crow", 4, steelGray, 7, speed: 2, meander: 30)
     ..attack("bite[s]", 5)
     ..drop("treasure", percent: 10);
   describe(""""What harm can a stupid little crow do?" you think as it and its
       murderous friends dive towards your eyes, claws extended.""");
 
-  breed("raven", 6, slate, 22, meander: 15)
+  breed("raven", 6, slate, 16, meander: 15)
     ..attack("bite[s]", 5)
     ..attack("claw[s]", 4)
     ..drop("treasure", percent: 10)
