@@ -19,7 +19,7 @@ class Dungeon extends Architecture {
   Iterable<String> build() sync* {
     var failed = 0;
     while (carvedDensity < _density && failed < 100) {
-      var room = Room.create();
+      var room = Room.create(depth);
 
       var placed = false;
       for (var i = 0; i < 400; i++) {

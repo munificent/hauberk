@@ -63,6 +63,7 @@ class Tiles {
   static final openBarredDoor = tile("open barred door", "♂", gunsmoke, slate)
       .onClose(_closeBarredDoor)
       .open();
+
   // TODO: Should be able to see through but not fly through.
   static final closedBarredDoor =
       tile("closed barred door", "♪", gunsmoke, slate)
@@ -109,6 +110,10 @@ class Tiles {
   static final wallTorch =
       tile("wall torch", "≤", gold, slate).emanate(192).solid();
 
+  // TODO: Different glyph.
+  static final braziers = multi("brazier", "≤", persimmon, null, 5,
+      (tile, n) => tile.emanate(192 - n * 12).obstacle());
+
   // TODO: Make these do something.
   static final openChest = tile("open chest", "⌠", persimmon).obstacle();
   static final closedChest = tile("closed chest", "⌡", persimmon)
@@ -144,6 +149,17 @@ class Tiles {
   static _TileBuilder tile(String name, Object char, Color fore,
           [Color back]) =>
       _TileBuilder(name, char, fore, back);
+
+  static List<TileType> multi(String name, Object char, Color fore,
+      Color back, int count, TileType Function(_TileBuilder, int) generate) {
+    var result = <TileType>[];
+    for (var i = 0; i < count; i++) {
+      var builder = tile(name, char, fore, back);
+      result.add(generate(builder, i));
+    }
+
+    return result;
+  }
 
   /// The amount of heat required for [tile] to catch fire or 0 if the tile
   /// cannot be ignited.

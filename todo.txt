@@ -6,9 +6,6 @@
 
 -- From playtesting 2018/11/16:
 
-- can get hatchet very early and it does 18 damage with relatively low heft
-  really overpowered
-
 - dungeons too big and dense
   probably make keeps rarer and dungeons more common with less density
 
@@ -18,27 +15,15 @@
 
 - teleport too rare
 
-- gloves show up at level 3 but are worth a lot of cash
-
 - no ui to tell how much headroom have with strength when buying armor
   (maybe show weight in item list?)
 
-- dungeon way too dark
-
 - have to eat too often
 
-- bows are still unusable
-
-- crows feel overpowered -- fast, group, decent damage
-
 - leveling feels slow
-
-- fur-lined robe has same armor as leather shirt. how do weight and cost
-  compare?
-
-- darkness means majority of time when hit by ranged attack, comes out of
-  darkness. not very fun
 
 - monsters drop a lot of loot, especially when dropping equipment
 
 - dark grey monsters and items blend into the background on well-lit tiles
+
+- don't show wake "!" effect if monster is killed

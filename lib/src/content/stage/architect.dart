@@ -418,6 +418,8 @@ abstract class Architecture {
 
   Iterable<String> build();
 
+  int get depth => _architect.depth;
+
   Rect get bounds => _architect.stage.bounds;
 
   int get width => _architect.stage.width;

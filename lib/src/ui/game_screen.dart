@@ -700,7 +700,7 @@ class GameScreen extends Screen<Input> {
             // Hackish. If the background color is the default dark color, then
             // boost it *past* its max value to add some extra glow when well
             // lit.
-            back = shadow.blend(back, light * 1.6 + 0.2);
+            back = shadow.blend(back, light * 1.1 + 0.2);
           } else {
             back = shadow.blend(back, light * 0.8 + 0.2);
           }
