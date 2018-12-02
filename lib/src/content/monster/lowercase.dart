@@ -111,44 +111,44 @@ void dragons() {
   breed("green dragon", 60, lima, 350)
     ..attack("bite[s]", 30)
     ..attack("claw[s]", 25)
-    ..drop("treasure", count: 7)
-    ..drop("magic", count: 4)
-    ..drop("equipment", count: 4);
+    ..drop("treasure", count: 5)
+    ..drop("magic", count: 3)
+    ..drop("equipment", count: 2);
   breed("blue dragon", 65, ash, 400)
     ..attack("bite[s]", 30)
     ..attack("claw[s]", 25)
     ..waterCone(damage: 70)
-    ..drop("treasure", count: 8)
-    ..drop("magic", count: 4)
-    ..drop("equipment", count: 5);
+    ..drop("treasure", count: 5)
+    ..drop("magic", count: 3)
+    ..drop("equipment", count: 2);
   breed("white dragon", 70, ash, 500)
     ..attack("bite[s]", 30)
     ..attack("claw[s]", 25)
     ..iceCone(damage: 80)
-    ..drop("treasure", count: 8)
-    ..drop("magic", count: 4)
-    ..drop("equipment", count: 5);
+    ..drop("treasure", count: 5)
+    ..drop("magic", count: 3)
+    ..drop("equipment", count: 2);
   breed("purple dragon", 75, violet, 600)
     ..attack("bite[s]", 30)
     ..attack("claw[s]", 25)
     ..lightningCone(damage: 100)
-    ..drop("treasure", count: 8)
-    ..drop("magic", count: 4)
-    ..drop("equipment", count: 5);
+    ..drop("treasure", count: 5)
+    ..drop("magic", count: 3)
+    ..drop("equipment", count: 2);
   breed("red dragon", 75, brickRed, 600)
     ..attack("bite[s]", 30)
     ..attack("claw[s]", 25)
     ..fireCone(damage: 100)
-    ..drop("treasure", count: 8)
-    ..drop("magic", count: 4)
-    ..drop("equipment", count: 5);
+    ..drop("treasure", count: 5)
+    ..drop("magic", count: 3)
+    ..drop("equipment", count: 2);
   breed("gold dragon", 80, gold, 700)
     ..attack("bite[s]", 32)
     ..attack("claw[s]", 27)
     ..lightCone(damage: 120)
-    ..drop("treasure", count: 8)
-    ..drop("magic", count: 4)
-    ..drop("equipment", count: 5);
+    ..drop("treasure", count: 5)
+    ..drop("magic", count: 3)
+    ..drop("equipment", count: 2);
 }
 
 void eyes() {
@@ -220,8 +220,8 @@ void goblins() {
     ..count(4)
     ..attack("stab[s]", 8)
     ..missive(Missive.insult, rate: 8)
-    ..drop("treasure", percent: 30)
-    ..drop("spear", percent: 20)
+    ..drop("treasure", percent: 20)
+    ..drop("spear", percent: 5)
     ..drop("healing", percent: 10);
 
   breed("goblin archer", 6, peaGreen, 36)
@@ -230,20 +230,20 @@ void goblins() {
     ..attack("stab[s]", 4)
     ..arrow(rate: 3, damage: 8)
     ..drop("treasure", percent: 30)
-    ..drop("bow", percent: 30)
-    ..drop("dagger", percent: 15)
-    ..drop("healing", percent: 5);
+    ..drop("bow", percent: 10)
+    ..drop("dagger", percent: 5)
+    ..drop("healing", percent: 10);
 
   breed("goblin fighter", 6, persimmon, 58)
     ..count(2)
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
     ..attack("stab[s]", 12)
-    ..drop("treasure", percent: 30)
-    ..drop("spear", percent: 20)
-    ..drop("armor", percent: 20)
+    ..drop("treasure", percent: 20)
+    ..drop("spear", percent: 10)
+    ..drop("armor", percent: 10)
     ..drop("resistance", percent: 5)
-    ..drop("healing", percent: 5);
+    ..drop("healing", percent: 10);
 
   breed("goblin warrior", 8, gunsmoke, 68)
     ..count(2)
@@ -251,11 +251,11 @@ void goblins() {
     ..minion("goblin archer", 0, 1)
     ..minion("goblin peon", 0, 3)
     ..attack("stab[s]", 16)
-    ..drop("treasure", percent: 35)
-    ..drop("axe", percent: 20)
-    ..drop("armor", percent: 20)
+    ..drop("treasure", percent: 25)
+    ..drop("axe", percent: 10)
+    ..drop("armor", percent: 10)
     ..drop("resistance", percent: 5)
-    ..drop("healing", percent: 5)
+    ..drop("healing", percent: 10)
     ..flags("protective");
 
   breed("goblin mage", 9, ultramarine, 50)
@@ -265,9 +265,8 @@ void goblins() {
     ..attack("whip[s]", 7)
     ..fireBolt(rate: 12, damage: 12)
     ..sparkBolt(rate: 12, damage: 16)
-    ..drop("treasure", percent: 30)
-    ..drop("robe", percent: 20)
-    ..drop("whip", percent: 10)
+    ..drop("treasure", percent: 20)
+    ..drop("robe", percent: 10)
     ..drop("magic", percent: 30);
 
   breed("goblin ranger", 12, sherwood, 60)
@@ -278,8 +277,8 @@ void goblins() {
     ..attack("stab[s]", 10)
     ..arrow(rate: 3, damage: 12)
     ..drop("treasure", percent: 20)
-    ..drop("bow", percent: 30)
-    ..drop("armor", percent: 20)
+    ..drop("bow", percent: 15)
+    ..drop("armor", percent: 10)
     ..drop("magic", percent: 20);
 
   // TODO: Always drop something good.
@@ -399,8 +398,8 @@ void kobolds() {
     ..missive(Missive.insult)
     ..haste()
     ..drop("treasure", percent: 20)
-    ..drop("club", percent: 40)
-    ..drop("speed", percent: 30);
+    ..drop("club", percent: 10)
+    ..drop("speed", percent: 20);
 
   breed("vexing imp", 2, violet, 16)
     ..count(2)
@@ -409,7 +408,7 @@ void kobolds() {
     ..missive(Missive.insult)
     ..sparkBolt(rate: 5, damage: 6)
     ..drop("treasure", percent: 25)
-    ..drop("teleportation", percent: 50);
+    ..drop("teleportation", percent: 20);
 
   family("k", meander: 20)..groups("kobold");
   breed("kobold", 3, brickRed, 20)
@@ -418,8 +417,8 @@ void kobolds() {
     ..attack("poke[s]", 4)
     ..teleport(rate: 10, range: 6)
     ..drop("treasure", percent: 25)
-    ..drop("equipment", percent: 20)
-    ..drop("magic", percent: 40);
+    ..drop("equipment", percent: 10)
+    ..drop("magic", percent: 20);
 
   breed("kobold shaman", 4, ultramarine, 20)
     ..count(2)
@@ -427,8 +426,8 @@ void kobolds() {
     ..attack("hit[s]", 4)
     ..waterBolt(rate: 10, damage: 8)
     ..drop("treasure", percent: 25)
-    ..drop("robe", percent: 20)
-    ..drop("magic", percent: 40);
+    ..drop("robe", percent: 10)
+    ..drop("magic", percent: 20);
 
   breed("kobold trickster", 5, gold, 24)
     ..attack("hit[s]", 5)
@@ -436,9 +435,8 @@ void kobolds() {
     ..sparkBolt(rate: 5, damage: 8)
     ..teleport(rate: 7, range: 6)
     ..haste(rate: 7)
-    ..drop("treasure", percent: 45)
-    ..drop("magic", percent: 20)
-    ..drop("magic", percent: 40);
+    ..drop("treasure", percent: 35)
+    ..drop("magic", percent: 20);
 
   breed("kobold priest", 6, cerulean, 30)
     ..count(2)
@@ -446,10 +444,10 @@ void kobolds() {
     ..attack("club[s]", 6)
     ..heal(rate: 15, amount: 10)
     ..haste(rate: 7)
-    ..drop("treasure", percent: 35)
-    ..drop("club", percent: 40)
-    ..drop("robe", percent: 20)
-    ..drop("magic", percent: 40);
+    ..drop("treasure", percent: 20)
+    ..drop("club", percent: 10)
+    ..drop("robe", percent: 10)
+    ..drop("magic", percent: 30);
 
   breed("imp incanter", 7, lilac, 33)
     ..count(2)
@@ -458,9 +456,9 @@ void kobolds() {
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult, rate: 6)
     ..fireBolt(rate: 5, damage: 10)
-    ..drop("treasure", percent: 35)
-    ..drop("robe", percent: 20)
-    ..drop("magic", percent: 50)
+    ..drop("treasure", percent: 30)
+    ..drop("robe", percent: 10)
+    ..drop("magic", percent: 35)
     ..flags("cowardly");
 
   breed("imp warlock", 8, indigo, 46)
@@ -470,10 +468,10 @@ void kobolds() {
     ..attack("stab[s]", 5)
     ..iceBolt(rate: 8, damage: 12)
     ..fireBolt(rate: 8, damage: 12)
-    ..drop("treasure", percent: 35)
-    ..drop("staff", percent: 40)
-    ..drop("robe", percent: 20)
-    ..drop("magic", count: 2, percent: 60);
+    ..drop("treasure", percent: 30)
+    ..drop("staff", percent: 20)
+    ..drop("robe", percent: 10)
+    ..drop("magic", percent: 30);
 
   // TODO: Always drop something good.
   breed("Feng", 10, carrot, 80, speed: 1, meander: 10)
@@ -489,9 +487,9 @@ void kobolds() {
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
     ..drop("treasure", count: 3, depthOffset: 5)
-    ..drop("spear", percent: 80, depthOffset: 5)
-    ..drop("armor", count: 2, depthOffset: 5)
-    ..drop("magic", count: 3, depthOffset: 5)
+    ..drop("spear", percent: 20, depthOffset: 5)
+    ..drop("armor", percent: 30, depthOffset: 5)
+    ..drop("magic", count: 2, depthOffset: 5)
     ..flags("unique");
 
   // homonculous
@@ -519,58 +517,57 @@ void people() {
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy)
     ..drop("treasure", percent: 80)
-    ..drop("weapon", percent: 50, depthOffset: 4)
-    ..drop("armor", percent: 60, depthOffset: 4)
-    ..drop("magic", percent: 30, depthOffset: 4)
+    ..drop("weapon", percent: 20, depthOffset: 4)
+    ..drop("armor", percent: 30, depthOffset: 4)
+    ..drop("magic", percent: 40, depthOffset: 4)
     ..flags("unique");
   // TODO: Make more interesting.
 
   breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 30)
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy, rate: 12)
-    ..drop("treasure", percent: 25)
-    ..drop("weapon", percent: 50)
-    ..drop("armor", percent: 60)
-    ..drop("magic", percent: 30)
+    ..drop("treasure", percent: 15)
+    ..drop("weapon", percent: 10)
+    ..drop("armor", percent: 15)
+    ..drop("magic", percent: 20)
     ..flags("cowardly");
 
   breed("simpering knave", 2, carrot, 17)
     ..attack("hit[s]", 2)
     ..attack("stab[s]", 4)
-    ..drop("treasure", percent: 25)
-    ..drop("whip", percent: 30)
-    ..drop("armor", percent: 40)
+    ..drop("treasure", percent: 20)
+    ..drop("whip", percent: 10)
+    ..drop("armor", percent: 15)
     ..drop("magic", percent: 20)
     ..flags("cowardly");
 
   breed("decrepit mage", 3, violet, 20, meander: 30)
     ..attack("hit[s]", 2)
     ..sparkBolt(rate: 10, damage: 8)
-    ..drop("treasure", percent: 25)
-    ..drop("magic", percent: 60)
-    ..drop("dagger", percent: 10)
-    ..drop("staff", percent: 10)
-    ..drop("robe", percent: 20)
-    ..drop("boots", percent: 20);
+    ..drop("treasure", percent: 15)
+    ..drop("magic", percent: 30)
+    ..drop("dagger", percent: 5)
+    ..drop("staff", percent: 5)
+    ..drop("robe", percent: 10)
+    ..drop("boots", percent: 5);
 
   breed("unlucky ranger", 5, peaGreen, 30, dodge: 25, meander: 20)
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
     ..missive(Missive.clumsy, rate: 10)
-    ..drop("treasure", percent: 25)
-    ..drop("potion", percent: 30)
-    ..drop("bow", percent: 40)
-    ..drop("sword", percent: 10)
+    ..drop("treasure", percent: 20)
+    ..drop("potion", percent: 20)
+    ..drop("bow", percent: 10)
     ..drop("body", percent: 20);
 
   breed("drunken priest", 5, cerulean, 34, meander: 40)
     ..attack("hit[s]", 8)
     ..heal(rate: 15, amount: 8)
     ..missive(Missive.clumsy)
-    ..drop("treasure", percent: 45)
-    ..drop("scroll", percent: 30)
-    ..drop("club", percent: 20)
-    ..drop("robe", percent: 40)
+    ..drop("treasure", percent: 35)
+    ..drop("scroll", percent: 20)
+    ..drop("club", percent: 10)
+    ..drop("robe", percent: 10)
     ..flags("fearless");
 }
 
@@ -689,14 +686,14 @@ void skeletons() {
     ..openDoors()
     ..attack("claw[s]", 7)
     ..drop("treasure", percent: 30)
-    ..drop("weapon", percent: 20)
-    ..drop("armor", percent: 20);
+    ..drop("weapon", percent: 10)
+    ..drop("armor", percent: 10);
 
   breed("armless skeleton", 12, mint, 25, frequency: 0.3)
     ..attack("bite[s]", 9)
     ..attack("kick[s]", 7)
     ..drop("treasure", percent: 30)
-    ..drop("armor", percent: 20);
+    ..drop("armor", percent: 10);
 
   breed("one-armed skeleton", 13, lima, 30, frequency: 0.4)
     ..openDoors()
@@ -704,8 +701,8 @@ void skeletons() {
     ..amputate("armless skeleton", "bony arm", "{1}'s arm falls off!")
     ..amputate("armless skeleton", "bony hand", "{1}'s hand falls off!")
     ..drop("treasure", percent: 30)
-    ..drop("weapon", percent: 10)
-    ..drop("armor", percent: 20);
+    ..drop("weapon", percent: 5)
+    ..drop("armor", percent: 10);
 
   breed("skeleton", 15, ash, 40)
     ..openDoors()
@@ -715,8 +712,8 @@ void skeletons() {
     ..amputate("one-armed skeleton", "bony arm", "{1}'s arm falls off!")
     ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!")
     ..drop("treasure", percent: 40)
-    ..drop("weapon", percent: 30)
-    ..drop("armor", percent: 30);
+    ..drop("weapon", percent: 10)
+    ..drop("armor", percent: 10);
 
   breed("skeleton warrior", 17, salmon, 50)
     ..openDoors()
@@ -726,8 +723,8 @@ void skeletons() {
     ..amputate("one-armed skeleton", "bony arm", "{1}'s arm falls off!")
     ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!")
     ..drop("treasure", percent: 50)
-    ..drop("weapon", percent: 50)
-    ..drop("armor", percent: 50);
+    ..drop("weapon", percent: 20)
+    ..drop("armor", percent: 15);
 
   breed("robed skeleton", 19, lilac, 50)
     ..openDoors()
@@ -738,8 +735,8 @@ void skeletons() {
     ..amputate("one-armed skeleton", "bony arm", "{1}'s arm falls off!")
     ..amputate("one-armed skeleton", "bony hand", "{1}'s hand falls off!")
     ..drop("treasure", percent: 50)
-    ..drop("magic", percent: 50)
-    ..drop("armor", percent: 50);
+    ..drop("magic", percent: 20)
+    ..drop("armor", percent: 10);
 
   // TODO: Stronger skeletons.
 }

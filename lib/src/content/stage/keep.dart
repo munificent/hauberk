@@ -97,6 +97,9 @@ class Keep extends Architecture {
         break;
     }
 
+    if (xMax < xMin) xMax = xMin;
+    if (yMax < yMin) yMax = yMin;
+
     return Vec(rng.range(xMin, xMax), rng.range(yMin, yMax));
   }
 

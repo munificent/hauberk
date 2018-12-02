@@ -8,12 +8,12 @@ void litter() {
   category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
     ..tag("item")
     ..toss(damage: 3, range: 7, element: Elements.earth, breakage: 10);
-  item("Rock", 1, persimmon, frequency: 1.0);
+  item("Rock", 1, persimmon, frequency: 0.5);
 
   category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
     ..tag("item")
     ..toss(damage: 2, range: 5, breakage: 30);
-  item("Skull", 1, gunsmoke, frequency: 1.0);
+  item("Skull", 1, gunsmoke, frequency: 0.5);
 }
 
 void treasure() {

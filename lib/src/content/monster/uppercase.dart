@@ -47,7 +47,7 @@ void faeFolk() {
     ..missive(Missive.insult, rate: 4)
     ..sparkBolt(rate: 7, damage: 4)
     ..drop("treasure", percent: 10)
-    ..drop("magic", percent: 60);
+    ..drop("magic", percent: 30);
 
   breed("house sprite", 5, cornflower, 10)
     ..attack("poke[s]", 5)
@@ -55,7 +55,7 @@ void faeFolk() {
     ..stoneBolt(rate: 10, damage: 4)
     ..teleport(rate: 7, range: 4)
     ..drop("treasure", percent: 10)
-    ..drop("magic", percent: 80);
+    ..drop("magic", percent: 30);
 
   breed("mischievous sprite", 7, salmon, 24)
     ..attack("stab[s]", 6)
@@ -63,7 +63,7 @@ void faeFolk() {
     ..windBolt(rate: 8, damage: 8)
     ..teleport(range: 5)
     ..drop("treasure", percent: 10)
-    ..drop("magic");
+    ..drop("magic", percent: 30);
 
   // TODO: https://en.wikipedia.org/wiki/Puck_(folklore)
 }
@@ -134,24 +134,24 @@ void reptiles() {
     ..attack("claw[s]", 8)
     ..attack("bite[s]", 10)
     ..drop("treasure", percent: 30)
-    ..drop("armor", percent: 30)
-    ..drop("spear", percent: 20);
+    ..drop("armor", percent: 10)
+    ..drop("spear", percent: 10);
 
   breed("lizard protector", 15, lima, 30)
     ..minion("lizard guard", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 14)
     ..drop("treasure", percent: 30)
-    ..drop("armor", percent: 30)
-    ..drop("spear", percent: 20);
+    ..drop("armor", percent: 10)
+    ..drop("spear", percent: 10);
 
   breed("armored lizard", 17, gunsmoke, 38)
     ..minion("lizard guard", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 15)
     ..drop("treasure", percent: 30)
-    ..drop("armor", percent: 50)
-    ..drop("spear", percent: 20);
+    ..drop("armor", percent: 20)
+    ..drop("spear", percent: 10);
 
   breed("scaled guardian", 19, steelGray, 50)
     ..minion("lizard protector", 0, 2)
@@ -160,8 +160,7 @@ void reptiles() {
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 15)
     ..drop("treasure", percent: 40)
-    ..drop("armor", percent: 30)
-    ..drop("weapon", percent: 20);
+    ..drop("equipment", percent: 10);
 
   breed("saurian", 21, carrot, 64)
     ..minion("lizard protector", 0, 2)
@@ -171,8 +170,7 @@ void reptiles() {
     ..attack("claw[s]", 12)
     ..attack("bite[s]", 17)
     ..drop("treasure", percent: 50)
-    ..drop("armor", percent: 30)
-    ..drop("weapon", percent: 20);
+    ..drop("equipment", percent: 10);
 
   family("R", dodge: 30, meander: 20)
     ..groups("salamander")

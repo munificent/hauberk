@@ -202,7 +202,7 @@ class Decorator {
     var densityMap = DensityMap(_stage.width, _stage.height);
     Debug.densityMap = densityMap;
 
-    var flow = MotilityFlow(_stage, _heroPos, Motility.all);
+    var flow = MotilityFlow(_stage, _heroPos, Motility.all, avoidActors: false);
 
     for (var pos in _stage.bounds.inflate(-1)) {
       var architecture = _architect.ownerAt(pos);
@@ -214,16 +214,21 @@ class Decorator {
       if (distance < 10) continue;
 
       var density = 4 + math.sqrt(distance - 10);
-      density *= architecture.style.monsterDensity;
-      densityMap[pos] = density.toInt();
+      densityMap[pos] = (density * architecture.style.monsterDensity).toInt();
     }
 
-    // TODO: Tune this. Maybe pick a total health based on depth and the number
-    // of open tiles and generate monsters until that's reached?
-    var monsterCount = 100 + _architect.depth * 2;
-    var monsters = 0;
+    // Try spawn as many monsters as needed to reach a total experience value
+    // based on the number of open tiles. (In other words, each tile the player
+    // explores nets some average expected amount of experience.)
+    var experiencePerTile = 2.0 + math.pow(_architect.depth - 1, 2.0) * 0.2;
+    var goalExperience = densityMap.possibleTiles * experiencePerTile;
 
-    while (monsters < monsterCount) {
+    // Add some randomness so some stages are worth more than others.
+    goalExperience += rng.float(goalExperience * 0.2);
+
+    var totalExperience = 0;
+
+    while (totalExperience < goalExperience) {
       var pos = densityMap.choose();
 
       // If there are no remaining open tiles, abort.
@@ -247,13 +252,13 @@ class Decorator {
         _spawnedUniques.add(breed);
       }
 
-      var spawned = _spawnMonster(densityMap, pos, breed);
+      var experience = _spawnMonster(densityMap, pos, breed);
       yield "Spawned monster";
 
       // Stop if we ran out of open tiles.
-      if (spawned == null) break;
+      if (experience == null) break;
 
-      monsters += spawned;
+      totalExperience += experience;
     }
 
     Debug.densityMap = null;
@@ -264,16 +269,17 @@ class Decorator {
   }
 
   int _spawnMonster(DensityMap density, Vec pos, Breed breed) {
-    var isCorpse = rng.oneIn(8);
+    var isCorpse = !breed.flags.unique && rng.oneIn(10);
     var breeds = breed.spawnAll();
 
-    var spawned = 0;
+    var experience = 0;
     spawn(Breed breed, Vec pos) {
       if (isCorpse) {
         _architect.stage.placeDrops(pos, breed.motility, breed.drop);
       } else {
-        _architect.stage.addActor(breed.spawn(_architect.stage.game, pos));
-        spawned++;
+        var monster = breed.spawn(_architect.stage.game, pos);
+        _architect.stage.addActor(monster);
+        experience += monster.experience;
 
         // Don't cluster monsters too much.
         // TODO: Increase distance for stronger monsters?
@@ -308,7 +314,7 @@ class Decorator {
       spawn(breed, here);
     }
 
-    return spawned;
+    return experience;
   }
 
 //  void _stain(TileType tile, Vec start, int distance, int count) {
@@ -335,7 +341,8 @@ class Decorator {
     var densityMap = DensityMap(_stage.width, _stage.height);
     Debug.densityMap = densityMap;
 
-    var flow = MotilityFlow(_stage, _heroPos, Motility.doorAndWalk);
+    var flow = MotilityFlow(_stage, _heroPos, Motility.doorAndWalk,
+        avoidActors: false);
 
     for (var pos in _stage.bounds.inflate(-1)) {
       var architecture = _architect.ownerAt(pos);
@@ -353,16 +360,24 @@ class Decorator {
       var density = 10 + math.sqrt(distance + 1);
       // TODO: Increase density if we go past articulation points, secret doors,
       // strong monsters, etc.
-      density *= architecture.style.itemDensity;
-      densityMap[pos] = density.toInt();
+      densityMap[pos] = (density * architecture.style.itemDensity).toInt();
     }
 
-    // TODO: Tune this. Maybe pick a total gold value x number of open tiles
-    // and generate items until that is reached?
-    var itemCount = 30 + _architect.depth;
-    var items = 0;
+    // Try to drop as many items as needed to reach a total price value based
+    // on the number of open tiles. (In other words, each tile the player
+    // explores nets some average expected amount of value.) Note that this
+    // doesn't include the items dropped by corpses.
+    // TODO: Prices are very untuned, which in turn makes this very untuned.
+    // Once prices are in a better state, tweak this to follow.
+    var pricePerTile = 0.1 + (_architect.depth - 1) * 0.1;
+    var goalPrice = densityMap.possibleTiles * pricePerTile;
 
-    while (items < itemCount) {
+    // Add some randomness so some stages are worth more than others.
+    goalPrice += rng.float(goalPrice * 0.2);
+
+    var totalPrice = 0;
+
+    while (totalPrice < goalPrice) {
       var pos = densityMap.choose();
 
       // If there are no remaining open tiles, abort.
@@ -371,10 +386,16 @@ class Decorator {
       // TODO: Style-specific drop types.
       var floorDrop = FloorDrops.choose(_architect.depth);
 
-      _architect.stage.placeDrops(pos, Motility.walk, floorDrop.drop);
-      densityMap.reduceAround(_stage, pos, Motility.doorAndWalk, 10);
+      var items =
+          _architect.stage.placeDrops(pos, Motility.walk, floorDrop.drop);
+      for (var item in items) {
+        // Give worthless items a little price so we don't clutter too many of
+        // them.
+        totalPrice += math.max(item.price, 1);
+      }
 
-      items++;
+      densityMap.reduceAround(_stage, pos, Motility.doorAndWalk, 3);
+
       yield "Spawned item";
     }
 
@@ -394,7 +415,14 @@ class DensityMap {
     var old = _density[pos];
     _total = _total - old + value;
     _density[pos] = value;
+
+    if (old == 0 && value > 0) _possibleTiles++;
+    if (old > 0 && value == 0) _possibleTiles--;
   }
+
+  /// The number of tiles whose density is non-zero.
+  int get possibleTiles => _possibleTiles;
+  int _possibleTiles = 0;
 
   /// Picks a random tile from the map, weighed by the density of each tile.
   ///

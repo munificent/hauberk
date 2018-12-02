@@ -15,6 +15,19 @@ double lerpDouble(num value, num min, num max, double outMin, double outMax) {
 int lerpInt(int value, int min, int max, int outMin, int outMax) =>
     lerpDouble(value, min, max, outMin.toDouble(), outMax.toDouble()).round();
 
+// TODO: Not currently used. Delete?
+/// Finds the quadratic curve that goes through [x0],[y0], [x1],[y1], and
+/// [x2],[y2]. Then calculates the y position at [x].
+double quadraticInterpolate(num x,
+    {num x0, num y0, num x1, num y1, num x2, num y2}) {
+  // From: http://mathonline.wikidot.com/deleted:quadratic-polynomial-interpolation
+  var a = ((x - x1) * (x - x2)) / ((x0 - x1) * (x0 - x2));
+  var b = ((x - x0) * (x - x2)) / ((x1 - x0) * (x1 - x2));
+  var c = ((x - x0) * (x - x1)) / ((x2 - x0) * (x2 - x1));
+
+  return y0 * a + y1 * b + y2 * c;
+}
+
 /// Produces a psuedo-random 32-bit unsigned integer for the point at [x, y]
 /// using [seed].
 ///

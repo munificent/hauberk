@@ -192,6 +192,7 @@ class Architect {
 
     var reachability = Reachability(stage, start);
 
+    var count = 0;
     for (var pos in unformed) {
       var tile = stage[pos];
 
@@ -221,7 +222,8 @@ class Architect {
         reachability.undoFill();
       }
 
-      yield "$pos";
+      // Yielding is slow, so don't do it often.
+      if (count++ % 20 == 0) yield "$pos";
     }
   }
 
