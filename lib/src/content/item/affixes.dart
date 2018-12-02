@@ -74,6 +74,22 @@ class Affixes {
     // TODO: "Heavy" and "adamant" increase weight and armor.
     // TODO: More stat bonus affixes.
 
+    affixCategory("helm");
+    for (var i = 0; i < 2; i++) {
+      affix("_ of Acumen", 35, 1.0)
+        ..price(300, 2.0)
+        ..intellect(1 + i);
+      affix("_ of Wisdom", 45, 1.0)
+        ..price(500, 3.0)
+        ..intellect(3 + i);
+      affix("_ of Sagacity", 55, 1.0)
+        ..price(700, 4.0)
+        ..intellect(5 + i);
+      affix("_ of Genius", 65, 1.0)
+        ..price(1000, 5.0)
+        ..intellect(7 + i);
+    }
+
     finishAffix();
   }
 
