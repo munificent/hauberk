@@ -11467,6 +11467,459 @@
       if (type != null)
         return type;
       return $.$get$Affixes_suffixes().find$1(0, $name);
+    },
+    Affixes_initialize: function() {
+      var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, i;
+      R.finishAffix();
+      $._affixTag = "body";
+      t1 = R.affix("Elven _", 40, 1);
+      t1._priceBonus = 400;
+      t1._priceScale = 2;
+      t1._weightBonus = -2;
+      t1._armor = 2;
+      t2 = $.$get$Elements_light();
+      t1.resist$1(t2);
+      t1 = R.affix("Elven _", 60, 0.3);
+      t1._priceBonus = 600;
+      t1._priceScale = 3;
+      t1._weightBonus = -3;
+      t1._armor = 4;
+      t1.resist$1(t2);
+      R.finishAffix();
+      $._affixTag = "cloak";
+      t1 = R.affix("Elven _", 40, 1);
+      t1._priceBonus = 300;
+      t1._priceScale = 2;
+      t1._weightBonus = -1;
+      t1._armor = 3;
+      t1.resist$1(t2);
+      t1 = R.affix("Elven _", 60, 0.3);
+      t1._priceBonus = 500;
+      t1._priceScale = 3;
+      t1._weightBonus = -2;
+      t1._armor = 5;
+      t1.resist$1(t2);
+      R.finishAffix();
+      $._affixTag = "boots";
+      t1 = R.affix("Elven _", 40, 1);
+      t1._priceBonus = 400;
+      t1._priceScale = 2.5;
+      t1._weightBonus = -2;
+      t1._armor = 2;
+      R.finishAffix();
+      $._affixTag = "helm";
+      t1 = R.affix("Elven _", 40, 1);
+      t1._priceBonus = 400;
+      t1._priceScale = 2;
+      t1._weightBonus = -1;
+      t1._armor = 1;
+      t1._builder$_statBonuses.$indexSet(0, C.Stat_Intellect, 1);
+      t1.resist$1(t2);
+      t1 = R.affix("Elven _", 60, 0.3);
+      t1._priceBonus = 600;
+      t1._priceScale = 3;
+      t1._weightBonus = -1;
+      t1._armor = 2;
+      t1._builder$_statBonuses.$indexSet(0, C.Stat_Intellect, 2);
+      t1.resist$1(t2);
+      R.finishAffix();
+      $._affixTag = "shield";
+      t1 = R.affix("Elven _", 40, 1);
+      t1._priceBonus = 300;
+      t1._priceScale = 1.6;
+      t1._builder$_heftScale = 0.8;
+      t1._builder$_damageScale = 1.3;
+      t1._builder$_damageBonus = null;
+      t1.resist$1(t2);
+      t1 = R.affix("Elven _", 50, 0.5);
+      t1._priceBonus = 500;
+      t1._priceScale = 2.2;
+      t1._builder$_heftScale = 0.6;
+      t1._builder$_damageScale = 1.5;
+      t1._builder$_damageBonus = null;
+      t1._builder$_statBonuses.$indexSet(0, C.Stat_Will, 1);
+      t1.resist$1(t2);
+      R.finishAffix();
+      $._affixTag = "body";
+      t1 = R.affix("Dwarven _", 30, 1);
+      t1._priceBonus = 400;
+      t1._priceScale = 2;
+      t1._weightBonus = 2;
+      t1._armor = 4;
+      t3 = $.$get$Elements_earth();
+      t1.resist$1(t3);
+      t4 = $.$get$Elements_dark();
+      t1.resist$1(t4);
+      t1 = R.affix("Dwarven _", 40, 0.5);
+      t1._priceBonus = 600;
+      t1._priceScale = 3;
+      t1._weightBonus = 2;
+      t1._armor = 6;
+      t1.resist$1(t3);
+      t1.resist$1(t4);
+      R.finishAffix();
+      $._affixTag = "helm";
+      t1 = R.affix("Dwarven _", 50, 1);
+      t1._priceBonus = 300;
+      t1._priceScale = 2;
+      t1._weightBonus = 1;
+      t1._armor = 3;
+      t1.resist$1(t4);
+      t1 = R.affix("Dwarven _", 60, 0.5);
+      t1._priceBonus = 500;
+      t1._priceScale = 3;
+      t1._weightBonus = 1;
+      t1._armor = 4;
+      t5 = t1._builder$_statBonuses;
+      t5.$indexSet(0, C.Stat_Strength, 1);
+      t5.$indexSet(0, C.Stat_Fortitude, 1);
+      t1.resist$1(t4);
+      R.finishAffix();
+      $._affixTag = "gloves";
+      t1 = R.affix("Dwarven _", 50, 1);
+      t1._priceBonus = 300;
+      t1._priceScale = 2;
+      t1._weightBonus = 1;
+      t1._armor = 3;
+      t1._builder$_statBonuses.$indexSet(0, C.Stat_Strength, 1);
+      t1.resist$1(t3);
+      R.finishAffix();
+      $._affixTag = "boots";
+      t1 = R.affix("Dwarven _", 50, 1);
+      t1._priceBonus = 300;
+      t1._priceScale = 2;
+      t1._weightBonus = 1;
+      t1._armor = 3;
+      t1.resist$1(t3);
+      t1 = R.affix("Dwarven _", 60, 0.3);
+      t1._priceBonus = 500;
+      t1._priceScale = 3;
+      t1._weightBonus = 2;
+      t1._armor = 5;
+      t1._builder$_statBonuses.$indexSet(0, C.Stat_Fortitude, 1);
+      t1.resist$1(t4);
+      t1.resist$1(t3);
+      R.finishAffix();
+      $._affixTag = "shield";
+      t1 = R.affix("Dwarven _", 40, 1);
+      t1._priceBonus = 200;
+      t1._priceScale = 2.2;
+      t1._builder$_heftScale = 1.2;
+      t1._builder$_damageScale = 1.5;
+      t1._builder$_damageBonus = 4;
+      t1.resist$1(t3);
+      t1.resist$1(t4);
+      t1 = R.affix("Dwarven _", 40, 1);
+      t1._priceBonus = 400;
+      t1._priceScale = 2.4;
+      t1._builder$_heftScale = 1.3;
+      t1._builder$_damageScale = 1.7;
+      t1._builder$_damageBonus = 5;
+      t1._builder$_statBonuses.$indexSet(0, C.Stat_Fortitude, 1);
+      t1.resist$1(t3);
+      t1.resist$1(t4);
+      R.finishAffix();
+      $._affixTag = "armor";
+      t1 = R.affix("_ of Resist Air", 10, 0.5);
+      t1._priceBonus = 200;
+      t1._priceScale = 1.2;
+      t5 = $.$get$Elements_air();
+      t1.resist$1(t5);
+      t1 = R.affix("_ of Resist Earth", 11, 0.5);
+      t1._priceBonus = 230;
+      t1._priceScale = 1.2;
+      t1.resist$1(t3);
+      t1 = R.affix("_ of Resist Fire", 12, 0.5);
+      t1._priceBonus = 260;
+      t1._priceScale = 1.3;
+      t6 = $.$get$Elements_fire();
+      t1.resist$1(t6);
+      t1 = R.affix("_ of Resist Water", 13, 0.5);
+      t1._priceBonus = 310;
+      t1._priceScale = 1.2;
+      t7 = $.$get$Elements_water();
+      t1.resist$1(t7);
+      t1 = R.affix("_ of Resist Acid", 14, 0.3);
+      t1._priceBonus = 340;
+      t1._priceScale = 1.3;
+      t8 = $.$get$Elements_acid();
+      t1.resist$1(t8);
+      t1 = R.affix("_ of Resist Cold", 15, 0.5);
+      t1._priceBonus = 400;
+      t1._priceScale = 1.2;
+      t9 = $.$get$Elements_cold();
+      t1.resist$1(t9);
+      t1 = R.affix("_ of Resist Lightning", 16, 0.3);
+      t1._priceBonus = 430;
+      t1._priceScale = 1.2;
+      t10 = $.$get$Elements_lightning();
+      t1.resist$1(t10);
+      t1 = R.affix("_ of Resist Poison", 17, 0.25);
+      t1._priceBonus = 460;
+      t1._priceScale = 1.5;
+      t11 = $.$get$Elements_poison();
+      t1.resist$1(t11);
+      t1 = R.affix("_ of Resist Dark", 18, 0.25);
+      t1._priceBonus = 490;
+      t1._priceScale = 1.3;
+      t1.resist$1(t4);
+      t1 = R.affix("_ of Resist Light", 19, 0.25);
+      t1._priceBonus = 490;
+      t1._priceScale = 1.3;
+      t1.resist$1(t2);
+      t1 = R.affix("_ of Resist Spirit", 20, 0.4);
+      t1._priceBonus = 520;
+      t1._priceScale = 1.4;
+      t12 = $.$get$Elements_spirit();
+      t1.resist$1(t12);
+      t1 = R.affix("_ of Resist Nature", 40, 0.3);
+      t1._priceBonus = 3000;
+      t1._priceScale = 4;
+      t1.resist$1(t5);
+      t1.resist$1(t3);
+      t1.resist$1(t6);
+      t1.resist$1(t7);
+      t1.resist$1(t9);
+      t1.resist$1(t10);
+      t1 = R.affix("_ of Resist Destruction", 40, 0.3);
+      t1._priceBonus = 1300;
+      t1._priceScale = 2.6;
+      t1.resist$1(t8);
+      t1.resist$1(t6);
+      t1.resist$1(t10);
+      t1.resist$1(t11);
+      t1 = R.affix("_ of Resist Evil", 60, 0.3);
+      t1._priceBonus = 1500;
+      t1._priceScale = 3;
+      t1.resist$1(t8);
+      t1.resist$1(t11);
+      t1.resist$1(t4);
+      t1.resist$1(t12);
+      t1 = R.affix("_ of Resistance", 70, 0.3);
+      t1._priceBonus = 5000;
+      t1._priceScale = 6;
+      t1.resist$1(t5);
+      t1.resist$1(t3);
+      t1.resist$1(t6);
+      t1.resist$1(t7);
+      t1.resist$1(t8);
+      t1.resist$1(t9);
+      t1.resist$1(t10);
+      t1.resist$1(t11);
+      t1.resist$1(t4);
+      t1.resist$1(t2);
+      t1.resist$1(t12);
+      t1 = R.affix("_ of Protection from Air", 16, 0.25);
+      t1._priceBonus = 500;
+      t1._priceScale = 1.4;
+      t1.resist$2(t5, 2);
+      t5 = R.affix("_ of Protection from Earth", 17, 0.25);
+      t5._priceBonus = 500;
+      t5._priceScale = 1.4;
+      t5.resist$2(t3, 2);
+      t3 = R.affix("_ of Protection from Fire", 18, 0.25);
+      t3._priceBonus = 500;
+      t3._priceScale = 1.5;
+      t3.resist$2(t6, 2);
+      t3 = R.affix("_ of Protection from Water", 19, 0.25);
+      t3._priceBonus = 500;
+      t3._priceScale = 1.4;
+      t3.resist$2(t7, 2);
+      t7 = R.affix("_ of Protection from Acid", 20, 0.2);
+      t7._priceBonus = 500;
+      t7._priceScale = 1.5;
+      t7.resist$2(t8, 2);
+      t8 = R.affix("_ of Protection from Cold", 21, 0.25);
+      t8._priceBonus = 500;
+      t8._priceScale = 1.4;
+      t8.resist$2(t9, 2);
+      t8 = R.affix("_ of Protection from Lightning", 22, 0.16);
+      t8._priceBonus = 500;
+      t8._priceScale = 1.4;
+      t8.resist$2(t10, 2);
+      t8 = R.affix("_ of Protection from Poison", 23, 0.14);
+      t8._priceBonus = 1000;
+      t8._priceScale = 1.6;
+      t8.resist$2(t11, 2);
+      t8 = R.affix("_ of Protection from Dark", 24, 0.14);
+      t8._priceBonus = 500;
+      t8._priceScale = 1.5;
+      t8.resist$2(t4, 2);
+      t8 = R.affix("_ of Protection from Light", 25, 0.14);
+      t8._priceBonus = 500;
+      t8._priceScale = 1.5;
+      t8.resist$2(t2, 2);
+      t8 = R.affix("_ of Protection from Spirit", 26, 0.13);
+      t8._priceBonus = 800;
+      t8._priceScale = 1.6;
+      t8.resist$2(t12, 2);
+      R.finishAffix();
+      $._affixTag = "weapon";
+      t8 = R.affix("_ of Harming", 1, 1);
+      t8._priceBonus = 100;
+      t8._priceScale = 1.2;
+      t8._builder$_heftScale = 1.05;
+      t8._builder$_damageScale = null;
+      t8._builder$_damageBonus = 1;
+      t8 = R.affix("_ of Wounding", 10, 1);
+      t8._priceBonus = 140;
+      t8._priceScale = 1.3;
+      t8._builder$_heftScale = 1.07;
+      t8._builder$_damageScale = null;
+      t8._builder$_damageBonus = 3;
+      t8 = R.affix("_ of Maiming", 25, 1);
+      t8._priceBonus = 180;
+      t8._priceScale = 1.5;
+      t8._builder$_heftScale = 1.09;
+      t8._builder$_damageScale = 1.2;
+      t8._builder$_damageBonus = 3;
+      t8 = R.affix("_ of Slaying", 45, 1);
+      t8._priceBonus = 200;
+      t8._priceScale = 2;
+      t8._builder$_heftScale = 1.11;
+      t8._builder$_damageScale = 1.4;
+      t8._builder$_damageBonus = 5;
+      R.finishAffix();
+      $._affixTag = "bow";
+      t8 = R.affix("Ash _", 10, 1);
+      t8._priceBonus = 300;
+      t8._priceScale = 1.3;
+      t8._builder$_heftScale = 0.8;
+      t8._builder$_damageScale = null;
+      t8._builder$_damageBonus = 3;
+      t8 = R.affix("Yew _", 20, 1);
+      t8._priceBonus = 500;
+      t8._priceScale = 1.4;
+      t8._builder$_heftScale = 0.8;
+      t8._builder$_damageScale = null;
+      t8._builder$_damageBonus = 5;
+      R.finishAffix();
+      $._affixTag = "weapon";
+      t8 = R.affix("Glimmering _", 20, 0.3);
+      t8._priceBonus = 300;
+      t8._priceScale = 1.3;
+      t8._builder$_damageScale = 1.2;
+      t8._builder$_damageBonus = null;
+      t8.brand$1(t2);
+      t8 = R.affix("Shining _", 32, 0.25);
+      t8._priceBonus = 400;
+      t8._priceScale = 1.6;
+      t8._builder$_damageScale = 1.4;
+      t8._builder$_damageBonus = null;
+      t8.brand$1(t2);
+      t8 = R.affix("Radiant _", 48, 0.2);
+      t8._priceBonus = 500;
+      t8._priceScale = 2;
+      t8._builder$_damageScale = 1.6;
+      t8._builder$_damageBonus = null;
+      t8.brand$2$resist(t2, 2);
+      t2 = R.affix("Dim _", 16, 0.3);
+      t2._priceBonus = 300;
+      t2._priceScale = 1.3;
+      t2._builder$_damageScale = 1.2;
+      t2._builder$_damageBonus = null;
+      t2.brand$1(t4);
+      t2 = R.affix("Dark _", 32, 0.25);
+      t2._priceBonus = 400;
+      t2._priceScale = 1.6;
+      t2._builder$_damageScale = 1.4;
+      t2._builder$_damageBonus = null;
+      t2.brand$1(t4);
+      t2 = R.affix("Black _", 56, 0.2);
+      t2._priceBonus = 500;
+      t2._priceScale = 2;
+      t2._builder$_damageScale = 1.6;
+      t2._builder$_damageBonus = null;
+      t2.brand$2$resist(t4, 2);
+      t4 = R.affix("Chilling _", 20, 0.3);
+      t4._priceBonus = 300;
+      t4._priceScale = 1.5;
+      t4._builder$_damageScale = 1.4;
+      t4._builder$_damageBonus = null;
+      t4.brand$1(t9);
+      t4 = R.affix("Freezing _", 40, 0.25);
+      t4._priceBonus = 400;
+      t4._priceScale = 1.7;
+      t4._builder$_damageScale = 1.6;
+      t4._builder$_damageBonus = null;
+      t4.brand$2$resist(t9, 2);
+      t9 = R.affix("Burning _", 20, 0.3);
+      t9._priceBonus = 300;
+      t9._priceScale = 1.5;
+      t9._builder$_damageScale = 1.3;
+      t9._builder$_damageBonus = null;
+      t9.brand$1(t6);
+      t9 = R.affix("Flaming _", 40, 0.25);
+      t9._priceBonus = 360;
+      t9._priceScale = 1.8;
+      t9._builder$_damageScale = 1.6;
+      t9._builder$_damageBonus = null;
+      t9.brand$1(t6);
+      t9 = R.affix("Searing _", 60, 0.2);
+      t9._priceBonus = 500;
+      t9._priceScale = 2.1;
+      t9._builder$_damageScale = 1.8;
+      t9._builder$_damageBonus = null;
+      t9.brand$2$resist(t6, 2);
+      t6 = R.affix("Electric _", 50, 0.2);
+      t6._priceBonus = 300;
+      t6._priceScale = 1.5;
+      t6._builder$_damageScale = 1.4;
+      t6._builder$_damageBonus = null;
+      t6.brand$1(t10);
+      t6 = R.affix("Shocking _", 70, 0.2);
+      t6._priceBonus = 400;
+      t6._priceScale = 2;
+      t6._builder$_damageScale = 1.8;
+      t6._builder$_damageBonus = null;
+      t6.brand$2$resist(t10, 2);
+      t10 = R.affix("Poisonous _", 35, 0.2);
+      t10._priceBonus = 500;
+      t10._priceScale = 1.5;
+      t10._builder$_damageScale = 1.1;
+      t10._builder$_damageBonus = null;
+      t10.brand$1(t11);
+      t10 = R.affix("Venomous _", 70, 0.2);
+      t10._priceBonus = 800;
+      t10._priceScale = 1.8;
+      t10._builder$_damageScale = 1.3;
+      t10._builder$_damageBonus = null;
+      t10.brand$2$resist(t11, 2);
+      t11 = R.affix("Ghostly _", 45, 0.2);
+      t11._priceBonus = 300;
+      t11._priceScale = 1.6;
+      t11._builder$_heftScale = 0.7;
+      t11._builder$_damageScale = 1.4;
+      t11._builder$_damageBonus = null;
+      t11.brand$1(t12);
+      t11 = R.affix("Spiritual _", 80, 0.15);
+      t11._priceBonus = 400;
+      t11._priceScale = 2.1;
+      t11._builder$_heftScale = 0.7;
+      t11._builder$_damageScale = 1.7;
+      t11._builder$_damageBonus = null;
+      t11.brand$2$resist(t12, 2);
+      R.finishAffix();
+      $._affixTag = "helm";
+      for (i = 0; i < 2; ++i) {
+        t1 = R.affix("_ of Acumen", 35, 1);
+        t1._priceBonus = 300;
+        t1._priceScale = 2;
+        t1._builder$_statBonuses.$indexSet(0, C.Stat_Intellect, 1 + i);
+        t1 = R.affix("_ of Wisdom", 45, 1);
+        t1._priceBonus = 500;
+        t1._priceScale = 3;
+        t1._builder$_statBonuses.$indexSet(0, C.Stat_Intellect, 3 + i);
+        t1 = R.affix("_ of Sagacity", 55, 1);
+        t1._priceBonus = 700;
+        t1._priceScale = 4;
+        t1._builder$_statBonuses.$indexSet(0, C.Stat_Intellect, 5 + i);
+        t1 = R.affix("_ of Genius", 65, 1);
+        t1._priceBonus = 1000;
+        t1._priceScale = 5;
+        t1._builder$_statBonuses.$indexSet(0, C.Stat_Intellect, 7 + i);
+      }
+      R.finishAffix();
     }
   }], ["", "package:hauberk/src/content/item/builder.dart",, R, {
     "^": "",
@@ -11606,10 +12059,10 @@
         fullName = displayName + " (" + H.S($._affixTag) + " " + index + ")";
       }
       t1 = $._affix;
-      t2 = t1._heftScale;
+      t2 = t1._builder$_heftScale;
       t3 = t1._weightBonus;
-      t4 = t1._damageScale;
-      t5 = t1._damageBonus;
+      t4 = t1._builder$_damageScale;
+      t5 = t1._builder$_damageBonus;
       t6 = t1._builder$_brand;
       t7 = t1._armor;
       t8 = t1._priceBonus;
@@ -11633,7 +12086,7 @@
         t9 = 1;
       affix = new L.Affix(fullName, displayName, t2, t3, 0, t4, t5, t6, t7, P.LinkedHashMap_LinkedHashMap$_empty(G.Element, t10), P.LinkedHashMap_LinkedHashMap$_empty(D.Stat, t10), t8, t9);
       t1._builder$_resists.forEach$1(0, affix.get$resist());
-      $._affix._statBonuses.forEach$1(0, affix.get$setStatBonus());
+      $._affix._builder$_statBonuses.forEach$1(0, affix.get$setStatBonus());
       t1 = $._affix;
       t9 = t1._builder$_depth;
       t1 = t1._frequency;
@@ -11871,7 +12324,7 @@
       }, null, null, 0, 0, null, "call"]
     },
     _AffixBuilder: {
-      "^": "Object;_builder$_name,_isPrefix,_builder$_depth,_frequency,0_heftScale,0_weightBonus,0_builder$_strikeBonus,0_damageScale,0_damageBonus,0_builder$_brand,0_armor,0_priceBonus,0_priceScale,_builder$_resists,_statBonuses",
+      "^": "Object;_builder$_name,_isPrefix,_builder$_depth,_frequency,0_builder$_heftScale,0_weightBonus,0_builder$_strikeBonus,0_builder$_damageScale,0_builder$_damageBonus,0_builder$_brand,0_armor,0_priceBonus,0_priceScale,_builder$_resists,_builder$_statBonuses",
       brand$2$resist: function(element, resist) {
         var t1;
         this._builder$_brand = element;
@@ -12226,14 +12679,8 @@
       drop$3$count$depthOffset: function($name, count, depthOffset) {
         return this.drop$4$count$depthOffset$percent($name, count, depthOffset, 100);
       },
-      drop$3$count$percent: function($name, count, percent) {
-        return this.drop$4$count$depthOffset$percent($name, count, 0, percent);
-      },
       drop$3$depthOffset$percent: function($name, depthOffset, percent) {
         return this.drop$4$count$depthOffset$percent($name, 1, depthOffset, percent);
-      },
-      drop$1: function($name) {
-        return this.drop$4$count$depthOffset$percent($name, 1, 0, 100);
       },
       _bolt$6$damage$range$rate: function(noun, verb, element, damage, range, rate) {
         C.JSArray_methods.add$1(this._moves, new O.BoltMove(U.Attack$(noun != null ? new O.Noun(noun) : null, verb, damage, range, element), rate));
@@ -12335,9 +12782,9 @@
       t5 = t4._attacks;
       C.JSArray_methods.add$1(t5, U.Attack$(null, "bite[s]", 30, 0, null));
       C.JSArray_methods.add$1(t5, U.Attack$(null, "claw[s]", 25, 0, null));
-      t4.drop$2$count("treasure", 7);
-      t4.drop$2$count("magic", 4);
-      t4.drop$2$count("equipment", 4);
+      t4.drop$2$count("treasure", 5);
+      t4.drop$2$count("magic", 3);
+      t4.drop$2$count("equipment", 2);
       t4 = R.breed("blue dragon", 65, C.Color_226_223_240, 400, null, null, null, 0);
       t5 = t4._attacks;
       C.JSArray_methods.add$1(t5, U.Attack$(null, "bite[s]", 30, 0, null));
@@ -12346,9 +12793,9 @@
       t5 = $.$get$Elements_water();
       t7 = U.Attack$(new O.Noun("the water"), "blasts", 70, 10, t5);
       C.JSArray_methods.add$1(t4._moves, new Y.ConeMove(t7, 5));
-      t4.drop$2$count("treasure", 8);
-      t4.drop$2$count("magic", 4);
-      t4.drop$2$count("equipment", 5);
+      t4.drop$2$count("treasure", 5);
+      t4.drop$2$count("magic", 3);
+      t4.drop$2$count("equipment", 2);
       t4 = R.breed("white dragon", 70, C.Color_226_223_240, 500, null, null, null, 0);
       t7 = t4._attacks;
       C.JSArray_methods.add$1(t7, U.Attack$(null, "bite[s]", 30, 0, null));
@@ -12357,9 +12804,9 @@
       t7 = $.$get$Elements_cold();
       t8 = U.Attack$(new O.Noun("the ice"), "freezes", 80, 10, t7);
       C.JSArray_methods.add$1(t4._moves, new Y.ConeMove(t8, 5));
-      t4.drop$2$count("treasure", 8);
-      t4.drop$2$count("magic", 4);
-      t4.drop$2$count("equipment", 5);
+      t4.drop$2$count("treasure", 5);
+      t4.drop$2$count("magic", 3);
+      t4.drop$2$count("equipment", 2);
       t4 = R.breed("purple dragon", 75, C.Color_86_30_138, 600, null, null, null, 0);
       t8 = t4._attacks;
       C.JSArray_methods.add$1(t8, U.Attack$(null, "bite[s]", 30, 0, null));
@@ -12368,9 +12815,9 @@
       t8 = $.$get$Elements_lightning();
       t9 = U.Attack$(new O.Noun("the lightning"), "shocks", 100, 10, t8);
       C.JSArray_methods.add$1(t4._moves, new Y.ConeMove(t9, 5));
-      t4.drop$2$count("treasure", 8);
-      t4.drop$2$count("magic", 4);
-      t4.drop$2$count("equipment", 5);
+      t4.drop$2$count("treasure", 5);
+      t4.drop$2$count("magic", 3);
+      t4.drop$2$count("equipment", 2);
       t4 = R.breed("red dragon", 75, C.Color_204_35_57, 600, null, null, null, 0);
       t9 = t4._attacks;
       C.JSArray_methods.add$1(t9, U.Attack$(null, "bite[s]", 30, 0, null));
@@ -12379,9 +12826,9 @@
       t9 = $.$get$Elements_fire();
       t10 = U.Attack$(new O.Noun("the flame"), "burns", 100, 10, t9);
       C.JSArray_methods.add$1(t4._moves, new Y.ConeMove(t10, 5));
-      t4.drop$2$count("treasure", 8);
-      t4.drop$2$count("magic", 4);
-      t4.drop$2$count("equipment", 5);
+      t4.drop$2$count("treasure", 5);
+      t4.drop$2$count("magic", 3);
+      t4.drop$2$count("equipment", 2);
       t4 = R.breed("gold dragon", 80, C.Color_222_156_33, 700, null, null, null, 0);
       t10 = t4._attacks;
       C.JSArray_methods.add$1(t10, U.Attack$(null, "bite[s]", 32, 0, null));
@@ -12390,9 +12837,9 @@
       t10 = $.$get$Elements_light();
       t11 = U.Attack$(new O.Noun("the light"), "sears", 120, 10, t10);
       C.JSArray_methods.add$1(t4._moves, new Y.ConeMove(t11, 5));
-      t4.drop$2$count("treasure", 8);
-      t4.drop$2$count("magic", 4);
-      t4.drop$2$count("equipment", 5);
+      t4.drop$2$count("treasure", 5);
+      t4.drop$2$count("magic", 3);
+      t4.drop$2$count("equipment", 2);
       t4 = R.family("e", null, "immobile", null, null, null, null);
       C.JSArray_methods.addAll$1(t4._groups, H.setRuntimeTypeInfo("eye".split(" "), t2));
       t4._vision = 16;
@@ -12465,8 +12912,8 @@
       t4.count$1(4);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 8, 0, null));
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_1, 8));
-      t4.drop$2$percent("treasure", 30);
-      t4.drop$2$percent("spear", 20);
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("spear", 5);
       t4.drop$2$percent("healing", 10);
       t4 = R.breed("goblin archer", 6, C.Color_22_117_38, 36, null, null, null, 0);
       t4.count$1(2);
@@ -12475,30 +12922,30 @@
       t15 = $.$get$Element_none();
       t4._bolt$6$damage$range$rate("the arrow", "hits", t15, 8, 8, 3);
       t4.drop$2$percent("treasure", 30);
-      t4.drop$2$percent("bow", 30);
-      t4.drop$2$percent("dagger", 15);
-      t4.drop$2$percent("healing", 5);
+      t4.drop$2$percent("bow", 10);
+      t4.drop$2$percent("dagger", 5);
+      t4.drop$2$percent("healing", 10);
       t4 = R.breed("goblin fighter", 6, C.Color_142_82_55, 58, null, null, null, 0);
       t4.count$1(2);
       t4.minion$3("goblin archer", 0, 1);
       t4.minion$3("goblin peon", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 12, 0, null));
-      t4.drop$2$percent("treasure", 30);
-      t4.drop$2$percent("spear", 20);
-      t4.drop$2$percent("armor", 20);
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("spear", 10);
+      t4.drop$2$percent("armor", 10);
       t4.drop$2$percent("resistance", 5);
-      t4.drop$2$percent("healing", 5);
+      t4.drop$2$percent("healing", 10);
       t4 = R.breed("goblin warrior", 8, C.Color_132_126_135, 68, null, null, null, 0);
       t4.count$1(2);
       t4.minion$3("goblin fighter", 0, 1);
       t4.minion$3("goblin archer", 0, 1);
       t4.minion$3("goblin peon", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 16, 0, null));
-      t4.drop$2$percent("treasure", 35);
-      t4.drop$2$percent("axe", 20);
-      t4.drop$2$percent("armor", 20);
+      t4.drop$2$percent("treasure", 25);
+      t4.drop$2$percent("axe", 10);
+      t4.drop$2$percent("armor", 10);
       t4.drop$2$percent("resistance", 5);
-      t4.drop$2$percent("healing", 5);
+      t4.drop$2$percent("healing", 10);
       t4._flags = "protective";
       t4 = R.breed("goblin mage", 9, C.Color_26_46_150, 50, null, null, null, 0);
       t4.minion$3("goblin fighter", 0, 1);
@@ -12507,9 +12954,8 @@
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "whip[s]", 7, 0, null));
       t4._bolt$6$damage$range$rate("the flame", "burns", t9, 12, 8, 12);
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 16, 8, 12);
-      t4.drop$2$percent("treasure", 30);
-      t4.drop$2$percent("robe", 20);
-      t4.drop$2$percent("whip", 10);
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("robe", 10);
       t4.drop$2$percent("magic", 30);
       t4 = R.breed("goblin ranger", 12, C.Color_0_64_39, 60, null, null, null, 0);
       t4.minion$3("goblin mage", 0, 1);
@@ -12519,8 +12965,8 @@
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 10, 0, null));
       t4._bolt$6$damage$range$rate("the arrow", "hits", t15, 12, 8, 3);
       t4.drop$2$percent("treasure", 20);
-      t4.drop$2$percent("bow", 30);
-      t4.drop$2$percent("armor", 20);
+      t4.drop$2$percent("bow", 15);
+      t4.drop$2$percent("armor", 10);
       t4.drop$2$percent("magic", 20);
       t4 = R.breed("Erlkonig, the Goblin Prince", 14, C.Color_38_38_56, 120, null, null, null, 0);
       t4._pronoun = C.Pronoun_he_him_his;
@@ -12636,8 +13082,8 @@
       C.JSArray_methods.add$1(t16, new R.MissiveMove(C.Missive_1, 5));
       C.JSArray_methods.add$1(t16, new X.HasteMove(10, 1, 5));
       t4.drop$2$percent("treasure", 20);
-      t4.drop$2$percent("club", 40);
-      t4.drop$2$percent("speed", 30);
+      t4.drop$2$percent("club", 10);
+      t4.drop$2$percent("speed", 20);
       t4 = R.breed("vexing imp", 2, C.Color_86_30_138, 16, null, null, null, 0);
       t4.count$1(2);
       t4.minion$3("scurrilous imp", 0, 1);
@@ -12645,7 +13091,7 @@
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_1, 5));
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 6, 8, 5);
       t4.drop$2$percent("treasure", 25);
-      t4.drop$2$percent("teleportation", 50);
+      t4.drop$2$percent("teleportation", 20);
       C.JSArray_methods.addAll$1(R.family("k", null, null, null, 20, null, null)._groups, H.setRuntimeTypeInfo("kobold".split(" "), t2));
       t4 = R.breed("kobold", 3, C.Color_204_35_57, 20, null, null, null, 0);
       t4.count$1(3);
@@ -12653,16 +13099,16 @@
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "poke[s]", 4, 0, null));
       C.JSArray_methods.add$1(t4._moves, new S.TeleportMove(6, 10));
       t4.drop$2$percent("treasure", 25);
-      t4.drop$2$percent("equipment", 20);
-      t4.drop$2$percent("magic", 40);
+      t4.drop$2$percent("equipment", 10);
+      t4.drop$2$percent("magic", 20);
       t4 = R.breed("kobold shaman", 4, C.Color_26_46_150, 20, null, null, null, 0);
       t4.count$1(2);
       t4.minion$3("wild dog", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "hit[s]", 4, 0, null));
       t4._bolt$6$damage$range$rate("the jet", "splashes", t5, 8, 8, 10);
       t4.drop$2$percent("treasure", 25);
-      t4.drop$2$percent("robe", 20);
-      t4.drop$2$percent("magic", 40);
+      t4.drop$2$percent("robe", 10);
+      t4.drop$2$percent("magic", 20);
       t4 = R.breed("kobold trickster", 5, C.Color_222_156_33, 24, null, null, null, 0);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "hit[s]", 5, 0, null));
       t5 = t4._moves;
@@ -12670,9 +13116,8 @@
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 8, 8, 5);
       C.JSArray_methods.add$1(t5, new S.TeleportMove(6, 7));
       C.JSArray_methods.add$1(t5, new X.HasteMove(10, 1, 7));
-      t4.drop$2$percent("treasure", 45);
+      t4.drop$2$percent("treasure", 35);
       t4.drop$2$percent("magic", 20);
-      t4.drop$2$percent("magic", 40);
       t4 = R.breed("kobold priest", 6, C.Color_21_87_194, 30, null, null, null, 0);
       t4.count$1(2);
       t4.minion$3("kobold", 1, 3);
@@ -12680,10 +13125,10 @@
       t5 = t4._moves;
       C.JSArray_methods.add$1(t5, new O.HealMove(10, 15));
       C.JSArray_methods.add$1(t5, new X.HasteMove(10, 1, 7));
-      t4.drop$2$percent("treasure", 35);
-      t4.drop$2$percent("club", 40);
-      t4.drop$2$percent("robe", 20);
-      t4.drop$2$percent("magic", 40);
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("club", 10);
+      t4.drop$2$percent("robe", 10);
+      t4.drop$2$percent("magic", 30);
       t4 = R.breed("imp incanter", 7, C.Color_189_106_235, 33, null, null, null, 0);
       t4.count$1(2);
       t4.minion$3("kobold", 1, 3);
@@ -12691,9 +13136,9 @@
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "scratch[es]", 4, 0, null));
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_1, 6));
       t4._bolt$6$damage$range$rate("the flame", "burns", t9, 10, 8, 5);
-      t4.drop$2$percent("treasure", 35);
-      t4.drop$2$percent("robe", 20);
-      t4.drop$2$percent("magic", 50);
+      t4.drop$2$percent("treasure", 30);
+      t4.drop$2$percent("robe", 10);
+      t4.drop$2$percent("magic", 35);
       t4._flags = "cowardly";
       t4 = R.breed("imp warlock", 8, C.Color_56_16_125, 46, null, null, null, 0);
       t4.minion$3("imp incanter", 1, 3);
@@ -12702,10 +13147,10 @@
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 5, 0, null));
       t4._bolt$6$damage$range$rate("the ice", "freezes", t7, 12, 8, 8);
       t4._bolt$6$damage$range$rate("the flame", "burns", t9, 12, 8, 8);
-      t4.drop$2$percent("treasure", 35);
-      t4.drop$2$percent("staff", 40);
-      t4.drop$2$percent("robe", 20);
-      t4.drop$3$count$percent("magic", 2, 60);
+      t4.drop$2$percent("treasure", 30);
+      t4.drop$2$percent("staff", 20);
+      t4.drop$2$percent("robe", 10);
+      t4.drop$2$percent("magic", 30);
       t4 = R.breed("Feng", 10, C.Color_179_74_4, 80, null, null, 10, 1);
       t4._pronoun = C.Pronoun_he_him_his;
       t4.minion$3("imp warlock", 1, 2);
@@ -12720,9 +13165,9 @@
       C.JSArray_methods.add$1(t7, new S.TeleportMove(30, 50));
       C.JSArray_methods.add$1(t7, new Y.ConeMove(U.Attack$(new O.Noun("the lightning"), "shocks", 12, 10, t8), 8));
       t4.drop$3$count$depthOffset("treasure", 3, 5);
-      t4.drop$3$depthOffset$percent("spear", 5, 80);
-      t4.drop$3$count$depthOffset("armor", 2, 5);
-      t4.drop$3$count$depthOffset("magic", 3, 5);
+      t4.drop$3$depthOffset$percent("spear", 5, 20);
+      t4.drop$3$depthOffset$percent("armor", 5, 30);
+      t4.drop$3$count$depthOffset("magic", 2, 5);
       t4._flags = "unique";
       t4 = R.family("p", null, null, null, 10, null, 14);
       C.JSArray_methods.addAll$1(t4._groups, H.setRuntimeTypeInfo("human".split(" "), t2));
@@ -12735,54 +13180,53 @@
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "hit[s]", 3, 0, null));
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_0, 5));
       t4.drop$2$percent("treasure", 80);
-      t4.drop$3$depthOffset$percent("weapon", 4, 50);
-      t4.drop$3$depthOffset$percent("armor", 4, 60);
-      t4.drop$3$depthOffset$percent("magic", 4, 30);
+      t4.drop$3$depthOffset$percent("weapon", 4, 20);
+      t4.drop$3$depthOffset$percent("armor", 4, 30);
+      t4.drop$3$depthOffset$percent("magic", 4, 40);
       t4._flags = "unique";
       t4 = R.breed("hapless adventurer", 1, C.Color_255_238_168, 14, 15, null, 30, 0);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "hit[s]", 3, 0, null));
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_0, 12));
-      t4.drop$2$percent("treasure", 25);
-      t4.drop$2$percent("weapon", 50);
-      t4.drop$2$percent("armor", 60);
-      t4.drop$2$percent("magic", 30);
+      t4.drop$2$percent("treasure", 15);
+      t4.drop$2$percent("weapon", 10);
+      t4.drop$2$percent("armor", 15);
+      t4.drop$2$percent("magic", 20);
       t4._flags = "cowardly";
       t4 = R.breed("simpering knave", 2, C.Color_179_74_4, 17, null, null, null, 0);
       t7 = t4._attacks;
       C.JSArray_methods.add$1(t7, U.Attack$(null, "hit[s]", 2, 0, null));
       C.JSArray_methods.add$1(t7, U.Attack$(null, "stab[s]", 4, 0, null));
-      t4.drop$2$percent("treasure", 25);
-      t4.drop$2$percent("whip", 30);
-      t4.drop$2$percent("armor", 40);
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("whip", 10);
+      t4.drop$2$percent("armor", 15);
       t4.drop$2$percent("magic", 20);
       t4._flags = "cowardly";
       t4 = R.breed("decrepit mage", 3, C.Color_86_30_138, 20, null, null, 30, 0);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "hit[s]", 2, 0, null));
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 8, 8, 10);
-      t4.drop$2$percent("treasure", 25);
-      t4.drop$2$percent("magic", 60);
-      t4.drop$2$percent("dagger", 10);
-      t4.drop$2$percent("staff", 10);
-      t4.drop$2$percent("robe", 20);
-      t4.drop$2$percent("boots", 20);
+      t4.drop$2$percent("treasure", 15);
+      t4.drop$2$percent("magic", 30);
+      t4.drop$2$percent("dagger", 5);
+      t4.drop$2$percent("staff", 5);
+      t4.drop$2$percent("robe", 10);
+      t4.drop$2$percent("boots", 5);
       t4 = R.breed("unlucky ranger", 5, C.Color_22_117_38, 30, 25, null, 20, 0);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "slash[es]", 2, 0, null));
       t4._bolt$6$damage$range$rate("the arrow", "hits", t15, 2, 8, 4);
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_0, 10));
-      t4.drop$2$percent("treasure", 25);
-      t4.drop$2$percent("potion", 30);
-      t4.drop$2$percent("bow", 40);
-      t4.drop$2$percent("sword", 10);
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("potion", 20);
+      t4.drop$2$percent("bow", 10);
       t4.drop$2$percent("body", 20);
       t4 = R.breed("drunken priest", 5, C.Color_21_87_194, 34, null, null, 40, 0);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "hit[s]", 8, 0, null));
       t7 = t4._moves;
       C.JSArray_methods.add$1(t7, new O.HealMove(8, 15));
       C.JSArray_methods.add$1(t7, new R.MissiveMove(C.Missive_0, 5));
-      t4.drop$2$percent("treasure", 45);
-      t4.drop$2$percent("scroll", 30);
-      t4.drop$2$percent("club", 20);
-      t4.drop$2$percent("robe", 40);
+      t4.drop$2$percent("treasure", 35);
+      t4.drop$2$percent("scroll", 20);
+      t4.drop$2$percent("club", 10);
+      t4.drop$2$percent("robe", 10);
       t4._flags = "fearless";
       t4 = R.family("r", 30, null, null, 30, null, null);
       C.JSArray_methods.addAll$1(t4._groups, H.setRuntimeTypeInfo("rodent".split(" "), t2));
@@ -12869,14 +13313,14 @@
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       C.JSArray_methods.add$1(t13._attacks, U.Attack$(null, "claw[s]", 7, 0, null));
       t13.drop$2$percent("treasure", 30);
-      t13.drop$2$percent("weapon", 20);
-      t13.drop$2$percent("armor", 20);
+      t13.drop$2$percent("weapon", 10);
+      t13.drop$2$percent("armor", 10);
       t13 = R.breed("armless skeleton", 12, C.Color_129_217_117, 25, null, 0.3, null, 0);
       t3 = t13._attacks;
       C.JSArray_methods.add$1(t3, U.Attack$(null, "bite[s]", 9, 0, null));
       C.JSArray_methods.add$1(t3, U.Attack$(null, "kick[s]", 7, 0, null));
       t13.drop$2$percent("treasure", 30);
-      t13.drop$2$percent("armor", 20);
+      t13.drop$2$percent("armor", 10);
       t13 = R.breed("one-armed skeleton", 13, C.Color_131_158_13, 30, null, 0.4, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       C.JSArray_methods.add$1(t13._attacks, U.Attack$(null, "claw[s]", 7, 0, null));
@@ -12894,8 +13338,8 @@
       C.JSArray_methods.add$1(t15, t3);
       C.JSArray_methods.add$1(t7, new Q.AmputateMove(t4, t3, "{1}'s hand falls off!", 1));
       t13.drop$2$percent("treasure", 30);
-      t13.drop$2$percent("weapon", 10);
-      t13.drop$2$percent("armor", 20);
+      t13.drop$2$percent("weapon", 5);
+      t13.drop$2$percent("armor", 10);
       t13 = R.breed("skeleton", 15, C.Color_226_223_240, 40, null, null, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       t3 = t13._attacks;
@@ -12919,8 +13363,8 @@
       C.JSArray_methods.add$1(t15, t4);
       C.JSArray_methods.add$1(t7, new Q.AmputateMove(t3, t4, "{1}'s hand falls off!", 1));
       t13.drop$2$percent("treasure", 40);
-      t13.drop$2$percent("weapon", 30);
-      t13.drop$2$percent("armor", 30);
+      t13.drop$2$percent("weapon", 10);
+      t13.drop$2$percent("armor", 10);
       t13 = R.breed("skeleton warrior", 17, C.Color_255_122_105, 50, null, null, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       t4 = t13._attacks;
@@ -12944,8 +13388,8 @@
       C.JSArray_methods.add$1(t15, t3);
       C.JSArray_methods.add$1(t7, new Q.AmputateMove(t4, t3, "{1}'s hand falls off!", 1));
       t13.drop$2$percent("treasure", 50);
-      t13.drop$2$percent("weapon", 50);
-      t13.drop$2$percent("armor", 50);
+      t13.drop$2$percent("weapon", 20);
+      t13.drop$2$percent("armor", 15);
       t13 = R.breed("robed skeleton", 19, C.Color_189_106_235, 50, null, null, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       t3 = t13._attacks;
@@ -12969,8 +13413,8 @@
       C.JSArray_methods.add$1(t15, t4);
       C.JSArray_methods.add$1(t7, new Q.AmputateMove(t3, t4, "{1}'s hand falls off!", 1));
       t13.drop$2$percent("treasure", 50);
-      t13.drop$2$percent("magic", 50);
-      t13.drop$2$percent("armor", 50);
+      t13.drop$2$percent("magic", 20);
+      t13.drop$2$percent("armor", 10);
       t13 = R.family("B", null, null, null, null, null, null);
       C.JSArray_methods.addAll$1(t13._groups, H.setRuntimeTypeInfo("bird".split(" "), t2));
       t13._vision = 8;
@@ -13003,7 +13447,7 @@
       C.JSArray_methods.add$1(t1._moves, new R.MissiveMove(C.Missive_1, 4));
       t1._bolt$6$damage$range$rate("the spark", "zaps", t8, 4, 8, 7);
       t1.drop$2$percent("treasure", 10);
-      t1.drop$2$percent("magic", 60);
+      t1.drop$2$percent("magic", 30);
       t1 = R.breed("house sprite", 5, C.Color_64_163_229, 10, null, null, null, 0);
       C.JSArray_methods.add$1(t1._attacks, U.Attack$(null, "poke[s]", 5, 0, null));
       t3 = t1._moves;
@@ -13011,7 +13455,7 @@
       t1._bolt$6$damage$range$rate("the stone", "hits", t14, 4, 8, 10);
       C.JSArray_methods.add$1(t3, new S.TeleportMove(4, 7));
       t1.drop$2$percent("treasure", 10);
-      t1.drop$2$percent("magic", 80);
+      t1.drop$2$percent("magic", 30);
       t1 = R.breed("mischievous sprite", 7, C.Color_255_122_105, 24, null, null, null, 0);
       C.JSArray_methods.add$1(t1._attacks, U.Attack$(null, "stab[s]", 6, 0, null));
       t3 = t1._moves;
@@ -13019,7 +13463,7 @@
       t1._bolt$6$damage$range$rate("the wind", "blows", t11, 8, 8, 8);
       C.JSArray_methods.add$1(t3, new S.TeleportMove(5, 5));
       t1.drop$2$percent("treasure", 10);
-      t1.drop$1("magic");
+      t1.drop$2$percent("magic", 30);
       t1 = R.family("H", null, null, null, null, null, null);
       C.JSArray_methods.addAll$1(t1._groups, H.setRuntimeTypeInfo("hybrid".split(" "), t2));
       t1._vision = 10;
@@ -13066,24 +13510,24 @@
       C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 8, 0, null));
       C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 10, 0, null));
       t1.drop$2$percent("treasure", 30);
-      t1.drop$2$percent("armor", 30);
-      t1.drop$2$percent("spear", 20);
+      t1.drop$2$percent("armor", 10);
+      t1.drop$2$percent("spear", 10);
       t1 = R.breed("lizard protector", 15, C.Color_131_158_13, 30, null, null, null, 0);
       t1.minion$3("lizard guard", 0, 2);
       t12 = t1._attacks;
       C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 10, 0, null));
       C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 14, 0, null));
       t1.drop$2$percent("treasure", 30);
-      t1.drop$2$percent("armor", 30);
-      t1.drop$2$percent("spear", 20);
+      t1.drop$2$percent("armor", 10);
+      t1.drop$2$percent("spear", 10);
       t1 = R.breed("armored lizard", 17, C.Color_132_126_135, 38, null, null, null, 0);
       t1.minion$3("lizard guard", 0, 2);
       t12 = t1._attacks;
       C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 10, 0, null));
       C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 15, 0, null));
       t1.drop$2$percent("treasure", 30);
-      t1.drop$2$percent("armor", 50);
-      t1.drop$2$percent("spear", 20);
+      t1.drop$2$percent("armor", 20);
+      t1.drop$2$percent("spear", 10);
       t1 = R.breed("scaled guardian", 19, C.Color_38_38_56, 50, null, null, null, 0);
       t1.minion$3("lizard protector", 0, 2);
       t1.minion$3("lizard guard", 0, 1);
@@ -13092,8 +13536,7 @@
       C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 10, 0, null));
       C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 15, 0, null));
       t1.drop$2$percent("treasure", 40);
-      t1.drop$2$percent("armor", 30);
-      t1.drop$2$percent("weapon", 20);
+      t1.drop$2$percent("equipment", 10);
       t1 = R.breed("saurian", 21, C.Color_179_74_4, 64, null, null, null, 0);
       t1.minion$3("lizard protector", 0, 2);
       t1.minion$3("armored lizard", 0, 1);
@@ -13103,8 +13546,7 @@
       C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 12, 0, null));
       C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 17, 0, null));
       t1.drop$2$percent("treasure", 50);
-      t1.drop$2$percent("armor", 30);
-      t1.drop$2$percent("weapon", 20);
+      t1.drop$2$percent("equipment", 10);
       t1 = R.family("R", 30, null, null, 20, null, null);
       C.JSArray_methods.addAll$1(t1._groups, H.setRuntimeTypeInfo("salamander".split(" "), t2));
       t1._vision = 6;
@@ -13757,7 +14199,7 @@
       modifyAttack$4: function(hero, monster, hit, level) {
         if (!this._hasWeapon$1(hero))
           return;
-        hit._combat$_damageScale *= K.lerpDouble(level, 1, 20, 1.05, 2);
+        hit._damageScale *= K.lerpDouble(level, 1, 20, 1.05, 2);
       },
       levelDescription$1: ["super$MasteryDiscipline$levelDescription", function(level) {
         return "Melee attacks inflict " + C.JSNumber_methods.toInt$0((K.lerpDouble(level, 1, 20, 1.05, 2) - 1) * 100) + "% more damage when using a " + this.get$weaponType() + ".";
@@ -13799,7 +14241,7 @@
         if (t1 == null)
           return;
         hit = this._action$_actor.createMeleeHit$1(t1);
-        hit._combat$_damageScale *= this.damageScale;
+        hit._damageScale *= this.damageScale;
         return hit.perform$3(this, this._action$_actor, t1);
       },
       get$noise: function() {
@@ -13838,7 +14280,7 @@
           return;
         if (!$.$get$Monsters_breeds().hasTag$2(O.Log__categorize(monster._breed._breed$_name, false, true), this._breedGroup))
           return;
-        hit._combat$_damageScale *= K.lerpDouble(level, 1, 20, 1.05, 2);
+        hit._damageScale *= K.lerpDouble(level, 1, 20, 1.05, 2);
       },
       levelDescription$1: function(level) {
         return "Melee attacks inflict " + C.JSNumber_methods.toInt$0((K.lerpDouble(level, 1, 20, 1.05, 2) - 1) * 100) + "% more damage against " + this._displayName.toLowerCase() + ".";
@@ -13951,7 +14393,7 @@
         var t1, hit;
         t1 = game._stage._actorsByTile.$index(0, target);
         hit = game.hero.createMeleeHit$1(t1);
-        hit._combat$_damageScale *= K.lerpDouble(level, 1, 10, 0.3, 1);
+        hit._damageScale *= K.lerpDouble(level, 1, 10, 0.3, 1);
         return new O.BoltAction(hit, true, 3, target);
       }
     },
@@ -14485,7 +14927,7 @@
         var $async$self = this;
         return P._makeSyncStarIterable(function() {
           var unownedPassages = $async$unownedPassages;
-          var $async$goto = 0, $async$handler = 2, $async$currentError, t1, unformed, t2, t3, t4, t5, t6, t7, t8, t9, t10, openCount, start, startDistance, t11, t12, pos, tile, distance, reachability, _i, t13;
+          var $async$goto = 0, $async$handler = 2, $async$currentError, t1, unformed, t2, t3, t4, t5, t6, t7, t8, t9, t10, openCount, start, startDistance, t11, t12, pos, tile, distance, reachability, count, _i, t13, count0;
           return function $async$_fillPassages$1($async$errorCode, $async$result) {
             if ($async$errorCode === 1) {
               $async$currentError = $async$result;
@@ -14555,7 +14997,7 @@
                     reachability = new D.Reachability(t2, start, t5, new U.VecSet(M.Array2D$(t7, t6, 0, t4), 0, t7, 0, t6, 0), 0);
                     reachability._setDistance$2(start, 0);
                     reachability._reachability$_process$1(H.setRuntimeTypeInfo([start], t1));
-                    t1 = unformed.length, t4 = t5._elements, t5 = t5.bounds.size.x, t6 = t4.length, _i = 0;
+                    t1 = unformed.length, t4 = t5._elements, t5 = t5.bounds.size.x, t6 = t4.length, count = 0, _i = 0;
                   case 3:
                     // for condition
                     if (!(_i < unformed.length)) {
@@ -14622,10 +15064,18 @@
                       $async$self._makePassage$2(unownedPassages, pos);
                       reachability.undoFill$0();
                     }
-                    $async$goto = 6;
-                    return H.S(pos);
+                    count0 = count + 1;
+                    $async$goto = C.JSInt_methods.$mod(count, 20) === 0 ? 6 : 7;
+                    break;
                   case 6:
+                    // then
+                    $async$goto = 8;
+                    return H.S(pos);
+                  case 8:
                     // after yield
+                  case 7:
+                    // join
+                    count = count0;
                   case 4:
                     // for update
                     unformed.length === t1 || (0, H.throwConcurrentModificationError)(unformed), ++_i;
@@ -16143,7 +16593,7 @@
       _spawnMonsters$0: function() {
         var $async$self = this;
         return P._makeSyncStarIterable(function() {
-          var $async$goto = 0, $async$handler = 2, $async$currentError, spawned, t1, t2, t3, t4, t5, t6, densityMap, flow, t7, t8, t9, t10, t11, t12, t13, t14, distance, old, monsterCount, monsters, pos, max, group, breed;
+          var $async$goto = 0, $async$handler = 2, $async$currentError, spawned, t1, t2, t3, t4, t5, t6, densityMap, flow, t7, t8, t9, pos, distance, goalExperience, t10, totalExperience, t11, t12, t13, max, t14, group, breed, experience;
           return function $async$_spawnMonsters$0($async$errorCode, $async$result) {
             if ($async$errorCode === 1) {
               $async$currentError = $async$result;
@@ -16162,73 +16612,53 @@
                     t4 = t3.bounds;
                     t5 = t4.size;
                     t6 = t5.x;
-                    t5 = M.Array2D$(t6, t5.y, 0, P.int);
-                    densityMap = new S.DensityMap(t5, 0);
+                    densityMap = new S.DensityMap(M.Array2D$(t6, t5.y, 0, P.int), 0, 0);
                     $.Debug_densityMap = densityMap;
-                    flow = N.MotilityFlow$(t2, $async$self._heroPos, $.$get$Motility_all(), null, null, null);
-                    for (t2 = X.RectIterator$(t4.inflate$1(-1)), t4 = t5._elements, t7 = t5.bounds.size.x, t8 = t4.length, t5 = H.getTypeArgumentByIndex(t5, 0), t9 = t1._owners, t10 = t9._elements, t9 = t9.bounds.size.x, t11 = t10.length; t2.moveNext$0();) {
-                      t12 = t2._rect$_x;
-                      t13 = t2._rect$_y;
-                      if (typeof t9 !== "number") {
-                        H.iae(t9);
+                    flow = N.MotilityFlow$(t2, $async$self._heroPos, $.$get$Motility_all(), false, null, null);
+                    for (t2 = X.RectIterator$(t4.inflate$1(-1)), t4 = t1._owners, t5 = t4._elements, t4 = t4.bounds.size.x, t7 = t5.length; t2.moveNext$0();) {
+                      t8 = t2._rect$_x;
+                      t9 = t2._rect$_y;
+                      pos = new L.Vec(t8, t9);
+                      if (typeof t4 !== "number") {
+                        H.iae(t4);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      if (typeof t12 !== "number") {
-                        H.iae(t12);
+                      if (typeof t8 !== "number") {
+                        H.iae(t8);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      t14 = t13 * t9 + t12;
-                      if (t14 < 0 || t14 >= t11) {
-                        H.ioore(t10, t14);
+                      t8 = t9 * t4 + t8;
+                      if (t8 < 0 || t8 >= t7) {
+                        H.ioore(t5, t8);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      t14 = t10[t14];
-                      if (t14 == null)
+                      t8 = t5[t8];
+                      if (t8 == null)
                         continue;
-                      if (spawned.contains$1(0, t14))
+                      if (spawned.contains$1(0, t8))
                         continue;
-                      distance = flow.costAt$1(new L.Vec(t12, t13));
+                      distance = flow.costAt$1(pos);
                       if (distance == null)
                         continue;
                       if (distance < 10)
                         continue;
-                      t14 = C.JSNumber_methods.toInt$0((4 + Math.sqrt(distance - 10)) * t14._style.monsterDensity);
-                      if (typeof t7 !== "number") {
-                        H.iae(t7);
-                        // goto return
-                        $async$goto = 1;
-                        break $async$outer;
-                      }
-                      t12 = t13 * t7 + t12;
-                      if (t12 < 0 || t12 >= t8) {
-                        H.ioore(t4, t12);
-                        // goto return
-                        $async$goto = 1;
-                        break $async$outer;
-                      }
-                      old = t4[t12];
-                      t13 = densityMap._total;
-                      if (typeof old !== "number") {
-                        H.iae(old);
-                        // goto return
-                        $async$goto = 1;
-                        break $async$outer;
-                      }
-                      densityMap._total = t13 - old + t14;
-                      C.JSArray_methods.$indexSet(t4, t12, H.assertSubtypeOfRuntimeType(t14, t5));
+                      densityMap.$indexSet(0, pos, C.JSNumber_methods.toInt$0((4 + Math.sqrt(distance - 10)) * t8._style.monsterDensity));
                     }
                     t2 = t1.depth;
-                    monsterCount = 100 + t2 * 2;
-                    t4 = [P.String], t5 = $async$self._spawnedUniques, t1 = t1.lore._slainBreeds, monsters = 0;
+                    t8 = Math.pow(t2 - 1, 2);
+                    goalExperience = densityMap._possibleTiles * (2 + t8 * 0.2);
+                    t8 = $.$get$rng();
+                    goalExperience += t8.float$1(0, goalExperience * 0.2);
+                    t9 = [P.String], t10 = $async$self._spawnedUniques, t1 = t1.lore._slainBreeds, totalExperience = 0;
                   case 3:
                     // for condition
-                    if (!(monsters < monsterCount)) {
+                    if (!(totalExperience < goalExperience)) {
                       // goto after for
                       $async$goto = 4;
                       break;
@@ -16239,83 +16669,79 @@
                       $async$goto = 4;
                       break;
                     }
-                    t7 = pos.y;
-                    if (typeof t9 !== "number") {
-                      H.iae(t9);
+                    t11 = pos.y;
+                    if (typeof t4 !== "number") {
+                      H.iae(t4);
                       // goto return
                       $async$goto = 1;
                       break;
                     }
-                    t8 = pos.x;
-                    if (typeof t8 !== "number") {
-                      H.iae(t8);
+                    t12 = pos.x;
+                    if (typeof t12 !== "number") {
+                      H.iae(t12);
                       // goto return
                       $async$goto = 1;
                       break;
                     }
-                    t12 = t7 * t9 + t8;
-                    if (t12 < 0 || t12 >= t11) {
-                      H.ioore(t10, t12);
+                    t13 = t11 * t4 + t12;
+                    if (t13 < 0 || t13 >= t7) {
+                      H.ioore(t5, t13);
                       // goto return
                       $async$goto = 1;
                       break;
                     }
-                    t12 = t10[t12];
-                    t13 = $.$get$rng();
-                    t12 = t12._style.monsterGroups;
-                    t13.toString;
-                    H.assertSubtype(t12, "$isList", t4, "$asList");
-                    max = t12.length;
-                    t13 = t13._random.nextInt$1(max - 0);
-                    if (t13 < 0 || t13 >= t12.length) {
-                      H.ioore(t12, t13);
+                    t13 = H.assertSubtype(t5[t13]._style.monsterGroups, "$isList", t9, "$asList");
+                    max = t13.length;
+                    t14 = t8._random.nextInt$1(max - 0);
+                    if (t14 < 0 || t14 >= t13.length) {
+                      H.ioore(t13, t14);
                       // goto return
                       $async$goto = 1;
                       break;
                     }
-                    group = t12[t13];
+                    group = t13[t14];
                     breed = $.$get$Monsters_breeds().tryChoose$2$tag(t2, group);
-                    t12 = t3._elements;
+                    t13 = t3._elements;
                     if (typeof t6 !== "number") {
                       H.iae(t6);
                       // goto return
                       $async$goto = 1;
                       break;
                     }
-                    t8 = t7 * t6 + t8;
-                    if (t8 < 0 || t8 >= t12.length) {
-                      H.ioore(t12, t8);
+                    t12 = t11 * t6 + t12;
+                    if (t12 < 0 || t12 >= t13.length) {
+                      H.ioore(t13, t12);
                       // goto return
                       $async$goto = 1;
                       break;
                     }
-                    t8 = t12[t8];
-                    t12 = breed.motility;
-                    if ((t8.type.motility._bitMask & t12._bitMask) === 0) {
+                    t12 = t13[t12];
+                    t13 = breed.motility;
+                    if ((t12.type.motility._bitMask & t13._bitMask) === 0) {
                       // goto for condition
                       $async$goto = 3;
                       break;
                     }
                     if (breed.flags.unique) {
-                      t7 = t1.$index(0, breed);
-                      if ((t7 == null ? 0 : t7) > 0) {
+                      t11 = t1.$index(0, breed);
+                      if ((t11 == null ? 0 : t11) > 0) {
                         // goto for condition
                         $async$goto = 3;
                         break;
                       }
-                      if (t5.contains$1(0, breed)) {
+                      if (t10.contains$1(0, breed)) {
                         // goto for condition
                         $async$goto = 3;
                         break;
                       }
-                      t5.add$1(0, breed);
+                      t10.add$1(0, breed);
                     }
-                    spawned = $async$self._spawnMonster$3(densityMap, pos, breed);
+                    experience = $async$self._spawnMonster$3(densityMap, pos, breed);
                     $async$goto = 5;
                     return "Spawned monster";
                   case 5:
                     // after yield
-                    monsters += spawned;
+                    totalExperience += experience;
                     // goto for condition
                     $async$goto = 3;
                     break;
@@ -16333,12 +16759,12 @@
         }, P.String);
       },
       _spawnMonster$3: function(density, pos, breed) {
-        var _box_0, t1, breeds, spawn, t2, t3, t4, t5, t6, t7, flow, here;
+        var _box_0, isCorpse, breeds, spawn, t1, t2, t3, t4, t5, t6, t7, flow, here;
         _box_0 = {};
-        t1 = $.$get$rng().range$1(8);
+        isCorpse = !breed.flags.unique && $.$get$rng().range$1(10) === 0;
         breeds = breed.spawnAll$0();
-        _box_0.spawned = 0;
-        spawn = new S.Decorator__spawnMonster_spawn(_box_0, this, t1 === 0, density);
+        _box_0.experience = 0;
+        spawn = new S.Decorator__spawnMonster_spawn(_box_0, this, isCorpse, density);
         if (0 >= breeds.length)
           return H.ioore(breeds, 0);
         spawn.call$2(breeds[0], pos);
@@ -16352,12 +16778,12 @@
             break;
           spawn.call$2(t6, here);
         }
-        return _box_0.spawned;
+        return _box_0.experience;
       },
       _dropItems$0: function() {
         var $async$self = this;
         return P._makeSyncStarIterable(function() {
-          var $async$goto = 0, $async$handler = 2, $async$currentError, t1, t2, t3, t4, t5, t6, densityMap, flow, t7, t8, t9, t10, t11, t12, t13, t14, t15, distance, t16, t17, old, itemCount, items, pos;
+          var $async$goto = 0, $async$handler = 2, $async$currentError, t1, t2, t3, t4, t5, t6, densityMap, flow, t7, t8, t9, t10, pos, t11, distance, t12, goalPrice, totalPrice, items, _i;
           return function $async$_dropItems$0($async$errorCode, $async$result) {
             if ($async$errorCode === 1) {
               $async$currentError = $async$result;
@@ -16374,88 +16800,66 @@
                     t4 = t3.bounds;
                     t5 = t4.size;
                     t6 = t5.x;
-                    t5 = M.Array2D$(t6, t5.y, 0, P.int);
-                    densityMap = new S.DensityMap(t5, 0);
+                    densityMap = new S.DensityMap(M.Array2D$(t6, t5.y, 0, P.int), 0, 0);
                     $.Debug_densityMap = densityMap;
-                    flow = N.MotilityFlow$(t2, $async$self._heroPos, $.$get$Motility_doorAndWalk(), null, null, null);
-                    for (t4 = X.RectIterator$(t4.inflate$1(-1)), t7 = t5._elements, t8 = t5.bounds.size.x, t9 = t7.length, t5 = H.getTypeArgumentByIndex(t5, 0), t10 = t1._owners, t11 = t10._elements, t10 = t10.bounds.size.x, t12 = t11.length; t4.moveNext$0();) {
-                      t13 = t4._rect$_x;
-                      t14 = t4._rect$_y;
-                      if (typeof t10 !== "number") {
-                        H.iae(t10);
+                    flow = N.MotilityFlow$(t2, $async$self._heroPos, $.$get$Motility_doorAndWalk(), false, null, null);
+                    for (t4 = X.RectIterator$(t4.inflate$1(-1)), t5 = t1._owners, t7 = t5._elements, t5 = t5.bounds.size.x, t8 = t7.length; t4.moveNext$0();) {
+                      t9 = t4._rect$_x;
+                      t10 = t4._rect$_y;
+                      pos = new L.Vec(t9, t10);
+                      if (typeof t5 !== "number") {
+                        H.iae(t5);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      if (typeof t13 !== "number") {
-                        H.iae(t13);
+                      if (typeof t9 !== "number") {
+                        H.iae(t9);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      t15 = t14 * t10 + t13;
-                      if (t15 < 0 || t15 >= t12) {
-                        H.ioore(t11, t15);
+                      t11 = t10 * t5 + t9;
+                      if (t11 < 0 || t11 >= t8) {
+                        H.ioore(t7, t11);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      t15 = t11[t15];
-                      if (t15 == null)
+                      t11 = t7[t11];
+                      if (t11 == null)
                         continue;
-                      distance = flow.costAt$1(new L.Vec(t13, t14));
+                      distance = flow.costAt$1(pos);
                       if (distance == null)
                         continue;
-                      t16 = t3._elements;
+                      t12 = t3._elements;
                       if (typeof t6 !== "number") {
                         H.iae(t6);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      t17 = t14 * t6 + t13;
-                      if (t17 < 0 || t17 >= t16.length) {
-                        H.ioore(t16, t17);
+                      t9 = t10 * t6 + t9;
+                      if (t9 < 0 || t9 >= t12.length) {
+                        H.ioore(t12, t9);
                         // goto return
                         $async$goto = 1;
                         break $async$outer;
                       }
-                      t17 = t16[t17].type;
-                      t17.toString;
-                      t16 = $.$get$Motility_walk();
-                      if ((t17.motility._bitMask & t16._bitMask) === 0)
+                      t9 = t12[t9].type;
+                      t9.toString;
+                      t12 = $.$get$Motility_walk();
+                      if ((t9.motility._bitMask & t12._bitMask) === 0)
                         continue;
-                      t15 = C.JSNumber_methods.toInt$0((10 + Math.sqrt(distance + 1)) * t15._style.itemDensity);
-                      if (typeof t8 !== "number") {
-                        H.iae(t8);
-                        // goto return
-                        $async$goto = 1;
-                        break $async$outer;
-                      }
-                      t13 = t14 * t8 + t13;
-                      if (t13 < 0 || t13 >= t9) {
-                        H.ioore(t7, t13);
-                        // goto return
-                        $async$goto = 1;
-                        break $async$outer;
-                      }
-                      old = t7[t13];
-                      t14 = densityMap._total;
-                      if (typeof old !== "number") {
-                        H.iae(old);
-                        // goto return
-                        $async$goto = 1;
-                        break $async$outer;
-                      }
-                      densityMap._total = t14 - old + t15;
-                      C.JSArray_methods.$indexSet(t7, t13, H.assertSubtypeOfRuntimeType(t15, t5));
+                      densityMap.$indexSet(0, pos, C.JSNumber_methods.toInt$0((10 + Math.sqrt(distance + 1)) * t11._style.itemDensity));
                     }
                     t1 = t1.depth;
-                    itemCount = 30 + t1;
-                    items = 0;
+                    goalPrice = densityMap._possibleTiles * (0.1 + (t1 - 1) * 0.1);
+                    goalPrice += $.$get$rng().float$1(0, goalPrice * 0.2);
+                    totalPrice = 0;
                   case 3:
                     // for condition
-                    if (!(items < itemCount)) {
+                    if (!(totalPrice < goalPrice)) {
                       // goto after for
                       $async$goto = 4;
                       break;
@@ -16467,9 +16871,10 @@
                       break;
                     }
                     t3 = $.$get$_floorDrops().tryChoose$1(t1);
-                    t2.placeDrops$3(pos, $.$get$Motility_walk(), t3.drop);
-                    densityMap.reduceAround$4(t2, pos, $.$get$Motility_doorAndWalk(), 10);
-                    ++items;
+                    items = t2.placeDrops$3(pos, $.$get$Motility_walk(), t3.drop);
+                    for (t3 = items.length, _i = 0; _i < items.length; items.length === t3 || (0, H.throwConcurrentModificationError)(items), ++_i)
+                      totalPrice += Math.max(items[_i].get$price(), 1);
+                    densityMap.reduceAround$4(t2, pos, $.$get$Motility_doorAndWalk(), 3);
                     $async$goto = 5;
                     return "Spawned item";
                   case 5:
@@ -16513,14 +16918,16 @@
     Decorator__spawnMonster_spawn: {
       "^": "Closure:74;_box_0,$this,isCorpse,density",
       call$2: function(breed, pos) {
-        var t1, t2;
+        var t1, monster, t2;
         t1 = this.$this._decorator$_architect;
         if (this.isCorpse)
           t1.stage.placeDrops$3(pos, breed.motility, breed.drop);
         else {
           t1 = t1.stage;
-          t1.addActor$1(breed.spawn$2(t1.game, pos));
-          ++this._box_0.spawned;
+          monster = breed.spawn$2(t1.game, pos);
+          t1.addActor$1(monster);
+          t2 = this._box_0;
+          t2.experience = t2.experience + monster._breed.get$experience();
           t2 = this.density;
           if (t2 != null)
             t2.reduceAround$4(t1, pos, $.$get$Motility_all(), 5);
@@ -16541,7 +16948,7 @@
       }
     },
     DensityMap: {
-      "^": "Object;_density,_total",
+      "^": "Object;_density,_total,_possibleTiles",
       $index: function(_, pos) {
         return this._density.$index(0, H.interceptedTypeCheck(pos, "$isVec"));
       },
@@ -16554,6 +16961,10 @@
           return H.iae(old);
         this._total = t2 - old + value;
         t1.$indexSet(0, pos, value);
+        if (old === 0 && value > 0)
+          ++this._possibleTiles;
+        if (old > 0 && value === 0)
+          --this._possibleTiles;
       },
       choose$0: function() {
         var t1, n, t2, t3, t4, t5, t6, pos, density;
@@ -16582,33 +16993,27 @@
         throw H.wrapException("unreachable");
       },
       reduceAround$4: function(stage, start, motility, range) {
-        var flow, t1, t2, t3, t4, t5, t6, t7, t8, old;
+        var flow, t1, t2, t3, t4, t5, t6, t7, t8;
         this.$indexSet(0, start, 0);
         flow = N.MotilityFlow$(stage, start, motility, null, null, range);
-        for (t1 = flow.get$reachable(), t1 = new P._SyncStarIterator(t1._outerHelper(), [H.getTypeArgumentByIndex(t1, 0)]), t2 = this._density, t3 = t2._elements, t4 = t2.bounds.size.x, t5 = t3.length, t2 = H.getTypeArgumentByIndex(t2, 0); t1.moveNext$0();) {
-          t6 = t1.get$current();
-          t7 = flow.costAt$1(t6);
-          if (typeof t7 !== "number")
-            return t7.$div();
-          t8 = t6.y;
-          if (typeof t4 !== "number")
-            return H.iae(t4);
-          t6 = t6.x;
+        for (t1 = flow.get$reachable(), t1 = new P._SyncStarIterator(t1._outerHelper(), [H.getTypeArgumentByIndex(t1, 0)]), t2 = this._density, t3 = t2._elements, t2 = t2.bounds.size.x, t4 = t3.length; t1.moveNext$0();) {
+          t5 = t1.get$current();
+          t6 = flow.costAt$1(t5);
           if (typeof t6 !== "number")
-            return H.iae(t6);
-          t6 = t8 * t4 + t6;
-          if (t6 < 0 || t6 >= t5)
-            return H.ioore(t3, t6);
-          t8 = t3[t6];
+            return t6.$div();
+          t7 = t5.y;
+          if (typeof t2 !== "number")
+            return H.iae(t2);
+          t8 = t5.x;
+          if (typeof t8 !== "number")
+            return H.iae(t8);
+          t8 = t7 * t2 + t8;
+          if (t8 < 0 || t8 >= t4)
+            return H.ioore(t3, t8);
+          t8 = t3[t8];
           if (typeof t8 !== "number")
             return t8.$mul();
-          t7 = C.JSNumber_methods.toInt$0(t8 * (t7 / range));
-          old = t3[t6];
-          t8 = this._total;
-          if (typeof old !== "number")
-            return H.iae(old);
-          this._total = t8 - old + t7;
-          C.JSArray_methods.$indexSet(t3, t6, H.assertSubtypeOfRuntimeType(t7, t2));
+          this.$indexSet(0, t5, C.JSNumber_methods.toInt$0(t8 * (t6 / range)));
         }
       }
     }
@@ -17015,6 +17420,10 @@
             default:
               xMin = 1;
           }
+          if (xMax < xMin)
+            xMax = xMin;
+          if (yMax < yMin)
+            yMax = yMin;
           t2 = $.$get$rng();
           t3 = t2._random.nextInt$1(xMax - xMin);
           if (this._tryPlaceRoom$3(room, t3 + xMin, t2._random.nextInt$1(yMax - yMin) + yMin))
@@ -19384,7 +19793,7 @@
       }
     },
     Hit: {
-      "^": "Object;_attack,_strikeBonus,_strikeScale,_combat$_damageScale,_combat$_damageBonus,_brand,_rangeScale",
+      "^": "Object;_attack,_strikeBonus,_strikeScale,_damageScale,_damageBonus,_brand,_rangeScale",
       get$range: function() {
         var t1 = this._attack.range;
         if (t1 === 0)
@@ -19398,7 +19807,7 @@
         return this._attack.element;
       },
       get$averageDamage: function() {
-        return this._attack.damage * this._combat$_damageScale + this._combat$_damageBonus;
+        return this._attack.damage * this._damageScale + this._damageBonus;
       },
       get$damageString: function() {
         return C.JSDouble_methods.toString$0(C.JSNumber_methods.toInt$0(this.get$averageDamage() * 100) / 100);
@@ -19430,7 +19839,7 @@
         }
         armor = defender.get$armor();
         resistance = defender.resistance$1(this.get$element());
-        damageCents = C.JSNumber_methods.toInt$0((t1.damage * this._combat$_damageScale + this._combat$_damageBonus) * (1 / (1 + resistance)) * 100);
+        damageCents = C.JSNumber_methods.toInt$0((t1.damage * this._damageScale + this._damageBonus) * (1 / (1 + resistance)) * 100);
         damage = C.JSDouble_methods.round$0($.$get$rng().triangleInt$2(damageCents, C.JSInt_methods._tdivFast$1(damageCents, 2)) * U.getArmorMultiplier(armor) / 100);
         if (damage === 0) {
           action.log$3("{1} do[es] no damage to {2}.", attackNoun, defender);
@@ -20494,7 +20903,7 @@
       return C.JSNumber_methods.toInt$0(Math.pow(level - 1, 3)) * 1000;
     },
     Hero: {
-      "^": "Actor;save,_seenMonsters,0_behavior,_hero$_heftScale,_stomach,_focus,_lastNoise,_level,game,energy,haste,cold,poison,blindness,dazzle,resistances,_pos,0_health",
+      "^": "Actor;save,_seenMonsters,0_behavior,_heftScale,_stomach,_focus,_lastNoise,_level,game,energy,haste,cold,poison,blindness,dazzle,resistances,_pos,0_health",
       get$nounText: function() {
         return "you";
       },
@@ -20614,11 +21023,11 @@
           t2 = weapon.type.attack;
           t2.toString;
           hit = new U.Hit(t2, 0, 1, 1, 0, $.$get$Element_none(), 1);
-          t2 = this._hero$_heftScale;
+          t2 = this._heftScale;
           t2 = t2._modify$1(t2._value);
           if (typeof t2 !== "number")
             return H.iae(t2);
-          hit._combat$_damageScale = t2;
+          hit._damageScale = t2;
         } else
           hit = new U.Hit(U.Attack$(this, "punch[es]", 3, null, null), 0, 1, 1, 0, $.$get$Element_none(), 1);
         hit._strikeBonus += t1.agility.get$strikeBonus();
@@ -20635,11 +21044,11 @@
         t1 = this.save._equipment.find$1(0, "weapon").type.attack;
         t1.toString;
         hit = new U.Hit(t1, 0, 1, 1, 0, $.$get$Element_none(), 1);
-        t1 = this._hero$_heftScale;
+        t1 = this._heftScale;
         t1 = t1._modify$1(t1._value);
         if (typeof t1 !== "number")
           return H.iae(t1);
-        hit._combat$_damageScale = t1;
+        hit._damageScale = t1;
         this.modifyHit$2(hit, C.HitType_1);
         return hit;
       },
@@ -20657,8 +21066,8 @@
         for (t1 = this.save._equipment, t1 = t1.get$iterator(t1), t2 = t1._iterator; t1.moveNext$0();) {
           t3 = t2.get$current();
           hit._strikeBonus += t3.get$strikeBonus();
-          hit._combat$_damageScale *= t3.get$damageScale();
-          hit._combat$_damageBonus += t3.get$damageBonus();
+          hit._damageScale *= t3.get$damageScale();
+          hit._damageBonus += t3.get$damageBonus();
           t3 = t3.get$element();
           if (t3 != $.$get$Element_none())
             hit._brand = t3;
@@ -20750,7 +21159,7 @@
         t3 = t1._equipment.find$1(0, "weapon");
         t3 = t3 == null ? null : t3.get$heft();
         heft = t2.heftScale$1(t3 == null ? 0 : t3);
-        this._hero$_heftScale.update$2(0, heft, new G.Hero_refreshProperties_closure0(this, heft));
+        this._heftScale.update$2(0, heft, new G.Hero_refreshProperties_closure0(this, heft));
         C.JSArray_methods.forEach$1(t1.skills.get$discovered(), this.get$refreshSkill());
       },
       pickUp$1: function(item) {
@@ -20867,12 +21276,12 @@
           t3 = t2.get$current();
           t4 = t3.prefix;
           if (t4 != null) {
-            t4 = t4._affix$_statBonuses.$index(0, stat);
+            t4 = t4._statBonuses.$index(0, stat);
             bonus += t4 == null ? 0 : t4;
           }
           t3 = t3.suffix;
           if (t3 != null) {
-            t3 = t3._affix$_statBonuses.$index(0, stat);
+            t3 = t3._statBonuses.$index(0, stat);
             bonus += t3 == null ? 0 : t3;
           }
         }
@@ -21492,7 +21901,7 @@
   }], ["", "package:hauberk/src/engine/items/affix.dart",, L, {
     "^": "",
     Affix: {
-      "^": "Object;name>,displayName,heftScale,weightBonus,strikeBonus,damageScale,damageBonus,brand,armor,_resists,_affix$_statBonuses,priceBonus,priceScale",
+      "^": "Object;name>,displayName,heftScale,weightBonus,strikeBonus,damageScale,damageBonus,brand,armor,_resists,_statBonuses,priceBonus,priceScale",
       resistance$1: function(element) {
         var t1 = this._resists.$index(0, element);
         return t1 == null ? 0 : t1;
@@ -21501,7 +21910,7 @@
         this._resists.$indexSet(0, H.interceptedTypeCheck(element, "$isElement"), H.intTypeCheck(power));
       }, "call$2", "get$resist", 8, 0, 91],
       setStatBonus$2: [function(stat, bonus) {
-        this._affix$_statBonuses.$indexSet(0, H.interceptedTypeCheck(stat, "$isStat"), H.intTypeCheck(bonus));
+        this._statBonuses.$indexSet(0, H.interceptedTypeCheck(stat, "$isStat"), H.intTypeCheck(bonus));
       }, "call$2", "get$setStatBonus", 8, 0, 115],
       toString$0: function(_) {
         return this.name;
@@ -27802,13 +28211,13 @@
       for (t2 = item.suffix, t3 = t2 != null, t4 = item.prefix, t5 = t4 != null, _i = 0; _i < 5; ++_i) {
         stat = C.List_zPV[_i];
         if (t5) {
-          bonus = t4._affix$_statBonuses.$index(0, stat);
+          bonus = t4._statBonuses.$index(0, stat);
           if (bonus == null)
             bonus = 0;
         } else
           bonus = 0;
         if (t3) {
-          t6 = t2._affix$_statBonuses.$index(0, stat);
+          t6 = t2._statBonuses.$index(0, stat);
           bonus += t6 == null ? 0 : t6;
         }
         if (bonus < 0)
@@ -30971,17 +31380,17 @@
       J.get$children$x(C.HtmlDocument_methods.querySelector$1(t6, ".button-bar")).add$1(0, button);
     },
     main: function() {
-      var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, tableCells, $content, font, fontIndex, i;
+      var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, tableCells, $content, font, fontIndex, i;
       $.$get$Items_types().defineTags$1("item");
       t1 = R.category(199, 10, null);
       t1.tag$1(0, "item");
       t2 = $.$get$Elements_earth();
       t1.toss$4$breakage$damage$element$range(10, 3, t2, 7);
-      R.item("Rock", 1, C.Color_142_82_55, 1, null);
+      R.item("Rock", 1, C.Color_142_82_55, 0.5, null);
       t1 = R.category(252, 4, null);
       t1.tag$1(0, "item");
       t1.toss$3$breakage$damage$range(30, 2, 5);
-      R.item("Skull", 1, C.Color_132_126_135, 1, null);
+      R.item("Skull", 1, C.Color_132_126_135, 0.5, null);
       t1 = R.category(162, null, null);
       t1.tag$1(0, "treasure/coin");
       t1._isTreasure = true;
@@ -31119,805 +31528,387 @@
       R.item("Bottled Shadow", 28, C.Color_38_38_56, 0.5, 260).ball$4(t8, "the darkness", "torments", 120);
       R.item("Bottled Radiance", 34, C.Color_255_238_168, 0.5, 280).ball$4(t5, "light", "sears", 140);
       R.item("Bottled Spirit", 40, C.Color_63_64_114, 0.5, 300).flow$5$fly(t12, "the spirit", "haunts", 160, true);
-      t1 = R.category(226, 20, null);
-      t1.tag$1(0, "magic/scroll/teleportation");
-      t1.toss$3$breakage$damage$range(75, 1, 3);
-      t1._destroyChance.$indexSet(0, t3, 20);
-      t1._fuel = 5;
+      t12 = R.category(226, 20, null);
+      t12.tag$1(0, "magic/scroll/teleportation");
+      t12.toss$3$breakage$damage$range(75, 1, 3);
+      t12._destroyChance.$indexSet(0, t3, 20);
+      t12._fuel = 5;
       R.item("Scroll[s] of Sidestepping", 2, C.Color_189_106_235, 0.5, 16).teleport$1(6);
       R.item("Scroll[s] of Phasing", 6, C.Color_86_30_138, 0.3, 28).teleport$1(12);
       R.item("Scroll[s] of Teleportation", 15, C.Color_56_16_125, 0.3, 52).teleport$1(24);
       R.item("Scroll[s] of Disappearing", 26, C.Color_26_46_150, 0.3, 74).teleport$1(48);
-      t1 = R.category(228, 20, null);
-      t1.tag$1(0, "magic/scroll/detection");
-      t1.toss$3$breakage$damage$range(75, 1, 3);
-      t1._destroyChance.$indexSet(0, t3, 20);
-      t1._fuel = 5;
-      t1 = [T.DetectType];
-      R.item("Scroll[s] of Find Nearby Escape", 1, C.Color_255_238_168, 0.5, 12).detection$2$range(H.setRuntimeTypeInfo([C.DetectType_0], t1), 20);
-      R.item("Scroll[s] of Find Nearby Items", 2, C.Color_222_156_33, 0.5, 24).detection$2$range(H.setRuntimeTypeInfo([C.DetectType_1], t1), 20);
-      R.item("Scroll[s] of Detect Nearby", 3, C.Color_131_158_13, 0.25, 36).detection$2$range(H.setRuntimeTypeInfo([C.DetectType_0, C.DetectType_1], t1), 20);
-      R.item("Scroll[s] of Locate Escape", 5, C.Color_189_144_108, 1, 28).detection$1(H.setRuntimeTypeInfo([C.DetectType_0], t1));
-      R.item("Scroll[s] of Item Detection", 20, C.Color_179_74_4, 0.5, 64).detection$1(H.setRuntimeTypeInfo([C.DetectType_1], t1));
-      R.item("Scroll[s] of Detection", 30, C.Color_122_44_24, 0.25, 124).detection$1(H.setRuntimeTypeInfo([C.DetectType_0, C.DetectType_1], t1));
-      t1 = R.category(224, 20, null);
-      t1.tag$1(0, "magic/scroll/mapping");
-      t1.toss$3$breakage$damage$range(75, 1, 3);
-      t1._destroyChance.$indexSet(0, t3, 15);
-      t1._fuel = 5;
+      t12 = R.category(228, 20, null);
+      t12.tag$1(0, "magic/scroll/detection");
+      t12.toss$3$breakage$damage$range(75, 1, 3);
+      t12._destroyChance.$indexSet(0, t3, 20);
+      t12._fuel = 5;
+      t12 = [T.DetectType];
+      R.item("Scroll[s] of Find Nearby Escape", 1, C.Color_255_238_168, 0.5, 12).detection$2$range(H.setRuntimeTypeInfo([C.DetectType_0], t12), 20);
+      R.item("Scroll[s] of Find Nearby Items", 2, C.Color_222_156_33, 0.5, 24).detection$2$range(H.setRuntimeTypeInfo([C.DetectType_1], t12), 20);
+      R.item("Scroll[s] of Detect Nearby", 3, C.Color_131_158_13, 0.25, 36).detection$2$range(H.setRuntimeTypeInfo([C.DetectType_0, C.DetectType_1], t12), 20);
+      R.item("Scroll[s] of Locate Escape", 5, C.Color_189_144_108, 1, 28).detection$1(H.setRuntimeTypeInfo([C.DetectType_0], t12));
+      R.item("Scroll[s] of Item Detection", 20, C.Color_179_74_4, 0.5, 64).detection$1(H.setRuntimeTypeInfo([C.DetectType_1], t12));
+      R.item("Scroll[s] of Detection", 30, C.Color_122_44_24, 0.25, 124).detection$1(H.setRuntimeTypeInfo([C.DetectType_0, C.DetectType_1], t12));
+      t12 = R.category(224, 20, null);
+      t12.tag$1(0, "magic/scroll/mapping");
+      t12.toss$3$breakage$damage$range(75, 1, 3);
+      t12._destroyChance.$indexSet(0, t3, 15);
+      t12._fuel = 5;
       R.item("Adventurer's Map", 10, C.Color_0_64_39, 0.25, 70).mapping$1(16);
       R.item("Explorer's Map", 30, C.Color_22_117_38, 0.25, 160).mapping$1(32);
       R.item("Cartographer's Map", 50, C.Color_129_217_117, 0.25, 240).mapping$1(64);
       R.item("Wizard's Map", 70, C.Color_9_95_112, 0.25, 360).mapping$2$illuminate(200, true);
-      t1 = R.category(189, 3, null);
-      t1.tag$1(0, "magic/book/sorcery");
-      t1.toss$3$breakage$damage$range(25, 1, 3);
-      t1._destroyChance.$indexSet(0, t3, 5);
-      t1._fuel = 10;
-      t1 = R.item('Spellbook "Elemental Primer"', 1, C.Color_84_0_39, 0.05, 100);
-      t13 = P.String;
-      t14 = [t13];
-      t15 = H.setRuntimeTypeInfo(["Sense Items", "Flee", "Escape", "Disappear", "Icicle", "Brilliant Beam", "Windstorm", "Fire Barrier", "Tidal Wave"], t14);
-      t1.toString;
-      H.assertSubtype(t15, "$isList", t14, "$asList");
-      t14 = M.Skill;
-      t16 = H.getTypeArgumentByIndex(t15, 0);
-      C.JSArray_methods.addAll$1(t1._skills, new H.MappedListIterable(t15, H.functionTypeCheck(Q.skills_Skills_find$closure(), {func: 1, ret: t14, args: [t16]}), [t16, t14]));
-      t14 = R.category(225, null, "hit[s]");
-      t14.tag$1(0, "equipment/weapon/club");
-      C.JSArray_methods.add$1(t14._skills, Q.Skills_find("Club Mastery"));
-      t14.toss$2$breakage$range(25, 5);
-      t14 = R.item("Stick", 1, C.Color_142_82_55, 0.5, null);
-      t14.weapon$2$heft(8, 6);
-      t14.toss$1$damage(3);
-      t14._destroyChance.$indexSet(0, t3, 10);
-      t14._fuel = 10;
-      t14 = R.item("Cudgel", 3, C.Color_132_126_135, 0.5, 20);
-      t14.weapon$2$heft(10, 8);
-      t14.toss$1$damage(4);
-      t14._destroyChance.$indexSet(0, t3, 5);
-      t14._fuel = 10;
-      t14 = R.item("Club", 6, C.Color_64_31_36, 0.5, 40);
-      t14.weapon$2$heft(12, 11);
-      t14.toss$1$damage(5);
-      t14._destroyChance.$indexSet(0, t3, 2);
-      t14._fuel = 10;
-      t14 = R.category(237, null, "hit[s]");
-      t14.tag$1(0, "equipment/weapon/staff");
-      t14.toss$2$breakage$range(35, 4);
-      t14 = R.item("Walking Stick", 2, C.Color_142_82_55, 0.5, 10);
-      t14.weapon$2$heft(10, 9);
-      t14.toss$1$damage(3);
-      t14._destroyChance.$indexSet(0, t3, 5);
-      t14._fuel = 15;
-      t14 = R.item("Sta[ff|aves]", 5, C.Color_64_31_36, 0.5, 50);
-      t14.weapon$2$heft(14, 11);
-      t14.toss$1$damage(5);
-      t14._destroyChance.$indexSet(0, t3, 2);
-      t14._fuel = 15;
-      t14 = R.item("Quartersta[ff|aves]", 11, C.Color_132_126_135, 0.5, 80);
-      t14.weapon$2$heft(24, 13);
-      t14.toss$1$damage(8);
-      t14._destroyChance.$indexSet(0, t3, 2);
-      t14._fuel = 15;
-      t14 = R.category(243, null, "bash[es]");
-      t14.tag$1(0, "equipment/weapon/hammer");
-      t14.toss$2$breakage$range(15, 5);
-      t14 = R.item("Hammer", 27, C.Color_142_82_55, 0.5, 120);
-      t14.weapon$2$heft(32, 22);
-      t14.toss$1$damage(12);
-      t14 = R.item("Mattock", 39, C.Color_64_31_36, 0.5, 240);
-      t14.weapon$2$heft(40, 26);
-      t14.toss$1$damage(16);
-      t14 = R.item("War Hammer", 45, C.Color_132_126_135, 0.5, 400);
-      t14.weapon$2$heft(48, 30);
-      t14.toss$1$damage(20);
-      t14 = R.category(250, null, "bash[es]");
-      t14.tag$1(0, "equipment/weapon/mace");
-      t14.toss$2$breakage$range(15, 4);
-      t14 = R.item("Morningstar", 24, C.Color_132_126_135, 0.5, 130);
-      t14.weapon$2$heft(26, 17);
-      t14.toss$1$damage(11);
-      t14 = R.item("Mace", 33, C.Color_63_64_114, 0.5, 310);
-      t14.weapon$2$heft(36, 23);
-      t14.toss$1$damage(16);
-      t14 = R.category(241, null, "whip[s]");
-      t14.tag$1(0, "equipment/weapon/whip");
-      t14.toss$2$breakage$range(25, 4);
-      C.JSArray_methods.add$1(t14._skills, Q.Skills_find("Whip Mastery"));
-      t14 = R.item("Whip", 4, C.Color_142_82_55, 0.5, 40);
-      t14.weapon$2$heft(10, 7);
-      t14.toss$1$damage(1);
-      t14._destroyChance.$indexSet(0, t3, 10);
-      t14._fuel = 5;
-      t14 = R.item("Chain Whip", 15, C.Color_132_126_135, 0.5, 230);
-      t14.weapon$2$heft(18, 15);
-      t14.toss$1$damage(2);
-      t14 = R.item("Flail", 27, C.Color_63_64_114, 0.5, 350);
-      t14.weapon$2$heft(28, 24);
-      t14.toss$1$damage(4);
-      t14 = R.category(209, null, "stab[s]");
-      t14.tag$1(0, "equipment/weapon/dagger");
-      t14.toss$2$breakage$range(2, 8);
-      t14 = R.item("Kni[fe|ves]", 3, C.Color_38_38_56, 0.5, 20);
-      t14.weapon$2$heft(8, 5);
-      t14.toss$1$damage(8);
-      t14 = R.item("Dirk", 4, C.Color_132_126_135, 0.5, 30);
-      t14.weapon$2$heft(10, 6);
-      t14.toss$1$damage(10);
-      t14 = R.item("Dagger", 6, C.Color_64_163_229, 0.5, 50);
-      t14.weapon$2$heft(12, 7);
-      t14.toss$1$damage(12);
-      t14 = R.item("Stiletto[es]", 10, C.Color_63_64_114, 0.5, 80);
-      t14.weapon$2$heft(14, 6);
-      t14.toss$1$damage(14);
-      t14 = R.item("Rondel", 20, C.Color_129_231_235, 0.5, 130);
-      t14.weapon$2$heft(16, 9);
-      t14.toss$1$damage(16);
-      t14 = R.item("Baselard", 30, C.Color_222_156_33, 0.5, 200);
-      t14.weapon$2$heft(18, 11);
-      t14.toss$1$damage(18);
-      t14 = R.category(170, null, "slash[es]");
-      t14.tag$1(0, "equipment/weapon/sword");
-      t14.toss$2$breakage$range(20, 5);
-      C.JSArray_methods.add$1(t14._skills, Q.Skills_find("Swordfighting"));
-      t14 = R.item("Rapier", 7, C.Color_38_38_56, 0.5, 140);
-      t14.weapon$2$heft(20, 12);
-      t14.toss$1$damage(4);
-      t14 = R.item("Shortsword", 11, C.Color_63_64_114, 0.5, 230);
-      t14.weapon$2$heft(22, 13);
-      t14.toss$1$damage(6);
-      t14 = R.item("Scimitar", 18, C.Color_132_126_135, 0.5, 370);
-      t14.weapon$2$heft(24, 16);
-      t14.toss$1$damage(9);
-      t14 = R.item("Cutlass[es]", 24, C.Color_255_238_168, 0.5, 520);
-      t14.weapon$2$heft(26, 17);
-      t14.toss$1$damage(11);
-      t14 = R.item("Falchion", 38, C.Color_129_231_235, 0.5, 750);
-      t14.weapon$2$heft(28, 18);
-      t14.toss$1$damage(15);
-      t14 = R.category(186, null, "stab[s]");
-      t14.tag$1(0, "equipment/weapon/spear");
-      t14.toss$1$range(9);
-      C.JSArray_methods.add$1(t14._skills, Q.Skills_find("Spear Mastery"));
-      t14 = R.item("Pointed Stick", 2, C.Color_64_31_36, 0.5, 10);
-      t14.weapon$2$heft(10, 9);
-      t14.toss$1$damage(9);
-      t14._destroyChance.$indexSet(0, t3, 7);
-      t14._fuel = 12;
-      t14 = R.item("Spear", 7, C.Color_142_82_55, 0.5, 160);
-      t14.weapon$2$heft(16, 13);
-      t14.toss$1$damage(15);
-      t14 = R.item("Angon", 14, C.Color_132_126_135, 0.5, 340);
-      t14.weapon$2$heft(20, 19);
-      t14.toss$1$damage(20);
-      t14 = R.category(186, null, "stab[s]");
-      t14.tag$1(0, "equipment/weapon/polearm");
-      t14.toss$1$range(4);
-      C.JSArray_methods.add$1(t14._skills, Q.Skills_find("Spear Mastery"));
-      t14 = R.item("Lance", 28, C.Color_64_163_229, 0.5, 550);
-      t14.weapon$2$heft(24, 27);
-      t14.toss$1$damage(20);
-      t14 = R.item("Partisan", 35, C.Color_63_64_114, 0.5, 850);
-      t14.weapon$2$heft(30, 29);
-      t14.toss$1$damage(26);
-      t14 = R.category(191, null, "chop[s]");
-      t14.tag$1(0, "equipment/weapon/axe");
-      C.JSArray_methods.add$1(t14._skills, Q.Skills_find("Axe Mastery"));
-      t14 = R.item("Hatchet", 6, C.Color_63_64_114, 0.5, 90);
-      t14.weapon$2$heft(12, 10);
-      t14.toss$2$damage$range(20, 8);
-      t14 = R.item("Axe", 12, C.Color_142_82_55, 0.5, 210);
-      t14.weapon$2$heft(15, 14);
-      t14.toss$2$damage$range(24, 7);
-      t14 = R.item("Valaska", 24, C.Color_132_126_135, 0.5, 330);
-      t14.weapon$2$heft(19, 19);
-      t14.toss$2$damage$range(26, 5);
-      t14 = R.item("Battleaxe", 40, C.Color_38_38_56, 0.5, 550);
-      t14.weapon$2$heft(25, 30);
-      t14.toss$2$damage$range(28, 4);
-      t14 = R.category(8976, null, "hit[s]");
-      t14.tag$1(0, "equipment/weapon/bow");
-      t14.toss$2$breakage$range(50, 5);
-      C.JSArray_methods.add$1(t14._skills, Q.Skills_find("Archery"));
-      t14 = R.item("Short Bow", 6, C.Color_142_82_55, 0.3, 120);
-      t14.ranged$4$damage$heft$range("the arrow", 4, 12, 8);
-      t14.toss$1$damage(2);
-      t14._destroyChance.$indexSet(0, t3, 15);
-      t14._fuel = 10;
-      t14 = R.item("Longbow", 13, C.Color_64_31_36, 0.3, 250);
-      t14.ranged$4$damage$heft$range("the arrow", 8, 18, 12);
-      t14.toss$1$damage(3);
-      t14._destroyChance.$indexSet(0, t3, 7);
-      t14._fuel = 13;
-      t14 = R.item("Crossbow", 28, C.Color_132_126_135, 0.3, 600);
-      t14.ranged$4$damage$heft$range("the bolt", 12, 24, 16);
-      t14.toss$1$damage(4);
-      t14._destroyChance.$indexSet(0, t3, 4);
-      t14._fuel = 14;
-      t14 = R.category(201, null, null);
-      t14.tag$1(0, "equipment/armor/helm");
-      t14.toss$3$breakage$damage$range(10, 3, 5);
-      t14 = R.item("Leather Cap", 4, C.Color_142_82_55, 0.5, 50);
-      t14._armor = 2;
-      t14._weight = 2;
-      t14._destroyChance.$indexSet(0, t3, 12);
-      t14._fuel = 2;
-      t14 = R.item("Chainmail Coif", 7, C.Color_38_38_56, 0.5, 160);
-      t14._armor = 3;
-      t14._weight = 3;
-      t14 = R.item("Steel Cap", 12, C.Color_63_64_114, 0.5, 200);
-      t14._armor = 4;
-      t14._weight = 3;
-      t14 = R.item("Visored Helm", 20, C.Color_132_126_135, 0.5, 350);
-      t14._armor = 5;
-      t14._weight = 6;
-      t14 = R.item("Great Helm", 30, C.Color_226_223_240, 0.5, 550);
-      t14._armor = 6;
-      t14._weight = 8;
+      t12 = R.category(189, 3, null);
+      t12.tag$1(0, "magic/book/sorcery");
+      t12.toss$3$breakage$damage$range(25, 1, 3);
+      t12._destroyChance.$indexSet(0, t3, 5);
+      t12._fuel = 10;
+      t12 = R.item('Spellbook "Elemental Primer"', 1, C.Color_84_0_39, 0.05, 100);
+      t5 = P.String;
+      t8 = [t5];
+      t11 = H.setRuntimeTypeInfo(["Sense Items", "Flee", "Escape", "Disappear", "Icicle", "Brilliant Beam", "Windstorm", "Fire Barrier", "Tidal Wave"], t8);
+      t12.toString;
+      H.assertSubtype(t11, "$isList", t8, "$asList");
+      t8 = M.Skill;
+      t10 = H.getTypeArgumentByIndex(t11, 0);
+      C.JSArray_methods.addAll$1(t12._skills, new H.MappedListIterable(t11, H.functionTypeCheck(Q.skills_Skills_find$closure(), {func: 1, ret: t8, args: [t10]}), [t10, t8]));
+      t8 = R.category(225, null, "hit[s]");
+      t8.tag$1(0, "equipment/weapon/club");
+      C.JSArray_methods.add$1(t8._skills, Q.Skills_find("Club Mastery"));
+      t8.toss$2$breakage$range(25, 5);
+      t8 = R.item("Stick", 1, C.Color_142_82_55, 0.5, null);
+      t8.weapon$2$heft(8, 6);
+      t8.toss$1$damage(3);
+      t8._destroyChance.$indexSet(0, t3, 10);
+      t8._fuel = 10;
+      t8 = R.item("Cudgel", 3, C.Color_132_126_135, 0.5, 20);
+      t8.weapon$2$heft(10, 8);
+      t8.toss$1$damage(4);
+      t8._destroyChance.$indexSet(0, t3, 5);
+      t8._fuel = 10;
+      t8 = R.item("Club", 6, C.Color_64_31_36, 0.5, 40);
+      t8.weapon$2$heft(12, 11);
+      t8.toss$1$damage(5);
+      t8._destroyChance.$indexSet(0, t3, 2);
+      t8._fuel = 10;
+      t8 = R.category(237, null, "hit[s]");
+      t8.tag$1(0, "equipment/weapon/staff");
+      t8.toss$2$breakage$range(35, 4);
+      t8 = R.item("Walking Stick", 2, C.Color_142_82_55, 0.5, 10);
+      t8.weapon$2$heft(10, 9);
+      t8.toss$1$damage(3);
+      t8._destroyChance.$indexSet(0, t3, 5);
+      t8._fuel = 15;
+      t8 = R.item("Sta[ff|aves]", 5, C.Color_64_31_36, 0.5, 50);
+      t8.weapon$2$heft(14, 11);
+      t8.toss$1$damage(5);
+      t8._destroyChance.$indexSet(0, t3, 2);
+      t8._fuel = 15;
+      t8 = R.item("Quartersta[ff|aves]", 11, C.Color_132_126_135, 0.5, 80);
+      t8.weapon$2$heft(24, 13);
+      t8.toss$1$damage(8);
+      t8._destroyChance.$indexSet(0, t3, 2);
+      t8._fuel = 15;
+      t8 = R.category(243, null, "bash[es]");
+      t8.tag$1(0, "equipment/weapon/hammer");
+      t8.toss$2$breakage$range(15, 5);
+      t8 = R.item("Hammer", 27, C.Color_142_82_55, 0.5, 120);
+      t8.weapon$2$heft(32, 22);
+      t8.toss$1$damage(12);
+      t8 = R.item("Mattock", 39, C.Color_64_31_36, 0.5, 240);
+      t8.weapon$2$heft(40, 26);
+      t8.toss$1$damage(16);
+      t8 = R.item("War Hammer", 45, C.Color_132_126_135, 0.5, 400);
+      t8.weapon$2$heft(48, 30);
+      t8.toss$1$damage(20);
+      t8 = R.category(250, null, "bash[es]");
+      t8.tag$1(0, "equipment/weapon/mace");
+      t8.toss$2$breakage$range(15, 4);
+      t8 = R.item("Morningstar", 24, C.Color_132_126_135, 0.5, 130);
+      t8.weapon$2$heft(26, 17);
+      t8.toss$1$damage(11);
+      t8 = R.item("Mace", 33, C.Color_63_64_114, 0.5, 310);
+      t8.weapon$2$heft(36, 23);
+      t8.toss$1$damage(16);
+      t8 = R.category(241, null, "whip[s]");
+      t8.tag$1(0, "equipment/weapon/whip");
+      t8.toss$2$breakage$range(25, 4);
+      C.JSArray_methods.add$1(t8._skills, Q.Skills_find("Whip Mastery"));
+      t8 = R.item("Whip", 4, C.Color_142_82_55, 0.5, 40);
+      t8.weapon$2$heft(10, 7);
+      t8.toss$1$damage(1);
+      t8._destroyChance.$indexSet(0, t3, 10);
+      t8._fuel = 5;
+      t8 = R.item("Chain Whip", 15, C.Color_132_126_135, 0.5, 230);
+      t8.weapon$2$heft(18, 15);
+      t8.toss$1$damage(2);
+      t8 = R.item("Flail", 27, C.Color_63_64_114, 0.5, 350);
+      t8.weapon$2$heft(28, 24);
+      t8.toss$1$damage(4);
+      t8 = R.category(209, null, "stab[s]");
+      t8.tag$1(0, "equipment/weapon/dagger");
+      t8.toss$2$breakage$range(2, 8);
+      t8 = R.item("Kni[fe|ves]", 3, C.Color_38_38_56, 0.5, 20);
+      t8.weapon$2$heft(8, 5);
+      t8.toss$1$damage(8);
+      t8 = R.item("Dirk", 4, C.Color_132_126_135, 0.5, 30);
+      t8.weapon$2$heft(10, 6);
+      t8.toss$1$damage(10);
+      t8 = R.item("Dagger", 6, C.Color_64_163_229, 0.5, 50);
+      t8.weapon$2$heft(12, 7);
+      t8.toss$1$damage(12);
+      t8 = R.item("Stiletto[es]", 10, C.Color_63_64_114, 0.5, 80);
+      t8.weapon$2$heft(14, 6);
+      t8.toss$1$damage(14);
+      t8 = R.item("Rondel", 20, C.Color_129_231_235, 0.5, 130);
+      t8.weapon$2$heft(16, 9);
+      t8.toss$1$damage(16);
+      t8 = R.item("Baselard", 30, C.Color_222_156_33, 0.5, 200);
+      t8.weapon$2$heft(18, 11);
+      t8.toss$1$damage(18);
+      t8 = R.category(170, null, "slash[es]");
+      t8.tag$1(0, "equipment/weapon/sword");
+      t8.toss$2$breakage$range(20, 5);
+      C.JSArray_methods.add$1(t8._skills, Q.Skills_find("Swordfighting"));
+      t8 = R.item("Rapier", 7, C.Color_38_38_56, 0.5, 140);
+      t8.weapon$2$heft(20, 12);
+      t8.toss$1$damage(4);
+      t8 = R.item("Shortsword", 11, C.Color_63_64_114, 0.5, 230);
+      t8.weapon$2$heft(22, 13);
+      t8.toss$1$damage(6);
+      t8 = R.item("Scimitar", 18, C.Color_132_126_135, 0.5, 370);
+      t8.weapon$2$heft(24, 16);
+      t8.toss$1$damage(9);
+      t8 = R.item("Cutlass[es]", 24, C.Color_255_238_168, 0.5, 520);
+      t8.weapon$2$heft(26, 17);
+      t8.toss$1$damage(11);
+      t8 = R.item("Falchion", 38, C.Color_129_231_235, 0.5, 750);
+      t8.weapon$2$heft(28, 18);
+      t8.toss$1$damage(15);
+      t8 = R.category(186, null, "stab[s]");
+      t8.tag$1(0, "equipment/weapon/spear");
+      t8.toss$1$range(9);
+      C.JSArray_methods.add$1(t8._skills, Q.Skills_find("Spear Mastery"));
+      t8 = R.item("Pointed Stick", 2, C.Color_64_31_36, 0.5, 10);
+      t8.weapon$2$heft(10, 9);
+      t8.toss$1$damage(9);
+      t8._destroyChance.$indexSet(0, t3, 7);
+      t8._fuel = 12;
+      t8 = R.item("Spear", 7, C.Color_142_82_55, 0.5, 160);
+      t8.weapon$2$heft(16, 13);
+      t8.toss$1$damage(15);
+      t8 = R.item("Angon", 14, C.Color_132_126_135, 0.5, 340);
+      t8.weapon$2$heft(20, 19);
+      t8.toss$1$damage(20);
+      t8 = R.category(186, null, "stab[s]");
+      t8.tag$1(0, "equipment/weapon/polearm");
+      t8.toss$1$range(4);
+      C.JSArray_methods.add$1(t8._skills, Q.Skills_find("Spear Mastery"));
+      t8 = R.item("Lance", 28, C.Color_64_163_229, 0.5, 550);
+      t8.weapon$2$heft(24, 27);
+      t8.toss$1$damage(20);
+      t8 = R.item("Partisan", 35, C.Color_63_64_114, 0.5, 850);
+      t8.weapon$2$heft(30, 29);
+      t8.toss$1$damage(26);
+      t8 = R.category(191, null, "chop[s]");
+      t8.tag$1(0, "equipment/weapon/axe");
+      C.JSArray_methods.add$1(t8._skills, Q.Skills_find("Axe Mastery"));
+      t8 = R.item("Hatchet", 6, C.Color_63_64_114, 0.5, 90);
+      t8.weapon$2$heft(12, 10);
+      t8.toss$2$damage$range(20, 8);
+      t8 = R.item("Axe", 12, C.Color_142_82_55, 0.5, 210);
+      t8.weapon$2$heft(15, 14);
+      t8.toss$2$damage$range(24, 7);
+      t8 = R.item("Valaska", 24, C.Color_132_126_135, 0.5, 330);
+      t8.weapon$2$heft(19, 19);
+      t8.toss$2$damage$range(26, 5);
+      t8 = R.item("Battleaxe", 40, C.Color_38_38_56, 0.5, 550);
+      t8.weapon$2$heft(25, 30);
+      t8.toss$2$damage$range(28, 4);
+      t8 = R.category(8976, null, "hit[s]");
+      t8.tag$1(0, "equipment/weapon/bow");
+      t8.toss$2$breakage$range(50, 5);
+      C.JSArray_methods.add$1(t8._skills, Q.Skills_find("Archery"));
+      t8 = R.item("Short Bow", 6, C.Color_142_82_55, 0.3, 120);
+      t8.ranged$4$damage$heft$range("the arrow", 4, 12, 8);
+      t8.toss$1$damage(2);
+      t8._destroyChance.$indexSet(0, t3, 15);
+      t8._fuel = 10;
+      t8 = R.item("Longbow", 13, C.Color_64_31_36, 0.3, 250);
+      t8.ranged$4$damage$heft$range("the arrow", 8, 18, 12);
+      t8.toss$1$damage(3);
+      t8._destroyChance.$indexSet(0, t3, 7);
+      t8._fuel = 13;
+      t8 = R.item("Crossbow", 28, C.Color_132_126_135, 0.3, 600);
+      t8.ranged$4$damage$heft$range("the bolt", 12, 24, 16);
+      t8.toss$1$damage(4);
+      t8._destroyChance.$indexSet(0, t3, 4);
+      t8._fuel = 14;
+      t8 = R.category(201, null, null);
+      t8.tag$1(0, "equipment/armor/helm");
+      t8.toss$3$breakage$damage$range(10, 3, 5);
+      t8 = R.item("Leather Cap", 4, C.Color_142_82_55, 0.5, 50);
+      t8._armor = 2;
+      t8._weight = 2;
+      t8._destroyChance.$indexSet(0, t3, 12);
+      t8._fuel = 2;
+      t8 = R.item("Chainmail Coif", 7, C.Color_38_38_56, 0.5, 160);
+      t8._armor = 3;
+      t8._weight = 3;
+      t8 = R.item("Steel Cap", 12, C.Color_63_64_114, 0.5, 200);
+      t8._armor = 4;
+      t8._weight = 3;
+      t8 = R.item("Visored Helm", 20, C.Color_132_126_135, 0.5, 350);
+      t8._armor = 5;
+      t8._weight = 6;
+      t8 = R.item("Great Helm", 30, C.Color_226_223_240, 0.5, 550);
+      t8._armor = 6;
+      t8._weight = 8;
       R.category(244, null, null).tag$1(0, "equipment/armor/body/robe");
-      t14 = R.item("Robe", 2, C.Color_21_87_194, 0.5, 20);
-      t14._armor = 4;
-      t14._weight = null;
-      t14._destroyChance.$indexSet(0, t3, 15);
-      t14._fuel = 8;
-      t14 = R.item("Fur-lined Robe", 6, C.Color_0_64_39, 0.25, 110);
-      t14._armor = 6;
-      t14._weight = null;
-      t14._destroyChance.$indexSet(0, t3, 12);
-      t14._fuel = 8;
+      t8 = R.item("Robe", 2, C.Color_21_87_194, 0.5, 20);
+      t8._armor = 4;
+      t8._weight = null;
+      t8._destroyChance.$indexSet(0, t3, 15);
+      t8._fuel = 8;
+      t8 = R.item("Fur-lined Robe", 6, C.Color_0_64_39, 0.25, 110);
+      t8._armor = 6;
+      t8._weight = null;
+      t8._destroyChance.$indexSet(0, t3, 12);
+      t8._fuel = 8;
       R.category(246, null, null).tag$1(0, "equipment/armor/body");
-      t14 = R.item("Cloth Shirt", 2, C.Color_226_223_240, 0.5, 40);
-      t14._armor = 3;
-      t14._weight = null;
-      t14._destroyChance.$indexSet(0, t3, 15);
-      t14._fuel = 4;
-      t14 = R.item("Leather Shirt", 5, C.Color_142_82_55, 0.5, 90);
-      t14._armor = 6;
-      t14._weight = 1;
-      t14._destroyChance.$indexSet(0, t3, 12);
-      t14._fuel = 4;
-      t14 = R.item("Jerkin", 7, C.Color_132_126_135, 0.5, 130);
-      t14._armor = 8;
-      t14._weight = 1;
-      t14 = R.item("Leather Armor", 10, C.Color_64_31_36, 0.5, 240);
-      t14._armor = 11;
-      t14._weight = 2;
-      t14._destroyChance.$indexSet(0, t3, 10);
-      t14._fuel = 4;
-      t14 = R.item("Padded Armor", 14, C.Color_38_38_56, 0.5, 320);
-      t14._armor = 15;
-      t14._weight = 3;
-      t14._destroyChance.$indexSet(0, t3, 8);
-      t14._fuel = 4;
-      t14 = R.item("Studded Armor", 17, C.Color_63_64_114, 0.5, 400);
-      t14._armor = 22;
-      t14._weight = 4;
-      t14._destroyChance.$indexSet(0, t3, 6);
-      t14._fuel = 4;
+      t8 = R.item("Cloth Shirt", 2, C.Color_226_223_240, 0.5, 40);
+      t8._armor = 3;
+      t8._weight = null;
+      t8._destroyChance.$indexSet(0, t3, 15);
+      t8._fuel = 4;
+      t8 = R.item("Leather Shirt", 5, C.Color_142_82_55, 0.5, 90);
+      t8._armor = 6;
+      t8._weight = 1;
+      t8._destroyChance.$indexSet(0, t3, 12);
+      t8._fuel = 4;
+      t8 = R.item("Jerkin", 7, C.Color_132_126_135, 0.5, 130);
+      t8._armor = 8;
+      t8._weight = 1;
+      t8 = R.item("Leather Armor", 10, C.Color_64_31_36, 0.5, 240);
+      t8._armor = 11;
+      t8._weight = 2;
+      t8._destroyChance.$indexSet(0, t3, 10);
+      t8._fuel = 4;
+      t8 = R.item("Padded Armor", 14, C.Color_38_38_56, 0.5, 320);
+      t8._armor = 15;
+      t8._weight = 3;
+      t8._destroyChance.$indexSet(0, t3, 8);
+      t8._fuel = 4;
+      t8 = R.item("Studded Armor", 17, C.Color_63_64_114, 0.5, 400);
+      t8._armor = 22;
+      t8._weight = 4;
+      t8._destroyChance.$indexSet(0, t3, 6);
+      t8._fuel = 4;
       R.category(242, null, null).tag$1(0, "equipment/armor/body");
-      t14 = R.item("Mail Hauberk", 20, C.Color_38_38_56, 0.5, 500);
-      t14._armor = 28;
-      t14._weight = 5;
-      t14 = R.item("Scale Mail", 23, C.Color_132_126_135, 0.5, 700);
-      t14._armor = 36;
-      t14._weight = 7;
+      t8 = R.item("Mail Hauberk", 20, C.Color_38_38_56, 0.5, 500);
+      t8._armor = 28;
+      t8._weight = 5;
+      t8 = R.item("Scale Mail", 23, C.Color_132_126_135, 0.5, 700);
+      t8._armor = 36;
+      t8._weight = 7;
       R.category(198, null, null).tag$1(0, "equipment/armor/cloak");
-      t14 = R.item("Cloak", 3, C.Color_26_46_150, 0.5, 70);
-      t14._armor = 2;
-      t14._weight = 1;
-      t14._destroyChance.$indexSet(0, t3, 20);
-      t14._fuel = 5;
-      t14 = R.item("Fur Cloak", 9, C.Color_64_31_36, 0.2, 140);
-      t14._armor = 3;
-      t14._weight = 1;
-      t14._destroyChance.$indexSet(0, t3, 16);
-      t14._fuel = 5;
-      t14 = R.category(197, null, null);
-      t14.tag$1(0, "equipment/armor/gloves");
-      t14.toss$3$breakage$damage$range(20, 5, 4);
-      t14 = R.item("Pair[s] of Gloves", 8, C.Color_189_144_108, 0.5, 170);
-      t14._armor = 1;
-      t14._weight = null;
-      t14._destroyChance.$indexSet(0, t3, 7);
-      t14._fuel = 2;
-      t14 = R.item("Set[s] of Bracers", 17, C.Color_64_31_36, 0.5, 480);
-      t14._armor = 2;
-      t14._weight = 1;
-      t14 = R.item("Pair[s] of Gauntlets", 34, C.Color_38_38_56, 0.5, 800);
-      t14._armor = 4;
-      t14._weight = 2;
-      t14 = R.category(230, null, null);
-      t14.tag$1(0, "equipment/armor/shield");
-      t14.toss$3$breakage$damage$range(10, 5, 8);
-      t14 = R.item("Small Leather Shield", 5, C.Color_64_31_36, 0.5, 170);
-      t14._armor = 3;
-      t14._weight = 2;
-      t14._destroyChance.$indexSet(0, t3, 7);
-      t14._fuel = 14;
-      t14 = R.item("Wooden Targe", 11, C.Color_189_144_108, 0.5, 250);
-      t14._armor = 4;
-      t14._weight = 4;
-      t14._destroyChance.$indexSet(0, t3, 14);
-      t14._fuel = 20;
-      t14 = R.item("Large Leather Shield", 17, C.Color_142_82_55, 0.5, 320);
-      t14._armor = 5;
-      t14._weight = 5;
-      t14._destroyChance.$indexSet(0, t3, 7);
-      t14._fuel = 17;
-      t14 = R.item("Steel Buckler", 27, C.Color_38_38_56, 0.5, 450);
-      t14._armor = 6;
-      t14._weight = 6;
-      t14 = R.item("Kite Shield", 35, C.Color_132_126_135, 0.5, 650);
-      t14._armor = 7;
-      t14._weight = 9;
+      t8 = R.item("Cloak", 3, C.Color_26_46_150, 0.5, 70);
+      t8._armor = 2;
+      t8._weight = 1;
+      t8._destroyChance.$indexSet(0, t3, 20);
+      t8._fuel = 5;
+      t8 = R.item("Fur Cloak", 9, C.Color_64_31_36, 0.2, 140);
+      t8._armor = 3;
+      t8._weight = 1;
+      t8._destroyChance.$indexSet(0, t3, 16);
+      t8._fuel = 5;
+      t8 = R.category(197, null, null);
+      t8.tag$1(0, "equipment/armor/gloves");
+      t8.toss$3$breakage$damage$range(20, 5, 4);
+      t8 = R.item("Pair[s] of Gloves", 8, C.Color_189_144_108, 0.5, 170);
+      t8._armor = 1;
+      t8._weight = null;
+      t8._destroyChance.$indexSet(0, t3, 7);
+      t8._fuel = 2;
+      t8 = R.item("Set[s] of Bracers", 17, C.Color_64_31_36, 0.5, 480);
+      t8._armor = 2;
+      t8._weight = 1;
+      t8 = R.item("Pair[s] of Gauntlets", 34, C.Color_38_38_56, 0.5, 800);
+      t8._armor = 4;
+      t8._weight = 2;
+      t8 = R.category(230, null, null);
+      t8.tag$1(0, "equipment/armor/shield");
+      t8.toss$3$breakage$damage$range(10, 5, 8);
+      t8 = R.item("Small Leather Shield", 5, C.Color_64_31_36, 0.5, 170);
+      t8._armor = 3;
+      t8._weight = 2;
+      t8._destroyChance.$indexSet(0, t3, 7);
+      t8._fuel = 14;
+      t8 = R.item("Wooden Targe", 11, C.Color_189_144_108, 0.5, 250);
+      t8._armor = 4;
+      t8._weight = 4;
+      t8._destroyChance.$indexSet(0, t3, 14);
+      t8._fuel = 20;
+      t8 = R.item("Large Leather Shield", 17, C.Color_142_82_55, 0.5, 320);
+      t8._armor = 5;
+      t8._weight = 5;
+      t8._destroyChance.$indexSet(0, t3, 7);
+      t8._fuel = 17;
+      t8 = R.item("Steel Buckler", 27, C.Color_38_38_56, 0.5, 450);
+      t8._armor = 6;
+      t8._weight = 6;
+      t8 = R.item("Kite Shield", 35, C.Color_132_126_135, 0.5, 650);
+      t8._armor = 7;
+      t8._weight = 9;
       R.category(236, null, null).tag$1(0, "equipment/armor/boots");
-      t14 = R.item("Pair[s] of Sandals", 2, C.Color_142_82_55, 0.24, 10);
-      t14._armor = 1;
-      t14._weight = null;
-      t14._destroyChance.$indexSet(0, t3, 20);
-      t14._fuel = 3;
-      t14 = R.item("Pair[s] of Shoes", 8, C.Color_64_31_36, 0.3, 30);
-      t14._armor = 2;
-      t14._weight = null;
-      t14._destroyChance.$indexSet(0, t3, 14);
-      t14._fuel = 3;
+      t8 = R.item("Pair[s] of Sandals", 2, C.Color_142_82_55, 0.24, 10);
+      t8._armor = 1;
+      t8._weight = null;
+      t8._destroyChance.$indexSet(0, t3, 20);
+      t8._fuel = 3;
+      t8 = R.item("Pair[s] of Shoes", 8, C.Color_64_31_36, 0.3, 30);
+      t8._armor = 2;
+      t8._weight = null;
+      t8._destroyChance.$indexSet(0, t3, 14);
+      t8._fuel = 3;
       R.category(196, null, null).tag$1(0, "equipment/armor/boots");
-      t14 = R.item("Pair[s] of Boots", 14, C.Color_142_82_55, 0.3, 70);
-      t14._armor = 6;
-      t14._weight = 1;
-      t14 = R.item("Pair[s] of Plated Boots", 22, C.Color_63_64_114, 0.3, 250);
-      t14._armor = 8;
-      t14._weight = 2;
-      t14 = R.item("Pair[s] of Greaves", 47, C.Color_132_126_135, 0.25, 350);
-      t14._armor = 12;
-      t14._weight = 3;
+      t8 = R.item("Pair[s] of Boots", 14, C.Color_142_82_55, 0.3, 70);
+      t8._armor = 6;
+      t8._weight = 1;
+      t8 = R.item("Pair[s] of Plated Boots", 22, C.Color_63_64_114, 0.3, 250);
+      t8._armor = 8;
+      t8._weight = 2;
+      t8 = R.item("Pair[s] of Greaves", 47, C.Color_132_126_135, 0.25, 350);
+      t8._armor = 12;
+      t8._weight = 3;
       R.finishItem();
       D.Monsters_initialize();
-      R.finishAffix();
-      $._affixTag = "body";
-      t14 = R.affix("Elven _", 40, 1);
-      t14._priceBonus = 400;
-      t14._priceScale = 2;
-      t14._weightBonus = -2;
-      t14._armor = 2;
-      t14.resist$1(t5);
-      t14 = R.affix("Elven _", 60, 0.3);
-      t14._priceBonus = 600;
-      t14._priceScale = 3;
-      t14._weightBonus = -3;
-      t14._armor = 4;
-      t14.resist$1(t5);
-      R.finishAffix();
-      $._affixTag = "cloak";
-      t14 = R.affix("Elven _", 40, 1);
-      t14._priceBonus = 300;
-      t14._priceScale = 2;
-      t14._weightBonus = -1;
-      t14._armor = 3;
-      t14.resist$1(t5);
-      t14 = R.affix("Elven _", 60, 0.3);
-      t14._priceBonus = 500;
-      t14._priceScale = 3;
-      t14._weightBonus = -2;
-      t14._armor = 5;
-      t14.resist$1(t5);
-      R.finishAffix();
-      $._affixTag = "boots";
-      t14 = R.affix("Elven _", 40, 1);
-      t14._priceBonus = 400;
-      t14._priceScale = 2.5;
-      t14._weightBonus = -2;
-      t14._armor = 2;
-      R.finishAffix();
-      $._affixTag = "helm";
-      t14 = R.affix("Elven _", 40, 1);
-      t14._priceBonus = 400;
-      t14._priceScale = 2;
-      t14._weightBonus = -1;
-      t14._armor = 1;
-      t14._statBonuses.$indexSet(0, C.Stat_Intellect, 1);
-      t14.resist$1(t5);
-      t14 = R.affix("Elven _", 60, 0.3);
-      t14._priceBonus = 600;
-      t14._priceScale = 3;
-      t14._weightBonus = -1;
-      t14._armor = 2;
-      t14._statBonuses.$indexSet(0, C.Stat_Intellect, 2);
-      t14.resist$1(t5);
-      R.finishAffix();
-      $._affixTag = "shield";
-      t14 = R.affix("Elven _", 40, 1);
-      t14._priceBonus = 300;
-      t14._priceScale = 1.6;
-      t14._heftScale = 0.8;
-      t14._damageScale = 1.3;
-      t14._damageBonus = null;
-      t14.resist$1(t5);
-      t14 = R.affix("Elven _", 50, 0.5);
-      t14._priceBonus = 500;
-      t14._priceScale = 2.2;
-      t14._heftScale = 0.6;
-      t14._damageScale = 1.5;
-      t14._damageBonus = null;
-      t14._statBonuses.$indexSet(0, C.Stat_Will, 1);
-      t14.resist$1(t5);
-      R.finishAffix();
-      $._affixTag = "body";
-      t14 = R.affix("Dwarven _", 30, 1);
-      t14._priceBonus = 400;
-      t14._priceScale = 2;
-      t14._weightBonus = 2;
-      t14._armor = 4;
-      t14.resist$1(t2);
-      t14.resist$1(t8);
-      t14 = R.affix("Dwarven _", 40, 0.5);
-      t14._priceBonus = 600;
-      t14._priceScale = 3;
-      t14._weightBonus = 2;
-      t14._armor = 6;
-      t14.resist$1(t2);
-      t14.resist$1(t8);
-      R.finishAffix();
-      $._affixTag = "helm";
-      t14 = R.affix("Dwarven _", 50, 1);
-      t14._priceBonus = 300;
-      t14._priceScale = 2;
-      t14._weightBonus = 1;
-      t14._armor = 3;
-      t14.resist$1(t8);
-      t14 = R.affix("Dwarven _", 60, 0.5);
-      t14._priceBonus = 500;
-      t14._priceScale = 3;
-      t14._weightBonus = 1;
-      t14._armor = 4;
-      t16 = t14._statBonuses;
-      t16.$indexSet(0, C.Stat_Strength, 1);
-      t16.$indexSet(0, C.Stat_Fortitude, 1);
-      t14.resist$1(t8);
-      R.finishAffix();
-      $._affixTag = "gloves";
-      t14 = R.affix("Dwarven _", 50, 1);
-      t14._priceBonus = 300;
-      t14._priceScale = 2;
-      t14._weightBonus = 1;
-      t14._armor = 3;
-      t14._statBonuses.$indexSet(0, C.Stat_Strength, 1);
-      t14.resist$1(t2);
-      R.finishAffix();
-      $._affixTag = "boots";
-      t14 = R.affix("Dwarven _", 50, 1);
-      t14._priceBonus = 300;
-      t14._priceScale = 2;
-      t14._weightBonus = 1;
-      t14._armor = 3;
-      t14.resist$1(t2);
-      t14 = R.affix("Dwarven _", 60, 0.3);
-      t14._priceBonus = 500;
-      t14._priceScale = 3;
-      t14._weightBonus = 2;
-      t14._armor = 5;
-      t14._statBonuses.$indexSet(0, C.Stat_Fortitude, 1);
-      t14.resist$1(t8);
-      t14.resist$1(t2);
-      R.finishAffix();
-      $._affixTag = "shield";
-      t14 = R.affix("Dwarven _", 40, 1);
-      t14._priceBonus = 200;
-      t14._priceScale = 2.2;
-      t14._heftScale = 1.2;
-      t14._damageScale = 1.5;
-      t14._damageBonus = 4;
-      t14.resist$1(t2);
-      t14.resist$1(t8);
-      t14 = R.affix("Dwarven _", 40, 1);
-      t14._priceBonus = 400;
-      t14._priceScale = 2.4;
-      t14._heftScale = 1.3;
-      t14._damageScale = 1.7;
-      t14._damageBonus = 5;
-      t14._statBonuses.$indexSet(0, C.Stat_Fortitude, 1);
-      t14.resist$1(t2);
-      t14.resist$1(t8);
-      R.finishAffix();
-      $._affixTag = "armor";
-      t14 = R.affix("_ of Resist Air", 10, 0.5);
-      t14._priceBonus = 200;
-      t14._priceScale = 1.2;
-      t14.resist$1(t6);
-      t14 = R.affix("_ of Resist Earth", 11, 0.5);
-      t14._priceBonus = 230;
-      t14._priceScale = 1.2;
-      t14.resist$1(t2);
-      t14 = R.affix("_ of Resist Fire", 12, 0.5);
-      t14._priceBonus = 260;
-      t14._priceScale = 1.3;
-      t14.resist$1(t3);
-      t14 = R.affix("_ of Resist Water", 13, 0.5);
-      t14._priceBonus = 310;
-      t14._priceScale = 1.2;
-      t14.resist$1(t9);
-      t14 = R.affix("_ of Resist Acid", 14, 0.3);
-      t14._priceBonus = 340;
-      t14._priceScale = 1.3;
-      t14.resist$1(t10);
-      t14 = R.affix("_ of Resist Cold", 15, 0.5);
-      t14._priceBonus = 400;
-      t14._priceScale = 1.2;
-      t14.resist$1(t4);
-      t14 = R.affix("_ of Resist Lightning", 16, 0.3);
-      t14._priceBonus = 430;
-      t14._priceScale = 1.2;
-      t14.resist$1(t7);
-      t14 = R.affix("_ of Resist Poison", 17, 0.25);
-      t14._priceBonus = 460;
-      t14._priceScale = 1.5;
-      t14.resist$1(t11);
-      t14 = R.affix("_ of Resist Dark", 18, 0.25);
-      t14._priceBonus = 490;
-      t14._priceScale = 1.3;
-      t14.resist$1(t8);
-      t14 = R.affix("_ of Resist Light", 19, 0.25);
-      t14._priceBonus = 490;
-      t14._priceScale = 1.3;
-      t14.resist$1(t5);
-      t14 = R.affix("_ of Resist Spirit", 20, 0.4);
-      t14._priceBonus = 520;
-      t14._priceScale = 1.4;
-      t14.resist$1(t12);
-      t14 = R.affix("_ of Resist Nature", 40, 0.3);
-      t14._priceBonus = 3000;
-      t14._priceScale = 4;
-      t14.resist$1(t6);
-      t14.resist$1(t2);
-      t14.resist$1(t3);
-      t14.resist$1(t9);
-      t14.resist$1(t4);
-      t14.resist$1(t7);
-      t14 = R.affix("_ of Resist Destruction", 40, 0.3);
-      t14._priceBonus = 1300;
-      t14._priceScale = 2.6;
-      t14.resist$1(t10);
-      t14.resist$1(t3);
-      t14.resist$1(t7);
-      t14.resist$1(t11);
-      t14 = R.affix("_ of Resist Evil", 60, 0.3);
-      t14._priceBonus = 1500;
-      t14._priceScale = 3;
-      t14.resist$1(t10);
-      t14.resist$1(t11);
-      t14.resist$1(t8);
-      t14.resist$1(t12);
-      t14 = R.affix("_ of Resistance", 70, 0.3);
-      t14._priceBonus = 5000;
-      t14._priceScale = 6;
-      t14.resist$1(t6);
-      t14.resist$1(t2);
-      t14.resist$1(t3);
-      t14.resist$1(t9);
-      t14.resist$1(t10);
-      t14.resist$1(t4);
-      t14.resist$1(t7);
-      t14.resist$1(t11);
-      t14.resist$1(t8);
-      t14.resist$1(t5);
-      t14.resist$1(t12);
-      t14 = R.affix("_ of Protection from Air", 16, 0.25);
-      t14._priceBonus = 500;
-      t14._priceScale = 1.4;
-      t14.resist$2(t6, 2);
-      t6 = R.affix("_ of Protection from Earth", 17, 0.25);
-      t6._priceBonus = 500;
-      t6._priceScale = 1.4;
-      t6.resist$2(t2, 2);
-      t2 = R.affix("_ of Protection from Fire", 18, 0.25);
-      t2._priceBonus = 500;
-      t2._priceScale = 1.5;
-      t2.resist$2(t3, 2);
-      t2 = R.affix("_ of Protection from Water", 19, 0.25);
-      t2._priceBonus = 500;
-      t2._priceScale = 1.4;
-      t2.resist$2(t9, 2);
-      t9 = R.affix("_ of Protection from Acid", 20, 0.2);
-      t9._priceBonus = 500;
-      t9._priceScale = 1.5;
-      t9.resist$2(t10, 2);
-      t10 = R.affix("_ of Protection from Cold", 21, 0.25);
-      t10._priceBonus = 500;
-      t10._priceScale = 1.4;
-      t10.resist$2(t4, 2);
-      t10 = R.affix("_ of Protection from Lightning", 22, 0.16);
-      t10._priceBonus = 500;
-      t10._priceScale = 1.4;
-      t10.resist$2(t7, 2);
-      t10 = R.affix("_ of Protection from Poison", 23, 0.14);
-      t10._priceBonus = 1000;
-      t10._priceScale = 1.6;
-      t10.resist$2(t11, 2);
-      t10 = R.affix("_ of Protection from Dark", 24, 0.14);
-      t10._priceBonus = 500;
-      t10._priceScale = 1.5;
-      t10.resist$2(t8, 2);
-      t10 = R.affix("_ of Protection from Light", 25, 0.14);
-      t10._priceBonus = 500;
-      t10._priceScale = 1.5;
-      t10.resist$2(t5, 2);
-      t10 = R.affix("_ of Protection from Spirit", 26, 0.13);
-      t10._priceBonus = 800;
-      t10._priceScale = 1.6;
-      t10.resist$2(t12, 2);
-      R.finishAffix();
-      $._affixTag = "weapon";
-      t10 = R.affix("_ of Harming", 1, 1);
-      t10._priceBonus = 100;
-      t10._priceScale = 1.2;
-      t10._heftScale = 1.05;
-      t10._damageScale = null;
-      t10._damageBonus = 1;
-      t10 = R.affix("_ of Wounding", 10, 1);
-      t10._priceBonus = 140;
-      t10._priceScale = 1.3;
-      t10._heftScale = 1.07;
-      t10._damageScale = null;
-      t10._damageBonus = 3;
-      t10 = R.affix("_ of Maiming", 25, 1);
-      t10._priceBonus = 180;
-      t10._priceScale = 1.5;
-      t10._heftScale = 1.09;
-      t10._damageScale = 1.2;
-      t10._damageBonus = 3;
-      t10 = R.affix("_ of Slaying", 45, 1);
-      t10._priceBonus = 200;
-      t10._priceScale = 2;
-      t10._heftScale = 1.11;
-      t10._damageScale = 1.4;
-      t10._damageBonus = 5;
-      R.finishAffix();
-      $._affixTag = "bow";
-      t10 = R.affix("Ash _", 10, 1);
-      t10._priceBonus = 300;
-      t10._priceScale = 1.3;
-      t10._heftScale = 0.8;
-      t10._damageScale = null;
-      t10._damageBonus = 3;
-      t10 = R.affix("Yew _", 20, 1);
-      t10._priceBonus = 500;
-      t10._priceScale = 1.4;
-      t10._heftScale = 0.8;
-      t10._damageScale = null;
-      t10._damageBonus = 5;
-      R.finishAffix();
-      $._affixTag = "weapon";
-      t10 = R.affix("Glimmering _", 20, 0.3);
-      t10._priceBonus = 300;
-      t10._priceScale = 1.3;
-      t10._damageScale = 1.2;
-      t10._damageBonus = null;
-      t10.brand$1(t5);
-      t10 = R.affix("Shining _", 32, 0.25);
-      t10._priceBonus = 400;
-      t10._priceScale = 1.6;
-      t10._damageScale = 1.4;
-      t10._damageBonus = null;
-      t10.brand$1(t5);
-      t10 = R.affix("Radiant _", 48, 0.2);
-      t10._priceBonus = 500;
-      t10._priceScale = 2;
-      t10._damageScale = 1.6;
-      t10._damageBonus = null;
-      t10.brand$2$resist(t5, 2);
-      t5 = R.affix("Dim _", 16, 0.3);
-      t5._priceBonus = 300;
-      t5._priceScale = 1.3;
-      t5._damageScale = 1.2;
-      t5._damageBonus = null;
-      t5.brand$1(t8);
-      t5 = R.affix("Dark _", 32, 0.25);
-      t5._priceBonus = 400;
-      t5._priceScale = 1.6;
-      t5._damageScale = 1.4;
-      t5._damageBonus = null;
-      t5.brand$1(t8);
-      t5 = R.affix("Black _", 56, 0.2);
-      t5._priceBonus = 500;
-      t5._priceScale = 2;
-      t5._damageScale = 1.6;
-      t5._damageBonus = null;
-      t5.brand$2$resist(t8, 2);
-      t8 = R.affix("Chilling _", 20, 0.3);
-      t8._priceBonus = 300;
-      t8._priceScale = 1.5;
-      t8._damageScale = 1.4;
-      t8._damageBonus = null;
-      t8.brand$1(t4);
-      t8 = R.affix("Freezing _", 40, 0.25);
-      t8._priceBonus = 400;
-      t8._priceScale = 1.7;
-      t8._damageScale = 1.6;
-      t8._damageBonus = null;
-      t8.brand$2$resist(t4, 2);
-      t4 = R.affix("Burning _", 20, 0.3);
-      t4._priceBonus = 300;
-      t4._priceScale = 1.5;
-      t4._damageScale = 1.3;
-      t4._damageBonus = null;
-      t4.brand$1(t3);
-      t4 = R.affix("Flaming _", 40, 0.25);
-      t4._priceBonus = 360;
-      t4._priceScale = 1.8;
-      t4._damageScale = 1.6;
-      t4._damageBonus = null;
-      t4.brand$1(t3);
-      t4 = R.affix("Searing _", 60, 0.2);
-      t4._priceBonus = 500;
-      t4._priceScale = 2.1;
-      t4._damageScale = 1.8;
-      t4._damageBonus = null;
-      t4.brand$2$resist(t3, 2);
-      t3 = R.affix("Electric _", 50, 0.2);
-      t3._priceBonus = 300;
-      t3._priceScale = 1.5;
-      t3._damageScale = 1.4;
-      t3._damageBonus = null;
-      t3.brand$1(t7);
-      t3 = R.affix("Shocking _", 70, 0.2);
-      t3._priceBonus = 400;
-      t3._priceScale = 2;
-      t3._damageScale = 1.8;
-      t3._damageBonus = null;
-      t3.brand$2$resist(t7, 2);
-      t7 = R.affix("Poisonous _", 35, 0.2);
-      t7._priceBonus = 500;
-      t7._priceScale = 1.5;
-      t7._damageScale = 1.1;
-      t7._damageBonus = null;
-      t7.brand$1(t11);
-      t7 = R.affix("Venomous _", 70, 0.2);
-      t7._priceBonus = 800;
-      t7._priceScale = 1.8;
-      t7._damageScale = 1.3;
-      t7._damageBonus = null;
-      t7.brand$2$resist(t11, 2);
-      t11 = R.affix("Ghostly _", 45, 0.2);
-      t11._priceBonus = 300;
-      t11._priceScale = 1.6;
-      t11._heftScale = 0.7;
-      t11._damageScale = 1.4;
-      t11._damageBonus = null;
-      t11.brand$1(t12);
-      t11 = R.affix("Spiritual _", 80, 0.15);
-      t11._priceBonus = 400;
-      t11._priceScale = 2.1;
-      t11._heftScale = 0.7;
-      t11._damageScale = 1.7;
-      t11._damageBonus = null;
-      t11.brand$2$resist(t12, 2);
-      R.finishAffix();
-      t12 = P.double;
-      R.shop("The General's General Store", P.LinkedHashMap_LinkedHashMap$_literal(["Loaf of Bread", 2, "Chunk of Meat", 0.6, "Tallow Candle", 1, "Wax Candle", 0.7, "Oil Lamp", 0.5, "Torch", 0.3, "Lantern", 0.1, "Soothing Balm", 0.6, "Mending Salve", 0.4, "Healing Poultice", 0.2, "Club", 0.1, "Staff", 0.1, "Quarterstaff", 0.05, "Whip", 0.1, "Dagger", 0.1], t13, t12));
-      R.shop("Dirk's Death Emporium", P.LinkedHashMap_LinkedHashMap$_literal(["Hammer", 0.5, "Mattock", 0.2, "War Hammer", 0.1, "Morningstar", 0.6, "Mace", 0.3, "Chain Whip", 0.2, "Flail", 0.1, "Falchion", 0.7, "Rapier", 1, "Shortsword", 0.6, "Scimitar", 0.4, "Cutlass", 0.2, "Spear", 1, "Angon", 0.4, "Lance", 0.2, "Partisan", 0.1, "Hatchet", 1, "Axe", 0.5, "Valaska", 0.25, "Battleaxe", 0.2, "Short Bow", 1, "Longbow", 0.3, "Crossbow", 0.05], t13, t12));
-      R.shop("Skullduggery and Bamboozelry", P.LinkedHashMap_LinkedHashMap$_literal(["Dirk", 1, "Dagger", 0.3, "Stiletto", 0.1, "Rondel", 0.05, "Baselard", 0.02], t13, t12));
-      R.shop("Garthag's Armoury", P.LinkedHashMap_LinkedHashMap$_literal(["Cloak", 1, "Fur Cloak", 1, "Cloth Shirt", 1, "Leather Shirt", 1, "Jerkin", 1, "Leather Armor", 1, "Padded Armor", 1, "Studded Armor", 1, "Mail Hauberk", 1, "Scale Mail", 1, "Robe", 1, "Fur-lined Robe", 1, "Pair of Sandals", 1, "Pair of Shoes", 1, "Pair of Boots", 1, "Pair of Plated Boots", 1, "Pair of Greaves", 1], t13, t12));
-      R.shop("Unguence the Alchemist", P.LinkedHashMap_LinkedHashMap$_literal(["Soothing Balm", 1, "Mending Salve", 1, "Healing Poultice", 1, "Antidote", 1, "Potion of Quickness", 1, "Potion of Alacrity", 1, "Bottled Wind", 1, "Bottled Ice", 1, "Bottled Fire", 1, "Bottled Ocean", 1, "Bottled Earth", 1], t13, t12));
-      R.shop("The Droll Magery", P.LinkedHashMap_LinkedHashMap$_literal(['Spellbook "Elemental Primer"', 1, "Scroll of Sidestepping", 1, "Scroll of Phasing", 1, "Scroll of Item Detection", 1], t13, t12));
-      t12 = $.$get$_floorDrops();
-      t12.defineTags$1("drop/built/dungeon/room");
-      t12.defineTags$1("drop/cave/glowing-moss");
-      t12.defineTags$1("drop/water");
-      t12.defineTags$1("drop/nature/aquatic");
-      t12.defineTags$1("drop/passage");
-      t12.defineTags$1("drop/room/storage/closet");
-      t12.defineTags$1("drop/room/storage/storeroom");
-      t12.defineTags$1("drop/room/storage/treasure-room");
-      t12.defineTags$1("drop/room/great-hall");
-      t12.defineTags$1("drop/room/hall");
-      t12.defineTags$1("drop/room/food/kitchen");
-      t12.defineTags$1("drop/room/food/larder");
-      t12.defineTags$1("drop/room/food/pantry");
-      t12.defineTags$1("drop/room/chamber");
-      t12.defineTags$1("drop/room/chamber/boss-chamber");
-      t12.defineTags$1("drop/room/laboratory");
-      t12.defineTags$1("drop/room/workshop");
+      Z.Affixes_initialize();
+      t8 = P.double;
+      R.shop("The General's General Store", P.LinkedHashMap_LinkedHashMap$_literal(["Loaf of Bread", 2, "Chunk of Meat", 0.6, "Tallow Candle", 1, "Wax Candle", 0.7, "Oil Lamp", 0.5, "Torch", 0.3, "Lantern", 0.1, "Soothing Balm", 0.6, "Mending Salve", 0.4, "Healing Poultice", 0.2, "Club", 0.1, "Staff", 0.1, "Quarterstaff", 0.05, "Whip", 0.1, "Dagger", 0.1], t5, t8));
+      R.shop("Dirk's Death Emporium", P.LinkedHashMap_LinkedHashMap$_literal(["Hammer", 0.5, "Mattock", 0.2, "War Hammer", 0.1, "Morningstar", 0.6, "Mace", 0.3, "Chain Whip", 0.2, "Flail", 0.1, "Falchion", 0.7, "Rapier", 1, "Shortsword", 0.6, "Scimitar", 0.4, "Cutlass", 0.2, "Spear", 1, "Angon", 0.4, "Lance", 0.2, "Partisan", 0.1, "Hatchet", 1, "Axe", 0.5, "Valaska", 0.25, "Battleaxe", 0.2, "Short Bow", 1, "Longbow", 0.3, "Crossbow", 0.05], t5, t8));
+      R.shop("Skullduggery and Bamboozelry", P.LinkedHashMap_LinkedHashMap$_literal(["Dirk", 1, "Dagger", 0.3, "Stiletto", 0.1, "Rondel", 0.05, "Baselard", 0.02], t5, t8));
+      R.shop("Garthag's Armoury", P.LinkedHashMap_LinkedHashMap$_literal(["Cloak", 1, "Fur Cloak", 1, "Cloth Shirt", 1, "Leather Shirt", 1, "Jerkin", 1, "Leather Armor", 1, "Padded Armor", 1, "Studded Armor", 1, "Mail Hauberk", 1, "Scale Mail", 1, "Robe", 1, "Fur-lined Robe", 1, "Pair of Sandals", 1, "Pair of Shoes", 1, "Pair of Boots", 1, "Pair of Plated Boots", 1, "Pair of Greaves", 1], t5, t8));
+      R.shop("Unguence the Alchemist", P.LinkedHashMap_LinkedHashMap$_literal(["Soothing Balm", 1, "Mending Salve", 1, "Healing Poultice", 1, "Antidote", 1, "Potion of Quickness", 1, "Potion of Alacrity", 1, "Bottled Wind", 1, "Bottled Ice", 1, "Bottled Fire", 1, "Bottled Ocean", 1, "Bottled Earth", 1], t5, t8));
+      R.shop("The Droll Magery", P.LinkedHashMap_LinkedHashMap$_literal(['Spellbook "Elemental Primer"', 1, "Scroll of Sidestepping", 1, "Scroll of Phasing", 1, "Scroll of Item Detection", 1], t5, t8));
+      t8 = $.$get$_floorDrops();
+      t8.defineTags$1("drop/built/dungeon/room");
+      t8.defineTags$1("drop/cave/glowing-moss");
+      t8.defineTags$1("drop/water");
+      t8.defineTags$1("drop/nature/aquatic");
+      t8.defineTags$1("drop/passage");
+      t8.defineTags$1("drop/room/storage/closet");
+      t8.defineTags$1("drop/room/storage/storeroom");
+      t8.defineTags$1("drop/room/storage/treasure-room");
+      t8.defineTags$1("drop/room/great-hall");
+      t8.defineTags$1("drop/room/hall");
+      t8.defineTags$1("drop/room/food/kitchen");
+      t8.defineTags$1("drop/room/food/larder");
+      t8.defineTags$1("drop/room/food/pantry");
+      t8.defineTags$1("drop/room/chamber");
+      t8.defineTags$1("drop/room/chamber/boss-chamber");
+      t8.defineTags$1("drop/room/laboratory");
+      t8.defineTags$1("drop/room/workshop");
       F.floorDrop(new X._AllOfDrop(H.setRuntimeTypeInfo([new X._PercentDrop(50, X.parseDrop("Skull", null)), new X._PercentDrop(30, X.parseDrop("treasure", null)), new X._PercentDrop(20, X.parseDrop("weapon", null)), new X._PercentDrop(20, X.parseDrop("armor", null)), new X._PercentDrop(20, X.parseDrop("armor", null)), new X._PercentDrop(15, X.parseDrop("magic", null)), new X._PercentDrop(15, X.parseDrop("magic", null))], [L.Drop])), null, C.SpawnLocation_2, 2);
       F.floorDrop(X.parseDrop("magic", null), null, C.SpawnLocation_2, 10);
       F.floorDrop(X.parseDrop("food", null), 1, null, 10);
@@ -31934,7 +31925,7 @@
       t1 = $.$get$Tiles_glowingMoss();
       t2 = $.$get$Motility_walk();
       t3 = S.Cell;
-      t1 = P.LinkedHashMap_LinkedHashMap$_literal(["*", S.Cell$(t1, t2, null, null)], t13, t3);
+      t1 = P.LinkedHashMap_LinkedHashMap$_literal(["*", S.Cell$(t1, t2, null, null)], t5, t3);
       $._themes = "glowing-moss";
       $._categoryFrequency = null;
       $._categoryCells = t1;
@@ -31942,12 +31933,12 @@
       T.furnishing(null, C.Symmetry_4, "    ##\n    #*");
       T.furnishing(null, null, "    ?.?\n    .*.\n    ?.?");
       t1 = $.$get$Tiles_candle();
-      t4 = P.LinkedHashMap_LinkedHashMap$_literal(["!", S.Cell$(t1, t2, null, null)], t13, t3);
+      t4 = P.LinkedHashMap_LinkedHashMap$_literal(["!", S.Cell$(t1, t2, null, null)], t5, t3);
       $._themes = "catacomb dungeon";
       $._categoryFrequency = null;
       $._categoryCells = t4;
       T.furnishing(null, null, "    ?.?\n    .!.\n    ?.?");
-      tableCells = P.LinkedHashMap_LinkedHashMap$_literal(["\u250c", S.Cell$($.$get$Tiles_tableTopLeft(), t2, null, null), "\u2500", S.Cell$($.$get$Tiles_tableTop(), t2, null, null), "\u2510", S.Cell$($.$get$Tiles_tableTopRight(), t2, null, null), "-", S.Cell$($.$get$Tiles_tableCenter(), t2, null, null), "\u2502", S.Cell$($.$get$Tiles_tableSide(), t2, null, null), "\u2558", S.Cell$($.$get$Tiles_tableBottomLeft(), t2, null, null), "\u2550", S.Cell$($.$get$Tiles_tableBottom(), t2, null, null), "\u255b", S.Cell$($.$get$Tiles_tableBottomRight(), t2, null, null), "\u255e", S.Cell$($.$get$Tiles_tableLegLeft(), t2, null, null), "\u2564", S.Cell$($.$get$Tiles_tableLeg(), t2, null, null), "\u2561", S.Cell$($.$get$Tiles_tableLegRight(), t2, null, null), "i", S.Cell$(t1, t2, null, null)], t13, t3);
+      tableCells = P.LinkedHashMap_LinkedHashMap$_literal(["\u250c", S.Cell$($.$get$Tiles_tableTopLeft(), t2, null, null), "\u2500", S.Cell$($.$get$Tiles_tableTop(), t2, null, null), "\u2510", S.Cell$($.$get$Tiles_tableTopRight(), t2, null, null), "-", S.Cell$($.$get$Tiles_tableCenter(), t2, null, null), "\u2502", S.Cell$($.$get$Tiles_tableSide(), t2, null, null), "\u2558", S.Cell$($.$get$Tiles_tableBottomLeft(), t2, null, null), "\u2550", S.Cell$($.$get$Tiles_tableBottom(), t2, null, null), "\u255b", S.Cell$($.$get$Tiles_tableBottomRight(), t2, null, null), "\u255e", S.Cell$($.$get$Tiles_tableLegLeft(), t2, null, null), "\u2564", S.Cell$($.$get$Tiles_tableLeg(), t2, null, null), "\u2561", S.Cell$($.$get$Tiles_tableLegRight(), t2, null, null), "i", S.Cell$(t1, t2, null, null)], t5, t3);
       $._themes = "room";
       $._categoryFrequency = null;
       $._categoryCells = tableCells;
@@ -32013,7 +32004,7 @@
       T.furnishing(null, null, "    .........\n    .\u250c\u2500\u2500\u2500\u2500\u2500\u2510.\n    .\u2502i---i\u2502.\n    .\u2502--i--\u2502.\n    .\u2558\u2564\u2550\u2550\u2550\u2564\u255b.\n    .........");
       T.furnishing(null, null, "    ..........\n    .\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2510.\n    .\u2502------\u2502.\n    .\u2502------\u2502.\n    .\u2558\u2564\u2550\u2550\u2550\u2550\u2564\u255b.\n    ..........");
       T.furnishing(null, null, "    ..........\n    .\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2510.\n    .\u2502-i--i-\u2502.\n    .\u2502-i--i-\u2502.\n    .\u2558\u2564\u2550\u2550\u2550\u2550\u2564\u255b.\n    ..........");
-      t1 = P.LinkedHashMap_LinkedHashMap$_literal(["\u03c0", S.Cell$($.$get$Tiles_chair(), t2, null, null)], t13, t3);
+      t1 = P.LinkedHashMap_LinkedHashMap$_literal(["\u03c0", S.Cell$($.$get$Tiles_chair(), t2, null, null)], t5, t3);
       $._themes = "built";
       $._categoryFrequency = 3;
       $._categoryCells = t1;
@@ -32025,7 +32016,7 @@
       T.furnishing(null, null, "    ?\u2564?\n    .\u03c0.");
       T.furnishing(null, C.Symmetry_4, "    \u03c0\n    #");
       T.furnishing(null, C.Symmetry_4, "    \u03c0\n    .\n    #");
-      t1 = P.LinkedHashMap_LinkedHashMap$_literal(["%", S.Cell$($.$get$Tiles_closedBarrel(), t2, null, null)], t13, t3);
+      t1 = P.LinkedHashMap_LinkedHashMap$_literal(["%", S.Cell$($.$get$Tiles_closedBarrel(), t2, null, null)], t5, t3);
       $._themes = "built";
       $._categoryFrequency = 0.7;
       $._categoryCells = t1;
@@ -32035,14 +32026,14 @@
       T.furnishing(null, C.Symmetry_4, "    ###\n    #%%\n    #%.");
       T.furnishing(null, C.Symmetry_4, "    ?##?\n    .%%.\n    ?..?");
       T.furnishing(null, C.Symmetry_4, "    ?###?\n    .%%%.\n    ?...?");
-      t2 = P.LinkedHashMap_LinkedHashMap$_literal(["&", S.Cell$($.$get$Tiles_closedChest(), t2, null, null)], t13, t3);
+      t2 = P.LinkedHashMap_LinkedHashMap$_literal(["&", S.Cell$($.$get$Tiles_closedChest(), t2, null, null)], t5, t3);
       $._themes = "built";
       $._categoryFrequency = 0.5;
       $._categoryCells = t2;
       T.furnishing(null, C.Symmetry_4, "    ##\n    #&");
       T.furnishing(null, C.Symmetry_4, "    ?#?\n    .&.\n    ?.?");
       t2 = $.$get$Tiles_steppingStone();
-      t3 = P.LinkedHashMap_LinkedHashMap$_literal(["*", S.Cell$(t2, null, $.$get$Tiles_water(), null), "o", S.Cell$(null, null, t2, null)], t13, t3);
+      t3 = P.LinkedHashMap_LinkedHashMap$_literal(["*", S.Cell$(t2, null, $.$get$Tiles_water(), null), "o", S.Cell$(null, null, t2, null)], t5, t3);
       $._themes = "water";
       $._categoryFrequency = null;
       $._categoryCells = t3;
