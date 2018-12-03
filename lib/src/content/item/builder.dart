@@ -31,13 +31,11 @@ _CategoryBuilder category(int glyph, {String verb, int stack}) {
   return _category;
 }
 
-_ItemBuilder item(String name, int depth, Color color,
-    {double frequency, int price}) {
+_ItemBuilder item(String name, Color color, {double frequency, int price}) {
   finishItem();
 
   _item = _ItemBuilder();
   _item._name = name;
-  _item._depth = depth;
   _item._color = color;
   _item._frequency = frequency ?? 1.0;
   _item._price = price ?? 0;
@@ -50,7 +48,7 @@ void affixCategory(String tag) {
   _affixTag = tag;
 }
 
-_AffixBuilder affix(String name, int depth, double frequency) {
+_AffixBuilder affix(String name, double frequency) {
   finishAffix();
 
   bool isPrefix;
@@ -64,7 +62,7 @@ _AffixBuilder affix(String name, int depth, double frequency) {
     throw 'Affix "$name" must start or end with "_".';
   }
 
-  return _affix = _AffixBuilder(name, isPrefix, depth, frequency);
+  return _affix = _AffixBuilder(name, isPrefix, frequency);
 }
 
 class _BaseBuilder {
@@ -175,7 +173,15 @@ class _ItemBuilder extends _BaseBuilder {
   int _armor;
 
   String _name;
-  int _depth;
+  int _minDepth;
+  int _maxDepth;
+
+  /// Sets the item's minimum depth to [from]. If [to] is given, then the item
+  /// has the given depth range. Otherwise, its max is [Option.maxDepth].
+  void depth(int from, {int to}) {
+    _minDepth = from;
+    _maxDepth = to ?? Option.maxDepth;
+  }
 
   void armor(int armor, {int weight}) {
     _armor = armor;
@@ -212,8 +218,12 @@ class _ItemBuilder extends _BaseBuilder {
       }
     }
 
-    use("Detects $typeDescription up to $range steps away.",
-        () => DetectAction(types, range));
+    var description = "Detects $typeDescription";
+    if (range != null) {
+      description += "up to $range steps away";
+    }
+
+    use("$description.", () => DetectAction(types, range));
   }
 
   void resistSalve(Element element) {
@@ -271,8 +281,10 @@ class _ItemBuilder extends _BaseBuilder {
     var motility = Motility.walk;
     if (fly) motility |= Motility.fly;
 
-    use("Unleashes a flow of $element that inflicts $damage damage out to "
-        "$range steps from the hero.", () => FlowSelfAction(attack, motility));
+    use(
+        "Unleashes a flow of $element that inflicts $damage damage out to "
+        "$range steps from the hero.",
+        () => FlowSelfAction(attack, motility));
     tossUse((pos) => FlowFromAction(attack, pos, motility));
   }
 
@@ -289,7 +301,8 @@ class _ItemBuilder extends _BaseBuilder {
 class _AffixBuilder {
   final String _name;
   final bool _isPrefix;
-  final int _depth;
+  int _minDepth;
+  int _maxDepth;
   final double _frequency;
 
   double _heftScale;
@@ -305,7 +318,15 @@ class _AffixBuilder {
   final Map<Element, int> _resists = {};
   final Map<Stat, int> _statBonuses = {};
 
-  _AffixBuilder(this._name, this._isPrefix, this._depth, this._frequency);
+  _AffixBuilder(this._name, this._isPrefix, this._frequency);
+
+  /// Sets the affix's minimum depth to [from]. If [to] is given, then the
+  /// affix has the given depth range. Otherwise, its max range is
+  /// [Option.maxDepth].
+  void depth(int from, {int to}) {
+    _minDepth = from;
+    _maxDepth = to ?? Option.maxDepth;
+  }
 
   void heft(double scale) {
     _heftScale = scale;
@@ -392,7 +413,7 @@ void finishItem() {
   var itemType = ItemType(
       _item._name,
       appearance,
-      _item._depth,
+      _item._minDepth,
       _sortIndex++,
       _category._equipSlot,
       _category._weaponType,
@@ -414,10 +435,11 @@ void finishItem() {
   itemType.skills.addAll(_category._skills);
   itemType.skills.addAll(_item._skills);
 
-  Items.types.add(itemType,
+  Items.types.addRanged(itemType,
       name: itemType.name,
-      depth: itemType.depth,
-      frequency: _item._frequency,
+      start: _item._minDepth,
+      end: _item._maxDepth,
+      startFrequency: _item._frequency,
       tags: _category._tag);
 
   _item = null;
@@ -452,10 +474,12 @@ void finishAffix() {
   _affix._resists.forEach(affix.resist);
   _affix._statBonuses.forEach(affix.setStatBonus);
 
-  affixes.add(affix,
+  affixes.addRanged(affix,
       name: fullName,
-      depth: _affix._depth,
-      frequency: _affix._frequency,
+      start: _affix._minDepth,
+      end: _affix._maxDepth,
+      startFrequency: _affix._frequency,
+      endFrequency: _affix._frequency,
       tags: _affixTag);
   _affix = null;
 }

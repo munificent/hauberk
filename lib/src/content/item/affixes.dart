@@ -76,16 +76,20 @@ class Affixes {
 
     affixCategory("helm");
     for (var i = 0; i < 2; i++) {
-      affix("_ of Acumen", 35, 1.0)
+      affix("_ of Acumen", 1.0)
+        ..depth(35, to: 55)
         ..price(300, 2.0)
         ..intellect(1 + i);
-      affix("_ of Wisdom", 45, 1.0)
+      affix("_ of Wisdom", 1.0)
+        ..depth(45, to: 75)
         ..price(500, 3.0)
         ..intellect(3 + i);
-      affix("_ of Sagacity", 55, 1.0)
+      affix("_ of Sagacity", 1.0)
+        ..depth(75)
         ..price(700, 4.0)
         ..intellect(5 + i);
-      affix("_ of Genius", 65, 1.0)
+      affix("_ of Genius", 1.0)
+        ..depth(65)
         ..price(1000, 5.0)
         ..intellect(7 + i);
     }
@@ -95,45 +99,52 @@ class Affixes {
 
   static void _elven() {
     affixCategory("body");
-    affix("Elven _", 40, 1.0)
+    affix("Elven _", 1.0)
+      ..depth(40, to: 80)
       ..price(400, 2.0)
       ..weight(-2)
       ..armor(2)
       ..resist(Elements.light);
-    affix("Elven _", 60, 0.3)
+    affix("Elven _", 0.3)
+      ..depth(60)
       ..price(600, 3.0)
       ..weight(-3)
       ..armor(4)
       ..resist(Elements.light);
 
     affixCategory("cloak");
-    affix("Elven _", 40, 1.0)
+    affix("Elven _", 1.0)
+      ..depth(40, to: 80)
       ..price(300, 2.0)
       ..weight(-1)
       ..armor(3)
       ..resist(Elements.light);
-    affix("Elven _", 60, 0.3)
+    affix("Elven _", 0.3)
+      ..depth(60)
       ..price(500, 3.0)
       ..weight(-2)
       ..armor(5)
       ..resist(Elements.light);
 
     affixCategory("boots");
-    affix("Elven _", 40, 1.0)
+    affix("Elven _", 1.0)
+      ..depth(50)
       ..price(400, 2.5)
       ..weight(-2)
       ..armor(2);
     // TODO: Increase dodge.
 
     affixCategory("helm");
-    affix("Elven _", 40, 1.0)
+    affix("Elven _", 1.0)
+      ..depth(40, to: 80)
       ..price(400, 2.0)
       ..weight(-1)
       ..armor(1)
       ..intellect(1)
       ..resist(Elements.light);
     // TODO: Emanate.
-    affix("Elven _", 60, 0.3)
+    affix("Elven _", 0.3)
+      ..depth(60)
       ..price(600, 3.0)
       ..weight(-1)
       ..armor(2)
@@ -142,12 +153,14 @@ class Affixes {
     // TODO: Emanate.
 
     affixCategory("shield");
-    affix("Elven _", 40, 1.0)
+    affix("Elven _", 1.0)
+      ..depth(40, to: 80)
       ..price(300, 1.6)
       ..heft(0.8)
       ..damage(scale: 1.3)
       ..resist(Elements.light);
-    affix("Elven _", 50, 0.5)
+    affix("Elven _", 0.5)
+      ..depth(50)
       ..price(500, 2.2)
       ..heft(0.6)
       ..damage(scale: 1.5)
@@ -158,13 +171,15 @@ class Affixes {
   static void _dwarven() {
     // TODO: These prices need tuning.
     affixCategory("body");
-    affix("Dwarven _", 30, 1.0)
+    affix("Dwarven _", 1.0)
+      ..depth(30, to: 70)
       ..price(400, 2.0)
       ..weight(2)
       ..armor(4)
       ..resist(Elements.earth)
       ..resist(Elements.dark);
-    affix("Dwarven _", 40, 0.5)
+    affix("Dwarven _", 0.5)
+      ..depth(40)
       ..price(600, 3.0)
       ..weight(2)
       ..armor(6)
@@ -172,12 +187,14 @@ class Affixes {
       ..resist(Elements.dark);
 
     affixCategory("helm");
-    affix("Dwarven _", 50, 1.0)
+    affix("Dwarven _", 1.0)
+      ..depth(50, to: 80)
       ..price(300, 2.0)
       ..weight(1)
       ..armor(3)
       ..resist(Elements.dark);
-    affix("Dwarven _", 60, 0.5)
+    affix("Dwarven _", 0.5)
+      ..depth(60)
       ..price(500, 3.0)
       ..weight(1)
       ..armor(4)
@@ -186,7 +203,8 @@ class Affixes {
       ..resist(Elements.dark);
 
     affixCategory("gloves");
-    affix("Dwarven _", 50, 1.0)
+    affix("Dwarven _", 1.0)
+      ..depth(50)
       ..price(300, 2.0)
       ..weight(1)
       // TODO: Encumbrance.
@@ -195,12 +213,14 @@ class Affixes {
       ..resist(Elements.earth);
 
     affixCategory("boots");
-    affix("Dwarven _", 50, 1.0)
+    affix("Dwarven _", 1.0)
+      ..depth(50, to: 70)
       ..price(300, 2.0)
       ..weight(1)
       ..armor(3)
       ..resist(Elements.earth);
-    affix("Dwarven _", 60, 0.3)
+    affix("Dwarven _", 0.3)
+      ..depth(60)
       ..price(500, 3.0)
       ..weight(2)
       ..armor(5)
@@ -209,13 +229,15 @@ class Affixes {
       ..resist(Elements.earth);
 
     affixCategory("shield");
-    affix("Dwarven _", 40, 1.0)
+    affix("Dwarven _", 1.0)
+      ..depth(40, to: 80)
       ..price(200, 2.2)
       ..heft(1.2)
       ..damage(scale: 1.5, bonus: 4)
       ..resist(Elements.earth)
       ..resist(Elements.dark);
-    affix("Dwarven _", 40, 1.0)
+    affix("Dwarven _", 1.0)
+      ..depth(60)
       ..price(400, 2.4)
       ..heft(1.3)
       ..damage(scale: 1.7, bonus: 5)
@@ -227,41 +249,53 @@ class Affixes {
   static void _resists() {
     // TODO: Don't apply to all armor types?
     affixCategory("armor");
-    affix("_ of Resist Air", 10, 0.5)
+    affix("_ of Resist Air", 0.5)
+      ..depth(10, to: 50)
       ..price(200, 1.2)
       ..resist(Elements.air);
-    affix("_ of Resist Earth", 11, 0.5)
+    affix("_ of Resist Earth", 0.5)
+      ..depth(11, to: 51)
       ..price(230, 1.2)
       ..resist(Elements.earth);
-    affix("_ of Resist Fire", 12, 0.5)
+    affix("_ of Resist Fire", 0.5)
+      ..depth(12, to: 52)
       ..price(260, 1.3)
       ..resist(Elements.fire);
-    affix("_ of Resist Water", 13, 0.5)
+    affix("_ of Resist Water", 0.5)
+      ..depth(13, to: 53)
       ..price(310, 1.2)
       ..resist(Elements.water);
-    affix("_ of Resist Acid", 14, 0.3)
+    affix("_ of Resist Acid", 0.3)
+      ..depth(14, to: 54)
       ..price(340, 1.3)
       ..resist(Elements.acid);
-    affix("_ of Resist Cold", 15, 0.5)
+    affix("_ of Resist Cold", 0.5)
+      ..depth(15, to: 55)
       ..price(400, 1.2)
       ..resist(Elements.cold);
-    affix("_ of Resist Lightning", 16, 0.3)
+    affix("_ of Resist Lightning", 0.3)
+      ..depth(16, to: 56)
       ..price(430, 1.2)
       ..resist(Elements.lightning);
-    affix("_ of Resist Poison", 17, 0.25)
+    affix("_ of Resist Poison", 0.25)
+      ..depth(17, to: 57)
       ..price(460, 1.5)
       ..resist(Elements.poison);
-    affix("_ of Resist Dark", 18, 0.25)
+    affix("_ of Resist Dark", 0.25)
+      ..depth(18, to: 58)
       ..price(490, 1.3)
       ..resist(Elements.dark);
-    affix("_ of Resist Light", 19, 0.25)
+    affix("_ of Resist Light", 0.25)
+      ..depth(19, to: 59)
       ..price(490, 1.3)
       ..resist(Elements.light);
-    affix("_ of Resist Spirit", 20, 0.4)
+    affix("_ of Resist Spirit", 0.4)
+      ..depth(10, to: 60)
       ..price(520, 1.4)
       ..resist(Elements.spirit);
 
-    affix("_ of Resist Nature", 40, 0.3)
+    affix("_ of Resist Nature", 0.3)
+      ..depth(40)
       ..price(3000, 4.0)
       ..resist(Elements.air)
       ..resist(Elements.earth)
@@ -270,21 +304,24 @@ class Affixes {
       ..resist(Elements.cold)
       ..resist(Elements.lightning);
 
-    affix("_ of Resist Destruction", 40, 0.3)
+    affix("_ of Resist Destruction", 0.3)
+      ..depth(40)
       ..price(1300, 2.6)
       ..resist(Elements.acid)
       ..resist(Elements.fire)
       ..resist(Elements.lightning)
       ..resist(Elements.poison);
 
-    affix("_ of Resist Evil", 60, 0.3)
+    affix("_ of Resist Evil", 0.3)
+      ..depth(60)
       ..price(1500, 3.0)
       ..resist(Elements.acid)
       ..resist(Elements.poison)
       ..resist(Elements.dark)
       ..resist(Elements.spirit);
 
-    affix("_ of Resistance", 70, 0.3)
+    affix("_ of Resistance", 0.3)
+      ..depth(70)
       ..price(5000, 6.0)
       ..resist(Elements.air)
       ..resist(Elements.earth)
@@ -298,37 +335,48 @@ class Affixes {
       ..resist(Elements.light)
       ..resist(Elements.spirit);
 
-    affix("_ of Protection from Air", 16, 0.25)
+    affix("_ of Protection from Air", 0.25)
+      ..depth(36)
       ..price(500, 1.4)
       ..resist(Elements.air, 2);
-    affix("_ of Protection from Earth", 17, 0.25)
+    affix("_ of Protection from Earth", 0.25)
+      ..depth(37)
       ..price(500, 1.4)
       ..resist(Elements.earth, 2);
-    affix("_ of Protection from Fire", 18, 0.25)
+    affix("_ of Protection from Fire", 0.25)
+      ..depth(38)
       ..price(500, 1.5)
       ..resist(Elements.fire, 2);
-    affix("_ of Protection from Water", 19, 0.25)
+    affix("_ of Protection from Water", 0.25)
+      ..depth(39)
       ..price(500, 1.4)
       ..resist(Elements.water, 2);
-    affix("_ of Protection from Acid", 20, 0.2)
+    affix("_ of Protection from Acid", 0.2)
+      ..depth(40)
       ..price(500, 1.5)
       ..resist(Elements.acid, 2);
-    affix("_ of Protection from Cold", 21, 0.25)
+    affix("_ of Protection from Cold", 0.25)
+      ..depth(41)
       ..price(500, 1.4)
       ..resist(Elements.cold, 2);
-    affix("_ of Protection from Lightning", 22, 0.16)
+    affix("_ of Protection from Lightning", 0.16)
+      ..depth(42)
       ..price(500, 1.4)
       ..resist(Elements.lightning, 2);
-    affix("_ of Protection from Poison", 23, 0.14)
+    affix("_ of Protection from Poison", 0.14)
+      ..depth(43)
       ..price(1000, 1.6)
       ..resist(Elements.poison, 2);
-    affix("_ of Protection from Dark", 24, 0.14)
+    affix("_ of Protection from Dark", 0.14)
+      ..depth(44)
       ..price(500, 1.5)
       ..resist(Elements.dark, 2);
-    affix("_ of Protection from Light", 25, 0.14)
+    affix("_ of Protection from Light", 0.14)
+      ..depth(45)
       ..price(500, 1.5)
       ..resist(Elements.light, 2);
-    affix("_ of Protection from Spirit", 26, 0.13)
+    affix("_ of Protection from Spirit", 0.13)
+      ..depth(46)
       ..price(800, 1.6)
       ..resist(Elements.spirit, 2);
   }
@@ -336,29 +384,35 @@ class Affixes {
   static void _extraDamage() {
     // TODO: Exclude bows?
     affixCategory("weapon");
-    affix("_ of Harming", 1, 1.0)
+    affix("_ of Harming", 1.0)
+      ..depth(1, to: 30)
       ..price(100, 1.2)
       ..heft(1.05)
       ..damage(bonus: 1);
-    affix("_ of Wounding", 10, 1.0)
+    affix("_ of Wounding", 1.0)
+      ..depth(10, to: 50)
       ..price(140, 1.3)
       ..heft(1.07)
       ..damage(bonus: 3);
-    affix("_ of Maiming", 25, 1.0)
+    affix("_ of Maiming", 1.0)
+      ..depth(25, to: 75)
       ..price(180, 1.5)
       ..heft(1.09)
       ..damage(scale: 1.2, bonus: 3);
-    affix("_ of Slaying", 45, 1.0)
+    affix("_ of Slaying", 1.0)
+      ..depth(45)
       ..price(200, 2.0)
       ..heft(1.11)
       ..damage(scale: 1.4, bonus: 5);
 
     affixCategory("bow");
-    affix("Ash _", 10, 1.0)
+    affix("Ash _", 1.0)
+      ..depth(10, to: 70)
       ..price(300, 1.3)
       ..heft(0.8)
       ..damage(bonus: 3);
-    affix("Yew _", 20, 1.0)
+    affix("Yew _", 1.0)
+      ..depth(20)
       ..price(500, 1.4)
       ..heft(0.8)
       ..damage(bonus: 5);
@@ -367,78 +421,95 @@ class Affixes {
   static void _brands() {
     affixCategory("weapon");
 
-    affix("Glimmering _", 20, 0.3)
+    affix("Glimmering _", 0.3)
+      ..depth(20, to: 60)
       ..price(300, 1.3)
       ..damage(scale: 1.2)
       ..brand(Elements.light);
-    affix("Shining _", 32, 0.25)
+    affix("Shining _", 0.25)
+      ..depth(32, to: 90)
       ..price(400, 1.6)
       ..damage(scale: 1.4)
       ..brand(Elements.light);
-    affix("Radiant _", 48, 0.2)
+    affix("Radiant _", 0.2)
+      ..depth(48)
       ..price(500, 2.0)
       ..damage(scale: 1.6)
       ..brand(Elements.light, resist: 2);
 
-    affix("Dim _", 16, 0.3)
+    affix("Dim _", 0.3)
+      ..depth(16, to: 60)
       ..price(300, 1.3)
       ..damage(scale: 1.2)
       ..brand(Elements.dark);
-    affix("Dark _", 32, 0.25)
+    affix("Dark _", 0.25)
+      ..depth(32, to: 80)
       ..price(400, 1.6)
       ..damage(scale: 1.4)
       ..brand(Elements.dark);
-    affix("Black _", 56, 0.2)
+    affix("Black _", 0.2)
+      ..depth(56)
       ..price(500, 2.0)
       ..damage(scale: 1.6)
       ..brand(Elements.dark, resist: 2);
 
-    affix("Chilling _", 20, 0.3)
+    affix("Chilling _", 0.3)
+      ..depth(20, to: 65)
       ..price(300, 1.5)
       ..damage(scale: 1.4)
       ..brand(Elements.cold);
-    affix("Freezing _", 40, 0.25)
+    affix("Freezing _", 0.25)
+      ..depth(40)
       ..price(400, 1.7)
       ..damage(scale: 1.6)
       ..brand(Elements.cold, resist: 2);
 
-    affix("Burning _", 20, 0.3)
+    affix("Burning _", 0.3)
+      ..depth(20, to: 60)
       ..price(300, 1.5)
       ..damage(scale: 1.3)
       ..brand(Elements.fire);
-    affix("Flaming _", 40, 0.25)
+    affix("Flaming _", 0.25)
+      ..depth(40, to: 90)
       ..price(360, 1.8)
       ..damage(scale: 1.6)
       ..brand(Elements.fire);
-    affix("Searing _", 60, 0.2)
+    affix("Searing _", 0.2)
+      ..depth(60)
       ..price(500, 2.1)
       ..damage(scale: 1.8)
       ..brand(Elements.fire, resist: 2);
 
-    affix("Electric _", 50, 0.2)
+    affix("Electric _", 0.2)
+      ..depth(50)
       ..price(300, 1.5)
       ..damage(scale: 1.4)
       ..brand(Elements.lightning);
-    affix("Shocking _", 70, 0.2)
+    affix("Shocking _", 0.2)
+      ..depth(70)
       ..price(400, 2.0)
       ..damage(scale: 1.8)
       ..brand(Elements.lightning, resist: 2);
 
-    affix("Poisonous _", 35, 0.2)
+    affix("Poisonous _", 0.2)
+      ..depth(35, to: 90)
       ..price(500, 1.5)
       ..damage(scale: 1.1)
       ..brand(Elements.poison);
-    affix("Venomous _", 70, 0.2)
+    affix("Venomous _", 0.2)
+      ..depth(70)
       ..price(800, 1.8)
       ..damage(scale: 1.3)
       ..brand(Elements.poison, resist: 2);
 
-    affix("Ghostly _", 45, 0.2)
+    affix("Ghostly _", 0.2)
+      ..depth(45, to: 85)
       ..price(300, 1.6)
       ..heft(0.7)
       ..damage(scale: 1.4)
       ..brand(Elements.spirit);
-    affix("Spiritual _", 80, 0.15)
+    affix("Spiritual _", 0.15)
+      ..depth(80)
       ..price(400, 2.1)
       ..heft(0.7)
       ..damage(scale: 1.7)

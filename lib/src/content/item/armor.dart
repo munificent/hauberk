@@ -8,53 +8,71 @@ void helms() {
   category(CharCode.latinCapitalLetterEWithAcute)
     ..tag("equipment/armor/helm")
     ..toss(damage: 3, range: 5, breakage: 10);
-  item("Leather Cap", 4, persimmon, frequency: 0.5, price: 50)
+  item("Leather Cap", persimmon, frequency: 0.5, price: 50)
+    ..depth(4)
     ..armor(2, weight: 2)
     ..destroy(Elements.fire, chance: 12, fuel: 2);
-  item("Chainmail Coif", 7, steelGray, frequency: 0.5, price: 160)
+  item("Chainmail Coif", steelGray, frequency: 0.5, price: 160)
+    ..depth(10)
     ..armor(3, weight: 3);
-  item("Steel Cap", 12, slate, frequency: 0.5, price: 200)..armor(4, weight: 3);
-  item("Visored Helm", 20, gunsmoke, frequency: 0.5, price: 350)
+  item("Steel Cap", slate, frequency: 0.5, price: 200)
+    ..depth(25)
+    ..armor(4, weight: 3);
+  item("Visored Helm", gunsmoke, frequency: 0.5, price: 350)
+    ..depth(40)
     ..armor(5, weight: 6);
-  item("Great Helm", 30, ash, frequency: 0.5, price: 550)..armor(6, weight: 8);
+  item("Great Helm", ash, frequency: 0.5, price: 550)
+    ..depth(50)
+    ..armor(6, weight: 8);
 }
 
 void bodyArmor() {
   // Robes.
   category(CharCode.latinSmallLetterOWithCircumflex)
     ..tag("equipment/armor/body/robe");
-  item("Robe", 2, cerulean, frequency: 0.5, price: 20)
+  item("Robe", cerulean, frequency: 0.5, price: 20)
+    ..depth(2)
     ..armor(4)
     ..destroy(Elements.fire, chance: 15, fuel: 8);
-  item("Fur-lined Robe", 6, sherwood, frequency: 0.25, price: 110)
+  item("Fur-lined Robe", sherwood, frequency: 0.25, price: 110)
+    ..depth(6)
     ..armor(6)
     ..destroy(Elements.fire, chance: 12, fuel: 8);
 
   // Soft armor.
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body");
-  item("Cloth Shirt", 2, ash, frequency: 0.5, price: 40)
+  item("Cloth Shirt", ash, frequency: 0.5, price: 40)
+    ..depth(2, to: 40)
     ..armor(3)
     ..destroy(Elements.fire, chance: 15, fuel: 4);
-  item("Leather Shirt", 5, persimmon, frequency: 0.5, price: 90)
+  item("Leather Shirt", persimmon, frequency: 0.5, price: 90)
+    ..depth(5, to: 80)
     ..armor(6, weight: 1)
     ..destroy(Elements.fire, chance: 12, fuel: 4);
-  item("Jerkin", 7, gunsmoke, frequency: 0.5, price: 130)..armor(8, weight: 1);
-  item("Leather Armor", 10, garnet, frequency: 0.5, price: 240)
+  item("Jerkin", gunsmoke, frequency: 0.5, price: 130)
+    ..depth(8)
+    ..armor(8, weight: 1);
+  item("Leather Armor", garnet, frequency: 0.5, price: 240)
+    ..depth(12)
     ..armor(11, weight: 2)
     ..destroy(Elements.fire, chance: 10, fuel: 4);
-  item("Padded Armor", 14, steelGray, frequency: 0.5, price: 320)
+  item("Padded Armor", steelGray, frequency: 0.5, price: 320)
+    ..depth(16)
     ..armor(15, weight: 3)
     ..destroy(Elements.fire, chance: 8, fuel: 4);
-  item("Studded Armor", 17, slate, frequency: 0.5, price: 400)
+  item("Studded Armor", slate, frequency: 0.5, price: 400)
+    ..depth(20)
     ..armor(22, weight: 4)
     ..destroy(Elements.fire, chance: 6, fuel: 4);
 
   // Mail armor.
   category(CharCode.latinSmallLetterOWithGrave)..tag("equipment/armor/body");
-  item("Mail Hauberk", 20, steelGray, frequency: 0.5, price: 500)
+  item("Mail Hauberk", steelGray, frequency: 0.5, price: 500)
+    ..depth(25)
     ..armor(28, weight: 5);
-  item("Scale Mail", 23, gunsmoke, frequency: 0.5, price: 700)
+  item("Scale Mail", gunsmoke, frequency: 0.5, price: 700)
+    ..depth(35)
     ..armor(36, weight: 7);
 
 //  CharCode.latinSmallLetterUWithCircumflex // armor
@@ -73,10 +91,12 @@ void bodyArmor() {
 
 void cloaks() {
   category(CharCode.latinCapitalLetterAe)..tag("equipment/armor/cloak");
-  item("Cloak", 3, ultramarine, frequency: 0.5, price: 70)
+  item("Cloak", ultramarine, frequency: 0.5, price: 70)
+    ..depth(3)
     ..armor(2, weight: 1)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
-  item("Fur Cloak", 9, garnet, frequency: 0.2, price: 140)
+  item("Fur Cloak", garnet, frequency: 0.2, price: 140)
+    ..depth(8)
     ..armor(3, weight: 1)
     ..destroy(Elements.fire, chance: 16, fuel: 5);
 }
@@ -94,12 +114,15 @@ void gloves() {
   //
   // Could probably do the same for heft. A battleaxe of fire doesn't do a lot
   // of fire damage if you can't lift it.
-  item("Pair[s] of Gloves", 8, sandal, frequency: 0.5, price: 170)
+  item("Pair[s] of Gloves", sandal, frequency: 0.5, price: 170)
+    ..depth(8)
     ..armor(1)
     ..destroy(Elements.fire, chance: 7, fuel: 2);
-  item("Set[s] of Bracers", 17, garnet, frequency: 0.5, price: 480)
+  item("Set[s] of Bracers", garnet, frequency: 0.5, price: 480)
+    ..depth(17)
     ..armor(2, weight: 1);
-  item("Pair[s] of Gauntlets", 34, steelGray, frequency: 0.5, price: 800)
+  item("Pair[s] of Gauntlets", steelGray, frequency: 0.5, price: 800)
+    ..depth(34)
     ..armor(4, weight: 2);
 }
 
@@ -108,36 +131,46 @@ void shields() {
     ..tag("equipment/armor/shield")
     ..toss(damage: 5, range: 8, breakage: 10);
   // TODO: Encumbrance.
-  item("Small Leather Shield", 5, garnet, frequency: 0.5, price: 170)
+  item("Small Leather Shield", garnet, frequency: 0.5, price: 170)
+    ..depth(12)
     ..armor(3, weight: 2)
     ..destroy(Elements.fire, chance: 7, fuel: 14);
-  item("Wooden Targe", 11, sandal, frequency: 0.5, price: 250)
+  item("Wooden Targe", sandal, frequency: 0.5, price: 250)
+    ..depth(25)
     ..armor(4, weight: 4)
     ..destroy(Elements.fire, chance: 14, fuel: 20);
-  item("Large Leather Shield", 17, persimmon, frequency: 0.5, price: 320)
+  item("Large Leather Shield", persimmon, frequency: 0.5, price: 320)
+    ..depth(35)
     ..armor(5, weight: 5)
     ..destroy(Elements.fire, chance: 7, fuel: 17);
-  item("Steel Buckler", 27, steelGray, frequency: 0.5, price: 450)
+  item("Steel Buckler", steelGray, frequency: 0.5, price: 450)
+    ..depth(50)
     ..armor(6, weight: 6);
-  item("Kite Shield", 35, gunsmoke, frequency: 0.5, price: 650)
+  item("Kite Shield", gunsmoke, frequency: 0.5, price: 650)
+    ..depth(65)
     ..armor(7, weight: 9);
 }
 
 void boots() {
   category(CharCode.latinSmallLetterIWithGrave)..tag("equipment/armor/boots");
-  item("Pair[s] of Sandals", 2, persimmon, frequency: 0.24, price: 10)
+  item("Pair[s] of Sandals", persimmon, frequency: 0.24, price: 10)
+    ..depth(2, to: 20)
     ..armor(1)
     ..destroy(Elements.fire, chance: 20, fuel: 3);
-  item("Pair[s] of Shoes", 8, garnet, frequency: 0.3, price: 30)
+  item("Pair[s] of Shoes", garnet, frequency: 0.3, price: 30)
+    ..depth(8)
     ..armor(2)
     ..destroy(Elements.fire, chance: 14, fuel: 3);
 
   category(CharCode.latinCapitalLetterAWithDiaeresis)
     ..tag("equipment/armor/boots");
-  item("Pair[s] of Boots", 14, persimmon, frequency: 0.3, price: 70)
+  item("Pair[s] of Boots", persimmon, frequency: 0.3, price: 70)
+    ..depth(14)
     ..armor(6, weight: 1);
-  item("Pair[s] of Plated Boots", 22, slate, frequency: 0.3, price: 250)
+  item("Pair[s] of Plated Boots", slate, frequency: 0.3, price: 250)
+    ..depth(22)
     ..armor(8, weight: 2);
-  item("Pair[s] of Greaves", 47, gunsmoke, frequency: 0.25, price: 350)
+  item("Pair[s] of Greaves", gunsmoke, frequency: 0.25, price: 350)
+    ..depth(47)
     ..armor(12, weight: 3);
 }
