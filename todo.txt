@@ -4,26 +4,28 @@
   won't choose move if out of range, but means action can go farther than
   intended range.
 
--- From playtesting 2018/11/16:
+Playtest 2018/11/16:
 
-- dungeons too big and dense
-  probably make keeps rarer and dungeons more common with less density
+- Treasure and healing too rare.
 
-- treasure and healing too rare
+- Teleport too rare.
 
-- equipment too common
+- No UI to tell how much headroom have with strength when buying armor. (Maybe
+  show weight in item list?)
 
-- teleport too rare
+- Have to eat too often.
 
-- no ui to tell how much headroom have with strength when buying armor
-  (maybe show weight in item list?)
+- Leveling feels slow.
 
-- have to eat too often
+- Dark grey monsters and items blend into the background on well-lit tiles.
 
-- leveling feels slow
+- Don't show wake "!" effect if monster is killed.
 
-- monsters drop a lot of loot, especially when dropping equipment
+Playtest 2018/12/04:
 
-- dark grey monsters and items blend into the background on well-lit tiles
+- Treasure could be more common, at least early on.
 
-- don't show wake "!" effect if monster is killed
+- Imps seem to run up to melee too much given that they have a ranged attack.
+  Most monsters seem to have same walking behavior. Should have more variety.
+
+- Food not common enough on level 1.

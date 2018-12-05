@@ -114,7 +114,7 @@ void dragons() {
     ..drop("treasure", count: 5)
     ..drop("magic", count: 3)
     ..drop("equipment", count: 2);
-  breed("blue dragon", 65, ash, 400)
+  breed("blue dragon", 65, cerulean, 400)
     ..attack("bite[s]", 30)
     ..attack("claw[s]", 25)
     ..waterCone(damage: 70)
