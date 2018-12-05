@@ -22,9 +22,11 @@ List<String> _itemNames;
 final _affixCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
 List<String> _affixNames;
 
-final _monsterDepthCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
+final _monsterDepthCounts =
+    List.generate(Option.maxDepth, (_) => Histogram<String>());
 
-final _floorDropCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
+final _floorDropCounts =
+    List.generate(Option.maxDepth, (_) => Histogram<String>());
 
 final _colors = <String, String>{};
 
@@ -45,6 +47,8 @@ main() {
 
   for (var itemType in Items.types.all) {
     _colors[itemType.name] = (itemType.appearance as Glyph).fore.cssColor;
+    _colors["${itemType.name} (ego)"] =
+        (itemType.appearance as Glyph).fore.blend(Color.black, 0.5).cssColor;
   }
 
   for (var breed in Monsters.breeds.all) {
@@ -141,7 +145,12 @@ void _moreItems() {
       var itemType = Items.types.tryChoose(depth);
       if (itemType == null) continue;
 
-      histogram.add(itemType.name);
+      var item = Affixes.createItem(itemType, depth);
+      if (item.prefix != null || item.suffix != null) {
+        histogram.add("${itemType.name} (ego)");
+      } else {
+        histogram.add(itemType.name);
+      }
     }
   }
 
@@ -230,7 +239,12 @@ void _drawBreeds() {
 void _drawItems() {
   _initializeItemNames();
   _redraw(_itemCounts, _itemNames, (label) {
-    var type = Items.types.find(label);
+    var typeName = label;
+    if (typeName.endsWith(" (ego)")) {
+      typeName = typeName.substring(0, typeName.length - 6);
+    }
+
+    var type = Items.types.find(typeName);
     return '$label (depth ${type.depth})';
   });
 }
@@ -291,6 +305,8 @@ void _initializeItemNames() {
 
       return aType.name.compareTo(bType.name);
     });
+
+    _itemNames.addAll(_itemNames.map((name) => "$name (ego)").toList());
   }
 }
 
