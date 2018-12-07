@@ -13,7 +13,7 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
 
   String get weaponType;
 
-  double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.05, 2.0);
+  double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.00, 2.0);
 
   void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {
     if (!_hasWeapon(hero)) return;
@@ -51,12 +51,18 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
 
     if (weapon.type.weaponType != weaponType) return;
 
-    hero.skills.earnPoints(this, (monster.experience / 1000).ceil());
+    hero.skills.earnPoints(this, (monster.experience / 100).ceil());
     hero.refreshSkill(this);
   }
 
-  // TODO: Tune.
-  int baseTrainingNeeded(int level) => 100 * level * level * level;
+  int baseTrainingNeeded(int level) {
+    // Get the mastery and unlock the action as soon as it's first used.
+    if (level == 1) return 1;
+
+    // TODO: Tune.
+    level--;
+    return 100 * level * level * level;
+  }
 }
 
 abstract class MasteryAction extends Action {
