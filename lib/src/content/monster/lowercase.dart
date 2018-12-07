@@ -455,7 +455,7 @@ void kobolds() {
     ..minion("wild dog", 0, 3)
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult, rate: 6)
-    ..fireBolt(rate: 5, damage: 10)
+    ..sparkBolt(rate: 5, damage: 10)
     ..drop("treasure", percent: 30)
     ..drop("robe", percent: 10)
     ..drop("magic", percent: 35)
@@ -467,7 +467,7 @@ void kobolds() {
     ..minion("wild dog", 0, 3)
     ..attack("stab[s]", 5)
     ..iceBolt(rate: 8, damage: 12)
-    ..fireBolt(rate: 8, damage: 12)
+    ..sparkBolt(rate: 8, damage: 12)
     ..drop("treasure", percent: 30)
     ..drop("staff", percent: 20)
     ..drop("robe", percent: 10)
@@ -649,7 +649,7 @@ void vines() {
 void worms() {
   family("w", dodge: 15, meander: 40, flags: "fearless")
     ..groups("worm")
-    ..sense(see: 0, hear: 3);
+    ..sense(see: 2, hear: 3);
   breed("blood worm", 1, maroon, 4, frequency: 0.5)
     ..count(2, 5)
     ..attack("crawl[s] on", 5);
