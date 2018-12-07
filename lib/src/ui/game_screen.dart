@@ -725,6 +725,10 @@ class GameScreen extends Screen<Input> {
           if (volume > 0.0) back = back.blend(peaGreen, volume);
         }
 
+        if (Debug.showMonsterAlertness && actor is Monster) {
+          back = Color.blue.blend(Color.red, actor.alertness);
+        }
+
         var glyph = Glyph.fromCharCode(char, fore, back);
         drawStageGlyph(terminal, pos.x, pos.y, glyph);
       }
@@ -956,6 +960,11 @@ class GameScreen extends Screen<Input> {
         drawCondition(
             _resistLetters[element], Color.black, elementColor(element));
       }
+    }
+
+    if (Debug.showMonsterAlertness && actor is Monster) {
+      var alertness = (actor.alertness * 100).toInt().toString().padLeft(3);
+      terminal.writeAt(2, y, alertness, ash);
     }
 
     Draw.meter(

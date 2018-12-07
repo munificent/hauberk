@@ -20,6 +20,7 @@ class WizardDialog extends Screen<Input> {
     _menuItems["Map Dungeon"] = _mapDungeon;
     _menuItems["Illuminate Dungeon"] = _illuminateDungeon;
     _menuItems["Toggle Show All Monsters"] = _toggleShowAllMonsters;
+    _menuItems["Toggle Show Monster Alertness"] = _toggleShowMonsterAlertness;
     _menuItems["Toggle Show Hero Volume"] = _toggleShowHeroVolume;
     _menuItems["Drop Item"] = _dropItem;
     _menuItems["Gain Level"] = _gainLevel;
@@ -105,6 +106,12 @@ class WizardDialog extends Screen<Input> {
   void _toggleShowAllMonsters() {
     Debug.showAllMonsters = !Debug.showAllMonsters;
     _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
+    ui.pop();
+  }
+
+  void _toggleShowMonsterAlertness() {
+    Debug.showMonsterAlertness = !Debug.showMonsterAlertness;
+    _game.log.cheat("Show monster alertness = ${Debug.showMonsterAlertness}");
     ui.pop();
   }
 

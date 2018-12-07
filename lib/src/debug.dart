@@ -9,10 +9,13 @@ import 'engine.dart';
 /// the engine to punch debug info all the way to where the UI can get it. It
 /// should not be used outside of a debugging scenario.
 class Debug {
-  static const enabled = false;
+  static const enabled = true;
 
   /// If true, all monsters are rendered, regardless of in-game visibility.
   static bool showAllMonsters = false;
+
+  /// If true, monster alertness is rendered.
+  static bool showMonsterAlertness = false;
 
   static bool showHeroVolume = false;
 
