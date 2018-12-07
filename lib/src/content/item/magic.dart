@@ -6,6 +6,7 @@ import '../elements.dart';
 import 'builder.dart';
 
 void potions() {
+  // TODO: Max depths for more of these.
   // TODO: Some potions should perform an effect when thrown.
 
   // Healing.

@@ -13,34 +13,45 @@ class Affixes {
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int droppedDepth) {
-    // Untagged items don't have any affixes.
-    if (Items.types.getTags(itemType.name).isEmpty) {
-      return Item(itemType, 1);
+    // Only equipped items have affixes.
+    if (itemType.equipSlot == null) return Item(itemType, 1);
+
+    // Calculate the effective depth of the item for generating affixes. This
+    // affects both the chances of having an affix at all, and which affixes it
+    // gets.
+    //
+    // The basic idea is that an item's overall value should reflect the depth
+    // where it's generated. So if an item for a shallower depth appears deeper
+    // in the dungeon it is more likely to have an affix to compensate.
+    // Likewise, finding a depth 20 item at depth 10 is already a good find, so
+    // it's less likely to also have an affix on it.
+    var affixDepth = droppedDepth;
+    var outOfDepth = itemType.depth - droppedDepth;
+
+    if (outOfDepth > 0) {
+      // Generating a stronger item than expected, so it will have weaker
+      // affixes.
+      affixDepth -= outOfDepth;
+    } else {
+      // Generating a weaker item than expected, so boost its affix. Reduce the
+      // boost as the hero gets deeper in the dungeon. Otherwise, near 100, the
+      // boost ends up pushing almost everything past 100 since most equipment
+      // has a lower starting depth.
+      var weight = lerpDouble(droppedDepth, 1, 100, 0.5, 0.0);
+      affixDepth -= rng.round(outOfDepth * weight);
     }
 
-    // The deeper we go, the greater chance of an affix. However, finding a
-    // deeper item at a shallower depth reduces its chance of an affix (since
-    // the item is already better than expected). Conversely, a weaker item
-    // found deeper in the dungeon has a greater chance of an affix to
-    // compensate for its weakness.
-    var outOfDepth = itemType.depth - droppedDepth;
-    var depth = math.max(1, droppedDepth - outOfDepth ~/ 3);
+    affixDepth = affixDepth.clamp(1, 100);
 
     // This generates a curve that starts out at 1% and slowly ramps upwards.
-    var chance = 1 + 0.006 * depth * depth + 0.2 * depth;
-
+    var chance = 0.006 * affixDepth * affixDepth + 0.3 * affixDepth + 1.0;
     if (rng.float(100.0) > chance) return Item(itemType, 1);
-
-    // Give items a chance to boost their effective level when choosing a
-    // affixes.
-    var affixDepth = math.max(droppedDepth, itemType.depth) + rng.taper(0, 2);
 
     var prefix = _chooseAffix(prefixes, itemType, affixDepth);
     var suffix = _chooseAffix(suffixes, itemType, affixDepth);
 
-    // If the item has both a prefix and suffix, only one tends to win. This
-    // makes dual-affix items rarer since they are more powerful (they only
-    // take a single equipment slot) and also look kind of funny.
+    // Make dual-affix items rarer since they are more powerful (they only take
+    // a single equipment slot) and also look kind of funny.
     if (prefix != null && suffix != null && !rng.oneIn(5)) {
       if (rng.oneIn(2)) {
         prefix = null;

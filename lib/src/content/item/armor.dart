@@ -9,14 +9,14 @@ void helms() {
     ..tag("equipment/armor/helm")
     ..toss(damage: 3, range: 5, breakage: 10);
   item("Leather Cap", persimmon, frequency: 0.5, price: 50)
-    ..depth(4)
+    ..depth(4, to: 40)
     ..armor(2, weight: 2)
     ..destroy(Elements.fire, chance: 12, fuel: 2);
   item("Chainmail Coif", steelGray, frequency: 0.5, price: 160)
-    ..depth(10)
+    ..depth(10, to: 60)
     ..armor(3, weight: 3);
   item("Steel Cap", slate, frequency: 0.5, price: 200)
-    ..depth(25)
+    ..depth(25, to: 80)
     ..armor(4, weight: 3);
   item("Visored Helm", gunsmoke, frequency: 0.5, price: 350)
     ..depth(40)
@@ -31,30 +31,31 @@ void bodyArmor() {
   category(CharCode.latinSmallLetterOWithCircumflex)
     ..tag("equipment/armor/body/robe");
   item("Robe", cerulean, frequency: 0.5, price: 20)
-    ..depth(2)
+    ..depth(2, to: 40)
     ..armor(4)
     ..destroy(Elements.fire, chance: 15, fuel: 8);
   item("Fur-lined Robe", sherwood, frequency: 0.25, price: 110)
     ..depth(6)
     ..armor(6)
     ..destroy(Elements.fire, chance: 12, fuel: 8);
+  // TODO: Better robes that don't add weight and appear later.
 
   // Soft armor.
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body");
   item("Cloth Shirt", ash, frequency: 0.5, price: 40)
-    ..depth(2, to: 40)
+    ..depth(2, to: 30)
     ..armor(3)
     ..destroy(Elements.fire, chance: 15, fuel: 4);
   item("Leather Shirt", persimmon, frequency: 0.5, price: 90)
-    ..depth(5, to: 80)
+    ..depth(5, to: 50)
     ..armor(6, weight: 1)
     ..destroy(Elements.fire, chance: 12, fuel: 4);
   item("Jerkin", gunsmoke, frequency: 0.5, price: 130)
-    ..depth(8)
+    ..depth(8, to: 70)
     ..armor(8, weight: 1);
   item("Leather Armor", garnet, frequency: 0.5, price: 240)
-    ..depth(12)
+    ..depth(12, to: 90)
     ..armor(11, weight: 2)
     ..destroy(Elements.fire, chance: 10, fuel: 4);
   item("Padded Armor", steelGray, frequency: 0.5, price: 320)
@@ -92,13 +93,18 @@ void bodyArmor() {
 void cloaks() {
   category(CharCode.latinCapitalLetterAe)..tag("equipment/armor/cloak");
   item("Cloak", ultramarine, frequency: 0.5, price: 70)
-    ..depth(3)
+    ..depth(10, to: 40)
     ..armor(2, weight: 1)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
   item("Fur Cloak", garnet, frequency: 0.2, price: 140)
-    ..depth(8)
-    ..armor(3, weight: 1)
+    ..depth(20, to: 60)
+    ..armor(4, weight: 2)
     ..destroy(Elements.fire, chance: 16, fuel: 5);
+  item("Spidersilk Cloak", steelGray, frequency: 0.2, price: 460)
+    ..depth(40)
+    ..armor(6)
+    ..destroy(Elements.fire, chance: 25, fuel: 3);
+  // TODO: Better cloaks that don't add weight and appear later.
 }
 
 void gloves() {
@@ -132,7 +138,7 @@ void shields() {
     ..toss(damage: 5, range: 8, breakage: 10);
   // TODO: Encumbrance.
   item("Small Leather Shield", garnet, frequency: 0.5, price: 170)
-    ..depth(12)
+    ..depth(12, to: 50)
     ..armor(3, weight: 2)
     ..destroy(Elements.fire, chance: 7, fuel: 14);
   item("Wooden Targe", sandal, frequency: 0.5, price: 250)
@@ -158,7 +164,7 @@ void boots() {
     ..armor(1)
     ..destroy(Elements.fire, chance: 20, fuel: 3);
   item("Pair[s] of Shoes", garnet, frequency: 0.3, price: 30)
-    ..depth(8)
+    ..depth(8, to: 40)
     ..armor(2)
     ..destroy(Elements.fire, chance: 14, fuel: 3);
 

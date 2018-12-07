@@ -177,7 +177,7 @@ void weapons() {
     ..toss(damage: 9)
     ..destroy(Elements.fire, chance: 7, fuel: 12);
   item("Spear", persimmon, frequency: 0.5, price: 160)
-    ..depth(13)
+    ..depth(13, to: 60)
     ..weapon(16, heft: 13)
     ..toss(damage: 15);
   item("Angon", gunsmoke, frequency: 0.5, price: 340)
@@ -204,11 +204,11 @@ void weapons() {
     ..tag("equipment/weapon/axe")
     ..skill("Axe Mastery");
   item("Hatchet", slate, frequency: 0.5, price: 90)
-    ..depth(6)
+    ..depth(6, to: 50)
     ..weapon(12, heft: 10)
     ..toss(damage: 20, range: 8);
   item("Axe", persimmon, frequency: 0.5, price: 210)
-    ..depth(12)
+    ..depth(12, to: 70)
     ..weapon(15, heft: 14)
     ..toss(damage: 24, range: 7);
   item("Valaska", gunsmoke, frequency: 0.5, price: 330)
@@ -226,7 +226,7 @@ void weapons() {
     ..toss(breakage: 50, range: 5)
     ..skill("Archery");
   item("Short Bow", persimmon, frequency: 0.3, price: 120)
-    ..depth(6)
+    ..depth(6, to: 60)
     ..ranged("the arrow", heft: 12, damage: 4, range: 8)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);
