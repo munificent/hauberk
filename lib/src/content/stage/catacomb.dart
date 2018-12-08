@@ -52,7 +52,7 @@ class Catacomb extends Architecture {
 
         switch (region) {
           case Region.everywhere:
-          // Do nothing.
+            // Do nothing.
             break;
           case Region.n:
             yMax = height ~/ 2 - cave.height;

@@ -6,7 +6,7 @@ import 'mastery.dart';
 
 class WhipMastery extends MasteryDiscipline with TargetSkill {
   // TODO: Tune.
-  static double _whipScale(int level) => lerpDouble(level, 1, 10, 0.3, 1.0);
+  static double _whipScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.0);
 
   // TODO: Better name.
   String get name => "Whip Mastery";

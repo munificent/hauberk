@@ -139,9 +139,7 @@ class ResourceSet<T> {
       // goal tag. So if the goal is "built/room/dungeon", a resource tagged
       // "room" is considered as good as "dungeon".
       for (var resourceTag in resource._tags) {
-        for (var thisTag = goalTag;
-            thisTag != null;
-            thisTag = thisTag.parent) {
+        for (var thisTag = goalTag; thisTag != null; thisTag = thisTag.parent) {
           if (thisTag == resourceTag) return 1.0;
         }
       }

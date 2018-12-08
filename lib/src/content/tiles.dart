@@ -150,8 +150,8 @@ class Tiles {
           [Color back]) =>
       _TileBuilder(name, char, fore, back);
 
-  static List<TileType> multi(String name, Object char, Color fore,
-      Color back, int count, TileType Function(_TileBuilder, int) generate) {
+  static List<TileType> multi(String name, Object char, Color fore, Color back,
+      int count, TileType Function(_TileBuilder, int) generate) {
     var result = <TileType>[];
     for (var i = 0; i < count; i++) {
       var builder = tile(name, char, fore, back);

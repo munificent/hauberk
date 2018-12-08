@@ -5,13 +5,17 @@ import 'mastery.dart';
 
 class SpearMastery extends MasteryDiscipline implements DirectionSkill {
   // TODO: Tune.
-  static double _spearScale(int level) => lerpDouble(level, 1, 10, 0.3, 1.0);
+  static double _spearScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.5);
+
   // TODO: Better name.
   String get name => "Spear Mastery";
+
   String get useName => "Spear Attack";
+
   String get description =>
       "Your diligent study of spears and polearms lets you attack at a "
       "distance when wielding one.";
+
   String get weaponType => "spear";
 
   String levelDescription(int level) {
@@ -33,12 +37,8 @@ class SpearMastery extends MasteryDiscipline implements DirectionSkill {
 }
 
 /// A melee attack that penetrates a row of actors.
-class SpearAction extends MasteryAction {
-  /// How many frames it pauses between each step of the attack.
-  static const _frameRate = 2;
-
+class SpearAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
-  int _step = 0;
   final bool _isPolearm;
 
   bool get isImmediate => false;
@@ -47,22 +47,40 @@ class SpearAction extends MasteryAction {
       : _isPolearm = isPolearm,
         super(damageScale);
 
-  ActionResult onPerform() {
-    var pos = actor.pos + _dir * (_step ~/ _frameRate + 1);
+  Iterable<ActionResult> onGenerate() sync* {
+    // Can only do a spear attack if the entire range is clear.
+    for (var step = 1; step <= (_isPolearm ? 3 : 2); step++) {
+      var pos = actor.pos + _dir * step;
 
-    // Polearms don't hit the adjacent tile, but do have longer range.
-    if (_isPolearm) pos += _dir;
+      var tile = game.stage[pos];
+      if (!tile.isExplored) {
+        yield fail("You can't see far enough to aim.");
+        return;
+      }
 
-    // Show the effect and perform the attack on alternate frames. This ensures
-    // the effect gets a chance to be shown before the hit effect covers hit.
-    if (_step % _frameRate == 0) {
-      addEvent(EventType.stab, pos: pos, dir: _dir);
-    } else if (_step % _frameRate == 1) {
-      attack(pos);
+      if (!tile.canEnter(Motility.fly)) {
+        var weapon = hero.equipment.weapon.type.name;
+        yield fail("There isn't enough room to use your $weapon.");
+        return;
+      }
     }
 
-    _step++;
-    return doneIf(_step == _frameRate * 2);
+    for (var step = 1; step <= 2; step++) {
+      var pos = actor.pos + _dir * step;
+
+      // Polearms don't hit the adjacent tile, but do have longer range.
+      if (_isPolearm) pos += _dir;
+
+      // Show the effect and perform the attack on alternate frames. This
+      // ensures the effect gets a chance to be shown before the hit effect
+      //  covers hit.
+      var weapon = hero.equipment.weapon.appearance;
+      addEvent(EventType.stab, pos: pos, dir: _dir, other: weapon);
+      yield waitOne();
+
+      attack(pos);
+      yield waitOne();
+    }
   }
 
   String toString() => '$actor spears $_dir';

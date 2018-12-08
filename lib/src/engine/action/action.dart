@@ -157,3 +157,29 @@ class FocusAction extends Action {
     return alternate(_action);
   }
 }
+
+// TODO: Use this for more actions.
+/// For multi-step actions, lets you define one using a `sync*` function and
+/// `yield` instead of building the state machine manually.
+mixin GeneratorActionMixin on Action {
+  Iterator<ActionResult> _iterator;
+
+  ActionResult onPerform() {
+    // Start the generator the first time through.
+    if (_iterator == null) _iterator = onGenerate().iterator;
+
+    // If it reaches the end, it succeeds.
+    if (!_iterator.moveNext()) return ActionResult.success;
+
+    return _iterator.current;
+  }
+
+  /// Wait a single frame.
+  ActionResult waitOne() => ActionResult.notDone;
+
+  /// Wait [frame] frames.
+  Iterable<ActionResult> wait(int frames) =>
+      List.generate(frames, (_) => ActionResult.notDone);
+
+  Iterable<ActionResult> onGenerate();
+}

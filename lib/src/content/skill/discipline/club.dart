@@ -63,7 +63,6 @@ class BashAction extends MasteryAction {
         log("{1} is knocked back!", defender);
         addEvent(EventType.knockBack, pos: actor.pos + _dir, dir: _dir);
       }
-      // TODO: Effect.
     } else {
       addEvent(EventType.pause);
     }

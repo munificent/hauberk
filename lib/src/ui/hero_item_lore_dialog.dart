@@ -102,7 +102,6 @@ class HeroItemLoreDialog extends HeroInfoDialog {
         } else {
           terminal.writeAt(75, y, "--".padLeft(5), fore);
         }
-
       } else {
         terminal.writeAt(
             2, y, "(undiscovered ${_scroll + i + 1})", UIHue.disabled);
@@ -205,8 +204,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
 class _Sort {
   /// The default order they are created in in the content.
-  static const type =
-      _Sort("ordered by type", "Sort by type");
+  static const type = _Sort("ordered by type", "Sort by type");
 
   /// Sort by depth.
   static const depth = _Sort("ordered by depth", "Sort by depth");

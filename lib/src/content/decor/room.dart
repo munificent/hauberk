@@ -476,9 +476,10 @@ void roomDecor() {
 
   // TODO: Some fraction of the time, should place open barrels and chests.
   // Barrels.
-  category(themes: "built", frequency: 0.7, cells: {
-    "%": applyOpen(Tiles.closedBarrel)
-  });
+  category(
+      themes: "built",
+      frequency: 0.7,
+      cells: {"%": applyOpen(Tiles.closedBarrel)});
 
   furnishing(symmetry: Symmetry.rotate90, template: """
     ##
@@ -509,9 +510,10 @@ void roomDecor() {
     ?...?""");
 
   // Chests.
-  category(themes: "built", frequency: 0.5, cells: {
-    "&": applyOpen(Tiles.closedChest)
-  });
+  category(
+      themes: "built",
+      frequency: 0.5,
+      cells: {"&": applyOpen(Tiles.closedChest)});
 
   furnishing(symmetry: Symmetry.rotate90, template: """
     ##

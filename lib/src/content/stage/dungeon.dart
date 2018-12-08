@@ -13,8 +13,7 @@ class Dungeon extends Architecture {
 
   String get paintStyle => "stone";
 
-  Dungeon({double density})
-      : _density = density ?? 0.3;
+  Dungeon({double density}) : _density = density ?? 0.3;
 
   Iterable<String> build() sync* {
     var failed = 0;

@@ -122,8 +122,15 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.slash:
     case EventType.stab:
       var line = _directionLines[event.dir];
-      // TODO: Element color.
-      effects.add(FrameEffect(event.pos, line, ash));
+
+      var color = ash;
+      if (event.other != null) {
+        color = (event.other as Glyph).fore;
+      }
+      // TODO: If monsters starting using this, we'll need some other way to
+      // color it.
+
+      effects.add(FrameEffect(event.pos, line, color));
       break;
 
     case EventType.gold:

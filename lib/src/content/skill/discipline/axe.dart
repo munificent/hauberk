@@ -6,7 +6,7 @@ import 'mastery.dart';
 /// A slashing melee attack that hits a number of adjacent monsters.
 class AxeMastery extends MasteryDiscipline implements DirectionSkill {
   // TODO: Tune.
-  static double _slashScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.5);
+  static double _slashScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.0);
 
   // TODO: Better name.
   String get name => "Axe Mastery";
@@ -45,7 +45,13 @@ class SlashAction extends MasteryAction {
     if (_step == 0) {
       for (var dir in [_dir.rotateLeft45, _dir, _dir.rotateRight45]) {
         var pos = actor.pos + dir;
-        if (!game.stage[pos].canEnter(Motility.fly)) {
+
+        var tile = game.stage[pos];
+        if (!tile.isExplored) {
+          return fail("You can't see where you're swinging.");
+        }
+
+        if (!tile.canEnter(Motility.fly)) {
           var weapon = hero.equipment.weapon.type.name;
           return fail("There isn't enough room to swing your $weapon.");
         }

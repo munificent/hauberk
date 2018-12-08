@@ -90,7 +90,8 @@ void generateTable() {
           count = 100;
         }
 
-        text.write('<div class="bar" style="width: ${count.toInt()}px;"></div>');
+        text.write(
+            '<div class="bar" style="width: ${count.toInt()}px;"></div>');
         text.write(" $name (${count.toStringAsFixed(2)})");
         text.write("<br>");
       }

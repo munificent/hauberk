@@ -48,9 +48,7 @@ class PaintStyle {
   static final Map<String, PaintStyle> _all = {
     "rock": PaintStyle({}),
     "stone": _DoorPaintStyle(),
-    "stone-jail": PaintStyle({
-      Tiles.doorway: Tiles.closedBarredDoor
-    }),
+    "stone-jail": PaintStyle({Tiles.doorway: Tiles.closedBarredDoor}),
   };
 
   static Map<TileType, TileType> _defaultTypes = {

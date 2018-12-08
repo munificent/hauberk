@@ -8,7 +8,6 @@ import 'decor.dart';
 /// existing tiles.
 class Furnishing extends Decor {
   static void initialize() {
-
     /*
     // Fountains.
     // TODO: Can these be found anywhere else?
