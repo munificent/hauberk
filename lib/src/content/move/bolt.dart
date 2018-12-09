@@ -4,6 +4,9 @@ import '../../debug.dart';
 import '../../engine.dart';
 import '../action/bolt.dart';
 
+// TODO: BoltMove does not pass its range to BoltAction. Probably OK since
+// monster won't choose move if out of range, but it means the action can go
+// farther than intended range.
 class BoltMove extends RangedMove {
   num get experience =>
       attack.damage * attack.element.experience * (1.0 + range / 20.0);

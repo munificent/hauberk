@@ -1,0 +1,6 @@
+- Treasure could be more common, at least early on.
+
++ Imps seem to run up to melee too much given that they have a ranged attack.
+  Most monsters seem to have same walking behavior. Should have more variety.
+
+- Food not common enough on level 1.

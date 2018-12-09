@@ -1,0 +1,14 @@
+- Treasure and healing too rare.
+
+- Teleport too rare.
+
+- No UI to tell how much headroom have with strength when buying armor. (Maybe
+  show weight in item list?)
+
+- Have to eat too often.
+
+- Leveling feels slow.
+
+- Dark grey monsters and items blend into the background on well-lit tiles.
+
+- Don't show wake "!" effect if monster is killed.

@@ -25,6 +25,8 @@ class ItemLocation {
   ItemLocation.shop(this.name) : emptyDescription = "All sold out!";
 }
 
+// TODO: Move tryAdd() out of ItemCollection and Equipment? I think it's only
+// needed for the home and crucible?
 abstract class ItemCollection implements Iterable<Item> {
   ItemLocation get location;
 

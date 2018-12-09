@@ -1,0 +1,17 @@
++ Managed to get two barrels completely blocking a corridor.
+
+- Some kind of minimap would be nice, or at least a meter of how much of the
+  level has been explored.
+
+- Antidotes are common enough that poison doesn't feel like much of a threat.
+
+- In order to prevent the hero from lurking in a corridor and picking off
+  monsters one at a time, it might be good for some monsters to be smart enough
+  to detect that case. If:
+
+  - The hero only has one reachable open neighboring tile.
+  - There are multiple nearby monsters.
+  - The hero hasn't done ranged attacks.
+
+  Then a monster with the right "flanking" AI flag won't get within melee range
+  in order to try to draw the hero out.
