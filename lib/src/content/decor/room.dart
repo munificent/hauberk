@@ -482,8 +482,9 @@ void roomDecor() {
       cells: {"%": applyOpen(Tiles.closedBarrel)});
 
   furnishing(symmetry: Symmetry.rotate90, template: """
-    ##
-    #%""");
+    ##?
+    #%.
+    ?.""");
 
   furnishing(symmetry: Symmetry.rotate90, template: """
     ?.?
@@ -491,13 +492,15 @@ void roomDecor() {
     ?.?""");
 
   furnishing(symmetry: Symmetry.rotate90, template: """
-    ###
-    #%%""");
+    ###?
+    #%%.
+    ?..?""");
 
   furnishing(symmetry: Symmetry.rotate90, template: """
-    ###
-    #%%
-    #%.""");
+    ###?
+    #%%.
+    #%.?
+    ?.??""");
 
   furnishing(symmetry: Symmetry.rotate90, template: """
     ?##?
