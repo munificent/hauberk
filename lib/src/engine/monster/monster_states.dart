@@ -240,8 +240,6 @@ class AwakeState extends MonsterState {
       walkDir = rangedDir ?? meleeDir;
     }
 
-    walkDir = meleeDir;
-
     if (walkDir == null) walkDir = Direction.none;
 
     return WalkAction(_meander(walkDir));
