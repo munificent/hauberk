@@ -19,11 +19,29 @@ class WizardDialog extends Screen<Input> {
   WizardDialog(this._game) {
     _menuItems["Map Dungeon"] = _mapDungeon;
     _menuItems["Illuminate Dungeon"] = _illuminateDungeon;
-    _menuItems["Toggle Show All Monsters"] = _toggleShowAllMonsters;
-    _menuItems["Toggle Show Monster Alertness"] = _toggleShowMonsterAlertness;
-    _menuItems["Toggle Show Hero Volume"] = _toggleShowHeroVolume;
-    _menuItems["Drop Item"] = _dropItem;
+    _menuItems["Drop Item"] = () {
+      ui.push(_WizardDropDialog(_game));
+    };
+    _menuItems["Spawn Monster"] = () {
+      ui.push(_WizardSpawnDialog(_game));
+    };
     _menuItems["Gain Level"] = _gainLevel;
+
+    _menuItems["Toggle Show All Monsters"] = () {
+      Debug.showAllMonsters = !Debug.showAllMonsters;
+      _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
+      ui.pop();
+    };
+    _menuItems["Toggle Show Monster Alertness"] = () {
+      Debug.showMonsterAlertness = !Debug.showMonsterAlertness;
+      _game.log.cheat("Show monster alertness = ${Debug.showMonsterAlertness}");
+      ui.pop();
+    };
+    _menuItems["Toggle Show Hero Volume"] = () {
+      Debug.showHeroVolume = !Debug.showHeroVolume;
+      _game.log.cheat("Show hero volume = ${Debug.showHeroVolume}");
+      ui.pop();
+    };
   }
 
   bool handleInput(Input input) {
@@ -103,28 +121,6 @@ class WizardDialog extends Screen<Input> {
     stage.refreshView();
   }
 
-  void _toggleShowAllMonsters() {
-    Debug.showAllMonsters = !Debug.showAllMonsters;
-    _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
-    ui.pop();
-  }
-
-  void _toggleShowMonsterAlertness() {
-    Debug.showMonsterAlertness = !Debug.showMonsterAlertness;
-    _game.log.cheat("Show monster alertness = ${Debug.showMonsterAlertness}");
-    ui.pop();
-  }
-
-  void _toggleShowHeroVolume() {
-    Debug.showHeroVolume = !Debug.showHeroVolume;
-    _game.log.cheat("Show hero volume = ${Debug.showHeroVolume}");
-    ui.pop();
-  }
-
-  void _dropItem() {
-    ui.push(WizardDropDialog(_game));
-  }
-
   void _gainLevel() {
     if (_game.hero.level == Hero.maxLevel) {
       _game.log.cheat("Already at max level.");
@@ -137,12 +133,12 @@ class WizardDialog extends Screen<Input> {
   }
 }
 
-/// Cheat menu.
-class WizardDropDialog extends Screen<Input> {
+/// Base class for a dialog that searches for things by name.
+abstract class SearchDialog<T> extends Screen<Input> {
   final Game _game;
   String _pattern = "";
 
-  WizardDropDialog(this._game);
+  SearchDialog(this._game);
 
   bool get isTransparent => true;
 
@@ -160,10 +156,8 @@ class WizardDropDialog extends Screen<Input> {
 
     switch (keyCode) {
       case KeyCode.enter:
-        for (var itemType in _matchedItems) {
-          var item = Item(itemType, itemType.maxStack);
-          _game.stage.addItem(item, _game.hero.pos);
-          _game.log.cheat("Dropped {1}.", item);
+        for (var item in _matchedItems) {
+          _selectItem(item);
         }
 
         ui.pop();
@@ -182,13 +176,17 @@ class WizardDropDialog extends Screen<Input> {
         return true;
 
       default:
-        if (keyCode == null) break;
-
-        if (keyCode >= KeyCode.a && keyCode <= KeyCode.z ||
-            keyCode >= KeyCode.zero && keyCode <= KeyCode.nine) {
+        if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
           _pattern += String.fromCharCodes([keyCode]).toLowerCase();
           dirty();
           return true;
+        } else if (keyCode >= KeyCode.zero && keyCode <= KeyCode.nine) {
+          var n = keyCode - KeyCode.zero;
+          if (n < _matchedItems.length) {
+            _selectItem(_matchedItems[n]);
+            ui.pop();
+            return true;
+          }
         }
         break;
     }
@@ -199,28 +197,85 @@ class WizardDropDialog extends Screen<Input> {
   void render(Terminal terminal) {
     // Draw a box for the contents.
     Draw.frame(terminal, 25, 0, 43, 39);
-    terminal.writeAt(26, 0, "Drop what?", UIHue.selection);
+    terminal.writeAt(26, 0, _question, UIHue.selection);
 
-    terminal.writeAt(26, 2, "Name:", UIHue.primary);
-    terminal.writeAt(32, 2, _pattern, UIHue.selection);
-    terminal.writeAt(
-        32 + _pattern.length, 2, " ", UIHue.selection, UIHue.selection);
+    terminal.writeAt(28 + _question.length, 0, _pattern, UIHue.selection);
+    terminal.writeAt(28 + _question.length + _pattern.length, 0, " ",
+        UIHue.selection, UIHue.selection);
 
-    var y = 4;
+    var n = 0;
     for (var item in _matchedItems) {
-      if (!item.name.toLowerCase().contains(_pattern.toLowerCase())) continue;
+      if (!_itemName(item).toLowerCase().contains(_pattern.toLowerCase())) {
+        continue;
+      }
 
-      terminal.drawGlyph(26, y, item.appearance as Glyph);
-      terminal.writeAt(28, y, item.name, UIHue.primary);
+      if (n < 10) {
+        terminal.writeAt(26, n + 2, n.toString(), UIHue.selection);
+        terminal.writeAt(27, n + 2, ")", UIHue.disabled);
+      }
 
-      y++;
-      if (y >= 38) break;
+      terminal.drawGlyph(28, n + 2, _itemAppearance(item) as Glyph);
+      terminal.writeAt(30, n + 2, _itemName(item), UIHue.primary);
+
+      n++;
+      if (n >= 36) break;
     }
 
-    terminal.writeAt(
-        0, terminal.height - 1, "[Return] Drop, [Esc] Exit", UIHue.helpText);
+    terminal.writeAt(0, terminal.height - 1,
+        "[0-9] Select, [Return] Select All, [Esc] Exit", UIHue.helpText);
   }
 
-  Iterable<ItemType> get _matchedItems => _game.content.items.where(
-      (item) => item.name.toLowerCase().contains(_pattern.toLowerCase()));
+  List<T> get _matchedItems => _allItems
+      .where((item) =>
+          _itemName(item).toLowerCase().contains(_pattern.toLowerCase()))
+      .toList();
+
+  String get _question;
+
+  Iterable<T> get _allItems;
+
+  String _itemName(T item);
+
+  Object _itemAppearance(T item);
+
+  void _selectItem(T item);
+}
+
+class _WizardDropDialog extends SearchDialog<ItemType> {
+  _WizardDropDialog(Game game): super(game);
+
+  String get _question => "Drop what?";
+
+  Iterable<ItemType> get _allItems => _game.content.items;
+
+  String _itemName(ItemType item) => item.name;
+
+  Object _itemAppearance(ItemType item) => item.name;
+
+  void _selectItem(ItemType itemType) {
+    var item = Item(itemType, itemType.maxStack);
+    _game.stage.addItem(item, _game.hero.pos);
+    _game.log.cheat("Dropped {1}.", item);
+  }
+}
+
+class _WizardSpawnDialog extends SearchDialog<Breed> {
+  _WizardSpawnDialog(Game game): super(game);
+
+  String get _question => "Spawn what?";
+
+  Iterable<Breed> get _allItems => _game.content.breeds;
+
+  String _itemName(Breed breed) => breed.name;
+
+  Object _itemAppearance(Breed breed) => breed.appearance;
+
+  void _selectItem(Breed breed) {
+    var flow = MotilityFlow(_game.stage, _game.hero.pos, Motility.walk);
+    var pos = flow.bestWhere((pos) => (pos - _game.hero.pos) > 6);
+    if (pos == null) return;
+
+    var monster = breed.spawn(_game, pos);
+    _game.stage.addActor(monster);
+  }
 }
