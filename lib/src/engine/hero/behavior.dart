@@ -204,15 +204,18 @@ class RunBehavior extends Behavior {
     // don't want to since the player doesn't know what's past it.
     if (stage[pos].isClosedDoor) return false;
 
+    // Whether the hero knows there is an actor at [pos].
+    bool actorAt(Vec pos) => stage[pos].isVisible && stage.actorAt(pos) != null;
+
     // Don't run into someone.
-    if (stage.actorAt(pos) != null) return false;
+    if (actorAt(pos)) return false;
 
     // Don't run next to someone.
-    if (stage.actorAt(pos + direction.rotateLeft90) != null) return false;
-    if (stage.actorAt(pos + direction.rotateLeft45) != null) return false;
-    if (stage.actorAt(pos + direction) != null) return false;
-    if (stage.actorAt(pos + direction.rotateRight45) != null) return false;
-    if (stage.actorAt(pos + direction.rotateRight90) != null) return false;
+    if (actorAt(pos + direction.rotateLeft90)) return false;
+    if (actorAt(pos + direction.rotateLeft45)) return false;
+    if (actorAt(pos + direction)) return false;
+    if (actorAt(pos + direction.rotateRight45)) return false;
+    if (actorAt(pos + direction.rotateRight90)) return false;
 
     // Don't run into a substance.
     if (stage[pos].substance > 0) return false;
