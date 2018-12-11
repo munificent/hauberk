@@ -32402,7 +32402,7 @@
       $._themes = "built";
       $._categoryFrequency = 0.7;
       $._categoryCells = t1;
-      T.furnishing(null, C.Symmetry_4, "    ##?\n    #%.\n    ?.");
+      T.furnishing(null, C.Symmetry_4, "    ##?\n    #%.\n    ?.?");
       T.furnishing(null, C.Symmetry_4, "    ?.?\n    .%.\n    ?.?");
       T.furnishing(null, C.Symmetry_4, "    ###?\n    #%%.\n    ?..?");
       T.furnishing(null, C.Symmetry_4, "    ###?\n    #%%.\n    #%.?\n    ?.??");
