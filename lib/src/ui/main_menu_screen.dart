@@ -4,9 +4,9 @@ import 'package:malison/malison_web.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'confirm_dialog.dart';
+import 'game_screen.dart';
 import 'input.dart';
 import 'new_hero_screen.dart';
-import 'select_depth_screen.dart';
 import 'storage.dart';
 
 const _chars = [
@@ -76,8 +76,8 @@ class MainMenuScreen extends Screen<Input> {
 
       case Input.ok:
         if (selectedHero < storage.heroes.length) {
-          ui.push(SelectDepthScreen(
-              content, storage.heroes[selectedHero], storage));
+          var save = storage.heroes[selectedHero];
+          ui.push(GameScreen.town(storage, content, save));
         }
         return true;
     }

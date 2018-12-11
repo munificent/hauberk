@@ -6,52 +6,43 @@ import 'package:malison/malison_web.dart';
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
-import 'game_screen.dart';
-import 'hero_info_dialog.dart';
+import 'draw.dart';
+
 import 'input.dart';
-import 'item_screen.dart';
-import 'loading_dialog.dart';
-import 'skill_dialog.dart';
-import 'storage.dart';
 
 class SelectDepthScreen extends Screen<Input> {
   final Content content;
   final HeroSave save;
-  final Storage storage;
-  int selectedDepth = 1;
 
-  SelectDepthScreen(this.content, this.save, this.storage) {
-    selectedDepth = math.min(Option.maxDepth, save.maxDepth + 1);
+  /// The selected depth.
+  int _depth = 1;
+
+  bool get isTransparent => true;
+
+  SelectDepthScreen(this.content, this.save) {
+    _depth = math.min(Option.maxDepth, save.maxDepth + 1);
   }
 
   bool handleInput(Input input) {
     switch (input) {
       case Input.w:
-        _changeDepth(selectedDepth - 1);
+        _changeDepth(_depth - 1);
         return true;
 
       case Input.e:
-        _changeDepth(selectedDepth + 1);
+        _changeDepth(_depth + 1);
         return true;
 
       case Input.n:
-        _changeDepth(selectedDepth - 10);
+        _changeDepth(_depth - 10);
         return true;
 
       case Input.s:
-        _changeDepth(selectedDepth + 10);
+        _changeDepth(_depth + 10);
         return true;
 
-      case Input.editSkills:
-        ui.push(SkillDialog(save));
-        break;
-
-      case Input.heroInfo:
-        ui.push(HeroInfoDialog(content, save));
-        break;
-
       case Input.ok:
-        ui.push(LoadingDialog(save, content, selectedDepth));
+        ui.pop(_depth);
         return true;
 
       case Input.cancel:
@@ -62,122 +53,43 @@ class SelectDepthScreen extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
-    if (shift || alt) return false;
-
-    // TODO: Shops, the crucible, and the home are disabled for now since
-    // I'm in the process of removing money.
-    switch (keyCode) {
-//      case KeyCode.c:
-//        ui.push(new ItemScreen.crucible(content, save));
-//        break;
-//
-      case KeyCode.s:
-        ui.push(SkillDialog(save));
-        break;
-
-      case KeyCode.h:
-        ui.push(ItemScreen.home(save));
-        return true;
-
-      case KeyCode.one:
-        return tryEnterShop(0);
-      case KeyCode.two:
-        return tryEnterShop(1);
-      case KeyCode.three:
-        return tryEnterShop(2);
-      case KeyCode.four:
-        return tryEnterShop(3);
-      case KeyCode.five:
-        return tryEnterShop(4);
-      case KeyCode.six:
-        return tryEnterShop(5);
-      case KeyCode.seven:
-        return tryEnterShop(6);
-      case KeyCode.eight:
-        return tryEnterShop(7);
-      case KeyCode.nine:
-        return tryEnterShop(8);
-    }
-
-    return false;
-  }
-
-  bool tryEnterShop(int index) {
-    var shops = save.shops.keys.toList();
-
-    if (index >= shops.length) return false;
-
-    ui.push(ItemScreen.shop(save, save.shops[shops[index]]));
-    return true;
-  }
-
   void render(Terminal terminal) {
-    terminal.writeAt(15, 4,
-        'Greetings, ${save.name}, how deep shall you venture?', UIHue.text);
-    terminal.writeAt(
-        0,
-        terminal.height - 1,
-        '[L] Enter dungeon, [↕] Change depth, [↔] Change depth',
-        UIHue.helpText);
+    terminal.writeAt(0, terminal.height - 1,
+        '[L] Enter dungeon, [↕↔] Change depth, [Esc] Cancel', UIHue.helpText);
 
-    // TODO: Do something prettier.
+    terminal = terminal.rect(11, 5, 44, 28);
+    terminal.clear();
+
+    Draw.doubleBox(terminal, 0, 0, terminal.width, terminal.height, gold);
+
+    terminal.writeAt(6, 2, "Stairs descend into darkness.", UIHue.text);
+    terminal.writeAt(6, 3, "How far down shall you venture?", UIHue.text);
+
     for (var depth = 1; depth <= Option.maxDepth; depth++) {
       var x = (depth - 1) % 10;
-      var y = (depth - 1) ~/ 10;
+      var y = ((depth - 1) ~/ 10) * 2;
 
       var color = UIHue.primary;
       if (!Debug.enabled && depth > save.maxDepth + 1) {
         color = UIHue.disabled;
-      } else if (depth == selectedDepth) {
+      } else if (depth == _depth) {
         color = UIHue.selection;
         terminal.drawChar(
-            14 + x * 5, 6 + y, CharCode.blackRightPointingPointer, color);
+            x * 4 + 1, 6 + y, CharCode.blackRightPointingPointer, color);
         terminal.drawChar(
-            18 + x * 5, 6 + y, CharCode.blackLeftPointingPointer, color);
+            x * 4 + 5, 6 + y, CharCode.blackLeftPointingPointer, color);
       }
 
-      terminal.writeAt(15 + x * 5, 6 + y, depth.toString().padLeft(3), color);
-    }
-
-    var y = 18;
-    drawMenuItem(String key, String label) {
-      terminal.writeAt(20, y, key, Color.gray);
-      terminal.writeAt(21, y, ")", Color.darkGray);
-      terminal.writeAt(23, y, label);
-      y++;
-    }
-
-    drawMenuItem("a", "About Hero");
-    drawMenuItem("s", "Hero Skills");
-    drawMenuItem("h", "Enter Home");
-    // TODO: The crucible is disabled for now.
-//    drawMenuItem("c", "Use Crucible");
-    y++;
-
-    var i = 1;
-    for (var shop in content.shops.values) {
-      drawMenuItem(i.toString(), shop.name);
-      i++;
+      terminal.writeAt(x * 4 + 2, 6 + y, depth.toString().padLeft(3), color);
     }
   }
 
-  void activate(Screen screen, result) {
-    if (screen is GameScreen && (result as bool)) {
-      // Left successfully, so save.
-      storage.save();
-    } else if (screen is ItemScreen) {
-      // Always save when leaving the item screen.
-      storage.save();
-    }
-  }
+  void _changeDepth(int depth) {
+    if (depth < 1) return;
+    if (depth > Option.maxDepth) return;
+    if (!Debug.enabled && depth > save.maxDepth + 1) return;
 
-  void _changeDepth(int level) {
-    if (level < 1) return;
-    if (level > Option.maxDepth) return;
-    if (!Debug.enabled && level > save.maxDepth + 1) return;
-
-    selectedDepth = level;
+    _depth = depth;
     dirty();
   }
 }

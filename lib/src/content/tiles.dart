@@ -71,7 +71,8 @@ class Tiles {
           .transparentDoor();
 
   // TODO: Different character that doesn't look like bridge?
-  static final stairs = tile("stairs", "≡", gunsmoke, slate).exit().open();
+  static final stairs =
+      tile("stairs", "≡", gunsmoke, slate).to(TilePortals.exit).open();
   static final bridge = tile("bridge", "≡", persimmon, garnet).open();
 
   // TODO: Stop glowing when stepped on?
@@ -145,6 +146,51 @@ class Tiles {
 
   // TODO: Make this do stuff when walked through.
   static final spiderweb = tile("spiderweb", "÷", slate).open();
+
+  // Town tiles.
+  static final dungeonEntrance = tile("dungeon entrance", "≡", gunsmoke, slate)
+      .to(TilePortals.dungeon)
+      .open();
+
+  static final home = tile("home entrance", "○", sandal)
+      .to(TilePortals.home)
+      .open();
+
+  static final shop1 = tile("shop entrance", "○", carrot)
+      .to(TilePortals.shop1)
+      .open();
+
+  static final shop2 = tile("shop entrance", "○", gold)
+      .to(TilePortals.shop2)
+      .open();
+
+  static final shop3 = tile("shop entrance", "○", lima)
+      .to(TilePortals.shop3)
+      .open();
+
+  static final shop4 = tile("shop entrance", "○", peaGreen)
+      .to(TilePortals.shop4)
+      .open();
+
+  static final shop5 = tile("shop entrance", "○", seaGreen)
+      .to(TilePortals.shop5)
+      .open();
+
+  static final shop6 = tile("shop entrance", "○", turquoise)
+      .to(TilePortals.shop6)
+      .open();
+
+  static final shop7 = tile("shop entrance", "○", cerulean)
+      .to(TilePortals.shop7)
+      .open();
+
+  static final shop8 = tile("shop entrance", "○", violet)
+      .to(TilePortals.shop8)
+      .open();
+
+  static final shop9 = tile("shop entrance", "○", brickRed)
+      .to(TilePortals.shop9)
+      .open();
 
   static _TileBuilder tile(String name, Object char, Color fore,
           [Color back]) =>
@@ -253,7 +299,7 @@ class _TileBuilder {
 
   Action Function(Vec) _onClose;
   Action Function(Vec) _onOpen;
-  bool _isExit = false;
+  TilePortal _portal;
   int _emanation = 0;
 
   factory _TileBuilder(String name, Object char, Color fore, [Color back]) {
@@ -284,8 +330,8 @@ class _TileBuilder {
     return this;
   }
 
-  _TileBuilder exit() {
-    _isExit = true;
+  _TileBuilder to(TilePortal portal) {
+    _portal = portal;
     return this;
   }
 
@@ -313,9 +359,29 @@ class _TileBuilder {
 
   TileType _motility(Motility motility) {
     return TileType(name, glyphs.length == 1 ? glyphs.first : glyphs, motility,
+        portal: _portal,
         emanation: _emanation,
-        isExit: _isExit,
         onClose: _onClose,
         onOpen: _onOpen);
   }
+}
+
+class TilePortals {
+  /// Stairs to exit the dungeon.
+  static const exit = TilePortal("exit");
+
+  /// Stairs to enter the dungeon from the town.
+  static const dungeon = TilePortal("dungeon");
+
+  static const home = TilePortal("home");
+
+  static const shop1 = TilePortal("shop 1");
+  static const shop2 = TilePortal("shop 2");
+  static const shop3 = TilePortal("shop 3");
+  static const shop4 = TilePortal("shop 4");
+  static const shop5 = TilePortal("shop 5");
+  static const shop6 = TilePortal("shop 6");
+  static const shop7 = TilePortal("shop 7");
+  static const shop8 = TilePortal("shop 8");
+  static const shop9 = TilePortal("shop 9");
 }

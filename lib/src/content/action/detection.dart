@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
+import '../tiles.dart';
 
 enum DetectType {
   exit,
@@ -58,7 +59,7 @@ class DetectAction extends Action {
         // Ignore already found ones.
         if (game.stage[pos].isExplored) continue;
 
-        if (!game.stage[pos].isExit) continue;
+        if (game.stage[pos].portal != TilePortals.exit) continue;
 
         foundExits++;
         addTile(pos);

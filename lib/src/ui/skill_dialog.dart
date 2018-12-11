@@ -6,7 +6,6 @@ import '../hues.dart';
 import 'draw.dart';
 import 'input.dart';
 
-// TODO: Allow accessing this outside of the dungeon.
 abstract class SkillDialog extends Screen<Input> {
   SkillDialog _nextScreen;
 

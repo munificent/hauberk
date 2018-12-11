@@ -46,9 +46,22 @@ class Motility {
   String toString() => _bitMask.toString();
 }
 
+/// Enum-like class for tiles that transport the hero: dungeon entrance, exit,
+/// shops, etc.
+class TilePortal {
+  final String name;
+
+  const TilePortal(this.name);
+
+  String toString() => name;
+}
+
 class TileType {
   final String name;
-  final bool isExit;
+
+  /// Where the tile takes the hero, or `null` if it's a regular tile.
+  final TilePortal portal;
+
   final int emanation;
   final appearance;
 
@@ -71,9 +84,8 @@ class TileType {
   bool get isWalkable => canEnter(Motility.walk);
 
   TileType(this.name, this.appearance, Motility motility,
-      {int emanation, bool isExit, this.onClose, this.onOpen})
-      : isExit = isExit ?? false,
-        emanation = emanation ?? 0,
+      {int emanation, this.portal, this.onClose, this.onOpen})
+      : emanation = emanation ?? 0,
         motility = motility;
 
   /// Whether an actor with [motility] is able to enter this tile.
@@ -178,7 +190,7 @@ class Tile {
 
   bool get isClosedDoor => type.motility == Motility.door;
 
-  bool get isExit => type.isExit;
+  TilePortal get portal => type.portal;
 
   bool canEnter(Motility motility) => type.canEnter(motility);
 }

@@ -5,8 +5,8 @@ import 'package:piecemeal/piecemeal.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
+import 'game_screen.dart';
 import 'input.dart';
-import 'select_depth_screen.dart';
 import 'storage.dart';
 
 // From: http://medieval.stormthecastle.com/medieval-names.htm.
@@ -276,7 +276,7 @@ class NewHeroScreen extends Screen<Input> {
             content.races[_race], content.classes[_class]);
         storage.heroes.add(hero);
         storage.save();
-        ui.goTo(SelectDepthScreen(content, hero, storage));
+        ui.goTo(GameScreen.town(storage, content, hero));
         return true;
 
       case KeyCode.tab:

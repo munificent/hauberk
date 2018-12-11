@@ -12,6 +12,7 @@ import 'content/monster/monsters.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
 import 'content/stage/architect.dart';
+import 'content/stage/town.dart';
 import 'content/tiles.dart';
 import 'engine.dart';
 
@@ -31,6 +32,7 @@ Content createContent() {
 class GameContent implements Content {
   Iterable<String> buildStage(
       Lore lore, Stage stage, int depth, Function(Vec) placeHero) {
+    if (depth == 0) return Town(stage).buildStage(placeHero);
     return Architect(lore, stage, depth).buildStage(placeHero);
   }
 

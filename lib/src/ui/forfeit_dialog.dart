@@ -41,9 +41,13 @@ class ForfeitDialog extends Screen<Input> {
   bool update() => false;
 
   void render(Terminal terminal) {
-    terminal.writeAt(
-        0, 0, 'Are you sure you want to forfeit the level? [Y]/[N]');
-    terminal.writeAt(
-        0, 1, 'You will lose all items and experience gained on the level.');
+    if (game.depth == 0) {
+      terminal.writeAt(0, 0, "Return to main menu? [Y]/[N]");
+    } else {
+      terminal.writeAt(
+          0, 0, "Are you sure you want to forfeit the level? [Y]/[N]");
+      terminal.writeAt(
+          0, 1, "You will lose all items and experience gained on the level.");
+    }
   }
 }

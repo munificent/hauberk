@@ -6,6 +6,8 @@ import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
 import '../content/elements.dart';
+// TODO: Directly importing this is a little hacky.
+import '../content/tiles.dart';
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
@@ -18,8 +20,12 @@ import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item_dialog.dart';
+import 'item_screen.dart';
+import 'loading_dialog.dart';
+import 'select_depth_screen.dart';
 import 'select_skill_dialog.dart';
 import 'skill_dialog.dart';
+import 'storage.dart';
 import 'target_dialog.dart';
 import 'wizard_dialog.dart';
 
@@ -27,6 +33,8 @@ class GameScreen extends Screen<Input> {
   final Game game;
 
   final HeroSave _save;
+  final Storage _storage;
+
   List<Effect> _effects = <Effect>[];
 
   /// The number of ticks left to wait before restarting the game loop after
@@ -49,6 +57,11 @@ class GameScreen extends Screen<Input> {
   Vec _target;
 
   UsableSkill _lastSkill;
+
+  /// The portal for the tile the hero is currently standing on.
+  ///
+  /// When this changes, we know the hero has stepped onto a new one.
+  TilePortal _portal;
 
   void targetActor(Actor value) {
     if (_targetActor != value) dirty();
@@ -105,20 +118,29 @@ class GameScreen extends Screen<Input> {
     return null;
   }
 
-  GameScreen(this._save, this.game) {
+  GameScreen(this._storage, this._save, this.game) {
     _positionCamera();
 
     Debug.bindGameScreen(this);
+  }
+
+  factory GameScreen.town(Storage storage, Content content, HeroSave save) {
+    var game = Game(content, save, 0, width: 60, height: 34);
+    for (var _ in game.generate()) {}
+
+    return GameScreen(storage, save, game);
   }
 
   bool handleInput(Input input) {
     Action action;
     switch (input) {
       case Input.quit:
-        if (game.stage[game.hero.pos].isExit) {
+        var portal = game.stage[game.hero.pos].portal;
+        if (portal == TilePortals.exit) {
+          // TODO: Save progress here?
           ui.push(ExitScreen(_save, game));
         } else {
-          game.log.error('You cannot exit from here.');
+          game.log.error("You are not standing on an exit.");
           dirty();
         }
         break;
@@ -153,13 +175,13 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.open:
-        open();
+        _open();
         break;
       case Input.close:
-        closeDoor();
+        _closeDoor();
         break;
       case Input.pickUp:
-        pickUp();
+        _pickUp();
         break;
       case Input.unequip:
         ui.push(ItemDialog.unequip(this));
@@ -291,7 +313,7 @@ class GameScreen extends Screen<Input> {
     return true;
   }
 
-  void open() {
+  void _open() {
     // See how many adjacent closed doors there are.
     // TODO: Handle chests.
     var openable = <Vec>[];
@@ -313,7 +335,7 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void closeDoor() {
+  void _closeDoor() {
     // See how many adjacent open doors there are.
     var closeable = <Vec>[];
     for (var pos in game.hero.pos.neighbors) {
@@ -334,7 +356,7 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void pickUp() {
+  void _pickUp() {
     var items = game.stage.itemsAt(game.hero.pos);
     if (items.length > 1) {
       // Show item dialog if there are multiple things to pick up.
@@ -421,11 +443,6 @@ class GameScreen extends Screen<Input> {
   }
 
   void activate(Screen popped, result) {
-    if (popped is ExitScreen) {
-      ui.pop(true);
-      return;
-    }
-
     if (!game.hero.needsInput) {
       // The player is coming back from a screen where they selected an action
       // for the hero. Give them a bit to visually reorient themselves before
@@ -433,9 +450,28 @@ class GameScreen extends Screen<Input> {
       _pause = 10;
     }
 
-    if (popped is ForfeitDialog && (result as bool)) {
-      // Forfeiting, so exit.
-      ui.pop(false);
+    if (popped is ExitScreen) {
+      // TODO: Hero should start next to dungeon entrance.
+      ui.goTo(GameScreen.town(_storage, game.content, _save));
+    } else if (popped is SelectDepthScreen && result is int) {
+      // Enter the dungeon.
+      // TODO: Make this a transparent dialog?
+      ui.goTo(LoadingDialog(_storage, _save, game.content, result));
+    } else if (popped is ForfeitDialog) {
+      if (game.depth > 0) {
+        // Forfeiting, so return to the town.
+        // TODO: Hero should start next to dungeon entrance.
+        ui.goTo(GameScreen.town(_storage, game.content, _save));
+      } else {
+        // Leaving the town.
+        ui.pop();
+      }
+    } else if (popped is ItemScreen) {
+      // Always save when leaving home or a shop.
+      _storage.save();
+    } else if (popped is ItemDialog) {
+      // Save after changing items in the town.
+      if (game.depth == 0) _storage.save();
     } else if (popped is SkillDialog) {
       // TODO: Once skills can be learned on the SkillDialog again, make this
       // work.
@@ -459,6 +495,50 @@ class GameScreen extends Screen<Input> {
   void update() {
     _frame++;
 
+    var portal = game.stage[game.hero.pos].portal;
+    if (portal != _portal) {
+      _portal = portal;
+      switch (portal) {
+        case TilePortals.dungeon:
+          ui.push(SelectDepthScreen(game.content, _save));
+          break;
+        case TilePortals.home:
+          ui.push(ItemScreen.home(_save));
+          break;
+        case TilePortals.shop1:
+          _enterShop(0);
+          break;
+        case TilePortals.shop2:
+          _enterShop(1);
+          break;
+        case TilePortals.shop3:
+          _enterShop(2);
+          break;
+        case TilePortals.shop4:
+          _enterShop(3);
+          break;
+        case TilePortals.shop5:
+          _enterShop(4);
+          break;
+        case TilePortals.shop6:
+          _enterShop(5);
+          break;
+        case TilePortals.shop7:
+          _enterShop(6);
+          break;
+        case TilePortals.shop8:
+          _enterShop(7);
+          break;
+        case TilePortals.shop9:
+          _enterShop(8);
+          break;
+      // TODO: No crucible right now.
+//        ui.push(new ItemScreen.crucible(content, save));
+      }
+
+      if (portal != null) return;
+    }
+
     if (_pause > 0) {
       _pause--;
       return;
@@ -469,7 +549,7 @@ class GameScreen extends Screen<Input> {
     // animated tiles if that's all that happened in a turn?
     if (_hasAnimatedTile) dirty();
 
-    if (_effects.length > 0) dirty();
+    if (_effects.isNotEmpty) dirty();
 
     var result = game.update();
 
@@ -525,6 +605,13 @@ class GameScreen extends Screen<Input> {
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the current view.
   void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
     terminal.drawGlyph(x - _cameraBounds.x, y - _cameraBounds.y, glyph);
+  }
+
+  void _enterShop(int index) {
+    var shops = _save.shops.keys.toList();
+    if (index >= shops.length) return;
+
+    ui.push(ItemScreen.shop(_save, _save.shops[shops[index]]));
   }
 
   /// Determines which portion of the [Stage] should be in view based on the

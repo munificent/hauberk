@@ -5,15 +5,17 @@ import '../engine.dart';
 import '../hues.dart';
 import 'game_screen.dart';
 import 'input.dart';
+import 'storage.dart';
 
 /// Dialog shown while a new level is being generated.
 class LoadingDialog extends Screen<Input> {
+  final Storage _storage;
   final HeroSave _save;
   final Game _game;
   Iterator<String> _steps;
   int _frame = 0;
 
-  LoadingDialog(this._save, Content content, int depth)
+  LoadingDialog(this._storage, this._save, Content content, int depth)
       : _game = Game(content, _save, depth);
 
   bool handleInput(Input input) {
@@ -52,7 +54,7 @@ class LoadingDialog extends Screen<Input> {
       if (_steps.moveNext()) {
         dirty();
       } else {
-        ui.goTo(GameScreen(_save, _game));
+        ui.goTo(GameScreen(_storage, _save, _game));
         return;
       }
     }
