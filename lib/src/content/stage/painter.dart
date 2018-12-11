@@ -37,6 +37,11 @@ class Painter {
 
   bool hasActor(Vec pos) => _architect.stage.actorAt(pos) != null;
 
+  Breed chooseBreed(int depth, {String tag, bool includeParentTags}) {
+    return _decorator.chooseBreed(
+        depth, tag: tag, includeParentTags: includeParentTags);
+  }
+
   void spawnMonster(Vec pos, Breed breed) {
     _decorator.spawnMonster(pos, breed);
   }

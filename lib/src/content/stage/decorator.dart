@@ -245,12 +245,7 @@ class Decorator {
       if (!_stage[pos].canEnter(breed.motility)) continue;
 
       // Don't place dead or redundant uniques.
-      if (breed.flags.unique) {
-        if (_architect.lore.slain(breed) > 0) continue;
-        if (_spawnedUniques.contains(breed)) continue;
-
-        _spawnedUniques.add(breed);
-      }
+      if (!_canSpawn(breed)) continue;
 
       var experience = _spawnMonster(densityMap, pos, breed);
       yield "Spawned monster";
@@ -264,16 +259,40 @@ class Decorator {
     Debug.densityMap = null;
   }
 
+  Breed chooseBreed(int depth, {String tag, bool includeParentTags}) {
+    while (true) {
+      var breed = Monsters.breeds
+          .tryChoose(depth, tag: tag, includeParents: includeParentTags);
+
+      if (_canSpawn(breed)) return breed;
+    }
+  }
+
+  /// Whether a monster of [breed] can be spawned.
+  ///
+  /// Returns `false` if [breed] is a unique that's already been killed or
+  /// spawned.
+  bool _canSpawn(Breed breed) {
+    if (!breed.flags.unique) return true;
+    if (_architect.lore.slain(breed) > 0) return false;
+    if (_spawnedUniques.contains(breed)) return false;
+
+    return true;
+  }
+
   void spawnMonster(Vec pos, Breed breed) {
     _spawnMonster(null, pos, breed);
   }
 
   int _spawnMonster(DensityMap density, Vec pos, Breed breed) {
     var isCorpse = !breed.flags.unique && rng.oneIn(10);
-    var breeds = breed.spawnAll();
 
     var experience = 0;
     spawn(Breed breed, Vec pos) {
+      if (!_canSpawn(breed)) return;
+
+      if (breed.flags.unique) _spawnedUniques.add(breed);
+
       if (isCorpse) {
         _architect.stage.placeDrops(pos, breed.motility, breed.drop);
       } else {
@@ -293,6 +312,8 @@ class Decorator {
 //        _stain(breed.stain, pos, 5, 2);
 //      }
     }
+
+    var breeds = breed.spawnAll();
 
     // TODO: Hack. Flow doesn't include the starting tile, so handle it here.
     spawn(breeds[0], pos);

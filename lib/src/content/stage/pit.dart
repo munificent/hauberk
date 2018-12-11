@@ -1,6 +1,5 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../monster/monsters.dart';
 import 'architect.dart';
 import 'blob.dart';
 import 'painter.dart';
@@ -63,8 +62,8 @@ class Pit extends Architecture {
 
       if (painter.hasActor(pos)) continue;
 
-      var breed = Monsters.breeds
-          .tryChoose(depth, tag: _monsterGroup, includeParents: false);
+      var breed = painter.chooseBreed(depth,
+          tag: _monsterGroup, includeParentTags: false);
       painter.spawnMonster(pos, breed);
     }
 
