@@ -1026,7 +1026,7 @@
         },
         JSArray__compareAny: [function(a, b) {
           return J.compareTo$1$ns(H.numberOrStringSuperNativeTypeCheck(a, "$isComparable"), H.numberOrStringSuperNativeTypeCheck(b, "$isComparable"));
-        }, "call$2", "_interceptors_JSArray__compareAny$closure", 8, 0, 133]
+        }, "call$2", "_interceptors_JSArray__compareAny$closure", 8, 0, 132]
       }
     },
     JSUnmodifiableArray: {
@@ -2366,7 +2366,7 @@
     },
     Primitives_dateNow: [function() {
       return Date.now();
-    }, "call$0", "_js_helper_Primitives_dateNow$closure", 0, 0, 134],
+    }, "call$0", "_js_helper_Primitives_dateNow$closure", 0, 0, 133],
     Primitives_initTicker: function() {
       var $window, performance;
       if ($.Primitives_timerFrequency != null)
@@ -3015,11 +3015,6 @@
       if (typeof value === "boolean")
         return value;
       throw H.wrapException(H.TypeErrorImplementation$(value, "bool"));
-    },
-    boolTypeCast: function(value) {
-      if (typeof value === "boolean" || value == null)
-        return value;
-      throw H.wrapException(H.CastErrorImplementation$(value, "bool"));
     },
     intTypeCheck: function(value) {
       if (value == null)
@@ -4434,13 +4429,13 @@
       }
     },
     initHooks_closure0: {
-      "^": "Closure:114;getUnknownTag",
+      "^": "Closure:116;getUnknownTag",
       call$2: function(o, tag) {
         return this.getUnknownTag(o, tag);
       }
     },
     initHooks_closure1: {
-      "^": "Closure:95;prototypeForTag",
+      "^": "Closure:114;prototypeForTag",
       call$1: function(tag) {
         return this.prototypeForTag(H.stringTypeCheck(tag));
       }
@@ -4906,7 +4901,7 @@
       }, null, null, 4, 0, null, 1, "call"]
     },
     _AsyncRun__initializeScheduleImmediate_closure: {
-      "^": "Closure:63;_box_0,div,span",
+      "^": "Closure:80;_box_0,div,span",
       call$1: function(callback) {
         var t1, t2;
         this._box_0.storedCallback = H.functionTypeCheck(callback, {func: 1, ret: -1});
@@ -5343,7 +5338,7 @@
       }
     },
     _Future__chainForeignFuture_closure0: {
-      "^": "Closure:135;target",
+      "^": "Closure:106;target",
       call$2: [function(error, stackTrace) {
         H.interceptedTypeCheck(stackTrace, "$isStackTrace");
         this.target._completeError$2(error, stackTrace);
@@ -5400,7 +5395,7 @@
       }
     },
     _Future__propagateToListeners_handleWhenCompleteCallback_closure: {
-      "^": "Closure:106;originalSource",
+      "^": "Closure:46;originalSource",
       call$1: function(_) {
         return this.originalSource;
       }
@@ -5530,7 +5525,7 @@
       "^": "Object;"
     },
     _cancelAndErrorClosure_closure: {
-      "^": "Closure:46;subscription,future",
+      "^": "Closure:63;subscription,future",
       call$2: function(error, stackTrace) {
         P._cancelAndError(this.subscription, this.future, error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"));
       }
@@ -5868,7 +5863,9 @@
         return new P._LinkedHashSet(0, 0, this.$ti);
       },
       get$iterator: function(_) {
-        return P._LinkedHashSetIterator$(this, this._collection$_modifications, H.getTypeArgumentByIndex(this, 0));
+        var t1 = new P._LinkedHashSetIterator(this, this._collection$_modifications, this.$ti);
+        t1._collection$_cell = this._collection$_first;
+        return t1;
       },
       get$length: function(_) {
         return this._collection$_length;
@@ -6093,7 +6090,7 @@
       forEach$1: function(_, f) {
         var t1;
         H.functionTypeCheck(f, {func: 1, ret: -1, args: [H.getRuntimeTypeArgument(this, "IterableMixin", 0)]});
-        for (t1 = this._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();)
+        for (t1 = this._items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();)
           f.call$1(t1.__interceptors$_current);
       },
       toList$1$growable: function(_, growable) {
@@ -6104,19 +6101,19 @@
       },
       get$length: function(_) {
         var t1, it, count;
-        t1 = this._inventory$_items;
+        t1 = this._items;
         it = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]);
         for (count = 0; it.moveNext$0();)
           ++count;
         return count;
       },
       get$isEmpty: function(_) {
-        var t1 = this._inventory$_items;
+        var t1 = this._items;
         return !new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]).moveNext$0();
       },
       get$first: function(_) {
         var t1, it;
-        t1 = this._inventory$_items;
+        t1 = this._items;
         it = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]);
         if (!it.moveNext$0())
           throw H.wrapException(H.IterableElementError_noElement());
@@ -6130,7 +6127,7 @@
           return index.$lt();
         if (index < 0)
           H.throwExpression(P.RangeError$range(index, 0, null, "index", null));
-        for (t1 = this._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), elementIndex = 0; t1.moveNext$0();) {
+        for (t1 = this._items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), elementIndex = 0; t1.moveNext$0();) {
           element = t1.__interceptors$_current;
           if (index === elementIndex)
             return element;
@@ -6355,7 +6352,7 @@
         this._table = H.assertSubtype(_table, "$isList", this.$ti, "$asList");
       },
       get$iterator: function(_) {
-        return new P._ListQueueIterator(this, this._tail, this._modificationCount, this._head, this.$ti);
+        return P._ListQueueIterator$(this, H.getTypeArgumentByIndex(this, 0));
       },
       forEach$1: function(_, f) {
         var modificationCount, i, t1;
@@ -7119,7 +7116,7 @@
       H.printString(object);
     },
     NoSuchMethodError_toString_closure: {
-      "^": "Closure:80;_box_0,sb",
+      "^": "Closure:81;_box_0,sb",
       call$2: function(key, value) {
         var t1, t2, t3;
         H.interceptedTypeCheck(key, "$isSymbol0");
@@ -7986,7 +7983,7 @@
       "%": ";Element"
     },
     Element_Element$html_closure: {
-      "^": "Closure:29;",
+      "^": "Closure:31;",
       call$1: function(e) {
         return !!J.getInterceptor$(H.interceptedTypeCheck(e, "$isNode")).$isElement0;
       }
@@ -8357,7 +8354,7 @@
       "%": "Storage"
     },
     Storage_keys_closure: {
-      "^": "Closure:83;keys",
+      "^": "Closure:85;keys",
       call$2: function(k, v) {
         return C.JSArray_methods.add$1(this.keys, k);
       }
@@ -8651,7 +8648,7 @@
       }
     },
     _EventStreamSubscription_closure: {
-      "^": "Closure:85;onData",
+      "^": "Closure:92;onData",
       call$1: [function(e) {
         return this.onData.call$1(H.interceptedTypeCheck(e, "$isEvent"));
       }, null, null, 4, 0, null, 20, "call"]
@@ -8748,13 +8745,13 @@
       $isNodeValidator: 1
     },
     NodeValidatorBuilder_allowsElement_closure: {
-      "^": "Closure:31;element",
+      "^": "Closure:32;element",
       call$1: function(v) {
         return H.interceptedTypeCheck(v, "$isNodeValidator").allowsElement$1(this.element);
       }
     },
     NodeValidatorBuilder_allowsAttribute_closure: {
-      "^": "Closure:31;element,attributeName,value",
+      "^": "Closure:32;element,attributeName,value",
       call$1: function(v) {
         return H.interceptedTypeCheck(v, "$isNodeValidator").allowsAttribute$3(this.element, this.attributeName, this.value);
       }
@@ -9152,7 +9149,7 @@
       }
     },
     FilteredElementList__iterable_closure: {
-      "^": "Closure:29;",
+      "^": "Closure:31;",
       call$1: function(n) {
         return !!J.getInterceptor$(H.interceptedTypeCheck(n, "$isNode")).$isElement0;
       }
@@ -9257,7 +9254,7 @@
         return o.o;
       else
         return P._wrapToDart(o);
-    }, "call$1", "js___convertToDart$closure", 4, 0, 137, 13],
+    }, "call$1", "js___convertToDart$closure", 4, 0, 136, 13],
     _wrapToDart: function(o) {
       if (typeof o == "function")
         return P._getDartProxy(o, $.$get$DART_CLOSURE_PROPERTY_NAME(), new P._wrapToDart_closure());
@@ -9398,7 +9395,7 @@
       }
     },
     _wrapToDart_closure1: {
-      "^": "Closure:62;",
+      "^": "Closure:61;",
       call$1: function(o) {
         return new P.JsObject(o);
       }
@@ -9552,6 +9549,16 @@
     "^": "",
     GameContent: {
       "^": "Object;",
+      buildStage$4: function(lore, stage, depth, placeHero) {
+        var t1;
+        H.functionTypeCheck(placeHero, {func: 1, args: [L.Vec]});
+        if (depth === 0)
+          return new D.Town(stage).buildStage$1(placeHero);
+        t1 = stage.tiles.bounds.size;
+        t1 = M.Array2D$(t1.x, t1.y, null, X.Architecture);
+        $.Architect_debugOwners = t1;
+        return new X.Architect(lore, stage, depth, t1, 0).buildStage$1(placeHero);
+      },
       createHero$3: function($name, race, heroClass) {
         var t1, t2, t3, t4, t5, t6, t7, t8, t9, hero, inventory;
         if (race == null)
@@ -9709,7 +9716,7 @@
   }], ["", "package:hauberk/src/content/action/barrier.dart",, R, {
     "^": "",
     BarrierAction: {
-      "^": "_BarrierAction_Action_ElementActionMixin;_center,_h,_v,_hit,_hitTiles,_distance,_goingPositive,_goingNegative,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_BarrierAction_Action_ElementActionMixin;_center,_h,_v,_hit,_hitTiles,_distance,_goingPositive,_goingNegative,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
@@ -9729,7 +9736,7 @@
       }
     },
     BarrierAction_onPerform_tryDirection: {
-      "^": "Closure:92;_box_0,$this",
+      "^": "Closure:83;_box_0,$this",
       call$2: function(going, sign) {
         var t1, allStopped;
         if (!going)
@@ -9746,7 +9753,7 @@
       }
     },
     BarrierAction_onPerform_tryDirection_tryOffset: {
-      "^": "Closure:98;_box_0,$this,sign",
+      "^": "Closure:95;_box_0,$this,sign",
       call$2: function(h, v) {
         var t1, t2, pos, t3;
         t1 = this.$this;
@@ -9770,7 +9777,7 @@
   }], ["", "package:hauberk/src/content/action/bolt.dart",, O, {
     "^": "",
     BoltAction: {
-      "^": "LosAction;_bolt$_hit,_canMiss,_range,_los$_target,0_lastPos,0_los,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "LosAction;_bolt$_hit,_canMiss,_range,_los$_target,0_lastPos,0_los,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$range: function() {
         var t1 = this._range;
         return t1 == null ? this._bolt$_hit.get$range() : t1;
@@ -9780,16 +9787,16 @@
         this.addEvent$4$dir$element$pos(C.EventType_bolt, pos.$sub(0, previous).get$nearestDirection(), t1, pos);
       },
       onHitActor$2: ["super$BoltAction$onHitActor", function(pos, target) {
-        this._bolt$_hit.perform$4$canMiss(this, this._action$_actor, target, this._canMiss);
+        this._bolt$_hit.perform$4$canMiss(this, this._actor, target, this._canMiss);
         return true;
       }]
     }
   }], ["", "package:hauberk/src/content/action/condition.dart",, E, {
     "^": "",
     HasteAction: {
-      "^": "ConditionAction;_condition0$_duration,_condition0$_speed,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ConditionAction;_condition0$_duration,_condition0$_speed,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$condition: function() {
-        return this._action$_actor.haste;
+        return this._actor.haste;
       },
       getIntensity$0: function() {
         return this._condition0$_speed;
@@ -9798,19 +9805,19 @@
         return this._condition0$_duration;
       },
       onActivate$0: function(_) {
-        return this.log$2("{1} start[s] moving faster.", this._action$_actor);
+        return this.log$2("{1} start[s] moving faster.", this._actor);
       },
       onExtend$0: function() {
-        return this.log$2("{1} [feel]s the haste lasting longer.", this._action$_actor);
+        return this.log$2("{1} [feel]s the haste lasting longer.", this._actor);
       },
       onIntensify$0: function() {
-        return this.log$2("{1} move[s] even faster.", this._action$_actor);
+        return this.log$2("{1} move[s] even faster.", this._actor);
       }
     },
     FreezeActorAction: {
-      "^": "_FreezeActorAction_ConditionAction_DestroyActionMixin;_condition0$_damage,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_FreezeActorAction_ConditionAction_DestroyActionMixin;_condition0$_damage,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$condition: function() {
-        return this._action$_actor.cold;
+        return this._actor.cold;
       },
       onPerform$0: function() {
         this.destroyHeldItems$1($.$get$Elements_cold());
@@ -9831,19 +9838,19 @@
         return 3 + t1.triangleInt$2(t2 * 2, C.JSInt_methods._tdivFast$1(t2, 2));
       },
       onActivate$0: function(_) {
-        return this.log$2("{1} [are|is] frozen!", this._action$_actor);
+        return this.log$2("{1} [are|is] frozen!", this._actor);
       },
       onExtend$0: function() {
-        return this.log$2("{1} feel[s] the cold linger!", this._action$_actor);
+        return this.log$2("{1} feel[s] the cold linger!", this._actor);
       },
       onIntensify$0: function() {
-        return this.log$2("{1} feel[s] the cold intensify!", this._action$_actor);
+        return this.log$2("{1} feel[s] the cold intensify!", this._actor);
       }
     },
     PoisonAction: {
-      "^": "ConditionAction;_condition0$_damage,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ConditionAction;_condition0$_damage,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$condition: function() {
-        return this._action$_actor.poison;
+        return this._actor.poison;
       },
       getIntensity$0: function() {
         var t1 = this._condition0$_damage;
@@ -9860,19 +9867,19 @@
         return 1 + t1.triangleInt$2(t2 * 2, C.JSInt_methods._tdivFast$1(t2, 2));
       },
       onActivate$0: function(_) {
-        return this.log$2("{1} [are|is] poisoned!", this._action$_actor);
+        return this.log$2("{1} [are|is] poisoned!", this._actor);
       },
       onExtend$0: function() {
-        return this.log$2("{1} feel[s] the poison linger!", this._action$_actor);
+        return this.log$2("{1} feel[s] the poison linger!", this._actor);
       },
       onIntensify$0: function() {
-        return this.log$2("{1} feel[s] the poison intensify!", this._action$_actor);
+        return this.log$2("{1} feel[s] the poison intensify!", this._actor);
       }
     },
     BlindAction: {
-      "^": "ConditionAction;_condition0$_damage,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ConditionAction;_condition0$_damage,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$condition: function() {
-        return this._action$_actor.blindness;
+        return this._actor.blindness;
       },
       getDuration$0: function() {
         var t1, t2;
@@ -9883,17 +9890,17 @@
         return 3 + t1.triangleInt$2(t2 * 2, C.JSInt_methods._tdivFast$1(t2, 2));
       },
       onActivate$0: function(_) {
-        this.log$2("{1 his} vision dims!", this._action$_actor);
+        this.log$2("{1 his} vision dims!", this._actor);
         this._action$_game._stage._lighting._visibilityDirty = true;
       },
       onExtend$0: function() {
-        return this.log$2("{1 his} vision dims!", this._action$_actor);
+        return this.log$2("{1 his} vision dims!", this._actor);
       }
     },
     DazzleAction: {
-      "^": "ConditionAction;_condition0$_damage,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ConditionAction;_condition0$_damage,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$condition: function() {
-        return this._action$_actor.dazzle;
+        return this._actor.dazzle;
       },
       getDuration$0: function() {
         var t1, t2;
@@ -9904,25 +9911,25 @@
         return 3 + t1.triangleInt$2(t2 * 2, C.JSInt_methods._tdivFast$1(t2, 2));
       },
       onActivate$0: function(_) {
-        return this.log$2("{1} [are|is] dazzled by the light!", this._action$_actor);
+        return this.log$2("{1} [are|is] dazzled by the light!", this._actor);
       },
       onExtend$0: function() {
-        return this.log$2("{1} [are|is] dazzled by the light!", this._action$_actor);
+        return this.log$2("{1} [are|is] dazzled by the light!", this._actor);
       }
     },
     ResistAction: {
-      "^": "ConditionAction;_condition0$_duration,_condition0$_element,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ConditionAction;_condition0$_duration,_condition0$_element,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$condition: function() {
-        return this._action$_actor.resistances.$index(0, this._condition0$_element);
+        return this._actor.resistances.$index(0, this._condition0$_element);
       },
       getDuration$0: function() {
         return this._condition0$_duration;
       },
       onActivate$0: function(_) {
-        return this.log$2("{1} [are|is] resistant to " + H.S(this._condition0$_element) + ".", this._action$_actor);
+        return this.log$2("{1} [are|is] resistant to " + H.S(this._condition0$_element) + ".", this._actor);
       },
       onExtend$0: function() {
-        return this.log$2("{1} feel[s] the resistance extend.", this._action$_actor);
+        return this.log$2("{1} feel[s] the resistance extend.", this._actor);
       }
     },
     _FreezeActorAction_ConditionAction_DestroyActionMixin: {
@@ -9937,7 +9944,7 @@
       }
     },
     DetectAction: {
-      "^": "Action;_types,_detection$_maxDistance,0_tilesByDistance,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_detection$_types,_detection$_maxDistance,0_tilesByDistance,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       set$_tilesByDistance: function(_tilesByDistance) {
         this._tilesByDistance = H.assertSubtype(_tilesByDistance, "$isList", [[P.List, L.Vec]], "$asList");
       },
@@ -9966,7 +9973,7 @@
         t1 = [P.List, L.Vec];
         distanceMap = P.LinkedHashMap_LinkedHashMap$_empty(P.int, t1);
         addTile = new T.DetectAction__findTiles_addTile(this, distanceMap);
-        t2 = this._types;
+        t2 = this._detection$_types;
         if (t2.contains$1(0, C.DetectType_0))
           for (t3 = X.RectIterator$(this._action$_game._stage.tiles.bounds), foundExits = 0; t3.moveNext$0();) {
             t4 = t3._rect$_x;
@@ -9984,7 +9991,7 @@
             t6 = t7[t6];
             if (t6._isExplored)
               continue;
-            if (!t6.type.isExit)
+            if (t6.type.portal !== C.TilePortal_exit)
               continue;
             ++foundExits;
             addTile.call$1(new L.Vec(t4, t5));
@@ -9996,13 +10003,13 @@
           this._action$_game._stage.forEachItem$1(new T.DetectAction__findTiles_closure(_box_0, this, addTile));
         if (foundExits > 0) {
           t2 = _box_0.foundItems;
-          t3 = this._action$_actor;
+          t3 = this._actor;
           if (t2 > 0)
             this.log$2("{1} sense[s] hidden secrets in the dark!", t3);
           else
             this.log$2("{1} sense[s] places to escape!", t3);
         } else if (_box_0.foundItems > 0)
-          this.log$2("{1} sense[s] the treasures held in the dark!", this._action$_actor);
+          this.log$2("{1} sense[s] the treasures held in the dark!", this._actor);
         else
           this.log$1("The darkness holds no secrets.");
         t2 = distanceMap.get$keys(distanceMap);
@@ -10017,7 +10024,7 @@
       call$1: function(pos) {
         var t1, distance;
         t1 = this.$this;
-        distance = t1._action$_actor._pos.$sub(0, pos).get$lengthSquared();
+        distance = t1._actor._pos.$sub(0, pos).get$lengthSquared();
         t1 = t1._detection$_maxDistance;
         if (t1 != null && distance > t1 * t1)
           return;
@@ -10049,7 +10056,7 @@
       }
     },
     DetectAction__findTiles_closure1: {
-      "^": "Closure:99;distanceMap",
+      "^": "Closure:98;distanceMap",
       call$1: [function(distance) {
         return this.distanceMap.$index(0, H.intTypeCheck(distance));
       }, null, null, 4, 0, null, 3, "call"]
@@ -10057,10 +10064,10 @@
   }], ["", "package:hauberk/src/content/action/eat.dart",, X, {
     "^": "",
     EatAction: {
-      "^": "Action;_eat$_amount,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_eat$_amount,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2;
-        t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+        t1 = H.interceptedTypeCast(this._actor, "$isHero");
         t2 = t1._stomach;
         if (t2 === 400)
           this.log$2("{1} [is|are] already full!", t1);
@@ -10068,7 +10075,7 @@
           this.log$2("{1} [is|are] stuffed!", t1);
         else
           this.log$2("{1} feel[s] satiated.", t1);
-        t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+        t1 = H.interceptedTypeCast(this._actor, "$isHero");
         t2 = t1._stomach;
         t1.toString;
         t1._stomach = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 + this._eat$_amount, 0, 400));
@@ -10086,8 +10093,8 @@
           this.addAction$1(t1.call$1(pos));
         this.addEvent$3$element$pos(C.EventType_cone, hit.get$element(), pos);
         t1 = this._action$_game._stage._actorsByTile.$index(0, pos);
-        if (t1 != null && t1 !== this._action$_actor)
-          hit.perform$4$canMiss(this, this._action$_actor, t1, false);
+        if (t1 != null && t1 !== this._actor)
+          hit.perform$4$canMiss(this, this._actor, t1, false);
         action = hit.get$element().floorAction.call$4(pos, hit, distance, fuel);
         if (action != null)
           this.addAction$1(action);
@@ -10097,11 +10104,11 @@
       }
     },
     BurnActorAction: {
-      "^": "_BurnActorAction_Action_DestroyActionMixin;0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_BurnActorAction_Action_DestroyActionMixin;0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2;
         this.destroyHeldItems$1($.$get$Elements_fire());
-        t1 = this._action$_actor;
+        t1 = this._actor;
         t2 = t1.cold;
         if (t2._turnsRemaining > 0) {
           t2._turnsRemaining = 0;
@@ -10112,7 +10119,7 @@
       }
     },
     BurnFloorAction: {
-      "^": "_BurnFloorAction_Action_DestroyActionMixin;_element$_pos,_element$_damage,_element$_fuel,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_BurnFloorAction_Action_DestroyActionMixin;_element$_pos,_element$_damage,_element$_fuel,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2, t3, t4, fuel, ignition;
         t1 = this._element$_fuel;
@@ -10143,7 +10150,7 @@
       }
     },
     BurningFloorAction: {
-      "^": "_BurningFloorAction_Action_DestroyActionMixin;_element$_pos,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_BurningFloorAction_Action_DestroyActionMixin;_element$_pos,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2;
         t1 = this._element$_pos;
@@ -10156,14 +10163,14 @@
       }
     },
     FreezeFloorAction: {
-      "^": "_FreezeFloorAction_Action_DestroyActionMixin;_element$_pos,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_FreezeFloorAction_Action_DestroyActionMixin;_element$_pos,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         this.destroyFloorItems$2(this._element$_pos, $.$get$Elements_cold());
         return C.ActionResult_null_true_true;
       }
     },
     PoisonFloorAction: {
-      "^": "_PoisonFloorAction_Action_DestroyActionMixin;_element$_pos,_element$_damage,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_PoisonFloorAction_Action_DestroyActionMixin;_element$_pos,_element$_damage,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2;
         t1 = this._action$_game._stage.tiles.$index(0, this._element$_pos);
@@ -10179,7 +10186,7 @@
       }
     },
     PoisonedFloorAction: {
-      "^": "_PoisonedFloorAction_Action_DestroyActionMixin;_element$_pos,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_PoisonedFloorAction_Action_DestroyActionMixin;_element$_pos,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1 = this._action$_game._stage._actorsByTile.$index(0, this._element$_pos);
         if (t1 != null)
@@ -10188,29 +10195,29 @@
       }
     },
     WindAction: {
-      "^": "Action;0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
       onPerform$0: function() {
         var t1, t2, distance, positions;
-        t1 = this._action$_actor.get$motility();
+        t1 = this._actor.get$motility();
         t2 = $.$get$Motility_fly();
         distance = (t1._bitMask & t2._bitMask) !== 0 ? 6 : 3;
-        t1 = this._action$_actor.get$motility();
+        t1 = this._actor.get$motility();
         t2 = $.$get$Motility_door();
         t1 = t1._bitMask;
         t2 = t2._bitMask;
-        t2 = N.MotilityFlow$(this._action$_game._stage, this._action$_actor._pos, new Q.Motility(t1 & ~t2), null, null, distance).get$reachable();
+        t2 = N.MotilityFlow$(this._action$_game._stage, this._actor._pos, new Q.Motility(t1 & ~t2), null, null, distance).get$reachable();
         t2.toString;
         t1 = H.getRuntimeTypeArgument(t2, "Iterable", 0);
         positions = P.List_List$from(new H.WhereIterable(t2, H.functionTypeCheck(new G.WindAction_onPerform_closure(this), {func: 1, ret: P.bool, args: [t1]}), [t1]), true, t1);
         if (positions.length === 0)
           return C.ActionResult_null_false_true;
-        this.log$2("{1} [are|is] thrown by the wind!", this._action$_actor);
-        t1 = this._action$_actor;
+        this.log$2("{1} [are|is] thrown by the wind!", this._actor);
+        t1 = this._actor;
         this.addEvent$3$actor$pos(C.EventType_wind, t1, t1._pos);
-        t1 = this._action$_actor;
+        t1 = this._actor;
         t2 = $.$get$rng();
         t2.toString;
         H.assertSubtype(positions, "$isList", [L.Vec], "$asList");
@@ -10229,7 +10236,7 @@
       }
     },
     LightFloorAction: {
-      "^": "Action;_element$_pos,0_element$_emanation,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_element$_pos,0_element$_emanation,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         this._action$_game._stage.tiles.$index(0, this._element$_pos).addEmanation$1(this._element$_emanation);
         this._action$_game._stage._lighting._floorLightDirty = true;
@@ -10257,7 +10264,7 @@
   }], ["", "package:hauberk/src/content/action/flow.dart",, N, {
     "^": "",
     FlowAction: {
-      "^": "_FlowAction_Action_ElementActionMixin;_flow0$_from,_flow0$_hit,0_flow0$_flow,0_tiles,_flow0$_motility,_slowness,_flow0$_frame,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_FlowAction_Action_ElementActionMixin;_flow0$_from,_flow0$_hit,0_flow0$_flow,0_tiles,_flow0$_motility,_slowness,_flow0$_frame,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       set$_tiles: function(_tiles) {
         this._tiles = H.assertSubtype(_tiles, "$isList", [L.Vec], "$asList");
       },
@@ -10314,13 +10321,13 @@
       }
     },
     FlowSelfAction: {
-      "^": "Action;_flow0$_attack,_flow0$_motility,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_flow0$_attack,_flow0$_motility,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
-        return this.alternate$1(N.FlowAction$(this._action$_actor._pos, new U.Hit(this._flow0$_attack, 0, 1, 1, 0, $.$get$Element_none(), 1), this._flow0$_motility, null));
+        return this.alternate$1(N.FlowAction$(this._actor._pos, new U.Hit(this._flow0$_attack, 0, 1, 1, 0, $.$get$Element_none(), 1), this._flow0$_motility, null));
       }
     },
     FlowFromAction: {
-      "^": "Action;_flow0$_attack,_flow0$_pos,_flow0$_motility,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_flow0$_attack,_flow0$_pos,_flow0$_motility,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         return this.alternate$1(N.FlowAction$(this._flow0$_pos, new U.Hit(this._flow0$_attack, 0, 1, 1, 0, $.$get$Element_none(), 1), this._flow0$_motility, null));
       }
@@ -10331,10 +10338,10 @@
   }], ["", "package:hauberk/src/content/action/heal.dart",, O, {
     "^": "",
     HealAction: {
-      "^": "Action;amount<,curePoison,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;amount<,curePoison,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2, changed, t3;
-        t1 = this._action$_actor;
+        t1 = this._actor;
         t2 = t1.poison;
         if (t2._turnsRemaining > 0 && this.curePoison) {
           t2._turnsRemaining = 0;
@@ -10343,38 +10350,38 @@
           changed = true;
         } else
           changed = false;
-        t1 = this._action$_actor;
+        t1 = this._actor;
         if (t1._health !== t1.get$maxHealth() && this.amount > 0) {
-          t1 = this._action$_actor;
+          t1 = this._actor;
           t2 = t1._health;
           t3 = this.amount;
           if (typeof t2 !== "number")
             return t2.$add();
           t1._health = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 + t3, 0, t1.get$maxHealth()));
-          this.addEvent$3$actor$other(C.EventType_heal, this._action$_actor, t3);
-          this.log$2("{1} feel[s] better.", this._action$_actor);
+          this.addEvent$3$actor$other(C.EventType_heal, this._actor, t3);
+          this.log$2("{1} feel[s] better.", this._actor);
           changed = true;
         }
         if (changed)
           return C.ActionResult_null_true_true;
         else
-          return this.succeed$2("{1} [don't|doesn't] feel any different.", this._action$_actor);
+          return this.succeed$2("{1} [don't|doesn't] feel any different.", this._actor);
       }
     }
   }], ["", "package:hauberk/src/content/action/howl.dart",, U, {
     "^": "",
     HowlAction: {
-      "^": "Action;_howl0$_range,_howl0$_verb,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_howl0$_range,_howl0$_verb,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2, t3, _i, other, t4, t5, t6;
-        this.log$2("{1} " + this._howl0$_verb + "!", this._action$_actor);
-        this.addEvent$2$actor(C.EventType_howl, this._action$_actor);
-        for (t1 = H.interceptedTypeCast(this._action$_actor, "$isMonster").game._stage._actors, t2 = t1.length, t3 = this._howl0$_range, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+        this.log$2("{1} " + this._howl0$_verb + "!", this._actor);
+        this.addEvent$2$actor(C.EventType_howl, this._actor);
+        for (t1 = H.interceptedTypeCast(this._actor, "$isMonster").game._stage._actors, t2 = t1.length, t3 = this._howl0$_range, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
           other = t1[_i];
-          t4 = this._action$_actor;
+          t4 = this._actor;
           if (other != t4 && other instanceof B.Monster && other._pos.$sub(0, H.interceptedTypeCast(t4, "$isMonster")._pos).$le(0, t3)) {
             t4 = this._action$_game._stage;
-            t5 = this._action$_actor._pos;
+            t5 = this._actor._pos;
             t6 = other._pos;
             t6 = t4._sound.volumeBetween$2(t5, t6);
             other.set$_alertness(other.get$_alertness() + t6 * other.get$_breed().hearing);
@@ -10387,7 +10394,7 @@
   }], ["", "package:hauberk/src/content/action/illuminate.dart",, F, {
     "^": "",
     IlluminateAction: {
-      "^": "RayActionBase;range<,_illuminate$_emanationLevel,_from,_to,_ray$_hitTiles,_radius,_rays,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "RayActionBase;range<,_illuminate$_emanationLevel,_from,_to,_ray$_hitTiles,_radius,_rays,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       reachStartTile$1: function(pos) {
         this.reachTile$2(pos, 0);
       },
@@ -10398,13 +10405,13 @@
       }
     },
     IlluminateSelfAction: {
-      "^": "Action;_illuminate$_range,_illuminate$_emanationLevel,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_illuminate$_range,_illuminate$_emanationLevel,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
       onPerform$0: function() {
         var t1, t2;
-        t1 = this._action$_actor._pos;
+        t1 = this._actor._pos;
         t2 = new F.IlluminateAction(this._illuminate$_range, this._illuminate$_emanationLevel, t1, t1, P.LinkedHashSet_LinkedHashSet(null, null, null, L.Vec), 1, H.setRuntimeTypeInfo([], [P.double]));
         t2.RayActionBase$3(t1, t1, 1);
         return this.alternate$1(t2);
@@ -10413,7 +10420,7 @@
   }], ["", "package:hauberk/src/content/action/mapping.dart",, Q, {
     "^": "",
     MappingAction: {
-      "^": "Action;_mapping$_maxDistance,_illuminate,_currentDistance,0_mapping$_tilesByDistance,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_mapping$_maxDistance,_illuminate,_currentDistance,0_mapping$_tilesByDistance,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       set$_mapping$_tilesByDistance: function(_tilesByDistance) {
         this._mapping$_tilesByDistance = H.assertSubtype(_tilesByDistance, "$isList", [[P.List, L.Vec]], "$asList");
       },
@@ -10470,9 +10477,9 @@
         t3 = this._mapping$_tilesByDistance;
         if (0 >= t3.length)
           return H.ioore(t3, 0);
-        C.JSArray_methods.add$1(t3[0], this._action$_actor._pos);
+        C.JSArray_methods.add$1(t3[0], this._actor._pos);
         t3 = this._action$_game._stage;
-        t4 = this._action$_actor._pos;
+        t4 = this._actor._pos;
         t5 = this._mapping$_maxDistance;
         flow = new Q.MappingFlow(t5, t3, t4, t5, new B.BucketQueue(H.setRuntimeTypeInfo([], [[P.Queue, L.Vec]]), 0, [t1]), H.setRuntimeTypeInfo([], t2));
         flow.Flow$3$maxDistance(t3, t4, t5);
@@ -10521,7 +10528,7 @@
       }
     },
     MissiveAction: {
-      "^": "Action;target,missive,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;target,missive,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2;
         t1 = $.$get$rng();
@@ -10531,32 +10538,32 @@
         t1 = t1.range$1(t2.length);
         if (t1 < 0 || t1 >= t2.length)
           return H.ioore(t2, t1);
-        return this.succeed$3(t2[t1], this._action$_actor, this.target);
+        return this.succeed$3(t2[t1], this._actor, this.target);
       }
     }
   }], ["", "package:hauberk/src/content/action/polymorph.dart",, Q, {
     "^": "",
     PolymorphAction: {
-      "^": "Action;_polymorph$_breed,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_polymorph$_breed,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2;
-        t1 = H.interceptedTypeCast(this._action$_actor, "$isMonster");
+        t1 = H.interceptedTypeCast(this._actor, "$isMonster");
         t2 = this._polymorph$_breed;
         t1._breed = t2;
         t1._health = H.intTypeCheck(C.JSInt_methods.clamp$2(H.intTypeCheck(J.clamp$2$n(t1._health, 0, t2.maxHealth)), 0, t1.get$maxHealth()));
         t1._recharges.clear$0(0);
         t1._resetCharges$0();
-        this.addEvent$2$actor(C.EventType_polymorph, this._action$_actor);
+        this.addEvent$2$actor(C.EventType_polymorph, this._actor);
         return C.ActionResult_null_true_true;
       }
     },
     AmputateAction: {
-      "^": "Action;_bodyBreed,_partBreed,_polymorph$_message,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_bodyBreed,_partBreed,_polymorph$_message,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var part, state, t1, positions, t2, _i, dir, pos, t3, t4, t5;
         this.addAction$1(new Q.PolymorphAction(this._bodyBreed));
-        this.log$2(this._polymorph$_message, this._action$_actor);
-        part = this._partBreed.spawn$3(this._action$_game, C.Vec_0_0, H.interceptedTypeCast(this._action$_actor, "$isMonster"));
+        this.log$2(this._polymorph$_message, this._actor);
+        part = this._partBreed.spawn$3(this._action$_game, C.Vec_0_0, H.interceptedTypeCast(this._actor, "$isMonster"));
         state = new M.AwakeState();
         part._monster$_state = state;
         state._monster = part;
@@ -10564,7 +10571,7 @@
         positions = H.setRuntimeTypeInfo([], t1);
         for (t2 = part.game, _i = 0; _i < 8; ++_i) {
           dir = C.List_slV[_i];
-          pos = this._action$_actor._pos.$add(0, dir);
+          pos = this._actor._pos.$add(0, dir);
           if (part.canOccupy$1(pos)) {
             t3 = t2._stage._actorsByTile;
             t4 = t3._elements;
@@ -10663,7 +10670,7 @@
       }
     },
     RayAction: {
-      "^": "_RayAction_RayActionBase_ElementActionMixin;_ray$_hit,_from,_to,_ray$_hitTiles,_radius,_rays,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_RayAction_RayActionBase_ElementActionMixin;_ray$_hit,_from,_to,_ray$_hitTiles,_radius,_rays,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$range: function() {
         return this._ray$_hit.get$range();
       },
@@ -10672,20 +10679,20 @@
       }
     },
     RingSelfAction: {
-      "^": "Action;_ray$_attack,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_ray$_attack,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
       onPerform$0: function() {
         var t1, t2;
-        t1 = this._action$_actor._pos;
+        t1 = this._actor._pos;
         t2 = new G.RayAction(new U.Hit(this._ray$_attack, 0, 1, 1, 0, $.$get$Element_none(), 1), t1, t1, P.LinkedHashSet_LinkedHashSet(null, null, null, L.Vec), 1, H.setRuntimeTypeInfo([], [P.double]));
         t2.RayActionBase$3(t1, t1, 1);
         return this.alternate$1(t2);
       }
     },
     RingFromAction: {
-      "^": "Action;_ray$_attack,_ray$_pos,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_ray$_attack,_ray$_pos,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
@@ -10703,12 +10710,12 @@
   }], ["", "package:hauberk/src/content/action/spawn.dart",, L, {
     "^": "",
     SpawnAction: {
-      "^": "Action;_spawn$_pos,_spawn$_breed,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_spawn$_pos,_spawn$_breed,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, spawned;
-        if ($.$get$rng().range$1(H.interceptedTypeCast(this._action$_actor, "$isMonster").generation) !== 0)
+        if ($.$get$rng().range$1(H.interceptedTypeCast(this._actor, "$isMonster").generation) !== 0)
           return C.ActionResult_null_true_true;
-        t1 = H.interceptedTypeCast(this._action$_actor, "$isMonster");
+        t1 = H.interceptedTypeCast(this._actor, "$isMonster");
         ++t1.generation;
         spawned = this._spawn$_breed.spawn$3(this._action$_game, this._spawn$_pos, t1);
         this._action$_game._stage.addActor$1(spawned);
@@ -10719,12 +10726,12 @@
   }], ["", "package:hauberk/src/content/action/teleport.dart",, S, {
     "^": "",
     TeleportAction: {
-      "^": "Action;distance,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;distance,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, targets, t2, t3, t4, t5, pos, t6, t7, t8, best, tries, max, from;
         t1 = [L.Vec];
         targets = H.setRuntimeTypeInfo([], t1);
-        t2 = this._action$_actor._pos;
+        t2 = this._actor._pos;
         t3 = t2.x;
         t4 = this.distance;
         if (typeof t3 !== "number")
@@ -10734,7 +10741,7 @@
           t3 = t2._rect$_x;
           t5 = t2._rect$_y;
           pos = new L.Vec(t3, t5);
-          t6 = this._action$_actor;
+          t6 = this._actor;
           if (t6.canOccupy$1(pos)) {
             t7 = t6.game._stage._actorsByTile;
             t8 = t7._elements;
@@ -10765,13 +10772,13 @@
             t3 = false;
           if (!t3)
             continue;
-          if (pos.$sub(0, this._action$_actor._pos).$gt(0, t4))
+          if (pos.$sub(0, this._actor._pos).$gt(0, t4))
             continue;
           C.JSArray_methods.add$1(targets, pos);
         }
         t2 = targets.length;
         if (t2 === 0)
-          return this.fail$2("{1} couldn't escape.", this._action$_actor);
+          return this.fail$2("{1} couldn't escape.", this._actor);
         t3 = $.$get$rng();
         t3.toString;
         H.assertSubtype(targets, "$isList", t1, "$asList");
@@ -10785,14 +10792,14 @@
           if (t1 < 0 || t1 >= targets.length)
             return H.ioore(targets, t1);
           pos = targets[t1];
-          if (pos.$sub(0, this._action$_actor._pos).$gt(0, best.$sub(0, this._action$_actor._pos)))
+          if (pos.$sub(0, this._actor._pos).$gt(0, best.$sub(0, this._actor._pos)))
             best = pos;
         }
-        t1 = this._action$_actor;
+        t1 = this._actor;
         from = t1._pos;
         t1.set$pos(best);
-        this.addEvent$3$actor$pos(C.EventType_teleport, this._action$_actor, from);
-        return this.succeed$2("{1} teleport[s]!", this._action$_actor);
+        this.addEvent$3$actor$pos(C.EventType_teleport, this._actor, from);
+        return this.succeed$2("{1} teleport[s]!", this._actor);
       }
     }
   }], ["", "package:hauberk/src/content/action/tile.dart",, Q, {
@@ -10807,16 +10814,16 @@
         t2 = $.$get$rng();
         t3 = C.JSNumber_methods.round$0(K.lerpDouble(this._action$_game.depth, 1, 100, this.get$_minDepthEmptyChance(), this.get$_maxDepthEmptyChance()));
         if (t2.range$1(100) < t3)
-          this.log$2("The " + this.get$_tile$_name() + " is empty.", this._action$_actor);
+          this.log$2("The " + this.get$_tile$_name() + " is empty.", this._actor);
         else {
           this._action$_game._stage.placeDrops$3(t1, $.$get$Motility_walk(), this._createDrop$0());
-          this.log$2("{1} open[s] the " + this.get$_tile$_name() + ".", this._action$_actor);
+          this.log$2("{1} open[s] the " + this.get$_tile$_name() + ".", this._actor);
         }
         return C.ActionResult_null_true_true;
       }
     },
     OpenBarrelAction: {
-      "^": "_OpenTileAction;_tile$_pos,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_OpenTileAction;_tile$_pos,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$_tile$_name: function() {
         return "barrel";
       },
@@ -10834,7 +10841,7 @@
       }
     },
     OpenChestAction: {
-      "^": "_OpenTileAction;_tile$_pos,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_OpenTileAction;_tile$_pos,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$_tile$_name: function() {
         return "chest";
       },
@@ -11135,7 +11142,7 @@
   }], ["", "package:hauberk/src/content/elements.dart",, A, {
     "^": "",
     Elements_closure2: {
-      "^": "Closure:115;",
+      "^": "Closure:127;",
       call$1: [function(_) {
         H.intTypeCheck(_);
         return new G.WindAction();
@@ -11159,13 +11166,13 @@
       }, null, null, 16, 0, null, 0, 5, 3, 50, "call"]
     },
     Elements_closure5: {
-      "^": "Closure:130;",
+      "^": "Closure:134;",
       call$1: [function(damage) {
         return new E.FreezeActorAction(H.intTypeCheck(damage));
       }, null, null, 4, 0, null, 6, "call"]
     },
     Elements_closure6: {
-      "^": "Closure:136;",
+      "^": "Closure:135;",
       call$4: [function(pos, hit, distance, _) {
         H.interceptedTypeCheck(pos, "$isVec");
         H.interceptedTypeCheck(hit, "$isHit");
@@ -11191,7 +11198,7 @@
       }, null, null, 16, 0, null, 0, 5, 3, 1, "call"]
     },
     Elements_closure1: {
-      "^": "Closure:81;",
+      "^": "Closure:137;",
       call$1: [function(damage) {
         return new E.BlindAction(H.intTypeCheck(damage));
       }, null, null, 4, 0, null, 6, "call"]
@@ -12031,7 +12038,7 @@
         this._maxDepth = to == null ? 100 : to;
       }, function(from) {
         return this.depth$2$to(from, null);
-      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 23, 7, 15, 16],
+      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 39, 7, 15, 16],
       weapon$3$element$heft: function(damage, element, heft) {
         this._builder$_attack = U.Attack$(null, $._category._builder$_verb, damage, null, element);
         this._heft = heft;
@@ -12209,7 +12216,7 @@
         this._maxDepth = to == null ? 100 : to;
       }, function(from) {
         return this.depth$2$to(from, null);
-      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 23, 7, 15, 16],
+      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 39, 7, 15, 16],
       brand$2$resist: function(element, resist) {
         var t1;
         this._builder$_brand = element;
@@ -12240,11 +12247,11 @@
       return new X._TagDrop($name, depth);
     },
     _ItemDrop: {
-      "^": "Object;_type,_depth",
+      "^": "Object;_type,_drops$_depth",
       spawnDrop$2: function(depth, addItem) {
         var t1;
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
-        t1 = this._depth;
+        t1 = this._drops$_depth;
         if (t1 == null)
           t1 = depth;
         addItem.call$1(Z.Affixes_createItem(this._type, t1));
@@ -12252,12 +12259,12 @@
       $isDrop: 1
     },
     _TagDrop: {
-      "^": "Object;_tag,_depth",
+      "^": "Object;_tag,_drops$_depth",
       spawnDrop$2: function(depth, addItem) {
         var t1, t2, t3, t4, itemType;
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
         t1 = $.$get$Items_types();
-        t2 = this._depth;
+        t2 = this._drops$_depth;
         t3 = t2 == null;
         t4 = t3 ? depth : t2;
         itemType = t1.tryChoose$2$tag(t4, this._tag);
@@ -12359,7 +12366,7 @@
       $.$get$Shops_all().$indexSet(0, $name, new O.Shop(X._OneOfDrop$(drops), $name));
     },
     shop_closure: {
-      "^": "Closure:61;drops",
+      "^": "Closure:40;drops",
       call$2: function($name, frequency) {
         H.stringTypeCheck($name);
         H.doubleTypeCheck(frequency);
@@ -12521,7 +12528,7 @@
         }
       }, function(minOrMax) {
         return this.count$2(minOrMax, null);
-      }, "count$1", "call$2", "call$1", "get$count", 4, 2, 40]
+      }, "count$1", "call$2", "call$1", "get$count", 4, 2, 62]
     },
     _FamilyBuilder: {
       "^": "_BaseBuilder0;0_character,_builder0$_frequency,0_tracking,_builder0$_motility,0_builder0$_location,0_builder0$_speed,0_meander,0_dodge,_defenses,_groups,0_flags,0_countMin,0_countMax,0_stain,0_emanationLevel,0_vision,0_hearing",
@@ -13913,14 +13920,14 @@
       $isUsableSkill: 1
     },
     ArrowAction: {
-      "^": "BoltAction;_skill,_bolt$_hit,_canMiss,_range,_los$_target,0_lastPos,0_los,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "BoltAction;_skill,_bolt$_hit,_canMiss,_range,_los$_target,0_lastPos,0_los,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onHitActor$2: function(pos, target) {
         var t1;
         this.super$BoltAction$onHitActor(pos, target);
         H.interceptedTypeCast(target, "$isMonster");
         t1 = this._skill;
-        H.interceptedTypeCast(this._action$_actor, "$isHero").save.skills.earnPoints$2(t1, C.JSDouble_methods.ceil$0(target._breed.get$experience() / 1000));
-        H.interceptedTypeCast(this._action$_actor, "$isHero").refreshSkill$1(t1);
+        H.interceptedTypeCast(this._actor, "$isHero").save.skills.earnPoints$2(t1, C.JSDouble_methods.ceil$0(target._breed.get$experience() / 1000));
+        H.interceptedTypeCast(this._actor, "$isHero").refreshSkill$1(t1);
         return true;
       }
     },
@@ -13953,7 +13960,7 @@
       $isDirectionSkill: 1
     },
     SlashAction: {
-      "^": "MasteryAction;_axe$_dir,_axe$_step,damageScale,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "MasteryAction;_axe$_dir,_axe$_step,damageScale,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
@@ -13962,7 +13969,7 @@
         if (this._axe$_step === 0)
           for (t1 = this._axe$_dir, t1 = [t1.get$rotateLeft45(), t1, t1.get$rotateRight45()], _i = 0; _i < 3; ++_i) {
             dir = t1[_i];
-            pos = this._action$_actor._pos.$add(0, dir);
+            pos = this._actor._pos.$add(0, dir);
             t2 = this._action$_game._stage.tiles;
             t3 = t2._elements;
             t2 = t2.bounds.size.x;
@@ -13981,7 +13988,7 @@
             }
             t2 = $.$get$Motility_fly();
             if ((t4.type.motility._bitMask & t2._bitMask) === 0) {
-              this.error$4(0, "There isn't enough room to swing your " + H.S(O.Log__categorize(H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment.find$1(0, "weapon").type.quantifiableName, false, true)) + ".", null, null, null);
+              this.error$4(0, "There isn't enough room to swing your " + H.S(O.Log__categorize(H.interceptedTypeCast(this._actor, "$isHero").save._equipment.find$1(0, "weapon").type.quantifiableName, false, true)) + ".", null, null, null);
               return C.ActionResult_null_false_true;
             }
           }
@@ -14000,13 +14007,13 @@
         }
         t1 = C.JSInt_methods.$mod(this._axe$_step, 2);
         if (t1 === 0)
-          this.addEvent$3$dir$pos(C.EventType_slash, dir, this._action$_actor._pos.$add(0, dir));
+          this.addEvent$3$dir$pos(C.EventType_slash, dir, this._actor._pos.$add(0, dir));
         else if (t1 === 1)
-          this.attack$1(this._action$_actor._pos.$add(0, dir));
+          this.attack$1(this._actor._pos.$add(0, dir));
         return ++this._axe$_step === 15 ? C.ActionResult_null_true_true : C.ActionResult_null_true_false;
       },
       toString$0: function(_) {
-        return H.S(this._action$_actor) + " slashes " + this._axe$_dir.toString$0(0);
+        return H.S(this._actor) + " slashes " + this._axe$_dir.toString$0(0);
       }
     }
   }], ["", "package:hauberk/src/content/skill/discipline/battle_hardening.dart",, M, {
@@ -14065,7 +14072,7 @@
       $isDirectionSkill: 1
     },
     BashAction: {
-      "^": "MasteryAction;_club$_dir,_step,_damage,damageScale,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "MasteryAction;_club$_dir,_step,_damage,damageScale,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
@@ -14073,18 +14080,18 @@
         var t1, t2, t3, dest, chance;
         t1 = this._step;
         if (t1 === 0) {
-          t1 = this.attack$1(this._action$_actor._pos.$add(0, this._club$_dir));
+          t1 = this.attack$1(this._actor._pos.$add(0, this._club$_dir));
           this._damage = t1;
           if (t1 == null)
             return C.ActionResult_null_true_true;
         } else if (t1 === 1) {
           t1 = this._action$_game._stage;
           t2 = this._club$_dir;
-          t3 = this._action$_actor._pos.$add(0, t2);
+          t3 = this._actor._pos.$add(0, t2);
           t3 = t1._actorsByTile.$index(0, t3);
           if (t3 == null)
             return C.ActionResult_null_true_true;
-          dest = this._action$_actor._pos.$add(0, t2).$add(0, t2);
+          dest = this._actor._pos.$add(0, t2).$add(0, t2);
           t1 = this._damage;
           if (typeof t1 !== "number")
             return H.iae(t1);
@@ -14093,14 +14100,14 @@
             t3.set$pos(dest);
             t3.energy.energy = 0;
             this.log$2("{1} is knocked back!", t3);
-            this.addEvent$3$dir$pos(C.EventType_knockBack, t2, this._action$_actor._pos.$add(0, t2));
+            this.addEvent$3$dir$pos(C.EventType_knockBack, t2, this._actor._pos.$add(0, t2));
           }
         } else
           this.addEvent$1(C.EventType_pause);
         return ++this._step > 10 ? C.ActionResult_null_true_true : C.ActionResult_null_true_false;
       },
       toString$0: function(_) {
-        return H.S(this._action$_actor) + " bashes " + this._club$_dir.toString$0(0);
+        return H.S(this._actor) + " bashes " + this._club$_dir.toString$0(0);
       }
     }
   }], ["", "package:hauberk/src/content/skill/discipline/mastery.dart",, S, {
@@ -14157,9 +14164,9 @@
         t1 = this._action$_game._stage._actorsByTile.$index(0, pos);
         if (t1 == null)
           return;
-        hit = this._action$_actor.createMeleeHit$1(t1);
+        hit = this._actor.createMeleeHit$1(t1);
         hit._damageScale *= this.damageScale;
-        return hit.perform$3(this, this._action$_actor, t1);
+        return hit.perform$3(this, this._actor, t1);
       },
       get$noise: function() {
         return 1;
@@ -14242,7 +14249,7 @@
       $isDirectionSkill: 1
     },
     SpearAction: {
-      "^": "_SpearAction_MasteryAction_GeneratorActionMixin;_dir,_isPolearm,GeneratorActionMixin__iterator,damageScale,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "_SpearAction_MasteryAction_GeneratorActionMixin;_dir,_isPolearm,GeneratorActionMixin__iterator,damageScale,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$isImmediate: function() {
         return false;
       },
@@ -14271,7 +14278,7 @@
                     $async$goto = 4;
                     break;
                   }
-                  t5 = $async$self._action$_actor._pos;
+                  t5 = $async$self._actor._pos;
                   if (typeof t2 !== "number") {
                     t2.$mul();
                     // goto return
@@ -14322,7 +14329,7 @@
                   break;
                 case 8:
                   // then
-                  $async$self.error$4(0, "There isn't enough room to use your " + H.S(O.Log__categorize(H.interceptedTypeCast($async$self._action$_actor, "$isHero").save._equipment.find$1(0, "weapon").type.quantifiableName, false, true)) + ".", null, null, null);
+                  $async$self.error$4(0, "There isn't enough room to use your " + H.S(O.Log__categorize(H.interceptedTypeCast($async$self._actor, "$isHero").save._equipment.find$1(0, "weapon").type.quantifiableName, false, true)) + ".", null, null, null);
                   $async$goto = 10;
                   return C.ActionResult_null_false_true;
                 case 10:
@@ -14346,7 +14353,7 @@
                     $async$goto = 13;
                     break;
                   }
-                  t5 = $async$self._action$_actor._pos;
+                  t5 = $async$self._actor._pos;
                   if (typeof t2 !== "number") {
                     t2.$mul();
                     // goto return
@@ -14356,7 +14363,7 @@
                   pos = t5.$add(0, new L.Vec(t2 * step, t3 * step));
                   if (t4)
                     pos = pos.$add(0, t1);
-                  weapon = H.interceptedTypeCast($async$self._action$_actor, "$isHero").save._equipment.find$1(0, "weapon").type.appearance;
+                  weapon = H.interceptedTypeCast($async$self._actor, "$isHero").save._equipment.find$1(0, "weapon").type.appearance;
                   C.JSArray_methods.add$1($async$self._action$_game._events, new D.Event0(C.EventType_stab, null, null, weapon, pos, t1));
                   $async$goto = 14;
                   return C.ActionResult_null_true_false;
@@ -14386,7 +14393,7 @@
         }, V.ActionResult);
       },
       toString$0: function(_) {
-        return H.S(this._action$_actor) + " spears " + this._dir.toString$0(0);
+        return H.S(this._actor) + " spears " + this._dir.toString$0(0);
       }
     },
     _SpearAction_MasteryAction_GeneratorActionMixin: {
@@ -14458,7 +14465,7 @@
       if (!t1.containsKey$1(0, $name))
         throw H.wrapException(P.ArgumentError$("Unknown skill '" + H.S($name) + "'."));
       return t1.$index(0, $name);
-    }, "call$1", "skills_Skills_find$closure", 4, 0, 100, 17],
+    }, "call$1", "skills_Skills_find$closure", 4, 0, 99, 17],
     Skills_closure: {
       "^": "Closure:64;",
       call$1: function(skill) {
@@ -15662,7 +15669,7 @@
       }
     },
     ArchitecturalStyle__initialize_closure2: {
-      "^": "Closure:139;",
+      "^": "Closure:138;",
       call$0: function() {
         return new Q.Cavern();
       }
@@ -17780,11 +17787,11 @@
       }
     },
     PaintStyle: {
-      "^": "Object;_painter$_types",
+      "^": "Object;_types",
       paintTile$2: ["super$PaintStyle$paintTile", function(painter, pos) {
         var tile, t1;
         tile = painter._painter$_architect.stage.tiles.$index(0, pos).type;
-        t1 = this._painter$_types;
+        t1 = this._types;
         if (t1.containsKey$1(0, tile))
           return t1.$index(0, tile);
         if ($.$get$PaintStyle__defaultTypes().containsKey$1(0, tile))
@@ -17798,7 +17805,7 @@
       }
     },
     _DoorPaintStyle: {
-      "^": "PaintStyle;_painter$_types",
+      "^": "PaintStyle;_types",
       paintTile$2: function(painter, pos) {
         if (painter._painter$_architect.stage.tiles.$index(0, pos).type == $.$get$Tiles_doorway())
           switch ($.$get$rng().range$1(3)) {
@@ -18157,7 +18164,7 @@
         queue = P.ListQueue$(null, L.Vec);
         t1 = this._affected;
         ++t1._sentinel;
-        t2 = t1._vec_set$_values;
+        t2 = t1._values;
         t3 = t2.bounds.size;
         t4 = t3.x;
         t1._xMin = t4;
@@ -18236,7 +18243,7 @@
         var t1, distance, t2, t3, t4, t5, t6, t7, t8, t9, t10, _i, neighbor, t11, t12, t13;
         t1 = this._distances;
         distance = t1.$index(0, pos);
-        for (t2 = pos.get$cardinalNeighbors(), t3 = t2.length, t4 = this._affected, t5 = t4._vec_set$_values, t6 = t5._elements, t5 = t5.bounds.size.x, t7 = t6.length, t8 = this.stage, t9 = t1._elements, t1 = t1.bounds.size.x, t10 = t9.length, _i = 0; _i < t2.length; t2.length === t3 || (0, H.throwConcurrentModificationError)(t2), ++_i) {
+        for (t2 = pos.get$cardinalNeighbors(), t3 = t2.length, t4 = this._affected, t5 = t4._values, t6 = t5._elements, t5 = t5.bounds.size.x, t7 = t6.length, t8 = this.stage, t9 = t1._elements, t1 = t1.bounds.size.x, t10 = t9.length, _i = 0; _i < t2.length; t2.length === t3 || (0, H.throwConcurrentModificationError)(t2), ++_i) {
           neighbor = t2[_i];
           if (!t8.tiles.bounds.contains$1(0, neighbor))
             continue;
@@ -18269,7 +18276,7 @@
       _findBorder$1: function(start) {
         var border, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, _i, neighbor, t11, t12, t13;
         border = P.LinkedHashSet_LinkedHashSet(null, null, null, L.Vec);
-        for (t1 = this._affected, t2 = t1.get$iterator(t1), t3 = this._distances, t4 = t3._elements, t3 = t3.bounds.size.x, t5 = t4.length, t6 = t1._vec_set$_values, t7 = t6._elements, t6 = t6.bounds.size.x, t8 = t7.length; t2.moveNext$0();) {
+        for (t1 = this._affected, t2 = t1.get$iterator(t1), t3 = this._distances, t4 = t3._elements, t3 = t3.bounds.size.x, t5 = t4.length, t6 = t1._values, t7 = t6._elements, t6 = t6.bounds.size.x, t8 = t7.length; t2.moveNext$0();) {
           t9 = t2.__interceptors$_current;
           if (J.$eq$(t9, start))
             continue;
@@ -18788,27 +18795,266 @@
         }
       }
     }
+  }], ["", "package:hauberk/src/content/stage/town.dart",, D, {
+    "^": "",
+    Town: {
+      "^": "Object;stage",
+      buildStage$1: function(placeHero) {
+        return this.buildStage$body$Town(H.functionTypeCheck(placeHero, {func: 1, args: [L.Vec]}));
+      },
+      buildStage$body$Town: function($async$placeHero) {
+        var $async$self = this;
+        return P._makeSyncStarIterable(function() {
+          var placeHero = $async$placeHero;
+          var $async$goto = 0, $async$handler = 2, $async$currentError, t1, t2, t3, t4, t5, t6, t7, entrances, i, x, y, rect, t8, t9, door;
+          return function $async$buildStage$1($async$errorCode, $async$result) {
+            if ($async$errorCode === 1) {
+              $async$currentError = $async$result;
+              $async$goto = $async$handler;
+            }
+            while (true)
+              $async$outer:
+                switch ($async$goto) {
+                  case 0:
+                    // Function start
+                    for (t1 = $async$self.stage.tiles, t2 = t1.bounds, t3 = X.RectIterator$(t2), t1 = t1._elements, t4 = t2.size.x, t5 = t1.length; t3.moveNext$0();) {
+                      t6 = t3._rect$_x;
+                      t7 = t3._rect$_y;
+                      if (typeof t4 !== "number") {
+                        H.iae(t4);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      if (typeof t6 !== "number") {
+                        H.iae(t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t6 = t7 * t4 + t6;
+                      if (t6 < 0 || t6 >= t5) {
+                        H.ioore(t1, t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t1[t6].type = $.$get$Tiles_floor();
+                    }
+                    for (t3 = J.get$iterator$ax(t2.trace$0()); t3.moveNext$0();) {
+                      t6 = t3.get$current();
+                      t7 = t6.y;
+                      if (typeof t4 !== "number") {
+                        H.iae(t4);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t6 = t6.x;
+                      if (typeof t6 !== "number") {
+                        H.iae(t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t6 = t7 * t4 + t6;
+                      if (t6 < 0 || t6 >= t5) {
+                        H.ioore(t1, t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t1[t6].type = $.$get$Tiles_wall();
+                    }
+                    entrances = [$.$get$Tiles_dungeonEntrance(), $.$get$Tiles_home(), $.$get$Tiles_shop1(), $.$get$Tiles_shop2(), $.$get$Tiles_shop3(), $.$get$Tiles_shop4(), $.$get$Tiles_shop5(), $.$get$Tiles_shop6()];
+                    for (i = 0; i < 8; ++i) {
+                      x = i % 4 * 13 + 5;
+                      t3 = C.JSInt_methods._tdivFast$1(i, 4);
+                      y = t3 * 14 + 6;
+                      rect = new X.Rect(new L.Vec(x, y), new L.Vec(11, 8));
+                      for (t6 = new X.RectIterator(rect), t6._rect$_x = x - 1, t6._rect$_y = y; t6.moveNext$0();) {
+                        t7 = t6._rect$_x;
+                        t8 = t6._rect$_y;
+                        if (typeof t4 !== "number") {
+                          H.iae(t4);
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        if (typeof t7 !== "number") {
+                          H.iae(t7);
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        t7 = t8 * t4 + t7;
+                        if (t7 < 0 || t7 >= t5) {
+                          H.ioore(t1, t7);
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        t1[t7].type = $.$get$Tiles_wall();
+                      }
+                      t6 = rect.pos;
+                      t7 = rect.size;
+                      t8 = t6.x;
+                      t9 = t7.x;
+                      t6 = t6.y;
+                      t7 = t7.y;
+                      if ((t3 & 1) === 1) {
+                        if (typeof t8 !== "number") {
+                          t8.$add();
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        if (typeof t9 !== "number") {
+                          H.iae(t9);
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        t3 = t8 + t9;
+                        t9 = Math.min(t8, t3);
+                        t7 = Math.min(t6, t6 + t7);
+                        t7 = new L.Vec(t9, t7).$add(0, new L.Vec(Math.max(t8, t3), t7));
+                        t3 = t7.x;
+                        if (typeof t3 !== "number") {
+                          t3.$tdiv();
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        door = new L.Vec(C.JSInt_methods._tdivFast$1(t3, 2), C.JSInt_methods._tdivFast$1(t7.y, 2));
+                      } else {
+                        if (typeof t8 !== "number") {
+                          t8.$add();
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        if (typeof t9 !== "number") {
+                          H.iae(t9);
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        t3 = t8 + t9;
+                        t9 = Math.min(t8, t3);
+                        t7 = Math.max(t6, t6 + t7);
+                        t7 = new L.Vec(t9, t7).$add(0, new L.Vec(Math.max(t8, t3), t7));
+                        t3 = t7.x;
+                        if (typeof t3 !== "number") {
+                          t3.$tdiv();
+                          // goto return
+                          $async$goto = 1;
+                          break $async$outer;
+                        }
+                        door = new L.Vec(C.JSInt_methods._tdivFast$1(t3, 2), C.JSInt_methods._tdivFast$1(t7.y, 2) + -1);
+                      }
+                      if (typeof t4 !== "number") {
+                        H.iae(t4);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t3 = door.y * t4;
+                      t6 = door.x;
+                      if (typeof t6 !== "number") {
+                        H.iae(t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t7 = t3 + t6;
+                      if (t7 < 0 || t7 >= t5) {
+                        H.ioore(t1, t7);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t1[t7].type = entrances[i];
+                      t7 = t3 + (t6 + -1);
+                      if (t7 < 0 || t7 >= t5) {
+                        H.ioore(t1, t7);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t7 = t1[t7];
+                      t8 = $.$get$Tiles_wallTorch();
+                      t7.type = t8;
+                      t6 = t3 + (t6 + 1);
+                      if (t6 < 0 || t6 >= t5) {
+                        H.ioore(t1, t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t1[t6].type = t8;
+                    }
+                    for (t3 = X.RectIterator$(t2); t3.moveNext$0();) {
+                      t6 = t3._rect$_x;
+                      t7 = t3._rect$_y;
+                      if (typeof t4 !== "number") {
+                        H.iae(t4);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      if (typeof t6 !== "number") {
+                        H.iae(t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t6 = t7 * t4 + t6;
+                      if (t6 < 0 || t6 >= t5) {
+                        H.ioore(t1, t6);
+                        // goto return
+                        $async$goto = 1;
+                        break $async$outer;
+                      }
+                      t6 = t1[t6];
+                      t6.updateExplored$1$force(true);
+                      t7 = $.$get$Motility_fly();
+                      if ((t6.type.motility._bitMask & t7._bitMask) !== 0)
+                        t6._appliedEmanation = H.intTypeCheck(C.JSInt_methods.clamp$2(t6._appliedEmanation + 64, 0, 192));
+                    }
+                    placeHero.call$1(t2.get$center());
+                  case 1:
+                    // return
+                    return P._IterationMarker_endOfIteration();
+                  case 2:
+                    // rethrow
+                    return P._IterationMarker_uncaughtError($async$currentError);
+                }
+          };
+        }, P.String);
+      }
+    }
   }], ["", "package:hauberk/src/content/tiles.dart",, Z, {
     "^": "",
     _closeDoor: [function(pos) {
       return new B.CloseDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_closedDoor());
-    }, "call$1", "tiles___closeDoor$closure", 4, 0, 13, 0],
+    }, "call$1", "tiles___closeDoor$closure", 4, 0, 12, 0],
     _openDoor: [function(pos) {
       return new B.OpenDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_openDoor());
-    }, "call$1", "tiles___openDoor$closure", 4, 0, 13, 0],
+    }, "call$1", "tiles___openDoor$closure", 4, 0, 12, 0],
     _closeBarredDoor: [function(pos) {
       return new B.CloseDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_closedBarredDoor());
-    }, "call$1", "tiles___closeBarredDoor$closure", 4, 0, 13, 0],
+    }, "call$1", "tiles___closeBarredDoor$closure", 4, 0, 12, 0],
     _openBarredDoor: [function(pos) {
       return new B.OpenDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_openBarredDoor());
-    }, "call$1", "tiles___openBarredDoor$closure", 4, 0, 13, 0],
+    }, "call$1", "tiles___openBarredDoor$closure", 4, 0, 12, 0],
     Tiles_multi: function($name, char, fore, $back, count, generate) {
       var result, t1, i, charCode;
       H.functionTypeCheck(generate, {func: 1, ret: Q.TileType, args: [Z._TileBuilder, P.int]});
       result = H.setRuntimeTypeInfo([], [Q.TileType]);
       for (t1 = [L.Glyph], i = 0; i < count; ++i) {
         charCode = C.JSString_methods._codeUnitAt$1(char, 0);
-        C.JSArray_methods.add$1(result, generate.call$2(new Z._TileBuilder($name, H.setRuntimeTypeInfo([new L.Glyph(charCode, fore, C.Color_19_17_28)], t1), false, 0), i));
+        C.JSArray_methods.add$1(result, generate.call$2(new Z._TileBuilder($name, H.setRuntimeTypeInfo([new L.Glyph(charCode, fore, C.Color_19_17_28)], t1), 0), i));
       }
       return result;
     },
@@ -18846,7 +19092,7 @@
       }, null, null, 4, 0, null, 0, "call"]
     },
     _TileBuilder: {
-      "^": "Object;name>,glyphs,0_onClose,0_onOpen,_isExit,_emanation",
+      "^": "Object;name>,glyphs,0_onClose,0_onOpen,0_tiles$_portal,_emanation",
       set$_onClose: function(_onClose) {
         this._onClose = H.functionTypeCheck(_onClose, {func: 1, ret: V.Action, args: [L.Vec]});
       },
@@ -18867,6 +19113,10 @@
       },
       emanate$1: function(emanation) {
         this._emanation = emanation;
+        return this;
+      },
+      to$1: function(portal) {
+        this._tiles$_portal = portal;
         return this;
       },
       onClose$1: function(onClose) {
@@ -18891,11 +19141,11 @@
         t1 = this.glyphs;
         if (t1.length === 1)
           t1 = C.JSArray_methods.get$first(t1);
-        t2 = this._emanation;
-        t3 = this._isExit;
+        t2 = this._tiles$_portal;
+        t3 = this._emanation;
         t4 = this._onClose;
         t5 = this._onOpen;
-        return new Q.TileType(this.name, t3, t2, t1, motility, t4, t5);
+        return new Q.TileType(this.name, t2, t3, t1, motility, t4, t5);
       },
       static: {
         _TileBuilder__TileBuilder: function($name, char, fore, $back) {
@@ -18903,7 +19153,7 @@
           if ($back == null)
             $back = C.Color_19_17_28;
           charCode = C.JSString_methods._codeUnitAt$1(char, 0);
-          return new Z._TileBuilder($name, H.setRuntimeTypeInfo([L.Glyph$fromCharCode(charCode, fore, $back)], [L.Glyph]), false, 0);
+          return new Z._TileBuilder($name, H.setRuntimeTypeInfo([L.Glyph$fromCharCode(charCode, fore, $back)], [L.Glyph]), 0);
         }
       }
     }
@@ -18929,7 +19179,7 @@
         return true;
       },
       _bind$4: function(actor, pos, game, consumesEnergy) {
-        this._action$_actor = actor;
+        this._actor = actor;
         this._action$_pos = pos == null ? actor._pos : pos;
         this._action$_game = game;
         this._consumesEnergy = consumesEnergy !== false;
@@ -18937,7 +19187,7 @@
       addAction$2: function(action, actor) {
         var t1;
         H.interceptedTypeCheck(action, "$isAction");
-        t1 = actor == null ? this._action$_actor : actor;
+        t1 = actor == null ? this._actor : actor;
         action._bind$4(t1, this._action$_pos, this._action$_game, false);
         t1 = this._action$_game;
         t1.toString;
@@ -18954,26 +19204,26 @@
       addEvent$6$actor$dir$element$other$pos: function(type, actor, dir, element, other, pos) {
         C.JSArray_methods.add$1(this._action$_game._events, new D.Event0(type, actor, element, other, pos, dir));
       },
+      addEvent$3$actor$pos: function(type, actor, pos) {
+        return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, null, null, pos);
+      },
+      addEvent$1: function(type) {
+        return this.addEvent$6$actor$dir$element$other$pos(type, null, null, null, null, null);
+      },
+      addEvent$3$element$pos: function(type, element, pos) {
+        return this.addEvent$6$actor$dir$element$other$pos(type, null, null, element, null, pos);
+      },
       addEvent$4$actor$element$other: function(type, actor, element, other) {
         return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, element, other, null);
       },
       addEvent$2$actor: function(type, actor) {
         return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, null, null, null);
       },
-      addEvent$3$element$pos: function(type, element, pos) {
-        return this.addEvent$6$actor$dir$element$other$pos(type, null, null, element, null, pos);
-      },
-      addEvent$4$dir$element$pos: function(type, dir, element, pos) {
-        return this.addEvent$6$actor$dir$element$other$pos(type, null, dir, element, null, pos);
-      },
       addEvent$3$dir$pos: function(type, dir, pos) {
         return this.addEvent$6$actor$dir$element$other$pos(type, null, dir, null, null, pos);
       },
-      addEvent$1: function(type) {
-        return this.addEvent$6$actor$dir$element$other$pos(type, null, null, null, null, null);
-      },
-      addEvent$3$actor$pos: function(type, actor, pos) {
-        return this.addEvent$6$actor$dir$element$other$pos(type, actor, null, null, null, pos);
+      addEvent$4$dir$element$pos: function(type, dir, element, pos) {
+        return this.addEvent$6$actor$dir$element$other$pos(type, null, dir, element, null, pos);
       },
       addEvent$3$other$pos: function(type, other, pos) {
         return this.addEvent$6$actor$dir$element$other$pos(type, null, null, null, other, pos);
@@ -19011,14 +19261,14 @@
           return;
         this._action$_game.log.add$5(0, C.LogType_message, message, noun1, noun2, noun3);
       },
-      log$3: function(message, noun1, noun2) {
-        return this.log$4(message, noun1, noun2, null);
-      },
       log$2: function(message, noun1) {
         return this.log$4(message, noun1, null, null);
       },
       log$1: function(message) {
         return this.log$4(message, null, null, null);
+      },
+      log$3: function(message, noun1, noun2) {
+        return this.log$4(message, noun1, noun2, null);
       },
       succeed$4: function(message, noun1, noun2, noun3) {
         if (message != null)
@@ -19050,7 +19300,7 @@
       alternate$1: function(action) {
         var t1, t2;
         H.interceptedTypeCheck(action, "$isAction");
-        t1 = this._action$_actor;
+        t1 = this._actor;
         t2 = this._consumesEnergy;
         action.toString;
         action._bind$4(t1, null, t1.game, t2);
@@ -19061,10 +19311,10 @@
       "^": "Object;alternative,succeeded,done"
     },
     FocusAction: {
-      "^": "Action;_action$_focus,_action,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;_action$_focus,_action,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2, t3, t4;
-        t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+        t1 = H.interceptedTypeCast(this._actor, "$isHero");
         t2 = t1._focus;
         t3 = this._action$_focus;
         if (t2 < t3)
@@ -19092,17 +19342,17 @@
   }], ["", "package:hauberk/src/engine/action/attack.dart",, S, {
     "^": "",
     AttackAction: {
-      "^": "Action;defender,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;defender,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1 = this.defender;
-        this._action$_actor.createMeleeHit$1(t1).perform$3(this, this._action$_actor, t1);
+        this._actor.createMeleeHit$1(t1).perform$3(this, this._actor, t1);
         return C.ActionResult_null_true_true;
       },
       get$noise: function() {
         return 1;
       },
       toString$0: function(_) {
-        return H.S(this._action$_actor) + " attacks " + this.defender.toString$0(0);
+        return H.S(this._actor) + " attacks " + this.defender.toString$0(0);
       }
     }
   }], ["", "package:hauberk/src/engine/action/condition.dart",, E, {
@@ -19148,17 +19398,17 @@
       removeItem$0: function() {
         switch (this.location) {
           case C.ItemLocation_46y:
-            this._action$_game._stage.removeItem$2(this.item, this._action$_actor._pos);
+            this._action$_game._stage.removeItem$2(this.item, this._actor._pos);
             break;
           case C.ItemLocation_wMy:
             var t1 = this.item;
-            C.JSArray_methods.remove$1(H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory._inventory$_items, t1);
+            C.JSArray_methods.remove$1(H.interceptedTypeCast(this._actor, "$isHero").save._inventory._items, t1);
             if (t1.type.emanationLevel > 0)
               this._action$_game._stage._lighting._actorLightDirty = true;
             break;
           case C.ItemLocation_A8D:
             t1 = this.item;
-            H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment.remove$1(0, t1);
+            H.interceptedTypeCast(this._actor, "$isHero").save._equipment.remove$1(0, t1);
             if (t1.type.emanationLevel > 0)
               this._action$_game._stage._lighting._actorLightDirty = true;
             break;
@@ -19171,10 +19421,10 @@
           case C.ItemLocation_46y:
             break;
           case C.ItemLocation_wMy:
-            H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.countChanged$0();
+            H.interceptedTypeCast(this._actor, "$isHero").save._inventory.countChanged$0();
             break;
           case C.ItemLocation_A8D:
-            H.interceptedTypeCast(this._action$_actor, "$isHero").save;
+            H.interceptedTypeCast(this._actor, "$isHero").save._equipment;
             break;
           default:
             throw H.wrapException(P.StateError$("Invalid location."));
@@ -19182,29 +19432,29 @@
       }
     },
     PickUpAction: {
-      "^": "Action;item,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;item,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, result, t2, t3;
         t1 = this.item;
-        result = H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.tryAdd$1(t1);
+        result = H.interceptedTypeCast(this._actor, "$isHero").save._inventory.tryAdd$1(t1);
         t2 = result.added;
         if (t2 === 0)
-          return this.fail$3("{1} [don't|doesn't] have room for {2}.", this._action$_actor, t1);
-        this.log$3("{1} pick[s] up {2}.", this._action$_actor, t1.clone$1(0, t2));
+          return this.fail$3("{1} [don't|doesn't] have room for {2}.", this._actor, t1);
+        this.log$3("{1} pick[s] up {2}.", this._actor, t1.clone$1(0, t2));
         if (t1.type.emanationLevel > 0)
           this._action$_game._stage._lighting._actorLightDirty = true;
         t2 = result.remaining;
-        t3 = this._action$_actor;
+        t3 = this._actor;
         if (t2 === 0)
           this._action$_game._stage.removeItem$2(t1, t3._pos);
         else
           this.log$3("{1} [don't|doesn't] have room for {2}.", t3, t1.clone$1(0, t2));
-        H.interceptedTypeCast(this._action$_actor, "$isHero").pickUp$1(t1);
+        H.interceptedTypeCast(this._actor, "$isHero").pickUp$1(t1);
         return C.ActionResult_null_true_true;
       }
     },
     DropAction: {
-      "^": "ItemAction;_item$_count,location,item,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ItemAction;_item$_count,location,item,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, dropped;
         t1 = this._item$_count;
@@ -19215,63 +19465,63 @@
           dropped = dropped.splitStack$1(t1);
           this.countChanged$0();
         }
-        t1 = this._action$_actor;
+        t1 = this._actor;
         if (this.location === C.ItemLocation_A8D) {
           this.log$3("{1} take[s] off and drop[s] {2}.", t1, dropped);
-          H.interceptedTypeCast(this._action$_actor, "$isHero").refreshProperties$0();
+          H.interceptedTypeCast(this._actor, "$isHero").refreshProperties$0();
         } else
           this.log$3("{1} drop[s] {2}.", t1, dropped);
-        this._action$_game._stage.addItem$2(dropped, this._action$_actor._pos);
+        this._action$_game._stage.addItem$2(dropped, this._actor._pos);
         return C.ActionResult_null_true_true;
       }
     },
     EquipAction: {
-      "^": "ItemAction;location,item,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ItemAction;location,item,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, unequipped, result, t2;
         t1 = this.location;
         if (t1 === C.ItemLocation_A8D)
           return this.alternate$1(new R.UnequipAction(t1, this.item));
         t1 = this.item;
-        if (!H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment.canEquip$1(t1))
-          return this.fail$3("{1} cannot equip {2}.", this._action$_actor, t1);
+        if (!H.interceptedTypeCast(this._actor, "$isHero").save._equipment.canEquip$1(t1))
+          return this.fail$3("{1} cannot equip {2}.", this._actor, t1);
         this.removeItem$0();
-        unequipped = H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment.equip$1(t1);
+        unequipped = H.interceptedTypeCast(this._actor, "$isHero").save._equipment.equip$1(t1);
         if (unequipped != null) {
-          result = H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.tryAdd$2$wasUnequipped(unequipped, true);
-          t2 = this._action$_actor;
+          result = H.interceptedTypeCast(this._actor, "$isHero").save._inventory.tryAdd$2$wasUnequipped(unequipped, true);
+          t2 = this._actor;
           if (result.remaining === 0)
             this.log$3("{1} unequip[s] {2}.", t2, unequipped);
           else {
             this._action$_game._stage.addItem$2(unequipped, t2._pos);
-            this.log$3("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.", this._action$_actor, unequipped);
+            this.log$3("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.", this._actor, unequipped);
           }
         }
-        this.log$3("{1} equip[s] {2}.", this._action$_actor, t1);
-        H.interceptedTypeCast(this._action$_actor, "$isHero").refreshProperties$0();
+        this.log$3("{1} equip[s] {2}.", this._actor, t1);
+        H.interceptedTypeCast(this._actor, "$isHero").refreshProperties$0();
         return C.ActionResult_null_true_true;
       }
     },
     UnequipAction: {
-      "^": "ItemAction;location,item,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ItemAction;location,item,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, result, t2;
         this.removeItem$0();
         t1 = this.item;
-        result = H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory.tryAdd$2$wasUnequipped(t1, true);
-        t2 = this._action$_actor;
+        result = H.interceptedTypeCast(this._actor, "$isHero").save._inventory.tryAdd$2$wasUnequipped(t1, true);
+        t2 = this._actor;
         if (result.remaining === 0)
           this.log$3("{1} unequip[s] {2}.", t2, t1);
         else {
           this._action$_game._stage.addItem$2(t1, t2._pos);
-          this.log$3("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.", this._action$_actor, t1);
+          this.log$3("{1} [don't|doesn't] have room for {2} and {2 he} drops to the ground.", this._actor, t1);
         }
-        H.interceptedTypeCast(this._action$_actor, "$isHero").refreshProperties$0();
+        H.interceptedTypeCast(this._actor, "$isHero").refreshProperties$0();
         return C.ActionResult_null_true_true;
       }
     },
     UseAction: {
-      "^": "ItemAction;location,item,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ItemAction;location,item,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2, t3;
         t1 = this.item;
@@ -19291,8 +19541,8 @@
         else
           this.countChanged$0();
         if (this.location === C.ItemLocation_46y)
-          H.interceptedTypeCast(this._action$_actor, "$isHero").pickUp$1(t1);
-        H.interceptedTypeCast(this._action$_actor, "$isHero").save._lore.useItem$1(t1);
+          H.interceptedTypeCast(this._actor, "$isHero").pickUp$1(t1);
+        H.interceptedTypeCast(this._actor, "$isHero").save._lore.useItem$1(t1);
         return this.alternate$1(t2);
       }
     },
@@ -19348,35 +19598,35 @@
       destroyHeldItems$1: function(element) {
         var t1, t2, fuel;
         t1 = {};
-        t2 = this._action$_actor;
+        t2 = this._actor;
         if (!(t2 instanceof G.Hero))
           return 0;
         if (t2.resistance$1(element) > 0)
           return 0;
-        fuel = this._destroy$4(element, H.interceptedTypeCast(this._action$_actor, "$isHero").save._inventory, true, new R.DestroyActionMixin_destroyHeldItems_closure(this));
+        fuel = this._destroy$4(element, H.interceptedTypeCast(this._actor, "$isHero").save._inventory, true, new R.DestroyActionMixin_destroyHeldItems_closure(this));
         t1.anyEquipmentDestroyed = false;
-        t2 = this._destroy$4(element, H.interceptedTypeCast(this._action$_actor, "$isHero").save._equipment, true, new R.DestroyActionMixin_destroyHeldItems_closure0(t1, this));
+        t2 = this._destroy$4(element, H.interceptedTypeCast(this._actor, "$isHero").save._equipment, true, new R.DestroyActionMixin_destroyHeldItems_closure0(t1, this));
         if (t1.anyEquipmentDestroyed)
-          H.interceptedTypeCast(this._action$_actor, "$isHero").refreshProperties$0();
+          H.interceptedTypeCast(this._actor, "$isHero").refreshProperties$0();
         return fuel + t2;
       }
     },
     DestroyActionMixin_destroyFloorItems_closure: {
-      "^": "Closure:11;$this,pos",
+      "^": "Closure:10;$this,pos",
       call$1: function(item) {
         this.$this._action$_game._stage.removeItem$2(item, this.pos);
       }
     },
     DestroyActionMixin_destroyHeldItems_closure: {
-      "^": "Closure:11;$this",
+      "^": "Closure:10;$this",
       call$1: function(item) {
-        C.JSArray_methods.remove$1(H.interceptedTypeCast(this.$this._action$_actor, "$isHero").save._inventory._inventory$_items, item);
+        C.JSArray_methods.remove$1(H.interceptedTypeCast(this.$this._actor, "$isHero").save._inventory._items, item);
       }
     },
     DestroyActionMixin_destroyHeldItems_closure0: {
-      "^": "Closure:11;_box_0,$this",
+      "^": "Closure:10;_box_0,$this",
       call$1: function(item) {
-        H.interceptedTypeCast(this.$this._action$_actor, "$isHero").save._equipment.remove$1(0, item);
+        H.interceptedTypeCast(this.$this._actor, "$isHero").save._equipment.remove$1(0, item);
         this._box_0.anyEquipmentDestroyed = true;
       }
     }
@@ -19393,21 +19643,21 @@
       onPerform$0: function() {
         var pos, t1, t2;
         if (this._los == null) {
-          this.set$_los(G._LineIterator$(this._action$_actor._pos, this._los$_target));
+          this.set$_los(G._LineIterator$(this._actor._pos, this._los$_target));
           this._los.moveNext$0();
-          this._lastPos = this._action$_actor._pos;
+          this._lastPos = this._actor._pos;
         }
         pos = this._los._line$_current;
         t1 = this._action$_game._stage.tiles.$index(0, pos);
         t1.toString;
         t2 = $.$get$Motility_fly();
-        if ((t1.type.motility._bitMask & t2._bitMask) === 0 || pos.$sub(0, this._action$_actor._pos).$gt(0, this.get$range())) {
+        if ((t1.type.motility._bitMask & t2._bitMask) === 0 || pos.$sub(0, this._actor._pos).$gt(0, this.get$range())) {
           this.onEnd$1(this._lastPos);
           return this.succeed$0();
         }
         this.onStep$2(this._lastPos, pos);
         t1 = this._action$_game._stage._actorsByTile.$index(0, pos);
-        if (t1 != null && t1 !== this._action$_actor)
+        if (t1 != null && t1 !== this._actor)
           if (this.onHitActor$2(pos, t1))
             return C.ActionResult_null_true_true;
         if (J.$eq$(pos, this._los$_target))
@@ -19426,7 +19676,7 @@
   }], ["", "package:hauberk/src/engine/action/toss.dart",, B, {
     "^": "",
     TossAction: {
-      "^": "ItemAction;_toss$_hit,_toss$_target,location,item,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ItemAction;_toss$_hit,_toss$_target,location,item,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var tossed = this.item;
         if (tossed.type.toss == null)
@@ -19441,7 +19691,7 @@
       }
     },
     TossLosAction: {
-      "^": "LosAction;_toss$_item,_toss$_hit,_missed,_los$_target,0_lastPos,0_los,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "LosAction;_toss$_item,_toss$_hit,_missed,_los$_target,0_lastPos,0_los,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$range: function() {
         return this._toss$_hit.get$range();
       },
@@ -19449,7 +19699,7 @@
         this.addEvent$3$other$pos(C.EventType_toss, this._toss$_item, pos);
       },
       onHitActor$2: function(pos, target) {
-        if (this._toss$_hit.perform$3(this, this._action$_actor, target) == null) {
+        if (this._toss$_hit.perform$3(this, this._actor, target) == null) {
           this._missed = true;
           return false;
         }
@@ -19486,30 +19736,30 @@
   }], ["", "package:hauberk/src/engine/action/walk.dart",, B, {
     "^": "",
     WalkAction: {
-      "^": "Action;dir>,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;dir>,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, pos, tile, t2, _i, item, t3, min, max, value, t4;
         t1 = this.dir;
         if (t1 === C.Direction_0_0)
           return this.alternate$1(new B.RestAction());
-        pos = this._action$_actor._pos.$add(0, t1);
+        pos = this._actor._pos.$add(0, t1);
         t1 = this._action$_game._stage._actorsByTile.$index(0, pos);
-        if (t1 != null && t1 !== this._action$_actor)
+        if (t1 != null && t1 !== this._actor)
           return this.alternate$1(new S.AttackAction(t1));
         tile = this._action$_game._stage.tiles.$index(0, pos).type;
         t1 = tile.onOpen;
         if (t1 != null)
           return this.alternate$1(t1.call$1(pos));
-        if (!this._action$_actor.canOccupy$1(pos)) {
-          if (this._action$_actor instanceof G.Hero)
+        if (!this._actor.canOccupy$1(pos)) {
+          if (this._actor instanceof G.Hero)
             this._action$_game._stage.exploreAt$3$force(pos.x, pos.y, true);
-          return this.fail$2("{1} hit[s] the " + tile.name + ".", this._action$_actor);
+          return this.fail$2("{1} hit[s] the " + tile.name + ".", this._actor);
         }
-        this._action$_actor.set$pos(pos);
-        if (this._action$_actor instanceof G.Hero) {
+        this._actor.set$pos(pos);
+        if (this._actor instanceof G.Hero) {
           for (t1 = this._action$_game._stage.itemsAt$1(pos), t1 = P.List_List$from(t1, true, H.getRuntimeTypeArgument(t1, "IterableMixin", 0)), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
             item = t1[_i];
-            t3 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+            t3 = H.interceptedTypeCast(this._actor, "$isHero");
             if (!(t3._behavior instanceof X.ActionBehavior))
               t3._behavior = null;
             if (J.get$type$z(item).isTreasure) {
@@ -19517,20 +19767,20 @@
               max = C.JSNumber_methods.ceil$0(item.get$price() * 1.5);
               t3 = $.$get$rng();
               value = t3._random.nextInt$1(max - min) + min;
-              t3 = H.interceptedTypeCast(this._action$_actor, "$isHero").save;
+              t3 = H.interceptedTypeCast(this._actor, "$isHero").save;
               t4 = t3.gold;
               if (typeof t4 !== "number")
                 return t4.$add();
               t3.gold = t4 + value;
-              this.log$3("{1} pick[s] up {2} worth " + value + " gold.", H.interceptedTypeCast(this._action$_actor, "$isHero"), item);
+              this.log$3("{1} pick[s] up {2} worth " + value + " gold.", H.interceptedTypeCast(this._actor, "$isHero"), item);
               this._action$_game._stage.removeItem$2(item, pos);
-              t4 = this._action$_actor;
+              t4 = this._actor;
               t3 = t4._pos;
               C.JSArray_methods.add$1(this._action$_game._events, new D.Event0(C.EventType_gold, t4, null, item, t3, null));
             } else
-              this.log$3("{1} [are|is] standing on {2}.", this._action$_actor, item);
+              this.log$3("{1} [are|is] standing on {2}.", this._actor, item);
           }
-          t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+          t1 = H.interceptedTypeCast(this._actor, "$isHero");
           t2 = t1._focus;
           t3 = t1.save.intellect;
           t1._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 + 2, 0, C.JSNumber_methods.ceil$0(Math.pow(t3._modify$1(t3._value), 1.3) * 2)));
@@ -19538,19 +19788,19 @@
         return this.succeed$0();
       },
       toString$0: function(_) {
-        return H.S(this._action$_actor) + " walks " + H.S(this.dir);
+        return H.S(this._actor) + " walks " + H.S(this.dir);
       }
     },
     OpenDoorAction: {
-      "^": "Action;pos<,openDoor,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;pos<,openDoor,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         this._action$_game._stage.tiles.$index(0, this.pos).type = this.openDoor;
         this._action$_game._stage.tileOpacityChanged$0();
-        return this.succeed$2("{1} open[s] the door.", this._action$_actor);
+        return this.succeed$2("{1} open[s] the door.", this._actor);
       }
     },
     CloseDoorAction: {
-      "^": "Action;doorPos,closedDoor,0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;doorPos,closedDoor,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2;
         t1 = this.doorPos;
@@ -19559,14 +19809,14 @@
           return this.fail$2("{1} [are|is] in the way!", t2);
         this._action$_game._stage.tiles.$index(0, t1).type = this.closedDoor;
         this._action$_game._stage.tileOpacityChanged$0();
-        return this.succeed$2("{1} close[s] the door.", this._action$_actor);
+        return this.succeed$2("{1} close[s] the door.", this._actor);
       }
     },
     RestAction: {
-      "^": "Action;0_action$_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "Action;0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       onPerform$0: function() {
         var t1, t2, t3;
-        t1 = this._action$_actor;
+        t1 = this._actor;
         if (t1 instanceof G.Hero) {
           if (t1._stomach > 0 && t1.poison._turnsRemaining <= 0) {
             t2 = t1._health;
@@ -19574,7 +19824,7 @@
               return t2.$add();
             t1._health = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 + 1, 0, t1.get$maxHealth()));
           }
-          t1 = H.interceptedTypeCast(this._action$_actor, "$isHero");
+          t1 = H.interceptedTypeCast(this._actor, "$isHero");
           t2 = t1._focus;
           t3 = t1.save.intellect;
           t1._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t2 + 10, 0, C.JSNumber_methods.ceil$0(Math.pow(t3._modify$1(t3._value), 1.3) * 2)));
@@ -19583,7 +19833,7 @@
           t1 = t1._pos;
           t1 = t2.tiles.$index(0, t1);
           if (!(!t1._isOccluded && t1.illumination - t1._fallOff >= 0)) {
-            t1 = this._action$_actor;
+            t1 = this._actor;
             t2 = t1._health;
             if (typeof t2 !== "number")
               return t2.$add();
@@ -19784,14 +20034,14 @@
           return;
         t1.log.add$5(0, C.LogType_message, message, noun1, noun2, noun3);
       },
-      log$3: function(message, noun1, noun2) {
-        return this.log$4(message, noun1, noun2, null);
-      },
       log$2: function(message, noun1) {
         return this.log$4(message, noun1, null, null);
       },
       log$1: function(message) {
         return this.log$4(message, null, null, null);
+      },
+      log$3: function(message, noun1, noun2) {
+        return this.log$4(message, noun1, noun2, null);
       },
       toString$0: function(_) {
         return this.get$nounText();
@@ -20028,7 +20278,7 @@
       generate$0: function() {
         var $async$self = this;
         return P._makeSyncStarIterable(function() {
-          var $async$goto = 0, $async$handler = 1, $async$currentError, t1, t2, t3, t4, t5, t6;
+          var $async$goto = 0, $async$handler = 1, $async$currentError, t1, t2;
           return function $async$generate$0($async$errorCode, $async$result) {
             if ($async$errorCode === 1) {
               $async$currentError = $async$result;
@@ -20041,14 +20291,8 @@
                   t1 = {};
                   t1.heroPos = null;
                   t2 = $async$self._game$_save;
-                  t3 = t2._lore;
-                  t4 = $async$self._stage;
-                  t5 = H.functionTypeCheck(new D.Game_generate_closure(t1), {func: 1, args: [L.Vec]});
-                  t6 = t4.tiles.bounds.size;
-                  t6 = M.Array2D$(t6.x, t6.y, null, X.Architecture);
-                  $.Architect_debugOwners = t6;
                   $async$goto = 2;
-                  return P._IterationMarker_yieldStar(new X.Architect(t3, t4, $async$self.depth, t6, 0).buildStage$1(t5));
+                  return P._IterationMarker_yieldStar($async$self.content.buildStage$4(t2._lore, $async$self._stage, $async$self.depth, new D.Game_generate_closure(t1)));
                 case 2:
                   // after yield
                   t2 = G.Hero$($async$self, t1.heroPos, t2);
@@ -20104,11 +20348,11 @@
             if (result.done) {
               t1.removeFirst$0();
               if (result.succeeded && action._consumesEnergy) {
-                action._action$_actor.finishTurn$1(action);
+                action._actor.finishTurn$1(action);
                 t6 = this._stage;
                 t6._currentActorIndex = C.JSInt_methods.$mod(t6._currentActorIndex + 1, t6._actors.length);
               }
-              if (action._action$_actor == this.hero) {
+              if (action._actor == this.hero) {
                 t1 = H.setRuntimeTypeInfo([], [D.Event0]);
                 C.JSArray_methods.addAll$1(t1, t3);
                 C.JSArray_methods.set$length(t3, 0);
@@ -20202,10 +20446,31 @@
           }
         }
         this._substanceIndex = null;
+      },
+      static: {
+        Game$: function($content, _save, depth, height, width) {
+          var t1, t2, t3, t4, t5, t6;
+          t1 = P.ListQueue$(null, O.Message);
+          t2 = V.Action;
+          t3 = P.ListQueue$(null, t2);
+          t2 = H.setRuntimeTypeInfo([], [t2]);
+          t4 = H.setRuntimeTypeInfo([], [D.Event0]);
+          t5 = [L.Vec];
+          t6 = H.setRuntimeTypeInfo([], t5);
+          t4 = new D.Game($content, _save, new O.Log(t1), t3, t2, t4, new Y.Energy(0), t6, depth);
+          t1 = width == null ? 80 : width;
+          t1 = L.Stage$(t1, height == null ? 60 : height, t4);
+          t4._stage = t1;
+          C.JSArray_methods.addAll$1(t6, t1.tiles.bounds.inflate$1(-1));
+          t1 = $.$get$rng();
+          t1.toString;
+          C.JSArray_methods.shuffle$1(H.assertSubtype(t6, "$isList", t5, "$asList"), t1._random);
+          return t4;
+        }
       }
     },
     Game_generate_closure: {
-      "^": "Closure:12;_box_0",
+      "^": "Closure:11;_box_0",
       call$1: function(pos) {
         this._box_0.heroPos = pos;
       }
@@ -20754,11 +21019,11 @@
   }], ["", "package:hauberk/src/engine/core/vec_set.dart",, U, {
     "^": "",
     VecSet: {
-      "^": "IterableBase;_vec_set$_values,_sentinel,_xMin,_xMax,_yMin,_yMax",
+      "^": "IterableBase;_values,_sentinel,_xMin,_xMax,_yMin,_yMax",
       get$iterator: function(_) {
         var result, y, t1, t2, t3, x, t4;
         result = H.setRuntimeTypeInfo([], [L.Vec]);
-        for (y = this._yMin, t1 = this._vec_set$_values, t2 = t1._elements, t1 = t1.bounds.size.x, t3 = t2.length; y <= this._yMax; ++y) {
+        for (y = this._yMin, t1 = this._values, t2 = t1._elements, t1 = t1.bounds.size.x, t3 = t2.length; y <= this._yMax; ++y) {
           x = this._xMin;
           while (true) {
             t4 = this._xMax;
@@ -20780,7 +21045,7 @@
       },
       add$1: function(_, pos) {
         var t1, t2;
-        this._vec_set$_values.$indexSet(0, pos, this._sentinel);
+        this._values.$indexSet(0, pos, this._sentinel);
         t1 = this._xMin;
         t2 = pos.x;
         this._xMin = H.intTypeCheck(Math.min(H.checkNum(t1), H.checkNum(t2)));
@@ -20998,7 +21263,7 @@
         this.refreshProperties$0();
         t1 = this.save;
         this._health = H.intTypeCheck(C.JSInt_methods.clamp$2(t1.fortitude.get$maxHealth(), 0, this.get$maxHealth()));
-        for (t1 = t1._inventory._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();)
+        for (t1 = t1._inventory._items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();)
           this._gainItemSkills$1(t1.__interceptors$_current);
       },
       get$appearance: function(_) {
@@ -21014,20 +21279,21 @@
         return this.save.get$armor();
       },
       _gainItemSkills$1: function(item) {
-        var t1, t2, t3, t4, t5, _i, skill, t6, level;
-        for (t1 = item.type.skills, t2 = t1.length, t3 = this.save, t4 = t3.heroClass, t5 = this.game, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+        var t1, t2, t3, t4, _i, skill, t5, level;
+        for (t1 = item.type.skills, t2 = t1.length, t3 = this.save, t4 = this.game, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
           skill = t1[_i];
-          t4.toString;
+          t5 = t3.heroClass;
+          t5.toString;
           H.interceptedTypeCheck(skill, "$isSkill");
-          t6 = t4._proficiency.$index(0, skill);
-          if ((t6 == null ? 1 : t6) !== 0 && t3.skills.discover$1(skill)) {
+          t5 = t5._proficiency.$index(0, skill);
+          if ((t5 == null ? 1 : t5) !== 0 && t3.skills.discover$1(skill)) {
             skill.toString;
-            t6 = t3.skills._points.$index(0, skill);
-            level = skill.onCalculateLevel$2(t3, t6 == null ? 0 : t6);
+            t5 = t3.skills._points.$index(0, skill);
+            level = skill.onCalculateLevel$2(t3, t5 == null ? 0 : t5);
             if (t3.skills.gain$2(skill, level))
-              t5.log.add$5(0, C.LogType_gain, skill.gainMessage$1(level), this, null, null);
+              t4.log.add$5(0, C.LogType_gain, skill.gainMessage$1(level), this, null, null);
             else
-              t5.log.add$5(0, C.LogType_gain, skill.get$discoverMessage(), this, null, null);
+              t4.log.add$5(0, C.LogType_gain, skill.get$discoverMessage(), this, null, null);
           }
         }
       },
@@ -21150,10 +21416,11 @@
         return this.save.equipmentResistance$1(element);
       },
       onTakeDamage$3: function(action, attacker, damage) {
-        var t1, t2, _i;
-        t1 = this.save;
-        t2 = t1.intellect;
-        this._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(this._focus - C.JSInt_methods.$tdiv(C.JSNumber_methods.ceil$0(Math.pow(t2._modify$1(t2._value), 1.3) * 2) * damage * 2, t1.fortitude.get$maxHealth()), 0, C.JSNumber_methods.ceil$0(Math.pow(t2._modify$1(t2._value), 1.3) * 2)));
+        var t1, t2, t3, _i;
+        t1 = this._focus;
+        t2 = this.save;
+        t3 = t2.intellect;
+        this._focus = H.intTypeCheck(C.JSInt_methods.clamp$2(t1 - C.JSInt_methods.$tdiv(C.JSNumber_methods.ceil$0(Math.pow(t3._modify$1(t3._value), 1.3) * 2) * damage * 2, t2.fortitude.get$maxHealth()), 0, C.JSNumber_methods.ceil$0(Math.pow(t3._modify$1(t3._value), 1.3) * 2)));
         for (this.game.content, t1 = $.$get$Skills_all(), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i)
           t1[_i].takeDamage$2(this, damage);
       },
@@ -21259,26 +21526,14 @@
       }, "call$1", "get$refreshSkill", 4, 0, 87],
       static: {
         Hero$: function(game, pos, save) {
-          var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
+          var t1, t2, t3;
           t1 = P.LinkedHashSet_LinkedHashSet(null, null, null, B.Monster);
-          t2 = P.int;
-          t3 = save._inventory.clone$0(0);
-          t4 = save._equipment.clone$0(0);
-          t5 = save.experience;
-          t6 = save.skills;
-          t7 = M.Skill;
-          t8 = P.LinkedHashMap_LinkedHashMap$from(t6._levels, t7, t2);
-          t7 = P.LinkedHashMap_LinkedHashMap$from(t6._points, t7, t2);
-          t6 = save._lore;
-          t9 = B.Breed;
-          t10 = L.ItemType;
-          t10 = K.HeroSave$load(save.name, save.race, save.heroClass, t3, t4, save._home, save._crucible, save.shops, t5, new M.SkillSet(t8, t7), V.Lore$from(P.LinkedHashMap_LinkedHashMap$of(t6._seenBreeds, t9, t2), P.LinkedHashMap_LinkedHashMap$of(t6._slainBreeds, t9, t2), P.LinkedHashMap_LinkedHashMap$of(t6._foundItems, t10, t2), P.LinkedHashMap_LinkedHashMap$of(t6._foundAffixes, L.Affix, t2), P.LinkedHashMap_LinkedHashMap$of(t6._usedItems, t10, t2)), save.gold, save.maxDepth);
-          t6 = pos.x;
-          t9 = pos.y;
-          t2 = new G.Hero(t10, t1, new D.Property([P.double]), 200, 400, 0, new D.Property([t2]), game, new Y.Energy(0), new E.HasteCondition(0, 0), new E.ColdCondition(0, 0), new E.PoisonCondition(0, 0), new E.BlindnessCondition(0, 0), new E.BlindnessCondition(0, 0), P.LinkedHashMap_LinkedHashMap$_empty(G.Element, E.ResistCondition), new L.Vec(t6, t9));
-          t2.Actor$3(game, t6, t9);
-          t2.Hero$3(game, pos, save);
-          return t2;
+          t2 = pos.x;
+          t3 = pos.y;
+          t1 = new G.Hero(save, t1, new D.Property([P.double]), 200, 400, 0, new D.Property([P.int]), game, new Y.Energy(0), new E.HasteCondition(0, 0), new E.ColdCondition(0, 0), new E.PoisonCondition(0, 0), new E.BlindnessCondition(0, 0), new E.BlindnessCondition(0, 0), P.LinkedHashMap_LinkedHashMap$_empty(G.Element, E.ResistCondition), new L.Vec(t2, t3));
+          t1.Actor$3(game, t2, t3);
+          t1.Hero$3(game, pos, save);
+          return t1;
         }
       }
     },
@@ -21314,7 +21569,7 @@
       "^": "Object;name>,race,heroClass,_inventory,_equipment,_home,_crucible,shops,experience,skills,gold,maxDepth,_lore,strength,agility,fortitude,intellect,will",
       get$emanationLevel: function() {
         var t1, level;
-        for (t1 = this._inventory._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), level = 0; t1.moveNext$0();)
+        for (t1 = this._inventory._items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), level = 0; t1.moveNext$0();)
           level = Math.max(level, t1.__interceptors$_current.type.emanationLevel);
         return level;
       },
@@ -21647,13 +21902,13 @@
         return "{1} can begin training in " + this.get$name(this) + ".";
       },
       onCalculateLevel$2: function(hero, points) {
-        var training, t1, level, t2;
+        var training, level, t1;
         training = hero.skills.points$1(0, this);
-        for (t1 = hero.heroClass, level = 1; level <= this.get$maxLevel(); ++level) {
-          t2 = this.trainingNeeded$2(t1, level);
-          if (typeof t2 !== "number")
-            return H.iae(t2);
-          if (training < t2)
+        for (level = 1; level <= this.get$maxLevel(); ++level) {
+          t1 = this.trainingNeeded$2(hero.heroClass, level);
+          if (typeof t1 !== "number")
+            return H.iae(t1);
+          if (training < t1)
             return level - 1;
         }
         return this.get$maxLevel();
@@ -21981,7 +22236,7 @@
       },
       resist$2: [function(element, power) {
         this._resists.$indexSet(0, H.interceptedTypeCheck(element, "$isElement"), H.intTypeCheck(power));
-      }, "call$2", "get$resist", 8, 0, 116],
+      }, "call$2", "get$resist", 8, 0, 115],
       setStatBonus$2: [function(stat, bonus) {
         this._statBonuses.$indexSet(0, H.interceptedTypeCheck(stat, "$isStat"), H.intTypeCheck(bonus));
       }, "call$2", "get$setStatBonus", 8, 0, 93],
@@ -22119,35 +22374,35 @@
       }
     },
     Inventory: {
-      "^": "_Inventory_IterableMixin_ItemCollection;location>,_inventory$_items,_capacity,0_lastUnequipped",
+      "^": "_Inventory_IterableMixin_ItemCollection;location>,_items,_capacity,0_lastUnequipped",
       get$length: function(_) {
-        return this._inventory$_items.length;
+        return this._items.length;
       },
       $index: function(_, index) {
         var t1;
         H.intTypeCheck(index);
-        t1 = this._inventory$_items;
+        t1 = this._items;
         if (index < 0 || index >= t1.length)
           return H.ioore(t1, index);
         return t1[index];
       },
       clone$0: function(_) {
         var t1, t2, t3;
-        t1 = this._inventory$_items;
+        t1 = this._items;
         t2 = R.Item;
         t3 = H.getTypeArgumentByIndex(t1, 0);
         return O.Inventory$(this.location, this._capacity, new H.MappedListIterable(t1, H.functionTypeCheck(new O.Inventory_clone_closure(), {func: 1, ret: t2, args: [t3]}), [t3, t2]));
       },
       remove$1: function(_, item) {
-        C.JSArray_methods.remove$1(this._inventory$_items, item);
+        C.JSArray_methods.remove$1(this._items, item);
       },
       canAdd$1: function(item) {
         var t1, remaining, t2, _i, existing, t3, t4;
         t1 = this._capacity;
-        if (t1 == null || this._inventory$_items.length < t1)
+        if (t1 == null || this._items.length < t1)
           return true;
         remaining = item._count;
-        for (t1 = this._inventory$_items, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+        for (t1 = this._items, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
           existing = t1[_i];
           if (existing.canStack$1(item)) {
             t3 = J.get$type$z(existing).maxStack;
@@ -22166,7 +22421,7 @@
       tryAdd$2$wasUnequipped: [function(item, wasUnequipped) {
         var adding, t1, t2, t3, _i, t4;
         adding = item._count;
-        for (t1 = this._inventory$_items, t2 = t1.length, t3 = adding, _i = 0; t4 = t1.length, _i < t4; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+        for (t1 = this._items, t2 = t1.length, t3 = adding, _i = 0; t4 = t1.length, _i < t4; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
           t1[_i].stack$1(item);
           t3 = item._count;
           if (t3 === 0)
@@ -22190,14 +22445,14 @@
       }, "tryAdd$1", "call$2$wasUnequipped", "call$1", "get$tryAdd", 4, 3, 96],
       countChanged$0: function() {
         var t1, items, _i;
-        t1 = this._inventory$_items;
+        t1 = this._items;
         items = H.setRuntimeTypeInfo(t1.slice(0), [H.getTypeArgumentByIndex(t1, 0)]);
         C.JSArray_methods.set$length(t1, 0);
         for (t1 = items.length, _i = 0; _i < items.length; items.length === t1 || (0, H.throwConcurrentModificationError)(items), ++_i)
           this.tryAdd$1(items[_i]);
       },
       get$iterator: function(_) {
-        var t1 = this._inventory$_items;
+        var t1 = this._items;
         return new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]);
       },
       $asIterableMixin: function() {
@@ -22466,7 +22721,7 @@
         var t1, remainCount, t2, max, t3, item, count, tries, tries0, t4, i, t5, t6;
         t1 = $.$get$rng();
         remainCount = C.JSNumber_methods.toInt$0(t1.float$2(0, 5.2, 10.4));
-        for (t2 = inventory._inventory$_items; max = t2.length, max > remainCount;) {
+        for (t2 = inventory._items; max = t2.length, max > remainCount;) {
           t3 = t1._random.nextInt$1(max - 0);
           if (t3 < 0 || t3 >= t2.length)
             return H.ioore(t2, t3);
@@ -23054,19 +23309,19 @@
       }
     },
     Monster_onGiveDamage_closure: {
-      "^": "Closure:32;action,damage",
+      "^": "Closure:33;action,damage",
       call$1: function(witness) {
         witness._viewHeroDamage$2(this.action, this.damage);
       }
     },
     Monster_onTakeDamage_closure: {
-      "^": "Closure:32;$this,action,damage",
+      "^": "Closure:33;$this,action,damage",
       call$1: function(witness) {
         witness._viewMonsterDamage$3(this.action, this.$this, this.damage);
       }
     },
     Monster_onTakeDamage_closure0: {
-      "^": "Closure:33;$this,damage",
+      "^": "Closure:29;$this,damage",
       call$1: function(move) {
         return H.interceptedTypeCheck(move, "$isMove").shouldUseOnDamage$2(this.$this, this.damage);
       }
@@ -23472,7 +23727,7 @@
       }
     },
     AwakeState_getAction_closure: {
-      "^": "Closure:33;$this",
+      "^": "Closure:29;$this",
       call$1: function(move) {
         var t1;
         H.interceptedTypeCheck(move, "$isMove");
@@ -23847,7 +24102,7 @@
       }
     },
     Flow__directionsTo_walkBack: {
-      "^": "Closure:12;$this,walked,directions",
+      "^": "Closure:11;$this,walked,directions",
       call$1: function(pos) {
         var t1, t2, t3, _i, dir, here, t4, t5, t6, t7, t8, t9;
         H.interceptedTypeCheck(pos, "$isVec");
@@ -23904,7 +24159,7 @@
       }
     },
     Flow__processNext_processNeighbor: {
-      "^": "Closure:138;$this,start,parentCost",
+      "^": "Closure:100;$this,start,parentCost",
       call$2: function(dir, isDiagonal) {
         var here, t1, t2, t3, relative, total;
         here = this.start.$add(0, dir);
@@ -24159,7 +24414,7 @@
             t14 = t2.$index(0, pos);
             if (t14 == null)
               t14 = new O.Inventory(C.ItemLocation_46y, H.setRuntimeTypeInfo([], t11), null);
-            t14 = t14._inventory$_items;
+            t14 = t14._items;
             t14 = new J.ArrayIterator(t14, t14.length, 0, [H.getTypeArgumentByIndex(t14, 0)]);
             itemEmanation = 0;
             for (; t14.moveNext$0();)
@@ -24336,7 +24591,7 @@
       }
     },
     Lighting__lightWalls_checkNeighbor: {
-      "^": "Closure:12;_box_0,$this,x,y",
+      "^": "Closure:11;_box_0,$this,x,y",
       call$1: function(offset) {
         var t1, neighborX, neighborY, t2, t3;
         t1 = offset.x;
@@ -24583,7 +24838,7 @@
       removeItem$2: function(item, pos) {
         var t1, t2;
         t1 = this._itemsByTile;
-        t2 = t1.$index(0, pos)._inventory$_items;
+        t2 = t1.$index(0, pos)._items;
         C.JSArray_methods.remove$1(t2, item);
         if (item.type.emanationLevel > 0)
           this._lighting._floorLightDirty = true;
@@ -24686,7 +24941,7 @@
       }
     },
     Stage_placeDrops_closure: {
-      "^": "Closure:11;$this,items,flow,pos",
+      "^": "Closure:10;$this,items,flow,pos",
       call$1: function(item) {
         var t1, t2, itemPos, allowed, t3;
         C.JSArray_methods.add$1(this.items, item);
@@ -24734,7 +24989,7 @@
       call$2: function(pos, inventory) {
         var t1, t2;
         H.interceptedTypeCheck(pos, "$isVec");
-        for (t1 = H.interceptedTypeCheck(inventory, "$isInventory")._inventory$_items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), t2 = this.callback; t1.moveNext$0();)
+        for (t1 = H.interceptedTypeCheck(inventory, "$isInventory")._items, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), t2 = this.callback; t1.moveNext$0();)
           t2.call$2(t1.__interceptors$_current, pos);
       }
     }
@@ -24761,8 +25016,14 @@
         }
       }
     },
+    TilePortal: {
+      "^": "Object;name>",
+      toString$0: function(_) {
+        return this.name;
+      }
+    },
     TileType: {
-      "^": "Object;name>,isExit,emanation,appearance>,motility,onClose,onOpen"
+      "^": "Object;name>,portal,emanation,appearance>,motility,onClose,onOpen"
     },
     Tile: {
       "^": "Object;0type>,_isOccluded,_fallOff,illumination,_appliedEmanation,_isExplored,element,substance",
@@ -24914,7 +25175,7 @@
             glyph = H.interceptedTypeCast(t1.get$appearance(t1), "$isGlyph");
           else {
             items = t3._stage.itemsAt$1(pos);
-            t1 = items._inventory$_items;
+            t1 = items._items;
             if (new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]).moveNext$0())
               glyph = H.interceptedTypeCast(J.get$appearance$z(items.get$first(items)), "$isGlyph");
             else {
@@ -25409,14 +25670,14 @@
       $isEffect: 1
     },
     HowlEffect: {
-      "^": "Object;_actor,_age",
+      "^": "Object;_effect$_actor,_age",
       update$1: function(_, game) {
         return ++this._age < 24;
       },
       render$2: function(game, drawGlyph) {
         var pos, t1, t2, t3, t4, t5, t6, t7;
         H.functionTypeCheck(drawGlyph, {func: 1, ret: -1, args: [P.int, P.int, L.Glyph]});
-        pos = this._actor._pos;
+        pos = this._effect$_actor._pos;
         if (C.JSInt_methods.$mod(C.JSInt_methods._tdivFast$1(this._age, 6), 2) === 0) {
           t1 = pos.x;
           t2 = pos.y;
@@ -25448,14 +25709,14 @@
       $isEffect: 1
     },
     BlinkEffect: {
-      "^": "Object;_actor,_glyph,_age",
+      "^": "Object;_effect$_actor,_glyph,_age",
       update$1: function(_, game) {
         return ++this._age < 24;
       },
       render$2: function(game, drawGlyph) {
         var pos;
         H.functionTypeCheck(drawGlyph, {func: 1, ret: -1, args: [P.int, P.int, L.Glyph]});
-        pos = this._actor._pos;
+        pos = this._effect$_actor._pos;
         if (C.JSInt_methods.$mod(C.JSInt_methods._tdivFast$1(this._age, 6), 2) === 1)
           drawGlyph.call$3(pos.x, pos.y, this._glyph);
       },
@@ -25464,12 +25725,12 @@
   }], ["", "package:hauberk/src/ui/exit_screen.dart",, Z, {
     "^": "",
     ExitScreen: {
-      "^": "Screen;_exit_screen$_save,_exit_screen$_game,_values,0_ui",
+      "^": "Screen;_exit_screen$_save,_exit_screen$_game,_exit_screen$_values,0_ui",
       ExitScreen$2: function(_save, _game) {
         var t1, hero, t2, t3, t4, t5, t6, slain;
         t1 = this._exit_screen$_game;
         hero = t1.hero;
-        t2 = this._values;
+        t2 = this._exit_screen$_values;
         t3 = hero.save;
         t4 = t3.gold;
         t5 = this._exit_screen$_save;
@@ -25493,20 +25754,25 @@
           return t4.$sub();
         C.JSArray_methods.add$1(t2, new Z._AnimatedValue(8, "Levels", t4 - t6, C.Color_129_231_235, null, 0));
         t6 = t3.strength;
+        t6 = t6._modify$1(t6._value);
         t4 = t5.strength;
-        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(10, "Strength", t6._modify$1(t6._value) - t4._modify$1(t4._value), C.Color_21_87_194, null, 0));
+        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(10, "Strength", t6 - t4._modify$1(t4._value), C.Color_21_87_194, null, 0));
         t4 = t3.agility;
+        t4 = t4._modify$1(t4._value);
         t6 = t5.agility;
-        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(11, "Agility", t4._modify$1(t4._value) - t6._modify$1(t6._value), C.Color_21_87_194, null, 0));
+        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(11, "Agility", t4 - t6._modify$1(t6._value), C.Color_21_87_194, null, 0));
         t6 = t3.fortitude;
+        t6 = t6._modify$1(t6._value);
         t4 = t5.fortitude;
-        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(12, "Fortitude", t6._modify$1(t6._value) - t4._modify$1(t4._value), C.Color_21_87_194, null, 0));
+        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(12, "Fortitude", t6 - t4._modify$1(t4._value), C.Color_21_87_194, null, 0));
         t4 = t3.intellect;
+        t4 = t4._modify$1(t4._value);
         t6 = t5.intellect;
-        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(13, "Intellect", t4._modify$1(t4._value) - t6._modify$1(t6._value), C.Color_21_87_194, null, 0));
+        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(13, "Intellect", t4 - t6._modify$1(t6._value), C.Color_21_87_194, null, 0));
         t6 = t3.will;
+        t6 = t6._modify$1(t6._value);
         t4 = t5.will;
-        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(14, "Will", t6._modify$1(t6._value) - t4._modify$1(t4._value), C.Color_21_87_194, null, 0));
+        C.JSArray_methods.add$1(t2, new Z._AnimatedValue(14, "Will", t6 - t4._modify$1(t4._value), C.Color_21_87_194, null, 0));
         t3 = t3._lore.get$allSlain();
         t5 = t5._lore.get$allSlain();
         if (typeof t3 !== "number")
@@ -25541,23 +25807,16 @@
         return false;
       },
       _done$0: function() {
-        var t1, t2, t3;
-        t1 = this._exit_screen$_save;
-        t2 = this._exit_screen$_game;
-        t3 = t2.hero.save;
-        t1._inventory = t3._inventory;
-        t1._equipment = t3._equipment;
-        t1.experience = t3.experience;
-        t1.gold = t3.gold;
-        t1.skills = t3.skills;
-        t1._lore = t3._lore;
-        t1.maxDepth = H.intTypeCheck(Math.max(t1.maxDepth, t2.depth));
-        t1.shops.forEach$1(0, new Z.ExitScreen__done_closure());
+        var t1, t2;
+        t1 = this._exit_screen$_game;
+        t2 = t1.hero.save;
+        t2.maxDepth = H.intTypeCheck(Math.max(this._exit_screen$_save.maxDepth, t1.depth));
+        t2.shops.forEach$1(0, new Z.ExitScreen__done_closure());
         this._ui.pop$0();
       },
       update$0: function(_) {
         var t1, t2, _i;
-        for (t1 = this._values, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i)
+        for (t1 = this._exit_screen$_values, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i)
           if (t1[_i].update$0(0))
             this.dirty$0();
       },
@@ -25569,7 +25828,7 @@
         terminal.writeAt$4(2, 2, "You survived depth " + this._exit_screen$_game.depth + "!", C.Color_132_126_135);
         terminal.writeAt$4(2, 4, "You gained:", C.Color_132_126_135);
         terminal.writeAt$4(2, 16, "You slayed:", C.Color_132_126_135);
-        for (t1 = this._values, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+        for (t1 = this._exit_screen$_values, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
           value = t1[_i];
           t3 = value.y;
           terminal.writeAt$4(6, t3, "................................", C.Color_38_38_56);
@@ -25638,7 +25897,7 @@
   }], ["", "package:hauberk/src/ui/forfeit_dialog.dart",, T, {
     "^": "",
     ForfeitDialog: {
-      "^": "Screen;game,0_ui",
+      "^": "Screen;_isTown,0_ui",
       get$isTransparent: function() {
         return true;
       },
@@ -25666,8 +25925,12 @@
         return false;
       },
       render$1: function(terminal) {
-        terminal.writeAt$3(0, 0, "Are you sure you want to forfeit the level? [Y]/[N]");
-        terminal.writeAt$3(0, 1, "You will lose all items and experience gained on the level.");
+        if (this._isTown)
+          terminal.writeAt$3(0, 0, "Return to main menu? [Y]/[N]");
+        else {
+          terminal.writeAt$3(0, 0, "Are you sure you want to forfeit the level? [Y]/[N]");
+          terminal.writeAt$3(0, 1, "You will lose all items and experience gained on the level.");
+        }
       },
       $asScreen: function() {
         return [Y.Input];
@@ -25699,7 +25962,7 @@
   }], ["", "package:hauberk/src/ui/game_screen.dart",, R, {
     "^": "",
     GameScreen: {
-      "^": "Screen;game,_game_screen$_save,_effects,_pause,_hasAnimatedTile,_game_screen$_frame,viewSize,0_cameraBounds,0_targetActor,0_game_screen$_target,0_lastSkill,0_ui",
+      "^": "Screen;game,_storageSave,_storage,_effects,_pause,_hasAnimatedTile,_frame,viewSize,0_cameraBounds,0_targetActor,0_game_screen$_target,0_lastSkill,0_portal,0_ui",
       set$_effects: function(_effects) {
         this._effects = H.assertSubtype(_effects, "$isList", [K.Effect], "$asList");
       },
@@ -25763,22 +26026,23 @@
         return;
       },
       handleInput$1: function(input) {
-        var t1, t2, t3, action, items;
+        var t1, t2, t3, action, t4, t5, t6, items;
         switch (H.interceptedTypeCheck(input, "$isInput")) {
           case C.Input_quit:
             t1 = this.game;
             t2 = t1._stage;
             t3 = t1.hero._pos;
-            if (t2.tiles.$index(0, t3).type.isExit)
-              this._ui.push$1(Z.ExitScreen$(this._game_screen$_save, t1));
+            if (t2.tiles.$index(0, t3).type.portal === C.TilePortal_exit)
+              this._ui.push$1(Z.ExitScreen$(this._storageSave, t1));
             else {
-              t1.log.add$5(0, C.LogType_error, "You cannot exit from here.", null, null, null);
+              t1.log.add$5(0, C.LogType_error, "You are not standing on an exit.", null, null, null);
               this.dirty$0();
             }
             action = null;
             break;
           case C.Input_forfeit:
-            this._ui.push$1(new T.ForfeitDialog(this.game));
+            t1 = this._ui;
+            t1.push$1(new T.ForfeitDialog(this.game.depth === 0));
             action = null;
             break;
           case C.Input_selectSkill:
@@ -25790,8 +26054,19 @@
             action = null;
             break;
           case C.Input_heroInfo:
-            t1 = this.game;
-            this._ui.push$1(M.HeroInfoDialog_HeroInfoDialog(t1.content, t1.hero.save));
+            t1 = this._ui;
+            t2 = this.game;
+            t3 = t2.content;
+            t2 = t2.hero.save;
+            t4 = $.$get$HeroInfoDialog__screens();
+            if (t4.length === 0) {
+              t5 = new Z.HeroMonsterLoreDialog(H.setRuntimeTypeInfo([], [B.Breed]), C._Sort_JQf, 0, 0, t3, t2);
+              t5._listBreeds$0();
+              t6 = new Q.HeroItemLoreDialog(H.setRuntimeTypeInfo([], [L.ItemType]), C._Sort_MQk, 0, 0, t3, t2);
+              t6._listItems$0();
+              C.JSArray_methods.addAll$1(t4, H.setRuntimeTypeInfo([new M.HeroEquipmentDialog(t3, t2), new Z.HeroResistancesDialog(t3, t2), t5, t6], [M.HeroInfoDialog]));
+            }
+            t1.push$1(C.JSArray_methods.get$first(t4));
             action = null;
             break;
           case C.Input_drop:
@@ -25812,17 +26087,17 @@
             action = null;
             break;
           case C.Input_open:
-            this.open$0(0);
+            this._game_screen$_open$0();
             action = null;
             break;
           case C.Input_close:
-            this.closeDoor$0();
+            this._closeDoor$0();
             action = null;
             break;
           case C.Input_pickUp:
             t1 = this.game;
             items = t1._stage.itemsAt$1(t1.hero._pos);
-            t2 = items._inventory$_items.length;
+            t2 = items._items.length;
             if (t2 > 1)
               this._ui.push$1(new D.ItemDialog(this, new D._PickUpItemCommand(), C.ItemLocation_46y, false));
             else if (t2 === 1)
@@ -25972,7 +26247,7 @@
           this.game.hero._behavior = new X.ActionBehavior(action);
         return true;
       },
-      open$0: function(_) {
+      _game_screen$_open$0: function() {
         var openable, t1, t2, t3, _i, pos, t4, t5, t6;
         openable = H.setRuntimeTypeInfo([], [L.Vec]);
         for (t1 = this.game, t2 = t1.hero._pos.get$neighbors(), t3 = t2.length, _i = 0; _i < t2.length; t2.length === t3 || (0, H.throwConcurrentModificationError)(t2), ++_i) {
@@ -26004,7 +26279,7 @@
         } else
           this._ui.push$1(new T.OpenDialog(this, 0));
       },
-      closeDoor$0: function() {
+      _closeDoor$0: function() {
         var closeable, t1, t2, t3, _i, pos, t4, t5, t6;
         closeable = H.setRuntimeTypeInfo([], [L.Vec]);
         for (t1 = this.game, t2 = t1.hero._pos.get$neighbors(), t3 = t2.length, _i = 0; _i < t2.length; t2.length === t3 || (0, H.throwConcurrentModificationError)(t2), ++_i) {
@@ -26140,44 +26415,133 @@
         }
       }, "call$1", "get$_fireTowards", 4, 0, 107],
       activate$2: function(popped, result) {
-        var t1, t2;
-        t1 = J.getInterceptor$(popped);
-        if (!!t1.$isExitScreen) {
-          this._ui.pop$1(true);
-          return;
-        }
-        t2 = this.game;
-        if (!t2.hero.get$needsInput())
+        var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19;
+        t1 = this.game;
+        if (!t1.hero.get$needsInput())
           this._pause = 10;
-        if (!!t1.$isForfeitDialog && H.boolTypeCast(result))
-          this._ui.pop$1(false);
-        else if (!t1.$isSkillDialog)
-          if (!!t1.$isSelectSkillDialog && result != null) {
-            t1 = J.getInterceptor$(result);
-            if (!!t1.$isTargetSkill)
+        t2 = J.getInterceptor$(popped);
+        if (!!t2.$isExitScreen) {
+          t2 = this._storageSave;
+          t3 = t1.hero;
+          t2.toString;
+          t3 = t3.save;
+          t2._inventory = t3._inventory;
+          t2._equipment = t3._equipment;
+          t2.experience = t3.experience;
+          t2.gold = t3.gold;
+          t2.skills = t3.skills;
+          t2._lore = t3._lore;
+          this._ui.goTo$1(R.GameScreen_GameScreen$town(this._storage, t1.content, t2));
+        } else if (!!t2.$isSelectDepthScreen && typeof result === "number" && Math.floor(result) === result) {
+          t2 = this._storage;
+          t2.save$0(0);
+          t3 = this._ui;
+          t4 = t1.hero.save;
+          t5 = t4.name;
+          t6 = t4.race;
+          t7 = t4.heroClass;
+          t8 = t4._inventory.clone$0(0);
+          t9 = t4._equipment.clone$0(0);
+          t10 = t4._home;
+          t11 = t4._crucible;
+          t12 = t4.shops;
+          t13 = t4.experience;
+          t14 = t4.skills;
+          t15 = M.Skill;
+          t16 = P.int;
+          t17 = P.LinkedHashMap_LinkedHashMap$from(t14._levels, t15, t16);
+          t15 = P.LinkedHashMap_LinkedHashMap$from(t14._points, t15, t16);
+          t14 = t4._lore;
+          t18 = B.Breed;
+          t19 = L.ItemType;
+          t3.goTo$1(new F.LoadingDialog(t2, t4, D.Game$(t1.content, K.HeroSave$load(t5, t6, t7, t8, t9, t10, t11, t12, t13, new M.SkillSet(t17, t15), V.Lore$from(P.LinkedHashMap_LinkedHashMap$of(t14._seenBreeds, t18, t16), P.LinkedHashMap_LinkedHashMap$of(t14._slainBreeds, t18, t16), P.LinkedHashMap_LinkedHashMap$of(t14._foundItems, t19, t16), P.LinkedHashMap_LinkedHashMap$of(t14._foundAffixes, L.Affix, t16), P.LinkedHashMap_LinkedHashMap$of(t14._usedItems, t19, t16)), t4.gold, t4.maxDepth), result, null, null), 0));
+        } else if (!!t2.$isForfeitDialog && J.$eq$(result, true)) {
+          t2 = this._storage;
+          if (t1.depth > 0)
+            this._ui.goTo$1(R.GameScreen_GameScreen$town(t2, t1.content, this._storageSave));
+          else {
+            t2.save$0(0);
+            this._ui.pop$0();
+          }
+        } else if (!!t2.$isItemScreen)
+          this._storage.save$0(0);
+        else if (!!t2.$isItemDialog) {
+          if (t1.depth === 0)
+            this._storage.save$0(0);
+        } else if (!t2.$isSkillDialog)
+          if (!!t2.$isSelectSkillDialog && result != null) {
+            t2 = J.getInterceptor$(result);
+            if (!!t2.$isTargetSkill)
               this._openTargetDialog$1(result);
-            else if (!!t1.$isDirectionSkill)
+            else if (!!t2.$isDirectionSkill)
               this._ui.push$1(new T.SkillDirectionDialog(new R.GameScreen_activate_closure(this, result), this, 0));
-            else if (!!t1.$isActionSkill) {
+            else if (!!t2.$isActionSkill) {
               this._lastSkill = result;
-              t1 = t2.hero;
-              t1._behavior = new X.ActionBehavior(result.getAction$2(t2, t1.save.skills.level$1(result)));
+              t2 = t1.hero;
+              t2._behavior = new X.ActionBehavior(result.getAction$2(t1, t2.save.skills.level$1(result)));
             }
           }
       },
       update$0: function(_) {
-        var t1, result, t2, t3, _i, $event;
-        ++this._game_screen$_frame;
-        t1 = this._pause;
-        if (t1 > 0) {
-          this._pause = t1 - 1;
+        var t1, t2, t3, portal, t4, result, _i, $event;
+        ++this._frame;
+        t1 = this.game;
+        t2 = t1._stage;
+        t3 = t1.hero._pos;
+        portal = t2.tiles.$index(0, t3).type.portal;
+        if (portal != this._portal) {
+          this._portal = portal;
+          switch (portal) {
+            case C.TilePortal_dungeon:
+              t2 = this._ui;
+              t3 = t1.hero.save;
+              t4 = new B.SelectDepthScreen(t1.content, t3, 1);
+              t4._depth = H.intTypeCheck(Math.min(100, t3.maxDepth + 1));
+              t2.push$1(t4);
+              break;
+            case C.TilePortal_home:
+              this._ui.push$1(new F._HomeViewScreen(t1.hero.save, null, false));
+              break;
+            case C.TilePortal_T3V:
+              this._enterShop$1(0);
+              break;
+            case C.TilePortal_T3V0:
+              this._enterShop$1(1);
+              break;
+            case C.TilePortal_T3V1:
+              this._enterShop$1(2);
+              break;
+            case C.TilePortal_T3V2:
+              this._enterShop$1(3);
+              break;
+            case C.TilePortal_T3V3:
+              this._enterShop$1(4);
+              break;
+            case C.TilePortal_T3V4:
+              this._enterShop$1(5);
+              break;
+            case C.TilePortal_T3V5:
+              this._enterShop$1(6);
+              break;
+            case C.TilePortal_T3V6:
+              this._enterShop$1(7);
+              break;
+            case C.TilePortal_T3V7:
+              this._enterShop$1(8);
+              break;
+          }
+          if (portal != null)
+            return;
+        }
+        t2 = this._pause;
+        if (t2 > 0) {
+          this._pause = t2 - 1;
           return;
         }
         if (this._hasAnimatedTile)
           this.dirty$0();
-        if (this._effects.length > 0)
+        if (this._effects.length !== 0)
           this.dirty$0();
-        t1 = this.game;
         result = t1.update$0(0);
         t2 = t1.hero;
         t3 = t2._health;
@@ -26255,8 +26619,20 @@
           return H.iae(t2);
         terminal.drawGlyph$3(x - t2, y - t1.y, glyph);
       },
+      _enterShop$1: function(index) {
+        var t1, t2, shops;
+        t1 = this.game;
+        t2 = t1.hero.save.shops;
+        t2 = t2.get$keys(t2);
+        shops = P.List_List$from(t2, true, H.getRuntimeTypeArgument(t2, "Iterable", 0));
+        if (index >= shops.length)
+          return;
+        t2 = this._ui;
+        t1 = t1.hero.save;
+        t2.push$1(new F._ShopViewScreen(t1.shops.$index(0, shops[index]), t1, null, false));
+      },
       _positionCamera$0: function() {
-        var t1, t2, t3, t4, t5, cameraRange, camera, x, y;
+        var t1, t2, t3, t4, t5, t6, cameraRange, camera, x, y;
         t1 = this.game;
         t2 = t1._stage.tiles.bounds.size;
         t3 = t2.x;
@@ -26266,13 +26642,13 @@
           return t3.$sub();
         if (typeof t5 !== "number")
           return H.iae(t5);
-        t4 = t4.y;
-        cameraRange = new X.Rect(new L.Vec(0, 0), new L.Vec(Math.max(0, t3 - t5), Math.max(0, t2.y - t4)));
-        camera = t1.hero._pos.$sub(0, new L.Vec(C.JSInt_methods._tdivFast$1(t5, 2), C.JSInt_methods._tdivFast$1(t4, 2)));
+        t6 = t4.y;
+        cameraRange = new X.Rect(new L.Vec(0, 0), new L.Vec(Math.max(0, t3 - t5), Math.max(0, t2.y - t6)));
+        camera = t1.hero._pos.$sub(0, t4.$tdiv(0, 2));
         x = C.JSNumber_methods.toInt$0(J.clamp$2$n(camera.x, cameraRange.get$left(cameraRange), cameraRange.get$right(cameraRange)));
         y = C.JSNumber_methods.toInt$0(C.JSInt_methods.clamp$2(camera.y, cameraRange.get$top(cameraRange), cameraRange.get$bottom(cameraRange)));
         t1 = t1._stage.tiles.bounds.size;
-        this._cameraBounds = new X.Rect(new L.Vec(x, y), new L.Vec(Math.min(t5, H.checkNum(t1.x)), Math.min(t4, t1.y)));
+        this._cameraBounds = new X.Rect(new L.Vec(x, y), new L.Vec(Math.min(t5, H.checkNum(t1.x)), Math.min(t6, t1.y)));
       },
       _drawStage$3: function(terminal, heroColor, visibleMonsters) {
         var t1, hero, t2, t3, t4, t5, t6, t7, t8, t9, pos, t10, t11, t12, tileGlyph, t13, phase, frame, t14, char, fore, $back, it, itemGlyph, isThing, color, actorGlyph, chance, max, light, volume, _i;
@@ -26317,7 +26693,7 @@
               if (typeof t13 !== "number")
                 return t13.$mul();
               phase = K.hashPoint(t8, t9, null);
-              frame = C.JSInt_methods.$mod(C.JSInt_methods._tdivFast$1(this._game_screen$_frame, 8) + phase, t13 * 2 - 2);
+              frame = C.JSInt_methods.$mod(C.JSInt_methods._tdivFast$1(this._frame, 8) + phase, t13 * 2 - 2);
               t13 = t12.get$length(tileGlyph);
               if (typeof t13 !== "number")
                 return H.iae(t13);
@@ -26339,7 +26715,7 @@
             t12 = t1._stage._itemsByTile.$index(0, pos);
             if (t12 == null)
               t12 = new O.Inventory(C.ItemLocation_46y, H.setRuntimeTypeInfo([], t4), null);
-            t12 = t12._inventory$_items;
+            t12 = t12._items;
             t13 = [H.getTypeArgumentByIndex(t12, 0)];
             if (new J.ArrayIterator(t12, t12.length, 0, t13).moveNext$0()) {
               it = new J.ArrayIterator(t12, t12.length, 0, t13);
@@ -26506,38 +26882,39 @@
         terminal.writeAt$4(0, 0, t3, C.Color_226_223_240);
         terminal.writeAt$4(0, 1, t2.race._race.name, C.Color_132_126_135);
         terminal.writeAt$4(0, 2, t2.heroClass.name, C.Color_132_126_135);
-        t4 = t2.fortitude;
-        this._drawStat$7(terminal, 4, "Health", hero._health, C.Color_204_35_57, t4.get$maxHealth(), C.Color_84_0_39);
+        t4 = hero._health;
+        t5 = t2.fortitude;
+        this._drawStat$7(terminal, 4, "Health", t4, C.Color_204_35_57, t5.get$maxHealth(), C.Color_84_0_39);
         terminal.writeAt$4(0, 5, "Food", C.Color_38_38_56);
         R.Draw_meter(terminal, 9, 5, 10, hero._stomach, 400, C.Color_142_82_55, C.Color_64_31_36);
-        t5 = hero._level;
-        this._drawStat$5(terminal, 6, "Level", t5._modify$1(t5._value), C.Color_21_87_194);
-        t6 = t5._modify$1(t5._value);
+        t4 = hero._level;
+        this._drawStat$5(terminal, 6, "Level", t4._modify$1(t4._value), C.Color_21_87_194);
+        t6 = t4._modify$1(t4._value);
         if (typeof t6 !== "number")
           return t6.$lt();
         if (t6 < 50) {
           t6 = t2.experience;
-          t7 = G.experienceLevelCost(t5._modify$1(t5._value));
+          t7 = G.experienceLevelCost(t4._modify$1(t4._value));
           if (typeof t6 !== "number")
             return t6.$sub();
           if (typeof t7 !== "number")
             return H.iae(t7);
-          t8 = t5._modify$1(t5._value);
+          t8 = t4._modify$1(t4._value);
           if (typeof t8 !== "number")
             return t8.$add();
           t8 = G.experienceLevelCost(t8 + 1);
-          t5 = G.experienceLevelCost(t5._modify$1(t5._value));
+          t4 = G.experienceLevelCost(t4._modify$1(t4._value));
           if (typeof t8 !== "number")
             return t8.$sub();
-          if (typeof t5 !== "number")
-            return H.iae(t5);
-          terminal.writeAt$4(15, 6, "" + C.JSInt_methods.$tdiv(100 * (t6 - t7), t8 - t5) + "%", C.Color_26_46_150);
+          if (typeof t4 !== "number")
+            return H.iae(t4);
+          terminal.writeAt$4(15, 6, "" + C.JSInt_methods.$tdiv(100 * (t6 - t7), t8 - t4) + "%", C.Color_26_46_150);
         }
         _box_0.x = 0;
         drawStat = new R.GameScreen__drawSidebar_drawStat(_box_0, terminal);
         drawStat.call$1(t2.strength);
         drawStat.call$1(t2.agility);
-        drawStat.call$1(t4);
+        drawStat.call$1(t5);
         t4 = t2.intellect;
         drawStat.call$1(t4);
         drawStat.call$1(t2.will);
@@ -26643,6 +27020,19 @@
       },
       $asScreen: function() {
         return [Y.Input];
+      },
+      static: {
+        GameScreen_GameScreen$town: function(storage, $content, save) {
+          var game, t1;
+          game = D.Game$($content, save, 0, 34, 60);
+          for (t1 = game.generate$0(), t1 = new P._SyncStarIterator(t1._outerHelper(), [H.getTypeArgumentByIndex(t1, 0)]); t1.moveNext$0();)
+            t1.get$current();
+          t1 = new R.GameScreen(game, null, storage, H.setRuntimeTypeInfo([], [K.Effect]), 0, false, 0, new L.Vec(60, 34));
+          t1._positionCamera$0();
+          $.Debug__gameScreen = t1;
+          $.$get$Debug__monsters().clear$0(0);
+          return t1;
+        }
       }
     },
     GameScreen__openTargetDialog_closure: {
@@ -26761,7 +27151,7 @@
       }
     },
     HeroEquipmentDialog_render_writeLine: {
-      "^": "Closure:14;terminal",
+      "^": "Closure:13;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500\u2500", color);
       }
@@ -26796,7 +27186,7 @@
       }
     },
     HeroEquipmentDialog_render_closure: {
-      "^": "Closure:36;writeLine,terminal,writeScale,writeBonus",
+      "^": "Closure:23;writeLine,terminal,writeScale,writeBonus",
       call$2: function(item, y) {
         var t1, t2, t3, t4;
         this.writeLine.call$2(y - 1, C.Color_19_17_28);
@@ -26822,18 +27212,6 @@
     }
   }], ["", "package:hauberk/src/ui/hero_info_dialog.dart",, M, {
     "^": "",
-    HeroInfoDialog_HeroInfoDialog: function($content, hero) {
-      var t1, t2, t3;
-      t1 = $.$get$HeroInfoDialog__screens();
-      if (t1.length === 0) {
-        t2 = new Z.HeroMonsterLoreDialog(H.setRuntimeTypeInfo([], [B.Breed]), C._Sort_JQf, 0, 0, $content, hero);
-        t2._listBreeds$0();
-        t3 = new Q.HeroItemLoreDialog(H.setRuntimeTypeInfo([], [L.ItemType]), C._Sort_MQk, 0, 0, $content, hero);
-        t3._listItems$0();
-        C.JSArray_methods.addAll$1(t1, H.setRuntimeTypeInfo([new M.HeroEquipmentDialog($content, hero), new Z.HeroResistancesDialog($content, hero), t2, t3], [M.HeroInfoDialog]));
-      }
-      return C.JSArray_methods.get$first(t1);
-    },
     HeroInfoDialog: {
       "^": "Screen;",
       get$extraHelp: function() {
@@ -27034,13 +27412,13 @@
       }
     },
     HeroItemLoreDialog_render_writeLine: {
-      "^": "Closure:14;terminal",
+      "^": "Closure:13;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500", color);
       }
     },
     HeroItemLoreDialog__listItems_compareSort: {
-      "^": "Closure:10;",
+      "^": "Closure:14;",
       call$2: [function(a, b) {
         H.interceptedTypeCheck(a, "$isItemType");
         H.interceptedTypeCheck(b, "$isItemType");
@@ -27048,7 +27426,7 @@
       }, null, null, 8, 0, null, 4, 2, "call"]
     },
     HeroItemLoreDialog__listItems_compareDepth: {
-      "^": "Closure:10;",
+      "^": "Closure:14;",
       call$2: [function(a, b) {
         H.interceptedTypeCheck(a, "$isItemType");
         H.interceptedTypeCheck(b, "$isItemType");
@@ -27056,7 +27434,7 @@
       }, null, null, 8, 0, null, 4, 2, "call"]
     },
     HeroItemLoreDialog__listItems_comparePrice: {
-      "^": "Closure:10;",
+      "^": "Closure:14;",
       call$2: [function(a, b) {
         H.interceptedTypeCheck(a, "$isItemType");
         H.interceptedTypeCheck(b, "$isItemType");
@@ -27064,7 +27442,7 @@
       }, null, null, 8, 0, null, 4, 2, "call"]
     },
     HeroItemLoreDialog__listItems_closure: {
-      "^": "Closure:10;_box_0",
+      "^": "Closure:14;_box_0",
       call$2: function(a, b) {
         var t1, t2, _i, compare;
         H.interceptedTypeCheck(a, "$isItemType");
@@ -27293,7 +27671,7 @@
       }
     },
     HeroMonsterLoreDialog_render_writeLine: {
-      "^": "Closure:14;terminal",
+      "^": "Closure:13;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500", color);
       }
@@ -27405,13 +27783,13 @@
       }
     },
     HeroResistancesDialog_render_writeLine: {
-      "^": "Closure:14;terminal",
+      "^": "Closure:13;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500", color);
       }
     },
     HeroResistancesDialog_render_closure: {
-      "^": "Closure:36;$this,writeLine,terminal",
+      "^": "Closure:23;$this,writeLine,terminal",
       call$2: function(item, y) {
         var t1, t2, i, _i, element, x, resistance, string;
         this.writeLine.call$2(y - 1, C.Color_19_17_28);
@@ -27708,7 +28086,7 @@
       }
     },
     _TossItemCommand_selectItem_closure: {
-      "^": "Closure:12;dialog,location,item,hit",
+      "^": "Closure:11;dialog,location,item,hit",
       call$1: function(target) {
         this.dialog._item_dialog$_gameScreen.game.hero._behavior = new X.ActionBehavior(new B.TossAction(this.hit, target, this.location, this.item));
       }
@@ -27775,12 +28153,12 @@
           return keyCode.$ge();
         if (keyCode >= 65 && keyCode <= 90) {
           index = keyCode - 65;
-          t1 = J.get$length$asx(this.get$_items().get$slots());
+          t1 = J.get$length$asx(this.get$_item_screen$_items().get$slots());
           if (typeof t1 !== "number")
             return H.iae(t1);
           if (index >= t1)
             return false;
-          item = J.elementAt$1$ax(this.get$_items().get$slots(), index);
+          item = J.elementAt$1$ax(this.get$_item_screen$_items().get$slots(), index);
           if (item == null)
             return false;
           if (this._shiftDown) {
@@ -27832,7 +28210,7 @@
         t2 = 45 - heroGold.length;
         terminal.writeAt$4(t2 - 1, 0, "$", C.Color_142_82_55);
         terminal.writeAt$4(t2, 0, heroGold, C.Color_222_156_33);
-        t2 = this.get$_items();
+        t2 = this.get$_item_screen$_items();
         t3 = this.get$_itemPrice();
         Y.drawItems(terminal, 0, t2, this.get$_canSelect(), this._shiftDown, t3, this._inspected, null, null);
         t2 = this._inspected;
@@ -27862,10 +28240,10 @@
         }
         if (count === item._count) {
           to.tryAdd$1(item);
-          this.get$_items().remove$1(0, item);
+          this.get$_item_screen$_items().remove$1(0, item);
         } else {
           to.tryAdd$1(item.splitStack$1(count));
-          this.get$_items().countChanged$0();
+          this.get$_item_screen$_items().countChanged$0();
         }
         this._afterTransfer$2(item, count);
         return true;
@@ -27878,7 +28256,7 @@
     },
     _HomeViewScreen: {
       "^": "ItemScreen;_save,_sink,_shiftDown,0_inspected,0_error,0_ui",
-      get$_items: function() {
+      get$_item_screen$_items: function() {
         return this._save._home;
       },
       get$_headerText: function() {
@@ -27916,7 +28294,7 @@
       get$_helpText: function() {
         return "[A-Z] Select item, [Shift] Inspect item, [Esc] Cancel";
       },
-      get$_items: function() {
+      get$_item_screen$_items: function() {
         return this._save._home;
       },
       canSelect$1: function(item) {
@@ -27945,7 +28323,7 @@
     },
     _InventoryScreen: {
       "^": "_HeroScreen;_save,_sink,_shiftDown,0_inspected,0_error,0_ui",
-      get$_items: function() {
+      get$_item_screen$_items: function() {
         return this._save._inventory;
       },
       get$nextScreenName: function() {
@@ -27957,7 +28335,7 @@
     },
     _EquipmentScreen: {
       "^": "_HeroScreen;_save,_sink,_shiftDown,0_inspected,0_error,0_ui",
-      get$_items: function() {
+      get$_item_screen$_items: function() {
         return this._save._equipment;
       },
       get$nextScreenName: function() {
@@ -27969,7 +28347,7 @@
     },
     _ShopViewScreen: {
       "^": "ItemScreen;_shop,_save,_sink,_shiftDown,0_inspected,0_error,0_ui",
-      get$_items: function() {
+      get$_item_screen$_items: function() {
         return this._shop;
       },
       get$_headerText: function() {
@@ -28009,7 +28387,7 @@
       get$_helpText: function() {
         return "[A-Z] Select item, [Shift] Inspect item, [Esc] Cancel";
       },
-      get$_items: function() {
+      get$_item_screen$_items: function() {
         return this._shop;
       },
       canSelect$1: function(item) {
@@ -28086,8 +28464,8 @@
     },
     _CountScreen: {
       "^": "ItemScreen;_parent,_item>,0_item_screen$_count,_save,_sink,_shiftDown,0_inspected,0_error,0_ui",
-      get$_items: function() {
-        return this._parent.get$_items();
+      get$_item_screen$_items: function() {
+        return this._parent.get$_item_screen$_items();
       },
       get$_headerText: function() {
         return "";
@@ -28600,7 +28978,7 @@
   }], ["", "package:hauberk/src/ui/loading_dialog.dart",, F, {
     "^": "",
     LoadingDialog: {
-      "^": "Screen;_loading_dialog$_save,_game,0_steps,_frame,0_ui",
+      "^": "Screen;_loading_dialog$_storage,_loading_dialog$_storageSave,_game,0_steps,_loading_dialog$_frame,0_ui",
       set$_steps: function(_steps) {
         this._steps = H.assertSubtype(_steps, "$isIterator", [P.String], "$asIterator");
       },
@@ -28651,7 +29029,7 @@
             this.dirty$0();
           else {
             t1 = this._ui;
-            t2 = new R.GameScreen(this._game, this._loading_dialog$_save, H.setRuntimeTypeInfo([], [K.Effect]), 0, false, 0, new L.Vec(60, 34));
+            t2 = new R.GameScreen(this._game, this._loading_dialog$_storageSave, this._loading_dialog$_storage, H.setRuntimeTypeInfo([], [K.Effect]), 0, false, 0, new L.Vec(60, 34));
             t2._positionCamera$0();
             $.Debug__gameScreen = t2;
             $.$get$Debug__monsters().clear$0(0);
@@ -28667,12 +29045,12 @@
             return;
           }
         }
-        this._frame = (this._frame + 1) % 10;
+        this._loading_dialog$_frame = (this._loading_dialog$_frame + 1) % 10;
       },
       render$1: function(terminal) {
         var offset;
         terminal.writeAt$4(30, 18, "Entering dungeon...", C.Color_132_126_135);
-        offset = C.JSInt_methods._tdivFast$1(this._frame, 2);
+        offset = C.JSInt_methods._tdivFast$1(this._loading_dialog$_frame, 2);
         terminal.writeAt$4(30, 20, C.JSString_methods.substring$2(C.JSString_methods.$mul("/    ", 5), offset, offset + 20), C.Color_226_223_240);
       },
       $asScreen: function() {
@@ -28684,7 +29062,7 @@
     MainMenuScreen: {
       "^": "Screen;content,storage,selectedHero,0_ui",
       handleInput$1: function(input) {
-        var t1, t2, t3, t4, t5;
+        var t1, t2, t3, t4, save;
         switch (H.interceptedTypeCheck(input, "$isInput")) {
           case C.Input_n:
             this._main_menu_screen$_changeSelection$1(-1);
@@ -28698,10 +29076,10 @@
             t3 = t2.heroes;
             t4 = t3.length;
             if (t1 < t4) {
-              t5 = this._ui;
               if (t1 < 0)
                 return H.ioore(t3, t1);
-              t5.push$1(B.SelectDepthScreen$(this.content, t3[t1], t2));
+              save = t3[t1];
+              this._ui.push$1(R.GameScreen_GameScreen$town(t2, this.content, save));
             }
             return true;
         }
@@ -28956,7 +29334,7 @@
             t5 = this.storage;
             C.JSArray_methods.add$1(t5.heroes, hero);
             t5.save$0(0);
-            this._ui.goTo$1(B.SelectDepthScreen$(t1, hero, t5));
+            this._ui.goTo$1(R.GameScreen_GameScreen$town(t5, t1, hero));
             return true;
           case 9:
             if (shift)
@@ -29057,47 +29435,26 @@
   }], ["", "package:hauberk/src/ui/select_depth_screen.dart",, B, {
     "^": "",
     SelectDepthScreen: {
-      "^": "Screen;content,save,storage,selectedDepth,0_ui",
+      "^": "Screen;content,save,_depth,0_ui",
+      get$isTransparent: function() {
+        return true;
+      },
       handleInput$1: function(input) {
-        var t1, t2, t3, t4, t5, t6, t7, t8, t9;
         switch (H.interceptedTypeCheck(input, "$isInput")) {
           case C.Input_w:
-            this._changeDepth$1(this.selectedDepth - 1);
+            this._changeDepth$1(this._depth - 1);
             return true;
           case C.Input_e:
-            this._changeDepth$1(this.selectedDepth + 1);
+            this._changeDepth$1(this._depth + 1);
             return true;
           case C.Input_n:
-            this._changeDepth$1(this.selectedDepth - 10);
+            this._changeDepth$1(this._depth - 10);
             return true;
           case C.Input_s:
-            this._changeDepth$1(this.selectedDepth + 10);
+            this._changeDepth$1(this._depth + 10);
             return true;
-          case C.Input_editSkills:
-            this._ui.push$1(R.SkillDialog_SkillDialog(this.save));
-            break;
-          case C.Input_heroInfo:
-            this._ui.push$1(M.HeroInfoDialog_HeroInfoDialog(this.content, this.save));
-            break;
           case C.Input_ok:
-            t1 = this._ui;
-            t2 = this.save;
-            t3 = this.selectedDepth;
-            t4 = P.ListQueue$(null, O.Message);
-            t5 = V.Action;
-            t6 = P.ListQueue$(null, t5);
-            t5 = H.setRuntimeTypeInfo([], [t5]);
-            t7 = H.setRuntimeTypeInfo([], [D.Event0]);
-            t8 = [L.Vec];
-            t9 = H.setRuntimeTypeInfo([], t8);
-            t3 = new D.Game(this.content, t2, new O.Log(t4), t6, t5, t7, new Y.Energy(0), t9, t3);
-            t4 = L.Stage$(80, 60, t3);
-            t3._stage = t4;
-            C.JSArray_methods.addAll$1(t9, t4.tiles.bounds.inflate$1(-1));
-            t4 = $.$get$rng();
-            t4.toString;
-            C.JSArray_methods.shuffle$1(H.assertSubtype(t9, "$isList", t8, "$asList"), t4._random);
-            t1.push$1(new F.LoadingDialog(t2, t3, 0));
+            this._ui.pop$1(this._depth);
             return true;
           case C.Input_cancel:
             this._ui.pop$0();
@@ -29105,123 +29462,46 @@
         }
         return false;
       },
-      keyDown$3$alt$shift: function(keyCode, alt, shift) {
-        if (shift || alt)
-          return false;
-        switch (keyCode) {
-          case 83:
-            this._ui.push$1(R.SkillDialog_SkillDialog(this.save));
-            break;
-          case 72:
-            this._ui.push$1(new F._HomeViewScreen(this.save, null, false));
-            return true;
-          case 49:
-            return this.tryEnterShop$1(0);
-          case 50:
-            return this.tryEnterShop$1(1);
-          case 51:
-            return this.tryEnterShop$1(2);
-          case 52:
-            return this.tryEnterShop$1(3);
-          case 53:
-            return this.tryEnterShop$1(4);
-          case 54:
-            return this.tryEnterShop$1(5);
-          case 55:
-            return this.tryEnterShop$1(6);
-          case 56:
-            return this.tryEnterShop$1(7);
-          case 57:
-            return this.tryEnterShop$1(8);
-        }
-        return false;
-      },
-      tryEnterShop$1: function(index) {
-        var t1, t2, t3, shops;
-        t1 = this.save;
-        t2 = t1.shops;
-        t3 = t2.get$keys(t2);
-        shops = P.List_List$from(t3, true, H.getRuntimeTypeArgument(t3, "Iterable", 0));
-        if (index >= shops.length)
-          return false;
-        this._ui.push$1(new F._ShopViewScreen(t2.$index(0, shops[index]), t1, null, false));
-        return true;
-      },
       render$1: function(terminal) {
-        var _box_0, t1, depth, t2, x, y, color, t3, drawMenuItem, i;
-        _box_0 = {};
-        t1 = this.save;
-        terminal.writeAt$4(15, 4, "Greetings, " + H.S(t1.name) + ", how deep shall you venture?", C.Color_132_126_135);
-        terminal.writeAt$4(0, terminal._display._glyphs.bounds.size.y - 1, "[L] Enter dungeon, [\u2195] Change depth, [\u2194] Change depth", C.Color_38_38_56);
-        for (depth = 1; depth <= 100; ++depth) {
+        var t1, depth, t2, x, y, color, t3;
+        terminal.writeAt$4(0, terminal._display._glyphs.bounds.size.y - 1, "[L] Enter dungeon, [\u2195\u2194] Change depth, [Esc] Cancel", C.Color_38_38_56);
+        terminal = new G.PortTerminal(new L.Vec(44, 28), 11, 5, terminal, C.Color_255_255_255, C.Color_0_0_0);
+        terminal.fill$4(0, 0, 0, terminal.get$width(terminal), terminal.get$height(terminal));
+        R.Draw__box(terminal, 0, 0, 44, 28, C.Color_222_156_33, "\u2554", "\u2550", "\u2557", "\u2551", "\u255a", "\u2550", "\u255d");
+        terminal.writeAt$4(6, 2, "Stairs descend into darkness.", C.Color_132_126_135);
+        terminal.writeAt$4(6, 3, "How far down shall you venture?", C.Color_132_126_135);
+        for (t1 = this.save, depth = 1; depth <= 100; ++depth) {
           t2 = depth - 1;
           x = C.JSInt_methods.$mod(t2, 10);
-          y = C.JSInt_methods._tdivFast$1(t2, 10);
+          y = C.JSInt_methods._tdivFast$1(t2, 10) * 2;
           t2 = t1.maxDepth;
           if (depth > t2 + 1)
             color = C.Color_38_38_56;
-          else if (depth === this.selectedDepth) {
-            t2 = x * 5;
+          else if (depth === this._depth) {
+            t2 = x * 4;
             t3 = 6 + y;
-            terminal.drawGlyph$3(14 + t2, t3, new L.Glyph(9658, C.Color_222_156_33, C.Color_0_0_0));
-            terminal.drawGlyph$3(18 + t2, t3, new L.Glyph(9668, C.Color_222_156_33, C.Color_0_0_0));
+            terminal.drawGlyph$3(t2 + 1, t3, new L.Glyph(9658, C.Color_222_156_33, C.Color_0_0_0));
+            terminal.drawGlyph$3(t2 + 5, t3, new L.Glyph(9668, C.Color_222_156_33, C.Color_0_0_0));
             color = C.Color_222_156_33;
           } else
             color = C.Color_226_223_240;
-          terminal.writeAt$4(15 + x * 5, 6 + y, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(depth), 3), color);
-        }
-        _box_0.y = 18;
-        drawMenuItem = new B.SelectDepthScreen_render_drawMenuItem(_box_0, terminal);
-        drawMenuItem.call$2("a", "About Hero");
-        drawMenuItem.call$2("s", "Hero Skills");
-        drawMenuItem.call$2("h", "Enter Home");
-        ++_box_0.y;
-        for (t1 = $.$get$Shops_all(), t1 = t1.get$values(t1), t1 = t1.get$iterator(t1), i = 1; t1.moveNext$0();) {
-          t2 = t1.get$current();
-          drawMenuItem.call$2(C.JSInt_methods.toString$0(i), t2.name);
-          ++i;
+          terminal.writeAt$4(x * 4 + 2, 6 + y, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(depth), 3), color);
         }
       },
-      activate$2: function($screen, result) {
-        var t1 = J.getInterceptor$($screen);
-        if (!!t1.$isGameScreen && H.boolTypeCast(result))
-          this.storage.save$0(0);
-        else if (!!t1.$isItemScreen)
-          this.storage.save$0(0);
-      },
-      _changeDepth$1: function(level) {
+      _changeDepth$1: function(depth) {
         var t1;
-        if (level < 1)
+        if (depth < 1)
           return;
-        if (level > 100)
+        if (depth > 100)
           return;
         t1 = this.save.maxDepth;
-        if (level > t1 + 1)
+        if (depth > t1 + 1)
           return;
-        this.selectedDepth = level;
+        this._depth = depth;
         this.dirty$0();
       },
       $asScreen: function() {
         return [Y.Input];
-      },
-      static: {
-        SelectDepthScreen$: function($content, save, storage) {
-          var t1 = new B.SelectDepthScreen($content, save, storage, 1);
-          t1.selectedDepth = H.intTypeCheck(Math.min(100, save.maxDepth + 1));
-          return t1;
-        }
-      }
-    },
-    SelectDepthScreen_render_drawMenuItem: {
-      "^": "Closure:125;_box_0,terminal",
-      call$2: function(key, label) {
-        var t1, t2;
-        t1 = this.terminal;
-        t2 = this._box_0;
-        t1.writeAt$4(20, t2.y, key, C.Color_128_128_128);
-        t1.writeAt$4(21, t2.y, ")", C.Color_64_64_64);
-        t1.writeAt$3(23, t2.y, label);
-        ++t2.y;
       }
     }
   }], ["", "package:hauberk/src/ui/select_skill_dialog.dart",, Z, {
@@ -29535,13 +29815,14 @@
         H.interceptedTypeCheck(skill, "$isSpell");
         terminal.writeAt$4(1, 30, "Complexity:", C.Color_38_38_56);
         t1 = this._skill_dialog$_hero;
-        t2 = t1.heroClass;
         if (t1.skills.isAcquired$1(skill))
-          terminal.writeAt$4(13, 30, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(skill.complexity$1(t2)), 3), C.Color_132_126_135);
+          terminal.writeAt$4(13, 30, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(skill.complexity$1(t1.heroClass)), 3), C.Color_132_126_135);
         else {
+          t2 = t1.heroClass;
           terminal.writeAt$4(13, 30, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(skill.complexity$1(t2)), 3), C.Color_204_35_57);
+          t2 = skill.complexity$1(t2);
           t3 = t1.intellect;
-          terminal.writeAt$4(17, 30, "Need " + (skill.complexity$1(t2) - t3._modify$1(t3._value)) + " more intellect", C.Color_38_38_56);
+          terminal.writeAt$4(17, 30, "Need " + (t2 - t3._modify$1(t3._value)) + " more intellect", C.Color_38_38_56);
         }
         terminal.writeAt$4(1, 32, "Focus cost:", C.Color_38_38_56);
         terminal.writeAt$4(13, 32, C.JSString_methods.padLeft$1(C.JSInt_methods.toString$0(skill.focusCost$1(t1)), 3), C.Color_132_126_135);
@@ -29823,7 +30104,7 @@
       }
     },
     Storage__load_closure: {
-      "^": "Closure:126;name",
+      "^": "Closure:125;name",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isHeroClass");
         return J.get$name$x(c) == this.name;
@@ -29842,7 +30123,7 @@
       }
     },
     Storage__loadRace_closure: {
-      "^": "Closure:127;name",
+      "^": "Closure:126;name",
       call$1: function(race) {
         return H.interceptedTypeCheck(race, "$isRace").name === this.name;
       }
@@ -30296,14 +30577,14 @@
       }
     },
     TargetDialog__changeMonsterTarget_closure: {
-      "^": "Closure:37;$this",
+      "^": "Closure:36;$this",
       call$1: function(monster) {
         var t1 = this.$this._target_dialog$_gameScreen;
         return monster.get$pos().$sub(0, t1.get$currentTarget(t1)).get$lengthSquared();
       }
     },
     TargetDialog__changeMonsterTarget_closure0: {
-      "^": "Closure:37;$this",
+      "^": "Closure:36;$this",
       call$1: function(monster) {
         var t1 = this.$this._target_dialog$_gameScreen;
         return monster.get$pos().$sub(0, t1.get$currentTarget(t1)).get$lengthSquared();
@@ -30548,7 +30829,7 @@
       }
     },
     RetroTerminal$__closure: {
-      "^": "Closure:38;$this",
+      "^": "Closure:37;$this",
       call$1: function(_) {
         var t1 = this.$this;
         t1._imageLoaded = true;
@@ -30724,7 +31005,7 @@
         t1 = $event.shiftKey;
         if ($screen.keyDown$3$alt$shift(keyCode, $event.altKey, t1))
           $event.preventDefault();
-      }, "call$1", "get$_keyDown", 4, 0, 39],
+      }, "call$1", "get$_keyDown", 4, 0, 38],
       _keyUp$1: [function($event) {
         var keyCode, $screen, t1;
         H.interceptedTypeCheck($event, "$isKeyboardEvent");
@@ -30735,13 +31016,13 @@
         t1 = $event.shiftKey;
         if ($screen.keyUp$3$alt$shift(keyCode, $event.altKey, t1))
           $event.preventDefault();
-      }, "call$1", "get$_keyUp", 4, 0, 39],
+      }, "call$1", "get$_keyUp", 4, 0, 38],
       _user_interface$_tick$1: [function(time) {
         H.numTypeCheck(time);
         this.refresh$0();
         if (this._running)
           C.Window_methods.requestAnimationFrame$1(window, this.get$_user_interface$_tick());
-      }, "call$1", "get$_user_interface$_tick", 4, 0, 131, 33],
+      }, "call$1", "get$_user_interface$_tick", 4, 0, 130, 33],
       _render$0: function() {
         var t1, i;
         t1 = this._terminal;
@@ -31497,6 +31778,12 @@
         if (typeof t1 !== "number")
           return t1.$mul();
         return new L.Vec(t1 * other, this.y * other);
+      },
+      $tdiv: function(_, other) {
+        var t1 = this.x;
+        if (typeof t1 !== "number")
+          return t1.$tdiv();
+        return new L.Vec(C.JSInt_methods.$tdiv(t1, other), C.JSInt_methods.$tdiv(this.y, other));
       },
       $add: function(_, other) {
         var t1, t2;
@@ -32553,13 +32840,13 @@
       "^": "Object;name>,element,terminal,charWidth,charHeight"
     },
     addTerminal_closure: {
-      "^": "Closure:38;element",
+      "^": "Closure:37;element",
       call$1: function(_) {
         F.fullscreen(this.element);
       }
     },
     addTerminal_closure0: {
-      "^": "Closure:132;name,terminal",
+      "^": "Closure:131;name,terminal",
       call$1: function(_) {
         var t1, i, t2, t3;
         H.interceptedTypeCheck(_, "$isMouseEvent");
@@ -32953,7 +33240,6 @@
   C.Color_0_64_255 = new L.Color(0, 64, 255);
   C.Color_0_64_39 = new L.Color(0, 64, 39);
   C.Color_122_44_24 = new L.Color(122, 44, 24);
-  C.Color_128_128_128 = new L.Color(128, 128, 128);
   C.Color_129_217_117 = new L.Color(129, 217, 117);
   C.Color_129_231_235 = new L.Color(129, 231, 235);
   C.Color_131_158_13 = new L.Color(131, 158, 13);
@@ -32979,7 +33265,6 @@
   C.Color_63_64_114 = new L.Color(63, 64, 114);
   C.Color_64_163_229 = new L.Color(64, 163, 229);
   C.Color_64_31_36 = new L.Color(64, 31, 36);
-  C.Color_64_64_64 = new L.Color(64, 64, 64);
   C.Color_84_0_39 = new L.Color(84, 0, 39);
   C.Color_86_30_138 = new L.Color(86, 30, 138);
   C.Color_99_87_7 = new L.Color(99, 87, 7);
@@ -33270,6 +33555,18 @@
   C.Symmetry_3 = new T.Symmetry(3, "Symmetry.mirrorBoth");
   C.Symmetry_4 = new T.Symmetry(4, "Symmetry.rotate90");
   C.Symmetry_5 = new T.Symmetry(5, "Symmetry.rotate180");
+  C.TilePortal_T3V = new Q.TilePortal("shop 1");
+  C.TilePortal_T3V0 = new Q.TilePortal("shop 2");
+  C.TilePortal_T3V1 = new Q.TilePortal("shop 3");
+  C.TilePortal_T3V2 = new Q.TilePortal("shop 4");
+  C.TilePortal_T3V3 = new Q.TilePortal("shop 5");
+  C.TilePortal_T3V4 = new Q.TilePortal("shop 6");
+  C.TilePortal_T3V5 = new Q.TilePortal("shop 7");
+  C.TilePortal_T3V6 = new Q.TilePortal("shop 8");
+  C.TilePortal_T3V7 = new Q.TilePortal("shop 9");
+  C.TilePortal_dungeon = new Q.TilePortal("dungeon");
+  C.TilePortal_exit = new Q.TilePortal("exit");
+  C.TilePortal_home = new Q.TilePortal("home");
   C.Vec_0_0 = new L.Vec(0, 0);
   C.Vec_0_1 = new L.Vec(0, 1);
   C.Vec_0_m1 = new L.Vec(0, -1);
@@ -33607,9 +33904,7 @@
   }, "Tiles_openBarredDoor", "Tiles_closedBarredDoor", "$get$Tiles_closedBarredDoor", function() {
     return Z._TileBuilder__TileBuilder("closed barred door", "\u266a", C.Color_132_126_135, C.Color_63_64_114).onOpen$1(Z.tiles___openBarredDoor$closure())._tiles$_motility$1($.$get$Motility_fly().$or(0, $.$get$Motility_door()));
   }, "Tiles_closedBarredDoor", "Tiles_stairs", "$get$Tiles_stairs", function() {
-    var t1 = Z._TileBuilder__TileBuilder("stairs", "\u2261", C.Color_132_126_135, C.Color_63_64_114);
-    t1._isExit = true;
-    return t1.open$0(0);
+    return Z._TileBuilder__TileBuilder("stairs", "\u2261", C.Color_132_126_135, C.Color_63_64_114).to$1(C.TilePortal_exit).open$0(0);
   }, "Tiles_stairs", "Tiles_bridge", "$get$Tiles_bridge", function() {
     return Z._TileBuilder__TileBuilder("bridge", "\u2261", C.Color_142_82_55, C.Color_64_31_36).open$0(0);
   }, "Tiles_bridge", "Tiles_glowingMoss", "$get$Tiles_glowingMoss", function() {
@@ -33686,7 +33981,23 @@
     return Z._TileBuilder__TileBuilder("white jelly stain", "\xb7", C.Color_226_223_240, null).open$0(0);
   }, "Tiles_whiteJellyStain", "Tiles_spiderweb", "$get$Tiles_spiderweb", function() {
     return Z._TileBuilder__TileBuilder("spiderweb", "\xf7", C.Color_63_64_114, null).open$0(0);
-  }, "Tiles_spiderweb", "Tiles__ignition", "$get$Tiles__ignition", function() {
+  }, "Tiles_spiderweb", "Tiles_dungeonEntrance", "$get$Tiles_dungeonEntrance", function() {
+    return Z._TileBuilder__TileBuilder("dungeon entrance", "\u2261", C.Color_132_126_135, C.Color_63_64_114).to$1(C.TilePortal_dungeon).open$0(0);
+  }, "Tiles_dungeonEntrance", "Tiles_home", "$get$Tiles_home", function() {
+    return Z._TileBuilder__TileBuilder("home entrance", "\u25cb", C.Color_189_144_108, null).to$1(C.TilePortal_home).open$0(0);
+  }, "Tiles_home", "Tiles_shop1", "$get$Tiles_shop1", function() {
+    return Z._TileBuilder__TileBuilder("shop entrance", "\u25cb", C.Color_179_74_4, null).to$1(C.TilePortal_T3V).open$0(0);
+  }, "Tiles_shop1", "Tiles_shop2", "$get$Tiles_shop2", function() {
+    return Z._TileBuilder__TileBuilder("shop entrance", "\u25cb", C.Color_222_156_33, null).to$1(C.TilePortal_T3V0).open$0(0);
+  }, "Tiles_shop2", "Tiles_shop3", "$get$Tiles_shop3", function() {
+    return Z._TileBuilder__TileBuilder("shop entrance", "\u25cb", C.Color_131_158_13, null).to$1(C.TilePortal_T3V1).open$0(0);
+  }, "Tiles_shop3", "Tiles_shop4", "$get$Tiles_shop4", function() {
+    return Z._TileBuilder__TileBuilder("shop entrance", "\u25cb", C.Color_22_117_38, null).to$1(C.TilePortal_T3V2).open$0(0);
+  }, "Tiles_shop4", "Tiles_shop5", "$get$Tiles_shop5", function() {
+    return Z._TileBuilder__TileBuilder("shop entrance", "\u25cb", C.Color_9_95_112, null).to$1(C.TilePortal_T3V3).open$0(0);
+  }, "Tiles_shop5", "Tiles_shop6", "$get$Tiles_shop6", function() {
+    return Z._TileBuilder__TileBuilder("shop entrance", "\u25cb", C.Color_129_231_235, null).to$1(C.TilePortal_T3V4).open$0(0);
+  }, "Tiles_shop6", "Tiles__ignition", "$get$Tiles__ignition", function() {
     return P.LinkedHashMap_LinkedHashMap$_literal([$.$get$Tiles_openDoor(), 30, $.$get$Tiles_closedDoor(), 30, $.$get$Tiles_bridge(), 50, $.$get$Tiles_glowingMoss(), 10, $.$get$Tiles_grass(), 3, $.$get$Tiles_tallGrass(), 3, $.$get$Tiles_tree(), 40, $.$get$Tiles_treeAlt1(), 40, $.$get$Tiles_treeAlt2(), 40, $.$get$Tiles_tableTopLeft(), 20, $.$get$Tiles_tableTop(), 20, $.$get$Tiles_tableTopRight(), 20, $.$get$Tiles_tableSide(), 20, $.$get$Tiles_tableCenter(), 20, $.$get$Tiles_tableBottomLeft(), 20, $.$get$Tiles_tableBottom(), 20, $.$get$Tiles_tableBottomRight(), 20, $.$get$Tiles_tableLegLeft(), 20, $.$get$Tiles_tableLeg(), 20, $.$get$Tiles_tableLegRight(), 20, $.$get$Tiles_openChest(), 40, $.$get$Tiles_closedChest(), 80, $.$get$Tiles_openBarrel(), 15, $.$get$Tiles_closedBarrel(), 40, $.$get$Tiles_candle(), 1, $.$get$Tiles_chair(), 10, $.$get$Tiles_spiderweb(), 1], Q.TileType, P.int);
   }, "Tiles__ignition", "Tiles__fuel", "$get$Tiles__fuel", function() {
     return P.LinkedHashMap_LinkedHashMap$_literal([$.$get$Tiles_openDoor(), 70, $.$get$Tiles_closedDoor(), 70, $.$get$Tiles_bridge(), 50, $.$get$Tiles_glowingMoss(), 20, $.$get$Tiles_grass(), 30, $.$get$Tiles_tallGrass(), 50, $.$get$Tiles_tree(), 100, $.$get$Tiles_treeAlt1(), 100, $.$get$Tiles_treeAlt2(), 100, $.$get$Tiles_tableTopLeft(), 60, $.$get$Tiles_tableTop(), 60, $.$get$Tiles_tableTopRight(), 60, $.$get$Tiles_tableSide(), 60, $.$get$Tiles_tableCenter(), 60, $.$get$Tiles_tableBottomLeft(), 60, $.$get$Tiles_tableBottom(), 60, $.$get$Tiles_tableBottomRight(), 60, $.$get$Tiles_tableLegLeft(), 60, $.$get$Tiles_tableLeg(), 60, $.$get$Tiles_tableLegRight(), 60, $.$get$Tiles_openChest(), 70, $.$get$Tiles_closedChest(), 80, $.$get$Tiles_openBarrel(), 30, $.$get$Tiles_closedBarrel(), 40, $.$get$Tiles_candle(), 60, $.$get$Tiles_chair(), 40, $.$get$Tiles_spiderweb(), 20], Q.TileType, P.int);
@@ -33767,7 +34078,7 @@
   Isolate = Isolate.$finishIsolateConstructor(Isolate);
   $ = new Isolate();
   init.metadata = ["pos", "_", "b", "distance", "a", "hit", "damage", null, "invocation", "attributeName", "element", "value", "context", "o", "input", "from", "to", "name", "each", "arg4", "e", "attr", "n", "callback", "captureThis", "self", "arguments", "index", "closure", "numberOfArguments", "line", "error", "stackTrace", "time", "arg", "key", "object", "arg1", "__", "___", "____", "resource", "tag", "item", "arg2", "arg3", "group", "sentence", "race", "c", "fuel"];
-  init.types = [{func: 1, ret: P.bool, args: [L.Vec]}, {func: 1, ret: P.Null}, {func: 1, args: [,]}, {func: 1, ret: -1}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: P.int}, {func: 1, ret: P.bool, args: [Z.Direction]}, {func: 1, ret: P.int, args: [R.Item]}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, ret: P.int, args: [L.ItemType, L.ItemType]}, {func: 1, ret: P.Null, args: [R.Item]}, {func: 1, ret: P.Null, args: [L.Vec]}, {func: 1, ret: V.Action, args: [L.Vec]}, {func: 1, ret: P.Null, args: [P.int, L.Color]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: -1, args: [P.String], opt: [O.Noun, O.Noun, O.Noun]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.bool, args: [R.Item]}, {func: 1, ret: P.int, args: [B.Breed, B.Breed]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: -1, args: [P.int], named: {to: P.int}}, {func: 1, ret: P.bool, args: [W.Element0, P.String, P.String, W._Html5NodeValidator]}, {func: 1, ret: -1, args: [L.Vec]}, {func: 1, ret: [P.List, L.Vec]}, {func: 1, ret: P.Null, args: [R.Item, L.Vec]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: -1, args: [E.Condition]}, {func: 1, ret: P.bool, args: [W.NodeValidator]}, {func: 1, ret: P.Null, args: [B.Monster]}, {func: 1, ret: P.bool, args: [O.Move]}, {func: 1, ret: P.Null, args: [O.Shop, O.Inventory]}, {func: 1, ret: P.Null, args: [P.int, P.int, L.Glyph]}, {func: 1, ret: P.Null, args: [R.Item, P.int]}, {func: 1, ret: P.num, args: [,]}, {func: 1, ret: P.Null, args: [W.Event]}, {func: 1, ret: -1, args: [W.KeyboardEvent]}, {func: 1, ret: -1, args: [P.int], opt: [P.int]}, {func: 1, ret: E.PoisonAction, args: [P.int]}, {func: 1, ret: G.PoisonFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: P.Null, args: [P.String, P.int]}, {func: 1, ret: E.DazzleAction, args: [P.int]}, {func: 1, ret: G.LightFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: X.EatAction}, {func: 1, ret: T.DetectAction}, {func: 1, ret: E.ResistAction}, {func: 1, ret: Q.MappingAction}, {func: 1, ret: E.HasteAction}, {func: 1, ret: S.TeleportAction}, {func: 1, ret: O.HealAction}, {func: 1, ret: G.RingSelfAction}, {func: 1, ret: G.RingFromAction, args: [L.Vec]}, {func: 1, ret: N.FlowSelfAction}, {func: 1, ret: N.FlowFromAction, args: [L.Vec]}, {func: 1, ret: F.IlluminateSelfAction}, {func: 1, ret: -1, args: [P.int, P.double]}, {func: 1, ret: P.Null, args: [L.Drop, P.double]}, {func: 1, ret: P.Null, args: [P.String, P.double]}, {func: 1, ret: P.JsObject, args: [,]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.Null, named: {canFill: P.bool, create: {func: 1, ret: X.Architecture}, decor: P.String, decorDensity: P.double, end: P.int, frequency: P.double, itemDensity: P.double, monsterDensity: P.double, monsters: P.String, start: P.int}}, {func: 1, ret: Q.Dungeon}, {func: 1, ret: Z.Keep}, {func: 1, ret: D.Catacomb}, {func: 1, ret: [P.JsArray,,], args: [,]}, {func: 1, ret: F.Lake}, {func: 1, ret: G.River}, {func: 1, ret: P.Null, args: [P.String], named: {end: P.int, start: P.int}}, {func: 1, ret: A.Pit}, {func: 1, ret: P.Null, args: [X.Architecture, [P.List, L.Vec]]}, {func: 1, ret: P.Null, args: [B.Breed, L.Vec]}, {func: 1, ret: P.double, args: [P.int,,]}, {func: 1, ret: Q.TileType, args: [Z._TileBuilder, P.int]}, {func: 1, ret: Q.OpenChestAction, args: [L.Vec]}, {func: 1, ret: Q.OpenBarrelAction, args: [L.Vec]}, {func: 1, ret: P.Null, args: [P.Symbol0,,]}, {func: 1, ret: E.BlindAction, args: [P.int]}, {func: 1, ret: -1, args: [P.int, P.int]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.Null, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, args: [W.Event]}, {func: 1, ret: P.int, args: [P.int]}, {func: 1, ret: -1, args: [M.Skill]}, {func: 1, ret: P.Null, args: [P.double]}, {func: 1, ret: P.Null, args: [L.Affix]}, {func: 1, ret: P.double, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [M.Skill]}, {func: 1, ret: P.bool, args: [P.bool, P.int]}, {func: 1, ret: -1, args: [D.Stat, P.int]}, {func: 1, ret: P.int, args: [P.int, R.Item]}, {func: 1, args: [P.String]}, {func: 1, ret: O.AddItemResult, args: [R.Item], named: {wasUnequipped: P.bool}}, {func: 1, ret: R.Item, args: [R.Item]}, {func: 1, ret: P.bool, args: [P.double, P.double]}, {func: 1, ret: [P.List, L.Vec], args: [P.int]}, {func: 1, ret: M.Skill, args: [P.String]}, {func: 1, ret: P.Null, args: [L.Vec, P.int]}, {func: 1, ret: Q.Tile}, {func: 1, ret: O.Inventory}, {func: 1, ret: P.Null, args: [L.Vec, O.Inventory]}, {func: 1, ret: P.bool, args: [S.Actor]}, {func: 1, ret: [P._Future,,], args: [,]}, {func: 1, ret: -1, args: [Z.Direction]}, {func: 1, ret: P.Null, args: [Z.Direction]}, {func: 1, ret: P.bool, args: [K.Effect]}, {func: 1, ret: P.bool, args: [P.double]}, {func: 1, ret: P.Null, args: [D.StatBase]}, {func: 1, ret: P.int, args: [B.Monster, B.Monster]}, {func: 1, ret: P.Null, args: [P.String, L.Color], opt: [L.Color]}, {func: 1, args: [, P.String]}, {func: 1, ret: G.WindAction, args: [P.int]}, {func: 1, ret: -1, args: [G.Element, P.int]}, {func: 1, ret: P.bool, args: [B.Breed]}, {func: 1, ret: -1, args: [W.Node, W.Node]}, {func: 1, ret: P.bool, args: [P.int]}, {func: 1, ret: W.Element0, args: [W.Node]}, {func: 1, ret: P.JsFunction, args: [,]}, {func: 1, ret: P.Null, args: [P.String, P.Object]}, {func: 1, ret: P.String, args: [N.Race]}, {func: 1, ret: P.String, args: [T.HeroClass]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: P.bool, args: [T.HeroClass]}, {func: 1, ret: P.bool, args: [N.Race]}, {func: 1, ret: G.BurnActorAction, args: [P.int]}, {func: 1, ret: G.BurnFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: E.FreezeActorAction, args: [P.int]}, {func: 1, ret: -1, args: [P.num]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: P.num}, {func: 1, ret: P.Null, args: [,], opt: [P.StackTrace]}, {func: 1, ret: G.FreezeFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: P.Object, args: [,]}, {func: 1, ret: P.Null, args: [Z.Direction, P.bool]}, {func: 1, ret: Q.Cavern}];
+  init.types = [{func: 1, ret: P.bool, args: [L.Vec]}, {func: 1, ret: P.Null}, {func: 1, args: [,]}, {func: 1, ret: -1}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: P.int}, {func: 1, ret: P.bool, args: [Z.Direction]}, {func: 1, ret: P.int, args: [R.Item]}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, ret: P.Null, args: [R.Item]}, {func: 1, ret: P.Null, args: [L.Vec]}, {func: 1, ret: V.Action, args: [L.Vec]}, {func: 1, ret: P.Null, args: [P.int, L.Color]}, {func: 1, ret: P.int, args: [L.ItemType, L.ItemType]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: -1, args: [P.String], opt: [O.Noun, O.Noun, O.Noun]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.bool, args: [R.Item]}, {func: 1, ret: P.int, args: [B.Breed, B.Breed]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: P.Null, args: [R.Item, P.int]}, {func: 1, ret: P.bool, args: [W.Element0, P.String, P.String, W._Html5NodeValidator]}, {func: 1, ret: -1, args: [L.Vec]}, {func: 1, ret: [P.List, L.Vec]}, {func: 1, ret: P.Null, args: [R.Item, L.Vec]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [O.Move]}, {func: 1, ret: -1, args: [E.Condition]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: P.bool, args: [W.NodeValidator]}, {func: 1, ret: P.Null, args: [B.Monster]}, {func: 1, ret: P.Null, args: [O.Shop, O.Inventory]}, {func: 1, ret: P.Null, args: [P.int, P.int, L.Glyph]}, {func: 1, ret: P.num, args: [,]}, {func: 1, ret: P.Null, args: [W.Event]}, {func: 1, ret: -1, args: [W.KeyboardEvent]}, {func: 1, ret: -1, args: [P.int], named: {to: P.int}}, {func: 1, ret: P.Null, args: [P.String, P.double]}, {func: 1, ret: E.PoisonAction, args: [P.int]}, {func: 1, ret: G.PoisonFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: P.Null, args: [P.String, P.int]}, {func: 1, ret: E.DazzleAction, args: [P.int]}, {func: 1, ret: G.LightFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: [P._Future,,], args: [,]}, {func: 1, ret: X.EatAction}, {func: 1, ret: T.DetectAction}, {func: 1, ret: E.ResistAction}, {func: 1, ret: Q.MappingAction}, {func: 1, ret: E.HasteAction}, {func: 1, ret: S.TeleportAction}, {func: 1, ret: O.HealAction}, {func: 1, ret: G.RingSelfAction}, {func: 1, ret: G.RingFromAction, args: [L.Vec]}, {func: 1, ret: N.FlowSelfAction}, {func: 1, ret: N.FlowFromAction, args: [L.Vec]}, {func: 1, ret: F.IlluminateSelfAction}, {func: 1, ret: -1, args: [P.int, P.double]}, {func: 1, ret: P.Null, args: [L.Drop, P.double]}, {func: 1, ret: P.JsObject, args: [,]}, {func: 1, ret: -1, args: [P.int], opt: [P.int]}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.Null, named: {canFill: P.bool, create: {func: 1, ret: X.Architecture}, decor: P.String, decorDensity: P.double, end: P.int, frequency: P.double, itemDensity: P.double, monsterDensity: P.double, monsters: P.String, start: P.int}}, {func: 1, ret: Q.Dungeon}, {func: 1, ret: Z.Keep}, {func: 1, ret: D.Catacomb}, {func: 1, ret: [P.JsArray,,], args: [,]}, {func: 1, ret: F.Lake}, {func: 1, ret: G.River}, {func: 1, ret: P.Null, args: [P.String], named: {end: P.int, start: P.int}}, {func: 1, ret: A.Pit}, {func: 1, ret: P.Null, args: [X.Architecture, [P.List, L.Vec]]}, {func: 1, ret: P.Null, args: [B.Breed, L.Vec]}, {func: 1, ret: P.double, args: [P.int,,]}, {func: 1, ret: Q.TileType, args: [Z._TileBuilder, P.int]}, {func: 1, ret: Q.OpenChestAction, args: [L.Vec]}, {func: 1, ret: Q.OpenBarrelAction, args: [L.Vec]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [P.Symbol0,,]}, {func: 1, ret: -1, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [P.bool, P.int]}, {func: 1, ret: P.Null, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.int, args: [P.int]}, {func: 1, ret: -1, args: [M.Skill]}, {func: 1, ret: P.Null, args: [P.double]}, {func: 1, ret: P.Null, args: [L.Affix]}, {func: 1, ret: P.double, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [M.Skill]}, {func: 1, args: [W.Event]}, {func: 1, ret: -1, args: [D.Stat, P.int]}, {func: 1, ret: P.int, args: [P.int, R.Item]}, {func: 1, ret: P.bool, args: [P.double, P.double]}, {func: 1, ret: O.AddItemResult, args: [R.Item], named: {wasUnequipped: P.bool}}, {func: 1, ret: R.Item, args: [R.Item]}, {func: 1, ret: [P.List, L.Vec], args: [P.int]}, {func: 1, ret: M.Skill, args: [P.String]}, {func: 1, ret: P.Null, args: [Z.Direction, P.bool]}, {func: 1, ret: P.Null, args: [L.Vec, P.int]}, {func: 1, ret: Q.Tile}, {func: 1, ret: O.Inventory}, {func: 1, ret: P.Null, args: [L.Vec, O.Inventory]}, {func: 1, ret: P.bool, args: [S.Actor]}, {func: 1, ret: P.Null, args: [,], opt: [P.StackTrace]}, {func: 1, ret: -1, args: [Z.Direction]}, {func: 1, ret: P.Null, args: [Z.Direction]}, {func: 1, ret: P.bool, args: [K.Effect]}, {func: 1, ret: P.bool, args: [P.double]}, {func: 1, ret: P.Null, args: [D.StatBase]}, {func: 1, ret: P.int, args: [B.Monster, B.Monster]}, {func: 1, ret: P.Null, args: [P.String, L.Color], opt: [L.Color]}, {func: 1, args: [P.String]}, {func: 1, ret: -1, args: [G.Element, P.int]}, {func: 1, args: [, P.String]}, {func: 1, ret: P.bool, args: [B.Breed]}, {func: 1, ret: -1, args: [W.Node, W.Node]}, {func: 1, ret: P.bool, args: [P.int]}, {func: 1, ret: W.Element0, args: [W.Node]}, {func: 1, ret: P.JsFunction, args: [,]}, {func: 1, ret: P.Null, args: [P.String, P.Object]}, {func: 1, ret: P.String, args: [N.Race]}, {func: 1, ret: P.String, args: [T.HeroClass]}, {func: 1, ret: P.bool, args: [T.HeroClass]}, {func: 1, ret: P.bool, args: [N.Race]}, {func: 1, ret: G.WindAction, args: [P.int]}, {func: 1, ret: G.BurnActorAction, args: [P.int]}, {func: 1, ret: G.BurnFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: -1, args: [P.num]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: P.num}, {func: 1, ret: E.FreezeActorAction, args: [P.int]}, {func: 1, ret: G.FreezeFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: P.Object, args: [,]}, {func: 1, ret: E.BlindAction, args: [P.int]}, {func: 1, ret: Q.Cavern}];
   function convertToFastObject(properties) {
     function MyClass() {
     }
