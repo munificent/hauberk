@@ -1,17 +1,16 @@
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
-import '../engine.dart';
 import 'input.dart';
 
 // TODO: Unify with ConfirmDialog.
 /// Modal dialog for letting the user confirm forfeiting the level.
 class ForfeitDialog extends Screen<Input> {
-  final Game game;
+  final bool _isTown;
 
   bool get isTransparent => true;
 
-  ForfeitDialog(this.game);
+  ForfeitDialog({bool isTown}) : _isTown = isTown ?? false;
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
@@ -41,7 +40,7 @@ class ForfeitDialog extends Screen<Input> {
   bool update() => false;
 
   void render(Terminal terminal) {
-    if (game.depth == 0) {
+    if (_isTown) {
       terminal.writeAt(0, 0, "Return to main menu? [Y]/[N]");
     } else {
       terminal.writeAt(

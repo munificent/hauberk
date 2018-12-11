@@ -91,9 +91,8 @@ class Hero extends Actor {
 
   int get emanationLevel => save.emanationLevel;
 
-  Hero(Game game, Vec pos, HeroSave save)
-      : save = save.clone(),
-        super(game, pos.x, pos.y) {
+  Hero(Game game, Vec pos, this.save)
+      : super(game, pos.x, pos.y) {
     // Give the hero energy so they can act before all of the monsters.
     energy.energy = Energy.actionCost;
 

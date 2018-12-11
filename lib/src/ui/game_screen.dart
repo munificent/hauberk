@@ -6,6 +6,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
 import '../content/elements.dart';
+
 // TODO: Directly importing this is a little hacky.
 import '../content/tiles.dart';
 import '../debug.dart';
@@ -32,7 +33,7 @@ import 'wizard_dialog.dart';
 class GameScreen extends Screen<Input> {
   final Game game;
 
-  final HeroSave _save;
+  final HeroSave _storageSave;
   final Storage _storage;
 
   List<Effect> _effects = <Effect>[];
@@ -118,7 +119,7 @@ class GameScreen extends Screen<Input> {
     return null;
   }
 
-  GameScreen(this._storage, this._save, this.game) {
+  GameScreen(this._storage, this.game, this._storageSave) {
     _positionCamera();
 
     Debug.bindGameScreen(this);
@@ -128,7 +129,7 @@ class GameScreen extends Screen<Input> {
     var game = Game(content, save, 0, width: 60, height: 34);
     for (var _ in game.generate()) {}
 
-    return GameScreen(storage, save, game);
+    return GameScreen(storage, game, null);
   }
 
   bool handleInput(Input input) {
@@ -137,8 +138,7 @@ class GameScreen extends Screen<Input> {
       case Input.quit:
         var portal = game.stage[game.hero.pos].portal;
         if (portal == TilePortals.exit) {
-          // TODO: Save progress here?
-          ui.push(ExitScreen(_save, game));
+          ui.push(ExitScreen(_storageSave, game));
         } else {
           game.log.error("You are not standing on an exit.");
           dirty();
@@ -146,7 +146,7 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.forfeit:
-        ui.push(ForfeitDialog(game));
+        ui.push(ForfeitDialog(isTown: game.depth == 0));
         break;
       case Input.selectSkill:
         ui.push(SelectSkillDialog(game));
@@ -452,18 +452,21 @@ class GameScreen extends Screen<Input> {
 
     if (popped is ExitScreen) {
       // TODO: Hero should start next to dungeon entrance.
-      ui.goTo(GameScreen.town(_storage, game.content, _save));
+      _storageSave.takeFrom(game.hero);
+      ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
     } else if (popped is SelectDepthScreen && result is int) {
       // Enter the dungeon.
       // TODO: Make this a transparent dialog?
-      ui.goTo(LoadingDialog(_storage, _save, game.content, result));
-    } else if (popped is ForfeitDialog) {
+      _storage.save();
+      ui.goTo(LoadingDialog(_storage, game.hero.save, game.content, result));
+    } else if (popped is ForfeitDialog && result == true) {
       if (game.depth > 0) {
-        // Forfeiting, so return to the town.
+        // Forfeiting, so return to the town and discard the current hero.
         // TODO: Hero should start next to dungeon entrance.
-        ui.goTo(GameScreen.town(_storage, game.content, _save));
+        ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
       } else {
-        // Leaving the town.
+        // Leaving the town. Save just to be safe.
+        _storage.save();
         ui.pop();
       }
     } else if (popped is ItemScreen) {
@@ -500,10 +503,10 @@ class GameScreen extends Screen<Input> {
       _portal = portal;
       switch (portal) {
         case TilePortals.dungeon:
-          ui.push(SelectDepthScreen(game.content, _save));
+          ui.push(SelectDepthScreen(game.content, game.hero.save));
           break;
         case TilePortals.home:
-          ui.push(ItemScreen.home(_save));
+          ui.push(ItemScreen.home(game.hero.save));
           break;
         case TilePortals.shop1:
           _enterShop(0);
@@ -532,7 +535,7 @@ class GameScreen extends Screen<Input> {
         case TilePortals.shop9:
           _enterShop(8);
           break;
-      // TODO: No crucible right now.
+        // TODO: No crucible right now.
 //        ui.push(new ItemScreen.crucible(content, save));
       }
 
@@ -608,10 +611,11 @@ class GameScreen extends Screen<Input> {
   }
 
   void _enterShop(int index) {
-    var shops = _save.shops.keys.toList();
+    var shops = game.hero.save.shops.keys.toList();
     if (index >= shops.length) return;
 
-    ui.push(ItemScreen.shop(_save, _save.shops[shops[index]]));
+    ui.push(
+        ItemScreen.shop(game.hero.save, game.hero.save.shops[shops[index]]));
   }
 
   /// Determines which portion of the [Stage] should be in view based on the

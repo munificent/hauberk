@@ -66,14 +66,12 @@ class ExitScreen extends Screen<Input> {
   }
 
   void _done() {
-    _save.takeFrom(_game.hero);
-
     // Remember that this depth was reached.
-    _save.maxDepth = math.max(_save.maxDepth, _game.depth);
+    _game.hero.save.maxDepth = math.max(_save.maxDepth, _game.depth);
 
     // Update shops.
     // TODO: Take how long the hero was in the dungeon into account.
-    _save.shops.forEach((shop, inventory) {
+    _game.hero.save.shops.forEach((shop, inventory) {
       shop.update(inventory);
     });
 

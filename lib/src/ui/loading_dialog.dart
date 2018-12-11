@@ -10,13 +10,13 @@ import 'storage.dart';
 /// Dialog shown while a new level is being generated.
 class LoadingDialog extends Screen<Input> {
   final Storage _storage;
-  final HeroSave _save;
+  final HeroSave _storageSave;
   final Game _game;
   Iterator<String> _steps;
   int _frame = 0;
 
-  LoadingDialog(this._storage, this._save, Content content, int depth)
-      : _game = Game(content, _save, depth);
+  LoadingDialog(this._storage, this._storageSave, Content content, int depth)
+      : _game = Game(content, _storageSave.clone(), depth);
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
@@ -54,7 +54,7 @@ class LoadingDialog extends Screen<Input> {
       if (_steps.moveNext()) {
         dirty();
       } else {
-        ui.goTo(GameScreen(_storage, _save, _game));
+        ui.goTo(GameScreen(_storage, _game, _storageSave));
         return;
       }
     }
