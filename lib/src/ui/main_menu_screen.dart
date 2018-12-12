@@ -117,6 +117,17 @@ class MainMenuScreen extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
+    // Center everything horizontally.
+    terminal = terminal.rect((terminal.width - 78) ~/ 2, 0, 80, terminal.height);
+
+    terminal.writeAt(
+        0,
+        terminal.height - 1,
+        '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
+        UIHue.helpText);
+
+    // Center the content vertically.
+    terminal = terminal.rect(0, (terminal.height - 40) ~/ 2, terminal.width, 40);
     for (var y = 0; y < _chars.length; y++) {
       for (var x = 0; x < _chars[y].length; x++) {
         var color = _colors[_charColors[y][x]];
@@ -125,11 +136,6 @@ class MainMenuScreen extends Screen<Input> {
     }
 
     terminal.writeAt(10, 18, 'Which hero shall you play?', UIHue.text);
-    terminal.writeAt(
-        0,
-        terminal.height - 1,
-        '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
-        UIHue.helpText);
 
     if (storage.heroes.length == 0) {
       terminal.writeAt(
