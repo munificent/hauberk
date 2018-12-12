@@ -33,10 +33,12 @@ class TerminalFont {
 main() {
   var content = createContent();
 
-  _addFont("Small", 8);
-  _addFont("Large", 16);
-  _addFont("Small Rect", 8, 10);
-  _addFont("Large Rect", 16, 20);
+  _addFont("8x8", 8);
+  _addFont("8x10", 8, 10);
+  _addFont("9x12", 9, 12);
+  _addFont("10x12", 10, 12);
+  _addFont("16x16", 16);
+  _addFont("16x20", 16, 20);
 
   // Load the user's font preference, if any.
   var fontName = html.window.localStorage["font"];
