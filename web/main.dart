@@ -33,19 +33,29 @@ class TerminalView {
 }
 
 addTerminal(String name, int w, [int h]) {
+  h ??= w;
+
   var element = html.CanvasElement();
   element.onDoubleClick.listen((_) {
     fullscreen(element);
   });
 
+  var scale = html.window.devicePixelRatio.toInt();
+  var canvasWidth = w * width;
+  var canvasHeight = h * height;
+  element.width = canvasWidth * scale;
+  element.height = canvasHeight * scale;
+  element.style.width = '${canvasWidth}px';
+  element.style.height = '${canvasHeight}px';
+
   // Make the terminal.
   var file = "font_$w";
-  if (h != null) file += "_$h";
+  if (h != w) file += "_$h";
   var terminal = RetroTerminal(width, height, "$file.png",
-      canvas: element, charWidth: w, charHeight: h ?? w);
+      canvas: element, charWidth: w, charHeight: h);
 
   terminals.add(
-      TerminalView(name, element, terminal, charWidth: w, charHeight: h ?? w));
+      TerminalView(name, element, terminal, charWidth: w, charHeight: h));
 
   if (Debug.enabled) {
     // Clicking a monster toggles its debug pane.
