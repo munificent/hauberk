@@ -1,11 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
-
-// TODO: Directly importing this is a little hacky. Put "appearance" on Element?
-import '../content/elements.dart';
 
 // TODO: Directly importing this is a little hacky.
 import '../content/tiles.dart';
@@ -13,8 +8,6 @@ import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'direction_dialog.dart';
-import 'draw.dart';
-import 'effect.dart';
 import 'exit_screen.dart';
 import 'forfeit_dialog.dart';
 import 'game_over_screen.dart';
@@ -23,9 +16,12 @@ import 'input.dart';
 import 'item_dialog.dart';
 import 'item_screen.dart';
 import 'loading_dialog.dart';
+import 'log_panel.dart';
 import 'select_depth_screen.dart';
 import 'select_skill_dialog.dart';
+import 'sidebar_panel.dart';
 import 'skill_dialog.dart';
+import 'stage_panel.dart';
 import 'storage.dart';
 import 'target_dialog.dart';
 import 'wizard_dialog.dart';
@@ -35,24 +31,17 @@ class GameScreen extends Screen<Input> {
 
   final HeroSave _storageSave;
   final Storage _storage;
-
-  List<Effect> _effects = <Effect>[];
+  final LogPanel _logPanel;
+  SidebarPanel _sidebarPanel;
+  StagePanel _stagePanel;
 
   /// The number of ticks left to wait before restarting the game loop after
   /// coming back from a dialog where the player chose an action for the hero.
   int _pause = 0;
 
-  bool _hasAnimatedTile = false;
-
-  int _frame = 0;
-
+  // TODO: Move this to StagePanel?
   /// The size of the [Stage] view area.
   final viewSize = Vec(60, 34);
-
-  /// The portion of the [Stage] currently in view on screen.
-  Rect _cameraBounds;
-
-  Rect get cameraBounds => _cameraBounds;
 
   Actor _targetActor;
   Vec _target;
@@ -119,8 +108,10 @@ class GameScreen extends Screen<Input> {
     return null;
   }
 
-  GameScreen(this._storage, this.game, this._storageSave) {
-    _positionCamera();
+  GameScreen(this._storage, this.game, this._storageSave)
+      : _logPanel = LogPanel(game.log) {
+    _sidebarPanel = SidebarPanel(this);
+    _stagePanel = StagePanel(this);
 
     Debug.bindGameScreen(this);
   }
@@ -130,6 +121,13 @@ class GameScreen extends Screen<Input> {
     for (var _ in game.generate()) {}
 
     return GameScreen(storage, game, null);
+  }
+
+  Rect get cameraBounds => _stagePanel.cameraBounds;
+
+  /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the stage panel.
+  void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
+    _stagePanel.drawStageGlyph(terminal, x, y, glyph);
   }
 
   bool handleInput(Input input) {
@@ -313,6 +311,154 @@ class GameScreen extends Screen<Input> {
     return true;
   }
 
+  void activate(Screen popped, result) {
+    if (!game.hero.needsInput) {
+      // The player is coming back from a screen where they selected an action
+      // for the hero. Give them a bit to visually reorient themselves before
+      // kicking off the action.
+      _pause = 10;
+    }
+
+    if (popped is ExitScreen) {
+      // TODO: Hero should start next to dungeon entrance.
+      _storageSave.takeFrom(game.hero);
+      ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
+    } else if (popped is SelectDepthScreen && result is int) {
+      // Enter the dungeon.
+      // TODO: Make this a transparent dialog?
+      _storage.save();
+      ui.goTo(LoadingDialog(_storage, game.hero.save, game.content, result));
+    } else if (popped is ForfeitDialog && result == true) {
+      if (game.depth > 0) {
+        // Forfeiting, so return to the town and discard the current hero.
+        // TODO: Hero should start next to dungeon entrance.
+        ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
+      } else {
+        // Leaving the town. Save just to be safe.
+        _storage.save();
+        ui.pop();
+      }
+    } else if (popped is ItemScreen) {
+      // Always save when leaving home or a shop.
+      _storage.save();
+    } else if (popped is ItemDialog) {
+      // Save after changing items in the town.
+      if (game.depth == 0) _storage.save();
+    } else if (popped is SkillDialog) {
+      // TODO: Once skills can be learned on the SkillDialog again, make this
+      // work.
+//      game.hero.updateSkills(result);
+    } else if (popped is SelectSkillDialog && result != null) {
+      if (result is TargetSkill) {
+        _openTargetDialog(result);
+      } else if (result is DirectionSkill) {
+        ui.push(SkillDirectionDialog(this, (dir) {
+          _lastSkill = result;
+          _fireTowards(dir);
+        }));
+      } else if (result is ActionSkill) {
+        _lastSkill = result;
+        game.hero.setNextAction(
+            result.getAction(game, game.hero.skills.level(result)));
+      }
+    }
+  }
+
+  void update() {
+    var portal = game.stage[game.hero.pos].portal;
+    if (portal != _portal) {
+      _portal = portal;
+      switch (portal) {
+        case TilePortals.dungeon:
+          ui.push(SelectDepthScreen(game.content, game.hero.save));
+          break;
+        case TilePortals.home:
+          ui.push(ItemScreen.home(game.hero.save));
+          break;
+        case TilePortals.shop1:
+          _enterShop(0);
+          break;
+        case TilePortals.shop2:
+          _enterShop(1);
+          break;
+        case TilePortals.shop3:
+          _enterShop(2);
+          break;
+        case TilePortals.shop4:
+          _enterShop(3);
+          break;
+        case TilePortals.shop5:
+          _enterShop(4);
+          break;
+        case TilePortals.shop6:
+          _enterShop(5);
+          break;
+        case TilePortals.shop7:
+          _enterShop(6);
+          break;
+        case TilePortals.shop8:
+          _enterShop(7);
+          break;
+        case TilePortals.shop9:
+          _enterShop(8);
+          break;
+        // TODO: No crucible right now.
+//        ui.push(new ItemScreen.crucible(content, save));
+      }
+
+      if (portal != null) return;
+    }
+
+    if (_pause > 0) {
+      _pause--;
+      return;
+    }
+
+    var result = game.update();
+
+    // See if the hero died.
+    if (!game.hero.isAlive) {
+      ui.goTo(GameOverScreen(game.log));
+      return;
+    }
+
+    if (_stagePanel.update(result.events)) dirty();
+
+    if (result.needsRefresh) dirty();
+  }
+
+  void render(Terminal terminal) {
+    terminal.clear();
+
+    var bar = Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
+    for (var y = 0; y < terminal.height; y++) {
+      terminal.drawGlyph(60, y, bar);
+    }
+
+    var hero = game.hero;
+    var heroColor = ash;
+    if (hero.health < hero.maxHealth / 4) {
+      heroColor = brickRed;
+    } else if (hero.poison.isActive) {
+      heroColor = peaGreen;
+    } else if (hero.cold.isActive) {
+      heroColor = cornflower;
+    } else if (hero.health < hero.maxHealth / 2) {
+      heroColor = salmon;
+    } else if (hero.stomach == 0 && hero.health < hero.maxHealth) {
+      heroColor = sandal;
+    }
+
+    var visibleMonsters = <Monster>[];
+
+    _stagePanel.render(terminal.rect(0, 0, viewSize.x, viewSize.y), heroColor,
+        visibleMonsters);
+
+    _logPanel.render(terminal.rect(0, 34, 60, 6));
+    _sidebarPanel.render(
+        terminal.rect(61, 0, 20, 40), heroColor, visibleMonsters);
+  }
+
   void _open() {
     // See how many adjacent closed doors there are.
     // TODO: Handle chests.
@@ -442,623 +588,11 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void activate(Screen popped, result) {
-    if (!game.hero.needsInput) {
-      // The player is coming back from a screen where they selected an action
-      // for the hero. Give them a bit to visually reorient themselves before
-      // kicking off the action.
-      _pause = 10;
-    }
-
-    if (popped is ExitScreen) {
-      // TODO: Hero should start next to dungeon entrance.
-      _storageSave.takeFrom(game.hero);
-      ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
-    } else if (popped is SelectDepthScreen && result is int) {
-      // Enter the dungeon.
-      // TODO: Make this a transparent dialog?
-      _storage.save();
-      ui.goTo(LoadingDialog(_storage, game.hero.save, game.content, result));
-    } else if (popped is ForfeitDialog && result == true) {
-      if (game.depth > 0) {
-        // Forfeiting, so return to the town and discard the current hero.
-        // TODO: Hero should start next to dungeon entrance.
-        ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
-      } else {
-        // Leaving the town. Save just to be safe.
-        _storage.save();
-        ui.pop();
-      }
-    } else if (popped is ItemScreen) {
-      // Always save when leaving home or a shop.
-      _storage.save();
-    } else if (popped is ItemDialog) {
-      // Save after changing items in the town.
-      if (game.depth == 0) _storage.save();
-    } else if (popped is SkillDialog) {
-      // TODO: Once skills can be learned on the SkillDialog again, make this
-      // work.
-//      game.hero.updateSkills(result);
-    } else if (popped is SelectSkillDialog && result != null) {
-      if (result is TargetSkill) {
-        _openTargetDialog(result);
-      } else if (result is DirectionSkill) {
-        ui.push(SkillDirectionDialog(this, (dir) {
-          _lastSkill = result;
-          _fireTowards(dir);
-        }));
-      } else if (result is ActionSkill) {
-        _lastSkill = result;
-        game.hero.setNextAction(
-            result.getAction(game, game.hero.skills.level(result)));
-      }
-    }
-  }
-
-  void update() {
-    _frame++;
-
-    var portal = game.stage[game.hero.pos].portal;
-    if (portal != _portal) {
-      _portal = portal;
-      switch (portal) {
-        case TilePortals.dungeon:
-          ui.push(SelectDepthScreen(game.content, game.hero.save));
-          break;
-        case TilePortals.home:
-          ui.push(ItemScreen.home(game.hero.save));
-          break;
-        case TilePortals.shop1:
-          _enterShop(0);
-          break;
-        case TilePortals.shop2:
-          _enterShop(1);
-          break;
-        case TilePortals.shop3:
-          _enterShop(2);
-          break;
-        case TilePortals.shop4:
-          _enterShop(3);
-          break;
-        case TilePortals.shop5:
-          _enterShop(4);
-          break;
-        case TilePortals.shop6:
-          _enterShop(5);
-          break;
-        case TilePortals.shop7:
-          _enterShop(6);
-          break;
-        case TilePortals.shop8:
-          _enterShop(7);
-          break;
-        case TilePortals.shop9:
-          _enterShop(8);
-          break;
-        // TODO: No crucible right now.
-//        ui.push(new ItemScreen.crucible(content, save));
-      }
-
-      if (portal != null) return;
-    }
-
-    if (_pause > 0) {
-      _pause--;
-      return;
-    }
-
-    // TODO: Re-rendering the entire screen when only animated tiles have
-    // changed is pretty rough on CPU usage. Maybe optimize to only redraw the
-    // animated tiles if that's all that happened in a turn?
-    if (_hasAnimatedTile) dirty();
-
-    if (_effects.isNotEmpty) dirty();
-
-    var result = game.update();
-
-    // See if the hero died.
-    if (!game.hero.isAlive) {
-      ui.goTo(GameOverScreen(game.log));
-      return;
-    }
-
-    if (game.hero.dazzle.isActive) dirty();
-
-    for (final event in result.events) addEffects(_effects, event);
-
-    if (result.needsRefresh) dirty();
-
-    _effects = _effects.where((effect) => effect.update(game)).toList();
-    _positionCamera();
-  }
-
-  void render(Terminal terminal) {
-    terminal.clear();
-
-    _hasAnimatedTile = false;
-
-    var bar = Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
-    for (var y = 0; y < terminal.height; y++) {
-      terminal.drawGlyph(60, y, bar);
-    }
-
-    var hero = game.hero;
-    var heroColor = ash;
-    if (hero.health < hero.maxHealth / 4) {
-      heroColor = brickRed;
-    } else if (hero.poison.isActive) {
-      heroColor = peaGreen;
-    } else if (hero.cold.isActive) {
-      heroColor = cornflower;
-    } else if (hero.health < hero.maxHealth / 2) {
-      heroColor = salmon;
-    } else if (hero.stomach == 0 && hero.health < hero.maxHealth) {
-      heroColor = sandal;
-    }
-
-    var visibleMonsters = <Monster>[];
-
-    _drawStage(terminal.rect(0, 0, viewSize.x, viewSize.y), heroColor,
-        visibleMonsters);
-
-    _drawLog(terminal.rect(0, 34, 60, 6));
-    _drawSidebar(terminal.rect(61, 0, 20, 40), heroColor, visibleMonsters);
-  }
-
-  /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the current view.
-  void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
-    terminal.drawGlyph(x - _cameraBounds.x, y - _cameraBounds.y, glyph);
-  }
-
   void _enterShop(int index) {
     var shops = game.hero.save.shops.keys.toList();
     if (index >= shops.length) return;
 
     ui.push(
         ItemScreen.shop(game.hero.save, game.hero.save.shops[shops[index]]));
-  }
-
-  /// Determines which portion of the [Stage] should be in view based on the
-  /// position of the [Hero].
-  void _positionCamera() {
-    // Handle the stage being smaller than the view.
-    var rangeWidth = math.max(0, game.stage.width - viewSize.x);
-    var rangeHeight = math.max(0, game.stage.height - viewSize.y);
-
-    var cameraRange = Rect(0, 0, rangeWidth, rangeHeight);
-
-    var camera = game.hero.pos - viewSize ~/ 2;
-    camera = cameraRange.clamp(camera);
-    _cameraBounds = Rect(
-        camera.x,
-        camera.y,
-        math.min(viewSize.x, game.stage.width),
-        math.min(viewSize.y, game.stage.height));
-  }
-
-  static const _dazzleColors = [
-    steelGray,
-    slate,
-    gunsmoke,
-    ash,
-    sandal,
-    persimmon,
-    copper,
-    garnet,
-    buttermilk,
-    gold,
-    carrot,
-    mint,
-    mustard,
-    lima,
-    peaGreen,
-    sherwood,
-    salmon,
-    brickRed,
-    maroon,
-    lilac,
-    violet,
-    indigo,
-    turquoise,
-    cornflower,
-    cerulean,
-    ultramarine,
-  ];
-
-  static final _fireChars = [CharCode.blackUpPointingTriangle, CharCode.caret];
-  static final _fireColors = [
-    [gold, copper],
-    [buttermilk, carrot],
-    [persimmon, brickRed],
-    [brickRed, garnet]
-  ];
-
-  void _drawStage(
-      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
-    var hero = game.hero;
-
-    // Draw the tiles and items.
-    for (var pos in _cameraBounds) {
-      var tile = game.stage[pos];
-      var actor = game.stage.actorAt(pos);
-
-      if (tile.isExplored ||
-          Debug.showAllMonsters && actor != null ||
-          Debug.showHeroVolume) {
-        Glyph tileGlyph;
-        if (tile.type.appearance is Glyph) {
-          tileGlyph = tile.type.appearance;
-        } else {
-          var glyphs = tile.type.appearance as List<Glyph>;
-
-          // Ping pong back and forth.
-          var period = glyphs.length * 2 - 2;
-
-          // Calculate a "random" but consistent phase for each position.
-          var phase = hashPoint(pos.x, pos.y);
-          var frame = (_frame ~/ 8 + phase) % period;
-          if (frame >= glyphs.length) {
-            frame = glyphs.length - (frame - glyphs.length) - 1;
-          }
-
-          tileGlyph = glyphs[frame];
-          _hasAnimatedTile = true;
-        }
-
-        var char = tileGlyph.char;
-        var fore = tileGlyph.fore;
-        var back = tileGlyph.back;
-        var isThing = false;
-
-        var items = game.stage.itemsAt(pos);
-        if (items.isNotEmpty) {
-          var itemGlyph = items.first.appearance as Glyph;
-          char = itemGlyph.char;
-          fore = itemGlyph.fore;
-          isThing = true;
-        }
-
-        // The hero is always visible, even in the dark.
-        if (tile.isVisible ||
-            pos == game.hero.pos ||
-            Debug.showAllMonsters && actor != null) {
-          if (tile.substance != 0) {
-            if (tile.element == Elements.fire) {
-              char = rng.item(_fireChars);
-              var color = rng.item(_fireColors);
-              fore = color[0];
-              back = color[1];
-
-              _hasAnimatedTile = true;
-            } else if (tile.element == Elements.poison) {
-              var amount = 0.1 + (tile.substance / 255) * 0.9;
-              back = back.blend(lima, amount);
-            }
-          }
-
-          var actor = game.stage.actorAt(pos);
-          if (actor != null) {
-            var actorGlyph = actor.appearance;
-            if (actorGlyph is Glyph) {
-              char = actorGlyph.char;
-              fore = actorGlyph.fore;
-            } else {
-              // Hero.
-              char = CharCode.at;
-              fore = heroColor;
-            }
-
-            // If the actor is being targeted, invert its colors.
-            if (_targetActor == actor) {
-              back = fore;
-              fore = midnight;
-            }
-
-            if (actor is Monster) visibleMonsters.add(actor);
-            isThing = true;
-          }
-        }
-
-        if (hero.dazzle.isActive) {
-          var chance = math.min(90, hero.dazzle.duration * 8);
-          if (rng.percent(chance)) {
-            char = rng.percent(chance) ? char : CharCode.asterisk;
-            fore = rng.item(_dazzleColors);
-          }
-        }
-
-        // Apply lighting and visibility to the tile.
-        if (tile.isVisible) {
-          // If we ramp the lighting so that only maximum lighting is fully
-          // illuminated, then the dungeon looks much too gloomy. Instead,
-          // anything above 50% lit is shown at full brightness. We square the
-          // value to ramp things down more quickly below that, and we allow
-          // brightness to go a little past 1.0 so that things above 128 have
-          // a little more glow.
-          var light = (tile.visibility / 128);
-          light = (light * light).clamp(0.0, 1.1);
-
-          const shadow = Color(0x04, 0x03, 0xa);
-
-          // Show tiles containing interesting things more brightly.
-          if (isThing) {
-            fore = shadow.blend(fore, light * 0.3 + 0.7);
-          } else {
-            fore = shadow.blend(fore, light * 0.7 + 0.3);
-          }
-
-          if (back == midnight) {
-            // Hackish. If the background color is the default dark color, then
-            // boost it *past* its max value to add some extra glow when well
-            // lit.
-            back = shadow.blend(back, light * 1.1 + 0.2);
-          } else {
-            back = shadow.blend(back, light * 0.8 + 0.2);
-          }
-        } else {
-          const blueShadow = Color(0x00, 0x00, 0xe);
-
-          // Show tiles containing interesting things more brightly.
-          fore = blueShadow.blend(fore, isThing ? 0.7 : 0.2);
-
-          if (back == midnight) {
-            // If the background color is the default dark color, then go all
-            // the way to black. This makes it easier for the player to tell
-            // which tiles are not visible.
-            back = Color.black;
-          } else {
-            back = blueShadow.blend(back, 0.1);
-          }
-        }
-
-        if (Debug.showHeroVolume) {
-          var volume = game.stage.heroVolume(pos);
-          if (volume > 0.0) back = back.blend(peaGreen, volume);
-        }
-
-        if (Debug.showMonsterAlertness && actor is Monster) {
-          back = Color.blue.blend(Color.red, actor.alertness);
-        }
-
-        var glyph = Glyph.fromCharCode(char, fore, back);
-        drawStageGlyph(terminal, pos.x, pos.y, glyph);
-      }
-    }
-
-    // Draw the effects.
-    for (var effect in _effects) {
-      effect.render(game, (x, y, glyph) {
-        drawStageGlyph(terminal, x, y, glyph);
-      });
-    }
-  }
-
-  void _drawLog(Terminal terminal) {
-    var y = 0;
-
-    for (var message in game.log.messages) {
-      Color color;
-      var messagesLength = game.log.messages.length - 1;
-
-      switch (message.type) {
-        case LogType.message:
-          color = ash;
-          break;
-        case LogType.error:
-          color = brickRed;
-          break;
-        case LogType.quest:
-          color = violet;
-          break;
-        case LogType.gain:
-          color = gold;
-          break;
-        case LogType.help:
-          color = peaGreen;
-          break;
-        case LogType.cheat:
-          color = seaGreen;
-          break;
-      }
-
-      if (y != messagesLength) {
-        color = color.blend(Color.black, 0.5);
-      }
-
-      terminal.writeAt(0, y, message.text, color);
-
-      if (message.count > 1) {
-        terminal.writeAt(
-            message.text.length, y, ' (x${message.count})', steelGray);
-      }
-      y++;
-    }
-  }
-
-  void _drawSidebar(
-      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
-    var hero = game.hero;
-    terminal.writeAt(0, 0, hero.save.name, UIHue.primary);
-    terminal.writeAt(0, 1, hero.save.race.name, UIHue.text);
-    terminal.writeAt(0, 2, hero.save.heroClass.name, UIHue.text);
-
-    _drawStat(
-        terminal, 4, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
-    terminal.writeAt(0, 5, 'Food', UIHue.helpText);
-    Draw.meter(terminal, 9, 5, 10, hero.stomach, Option.heroMaxStomach,
-        persimmon, garnet);
-
-    _drawStat(terminal, 6, 'Level', hero.level, cerulean);
-    if (hero.level < Hero.maxLevel) {
-      var levelPercent = 100 *
-          (hero.experience - experienceLevelCost(hero.level)) ~/
-          (experienceLevelCost(hero.level + 1) -
-              experienceLevelCost(hero.level));
-      terminal.writeAt(15, 6, '$levelPercent%', ultramarine);
-    }
-
-    var x = 0;
-    drawStat(StatBase stat) {
-      terminal.writeAt(x, 8, stat.name.substring(0, 3), UIHue.helpText);
-      terminal.writeAt(x, 9, stat.value.toString().padLeft(3), UIHue.text);
-      x += 4;
-    }
-
-    drawStat(hero.strength);
-    drawStat(hero.agility);
-    drawStat(hero.fortitude);
-    drawStat(hero.intellect);
-    drawStat(hero.will);
-
-    terminal.writeAt(0, 11, 'Focus', UIHue.helpText);
-
-    Draw.meter(terminal, 9, 11, 10, hero.focus, hero.intellect.maxFocus,
-        cerulean, ultramarine);
-
-    _drawStat(terminal, 13, 'Armor',
-        '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
-    // TODO: Show the weapon and stats better.
-    var hit = hero.createMeleeHit(null);
-    _drawStat(terminal, 14, 'Weapon', hit.damageString, turquoise);
-
-    // Draw the nearby monsters.
-    terminal.writeAt(0, 16, '@', heroColor);
-    terminal.writeAt(2, 16, hero.save.name, UIHue.text);
-    _drawHealthBar(terminal, 17, hero);
-
-    visibleMonsters.sort((a, b) {
-      var aDistance = (a.pos - game.hero.pos).lengthSquared;
-      var bDistance = (b.pos - game.hero.pos).lengthSquared;
-      return aDistance.compareTo(bDistance);
-    });
-
-    for (var i = 0; i < 10; i++) {
-      var y = 18 + i * 2;
-      if (i < visibleMonsters.length) {
-        var monster = visibleMonsters[i];
-
-        var glyph = monster.appearance as Glyph;
-        if (_targetActor == monster) {
-          glyph = Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
-        }
-
-        terminal.drawGlyph(0, y, glyph);
-        terminal.writeAt(2, y, monster.breed.name,
-            (_targetActor == monster) ? UIHue.selection : UIHue.text);
-
-        _drawHealthBar(terminal, y + 1, monster);
-      }
-    }
-
-    // Draw the unseen items.
-    terminal.writeAt(0, 38, "Unfound items:", UIHue.helpText);
-    var unseen = <Item>[];
-    game.stage.forEachItem((item, pos) {
-      if (!game.stage[pos].isExplored) unseen.add(item);
-    });
-
-    // Show the "best" ones first.
-    unseen.sort();
-
-    x = 0;
-    var lastGlyph;
-    for (var item in unseen.reversed) {
-      if (item.appearance != lastGlyph) {
-        terminal.drawGlyph(x, 39, item.appearance as Glyph);
-        x++;
-        if (x >= terminal.width) break;
-        lastGlyph = item.appearance;
-      }
-    }
-  }
-
-  /// Draws a labeled numeric stat.
-  void _drawStat(
-      Terminal terminal, int y, String label, value, Color valueColor,
-      [max, Color maxColor]) {
-    terminal.writeAt(0, y, label, UIHue.helpText);
-    var valueString = value.toString();
-    terminal.writeAt(10, y, valueString, valueColor);
-
-    if (max != null) {
-      terminal.writeAt(10 + valueString.length, y, ' / $max', maxColor);
-    }
-  }
-
-  static final _resistLetters = {
-    Elements.air: "A",
-    Elements.earth: "E",
-    Elements.fire: "F",
-    Elements.water: "W",
-    Elements.acid: "A",
-    Elements.cold: "C",
-    Elements.lightning: "L",
-    Elements.poison: "P",
-    Elements.dark: "D",
-    Elements.light: "L",
-    Elements.spirit: "S"
-  };
-
-  /// Draws a health bar for [actor].
-  void _drawHealthBar(Terminal terminal, int y, Actor actor) {
-    // Show conditions.
-    var x = 2;
-
-    drawCondition(String char, Color fore, [Color back]) {
-      // Don't overlap other stuff.
-      if (x > 8) return;
-
-      terminal.writeAt(x, y, char, fore, back);
-      x++;
-    }
-
-    if (actor is Monster && actor.isAfraid) {
-      drawCondition("!", sandal);
-    }
-
-    if (actor.poison.isActive) {
-      switch (actor.poison.intensity) {
-        case 1:
-          drawCondition("P", sherwood);
-          break;
-        case 2:
-          drawCondition("P", peaGreen);
-          break;
-        default:
-          drawCondition("P", mint);
-          break;
-      }
-    }
-
-    if (actor.cold.isActive) drawCondition("C", cornflower);
-    switch (actor.haste.intensity) {
-      case 1:
-        drawCondition("S", persimmon);
-        break;
-      case 2:
-        drawCondition("S", gold);
-        break;
-      case 3:
-        drawCondition("S", buttermilk);
-        break;
-    }
-
-    if (actor.blindness.isActive) drawCondition("B", steelGray);
-    if (actor.dazzle.isActive) drawCondition("D", lilac);
-
-    for (var element in game.content.elements) {
-      if (actor.resistances[element].isActive) {
-        drawCondition(
-            _resistLetters[element], Color.black, elementColor(element));
-      }
-    }
-
-    if (Debug.showMonsterAlertness && actor is Monster) {
-      var alertness = (actor.alertness * 100).toInt().toString().padLeft(3);
-      terminal.writeAt(2, y, alertness, ash);
-    }
-
-    Draw.meter(
-        terminal, 9, y, 10, actor.health, actor.maxHealth, brickRed, maroon);
   }
 }

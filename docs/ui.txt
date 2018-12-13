@@ -1,0 +1,41 @@
+Things to show in UI:
+
+- Main gameplay area
+- Log
+- Hero info bar (health, stats, etc.)
+- Inventory
+- Equipment
+- Description of current tile
+- Info for most recent monster or item
+- Nearby monster stat bars
+- Selected skills and quick-key bindings
+- Mini-map
+
+With 10x12 font, laptop is about 141x54 chars.
+
+Stage view area is currently 60x34.
+Log is 60x6.
+Sidebar is 20x40.
+
+Could do three columns:
+- 40 chars
+  - Hero info
+  - Nearby monster stat bars
+  - Recent monster or item info
+  - Minimap?
+- 60 chars
+  - Gameplay
+  - Current tile description
+  - Log
+- 40 chars
+  - Equipment
+  - Inventory
+  - Skill quick keys?
+
+Can show inventory and equipment without "a)" part for normal viewing, and
+somewhat truncated if needed. Then when the user chooses a command, those panels
+slide out to be larger and add the letters for selection.
+
+If display isn't wide enough right column is completely dropped.
+
+As display gets shorter, trim minimap, skill quick keys, and log rows.
