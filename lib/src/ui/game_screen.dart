@@ -365,49 +365,7 @@ class GameScreen extends Screen<Input> {
   }
 
   void update() {
-    var portal = game.stage[game.hero.pos].portal;
-    if (portal != _portal) {
-      _portal = portal;
-      switch (portal) {
-        case TilePortals.dungeon:
-          ui.push(SelectDepthScreen(game.content, game.hero.save));
-          break;
-        case TilePortals.home:
-          ui.push(ItemScreen.home(game.hero.save));
-          break;
-        case TilePortals.shop1:
-          _enterShop(0);
-          break;
-        case TilePortals.shop2:
-          _enterShop(1);
-          break;
-        case TilePortals.shop3:
-          _enterShop(2);
-          break;
-        case TilePortals.shop4:
-          _enterShop(3);
-          break;
-        case TilePortals.shop5:
-          _enterShop(4);
-          break;
-        case TilePortals.shop6:
-          _enterShop(5);
-          break;
-        case TilePortals.shop7:
-          _enterShop(6);
-          break;
-        case TilePortals.shop8:
-          _enterShop(7);
-          break;
-        case TilePortals.shop9:
-          _enterShop(8);
-          break;
-        // TODO: No crucible right now.
-//        ui.push(new ItemScreen.crucible(content, save));
-      }
-
-      if (portal != null) return;
-    }
+    if (_enterPortal()) return;
 
     if (_pause > 0) {
       _pause--;
@@ -457,6 +415,53 @@ class GameScreen extends Screen<Input> {
     _logPanel.render(terminal.rect(0, 34, 60, 6));
     _sidebarPanel.render(
         terminal.rect(61, 0, 20, 40), heroColor, visibleMonsters);
+  }
+
+  /// Handle the hero stepping onto a portal tile.
+  bool _enterPortal() {
+    var portal = game.stage[game.hero.pos].portal;
+    if (portal == _portal) return false;
+    _portal = portal;
+
+    switch (portal) {
+      case TilePortals.dungeon:
+        ui.push(SelectDepthScreen(game.content, game.hero.save));
+        break;
+      case TilePortals.home:
+        ui.push(ItemScreen.home(game.hero.save));
+        break;
+      case TilePortals.shop1:
+        _enterShop(0);
+        break;
+      case TilePortals.shop2:
+        _enterShop(1);
+        break;
+      case TilePortals.shop3:
+        _enterShop(2);
+        break;
+      case TilePortals.shop4:
+        _enterShop(3);
+        break;
+      case TilePortals.shop5:
+        _enterShop(4);
+        break;
+      case TilePortals.shop6:
+        _enterShop(5);
+        break;
+      case TilePortals.shop7:
+        _enterShop(6);
+        break;
+      case TilePortals.shop8:
+        _enterShop(7);
+        break;
+      case TilePortals.shop9:
+        _enterShop(8);
+        break;
+    // TODO: No crucible right now.
+//        ui.push(new ItemScreen.crucible(content, save));
+    }
+
+    return true;
   }
 
   void _open() {
