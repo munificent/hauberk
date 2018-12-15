@@ -62,9 +62,8 @@ main() {
 
   // Set up the keyPress.
   _ui.keyPress.bind(Input.ok, KeyCode.enter);
-  // TODO: This doesn't work when the UI is fullscreen. Use a different key.
-  // Maybe "q"?
   _ui.keyPress.bind(Input.cancel, KeyCode.escape);
+  _ui.keyPress.bind(Input.cancel, KeyCode.backtick);
   _ui.keyPress.bind(Input.forfeit, KeyCode.f, shift: true);
   _ui.keyPress.bind(Input.quit, KeyCode.q);
 
