@@ -1,12 +1,12 @@
 import 'package:malison/malison.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
-import '../content/elements.dart';
-import '../debug.dart';
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
-import 'game_screen.dart';
+import '../../content/elements.dart';
+import '../../debug.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../draw.dart';
+import '../game_screen.dart';
 
 // TODO: Split this into multiple panels and/or give it a better name.
 class SidebarPanel {

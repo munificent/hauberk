@@ -1,8 +1,8 @@
 import 'package:malison/malison.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../draw.dart';
 
 class ItemPanel {
   final Hero _hero;

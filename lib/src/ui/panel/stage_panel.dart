@@ -4,12 +4,12 @@ import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
-import '../content/elements.dart';
-import '../debug.dart';
-import '../engine.dart';
-import '../hues.dart';
-import 'effect.dart';
-import 'game_screen.dart';
+import '../../content/elements.dart';
+import '../../debug.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../effect.dart';
+import '../game_screen.dart';
 
 /// The main gameplay area of the screen.
 class StagePanel {
