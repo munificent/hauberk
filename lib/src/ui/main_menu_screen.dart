@@ -3,7 +3,7 @@ import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
-import 'confirm_dialog.dart';
+import 'confirm_popup.dart';
 import 'game_screen.dart';
 import 'input.dart';
 import 'new_hero_screen.dart';
@@ -92,7 +92,7 @@ class MainMenuScreen extends Screen<Input> {
       case KeyCode.d:
         if (selectedHero < storage.heroes.length) {
           var name = storage.heroes[selectedHero].name;
-          ui.push(ConfirmDialog(
+          ui.push(ConfirmPopup(
               "Are you sure you want to delete $name?", 'delete'));
         }
         return true;
@@ -106,7 +106,7 @@ class MainMenuScreen extends Screen<Input> {
   }
 
   void activate(Screen screen, result) {
-    if (screen is ConfirmDialog && result == 'delete') {
+    if (screen is ConfirmPopup && result == 'delete') {
       storage.heroes.removeAt(selectedHero);
       if (selectedHero > 0 && selectedHero >= storage.heroes.length) {
         selectedHero--;

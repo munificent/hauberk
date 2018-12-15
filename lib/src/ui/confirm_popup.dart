@@ -1,17 +1,19 @@
 import 'package:malison/malison.dart';
-import 'package:malison/malison_web.dart';
 
-import '../hues.dart';
 import 'input.dart';
+import 'popup.dart';
 
 /// Modal dialog for letting the user confirm an action.
-class ConfirmDialog extends Screen<Input> {
-  final String message;
-  final result;
+class ConfirmPopup extends Popup {
+  final String _message;
+  final Object _result;
 
-  bool get isTransparent => true;
+  ConfirmPopup(this._message, this._result);
 
-  ConfirmDialog(this.message, this.result);
+  List<String> get message => [_message];
+
+  Map<String, String> get helpKeys =>
+      const {"Y": "Yes", "N": "No", "Esc": "No"};
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
@@ -31,16 +33,10 @@ class ConfirmDialog extends Screen<Input> {
         break;
 
       case KeyCode.y:
-        ui.pop(result);
+        ui.pop(_result);
         break;
     }
 
     return true;
-  }
-
-  bool update() => false;
-
-  void render(Terminal terminal) {
-    terminal.writeAt(0, 0, '$message [Y]/[N]', UIHue.text);
   }
 }

@@ -45,7 +45,7 @@ const maroon = Color(0x54, 0x00, 0x27);
 
 class UIHue {
   static const text = gunsmoke;
-  static const helpText = steelGray;
+  static const helpText = gunsmoke;
   static const selection = gold;
   static const disabled = steelGray;
   static const primary = ash;

@@ -10,8 +10,8 @@ import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'direction_dialog.dart';
-import 'exit_screen.dart';
-import 'forfeit_dialog.dart';
+import 'exit_popup.dart';
+import 'forfeit_popup.dart';
 import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
@@ -22,7 +22,7 @@ import 'panel/item_panel.dart';
 import 'panel/log_panel.dart';
 import 'panel/sidebar_panel.dart';
 import 'panel/stage_panel.dart';
-import 'select_depth_screen.dart';
+import 'select_depth_popup.dart';
 import 'select_skill_dialog.dart';
 import 'skill_dialog.dart';
 import 'storage.dart';
@@ -140,7 +140,7 @@ class GameScreen extends Screen<Input> {
       case Input.quit:
         var portal = game.stage[game.hero.pos].portal;
         if (portal == TilePortals.exit) {
-          ui.push(ExitScreen(_storageSave, game));
+          ui.push(ExitPopup(_storageSave, game));
         } else {
           game.log.error("You are not standing on an exit.");
           dirty();
@@ -148,7 +148,7 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.forfeit:
-        ui.push(ForfeitDialog(isTown: game.depth == 0));
+        ui.push(ForfeitPopup(isTown: game.depth == 0));
         break;
       case Input.selectSkill:
         ui.push(SelectSkillDialog(game));
@@ -323,16 +323,16 @@ class GameScreen extends Screen<Input> {
       _pause = 10;
     }
 
-    if (popped is ExitScreen) {
+    if (popped is ExitPopup) {
       // TODO: Hero should start next to dungeon entrance.
       _storageSave.takeFrom(game.hero);
       ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
-    } else if (popped is SelectDepthScreen && result is int) {
+    } else if (popped is SelectDepthPopup && result is int) {
       // Enter the dungeon.
       // TODO: Make this a transparent dialog?
       _storage.save();
       ui.goTo(LoadingDialog(_storage, game.hero.save, game.content, result));
-    } else if (popped is ForfeitDialog && result == true) {
+    } else if (popped is ForfeitPopup && result == true) {
       if (game.depth > 0) {
         // Forfeiting, so return to the town and discard the current hero.
         // TODO: Hero should start next to dungeon entrance.
@@ -443,7 +443,7 @@ class GameScreen extends Screen<Input> {
 
     switch (portal) {
       case TilePortals.dungeon:
-        ui.push(SelectDepthScreen(game.content, game.hero.save));
+        ui.push(SelectDepthPopup(game.content, game.hero.save));
         break;
       case TilePortals.home:
         ui.push(ItemScreen.home(game.hero.save));

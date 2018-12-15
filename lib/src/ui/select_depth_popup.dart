@@ -1,27 +1,36 @@
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
-import 'package:malison/malison_web.dart';
 
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
-import 'draw.dart';
+import 'popup.dart';
 
 import 'input.dart';
 
-class SelectDepthScreen extends Screen<Input> {
+class SelectDepthPopup extends Popup {
   final Content content;
   final HeroSave save;
 
   /// The selected depth.
   int _depth = 1;
 
-  bool get isTransparent => true;
-
-  SelectDepthScreen(this.content, this.save) {
+  SelectDepthPopup(this.content, this.save) {
     _depth = math.min(Option.maxDepth, save.maxDepth + 1);
   }
+
+  int get width => 42;
+
+  int get height => 26;
+
+  List<String> get message => const [
+        "Stairs descend into darkness.",
+        "How far down shall you venture?"
+      ];
+
+  Map<String, String> get helpKeys =>
+      const {"OK": "Enter dungeon", "↕↔": "Change depth", "Esc": "Cancel"};
 
   bool handleInput(Input input) {
     switch (input) {
@@ -53,18 +62,7 @@ class SelectDepthScreen extends Screen<Input> {
     return false;
   }
 
-  void render(Terminal terminal) {
-    terminal.writeAt(0, terminal.height - 1,
-        '[L] Enter dungeon, [↕↔] Change depth, [Esc] Cancel', UIHue.helpText);
-
-    terminal = terminal.rect(11, 5, 44, 28);
-    terminal.clear();
-
-    Draw.doubleBox(terminal, 0, 0, terminal.width, terminal.height, gold);
-
-    terminal.writeAt(6, 2, "Stairs descend into darkness.", UIHue.text);
-    terminal.writeAt(6, 3, "How far down shall you venture?", UIHue.text);
-
+  void renderPopup(Terminal terminal) {
     for (var depth = 1; depth <= Option.maxDepth; depth++) {
       var x = (depth - 1) % 10;
       var y = ((depth - 1) ~/ 10) * 2;
@@ -75,12 +73,12 @@ class SelectDepthScreen extends Screen<Input> {
       } else if (depth == _depth) {
         color = UIHue.selection;
         terminal.drawChar(
-            x * 4 + 1, 6 + y, CharCode.blackRightPointingPointer, color);
+            x * 4, y + 5, CharCode.blackRightPointingPointer, color);
         terminal.drawChar(
-            x * 4 + 5, 6 + y, CharCode.blackLeftPointingPointer, color);
+            x * 4 + 4, y + 5, CharCode.blackLeftPointingPointer, color);
       }
 
-      terminal.writeAt(x * 4 + 2, 6 + y, depth.toString().padLeft(3), color);
+      terminal.writeAt(x * 4 + 1, y + 5, depth.toString().padLeft(3), color);
     }
   }
 

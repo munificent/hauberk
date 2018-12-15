@@ -1,16 +1,25 @@
 import 'package:malison/malison.dart';
-import 'package:malison/malison_web.dart';
 
 import 'input.dart';
+import 'popup.dart';
 
-// TODO: Unify with ConfirmDialog.
 /// Modal dialog for letting the user confirm forfeiting the level.
-class ForfeitDialog extends Screen<Input> {
+class ForfeitPopup extends Popup {
   final bool _isTown;
 
-  bool get isTransparent => true;
+  ForfeitPopup({bool isTown}) : _isTown = isTown ?? false;
 
-  ForfeitDialog({bool isTown}) : _isTown = isTown ?? false;
+  List<String> get message {
+    if (_isTown) return const ["Return to main menu?"];
+
+    return const [
+      "Are you sure you want to forfeit the level?",
+      "You will lose all items and experience gained in the dungeon."
+    ];
+  }
+
+  Map<String, String> get helpKeys =>
+      const {"Y": "Yes", "N": "No", "Esc": "No"};
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
@@ -38,15 +47,4 @@ class ForfeitDialog extends Screen<Input> {
   }
 
   bool update() => false;
-
-  void render(Terminal terminal) {
-    if (_isTown) {
-      terminal.writeAt(0, 0, "Return to main menu? [Y]/[N]");
-    } else {
-      terminal.writeAt(
-          0, 0, "Are you sure you want to forfeit the level? [Y]/[N]");
-      terminal.writeAt(
-          0, 1, "You will lose all items and experience gained on the level.");
-    }
-  }
 }
