@@ -60,9 +60,7 @@ class StagePanel {
 
   Rect _cameraBounds;
 
-  StagePanel(this._gameScreen) {
-    _positionCamera();
-  }
+  StagePanel(this._gameScreen);
 
   /// The portion of the [Stage] currently in view on screen.
   Rect get cameraBounds => _cameraBounds;
@@ -80,8 +78,6 @@ class StagePanel {
     var hadEffects = _effects.isNotEmpty;
     _effects.removeWhere((effect) => !effect.update(_gameScreen.game));
 
-    _positionCamera();
-
     // TODO: Re-rendering the entire screen when only animated tiles have
     // changed is pretty rough on CPU usage. Maybe optimize to only redraw the
     // animated tiles if that's all that happened in a turn?
@@ -93,6 +89,8 @@ class StagePanel {
 
   void render(
       Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
+    _positionCamera(terminal.size);
+
     _hasAnimatedTile = false;
 
     var game = _gameScreen.game;
@@ -268,21 +266,18 @@ class StagePanel {
 
   /// Determines which portion of the [Stage] should be in view based on the
   /// position of the [Hero].
-  void _positionCamera() {
+  void _positionCamera(Vec size) {
     var game = _gameScreen.game;
 
     // Handle the stage being smaller than the view.
-    var rangeWidth = math.max(0, game.stage.width - _gameScreen.viewSize.x);
-    var rangeHeight = math.max(0, game.stage.height - _gameScreen.viewSize.y);
+    var rangeWidth = math.max(0, game.stage.width - size.x);
+    var rangeHeight = math.max(0, game.stage.height - size.y);
 
     var cameraRange = Rect(0, 0, rangeWidth, rangeHeight);
 
-    var camera = game.hero.pos - _gameScreen.viewSize ~/ 2;
+    var camera = game.hero.pos - size ~/ 2;
     camera = cameraRange.clamp(camera);
-    _cameraBounds = Rect(
-        camera.x,
-        camera.y,
-        math.min(_gameScreen.viewSize.x, game.stage.width),
-        math.min(_gameScreen.viewSize.y, game.stage.height));
+    _cameraBounds = Rect(camera.x, camera.y, math.min(size.x, game.stage.width),
+        math.min(size.y, game.stage.height));
   }
 }

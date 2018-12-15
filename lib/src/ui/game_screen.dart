@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
@@ -14,6 +16,7 @@ import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item_dialog.dart';
+import 'item_panel.dart';
 import 'item_screen.dart';
 import 'loading_dialog.dart';
 import 'log_panel.dart';
@@ -32,6 +35,7 @@ class GameScreen extends Screen<Input> {
   final HeroSave _storageSave;
   final Storage _storage;
   final LogPanel _logPanel;
+  final ItemPanel _itemPanel;
   SidebarPanel _sidebarPanel;
   StagePanel _stagePanel;
 
@@ -39,10 +43,8 @@ class GameScreen extends Screen<Input> {
   /// coming back from a dialog where the player chose an action for the hero.
   int _pause = 0;
 
-  // TODO: Move this to StagePanel?
-  /// The size of the [Stage] view area.
-  final viewSize = Vec(60, 34);
-
+  /// The top left corner of the stage panel.
+  Vec _stagePanelPos;
   Actor _targetActor;
   Vec _target;
 
@@ -109,7 +111,8 @@ class GameScreen extends Screen<Input> {
   }
 
   GameScreen(this._storage, this.game, this._storageSave)
-      : _logPanel = LogPanel(game.log) {
+      : _logPanel = LogPanel(game.log),
+        _itemPanel = ItemPanel(game.hero) {
     _sidebarPanel = SidebarPanel(this);
     _stagePanel = StagePanel(this);
 
@@ -127,7 +130,8 @@ class GameScreen extends Screen<Input> {
 
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the stage panel.
   void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
-    _stagePanel.drawStageGlyph(terminal, x, y, glyph);
+    _stagePanel.drawStageGlyph(
+        terminal, _stagePanelPos.x + x, _stagePanelPos.y + y, glyph);
   }
 
   bool handleInput(Input input) {
@@ -388,10 +392,18 @@ class GameScreen extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    var bar = Glyph.fromCharCode(CharCode.boxDrawingsLightVertical, steelGray);
-    for (var y = 0; y < terminal.height; y++) {
-      terminal.drawGlyph(60, y, bar);
+    var leftWidth = 21;
+    var centerWidth = terminal.width - leftWidth;
+    var rightWidth = 0;
+    if (terminal.width >= 100) {
+      rightWidth = 20 + (terminal.width - 100) ~/ 2;
+      rightWidth = math.min(rightWidth, 50);
+
+      centerWidth = terminal.width - leftWidth - rightWidth;
     }
+
+    var logHeight = 6 + (terminal.height - 40) ~/ 2;
+    logHeight = math.min(logHeight, 20);
 
     var hero = game.hero;
     var heroColor = ash;
@@ -409,12 +421,18 @@ class GameScreen extends Screen<Input> {
 
     var visibleMonsters = <Monster>[];
 
-    _stagePanel.render(terminal.rect(0, 0, viewSize.x, viewSize.y), heroColor,
+    _stagePanelPos = Vec(leftWidth, 0);
+    _stagePanel.render(
+        terminal.rect(_stagePanelPos.x, _stagePanelPos.y, centerWidth,
+            terminal.height - logHeight),
+        heroColor,
         visibleMonsters);
-
-    _logPanel.render(terminal.rect(0, 34, 60, 6));
-    _sidebarPanel.render(
-        terminal.rect(61, 0, 20, 40), heroColor, visibleMonsters);
+    _logPanel.render(terminal.rect(
+        leftWidth, terminal.height - logHeight, centerWidth, logHeight));
+    _sidebarPanel.render(terminal.rect(0, 0, leftWidth, terminal.height),
+        heroColor, visibleMonsters);
+    _itemPanel.render(terminal.rect(
+        terminal.width - rightWidth, 0, rightWidth, terminal.height));
   }
 
   /// Handle the hero stepping onto a portal tile.
@@ -457,7 +475,7 @@ class GameScreen extends Screen<Input> {
       case TilePortals.shop9:
         _enterShop(8);
         break;
-    // TODO: No crucible right now.
+      // TODO: No crucible right now.
 //        ui.push(new ItemScreen.crucible(content, save));
     }
 

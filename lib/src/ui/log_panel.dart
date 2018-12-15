@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 
 class LogPanel {
   final Log _log;
@@ -9,11 +10,14 @@ class LogPanel {
   LogPanel(this._log);
 
   void render(Terminal terminal) {
-    var y = 0;
+    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
+    terminal.writeAt(2, 0, " Messages ", UIHue.text);
 
-    for (var message in _log.messages) {
+    var y = terminal.height - 2;
+    for (var i = _log.messages.length - 1; i >= 0 && y > 0; i--) {
+      var message = _log.messages[i];
+
       Color color;
-      var messagesLength = _log.messages.length - 1;
 
       switch (message.type) {
         case LogType.message:
@@ -36,18 +40,18 @@ class LogPanel {
           break;
       }
 
-      if (y != messagesLength) {
+      if (i != _log.messages.length - 1) {
         color = color.blend(Color.black, 0.5);
       }
 
-      terminal.writeAt(0, y, message.text, color);
+      terminal.writeAt(1, y, message.text, color);
 
       if (message.count > 1) {
         terminal.writeAt(
-            message.text.length, y, ' (x${message.count})', steelGray);
+            message.text.length + 1, y, ' (x${message.count})', steelGray);
       }
-      y++;
+
+      y--;
     }
   }
-
 }

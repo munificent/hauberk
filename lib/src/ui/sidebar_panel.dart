@@ -30,16 +30,18 @@ class SidebarPanel {
 
   void render(
       Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
+    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
+
     var game = _gameScreen.game;
     var hero = game.hero;
-    terminal.writeAt(0, 0, hero.save.name, UIHue.primary);
-    terminal.writeAt(0, 1, hero.save.race.name, UIHue.text);
-    terminal.writeAt(0, 2, hero.save.heroClass.name, UIHue.text);
+    terminal.writeAt(2, 0, " ${hero.save.name} ", UIHue.text);
+    terminal.writeAt(
+        1, 2, "${hero.save.race.name} ${hero.save.heroClass.name}", UIHue.text);
 
     _drawStat(
         terminal, 4, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
-    terminal.writeAt(0, 5, 'Food', UIHue.helpText);
-    Draw.meter(terminal, 9, 5, 10, hero.stomach, Option.heroMaxStomach,
+    terminal.writeAt(1, 5, 'Food', UIHue.helpText);
+    Draw.meter(terminal, 10, 5, 10, hero.stomach, Option.heroMaxStomach,
         persimmon, garnet);
 
     _drawStat(terminal, 6, 'Level', hero.level, cerulean);
@@ -51,7 +53,7 @@ class SidebarPanel {
       terminal.writeAt(15, 6, '$levelPercent%', ultramarine);
     }
 
-    var x = 0;
+    var x = 1;
     drawStat(StatBase stat) {
       terminal.writeAt(x, 8, stat.name.substring(0, 3), UIHue.helpText);
       terminal.writeAt(x, 9, stat.value.toString().padLeft(3), UIHue.text);
@@ -64,9 +66,9 @@ class SidebarPanel {
     drawStat(hero.intellect);
     drawStat(hero.will);
 
-    terminal.writeAt(0, 11, 'Focus', UIHue.helpText);
+    terminal.writeAt(1, 11, 'Focus', UIHue.helpText);
 
-    Draw.meter(terminal, 9, 11, 10, hero.focus, hero.intellect.maxFocus,
+    Draw.meter(terminal, 10, 11, 10, hero.focus, hero.intellect.maxFocus,
         cerulean, ultramarine);
 
     _drawStat(terminal, 13, 'Armor',
@@ -76,8 +78,8 @@ class SidebarPanel {
     _drawStat(terminal, 14, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.
-    terminal.writeAt(0, 16, '@', heroColor);
-    terminal.writeAt(2, 16, hero.save.name, UIHue.text);
+    terminal.writeAt(1, 16, '@', heroColor);
+    terminal.writeAt(3, 16, hero.save.name, UIHue.text);
     _drawHealthBar(terminal, 17, hero);
 
     visibleMonsters.sort((a, b) {
@@ -96,9 +98,9 @@ class SidebarPanel {
           glyph = Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
-        terminal.drawGlyph(0, y, glyph);
+        terminal.drawGlyph(1, y, glyph);
         terminal.writeAt(
-            2,
+            3,
             y,
             monster.breed.name,
             (_gameScreen.currentTargetActor == monster)
@@ -108,46 +110,25 @@ class SidebarPanel {
         _drawHealthBar(terminal, y + 1, monster);
       }
     }
-
-    // Draw the unseen items.
-    terminal.writeAt(0, 38, "Unfound items:", UIHue.helpText);
-    var unseen = <Item>[];
-    game.stage.forEachItem((item, pos) {
-      if (!game.stage[pos].isExplored) unseen.add(item);
-    });
-
-    // Show the "best" ones first.
-    unseen.sort();
-
-    x = 0;
-    var lastGlyph;
-    for (var item in unseen.reversed) {
-      if (item.appearance != lastGlyph) {
-        terminal.drawGlyph(x, 39, item.appearance as Glyph);
-        x++;
-        if (x >= terminal.width) break;
-        lastGlyph = item.appearance;
-      }
-    }
   }
 
   /// Draws a labeled numeric stat.
   void _drawStat(
       Terminal terminal, int y, String label, value, Color valueColor,
       [max, Color maxColor]) {
-    terminal.writeAt(0, y, label, UIHue.helpText);
+    terminal.writeAt(1, y, label, UIHue.helpText);
     var valueString = value.toString();
-    terminal.writeAt(10, y, valueString, valueColor);
+    terminal.writeAt(11, y, valueString, valueColor);
 
     if (max != null) {
-      terminal.writeAt(10 + valueString.length, y, ' / $max', maxColor);
+      terminal.writeAt(11 + valueString.length, y, ' / $max', maxColor);
     }
   }
 
   /// Draws a health bar for [actor].
   void _drawHealthBar(Terminal terminal, int y, Actor actor) {
     // Show conditions.
-    var x = 2;
+    var x = 3;
 
     drawCondition(String char, Color fore, [Color back]) {
       // Don't overlap other stuff.
@@ -204,6 +185,6 @@ class SidebarPanel {
     }
 
     Draw.meter(
-        terminal, 9, y, 10, actor.health, actor.maxHealth, brickRed, maroon);
+        terminal, 10, y, 10, actor.health, actor.maxHealth, brickRed, maroon);
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 /// The message log.
 class Log {
   /// Given a noun pattern, returns the unquantified singular form of it.
@@ -64,11 +62,9 @@ class Log {
     return lines;
   }
 
-  static const maxMessages = 6;
+  static const _maxMessages = 20;
 
-  final Queue<Message> messages;
-
-  Log() : messages = Queue<Message>();
+  final messages = <Message>[];
 
   void message(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     add(LogType.message, message, noun1, noun2, noun3);
@@ -109,7 +105,7 @@ class Log {
 
     // It's a new message.
     messages.add(Message(type, message));
-    if (messages.length > maxMessages) messages.removeFirst();
+    if (messages.length > _maxMessages) messages.removeAt(0);
   }
 
   /// The same message can apply to a variety of subjects and objects, and it

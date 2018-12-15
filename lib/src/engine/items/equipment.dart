@@ -28,7 +28,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   /// Gets the [Item] in the weapon slot, if any.
   Item get weapon => find('weapon');
 
-  /// Gets the number of equipped item. Ignores empty slots.
+  /// Gets the number of equipped items. Ignores empty slots.
   int get length {
     return slots.fold(0, (count, item) => count + ((item == null) ? 0 : 1));
   }
