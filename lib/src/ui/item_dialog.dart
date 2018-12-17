@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
 import 'item_view.dart';
@@ -131,18 +134,9 @@ class ItemDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.fill(0, 0, 40, 2);
+    _renderHelp(terminal);
 
-    drawItems(terminal, 0, _getItems(),
-        canSelect: _canSelect,
-        isDialog: true,
-        capitals: _shiftDown,
-        inspected: _inspected);
-
-    if (_inspected != null) {
-      drawInspector(terminal, _gameScreen.game.hero.save, _inspected);
-    }
-
+    // TODO: Position the query near the item list.
     if (_selectedItem == null) {
       if (_shiftDown) {
         terminal.writeAt(1, 0, "Inspect which item?", UIHue.selection);
@@ -155,19 +149,71 @@ class ItemDialog extends Screen<Input> {
       terminal.writeAt(query.length + 2, 0, _count.toString(), UIHue.selection);
     }
 
-    var select = '[↕] Change quantity';
-    if (_selectedItem == null) {
-      if (_shiftDown) {
-        select = '[A-Z] Inspect item';
-      } else {
-        select = '[A-Z] Select item, [Shift] Inspect';
-      }
+    var itemCount = 0;
+    switch (_location) {
+      case ItemLocation.inventory:
+        itemCount = Option.inventoryCapacity;
+        break;
+      case ItemLocation.equipment:
+        itemCount = _gameScreen.game.hero.equipment.slots.length;
+        break;
+      case ItemLocation.onGround:
+        itemCount = _getItems().length;
+        break;
     }
 
-    var helpText = canSwitchLocations ? ', [Tab] Switch view' : '';
+    int itemsLeft;
+    int itemsTop;
+    if (_gameScreen.itemPanelVisible) {
+      switch (_location) {
+        case ItemLocation.inventory:
+          itemsTop = _gameScreen.game.hero.equipment.slots.length + 2;
+          break;
+        case ItemLocation.equipment:
+          itemsTop = 0;
+          break;
+        case ItemLocation.onGround:
+          // TODO: Better Y? Make a panel for this?
+          itemsTop = 0;
+          break;
+      }
 
-    terminal.writeAt(
-        0, terminal.height - 1, '$select$helpText', UIHue.helpText);
+      itemsLeft = terminal.width - 46;
+    } else {
+      itemsLeft = _gameScreen.stagePanelBounds.right - 46;
+      itemsTop = _gameScreen.stagePanelBounds.y;
+    }
+
+    // TODO: Handle the item panel being wider than 46.
+    var itemView = _ItemDialogItemView(this);
+    itemView.render(terminal.rect(itemsLeft, itemsTop, 46, itemCount + 2));
+
+    if (_inspected != null) {
+      var y = itemsTop + itemView.itemY(_inspected) + 1;
+      y = y.clamp(0, terminal.height - 20);
+      drawInspector(terminal.rect(itemsLeft - 34, y, 34, 20),
+          _gameScreen.game.hero.save, _inspected);
+    }
+  }
+
+  void _renderHelp(Terminal terminal) {
+    var helpKeys = <String, String>{};
+    if (_selectedItem == null) {
+      if (_shiftDown) {
+        helpKeys["A-Z"] = "Inspect item";
+      } else {
+        helpKeys["A-Z"] = "Select item";
+        helpKeys["Shift"] = "Inspect";
+      }
+    } else {
+      helpKeys["↕"] = "Change quantity";
+    }
+
+    if (canSwitchLocations) {
+      helpKeys["Tab"] = "Switch view";
+    }
+
+    Draw.helpKeys(terminal, helpKeys);
   }
 
   bool _canSelect(Item item) {
@@ -219,6 +265,30 @@ class ItemDialog extends Screen<Input> {
     var index = _command.allowedLocations.indexOf(_location);
     _location = _command
         .allowedLocations[(index + 1) % _command.allowedLocations.length];
+  }
+}
+
+class _ItemDialogItemView extends ItemView {
+  final ItemDialog _dialog;
+
+  ItemCollection get items => _dialog._getItems();
+
+  bool get canSelectAny => true;
+
+  bool get capitalize => _dialog._shiftDown;
+
+  Item get inspectedItem => _dialog._inspected;
+
+  bool canSelect(Item item) => _dialog._canSelect(item);
+
+  _ItemDialogItemView(this._dialog);
+
+  void render(Terminal terminal) {
+    Draw.frame(
+        terminal, 0, 0, terminal.width, terminal.height, UIHue.selection);
+    terminal.writeAt(2, 0, " ${items.name} ", UIHue.selection);
+
+    super.render(terminal.rect(1, 1, terminal.width - 2, terminal.height - 2));
   }
 }
 

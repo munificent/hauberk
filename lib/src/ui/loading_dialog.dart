@@ -7,6 +7,7 @@ import 'game_screen.dart';
 import 'input.dart';
 import 'storage.dart';
 
+// TODO: Update the handle the resizable terminal.
 /// Dialog shown while a new level is being generated.
 class LoadingDialog extends Screen<Input> {
   final Storage _storage;

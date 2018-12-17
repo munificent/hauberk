@@ -30,33 +30,7 @@ abstract class Popup extends Screen<Input> {
   Map<String, String> get helpKeys;
 
   void render(Terminal terminal) {
-    // Draw the help.
-    var helpTextLength = 0;
-    helpKeys.forEach((key, text) {
-      if (helpTextLength > 0) helpTextLength += 2;
-      helpTextLength += key.length + text.length + 3;
-    });
-
-    var x = (terminal.width - helpTextLength) ~/ 2;
-    var first = true;
-    helpKeys.forEach((key, text) {
-      if (!first) {
-        terminal.writeAt(x, terminal.height - 1, ", ", UIHue.secondary);
-        x += 2;
-      }
-
-      terminal.writeAt(x, terminal.height - 1, "[", UIHue.secondary);
-      x++;
-      terminal.writeAt(x, terminal.height - 1, key, UIHue.selection);
-      x += key.length;
-      terminal.writeAt(x, terminal.height - 1, "] ", UIHue.secondary);
-      x += 2;
-
-      terminal.writeAt(x, terminal.height - 1, text, UIHue.helpText);
-      x += text.length;
-
-      first = false;
-    });
+    Draw.helpKeys(terminal, helpKeys);
 
     var messageLines = message;
 

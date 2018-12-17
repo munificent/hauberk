@@ -147,7 +147,7 @@ abstract class ItemScreen extends Screen<Input> {
         inspected: _inspected);
 
     if (_inspected != null) {
-      drawInspector(terminal, _save, _inspected);
+      drawInspector(terminal.rect(46, 0, 34, 20), _save, _inspected);
     }
 
 //    if (completeRecipe != null) {
@@ -164,6 +164,7 @@ abstract class ItemScreen extends Screen<Input> {
       terminal.writeAt(0, 32, _error, brickRed);
     }
 
+    // TODO: Use Draw.helpKeys().
     var help = _shiftDown ? "[A-Z] Inspect item" : _helpText;
     terminal.writeAt(0, terminal.height - 1, help, UIHue.helpText);
   }

@@ -39,12 +39,15 @@ class GameScreen extends Screen<Input> {
   SidebarPanel _sidebarPanel;
   StagePanel _stagePanel;
 
+  /// The screen dimensions of the stage panel.
+  Rect _stagePanelBounds;
+
+  bool _itemPanelVisible = false;
+
   /// The number of ticks left to wait before restarting the game loop after
   /// coming back from a dialog where the player chose an action for the hero.
   int _pause = 0;
 
-  /// The top left corner of the stage panel.
-  Vec _stagePanelPos;
   Actor _targetActor;
   Vec _target;
 
@@ -110,6 +113,12 @@ class GameScreen extends Screen<Input> {
     return null;
   }
 
+  Rect get cameraBounds => _stagePanel.cameraBounds;
+
+  Rect get stagePanelBounds => _stagePanelBounds;
+
+  bool get itemPanelVisible => _itemPanelVisible;
+
   GameScreen(this._storage, this.game, this._storageSave)
       : _logPanel = LogPanel(game.log),
         _itemPanel = ItemPanel(game.hero) {
@@ -126,12 +135,10 @@ class GameScreen extends Screen<Input> {
     return GameScreen(storage, game, null);
   }
 
-  Rect get cameraBounds => _stagePanel.cameraBounds;
-
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the stage panel.
   void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
     _stagePanel.drawStageGlyph(
-        terminal, _stagePanelPos.x + x, _stagePanelPos.y + y, glyph);
+        terminal, _stagePanelBounds.x + x, _stagePanelBounds.y + y, glyph);
   }
 
   bool handleInput(Input input) {
@@ -395,7 +402,9 @@ class GameScreen extends Screen<Input> {
     var leftWidth = 21;
     var centerWidth = terminal.width - leftWidth;
     var rightWidth = 0;
-    if (terminal.width >= 100) {
+
+    _itemPanelVisible = terminal.width >= 100;
+    if (_itemPanelVisible) {
       rightWidth = 20 + (terminal.width - 100) ~/ 2;
       rightWidth = math.min(rightWidth, 50);
 
@@ -421,10 +430,11 @@ class GameScreen extends Screen<Input> {
 
     var visibleMonsters = <Monster>[];
 
-    _stagePanelPos = Vec(leftWidth, 0);
+    _stagePanelBounds =
+        Rect(leftWidth, 0, centerWidth, terminal.height - logHeight);
     _stagePanel.render(
-        terminal.rect(_stagePanelPos.x, _stagePanelPos.y, centerWidth,
-            terminal.height - logHeight),
+        terminal.rect(_stagePanelBounds.x, _stagePanelBounds.y,
+            _stagePanelBounds.width, _stagePanelBounds.height),
         heroColor,
         visibleMonsters);
     _logPanel.render(terminal.rect(

@@ -7,6 +7,139 @@ import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
 
+// TODO: This is copy/pasted from below. Unify.
+abstract class ItemView {
+  ItemCollection get items;
+
+  bool get showLetters => true;
+
+  bool get canSelectAny => true;
+
+  bool get capitalize => false;
+
+  Item get inspectedItem => null;
+
+  bool canSelect(Item item) => false;
+
+  int itemY(Item item) {
+    var y = 0;
+    for (var thisItem in items) {
+      if (thisItem == item) return y;
+      y++;
+    }
+
+    return -1;
+  }
+
+  void render(Terminal terminal) {
+    var letters = capitalize
+        ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        : "abcdefghijklmnopqrstuvwxyz";
+
+    // Shift the stats over to make room for prices, if needed.
+    var statRight = terminal.width;
+    // TODO
+//    if (getPrice != null) {
+//      for (var item in items) {
+//        var price = getPrice(item);
+//        if (price != null) {
+//          statRight =
+//              math.min(statRight, terminal.width - formatMoney(price).length - 2);
+//        }
+//      }
+//    }
+
+    var i = 0;
+    var letter = 0;
+    for (var item in items.slots) {
+      var y = i;
+
+      var x = showLetters ? 2 : 0;
+
+      // If there's no item in this equipment slot, show the slot name.
+      if (item == null) {
+        // Null items should only appear in equipment.
+        assert(items.slotTypes != null);
+
+        terminal.writeAt(x + 2, y, "(${items.slotTypes[i]})", UIHue.disabled);
+        letter++;
+        i++;
+        continue;
+      }
+
+      var borderColor = steelGray;
+      var letterColor = UIHue.secondary;
+      var textColor = UIHue.primary;
+      var enabled = true;
+
+      if (canSelectAny) {
+        if (canSelect(item)) {
+          borderColor = UIHue.secondary;
+          letterColor = UIHue.selection;
+          textColor = UIHue.primary;
+        } else {
+          borderColor = Color.black;
+          letterColor = Color.black;
+          textColor = UIHue.disabled;
+          enabled = false;
+        }
+      }
+
+      if (item == inspectedItem) {
+        textColor = UIHue.selection;
+      }
+
+      if (showLetters) {
+        terminal.writeAt(0, y, " )", borderColor);
+        terminal.writeAt(0, y, letters[letter], letterColor);
+      }
+
+      letter++;
+
+      if (enabled) {
+        terminal.drawGlyph(x, y, item.appearance as Glyph);
+      }
+
+      terminal.writeAt(x + 2, y, item.nounText, textColor);
+
+      // TODO
+//      if (getPrice != null && getPrice(item) != null) {
+//        var price = formatMoney(getPrice(item));
+//        terminal.writeAt(terminal.width - price.length - 1, y, price,
+//            enabled ? gold : UIHue.disabled);
+//        terminal.writeAt(terminal.width - price.length - 2, y, "\$",
+//            enabled ? persimmon : UIHue.disabled);
+//      }
+
+      drawStat(int symbol, Object stat, Color light, Color dark) {
+        var string = stat.toString();
+        terminal.drawChar(statRight - string.length - 1, y, symbol,
+            enabled ? dark : UIHue.disabled);
+        terminal.writeAt(statRight - string.length, y, string,
+            enabled ? light : UIHue.disabled);
+      }
+
+      // TODO: Eventually need to handle equipment that gives both an armor and
+      // attack bonus.
+      if (item.attack != null) {
+        var hit = item.attack.createHit();
+        drawStat(CharCode.feminineOrdinalIndicator, hit.damageString, carrot,
+            garnet);
+      } else if (item.armor != 0) {
+        drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
+      }
+
+//      if (item != null && item == inspectedItem) {
+//        terminal.drawChar(
+//            0, y, CharCode.blackLeftPointingPointer, UIHue.selection);
+//      }
+
+      // TODO: Show heft and weight.
+      i++;
+    }
+  }
+}
+
 /// Draws a collection of [items] on [terminal] at [left].
 ///
 /// This is used both on the [ItemScreen] and in game for things like using
@@ -20,7 +153,10 @@ import 'draw.dart';
 ///   selectable.
 /// * If [canSelect] returns `false`, the item cannot be selected and is
 ///   grayed out.
-void drawItems(Terminal terminal, int left, ItemCollection items,
+///
+/// If there is an item being inspected, returns its `y` position. Otherwise,
+/// returns -1.
+int drawItems(Terminal terminal, int left, ItemCollection items,
     {bool canSelect(Item item),
     int getPrice(Item item),
     bool isDialog,
@@ -33,14 +169,14 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
 
   // Draw a box for the contents.
   var itemCount = items.slots.length;
-  var boxHeight = (isDialog ? math.max(itemCount, 1) : 26) + 3;
+  var boxHeight = (isDialog ? math.max(itemCount, 1) : 26) + 2;
   Draw.frame(terminal, 0, 0, terminal.width, boxHeight);
 
   terminal.writeAt(1, 0, items.name, UIHue.text);
 
   if (items.slots.isEmpty) {
-    terminal.writeAt(1, 2, items.location.emptyDescription, UIHue.disabled);
-    return;
+    terminal.writeAt(1, 1, items.location.emptyDescription, UIHue.disabled);
+    return -1;
   }
 
   capitals ??= false;
@@ -61,15 +197,16 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
 
   var i = 0;
   var letter = 0;
+  var inspectedY = -1;
   for (var item in items.slots) {
-    var y = i + 2;
+    var y = i + 1;
 
     // If there's no item in this equipment slot, show the slot name.
     if (item == null) {
       // Null items should only appear in equipment.
       assert(items.slotTypes != null);
 
-      terminal.writeAt(1, y, "    (${items.slotTypes[i]})", UIHue.helpText);
+      terminal.writeAt(1, y, "    (${items.slotTypes[i]})", UIHue.disabled);
       letter++;
       i++;
       continue;
@@ -110,9 +247,9 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
           enabled ? persimmon : UIHue.disabled);
     }
 
-    drawStat(String symbol, Object stat, Color light, Color dark) {
+    drawStat(int symbol, Object stat, Color light, Color dark) {
       var string = stat.toString();
-      terminal.writeAt(statRight - string.length - 1, y, symbol,
+      terminal.drawChar(statRight - string.length - 1, y, symbol,
           enabled ? dark : UIHue.disabled);
       terminal.writeAt(statRight - string.length, y, string,
           enabled ? light : UIHue.disabled);
@@ -122,26 +259,30 @@ void drawItems(Terminal terminal, int left, ItemCollection items,
     // attack bonus.
     if (item.attack != null) {
       var hit = item.attack.createHit();
-      drawStat("»", hit.damageString, carrot, garnet);
+      drawStat(
+          CharCode.feminineOrdinalIndicator, hit.damageString, carrot, garnet);
     } else if (item.armor != 0) {
-      drawStat("•", item.armor, peaGreen, sherwood);
+      drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
     }
 
     if (item != null && item == inspected) {
       terminal.drawChar(
-          2, y, CharCode.blackRightPointingPointer, UIHue.selection);
-      terminal.drawChar(terminal.width - 1, y,
-          CharCode.blackRightPointingPointer, UIHue.selection);
+          0, y, CharCode.blackLeftPointingPointer, UIHue.selection);
+      inspectedY = y + 2;
+//      terminal.drawChar(
+//          2, y, CharCode.blackRightPointingPointer, UIHue.selection);
+//      terminal.drawChar(terminal.width - 1, y,
+//          CharCode.blackRightPointingPointer, UIHue.selection);
     }
 
     // TODO: Show heft and weight.
     i++;
   }
+
+  return inspectedY;
 }
 
 void drawInspector(Terminal terminal, HeroSave hero, Item item) {
-  terminal = terminal.rect(46, 0, 34, 20);
-
   Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
   terminal.drawGlyph(1, 0, item.appearance as Glyph);

@@ -9,6 +9,7 @@ import 'hero_monster_lore_dialog.dart';
 import 'hero_resistances_dialog.dart';
 import 'input.dart';
 
+// TODO: Fix this and its subscreens to work with the resizable UI.
 abstract class HeroInfoDialog extends Screen<Input> {
   static final List<HeroInfoDialog> _screens = [];
 
