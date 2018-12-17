@@ -206,6 +206,7 @@ class TargetDialog extends Screen<Input> {
           terminal, target.x, target.y, Glyph('X', reticleColor));
     }
 
+    // TODO: Use Draw.helpKeys().
     if (_monsters.isEmpty) {
       terminal.writeAt(0, terminal.height - 1, "[↕↔] Choose tile, [Esc] Cancel",
           UIHue.helpText);

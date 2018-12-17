@@ -7,7 +7,7 @@ import 'draw.dart';
 import 'input.dart';
 
 // TODO: Would be good to show skill description and stuff here too.
-
+// TODO: Get working with resizable UI.
 class SelectSkillDialog extends Screen<Input> {
   final Game _game;
   final List<UsableSkill> _skills = [];

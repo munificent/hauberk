@@ -6,32 +6,32 @@ import '../draw.dart';
 import '../item_view.dart';
 
 class ItemPanel {
-  final Hero _hero;
+  final Game _game;
 
-  ItemPanel(this._hero);
+  ItemPanel(this._game);
 
   void render(Terminal terminal) {
-    Draw.frame(
-        terminal, 0, 0, terminal.width, _hero.equipment.slots.length + 2);
-    terminal.writeAt(2, 0, " Equipment ", UIHue.text);
+    var hero = _game.hero;
+    var y =
+        _drawItems(terminal, 0, hero.equipment.slots.length, hero.equipment);
 
-    var equipmentView = _ItemPanelItemView(_hero.equipment);
-    equipmentView.render(
-        terminal.rect(1, 1, terminal.width - 2, _hero.equipment.slots.length));
+    y = _drawItems(terminal, y, Option.inventoryCapacity, hero.inventory);
 
-    var inventoryTop = _hero.equipment.slots.length + 2;
-
-    Draw.frame(terminal, 0, inventoryTop, terminal.width,
-        Option.inventoryCapacity + 2);
-    terminal.writeAt(2, inventoryTop, " Inventory ", UIHue.text);
-
-    var inventoryView = _ItemPanelItemView(_hero.inventory);
-    inventoryView.render(terminal.rect(
-        1, inventoryTop + 1, terminal.width - 2, Option.inventoryCapacity));
+    var onGround = _game.stage.itemsAt(hero.pos);
+    y = _drawItems(terminal, y, 5, onGround);
 
     // TODO: Show something useful down here. Maybe mini-map or monster info.
-    var restTop = inventoryTop + Option.inventoryCapacity + 2;
-    Draw.box(terminal, 0, restTop, terminal.width, terminal.height - restTop);
+    Draw.box(terminal, 0, y, terminal.width, terminal.height - y);
+  }
+
+  int _drawItems(Terminal terminal, int y, int height, ItemCollection items) {
+    Draw.frame(terminal, 0, y, terminal.width, height + 2);
+    terminal.writeAt(2, y, " ${items.name} ", UIHue.text);
+
+    var view = _ItemPanelItemView(items);
+    view.render(terminal.rect(1, y + 1, terminal.width - 2, height));
+
+    return y + height + 2;
   }
 }
 
@@ -41,5 +41,6 @@ class _ItemPanelItemView extends ItemView {
   _ItemPanelItemView(this.items);
 
   bool get showLetters => false;
+
   bool get canSelectAny => false;
 }

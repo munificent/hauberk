@@ -6,6 +6,7 @@ import '../hues.dart';
 import 'draw.dart';
 import 'input.dart';
 
+// TODO: Get working with resizable UI.
 abstract class SkillDialog extends Screen<Input> {
   SkillDialog _nextScreen;
 

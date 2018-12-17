@@ -120,7 +120,7 @@ class GameScreen extends Screen<Input> {
 
   GameScreen(this._storage, this.game, this._storageSave)
       : _logPanel = LogPanel(game.log),
-        _itemPanel = ItemPanel(game.hero) {
+        _itemPanel = ItemPanel(game) {
     _sidebarPanel = SidebarPanel(this);
     _stagePanel = StagePanel(this);
 

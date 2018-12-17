@@ -114,8 +114,8 @@ class ItemDialog extends Screen<Input> {
       return true;
     }
 
-    if (!shift && keyCode == KeyCode.tab && canSwitchLocations) {
-      _advanceLocation();
+    if (keyCode == KeyCode.tab && canSwitchLocations) {
+      _advanceLocation(shift ? -1 : 1);
       dirty();
       return true;
     }
@@ -143,7 +143,9 @@ class ItemDialog extends Screen<Input> {
         itemCount = _gameScreen.game.hero.equipment.slots.length;
         break;
       case ItemLocation.onGround:
-        itemCount = _getItems().length;
+        // TODO: Define this constant somewhere. Make the game engine try not
+        // to place more than this many items per tile.
+        itemCount = 5;
         break;
     }
 
@@ -159,8 +161,9 @@ class ItemDialog extends Screen<Input> {
           itemsTop = 0;
           break;
         case ItemLocation.onGround:
-          // TODO: Better Y? Make a panel for this?
-          itemsTop = 0;
+          itemsTop = _gameScreen.game.hero.equipment.slots.length +
+              Option.inventoryCapacity +
+              4;
           break;
       }
 
@@ -264,10 +267,10 @@ class ItemDialog extends Screen<Input> {
   }
 
   /// Rotates through the viewable locations the player can select an item from.
-  void _advanceLocation() {
+  void _advanceLocation(int offset) {
     var index = _command.allowedLocations.indexOf(_location);
-    _location = _command
-        .allowedLocations[(index + 1) % _command.allowedLocations.length];
+    var count = _command.allowedLocations.length;
+    _location = _command.allowedLocations[(index + count + offset) % count];
   }
 }
 
@@ -301,8 +304,8 @@ abstract class _ItemCommand {
   /// allows multiple locations, players can switch between them.
   List<ItemLocation> get allowedLocations => const [
         ItemLocation.inventory,
-        ItemLocation.equipment,
-        ItemLocation.onGround
+        ItemLocation.onGround,
+        ItemLocation.equipment
       ];
 
   /// If the player must select how many items in a stack, returns `true`.
@@ -411,6 +414,8 @@ class _TossItemCommand extends _ItemCommand {
   }
 }
 
+// TODO: It queries for a count. But if there is only a single item, the hero
+// automatically picks up the whole stack. Should it do the same here?
 class _PickUpItemCommand extends _ItemCommand {
   List<ItemLocation> get allowedLocations => const [ItemLocation.onGround];
 
