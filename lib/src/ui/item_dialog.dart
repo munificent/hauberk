@@ -134,21 +134,6 @@ class ItemDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    _renderHelp(terminal);
-
-    // TODO: Position the query near the item list.
-    if (_selectedItem == null) {
-      if (_shiftDown) {
-        terminal.writeAt(1, 0, "Inspect which item?", UIHue.selection);
-      } else {
-        terminal.writeAt(1, 0, _command.query(_location), UIHue.selection);
-      }
-    } else {
-      var query = _command.queryCount(_location);
-      terminal.writeAt(1, 0, query, UIHue.text);
-      terminal.writeAt(query.length + 2, 0, _count.toString(), UIHue.selection);
-    }
-
     var itemCount = 0;
     switch (_location) {
       case ItemLocation.inventory:
@@ -164,7 +149,8 @@ class ItemDialog extends Screen<Input> {
 
     int itemsLeft;
     int itemsTop;
-    if (_gameScreen.itemPanelVisible) {
+    int itemsWidth;
+    if (_gameScreen.itemPanelBounds != null) {
       switch (_location) {
         case ItemLocation.inventory:
           itemsTop = _gameScreen.game.hero.equipment.slots.length + 2;
@@ -178,15 +164,32 @@ class ItemDialog extends Screen<Input> {
           break;
       }
 
-      itemsLeft = terminal.width - 46;
+      // Always make it at least 2 wider than the item panel. That way, with
+      // the letters, the items stay in the same position.
+      itemsWidth = math.max(46, _gameScreen.itemPanelBounds.width + 2);
+      itemsLeft = terminal.width - itemsWidth;
     } else {
-      itemsLeft = _gameScreen.stagePanelBounds.right - 46;
+      itemsWidth = 46;
+      itemsLeft = _gameScreen.stagePanelBounds.right - itemsWidth;
       itemsTop = _gameScreen.stagePanelBounds.y;
     }
 
-    // TODO: Handle the item panel being wider than 46.
     var itemView = _ItemDialogItemView(this);
-    itemView.render(terminal.rect(itemsLeft, itemsTop, 46, itemCount + 2));
+    itemView
+        .render(terminal.rect(itemsLeft, itemsTop, itemsWidth, itemCount + 2));
+
+    String query;
+    if (_selectedItem == null) {
+      if (_shiftDown) {
+        query = "Inspect which item?";
+      } else {
+        query = _command.query(_location);
+      }
+    } else {
+      query = _command.queryCount(_location) + " $_count";
+    }
+
+    _renderHelp(terminal, query);
 
     if (_inspected != null) {
       var y = itemsTop + itemView.itemY(_inspected) + 1;
@@ -196,7 +199,7 @@ class ItemDialog extends Screen<Input> {
     }
   }
 
-  void _renderHelp(Terminal terminal) {
+  void _renderHelp(Terminal terminal, String query) {
     var helpKeys = <String, String>{};
     if (_selectedItem == null) {
       if (_shiftDown) {
@@ -213,7 +216,7 @@ class ItemDialog extends Screen<Input> {
       helpKeys["Tab"] = "Switch view";
     }
 
-    Draw.helpKeys(terminal, helpKeys);
+    Draw.helpKeys(terminal, helpKeys, query);
   }
 
   bool _canSelect(Item item) {

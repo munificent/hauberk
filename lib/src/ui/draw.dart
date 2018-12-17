@@ -20,7 +20,8 @@ class Draw {
         "╝");
   }
 
-  static void helpKeys(Terminal terminal, Map<String, String> helpKeys) {
+  static void helpKeys(Terminal terminal, Map<String, String> helpKeys,
+      [String query]) {
     // Draw the help.
     var helpTextLength = 0;
     helpKeys.forEach((key, text) {
@@ -29,6 +30,18 @@ class Draw {
     });
 
     var x = (terminal.width - helpTextLength) ~/ 2;
+
+    // Show the query string, if there is one.
+    if (query != null) {
+      box(terminal, x - 2, terminal.height - 4, helpTextLength + 4, 5,
+          UIHue.text);
+      terminal.writeAt((terminal.width - query.length) ~/ 2,
+          terminal.height - 3, query, UIHue.primary);
+    } else {
+      box(terminal, x - 2, terminal.height - 2, helpTextLength + 4, 3,
+          UIHue.text);
+    }
+
     var first = true;
     helpKeys.forEach((key, text) {
       if (!first) {

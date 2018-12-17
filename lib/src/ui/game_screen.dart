@@ -40,9 +40,12 @@ class GameScreen extends Screen<Input> {
   StagePanel _stagePanel;
 
   /// The screen dimensions of the stage panel.
+  Rect get stagePanelBounds => _stagePanelBounds;
   Rect _stagePanelBounds;
 
-  bool _itemPanelVisible = false;
+  /// The bounds of the item panel or `null` if it's not shown.
+  Rect get itemPanelBounds => _itemPanelBounds;
+  Rect _itemPanelBounds;
 
   /// The number of ticks left to wait before restarting the game loop after
   /// coming back from a dialog where the player chose an action for the hero.
@@ -114,10 +117,6 @@ class GameScreen extends Screen<Input> {
   }
 
   Rect get cameraBounds => _stagePanel.cameraBounds;
-
-  Rect get stagePanelBounds => _stagePanelBounds;
-
-  bool get itemPanelVisible => _itemPanelVisible;
 
   GameScreen(this._storage, this.game, this._storageSave)
       : _logPanel = LogPanel(game.log),
@@ -401,14 +400,14 @@ class GameScreen extends Screen<Input> {
 
     var leftWidth = 21;
     var centerWidth = terminal.width - leftWidth;
-    var rightWidth = 0;
 
-    _itemPanelVisible = terminal.width >= 100;
-    if (_itemPanelVisible) {
-      rightWidth = 20 + (terminal.width - 100) ~/ 2;
-      rightWidth = math.min(rightWidth, 50);
+    _itemPanelBounds = null;
+    if (terminal.width >= 100) {
+      var width = math.min(50, 20 + (terminal.width - 100) ~/ 2);
+      _itemPanelBounds =
+          Rect(terminal.width - width, 0, width, terminal.height);
 
-      centerWidth = terminal.width - leftWidth - rightWidth;
+      centerWidth = terminal.width - leftWidth - width;
     }
 
     var logHeight = 6 + (terminal.height - 40) ~/ 2;
@@ -441,8 +440,11 @@ class GameScreen extends Screen<Input> {
         leftWidth, terminal.height - logHeight, centerWidth, logHeight));
     _sidebarPanel.render(terminal.rect(0, 0, leftWidth, terminal.height),
         heroColor, visibleMonsters);
-    _itemPanel.render(terminal.rect(
-        terminal.width - rightWidth, 0, rightWidth, terminal.height));
+
+    if (_itemPanelBounds != null) {
+      _itemPanel.render(terminal.rect(_itemPanelBounds.x, _itemPanelBounds.top,
+          _itemPanelBounds.width, _itemPanelBounds.height));
+    }
   }
 
   /// Handle the hero stepping onto a portal tile.
