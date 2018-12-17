@@ -58,16 +58,23 @@ class StagePanel {
 
   int _frame = 0;
 
-  Rect _cameraBounds;
-
-  StagePanel(this._gameScreen);
-
   /// The portion of the [Stage] currently in view on screen.
   Rect get cameraBounds => _cameraBounds;
 
+  Rect _cameraBounds;
+
+  /// The amount of offset the rendered stage from the top left corner of the
+  /// screen.
+  ///
+  /// This will be zero unless the stage is smaller than the view.
+  Vec _renderOffset;
+
+  StagePanel(this._gameScreen);
+
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the current view.
   void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
-    terminal.drawGlyph(x - _cameraBounds.x, y - _cameraBounds.y, glyph);
+    terminal.drawGlyph(x - _cameraBounds.x + _renderOffset.x,
+        y - _cameraBounds.y + _renderOffset.y, glyph);
   }
 
   bool update(Iterable<Event> events) {
@@ -279,5 +286,8 @@ class StagePanel {
     camera = cameraRange.clamp(camera);
     _cameraBounds = Rect(camera.x, camera.y, math.min(size.x, game.stage.width),
         math.min(size.y, game.stage.height));
+
+    _renderOffset = Vec(math.max(0, size.x - game.stage.width) ~/ 2,
+        math.max(0, size.y - game.stage.height) ~/ 2);
   }
 }
