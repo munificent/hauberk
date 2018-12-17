@@ -4,19 +4,21 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../draw.dart';
 import '../item_view.dart';
+import 'panel.dart';
 
-class ItemPanel {
+class ItemPanel extends Panel {
   final Game _game;
 
   ItemPanel(this._game);
 
-  void render(Terminal terminal) {
+  void renderPanel(Terminal terminal) {
     var hero = _game.hero;
     var y =
         _drawItems(terminal, 0, hero.equipment.slots.length, hero.equipment);
 
     y = _drawItems(terminal, y, Option.inventoryCapacity, hero.inventory);
 
+    // TODO: Don't show this panel if the height is too short for it.
     var onGround = _game.stage.itemsAt(hero.pos);
     y = _drawItems(terminal, y, 5, onGround);
 

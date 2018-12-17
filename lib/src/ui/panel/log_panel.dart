@@ -3,13 +3,14 @@ import 'package:malison/malison.dart';
 import '../../engine.dart';
 import '../../hues.dart';
 import '../draw.dart';
+import 'panel.dart';
 
-class LogPanel {
+class LogPanel extends Panel {
   final Log _log;
 
   LogPanel(this._log);
 
-  void render(Terminal terminal) {
+  void renderPanel(Terminal terminal) {
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
     terminal.writeAt(2, 0, " Messages ", UIHue.text);
 

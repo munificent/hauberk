@@ -35,17 +35,11 @@ class GameScreen extends Screen<Input> {
   final HeroSave _storageSave;
   final Storage _storage;
   final LogPanel _logPanel;
-  final ItemPanel _itemPanel;
+  final ItemPanel itemPanel;
   SidebarPanel _sidebarPanel;
+
+  StagePanel get stagePanel => _stagePanel;
   StagePanel _stagePanel;
-
-  /// The screen dimensions of the stage panel.
-  Rect get stagePanelBounds => _stagePanelBounds;
-  Rect _stagePanelBounds;
-
-  /// The bounds of the item panel or `null` if it's not shown.
-  Rect get itemPanelBounds => _itemPanelBounds;
-  Rect _itemPanelBounds;
 
   /// The number of ticks left to wait before restarting the game loop after
   /// coming back from a dialog where the player chose an action for the hero.
@@ -118,9 +112,19 @@ class GameScreen extends Screen<Input> {
 
   Rect get cameraBounds => _stagePanel.cameraBounds;
 
+  Color get heroColor {
+    var hero = game.hero;
+    if (hero.health < hero.maxHealth / 4) return brickRed;
+    if (hero.poison.isActive) return peaGreen;
+    if (hero.cold.isActive) return cornflower;
+    if (hero.health < hero.maxHealth / 2) return salmon;
+    if (hero.stomach == 0 && hero.health < hero.maxHealth) return sandal;
+    return ash;
+  }
+
   GameScreen(this._storage, this.game, this._storageSave)
       : _logPanel = LogPanel(game.log),
-        _itemPanel = ItemPanel(game) {
+        itemPanel = ItemPanel(game) {
     _sidebarPanel = SidebarPanel(this);
     _stagePanel = StagePanel(this);
 
@@ -136,8 +140,7 @@ class GameScreen extends Screen<Input> {
 
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the stage panel.
   void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
-    _stagePanel.drawStageGlyph(
-        terminal, _stagePanelBounds.x + x, _stagePanelBounds.y + y, glyph);
+    _stagePanel.drawStageGlyph(terminal, x, y, glyph);
   }
 
   bool handleInput(Input input) {
@@ -395,56 +398,36 @@ class GameScreen extends Screen<Input> {
     if (result.needsRefresh) dirty();
   }
 
+  void resize(Vec size) {
+    var leftWidth = 21;
+    var centerWidth = size.x - leftWidth;
+
+    itemPanel.bounds = null;
+    if (size.x >= 100) {
+      var width = math.min(50, 20 + (size.x - 100) ~/ 2);
+      itemPanel.bounds = Rect(size.x - width, 0, width, size.y);
+      centerWidth = size.x - leftWidth - width;
+    }
+
+    _sidebarPanel.bounds = Rect(0, 0, leftWidth, size.y);
+
+    var logHeight = 6 + (size.y - 40) ~/ 2;
+    logHeight = math.min(logHeight, 20);
+
+    stagePanel.bounds = Rect(leftWidth, 0, centerWidth, size.y - logHeight);
+    _logPanel.bounds =
+        Rect(leftWidth, size.y - logHeight, centerWidth, logHeight);
+  }
+
   void render(Terminal terminal) {
     terminal.clear();
 
-    var leftWidth = 21;
-    var centerWidth = terminal.width - leftWidth;
-
-    _itemPanelBounds = null;
-    if (terminal.width >= 100) {
-      var width = math.min(50, 20 + (terminal.width - 100) ~/ 2);
-      _itemPanelBounds =
-          Rect(terminal.width - width, 0, width, terminal.height);
-
-      centerWidth = terminal.width - leftWidth - width;
-    }
-
-    var logHeight = 6 + (terminal.height - 40) ~/ 2;
-    logHeight = math.min(logHeight, 20);
-
-    var hero = game.hero;
-    var heroColor = ash;
-    if (hero.health < hero.maxHealth / 4) {
-      heroColor = brickRed;
-    } else if (hero.poison.isActive) {
-      heroColor = peaGreen;
-    } else if (hero.cold.isActive) {
-      heroColor = cornflower;
-    } else if (hero.health < hero.maxHealth / 2) {
-      heroColor = salmon;
-    } else if (hero.stomach == 0 && hero.health < hero.maxHealth) {
-      heroColor = sandal;
-    }
-
-    var visibleMonsters = <Monster>[];
-
-    _stagePanelBounds =
-        Rect(leftWidth, 0, centerWidth, terminal.height - logHeight);
-    _stagePanel.render(
-        terminal.rect(_stagePanelBounds.x, _stagePanelBounds.y,
-            _stagePanelBounds.width, _stagePanelBounds.height),
-        heroColor,
-        visibleMonsters);
-    _logPanel.render(terminal.rect(
-        leftWidth, terminal.height - logHeight, centerWidth, logHeight));
-    _sidebarPanel.render(terminal.rect(0, 0, leftWidth, terminal.height),
-        heroColor, visibleMonsters);
-
-    if (_itemPanelBounds != null) {
-      _itemPanel.render(terminal.rect(_itemPanelBounds.x, _itemPanelBounds.top,
-          _itemPanelBounds.width, _itemPanelBounds.height));
-    }
+    _stagePanel.render(terminal);
+    _logPanel.render(terminal);
+    // Note, this must be rendered after the stage panel so that the visible
+    // monsters are correctly calculated first.
+    _sidebarPanel.render(terminal);
+    itemPanel.render(terminal);
   }
 
   /// Handle the hero stepping onto a portal tile.

@@ -7,9 +7,10 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../draw.dart';
 import '../game_screen.dart';
+import 'panel.dart';
 
 // TODO: Split this into multiple panels and/or give it a better name.
-class SidebarPanel {
+class SidebarPanel extends Panel {
   static final _resistLetters = {
     Elements.air: "A",
     Elements.earth: "E",
@@ -28,8 +29,7 @@ class SidebarPanel {
 
   SidebarPanel(this._gameScreen);
 
-  void render(
-      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
+  void renderPanel(Terminal terminal) {
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
     var game = _gameScreen.game;
@@ -78,10 +78,11 @@ class SidebarPanel {
     _drawStat(terminal, 14, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.
-    terminal.writeAt(1, 16, '@', heroColor);
+    terminal.writeAt(1, 16, '@', _gameScreen.heroColor);
     terminal.writeAt(3, 16, hero.save.name, UIHue.text);
     _drawHealthBar(terminal, 17, hero);
 
+    var visibleMonsters = _gameScreen.stagePanel.visibleMonsters;
     visibleMonsters.sort((a, b) {
       var aDistance = (a.pos - hero.pos).lengthSquared;
       var bDistance = (b.pos - hero.pos).lengthSquared;

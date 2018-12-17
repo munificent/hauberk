@@ -152,7 +152,7 @@ class ItemDialog extends Screen<Input> {
     int itemsLeft;
     int itemsTop;
     int itemsWidth;
-    if (_gameScreen.itemPanelBounds != null) {
+    if (_gameScreen.itemPanel.isVisible) {
       switch (_location) {
         case ItemLocation.inventory:
           itemsTop = _gameScreen.game.hero.equipment.slots.length + 2;
@@ -169,12 +169,12 @@ class ItemDialog extends Screen<Input> {
 
       // Always make it at least 2 wider than the item panel. That way, with
       // the letters, the items stay in the same position.
-      itemsWidth = math.max(46, _gameScreen.itemPanelBounds.width + 2);
+      itemsWidth = math.max(46, _gameScreen.itemPanel.bounds.width + 2);
       itemsLeft = terminal.width - itemsWidth;
     } else {
       itemsWidth = 46;
-      itemsLeft = _gameScreen.stagePanelBounds.right - itemsWidth;
-      itemsTop = _gameScreen.stagePanelBounds.y;
+      itemsLeft = _gameScreen.stagePanel.bounds.right - itemsWidth;
+      itemsTop = _gameScreen.stagePanel.bounds.y;
     }
 
     var itemView = _ItemDialogItemView(this);

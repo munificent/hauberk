@@ -10,9 +10,10 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../effect.dart';
 import '../game_screen.dart';
+import 'panel.dart';
 
 /// The main gameplay area of the screen.
-class StagePanel {
+class StagePanel extends Panel {
   static const _dazzleColors = [
     steelGray,
     slate,
@@ -54,6 +55,8 @@ class StagePanel {
 
   final _effects = <Effect>[];
 
+  final List<Monster> visibleMonsters = [];
+
   bool _hasAnimatedTile = false;
 
   int _frame = 0;
@@ -73,6 +76,10 @@ class StagePanel {
 
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the current view.
   void drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
+    _drawStageGlyph(terminal, x + bounds.x, y + bounds.y, glyph);
+  }
+
+  void _drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
     terminal.drawGlyph(x - _cameraBounds.x + _renderOffset.x,
         y - _cameraBounds.y + _renderOffset.y, glyph);
   }
@@ -94,10 +101,10 @@ class StagePanel {
         _gameScreen.game.hero.dazzle.isActive;
   }
 
-  void render(
-      Terminal terminal, Color heroColor, List<Monster> visibleMonsters) {
+  void renderPanel(Terminal terminal) {
     _positionCamera(terminal.size);
 
+    visibleMonsters.clear();
     _hasAnimatedTile = false;
 
     var game = _gameScreen.game;
@@ -162,7 +169,7 @@ class StagePanel {
           } else {
             // Hero.
             char = CharCode.at;
-            fore = heroColor;
+            fore = _gameScreen.heroColor;
           }
 
           // If the actor is being targeted, invert its colors.
@@ -238,13 +245,13 @@ class StagePanel {
       }
 
       var glyph = Glyph.fromCharCode(char, fore, back);
-      drawStageGlyph(terminal, pos.x, pos.y, glyph);
+      _drawStageGlyph(terminal, pos.x, pos.y, glyph);
     }
 
     // Draw the effects.
     for (var effect in _effects) {
       effect.render(game, (x, y, glyph) {
-        drawStageGlyph(terminal, x, y, glyph);
+        _drawStageGlyph(terminal, x, y, glyph);
       });
     }
   }
