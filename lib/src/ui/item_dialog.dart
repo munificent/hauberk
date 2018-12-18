@@ -155,15 +155,17 @@ class ItemDialog extends Screen<Input> {
     if (_gameScreen.itemPanel.isVisible) {
       switch (_location) {
         case ItemLocation.inventory:
-          itemsTop = _gameScreen.game.hero.equipment.slots.length + 2;
+          itemsTop = _gameScreen.itemPanel.inventoryTop;
           break;
         case ItemLocation.equipment:
-          itemsTop = 0;
+          itemsTop = _gameScreen.itemPanel.equipmentTop;
           break;
         case ItemLocation.onGround:
-          itemsTop = _gameScreen.game.hero.equipment.slots.length +
-              Option.inventoryCapacity +
-              4;
+          if (_gameScreen.itemPanel.onGroundVisible) {
+            itemsTop = _gameScreen.itemPanel.onGroundTop;
+          } else {
+            itemsTop = 0;
+          }
           break;
       }
 

@@ -11,29 +11,39 @@ class ItemPanel extends Panel {
 
   ItemPanel(this._game);
 
+  int get equipmentTop => 0;
+
+  int get inventoryTop => _game.hero.equipment.slots.length + 2;
+
+  int get onGroundTop => _game.hero.equipment.slots.length + Option.inventoryCapacity + 4;
+
+  bool get onGroundVisible => bounds.height > 50;
+
   void renderPanel(Terminal terminal) {
     var hero = _game.hero;
-    var y =
-        _drawItems(terminal, 0, hero.equipment.slots.length, hero.equipment);
+    _drawItems(
+        terminal, equipmentTop, hero.equipment.slots.length, hero.equipment);
 
-    y = _drawItems(terminal, y, Option.inventoryCapacity, hero.inventory);
+    _drawItems(
+        terminal, inventoryTop, Option.inventoryCapacity, hero.inventory);
 
-    // TODO: Don't show this panel if the height is too short for it.
-    var onGround = _game.stage.itemsAt(hero.pos);
-    y = _drawItems(terminal, y, 5, onGround);
+    // Don't show the on the ground panel if the height is too short for it.
+    if (onGroundVisible) {
+      var onGround = _game.stage.itemsAt(hero.pos);
+      _drawItems(terminal, onGroundTop, 5, onGround);
+    }
 
     // TODO: Show something useful down here. Maybe mini-map or monster info.
-    Draw.box(terminal, 0, y, terminal.width, terminal.height - y);
+    var restTop = onGroundVisible ? onGroundTop + 7 : onGroundTop;
+    Draw.box(terminal, 0, restTop, terminal.width, terminal.height - restTop);
   }
 
-  int _drawItems(Terminal terminal, int y, int height, ItemCollection items) {
+  void _drawItems(Terminal terminal, int y, int height, ItemCollection items) {
     Draw.frame(terminal, 0, y, terminal.width, height + 2);
     terminal.writeAt(2, y, " ${items.name} ", UIHue.text);
 
     var view = _ItemPanelItemView(items);
     view.render(terminal.rect(1, y + 1, terminal.width - 2, height));
-
-    return y + height + 2;
   }
 }
 
