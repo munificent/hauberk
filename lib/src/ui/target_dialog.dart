@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
@@ -206,23 +207,18 @@ class TargetDialog extends Screen<Input> {
           terminal, target.x, target.y, Glyph('X', reticleColor));
     }
 
-    // TODO: Use Draw.helpKeys().
+    var helpKeys = <String, String>{};
     if (_monsters.isEmpty) {
-      terminal.writeAt(0, terminal.height - 1, "[↕↔] Choose tile, [Esc] Cancel",
-          UIHue.helpText);
+      helpKeys["↕↔"] = "Choose tile";
     } else if (_targetingFloor) {
-      terminal.writeAt(
-          0,
-          terminal.height - 1,
-          "[↕↔] Choose tile, [Tab] Target monsters, [Esc] Cancel",
-          UIHue.helpText);
+      helpKeys["↕↔"] = "Choose tile";
+      helpKeys["Tab"] = "Target monsters";
     } else {
-      terminal.writeAt(
-          0,
-          terminal.height - 1,
-          "[↕↔] Choose monster, [Tab] Target floor, [Esc] Cancel",
-          UIHue.helpText);
+      helpKeys["↕↔"] = "Choose monster";
+      helpKeys["Tab"] = "Target floor";
     }
+    helpKeys["Esc"] = "Cancel";
+    Draw.helpKeys(terminal, helpKeys, "Throw towards where?");
   }
 
   void _changeTarget(Direction dir) {

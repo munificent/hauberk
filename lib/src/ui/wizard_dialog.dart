@@ -250,7 +250,7 @@ class _WizardDropDialog extends SearchDialog<ItemType> {
 
   String _itemName(ItemType item) => item.name;
 
-  Object _itemAppearance(ItemType item) => item.name;
+  Object _itemAppearance(ItemType item) => item.appearance;
 
   void _selectItem(ItemType itemType) {
     var item = Item(itemType, itemType.maxStack);

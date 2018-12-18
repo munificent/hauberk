@@ -4,11 +4,11 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
-/// Modal dialog for letting the user select a [Direction] to perform a
-/// [DirectionSkill] in.
+/// Modal dialog for letting the user select a [Direction] to perform a command.
 abstract class DirectionDialog extends Screen<Input> {
   static const _numFrames = 8;
   static const _ticksPerFrame = 5;
@@ -21,7 +21,7 @@ abstract class DirectionDialog extends Screen<Input> {
 
   Game get game => _gameScreen.game;
 
-  String get question;
+  String get query;
 
   String get helpText;
 
@@ -68,8 +68,6 @@ abstract class DirectionDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(0, 0, question, UIHue.text);
-
     draw(int frame, Direction dir, String char) {
       var pos = game.hero.pos + dir;
       if (!canTarget(game.stage[pos])) return;
@@ -115,8 +113,7 @@ abstract class DirectionDialog extends Screen<Input> {
     draw(6, Direction.w, "-");
     draw(7, Direction.nw, r"\");
 
-    terminal.writeAt(
-        0, terminal.height - 1, "[↕↔] $helpText, [Esc] Cancel", UIHue.helpText);
+    Draw.helpKeys(terminal, {"↕↔": helpText, "Esc": "Cancel"}, query);
   }
 
   void _select(Direction dir) {
@@ -136,7 +133,7 @@ abstract class DirectionDialog extends Screen<Input> {
 class SkillDirectionDialog extends DirectionDialog {
   final void Function(Direction direction) _onSelect;
 
-  String get question => "Which direction?";
+  String get query => "Which direction?";
 
   String get helpText => "Choose direction";
 
@@ -154,7 +151,7 @@ class SkillDirectionDialog extends DirectionDialog {
 
 /// Asks the user to select an adjacent tile to close.
 class CloseDialog extends DirectionDialog {
-  String get question => "Close what?";
+  String get query => "Close what?";
   String get helpText => "Choose direction";
 
   CloseDialog(GameScreen gameScreen) : super(gameScreen);
@@ -176,7 +173,7 @@ class CloseDialog extends DirectionDialog {
 
 /// Asks the user to select an adjacent tile to open.
 class OpenDialog extends DirectionDialog {
-  String get question => "Open what?";
+  String get query => "Open what?";
   String get helpText => "Choose direction";
 
   OpenDialog(GameScreen gameScreen) : super(gameScreen);
