@@ -21,7 +21,7 @@ abstract class ItemScreen extends Screen<Input> {
 
   /// The place items are being transferred to or `null` if this is just a
   /// view.
-  final _ItemSink _sink;
+  ItemCollection get _destination => null;
 
   /// Whether the shift key is currently pressed.
   bool _shiftDown = false;
@@ -43,22 +43,23 @@ abstract class ItemScreen extends Screen<Input> {
 
   HeroSave get _save => _gameScreen.game.hero.save;
 
-  String get _headerText => _sink.headerText;
+  String get _headerText;
+
+  String get _verb => throw "Subclass should implement";
 
   Map<String, String> get _helpKeys;
 
-  ItemScreen._(this._gameScreen, this._sink);
+  ItemScreen._(this._gameScreen);
 
   bool get isTransparent => true;
 
-  factory ItemScreen.home(GameScreen gameScreen) =>
-      _HomeViewScreen(gameScreen);
+  factory ItemScreen.home(GameScreen gameScreen) => _HomeViewScreen(gameScreen);
 
-  factory ItemScreen.shop(
-          GameScreen gameScreen, Inventory shop) =>
+  factory ItemScreen.shop(GameScreen gameScreen, Inventory shop) =>
       _ShopViewScreen(gameScreen, shop);
 
   bool get _canSelectAny => false;
+  bool get _showPrices => false;
 
   bool _canSelect(Item item) {
     if (_shiftDown) return true;
@@ -207,9 +208,7 @@ abstract class ItemScreen extends Screen<Input> {
   int _itemPrice(Item item) => null;
 
   bool _transfer(Item item, int count) {
-    var to = _sink.items;
-
-    if (!to.canAdd(item)) {
+    if (!_destination.canAdd(item)) {
       _error = "Not enough room for ${item.clone(count)}.";
       dirty();
       return false;
@@ -217,11 +216,11 @@ abstract class ItemScreen extends Screen<Input> {
 
     if (count == item.count) {
       // Moving the entire stack.
-      to.tryAdd(item);
+      _destination.tryAdd(item);
       _items.remove(item);
     } else {
       // Splitting the stack.
-      to.tryAdd(item.splitStack(count));
+      _destination.tryAdd(item.splitStack(count));
       _items.countChanged();
     }
 
@@ -247,6 +246,8 @@ class _TownItemView extends ItemView {
 
   bool get capitalize => _screen._shiftDown;
 
+  bool get showPrices => _screen._showPrices;
+
   Item get inspectedItem => _screen._inspected;
 
   bool get canSelectAny => _screen._shiftDown || _screen._canSelectAny;
@@ -268,8 +269,7 @@ class _HomeViewScreen extends ItemScreen {
         "Esc": "Leave"
       };
 
-  _HomeViewScreen(GameScreen gameScreen)
-      : super._(gameScreen, null);
+  _HomeViewScreen(GameScreen gameScreen) : super._(gameScreen);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
@@ -298,13 +298,16 @@ class _HomeViewScreen extends ItemScreen {
 class _HomeGetScreen extends ItemScreen {
   String get _headerText => "Get which item?";
 
+  String get _verb => "Get";
+
   Map<String, String> get _helpKeys =>
       {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
 
   ItemCollection get _items => _gameScreen.game.hero.save.home;
 
-  _HomeGetScreen(GameScreen gameScreen)
-      : super._(gameScreen, _InventorySink(gameScreen.game.hero.save));
+  ItemCollection get _destination => _gameScreen.game.hero.inventory;
+
+  _HomeGetScreen(GameScreen gameScreen) : super._(gameScreen);
 
   bool get _canSelectAny => true;
 
@@ -322,6 +325,7 @@ class _ShopViewScreen extends ItemScreen {
   ItemCollection get _items => _shop;
 
   String get _headerText => "What can I interest you in?";
+  bool get _showPrices => true;
 
   Map<String, String> get _helpKeys => {
         "B": "Buy item",
@@ -330,8 +334,7 @@ class _ShopViewScreen extends ItemScreen {
         "Esc": "Cancel"
       };
 
-  _ShopViewScreen(GameScreen gameScreen, this._shop)
-      : super._(gameScreen, null);
+  _ShopViewScreen(GameScreen gameScreen, this._shop) : super._(gameScreen);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
@@ -364,15 +367,19 @@ class _ShopBuyScreen extends ItemScreen {
 
   String get _headerText => "Buy which item?";
 
+  String get _verb => "Buy";
+
   Map<String, String> get _helpKeys =>
       {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
 
   ItemCollection get _items => _shop;
 
-  _ShopBuyScreen(GameScreen gameScreen, this._shop)
-      : super._(gameScreen, _InventorySink(gameScreen.game.hero.save));
+  ItemCollection get _destination => _gameScreen.game.hero.save.inventory;
+
+  _ShopBuyScreen(GameScreen gameScreen, this._shop) : super._(gameScreen);
 
   bool get _canSelectAny => true;
+  bool get _showPrices => true;
 
   bool canSelect(Item item) => item.price <= _save.gold;
 
@@ -406,17 +413,17 @@ class _CountScreen extends ItemScreen {
     var price = _parent._itemPrice(_item);
     if (price != null) {
       var priceString = formatMoney(price * _count);
-      return "${_sink.verb} $itemText for $priceString gold?";
+      return "${_parent._verb} $itemText for $priceString gold?";
     } else {
-      return "${_sink.verb} $itemText?";
+      return "${_parent._verb} $itemText?";
     }
   }
 
   Map<String, String> get _helpKeys =>
-      {"OK": _sink.verb, "↕": "Change quantity", "Esc": "Cancel"};
+      {"OK": _parent._verb, "↕": "Change quantity", "Esc": "Cancel"};
 
   _CountScreen(GameScreen gameScreen, this._parent, this._item)
-      : super._(gameScreen, _parent._sink) {
+      : super._(gameScreen) {
     _count = _parent._initialCount(_item);
     _inspected = _item;
   }
@@ -479,23 +486,4 @@ class _CountScreen extends ItemScreen {
   }
 
   int _itemPrice(Item item) => _parent._itemPrice(item);
-}
-
-// TODO: Get rid of this abstraction?
-abstract class _ItemSink {
-  String get headerText => throw "unreachable";
-
-  String get verb;
-
-  ItemCollection get items;
-}
-
-class _InventorySink extends _ItemSink {
-  final HeroSave _save;
-
-  String get verb => "Get";
-
-  ItemCollection get items => _save.inventory;
-
-  _InventorySink(this._save);
 }
