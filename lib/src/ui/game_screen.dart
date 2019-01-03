@@ -160,7 +160,7 @@ class GameScreen extends Screen<Input> {
         ui.push(ForfeitPopup(isTown: game.depth == 0));
         break;
       case Input.selectSkill:
-        ui.push(SelectSkillDialog(game));
+        ui.push(SelectSkillDialog(this));
         break;
       case Input.editSkills:
         ui.push(SkillDialog(game.hero.save));
