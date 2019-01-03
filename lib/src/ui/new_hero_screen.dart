@@ -242,6 +242,11 @@ class NewHeroScreen extends Screen<Input> {
   }
 
   bool handleInput(Input input) {
+    if (input == Input.cancel) {
+      ui.pop();
+      return true;
+    }
+
     if (_field == _Field.race) {
       switch (input) {
         case Input.n:
@@ -286,10 +291,6 @@ class NewHeroScreen extends Screen<Input> {
         } else {
           _changeField(1);
         }
-        return true;
-
-      case KeyCode.escape:
-        ui.pop();
         return true;
 
       case KeyCode.delete:

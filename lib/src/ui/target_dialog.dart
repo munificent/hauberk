@@ -218,7 +218,7 @@ class TargetDialog extends Screen<Input> {
       helpKeys["Tab"] = "Target floor";
     }
     helpKeys["Esc"] = "Cancel";
-    Draw.helpKeys(terminal, helpKeys, "Throw towards where?");
+    Draw.helpKeys(terminal, helpKeys, "Choose a target");
   }
 
   void _changeTarget(Direction dir) {

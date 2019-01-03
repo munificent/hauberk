@@ -56,6 +56,8 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
   }
 
   int baseTrainingNeeded(int level) {
+    if (level == 0) return 0;
+
     // Get the mastery and unlock the action as soon as it's first used.
     if (level == 1) return 1;
 

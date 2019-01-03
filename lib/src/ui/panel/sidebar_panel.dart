@@ -104,11 +104,16 @@ class SidebarPanel extends Panel {
           glyph = Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
         }
 
+        var name = monster.breed.name;
+        if (name.length > terminal.width - 4) {
+          name = name.substring(0, terminal.width - 4);
+        }
+
         terminal.drawGlyph(1, y, glyph);
         terminal.writeAt(
             3,
             y,
-            monster.breed.name,
+            name,
             (_gameScreen.currentTargetActor == monster)
                 ? UIHue.selection
                 : UIHue.text);

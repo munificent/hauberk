@@ -315,6 +315,7 @@ class _HomeGetScreen extends ItemScreen {
 
   void _afterTransfer(Item item, int count) {
     _gameScreen.game.log.message("You get ${item.clone(count)}.");
+    _gameScreen.game.hero.pickUp(item);
   }
 }
 
@@ -396,6 +397,11 @@ class _ShopBuyScreen extends ItemScreen {
     _gameScreen.game.log
         .message("You buy ${item.clone(count)} for $price gold.");
     _save.gold -= price;
+
+    // Acquiring an item may unlock skills.
+    // TODO: Would be nice if hero handled this more automatically. Maybe make
+    // Inventory and Equipment manage this?
+    _gameScreen.game.hero.pickUp(item);
   }
 }
 

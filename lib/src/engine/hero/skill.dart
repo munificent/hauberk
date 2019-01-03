@@ -168,7 +168,7 @@ abstract class Discipline extends Skill {
 ///
 /// Spells do not need to be explicitly trained or learned. As soon as one is
 /// discovered, as long as it's not too complex, the hero can use it.
-abstract class Spell extends Skill implements UsableSkill {
+abstract class Spell extends Skill with UsableSkill {
   String gainMessage(int level) => '{1} have learned the spell $name.';
 
   String get discoverMessage => '{1} are not wise enough to cast $name.';
@@ -201,8 +201,6 @@ abstract class Spell extends Skill implements UsableSkill {
 
   int complexity(HeroClass heroClass) =>
       ((baseComplexity - 9) / heroClass.proficiency(this)).round() + 9;
-
-  String unusableReason(Game game) => null;
 
   int getRange(Game game) => range;
 
