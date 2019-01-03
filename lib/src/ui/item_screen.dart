@@ -5,11 +5,19 @@ import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
+import 'game_screen.dart';
 import 'input.dart';
+import 'item_dialog.dart';
 import 'item_view.dart';
 
+// TODO: Home screen is confusing when empty.
+// TODO: The home (get) and shop (buy) screens handle selecting a count
+// completely differently from the ItemDialogs (put, sell, etc.). Different
+// code and different user interface. Unify those.
+
 abstract class ItemScreen extends Screen<Input> {
-  final HeroSave _save;
+  final GameScreen _gameScreen;
 
   /// The place items are being transferred to or `null` if this is just a
   /// view.
@@ -17,6 +25,10 @@ abstract class ItemScreen extends Screen<Input> {
 
   /// Whether the shift key is currently pressed.
   bool _shiftDown = false;
+
+  /// Whether this screen is on top.
+  // TODO: Maintaining this manually is hacky. Maybe have malison expose it?
+  bool _isActive = true;
 
   /// The item currently being inspected or `null` if none.
   Item _inspected;
@@ -29,18 +41,24 @@ abstract class ItemScreen extends Screen<Input> {
 
   ItemCollection get _items;
 
+  HeroSave get _save => _gameScreen.game.hero.save;
+
   String get _headerText => _sink.headerText;
 
-  String get _helpText;
+  Map<String, String> get _helpKeys;
 
-  ItemScreen._(this._save, this._sink);
+  ItemScreen._(this._gameScreen, this._sink);
 
-//  ItemScreen.crucible(this._content, this._save) : _place = _Place.crucible;
+  bool get isTransparent => true;
 
-  factory ItemScreen.home(HeroSave save) => _HomeViewScreen(save);
+  factory ItemScreen.home(GameScreen gameScreen) =>
+      _HomeViewScreen(gameScreen);
 
-  factory ItemScreen.shop(HeroSave save, Inventory shop) =>
-      _ShopViewScreen(save, shop);
+  factory ItemScreen.shop(
+          GameScreen gameScreen, Inventory shop) =>
+      _ShopViewScreen(gameScreen, shop);
+
+  bool get _canSelectAny => false;
 
   bool _canSelect(Item item) {
     if (_shiftDown) return true;
@@ -48,7 +66,7 @@ abstract class ItemScreen extends Screen<Input> {
     return canSelect(item);
   }
 
-  bool canSelect(Item item) => null;
+  bool canSelect(Item item) => true;
 
   bool handleInput(Input input) {
     _error = null;
@@ -93,11 +111,12 @@ abstract class ItemScreen extends Screen<Input> {
         _inspected = item;
         dirty();
       } else {
-        if (canSelect(item) != true) return false;
+        if (!_canSelectAny || !canSelect(item)) return false;
 
         // Prompt the user for a count if the item is a stack.
         if (item.count > 1) {
-          ui.push(_CountScreen(_save, this, item));
+          _isActive = false;
+          ui.push(_CountScreen(_gameScreen, this, item));
           return true;
         }
 
@@ -122,6 +141,7 @@ abstract class ItemScreen extends Screen<Input> {
   }
 
   void activate(Screen<Input> popped, Object result) {
+    _isActive = true;
     _inspected = null;
 
     if (popped is _CountScreen && result != null) {
@@ -132,22 +152,33 @@ abstract class ItemScreen extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    var header = _shiftDown ? "Inspect which item?" : _headerText;
-    terminal.writeAt(0, 0, header, UIHue.selection);
+    // Don't show the help if another dialog (like buy or sell) is on top with
+    // its own help.
+    if (_isActive) {
+      Draw.helpKeys(terminal, _shiftDown ? {"A-Z": "Inspect item"} : _helpKeys,
+          _shiftDown ? "Inspect which item?" : _headerText);
+    }
 
-    var heroGold = formatMoney(_save.gold);
-    terminal.writeAt(31, 0, "Gold:", UIHue.text);
-    terminal.writeAt(45 - heroGold.length - 1, 0, "\$", persimmon);
-    terminal.writeAt(45 - heroGold.length, 0, heroGold, gold);
+    terminal = terminal.rect(
+        _gameScreen.stagePanel.bounds.x,
+        _gameScreen.stagePanel.bounds.y,
+        _gameScreen.stagePanel.bounds.width,
+        _gameScreen.stagePanel.bounds.height);
 
-    drawItems(terminal, 0, _items,
-        canSelect: _canSelect,
-        getPrice: _itemPrice,
-        capitals: _shiftDown,
-        inspected: _inspected);
+    Draw.frame(terminal, 0, 0, terminal.width - 34, _items.length + 2,
+        _canSelectAny ? UIHue.selection : UIHue.disabled);
+    terminal.writeAt(
+        2, 0, " ${_items.name} ", _canSelectAny ? UIHue.selection : UIHue.text);
+
+    var view = _TownItemView(this);
+    view.render(terminal.rect(1, 1, terminal.width - 36, terminal.height - 5));
 
     if (_inspected != null) {
-      drawInspector(terminal.rect(46, 0, 34, 20), _save, _inspected);
+      var y = view.itemY(_inspected) + 1;
+      y = y.clamp(0, terminal.height - 20);
+
+      drawInspector(
+          terminal.rect(terminal.width - 34, y, 34, 20), _save, _inspected);
     }
 
 //    if (completeRecipe != null) {
@@ -163,10 +194,6 @@ abstract class ItemScreen extends Screen<Input> {
     if (_error != null) {
       terminal.writeAt(0, 32, _error, brickRed);
     }
-
-    // TODO: Use Draw.helpKeys().
-    var help = _shiftDown ? "[A-Z] Inspect item" : _helpText;
-    terminal.writeAt(0, terminal.height - 1, help, UIHue.helpText);
   }
 
   /// The default count to move when transferring a stack from [_items].
@@ -211,15 +238,38 @@ abstract class ItemScreen extends Screen<Input> {
   void _afterTransfer(Item item, int count) {}
 }
 
+class _TownItemView extends ItemView {
+  final ItemScreen _screen;
+
+  _TownItemView(this._screen);
+
+  ItemCollection get items => _screen._items;
+
+  bool get capitalize => _screen._shiftDown;
+
+  Item get inspectedItem => _screen._inspected;
+
+  bool get canSelectAny => _screen._shiftDown || _screen._canSelectAny;
+
+  bool canSelect(Item item) => _screen._canSelect(item);
+
+  int getPrice(Item item) => _screen._itemPrice(item);
+}
+
 class _HomeViewScreen extends ItemScreen {
   ItemCollection get _items => _save.home;
 
   String get _headerText => "Welcome home!";
 
-  String get _helpText =>
-      "[G] Get item, [P] Put item, [Shift] Inspect item, [Esc] Leave";
+  Map<String, String> get _helpKeys => {
+        "G": "Get item",
+        "P": "Put item",
+        "Shift": "Inspect item",
+        "Esc": "Leave"
+      };
 
-  _HomeViewScreen(HeroSave save) : super._(save, null);
+  _HomeViewScreen(GameScreen gameScreen)
+      : super._(gameScreen, null);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
@@ -228,13 +278,15 @@ class _HomeViewScreen extends ItemScreen {
 
     switch (keyCode) {
       case KeyCode.g:
-        var screen = _HomeGetScreen(_save);
+        var screen = _HomeGetScreen(_gameScreen);
         screen._inspected = _inspected;
+        _isActive = false;
         ui.push(screen);
         return true;
 
       case KeyCode.p:
-        ui.push(_InventoryScreen(_save, _HomeSink(_save)));
+        _isActive = false;
+        ui.push(ItemDialog.put(_gameScreen));
         return true;
     }
 
@@ -246,64 +298,21 @@ class _HomeViewScreen extends ItemScreen {
 class _HomeGetScreen extends ItemScreen {
   String get _headerText => "Get which item?";
 
-  String get _helpText =>
-      "[A-Z] Select item, [Shift] Inspect item, [Esc] Cancel";
+  Map<String, String> get _helpKeys =>
+      {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
 
-  ItemCollection get _items => _save.home;
+  ItemCollection get _items => _gameScreen.game.hero.save.home;
 
-  _HomeGetScreen(HeroSave save) : super._(save, _InventorySink(save));
+  _HomeGetScreen(GameScreen gameScreen)
+      : super._(gameScreen, _InventorySink(gameScreen.game.hero.save));
 
-  bool canSelect(Item item) => true;
-}
-
-/// Base class for inventory and equipment screens.
-// TODO: Show confirmation of put item.
-abstract class _HeroScreen extends ItemScreen {
-  String get _helpText => "[Tab] Switch to $nextScreenName, "
-      "[A-Z] Select item, [Shift] Inspect item, [Esc] Cancel";
-
-  String get nextScreenName;
-
-  _HeroScreen(HeroSave save, _ItemSink sink) : super._(save, sink);
-
-  ItemScreen nextScreen();
+  bool get _canSelectAny => true;
 
   bool canSelect(Item item) => true;
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
-    if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
-
-    if (shift || alt) return false;
-
-    if (keyCode == KeyCode.tab) {
-      ui.goTo(nextScreen());
-      return true;
-    }
-
-    return false;
+  void _afterTransfer(Item item, int count) {
+    _gameScreen.game.log.message("You get ${item.clone(count)}.");
   }
-}
-
-/// Takes an item from the inventory.
-class _InventoryScreen extends _HeroScreen {
-  ItemCollection get _items => _save.inventory;
-
-  String get nextScreenName => "equipment";
-
-  _InventoryScreen(HeroSave save, _ItemSink sink) : super(save, sink);
-
-  ItemScreen nextScreen() => _EquipmentScreen(_save, _sink);
-}
-
-/// Takes an item from the equipment.
-class _EquipmentScreen extends _HeroScreen {
-  ItemCollection get _items => _save.equipment;
-
-  String get nextScreenName => "inventory";
-
-  _EquipmentScreen(HeroSave save, _ItemSink sink) : super(save, sink);
-
-  ItemScreen nextScreen() => _InventoryScreen(_save, _sink);
 }
 
 /// Views the contents of a shop and lets the player choose to buy or sell.
@@ -314,10 +323,15 @@ class _ShopViewScreen extends ItemScreen {
 
   String get _headerText => "What can I interest you in?";
 
-  String get _helpText =>
-      "[B] Buy item, [S] Sell item, [Shift] Inspect item, [Esc] Leave";
+  Map<String, String> get _helpKeys => {
+        "B": "Buy item",
+        "S": "Sell item",
+        "Shift": "Inspect item",
+        "Esc": "Cancel"
+      };
 
-  _ShopViewScreen(HeroSave save, this._shop) : super._(save, null);
+  _ShopViewScreen(GameScreen gameScreen, this._shop)
+      : super._(gameScreen, null);
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
@@ -326,13 +340,15 @@ class _ShopViewScreen extends ItemScreen {
 
     switch (keyCode) {
       case KeyCode.b:
-        var screen = _ShopBuyScreen(_save, _shop);
+        var screen = _ShopBuyScreen(_gameScreen, _shop);
         screen._inspected = _inspected;
+        _isActive = false;
         ui.push(screen);
         break;
 
       case KeyCode.s:
-        ui.push(_InventorySellScreen(_save, _ShopSink(_shop)));
+        _isActive = false;
+        ui.push(ItemDialog.sell(_gameScreen, _shop));
         return true;
     }
 
@@ -348,13 +364,15 @@ class _ShopBuyScreen extends ItemScreen {
 
   String get _headerText => "Buy which item?";
 
-  String get _helpText =>
-      "[A-Z] Select item, [Shift] Inspect item, [Esc] Cancel";
+  Map<String, String> get _helpKeys =>
+      {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
 
   ItemCollection get _items => _shop;
 
-  _ShopBuyScreen(HeroSave save, this._shop)
-      : super._(save, _InventorySink(save));
+  _ShopBuyScreen(GameScreen gameScreen, this._shop)
+      : super._(gameScreen, _InventorySink(gameScreen.game.hero.save));
+
+  bool get _canSelectAny => true;
 
   bool canSelect(Item item) => item.price <= _save.gold;
 
@@ -366,38 +384,12 @@ class _ShopBuyScreen extends ItemScreen {
   int _itemPrice(Item item) => item.price;
 
   /// Pay for purchased item.
-  void _afterTransfer(item, count) {
-    _save.gold -= item.price * count;
+  void _afterTransfer(Item item, int count) {
+    var price = item.price * count;
+    _gameScreen.game.log
+        .message("You buy ${item.clone(count)} for $price gold.");
+    _save.gold -= price;
   }
-}
-
-// TODO: Require confirmation when selling an item?
-// TODO: Show confirmation of sold item.
-/// Mixin for screens that sell a hero's item to a shop.
-abstract class _SellMixin implements ItemScreen {
-  bool canSelect(Item item) => _itemPrice(item) > 0;
-
-  int _initialCount(Item item) => 1;
-
-  int _itemPrice(Item item) => (item.price * 0.75).floor();
-
-  void _afterTransfer(item, count) {
-    _save.gold += _itemPrice(item) * count;
-  }
-}
-
-/// Screen to sell an item from the inventory.
-class _InventorySellScreen extends _InventoryScreen with _SellMixin {
-  _InventorySellScreen(HeroSave save, _ItemSink sink) : super(save, sink);
-
-  ItemScreen nextScreen() => _EquipmentSellScreen(_save, _sink);
-}
-
-/// Screen to sell an item from the equipment.
-class _EquipmentSellScreen extends _EquipmentScreen with _SellMixin {
-  _EquipmentSellScreen(HeroSave save, _ItemSink sink) : super(save, sink);
-
-  ItemScreen nextScreen() => _InventorySellScreen(_save, _sink);
 }
 
 /// Screen to let the player choose a count for a selected item.
@@ -409,46 +401,30 @@ class _CountScreen extends ItemScreen {
 
   ItemCollection get _items => _parent._items;
 
-  String get _headerText => "";
+  String get _headerText {
+    var itemText = _item.clone(_count).toString();
+    var price = _parent._itemPrice(_item);
+    if (price != null) {
+      var priceString = formatMoney(price * _count);
+      return "${_sink.verb} $itemText for $priceString gold?";
+    } else {
+      return "${_sink.verb} $itemText?";
+    }
+  }
 
-  String get _helpText =>
-      "[OK] ${_sink.verb}, [↕] Change quantity, [Esc] Cancel";
+  Map<String, String> get _helpKeys =>
+      {"OK": _sink.verb, "↕": "Change quantity", "Esc": "Cancel"};
 
-  _CountScreen(HeroSave save, this._parent, this._item)
-      : super._(save, _parent._sink) {
+  _CountScreen(GameScreen gameScreen, this._parent, this._item)
+      : super._(gameScreen, _parent._sink) {
     _count = _parent._initialCount(_item);
     _inspected = _item;
   }
 
+  bool get _canSelectAny => true;
+
   /// Highlight the item the user already selected.
   bool canSelect(Item item) => item == _item;
-
-  void render(Terminal terminal) {
-    super.render(terminal);
-
-    var x = 0;
-    terminal.writeAt(x, 0, _sink.verb);
-    x += _sink.verb.length + 1;
-
-    var itemText = _item.clone(_count).toString();
-    terminal.writeAt(x, 0, itemText, UIHue.selection);
-    x += itemText.length;
-
-    var price = _parent._itemPrice(_item);
-    if (price != null) {
-      terminal.writeAt(x, 0, " for ");
-      x += 5;
-
-      var priceString = formatMoney(price * _count);
-      terminal.writeAt(x, 0, priceString, gold);
-      x += priceString.length;
-
-      terminal.writeAt(x, 0, " gold");
-      x += 5;
-    }
-
-    terminal.writeAt(x, 0, "?");
-  }
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
     // Don't allow the shift key to inspect items.
@@ -505,24 +481,13 @@ class _CountScreen extends ItemScreen {
   int _itemPrice(Item item) => _parent._itemPrice(item);
 }
 
+// TODO: Get rid of this abstraction?
 abstract class _ItemSink {
   String get headerText => throw "unreachable";
 
   String get verb;
 
   ItemCollection get items;
-}
-
-class _HomeSink extends _ItemSink {
-  final HeroSave _save;
-
-  String get headerText => "Put which item in your home?";
-
-  String get verb => "Put";
-
-  ItemCollection get items => _save.home;
-
-  _HomeSink(this._save);
 }
 
 class _InventorySink extends _ItemSink {
@@ -534,35 +499,3 @@ class _InventorySink extends _ItemSink {
 
   _InventorySink(this._save);
 }
-
-class _ShopSink extends _ItemSink {
-  final Inventory _shop;
-
-  String get headerText => "Sell which item?";
-
-  String get verb => "Sell";
-
-  ItemCollection get items => _shop;
-
-  _ShopSink(this._shop);
-}
-
-// TODO: Add screens to equip/unequip an item.
-
-/*
-class _CruciblePlace extends _Place {
-  const _CruciblePlace();
-
-  ItemCollection items(ItemScreenOld screen) => screen._save.crucible;
-
-  bool canPut(ItemScreenOld screen, Item item) {
-    // TODO: Should not allow a greater count of items than the recipe permits,
-    // since the extras will be lost when the item is forged.
-
-    // Can only put items in the crucible if they fit a recipe.
-    var ingredients = items(screen).toList();
-    ingredients.add(item);
-    return screen._content.recipes.any((recipe) => recipe.allows(ingredients));
-  }
-}
-*/

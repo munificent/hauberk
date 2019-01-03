@@ -88,6 +88,7 @@ class _Field {
   static const count = 3;
 }
 
+// TODO: Update to handle resizable UI.
 class NewHeroScreen extends Screen<Input> {
   static const _maxNameLength = 20;
 

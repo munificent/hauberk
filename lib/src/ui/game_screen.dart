@@ -441,7 +441,7 @@ class GameScreen extends Screen<Input> {
         ui.push(SelectDepthPopup(game.content, game.hero.save));
         break;
       case TilePortals.home:
-        ui.push(ItemScreen.home(game.hero.save));
+        ui.push(ItemScreen.home(this));
         break;
       case TilePortals.shop1:
         _enterShop(0);
@@ -610,7 +610,6 @@ class GameScreen extends Screen<Input> {
     var shops = game.hero.save.shops.keys.toList();
     if (index >= shops.length) return;
 
-    ui.push(
-        ItemScreen.shop(game.hero.save, game.hero.save.shops[shops[index]]));
+    ui.push(ItemScreen.shop(this, game.hero.save.shops[shops[index]]));
   }
 }

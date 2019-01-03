@@ -7,7 +7,6 @@ import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
 
-// TODO: This is copy/pasted from below. Unify.
 abstract class ItemView {
   ItemCollection get items;
 
@@ -17,9 +16,13 @@ abstract class ItemView {
 
   bool get capitalize => false;
 
+  bool get showPrices => false;
+
   Item get inspectedItem => null;
 
   bool canSelect(Item item) => false;
+
+  int getPrice(Item item) => item.price;
 
   int itemY(Item item) {
     var y = 0;
@@ -38,16 +41,15 @@ abstract class ItemView {
 
     // Shift the stats over to make room for prices, if needed.
     var statRight = terminal.width;
-    // TODO
-//    if (getPrice != null) {
-//      for (var item in items) {
-//        var price = getPrice(item);
-//        if (price != null) {
-//          statRight =
-//              math.min(statRight, terminal.width - formatMoney(price).length - 2);
-//        }
-//      }
-//    }
+    if (showPrices) {
+      for (var item in items) {
+        var price = getPrice(item);
+        if (price != null) {
+          statRight = math.min(
+              statRight, terminal.width - formatMoney(price).length - 2);
+        }
+      }
+    }
 
     var i = 0;
     var letter = 0;
@@ -102,14 +104,13 @@ abstract class ItemView {
 
       terminal.writeAt(x + 2, y, item.nounText, textColor);
 
-      // TODO
-//      if (getPrice != null && getPrice(item) != null) {
-//        var price = formatMoney(getPrice(item));
-//        terminal.writeAt(terminal.width - price.length - 1, y, price,
-//            enabled ? gold : UIHue.disabled);
-//        terminal.writeAt(terminal.width - price.length - 2, y, "\$",
-//            enabled ? persimmon : UIHue.disabled);
-//      }
+      if (showPrices && getPrice(item) != 0) {
+        var price = formatMoney(getPrice(item));
+        terminal.writeAt(terminal.width - price.length, y, price,
+            enabled ? gold : UIHue.disabled);
+        terminal.writeAt(terminal.width - price.length - 1, y, "\$",
+            enabled ? persimmon : UIHue.disabled);
+      }
 
       drawStat(int symbol, Object stat, Color light, Color dark) {
         var string = stat.toString();
@@ -138,148 +139,6 @@ abstract class ItemView {
       i++;
     }
   }
-}
-
-/// Draws a collection of [items] on [terminal] at [left].
-///
-/// This is used both on the [ItemScreen] and in game for things like using
-/// and dropping items.
-///
-/// Items can be drawn in one of three states:
-///
-/// * If [canSelect] is `null` or returns `null`, then item list is just being
-///   viewed and no items in particular are highlighted.
-/// * If [canSelect] returns `true`, the item is highlighted as being
-///   selectable.
-/// * If [canSelect] returns `false`, the item cannot be selected and is
-///   grayed out.
-///
-/// If there is an item being inspected, returns its `y` position. Otherwise,
-/// returns -1.
-int drawItems(Terminal terminal, int left, ItemCollection items,
-    {bool canSelect(Item item),
-    int getPrice(Item item),
-    bool isDialog,
-    bool capitals,
-    bool shrinkToFit,
-    Item inspected}) {
-  isDialog ??= false;
-
-  terminal = terminal.rect(left, 2, 46, terminal.height - 2);
-
-  // Draw a box for the contents.
-  var itemCount = items.slots.length;
-  var boxHeight = (isDialog ? math.max(itemCount, 1) : 26) + 2;
-  Draw.frame(terminal, 0, 0, terminal.width, boxHeight);
-
-  terminal.writeAt(1, 0, items.name, UIHue.text);
-
-  if (items.slots.isEmpty) {
-    terminal.writeAt(1, 1, items.location.emptyDescription, UIHue.disabled);
-    return -1;
-  }
-
-  capitals ??= false;
-  var letters =
-      capitals ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz";
-
-  // Shift the stats over to make room for prices, if needed.
-  var statRight = terminal.width - 1;
-  if (getPrice != null) {
-    for (var item in items) {
-      var price = getPrice(item);
-      if (price != null) {
-        statRight =
-            math.min(statRight, terminal.width - formatMoney(price).length - 3);
-      }
-    }
-  }
-
-  var i = 0;
-  var letter = 0;
-  var inspectedY = -1;
-  for (var item in items.slots) {
-    var y = i + 1;
-
-    // If there's no item in this equipment slot, show the slot name.
-    if (item == null) {
-      // Null items should only appear in equipment.
-      assert(items.slotTypes != null);
-
-      terminal.writeAt(1, y, "    (${items.slotTypes[i]})", UIHue.disabled);
-      letter++;
-      i++;
-      continue;
-    }
-
-    var borderColor = steelGray;
-    var letterColor = UIHue.secondary;
-    var textColor = UIHue.primary;
-    var enabled = true;
-
-    var canSelectItem = canSelect != null ? canSelect(item) : null;
-    if (canSelectItem == true) {
-      borderColor = UIHue.secondary;
-      letterColor = UIHue.selection;
-      textColor = UIHue.primary;
-    } else if (canSelectItem == false) {
-      borderColor = Color.black;
-      letterColor = Color.black;
-      textColor = UIHue.disabled;
-      enabled = false;
-    }
-
-    terminal.writeAt(1, y, " )", borderColor);
-    terminal.writeAt(1, y, letters[letter], letterColor);
-    letter++;
-
-    if (enabled) {
-      terminal.drawGlyph(3, y, item.appearance as Glyph);
-    }
-
-    terminal.writeAt(5, y, item.nounText, textColor);
-
-    if (getPrice != null && getPrice(item) != null) {
-      var price = formatMoney(getPrice(item));
-      terminal.writeAt(terminal.width - price.length - 1, y, price,
-          enabled ? gold : UIHue.disabled);
-      terminal.writeAt(terminal.width - price.length - 2, y, "\$",
-          enabled ? persimmon : UIHue.disabled);
-    }
-
-    drawStat(int symbol, Object stat, Color light, Color dark) {
-      var string = stat.toString();
-      terminal.drawChar(statRight - string.length - 1, y, symbol,
-          enabled ? dark : UIHue.disabled);
-      terminal.writeAt(statRight - string.length, y, string,
-          enabled ? light : UIHue.disabled);
-    }
-
-    // TODO: Eventually need to handle equipment that gives both an armor and
-    // attack bonus.
-    if (item.attack != null) {
-      var hit = item.attack.createHit();
-      drawStat(
-          CharCode.feminineOrdinalIndicator, hit.damageString, carrot, garnet);
-    } else if (item.armor != 0) {
-      drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
-    }
-
-    if (item != null && item == inspected) {
-      terminal.drawChar(
-          0, y, CharCode.blackLeftPointingPointer, UIHue.selection);
-      inspectedY = y + 2;
-//      terminal.drawChar(
-//          2, y, CharCode.blackRightPointingPointer, UIHue.selection);
-//      terminal.drawChar(terminal.width - 1, y,
-//          CharCode.blackRightPointingPointer, UIHue.selection);
-    }
-
-    // TODO: Show heft and weight.
-    i++;
-  }
-
-  return inspectedY;
 }
 
 void drawInspector(Terminal terminal, HeroSave hero, Item item) {

@@ -54,6 +54,14 @@ class ItemDialog extends Screen<Input> {
       : _command = _UseItemCommand(),
         _location = ItemLocation.equipment;
 
+  ItemDialog.sell(this._gameScreen, Inventory shop)
+      : _command = _SellItemCommand(shop),
+        _location = ItemLocation.inventory;
+
+  ItemDialog.put(this._gameScreen)
+      : _command = _PutItemCommand(),
+        _location = ItemLocation.inventory;
+
   bool handleInput(Input input) {
     switch (input) {
       case Input.ok:
@@ -285,9 +293,13 @@ class _ItemDialogItemView extends ItemView {
 
   bool get capitalize => _dialog._shiftDown;
 
+  bool get showPrices => _dialog._command.showPrices;
+
   Item get inspectedItem => _dialog._inspected;
 
   bool canSelect(Item item) => _dialog._canSelect(item);
+
+  int getPrice(Item item) => _dialog._command.getPrice(item);
 
   _ItemDialogItemView(this._dialog);
 
@@ -313,6 +325,8 @@ abstract class _ItemCommand {
   /// If the player must select how many items in a stack, returns `true`.
   bool get needsCount;
 
+  bool get showPrices => false;
+
   /// The query shown to the user when selecting an item in this mode from
   /// [view].
   String query(ItemLocation location);
@@ -327,6 +341,33 @@ abstract class _ItemCommand {
   /// Called when a valid item has been selected.
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location);
+
+  int getPrice(Item item) => item.price;
+
+  void transfer(
+      ItemDialog dialog, Item item, int count, ItemCollection destination) {
+    if (!destination.canAdd(item)) {
+      dialog._gameScreen.game.log
+          .error("Not enough room for ${item.clone(count)}.");
+      dialog.dirty();
+      return;
+    }
+
+    if (count == item.count) {
+      // Moving the entire stack.
+      destination.tryAdd(item);
+      dialog._getItems().remove(item);
+    } else {
+      // Splitting the stack.
+      destination.tryAdd(item.splitStack(count));
+      dialog._getItems().countChanged();
+    }
+
+    afterTransfer(dialog, item, count);
+    dialog.ui.pop();
+  }
+
+  void afterTransfer(ItemDialog dialog, Item item, int count) {}
 }
 
 class _DropItemCommand extends _ItemCommand {
@@ -434,5 +475,65 @@ class _PickUpItemCommand extends _ItemCommand {
     // Pick up item and return to the game
     dialog._gameScreen.game.hero.setNextAction(PickUpAction(item));
     dialog.ui.pop();
+  }
+}
+
+class _PutItemCommand extends _ItemCommand {
+  _PutItemCommand();
+
+  List<ItemLocation> get allowedLocations =>
+      const [ItemLocation.inventory, ItemLocation.equipment];
+
+  bool get needsCount => true;
+
+  String query(ItemLocation location) => "Put which item?";
+
+  String queryCount(ItemLocation location) => "Put how many?";
+
+  bool canSelect(Item item) => true;
+
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
+    transfer(dialog, item, count, dialog._gameScreen.game.hero.save.home);
+  }
+
+  void afterTransfer(ItemDialog dialog, Item item, int count) {
+    dialog._gameScreen.game.log
+        .message("You put ${item.clone(count)} safely into your home.");
+  }
+}
+
+// TODO: Require confirmation when selling an item if it isn't a stack?
+class _SellItemCommand extends _ItemCommand {
+  final Inventory _shop;
+
+  _SellItemCommand(this._shop);
+
+  List<ItemLocation> get allowedLocations =>
+      const [ItemLocation.inventory, ItemLocation.equipment];
+
+  bool get needsCount => true;
+
+  bool get showPrices => true;
+
+  String query(ItemLocation location) => "Sell which item?";
+
+  String queryCount(ItemLocation location) => "Sell how many?";
+
+  bool canSelect(Item item) => true;
+
+  int getPrice(Item item) => (item.price * 0.75).floor();
+
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
+    transfer(dialog, item, count, _shop);
+  }
+
+  void afterTransfer(ItemDialog dialog, Item item, int count) {
+    var itemText = item.clone(count).toString();
+    var price = getPrice(item) * count;
+    // TODO: The help text overlaps the log pane, so this isn't very useful.
+    dialog._gameScreen.game.log.message("You sell $itemText for $price gold.");
+    dialog._gameScreen.game.hero.gold += price;
   }
 }

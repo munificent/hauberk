@@ -5,6 +5,7 @@ import '../engine.dart';
 import '../hues.dart';
 import 'input.dart';
 
+// TODO: Update to handle resizable UI.
 class GameOverScreen extends Screen<Input> {
   final Log log;
 

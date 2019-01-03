@@ -7,6 +7,7 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../draw.dart';
 import '../game_screen.dart';
+import '../item_view.dart';
 import 'panel.dart';
 
 // TODO: Split this into multiple panels and/or give it a better name.
@@ -39,24 +40,28 @@ class SidebarPanel extends Panel {
         1, 2, "${hero.save.race.name} ${hero.save.heroClass.name}", UIHue.text);
 
     _drawStat(
-        terminal, 4, 'Health', hero.health, brickRed, hero.maxHealth, maroon);
-    terminal.writeAt(1, 5, 'Food', UIHue.helpText);
+        terminal, 4, "Health", hero.health, brickRed, hero.maxHealth, maroon);
+    terminal.writeAt(1, 5, "Food", UIHue.helpText);
     Draw.meter(terminal, 10, 5, 10, hero.stomach, Option.heroMaxStomach,
         persimmon, garnet);
 
-    _drawStat(terminal, 6, 'Level', hero.level, cerulean);
+    _drawStat(terminal, 6, "Level", hero.level, cerulean);
     if (hero.level < Hero.maxLevel) {
       var levelPercent = 100 *
           (hero.experience - experienceLevelCost(hero.level)) ~/
           (experienceLevelCost(hero.level + 1) -
               experienceLevelCost(hero.level));
-      terminal.writeAt(15, 6, '$levelPercent%', ultramarine);
+      terminal.writeAt(15, 6, "$levelPercent%", ultramarine);
     }
+
+    terminal.writeAt(1, 7, "Gold", UIHue.helpText);
+    var heroGold = formatMoney(hero.gold);
+    terminal.writeAt(10, 7, heroGold, gold);
 
     var x = 1;
     drawStat(StatBase stat) {
-      terminal.writeAt(x, 8, stat.name.substring(0, 3), UIHue.helpText);
-      terminal.writeAt(x, 9, stat.value.toString().padLeft(3), UIHue.text);
+      terminal.writeAt(x, 9, stat.name.substring(0, 3), UIHue.helpText);
+      terminal.writeAt(x, 10, stat.value.toString().padLeft(3), UIHue.text);
       x += 4;
     }
 
@@ -66,21 +71,21 @@ class SidebarPanel extends Panel {
     drawStat(hero.intellect);
     drawStat(hero.will);
 
-    terminal.writeAt(1, 11, 'Focus', UIHue.helpText);
+    terminal.writeAt(1, 12, 'Focus', UIHue.helpText);
 
-    Draw.meter(terminal, 10, 11, 10, hero.focus, hero.intellect.maxFocus,
+    Draw.meter(terminal, 10, 12, 10, hero.focus, hero.intellect.maxFocus,
         cerulean, ultramarine);
 
-    _drawStat(terminal, 13, 'Armor',
+    _drawStat(terminal, 14, 'Armor',
         '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
     // TODO: Show the weapon and stats better.
     var hit = hero.createMeleeHit(null);
-    _drawStat(terminal, 14, 'Weapon', hit.damageString, turquoise);
+    _drawStat(terminal, 15, 'Weapon', hit.damageString, turquoise);
 
     // Draw the nearby monsters.
-    terminal.writeAt(1, 16, '@', _gameScreen.heroColor);
-    terminal.writeAt(3, 16, hero.save.name, UIHue.text);
-    _drawHealthBar(terminal, 17, hero);
+    terminal.writeAt(1, 17, '@', _gameScreen.heroColor);
+    terminal.writeAt(3, 17, hero.save.name, UIHue.text);
+    _drawHealthBar(terminal, 18, hero);
 
     var visibleMonsters = _gameScreen.stagePanel.visibleMonsters;
     visibleMonsters.sort((a, b) {
@@ -90,7 +95,7 @@ class SidebarPanel extends Panel {
     });
 
     for (var i = 0; i < 10; i++) {
-      var y = 18 + i * 2;
+      var y = 19 + i * 2;
       if (i < visibleMonsters.length) {
         var monster = visibleMonsters[i];
 
