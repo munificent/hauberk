@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -52,7 +50,7 @@ class Architect {
       stage[pos].type = Tiles.unformed;
     }
 
-    var styles = _pickStyles();
+    var styles = ArchitecturalStyle.pick(depth);
 
     int lastFillable;
     for (var i = styles.length - 1; i >= 0; i--) {
@@ -97,25 +95,6 @@ class Architect {
   }
 
   Architecture ownerAt(Vec pos) => _owners[pos];
-
-  List<ArchitecturalStyle> _pickStyles() {
-    var result = <ArchitecturalStyle>[];
-
-    // TODO: Change count range based on depth?
-    var count = math.min(rng.taper(1, 10), 5);
-    var hasFillable = false;
-
-    while (!hasFillable || result.length < count) {
-      var style = ArchitecturalStyle.all.tryChoose(depth);
-
-      // Make sure there's at least one style that can fill the entire stage.
-      if (style.canFill) hasFillable = true;
-
-      if (!result.contains(style)) result.add(style);
-    }
-
-    return result;
-  }
 
   /// Marks the tile at [x], [y] as open floor for [architecture].
   void _carve(Architecture architecture, int x, int y, TileType tile) {

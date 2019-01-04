@@ -8,8 +8,13 @@ import 'package:hauberk/src/content/item/affixes.dart';
 import 'package:hauberk/src/content/item/floor_drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
+import 'package:hauberk/src/content/stage/architectural_style.dart';
 
 import 'histogram.dart';
+
+const batchSize = 1000;
+const chartWidth = 600;
+const barSize = 6;
 
 final _svg = html.querySelector("svg") as svg.SvgElement;
 
@@ -18,7 +23,8 @@ final List<Chart> _charts = [
   ItemTypesChart(),
   AffixesChart(),
   MonsterDepthsChart(),
-  FloorDropsChart()
+  FloorDropsChart(),
+  ArchitecturesChart()
 ];
 
 final _colors = <String, String>{};
@@ -59,15 +65,11 @@ main() {
 }
 
 abstract class Chart {
-  static const batchSize = 1000;
-  static const chartWidth = 600;
-  static const barSize = 6;
-
   final histograms = List.generate(Option.maxDepth, (_) => Histogram<String>());
 
   String get name;
 
-  List<String> get labels;
+  Iterable<String> get labels;
 
   void generateMore() {
     for (var depth = 1; depth <= Option.maxDepth; depth++) {
@@ -120,9 +122,9 @@ abstract class Chart {
 }
 
 class BreedChart extends Chart {
-  final _breedNames = _allBreedNames();
+  final _labels = _makeLabels();
 
-  static List<String> _allBreedNames() {
+  static List<String> _makeLabels() {
     var names = Monsters.breeds.all.map((breed) => breed.name).toList();
     names.sort((a, b) {
       var aBreed = Monsters.breeds.find(a);
@@ -143,7 +145,7 @@ class BreedChart extends Chart {
 
   String get name => "breeds";
 
-  List<String> get labels => _breedNames;
+  Iterable<String> get labels => _labels;
 
   void generate(Histogram<String> histogram, int depth) {
     var breed = Monsters.breeds.tryChoose(depth);
@@ -162,9 +164,9 @@ class BreedChart extends Chart {
 }
 
 class ItemTypesChart extends Chart {
-  static final _itemNames = _allItemNames();
+  static final _labels = _makeLabels();
 
-  static List<String> _allItemNames() {
+  static List<String> _makeLabels() {
     var names = Items.types.all.map((type) => type.name).toList();
     names.sort((a, b) {
       var aType = Items.types.find(a);
@@ -187,7 +189,7 @@ class ItemTypesChart extends Chart {
 
   String get name => "item-types";
 
-  List<String> get labels => _itemNames;
+  Iterable<String> get labels => _labels;
 
   void generate(Histogram<String> histogram, int depth) {
     var itemType = Items.types.tryChoose(depth);
@@ -213,9 +215,9 @@ class ItemTypesChart extends Chart {
 }
 
 class AffixesChart extends Chart {
-  static final _affixNames = _allAffixNames();
+  static final _labels = _makeLabels();
 
-  static List<String> _allAffixNames() {
+  static List<String> _makeLabels() {
     var names = ["(none)"];
     names.addAll(Affixes.prefixes.all.map((affix) => "${affix.name} _"));
     names.addAll(Affixes.suffixes.all.map((affix) => "_ ${affix.name}"));
@@ -232,7 +234,7 @@ class AffixesChart extends Chart {
 
   String get name => "affixes";
 
-  List<String> get labels => _affixNames;
+  Iterable<String> get labels => _labels;
 
   void generate(Histogram<String> histogram, int depth) {
     var itemType = Items.types.tryChoose(depth, tag: "equipment");
@@ -279,7 +281,7 @@ class MonsterDepthsChart extends Chart {
 class FloorDropsChart extends Chart {
   String get name => "floor-drops";
 
-  List<String> get labels => ItemTypesChart._itemNames;
+  Iterable<String> get labels => ItemTypesChart._labels;
 
   void generate(Histogram<String> histogram, int depth) {
     var drop = FloorDrops.choose(depth);
@@ -292,4 +294,35 @@ class FloorDropsChart extends Chart {
     var type = Items.types.find(label);
     return "$label (depth ${type.depth})";
   }
+}
+
+class ArchitecturesChart extends Chart {
+  static final List<String> _labels = _makeLabels();
+
+  static List<String> _makeLabels() {
+    var labels = <String>[];
+    for (var style in ArchitecturalStyle.styles.all) {
+      labels.add(style.name);
+    }
+
+    for (var i = 0; i < labels.length; i++) {
+      _colors[labels[i]] = 'hsl(${i * 17 % 360}, 50%, 50%)';
+    }
+
+    return labels;
+  }
+
+  String get name => "architectures";
+
+  Iterable<String> get labels => _labels;
+
+  void generate(Histogram<String> histogram, int depth) {
+    var styles = ArchitecturalStyle.pick(depth);
+    for (var style in styles) {
+      histogram.add(style.name);
+    }
+  }
+
+  // TODO: Show min and max depths?
+  String describe(String label) => label;
 }
