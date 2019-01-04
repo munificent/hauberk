@@ -127,10 +127,13 @@ class HeroSave {
   void takeFrom(Hero hero) {
     _inventory = hero.inventory;
     _equipment = hero.equipment;
+    shops.clear();
+    shops.addAll(hero.save.shops);
     experience = hero.experience;
     gold = hero.gold;
     skills = hero.skills;
     _lore = hero.lore;
+    maxDepth = hero.save.maxDepth;
   }
 
   HeroSave clone() => HeroSave.load(

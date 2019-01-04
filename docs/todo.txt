@@ -8,7 +8,12 @@
   - "ego monsters" -- affixes for monsters
   - tune monster perception
   - element resistance and immunity
+  - make ai more breed-tunable
+    - avoid light
+    - surround or work as a team
+    - avoid open spaces
 - items
+  - figure out what to about food
   - more food
   - helmets
   - heavy armor

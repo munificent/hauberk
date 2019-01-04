@@ -30,7 +30,7 @@ The basic idea I have in mind is:
   combination of negative and positive things. Negative requirements are
   forbidden actions: if you want to be a paladin, you can't have ever killed
   using a blade. Positive ones are things you must do: to become an archer, you
-  must kill 100 enemies with a box. Something like that.
+  must kill 100 enemies with a bow. Something like that.
 
   Titles need both. If they just have negative requirements, you'd earn every
   title on day one. If they just have positive requirements, it's possible to

@@ -235,6 +235,7 @@ void weapons() {
     ..ranged("the arrow", heft: 18, damage: 8, range: 12)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 7, fuel: 13);
+  // TODO: Warbow.
   item("Crossbow", gunsmoke, frequency: 0.3, price: 600)
     ..depth(28)
     ..ranged("the bolt", heft: 24, damage: 12, range: 16)
