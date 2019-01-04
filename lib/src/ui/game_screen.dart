@@ -338,9 +338,10 @@ class GameScreen extends Screen<Input> {
       ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
     } else if (popped is SelectDepthPopup && result is int) {
       // Enter the dungeon.
-      // TODO: Make this a transparent dialog?
       _storage.save();
-      ui.goTo(LoadingDialog(_storage, game.hero.save, game.content, result));
+      ui.push(LoadingDialog(game.hero.save, game.content, result));
+    } else if (popped is LoadingDialog) {
+      ui.goTo(GameScreen(_storage, result as Game, game.hero.save));
     } else if (popped is ForfeitPopup && result == true) {
       if (game.depth > 0) {
         // Forfeiting, so return to the town and discard the current hero.

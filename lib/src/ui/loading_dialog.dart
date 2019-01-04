@@ -3,21 +3,19 @@ import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
-import 'game_screen.dart';
+import 'draw.dart';
 import 'input.dart';
-import 'storage.dart';
 
-// TODO: Update the handle the resizable terminal.
 /// Dialog shown while a new level is being generated.
 class LoadingDialog extends Screen<Input> {
-  final Storage _storage;
-  final HeroSave _storageSave;
   final Game _game;
   Iterator<String> _steps;
   int _frame = 0;
 
-  LoadingDialog(this._storage, this._storageSave, Content content, int depth)
-      : _game = Game(content, _storageSave.clone(), depth);
+  bool get isTransparent => true;
+
+  LoadingDialog(HeroSave save, Content content, int depth)
+      : _game = Game(content, save.clone(), depth);
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
@@ -55,7 +53,7 @@ class LoadingDialog extends Screen<Input> {
       if (_steps.moveNext()) {
         dirty();
       } else {
-        ui.goTo(GameScreen(_storage, _game, _storageSave));
+        ui.pop(_game);
         return;
       }
     }
@@ -64,10 +62,18 @@ class LoadingDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    terminal.writeAt(30, 18, "Entering dungeon...", UIHue.text);
+    var width = 30;
+    var height = 7;
+
+    terminal = terminal.rect((terminal.width - width) ~/ 2,
+        (terminal.height - height) ~/ 2, width, height);
+
+    Draw.doubleBox(terminal, 0, 0, terminal.width, terminal.height, gold);
+
+    terminal.writeAt(2, 2, "Entering dungeon...", UIHue.text);
 
     var offset = _frame ~/ 2;
-    var bar = ("/    " * 5).substring(offset, offset + 20);
-    terminal.writeAt(30, 20, bar, UIHue.primary);
+    var bar = ("/    " * 6).substring(offset, offset + 26);
+    terminal.writeAt(2, 4, bar, UIHue.primary);
   }
 }

@@ -114,6 +114,7 @@
   - "examine command"
   - monster descriptions
   - better hero creation screen with clearer flow
+  - finish all glyphs for non-square fonts
 - gameplay
   - home?
   - victory

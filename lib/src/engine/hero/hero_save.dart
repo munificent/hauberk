@@ -16,6 +16,10 @@ import 'stat.dart';
 /// When outside of the dungeon on the menu screens, though, only a subset of
 /// the hero's data persists (for example, there is no position when not in a
 /// dungeon). This class stores that state.
+// TODO: This is no longer true with the town. Now that the game plays more like
+// a classic roguelike, it's weird that some hero state (hunger, log,
+// conditions) evaporates when the hero leaves and enters the dungeon. Need to
+// figure out what gets saved and what doesn't now.
 class HeroSave {
   final String name;
   final RaceStats race;
