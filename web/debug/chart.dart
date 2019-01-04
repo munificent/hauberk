@@ -13,30 +13,19 @@ import 'histogram.dart';
 
 final _svg = html.querySelector("svg") as svg.SvgElement;
 
-final _breedCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
-List<String> _breedNames;
-
-final _itemCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
-List<String> _itemNames;
-
-final _affixCounts = List.generate(Option.maxDepth, (_) => Histogram<String>());
-List<String> _affixNames;
-
-final _monsterDepthCounts =
-    List.generate(Option.maxDepth, (_) => Histogram<String>());
-
-final _floorDropCounts =
-    List.generate(Option.maxDepth, (_) => Histogram<String>());
+final List<Chart> _charts = [
+  BreedChart(),
+  ItemTypesChart(),
+  AffixesChart(),
+  MonsterDepthsChart(),
+  FloorDropsChart()
+];
 
 final _colors = <String, String>{};
 
-const batchSize = 1000;
-const chartWidth = 600;
-const barSize = 6;
-
-String get shownData {
+Chart get currentChart {
   var select = html.querySelector("select") as html.SelectElement;
-  return select.value;
+  return _charts.firstWhere((chart) => chart.name == select.value);
 }
 
 main() {
@@ -59,162 +48,83 @@ main() {
     _colors[i.toString()] = "hsl(${(i + 100) * 10 % 360}, 70%, 40%)";
   }
 
-  _svg.onClick.listen((_) => _generateMore());
+  _svg.onClick.listen((_) => currentChart.generateMore());
 
   var select = html.querySelector("select") as html.SelectElement;
   select.onChange.listen((_) {
-    switch (shownData) {
-      case "breeds":
-        _drawBreeds();
-        break;
-
-      case "item-types":
-        _drawItems();
-        break;
-
-      case "affixes":
-        _drawAffixes();
-        break;
-
-      case "monster-depths":
-        _drawMonsterDepths();
-        break;
-
-      case "floor-drops":
-        _drawFloorDrops();
-        break;
-
-      default:
-        throw "Unknown select value '$shownData'.";
-    }
+    currentChart.draw();
   });
 
-  _generateMore();
+  currentChart.generateMore();
 }
 
-void _generateMore() {
-  switch (shownData) {
-    case "breeds":
-      _moreBreeds();
-      break;
+abstract class Chart {
+  static const batchSize = 1000;
+  static const chartWidth = 600;
+  static const barSize = 6;
 
-    case "item-types":
-      _moreItems();
-      break;
+  final histograms = List.generate(Option.maxDepth, (_) => Histogram<String>());
 
-    case "affixes":
-      _moreAffixes();
-      break;
+  String get name;
 
-    case "monster-depths":
-      _moreMonsterDepths();
-      break;
+  List<String> get labels;
 
-    case "floor-drops":
-      _moreFloorDrops();
-      break;
+  void generateMore() {
+    for (var depth = 1; depth <= Option.maxDepth; depth++) {
+      var histogram = histograms[depth - 1];
 
-    default:
-      throw "Unknown select value '$shownData'.";
-  }
-}
-
-void _moreBreeds() {
-  for (var depth = 1; depth <= Option.maxDepth; depth++) {
-    var histogram = _breedCounts[depth - 1];
-
-    for (var i = 0; i < batchSize; i++) {
-      var breed = Monsters.breeds.tryChoose(depth);
-      if (breed == null) continue;
-
-      // Take groups and minions into account
-      for (var spawn in breed.spawnAll()) {
-        histogram.add(spawn.name);
+      for (var i = 0; i < batchSize; i++) {
+        generate(histogram, depth);
       }
     }
+
+    draw();
   }
 
-  _drawBreeds();
-}
+  void generate(Histogram<String> histogram, int depth);
 
-void _moreItems() {
-  for (var depth = 1; depth <= Option.maxDepth; depth++) {
-    var histogram = _itemCounts[depth - 1];
+  String describe(String label);
 
-    for (var i = 0; i < batchSize; i++) {
-      var itemType = Items.types.tryChoose(depth);
-      if (itemType == null) continue;
+  void draw() {
+    var buffer = StringBuffer();
 
-      var item = Affixes.createItem(itemType, depth);
-      if (item.prefix != null || item.suffix != null) {
-        histogram.add("${itemType.name} (ego)");
-      } else {
-        histogram.add(itemType.name);
-      }
-    }
-  }
-
-  _drawItems();
-}
-
-void _moreAffixes() {
-  for (var depth = 1; depth <= Option.maxDepth; depth++) {
-    var histogram = _affixCounts[depth - 1];
-
-    for (var i = 0; i < batchSize; i++) {
-      var itemType = Items.types.tryChoose(depth, tag: "equipment");
-      if (itemType == null) continue;
-
-      // Don't count items that can't have affixes.
-      if (!Items.types.hasTag(itemType.name, "equipment")) {
-        continue;
+    for (var depth = 0; depth < Option.maxDepth; depth++) {
+      var histogram = histograms[depth];
+      var total = 0;
+      for (var label in labels) {
+        total += histogram.count(label);
       }
 
-      var item = Affixes.createItem(itemType, depth);
+      var x = chartWidth.toDouble();
+      var y = depth * barSize;
+      var right = chartWidth.toDouble();
 
-      if (item.prefix != null) histogram.add("${item.prefix.name} _");
-      if (item.suffix != null) histogram.add("_ ${item.suffix.name}");
-      if (item.prefix == null && item.suffix == null) histogram.add("(none)");
+      for (var label in labels) {
+        var count = histogram.count(label);
+        if (count == 0) continue;
+
+        var fraction = count / total;
+        var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
+        x -= fraction * chartWidth;
+        buffer.write('<rect fill="${_colors[label]}" x="$x" y="$y" '
+            'width="${right - x}" height="$barSize">');
+        buffer.write('<title>depth ${depth + 1}: ${describe(label)} $percent% '
+            '($count)</title></rect>');
+
+        right = x;
+      }
     }
-  }
 
-  _drawAffixes();
+    _svg.setInnerHtml(buffer.toString());
+  }
 }
 
-void _moreMonsterDepths() {
-  for (var depth = 1; depth <= Option.maxDepth; depth++) {
-    var histogram = _monsterDepthCounts[depth - 1];
+class BreedChart extends Chart {
+  final _breedNames = _allBreedNames();
 
-    for (var i = 0; i < batchSize; i++) {
-      var breed = Monsters.breeds.tryChoose(depth);
-      if (breed == null) continue;
-
-      histogram.add((breed.depth - depth).toString());
-    }
-  }
-
-  _drawMonsterDepths();
-}
-
-void _moreFloorDrops() {
-  for (var depth = 1; depth <= Option.maxDepth; depth++) {
-    var histogram = _floorDropCounts[depth - 1];
-
-    for (var i = 0; i < batchSize; i++) {
-      var drop = FloorDrops.choose(depth);
-      drop.drop.spawnDrop(depth, (item) {
-        histogram.add(item.type.name);
-      });
-    }
-  }
-
-  _drawFloorDrops();
-}
-
-void _drawBreeds() {
-  if (_breedNames == null) {
-    _breedNames = Monsters.breeds.all.map((breed) => breed.name).toList();
-    _breedNames.sort((a, b) {
+  static List<String> _allBreedNames() {
+    var names = Monsters.breeds.all.map((breed) => breed.name).toList();
+    names.sort((a, b) {
       var aBreed = Monsters.breeds.find(a);
       var bBreed = Monsters.breeds.find(b);
 
@@ -228,70 +138,35 @@ void _drawBreeds() {
 
       return aBreed.name.compareTo(bBreed.name);
     });
+    return names;
   }
 
-  _redraw(_breedCounts, _breedNames, (label) {
+  String get name => "breeds";
+
+  List<String> get labels => _breedNames;
+
+  void generate(Histogram<String> histogram, int depth) {
+    var breed = Monsters.breeds.tryChoose(depth);
+    if (breed == null) return;
+
+    // Take groups and minions into account.
+    for (var spawn in breed.spawnAll()) {
+      histogram.add(spawn.name);
+    }
+  }
+
+  String describe(String label) {
     var breed = Monsters.breeds.find(label);
-    return '$label (depth ${breed.depth})';
-  });
-}
-
-void _drawItems() {
-  _initializeItemNames();
-  _redraw(_itemCounts, _itemNames, (label) {
-    var typeName = label;
-    if (typeName.endsWith(" (ego)")) {
-      typeName = typeName.substring(0, typeName.length - 6);
-    }
-
-    var type = Items.types.find(typeName);
-    return '$label (depth ${type.depth})';
-  });
-}
-
-void _drawAffixes() {
-  if (_affixNames == null) {
-    _affixNames = ["(none)"];
-    _affixNames.addAll(Affixes.prefixes.all.map((affix) => "${affix.name} _"));
-    _affixNames.addAll(Affixes.suffixes.all.map((affix) => "_ ${affix.name}"));
-
-    // TODO: Sort by depth and rarity?
-    _affixNames.sort();
-
-    for (var i = 0; i < _affixNames.length; i++) {
-      _colors[_affixNames[i]] = 'hsl(${i * 17 % 360}, 50%, 50%)';
-    }
+    return "$label (depth ${breed.depth})";
   }
-
-  _redraw(_affixCounts, _affixNames, (label) => label);
 }
 
-void _drawMonsterDepths() {
-  var labels = <String>[];
-  for (var i = -100; i <= 100; i++) {
-    labels.add("$i");
-  }
+class ItemTypesChart extends Chart {
+  static final _itemNames = _allItemNames();
 
-  _redraw(_monsterDepthCounts, labels, (label) {
-    var relative = int.parse(label);
-    if (relative == 0) return "same";
-    if (relative < 0) return "${-relative} shallower monster";
-    return "$label deeper monster";
-  });
-}
-
-void _drawFloorDrops() {
-  _initializeItemNames();
-  _redraw(_floorDropCounts, _itemNames, (label) {
-    var type = Items.types.find(label);
-    return '$label (depth ${type.depth})';
-  });
-}
-
-void _initializeItemNames() {
-  if (_itemNames == null) {
-    _itemNames = Items.types.all.map((type) => type.name).toList();
-    _itemNames.sort((a, b) {
+  static List<String> _allItemNames() {
+    var names = Items.types.all.map((type) => type.name).toList();
+    names.sort((a, b) {
       var aType = Items.types.find(a);
       var bType = Items.types.find(b);
 
@@ -306,40 +181,115 @@ void _initializeItemNames() {
       return aType.name.compareTo(bType.name);
     });
 
-    _itemNames.addAll(_itemNames.map((name) => "$name (ego)").toList());
+    names.addAll(names.map((name) => "$name (ego)").toList());
+    return names;
+  }
+
+  String get name => "item-types";
+
+  List<String> get labels => _itemNames;
+
+  void generate(Histogram<String> histogram, int depth) {
+    var itemType = Items.types.tryChoose(depth);
+    if (itemType == null) return;
+
+    var item = Affixes.createItem(itemType, depth);
+    if (item.prefix != null || item.suffix != null) {
+      histogram.add("${itemType.name} (ego)");
+    } else {
+      histogram.add(itemType.name);
+    }
+  }
+
+  String describe(String label) {
+    var typeName = label;
+    if (typeName.endsWith(" (ego)")) {
+      typeName = typeName.substring(0, typeName.length - 6);
+    }
+
+    var type = Items.types.find(typeName);
+    return "$label (depth ${type.depth})";
   }
 }
 
-void _redraw(List<Histogram<String>> histograms, List<String> labels,
-    String describe(String label)) {
-  var buffer = StringBuffer();
+class AffixesChart extends Chart {
+  static final _affixNames = _allAffixNames();
 
-  for (var depth = 0; depth < Option.maxDepth; depth++) {
-    var histogram = histograms[depth];
-    var total = 0;
-    for (var label in labels) {
-      total += histogram.count(label);
+  static List<String> _allAffixNames() {
+    var names = ["(none)"];
+    names.addAll(Affixes.prefixes.all.map((affix) => "${affix.name} _"));
+    names.addAll(Affixes.suffixes.all.map((affix) => "_ ${affix.name}"));
+
+    // TODO: Sort by depth and rarity?
+    names.sort();
+
+    for (var i = 0; i < names.length; i++) {
+      _colors[names[i]] = 'hsl(${i * 17 % 360}, 50%, 50%)';
     }
 
-    var x = chartWidth.toDouble();
-    var y = depth * barSize;
-    var right = chartWidth.toDouble();
+    return names;
+  }
 
-    for (var label in labels) {
-      var count = histogram.count(label);
-      if (count == 0) continue;
+  String get name => "affixes";
 
-      var fraction = count / total;
-      var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
-      x -= fraction * chartWidth;
-      buffer.write('<rect fill="${_colors[label]}" x="$x" y="$y" '
-          'width="${right - x}" height="$barSize">');
-      buffer.write('<title>depth ${depth + 1}: ${describe(label)} $percent% '
-          '($count)</title></rect>');
+  List<String> get labels => _affixNames;
 
-      right = x;
+  void generate(Histogram<String> histogram, int depth) {
+    var itemType = Items.types.tryChoose(depth, tag: "equipment");
+    if (itemType == null) return;
+
+    // Don't count items that can't have affixes.
+    if (!Items.types.hasTag(itemType.name, "equipment")) return;
+
+    var item = Affixes.createItem(itemType, depth);
+
+    if (item.prefix != null) histogram.add("${item.prefix.name} _");
+    if (item.suffix != null) histogram.add("_ ${item.suffix.name}");
+    if (item.prefix == null && item.suffix == null) histogram.add("(none)");
+  }
+
+  String describe(String label) => label;
+}
+
+class MonsterDepthsChart extends Chart {
+  String get name => "monster-depths";
+  final List<String> labels = [];
+
+  MonsterDepthsChart() {
+    for (var i = -100; i <= 100; i++) {
+      labels.add("$i");
     }
   }
 
-  _svg.setInnerHtml(buffer.toString());
+  void generate(Histogram<String> histogram, int depth) {
+    var breed = Monsters.breeds.tryChoose(depth);
+    if (breed == null) return;
+
+    histogram.add((breed.depth - depth).toString());
+  }
+
+  String describe(String label) {
+    var relative = int.parse(label);
+    if (relative == 0) return "same";
+    if (relative < 0) return "${-relative} shallower monster";
+    return "$label deeper monster";
+  }
+}
+
+class FloorDropsChart extends Chart {
+  String get name => "floor-drops";
+
+  List<String> get labels => ItemTypesChart._itemNames;
+
+  void generate(Histogram<String> histogram, int depth) {
+    var drop = FloorDrops.choose(depth);
+    drop.drop.spawnDrop(depth, (item) {
+      histogram.add(item.type.name);
+    });
+  }
+
+  String describe(String label) {
+    var type = Items.types.find(label);
+    return "$label (depth ${type.depth})";
+  }
 }
