@@ -29787,9 +29787,9 @@
         this._render$0();
       },
       refresh$0: function() {
-        var t1, t2, _i;
-        for (t1 = this._screens, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i)
-          t1[_i].update$0(0);
+        var t1, i;
+        for (t1 = this._screens, i = 0; i < t1.length; ++i)
+          t1[i].update$0(0);
         if (this._dirty)
           this._render$0();
       },
