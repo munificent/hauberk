@@ -17,6 +17,8 @@ const chartWidth = 600;
 const barSize = 6;
 
 final _svg = html.querySelector("svg") as svg.SvgElement;
+final _chart = html.querySelector("select[name=chart]") as html.SelectElement;
+final _highlight = html.querySelector("select[name=highlight]") as html.SelectElement;
 
 final List<Chart> _charts = [
   BreedChart(),
@@ -27,11 +29,10 @@ final List<Chart> _charts = [
   ArchitecturesChart()
 ];
 
-final _colors = <String, String>{};
+final _colors = <String, Color>{};
 
 Chart get currentChart {
-  var select = html.querySelector("select") as html.SelectElement;
-  return _charts.firstWhere((chart) => chart.name == select.value);
+  return _charts.firstWhere((chart) => chart.name == _chart.value);
 }
 
 main() {
@@ -41,24 +42,27 @@ main() {
   FloorDrops.initialize();
 
   for (var itemType in Items.types.all) {
-    _colors[itemType.name] = (itemType.appearance as Glyph).fore.cssColor;
+    _colors[itemType.name] = (itemType.appearance as Glyph).fore;
     _colors["${itemType.name} (ego)"] =
-        (itemType.appearance as Glyph).fore.blend(Color.black, 0.5).cssColor;
+        (itemType.appearance as Glyph).fore.blend(Color.black, 0.5);
   }
 
   for (var breed in Monsters.breeds.all) {
-    _colors[breed.name] = (breed.appearance as Glyph).fore.cssColor;
+    _colors[breed.name] = (breed.appearance as Glyph).fore;
   }
 
   for (var i = -100; i <= 100; i++) {
-    _colors[i.toString()] = "hsl(${(i + 100) * 10 % 360}, 70%, 40%)";
+    _colors[i.toString()] = _rainbow((i + 100) * 10);
   }
 
   _svg.onClick.listen((_) => currentChart.generateMore());
 
-  var select = html.querySelector("select") as html.SelectElement;
-  select.onChange.listen((_) {
-    currentChart.draw();
+  _chart.onChange.listen((_) {
+    currentChart.refresh();
+  });
+
+  _highlight.onChange.listen((_) {
+    currentChart.refresh();
   });
 
   currentChart.generateMore();
@@ -80,14 +84,32 @@ abstract class Chart {
       }
     }
 
-    draw();
+    refresh();
   }
 
   void generate(Histogram<String> histogram, int depth);
 
   String describe(String label);
 
-  void draw() {
+  void refresh() {
+    var buffer = StringBuffer();
+
+    var currentHighlight = _highlight.value;
+
+    buffer.writeln('<option value="">(none)</option>');
+    for (var label in labels) {
+      var selected = currentHighlight == label ? "selected": "";
+      buffer.writeln('<option value="$label" $selected>$label</option>');
+    }
+
+    _highlight.setInnerHtml(buffer.toString());
+
+    _draw();
+  }
+
+  void _draw() {
+    var highlight = _highlight.value;
+
     var buffer = StringBuffer();
 
     for (var depth = 0; depth < Option.maxDepth; depth++) {
@@ -108,7 +130,13 @@ abstract class Chart {
         var fraction = count / total;
         var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
         x -= fraction * chartWidth;
-        buffer.write('<rect fill="${_colors[label]}" x="$x" y="$y" '
+
+        var color = _colors[label];
+        if (highlight != "" && label != highlight) {
+          color = color.blend(Color.white, 0.80);
+        }
+
+        buffer.write('<rect fill="${color.cssColor}" x="$x" y="$y" '
             'width="${right - x}" height="$barSize">');
         buffer.write('<title>depth ${depth + 1}: ${describe(label)} $percent% '
             '($count)</title></rect>');
@@ -226,7 +254,7 @@ class AffixesChart extends Chart {
     names.sort();
 
     for (var i = 0; i < names.length; i++) {
-      _colors[names[i]] = 'hsl(${i * 17 % 360}, 50%, 50%)';
+      _colors[names[i]] = _rainbow(i * 17);
     }
 
     return names;
@@ -306,7 +334,7 @@ class ArchitecturesChart extends Chart {
     }
 
     for (var i = 0; i < labels.length; i++) {
-      _colors[labels[i]] = 'hsl(${i * 17 % 360}, 50%, 50%)';
+      _colors[labels[i]] = _rainbow(i * 17);
     }
 
     return labels;
@@ -325,4 +353,22 @@ class ArchitecturesChart extends Chart {
 
   // TODO: Show min and max depths?
   String describe(String label) => label;
+}
+
+Color _rainbow(int hue) {
+  var normal = (hue % 360) / 60.0;
+
+  if (normal < 1.0) {
+    return Color.red.blend(Color.yellow, normal);
+  } else if (normal < 2.0) {
+    return Color.yellow.blend(Color.green, normal - 1.0);
+  } else if (normal < 3.0) {
+    return Color.green.blend(Color.aqua, normal - 2.0);
+  } else if (normal < 4.0) {
+    return Color.aqua.blend(Color.blue, normal - 3.0);
+  } else if (normal < 5.0) {
+    return Color.blue.blend(Color.purple, normal - 4.0);
+  } else {
+    return Color.purple.blend(Color.red, normal - 5.0);
+  }
 }
