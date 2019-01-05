@@ -390,7 +390,7 @@ class Decorator {
     // doesn't include the items dropped by corpses.
     // TODO: Prices are very untuned, which in turn makes this very untuned.
     // Once prices are in a better state, tweak this to follow.
-    var pricePerTile = 0.1 + (_architect.depth - 1) * 0.1;
+    var pricePerTile = 0.05 + (_architect.depth - 1) * 0.05;
     var goalPrice = densityMap.possibleTiles * pricePerTile;
 
     // Add some randomness so some stages are worth more than others.

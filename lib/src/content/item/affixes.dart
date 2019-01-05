@@ -41,8 +41,8 @@ class Affixes {
 
     affixDepth = affixDepth.clamp(1, 100);
 
-    // This generates a curve that starts out at 1% and slowly ramps upwards.
-    var chance = 0.006 * affixDepth * affixDepth + 0.3 * affixDepth + 1.0;
+    // This generates a curve that starts around 1% and slowly ramps upwards.
+    var chance = 0.008 * affixDepth * affixDepth + 0.05 * affixDepth + 0.1;
     if (rng.float(100.0) > chance) return Item(itemType, 1);
 
     var prefix = _chooseAffix(prefixes, itemType, affixDepth);

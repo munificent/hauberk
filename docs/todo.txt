@@ -29,6 +29,7 @@
     - stat gain
     - reduce weight, heft, encumbrance
   - gems
+  - backstabbing discipline when wielding dagger
   - two-arm mechanics
     - dual wielding
     - two-armed weapons

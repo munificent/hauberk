@@ -136,22 +136,22 @@ void weapons() {
     ..skill("Swordfighting");
   item("Rapier", steelGray, frequency: 0.5, price: 140)
     ..depth(13)
-    ..weapon(20, heft: 12)
+    ..weapon(13, heft: 12)
     ..toss(damage: 4);
   item("Shortsword", slate, frequency: 0.5, price: 230)
     ..depth(17)
-    ..weapon(22, heft: 13)
+    ..weapon(15, heft: 13)
     ..toss(damage: 6);
   item("Scimitar", gunsmoke, frequency: 0.5, price: 370)
-    ..depth(21)
+    ..depth(18)
     ..weapon(24, heft: 16)
     ..toss(damage: 9);
   item("Cutlass[es]", buttermilk, frequency: 0.5, price: 520)
-    ..depth(24)
+    ..depth(20)
     ..weapon(26, heft: 17)
     ..toss(damage: 11);
   item("Falchion", turquoise, frequency: 0.5, price: 750)
-    ..depth(38)
+    ..depth(34)
     ..weapon(28, heft: 18)
     ..toss(damage: 15);
 

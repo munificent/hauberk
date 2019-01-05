@@ -502,7 +502,9 @@ void lizardMen() {
 
 void mushrooms() {}
 
-void nagas() {}
+void nagas() {
+  // TODO: https://en.wikipedia.org/wiki/Nagaraja
+}
 
 void orcs() {}
 
