@@ -194,9 +194,10 @@ class Breed {
 
     // TODO: Modify by motility?
     // TODO: Modify by count?
+    // TODO: Modify by minions.
 
     // Meandering monsters are worth less.
-    exp *= lerpDouble(meander, 0.0, 100.0, 1.0, 0.8);
+    exp *= lerpDouble(meander, 0.0, 100.0, 1.0, 0.7);
 
     // Scale it down arbitrarily to keep the numbers reasonable. This is tuned
     // so that the weakest monsters can still have some variance in experience

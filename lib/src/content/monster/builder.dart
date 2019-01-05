@@ -22,7 +22,7 @@ final collapseNewlines = RegExp(r"\n\s*");
 /// don't need an explicit `build()` call at the end of each builder.
 _BreedBuilder _builder;
 
-_FamilyBuilder _family = _FamilyBuilder(null);
+_FamilyBuilder _family;
 
 _FamilyBuilder family(String character,
     {double frequency,
@@ -33,8 +33,7 @@ _FamilyBuilder family(String character,
     String flags}) {
   finishBreed();
 
-  _family = _FamilyBuilder(frequency);
-  _family._character = character;
+  _family = _FamilyBuilder(frequency, character);
   _family._meander = meander;
   _family._speed = speed;
   _family._dodge = dodge;
@@ -47,7 +46,6 @@ _FamilyBuilder family(String character,
 void finishBreed() {
   if (_builder == null) return;
 
-  // TODO: Is this tag still needed?
   var tags = <String>[];
   tags.addAll(_family._groups);
   tags.addAll(_builder._groups);
@@ -56,7 +54,6 @@ void finishBreed() {
 
   var breed = _builder.build();
 
-  // TODO: join() here is dumb since Resource then splits it.
   Monsters.breeds.add(breed,
       name: breed.name,
       depth: breed.depth,
@@ -181,9 +178,9 @@ class _BaseBuilder {
 
 class _FamilyBuilder extends _BaseBuilder {
   /// Character for the current monster.
-  String _character;
+  final String _character;
 
-  _FamilyBuilder(double frequency) : super(frequency);
+  _FamilyBuilder(double frequency, this._character) : super(frequency);
 }
 
 class _BreedBuilder extends _BaseBuilder {
@@ -202,6 +199,8 @@ class _BreedBuilder extends _BaseBuilder {
       this._name, this._depth, double frequency, this._appearance, this._health)
       : super(frequency) {}
 
+  // TODO: Support "minions" that just take a tag and spawn random breeds in
+  // that tag.
   void minion(String name, [int minOrMax, int max]) {
     if (minOrMax == null) {
       minOrMax = 1;
