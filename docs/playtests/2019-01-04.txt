@@ -1,3 +1,8 @@
 Items are too common.
 
 Rapiers are very powerful for the cost and heft.
+
+Weapon damage in item lists doesn't take affixes into account.
+
+Would be really handy to show heft and weight in item lists.
+
