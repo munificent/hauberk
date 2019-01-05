@@ -154,7 +154,12 @@ class TargetDialog extends Screen<Input> {
 
       int charCode;
       if (tile.isExplored) {
-        charCode = (tile.type.appearance as Glyph).char;
+        var appearance = tile.type.appearance;
+        if (appearance is Glyph) {
+          charCode = appearance.char;
+        } else {
+          charCode = (appearance as List<Glyph>)[0].char;
+        }
       } else {
         // Since the hero doesn't know what's on the tile, optimistically guess
         // that it's some kind of floor.
