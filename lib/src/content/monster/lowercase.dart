@@ -19,12 +19,12 @@ void arachnids() {
   breed("gray spider", 7, slate, 12, dodge: 30, meander: 30)
     ..attack("bite[s]", 5, Elements.poison);
 
-  breed("spiderling", 9, ash, 8, dodge: 35, meander: 50)
-    ..count(2, 5)
-    ..attack("bite[s]", 5, Elements.poison);
+  breed("spiderling", 9, ash, 14, dodge: 35, meander: 50)
+    ..count(2, 7)
+    ..attack("bite[s]", 10, Elements.poison);
 
   breed("giant spider", 12, ultramarine, 40, meander: 30)
-    ..attack("bite[s]", 5, Elements.poison);
+    ..attack("bite[s]", 7, Elements.poison);
 }
 
 void bats() {
@@ -603,12 +603,12 @@ void rodents() {
     ..attack("bite[s]", 12)
     ..attack("scratch[es]", 8);
 
-  breed("The Rat King", 8, maroon, 70)
+  breed("The Rat King", 8, maroon, 120)
     ..he()
     ..attack("bite[s]", 16)
     ..attack("scratch[es]", 10)
-    ..minion("sewer rat", 3, 5)
-    ..minion("plague rat", 3, 5)
+    ..minion("sewer rat", 5, 10)
+    ..minion("plague rat", 4, 6)
     ..drop("treasure", count: 3)
     ..drop("item", percent: 50, depthOffset: 10)
     ..flags("unique");
