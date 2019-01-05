@@ -53,11 +53,6 @@ class ExitPopup extends Popup {
     // Remember that this depth was reached.
     _game.hero.save.maxDepth = math.max(_save.maxDepth, _game.depth);
 
-    // Update shops.
-    _game.hero.save.shops.forEach((shop, inventory) {
-      shop.update(inventory);
-    });
-
     ui.pop();
     return true;
   }

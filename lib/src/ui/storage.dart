@@ -61,12 +61,13 @@ class Storage {
         // TODO: What if shops are added or changed?
         var shops = <Shop, Inventory>{};
         if (hero.containsKey('shops')) {
-          hero['shops'].forEach((name, shopData) {
-            var shop = content.shops[name];
-            if (shop != null) {
+          content.shops.forEach((name, shop) {
+            var shopData = hero['shops'][name];
+            if (shopData != null) {
               shops[shop] = shop.load(_loadItems(shopData));
             } else {
-              print("Couldn't find shop '$name'.");
+              print("No data for $name, so regenerating.");
+              shops[shop] = shop.create();
             }
           });
         }

@@ -335,6 +335,12 @@ class GameScreen extends Screen<Input> {
     if (popped is ExitPopup) {
       // TODO: Hero should start next to dungeon entrance.
       _storageSave.takeFrom(game.hero);
+
+      // Update shops.
+      game.hero.save.shops.forEach((shop, inventory) {
+        shop.update(inventory);
+      });
+
       ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
     } else if (popped is SelectDepthPopup && result is int) {
       // Enter the dungeon.

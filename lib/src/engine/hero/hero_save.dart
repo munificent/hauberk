@@ -131,8 +131,6 @@ class HeroSave {
   void takeFrom(Hero hero) {
     _inventory = hero.inventory;
     _equipment = hero.equipment;
-    shops.clear();
-    shops.addAll(hero.save.shops);
     experience = hero.experience;
     gold = hero.gold;
     skills = hero.skills;
