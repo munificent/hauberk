@@ -102,7 +102,7 @@ class Breed {
   final int countMax;
 
   /// Additional monsters that should be spawned when this one is spawned.
-  final List<Minion> minions = [];
+  final Spawn minions;
 
   /// The name of the breed. If the breed's name has irregular pluralization
   /// like "bunn[y|ies]", this will be the original unparsed string.
@@ -134,6 +134,7 @@ class Breed {
       int emanationLevel,
       this.countMin,
       this.countMax,
+      this.minions,
       this.stain,
       BreedFlags flags,
       this.description})
@@ -227,11 +228,10 @@ class Breed {
       breeds.add(this);
     }
 
-    for (var minion in minions) {
-      count = rng.inclusive(minion.countMin, minion.countMax);
-      for (var i = 0; i < count; i++) {
-        breeds.add(minion.breed.breed);
-      }
+    if (minions != null) {
+      // Minions are weaker than the main breed.
+      var minionDepth = (depth * 0.9).floor();
+      minions.spawnBreed(minionDepth, breeds.add);
     }
 
     return breeds;
@@ -255,12 +255,10 @@ enum SpawnLocation {
   corner,
 }
 
-class Minion {
-  final BreedRef breed;
-  final int countMin;
-  final int countMax;
+typedef void AddMonster(Breed breed);
 
-  Minion(String breed, this.countMin, this.countMax) : breed = BreedRef(breed);
+abstract class Spawn {
+  void spawnBreed(int depth, AddMonster addMonster);
 }
 
 class BreedFlags {

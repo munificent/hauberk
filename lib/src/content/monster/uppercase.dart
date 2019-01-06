@@ -108,7 +108,8 @@ void ogres() {}
 void giants() {}
 
 void quest() {
-  family("Q");
+  // TODO: Better group?
+  family("Q")..groups("magical");
   breed("Nameless Unmaker", 100, violet, 1000, speed: 2)
     ..sense(see: 16, hear: 16)
     ..attack("crushe[s]", 250, Elements.earth)
@@ -138,7 +139,7 @@ void reptiles() {
     ..drop("spear", percent: 10);
 
   breed("lizard protector", 15, lima, 30)
-    ..minion("lizard guard", 0, 2)
+    ..minion("saurian", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 14)
     ..drop("treasure", percent: 30)
@@ -146,7 +147,7 @@ void reptiles() {
     ..drop("spear", percent: 10);
 
   breed("armored lizard", 17, gunsmoke, 38)
-    ..minion("lizard guard", 0, 2)
+    ..minion("saurian", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 15)
     ..drop("treasure", percent: 30)
@@ -154,18 +155,15 @@ void reptiles() {
     ..drop("spear", percent: 10);
 
   breed("scaled guardian", 19, steelGray, 50)
-    ..minion("lizard protector", 0, 2)
-    ..minion("lizard guard", 0, 1)
-    ..minion("salamander", 0, 1)
+    ..minion("saurian", 0, 3)
+    ..minion("salamander", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 15)
     ..drop("treasure", percent: 40)
     ..drop("equipment", percent: 10);
 
   breed("saurian", 21, carrot, 64)
-    ..minion("lizard protector", 0, 2)
-    ..minion("armored lizard", 0, 1)
-    ..minion("lizard guard", 0, 1)
+    ..minion("saurian", 1, 4)
     ..minion("salamander", 0, 2)
     ..attack("claw[s]", 12)
     ..attack("bite[s]", 17)

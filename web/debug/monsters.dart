@@ -103,7 +103,7 @@ void moreDrops(html.Element span) {
   var drops = breedDrops.putIfAbsent(breed, () => Histogram());
 
   for (var i = 0; i < 100; i++) {
-    breed.drop.spawnDrop(breed.depth, (item) {
+    breed.drop.dropItem(breed.depth, (item) {
       drops.add(item.toString());
     });
   }

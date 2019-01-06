@@ -141,8 +141,12 @@ class ResourceSet<T> {
       for (var resourceTag in resource._tags) {
         for (var thisTag = goalTag; thisTag != null; thisTag = thisTag.parent) {
           if (thisTag == resourceTag) return 1.0;
+
+          if (!includeParents) break;
         }
       }
+
+      if (!includeParents) return 0.0;
 
       // Resources in sibling trees are included with lower probability based
       // on how far their common ancestor is. So if the goal is

@@ -14,6 +14,7 @@ import '../move/missive.dart';
 import '../move/spawn.dart';
 import '../move/teleport.dart';
 import 'monsters.dart';
+import 'spawns.dart';
 
 final collapseNewlines = RegExp(r"\n\s*");
 
@@ -191,7 +192,7 @@ class _BreedBuilder extends _BaseBuilder {
   final List<Attack> _attacks = [];
   final List<Move> _moves = [];
   final List<Drop> _drops = [];
-  final List<Minion> _minions = [];
+  final List<Spawn> _minions = [];
   Pronoun _pronoun;
   String _description;
 
@@ -199,18 +200,21 @@ class _BreedBuilder extends _BaseBuilder {
       this._name, this._depth, double frequency, this._appearance, this._health)
       : super(frequency) {}
 
-  // TODO: Support "minions" that just take a tag and spawn random breeds in
-  // that tag.
   void minion(String name, [int minOrMax, int max]) {
-    if (minOrMax == null) {
-      minOrMax = 1;
-      max = 1;
-    } else if (max == null) {
-      max = minOrMax;
-      minOrMax = 1;
+    Spawn spawn;
+    if (Monsters.breeds.tagExists(name)) {
+      spawn = spawnTag(name);
+    } else {
+      spawn = spawnBreed(name);
     }
 
-    _minions.add(Minion(name, minOrMax, max));
+    if (max != null) {
+      spawn = repeatSpawn(minOrMax, max, spawn);
+    } else if (minOrMax != null) {
+      spawn = repeatSpawn(1, minOrMax, spawn);
+    }
+
+    _minions.add(spawn);
   }
 
   void attack(String verb, int damage, [Element element, Noun noun]) {
@@ -360,6 +364,13 @@ class _BreedBuilder extends _BaseBuilder {
     var dodge = _dodge ?? _family._dodge;
     if (flags.contains("immobile")) dodge = 0;
 
+    Spawn minions;
+    if (_minions.length == 1) {
+      minions = _minions[0];
+    } else if (_minions.length > 1) {
+      minions = spawnAll(_minions);
+    }
+
     var breed = Breed(
         _name,
         _pronoun ?? Pronoun.it,
@@ -380,6 +391,7 @@ class _BreedBuilder extends _BaseBuilder {
         emanationLevel: _family._emanationLevel ?? _emanationLevel,
         countMin: _countMin ?? _family._countMin ?? 1,
         countMax: _countMax ?? _family._countMax ?? 1,
+        minions: minions,
         stain: _stain ?? _family._stain,
         flags: BreedFlags.fromSet(flags),
         description: _description);
@@ -389,8 +401,6 @@ class _BreedBuilder extends _BaseBuilder {
 
     breed.groups.addAll(_family._groups);
     breed.groups.addAll(_groups);
-
-    breed.minions.addAll(_minions);
 
     return breed;
   }

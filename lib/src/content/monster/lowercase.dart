@@ -79,19 +79,19 @@ void canines() {
   // TODO: Drops.
   breed("Skoll", 36, gold, 200)
     ..flags("unique")
-    ..minion("varg", 3, 5)
+    ..minion("canine", 5, 9)
     ..attack("bite[s]", 20)
     ..howl(range: 10);
 
   breed("Hati", 40, cerulean, 250)
     ..flags("unique")
-    ..minion("varg", 3, 5)
+    ..minion("canine", 5, 9)
     ..attack("bite[s]", 23)
     ..howl(range: 10);
 
   breed("Fenrir", 44, steelGray, 300)
     ..flags("unique")
-    ..minion("varg", 3, 5)
+    ..minion("canine", 3, 5)
     ..minion("Skoll")
     ..minion("Hati")
     ..attack("bite[s]", 26)
@@ -226,7 +226,7 @@ void goblins() {
 
   breed("goblin archer", 6, peaGreen, 36)
     ..count(2)
-    ..minion("goblin peon", 0, 2)
+    ..minion("goblin", 0, 3)
     ..attack("stab[s]", 4)
     ..arrow(rate: 3, damage: 8)
     ..drop("treasure", percent: 30)
@@ -236,8 +236,7 @@ void goblins() {
 
   breed("goblin fighter", 6, persimmon, 58)
     ..count(2)
-    ..minion("goblin archer", 0, 1)
-    ..minion("goblin peon", 0, 3)
+    ..minion("goblin", 1, 4)
     ..attack("stab[s]", 12)
     ..drop("treasure", percent: 20)
     ..drop("spear", percent: 10)
@@ -247,9 +246,7 @@ void goblins() {
 
   breed("goblin warrior", 8, gunsmoke, 68)
     ..count(2)
-    ..minion("goblin fighter", 0, 1)
-    ..minion("goblin archer", 0, 1)
-    ..minion("goblin peon", 0, 3)
+    ..minion("goblin", 1, 5)
     ..attack("stab[s]", 16)
     ..drop("treasure", percent: 25)
     ..drop("axe", percent: 10)
@@ -259,9 +256,7 @@ void goblins() {
     ..flags("protective");
 
   breed("goblin mage", 9, ultramarine, 50)
-    ..minion("goblin fighter", 0, 1)
-    ..minion("goblin archer", 0, 1)
-    ..minion("goblin peon", 0, 2)
+    ..minion("goblin", 1, 4)
     ..attack("whip[s]", 7)
     ..fireBolt(rate: 12, damage: 12)
     ..sparkBolt(rate: 12, damage: 16)
@@ -270,10 +265,7 @@ void goblins() {
     ..drop("magic", percent: 30);
 
   breed("goblin ranger", 12, sherwood, 60)
-    ..minion("goblin mage", 0, 1)
-    ..minion("goblin fighter", 0, 1)
-    ..minion("goblin archer", 0, 1)
-    ..minion("goblin peon", 0, 2)
+    ..minion("goblin", 0, 5)
     ..attack("stab[s]", 10)
     ..arrow(rate: 3, damage: 12)
     ..drop("treasure", percent: 20)
@@ -284,10 +276,7 @@ void goblins() {
   // TODO: Always drop something good.
   breed("Erlkonig, the Goblin Prince", 14, steelGray, 120)
     ..he()
-    ..minion("goblin mage", 1, 2)
-    ..minion("goblin fighter", 1, 3)
-    ..minion("goblin archer", 1, 3)
-    ..minion("goblin peon", 2, 4)
+    ..minion("goblin", 4, 8)
     ..attack("hit[s]", 10)
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
@@ -403,7 +392,7 @@ void kobolds() {
 
   breed("vexing imp", 2, violet, 16)
     ..count(2)
-    ..minion("scurrilous imp", 0, 1)
+    ..minion("kobold", 0, 1)
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult)
     ..sparkBolt(rate: 5, damage: 6)
@@ -413,7 +402,7 @@ void kobolds() {
   family("k", meander: 20)..groups("kobold");
   breed("kobold", 3, brickRed, 20)
     ..count(3)
-    ..minion("wild dog", 0, 3)
+    ..minion("canine", 0, 3)
     ..attack("poke[s]", 4)
     ..teleport(rate: 10, range: 6)
     ..drop("treasure", percent: 25)
@@ -422,7 +411,7 @@ void kobolds() {
 
   breed("kobold shaman", 4, ultramarine, 20)
     ..count(2)
-    ..minion("wild dog", 0, 3)
+    ..minion("canine", 0, 3)
     ..attack("hit[s]", 4)
     ..waterBolt(rate: 10, damage: 8)
     ..drop("treasure", percent: 25)
@@ -452,7 +441,7 @@ void kobolds() {
   breed("imp incanter", 7, lilac, 33)
     ..count(2)
     ..minion("kobold", 1, 3)
-    ..minion("wild dog", 0, 3)
+    ..minion("canine", 0, 3)
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult, rate: 6)
     ..sparkBolt(rate: 5, damage: 10)
@@ -462,9 +451,8 @@ void kobolds() {
     ..flags("cowardly");
 
   breed("imp warlock", 8, indigo, 46)
-    ..minion("imp incanter", 1, 3)
-    ..minion("kobold", 1, 3)
-    ..minion("wild dog", 0, 3)
+    ..minion("kobold", 2, 5)
+    ..minion("canine", 0, 3)
     ..attack("stab[s]", 5)
     ..iceBolt(rate: 8, damage: 12)
     ..sparkBolt(rate: 8, damage: 12)
@@ -476,11 +464,8 @@ void kobolds() {
   // TODO: Always drop something good.
   breed("Feng", 10, carrot, 80, speed: 1, meander: 10)
     ..he()
-    ..minion("imp warlock", 1, 2)
-    ..minion("imp incanter", 1, 2)
-    ..minion("kobold priest", 1, 2)
-    ..minion("kobold", 1, 3)
-    ..minion("wild dog", 0, 3)
+    ..minion("kobold", 4, 10)
+    ..minion("canine", 1, 3)
     ..attack("stab[s]", 5)
     ..missive(Missive.insult, rate: 7)
     ..teleport(rate: 5, range: 6)
@@ -607,8 +592,7 @@ void rodents() {
     ..he()
     ..attack("bite[s]", 16)
     ..attack("scratch[es]", 10)
-    ..minion("sewer rat", 5, 10)
-    ..minion("plague rat", 4, 6)
+    ..minion("rodent", 8, 16)
     ..drop("treasure", count: 3)
     ..drop("item", percent: 50, depthOffset: 10)
     ..flags("unique");
@@ -661,7 +645,7 @@ void worms() {
     ..preferWall()
     ..attack("crawl[s] on", 5, Elements.fire);
 
-  family("w", dodge: 10, meander: 30, flags: "fearless");
+  family("w", dodge: 10, meander: 30, flags: "fearless")..groups("worm");
   breed("giant earthworm", 3, salmon, 20, speed: -2)..attack("crawl[s] on", 5);
 
   breed("giant cave worm", 7, sandal, 80, speed: -2)

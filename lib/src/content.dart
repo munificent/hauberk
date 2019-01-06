@@ -66,7 +66,7 @@ class GameContent implements Content {
       hero.inventory.tryAdd(Item(Items.types.find(type), amount));
     });
 
-    heroClass.startingItems.spawnDrop(1, hero.inventory.tryAdd);
+    heroClass.startingItems.dropItem(1, hero.inventory.tryAdd);
 
     // TODO: Instead of giving the player access to all shops at once, consider
     // letting the rescue shopkeepers from the dungeon to unlock better and

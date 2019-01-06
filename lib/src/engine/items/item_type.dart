@@ -11,7 +11,7 @@ typedef Action TossItemUse(Vec pos);
 typedef void AddItem(Item item);
 
 abstract class Drop {
-  void spawnDrop(int depth, AddItem addItem);
+  void dropItem(int depth, AddItem addItem);
 }
 
 class ItemUse {

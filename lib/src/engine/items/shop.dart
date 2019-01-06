@@ -37,7 +37,7 @@ class Shop {
 
     while (inventory.length < count && tries++ < 100) {
       // Try to add an item.
-      _drop.spawnDrop(1, inventory.tryAdd);
+      _drop.dropItem(1, inventory.tryAdd);
 
       // Remove duplicates.
       for (var i = 1; i < inventory.length; i++) {

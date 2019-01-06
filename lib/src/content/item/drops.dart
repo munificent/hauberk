@@ -40,7 +40,7 @@ class _ItemDrop implements Drop {
 
   _ItemDrop(this._type, this._depth);
 
-  void spawnDrop(int depth, AddItem addItem) {
+  void dropItem(int depth, AddItem addItem) {
     addItem(Affixes.createItem(_type, _depth ?? depth));
   }
 }
@@ -57,7 +57,7 @@ class _TagDrop implements Drop {
 
   _TagDrop(this._tag, this._depth);
 
-  void spawnDrop(int depth, AddItem addItem) {
+  void dropItem(int depth, AddItem addItem) {
     var itemType = Items.types.tryChoose(_depth ?? depth, tag: _tag);
     if (itemType == null) return;
 
@@ -72,9 +72,9 @@ class _PercentDrop implements Drop {
 
   _PercentDrop(this._chance, this._drop);
 
-  void spawnDrop(int depth, AddItem addItem) {
+  void dropItem(int depth, AddItem addItem) {
     if (rng.range(100) >= _chance) return;
-    _drop.spawnDrop(depth, addItem);
+    _drop.dropItem(depth, addItem);
   }
 }
 
@@ -84,8 +84,8 @@ class _AllOfDrop implements Drop {
 
   _AllOfDrop(this._drops);
 
-  void spawnDrop(int depth, AddItem addItem) {
-    for (var drop in _drops) drop.spawnDrop(depth, addItem);
+  void dropItem(int depth, AddItem addItem) {
+    for (var drop in _drops) drop.dropItem(depth, addItem);
   }
 }
 
@@ -100,12 +100,12 @@ class _OneOfDrop implements Drop {
     });
   }
 
-  void spawnDrop(int depth, AddItem addItem) {
+  void dropItem(int depth, AddItem addItem) {
     // TODO: Allow passing in depth?
     var drop = _drop.tryChoose(1);
     if (drop == null) return;
 
-    drop.spawnDrop(depth, addItem);
+    drop.dropItem(depth, addItem);
   }
 }
 
@@ -116,14 +116,14 @@ class _RepeatDrop implements Drop {
 
   _RepeatDrop(this._count, this._drop);
 
-  void spawnDrop(int depth, AddItem addItem) {
+  void dropItem(int depth, AddItem addItem) {
     var taper = 5;
     if (_count > 3) taper = 4;
     if (_count > 6) taper = 3;
 
     var count = rng.triangleInt(_count, _count ~/ 2) + rng.taper(0, taper);
     for (var i = 0; i < count; i++) {
-      _drop.spawnDrop(depth, addItem);
+      _drop.dropItem(depth, addItem);
     }
   }
 }

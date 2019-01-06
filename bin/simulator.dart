@@ -118,7 +118,7 @@ class Simulator {
 
     kill.kills++;
 
-    monster.breed.drop.spawnDrop(depth, _getItem);
+    monster.breed.drop.dropItem(depth, _getItem);
   }
 
   void _log(Object message) {

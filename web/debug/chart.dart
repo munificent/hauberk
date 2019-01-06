@@ -313,7 +313,7 @@ class FloorDropsChart extends Chart {
 
   void generate(Histogram<String> histogram, int depth) {
     var drop = FloorDrops.choose(depth);
-    drop.drop.spawnDrop(depth, (item) {
+    drop.drop.dropItem(depth, (item) {
       histogram.add(item.type.name);
     });
   }
