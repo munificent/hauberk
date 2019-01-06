@@ -11,6 +11,15 @@ class Monsters {
     // Define the tag path and store the leaf tag which is what gets used by
     // the item types.
     var groups = [
+      "humanoid/hob/fae",
+      "humanoid/hob/goblin",
+      "humanoid/hob/kobold",
+      "humanoid/human",
+      "humanoid/saurian",
+      "magical/eye",
+      "magical/jelly",
+      "mythical/beast/dragon",
+      "mythical/beast/hybrid",
       "natural/animal/bird",
       "natural/animal/herp/salamander",
       "natural/animal/herp/snake",
@@ -23,19 +32,10 @@ class Monsters {
       "natural/bug/spider",
       "natural/bug/worm",
       "natural/plant/vine",
-      "mythical/beast/dragon",
-      "mythical/beast/hybrid",
-      "magical/eye",
-      "humanoid/hob/fae",
-      "humanoid/hob/goblin",
-      "magical/jelly",
-      "humanoid/hob/kobold",
-      "humanoid/human",
-      "humanoid/saurian",
       "undead/skeleton",
     ];
     for (var group in groups) {
-      breeds.defineTags("monster/$group");
+      breeds.defineTags(group);
     }
 
     // TODO: https://en.wikipedia.org/wiki/P%C3%BAca

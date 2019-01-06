@@ -221,9 +221,11 @@ class _BreedBuilder extends _BaseBuilder {
     _attacks.add(Attack(noun, verb, damage, 0, element));
   }
 
+  /// Drops [name], which can be either an item type or tag.
   void drop(String name,
-      {int percent = 100, int count = 1, int depthOffset = 0}) {
-    var drop = percentDrop(percent, name, _depth + depthOffset);
+      {int percent = 100, int count = 1, int depthOffset = 0,
+      int affixChance}) {
+    var drop = percentDrop(percent, name, _depth + depthOffset, affixChance);
     if (count > 1) drop = repeatDrop(count, drop);
     _drops.add(drop);
   }

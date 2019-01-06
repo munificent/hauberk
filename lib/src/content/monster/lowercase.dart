@@ -461,7 +461,6 @@ void kobolds() {
     ..drop("robe", percent: 10)
     ..drop("magic", percent: 30);
 
-  // TODO: Always drop something good.
   breed("Feng", 10, carrot, 80, speed: 1, meander: 10)
     ..he()
     ..minion("kobold", 4, 10)
@@ -472,8 +471,8 @@ void kobolds() {
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
     ..drop("treasure", count: 3, depthOffset: 5)
-    ..drop("spear", percent: 20, depthOffset: 5)
-    ..drop("armor", percent: 30, depthOffset: 5)
+    ..drop("spear", percent: 20, depthOffset: 5, affixChance: 20)
+    ..drop("armor", percent: 30, depthOffset: 5, affixChance: 10)
     ..drop("magic", count: 2, depthOffset: 5)
     ..flags("unique");
 
@@ -482,7 +481,49 @@ void kobolds() {
 
 void lizardMen() {
   // troglodyte
-  // reptilian
+
+  family("l", meander: 10, flags: "fearless")
+    ..groups("saurian")
+    ..sense(see: 10, hear: 5)
+    ..defense(5, "{2} [is|are] deflected by its scales.");
+  breed("lizard guard", 11, gold, 26)
+    ..attack("claw[s]", 8)
+    ..attack("bite[s]", 10)
+    ..drop("treasure", percent: 30)
+    ..drop("armor", percent: 10)
+    ..drop("spear", percent: 10);
+
+  breed("lizard protector", 15, lima, 30)
+    ..minion("saurian", 0, 2)
+    ..attack("claw[s]", 10)
+    ..attack("bite[s]", 14)
+    ..drop("treasure", percent: 30)
+    ..drop("armor", percent: 10)
+    ..drop("spear", percent: 10);
+
+  breed("armored lizard", 17, gunsmoke, 38)
+    ..minion("saurian", 0, 2)
+    ..attack("claw[s]", 10)
+    ..attack("bite[s]", 15)
+    ..drop("treasure", percent: 30)
+    ..drop("armor", percent: 20)
+    ..drop("spear", percent: 10);
+
+  breed("scaled guardian", 19, steelGray, 50)
+    ..minion("saurian", 0, 3)
+    ..minion("salamander", 0, 2)
+    ..attack("claw[s]", 10)
+    ..attack("bite[s]", 15)
+    ..drop("treasure", percent: 40)
+    ..drop("equipment", percent: 10);
+
+  breed("saurian", 21, carrot, 64)
+    ..minion("saurian", 1, 4)
+    ..minion("salamander", 0, 2)
+    ..attack("claw[s]", 12)
+    ..attack("bite[s]", 17)
+    ..drop("treasure", percent: 50)
+    ..drop("equipment", percent: 10);
 }
 
 void mushrooms() {}
@@ -508,7 +549,6 @@ void people() {
     ..drop("armor", percent: 30, depthOffset: 4)
     ..drop("magic", percent: 40, depthOffset: 4)
     ..flags("unique");
-  // TODO: Make more interesting.
 
   breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 30)
     ..attack("hit[s]", 3)
@@ -594,7 +634,7 @@ void rodents() {
     ..attack("scratch[es]", 10)
     ..minion("rodent", 8, 16)
     ..drop("treasure", count: 3)
-    ..drop("item", percent: 50, depthOffset: 10)
+    ..drop("item", percent: 50, depthOffset: 10, affixChance: 10)
     ..flags("unique");
 }
 

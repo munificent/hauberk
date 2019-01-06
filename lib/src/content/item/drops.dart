@@ -6,16 +6,19 @@ import 'items.dart';
 
 // TODO: Instead of storing the depth in the drop, pass it in. This way, if
 // weaker monsters appear deep in the dungeon, they can drop better stuff.
-Drop parseDrop(String name, [int depth]) {
-  var itemType = Items.types.tryFind(name);
-  if (itemType != null) return _ItemDrop(itemType, depth);
+Drop parseDrop(String name, {int depth, int affixChance}) {
+  depth ??= 1;
 
-  return _TagDrop(name, depth);
+  var itemType = Items.types.tryFind(name);
+  if (itemType != null) return _ItemDrop(itemType, depth, affixChance);
+
+  return _TagDrop(name, depth, affixChance);
 }
 
 /// Creates a [Drop] that has a [chance]% chance of dropping [drop].
-Drop percentDrop(int chance, String drop, [int depth]) {
-  return _PercentDrop(chance, parseDrop(drop, depth));
+Drop percentDrop(int chance, String drop, [int depth, int affixChance]) {
+  return _PercentDrop(
+      chance, parseDrop(drop, depth: depth, affixChance: affixChance));
 }
 
 /// Creates a [Drop] that drops all of [drops].
@@ -25,7 +28,7 @@ Drop dropAllOf(List<Drop> drops) => _AllOfDrop(drops);
 Drop dropOneOf(Map<Drop, double> drops) => _OneOfDrop(drops);
 
 Drop repeatDrop(int count, drop, [int depth]) {
-  if (drop is String) drop = parseDrop(drop, depth);
+  if (drop is String) drop = parseDrop(drop, depth: depth);
   return _RepeatDrop(count, drop);
 }
 
@@ -38,10 +41,13 @@ class _ItemDrop implements Drop {
   /// If `null`, uses the current depth when the drop is generated.
   final int _depth;
 
-  _ItemDrop(this._type, this._depth);
+  /// Modifier to the apply to the percent chance of adding an affix.
+  final int _affixChance;
+
+  _ItemDrop(this._type, this._depth, this._affixChance);
 
   void dropItem(int depth, AddItem addItem) {
-    addItem(Affixes.createItem(_type, _depth ?? depth));
+    addItem(Affixes.createItem(_type, _depth ?? depth, _affixChance));
   }
 }
 
@@ -55,13 +61,16 @@ class _TagDrop implements Drop {
   /// If `null`, uses the current depth when the drop is generated.
   final int _depth;
 
-  _TagDrop(this._tag, this._depth);
+  /// Modifier to the apply to the percent chance of adding an affix.
+  final int _affixChance;
+
+  _TagDrop(this._tag, this._depth, this._affixChance);
 
   void dropItem(int depth, AddItem addItem) {
     var itemType = Items.types.tryChoose(_depth ?? depth, tag: _tag);
     if (itemType == null) return;
 
-    addItem(Affixes.createItem(itemType, _depth ?? depth));
+    addItem(Affixes.createItem(itemType, _depth ?? depth, _affixChance));
   }
 }
 

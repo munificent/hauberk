@@ -6,13 +6,13 @@ import 'skill/skills.dart';
 class Classes {
   // TODO: Tune battle-hardening.
   // TODO: Better starting items?
-  static final adventurer = _class("Adventurer", "TODO", parseDrop("item", 1),
+  static final adventurer = _class("Adventurer", "TODO", parseDrop("item"),
       masteries: 0.5, spells: 0.2);
-  static final warrior = _class("Warrior", "TODO", parseDrop("weapon", 1),
+  static final warrior = _class("Warrior", "TODO", parseDrop("weapon"),
       masteries: 1.0, spells: 0.0);
   // TODO: Different book for generalist mage versus sorceror?
   static final mage = _class(
-      "Mage", "TODO", parseDrop('Spellbook "Elemental Primer"', 1),
+      "Mage", "TODO", parseDrop('Spellbook "Elemental Primer"'),
       masteries: 0.2, spells: 1.0);
 
   // TODO: Add these once their skill types are working.

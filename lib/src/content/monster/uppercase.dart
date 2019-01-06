@@ -58,12 +58,23 @@ void faeFolk() {
     ..drop("magic", percent: 30);
 
   breed("mischievous sprite", 7, salmon, 24)
-    ..attack("stab[s]", 6)
+    ..attack("poke[s]", 6)
     ..missive(Missive.insult, rate: 4)
     ..windBolt(rate: 8, damage: 8)
     ..teleport(range: 5)
     ..drop("treasure", percent: 10)
     ..drop("magic", percent: 30);
+
+  breed("Tink", 8, peaGreen, 40, meander: 10)
+    ..she()
+    ..attack("poke[s]", 8)
+    ..missive(Missive.insult, rate: 4)
+    ..sparkBolt(rate: 7, damage: 4)
+    ..windBolt(rate: 8, damage: 7)
+    ..teleport(range: 5)
+    ..drop("treasure", count: 2)
+    ..drop("magic", count: 3, depthOffset: 3)
+    ..flags("unique");
 
   // TODO: https://en.wikipedia.org/wiki/Puck_(folklore)
 }
@@ -117,7 +128,7 @@ void quest() {
     ..darkCone(damage: 500)
     ..flags("fearless unique")
     ..openDoors()
-    ..drop("treasure", count: 10);
+    ..drop("item", count: 20, affixChance: 50);
   // TODO: Minions. Moves.
 }
 
@@ -128,54 +139,11 @@ void reptiles() {
     ..swim()
     ..attack("hop[s] on", 2);
 
-  family("R", meander: 10, flags: "fearless")
-    ..groups("saurian")
-    ..sense(see: 10, hear: 5);
-  breed("lizard guard", 11, gold, 26)
-    ..attack("claw[s]", 8)
-    ..attack("bite[s]", 10)
-    ..drop("treasure", percent: 30)
-    ..drop("armor", percent: 10)
-    ..drop("spear", percent: 10);
-
-  breed("lizard protector", 15, lima, 30)
-    ..minion("saurian", 0, 2)
-    ..attack("claw[s]", 10)
-    ..attack("bite[s]", 14)
-    ..drop("treasure", percent: 30)
-    ..drop("armor", percent: 10)
-    ..drop("spear", percent: 10);
-
-  breed("armored lizard", 17, gunsmoke, 38)
-    ..minion("saurian", 0, 2)
-    ..attack("claw[s]", 10)
-    ..attack("bite[s]", 15)
-    ..drop("treasure", percent: 30)
-    ..drop("armor", percent: 20)
-    ..drop("spear", percent: 10);
-
-  breed("scaled guardian", 19, steelGray, 50)
-    ..minion("saurian", 0, 3)
-    ..minion("salamander", 0, 2)
-    ..attack("claw[s]", 10)
-    ..attack("bite[s]", 15)
-    ..drop("treasure", percent: 40)
-    ..drop("equipment", percent: 10);
-
-  breed("saurian", 21, carrot, 64)
-    ..minion("saurian", 1, 4)
-    ..minion("salamander", 0, 2)
-    ..attack("claw[s]", 12)
-    ..attack("bite[s]", 17)
-    ..drop("treasure", percent: 50)
-    ..drop("equipment", percent: 10);
-
   family("R", dodge: 30, meander: 20)
     ..groups("salamander")
     ..sense(see: 6, hear: 5)
     ..preferOpen()
     ..emanate(3);
-
   breed("juvenile salamander", 7, salmon, 20)
     ..attack("bite[s]", 14, Elements.fire)
     ..fireCone(rate: 16, damage: 20, range: 4);

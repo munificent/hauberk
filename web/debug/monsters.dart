@@ -2,8 +2,8 @@ import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
 
-import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
+import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';
@@ -12,15 +12,15 @@ final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 final breedDrops = <Breed, Histogram<String>>{};
 
 main() {
-  var text = StringBuffer();
-  Items.initialize();
-  Monsters.initialize();
+  createContent();
+
   var breeds = Monsters.breeds.all.toList();
   breeds.sort((a, b) {
     if (a.depth != b.depth) return a.depth.compareTo(b.depth);
     return a.experience.compareTo(b.experience);
   });
 
+  var text = StringBuffer();
   text.write('''
     <thead>
     <tr>

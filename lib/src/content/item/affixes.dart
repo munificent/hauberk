@@ -10,7 +10,10 @@ class Affixes {
   static final suffixes = ResourceSet<Affix>();
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
-  static Item createItem(ItemType itemType, int droppedDepth) {
+  static Item createItem(ItemType itemType, int droppedDepth,
+      [int affixChance]) {
+    affixChance ??= 0;
+
     // Only equipped items have affixes.
     if (itemType.equipSlot == null) return Item(itemType, 1);
 
@@ -43,14 +46,23 @@ class Affixes {
 
     // This generates a curve that starts around 1% and slowly ramps upwards.
     var chance = 0.008 * affixDepth * affixDepth + 0.05 * affixDepth + 0.1;
-    if (rng.float(100.0) > chance) return Item(itemType, 1);
+
+    // See how many affixes the item has. The affixChance only boosts one roll
+    // because it increases the odds of *an* affix, but not the odds of
+    // multiple.
+    var affixes = 0;
+    if (rng.float(100.0) < chance + affixChance) affixes++;
+
+    // Make dual-affix items rarer since they are more powerful (they only take
+    // a single equipment slot) and also look kind of funny.
+    if (rng.float(100.0) < chance && rng.oneIn(5)) affixes++;
+
+    if (affixes == 0) return Item(itemType, 1);
 
     var prefix = _chooseAffix(prefixes, itemType, affixDepth);
     var suffix = _chooseAffix(suffixes, itemType, affixDepth);
 
-    // Make dual-affix items rarer since they are more powerful (they only take
-    // a single equipment slot) and also look kind of funny.
-    if (prefix != null && suffix != null && !rng.oneIn(5)) {
+    if (affixes == 1 && prefix != null && suffix != null) {
       if (rng.oneIn(2)) {
         prefix = null;
       } else {

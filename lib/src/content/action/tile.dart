@@ -55,7 +55,7 @@ class OpenBarrelAction extends _OpenTileAction {
   int get _maxDepthEmptyChance => 10;
 
   // TODO: More sophisticated drop.
-  Drop _createDrop() => parseDrop("food", game.depth);
+  Drop _createDrop() => parseDrop("food", depth: game.depth);
 }
 
 /// Open a chest and place its drops.
@@ -72,8 +72,8 @@ class OpenChestAction extends _OpenTileAction {
 
   // TODO: Drop more than one item sometimes.
   Drop _createDrop() => dropOneOf({
-        parseDrop("treasure", game.depth): 0.5,
-        parseDrop("magic", game.depth): 0.2,
-        parseDrop("equipment", game.depth): 0.3
+        parseDrop("treasure", depth: game.depth): 0.5,
+        parseDrop("magic", depth: game.depth): 0.2,
+        parseDrop("equipment", depth: game.depth): 0.3
       });
 }

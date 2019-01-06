@@ -109,7 +109,7 @@ class Shops {
 void shop(String name, Map<String, double> itemTypes) {
   var drops = <Drop, double>{};
   itemTypes.forEach((name, frequency) {
-    drops[parseDrop(name, 1)] = frequency;
+    drops[parseDrop(name)] = frequency;
   });
 
   Shops.all[name] = Shop(name, dropOneOf(drops));
