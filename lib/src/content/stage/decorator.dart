@@ -289,6 +289,7 @@ class Decorator {
 
     var experience = 0;
     spawn(Breed breed, Vec pos) {
+      if (_architect.stage.actorAt(pos) != null) return;
       if (!_canSpawn(breed)) return;
 
       if (breed.flags.unique) _spawnedUniques.add(breed);

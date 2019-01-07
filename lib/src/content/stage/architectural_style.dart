@@ -74,13 +74,14 @@ class ArchitecturalStyle {
         decorDensity: 0.07,
         create: () => Dungeon());
 
+    // TODO: Decide if we should ever do full-size keeps anymore.
     // Generic default dungeon style.
-    addStyle("keep",
-        startFrequency: 2.0,
-        endFrequency: 5.0,
-        decor: "keep",
-        decorDensity: 0.07,
-        create: () => Keep());
+//    addStyle("keep",
+//        startFrequency: 2.0,
+//        endFrequency: 5.0,
+//        decor: "keep",
+//        decorDensity: 0.07,
+//        create: () => Keep());
 
     // TODO: Define more.
     // TODO: More catacomb styles with different tile types and tuned params.
@@ -141,6 +142,25 @@ class ArchitecturalStyle {
     pit("plant", start: 15, end: 40);
     pit("eye", start: 20, end: 100);
     pit("dragon", start: 60, end: 100);
+
+    // Keeps.
+    keep(String monsters, {int start, int end}) {
+      addStyle("$monsters keep",
+          start: start,
+          end: end,
+          startFrequency: 2.0,
+          decor: "keep",
+          decorDensity: 0.07,
+          monsters: monsters,
+          // Keep spawns monsters itself.
+          monsterDensity: 0.0,
+          itemDensity: 1.5,
+          canFill: false,
+          create: () => Keep(5));
+    }
+
+    keep("goblin", start: 3, end: 16);
+    // TODO: More.
   }
 
   final String name;

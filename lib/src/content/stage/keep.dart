@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import 'architect.dart';
+import 'painter.dart';
 import 'room.dart';
 
 // TODO: Give at an optional max number of rooms so that it
@@ -15,10 +16,28 @@ import 'room.dart';
 class Keep extends Architecture {
   static JunctionSet debugJunctions;
 
-  // TODO: Fields to tune numbers below.
+  final JunctionSet _junctions;
 
-  final JunctionSet _junctions = JunctionSet();
+  int _placedRooms = 0;
 
+  int _maxRooms;
+
+  factory Keep([int maxRooms]) {
+    if (maxRooms != null) {
+      // TODO: For now, small keeps always pack rooms in densely. Have
+      // different styles of keep for different monsters?
+      return Keep._(rng.triangleInt(maxRooms, maxRooms ~/ 2), TakeFrom.oldest);
+    } else {
+      // TODO: Do we still need this case? Do we want keeps that span the whole
+      // dungeon?
+      return Keep._(null, rng.item(TakeFrom.values));
+    }
+  }
+
+  Keep._(this._maxRooms, TakeFrom takeFrom)
+      : _junctions = JunctionSet(takeFrom);
+
+  // TODO: Different paint styles.
   String get paintStyle => "stone";
 
   Iterable<String> build() sync* {
@@ -27,10 +46,32 @@ class Keep extends Architecture {
     // If we are covering the whole area, attempt to place multiple rooms.
     // That way, if there disconnected areas (like a river cutting through the
     // stage, we can still hopefully cover it all.
-    var startingRooms = region == Region.everywhere ? 20 : 1;
+    var startingRooms = 1;
+    if (region == Region.everywhere && _maxRooms == null) {
+      startingRooms = 20;
+    }
+
     for (var i = 0; i < startingRooms; i++) {
       yield* _growRooms();
     }
+  }
+
+  bool spawnMonsters(Painter painter) {
+    var tiles = painter.ownedTiles
+        .where((pos) => painter.getTile(pos).isWalkable)
+        .toList();
+    rng.shuffle(tiles);
+
+    for (var pos in tiles) {
+      // TODO: Make this tunable?
+      if (!rng.oneIn(20)) continue;
+
+      var group = rng.item(style.monsterGroups);
+      var breed = painter.chooseBreed(painter.depth, tag: group);
+      painter.spawnMonster(pos, breed);
+    }
+
+    return true;
   }
 
   Iterable<String> _growRooms() sync* {
@@ -46,11 +87,14 @@ class Keep extends Architecture {
 
       if (_tryAttachRoom(junction)) {
         yield "Room";
-        continue;
-      }
 
-      // TODO: Make tunable.
-      if (junction.tries < 5) _junctions.add(junction);
+        _placedRooms++;
+        if (_maxRooms != null && _placedRooms >= _maxRooms) break;
+      } else {
+        // Couldn't place the room, but maybe try the junction again.
+        // TODO: Make tunable.
+        if (junction.tries < 5) _junctions.add(junction);
+      }
     }
   }
 
@@ -221,10 +265,11 @@ class Junction {
 enum TakeFrom { newest, oldest, random }
 
 class JunctionSet {
-  // TODO: Let the architectural style control this.
-  final TakeFrom _takeFrom = rng.item(TakeFrom.values);
+  final TakeFrom _takeFrom;
   final Map<Vec, Junction> _byPosition = {};
   final List<Junction> _junctions = [];
+
+  JunctionSet(this._takeFrom);
 
   bool get isNotEmpty => _junctions.isNotEmpty;
 

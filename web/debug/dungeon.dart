@@ -111,6 +111,8 @@ void hover(Vec pos) {
 Future generate() async {
   hues.clear();
   Keep.debugJunctions = null;
+  Debug.densityMap = null;
+
   _game = Game(content, save, depth);
   var thisGame = _game;
   var stage = _game.stage;

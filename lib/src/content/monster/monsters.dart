@@ -35,7 +35,7 @@ class Monsters {
       "undead/skeleton",
     ];
     for (var group in groups) {
-      breeds.defineTags(group);
+      breeds.defineTags("monster/$group");
     }
 
     // TODO: https://en.wikipedia.org/wiki/P%C3%BAca
