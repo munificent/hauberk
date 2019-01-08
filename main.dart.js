@@ -678,12 +678,12 @@
     },
     JSArray: {
       "^": "Interceptor;$ti",
-      add$1: function(receiver, value) {
+      add$1: [function(receiver, value) {
         H.assertSubtypeOfRuntimeType(value, H.getTypeArgumentByIndex(receiver, 0));
         if (!!receiver.fixed$length)
           H.throwExpression(P.UnsupportedError$("add"));
         receiver.push(value);
-      },
+      }, "call$1", "get$add", 5, 0, 46],
       removeAt$1: function(receiver, index) {
         if (!!receiver.fixed$length)
           H.throwExpression(P.UnsupportedError$("removeAt"));
@@ -727,6 +727,10 @@
         this.set$length(receiver, t1);
         for (i = 0; i < retained.length; ++i)
           receiver[i] = retained[i];
+      },
+      where$1: function(receiver, f) {
+        var t1 = H.getTypeArgumentByIndex(receiver, 0);
+        return new H.WhereIterable(receiver, H.functionTypeCheck(f, {func: 1, ret: P.bool, args: [t1]}), [t1]);
       },
       addAll$1: function(receiver, collection) {
         var t1;
@@ -1011,7 +1015,7 @@
         },
         JSArray__compareAny: [function(a, b) {
           return J.compareTo$1$ns(H.numberOrStringSuperNativeTypeCheck(a, "$isComparable"), H.numberOrStringSuperNativeTypeCheck(b, "$isComparable"));
-        }, "call$2", "_interceptors_JSArray__compareAny$closure", 8, 0, 132]
+        }, "call$2", "_interceptors_JSArray__compareAny$closure", 8, 0, 133]
       }
     },
     JSUnmodifiableArray: {
@@ -2328,7 +2332,7 @@
     },
     Primitives_dateNow: [function() {
       return Date.now();
-    }, "call$0", "_js_helper_Primitives_dateNow$closure", 0, 0, 133],
+    }, "call$0", "_js_helper_Primitives_dateNow$closure", 0, 0, 134],
     Primitives_initTicker: function() {
       var $window, performance;
       if ($.Primitives_timerFrequency != null)
@@ -3809,13 +3813,13 @@
       }
     },
     Primitives_initTicker_closure: {
-      "^": "Closure:6;performance",
+      "^": "Closure:4;performance",
       call$0: function() {
         return C.JSNumber_methods.floor$0(1000 * this.performance.now());
       }
     },
     Primitives_functionNoSuchMethod_closure: {
-      "^": "Closure:4;_box_0,namedArgumentList,$arguments",
+      "^": "Closure:5;_box_0,namedArgumentList,$arguments",
       call$2: function($name, argument) {
         var t1;
         H.stringTypeCheck($name);
@@ -4378,13 +4382,13 @@
       }
     },
     initHooks_closure0: {
-      "^": "Closure:46;getUnknownTag",
+      "^": "Closure:62;getUnknownTag",
       call$2: function(o, tag) {
         return this.getUnknownTag(o, tag);
       }
     },
     initHooks_closure1: {
-      "^": "Closure:114;prototypeForTag",
+      "^": "Closure:111;prototypeForTag",
       call$1: function(tag) {
         return this.prototypeForTag(H.stringTypeCheck(tag));
       }
@@ -4689,7 +4693,7 @@
         if ($._nextCallback != null)
           $.$get$_AsyncRun__scheduleImmediateClosure().call$1(P.async___startMicrotaskLoop$closure());
       }
-    }, "call$0", "async___startMicrotaskLoop$closure", 0, 0, 5],
+    }, "call$0", "async___startMicrotaskLoop$closure", 0, 0, 6],
     _scheduleAsyncCallback: function(callback) {
       var newEntry = new P._AsyncCallbackEntry(H.functionTypeCheck(callback, {func: 1, ret: -1}));
       if ($._nextCallback == null) {
@@ -4805,7 +4809,7 @@
       P._scheduleAsyncCallback(f);
     },
     _AsyncRun__initializeScheduleImmediate_internalCallback: {
-      "^": "Closure:24;_box_0",
+      "^": "Closure:21;_box_0",
       call$1: [function(_) {
         var t1, f;
         t1 = this._box_0;
@@ -4815,7 +4819,7 @@
       }, null, null, 4, 0, null, 1, "call"]
     },
     _AsyncRun__initializeScheduleImmediate_closure: {
-      "^": "Closure:109;_box_0,div,span",
+      "^": "Closure:92;_box_0,div,span",
       call$1: function(callback) {
         var t1, t2;
         this._box_0.storedCallback = H.functionTypeCheck(callback, {func: 1, ret: -1});
@@ -4853,7 +4857,7 @@
       }
     },
     _TimerImpl_internalCallback: {
-      "^": "Closure:5;$this,callback",
+      "^": "Closure:6;$this,callback",
       call$0: [function() {
         var t1 = this.$this;
         t1._handle = null;
@@ -5244,7 +5248,7 @@
       }
     },
     _Future__chainForeignFuture_closure: {
-      "^": "Closure:24;target",
+      "^": "Closure:21;target",
       call$1: function(value) {
         var t1 = this.target;
         t1._state = 0;
@@ -5252,7 +5256,7 @@
       }
     },
     _Future__chainForeignFuture_closure0: {
-      "^": "Closure:61;target",
+      "^": "Closure:70;target",
       call$2: [function(error, stackTrace) {
         H.interceptedTypeCheck(stackTrace, "$isStackTrace");
         this.target._completeError$2(error, stackTrace);
@@ -5267,7 +5271,7 @@
       }
     },
     _Future__propagateToListeners_handleWhenCompleteCallback: {
-      "^": "Closure:5;_box_1,_box_0,listener,hasError",
+      "^": "Closure:6;_box_1,_box_0,listener,hasError",
       call$0: function() {
         var completeResult, e, s, t1, exception, t2, originalSource;
         completeResult = null;
@@ -5309,13 +5313,13 @@
       }
     },
     _Future__propagateToListeners_handleWhenCompleteCallback_closure: {
-      "^": "Closure:78;originalSource",
+      "^": "Closure:79;originalSource",
       call$1: function(_) {
         return this.originalSource;
       }
     },
     _Future__propagateToListeners_handleValueCallback: {
-      "^": "Closure:5;_box_0,listener,sourceResult",
+      "^": "Closure:6;_box_0,listener,sourceResult",
       call$0: function() {
         var e, s, t1, t2, t3, t4, exception;
         try {
@@ -5335,7 +5339,7 @@
       }
     },
     _Future__propagateToListeners_handleError: {
-      "^": "Closure:5;_box_1,_box_0,listener",
+      "^": "Closure:6;_box_1,_box_0,listener",
       call$0: function() {
         var asyncError, e, s, t1, t2, exception, t3, t4;
         try {
@@ -5511,7 +5515,7 @@
       }
     },
     _RootZone_bindCallbackGuarded_closure: {
-      "^": "Closure:5;$this,f",
+      "^": "Closure:6;$this,f",
       call$0: function() {
         return this.$this.runGuarded$1(this.f);
       }
@@ -5988,7 +5992,7 @@
       "^": "Iterable;"
     },
     LinkedHashMap_LinkedHashMap$from_closure: {
-      "^": "Closure:13;result,K,V",
+      "^": "Closure:14;result,K,V",
       call$2: function(k, v) {
         this.result.$indexSet(0, H.assertSubtypeOfRuntimeType(k, this.K), H.assertSubtypeOfRuntimeType(v, this.V));
       }
@@ -6012,6 +6016,10 @@
       },
       get$isNotEmpty: function(receiver) {
         return !this.get$isEmpty(receiver);
+      },
+      where$1: function(receiver, test) {
+        var t1 = H.getRuntimeTypeArgumentIntercepted(this, receiver, "ListMixin", 0);
+        return new H.WhereIterable(receiver, H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [t1]}), [t1]);
       },
       map$1$1: function(receiver, f, $T) {
         var t1 = H.getRuntimeTypeArgumentIntercepted(this, receiver, "ListMixin", 0);
@@ -6067,7 +6075,7 @@
       "^": "MapMixin;"
     },
     MapBase_mapToString_closure: {
-      "^": "Closure:13;_box_0,result",
+      "^": "Closure:14;_box_0,result",
       call$2: function(k, v) {
         var t1, t2;
         t1 = this._box_0;
@@ -6812,7 +6820,7 @@
       }
     },
     _JsonStringifier_writeMap_closure: {
-      "^": "Closure:13;_box_0,keyValueList",
+      "^": "Closure:14;_box_0,keyValueList",
       call$2: function(key, value) {
         var t1, t2;
         if (typeof key !== "string")
@@ -7771,7 +7779,7 @@
       "%": ";Element"
     },
     Element_Element$html_closure: {
-      "^": "Closure:20;",
+      "^": "Closure:26;",
       call$1: function(e) {
         return !!J.getInterceptor$(H.interceptedTypeCheck(e, "$isNode")).$isElement0;
       }
@@ -8139,7 +8147,7 @@
       "%": "Storage"
     },
     Storage_keys_closure: {
-      "^": "Closure:123;keys",
+      "^": "Closure:115;keys",
       call$2: function(k, v) {
         return C.JSArray_methods.add$1(this.keys, k);
       }
@@ -8410,7 +8418,7 @@
       }
     },
     _EventStreamSubscription_closure: {
-      "^": "Closure:45;onData",
+      "^": "Closure:124;onData",
       call$1: [function(e) {
         return this.onData.call$1(H.interceptedTypeCheck(e, "$isEvent"));
       }, null, null, 4, 0, null, 20, "call"]
@@ -8457,7 +8465,7 @@
           H.stringTypeCheck(value);
           H.interceptedTypeCheck(context, "$is_Html5NodeValidator");
           return true;
-        }, "call$4", "html__Html5NodeValidator__standardAttributeValidator$closure", 16, 0, 29, 10, 9, 11, 12],
+        }, "call$4", "html__Html5NodeValidator__standardAttributeValidator$closure", 16, 0, 23, 10, 9, 11, 12],
         _Html5NodeValidator__uriAttributeValidator: [function(element, attributeName, value, context) {
           var t1, t2, t3;
           H.interceptedTypeCheck(element, "$isElement0");
@@ -8480,7 +8488,7 @@
           else
             t1 = true;
           return t1;
-        }, "call$4", "html__Html5NodeValidator__uriAttributeValidator$closure", 16, 0, 29, 10, 9, 11, 12]
+        }, "call$4", "html__Html5NodeValidator__uriAttributeValidator$closure", 16, 0, 23, 10, 9, 11, 12]
       }
     },
     ImmutableListMixin: {
@@ -8507,13 +8515,13 @@
       $isNodeValidator: 1
     },
     NodeValidatorBuilder_allowsElement_closure: {
-      "^": "Closure:22;element",
+      "^": "Closure:20;element",
       call$1: function(v) {
         return H.interceptedTypeCheck(v, "$isNodeValidator").allowsElement$1(this.element);
       }
     },
     NodeValidatorBuilder_allowsAttribute_closure: {
-      "^": "Closure:22;element,attributeName,value",
+      "^": "Closure:20;element,attributeName,value",
       call$1: function(v) {
         return H.interceptedTypeCheck(v, "$isNodeValidator").allowsAttribute$3(this.element, this.attributeName, this.value);
       }
@@ -8557,13 +8565,13 @@
       $isNodeValidator: 1
     },
     _SimpleNodeValidator_closure: {
-      "^": "Closure:14;",
+      "^": "Closure:13;",
       call$1: function(x) {
         return !C.JSArray_methods.contains$1(C.List_yrN, H.stringTypeCheck(x));
       }
     },
     _SimpleNodeValidator_closure0: {
-      "^": "Closure:14;",
+      "^": "Closure:13;",
       call$1: function(x) {
         return C.JSArray_methods.contains$1(C.List_yrN, H.stringTypeCheck(x));
       }
@@ -8764,7 +8772,7 @@
       $isNodeTreeSanitizer: 1
     },
     _ValidatingTreeSanitizer_sanitizeTree_walk: {
-      "^": "Closure:79;$this",
+      "^": "Closure:80;$this",
       call$2: function(node, $parent) {
         var child, nextChild, t1, exception, t2, t3;
         t1 = this.$this;
@@ -8907,13 +8915,13 @@
       }
     },
     FilteredElementList__iterable_closure: {
-      "^": "Closure:20;",
+      "^": "Closure:26;",
       call$1: function(n) {
         return !!J.getInterceptor$(H.interceptedTypeCheck(n, "$isNode")).$isElement0;
       }
     },
     FilteredElementList__iterable_closure0: {
-      "^": "Closure:80;",
+      "^": "Closure:81;",
       call$1: [function(n) {
         return H.interceptedTypeCast(H.interceptedTypeCheck(n, "$isNode"), "$isElement0");
       }, null, null, 4, 0, null, 22, "call"]
@@ -9012,7 +9020,7 @@
         return o.o;
       else
         return P._wrapToDart(o);
-    }, "call$1", "js___convertToDart$closure", 4, 0, 136, 13],
+    }, "call$1", "js___convertToDart$closure", 4, 0, 137, 13],
     _wrapToDart: function(o) {
       if (typeof o == "function")
         return P._getDartProxy(o, $.$get$DART_CLOSURE_PROPERTY_NAME(), new P._wrapToDart_closure());
@@ -9136,19 +9144,19 @@
       }
     },
     _wrapToDart_closure: {
-      "^": "Closure:82;",
+      "^": "Closure:83;",
       call$1: function(o) {
         return new P.JsFunction(o);
       }
     },
     _wrapToDart_closure0: {
-      "^": "Closure:92;",
+      "^": "Closure:39;",
       call$1: function(o) {
         return new P.JsArray(o, [null]);
       }
     },
     _wrapToDart_closure1: {
-      "^": "Closure:96;",
+      "^": "Closure:97;",
       call$1: function(o) {
         return new P.JsObject(o);
       }
@@ -9330,7 +9338,7 @@
         hero = new K.HeroSave($name, race.rollStats$0(), heroClass, t1, t2, t3, t4, t5, 0, new M.SkillSet(P.LinkedHashMap_LinkedHashMap$_empty(t6, t7), P.LinkedHashMap_LinkedHashMap$_empty(t6, t7)), 60, 0, new V.Lore(P.LinkedHashMap_LinkedHashMap$_empty(t8, t7), P.LinkedHashMap_LinkedHashMap$_empty(t8, t7), P.LinkedHashMap_LinkedHashMap$_empty(t9, t7), P.LinkedHashMap_LinkedHashMap$_empty(L.Affix, t7), P.LinkedHashMap_LinkedHashMap$_empty(t9, t7)), new D.Strength(), new D.Agility(), new D.Fortitude(), new D.Intellect(), new D.Will());
         hero._bindStats$0();
         P.LinkedHashMap_LinkedHashMap$_literal(["Mending Salve", 3, "Scroll of Sidestepping", 2, "Tallow Candle", 4, "Loaf of Bread", 5], P.String, t7).forEach$1(0, new T.GameContent_createHero_closure(hero));
-        heroClass.startingItems.spawnDrop$2(1, hero._inventory.get$tryAdd());
+        heroClass.startingItems.dropItem$2(1, hero._inventory.get$tryAdd());
         for (t1 = $.$get$Shops_all(), t1 = t1.get$values(t1), t1 = t1.get$iterator(t1), t2 = [R.Item]; t1.moveNext$0();) {
           t3 = t1.get$current();
           inventory = new O.Inventory(new O.ItemLocation(t3.name, "All sold out!"), H.setRuntimeTypeInfo([], t2), 26);
@@ -9423,7 +9431,7 @@
       $isContent: 1
     },
     GameContent_createHero_closure: {
-      "^": "Closure:97;hero",
+      "^": "Closure:98;hero",
       call$2: function(type, amount) {
         H.stringTypeCheck(type);
         H.intTypeCheck(amount);
@@ -9445,7 +9453,7 @@
       }
     },
     GameContent__spreadPoison_neighbor: {
-      "^": "Closure:103;_box_0,stage,pos",
+      "^": "Closure:104;_box_0,stage,pos",
       call$2: function(x, y) {
         var t1, t2;
         t1 = this.pos;
@@ -9485,7 +9493,7 @@
       }
     },
     BarrierAction_onPerform_tryDirection: {
-      "^": "Closure:106;_box_0,$this",
+      "^": "Closure:107;_box_0,$this",
       call$2: function(going, sign) {
         var t1, allStopped;
         if (!going)
@@ -9502,7 +9510,7 @@
       }
     },
     BarrierAction_onPerform_tryDirection_tryOffset: {
-      "^": "Closure:108;_box_0,$this,sign",
+      "^": "Closure:109;_box_0,$this,sign",
       call$2: function(h, v) {
         var t1, t2, pos, t3;
         t1 = this.$this;
@@ -9543,7 +9551,7 @@
   }], ["", "package:hauberk/src/content/action/condition.dart",, E, {
     "^": "",
     HasteAction: {
-      "^": "ConditionAction;_condition0$_duration,_condition0$_speed,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
+      "^": "ConditionAction;_condition0$_speed,_condition0$_duration,0_actor,0_action$_pos,0_action$_game,0_consumesEnergy",
       get$condition: function() {
         return this._actor.haste;
       },
@@ -9764,7 +9772,7 @@
       }
     },
     DetectAction__findTiles_addTile: {
-      "^": "Closure:25;$this,distanceMap",
+      "^": "Closure:38;$this,distanceMap",
       call$1: function(pos) {
         var t1, distance;
         t1 = this.$this;
@@ -9778,13 +9786,13 @@
       }
     },
     DetectAction__findTiles_addTile_closure: {
-      "^": "Closure:37;",
+      "^": "Closure:24;",
       call$0: function() {
         return H.setRuntimeTypeInfo([], [L.Vec]);
       }
     },
     DetectAction__findTiles_closure: {
-      "^": "Closure:112;_box_0,$this,addTile",
+      "^": "Closure:113;_box_0,$this,addTile",
       call$2: function(item, pos) {
         if (this.$this._action$_game._stage.tiles.$index(0, pos)._isExplored)
           return;
@@ -9793,14 +9801,14 @@
       }
     },
     DetectAction__findTiles_closure0: {
-      "^": "Closure:31;",
+      "^": "Closure:25;",
       call$2: function(a, b) {
         H.intTypeCheck(a);
         return J.compareTo$1$ns(H.intTypeCheck(b), a);
       }
     },
     DetectAction__findTiles_closure1: {
-      "^": "Closure:122;distanceMap",
+      "^": "Closure:123;distanceMap",
       call$1: [function(distance) {
         return this.distanceMap.$index(0, H.intTypeCheck(distance));
       }, null, null, 4, 0, null, 3, "call"]
@@ -10379,7 +10387,7 @@
       }
     },
     RayActionBase_onPerform_closure: {
-      "^": "Closure:127;$this",
+      "^": "Closure:128;$this",
       call$1: function(ray) {
         var t1, t2, pos, t3, t4;
         H.doubleTypeCheck(ray);
@@ -10553,7 +10561,7 @@
         return 10;
       },
       _createDrop$0: function() {
-        return X.parseDrop("food", this._action$_game.depth);
+        return X.parseDrop("food", null, this._action$_game.depth);
       }
     },
     OpenChestAction: {
@@ -10571,7 +10579,7 @@
         return 2;
       },
       _createDrop$0: function() {
-        return X._OneOfDrop$(P.LinkedHashMap_LinkedHashMap$_literal([X.parseDrop("treasure", this._action$_game.depth), 0.5, X.parseDrop("magic", this._action$_game.depth), 0.2, X.parseDrop("equipment", this._action$_game.depth), 0.3], L.Drop, P.double));
+        return X._OneOfDrop$(P.LinkedHashMap_LinkedHashMap$_literal([X.parseDrop("treasure", null, this._action$_game.depth), 0.5, X.parseDrop("magic", null, this._action$_game.depth), 0.2, X.parseDrop("equipment", null, this._action$_game.depth), 0.3], L.Drop, P.double));
       }
     }
   }], ["", "package:hauberk/src/content/classes.dart",, V, {
@@ -10843,21 +10851,21 @@
   }], ["", "package:hauberk/src/content/elements.dart",, A, {
     "^": "",
     Elements_closure2: {
-      "^": "Closure:128;",
+      "^": "Closure:129;",
       call$1: [function(_) {
         H.intTypeCheck(_);
         return new G.WindAction();
       }, null, null, 4, 0, null, 1, "call"]
     },
     Elements_closure7: {
-      "^": "Closure:129;",
+      "^": "Closure:130;",
       call$1: [function(_) {
         H.intTypeCheck(_);
         return new G.BurnActorAction();
       }, null, null, 4, 0, null, 1, "call"]
     },
     Elements_closure8: {
-      "^": "Closure:134;",
+      "^": "Closure:135;",
       call$4: [function(pos, hit, distance, fuel) {
         H.interceptedTypeCheck(pos, "$isVec");
         H.interceptedTypeCheck(hit, "$isHit");
@@ -10867,13 +10875,13 @@
       }, null, null, 16, 0, null, 0, 5, 3, 50, "call"]
     },
     Elements_closure5: {
-      "^": "Closure:135;",
+      "^": "Closure:136;",
       call$1: [function(damage) {
         return new E.FreezeActorAction(H.intTypeCheck(damage));
       }, null, null, 4, 0, null, 6, "call"]
     },
     Elements_closure6: {
-      "^": "Closure:39;",
+      "^": "Closure:40;",
       call$4: [function(pos, hit, distance, _) {
         H.interceptedTypeCheck(pos, "$isVec");
         H.interceptedTypeCheck(hit, "$isHit");
@@ -10883,13 +10891,13 @@
       }, null, null, 16, 0, null, 0, 5, 3, 1, "call"]
     },
     Elements_closure: {
-      "^": "Closure:40;",
+      "^": "Closure:41;",
       call$1: [function(damage) {
         return new E.PoisonAction(H.intTypeCheck(damage));
       }, null, null, 4, 0, null, 6, "call"]
     },
     Elements_closure0: {
-      "^": "Closure:41;",
+      "^": "Closure:42;",
       call$4: [function(pos, hit, distance, _) {
         H.interceptedTypeCheck(pos, "$isVec");
         H.interceptedTypeCheck(hit, "$isHit");
@@ -10899,19 +10907,19 @@
       }, null, null, 16, 0, null, 0, 5, 3, 1, "call"]
     },
     Elements_closure1: {
-      "^": "Closure:42;",
+      "^": "Closure:43;",
       call$1: [function(damage) {
         return new E.BlindAction(H.intTypeCheck(damage));
       }, null, null, 4, 0, null, 6, "call"]
     },
     Elements_closure3: {
-      "^": "Closure:43;",
+      "^": "Closure:44;",
       call$1: [function(damage) {
         return new E.DazzleAction(H.intTypeCheck(damage));
       }, null, null, 4, 0, null, 6, "call"]
     },
     Elements_closure4: {
-      "^": "Closure:44;",
+      "^": "Closure:45;",
       call$4: [function(pos, hit, distance, _) {
         var t1, min, max, t2;
         H.interceptedTypeCheck(pos, "$isVec");
@@ -10930,8 +10938,10 @@
     }
   }], ["", "package:hauberk/src/content/item/affixes.dart",, Z, {
     "^": "",
-    Affixes_createItem: function(itemType, droppedDepth) {
-      var t1, outOfDepth, affixDepth, weight, t2, t3, t4, prefix, suffix;
+    Affixes_createItem: function(itemType, droppedDepth, affixChance) {
+      var t1, outOfDepth, affixDepth, weight, chance, affixes, t2, t3, t4, prefix, suffix;
+      if (affixChance == null)
+        affixChance = 0;
       if (itemType.equipSlot == null)
         return new R.Item(itemType, null, null, 1);
       t1 = itemType.depth;
@@ -10945,15 +10955,19 @@
         affixDepth = droppedDepth - $.$get$rng().round$1(0, outOfDepth * weight);
       }
       affixDepth = H.intTypeCheck(C.JSInt_methods.clamp$2(affixDepth, 1, 100));
+      chance = 0.008 * affixDepth * affixDepth + 0.05 * affixDepth + 0.1;
       t1 = $.$get$rng();
-      if (t1.float$1(0, 100) > 0.008 * affixDepth * affixDepth + 0.05 * affixDepth + 0.1)
+      affixes = t1.float$1(0, 100) < chance + affixChance ? 1 : 0;
+      if (t1.float$1(0, 100) < chance && t1.range$1(5) === 0)
+        ++affixes;
+      if (affixes === 0)
         return new R.Item(itemType, null, null, 1);
       t2 = $.$get$Affixes_prefixes();
       t3 = $.$get$Items_types();
       t4 = itemType.quantifiableName;
       prefix = t2.tryChooseMatching$2(affixDepth, t3.getTags$1(O.Log__categorize(t4, false, true)));
       suffix = $.$get$Affixes_suffixes().tryChooseMatching$2(affixDepth, t3.getTags$1(O.Log__categorize(t4, false, true)));
-      if (prefix != null && suffix != null && t1.range$1(5) !== 0)
+      if (affixes === 1 && prefix != null && suffix != null)
         if (t1.range$1(2) === 0)
           prefix = null;
         else
@@ -11739,7 +11753,7 @@
         this._maxDepth = to == null ? 100 : to;
       }, function(from) {
         return this.depth$2$to(from, null);
-      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 21, 7, 15, 16],
+      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 22, 7, 15, 16],
       weapon$3$element$heft: function(damage, element, heft) {
         this._builder$_attack = U.Attack$(null, $._category._builder$_verb, damage, null, element);
         this._heft = heft;
@@ -11790,7 +11804,7 @@
       mapping$1: function(distance) {
         return this.mapping$2$illuminate(distance, null);
       },
-      haste$2: function(duration, amount) {
+      haste$2: function(amount, duration) {
         this._use = new L.ItemUse("Raises speed by " + amount + " for " + duration + " turns.", H.functionTypeCheck(new R._ItemBuilder_haste_closure(amount, duration), {func: 1, ret: V.Action}));
       },
       teleport$1: function(distance) {
@@ -11835,75 +11849,75 @@
       }
     },
     _ItemBuilder_food_closure: {
-      "^": "Closure:38;amount",
+      "^": "Closure:47;amount",
       call$0: [function() {
         return new X.EatAction(this.amount);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_detection_closure: {
-      "^": "Closure:47;types,range",
+      "^": "Closure:48;types,range",
       call$0: [function() {
         var t1 = this.types;
         return new T.DetectAction(P.LinkedHashSet_LinkedHashSet$from(t1, H.getTypeArgumentByIndex(t1, 0)), this.range);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_resistSalve_closure: {
-      "^": "Closure:48;element",
+      "^": "Closure:49;element",
       call$0: [function() {
         return new E.ResistAction(40, this.element);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_mapping_closure: {
-      "^": "Closure:49;_box_0,distance",
+      "^": "Closure:50;_box_0,distance",
       call$0: [function() {
         var t1 = this._box_0.illuminate;
         return new Q.MappingAction(this.distance, t1 === true, 0);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_haste_closure: {
-      "^": "Closure:50;amount,duration",
+      "^": "Closure:51;amount,duration",
       call$0: [function() {
         return new E.HasteAction(this.amount, this.duration);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_teleport_closure: {
-      "^": "Closure:51;distance",
+      "^": "Closure:52;distance",
       call$0: [function() {
         return new S.TeleportAction(this.distance);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_heal_closure: {
-      "^": "Closure:52;amount,curePoison",
+      "^": "Closure:53;amount,curePoison",
       call$0: [function() {
         return new O.HealAction(this.amount, this.curePoison);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_ball_closure: {
-      "^": "Closure:53;attack",
+      "^": "Closure:54;attack",
       call$0: [function() {
         return new G.RingSelfAction(this.attack);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_ball_closure0: {
-      "^": "Closure:54;attack",
+      "^": "Closure:55;attack",
       call$1: [function(pos) {
         return new G.RingFromAction(this.attack, H.interceptedTypeCheck(pos, "$isVec"));
       }, null, null, 4, 0, null, 0, "call"]
     },
     _ItemBuilder_flow_closure: {
-      "^": "Closure:55;_box_0,attack",
+      "^": "Closure:56;_box_0,attack",
       call$0: [function() {
         return new N.FlowSelfAction(this.attack, this._box_0.motility);
       }, null, null, 0, 0, null, "call"]
     },
     _ItemBuilder_flow_closure0: {
-      "^": "Closure:56;_box_0,attack",
+      "^": "Closure:57;_box_0,attack",
       call$1: [function(pos) {
         return new N.FlowFromAction(this.attack, H.interceptedTypeCheck(pos, "$isVec"), this._box_0.motility);
       }, null, null, 4, 0, null, 0, "call"]
     },
     _ItemBuilder_lightSource_closure: {
-      "^": "Closure:57;range,level",
+      "^": "Closure:58;range,level",
       call$0: [function() {
         return new F.IlluminateSelfAction(this.range, this.level + 1);
       }, null, null, 0, 0, null, "call"]
@@ -11917,7 +11931,7 @@
         this._maxDepth = to == null ? 100 : to;
       }, function(from) {
         return this.depth$2$to(from, null);
-      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 21, 7, 15, 16],
+      }, "depth$1", "call$2$to", "call$1", "get$depth", 4, 3, 22, 7, 15, 16],
       brand$2$resist: function(element, resist) {
         var t1;
         this._builder$_brand = element;
@@ -11937,61 +11951,58 @@
       price$2: [function(bonus, scale) {
         this._priceBonus = bonus;
         this._priceScale = scale;
-      }, "call$2", "get$price", 8, 0, 58]
+      }, "call$2", "get$price", 8, 0, 59]
     }
   }], ["", "package:hauberk/src/content/item/drops.dart",, X, {
     "^": "",
-    parseDrop: function($name, depth) {
-      var itemType = $.$get$Items_types().tryFind$1($name);
+    parseDrop: function($name, affixChance, depth) {
+      var itemType;
+      if (depth == null)
+        depth = 1;
+      itemType = $.$get$Items_types().tryFind$1($name);
       if (itemType != null)
-        return new X._ItemDrop(itemType, depth);
-      return new X._TagDrop($name, depth);
+        return new X._ItemDrop(itemType, depth, affixChance);
+      return new X._TagDrop($name, depth, affixChance);
     },
     _ItemDrop: {
-      "^": "Object;_type,_drops$_depth",
-      spawnDrop$2: function(depth, addItem) {
-        var t1;
+      "^": "Object;_type,_drops$_depth,_affixChance",
+      dropItem$2: function(depth, addItem) {
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
-        t1 = this._drops$_depth;
-        if (t1 == null)
-          t1 = depth;
-        addItem.call$1(Z.Affixes_createItem(this._type, t1));
+        addItem.call$1(Z.Affixes_createItem(this._type, this._drops$_depth, this._affixChance));
       },
       $isDrop: 1
     },
     _TagDrop: {
-      "^": "Object;_tag,_drops$_depth",
-      spawnDrop$2: function(depth, addItem) {
-        var t1, t2, t3, t4, itemType;
+      "^": "Object;_tag,_drops$_depth,_affixChance",
+      dropItem$2: function(depth, addItem) {
+        var t1, t2, itemType;
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
         t1 = $.$get$Items_types();
         t2 = this._drops$_depth;
-        t3 = t2 == null;
-        t4 = t3 ? depth : t2;
-        itemType = t1.tryChoose$2$tag(t4, this._tag);
+        itemType = t1.tryChoose$2$tag(t2, this._tag);
         if (itemType == null)
           return;
-        addItem.call$1(Z.Affixes_createItem(itemType, t3 ? depth : t2));
+        addItem.call$1(Z.Affixes_createItem(itemType, t2, this._affixChance));
       },
       $isDrop: 1
     },
     _PercentDrop: {
       "^": "Object;_chance,_drop",
-      spawnDrop$2: function(depth, addItem) {
+      dropItem$2: function(depth, addItem) {
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
         if ($.$get$rng().range$1(100) >= this._chance)
           return;
-        this._drop.spawnDrop$2(depth, addItem);
+        this._drop.dropItem$2(depth, addItem);
       },
       $isDrop: 1
     },
     _AllOfDrop: {
       "^": "Object;_drops",
-      spawnDrop$2: function(depth, addItem) {
+      dropItem$2: function(depth, addItem) {
         var t1, t2, _i;
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
         for (t1 = this._drops, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i)
-          t1[_i].spawnDrop$2(depth, addItem);
+          t1[_i].dropItem$2(depth, addItem);
       },
       $isDrop: 1
     },
@@ -12000,13 +12011,13 @@
       _OneOfDrop$1: function(drops) {
         drops.forEach$1(0, new X._OneOfDrop_closure(this));
       },
-      spawnDrop$2: function(depth, addItem) {
+      dropItem$2: function(depth, addItem) {
         var drop;
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
         drop = this._drop.tryChoose$1(1);
         if (drop == null)
           return;
-        drop.spawnDrop$2(depth, addItem);
+        drop.dropItem$2(depth, addItem);
       },
       $isDrop: 1,
       static: {
@@ -12019,7 +12030,7 @@
       }
     },
     _OneOfDrop_closure: {
-      "^": "Closure:59;$this",
+      "^": "Closure:60;$this",
       call$2: function(drop, frequency) {
         var t1;
         H.interceptedTypeCheck(drop, "$isDrop");
@@ -12030,7 +12041,7 @@
     },
     _RepeatDrop: {
       "^": "Object;_drops$_count,_drop",
-      spawnDrop$2: function(depth, addItem) {
+      dropItem$2: function(depth, addItem) {
         var t1, taper, t2, count, i;
         H.functionTypeCheck(addItem, {func: 1, ret: -1, args: [R.Item]});
         t1 = this._drops$_count;
@@ -12040,7 +12051,7 @@
         t2 = $.$get$rng();
         count = t2.triangleInt$2(t1, t1 / 2 | 0) + t2.taper$2(0, taper);
         for (t1 = this._drop, i = 0; i < count; ++i)
-          t1.spawnDrop$2(depth, addItem);
+          t1.dropItem$2(depth, addItem);
       },
       $isDrop: 1
     }
@@ -12067,11 +12078,11 @@
       $.$get$Shops_all().$indexSet(0, $name, new O.Shop(X._OneOfDrop$(drops), $name));
     },
     shop_closure: {
-      "^": "Closure:60;drops",
+      "^": "Closure:61;drops",
       call$2: function($name, frequency) {
         H.stringTypeCheck($name);
         H.doubleTypeCheck(frequency);
-        this.drops.$indexSet(0, X.parseDrop($name, 1), frequency);
+        this.drops.$indexSet(0, X.parseDrop($name, null, null), frequency);
       }
     }
   }], ["", "package:hauberk/src/content/monster/builder.dart",, R, {
@@ -12079,9 +12090,8 @@
     family: function(character, dodge, flags, frequency, meander, speed, tracking) {
       var t1;
       R.finishBreed();
-      t1 = new R._FamilyBuilder(frequency, $.$get$Motility_walk(), H.setRuntimeTypeInfo([], [U.Defense]), H.setRuntimeTypeInfo([], [P.String]));
+      t1 = new R._FamilyBuilder(character, frequency, $.$get$Motility_walk(), H.setRuntimeTypeInfo([], [U.Defense]), H.setRuntimeTypeInfo([], [P.String]));
       $._family = t1;
-      t1._character = character;
       t1._meander = meander;
       t1._builder0$_speed = speed;
       t1._dodge = dodge;
@@ -12090,20 +12100,20 @@
       return t1;
     },
     finishBreed: function() {
-      var t1, t2, tags, t3, flags, t4, dodge, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23, t24, t25, names, t26, t27, t28, t29, t30, t31, t32, t33, t34, t35, t36, t37;
+      var t1, t2, tags, t3, flags, t4, dodge, minions, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23, t24, t25, names, t26, t27, t28, t29, t30, t31, t32, t33, t34, t35, t36;
       if ($._builder == null)
         return;
       t1 = P.String;
       t2 = [t1];
       tags = H.setRuntimeTypeInfo([], t2);
-      C.JSArray_methods.addAll$1(tags, $.$get$_family()._groups);
+      C.JSArray_methods.addAll$1(tags, $._family._groups);
       C.JSArray_methods.addAll$1(tags, $._builder._groups);
       if (tags.length === 0)
         C.JSArray_methods.add$1(tags, "monster");
       t3 = $._builder;
       t3.toString;
       flags = P.LinkedHashSet_LinkedHashSet(null, null, null, t1);
-      t4 = $.$get$_family()._flags;
+      t4 = $._family._flags;
       if (t4 != null)
         flags.addAll$1(0, H.setRuntimeTypeInfo(t4.split(" "), [t1]));
       t4 = t3._flags;
@@ -12111,9 +12121,17 @@
         flags.addAll$1(0, H.setRuntimeTypeInfo(t4.split(" "), [t1]));
       dodge = t3._dodge;
       if (dodge == null)
-        dodge = $.$get$_family()._dodge;
+        dodge = $._family._dodge;
       if (flags.contains$1(0, "immobile"))
         dodge = 0;
+      t1 = t3._minions;
+      t4 = t1.length;
+      if (t4 === 1) {
+        if (0 >= t4)
+          return H.ioore(t1, 0);
+        minions = t1[0];
+      } else
+        minions = t4 > 1 ? new B._AllOfSpawn(t1) : null;
       t1 = t3._builder0$_name;
       t4 = t3._pronoun;
       if (t4 == null)
@@ -12124,10 +12142,10 @@
       t8 = t3._builder0$_drops;
       t9 = t3._builder0$_location;
       if (t9 == null)
-        t9 = $.$get$_family()._builder0$_location;
+        t9 = $._family._builder0$_location;
       if (t9 == null)
         t9 = C.SpawnLocation_0;
-      t10 = $.$get$_family();
+      t10 = $._family;
       t11 = t10._builder0$_motility;
       t12 = t3._builder0$_motility;
       t11 = t11._bitMask;
@@ -12184,34 +12202,32 @@
         H.throwExpression(P.ArgumentError$('Unknown flags "' + names.join$1(0, ", ") + '"'));
       t31 = t3._description;
       t32 = H.setRuntimeTypeInfo([], [U.Defense]);
-      t33 = H.setRuntimeTypeInfo([], [B.Minion]);
       t2 = H.setRuntimeTypeInfo([], t2);
       if (t17 == null)
         t17 = 8;
       if (t18 == null)
         t18 = 10;
-      t34 = dodge == null ? 20 : dodge;
+      t33 = dodge == null ? 20 : dodge;
       if (t22 == null)
         t22 = 0;
-      C.JSArray_methods.addAll$1(t32, $.$get$_family()._defenses);
+      C.JSArray_methods.addAll$1(t32, $._family._defenses);
       C.JSArray_methods.addAll$1(t32, t3._defenses);
-      C.JSArray_methods.addAll$1(t2, $.$get$_family()._groups);
+      C.JSArray_methods.addAll$1(t2, $._family._groups);
       C.JSArray_methods.addAll$1(t2, t3._groups);
-      C.JSArray_methods.addAll$1(t33, t3._minions);
       t3 = $.$get$Monsters_breeds();
-      t35 = O.Log__categorize(t1, false, true);
-      t36 = $._builder._builder0$_frequency;
-      if (t36 == null)
-        t36 = $.$get$_family()._builder0$_frequency;
-      t37 = C.JSArray_methods.join$1(tags, " ");
+      t34 = O.Log__categorize(t1, false, true);
+      t35 = $._builder._builder0$_frequency;
+      if (t35 == null)
+        t35 = $._family._builder0$_frequency;
+      t36 = C.JSArray_methods.join$1(tags, " ");
       t3.toString;
-      t3._resource$_add$7(H.assertSubtypeOfRuntimeType(new B.Breed(t4, t5, t13, t6, t7, t14, t15 + t16, t17, t18, t19, t20 + t21, new X._AllOfDrop(t8), t9, new Q.Motility(t11 | t12), new B.BreedFlags(t25, t26, t27, t28, t29, t30), t34, t22, t32, t23, t24, t33, t1, t10, t2, t31), H.getTypeArgumentByIndex(t3, 0)), t35, t13, t13, t36, t36, t37);
+      t3._resource$_add$7(H.assertSubtypeOfRuntimeType(new B.Breed(t4, t5, t13, t6, t7, t14, t15 + t16, t17, t18, t19, t20 + t21, new X._AllOfDrop(t8), t9, new Q.Motility(t11 | t12), new B.BreedFlags(t25, t26, t27, t28, t29, t30), t33, t22, t32, t23, t24, minions, t1, t10, t2, t31), H.getTypeArgumentByIndex(t3, 0)), t34, t13, t13, t35, t35, t36);
       $._builder = null;
     },
     breed: function($name, depth, color, health, dodge, frequency, meander, speed) {
       var t1;
       R.finishBreed();
-      t1 = new R._BreedBuilder($name, depth, L.Glyph$($.$get$_family()._character, color, null), health, H.setRuntimeTypeInfo([], [U.Attack]), H.setRuntimeTypeInfo([], [O.Move]), H.setRuntimeTypeInfo([], [L.Drop]), H.setRuntimeTypeInfo([], [B.Minion]), frequency, $.$get$Motility_walk(), H.setRuntimeTypeInfo([], [U.Defense]), H.setRuntimeTypeInfo([], [P.String]));
+      t1 = new R._BreedBuilder($name, depth, L.Glyph$($._family._character, color, null), health, H.setRuntimeTypeInfo([], [U.Attack]), H.setRuntimeTypeInfo([], [O.Move]), H.setRuntimeTypeInfo([], [L.Drop]), H.setRuntimeTypeInfo([], [B.Spawn]), frequency, $.$get$Motility_walk(), H.setRuntimeTypeInfo([], [U.Defense]), H.setRuntimeTypeInfo([], [P.String]));
       $._builder = t1;
       t1._builder0$_speed = speed;
       t1._meander = meander;
@@ -12233,48 +12249,57 @@
       }
     },
     _FamilyBuilder: {
-      "^": "_BaseBuilder0;0_character,_builder0$_frequency,0_tracking,_builder0$_motility,0_builder0$_location,0_builder0$_speed,0_meander,0_dodge,_defenses,_groups,0_flags,0_countMin,0_countMax,0_stain,0_emanationLevel,0_vision,0_hearing",
-      static: {
-        _FamilyBuilder$: function(frequency) {
-          return new R._FamilyBuilder(frequency, $.$get$Motility_walk(), H.setRuntimeTypeInfo([], [U.Defense]), H.setRuntimeTypeInfo([], [P.String]));
-        }
-      }
+      "^": "_BaseBuilder0;_character,_builder0$_frequency,0_tracking,_builder0$_motility,0_builder0$_location,0_builder0$_speed,0_meander,0_dodge,_defenses,_groups,0_flags,0_countMin,0_countMax,0_stain,0_emanationLevel,0_vision,0_hearing"
     },
     _BreedBuilder: {
       "^": "_BaseBuilder0;_builder0$_name,_builder0$_depth,_appearance,_builder0$_health,_attacks,_moves,_builder0$_drops,_minions,0_pronoun,0_description,_builder0$_frequency,0_tracking,_builder0$_motility,0_builder0$_location,0_builder0$_speed,0_meander,0_dodge,_defenses,_groups,0_flags,0_countMin,0_countMax,0_stain,0_emanationLevel,0_vision,0_hearing",
       minion$3: function($name, minOrMax, max) {
-        var t1;
-        if (minOrMax == null) {
-          minOrMax = 1;
-          max = 1;
-        } else if (max == null) {
-          max = minOrMax;
-          minOrMax = 1;
+        var spawn, t1;
+        if ($.$get$Monsters_breeds()._tags.containsKey$1(0, $name))
+          spawn = new B._TagSpawn($name);
+        else {
+          t1 = new B.BreedRef($name);
+          C.JSArray_methods.add$1($.$get$BreedRef__unresolved(), t1);
+          spawn = new B._BreedSpawn(t1);
         }
-        t1 = new B.BreedRef($name);
-        C.JSArray_methods.add$1($.$get$BreedRef__unresolved(), t1);
-        C.JSArray_methods.add$1(this._minions, new B.Minion(t1, minOrMax, max));
+        if (max != null)
+          spawn = new B._RepeatSpawn(minOrMax, max, spawn);
+        else if (minOrMax != null)
+          spawn = new B._RepeatSpawn(1, minOrMax, spawn);
+        C.JSArray_methods.add$1(this._minions, spawn);
       },
       minion$1: function($name) {
         return this.minion$3($name, null, null);
       },
-      drop$4$count$depthOffset$percent: function($name, count, depthOffset, percent) {
-        var drop = new X._PercentDrop(percent, X.parseDrop($name, this._builder0$_depth + depthOffset));
+      drop$5$affixChance$count$depthOffset$percent: function($name, affixChance, count, depthOffset, percent) {
+        var drop = new X._PercentDrop(percent, X.parseDrop($name, affixChance, this._builder0$_depth + depthOffset));
         if (count > 1)
           drop = new X._RepeatDrop(count, drop);
         C.JSArray_methods.add$1(this._builder0$_drops, drop);
       },
       drop$2$count: function($name, count) {
-        return this.drop$4$count$depthOffset$percent($name, count, 0, 100);
+        return this.drop$5$affixChance$count$depthOffset$percent($name, null, count, 0, 100);
       },
       drop$2$percent: function($name, percent) {
-        return this.drop$4$count$depthOffset$percent($name, 1, 0, percent);
+        return this.drop$5$affixChance$count$depthOffset$percent($name, null, 1, 0, percent);
+      },
+      drop$4$affixChance$count$depthOffset: function($name, affixChance, count, depthOffset) {
+        return this.drop$5$affixChance$count$depthOffset$percent($name, affixChance, count, depthOffset, 100);
       },
       drop$3$count$depthOffset: function($name, count, depthOffset) {
-        return this.drop$4$count$depthOffset$percent($name, count, depthOffset, 100);
+        return this.drop$5$affixChance$count$depthOffset$percent($name, null, count, depthOffset, 100);
+      },
+      drop$4$affixChance$depthOffset$percent: function($name, affixChance, depthOffset, percent) {
+        return this.drop$5$affixChance$count$depthOffset$percent($name, affixChance, 1, depthOffset, percent);
+      },
+      drop$3$count$percent: function($name, count, percent) {
+        return this.drop$5$affixChance$count$depthOffset$percent($name, null, count, 0, percent);
       },
       drop$3$depthOffset$percent: function($name, depthOffset, percent) {
-        return this.drop$4$count$depthOffset$percent($name, 1, depthOffset, percent);
+        return this.drop$5$affixChance$count$depthOffset$percent($name, null, 1, depthOffset, percent);
+      },
+      drop$3$affixChance$count: function($name, affixChance, count) {
+        return this.drop$5$affixChance$count$depthOffset$percent($name, affixChance, count, 0, 100);
       },
       _bolt$6$damage$range$rate: function(noun, verb, element, damage, range, rate) {
         C.JSArray_methods.add$1(this._moves, new O.BoltMove(U.Attack$(noun != null ? new O.Noun(noun) : null, verb, damage, range, element), rate));
@@ -12284,8 +12309,8 @@
     "^": "",
     Monsters_initialize: function() {
       var groups, _i, group, t1, t2, t3, description, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17;
-      groups = ["natural/animal/bird", "natural/animal/herp/salamander", "natural/animal/herp/snake", "natural/animal/mammal/bat", "natural/animal/mammal/canine", "natural/animal/mammal/feline", "natural/animal/mammal/rodent", "natural/bug/fly", "natural/bug/slug", "natural/bug/spider", "natural/bug/worm", "natural/plant/vine", "mythical/beast/dragon", "mythical/beast/hybrid", "magical/eye", "humanoid/hob/fae", "humanoid/hob/goblin", "magical/jelly", "humanoid/hob/kobold", "humanoid/human", "humanoid/saurian", "undead/skeleton"];
-      for (_i = 0; _i < 22; ++_i) {
+      groups = ["humanoid/hob/fae", "humanoid/hob/goblin", "humanoid/hob/kobold", "humanoid/human", "humanoid/orcus/ogre", "humanoid/orcus/orc", "humanoid/saurian", "magical/eye", "magical/jelly", "mythical/beast/dragon", "mythical/beast/hybrid", "natural/animal/bird", "natural/animal/herp/salamander", "natural/animal/herp/snake", "natural/animal/mammal/bat", "natural/animal/mammal/canine", "natural/animal/mammal/feline", "natural/animal/mammal/rodent", "natural/bug/fly", "natural/bug/slug", "natural/bug/spider", "natural/bug/worm", "natural/plant/vine", "undead/skeleton"];
+      for (_i = 0; _i < 24; ++_i) {
         group = groups[_i];
         $.$get$Monsters_breeds().defineTags$1("monster/" + group);
       }
@@ -12351,17 +12376,17 @@
       C.JSArray_methods.add$1(t4._moves, new U.HowlMove(10, null, 10));
       t4 = R.breed("Skoll", 36, C.Color_222_156_33, 200, null, null, null, 0);
       t4._flags = "unique";
-      t4.minion$3("varg", 3, 5);
+      t4.minion$3("canine", 5, 9);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "bite[s]", 20, 0, null));
       C.JSArray_methods.add$1(t4._moves, new U.HowlMove(10, null, 10));
       t4 = R.breed("Hati", 40, C.Color_21_87_194, 250, null, null, null, 0);
       t4._flags = "unique";
-      t4.minion$3("varg", 3, 5);
+      t4.minion$3("canine", 5, 9);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "bite[s]", 23, 0, null));
       C.JSArray_methods.add$1(t4._moves, new U.HowlMove(10, null, 10));
       t4 = R.breed("Fenrir", 44, C.Color_38_38_56, 300, null, null, null, 0);
       t4._flags = "unique";
-      t4.minion$3("varg", 3, 5);
+      t4.minion$3("canine", 3, 5);
       t4.minion$1("Skoll");
       t4.minion$1("Hati");
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "bite[s]", 26, 0, null));
@@ -12511,7 +12536,7 @@
       t4.drop$2$percent("healing", 10);
       t4 = R.breed("goblin archer", 6, C.Color_22_117_38, 36, null, null, null, 0);
       t4.count$1(2);
-      t4.minion$3("goblin peon", 0, 2);
+      t4.minion$3("goblin", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 4, 0, null));
       t15 = $.$get$Element_none();
       t4._bolt$6$damage$range$rate("the arrow", "hits", t15, 8, 8, 3);
@@ -12521,8 +12546,7 @@
       t4.drop$2$percent("healing", 10);
       t4 = R.breed("goblin fighter", 6, C.Color_142_82_55, 58, null, null, null, 0);
       t4.count$1(2);
-      t4.minion$3("goblin archer", 0, 1);
-      t4.minion$3("goblin peon", 0, 3);
+      t4.minion$3("goblin", 1, 4);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 12, 0, null));
       t4.drop$2$percent("treasure", 20);
       t4.drop$2$percent("spear", 10);
@@ -12531,9 +12555,7 @@
       t4.drop$2$percent("healing", 10);
       t4 = R.breed("goblin warrior", 8, C.Color_132_126_135, 68, null, null, null, 0);
       t4.count$1(2);
-      t4.minion$3("goblin fighter", 0, 1);
-      t4.minion$3("goblin archer", 0, 1);
-      t4.minion$3("goblin peon", 0, 3);
+      t4.minion$3("goblin", 1, 5);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 16, 0, null));
       t4.drop$2$percent("treasure", 25);
       t4.drop$2$percent("axe", 10);
@@ -12542,9 +12564,7 @@
       t4.drop$2$percent("healing", 10);
       t4._flags = "protective";
       t4 = R.breed("goblin mage", 9, C.Color_26_46_150, 50, null, null, null, 0);
-      t4.minion$3("goblin fighter", 0, 1);
-      t4.minion$3("goblin archer", 0, 1);
-      t4.minion$3("goblin peon", 0, 2);
+      t4.minion$3("goblin", 1, 4);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "whip[s]", 7, 0, null));
       t4._bolt$6$damage$range$rate("the flame", "burns", t9, 12, 8, 12);
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 16, 8, 12);
@@ -12552,10 +12572,7 @@
       t4.drop$2$percent("robe", 10);
       t4.drop$2$percent("magic", 30);
       t4 = R.breed("goblin ranger", 12, C.Color_0_64_39, 60, null, null, null, 0);
-      t4.minion$3("goblin mage", 0, 1);
-      t4.minion$3("goblin fighter", 0, 1);
-      t4.minion$3("goblin archer", 0, 1);
-      t4.minion$3("goblin peon", 0, 2);
+      t4.minion$3("goblin", 0, 5);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 10, 0, null));
       t4._bolt$6$damage$range$rate("the arrow", "hits", t15, 12, 8, 3);
       t4.drop$2$percent("treasure", 20);
@@ -12564,16 +12581,13 @@
       t4.drop$2$percent("magic", 20);
       t4 = R.breed("Erlkonig, the Goblin Prince", 14, C.Color_38_38_56, 120, null, null, null, 0);
       t4._pronoun = C.Pronoun_he_him_his;
-      t4.minion$3("goblin mage", 1, 2);
-      t4.minion$3("goblin fighter", 1, 3);
-      t4.minion$3("goblin archer", 1, 3);
-      t4.minion$3("goblin peon", 2, 4);
+      t4.minion$3("goblin", 4, 8);
       t16 = t4._attacks;
       C.JSArray_methods.add$1(t16, U.Attack$(null, "hit[s]", 10, 0, null));
       C.JSArray_methods.add$1(t16, U.Attack$(null, "slash[es]", 14, 0, null));
       t4._bolt$6$damage$range$rate("the darkness", "crushes", t12, 20, 10, 20);
       t4.drop$2$count("treasure", 3);
-      t4.drop$3$count$depthOffset("equipment", 2, 8);
+      t4.drop$4$affixChance$count$depthOffset("equipment", 30, 2, 8);
       t4.drop$3$count$depthOffset("magic", 3, 4);
       t4._flags = "protective unique";
       t4 = R.family("i", null, "fearless", null, 40, null, 3);
@@ -12680,7 +12694,7 @@
       t4.drop$2$percent("speed", 20);
       t4 = R.breed("vexing imp", 2, C.Color_86_30_138, 16, null, null, null, 0);
       t4.count$1(2);
-      t4.minion$3("scurrilous imp", 0, 1);
+      t4.minion$3("kobold", 0, 1);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "scratch[es]", 4, 0, null));
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_1, 5));
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 6, 8, 5);
@@ -12689,7 +12703,7 @@
       C.JSArray_methods.addAll$1(R.family("k", null, null, null, 20, null, null)._groups, H.setRuntimeTypeInfo("kobold".split(" "), t2));
       t4 = R.breed("kobold", 3, C.Color_204_35_57, 20, null, null, null, 0);
       t4.count$1(3);
-      t4.minion$3("wild dog", 0, 3);
+      t4.minion$3("canine", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "poke[s]", 4, 0, null));
       C.JSArray_methods.add$1(t4._moves, new S.TeleportMove(6, 10));
       t4.drop$2$percent("treasure", 25);
@@ -12697,7 +12711,7 @@
       t4.drop$2$percent("magic", 20);
       t4 = R.breed("kobold shaman", 4, C.Color_26_46_150, 20, null, null, null, 0);
       t4.count$1(2);
-      t4.minion$3("wild dog", 0, 3);
+      t4.minion$3("canine", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "hit[s]", 4, 0, null));
       t4._bolt$6$damage$range$rate("the jet", "splashes", t5, 8, 8, 10);
       t4.drop$2$percent("treasure", 25);
@@ -12726,7 +12740,7 @@
       t4 = R.breed("imp incanter", 7, C.Color_189_106_235, 33, null, null, null, 0);
       t4.count$1(2);
       t4.minion$3("kobold", 1, 3);
-      t4.minion$3("wild dog", 0, 3);
+      t4.minion$3("canine", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "scratch[es]", 4, 0, null));
       C.JSArray_methods.add$1(t4._moves, new R.MissiveMove(C.Missive_1, 6));
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 10, 8, 5);
@@ -12735,9 +12749,8 @@
       t4.drop$2$percent("magic", 35);
       t4._flags = "cowardly";
       t4 = R.breed("imp warlock", 8, C.Color_56_16_125, 46, null, null, null, 0);
-      t4.minion$3("imp incanter", 1, 3);
-      t4.minion$3("kobold", 1, 3);
-      t4.minion$3("wild dog", 0, 3);
+      t4.minion$3("kobold", 2, 5);
+      t4.minion$3("canine", 0, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 5, 0, null));
       t4._bolt$6$damage$range$rate("the ice", "freezes", t7, 12, 8, 8);
       t4._bolt$6$damage$range$rate("the spark", "zaps", t8, 12, 8, 8);
@@ -12747,11 +12760,8 @@
       t4.drop$2$percent("magic", 30);
       t4 = R.breed("Feng", 10, C.Color_179_74_4, 80, null, null, 10, 1);
       t4._pronoun = C.Pronoun_he_him_his;
-      t4.minion$3("imp warlock", 1, 2);
-      t4.minion$3("imp incanter", 1, 2);
-      t4.minion$3("kobold priest", 1, 2);
-      t4.minion$3("kobold", 1, 3);
-      t4.minion$3("wild dog", 0, 3);
+      t4.minion$3("kobold", 4, 10);
+      t4.minion$3("canine", 1, 3);
       C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 5, 0, null));
       t7 = t4._moves;
       C.JSArray_methods.add$1(t7, new R.MissiveMove(C.Missive_1, 7));
@@ -12759,10 +12769,86 @@
       C.JSArray_methods.add$1(t7, new S.TeleportMove(30, 50));
       C.JSArray_methods.add$1(t7, new Y.ConeMove(U.Attack$(new O.Noun("the lightning"), "shocks", 12, 10, t8), 8));
       t4.drop$3$count$depthOffset("treasure", 3, 5);
-      t4.drop$3$depthOffset$percent("spear", 5, 20);
-      t4.drop$3$depthOffset$percent("armor", 5, 30);
+      t4.drop$4$affixChance$depthOffset$percent("spear", 20, 5, 20);
+      t4.drop$4$affixChance$depthOffset$percent("armor", 10, 5, 30);
       t4.drop$3$count$depthOffset("magic", 2, 5);
       t4._flags = "unique";
+      t4 = R.family("l", null, "fearless", null, 10, null, null);
+      C.JSArray_methods.addAll$1(t4._groups, H.setRuntimeTypeInfo("saurian".split(" "), t2));
+      t4._vision = 10;
+      t4._hearing = 5;
+      C.JSArray_methods.add$1(t4._defenses, new U.Defense(5, "{2} [is|are] deflected by its scales."));
+      t4 = R.breed("lizard guard", 11, C.Color_222_156_33, 26, null, null, null, 0);
+      t7 = t4._attacks;
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "claw[s]", 8, 0, null));
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "bite[s]", 10, 0, null));
+      t4.drop$2$percent("treasure", 30);
+      t4.drop$2$percent("armor", 10);
+      t4.drop$2$percent("spear", 10);
+      t4 = R.breed("lizard protector", 15, C.Color_131_158_13, 30, null, null, null, 0);
+      t4.minion$3("saurian", 0, 2);
+      t7 = t4._attacks;
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "claw[s]", 10, 0, null));
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "bite[s]", 14, 0, null));
+      t4.drop$2$percent("treasure", 30);
+      t4.drop$2$percent("armor", 10);
+      t4.drop$2$percent("spear", 10);
+      t4 = R.breed("armored lizard", 17, C.Color_132_126_135, 38, null, null, null, 0);
+      t4.minion$3("saurian", 0, 2);
+      t7 = t4._attacks;
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "claw[s]", 10, 0, null));
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "bite[s]", 15, 0, null));
+      t4.drop$2$percent("treasure", 30);
+      t4.drop$2$percent("armor", 20);
+      t4.drop$2$percent("spear", 10);
+      t4 = R.breed("scaled guardian", 19, C.Color_38_38_56, 50, null, null, null, 0);
+      t4.minion$3("saurian", 0, 3);
+      t4.minion$3("salamander", 0, 2);
+      t7 = t4._attacks;
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "claw[s]", 10, 0, null));
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "bite[s]", 15, 0, null));
+      t4.drop$2$percent("treasure", 40);
+      t4.drop$2$percent("equipment", 10);
+      t4 = R.breed("saurian", 21, C.Color_179_74_4, 64, null, null, null, 0);
+      t4.minion$3("saurian", 1, 4);
+      t4.minion$3("salamander", 0, 2);
+      t7 = t4._attacks;
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "claw[s]", 12, 0, null));
+      C.JSArray_methods.add$1(t7, U.Attack$(null, "bite[s]", 17, 0, null));
+      t4.drop$2$percent("treasure", 50);
+      t4.drop$2$percent("equipment", 10);
+      t4 = R.family("o", null, null, null, 10, null, null);
+      t4._vision = 7;
+      t4._hearing = 6;
+      C.JSArray_methods.addAll$1(t4._groups, H.setRuntimeTypeInfo("orc".split(" "), t2));
+      t4._builder0$_motility = new Q.Motility(t4._builder0$_motility._bitMask | t10);
+      t4._flags = "protective";
+      t4 = R.breed("orc", 28, C.Color_179_74_4, 100, null, null, null, 0);
+      t4.count$2(3, 6);
+      C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 12, 0, null));
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("equipment", 5);
+      t4.drop$2$percent("spear", 5);
+      t4 = R.breed("orc brute", 29, C.Color_129_217_117, 120, null, null, null, 0);
+      t4.count$1(1);
+      t4.minion$3("orc", 2, 5);
+      C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "bash[es]", 16, 0, null));
+      t4.drop$2$percent("treasure", 20);
+      t4.drop$2$percent("club", 10);
+      t4.drop$2$percent("armor", 10);
+      t4 = R.breed("orc soldier", 30, C.Color_132_126_135, 140, null, null, null, 0);
+      t4.count$2(4, 6);
+      t4.minion$3("orcus", 1, 5);
+      C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 20, 0, null));
+      t4.drop$2$percent("treasure", 25);
+      t4.drop$2$percent("axe", 10);
+      t4.drop$2$percent("armor", 10);
+      t4 = R.breed("orc chieftain", 31, C.Color_204_35_57, 180, null, null, null, 0);
+      t4.minion$3("orcus", 2, 10);
+      C.JSArray_methods.add$1(t4._attacks, U.Attack$(null, "stab[s]", 10, 0, null));
+      t4.drop$3$count$percent("treasure", 2, 40);
+      t4.drop$2$percent("equipment", 20);
+      t4.drop$2$percent("item", 20);
       t4 = R.family("p", null, null, null, 10, null, 14);
       C.JSArray_methods.addAll$1(t4._groups, H.setRuntimeTypeInfo("human".split(" "), t2));
       t4._vision = 10;
@@ -12853,10 +12939,9 @@
       t7 = t4._attacks;
       C.JSArray_methods.add$1(t7, U.Attack$(null, "bite[s]", 16, 0, null));
       C.JSArray_methods.add$1(t7, U.Attack$(null, "scratch[es]", 10, 0, null));
-      t4.minion$3("sewer rat", 5, 10);
-      t4.minion$3("plague rat", 4, 6);
+      t4.minion$3("rodent", 8, 16);
       t4.drop$2$count("treasure", 3);
-      t4.drop$3$depthOffset$percent("item", 10, 50);
+      t4.drop$4$affixChance$depthOffset$percent("item", 10, 10, 50);
       t4._flags = "unique";
       t4 = R.family("s", 5, "fearless", null, 30, -3, 2);
       C.JSArray_methods.addAll$1(t4._groups, H.setRuntimeTypeInfo("slug".split(" "), t2));
@@ -12891,17 +12976,17 @@
       t3.count$2(2, 6);
       t3._builder0$_location = C.SpawnLocation_2;
       C.JSArray_methods.add$1(t3._attacks, U.Attack$(null, "crawl[s] on", 5, 0, t9));
-      R.family("w", 10, "fearless", null, 30, null, null);
+      C.JSArray_methods.addAll$1(R.family("w", 10, "fearless", null, 30, null, null)._groups, H.setRuntimeTypeInfo("worm".split(" "), t2));
       C.JSArray_methods.add$1(R.breed("giant earthworm", 3, C.Color_255_122_105, 20, null, null, null, -2)._attacks, U.Attack$(null, "crawl[s] on", 5, 0, null));
-      C.JSArray_methods.add$1(R.breed("giant cave worm", 7, C.Color_189_144_108, 80, null, null, null, -2)._attacks, U.Attack$(null, "crawl[s] on", 8, 0, t13));
+      C.JSArray_methods.add$1(R.breed("giant cave worm", 7, C.Color_189_144_108, 80, null, null, null, -2)._attacks, U.Attack$(null, "crawl[s] on", 12, 0, t13));
       t13 = R.family("x", null, null, null, 30, null, null);
       C.JSArray_methods.addAll$1(t13._groups, H.setRuntimeTypeInfo("skeleton".split(" "), t2));
       t13._vision = 4;
       t13._hearing = 4;
-      C.JSArray_methods.add$1(R.breed("bony hand", 3, C.Color_63_64_114, 12, null, 0.3, 40, -1)._attacks, U.Attack$(null, "claw[s]", 5, 0, null));
-      C.JSArray_methods.add$1(R.breed("bony arm", 4, C.Color_132_126_135, 18, null, 0.3, 40, 0)._attacks, U.Attack$(null, "claw[s]", 7, 0, null));
-      C.JSArray_methods.add$1(R.breed("severed skull", 7, C.Color_189_144_108, 20, null, 0.3, 40, -2)._attacks, U.Attack$(null, "bite[s]", 9, 0, null));
-      t13 = R.breed("decapitated skeleton", 10, C.Color_255_238_168, 30, null, 0.5, 60, 0);
+      C.JSArray_methods.add$1(R.breed("bony hand", 3, C.Color_63_64_114, 12, null, 3, 40, -1)._attacks, U.Attack$(null, "claw[s]", 5, 0, null));
+      C.JSArray_methods.add$1(R.breed("bony arm", 4, C.Color_132_126_135, 18, null, 4, 40, 0)._attacks, U.Attack$(null, "claw[s]", 7, 0, null));
+      C.JSArray_methods.add$1(R.breed("severed skull", 7, C.Color_189_144_108, 20, null, 3, 40, -2)._attacks, U.Attack$(null, "bite[s]", 9, 0, null));
+      t13 = R.breed("decapitated skeleton", 10, C.Color_255_238_168, 30, null, 4, 60, 0);
       t13._vision = 0;
       t13._hearing = 0;
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
@@ -12909,13 +12994,13 @@
       t13.drop$2$percent("treasure", 30);
       t13.drop$2$percent("weapon", 10);
       t13.drop$2$percent("armor", 10);
-      t13 = R.breed("armless skeleton", 12, C.Color_129_217_117, 25, null, 0.3, null, 0);
+      t13 = R.breed("armless skeleton", 12, C.Color_129_217_117, 25, null, 4, null, 0);
       t3 = t13._attacks;
       C.JSArray_methods.add$1(t3, U.Attack$(null, "bite[s]", 9, 0, null));
       C.JSArray_methods.add$1(t3, U.Attack$(null, "kick[s]", 7, 0, null));
       t13.drop$2$percent("treasure", 30);
       t13.drop$2$percent("armor", 10);
-      t13 = R.breed("one-armed skeleton", 13, C.Color_131_158_13, 30, null, 0.4, null, 0);
+      t13 = R.breed("one-armed skeleton", 13, C.Color_131_158_13, 30, null, 5, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       C.JSArray_methods.add$1(t13._attacks, U.Attack$(null, "claw[s]", 7, 0, null));
       t13.toString;
@@ -12934,7 +13019,7 @@
       t13.drop$2$percent("treasure", 30);
       t13.drop$2$percent("weapon", 5);
       t13.drop$2$percent("armor", 10);
-      t13 = R.breed("skeleton", 15, C.Color_226_223_240, 40, null, null, null, 0);
+      t13 = R.breed("skeleton", 15, C.Color_226_223_240, 40, null, 6, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       t3 = t13._attacks;
       C.JSArray_methods.add$1(t3, U.Attack$(null, "claw[s]", 7, 0, null));
@@ -12959,7 +13044,7 @@
       t13.drop$2$percent("treasure", 40);
       t13.drop$2$percent("weapon", 10);
       t13.drop$2$percent("armor", 10);
-      t13 = R.breed("skeleton warrior", 17, C.Color_255_122_105, 50, null, null, null, 0);
+      t13 = R.breed("skeleton warrior", 17, C.Color_255_122_105, 50, null, 6, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       t4 = t13._attacks;
       C.JSArray_methods.add$1(t4, U.Attack$(null, "slash[es]", 13, 0, null));
@@ -12984,7 +13069,7 @@
       t13.drop$2$percent("treasure", 50);
       t13.drop$2$percent("weapon", 20);
       t13.drop$2$percent("armor", 15);
-      t13 = R.breed("robed skeleton", 19, C.Color_189_106_235, 50, null, null, null, 0);
+      t13 = R.breed("robed skeleton", 19, C.Color_189_106_235, 50, null, 4, null, 0);
       t13._builder0$_motility = new Q.Motility(t13._builder0$_motility._bitMask | t10);
       t3 = t13._attacks;
       C.JSArray_methods.add$1(t3, U.Attack$(null, "slash[es]", 13, 0, null));
@@ -13051,13 +13136,24 @@
       t1.drop$2$percent("treasure", 10);
       t1.drop$2$percent("magic", 30);
       t1 = R.breed("mischievous sprite", 7, C.Color_255_122_105, 24, null, null, null, 0);
-      C.JSArray_methods.add$1(t1._attacks, U.Attack$(null, "stab[s]", 6, 0, null));
+      C.JSArray_methods.add$1(t1._attacks, U.Attack$(null, "poke[s]", 6, 0, null));
       t3 = t1._moves;
       C.JSArray_methods.add$1(t3, new R.MissiveMove(C.Missive_1, 4));
       t1._bolt$6$damage$range$rate("the wind", "blows", t11, 8, 8, 8);
       C.JSArray_methods.add$1(t3, new S.TeleportMove(5, 5));
       t1.drop$2$percent("treasure", 10);
       t1.drop$2$percent("magic", 30);
+      t1 = R.breed("Tink", 8, C.Color_22_117_38, 40, null, null, 10, 0);
+      t1._pronoun = C.Pronoun_she_her_her;
+      C.JSArray_methods.add$1(t1._attacks, U.Attack$(null, "poke[s]", 8, 0, null));
+      t3 = t1._moves;
+      C.JSArray_methods.add$1(t3, new R.MissiveMove(C.Missive_1, 4));
+      t1._bolt$6$damage$range$rate("the spark", "zaps", t8, 4, 8, 7);
+      t1._bolt$6$damage$range$rate("the wind", "blows", t11, 7, 8, 8);
+      C.JSArray_methods.add$1(t3, new S.TeleportMove(5, 5));
+      t1.drop$2$count("treasure", 2);
+      t1.drop$3$count$depthOffset("magic", 3, 3);
+      t1._flags = "unique";
       t1 = R.family("H", null, null, null, null, null, null);
       C.JSArray_methods.addAll$1(t1._groups, H.setRuntimeTypeInfo("hybrid".split(" "), t2));
       t1._vision = 10;
@@ -13074,7 +13170,7 @@
       t1 = R.breed("griffin", 35, C.Color_222_156_33, 200, null, null, null, 0)._attacks;
       C.JSArray_methods.add$1(t1, U.Attack$(null, "bite[s]", 20, 0, null));
       C.JSArray_methods.add$1(t1, U.Attack$(null, "scratch[es]", 15, 0, null));
-      R.family("Q", null, null, null, null, null, null);
+      C.JSArray_methods.addAll$1(R.family("Q", null, null, null, null, null, null)._groups, H.setRuntimeTypeInfo("magical".split(" "), t2));
       t1 = R.breed("Nameless Unmaker", 100, C.Color_86_30_138, 1000, null, null, null, 2);
       t1._vision = 16;
       t1._hearing = 16;
@@ -13086,7 +13182,7 @@
       C.JSArray_methods.add$1(t1._moves, new Y.ConeMove(t12, 5));
       t1._flags = "fearless unique";
       t1._builder0$_motility = new Q.Motility(t1._builder0$_motility._bitMask | t10);
-      t1.drop$2$count("treasure", 10);
+      t1.drop$3$affixChance$count("item", 50, 20);
       C.JSArray_methods.addAll$1(R.family("R", null, null, null, null, null, null)._groups, H.setRuntimeTypeInfo("herp".split(" "), t2));
       t1 = R.breed("frog", 1, C.Color_131_158_13, 4, 30, null, 30, 0);
       t1._vision = 6;
@@ -13095,52 +13191,6 @@
       t12 = $.$get$Motility_swim();
       t1._builder0$_motility = new Q.Motility(t10._bitMask | t12._bitMask);
       C.JSArray_methods.add$1(t1._attacks, U.Attack$(null, "hop[s] on", 2, 0, null));
-      t1 = R.family("R", null, "fearless", null, 10, null, null);
-      C.JSArray_methods.addAll$1(t1._groups, H.setRuntimeTypeInfo("saurian".split(" "), t2));
-      t1._vision = 10;
-      t1._hearing = 5;
-      t1 = R.breed("lizard guard", 11, C.Color_222_156_33, 26, null, null, null, 0);
-      t12 = t1._attacks;
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 8, 0, null));
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 10, 0, null));
-      t1.drop$2$percent("treasure", 30);
-      t1.drop$2$percent("armor", 10);
-      t1.drop$2$percent("spear", 10);
-      t1 = R.breed("lizard protector", 15, C.Color_131_158_13, 30, null, null, null, 0);
-      t1.minion$3("lizard guard", 0, 2);
-      t12 = t1._attacks;
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 10, 0, null));
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 14, 0, null));
-      t1.drop$2$percent("treasure", 30);
-      t1.drop$2$percent("armor", 10);
-      t1.drop$2$percent("spear", 10);
-      t1 = R.breed("armored lizard", 17, C.Color_132_126_135, 38, null, null, null, 0);
-      t1.minion$3("lizard guard", 0, 2);
-      t12 = t1._attacks;
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 10, 0, null));
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 15, 0, null));
-      t1.drop$2$percent("treasure", 30);
-      t1.drop$2$percent("armor", 20);
-      t1.drop$2$percent("spear", 10);
-      t1 = R.breed("scaled guardian", 19, C.Color_38_38_56, 50, null, null, null, 0);
-      t1.minion$3("lizard protector", 0, 2);
-      t1.minion$3("lizard guard", 0, 1);
-      t1.minion$3("salamander", 0, 1);
-      t12 = t1._attacks;
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 10, 0, null));
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 15, 0, null));
-      t1.drop$2$percent("treasure", 40);
-      t1.drop$2$percent("equipment", 10);
-      t1 = R.breed("saurian", 21, C.Color_179_74_4, 64, null, null, null, 0);
-      t1.minion$3("lizard protector", 0, 2);
-      t1.minion$3("armored lizard", 0, 1);
-      t1.minion$3("lizard guard", 0, 1);
-      t1.minion$3("salamander", 0, 2);
-      t12 = t1._attacks;
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "claw[s]", 12, 0, null));
-      C.JSArray_methods.add$1(t12, U.Attack$(null, "bite[s]", 17, 0, null));
-      t1.drop$2$percent("treasure", 50);
-      t1.drop$2$percent("equipment", 10);
       t1 = R.family("R", 30, null, null, 20, null, null);
       C.JSArray_methods.addAll$1(t1._groups, H.setRuntimeTypeInfo("salamander".split(" "), t2));
       t1._vision = 6;
@@ -13172,6 +13222,58 @@
       R.finishBreed();
       t9 = $.$get$Monsters_breeds();
       B.BreedRef_resolve(t9.get$find(t9));
+    }
+  }], ["", "package:hauberk/src/content/monster/spawns.dart",, B, {
+    "^": "",
+    _BreedSpawn: {
+      "^": "Object;_spawns$_breed",
+      spawnBreed$2: function(depth, addMonster) {
+        H.functionTypeCheck(addMonster, {func: 1, ret: -1, args: [B.Breed]}).call$1(this._spawns$_breed._breed$_breed);
+      },
+      $isSpawn: 1
+    },
+    _TagSpawn: {
+      "^": "Object;_spawns$_tag",
+      spawnBreed$2: function(depth, addMonster) {
+        var t1, tries, breed;
+        H.functionTypeCheck(addMonster, {func: 1, ret: -1, args: [B.Breed]});
+        for (t1 = this._spawns$_tag, tries = 0; tries < 10; ++tries) {
+          breed = $.$get$Monsters_breeds().tryChoose$3$includeParents$tag(depth, false, t1);
+          if (breed == null)
+            continue;
+          if (breed.flags.unique)
+            continue;
+          addMonster.call$1(breed);
+          break;
+        }
+      },
+      $isSpawn: 1
+    },
+    _RepeatSpawn: {
+      "^": "Object;_minCount,_spawns$_maxCount,_spawn",
+      spawnBreed$2: function(depth, addMonster) {
+        var t1, taper, t2, count, i;
+        H.functionTypeCheck(addMonster, {func: 1, ret: -1, args: [B.Breed]});
+        t1 = this._spawns$_maxCount;
+        taper = t1 > 3 ? 4 : 5;
+        if (t1 > 6)
+          taper = 3;
+        t2 = $.$get$rng();
+        count = t2.inclusive$2(this._minCount, t1) + t2.taper$2(0, taper);
+        for (t1 = this._spawn, i = 0; i < count; ++i)
+          t1.spawnBreed$2(depth, addMonster);
+      },
+      $isSpawn: 1
+    },
+    _AllOfSpawn: {
+      "^": "Object;_spawns",
+      spawnBreed$2: function(depth, addMonster) {
+        var t1, t2, _i;
+        H.functionTypeCheck(addMonster, {func: 1, ret: -1, args: [B.Breed]});
+        for (t1 = this._spawns, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i)
+          t1[_i].spawnBreed$2(depth, addMonster);
+      },
+      $isSpawn: 1
     }
   }], ["", "package:hauberk/src/content/move/amputate.dart",, Q, {
     "^": "",
@@ -14093,9 +14195,9 @@
       if (!t1.containsKey$1(0, $name))
         throw H.wrapException(P.ArgumentError$("Unknown skill '" + H.S($name) + "'."));
       return t1.$index(0, $name);
-    }, "call$1", "skills_Skills_find$closure", 4, 0, 137, 17],
+    }, "call$1", "skills_Skills_find$closure", 4, 0, 138, 17],
     Skills_closure: {
-      "^": "Closure:62;",
+      "^": "Closure:63;",
       call$1: function(skill) {
         return J.get$name$x(skill);
       }
@@ -15032,44 +15134,47 @@
           return result;
         },
         ArchitecturalStyle__initialize: function() {
-          var t1 = new F.ArchitecturalStyle__initialize_addStyle();
-          t1.call$5$create$decor$decorDensity$startFrequency("dungeon", new F.ArchitecturalStyle__initialize_closure(), "dungeon", 0.07, 10);
-          t1.call$6$create$decor$decorDensity$endFrequency$startFrequency("keep", new F.ArchitecturalStyle__initialize_closure0(), "keep", 0.07, 5, 2);
-          t1.call$7$create$decor$decorDensity$endFrequency$monsters$startFrequency("catacomb", new F.ArchitecturalStyle__initialize_closure1(), "catacomb", 0.02, 2, "bat bug humanoid natural", 1);
-          t1.call$7$create$decor$decorDensity$endFrequency$monsters$startFrequency("cavern", new F.ArchitecturalStyle__initialize_closure2(), "glowing-moss", 0.3, 1, "animal bat bug natural", 0.2);
-          t1.call$7$canFill$create$decor$decorDensity$monsterDensity$monsters("lake", false, new F.ArchitecturalStyle__initialize_closure3(), "water", 0.01, 0, "animal herp");
-          t1.call$7$canFill$create$decor$decorDensity$monsterDensity$monsters("river", false, new F.ArchitecturalStyle__initialize_closure4(), "water", 0.01, 0, "animal herp");
-          t1 = new F.ArchitecturalStyle__initialize_pit(t1);
-          t1.call$3$end$start("bug", 40, 1);
-          t1.call$3$end$start("jelly", 50, 5);
-          t1.call$3$end$start("bat", 40, 10);
-          t1.call$3$end$start("rodent", 50, 1);
-          t1.call$3$end$start("snake", 60, 8);
-          t1.call$3$end$start("plant", 40, 15);
-          t1.call$3$end$start("eye", 100, 20);
-          t1.call$3$end$start("dragon", 100, 60);
+          var t1, t2;
+          t1 = new F.ArchitecturalStyle__initialize_addStyle();
+          t1.call$5$create$decor$decorDensity$startFrequency("dungeon", new F.ArchitecturalStyle__initialize_closure(), "dungeon", 0.09, 10);
+          t1.call$7$create$decor$decorDensity$endFrequency$monsters$startFrequency("catacomb", new F.ArchitecturalStyle__initialize_closure0(), "catacomb", 0.02, 2, "bat bug humanoid natural", 1);
+          t1.call$7$create$decor$decorDensity$endFrequency$monsters$startFrequency("cavern", new F.ArchitecturalStyle__initialize_closure1(), "glowing-moss", 0.3, 1, "animal bat bug natural", 0.2);
+          t1.call$7$canFill$create$decor$decorDensity$monsterDensity$monsters("lake", false, new F.ArchitecturalStyle__initialize_closure2(), "water", 0.01, 0, "animal herp");
+          t1.call$7$canFill$create$decor$decorDensity$monsterDensity$monsters("river", false, new F.ArchitecturalStyle__initialize_closure3(), "water", 0.01, 0, "animal herp");
+          t2 = new F.ArchitecturalStyle__initialize_pit(t1);
+          t2.call$3$end$start("bug", 40, 1);
+          t2.call$3$end$start("jelly", 50, 5);
+          t2.call$3$end$start("bat", 40, 10);
+          t2.call$3$end$start("rodent", 50, 1);
+          t2.call$3$end$start("snake", 60, 8);
+          t2.call$3$end$start("plant", 40, 15);
+          t2.call$3$end$start("eye", 100, 20);
+          t2.call$3$end$start("dragon", 100, 60);
+          t1 = new F.ArchitecturalStyle__initialize_keep(t1);
+          t1.call$3$end$start("kobold", 16, 2);
+          t1.call$3$end$start("goblin", 23, 5);
+          t1.call$3$end$start("saurian", 30, 10);
+          t1.call$3$end$start("orc", 40, 28);
         }
       }
     },
     ArchitecturalStyle__initialize_addStyle: {
-      "^": "Closure:63;",
+      "^": "Closure:64;",
       call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency: function($name, canFill, create, decor, decorDensity, end, endFrequency, itemDensity, monsterDensity, monsters, start, startFrequency) {
-        var t1, t2, t3;
+        var t1, t2, t3, t4;
         H.functionTypeCheck(create, {func: 1, ret: X.Architecture});
         t1 = H.setRuntimeTypeInfo((monsters == null ? "monster" : monsters).split(" "), [P.String]);
         t2 = monsterDensity == null ? 1 : monsterDensity;
-        t3 = $.$get$ArchitecturalStyle__styles();
-        t3.toString;
-        t3._resource$_add$7(H.assertSubtypeOfRuntimeType(new F.ArchitecturalStyle($name, decor, decorDensity, t1, t2, 1, create, canFill !== false), H.getTypeArgumentByIndex(t3, 0)), null, start, end, startFrequency, endFrequency, null);
+        t3 = itemDensity == null ? 1 : itemDensity;
+        t4 = $.$get$ArchitecturalStyle__styles();
+        t4.toString;
+        t4._resource$_add$7(H.assertSubtypeOfRuntimeType(new F.ArchitecturalStyle($name, decor, decorDensity, t1, t2, t3, create, canFill !== false), H.getTypeArgumentByIndex(t4, 0)), null, start, end, startFrequency, endFrequency, null);
       },
       call$1: function($name) {
         return this.call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency($name, null, null, null, null, 100, null, null, null, null, 1, null);
       },
       call$5$create$decor$decorDensity$startFrequency: function($name, create, decor, decorDensity, startFrequency) {
         return this.call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency($name, null, create, decor, decorDensity, 100, null, null, null, null, 1, startFrequency);
-      },
-      call$6$create$decor$decorDensity$endFrequency$startFrequency: function($name, create, decor, decorDensity, endFrequency, startFrequency) {
-        return this.call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency($name, null, create, decor, decorDensity, 100, endFrequency, null, null, null, 1, startFrequency);
       },
       call$7$create$decor$decorDensity$endFrequency$monsters$startFrequency: function($name, create, decor, decorDensity, endFrequency, monsters, startFrequency) {
         return this.call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency($name, null, create, decor, decorDensity, 100, endFrequency, null, null, monsters, 1, startFrequency);
@@ -15083,57 +15188,45 @@
       call$3$end$start: function($name, end, start) {
         return this.call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency($name, null, null, null, null, end, null, null, null, null, start, null);
       },
+      call$11$canFill$create$decor$decorDensity$end$itemDensity$monsterDensity$monsters$start$startFrequency: function($name, canFill, create, decor, decorDensity, end, itemDensity, monsterDensity, monsters, start, startFrequency) {
+        return this.call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency($name, canFill, create, decor, decorDensity, end, null, itemDensity, monsterDensity, monsters, start, startFrequency);
+      },
       call$8$canFill$create$decor$decorDensity$end$start$startFrequency: function($name, canFill, create, decor, decorDensity, end, start, startFrequency) {
         return this.call$12$canFill$create$decor$decorDensity$end$endFrequency$itemDensity$monsterDensity$monsters$start$startFrequency($name, canFill, create, decor, decorDensity, end, null, null, null, null, start, startFrequency);
       }
     },
     ArchitecturalStyle__initialize_closure: {
-      "^": "Closure:64;",
+      "^": "Closure:65;",
       call$0: function() {
         return new Q.Dungeon(0.3);
       }
     },
     ArchitecturalStyle__initialize_closure0: {
-      "^": "Closure:65;",
-      call$0: function() {
-        var t1, t2;
-        t1 = $.$get$rng();
-        t1.toString;
-        H.assertSubtype(C.List_swd, "$isList", [Z.TakeFrom], "$asList");
-        t2 = C.List_swd.length;
-        t1 = t1.range$1(t2);
-        if (t1 < 0 || t1 >= t2)
-          return H.ioore(C.List_swd, t1);
-        t2 = Z.Junction;
-        return new Z.Keep(new Z.JunctionSet(C.List_swd[t1], P.LinkedHashMap_LinkedHashMap$_empty(L.Vec, t2), H.setRuntimeTypeInfo([], [t2])));
-      }
-    },
-    ArchitecturalStyle__initialize_closure1: {
       "^": "Closure:66;",
       call$0: function() {
         return new D.Catacomb(0.3, 8, 32);
       }
     },
-    ArchitecturalStyle__initialize_closure2: {
+    ArchitecturalStyle__initialize_closure1: {
       "^": "Closure:67;",
       call$0: function() {
         return new Q.Cavern();
       }
     },
-    ArchitecturalStyle__initialize_closure3: {
+    ArchitecturalStyle__initialize_closure2: {
       "^": "Closure:68;",
       call$0: function() {
         return new F.Lake();
       }
     },
-    ArchitecturalStyle__initialize_closure4: {
+    ArchitecturalStyle__initialize_closure3: {
       "^": "Closure:69;",
       call$0: function() {
         return new G.River();
       }
     },
     ArchitecturalStyle__initialize_pit: {
-      "^": "Closure:70;addStyle",
+      "^": "Closure:27;addStyle",
       call$3$end$start: function(monsterGroup, end, start) {
         this.addStyle.call$8$canFill$create$decor$decorDensity$end$start$startFrequency(monsterGroup + " pit", false, new F.ArchitecturalStyle__initialize_pit_closure(monsterGroup), "glowing-moss", 0.05, end, start, 0.2);
       },
@@ -15146,6 +15239,21 @@
       call$0: function() {
         var t1 = H.setRuntimeTypeInfo([], [L.Vec]);
         return new A.Pit(this.monsterGroup, 12, 24, t1);
+      }
+    },
+    ArchitecturalStyle__initialize_keep: {
+      "^": "Closure:27;addStyle",
+      call$3$end$start: function(monsters, end, start) {
+        this.addStyle.call$11$canFill$create$decor$decorDensity$end$itemDensity$monsterDensity$monsters$start$startFrequency(monsters + " keep", false, new F.ArchitecturalStyle__initialize_keep_closure(), "keep", 0.07, end, 1.5, 0, monsters, start, 2);
+      },
+      call$1: function(monsters) {
+        return this.call$3$end$start(monsters, null, null);
+      }
+    },
+    ArchitecturalStyle__initialize_keep_closure: {
+      "^": "Closure:72;",
+      call$0: function() {
+        return Z.Keep_Keep(5);
       }
     }
   }], ["", "package:hauberk/src/content/stage/blob.dart",, M, {
@@ -15991,7 +16099,7 @@
       chooseBreed$3$includeParentTags$tag: function(depth, includeParentTags, tag) {
         var breed;
         for (; true;) {
-          breed = $.$get$Monsters_breeds().tryChoose$3$includeParents$tag(depth, false, tag);
+          breed = $.$get$Monsters_breeds().tryChoose$3$includeParents$tag(depth, includeParentTags, tag);
           if (this._canSpawn$1(breed))
             return breed;
         }
@@ -16126,13 +16234,13 @@
       }
     },
     Decorator_decorate_closure: {
-      "^": "Closure:37;",
+      "^": "Closure:24;",
       call$0: function() {
         return H.setRuntimeTypeInfo([], [L.Vec]);
       }
     },
     Decorator__spawnMonsters_closure: {
-      "^": "Closure:72;$this,spawned",
+      "^": "Closure:73;$this,spawned",
       call$2: function(architecture, tiles) {
         var t1;
         H.interceptedTypeCheck(architecture, "$isArchitecture");
@@ -16145,25 +16253,27 @@
       }
     },
     Decorator__spawnMonster_spawn: {
-      "^": "Closure:73;_box_0,$this,isCorpse,density",
+      "^": "Closure:74;_box_0,$this,isCorpse,density",
       call$2: function(breed, pos) {
-        var t1, monster, t2;
+        var t1, t2, monster;
         t1 = this.$this;
+        t2 = t1._decorator$_architect.stage;
+        if (t2._actorsByTile.$index(0, pos) != null)
+          return;
         if (!t1._canSpawn$1(breed))
           return;
         if (breed.flags.unique)
           t1._spawnedUniques.add$1(0, breed);
-        t1 = t1._decorator$_architect.stage;
         if (this.isCorpse)
-          t1.placeDrops$3(pos, breed.motility, breed.drop);
+          t2.placeDrops$3(pos, breed.motility, breed.drop);
         else {
-          monster = breed.spawn$2(t1.game, pos);
-          t1.addActor$1(monster);
-          t2 = this._box_0;
-          t2.experience = t2.experience + monster._breed.get$experience();
-          t2 = this.density;
-          if (t2 != null)
-            t2.reduceAround$4(t1, pos, $.$get$Motility_all(), 5);
+          monster = breed.spawn$2(t2.game, pos);
+          t2.addActor$1(monster);
+          t1 = this._box_0;
+          t1.experience = t1.experience + monster._breed.get$experience();
+          t1 = this.density;
+          if (t1 != null)
+            t1.reduceAround$4(t2, pos, $.$get$Motility_all(), 5);
         }
       }
     },
@@ -16424,7 +16534,7 @@
   }], ["", "package:hauberk/src/content/stage/keep.dart",, Z, {
     "^": "",
     Keep: {
-      "^": "Architecture;_junctions,0_architect,0_style,0_region",
+      "^": "Architecture;_junctions,_placedRooms,_maxRooms,0_architect,0_style,0_region",
       get$paintStyle: function() {
         return "stone";
       },
@@ -16442,7 +16552,7 @@
                 case 0:
                   // Function start
                   $.Keep_debugJunctions = $async$self._junctions;
-                  startingRooms = $async$self._region === C.Region_everywhere ? 20 : 1;
+                  startingRooms = $async$self._region === C.Region_everywhere && $async$self._maxRooms == null ? 20 : 1;
                   i = 0;
                 case 2:
                   // for condition
@@ -16472,10 +16582,32 @@
           };
         }, P.String);
       },
+      spawnMonsters$1: function(painter) {
+        var t1, t2, tiles, t3, t4, t5, _i, pos, t6, max, t7, breed;
+        t1 = painter._decorator;
+        t2 = J.where$1$ax(t1._tilesByArchitecture.$index(0, painter._architecture), new Z.Keep_spawnMonsters_closure(painter));
+        tiles = P.List_List$from(t2, true, H.getTypeArgumentByIndex(t2, 0));
+        t2 = $.$get$rng();
+        t2.toString;
+        C.JSArray_methods.shuffle$1(H.assertSubtype(tiles, "$isList", [L.Vec], "$asList"), t2._random);
+        for (t3 = tiles.length, t4 = painter._painter$_architect.depth, t5 = [P.String], _i = 0; _i < tiles.length; tiles.length === t3 || (0, H.throwConcurrentModificationError)(tiles), ++_i) {
+          pos = tiles[_i];
+          if (t2._random.nextInt$1(20) !== 0)
+            continue;
+          t6 = H.assertSubtype(this._style.monsterGroups, "$isList", t5, "$asList");
+          max = t6.length;
+          t7 = t2._random.nextInt$1(max - 0);
+          if (t7 < 0 || t7 >= t6.length)
+            return H.ioore(t6, t7);
+          breed = t1.chooseBreed$3$includeParentTags$tag(t4, null, t6[t7]);
+          t1._spawnMonster$3(null, H.interceptedTypeCheck(pos, "$isVec"), breed);
+        }
+        return true;
+      },
       _growRooms$0: function() {
         var $async$self = this;
         return P._makeSyncStarIterable(function() {
-          var $async$goto = 0, $async$handler = 2, $async$currentError, t1, t2, t3, t4, t5, junction, t6;
+          var $async$goto = 0, $async$handler = 2, $async$currentError, t1, t2, t3, t4, t5, t6, t7, junction, t8;
           return function $async$_growRooms$0($async$errorCode, $async$result) {
             if ($async$errorCode === 1) {
               $async$currentError = $async$result;
@@ -16491,17 +16623,17 @@
                       $async$goto = 1;
                       break;
                     }
-                    t1 = $async$self._junctions, t2 = t1._junctions, t3 = Z.Junction, t4 = t1._byPosition;
+                    t1 = $async$self._junctions, t2 = t1._junctions, t3 = Z.Junction, t4 = t1._byPosition, t5 = $async$self._maxRooms, t6 = t5 != null;
                   case 3:
                     // for condition
-                    if (!(t5 = t2.length, t5 !== 0)) {
+                    if (!(t7 = t2.length, t7 !== 0)) {
                       // goto after for
                       $async$goto = 4;
                       break;
                     }
                     switch (t1._takeFrom) {
                       case C.TakeFrom_0:
-                        if (0 >= t5) {
+                        if (0 >= t7) {
                           H.ioore(t2, -1);
                           // goto return
                           $async$goto = 1;
@@ -16518,32 +16650,40 @@
                       default:
                         junction = null;
                     }
-                    t5 = junction.position;
-                    t4.remove$1(0, t5);
+                    t7 = junction.position;
+                    t4.remove$1(0, t7);
                     ++junction.tries;
-                    t6 = t5.$add(0, junction.direction);
-                    if (!$async$self._architect._canCarve$2($async$self, t6)) {
+                    t8 = t7.$add(0, junction.direction);
+                    if (!$async$self._architect._canCarve$2($async$self, t8)) {
                       // goto for condition
                       $async$goto = 3;
                       break;
                     }
-                    $async$goto = $async$self._tryAttachRoom$1(junction) ? 5 : 6;
+                    $async$goto = $async$self._tryAttachRoom$1(junction) ? 5 : 7;
                     break;
                   case 5:
                     // then
-                    $async$goto = 7;
+                    $async$goto = 8;
                     return "Room";
-                  case 7:
+                  case 8:
                     // after yield
-                    // goto for condition
-                    $async$goto = 3;
+                    t7 = ++$async$self._placedRooms;
+                    if (t6 && t7 >= t5) {
+                      // goto after for
+                      $async$goto = 4;
+                      break;
+                    }
+                    // goto join
+                    $async$goto = 6;
                     break;
-                  case 6:
-                    // join
+                  case 7:
+                    // else
                     if (junction.tries < 5) {
-                      t4.$indexSet(0, t5, junction);
+                      t4.$indexSet(0, t7, junction);
                       C.JSArray_methods.add$1(t2, junction);
                     }
+                  case 6:
+                    // join
                     // goto for condition
                     $async$goto = 3;
                     break;
@@ -16737,10 +16877,30 @@
           C.JSArray_methods.add$1(t6, junction);
         }
         return true;
+      },
+      static: {
+        Keep_Keep: function(maxRooms) {
+          var t1, t2, t3;
+          t1 = $.$get$rng().triangleInt$2(maxRooms, maxRooms / 2 | 0);
+          t2 = Z.Junction;
+          t3 = H.setRuntimeTypeInfo([], [t2]);
+          return new Z.Keep(new Z.JunctionSet(C.TakeFrom_1, P.LinkedHashMap_LinkedHashMap$_empty(L.Vec, t2), t3), 0, t1);
+        }
+      }
+    },
+    Keep_spawnMonsters_closure: {
+      "^": "Closure:0;painter",
+      call$1: function(pos) {
+        var t1, t2;
+        H.interceptedTypeCheck(pos, "$isVec");
+        t1 = this.painter._painter$_architect.stage.tiles.$index(0, pos).type;
+        t1.toString;
+        t2 = $.$get$Motility_walk();
+        return (t1.motility._bitMask & t2._bitMask) !== 0;
       }
     },
     Keep__regionContains_diagonal: {
-      "^": "Closure:74;$this",
+      "^": "Closure:75;$this",
       call$2: function(xDistance, yDistance) {
         var t1 = this.$this._architect.stage.tiles.bounds.size;
         return K.lerpDouble(xDistance + yDistance, 0, t1.x + t1.y, 2, -3);
@@ -16881,13 +17041,13 @@
       "^": "PaintStyle;_types",
       paintTile$2: function(painter, pos) {
         if (painter._painter$_architect.stage.tiles.$index(0, pos).type == $.$get$Tiles_doorway())
-          switch ($.$get$rng().range$1(3)) {
+          switch ($.$get$rng().range$1(6)) {
             case 0:
               return $.$get$Tiles_openDoor();
             case 1:
-              return $.$get$Tiles_closedDoor();
-            case 2:
               return $.$get$Tiles_floor();
+            default:
+              return $.$get$Tiles_closedDoor();
           }
         return this.super$PaintStyle$paintTile(painter, pos);
       }
@@ -17835,16 +17995,16 @@
     "^": "",
     _closeDoor: [function(pos) {
       return new B.CloseDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_closedDoor());
-    }, "call$1", "tiles___closeDoor$closure", 4, 0, 11, 0],
+    }, "call$1", "tiles___closeDoor$closure", 4, 0, 10, 0],
     _openDoor: [function(pos) {
       return new B.OpenDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_openDoor());
-    }, "call$1", "tiles___openDoor$closure", 4, 0, 11, 0],
+    }, "call$1", "tiles___openDoor$closure", 4, 0, 10, 0],
     _closeBarredDoor: [function(pos) {
       return new B.CloseDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_closedBarredDoor());
-    }, "call$1", "tiles___closeBarredDoor$closure", 4, 0, 11, 0],
+    }, "call$1", "tiles___closeBarredDoor$closure", 4, 0, 10, 0],
     _openBarredDoor: [function(pos) {
       return new B.OpenDoorAction(H.interceptedTypeCheck(pos, "$isVec"), $.$get$Tiles_openBarredDoor());
-    }, "call$1", "tiles___openBarredDoor$closure", 4, 0, 11, 0],
+    }, "call$1", "tiles___openBarredDoor$closure", 4, 0, 10, 0],
     Tiles_multi: function($name, char, fore, $back, count, generate) {
       var result, t1, i, charCode;
       H.functionTypeCheck(generate, {func: 1, ret: Q.TileType, args: [Z._TileBuilder, P.int]});
@@ -17870,20 +18030,20 @@
       return H.setRuntimeTypeInfo([$.$get$Tiles_burntFloor(), $.$get$Tiles_burntFloor2()], [Q.TileType]);
     },
     Tiles_closure: {
-      "^": "Closure:75;",
+      "^": "Closure:76;",
       call$2: function(tile, n) {
         tile._emanation = 192 - n * 12;
         return tile._tiles$_motility$1($.$get$Motility_fly());
       }
     },
     Tiles_closure0: {
-      "^": "Closure:76;",
+      "^": "Closure:77;",
       call$1: [function(pos) {
         return new Q.OpenChestAction(H.interceptedTypeCheck(pos, "$isVec"));
       }, null, null, 4, 0, null, 0, "call"]
     },
     Tiles_closure1: {
-      "^": "Closure:77;",
+      "^": "Closure:78;",
       call$1: [function(pos) {
         return new Q.OpenBarrelAction(H.interceptedTypeCheck(pos, "$isVec"));
       }, null, null, 4, 0, null, 0, "call"]
@@ -18400,19 +18560,19 @@
       }
     },
     DestroyActionMixin_destroyFloorItems_closure: {
-      "^": "Closure:9;$this,pos",
+      "^": "Closure:8;$this,pos",
       call$1: function(item) {
         this.$this._action$_game._stage.removeItem$2(item, this.pos);
       }
     },
     DestroyActionMixin_destroyHeldItems_closure: {
-      "^": "Closure:9;$this",
+      "^": "Closure:8;$this",
       call$1: function(item) {
         C.JSArray_methods.remove$1(H.interceptedTypeCast(this.$this._actor, "$isHero").save._inventory._items, item);
       }
     },
     DestroyActionMixin_destroyHeldItems_closure0: {
-      "^": "Closure:9;_box_0,$this",
+      "^": "Closure:8;_box_0,$this",
       call$1: function(item) {
         H.interceptedTypeCast(this.$this._actor, "$isHero").save._equipment.remove$1(0, item);
         this._box_0.anyEquipmentDestroyed = true;
@@ -18831,14 +18991,14 @@
       $isNoun: 1
     },
     Actor_closure: {
-      "^": "Closure:23;$this",
+      "^": "Closure:28;$this",
       call$1: function(condition) {
         H.interceptedTypeCheck(condition, "$isCondition")._condition$_actor = this.$this;
         return;
       }
     },
     Actor_finishTurn_closure: {
-      "^": "Closure:23;action",
+      "^": "Closure:28;action",
       call$1: function(condition) {
         var t1;
         H.interceptedTypeCheck(condition, "$isCondition");
@@ -19036,7 +19196,7 @@
       }, null, null, 4, 0, null, 1, "call"]
     },
     Element_closure0: {
-      "^": "Closure:81;",
+      "^": "Closure:82;",
       call$4: [function(_, __, ___, ____) {
         H.interceptedTypeCheck(_, "$isVec");
         H.interceptedTypeCheck(__, "$isHit");
@@ -19249,7 +19409,7 @@
       }
     },
     Game_generate_closure: {
-      "^": "Closure:10;_box_0",
+      "^": "Closure:9;_box_0",
       call$1: function(pos) {
         this._box_0.heroPos = pos;
       }
@@ -19278,7 +19438,7 @@
         return this.message$4($receiver, message, noun1, null, null);
       }, "message$2", function($receiver, message, noun1, noun2) {
         return this.message$4($receiver, message, noun1, noun2, null);
-      }, "message$3", "call$4", "call$1", "call$2", "call$3", "get$message", 5, 6, 83],
+      }, "message$3", "call$4", "call$1", "call$2", "call$3", "get$message", 5, 6, 84],
       add$5: function(_, type, message, noun1, noun2, noun3) {
         var t1, last;
         message = this._format$4(message, noun1, noun2, noun3);
@@ -19430,7 +19590,7 @@
       return J.$and$bn(t1.call$1(J.$add$ansx(t1.call$1(J.$add$ansx(t1.call$1(0), x)), y)), 4294967295);
     },
     hashPoint_hashInt: {
-      "^": "Closure:84;",
+      "^": "Closure:85;",
       call$1: function(n) {
         n = ((C.JSInt_methods._shrOtherPositive$1(n, 16) ^ n) >>> 0) * 73244475 & 4294967295;
         n = ((n >>> 16 ^ n) >>> 0) * 73244475 & 4294967295;
@@ -19534,14 +19694,21 @@
         return new H.EfficientLengthMappedIterable(t1, H.functionTypeCheck(new Y.ResourceSet_getTags_closure(this), {func: 1, ret: t2, args: [t3]}), [t3, t2]);
       },
       tryChoose$3$includeParents$tag: function(depth, includeParents, tag) {
-        var goalTag, label;
+        var t1, t2, goalTag, label;
+        t1 = {};
+        t1.includeParents = includeParents;
+        if (includeParents == null) {
+          t1.includeParents = true;
+          t2 = true;
+        } else
+          t2 = includeParents;
         if (tag == null)
           return this._runQuery$3("", depth, new Y.ResourceSet_tryChoose_closure(this));
         goalTag = this._tags.$index(0, tag);
         label = goalTag.name;
-        if (includeParents === false)
+        if (!t2)
           label = J.$add$ansx(label, " (only)");
-        return this._runQuery$3(label, depth, new Y.ResourceSet_tryChoose_closure0(this, goalTag));
+        return this._runQuery$3(label, depth, new Y.ResourceSet_tryChoose_closure0(t1, this, goalTag));
       },
       tryChoose$1: function(depth) {
         return this.tryChoose$3$includeParents$tag(depth, null, null);
@@ -19633,15 +19800,20 @@
       }
     },
     ResourceSet_tryChoose_closure0: {
-      "^": "Closure;$this,goalTag",
+      "^": "Closure;_box_0,$this,goalTag",
       call$1: function(resource) {
-        var t1, t2, t3, thisTag, t4, thisTag0, scale;
-        for (t1 = H.assertSubtype(resource, "$is_Resource", [H.getTypeArgumentByIndex(this.$this, 0)], "$as_Resource")._tags, t2 = H.getTypeArgumentByIndex(t1, 0), t3 = P._LinkedHashSetIterator$(t1, t1._collection$_modifications, t2), thisTag = this.goalTag; t3.moveNext$0();) {
-          t4 = t3._collection$_current;
-          for (thisTag0 = thisTag; thisTag0 != null; thisTag0 = thisTag0.parent)
-            if (thisTag0 === t4)
+        var t1, t2, t3, thisTag, t4, t5, t6, thisTag0, scale;
+        for (t1 = H.assertSubtype(resource, "$is_Resource", [H.getTypeArgumentByIndex(this.$this, 0)], "$as_Resource")._tags, t2 = H.getTypeArgumentByIndex(t1, 0), t3 = P._LinkedHashSetIterator$(t1, t1._collection$_modifications, t2), thisTag = this.goalTag, t4 = this._box_0; t3.moveNext$0();) {
+          t5 = t3._collection$_current;
+          for (t6 = !t4.includeParents, thisTag0 = thisTag; thisTag0 != null; thisTag0 = thisTag0.parent) {
+            if (thisTag0 === t5)
               return 1;
+            if (t6)
+              break;
+          }
         }
+        if (!t4.includeParents)
+          return 0;
         for (t2 = [t2], scale = 1; thisTag != null; thisTag = thisTag.parent) {
           for (t3 = new P._LinkedHashSetIterator(t1, t1._collection$_modifications, t2), t3._collection$_cell = t1._collection$_first; t3.moveNext$0();)
             if (t3._collection$_current.contains$1(0, thisTag))
@@ -20279,7 +20451,7 @@
         level = skill.onCalculateLevel$2(t1, t1.skills.points$1(0, skill));
         if (t1.skills.gain$2(skill, level))
           this.game.log.add$5(0, C.LogType_gain, skill.gainMessage$1(level), this, null, null);
-      }, "call$1", "get$refreshSkill", 4, 0, 85],
+      }, "call$1", "get$refreshSkill", 4, 0, 86],
       static: {
         Hero$: function(game, pos, save) {
           var t1, t2, t3;
@@ -20301,7 +20473,7 @@
       }
     },
     Hero_refreshProperties_closure0: {
-      "^": "Closure:86;$this,heft",
+      "^": "Closure:87;$this,heft",
       call$1: function(previous) {
         var t1 = this.heft;
         if (t1 < 1 && previous >= 1)
@@ -20445,7 +20617,7 @@
       }
     },
     Lore_allSlain_closure: {
-      "^": "Closure:31;",
+      "^": "Closure:25;",
       call$2: function(a, b) {
         H.intTypeCheck(a);
         H.intTypeCheck(b);
@@ -20457,25 +20629,25 @@
       }
     },
     Lore_seeBreed_closure: {
-      "^": "Closure:6;",
+      "^": "Closure:4;",
       call$0: function() {
         return 0;
       }
     },
     Lore_slay_closure: {
-      "^": "Closure:6;",
+      "^": "Closure:4;",
       call$0: function() {
         return 0;
       }
     },
     Lore_findItem_closure: {
-      "^": "Closure:6;",
+      "^": "Closure:4;",
       call$0: function() {
         return 0;
       }
     },
     Lore_findItem_findAffix: {
-      "^": "Closure:87;$this",
+      "^": "Closure:88;$this",
       call$1: function(affix) {
         var t1;
         if (affix == null)
@@ -20486,13 +20658,13 @@
       }
     },
     Lore_findItem_findAffix_closure: {
-      "^": "Closure:6;",
+      "^": "Closure:4;",
       call$0: function() {
         return 0;
       }
     },
     Lore_useItem_closure: {
-      "^": "Closure:6;",
+      "^": "Closure:4;",
       call$0: function() {
         return 0;
       }
@@ -20599,7 +20771,7 @@
       }
     },
     RaceStats_lerp: {
-      "^": "Closure:88;level",
+      "^": "Closure:89;level",
       call$2: function(from, to) {
         var t = this.level / 49;
         if (typeof from !== "number")
@@ -20796,7 +20968,7 @@
       }
     },
     SkillSet_acquired_closure: {
-      "^": "Closure:89;$this",
+      "^": "Closure:90;$this",
       call$1: function(skill) {
         return J.$gt$n(this.$this._levels.$index(0, H.interceptedTypeCheck(skill, "$isSkill")), 0);
       }
@@ -20994,10 +21166,10 @@
       },
       resist$2: [function(element, power) {
         this._resists.$indexSet(0, H.interceptedTypeCheck(element, "$isElement"), H.intTypeCheck(power));
-      }, "call$2", "get$resist", 8, 0, 90],
+      }, "call$2", "get$resist", 8, 0, 91],
       setStatBonus$2: [function(stat, bonus) {
         this._statBonuses.$indexSet(0, H.interceptedTypeCheck(stat, "$isStat"), H.intTypeCheck(bonus));
-      }, "call$2", "get$setStatBonus", 8, 0, 91],
+      }, "call$2", "get$setStatBonus", 8, 0, 139],
       toString$0: function(_) {
         return this.name;
       }
@@ -21090,7 +21262,7 @@
       }
     },
     Equipment_length_closure: {
-      "^": "Closure:138;",
+      "^": "Closure:93;",
       call$2: function(count, item) {
         var t1;
         H.intTypeCheck(count);
@@ -21101,14 +21273,14 @@
       }
     },
     Equipment_canEquip_closure: {
-      "^": "Closure:14;item",
+      "^": "Closure:13;item",
       call$1: function(slot) {
         H.stringTypeCheck(slot);
         return this.item.type.equipSlot == slot;
       }
     },
     Equipment_iterator_closure: {
-      "^": "Closure:93;",
+      "^": "Closure:94;",
       call$1: function(item) {
         return H.interceptedTypeCheck(item, "$isItem") != null;
       }
@@ -21197,7 +21369,7 @@
         return new O.AddItemResult(adding, 0);
       }, function(item) {
         return this.tryAdd$2$wasUnequipped(item, false);
-      }, "tryAdd$1", "call$2$wasUnequipped", "call$1", "get$tryAdd", 4, 3, 94],
+      }, "tryAdd$1", "call$2$wasUnequipped", "call$1", "get$tryAdd", 4, 3, 95],
       countChanged$0: function() {
         var t1, items, _i;
         t1 = this._items;
@@ -21226,7 +21398,7 @@
       }
     },
     Inventory_clone_closure: {
-      "^": "Closure:95;",
+      "^": "Closure:96;",
       call$1: [function(item) {
         return H.interceptedTypeCheck(item, "$isItem").clone$0(0);
       }, null, null, 4, 0, null, 43, "call"]
@@ -21497,7 +21669,7 @@
             t4 = false;
           if (!t4)
             break;
-          t1.spawnDrop$2(1, t3);
+          t1.dropItem$2(1, t3);
           for (i = 1; t4 = t2.length, i < t4; ++i) {
             t5 = i - 1;
             if (t5 < 0)
@@ -21520,9 +21692,6 @@
     "^": "",
     BreedRef: {
       "^": "Object;_breed$_name,0_breed$_breed",
-      get$breed: function() {
-        return this._breed$_breed;
-      },
       static: {
         BreedRef_resolve: function(resolver) {
           var t1, t2, _i, ref;
@@ -21536,7 +21705,7 @@
       }
     },
     Breed: {
-      "^": "Object;pronoun,appearance,depth<,attacks,moves,maxHealth,tracking,vision,hearing,meander,speed,drop,location,motility,flags,dodge,emanationLevel,defenses,countMin<,countMax<,minions,_breed$_name,stain,groups,description",
+      "^": "Object;pronoun,appearance,depth<,attacks,moves,maxHealth,tracking,vision,hearing,meander,speed,drop,location,motility,flags,dodge,emanationLevel,defenses,countMin,countMax,minions,_breed$_name,stain,groups,description",
       get$name: function(_) {
         return O.Log__categorize(this._breed$_name, false, true);
       },
@@ -21569,7 +21738,7 @@
           scale *= 0.7;
         if (t2.protective)
           scale *= 1.1;
-        return C.JSDouble_methods.ceil$0(this.maxHealth * (1 + totalDodge / 100) * t1 * (attackTotal / t3 * (1 - moveRateTotal) + moveTotal) * scale * K.lerpDouble(this.meander, 0, 100, 1, 0.8) / 40);
+        return C.JSDouble_methods.ceil$0(this.maxHealth * (1 + totalDodge / 100) * t1 * (attackTotal / t3 * (1 - moveRateTotal) + moveTotal) * scale * K.lerpDouble(this.meander, 0, 100, 1, 0.7) / 40);
       },
       spawn$3: function(game, pos, $parent) {
         var generation = $parent != null ? $parent.generation + 1 : 1;
@@ -21579,20 +21748,14 @@
         return this.spawn$3(game, pos, null);
       },
       spawnAll$0: function() {
-        var breeds, count, i, t1, t2, _i, minion, t3, max, max0;
+        var breeds, count, i, t1;
         breeds = H.setRuntimeTypeInfo([], [B.Breed]);
         count = $.$get$rng().inclusive$2(this.countMin, this.countMax);
         for (i = 0; i < count; ++i)
           C.JSArray_methods.add$1(breeds, this);
-        for (t1 = this.minions, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
-          minion = t1[_i];
-          t3 = $.$get$rng();
-          max = minion.get$countMin();
-          max0 = minion.get$countMax();
-          count = t3._random.nextInt$1(max0 + 1 - max) + max;
-          for (i = 0; i < count; ++i)
-            C.JSArray_methods.add$1(breeds, minion.get$breed()._breed$_breed);
-        }
+        t1 = this.minions;
+        if (t1 != null)
+          t1.spawnBreed$2(C.JSNumber_methods.floor$0(this.depth * 0.9), C.JSArray_methods.get$add(breeds));
         return breeds;
       },
       toString$0: function(_) {
@@ -21605,8 +21768,8 @@
         return this._breed$_name;
       }
     },
-    Minion: {
-      "^": "Object;breed<,countMin<,countMax<"
+    Spawn: {
+      "^": "Object;"
     },
     BreedFlags: {
       "^": "Object;berzerk,cowardly,fearless,immobile,protective,unique",
@@ -21633,9 +21796,6 @@
       "^": "Actor;_breed<,generation,0_monster$_state,_recharges,wantsToMelee,_alertness<,_fear,0_frightenThreshold,game,energy,haste,cold,poison,blindness,dazzle,resistances,_pos,0_health",
       set$_alertness: function(_alertness) {
         this._alertness = H.doubleTypeCheck(_alertness);
-      },
-      get$breed: function() {
-        return this._breed;
       },
       get$motility: function() {
         return this._breed.motility;
@@ -22058,19 +22218,19 @@
       }
     },
     Monster_onGiveDamage_closure: {
-      "^": "Closure:26;action,damage",
+      "^": "Closure:29;action,damage",
       call$1: function(witness) {
         witness._viewHeroDamage$2(this.action, this.damage);
       }
     },
     Monster_onTakeDamage_closure: {
-      "^": "Closure:26;$this,action,damage",
+      "^": "Closure:29;$this,action,damage",
       call$1: function(witness) {
         witness._viewMonsterDamage$3(this.action, this.$this, this.damage);
       }
     },
     Monster_onTakeDamage_closure0: {
-      "^": "Closure:32;$this,damage",
+      "^": "Closure:33;$this,damage",
       call$1: function(move) {
         return H.interceptedTypeCheck(move, "$isMove").shouldUseOnDamage$2(this.$this, this.damage);
       }
@@ -22138,9 +22298,6 @@
     "^": "",
     MonsterState: {
       "^": "Object;",
-      get$breed: function() {
-        return this._monster._breed;
-      },
       get$pos: function() {
         return this._monster._pos;
       },
@@ -22444,7 +22601,7 @@
       }
     },
     AwakeState_getAction_closure: {
-      "^": "Closure:32;$this",
+      "^": "Closure:33;$this",
       call$1: function(move) {
         var t1;
         H.interceptedTypeCheck(move, "$isMove");
@@ -22788,7 +22945,7 @@
       }
     },
     Flow__directionsTo_walkBack: {
-      "^": "Closure:10;$this,walked,directions",
+      "^": "Closure:9;$this,walked,directions",
       call$1: function(pos) {
         var t1, t2, t3, _i, dir, here, t4, t5, t6, t7;
         H.interceptedTypeCheck(pos, "$isVec");
@@ -22833,7 +22990,7 @@
       }
     },
     Flow__processNext_processNeighbor: {
-      "^": "Closure:98;$this,start,parentCost",
+      "^": "Closure:99;$this,start,parentCost",
       call$2: function(dir, isDiagonal) {
         var here, t1, t2, t3, relative, total;
         here = this.start.$add(0, dir);
@@ -23210,7 +23367,7 @@
       }
     },
     Lighting__lightWalls_checkNeighbor: {
-      "^": "Closure:10;_box_0,$this,x,y",
+      "^": "Closure:9;_box_0,$this,x,y",
       call$1: function(offset) {
         var neighborX, neighborY, t1, t2;
         neighborX = this.x + offset.x;
@@ -23238,7 +23395,7 @@
       }
     },
     Lighting__process_checkNeighbor: {
-      "^": "Closure:99;$this,pos,parentLight,tiles,attenuate",
+      "^": "Closure:100;$this,pos,parentLight,tiles,attenuate",
       call$2: function(dir, attenuation) {
         var neighborPos, t1, t2, t3, illumination;
         neighborPos = this.pos.$add(0, dir);
@@ -23425,7 +23582,7 @@
       },
       placeDrops$3: function(pos, motility, drop) {
         var items = H.setRuntimeTypeInfo([], [R.Item]);
-        drop.spawnDrop$2(this.game.depth, new L.Stage_placeDrops_closure(this, items, N.MotilityFlow$(this, pos, motility, false, null, null), pos));
+        drop.dropItem$2(this.game.depth, new L.Stage_placeDrops_closure(this, items, N.MotilityFlow$(this, pos, motility, false, null, null), pos));
         return items;
       },
       addItem$2: function(item, pos) {
@@ -23530,13 +23687,13 @@
       }
     },
     Stage_closure: {
-      "^": "Closure:100;",
+      "^": "Closure:101;",
       call$0: function() {
         return new Q.Tile(false, 0, 0, 0, false, $.$get$Element_none(), 0);
       }
     },
     Stage_placeDrops_closure: {
-      "^": "Closure:9;$this,items,flow,pos",
+      "^": "Closure:8;$this,items,flow,pos",
       call$1: function(item) {
         var t1, t2, itemPos, allowed, t3;
         C.JSArray_methods.add$1(this.items, item);
@@ -23574,13 +23731,13 @@
       }
     },
     Stage_addItem_closure: {
-      "^": "Closure:101;",
+      "^": "Closure:102;",
       call$0: function() {
         return O.Inventory$(C.ItemLocation_46y, null, null);
       }
     },
     Stage_forEachItem_closure: {
-      "^": "Closure:102;callback",
+      "^": "Closure:103;callback",
       call$2: function(pos, inventory) {
         var t1, t2;
         H.interceptedTypeCheck(pos, "$isVec");
@@ -23909,7 +24066,7 @@
       }
     },
     Draw_helpKeys_closure: {
-      "^": "Closure:27;_box_0",
+      "^": "Closure:30;_box_0",
       call$2: function(key, text) {
         var t1, t2, helpTextLength;
         H.stringTypeCheck(key);
@@ -23925,7 +24082,7 @@
       }
     },
     Draw_helpKeys_closure0: {
-      "^": "Closure:27;_box_0,terminal",
+      "^": "Closure:30;_box_0,terminal",
       call$2: function(key, text) {
         var t1, t2, t3, t4, x;
         H.stringTypeCheck(key);
@@ -24488,7 +24645,7 @@
       }
     },
     ExitPopup_closure: {
-      "^": "Closure:104;",
+      "^": "Closure:105;",
       call$1: function(actor) {
         return !(H.interceptedTypeCheck(actor, "$isActor") instanceof G.Hero);
       }
@@ -25206,7 +25363,7 @@
             this.dirty$0();
           }
         }
-      }, "call$1", "get$_fireTowards", 4, 0, 105],
+      }, "call$1", "get$_fireTowards", 4, 0, 106],
       _enterShop$1: function(index) {
         var t1, t2, shops;
         t1 = this.game;
@@ -25239,13 +25396,13 @@
       }
     },
     GameScreen_activate_closure: {
-      "^": "Closure:28;",
+      "^": "Closure:31;",
       call$2: function(shop, inventory) {
         H.interceptedTypeCheck(shop, "$isShop").update$1(0, H.interceptedTypeCheck(inventory, "$isInventory"));
       }
     },
     GameScreen_activate_closure0: {
-      "^": "Closure:107;$this,result",
+      "^": "Closure:108;$this,result",
       call$1: function(dir) {
         var t1 = this.$this;
         t1._lastSkill = this.result;
@@ -25253,7 +25410,7 @@
       }
     },
     GameScreen__openTargetDialog_closure: {
-      "^": "Closure:25;$this,skill",
+      "^": "Closure:38;$this,skill",
       call$1: function(_) {
         return this.$this._fireAtTarget$1(this.skill);
       }
@@ -25305,7 +25462,7 @@
       }
     },
     HeroEquipmentDialog_render_writeLine: {
-      "^": "Closure:12;terminal",
+      "^": "Closure:11;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500\u2500", color);
       }
@@ -25340,7 +25497,7 @@
       }
     },
     HeroEquipmentDialog_render_closure: {
-      "^": "Closure:30;writeLine,terminal,writeScale,writeBonus",
+      "^": "Closure:32;writeLine,terminal,writeScale,writeBonus",
       call$2: function(item, y) {
         var t1, t2, t3, t4;
         this.writeLine.call$2(y - 1, C.Color_19_17_28);
@@ -25565,13 +25722,13 @@
       }
     },
     HeroItemLoreDialog_render_writeLine: {
-      "^": "Closure:12;terminal",
+      "^": "Closure:11;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500", color);
       }
     },
     HeroItemLoreDialog__listItems_compareSort: {
-      "^": "Closure:8;",
+      "^": "Closure:12;",
       call$2: [function(a, b) {
         H.interceptedTypeCheck(a, "$isItemType");
         H.interceptedTypeCheck(b, "$isItemType");
@@ -25579,7 +25736,7 @@
       }, null, null, 8, 0, null, 4, 2, "call"]
     },
     HeroItemLoreDialog__listItems_compareDepth: {
-      "^": "Closure:8;",
+      "^": "Closure:12;",
       call$2: [function(a, b) {
         H.interceptedTypeCheck(a, "$isItemType");
         H.interceptedTypeCheck(b, "$isItemType");
@@ -25587,7 +25744,7 @@
       }, null, null, 8, 0, null, 4, 2, "call"]
     },
     HeroItemLoreDialog__listItems_comparePrice: {
-      "^": "Closure:8;",
+      "^": "Closure:12;",
       call$2: [function(a, b) {
         H.interceptedTypeCheck(a, "$isItemType");
         H.interceptedTypeCheck(b, "$isItemType");
@@ -25595,7 +25752,7 @@
       }, null, null, 8, 0, null, 4, 2, "call"]
     },
     HeroItemLoreDialog__listItems_closure: {
-      "^": "Closure:8;_box_0",
+      "^": "Closure:12;_box_0",
       call$2: function(a, b) {
         var t1, t2, _i, compare;
         H.interceptedTypeCheck(a, "$isItemType");
@@ -25811,7 +25968,7 @@
       }
     },
     HeroMonsterLoreDialog_render_writeLine: {
-      "^": "Closure:12;terminal",
+      "^": "Closure:11;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500 \u2500\u2500\u2500\u2500\u2500", color);
       }
@@ -25830,7 +25987,7 @@
       }, null, null, 4, 0, null, 47, "call"]
     },
     HeroMonsterLoreDialog__listBreeds_closure: {
-      "^": "Closure:111;",
+      "^": "Closure:112;",
       call$1: function(breed) {
         return H.interceptedTypeCheck(breed, "$isBreed").flags.unique;
       }
@@ -25852,7 +26009,7 @@
       }, null, null, 8, 0, null, 4, 2, "call"]
     },
     HeroMonsterLoreDialog__listBreeds_compareGlyph_isUpper: {
-      "^": "Closure:113;",
+      "^": "Closure:114;",
       call$1: function(c) {
         if (typeof c !== "number")
           return c.$ge();
@@ -25923,13 +26080,13 @@
       }
     },
     HeroResistancesDialog_render_writeLine: {
-      "^": "Closure:12;terminal",
+      "^": "Closure:11;terminal",
       call$2: function(y, color) {
         this.terminal.writeAt$4(2, y, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500 \u2500\u2500", color);
       }
     },
     HeroResistancesDialog_render_closure: {
-      "^": "Closure:30;$this,writeLine,terminal",
+      "^": "Closure:32;$this,writeLine,terminal",
       call$2: function(item, y) {
         var t1, t2, i, _i, element, x, resistance, string;
         this.writeLine.call$2(y - 1, C.Color_19_17_28);
@@ -26328,7 +26485,7 @@
       }
     },
     _TossItemCommand_selectItem_closure: {
-      "^": "Closure:10;dialog,location,item,hit",
+      "^": "Closure:9;dialog,location,item,hit",
       call$1: function(target) {
         this.dialog._item_dialog$_gameScreen.game.hero._behavior = new X.ActionBehavior(new B.TossAction(this.hit, target, this.location, this.item));
       }
@@ -27186,7 +27343,7 @@
       }
     },
     drawInspector_writeStat: {
-      "^": "Closure:115;_box_0,writeLabel,terminal",
+      "^": "Closure:116;_box_0,writeLabel,terminal",
       call$2: function(label, value) {
         var t1;
         this.writeLabel.call$1(label);
@@ -27658,13 +27815,13 @@
       }
     },
     NewHeroScreen__renderMenu_closure: {
-      "^": "Closure:116;",
+      "^": "Closure:117;",
       call$1: [function(race) {
         return H.interceptedTypeCheck(race, "$isRace").name;
       }, null, null, 4, 0, null, 48, "call"]
     },
     NewHeroScreen__renderMenu_closure0: {
-      "^": "Closure:117;",
+      "^": "Closure:118;",
       call$1: [function(c) {
         return H.interceptedTypeCheck(c, "$isHeroClass").name;
       }, null, null, 4, 0, null, 49, "call"]
@@ -27923,7 +28080,7 @@
       }
     },
     SidebarPanel_renderPanel_drawStat: {
-      "^": "Closure:118;_box_0,terminal",
+      "^": "Closure:119;_box_0,terminal",
       call$1: function(stat) {
         var t1, t2;
         t1 = this.terminal;
@@ -27934,7 +28091,7 @@
       }
     },
     SidebarPanel_renderPanel_closure: {
-      "^": "Closure:119;hero",
+      "^": "Closure:120;hero",
       call$2: function(a, b) {
         var t1;
         H.interceptedTypeCheck(a, "$isMonster");
@@ -27944,7 +28101,7 @@
       }
     },
     SidebarPanel__drawHealthBar_drawCondition: {
-      "^": "Closure:120;_box_0,terminal,y",
+      "^": "Closure:121;_box_0,terminal,y",
       call$3: function(char, fore, $back) {
         var t1, t2;
         t1 = this._box_0;
@@ -28161,13 +28318,13 @@
       }
     },
     StagePanel_update_closure: {
-      "^": "Closure:121;$this",
+      "^": "Closure:122;$this",
       call$1: function(effect) {
         return !H.interceptedTypeCheck(effect, "$isEffect").update$1(0, this.$this._stage_panel$_gameScreen.game);
       }
     },
     StagePanel_renderPanel_closure: {
-      "^": "Closure:33;$this,terminal",
+      "^": "Closure:34;$this,terminal",
       call$3: function(x, y, glyph) {
         this.$this._drawStageGlyph$4(this.terminal, x, y, glyph);
       }
@@ -28235,7 +28392,7 @@
       }
     },
     Popup_render_closure: {
-      "^": "Closure:34;",
+      "^": "Closure:35;",
       call$2: function(width, line) {
         var t1;
         H.intTypeCheck(width);
@@ -28244,7 +28401,7 @@
       }
     },
     Popup_render_closure0: {
-      "^": "Closure:34;",
+      "^": "Closure:35;",
       call$2: function(width, line) {
         var t1;
         H.intTypeCheck(width);
@@ -28943,14 +29100,14 @@
       }
     },
     Storage__load_closure: {
-      "^": "Closure:124;name",
+      "^": "Closure:125;name",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isHeroClass");
         return J.get$name$x(c) == this.name;
       }
     },
     Storage__load_closure0: {
-      "^": "Closure:125;$this,hero,shops",
+      "^": "Closure:126;$this,hero,shops",
       call$2: function($name, shop) {
         var shopData, t1, t2, t3;
         H.stringTypeCheck($name);
@@ -28970,13 +29127,13 @@
       }
     },
     Storage__loadRace_closure: {
-      "^": "Closure:126;name",
+      "^": "Closure:127;name",
       call$1: function(race) {
         return H.interceptedTypeCheck(race, "$isRace").name === this.name;
       }
     },
     Storage__loadLore_closure: {
-      "^": "Closure:4;$this,seenBreeds",
+      "^": "Closure:5;$this,seenBreeds",
       call$2: function(breedName, count) {
         var t1;
         H.stringTypeCheck(breedName);
@@ -28986,7 +29143,7 @@
       }
     },
     Storage__loadLore_closure0: {
-      "^": "Closure:4;$this,slain",
+      "^": "Closure:5;$this,slain",
       call$2: function(breedName, count) {
         var t1;
         H.stringTypeCheck(breedName);
@@ -28996,7 +29153,7 @@
       }
     },
     Storage__loadLore_closure1: {
-      "^": "Closure:4;$this,foundItems",
+      "^": "Closure:5;$this,foundItems",
       call$2: function(itemName, count) {
         var t1;
         H.stringTypeCheck(itemName);
@@ -29006,7 +29163,7 @@
       }
     },
     Storage__loadLore_closure2: {
-      "^": "Closure:4;$this,foundAffixes",
+      "^": "Closure:5;$this,foundAffixes",
       call$2: function(affixName, count) {
         var affix = Z.Affixes_find(H.stringTypeCheck(affixName));
         if (affix != null)
@@ -29014,7 +29171,7 @@
       }
     },
     Storage__loadLore_closure3: {
-      "^": "Closure:4;$this,usedItems",
+      "^": "Closure:5;$this,usedItems",
       call$2: function(itemName, count) {
         var t1;
         H.stringTypeCheck(itemName);
@@ -29024,7 +29181,7 @@
       }
     },
     Storage_save_closure: {
-      "^": "Closure:28;$this,shops",
+      "^": "Closure:31;$this,shops",
       call$2: function(shop, inventory) {
         H.interceptedTypeCheck(shop, "$isShop");
         H.interceptedTypeCheck(inventory, "$isInventory");
@@ -29408,14 +29565,14 @@
       }
     },
     TargetDialog__changeMonsterTarget_closure: {
-      "^": "Closure:35;$this",
+      "^": "Closure:36;$this",
       call$1: function(monster) {
         var t1 = this.$this._target_dialog$_gameScreen;
         return monster.get$pos().$sub(0, t1.get$currentTarget(t1)).get$lengthSquared();
       }
     },
     TargetDialog__changeMonsterTarget_closure0: {
-      "^": "Closure:35;$this",
+      "^": "Closure:36;$this",
       call$1: function(monster) {
         var t1 = this.$this._target_dialog$_gameScreen;
         return monster.get$pos().$sub(0, t1.get$currentTarget(t1)).get$lengthSquared();
@@ -29639,7 +29796,7 @@
       }
     },
     RetroTerminal_render_closure: {
-      "^": "Closure:33;$this",
+      "^": "Closure:34;$this",
       call$3: function(x, y, glyph) {
         var char, char0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, color;
         char = glyph.char;
@@ -29811,7 +29968,7 @@
         t1 = $event.shiftKey;
         if ($screen.keyDown$3$alt$shift(keyCode, $event.altKey, t1))
           $event.preventDefault();
-      }, "call$1", "get$_keyDown", 4, 0, 36],
+      }, "call$1", "get$_keyDown", 4, 0, 37],
       _keyUp$1: [function($event) {
         var keyCode, $screen, t1;
         H.interceptedTypeCheck($event, "$isKeyboardEvent");
@@ -29822,13 +29979,13 @@
         t1 = $event.shiftKey;
         if ($screen.keyUp$3$alt$shift(keyCode, $event.altKey, t1))
           $event.preventDefault();
-      }, "call$1", "get$_keyUp", 4, 0, 36],
+      }, "call$1", "get$_keyUp", 4, 0, 37],
       _user_interface$_tick$1: [function(time) {
         H.numTypeCheck(time);
         this.refresh$0();
         if (this._running)
           C.Window_methods.requestAnimationFrame$1(window, this.get$_user_interface$_tick());
-      }, "call$1", "get$_user_interface$_tick", 4, 0, 130, 33],
+      }, "call$1", "get$_user_interface$_tick", 4, 0, 131, 33],
       _render$0: function() {
         var t1, i;
         t1 = this._terminal;
@@ -30367,11 +30524,17 @@
         return this.range$2(minOrMax, null);
       },
       inclusive$2: function(minOrMax, max) {
+        var t1;
         if (max == null) {
           max = minOrMax;
           minOrMax = 0;
         }
-        return this._random.nextInt$1(max + 1 - minOrMax) + minOrMax;
+        if (typeof max !== "number")
+          return max.$add();
+        t1 = this._random;
+        if (typeof minOrMax !== "number")
+          return H.iae(minOrMax);
+        return t1.nextInt$1(max + 1 - minOrMax) + minOrMax;
       },
       inclusive$1: function(minOrMax) {
         return this.inclusive$2(minOrMax, null);
@@ -30721,13 +30884,13 @@
       t1._fuel = null;
       t1 = R.item("Potion[s] of Quickness", C.Color_131_158_13, 0.3, 25);
       t1.depth$2$to(3, 30);
-      t1.haste$2(20, 1);
+      t1.haste$2(1, 40);
       t1 = R.item("Potion[s] of Alacrity", C.Color_22_117_38, 0.3, 60);
       t1.depth$2$to(18, 50);
-      t1.haste$2(30, 2);
+      t1.haste$2(2, 60);
       t1 = R.item("Potion[s] of Speed", C.Color_0_64_39, 0.25, 150);
       t1.depth$1(34);
-      t1.haste$2(40, 3);
+      t1.haste$2(3, 100);
       t1 = R.category(232, 10, null);
       t1.tag$1(0, "magic/potion/bottled");
       t1.toss$3$breakage$damage$range(100, 1, 8);
@@ -31247,13 +31410,13 @@
       t11.defineTags$1("drop/room/chamber/boss-chamber");
       t11.defineTags$1("drop/room/laboratory");
       t11.defineTags$1("drop/room/workshop");
-      F.floorDrop(new X._AllOfDrop(H.setRuntimeTypeInfo([new X._PercentDrop(30, X.parseDrop("Skull", null)), new X._PercentDrop(30, X.parseDrop("treasure", null)), new X._PercentDrop(20, X.parseDrop("weapon", null)), new X._PercentDrop(20, X.parseDrop("armor", null)), new X._PercentDrop(20, X.parseDrop("food", null)), new X._PercentDrop(15, X.parseDrop("magic", null)), new X._PercentDrop(15, X.parseDrop("magic", null))], [L.Drop])), null, C.SpawnLocation_2, 2);
-      F.floorDrop(X.parseDrop("magic", null), null, C.SpawnLocation_2, 5);
-      F.floorDrop(X.parseDrop("food", null), 1, null, 10);
-      F.floorDrop(X.parseDrop("Rock", null), 0.01, C.SpawnLocation_3, 3);
-      F.floorDrop(X.parseDrop("treasure", null), null, null, 10);
-      F.floorDrop(X.parseDrop("light", null), 0.1, null, 4);
-      F.floorDrop(X.parseDrop("item", null), 5, C.SpawnLocation_0, 2);
+      F.floorDrop(new X._AllOfDrop(H.setRuntimeTypeInfo([new X._PercentDrop(30, X.parseDrop("Skull", null, null)), new X._PercentDrop(30, X.parseDrop("treasure", null, null)), new X._PercentDrop(20, X.parseDrop("weapon", null, null)), new X._PercentDrop(20, X.parseDrop("armor", null, null)), new X._PercentDrop(20, X.parseDrop("food", null, null)), new X._PercentDrop(15, X.parseDrop("magic", null, null)), new X._PercentDrop(15, X.parseDrop("magic", null, null))], [L.Drop])), null, C.SpawnLocation_2, 2);
+      F.floorDrop(X.parseDrop("magic", null, null), null, C.SpawnLocation_2, 5);
+      F.floorDrop(X.parseDrop("food", null, null), 1, null, 10);
+      F.floorDrop(X.parseDrop("Rock", null, null), 0.01, C.SpawnLocation_3, 3);
+      F.floorDrop(X.parseDrop("treasure", null, null), null, null, 10);
+      F.floorDrop(X.parseDrop("light", null, null), 0.1, null, 4);
+      F.floorDrop(X.parseDrop("item", null, null), 5, C.SpawnLocation_0, 2);
       t1 = $.$get$Decor_all();
       t1.defineTags$1("built/room/dungeon");
       t1.defineTags$1("built/room/keep");
@@ -31344,7 +31507,7 @@
       T.furnishing(null, null, "    ..........\n    .\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2510.\n    .\u2502-i--i-\u2502.\n    .\u2502-i--i-\u2502.\n    .\u2558\u2564\u2550\u2550\u2550\u2550\u2564\u255b.\n    ..........");
       t1 = P.LinkedHashMap_LinkedHashMap$_literal(["\u03c0", S.Cell$($.$get$Tiles_chair(), t2, null, null)], t12, t3);
       $._themes = "built";
-      $._categoryFrequency = 3;
+      $._categoryFrequency = 2;
       $._categoryCells = t1;
       T.furnishing(null, C.Symmetry_3, "    \u03c0.\n    .\u250c");
       T.furnishing(null, C.Symmetry_3, "    \u03c0.\n    \u250c?");
@@ -31368,7 +31531,7 @@
       $._themes = "built";
       $._categoryFrequency = 0.5;
       $._categoryCells = t2;
-      T.furnishing(null, C.Symmetry_4, "    ##\n    #&");
+      T.furnishing(null, C.Symmetry_4, "    ##?\n    #&.\n    ?.?");
       T.furnishing(null, C.Symmetry_4, "    ?#?\n    .&.\n    ?.?");
       t2 = $.$get$Tiles_steppingStone();
       t3 = P.LinkedHashMap_LinkedHashMap$_literal(["*", S.Cell$(t2, null, $.$get$Tiles_water(), null), "o", S.Cell$(null, null, t2, null)], t12, t3);
@@ -31579,7 +31742,7 @@
       }
     },
     _addFont_closure0: {
-      "^": "Closure:131;name",
+      "^": "Closure:132;name",
       call$1: function(_) {
         var t1, i, t2, t3;
         H.interceptedTypeCheck(_, "$isMouseEvent");
@@ -31901,6 +32064,9 @@
   J.trim$0$s = function(receiver) {
     return J.getInterceptor$s(receiver).trim$0(receiver);
   };
+  J.where$1$ax = function(receiver, a0) {
+    return J.getInterceptor$ax(receiver).where$1(receiver, a0);
+  };
   Isolate.makeConstantList = function(list) {
     list.immutable$list = Array;
     list.fixed$length = Array;
@@ -32218,10 +32384,6 @@
   C.List_izR = H.setRuntimeTypeInfo(Isolate.makeConstantList([C.Direction_1_m1, C.Direction_1_1, C.Direction_m1_1, C.Direction_m1_m1]), [Z.Direction]);
   C.List_mC8 = H.setRuntimeTypeInfo(Isolate.makeConstantList([15, 20, 24, 30, 40, 50, 60, 80, 100, 120, 150, 180, 240]), [P.int]);
   C.List_slV = H.setRuntimeTypeInfo(Isolate.makeConstantList([C.Direction_0_m1, C.Direction_1_m1, C.Direction_1_0, C.Direction_1_1, C.Direction_0_1, C.Direction_m1_1, C.Direction_m1_0, C.Direction_m1_m1]), [Z.Direction]);
-  C.TakeFrom_0 = new Z.TakeFrom(0, "TakeFrom.newest");
-  C.TakeFrom_1 = new Z.TakeFrom(1, "TakeFrom.oldest");
-  C.TakeFrom_2 = new Z.TakeFrom(2, "TakeFrom.random");
-  C.List_swd = H.setRuntimeTypeInfo(Isolate.makeConstantList([C.TakeFrom_0, C.TakeFrom_1, C.TakeFrom_2]), [Z.TakeFrom]);
   C.List_tBY = H.setRuntimeTypeInfo(Isolate.makeConstantList(["weapon", "ring", "necklace", "body", "cloak", "shield", "helm", "gloves", "boots"]), [P.String]);
   C.List_wEV = H.setRuntimeTypeInfo(Isolate.makeConstantList(["Stairs descend into darkness.", "How far down shall you venture?"]), [P.String]);
   C.List_wSV = H.setRuntimeTypeInfo(Isolate.makeConstantList(["bind", "if", "ref", "repeat", "syntax"]), [P.String]);
@@ -32253,6 +32415,7 @@
   C.Missive_2 = new R.Missive(2, "Missive.screech");
   C.Pronoun_he_him_his = new O.Pronoun("he", "him", "his");
   C.Pronoun_it_it_its = new O.Pronoun("it", "it", "its");
+  C.Pronoun_she_her_her = new O.Pronoun("she", "her", "her");
   C.Pronoun_they_them_their = new O.Pronoun("they", "them", "their");
   C.Pronoun_you_you_your = new O.Pronoun("you", "you", "your");
   C.Region_everywhere = new X.Region("everywhere");
@@ -32267,6 +32430,9 @@
   C.Symmetry_3 = new T.Symmetry(3, "Symmetry.mirrorBoth");
   C.Symmetry_4 = new T.Symmetry(4, "Symmetry.rotate90");
   C.Symmetry_5 = new T.Symmetry(5, "Symmetry.rotate180");
+  C.TakeFrom_0 = new Z.TakeFrom(0, "TakeFrom.newest");
+  C.TakeFrom_1 = new Z.TakeFrom(1, "TakeFrom.oldest");
+  C.TakeFrom_2 = new Z.TakeFrom(2, "TakeFrom.random");
   C.TilePortal_T3V4 = new Q.TilePortal("shop 1");
   C.TilePortal_T3V3 = new Q.TilePortal("shop 2");
   C.TilePortal_T3V2 = new Q.TilePortal("shop 3");
@@ -32319,6 +32485,7 @@
   $._affixTag = null;
   $._affix = null;
   $._builder = null;
+  $._family = null;
   $.Architect_debugOwners = null;
   $.Keep_debugJunctions = null;
   $.Debug_showAllMonsters = false;
@@ -32432,11 +32599,11 @@
     var t1 = [P.String];
     return P.LinkedHashMap_LinkedHashMap$_literal([C.Missive_0, H.setRuntimeTypeInfo(["{1} forget[s] what {1 he} was doing.", "{1} lurch[es] around.", "{1} stumble[s] awkwardly.", "{1} trip[s] over {1 his} own feet!"], t1), C.Missive_1, H.setRuntimeTypeInfo(["{1} insult[s] {2 his} mother!", "{1} jeer[s] at {2}!", "{1} mock[s] {2} mercilessly!", "{1} make[s] faces at {2}!", "{1} laugh[s] at {2}!", "{1} sneer[s] at {2}!"], t1), C.Missive_2, H.setRuntimeTypeInfo(["{1} screeches at {2}!", "{1} taunts {2}!", "{1} cackles at {2}!"], t1)], R.Missive, [P.List, P.String]);
   }, "_messages", "Classes_adventurer", "$get$Classes_adventurer", function() {
-    return V._class("Adventurer", "TODO", X.parseDrop("item", 1), 0.5, 0.2);
+    return V._class("Adventurer", "TODO", X.parseDrop("item", null, null), 0.5, 0.2);
   }, "Classes_adventurer", "Classes_warrior", "$get$Classes_warrior", function() {
-    return V._class("Warrior", "TODO", X.parseDrop("weapon", 1), 1, 0);
+    return V._class("Warrior", "TODO", X.parseDrop("weapon", null, null), 1, 0);
   }, "Classes_warrior", "Classes_mage", "$get$Classes_mage", function() {
-    return V._class("Mage", "TODO", X.parseDrop('Spellbook "Elemental Primer"', 1), 0.2, 1);
+    return V._class("Mage", "TODO", X.parseDrop('Spellbook "Elemental Primer"', null, null), 0.2, 1);
   }, "Classes_mage", "Classes_all", "$get$Classes_all", function() {
     return H.setRuntimeTypeInfo([$.$get$Classes_adventurer(), $.$get$Classes_warrior(), $.$get$Classes_mage()], [T.HeroClass]);
   }, "Classes_all", "Decor_all", "$get$Decor_all", function() {
@@ -32500,9 +32667,7 @@
     return P.LinkedHashMap_LinkedHashMap$_empty(P.String, O.Shop);
   }, "Shops_all", "collapseNewlines", "$get$collapseNewlines", function() {
     return P.RegExp_RegExp("\\n\\s*", true, false);
-  }, "collapseNewlines", "_family", "$get$_family", function() {
-    return R._FamilyBuilder$(null);
-  }, "_family", "Monsters_breeds", "$get$Monsters_breeds", function() {
+  }, "collapseNewlines", "Monsters_breeds", "$get$Monsters_breeds", function() {
     return Y.ResourceSet$(B.Breed);
   }, "Monsters_breeds", "Races_dwarf", "$get$Races_dwarf", function() {
     return B.Races__race("Dwarf", 25, "It takes a certain kind of person to be willing to spend their life deep in the bowels of the Earth, toiling away in darkness. Dwarves aren't just willing, but delight in it. Solid, impenetrable and, well, not very bright... perhaps it's no surprise that dwarves love mines since they have so much in common.", 45, 15, 35, 30);
@@ -32785,7 +32950,7 @@
   Isolate = Isolate.$finishIsolateConstructor(Isolate);
   $ = new Isolate();
   init.metadata = ["pos", "_", "b", "distance", "a", "hit", "damage", null, "invocation", "attributeName", "element", "value", "context", "o", "input", "from", "to", "name", "each", "arg4", "e", "attr", "n", "callback", "captureThis", "self", "arguments", "index", "closure", "numberOfArguments", "line", "error", "stackTrace", "time", "arg", "key", "object", "arg1", "__", "___", "____", "resource", "tag", "item", "arg2", "arg3", "group", "sentence", "race", "c", "fuel"];
-  init.types = [{func: 1, ret: P.bool, args: [L.Vec]}, {func: 1, args: [,]}, {func: 1, ret: P.Null}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: -1}, {func: 1, ret: P.int}, {func: 1, ret: P.bool, args: [Z.Direction]}, {func: 1, ret: P.int, args: [L.ItemType, L.ItemType]}, {func: 1, ret: P.Null, args: [R.Item]}, {func: 1, ret: P.Null, args: [L.Vec]}, {func: 1, ret: V.Action, args: [L.Vec]}, {func: 1, ret: P.Null, args: [P.int, L.Color]}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.int, args: [B.Breed, B.Breed]}, {func: 1, ret: P.Null, args: [W.Event]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: -1, args: [P.int], named: {to: P.int}}, {func: 1, ret: P.bool, args: [W.NodeValidator]}, {func: 1, ret: -1, args: [E.Condition]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [L.Vec]}, {func: 1, ret: P.Null, args: [B.Monster]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: P.Null, args: [O.Shop, O.Inventory]}, {func: 1, ret: P.bool, args: [W.Element0, P.String, P.String, W._Html5NodeValidator]}, {func: 1, ret: P.Null, args: [R.Item, P.int]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [O.Move]}, {func: 1, ret: P.Null, args: [P.int, P.int, L.Glyph]}, {func: 1, ret: P.int, args: [P.int, P.String]}, {func: 1, ret: P.num, args: [,]}, {func: 1, ret: -1, args: [W.KeyboardEvent]}, {func: 1, ret: [P.List, L.Vec]}, {func: 1, ret: X.EatAction}, {func: 1, ret: G.FreezeFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: E.PoisonAction, args: [P.int]}, {func: 1, ret: G.PoisonFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: E.BlindAction, args: [P.int]}, {func: 1, ret: E.DazzleAction, args: [P.int]}, {func: 1, ret: G.LightFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, args: [W.Event]}, {func: 1, args: [, P.String]}, {func: 1, ret: T.DetectAction}, {func: 1, ret: E.ResistAction}, {func: 1, ret: Q.MappingAction}, {func: 1, ret: E.HasteAction}, {func: 1, ret: S.TeleportAction}, {func: 1, ret: O.HealAction}, {func: 1, ret: G.RingSelfAction}, {func: 1, ret: G.RingFromAction, args: [L.Vec]}, {func: 1, ret: N.FlowSelfAction}, {func: 1, ret: N.FlowFromAction, args: [L.Vec]}, {func: 1, ret: F.IlluminateSelfAction}, {func: 1, ret: -1, args: [P.int, P.double]}, {func: 1, ret: P.Null, args: [L.Drop, P.double]}, {func: 1, ret: P.Null, args: [P.String, P.double]}, {func: 1, ret: P.Null, args: [,], opt: [P.StackTrace]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.Null, args: [P.String], named: {canFill: P.bool, create: {func: 1, ret: X.Architecture}, decor: P.String, decorDensity: P.double, end: P.int, endFrequency: P.double, itemDensity: P.double, monsterDensity: P.double, monsters: P.String, start: P.int, startFrequency: P.double}}, {func: 1, ret: Q.Dungeon}, {func: 1, ret: Z.Keep}, {func: 1, ret: D.Catacomb}, {func: 1, ret: Q.Cavern}, {func: 1, ret: F.Lake}, {func: 1, ret: G.River}, {func: 1, ret: P.Null, args: [P.String], named: {end: P.int, start: P.int}}, {func: 1, ret: A.Pit}, {func: 1, ret: P.Null, args: [X.Architecture, [P.List, L.Vec]]}, {func: 1, ret: P.Null, args: [B.Breed, L.Vec]}, {func: 1, ret: P.double, args: [P.int,,]}, {func: 1, ret: Q.TileType, args: [Z._TileBuilder, P.int]}, {func: 1, ret: Q.OpenChestAction, args: [L.Vec]}, {func: 1, ret: Q.OpenBarrelAction, args: [L.Vec]}, {func: 1, ret: [P._Future,,], args: [,]}, {func: 1, ret: -1, args: [W.Node, W.Node]}, {func: 1, ret: W.Element0, args: [W.Node]}, {func: 1, ret: P.Null, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: P.JsFunction, args: [,]}, {func: 1, ret: -1, args: [P.String], opt: [O.Noun, O.Noun, O.Noun]}, {func: 1, ret: P.int, args: [P.int]}, {func: 1, ret: -1, args: [M.Skill]}, {func: 1, ret: P.Null, args: [P.double]}, {func: 1, ret: P.Null, args: [L.Affix]}, {func: 1, ret: P.double, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [M.Skill]}, {func: 1, ret: -1, args: [G.Element, P.int]}, {func: 1, ret: -1, args: [D.Stat, P.int]}, {func: 1, ret: [P.JsArray,,], args: [,]}, {func: 1, ret: P.bool, args: [R.Item]}, {func: 1, ret: O.AddItemResult, args: [R.Item], named: {wasUnequipped: P.bool}}, {func: 1, ret: R.Item, args: [R.Item]}, {func: 1, ret: P.JsObject, args: [,]}, {func: 1, ret: P.Null, args: [P.String, P.int]}, {func: 1, ret: P.Null, args: [Z.Direction, P.bool]}, {func: 1, ret: P.Null, args: [L.Vec, P.int]}, {func: 1, ret: Q.Tile}, {func: 1, ret: O.Inventory}, {func: 1, ret: P.Null, args: [L.Vec, O.Inventory]}, {func: 1, ret: -1, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [S.Actor]}, {func: 1, ret: -1, args: [Z.Direction]}, {func: 1, ret: P.bool, args: [P.bool, P.int]}, {func: 1, ret: P.Null, args: [Z.Direction]}, {func: 1, ret: P.bool, args: [P.double, P.double]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [P.Symbol0,,]}, {func: 1, ret: P.bool, args: [B.Breed]}, {func: 1, ret: P.Null, args: [R.Item, L.Vec]}, {func: 1, ret: P.bool, args: [P.int]}, {func: 1, args: [P.String]}, {func: 1, ret: P.Null, args: [P.String, P.Object]}, {func: 1, ret: P.String, args: [N.Race]}, {func: 1, ret: P.String, args: [T.HeroClass]}, {func: 1, ret: P.Null, args: [D.StatBase]}, {func: 1, ret: P.int, args: [B.Monster, B.Monster]}, {func: 1, ret: P.Null, args: [P.String, L.Color], opt: [L.Color]}, {func: 1, ret: P.bool, args: [K.Effect]}, {func: 1, ret: [P.List, L.Vec], args: [P.int]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.bool, args: [T.HeroClass]}, {func: 1, ret: P.Null, args: [P.String, O.Shop]}, {func: 1, ret: P.bool, args: [N.Race]}, {func: 1, ret: P.bool, args: [P.double]}, {func: 1, ret: G.WindAction, args: [P.int]}, {func: 1, ret: G.BurnActorAction, args: [P.int]}, {func: 1, ret: -1, args: [P.num]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: P.num}, {func: 1, ret: G.BurnFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: E.FreezeActorAction, args: [P.int]}, {func: 1, ret: P.Object, args: [,]}, {func: 1, ret: M.Skill, args: [P.String]}, {func: 1, ret: P.int, args: [P.int, R.Item]}];
+  init.types = [{func: 1, ret: P.bool, args: [L.Vec]}, {func: 1, args: [,]}, {func: 1, ret: P.Null}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: P.int}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: -1}, {func: 1, ret: P.bool, args: [Z.Direction]}, {func: 1, ret: P.Null, args: [R.Item]}, {func: 1, ret: P.Null, args: [L.Vec]}, {func: 1, ret: V.Action, args: [L.Vec]}, {func: 1, ret: P.Null, args: [P.int, L.Color]}, {func: 1, ret: P.int, args: [L.ItemType, L.ItemType]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.int, args: [B.Breed, B.Breed]}, {func: 1, ret: P.Null, args: [W.Event]}, {func: 1, ret: P.bool, args: [W.NodeValidator]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [P.int], named: {to: P.int}}, {func: 1, ret: P.bool, args: [W.Element0, P.String, P.String, W._Html5NodeValidator]}, {func: 1, ret: [P.List, L.Vec]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: P.Null, args: [P.String], named: {end: P.int, start: P.int}}, {func: 1, ret: -1, args: [E.Condition]}, {func: 1, ret: P.Null, args: [B.Monster]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: P.Null, args: [O.Shop, O.Inventory]}, {func: 1, ret: P.Null, args: [R.Item, P.int]}, {func: 1, ret: P.bool, args: [O.Move]}, {func: 1, ret: P.Null, args: [P.int, P.int, L.Glyph]}, {func: 1, ret: P.int, args: [P.int, P.String]}, {func: 1, ret: P.num, args: [,]}, {func: 1, ret: -1, args: [W.KeyboardEvent]}, {func: 1, ret: -1, args: [L.Vec]}, {func: 1, ret: [P.JsArray,,], args: [,]}, {func: 1, ret: G.FreezeFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: E.PoisonAction, args: [P.int]}, {func: 1, ret: G.PoisonFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: E.BlindAction, args: [P.int]}, {func: 1, ret: E.DazzleAction, args: [P.int]}, {func: 1, ret: G.LightFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: -1, args: [P.Object]}, {func: 1, ret: X.EatAction}, {func: 1, ret: T.DetectAction}, {func: 1, ret: E.ResistAction}, {func: 1, ret: Q.MappingAction}, {func: 1, ret: E.HasteAction}, {func: 1, ret: S.TeleportAction}, {func: 1, ret: O.HealAction}, {func: 1, ret: G.RingSelfAction}, {func: 1, ret: G.RingFromAction, args: [L.Vec]}, {func: 1, ret: N.FlowSelfAction}, {func: 1, ret: N.FlowFromAction, args: [L.Vec]}, {func: 1, ret: F.IlluminateSelfAction}, {func: 1, ret: -1, args: [P.int, P.double]}, {func: 1, ret: P.Null, args: [L.Drop, P.double]}, {func: 1, ret: P.Null, args: [P.String, P.double]}, {func: 1, args: [, P.String]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.Null, args: [P.String], named: {canFill: P.bool, create: {func: 1, ret: X.Architecture}, decor: P.String, decorDensity: P.double, end: P.int, endFrequency: P.double, itemDensity: P.double, monsterDensity: P.double, monsters: P.String, start: P.int, startFrequency: P.double}}, {func: 1, ret: Q.Dungeon}, {func: 1, ret: D.Catacomb}, {func: 1, ret: Q.Cavern}, {func: 1, ret: F.Lake}, {func: 1, ret: G.River}, {func: 1, ret: P.Null, args: [,], opt: [P.StackTrace]}, {func: 1, ret: A.Pit}, {func: 1, ret: Z.Keep}, {func: 1, ret: P.Null, args: [X.Architecture, [P.List, L.Vec]]}, {func: 1, ret: P.Null, args: [B.Breed, L.Vec]}, {func: 1, ret: P.double, args: [P.int,,]}, {func: 1, ret: Q.TileType, args: [Z._TileBuilder, P.int]}, {func: 1, ret: Q.OpenChestAction, args: [L.Vec]}, {func: 1, ret: Q.OpenBarrelAction, args: [L.Vec]}, {func: 1, ret: [P._Future,,], args: [,]}, {func: 1, ret: -1, args: [W.Node, W.Node]}, {func: 1, ret: W.Element0, args: [W.Node]}, {func: 1, ret: P.Null, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: P.JsFunction, args: [,]}, {func: 1, ret: -1, args: [P.String], opt: [O.Noun, O.Noun, O.Noun]}, {func: 1, ret: P.int, args: [P.int]}, {func: 1, ret: -1, args: [M.Skill]}, {func: 1, ret: P.Null, args: [P.double]}, {func: 1, ret: P.Null, args: [L.Affix]}, {func: 1, ret: P.double, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [M.Skill]}, {func: 1, ret: -1, args: [G.Element, P.int]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.int, args: [P.int, R.Item]}, {func: 1, ret: P.bool, args: [R.Item]}, {func: 1, ret: O.AddItemResult, args: [R.Item], named: {wasUnequipped: P.bool}}, {func: 1, ret: R.Item, args: [R.Item]}, {func: 1, ret: P.JsObject, args: [,]}, {func: 1, ret: P.Null, args: [P.String, P.int]}, {func: 1, ret: P.Null, args: [Z.Direction, P.bool]}, {func: 1, ret: P.Null, args: [L.Vec, P.int]}, {func: 1, ret: Q.Tile}, {func: 1, ret: O.Inventory}, {func: 1, ret: P.Null, args: [L.Vec, O.Inventory]}, {func: 1, ret: -1, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [S.Actor]}, {func: 1, ret: -1, args: [Z.Direction]}, {func: 1, ret: P.bool, args: [P.bool, P.int]}, {func: 1, ret: P.Null, args: [Z.Direction]}, {func: 1, ret: P.bool, args: [P.double, P.double]}, {func: 1, ret: P.Null, args: [P.Symbol0,,]}, {func: 1, args: [P.String]}, {func: 1, ret: P.bool, args: [B.Breed]}, {func: 1, ret: P.Null, args: [R.Item, L.Vec]}, {func: 1, ret: P.bool, args: [P.int]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.Null, args: [P.String, P.Object]}, {func: 1, ret: P.String, args: [N.Race]}, {func: 1, ret: P.String, args: [T.HeroClass]}, {func: 1, ret: P.Null, args: [D.StatBase]}, {func: 1, ret: P.int, args: [B.Monster, B.Monster]}, {func: 1, ret: P.Null, args: [P.String, L.Color], opt: [L.Color]}, {func: 1, ret: P.bool, args: [K.Effect]}, {func: 1, ret: [P.List, L.Vec], args: [P.int]}, {func: 1, args: [W.Event]}, {func: 1, ret: P.bool, args: [T.HeroClass]}, {func: 1, ret: P.Null, args: [P.String, O.Shop]}, {func: 1, ret: P.bool, args: [N.Race]}, {func: 1, ret: P.bool, args: [P.double]}, {func: 1, ret: G.WindAction, args: [P.int]}, {func: 1, ret: G.BurnActorAction, args: [P.int]}, {func: 1, ret: -1, args: [P.num]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: P.num}, {func: 1, ret: G.BurnFloorAction, args: [L.Vec, U.Hit, P.num, P.int]}, {func: 1, ret: E.FreezeActorAction, args: [P.int]}, {func: 1, ret: P.Object, args: [,]}, {func: 1, ret: M.Skill, args: [P.String]}, {func: 1, ret: -1, args: [D.Stat, P.int]}];
   function convertToFastObject(properties) {
     function MyClass() {
     }
