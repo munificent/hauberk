@@ -437,7 +437,7 @@ void roomDecor() {
   // TODO: More table sizes? Shapes?
 
   // Chairs.
-  category(themes: "built", frequency: 3.0, cells: {
+  category(themes: "built", frequency: 2.0, cells: {
     "π": applyOpen(Tiles.chair),
   });
 
@@ -519,8 +519,9 @@ void roomDecor() {
       cells: {"&": applyOpen(Tiles.closedChest)});
 
   furnishing(symmetry: Symmetry.rotate90, template: """
-    ##
-    #&""");
+    ##?
+    #&.
+    ?.?""");
 
   furnishing(symmetry: Symmetry.rotate90, template: """
     ?#?

@@ -243,7 +243,7 @@ class _ItemBuilder extends _BaseBuilder {
     use(description, () => MappingAction(distance, illuminate: illuminate));
   }
 
-  void haste(int duration, int amount) {
+  void haste(int amount, int duration) {
     use("Raises speed by $amount for $duration turns.",
         () => HasteAction(amount, duration));
   }

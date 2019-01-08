@@ -4,10 +4,10 @@ import '../../engine.dart';
 import '../elements.dart';
 
 class HasteAction extends ConditionAction {
-  final int _duration;
   final int _speed;
+  final int _duration;
 
-  HasteAction(this._duration, this._speed);
+  HasteAction(this._speed, this._duration);
 
   Condition get condition => actor.haste;
 

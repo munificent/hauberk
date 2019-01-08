@@ -71,7 +71,7 @@ class ArchitecturalStyle {
     addStyle("dungeon",
         startFrequency: 10.0,
         decor: "dungeon",
-        decorDensity: 0.07,
+        decorDensity: 0.09,
         create: () => Dungeon());
 
     // TODO: Decide if we should ever do full-size keeps anymore.

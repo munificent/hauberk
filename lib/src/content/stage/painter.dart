@@ -88,13 +88,13 @@ class _DoorPaintStyle extends PaintStyle {
   TileType paintTile(Painter painter, Vec pos) {
     // TODO: Take depth into account. Locked doors, trapped, etc.
     if (painter.getTile(pos) == Tiles.doorway) {
-      switch (rng.range(3)) {
+      switch (rng.range(6)) {
         case 0:
           return Tiles.openDoor;
         case 1:
-          return Tiles.closedDoor;
-        case 2:
           return Tiles.floor;
+        default:
+          return Tiles.closedDoor;
       }
     }
 

@@ -84,13 +84,13 @@ void potions() {
     ..destroy(Elements.cold, chance: 20);
   item("Potion[s] of Quickness", lima, frequency: 0.3, price: 25)
     ..depth(3, to: 30)
-    ..haste(20, 1);
+    ..haste(1, 40);
   item("Potion[s] of Alacrity", peaGreen, frequency: 0.3, price: 60)
     ..depth(18, to: 50)
-    ..haste(30, 2);
+    ..haste(2, 60);
   item("Potion[s] of Speed", sherwood, frequency: 0.25, price: 150)
     ..depth(34)
-    ..haste(40, 3);
+    ..haste(3, 100);
 
   // dram, draught, elixir, philter
 
