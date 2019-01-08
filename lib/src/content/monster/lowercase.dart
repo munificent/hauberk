@@ -273,7 +273,6 @@ void goblins() {
     ..drop("armor", percent: 10)
     ..drop("magic", percent: 20);
 
-  // TODO: Always drop something good.
   breed("Erlkonig, the Goblin Prince", 14, steelGray, 120)
     ..he()
     ..minion("goblin", 4, 8)
@@ -281,7 +280,7 @@ void goblins() {
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
     ..drop("treasure", count: 3)
-    ..drop("equipment", count: 2, depthOffset: 8)
+    ..drop("equipment", count: 2, depthOffset: 8, affixChance: 30)
     ..drop("magic", count: 3, depthOffset: 4)
     ..flags("protective unique");
 
@@ -532,7 +531,44 @@ void nagas() {
   // TODO: https://en.wikipedia.org/wiki/Nagaraja
 }
 
-void orcs() {}
+void orcs() {
+  family("o", meander: 10)
+    ..sense(see: 7, hear: 6)
+    ..groups("orc")
+    ..openDoors()
+    ..flags("protective");
+  breed("orc", 28, carrot, 100)
+    ..count(3, 6)
+    ..attack("stab[s]", 12)
+    ..drop("treasure", percent: 20)
+    ..drop("equipment", percent: 5)
+    ..drop("spear", percent: 5);
+
+  breed("orc brute", 29, mint, 120)
+    ..count(1)
+    ..minion("orc", 2, 5)
+    ..attack("bash[es]", 16)
+    ..drop("treasure", percent: 20)
+    ..drop("club", percent: 10)
+    ..drop("armor", percent: 10);
+
+  breed("orc soldier", 30, gunsmoke, 140)
+    ..count(4, 6)
+    ..minion("orcus", 1, 5)
+    ..attack("stab[s]", 20)
+    ..drop("treasure", percent: 25)
+    ..drop("axe", percent: 10)
+    ..drop("armor", percent: 10);
+
+  breed("orc chieftain", 31, brickRed, 180)
+    ..minion("orcus", 2, 10)
+    ..attack("stab[s]", 10)
+    ..drop("treasure", count: 2, percent: 40)
+    ..drop("equipment", percent: 20)
+    ..drop("item", percent: 20);
+
+  // TODO: Uniques. Some kind of magic-user.
+}
 
 void people() {
   family("p", tracking: 14, meander: 10)

@@ -15,6 +15,8 @@ class Monsters {
       "humanoid/hob/goblin",
       "humanoid/hob/kobold",
       "humanoid/human",
+      "humanoid/orcus/ogre",
+      "humanoid/orcus/orc",
       "humanoid/saurian",
       "magical/eye",
       "magical/jelly",

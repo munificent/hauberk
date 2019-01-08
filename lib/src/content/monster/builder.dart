@@ -120,6 +120,11 @@ class _BaseBuilder {
 
   _BaseBuilder(this._frequency);
 
+  void flags(String flags) {
+    // TODO: Allow negated flags.
+    _flags = flags;
+  }
+
   void emanate(int level) {
     _emanationLevel = level;
   }
@@ -228,11 +233,6 @@ class _BreedBuilder extends _BaseBuilder {
     var drop = percentDrop(percent, name, _depth + depthOffset, affixChance);
     if (count > 1) drop = repeatDrop(count, drop);
     _drops.add(drop);
-  }
-
-  void flags(String flags) {
-    // TODO: Allow negated flags.
-    _flags = flags;
   }
 
   void he() {
