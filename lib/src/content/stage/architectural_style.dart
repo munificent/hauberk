@@ -159,7 +159,10 @@ class ArchitecturalStyle {
           create: () => Keep(5));
     }
 
-    keep("goblin", start: 3, end: 16);
+    keep("kobold", start: 2, end: 16);
+    keep("goblin", start: 5, end: 23);
+    keep("saurian", start: 10, end: 30);
+    keep("orc", start: 28, end: 40);
     // TODO: More.
   }
 
