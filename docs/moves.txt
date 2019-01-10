@@ -38,3 +38,4 @@ Ideas for more things monsters can do to increase variety:
 - "Frog tongue" that reaches out and pulls hero closer
 - Knockback
 - Stun
+- Bash doors
