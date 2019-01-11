@@ -407,6 +407,13 @@ class GameScreen extends Screen<Input> {
 
   void resize(Vec size) {
     var leftWidth = 21;
+
+    if (size > 160) {
+      leftWidth = 29;
+    } else if (size > 150) {
+      leftWidth = 25;
+    }
+
     var centerWidth = size.x - leftWidth;
 
     itemPanel.bounds = null;

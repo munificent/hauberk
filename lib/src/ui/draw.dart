@@ -110,15 +110,38 @@ class Draw {
     if (barWidth == width * 2 && value < max) barWidth = width * 2 - 1;
 
     for (var i = 0; i < width; i++) {
-      int char;
+      var char = CharCode.space;
       if (i < barWidth ~/ 2) {
         char = CharCode.fullBlock;
       } else if (i < (barWidth + 1) ~/ 2) {
         char = CharCode.leftHalfBlock;
-      } else {
-        char = CharCode.space;
       }
-      terminal.drawGlyph(x + i, y, Glyph.fromCharCode(char, fore, back));
+      terminal.drawChar(x + i, y, char, fore, back);
     }
   }
-}
+
+  /// Draws a progress bar to reflect [value]'s range between `0` and [max].
+  /// Has a couple of special tweaks: the bar will only be empty if [value] is
+  /// exactly `0`, otherwise it will at least show a sliver. Likewise, the bar
+  /// will only be full if [value] is exactly [max], otherwise at least one
+  /// half unit will be missing.
+  static void thinMeter(
+      Terminal terminal, int x, int y, int width, int value, int max,
+      [Color fore, Color back]) {
+    assert(max != 0);
+
+    fore ??= brickRed;
+    back ??= maroon;
+
+    var barWidth = (width * value / max).round();
+
+    // Edge cases, don't show an empty or full bar unless actually at the min
+    // or max.
+    if (barWidth == 0 && value > 0) barWidth = 1;
+    if (barWidth == width && value < max) barWidth = width - 1;
+
+    for (var i = 0; i < width; i++) {
+      var color = i < barWidth ? fore : back;
+      terminal.drawChar(x + i, y, CharCode.lowerHalfBlock, color);
+    }
+  }}

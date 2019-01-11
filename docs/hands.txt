@@ -1,0 +1,179 @@
+I've been thinking around how hands and equipment should work. There are a
+couple of things I have in mind:
+
+*   The way light sources work is kind of random and hacky where it just takes
+    the brightest thing hanging out in your inventory.
+
+*   Some kind of dual-wielding could make for interesting equipment variety.
+
+*   It seems weird that you can wield a giant two-handed weapon and a shield at
+    the same time.
+
+My plan for resolving this is to treat the hero's hands as a resource. You have
+two hand slots to fill, and you can fill them with:
+
+*   One slot for a single-handed weapon.
+*   Both slots for a two-handed weapon.
+*   A held light source.
+*   A shield.
+
+You can do combinations like:
+
+*   A weapon in each hand.
+*   A single-handed weapon in one hand and a light source.
+*   A single-handed weapon and a shield.
+*   A two-handed weapon.
+
+## Features
+
+This opens up some questions and problems:
+
+### Dual wielding
+
+#### Hits
+
+If you have two weapons equipped, how does that interact with melee combat?
+Does the player use each weapon independently as separate actions? Does using
+both take two turns or just one?
+
+One idea I had was that if you have two weapons wielded, then attacking only
+consumes half the energy. In other words, it makes an attack take half the time.
+I don't think that's the right approach. In general, I think it's a good
+simplification for players that all turns take the same amount of time. I'd
+have to tweak the entire energy system to be able to correctly handle a
+half-time attack when the hero is already moving at the highest possible speed.
+
+Also, it would cause some weird consequences. Imagine the player is wielding
+one really good weapon and one crappy one. They do one attack with the good one.
+Now it's their turn. If the game lets them choose which weapon they use each
+turn, then putting a random weapon in the off hand becomes a hack to let you
+just use the other weapon twice as fast. That doesn't feel right.
+
+If we don't do that, the game has to track which weapon/hand you're allowed to
+attack with next. So after using the good weapon, it needs some internal state
+that forces the next melee attack to toggle to the other hand. But, then, how
+does that interact with equipping/unequipping? This bit of hidden state feels
+weird and confusing.
+
+Given that, I think a better option is to have a single melee attack action hit
+with both weapons at once. It should be fairly straightforward to extend
+AttackAction to get a list of hits from the attacker and perform them all. We
+could even possibly extend monsters to use that, though I think it's probably
+not that useful. Each weapon could have side effects, but the action system
+already handles a queue of pending effects, so that should work.
+
+#### Heft
+
+Weapon heft is a strength requirement. Dual-wielding should affect that. If
+you're just barely strong enough to wield a sword without penalty, you shouldn't
+be able to wield two of them without penalty.
+
+I considered having weapons subtract your strength like weight does. Then
+weapon heft scaling would be become a flat scale based on strength instead of
+centered on the weapon's heft. But that doesn't feel right to me. Wielding a
+heavy weapon shouldn't affect everything else that strength touches. I could be
+wrong about this, though. Strength actually isn't used for much else.
+
+The option I'm currently leaning towards is to scale heft when weapons are dual
+wielded. So each weapon's heft is the strength requirement when it's the only
+weapon wielded. If you wield two, both weapons have their heft scaled using
+some formula. I don't want to hand author two heft values for each weapon, but
+I think it should be doable to come up with a simple formula to calculate the
+dual-wield heft from the base one.
+
+#### Disciplines
+
+It would be good to have a discipline or two around dual wielding. A simple
+option given the above stuff around heft is to have the dual-wield disciplline
+modify the heft scaling. At its max level, you could dual wield two weapons as
+easily as one.
+
+### Light sources
+
+#### Wielding and using
+
+Right now, candles and torches can be consumed to light an area. This change
+means you can equip them. The game doesn't currently support an item that can
+be both equipped and used since there's just a single "use" command.
+
+This probably isn't a huge deal. There's already an "e" key binding for showing
+the equipment. (Which, now that I think about it, isn't very useful given the
+new item sidebar.) So we can just have two commands for using versus equipping.
+
+#### Lanterns on belts
+
+Using up a hand for a light source is a big sacrifice. We could also give the
+player a belt slot that can be used for a lantern. That would make lanterns a
+much more useful item since they don't take up a slot.
+
+### Two-handed weapons
+
+Since two-handed weapons take both hand slots, we should make them more
+valuable in other ways. The obvious answer is that they have higher damage than
+other weapons. Probably give them relatively lower heft for the amount of
+damage they do too, since it takes less strength to use a weapon when you can
+put both hands on it.
+
+We could maybe do some kind of skill or subclass title thing to let a strong
+hero wield a two-handed weapon in one hand.
+
+### Handed-ness and UI
+
+The UI for equipping stuff in hands can get complicated. Right now, the player
+never says *where* to equip something, they just choose *what* to equip. I'd
+like to keep that simplicity.
+
+I think we can do that similar to how Angband manages rings. The idea is that
+when you equip something that needs a hand, if there's an empty hand, it goes
+there. Otherwise, it unequips something (it really doesn't matter which) and
+then puts it there instead.
+
+If the player wants to equip it in a specific hand, they can just explicitly
+unequip the thing in that hand first to leave the slot empty.
+
+That raises the question of handedness. Should one hand be better for wielding
+weapons? For simplicity, I'm currently thinking no. Each hand is equally good.
+The only thing that comes into play is that if you dual wield, both hands get
+"worse" effectively because the heft of both weapons goes up.
+
+## Changes
+
+OK, so here's the summary of what I think this entails:
+
+*   Give the hero two "hand" slots instead of a "weapon" slot.
+
+*   Weapons, shields, and light sources go in that hand.
+
+*   The hero's emanation is the sum of all equipment emanation.
+
+*   Make a separate equip/unequip input so that light sources can be used and
+    equipped. If a piece of equipment has no use, it's probably best to not
+    default to equipping it so that users don't get in that habit and then
+    accidentally consume other things that they mean to equip.
+
+*   Add a belt equipment slot. Lanterns go there. Maybe some other kinds of
+    equipment?
+
+*   Make AttackAction handle an Actor returning a list of hits. Hero returns
+    two, one for each weapon, if two weapons are wielded.
+
+*   Make heft scaling take dual-wielding into account. If two weapons are
+    wielded, the heft for both goes up. Figure out how to show this in the UI
+    and what notifications to show.
+
+*   Allow items to be marked as "two-handed". Wielding a two-handed item forces
+    the other hand slot to be unused. So it needs to unequip whatever's in the
+    other hand. Equipping in a hand slot should check to see if the other hand
+    slot already has a two-handed item in it. The equipment list UI should show
+    that the slot is unavailable somehow. Maybe show the two-handed item in the
+    second slot too, but grayed out?
+
+*   Add a discipline for dual-wielding that reduces the heft penalty.
+
+*   Eventually maybe add a subclass/title for wielding a two-handed weapon in
+    one hand?
+
+*   Tweak weapon stats so that two-handed weapons do more damage and have lower
+    heft.
+
+

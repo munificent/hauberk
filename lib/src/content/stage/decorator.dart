@@ -68,7 +68,9 @@ class Decorator {
     // This way, you can get nearby styles and foreshadowing without a lot of
     // complex calculation.
 
-    // TODO: Do something smarter.
+    // TODO: Do something smarter. In particular, we shouldn't spawn the hero
+    // in a Keep, Pit or other special area. Since those spawn their own
+    // monsters, the hero can end up surrounded by monsters.
     _heroPos = _stage.findOpenTile();
 
     yield* _spawnMonsters();

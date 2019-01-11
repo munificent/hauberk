@@ -11,6 +11,8 @@ import '../item_view.dart';
 import 'panel.dart';
 
 // TODO: Split this into multiple panels and/or give it a better name.
+// TODO: There's room at the bottom of the panel for something else. Maybe a
+// mini-map?
 class SidebarPanel extends Panel {
   static final _resistLetters = {
     Elements.air: "A",
@@ -36,54 +38,23 @@ class SidebarPanel extends Panel {
     var game = _gameScreen.game;
     var hero = game.hero;
     terminal.writeAt(2, 0, " ${hero.save.name} ", UIHue.text);
-    terminal.writeAt(
-        1, 2, "${hero.save.race.name} ${hero.save.heroClass.name}", UIHue.text);
+    terminal.writeAt(1, 2, "${hero.save.race.name} ${hero.save.heroClass.name}",
+        UIHue.primary);
 
-    _drawStat(
-        terminal, 4, "Health", hero.health, brickRed, hero.maxHealth, maroon);
-    terminal.writeAt(1, 5, "Food", UIHue.helpText);
-    Draw.meter(terminal, 10, 5, 10, hero.stomach, Option.heroMaxStomach,
-        persimmon, garnet);
+    _drawStats(hero, terminal, 4);
 
-    _drawStat(terminal, 6, "Level", hero.level, cerulean);
-    if (hero.level < Hero.maxLevel) {
-      var levelPercent = 100 *
-          (hero.experience - experienceLevelCost(hero.level)) ~/
-          (experienceLevelCost(hero.level + 1) -
-              experienceLevelCost(hero.level));
-      terminal.writeAt(15, 6, "$levelPercent%", ultramarine);
-    }
+    _drawHealth(hero, terminal, 7);
+    _drawLevel(hero, terminal, 8);
+    _drawGold(hero, terminal, 9);
 
-    terminal.writeAt(1, 7, "Gold", UIHue.helpText);
-    var heroGold = formatMoney(hero.gold);
-    terminal.writeAt(10, 7, heroGold, gold);
+    _drawArmor(hero, terminal, 10);
+    _drawWeapon(hero, terminal, 11);
 
-    var x = 1;
-    drawStat(StatBase stat) {
-      terminal.writeAt(x, 9, stat.name.substring(0, 3), UIHue.helpText);
-      terminal.writeAt(x, 10, stat.value.toString().padLeft(3), UIHue.text);
-      x += 4;
-    }
-
-    drawStat(hero.strength);
-    drawStat(hero.agility);
-    drawStat(hero.fortitude);
-    drawStat(hero.intellect);
-    drawStat(hero.will);
-
-    terminal.writeAt(1, 12, 'Focus', UIHue.helpText);
-
-    Draw.meter(terminal, 10, 12, 10, hero.focus, hero.intellect.maxFocus,
-        cerulean, ultramarine);
-
-    _drawStat(terminal, 14, 'Armor',
-        '${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}% ', peaGreen);
-    // TODO: Show the weapon and stats better.
-    var hit = hero.createMeleeHit(null);
-    _drawStat(terminal, 15, 'Weapon', hit.damageString, turquoise);
+    _drawFood(hero, terminal, 13);
+    _drawFocus(hero, terminal, 14);
 
     // Draw the nearby monsters.
-    terminal.writeAt(1, 17, '@', _gameScreen.heroColor);
+    terminal.writeAt(1, 17, "@", _gameScreen.heroColor);
     terminal.writeAt(3, 17, hero.save.name, UIHue.text);
     _drawHealthBar(terminal, 18, hero);
 
@@ -123,17 +94,102 @@ class SidebarPanel extends Panel {
     }
   }
 
+  void _drawStats(Hero hero, Terminal terminal, int y) {
+    var x = 1;
+    drawStat(StatBase stat) {
+      terminal.writeAt(x, y, stat.name.substring(0, 3), UIHue.helpText);
+      terminal.writeAt(
+          x, y + 1, stat.value.toString().padLeft(3), UIHue.primary);
+      x += (terminal.width - 4) ~/ 4;
+    }
+
+    drawStat(hero.strength);
+    drawStat(hero.agility);
+    drawStat(hero.fortitude);
+    drawStat(hero.intellect);
+    drawStat(hero.will);
+  }
+
+  void _drawHealth(Hero hero, Terminal terminal, int y) {
+    _drawStat(
+        terminal, y, "Health", hero.health, brickRed, hero.maxHealth, maroon);
+  }
+
+  void _drawLevel(Hero hero, Terminal terminal, int y) {
+    terminal.writeAt(1, y, "Level", UIHue.helpText);
+
+    var levelString = hero.level.toString();
+    terminal.writeAt(
+        terminal.width - levelString.length - 1, y, levelString, turquoise);
+
+    if (hero.level < Hero.maxLevel) {
+      var levelPercent = 100 *
+          (hero.experience - experienceLevelCost(hero.level)) ~/
+          (experienceLevelCost(hero.level + 1) -
+              experienceLevelCost(hero.level));
+      Draw.thinMeter(terminal, 10, y, terminal.width - 14, levelPercent, 100,
+          turquoise, seaGreen);
+    }
+  }
+
+  void _drawGold(Hero hero, Terminal terminal, int y) {
+    terminal.writeAt(1, y, "Gold", UIHue.helpText);
+    var heroGold = formatMoney(hero.gold);
+    terminal.writeAt(terminal.width - 1 - heroGold.length, y, heroGold, gold);
+  }
+
+  void _drawArmor(Hero hero, Terminal terminal, int y) {
+    // Show equipment resistances.
+    var x = 10;
+    for (var element in Elements.all) {
+      if (hero.resistance(element) > 0) {
+        terminal.writeAt(x, y, _resistLetters[element], elementColor(element));
+        x++;
+      }
+    }
+
+    var armor = " ${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}%";
+    _drawStat(terminal, 10, "Armor", armor, peaGreen);
+  }
+
+  void _drawWeapon(Hero hero, Terminal terminal, int y) {
+    // TODO: Show element and other bonuses.
+    var hit = hero.createMeleeHit(null);
+    _drawStat(terminal, y, "Weapon", hit.damageString, carrot);
+  }
+
+  void _drawFood(Hero hero, Terminal terminal, int y) {
+    terminal.writeAt(1, y, "Food", UIHue.helpText);
+    Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.stomach,
+        Option.heroMaxStomach, persimmon, garnet);
+  }
+
+  void _drawFocus(Hero hero, Terminal terminal, int y) {
+    terminal.writeAt(1, y, 'Focus', UIHue.helpText);
+
+    Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.focus,
+        hero.intellect.maxFocus, cerulean, ultramarine);
+  }
+
   /// Draws a labeled numeric stat.
   void _drawStat(
       Terminal terminal, int y, String label, value, Color valueColor,
-      [max, Color maxColor]) {
+      [int max, Color maxColor]) {
     terminal.writeAt(1, y, label, UIHue.helpText);
-    var valueString = value.toString();
-    terminal.writeAt(11, y, valueString, valueColor);
 
+    var x = terminal.width - 1;
     if (max != null) {
-      terminal.writeAt(11 + valueString.length, y, ' / $max', maxColor);
+      var maxString = max.toString();
+      x -= maxString.length;
+      terminal.writeAt(x, y, maxString, maxColor);
+
+      x -= 3;
+      terminal.writeAt(x, y, " / ", maxColor);
     }
+
+    var valueString = value.toString();
+    x -= valueString.length;
+    terminal.writeAt(x, y, valueString, valueColor);
   }
 
   /// Draws a health bar for [actor].
@@ -195,7 +251,7 @@ class SidebarPanel extends Panel {
       terminal.writeAt(2, y, alertness, ash);
     }
 
-    Draw.meter(
-        terminal, 10, y, 10, actor.health, actor.maxHealth, brickRed, maroon);
+    Draw.meter(terminal, 10, y, terminal.width - 11, actor.health,
+        actor.maxHealth, brickRed, maroon);
   }
 }
