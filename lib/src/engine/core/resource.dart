@@ -117,8 +117,13 @@ class ResourceSet<T> {
   /// path "equipment/weapon/sword", if [tagName] is "weapon", this will permit
   /// resources tagged "weapon" or "sword", with equal probability.
   ///
-  /// Resources of in parent tags are also possible, but with less probability.
-  /// So in the above example, anything tagged "equipment" is included but rare.
+  /// Resources in parent tags, or in children of those tags, are also possible,
+  /// but with less probability. So in the above example, anything tagged
+  /// "equipment" is included but rare. Likewise, "equipment/armor" may also
+  /// show up, but is less frequent. The odds of a resource outside of [tag] or
+  /// its children show up are based on the common ancestor tag that contains
+  /// both [tag] and the resource. Each level of ancestry divides the chances
+  /// by ten.
   ///
   /// If no tag is given, chooses from all resources based only on depth.
   ///
@@ -135,30 +140,18 @@ class ResourceSet<T> {
     if (!includeParents) label += " (only)";
 
     return _runQuery(label, depth, (resource) {
-      // Include any resources that are directly tagged with a parent of the
-      // goal tag. So if the goal is "built/room/dungeon", a resource tagged
-      // "room" is considered as good as "dungeon".
-      for (var resourceTag in resource._tags) {
-        for (var thisTag = goalTag; thisTag != null; thisTag = thisTag.parent) {
-          if (thisTag == resourceTag) return 1.0;
-
-          if (!includeParents) break;
-        }
-      }
-
-      if (!includeParents) return 0.0;
-
-      // Resources in sibling trees are included with lower probability based
-      // on how far their common ancestor is. So if the goal is
-      // "equipment/weapon/sword", then "equipment/weapon/dagger" has a 1/10
-      // chance, and "equipment/armor" has 1/100.
       var scale = 1.0;
       for (var thisTag = goalTag; thisTag != null; thisTag = thisTag.parent) {
         for (var resourceTag in resource._tags) {
           if (resourceTag.contains(thisTag)) return scale;
         }
 
-        // TODO: Allow callers to tune this?
+        if (!includeParents) break;
+
+        // Resources in sibling trees are included with lower probability based
+        // on how far their common ancestor is. So if the goal is
+        // "equipment/weapon/sword", then "equipment/weapon/dagger" has a 1/10
+        // chance, and "equipment/armor" has 1/100.
         scale /= 10.0;
       }
 

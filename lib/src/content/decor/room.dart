@@ -18,7 +18,7 @@ void roomDecor() {
   };
 
   // Counters.
-  category(themes: "room", cells: tableCells);
+  category(themes: "dungeon keep", cells: tableCells);
   furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
     ?...
     #─┐.
@@ -161,7 +161,7 @@ void roomDecor() {
     .......""");
 
   // Separating counters.
-  category(themes: "room", cells: tableCells);
+  category(themes: "dungeon keep", cells: tableCells);
   furnishing(template: """
     ?.....?
     #─┐.┌─#
@@ -214,7 +214,7 @@ void roomDecor() {
     ?##?""");
 
   // Tables.
-  category(themes: "room", cells: tableCells);
+  category(themes: "dungeon keep", cells: tableCells);
 
   furnishing(template: """
     .....

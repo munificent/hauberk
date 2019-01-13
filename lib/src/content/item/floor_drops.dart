@@ -1,5 +1,4 @@
 import '../../engine.dart';
-import '../themes.dart';
 import 'drops.dart';
 
 final ResourceSet<FloorDrop> _floorDrops = ResourceSet();
@@ -7,8 +6,6 @@ final ResourceSet<FloorDrop> _floorDrops = ResourceSet();
 /// Items that are spawned on the ground when a dungeon is first generated.
 class FloorDrops {
   static void initialize() {
-    Themes.defineTags(_floorDrops, "drop");
-
     // Add generic stuff at every depth.
 
     // TODO: Tune this.
