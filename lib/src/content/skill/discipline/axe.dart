@@ -29,58 +29,42 @@ class AxeMastery extends MasteryDiscipline implements DirectionSkill {
 }
 
 /// A sweeping melee attack that hits three adjacent tiles.
-class SlashAction extends MasteryAction {
-  /// How many frames it pauses between each step of the swing.
-  static const _frameRate = 5;
-
+class SlashAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
-  int _step = 0;
 
   bool get isImmediate => false;
 
+  String get weaponType => "axe";
+
   SlashAction(this._dir, double damageScale) : super(damageScale);
 
-  ActionResult onPerform() {
+  Iterable<ActionResult> onGenerate() sync* {
     // Make sure there is room to swing it.
-    if (_step == 0) {
-      for (var dir in [_dir.rotateLeft45, _dir, _dir.rotateRight45]) {
-        var pos = actor.pos + dir;
+    for (var dir in [_dir.rotateLeft45, _dir, _dir.rotateRight45]) {
+      var pos = actor.pos + dir;
 
-        var tile = game.stage[pos];
-        if (!tile.isExplored) {
-          return fail("You can't see where you're swinging.");
-        }
+      var tile = game.stage[pos];
+      if (!tile.isExplored) {
+        yield fail("You can't see where you're swinging.");
+        return;
+      }
 
-        if (!tile.canEnter(Motility.fly)) {
-          var weapon = hero.equipment.weapon.type.name;
-          return fail("There isn't enough room to swing your $weapon.");
-        }
+      if (!tile.canEnter(Motility.fly)) {
+        yield fail("There isn't enough room to swing your weapon.");
+        return;
       }
     }
 
-    Direction dir;
-    switch (_step ~/ _frameRate) {
-      case 0:
-        dir = _dir.rotateLeft45;
-        break;
-      case 1:
-        dir = _dir;
-        break;
-      case 2:
-        dir = _dir.rotateRight45;
-        break;
-    }
-
-    // Show the effect and perform the attack on alternate frames. This ensures
-    // the effect gets a chance to be shown before the hit effect covers hit.
-    if (_step % 2 == 0) {
+    for (var dir in [_dir.rotateLeft45, _dir, _dir.rotateRight45]) {
+      // Show the effect and perform the attack on alternate frames. This
+      // ensures the effect gets a chance to be shown before the hit effect
+      // covers hit.
       addEvent(EventType.slash, pos: actor.pos + dir, dir: dir);
-    } else if (_step % 2 == 1) {
-      attack(actor.pos + dir);
-    }
+      yield* wait(2);
 
-    _step++;
-    return doneIf(_step == _frameRate * 3);
+      attack(actor.pos + dir);
+      yield* wait(3);
+    }
   }
 
   String toString() => '$actor slashes $_dir';
