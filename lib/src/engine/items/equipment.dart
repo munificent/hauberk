@@ -4,7 +4,7 @@ import 'inventory.dart';
 import 'item.dart';
 
 /// The collection of wielded [Item]s held by the [Hero]. Unlike [Inventory],
-/// the [Equipment] holds each Item in a categorized slot.
+/// the [Equipment] holds each item in a categorized slot.
 class Equipment extends IterableBase<Item> with ItemCollection {
   ItemLocation get location => ItemLocation.equipment;
 
@@ -13,20 +13,23 @@ class Equipment extends IterableBase<Item> with ItemCollection {
 
   Equipment()
       : slotTypes = const [
-          'weapon',
+          'hand',
+          'hand',
           'ring',
           'necklace',
           'body',
           'cloak',
+          // TODO: Shields should use a hand too.
           'shield',
           'helm',
           'gloves',
           'boots'
         ],
-        slots = List<Item>(9);
+        slots = List<Item>(10);
 
-  /// Gets the [Item] in the weapon slot, if any.
-  Item get weapon => find('weapon');
+  /// Gets the currently-equipped weapons, if any.
+  Iterable<Item> get weapons =>
+      slots.where((item) => item != null && item.type.weaponType != null);
 
   /// Gets the number of equipped items. Ignores empty slots.
   int get length {
@@ -60,17 +63,6 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     return equipment;
   }
 
-  /// Gets the [Item] currently equipped in [slotType], if any.
-  Item find(String slotType) {
-    for (var i = 0; i < slotTypes.length; i++) {
-      if (slotTypes[i] == slotType) {
-        return slots[i];
-      }
-    }
-
-    throw 'Unknown equipment slot type "$slotType".';
-  }
-
   /// Gets whether or not there is a slot to equip [item].
   bool canEquip(Item item) {
     return slotTypes.any((slot) => item.equipSlot == slot);
@@ -93,8 +85,6 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     // knives stackable, we'll have to add support for splitting stacks here.
     assert(item.count == 1);
 
-    // TODO: Need to handle multiple slots of the same type. In that case,
-    // should prefer an empty slot before reusing an in-use one.
     for (var i = 0; i < slotTypes.length; i++) {
       if (slotTypes[i] == item.equipSlot && slots[i] == null) {
         slots[i] = item;
@@ -114,17 +104,25 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     // Equipping stackable items isn't supported.
     assert(item.count == 1);
 
-    // TODO: Need to handle multiple slots of the same type. In that case,
-    // should prefer an empty slot before reusing an in-use one.
+    var usedSlot = -1;
     for (var i = 0; i < slotTypes.length; i++) {
       if (slotTypes[i] == item.equipSlot) {
-        var unequipped = slots[i];
-        slots[i] = item;
-        return unequipped;
+        if (slots[i] == null) {
+          // Found an empty slot, so put it there.
+          slots[i] = item;
+          return null;
+        } else {
+          // Found the slot, but it's occupied.
+          usedSlot = i;
+        }
       }
     }
 
-    throw "unreachable";
+    // If we get here, all matching slots were already full. Swap out an item.
+    assert(usedSlot != -1, "Should have at least one of every slot.");
+    var unequipped = slots[usedSlot];
+    slots[usedSlot] = item;
+    return unequipped;
   }
 
   void remove(Item item) {
@@ -140,15 +138,14 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   Item removeAt(int index) {
     // Find the slot, skipping over empty ones.
     for (var i = 0; i < slotTypes.length; i++) {
-      if (slots[i] != null) {
-        if (index == 0) {
-          final item = slots[i];
-          slots[i] = null;
-          return item;
-        } else {
-          index--;
-        }
+      if (slots[i] == null) continue;
+      if (index == 0) {
+        var item = slots[i];
+        slots[i] = null;
+        return item;
       }
+
+      index--;
     }
 
     throw "unreachable";

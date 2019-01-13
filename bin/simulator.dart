@@ -76,14 +76,17 @@ class Simulator {
     }
 
     // TODO: Equip armor.
+    hero.refreshProperties();
   }
 
   void _getWeapon(Item item) {
     // TODO: Use ranged weapons?
     if (item.attack.range > 0) return;
 
-    if (hero.equipment.weapon != null &&
-        hero.equipment.weapon.price >= item.price) {
+    var weapons = hero.equipment.weapons;
+    var weapon = weapons.isNotEmpty ? weapons.first : null;
+
+    if (weapon != null && weapon.price >= item.price) {
 //      _log("$item is not better than ${hero.equipment.weapon}");
       return;
     }
@@ -93,9 +96,7 @@ class Simulator {
       return;
     }
 
-    if (hero.equipment.weapon != null) {
-      hero.equipment.remove(hero.equipment.weapon);
-    }
+    if (weapon != null) hero.equipment.remove(weapon);
 
     hero.equipment.tryAdd(item);
     _log("wield $item");

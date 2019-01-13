@@ -22,7 +22,9 @@ class Monster extends Actor {
   static const _maxAlertness = 1.0;
 
   Breed _breed;
+
   Breed get breed => _breed;
+
   set breed(Breed value) {
     _breed = value;
 
@@ -335,7 +337,8 @@ class Monster extends Actor {
     _state.bind(this);
   }
 
-  Hit onCreateMeleeHit(Actor defender) => rng.item(breed.attacks).createHit();
+  List<Hit> onCreateMeleeHits(Actor defender) =>
+      [rng.item(breed.attacks).createHit()];
 
   // TODO: Breed resistances.
   int onGetResistance(Element element) => 0;

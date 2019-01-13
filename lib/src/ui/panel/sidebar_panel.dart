@@ -43,15 +43,18 @@ class SidebarPanel extends Panel {
 
     _drawStats(hero, terminal, 4);
 
+    // TODO: Decide on a consistent set of colors for attributes and use them
+    // consistently through the UI.
     _drawHealth(hero, terminal, 7);
     _drawLevel(hero, terminal, 8);
     _drawGold(hero, terminal, 9);
 
-    _drawArmor(hero, terminal, 10);
-    _drawWeapon(hero, terminal, 11);
+    _drawWeapon(hero, terminal, 10);
+    _drawDefense(hero, terminal, 11);
+    _drawArmor(hero, terminal, 12);
 
-    _drawFood(hero, terminal, 13);
-    _drawFocus(hero, terminal, 14);
+    _drawFood(hero, terminal, 14);
+    _drawFocus(hero, terminal, 15);
 
     // Draw the nearby monsters.
     terminal.writeAt(1, 17, "@", _gameScreen.heroColor);
@@ -138,6 +141,22 @@ class SidebarPanel extends Panel {
     terminal.writeAt(terminal.width - 1 - heroGold.length, y, heroGold, gold);
   }
 
+  void _drawWeapon(Hero hero, Terminal terminal, int y) {
+    // TODO: Show element and other bonuses.
+    var hits = hero.createMeleeHits(null);
+    // TODO: Show both weapons when dual-wielding.
+    _drawStat(terminal, y, "Weapon", hits[0].damageString, carrot);
+  }
+
+  void _drawDefense(Hero hero, Terminal terminal, int y) {
+    var total = 0;
+    for (var defense in hero.defenses) {
+      total += defense.amount;
+    }
+
+    _drawStat(terminal, y, "Defense", "$total%", seaGreen);
+  }
+
   void _drawArmor(Hero hero, Terminal terminal, int y) {
     // Show equipment resistances.
     var x = 10;
@@ -149,13 +168,7 @@ class SidebarPanel extends Panel {
     }
 
     var armor = " ${(100 - getArmorMultiplier(hero.armor) * 100).toInt()}%";
-    _drawStat(terminal, 10, "Armor", armor, peaGreen);
-  }
-
-  void _drawWeapon(Hero hero, Terminal terminal, int y) {
-    // TODO: Show element and other bonuses.
-    var hit = hero.createMeleeHit(null);
-    _drawStat(terminal, y, "Weapon", hit.damageString, carrot);
+    _drawStat(terminal, y, "Armor", armor, peaGreen);
   }
 
   void _drawFood(Hero hero, Terminal terminal, int y) {

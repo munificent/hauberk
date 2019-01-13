@@ -6,7 +6,7 @@ import 'mastery.dart';
 /// A slashing melee attack that hits a number of adjacent monsters.
 class AxeMastery extends MasteryDiscipline implements DirectionSkill {
   // TODO: Tune.
-  static double _slashScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.0);
+  static double _sweepScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.0);
 
   // TODO: Better name.
   String get name => "Axe Mastery";
@@ -18,25 +18,25 @@ class AxeMastery extends MasteryDiscipline implements DirectionSkill {
   String get weaponType => "axe";
 
   String levelDescription(int level) {
-    var damage = (_slashScale(level) * 100).toInt();
+    var damage = (_sweepScale(level) * 100).toInt();
     return super.levelDescription(level) +
-        " Slash attacks inflict $damage% of the damage of a regular attack.";
+        " Sweep attacks inflict $damage% of the damage of a regular attack.";
   }
 
   Action getDirectionAction(Game game, int level, Direction dir) {
-    return SlashAction(dir, AxeMastery._slashScale(level));
+    return SweepAction(dir, AxeMastery._sweepScale(level));
   }
 }
 
 /// A sweeping melee attack that hits three adjacent tiles.
-class SlashAction extends MasteryAction with GeneratorActionMixin {
+class SweepAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
 
   bool get isImmediate => false;
 
   String get weaponType => "axe";
 
-  SlashAction(this._dir, double damageScale) : super(damageScale);
+  SweepAction(this._dir, double damageScale) : super(damageScale);
 
   Iterable<ActionResult> onGenerate() sync* {
     // Make sure there is room to swing it.

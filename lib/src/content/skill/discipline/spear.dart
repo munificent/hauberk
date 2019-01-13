@@ -25,31 +25,23 @@ class SpearMastery extends MasteryDiscipline implements DirectionSkill {
         "attack.";
   }
 
-  Action getDirectionAction(Game game, int level, Direction dir) {
-    // See if the spear is a polearm.
-    // TODO: Should these have a separate weapon type?
-    var weapon = game.hero.equipment.weapon.type;
-    var isPolearm = weapon.name == "Lance" || weapon.name == "Partisan";
-
-    return SpearAction(dir, SpearMastery._spearScale(level),
-        isPolearm: isPolearm);
-  }
+  Action getDirectionAction(Game game, int level, Direction dir) =>
+      SpearAction(dir, SpearMastery._spearScale(level));
 }
 
 /// A melee attack that penetrates a row of actors.
 class SpearAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
-  final bool _isPolearm;
+
+  SpearAction(this._dir, double damageScale)
+      : super(damageScale);
 
   bool get isImmediate => false;
-
-  SpearAction(this._dir, double damageScale, {bool isPolearm})
-      : _isPolearm = isPolearm,
-        super(damageScale);
+  String get weaponType => "spear";
 
   Iterable<ActionResult> onGenerate() sync* {
     // Can only do a spear attack if the entire range is clear.
-    for (var step = 1; step <= (_isPolearm ? 3 : 2); step++) {
+    for (var step = 1; step <= 2; step++) {
       var pos = actor.pos + _dir * step;
 
       var tile = game.stage[pos];
@@ -59,8 +51,7 @@ class SpearAction extends MasteryAction with GeneratorActionMixin {
       }
 
       if (!tile.canEnter(Motility.fly)) {
-        var weapon = hero.equipment.weapon.type.name;
-        yield fail("There isn't enough room to use your $weapon.");
+        yield fail("There isn't enough room to use your weapon.");
         return;
       }
     }
@@ -68,13 +59,10 @@ class SpearAction extends MasteryAction with GeneratorActionMixin {
     for (var step = 1; step <= 2; step++) {
       var pos = actor.pos + _dir * step;
 
-      // Polearms don't hit the adjacent tile, but do have longer range.
-      if (_isPolearm) pos += _dir;
-
       // Show the effect and perform the attack on alternate frames. This
       // ensures the effect gets a chance to be shown before the hit effect
       //  covers hit.
-      var weapon = hero.equipment.weapon.appearance;
+      var weapon = hero.equipment.weapons.first.appearance;
       addEvent(EventType.stab, pos: pos, dir: _dir, other: weapon);
       yield waitOne();
 

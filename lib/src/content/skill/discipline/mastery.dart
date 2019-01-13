@@ -34,22 +34,14 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
     return "No $weaponType equipped.";
   }
 
-  bool _hasWeapon(Hero hero) {
-    // Must have the right weapon equipped.
-    var weapon = hero.equipment.weapon;
-    if (weapon == null) return false;
-
-    return weapon.type.weaponType == weaponType;
-  }
+  bool _hasWeapon(Hero hero) =>
+      hero.equipment.weapons.any((item) => item.type.weaponType == weaponType);
 
   void killMonster(Hero hero, Action action, Monster monster) {
     // Have to have killed the monster by hitting it.
     if (action is! AttackAction) return;
 
-    var weapon = hero.equipment.weapon;
-    if (weapon == null) return;
-
-    if (weapon.type.weaponType != weaponType) return;
+    if (!_hasWeapon(hero)) return;
 
     hero.skills.earnPoints(this, (monster.experience / 100).ceil());
     hero.refreshSkill(this);
@@ -72,14 +64,30 @@ abstract class MasteryAction extends Action {
 
   MasteryAction(this.damageScale);
 
+  String get weaponType;
+
   /// Attempts to hit the [Actor] at [pos], if any.
   int attack(Vec pos) {
     var defender = game.stage.actorAt(pos);
     if (defender == null) return null;
 
-    var hit = actor.createMeleeHit(defender);
-    hit.scaleDamage(damageScale);
-    return hit.perform(this, actor, defender);
+    // If dual-wielding two weapons of the mastered type, both are used.
+    var weapons = hero.equipment.weapons.toList();
+    var hits = hero.createMeleeHits(defender);
+    assert(weapons.length == hits.length);
+
+    var damage = 0;
+    for (var i = 0; i < weapons.length; i++) {
+      if (weapons[i].type.weaponType != weaponType) continue;
+
+      var hit = hits[i];
+      hit.scaleDamage(damageScale);
+      damage += hit.perform(this, actor, defender);
+
+      if (!defender.isAlive) break;
+    }
+
+    return damage;
   }
 
   double get noise => Sound.attackNoise;

@@ -130,11 +130,12 @@ class _CategoryBuilder extends _BaseBuilder {
     _tag = tags.last;
 
     const tagEquipSlots = [
-      "weapon",
+      "hand",
       "ring",
       "necklace",
       "body",
       "cloak",
+      // TODO: Shields should use a hand too.
       "shield",
       "helm",
       "gloves",
@@ -149,6 +150,8 @@ class _CategoryBuilder extends _BaseBuilder {
     }
 
     if (tags.contains("weapon")) {
+      // TODO: Handle two-handed weapons.
+      _equipSlot = "hand";
       _weaponType = tags[tags.indexOf("weapon") + 1];
     }
 

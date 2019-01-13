@@ -34,9 +34,10 @@ class BashAction extends MasteryAction {
   int _step = 0;
   int _damage = 0;
 
-  bool get isImmediate => false;
-
   BashAction(this._dir, double scale) : super(scale);
+
+  bool get isImmediate => false;
+  String get weaponType => "club";
 
   ActionResult onPerform() {
     if (_step == 0) {

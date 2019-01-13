@@ -116,8 +116,10 @@ class Strength extends StatBase {
   }
 
   /// Calculates the melee damage scaling factor based on the hero's strength
-  /// relative to the weapon's [heft].
-  double heftScale(int heft) {
+  /// relative to the weapon's [heft] and the number of [weaponsWielded] (1
+  /// or 2).
+  double heftScale(int heft, int weaponsWielded) {
+    // TODO: Use weaponsWielded.
     var relative = (value - heft).clamp(-20, 50);
 
     if (relative < -10) return lerpDouble(relative, -20, -10, 0.05, 0.3);
@@ -141,8 +143,8 @@ class Agility extends StatBase {
 
   int get dodgeBonus {
     if (value <= 10) return lerpInt(value, 1, 10, -50, 0);
-    if (value <= 30) return lerpInt(value, 10, 30, 0, 30);
-    return lerpInt(value, 30, 60, 30, 60);
+    if (value <= 30) return lerpInt(value, 10, 30, 0, 20);
+    return lerpInt(value, 30, 60, 20, 60);
   }
 
   int get strikeBonus {

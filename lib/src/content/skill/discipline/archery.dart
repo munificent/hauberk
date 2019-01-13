@@ -24,12 +24,8 @@ class Archery extends Discipline with TargetSkill {
     return "No bow equipped.";
   }
 
-  bool _hasBow(Hero hero) {
-    var weapon = hero.equipment.weapon;
-    if (weapon == null) return false;
-
-    return weapon.type.weaponType == "bow";
-  }
+  bool _hasBow(Hero hero) =>
+      hero.equipment.weapons.any((item) => item.type.weaponType == "bow");
 
   // TODO: Tune.
   int baseTrainingNeeded(int level) {

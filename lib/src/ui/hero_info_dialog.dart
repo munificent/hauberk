@@ -82,12 +82,12 @@ abstract class HeroInfoDialog extends Screen<Input> {
     terminal.writeAt(2, 1, "Equipment", gold);
 
     var y = 3;
-    for (var slot in hero.equipment.slotTypes) {
-      var item = hero.equipment.find(slot);
+    for (var i = 0; i < hero.equipment.slots.length; i++) {
+      var item = hero.equipment.slots[i];
       callback(item, y);
 
       if (item == null) {
-        terminal.writeAt(2, y, "(${slot})", steelGray);
+        terminal.writeAt(2, y, "(${hero.equipment.slotTypes[i]})", steelGray);
         y += 2;
         continue;
       }

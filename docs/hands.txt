@@ -100,6 +100,18 @@ This probably isn't a huge deal. There's already an "e" key binding for showing
 the equipment. (Which, now that I think about it, isn't very useful given the
 new item sidebar.) So we can just have two commands for using versus equipping.
 
+Another challenge is that we currently assume all equippable items cannot stack.
+Candles and torches do stack right now. Options:
+
+*   Do the work to handle stackable equippable items. Equipping should only
+    equip one from the stack. Unequipping needs to handle merging. This might
+    not be too bad.
+
+*   Not allow light sources to stack. That feels egregious given that you need
+    to stock up on them as usable items.
+
+*   Come up with another way to light rooms instead of consuming light sources.
+
 #### Lanterns on belts
 
 Using up a hand for a light source is a big sacrifice. We could also give the
@@ -136,44 +148,73 @@ weapons? For simplicity, I'm currently thinking no. Each hand is equally good.
 The only thing that comes into play is that if you dual wield, both hands get
 "worse" effectively because the heft of both weapons goes up.
 
+## Bows
+
+I guess bows should be two-handed weapons. Although that means you can't wield
+a bow and a light source, which seems annoying. On the other hand, if we make
+them single-handed, then we have to handle the case where you wield two bows.
+That should definitely be prohibited.
+
+One option is to do what Angband does and have a separate slot for bows. But
+that kind of undermines this feature. It also means basically every character
+ends up wielding a bow because, even if you never use it, you can still equip
+one that has some bonuses.
+
+One goal with Hauberk is that different kinds of characters should have pretty
+different equipment. I don't like that end-game Angband characters often all
+have the same kit, regardless of class and race.
+
+The simplest option is to say that, yes, bows are two-handed and you can't
+carry a light source while wielding one, at least not until you can find a
+lantern or some other non-held source of light. That makes ranged weapons more
+of a challenge, but that might help balance out the fact that you don't need
+ammo for them.
+
 ## Changes
 
 OK, so here's the summary of what I think this entails:
 
-*   Give the hero two "hand" slots instead of a "weapon" slot.
+-   Give the hero two "hand" slots instead of a "weapon" slot. Weapons go in
+    hands.
 
-*   Weapons, shields, and light sources go in that hand.
+-   Shields go in hands.
 
-*   The hero's emanation is the sum of all equipment emanation.
+-   Light sources go in hands.
 
-*   Make a separate equip/unequip input so that light sources can be used and
+-   The hero's emanation is the sum of all equipment emanation.
+
+-   Make a separate equip/unequip input so that light sources can be used and
     equipped. If a piece of equipment has no use, it's probably best to not
     default to equipping it so that users don't get in that habit and then
     accidentally consume other things that they mean to equip.
 
-*   Add a belt equipment slot. Lanterns go there. Maybe some other kinds of
+-   Handle equipping stackable items. Equipping a stack should split it.
+
+-   Add a belt equipment slot. Lanterns go there. Maybe some other kinds of
     equipment?
 
-*   Make AttackAction handle an Actor returning a list of hits. Hero returns
+-   Make AttackAction handle an Actor returning a list of hits. Hero returns
     two, one for each weapon, if two weapons are wielded.
 
-*   Make heft scaling take dual-wielding into account. If two weapons are
+-   Make heft scaling take dual-wielding into account. If two weapons are
     wielded, the heft for both goes up. Figure out how to show this in the UI
     and what notifications to show.
 
-*   Allow items to be marked as "two-handed". Wielding a two-handed item forces
+-   Allow items to be marked as "two-handed". Wielding a two-handed item forces
     the other hand slot to be unused. So it needs to unequip whatever's in the
     other hand. Equipping in a hand slot should check to see if the other hand
     slot already has a two-handed item in it. The equipment list UI should show
     that the slot is unavailable somehow. Maybe show the two-handed item in the
     second slot too, but grayed out?
 
-*   Add a discipline for dual-wielding that reduces the heft penalty.
+-   Add a discipline for dual-wielding that reduces the heft penalty.
 
-*   Eventually maybe add a subclass/title for wielding a two-handed weapon in
+-   Eventually maybe add a subclass/title for wielding a two-handed weapon in
     one hand?
 
-*   Tweak weapon stats so that two-handed weapons do more damage and have lower
+-   Tweak weapon stats so that two-handed weapons do more damage and have lower
     heft.
 
+-   Make bows two-handed.
 
+-   Show both weapons in sidebar.

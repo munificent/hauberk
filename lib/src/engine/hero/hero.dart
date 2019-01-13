@@ -33,8 +33,14 @@ class Hero extends Actor {
 
   Behavior _behavior;
 
-  /// Damage scale based on the current weapon, equipment, and stats.
-  final Property<double> _heftScale = Property();
+  /// Damage scales for each weapon being wielded, based on the weapon, other
+  /// equipment, and stats.
+  ///
+  /// This list parallels the sequence returned by [equipment.weapons].
+  final List<Property<double>> _heftScales = [
+    Property(),
+    Property()
+  ];
 
   /// How full the hero is.
   ///
@@ -172,40 +178,49 @@ class Hero extends Actor {
 
   Action onGetAction() => _behavior.getAction(this);
 
-  Hit onCreateMeleeHit(Actor defender) {
-    // See if a melee weapon is equipped.
-    var weapon = equipment.weapon;
+  List<Hit> onCreateMeleeHits(Actor defender) {
+    var hits = <Hit>[];
 
-    Hit hit;
-    if (weapon != null && !weapon.attack.isRanged) {
-      hit = weapon.attack.createHit();
+    // See if any melee weapons are equipped.
+    var weapons = equipment.weapons.toList();
+    for (var i = 0; i < weapons.length; i++) {
+      var weapon = weapons[i];
+      if (weapon.attack.isRanged) continue;
+
+      var hit = weapon.attack.createHit();
+
+      weapon.modifyHit(hit);
 
       // Take heft and strength into account.
-      hit.scaleDamage(_heftScale.value);
-    } else {
-      hit = Attack(this, 'punch[es]', Option.heroPunchDamage).createHit();
+      hit.scaleDamage(_heftScales[i].value);
+      hits.add(hit);
     }
 
-    hit.addStrike(agility.strikeBonus);
-
-    for (var skill in skills.acquired) {
-      skill.modifyAttack(this, defender as Monster, hit, skills.level(skill));
+    // If not, punch it.
+    if (hits.isEmpty) {
+      hits.add(Attack(this, 'punch[es]', Option.heroPunchDamage).createHit());
     }
 
-    return hit;
+    for (var hit in hits) {
+      hit.addStrike(agility.strikeBonus);
+
+      for (var skill in skills.acquired) {
+        skill.modifyAttack(this, defender as Monster, hit, skills.level(skill));
+      }
+    }
+
+    return hits;
   }
 
   Hit createRangedHit() {
-    var weapon = equipment.weapon;
+    var weapons = equipment.weapons.toList();
+    var i = weapons.indexWhere((weapon) => weapon.attack.isRanged);
+    assert(i != -1, "Should have ranged weapon equipped.");
 
-    // This should only be called when we know the hero has a ranged weapon
-    // equipped.
-    assert(weapon != null && weapon.attack.isRanged);
-
-    var hit = weapon.attack.createHit();
+    var hit = weapons[i].attack.createHit();
 
     // Take heft and strength into account.
-    hit.scaleDamage(_heftScale.value);
+    hit.scaleDamage(_heftScales[i].value);
 
     modifyHit(hit, HitType.ranged);
     return hit;
@@ -229,9 +244,11 @@ class Hero extends Actor {
         break;
     }
 
-    // Let equipment modify it.
+    // Let armor modify it. We don't worry about weapons here since the weapon
+    // modified it when the hit was created. This ensures that when
+    // dual-wielding that one weapon's modifiers don't affect the other.
     for (var item in equipment) {
-      item.modifyHit(hit);
+      if (item.type.weaponType == null) item.modifyHit(hit);
     }
 
     // TODO: Apply skills.
@@ -375,15 +392,19 @@ class Hero extends Actor {
     intellect.refresh(game);
     will.refresh(game);
 
-    var heft = strength.heftScale(equipment.weapon?.heft ?? 0);
-    _heftScale.update(heft, (previous) {
-      // TODO: Reword these if there is no weapon equipped?
-      if (heft < 1.0 && previous >= 1.0) {
-        game.log.error("You are too weak to effectively wield your weapon.");
-      } else if (heft >= 1.0 && previous < 1.0) {
-        game.log.message("You feel comfortable wielding your weapon.");
-      }
-    });
+    var weapons = equipment.weapons.toList();
+    for (var i = 0; i < weapons.length; i++) {
+      var weapon = weapons[i];
+      var heft = strength.heftScale(weapon.heft, weapons.length);
+      _heftScales[i].update(heft, (previous) {
+        // TODO: Reword these if there is no weapon equipped?
+        if (heft < 1.0 && previous >= 1.0) {
+          game.log.error("You are too weak to effectively wield $weapon.");
+        } else if (heft >= 1.0 && previous < 1.0) {
+          game.log.message("You feel comfortable wielding $weapon.");
+        }
+      });
+    }
 
     // See if any skills changed. (Gaining intellect learns spells.)
     _refreshSkills();

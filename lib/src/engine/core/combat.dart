@@ -152,7 +152,7 @@ class Hit {
         strike -= defense.amount;
         if (strike < 0) {
           action.log(defense.message, defender, attackNoun);
-          return null;
+          return 0;
         }
       }
     }
@@ -188,7 +188,6 @@ class Hit {
       // was resisted?
     }
 
-    // TODO: Pass in and use element.
     action.addEvent(EventType.hit,
         actor: defender, element: element, other: damage);
     action.log(

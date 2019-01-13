@@ -243,7 +243,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     var strongEnough = hero.strength.value >= item.heft;
     var color = strongEnough ? UIHue.primary : brickRed;
     terminal.writeAt(12, y, item.heft.toString(), color);
-    writeScale(16, y, hero.strength.heftScale(item.heft));
+    writeScale(16, y, hero.strength.heftScale(item.heft, 1));
     y++;
   }
 

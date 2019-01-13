@@ -82,8 +82,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
     var totalStrikeBonus = 0;
     var totalArmor = 0;
     var totalArmorBonus = 0;
-    for (var slot in hero.equipment.slotTypes) {
-      var item = hero.equipment.find(slot);
+    for (var item in hero.equipment.slots) {
       if (item == null) continue;
 
       if (item.attack != null) {

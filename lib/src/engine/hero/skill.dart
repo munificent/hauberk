@@ -60,6 +60,7 @@ abstract class Skill implements Comparable<Skill> {
   /// Called when the hero kills [monster].
   void killMonster(Hero hero, Action action, Monster monster) {}
 
+  // TODO: Rename to "modifyHit".
   /// Gives the skill a chance to modify the [hit] the [hero] is about to
   /// perform on [monster].
   void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {}
