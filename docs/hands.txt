@@ -177,7 +177,7 @@ OK, so here's the summary of what I think this entails:
 +   Give the hero two "hand" slots instead of a "weapon" slot. Weapons go in
     hands.
 
--   Shields go in hands.
++   Shields go in hands.
 
 -   Light sources go in hands.
 

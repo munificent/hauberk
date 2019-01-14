@@ -139,22 +139,27 @@ void shields() {
   // TODO: Encumbrance.
   item("Small Leather Shield", garnet, frequency: 0.5, price: 170)
     ..depth(12, to: 50)
-    ..armor(3, weight: 2)
+    ..armor(0, weight: 2)
+    ..defense(4, "The shield blocks {2}.")
     ..destroy(Elements.fire, chance: 7, fuel: 14);
   item("Wooden Targe", sandal, frequency: 0.5, price: 250)
     ..depth(25)
-    ..armor(4, weight: 4)
+    ..armor(0, weight: 4)
+    ..defense(6, "The targe blocks {2}.")
     ..destroy(Elements.fire, chance: 14, fuel: 20);
   item("Large Leather Shield", persimmon, frequency: 0.5, price: 320)
     ..depth(35)
-    ..armor(5, weight: 5)
+    ..armor(0, weight: 5)
+    ..defense(8, "The shield blocks {2}.")
     ..destroy(Elements.fire, chance: 7, fuel: 17);
   item("Steel Buckler", steelGray, frequency: 0.5, price: 450)
     ..depth(50)
-    ..armor(6, weight: 6);
+    ..armor(0, weight: 4)
+    ..defense(10, "The buckler blocks {2}.");
   item("Kite Shield", gunsmoke, frequency: 0.5, price: 650)
     ..depth(65)
-    ..armor(7, weight: 9);
+    ..armor(0, weight: 7)
+    ..defense(12, "The shield blocks {2}.");
 }
 
 void boots() {

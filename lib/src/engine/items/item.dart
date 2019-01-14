@@ -69,6 +69,9 @@ class Item implements Comparable<Item>, Noun {
     return result;
   }
 
+  // TODO: Affix defenses?
+  Defense get defense => type.defense;
+
   /// The amount of protection provided by the item when equipped.
   int get armor => baseArmor + armorModifier;
 

@@ -135,24 +135,24 @@ class _CategoryBuilder extends _BaseBuilder {
       "necklace",
       "body",
       "cloak",
-      // TODO: Shields should use a hand too.
-      "shield",
       "helm",
       "gloves",
       "boots"
     ];
 
-    for (var equipSlot in tagEquipSlots) {
-      if (tags.contains(equipSlot)) {
-        _equipSlot = equipSlot;
-        break;
-      }
-    }
-
-    if (tags.contains("weapon")) {
+    if (tags.contains("shield")) {
+      _equipSlot = "hand";
+    } else if (tags.contains("weapon")) {
       // TODO: Handle two-handed weapons.
       _equipSlot = "hand";
       _weaponType = tags[tags.indexOf("weapon") + 1];
+    } else {
+      for (var equipSlot in tagEquipSlots) {
+        if (tags.contains(equipSlot)) {
+          _equipSlot = equipSlot;
+          break;
+        }
+      }
     }
 
     // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
@@ -171,6 +171,7 @@ class _ItemBuilder extends _BaseBuilder {
   int _price;
   ItemUse _use;
   Attack _attack;
+  Defense _defense;
   int _weight;
   int _heft;
   int _armor;
@@ -184,6 +185,11 @@ class _ItemBuilder extends _BaseBuilder {
   void depth(int from, {int to}) {
     _minDepth = from;
     _maxDepth = to ?? Option.maxDepth;
+  }
+
+  void defense(int amount, String message) {
+    assert(_defense == null);
+    _defense = Defense(amount, message);
   }
 
   void armor(int armor, {int weight}) {
@@ -423,6 +429,7 @@ void finishItem() {
       _item._use,
       _item._attack,
       toss,
+      _item._defense,
       _item._armor ?? 0,
       _item._price,
       _item._maxStack ?? _category._maxStack ?? 1,

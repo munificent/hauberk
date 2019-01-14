@@ -248,16 +248,23 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     y++;
   }
 
-  if (item.armor != 0) {
+  if (item.armor != 0 || item.defense != null) {
     writeSection("Defense");
-    writeLabel("Armor");
-    terminal.writeAt(12, y, item.baseArmor.toString(), UIHue.text);
-    writeBonus(16, y, item.armorModifier);
-    terminal.writeAt(25, y, "=", UIHue.secondary);
 
-    var armor = item.armor.toString().padLeft(6);
-    terminal.writeAt(27, y, armor, peaGreen);
-    y++;
+    if (item.defense != null) {
+      writeStat("Dodge", item.defense.amount);
+    }
+
+    if (item.armor != 0) {
+      writeLabel("Armor");
+      terminal.writeAt(12, y, item.baseArmor.toString(), UIHue.text);
+      writeBonus(16, y, item.armorModifier);
+      terminal.writeAt(25, y, "=", UIHue.secondary);
+
+      var armor = item.armor.toString().padLeft(6);
+      terminal.writeAt(27, y, armor, peaGreen);
+      y++;
+    }
 
     writeStat("Weight", item.weight);
     // TODO: Encumbrance.

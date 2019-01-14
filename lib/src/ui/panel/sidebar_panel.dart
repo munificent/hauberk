@@ -161,7 +161,7 @@ class SidebarPanel extends Panel {
       total += defense.amount;
     }
 
-    _drawStat(terminal, y, "Defense", "$total%", seaGreen);
+    _drawStat(terminal, y, "Dodge", "$total%", seaGreen);
   }
 
   void _drawArmor(Hero hero, Terminal terminal, int y) {

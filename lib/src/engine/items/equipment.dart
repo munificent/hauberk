@@ -19,13 +19,11 @@ class Equipment extends IterableBase<Item> with ItemCollection {
           'necklace',
           'body',
           'cloak',
-          // TODO: Shields should use a hand too.
-          'shield',
           'helm',
           'gloves',
           'boots'
         ],
-        slots = List<Item>(10);
+        slots = List<Item>(9);
 
   /// Gets the currently-equipped weapons, if any.
   Iterable<Item> get weapons =>
@@ -151,9 +149,6 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     throw "unreachable";
   }
 
-  Iterator<Item> get iterator {
-    // TODO: Would be better if empty slots were shown with a slot label.
-    // Don't include empty slots.
-    return slots.where((item) => item != null).iterator;
-  }
+  /// Gets the non-empty item slots.
+  Iterator<Item> get iterator => slots.where((item) => item != null).iterator;
 }

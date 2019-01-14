@@ -168,12 +168,18 @@ class Hero extends Actor {
 
   int get baseDodge => 20 + agility.dodgeBonus;
 
-  // TODO: Shields, temporary bonuses, etc.
   Iterable<Defense> onGetDefenses() sync* {
+    for (var item in equipment) {
+      var defense = item.defense;
+      if (defense != null) yield defense;
+    }
+
     for (var skill in skills.acquired) {
       var defense = skill.getDefense(this, skills.level(skill));
       if (defense != null) yield defense;
     }
+
+    // TODO: Temporary bonuses, etc.
   }
 
   Action onGetAction() => _behavior.getAction(this);

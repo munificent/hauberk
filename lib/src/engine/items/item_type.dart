@@ -76,6 +76,8 @@ class ItemType {
   /// The items toss information, or `null` if it can't be tossed.
   final Toss toss;
 
+  final Defense defense;
+
   final int armor;
 
   // TODO: Affix should modify this.
@@ -123,6 +125,7 @@ class ItemType {
       this.use,
       this.attack,
       this.toss,
+      this.defense,
       this.armor,
       this.price,
       this.maxStack,
