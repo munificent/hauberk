@@ -244,6 +244,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     var color = strongEnough ? UIHue.primary : brickRed;
     terminal.writeAt(12, y, item.heft.toString(), color);
     writeScale(16, y, hero.strength.heftScale(item.heft, 1));
+    // TODO: Show heft when dual-wielding somehow?
     y++;
   }
 

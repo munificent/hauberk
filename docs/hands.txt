@@ -174,7 +174,7 @@ ammo for them.
 
 OK, so here's the summary of what I think this entails:
 
--   Give the hero two "hand" slots instead of a "weapon" slot. Weapons go in
++   Give the hero two "hand" slots instead of a "weapon" slot. Weapons go in
     hands.
 
 -   Shields go in hands.
@@ -193,10 +193,10 @@ OK, so here's the summary of what I think this entails:
 -   Add a belt equipment slot. Lanterns go there. Maybe some other kinds of
     equipment?
 
--   Make AttackAction handle an Actor returning a list of hits. Hero returns
++   Make AttackAction handle an Actor returning a list of hits. Hero returns
     two, one for each weapon, if two weapons are wielded.
 
--   Make heft scaling take dual-wielding into account. If two weapons are
++   Make heft scaling take dual-wielding into account. If two weapons are
     wielded, the heft for both goes up. Figure out how to show this in the UI
     and what notifications to show.
 
@@ -217,4 +217,4 @@ OK, so here's the summary of what I think this entails:
 
 -   Make bows two-handed.
 
--   Show both weapons in sidebar.
++   Show both weapons in sidebar.

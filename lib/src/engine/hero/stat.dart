@@ -119,16 +119,25 @@ class Strength extends StatBase {
   /// relative to the weapon's [heft] and the number of [weaponsWielded] (1
   /// or 2).
   double heftScale(int heft, int weaponsWielded) {
-    // TODO: Use weaponsWielded.
+    // Dual-wielding increases the heft of both weapons.
+    // TODO: Discipline that reduces this cost.
+    if (weaponsWielded == 2) heft = (heft * 1.2).round();
+
     var relative = (value - heft).clamp(-20, 50);
 
-    if (relative < -10) return lerpDouble(relative, -20, -10, 0.05, 0.3);
+    var scale = 0.0;
+    if (relative < -10) {
+      scale = lerpDouble(relative, -20, -10, 0.05, 0.3);
+    } else if (relative < 0) {
+      // Note that there is an immediate step down to 0.8 at -1.
+      scale = lerpDouble(relative, -10, -1, 0.3, 0.8);
+    } else if (relative < 30) {
+      scale = lerpDouble(relative, 0, 30, 1.0, 2.0);
+    } else {
+      scale = lerpDouble(relative, 30, 50, 2.0, 3.0);
+    }
 
-    // Note that there is an immediate step down to 0.8 at -1.
-    if (relative < 0) return lerpDouble(relative, -10, -1, 0.3, 0.8);
-
-    if (relative < 30) return lerpDouble(relative, 0, 30, 1.0, 2.0);
-    return lerpDouble(relative, 30, 50, 2.0, 3.0);
+    return scale;
   }
 }
 
