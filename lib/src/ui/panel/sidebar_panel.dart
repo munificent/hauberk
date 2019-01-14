@@ -49,17 +49,17 @@ class SidebarPanel extends Panel {
     _drawLevel(hero, terminal, 8);
     _drawGold(hero, terminal, 9);
 
-    _drawWeapon(hero, terminal, 10);
+    _drawArmor(hero, terminal, 10);
     _drawDefense(hero, terminal, 11);
-    _drawArmor(hero, terminal, 12);
+    _drawWeapons(hero, terminal, 12);
 
-    _drawFood(hero, terminal, 14);
-    _drawFocus(hero, terminal, 15);
+    _drawFood(hero, terminal, 15);
+    _drawFocus(hero, terminal, 16);
 
     // Draw the nearby monsters.
-    terminal.writeAt(1, 17, "@", _gameScreen.heroColor);
-    terminal.writeAt(3, 17, hero.save.name, UIHue.text);
-    _drawHealthBar(terminal, 18, hero);
+    terminal.writeAt(1, 18, "@", _gameScreen.heroColor);
+    terminal.writeAt(3, 18, hero.save.name, UIHue.text);
+    _drawHealthBar(terminal, 19, hero);
 
     var visibleMonsters = _gameScreen.stagePanel.visibleMonsters;
     visibleMonsters.sort((a, b) {
@@ -68,32 +68,32 @@ class SidebarPanel extends Panel {
       return aDistance.compareTo(bDistance);
     });
 
-    for (var i = 0; i < 10; i++) {
-      var y = 19 + i * 2;
-      if (i < visibleMonsters.length) {
-        var monster = visibleMonsters[i];
+    for (var i = 0; i < 10 && i < visibleMonsters.length; i++) {
+      var y = 20 + i * 2;
+      if (y >= terminal.height - 2) break;
 
-        var glyph = monster.appearance as Glyph;
-        if (_gameScreen.currentTargetActor == monster) {
-          glyph = Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
-        }
+      var monster = visibleMonsters[i];
 
-        var name = monster.breed.name;
-        if (name.length > terminal.width - 4) {
-          name = name.substring(0, terminal.width - 4);
-        }
-
-        terminal.drawGlyph(1, y, glyph);
-        terminal.writeAt(
-            3,
-            y,
-            name,
-            (_gameScreen.currentTargetActor == monster)
-                ? UIHue.selection
-                : UIHue.text);
-
-        _drawHealthBar(terminal, y + 1, monster);
+      var glyph = monster.appearance as Glyph;
+      if (_gameScreen.currentTargetActor == monster) {
+        glyph = Glyph.fromCharCode(glyph.char, glyph.back, glyph.fore);
       }
+
+      var name = monster.breed.name;
+      if (name.length > terminal.width - 4) {
+        name = name.substring(0, terminal.width - 4);
+      }
+
+      terminal.drawGlyph(1, y, glyph);
+      terminal.writeAt(
+          3,
+          y,
+          name,
+          (_gameScreen.currentTargetActor == monster)
+              ? UIHue.selection
+              : UIHue.text);
+
+      _drawHealthBar(terminal, y + 1, monster);
     }
   }
 
@@ -141,11 +141,18 @@ class SidebarPanel extends Panel {
     terminal.writeAt(terminal.width - 1 - heroGold.length, y, heroGold, gold);
   }
 
-  void _drawWeapon(Hero hero, Terminal terminal, int y) {
-    // TODO: Show element and other bonuses.
-    var hits = hero.createMeleeHits(null);
-    // TODO: Show both weapons when dual-wielding.
-    _drawStat(terminal, y, "Weapon", hits[0].damageString, carrot);
+  void _drawWeapons(Hero hero, Terminal terminal, int y) {
+    var hits = hero.createMeleeHits(null).toList();
+
+    var label = hits.length == 2 ? "Weapons" : "Weapon";
+    terminal.writeAt(1, y, label, UIHue.helpText);
+
+    for (var i = 0; i < hits.length; i++) {
+      var hitString = hits[i].damageString;
+      // TODO: Show element and other bonuses.
+      terminal.writeAt(
+          terminal.width - hitString.length - 1, y + i, hitString, carrot);
+    }
   }
 
   void _drawDefense(Hero hero, Terminal terminal, int y) {
