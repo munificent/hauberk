@@ -183,7 +183,7 @@ OK, so here's the summary of what I think this entails:
 
 -   The hero's emanation is the sum of all equipment emanation.
 
--   Make a separate equip/unequip input so that light sources can be used and
++   Make a separate equip/unequip input so that light sources can be used and
     equipped. If a piece of equipment has no use, it's probably best to not
     default to equipping it so that users don't get in that habit and then
     accidentally consume other things that they mean to equip.

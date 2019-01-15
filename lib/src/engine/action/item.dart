@@ -203,20 +203,12 @@ class UnequipAction extends ItemAction {
   }
 }
 
-/// [Action] for using an [Item] from the [Hero]'s [Inventory] or the ground.
-/// If the Item is equippable, then using it means equipping it.
+/// [Action] for using an [Item].
 class UseAction extends ItemAction {
   UseAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
-    // If it's equippable, then using it just equips it.
-    if (item.canEquip) {
-      return alternate(EquipAction(location, item));
-    }
-
-    if (!item.canUse) {
-      return fail("{1} can't be used.", item);
-    }
+    if (!item.canUse) return fail("{1} can't be used.", item);
 
     // TODO: Some items should not be usable when certain conditions are active.
     // For example, you cannot read scrolls when dazzled or blinded.

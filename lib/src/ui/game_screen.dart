@@ -194,8 +194,8 @@ class GameScreen extends Screen<Input> {
       case Input.pickUp:
         _pickUp();
         break;
-      case Input.unequip:
-        ui.push(ItemDialog.unequip(this));
+      case Input.equip:
+        ui.push(ItemDialog.equip(this));
         break;
 
       case Input.nw:

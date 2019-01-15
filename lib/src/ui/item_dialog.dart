@@ -50,9 +50,9 @@ class ItemDialog extends Screen<Input> {
       : _command = _PickUpItemCommand(),
         _location = ItemLocation.onGround;
 
-  ItemDialog.unequip(this._gameScreen)
-      : _command = _UseItemCommand(),
-        _location = ItemLocation.equipment;
+  ItemDialog.equip(this._gameScreen)
+      : _command = _EquipItemCommand(),
+        _location = ItemLocation.inventory;
 
   ItemDialog.sell(this._gameScreen, Inventory shop)
       : _command = _SellItemCommand(shop),
@@ -405,9 +405,8 @@ class _UseItemCommand extends _ItemCommand {
   String query(ItemLocation location) {
     switch (location) {
       case ItemLocation.inventory:
-        return 'Use or equip which item?';
       case ItemLocation.equipment:
-        return 'Unequip which item?';
+        return 'Use which item?';
       case ItemLocation.onGround:
         return 'Pick up and use which item?';
     }
@@ -415,11 +414,36 @@ class _UseItemCommand extends _ItemCommand {
     throw "unreachable";
   }
 
-  bool canSelect(Item item) => item.canUse || item.canEquip;
+  bool canSelect(Item item) => item.canUse;
 
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     dialog._gameScreen.game.hero.setNextAction(UseAction(location, item));
+    dialog.ui.pop();
+  }
+}
+
+class _EquipItemCommand extends _ItemCommand {
+  bool get needsCount => false;
+
+  String query(ItemLocation location) {
+    switch (location) {
+      case ItemLocation.inventory:
+        return 'Equip which item?';
+      case ItemLocation.equipment:
+        return 'Unequip which item?';
+      case ItemLocation.onGround:
+        return 'Pick up and equip which item?';
+    }
+
+    throw "unreachable";
+  }
+
+  bool canSelect(Item item) => item.canEquip;
+
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
+    dialog._gameScreen.game.hero.setNextAction(EquipAction(location, item));
     dialog.ui.pop();
   }
 }
