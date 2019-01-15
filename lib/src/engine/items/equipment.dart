@@ -99,8 +99,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
 
   /// Equips [item]. Returns the previously equipped item in that slot, if any.
   Item equip(Item item) {
-    // Equipping stackable items isn't supported.
-    assert(item.count == 1);
+    assert(item.count == 1, "Must split the stack before equipping.");
 
     var usedSlot = -1;
     for (var i = 0; i < slotTypes.length; i++) {

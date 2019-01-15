@@ -152,14 +152,21 @@ class EquipAction extends ItemAction {
     }
 
     var equipped = item;
-    removeItem();
+    if (item.count == 1) {
+      removeItem();
+    } else {
+      equipped = item.splitStack(1);
+      countChanged();
+    }
     var unequipped = hero.equipment.equip(equipped);
 
     // Add the previously equipped item to inventory.
     if (unequipped != null) {
+      // Make a copy with the original count for the message.
+      var copy = unequipped.clone();
       var result = hero.inventory.tryAdd(unequipped, wasUnequipped: true);
       if (result.remaining == 0) {
-        log('{1} unequip[s] {2}.', actor, unequipped);
+        log('{1} unequip[s] {2}.', actor, copy);
       } else {
         // No room in inventory, so drop it.
         game.stage.addItem(unequipped, actor.pos);
@@ -184,10 +191,12 @@ class UnequipAction extends ItemAction {
   UnequipAction(ItemLocation location, Item item) : super(location, item);
 
   ActionResult onPerform() {
+    // Make a copy with the original count for the message.
+    var copy = item.clone();
     removeItem();
     var result = hero.inventory.tryAdd(item, wasUnequipped: true);
     if (result.remaining == 0) {
-      log('{1} unequip[s] {2}.', actor, item);
+      log('{1} unequip[s] {2}.', actor, copy);
     } else {
       // No room in inventory, so drop it.
       game.stage.addItem(item, actor.pos);
