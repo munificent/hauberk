@@ -63,7 +63,17 @@ abstract class ItemView {
         // Null items should only appear in equipment.
         assert(items.slotTypes != null);
 
-        terminal.writeAt(x + 2, y, "(${items.slotTypes[i]})", UIHue.disabled);
+        // If this is the second hand slot and the previous one has a
+        // two-handed item in it, mark this one.
+        if (i > 0 &&
+            items.slotTypes[i] == "hand" &&
+            items.slotTypes[i - 1] == "hand" &&
+            items[i - 1] != null &&
+            items[i - 1].type.isTwoHanded) {
+          terminal.writeAt(x + 2, y, "↑ two-handed", UIHue.disabled);
+        } else {
+          terminal.writeAt(x + 2, y, "(${items.slotTypes[i]})", UIHue.disabled);
+        }
         letter++;
         i++;
         continue;
@@ -129,11 +139,6 @@ abstract class ItemView {
       } else if (item.armor != 0) {
         drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
       }
-
-//      if (item != null && item == inspectedItem) {
-//        terminal.drawChar(
-//            0, y, CharCode.blackLeftPointingPointer, UIHue.selection);
-//      }
 
       // TODO: Show heft and weight.
       i++;

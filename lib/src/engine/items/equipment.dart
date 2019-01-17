@@ -97,9 +97,68 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     // Do nothing. Equipment doesn't stack.
   }
 
-  /// Equips [item]. Returns the previously equipped item in that slot, if any.
-  Item equip(Item item) {
+  /// Equips [item].
+  ///
+  /// Returns any items that had to be unequipped to make room for it. This is
+  /// usually nothing or a single item, but can be two held items if equipping
+  /// a two-handed item.
+  List<Item> equip(Item item) {
     assert(item.count == 1, "Must split the stack before equipping.");
+
+    // Handle hands and two-handed items specially. We need to preserve the
+    // invariant that you can never get into a state where you are holding a
+    // two-handed item and something else.
+    if (item.equipSlot == "hand") {
+      var handSlots = <int>[];
+      var heldSlots = <int>[];
+      for (var i = 0; i < slotTypes.length; i++) {
+        if (slotTypes[i] == "hand") {
+          handSlots.add(i);
+          if (slots[i] != null) heldSlots.add(i);
+        }
+      }
+
+      // Nothing held, so hold it.
+      if (heldSlots.isEmpty) {
+        slots[handSlots[0]] = item;
+        return const [];
+      }
+
+      // Holding a two-handed item, so unequip it.
+      if (heldSlots.length == 1 &&
+          slots[heldSlots[0]].type.isTwoHanded) {
+        var unequipped = slots[heldSlots[0]];
+        slots[handSlots[0]] = item;
+        return [unequipped];
+      }
+
+      // Equipping a two-handed, so unequip anything held.
+      if (item.type.isTwoHanded) {
+        var unequipped = <Item>[];
+        for (var slot in heldSlots) {
+          unequipped.add(slots[slot]);
+          slots[slot] = null;
+        }
+
+        slots[handSlots[0]] = item;
+        return unequipped;
+      }
+
+      // Both hands full, so empty one.
+      if (heldSlots.length == 2) {
+        var unequipped = slots[heldSlots[0]];
+        slots[heldSlots[0]] = item;
+        return [unequipped];
+      }
+
+      // One empty hand, so use it.
+      if (heldSlots[0] == handSlots[0]) {
+        slots[handSlots[1]] = item;
+      } else {
+        slots[handSlots[0]] = item;
+      }
+      return const [];
+    }
 
     var usedSlot = -1;
     for (var i = 0; i < slotTypes.length; i++) {
@@ -107,7 +166,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
         if (slots[i] == null) {
           // Found an empty slot, so put it there.
           slots[i] = item;
-          return null;
+          return const [];
         } else {
           // Found the slot, but it's occupied.
           usedSlot = i;
@@ -117,7 +176,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
 
     // If we get here, all matching slots were already full. Swap out an item.
     assert(usedSlot != -1, "Should have at least one of every slot.");
-    var unequipped = slots[usedSlot];
+    var unequipped = [slots[usedSlot]];
     slots[usedSlot] = item;
     return unequipped;
   }

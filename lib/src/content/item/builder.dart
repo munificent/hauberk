@@ -121,6 +121,7 @@ class _CategoryBuilder extends _BaseBuilder {
   String _tag;
   String _verb;
   bool _isTreasure = false;
+  bool _isTwoHanded = false;
 
   void tag(String tagPath) {
     // Define the tag path and store the leaf tag which is what gets used by
@@ -162,6 +163,10 @@ class _CategoryBuilder extends _BaseBuilder {
 
   void treasure() {
     _isTreasure = true;
+  }
+
+  void twoHanded() {
+    _isTwoHanded = true;
   }
 }
 
@@ -437,7 +442,8 @@ void finishItem() {
       heft: _item._heft ?? 0,
       emanation: _item._emanation ?? _category._emanation,
       fuel: _item._fuel ?? _category._fuel,
-      treasure: _category._isTreasure);
+      treasure: _category._isTreasure,
+      twoHanded: _category._isTwoHanded);
 
   itemType.destroyChance.addAll(_category._destroyChance);
   itemType.destroyChance.addAll(_item._destroyChance);

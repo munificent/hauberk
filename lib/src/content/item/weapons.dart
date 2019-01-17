@@ -32,6 +32,7 @@ void weapons() {
   // TODO: Staff skill. Distance attack + pushback?
   category(CharCode.latinSmallLetterIWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/staff")
+    ..twoHanded()
     ..toss(breakage: 35, range: 4);
   item("Walking Stick", persimmon, frequency: 0.5, price: 10)
     ..depth(2, to: 40)
@@ -187,15 +188,16 @@ void weapons() {
 
   category(CharCode.masculineOrdinalIndicator, verb: "stab[s]")
     ..tag("equipment/weapon/polearm")
+    ..twoHanded()
     ..toss(range: 4)
     ..skill("Spear Mastery");
   item("Lance", cornflower, frequency: 0.5, price: 550)
     ..depth(28)
-    ..weapon(24, heft: 27)
+    ..weapon(22, heft: 23)
     ..toss(damage: 20);
   item("Partisan", slate, frequency: 0.5, price: 850)
     ..depth(35)
-    ..weapon(30, heft: 29)
+    ..weapon(26, heft: 25)
     ..toss(damage: 26);
 
   // glaive, voulge, halberd, pole-axe, lucerne hammer,
@@ -215,6 +217,7 @@ void weapons() {
     ..depth(24)
     ..weapon(19, heft: 19)
     ..toss(damage: 26, range: 5);
+  // TODO: Two-handed?
   item("Battleaxe", steelGray, frequency: 0.5, price: 550)
     ..depth(40)
     ..weapon(25, heft: 30)
@@ -223,22 +226,23 @@ void weapons() {
   // Bows.
   category(CharCode.reversedNotSign, verb: "hit[s]")
     ..tag("equipment/weapon/bow")
+    ..twoHanded()
     ..toss(breakage: 50, range: 5)
     ..skill("Archery");
   item("Short Bow", persimmon, frequency: 0.3, price: 120)
     ..depth(6, to: 60)
-    ..ranged("the arrow", heft: 12, damage: 4, range: 8)
+    ..ranged("the arrow", heft: 12, damage: 5, range: 8)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);
   item("Longbow", garnet, frequency: 0.3, price: 250)
     ..depth(13)
-    ..ranged("the arrow", heft: 18, damage: 8, range: 12)
+    ..ranged("the arrow", heft: 18, damage: 9, range: 12)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 7, fuel: 13);
   // TODO: Warbow.
   item("Crossbow", gunsmoke, frequency: 0.3, price: 600)
     ..depth(28)
-    ..ranged("the bolt", heft: 24, damage: 12, range: 16)
+    ..ranged("the bolt", heft: 24, damage: 14, range: 16)
     ..toss(damage: 4)
     ..destroy(Elements.fire, chance: 4, fuel: 14);
 }

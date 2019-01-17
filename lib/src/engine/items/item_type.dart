@@ -64,6 +64,9 @@ class ItemType {
   /// then this Item cannot be equipped.
   final String equipSlot;
 
+  /// If true, the item takes up both hand slots.
+  final bool isTwoHanded;
+
   /// If this item is a weapon, returns which kind of weapon it is -- "spear",
   /// "sword", etc. Otherwise returns `null`.
   final String weaponType;
@@ -133,10 +136,12 @@ class ItemType {
       this.heft = 1,
       int emanation,
       int fuel,
-      bool treasure})
+      bool treasure,
+      bool twoHanded})
       : emanationLevel = emanation ?? 0,
         fuel = fuel ?? 0,
-        isTreasure = treasure ?? false;
+        isTreasure = treasure ?? false,
+        isTwoHanded = twoHanded ?? false;
 
   String toString() => name;
 }

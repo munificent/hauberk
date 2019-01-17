@@ -200,7 +200,7 @@ OK, so here's the summary of what I think this entails:
     wielded, the heft for both goes up. Figure out how to show this in the UI
     and what notifications to show.
 
--   Allow items to be marked as "two-handed". Wielding a two-handed item forces
++   Allow items to be marked as "two-handed". Wielding a two-handed item forces
     the other hand slot to be unused. So it needs to unequip whatever's in the
     other hand. Equipping in a hand slot should check to see if the other hand
     slot already has a two-handed item in it. The equipment list UI should show
@@ -212,9 +212,9 @@ OK, so here's the summary of what I think this entails:
 -   Eventually maybe add a subclass/title for wielding a two-handed weapon in
     one hand?
 
--   Tweak weapon stats so that two-handed weapons do more damage and have lower
++   Tweak weapon stats so that two-handed weapons do more damage and have lower
     heft.
 
--   Make bows two-handed.
++   Make bows two-handed.
 
 +   Show both weapons in sidebar.

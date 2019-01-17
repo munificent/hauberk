@@ -151,21 +151,21 @@ class EquipAction extends ItemAction {
     }
     var unequipped = hero.equipment.equip(equipped);
 
-    // Add the previously equipped item to inventory.
-    if (unequipped != null) {
+    // Add the previously equipped items to inventory.
+    for (var unequippedItem in unequipped) {
       // Make a copy with the original count for the message.
-      var copy = unequipped.clone();
-      var result = hero.inventory.tryAdd(unequipped, wasUnequipped: true);
+      var copy = unequippedItem.clone();
+      var result = hero.inventory.tryAdd(unequippedItem, wasUnequipped: true);
       if (result.remaining == 0) {
         log('{1} unequip[s] {2}.', actor, copy);
       } else {
         // No room in inventory, so drop it.
-        game.stage.addItem(unequipped, actor.pos);
+        game.stage.addItem(unequippedItem, actor.pos);
         log(
             "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
             "ground.",
             actor,
-            unequipped);
+            unequippedItem);
       }
     }
 
