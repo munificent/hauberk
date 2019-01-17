@@ -119,7 +119,7 @@ class Tile {
   /// Whether the hero can currently see the tile.
   ///
   /// To be visible, a tile must not be occluded, in the dark, or too far away.
-  bool get isVisible => !isOccluded && visibility >= 0;
+  bool get isVisible => !isOccluded && visibility > 0;
 
   /// How visible the tile is to the player.
   ///

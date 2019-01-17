@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import '../core/element.dart';
 import '../core/option.dart';
 import '../items/equipment.dart';
@@ -68,9 +66,9 @@ class HeroSave {
   int get emanationLevel {
     var level = 0;
 
-    // Find the brightest light source being carried.
-    for (var item in inventory) {
-      level = math.max(level, item.emanationLevel);
+    // Add the emanation of all equipment.
+    for (var item in equipment) {
+      level += item.emanationLevel;
     }
 
     return level;

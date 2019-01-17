@@ -179,16 +179,16 @@ OK, so here's the summary of what I think this entails:
 
 +   Shields go in hands.
 
--   Light sources go in hands.
++   Light sources go in hands.
 
--   The hero's emanation is the sum of all equipment emanation.
++   The hero's emanation is the sum of all equipment emanation.
 
 +   Make a separate equip/unequip input so that light sources can be used and
     equipped. If a piece of equipment has no use, it's probably best to not
     default to equipping it so that users don't get in that habit and then
     accidentally consume other things that they mean to equip.
 
--   Handle equipping stackable items. Equipping a stack should split it.
++   Handle equipping stackable items. Equipping a stack should split it.
 
 -   Add a belt equipment slot. Lanterns go there. Maybe some other kinds of
     equipment?

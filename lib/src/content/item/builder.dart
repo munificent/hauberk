@@ -140,7 +140,7 @@ class _CategoryBuilder extends _BaseBuilder {
       "boots"
     ];
 
-    if (tags.contains("shield")) {
+    if (tags.contains("shield") || tags.contains("light")) {
       _equipSlot = "hand";
     } else if (tags.contains("weapon")) {
       // TODO: Handle two-handed weapons.

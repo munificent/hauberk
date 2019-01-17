@@ -30,10 +30,6 @@ abstract class ItemAction extends Action {
 
       case ItemLocation.inventory:
         hero.inventory.remove(item);
-
-        if (item.emanationLevel > 0) {
-          game.stage.actorEmanationChanged();
-        }
         break;
 
       case ItemLocation.equipment:
@@ -85,11 +81,6 @@ class PickUpAction extends Action {
     }
 
     log('{1} pick[s] up {2}.', actor, item.clone(result.added));
-
-    // TODO: Use refreshProperties()?
-    if (item.emanationLevel > 0) {
-      game.stage.actorEmanationChanged();
-    }
 
     if (result.remaining == 0) {
       game.stage.removeItem(item, actor.pos);
@@ -179,6 +170,11 @@ class EquipAction extends ItemAction {
     }
 
     log("{1} equip[s] {2}.", actor, equipped);
+
+    if (item.emanationLevel > 0) {
+      game.stage.actorEmanationChanged();
+    }
+
     hero.refreshProperties();
     return ActionResult.success;
   }
