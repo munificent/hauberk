@@ -20,7 +20,7 @@ class BattleHardening extends Discipline {
     hero.refreshSkill(this);
   }
 
-  int modifyArmor(HeroSave hero, int level) => level;
+  int modifyArmor(HeroSave hero, int level, int armor) => armor + level;
 
   String levelDescription(int level) => "Increases armor by $level.";
 

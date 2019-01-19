@@ -68,8 +68,8 @@ abstract class ItemView {
         if (i > 0 &&
             items.slotTypes[i] == "hand" &&
             items.slotTypes[i - 1] == "hand" &&
-            items[i - 1] != null &&
-            items[i - 1].type.isTwoHanded) {
+            items.slots.elementAt(i - 1) != null &&
+            items.slots.elementAt(i - 1).type.isTwoHanded) {
           terminal.writeAt(x + 2, y, "↑ two-handed", UIHue.disabled);
         } else {
           terminal.writeAt(x + 2, y, "(${items.slotTypes[i]})", UIHue.disabled);
@@ -248,7 +248,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     var strongEnough = hero.strength.value >= item.heft;
     var color = strongEnough ? UIHue.primary : brickRed;
     terminal.writeAt(12, y, item.heft.toString(), color);
-    writeScale(16, y, hero.strength.heftScale(item.heft, 1));
+    writeScale(16, y, hero.strength.heftScale(item.heft));
     // TODO: Show heft when dual-wielding somehow?
     y++;
   }

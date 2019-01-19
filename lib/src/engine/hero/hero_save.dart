@@ -81,7 +81,7 @@ class HeroSave {
     }
 
     for (var skill in skills.acquired) {
-      total += skill.modifyArmor(this, skills.level(skill));
+      total = skill.modifyArmor(this, skills.level(skill), total);
     }
 
     return total;

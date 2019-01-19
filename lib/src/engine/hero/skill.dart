@@ -60,16 +60,23 @@ abstract class Skill implements Comparable<Skill> {
   /// Called when the hero kills [monster].
   void killMonster(Hero hero, Action action, Monster monster) {}
 
+  /// Called when the hero is dual-wielding two weapons.
+  void dualWield(Hero hero) {}
+
   // TODO: Rename to "modifyHit".
   /// Gives the skill a chance to modify the [hit] the [hero] is about to
   /// perform on [monster].
   void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {}
 
-  /// Adds or subtracts to the hero's base armor.
-  int modifyArmor(HeroSave hero, int level) => 0;
+  /// Modifies the hero's base armor.
+  int modifyArmor(HeroSave hero, int level, int armor) => armor;
 
   /// Gives the skill a chance to add new defenses to the hero.
   Defense getDefense(Hero hero, int level) => null;
+
+  /// Gives the skill a chance to adjust the [heftModifier] applied to the base
+  /// heft of a weapon.
+  double modifyHeft(Hero hero, int level, double heftModifier) => heftModifier;
 
   /// Gives the skill a chance to modify the hit the hero is about to receive.
 // TODO: Not currently used.

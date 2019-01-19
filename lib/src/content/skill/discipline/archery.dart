@@ -16,7 +16,7 @@ class Archery extends Discipline with TargetSkill {
       "of arrows from far away.";
 
   String levelDescription(int level) =>
-      "Scales strike by ${(_strikeScale(level) * 100).toInt().toString()}%.";
+      "Scales strike by ${(_strikeScale(level) * 100).toInt()}%.";
 
   String unusableReason(Game game) {
     if (_hasBow(game.hero)) return null;

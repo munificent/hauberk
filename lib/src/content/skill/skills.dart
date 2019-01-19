@@ -3,6 +3,7 @@ import 'discipline/archery.dart';
 import 'discipline/axe.dart';
 import 'discipline/battle_hardening.dart';
 import 'discipline/club.dart';
+import 'discipline/dual_wield.dart';
 import 'discipline/slay.dart';
 import 'discipline/spear.dart';
 import 'discipline/sword.dart';
@@ -27,7 +28,10 @@ class Skills {
   }
 
   static List<Skill> _generateSkills() {
-    var skills = <Skill>[BattleHardening()];
+    var skills = <Skill>[
+      BattleHardening(),
+      DualWield(),
+    ];
 
     // Masteries.
     skills.addAll([
@@ -36,7 +40,7 @@ class Skills {
       ClubMastery(),
       SpearMastery(),
       Swordfighting(),
-      WhipMastery()
+      WhipMastery(),
     ]);
 
     // Slays.

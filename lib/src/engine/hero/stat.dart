@@ -116,13 +116,8 @@ class Strength extends StatBase {
   }
 
   /// Calculates the melee damage scaling factor based on the hero's strength
-  /// relative to the weapon's [heft] and the number of [weaponsWielded] (1
-  /// or 2).
-  double heftScale(int heft, int weaponsWielded) {
-    // Dual-wielding increases the heft of both weapons.
-    // TODO: Discipline that reduces this cost.
-    if (weaponsWielded == 2) heft = (heft * 1.2).round();
-
+  /// relative to the weapon's [heft].
+  double heftScale(int heft) {
     var relative = (value - heft).clamp(-20, 50);
 
     var scale = 0.0;

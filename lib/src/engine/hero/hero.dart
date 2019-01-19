@@ -37,10 +37,7 @@ class Hero extends Actor {
   /// equipment, and stats.
   ///
   /// This list parallels the sequence returned by [equipment.weapons].
-  final List<Property<double>> _heftScales = [
-    Property(),
-    Property()
-  ];
+  final List<Property<double>> _heftScales = [Property(), Property()];
 
   /// How full the hero is.
   ///
@@ -87,9 +84,13 @@ class Hero extends Actor {
   int get maxHealth => fortitude.maxHealth;
 
   Strength get strength => save.strength;
+
   Agility get agility => save.agility;
+
   Fortitude get fortitude => save.fortitude;
+
   Intellect get intellect => save.intellect;
+
   Will get will => save.will;
 
   // TODO: Equipment and items that let the hero swim, fly, etc.
@@ -97,8 +98,7 @@ class Hero extends Actor {
 
   int get emanationLevel => save.emanationLevel;
 
-  Hero(Game game, Vec pos, this.save)
-      : super(game, pos.x, pos.y) {
+  Hero(Game game, Vec pos, this.save) : super(game, pos.x, pos.y) {
     // Give the hero energy so they can act before all of the monsters.
     energy.energy = Energy.actionCost;
 
@@ -365,8 +365,6 @@ class Hero extends Actor {
       // If this is the first time we've seen this breed, see if that unlocks
       // a slaying skill for it.
       if (lore.seenBreed(monster.breed) == 1) {
-        // TODO: Would be better to do skills.discovered, but right now this also
-        // discovers BattleHardening.
         for (var skill in game.content.skills) {
           skill.seeBreed(this, monster.breed);
         }
@@ -398,15 +396,37 @@ class Hero extends Actor {
     intellect.refresh(game);
     will.refresh(game);
 
+    // Refresh the heft scales.
     var weapons = equipment.weapons.toList();
     for (var i = 0; i < weapons.length; i++) {
       var weapon = weapons[i];
-      var heft = strength.heftScale(weapon.heft, weapons.length);
-      _heftScales[i].update(heft, (previous) {
+
+      // Dual-wielding imposes a heft penalty.
+      var heftModifier = 1.0;
+
+      if (weapons.length == 2) {
+        heftModifier = 1.3;
+
+        // Discover the dual-wield skill.
+        // TODO: This is a really specific method to put on Skill. Is there a
+        // cleaner way to handle this?
+        for (var skill in game.content.skills) {
+          skill.dualWield(this);
+        }
+      }
+
+      for (var skill in skills.acquired) {
+        heftModifier =
+            skill.modifyHeft(this, skills.level(skill), heftModifier);
+      }
+
+      var heft = (weapon.heft * heftModifier).round();
+      var heftScale = strength.heftScale(heft);
+      _heftScales[i].update(heftScale, (previous) {
         // TODO: Reword these if there is no weapon equipped?
-        if (heft < 1.0 && previous >= 1.0) {
+        if (heftScale < 1.0 && previous >= 1.0) {
           game.log.error("You are too weak to effectively wield $weapon.");
-        } else if (heft >= 1.0 && previous < 1.0) {
+        } else if (heftScale >= 1.0 && previous < 1.0) {
           game.log.message("You feel comfortable wielding $weapon.");
         }
       });

@@ -207,7 +207,7 @@ OK, so here's the summary of what I think this entails:
     that the slot is unavailable somehow. Maybe show the two-handed item in the
     second slot too, but grayed out?
 
--   Add a discipline for dual-wielding that reduces the heft penalty.
++   Add a discipline for dual-wielding that reduces the heft penalty.
 
 -   Eventually maybe add a subclass/title for wielding a two-handed weapon in
     one hand?

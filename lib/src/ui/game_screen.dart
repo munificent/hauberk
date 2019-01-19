@@ -341,6 +341,7 @@ class GameScreen extends Screen<Input> {
         shop.update(inventory);
       });
 
+      _storage.save();
       ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
     } else if (popped is SelectDepthPopup && result is int) {
       // Enter the dungeon.
