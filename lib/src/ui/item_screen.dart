@@ -193,7 +193,7 @@ abstract class ItemScreen extends Screen<Input> {
 //    }
 
     if (_error != null) {
-      terminal.writeAt(0, 32, _error, brickRed);
+      terminal.writeAt(0, 32, _error, red);
     }
   }
 

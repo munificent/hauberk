@@ -106,17 +106,17 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     terminal.writeAt(1, 0, _name, UIHue.text);
 
     _renderSkillListHeader(terminal);
-    terminal.writeAt(2, 2, _rowSeparator, steelGray);
+    terminal.writeAt(2, 2, _rowSeparator, darkCoolGray);
 
     if (_skills.isEmpty) {
-      terminal.writeAt(2, 3, "(None known.)", steelGray);
+      terminal.writeAt(2, 3, "(None known.)", darkCoolGray);
       return;
     }
 
     var i = 0;
     for (var skill in _skills) {
       var y = i * 2 + 3;
-      terminal.writeAt(2, y + 1, _rowSeparator, midnight);
+      terminal.writeAt(2, y + 1, _rowSeparator, darkerCoolGray);
 
       var nameColor = UIHue.primary;
       var detailColor = UIHue.text;
@@ -211,7 +211,7 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
 
     terminal.writeAt(1, 30, "Level:", UIHue.secondary);
     terminal.writeAt(9, 30, level.toString().padLeft(4), UIHue.text);
-    Draw.meter(terminal, 14, 30, 25, level, skill.maxLevel, brickRed, maroon);
+    Draw.meter(terminal, 14, 30, 25, level, skill.maxLevel, red, maroon);
 
     terminal.writeAt(1, 32, "Next:", UIHue.secondary);
     var percent = skill.percentUntilNext(_hero);
@@ -220,8 +220,8 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
       var current = skill.trainingNeeded(_hero.heroClass, level);
       var next = skill.trainingNeeded(_hero.heroClass, level + 1);
       terminal.writeAt(9, 32, "$percent%".padLeft(4), UIHue.text);
-      Draw.meter(terminal, 14, 32, 25, points - current, next - current,
-          brickRed, maroon);
+      Draw.meter(
+          terminal, 14, 32, 25, points - current, next - current, red, maroon);
     } else {
       terminal.writeAt(14, 32, "(At max level.)", UIHue.disabled);
     }
@@ -250,8 +250,8 @@ class SpellDialog extends SkillTypeDialog<Spell> {
       terminal.writeAt(13, 30,
           skill.complexity(_hero.heroClass).toString().padLeft(3), UIHue.text);
     } else {
-      terminal.writeAt(13, 30,
-          skill.complexity(_hero.heroClass).toString().padLeft(3), brickRed);
+      terminal.writeAt(
+          13, 30, skill.complexity(_hero.heroClass).toString().padLeft(3), red);
 
       var need = skill.complexity(_hero.heroClass) - _hero.intellect.value;
       terminal.writeAt(17, 30, "Need $need more intellect", UIHue.secondary);

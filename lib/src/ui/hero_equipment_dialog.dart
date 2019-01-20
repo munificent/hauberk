@@ -30,7 +30,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
         terminal.writeAt(x + 1, y, string, peaGreen);
       } else if (scale < 1.0) {
         terminal.writeAt(x, y, "x", maroon);
-        terminal.writeAt(x + 1, y, string, brickRed);
+        terminal.writeAt(x + 1, y, string, red);
       }
     }
 
@@ -42,15 +42,15 @@ class HeroEquipmentDialog extends HeroInfoDialog {
         terminal.writeAt(x + 3 - string.length, y, string, peaGreen);
       } else if (bonus < 0) {
         terminal.writeAt(x + 2 - string.length, y, "-", maroon);
-        terminal.writeAt(x + 3 - string.length, y, string, brickRed);
+        terminal.writeAt(x + 3 - string.length, y, string, red);
       }
     }
 
-    terminal.writeAt(48, 0, "══════ Attack ═════ ══ Defend ══", steelGray);
-    terminal.writeAt(48, 1, "El Damage      Hit  Dodge Armor", slate);
+    terminal.writeAt(48, 0, "══════ Attack ═════ ══ Defend ══", darkCoolGray);
+    terminal.writeAt(48, 1, "El Damage      Hit  Dodge Armor", coolGray);
 
     drawEquipmentTable(terminal, (item, y) {
-      writeLine(y - 1, midnight);
+      writeLine(y - 1, darkerCoolGray);
 
       if (item == null) return;
 
@@ -98,10 +98,10 @@ class HeroEquipmentDialog extends HeroInfoDialog {
     }
 
     var totalY = 21;
-    terminal.writeAt(41, totalY, "Totals", slate);
+    terminal.writeAt(41, totalY, "Totals", coolGray);
 
-    writeLine(2, steelGray);
-    writeLine(totalY - 1, steelGray);
+    writeLine(2, darkCoolGray);
+    writeLine(totalY - 1, darkCoolGray);
 
     terminal.writeAt(48, totalY, element.abbreviation, elementColor(element));
     terminal.writeAt(51, totalY, baseDamage.toString().padLeft(2));

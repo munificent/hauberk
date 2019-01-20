@@ -75,8 +75,7 @@ class SelectSkillDialog extends Screen<Input> {
     // Draw a box for the contents.
     var height = math.max(_skills.length + 2, 3);
 
-    Draw.frame(
-        terminal, 0, 0, terminal.width, height, UIHue.selection);
+    Draw.frame(terminal, 0, 0, terminal.width, height, UIHue.selection);
     terminal.writeAt(2, 0, " Use which skill? ", UIHue.selection);
 
     terminal = terminal.rect(1, 1, terminal.width - 2, terminal.height - 2);
@@ -91,7 +90,7 @@ class SelectSkillDialog extends Screen<Input> {
       var skill = _skills[y];
 
       var borderColor = UIHue.secondary;
-      var letterColor = midnight;
+      var letterColor = darkerCoolGray;
       var textColor = UIHue.disabled;
 
       var reason = skill.unusableReason(_gameScreen.game);

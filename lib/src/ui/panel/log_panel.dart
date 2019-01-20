@@ -25,10 +25,10 @@ class LogPanel extends Panel {
           color = ash;
           break;
         case LogType.error:
-          color = brickRed;
+          color = red;
           break;
         case LogType.quest:
-          color = violet;
+          color = purple;
           break;
         case LogType.gain:
           color = gold;
@@ -37,7 +37,7 @@ class LogPanel extends Panel {
           color = peaGreen;
           break;
         case LogType.cheat:
-          color = seaGreen;
+          color = aqua;
           break;
       }
 
@@ -49,7 +49,7 @@ class LogPanel extends Panel {
 
       if (message.count > 1) {
         terminal.writeAt(
-            message.text.length + 1, y, ' (x${message.count})', steelGray);
+            message.text.length + 1, y, ' (x${message.count})', darkCoolGray);
       }
 
       y--;

@@ -15,7 +15,8 @@ class ItemPanel extends Panel {
 
   int get inventoryTop => _game.hero.equipment.slots.length + 2;
 
-  int get onGroundTop => _game.hero.equipment.slots.length + Option.inventoryCapacity + 4;
+  int get onGroundTop =>
+      _game.hero.equipment.slots.length + Option.inventoryCapacity + 4;
 
   bool get onGroundVisible => bounds.height > 50;
 

@@ -193,12 +193,12 @@ class TargetDialog extends Screen<Input> {
       }
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
-          Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : steelGray));
+          Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : darkCoolGray));
       i = (i + _numFrames - 1) % _numFrames;
     }
 
     // Highlight the reticle if the bolt will reach the target.
-    var reticleColor = reachedTarget ? gold : steelGray;
+    var reticleColor = reachedTarget ? gold : darkCoolGray;
     _gameScreen.drawStageGlyph(
         terminal, target.x - 1, target.y, Glyph('-', reticleColor));
     _gameScreen.drawStageGlyph(

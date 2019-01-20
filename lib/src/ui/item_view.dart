@@ -79,7 +79,7 @@ abstract class ItemView {
         continue;
       }
 
-      var borderColor = steelGray;
+      var borderColor = darkCoolGray;
       var letterColor = UIHue.secondary;
       var textColor = UIHue.primary;
       var enabled = true;
@@ -119,7 +119,7 @@ abstract class ItemView {
         terminal.writeAt(terminal.width - price.length, y, price,
             enabled ? gold : UIHue.disabled);
         terminal.writeAt(terminal.width - price.length - 1, y, "\$",
-            enabled ? persimmon : UIHue.disabled);
+            enabled ? tan : UIHue.disabled);
       }
 
       drawStat(int symbol, Object stat, Color light, Color dark) {
@@ -134,8 +134,8 @@ abstract class ItemView {
       // attack bonus.
       if (item.attack != null) {
         var hit = item.attack.createHit();
-        drawStat(CharCode.feminineOrdinalIndicator, hit.damageString, carrot,
-            garnet);
+        drawStat(
+            CharCode.feminineOrdinalIndicator, hit.damageString, carrot, brown);
       } else if (item.armor != 0) {
         drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
       }
@@ -176,7 +176,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
       numberColor = peaGreen;
     } else if (scale < 1.0) {
       xColor = maroon;
-      numberColor = brickRed;
+      numberColor = red;
     }
 
     terminal.writeAt(x, y, "x", xColor);
@@ -192,7 +192,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
       terminal.writeAt(x + 3 - string.length, y, string, peaGreen);
     } else if (bonus < 0) {
       terminal.writeAt(x + 2 - string.length, y, "-", maroon);
-      terminal.writeAt(x + 3 - string.length, y, string, brickRed);
+      terminal.writeAt(x + 3 - string.length, y, string, red);
     } else {
       terminal.writeAt(x + 2 - string.length, y, "+", UIHue.disabled);
       terminal.writeAt(x + 3 - string.length, y, string, UIHue.disabled);
@@ -246,7 +246,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
 
     writeLabel("Heft");
     var strongEnough = hero.strength.value >= item.heft;
-    var color = strongEnough ? UIHue.primary : brickRed;
+    var color = strongEnough ? UIHue.primary : red;
     terminal.writeAt(12, y, item.heft.toString(), color);
     writeScale(16, y, hero.strength.heftScale(item.heft));
     // TODO: Show heft when dual-wielding somehow?

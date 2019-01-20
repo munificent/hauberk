@@ -74,7 +74,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
       helpText += ", $extraHelp";
     }
 
-    terminal.writeAt(0, terminal.height - 1, helpText, slate);
+    terminal.writeAt(0, terminal.height - 1, helpText, coolGray);
   }
 
   void drawEquipmentTable(
@@ -87,7 +87,8 @@ abstract class HeroInfoDialog extends Screen<Input> {
       callback(item, y);
 
       if (item == null) {
-        terminal.writeAt(2, y, "(${hero.equipment.slotTypes[i]})", steelGray);
+        terminal.writeAt(
+            2, y, "(${hero.equipment.slotTypes[i]})", darkCoolGray);
         y += 2;
         continue;
       }

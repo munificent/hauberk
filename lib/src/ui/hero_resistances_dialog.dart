@@ -22,9 +22,9 @@ class HeroResistancesDialog extends HeroInfoDialog {
           color);
     }
 
-    terminal.writeAt(48, 0, "══════════ Resistances ═════════", steelGray);
+    terminal.writeAt(48, 0, "══════════ Resistances ═════════", darkCoolGray);
     drawEquipmentTable(terminal, (item, y) {
-      writeLine(y - 1, midnight);
+      writeLine(y - 1, darkerCoolGray);
 
       if (item == null) return;
 
@@ -38,7 +38,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
         if (resistance > 0) {
           terminal.writeAt(x, y, string, peaGreen);
         } else if (resistance < 0) {
-          terminal.writeAt(x, y, string, brickRed);
+          terminal.writeAt(x, y, string, red);
         }
 
         i++;
@@ -46,10 +46,10 @@ class HeroResistancesDialog extends HeroInfoDialog {
     });
 
     var totalY = 21;
-    terminal.writeAt(41, totalY, "Totals", slate);
+    terminal.writeAt(41, totalY, "Totals", coolGray);
 
-    writeLine(2, steelGray);
-    writeLine(totalY - 1, steelGray);
+    writeLine(2, darkCoolGray);
+    writeLine(totalY - 1, darkCoolGray);
 
     var i = 0;
     for (var element in content.elements) {
@@ -60,11 +60,11 @@ class HeroResistancesDialog extends HeroInfoDialog {
 
       // Show the total resistance.
       var resistance = hero.equipmentResistance(element);
-      var color = steelGray;
+      var color = darkCoolGray;
       if (resistance > 0) {
         color = peaGreen;
       } else if (resistance < 0) {
-        color = brickRed;
+        color = red;
       }
 
       terminal.writeAt(x, totalY, resistance.toString().padLeft(2), color);

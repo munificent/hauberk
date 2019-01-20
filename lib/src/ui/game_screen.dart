@@ -114,10 +114,10 @@ class GameScreen extends Screen<Input> {
 
   Color get heroColor {
     var hero = game.hero;
-    if (hero.health < hero.maxHealth / 4) return brickRed;
+    if (hero.health < hero.maxHealth / 4) return red;
     if (hero.poison.isActive) return peaGreen;
-    if (hero.cold.isActive) return cornflower;
-    if (hero.health < hero.maxHealth / 2) return salmon;
+    if (hero.cold.isActive) return lightBlue;
+    if (hero.health < hero.maxHealth / 2) return pink;
     if (hero.stomach == 0 && hero.health < hero.maxHealth) return sandal;
     return ash;
   }

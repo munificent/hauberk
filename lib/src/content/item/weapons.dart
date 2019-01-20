@@ -12,17 +12,17 @@ void weapons() {
     ..tag("equipment/weapon/club")
     ..skill("Club Mastery")
     ..toss(breakage: 25, range: 5);
-  item("Stick", persimmon, frequency: 0.5)
+  item("Stick", tan, frequency: 0.5)
     ..depth(1, to: 20)
     ..weapon(7, heft: 6)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 10, fuel: 10);
-  item("Cudgel", gunsmoke, frequency: 0.5, price: 20)
+  item("Cudgel", lightCoolGray, frequency: 0.5, price: 20)
     ..depth(6, to: 60)
     ..weapon(9, heft: 8)
     ..toss(damage: 4)
     ..destroy(Elements.fire, chance: 5, fuel: 10);
-  item("Club", garnet, frequency: 0.5, price: 40)
+  item("Club", brown, frequency: 0.5, price: 40)
     ..depth(14)
     ..weapon(12, heft: 11)
     ..toss(damage: 5)
@@ -34,17 +34,17 @@ void weapons() {
     ..tag("equipment/weapon/staff")
     ..twoHanded()
     ..toss(breakage: 35, range: 4);
-  item("Walking Stick", persimmon, frequency: 0.5, price: 10)
+  item("Walking Stick", tan, frequency: 0.5, price: 10)
     ..depth(2, to: 40)
     ..weapon(10, heft: 9)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 5, fuel: 15);
-  item("Sta[ff|aves]", garnet, frequency: 0.5, price: 50)
+  item("Sta[ff|aves]", brown, frequency: 0.5, price: 50)
     ..depth(7)
     ..weapon(14, heft: 11)
     ..toss(damage: 5)
     ..destroy(Elements.fire, chance: 2, fuel: 15);
-  item("Quartersta[ff|aves]", gunsmoke, frequency: 0.5, price: 80)
+  item("Quartersta[ff|aves]", lightCoolGray, frequency: 0.5, price: 80)
     ..depth(24)
     ..weapon(20, heft: 13)
     ..toss(damage: 8)
@@ -54,15 +54,15 @@ void weapons() {
   category(CharCode.latinSmallLetterOWithAcute, verb: "bash[es]")
     ..tag("equipment/weapon/hammer")
     ..toss(breakage: 15, range: 5);
-  item("Hammer", persimmon, frequency: 0.5, price: 120)
+  item("Hammer", tan, frequency: 0.5, price: 120)
     ..depth(40)
     ..weapon(32, heft: 22)
     ..toss(damage: 12);
-  item("Mattock", garnet, frequency: 0.5, price: 240)
+  item("Mattock", brown, frequency: 0.5, price: 240)
     ..depth(46)
     ..weapon(40, heft: 26)
     ..toss(damage: 16);
-  item("War Hammer", gunsmoke, frequency: 0.5, price: 400)
+  item("War Hammer", lightCoolGray, frequency: 0.5, price: 400)
     ..depth(52)
     ..weapon(48, heft: 30)
     ..toss(damage: 20);
@@ -71,11 +71,11 @@ void weapons() {
   category(CharCode.latinSmallLetterUWithAcute, verb: "bash[es]")
     ..tag("equipment/weapon/mace")
     ..toss(breakage: 15, range: 4);
-  item("Morningstar", gunsmoke, frequency: 0.5, price: 130)
+  item("Morningstar", lightCoolGray, frequency: 0.5, price: 130)
     ..depth(24)
     ..weapon(26, heft: 17)
     ..toss(damage: 11);
-  item("Mace", slate, frequency: 0.5, price: 310)
+  item("Mace", coolGray, frequency: 0.5, price: 310)
     ..depth(33)
     ..weapon(36, heft: 23)
     ..toss(damage: 16);
@@ -85,16 +85,16 @@ void weapons() {
     ..tag("equipment/weapon/whip")
     ..toss(breakage: 25, range: 4)
     ..skill("Whip Mastery");
-  item("Whip", persimmon, frequency: 0.5, price: 40)
+  item("Whip", tan, frequency: 0.5, price: 40)
     ..depth(4)
     ..weapon(10, heft: 7)
     ..toss(damage: 1)
     ..destroy(Elements.fire, chance: 10, fuel: 5);
-  item("Chain Whip", gunsmoke, frequency: 0.5, price: 230)
+  item("Chain Whip", lightCoolGray, frequency: 0.5, price: 230)
     ..depth(15)
     ..weapon(18, heft: 15)
     ..toss(damage: 2);
-  item("Flail", slate, frequency: 0.5, price: 350)
+  item("Flail", coolGray, frequency: 0.5, price: 350)
     ..depth(27)
     ..weapon(28, heft: 24)
     ..toss(damage: 4);
@@ -104,23 +104,23 @@ void weapons() {
   category(CharCode.latinCapitalLetterNWithTilde, verb: "stab[s]")
     ..tag("equipment/weapon/dagger")
     ..toss(breakage: 2, range: 8);
-  item("Kni[fe|ves]", steelGray, frequency: 0.5, price: 20)
+  item("Kni[fe|ves]", darkCoolGray, frequency: 0.5, price: 20)
     ..depth(3, to: 20)
     ..weapon(8, heft: 5)
     ..toss(damage: 8);
-  item("Dirk", gunsmoke, frequency: 0.5, price: 30)
+  item("Dirk", lightCoolGray, frequency: 0.5, price: 30)
     ..depth(4, to: 40)
     ..weapon(10, heft: 6)
     ..toss(damage: 10);
-  item("Dagger", cornflower, frequency: 0.5, price: 50)
+  item("Dagger", lightBlue, frequency: 0.5, price: 50)
     ..depth(6, to: 70)
     ..weapon(12, heft: 7)
     ..toss(damage: 12);
-  item("Stiletto[es]", slate, frequency: 0.5, price: 80)
+  item("Stiletto[es]", coolGray, frequency: 0.5, price: 80)
     ..depth(10)
     ..weapon(14, heft: 6)
     ..toss(damage: 14);
-  item("Rondel", turquoise, frequency: 0.5, price: 130)
+  item("Rondel", lightAqua, frequency: 0.5, price: 130)
     ..depth(20)
     ..weapon(16, heft: 9)
     ..toss(damage: 16);
@@ -135,15 +135,15 @@ void weapons() {
     ..tag("equipment/weapon/sword")
     ..toss(breakage: 20, range: 5)
     ..skill("Swordfighting");
-  item("Rapier", steelGray, frequency: 0.5, price: 140)
+  item("Rapier", darkCoolGray, frequency: 0.5, price: 140)
     ..depth(13)
     ..weapon(13, heft: 12)
     ..toss(damage: 4);
-  item("Shortsword", slate, frequency: 0.5, price: 230)
+  item("Shortsword", coolGray, frequency: 0.5, price: 230)
     ..depth(17)
     ..weapon(15, heft: 13)
     ..toss(damage: 6);
-  item("Scimitar", gunsmoke, frequency: 0.5, price: 370)
+  item("Scimitar", lightCoolGray, frequency: 0.5, price: 370)
     ..depth(18)
     ..weapon(24, heft: 16)
     ..toss(damage: 9);
@@ -151,7 +151,7 @@ void weapons() {
     ..depth(20)
     ..weapon(26, heft: 17)
     ..toss(damage: 11);
-  item("Falchion", turquoise, frequency: 0.5, price: 750)
+  item("Falchion", lightAqua, frequency: 0.5, price: 750)
     ..depth(34)
     ..weapon(28, heft: 18)
     ..toss(damage: 15);
@@ -172,16 +172,16 @@ void weapons() {
     ..tag("equipment/weapon/spear")
     ..toss(range: 9)
     ..skill("Spear Mastery");
-  item("Pointed Stick", garnet, frequency: 0.5, price: 10)
+  item("Pointed Stick", brown, frequency: 0.5, price: 10)
     ..depth(2, to: 30)
     ..weapon(10, heft: 9)
     ..toss(damage: 9)
     ..destroy(Elements.fire, chance: 7, fuel: 12);
-  item("Spear", persimmon, frequency: 0.5, price: 160)
+  item("Spear", tan, frequency: 0.5, price: 160)
     ..depth(13, to: 60)
     ..weapon(16, heft: 13)
     ..toss(damage: 15);
-  item("Angon", gunsmoke, frequency: 0.5, price: 340)
+  item("Angon", lightCoolGray, frequency: 0.5, price: 340)
     ..depth(21)
     ..weapon(20, heft: 19)
     ..toss(damage: 20);
@@ -191,11 +191,11 @@ void weapons() {
     ..twoHanded()
     ..toss(range: 4)
     ..skill("Spear Mastery");
-  item("Lance", cornflower, frequency: 0.5, price: 550)
+  item("Lance", lightBlue, frequency: 0.5, price: 550)
     ..depth(28)
     ..weapon(22, heft: 23)
     ..toss(damage: 20);
-  item("Partisan", slate, frequency: 0.5, price: 850)
+  item("Partisan", coolGray, frequency: 0.5, price: 850)
     ..depth(35)
     ..weapon(26, heft: 25)
     ..toss(damage: 26);
@@ -205,20 +205,20 @@ void weapons() {
   category(CharCode.invertedQuestionMark, verb: "chop[s]")
     ..tag("equipment/weapon/axe")
     ..skill("Axe Mastery");
-  item("Hatchet", slate, frequency: 0.5, price: 90)
+  item("Hatchet", coolGray, frequency: 0.5, price: 90)
     ..depth(6, to: 50)
     ..weapon(12, heft: 10)
     ..toss(damage: 20, range: 8);
-  item("Axe", persimmon, frequency: 0.5, price: 210)
+  item("Axe", tan, frequency: 0.5, price: 210)
     ..depth(12, to: 70)
     ..weapon(15, heft: 14)
     ..toss(damage: 24, range: 7);
-  item("Valaska", gunsmoke, frequency: 0.5, price: 330)
+  item("Valaska", lightCoolGray, frequency: 0.5, price: 330)
     ..depth(24)
     ..weapon(19, heft: 19)
     ..toss(damage: 26, range: 5);
   // TODO: Two-handed?
-  item("Battleaxe", steelGray, frequency: 0.5, price: 550)
+  item("Battleaxe", darkCoolGray, frequency: 0.5, price: 550)
     ..depth(40)
     ..weapon(25, heft: 30)
     ..toss(damage: 28, range: 4);
@@ -229,18 +229,18 @@ void weapons() {
     ..twoHanded()
     ..toss(breakage: 50, range: 5)
     ..skill("Archery");
-  item("Short Bow", persimmon, frequency: 0.3, price: 120)
+  item("Short Bow", tan, frequency: 0.3, price: 120)
     ..depth(6, to: 60)
     ..ranged("the arrow", heft: 12, damage: 5, range: 8)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);
-  item("Longbow", garnet, frequency: 0.3, price: 250)
+  item("Longbow", brown, frequency: 0.3, price: 250)
     ..depth(13)
     ..ranged("the arrow", heft: 18, damage: 9, range: 12)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 7, fuel: 13);
   // TODO: Warbow.
-  item("Crossbow", gunsmoke, frequency: 0.3, price: 600)
+  item("Crossbow", lightCoolGray, frequency: 0.3, price: 600)
     ..depth(28)
     ..ranged("the bolt", heft: 24, damage: 14, range: 16)
     ..toss(damage: 4)

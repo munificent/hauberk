@@ -114,8 +114,7 @@ class SidebarPanel extends Panel {
   }
 
   void _drawHealth(Hero hero, Terminal terminal, int y) {
-    _drawStat(
-        terminal, y, "Health", hero.health, brickRed, hero.maxHealth, maroon);
+    _drawStat(terminal, y, "Health", hero.health, red, hero.maxHealth, maroon);
   }
 
   void _drawLevel(Hero hero, Terminal terminal, int y) {
@@ -123,7 +122,7 @@ class SidebarPanel extends Panel {
 
     var levelString = hero.level.toString();
     terminal.writeAt(
-        terminal.width - levelString.length - 1, y, levelString, turquoise);
+        terminal.width - levelString.length - 1, y, levelString, lightAqua);
 
     if (hero.level < Hero.maxLevel) {
       var levelPercent = 100 *
@@ -131,7 +130,7 @@ class SidebarPanel extends Panel {
           (experienceLevelCost(hero.level + 1) -
               experienceLevelCost(hero.level));
       Draw.thinMeter(terminal, 10, y, terminal.width - 14, levelPercent, 100,
-          turquoise, seaGreen);
+          lightAqua, aqua);
     }
   }
 
@@ -161,7 +160,7 @@ class SidebarPanel extends Panel {
       total += defense.amount;
     }
 
-    _drawStat(terminal, y, "Dodge", "$total%", seaGreen);
+    _drawStat(terminal, y, "Dodge", "$total%", aqua);
   }
 
   void _drawArmor(Hero hero, Terminal terminal, int y) {
@@ -181,14 +180,14 @@ class SidebarPanel extends Panel {
   void _drawFood(Hero hero, Terminal terminal, int y) {
     terminal.writeAt(1, y, "Food", UIHue.helpText);
     Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.stomach,
-        Option.heroMaxStomach, persimmon, garnet);
+        Option.heroMaxStomach, tan, brown);
   }
 
   void _drawFocus(Hero hero, Terminal terminal, int y) {
     terminal.writeAt(1, y, 'Focus', UIHue.helpText);
 
     Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.focus,
-        hero.intellect.maxFocus, cerulean, ultramarine);
+        hero.intellect.maxFocus, blue, darkBlue);
   }
 
   /// Draws a labeled numeric stat.
@@ -243,10 +242,10 @@ class SidebarPanel extends Panel {
       }
     }
 
-    if (actor.cold.isActive) drawCondition("C", cornflower);
+    if (actor.cold.isActive) drawCondition("C", lightBlue);
     switch (actor.haste.intensity) {
       case 1:
-        drawCondition("S", persimmon);
+        drawCondition("S", tan);
         break;
       case 2:
         drawCondition("S", gold);
@@ -256,7 +255,7 @@ class SidebarPanel extends Panel {
         break;
     }
 
-    if (actor.blindness.isActive) drawCondition("B", steelGray);
+    if (actor.blindness.isActive) drawCondition("B", darkCoolGray);
     if (actor.dazzle.isActive) drawCondition("D", lilac);
 
     for (var element in Elements.all) {
@@ -272,6 +271,6 @@ class SidebarPanel extends Panel {
     }
 
     Draw.meter(terminal, 10, y, terminal.width - 11, actor.health,
-        actor.maxHealth, brickRed, maroon);
+        actor.maxHealth, red, maroon);
   }
 }

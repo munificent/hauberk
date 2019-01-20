@@ -25,23 +25,23 @@ class ExitPopup extends Popup {
     _values.add(_AnimatedValue(
         6, "Experience", hero.experience - _save.experience, peaGreen));
     _values
-        .add(_AnimatedValue(7, "Levels", hero.level - _save.level, turquoise));
+        .add(_AnimatedValue(7, "Levels", hero.level - _save.level, lightAqua));
 
     _values.add(_AnimatedValue(
-        9, "Strength", hero.strength.value - _save.strength.value, cerulean));
+        9, "Strength", hero.strength.value - _save.strength.value, blue));
     _values.add(_AnimatedValue(
-        10, "Agility", hero.agility.value - _save.agility.value, cerulean));
-    _values.add(_AnimatedValue(11, "Fortitude",
-        hero.fortitude.value - _save.fortitude.value, cerulean));
-    _values.add(_AnimatedValue(12, "Intellect",
-        hero.intellect.value - _save.intellect.value, cerulean));
+        10, "Agility", hero.agility.value - _save.agility.value, blue));
     _values.add(_AnimatedValue(
-        13, "Will", hero.will.value - _save.will.value, cerulean));
+        11, "Fortitude", hero.fortitude.value - _save.fortitude.value, blue));
+    _values.add(_AnimatedValue(
+        12, "Intellect", hero.intellect.value - _save.intellect.value, blue));
+    _values.add(
+        _AnimatedValue(13, "Will", hero.will.value - _save.will.value, blue));
 
     var slain = hero.lore.allSlain - _save.lore.allSlain;
     var remainingMonsters =
         _game.stage.actors.where((actor) => actor is! Hero).length;
-    _values.add(_AnimatedValue(17, "Monsters", slain, brickRed,
+    _values.add(_AnimatedValue(17, "Monsters", slain, red,
         total: slain + remainingMonsters));
   }
 

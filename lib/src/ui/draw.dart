@@ -77,7 +77,7 @@ class Draw {
       String bottomLeft,
       String bottom,
       String bottomRight) {
-    color ??= steelGray;
+    color ??= darkCoolGray;
     var bar = vertical + " " * (width - 2) + vertical;
     for (var row = y + 1; row < y + height - 1; row++) {
       terminal.writeAt(x, row, bar, color);
@@ -99,7 +99,7 @@ class Draw {
       [Color fore, Color back]) {
     assert(max != 0);
 
-    fore ??= brickRed;
+    fore ??= red;
     back ??= maroon;
 
     var barWidth = (width * 2 * value / max).round();
@@ -130,7 +130,7 @@ class Draw {
       [Color fore, Color back]) {
     assert(max != 0);
 
-    fore ??= brickRed;
+    fore ??= red;
     back ??= maroon;
 
     var barWidth = (width * value / max).round();
@@ -144,4 +144,5 @@ class Draw {
       var color = i < barWidth ? fore : back;
       terminal.drawChar(x + i, y, CharCode.lowerHalfBlock, color);
     }
-  }}
+  }
+}

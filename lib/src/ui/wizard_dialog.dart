@@ -242,7 +242,7 @@ abstract class SearchDialog<T> extends Screen<Input> {
 }
 
 class _WizardDropDialog extends SearchDialog<ItemType> {
-  _WizardDropDialog(Game game): super(game);
+  _WizardDropDialog(Game game) : super(game);
 
   String get _question => "Drop what?";
 
@@ -260,7 +260,7 @@ class _WizardDropDialog extends SearchDialog<ItemType> {
 }
 
 class _WizardSpawnDialog extends SearchDialog<Breed> {
-  _WizardSpawnDialog(Game game): super(game);
+  _WizardSpawnDialog(Game game) : super(game);
 
   String get _question => "Spawn what?";
 

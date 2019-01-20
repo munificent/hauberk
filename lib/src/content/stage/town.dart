@@ -32,7 +32,7 @@ class Town {
     ];
 
     // TODO: Place more interestingly.
-    for (var i = 0; i < entrances.length; i++ ){
+    for (var i = 0; i < entrances.length; i++) {
       var x = (i % 4) * 13 + 5;
       var y = (i ~/ 4) * 14 + 6;
 

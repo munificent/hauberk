@@ -74,7 +74,7 @@ abstract class DirectionDialog extends Screen<Input> {
 
       Glyph glyph;
       if (_animateOffset ~/ _ticksPerFrame == frame) {
-        glyph = Glyph(char, gold, garnet);
+        glyph = Glyph(char, gold, brown);
       } else {
         // TODO: TargetDialog and GameScreen have similar code. Unify?
         var actor = game.stage.actorAt(pos);
@@ -98,7 +98,7 @@ abstract class DirectionDialog extends Screen<Input> {
           }
         }
 
-        glyph = Glyph.fromCharCode(glyph.char, gold, garnet);
+        glyph = Glyph.fromCharCode(glyph.char, gold, brown);
       }
 
       _gameScreen.drawStageGlyph(terminal, pos.x, pos.y, glyph);

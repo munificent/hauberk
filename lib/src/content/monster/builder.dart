@@ -18,6 +18,20 @@ import 'spawns.dart';
 
 final collapseNewlines = RegExp(r"\n\s*");
 
+final _elementText = {
+  Elements.air: ["the wind", "buffets"],
+  Elements.earth: ["the soil", "buries"],
+  Elements.fire: ["the flame", "burns"],
+  Elements.water: ["the water", "blasts"],
+  Elements.acid: ["the acid", "melts"],
+  Elements.cold: ["the ice", "freezes"],
+  Elements.lightning: ["the lightning", "shocks"],
+  Elements.poison: ["the poison", "chokes"],
+  Elements.dark: ["the darkness", "crushes"],
+  Elements.light: ["the light", "sears"],
+  Elements.spirit: ["the spirit", "haunts"],
+};
+
 /// The last builder that was created. It gets implicitly finished when the
 /// next family or breed starts, or at the end of initialization. This way, we
 /// don't need an explicit `build()` call at the end of each builder.
@@ -228,7 +242,9 @@ class _BreedBuilder extends _BaseBuilder {
 
   /// Drops [name], which can be either an item type or tag.
   void drop(String name,
-      {int percent = 100, int count = 1, int depthOffset = 0,
+      {int percent = 100,
+      int count = 1,
+      int depthOffset = 0,
       int affixChance}) {
     var drop = percentDrop(percent, name, _depth + depthOffset, affixChance);
     if (count > 1) drop = repeatDrop(count, drop);
@@ -253,9 +269,13 @@ class _BreedBuilder extends _BaseBuilder {
       _bolt(null, "whips", Element.none,
           rate: rate, damage: damage, range: range);
 
+  void bolt(Element element, {num rate, int damage, int range}) {
+    _bolt(_elementText[element][0], _elementText[element][1], element,
+        rate: rate, damage: damage, range: range);
+  }
+
   void windBolt({num rate = 5, int damage}) =>
-      _bolt("the wind", "blows", Elements.air,
-          rate: rate, damage: damage, range: 8);
+      bolt(Elements.air, rate: rate, damage: damage, range: 8);
 
   void stoneBolt({num rate = 5, int damage}) =>
       _bolt("the stone", "hits", Elements.earth,
@@ -274,56 +294,48 @@ class _BreedBuilder extends _BaseBuilder {
           rate: rate, damage: damage, range: range);
 
   void fireBolt({num rate = 5, int damage}) =>
-      _bolt("the flame", "burns", Elements.fire,
-          rate: rate, damage: damage, range: 8);
+      bolt(Elements.fire, rate: rate, damage: damage, range: 8);
 
   void lightningBolt({num rate = 5, int damage}) =>
-      _bolt("the lightning", "shocks", Elements.lightning,
-          rate: rate, damage: damage, range: 10);
+      bolt(Elements.lightning, rate: rate, damage: damage, range: 10);
 
   void acidBolt({num rate = 5, int damage, int range = 8}) =>
-      _bolt("the acid", "burns", Elements.acid,
-          rate: rate, damage: damage, range: range);
+      bolt(Elements.acid, rate: rate, damage: damage, range: range);
 
   void darkBolt({num rate = 5, int damage}) =>
-      _bolt("the darkness", "crushes", Elements.dark,
-          rate: rate, damage: damage, range: 10);
+      bolt(Elements.dark, rate: rate, damage: damage, range: 10);
 
   void lightBolt({num rate = 5, int damage}) =>
-      _bolt("the light", "sears", Elements.light,
-          rate: rate, damage: damage, range: 10);
+      bolt(Elements.light, rate: rate, damage: damage, range: 10);
 
   void poisonBolt({num rate = 5, int damage}) =>
-      _bolt("the poison", "engulfs", Elements.poison,
-          rate: rate, damage: damage, range: 8);
+      bolt(Elements.poison, rate: rate, damage: damage, range: 8);
 
-  void windCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the wind", "buffets", Elements.air,
-          rate: rate, damage: damage, range: range);
+  void cone(Element element, {num rate, int damage, int range}) {
+    _cone(_elementText[element][0], _elementText[element][1], element,
+        rate: rate, damage: damage, range: range);
+  }
 
-  void fireCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the flame", "burns", Elements.fire,
-          rate: rate, damage: damage, range: range);
+  void windCone({num rate, int damage, int range}) =>
+      cone(Elements.air, rate: rate, damage: damage, range: range);
 
-  void iceCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the ice", "freezes", Elements.cold,
-          rate: rate, damage: damage, range: range);
+  void fireCone({num rate, int damage, int range}) =>
+      cone(Elements.fire, rate: rate, damage: damage, range: range);
 
-  void lightningCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the lightning", "shocks", Elements.lightning,
-          rate: rate, damage: damage, range: range);
+  void iceCone({num rate, int damage, int range}) =>
+      cone(Elements.cold, rate: rate, damage: damage, range: range);
 
-  void lightCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the light", "sears", Elements.light,
-          rate: rate, damage: damage, range: range);
+  void lightningCone({num rate, int damage, int range}) =>
+      cone(Elements.lightning, rate: rate, damage: damage, range: range);
 
-  void darkCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the darkness", "crushes", Elements.dark,
-          rate: rate, damage: damage, range: range);
+  void lightCone({num rate, int damage, int range}) =>
+      cone(Elements.light, rate: rate, damage: damage, range: range);
 
-  void waterCone({num rate = 5, int damage, int range = 10}) =>
-      _cone("the water", "blasts", Elements.water,
-          rate: rate, damage: damage, range: range);
+  void darkCone({num rate, int damage, int range}) =>
+      cone(Elements.dark, rate: rate, damage: damage, range: range);
+
+  void waterCone({num rate, int damage, int range}) =>
+      cone(Elements.water, rate: rate, damage: damage, range: range);
 
   void missive(Missive missive, {num rate = 5}) =>
       _addMove(MissiveMove(missive, rate));
@@ -351,6 +363,9 @@ class _BreedBuilder extends _BaseBuilder {
 
   void _cone(String noun, String verb, Element element,
       {num rate, int damage, int range}) {
+    rate ??= 5;
+    range ??= 10;
+
     _addMove(ConeMove(rate, Attack(Noun(noun), verb, damage, range, element)));
   }
 

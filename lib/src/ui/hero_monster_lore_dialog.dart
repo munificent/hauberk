@@ -69,12 +69,12 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     }
 
     terminal.writeAt(2, 1, "Monsters", gold);
-    terminal.writeAt(20, 1, "(${_sort.description})".padLeft(42), steelGray);
-    terminal.writeAt(63, 1, "Depth Seen Slain", slate);
+    terminal.writeAt(20, 1, "(${_sort.description})".padLeft(42), darkCoolGray);
+    terminal.writeAt(63, 1, "Depth Seen Slain", coolGray);
 
     for (var i = 0; i < _rowCount; i++) {
       var y = i * 2 + 3;
-      writeLine(y + 1, midnight);
+      writeLine(y + 1, darkerCoolGray);
 
       var index = _scroll + i;
       if (index >= _breeds.length) continue;
@@ -106,7 +106,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
       }
     }
 
-    writeLine(2, steelGray);
+    writeLine(2, darkCoolGray);
 
     _showMonster(terminal, _breeds[_selection]);
   }
@@ -115,9 +115,9 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     terminal = terminal.rect(0, terminal.height - 15, terminal.width, 14);
 
     Draw.frame(terminal, 0, 1, 80, terminal.height - 1);
-    terminal.writeAt(1, 0, "┌─┐", steelGray);
-    terminal.writeAt(1, 1, "╡ ╞", steelGray);
-    terminal.writeAt(1, 2, "└─┘", steelGray);
+    terminal.writeAt(1, 0, "┌─┐", darkCoolGray);
+    terminal.writeAt(1, 1, "╡ ╞", darkCoolGray);
+    terminal.writeAt(1, 2, "└─┘", darkCoolGray);
 
     var seen = hero.lore.seenBreed(breed);
     if (seen == 0) {

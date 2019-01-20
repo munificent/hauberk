@@ -48,12 +48,12 @@ const _charColors = [
 ];
 
 const _colors = {
-  "L": gunsmoke,
-  "E": slate,
-  "R": brickRed,
-  "O": copper,
-  "G": carrot,
-  "Y": gold
+  "L": lightWarmGray,
+  "E": warmGray,
+  "R": red,
+  "O": carrot,
+  "G": gold,
+  "Y": yellow
 };
 
 class MainMenuScreen extends Screen<Input> {
@@ -92,8 +92,8 @@ class MainMenuScreen extends Screen<Input> {
       case KeyCode.d:
         if (selectedHero < storage.heroes.length) {
           var name = storage.heroes[selectedHero].name;
-          ui.push(ConfirmPopup(
-              "Are you sure you want to delete $name?", 'delete'));
+          ui.push(
+              ConfirmPopup("Are you sure you want to delete $name?", 'delete'));
         }
         return true;
 
@@ -118,7 +118,8 @@ class MainMenuScreen extends Screen<Input> {
 
   void render(Terminal terminal) {
     // Center everything horizontally.
-    terminal = terminal.rect((terminal.width - 78) ~/ 2, 0, 80, terminal.height);
+    terminal =
+        terminal.rect((terminal.width - 78) ~/ 2, 0, 80, terminal.height);
 
     terminal.writeAt(
         0,
@@ -127,7 +128,8 @@ class MainMenuScreen extends Screen<Input> {
         UIHue.helpText);
 
     // Center the content vertically.
-    terminal = terminal.rect(0, (terminal.height - 40) ~/ 2, terminal.width, 40);
+    terminal =
+        terminal.rect(0, (terminal.height - 40) ~/ 2, terminal.width, 40);
     for (var y = 0; y < _chars.length; y++) {
       for (var x = 0; x < _chars[y].length; x++) {
         var color = _colors[_charColors[y][x]];

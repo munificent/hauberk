@@ -65,7 +65,7 @@ void addEffects(List<Effect> effects, Event event) {
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
         // TODO: Different blood colors for different breeds.
-        effects.add(ParticleEffect(event.actor.x, event.actor.y, brickRed));
+        effects.add(ParticleEffect(event.actor.x, event.actor.y, red));
       }
       break;
 
@@ -168,73 +168,73 @@ final _elementSequences = <Element, List<List<Glyph>>>{
   Element.none: [
     _glyphs("•", [sandal]),
     _glyphs("•", [sandal]),
-    _glyphs("•", [persimmon])
+    _glyphs("•", [tan])
   ],
   Elements.air: [
-    _glyphs("Oo", [ash, turquoise]),
-    _glyphs(".", [turquoise]),
-    _glyphs(".", [cornflower])
+    _glyphs("Oo", [ash, lightAqua]),
+    _glyphs(".", [lightAqua]),
+    _glyphs(".", [lightBlue])
   ],
   Elements.earth: [
     _glyphs("*%", [sandal, gold]),
-    _glyphs("*%", [persimmon, garnet]),
-    _glyphs("•*", [persimmon]),
-    _glyphs("•", [garnet])
+    _glyphs("*%", [tan, brown]),
+    _glyphs("•*", [tan]),
+    _glyphs("•", [brown])
   ],
   Elements.fire: [
     _glyphs("▲^", [gold, buttermilk]),
     _glyphs("*^", [carrot]),
-    _glyphs("^", [brickRed]),
-    _glyphs("^", [garnet, brickRed]),
-    _glyphs(".", [garnet, brickRed])
+    _glyphs("^", [red]),
+    _glyphs("^", [brown, red]),
+    _glyphs(".", [brown, red])
   ],
   Elements.water: [
-    _glyphs("Oo", [turquoise, cornflower]),
-    _glyphs("o•^", [cornflower, cerulean]),
-    _glyphs("•^", [cerulean, ultramarine]),
-    _glyphs("^~", [cerulean, ultramarine]),
-    _glyphs("~", [ultramarine]),
-    _glyphs(".", [ultramarine, indigo])
+    _glyphs("Oo", [lightAqua, lightBlue]),
+    _glyphs("o•^", [lightBlue, blue]),
+    _glyphs("•^", [blue, darkBlue]),
+    _glyphs("^~", [blue, darkBlue]),
+    _glyphs("~", [darkBlue]),
+    _glyphs(".", [darkBlue, violet])
   ],
   Elements.acid: [
     _glyphs("Oo", [buttermilk, gold]),
     _glyphs("o•~", [lima, gold]),
-    _glyphs(":,", [lima, mustard]),
+    _glyphs(":,", [lima, olive]),
     _glyphs(".", [lima])
   ],
   Elements.cold: [
     _glyphs("*", [ash]),
-    _glyphs("+x", [turquoise, ash]),
-    _glyphs("+x", [cornflower, gunsmoke]),
-    _glyphs(".", [slate, ultramarine])
+    _glyphs("+x", [lightAqua, ash]),
+    _glyphs("+x", [lightBlue, lightCoolGray]),
+    _glyphs(".", [coolGray, darkBlue])
   ],
   Elements.lightning: [
     _glyphs("*", [lilac]),
-    _glyphs(r"-|\/", [violet, ash]),
-    _glyphs(".", [midnight, midnight, midnight, lilac])
+    _glyphs(r"-|\/", [purple, ash]),
+    _glyphs(".", [darkerCoolGray, darkerCoolGray, darkerCoolGray, lilac])
   ],
   Elements.poison: [
     _glyphs("Oo", [mint, lima]),
-    _glyphs("o•", [peaGreen, peaGreen, mustard]),
-    _glyphs("•", [sherwood, mustard]),
+    _glyphs("o•", [peaGreen, peaGreen, olive]),
+    _glyphs("•", [sherwood, olive]),
     _glyphs(".", [sherwood])
   ],
   Elements.dark: [
-    _glyphs("*%", [midnight, midnight, steelGray]),
-    _glyphs("•", [midnight, midnight, gunsmoke]),
-    _glyphs(".", [midnight]),
-    _glyphs(".", [midnight])
+    _glyphs("*%", [darkerCoolGray, darkerCoolGray, darkCoolGray]),
+    _glyphs("•", [darkerCoolGray, darkerCoolGray, lightCoolGray]),
+    _glyphs(".", [darkerCoolGray]),
+    _glyphs(".", [darkerCoolGray])
   ],
   Elements.light: [
     _glyphs("*", [ash]),
     _glyphs("x+", [ash, buttermilk]),
     _glyphs(":;\"'`,", [buttermilk, gold]),
-    _glyphs(".", [gunsmoke, buttermilk])
+    _glyphs(".", [lightCoolGray, buttermilk])
   ],
   Elements.spirit: [
-    _glyphs("Oo*+", [lilac, gunsmoke]),
-    _glyphs("o+", [violet, peaGreen]),
-    _glyphs("•.", [indigo, sherwood, sherwood])
+    _glyphs("Oo*+", [lilac, lightCoolGray]),
+    _glyphs("o+", [purple, peaGreen]),
+    _glyphs("•.", [violet, sherwood, sherwood])
   ]
 };
 
@@ -362,7 +362,7 @@ class TeleportEffect implements Effect {
   int age = 0;
   final Vec target;
 
-  static final _colors = [turquoise, cornflower, lilac, ash];
+  static final _colors = [lightAqua, lightBlue, lilac, ash];
 
   TeleportEffect(Vec from, this.target) {
     x = from.x;
@@ -429,16 +429,16 @@ class HealEffect implements Effect {
     Color back;
     switch ((frame ~/ 4) % 4) {
       case 0:
-        back = midnight;
+        back = darkerCoolGray;
         break;
       case 1:
-        back = seaGreen;
+        back = aqua;
         break;
       case 2:
-        back = cornflower;
+        back = lightBlue;
         break;
       case 3:
-        back = turquoise;
+        back = lightAqua;
         break;
     }
 
@@ -454,8 +454,8 @@ class DetectEffect implements Effect {
     ash,
     buttermilk,
     gold,
-    mustard,
-    copper,
+    olive,
+    darkOlive,
   ];
 
   final Vec pos;
@@ -493,7 +493,7 @@ class MapEffect implements Effect {
     glyph = Glyph.fromCharCode(
         glyph.char,
         glyph.fore.blend(gold, life / _maxLife),
-        glyph.back.blend(persimmon, life / _maxLife));
+        glyph.back.blend(tan, life / _maxLife));
 
     drawGlyph(pos.x, pos.y, glyph);
   }
@@ -525,12 +525,12 @@ class TreasureEffect implements Effect {
 }
 
 class HowlEffect implements Effect {
-  static final bang = Glyph("!", seaGreen);
-  static final slash = Glyph("/", turquoise);
-  static final backslash = Glyph("\\", turquoise);
-  static final dash = Glyph("-", seaGreen);
-  static final less = Glyph("<", seaGreen);
-  static final greater = Glyph(">", seaGreen);
+  static final bang = Glyph("!", aqua);
+  static final slash = Glyph("/", lightAqua);
+  static final backslash = Glyph("\\", lightAqua);
+  static final dash = Glyph("-", aqua);
+  static final less = Glyph("<", aqua);
+  static final greater = Glyph(">", aqua);
 
   final Actor _actor;
   int _age = 0;

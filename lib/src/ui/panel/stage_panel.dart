@@ -15,40 +15,40 @@ import 'panel.dart';
 /// The main gameplay area of the screen.
 class StagePanel extends Panel {
   static const _dazzleColors = [
-    steelGray,
-    slate,
-    gunsmoke,
+    darkCoolGray,
+    coolGray,
+    lightCoolGray,
     ash,
     sandal,
+    tan,
     persimmon,
-    copper,
-    garnet,
+    brown,
     buttermilk,
     gold,
     carrot,
     mint,
-    mustard,
+    olive,
     lima,
     peaGreen,
     sherwood,
-    salmon,
-    brickRed,
+    pink,
+    red,
     maroon,
     lilac,
+    purple,
     violet,
-    indigo,
-    turquoise,
-    cornflower,
-    cerulean,
-    ultramarine,
+    lightAqua,
+    lightBlue,
+    blue,
+    darkBlue,
   ];
 
   static const _fireChars = [CharCode.blackUpPointingTriangle, CharCode.caret];
   static const _fireColors = [
-    [gold, copper],
+    [gold, persimmon],
     [buttermilk, carrot],
-    [persimmon, brickRed],
-    [brickRed, garnet]
+    [tan, red],
+    [red, brown]
   ];
 
   final GameScreen _gameScreen;
@@ -175,7 +175,7 @@ class StagePanel extends Panel {
           // If the actor is being targeted, invert its colors.
           if (_gameScreen.currentTargetActor == actor) {
             back = fore;
-            fore = midnight;
+            fore = darkerCoolGray;
           }
 
           if (actor is Monster) visibleMonsters.add(actor);
@@ -211,7 +211,7 @@ class StagePanel extends Panel {
           fore = shadow.blend(fore, light * 0.7 + 0.3);
         }
 
-        if (back == midnight) {
+        if (back == darkerCoolGray) {
           // Hackish. If the background color is the default dark color, then
           // boost it *past* its max value to add some extra glow when well
           // lit.
@@ -225,7 +225,7 @@ class StagePanel extends Panel {
         // Show tiles containing interesting things more brightly.
         fore = blueShadow.blend(fore, isThing ? 0.7 : 0.2);
 
-        if (back == midnight) {
+        if (back == darkerCoolGray) {
           // If the background color is the default dark color, then go all
           // the way to black. This makes it easier for the player to tell
           // which tiles are not visible.

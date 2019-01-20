@@ -33,8 +33,7 @@ class SpearMastery extends MasteryDiscipline implements DirectionSkill {
 class SpearAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
 
-  SpearAction(this._dir, double damageScale)
-      : super(damageScale);
+  SpearAction(this._dir, double damageScale) : super(damageScale);
 
   bool get isImmediate => false;
   String get weaponType => "spear";

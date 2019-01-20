@@ -70,12 +70,12 @@ class HeroItemLoreDialog extends HeroInfoDialog {
     }
 
     terminal.writeAt(2, 1, "Items", gold);
-    terminal.writeAt(20, 1, "(${_sort.description})".padLeft(34), steelGray);
-    terminal.writeAt(55, 1, "Depth   Price Found  Used", slate);
+    terminal.writeAt(20, 1, "(${_sort.description})".padLeft(34), darkCoolGray);
+    terminal.writeAt(55, 1, "Depth   Price Found  Used", coolGray);
 
     for (var i = 0; i < _rowCount; i++) {
       var y = i * 2 + 3;
-      writeLine(y + 1, midnight);
+      writeLine(y + 1, darkerCoolGray);
 
       var index = _scroll + i;
       if (index >= _items.length) continue;
@@ -108,7 +108,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
       }
     }
 
-    writeLine(2, steelGray);
+    writeLine(2, darkCoolGray);
 
     _showItem(terminal, _items[_selection]);
   }
@@ -117,9 +117,9 @@ class HeroItemLoreDialog extends HeroInfoDialog {
     terminal = terminal.rect(0, terminal.height - 15, terminal.width, 14);
 
     Draw.frame(terminal, 0, 1, 80, terminal.height - 1);
-    terminal.writeAt(1, 0, "┌─┐", steelGray);
-    terminal.writeAt(1, 1, "╡ ╞", steelGray);
-    terminal.writeAt(1, 2, "└─┘", steelGray);
+    terminal.writeAt(1, 0, "┌─┐", darkCoolGray);
+    terminal.writeAt(1, 1, "╡ ╞", darkCoolGray);
+    terminal.writeAt(1, 2, "└─┘", darkCoolGray);
 
     // TODO: Get working.
     var found = hero.lore.foundItems(item);

@@ -13,13 +13,13 @@ void birds() {
     ..defense(10, "{1} flaps out of the way.")
     ..fly()
     ..count(3, 6);
-  breed("crow", 4, steelGray, 7, speed: 2, meander: 30)
+  breed("crow", 4, darkCoolGray, 7, speed: 2, meander: 30)
     ..attack("bite[s]", 5)
     ..drop("treasure", percent: 10);
   describe(""""What harm can a stupid little crow do?" you think as it and its
       murderous friends dive towards your eyes, claws extended.""");
 
-  breed("raven", 6, slate, 16, meander: 15)
+  breed("raven", 6, coolGray, 16, meander: 15)
     ..attack("bite[s]", 5)
     ..attack("claw[s]", 4)
     ..drop("treasure", percent: 10)
@@ -49,7 +49,7 @@ void faeFolk() {
     ..drop("treasure", percent: 10)
     ..drop("magic", percent: 30);
 
-  breed("house sprite", 5, cornflower, 10)
+  breed("house sprite", 5, lightBlue, 10)
     ..attack("poke[s]", 5)
     ..missive(Missive.insult, rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
@@ -57,7 +57,7 @@ void faeFolk() {
     ..drop("treasure", percent: 10)
     ..drop("magic", percent: 30);
 
-  breed("mischievous sprite", 7, salmon, 24)
+  breed("mischievous sprite", 7, pink, 24)
     ..attack("poke[s]", 6)
     ..missive(Missive.insult, rate: 4)
     ..windBolt(rate: 8, damage: 8)
@@ -121,7 +121,7 @@ void giants() {}
 void quest() {
   // TODO: Better group?
   family("Q")..groups("magical");
-  breed("Nameless Unmaker", 100, violet, 1000, speed: 2)
+  breed("Nameless Unmaker", 100, purple, 1000, speed: 2)
     ..sense(see: 16, hear: 16)
     ..attack("crushe[s]", 250, Elements.earth)
     ..attack("blast[s]", 200, Elements.lightning)
@@ -144,11 +144,11 @@ void reptiles() {
     ..sense(see: 6, hear: 5)
     ..preferOpen()
     ..emanate(3);
-  breed("juvenile salamander", 7, salmon, 20)
+  breed("juvenile salamander", 7, pink, 20)
     ..attack("bite[s]", 14, Elements.fire)
     ..fireCone(rate: 16, damage: 20, range: 4);
 
-  breed("salamander", 13, brickRed, 30)
+  breed("salamander", 13, red, 30)
     ..attack("bite[s]", 18, Elements.fire)
     ..fireCone(rate: 16, damage: 30, range: 5);
 
@@ -163,9 +163,9 @@ void snakes() {
     ..sense(see: 4, hear: 7);
   breed("water snake", 1, lima, 9)..attack("bite[s]", 3);
 
-  breed("brown snake", 3, persimmon, 25)..attack("bite[s]", 4);
+  breed("brown snake", 3, tan, 25)..attack("bite[s]", 4);
 
-  breed("cave snake", 8, gunsmoke, 40)..attack("bite[s]", 10);
+  breed("cave snake", 8, lightCoolGray, 40)..attack("bite[s]", 10);
 }
 
 void trolls() {}

@@ -14,19 +14,19 @@ void potions() {
     ..tag("magic/potion/healing")
     ..toss(damage: 1, range: 6, breakage: 100)
     ..destroy(Elements.cold, chance: 20);
-  item("Soothing Balm", salmon, frequency: 1.0, price: 10)
+  item("Soothing Balm", pink, frequency: 1.0, price: 10)
     ..depth(2, to: 30)
     ..heal(48);
-  item("Mending Salve", brickRed, frequency: 1.0, price: 30)
+  item("Mending Salve", red, frequency: 1.0, price: 30)
     ..depth(20, to: 40)
     ..heal(100);
   item("Healing Poultice", maroon, frequency: 1.0, price: 80)
     ..depth(30)
     ..heal(200, curePoison: true);
-  item("Potion[s] of Amelioration", indigo, frequency: 1.0, price: 220)
+  item("Potion[s] of Amelioration", violet, frequency: 1.0, price: 220)
     ..depth(60)
     ..heal(400, curePoison: true);
-  item("Potion[s] of Rejuvenation", violet, frequency: 0.5, price: 1000)
+  item("Potion[s] of Rejuvenation", purple, frequency: 0.5, price: 1000)
     ..depth(80)
     ..heal(1000, curePoison: true);
 
@@ -44,25 +44,25 @@ void potions() {
     ..depth(5)
     ..resistSalve(Elements.fire);
   // TODO: Make not freezable?
-  item("Salve[s] of Cold Resistance", cornflower, frequency: 0.5, price: 55)
+  item("Salve[s] of Cold Resistance", lightBlue, frequency: 0.5, price: 55)
     ..depth(6)
     ..resistSalve(Elements.cold);
   item("Salve[s] of Light Resistance", buttermilk, frequency: 0.5, price: 60)
     ..depth(7)
     ..resistSalve(Elements.light);
-  item("Salve[s] of Wind Resistance", turquoise, frequency: 0.5, price: 65)
+  item("Salve[s] of Wind Resistance", lightAqua, frequency: 0.5, price: 65)
     ..depth(8)
     ..resistSalve(Elements.air);
   item("Salve[s] of Lightning Resistance", lilac, frequency: 0.5, price: 70)
     ..depth(9)
     ..resistSalve(Elements.lightning);
-  item("Salve[s] of Darkness Resistance", slate, frequency: 0.5, price: 75)
+  item("Salve[s] of Darkness Resistance", coolGray, frequency: 0.5, price: 75)
     ..depth(10)
     ..resistSalve(Elements.dark);
-  item("Salve[s] of Earth Resistance", persimmon, frequency: 0.5, price: 80)
+  item("Salve[s] of Earth Resistance", tan, frequency: 0.5, price: 80)
     ..depth(13)
     ..resistSalve(Elements.earth);
-  item("Salve[s] of Water Resistance", ultramarine, frequency: 0.5, price: 85)
+  item("Salve[s] of Water Resistance", darkBlue, frequency: 0.5, price: 85)
     ..depth(16)
     ..resistSalve(Elements.water);
   item("Salve[s] of Acid Resistance", sandal, frequency: 0.5, price: 90)
@@ -71,7 +71,7 @@ void potions() {
   item("Salve[s] of Poison Resistance", lima, frequency: 0.5, price: 95)
     ..depth(23)
     ..resistSalve(Elements.poison);
-  item("Salve[s] of Death Resistance", violet, frequency: 0.5, price: 100)
+  item("Salve[s] of Death Resistance", purple, frequency: 0.5, price: 100)
     ..depth(30)
     ..resistSalve(Elements.spirit);
 
@@ -99,20 +99,20 @@ void potions() {
     ..tag("magic/potion/bottled")
     ..toss(damage: 1, range: 8, breakage: 100)
     ..destroy(Elements.cold, chance: 15);
-  item("Bottled Wind", cornflower, frequency: 0.5, price: 100)
+  item("Bottled Wind", lightBlue, frequency: 0.5, price: 100)
     ..depth(4)
     ..flow(Elements.air, "the wind", "blasts", 20, fly: true);
   // TODO: Make not freezable?
-  item("Bottled Ice", cerulean, frequency: 0.5, price: 120)
+  item("Bottled Ice", blue, frequency: 0.5, price: 120)
     ..depth(7)
     ..ball(Elements.cold, "the cold", "freezes", 30);
-  item("Bottled Fire", brickRed, frequency: 0.5, price: 140)
+  item("Bottled Fire", red, frequency: 0.5, price: 140)
     ..depth(11)
     ..flow(Elements.fire, "the fire", "burns", 44, fly: true);
-  item("Bottled Ocean", ultramarine, frequency: 0.5, price: 160)
+  item("Bottled Ocean", darkBlue, frequency: 0.5, price: 160)
     ..depth(12)
     ..flow(Elements.water, "the water", "drowns", 52);
-  item("Bottled Earth", persimmon, frequency: 0.5, price: 180)
+  item("Bottled Earth", tan, frequency: 0.5, price: 180)
     ..depth(13)
     ..ball(Elements.earth, "the dirt", "crushes", 58);
   item("Bottled Lightning", lilac, frequency: 0.5, price: 200)
@@ -124,13 +124,13 @@ void potions() {
   item("Bottled Poison", sherwood, frequency: 0.5, price: 240)
     ..depth(22)
     ..flow(Elements.poison, "the poison", "infects", 90, fly: true);
-  item("Bottled Shadow", steelGray, frequency: 0.5, price: 260)
+  item("Bottled Shadow", darkCoolGray, frequency: 0.5, price: 260)
     ..depth(28)
     ..ball(Elements.dark, "the darkness", "torments", 120);
   item("Bottled Radiance", buttermilk, frequency: 0.5, price: 280)
     ..depth(34)
     ..ball(Elements.light, "light", "sears", 140);
-  item("Bottled Spirit", slate, frequency: 0.5, price: 300)
+  item("Bottled Spirit", coolGray, frequency: 0.5, price: 300)
     ..depth(40)
     ..flow(Elements.spirit, "the spirit", "haunts", 160, fly: true);
 }
@@ -148,13 +148,13 @@ void scrolls() {
   item("Scroll[s] of Sidestepping", lilac, frequency: 0.5, price: 16)
     ..depth(2)
     ..teleport(8);
-  item("Scroll[s] of Phasing", violet, frequency: 0.3, price: 28)
+  item("Scroll[s] of Phasing", purple, frequency: 0.3, price: 28)
     ..depth(6)
     ..teleport(14);
-  item("Scroll[s] of Teleportation", indigo, frequency: 0.3, price: 52)
+  item("Scroll[s] of Teleportation", violet, frequency: 0.3, price: 52)
     ..depth(15)
     ..teleport(28);
-  item("Scroll[s] of Disappearing", ultramarine, frequency: 0.3, price: 74)
+  item("Scroll[s] of Disappearing", darkBlue, frequency: 0.3, price: 74)
     ..depth(26)
     ..teleport(54);
 
@@ -179,7 +179,7 @@ void scrolls() {
   item("Scroll[s] of Item Detection", carrot, frequency: 0.5, price: 64)
     ..depth(12)
     ..detection([DetectType.item]);
-  item("Scroll[s] of Detection", copper, frequency: 0.25, price: 124)
+  item("Scroll[s] of Detection", persimmon, frequency: 0.25, price: 124)
     ..depth(18)
     ..detection([DetectType.exit, DetectType.item]);
 
@@ -197,7 +197,7 @@ void scrolls() {
   item("Cartographer's Map", mint, frequency: 0.25, price: 240)
     ..depth(50, to: 90)
     ..mapping(64);
-  item("Wizard's Map", seaGreen, frequency: 0.25, price: 360)
+  item("Wizard's Map", aqua, frequency: 0.25, price: 360)
     ..depth(70)
     ..mapping(200, illuminate: true);
 

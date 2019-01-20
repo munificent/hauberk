@@ -18,7 +18,8 @@ const barSize = 6;
 
 final _svg = html.querySelector("svg") as svg.SvgElement;
 final _chart = html.querySelector("select[name=chart]") as html.SelectElement;
-final _highlight = html.querySelector("select[name=highlight]") as html.SelectElement;
+final _highlight =
+    html.querySelector("select[name=highlight]") as html.SelectElement;
 
 final List<Chart> _charts = [
   BreedChart(),
@@ -98,7 +99,7 @@ abstract class Chart {
 
     buffer.writeln('<option value="">(none)</option>');
     for (var label in labels) {
-      var selected = currentHighlight == label ? "selected": "";
+      var selected = currentHighlight == label ? "selected" : "";
       buffer.writeln('<option value="$label" $selected>$label</option>');
     }
 

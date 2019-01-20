@@ -8,12 +8,12 @@ void litter() {
   category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
     ..tag("item")
     ..toss(damage: 3, range: 7, element: Elements.earth, breakage: 10);
-  item("Rock", persimmon, frequency: 0.1)..depth(1);
+  item("Rock", tan, frequency: 0.1)..depth(1);
 
   category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
     ..tag("item")
     ..toss(damage: 2, range: 5, breakage: 30);
-  item("Skull", gunsmoke, frequency: 0.1)..depth(1);
+  item("Skull", lightCoolGray, frequency: 0.1)..depth(1);
 }
 
 void treasure() {
@@ -21,23 +21,23 @@ void treasure() {
   category(CharCode.centSign)
     ..tag("treasure/coin")
     ..treasure();
-  item("Copper Coins", copper, price: 4)..depth(1, to: 11);
-  item("Bronze Coins", persimmon, price: 8)..depth(7, to: 20);
-  item("Silver Coins", turquoise, price: 20)..depth(11, to: 30);
+  item("Copper Coins", persimmon, price: 4)..depth(1, to: 11);
+  item("Bronze Coins", tan, price: 8)..depth(7, to: 20);
+  item("Silver Coins", lightAqua, price: 20)..depth(11, to: 30);
   item("Electrum Coins", buttermilk, price: 50)..depth(20, to: 40);
   item("Gold Coins", gold, price: 100)..depth(30, to: 50);
-  item("Platinum Coins", gunsmoke, price: 300)..depth(40, to: 70);
+  item("Platinum Coins", lightCoolGray, price: 300)..depth(40, to: 70);
 
   // Bars.
   category(CharCode.dollarSign)
     ..tag("treasure/bar")
     ..treasure();
-  item("Copper Bar", copper, price: 150)..depth(35, to: 60);
-  item("Bronze Bar", persimmon, price: 500)..depth(50, to: 70);
-  item("Silver Bar", turquoise, price: 800)..depth(60, to: 80);
+  item("Copper Bar", persimmon, price: 150)..depth(35, to: 60);
+  item("Bronze Bar", tan, price: 500)..depth(50, to: 70);
+  item("Silver Bar", lightAqua, price: 800)..depth(60, to: 80);
   item("Electrum Bar", buttermilk, price: 1200)..depth(70, to: 90);
   item("Gold Bar", gold, price: 2000)..depth(80);
-  item("Platinum Bar", gunsmoke, price: 3000)..depth(90);
+  item("Platinum Bar", lightCoolGray, price: 3000)..depth(90);
 
 /*
   // TODO: Could add more treasure using other currency symbols.
@@ -93,7 +93,7 @@ void food() {
     ..depth(1, to: 10)
     ..stack(6)
     ..food(100);
-  item("Loa[f|ves] of Bread", persimmon, frequency: 1.0, price: 4)
+  item("Loa[f|ves] of Bread", tan, frequency: 1.0, price: 4)
     ..depth(3, to: 40)
     ..stack(6)
     ..food(200);
@@ -101,13 +101,13 @@ void food() {
   category(CharCode.vulgarFractionOneQuarter)
     ..tag("item/food")
     ..destroy(Elements.fire, chance: 15, fuel: 2);
-  item("Chunk[s] of Meat", garnet, frequency: 1.0, price: 10)
+  item("Chunk[s] of Meat", brown, frequency: 1.0, price: 10)
     ..depth(8)
     ..stack(4)
     ..food(400);
   // TODO: Chance of poisoning.
   // TODO: Make some monsters drop this.
-  item("Piece[s] of Jerky", persimmon, frequency: 1.0, price: 20)
+  item("Piece[s] of Jerky", tan, frequency: 1.0, price: 20)
     ..depth(10)
     ..stack(12)
     ..food(600);
@@ -136,7 +136,7 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 40, fuel: 25);
 
   // TODO: Larger ball of fire when hits toss target.
-  item("Oil Lamp", garnet, frequency: 1.0, price: 18)
+  item("Oil Lamp", brown, frequency: 1.0, price: 18)
     ..depth(8, to: 30)
     ..stack(4)
     ..toss(damage: 10, range: 8, element: Elements.fire)
@@ -144,7 +144,7 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 50, fuel: 40);
 
   // TODO: Ball of fire when hits toss target.
-  item("Torch[es]", persimmon, frequency: 1.0, price: 16)
+  item("Torch[es]", tan, frequency: 1.0, price: 16)
     ..depth(11, to: 45)
     ..stack(4)
     ..toss(damage: 6, range: 10, element: Elements.fire)

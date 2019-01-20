@@ -125,8 +125,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
       }
 
       // Holding a two-handed item, so unequip it.
-      if (heldSlots.length == 1 &&
-          slots[heldSlots[0]].type.isTwoHanded) {
+      if (heldSlots.length == 1 && slots[heldSlots[0]].type.isTwoHanded) {
         var unequipped = slots[heldSlots[0]];
         slots[handSlots[0]] = item;
         return [unequipped];

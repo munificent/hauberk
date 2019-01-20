@@ -136,7 +136,7 @@ class NewHeroScreen extends Screen<Input> {
     terminal = terminal.rect(0, 0, 40, 10);
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        _field == _Field.name ? UIHue.selection : steelGray);
+        _field == _Field.name ? UIHue.selection : darkCoolGray);
 
     terminal.writeAt(
         1, 0, "Name", _field == _Field.name ? UIHue.selection : UIHue.text);
@@ -165,7 +165,7 @@ class NewHeroScreen extends Screen<Input> {
     terminal = terminal.rect(0, 10, 40, 29);
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        _field == _Field.race ? UIHue.selection : steelGray);
+        _field == _Field.race ? UIHue.selection : darkCoolGray);
     terminal.writeAt(
         1, 0, "Race", _field == _Field.race ? UIHue.selection : UIHue.text);
 
@@ -182,7 +182,7 @@ class NewHeroScreen extends Screen<Input> {
     for (var stat in Stat.all) {
       terminal.writeAt(2, y, stat.name, UIHue.secondary);
       var width = 25 * race.stats[stat] ~/ 45;
-      terminal.writeAt(12, y, " " * width, ash, brickRed);
+      terminal.writeAt(12, y, " " * width, ash, red);
       terminal.writeAt(12 + width, y, " " * (25 - width), ash, maroon);
       y += 2;
     }
@@ -192,7 +192,7 @@ class NewHeroScreen extends Screen<Input> {
     terminal = terminal.rect(40, 10, 40, 29);
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        _field == _Field.heroClass ? UIHue.selection : steelGray);
+        _field == _Field.heroClass ? UIHue.selection : darkCoolGray);
     terminal.writeAt(1, 0, "Class",
         _field == _Field.heroClass ? UIHue.selection : UIHue.text);
 
