@@ -11,6 +11,11 @@ Action _closeDoor(Vec pos) => CloseDoorAction(pos, Tiles.closedDoor);
 
 Action _openDoor(Vec pos) => OpenDoorAction(pos, Tiles.openDoor);
 
+Action _closeSquareDoor(Vec pos) =>
+    CloseDoorAction(pos, Tiles.closedSquareDoor);
+
+Action _openSquareDoor(Vec pos) => OpenDoorAction(pos, Tiles.openSquareDoor);
+
 Action _closeBarredDoor(Vec pos) =>
     CloseDoorAction(pos, Tiles.closedBarredDoor);
 
@@ -47,19 +52,44 @@ class Tiles {
 
   // Real tiles.
 
-  static final floor = tile("floor", "·", darkCoolGray).open();
-  static final burntFloor = tile("burnt floor", "φ", darkCoolGray).open();
-  static final burntFloor2 = tile("burnt floor", "ε", darkCoolGray).open();
-  static final rock = tile("rock", "▓", coolGray, darkCoolGray).solid();
-  static final wall = tile("wall", "▒", lightWarmGray, coolGray).solid();
-  static final lowWall = tile("low wall", "%", lightWarmGray).obstacle();
+  // Walls.
+  static final flagstoneWall =
+      tile("flagstone wall", "▒", lightWarmGray, warmGray).solid();
+
+  static final graniteWall =
+      tile("granite wall", "▒", coolGray, darkCoolGray).solid();
+
+  static final granite1 = tile("granite", "▓", coolGray, darkCoolGray)
+      .blend(0.0, darkCoolGray, darkerCoolGray)
+      .solid();
+  static final granite2 = tile("granite", "▓", coolGray, darkCoolGray)
+      .blend(0.2, darkCoolGray, darkerCoolGray)
+      .solid();
+  static final granite3 = tile("granite", "▓", coolGray, darkCoolGray)
+      .blend(0.4, darkCoolGray, darkerCoolGray)
+      .solid();
+
+  // Floors.
+  static final flagstoneFloor =
+      tile("flagstone floor", "·", darkWarmGray).open();
+
+  static final graniteFloor = tile("granite floor", "·", darkCoolGray).open();
+
+  // Doors.
   static final openDoor =
       tile("open door", "○", tan, darkBrown).onClose(_closeDoor).open();
   static final closedDoor =
       tile("closed door", "◙", tan, darkBrown).onOpen(_openDoor).door();
 
-//  TODO: maleSign = open square door ♂
-//  TODO: femaleSign = closed square door
+  static final openSquareDoor = tile("open square door", "♂", tan, darkBrown)
+      .onClose(_closeSquareDoor)
+      .open();
+
+  static final closedSquareDoor =
+      tile("closed square door", "♀", tan, darkBrown)
+          .onOpen(_openSquareDoor)
+          .door();
+
   static final openBarredDoor =
       tile("open barred door", "♂", lightWarmGray, coolGray)
           .onClose(_closeBarredDoor)
@@ -70,6 +100,13 @@ class Tiles {
       tile("closed barred door", "♪", lightWarmGray, coolGray)
           .onOpen(_openBarredDoor)
           .transparentDoor();
+
+  // Unsorted.
+
+  // TODO: Organize these.
+  static final burntFloor = tile("burnt floor", "φ", darkCoolGray).open();
+  static final burntFloor2 = tile("burnt floor", "ε", darkCoolGray).open();
+  static final lowWall = tile("low wall", "%", lightWarmGray).obstacle();
 
   // TODO: Different character that doesn't look like bridge?
   static final stairs =
@@ -93,6 +130,17 @@ class Tiles {
   static final treeAlt1 = tile("tree", "♠", peaGreen, sherwood).solid();
   static final treeAlt2 = tile("tree", "♣", peaGreen, sherwood).solid();
 
+  // Decor.
+
+  static final openChest = tile("open chest", "⌠", tan).obstacle();
+  static final closedChest = tile("closed chest", "⌡", tan)
+      .onOpen((pos) => OpenChestAction(pos))
+      .obstacle();
+  static final closedBarrel = tile("closed barrel", "°", tan)
+      .onOpen((pos) => OpenBarrelAction(pos))
+      .obstacle();
+  static final openBarrel = tile("open barrel", "∙", tan).obstacle();
+
   static final tableTopLeft = tile("table", "┌", tan).obstacle();
   static final tableTop = tile("table", "─", tan).obstacle();
   static final tableTopRight = tile("table", "┐", tan).obstacle();
@@ -115,21 +163,14 @@ class Tiles {
   static final braziers = multi("brazier", "≤", tan, null, 5,
       (tile, n) => tile.emanate(192 - n * 12).obstacle());
 
-  // TODO: Make these do something.
-  static final openChest = tile("open chest", "⌠", tan).obstacle();
-  static final closedChest = tile("closed chest", "⌡", tan)
-      .onOpen((pos) => OpenChestAction(pos))
-      .obstacle();
-  static final closedBarrel = tile("closed barrel", "°", tan)
-      .onOpen((pos) => OpenBarrelAction(pos))
-      .obstacle();
-  static final openBarrel = tile("open barrel", "∙", tan).obstacle();
-
   static final statue = tile("statue", "P", ash, coolGray).obstacle();
 
   // Make these "monsters" that can be pushed around.
   static final chair = tile("chair", "π", tan).open();
 
+  // Stains.
+
+  // TODO: Not used right now.
   static final brownJellyStain = tile("brown jelly stain", "·", tan).open();
 
   static final grayJellyStain =
@@ -148,6 +189,7 @@ class Tiles {
   static final spiderweb = tile("spiderweb", "÷", coolGray).open();
 
   // Town tiles.
+
   static final dungeonEntrance =
       tile("dungeon entrance", "≡", lightWarmGray, coolGray)
           .to(TilePortals.dungeon)
@@ -280,7 +322,8 @@ class Tiles {
     treeAlt1: [dirt, dirt2],
     treeAlt2: [dirt, dirt2],
     candle: [tableCenter],
-    spiderweb: [floor]
+    // TODO: This doesn't handle spiderwebs on other floors.
+    spiderweb: [flagstoneFloor]
   };
 }
 
@@ -301,6 +344,16 @@ class _TileBuilder {
   }
 
   _TileBuilder._(this.name, Glyph glyph) : glyphs = [glyph];
+
+  _TileBuilder blend(double amount, Color fore, Color back) {
+    for (var i = 0; i < glyphs.length; i++) {
+      var glyph = glyphs[i];
+      glyphs[i] = Glyph.fromCharCode(glyph.char, glyph.fore.blend(fore, amount),
+          glyph.back.blend(back, amount));
+    }
+
+    return this;
+  }
 
   _TileBuilder animate(int count, double maxMix, Color fore, Color back) {
     var glyph = glyphs.first;

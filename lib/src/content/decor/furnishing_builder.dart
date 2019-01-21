@@ -20,7 +20,9 @@ String _themes;
 Map<String, Cell> _categoryCells;
 
 final Map<String, Cell> _applyCells = {
-  "I": Cell(apply: Tiles.wallTorch, require: Tiles.wall),
+  "I": Cell(
+      apply: Tiles.wallTorch,
+      requireAny: [Tiles.flagstoneWall, Tiles.graniteWall]),
   "l": Cell(apply: Tiles.wallTorch, motility: Motility.walk),
   "P": Cell(apply: Tiles.statue, motility: Motility.walk),
   "≈": Cell(apply: Tiles.water, motility: Motility.walk),
@@ -35,7 +37,13 @@ final Map<String, Cell> _applyCells = {
 final Map<String, Cell> _requireCells = {
   "?": Cell(),
   ".": Cell(motility: Motility.walk),
-  "#": Cell(requireAny: [Tiles.wall, Tiles.rock]),
+  "#": Cell(requireAny: [
+    Tiles.flagstoneWall,
+    Tiles.graniteWall,
+    Tiles.granite1,
+    Tiles.granite2,
+    Tiles.granite3
+  ]),
   "┌": Cell(require: Tiles.tableTopLeft),
   "─": Cell(require: Tiles.tableTop),
   "┐": Cell(require: Tiles.tableTopRight),

@@ -12,12 +12,12 @@ class Town {
   Iterable<String> buildStage(Function(Vec) placeHero) sync* {
     for (var pos in stage.bounds) {
       // TODO: Grass? Something else?
-      stage[pos].type = Tiles.floor;
+      stage[pos].type = Tiles.flagstoneFloor;
     }
 
     for (var pos in stage.bounds.trace()) {
       // TODO: Impenetrable wall when we add destructibility.
-      stage[pos].type = Tiles.wall;
+      stage[pos].type = Tiles.flagstoneWall;
     }
 
     var entrances = [
@@ -39,7 +39,7 @@ class Town {
       var rect = Rect(x, y, 11, 8);
 
       for (var pos in rect) {
-        stage[pos].type = Tiles.wall;
+        stage[pos].type = Tiles.flagstoneWall;
       }
 
       Vec door;

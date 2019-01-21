@@ -37,8 +37,8 @@ class Keep extends Architecture {
   Keep._(this._maxRooms, TakeFrom takeFrom)
       : _junctions = JunctionSet(takeFrom);
 
-  // TODO: Different paint styles.
-  String get paintStyle => "stone";
+  // TODO: Different paint styles for different monsters.
+  PaintStyle get paintStyle => PaintStyle.granite;
 
   Iterable<String> build() sync* {
     debugJunctions = _junctions;

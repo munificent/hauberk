@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import 'architect.dart';
+import 'painter.dart';
 import 'room.dart';
 
 // TODO: There's a lot of copy/paste between this and Catacomb. Decide if it's
@@ -11,7 +12,7 @@ class Dungeon extends Architecture {
   /// How much open space it tries to carve.
   final double _density;
 
-  String get paintStyle => "stone";
+  PaintStyle get paintStyle => PaintStyle.flagstone;
 
   Dungeon({double density}) : _density = density ?? 0.3;
 

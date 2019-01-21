@@ -50,54 +50,81 @@ class Painter {
 /// Each style is a custom "look" that translates the semantic temporary
 /// tiles into specific concrete tile types.
 class PaintStyle {
-  static final Map<String, PaintStyle> _all = {
-    "rock": PaintStyle({}),
-    "stone": _DoorPaintStyle(),
-    "stone-jail": PaintStyle({Tiles.doorway: Tiles.closedBarredDoor}),
+  static final rock = PaintStyle();
+  static final flagstone = PaintStyle(
+      floor: [Tiles.flagstoneFloor],
+      wall: [Tiles.flagstoneWall],
+      closedDoor: Tiles.closedDoor,
+      openDoor: Tiles.openDoor);
+  static final granite = PaintStyle(
+      floor: [Tiles.graniteFloor],
+      wall: [Tiles.graniteWall],
+      closedDoor: Tiles.closedSquareDoor);
+  static final stoneJail = PaintStyle(closedDoor: Tiles.closedBarredDoor);
+
+  static Map<TileType, List<TileType>> _defaultTypes = {
+    Tiles.solidWet: [Tiles.water],
+    Tiles.passageWet: [Tiles.bridge]
   };
 
-  static Map<TileType, TileType> _defaultTypes = {
-    Tiles.open: Tiles.floor,
-    Tiles.solid: Tiles.rock,
-    Tiles.passage: Tiles.floor,
-    Tiles.doorway: Tiles.floor,
-    Tiles.solidWet: Tiles.water,
-    Tiles.passageWet: Tiles.bridge
-  };
+  static List<TileType> _defaultWalls = [
+    Tiles.granite1,
+    Tiles.granite2,
+    Tiles.granite3
+  ];
 
-  static PaintStyle find(String name) => _all[name];
+  final List<TileType> _floor;
+  final List<TileType> _wall;
+  final TileType _closedDoor;
+  final TileType _openDoor;
 
-  final Map<TileType, TileType> _types;
-
-  PaintStyle(this._types);
+  PaintStyle(
+      {List<TileType> floor,
+      List<TileType> wall,
+      TileType closedDoor,
+      TileType openDoor})
+      : _floor = floor,
+        _wall = wall,
+        _closedDoor = closedDoor,
+        _openDoor = openDoor;
 
   TileType paintTile(Painter painter, Vec pos) {
     var tile = painter.getTile(pos);
-    if (_types.containsKey(tile)) return _types[tile];
 
-    if (_defaultTypes.containsKey(tile)) return _defaultTypes[tile];
+    if (tile == Tiles.open || tile == Tiles.passage) return _floorTile();
 
-    return tile;
-  }
-}
+    if (tile == Tiles.solid) {
+      if (_wall != null) return rng.item(_wall);
+      return rng.item(_defaultWalls);
+    }
 
-/// A paint style that turns doorways into doors.
-class _DoorPaintStyle extends PaintStyle {
-  _DoorPaintStyle() : super({Tiles.solid: Tiles.wall});
-
-  TileType paintTile(Painter painter, Vec pos) {
-    // TODO: Take depth into account. Locked doors, trapped, etc.
-    if (painter.getTile(pos) == Tiles.doorway) {
-      switch (rng.range(6)) {
-        case 0:
-          return Tiles.openDoor;
-        case 1:
-          return Tiles.floor;
-        default:
-          return Tiles.closedDoor;
+    if (tile == Tiles.doorway) {
+      if (_closedDoor != null && _openDoor != null) {
+        switch (rng.range(6)) {
+          case 0:
+            return _openDoor;
+          case 1:
+            return _floorTile();
+          default:
+            return _closedDoor;
+        }
+      } else if (_closedDoor != null) {
+        return _closedDoor;
+      } else if (_openDoor != null) {
+        return _openDoor;
+      } else {
+        return _floorTile();
       }
     }
 
-    return super.paintTile(painter, pos);
+    if (_defaultTypes.containsKey(tile)) return rng.item(_defaultTypes[tile]);
+
+    return tile;
+  }
+
+  TileType _floorTile() {
+    if (_floor != null) return rng.item(_floor);
+
+    return Tiles.flagstoneFloor;
   }
 }

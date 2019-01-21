@@ -16,7 +16,7 @@ class Pit extends Architecture {
 
   final List<Vec> _monsterTiles = [];
 
-  String get paintStyle => "stone-jail";
+  PaintStyle get paintStyle => PaintStyle.stoneJail;
 
   Pit(this._monsterGroup, {int minSize, int maxSize})
       : _minSize = minSize ?? 12,

@@ -131,9 +131,9 @@ class Decorator {
   void _paintTiles() {
     for (var entry in _tilesByArchitecture.entries) {
       var architecture = entry.key;
-      var paintStyle = PaintStyle.find("rock");
+      var paintStyle = PaintStyle.rock;
       if (architecture != null) {
-        paintStyle = PaintStyle.find(architecture.paintStyle);
+        paintStyle = architecture.paintStyle;
       }
 
       var painter = Painter(this, _architect, architecture);

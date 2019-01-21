@@ -409,7 +409,7 @@ abstract class Architecture {
 
   Region get region => _region;
 
-  String get paintStyle => "rock";
+  PaintStyle get paintStyle => PaintStyle.rock;
 
   /// Gets the ratio of carved tiles to carvable tiles.
   ///
