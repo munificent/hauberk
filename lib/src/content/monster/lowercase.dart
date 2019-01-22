@@ -746,16 +746,16 @@ void skeletons() {
     ..sense(see: 4, hear: 4);
   // TODO: Special room/trap where these get spawned and come up from the
   // ground?
-  breed("bony hand", 3, coolGray, 12, frequency: 3.0, meander: 40, speed: -1)
-    ..attack("claw[s]", 5);
+  breed("bony hand", 3, coolGray, 16, frequency: 3.0, meander: 40, speed: -1)
+    ..attack("claw[s]", 6);
 
-  breed("bony arm", 4, lightCoolGray, 18, frequency: 4.0, meander: 40)
-    ..attack("claw[s]", 7);
+  breed("bony arm", 4, lightCoolGray, 22, frequency: 4.0, meander: 40)
+    ..attack("claw[s]", 8);
 
-  breed("severed skull", 7, sandal, 20, frequency: 3.0, meander: 40, speed: -2)
-    ..attack("bite[s]", 9);
+  breed("severed skull", 7, sandal, 28, frequency: 3.0, meander: 40, speed: -2)
+    ..attack("bite[s]", 10);
 
-  breed("decapitated skeleton", 10, buttermilk, 30, frequency: 4.0, meander: 60)
+  breed("decapitated skeleton", 10, buttermilk, 38, frequency: 4.0, meander: 60)
     ..sense(see: 0, hear: 0)
     ..openDoors()
     ..attack("claw[s]", 7)
@@ -763,13 +763,13 @@ void skeletons() {
     ..drop("weapon", percent: 10)
     ..drop("armor", percent: 10);
 
-  breed("armless skeleton", 12, mint, 25, frequency: 4.0)
+  breed("armless skeleton", 12, mint, 40, frequency: 4.0)
     ..attack("bite[s]", 9)
     ..attack("kick[s]", 7)
     ..drop("treasure", percent: 30)
     ..drop("armor", percent: 10);
 
-  breed("one-armed skeleton", 13, lima, 30, frequency: 5.0)
+  breed("one-armed skeleton", 13, lima, 46, frequency: 5.0)
     ..openDoors()
     ..attack("claw[s]", 7)
     ..amputate("armless skeleton", "bony arm", "{1}'s arm falls off!")
@@ -778,7 +778,7 @@ void skeletons() {
     ..drop("weapon", percent: 5)
     ..drop("armor", percent: 10);
 
-  breed("skeleton", 15, ash, 40, frequency: 6.0)
+  breed("skeleton", 15, ash, 50, frequency: 6.0)
     ..openDoors()
     ..attack("claw[s]", 7)
     ..attack("bite[s]", 9)
@@ -789,7 +789,7 @@ void skeletons() {
     ..drop("weapon", percent: 10)
     ..drop("armor", percent: 10);
 
-  breed("skeleton warrior", 17, pink, 50, frequency: 6.0)
+  breed("skeleton warrior", 17, pink, 70, frequency: 6.0)
     ..openDoors()
     ..attack("slash[es]", 13)
     ..attack("stab[s]", 10)
@@ -800,7 +800,7 @@ void skeletons() {
     ..drop("weapon", percent: 20)
     ..drop("armor", percent: 15);
 
-  breed("robed skeleton", 19, lilac, 50, frequency: 4.0)
+  breed("robed skeleton", 19, lilac, 70, frequency: 4.0)
     ..openDoors()
     ..attack("slash[es]", 13)
     ..attack("stab[s]", 10)

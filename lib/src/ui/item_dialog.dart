@@ -544,7 +544,7 @@ class _SellItemCommand extends _ItemCommand {
 
   String queryCount(ItemLocation location) => "Sell how many?";
 
-  bool canSelect(Item item) => true;
+  bool canSelect(Item item) => item.price != 0;
 
   int getPrice(Item item) => (item.price * 0.75).floor();
 

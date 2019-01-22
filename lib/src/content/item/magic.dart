@@ -16,16 +16,16 @@ void potions() {
     ..destroy(Elements.cold, chance: 20);
   item("Soothing Balm", pink, frequency: 1.0, price: 10)
     ..depth(2, to: 30)
-    ..heal(48);
+    ..heal(36);
   item("Mending Salve", red, frequency: 1.0, price: 30)
     ..depth(20, to: 40)
-    ..heal(100);
+    ..heal(64);
   item("Healing Poultice", maroon, frequency: 1.0, price: 80)
     ..depth(30)
-    ..heal(200, curePoison: true);
+    ..heal(120, curePoison: true);
   item("Potion[s] of Amelioration", violet, frequency: 1.0, price: 220)
     ..depth(60)
-    ..heal(400, curePoison: true);
+    ..heal(200, curePoison: true);
   item("Potion[s] of Rejuvenation", purple, frequency: 0.5, price: 1000)
     ..depth(80)
     ..heal(1000, curePoison: true);

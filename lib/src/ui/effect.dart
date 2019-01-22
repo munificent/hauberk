@@ -567,6 +567,8 @@ class BlinkEffect implements Effect {
   BlinkEffect(this._actor, this._glyph);
 
   bool update(Game game) {
+    if (!game.stage[_actor.pos].isVisible) return false;
+
     return ++_age < 24;
   }
 
