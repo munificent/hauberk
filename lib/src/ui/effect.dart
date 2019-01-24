@@ -77,6 +77,11 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(DetectEffect(event.pos));
       break;
 
+    case EventType.perceive:
+      // TODO: Make look different.
+      effects.add(DetectEffect(event.actor.pos));
+      break;
+
     case EventType.map:
       effects.add(MapEffect(event.pos));
       break;

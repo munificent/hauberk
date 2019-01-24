@@ -8,6 +8,7 @@ import '../action/flow.dart';
 import '../action/heal.dart';
 import '../action/illuminate.dart';
 import '../action/mapping.dart';
+import '../action/perception.dart';
 import '../action/ray.dart';
 import '../action/teleport.dart';
 import '../skill/skills.dart';
@@ -238,6 +239,14 @@ class _ItemBuilder extends _BaseBuilder {
     }
 
     use("$description.", () => DetectAction(types, range));
+  }
+
+  void perception({int duration, int distance}) {
+    duration ??= 5;
+    distance ??= 16;
+
+    // TODO: Better description.
+    use("Perceive monsters.", () => PerceiveAction(duration, distance));
   }
 
   void resistSalve(Element element) {

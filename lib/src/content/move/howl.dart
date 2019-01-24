@@ -11,6 +11,7 @@ class HowlMove extends Move {
 
   bool shouldUse(Monster monster) {
     // Don't wake up others unless the hero is around.
+    // TODO: Should take sight into account.
     if (!monster.isVisibleToHero) return false;
 
     // See if there are any sleeping monsters nearby.

@@ -29,6 +29,8 @@ abstract class Actor implements Noun {
   /// Makes it hard for the actor to see.
   final Condition dazzle = BlindnessCondition();
 
+  final Condition perception = PerceiveCondition();
+
   // Temporary resistance to elements.
   final resistances = <Element, ResistCondition>{};
 
@@ -38,7 +40,8 @@ abstract class Actor implements Noun {
         cold,
         poison,
         blindness,
-        dazzle
+        dazzle,
+        perception,
       ]..addAll(resistances.values);
 
   Vec _pos;
@@ -299,7 +302,7 @@ abstract class Actor implements Noun {
 
   /// Logs [message] if the actor is visible to the hero.
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
-    if (!isVisibleToHero) return;
+    if (!game.hero.canPerceive(this)) return;
     game.log.message(message, noun1, noun2, noun3);
   }
 

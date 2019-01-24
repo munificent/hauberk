@@ -257,6 +257,7 @@ class SidebarPanel extends Panel {
 
     if (actor.blindness.isActive) drawCondition("B", darkCoolGray);
     if (actor.dazzle.isActive) drawCondition("D", lilac);
+    if (actor.perception.isActive) drawCondition("V", ash);
 
     for (var element in Elements.all) {
       if (actor.resistances[element].isActive) {

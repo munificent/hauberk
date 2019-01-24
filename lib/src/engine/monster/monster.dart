@@ -212,11 +212,7 @@ class Monster extends Actor {
         _resetCharges();
         _changeState(AfraidState());
       } else if (rng.percent(_awakenPercent(notice))) {
-        if (isVisibleToHero) {
-          log("{1} wakes up!", this);
-        } else {
-          log("Something stirs in the darkness.");
-        }
+        log("{1} wakes up!", this);
 
         // TODO: Probably shouldn't add event if monster woke up because they
         // were hit.
@@ -232,9 +228,7 @@ class Monster extends Actor {
         game.addEvent(EventType.frighten, actor: this);
         _changeState(AfraidState());
       } else if (notice < 0.01) {
-        if (isVisibleToHero) {
-          log("{1} falls asleep!", this);
-        }
+        log("{1} falls asleep!", this);
 
         _alertness = 0.0;
         _changeState(AsleepState());

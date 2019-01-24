@@ -319,6 +319,9 @@ class EventType {
   /// Something in the level was detected.
   static const detect = EventType("detect");
 
+  /// An actor was perceived.
+  static const perceive = EventType("perceive");
+
   /// A floor tile was magically explored.
   static const map = EventType("map");
 

@@ -81,8 +81,6 @@ abstract class MonsterState {
 
   Vec get pos => _monster.pos;
 
-  bool get isVisibleToHero => _monster.isVisibleToHero;
-
   void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
     monster.log(message, noun1, noun2, noun3);
   }

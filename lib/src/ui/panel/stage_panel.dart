@@ -112,40 +112,35 @@ class StagePanel extends Panel {
 
     // Draw the tiles and items.
     for (var pos in _cameraBounds) {
-      var tile = game.stage[pos];
-      var actor = game.stage.actorAt(pos);
-
-      // Skip the tile if not known.
-      if (!tile.isExplored &&
-          (!Debug.showMonsterAlertness || actor == null) &&
-          !Debug.showHeroVolume) {
-        continue;
-      }
+      int char;
+      var fore = Color.black;
+      var back = Color.black;
+      var lightFore = false;
+      var lightBack = false;
 
       // Even if not currently visible, if explored we can see the tile itself.
-      var tileGlyph = _tileGlyph(pos, tile);
+      var tile = game.stage[pos];
+      if (tile.isExplored) {
+        var tileGlyph = _tileGlyph(pos, tile);
+        char = tileGlyph.char;
+        fore = tileGlyph.fore;
+        back = tileGlyph.back;
+        lightFore = true;
+        lightBack = true;
 
-      var char = tileGlyph.char;
-      var fore = tileGlyph.fore;
-      var back = tileGlyph.back;
-      var isThing = false;
-
-      // Show the item if the tile has been explored, even if not currently
-      // visible.
-      // TODO: If an item is picked up or destroyed while not visible, the
-      // player will see it. Should they?
-      var items = game.stage.itemsAt(pos);
-      if (items.isNotEmpty) {
-        var itemGlyph = items.first.appearance as Glyph;
-        char = itemGlyph.char;
-        fore = itemGlyph.fore;
-        isThing = true;
+        // Show the item if the tile has been explored, even if not currently
+        // visible.
+        var items = game.stage.itemsAt(pos);
+        if (items.isNotEmpty) {
+          var itemGlyph = items.first.appearance as Glyph;
+          char = itemGlyph.char;
+          fore = itemGlyph.fore;
+          lightFore = false;
+        }
       }
 
       // If the tile is currently visible, show any actor on it.
-      if (tile.isVisible ||
-          pos == game.hero.pos ||
-          Debug.showAllMonsters && actor != null) {
+      if (tile.isVisible) {
         if (tile.substance != 0) {
           if (tile.element == Elements.fire) {
             char = rng.item(_fireChars);
@@ -159,28 +154,34 @@ class StagePanel extends Panel {
             back = back.blend(lima, amount);
           }
         }
+      }
 
-        var actor = game.stage.actorAt(pos);
-        if (actor != null) {
-          var actorGlyph = actor.appearance;
-          if (actorGlyph is Glyph) {
-            char = actorGlyph.char;
-            fore = actorGlyph.fore;
-          } else {
-            // Hero.
-            char = CharCode.at;
-            fore = _gameScreen.heroColor;
-          }
+      var actor = game.stage.actorAt(pos);
+      var showActor = tile.isVisible ||
+          pos == game.hero.pos ||
+          Debug.showAllMonsters ||
+          actor != null && hero.canPerceive(actor);
 
-          // If the actor is being targeted, invert its colors.
-          if (_gameScreen.currentTargetActor == actor) {
-            back = fore;
-            fore = darkerCoolGray;
-          }
-
-          if (actor is Monster) visibleMonsters.add(actor);
-          isThing = true;
+      if (showActor && actor != null) {
+        var actorGlyph = actor.appearance;
+        if (actorGlyph is Glyph) {
+          char = actorGlyph.char;
+          fore = actorGlyph.fore;
+        } else {
+          // Hero.
+          char = CharCode.at;
+          fore = _gameScreen.heroColor;
         }
+        lightFore = false;
+
+        // If the actor is being targeted, invert its colors.
+        if (_gameScreen.currentTargetActor == actor) {
+          back = fore;
+          fore = darkerCoolGray;
+          lightBack = false;
+        }
+
+        if (actor is Monster) visibleMonsters.add(actor);
       }
 
       if (hero.dazzle.isActive) {
@@ -189,10 +190,13 @@ class StagePanel extends Panel {
           char = rng.percent(chance) ? char : CharCode.asterisk;
           fore = rng.item(_dazzleColors);
         }
+
+        lightFore = false;
+        lightBack = false;
       }
 
       // Apply lighting and visibility to the tile.
-      if (tile.isVisible) {
+      if (tile.isVisible && (lightFore || lightBack)) {
         // If we ramp the lighting so that only maximum lighting is fully
         // illuminated, then the dungeon looks much too gloomy. Instead,
         // anything above 50% lit is shown at full brightness. We square the
@@ -205,33 +209,37 @@ class StagePanel extends Panel {
         const shadow = Color(0x04, 0x03, 0xa);
 
         // Show tiles containing interesting things more brightly.
-        if (isThing) {
-          fore = shadow.blend(fore, light * 0.3 + 0.7);
-        } else {
+        if (lightFore) {
           fore = shadow.blend(fore, light * 0.7 + 0.3);
         }
 
-        if (back == darkerCoolGray) {
-          // Hackish. If the background color is the default dark color, then
-          // boost it *past* its max value to add some extra glow when well
-          // lit.
-          back = shadow.blend(back, light * 1.1 + 0.2);
-        } else {
-          back = shadow.blend(back, light * 0.8 + 0.2);
+        if (lightBack) {
+          if (back == darkerCoolGray) {
+            // Hackish. If the background color is the default dark color, then
+            // boost it *past* its max value to add some extra glow when well
+            // lit.
+            back = shadow.blend(back, light * 1.1 + 0.2);
+          } else {
+            back = shadow.blend(back, light * 0.8 + 0.2);
+          }
         }
       } else {
         const blueShadow = Color(0x00, 0x00, 0xe);
 
         // Show tiles containing interesting things more brightly.
-        fore = blueShadow.blend(fore, isThing ? 0.7 : 0.2);
+        if (lightFore) {
+          fore = blueShadow.blend(fore, 0.2);
+        }
 
-        if (back == darkerCoolGray) {
-          // If the background color is the default dark color, then go all
-          // the way to black. This makes it easier for the player to tell
-          // which tiles are not visible.
-          back = Color.black;
-        } else {
-          back = blueShadow.blend(back, 0.1);
+        if (lightBack) {
+          if (back == darkerCoolGray) {
+            // If the background color is the default dark color, then go all
+            // the way to black. This makes it easier for the player to tell
+            // which tiles are not visible.
+            back = Color.black;
+          } else {
+            back = blueShadow.blend(back, 0.1);
+          }
         }
       }
 
@@ -244,8 +252,10 @@ class StagePanel extends Panel {
         back = Color.blue.blend(Color.red, actor.alertness);
       }
 
-      var glyph = Glyph.fromCharCode(char, fore, back);
-      _drawStageGlyph(terminal, pos.x, pos.y, glyph);
+      if (char != null) {
+        var glyph = Glyph.fromCharCode(char, fore, back);
+        _drawStageGlyph(terminal, pos.x, pos.y, glyph);
+      }
     }
 
     // Draw the effects.

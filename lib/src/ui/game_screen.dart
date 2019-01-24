@@ -77,17 +77,6 @@ class GameScreen extends Screen<Input> {
     // If we're targeting an actor, use its position.
     if (currentTargetActor != null) return currentTargetActor.pos;
 
-    // Forget the targeted floor if we know the hero can't see it.
-    if (_target != null) {
-      var tile = game.stage[_target];
-
-      // TODO: Should use isVisible? Can you still target a reachable tile in
-      // the dark?
-      if (tile.isExplored && (tile.isOccluded || tile.blocksView)) {
-        _target = null;
-      }
-    }
-
     return _target;
   }
 
@@ -95,7 +84,7 @@ class GameScreen extends Screen<Input> {
   Actor get currentTargetActor {
     // Forget the target if it dies or goes offscreen.
     if (_targetActor != null) {
-      if (!_targetActor.isAlive || !_targetActor.isVisibleToHero) {
+      if (!_targetActor.isAlive || !game.hero.canPerceive(_targetActor)) {
         _targetActor = null;
       }
     }

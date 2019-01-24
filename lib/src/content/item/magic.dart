@@ -183,6 +183,26 @@ void scrolls() {
     ..depth(18)
     ..detection([DetectType.exit, DetectType.item]);
 
+  // Perception.
+  // TODO: Different scrolls for different kinds of monsters? (Evil, natural,
+  // with brain, invisible, etc.)
+  item("Scroll[s] of Sense Nearby Monsters", lightBlue,
+      frequency: 1.0, price: 50)
+    ..depth(6, to: 19)
+    ..perception(duration: 5, distance: 15);
+
+  item("Scroll[s] of Sense Monsters", aqua, frequency: 1.0, price: 70)
+    ..depth(20, to: 39)
+    ..perception(duration: 5, distance: 20);
+
+  item("Scroll[s] of Perceive Monsters", blue, frequency: 1.0, price: 100)
+    ..depth(40, to: 69)
+    ..perception(duration: 50, distance: 30);
+
+  item("Scroll[s] of Telepathy", darkBlue, frequency: 1.0, price: 150)
+    ..depth(70, to: 100)
+    ..perception(duration: 5, distance: 200);
+
   // Mapping.
   category(CharCode.latinSmallLetterAWithGrave, stack: 20)
     ..tag("magic/scroll/mapping")

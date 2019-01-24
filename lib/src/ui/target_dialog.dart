@@ -31,7 +31,7 @@ class TargetDialog extends Screen<Input> {
     var hero = _gameScreen.game.hero;
     for (var actor in _gameScreen.game.stage.actors) {
       if (actor is! Monster) continue;
-      if (!actor.isVisibleToHero) continue;
+      if (!hero.canPerceive(actor)) continue;
 
       // Must be within range.
       var toMonster = actor.pos - hero.pos;
@@ -129,6 +129,7 @@ class TargetDialog extends Screen<Input> {
 
   void render(Terminal terminal) {
     var stage = _gameScreen.game.stage;
+    var hero = _gameScreen.game.hero;
 
     // Show the range field.
     for (var pos in _gameScreen.cameraBounds) {
@@ -136,20 +137,24 @@ class TargetDialog extends Screen<Input> {
 
       // Don't leak information to the player about unknown tiles. Instead,
       // treat them as potentially targetable.
+      var actor = stage.actorAt(pos);
       if (tile.isExplored) {
         // If the tile can't be reached, don't show it as targetable.
         if (tile.isOccluded) continue;
 
         if (!tile.isWalkable && tile.blocksView) continue;
-        if (stage.actorAt(pos) != null) continue;
+        if (actor != null) continue;
         if (stage.isItemAt(pos)) continue;
       } else if (_isKnownOccluded(pos)) {
         // The player knows it can't be targeted.
         continue;
+      } else if (actor != null && hero.canPerceive(actor)) {
+        // Show the actor.
+        continue;
       }
 
       // Must be in range.
-      var toPos = pos - _gameScreen.game.hero.pos;
+      var toPos = pos - hero.pos;
       if (toPos > _range) continue;
 
       int charCode;
@@ -173,28 +178,36 @@ class TargetDialog extends Screen<Input> {
     var target = _gameScreen.currentTarget;
     if (target == null) return;
 
-    // Show the path that the bolt will trace, stopping when it hits an
-    // obstacle.
-    int i = _animateOffset ~/ _ticksPerFrame;
+    // Don't target a tile the player knows can't be hit.
     var reachedTarget = false;
-    for (var pos in Line(_gameScreen.game.hero.pos, target)) {
-      // Note if we made it to the target.
-      if (pos == target) {
-        reachedTarget = true;
-        break;
+    var tile = _gameScreen.game.stage[target];
+    if (!tile.isExplored || (!tile.blocksView && tile.isOccluded)) {
+      // Show the path that the bolt will trace, stopping when it hits an
+      // obstacle.
+      var i = _animateOffset ~/ _ticksPerFrame;
+      for (var pos in Line(_gameScreen.game.hero.pos, target)) {
+        // Note if we made it to the target.
+        if (pos == target) {
+          reachedTarget = true;
+          break;
+        }
+
+        var tile = stage[pos];
+
+        // Don't leak information about unexplored tiles.
+        if (tile.isExplored) {
+          if (stage.actorAt(pos) != null) break;
+          if (!tile.isFlyable) break;
+        }
+
+        _gameScreen.drawStageGlyph(
+            terminal,
+            pos.x,
+            pos.y,
+            Glyph.fromCharCode(
+                CharCode.bullet, (i == 0) ? gold : darkCoolGray));
+        i = (i + _numFrames - 1) % _numFrames;
       }
-
-      var tile = stage[pos];
-
-      // Don't leak information about unexplored tiles.
-      if (tile.isExplored) {
-        if (stage.actorAt(pos) != null) break;
-        if (!tile.isFlyable) break;
-      }
-
-      _gameScreen.drawStageGlyph(terminal, pos.x, pos.y,
-          Glyph.fromCharCode(CharCode.bullet, (i == 0) ? gold : darkCoolGray));
-      i = (i + _numFrames - 1) % _numFrames;
     }
 
     // Highlight the reticle if the bolt will reach the target.
@@ -240,10 +253,6 @@ class TargetDialog extends Screen<Input> {
     // Don't target out of range.
     var toPos = pos - _gameScreen.game.hero.pos;
     if (toPos > _range) return;
-
-    // Don't target a tile the player knows can't be hit.
-    var tile = _gameScreen.game.stage[pos];
-    if (tile.isExplored && (tile.blocksView || tile.isOccluded)) return;
 
     _gameScreen.targetFloor(pos);
   }

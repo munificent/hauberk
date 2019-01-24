@@ -471,6 +471,18 @@ class Hero extends Actor {
       game.log.gain(skill.gainMessage(level), this);
     }
   }
+
+  /// Whether the hero can currently perceive [actor].
+  ///
+  /// Takes into account both visibility and [perception].
+  bool canPerceive(Actor actor) {
+    if (game.stage[actor.pos].isVisible) return true;
+    if (perception.isActive && (pos - actor.pos) < perception.intensity) {
+      return true;
+    }
+
+    return false;
+  }
 }
 
 int experienceLevel(int experience) {

@@ -121,3 +121,12 @@ class ResistCondition extends Condition {
     actor.log("{1} feel[s] susceptible to $_element.", actor);
   }
 }
+
+/// A condition that provides non-visual perception of nearby monsters.
+class PerceiveCondition extends Condition {
+  PerceiveCondition();
+
+  void onDeactivate() {
+    actor.log("{1} no longer perceive[s] monsters.", actor);
+  }
+}
