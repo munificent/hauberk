@@ -29,7 +29,7 @@ class Hero extends Actor {
   final HeroSave save;
 
   /// Monsters the hero has already seen. Makes sure we don't double count them.
-  final Set<Monster> _seenMonsters = Set();
+  final Set<Monster> _seenMonsters = {};
 
   Behavior _behavior;
 

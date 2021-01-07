@@ -11,7 +11,7 @@ class PerceiveAction extends Action {
   bool get isImmediate => false;
 
   ActionResult onPerform() {
-    var alreadyPerceived = Set<Actor>();
+    var alreadyPerceived = <Actor>{};
     for (var actor in game.stage.actors) {
       if (actor == hero) continue;
 

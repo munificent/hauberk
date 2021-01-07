@@ -24,7 +24,7 @@ var actions = Queue<Action>();
 
 var breeds = <int, Breed>{};
 
-main(List<String> arguments) {
+void main(List<String> arguments) {
   content = createContent();
 
   for (var strength = 10; strength <= 60; strength += 5) {

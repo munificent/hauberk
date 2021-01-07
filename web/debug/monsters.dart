@@ -11,7 +11,7 @@ import 'histogram.dart';
 final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 final breedDrops = <Breed, Histogram<String>>{};
 
-main() {
+void main() {
   createContent();
 
   var breeds = Monsters.breeds.all.toList();

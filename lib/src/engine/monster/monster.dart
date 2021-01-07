@@ -440,7 +440,7 @@ class Monster extends Actor {
   }
 
   /// Invokes [callback] on all nearby monsters that can see this one.
-  void _updateWitnesses(callback(Monster monster)) {
+  void _updateWitnesses(void Function(Monster monster) callback) {
     for (var other in game.stage.actors) {
       if (other == this) continue;
 

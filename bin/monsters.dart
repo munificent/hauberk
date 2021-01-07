@@ -3,7 +3,7 @@ import 'package:hauberk/src/content/monster/monsters.dart';
 
 const tries = 1000;
 
-main() {
+void main() {
   Monsters.initialize();
 
   for (var i = 0; i < 20; i++) {

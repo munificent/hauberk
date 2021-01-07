@@ -20,7 +20,7 @@ class WhipMastery extends MasteryDiscipline with TargetSkill {
     var damage = (_whipScale(level) * 100).toInt();
     return super.levelDescription(level) +
         " Ranged whip attacks inflict $damage% of the damage of a regular "
-        "attack.";
+            "attack.";
   }
 
   int getRange(Game game) => 3;

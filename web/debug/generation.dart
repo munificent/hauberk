@@ -22,7 +22,7 @@ int get depth {
   return int.parse(depthSelect.value);
 }
 
-main() {
+void main() {
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
     depthSelect.append(html.OptionElement(

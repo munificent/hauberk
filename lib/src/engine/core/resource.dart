@@ -228,7 +228,7 @@ class _Resource<T> {
   final double startFrequency;
   final double endFrequency;
 
-  final Set<_Tag<T>> _tags = Set();
+  final Set<_Tag<T>> _tags = {};
 
   _Resource(this.object, this.startDepth, this.endDepth, this.startFrequency,
       this.endFrequency) {
@@ -315,9 +315,9 @@ class _QueryKey {
 
   int get hashCode => name.hashCode ^ depth.hashCode;
 
-  bool operator ==(other) {
-    assert(other is _QueryKey);
-    return name == other.name && depth == other.depth;
+  bool operator ==(Object other) {
+    var query = other as _QueryKey;
+    return name == query.name && depth == query.depth;
   }
 
   String toString() => "$name ($depth)";

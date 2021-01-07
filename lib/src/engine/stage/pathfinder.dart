@@ -44,7 +44,7 @@ abstract class Pathfinder<T> {
     var paths = BucketQueue<Path>();
 
     // The set of tiles we have completely explored already.
-    var explored = Set<Vec>();
+    var explored = <Vec>{};
 
     var startPath = Path(Direction.none, start, 0, 0);
     paths.add(startPath, priority(startPath, end));

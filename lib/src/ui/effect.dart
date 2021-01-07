@@ -148,7 +148,7 @@ void addEffects(List<Effect> effects, Event event) {
   }
 }
 
-typedef void DrawGlyph(int x, int y, Glyph glyph);
+typedef DrawGlyph = void Function(int x, int y, Glyph glyph);
 
 abstract class Effect {
   bool update(Game game);

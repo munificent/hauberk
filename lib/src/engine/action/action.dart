@@ -70,7 +70,7 @@ abstract class Action {
   }
 
   void addEvent(EventType type,
-      {Actor actor, Element element, other, Vec pos, Direction dir}) {
+      {Actor actor, Element element, Object other, Vec pos, Direction dir}) {
     _game.addEvent(type,
         actor: actor, element: element, pos: pos, dir: dir, other: other);
   }

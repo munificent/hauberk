@@ -7,8 +7,8 @@ import '../core/log.dart';
 import '../hero/skill.dart';
 import 'item.dart';
 
-typedef Action TossItemUse(Vec pos);
-typedef void AddItem(Item item);
+typedef TossItemUse = Action Function(Vec pos);
+typedef AddItem = void Function(Item item);
 
 abstract class Drop {
   void dropItem(int depth, AddItem addItem);

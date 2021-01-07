@@ -171,7 +171,7 @@ class Stage {
 
   /// Iterates over every item on the stage and returns the item and its
   /// position.
-  void forEachItem(callback(Item item, Vec pos)) {
+  void forEachItem(void Function(Item item, Vec pos) callback) {
     _itemsByTile.forEach((pos, inventory) {
       for (var item in inventory) {
         callback(item, pos);

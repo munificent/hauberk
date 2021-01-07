@@ -28,7 +28,7 @@ class Motility {
 
   Motility._(this._bitMask);
 
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is Motility) return _bitMask == other._bitMask;
     return false;
   }
@@ -63,7 +63,7 @@ class TileType {
   final TilePortal portal;
 
   final int emanation;
-  final appearance;
+  final Object appearance;
 
   bool get canClose => onClose != null;
 

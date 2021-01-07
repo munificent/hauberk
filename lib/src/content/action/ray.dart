@@ -16,7 +16,7 @@ abstract class RayActionBase extends Action {
 
   /// The tiles that have already been touched by the effect. Used to make sure
   /// we don't hit the same tile multiple times.
-  final _hitTiles = Set<Vec>();
+  final _hitTiles = <Vec>{};
 
   /// The cone incrementally spreads outward. This is how far we currently are.
   var _radius = 1.0;

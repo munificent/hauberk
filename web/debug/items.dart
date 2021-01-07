@@ -8,7 +8,7 @@ import 'package:hauberk/src/engine.dart';
 
 final _scaleBySelect = html.querySelector("select") as html.SelectElement;
 
-main() {
+void main() {
   Items.initialize();
 
   _scaleBySelect.onChange.listen((_) {
@@ -19,11 +19,6 @@ main() {
 }
 
 num _itemScale(ItemType item) {
-//  <option value="none" selected>None</option>
-//  <option value="depth">Depth</option>
-//  <option value="price">Price</option>
-//  <option value="heft">Heft</option>
-//  <option value="weight">Weight</option>
   switch (_scaleBySelect.value) {
     case "none":
       return 1.0;
@@ -132,7 +127,7 @@ class Table<T> {
     _rows.add(Row(value, cells));
   }
 
-  render() {
+  void render() {
     _sortRows();
 
     var table = html.querySelector(_selector) as html.TableElement;

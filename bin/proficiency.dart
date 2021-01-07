@@ -5,7 +5,7 @@ import 'package:hauberk/src/content.dart';
 Content content;
 Game game;
 
-main(List<String> arguments) {
+void main(List<String> arguments) {
   content = createContent();
 
   for (var heroClass in content.classes) {

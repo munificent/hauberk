@@ -120,7 +120,7 @@ void giants() {}
 
 void quest() {
   // TODO: Better group?
-  family("Q")..groups("magical");
+  family("Q").groups("magical");
   breed("Nameless Unmaker", 100, purple, 1000, speed: 2)
     ..sense(see: 16, hear: 16)
     ..attack("crushe[s]", 250, Elements.earth)
@@ -133,7 +133,7 @@ void quest() {
 }
 
 void reptiles() {
-  family("R")..groups("herp");
+  family("R").groups("herp");
   breed("frog", 1, lima, 4, dodge: 30, meander: 30)
     ..sense(see: 6, hear: 4)
     ..swim()
@@ -161,11 +161,11 @@ void snakes() {
   family("S", dodge: 30, meander: 30)
     ..groups("snake")
     ..sense(see: 4, hear: 7);
-  breed("water snake", 1, lima, 9)..attack("bite[s]", 3);
+  breed("water snake", 1, lima, 9).attack("bite[s]", 3);
 
-  breed("brown snake", 3, tan, 25)..attack("bite[s]", 4);
+  breed("brown snake", 3, tan, 25).attack("bite[s]", 4);
 
-  breed("cave snake", 8, lightCoolGray, 40)..attack("bite[s]", 10);
+  breed("cave snake", 8, lightCoolGray, 40).attack("bite[s]", 10);
 }
 
 void trolls() {}

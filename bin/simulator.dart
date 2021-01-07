@@ -5,13 +5,7 @@ import 'package:hauberk/src/engine.dart';
 
 /// Tracks what level the hero reaches if they kill every monster in every
 /// generated dungeon going down.
-main() {
-//  for (var race in createContent().races) {
-//    print(race.name);
-//    for (var i = 0; i < 100; i++) {
-//      race.rollStats();
-//    }
-//  }
+void main() {
   Simulator().run();
 }
 
@@ -50,9 +44,10 @@ class Simulator {
 
     print("--- Depth $depth (hero level ${hero.level}) ---");
 
-    var events = <Object>[];
-    events.addAll(game.stage.actors);
-    events.addAll(game.stage.allItems);
+    var events = <Object>[
+      ...game.stage.actors,
+      ...game.stage.allItems,
+    ];
     rng.shuffle(events);
 
     for (var event in events) {

@@ -29,7 +29,7 @@ void helms() {
 void bodyArmor() {
   // Robes.
   category(CharCode.latinSmallLetterOWithCircumflex)
-    ..tag("equipment/armor/body/robe");
+      .tag("equipment/armor/body/robe");
   item("Robe", blue, frequency: 0.5, price: 20)
     ..depth(2, to: 40)
     ..armor(4)
@@ -41,8 +41,7 @@ void bodyArmor() {
   // TODO: Better robes that don't add weight and appear later.
 
   // Soft armor.
-  category(CharCode.latinSmallLetterOWithDiaeresis)
-    ..tag("equipment/armor/body");
+  category(CharCode.latinSmallLetterOWithDiaeresis).tag("equipment/armor/body");
   item("Cloth Shirt", ash, frequency: 0.5, price: 40)
     ..depth(2, to: 30)
     ..armor(3)
@@ -68,7 +67,7 @@ void bodyArmor() {
     ..destroy(Elements.fire, chance: 6, fuel: 4);
 
   // Mail armor.
-  category(CharCode.latinSmallLetterOWithGrave)..tag("equipment/armor/body");
+  category(CharCode.latinSmallLetterOWithGrave).tag("equipment/armor/body");
   item("Mail Hauberk", darkCoolGray, frequency: 0.5, price: 500)
     ..depth(25)
     ..armor(28, weight: 5);
@@ -91,7 +90,7 @@ void bodyArmor() {
 }
 
 void cloaks() {
-  category(CharCode.latinCapitalLetterAe)..tag("equipment/armor/cloak");
+  category(CharCode.latinCapitalLetterAe).tag("equipment/armor/cloak");
   item("Cloak", darkBlue, frequency: 0.5, price: 70)
     ..depth(10, to: 40)
     ..armor(2, weight: 1)
@@ -163,7 +162,7 @@ void shields() {
 }
 
 void boots() {
-  category(CharCode.latinSmallLetterIWithGrave)..tag("equipment/armor/boots");
+  category(CharCode.latinSmallLetterIWithGrave).tag("equipment/armor/boots");
   item("Pair[s] of Sandals", tan, frequency: 0.24, price: 10)
     ..depth(2, to: 20)
     ..armor(1)
@@ -174,7 +173,7 @@ void boots() {
     ..destroy(Elements.fire, chance: 14, fuel: 3);
 
   category(CharCode.latinCapitalLetterAWithDiaeresis)
-    ..tag("equipment/armor/boots");
+      .tag("equipment/armor/boots");
   item("Pair[s] of Boots", tan, frequency: 0.3, price: 70)
     ..depth(14)
     ..armor(6, weight: 1);

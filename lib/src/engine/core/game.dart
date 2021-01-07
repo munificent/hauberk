@@ -179,7 +179,7 @@ class Game {
   }
 
   void addEvent(EventType type,
-      {Actor actor, Element element, other, Vec pos, Direction dir}) {
+      {Actor actor, Element element, Object other, Vec pos, Direction dir}) {
     _events.add(Event(type, actor, element, pos, dir, other));
   }
 
@@ -286,7 +286,7 @@ class Event {
   final EventType type;
   final Actor actor;
   final Element element;
-  final other;
+  final Object other;
   final Vec pos;
   final Direction dir;
 

@@ -157,7 +157,7 @@ abstract class Flow {
   List<Vec> _findAllBestWhere(bool predicate(Vec pos)) {
     var goals = <Vec>[];
 
-    var lowestCost;
+    int lowestCost;
     for (var i = 0;; i++) {
       // Lazily find the next open tile.
       while (i >= _found.length) {
@@ -191,8 +191,8 @@ abstract class Flow {
   ///
   /// Returns an empty list if none of the goals can be reached.
   List<Direction> _directionsTo(List<Vec> goals) {
-    var walked = Set<Vec>();
-    var directions = Set<Direction>();
+    var walked = <Vec>{};
+    var directions = <Direction>{};
 
     // Starting at [pos], recursively walk along all paths that proceed towards
     // [start].

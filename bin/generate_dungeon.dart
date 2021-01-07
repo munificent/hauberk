@@ -6,7 +6,7 @@ import 'package:hauberk/src/content.dart';
 /// A benchmark that just repeatedly generates dungeons for running in a
 /// profiler.
 
-main() {
+void main() {
   var content = createContent();
   var save = content.createHero("blah");
 

@@ -13,7 +13,7 @@ int get depth {
   return int.parse(depthSelect.value);
 }
 
-main() {
+void main() {
   Items.initialize();
   Affixes.initialize();
 

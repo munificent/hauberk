@@ -3,7 +3,7 @@ import 'package:hauberk/src/engine.dart';
 
 /// Estimates how many monsters need to be killed to reach each experience
 /// level.
-main() {
+void main() {
   var strength = Strength();
   var agility = Agility();
   var fortitude = Fortitude();

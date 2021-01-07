@@ -8,12 +8,12 @@ void litter() {
   category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
     ..tag("item")
     ..toss(damage: 3, range: 7, element: Elements.earth, breakage: 10);
-  item("Rock", tan, frequency: 0.1)..depth(1);
+  item("Rock", tan, frequency: 0.1).depth(1);
 
   category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
     ..tag("item")
     ..toss(damage: 2, range: 5, breakage: 30);
-  item("Skull", lightCoolGray, frequency: 0.1)..depth(1);
+  item("Skull", lightCoolGray, frequency: 0.1).depth(1);
 }
 
 void treasure() {
@@ -21,23 +21,23 @@ void treasure() {
   category(CharCode.centSign)
     ..tag("treasure/coin")
     ..treasure();
-  item("Copper Coins", persimmon, price: 4)..depth(1, to: 11);
-  item("Bronze Coins", tan, price: 8)..depth(7, to: 20);
-  item("Silver Coins", lightAqua, price: 20)..depth(11, to: 30);
-  item("Electrum Coins", buttermilk, price: 50)..depth(20, to: 40);
-  item("Gold Coins", gold, price: 100)..depth(30, to: 50);
-  item("Platinum Coins", lightCoolGray, price: 300)..depth(40, to: 70);
+  item("Copper Coins", persimmon, price: 4).depth(1, to: 11);
+  item("Bronze Coins", tan, price: 8).depth(7, to: 20);
+  item("Silver Coins", lightAqua, price: 20).depth(11, to: 30);
+  item("Electrum Coins", buttermilk, price: 50).depth(20, to: 40);
+  item("Gold Coins", gold, price: 100).depth(30, to: 50);
+  item("Platinum Coins", lightCoolGray, price: 300).depth(40, to: 70);
 
   // Bars.
   category(CharCode.dollarSign)
     ..tag("treasure/bar")
     ..treasure();
-  item("Copper Bar", persimmon, price: 150)..depth(35, to: 60);
-  item("Bronze Bar", tan, price: 500)..depth(50, to: 70);
-  item("Silver Bar", lightAqua, price: 800)..depth(60, to: 80);
-  item("Electrum Bar", buttermilk, price: 1200)..depth(70, to: 90);
-  item("Gold Bar", gold, price: 2000)..depth(80);
-  item("Platinum Bar", lightCoolGray, price: 3000)..depth(90);
+  item("Copper Bar", persimmon, price: 150).depth(35, to: 60);
+  item("Bronze Bar", tan, price: 500).depth(50, to: 70);
+  item("Silver Bar", lightAqua, price: 800).depth(60, to: 80);
+  item("Electrum Bar", buttermilk, price: 1200).depth(70, to: 90);
+  item("Gold Bar", gold, price: 2000).depth(80);
+  item("Platinum Bar", lightCoolGray, price: 3000).depth(90);
 
 /*
   // TODO: Could add more treasure using other currency symbols.

@@ -16,8 +16,9 @@ class Skills {
   /// All of the known skills.
   static final List<Skill> all = _generateSkills();
 
-  static final Map<String, Skill> _byName =
-      Map.fromIterable(all, key: (skill) => skill.name);
+  static final Map<String, Skill> _byName = {
+    for (var skill in all) skill.name: skill
+  };
 
   static Skill find(String name) {
     if (!_byName.containsKey(name)) {

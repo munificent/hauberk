@@ -152,7 +152,7 @@ class Keep extends Architecture {
     const min = -3.0;
     const max = 2.0;
 
-    diagonal(int xDistance, yDistance) =>
+    diagonal(int xDistance, int yDistance) =>
         lerpDouble(xDistance + yDistance, 0, width + height, 2.0, -3.0);
 
     var density = 0.0;

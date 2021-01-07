@@ -18,7 +18,7 @@ final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 Content content = createContent();
 
-main() {
+void main() {
   for (var i = 1; i <= Option.maxDepth; i++) {
     generated[i] = 0;
   }

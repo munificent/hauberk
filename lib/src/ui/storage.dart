@@ -22,7 +22,7 @@ class Storage {
     var storage = html.window.localStorage['heroes'];
     if (storage == null) return;
 
-    var data = json.decode(storage);
+    var data = json.decode(storage) as Map<String, dynamic>;
 
     // TODO: Check version.
 
@@ -62,7 +62,7 @@ class Storage {
         var shops = <Shop, Inventory>{};
         if (hero.containsKey('shops')) {
           content.shops.forEach((name, shop) {
-            var shopData = hero['shops'][name];
+            var shopData = hero['shops'][name] as List<dynamic>;
             if (shopData != null) {
               shops[shop] = shop.load(_loadItems(shopData));
             } else {
@@ -139,7 +139,7 @@ class Storage {
     var name = data['name'] as String;
     var race = content.races.firstWhere((race) => race.name == name);
 
-    var statData = data['stats'];
+    var statData = data['stats'] as Map<String, dynamic>;
     var stats = <Stat, int>{};
 
     for (var stat in Stat.all) {
@@ -209,7 +209,7 @@ class Storage {
     if (data != null) {
       var seenMap = data['seen'] as Map<String, dynamic>;
       if (seenMap != null) {
-        seenMap.forEach((breedName, count) {
+        seenMap.forEach((breedName, dynamic count) {
           var breed = content.tryFindBreed(breedName);
           if (breed != null) seenBreeds[breed] = count as int;
         });
@@ -217,7 +217,7 @@ class Storage {
 
       var slainMap = data['slain'] as Map<String, dynamic>;
       if (slainMap != null) {
-        slainMap.forEach((breedName, count) {
+        slainMap.forEach((breedName, dynamic count) {
           var breed = content.tryFindBreed(breedName);
           if (breed != null) slain[breed] = count as int;
         });
@@ -225,7 +225,7 @@ class Storage {
 
       var foundItemMap = data['foundItems'] as Map<String, dynamic>;
       if (foundItemMap != null) {
-        foundItemMap.forEach((itemName, count) {
+        foundItemMap.forEach((itemName, dynamic count) {
           var itemType = content.tryFindItem(itemName);
           if (itemType != null) foundItems[itemType] = count as int;
         });
@@ -233,7 +233,7 @@ class Storage {
 
       var foundAffixMap = data['foundAffixes'] as Map<String, dynamic>;
       if (foundAffixMap != null) {
-        foundAffixMap.forEach((affixName, count) {
+        foundAffixMap.forEach((affixName, dynamic count) {
           var affix = content.findAffix(affixName);
           if (affix != null) foundAffixes[affix] = count as int;
         });
@@ -241,7 +241,7 @@ class Storage {
 
       var usedItemMap = data['usedItems'] as Map<String, dynamic>;
       if (usedItemMap != null) {
-        usedItemMap.forEach((itemName, count) {
+        usedItemMap.forEach((itemName, dynamic count) {
           var itemType = content.tryFindItem(itemName);
           if (itemType != null) usedItems[itemType] = count as int;
         });
@@ -252,9 +252,9 @@ class Storage {
   }
 
   void save() {
-    var heroData = [];
+    var heroData = <dynamic>[];
     for (var hero in heroes) {
-      var raceStats = {};
+      var raceStats = <String, dynamic>{};
       for (var stat in Stat.all) {
         raceStats[stat.name] = hero.race.max(stat);
       }
@@ -270,12 +270,12 @@ class Storage {
       var home = _saveItems(hero.home);
       var crucible = _saveItems(hero.crucible);
 
-      var shops = {};
+      var shops = <String, dynamic>{};
       hero.shops.forEach((shop, inventory) {
         shops[shop.name] = _saveItems(inventory);
       });
 
-      var skills = {};
+      var skills = <String, dynamic>{};
       for (var skill in hero.skills.discovered) {
         skills[skill.name] = {
           'level': hero.skills.level(skill),
@@ -283,8 +283,8 @@ class Storage {
         };
       }
 
-      var seen = {};
-      var slain = {};
+      var seen = <String, dynamic>{};
+      var slain = <String, dynamic>{};
       var lore = {'seen': seen, 'slain': slain};
       for (var breed in content.breeds) {
         var count = hero.lore.seenBreed(breed);
@@ -319,26 +319,16 @@ class Storage {
   }
 
   List _saveItems(Iterable<Item> items) {
-    var list = [];
-    for (var item in items) {
-      list.add(_saveItem(item));
-    }
-    return list;
+    return <dynamic>[for (var item in items) _saveItem(item)];
   }
 
   Map _saveItem(Item item) {
     var itemData = <String, dynamic>{
       'type': item.type.name,
-      'count': item.count
+      'count': item.count,
+      if (item.prefix != null) 'prefix': item.prefix.name,
+      if (item.suffix != null) 'suffix': item.suffix.name,
     };
-
-    if (item.prefix != null) {
-      itemData['prefix'] = item.prefix.name;
-    }
-
-    if (item.suffix != null) {
-      itemData['suffix'] = item.suffix.name;
-    }
 
     return itemData;
   }

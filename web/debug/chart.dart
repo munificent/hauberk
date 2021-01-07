@@ -36,7 +36,7 @@ Chart get currentChart {
   return _charts.firstWhere((chart) => chart.name == _chart.value);
 }
 
-main() {
+void main() {
   Items.initialize();
   Affixes.initialize();
   Monsters.initialize();
@@ -247,9 +247,11 @@ class AffixesChart extends Chart {
   static final _labels = _makeLabels();
 
   static List<String> _makeLabels() {
-    var names = ["(none)"];
-    names.addAll(Affixes.prefixes.all.map((affix) => "${affix.name} _"));
-    names.addAll(Affixes.suffixes.all.map((affix) => "_ ${affix.name}"));
+    var names = [
+      "(none)",
+      ...Affixes.prefixes.all.map((affix) => "${affix.name} _"),
+      ...Affixes.suffixes.all.map((affix) => "_ ${affix.name}"),
+    ];
 
     // TODO: Sort by depth and rarity?
     names.sort();

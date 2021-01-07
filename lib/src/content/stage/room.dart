@@ -269,8 +269,6 @@ class RoomTile {
 
   RoomTile.tile(this.tile) : direction = Direction.none;
 
-  const RoomTile._(this.tile, this.direction);
-
   bool get isUnused => tile == null && direction == Direction.none;
 
   /// Whether the room tile is a floor or other specific tile type.

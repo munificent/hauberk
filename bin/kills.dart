@@ -3,7 +3,7 @@ import 'package:hauberk/src/content/monster/monsters.dart';
 
 /// Estimates how many monsters need to be killed to reach each experience
 /// level.
-main() {
+void main() {
   Monsters.initialize();
 
   var breedsByDepth = <int, List<Breed>>{};
@@ -16,7 +16,8 @@ main() {
   for (var depth = 1; depth <= 100; depth++) {
     if (breedsByDepth.containsKey(depth)) {
       var breeds = breedsByDepth[depth];
-      exp = breeds.fold(0.0, (a, b) => a + b.experience) / breeds.length;
+      exp =
+          breeds.fold<double>(0.0, (a, b) => a + b.experience) / breeds.length;
       print("${depth.toString().padLeft(3)}: $exp (${breeds.length} breeds)");
     } else {
       print("${depth.toString().padLeft(3)}: (no breeds)");

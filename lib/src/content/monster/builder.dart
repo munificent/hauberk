@@ -61,9 +61,10 @@ _FamilyBuilder family(String character,
 void finishBreed() {
   if (_builder == null) return;
 
-  var tags = <String>[];
-  tags.addAll(_family._groups);
-  tags.addAll(_builder._groups);
+  var tags = [
+    ..._family._groups,
+    ..._builder._groups,
+  ];
 
   if (tags.isEmpty) tags.add("monster");
 
@@ -374,9 +375,10 @@ class _BreedBuilder extends _BaseBuilder {
   }
 
   Breed build() {
-    var flags = Set<String>();
-    if (_family._flags != null) flags.addAll(_family._flags.split(" "));
-    if (_flags != null) flags.addAll(_flags.split(" "));
+    var flags = {
+      if (_family._flags != null) ..._family._flags.split(" "),
+      if (_flags != null) ..._flags.split(" "),
+    };
 
     var dodge = _dodge ?? _family._dodge;
     if (flags.contains("immobile")) dodge = 0;

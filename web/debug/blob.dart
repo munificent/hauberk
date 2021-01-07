@@ -8,7 +8,7 @@ final sizeSelect = html.querySelector("#size") as html.SelectElement;
 final canvas = html.querySelector("canvas") as html.CanvasElement;
 final context = canvas.context2D;
 
-main() {
+void main() {
   for (var i = 4; i <= 128; i++) {
     sizeSelect.append(html.OptionElement(
         data: i.toString(), value: i.toString(), selected: i == 16));

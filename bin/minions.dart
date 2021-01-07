@@ -4,7 +4,7 @@ import 'package:hauberk/src/content/monster/monsters.dart';
 
 const trials = 1000;
 
-main() {
+void main() {
   Monsters.initialize();
 
   for (var breed in Monsters.breeds.all) {

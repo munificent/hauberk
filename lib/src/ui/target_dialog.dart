@@ -277,14 +277,14 @@ class TargetDialog extends Screen<Input> {
       }
     }
 
-    var nearest = _findLowest(ahead,
+    var nearest = _findLowest<Monster>(ahead,
         (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
     if (nearest != null) {
       _gameScreen.targetActor(nearest);
       return;
     }
 
-    var farthest = _findHighest(behind,
+    var farthest = _findHighest<Monster>(behind,
         (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
     if (farthest != null) {
       _gameScreen.targetActor(farthest);

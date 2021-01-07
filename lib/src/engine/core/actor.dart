@@ -35,14 +35,15 @@ abstract class Actor implements Noun {
   final resistances = <Element, ResistCondition>{};
 
   // All [Condition]s for the actor.
-  Iterable<Condition> get conditions => <Condition>[
+  Iterable<Condition> get conditions => [
         haste,
         cold,
         poison,
         blindness,
         dazzle,
         perception,
-      ]..addAll(resistances.values);
+        ...resistances.values
+      ];
 
   Vec _pos;
 

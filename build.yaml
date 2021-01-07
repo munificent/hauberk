@@ -4,5 +4,5 @@ targets:
     builders:
       build_web_compilers|entrypoint:
         options:
-          dart2js_args:
+          dart2js_args: []
           # - --no-minify

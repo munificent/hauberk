@@ -78,9 +78,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   Item operator [](int index) => _items[index];
 
   Inventory(this.location, [this._capacity, Iterable<Item> items])
-      : _items = <Item>[] {
-    if (items != null) _items.addAll(items);
-  }
+      : _items = [...?items];
 
   /// Creates a new copy of this Inventory. This is done when the [Hero] enters
   /// a [Stage] so that any inventory changes that happen in the stage are

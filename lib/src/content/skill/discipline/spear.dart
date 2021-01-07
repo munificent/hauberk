@@ -22,7 +22,7 @@ class SpearMastery extends MasteryDiscipline implements DirectionSkill {
     var damage = (_spearScale(level) * 100).toInt();
     return super.levelDescription(level) +
         " Distance spear attacks inflict $damage% of the damage of a regular "
-        "attack.";
+            "attack.";
   }
 
   Action getDirectionAction(Game game, int level, Direction dir) =>

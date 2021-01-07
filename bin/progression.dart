@@ -3,7 +3,7 @@ import 'package:hauberk/src/engine.dart';
 
 /// Tracks what level the hero reaches if they kill every monster in every
 /// generated dungeon going down.
-main() {
+void main() {
   var content = createContent();
   var save = content.createHero("Fred", content.races[4], content.classes[1]);
   for (var level = 1; level <= Option.maxDepth; level++) {

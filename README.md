@@ -1,6 +1,7 @@
 ![Splash screen][splash]
 
-Hauberk is a [roguelike][], an ASCII-art based procedurally-generated dungeon crawl game. It's written in [Dart] and runs in your browser.
+Hauberk is a [roguelike][], an ASCII-art based procedurally-generated dungeon
+crawl game. It's written in [Dart] and runs in your browser.
 
 Behold it in all of its glory:
 

@@ -15,19 +15,19 @@ void arachnids() {
     ..sense(see: 4, hear: 2)
     ..stain(Tiles.spiderweb);
   breed("brown spider", 5, tan, 6, dodge: 30, meander: 40)
-    ..attack("bite[s]", 5, Elements.poison);
+      .attack("bite[s]", 5, Elements.poison);
   describe("""Like a large dog, if the dog had eight articulated legs, eight
   glittering eyes, and wanted nothing more than to kill you.""");
 
   breed("gray spider", 7, coolGray, 12, dodge: 30, meander: 30)
-    ..attack("bite[s]", 5, Elements.poison);
+      .attack("bite[s]", 5, Elements.poison);
 
   breed("spiderling", 9, ash, 14, dodge: 35, meander: 50)
     ..count(2, 7)
     ..attack("bite[s]", 10, Elements.poison);
 
   breed("giant spider", 12, darkBlue, 40, meander: 30)
-    ..attack("bite[s]", 7, Elements.poison);
+      .attack("bite[s]", 7, Elements.poison);
 }
 
 void bats() {
@@ -411,7 +411,7 @@ void kobolds() {
     ..drop("treasure", percent: 25)
     ..drop("teleportation", percent: 20);
 
-  family("k", meander: 20)..groups("kobold");
+  family("k", meander: 20).groups("kobold");
   breed("kobold", 3, red, 20)
     ..count(3)
     ..minion("canine", 0, 3)
@@ -691,13 +691,13 @@ void slugs() {
   family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 30)
     ..groups("slug")
     ..sense(see: 3, hear: 1);
-  breed("giant slug", 3, olive, 20)..attack("crawl[s] on", 8);
+  breed("giant slug", 3, olive, 20).attack("crawl[s] on", 8);
 
   breed("suppurating slug", 6, lima, 50)
-    ..attack("crawl[s] on", 12, Elements.poison);
+      .attack("crawl[s] on", 12, Elements.poison);
 
   // TODO: Leave a trail.
-  breed("acidic slug", 9, olive, 70)..attack("crawl[s] on", 16, Elements.acid);
+  breed("acidic slug", 9, olive, 70).attack("crawl[s] on", 16, Elements.acid);
 }
 
 void troglodytes() {}
@@ -708,7 +708,7 @@ void vines() {
   family("v", flags: "fearless immobile")
     ..groups("vine")
     ..sense(see: 10, hear: 10);
-  breed("choker", 16, peaGreen, 40)..attack("strangle", 12);
+  breed("choker", 16, peaGreen, 40).attack("strangle", 12);
   // TODO: Touch to confuse?
   breed("nightshade", 19, lilac, 50)
     ..whip(rate: 3, damage: 10)
@@ -717,7 +717,7 @@ void vines() {
     ..spawn(preferStraight: true)
     ..whip(rate: 3, damage: 10)
     ..attack("strangle", 8);
-  breed("strangler", 26, sherwood, 80)..attack("strangle", 14);
+  breed("strangler", 26, sherwood, 80).attack("strangle", 14);
 }
 
 void worms() {
@@ -733,11 +733,11 @@ void worms() {
     ..preferWall()
     ..attack("crawl[s] on", 5, Elements.fire);
 
-  family("w", dodge: 10, meander: 30, flags: "fearless")..groups("worm");
-  breed("giant earthworm", 3, pink, 20, speed: -2)..attack("crawl[s] on", 5);
+  family("w", dodge: 10, meander: 30, flags: "fearless").groups("worm");
+  breed("giant earthworm", 3, pink, 20, speed: -2).attack("crawl[s] on", 5);
 
   breed("giant cave worm", 7, sandal, 80, speed: -2)
-    ..attack("crawl[s] on", 12, Elements.acid);
+      .attack("crawl[s] on", 12, Elements.acid);
 }
 
 void skeletons() {
@@ -747,13 +747,13 @@ void skeletons() {
   // TODO: Special room/trap where these get spawned and come up from the
   // ground?
   breed("bony hand", 3, coolGray, 16, frequency: 3.0, meander: 40, speed: -1)
-    ..attack("claw[s]", 6);
+      .attack("claw[s]", 6);
 
   breed("bony arm", 4, lightCoolGray, 22, frequency: 4.0, meander: 40)
-    ..attack("claw[s]", 8);
+      .attack("claw[s]", 8);
 
   breed("severed skull", 7, sandal, 28, frequency: 3.0, meander: 40, speed: -2)
-    ..attack("bite[s]", 10);
+      .attack("bite[s]", 10);
 
   breed("decapitated skeleton", 10, buttermilk, 38, frequency: 4.0, meander: 60)
     ..sense(see: 0, hear: 0)

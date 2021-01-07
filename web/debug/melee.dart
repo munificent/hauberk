@@ -16,9 +16,9 @@ const simulationRounds = 20;
 
 Breed breed = Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
     null, SpawnLocation.anywhere, Motility.walk,
-    meander: 0, maxHealth: 200, flags: BreedFlags.fromSet(Set()));
+    meander: 0, maxHealth: 200, flags: BreedFlags.fromSet({}));
 
-main() {
+void main() {
   content = createContent();
 
   var rows = AgilityAxis();

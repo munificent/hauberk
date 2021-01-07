@@ -22,7 +22,7 @@ class Decorator {
 
   /// The unique breeds that have already been placed on the stage. Ensures we
   /// don't spawn the same unique more than once.
-  var _spawnedUniques = Set<Breed>();
+  var _spawnedUniques = <Breed>{};
 
   Decorator(this._architect);
 
@@ -190,7 +190,7 @@ class Decorator {
 
   Iterable<String> _spawnMonsters() sync* {
     // Let the architectures that control their own monsters go.
-    var spawned = Set<Architecture>();
+    var spawned = <Architecture>{};
     _tilesByArchitecture.forEach((architecture, tiles) {
       if (architecture == null) return;
 

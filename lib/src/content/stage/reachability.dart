@@ -28,7 +28,7 @@ class Reachability {
 
   Reachability(this.stage, this._start)
       : _distances = Array2D<int>(stage.width, stage.height, _unknown),
-        _affected = new VecSet(stage.width, stage.height) {
+        _affected = VecSet(stage.width, stage.height) {
     _setDistance(_start, 0);
     _process([_start]);
   }
@@ -123,7 +123,7 @@ class Reachability {
   /// Find all of the tiles around the affected tiles that do have a distance.
   /// We'll recalculate the affected tiles using paths from those.
   Set<Vec> _findBorder(Vec start) {
-    var border = Set<Vec>();
+    var border = <Vec>{};
     for (var here in _affected) {
       // Don't consider the initial filled tile.
       // TODO: This is kind of hokey. Would be better to eliminate pos from

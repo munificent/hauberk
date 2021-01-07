@@ -16,7 +16,7 @@ class Item implements Comparable<Item>, Noun {
 
   Item(this.type, this._count, [this.prefix, this.suffix]);
 
-  get appearance => type.appearance;
+  Object get appearance => type.appearance;
 
   bool get canEquip => equipSlot != null;
   String get equipSlot => type.equipSlot;

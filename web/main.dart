@@ -17,7 +17,7 @@ final _fonts = <TerminalFont>[];
 UserInterface<Input> _ui;
 TerminalFont _font;
 
-final Set<Monster> _debugMonsters = Set();
+final Set<Monster> _debugMonsters = {};
 
 class TerminalFont {
   final String name;
@@ -30,7 +30,7 @@ class TerminalFont {
       {this.charWidth, this.charHeight});
 }
 
-main() {
+void main() {
   var content = createContent();
 
   _addFont("8x8", 8);

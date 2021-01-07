@@ -192,7 +192,7 @@ class SidebarPanel extends Panel {
 
   /// Draws a labeled numeric stat.
   void _drawStat(
-      Terminal terminal, int y, String label, value, Color valueColor,
+      Terminal terminal, int y, String label, Object value, Color valueColor,
       [int max, Color maxColor]) {
     terminal.writeAt(1, y, label, UIHue.helpText);
 
