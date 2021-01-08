@@ -30,7 +30,7 @@ class Game {
   final _reactions = <Action>[];
 
   /// The events that have occurred since the last call to [update()].
-  final _events = List<Event>();
+  final _events = <Event>[];
 
   /// The energy that tracks when the substances are ready to update.
   final _substanceEnergy = Energy();

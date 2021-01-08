@@ -113,7 +113,7 @@ abstract class Flow {
 
     // Lazily search until we reach the tile in question or run out of paths to
     // try.
-    while (_costs[pos] == _unknown && _processNext());
+    while (_costs[pos] == _unknown && _processNext()) {}
 
     var distance = _costs[pos];
     if (distance == _unknown || distance == _unreachable) return null;

@@ -11,7 +11,7 @@ void main(List<String> arguments) {
   for (var heroClass in content.classes) {
     print(heroClass.name);
     for (var skill in content.skills) {
-      String line = "";
+      var line = "";
       if (skill is Discipline) {
         for (var level = 1; level <= skill.maxLevel; level++) {
           var training = skill.trainingNeeded(heroClass, level);

@@ -71,6 +71,8 @@ class _AllOfSpawn implements Spawn {
   _AllOfSpawn(this._spawns);
 
   void spawnBreed(int depth, AddMonster addMonster) {
-    for (var spawn in _spawns) spawn.spawnBreed(depth, addMonster);
+    for (var spawn in _spawns) {
+      spawn.spawnBreed(depth, addMonster);
+    }
   }
 }

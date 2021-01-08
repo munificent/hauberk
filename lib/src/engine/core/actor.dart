@@ -49,7 +49,7 @@ abstract class Actor implements Noun {
 
   Vec get pos => _pos;
 
-  void set pos(Vec value) {
+  set pos(Vec value) {
     if (value != _pos) {
       changePosition(_pos, value);
       _pos = value;
@@ -58,13 +58,13 @@ abstract class Actor implements Noun {
 
   int get x => pos.x;
 
-  void set x(int value) {
+  set x(int value) {
     pos = Vec(value, y);
   }
 
   int get y => pos.y;
 
-  void set y(int value) {
+  set y(int value) {
     pos = Vec(x, value);
   }
 
@@ -72,7 +72,7 @@ abstract class Actor implements Noun {
 
   int get health => _health;
 
-  void set health(int value) {
+  set health(int value) {
     _health = value.clamp(0, maxHealth);
   }
 

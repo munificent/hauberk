@@ -20,7 +20,7 @@ void main() {
       rng.setSeed(i);
 
       var game = Game(content, save, 1);
-      for (var _ in game.generate());
+      for (var _ in game.generate()) {}
 
       // Read some bit of game data so the JIT doesn't optimize the whole
       // program away as dead code.

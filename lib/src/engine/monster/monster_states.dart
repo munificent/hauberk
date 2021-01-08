@@ -238,7 +238,7 @@ class AwakeState extends MonsterState {
       walkDir = rangedDir ?? meleeDir;
     }
 
-    if (walkDir == null) walkDir = Direction.none;
+    walkDir ??= Direction.none;
 
     return WalkAction(_meander(walkDir));
   }
@@ -404,6 +404,7 @@ class AwakeState extends MonsterState {
       if (step == game.hero.pos) return true;
       if (game.stage[step].blocksView) return false;
       var actor = game.stage.actorAt(step);
+      // TODO: There is a bug here. Should be `actor != monster`. Investigate.
       if (actor != null && actor != this) return false;
     }
 

@@ -107,7 +107,7 @@ class TargetDialog extends Screen<Input> {
   }
 
   bool keyDown(int keyCode, {bool shift, bool alt}) {
-    if (keyCode == KeyCode.tab && !_monsters.isEmpty) {
+    if (keyCode == KeyCode.tab && _monsters.isNotEmpty) {
       _targetingFloor = !_targetingFloor;
       if (!_targetingFloor) {
         // Target the nearest monster to the floor tile we were previously

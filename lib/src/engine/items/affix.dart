@@ -46,7 +46,7 @@ class Affix {
         brand = brand ?? Element.none,
         armor = armor ?? 0,
         priceBonus = priceBonus ?? 0,
-        priceScale = priceScale ?? 1.0 {}
+        priceScale = priceScale ?? 1.0;
 
   int resistance(Element element) => _resists[element] ?? 0;
 

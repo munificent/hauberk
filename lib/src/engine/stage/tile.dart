@@ -24,7 +24,7 @@ class Motility {
   static final flyAndWalk = Motility.fly | Motility.walk;
   static final all = door | fly | swim | walk;
 
-  int _bitMask = 0;
+  final int _bitMask;
 
   Motility._(this._bitMask);
 

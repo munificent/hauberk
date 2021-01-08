@@ -113,7 +113,7 @@ class Pit extends Architecture {
           pitBounds.top - cave.height,
           pitBounds.right + cave.width,
           pitBounds.bottom + cave.height);
-      allowed = Rect.intersect(allowed, this.bounds.inflate(-1));
+      allowed = Rect.intersect(allowed, bounds.inflate(-1));
 
       if (_tryPlaceCave(cave, allowed) != null) yield "antechamber";
     }

@@ -26,7 +26,9 @@ class Race {
 
       // Randomly boost the max some.
       value += rng.range(4);
-      while (value < 50 && rng.percent(base ~/ 2 + 30)) value++;
+      while (value < 50 && rng.percent(base ~/ 2 + 30)) {
+        value++;
+      }
       rolled[stat] = value;
     }
 

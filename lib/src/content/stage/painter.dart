@@ -62,12 +62,12 @@ class PaintStyle {
       closedDoor: Tiles.closedSquareDoor);
   static final stoneJail = PaintStyle(closedDoor: Tiles.closedBarredDoor);
 
-  static Map<TileType, List<TileType>> _defaultTypes = {
+  static final Map<TileType, List<TileType>> _defaultTypes = {
     Tiles.solidWet: [Tiles.water],
     Tiles.passageWet: [Tiles.bridge]
   };
 
-  static List<TileType> _defaultWalls = [
+  static final List<TileType> _defaultWalls = [
     Tiles.granite1,
     Tiles.granite2,
     Tiles.granite3

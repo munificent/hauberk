@@ -87,7 +87,9 @@ class StagePanel extends Panel {
   bool update(Iterable<Event> events) {
     _frame++;
 
-    for (final event in events) addEffects(_effects, event);
+    for (final event in events) {
+      addEffects(_effects, event);
+    }
 
     var hadEffects = _effects.isNotEmpty;
     _effects.removeWhere((effect) => !effect.update(_gameScreen.game));

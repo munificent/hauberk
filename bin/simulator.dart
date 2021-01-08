@@ -39,8 +39,7 @@ class Simulator {
 
   void _exploreDepth() {
     game = Game(content, save, depth);
-
-    for (var _ in game.generate());
+    for (var _ in game.generate()) {}
 
     print("--- Depth $depth (hero level ${hero.level}) ---");
 

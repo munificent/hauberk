@@ -51,10 +51,12 @@ class Log {
 
       if (i - start >= width) {
         // No space to break at, so character wrap.
-        if (wordBreak == null) wordBreak = i;
+        wordBreak ??= i;
         lines.add(text.substring(start, wordBreak).trim());
         start = wordBreak;
-        while (start < text.length && text[start] == ' ') start++;
+        while (start < text.length && text[start] == ' ') {
+          start++;
+        }
       }
     }
 
@@ -171,7 +173,7 @@ class Log {
     var result = text;
 
     final nouns = [noun1, noun2, noun3];
-    for (int i = 1; i <= 3; i++) {
+    for (var i = 1; i <= 3; i++) {
       final noun = nouns[i - 1];
 
       if (noun != null) {

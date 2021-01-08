@@ -166,7 +166,7 @@ mixin GeneratorActionMixin on Action {
 
   ActionResult onPerform() {
     // Start the generator the first time through.
-    if (_iterator == null) _iterator = onGenerate().iterator;
+    _iterator ??= onGenerate().iterator;
 
     // If it reaches the end, it succeeds.
     if (!_iterator.moveNext()) return ActionResult.success;

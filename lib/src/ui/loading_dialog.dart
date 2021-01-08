@@ -43,9 +43,7 @@ class LoadingDialog extends Screen<Input> {
   }
 
   void update() {
-    if (_steps == null) {
-      _steps = _game.generate().iterator;
-    }
+    _steps ??= _game.generate().iterator;
 
     var stopwatch = Stopwatch()..start();
 

@@ -94,7 +94,9 @@ class _AllOfDrop implements Drop {
   _AllOfDrop(this._drops);
 
   void dropItem(int depth, AddItem addItem) {
-    for (var drop in _drops) drop.dropItem(depth, addItem);
+    for (var drop in _drops) {
+      drop.dropItem(depth, addItem);
+    }
   }
 }
 

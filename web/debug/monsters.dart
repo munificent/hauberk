@@ -46,8 +46,9 @@ void main() {
     var glyph = breed.appearance as Glyph;
 
     var count = breed.countMin.toString();
-    if (breed.countMax != breed.countMin)
+    if (breed.countMax != breed.countMin) {
       count += "&thinsp;&ndash;&thinsp;${breed.countMax}";
+    }
 
     text.write('''
         <tr>

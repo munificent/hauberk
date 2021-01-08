@@ -22,7 +22,7 @@ class Decorator {
 
   /// The unique breeds that have already been placed on the stage. Ensures we
   /// don't spawn the same unique more than once.
-  var _spawnedUniques = <Breed>{};
+  final _spawnedUniques = <Breed>{};
 
   Decorator(this._architect);
 

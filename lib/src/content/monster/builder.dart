@@ -218,7 +218,7 @@ class _BreedBuilder extends _BaseBuilder {
 
   _BreedBuilder(
       this._name, this._depth, double frequency, this._appearance, this._health)
-      : super(frequency) {}
+      : super(frequency);
 
   void minion(String name, [int minOrMax, int max]) {
     Spawn spawn;
