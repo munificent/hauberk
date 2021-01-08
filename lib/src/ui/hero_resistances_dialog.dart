@@ -13,7 +13,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
   void render(Terminal terminal) {
     super.render(terminal);
 
-    writeLine(int y, Color color) {
+    void writeLine(int y, Color color) {
       terminal.writeAt(
           2,
           y,

@@ -122,7 +122,7 @@ abstract class ItemView {
             enabled ? tan : UIHue.disabled);
       }
 
-      drawStat(int symbol, Object stat, Color light, Color dark) {
+      void drawStat(int symbol, Object stat, Color light, Color dark) {
         var string = stat.toString();
         terminal.drawChar(statRight - string.length - 1, y, symbol,
             enabled ? dark : UIHue.disabled);
@@ -154,19 +154,19 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
 
   var y = 2;
 
-  writeSection(String label) {
+  void writeSection(String label) {
     // Put a blank line between sections.
     if (y != 2) y++;
     terminal.writeAt(1, y, "$label:", UIHue.selection);
     y++;
   }
 
-  writeLabel(String label) {
+  void writeLabel(String label) {
     terminal.writeAt(1, y, "$label:", UIHue.text);
   }
 
   // TODO: Mostly copied from hero_equipment_dialog. Unify.
-  writeScale(int x, int y, double scale) {
+  void writeScale(int x, int y, double scale) {
     var string = scale.toStringAsFixed(1);
 
     var xColor = UIHue.disabled;
@@ -184,7 +184,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
   }
 
   // TODO: Mostly copied from hero_equipment_dialog. Unify.
-  writeBonus(int x, int y, int bonus) {
+  void writeBonus(int x, int y, int bonus) {
     var string = bonus.abs().toString();
 
     if (bonus > 0) {
@@ -199,7 +199,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     }
   }
 
-  writeStat(String label, Object value) {
+  void writeStat(String label, Object value) {
     if (value == null) return;
 
     writeLabel(label);
@@ -207,7 +207,7 @@ void drawInspector(Terminal terminal, HeroSave hero, Item item) {
     y++;
   }
 
-  writeText(String text) {
+  void writeText(String text) {
     for (var line in Log.wordWrap(terminal.width - 2, text)) {
       terminal.writeAt(1, y, line, UIHue.text);
       y++;

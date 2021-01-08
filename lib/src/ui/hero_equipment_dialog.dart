@@ -13,7 +13,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
   void render(Terminal terminal) {
     super.render(terminal);
 
-    writeLine(int y, Color color) {
+    void writeLine(int y, Color color) {
       terminal.writeAt(
           2,
           y,
@@ -22,7 +22,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
           color);
     }
 
-    writeScale(int x, int y, double scale) {
+    void writeScale(int x, int y, double scale) {
       var string = scale.toStringAsFixed(1);
 
       if (scale > 1.0) {
@@ -34,7 +34,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
       }
     }
 
-    writeBonus(int x, int y, int bonus) {
+    void writeBonus(int x, int y, int bonus) {
       var string = bonus.abs().toString();
 
       if (bonus > 0) {

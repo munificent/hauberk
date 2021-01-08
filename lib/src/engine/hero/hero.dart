@@ -116,7 +116,7 @@ class Hero extends Actor {
   }
 
   // TODO: Hackish.
-  get appearance => 'hero';
+  Object get appearance => 'hero';
 
   bool get needsInput {
     if (_behavior != null && !_behavior.canPerform(this)) {

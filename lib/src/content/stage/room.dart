@@ -215,7 +215,7 @@ class Room {
     for (var pos in room.bounds) {
       if (!room[pos].isUnused) continue;
 
-      isFloor(Direction dir) {
+      bool isFloor(Direction dir) {
         var here = pos + dir;
         if (!room.bounds.contains(here)) return false;
         return room[here].isTile;

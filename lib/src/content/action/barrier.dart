@@ -55,10 +55,10 @@ class BarrierAction extends Action with ElementActionMixin {
     while (_distance < 6.0) {
       var madeProgress = false;
 
-      tryDirection(bool going, int sign) {
+      bool tryDirection(bool going, int sign) {
         if (!going) return false;
 
-        tryOffset(double h, double v) {
+        bool tryOffset(double h, double v) {
           var offset =
               Vec((_h * _distance + h).round(), (_v * _distance + v).round());
           var pos = _center + offset * sign;

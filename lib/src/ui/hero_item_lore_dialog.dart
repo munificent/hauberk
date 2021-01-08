@@ -60,7 +60,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
   void render(Terminal terminal) {
     super.render(terminal);
 
-    writeLine(int y, Color color) {
+    void writeLine(int y, Color color) {
       terminal.writeAt(
           2,
           y,
@@ -153,11 +153,12 @@ class HeroItemLoreDialog extends HeroInfoDialog {
     _items.clear();
     _items.addAll(content.items);
 
-    compareSort(ItemType a, ItemType b) => a.sortIndex.compareTo(b.sortIndex);
+    int compareSort(ItemType a, ItemType b) =>
+        a.sortIndex.compareTo(b.sortIndex);
 
-    compareDepth(ItemType a, ItemType b) => a.depth.compareTo(b.depth);
+    int compareDepth(ItemType a, ItemType b) => a.depth.compareTo(b.depth);
 
-    comparePrice(ItemType a, ItemType b) => a.price.compareTo(b.price);
+    int comparePrice(ItemType a, ItemType b) => a.price.compareTo(b.price);
 
     var comparisons = <int Function(ItemType, ItemType)>[];
     switch (_sort) {

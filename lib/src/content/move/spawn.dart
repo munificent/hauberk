@@ -36,7 +36,7 @@ class SpawnMove extends Move {
       for (var dir in Direction.all) {
         if (!monster.willEnter(monster.pos + dir)) continue;
 
-        checkNeighbor(Direction neighbor) {
+        bool checkNeighbor(Direction neighbor) {
           var other = monster.game.stage.actorAt(monster.pos + dir);
           return other != null &&
               other is Monster &&

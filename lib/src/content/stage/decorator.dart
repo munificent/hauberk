@@ -290,7 +290,7 @@ class Decorator {
     var isCorpse = !breed.flags.unique && rng.oneIn(10);
 
     var experience = 0;
-    spawn(Breed breed, Vec pos) {
+    void spawn(Breed breed, Vec pos) {
       if (_architect.stage.actorAt(pos) != null) return;
       if (!_canSpawn(breed)) return;
 

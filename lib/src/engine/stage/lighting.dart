@@ -221,7 +221,7 @@ class Lighting {
         var illumination = 0;
         var openNeighbor = false;
 
-        checkNeighbor(Vec offset) {
+        void checkNeighbor(Vec offset) {
           // Not using Vec for math because that creates a lot of temporary
           // objects and this method is performance critical.
           var neighborX = x + offset.x;
@@ -297,7 +297,7 @@ class Lighting {
 
       var parentLight = tiles[pos];
 
-      checkNeighbor(Vec dir, int attenuation) {
+      void checkNeighbor(Vec dir, int attenuation) {
         var neighborPos = pos + dir;
 
         if (!_stage.bounds.contains(neighborPos)) return;

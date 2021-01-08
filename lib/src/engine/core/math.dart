@@ -37,7 +37,7 @@ int hashPoint(int x, int y, [int seed]) {
   seed ??= 0;
 
   // From: https://stackoverflow.com/a/12996028/9457
-  hashInt(int n) {
+  int hashInt(int n) {
     n = (((n >> 16) ^ n) * 0x45d9f3b) & 0xffffffff;
     n = (((n >> 16) ^ n) * 0x45d9f3b) & 0xffffffff;
     n = (n >> 16) ^ n;

@@ -59,7 +59,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
   void render(Terminal terminal) {
     super.render(terminal);
 
-    writeLine(int y, Color color) {
+    void writeLine(int y, Color color) {
       terminal.writeAt(
           2,
           y,
@@ -208,11 +208,11 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
       _breeds.addAll(content.breeds);
     }
 
-    compareGlyph(Breed a, Breed b) {
+    int compareGlyph(Breed a, Breed b) {
       var aChar = (a.appearance as Glyph).char;
       var bChar = (b.appearance as Glyph).char;
 
-      isUpper(int c) => c >= CharCode.aUpper && c <= CharCode.zUpper;
+      bool isUpper(int c) => c >= CharCode.aUpper && c <= CharCode.zUpper;
 
       // Sort lowercase letters first even though they come later in character
       // code.
@@ -222,9 +222,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
       return aChar.compareTo(bChar);
     }
 
-    compareDepth(Breed a, Breed b) {
-      return a.depth.compareTo(b.depth);
-    }
+    int compareDepth(Breed a, Breed b) => a.depth.compareTo(b.depth);
 
     var comparisons = <int Function(Breed, Breed)>[];
     switch (_sort) {

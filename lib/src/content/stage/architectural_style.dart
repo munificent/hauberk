@@ -42,7 +42,7 @@ class ArchitecturalStyle {
   }
 
   static void _initialize() {
-    addStyle(String name,
+    void addStyle(String name,
         {int start = 1,
         int end = 100,
         double startFrequency,
@@ -122,7 +122,7 @@ class ArchitecturalStyle {
         create: () => River());
 
     // Pits.
-    pit(String monsterGroup, {int start, int end}) {
+    void pit(String monsterGroup, {int start, int end}) {
       addStyle("$monsterGroup pit",
           start: start,
           end: end,
@@ -144,7 +144,7 @@ class ArchitecturalStyle {
     pit("dragon", start: 60, end: 100);
 
     // Keeps.
-    keep(String monsters, {int start, int end}) {
+    void keep(String monsters, {int start, int end}) {
       addStyle("$monsters keep",
           start: start,
           end: end,

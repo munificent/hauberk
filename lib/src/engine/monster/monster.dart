@@ -81,7 +81,7 @@ class Monster extends Actor {
 
   double get fear => _fear;
 
-  get appearance => breed.appearance;
+  Object get appearance => breed.appearance;
 
   String get nounText => 'the ${breed.name}';
 

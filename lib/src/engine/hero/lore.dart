@@ -49,7 +49,7 @@ class Lore {
     _foundItems.putIfAbsent(item.type, () => 0);
     _foundItems[item.type]++;
 
-    findAffix(Affix affix) {
+    void findAffix(Affix affix) {
       if (affix == null) return;
 
       _foundAffixes.putIfAbsent(affix, () => 0);

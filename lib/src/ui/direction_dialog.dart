@@ -68,7 +68,7 @@ abstract class DirectionDialog extends Screen<Input> {
   }
 
   void render(Terminal terminal) {
-    draw(int frame, Direction dir, String char) {
+    void draw(int frame, Direction dir, String char) {
       var pos = game.hero.pos + dir;
       if (!canTarget(game.stage[pos])) return;
 

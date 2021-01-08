@@ -196,7 +196,7 @@ abstract class Flow {
 
     // Starting at [pos], recursively walk along all paths that proceed towards
     // [start].
-    walkBack(Vec pos) {
+    void walkBack(Vec pos) {
       if (walked.contains(pos)) return;
       walked.add(pos);
 
@@ -228,7 +228,7 @@ abstract class Flow {
     var parentCost = _costs[start];
 
     // Propagate to neighboring tiles.
-    processNeighbor(Direction dir, bool isDiagonal) {
+    void processNeighbor(Direction dir, bool isDiagonal) {
       var here = start + dir;
 
       if (!_costs.bounds.contains(here)) return;

@@ -55,7 +55,7 @@ void _makeTable() {
     var scale = _itemScale(item);
     var cells = <Object>[];
 
-    scaleValue(num value) {
+    num scaleValue(num value) {
       if (value == null) return null;
       if (scale == 0) return null;
       return value / scale;
