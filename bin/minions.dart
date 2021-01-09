@@ -24,7 +24,7 @@ void main() {
     for (var minion in histogram.descending()) {
       var count =
           (histogram.count(minion) / trials).toStringAsFixed(2).padLeft(4);
-      print("- $count ${minion}");
+      print("- $count $minion");
     }
   }
 }

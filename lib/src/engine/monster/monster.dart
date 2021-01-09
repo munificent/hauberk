@@ -344,7 +344,7 @@ class Monster extends Actor {
 
     _modifyFear(-fear);
     Debug.monsterReason(this, "fear",
-        "hit for ${damage}/${game.hero.maxHealth} decrease by ${fear}");
+        "hit for $damage/${game.hero.maxHealth} decrease by $fear");
 
     // Nearby monsters may witness it.
     _updateWitnesses((witness) {

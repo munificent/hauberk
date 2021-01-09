@@ -176,7 +176,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
       }
     } else {
       sentences.add("You have seen ${lore.seenBreed(breed)} and slain "
-          "${lore.slain(breed)} of this ${noun}.");
+          "${lore.slain(breed)} of this $noun.");
     }
 
     sentences.add("$pronoun is worth ${breed.experience} experience.");

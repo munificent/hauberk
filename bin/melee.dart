@@ -82,7 +82,7 @@ void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
   var match = findMatch(save);
 
   var stuff = gear.map((type) => type.name).join(" ");
-  var line = "str:${strength} agi:${agility} for:${fortitude} $stuff";
+  var line = "str:$strength agi:$agility for:$fortitude $stuff";
   if (results != null) {
     results[line] = match;
   } else {

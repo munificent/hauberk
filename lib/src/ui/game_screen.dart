@@ -597,7 +597,7 @@ class GameScreen extends Screen<Input> {
             game, game.hero.skills.level(targetSkill), currentTarget));
       } else {
         var tile = game.stage[game.hero.pos + dir].type.name;
-        game.log.error("There is a ${tile} in the way.");
+        game.log.error("There is a $tile in the way.");
         dirty();
       }
     } else if (_lastSkill is ActionSkill) {
