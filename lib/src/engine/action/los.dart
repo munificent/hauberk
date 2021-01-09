@@ -56,7 +56,7 @@ abstract class LosAction extends Action {
   ///
   /// Return `true` if the LOS should stop here or `false` if it should keep
   /// going.
-  bool onHitActor(Vec pos, Actor actor) => true;
+  bool onHitActor(Vec pos, Actor target) => true;
 
   /// Override this to handle the LOS hitting a wall or going out of range.
   ///

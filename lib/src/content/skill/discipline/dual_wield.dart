@@ -21,11 +21,11 @@ class DualWield extends Discipline {
     hero.discoverSkill(this);
   }
 
-  double modifyHeft(Hero hero, int level, double heft) {
+  double modifyHeft(Hero hero, int level, double heftModifier) {
     // Have to be dual-wielding.
-    if (hero.equipment.weapons.length != 2) return heft;
+    if (hero.equipment.weapons.length != 2) return heftModifier;
 
-    return heft * _heftModifier(level);
+    return heftModifier * _heftModifier(level);
   }
 
   void killMonster(Hero hero, Action action, Monster monster) {

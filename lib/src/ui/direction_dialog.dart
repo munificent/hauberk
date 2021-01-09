@@ -126,7 +126,7 @@ abstract class DirectionDialog extends Screen<Input> {
 
   bool canTarget(Tile tile);
 
-  bool tryDirection(Direction dir);
+  bool tryDirection(Direction direction);
 }
 
 /// Asks the user to select a direction for a [DirectionSkill].
