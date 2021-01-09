@@ -91,7 +91,7 @@ abstract class Skill implements Comparable<Skill> {
 /// Some skills require additional data to be performed -- a target position
 /// or a direction. Those will implement one of the subclasses, [TargetSkill]
 /// or [DirectionSkill].
-abstract class UsableSkill implements Skill {
+mixin UsableSkill implements Skill {
   /// If the skill cannot currently be used (for example Archery when a bow is
   /// not equipped), returns the reason why. Otherwise, returns `null` to
   /// indicate the skill is usable.
@@ -99,12 +99,12 @@ abstract class UsableSkill implements Skill {
 }
 
 /// A skill that can be directly used to perform an action.
-abstract class ActionSkill implements UsableSkill {
+mixin ActionSkill implements UsableSkill {
   Action getAction(Game game, int level);
 }
 
 /// A skill that requires a target position to perform.
-abstract class TargetSkill implements UsableSkill {
+mixin TargetSkill implements UsableSkill {
   bool get canTargetSelf => false;
 
   /// The maximum range of the target from the hero.
@@ -116,7 +116,7 @@ abstract class TargetSkill implements UsableSkill {
 }
 
 /// A skill that requires a direction to perform.
-abstract class DirectionSkill implements UsableSkill {
+mixin DirectionSkill implements UsableSkill {
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Command].
   Action getDirectionAction(Game game, int level, Direction dir);

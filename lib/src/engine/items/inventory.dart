@@ -27,7 +27,7 @@ class ItemLocation {
 
 // TODO: Move tryAdd() out of ItemCollection and Equipment? I think it's only
 // needed for the home and crucible?
-abstract class ItemCollection implements Iterable<Item> {
+mixin ItemCollection implements Iterable<Item> {
   ItemLocation get location;
 
   String get name => location.name;

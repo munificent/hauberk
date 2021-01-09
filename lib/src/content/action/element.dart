@@ -5,7 +5,7 @@ import '../../engine.dart';
 import '../elements.dart';
 import '../tiles.dart';
 
-abstract class ElementActionMixin implements Action {
+mixin ElementActionMixin implements Action {
   void hitTile(Hit hit, Vec pos, num distance, [int fuel = 0]) {
     // Open tiles if the given motility lets us go through them.
     var tile = game.stage[pos];

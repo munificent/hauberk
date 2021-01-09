@@ -237,8 +237,8 @@ class UseAction extends ItemAction {
   }
 }
 
-/// Base class for actions that permanently destroy items.
-abstract class DestroyActionMixin implements Action {
+/// Mixin for actions that permanently destroy items.
+mixin DestroyActionMixin implements Action {
   // TODO: Take damage into account when choosing the odds?
 
   /// Tries to destroy [items] with [element].
