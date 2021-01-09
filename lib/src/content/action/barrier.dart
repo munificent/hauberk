@@ -29,6 +29,8 @@ class BarrierAction extends Action with ElementActionMixin {
 
   bool get isImmediate => false;
 
+  /// Creates a [BarrierAction] radiating from [from] perpendicular to a line
+  /// from there to [to]. It applies [hit] to each touched tile.
   factory BarrierAction(Vec from, Vec to, Hit hit) {
     // The barrier spreads out perpendicular to the line from the actor to the
     // target. Swapping the coordinates does a 90° rotation.
@@ -44,11 +46,6 @@ class BarrierAction extends Action with ElementActionMixin {
     return BarrierAction._(to, h, v, hit);
   }
 
-  /// Creates a [RayAction] radiating from [_from] centered on [_to] (which
-  /// may be the same as [_from] if the ray is a full circle. It applies
-  /// [_hit] to each touched tile. The rays cover a chord whose width is
-  /// [fraction] which varies from 0 (an infinitely narrow line) to 1.0 (a full
-  /// circle.
   BarrierAction._(this._center, this._h, this._v, this._hit);
 
   ActionResult onPerform() {

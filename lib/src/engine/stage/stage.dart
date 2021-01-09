@@ -210,7 +210,7 @@ class Stage {
     _lighting.dirtyVisibility();
   }
 
-  /// Marks this tile at [pos] as explored if the hero can see it and hasn't
+  /// Marks the tile at [x],[y] as explored if the hero can see it and hasn't
   /// previously explored it.
   void exploreAt(int x, int y, {bool force}) {
     var tile = tiles.get(x, y);

@@ -2,7 +2,9 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../core/element.dart';
+import 'fov.dart';
 import 'lighting.dart';
+import 'stage.dart';
 
 /// Bitmask-like class defining ways that actors can move over tiles.
 ///
@@ -180,7 +182,7 @@ class Tile {
   /// gas, etc.
   Element element = Element.none;
 
-  /// How much of [_element] is occupying the tile.
+  /// How much of [element] is occupying the tile.
   int substance = 0;
 
   bool get isWalkable => type.isWalkable;

@@ -290,7 +290,7 @@ class Architect {
     }
   }
 
-  /// Returns `true` if a passage with [length] from [from] to [to] is
+  /// Returns `true` if a passage with [passageLength] from [from] to [to] is
   /// significantly shorter than the current shortest path between those points.
   ///
   /// Used to avoid placing pointless shortcuts on the stage.

@@ -40,7 +40,7 @@ import 'move.dart';
 ///   move.
 ///
 /// Each move carries with it a little bit of logic to determine if it's a good
-/// idea to use it. For example, the [HealMove] won't let itself be used if the
+/// idea to use it. For example, the HealMove won't let itself be used if the
 /// monster is at max health. In order to use a move, the monster must be
 /// "recharged". Each move has a cost, and after using it, the monster must
 /// recharge before another move can be performed. (Melee attacks have no cost.)

@@ -355,7 +355,7 @@ class EventType {
   /// A spear's stab attack hits a tile.
   static const stab = EventType("stab");
 
-  /// The hero picks up gold worth [other].
+  /// The hero picks up gold worth [Event.other].
   static const gold = EventType("gold");
 
   static const openBarrel = EventType("openBarrel");

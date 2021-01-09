@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import '../core/actor.dart';
 import '../hero/hero.dart';
+import 'equipment.dart';
 import 'item.dart';
 
 /// An [Item] in the game can be either on the ground in the level, or held by
@@ -81,7 +82,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
       : _items = [...?items];
 
   /// Creates a new copy of this Inventory. This is done when the [Hero] enters
-  /// a [Stage] so that any inventory changes that happen in the stage are
+  /// a stage so that any inventory changes that happen in the stage are
   /// discarded if the hero dies.
   Inventory clone() {
     var items = _items.map((item) => item.clone());

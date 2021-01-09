@@ -109,7 +109,8 @@ abstract class Action {
     return ActionResult.alternate(action);
   }
 
-  /// Returns [success] if [done] is `true`, otherwise returns [notDone].
+  /// Returns [ActionResult.success] if [done] is `true`, otherwise returns
+  /// [ActionResult.notDone].
   ActionResult doneIf(bool done) {
     return done ? ActionResult.success : ActionResult.notDone;
   }
@@ -122,8 +123,8 @@ class ActionResult {
 
   /// An alternate [Action] that should be performed instead of the one that
   /// failed to perform and returned this. For example, when the [Hero] walks
-  /// into a closed door, the [WalkAction] will fail (the door is closed) and
-  /// return an alternate [OpenDoorAction] instead.
+  /// into a closed door, a WalkAction will fail (the door is closed) and
+  /// return an alternate OpenDoorAction instead.
   final Action alternative;
 
   /// `true` if the [Action] was successful and energy should be consumed.
@@ -177,7 +178,7 @@ mixin GeneratorActionMixin on Action {
   /// Wait a single frame.
   ActionResult waitOne() => ActionResult.notDone;
 
-  /// Wait [frame] frames.
+  /// Wait [frames] frames.
   Iterable<ActionResult> wait(int frames) =>
       List.generate(frames, (_) => ActionResult.notDone);
 

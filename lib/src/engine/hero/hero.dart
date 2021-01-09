@@ -36,7 +36,7 @@ class Hero extends Actor {
   /// Damage scales for each weapon being wielded, based on the weapon, other
   /// equipment, and stats.
   ///
-  /// This list parallels the sequence returned by [equipment.weapons].
+  /// This list parallels the sequence returned by `equipment.weapons`.
   final List<Property<double>> _heftScales = [Property(), Property()];
 
   /// How full the hero is.

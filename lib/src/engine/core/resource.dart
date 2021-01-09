@@ -111,11 +111,11 @@ class ResourceSet<T> {
 
   bool tagExists(String tagName) => _tags.containsKey(tagName);
 
-  /// Chooses a random resource in [tagName] for [depth].
+  /// Chooses a random resource in [tag] for [depth].
   ///
-  /// Includes all resources of child tags of [tagName]. For example, given tag
-  /// path "equipment/weapon/sword", if [tagName] is "weapon", this will permit
-  /// resources tagged "weapon" or "sword", with equal probability.
+  /// Includes all resources of child tags of [tag]. For example, given tag path
+  /// "equipment/weapon/sword", if [tag] is "weapon", this will permit resources
+  /// tagged "weapon" or "sword", with equal probability.
   ///
   /// Resources in parent tags, or in children of those tags, are also possible,
   /// but with less probability. So in the above example, anything tagged
@@ -336,8 +336,8 @@ class _QueryKey {
 ///
 /// The first two steps are quite slow: they involve iterating over all
 /// resources, allocating a list, etc. Fortunately, we can reuse the results of
-/// them for every call to [tryChoose] or [tryChooseMatching] with the same
-/// arguments.
+/// them for every call to [ResourceSet.tryChoose] or
+/// [ResourceSet.tryChooseMatching] with the same arguments.
 ///
 /// This caches that state.
 class _ResourceQuery<T> {

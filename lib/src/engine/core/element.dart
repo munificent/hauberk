@@ -22,7 +22,7 @@ class Element {
   String get capitalized => "${name[0].toUpperCase()}${name.substring(1)}";
 
   /// Creates a side-effect action to perform when an [Attack] of this element
-  /// hits an actor for [damage] or `null` if this element has no side effect.
+  /// hits an actor for `damage` or `null` if this element has no side effect.
   final Action Function(int damage) attackAction;
 
   /// Creates a side-effect action to perform when an area attack of this

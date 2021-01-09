@@ -11,6 +11,7 @@ import 'hero.dart';
 import 'hero_class.dart';
 import 'hero_save.dart';
 import 'lore.dart';
+import 'stat.dart';
 
 /// An immutable unique skill a hero may learn.
 ///
@@ -111,14 +112,14 @@ mixin TargetSkill implements UsableSkill {
   int getRange(Game game);
 
   /// Override this to create the [Action] that the [Hero] should perform when
-  /// using this [Command].
+  /// using this [Skill].
   Action getTargetAction(Game game, int level, Vec target);
 }
 
 /// A skill that requires a direction to perform.
 mixin DirectionSkill implements UsableSkill {
   /// Override this to create the [Action] that the [Hero] should perform when
-  /// using this [Command].
+  /// using this [Skill].
   Action getDirectionAction(Game game, int level, Direction dir);
 }
 
@@ -126,7 +127,7 @@ mixin DirectionSkill implements UsableSkill {
 ///
 /// A discipline is "trained", which means to perform an in-game action related
 /// to the discipline. For example, killing monsters with a sword trains the
-/// [Swordfighting] discipline.
+/// Swordfighting discipline.
 ///
 /// The underlying data used to track progress in disciplines is stored in the
 /// hero's [Lore].

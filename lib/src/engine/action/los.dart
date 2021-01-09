@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../core/actor.dart';
 import 'action.dart';
 
-/// Base class for an [Action] that traces a path from the actor along a [Los].
+/// Base class for an [Action] that traces a path from the actor along a [Line].
 abstract class LosAction extends Action {
   final Vec _target;
   Vec _lastPos;

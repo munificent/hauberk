@@ -4,8 +4,8 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'stage.dart';
 
-/// Calculates the [Hero]'s field of view of the dungeon -- which tiles are
-/// occluded by other tiles and which are not.
+/// Calculates the hero's field of view of the dungeon, which tiles are occluded
+/// by other tiles and which are not.
 class Fov {
   static const _maxViewDistance = 24;
 
@@ -26,7 +26,7 @@ class Fov {
 
   Fov(this._stage);
 
-  /// Updates the visible flags in [stage] given the [Hero]'s [pos].
+  /// Updates the visible flags in [_stage] given the hero's [pos].
   void refresh(Vec pos) {
     if (_stage.game.hero.blindness.isActive) {
       _hideAll();
@@ -115,7 +115,7 @@ class Fov {
     }
   }
 
-  /// Creates a [Shadow] that corresponds to the projected silhouette of the
+  /// Creates a [_Shadow] that corresponds to the projected silhouette of the
   /// given tile. This is used both to determine visibility (if any of the
   /// projection is visible, the tile is) and to add the tile to the shadow map.
   ///

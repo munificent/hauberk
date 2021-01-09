@@ -327,12 +327,12 @@ abstract class _ItemCommand {
 
   bool get showPrices => false;
 
-  /// The query shown to the user when selecting an item in this mode from
-  /// [view].
+  /// The query shown to the user when selecting an item in this mode from the
+  /// [ItemDialog].
   String query(ItemLocation location);
 
   /// The query shown to the user when selecting a quantity for an item in this
-  /// mode from [view].
+  /// mode from the [ItemDialog].
   String queryCount(ItemLocation location) => null;
 
   /// Returns `true` if [item] is a valid selection for this command.

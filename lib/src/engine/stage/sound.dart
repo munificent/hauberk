@@ -50,7 +50,7 @@ class Sound {
     return _volume(distance);
   }
 
-  /// How far away the [Hero] is from [pos] in terms of sound flow, up to
+  /// How far away the hero is from [pos] in terms of sound flow, up to
   /// [Sound.maxDistance].
   ///
   /// Returns the auditory equivalent of the number of open tiles away the hero

@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'inventory.dart';
 import 'item.dart';
 
-/// The collection of wielded [Item]s held by the [Hero]. Unlike [Inventory],
-/// the [Equipment] holds each item in a categorized slot.
+/// The collection of wielded [Item]s held by the hero. Unlike [Inventory], the
+/// [Equipment] holds each item in a categorized slot.
 class Equipment extends IterableBase<Item> with ItemCollection {
   ItemLocation get location => ItemLocation.equipment;
 
@@ -47,7 +47,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     throw "unreachable";
   }
 
-  /// Creates a new copy of this Equipment. This is done when the [Hero] enters
+  /// Creates a new copy of this [Equipment]. This is done when the hero enters
   /// the dungeon so that any inventory changes that happen there are discarded
   /// if the hero dies.
   Equipment clone() {
@@ -77,7 +77,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
 
   /// Tries to add the item. This will only succeed if there is an empty slot
   /// that allows the item. Unlike [equip], this will not swap items. It is
-  /// used by the [ItemScreen].
+  /// used by the ItemScreen.
   AddItemResult tryAdd(Item item) {
     // Should not be able to equip stackable items. If we want to make, say,
     // knives stackable, we'll have to add support for splitting stacks here.

@@ -40,7 +40,7 @@ class Toss {
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {
   /// The pattern string used to generate quantified names for items of this
-  /// type: "Scroll[s] of Disappearing", etc.
+  /// type: `Scroll[s] of Disappearing`, etc.
   final String quantifiableName;
 
   /// The singular name of the item type: "Sword", "Scroll of Disappearing".
@@ -60,7 +60,7 @@ class ItemType {
   // TODO: These two fields are sort of redundant with tags, but ItemTypes
   // don't own their tags. Should they?
 
-  /// The name of the [Equipment] slot that [Item]s can be placed in. If `null`
+  /// The name of the equipment slot that [Item]s can be placed in. If `null`
   /// then this Item cannot be equipped.
   final String equipSlot;
 

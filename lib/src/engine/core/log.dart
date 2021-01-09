@@ -156,14 +156,14 @@ class Log {
   /// A series of letters enclosed in square brackets defines an optional verb
   /// suffix. If noun 1 is second person, then the contents will be included.
   /// Otherwise they are omitted. For example, `open[s]` will result in `open`
-  /// if noun 1 is second-person (i.e. the [Hero]) or `opens` if third-person.
+  /// if noun 1 is second-person (i.e. the hero) or `opens` if third-person.
   ///
   /// ### Irregular verbs: `[second|third]`
   ///
   /// Two words in square brackets separated by a pipe (`|`) defines an
   /// irregular verb. If noun 1 is second person that the first word is used,
   /// otherwise the second is. For example `[are|is]` will result in `are` if
-  /// noun 1 is second-person (i.e. the [Hero]) or `is` if third-person.
+  /// noun 1 is second-person (i.e. the hero) or `is` if third-person.
   ///
   /// ### Sentence case
   ///
