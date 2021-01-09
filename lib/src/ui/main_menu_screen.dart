@@ -61,9 +61,7 @@ class MainMenuScreen extends Screen<Input> {
   final Storage storage;
   int selectedHero = 0;
 
-  MainMenuScreen(Content content)
-      : content = content,
-        storage = Storage(content);
+  MainMenuScreen(this.content) : storage = Storage(content);
 
   bool handleInput(Input input) {
     switch (input) {

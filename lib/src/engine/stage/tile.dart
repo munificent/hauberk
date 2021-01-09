@@ -83,10 +83,9 @@ class TileType {
 
   bool get isWalkable => canEnter(Motility.walk);
 
-  TileType(this.name, this.appearance, Motility motility,
+  TileType(this.name, this.appearance, this.motility,
       {int emanation, this.portal, this.onClose, this.onOpen})
-      : emanation = emanation ?? 0,
-        motility = motility;
+      : emanation = emanation ?? 0;
 
   /// Whether an actor with [motility] is able to enter this tile.
   bool canEnter(Motility motility) => this.motility.overlaps(motility);

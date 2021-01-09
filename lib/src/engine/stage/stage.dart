@@ -42,9 +42,8 @@ class Stage {
   /// doesn't step on other actors.
   final Array2D<Actor> _actorsByTile;
 
-  Stage(int width, int height, Game game)
-      : game = game,
-        tiles = Array2D.generated(width, height, () => Tile()),
+  Stage(int width, int height, this.game)
+      : tiles = Array2D.generated(width, height, () => Tile()),
         _actorsByTile = Array2D(width, height) {
     _lighting = Lighting(this);
     _sound = Sound(this);
