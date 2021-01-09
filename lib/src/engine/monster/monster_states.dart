@@ -404,8 +404,7 @@ class AwakeState extends MonsterState {
       if (step == game.hero.pos) return true;
       if (game.stage[step].blocksView) return false;
       var actor = game.stage.actorAt(step);
-      // TODO: There is a bug here. Should be `actor != monster`. Investigate.
-      if (actor != null && actor != this) return false;
+      if (actor != null && actor != monster) return false;
     }
 
     throw "unreachable";

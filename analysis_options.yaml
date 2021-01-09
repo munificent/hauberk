@@ -104,7 +104,7 @@ linter:
     - unnecessary_string_escapes
     - unnecessary_string_interpolations
     - unnecessary_this
-    # - unrelated_type_equality_checks
+    - unrelated_type_equality_checks
     - use_function_type_syntax_for_parameters
     - use_is_even_rather_than_modulo
     - use_rethrow_when_possible
