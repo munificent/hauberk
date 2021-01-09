@@ -59,7 +59,7 @@ class Fov {
 
     _shadows = <_Shadow>[];
 
-    final bounds = _stage.bounds;
+    var bounds = _stage.bounds;
     var fullShadow = false;
 
     // Sweep through the rows ('rows' may be vertical or horizontal based on
@@ -135,7 +135,7 @@ class Fov {
 
   bool _isInShadow(_Shadow projection) {
     // Check the shadow list.
-    for (final shadow in _shadows) {
+    for (var shadow in _shadows) {
       if (shadow.contains(projection)) return true;
     }
 

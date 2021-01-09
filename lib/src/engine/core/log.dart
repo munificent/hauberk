@@ -172,9 +172,9 @@ class Log {
   String _format(String text, [Noun noun1, Noun noun2, Noun noun3]) {
     var result = text;
 
-    final nouns = [noun1, noun2, noun3];
+    var nouns = [noun1, noun2, noun3];
     for (var i = 1; i <= 3; i++) {
-      final noun = nouns[i - 1];
+      var noun = nouns[i - 1];
 
       if (noun != null) {
         result = result.replaceAll('{$i}', noun.nounText);

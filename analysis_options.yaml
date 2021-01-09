@@ -55,7 +55,6 @@ linter:
     - package_names
     - package_prefixed_library_names
     - prefer_adjacent_string_concatenation
-    # - prefer_asserts_with_message
     - prefer_collection_literals
     - prefer_conditional_assignment
     - prefer_const_declarations
@@ -92,7 +91,7 @@ linter:
     - unnecessary_await_in_return
     - unnecessary_brace_in_string_interps
     - unnecessary_const
-    # - unnecessary_final
+    - unnecessary_final
     - unnecessary_getters_setters
     - unnecessary_lambdas
     - unnecessary_new

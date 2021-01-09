@@ -138,7 +138,7 @@ class Monster extends Actor {
   /// and the target.
   bool canView(Vec target) {
     // Walk to the target.
-    for (final step in Line(pos, target)) {
+    for (var step in Line(pos, target)) {
       if (step == target) return true;
       if (game.stage[step].blocksView) return false;
     }
@@ -152,7 +152,7 @@ class Monster extends Actor {
   /// and the target.
   bool canTarget(Vec target) {
     // Walk to the target.
-    for (final step in Line(pos, target)) {
+    for (var step in Line(pos, target)) {
       if (step == target) return true;
       if (game.stage.actorAt(step) != null) return false;
       if (game.stage[step].blocksView) return false;

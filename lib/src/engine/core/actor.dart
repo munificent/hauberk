@@ -152,7 +152,7 @@ abstract class Actor implements Noun {
   Iterable<Defense> onGetDefenses();
 
   Action getAction() {
-    final action = onGetAction();
+    var action = onGetAction();
     if (action != null) action.bind(this);
     return action;
   }

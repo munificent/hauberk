@@ -333,8 +333,8 @@ class ParticleEffect implements Effect {
   final Color color;
 
   ParticleEffect(this.x, this.y, this.color) {
-    final theta = rng.range(628) / 100;
-    final radius = rng.range(30, 40) / 100;
+    var theta = rng.range(628) / 100;
+    var radius = rng.range(30, 40) / 100;
 
     h = math.cos(theta) * radius;
     v = math.sin(theta) * radius;
@@ -345,7 +345,7 @@ class ParticleEffect implements Effect {
     x += h;
     y += v;
 
-    final pos = Vec(x.toInt(), y.toInt());
+    var pos = Vec(x.toInt(), y.toInt());
     if (!game.stage.bounds.contains(pos)) return false;
     if (!game.stage[pos].isFlyable) return false;
 

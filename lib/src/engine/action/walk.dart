@@ -20,7 +20,7 @@ class WalkAction extends Action {
     var pos = actor.pos + dir;
 
     // See if there is an actor there.
-    final target = game.stage.actorAt(pos);
+    var target = game.stage.actorAt(pos);
     if (target != null && target != actor) {
       return alternate(AttackAction(target));
     }

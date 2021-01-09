@@ -87,7 +87,7 @@ class StagePanel extends Panel {
   bool update(Iterable<Event> events) {
     _frame++;
 
-    for (final event in events) {
+    for (var event in events) {
       addEffects(_effects, event);
     }
 
