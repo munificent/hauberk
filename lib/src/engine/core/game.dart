@@ -274,7 +274,7 @@ class GameResult {
 
   /// Returns `true` if the game state has progressed to the point that a change
   /// should be shown to the user.
-  bool get needsRefresh => madeProgress || events.length > 0;
+  bool get needsRefresh => madeProgress || events.isNotEmpty;
 
   GameResult(this.madeProgress);
 }

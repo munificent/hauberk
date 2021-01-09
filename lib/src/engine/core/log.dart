@@ -96,8 +96,8 @@ class Log {
     message = _format(message, noun1, noun2, noun3);
 
     // See if it's a repeat of the last message.
-    if (messages.length > 0) {
-      final last = messages.last;
+    if (messages.isNotEmpty) {
+      var last = messages.last;
       if (last.text == message) {
         // It is, so just repeat the count.
         last.count++;

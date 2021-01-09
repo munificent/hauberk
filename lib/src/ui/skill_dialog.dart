@@ -165,7 +165,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
   void _renderSkillDetails(Terminal terminal, T skill);
 
   void _changeSelection(int offset) {
-    if (_skills.length == 0) return;
+    if (_skills.isEmpty) return;
 
     _selectedSkill = (_selectedSkill + offset).clamp(0, _skills.length - 1);
     dirty();

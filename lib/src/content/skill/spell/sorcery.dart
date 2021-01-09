@@ -1,4 +1,4 @@
-import 'package:piecemeal/src/vec.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
 

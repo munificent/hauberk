@@ -22,7 +22,7 @@ class TeleportAction extends Action {
       targets.add(pos);
     }
 
-    if (targets.length == 0) {
+    if (targets.isEmpty) {
       return fail("{1} couldn't escape.", actor);
     }
 

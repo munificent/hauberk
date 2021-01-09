@@ -139,7 +139,7 @@ class MainMenuScreen extends Screen<Input> {
 
     terminal.writeAt(10, 18, 'Which hero shall you play?', UIHue.text);
 
-    if (storage.heroes.length == 0) {
+    if (storage.heroes.isEmpty) {
       terminal.writeAt(
           10, 20, '(No heroes. Please create a new one.)', UIHue.helpText);
     }

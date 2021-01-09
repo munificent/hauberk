@@ -98,7 +98,7 @@ abstract class Flow {
   ///
   /// If there are multiple equivalent positions, chooses one randomly. If
   /// there are none, returns null.
-  Vec bestWhere(bool predicate(Vec pos)) {
+  Vec bestWhere(bool Function(Vec pos) predicate) {
     var results = _findAllBestWhere(predicate);
     if (results.isEmpty) return null;
 
@@ -131,7 +131,7 @@ abstract class Flow {
   /// best positions matching [predicate].
   ///
   /// Returns [Direction.none] if no matching positions were found.
-  Direction directionToBestWhere(bool predicate(Vec pos)) {
+  Direction directionToBestWhere(bool Function(Vec pos) predicate) {
     var directions = directionsToBestWhere(predicate);
     if (directions.isEmpty) return Direction.none;
     return rng.item(directions);
@@ -141,7 +141,7 @@ abstract class Flow {
   /// positions matching [predicate].
   ///
   /// Returns an empty list if no matching positions were found.
-  List<Direction> directionsToBestWhere(bool predicate(Vec pos)) {
+  List<Direction> directionsToBestWhere(bool Function(Vec pos) predicate) {
     var goals = _findAllBestWhere(predicate);
     if (goals == null) return [];
 
@@ -154,7 +154,7 @@ abstract class Flow {
   /// positions meeting the criteria. Returns an empty list if no valid
   /// positions are found. Returned positions are local to [_costs], not
   /// the [Stage].
-  List<Vec> _findAllBestWhere(bool predicate(Vec pos)) {
+  List<Vec> _findAllBestWhere(bool Function(Vec pos) predicate) {
     var goals = <Vec>[];
 
     int lowestCost;

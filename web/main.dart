@@ -271,7 +271,7 @@ void _fullscreen() {
   }
 }
 
-void _refreshDebugBoxes() async {
+Future<void> _refreshDebugBoxes() async {
   // Hack: Give the engine a chance to update.
   await html.window.animationFrame;
 

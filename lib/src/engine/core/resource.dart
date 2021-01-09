@@ -184,7 +184,8 @@ class ResourceSet<T> {
     });
   }
 
-  T _runQuery(String name, int depth, double scale(_Resource<T> resource)) {
+  T _runQuery(
+      String name, int depth, double Function(_Resource<T> resource) scale) {
     // Reuse a cached query, if possible.
     var key = _QueryKey(name, depth);
     var query = _queries[key];
