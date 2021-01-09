@@ -116,9 +116,9 @@ abstract class Action {
 }
 
 class ActionResult {
-  static final success = const ActionResult(succeeded: true, done: true);
-  static final failure = const ActionResult(succeeded: false, done: true);
-  static final notDone = const ActionResult(succeeded: true, done: false);
+  static const success = ActionResult(succeeded: true, done: true);
+  static const failure = ActionResult(succeeded: false, done: true);
+  static const notDone = ActionResult(succeeded: true, done: false);
 
   /// An alternate [Action] that should be performed instead of the one that
   /// failed to perform and returned this. For example, when the [Hero] walks

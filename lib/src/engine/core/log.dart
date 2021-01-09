@@ -270,11 +270,11 @@ class Noun {
 
 class Pronoun {
   // See http://en.wikipedia.org/wiki/English_personal_pronouns.
-  static final you = const Pronoun('you', 'you', 'your');
-  static final she = const Pronoun('she', 'her', 'her');
-  static final he = const Pronoun('he', 'him', 'his');
-  static final it = const Pronoun('it', 'it', 'its');
-  static final they = const Pronoun('they', 'them', 'their');
+  static const you = Pronoun('you', 'you', 'your');
+  static const she = Pronoun('she', 'her', 'her');
+  static const he = Pronoun('he', 'him', 'his');
+  static const it = Pronoun('it', 'it', 'its');
+  static const they = Pronoun('they', 'them', 'their');
 
   final String subjective;
   final String objective;

@@ -2,14 +2,14 @@
 /// actors. Each game turn, every actor will accumulate energy based on their
 /// speed. When it reaches a threshold, that actor can take a turn.
 class Energy {
-  static final minSpeed = 0;
-  static final normalSpeed = 6;
-  static final maxSpeed = 12;
+  static const minSpeed = 0;
+  static const normalSpeed = 6;
+  static const maxSpeed = 12;
 
-  static final actionCost = 240;
+  static const actionCost = 240;
 
   // How much energy is gained each game turn for each speed.
-  static final gains = const [
+  static const gains = [
     15, // 1/4 normal speed
     20, // 1/3 normal speed
     24, // 2/5 normal speed
