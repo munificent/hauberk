@@ -28,6 +28,8 @@ class Motility {
 
   Motility._(this._bitMask);
 
+  int get hashCode => _bitMask;
+
   bool operator ==(Object other) {
     if (other is Motility) return _bitMask == other._bitMask;
     return false;

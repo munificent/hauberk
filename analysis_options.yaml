@@ -38,7 +38,7 @@ linter:
     - empty_statements
     - exhaustive_cases
     - file_names
-    # - hash_and_equals
+    - hash_and_equals
     - implementation_imports
     - iterable_contains_unrelated_type
     - library_names
