@@ -18,12 +18,12 @@ import 'histogram.dart';
 
 final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
-var depthSelect = html.querySelector("#depth") as html.SelectElement;
-var canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
-var stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
+final depthSelect = html.querySelector("#depth") as html.SelectElement;
+final canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
+final stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
 
-var content = createContent();
-var save = content.createHero("hero");
+final content = createContent();
+final save = content.createHero("hero");
 Game _game;
 RenderableTerminal terminal;
 Vec hoverPos;

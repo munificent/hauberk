@@ -85,7 +85,7 @@ linter:
     - slash_for_doc_comments
     - sort_pub_dependencies
     - throw_in_finally
-    # - type_annotate_public_apis
+    - type_annotate_public_apis
     - type_init_formals
     - unawaited_futures
     - unnecessary_await_in_return

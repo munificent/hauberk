@@ -20,9 +20,8 @@ const simulationRounds = 20;
 Content content;
 Game game;
 
-var actions = Queue<Action>();
-
-var breeds = <int, Breed>{};
+final actions = Queue<Action>();
+final breeds = <int, Breed>{};
 
 void main(List<String> arguments) {
   content = createContent();

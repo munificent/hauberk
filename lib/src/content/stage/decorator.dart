@@ -435,7 +435,7 @@ class DensityMap {
 
   int operator [](Vec pos) => _density[pos];
 
-  operator []=(Vec pos, int value) {
+  void operator []=(Vec pos, int value) {
     var old = _density[pos];
     _total = _total - old + value;
     _density[pos] = value;

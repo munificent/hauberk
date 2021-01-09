@@ -103,7 +103,7 @@ class MainMenuScreen extends Screen<Input> {
     return false;
   }
 
-  void activate(Screen popped, result) {
+  void activate(Screen popped, Object result) {
     if (popped is ConfirmPopup && result == 'delete') {
       storage.heroes.removeAt(selectedHero);
       if (selectedHero > 0 && selectedHero >= storage.heroes.length) {
