@@ -26,7 +26,7 @@ class Classes {
 }
 
 HeroClass _class(String name, String description, Drop startingItems,
-    {double masteries = 1.0, double spells = 1.0}) {
+    {double masteries, double spells}) {
   var proficiencies = <Skill, double>{};
 
   for (var skill in Skills.all) {

@@ -136,8 +136,8 @@ void dragons() {
           ..attack("bite[s]", 20 + i * 2)
           ..attack("claw[s]", 15 + i)
           ..drop("treasure", count: 2 + i ~/ 2)
-          ..drop("magic", count: 1)
-          ..drop("equipment", count: 1);
+          ..drop("magic")
+          ..drop("equipment");
 
     if (element != Element.none) {
       dragon.cone(element, rate: 11, damage: 40 + i * 6, range: 5);

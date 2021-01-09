@@ -260,6 +260,9 @@ class _BreedBuilder extends _BaseBuilder {
     _pronoun = Pronoun.she;
   }
 
+  // TODO: Figure out some strategy for which of these parameters have defaults
+  // and which don't.
+
   void heal({num rate = 5, int amount}) => _addMove(HealMove(rate, amount));
 
   void arrow({num rate = 5, int damage}) =>
@@ -286,7 +289,7 @@ class _BreedBuilder extends _BaseBuilder {
       _bolt("the jet", "splashes", Elements.water,
           rate: rate, damage: damage, range: 8);
 
-  void sparkBolt({num rate = 5, int damage, int range = 8}) =>
+  void sparkBolt({num rate, int damage, int range}) =>
       _bolt("the spark", "zaps", Elements.lightning,
           rate: rate, damage: damage, range: range);
 
@@ -341,13 +344,13 @@ class _BreedBuilder extends _BaseBuilder {
   void missive(Missive missive, {num rate = 5}) =>
       _addMove(MissiveMove(missive, rate));
 
-  void howl({num rate = 10, int range = 10, String verb}) =>
+  void howl({num rate = 10, int range, String verb}) =>
       _addMove(HowlMove(rate, range, verb));
 
   void haste({num rate = 5, int duration = 10, int speed = 1}) =>
       _addMove(HasteMove(rate, duration, speed));
 
-  void teleport({num rate = 5, int range = 10}) =>
+  void teleport({num rate, int range = 10}) =>
       _addMove(TeleportMove(rate, range));
 
   void spawn({num rate = 10, bool preferStraight}) =>

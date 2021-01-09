@@ -17,7 +17,7 @@ class ConfirmPopup extends Popup {
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {
-      ui.pop(null);
+      ui.pop();
       return true;
     }
 
@@ -29,7 +29,7 @@ class ConfirmPopup extends Popup {
 
     switch (keyCode) {
       case KeyCode.n:
-        ui.pop(null);
+        ui.pop();
         break;
 
       case KeyCode.y:
