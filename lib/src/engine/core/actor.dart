@@ -81,7 +81,9 @@ abstract class Actor implements Noun {
       resistances[element] = ResistCondition(element);
     }
 
-    conditions.forEach((condition) => condition.bind(this));
+    for (var condition in conditions) {
+      condition.bind(this);
+    }
   }
 
   Object get appearance;
@@ -296,7 +298,9 @@ abstract class Actor implements Noun {
   void finishTurn(Action action) {
     energy.spend();
 
-    conditions.forEach((condition) => condition.update(action));
+    for (var condition in conditions) {
+      condition.update(action);
+    }
 
     if (isAlive) onFinishTurn(action);
   }
