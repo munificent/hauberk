@@ -134,11 +134,11 @@ void furnishing({double frequency, Symmetry symmetry, String template}) {
     // Rotate 90°.
     var rotateLines = <String>[];
     for (var x = 0; x < lines[0].length; x++) {
-      var line = "";
+      var buffer = StringBuffer();
       for (var y = 0; y < lines.length; y++) {
-        line += _rotateChar90(lines[y][x]);
+        buffer.write(_rotateChar90(lines[y][x]));
       }
-      rotateLines.add(line);
+      rotateLines.add(buffer.toString());
     }
 
     _singleFurnishing(rotateLines);

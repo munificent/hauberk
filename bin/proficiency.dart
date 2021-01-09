@@ -13,9 +13,11 @@ void main(List<String> arguments) {
     for (var skill in content.skills) {
       var line = "";
       if (skill is Discipline) {
+        var buffer = StringBuffer();
         for (var level = 1; level <= skill.maxLevel; level++) {
           var training = skill.trainingNeeded(heroClass, level);
-          line += training.toString().padLeft(6);
+          buffer.write(training.toString().padLeft(6));
+          line = buffer.toString();
         }
       } else if (skill is Spell) {
         if (heroClass.proficiency(skill) != 0.0) {

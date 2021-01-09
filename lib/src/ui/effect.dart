@@ -516,7 +516,7 @@ class TreasureEffect implements Effect {
         _y = pos.y;
 
   bool update(Game game) {
-    if (_life % 2 == 0) {
+    if (_life.isEven) {
       _y--;
       if (_y < 0) return false;
     }
@@ -549,7 +549,7 @@ class HowlEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var pos = _actor.pos;
 
-    if ((_age ~/ 6) % 2 == 0) {
+    if ((_age ~/ 6).isEven) {
       drawGlyph(pos.x, pos.y, bang);
       drawGlyph(pos.x - 1, pos.y, greater);
       drawGlyph(pos.x + 1, pos.y, less);
@@ -580,7 +580,7 @@ class BlinkEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var pos = _actor.pos;
 
-    if ((_age ~/ 6) % 2 == 1) {
+    if ((_age ~/ 6).isOdd) {
       drawGlyph(pos.x, pos.y, _glyph);
     }
   }
