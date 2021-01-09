@@ -3,8 +3,8 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 //import 'blast.dart';
 import '../stage/painter.dart';
-import 'cave.dart';
 import 'catacomb.dart';
+import 'cave.dart';
 import 'room.dart';
 import 'water.dart';
 

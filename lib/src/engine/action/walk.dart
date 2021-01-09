@@ -1,11 +1,11 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import 'action.dart';
-import 'attack.dart';
 import '../core/game.dart';
 import '../hero/hero.dart';
 import '../stage/sound.dart';
 import '../stage/tile.dart';
+import 'action.dart';
+import 'attack.dart';
 
 class WalkAction extends Action {
   final Direction dir;

@@ -1,8 +1,8 @@
 import 'package:malison/malison.dart';
 
-import 'engine.dart';
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
 import 'content/elements.dart';
+import 'engine.dart';
 
 const ash = Color(0xe2, 0xdf, 0xf0);
 const lightCoolGray = Color(0x74, 0x92, 0xb5);

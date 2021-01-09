@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
-import '../hero/hero_save.dart';
 import '../core/game.dart';
 import '../core/math.dart';
+import '../hero/hero_save.dart';
 
 /// A derived property of the hero that needs to log a message when it changes.
 ///

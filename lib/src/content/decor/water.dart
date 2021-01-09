@@ -1,5 +1,5 @@
-import 'furnishing_builder.dart';
 import '../tiles.dart';
+import 'furnishing_builder.dart';
 
 void waterDecor() {
   // TODO: Get rid of this if we don't add shores.

@@ -3,8 +3,8 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
-import 'input.dart';
 import 'hero_info_dialog.dart';
+import 'input.dart';
 
 class HeroMonsterLoreDialog extends HeroInfoDialog {
   static const _rowCount = 11;

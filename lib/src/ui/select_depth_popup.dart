@@ -5,9 +5,8 @@ import 'package:malison/malison.dart';
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
-import 'popup.dart';
-
 import 'input.dart';
+import 'popup.dart';
 
 class SelectDepthPopup extends Popup {
   final Content content;
