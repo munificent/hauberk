@@ -316,7 +316,7 @@ class TargetDialog extends Screen<Input> {
       if (tile.isExplored && tile.blocksView) return true;
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 }
 

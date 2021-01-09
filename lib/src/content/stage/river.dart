@@ -40,7 +40,7 @@ class River extends Architecture {
         return _RiverPoint(-2.0, y);
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   void _displace(_RiverPoint start, _RiverPoint end) {

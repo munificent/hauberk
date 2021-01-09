@@ -45,8 +45,6 @@ abstract class ItemScreen extends Screen<Input> {
 
   String get _headerText;
 
-  String get _verb => throw "Subclass should implement";
-
   Map<String, String> get _helpKeys;
 
   ItemScreen._(this._gameScreen);
@@ -237,6 +235,13 @@ abstract class ItemScreen extends Screen<Input> {
   void _afterTransfer(Item item, int count) {}
 }
 
+/// Base class for item views where the player is performing an action.
+abstract class _ItemVerbScreen extends ItemScreen {
+  String get _verb;
+
+  _ItemVerbScreen(GameScreen gameScreen) : super._(gameScreen);
+}
+
 class _TownItemView extends ItemView {
   final ItemScreen _screen;
 
@@ -295,7 +300,7 @@ class _HomeViewScreen extends ItemScreen {
 }
 
 /// Screen to get items from the hero's home.
-class _HomeGetScreen extends ItemScreen {
+class _HomeGetScreen extends _ItemVerbScreen {
   String get _headerText => "Get which item?";
 
   String get _verb => "Get";
@@ -307,7 +312,7 @@ class _HomeGetScreen extends ItemScreen {
 
   ItemCollection get _destination => _gameScreen.game.hero.inventory;
 
-  _HomeGetScreen(GameScreen gameScreen) : super._(gameScreen);
+  _HomeGetScreen(GameScreen gameScreen) : super(gameScreen);
 
   bool get _canSelectAny => true;
 
@@ -363,7 +368,7 @@ class _ShopViewScreen extends ItemScreen {
 }
 
 /// Screen to buy items from a shop.
-class _ShopBuyScreen extends ItemScreen {
+class _ShopBuyScreen extends _ItemVerbScreen {
   final Inventory _shop;
 
   String get _headerText => "Buy which item?";
@@ -377,7 +382,7 @@ class _ShopBuyScreen extends ItemScreen {
 
   ItemCollection get _destination => _gameScreen.game.hero.save.inventory;
 
-  _ShopBuyScreen(GameScreen gameScreen, this._shop) : super._(gameScreen);
+  _ShopBuyScreen(GameScreen gameScreen, this._shop) : super(gameScreen);
 
   bool get _canSelectAny => true;
   bool get _showPrices => true;
@@ -407,8 +412,8 @@ class _ShopBuyScreen extends ItemScreen {
 
 /// Screen to let the player choose a count for a selected item.
 class _CountScreen extends ItemScreen {
-  /// The [ItemScreen] that pushed this.
-  final ItemScreen _parent;
+  /// The [_ItemVerbScreen] that pushed this.
+  final _ItemVerbScreen _parent;
   final Item _item;
   int _count;
 

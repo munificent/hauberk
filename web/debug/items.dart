@@ -31,7 +31,7 @@ num _itemScale(ItemType item) {
     case "weight":
       return item.weight;
     default:
-      throw "Unknown select value '${_scaleBySelect.value}'.";
+      throw ArgumentError("Unknown select value '${_scaleBySelect.value}'.");
   }
 }
 

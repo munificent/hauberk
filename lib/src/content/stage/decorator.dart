@@ -461,7 +461,7 @@ class DensityMap {
       n -= density;
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   void reduceAround(Stage stage, Vec start, Motility motility, int range) {

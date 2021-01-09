@@ -232,9 +232,7 @@ class _Resource<T> {
   final Set<_Tag<T>> _tags = {};
 
   _Resource(this.object, this.startDepth, this.endDepth, this.startFrequency,
-      this.endFrequency) {
-    if (startDepth == null) throw "!";
-  }
+      this.endFrequency);
 
   /// The resource's frequency at [depth].
   ///

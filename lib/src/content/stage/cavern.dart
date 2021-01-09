@@ -85,6 +85,6 @@ class Cavern extends Architecture {
         return lerpDouble(distance, 0, range, min, max);
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 }

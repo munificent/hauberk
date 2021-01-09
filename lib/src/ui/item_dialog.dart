@@ -273,7 +273,7 @@ class ItemDialog extends Screen<Input> {
         return _gameScreen.game.stage.itemsAt(_gameScreen.game.hero.pos);
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   /// Rotates through the viewable locations the player can select an item from.
@@ -384,7 +384,7 @@ class _DropItemCommand extends _ItemCommand {
         return 'Unequip and drop which item?';
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   String queryCount(ItemLocation location) => 'Drop how many?';
@@ -411,7 +411,7 @@ class _UseItemCommand extends _ItemCommand {
         return 'Pick up and use which item?';
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   bool canSelect(Item item) => item.canUse;
@@ -436,7 +436,7 @@ class _EquipItemCommand extends _ItemCommand {
         return 'Pick up and equip which item?';
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   bool canSelect(Item item) => item.canEquip;
@@ -461,7 +461,7 @@ class _TossItemCommand extends _ItemCommand {
         return 'Pick up and throw which item?';
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   bool canSelect(Item item) => item.canToss;

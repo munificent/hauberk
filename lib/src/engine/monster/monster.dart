@@ -143,7 +143,7 @@ class Monster extends Actor {
       if (game.stage[step].blocksView) return false;
     }
 
-    throw 'unreachable';
+    throw AssertionError("Unreachable.");
   }
 
   /// Gets whether or not this monster has a line of sight to [target].
@@ -158,7 +158,7 @@ class Monster extends Actor {
       if (game.stage[step].blocksView) return false;
     }
 
-    throw 'unreachable';
+    throw AssertionError("Unreachable.");
   }
 
   int get baseSpeed => Energy.normalSpeed + breed.speed;

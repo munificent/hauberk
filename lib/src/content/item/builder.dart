@@ -60,7 +60,7 @@ _AffixBuilder affix(String name, double frequency) {
     name = name.substring(2);
     isPrefix = false;
   } else {
-    throw 'Affix "$name" must start or end with "_".';
+    throw ArgumentError('Affix "$name" must start or end with "_".');
   }
 
   return _affix = _AffixBuilder(name, isPrefix, frequency);

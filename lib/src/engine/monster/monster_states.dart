@@ -407,7 +407,7 @@ class AwakeState extends MonsterState {
       if (actor != null && actor != monster) return false;
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 }
 

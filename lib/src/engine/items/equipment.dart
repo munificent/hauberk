@@ -44,7 +44,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
       }
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   /// Creates a new copy of this [Equipment]. This is done when the hero enters
@@ -203,7 +203,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
       index--;
     }
 
-    throw "unreachable";
+    throw AssertionError("Unreachable.");
   }
 
   /// Gets the non-empty item slots.
