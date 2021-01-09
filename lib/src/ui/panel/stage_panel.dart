@@ -205,7 +205,7 @@ class StagePanel extends Panel {
         // value to ramp things down more quickly below that, and we allow
         // brightness to go a little past 1.0 so that things above 128 have
         // a little more glow.
-        var light = (tile.visibility / 128);
+        var light = tile.visibility / 128;
         light = (light * light).clamp(0.0, 1.1);
 
         const shadow = Color(0x04, 0x03, 0xa);

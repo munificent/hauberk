@@ -185,7 +185,7 @@ class Breed {
     }
 
     // Time spent using moves is not time spent attacking.
-    attackTotal *= (1.0 - moveRateTotal);
+    attackTotal *= 1.0 - moveRateTotal;
 
     // Add in moves and attacks.
     exp *= attackTotal + moveTotal;

@@ -153,10 +153,9 @@ class Fov {
     }
 
     // The new shadow is going here. See if it overlaps the previous or next.
-    var overlapsPrev =
-        ((index > 0) && (_shadows[index - 1].end > shadow.start));
+    var overlapsPrev = (index > 0) && (_shadows[index - 1].end > shadow.start);
     var overlapsNext =
-        ((index < _shadows.length) && (_shadows[index].start < shadow.end));
+        (index < _shadows.length) && (_shadows[index].start < shadow.end);
 
     // Insert and unify with overlapping shadows.
     if (overlapsNext) {
