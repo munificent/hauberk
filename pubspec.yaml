@@ -2,7 +2,7 @@ name: hauberk
 environment:
   sdk: '^2.10.0'
 dependencies:
-  malison: '^0.11.3'
+  malison: '^0.11.4'
   markdown: any
   path: any
   piecemeal: '^0.4.1'

@@ -142,7 +142,9 @@ void main() {
   _ui.keyPress.bind(Input.runSE, KeyCode.numpad3, shift: true);
 
   _ui.keyPress.bind(Input.ok, KeyCode.numpad5);
+  _ui.keyPress.bind(Input.ok, KeyCode.numpadEnter);
   _ui.keyPress.bind(Input.rest, KeyCode.numpad5, shift: true);
+  _ui.keyPress.bind(Input.rest, KeyCode.numpadEnter, shift: true);
   _ui.keyPress.bind(Input.fire, KeyCode.numpad5, alt: true);
 
   _ui.keyPress.bind(Input.wizard, KeyCode.w, shift: true, alt: true);
