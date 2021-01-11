@@ -12,7 +12,6 @@ import '../core/game.dart';
 import '../core/log.dart';
 import '../core/math.dart';
 import '../hero/hero.dart';
-import '../stage/lighting.dart';
 import '../stage/tile.dart';
 import 'breed.dart';
 import 'monster_states.dart';
@@ -265,8 +264,8 @@ class Monster extends Actor {
     }
 
     // TODO: Don't check illumination for breeds that see in the dark.
-    var illumination = game.stage[heroPos].illumination / Lighting.max;
-    if (illumination == 0.0) {
+    var illumination = game.stage[heroPos].illumination;
+    if (illumination == 0) {
       Debug.monsterStat(this, "see", 0.0, "hero in dark");
       return 0.0;
     }

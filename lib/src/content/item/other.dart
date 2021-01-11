@@ -124,7 +124,7 @@ void lightSources() {
     ..depth(1, to: 12)
     ..stack(10)
     ..toss(damage: 2, range: 8, element: Elements.fire)
-    ..lightSource(level: 2, range: 8)
+    ..lightSource(level: 2, range: 5)
     ..destroy(Elements.fire, chance: 40, fuel: 20);
 
   // TODO: Ball of fire when hits toss target.
@@ -132,7 +132,7 @@ void lightSources() {
     ..depth(4, to: 20)
     ..stack(10)
     ..toss(damage: 3, range: 8, element: Elements.fire)
-    ..lightSource(level: 3, range: 10)
+    ..lightSource(level: 3, range: 7)
     ..destroy(Elements.fire, chance: 40, fuel: 25);
 
   // TODO: Larger ball of fire when hits toss target.
@@ -140,7 +140,7 @@ void lightSources() {
     ..depth(8, to: 30)
     ..stack(4)
     ..toss(damage: 10, range: 8, element: Elements.fire)
-    ..lightSource(level: 4, range: 13)
+    ..lightSource(level: 4, range: 10)
     ..destroy(Elements.fire, chance: 50, fuel: 40);
 
   // TODO: Ball of fire when hits toss target.
@@ -148,12 +148,12 @@ void lightSources() {
     ..depth(11, to: 45)
     ..stack(4)
     ..toss(damage: 6, range: 10, element: Elements.fire)
-    ..lightSource(level: 5, range: 18)
+    ..lightSource(level: 5, range: 14)
     ..destroy(Elements.fire, chance: 60, fuel: 60);
 
   // TODO: Maybe allow this to be equipped and increase its radius when held?
   item("Lantern", gold, frequency: 0.3, price: 78)
     ..depth(18)
     ..toss(damage: 5, range: 5, element: Elements.fire)
-    ..lightSource(level: 6, range: 24);
+    ..lightSource(level: 6, range: 18);
 }

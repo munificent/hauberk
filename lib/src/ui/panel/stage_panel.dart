@@ -117,6 +117,8 @@ class StagePanel extends Panel {
       int char;
       var fore = Color.black;
       var back = Color.black;
+
+      // Show tiles containing interesting things more brightly.
       var lightFore = false;
       var lightBack = false;
 
@@ -132,6 +134,8 @@ class StagePanel extends Panel {
 
         // Show the item if the tile has been explored, even if not currently
         // visible.
+        // TODO: Should this show what the player last saw when the tile was
+        // visible?
         var items = game.stage.itemsAt(pos);
         if (items.isNotEmpty) {
           var itemGlyph = items.first.appearance as Glyph;
@@ -197,52 +201,45 @@ class StagePanel extends Panel {
         lightBack = false;
       }
 
+      Color multiply(Color a, Color b) {
+        return Color(a.r * b.r ~/ 255, a.g * b.g ~/ 255, a.b * b.b ~/ 255);
+      }
+
+      // TODO: This could be cached if needed.
+      var foreShadow = multiply(fore, const Color(80, 80, 95));
+      var backShadow = multiply(back, const Color(40, 40, 55));
+
       // Apply lighting and visibility to the tile.
       if (tile.isVisible && (lightFore || lightBack)) {
-        // If we ramp the lighting so that only maximum lighting is fully
-        // illuminated, then the dungeon looks much too gloomy. Instead,
-        // anything above 50% lit is shown at full brightness. We square the
-        // value to ramp things down more quickly below that, and we allow
-        // brightness to go a little past 1.0 so that things above 128 have
-        // a little more glow.
-        var light = tile.visibility / 128;
-        light = (light * light).clamp(0.0, 1.1);
-
-        const shadow = Color(0x04, 0x03, 0xa);
-
-        // Show tiles containing interesting things more brightly.
-        if (lightFore) {
-          fore = shadow.blend(fore, light * 0.7 + 0.3);
-        }
-
-        if (lightBack) {
-          if (back == darkerCoolGray) {
-            // Hackish. If the background color is the default dark color, then
-            // boost it *past* its max value to add some extra glow when well
-            // lit.
-            back = shadow.blend(back, light * 1.1 + 0.2);
-          } else {
-            back = shadow.blend(back, light * 0.8 + 0.2);
+        Color applyLighting(Color color, Color shadow) {
+          // Apply a slight brightness curve to either end of the range of
+          // floor illumination. We keep most of the middle of the range flat
+          // so that there is still a visible ramp down at the dark end and
+          // just a small bloom around lights at the bright end.
+          var visibility = tile.floorIllumination - tile.fallOff;
+          if (visibility < 64) {
+            // Only blend up to 50% of the shadow color so that there is a
+            // clear line between hidden and visible tiles.
+            color =
+                color.blend(shadow, lerpDouble(visibility, 0, 64, 0.5, 0.0));
+          } else if (visibility > 128) {
+            color = color.add(ash, lerpDouble(visibility, 128, 255, 0.0, 0.2));
           }
+
+          if (tile.actorIllumination > 0) {
+            const glow = Color(200, 130, 0);
+            color = color.add(
+                glow, lerpDouble(tile.actorIllumination, 0, 255, 0.05, 0.1));
+          }
+
+          return color;
         }
+
+        if (lightFore) fore = applyLighting(fore, foreShadow);
+        if (lightBack) back = applyLighting(back, backShadow);
       } else {
-        const blueShadow = Color(0x00, 0x00, 0xe);
-
-        // Show tiles containing interesting things more brightly.
-        if (lightFore) {
-          fore = blueShadow.blend(fore, 0.2);
-        }
-
-        if (lightBack) {
-          if (back == darkerCoolGray) {
-            // If the background color is the default dark color, then go all
-            // the way to black. This makes it easier for the player to tell
-            // which tiles are not visible.
-            back = Color.black;
-          } else {
-            back = blueShadow.blend(back, 0.1);
-          }
-        }
+        if (lightFore) fore = foreShadow;
+        if (lightBack) back = backShadow;
       }
 
       if (Debug.showHeroVolume) {
@@ -262,6 +259,7 @@ class StagePanel extends Panel {
 
     // Draw the effects.
     for (var effect in _effects) {
+      // TODO: Allow effects to preserve the tile's existing background color.
       effect.render(game, (x, y, glyph) {
         _drawStageGlyph(terminal, x, y, glyph);
       });

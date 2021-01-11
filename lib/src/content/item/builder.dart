@@ -316,7 +316,7 @@ class _ItemBuilder extends _BaseBuilder {
 
     if (range != null) {
       use("Illuminates out to a range of $range.",
-          () => IlluminateSelfAction(range, level + 1));
+          () => IlluminateSelfAction(range));
     }
   }
 }

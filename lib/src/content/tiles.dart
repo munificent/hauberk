@@ -70,10 +70,9 @@ class Tiles {
       .solid();
 
   // Floors.
-  static final flagstoneFloor =
-      tile("flagstone floor", "·", darkWarmGray).open();
+  static final flagstoneFloor = tile("flagstone floor", "·", warmGray).open();
 
-  static final graniteFloor = tile("granite floor", "·", darkCoolGray).open();
+  static final graniteFloor = tile("granite floor", "·", coolGray).open();
 
   // Doors.
   static final openDoor =

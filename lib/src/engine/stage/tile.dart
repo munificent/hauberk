@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -110,6 +112,7 @@ class Tile {
   bool get isOccluded => _isOccluded;
 
   /// How much visibility is reduced by distance fall-off.
+  int get fallOff => _fallOff;
   int _fallOff = 0;
 
   /// Whether the tile can be seen through or blocks the hero's view beyond it.
@@ -122,19 +125,16 @@ class Tile {
   /// Whether the hero can currently see the tile.
   ///
   /// To be visible, a tile must not be occluded, in the dark, or too far away.
-  bool get isVisible => !isOccluded && visibility > 0;
-
-  /// How visible the tile is to the player.
-  ///
-  /// If zero or less, the player can't see it because it's too dark or far
-  /// away.
-  int get visibility => illumination - _fallOff;
+  bool get isVisible => !isOccluded && illumination > _fallOff;
 
   /// The total amount of light being cast onto this tile from various sources.
   ///
   /// This is a combination of the tile's [emanation], the propagated emanation
   /// from nearby tiles, light from actors, etc.
-  int illumination = 0;
+  int get illumination => floorIllumination + actorIllumination;
+
+  int floorIllumination = 0;
+  int actorIllumination = 0;
 
   /// The amount of light the tile produces.
   ///
@@ -151,6 +151,10 @@ class Tile {
   void addEmanation(int offset) {
     _appliedEmanation =
         (_appliedEmanation + offset).clamp(0, Lighting.floorMax);
+  }
+
+  void maxEmanation(int amount) {
+    _appliedEmanation = math.max(_appliedEmanation, amount);
   }
 
   bool _isExplored = false;

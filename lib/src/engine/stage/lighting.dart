@@ -200,8 +200,8 @@ class Lighting {
         var tile = _stage.get(x, y);
         if (tile.blocksView) continue;
 
-        tile.illumination =
-            (_floorLight.get(x, y) + _actorLight.get(x, y)).clamp(0, max);
+        tile.floorIllumination = _floorLight.get(x, y).clamp(0, max);
+        tile.actorIllumination = _actorLight.get(x, y).clamp(0, max);
       }
     }
   }
@@ -218,7 +218,8 @@ class Lighting {
         var tile = _stage.get(x, y);
         if (!tile.blocksView) continue;
 
-        var illumination = 0;
+        var floorIllumination = 0;
+        var actorIllumination = 0;
         var openNeighbor = false;
 
         void checkNeighbor(Vec offset) {
@@ -238,7 +239,10 @@ class Lighting {
           if (neighborTile.blocksView) return;
 
           openNeighbor = true;
-          illumination = math.max(illumination, neighborTile.illumination);
+          floorIllumination =
+              math.max(floorIllumination, neighborTile.floorIllumination);
+          actorIllumination =
+              math.max(actorIllumination, neighborTile.actorIllumination);
         }
 
         // First, see if any of the cardinal neighbors are lit.
@@ -255,7 +259,8 @@ class Lighting {
           }
         }
 
-        tile.illumination = illumination;
+        tile.floorIllumination = floorIllumination;
+        tile.actorIllumination = actorIllumination;
       }
     }
   }
