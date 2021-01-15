@@ -1,7 +1,6 @@
 import 'package:malison/malison.dart';
 
 import '../../engine.dart';
-import '../../hues.dart';
 import '../draw.dart';
 import '../item_view.dart';
 import 'panel.dart';
@@ -39,19 +38,20 @@ class ItemPanel extends Panel {
     Draw.box(terminal, 0, restTop, terminal.width, terminal.height - restTop);
   }
 
-  void _drawItems(Terminal terminal, int y, int height, ItemCollection items) {
-    Draw.frame(terminal, 0, y, terminal.width, height + 2);
-    terminal.writeAt(2, y, " ${items.name} ", UIHue.text);
-
-    var view = _ItemPanelItemView(items);
-    view.render(terminal.rect(1, y + 1, terminal.width - 2, height));
+  void _drawItems(
+      Terminal terminal, int y, int itemSlotCount, ItemCollection items) {
+    var view = _ItemPanelItemView(_game, items);
+    view.render(terminal, 0, y, terminal.width, itemSlotCount);
   }
 }
 
 class _ItemPanelItemView extends ItemView {
+  final Game _game;
   final ItemCollection items;
 
-  _ItemPanelItemView(this.items);
+  _ItemPanelItemView(this._game, this.items);
+
+  HeroSave get save => _game.hero.save;
 
   bool get showLetters => false;
 

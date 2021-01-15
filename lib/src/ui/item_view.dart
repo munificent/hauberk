@@ -2,12 +2,18 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 
-import '../content/elements.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
+import 'inspector.dart';
 
+/// Renders a list of items in some UI context, including the surrounding frame.
 abstract class ItemView {
+  /// The ideal maximum width of an item list, including the frame.
+  static int preferredWidth = 46;
+
+  HeroSave get save;
+
   ItemCollection get items;
 
   bool get showLetters => true;
@@ -20,43 +26,41 @@ abstract class ItemView {
 
   Item get inspectedItem => null;
 
+  bool get inspectorOnRight => false;
+
   bool canSelect(Item item) => false;
 
   int getPrice(Item item) => item.price;
 
-  int itemY(Item item) {
-    var y = 0;
-    for (var thisItem in items) {
-      if (thisItem == item) return y;
-      y++;
-    }
+  void render(
+      Terminal terminal, int left, int top, int width, int itemSlotCount) {
+    Draw.frame(terminal, left, top, width, itemSlotCount + 2,
+        canSelectAny ? UIHue.selection : UIHue.disabled);
+    terminal.writeAt(left + 2, top, " ${items.name} ",
+        canSelectAny ? UIHue.selection : UIHue.text);
 
-    return -1;
-  }
-
-  void render(Terminal terminal) {
     var letters = capitalize
         ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         : "abcdefghijklmnopqrstuvwxyz";
 
     // Shift the stats over to make room for prices, if needed.
-    var statRight = terminal.width;
+    var statRight = left + width - 1;
+
     if (showPrices) {
       for (var item in items) {
         var price = getPrice(item);
         if (price != null) {
-          statRight = math.min(
-              statRight, terminal.width - formatMoney(price).length - 2);
+          statRight =
+              math.min(statRight, left + width - formatMoney(price).length - 3);
         }
       }
     }
 
-    var i = 0;
+    var slot = 0;
     var letter = 0;
     for (var item in items.slots) {
-      var y = i;
-
-      var x = showLetters ? 2 : 0;
+      var x = left + (showLetters ? 3 : 1);
+      var y = top + slot + 1;
 
       // If there's no item in this equipment slot, show the slot name.
       if (item == null) {
@@ -65,17 +69,18 @@ abstract class ItemView {
 
         // If this is the second hand slot and the previous one has a
         // two-handed item in it, mark this one.
-        if (i > 0 &&
-            items.slotTypes[i] == "hand" &&
-            items.slotTypes[i - 1] == "hand" &&
-            items.slots.elementAt(i - 1) != null &&
-            items.slots.elementAt(i - 1).type.isTwoHanded) {
+        if (slot > 0 &&
+            items.slotTypes[slot] == "hand" &&
+            items.slotTypes[slot - 1] == "hand" &&
+            items.slots.elementAt(slot - 1) != null &&
+            items.slots.elementAt(slot - 1).type.isTwoHanded) {
           terminal.writeAt(x + 2, y, "↑ two-handed", UIHue.disabled);
         } else {
-          terminal.writeAt(x + 2, y, "(${items.slotTypes[i]})", UIHue.disabled);
+          terminal.writeAt(
+              x + 2, y, "(${items.slotTypes[slot]})", UIHue.disabled);
         }
         letter++;
-        i++;
+        slot++;
         continue;
       }
 
@@ -102,8 +107,8 @@ abstract class ItemView {
       }
 
       if (showLetters) {
-        terminal.writeAt(0, y, " )", borderColor);
-        terminal.writeAt(0, y, letters[letter], letterColor);
+        terminal.writeAt(left + 1, y, " )", borderColor);
+        terminal.writeAt(left + 1, y, letters[letter], letterColor);
       }
 
       letter++;
@@ -112,22 +117,25 @@ abstract class ItemView {
         terminal.drawGlyph(x, y, item.appearance as Glyph);
       }
 
-      terminal.writeAt(x + 2, y, item.nounText, textColor);
-
+      var nameRight = left + width - 1;
       if (showPrices && getPrice(item) != 0) {
         var price = formatMoney(getPrice(item));
-        terminal.writeAt(terminal.width - price.length, y, price,
-            enabled ? gold : UIHue.disabled);
-        terminal.writeAt(terminal.width - price.length - 1, y, "\$",
-            enabled ? tan : UIHue.disabled);
+        var priceLeft = left + width - 1 - price.length - 1;
+        terminal.writeAt(priceLeft, y, "\$", enabled ? tan : UIHue.disabled);
+        terminal.writeAt(
+            priceLeft + 1, y, price, enabled ? gold : UIHue.disabled);
+
+        nameRight = priceLeft;
       }
 
       void drawStat(int symbol, Object stat, Color light, Color dark) {
         var string = stat.toString();
-        terminal.drawChar(statRight - string.length - 1, y, symbol,
-            enabled ? dark : UIHue.disabled);
-        terminal.writeAt(statRight - string.length, y, string,
-            enabled ? light : UIHue.disabled);
+        var statLeft = statRight - string.length - 1;
+        terminal.drawChar(statLeft, y, symbol, enabled ? dark : UIHue.disabled);
+        terminal.writeAt(
+            statLeft + 1, y, string, enabled ? light : UIHue.disabled);
+
+        nameRight = statLeft;
       }
 
       // TODO: Eventually need to handle equipment that gives both an armor and
@@ -140,211 +148,36 @@ abstract class ItemView {
         drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
       }
 
-      // TODO: Show heft and weight.
-      i++;
+      var name = item.nounText;
+      var nameWidth = nameRight - (x + 2);
+      if (name.length > nameWidth) name = name.substring(0, nameWidth);
+      terminal.writeAt(x + 2, y, name, textColor);
+
+      // Draw the inspector for this item.
+      if (item == inspectedItem) {
+        var inspector = Inspector(save, item);
+        if (inspectorOnRight) {
+          if (left + width + Inspector.width > terminal.width) {
+            // No room on the right so draw it below.
+            terminal.writeAt(left + width - 1, y, "▼", UIHue.selection);
+            inspector.draw(left + (width - Inspector.width) ~/ 2,
+                top + itemSlotCount + 3, terminal);
+          } else {
+            terminal.writeAt(left + width - 1, y, "►", UIHue.selection);
+            inspector.draw(left + width, y, terminal);
+          }
+        } else {
+          terminal.writeAt(left, y, "◄", UIHue.selection);
+          inspector.draw(left - Inspector.width, y, terminal);
+        }
+      }
+
+      slot++;
     }
   }
 }
 
-void drawInspector(Terminal terminal, HeroSave hero, Item item) {
-  Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
-
-  terminal.drawGlyph(1, 0, item.appearance as Glyph);
-  terminal.writeAt(3, 0, item.nounText, UIHue.primary);
-
-  var y = 2;
-
-  void writeSection(String label) {
-    // Put a blank line between sections.
-    if (y != 2) y++;
-    terminal.writeAt(1, y, "$label:", UIHue.selection);
-    y++;
-  }
-
-  void writeLabel(String label) {
-    terminal.writeAt(1, y, "$label:", UIHue.text);
-  }
-
-  // TODO: Mostly copied from hero_equipment_dialog. Unify.
-  void writeScale(int x, int y, double scale) {
-    var string = scale.toStringAsFixed(1);
-
-    var xColor = UIHue.disabled;
-    var numberColor = UIHue.disabled;
-    if (scale > 1.0) {
-      xColor = sherwood;
-      numberColor = peaGreen;
-    } else if (scale < 1.0) {
-      xColor = maroon;
-      numberColor = red;
-    }
-
-    terminal.writeAt(x, y, "x", xColor);
-    terminal.writeAt(x + 1, y, string, numberColor);
-  }
-
-  // TODO: Mostly copied from hero_equipment_dialog. Unify.
-  void writeBonus(int x, int y, int bonus) {
-    var string = bonus.abs().toString();
-
-    if (bonus > 0) {
-      terminal.writeAt(x + 2 - string.length, y, "+", sherwood);
-      terminal.writeAt(x + 3 - string.length, y, string, peaGreen);
-    } else if (bonus < 0) {
-      terminal.writeAt(x + 2 - string.length, y, "-", maroon);
-      terminal.writeAt(x + 3 - string.length, y, string, red);
-    } else {
-      terminal.writeAt(x + 2 - string.length, y, "+", UIHue.disabled);
-      terminal.writeAt(x + 3 - string.length, y, string, UIHue.disabled);
-    }
-  }
-
-  void writeStat(String label, Object value) {
-    if (value == null) return;
-
-    writeLabel(label);
-    terminal.writeAt(12, y, value.toString(), UIHue.primary);
-    y++;
-  }
-
-  void writeText(String text) {
-    for (var line in Log.wordWrap(terminal.width - 2, text)) {
-      terminal.writeAt(1, y, line, UIHue.text);
-      y++;
-    }
-  }
-
-  // TODO: Handle armor that gives attack bonuses even though the item
-  // itself has no attack.
-  if (item.attack != null) {
-    writeSection("Attack");
-
-    writeLabel("Damage");
-    if (item.element != Element.none) {
-      terminal.writeAt(
-          9, y, item.element.abbreviation, elementColor(item.element));
-    }
-
-    terminal.writeAt(12, y, item.attack.damage.toString(), UIHue.text);
-    writeScale(16, y, item.damageScale);
-    writeBonus(20, y, item.damageBonus);
-    terminal.writeAt(25, y, "=", UIHue.secondary);
-
-    var damage = item.attack.damage * item.damageScale + item.damageBonus;
-    terminal.writeAt(27, y, damage.toStringAsFixed(2).padLeft(6), carrot);
-    y++;
-
-    if (item.strikeBonus != 0) {
-      writeLabel("Strike");
-      writeBonus(12, y, item.strikeBonus);
-      y++;
-    }
-
-    if (item.attack.isRanged) {
-      writeStat("Range", item.attack.range);
-    }
-
-    writeLabel("Heft");
-    var strongEnough = hero.strength.value >= item.heft;
-    var color = strongEnough ? UIHue.primary : red;
-    terminal.writeAt(12, y, item.heft.toString(), color);
-    writeScale(16, y, hero.strength.heftScale(item.heft));
-    // TODO: Show heft when dual-wielding somehow?
-    y++;
-  }
-
-  if (item.armor != 0 || item.defense != null) {
-    writeSection("Defense");
-
-    if (item.defense != null) {
-      writeStat("Dodge", item.defense.amount);
-    }
-
-    if (item.armor != 0) {
-      writeLabel("Armor");
-      terminal.writeAt(12, y, item.baseArmor.toString(), UIHue.text);
-      writeBonus(16, y, item.armorModifier);
-      terminal.writeAt(25, y, "=", UIHue.secondary);
-
-      var armor = item.armor.toString().padLeft(6);
-      terminal.writeAt(27, y, armor, peaGreen);
-      y++;
-    }
-
-    writeStat("Weight", item.weight);
-    // TODO: Encumbrance.
-  }
-
-  // TODO: Show spells for spellbooks.
-
-  if (item.canEquip) {
-    writeSection("Resistances");
-    var x = 1;
-    for (var element in Elements.all) {
-      if (element == Element.none) continue;
-      var resistance = item.resistance(element);
-      writeBonus(x - 1, y, resistance);
-      terminal.writeAt(x, y + 1, element.abbreviation,
-          resistance == 0 ? UIHue.disabled : elementColor(element));
-      x += 3;
-    }
-    y += 2;
-  }
-
-  if (item.canUse) {
-    writeSection("Use");
-    writeText(item.type.use.description);
-  }
-
-  writeSection("Description");
-
-  var description = <String>[];
-  // TODO: General description.
-  // TODO: Equip slot.
-  for (var stat in Stat.all) {
-    var bonus = 0;
-    if (item.prefix != null) bonus += item.prefix.statBonus(stat);
-    if (item.suffix != null) bonus += item.suffix.statBonus(stat);
-
-    if (bonus < 0) {
-      description.add("It lowers your ${stat.name} by ${-bonus}.");
-    } else if (bonus > 0) {
-      description.add("It raises your ${stat.name} by $bonus.");
-    }
-  }
-
-  if (item.toss != null) {
-    var toss = item.toss;
-
-    var element = "";
-    if (toss.attack.element != Element.none) {
-      element = " ${toss.attack.element.name}";
-    }
-
-    description.add("It can be thrown for ${toss.attack.damage}$element"
-        " damage up to range ${toss.attack.range}.");
-
-    if (toss.breakage != 0) {
-      description
-          .add("It has a ${toss.breakage}% chance of breaking when thrown.");
-    }
-
-    // TODO: Describe toss use.
-  }
-
-  if (item.emanationLevel > 0) {
-    description.add("It emanates ${item.emanationLevel} light.");
-  }
-
-  for (var element in item.type.destroyChance.keys) {
-    description.add("It can be destroyed by ${element.name.toLowerCase()}.");
-  }
-
-  writeText(description.join(" "));
-
-  // TODO: Max stack size?
-}
-
+// TODO: Move this elsewhere?
 String formatMoney(int price) {
   var result = price.toString();
   if (price > 999999999) {

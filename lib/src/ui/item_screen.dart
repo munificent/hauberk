@@ -100,6 +100,12 @@ abstract class ItemScreen extends Screen<Input> {
 //      return true;
 //    }
 
+    if (_shiftDown && keyCode == KeyCode.escape) {
+      _inspected = null;
+      dirty();
+      return true;
+    }
+
     if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
       var index = keyCode - KeyCode.a;
       if (index >= _items.slots.length) return false;
@@ -154,31 +160,24 @@ abstract class ItemScreen extends Screen<Input> {
     // Don't show the help if another dialog (like buy or sell) is on top with
     // its own help.
     if (_isActive) {
-      Draw.helpKeys(terminal, _shiftDown ? {"A-Z": "Inspect item"} : _helpKeys,
-          _shiftDown ? "Inspect which item?" : _headerText);
+      if (_shiftDown) {
+        Draw.helpKeys(
+            terminal,
+            {
+              "A-Z": "Inspect item",
+              if (_inspected != null) "Esc": "Hide inspector"
+            },
+            "Inspect which item?");
+      } else {
+        Draw.helpKeys(terminal, _helpKeys, _headerText);
+      }
     }
-
-    terminal = terminal.rect(
-        _gameScreen.stagePanel.bounds.x,
-        _gameScreen.stagePanel.bounds.y,
-        _gameScreen.stagePanel.bounds.width,
-        _gameScreen.stagePanel.bounds.height);
-
-    Draw.frame(terminal, 0, 0, terminal.width - 34, _items.length + 2,
-        _canSelectAny ? UIHue.selection : UIHue.disabled);
-    terminal.writeAt(
-        2, 0, " ${_items.name} ", _canSelectAny ? UIHue.selection : UIHue.text);
 
     var view = _TownItemView(this);
-    view.render(terminal.rect(1, 1, terminal.width - 36, terminal.height - 5));
-
-    if (_inspected != null) {
-      var y = view.itemY(_inspected) + 1;
-      y = y.clamp(0, terminal.height - 20);
-
-      drawInspector(
-          terminal.rect(terminal.width - 34, y, 34, 20), _save, _inspected);
-    }
+    var width =
+        math.min(ItemView.preferredWidth, _gameScreen.stagePanel.bounds.width);
+    view.render(terminal, _gameScreen.stagePanel.bounds.x,
+        _gameScreen.stagePanel.bounds.y, width, _items.length);
 
 //    if (completeRecipe != null) {
 //      terminal.writeAt(59, 2, "Press [Space] to forge item!", UIHue.selection);
@@ -247,13 +246,17 @@ class _TownItemView extends ItemView {
 
   _TownItemView(this._screen);
 
+  HeroSave get save => _screen._gameScreen.game.hero.save;
+
   ItemCollection get items => _screen._items;
 
   bool get capitalize => _screen._shiftDown;
 
   bool get showPrices => _screen._showPrices;
 
-  Item get inspectedItem => _screen._inspected;
+  Item get inspectedItem => _screen._isActive ? _screen._inspected : null;
+
+  bool get inspectorOnRight => true;
 
   bool get canSelectAny => _screen._shiftDown || _screen._canSelectAny;
 

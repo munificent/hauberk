@@ -235,7 +235,7 @@ class _ItemBuilder extends _BaseBuilder {
 
     var description = "Detects $typeDescription";
     if (range != null) {
-      description += "up to $range steps away";
+      description += " up to $range steps away";
     }
 
     use("$description.", () => DetectAction(types, range));

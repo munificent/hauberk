@@ -4,7 +4,6 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
-import '../hues.dart';
 import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
@@ -114,6 +113,12 @@ class ItemDialog extends Screen<Input> {
 
     if (alt) return false;
 
+    if (_shiftDown && keyCode == KeyCode.escape) {
+      _inspected = null;
+      dirty();
+      return true;
+    }
+
     // Can't switch view or select an item while selecting a count.
     if (_selectedItem != null) return false;
 
@@ -122,7 +127,7 @@ class ItemDialog extends Screen<Input> {
       return true;
     }
 
-    if (keyCode == KeyCode.tab && canSwitchLocations) {
+    if (keyCode == KeyCode.tab && !_shiftDown && canSwitchLocations) {
       _advanceLocation(shift ? -1 : 1);
       dirty();
       return true;
@@ -179,17 +184,17 @@ class ItemDialog extends Screen<Input> {
 
       // Always make it at least 2 wider than the item panel. That way, with
       // the letters, the items stay in the same position.
-      itemsWidth = math.max(46, _gameScreen.itemPanel.bounds.width + 2);
+      itemsWidth = math.max(
+          ItemView.preferredWidth, _gameScreen.itemPanel.bounds.width + 2);
       itemsLeft = terminal.width - itemsWidth;
     } else {
-      itemsWidth = 46;
+      itemsWidth = ItemView.preferredWidth;
       itemsLeft = _gameScreen.stagePanel.bounds.right - itemsWidth;
       itemsTop = _gameScreen.stagePanel.bounds.y;
     }
 
     var itemView = _ItemDialogItemView(this);
-    itemView
-        .render(terminal.rect(itemsLeft, itemsTop, itemsWidth, itemCount + 2));
+    itemView.render(terminal, itemsLeft, itemsTop, itemsWidth, itemCount);
 
     String query;
     if (_selectedItem == null) {
@@ -203,30 +208,25 @@ class ItemDialog extends Screen<Input> {
     }
 
     _renderHelp(terminal, query);
-
-    if (_inspected != null) {
-      var y = itemsTop + itemView.itemY(_inspected) + 1;
-      y = y.clamp(0, terminal.height - 20);
-      drawInspector(terminal.rect(itemsLeft - 34, y, 34, 20),
-          _gameScreen.game.hero.save, _inspected);
-    }
   }
 
   void _renderHelp(Terminal terminal, String query) {
-    var helpKeys = <String, String>{};
+    Map<String, String> helpKeys;
     if (_selectedItem == null) {
       if (_shiftDown) {
-        helpKeys["A-Z"] = "Inspect item";
+        helpKeys = {
+          "A-Z": "Inspect item",
+          if (_inspected != null) "Esc": "Hide inspector"
+        };
       } else {
-        helpKeys["A-Z"] = "Select item";
-        helpKeys["Shift"] = "Inspect";
+        helpKeys = {
+          "A-Z": "Select item",
+          "Shift": "Inspect item",
+          if (canSwitchLocations) "Tab": "Switch view"
+        };
       }
     } else {
-      helpKeys["↕"] = "Change quantity";
-    }
-
-    if (canSwitchLocations) {
-      helpKeys["Tab"] = "Switch view";
+      helpKeys = {"↕": "Change quantity"};
     }
 
     Draw.helpKeys(terminal, helpKeys, query);
@@ -287,6 +287,8 @@ class ItemDialog extends Screen<Input> {
 class _ItemDialogItemView extends ItemView {
   final ItemDialog _dialog;
 
+  HeroSave get save => _dialog._gameScreen.game.hero.save;
+
   ItemCollection get items => _dialog._getItems();
 
   bool get canSelectAny => true;
@@ -302,14 +304,6 @@ class _ItemDialogItemView extends ItemView {
   int getPrice(Item item) => _dialog._command.getPrice(item);
 
   _ItemDialogItemView(this._dialog);
-
-  void render(Terminal terminal) {
-    Draw.frame(
-        terminal, 0, 0, terminal.width, terminal.height, UIHue.selection);
-    terminal.writeAt(2, 0, " ${items.name} ", UIHue.selection);
-
-    super.render(terminal.rect(1, 1, terminal.width - 2, terminal.height - 2));
-  }
 }
 
 /// The action the user wants to perform on the selected item.
