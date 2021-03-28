@@ -1,4 +1,5 @@
-A **furnishing** is a little blob of content that may be placeable within a room or other generated area of the dungeon. It has a few components:
+A **furnishing** is a little blob of content that may be placeable within a room
+or other generated area of the dungeon. It has a few components:
 
 -   The **template** is a 2D grid of cells that defines the furnishing's
     appearance and requirements. In code, the template is a string literal with
