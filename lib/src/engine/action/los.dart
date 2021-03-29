@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/actor.dart';
@@ -7,8 +6,8 @@ import 'action.dart';
 /// Base class for an [Action] that traces a path from the actor along a [Line].
 abstract class LosAction extends Action {
   final Vec _target;
-  Vec _lastPos;
-  Iterator<Vec> _los;
+  late Vec _lastPos;
+  late final Iterator<Vec> _los = _initIterator();
 
   /// Override this to provide the range of the line.
   int get range;
@@ -18,14 +17,6 @@ abstract class LosAction extends Action {
   LosAction(this._target);
 
   ActionResult onPerform() {
-    if (_los == null) {
-      _los = Line(actor.pos, _target).iterator;
-      // Advance to the first tile.
-      _los.moveNext();
-
-      _lastPos = actor.pos;
-    }
-
     var pos = _los.current;
 
     // Stop if we hit a wall or went out of range.
@@ -71,4 +62,14 @@ abstract class LosAction extends Action {
   /// If this returns `true`, the LOS will stop there. Otherwise it will
   /// continue until it reaches the end of its range or hits something.
   bool onTarget(Vec pos) => false;
+
+  Iterator<Vec> _initIterator() {
+    var iterator = Line(actor.pos, _target).iterator;
+
+    // Advance to the first tile.
+    iterator.moveNext();
+
+    _lastPos = actor.pos;
+    return iterator;
+  }
 }

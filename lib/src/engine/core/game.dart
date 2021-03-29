@@ -92,7 +92,7 @@ class Game {
         // Cascade through the alternates until we hit bottom.
         while (result.alternative != null) {
           _actions.removeFirst();
-          action = result.alternative;
+          action = result.alternative!;
           _actions.addFirst(action);
 
           result = action.perform();
@@ -104,7 +104,7 @@ class Game {
 
           // Cascade through the alternates until we hit bottom.
           while (result.alternative != null) {
-            reaction = result.alternative;
+            reaction = result.alternative!;
             result = reaction.perform();
           }
 

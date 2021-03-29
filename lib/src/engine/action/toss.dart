@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/actor.dart';
@@ -61,7 +60,7 @@ class TossLosAction extends LosAction {
 
   bool onHitActor(Vec pos, Actor target) {
     // TODO: Range should affect strike.
-    if (_hit.perform(this, actor, target) == null) {
+    if (_hit.perform(this, actor, target) == 0) {
       // The item missed, so keep flying.
       _missed = true;
       return false;
