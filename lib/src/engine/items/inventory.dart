@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:collection';
 
 import '../core/actor.dart';
@@ -46,7 +45,7 @@ mixin ItemCollection implements Iterable<Item> {
 
   /// If the item collection may have empty slots in it (equipment) this returns
   /// the sequence of items and slots.
-  Iterable<Item> get slots => this;
+  Iterable<Item?> get slots => this;
 
   void remove(Item item);
 
@@ -66,20 +65,20 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   final ItemLocation location;
 
   final List<Item> _items;
-  final int _capacity;
+  final int? _capacity;
 
   /// If the [Hero] had to unequip an item in order to equip another one, this
   /// will refer to the item that was unequipped.
   ///
   /// If the hero isn't holding an unequipped item, returns `null`.
-  Item get lastUnequipped => _lastUnequipped;
-  Item _lastUnequipped;
+  Item? get lastUnequipped => _lastUnequipped;
+  Item? _lastUnequipped;
 
   int get length => _items.length;
 
   Item operator [](int index) => _items[index];
 
-  Inventory(this.location, [this._capacity, Iterable<Item> items])
+  Inventory(this.location, [this._capacity, Iterable<Item>? items])
       : _items = [...?items];
 
   /// Creates a new copy of this Inventory. This is done when the [Hero] enters
@@ -109,7 +108,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
 
   bool canAdd(Item item) {
     // If there's an empty slot, can always add it.
-    if (_capacity == null || _items.length < _capacity) return true;
+    if (_capacity == null || _items.length < _capacity!) return true;
 
     // See if we can merge it with other stacks.
     var remaining = item.count;
@@ -139,7 +138,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     }
 
     // See if there is room to start a new stack with the rest.
-    if (_capacity != null && _items.length >= _capacity) {
+    if (_capacity != null && _items.length >= _capacity!) {
       // There isn't room to pick up everything.
       return AddItemResult(adding - item.count, item.count);
     }

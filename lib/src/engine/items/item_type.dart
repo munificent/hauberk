@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -33,7 +32,7 @@ class Toss {
 
   /// The action created when the item is tossed and hits something, or `null`
   /// if it just falls to the ground.
-  final TossItemUse use;
+  final TossItemUse? use;
 
   Toss(this.breakage, this.attack, this.use);
 }
@@ -63,28 +62,27 @@ class ItemType {
 
   /// The name of the equipment slot that [Item]s can be placed in. If `null`
   /// then this Item cannot be equipped.
-  final String equipSlot;
+  final String? equipSlot;
 
   /// If true, the item takes up both hand slots.
   final bool isTwoHanded;
 
   /// If this item is a weapon, returns which kind of weapon it is -- "spear",
   /// "sword", etc. Otherwise returns `null`.
-  final String weaponType;
+  final String? weaponType;
 
-  final ItemUse use;
+  final ItemUse? use;
 
   /// The item's [Attack] or `null` if the item is not an equippable weapon.
-  final Attack attack;
+  final Attack? attack;
 
   /// The items toss information, or `null` if it can't be tossed.
-  final Toss toss;
+  final Toss? toss;
 
-  final Defense defense;
+  final Defense? defense;
 
   final int armor;
 
-  // TODO: Affix should modify this.
   /// How much gold this item is worth.
   final int price;
 
@@ -135,10 +133,10 @@ class ItemType {
       this.maxStack,
       {this.weight = 0,
       this.heft = 1,
-      int emanation,
-      int fuel,
-      bool treasure,
-      bool twoHanded})
+      int? emanation,
+      int? fuel,
+      bool? treasure,
+      bool? twoHanded})
       : emanationLevel = emanation ?? 0,
         fuel = fuel ?? 0,
         isTreasure = treasure ?? false,

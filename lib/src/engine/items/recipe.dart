@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'item.dart';
 import 'item_type.dart';
 
@@ -31,16 +30,16 @@ class Recipe {
   /// Gets the remaining ingredients needed to complete this recipe given
   /// [items] ingredients. Returns `null` if [items] contains any ingredients
   /// that are not used by this recipe.
-  Map<ItemType, int> _missingIngredients(Iterable<Item> items) {
+  Map<ItemType, int>? _missingIngredients(Iterable<Item> items) {
     var missing = Map<ItemType, int>.from(ingredients);
     for (var item in items) {
       if (!missing.containsKey(item.type)) return null;
-      missing[item.type] -= item.count;
+      missing[item.type] = missing[item.type]! - item.count;
     }
 
     // Remove the ingredients that are complete.
     for (var ingredient in missing.keys.toList()) {
-      if (missing[ingredient] <= 0) missing.remove(ingredient);
+      if (missing[ingredient]! <= 0) missing.remove(ingredient);
     }
 
     return missing;

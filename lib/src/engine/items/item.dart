@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import '../action/action.dart';
@@ -12,15 +11,15 @@ import 'item_type.dart';
 class Item implements Comparable<Item>, Noun {
   final ItemType type;
 
-  final Affix prefix;
-  final Affix suffix;
+  final Affix? prefix;
+  final Affix? suffix;
 
   Item(this.type, this._count, [this.prefix, this.suffix]);
 
   Object get appearance => type.appearance;
 
   bool get canEquip => equipSlot != null;
-  String get equipSlot => type.equipSlot;
+  String? get equipSlot => type.equipSlot;
 
   /// Whether the item can be used or not.
   bool get canUse => type.use != null;
@@ -30,48 +29,45 @@ class Item implements Comparable<Item>, Noun {
     // TODO: Some kinds of usable items shouldn't be consumed, like rods in
     // Angband.
     _count--;
-    return type.use.createAction();
+    return type.use!.createAction();
   }
 
   /// Whether the item can be thrown or not.
   bool get canToss => type.toss != null;
 
   /// The base attack for the item, ignoring its own affixes.
-  Attack get attack => type.attack;
+  Attack? get attack => type.attack;
 
-  Toss get toss => type.toss;
+  Toss? get toss => type.toss;
 
   Element get element {
     var result = Element.none;
-    if (attack != null) result = attack.element;
-    if (prefix != null && prefix.brand != Element.none) result = prefix.brand;
-    if (suffix != null && suffix.brand != Element.none) result = suffix.brand;
+    if (attack != null) result = attack!.element;
+    if (prefix != null && prefix!.brand != Element.none) result = prefix!.brand;
+    if (suffix != null && suffix!.brand != Element.none) result = suffix!.brand;
     return result;
   }
 
   int get strikeBonus {
     var result = 0;
-    if (prefix != null) result += prefix.strikeBonus;
-    if (suffix != null) result += suffix.strikeBonus;
+    _applyAffixes((affix) => result += affix.strikeBonus);
     return result;
   }
 
   double get damageScale {
     var result = 1.0;
-    if (prefix != null) result *= prefix.damageScale;
-    if (suffix != null) result *= suffix.damageScale;
+    _applyAffixes((affix) => result *= affix.damageScale);
     return result;
   }
 
   int get damageBonus {
     var result = 0;
-    if (prefix != null) result += prefix.damageBonus;
-    if (suffix != null) result += suffix.damageBonus;
+    _applyAffixes((affix) => result += affix.damageBonus);
     return result;
   }
 
   // TODO: Affix defenses?
-  Defense get defense => type.defense;
+  Defense? get defense => type.defense;
 
   /// The amount of protection provided by the item when equipped.
   int get armor => baseArmor + armorModifier;
@@ -83,16 +79,15 @@ class Item implements Comparable<Item>, Noun {
   /// The amount of protection added by the affixes.
   int get armorModifier {
     var result = 0;
-    if (prefix != null) result += prefix.armor;
-    if (suffix != null) result += suffix.armor;
+    _applyAffixes((affix) => result += affix.armor);
     return result;
   }
 
   String get nounText {
     var name = type.quantifiableName;
 
-    if (prefix != null) name = "${prefix.displayName} $name";
-    if (suffix != null) name = "$name ${suffix.displayName}";
+    if (prefix != null) name = "${prefix!.displayName} $name";
+    if (suffix != null) name = "$name ${suffix!.displayName}";
 
     return Log.quantify(name, count);
   }
@@ -108,11 +103,8 @@ class Item implements Comparable<Item>, Noun {
     var affixScale = 1.0;
     if (prefix != null && suffix != null) affixScale = 1.5;
 
-    if (prefix != null) price *= prefix.priceScale * affixScale;
-    if (suffix != null) price *= suffix.priceScale * affixScale;
-
-    if (prefix != null) price += prefix.priceBonus * affixScale;
-    if (suffix != null) price += suffix.priceBonus * affixScale;
+    _applyAffixes((affix) => price *= affix.priceScale * affixScale);
+    _applyAffixes((affix) => price += affix.priceBonus * affixScale);
 
     return price.ceil();
   }
@@ -122,20 +114,14 @@ class Item implements Comparable<Item>, Noun {
   /// The penalty to the hero's strength when wearing this.
   int get weight {
     var result = type.weight;
-
-    if (prefix != null) result += prefix.weightBonus;
-    if (suffix != null) result += suffix.weightBonus;
-
+    _applyAffixes((affix) => result += affix.weightBonus);
     return math.max(0, result);
   }
 
   /// The amount of strength required to wield the item effectively.
   int get heft {
     var result = type.heft.toDouble();
-
-    if (prefix != null) result *= prefix.heftScale;
-    if (suffix != null) result *= suffix.heftScale;
-
+    _applyAffixes((affix) => result *= affix.heftScale);
     return result.round();
   }
 
@@ -158,10 +144,7 @@ class Item implements Comparable<Item>, Noun {
   /// Gets the resistance this item confers to [element] when equipped.
   int resistance(Element element) {
     var resistance = 0;
-
-    if (prefix != null) resistance += prefix.resistance(element);
-    if (suffix != null) resistance += suffix.resistance(element);
-
+    _applyAffixes((affix) => resistance += affix.resistance(element));
     return resistance;
   }
 
@@ -182,7 +165,7 @@ class Item implements Comparable<Item>, Noun {
   ///
   /// If [count] is given, the clone has that count. Otherwise, it has the
   /// same count as this item.
-  Item clone([int count]) => Item(type, count ?? _count, prefix, suffix);
+  Item clone([int? count]) => Item(type, count ?? _count, prefix, suffix);
 
   bool canStack(Item item) {
     if (type != item.type) return false;
@@ -233,4 +216,9 @@ class Item implements Comparable<Item>, Noun {
   }
 
   String toString() => nounText;
+
+  void _applyAffixes(Function(Affix) callback) {
+    if (prefix != null) callback(prefix!);
+    if (suffix != null) callback(suffix!);
+  }
 }

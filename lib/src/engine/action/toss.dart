@@ -86,17 +86,19 @@ class TossLosAction extends LosAction {
   }
 
   void _endThrow(Vec pos) {
+    var toss = _item.toss!;
+
     // TODO: I think there's a bug here somewhere. Sometimes, when you throw a
     // bottled element at a monster, it seems to only do the toss damage of the
     // bottle itself, and not the effect damage too.
     // See if the item does something when it hits.
-    if (_item.toss.use != null) {
-      addAction(_item.toss.use(pos));
+    if (toss.use != null) {
+      addAction(toss.use!(pos));
       return;
     }
 
     // See if it breaks.
-    if (rng.percent(_item.toss.breakage)) {
+    if (rng.percent(toss.breakage)) {
       log("{1} breaks!", _item);
       return;
     }

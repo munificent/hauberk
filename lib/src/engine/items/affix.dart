@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../core/element.dart';
 import '../hero/stat.dart';
 import 'item.dart';
@@ -31,15 +30,15 @@ class Affix {
   final double priceScale;
 
   Affix(this.name, this.displayName,
-      {double heftScale,
-      int weightBonus,
-      int strikeBonus,
-      double damageScale,
-      int damageBonus,
-      Element brand,
-      int armor,
-      int priceBonus,
-      double priceScale})
+      {double? heftScale,
+      int? weightBonus,
+      int? strikeBonus,
+      double? damageScale,
+      int? damageBonus,
+      Element? brand,
+      int? armor,
+      int? priceBonus,
+      double? priceScale})
       : heftScale = heftScale ?? 1.0,
         weightBonus = weightBonus ?? 0,
         strikeBonus = strikeBonus ?? 0,

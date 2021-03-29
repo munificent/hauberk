@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:collection';
 
 import 'inventory.dart';
@@ -10,7 +9,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   ItemLocation get location => ItemLocation.equipment;
 
   final List<String> slotTypes;
-  final List<Item> slots;
+  final List<Item?> slots;
 
   Equipment()
       : slotTypes = const [
@@ -24,11 +23,11 @@ class Equipment extends IterableBase<Item> with ItemCollection {
           'gloves',
           'boots'
         ],
-        slots = List<Item>.filled(9, null);
+        slots = List<Item?>.filled(9, null);
 
   /// Gets the currently-equipped weapons, if any.
   Iterable<Item> get weapons =>
-      slots.where((item) => item != null && item.type.weaponType != null);
+      slots.whereType<Item>().where((item) => item.type.weaponType != null);
 
   /// Gets the number of equipped items. Ignores empty slots.
   int get length {
@@ -40,7 +39,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     // Find the slot, skipping over empty ones.
     for (var i = 0; i < slotTypes.length; i++) {
       if (slots[i] != null) {
-        if (index == 0) return slots[i];
+        if (index == 0) return slots[i]!;
         index--;
       }
     }
@@ -55,7 +54,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     var equipment = Equipment();
     for (var i = 0; i < slotTypes.length; i++) {
       if (slots[i] != null) {
-        equipment.slots[i] = slots[i].clone();
+        equipment.slots[i] = slots[i]!.clone();
       }
     }
 
@@ -126,8 +125,8 @@ class Equipment extends IterableBase<Item> with ItemCollection {
       }
 
       // Holding a two-handed item, so unequip it.
-      if (heldSlots.length == 1 && slots[heldSlots[0]].type.isTwoHanded) {
-        var unequipped = slots[heldSlots[0]];
+      if (heldSlots.length == 1 && slots[heldSlots[0]]!.type.isTwoHanded) {
+        var unequipped = slots[heldSlots[0]]!;
         slots[handSlots[0]] = item;
         return [unequipped];
       }
@@ -136,7 +135,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
       if (item.type.isTwoHanded) {
         var unequipped = <Item>[];
         for (var slot in heldSlots) {
-          unequipped.add(slots[slot]);
+          unequipped.add(slots[slot]!);
           slots[slot] = null;
         }
 
@@ -146,7 +145,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
 
       // Both hands full, so empty one.
       if (heldSlots.length == 2) {
-        var unequipped = slots[heldSlots[0]];
+        var unequipped = slots[heldSlots[0]]!;
         slots[heldSlots[0]] = item;
         return [unequipped];
       }
@@ -176,7 +175,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
 
     // If we get here, all matching slots were already full. Swap out an item.
     assert(usedSlot != -1, "Should have at least one of every slot.");
-    var unequipped = [slots[usedSlot]];
+    var unequipped = [slots[usedSlot]!];
     slots[usedSlot] = item;
     return unequipped;
   }
@@ -198,7 +197,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
       if (index == 0) {
         var item = slots[i];
         slots[i] = null;
-        return item;
+        return item!;
       }
 
       index--;
@@ -208,5 +207,5 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   }
 
   /// Gets the non-empty item slots.
-  Iterator<Item> get iterator => slots.where((item) => item != null).iterator;
+  Iterator<Item> get iterator => slots.whereType<Item>().iterator;
 }
