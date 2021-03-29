@@ -67,30 +67,30 @@ void canines() {
   breed("mongrel", 7, carrot, 28)
     ..count(2, 5)
     ..attack("bite[s]", 8)
-    ..howl(range: 10);
+    ..howl();
 
   breed("wolf", 26, ash, 60)
     ..count(3, 6)
     ..attack("bite[s]", 12)
-    ..howl(range: 10);
+    ..howl();
 
   breed("varg", 30, coolGray, 80)
     ..count(2, 6)
     ..attack("bite[s]", 16)
-    ..howl(range: 10);
+    ..howl();
 
   // TODO: Drops.
   breed("Skoll", 36, gold, 200)
     ..flags("unique")
     ..minion("canine", 5, 9)
     ..attack("bite[s]", 20)
-    ..howl(range: 10);
+    ..howl();
 
   breed("Hati", 40, blue, 250)
     ..flags("unique")
     ..minion("canine", 5, 9)
     ..attack("bite[s]", 23)
-    ..howl(range: 10);
+    ..howl();
 
   breed("Fenrir", 44, darkCoolGray, 300)
     ..flags("unique")
@@ -98,7 +98,7 @@ void canines() {
     ..minion("Skoll")
     ..minion("Hati")
     ..attack("bite[s]", 26)
-    ..howl(range: 10);
+    ..howl();
 }
 
 void dragons() {
@@ -183,27 +183,27 @@ void eyes() {
   breed("floating eye", 15, buttermilk, 60)
     ..attack("stare[s] at", 10)
     ..sparkBolt(rate: 4, damage: 24)
-    ..teleport(rate: 10, range: 7);
+    ..teleport(range: 7);
 
   breed("baleful eye", 20, carrot, 80)
     ..attack("gaze[s] into", 12)
     ..fireBolt(rate: 4, damage: 20)
     ..waterBolt(rate: 4, damage: 20)
-    ..teleport(rate: 10, range: 9);
+    ..teleport(range: 9);
 
   breed("malevolent eye", 30, red, 120)
     ..attack("gaze[s] into", 20)
     ..lightBolt(rate: 4, damage: 20)
     ..darkBolt(rate: 4, damage: 20)
     ..fireCone(rate: 7, damage: 30)
-    ..teleport(rate: 10, range: 9);
+    ..teleport(range: 9);
 
   breed("murderous eye", 40, maroon, 180)
     ..attack("gaze[s] into", 30)
     ..acidBolt(rate: 7, damage: 40)
     ..stoneBolt(rate: 7, damage: 40)
     ..iceCone(rate: 7, damage: 30)
-    ..teleport(rate: 10, range: 9);
+    ..teleport(range: 9);
 
   breed("watcher", 60, lightCoolGray, 300)
     ..attack("see[s]", 50)
@@ -416,7 +416,7 @@ void kobolds() {
     ..count(3)
     ..minion("canine", 0, 3)
     ..attack("poke[s]", 4)
-    ..teleport(rate: 10, range: 6)
+    ..teleport(range: 6)
     ..drop("treasure", percent: 25)
     ..drop("equipment", percent: 10)
     ..drop("magic", percent: 20);
