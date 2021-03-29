@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../action/action.dart';
 import 'actor.dart';
 import 'element.dart';
@@ -12,7 +11,7 @@ import 'log.dart';
 abstract class Condition {
   /// The [Actor] that this condition applies to.
   Actor get actor => _actor;
-  Actor _actor;
+  late Actor _actor;
 
   /// The number of turns that the condition while remain in effect for.
   int _turnsRemaining = 0;
@@ -32,7 +31,6 @@ abstract class Condition {
   /// Binds the condition to the actor that it applies to. Must be called and
   /// can only be called once.
   void bind(Actor actor) {
-    assert(_actor == null);
     _actor = actor;
   }
 

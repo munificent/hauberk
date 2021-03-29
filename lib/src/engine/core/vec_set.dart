@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:collection';
 import 'dart:math' as math;
 
@@ -68,5 +67,5 @@ class VecSet extends IterableBase<Vec> {
     _yMax = math.max(_yMax, pos.y);
   }
 
-  bool contains(Object element) => _values[element as Vec] == _sentinel;
+  bool contains(Object? element) => _values[element as Vec] == _sentinel;
 }

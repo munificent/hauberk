@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -18,26 +17,26 @@ class ResourceSet<T> {
 
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
-  void add(T object, {String name, int depth, double frequency, String tags}) {
+  void add(T object,
+      {String? name, int? depth, double? frequency, String? tags}) {
     _add(object, name, depth, depth, frequency, frequency, tags);
   }
 
   void addRanged(T object,
-      {String name,
-      int start,
-      int end,
-      double startFrequency,
-      double endFrequency,
-      String tags}) {
+      {String? name,
+      int? start,
+      int? end,
+      double? startFrequency,
+      double? endFrequency,
+      String? tags}) {
     _add(object, name, start, end, startFrequency, endFrequency, tags);
   }
 
-  void _add(T object, String name, int startDepth, int endDepth,
-      double startFrequency, double endFrequency, String tags) {
+  void _add(T object, String? name, int? startDepth, int? endDepth,
+      double? startFrequency, double? endFrequency, String? tags) {
     name ??= _resources.length.toString();
     startDepth ??= 1;
     endDepth ??= startDepth;
-
     startFrequency ??= 1.0;
     endFrequency ??= startFrequency;
 
@@ -63,8 +62,8 @@ class ResourceSet<T> {
   /// "b", "b"'s is "a", and "e"'s parent is "d".
   void defineTags(String paths) {
     for (var path in paths.split(" ")) {
-      _Tag<T> parent;
-      _Tag<T> tag;
+      _Tag<T>? parent;
+      _Tag<T>? tag;
       for (var name in path.split("/")) {
         tag = _tags[name];
         if (tag == null) {
@@ -85,7 +84,7 @@ class ResourceSet<T> {
   }
 
   /// Returns the resource with [name], if any, or else `null`.
-  T tryFind(String name) {
+  T? tryFind(String name) {
     var resource = _resources[name];
     if (resource == null) return null;
     return resource.object;
@@ -129,25 +128,26 @@ class ResourceSet<T> {
   /// If no tag is given, chooses from all resources based only on depth.
   ///
   /// May return `null` if there are no resources with [tag].
-  T tryChoose(int depth, {String tag, bool includeParents}) {
+  T? tryChoose(int depth, {String? tag, bool? includeParents}) {
     includeParents ??= true;
 
     if (tag == null) return _runQuery("", depth, (_) => 1.0);
 
-    var goalTag = _tags[tag];
-    assert(goalTag != null);
+    var goalTag = _tags[tag]!;
 
     var label = goalTag.name;
     if (!includeParents) label += " (only)";
 
     return _runQuery(label, depth, (resource) {
       var scale = 1.0;
-      for (var thisTag = goalTag; thisTag != null; thisTag = thisTag.parent) {
+      for (_Tag<T>? thisTag = goalTag;
+          thisTag != null;
+          thisTag = thisTag.parent) {
         for (var resourceTag in resource._tags) {
           if (resourceTag.contains(thisTag)) return scale;
         }
 
-        if (!includeParents) break;
+        if (!includeParents!) break;
 
         // Resources in sibling trees are included with lower probability based
         // on how far their common ancestor is. So if the goal is
@@ -166,7 +166,7 @@ class ResourceSet<T> {
   /// For example, given tag path "equipment/weapon/sword", if [tags] is
   /// "weapon", this will permit resources tagged "weapon" or "equipment", but
   /// not "sword".
-  T tryChooseMatching(int depth, Iterable<String> tags) {
+  T? tryChooseMatching(int depth, Iterable<String> tags) {
     var tagObjects = tags.map((name) {
       var tag = _tags[name];
       if (tag == null) throw ArgumentError('Unknown tag "$name".');
@@ -185,7 +185,7 @@ class ResourceSet<T> {
     });
   }
 
-  T _runQuery(
+  T? _runQuery(
       String name, int depth, double Function(_Resource<T> resource) scale) {
     // Reuse a cached query, if possible.
     var key = _QueryKey(name, depth);
@@ -287,13 +287,13 @@ class _Resource<T> {
 
 class _Tag<T> {
   final String name;
-  final _Tag<T> parent;
+  final _Tag<T>? parent;
 
   _Tag(this.name, this.parent);
 
   /// Returns `true` if this tag is [tag] or one of this tag's parents is.
   bool contains(_Tag<T> tag) {
-    for (var thisTag = this; thisTag != null; thisTag = thisTag.parent) {
+    for (_Tag<T>? thisTag = this; thisTag != null; thisTag = thisTag.parent) {
       if (tag == thisTag) return true;
     }
 
@@ -348,7 +348,7 @@ class _ResourceQuery<T> {
   _ResourceQuery(this.depth, this.resources, this.chances, this.totalChance);
 
   /// Choose a random resource that matches this query.
-  T choose() {
+  T? choose() {
     if (resources.isEmpty) return null;
 
     // Pick a point in the probability range.

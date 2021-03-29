@@ -1,4 +1,3 @@
-// @dart=2.11
 /// The message log.
 class Log {
   /// Given a noun pattern, returns the unquantified singular form of it.
@@ -46,7 +45,7 @@ class Log {
   static List<String> wordWrap(int width, String text) {
     var lines = <String>[];
     var start = 0;
-    int wordBreak;
+    int? wordBreak;
     for (var i = 0; i < text.length; i++) {
       if (text[i] == ' ') wordBreak = i + 1;
 
@@ -69,31 +68,32 @@ class Log {
 
   final messages = <Message>[];
 
-  void message(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void message(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     add(LogType.message, message, noun1, noun2, noun3);
   }
 
-  void error(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void error(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     add(LogType.error, message, noun1, noun2, noun3);
   }
 
-  void quest(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void quest(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     add(LogType.quest, message, noun1, noun2, noun3);
   }
 
-  void gain(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void gain(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     add(LogType.gain, message, noun1, noun2, noun3);
   }
 
-  void help(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void help(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     add(LogType.help, message, noun1, noun2, noun3);
   }
 
-  void cheat(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void cheat(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     add(LogType.cheat, message, noun1, noun2, noun3);
   }
 
-  void add(LogType type, String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void add(LogType type, String message,
+      [Noun? noun1, Noun? noun2, Noun? noun3]) {
     message = _format(message, noun1, noun2, noun3);
 
     // See if it's a repeat of the last message.
@@ -170,7 +170,7 @@ class Log {
   ///
   /// Finally, the first letter in the result will be capitalized to properly
   /// sentence case it.
-  String _format(String text, [Noun noun1, Noun noun2, Noun noun3]) {
+  String _format(String text, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     var result = text;
 
     var nouns = [noun1, noun2, noun3];
@@ -214,9 +214,8 @@ class Log {
   ///
   /// If [force] is `true`, then a trailing "s" will be added to the end if
   /// [isFirst] is `false` and [text] doesn't have any formatting.
-  static String _categorize(String text, {bool isFirst, bool force = false}) {
-    assert(isFirst != null);
-
+  static String _categorize(String text,
+      {required bool isFirst, bool force = false}) {
     var optionalSuffix = RegExp(r'\[(\w+?)\]');
     var irregular = RegExp(r'\[([^|]+)\|([^\]]+)\]');
 

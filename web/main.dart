@@ -243,7 +243,9 @@ RetroTerminal _makeTerminal(
   var file = "font_$charWidth";
   if (charWidth != charHeight) file += "_$charHeight";
   return RetroTerminal(width, height, "$file.png",
-      canvas: canvas, charWidth: charWidth, charHeight: charHeight,
+      canvas: canvas,
+      charWidth: charWidth,
+      charHeight: charHeight,
       scale: html.window.devicePixelRatio.toInt());
 }
 

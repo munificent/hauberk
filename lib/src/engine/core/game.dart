@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
@@ -50,15 +49,15 @@ class Game {
   /// While the game is processing substance tiles, this is the index of the
   /// current tile's position in [_substanceUpdateOrder]. Otherwise, this is
   /// `null`.
-  int _substanceIndex;
+  int? _substanceIndex;
 
   final int depth;
 
   Stage get stage => _stage;
-  Stage _stage;
-  Hero hero;
+  late Stage _stage;
+  late Hero hero;
 
-  Game(this.content, this._save, this.depth, {int width, int height}) {
+  Game(this.content, this._save, this.depth, {int? width, int? height}) {
     // TODO: Vary size?
     _stage = Stage(width ?? 80, height ?? 60, this);
 
@@ -68,7 +67,7 @@ class Game {
 
   Iterable<String> generate() sync* {
     // TODO: Do something useful with depth.
-    Vec heroPos;
+    late Vec heroPos;
     yield* content.buildStage(_save.lore, _stage, depth, (pos) {
       heroPos = pos;
     });
@@ -180,7 +179,11 @@ class Game {
   }
 
   void addEvent(EventType type,
-      {Actor actor, Element element, Object other, Vec pos, Direction dir}) {
+      {Actor? actor,
+      Element? element,
+      Object? other,
+      Vec? pos,
+      Direction? dir}) {
     _events.add(Event(type, actor, element, pos, dir, other));
   }
 
@@ -192,10 +195,10 @@ class Game {
   }
 
   void _updateSubstances() {
-    while (_substanceIndex < _substanceUpdateOrder.length) {
-      var pos = _substanceUpdateOrder[_substanceIndex];
+    while (_substanceIndex! < _substanceUpdateOrder.length) {
+      var pos = _substanceUpdateOrder[_substanceIndex!];
       var action = content.updateSubstance(stage, pos);
-      _substanceIndex++;
+      _substanceIndex = _substanceIndex! + 1;
 
       if (action != null) {
         action.bindPassive(this, pos);
@@ -259,7 +262,7 @@ abstract class Content {
 
   HeroSave createHero(String name, [Race race, HeroClass heroClass]);
 
-  Action updateSubstance(Stage stage, Vec pos);
+  Action? updateSubstance(Stage stage, Vec pos);
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells
@@ -285,11 +288,11 @@ class GameResult {
 /// to want to display visually in some form.
 class Event {
   final EventType type;
-  final Actor actor;
-  final Element element;
-  final Object other;
-  final Vec pos;
-  final Direction dir;
+  final Actor? actor;
+  final Element? element;
+  final Object? other;
+  final Vec? pos;
+  final Direction? dir;
 
   Event(this.type, this.actor, this.element, this.pos, this.dir, this.other);
 }

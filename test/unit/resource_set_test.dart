@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 import 'package:test/test.dart';
 
@@ -13,15 +12,15 @@ void main() {
   resourceSet.add("lizard", tags: "reptile");
   resourceSet.add("cobra", tags: "snake");
 
-  Map<String, double> runTrial(String tag, {bool includeParents}) {
+  Map<String, double> runTrial(String? tag, {bool? includeParents}) {
     assert(includeParents != null);
 
     var counts = <String, int>{};
     for (var i = 0; i < 10000; i++) {
       var animal =
-          resourceSet.tryChoose(1, tag: tag, includeParents: includeParents);
+          resourceSet.tryChoose(1, tag: tag, includeParents: includeParents)!;
       counts.putIfAbsent(animal, () => 0);
-      counts[animal]++;
+      counts[animal] = counts[animal]! + 1;
     }
 
     var ratios = <String, double>{};

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -29,7 +28,7 @@ num getArmorMultiplier(int armor) {
 class Attack {
   /// The thing performing the attack. If `null`, then the attacker will be
   /// used.
-  final Noun noun;
+  final Noun? noun;
 
   /// A verb string describing the attack: "hits", "fries", etc.
   final String verb;
@@ -44,7 +43,7 @@ class Attack {
 
   final Element element;
 
-  Attack(this.noun, this.verb, this.damage, [int range, Element element])
+  Attack(this.noun, this.verb, this.damage, [int? range, Element? element])
       : range = range ?? 0,
         element = element ?? Element.none;
 
@@ -128,12 +127,12 @@ class Hit {
   ///
   /// Returns the amount of damage done if the attack connected or `null` if
   /// it missed.
-  int perform(Action action, Actor attacker, Actor defender, {bool canMiss}) {
+  int perform(Action action, Actor? attacker, Actor defender, {bool? canMiss}) {
     canMiss ??= true;
 
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
     // attacker ("the wolf bites").
-    var attackNoun = _attack.noun ?? attacker;
+    var attackNoun = (_attack.noun ?? attacker)!;
 
     // Don't sleep through being attacked.
     if (defender is Hero) defender.disturb();

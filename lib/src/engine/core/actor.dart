@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -69,7 +68,7 @@ abstract class Actor implements Noun {
     pos = Vec(x, value);
   }
 
-  int _health;
+  int _health = 0;
 
   int get health => _health;
 
@@ -154,7 +153,7 @@ abstract class Actor implements Noun {
 
   Action getAction() {
     var action = onGetAction();
-    if (action != null) action.bind(this);
+    action.bind(this);
     return action;
   }
 
@@ -209,7 +208,7 @@ abstract class Actor implements Noun {
     var result = onGetResistance(element);
 
     // Apply temporary resistance.
-    var resistance = resistances[element];
+    var resistance = resistances[element]!;
     if (resistance.isActive) {
       result += resistance.intensity;
     }
@@ -222,7 +221,7 @@ abstract class Actor implements Noun {
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.
   bool takeDamage(Action action, int damage, Noun attackNoun,
-      [Actor attacker]) {
+      [Actor? attacker]) {
     health -= damage;
     onTakeDamage(action, attacker, damage);
 
@@ -248,7 +247,7 @@ abstract class Actor implements Noun {
   ///
   /// [attacker] may be `null` if the damage is not the direct result of an
   /// attack (for example, poison).
-  void onTakeDamage(Action action, Actor attacker, int damage) {
+  void onTakeDamage(Action action, Actor? attacker, int damage) {
     // Do nothing.
   }
 
@@ -307,7 +306,7 @@ abstract class Actor implements Noun {
   }
 
   /// Logs [message] if the actor is visible to the hero.
-  void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void log(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     if (!game.hero.canPerceive(this)) return;
     game.log.message(message, noun1, noun2, noun3);
   }
