@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -64,13 +63,16 @@ class TilePortal {
 }
 
 class TileType {
+  /// The type of a tile when first constructed.
+  static final uninitialized = TileType("uninitialized", null, Motility.none);
+
   final String name;
 
   /// Where the tile takes the hero, or `null` if it's a regular tile.
-  final TilePortal portal;
+  final TilePortal? portal;
 
   final int emanation;
-  final Object appearance;
+  final Object? appearance;
 
   bool get canClose => onClose != null;
 
@@ -80,18 +82,18 @@ class TileType {
 
   /// If the tile can be "opened", this is the function that produces an open
   /// action for it. Otherwise `null`.
-  final Action Function(Vec) onClose;
+  final Action Function(Vec)? onClose;
 
   /// If the tile can be "opened", this is the function that produces an open
   /// action for it. Otherwise `null`.
-  final Action Function(Vec) onOpen;
+  final Action Function(Vec)? onOpen;
 
   bool get isTraversable => canEnter(Motility.doorAndWalk);
 
   bool get isWalkable => canEnter(Motility.walk);
 
   TileType(this.name, this.appearance, this.motility,
-      {int emanation, this.portal, this.onClose, this.onOpen})
+      {int? emanation, this.portal, this.onClose, this.onOpen})
       : emanation = emanation ?? 0;
 
   /// Whether an actor with [motility] is able to enter this tile.
@@ -103,7 +105,7 @@ class Tile {
   ///
   /// If you change this during the game, make sure to call
   /// [Stage.tileOpacityChanged] if the tile's opacity changed.
-  TileType type;
+  TileType type = TileType.uninitialized;
 
   /// Whether some other opaque tile is blocking the hero's view of this tile.
   ///
@@ -168,7 +170,7 @@ class Tile {
   /// This should not be called directly. Instead, call [Stage.explore()].
   ///
   /// Returns true if this tile was explored just now.
-  bool updateExplored({bool force}) {
+  bool updateExplored({bool? force}) {
     force ??= false;
     if ((force || isVisible) && !_isExplored) {
       _isExplored = true;
@@ -198,7 +200,7 @@ class Tile {
 
   bool get isClosedDoor => type.motility == Motility.door;
 
-  TilePortal get portal => type.portal;
+  TilePortal? get portal => type.portal;
 
   bool canEnter(Motility motility) => type.canEnter(motility);
 }

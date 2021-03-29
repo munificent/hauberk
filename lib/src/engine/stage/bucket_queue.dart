@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:collection';
 import 'dart:math' as math;
 
@@ -20,7 +19,7 @@ import 'dart:math' as math;
 /// * https://en.wikipedia.org/wiki/Bucket_queue
 /// * https://www.redblobgames.com/pathfinding/a-star/implementation.html#algorithm
 class BucketQueue<T> {
-  final List<Queue<T>> _buckets = [];
+  final List<Queue<T>?> _buckets = [];
   int _bucket = 0;
 
   void reset() {
@@ -45,16 +44,15 @@ class BucketQueue<T> {
 
   /// Removes the best item from the queue or returns `null` if the queue is
   /// empty.
-  T removeNext() {
+  T? removeNext() {
     // Advance past any empty buckets.
-    while (_bucket < _buckets.length &&
-        (_buckets[_bucket] == null || _buckets[_bucket].isEmpty)) {
+    while (_bucket < _buckets.length && (_buckets[_bucket]?.isEmpty ?? true)) {
       _bucket++;
     }
 
     // If we ran out of buckets, the queue is empty.
     if (_bucket >= _buckets.length) return null;
 
-    return _buckets[_bucket].removeFirst();
+    return _buckets[_bucket]!.removeFirst();
   }
 }

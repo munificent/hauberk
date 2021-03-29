@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../stage/bucket_queue.dart';
@@ -107,7 +106,7 @@ abstract class Pathfinder<T> {
 
   /// The cost required to enter [tile] at [pos] from a neighboring tile or
   /// `null` if the tile cannot be entered.
-  int stepCost(Vec pos, Tile tile);
+  int? stepCost(Vec pos, Tile tile);
 
   /// Called for each step of pathfinding where [path] is the current path
   /// being processed.
@@ -115,7 +114,7 @@ abstract class Pathfinder<T> {
   /// If the pathfinder wants to immediately stop processing and return a value,
   /// this should return a non-`null` value. Otherwise, return `null` and the
   /// pathfinder will continue.
-  T processStep(Path path);
+  T? processStep(Path path);
 
   /// Called when the pathfinder has found a [path] to the end point.
   ///

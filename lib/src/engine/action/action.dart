@@ -13,7 +13,7 @@ abstract class Action {
 
   // TODO: Now that Action has this, should Action subclasses that need a
   // position use it?
-  late final Vec? _pos;
+  late final Vec _pos;
   late final Game _game;
 
   late final bool _consumesEnergy;
@@ -47,7 +47,7 @@ abstract class Action {
   }
 
   /// Binds an action created passively by the dungeon.
-  void _bind(Actor actor, Vec? pos, Game game) {
+  void _bind(Actor actor, Vec pos, Game game) {
     _actor = actor;
     _pos = pos;
     _game = game;

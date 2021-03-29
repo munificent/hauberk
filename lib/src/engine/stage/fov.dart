@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -23,7 +22,7 @@ class Fov {
 
   final Stage _stage;
 
-  List<_Shadow> _shadows;
+  List<_Shadow> _shadows = const []; // Temporary value.
 
   Fov(this._stage);
 

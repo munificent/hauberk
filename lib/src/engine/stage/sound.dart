@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import 'flow.dart';
@@ -20,7 +19,7 @@ class Sound {
 
   /// A [Flow] that calculates how much sound attenuates from the hero's
   /// current position.
-  Flow _flow;
+  Flow? _flow;
 
   Sound(this._stage);
 
@@ -65,7 +64,7 @@ class Sound {
     }
 
     _refresh();
-    return _flow.costAt(pos) ?? maxDistance;
+    return _flow!.costAt(pos) ?? maxDistance;
   }
 
   /// Converts [auditoryDistance] to a volume.
@@ -81,7 +80,7 @@ class Sound {
 
   void _refresh() {
     // Don't recalculate if still valid.
-    if (_flow != null && _stage.game.hero.pos == _flow.start) return;
+    if (_flow != null && _stage.game.hero.pos == _flow!.start) return;
 
     // TODO: Is this the right motility set?
     _flow = _SoundFlow(_stage);
@@ -91,7 +90,7 @@ class Sound {
 class _SoundFlow extends Flow {
   _SoundFlow(Stage stage) : super(stage, stage.game.hero.pos);
 
-  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
+  int? tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Stop propagating if we reach the max distance.
     if (parentCost >= Sound.maxDistance) return null;
 
@@ -109,7 +108,7 @@ class _SoundFlow extends Flow {
 class _SoundPathfinder extends Pathfinder<int> {
   _SoundPathfinder(Stage stage, Vec from, Vec to) : super(stage, from, to);
 
-  int processStep(Path path) {
+  int? processStep(Path path) {
     if (path.cost > Sound.maxDistance) return Sound.maxDistance;
     return null;
   }

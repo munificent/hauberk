@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/actor.dart';
@@ -18,8 +17,8 @@ class Stage {
   final Game game;
 
   final _actors = <Actor>[];
-  Lighting _lighting;
-  Sound _sound;
+  late final Lighting _lighting = Lighting(this);
+  late final Sound _sound = Sound(this);
 
   int _currentActorIndex = 0;
 
@@ -41,14 +40,11 @@ class Stage {
   ///
   /// This is a performance bottleneck since pathfinding needs to ensure it
   /// doesn't step on other actors.
-  final Array2D<Actor> _actorsByTile;
+  final Array2D<Actor?> _actorsByTile;
 
   Stage(int width, int height, this.game)
       : tiles = Array2D.generated(width, height, (_) => Tile()),
-        _actorsByTile = Array2D(width, height, null) {
-    _lighting = Lighting(this);
-    _sound = Sound(this);
-  }
+        _actorsByTile = Array2D(width, height, null);
 
   Tile operator [](Vec pos) => tiles[pos];
 
@@ -93,7 +89,7 @@ class Stage {
     _currentActorIndex = (_currentActorIndex + 1) % _actors.length;
   }
 
-  Actor actorAt(Vec pos) => _actorsByTile[pos];
+  Actor? actorAt(Vec pos) => _actorsByTile[pos];
 
   List<Item> placeDrops(Vec pos, Motility motility, Drop drop) {
     var items = <Item>[];
@@ -126,7 +122,7 @@ class Stage {
         }
       }
 
-      addItem(item, itemPos);
+      addItem(item, itemPos!);
     });
 
     return items;
@@ -157,9 +153,7 @@ class Stage {
   ///
   /// It is an error to call this if [item] is not on the ground at [pos].
   void removeItem(Item item, Vec pos) {
-    var inventory = _itemsByTile[pos];
-    assert(inventory != null);
-
+    var inventory = _itemsByTile[pos]!;
     inventory.remove(item);
 
     // If a light source is picked up, we need to unlight the floor.
@@ -213,7 +207,7 @@ class Stage {
 
   /// Marks the tile at [x],[y] as explored if the hero can see it and hasn't
   /// previously explored it.
-  void exploreAt(int x, int y, {bool force}) {
+  void exploreAt(int x, int y, {bool? force}) {
     var tile = tiles.get(x, y);
     if (tile.updateExplored(force: force)) {
       if (tile.isVisible) {
@@ -225,7 +219,7 @@ class Stage {
     }
   }
 
-  void explore(Vec pos, {bool force}) {
+  void explore(Vec pos, {bool? force}) {
     exploreAt(pos.x, pos.y, force: force);
   }
 

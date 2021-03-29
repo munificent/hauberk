@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -28,12 +27,11 @@ abstract class Flow {
 
   final Stage stage;
   final Vec _start;
-  final int _maxDistance;
 
-  Array2D<int> _costs;
+  late final Array2D<int> _costs;
 
   /// The position of the array's top-level corner relative to the stage.
-  Vec _offset;
+  late final Vec _offset;
 
   /// The cells whose neighbors still remain to be processed.
   final _open = BucketQueue<Vec>();
@@ -52,23 +50,22 @@ abstract class Flow {
 
   bool get includeDiagonals => true;
 
-  Flow(this.stage, this._start, {int maxDistance})
-      : _maxDistance = maxDistance {
+  Flow(this.stage, this._start, {int? maxDistance}) {
     int width;
     int height;
 
     // TODO: Distinguish between maxDistance and maxCost. Once cost is no longer
     // unit for every step, the two can diverge.
-    if (_maxDistance == null) {
+    if (maxDistance == null) {
       // Inset by one since we can assume the edges are impassable.
       _offset = Vec(1, 1);
       width = stage.width - 2;
       height = stage.height - 2;
     } else {
-      var left = math.max(1, _start.x - _maxDistance);
-      var top = math.max(1, _start.y - _maxDistance);
-      var right = math.min(stage.width - 1, _start.x + _maxDistance + 1);
-      var bottom = math.min(stage.height - 1, _start.y + _maxDistance + 1);
+      var left = math.max(1, _start.x - maxDistance);
+      var top = math.max(1, _start.y - maxDistance);
+      var right = math.min(stage.width - 1, _start.x + maxDistance + 1);
+      var bottom = math.min(stage.height - 1, _start.y + maxDistance + 1);
       _offset = Vec(left, top);
       width = right - left;
       height = bottom - top;
@@ -99,7 +96,7 @@ abstract class Flow {
   ///
   /// If there are multiple equivalent positions, chooses one randomly. If
   /// there are none, returns null.
-  Vec bestWhere(bool Function(Vec pos) predicate) {
+  Vec? bestWhere(bool Function(Vec pos) predicate) {
     var results = _findAllBestWhere(predicate);
     if (results.isEmpty) return null;
 
@@ -108,7 +105,7 @@ abstract class Flow {
 
   /// Gets the cost from the starting position to [pos], or `null` if there is
   /// no path to it.
-  int costAt(Vec pos) {
+  int? costAt(Vec pos) {
     pos -= _offset;
     if (!_costs.bounds.contains(pos)) return null;
 
@@ -143,10 +140,7 @@ abstract class Flow {
   ///
   /// Returns an empty list if no matching positions were found.
   List<Direction> directionsToBestWhere(bool Function(Vec pos) predicate) {
-    var goals = _findAllBestWhere(predicate);
-    if (goals == null) return [];
-
-    return _directionsTo(goals);
+    return _directionsTo(_findAllBestWhere(predicate));
   }
 
   /// Get the lowest-cost positions that meet [predicate].
@@ -158,7 +152,7 @@ abstract class Flow {
   List<Vec> _findAllBestWhere(bool Function(Vec pos) predicate) {
     var goals = <Vec>[];
 
-    int lowestCost;
+    int? lowestCost;
     for (var i = 0;; i++) {
       // Lazily find the next open tile.
       while (i >= _found.length) {
@@ -265,7 +259,7 @@ abstract class Flow {
   }
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
-  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal);
+  int? tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal);
 }
 
 /// A basic [Flow] implementation that flows through any tile permitting one of
@@ -274,15 +268,17 @@ class MotilityFlow extends Flow {
   final Motility _motility;
   final bool _avoidActors;
   final bool _avoidSubstances;
+  final int? _maxDistance;
 
   MotilityFlow(Stage stage, Vec start, this._motility,
-      {int maxDistance, bool avoidActors, bool avoidSubstances})
-      : _avoidActors = avoidActors ?? true,
+      {int? maxDistance, bool? avoidActors, bool? avoidSubstances})
+      : _maxDistance = maxDistance,
+        _avoidActors = avoidActors ?? true,
         _avoidSubstances = avoidSubstances ?? false,
         super(stage, start, maxDistance: maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
-  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
+  int? tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Can't enter impassable tiles.
     if (!tile.canEnter(_motility)) return null;
 
@@ -294,7 +290,7 @@ class MotilityFlow extends Flow {
 
     // TODO: Assumes cost == distance.
     // Can't reach if it's too far.
-    if (_maxDistance != null && parentCost >= _maxDistance) return null;
+    if (_maxDistance != null && parentCost >= _maxDistance!) return null;
 
     return 1;
   }

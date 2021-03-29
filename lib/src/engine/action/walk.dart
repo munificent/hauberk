@@ -28,7 +28,7 @@ class WalkAction extends Action {
     // See if it can be opened.
     var tile = game.stage[pos].type;
     if (tile.canOpen) {
-      return alternate(tile.onOpen(pos));
+      return alternate(tile.onOpen!(pos));
     }
 
     // See if we can walk there.
