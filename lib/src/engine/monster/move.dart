@@ -1,3 +1,4 @@
+// @dart=2.11
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../monster/monster.dart';

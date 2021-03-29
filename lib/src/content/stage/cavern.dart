@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -13,8 +14,8 @@ class Cavern extends Architecture {
   Iterable<String> build() sync* {
     // True is wall, false is floor, null is untouchable tiles that belong to
     // other architectures.
-    var cells1 = Array2D<bool>(width, height);
-    var cells2 = Array2D<bool>(width, height);
+    var cells1 = Array2D<bool>(width, height, null);
+    var cells2 = Array2D<bool>(width, height, null);
 
     for (var pos in cells1.bounds) {
       if (!canCarve(pos)) continue;

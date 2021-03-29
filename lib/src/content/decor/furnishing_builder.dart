@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -197,7 +198,7 @@ String _rotateChar90(String input) {
 }
 
 void _singleFurnishing(List<String> lines) {
-  var cells = Array2D<Cell>(lines.first.length, lines.length);
+  var cells = Array2D<Cell>(lines.first.length, lines.length, null);
   for (var y = 0; y < lines.length; y++) {
     for (var x = 0; x < lines.first.length; x++) {
       var char = lines[y][x];

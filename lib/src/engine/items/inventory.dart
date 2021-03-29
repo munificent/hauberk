@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'dart:collection';
 
 import '../core/actor.dart';

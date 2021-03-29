@@ -1,3 +1,4 @@
+// @dart=2.11
 import '../../engine.dart';
 
 /// An [Action] that gives the hero temporary monster perception.

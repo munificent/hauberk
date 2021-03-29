@@ -1,3 +1,4 @@
+// @dart=2.11
 import '../items/affix.dart';
 import '../items/item.dart';
 import '../items/item_type.dart';

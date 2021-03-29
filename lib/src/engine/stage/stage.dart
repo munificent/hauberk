@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/actor.dart';
@@ -43,8 +44,8 @@ class Stage {
   final Array2D<Actor> _actorsByTile;
 
   Stage(int width, int height, this.game)
-      : tiles = Array2D.generated(width, height, () => Tile()),
-        _actorsByTile = Array2D(width, height) {
+      : tiles = Array2D.generated(width, height, (_) => Tile()),
+        _actorsByTile = Array2D(width, height, null) {
     _lighting = Lighting(this);
     _sound = Sound(this);
   }

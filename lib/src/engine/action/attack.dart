@@ -1,3 +1,4 @@
+// @dart=2.11
 import '../core/actor.dart';
 import '../stage/sound.dart';
 import 'action.dart';

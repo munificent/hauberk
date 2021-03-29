@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -97,11 +98,7 @@ class Blob {
       }
     }
 
-    var result = Array2D<bool>(maxX - minX + 1, maxY - minY + 1);
-    for (var pos in result.bounds) {
-      result[pos] = blob[pos.offset(minX, minY)];
-    }
-
-    return result;
+    return Array2D<bool>.generated(maxX - minX + 1, maxY - minY + 1,
+        (pos) => blob[pos.offset(minX, minY)]);
   }
 }

@@ -1,3 +1,4 @@
+// @dart=2.11
 import '../../engine.dart';
 
 /// Alert nearby sleeping monsters.

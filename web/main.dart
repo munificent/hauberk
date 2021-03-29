@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'dart:html' as html;
 import 'dart:js';
 import 'dart:math' as math;
@@ -242,7 +243,8 @@ RetroTerminal _makeTerminal(
   var file = "font_$charWidth";
   if (charWidth != charHeight) file += "_$charHeight";
   return RetroTerminal(width, height, "$file.png",
-      canvas: canvas, charWidth: charWidth, charHeight: charHeight);
+      canvas: canvas, charWidth: charWidth, charHeight: charHeight,
+      scale: html.window.devicePixelRatio.toInt());
 }
 
 /// Updates the character dimensions of the current terminal to fit the screen

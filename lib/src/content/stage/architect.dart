@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -39,7 +40,7 @@ class Architect {
   int _carvedTiles = 0;
 
   Architect(this.lore, this.stage, this.depth)
-      : _owners = Array2D(stage.width, stage.height) {
+      : _owners = Array2D(stage.width, stage.height, null) {
     debugOwners = _owners;
   }
 

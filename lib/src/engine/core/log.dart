@@ -1,3 +1,4 @@
+// @dart=2.11
 /// The message log.
 class Log {
   /// Given a noun pattern, returns the unquantified singular form of it.

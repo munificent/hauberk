@@ -1,3 +1,4 @@
+// @dart=2.11
 /// These actions are side effects from taking elemental damage.
 import 'package:piecemeal/piecemeal.dart';
 

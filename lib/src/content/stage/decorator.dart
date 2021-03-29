@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -191,14 +192,14 @@ class Decorator {
   Iterable<String> _spawnMonsters() sync* {
     // Let the architectures that control their own monsters go.
     var spawned = <Architecture>{};
-    _tilesByArchitecture.forEach((architecture, tiles) {
-      if (architecture == null) return;
+    for (var architecture in _tilesByArchitecture.keys) {
+      if (architecture == null) continue;
 
       var painter = Painter(this, _architect, architecture);
       if (architecture.spawnMonsters(painter)) {
         spawned.add(architecture);
       }
-    });
+    }
 
     // Build a density map for where monsters should spawn.
     var densityMap = DensityMap(_stage.width, _stage.height);

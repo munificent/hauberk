@@ -1,3 +1,4 @@
+// @dart=2.11
 import '../core/element.dart';
 import '../core/option.dart';
 import '../items/equipment.dart';

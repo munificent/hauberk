@@ -1,3 +1,4 @@
+// @dart=2.11
 import 'dart:collection';
 
 import 'inventory.dart';
@@ -23,7 +24,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
           'gloves',
           'boots'
         ],
-        slots = List<Item>(9);
+        slots = List<Item>.filled(9, null);
 
   /// Gets the currently-equipped weapons, if any.
   Iterable<Item> get weapons =>
