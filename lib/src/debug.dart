@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:collection';
 import 'dart:math' as math;
 
@@ -22,18 +21,18 @@ class Debug {
 
   /// The current density map being used.
   ///
-  /// Typed as Object so that this library isn't coupled to the UI.
-  static Object densityMap;
+  /// Typed as Object? so that this library isn't coupled to the UI.
+  static Object? densityMap;
 
   static final Map<Monster, _MonsterLog> _monsters = {};
 
   /// The current game screen.
   ///
   /// Typed as Object so that this library isn't coupled to the UI.
-  static Object _gameScreen;
-  static Object get gameScreen => _gameScreen;
+  static Object? _gameScreen;
+  static Object? get gameScreen => _gameScreen;
 
-  static void bindGameScreen(Object screen) {
+  static void bindGameScreen(Object? screen) {
     _gameScreen = screen;
     _monsters.clear();
   }
@@ -51,7 +50,7 @@ class Debug {
   /// The value should range from 0.0 to 1.0. If there is a descriptive [reason]
   /// for the value, that can be provided too.
   static void monsterStat(Monster monster, String stat, num value,
-      [String reason]) {
+      [String? reason]) {
     if (!enabled) return;
 
     var monsterLog = _monsters.putIfAbsent(monster, () => _MonsterLog(monster));
@@ -63,7 +62,7 @@ class Debug {
   }
 
   /// Updates [stat]'s [reason] text without appending a new value.
-  static void monsterReason(Monster monster, String stat, String reason) {
+  static void monsterReason(Monster monster, String stat, String? reason) {
     if (!enabled) return;
 
     var monsterLog = _monsters.putIfAbsent(monster, () => _MonsterLog(monster));
@@ -71,7 +70,7 @@ class Debug {
   }
 
   /// Gets the debug info for [monster].
-  static String monsterInfo(Monster monster) {
+  static String? monsterInfo(Monster monster) {
     if (!enabled || _gameScreen == null) return null;
 
     var log = _monsters[monster];
@@ -85,7 +84,7 @@ class _MonsterLog {
   final Queue<String> log = Queue<String>();
 
   final Map<String, Queue<num>> stats = {};
-  final Map<String, String> statReason = {};
+  final Map<String, String?> statReason = {};
 
   _MonsterLog(this.monster);
 
@@ -117,7 +116,7 @@ class _MonsterLog {
       var barBuffer = StringBuffer("${name.padRight(length)} ");
       var showBar = false;
 
-      var values = stats[name];
+      var values = stats[name]!;
       for (var value in values) {
         var i = (value * barChars.length).ceil().clamp(0, barChars.length - 1);
         barBuffer.write(barChars[i]);

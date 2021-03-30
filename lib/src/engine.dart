@@ -1,4 +1,3 @@
-// @dart=2.11
 export 'engine/action/action.dart';
 export 'engine/action/attack.dart';
 export 'engine/action/condition.dart';
