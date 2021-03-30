@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
@@ -42,7 +41,7 @@ class SpearAction extends MasteryAction with GeneratorActionMixin {
   Iterable<ActionResult> onGenerate() sync* {
     // Can only do a spear attack if the entire range is clear.
     for (var step = 1; step <= 2; step++) {
-      var pos = actor.pos + _dir * step;
+      var pos = actor!.pos + _dir * step;
 
       var tile = game.stage[pos];
       if (!tile.isExplored) {
@@ -57,7 +56,7 @@ class SpearAction extends MasteryAction with GeneratorActionMixin {
     }
 
     for (var step = 1; step <= 2; step++) {
-      var pos = actor.pos + _dir * step;
+      var pos = actor!.pos + _dir * step;
 
       // Show the effect and perform the attack on alternate frames. This
       // ensures the effect gets a chance to be shown before the hit effect

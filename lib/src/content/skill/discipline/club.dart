@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
@@ -33,7 +32,7 @@ class ClubMastery extends MasteryDiscipline implements DirectionSkill {
 class BashAction extends MasteryAction {
   final Direction _dir;
   int _step = 0;
-  int _damage = 0;
+  int? _damage = 0;
 
   BashAction(this._dir, double scale) : super(scale);
 
@@ -42,28 +41,28 @@ class BashAction extends MasteryAction {
 
   ActionResult onPerform() {
     if (_step == 0) {
-      _damage = attack(actor.pos + _dir);
+      _damage = attack(actor!.pos + _dir);
 
       // If the hit missed, no pushback.
       if (_damage == null) return ActionResult.success;
     } else if (_step == 1) {
       // Push the defender.
-      var defender = game.stage.actorAt(actor.pos + _dir);
+      var defender = game.stage.actorAt(actor!.pos + _dir);
 
       // Make sure the defender is still there. Could have died.
       if (defender == null) return ActionResult.success;
 
-      var dest = actor.pos + _dir + _dir;
+      var dest = actor!.pos + _dir + _dir;
 
       // TODO: Strength bonus?
-      var chance = 300 * _damage ~/ defender.maxHealth;
+      var chance = 300 * _damage! ~/ defender.maxHealth;
       chance = chance.clamp(5, 100);
 
       if (defender.canEnter(dest) && rng.percent(chance)) {
         defender.pos = dest;
         defender.energy.energy = 0;
         log("{1} is knocked back!", defender);
-        addEvent(EventType.knockBack, pos: actor.pos + _dir, dir: _dir);
+        addEvent(EventType.knockBack, pos: actor!.pos + _dir, dir: _dir);
       }
     } else {
       addEvent(EventType.pause);

@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../../engine.dart';
 import 'discipline/archery.dart';
 import 'discipline/axe.dart';
@@ -22,13 +21,12 @@ class Skills {
   };
 
   static Skill find(String name) {
-    if (!_byName.containsKey(name)) {
-      throw ArgumentError("Unknown skill '$name'.");
-    }
-
-    return _byName[name];
+    var skill = _byName[name];
+    if (skill == null) throw ArgumentError("Unknown skill '$name'.");
+    return skill;
   }
 
+  // TODO: Inline into one big list literal.
   static List<Skill> _generateSkills() {
     var skills = <Skill>[
       BattleHardening(),

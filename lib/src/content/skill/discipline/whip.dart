@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
@@ -27,7 +26,7 @@ class WhipMastery extends MasteryDiscipline with TargetSkill {
   int getRange(Game game) => 3;
 
   Action getTargetAction(Game game, int level, Vec target) {
-    var defender = game.stage.actorAt(target);
+    var defender = game.stage.actorAt(target)!;
 
     // Find which hand has a whip. If both do, just pick the first.
     // TODO: Is this the best way to handle dual-wielded whips?
@@ -35,7 +34,8 @@ class WhipMastery extends MasteryDiscipline with TargetSkill {
     var hits = game.hero.createMeleeHits(defender);
     assert(weapons.length == hits.length);
 
-    Hit hit;
+    // Should have at least one whip wielded.
+    late Hit hit;
     for (var i = 0; i < weapons.length; i++) {
       if (weapons[i].type.weaponType != "whip") continue;
 
@@ -43,7 +43,6 @@ class WhipMastery extends MasteryDiscipline with TargetSkill {
       break;
     }
 
-    assert(hit != null, "Should have at least one whip wielded.");
     hit.scaleDamage(WhipMastery._whipScale(level));
 
     // TODO: Better effect.

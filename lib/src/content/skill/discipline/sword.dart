@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../../../engine.dart';
 import 'mastery.dart';
 
@@ -16,7 +15,7 @@ class Swordfighting extends MasteryDiscipline {
       super.levelDescription(level) +
       " Parrying increases dodge by ${_parryDefense(level)}.";
 
-  Defense getDefense(Hero hero, int level) {
+  Defense? getDefense(Hero hero, int level) {
     var swords = hero.equipment.weapons
         .where((weapon) => weapon.type.weaponType == "sword")
         .length;

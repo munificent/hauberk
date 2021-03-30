@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../../../engine.dart';
 import '../../monster/monsters.dart';
 
@@ -36,8 +35,6 @@ class SlayDiscipline extends Discipline {
   }
 
   void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {
-    if (monster == null) return;
-
     if (!Monsters.breeds.hasTag(monster.breed.name, _breedGroup)) return;
 
     // TODO: Tune.

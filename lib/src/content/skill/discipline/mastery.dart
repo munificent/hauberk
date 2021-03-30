@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
@@ -29,7 +28,7 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
         "$weaponType.";
   }
 
-  String unusableReason(Game game) {
+  String? unusableReason(Game game) {
     if (_hasWeapon(game.hero)) return null;
 
     return "No $weaponType equipped.";
@@ -68,7 +67,7 @@ abstract class MasteryAction extends Action {
   String get weaponType;
 
   /// Attempts to hit the [Actor] at [pos], if any.
-  int attack(Vec pos) {
+  int? attack(Vec pos) {
     var defender = game.stage.actorAt(pos);
     if (defender == null) return null;
 

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
@@ -19,7 +18,7 @@ class Archery extends Discipline with TargetSkill {
   String levelDescription(int level) =>
       "Scales strike by ${(_strikeScale(level) * 100).toInt()}%.";
 
-  String unusableReason(Game game) {
+  String? unusableReason(Game game) {
     if (_hasBow(game.hero)) return null;
 
     return "No bow equipped.";

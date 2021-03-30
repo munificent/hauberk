@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../../../engine.dart';
 
 class DualWield extends Discipline {
