@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import 'hero.dart';
@@ -22,7 +21,7 @@ class Race {
     // Pick specific values for each stat.
     var rolled = <Stat, int>{};
     for (var stat in stats.keys) {
-      var base = stats[stat];
+      var base = stats[stat]!;
       var value = base;
 
       // Randomly boost the max some.
@@ -59,9 +58,9 @@ class RaceStats {
     var totalMin = 0;
     var totalMax = 0;
     for (var stat in _max.keys) {
-      min[stat] = 10 + _max[stat] ~/ 15;
-      totalMin += min[stat];
-      totalMax += _max[stat];
+      min[stat] = 10 + _max[stat]! ~/ 15;
+      totalMin += min[stat]!;
+      totalMax += _max[stat]!;
       current[stat] = 0;
     }
 
@@ -89,8 +88,8 @@ class RaceStats {
         var worstStats = <Stat>[];
 
         for (var stat in _max.keys) {
-          var ideal = lerp(min[stat], _max[stat]);
-          var error = ideal - current[stat];
+          var ideal = lerp(min[stat]!, _max[stat]!);
+          var error = ideal - current[stat]!;
 
           if (error > worstError) {
             worstStats = [stat];
@@ -102,7 +101,7 @@ class RaceStats {
 
         // Increment the stat whose value is furthest from the ideal.
         var stat = random.item(worstStats);
-        current[stat]++;
+        current[stat] = current[stat]! + 1;
       }
 
       _stats.add(Map<Stat, int>.from(current));
@@ -113,7 +112,7 @@ class RaceStats {
   String get name => _race.name;
 
   /// The maximum number of points of [stat] the hero will gain.
-  int max(Stat stat) => _max[stat];
+  int max(Stat stat) => _max[stat]!;
 
-  int valueAtLevel(Stat stat, int level) => _stats[level - 1][stat];
+  int valueAtLevel(Stat stat, int level) => _stats[level - 1][stat]!;
 }

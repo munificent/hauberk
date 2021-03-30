@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import '../core/game.dart';
@@ -16,10 +15,10 @@ import '../hero/hero_save.dart';
 /// The remaining properties use this. It stores the previously-calculated
 /// value so that we can tell when a recalculation has actually changed it.
 class Property<T extends num> {
-  T _value;
+  T? _value;
 
   /// The current modified value.
-  T get value => _modify(_value);
+  T get value => _modify(_value!);
 
   /// A subclass can override this to modify the observed value. The updating
   /// and notifications are based on the raw base value.
@@ -62,7 +61,7 @@ class Stat {
 }
 
 abstract class StatBase extends Property<int> {
-  HeroSave _hero;
+  late final HeroSave _hero;
 
   String get name => _stat.name;
 
@@ -78,7 +77,6 @@ abstract class StatBase extends Property<int> {
   int get _statOffset => 0;
 
   void bindHero(HeroSave hero) {
-    assert(_hero == null);
     _hero = hero;
     _value = _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
   }

@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../items/item_type.dart';
 import 'skill.dart';
 

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -62,10 +61,10 @@ class RunBehavior extends Behavior {
   bool firstStep = true;
 
   /// Whether the hero is running with open tiles to their left.
-  bool openLeft;
+  bool? openLeft;
 
   /// Whether the hero is running with open tiles to their right.
-  bool openRight;
+  bool? openRight;
 
   Direction direction;
 
@@ -123,7 +122,7 @@ class RunBehavior extends Behavior {
         openLeft = _isOpen(hero, direction.rotateLeft90);
         openRight = _isOpen(hero, direction.rotateRight90);
       }
-    } else if (!openLeft && !openRight) {
+    } else if (!openLeft! && !openRight!) {
       if (!_runInPassage(hero)) return false;
     } else {
       if (!_runInOpen(hero)) return false;

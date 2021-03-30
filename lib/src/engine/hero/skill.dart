@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -74,7 +73,7 @@ abstract class Skill implements Comparable<Skill> {
   int modifyArmor(HeroSave hero, int level, int armor) => armor;
 
   /// Gives the skill a chance to add new defenses to the hero.
-  Defense getDefense(Hero hero, int level) => null;
+  Defense? getDefense(Hero hero, int level) => null;
 
   /// Gives the skill a chance to adjust the [heftModifier] applied to the base
   /// heft of a weapon.
@@ -97,7 +96,7 @@ mixin UsableSkill implements Skill {
   /// If the skill cannot currently be used (for example Archery when a bow is
   /// not equipped), returns the reason why. Otherwise, returns `null` to
   /// indicate the skill is usable.
-  String unusableReason(Game game) => null;
+  String? unusableReason(Game game) => null;
 }
 
 /// A skill that can be directly used to perform an action.
@@ -142,7 +141,7 @@ abstract class Discipline extends Skill {
   int onCalculateLevel(HeroSave hero, int points) {
     var training = hero.skills.points(this);
     for (var level = 1; level <= maxLevel; level++) {
-      if (training < trainingNeeded(hero.heroClass, level)) return level - 1;
+      if (training < trainingNeeded(hero.heroClass, level)!) return level - 1;
     }
 
     return maxLevel;
@@ -150,19 +149,19 @@ abstract class Discipline extends Skill {
 
   /// How close the hero is to reaching the next level in this skill, in
   /// percent, or `null` if this skill is at max level.
-  int percentUntilNext(HeroSave hero) {
+  int? percentUntilNext(HeroSave hero) {
     var level = calculateLevel(hero);
     if (level == maxLevel) return null;
 
     var points = hero.skills.points(this);
-    var current = trainingNeeded(hero.heroClass, level);
-    var next = trainingNeeded(hero.heroClass, level + 1);
+    var current = trainingNeeded(hero.heroClass, level)!;
+    var next = trainingNeeded(hero.heroClass, level + 1)!;
     return 100 * (points - current) ~/ (next - current);
   }
 
   /// How much training is needed for a hero of [heroClass] to reach [level],
   /// or `null` if the hero cannot train this skill.
-  int trainingNeeded(HeroClass heroClass, int level) {
+  int? trainingNeeded(HeroClass heroClass, int level) {
     var profiency = heroClass.proficiency(this);
     if (profiency == 0.0) return null;
 
@@ -193,11 +192,11 @@ abstract class Spell extends Skill with UsableSkill {
   /// The base focus cost to cast the spell, ignoring class proficiency.
   int get baseFocusCost;
 
-  /// The base damage of the spell, or `null` if not relevant.
-  int get damage => null;
+  /// The base damage of the spell, or 0 if not relevant.
+  int get damage => 0;
 
-  /// The range of the spell, or `null` if not relevant.
-  int get range => null;
+  /// The range of the spell, or 0 if not relevant.
+  int get range => 0;
 
   int onCalculateLevel(HeroSave hero, int points) {
     if (hero.heroClass.proficiency(this) == 0.0) return 0;
@@ -219,14 +218,15 @@ abstract class Spell extends Skill with UsableSkill {
     return FocusAction(focusCost(game.hero.save), action);
   }
 
-  Action onGetTargetAction(Game game, Vec target) => null;
+  Action onGetTargetAction(Game game, Vec target) => throw UnsupportedError("");
 
   Action getAction(Game game, int level) {
     var action = onGetAction(game);
     return FocusAction(focusCost(game.hero.save), action);
   }
 
-  Action onGetAction(Game game) => null;
+  // TODO: Split actions and target actions into different types?
+  Action onGetAction(Game game) => throw UnsupportedError("");
 }
 
 /// A collection of [Skill]s and the hero's progress in them.
@@ -252,7 +252,7 @@ class SkillSet {
 
   /// All the skills the hero actually has.
   Iterable<Skill> get acquired =>
-      _levels.keys.where((skill) => _levels[skill] > 0);
+      _levels.keys.where((skill) => _levels[skill]! > 0);
 
   /// Gets the current level of [skill] or 0 if the skill isn't known.
   int level(Skill skill) => _levels[skill] ?? 0;
@@ -307,7 +307,7 @@ class SkillSet {
 
   /// Whether the hero knows of and has learned this skill.
   bool isAcquired(Skill skill) =>
-      _levels.containsKey(skill) && _levels[skill] > 0;
+      _levels.containsKey(skill) && _levels[skill]! > 0;
 
   SkillSet clone() => SkillSet.from(Map.from(_levels), Map.from(_points));
 

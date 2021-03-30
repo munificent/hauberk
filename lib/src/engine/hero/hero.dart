@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -32,7 +31,7 @@ class Hero extends Actor {
   /// Monsters the hero has already seen. Makes sure we don't double count them.
   final Set<Monster> _seenMonsters = {};
 
-  Behavior _behavior;
+  Behavior? _behavior;
 
   /// Damage scales for each weapon being wielded, based on the weapon, other
   /// equipment, and stats.
@@ -120,7 +119,7 @@ class Hero extends Actor {
   Object get appearance => 'hero';
 
   bool get needsInput {
-    if (_behavior != null && !_behavior.canPerform(this)) {
+    if (_behavior != null && !_behavior!.canPerform(this)) {
       waitForInput();
     }
 
@@ -183,7 +182,7 @@ class Hero extends Actor {
     // TODO: Temporary bonuses, etc.
   }
 
-  Action onGetAction() => _behavior.getAction(this);
+  Action onGetAction() => _behavior!.getAction(this);
 
   List<Hit> onCreateMeleeHits(Actor defender) {
     var hits = <Hit>[];
@@ -192,9 +191,9 @@ class Hero extends Actor {
     var weapons = equipment.weapons.toList();
     for (var i = 0; i < weapons.length; i++) {
       var weapon = weapons[i];
-      if (weapon.attack.isRanged) continue;
+      if (weapon.attack!.isRanged) continue;
 
-      var hit = weapon.attack.createHit();
+      var hit = weapon.attack!.createHit();
 
       weapon.modifyHit(hit);
 
@@ -221,10 +220,10 @@ class Hero extends Actor {
 
   Hit createRangedHit() {
     var weapons = equipment.weapons.toList();
-    var i = weapons.indexWhere((weapon) => weapon.attack.isRanged);
+    var i = weapons.indexWhere((weapon) => weapon.attack!.isRanged);
     assert(i != -1, "Should have ranged weapon equipped.");
 
-    var hit = weapons[i].attack.createHit();
+    var hit = weapons[i].attack!.createHit();
 
     // Take heft and strength into account.
     hit.scaleDamage(_heftScales[i].value);
@@ -264,7 +263,7 @@ class Hero extends Actor {
   // TODO: If class or race can affect this, add it in.
   int onGetResistance(Element element) => save.equipmentResistance(element);
 
-  void onTakeDamage(Action action, Actor attacker, int damage) {
+  void onTakeDamage(Action action, Actor? attacker, int damage) {
     // Getting hit loses focus.
     // TODO: Should the hero lose focus if they dodge the attack? Seems like it
     // would still break their attention. Maybe lose a fraction of the focus?
@@ -494,9 +493,8 @@ int experienceLevel(int experience) {
   return Hero.maxLevel;
 }
 
-/// Returns how much experience is needed to reach [level] or `null` if [level]
-/// is greater than the maximum level.
+/// Returns how much experience is needed to reach [level].
 int experienceLevelCost(int level) {
-  if (level > Hero.maxLevel) return null;
+  if (level > Hero.maxLevel) throw RangeError.value(level, "level");
   return math.pow(level - 1, 3).toInt() * 1000;
 }

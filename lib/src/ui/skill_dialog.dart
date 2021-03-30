@@ -262,12 +262,12 @@ class SpellDialog extends SkillTypeDialog<Spell> {
     terminal.writeAt(
         13, 32, skill.focusCost(_hero).toString().padLeft(3), UIHue.text);
 
-    if (skill.damage != null) {
+    if (skill.damage != 0) {
       terminal.writeAt(1, 34, "Damage:", UIHue.secondary);
       terminal.writeAt(13, 34, skill.damage.toString().padLeft(3), UIHue.text);
     }
 
-    if (skill.range != null) {
+    if (skill.range != 0) {
       terminal.writeAt(1, 36, "Range:", UIHue.secondary);
       terminal.writeAt(13, 36, skill.range.toString().padLeft(3), UIHue.text);
     }

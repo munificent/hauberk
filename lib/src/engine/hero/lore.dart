@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../items/affix.dart';
 import '../items/item.dart';
 import '../items/item_type.dart';
@@ -38,23 +37,23 @@ class Lore {
 
   void seeBreed(Breed breed) {
     _seenBreeds.putIfAbsent(breed, () => 0);
-    _seenBreeds[breed]++;
+    _seenBreeds[breed] = _seenBreeds[breed]! + 1;
   }
 
   void slay(Breed breed) {
     _slainBreeds.putIfAbsent(breed, () => 0);
-    _slainBreeds[breed]++;
+    _slainBreeds[breed] = _slainBreeds[breed]! + 1;
   }
 
   void findItem(Item item) {
     _foundItems.putIfAbsent(item.type, () => 0);
-    _foundItems[item.type]++;
+    _foundItems[item.type] = _foundItems[item.type]! + 1;
 
-    void findAffix(Affix affix) {
+    void findAffix(Affix? affix) {
       if (affix == null) return;
 
       _foundAffixes.putIfAbsent(affix, () => 0);
-      _foundAffixes[affix]++;
+      _foundAffixes[affix] = _foundAffixes[affix]! + 1;
     }
 
     findAffix(item.prefix);
@@ -63,7 +62,7 @@ class Lore {
 
   void useItem(Item item) {
     _usedItems.putIfAbsent(item.type, () => 0);
-    _usedItems[item.type]++;
+    _usedItems[item.type] = _usedItems[item.type]! + 1;
   }
 
   /// The number of monsters of [breed] that the hero has detected.
