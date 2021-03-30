@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -263,7 +262,7 @@ class RoomTile {
   /// prevent entrances to rooms in corners, which looks weird.
   static final wall = RoomTile.tile(Tiles.solid);
 
-  final TileType tile;
+  final TileType? tile;
   final Direction direction;
 
   RoomTile.junction(this.direction) : tile = null;

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -7,7 +6,7 @@ class Blob {
   // TODO: This may generate unconnected regions. Decide if that's OK or not.
 
   static Array2D<bool> make(int size) {
-    Array2D<bool> blob;
+    Array2D<bool>? blob;
 
     if (size >= 64) {
       // Truncate to nearest multiple of 8.
@@ -34,7 +33,7 @@ class Blob {
     return _crop(blob);
   }
 
-  static Array2D<bool> _make(int size, int smoothing, [Array2D<bool> input]) {
+  static Array2D<bool> _make(int size, int smoothing, [Array2D<bool>? input]) {
     var cells = Array2D(size, size, false);
     var dest = Array2D(size, size, false);
 
@@ -98,7 +97,11 @@ class Blob {
       }
     }
 
-    return Array2D<bool>.generated(maxX - minX + 1, maxY - minY + 1,
-        (pos) => blob[pos.offset(minX, minY)]);
+    var result = Array2D<bool>(maxX - minX + 1, maxY - minY + 1, false);
+    for (var pos in result.bounds) {
+      result[pos] = blob[pos.offset(minX, minY)];
+    }
+
+    return result;
   }
 }

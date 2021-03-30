@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -30,12 +29,12 @@ class Region {
 
 /// The main class that orchestrates painting and populating the stage.
 class Architect {
-  static Array2D<Architecture> debugOwners;
+  static Array2D<Architecture?>? debugOwners;
 
   final Lore lore;
   final Stage stage;
   final int depth;
-  final Array2D<Architecture> _owners;
+  final Array2D<Architecture?> _owners;
 
   int _carvedTiles = 0;
 
@@ -53,7 +52,7 @@ class Architect {
 
     var styles = ArchitecturalStyle.pick(depth);
 
-    int lastFillable;
+    var lastFillable = -1;
     for (var i = styles.length - 1; i >= 0; i--) {
       if (styles[i].canFill) {
         lastFillable = i;
@@ -95,10 +94,10 @@ class Architect {
     placeHero(decorator.heroPos);
   }
 
-  Architecture ownerAt(Vec pos) => _owners[pos];
+  Architecture? ownerAt(Vec pos) => _owners[pos];
 
   /// Marks the tile at [x], [y] as open floor for [architecture].
-  void _carve(Architecture architecture, int x, int y, TileType tile) {
+  void _carve(Architecture architecture, int x, int y, TileType? tile) {
     assert(_owners.get(x, y) == null || _owners.get(x, y) == architecture);
     assert(stage.get(x, y).type == Tiles.unformed);
 
@@ -394,9 +393,9 @@ class _Path {
 /// Each architecture is a separate algorithm and some tuning parameters for it
 /// that generates part of a stage.
 abstract class Architecture {
-  Architect _architect;
-  ArchitecturalStyle _style;
-  Region _region;
+  late final Architect _architect;
+  late final ArchitecturalStyle _style;
+  late final Region _region;
 
   Iterable<String> build();
 
@@ -435,7 +434,7 @@ abstract class Architecture {
   /// Sets the tile at [x], [y] to [tile] and owned by this architecture.
   ///
   /// If [tile] is omitted, uses [Tiles.open].
-  void carve(int x, int y, [TileType tile]) =>
+  void carve(int x, int y, [TileType? tile]) =>
       _architect._carve(this, x, y, tile);
 
   /// Whether this architecture can carve the tile at [pos].
@@ -471,7 +470,7 @@ class _LengthPathfinder extends Pathfinder<bool> {
   _LengthPathfinder(Stage stage, Vec start, Vec end, this._maxLength)
       : super(stage, start, end);
 
-  bool processStep(Path path) {
+  bool? processStep(Path path) {
     if (path.length >= _maxLength) return false;
 
     return null;
@@ -479,7 +478,7 @@ class _LengthPathfinder extends Pathfinder<bool> {
 
   bool reachedGoal(Path path) => true;
 
-  int stepCost(Vec pos, Tile tile) {
+  int? stepCost(Vec pos, Tile tile) {
     if (tile.canEnter(Motility.doorAndWalk)) return 1;
 
     return null;

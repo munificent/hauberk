@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -95,7 +94,7 @@ class _RiverPoint {
   final double y;
   final double radius;
 
-  _RiverPoint(this.x, this.y, [double radius])
+  _RiverPoint(this.x, this.y, [double? radius])
       : radius = radius ?? rng.float(1.0, 3.0);
 
   String toString() => "$x,$y ($radius)";

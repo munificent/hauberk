@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -14,12 +13,12 @@ import 'painter.dart';
 
 class Decorator {
   final Architect _architect;
-  Vec _heroPos;
+  late final Vec _heroPos;
 
   /// The tiles organized by which architect owns them.
   ///
   /// Includes a null key for the tiles with no owner.
-  final Map<Architecture, List<Vec>> _tilesByArchitecture = {};
+  final Map<Architecture?, List<Vec>> _tilesByArchitecture = {};
 
   /// The unique breeds that have already been placed on the stage. Ensures we
   /// don't spawn the same unique more than once.
@@ -32,8 +31,8 @@ class Decorator {
   Stage get _stage => _architect.stage;
 
   /// Gets the list of tiles owned by [architecture].
-  List<Vec> tilesFor(Architecture architecture) =>
-      _tilesByArchitecture[architecture];
+  List<Vec> tilesFor(Architecture? architecture) =>
+      _tilesByArchitecture[architecture]!;
 
   Iterable<String> decorate() sync* {
     _findDoorways();
@@ -240,9 +239,9 @@ class Decorator {
       // TODO: Do a random walk from [pos] and use the resulting tile for the
       // group. That way, there is some bleed and foreshadowing between
       // architectures.
-      var architecture = _architect.ownerAt(pos);
+      var architecture = _architect.ownerAt(pos)!;
       var group = rng.item(architecture.style.monsterGroups);
-      var breed = Monsters.breeds.tryChoose(_architect.depth, tag: group);
+      var breed = Monsters.breeds.tryChoose(_architect.depth, tag: group)!;
 
       // Don't place a breed whose motility doesn't match the tile.
       if (!_stage[pos].canEnter(breed.motility)) continue;
@@ -262,10 +261,10 @@ class Decorator {
     Debug.densityMap = null;
   }
 
-  Breed chooseBreed(int depth, {String tag, bool includeParentTags}) {
+  Breed chooseBreed(int depth, {String? tag, bool? includeParentTags}) {
     while (true) {
       var breed = Monsters.breeds
-          .tryChoose(depth, tag: tag, includeParents: includeParentTags);
+          .tryChoose(depth, tag: tag, includeParents: includeParentTags)!;
 
       if (_canSpawn(breed)) return breed;
     }
@@ -287,7 +286,7 @@ class Decorator {
     _spawnMonster(null, pos, breed);
   }
 
-  int _spawnMonster(DensityMap density, Vec pos, Breed breed) {
+  int _spawnMonster(DensityMap? density, Vec pos, Breed breed) {
     var isCorpse = !breed.flags.unique && rng.oneIn(10);
 
     var experience = 0;
@@ -331,10 +330,11 @@ class Decorator {
 
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
-      var here = flow.reachable.firstWhere((_) => true, orElse: () => null);
+      var here =
+          flow.reachable.firstWhere((_) => true, orElse: () => Vec(-1, -1));
 
       // If there are no open tiles, discard the remaining monsters.
-      if (here == null) break;
+      if (here == Vec(-1, -1)) break;
 
       spawn(breed, here);
     }
@@ -452,7 +452,7 @@ class DensityMap {
   /// Picks a random tile from the map, weighed by the density of each tile.
   ///
   /// Returns `null` if no tiles have any density.
-  Vec choose() {
+  Vec? choose() {
     if (_total == 0) return null;
 
     var n = rng.range(_total);
@@ -470,7 +470,7 @@ class DensityMap {
 
     var flow = MotilityFlow(stage, start, motility, maxDistance: range);
     for (var pos in flow.reachable) {
-      var scale = flow.costAt(pos) / range;
+      var scale = flow.costAt(pos)! / range;
       this[pos] = (this[pos] * scale).toInt();
     }
   }

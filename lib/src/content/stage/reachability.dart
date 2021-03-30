@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:collection';
 
 import 'package:piecemeal/piecemeal.dart';
@@ -25,7 +24,7 @@ class Reachability {
   int _reachedOpenCount = 0;
   int get reachedOpenCount => _reachedOpenCount;
 
-  List<_FillStep> _beforeFill;
+  List<_FillStep>? _beforeFill;
 
   Reachability(this.stage, this._start)
       : _distances = Array2D<int>(stage.width, stage.height, _unknown),
@@ -67,7 +66,7 @@ class Reachability {
         queue.add(neighbor);
         _affected.add(neighbor);
 
-        _beforeFill.add(_FillStep(neighbor, neighborDistance));
+        _beforeFill!.add(_FillStep(neighbor, neighborDistance));
       }
     }
 
@@ -96,7 +95,7 @@ class Reachability {
 
   /// Revert the previous call to [fill].
   void undoFill() {
-    for (var step in _beforeFill) {
+    for (var step in _beforeFill!) {
       _setDistance(step.pos, step.distance);
     }
 

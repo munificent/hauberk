@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import 'architect.dart';
@@ -15,7 +14,7 @@ class Dungeon extends Architecture {
 
   PaintStyle get paintStyle => PaintStyle.flagstone;
 
-  Dungeon({double density}) : _density = density ?? 0.3;
+  Dungeon({double? density}) : _density = density ?? 0.3;
 
   Iterable<String> build() sync* {
     var failed = 0;

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -31,7 +30,7 @@ class ArchitecturalStyle {
     var hasFillable = false;
 
     while (!hasFillable || result.length < count) {
-      var style = _styles.tryChoose(depth);
+      var style = _styles.tryChoose(depth)!;
 
       // Make sure there's at least one style that can fill the entire stage.
       if (style.canFill) hasFillable = true;
@@ -46,15 +45,15 @@ class ArchitecturalStyle {
     void addStyle(String name,
         {int start = 1,
         int end = 100,
-        double startFrequency,
-        double endFrequency,
-        String decor,
-        double decorDensity,
-        String monsters,
-        double monsterDensity,
-        double itemDensity,
-        Architecture Function() create,
-        bool canFill}) {
+        double? startFrequency,
+        double? endFrequency,
+        required String decor,
+        double? decorDensity,
+        String? monsters,
+        double? monsterDensity,
+        double? itemDensity,
+        required Architecture Function() create,
+        bool? canFill}) {
       monsters ??= "monster";
 
       var style = ArchitecturalStyle(name, decor, decorDensity,
@@ -123,7 +122,7 @@ class ArchitecturalStyle {
         create: () => River());
 
     // Pits.
-    void pit(String monsterGroup, {int start, int end}) {
+    void pit(String monsterGroup, {required int start, required int end}) {
       addStyle("$monsterGroup pit",
           start: start,
           end: end,
@@ -145,7 +144,7 @@ class ArchitecturalStyle {
     pit("dragon", start: 60, end: 100);
 
     // Keeps.
-    void keep(String monsters, {int start, int end}) {
+    void keep(String monsters, {required int start, required int end}) {
       addStyle("$monsters keep",
           start: start,
           end: end,
@@ -179,12 +178,12 @@ class ArchitecturalStyle {
   ArchitecturalStyle(
       this.name,
       this.decorTheme,
-      double decorDensity,
+      double? decorDensity,
       this.monsterGroups,
-      double monsterDensity,
-      double itemDensity,
+      double? monsterDensity,
+      double? itemDensity,
       this._factory,
-      {bool canFill})
+      {bool? canFill})
       : decorDensity = decorDensity ?? 0.1,
         monsterDensity = monsterDensity ?? 1.0,
         itemDensity = itemDensity ?? 1.0,

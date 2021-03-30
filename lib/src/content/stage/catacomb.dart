@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -17,7 +16,7 @@ class Catacomb extends Architecture {
   /// The maximum chamber size.
   final int _maxSize;
 
-  Catacomb({double density, int minSize, int maxSize})
+  Catacomb({double? density, int? minSize, int? maxSize})
       : _density = density ?? 0.3,
         _minSize = minSize ?? 8,
         _maxSize = maxSize ?? 32;

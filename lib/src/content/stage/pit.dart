@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import 'architect.dart';
@@ -19,7 +18,7 @@ class Pit extends Architecture {
 
   PaintStyle get paintStyle => PaintStyle.stoneJail;
 
-  Pit(this._monsterGroup, {int minSize, int maxSize})
+  Pit(this._monsterGroup, {int? minSize, int? maxSize})
       : _minSize = minSize ?? 12,
         _maxSize = maxSize ?? 24;
 
@@ -71,7 +70,7 @@ class Pit extends Architecture {
     return true;
   }
 
-  Rect _tryPlaceCave(Array2D<bool> cave, Rect bounds) {
+  Rect? _tryPlaceCave(Array2D<bool> cave, Rect bounds) {
     if (bounds.width < cave.width) return null;
     if (bounds.height < cave.height) return null;
 

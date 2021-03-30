@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -15,15 +14,15 @@ import 'room.dart';
 
 /// Places a number of connected rooms.
 class Keep extends Architecture {
-  static JunctionSet debugJunctions;
+  static JunctionSet? debugJunctions;
 
   final JunctionSet _junctions;
 
   int _placedRooms = 0;
 
-  int _maxRooms;
+  int? _maxRooms;
 
-  factory Keep([int maxRooms]) {
+  factory Keep([int? maxRooms]) {
     if (maxRooms != null) {
       // TODO: For now, small keeps always pack rooms in densely. Have
       // different styles of keep for different monsters?
@@ -90,7 +89,7 @@ class Keep extends Architecture {
         yield "Room";
 
         _placedRooms++;
-        if (_maxRooms != null && _placedRooms >= _maxRooms) break;
+        if (_maxRooms != null && _placedRooms >= _maxRooms!) break;
       } else {
         // Couldn't place the room, but maybe try the junction again.
         // TODO: Make tunable.
@@ -274,7 +273,7 @@ class JunctionSet {
 
   bool get isNotEmpty => _junctions.isNotEmpty;
 
-  Junction operator [](Vec pos) => _byPosition[pos];
+  Junction? operator [](Vec pos) => _byPosition[pos];
 
   void add(Junction junction) {
     assert(_byPosition[junction.position] == null);

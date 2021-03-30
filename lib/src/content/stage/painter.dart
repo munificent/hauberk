@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -11,7 +10,7 @@ import 'decorator.dart';
 class Painter {
   final Decorator _decorator;
   final Architect _architect;
-  final Architecture _architecture;
+  final Architecture? _architecture;
   int _painted = 0;
 
   Painter(this._decorator, this._architect, this._architecture);
@@ -38,7 +37,7 @@ class Painter {
 
   bool hasActor(Vec pos) => _architect.stage.actorAt(pos) != null;
 
-  Breed chooseBreed(int depth, {String tag, bool includeParentTags}) {
+  Breed chooseBreed(int depth, {String? tag, bool? includeParentTags}) {
     return _decorator.chooseBreed(depth,
         tag: tag, includeParentTags: includeParentTags);
   }
@@ -74,16 +73,16 @@ class PaintStyle {
     Tiles.granite3
   ];
 
-  final List<TileType> _floor;
-  final List<TileType> _wall;
-  final TileType _closedDoor;
-  final TileType _openDoor;
+  final List<TileType>? _floor;
+  final List<TileType>? _wall;
+  final TileType? _closedDoor;
+  final TileType? _openDoor;
 
   PaintStyle(
-      {List<TileType> floor,
-      List<TileType> wall,
-      TileType closedDoor,
-      TileType openDoor})
+      {List<TileType>? floor,
+      List<TileType>? wall,
+      TileType? closedDoor,
+      TileType? openDoor})
       : _floor = floor,
         _wall = wall,
         _closedDoor = closedDoor,
@@ -95,7 +94,7 @@ class PaintStyle {
     if (tile == Tiles.open || tile == Tiles.passage) return _floorTile();
 
     if (tile == Tiles.solid) {
-      if (_wall != null) return rng.item(_wall);
+      if (_wall != null) return rng.item(_wall!);
       return rng.item(_defaultWalls);
     }
 
@@ -103,28 +102,28 @@ class PaintStyle {
       if (_closedDoor != null && _openDoor != null) {
         switch (rng.range(6)) {
           case 0:
-            return _openDoor;
+            return _openDoor!;
           case 1:
             return _floorTile();
           default:
-            return _closedDoor;
+            return _closedDoor!;
         }
       } else if (_closedDoor != null) {
-        return _closedDoor;
+        return _closedDoor!;
       } else if (_openDoor != null) {
-        return _openDoor;
+        return _openDoor!;
       } else {
         return _floorTile();
       }
     }
 
-    if (_defaultTypes.containsKey(tile)) return rng.item(_defaultTypes[tile]);
+    if (_defaultTypes.containsKey(tile)) return rng.item(_defaultTypes[tile]!);
 
     return tile;
   }
 
   TileType _floorTile() {
-    if (_floor != null) return rng.item(_floor);
+    if (_floor != null) return rng.item(_floor!);
 
     return Tiles.flagstoneFloor;
   }
