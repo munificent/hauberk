@@ -17,7 +17,12 @@ const simulationRounds = 20;
 
 Breed breed = Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
     null, SpawnLocation.anywhere, Motility.walk,
-    meander: 0, maxHealth: 200, flags: BreedFlags.fromSet({}));
+    depth: 1,
+    meander: 0,
+    maxHealth: 200,
+    flags: BreedFlags.fromSet({}),
+    tracking: 10,
+    description: "");
 
 void main() {
   content = createContent();

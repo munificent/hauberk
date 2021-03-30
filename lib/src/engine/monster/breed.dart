@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/combat.dart';
@@ -21,7 +20,6 @@ class BreedRef {
 
   static void resolve(Breed Function(String) resolver) {
     for (var ref in _unresolved) {
-      assert(ref._breed == null, "Already resolved.");
       ref._breed = resolver(ref._name);
     }
 
@@ -29,11 +27,8 @@ class BreedRef {
   }
 
   final String _name;
-  Breed _breed;
-  Breed get breed {
-    assert(_breed != null, "Breed is not resolved yet.");
-    return _breed;
-  }
+  late final Breed _breed;
+  Breed get breed => _breed;
 
   BreedRef(this._name) {
     _unresolved.add(this);
@@ -103,15 +98,15 @@ class Breed {
   final int countMax;
 
   /// Additional monsters that should be spawned when this one is spawned.
-  final Spawn minions;
+  final Spawn? minions;
 
   /// The name of the breed. If the breed's name has irregular pluralization
   /// like "bunn[y|ies]", this will be the original unparsed string.
   final String _name;
 
   /// If this breed should stain some of the nearby floor tiles when spawned,
-  /// this is the type is should stain them with. Otherwise null.
-  final TileType stain;
+  /// this is the type is should stain them with. Otherwise `null`.
+  final TileType? stain;
 
   /// The groups that the breed is a part of.
   ///
@@ -124,27 +119,28 @@ class Breed {
 
   Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
       this.drop, this.location, this.motility,
-      {this.depth,
-      this.maxHealth,
-      this.tracking,
-      int vision,
-      int hearing,
-      this.meander,
-      int speed,
-      int dodge,
-      int emanationLevel,
-      this.countMin,
-      this.countMax,
+      {required this.depth,
+      required this.maxHealth,
+      required this.tracking,
+      int? vision,
+      int? hearing,
+      required this.meander,
+      int? speed,
+      int? dodge,
+      int? emanationLevel,
+      int? countMin,
+      int? countMax,
       this.minions,
       this.stain,
-      BreedFlags flags,
-      this.description})
+      required this.flags,
+      required this.description})
       : vision = vision ?? 8,
         hearing = hearing ?? 10,
         speed = speed ?? 0,
         dodge = dodge ?? 20,
         emanationLevel = emanationLevel ?? 0,
-        flags = flags ?? BreedFlags();
+        countMin = countMin ?? 1,
+        countMax = countMax ?? 1;
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
@@ -209,7 +205,7 @@ class Breed {
     return exp.ceil();
   }
 
-  Monster spawn(Game game, Vec pos, [Monster parent]) {
+  Monster spawn(Game game, Vec pos, [Monster? parent]) {
     var generation = 1;
     if (parent != null) generation = parent.generation + 1;
 
@@ -232,7 +228,7 @@ class Breed {
     if (minions != null) {
       // Minions are weaker than the main breed.
       var minionDepth = (depth * 0.9).floor();
-      minions.spawnBreed(minionDepth, breeds.add);
+      minions!.spawnBreed(minionDepth, breeds.add);
     }
 
     return breeds;
@@ -271,12 +267,12 @@ class BreedFlags {
   final bool unique;
 
   BreedFlags(
-      {this.berzerk,
-      this.cowardly,
-      this.fearless,
-      this.immobile,
-      this.protective,
-      this.unique});
+      {required this.berzerk,
+      required this.cowardly,
+      required this.fearless,
+      required this.immobile,
+      required this.protective,
+      required this.unique});
 
   /// The way this set of flags affects the experience gained when killing a
   /// monster.

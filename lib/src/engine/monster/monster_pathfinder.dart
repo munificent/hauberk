@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -8,7 +7,7 @@ import '../stage/stage.dart';
 import '../stage/tile.dart';
 import 'monster.dart';
 
-class MonsterPathfinder extends Pathfinder<Direction> {
+class MonsterPathfinder extends Pathfinder<Direction?> {
   /// When calculating pathfinding, how much it "costs" to move one step on
   /// an open floor tile.
   static const _floorCost = 10;
@@ -31,24 +30,24 @@ class MonsterPathfinder extends Pathfinder<Direction> {
   /// available.
   static const _diagonalCost = 11;
 
-  static Direction findDirection(Stage stage, Monster monster) {
+  static Direction? findDirection(Stage stage, Monster monster) {
     return MonsterPathfinder(stage, monster).search();
   }
 
   final Monster _monster;
-  Path _nearest;
+  Path? _nearest;
 
   MonsterPathfinder(Stage stage, this._monster)
       : super(stage, _monster.pos, stage.game.hero.pos);
 
-  Direction processStep(Path path) {
+  Direction? processStep(Path path) {
     if (_nearest == null ||
-        heuristic(path.pos, end) < heuristic(_nearest.pos, end)) {
+        heuristic(path.pos, end) < heuristic(_nearest!.pos, end)) {
       _nearest = path;
     }
 
     if (path.length >= _monster.breed.tracking) {
-      return _nearest.startDirection;
+      return _nearest!.startDirection;
     }
 
     return null;
@@ -70,7 +69,7 @@ class MonsterPathfinder extends Pathfinder<Direction> {
     return straight * _floorCost + diagonal * _diagonalCost;
   }
 
-  int stepCost(Vec pos, Tile tile) {
+  int? stepCost(Vec pos, Tile tile) {
     // Don't enter tiles that are on fire, etc.
     // TODO: Take resistance and immunity into account.
     if (tile.substance != 0) return null;
@@ -120,11 +119,11 @@ class MonsterPathfinder extends Pathfinder<Direction> {
   /// There's no path to the goal so, just pick the path that gets nearest to
   /// it and hope for the best. (Maybe someone will open a door later or
   /// something.)
-  Direction unreachableGoal() {
+  Direction? unreachableGoal() {
     // If the monster was totally blocked in, there is no path.
     if (_nearest == null) return null;
 
     // Take the first step along the best path.
-    return _nearest.startDirection;
+    return _nearest!.startDirection;
   }
 }

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -46,7 +45,7 @@ class Monster extends Actor {
   /// also spawns less frequently over time.
   int generation;
 
-  MonsterState _state;
+  MonsterState _state = AsleepState();
 
   /// After performing a [Move] a monster must recharge to limit the rate that
   /// it can be performed. This tracks how much recharging is left to do for
@@ -77,7 +76,10 @@ class Monster extends Actor {
   double _fear = 0.0;
 
   /// The fear level that will cause the monster to become frightened.
-  double _frightenThreshold;
+  ///
+  /// Give this some random variation within monsters of the same breed so
+  /// they don't all become frightened at the same time.
+  double _frightenThreshold = rng.range(60, 200).toDouble();
 
   double get fear => _fear;
 
@@ -109,11 +111,8 @@ class Monster extends Actor {
       : super(game, x, y) {
     health = maxHealth;
 
-    _changeState(AsleepState());
+    _state.bind(this);
 
-    /// Give this some random variation within monsters of the same breed so
-    /// they don't all become frightened at the same time.
-    _frightenThreshold = rng.range(60, 200).toDouble();
     if (breed.flags.cowardly) _frightenThreshold *= 0.7;
 
     // Initialize the recharges. These will be set to real values when the
@@ -126,7 +125,10 @@ class Monster extends Actor {
   void useMove(Move move) {
     // Add some randomness to the rate. Since monsters very eagerly prefer to
     // use moves, this ensures they don't use them too predictably.
-    _recharges[move] += rng.float(move.rate, move.rate * 1.3);
+    // TODO: Make rate and experience be double instead of num? If so, get rid
+    // of this toDouble().
+    _recharges[move] =
+        _recharges[move]! + rng.float(move.rate.toDouble(), move.rate * 1.3);
   }
 
   /// Returns `true` if [move] is recharged.
@@ -170,7 +172,7 @@ class Monster extends Actor {
   Action onGetAction() {
     // Recharge moves.
     for (var move in breed.moves) {
-      _recharges[move] = math.max(0.0, _recharges[move] - 1.0);
+      _recharges[move] = math.max(0.0, _recharges[move]! - 1.0);
     }
 
     // Use the monster's senses to update its mood.
@@ -365,7 +367,7 @@ class Monster extends Actor {
   }
 
   /// Taking damage increases fear.
-  void onTakeDamage(Action action, Actor attacker, int damage) {
+  void onTakeDamage(Action action, Actor? attacker, int damage) {
     _alertness = _maxAlertness;
 
     // The greater the power of the hit, the more frightening it is.
@@ -443,15 +445,13 @@ class Monster extends Actor {
   void _updateWitnesses(void Function(Monster monster) callback) {
     for (var other in game.stage.actors) {
       if (other == this) continue;
-
       if (other is! Monster) continue;
-      var monster = other as Monster;
 
       // TODO: Take breed vision into account.
-      var distance = (monster.pos - pos).kingLength;
+      var distance = (other.pos - pos).kingLength;
       if (distance > 20) continue;
 
-      if (monster.canView(pos)) callback(monster);
+      if (other.canView(pos)) callback(other);
     }
   }
 

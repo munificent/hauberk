@@ -149,7 +149,12 @@ bool fight(HeroSave save, int monsterHealth) {
       monsterHealth,
       () => Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
           null, SpawnLocation.anywhere, Motility.walk,
-          meander: 0, maxHealth: monsterHealth));
+          depth: 1,
+          meander: 0,
+          maxHealth: monsterHealth,
+          tracking: 10,
+          flags: BreedFlags.fromSet({}),
+          description: ""));
 
   var monster = Monster(game, breed, 0, 0, 1);
   var hero = Hero(game, Vec.zero, save);

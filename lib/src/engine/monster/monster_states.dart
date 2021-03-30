@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -68,7 +67,7 @@ import 'move.dart';
 /// In either case, the end result is walking one tile (or possibly standing
 /// in place.)
 abstract class MonsterState {
-  Monster _monster;
+  late final Monster _monster;
 
   void bind(Monster monster) {
     _monster = monster;
@@ -82,7 +81,7 @@ abstract class MonsterState {
 
   Vec get pos => _monster.pos;
 
-  void log(String message, [Noun noun1, Noun noun2, Noun noun3]) {
+  void log(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
     monster.log(message, noun1, noun2, noun3);
   }
 
@@ -179,7 +178,7 @@ class AwakeState extends MonsterState {
     for (var move in breed.moves) {
       if (move is! RangedMove) continue;
 
-      rangedDamage += (move as RangedMove).attack.damage / move.rate;
+      rangedDamage += move.attack.damage / move.rate;
       rangedAttacks++;
 
       // TODO: Take elements into account?
@@ -232,7 +231,7 @@ class AwakeState extends MonsterState {
     var meleeDir = _findMeleePath();
     var rangedDir = rangedAttacks > 0 ? _findRangedPath() : null;
 
-    Direction walkDir;
+    Direction? walkDir;
     if (monster.wantsToMelee) {
       walkDir = meleeDir ?? rangedDir;
     } else {
@@ -263,7 +262,7 @@ class AwakeState extends MonsterState {
   /// Returns the [Direction] to take along the path. Returns [Direction.none]
   /// if the monster's current position is a good ranged spot. Returns `null`
   /// if no good ranged position could be found.
-  Direction _findRangedPath() {
+  Direction? _findRangedPath() {
     var maxRange = 9999;
     for (var move in breed.moves) {
       if (move.range > 0 && move.range < maxRange) maxRange = move.range;
@@ -292,7 +291,7 @@ class AwakeState extends MonsterState {
     // a tolerable position, the monster will hill-climb to get into a local
     // optimal position (which basically means as far from the hero as possible
     // while still in range).
-    Direction best;
+    Direction? best;
     var bestDistance = 0;
 
     if (isValidRangedPosition(pos)) {
@@ -329,7 +328,7 @@ class AwakeState extends MonsterState {
     return null;
   }
 
-  Direction _findMeleePath() {
+  Direction? _findMeleePath() {
     var losDir = _findLosWalkPath();
     if (losDir != null) return losDir;
 
@@ -348,9 +347,9 @@ class AwakeState extends MonsterState {
   ///    to the hero, A* will always prefer an intercardinal move direction,
   ///    even if the hero is almost a cardinal direction away. Bresenham will
   ///    pick a direction that's closest to the direction pointing at the hero.
-  Direction _findLosWalkPath() {
+  Direction? _findLosWalkPath() {
     // TODO: Need to verify that this does actually help performance.
-    Vec first;
+    Vec? first;
     var length = 1;
 
     for (var pos in Line(pos, game.hero.pos)) {
@@ -373,7 +372,7 @@ class AwakeState extends MonsterState {
       if (pos == game.hero.pos) break;
     }
 
-    var step = first - pos;
+    var step = first! - pos;
     if (step.y == -1) {
       if (step.x == -1) {
         return Direction.nw;
@@ -432,7 +431,8 @@ class AfraidState extends MonsterState {
 
     // If we couldn't find a hidden tile, at least try to get some distance.
     var heroDistance = (pos - game.hero.pos).kingLength;
-    var farther = pos.neighbors.where((here) {
+    var farther = Direction.all.where((dir) {
+      var here = pos + dir;
       if (!monster.willEnter(here)) return false;
       return (here - game.hero.pos).kingLength > heroDistance;
     });
