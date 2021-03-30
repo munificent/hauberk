@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../../engine.dart';
 import 'drops.dart';
 
@@ -49,7 +48,7 @@ class FloorDrops {
     // TODO: Other stuff.
   }
 
-  static FloorDrop choose(int depth) => _floorDrops.tryChoose(depth);
+  static FloorDrop choose(int depth) => _floorDrops.tryChoose(depth)!;
 }
 
 class FloorDrop {
@@ -60,10 +59,10 @@ class FloorDrop {
 }
 
 void floorDrop(
-    {double startFrequency,
-    double endFrequency,
-    SpawnLocation location,
-    Drop drop}) {
+    {double? startFrequency,
+    double? endFrequency,
+    SpawnLocation? location,
+    required Drop drop}) {
   location ??= SpawnLocation.anywhere;
   var floorDrop = FloorDrop(location, drop);
   _floorDrops.addRanged(floorDrop,

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import '../../engine.dart';
@@ -17,32 +16,24 @@ import 'affixes.dart';
 import 'items.dart';
 
 int _sortIndex = 0;
-_CategoryBuilder _category;
-_ItemBuilder _item;
-String _affixTag;
-_AffixBuilder _affix;
+late _CategoryBuilder _category;
+_ItemBuilder? _item;
+late String _affixTag;
+_AffixBuilder? _affix;
 
-_CategoryBuilder category(int glyph, {String verb, int stack}) {
+_CategoryBuilder category(int glyph, {String? verb, int? stack}) {
   finishItem();
 
-  _category = _CategoryBuilder();
-  _category._glyph = glyph;
-  _category._verb = verb;
+  _category = _CategoryBuilder(glyph, verb);
   _category._maxStack = stack;
 
   return _category;
 }
 
-_ItemBuilder item(String name, Color color, {double frequency, int price}) {
+_ItemBuilder item(String name, Color color, {double? frequency, int? price}) {
   finishItem();
 
-  _item = _ItemBuilder();
-  _item._name = name;
-  _item._color = color;
-  _item._frequency = frequency ?? 1.0;
-  _item._price = price ?? 0;
-
-  return _item;
+  return _item = _ItemBuilder(name, color, frequency ?? 1.0, price ?? 0);
 }
 
 void affixCategory(String tag) {
@@ -71,23 +62,23 @@ class _BaseBuilder {
   final List<Skill> _skills = [];
   final Map<Element, int> _destroyChance = {};
 
-  int _maxStack;
-  Element _tossElement;
-  int _tossDamage;
-  int _tossRange;
-  TossItemUse _tossUse;
-  int _emanation;
-  int _fuel;
+  int? _maxStack;
+  Element? _tossElement;
+  int? _tossDamage;
+  int? _tossRange;
+  TossItemUse? _tossUse;
+  int? _emanation;
+  int? _fuel;
 
   /// Percent chance of objects in the current category breaking when thrown.
-  int _breakage;
+  int? _breakage;
 
   void stack(int stack) {
     _maxStack = stack;
   }
 
   /// Makes items in the category throwable.
-  void toss({int damage, Element element, int range, int breakage}) {
+  void toss({int? damage, Element? element, int? range, int? breakage}) {
     _tossDamage = damage;
     _tossElement = element;
     _tossRange = range;
@@ -98,7 +89,7 @@ class _BaseBuilder {
     _tossUse = use;
   }
 
-  void destroy(Element element, {int chance, int fuel}) {
+  void destroy(Element element, {required int chance, int? fuel}) {
     _destroyChance[element] = chance;
     // TODO: Per-element fuel.
     _fuel = fuel;
@@ -115,15 +106,16 @@ class _BaseBuilder {
 
 class _CategoryBuilder extends _BaseBuilder {
   /// The current glyph's character code. Any items defined will use this.
-  int _glyph;
+  final int _glyph;
+  final String? _verb;
 
-  String _equipSlot;
-
-  String _weaponType;
-  String _tag;
-  String _verb;
+  String? _equipSlot;
+  String? _weaponType;
+  late final String _tag;
   bool _isTreasure = false;
   bool _isTwoHanded = false;
+
+  _CategoryBuilder(this._glyph, this._verb);
 
   void tag(String tagPath) {
     // Define the tag path and store the leaf tag which is what gets used by
@@ -173,23 +165,26 @@ class _CategoryBuilder extends _BaseBuilder {
 }
 
 class _ItemBuilder extends _BaseBuilder {
-  Color _color;
-  double _frequency;
-  int _price;
-  ItemUse _use;
-  Attack _attack;
-  Defense _defense;
-  int _weight;
-  int _heft;
-  int _armor;
+  final String _name;
+  final Color _color;
+  final double _frequency;
+  final int _price;
+  ItemUse? _use;
+  Attack? _attack;
+  Defense? _defense;
+  int? _weight;
+  int? _heft;
+  int? _armor;
 
-  String _name;
-  int _minDepth;
-  int _maxDepth;
+  // TODO: Instead of late final, initialize these in item() instead of depth().
+  late final int _minDepth;
+  late final int _maxDepth;
+
+  _ItemBuilder(this._name, this._color, this._frequency, this._price);
 
   /// Sets the item's minimum depth to [from]. If [to] is given, then the item
   /// has the given depth range. Otherwise, its max is [Option.maxDepth].
-  void depth(int from, {int to}) {
+  void depth(int from, {int? to}) {
     _minDepth = from;
     _maxDepth = to ?? Option.maxDepth;
   }
@@ -199,17 +194,17 @@ class _ItemBuilder extends _BaseBuilder {
     _defense = Defense(amount, message);
   }
 
-  void armor(int armor, {int weight}) {
+  void armor(int armor, {int? weight}) {
     _armor = armor;
     _weight = weight;
   }
 
-  void weapon(int damage, {int heft, Element element}) {
-    _attack = Attack(null, _category._verb, damage, null, element);
+  void weapon(int damage, {required int heft, Element? element}) {
+    _attack = Attack(null, _category._verb!, damage, null, element);
     _heft = heft;
   }
 
-  void ranged(String noun, {int heft, int damage, int range}) {
+  void ranged(String noun, {required int heft, required int damage, required int range}) {
     _attack = Attack(Noun(noun), "pierce[s]", damage, range);
     // TODO: Make this per-item once it does something.
     _heft = heft;
@@ -223,7 +218,7 @@ class _ItemBuilder extends _BaseBuilder {
     use("Provides $amount turns of food.", () => EatAction(amount));
   }
 
-  void detection(List<DetectType> types, {int range}) {
+  void detection(List<DetectType> types, {int? range}) {
     // TODO: Hokey. Do something more general if more DetectTypes are added.
     var typeDescription = "exits and items";
     if (types.length == 1) {
@@ -242,10 +237,7 @@ class _ItemBuilder extends _BaseBuilder {
     use("$description.", () => DetectAction(types, range));
   }
 
-  void perception({int duration, int distance}) {
-    duration ??= 5;
-    distance ??= 16;
-
+  void perception({int duration = 5, int distance = 16}) {
     // TODO: Better description.
     use("Perceive monsters.", () => PerceiveAction(duration, distance));
   }
@@ -255,9 +247,7 @@ class _ItemBuilder extends _BaseBuilder {
         () => ResistAction(40, element));
   }
 
-  void mapping(int distance, {bool illuminate}) {
-    illuminate ??= false;
-
+  void mapping(int distance, {bool illuminate = false}) {
     var description =
         "Imparts knowledge of the dungeon up to $distance steps from the hero.";
     if (illuminate) {
@@ -286,7 +276,7 @@ class _ItemBuilder extends _BaseBuilder {
   /// Sets a use and toss use that creates an expanding ring of elemental
   /// damage.
   void ball(Element element, String noun, String verb, int damage,
-      {int range}) {
+      {int? range}) {
     range ??= 3;
     var attack = Attack(Noun(noun), verb, damage, range, element);
 
@@ -312,7 +302,7 @@ class _ItemBuilder extends _BaseBuilder {
     tossUse((pos) => FlowFromAction(attack, pos, motility));
   }
 
-  void lightSource({int level, int range}) {
+  void lightSource({required int level, int? range}) {
     _emanation = level;
 
     if (range != null) {
@@ -325,19 +315,19 @@ class _ItemBuilder extends _BaseBuilder {
 class _AffixBuilder {
   final String _name;
   final bool _isPrefix;
-  int _minDepth;
-  int _maxDepth;
+  int? _minDepth;
+  int? _maxDepth;
   final double _frequency;
 
-  double _heftScale;
-  int _weightBonus;
-  int _strikeBonus;
-  double _damageScale;
-  int _damageBonus;
-  Element _brand;
-  int _armor;
-  int _priceBonus;
-  double _priceScale;
+  double? _heftScale;
+  int? _weightBonus;
+  int? _strikeBonus;
+  double? _damageScale;
+  int? _damageBonus;
+  Element? _brand;
+  int? _armor;
+  int? _priceBonus;
+  double? _priceScale;
 
   final Map<Element, int> _resists = {};
   final Map<Stat, int> _statBonuses = {};
@@ -347,7 +337,7 @@ class _AffixBuilder {
   /// Sets the affix's minimum depth to [from]. If [to] is given, then the
   /// affix has the given depth range. Otherwise, its max range is
   /// [Option.maxDepth].
-  void depth(int from, {int to}) {
+  void depth(int from, {int? to}) {
     _minDepth = from;
     _maxDepth = to ?? Option.maxDepth;
   }
@@ -364,12 +354,12 @@ class _AffixBuilder {
     _strikeBonus = bonus;
   }
 
-  void damage({double scale, int bonus}) {
+  void damage({double? scale, int? bonus}) {
     _damageScale = scale;
     _damageBonus = bonus;
   }
 
-  void brand(Element element, {int resist}) {
+  void brand(Element element, {int? resist}) {
     _brand = element;
 
     // By default, branding also grants resistance.
@@ -380,7 +370,7 @@ class _AffixBuilder {
     _armor = armor;
   }
 
-  void resist(Element element, [int power]) {
+  void resist(Element element, [int? power]) {
     _resists[element] = power ?? 1;
   }
 
@@ -411,72 +401,74 @@ class _AffixBuilder {
 }
 
 void finishItem() {
-  if (_item == null) return;
+  var builder = _item;
+  if (builder == null) return;
 
-  var appearance = Glyph.fromCharCode(_category._glyph, _item._color);
+  var appearance = Glyph.fromCharCode(_category._glyph, builder._color);
 
-  Toss toss;
-  var tossDamage = _item._tossDamage ?? _category._tossDamage;
+  Toss? toss;
+  var tossDamage = builder._tossDamage ?? _category._tossDamage;
   if (tossDamage != null) {
-    var noun = Noun("the ${_item._name.toLowerCase()}");
+    var noun = Noun("the ${builder._name.toLowerCase()}");
     var verb = "hits";
     if (_category._verb != null) {
-      verb = Log.conjugate(_category._verb, Pronoun.it);
+      verb = Log.conjugate(_category._verb!, Pronoun.it);
     }
 
-    var range = _item._tossRange ?? _category._tossRange;
+    var range = builder._tossRange ?? _category._tossRange;
     assert(range != null);
-    var element = _item._tossElement ?? _category._tossElement ?? Element.none;
-    var use = _item._tossUse ?? _category._tossUse;
-    var breakage = _category._breakage ?? _item._breakage ?? 0;
+    var element = builder._tossElement ?? _category._tossElement ?? Element.none;
+    var use = builder._tossUse ?? _category._tossUse;
+    var breakage = _category._breakage ?? builder._breakage ?? 0;
 
     var tossAttack = Attack(noun, verb, tossDamage, range, element);
     toss = Toss(breakage, tossAttack, use);
   }
 
   var itemType = ItemType(
-      _item._name,
+      builder._name,
       appearance,
-      _item._minDepth,
+      builder._minDepth,
       _sortIndex++,
       _category._equipSlot,
       _category._weaponType,
-      _item._use,
-      _item._attack,
+      builder._use,
+      builder._attack,
       toss,
-      _item._defense,
-      _item._armor ?? 0,
-      _item._price,
-      _item._maxStack ?? _category._maxStack ?? 1,
-      weight: _item._weight ?? 0,
-      heft: _item._heft ?? 0,
-      emanation: _item._emanation ?? _category._emanation,
-      fuel: _item._fuel ?? _category._fuel,
+      builder._defense,
+      builder._armor ?? 0,
+      builder._price,
+      builder._maxStack ?? _category._maxStack ?? 1,
+      weight: builder._weight ?? 0,
+      heft: builder._heft ?? 0,
+      emanation: builder._emanation ?? _category._emanation,
+      fuel: builder._fuel ?? _category._fuel,
       treasure: _category._isTreasure,
       twoHanded: _category._isTwoHanded);
 
   itemType.destroyChance.addAll(_category._destroyChance);
-  itemType.destroyChance.addAll(_item._destroyChance);
+  itemType.destroyChance.addAll(builder._destroyChance);
 
   itemType.skills.addAll(_category._skills);
-  itemType.skills.addAll(_item._skills);
+  itemType.skills.addAll(builder._skills);
 
   Items.types.addRanged(itemType,
       name: itemType.name,
-      start: _item._minDepth,
-      end: _item._maxDepth,
-      startFrequency: _item._frequency,
+      start: builder._minDepth,
+      end: builder._maxDepth,
+      startFrequency: builder._frequency,
       tags: _category._tag);
 
   _item = null;
 }
 
 void finishAffix() {
-  if (_affix == null) return;
+  var builder = _affix;
+  if (builder == null) return;
 
-  var affixes = _affix._isPrefix ? Affixes.prefixes : Affixes.suffixes;
+  var affixes = builder._isPrefix ? Affixes.prefixes : Affixes.suffixes;
 
-  var displayName = _affix._name;
+  var displayName = builder._name;
   var fullName = "$displayName ($_affixTag)";
   var index = 1;
 
@@ -487,25 +479,25 @@ void finishAffix() {
   }
 
   var affix = Affix(fullName, displayName,
-      heftScale: _affix._heftScale,
-      weightBonus: _affix._weightBonus,
-      strikeBonus: _affix._strikeBonus,
-      damageScale: _affix._damageScale,
-      damageBonus: _affix._damageBonus,
-      brand: _affix._brand,
-      armor: _affix._armor,
-      priceBonus: _affix._priceBonus,
-      priceScale: _affix._priceScale);
+      heftScale: builder._heftScale,
+      weightBonus: builder._weightBonus,
+      strikeBonus: builder._strikeBonus,
+      damageScale: builder._damageScale,
+      damageBonus: builder._damageBonus,
+      brand: builder._brand,
+      armor: builder._armor,
+      priceBonus: builder._priceBonus,
+      priceScale: builder._priceScale);
 
-  _affix._resists.forEach(affix.resist);
-  _affix._statBonuses.forEach(affix.setStatBonus);
+  builder._resists.forEach(affix.resist);
+  builder._statBonuses.forEach(affix.setStatBonus);
 
   affixes.addRanged(affix,
       name: fullName,
-      start: _affix._minDepth,
-      end: _affix._maxDepth,
-      startFrequency: _affix._frequency,
-      endFrequency: _affix._frequency,
+      start: builder._minDepth,
+      end: builder._maxDepth,
+      startFrequency: builder._frequency,
+      endFrequency: builder._frequency,
       tags: _affixTag);
   _affix = null;
 }

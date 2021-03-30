@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -12,7 +11,7 @@ class Affixes {
 
   /// Creates a new [Item] of [itemType] and chooses affixes for it.
   static Item createItem(ItemType itemType, int droppedDepth,
-      [int affixChance]) {
+      [int? affixChance]) {
     affixChance ??= 0;
 
     // Only equipped items have affixes.
@@ -81,7 +80,7 @@ class Affixes {
     return suffixes.find(name);
   }
 
-  static Affix _chooseAffix(
+  static Affix? _chooseAffix(
       ResourceSet<Affix> affixes, ItemType itemType, int depth) {
     return affixes.tryChooseMatching(depth, Items.types.getTags(itemType.name));
   }
