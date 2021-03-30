@@ -252,9 +252,6 @@ class Decorator {
       var experience = _spawnMonster(densityMap, pos, breed);
       yield "Spawned monster";
 
-      // Stop if we ran out of open tiles.
-      if (experience == null) break;
-
       totalExperience += experience;
     }
 

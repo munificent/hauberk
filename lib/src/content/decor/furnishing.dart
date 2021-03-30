@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -192,15 +191,17 @@ class Furnishing extends Decor {
 }
 
 class Cell {
-  final TileType _apply;
-  final Motility _motility;
+  static final uninitialized = Cell();
+
+  final TileType? _apply;
+  final Motility? _motility;
   final List<TileType> _require = [];
 
   Cell(
-      {TileType apply,
-      Motility motility,
-      TileType require,
-      List<TileType> requireAny})
+      {TileType? apply,
+      Motility? motility,
+      TileType? require,
+      List<TileType>? requireAny})
       : _apply = apply,
         _motility = motility {
     if (require != null) _require.add(require);
@@ -208,12 +209,12 @@ class Cell {
   }
 
   bool meetsRequirement(TileType tile) {
-    if (_motility != null && !tile.canEnter(_motility)) return false;
+    if (_motility != null && !tile.canEnter(_motility!)) return false;
     if (_require.isNotEmpty && !_require.contains(tile)) return false;
     return true;
   }
 
   void apply(Painter painter, Vec pos) {
-    if (_apply != null) painter.setTile(pos, _apply);
+    if (_apply != null) painter.setTile(pos, _apply!);
   }
 }

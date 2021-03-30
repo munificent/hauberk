@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -15,10 +14,10 @@ enum Symmetry {
   rotate180,
 }
 
-double _categoryFrequency;
-double _furnishingFrequency;
-String _themes;
-Map<String, Cell> _categoryCells;
+double? _categoryFrequency;
+double? _furnishingFrequency;
+late String _themes;
+Map<String, Cell>? _categoryCells;
 
 final Map<String, Cell> _applyCells = {
   "I": Cell(
@@ -78,7 +77,7 @@ final _rotate = [
   "─│═│",
 ];
 
-void category({String themes, double frequency, Map<String, Cell> cells}) {
+void category({required String themes, double? frequency, Map<String, Cell>? cells}) {
   _themes = themes;
   _categoryFrequency = frequency;
   _categoryCells = cells;
@@ -86,11 +85,11 @@ void category({String themes, double frequency, Map<String, Cell> cells}) {
 
 Cell applyOpen(TileType type) => Cell(apply: type, motility: Motility.walk);
 
-Cell apply(TileType type, {TileType over}) => Cell(apply: type, require: over);
+Cell apply(TileType type, {TileType? over}) => Cell(apply: type, require: over);
 
 Cell require(TileType type) => Cell(require: type);
 
-void furnishing({double frequency, Symmetry symmetry, String template}) {
+void furnishing({double? frequency, Symmetry? symmetry, required String template}) {
   _furnishingFrequency = frequency;
   symmetry ??= Symmetry.none;
 
@@ -198,20 +197,19 @@ String _rotateChar90(String input) {
 }
 
 void _singleFurnishing(List<String> lines) {
-  var cells = Array2D<Cell>(lines.first.length, lines.length, null);
+  var cells = Array2D<Cell>(lines.first.length, lines.length, Cell.uninitialized);
   for (var y = 0; y < lines.length; y++) {
     for (var x = 0; x < lines.first.length; x++) {
       var char = lines[y][x];
       Cell cell;
-      if (_categoryCells != null && _categoryCells.containsKey(char)) {
-        cell = _categoryCells[char];
+      if (_categoryCells != null && _categoryCells!.containsKey(char)) {
+        cell = _categoryCells![char]!;
       } else if (_applyCells.containsKey(char)) {
-        cell = _applyCells[char];
+        cell = _applyCells[char]!;
       } else {
-        cell = _requireCells[char];
+        cell = _requireCells[char]!;
       }
 
-      assert(cell != null);
       cells.set(x, y, cell);
     }
   }

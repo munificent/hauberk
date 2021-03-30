@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -30,7 +29,7 @@ abstract class Decor {
 //    all.addUnnamed(Blast(), 1, 0.01, "laboratory");
   }
 
-  static Decor choose(int depth, String theme) {
+  static Decor? choose(int depth, String theme) {
     if (!all.tagExists(theme)) return null;
     return all.tryChoose(depth, tag: theme);
   }

@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../tiles.dart';
 import 'furnishing_builder.dart';
 
