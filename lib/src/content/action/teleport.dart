@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -13,13 +12,13 @@ class TeleportAction extends Action {
     var targets = <Vec>[];
 
     var bounds = Rect.intersect(
-        Rect.leftTopRightBottom(actor.x - distance, actor.y - distance,
-            actor.x + distance, actor.y + distance),
+        Rect.leftTopRightBottom(actor!.x - distance, actor!.y - distance,
+            actor!.x + distance, actor!.y + distance),
         game.stage.bounds);
 
     for (var pos in bounds) {
-      if (!actor.willEnter(pos)) continue;
-      if (pos - actor.pos > distance) continue;
+      if (!actor!.willEnter(pos)) continue;
+      if (pos - actor!.pos > distance) continue;
       targets.add(pos);
     }
 
@@ -32,11 +31,11 @@ class TeleportAction extends Action {
 
     for (var tries = 0; tries < 10; tries++) {
       var pos = rng.item(targets);
-      if (pos - actor.pos > best - actor.pos) best = pos;
+      if (pos - actor!.pos > best - actor!.pos) best = pos;
     }
 
-    var from = actor.pos;
-    actor.pos = best;
+    var from = actor!.pos;
+    actor!.pos = best;
     addEvent(EventType.teleport, actor: actor, pos: from);
     return succeed('{1} teleport[s]!', actor);
   }

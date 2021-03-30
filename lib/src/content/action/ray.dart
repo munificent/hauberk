@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
@@ -136,7 +135,7 @@ class RingSelfAction extends Action {
   bool get isImmediate => false;
 
   ActionResult onPerform() {
-    return alternate(RayAction.ring(actor.pos, _attack.createHit()));
+    return alternate(RayAction.ring(actor!.pos, _attack.createHit()));
   }
 }
 

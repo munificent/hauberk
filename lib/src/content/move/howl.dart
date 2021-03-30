@@ -1,10 +1,9 @@
-// @dart=2.11
 import '../../engine.dart';
 import '../action/howl.dart';
 
 class HowlMove extends Move {
   final int _range;
-  final String _verb;
+  final String? _verb;
 
   num get experience => _range * 0.5;
 

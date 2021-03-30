@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -11,18 +10,14 @@ class MappingAction extends Action {
 
   /// The different distances (squared) that contain tiles, in reverse order
   /// for easy removal of the nearest distance.
-  List<List<Vec>> _tilesByDistance;
+  late final List<List<Vec>> _tilesByDistance = _findTiles();
 
   bool get isImmediate => false;
 
-  MappingAction(this._maxDistance, {bool illuminate})
+  MappingAction(this._maxDistance, {bool? illuminate})
       : _illuminate = illuminate ?? false;
 
   ActionResult onPerform() {
-    if (_tilesByDistance == null) {
-      _findTiles();
-    }
-
     for (var i = 0; i < 2; i++) {
       // If we've shown all the tiles, we're done.
       if (_currentDistance >= _tilesByDistance.length) {
@@ -52,24 +47,26 @@ class MappingAction extends Action {
 
   /// Finds all the tiles that should be detected and organizes them from
   /// farthest to nearest.
-  void _findTiles() {
-    _tilesByDistance = [[]];
-    _tilesByDistance[0].add(actor.pos);
+  List<List<Vec>> _findTiles() {
+    var result = <List<Vec>>[[]];
+    result[0].add(actor!.pos);
 
-    var flow = MappingFlow(game.stage, actor.pos, _maxDistance);
+    var flow = MappingFlow(game.stage, actor!.pos, _maxDistance);
 
     for (var pos in flow.reachable) {
-      var distance = flow.costAt(pos);
-      for (var i = _tilesByDistance.length; i <= distance; i++) {
-        _tilesByDistance.add([]);
+      var distance = flow.costAt(pos)!;
+      for (var i = result.length; i <= distance; i++) {
+        result.add([]);
       }
 
-      _tilesByDistance[distance].add(pos);
+      result[distance].add(pos);
     }
 
-    for (var i = 0; i < _tilesByDistance.length; i++) {
-      rng.shuffle(_tilesByDistance[i]);
+    for (var i = 0; i < result.length; i++) {
+      rng.shuffle(result[i]);
     }
+
+    return result;
   }
 }
 
@@ -82,7 +79,7 @@ class MappingFlow extends Flow {
       : super(stage, start, maxDistance: _maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
-  int tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
+  int? tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Can't enter impassable tiles.
     if (!tile.canEnter(Motility.doorAndFly)) return null;
 

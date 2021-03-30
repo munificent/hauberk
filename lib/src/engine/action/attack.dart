@@ -9,7 +9,7 @@ class AttackAction extends Action {
   AttackAction(this.defender);
 
   ActionResult onPerform() {
-    for (var hit in actor.createMeleeHits(defender)) {
+    for (var hit in actor!.createMeleeHits(defender)) {
       hit.perform(this, actor, defender);
       if (!defender.isAlive) break;
     }

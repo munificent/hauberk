@@ -1,4 +1,3 @@
-// @dart=2.11
 /// These actions are side effects from taking elemental damage.
 import 'package:piecemeal/piecemeal.dart';
 
@@ -11,7 +10,7 @@ mixin ElementActionMixin implements Action {
     // Open tiles if the given motility lets us go through them.
     var tile = game.stage[pos];
     if (tile.type.canOpen) {
-      addAction(tile.type.onOpen(pos));
+      addAction(tile.type.onOpen!(pos));
     }
 
     addEvent(EventType.cone, element: hit.element, pos: pos);
@@ -36,8 +35,8 @@ class BurnActorAction extends Action with DestroyActionMixin {
     destroyHeldItems(Elements.fire);
 
     // Being burned "cures" cold.
-    if (actor.cold.isActive) {
-      actor.cold.cancel();
+    if (actor!.cold.isActive) {
+      actor!.cold.cancel();
       return succeed("The fire warms {1} back up.", actor);
     }
 
@@ -166,19 +165,19 @@ class WindAction extends Action {
 
   ActionResult onPerform() {
     // Move the actor to a random reachable tile. Flying actors get blown more.
-    var distance = actor.motility.overlaps(Motility.fly) ? 6 : 3;
+    var distance = actor!.motility.overlaps(Motility.fly) ? 6 : 3;
 
     // Don't blow through doors.
-    var motility = actor.motility - Motility.door;
+    var motility = actor!.motility - Motility.door;
     var flow =
-        MotilityFlow(game.stage, actor.pos, motility, maxDistance: distance);
+        MotilityFlow(game.stage, actor!.pos, motility, maxDistance: distance);
     var positions =
         flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();
     if (positions.isEmpty) return ActionResult.failure;
 
     log("{1} [are|is] thrown by the wind!", actor);
-    addEvent(EventType.wind, actor: actor, pos: actor.pos);
-    actor.pos = rng.item(positions);
+    addEvent(EventType.wind, actor: actor, pos: actor!.pos);
+    actor!.pos = rng.item(positions);
 
     return ActionResult.success;
   }
@@ -189,14 +188,19 @@ class LightFloorAction extends Action {
   final Vec _pos;
   int _emanation;
 
-  LightFloorAction(this._pos, Hit hit, num distance) {
+  factory LightFloorAction(Vec pos, Hit hit, num distance) {
     // The intensity fades from the center outward. Also, strong hits produce
     // more light.
-    var min = (1.0 + hit.averageDamage.toInt() * 4.0).clamp(0.0, Lighting.max);
-    var max = (128.0 + hit.averageDamage * 16.0).clamp(0.0, Lighting.max);
-    _emanation =
-        lerpDouble(hit.range - distance, 0.0, hit.range, min, max).toInt();
+    var min = (1.0 + hit.averageDamage.toInt() * 4.0)
+        .clamp(0.0, Lighting.max)
+        .toDouble();
+    var max =
+        (128.0 + hit.averageDamage * 16.0).clamp(0.0, Lighting.max).toDouble();
+    return LightFloorAction._(pos,
+        lerpDouble(hit.range - distance, 0.0, hit.range, min, max).toInt());
   }
+
+  LightFloorAction._(this._pos, this._emanation);
 
   ActionResult onPerform() {
     game.stage[_pos].addEmanation(_emanation);

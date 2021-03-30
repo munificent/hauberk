@@ -17,7 +17,7 @@ class WalkAction extends Action {
       return alternate(RestAction());
     }
 
-    var pos = actor.pos + dir;
+    var pos = actor!.pos + dir;
 
     // See if there is an actor there.
     var target = game.stage.actorAt(pos);
@@ -32,7 +32,7 @@ class WalkAction extends Action {
     }
 
     // See if we can walk there.
-    if (!actor.canOccupy(pos)) {
+    if (!actor!.canOccupy(pos)) {
       // If the hero runs into something in the dark, they can figure out what
       // it is.
       if (actor is Hero) {
@@ -42,7 +42,7 @@ class WalkAction extends Action {
       return fail('{1} hit[s] the ${tile.name}.', actor);
     }
 
-    actor.pos = pos;
+    actor!.pos = pos;
 
     // See if the hero stepped on anything interesting.
     if (actor is Hero) {
@@ -59,7 +59,7 @@ class WalkAction extends Action {
           log("{1} pick[s] up {2} worth $value gold.", hero, item);
           game.stage.removeItem(item, pos);
 
-          addEvent(EventType.gold, actor: actor, pos: actor.pos, other: item);
+          addEvent(EventType.gold, actor: actor, pos: actor!.pos, other: item);
         } else {
           log('{1} [are|is] standing on {2}.', actor, item);
         }
@@ -122,9 +122,9 @@ class RestAction extends Action {
       // TODO: What should affect this rate?
       // TODO: Can the hero regain focus when hungry?
       hero.focus += 10;
-    } else if (!actor.isVisibleToHero) {
+    } else if (!actor!.isVisibleToHero) {
       // Monsters can rest if out of sight.
-      actor.health++;
+      actor!.health++;
     }
 
     return succeed();

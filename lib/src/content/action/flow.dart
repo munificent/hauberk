@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -11,8 +10,9 @@ class FlowAction extends Action with ElementActionMixin {
   final Vec _from;
   final Hit _hit;
 
-  Flow _flow;
-  List<Vec> _tiles;
+  late final Flow _flow;
+  // TODO: Make this late final?
+  List<Vec>? _tiles;
 
   final Motility _motility;
   final int _slowness;
@@ -24,7 +24,7 @@ class FlowAction extends Action with ElementActionMixin {
   // TODO: Support motilities that can flow into closed doors but not out of
   // them. That would let fire flow attacks that can set closed doors on fire.
 
-  FlowAction(this._from, this._hit, this._motility, {int slowness})
+  FlowAction(this._from, this._hit, this._motility, {int? slowness})
       : _slowness = slowness ?? 1;
 
   ActionResult onPerform() {
@@ -41,23 +41,23 @@ class FlowAction extends Action with ElementActionMixin {
       _flow = MotilityFlow(game.stage, _from, _motility, avoidActors: false);
 
       _tiles = _flow.reachable
-          .takeWhile((pos) => _flow.costAt(pos) <= _hit.range)
+          .takeWhile((pos) => _flow.costAt(pos)! <= _hit.range)
           .toList();
     }
 
     // Hit all tiles at the same distance.
-    var distance = _flow.costAt(_tiles.first);
+    var distance = _flow.costAt(_tiles!.first)!;
     int end;
-    for (end = 0; end < _tiles.length; end++) {
-      if (_flow.costAt(_tiles[end]) != distance) break;
+    for (end = 0; end < _tiles!.length; end++) {
+      if (_flow.costAt(_tiles![end]) != distance) break;
     }
 
-    for (var pos in _tiles.sublist(0, end)) {
+    for (var pos in _tiles!.sublist(0, end)) {
       hitTile(_hit, pos, distance);
     }
 
-    _tiles = _tiles.sublist(end);
-    if (_tiles.isEmpty) return ActionResult.success;
+    _tiles = _tiles!.sublist(end);
+    if (_tiles!.isEmpty) return ActionResult.success;
 
     return ActionResult.notDone;
   }
@@ -73,7 +73,7 @@ class FlowSelfAction extends Action {
   FlowSelfAction(this._attack, this._motility);
 
   ActionResult onPerform() {
-    return alternate(FlowAction(actor.pos, _attack.createHit(), _motility));
+    return alternate(FlowAction(actor!.pos, _attack.createHit(), _motility));
   }
 }
 

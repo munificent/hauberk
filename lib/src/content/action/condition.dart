@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -10,7 +9,7 @@ class HasteAction extends ConditionAction {
 
   HasteAction(this._speed, this._duration);
 
-  Condition get condition => actor.haste;
+  Condition get condition => actor!.haste;
 
   int getIntensity() => _speed;
   int getDuration() => _duration;
@@ -24,7 +23,7 @@ class FreezeActorAction extends ConditionAction with DestroyActionMixin {
 
   FreezeActorAction(this._damage);
 
-  Condition get condition => actor.cold;
+  Condition get condition => actor!.cold;
 
   ActionResult onPerform() {
     destroyHeldItems(Elements.cold);
@@ -43,7 +42,7 @@ class PoisonAction extends ConditionAction {
 
   PoisonAction(this._damage);
 
-  Condition get condition => actor.poison;
+  Condition get condition => actor!.poison;
 
   int getIntensity() => 1 + _damage ~/ 20;
   int getDuration() => 1 + rng.triangleInt(_damage * 2, _damage ~/ 2);
@@ -57,7 +56,7 @@ class BlindAction extends ConditionAction {
 
   BlindAction(this._damage);
 
-  Condition get condition => actor.blindness;
+  Condition get condition => actor!.blindness;
 
   int getDuration() => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
 
@@ -74,7 +73,7 @@ class DazzleAction extends ConditionAction {
 
   DazzleAction(this._damage);
 
-  Condition get condition => actor.dazzle;
+  Condition get condition => actor!.dazzle;
 
   int getDuration() => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
   void onActivate() => log("{1} [are|is] dazzled by the light!", actor);
@@ -87,7 +86,7 @@ class ResistAction extends ConditionAction {
 
   ResistAction(this._duration, this._element);
 
-  Condition get condition => actor.resistances[_element];
+  Condition get condition => actor!.resistances[_element]!;
 
   int getDuration() => _duration;
   // TODO: Resistances of different intensity.

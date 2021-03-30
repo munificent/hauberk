@@ -118,7 +118,7 @@ class Game {
           _actions.removeFirst();
 
           if (result.succeeded && action.consumesEnergy) {
-            action.actor.finishTurn(action);
+            action.actor!.finishTurn(action);
             stage.advanceActor();
           }
 

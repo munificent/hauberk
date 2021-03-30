@@ -1,10 +1,9 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import 'ray.dart';
 
-/// Creates a swath of damage that radiates out from a point.
+/// Creates a swath of emanation that radiates out from a point.
 class IlluminateAction extends RayActionBase {
   final int range;
 
@@ -32,10 +31,10 @@ class IlluminateSelfAction extends Action {
   bool get isImmediate => false;
 
   ActionResult onPerform() {
-    game.stage[actor.pos].maxEmanation(Lighting.emanationForLevel(3));
+    game.stage[actor!.pos].maxEmanation(Lighting.emanationForLevel(3));
     game.stage.floorEmanationChanged();
     addEvent(EventType.pause);
 
-    return alternate(IlluminateAction(_range, actor.pos));
+    return alternate(IlluminateAction(_range, actor!.pos));
   }
 }

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -8,11 +7,11 @@ import '../../engine.dart';
 class BoltAction extends LosAction {
   final Hit _hit;
   final bool _canMiss;
-  final int _range;
+  final int? _range;
 
   int get range => _range ?? _hit.range;
 
-  BoltAction(Vec target, this._hit, {bool canMiss = false, int range})
+  BoltAction(Vec target, this._hit, {bool canMiss = false, int? range})
       : _canMiss = canMiss,
         _range = range,
         super(target);

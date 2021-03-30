@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -34,7 +33,7 @@ class MissiveAction extends Action {
   MissiveAction(this.target, this.missive);
 
   ActionResult onPerform() {
-    var message = rng.item(_messages[missive]);
+    var message = rng.item(_messages[missive]!);
 
     return succeed(message, actor, target);
   }

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -8,7 +7,7 @@ import '../action/spawn.dart';
 class SpawnMove extends Move {
   final bool _preferStraight;
 
-  SpawnMove(num rate, {bool preferStraight})
+  SpawnMove(num rate, {bool? preferStraight})
       : _preferStraight = preferStraight ?? false,
         super(rate);
 

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -21,6 +20,8 @@ class PolymorphAction extends Action {
   }
 }
 
+/// "Amputates" part of the monster by spawning a new one for the part and
+/// polymorphing the original into a different breed that lacks the part.
 class AmputateAction extends Action {
   final Breed _bodyBreed;
   final Breed _partBreed;
@@ -41,7 +42,7 @@ class AmputateAction extends Action {
     // Pick an open adjacent tile.
     var positions = <Vec>[];
     for (var dir in Direction.all) {
-      var pos = actor.pos + dir;
+      var pos = actor!.pos + dir;
       if (part.canEnter(pos)) positions.add(pos);
     }
 

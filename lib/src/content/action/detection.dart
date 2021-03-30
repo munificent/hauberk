@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
@@ -12,11 +11,11 @@ enum DetectType {
 /// An [Action] that marks all tiles containing [Item]s explored.
 class DetectAction extends Action {
   final Set<DetectType> _types;
-  final int _maxDistance;
+  final int? _maxDistance;
 
   /// The different distances (squared) that contain tiles, in reverse order
   /// for easy removal of the nearest distance.
-  List<List<Vec>> _tilesByDistance;
+  late final List<List<Vec>> _tilesByDistance = _findTiles();
 
   bool get isImmediate => false;
 
@@ -24,10 +23,6 @@ class DetectAction extends Action {
       : _types = types.toSet();
 
   ActionResult onPerform() {
-    if (_tilesByDistance == null) {
-      _findTiles();
-    }
-
     // If we've shown all the tiles, we're done.
     if (_tilesByDistance.isEmpty) return ActionResult.success;
 
@@ -41,17 +36,17 @@ class DetectAction extends Action {
 
   /// Finds all the tiles that should be detected and organizes them from
   /// farthest to nearest.
-  void _findTiles() {
+  List<List<Vec>> _findTiles() {
     var distanceMap = <int, List<Vec>>{};
 
     void addTile(Vec pos) {
-      var distance = (actor.pos - pos).lengthSquared;
-      if (_maxDistance != null && distance > _maxDistance * _maxDistance) {
+      var distance = (actor!.pos - pos).lengthSquared;
+      if (_maxDistance != null && distance > _maxDistance! * _maxDistance!) {
         return;
       }
 
       distanceMap.putIfAbsent(distance, () => []);
-      distanceMap[distance].add(pos);
+      distanceMap[distance]!.add(pos);
     }
 
     var foundExits = 0;
@@ -95,7 +90,6 @@ class DetectAction extends Action {
     var distances = distanceMap.keys.toList();
     distances.sort((a, b) => b.compareTo(a));
 
-    _tilesByDistance =
-        distances.map((distance) => distanceMap[distance]).toList();
+    return distances.map((distance) => distanceMap[distance]!).toList();
   }
 }

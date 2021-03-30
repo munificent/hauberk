@@ -20,7 +20,10 @@ abstract class Action {
 
   Game get game => _game;
 
-  Actor get actor => _actor!; // TODO: Should this be nullable?
+  // TODO: Instead of making this nullable, split out actions with actors into
+  // a separate subclass where the field is always non-null. Most actions will
+  // always have an actor. It's only a few like burning floors that don't.
+  Actor? get actor => _actor;
 
   Monster get monster => _actor as Monster;
 

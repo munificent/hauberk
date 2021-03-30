@@ -20,7 +20,7 @@ abstract class LosAction extends Action {
     var pos = _los.current;
 
     // Stop if we hit a wall or went out of range.
-    if (!game.stage[pos].isFlyable || pos - actor.pos > range) {
+    if (!game.stage[pos].isFlyable || pos - actor!.pos > range) {
       onEnd(_lastPos);
       return succeed();
     }
@@ -64,12 +64,12 @@ abstract class LosAction extends Action {
   bool onTarget(Vec pos) => false;
 
   Iterator<Vec> _initIterator() {
-    var iterator = Line(actor.pos, _target).iterator;
+    var iterator = Line(actor!.pos, _target).iterator;
 
     // Advance to the first tile.
     iterator.moveNext();
 
-    _lastPos = actor.pos;
+    _lastPos = actor!.pos;
     return iterator;
   }
 }

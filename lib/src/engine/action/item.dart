@@ -26,7 +26,7 @@ abstract class ItemAction extends Action {
   void removeItem() {
     switch (location) {
       case ItemLocation.onGround:
-        game.stage.removeItem(item, actor.pos);
+        game.stage.removeItem(item, actor!.pos);
         break;
 
       case ItemLocation.inventory:
@@ -84,7 +84,7 @@ class PickUpAction extends Action {
     log('{1} pick[s] up {2}.', actor, item.clone(result.added));
 
     if (result.remaining == 0) {
-      game.stage.removeItem(item, actor.pos);
+      game.stage.removeItem(item, actor!.pos);
     } else {
       log("{1} [don't|doesn't] have room for {2}.", actor,
           item.clone(result.remaining));
@@ -122,7 +122,7 @@ class DropAction extends ItemAction {
       log('{1} drop[s] {2}.', actor, dropped);
     }
 
-    game.stage.addItem(dropped, actor.pos);
+    game.stage.addItem(dropped, actor!.pos);
     return ActionResult.success;
   }
 }
@@ -161,7 +161,7 @@ class EquipAction extends ItemAction {
         log('{1} unequip[s] {2}.', actor, copy);
       } else {
         // No room in inventory, so drop it.
-        game.stage.addItem(unequippedItem, actor.pos);
+        game.stage.addItem(unequippedItem, actor!.pos);
         log(
             "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
             "ground.",
@@ -196,7 +196,7 @@ class UnequipAction extends ItemAction {
       log('{1} unequip[s] {2}.', actor, copy);
     } else {
       // No room in inventory, so drop it.
-      game.stage.addItem(item, actor.pos);
+      game.stage.addItem(item, actor!.pos);
       log(
           "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
           "the ground.",
@@ -299,7 +299,7 @@ mixin DestroyActionMixin implements Action {
     if (actor is! Hero) return 0;
 
     // Any resistance prevents destruction.
-    if (actor.resistance(element) > 0) return 0;
+    if (actor!.resistance(element) > 0) return 0;
 
     var fuel = _destroy(element, hero.inventory, true, (item) {
       hero.inventory.remove(item);

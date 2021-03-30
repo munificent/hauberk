@@ -1,12 +1,11 @@
-// @dart=2.11
 import '../../engine.dart';
 
 /// Alert nearby sleeping monsters.
 class HowlAction extends Action {
   final int _range;
-  final String _verb;
+  final String? _verb;
 
-  HowlAction(this._range, String verb) : _verb = verb ?? "howls";
+  HowlAction(this._range, String? verb) : _verb = verb ?? "howls";
 
   ActionResult onPerform() {
     log("{1} $_verb!", actor);
@@ -17,7 +16,7 @@ class HowlAction extends Action {
           other is Monster &&
           (other.pos - monster.pos) <= _range) {
         // TODO: Take range into account when attenuating volume?
-        other.hear(game.stage.volumeBetween(actor.pos, other.pos));
+        other.hear(game.stage.volumeBetween(actor!.pos, other.pos));
       }
     }
 
