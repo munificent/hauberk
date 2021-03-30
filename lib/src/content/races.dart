@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../engine.dart';
 
 class Races {
@@ -80,12 +79,12 @@ class Races {
   ];
 
   static Race _race(String name,
-      {int strength,
-      int agility,
-      int fortitude,
-      int intellect,
-      int will,
-      String description}) {
+      {required int strength,
+      required int agility,
+      required int fortitude,
+      required int intellect,
+      required int will,
+      required String description}) {
     return Race(name, description, {
       Stat.strength: strength,
       Stat.agility: agility,

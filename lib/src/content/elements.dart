@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../engine.dart';
 import 'action/condition.dart';
 import 'action/element.dart';

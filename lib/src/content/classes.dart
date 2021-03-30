@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../engine.dart';
 import 'item/drops.dart';
 import 'skill/discipline/mastery.dart';
@@ -27,7 +26,7 @@ class Classes {
 }
 
 HeroClass _class(String name, String description, Drop startingItems,
-    {double masteries, double spells}) {
+    {required double masteries, required double spells}) {
   var proficiencies = <Skill, double>{};
 
   for (var skill in Skills.all) {

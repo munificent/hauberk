@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
@@ -226,10 +225,10 @@ class Tiles {
       tile("shop entrance", "○", red).to(TilePortals.shop9).open();
 
   static _TileBuilder tile(String name, Object char, Color fore,
-          [Color back]) =>
+          [Color? back]) =>
       _TileBuilder(name, char, fore, back);
 
-  static List<TileType> multi(String name, Object char, Color fore, Color back,
+  static List<TileType> multi(String name, Object char, Color fore, Color? back,
       int count, TileType Function(_TileBuilder, int) generate) {
     var result = <TileType>[];
     for (var i = 0; i < count; i++) {
@@ -309,7 +308,7 @@ class Tiles {
 
   /// What types [tile] can turn into when it finishes burning.
   static List<TileType> burnResult(TileType tile) {
-    if (_burnTypes.containsKey(tile)) return _burnTypes[tile];
+    if (_burnTypes.containsKey(tile)) return _burnTypes[tile]!;
 
     return [burntFloor, burntFloor2];
   }
@@ -331,12 +330,12 @@ class _TileBuilder {
   final String name;
   final List<Glyph> glyphs;
 
-  Action Function(Vec) _onClose;
-  Action Function(Vec) _onOpen;
-  TilePortal _portal;
+  Action Function(Vec)? _onClose;
+  Action Function(Vec)? _onOpen;
+  TilePortal? _portal;
   int _emanation = 0;
 
-  factory _TileBuilder(String name, Object char, Color fore, [Color back]) {
+  factory _TileBuilder(String name, Object char, Color fore, [Color? back]) {
     back ??= darkerCoolGray;
     var charCode = char is int ? char : (char as String).codeUnitAt(0);
 
