@@ -153,8 +153,7 @@ bool fight(HeroSave save, int monsterHealth) {
           meander: 0,
           maxHealth: monsterHealth,
           tracking: 10,
-          flags: BreedFlags.fromSet({}),
-          description: ""));
+          flags: BreedFlags.fromSet({})));
 
   var monster = Monster(game, breed, 0, 0, 1);
   var hero = Hero(game, Vec.zero, save);

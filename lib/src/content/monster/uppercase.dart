@@ -1,4 +1,3 @@
-// @dart=2.11
 import '../../hues.dart';
 import '../action/missive.dart';
 import '../elements.dart';
@@ -126,7 +125,7 @@ void quest() {
     ..sense(see: 16, hear: 16)
     ..attack("crushe[s]", 250, Elements.earth)
     ..attack("blast[s]", 200, Elements.lightning)
-    ..darkCone(damage: 500)
+    ..darkCone(rate: 10, damage: 500)
     ..flags("fearless unique")
     ..openDoors()
     ..drop("item", count: 20, affixChance: 50);

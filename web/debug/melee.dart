@@ -21,8 +21,7 @@ Breed breed = Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
     meander: 0,
     maxHealth: 200,
     flags: BreedFlags.fromSet({}),
-    tracking: 10,
-    description: "");
+    tracking: 10);
 
 void main() {
   content = createContent();

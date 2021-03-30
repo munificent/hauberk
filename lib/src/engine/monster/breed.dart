@@ -133,14 +133,15 @@ class Breed {
       this.minions,
       this.stain,
       required this.flags,
-      required this.description})
+      String? description})
       : vision = vision ?? 8,
         hearing = hearing ?? 10,
         speed = speed ?? 0,
         dodge = dodge ?? 20,
         emanationLevel = emanationLevel ?? 0,
         countMin = countMin ?? 1,
-        countMax = countMax ?? 1;
+        countMax = countMax ?? 1,
+        description = description ?? "Indescribable.";
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.

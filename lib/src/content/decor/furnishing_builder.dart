@@ -77,7 +77,8 @@ final _rotate = [
   "─│═│",
 ];
 
-void category({required String themes, double? frequency, Map<String, Cell>? cells}) {
+void category(
+    {required String themes, double? frequency, Map<String, Cell>? cells}) {
   _themes = themes;
   _categoryFrequency = frequency;
   _categoryCells = cells;
@@ -89,7 +90,8 @@ Cell apply(TileType type, {TileType? over}) => Cell(apply: type, require: over);
 
 Cell require(TileType type) => Cell(require: type);
 
-void furnishing({double? frequency, Symmetry? symmetry, required String template}) {
+void furnishing(
+    {double? frequency, Symmetry? symmetry, required String template}) {
   _furnishingFrequency = frequency;
   symmetry ??= Symmetry.none;
 
@@ -197,7 +199,8 @@ String _rotateChar90(String input) {
 }
 
 void _singleFurnishing(List<String> lines) {
-  var cells = Array2D<Cell>(lines.first.length, lines.length, Cell.uninitialized);
+  var cells =
+      Array2D<Cell>(lines.first.length, lines.length, Cell.uninitialized);
   for (var y = 0; y < lines.length; y++) {
     for (var x = 0; x < lines.first.length; x++) {
       var char = lines[y][x];

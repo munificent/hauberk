@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import '../../engine.dart';
@@ -36,17 +35,17 @@ final _elementText = {
 /// The last builder that was created. It gets implicitly finished when the
 /// next family or breed starts, or at the end of initialization. This way, we
 /// don't need an explicit `build()` call at the end of each builder.
-_BreedBuilder _builder;
+_BreedBuilder? _builder;
 
-_FamilyBuilder _family;
+late _FamilyBuilder _family;
 
 _FamilyBuilder family(String character,
-    {double frequency,
-    int meander,
-    int speed,
-    int dodge,
-    int tracking,
-    String flags}) {
+    {double? frequency,
+    int? meander,
+    int? speed,
+    int? dodge,
+    int? tracking,
+    String? flags}) {
   finishBreed();
 
   _family = _FamilyBuilder(frequency, character);
@@ -60,79 +59,82 @@ _FamilyBuilder family(String character,
 }
 
 void finishBreed() {
-  if (_builder == null) return;
+  var builder = _builder;
+  if (builder == null) return;
 
   var tags = [
     ..._family._groups,
-    ..._builder._groups,
+    ...builder._groups,
   ];
 
   if (tags.isEmpty) tags.add("monster");
 
-  var breed = _builder.build();
+  var breed = builder.build();
 
   Monsters.breeds.add(breed,
       name: breed.name,
       depth: breed.depth,
-      frequency: _builder._frequency ?? _family._frequency,
+      frequency: builder._frequency ?? _family._frequency,
       tags: tags.join(" "));
   _builder = null;
 }
 
 // TODO: Move more named params into builder methods?
 _BreedBuilder breed(String name, int depth, Color color, int health,
-    {double frequency, int speed = 0, int dodge, int meander}) {
+    {double? frequency, int speed = 0, int? dodge, int? meander}) {
   finishBreed();
 
   var glyph = Glyph(_family._character, color);
-  _builder = _BreedBuilder(name, depth, frequency, glyph, health);
-  _builder._speed = speed;
-  _builder._meander = meander;
-  return _builder;
+  var builder = _BreedBuilder(name, depth, frequency, glyph, health);
+  builder._speed = speed;
+  builder._dodge = dodge;
+  builder._meander = meander;
+  _builder = builder;
+  return builder;
 }
 
 void describe(String description) {
   description = description.replaceAll(collapseNewlines, " ");
-  _builder._description = description;
+  _builder!._description = description;
 }
 
 class _BaseBuilder {
-  final double _frequency;
+  final double? _frequency;
 
-  int _tracking;
+  int? _tracking;
 
   // Default to walking.
   // TODO: Are there monsters that cannot walk?
   Motility _motility = Motility.walk;
 
   // TODO: Get this working again.
-  SpawnLocation _location;
+  SpawnLocation? _location;
 
   /// The default speed for breeds in the current family. If the breed
   /// specifies a speed, it offsets the family's speed.
-  int _speed;
+  int? _speed;
 
   /// The default meander for breeds in the current family. If the breed
   /// specifies a meander, it offset's the family's meander.
-  int _meander;
+  int? _meander;
 
-  int _dodge;
+  int? _dodge;
 
   final List<Defense> _defenses = [];
   final List<String> _groups = [];
 
   // TODO: Make flags strongly typed here too?
-  String _flags;
+  String? _flags;
 
-  int _countMin;
-  int _countMax;
+  int? _countMin;
+  int? _countMax;
 
-  TileType _stain;
+  TileType? _stain;
 
-  int _emanationLevel;
+  int? _emanationLevel;
 
-  int _vision;
-  int _hearing;
+  int? _vision;
+  int? _hearing;
 
   _BaseBuilder(this._frequency);
 
@@ -145,7 +147,7 @@ class _BaseBuilder {
     _emanationLevel = level;
   }
 
-  void sense({int see, int hear}) {
+  void sense({int? see, int? hear}) {
     _vision = see;
     _hearing = hear;
   }
@@ -163,7 +165,7 @@ class _BaseBuilder {
   }
 
   /// How many monsters of this kind are spawned.
-  void count(int minOrMax, [int max]) {
+  void count(int minOrMax, [int? max]) {
     if (max == null) {
       _countMin = 1;
       _countMax = minOrMax;
@@ -202,7 +204,7 @@ class _FamilyBuilder extends _BaseBuilder {
   /// Character for the current monster.
   final String _character;
 
-  _FamilyBuilder(double frequency, this._character) : super(frequency);
+  _FamilyBuilder(double? frequency, this._character) : super(frequency);
 }
 
 class _BreedBuilder extends _BaseBuilder {
@@ -214,14 +216,14 @@ class _BreedBuilder extends _BaseBuilder {
   final List<Move> _moves = [];
   final List<Drop> _drops = [];
   final List<Spawn> _minions = [];
-  Pronoun _pronoun;
-  String _description;
+  Pronoun? _pronoun;
+  String? _description;
 
-  _BreedBuilder(
-      this._name, this._depth, double frequency, this._appearance, this._health)
+  _BreedBuilder(this._name, this._depth, double? frequency, this._appearance,
+      this._health)
       : super(frequency);
 
-  void minion(String name, [int minOrMax, int max]) {
+  void minion(String name, [int? minOrMax, int? max]) {
     Spawn spawn;
     if (Monsters.breeds.tagExists(name)) {
       spawn = spawnTag(name);
@@ -230,7 +232,7 @@ class _BreedBuilder extends _BaseBuilder {
     }
 
     if (max != null) {
-      spawn = repeatSpawn(minOrMax, max, spawn);
+      spawn = repeatSpawn(minOrMax!, max, spawn);
     } else if (minOrMax != null) {
       spawn = repeatSpawn(1, minOrMax, spawn);
     }
@@ -238,7 +240,7 @@ class _BreedBuilder extends _BaseBuilder {
     _minions.add(spawn);
   }
 
-  void attack(String verb, int damage, [Element element, Noun noun]) {
+  void attack(String verb, int damage, [Element? element, Noun? noun]) {
     _attacks.add(Attack(noun, verb, damage, 0, element));
   }
 
@@ -247,7 +249,7 @@ class _BreedBuilder extends _BaseBuilder {
       {int percent = 100,
       int count = 1,
       int depthOffset = 0,
-      int affixChance}) {
+      int? affixChance}) {
     var drop = percentDrop(percent, name, _depth + depthOffset, affixChance);
     if (count > 1) drop = repeatDrop(count, drop);
     _drops.add(drop);
@@ -264,88 +266,90 @@ class _BreedBuilder extends _BaseBuilder {
   // TODO: Figure out some strategy for which of these parameters have defaults
   // and which don't.
 
-  void heal({num rate = 5, int amount}) => _addMove(HealMove(rate, amount));
+  void heal({num rate = 5, required int amount}) =>
+      _addMove(HealMove(rate, amount));
 
-  void arrow({num rate = 5, int damage}) =>
+  void arrow({num rate = 5, required int damage}) =>
       _bolt("the arrow", "hits", Element.none,
           rate: rate, damage: damage, range: 8);
 
-  void whip({num rate = 5, int damage, int range = 2}) =>
+  void whip({num rate = 5, required int damage, int range = 2}) =>
       _bolt(null, "whips", Element.none,
           rate: rate, damage: damage, range: range);
 
-  void bolt(Element element, {num rate, int damage, int range}) {
-    _bolt(_elementText[element][0], _elementText[element][1], element,
+  void bolt(Element element,
+      {required num rate, required int damage, required int range}) {
+    _bolt(_elementText[element]![0], _elementText[element]![1], element,
         rate: rate, damage: damage, range: range);
   }
 
-  void windBolt({num rate = 5, int damage}) =>
+  void windBolt({num rate = 5, required int damage}) =>
       bolt(Elements.air, rate: rate, damage: damage, range: 8);
 
-  void stoneBolt({num rate = 5, int damage}) =>
+  void stoneBolt({num rate = 5, required int damage}) =>
       _bolt("the stone", "hits", Elements.earth,
           rate: rate, damage: damage, range: 8);
 
-  void waterBolt({num rate = 5, int damage}) =>
+  void waterBolt({num rate = 5, required int damage}) =>
       _bolt("the jet", "splashes", Elements.water,
           rate: rate, damage: damage, range: 8);
 
-  void sparkBolt({num rate, int damage, int range}) =>
+  void sparkBolt({required num rate, required int damage, int range = 6}) =>
       _bolt("the spark", "zaps", Elements.lightning,
           rate: rate, damage: damage, range: range);
 
-  void iceBolt({num rate = 5, int damage, int range = 8}) =>
+  void iceBolt({num rate = 5, required int damage, int range = 8}) =>
       _bolt("the ice", "freezes", Elements.cold,
           rate: rate, damage: damage, range: range);
 
-  void fireBolt({num rate = 5, int damage}) =>
+  void fireBolt({num rate = 5, required int damage}) =>
       bolt(Elements.fire, rate: rate, damage: damage, range: 8);
 
-  void lightningBolt({num rate = 5, int damage}) =>
+  void lightningBolt({num rate = 5, required int damage}) =>
       bolt(Elements.lightning, rate: rate, damage: damage, range: 10);
 
-  void acidBolt({num rate = 5, int damage, int range = 8}) =>
+  void acidBolt({num rate = 5, required int damage, int range = 8}) =>
       bolt(Elements.acid, rate: rate, damage: damage, range: range);
 
-  void darkBolt({num rate = 5, int damage}) =>
+  void darkBolt({num rate = 5, required int damage}) =>
       bolt(Elements.dark, rate: rate, damage: damage, range: 10);
 
-  void lightBolt({num rate = 5, int damage}) =>
+  void lightBolt({num rate = 5, required int damage}) =>
       bolt(Elements.light, rate: rate, damage: damage, range: 10);
 
-  void poisonBolt({num rate = 5, int damage}) =>
+  void poisonBolt({num rate = 5, required int damage}) =>
       bolt(Elements.poison, rate: rate, damage: damage, range: 8);
 
-  void cone(Element element, {num rate, int damage, int range}) {
-    _cone(_elementText[element][0], _elementText[element][1], element,
+  void cone(Element element, {num? rate, required int damage, int? range}) {
+    _cone(_elementText[element]![0], _elementText[element]![1], element,
         rate: rate, damage: damage, range: range);
   }
 
-  void windCone({num rate, int damage, int range}) =>
+  void windCone({required num rate, required int damage, int? range}) =>
       cone(Elements.air, rate: rate, damage: damage, range: range);
 
-  void fireCone({num rate, int damage, int range}) =>
+  void fireCone({required num rate, required int damage, int? range}) =>
       cone(Elements.fire, rate: rate, damage: damage, range: range);
 
-  void iceCone({num rate, int damage, int range}) =>
+  void iceCone({required num rate, required int damage, int? range}) =>
       cone(Elements.cold, rate: rate, damage: damage, range: range);
 
-  void lightningCone({num rate, int damage, int range}) =>
+  void lightningCone({required num rate, required int damage, int? range}) =>
       cone(Elements.lightning, rate: rate, damage: damage, range: range);
 
-  void lightCone({num rate, int damage, int range}) =>
+  void lightCone({required num rate, required int damage, int? range}) =>
       cone(Elements.light, rate: rate, damage: damage, range: range);
 
-  void darkCone({num rate, int damage, int range}) =>
+  void darkCone({required num rate, required int damage, int? range}) =>
       cone(Elements.dark, rate: rate, damage: damage, range: range);
 
-  void waterCone({num rate, int damage, int range}) =>
+  void waterCone({required num rate, required int damage, int? range}) =>
       cone(Elements.water, rate: rate, damage: damage, range: range);
 
   void missive(Missive missive, {num rate = 5}) =>
       _addMove(MissiveMove(missive, rate));
 
-  void howl({num rate = 10, int range = 10, String verb}) =>
+  void howl({num rate = 10, int range = 10, String? verb}) =>
       _addMove(HowlMove(rate, range, verb));
 
   void haste({num rate = 5, int duration = 10, int speed = 1}) =>
@@ -354,20 +358,20 @@ class _BreedBuilder extends _BaseBuilder {
   void teleport({num rate = 10, int range = 10}) =>
       _addMove(TeleportMove(rate, range));
 
-  void spawn({num rate = 10, bool preferStraight}) =>
+  void spawn({num rate = 10, bool? preferStraight}) =>
       _addMove(SpawnMove(rate, preferStraight: preferStraight));
 
   void amputate(String body, String part, String message) =>
       _addMove(AmputateMove(BreedRef(body), BreedRef(part), message));
 
-  void _bolt(String noun, String verb, Element element,
-      {num rate, int damage, int range}) {
+  void _bolt(String? noun, String verb, Element element,
+      {required num rate, required int damage, required int range}) {
     var nounObject = noun != null ? Noun(noun) : null;
     _addMove(BoltMove(rate, Attack(nounObject, verb, damage, range, element)));
   }
 
   void _cone(String noun, String verb, Element element,
-      {num rate, int damage, int range}) {
+      {num? rate, required int damage, int? range}) {
     rate ??= 5;
     range ??= 10;
 
@@ -380,14 +384,15 @@ class _BreedBuilder extends _BaseBuilder {
 
   Breed build() {
     var flags = {
-      if (_family._flags != null) ..._family._flags.split(" "),
-      if (_flags != null) ..._flags.split(" "),
+      // TODO: Use ?. and ...?.
+      if (_family._flags != null) ..._family._flags!.split(" "),
+      if (_flags != null) ..._flags!.split(" "),
     };
 
     var dodge = _dodge ?? _family._dodge;
     if (flags.contains("immobile")) dodge = 0;
 
-    Spawn minions;
+    Spawn? minions;
     if (_minions.length == 1) {
       minions = _minions[0];
     } else if (_minions.length > 1) {
