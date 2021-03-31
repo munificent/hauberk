@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import 'content/action/element.dart';
@@ -38,8 +37,8 @@ class GameContent implements Content {
   }
 
   Affix findAffix(String name) => Affixes.find(name);
-  Breed tryFindBreed(String name) => Monsters.breeds.tryFind(name);
-  ItemType tryFindItem(String name) => Items.types.tryFind(name);
+  Breed? tryFindBreed(String name) => Monsters.breeds.tryFind(name);
+  ItemType? tryFindItem(String name) => Items.types.tryFind(name);
   Skill findSkill(String name) => Skills.find(name);
 
   Iterable<Breed> get breeds => Monsters.breeds.all;
@@ -50,7 +49,7 @@ class GameContent implements Content {
   Iterable<Skill> get skills => Skills.all;
   Map<String, Shop> get shops => Shops.all;
 
-  HeroSave createHero(String name, [Race race, HeroClass heroClass]) {
+  HeroSave createHero(String name, [Race? race, HeroClass? heroClass]) {
     race ??= Races.human;
     heroClass ??= Classes.adventurer;
 
@@ -82,7 +81,7 @@ class GameContent implements Content {
 
   // TODO: Putting this right here in content is kind of lame. Is there a
   // better place for it?
-  Action updateSubstance(Stage stage, Vec pos) {
+  Action? updateSubstance(Stage stage, Vec pos) {
     // TODO: More interactions:
     // fire:
     // - burns fuel (amount) and goes out when it hits zero

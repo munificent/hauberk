@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
 
@@ -16,7 +15,7 @@ void main() {
   var averages = <double>[];
   for (var depth = 1; depth <= 100; depth++) {
     if (breedsByDepth.containsKey(depth)) {
-      var breeds = breedsByDepth[depth];
+      var breeds = breedsByDepth[depth]!;
       exp =
           breeds.fold<double>(0.0, (a, b) => a + b.experience) / breeds.length;
       print("${depth.toString().padLeft(3)}: $exp (${breeds.length} breeds)");

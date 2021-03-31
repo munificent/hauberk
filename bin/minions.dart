@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:hauberk/src/content/monster/monsters.dart';
@@ -15,7 +14,7 @@ void main() {
     for (var i = 0; i < trials; i++) {
       // Minions are weaker than the main breed.
       var minionDepth = (breed.depth * 0.9).floor();
-      breed.minions.spawnBreed(minionDepth, (minion) {
+      breed.minions!.spawnBreed(minionDepth, (minion) {
         histogram.add(minion.name);
       });
     }
@@ -39,23 +38,24 @@ class Histogram<T> {
 
   int add(T object) {
     _counts.putIfAbsent(object, () => 0);
-    return ++_counts[object];
+    _counts[object] = _counts[object]! + 1;
+    return _counts[object]!;
   }
 
   int count(T object) {
     if (!_counts.containsKey(object)) return 0;
-    return _counts[object];
+    return _counts[object]!;
   }
 
   List<T> ascending() {
     var objects = _counts.keys.toList();
-    objects.sort((a, b) => _counts[a].compareTo(_counts[b]));
+    objects.sort((a, b) => _counts[a]!.compareTo(_counts[b]!));
     return objects;
   }
 
   List<T> descending() {
     var objects = _counts.keys.toList();
-    objects.sort((a, b) => _counts[b].compareTo(_counts[a]));
+    objects.sort((a, b) => _counts[b]!.compareTo(_counts[a]!));
     return objects;
   }
 }

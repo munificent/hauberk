@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
@@ -14,8 +13,8 @@ class Simulator {
   static final content = createContent();
   final save = content.createHero("Fred", content.races[4], content.classes[1]);
 
-  Game game;
-  int depth;
+  late Game game;
+  late int depth;
 
   Hero get hero => game.hero;
 
@@ -32,7 +31,7 @@ class Simulator {
     breeds.sort((a, b) => a.experience.compareTo(b.experience));
 
     for (var breed in breeds) {
-      var kill = kills[breed];
+      var kill = kills[breed]!;
       print("${breed.name.padRight(40)} ${kill.kills.toString().padLeft(5)} "
           "${(kill.hits / kill.kills).toStringAsFixed(1).padLeft(9)}");
     }
@@ -76,7 +75,7 @@ class Simulator {
 
   void _getWeapon(Item item) {
     // TODO: Use ranged weapons?
-    if (item.attack.range > 0) return;
+    if (item.attack!.range > 0) return;
 
     var weapons = hero.equipment.weapons;
     var weapon = weapons.isNotEmpty ? weapons.first : null;

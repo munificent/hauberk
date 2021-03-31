@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
 

@@ -1,6 +1,6 @@
-// @dart=2.11
 import 'dart:collection';
 
+import 'package:hauberk/src/content/item/drops.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/engine.dart';
@@ -18,15 +18,11 @@ import 'package:hauberk/src/content/item/items.dart';
 /// different configurations compare.
 const simulationRounds = 20;
 
-Content content;
-Game game;
-
+final content = createContent();
 final actions = Queue<Action>();
 final breeds = <int, Breed>{};
 
 void main(List<String> arguments) {
-  content = createContent();
-
   for (var strength = 10; strength <= 60; strength += 5) {
     var results = <String, int>{};
 
@@ -34,7 +30,7 @@ void main(List<String> arguments) {
       if (armor.armor == 0) continue;
 
       for (var weapon in Items.types.all) {
-        if (weapon.attack == null || weapon.attack.range > 0) continue;
+        if (weapon.attack == null || weapon.attack!.range > 0) continue;
 
         runTrial(strength, 20, 20, [weapon, armor], results);
       }
@@ -42,7 +38,7 @@ void main(List<String> arguments) {
 
     print("--- $strength ---");
     var sorted = results.keys.toList();
-    sorted.sort((a, b) => results[b].compareTo(results[a]));
+    sorted.sort((a, b) => results[b]!.compareTo(results[a]!));
     for (var line in sorted.take(5)) {
       print("${results[line].toString().padLeft(4, '0')} = $line");
     }
@@ -65,9 +61,9 @@ void main(List<String> arguments) {
 }
 
 void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
-    [Map<String, int> results]) {
+    [Map<String, int>? results]) {
   var save = content.createHero("blah");
-  game = Game(content, save, 1);
+  var game = Game(content, save, 1);
 
 //  save.attributes[Attribute.strength] = strength;
 //  save.attributes[Attribute.agility] = agility;
@@ -79,7 +75,7 @@ void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
     save.equipment.tryAdd(Item(item, 1));
   }
 
-  var match = findMatch(save);
+  var match = findMatch(game, save);
 
   var stuff = gear.map((type) => type.name).join(" ");
   var line = "str:$strength agi:$agility for:$fortitude $stuff";
@@ -90,13 +86,13 @@ void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
   }
 }
 
-int findMatch(HeroSave save) {
+int findMatch(Game game, HeroSave save) {
   var min = 1;
   var max = 2000;
 
   while (min < max) {
     var middle = (min + max) ~/ 2;
-    var result = runMatch(save, middle);
+    var result = runMatch(game, save, middle);
     if (result == 0) {
       return middle;
     } else if (result < 0) {
@@ -109,7 +105,7 @@ int findMatch(HeroSave save) {
   return min;
 }
 
-int runMatch(HeroSave save, int monsterHealth) {
+int runMatch(Game game, HeroSave save, int monsterHealth) {
 //  print("match $monsterHealth");
   var rounds = 0;
   var wins = 0;
@@ -117,7 +113,7 @@ int runMatch(HeroSave save, int monsterHealth) {
 
   while (true) {
     rounds++;
-    if (fight(save, monsterHealth)) {
+    if (fight(game, save, monsterHealth)) {
       wins++;
     } else {
       losses++;
@@ -144,11 +140,11 @@ int runMatch(HeroSave save, int monsterHealth) {
   }
 }
 
-bool fight(HeroSave save, int monsterHealth) {
+bool fight(Game game, HeroSave save, int monsterHealth) {
   var breed = breeds.putIfAbsent(
       monsterHealth,
-      () => Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
-          null, SpawnLocation.anywhere, Motility.walk,
+      () => Breed("meat", Pronoun.it, "", [Attack(null, "hits", 20)], [],
+          dropAllOf([]), SpawnLocation.anywhere, Motility.walk,
           depth: 1,
           meander: 0,
           maxHealth: monsterHealth,

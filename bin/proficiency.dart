@@ -1,13 +1,9 @@
-// @dart=2.11
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
 
 /// Shows how proficiency affects skills for the various classes.
-Content content;
-Game game;
-
 void main(List<String> arguments) {
-  content = createContent();
+  var content = createContent();
 
   for (var heroClass in content.classes) {
     print(heroClass.name);
