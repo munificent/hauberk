@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 
 import 'package:hauberk/src/engine.dart';
@@ -14,13 +13,12 @@ final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 HeroSave save = content.createHero("hero");
 Content content = createContent();
-Game game;
 
 int generated = 0;
 
 int get depth {
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
-  return int.parse(depthSelect.value);
+  return int.parse(depthSelect.value!);
 }
 
 void main() {
@@ -40,7 +38,7 @@ void main() {
     generateTable();
   });
 
-  html.querySelector('table').onClick.listen((_) {
+  html.querySelector('table')!.onClick.listen((_) {
     generate();
     generateTable();
   });
@@ -50,7 +48,7 @@ void main() {
 }
 
 void generate() {
-  game = Game(content, save, depth);
+  var game = Game(content, save, depth);
 
   for (var event in game.generate()) {
     print(event);
@@ -59,8 +57,8 @@ void generate() {
   void addItem(Item item) {
     items.add(item.type.name);
 
-    if (item.prefix != null) affixes.add("${item.prefix.name} _");
-    if (item.suffix != null) affixes.add("_ ${item.suffix.name}");
+    if (item.prefix != null) affixes.add("${item.prefix!.name} _");
+    if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
   }
 
   for (var actor in game.stage.actors) {
@@ -114,6 +112,6 @@ void generateTable() {
   text.write('</tr>');
 
   html
-      .querySelector('table')
+      .querySelector('table')!
       .setInnerHtml(text.toString(), validator: validator);
 }

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:async';
 import 'dart:html' as html;
 import 'dart:math' as math;
@@ -25,14 +24,14 @@ final stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
 
 final content = createContent();
 final save = content.createHero("hero");
-Game _game;
-RenderableTerminal terminal;
-Vec hoverPos;
+late Game _game;
+late RenderableTerminal terminal;
+Vec? hoverPos;
 
 final Map<Architecture, int> hues = {};
 
 int get depth {
-  return int.parse(depthSelect.value);
+  return int.parse(depthSelect.value!);
 }
 
 void main() {
@@ -105,7 +104,7 @@ void hover(Vec pos) {
   }
 
   html
-      .querySelector('div[id=hover]')
+      .querySelector('div[id=hover]')!
       .setInnerHtml(buffer.toString(), validator: validator);
 }
 
@@ -193,7 +192,7 @@ Future generate() async {
   tableContents.write('</tbody>');
 
   html
-      .querySelector('table[id=monsters]')
+      .querySelector('table[id=monsters]')!
       .setInnerHtml(tableContents.toString(), validator: validator);
 
   tableContents.clear();
@@ -236,7 +235,7 @@ Future generate() async {
     ''');
   }
   html
-      .querySelector('table[id=items]')
+      .querySelector('table[id=items]')!
       .setInnerHtml(tableContents.toString(), validator: validator);
 }
 
@@ -285,13 +284,13 @@ void render({bool showInfo = true}) {
   terminal.render();
 
   var context = stateCanvas.context2D;
-  context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
+  context.clearRect(0, 0, stateCanvas.width!, stateCanvas.height!);
 
   if (!showInfo) return;
 
   if (Architect.debugOwners != null) {
-    for (var pos in Architect.debugOwners.bounds) {
-      var architecture = Architect.debugOwners[pos];
+    for (var pos in Architect.debugOwners!.bounds) {
+      var architecture = Architect.debugOwners![pos];
       if (architecture == null) continue;
 
       var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
@@ -322,7 +321,7 @@ void render({bool showInfo = true}) {
   context.fillStyle = 'hsla(0, 100%, 100%, 0.4)';
   if (Keep.debugJunctions != null) {
     for (var pos in _game.stage.bounds) {
-      var junction = Keep.debugJunctions[pos];
+      var junction = Keep.debugJunctions![pos];
       if (junction == null) continue;
 
       switch (junction.direction) {

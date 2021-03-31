@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
@@ -90,7 +89,7 @@ void main() {
   text.write('</tbody>');
 
   html
-      .querySelector('table')
+      .querySelector('table')!
       .setInnerHtml(text.toString(), validator: validator);
 
   for (var span in html.querySelectorAll('span.drop')) {

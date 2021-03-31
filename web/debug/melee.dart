@@ -1,22 +1,19 @@
-// @dart=2.11
 import 'dart:html' as html;
 import 'dart:math' as math;
 
+import 'package:hauberk/src/content/item/drops.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/engine.dart';
 
-html.CanvasElement canvas;
-html.CanvasRenderingContext2D context;
-
-Content content;
+final content = createContent();
 
 const simulationRounds = 20;
 
-Breed breed = Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
-    null, SpawnLocation.anywhere, Motility.walk,
+Breed breed = Breed("meat", Pronoun.it, "", [Attack(null, "hits", 20)], [],
+    dropAllOf([]), SpawnLocation.anywhere, Motility.walk,
     depth: 1,
     meander: 0,
     maxHealth: 200,
@@ -24,8 +21,6 @@ Breed breed = Breed("meat", Pronoun.it, null, [Attack(null, "hits", 20)], [],
     tracking: 10);
 
 void main() {
-  content = createContent();
-
   var rows = AgilityAxis();
   var columns = StrengthAxis();
 
@@ -75,7 +70,7 @@ abstract class Axis {
 
 class WeaponAxis implements Axis {
   final List<ItemType> _weapons = Items.types.all.where((itemType) {
-    return itemType.attack != null && itemType.attack.range == 0;
+    return itemType.attack != null && itemType.attack!.range == 0;
   }).toList();
 
   String get name => "Weapon";
@@ -198,7 +193,7 @@ class Table {
     validator.allowInlineStyles();
 
     html
-        .querySelector('table')
+        .querySelector('table')!
         .setInnerHtml(buffer.toString(), validator: validator);
 
     for (var column in html.querySelectorAll('thead td')) {

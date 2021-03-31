@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 
 import 'package:hauberk/src/content/stage/blob.dart';
@@ -27,10 +26,10 @@ void main() {
 }
 
 void render() {
-  var blob = Blob.make(int.parse(sizeSelect.value));
+  var blob = Blob.make(int.parse(sizeSelect.value!));
   canvas.width = blob.width * cellSize;
   canvas.height = blob.height * cellSize;
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width!, canvas.height!);
 
   for (var y = 0; y < blob.height; y++) {
     for (var x = 0; x < blob.width; x++) {

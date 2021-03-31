@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 
 import 'package:hauberk/src/engine.dart';
@@ -11,7 +10,7 @@ const tries = 10000;
 
 int get depth {
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
-  return int.parse(depthSelect.value);
+  return int.parse(depthSelect.value!);
 }
 
 void main() {
@@ -47,8 +46,8 @@ void generate() {
     var item = Affixes.createItem(itemType, depth);
 
     items.add(item.toString());
-    if (item.prefix != null) affixes.add("${item.prefix.name} _");
-    if (item.suffix != null) affixes.add("_ ${item.suffix.name}");
+    if (item.prefix != null) affixes.add("${item.prefix!.name} _");
+    if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
   }
 
   var tableContents = StringBuffer();
@@ -84,6 +83,6 @@ void generate() {
   validator.allowInlineStyles();
 
   html
-      .querySelector('table')
+      .querySelector('table')!
       .setInnerHtml(tableContents.toString(), validator: validator);
 }

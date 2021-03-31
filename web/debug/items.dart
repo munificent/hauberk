@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 
 import 'package:malison/malison.dart';
@@ -54,9 +53,9 @@ void _makeTable() {
 
   for (var item in Items.types.all) {
     var scale = _itemScale(item);
-    var cells = <Object>[];
+    var cells = <Object?>[];
 
-    num scaleValue(num value) {
+    num? scaleValue(num? value) {
       if (value == null) return null;
       if (scale == 0) return null;
       return value / scale;
@@ -82,13 +81,13 @@ void _makeTable() {
     if (item.toss == null) {
       cells.add(null);
     } else {
-      var toss = item.toss.attack.toString();
-      if (item.toss.use != null) {
-        toss += ' ${item.toss.use(Vec.zero).runtimeType} ';
+      var toss = item.toss!.attack.toString();
+      if (item.toss!.use != null) {
+        toss += ' ${item.toss!.use!(Vec.zero).runtimeType} ';
       }
 
-      if (item.toss.breakage != 0) {
-        toss += ' ${item.toss.breakage}%';
+      if (item.toss!.breakage != 0) {
+        toss += ' ${item.toss!.breakage}%';
       }
 
       cells.add(toss);
@@ -97,7 +96,7 @@ void _makeTable() {
     if (item.use == null) {
       cells.add(null);
     } else {
-      cells.add(item.use.description);
+      cells.add(item.use!.description);
     }
 
     table.row(item, cells);
@@ -120,11 +119,11 @@ class Table<T> {
   Table(this._selector, this._defaultSort);
 
   void column(String name,
-      {Object defaultValue, String Function(T, Object) render}) {
+      {Object? defaultValue, String Function(T, Object?)? render}) {
     _columns.add(Column(name, defaultValue, render));
   }
 
-  void row(T value, List<Object> cells) {
+  void row(T value, List<Object?> cells) {
     _rows.add(Row(value, cells));
   }
 
@@ -172,14 +171,14 @@ class Table<T> {
         var text = '&mdash;';
         if (cell == null) {
         } else if (column.renderCell != null) {
-          text = column.renderCell(row._value, cell);
+          text = column.renderCell!(row._value, cell);
         } else if (cell is num) {
           if (cell.toInt() == cell) {
             text = cell.toString();
           } else {
             text = cell.toStringAsFixed(2);
           }
-        } else if (cell != null) {
+        } else {
           text = cell.toString();
         }
 
@@ -261,15 +260,15 @@ class Table<T> {
 
 class Column<T> {
   final String name;
-  final Object defaultValue;
-  final String Function(T, Object) renderCell;
+  final Object? defaultValue;
+  final String Function(T, Object?)? renderCell;
 
   Column(this.name, this.defaultValue, this.renderCell);
 }
 
 class Row<T> {
   final T _value;
-  final List<Object> _cells;
+  final List<Object?> _cells;
 
   Row(this._value, this._cells);
 }

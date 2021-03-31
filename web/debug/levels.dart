@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 
 import 'package:hauberk/src/content.dart';
@@ -24,15 +23,13 @@ void main() {
     generated[i] = 0;
   }
 
-  html.querySelector("table").onClick.listen((event) {
+  html.querySelector("table")!.onClick.listen((event) {
     var target = event.target;
     if (target is html.TableCellElement) {
-      var row = target.parent;
-      if (row.id != null) {
-        var depth = int.tryParse(row.id);
-        if (depth != null) {
-          spawnStuff(depth);
-        }
+      var row = target.parent!;
+      var depth = int.tryParse(row.id);
+      if (depth != null) {
+        spawnStuff(depth);
       }
     }
   });
@@ -55,11 +52,11 @@ void spawnStuff(int depth) {
   for (var item in game.stage.allItems) {
     items.add(item.type.name);
 
-    if (item.prefix != null) affixes.add("${item.prefix.name} _");
-    if (item.suffix != null) affixes.add("_ ${item.suffix.name}");
+    if (item.prefix != null) affixes.add("${item.prefix!.name} _");
+    if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
   }
 
-  generated[depth]++;
+  generated[depth] = generated[depth]! + 1;
   generateTable();
 }
 
@@ -82,7 +79,7 @@ void generateTable() {
       text.write('<td width="25%">');
       var more = 0;
       for (var name in histogram.descending()) {
-        var count = histogram.count(name) / generated[depth];
+        var count = histogram.count(name) / generated[depth]!;
 //        if (count < 1) {
 //          more++;
 //          continue;
@@ -112,6 +109,6 @@ void generateTable() {
   }
 
   html
-      .querySelector('table')
+      .querySelector('table')!
       .setInnerHtml(text.toString(), validator: validator);
 }

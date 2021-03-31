@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 import 'dart:svg' as svg;
 
@@ -133,7 +132,7 @@ abstract class Chart {
         var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
         x -= fraction * chartWidth;
 
-        var color = _colors[label];
+        var color = _colors[label]!;
         if (highlight != "" && label != highlight) {
           color = color.blend(Color.white, 0.80);
         }
@@ -277,8 +276,8 @@ class AffixesChart extends Chart {
 
     var item = Affixes.createItem(itemType, depth);
 
-    if (item.prefix != null) histogram.add("${item.prefix.name} _");
-    if (item.suffix != null) histogram.add("_ ${item.suffix.name}");
+    if (item.prefix != null) histogram.add("${item.prefix!.name} _");
+    if (item.suffix != null) histogram.add("_ ${item.suffix!.name}");
     if (item.prefix == null && item.suffix == null) histogram.add("(none)");
   }
 
