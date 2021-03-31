@@ -67,7 +67,7 @@ abstract class Skill implements Comparable<Skill> {
   // TODO: Rename to "modifyHit".
   /// Gives the skill a chance to modify the [hit] the [hero] is about to
   /// perform on [monster].
-  void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {}
+  void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {}
 
   /// Modifies the hero's base armor.
   int modifyArmor(HeroSave hero, int level, int armor) => armor;

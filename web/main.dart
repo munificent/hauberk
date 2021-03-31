@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:html' as html;
 import 'dart:js';
 import 'dart:math' as math;
@@ -15,8 +14,8 @@ import 'package:hauberk/src/ui/input.dart';
 import 'package:hauberk/src/ui/main_menu_screen.dart';
 
 final _fonts = <TerminalFont>[];
-UserInterface<Input> _ui;
-TerminalFont _font;
+late final UserInterface<Input> _ui;
+late TerminalFont _font;
 
 final Set<Monster> _debugMonsters = {};
 
@@ -28,7 +27,7 @@ class TerminalFont {
   final int charHeight;
 
   TerminalFont(this.name, this.canvas, this.terminal,
-      {this.charWidth, this.charHeight});
+      {required this.charWidth, required this.charHeight});
 }
 
 void main() {
@@ -51,7 +50,7 @@ void main() {
     }
   }
 
-  var div = html.querySelector("#game");
+  var div = html.querySelector("#game")!;
   div.append(_font.canvas);
 
   // Scale the terminal to fit the screen.
@@ -59,7 +58,7 @@ void main() {
     _resizeTerminal();
   });
 
-  _ui = UserInterface<Input>(_font.terminal);
+  var _ui = UserInterface<Input>(_font.terminal);
 
   // Set up the keyPress.
   _ui.keyPress.bind(Input.ok, KeyCode.enter);
@@ -156,13 +155,13 @@ void main() {
   _ui.running = true;
 
   if (Debug.enabled) {
-    html.document.body.onKeyDown.listen((_) {
+    html.document.body!.onKeyDown.listen((_) {
       _refreshDebugBoxes();
     });
   }
 }
 
-void _addFont(String name, int charWidth, [int charHeight]) {
+void _addFont(String name, int charWidth, [int? charHeight]) {
   charHeight ??= charWidth;
 
   var canvas = html.CanvasElement();
@@ -177,7 +176,7 @@ void _addFont(String name, int charWidth, [int charHeight]) {
   if (Debug.enabled) {
     // Clicking a monster toggles its debug pane.
     canvas.onClick.listen((event) {
-      var gameScreen = Debug.gameScreen as GameScreen;
+      var gameScreen = Debug.gameScreen as GameScreen?;
       if (gameScreen == null) return;
 
       var pixel = Vec(event.offset.x.toInt(), event.offset.y.toInt());
@@ -206,7 +205,7 @@ void _addFont(String name, int charWidth, [int charHeight]) {
     for (var i = 0; i < _fonts.length; i++) {
       if (_fonts[i].name == name) {
         _font = _fonts[i];
-        html.querySelector("#game").append(_font.canvas);
+        html.querySelector("#game")!.append(_font.canvas);
       } else {
         _fonts[i].canvas.remove();
       }
@@ -220,13 +219,13 @@ void _addFont(String name, int charWidth, [int charHeight]) {
     html.window.localStorage['font'] = name;
   });
 
-  html.querySelector('.button-bar').children.add(button);
+  html.querySelector('.button-bar')!.children.add(button);
 }
 
 RetroTerminal _makeTerminal(
     html.CanvasElement canvas, int charWidth, int charHeight) {
-  var width = (html.document.body.clientWidth - 20) ~/ charWidth;
-  var height = (html.document.body.clientHeight - 30) ~/ charHeight;
+  var width = (html.document.body!.clientWidth - 20) ~/ charWidth;
+  var height = (html.document.body!.clientHeight - 30) ~/ charHeight;
 
   width = math.max(width, 80);
   height = math.max(height, 40);
@@ -260,7 +259,7 @@ void _resizeTerminal() {
 
 /// See: https://stackoverflow.com/a/29715395/9457
 void _fullscreen() {
-  var div = html.querySelector("#game");
+  var div = html.querySelector("#game")!;
   var jsElement = JsObject.fromBrowserObject(div);
 
   var methods = [
@@ -282,10 +281,11 @@ Future<void> _refreshDebugBoxes() async {
   await html.window.animationFrame;
 
   for (var debugBox in html.querySelectorAll(".debug")) {
-    html.document.body.children.remove(debugBox);
+    html.document.body!.children.remove(debugBox);
   }
 
-  var gameScreen = Debug.gameScreen as GameScreen;
+  var gameScreen = Debug.gameScreen as GameScreen?;
+  if (gameScreen == null) return;
 
   _debugMonsters.removeWhere((monster) => !monster.isAlive);
   for (var monster in _debugMonsters) {
@@ -309,7 +309,7 @@ Future<void> _refreshDebugBoxes() async {
       debugBox.style.top = y.toString();
       debugBox.text = info;
 
-      html.document.body.children.add(debugBox);
+      html.document.body!.children.add(debugBox);
     }
   }
 }

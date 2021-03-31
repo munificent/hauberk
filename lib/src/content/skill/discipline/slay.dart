@@ -34,7 +34,8 @@ class SlayDiscipline extends Discipline {
     hero.refreshSkill(this);
   }
 
-  void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {
+  void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {
+    if (monster == null) return;
     if (!Monsters.breeds.hasTag(monster.breed.name, _breedGroup)) return;
 
     // TODO: Tune.

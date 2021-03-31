@@ -15,7 +15,7 @@ abstract class MasteryDiscipline extends Discipline implements UsableSkill {
 
   double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.00, 2.0);
 
-  void modifyAttack(Hero hero, Monster monster, Hit hit, int level) {
+  void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {
     if (!_hasWeapon(hero)) return;
 
     // TODO: Tune.

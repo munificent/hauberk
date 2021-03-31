@@ -211,7 +211,8 @@ class Hero extends Actor {
       hit.addStrike(agility.strikeBonus);
 
       for (var skill in skills.acquired) {
-        skill.modifyAttack(this, defender as Monster, hit, skills.level(skill));
+        skill.modifyAttack(
+            this, defender as Monster?, hit, skills.level(skill));
       }
     }
 
