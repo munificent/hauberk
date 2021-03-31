@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
@@ -25,7 +24,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
   String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (!shift && !alt && keyCode == KeyCode.s) {
       _sort = _sort.next;
       _listItems();
@@ -146,7 +145,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
   void _listItems() {
     // Try to keep the current item type selected, if there is one.
-    ItemType selectedItem;
+    ItemType? selectedItem;
     if (_items.isNotEmpty) {
       selectedItem = _items[_selection];
     }

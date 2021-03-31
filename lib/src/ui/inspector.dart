@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import '../content/elements.dart';
@@ -75,7 +74,7 @@ class Inspector {
   }
 
   void _use() {
-    _sections.add(_TextSection("Use", _wordWrap(_item.type.use.description)));
+    _sections.add(_TextSection("Use", _wordWrap(_item.type.use!.description)));
   }
 
   void _description() {
@@ -89,8 +88,8 @@ class Inspector {
 
     for (var stat in Stat.all) {
       var bonus = 0;
-      if (_item.prefix != null) bonus += _item.prefix.statBonus(stat);
-      if (_item.suffix != null) bonus += _item.suffix.statBonus(stat);
+      if (_item.prefix != null) bonus += _item.prefix!.statBonus(stat);
+      if (_item.suffix != null) bonus += _item.suffix!.statBonus(stat);
 
       if (bonus < 0) {
         sentences.add("It lowers your ${stat.name} by ${-bonus}.");
@@ -99,9 +98,8 @@ class Inspector {
       }
     }
 
-    if (_item.toss != null) {
-      var toss = _item.toss;
-
+    var toss = _item.toss;
+    if (toss != null) {
       var element = "";
       if (toss.attack.element != Element.none) {
         element = " ${toss.attack.element.name}";
@@ -157,9 +155,7 @@ abstract class _Section {
     terminal.writeAt(1, y, "$label:", UIHue.text);
   }
 
-  void _writeStat(Terminal terminal, int y, String label, Object value) {
-    if (value == null) return;
-
+  void _writeStat(Terminal terminal, int y, String label, int value) {
     _writeLabel(terminal, y, label);
     terminal.writeAt(12, y, value.toString(), UIHue.primary);
   }
@@ -196,7 +192,7 @@ class _AttackSection extends _Section {
     var height = 2;
 
     if (_item.strikeBonus != 0) height++;
-    if (_item.attack.isRanged) height++;
+    if (_item.attack!.isRanged) height++;
 
     return height;
   }
@@ -211,12 +207,12 @@ class _AttackSection extends _Section {
           9, y, _item.element.abbreviation, elementColor(_item.element));
     }
 
-    terminal.writeAt(12, y, _item.attack.damage.toString(), UIHue.text);
+    terminal.writeAt(12, y, _item.attack!.damage.toString(), UIHue.text);
     _writeScale(terminal, 16, y, _item.damageScale);
     _writeBonus(terminal, 20, y, _item.damageBonus);
     terminal.writeAt(25, y, "=", UIHue.secondary);
 
-    var damage = _item.attack.damage * _item.damageScale + _item.damageBonus;
+    var damage = _item.attack!.damage * _item.damageScale + _item.damageBonus;
     terminal.writeAt(27, y, damage.toStringAsFixed(2).padLeft(6), carrot);
     y++;
 
@@ -226,8 +222,8 @@ class _AttackSection extends _Section {
       y++;
     }
 
-    if (_item.attack.isRanged) {
-      _writeStat(terminal, y, "Range", _item.attack.range);
+    if (_item.attack!.isRanged) {
+      _writeStat(terminal, y, "Range", _item.attack!.range);
     }
 
     _writeLabel(terminal, y, "Heft");
@@ -254,7 +250,7 @@ class _DefenseSection extends _Section {
   @override
   void draw(Terminal terminal, int y) {
     if (_item.defense != null) {
-      _writeStat(terminal, y, "Dodge", _item.defense.amount);
+      _writeStat(terminal, y, "Dodge", _item.defense!.amount);
     }
 
     if (_item.armor != 0) {

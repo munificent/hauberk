@@ -283,29 +283,24 @@ class Pronoun {
   const Pronoun(this.subjective, this.objective, this.possessive);
 }
 
-class LogType {
+enum LogType {
   /// Normal log messages.
-  static const message = LogType._("message");
+  message,
 
   /// Messages when the player tries an invalid action.
-  static const error = LogType._("error");
+  error,
 
   /// Messages related to the hero's quest.
-  static const quest = LogType._("quest");
+  quest,
 
   /// Messages when the hero levels up or gains powers.
-  static const gain = LogType._("gain");
+  gain,
 
   /// Help or tutorial messages.
-  static const help = LogType._("help");
+  help,
 
   /// Help or tutorial messages.
-  static const cheat = LogType._("cheat");
-
-  final String _name;
-  const LogType._(this._name);
-
-  String toString() => _name;
+  cheat,
 }
 
 /// A single log entry.

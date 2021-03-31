@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -17,16 +16,16 @@ abstract class Popup extends Screen<Input> {
   ///
   /// If not overridden, is calculated from the width of the longest line in
   /// [message].
-  int get width => null;
+  int? get width => null;
 
   /// The height of the content area of the popup.
   ///
   /// If not overridden, is calculated from the number of lines in [message].
-  int get height => null;
+  int? get height => null;
 
   /// Override this to return a list of lines of text that should be shown
   /// centered at the top of the popup.
-  List<String> get message => null;
+  List<String>? get message => null;
 
   Map<String, String> get helpKeys;
 

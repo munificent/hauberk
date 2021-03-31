@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 

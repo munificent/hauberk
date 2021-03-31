@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:convert';
 import 'dart:html' as html;
 
@@ -63,7 +62,7 @@ class Storage {
         var shops = <Shop, Inventory>{};
         if (hero.containsKey('shops')) {
           content.shops.forEach((name, shop) {
-            var shopData = hero['shops'][name] as List<dynamic>;
+            var shopData = hero['shops'][name] as List<dynamic>?;
             if (shopData != null) {
               shops[shop] = shop.load(_loadItems(shopData));
             } else {
@@ -85,7 +84,7 @@ class Storage {
 
         var levels = <Skill, int>{};
         var points = <Skill, int>{};
-        var skills = hero['skills'] as Map<String, dynamic>;
+        var skills = hero['skills'] as Map<String, dynamic>?;
         if (skills != null) {
           for (var name in skills.keys) {
             var skill = content.findSkill(name);
@@ -106,7 +105,7 @@ class Storage {
         var lore = _loadLore(hero['lore'] as Map<String, dynamic>);
 
         var gold = hero['gold'] as int;
-        var maxDepth = hero['maxDepth'] as int ?? 0;
+        var maxDepth = hero['maxDepth'] as int? ?? 0;
 
         var heroSave = HeroSave.load(
             name,
@@ -131,7 +130,7 @@ class Storage {
     }
   }
 
-  RaceStats _loadRace(Map<String, dynamic> data) {
+  RaceStats _loadRace(Map<String, dynamic>? data) {
     // TODO: Temp to handle heros from before races.
     if (data == null) {
       return content.races.elementAt(4).rollStats();
@@ -148,7 +147,7 @@ class Storage {
     }
 
     // TODO: 1234 is temp for characters without seed.
-    var seed = data['seed'] as int ?? 1234;
+    var seed = data['seed'] as int? ?? 1234;
 
     return RaceStats(race, stats, seed);
   }
@@ -163,7 +162,7 @@ class Storage {
     return items;
   }
 
-  Item _loadItem(Map<String, dynamic> data) {
+  Item? _loadItem(Map<String, dynamic> data) {
     var type = content.tryFindItem(data['type'] as String);
     if (type == null) {
       print("Couldn't find item type \"${data['type']}\", discarding item.");
@@ -176,7 +175,7 @@ class Storage {
       count = data['count'] as int;
     }
 
-    Affix prefix;
+    Affix? prefix;
     if (data.containsKey('prefix')) {
       // TODO: Older save from back when affixes had types.
       if (data['prefix'] is Map) {
@@ -186,7 +185,7 @@ class Storage {
       }
     }
 
-    Affix suffix;
+    Affix? suffix;
     if (data.containsKey('suffix')) {
       // TODO: Older save from back when affixes had types.
       if (data['suffix'] is Map) {
@@ -199,7 +198,7 @@ class Storage {
     return Item(type, count, prefix, suffix);
   }
 
-  Lore _loadLore(Map<String, dynamic> data) {
+  Lore _loadLore(Map<String, dynamic>? data) {
     var seenBreeds = <Breed, int>{};
     var slain = <Breed, int>{};
     var foundItems = <ItemType, int>{};
@@ -208,7 +207,7 @@ class Storage {
 
     // TODO: Older saves before lore.
     if (data != null) {
-      var seenMap = data['seen'] as Map<String, dynamic>;
+      var seenMap = data['seen'] as Map<String, dynamic>?;
       if (seenMap != null) {
         seenMap.forEach((breedName, dynamic count) {
           var breed = content.tryFindBreed(breedName);
@@ -216,7 +215,7 @@ class Storage {
         });
       }
 
-      var slainMap = data['slain'] as Map<String, dynamic>;
+      var slainMap = data['slain'] as Map<String, dynamic>?;
       if (slainMap != null) {
         slainMap.forEach((breedName, dynamic count) {
           var breed = content.tryFindBreed(breedName);
@@ -224,7 +223,7 @@ class Storage {
         });
       }
 
-      var foundItemMap = data['foundItems'] as Map<String, dynamic>;
+      var foundItemMap = data['foundItems'] as Map<String, dynamic>?;
       if (foundItemMap != null) {
         foundItemMap.forEach((itemName, dynamic count) {
           var itemType = content.tryFindItem(itemName);
@@ -232,7 +231,7 @@ class Storage {
         });
       }
 
-      var foundAffixMap = data['foundAffixes'] as Map<String, dynamic>;
+      var foundAffixMap = data['foundAffixes'] as Map<String, dynamic>?;
       if (foundAffixMap != null) {
         foundAffixMap.forEach((affixName, dynamic count) {
           var affix = content.findAffix(affixName);
@@ -240,7 +239,7 @@ class Storage {
         });
       }
 
-      var usedItemMap = data['usedItems'] as Map<String, dynamic>;
+      var usedItemMap = data['usedItems'] as Map<String, dynamic>?;
       if (usedItemMap != null) {
         usedItemMap.forEach((itemName, dynamic count) {
           var itemType = content.tryFindItem(itemName);
@@ -323,14 +322,12 @@ class Storage {
     return <dynamic>[for (var item in items) _saveItem(item)];
   }
 
-  Map _saveItem(Item item) {
-    var itemData = <String, dynamic>{
+  Map<String, dynamic> _saveItem(Item item) {
+    return <String, dynamic>{
       'type': item.type.name,
       'count': item.count,
-      if (item.prefix != null) 'prefix': item.prefix.name,
-      if (item.suffix != null) 'suffix': item.suffix.name,
+      if (item.prefix != null) 'prefix': item.prefix!.name,
+      if (item.suffix != null) 'suffix': item.suffix!.name,
     };
-
-    return itemData;
   }
 }

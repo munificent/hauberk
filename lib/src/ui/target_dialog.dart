@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
@@ -54,7 +53,7 @@ class TargetDialog extends Screen<Input> {
   bool _targetNearest(Vec pos) {
     if (_monsters.isEmpty) return false;
 
-    Actor nearest;
+    Actor? nearest;
     for (var monster in _monsters) {
       if (nearest == null || pos - monster.pos < pos - nearest.pos) {
         nearest = monster;
@@ -70,7 +69,7 @@ class TargetDialog extends Screen<Input> {
       case Input.ok:
         if (_gameScreen.currentTarget != null) {
           ui.pop();
-          _onSelect(_gameScreen.currentTarget);
+          _onSelect(_gameScreen.currentTarget!);
         }
         break;
 
@@ -107,7 +106,7 @@ class TargetDialog extends Screen<Input> {
     return true;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.tab && _monsters.isNotEmpty) {
       _targetingFloor = !_targetingFloor;
       if (!_targetingFloor) {
@@ -249,7 +248,7 @@ class TargetDialog extends Screen<Input> {
   }
 
   void _changeFloorTarget(Direction dir) {
-    var pos = _gameScreen.currentTarget + dir;
+    var pos = _gameScreen.currentTarget! + dir;
 
     // Don't target out of range.
     var toPos = pos - _gameScreen.game.hero.pos;
@@ -267,9 +266,10 @@ class TargetDialog extends Screen<Input> {
     var ahead = <Monster>[];
     var behind = <Monster>[];
 
+    var target = _gameScreen.currentTarget!;
     var perp = dir.rotateLeft90;
     for (var monster in _monsters) {
-      var relative = monster.pos - _gameScreen.currentTarget;
+      var relative = monster.pos - target;
       var dotProduct = perp.x * relative.y - perp.y * relative.x;
       if (dotProduct > 0) {
         ahead.add(monster);
@@ -278,15 +278,15 @@ class TargetDialog extends Screen<Input> {
       }
     }
 
-    var nearest = _findLowest<Monster>(ahead,
-        (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
+    var nearest = _findLowest<Monster>(
+        ahead, (monster) => (monster.pos - target).lengthSquared);
     if (nearest != null) {
       _gameScreen.targetActor(nearest);
       return;
     }
 
-    var farthest = _findHighest<Monster>(behind,
-        (monster) => (monster.pos - _gameScreen.currentTarget).lengthSquared);
+    var farthest = _findHighest<Monster>(
+        behind, (monster) => (monster.pos - target).lengthSquared);
     if (farthest != null) {
       _gameScreen.targetActor(farthest);
     }
@@ -325,11 +325,9 @@ class TargetDialog extends Screen<Input> {
 ///
 /// The score for an item is determined by calling [callback] on it. Returns
 /// `null` if the [collection] is `null` or empty.
-T _findLowest<T>(Iterable<T> collection, num Function(T) callback) {
-  if (collection == null) return null;
-
-  T bestItem;
-  num bestScore;
+T? _findLowest<T>(Iterable<T> collection, num Function(T) callback) {
+  T? bestItem;
+  num? bestScore;
 
   for (var item in collection) {
     var score = callback(item);
@@ -346,11 +344,9 @@ T _findLowest<T>(Iterable<T> collection, num Function(T) callback) {
 ///
 /// The score for an item is determined by calling [callback] on it. Returns
 /// `null` if the [collection] is `null` or empty.
-T _findHighest<T>(Iterable<T> collection, num Function(T) callback) {
-  if (collection == null) return null;
-
-  T bestItem;
-  num bestScore;
+T? _findHighest<T>(Iterable<T> collection, num Function(T) callback) {
+  T? bestItem;
+  num? bestScore;
 
   for (var item in collection) {
     var score = callback(item);

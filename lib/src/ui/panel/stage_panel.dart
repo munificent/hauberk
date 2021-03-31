@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -65,13 +64,13 @@ class StagePanel extends Panel {
   /// The portion of the [Stage] currently in view on screen.
   Rect get cameraBounds => _cameraBounds;
 
-  Rect _cameraBounds;
+  late Rect _cameraBounds;
 
   /// The amount of offset the rendered stage from the top left corner of the
   /// screen.
   ///
   /// This will be zero unless the stage is smaller than the view.
-  Vec _renderOffset;
+  late Vec _renderOffset;
 
   StagePanel(this._gameScreen);
 
@@ -115,7 +114,7 @@ class StagePanel extends Panel {
 
     // Draw the tiles and items.
     for (var pos in _cameraBounds) {
-      int char;
+      int? char;
       var fore = Color.black;
       var back = Color.black;
 
@@ -270,10 +269,11 @@ class StagePanel extends Panel {
   /// Gets the [Glyph] to render for [tile].
   Glyph _tileGlyph(Vec pos, Tile tile) {
     // If the appearance is a single glyph, it's a normal tile.
-    if (tile.type.appearance is Glyph) return tile.type.appearance;
+    var appearance = tile.type.appearance;
+    if (appearance is Glyph) return appearance;
 
     // Otherwise it's an animated tile, like water.
-    var glyphs = tile.type.appearance as List<Glyph>;
+    var glyphs = appearance as List<Glyph>;
 
     // Ping pong back and forth.
     var period = glyphs.length * 2 - 2;

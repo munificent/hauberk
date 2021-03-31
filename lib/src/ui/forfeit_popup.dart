@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import 'input.dart';
@@ -8,7 +7,7 @@ import 'popup.dart';
 class ForfeitPopup extends Popup {
   final bool _isTown;
 
-  ForfeitPopup({bool isTown}) : _isTown = isTown ?? false;
+  ForfeitPopup({required bool isTown}) : _isTown = isTown;
 
   List<String> get message {
     if (_isTown) return const ["Return to main menu?"];
@@ -31,7 +30,7 @@ class ForfeitPopup extends Popup {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
     switch (keyCode) {

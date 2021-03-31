@@ -31,6 +31,7 @@ abstract class Actor implements Noun {
 
   final Condition perception = PerceiveCondition();
 
+  // TODO: Wrap this in a method that returns a non-nullable result.
   // Temporary resistance to elements.
   final resistances = <Element, ResistCondition>{};
 
@@ -163,7 +164,7 @@ abstract class Actor implements Noun {
   ///
   /// Note that [defender] may be null if this hit is being created for
   /// something like a bolt attack or whether the targeted actor isn't known.
-  List<Hit> createMeleeHits(Actor defender) {
+  List<Hit> createMeleeHits(Actor? defender) {
     var hits = onCreateMeleeHits(defender);
     for (var hit in hits) {
       modifyHit(hit, HitType.melee);
@@ -171,7 +172,7 @@ abstract class Actor implements Noun {
     return hits;
   }
 
-  List<Hit> onCreateMeleeHits(Actor defender);
+  List<Hit> onCreateMeleeHits(Actor? defender);
 
   /// Applies the hit modifications from the actor.
   void modifyHit(Hit hit, HitType type) {

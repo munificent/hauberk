@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -43,77 +42,78 @@ void addEffects(List<Effect> effects, Event event) {
           Direction.sw: "/",
           Direction.w: "-",
           Direction.nw: "\\",
-        }[event.dir];
-        effects.add(FrameEffect(event.pos, char, sandal, life: 2));
+        }[event.dir]!;
+        effects.add(FrameEffect(event.pos!, char, sandal, life: 2));
       } else {
-        effects.add(ElementEffect(event.pos, event.element));
+        effects.add(ElementEffect(event.pos!, event.element));
       }
       break;
 
     case EventType.cone:
-      effects.add(ElementEffect(event.pos, event.element));
+      effects.add(ElementEffect(event.pos!, event.element));
       break;
 
     case EventType.toss:
-      effects.add(ItemEffect(event.pos, event.other as Item));
+      effects.add(ItemEffect(event.pos!, event.other as Item));
       break;
 
     case EventType.hit:
-      effects.add(DamageEffect(event.actor, event.element, event.other as int));
+      effects
+          .add(DamageEffect(event.actor!, event.element, event.other as int));
       break;
 
     case EventType.die:
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
         // TODO: Different blood colors for different breeds.
-        effects.add(ParticleEffect(event.actor.x, event.actor.y, red));
+        effects.add(ParticleEffect(event.actor!.x, event.actor!.y, red));
       }
       break;
 
     case EventType.heal:
-      effects.add(HealEffect(event.actor.pos.x, event.actor.pos.y));
+      effects.add(HealEffect(event.actor!.pos.x, event.actor!.pos.y));
       break;
 
     case EventType.detect:
-      effects.add(DetectEffect(event.pos));
+      effects.add(DetectEffect(event.pos!));
       break;
 
     case EventType.perceive:
       // TODO: Make look different.
-      effects.add(DetectEffect(event.actor.pos));
+      effects.add(DetectEffect(event.actor!.pos));
       break;
 
     case EventType.map:
-      effects.add(MapEffect(event.pos));
+      effects.add(MapEffect(event.pos!));
       break;
 
     case EventType.teleport:
-      var numParticles = (event.actor.pos - event.pos).kingLength * 2;
+      var numParticles = (event.actor!.pos - event.pos!).kingLength * 2;
       for (var i = 0; i < numParticles; i++) {
-        effects.add(TeleportEffect(event.pos, event.actor.pos));
+        effects.add(TeleportEffect(event.pos!, event.actor!.pos));
       }
       break;
 
     case EventType.spawn:
       // TODO: Something more interesting.
-      effects.add(FrameEffect(event.actor.pos, '*', ash));
+      effects.add(FrameEffect(event.actor!.pos, '*', ash));
       break;
 
     case EventType.polymorph:
       // TODO: Something more interesting.
-      effects.add(FrameEffect(event.actor.pos, '*', ash));
+      effects.add(FrameEffect(event.actor!.pos, '*', ash));
       break;
 
     case EventType.howl:
-      effects.add(HowlEffect(event.actor));
+      effects.add(HowlEffect(event.actor!));
       break;
 
     case EventType.awaken:
-      effects.add(BlinkEffect(event.actor, Glyph('!', ash)));
+      effects.add(BlinkEffect(event.actor!, Glyph('!', ash)));
       break;
 
     case EventType.frighten:
-      effects.add(BlinkEffect(event.actor, Glyph("!", gold)));
+      effects.add(BlinkEffect(event.actor!, Glyph("!", gold)));
       break;
 
     case EventType.wind:
@@ -122,12 +122,12 @@ void addEffects(List<Effect> effects, Event event) {
 
     case EventType.knockBack:
       // TODO: Something more interesting.
-      effects.add(FrameEffect(event.pos, "*", buttermilk));
+      effects.add(FrameEffect(event.pos!, "*", buttermilk));
       break;
 
     case EventType.slash:
     case EventType.stab:
-      var line = _directionLines[event.dir];
+      var line = _directionLines[event.dir]!;
 
       var color = ash;
       if (event.other != null) {
@@ -136,15 +136,15 @@ void addEffects(List<Effect> effects, Event event) {
       // TODO: If monsters starting using this, we'll need some other way to
       // color it.
 
-      effects.add(FrameEffect(event.pos, line, color));
+      effects.add(FrameEffect(event.pos!, line, color));
       break;
 
     case EventType.gold:
-      effects.add(TreasureEffect(event.pos, event.other as Item));
+      effects.add(TreasureEffect(event.pos!, event.other as Item));
       break;
 
     case EventType.openBarrel:
-      effects.add(FrameEffect(event.pos, '*', sandal));
+      effects.add(FrameEffect(event.pos!, '*', sandal));
       break;
   }
 }
@@ -252,7 +252,7 @@ class ElementEffect implements Effect {
   int _age = 0;
 
   ElementEffect(this._pos, Element element)
-      : _sequence = _elementSequences[element];
+      : _sequence = _elementSequences[element]!;
 
   bool update(Game game) {
     if (rng.oneIn(_age + 2)) _age++;
@@ -333,14 +333,17 @@ class ParticleEffect implements Effect {
   int life;
   final Color color;
 
-  ParticleEffect(this.x, this.y, this.color) {
+  factory ParticleEffect(num x, num y, Color color) {
     var theta = rng.range(628) / 100;
     var radius = rng.range(30, 40) / 100;
 
-    h = math.cos(theta) * radius;
-    v = math.sin(theta) * radius;
-    life = rng.range(7, 15);
+    var h = math.cos(theta) * radius;
+    var v = math.sin(theta) * radius;
+    var life = rng.range(7, 15);
+    return ParticleEffect._(x, y, h, v, life, color);
   }
+
+  ParticleEffect._(this.x, this.y, this.h, this.v, this.life, this.color);
 
   bool update(Game game) {
     x += h;
@@ -370,16 +373,20 @@ class TeleportEffect implements Effect {
 
   static final _colors = [lightAqua, lightBlue, lilac, ash];
 
-  TeleportEffect(Vec from, this.target) {
-    x = from.x;
-    y = from.y;
+  factory TeleportEffect(Vec from, Vec target) {
+    var x = from.x;
+    var y = from.y;
 
     var theta = rng.range(628) / 100;
     var radius = rng.range(10, 80) / 100;
 
-    h = math.cos(theta) * radius;
-    v = math.sin(theta) * radius;
+    var h = math.cos(theta) * radius;
+    var v = math.sin(theta) * radius;
+
+    return TeleportEffect._(x, y, h, v, target);
   }
+
+  TeleportEffect._(this.x, this.y, this.h, this.v, this.target);
 
   bool update(Game game) {
     var friction = 1.0 - age * 0.015;
@@ -432,21 +439,7 @@ class HealEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     if (game.stage.get(x, y).isOccluded) return;
 
-    Color back;
-    switch ((frame ~/ 4) % 4) {
-      case 0:
-        back = darkerCoolGray;
-        break;
-      case 1:
-        back = aqua;
-        break;
-      case 2:
-        back = lightBlue;
-        break;
-      case 3:
-        back = lightAqua;
-        break;
-    }
+    var back = [darkerCoolGray, aqua, lightBlue, lightAqua][(frame ~/ 4) % 4];
 
     drawGlyph(x - 1, y, Glyph('-', back));
     drawGlyph(x + 1, y, Glyph('-', back));
@@ -485,7 +478,7 @@ class MapEffect implements Effect {
   final _maxLife = rng.range(10, 20);
 
   final Vec pos;
-  int life;
+  int life = -1;
 
   MapEffect(this.pos) {
     life = _maxLife;

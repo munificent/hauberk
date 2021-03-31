@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -20,9 +19,11 @@ import 'item_view.dart';
 abstract class ItemScreen extends Screen<Input> {
   final GameScreen _gameScreen;
 
+  // TODO: Move this and _transfer() to an intermediate class instead of making
+  // this nullable?
   /// The place items are being transferred to or `null` if this is just a
   /// view.
-  ItemCollection get _destination => null;
+  ItemCollection? get _destination => null;
 
   /// Whether the shift key is currently pressed.
   bool _shiftDown = false;
@@ -32,13 +33,13 @@ abstract class ItemScreen extends Screen<Input> {
   bool _isActive = true;
 
   /// The item currently being inspected or `null` if none.
-  Item _inspected;
+  Item? _inspected;
 
 //  /// If the crucible contains a complete recipe, this will be it. Otherwise,
 //  /// this will be `null`.
 //  Recipe completeRecipe;
 
-  String _error;
+  String? _error;
 
   ItemCollection get _items;
 
@@ -79,7 +80,7 @@ abstract class ItemScreen extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     _error = null;
 
     if (keyCode == KeyCode.shift) {
@@ -122,7 +123,7 @@ abstract class ItemScreen extends Screen<Input> {
         // Prompt the user for a count if the item is a stack.
         if (item.count > 1) {
           _isActive = false;
-          ui.push(_CountScreen(_gameScreen, this, item));
+          ui.push(_CountScreen(_gameScreen, this as _ItemVerbScreen, item));
           return true;
         }
 
@@ -136,7 +137,7 @@ abstract class ItemScreen extends Screen<Input> {
     return false;
   }
 
-  bool keyUp(int keyCode, {bool shift, bool alt}) {
+  bool keyUp(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.shift) {
       _shiftDown = false;
       dirty();
@@ -146,12 +147,12 @@ abstract class ItemScreen extends Screen<Input> {
     return false;
   }
 
-  void activate(Screen<Input> popped, Object result) {
+  void activate(Screen<Input> popped, Object? result) {
     _isActive = true;
     _inspected = null;
 
     if (popped is _CountScreen && result != null) {
-      if (_transfer(popped._item, result)) {
+      if (_transfer(popped._item, result as int)) {
         ui.pop();
       }
     }
@@ -191,7 +192,7 @@ abstract class ItemScreen extends Screen<Input> {
 //    }
 
     if (_error != null) {
-      terminal.writeAt(0, 32, _error, red);
+      terminal.writeAt(0, 32, _error!, red);
     }
   }
 
@@ -203,10 +204,11 @@ abstract class ItemScreen extends Screen<Input> {
   int _maxCount(Item item) => item.count;
 
   /// By default, don't show the price.
-  int _itemPrice(Item item) => null;
+  int? _itemPrice(Item item) => null;
 
   bool _transfer(Item item, int count) {
-    if (!_destination.canAdd(item)) {
+    var destination = _destination!;
+    if (!destination.canAdd(item)) {
       _error = "Not enough room for ${item.clone(count)}.";
       dirty();
       return false;
@@ -214,11 +216,11 @@ abstract class ItemScreen extends Screen<Input> {
 
     if (count == item.count) {
       // Moving the entire stack.
-      _destination.tryAdd(item);
+      destination.tryAdd(item);
       _items.remove(item);
     } else {
       // Splitting the stack.
-      _destination.tryAdd(item.splitStack(count));
+      destination.tryAdd(item.splitStack(count));
       _items.countChanged();
     }
 
@@ -255,7 +257,7 @@ class _TownItemView extends ItemView {
 
   bool get showPrices => _screen._showPrices;
 
-  Item get inspectedItem => _screen._isActive ? _screen._inspected : null;
+  Item? get inspectedItem => _screen._isActive ? _screen._inspected : null;
 
   bool get inspectorOnRight => true;
 
@@ -263,7 +265,7 @@ class _TownItemView extends ItemView {
 
   bool canSelect(Item item) => _screen._canSelect(item);
 
-  int getPrice(Item item) => _screen._itemPrice(item);
+  int? getPrice(Item item) => _screen._itemPrice(item);
 }
 
 class _HomeViewScreen extends ItemScreen {
@@ -280,7 +282,7 @@ class _HomeViewScreen extends ItemScreen {
 
   _HomeViewScreen(GameScreen gameScreen) : super._(gameScreen);
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
 
     if (shift || alt) return false;
@@ -346,7 +348,7 @@ class _ShopViewScreen extends ItemScreen {
 
   _ShopViewScreen(GameScreen gameScreen, this._shop) : super._(gameScreen);
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
 
     if (shift || alt) return false;
@@ -368,7 +370,7 @@ class _ShopViewScreen extends ItemScreen {
     return false;
   }
 
-  int _itemPrice(Item item) => item.price;
+  int? _itemPrice(Item item) => item.price;
 }
 
 /// Screen to buy items from a shop.
@@ -398,7 +400,7 @@ class _ShopBuyScreen extends _ItemVerbScreen {
   /// Don't allow buying more than the hero can afford.
   int _maxCount(Item item) => math.min(item.count, _save.gold ~/ item.price);
 
-  int _itemPrice(Item item) => item.price;
+  int? _itemPrice(Item item) => item.price;
 
   /// Pay for purchased item.
   void _afterTransfer(Item item, int count) {
@@ -438,8 +440,8 @@ class _CountScreen extends ItemScreen {
       {"OK": _parent._verb, "↕": "Change quantity", "Esc": "Cancel"};
 
   _CountScreen(GameScreen gameScreen, this._parent, this._item)
-      : super._(gameScreen) {
-    _count = _parent._initialCount(_item);
+      : _count = _parent._initialCount(_item),
+        super._(gameScreen) {
     _inspected = _item;
   }
 
@@ -448,14 +450,14 @@ class _CountScreen extends ItemScreen {
   /// Highlight the item the user already selected.
   bool canSelect(Item item) => item == _item;
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     // Don't allow the shift key to inspect items.
     if (keyCode == KeyCode.shift) return false;
 
     return super.keyDown(keyCode, shift: shift, alt: alt);
   }
 
-  bool keyUp(int keyCode, {bool shift, bool alt}) {
+  bool keyUp(int keyCode, {required bool shift, required bool alt}) {
     // Don't allow the shift key to inspect items.
     return false;
   }
@@ -500,5 +502,5 @@ class _CountScreen extends ItemScreen {
     return false;
   }
 
-  int _itemPrice(Item item) => _parent._itemPrice(item);
+  int? _itemPrice(Item item) => _parent._itemPrice(item);
 }

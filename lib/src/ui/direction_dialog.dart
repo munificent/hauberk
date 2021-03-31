@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
@@ -163,7 +162,7 @@ class CloseDialog extends DirectionDialog {
     var pos = game.hero.pos + direction;
     var tile = game.stage[pos].type;
     if (tile.canClose) {
-      game.hero.setNextAction(tile.onClose(pos));
+      game.hero.setNextAction(tile.onClose!(pos));
       return true;
     } else {
       game.log.error('There is nothing to close there.');
@@ -185,7 +184,7 @@ class OpenDialog extends DirectionDialog {
     var pos = game.hero.pos + direction;
     var tile = game.stage[pos].type;
     if (tile.canOpen) {
-      game.hero.setNextAction(tile.onOpen(pos));
+      game.hero.setNextAction(tile.onOpen!(pos));
       return true;
     } else {
       game.log.error('There is nothing to open there.');

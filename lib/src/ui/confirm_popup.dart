@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import 'input.dart';
@@ -25,7 +24,7 @@ class ConfirmPopup extends Popup {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
     switch (keyCode) {

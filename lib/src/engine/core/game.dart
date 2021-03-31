@@ -184,7 +184,7 @@ class Game {
       Object? other,
       Vec? pos,
       Direction? dir}) {
-    _events.add(Event(type, actor, element, pos, dir, other));
+    _events.add(Event(type, actor, element ?? Element.none, pos, dir, other));
   }
 
   GameResult makeResult(bool madeProgress) {
@@ -238,11 +238,11 @@ abstract class Content {
   Iterable<String> buildStage(
       Lore lore, Stage stage, int depth, Function(Vec) placeHero);
 
-  Affix findAffix(String name);
+  Affix? findAffix(String name);
 
-  Breed tryFindBreed(String name);
+  Breed? tryFindBreed(String name);
 
-  ItemType tryFindItem(String name);
+  ItemType? tryFindItem(String name);
 
   Skill findSkill(String name);
 
@@ -288,8 +288,10 @@ class GameResult {
 /// to want to display visually in some form.
 class Event {
   final EventType type;
+  // TODO: Having these all be nullable leads to a lot of "!" in effects.
+  // Consider a better way to model this.
   final Actor? actor;
-  final Element? element;
+  final Element element;
   final Object? other;
   final Vec? pos;
   final Direction? dir;

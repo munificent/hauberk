@@ -9,6 +9,7 @@ class Race {
 
   final String description;
 
+  // TODO: Wrap this in a method that returns a non-nullable int.
   /// The base number of points a hero of this race will attain by the max
   /// level for each stat.
   final Map<Stat, int> stats;

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -104,7 +103,7 @@ class _AnimatedValue {
   final String name;
   final int value;
   final Color color;
-  final int total;
+  final int? total;
 
   int current;
 

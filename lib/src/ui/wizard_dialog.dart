@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -54,13 +53,13 @@ class WizardDialog extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
     var index = keyCode - KeyCode.a;
     if (index < 0 || index >= _menuItems.length) return false;
 
-    var menuItem = _menuItems[_menuItems.keys.elementAt(index)];
+    var menuItem = _menuItems[_menuItems.keys.elementAt(index)]!;
     menuItem();
     dirty();
 
@@ -152,7 +151,7 @@ abstract class SearchDialog<T> extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (alt) return false;
 
     switch (keyCode) {

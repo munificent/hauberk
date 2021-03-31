@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
@@ -35,9 +34,9 @@ abstract class HeroInfoDialog extends Screen<Input> {
 
   String get name;
 
-  String get extraHelp => null;
+  String? get extraHelp => null;
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (alt) return false;
 
     if (keyCode == KeyCode.tab) {
@@ -79,7 +78,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
   }
 
   void drawEquipmentTable(
-      Terminal terminal, void Function(Item item, int y) callback) {
+      Terminal terminal, void Function(Item? item, int y) callback) {
     terminal.writeAt(2, 1, "Equipment", gold);
 
     var y = 3;

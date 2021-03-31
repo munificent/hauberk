@@ -1,15 +1,26 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 abstract class Panel {
-  Rect bounds;
+  Rect? _bounds;
 
-  bool get isVisible => bounds != null;
+  bool get isVisible => _bounds != null;
+
+  /// The bounding box for the panel.
+  ///
+  /// This can only be called if the panel is visible.
+  Rect get bounds => _bounds!;
+
+  void hide() {
+    _bounds = null;
+  }
+
+  void show(Rect bounds) {
+    _bounds = bounds;
+  }
 
   void render(Terminal terminal) {
-    if (bounds == null) return;
-
+    if (!isVisible) return;
     renderPanel(terminal.rect(bounds.x, bounds.y, bounds.width, bounds.height));
   }
 

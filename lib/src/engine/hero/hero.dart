@@ -184,7 +184,7 @@ class Hero extends Actor {
 
   Action onGetAction() => _behavior!.getAction(this);
 
-  List<Hit> onCreateMeleeHits(Actor defender) {
+  List<Hit> onCreateMeleeHits(Actor? defender) {
     var hits = <Hit>[];
 
     // See if any melee weapons are equipped.

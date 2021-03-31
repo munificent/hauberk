@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
@@ -169,7 +168,7 @@ class SidebarPanel extends Panel {
     var x = 10;
     for (var element in Elements.all) {
       if (hero.resistance(element) > 0) {
-        terminal.writeAt(x, y, _resistLetters[element], elementColor(element));
+        terminal.writeAt(x, y, _resistLetters[element]!, elementColor(element));
         x++;
       }
     }
@@ -194,7 +193,7 @@ class SidebarPanel extends Panel {
   /// Draws a labeled numeric stat.
   void _drawStat(
       Terminal terminal, int y, String label, Object value, Color valueColor,
-      [int max, Color maxColor]) {
+      [int? max, Color? maxColor]) {
     terminal.writeAt(1, y, label, UIHue.helpText);
 
     var x = terminal.width - 1;
@@ -217,7 +216,7 @@ class SidebarPanel extends Panel {
     // Show conditions.
     var x = 3;
 
-    void drawCondition(String char, Color fore, [Color back]) {
+    void drawCondition(String char, Color fore, [Color? back]) {
       // Don't overlap other stuff.
       if (x > 8) return;
 
@@ -261,9 +260,9 @@ class SidebarPanel extends Panel {
     if (actor.perception.isActive) drawCondition("V", ash);
 
     for (var element in Elements.all) {
-      if (actor.resistances[element].isActive) {
+      if (actor.resistances[element]!.isActive) {
         drawCondition(
-            _resistLetters[element], Color.black, elementColor(element));
+            _resistLetters[element]!, Color.black, elementColor(element));
       }
     }
 

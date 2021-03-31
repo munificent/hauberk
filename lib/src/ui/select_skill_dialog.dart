@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -31,7 +30,7 @@ class SelectSkillDialog extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
     if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {

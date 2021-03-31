@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
@@ -10,7 +9,7 @@ import 'input.dart';
 /// Dialog shown while a new level is being generated.
 class LoadingDialog extends Screen<Input> {
   final Game _game;
-  Iterator<String> _steps;
+  late final Iterator<String> _steps = _game.generate().iterator;
   int _frame = 0;
 
   bool get isTransparent => true;
@@ -27,7 +26,7 @@ class LoadingDialog extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
     switch (keyCode) {
@@ -44,8 +43,6 @@ class LoadingDialog extends Screen<Input> {
   }
 
   void update() {
-    _steps ??= _game.generate().iterator;
-
     var stopwatch = Stopwatch()..start();
 
     while (stopwatch.elapsedMilliseconds < 16) {

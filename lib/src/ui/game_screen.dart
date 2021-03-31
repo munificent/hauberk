@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -33,30 +32,33 @@ import 'wizard_dialog.dart';
 class GameScreen extends Screen<Input> {
   final Game game;
 
-  final HeroSave _storageSave;
+  /// When the hero is in the dungeon, this is their save state before entering.
+  /// If they die or forfeit, their current state is discarded and this one is
+  /// used instead.
+  final HeroSave? _storageSave;
   final Storage _storage;
   final LogPanel _logPanel;
   final ItemPanel itemPanel;
-  SidebarPanel _sidebarPanel;
+  late final SidebarPanel _sidebarPanel;
 
   StagePanel get stagePanel => _stagePanel;
-  StagePanel _stagePanel;
+  late final StagePanel _stagePanel;
 
   /// The number of ticks left to wait before restarting the game loop after
   /// coming back from a dialog where the player chose an action for the hero.
   int _pause = 0;
 
-  Actor _targetActor;
-  Vec _target;
+  Actor? _targetActor;
+  Vec? _target;
 
-  UsableSkill _lastSkill;
+  UsableSkill? _lastSkill;
 
   /// The portal for the tile the hero is currently standing on.
   ///
   /// When this changes, we know the hero has stepped onto a new one.
-  TilePortal _portal;
+  TilePortal? _portal;
 
-  void targetActor(Actor value) {
+  void targetActor(Actor? value) {
     if (_targetActor != value) dirty();
 
     _targetActor = value;
@@ -64,7 +66,7 @@ class GameScreen extends Screen<Input> {
   }
 
   /// Targets the floor at [pos].
-  void targetFloor(Vec pos) {
+  void targetFloor(Vec? pos) {
     if (_targetActor != null || _target != pos) dirty();
 
     _targetActor = null;
@@ -74,18 +76,18 @@ class GameScreen extends Screen<Input> {
   /// Gets the currently targeted position.
   ///
   /// If targeting an actor, gets the actor's position.
-  Vec get currentTarget {
+  Vec? get currentTarget {
     // If we're targeting an actor, use its position.
-    if (currentTargetActor != null) return currentTargetActor.pos;
-
-    return _target;
+    var actor = currentTargetActor;
+    return actor?.pos ?? _target;
   }
 
   /// The currently targeted actor, if any.
-  Actor get currentTargetActor {
+  Actor? get currentTargetActor {
     // Forget the target if it dies or goes offscreen.
-    if (_targetActor != null) {
-      if (!_targetActor.isAlive || !game.hero.canPerceive(_targetActor)) {
+    var actor = _targetActor;
+    if (actor != null) {
+      if (!actor.isAlive || !game.hero.canPerceive(actor)) {
         _targetActor = null;
       }
     }
@@ -94,7 +96,7 @@ class GameScreen extends Screen<Input> {
 
     // If we're targeting the floor, see if there is an actor there.
     if (_target != null) {
-      return game.stage.actorAt(_target);
+      return game.stage.actorAt(_target!);
     }
 
     return null;
@@ -134,12 +136,13 @@ class GameScreen extends Screen<Input> {
   }
 
   bool handleInput(Input input) {
-    Action action;
+    Action? action;
     switch (input) {
       case Input.quit:
         var portal = game.stage[game.hero.pos].portal;
         if (portal == TilePortals.exit) {
-          ui.push(ExitPopup(_storageSave, game));
+          // Should have a storage because there are no exits in the town.
+          ui.push(ExitPopup(_storageSave!, game));
         } else {
           game.log.error("You are not standing on an exit.");
           dirty();
@@ -290,12 +293,12 @@ class GameScreen extends Screen<Input> {
         break;
 
       case Input.swap:
-        if (game.hero.inventory.lastUnequipped == null) {
+        var unequipped = game.hero.inventory.lastUnequipped;
+        if (unequipped == null) {
           game.log.error("You aren't holding an unequipped item to swap.");
           dirty();
         } else {
-          action = EquipAction(
-              ItemLocation.inventory, game.hero.inventory.lastUnequipped);
+          action = EquipAction(ItemLocation.inventory, unequipped);
         }
         break;
 
@@ -314,7 +317,7 @@ class GameScreen extends Screen<Input> {
     return true;
   }
 
-  void activate(Screen popped, Object result) {
+  void activate(Screen popped, Object? result) {
     if (!game.hero.needsInput) {
       // The player is coming back from a screen where they selected an action
       // for the hero. Give them a bit to visually reorient themselves before
@@ -324,7 +327,7 @@ class GameScreen extends Screen<Input> {
 
     if (popped is ExitPopup) {
       // TODO: Hero should start next to dungeon entrance.
-      _storageSave.takeFrom(game.hero);
+      _storageSave!.takeFrom(game.hero);
 
       // Update shops.
       game.hero.save.shops.forEach((shop, inventory) {
@@ -332,7 +335,7 @@ class GameScreen extends Screen<Input> {
       });
 
       _storage.save();
-      ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
+      ui.goTo(GameScreen.town(_storage, game.content, _storageSave!));
     } else if (popped is SelectDepthPopup && result is int) {
       // Enter the dungeon.
       _storage.save();
@@ -343,7 +346,7 @@ class GameScreen extends Screen<Input> {
       if (game.depth > 0) {
         // Forfeiting, so return to the town and discard the current hero.
         // TODO: Hero should start next to dungeon entrance.
-        ui.goTo(GameScreen.town(_storage, game.content, _storageSave));
+        ui.goTo(GameScreen.town(_storage, game.content, _storageSave!));
       } else {
         // Leaving the town. Save just to be safe.
         _storage.save();
@@ -407,21 +410,20 @@ class GameScreen extends Screen<Input> {
 
     var centerWidth = size.x - leftWidth;
 
-    itemPanel.bounds = null;
+    itemPanel.hide();
     if (size.x >= 100) {
       var width = math.min(50, 20 + (size.x - 100) ~/ 2);
-      itemPanel.bounds = Rect(size.x - width, 0, width, size.y);
+      itemPanel.show(Rect(size.x - width, 0, width, size.y));
       centerWidth = size.x - leftWidth - width;
     }
 
-    _sidebarPanel.bounds = Rect(0, 0, leftWidth, size.y);
+    _sidebarPanel.show(Rect(0, 0, leftWidth, size.y));
 
     var logHeight = 6 + (size.y - 40) ~/ 2;
     logHeight = math.min(logHeight, 20);
 
-    stagePanel.bounds = Rect(leftWidth, 0, centerWidth, size.y - logHeight);
-    _logPanel.bounds =
-        Rect(leftWidth, size.y - logHeight, centerWidth, logHeight);
+    stagePanel.show(Rect(leftWidth, 0, centerWidth, size.y - logHeight));
+    _logPanel.show(Rect(leftWidth, size.y - logHeight, centerWidth, logHeight));
   }
 
   void render(Terminal terminal) {
@@ -498,7 +500,7 @@ class GameScreen extends Screen<Input> {
     } else if (openable.length == 1) {
       var pos = openable.first;
       // TODO: This leaks information if the hero is next to unexplored tiles.
-      game.hero.setNextAction(game.stage[pos].type.onOpen(pos));
+      game.hero.setNextAction(game.stage[pos].type.onOpen!(pos));
     } else {
       ui.push(OpenDialog(this));
     }
@@ -519,7 +521,7 @@ class GameScreen extends Screen<Input> {
     } else if (closeable.length == 1) {
       var pos = closeable.first;
       // TODO: This leaks information if the hero is next to unexplored tiles.
-      game.hero.setNextAction(game.stage[pos].type.onClose(pos));
+      game.hero.setNextAction(game.stage[pos].type.onClose!(pos));
     } else {
       ui.push(CloseDialog(this));
     }
@@ -553,7 +555,7 @@ class GameScreen extends Screen<Input> {
 
     _lastSkill = skill;
     game.hero.setNextAction(skill.getTargetAction(
-        game, game.hero.skills.level(skill), currentTarget));
+        game, game.hero.skills.level(skill), currentTarget!));
   }
 
   void _fireTowards(Direction dir) {
@@ -569,7 +571,7 @@ class GameScreen extends Screen<Input> {
       var pos = game.hero.pos + dir;
 
       // Target the monster that is in the fired direction, if any.
-      Vec previous;
+      late Vec previous;
       for (var step in Line(game.hero.pos, pos)) {
         // If we reached an actor, target it.
         var actor = game.stage.actorAt(step);
@@ -595,14 +597,14 @@ class GameScreen extends Screen<Input> {
 
       if (currentTarget != null) {
         game.hero.setNextAction(targetSkill.getTargetAction(
-            game, game.hero.skills.level(targetSkill), currentTarget));
+            game, game.hero.skills.level(targetSkill), currentTarget!));
       } else {
         var tile = game.stage[game.hero.pos + dir].type.name;
         game.log.error("There is a $tile in the way.");
         dirty();
       }
     } else if (_lastSkill is ActionSkill) {
-      game.log.error("${_lastSkill.useName} does not take a direction.");
+      game.log.error("${_lastSkill!.useName} does not take a direction.");
       dirty();
     } else {
       // TODO: Better error message.
@@ -615,6 +617,6 @@ class GameScreen extends Screen<Input> {
     var shops = game.hero.save.shops.keys.toList();
     if (index >= shops.length) return;
 
-    ui.push(ItemScreen.shop(this, game.hero.save.shops[shops[index]]));
+    ui.push(ItemScreen.shop(this, game.hero.save.shops[shops[index]]!));
   }
 }

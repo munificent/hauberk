@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
@@ -84,7 +83,7 @@ class MainMenuScreen extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
     switch (keyCode) {
@@ -104,7 +103,7 @@ class MainMenuScreen extends Screen<Input> {
     return false;
   }
 
-  void activate(Screen popped, Object result) {
+  void activate(Screen popped, Object? result) {
     if (popped is ConfirmPopup && result == 'delete') {
       storage.heroes.removeAt(selectedHero);
       if (selectedHero > 0 && selectedHero >= storage.heroes.length) {

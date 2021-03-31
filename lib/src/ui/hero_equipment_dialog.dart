@@ -1,10 +1,11 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
 import '../hues.dart';
 import 'hero_info_dialog.dart';
 
+// TODO: Unify with HeroItemLoreDialog so that we can select and show inspector
+// for equipment.
 class HeroEquipmentDialog extends HeroInfoDialog {
   HeroEquipmentDialog(Content content, HeroSave hero)
       : super.base(content, hero);
@@ -55,8 +56,8 @@ class HeroEquipmentDialog extends HeroInfoDialog {
 
       if (item == null) return;
 
-      if (item.attack != null) {
-        var attack = item.attack;
+      var attack = item.attack;
+      if (attack != null) {
         terminal.writeAt(
             48, y, attack.element.abbreviation, elementColor(attack.element));
 
@@ -87,8 +88,8 @@ class HeroEquipmentDialog extends HeroInfoDialog {
       if (item == null) continue;
 
       if (item.attack != null) {
-        element = item.attack.element;
-        baseDamage = item.attack.damage;
+        element = item.attack!.element;
+        baseDamage = item.attack!.damage;
       }
 
       totalDamageScale *= item.damageScale;

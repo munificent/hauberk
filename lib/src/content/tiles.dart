@@ -153,12 +153,15 @@ class Tiles {
   static final tableLeg = tile("table", "╤", tan).obstacle();
   static final tableLegRight = tile("table", "╡", tan).obstacle();
 
+  // TODO: Animate.
   static final candle = tile("candle", "≥", sandal).emanate(128).obstacle();
 
+  // TODO: Animate.
   static final wallTorch =
       tile("wall torch", "≤", gold, coolGray).emanate(192).solid();
 
   // TODO: Different glyph.
+  // TODO: Animate.
   static final braziers = multi("brazier", "≤", tan, null, 5,
       (tile, n) => tile.emanate(192 - n * 12).obstacle());
 

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
@@ -9,7 +8,8 @@ import 'input.dart';
 
 // TODO: Get working with resizable UI.
 abstract class SkillDialog extends Screen<Input> {
-  SkillDialog _nextScreen;
+  // TODO: Make this a getter instead of a field.
+  late final SkillDialog _nextScreen;
 
   factory SkillDialog(HeroSave hero) {
     var screens = [
@@ -41,14 +41,14 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     }
   }
 
-  String get _extraHelp => null;
+  String? get _extraHelp => null;
 
   // TODO: Eventually should clone skill set so we can cancel changes on dialog.
   SkillSet get _skillSet => _hero.skills;
 
   String get _rowSeparator;
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
     if (keyCode == KeyCode.tab) {
@@ -218,8 +218,8 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     var percent = skill.percentUntilNext(_hero);
     if (percent != null) {
       var points = _hero.skills.points(skill);
-      var current = skill.trainingNeeded(_hero.heroClass, level);
-      var next = skill.trainingNeeded(_hero.heroClass, level + 1);
+      var current = skill.trainingNeeded(_hero.heroClass, level)!;
+      var next = skill.trainingNeeded(_hero.heroClass, level + 1)!;
       terminal.writeAt(9, 32, "$percent%".padLeft(4), UIHue.text);
       Draw.meter(
           terminal, 14, 32, 25, points - current, next - current, red, maroon);

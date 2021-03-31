@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
@@ -102,10 +101,9 @@ class NewHeroScreen extends Screen<Input> {
   int _race;
   int _class;
 
-  NewHeroScreen(this.content, this.storage) {
-    _race = rng.range(content.races.length);
-    _class = rng.range(content.classes.length);
-  }
+  NewHeroScreen(this.content, this.storage)
+      : _race = rng.range(content.races.length),
+        _class = rng.range(content.classes.length);
 
   void render(Terminal terminal) {
     terminal.clear();
@@ -182,7 +180,7 @@ class NewHeroScreen extends Screen<Input> {
     y = 18;
     for (var stat in Stat.all) {
       terminal.writeAt(2, y, stat.name, UIHue.secondary);
-      var width = 25 * race.stats[stat] ~/ 45;
+      var width = 25 * race.stats[stat]! ~/ 45;
       terminal.writeAt(12, y, " " * width, ash, red);
       terminal.writeAt(12 + width, y, " " * (25 - width), ash, maroon);
       y += 2;
@@ -273,7 +271,7 @@ class NewHeroScreen extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     // TODO: Figuring out the char code manually here is lame. Pass it in from
     // the KeyEvent?
 
@@ -319,7 +317,6 @@ class NewHeroScreen extends Screen<Input> {
       default:
         if (_field == _Field.name && !alt) {
           var key = keyCode;
-          if (key == null) break;
 
           if (key >= KeyCode.a && key <= KeyCode.z) {
             var charCode = key;

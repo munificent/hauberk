@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -24,16 +23,16 @@ class ItemDialog extends Screen<Input> {
 
   /// If the player needs to select a quantity for an item they have already
   /// chosen, this will be the index of the item.
-  Item _selectedItem;
+  Item? _selectedItem;
 
   /// The number of items the player selected.
-  int _count;
+  int _count = -1;
 
   /// Whether the shift key is currently pressed.
   bool _shiftDown = false;
 
   /// The current item being inspected or `null` if there is none.
-  Item _inspected;
+  Item? _inspected;
 
   bool get isTransparent => true;
 
@@ -66,7 +65,7 @@ class ItemDialog extends Screen<Input> {
     switch (input) {
       case Input.ok:
         if (_selectedItem != null) {
-          _command.selectItem(this, _selectedItem, _count, _location);
+          _command.selectItem(this, _selectedItem!, _count, _location);
           return true;
         }
         break;
@@ -83,7 +82,7 @@ class ItemDialog extends Screen<Input> {
 
       case Input.n:
         if (_selectedItem != null) {
-          if (_count < _selectedItem.count) {
+          if (_count < _selectedItem!.count) {
             _count++;
             dirty();
           }
@@ -105,7 +104,7 @@ class ItemDialog extends Screen<Input> {
     return false;
   }
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.shift) {
       _shiftDown = true;
       dirty();
@@ -137,7 +136,7 @@ class ItemDialog extends Screen<Input> {
     return false;
   }
 
-  bool keyUp(int keyCode, {bool shift, bool alt}) {
+  bool keyUp(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.shift) {
       _shiftDown = false;
       dirty();
@@ -181,6 +180,8 @@ class ItemDialog extends Screen<Input> {
             itemsTop = 0;
           }
           break;
+        default:
+          throw StateError("Unexpected location.");
       }
 
       // Always make it at least 2 wider than the item panel. That way, with
@@ -245,21 +246,22 @@ class ItemDialog extends Screen<Input> {
     if (index >= items.length) return;
 
     // Can't select an empty equipment slot.
-    if (items[index] == null) return;
+    var item = items[index];
+    if (item == null) return;
 
     if (_shiftDown) {
-      _inspected = items[index];
+      _inspected = item;
       dirty();
     } else {
-      if (!_command.canSelect(items[index])) return;
+      if (!_command.canSelect(item)) return;
 
-      if (items[index].count > 1 && _command.needsCount) {
-        _selectedItem = items[index];
-        _count = _selectedItem.count;
+      if (item.count > 1 && _command.needsCount) {
+        _selectedItem = item;
+        _count = item.count;
         dirty();
       } else {
         // Either we don't need a count or there's only one item.
-        _command.selectItem(this, items[index], 1, _location);
+        _command.selectItem(this, item, 1, _location);
       }
     }
   }
@@ -272,9 +274,9 @@ class ItemDialog extends Screen<Input> {
         return _gameScreen.game.hero.equipment;
       case ItemLocation.onGround:
         return _gameScreen.game.stage.itemsAt(_gameScreen.game.hero.pos);
+      default:
+        throw StateError("Unexpected location.");
     }
-
-    throw AssertionError("Unreachable.");
   }
 
   /// Rotates through the viewable locations the player can select an item from.
@@ -298,7 +300,7 @@ class _ItemDialogItemView extends ItemView {
 
   bool get showPrices => _dialog._command.showPrices;
 
-  Item get inspectedItem => _dialog._inspected;
+  Item? get inspectedItem => _dialog._inspected;
 
   bool canSelect(Item item) => _dialog._canSelect(item);
 
@@ -328,7 +330,7 @@ abstract class _ItemCommand {
 
   /// The query shown to the user when selecting a quantity for an item in this
   /// mode from the [ItemDialog].
-  String queryCount(ItemLocation location) => null;
+  String queryCount(ItemLocation location) => throw UnimplementedError();
 
   /// Returns `true` if [item] is a valid selection for this command.
   bool canSelect(Item item);
@@ -465,7 +467,7 @@ class _TossItemCommand extends _ItemCommand {
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     // Create the hit now so range modifiers can be calculated before the
     // target is chosen.
-    var hit = item.toss.attack.createHit();
+    var hit = item.toss!.attack.createHit();
     dialog._gameScreen.game.hero.modifyHit(hit, HitType.toss);
 
     // Now we need a target.

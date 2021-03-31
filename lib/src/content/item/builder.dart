@@ -204,7 +204,8 @@ class _ItemBuilder extends _BaseBuilder {
     _heft = heft;
   }
 
-  void ranged(String noun, {required int heft, required int damage, required int range}) {
+  void ranged(String noun,
+      {required int heft, required int damage, required int range}) {
     _attack = Attack(Noun(noun), "pierce[s]", damage, range);
     // TODO: Make this per-item once it does something.
     _heft = heft;
@@ -417,7 +418,8 @@ void finishItem() {
 
     var range = builder._tossRange ?? _category._tossRange;
     assert(range != null);
-    var element = builder._tossElement ?? _category._tossElement ?? Element.none;
+    var element =
+        builder._tossElement ?? _category._tossElement ?? Element.none;
     var use = builder._tossUse ?? _category._tossUse;
     var breakage = _category._breakage ?? builder._breakage ?? 0;
 

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
@@ -25,13 +24,13 @@ abstract class ItemView {
 
   bool get showPrices => false;
 
-  Item get inspectedItem => null;
+  Item? get inspectedItem => null;
 
   bool get inspectorOnRight => false;
 
   bool canSelect(Item item) => false;
 
-  int getPrice(Item item) => item.price;
+  int? getPrice(Item item) => item.price;
 
   void render(
       Terminal terminal, int left, int top, int width, int itemSlotCount) {
@@ -65,16 +64,14 @@ abstract class ItemView {
 
       // If there's no item in this equipment slot, show the slot name.
       if (item == null) {
-        // Null items should only appear in equipment.
-        assert(items.slotTypes != null);
-
         // If this is the second hand slot and the previous one has a
         // two-handed item in it, mark this one.
         if (slot > 0 &&
             items.slotTypes[slot] == "hand" &&
             items.slotTypes[slot - 1] == "hand" &&
+            // TODO: Use "?.".
             items.slots.elementAt(slot - 1) != null &&
-            items.slots.elementAt(slot - 1).type.isTwoHanded) {
+            items.slots.elementAt(slot - 1)!.type.isTwoHanded) {
           terminal.writeAt(x + 2, y, "↑ two-handed", UIHue.disabled);
         } else {
           terminal.writeAt(
@@ -119,8 +116,8 @@ abstract class ItemView {
       }
 
       var nameRight = left + width - 1;
-      if (showPrices && getPrice(item) != 0) {
-        var price = formatMoney(getPrice(item));
+      if (showPrices && getPrice(item) != null) {
+        var price = formatMoney(getPrice(item)!);
         var priceLeft = left + width - 1 - price.length - 1;
         terminal.writeAt(priceLeft, y, "\$", enabled ? tan : UIHue.disabled);
         terminal.writeAt(
@@ -142,7 +139,7 @@ abstract class ItemView {
       // TODO: Eventually need to handle equipment that gives both an armor and
       // attack bonus.
       if (item.attack != null) {
-        var hit = item.attack.createHit();
+        var hit = item.attack!.createHit();
         drawStat(
             CharCode.feminineOrdinalIndicator, hit.damageString, carrot, brown);
       } else if (item.armor != 0) {

@@ -1,4 +1,3 @@
-// @dart=2.11
 import 'package:malison/malison.dart';
 
 import '../engine.dart';
@@ -24,7 +23,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
 
   String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
 
-  bool keyDown(int keyCode, {bool shift, bool alt}) {
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (!shift && !alt && keyCode == KeyCode.s) {
       _sort = _sort.next;
       _listBreeds();
@@ -131,7 +130,8 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     terminal.writeAt(4, 1, breed.name, UIHue.selection);
 
     var y = 3;
-    if (breed.description != null) {
+    // TODO: Remove this check once all breeds have descriptions.
+    if (breed.description != "") {
       for (var line in Log.wordWrap(terminal.width - 2, breed.description)) {
         terminal.writeAt(1, y, line, UIHue.text);
         y++;
@@ -196,7 +196,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
 
   void _listBreeds() {
     // Try to keep the current breed selected, if there is one.
-    Breed selectedBreed;
+    Breed? selectedBreed;
     if (_breeds.isNotEmpty) {
       selectedBreed = _breeds[_selection];
     }
