@@ -14,37 +14,21 @@ import 'spell/sorcery.dart';
 
 class Skills {
   /// All of the known skills.
-  static final List<Skill> all = _generateSkills();
-
-  static final Map<String, Skill> _byName = {
-    for (var skill in all) skill.name: skill
-  };
-
-  static Skill find(String name) {
-    var skill = _byName[name];
-    if (skill == null) throw ArgumentError("Unknown skill '$name'.");
-    return skill;
-  }
-
-  // TODO: Inline into one big list literal.
-  static List<Skill> _generateSkills() {
-    var skills = <Skill>[
+  static final List<Skill> all = [
+    // Disciplines.
+    ...[
       BattleHardening(),
       DualWield(),
-    ];
 
-    // Masteries.
-    skills.addAll([
+      // Masteries.
       Archery(),
       AxeMastery(),
       ClubMastery(),
       SpearMastery(),
       Swordfighting(),
       WhipMastery(),
-    ]);
 
-    // Slays.
-    skills.addAll([
+      // Slays.
       SlayDiscipline("Animals", "animal"),
       SlayDiscipline("Bugs", "bug"),
       SlayDiscipline("Dragons", "dragon"),
@@ -56,24 +40,34 @@ class Skills {
       SlayDiscipline("Plants", "plant"),
       SlayDiscipline("Saurians", "saurian"),
       SlayDiscipline("Undead", "undead"),
-    ]);
+    ],
 
     // Spells.
-    skills.addAll([
+    ...[
       // Divination.
       SenseItems(),
+
       // Conjuring.
       Flee(),
       Escape(),
       Disappear(),
+
       // Sorcery.
       Icicle(),
       BrilliantBeam(),
       Windstorm(),
       FireBarrier(),
-      TidalWave()
-    ]);
+      TidalWave(),
+    ]
+  ];
 
-    return skills;
+  static final Map<String, Skill> _byName = {
+    for (var skill in all) skill.name: skill
+  };
+
+  static Skill find(String name) {
+    var skill = _byName[name];
+    if (skill == null) throw ArgumentError("Unknown skill '$name'.");
+    return skill;
   }
 }

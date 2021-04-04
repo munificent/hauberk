@@ -2,9 +2,10 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+/// Uses an iterated cellular automata to generate organic blob-like shapes.
+///
+/// Note that this may generate unconnected regions.
 class Blob {
-  // TODO: This may generate unconnected regions. Decide if that's OK or not.
-
   static Array2D<bool> make(int size) {
     Array2D<bool>? blob;
 

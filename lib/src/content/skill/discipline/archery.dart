@@ -24,8 +24,6 @@ class Archery extends Discipline with UsableSkill, TargetSkill {
     return "No bow equipped.";
   }
 
-  // TODO: Scale focus cost with level?
-
   bool _hasBow(Hero hero) =>
       hero.equipment.weapons.any((item) => item.type.weaponType == "bow");
 
@@ -37,6 +35,7 @@ class Archery extends Discipline with UsableSkill, TargetSkill {
     return 100 * level * level * level;
   }
 
+  /// Focus cost goes down with level.
   int focusCost(HeroSave hero, int level) => 21 - level;
 
   int getRange(Game game) {
