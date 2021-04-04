@@ -268,9 +268,8 @@ class Hero extends Actor {
 
   void onTakeDamage(Action action, Actor? attacker, int damage) {
     // Getting hit loses focus.
-    // TODO: Scale based on will.
     // TODO: Lose less focus for ranged attacks?
-    _focus -= (damage / maxHealth * 400).ceil();
+    _focus -= (damage / maxHealth * will.damageFocusScale).ceil();
     _turnsSinceLostFocus = 0;
 
     // TODO: Would be better to do skills.discovered, but right now this also

@@ -18,17 +18,18 @@ class Races {
       agility: 40,
       fortitude: 25,
       intellect: 35,
-      will: 25,
+      will: 15,
       description:
           "There are few things elves are not good at, as any elf will be "
           "quick to inform you. Clever, quick on their feet, and surprisingly "
           "strong for how they look. Which is radiantly beautiful, naturally.");
+  // TODO: Make stats lower and enable them to fly?
   static final fae = _race("Fae",
       strength: 20,
       agility: 45,
       fortitude: 15,
-      intellect: 30,
-      will: 20,
+      intellect: 35,
+      will: 25,
       description:
           "What can be said about the fae folk that is known to be true? "
           "Dimunitive and easily harmed, they survive by cloaking themselves "
@@ -61,10 +62,10 @@ class Races {
           "great devotion.");
   static final troll = _race("Troll",
       strength: 45,
-      agility: 40,
+      agility: 20,
       fortitude: 35,
       intellect: 10,
-      will: 20,
+      will: 40,
       description:
           "Troll strong like rock. Troll smart like rock. Troll eat rock.");
 

@@ -186,7 +186,13 @@ class Intellect extends StatBase {
 class Will extends StatBase {
   Stat get _stat => Stat.will;
 
-  String get _gainAdjective => "invincible";
+  String get _gainAdjective => "driven";
 
   String get _loseAdjective => "foolish";
+
+  /// Scales how much focus is lost when taking damage.
+  double get damageFocusScale {
+    if (value <= 10) return lerpDouble(value, 1, 10, 800, 400);
+    return lerpDouble(value, 10, 60, 400, 80);
+  }
 }

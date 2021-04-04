@@ -15,9 +15,9 @@ void main() {
   intellect.bindHero(save);
   will.bindHero(save);
 
-  print("     Strength   Agility     Fortitude Intellect Will");
-  print("     ┌───────┐ ┌──────────┐ ┌───────┐ ┌─────────────────┐ ┌──┐");
-  print("Lvl  Toss Heft Dodge Strike Health    MaxFocus SpellFocus");
+  print("     Strength   Agility     Fortitude Intellect           Will");
+  print("     ┌───────┐ ┌──────────┐ ┌───────┐ ┌─────────────────┐ ┌───┐");
+  print("Lvl  Toss Heft Dodge Strike Health    MaxFocus SpellFocus Focus");
 
   for (var i = 1; i <= Stat.max; i++) {
     strength.update(i, (_) {});
@@ -33,6 +33,7 @@ void main() {
         " ${agility.strikeBonus.toString().padLeft(6)}"
         " ${fortitude.maxHealth.toString().padLeft(6)}"
         " ${intellect.maxFocus.toString().padLeft(11)}"
-        " ${intellect.spellFocusScale(10).toStringAsFixed(2).padLeft(10)}");
+        " ${intellect.spellFocusScale(10).toStringAsFixed(2).padLeft(10)}"
+        " ${will.damageFocusScale.toStringAsFixed(0).padLeft(5)}");
   }
 }
