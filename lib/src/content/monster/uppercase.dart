@@ -45,7 +45,7 @@ void faeFolk() {
   breed("forest sprite", 2, mint, 6)
     ..attack("scratch[es]", 3)
     ..missive(Missive.insult, rate: 4)
-    ..sparkBolt(rate: 7, damage: 4)
+    ..sparkBolt(rate: 12, damage: 4)
     ..drop("treasure", percent: 10)
     ..drop("magic", percent: 30);
 
@@ -53,14 +53,14 @@ void faeFolk() {
     ..attack("poke[s]", 5)
     ..missive(Missive.insult, rate: 4)
     ..stoneBolt(rate: 10, damage: 4)
-    ..teleport(rate: 7, range: 4)
+    ..teleport(rate: 8, range: 4)
     ..drop("treasure", percent: 10)
     ..drop("magic", percent: 30);
 
   breed("mischievous sprite", 7, pink, 24)
     ..attack("poke[s]", 6)
     ..missive(Missive.insult, rate: 4)
-    ..windBolt(rate: 8, damage: 8)
+    ..windBolt(rate: 10, damage: 8)
     ..teleport(range: 5)
     ..drop("treasure", percent: 10)
     ..drop("magic", percent: 30);
@@ -69,8 +69,8 @@ void faeFolk() {
     ..she()
     ..attack("poke[s]", 8)
     ..missive(Missive.insult, rate: 4)
-    ..sparkBolt(rate: 7, damage: 4)
-    ..windBolt(rate: 8, damage: 7)
+    ..sparkBolt(rate: 8, damage: 4)
+    ..windBolt(rate: 10, damage: 7)
     ..teleport(range: 5)
     ..drop("treasure", count: 2)
     ..drop("magic", count: 3, depthOffset: 3)

@@ -659,7 +659,7 @@ void rodents() {
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
 
-  breed("sewer rat", 2, darkCoolGray, 8, meander: 20)
+  breed("sewer rat", 2, coolGray, 8, meander: 20)
     ..count(1, 4)
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
