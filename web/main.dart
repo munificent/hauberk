@@ -58,7 +58,7 @@ void main() {
     _resizeTerminal();
   });
 
-  var _ui = UserInterface<Input>(_font.terminal);
+  _ui = UserInterface<Input>(_font.terminal);
 
   // Set up the keyPress.
   _ui.keyPress.bind(Input.ok, KeyCode.enter);
