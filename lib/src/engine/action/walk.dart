@@ -65,7 +65,7 @@ class WalkAction extends Action {
         }
       }
 
-      hero.focus += 2;
+      hero.regenerateFocus(4);
     }
 
     return succeed();
@@ -84,6 +84,7 @@ class OpenDoorAction extends Action {
     game.stage[pos].type = openDoor;
     game.stage.tileOpacityChanged();
 
+    if (actor is Hero) hero.regenerateFocus(4);
     return succeed('{1} open[s] the door.', actor);
   }
 }
@@ -104,6 +105,7 @@ class CloseDoorAction extends Action {
     game.stage[doorPos].type = closedDoor;
     game.stage.tileOpacityChanged();
 
+    if (actor is Hero) hero.regenerateFocus(4);
     return succeed('{1} close[s] the door.', actor);
   }
 }
@@ -119,9 +121,7 @@ class RestAction extends Action {
       }
 
       // TODO: Have this amount increase over successive resting turns?
-      // TODO: What should affect this rate?
-      // TODO: Can the hero regain focus when hungry?
-      hero.focus += 10;
+      hero.regenerateFocus(10);
     } else if (!actor!.isVisibleToHero) {
       // Monsters can rest if out of sight.
       actor!.health++;

@@ -163,7 +163,7 @@ class FocusAction extends Action {
   ActionResult onPerform() {
     if (hero.focus < _focus) return fail("You aren't focused enough.");
 
-    hero.focus -= _focus;
+    hero.spendFocus(_focus);
     return alternate(_action);
   }
 }

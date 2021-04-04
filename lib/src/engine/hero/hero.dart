@@ -51,11 +51,12 @@ class Hero extends Actor {
   set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
   int _stomach = Option.heroMaxStomach ~/ 2;
 
-  int _focus = 400;
-
+  int _focus = 0;
   int get focus => _focus;
 
-  set focus(int value) => _focus = value.clamp(0, intellect.maxFocus);
+  /// The number of hero turns since they last took a hit that caused them to
+  /// lose focus.
+  int _turnsSinceLostFocus = 0;
 
   /// How much noise the Hero's last action made.
   double get lastNoise => _lastNoise;
@@ -106,6 +107,7 @@ class Hero extends Actor {
 
     // Set the health now that we know the level, which determines fortitude.
     health = maxHealth;
+    _focus = intellect.maxFocus;
 
     // Acquire any skills from the starting items.
     // TODO: Doing this here is hacky. It only really comes into play for
@@ -266,10 +268,10 @@ class Hero extends Actor {
 
   void onTakeDamage(Action action, Actor? attacker, int damage) {
     // Getting hit loses focus.
-    // TODO: Should the hero lose focus if they dodge the attack? Seems like it
-    // would still break their attention. Maybe lose a fraction of the focus?
     // TODO: Scale based on will.
-    focus -= intellect.maxFocus * damage * 2 ~/ maxHealth;
+    // TODO: Lose less focus for ranged attacks?
+    _focus -= (damage / maxHealth * 400).ceil();
+    _turnsSinceLostFocus = 0;
 
     // TODO: Would be better to do skills.discovered, but right now this also
     // discovers BattleHardening.
@@ -307,6 +309,8 @@ class Hero extends Actor {
       stomach--;
       if (stomach == 0) game.log.message("You are getting hungry.");
     }
+
+    _turnsSinceLostFocus++;
 
     // TODO: Passive skills?
   }
@@ -373,6 +377,22 @@ class Hero extends Actor {
     }
   }
 
+  /// Spends focus on some useful action.
+  ///
+  /// Does not reset [_turnsSinceLostFocus].
+  void spendFocus(int focus) {
+    assert(focus >= _focus);
+
+    _focus -= focus;
+  }
+
+  void regenerateFocus(int focus) {
+    // The longer the hero goes without losing focus, the more quickly it
+    // regenerates.
+    var scale = (_turnsSinceLostFocus + 1).clamp(1, 8) / 4;
+    _focus = (_focus + focus * scale).ceil().clamp(0, intellect.maxFocus);
+  }
+
   /// Refreshes all hero state whose change should be logged.
   ///
   /// For example, if the hero equips a helm that increases intellect, we want
@@ -435,6 +455,10 @@ class Hero extends Actor {
 
     // See if any skills changed. (Gaining intellect learns spells.)
     _refreshSkills();
+
+    // Keep other stats in bounds.
+    health = health.clamp(0, maxHealth);
+    _focus = _focus.clamp(0, intellect.maxFocus);
   }
 
   /// Called when the hero holds an item.
