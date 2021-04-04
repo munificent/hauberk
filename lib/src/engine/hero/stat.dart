@@ -119,19 +119,16 @@ class Strength extends StatBase {
   double heftScale(int heft) {
     var relative = (value - heft).clamp(-20, 50);
 
-    var scale = 0.0;
     if (relative < -10) {
-      scale = lerpDouble(relative, -20, -10, 0.05, 0.3);
+      return lerpDouble(relative, -20, -10, 0.05, 0.3);
     } else if (relative < 0) {
       // Note that there is an immediate step down to 0.8 at -1.
-      scale = lerpDouble(relative, -10, -1, 0.3, 0.8);
+      return lerpDouble(relative, -10, -1, 0.3, 0.8);
     } else if (relative < 30) {
-      scale = lerpDouble(relative, 0, 30, 1.0, 2.0);
+      return lerpDouble(relative, 0, 30, 1.0, 2.0);
     } else {
-      scale = lerpDouble(relative, 30, 50, 2.0, 3.0);
+      return lerpDouble(relative, 30, 50, 2.0, 3.0);
     }
-
-    return scale;
   }
 }
 
@@ -175,7 +172,15 @@ class Intellect extends StatBase {
 
   String get _loseAdjective => "stupid";
 
-  int get maxFocus => (math.pow(value, 1.3) * 2).ceil();
+  int get maxFocus {
+    if (value <= 10) return lerpInt(value, 1, 10, 40, 100);
+    return lerpInt(value, 10, 60, 100, 200);
+  }
+
+  double spellFocusScale(int complexity) {
+    var relative = value - complexity.clamp(0, 50);
+    return lerpDouble(relative, 0, 50, 1.0, 0.2);
+  }
 }
 
 class Will extends StatBase {

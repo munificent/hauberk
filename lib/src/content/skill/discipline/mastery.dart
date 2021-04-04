@@ -7,7 +7,7 @@ import '../../../engine.dart';
 // - Fury. Increases damage when health is low. Trained by killing monsters
 //   when near death.
 
-abstract class MasteryDiscipline extends Discipline implements UsableSkill {
+abstract class MasteryDiscipline extends Discipline {
   // TODO: Tune.
   int get maxLevel => 20;
 

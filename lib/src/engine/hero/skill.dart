@@ -93,6 +93,9 @@ abstract class Skill implements Comparable<Skill> {
 /// or a direction. Those will implement one of the subclasses, [TargetSkill]
 /// or [DirectionSkill].
 mixin UsableSkill implements Skill {
+  /// The focus cost to use the skill, with proficiency applied.
+  int focusCost(HeroSave hero, int level);
+
   /// If the skill cannot currently be used (for example Archery when a bow is
   /// not equipped), returns the reason why. Otherwise, returns `null` to
   /// indicate the skill is usable.
@@ -101,7 +104,12 @@ mixin UsableSkill implements Skill {
 
 /// A skill that can be directly used to perform an action.
 mixin ActionSkill implements UsableSkill {
-  Action getAction(Game game, int level);
+  Action getAction(Game game, int level) {
+    var action = onGetAction(game, level);
+    return FocusAction(focusCost(game.hero.save, level), action);
+  }
+
+  Action onGetAction(Game game, int level);
 }
 
 /// A skill that requires a target position to perform.
@@ -111,9 +119,14 @@ mixin TargetSkill implements UsableSkill {
   /// The maximum range of the target from the hero.
   int getRange(Game game);
 
+  Action getTargetAction(Game game, int level, Vec target) {
+    var action = onGetTargetAction(game, level, target);
+    return FocusAction(focusCost(game.hero.save, level), action);
+  }
+
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Skill].
-  Action getTargetAction(Game game, int level, Vec target);
+  Action onGetTargetAction(Game game, int level, Vec target);
 }
 
 /// A skill that requires a direction to perform.
@@ -185,12 +198,12 @@ abstract class Spell extends Skill with UsableSkill {
   /// Spells are not leveled.
   int get maxLevel => 1;
 
+  /// The base focus cost to cast the spell.
+  int get baseFocusCost;
+
   /// The amount of [Intellect] the hero must possess to use this spell
   /// effectively, ignoring class proficiency.
   int get baseComplexity;
-
-  /// The base focus cost to cast the spell, ignoring class proficiency.
-  int get baseFocusCost;
 
   /// The base damage of the spell, or 0 if not relevant.
   int get damage => 0;
@@ -205,28 +218,23 @@ abstract class Spell extends Skill with UsableSkill {
     return hero.intellect.value >= complexity(hero.heroClass) ? 1 : 0;
   }
 
-  int focusCost(HeroSave hero) =>
-      (baseFocusCost / hero.heroClass.proficiency(this)).round();
+  int focusCost(HeroSave hero, int level) {
+    var cost = baseFocusCost.toDouble();
+
+    // Intellect makes spells cheaper, relative to their complexity.
+    cost *= hero.intellect.spellFocusScale(complexity(hero.heroClass));
+
+    // Spell proficiency lowers cost.
+    cost /= hero.heroClass.proficiency(this);
+
+    // Round up so that it always costs at least 1.
+    return cost.ceil();
+  }
 
   int complexity(HeroClass heroClass) =>
       ((baseComplexity - 9) / heroClass.proficiency(this)).round() + 9;
 
   int getRange(Game game) => range;
-
-  Action getTargetAction(Game game, int level, Vec target) {
-    var action = onGetTargetAction(game, target);
-    return FocusAction(focusCost(game.hero.save), action);
-  }
-
-  Action onGetTargetAction(Game game, Vec target) => throw UnsupportedError("");
-
-  Action getAction(Game game, int level) {
-    var action = onGetAction(game);
-    return FocusAction(focusCost(game.hero.save), action);
-  }
-
-  // TODO: Split actions and target actions into different types?
-  Action onGetAction(Game game) => throw UnsupportedError("");
 }
 
 /// A collection of [Skill]s and the hero's progress in them.

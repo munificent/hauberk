@@ -23,9 +23,12 @@ class WhipMastery extends MasteryDiscipline with TargetSkill {
             "attack.";
   }
 
+  // TODO: Make this spend fury.
+  int focusCost(HeroSave hero, int level) => 0;
+
   int getRange(Game game) => 3;
 
-  Action getTargetAction(Game game, int level, Vec target) {
+  Action onGetTargetAction(Game game, int level, Vec target) {
     var defender = game.stage.actorAt(target)!;
 
     // Find which hand has a whip. If both do, just pick the first.

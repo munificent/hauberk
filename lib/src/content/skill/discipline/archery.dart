@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import '../../action/bolt.dart';
 
-class Archery extends Discipline with TargetSkill {
+class Archery extends Discipline with UsableSkill, TargetSkill {
   // TODO: Tune.
   int get maxLevel => 20;
 
@@ -24,6 +24,8 @@ class Archery extends Discipline with TargetSkill {
     return "No bow equipped.";
   }
 
+  // TODO: Scale focus cost with level?
+
   bool _hasBow(Hero hero) =>
       hero.equipment.weapons.any((item) => item.type.weaponType == "bow");
 
@@ -35,6 +37,8 @@ class Archery extends Discipline with TargetSkill {
     return 100 * level * level * level;
   }
 
+  int focusCost(HeroSave hero, int level) => 21 - level;
+
   int getRange(Game game) {
     var hit = game.hero.createRangedHit();
     var level = game.hero.skills.level(this);
@@ -42,7 +46,7 @@ class Archery extends Discipline with TargetSkill {
     return hit.range;
   }
 
-  Action getTargetAction(Game game, int level, Vec target) {
+  Action onGetTargetAction(Game game, int level, Vec target) {
     var hit = game.hero.createRangedHit();
     return ArrowAction(this, target, hit);
   }

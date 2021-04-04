@@ -258,9 +258,10 @@ class SpellDialog extends SkillTypeDialog<Spell> {
       terminal.writeAt(17, 30, "Need $need more intellect", UIHue.secondary);
     }
 
+    var level = _skillSet.level(skill);
     terminal.writeAt(1, 32, "Focus cost:", UIHue.secondary);
-    terminal.writeAt(
-        13, 32, skill.focusCost(_hero).toString().padLeft(3), UIHue.text);
+    terminal.writeAt(13, 32,
+        skill.focusCost(_hero, level).toString().padLeft(3), UIHue.text);
 
     if (skill.damage != 0) {
       terminal.writeAt(1, 34, "Damage:", UIHue.secondary);
