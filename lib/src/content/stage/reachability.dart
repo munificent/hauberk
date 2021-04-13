@@ -5,7 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../tiles.dart';
 
-/// An incrementally-updated bread-first search distance map.
+/// An incrementally-updated breadth-first search distance map.
 ///
 /// Works basically like [Flow] except that when a tile is turned solid, only
 /// the tiles that need to be updated are recalculated. This is much faster
@@ -24,7 +24,7 @@ class Reachability {
   int _reachedOpenCount = 0;
   int get reachedOpenCount => _reachedOpenCount;
 
-  List<_FillStep>? _beforeFill;
+  List<_FillStep> _beforeFill = const [];
 
   Reachability(this.stage, this._start)
       : _distances = Array2D<int>(stage.width, stage.height, _unknown),
@@ -66,7 +66,7 @@ class Reachability {
         queue.add(neighbor);
         _affected.add(neighbor);
 
-        _beforeFill!.add(_FillStep(neighbor, neighborDistance));
+        _beforeFill.add(_FillStep(neighbor, neighborDistance));
       }
     }
 
@@ -95,11 +95,11 @@ class Reachability {
 
   /// Revert the previous call to [fill].
   void undoFill() {
-    for (var step in _beforeFill!) {
+    for (var step in _beforeFill) {
       _setDistance(step.pos, step.distance);
     }
 
-    _beforeFill = null;
+    _beforeFill = const [];
   }
 
   // Returns true if there is a path to [pos] that doesn't go through an
