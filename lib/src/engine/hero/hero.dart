@@ -51,8 +51,14 @@ class Hero extends Actor {
   set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
   int _stomach = Option.heroMaxStomach ~/ 2;
 
-  int _focus = 0;
+  /// How calm and centered the hero is. Mental skills like spells spend focus.
   int get focus => _focus;
+  int _focus = 0;
+
+  /// How enraged the hero is. Physical skills like active disciplines spend
+  /// fury.
+  int get fury => _fury;
+  int _fury = 0;
 
   /// The number of hero turns since they last took a hit that caused them to
   /// lose focus.
@@ -105,7 +111,7 @@ class Hero extends Actor {
 
     refreshProperties();
 
-    // Set the health now that we know the level, which determines fortitude.
+    // Set the meters now that we know the stats.
     health = maxHealth;
     _focus = intellect.maxFocus;
 
@@ -266,10 +272,18 @@ class Hero extends Actor {
   // TODO: If class or race can affect this, add it in.
   int onGetResistance(Element element) => save.equipmentResistance(element);
 
+  void onGiveDamage(Action action, Actor defender, int damage) {
+    // Hitting increases fury.
+    _gainFury(damage / defender.maxHealth * maxHealth / 100);
+  }
+
   void onTakeDamage(Action action, Actor? attacker, int damage) {
-    // Getting hit loses focus.
+    // Getting hit loses focus and gains fury.
     // TODO: Lose less focus for ranged attacks?
-    _focus -= (damage / maxHealth * will.damageFocusScale).ceil();
+    var focus = (damage / maxHealth * will.damageFocusScale).ceil();
+    _focus = (_focus - focus).clamp(0, intellect.maxFocus);
+
+    _gainFury(damage / maxHealth * 50);
     _turnsSinceLostFocus = 0;
 
     // TODO: Would be better to do skills.discovered, but right now this also
@@ -284,6 +298,9 @@ class Hero extends Actor {
 
     // It only counts if the hero's seen the monster at least once.
     if (!_seenMonsters.contains(monster)) return;
+
+    // Gain some fury.
+    _gainFury(defender.maxHealth / maxHealth * 50);
 
     lore.slay(monster.breed);
 
@@ -385,11 +402,28 @@ class Hero extends Actor {
     _focus -= focus;
   }
 
+  /// Spends fury on some useful action.
+  ///
+  /// Does not reset [_turnsSinceLostFocus].
+  void spendFury(int fury) {
+    assert(fury >= fury);
+
+    _fury -= fury;
+  }
+
   void regenerateFocus(int focus) {
     // The longer the hero goes without losing focus, the more quickly it
     // regenerates.
     var scale = (_turnsSinceLostFocus + 1).clamp(1, 8) / 4;
     _focus = (_focus + focus * scale).ceil().clamp(0, intellect.maxFocus);
+
+    _fury = (_fury - focus * scale * will.restFuryScale)
+        .ceil()
+        .clamp(0, strength.maxFury);
+  }
+
+  void _gainFury(double fury) {
+    _fury = (_fury + fury.ceil()).clamp(0, strength.maxFury);
   }
 
   /// Refreshes all hero state whose change should be logged.
@@ -458,6 +492,8 @@ class Hero extends Actor {
     // Keep other stats in bounds.
     health = health.clamp(0, maxHealth);
     _focus = _focus.clamp(0, intellect.maxFocus);
+    // TODO: Is this how we want max fury derived?
+    _fury = _fury.clamp(0, strength.maxFury);
   }
 
   /// Called when the hero holds an item.

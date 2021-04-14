@@ -94,19 +94,35 @@ abstract class Skill implements Comparable<Skill> {
 /// or [DirectionSkill].
 mixin UsableSkill implements Skill {
   /// The focus cost to use the skill, with proficiency applied.
-  int focusCost(HeroSave hero, int level);
+  int focusCost(HeroSave hero, int level) => 0;
+
+  /// The fury cost to use the skill, with proficiency applied.
+  int furyCost(HeroSave hero, int level) => 0;
 
   /// If the skill cannot currently be used (for example Archery when a bow is
   /// not equipped), returns the reason why. Otherwise, returns `null` to
   /// indicate the skill is usable.
   String? unusableReason(Game game) => null;
+
+  /// If this skill has a focus or fury cost, wraps [action] in an appropriate
+  /// action to spend that.
+  Action _wrapActionCost(HeroSave hero, int level, Action action) {
+    if (focusCost(hero, level) > 0) {
+      return FocusAction(focusCost(hero, level), action);
+    }
+
+    if (furyCost(hero, level) > 0) {
+      return FuryAction(furyCost(hero, level), action);
+    }
+
+    return action;
+  }
 }
 
 /// A skill that can be directly used to perform an action.
 mixin ActionSkill implements UsableSkill {
   Action getAction(Game game, int level) {
-    var action = onGetAction(game, level);
-    return FocusAction(focusCost(game.hero.save, level), action);
+    return _wrapActionCost(game.hero.save, level, onGetAction(game, level));
   }
 
   Action onGetAction(Game game, int level);
@@ -120,8 +136,8 @@ mixin TargetSkill implements UsableSkill {
   int getRange(Game game);
 
   Action getTargetAction(Game game, int level, Vec target) {
-    var action = onGetTargetAction(game, level, target);
-    return FocusAction(focusCost(game.hero.save, level), action);
+    return _wrapActionCost(
+        game.hero.save, level, onGetTargetAction(game, level, target));
   }
 
   /// Override this to create the [Action] that the [Hero] should perform when
@@ -133,7 +149,14 @@ mixin TargetSkill implements UsableSkill {
 mixin DirectionSkill implements UsableSkill {
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Skill].
-  Action getDirectionAction(Game game, int level, Direction dir);
+  Action getDirectionAction(Game game, int level, Direction dir) {
+    return _wrapActionCost(
+        game.hero.save, level, onGetDirectionAction(game, level, dir));
+  }
+
+  /// Override this to create the [Action] that the [Hero] should perform when
+  /// using this [Skill].
+  Action onGetDirectionAction(Game game, int level, Direction dir);
 }
 
 /// Disciplines are the primary [Skill]s of warriors.

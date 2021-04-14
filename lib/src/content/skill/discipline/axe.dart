@@ -4,9 +4,9 @@ import '../../../engine.dart';
 import 'mastery.dart';
 
 /// A slashing melee attack that hits a number of adjacent monsters.
-class AxeMastery extends MasteryDiscipline with DirectionSkill {
+class AxeMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
   // TODO: Tune.
-  static double _sweepScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.0);
+  static double _sweepScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
   String get name => "Axe Mastery";
@@ -23,10 +23,9 @@ class AxeMastery extends MasteryDiscipline with DirectionSkill {
         " Sweep attacks inflict $damage% of the damage of a regular attack.";
   }
 
-  // TODO: Make this spend fury.
-  int focusCost(HeroSave hero, int level) => 0;
+  int furyCost(HeroSave hero, int level) => 20;
 
-  Action getDirectionAction(Game game, int level, Direction dir) {
+  Action onGetDirectionAction(Game game, int level, Direction dir) {
     return SweepAction(dir, AxeMastery._sweepScale(level));
   }
 }

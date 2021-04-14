@@ -151,6 +151,7 @@ class ActionResult {
         done = true;
 }
 
+/// Attempts to perform an action that spends focus.
 class FocusAction extends Action {
   /// The focus cost of the action.
   final int _focus;
@@ -164,6 +165,24 @@ class FocusAction extends Action {
     if (hero.focus < _focus) return fail("You aren't focused enough.");
 
     hero.spendFocus(_focus);
+    return alternate(_action);
+  }
+}
+
+/// Attempts to perform an action that spends fury.
+class FuryAction extends Action {
+  /// The fury cost of the action.
+  final int _fury;
+
+  /// The action to perform if the hero has enough focus.
+  final Action _action;
+
+  FuryAction(this._fury, this._action);
+
+  ActionResult onPerform() {
+    if (hero.fury < _fury) return fail("You aren't angry enough.");
+
+    hero.spendFury(_fury);
     return alternate(_action);
   }
 }

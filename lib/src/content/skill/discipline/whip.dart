@@ -4,9 +4,9 @@ import '../../../engine.dart';
 import '../../action/bolt.dart';
 import 'mastery.dart';
 
-class WhipMastery extends MasteryDiscipline with TargetSkill {
+class WhipMastery extends MasteryDiscipline with UsableSkill, TargetSkill {
   // TODO: Tune.
-  static double _whipScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.0);
+  static double _whipScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
   String get name => "Whip Mastery";
@@ -23,13 +23,12 @@ class WhipMastery extends MasteryDiscipline with TargetSkill {
             "attack.";
   }
 
-  // TODO: Make this spend fury.
-  int focusCost(HeroSave hero, int level) => 0;
+  int furyCost(HeroSave hero, int level) => 20;
 
   int getRange(Game game) => 3;
 
   Action onGetTargetAction(Game game, int level, Vec target) {
-    var defender = game.stage.actorAt(target)!;
+    var defender = game.stage.actorAt(target);
 
     // Find which hand has a whip. If both do, just pick the first.
     // TODO: Is this the best way to handle dual-wielded whips?

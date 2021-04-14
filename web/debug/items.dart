@@ -64,8 +64,8 @@ void _makeTable() {
     var glyph = item.appearance as Glyph;
     cells.add('''
 <code class="term"><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
-      glyph.char
-    ])}</span></code>&nbsp;${item.name}
+          glyph.char
+        ])}</span></code>&nbsp;${item.name}
     ''');
 
     cells.add(scaleValue(item.depth));

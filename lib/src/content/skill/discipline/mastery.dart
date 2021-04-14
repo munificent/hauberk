@@ -13,7 +13,7 @@ abstract class MasteryDiscipline extends Discipline {
 
   String get weaponType;
 
-  double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.00, 2.0);
+  double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.0, 2.0);
 
   void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {
     if (!_hasWeapon(hero)) return;

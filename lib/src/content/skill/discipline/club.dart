@@ -3,9 +3,9 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class ClubMastery extends MasteryDiscipline with DirectionSkill {
+class ClubMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
   // TODO: Tune.
-  static double _bashScale(int level) => lerpDouble(level, 1, 10, 0.2, 0.8);
+  static double _bashScale(int level) => lerpDouble(level, 1, 10, 1.0, 2.0);
 
   // TODO: Better name.
   String get name => "Club Mastery";
@@ -23,10 +23,9 @@ class ClubMastery extends MasteryDiscipline with DirectionSkill {
     return super.levelDescription(level) + " Bashes the enemy away.";
   }
 
-  // TODO: Make this spend fury.
-  int focusCost(HeroSave hero, int level) => 0;
+  int furyCost(HeroSave hero, int level) => 20;
 
-  Action getDirectionAction(Game game, int level, Direction dir) {
+  Action onGetDirectionAction(Game game, int level, Direction dir) {
     return BashAction(dir, ClubMastery._bashScale(level));
   }
 }

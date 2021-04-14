@@ -134,15 +134,17 @@ class TargetDialog extends Screen<Input> {
     // Show the range field.
     for (var pos in _gameScreen.cameraBounds) {
       var tile = stage[pos];
+      var actor = stage.actorAt(pos);
 
       // Don't leak information to the player about unknown tiles. Instead,
       // treat them as potentially targetable.
-      var actor = stage.actorAt(pos);
       if (tile.isExplored) {
         // If the tile can't be reached, don't show it as targetable.
         if (tile.isOccluded) continue;
 
         if (!tile.isWalkable && tile.blocksView) continue;
+
+        // Don't obscure monsters and items.
         if (actor != null) continue;
         if (stage.isItemAt(pos)) continue;
       } else if (_isKnownOccluded(pos)) {
@@ -181,10 +183,11 @@ class TargetDialog extends Screen<Input> {
     // Don't target a tile the player knows can't be hit.
     var reachedTarget = false;
     var tile = _gameScreen.game.stage[target];
-    if (!tile.isExplored || (!tile.blocksView && tile.isOccluded)) {
+    var frame = 0;
+    if (!tile.isExplored || (!tile.blocksView && !tile.isOccluded)) {
       // Show the path that the bolt will trace, stopping when it hits an
       // obstacle.
-      var i = _animateOffset ~/ _ticksPerFrame;
+      frame = _animateOffset ~/ _ticksPerFrame;
       for (var pos in Line(_gameScreen.game.hero.pos, target)) {
         // Note if we made it to the target.
         if (pos == target) {
@@ -205,13 +208,14 @@ class TargetDialog extends Screen<Input> {
             pos.x,
             pos.y,
             Glyph.fromCharCode(
-                CharCode.bullet, (i == 0) ? gold : darkCoolGray));
-        i = (i + _numFrames - 1) % _numFrames;
+                CharCode.bullet, (frame == 0) ? gold : darkCoolGray));
+        frame = (frame + _numFrames - 1) % _numFrames;
       }
     }
 
     // Highlight the reticle if the bolt will reach the target.
-    var reticleColor = reachedTarget ? gold : darkCoolGray;
+    var reticleColor = darkCoolGray;
+    if (reachedTarget) reticleColor = (frame == 0) ? gold : darkCoolGray;
     _gameScreen.drawStageGlyph(
         terminal, target.x - 1, target.y, Glyph('-', reticleColor));
     _gameScreen.drawStageGlyph(

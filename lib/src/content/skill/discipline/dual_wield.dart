@@ -4,7 +4,7 @@ class DualWield extends Discipline {
   // TODO: Tune.
   int get maxLevel => 10;
 
-  static double _heftModifier(int level) => lerpDouble(level, 0, 10, 1.0, 0.8);
+  static double _heftModifier(int level) => lerpDouble(level, 0, 10, 1.0, 0.5);
 
   String get name => "Dual-wield";
 

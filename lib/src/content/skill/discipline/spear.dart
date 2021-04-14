@@ -3,9 +3,9 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class SpearMastery extends MasteryDiscipline with DirectionSkill {
+class SpearMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
   // TODO: Tune.
-  static double _spearScale(int level) => lerpDouble(level, 1, 10, 0.5, 1.5);
+  static double _spearScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
   String get name => "Spear Mastery";
@@ -25,10 +25,9 @@ class SpearMastery extends MasteryDiscipline with DirectionSkill {
             "attack.";
   }
 
-  // TODO: Make this spend fury.
-  int focusCost(HeroSave hero, int level) => 0;
+  int furyCost(HeroSave hero, int level) => 20;
 
-  Action getDirectionAction(Game game, int level, Direction dir) =>
+  Action onGetDirectionAction(Game game, int level, Direction dir) =>
       SpearAction(dir, SpearMastery._spearScale(level));
 }
 

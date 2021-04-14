@@ -554,6 +554,9 @@ class GameScreen extends Screen<Input> {
     }
 
     _lastSkill = skill;
+    // TODO: It's kind of annoying that we force the player to select a target
+    // or direction for skills that spend focus/fury even when they won't be
+    // able to perform it. Should do an early check first.
     game.hero.setNextAction(skill.getTargetAction(
         game, game.hero.skills.level(skill), currentTarget!));
   }

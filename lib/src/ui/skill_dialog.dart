@@ -205,6 +205,8 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
           3, 10, "(You haven't trained this yet.)", UIHue.disabled);
     }
 
+    // TODO: Show fury cost.
+
     if (level < skill.maxLevel) {
       terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
       _writeText(terminal, 3, 18, skill.levelDescription(level + 1));

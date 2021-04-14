@@ -55,11 +55,12 @@ class SidebarPanel extends Panel {
 
     _drawFood(hero, terminal, 15);
     _drawFocus(hero, terminal, 16);
+    _drawFury(hero, terminal, 17);
 
     // Draw the nearby monsters.
-    terminal.writeAt(1, 18, "@", _gameScreen.heroColor);
-    terminal.writeAt(3, 18, hero.save.name, UIHue.text);
-    _drawHealthBar(terminal, 19, hero);
+    terminal.writeAt(1, 19, "@", _gameScreen.heroColor);
+    terminal.writeAt(3, 19, hero.save.name, UIHue.text);
+    _drawHealthBar(terminal, 20, hero);
 
     var visibleMonsters = _gameScreen.stagePanel.visibleMonsters;
     visibleMonsters.sort((a, b) {
@@ -69,7 +70,7 @@ class SidebarPanel extends Panel {
     });
 
     for (var i = 0; i < 10 && i < visibleMonsters.length; i++) {
-      var y = 20 + i * 2;
+      var y = 21 + i * 2;
       if (y >= terminal.height - 2) break;
 
       var monster = visibleMonsters[i];
@@ -184,10 +185,21 @@ class SidebarPanel extends Panel {
   }
 
   void _drawFocus(Hero hero, Terminal terminal, int y) {
-    terminal.writeAt(1, y, 'Focus', UIHue.helpText);
+    // TODO: Show bar once these are tuned.
+    // terminal.writeAt(1, y, 'Focus', UIHue.helpText);
+    // Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.focus,
+    //     hero.intellect.maxFocus, blue, darkBlue);
+    _drawStat(terminal, y, 'Focus', hero.focus, blue, hero.intellect.maxFocus,
+        darkBlue);
+  }
 
-    Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.focus,
-        hero.intellect.maxFocus, blue, darkBlue);
+  void _drawFury(Hero hero, Terminal terminal, int y) {
+    // TODO: Show bar once these are tuned.
+    // terminal.writeAt(1, y, 'Fury', UIHue.helpText);
+    // Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.fury,
+    //     hero.strength.maxFury, red, maroon);
+    _drawStat(
+        terminal, y, 'Fury', hero.fury, red, hero.strength.maxFury, maroon);
   }
 
   /// Draws a labeled numeric stat.

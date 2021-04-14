@@ -239,7 +239,7 @@ abstract class Actor implements Noun {
     return true;
   }
 
-  /// Called when this actor has successfully hit this [defender].
+  /// Called when this actor has successfully hit [defender].
   void onGiveDamage(Action action, Actor defender, int damage) {
     // Do nothing.
   }

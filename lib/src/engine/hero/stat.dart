@@ -106,6 +106,11 @@ class Strength extends StatBase {
 
   int get _statOffset => -_hero.weight;
 
+  int get maxFury {
+    if (value <= 10) return lerpInt(value, 1, 10, 40, 100);
+    return lerpInt(value, 10, 60, 100, 200);
+  }
+
   double get tossRangeScale {
     if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
     if (value <= 30) return lerpDouble(value, 20, 30, 1.0, 1.5);
@@ -194,5 +199,11 @@ class Will extends StatBase {
   double get damageFocusScale {
     if (value <= 10) return lerpDouble(value, 1, 10, 800, 400);
     return lerpDouble(value, 10, 60, 400, 80);
+  }
+
+  /// Scales how much fury is lost when regenerating focus.
+  double get restFuryScale {
+    if (value <= 10) return lerpDouble(value, 1, 10, 4.0, 1.0);
+    return lerpDouble(value, 10, 60, 1.0, 0.2);
   }
 }

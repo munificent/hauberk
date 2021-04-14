@@ -26,6 +26,9 @@ class WizardDialog extends Screen<Input> {
       ui.push(_WizardSpawnDialog(_game));
     };
     _menuItems["Gain Level"] = _gainLevel;
+    _menuItems["Train Discipline"] = () {
+      ui.push(_WizardTrainDialog(_game));
+    };
 
     _menuItems["Toggle Show All Monsters"] = () {
       Debug.showAllMonsters = !Debug.showAllMonsters;
@@ -134,11 +137,11 @@ class WizardDialog extends Screen<Input> {
 }
 
 /// Base class for a dialog that searches for things by name.
-abstract class SearchDialog<T> extends Screen<Input> {
+abstract class _SearchDialog<T> extends Screen<Input> {
   final Game _game;
   String _pattern = "";
 
-  SearchDialog(this._game);
+  _SearchDialog(this._game);
 
   bool get isTransparent => true;
 
@@ -214,7 +217,12 @@ abstract class SearchDialog<T> extends Screen<Input> {
         terminal.writeAt(27, n + 2, ")", UIHue.disabled);
       }
 
-      terminal.drawGlyph(28, n + 2, _itemAppearance(item) as Glyph);
+      var appearance = _itemAppearance(item);
+      if (appearance is Glyph) {
+        terminal.drawGlyph(28, n + 2, appearance);
+      } else {
+        terminal.writeAt(28, n + 2, "-");
+      }
       terminal.writeAt(30, n + 2, _itemName(item), UIHue.primary);
 
       n++;
@@ -236,12 +244,12 @@ abstract class SearchDialog<T> extends Screen<Input> {
 
   String _itemName(T item);
 
-  Object _itemAppearance(T item);
+  Object? _itemAppearance(T item);
 
   void _selectItem(T item);
 }
 
-class _WizardDropDialog extends SearchDialog<ItemType> {
+class _WizardDropDialog extends _SearchDialog<ItemType> {
   _WizardDropDialog(Game game) : super(game);
 
   String get _question => "Drop what?";
@@ -250,7 +258,7 @@ class _WizardDropDialog extends SearchDialog<ItemType> {
 
   String _itemName(ItemType item) => item.name;
 
-  Object _itemAppearance(ItemType item) => item.appearance;
+  Object? _itemAppearance(ItemType item) => item.appearance;
 
   void _selectItem(ItemType itemType) {
     var item = Item(itemType, itemType.maxStack);
@@ -259,7 +267,7 @@ class _WizardDropDialog extends SearchDialog<ItemType> {
   }
 }
 
-class _WizardSpawnDialog extends SearchDialog<Breed> {
+class _WizardSpawnDialog extends _SearchDialog<Breed> {
   _WizardSpawnDialog(Game game) : super(game);
 
   String get _question => "Spawn what?";
@@ -268,7 +276,7 @@ class _WizardSpawnDialog extends SearchDialog<Breed> {
 
   String _itemName(Breed breed) => breed.name;
 
-  Object _itemAppearance(Breed breed) => breed.appearance;
+  Object? _itemAppearance(Breed breed) => breed.appearance;
 
   void _selectItem(Breed breed) {
     var flow = MotilityFlow(_game.stage, _game.hero.pos, Motility.walk);
@@ -277,5 +285,31 @@ class _WizardSpawnDialog extends SearchDialog<Breed> {
 
     var monster = breed.spawn(_game, pos);
     _game.stage.addActor(monster);
+  }
+}
+
+class _WizardTrainDialog extends _SearchDialog<Discipline> {
+  _WizardTrainDialog(Game game) : super(game);
+
+  String get _question => "Train which discipline?";
+
+  Iterable<Discipline> get _allItems =>
+      _game.content.skills.whereType<Discipline>();
+
+  String _itemName(Discipline discipline) => discipline.name;
+
+  Object? _itemAppearance(Discipline discipline) => null;
+
+  void _selectItem(Discipline discipline) {
+    var level = _game.hero.skills.level(discipline);
+    if (level + 1 < discipline.maxLevel) {
+      var training =
+          discipline.trainingNeeded(_game.hero.save.heroClass, level + 1)!;
+      _game.hero.skills.earnPoints(
+          discipline, training - _game.hero.skills.points(discipline));
+      _game.hero.refreshSkill(discipline);
+    } else {
+      _game.log.cheat("Already at max level.");
+    }
   }
 }
