@@ -205,11 +205,7 @@ class ItemTypesChart extends Chart {
         return aType.depth.compareTo(bType.depth);
       }
 
-      if (aType.price != bType.price) {
-        return aType.price.compareTo(bType.price);
-      }
-
-      return aType.name.compareTo(bType.name);
+      return bType.sortIndex.compareTo(aType.sortIndex);
     });
 
     names.addAll(names.map((name) => "$name (ego)").toList());

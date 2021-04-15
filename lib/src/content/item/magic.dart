@@ -14,23 +14,23 @@ void potions() {
     ..tag("magic/potion/healing")
     ..toss(damage: 1, range: 6, breakage: 100)
     ..destroy(Elements.cold, chance: 20);
-  item("Soothing Balm", pink, frequency: 1.0, price: 10)
+  item("Soothing Balm", pink, price: 10)
     ..depth(2, to: 30)
     ..heal(36);
-  item("Mending Salve", red, frequency: 1.0, price: 30)
+  item("Mending Salve", red, price: 30)
     ..depth(20, to: 40)
     ..heal(64);
-  item("Healing Poultice", maroon, frequency: 1.0, price: 80)
+  item("Healing Poultice", maroon, price: 80)
     ..depth(30)
     ..heal(120, curePoison: true);
-  item("Potion[s] of Amelioration", violet, frequency: 1.0, price: 220)
+  item("Potion[s] of Amelioration", violet, price: 220)
     ..depth(60)
     ..heal(200, curePoison: true);
-  item("Potion[s] of Rejuvenation", purple, frequency: 0.5, price: 1000)
+  item("Potion[s] of Rejuvenation", purple, price: 1000)
     ..depth(80)
     ..heal(1000, curePoison: true);
 
-  item("Antidote", peaGreen, frequency: 1.0, price: 20)
+  item("Antidote", peaGreen, price: 20)
     ..depth(2)
     ..heal(0, curePoison: true);
 
@@ -173,7 +173,7 @@ void scrolls() {
     ..depth(3, to: 24)
     ..detection([DetectType.exit, DetectType.item], range: 20);
 
-  item("Scroll[s] of Locate Escape", sandal, frequency: 1.0, price: 28)
+  item("Scroll[s] of Locate Escape", sandal, price: 28)
     ..depth(6)
     ..detection([DetectType.exit]);
   item("Scroll[s] of Item Detection", carrot, frequency: 0.5, price: 64)
@@ -186,20 +186,19 @@ void scrolls() {
   // Perception.
   // TODO: Different scrolls for different kinds of monsters? (Evil, natural,
   // with brain, invisible, etc.)
-  item("Scroll[s] of Sense Nearby Monsters", lightBlue,
-      frequency: 1.0, price: 50)
+  item("Scroll[s] of Sense Nearby Monsters", lightBlue, price: 50)
     ..depth(6, to: 19)
     ..perception(distance: 15);
 
-  item("Scroll[s] of Sense Monsters", aqua, frequency: 1.0, price: 70)
+  item("Scroll[s] of Sense Monsters", aqua, price: 70)
     ..depth(20, to: 39)
     ..perception(distance: 20);
 
-  item("Scroll[s] of Perceive Monsters", blue, frequency: 1.0, price: 100)
+  item("Scroll[s] of Perceive Monsters", blue, price: 100)
     ..depth(40, to: 69)
     ..perception(duration: 50, distance: 30);
 
-  item("Scroll[s] of Telepathy", darkBlue, frequency: 1.0, price: 150)
+  item("Scroll[s] of Telepathy", darkBlue, price: 150)
     ..depth(70, to: 100)
     ..perception(distance: 200);
 

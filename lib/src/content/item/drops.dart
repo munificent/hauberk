@@ -4,14 +4,12 @@ import '../../engine.dart';
 import 'affixes.dart';
 import 'items.dart';
 
-// TODO: Instead of storing the depth in the drop, pass it in. This way, if
-// weaker monsters appear deep in the dungeon, they can drop better stuff.
 Drop parseDrop(String name, {int? depth, int? affixChance}) {
-  depth ??= 1;
-
+  // See if we're parsing a drop for a single item type.
   var itemType = Items.types.tryFind(name);
   if (itemType != null) return _ItemDrop(itemType, depth, affixChance);
 
+  // Otherwise, it's a tag name.
   return _TagDrop(name, depth, affixChance);
 }
 

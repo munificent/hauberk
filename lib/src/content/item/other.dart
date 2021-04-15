@@ -89,11 +89,11 @@ void food() {
   category(CharCode.invertedExclamationMark)
     ..tag("item/food")
     ..destroy(Elements.fire, chance: 20, fuel: 3);
-  item("Stale Biscuit", sandal, frequency: 1.0)
+  item("Stale Biscuit", sandal)
     ..depth(1, to: 10)
     ..stack(6)
     ..food(100);
-  item("Loa[f|ves] of Bread", tan, frequency: 1.0, price: 4)
+  item("Loa[f|ves] of Bread", tan, price: 4)
     ..depth(3, to: 40)
     ..stack(6)
     ..food(200);
@@ -101,14 +101,14 @@ void food() {
   category(CharCode.vulgarFractionOneQuarter)
     ..tag("item/food")
     ..destroy(Elements.fire, chance: 15, fuel: 2);
-  item("Chunk[s] of Meat", brown, frequency: 1.0, price: 10)
-    ..depth(8)
+  item("Chunk[s] of Meat", brown, price: 10)
+    ..depth(8, to: 60)
     ..stack(4)
     ..food(400);
   // TODO: Chance of poisoning.
   // TODO: Make some monsters drop this.
-  item("Piece[s] of Jerky", tan, frequency: 1.0, price: 20)
-    ..depth(10)
+  item("Piece[s] of Jerky", tan, price: 20)
+    ..depth(15)
     ..stack(12)
     ..food(600);
   // TODO: More foods. Some should also cure minor conditions or cause them.
@@ -120,7 +120,7 @@ void lightSources() {
     ..toss(breakage: 70);
 
   // TODO: Ball of fire when hits toss target.
-  item("Tallow Candle", sandal, frequency: 1.0, price: 6)
+  item("Tallow Candle", sandal, price: 6)
     ..depth(1, to: 12)
     ..stack(10)
     ..toss(damage: 2, range: 8, element: Elements.fire)
@@ -128,7 +128,7 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 40, fuel: 20);
 
   // TODO: Ball of fire when hits toss target.
-  item("Wax Candle", ash, frequency: 1.0, price: 8)
+  item("Wax Candle", ash, price: 8)
     ..depth(4, to: 20)
     ..stack(10)
     ..toss(damage: 3, range: 8, element: Elements.fire)
@@ -136,7 +136,7 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 40, fuel: 25);
 
   // TODO: Larger ball of fire when hits toss target.
-  item("Oil Lamp", brown, frequency: 1.0, price: 18)
+  item("Oil Lamp", brown, price: 18)
     ..depth(8, to: 30)
     ..stack(4)
     ..toss(damage: 10, range: 8, element: Elements.fire)
@@ -144,7 +144,7 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 50, fuel: 40);
 
   // TODO: Ball of fire when hits toss target.
-  item("Torch[es]", tan, frequency: 1.0, price: 16)
+  item("Torch[es]", tan, price: 16)
     ..depth(11, to: 45)
     ..stack(4)
     ..toss(damage: 6, range: 10, element: Elements.fire)

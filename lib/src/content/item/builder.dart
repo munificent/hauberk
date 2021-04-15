@@ -30,10 +30,11 @@ _CategoryBuilder category(int glyph, {String? verb, int? stack}) {
   return _category;
 }
 
-_ItemBuilder item(String name, Color color, {double? frequency, int? price}) {
+_ItemBuilder item(String name, Color color,
+    {double frequency = 1.0, int price = 0}) {
   finishItem();
 
-  return _item = _ItemBuilder(name, color, frequency ?? 1.0, price ?? 0);
+  return _item = _ItemBuilder(name, color, frequency, price);
 }
 
 void affixCategory(String tag) {
