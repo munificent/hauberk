@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../tiles.dart';
+import 'architect.dart';
 
 // TODO: Different kinds of lights.
 // TODO: Different architectural styles should lean towards certain lighting
@@ -15,6 +16,22 @@ import '../tiles.dart';
 // - fireplaces
 // - freestanding torches?
 // - fire pit
+
+/// Base class for architectures that work with [Room]s.
+abstract class RoomArchitecture extends Architecture {
+  /// Determines whether [room] can be placed on the stage at [x], [y].
+  bool canPlaceRoom(Array2D<RoomTile> room, int x, int y) {
+    for (var pos in room.bounds) {
+      var here = pos.offset(x, y);
+      var tile = room[pos];
+
+      if (!tile.isUnused && !bounds.contains(here)) return false;
+      if (tile.isTile && !canCarve(pos.offset(x, y))) return false;
+    }
+
+    return true;
+  }
+}
 
 /// Generates random rooms.
 class Room {

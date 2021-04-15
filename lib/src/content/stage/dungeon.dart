@@ -8,7 +8,7 @@ import 'room.dart';
 // worth trying to refactor and share some code.
 
 /// Places a number of random rooms.
-class Dungeon extends Architecture {
+class Dungeon extends RoomArchitecture {
   /// How much open space it tries to carve.
   final double _density;
 
@@ -82,14 +82,7 @@ class Dungeon extends Architecture {
   }
 
   bool _tryPlaceRoom(Array2D<RoomTile> room, int x, int y) {
-    // TODO: keep.dart has the same code.
-    for (var pos in room.bounds) {
-      var here = pos.offset(x, y);
-      var tile = room[pos];
-
-      if (!tile.isUnused && !bounds.contains(here)) return false;
-      if (tile.isTile && !canCarve(pos.offset(x, y))) return false;
-    }
+    if (!canPlaceRoom(room, x, y)) return false;
 
     for (var pos in room.bounds) {
       var here = pos.offset(x, y);

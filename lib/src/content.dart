@@ -12,6 +12,7 @@ import 'content/monster/monsters.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
 import 'content/stage/architect.dart';
+import 'content/stage/architectural_style.dart';
 import 'content/stage/town.dart';
 import 'content/tiles.dart';
 import 'engine.dart';
@@ -24,6 +25,7 @@ Content createContent() {
   Affixes.initialize();
   Shops.initialize();
   FloorDrops.initialize();
+  ArchitecturalStyle.initialize();
   Decor.initialize();
 
   return GameContent();

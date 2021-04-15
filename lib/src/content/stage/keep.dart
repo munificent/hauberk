@@ -7,13 +7,8 @@ import 'architect.dart';
 import 'painter.dart';
 import 'room.dart';
 
-// TODO: Give at an optional max number of rooms so that it
-// can be used to generate small concentrated areas on the stage. Create a
-// separate "Dungeon" that works like Catacomb but uses rooms instead of blobs
-// so that you get passages between them.
-
 /// Places a number of connected rooms.
-class Keep extends Architecture {
+class Keep extends RoomArchitecture {
   static JunctionSet? debugJunctions;
 
   final JunctionSet _junctions;
@@ -207,13 +202,7 @@ class Keep extends Architecture {
   }
 
   bool _tryPlaceRoom(Array2D<RoomTile> room, int x, int y) {
-    for (var pos in room.bounds) {
-      var here = pos.offset(x, y);
-      var tile = room[pos];
-
-      if (!tile.isUnused && !bounds.contains(here)) return false;
-      if (tile.isTile && !canCarve(pos.offset(x, y))) return false;
-    }
+    if (!canPlaceRoom(room, x, y)) return false;
 
     var junctions = <Junction>[];
 
