@@ -158,6 +158,7 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
   }
 }
 
+// TODO: Should interact with substances on tile: spead poison and fire, etc.
 class WindAction extends Action {
   /// Not immediate to ensure an actor doesn't get blown into the path of a
   /// yet-to-be-processed tile.

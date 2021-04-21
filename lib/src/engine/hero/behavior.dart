@@ -223,6 +223,7 @@ class RunBehavior extends Behavior {
     return true;
   }
 
+  // TODO: Leaks information. Should take explored/visible into account.
   bool _isOpen(Hero hero, Direction dir) =>
       hero.game.stage[hero.pos + dir].isTraversable;
 }
