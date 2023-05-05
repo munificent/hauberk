@@ -397,7 +397,7 @@ class Hero extends Actor {
   ///
   /// Does not reset [_turnsSinceLostFocus].
   void spendFocus(int focus) {
-    assert(focus >= _focus);
+    assert(_focus >= focus);
 
     _focus -= focus;
   }
@@ -406,7 +406,7 @@ class Hero extends Actor {
   ///
   /// Does not reset [_turnsSinceLostFocus].
   void spendFury(int fury) {
-    assert(fury >= fury);
+    assert(_fury >= fury);
 
     _fury -= fury;
   }
