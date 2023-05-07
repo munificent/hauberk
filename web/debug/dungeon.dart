@@ -326,16 +326,12 @@ void render({bool showInfo = true}) {
       switch (junction.direction) {
         case Direction.n:
           context.fillRect(pos.x * 8 + 3, pos.y * 8, 2, 4);
-          break;
         case Direction.s:
           context.fillRect(pos.x * 8 + 3, pos.y * 8 + 4, 2, 4);
-          break;
         case Direction.e:
           context.fillRect(pos.x * 8 + 4, pos.y * 8 + 3, 4, 2);
-          break;
         case Direction.w:
           context.fillRect(pos.x * 8, pos.y * 8 + 3, 4, 2);
-          break;
         default:
         // Do nothing.
       }

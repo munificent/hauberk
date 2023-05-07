@@ -40,11 +40,9 @@ class ForfeitPopup extends Popup {
     switch (keyCode) {
       case KeyCode.n:
         ui.pop(false);
-        break;
 
       case KeyCode.y:
         ui.pop(true);
-        break;
     }
 
     return true;

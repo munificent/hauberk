@@ -39,11 +39,9 @@ class LoadingDialog extends Screen<Input> {
     switch (keyCode) {
       case KeyCode.n:
         ui.pop(false);
-        break;
 
       case KeyCode.y:
         ui.pop(true);
-        break;
     }
 
     return true;

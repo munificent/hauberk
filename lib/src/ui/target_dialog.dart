@@ -73,36 +73,26 @@ class TargetDialog extends Screen<Input> {
           ui.pop();
           _onSelect(_gameScreen.currentTarget!);
         }
-        break;
 
       case Input.cancel:
         ui.pop();
-        break;
 
       case Input.nw:
         _changeTarget(Direction.nw);
-        break;
       case Input.n:
         _changeTarget(Direction.n);
-        break;
       case Input.ne:
         _changeTarget(Direction.ne);
-        break;
       case Input.w:
         _changeTarget(Direction.w);
-        break;
       case Input.e:
         _changeTarget(Direction.e);
-        break;
       case Input.sw:
         _changeTarget(Direction.sw);
-        break;
       case Input.s:
         _changeTarget(Direction.s);
-        break;
       case Input.se:
         _changeTarget(Direction.se);
-        break;
     }
 
     return true;

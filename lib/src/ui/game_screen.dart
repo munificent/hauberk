@@ -148,127 +148,89 @@ class GameScreen extends Screen<Input> {
           game.log.error("You are not standing on an exit.");
           dirty();
         }
-        break;
 
       case Input.forfeit:
         ui.push(ForfeitPopup(isTown: game.depth == 0));
-        break;
       case Input.selectSkill:
         ui.push(SelectSkillDialog(this));
-        break;
       case Input.editSkills:
         ui.push(SkillDialog(game.hero.save));
-        break;
       case Input.heroInfo:
         ui.push(HeroInfoDialog(game.content, game.hero.save));
-        break;
       case Input.drop:
         ui.push(ItemDialog.drop(this));
-        break;
       case Input.use:
         ui.push(ItemDialog.use(this));
-        break;
       case Input.toss:
         ui.push(ItemDialog.toss(this));
-        break;
 
       case Input.rest:
         if (!game.hero.rest()) {
           // Show the message.
           dirty();
         }
-        break;
 
       case Input.open:
         _open();
-        break;
       case Input.close:
         _closeDoor();
-        break;
       case Input.pickUp:
         _pickUp();
-        break;
       case Input.equip:
         ui.push(ItemDialog.equip(this));
-        break;
 
       case Input.nw:
         action = WalkAction(Direction.nw);
-        break;
       case Input.n:
         action = WalkAction(Direction.n);
-        break;
       case Input.ne:
         action = WalkAction(Direction.ne);
-        break;
       case Input.w:
         action = WalkAction(Direction.w);
-        break;
       case Input.ok:
         action = WalkAction(Direction.none);
-        break;
       case Input.e:
         action = WalkAction(Direction.e);
-        break;
       case Input.sw:
         action = WalkAction(Direction.sw);
-        break;
       case Input.s:
         action = WalkAction(Direction.s);
-        break;
       case Input.se:
         action = WalkAction(Direction.se);
-        break;
 
       case Input.runNW:
         game.hero.run(Direction.nw);
-        break;
       case Input.runN:
         game.hero.run(Direction.n);
-        break;
       case Input.runNE:
         game.hero.run(Direction.ne);
-        break;
       case Input.runW:
         game.hero.run(Direction.w);
-        break;
       case Input.runE:
         game.hero.run(Direction.e);
-        break;
       case Input.runSW:
         game.hero.run(Direction.sw);
-        break;
       case Input.runS:
         game.hero.run(Direction.s);
-        break;
       case Input.runSE:
         game.hero.run(Direction.se);
-        break;
 
       case Input.fireNW:
         _fireTowards(Direction.nw);
-        break;
       case Input.fireN:
         _fireTowards(Direction.n);
-        break;
       case Input.fireNE:
         _fireTowards(Direction.ne);
-        break;
       case Input.fireW:
         _fireTowards(Direction.w);
-        break;
       case Input.fireE:
         _fireTowards(Direction.e);
-        break;
       case Input.fireSW:
         _fireTowards(Direction.sw);
-        break;
       case Input.fireS:
         _fireTowards(Direction.s);
-        break;
       case Input.fireSE:
         _fireTowards(Direction.se);
-        break;
 
       case Input.fire:
         if (_lastSkill is TargetSkill) {
@@ -291,7 +253,6 @@ class GameScreen extends Screen<Input> {
           game.log.error("No skill selected.");
           dirty();
         }
-        break;
 
       case Input.swap:
         var unequipped = game.hero.inventory.lastUnequipped;
@@ -301,7 +262,6 @@ class GameScreen extends Screen<Input> {
         } else {
           action = EquipAction(ItemLocation.inventory, unequipped);
         }
-        break;
 
       case Input.wizard:
         if (Debug.enabled) {
@@ -310,7 +270,6 @@ class GameScreen extends Screen<Input> {
           game.log.cheat("No cheating in non-debug builds. Cheater.");
           dirty();
         }
-        break;
     }
 
     if (action != null) game.hero.setNextAction(action);
@@ -451,37 +410,26 @@ class GameScreen extends Screen<Input> {
     switch (portal) {
       case TilePortals.dungeon:
         ui.push(SelectDepthPopup(game.content, game.hero.save));
-        break;
       case TilePortals.home:
         ui.push(ItemScreen.home(this));
-        break;
       case TilePortals.shop1:
         _enterShop(0);
-        break;
       case TilePortals.shop2:
         _enterShop(1);
-        break;
       case TilePortals.shop3:
         _enterShop(2);
-        break;
       case TilePortals.shop4:
         _enterShop(3);
-        break;
       case TilePortals.shop5:
         _enterShop(4);
-        break;
       case TilePortals.shop6:
         _enterShop(5);
-        break;
       case TilePortals.shop7:
         _enterShop(6);
-        break;
       case TilePortals.shop8:
         _enterShop(7);
-        break;
       case TilePortals.shop9:
         _enterShop(8);
-        break;
       // TODO: No crucible right now.
 //        ui.push(new ItemScreen.crucible(content, save));
     }

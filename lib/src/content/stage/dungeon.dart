@@ -38,32 +38,24 @@ class Dungeon extends RoomArchitecture {
             break;
           case Region.n:
             yMax = height ~/ 2 - room.height;
-            break;
           case Region.ne:
             xMin = width ~/ 2;
             yMax = height ~/ 2 - room.height;
-            break;
           case Region.e:
             xMin = width ~/ 2;
-            break;
           case Region.se:
             xMin = width ~/ 2;
             yMin = height ~/ 2;
-            break;
           case Region.s:
             yMin = height ~/ 2;
-            break;
           case Region.sw:
             xMax = width ~/ 2 - room.width;
             yMin = height ~/ 2;
-            break;
           case Region.w:
             xMax = width ~/ 2 - room.width;
-            break;
           case Region.nw:
             xMax = width ~/ 2 - room.width;
             yMax = height ~/ 2 - room.height;
-            break;
         }
 
         // TODO: Instead of purely random, it would be good if it tried to

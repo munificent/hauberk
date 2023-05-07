@@ -24,22 +24,16 @@ class LogPanel extends Panel {
       switch (message.type) {
         case LogType.message:
           color = ash;
-          break;
         case LogType.error:
           color = red;
-          break;
         case LogType.quest:
           color = purple;
-          break;
         case LogType.gain:
           color = gold;
-          break;
         case LogType.help:
           color = peaGreen;
-          break;
         case LogType.cheat:
           color = aqua;
-          break;
       }
 
       if (i != _log.messages.length - 1) {

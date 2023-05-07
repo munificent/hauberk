@@ -169,7 +169,6 @@ class HeroItemLoreDialog extends HeroInfoDialog {
     switch (_sort) {
       case _Sort.type:
         comparisons = [compareSort, compareDepth];
-        break;
 
       case _Sort.name:
         // No other comparisons.
@@ -177,11 +176,9 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
       case _Sort.depth:
         comparisons = [compareDepth];
-        break;
 
       case _Sort.price:
         comparisons = [comparePrice];
-        break;
 
       // TODO: Price. Damage for weapons, weight, heft, etc.
     }

@@ -245,10 +245,8 @@ class SidebarPanel extends Panel {
       switch (actor.poison.intensity) {
         case 1:
           drawCondition("P", sherwood);
-          break;
         case 2:
           drawCondition("P", peaGreen);
-          break;
         default:
           drawCondition("P", mint);
           break;
@@ -259,13 +257,10 @@ class SidebarPanel extends Panel {
     switch (actor.haste.intensity) {
       case 1:
         drawCondition("S", tan);
-        break;
       case 2:
         drawCondition("S", gold);
-        break;
       case 3:
         drawCondition("S", buttermilk);
-        break;
     }
 
     if (actor.blindness.isActive) drawCondition("B", darkCoolGray);

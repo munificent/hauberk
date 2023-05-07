@@ -27,11 +27,9 @@ abstract class ItemAction extends Action {
     switch (location) {
       case ItemLocation.onGround:
         game.stage.removeItem(item, actor!.pos);
-        break;
 
       case ItemLocation.inventory:
         hero.inventory.remove(item);
-        break;
 
       case ItemLocation.equipment:
         hero.equipment.remove(item);
@@ -39,7 +37,6 @@ abstract class ItemAction extends Action {
         if (item.emanationLevel > 0) {
           game.stage.actorEmanationChanged();
         }
-        break;
 
       default:
         throw StateError("Invalid location.");
@@ -57,11 +54,9 @@ abstract class ItemAction extends Action {
 
       case ItemLocation.inventory:
         hero.inventory.countChanged();
-        break;
 
       case ItemLocation.equipment:
         hero.equipment.countChanged();
-        break;
 
       default:
         throw StateError("Invalid location.");

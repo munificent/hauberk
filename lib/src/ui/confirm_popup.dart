@@ -34,11 +34,9 @@ class ConfirmPopup extends Popup {
     switch (keyCode) {
       case KeyCode.n:
         ui.pop();
-        break;
 
       case KeyCode.y:
         ui.pop(_result);
-        break;
     }
 
     return true;

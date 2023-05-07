@@ -183,13 +183,10 @@ abstract class Actor implements Noun {
       switch (type) {
         case HitType.melee:
           hit.scaleStrike(0.5);
-          break;
         case HitType.ranged:
           hit.scaleStrike(0.3);
-          break;
         case HitType.toss:
           hit.scaleStrike(0.2);
-          break;
       }
     }
 

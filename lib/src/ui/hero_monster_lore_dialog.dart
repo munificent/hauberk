@@ -234,7 +234,6 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     switch (_sort) {
       case _Sort.appearance:
         comparisons = [compareGlyph, compareDepth];
-        break;
 
       case _Sort.name:
         // No other comparisons.
@@ -242,11 +241,9 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
 
       case _Sort.depth:
         comparisons = [compareDepth];
-        break;
 
       case _Sort.uniques:
         comparisons = [compareDepth];
-        break;
     }
 
     _breeds.sort((a, b) {

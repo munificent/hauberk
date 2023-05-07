@@ -118,13 +118,10 @@ class NewHeroScreen extends Screen<Input> {
     switch (_field) {
       case _Field.name:
         help.add("[A-Z Del] Edit name");
-        break;
       case _Field.race:
         help.add("[↕] Select race");
-        break;
       case _Field.heroClass:
         help.add("[↕] Select class");
-        break;
     }
 
     help.add("[Enter] Create hero");

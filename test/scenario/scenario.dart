@@ -85,7 +85,6 @@ class Scenario {
         switch (char) {
           case "@":
             heroPos = Vec(x, y);
-            break;
           case "1":
           case "2":
           case "3":
@@ -96,7 +95,6 @@ class Scenario {
           case "8":
           case "9":
             _labels[int.parse(char)] = Vec(x, y);
-            break;
         }
       }
     }

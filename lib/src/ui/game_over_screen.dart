@@ -16,7 +16,6 @@ class GameOverScreen extends Screen<Input> {
     switch (input) {
       case Input.cancel:
         ui.pop();
-        break;
     }
 
     return true;

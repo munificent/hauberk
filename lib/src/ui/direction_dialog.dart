@@ -33,32 +33,23 @@ abstract class DirectionDialog extends Screen<Input> {
     switch (input) {
       case Input.cancel:
         _select(Direction.none);
-        break;
 
       case Input.nw:
         _select(Direction.nw);
-        break;
       case Input.n:
         _select(Direction.n);
-        break;
       case Input.ne:
         _select(Direction.ne);
-        break;
       case Input.w:
         _select(Direction.w);
-        break;
       case Input.e:
         _select(Direction.e);
-        break;
       case Input.sw:
         _select(Direction.sw);
-        break;
       case Input.s:
         _select(Direction.s);
-        break;
       case Input.se:
         _select(Direction.se);
-        break;
     }
 
     return true;

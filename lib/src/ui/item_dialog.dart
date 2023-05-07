@@ -70,7 +70,6 @@ class ItemDialog extends Screen<Input> {
           _command.selectItem(this, _selectedItem!, _count, _location);
           return true;
         }
-        break;
 
       case Input.cancel:
         if (_selectedItem != null) {
@@ -90,7 +89,6 @@ class ItemDialog extends Screen<Input> {
           }
           return true;
         }
-        break;
 
       case Input.s:
         if (_selectedItem != null) {
@@ -100,7 +98,6 @@ class ItemDialog extends Screen<Input> {
           }
           return true;
         }
-        break;
     }
 
     return false;
@@ -156,15 +153,12 @@ class ItemDialog extends Screen<Input> {
     switch (_location) {
       case ItemLocation.inventory:
         itemCount = Option.inventoryCapacity;
-        break;
       case ItemLocation.equipment:
         itemCount = _gameScreen.game.hero.equipment.slots.length;
-        break;
       case ItemLocation.onGround:
         // TODO: Define this constant somewhere. Make the game engine try not
         // to place more than this many items per tile.
         itemCount = 5;
-        break;
     }
 
     int itemsLeft;
@@ -174,17 +168,14 @@ class ItemDialog extends Screen<Input> {
       switch (_location) {
         case ItemLocation.inventory:
           itemsTop = _gameScreen.itemPanel.inventoryTop;
-          break;
         case ItemLocation.equipment:
           itemsTop = _gameScreen.itemPanel.equipmentTop;
-          break;
         case ItemLocation.onGround:
           if (_gameScreen.itemPanel.onGroundVisible) {
             itemsTop = _gameScreen.itemPanel.onGroundTop;
           } else {
             itemsTop = 0;
           }
-          break;
         default:
           throw StateError("Unexpected location.");
       }

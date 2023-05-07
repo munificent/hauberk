@@ -391,7 +391,6 @@ class _ShopViewScreen extends ItemScreen {
         screen._inspected = _inspected;
         _isActive = false;
         ui.push(screen);
-        break;
 
       case KeyCode.s:
         _isActive = false;

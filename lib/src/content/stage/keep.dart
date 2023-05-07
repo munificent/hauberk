@@ -118,12 +118,10 @@ class Keep extends RoomArchitecture {
       case Region.n:
       case Region.ne:
         yMax = math.max(1, (height * 0.25).toInt() - room.height);
-        break;
       case Region.sw:
       case Region.s:
       case Region.se:
         yMin = (height * 0.75).toInt();
-        break;
     }
 
     switch (region) {
@@ -131,12 +129,10 @@ class Keep extends RoomArchitecture {
       case Region.w:
       case Region.sw:
         xMax = math.max(1, (width * 0.25).toInt() - room.width);
-        break;
       case Region.ne:
       case Region.e:
       case Region.se:
         xMin = (width * 0.75).toInt();
-        break;
     }
 
     if (xMax < xMin) xMax = xMin;
@@ -159,28 +155,20 @@ class Keep extends RoomArchitecture {
         return true;
       case Region.n:
         density = lerpDouble(pos.y, 0, height, max, min);
-        break;
       case Region.ne:
         density = diagonal(width - pos.x - 1, pos.y);
-        break;
       case Region.e:
         density = lerpDouble(pos.x, 0, width, min, max);
-        break;
       case Region.se:
         density = diagonal(width - pos.x - 1, height - pos.y - 1);
-        break;
       case Region.s:
         density = lerpDouble(pos.y, 0, height, min, max);
-        break;
       case Region.sw:
         density = diagonal(pos.x, height - pos.y - 1);
-        break;
       case Region.w:
         density = lerpDouble(pos.x, 0, width, max, min);
-        break;
       case Region.nw:
         density = diagonal(pos.x, pos.y);
-        break;
     }
 
     return rng.float(1.0) < density;
@@ -279,15 +267,12 @@ class JunctionSet {
     switch (_takeFrom) {
       case TakeFrom.newest:
         junction = _junctions.removeLast();
-        break;
 
       case TakeFrom.oldest:
         junction = _junctions.removeAt(0);
-        break;
 
       case TakeFrom.random:
         junction = rng.take(_junctions);
-        break;
     }
 
     _byPosition.remove(junction.position);

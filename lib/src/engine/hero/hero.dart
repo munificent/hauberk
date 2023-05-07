@@ -270,7 +270,6 @@ class Hero extends Actor {
 
       case HitType.toss:
         hit.scaleRange(strength.tossRangeScale);
-        break;
     }
 
     // Let armor modify it. We don't worry about weapons here since the weapon

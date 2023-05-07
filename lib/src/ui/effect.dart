@@ -47,20 +47,16 @@ void addEffects(List<Effect> effects, Event event) {
       } else {
         effects.add(ElementEffect(event.pos!, event.element));
       }
-      break;
 
     case EventType.cone:
       effects.add(ElementEffect(event.pos!, event.element));
-      break;
 
     case EventType.toss:
       effects.add(ItemEffect(event.pos!, event.other as Item));
-      break;
 
     case EventType.hit:
       effects
           .add(DamageEffect(event.actor!, event.element, event.other as int));
-      break;
 
     case EventType.die:
       // TODO: Make number of particles vary based on monster health.
@@ -68,53 +64,42 @@ void addEffects(List<Effect> effects, Event event) {
         // TODO: Different blood colors for different breeds.
         effects.add(ParticleEffect(event.actor!.x, event.actor!.y, red));
       }
-      break;
 
     case EventType.heal:
       effects.add(HealEffect(event.actor!.pos.x, event.actor!.pos.y));
-      break;
 
     case EventType.detect:
       effects.add(DetectEffect(event.pos!));
-      break;
 
     case EventType.perceive:
       // TODO: Make look different.
       effects.add(DetectEffect(event.actor!.pos));
-      break;
 
     case EventType.map:
       effects.add(MapEffect(event.pos!));
-      break;
 
     case EventType.teleport:
       var numParticles = (event.actor!.pos - event.pos!).kingLength * 2;
       for (var i = 0; i < numParticles; i++) {
         effects.add(TeleportEffect(event.pos!, event.actor!.pos));
       }
-      break;
 
     case EventType.spawn:
       // TODO: Something more interesting.
       effects.add(FrameEffect(event.actor!.pos, '*', ash));
-      break;
 
     case EventType.polymorph:
       // TODO: Something more interesting.
       effects.add(FrameEffect(event.actor!.pos, '*', ash));
-      break;
 
     case EventType.howl:
       effects.add(HowlEffect(event.actor!));
-      break;
 
     case EventType.awaken:
       effects.add(BlinkEffect(event.actor!, Glyph('!', ash)));
-      break;
 
     case EventType.frighten:
       effects.add(BlinkEffect(event.actor!, Glyph("!", gold)));
-      break;
 
     case EventType.wind:
       // TODO: Do something.
@@ -123,7 +108,6 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.knockBack:
       // TODO: Something more interesting.
       effects.add(FrameEffect(event.pos!, "*", buttermilk));
-      break;
 
     case EventType.slash:
     case EventType.stab:
@@ -137,15 +121,12 @@ void addEffects(List<Effect> effects, Event event) {
       // color it.
 
       effects.add(FrameEffect(event.pos!, line, color));
-      break;
 
     case EventType.gold:
       effects.add(TreasureEffect(event.pos!, event.other as Item));
-      break;
 
     case EventType.openBarrel:
       effects.add(FrameEffect(event.pos!, '*', sandal));
-      break;
   }
 }
 
