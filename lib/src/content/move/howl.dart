@@ -5,10 +5,12 @@ class HowlMove extends Move {
   final int _range;
   final String? _verb;
 
+  @override
   num get experience => _range * 0.5;
 
   HowlMove(num rate, this._range, this._verb) : super(rate);
 
+  @override
   bool shouldUse(Monster monster) {
     // Don't wake up others unless the hero is around.
     // TODO: Should take sight into account.
@@ -29,7 +31,9 @@ class HowlMove extends Move {
     return false;
   }
 
+  @override
   Action onGetAction(Monster monster) => HowlAction(_range, _verb);
 
+  @override
   String toString() => "Howl $_range";
 }

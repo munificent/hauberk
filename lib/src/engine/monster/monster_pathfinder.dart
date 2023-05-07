@@ -40,6 +40,7 @@ class MonsterPathfinder extends Pathfinder<Direction?> {
   MonsterPathfinder(Stage stage, this._monster)
       : super(stage, _monster.pos, stage.game.hero.pos);
 
+  @override
   Direction? processStep(Path path) {
     if (_nearest == null ||
         heuristic(path.pos, end) < heuristic(_nearest!.pos, end)) {
@@ -62,6 +63,7 @@ class MonsterPathfinder extends Pathfinder<Direction?> {
   ///     ...*...
   ///     s.*.*.g
   ///     .*...*.
+  @override
   int heuristic(Vec pos, Vec end) {
     var offset = (end - pos).abs();
     var diagonal = math.min(offset.x, offset.y);
@@ -69,6 +71,7 @@ class MonsterPathfinder extends Pathfinder<Direction?> {
     return straight * _floorCost + diagonal * _diagonalCost;
   }
 
+  @override
   int? stepCost(Vec pos, Tile tile) {
     // Don't enter tiles that are on fire, etc.
     // TODO: Take resistance and immunity into account.
@@ -114,11 +117,13 @@ class MonsterPathfinder extends Pathfinder<Direction?> {
     return null;
   }
 
+  @override
   Direction reachedGoal(Path path) => path.startDirection;
 
   /// There's no path to the goal so, just pick the path that gets nearest to
   /// it and hope for the best. (Maybe someone will open a door later or
   /// something.)
+  @override
   Direction? unreachableGoal() {
     // If the monster was totally blocked in, there is no path.
     if (_nearest == null) return null;

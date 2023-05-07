@@ -9,22 +9,29 @@ class AxeMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
   static double _sweepScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
+  @override
   String get name => "Axe Mastery";
+  @override
   String get useName => "Axe Sweep";
 
+  @override
   String get description =>
       "Axes are not just for woodcutting. In the hands of a skilled user, "
       "they can cut down a swath of nearby foes as well.";
+  @override
   String get weaponType => "axe";
 
+  @override
   String levelDescription(int level) {
     var damage = (_sweepScale(level) * 100).toInt();
-    return super.levelDescription(level) +
-        " Sweep attacks inflict $damage% of the damage of a regular attack.";
+    return "${super.levelDescription(level)} Sweep attacks inflict $damage% "
+        "of the damage of a regular attack.";
   }
 
+  @override
   int furyCost(HeroSave hero, int level) => 20;
 
+  @override
   Action onGetDirectionAction(Game game, int level, Direction dir) {
     return SweepAction(dir, AxeMastery._sweepScale(level));
   }
@@ -34,12 +41,15 @@ class AxeMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
 class SweepAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
 
+  @override
   bool get isImmediate => false;
 
+  @override
   String get weaponType => "axe";
 
   SweepAction(this._dir, double damageScale) : super(damageScale);
 
+  @override
   Iterable<ActionResult> onGenerate() sync* {
     // Make sure there is room to swing it.
     for (var dir in [_dir.rotateLeft45, _dir, _dir.rotateRight45]) {
@@ -69,5 +79,6 @@ class SweepAction extends MasteryAction with GeneratorActionMixin {
     }
   }
 
+  @override
   String toString() => '$actor slashes $_dir';
 }

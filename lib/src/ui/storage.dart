@@ -26,7 +26,7 @@ class Storage {
 
     // TODO: Check version.
 
-    for (var hero in data['heroes']) {
+    for (var hero in data['heroes'] as List<dynamic>) {
       try {
         var name = hero['name'] as String;
         var race = _loadRace(hero['race'] as Map<String, dynamic>);
@@ -61,8 +61,9 @@ class Storage {
         // TODO: What if shops are added or changed?
         var shops = <Shop, Inventory>{};
         if (hero.containsKey('shops')) {
+          var shopsData = hero['shops'] as Map<String, dynamic>;
           content.shops.forEach((name, shop) {
-            var shopData = hero['shops'][name] as List<dynamic>?;
+            var shopData = shopsData[name] as List<dynamic>?;
             if (shopData != null) {
               shops[shop] = shop.load(_loadItems(shopData));
             } else {
@@ -90,12 +91,14 @@ class Storage {
             var skill = content.findSkill(name);
             // Handle old storage without points.
             // TODO: Remove when no longer needed.
-            if (skills[name] is int) {
-              levels[skill] = skills[name] as int;
+            var skillData = skills[name];
+            if (skillData is int) {
+              levels[skill] = skillData;
               points[skill] = 0;
             } else {
-              levels[skill] = skills[name]['level'] as int;
-              points[skill] = skills[name]['points'] as int;
+              skillData as Map<String, dynamic>;
+              levels[skill] = skillData['level'] as int;
+              points[skill] = skillData['points'] as int;
             }
           }
         }
@@ -177,21 +180,23 @@ class Storage {
 
     Affix? prefix;
     if (data.containsKey('prefix')) {
+      var prefixData = data['prefix'];
       // TODO: Older save from back when affixes had types.
-      if (data['prefix'] is Map) {
-        prefix = content.findAffix(data['prefix']['name'] as String);
+      if (prefixData is Map<String, dynamic>) {
+        prefix = content.findAffix(prefixData['name'] as String);
       } else {
-        prefix = content.findAffix(data['prefix'] as String);
+        prefix = content.findAffix(prefixData as String);
       }
     }
 
     Affix? suffix;
     if (data.containsKey('suffix')) {
+      var suffixData = data['suffix'];
       // TODO: Older save from back when affixes had types.
-      if (data['suffix'] is Map) {
-        suffix = content.findAffix(data['suffix']['name'] as String);
+      if (suffixData is Map<String, dynamic>) {
+        suffix = content.findAffix(suffixData['name'] as String);
       } else {
-        suffix = content.findAffix(data['suffix'] as String);
+        suffix = content.findAffix(suffixData as String);
       }
     }
 

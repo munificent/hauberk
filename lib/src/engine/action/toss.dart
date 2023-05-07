@@ -21,6 +21,7 @@ class TossAction extends ItemAction {
   TossAction(ItemLocation location, Item item, this._hit, this._target)
       : super(location, item);
 
+  @override
   ActionResult onPerform() {
     if (!item.canToss) return fail("{1} can't be thrown.", item);
 
@@ -50,14 +51,17 @@ class TossLosAction extends LosAction {
   /// range.
   bool _missed = false;
 
+  @override
   int get range => _hit.range;
 
   TossLosAction(Vec target, this._item, this._hit) : super(target);
 
+  @override
   void onStep(Vec previous, Vec pos) {
     addEvent(EventType.toss, pos: pos, other: _item);
   }
 
+  @override
   bool onHitActor(Vec pos, Actor target) {
     // TODO: Range should affect strike.
     if (_hit.perform(this, actor, target) == 0) {
@@ -70,10 +74,12 @@ class TossLosAction extends LosAction {
     return true;
   }
 
+  @override
   void onEnd(Vec pos) {
     _endThrow(pos);
   }
 
+  @override
   bool onTarget(Vec pos) {
     // If the item failed to make contact with an actor, it's no longer well
     // targeted and just keeps going.

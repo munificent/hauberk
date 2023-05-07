@@ -68,8 +68,10 @@ class Hero extends Actor {
   double get lastNoise => _lastNoise;
   double _lastNoise = 0.0;
 
+  @override
   String get nounText => 'you';
 
+  @override
   Pronoun get pronoun => Pronoun.you;
 
   Inventory get inventory => save.inventory;
@@ -88,6 +90,7 @@ class Hero extends Actor {
 
   Lore get lore => save.lore;
 
+  @override
   int get maxHealth => fortitude.maxHealth;
 
   Strength get strength => save.strength;
@@ -101,8 +104,10 @@ class Hero extends Actor {
   Will get will => save.will;
 
   // TODO: Equipment and items that let the hero swim, fly, etc.
+  @override
   Motility get motility => Motility.doorAndWalk;
 
+  @override
   int get emanationLevel => save.emanationLevel;
 
   Hero(Game game, Vec pos, this.save) : super(game, pos.x, pos.y) {
@@ -124,8 +129,10 @@ class Hero extends Actor {
   }
 
   // TODO: Hackish.
+  @override
   Object get appearance => 'hero';
 
+  @override
   bool get needsInput {
     if (_behavior != null && !_behavior!.canPerform(this)) {
       waitForInput();
@@ -138,6 +145,7 @@ class Hero extends Actor {
   int get level => _level.value;
   final _level = Property<int>();
 
+  @override
   int get armor => save.armor;
 
   /// The total weight of all equipment.
@@ -172,10 +180,13 @@ class Hero extends Actor {
     }
   }
 
+  @override
   int get baseSpeed => Energy.normalSpeed;
 
+  @override
   int get baseDodge => 20 + agility.dodgeBonus;
 
+  @override
   Iterable<Defense> onGetDefenses() sync* {
     for (var item in equipment) {
       var defense = item.defense;
@@ -190,8 +201,10 @@ class Hero extends Actor {
     // TODO: Temporary bonuses, etc.
   }
 
+  @override
   Action onGetAction() => _behavior!.getAction(this);
 
+  @override
   List<Hit> onCreateMeleeHits(Actor? defender) {
     var hits = <Hit>[];
 
@@ -242,6 +255,7 @@ class Hero extends Actor {
   }
 
   /// Applies the hero-specific modifications to [hit].
+  @override
   void onModifyHit(Hit hit, HitType type) {
     // TODO: Use agility to affect strike.
 
@@ -270,13 +284,16 @@ class Hero extends Actor {
   }
 
   // TODO: If class or race can affect this, add it in.
+  @override
   int onGetResistance(Element element) => save.equipmentResistance(element);
 
+  @override
   void onGiveDamage(Action action, Actor defender, int damage) {
     // Hitting increases fury.
     _gainFury(damage / defender.maxHealth * maxHealth / 100);
   }
 
+  @override
   void onTakeDamage(Action action, Actor? attacker, int damage) {
     // Getting hit loses focus and gains fury.
     // TODO: Lose less focus for ranged attacks?
@@ -293,6 +310,7 @@ class Hero extends Actor {
     }
   }
 
+  @override
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
 
@@ -312,10 +330,12 @@ class Hero extends Actor {
     refreshProperties();
   }
 
+  @override
   void onDied(Noun attackNoun) {
     game.log.message("you were slain by {1}.", attackNoun);
   }
 
+  @override
   void onFinishTurn(Action action) {
     // Make some noise.
     _lastNoise = action.noise;
@@ -331,6 +351,7 @@ class Hero extends Actor {
     // TODO: Passive skills?
   }
 
+  @override
   void changePosition(Vec from, Vec to) {
     super.changePosition(from, to);
     game.stage.heroVisibilityChanged();

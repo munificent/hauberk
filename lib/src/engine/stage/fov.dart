@@ -96,7 +96,7 @@ class Fov {
             fallOff = (normalized * 255).toInt();
           }
 
-          var projection = getProjection(col, row);
+          var projection = _projection(col, row);
           _stage.setVisibility(pos, _isInShadow(projection), fallOff);
 
           // Add any opaque tiles to the shadow map.
@@ -123,7 +123,7 @@ class Fov {
   /// corners. From the perspective of octant zero, we know the square is
   /// above and to the right of the viewpoint, so it will be the top left and
   /// bottom right corners.
-  static _Shadow getProjection(int col, int row) {
+  static _Shadow _projection(int col, int row) {
     // The top edge of row 0 is 2 wide.
     var topLeft = col / (row + 2);
 
@@ -193,6 +193,7 @@ class _Shadow {
 
   _Shadow(this.start, this.end);
 
+  @override
   String toString() => '($start-$end)';
 
   bool contains(_Shadow projection) {

@@ -63,6 +63,7 @@ class MainMenuScreen extends Screen<Input> {
 
   MainMenuScreen(this.content) : storage = Storage(content);
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.n:
@@ -83,6 +84,7 @@ class MainMenuScreen extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
@@ -103,6 +105,7 @@ class MainMenuScreen extends Screen<Input> {
     return false;
   }
 
+  @override
   void activate(Screen popped, Object? result) {
     if (popped is ConfirmPopup && result == 'delete') {
       storage.heroes.removeAt(selectedHero);
@@ -114,6 +117,7 @@ class MainMenuScreen extends Screen<Input> {
     }
   }
 
+  @override
   void render(Terminal terminal) {
     // Center everything horizontally.
     terminal =

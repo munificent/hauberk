@@ -9,6 +9,7 @@ class SpawnAction extends Action {
 
   SpawnAction(this._pos, this._breed);
 
+  @override
   ActionResult onPerform() {
     // There's a chance the move will do nothing (except burn charge) based on
     // the monster's generation. This is to keep breeders from filling the

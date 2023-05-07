@@ -20,6 +20,7 @@ class Path {
 
   Path(this.startDirection, this.pos, this.length, this.cost);
 
+  @override
   String toString() => "$startDirection pos:$pos cost:$cost";
 }
 

@@ -32,25 +32,38 @@ Content createContent() {
 }
 
 class GameContent implements Content {
+  @override
   Iterable<String> buildStage(
       Lore lore, Stage stage, int depth, Function(Vec) placeHero) {
     if (depth == 0) return Town(stage).buildStage(placeHero);
     return Architect(lore, stage, depth).buildStage(placeHero);
   }
 
+  @override
   Affix findAffix(String name) => Affixes.find(name);
+  @override
   Breed? tryFindBreed(String name) => Monsters.breeds.tryFind(name);
+  @override
   ItemType? tryFindItem(String name) => Items.types.tryFind(name);
+  @override
   Skill findSkill(String name) => Skills.find(name);
 
+  @override
   Iterable<Breed> get breeds => Monsters.breeds.all;
+  @override
   List<HeroClass> get classes => Classes.all;
+  @override
   Iterable<Element> get elements => Elements.all;
+  @override
   Iterable<ItemType> get items => Items.types.all;
+  @override
   List<Race> get races => Races.all;
+  @override
   Iterable<Skill> get skills => Skills.all;
+  @override
   Map<String, Shop> get shops => Shops.all;
 
+  @override
   HeroSave createHero(String name, [Race? race, HeroClass? heroClass]) {
     race ??= Races.human;
     heroClass ??= Classes.adventurer;
@@ -83,6 +96,7 @@ class GameContent implements Content {
 
   // TODO: Putting this right here in content is kind of lame. Is there a
   // better place for it?
+  @override
   Action? updateSubstance(Stage stage, Vec pos) {
     // TODO: More interactions:
     // fire:

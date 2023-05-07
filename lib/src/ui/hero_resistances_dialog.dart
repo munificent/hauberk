@@ -8,8 +8,10 @@ class HeroResistancesDialog extends HeroInfoDialog {
   HeroResistancesDialog(Content content, HeroSave hero)
       : super.base(content, hero);
 
+  @override
   String get name => "Resistances";
 
+  @override
   void render(Terminal terminal) {
     super.render(terminal);
 

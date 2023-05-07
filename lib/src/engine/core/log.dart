@@ -3,9 +3,11 @@ class Log {
   /// Given a noun pattern, returns the unquantified singular form of it.
   /// Examples:
   ///
-  ///     singular("dog");           // "dog"
-  ///     singular("dogg[y|ies]");   // "doggy"
-  ///     singular("cockroach[es]"); // "cockroach"
+  /// ```
+  /// singular("dog");           // "dog"
+  /// singular("dogg[y|ies]");   // "doggy"
+  /// singular("cockroach[es]"); // "cockroach"
+  /// ```
   static String singular(String text) => _categorize(text, isFirst: true);
 
   /// Conjugates the verb pattern in [text] to agree with [pronoun].
@@ -17,11 +19,13 @@ class Log {
   /// Quantifies the noun pattern in [text] to create a noun phrase for that
   /// number. Examples:
   ///
-  ///     quantify("bunn[y|ies]", 1); // -> "a bunny"
-  ///     quantify("bunn[y|ies]", 2); // -> "2 bunnies"
-  ///     quantify("bunn[y|ies]", 2); // -> "2 bunnies"
-  ///     quantify("(a) unicorn", 1); // -> "a unicorn"
-  ///     quantify("ocelot", 1);      // -> "an ocelot"
+  /// ```
+  /// quantify("bunn[y|ies]", 1); // -> "a bunny"
+  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
+  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
+  /// quantify("(a) unicorn", 1); // -> "a unicorn"
+  /// quantify("ocelot", 1);      // -> "an ocelot"
+  /// ```
   static String quantify(String text, int count) {
     String quantity;
     if (count == 1) {
@@ -207,10 +211,12 @@ class Log {
   ///
   /// Examples:
   ///
-  ///     _categorize("run[s]", isFirst: true)       // -> "run"
-  ///     _categorize("run[s]", isFirst: false)      // -> "runs"
-  ///     _categorize("bunn[y|ies]", isFirst: true)  // -> "bunny"
-  ///     _categorize("bunn[y|ies]", isFirst: false) // -> "bunnies"
+  /// ```
+  /// _categorize("run[s]", isFirst: true)       // -> "run"
+  /// _categorize("run[s]", isFirst: false)      // -> "runs"
+  /// _categorize("bunn[y|ies]", isFirst: true)  // -> "bunny"
+  /// _categorize("bunn[y|ies]", isFirst: false) // -> "bunnies"
+  /// ```
   ///
   /// If [force] is `true`, then a trailing "s" will be added to the end if
   /// [isFirst] is `false` and [text] doesn't have any formatting.
@@ -265,6 +271,7 @@ class Noun {
 
   Noun(this.nounText);
 
+  @override
   String toString() => nounText;
 }
 

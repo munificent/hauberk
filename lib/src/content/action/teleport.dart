@@ -8,6 +8,7 @@ class TeleportAction extends Action {
 
   TeleportAction(this.distance);
 
+  @override
   ActionResult onPerform() {
     var targets = <Vec>[];
 

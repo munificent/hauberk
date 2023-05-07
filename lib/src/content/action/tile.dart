@@ -21,6 +21,7 @@ abstract class _OpenTileAction extends Action {
 
   int get _maxDepthEmptyChance;
 
+  @override
   ActionResult onPerform() {
     game.stage[_pos].type = _openTile;
     addEvent(EventType.openBarrel, pos: _pos);
@@ -46,15 +47,20 @@ abstract class _OpenTileAction extends Action {
 class OpenBarrelAction extends _OpenTileAction {
   OpenBarrelAction(Vec pos) : super(pos);
 
+  @override
   String get _name => "barrel";
 
+  @override
   TileType get _openTile => Tiles.openBarrel;
 
+  @override
   int get _minDepthEmptyChance => 40;
 
+  @override
   int get _maxDepthEmptyChance => 10;
 
   // TODO: More sophisticated drop.
+  @override
   Drop _createDrop() => parseDrop("food", depth: game.depth);
 }
 
@@ -62,15 +68,20 @@ class OpenBarrelAction extends _OpenTileAction {
 class OpenChestAction extends _OpenTileAction {
   OpenChestAction(Vec pos) : super(pos);
 
+  @override
   String get _name => "chest";
 
+  @override
   TileType get _openTile => Tiles.openChest;
 
+  @override
   int get _minDepthEmptyChance => 20;
 
+  @override
   int get _maxDepthEmptyChance => 2;
 
   // TODO: Drop more than one item sometimes.
+  @override
   Drop _createDrop() => dropOneOf({
         parseDrop("treasure", depth: game.depth): 0.5,
         parseDrop("magic", depth: game.depth): 0.2,

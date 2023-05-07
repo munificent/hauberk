@@ -5,6 +5,7 @@ import 'blob.dart';
 
 /// Uses a cellular automata to carve out rounded open cavernous areas.
 class Lake extends Architecture {
+  @override
   Iterable<String> build() sync* {
     var lakeCount = rng.inclusive(1, 2);
     for (var i = 0; i < lakeCount; i++) {

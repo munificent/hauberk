@@ -35,11 +35,11 @@ final _elementText = {
 /// The last builder that was created. It gets implicitly finished when the
 /// next family or breed starts, or at the end of initialization. This way, we
 /// don't need an explicit `build()` call at the end of each builder.
-_BreedBuilder? _builder;
+BreedBuilder? _builder;
 
-late _FamilyBuilder _family;
+late FamilyBuilder _family;
 
-_FamilyBuilder family(String character,
+FamilyBuilder family(String character,
     {double? frequency,
     int? meander,
     int? speed,
@@ -48,7 +48,7 @@ _FamilyBuilder family(String character,
     String? flags}) {
   finishBreed();
 
-  _family = _FamilyBuilder(frequency, character);
+  _family = FamilyBuilder(frequency, character);
   _family._meander = meander;
   _family._speed = speed;
   _family._dodge = dodge;
@@ -80,12 +80,12 @@ void finishBreed() {
 }
 
 // TODO: Move more named params into builder methods?
-_BreedBuilder breed(String name, int depth, Color color, int health,
+BreedBuilder breed(String name, int depth, Color color, int health,
     {double? frequency, int speed = 0, int? dodge, int? meander}) {
   finishBreed();
 
   var glyph = Glyph(_family._character, color);
-  var builder = _BreedBuilder(name, depth, frequency, glyph, health);
+  var builder = BreedBuilder(name, depth, frequency, glyph, health);
   builder._speed = speed;
   builder._dodge = dodge;
   builder._meander = meander;
@@ -200,14 +200,14 @@ class _BaseBuilder {
   }
 }
 
-class _FamilyBuilder extends _BaseBuilder {
+class FamilyBuilder extends _BaseBuilder {
   /// Character for the current monster.
   final String _character;
 
-  _FamilyBuilder(double? frequency, this._character) : super(frequency);
+  FamilyBuilder(double? frequency, this._character) : super(frequency);
 }
 
-class _BreedBuilder extends _BaseBuilder {
+class BreedBuilder extends _BaseBuilder {
   final String _name;
   final int _depth;
   final Object _appearance;
@@ -219,7 +219,7 @@ class _BreedBuilder extends _BaseBuilder {
   Pronoun? _pronoun;
   String? _description;
 
-  _BreedBuilder(this._name, this._depth, double? frequency, this._appearance,
+  BreedBuilder(this._name, this._depth, double? frequency, this._appearance,
       this._health)
       : super(frequency);
 

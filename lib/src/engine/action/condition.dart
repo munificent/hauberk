@@ -25,6 +25,7 @@ abstract class ConditionAction extends Action {
   /// at a weaker intensity and the intensity increases.
   void onIntensify() {}
 
+  @override
   ActionResult onPerform() {
     var intensity = getIntensity();
     var duration = getDuration();

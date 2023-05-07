@@ -470,19 +470,23 @@ class _LengthPathfinder extends Pathfinder<bool> {
   _LengthPathfinder(Stage stage, Vec start, Vec end, this._maxLength)
       : super(stage, start, end);
 
+  @override
   bool? processStep(Path path) {
     if (path.length >= _maxLength) return false;
 
     return null;
   }
 
+  @override
   bool reachedGoal(Path path) => true;
 
+  @override
   int? stepCost(Vec pos, Tile tile) {
     if (tile.canEnter(Motility.doorAndWalk)) return 1;
 
     return null;
   }
 
+  @override
   bool unreachableGoal() => false;
 }

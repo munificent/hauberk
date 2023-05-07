@@ -75,6 +75,7 @@ class PickUpAction extends Action {
 
   PickUpAction(this.item);
 
+  @override
   ActionResult onPerform() {
     var result = hero.inventory.tryAdd(item);
     if (result.added == 0) {
@@ -104,6 +105,7 @@ class DropAction extends ItemAction {
   DropAction(ItemLocation location, Item item, this._count)
       : super(location, item);
 
+  @override
   ActionResult onPerform() {
     Item dropped;
     if (_count == item.count) {
@@ -133,6 +135,7 @@ class DropAction extends ItemAction {
 class EquipAction extends ItemAction {
   EquipAction(ItemLocation location, Item item) : super(location, item);
 
+  @override
   ActionResult onPerform() {
     // If it's already equipped, unequip it.
     if (location == ItemLocation.equipment) {
@@ -187,6 +190,7 @@ class EquipAction extends ItemAction {
 class UnequipAction extends ItemAction {
   UnequipAction(ItemLocation location, Item item) : super(location, item);
 
+  @override
   ActionResult onPerform() {
     // Make a copy with the original count for the message.
     var copy = item.clone();
@@ -213,6 +217,7 @@ class UnequipAction extends ItemAction {
 class UseAction extends ItemAction {
   UseAction(ItemLocation location, Item item) : super(location, item);
 
+  @override
   ActionResult onPerform() {
     if (!item.canUse) return fail("{1} can't be used.", item);
 

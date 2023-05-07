@@ -93,6 +93,7 @@ class _MonsterLog {
     if (log.length > 10) log.removeFirst();
   }
 
+  @override
   String toString() {
     var buffer = StringBuffer();
 

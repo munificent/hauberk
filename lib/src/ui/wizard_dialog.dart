@@ -14,6 +14,7 @@ class WizardDialog extends Screen<Input> {
   final Map<String, void Function()> _menuItems = {};
   final Game _game;
 
+  @override
   bool get isTransparent => true;
 
   WizardDialog(this._game) {
@@ -47,6 +48,7 @@ class WizardDialog extends Screen<Input> {
     };
   }
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop();
@@ -56,6 +58,7 @@ class WizardDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
@@ -71,6 +74,7 @@ class WizardDialog extends Screen<Input> {
     return true;
   }
 
+  @override
   void render(Terminal terminal) {
     // Draw a box for the contents.
     var width = _menuItems.keys
@@ -143,8 +147,10 @@ abstract class _SearchDialog<T> extends Screen<Input> {
 
   _SearchDialog(this._game);
 
+  @override
   bool get isTransparent => true;
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop();
@@ -154,6 +160,7 @@ abstract class _SearchDialog<T> extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (alt) return false;
 
@@ -197,6 +204,7 @@ abstract class _SearchDialog<T> extends Screen<Input> {
     return false;
   }
 
+  @override
   void render(Terminal terminal) {
     // Draw a box for the contents.
     Draw.frame(terminal, 25, 0, 43, 39);
@@ -252,14 +260,19 @@ abstract class _SearchDialog<T> extends Screen<Input> {
 class _WizardDropDialog extends _SearchDialog<ItemType> {
   _WizardDropDialog(Game game) : super(game);
 
+  @override
   String get _question => "Drop what?";
 
+  @override
   Iterable<ItemType> get _allItems => _game.content.items;
 
+  @override
   String _itemName(ItemType item) => item.name;
 
+  @override
   Object? _itemAppearance(ItemType item) => item.appearance;
 
+  @override
   void _selectItem(ItemType itemType) {
     var item = Item(itemType, itemType.maxStack);
     _game.stage.addItem(item, _game.hero.pos);
@@ -270,14 +283,19 @@ class _WizardDropDialog extends _SearchDialog<ItemType> {
 class _WizardSpawnDialog extends _SearchDialog<Breed> {
   _WizardSpawnDialog(Game game) : super(game);
 
+  @override
   String get _question => "Spawn what?";
 
+  @override
   Iterable<Breed> get _allItems => _game.content.breeds;
 
+  @override
   String _itemName(Breed breed) => breed.name;
 
+  @override
   Object? _itemAppearance(Breed breed) => breed.appearance;
 
+  @override
   void _selectItem(Breed breed) {
     var flow = MotilityFlow(_game.stage, _game.hero.pos, Motility.walk);
     var pos = flow.bestWhere((pos) => (pos - _game.hero.pos) > 6);
@@ -291,15 +309,20 @@ class _WizardSpawnDialog extends _SearchDialog<Breed> {
 class _WizardTrainDialog extends _SearchDialog<Discipline> {
   _WizardTrainDialog(Game game) : super(game);
 
+  @override
   String get _question => "Train which discipline?";
 
+  @override
   Iterable<Discipline> get _allItems =>
       _game.content.skills.whereType<Discipline>();
 
+  @override
   String _itemName(Discipline discipline) => discipline.name;
 
+  @override
   Object? _itemAppearance(Discipline discipline) => null;
 
+  @override
   void _selectItem(Discipline discipline) {
     var level = _game.hero.skills.level(discipline);
     if (level + 1 < discipline.maxLevel) {

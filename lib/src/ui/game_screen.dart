@@ -135,6 +135,7 @@ class GameScreen extends Screen<Input> {
     _stagePanel.drawStageGlyph(terminal, x, y, glyph);
   }
 
+  @override
   bool handleInput(Input input) {
     Action? action;
     switch (input) {
@@ -317,6 +318,7 @@ class GameScreen extends Screen<Input> {
     return true;
   }
 
+  @override
   void activate(Screen popped, Object? result) {
     if (!game.hero.needsInput) {
       // The player is coming back from a screen where they selected an action
@@ -378,6 +380,7 @@ class GameScreen extends Screen<Input> {
     }
   }
 
+  @override
   void update() {
     if (_enterPortal()) return;
 
@@ -399,6 +402,7 @@ class GameScreen extends Screen<Input> {
     if (result.needsRefresh) dirty();
   }
 
+  @override
   void resize(Vec size) {
     var leftWidth = 21;
 
@@ -426,6 +430,7 @@ class GameScreen extends Screen<Input> {
     _logPanel.show(Rect(leftWidth, size.y - logHeight, centerWidth, logHeight));
   }
 
+  @override
   void render(Terminal terminal) {
     terminal.clear();
 

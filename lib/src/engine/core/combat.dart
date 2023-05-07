@@ -51,6 +51,7 @@ class Attack {
 
   Hit createHit() => Hit._(this);
 
+  @override
   String toString() {
     var result = damage.toString();
     if (element != Element.none) result = "$element $result";

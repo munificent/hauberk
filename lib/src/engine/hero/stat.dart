@@ -71,6 +71,7 @@ abstract class StatBase extends Property<int> {
 
   String get _loseAdjective;
 
+  @override
   int _modify(int base) =>
       (base + _statOffset + _hero.statBonus(_stat)).clamp(1, Stat.max);
 
@@ -98,12 +99,16 @@ abstract class StatBase extends Property<int> {
 }
 
 class Strength extends StatBase {
+  @override
   Stat get _stat => Stat.strength;
 
+  @override
   String get _gainAdjective => "mighty";
 
+  @override
   String get _loseAdjective => "weak";
 
+  @override
   int get _statOffset => -_hero.weight;
 
   int get maxFury {
@@ -138,10 +143,13 @@ class Strength extends StatBase {
 }
 
 class Agility extends StatBase {
+  @override
   Stat get _stat => Stat.agility;
 
+  @override
   String get _gainAdjective => "dextrous";
 
+  @override
   String get _loseAdjective => "clumsy";
 
   // TODO: Subtract encumbrance.
@@ -161,20 +169,26 @@ class Agility extends StatBase {
 
 // TODO: "Vitality"?
 class Fortitude extends StatBase {
+  @override
   Stat get _stat => Stat.fortitude;
 
+  @override
   String get _gainAdjective => "tough";
 
+  @override
   String get _loseAdjective => "sickly";
 
   int get maxHealth => (math.pow(value, 1.4) + 1.23 * value + 18).toInt();
 }
 
 class Intellect extends StatBase {
+  @override
   Stat get _stat => Stat.intellect;
 
+  @override
   String get _gainAdjective => "smart";
 
+  @override
   String get _loseAdjective => "stupid";
 
   int get maxFocus {
@@ -189,10 +203,13 @@ class Intellect extends StatBase {
 }
 
 class Will extends StatBase {
+  @override
   Stat get _stat => Stat.will;
 
+  @override
   String get _gainAdjective => "driven";
 
+  @override
   String get _loseAdjective => "foolish";
 
   /// Scales how much focus is lost when taking damage.

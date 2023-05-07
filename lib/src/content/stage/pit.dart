@@ -16,12 +16,14 @@ class Pit extends Architecture {
 
   final List<Vec> _monsterTiles = [];
 
+  @override
   PaintStyle get paintStyle => PaintStyle.stoneJail;
 
   Pit(this._monsterGroup, {int? minSize, int? maxSize})
       : _minSize = minSize ?? 12,
         _maxSize = maxSize ?? 24;
 
+  @override
   Iterable<String> build() sync* {
     for (var i = 0; i < 20; i++) {
       var size = rng.range(_minSize, _maxSize);
@@ -43,6 +45,7 @@ class Pit extends Architecture {
     }
   }
 
+  @override
   bool spawnMonsters(Painter painter) {
     // Boost the depth some.
     var depth = (painter.depth * rng.float(1.0, 1.4)).ceil();

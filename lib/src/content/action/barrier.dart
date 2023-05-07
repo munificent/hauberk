@@ -27,6 +27,7 @@ class BarrierAction extends Action with ElementActionMixin {
   /// Whether the barrier has hit a wall in the negative direction.
   bool _goingNegative = true;
 
+  @override
   bool get isImmediate => false;
 
   /// Creates a [BarrierAction] radiating from [from] perpendicular to a line
@@ -48,6 +49,7 @@ class BarrierAction extends Action with ElementActionMixin {
 
   BarrierAction._(this._center, this._h, this._v, this._hit);
 
+  @override
   ActionResult onPerform() {
     while (_distance < 6.0) {
       var madeProgress = false;

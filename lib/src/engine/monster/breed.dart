@@ -235,6 +235,7 @@ class Breed {
     return breeds;
   }
 
+  @override
   String toString() => name;
 }
 
@@ -307,6 +308,7 @@ class BreedFlags {
     return flags;
   }
 
+  @override
   String toString() {
     return [
       if (berzerk) "berzerk",

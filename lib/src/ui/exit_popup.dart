@@ -13,9 +13,12 @@ class ExitPopup extends Popup {
   final Game _game;
   final List<_AnimatedValue> _values = [];
 
+  @override
   int get width => 38;
+  @override
   int get height => 19;
 
+  @override
   Map<String, String> get helpKeys => {"OK": "Return to town"};
 
   ExitPopup(this._save, this._game) {
@@ -45,8 +48,10 @@ class ExitPopup extends Popup {
         total: slain + remainingMonsters));
   }
 
+  @override
   bool get isTransparent => true;
 
+  @override
   bool handleInput(Input input) {
     if (input != Input.ok) return false;
 
@@ -57,12 +62,14 @@ class ExitPopup extends Popup {
     return true;
   }
 
+  @override
   void update() {
     for (var value in _values) {
       if (value.update()) dirty();
     }
   }
 
+  @override
   void renderPopup(Terminal terminal) {
     terminal.writeAt(1, 1, "You survived depth ${_game.depth}!", UIHue.text);
 

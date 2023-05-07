@@ -11,6 +11,7 @@ class PolymorphAction extends Action {
 
   PolymorphAction(this._breed);
 
+  @override
   ActionResult onPerform() {
     monster.breed = _breed;
     addEvent(EventType.polymorph, actor: actor);
@@ -29,6 +30,7 @@ class AmputateAction extends Action {
 
   AmputateAction(this._bodyBreed, this._partBreed, this._message);
 
+  @override
   ActionResult onPerform() {
     // Hack off the part.
     addAction(PolymorphAction(_bodyBreed));

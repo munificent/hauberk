@@ -18,6 +18,7 @@ class _BreedSpawn implements Spawn {
 
   _BreedSpawn(this._breed);
 
+  @override
   void spawnBreed(int depth, AddMonster addMonster) {
     addMonster(_breed.breed);
   }
@@ -31,6 +32,7 @@ class _TagSpawn implements Spawn {
   _TagSpawn(this._tag);
 
   // TODO: Should the spawn be able to override or modify the depth?
+  @override
   void spawnBreed(int depth, AddMonster addMonster) {
     for (var tries = 0; tries < 10; tries++) {
       var breed =
@@ -52,6 +54,7 @@ class _RepeatSpawn implements Spawn {
 
   _RepeatSpawn(this._minCount, this._maxCount, this._spawn);
 
+  @override
   void spawnBreed(int depth, AddMonster addMonster) {
     var taper = 5;
     if (_maxCount > 3) taper = 4;
@@ -70,6 +73,7 @@ class _AllOfSpawn implements Spawn {
 
   _AllOfSpawn(this._spawns);
 
+  @override
   void spawnBreed(int depth, AddMonster addMonster) {
     for (var spawn in _spawns) {
       spawn.spawnBreed(depth, addMonster);

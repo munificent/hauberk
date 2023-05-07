@@ -336,6 +336,8 @@ void render({bool showInfo = true}) {
         case Direction.w:
           context.fillRect(pos.x * 8, pos.y * 8 + 3, 4, 2);
           break;
+        default:
+        // Do nothing.
       }
     }
   }

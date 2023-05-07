@@ -10,8 +10,10 @@ class HeroEquipmentDialog extends HeroInfoDialog {
   HeroEquipmentDialog(Content content, HeroSave hero)
       : super.base(content, hero);
 
+  @override
   String get name => "Equipment";
 
+  @override
   void render(Terminal terminal) {
     super.render(terminal);
 

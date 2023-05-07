@@ -89,8 +89,10 @@ abstract class Actor implements Noun {
 
   Object get appearance;
 
+  @override
   String get nounText;
 
+  @override
   Pronoun get pronoun => Pronoun.it;
 
   bool get isAlive => health > 0;
@@ -312,5 +314,6 @@ abstract class Actor implements Noun {
     game.log.message(message, noun1, noun2, noun3);
   }
 
+  @override
   String toString() => nounText;
 }

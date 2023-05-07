@@ -142,5 +142,6 @@ class ItemType {
         isTreasure = treasure ?? false,
         isTwoHanded = twoHanded ?? false;
 
+  @override
   String toString() => name;
 }

@@ -6,9 +6,12 @@ import 'item.dart';
 /// The collection of wielded [Item]s held by the hero. Unlike [Inventory], the
 /// [Equipment] holds each item in a categorized slot.
 class Equipment extends IterableBase<Item> with ItemCollection {
+  @override
   ItemLocation get location => ItemLocation.equipment;
 
+  @override
   final List<String> slotTypes;
+  @override
   final List<Item?> slots;
 
   Equipment()
@@ -30,11 +33,13 @@ class Equipment extends IterableBase<Item> with ItemCollection {
       slots.whereType<Item>().where((item) => item.type.weaponType != null);
 
   /// Gets the number of equipped items. Ignores empty slots.
+  @override
   int get length {
     return slots.fold(0, (count, item) => count + ((item == null) ? 0 : 1));
   }
 
   /// Gets the equipped item at the given index. Ignores empty slots.
+  @override
   Item operator [](int index) {
     // Find the slot, skipping over empty ones.
     for (var i = 0; i < slotTypes.length; i++) {
@@ -66,6 +71,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     return slotTypes.any((slot) => item.equipSlot == slot);
   }
 
+  @override
   bool canAdd(Item item) {
     // Look for an empty slot of the right type.
     for (var i = 0; i < slots.length; i++) {
@@ -78,6 +84,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   /// Tries to add the item. This will only succeed if there is an empty slot
   /// that allows the item. Unlike [equip], this will not swap items. It is
   /// used by the ItemScreen.
+  @override
   AddItemResult tryAdd(Item item) {
     // Should not be able to equip stackable items. If we want to make, say,
     // knives stackable, we'll have to add support for splitting stacks here.
@@ -93,6 +100,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     return AddItemResult(0, item.count);
   }
 
+  @override
   void countChanged() {
     // Do nothing. Equipment doesn't stack.
   }
@@ -180,6 +188,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
     return unequipped;
   }
 
+  @override
   void remove(Item item) {
     for (var i = 0; i < slots.length; i++) {
       if (slots[i] == item) {
@@ -190,6 +199,7 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   }
 
   /// Unequips and returns the [Item] at [index].
+  @override
   Item removeAt(int index) {
     // Find the slot, skipping over empty ones.
     for (var i = 0; i < slotTypes.length; i++) {
@@ -207,5 +217,6 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   }
 
   /// Gets the non-empty item slots.
+  @override
   Iterator<Item> get iterator => slots.whereType<Item>().iterator;
 }

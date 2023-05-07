@@ -31,6 +31,7 @@ mixin ElementActionMixin implements Action {
 /// Side-effect action when an actor has been hit with an [Elements.fire]
 /// attack.
 class BurnActorAction extends Action with DestroyActionMixin {
+  @override
   ActionResult onPerform() {
     destroyHeldItems(Elements.fire);
 
@@ -52,6 +53,7 @@ class BurnFloorAction extends Action with DestroyActionMixin {
 
   BurnFloorAction(this._pos, this._damage, this._fuel);
 
+  @override
   ActionResult onPerform() {
     var fuel = _fuel + destroyFloorItems(_pos, Elements.fire);
 
@@ -82,6 +84,7 @@ class BurningFloorAction extends Action with DestroyActionMixin {
 
   BurningFloorAction(this._pos);
 
+  @override
   ActionResult onPerform() {
     // See if there is an actor there.
     var target = game.stage.actorAt(_pos);
@@ -103,6 +106,7 @@ class FreezeFloorAction extends Action with DestroyActionMixin {
 
   FreezeFloorAction(this._pos);
 
+  @override
   ActionResult onPerform() {
     destroyFloorItems(_pos, Elements.cold);
 
@@ -119,6 +123,7 @@ class PoisonFloorAction extends Action with DestroyActionMixin {
 
   PoisonFloorAction(this._pos, this._damage);
 
+  @override
   ActionResult onPerform() {
     var tile = game.stage[_pos];
 
@@ -144,6 +149,7 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
 
   PoisonedFloorAction(this._pos);
 
+  @override
   ActionResult onPerform() {
     // See if there is an actor there.
     var target = game.stage.actorAt(_pos);
@@ -162,8 +168,10 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
 class WindAction extends Action {
   /// Not immediate to ensure an actor doesn't get blown into the path of a
   /// yet-to-be-processed tile.
+  @override
   bool get isImmediate => false;
 
+  @override
   ActionResult onPerform() {
     // Move the actor to a random reachable tile. Flying actors get blown more.
     var distance = actor!.motility.overlaps(Motility.fly) ? 6 : 3;
@@ -203,6 +211,7 @@ class LightFloorAction extends Action {
 
   LightFloorAction._(this._pos, this._emanation);
 
+  @override
   ActionResult onPerform() {
     game.stage[_pos].addEmanation(_emanation);
     game.stage.floorEmanationChanged();

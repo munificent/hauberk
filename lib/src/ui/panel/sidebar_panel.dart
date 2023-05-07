@@ -32,6 +32,7 @@ class SidebarPanel extends Panel {
 
   SidebarPanel(this._gameScreen);
 
+  @override
   void renderPanel(Terminal terminal) {
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 

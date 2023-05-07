@@ -5,6 +5,7 @@ class EatAction extends Action {
 
   EatAction(this._amount);
 
+  @override
   ActionResult onPerform() {
     if (hero.stomach == Option.heroMaxStomach) {
       log("{1} [is|are] already full!", actor);

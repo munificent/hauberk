@@ -16,25 +16,25 @@ import 'affixes.dart';
 import 'items.dart';
 
 int _sortIndex = 0;
-late _CategoryBuilder _category;
-_ItemBuilder? _item;
+late CategoryBuilder _category;
+ItemBuilder? _item;
 late String _affixTag;
-_AffixBuilder? _affix;
+AffixBuilder? _affix;
 
-_CategoryBuilder category(int glyph, {String? verb, int? stack}) {
+CategoryBuilder category(int glyph, {String? verb, int? stack}) {
   finishItem();
 
-  _category = _CategoryBuilder(glyph, verb);
+  _category = CategoryBuilder(glyph, verb);
   _category._maxStack = stack;
 
   return _category;
 }
 
-_ItemBuilder item(String name, Color color,
+ItemBuilder item(String name, Color color,
     {double frequency = 1.0, int price = 0}) {
   finishItem();
 
-  return _item = _ItemBuilder(name, color, frequency, price);
+  return _item = ItemBuilder(name, color, frequency, price);
 }
 
 void affixCategory(String tag) {
@@ -42,7 +42,7 @@ void affixCategory(String tag) {
   _affixTag = tag;
 }
 
-_AffixBuilder affix(String name, double frequency) {
+AffixBuilder affix(String name, double frequency) {
   finishAffix();
 
   bool isPrefix;
@@ -56,7 +56,7 @@ _AffixBuilder affix(String name, double frequency) {
     throw ArgumentError('Affix "$name" must start or end with "_".');
   }
 
-  return _affix = _AffixBuilder(name, isPrefix, frequency);
+  return _affix = AffixBuilder(name, isPrefix, frequency);
 }
 
 class _BaseBuilder {
@@ -105,7 +105,7 @@ class _BaseBuilder {
   }
 }
 
-class _CategoryBuilder extends _BaseBuilder {
+class CategoryBuilder extends _BaseBuilder {
   /// The current glyph's character code. Any items defined will use this.
   final int _glyph;
   final String? _verb;
@@ -116,7 +116,7 @@ class _CategoryBuilder extends _BaseBuilder {
   bool _isTreasure = false;
   bool _isTwoHanded = false;
 
-  _CategoryBuilder(this._glyph, this._verb);
+  CategoryBuilder(this._glyph, this._verb);
 
   void tag(String tagPath) {
     // Define the tag path and store the leaf tag which is what gets used by
@@ -165,7 +165,7 @@ class _CategoryBuilder extends _BaseBuilder {
   }
 }
 
-class _ItemBuilder extends _BaseBuilder {
+class ItemBuilder extends _BaseBuilder {
   final String _name;
   final Color _color;
   final double _frequency;
@@ -181,7 +181,7 @@ class _ItemBuilder extends _BaseBuilder {
   late final int _minDepth;
   late final int _maxDepth;
 
-  _ItemBuilder(this._name, this._color, this._frequency, this._price);
+  ItemBuilder(this._name, this._color, this._frequency, this._price);
 
   /// Sets the item's minimum depth to [from]. If [to] is given, then the item
   /// has the given depth range. Otherwise, its max is [Option.maxDepth].
@@ -314,7 +314,7 @@ class _ItemBuilder extends _BaseBuilder {
   }
 }
 
-class _AffixBuilder {
+class AffixBuilder {
   final String _name;
   final bool _isPrefix;
   int? _minDepth;
@@ -334,7 +334,7 @@ class _AffixBuilder {
   final Map<Element, int> _resists = {};
   final Map<Stat, int> _statBonuses = {};
 
-  _AffixBuilder(this._name, this._isPrefix, this._frequency);
+  AffixBuilder(this._name, this._isPrefix, this._frequency);
 
   /// Sets the affix's minimum depth to [from]. If [to] is given, then the
   /// affix has the given depth range. Otherwise, its max range is

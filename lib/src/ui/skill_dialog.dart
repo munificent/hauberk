@@ -48,6 +48,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
   String get _rowSeparator;
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
@@ -59,6 +60,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     return false;
   }
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.n:
@@ -86,6 +88,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     return false;
   }
 
+  @override
   void render(Terminal terminal) {
     terminal.clear();
 
@@ -176,14 +179,18 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 class DisciplineDialog extends SkillTypeDialog<Discipline> {
   DisciplineDialog(HeroSave hero) : super(hero);
 
+  @override
   String get _name => "Disciplines";
 
+  @override
   String get _rowSeparator => "──────────────────────────── ─── ────";
 
+  @override
   void _renderSkillListHeader(Terminal terminal) {
     terminal.writeAt(31, 1, "Lev Next", UIHue.helpText);
   }
 
+  @override
   void _renderSkillInList(
       Terminal terminal, int y, Color color, Discipline skill) {
     var level = _skillSet.level(skill).toString().padLeft(3);
@@ -194,6 +201,7 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
         35, y, percent == null ? "  --" : "$percent%".padLeft(4), color);
   }
 
+  @override
   void _renderSkillDetails(Terminal terminal, Discipline skill) {
     var level = _skillSet.level(skill);
 
@@ -232,21 +240,26 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
 }
 
 class SpellDialog extends SkillTypeDialog<Spell> {
+  @override
   String get _name => "Spells";
 
+  @override
   String get _rowSeparator => "──────────────────────────────── ────";
 
   SpellDialog(HeroSave hero) : super(hero);
 
+  @override
   void _renderSkillListHeader(Terminal terminal) {
     terminal.writeAt(35, 1, "Comp", UIHue.helpText);
   }
 
+  @override
   void _renderSkillInList(Terminal terminal, int y, Color color, Spell skill) {
     terminal.writeAt(
         35, y, skill.complexity(_hero.heroClass).toString().padLeft(4), color);
   }
 
+  @override
   void _renderSkillDetails(Terminal terminal, Spell skill) {
     terminal.writeAt(1, 30, "Complexity:", UIHue.secondary);
     if (_hero.skills.isAcquired(skill)) {

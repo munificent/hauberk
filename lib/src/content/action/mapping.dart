@@ -12,11 +12,13 @@ class MappingAction extends Action {
   /// for easy removal of the nearest distance.
   late final List<List<Vec>> _tilesByDistance = _findTiles();
 
+  @override
   bool get isImmediate => false;
 
   MappingAction(this._maxDistance, {bool? illuminate})
       : _illuminate = illuminate ?? false;
 
+  @override
   ActionResult onPerform() {
     for (var i = 0; i < 2; i++) {
       // If we've shown all the tiles, we're done.
@@ -79,6 +81,7 @@ class MappingFlow extends Flow {
       : super(stage, start, maxDistance: _maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
+  @override
   int? tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Can't enter impassable tiles.
     if (!tile.canEnter(Motility.doorAndFly)) return null;

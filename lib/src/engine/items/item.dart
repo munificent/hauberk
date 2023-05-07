@@ -83,6 +83,7 @@ class Item implements Comparable<Item>, Noun {
     return result;
   }
 
+  @override
   String get nounText {
     var name = type.quantifiableName;
 
@@ -92,6 +93,7 @@ class Item implements Comparable<Item>, Noun {
     return Log.quantify(name, count);
   }
 
+  @override
   Pronoun get pronoun => Pronoun.it;
 
   /// How much the one unit of the item can be bought and sold for.
@@ -148,6 +150,7 @@ class Item implements Comparable<Item>, Noun {
     return resistance;
   }
 
+  @override
   int compareTo(Item other) {
     if (type.sortIndex != other.type.sortIndex) {
       return type.sortIndex.compareTo(other.type.sortIndex);
@@ -215,6 +218,7 @@ class Item implements Comparable<Item>, Noun {
     return clone(count);
   }
 
+  @override
   String toString() => nounText;
 
   void _applyAffixes(Function(Affix) callback) {

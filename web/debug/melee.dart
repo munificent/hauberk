@@ -72,26 +72,34 @@ class WeaponAxis implements Axis {
     return itemType.attack != null && itemType.attack!.range == 0;
   }).toList();
 
+  @override
   String get name => "Weapon";
+  @override
   int get length => _weapons.length;
 
+  @override
   String label(int cell) => _weapons[cell].name;
 
+  @override
   void apply(int cell, HeroSave save) {
     save.equipment.tryAdd(Item(_weapons[cell], 1));
   }
 }
 
 abstract class StatAxis implements Axis {
+  @override
   int get length => 20;
 
+  @override
   String label(int cell) => _stat(cell).toString();
 
   int _stat(int cell) => cell * 3 + 1;
 }
 
 class StrengthAxis extends StatAxis {
+  @override
   String get name => "Strength";
+  @override
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
 //    save.attributes[Attribute.strength] = _attribute(cell);
@@ -99,7 +107,9 @@ class StrengthAxis extends StatAxis {
 }
 
 class AgilityAxis extends StatAxis {
+  @override
   String get name => "Agility";
+  @override
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
 //    save.attributes[Attribute.agility] = _attribute(cell);
@@ -107,7 +117,9 @@ class AgilityAxis extends StatAxis {
 }
 
 class FortitudeAxis extends StatAxis {
+  @override
   String get name => "Fortitude";
+  @override
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
 //    save.attributes[Attribute.fortitude] = _attribute(cell);

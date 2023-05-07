@@ -50,6 +50,7 @@ abstract class Move {
 abstract class RangedMove extends Move {
   final Attack attack;
 
+  @override
   int get range => attack.range;
 
   RangedMove(num rate, this.attack) : super(rate);

@@ -17,11 +17,13 @@ class DetectAction extends Action {
   /// for easy removal of the nearest distance.
   late final List<List<Vec>> _tilesByDistance = _findTiles();
 
+  @override
   bool get isImmediate => false;
 
   DetectAction(Iterable<DetectType> types, [this._maxDistance])
       : _types = types.toSet();
 
+  @override
   ActionResult onPerform() {
     // If we've shown all the tiles, we're done.
     if (_tilesByDistance.isEmpty) return ActionResult.success;

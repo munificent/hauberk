@@ -9,24 +9,31 @@ class WhipMastery extends MasteryDiscipline with UsableSkill, TargetSkill {
   static double _whipScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
+  @override
   String get name => "Whip Mastery";
+  @override
   String get useName => "Whip Crack";
+  @override
   String get description =>
       "Whips and flails are difficult to use well, but deadly even at a "
       "distance when mastered.";
+  @override
   String get weaponType => "whip";
 
+  @override
   String levelDescription(int level) {
     var damage = (_whipScale(level) * 100).toInt();
-    return super.levelDescription(level) +
-        " Ranged whip attacks inflict $damage% of the damage of a regular "
-            "attack.";
+    return "${super.levelDescription(level)} Ranged whip attacks inflict "
+        "$damage% of the damage of a regular attack.";
   }
 
+  @override
   int furyCost(HeroSave hero, int level) => 20;
 
+  @override
   int getRange(Game game) => 3;
 
+  @override
   Action onGetTargetAction(Game game, int level, Vec target) {
     var defender = game.stage.actorAt(target);
 

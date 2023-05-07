@@ -22,6 +22,7 @@ class TargetDialog extends Screen<Input> {
   bool _targetingFloor = false;
   int _animateOffset = 0;
 
+  @override
   bool get isTransparent => true;
 
   // TODO: Prevent targeting self if skill doesn't allow it?
@@ -64,6 +65,7 @@ class TargetDialog extends Screen<Input> {
     return true;
   }
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.ok:
@@ -106,6 +108,7 @@ class TargetDialog extends Screen<Input> {
     return true;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.tab && _monsters.isNotEmpty) {
       _targetingFloor = !_targetingFloor;
@@ -122,11 +125,13 @@ class TargetDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   void update() {
     _animateOffset = (_animateOffset + 1) % (_numFrames * _ticksPerFrame);
     if (_animateOffset % _ticksPerFrame == 0) dirty();
   }
 
+  @override
   void render(Terminal terminal) {
     var stage = _gameScreen.game.stage;
     var hero = _gameScreen.game.hero;

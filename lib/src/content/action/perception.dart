@@ -8,8 +8,10 @@ class PerceiveAction extends Action {
   PerceiveAction(this._duration, this._distance);
 
   // TODO: Options for range and monster tag.
+  @override
   bool get isImmediate => false;
 
+  @override
   ActionResult onPerform() {
     var alreadyPerceived = <Actor>{};
     for (var actor in game.stage.actors) {

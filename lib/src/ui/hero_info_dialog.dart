@@ -36,6 +36,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
 
   String? get extraHelp => null;
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (alt) return false;
 
@@ -56,6 +57,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop();
@@ -65,6 +67,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   void render(Terminal terminal) {
     terminal.clear();
 

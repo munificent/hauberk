@@ -9,12 +9,14 @@ import '../../../engine.dart';
 
 abstract class MasteryDiscipline extends Discipline {
   // TODO: Tune.
+  @override
   int get maxLevel => 20;
 
   String get weaponType;
 
   double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.0, 2.0);
 
+  @override
   void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {
     if (!_hasWeapon(hero)) return;
 
@@ -22,6 +24,7 @@ abstract class MasteryDiscipline extends Discipline {
     hit.scaleDamage(_damageScale(level));
   }
 
+  @override
   String levelDescription(int level) {
     var damage = ((_damageScale(level) - 1.0) * 100).toInt();
     return "Melee attacks inflict $damage% more damage when using a "
@@ -37,6 +40,7 @@ abstract class MasteryDiscipline extends Discipline {
   bool _hasWeapon(Hero hero) =>
       hero.equipment.weapons.any((item) => item.type.weaponType == weaponType);
 
+  @override
   void killMonster(Hero hero, Action action, Monster monster) {
     // Have to have killed the monster by hitting it.
     if (action is! AttackAction) return;
@@ -47,6 +51,7 @@ abstract class MasteryDiscipline extends Discipline {
     hero.refreshSkill(this);
   }
 
+  @override
   int baseTrainingNeeded(int level) {
     if (level == 0) return 0;
 
@@ -90,5 +95,6 @@ abstract class MasteryAction extends Action {
     return damage;
   }
 
+  @override
   double get noise => Sound.attackNoise;
 }

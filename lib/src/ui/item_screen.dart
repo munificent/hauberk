@@ -51,6 +51,7 @@ abstract class ItemScreen extends Screen<Input> {
 
   ItemScreen._(this._gameScreen);
 
+  @override
   bool get isTransparent => true;
 
   factory ItemScreen.home(GameScreen gameScreen) => _HomeViewScreen(gameScreen);
@@ -69,6 +70,7 @@ abstract class ItemScreen extends Screen<Input> {
 
   bool canSelect(Item item) => true;
 
+  @override
   bool handleInput(Input input) {
     _error = null;
 
@@ -80,6 +82,7 @@ abstract class ItemScreen extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     _error = null;
 
@@ -137,6 +140,7 @@ abstract class ItemScreen extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyUp(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.shift) {
       _shiftDown = false;
@@ -147,6 +151,7 @@ abstract class ItemScreen extends Screen<Input> {
     return false;
   }
 
+  @override
   void activate(Screen<Input> popped, Object? result) {
     _isActive = true;
     _inspected = null;
@@ -158,6 +163,7 @@ abstract class ItemScreen extends Screen<Input> {
     }
   }
 
+  @override
   void render(Terminal terminal) {
     // Don't show the help if another dialog (like buy or sell) is on top with
     // its own help.
@@ -249,30 +255,42 @@ class _TownItemView extends ItemView {
 
   _TownItemView(this._screen);
 
+  @override
   HeroSave get save => _screen._gameScreen.game.hero.save;
 
+  @override
   ItemCollection get items => _screen._items;
 
+  @override
   bool get capitalize => _screen._shiftDown;
 
+  @override
   bool get showPrices => _screen._showPrices;
 
+  @override
   Item? get inspectedItem => _screen._isActive ? _screen._inspected : null;
 
+  @override
   bool get inspectorOnRight => true;
 
+  @override
   bool get canSelectAny => _screen._shiftDown || _screen._canSelectAny;
 
+  @override
   bool canSelect(Item item) => _screen._canSelect(item);
 
+  @override
   int? getPrice(Item item) => _screen._itemPrice(item);
 }
 
 class _HomeViewScreen extends ItemScreen {
+  @override
   ItemCollection get _items => _save.home;
 
+  @override
   String get _headerText => "Welcome home!";
 
+  @override
   Map<String, String> get _helpKeys => {
         "G": "Get item",
         "P": "Put item",
@@ -282,6 +300,7 @@ class _HomeViewScreen extends ItemScreen {
 
   _HomeViewScreen(GameScreen gameScreen) : super._(gameScreen);
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
 
@@ -307,23 +326,31 @@ class _HomeViewScreen extends ItemScreen {
 
 /// Screen to get items from the hero's home.
 class _HomeGetScreen extends _ItemVerbScreen {
+  @override
   String get _headerText => "Get which item?";
 
+  @override
   String get _verb => "Get";
 
+  @override
   Map<String, String> get _helpKeys =>
       {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
 
+  @override
   ItemCollection get _items => _gameScreen.game.hero.save.home;
 
+  @override
   ItemCollection get _destination => _gameScreen.game.hero.inventory;
 
   _HomeGetScreen(GameScreen gameScreen) : super(gameScreen);
 
+  @override
   bool get _canSelectAny => true;
 
+  @override
   bool canSelect(Item item) => true;
 
+  @override
   void _afterTransfer(Item item, int count) {
     _gameScreen.game.log.message("You get ${item.clone(count)}.");
     _gameScreen.game.hero.pickUp(item);
@@ -334,11 +361,15 @@ class _HomeGetScreen extends _ItemVerbScreen {
 class _ShopViewScreen extends ItemScreen {
   final Inventory _shop;
 
+  @override
   ItemCollection get _items => _shop;
 
+  @override
   String get _headerText => "What can I interest you in?";
+  @override
   bool get _showPrices => true;
 
+  @override
   Map<String, String> get _helpKeys => {
         "B": "Buy item",
         "S": "Sell item",
@@ -348,6 +379,7 @@ class _ShopViewScreen extends ItemScreen {
 
   _ShopViewScreen(GameScreen gameScreen, this._shop) : super._(gameScreen);
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
 
@@ -370,6 +402,7 @@ class _ShopViewScreen extends ItemScreen {
     return false;
   }
 
+  @override
   int? _itemPrice(Item item) => item.price;
 }
 
@@ -377,32 +410,44 @@ class _ShopViewScreen extends ItemScreen {
 class _ShopBuyScreen extends _ItemVerbScreen {
   final Inventory _shop;
 
+  @override
   String get _headerText => "Buy which item?";
 
+  @override
   String get _verb => "Buy";
 
+  @override
   Map<String, String> get _helpKeys =>
       {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
 
+  @override
   ItemCollection get _items => _shop;
 
+  @override
   ItemCollection get _destination => _gameScreen.game.hero.save.inventory;
 
   _ShopBuyScreen(GameScreen gameScreen, this._shop) : super(gameScreen);
 
+  @override
   bool get _canSelectAny => true;
+  @override
   bool get _showPrices => true;
 
+  @override
   bool canSelect(Item item) => item.price <= _save.gold;
 
+  @override
   int _initialCount(Item item) => 1;
 
   /// Don't allow buying more than the hero can afford.
+  @override
   int _maxCount(Item item) => math.min(item.count, _save.gold ~/ item.price);
 
+  @override
   int? _itemPrice(Item item) => item.price;
 
   /// Pay for purchased item.
+  @override
   void _afterTransfer(Item item, int count) {
     var price = item.price * count;
     _gameScreen.game.log
@@ -423,8 +468,10 @@ class _CountScreen extends ItemScreen {
   final Item _item;
   int _count;
 
+  @override
   ItemCollection get _items => _parent._items;
 
+  @override
   String get _headerText {
     var itemText = _item.clone(_count).toString();
     var price = _parent._itemPrice(_item);
@@ -436,6 +483,7 @@ class _CountScreen extends ItemScreen {
     }
   }
 
+  @override
   Map<String, String> get _helpKeys =>
       {"OK": _parent._verb, "↕": "Change quantity", "Esc": "Cancel"};
 
@@ -445,11 +493,14 @@ class _CountScreen extends ItemScreen {
     _inspected = _item;
   }
 
+  @override
   bool get _canSelectAny => true;
 
   /// Highlight the item the user already selected.
+  @override
   bool canSelect(Item item) => item == _item;
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     // Don't allow the shift key to inspect items.
     if (keyCode == KeyCode.shift) return false;
@@ -457,11 +508,13 @@ class _CountScreen extends ItemScreen {
     return super.keyDown(keyCode, shift: shift, alt: alt);
   }
 
+  @override
   bool keyUp(int keyCode, {required bool shift, required bool alt}) {
     // Don't allow the shift key to inspect items.
     return false;
   }
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.ok:
@@ -502,5 +555,6 @@ class _CountScreen extends ItemScreen {
     return false;
   }
 
+  @override
   int? _itemPrice(Item item) => _parent._itemPrice(item);
 }

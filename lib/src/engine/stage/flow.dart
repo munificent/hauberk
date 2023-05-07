@@ -278,6 +278,7 @@ class MotilityFlow extends Flow {
         super(stage, start, maxDistance: maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
+  @override
   int? tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Can't enter impassable tiles.
     if (!tile.canEnter(_motility)) return null;

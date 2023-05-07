@@ -19,10 +19,13 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     _listBreeds();
   }
 
+  @override
   String get name => "Monster Lore";
 
+  @override
   String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (!shift && !alt && keyCode == KeyCode.s) {
       _sort = _sort.next;
@@ -34,6 +37,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     return super.keyDown(keyCode, shift: shift, alt: alt);
   }
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.n:
@@ -56,6 +60,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     return super.handleInput(input);
   }
 
+  @override
   void render(Terminal terminal) {
     super.render(terminal);
 

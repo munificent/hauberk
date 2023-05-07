@@ -172,10 +172,13 @@ class BreedChart extends Chart {
     return names;
   }
 
+  @override
   String get name => "breeds";
 
+  @override
   Iterable<String> get labels => _labels;
 
+  @override
   void generate(Histogram<String> histogram, int depth) {
     var breed = Monsters.breeds.tryChoose(depth);
     if (breed == null) return;
@@ -186,6 +189,7 @@ class BreedChart extends Chart {
     }
   }
 
+  @override
   String describe(String label) {
     var breed = Monsters.breeds.find(label);
     return "$label (depth ${breed.depth})";
@@ -212,10 +216,13 @@ class ItemTypesChart extends Chart {
     return names;
   }
 
+  @override
   String get name => "item-types";
 
+  @override
   Iterable<String> get labels => _labels;
 
+  @override
   void generate(Histogram<String> histogram, int depth) {
     var itemType = Items.types.tryChoose(depth);
     if (itemType == null) return;
@@ -228,6 +235,7 @@ class ItemTypesChart extends Chart {
     }
   }
 
+  @override
   String describe(String label) {
     var typeName = label;
     if (typeName.endsWith(" (ego)")) {
@@ -259,10 +267,13 @@ class AffixesChart extends Chart {
     return names;
   }
 
+  @override
   String get name => "affixes";
 
+  @override
   Iterable<String> get labels => _labels;
 
+  @override
   void generate(Histogram<String> histogram, int depth) {
     var itemType = Items.types.tryChoose(depth, tag: "equipment");
     if (itemType == null) return;
@@ -277,11 +288,14 @@ class AffixesChart extends Chart {
     if (item.prefix == null && item.suffix == null) histogram.add("(none)");
   }
 
+  @override
   String describe(String label) => label;
 }
 
 class MonsterDepthsChart extends Chart {
+  @override
   String get name => "monster-depths";
+  @override
   final List<String> labels = [];
 
   MonsterDepthsChart() {
@@ -290,6 +304,7 @@ class MonsterDepthsChart extends Chart {
     }
   }
 
+  @override
   void generate(Histogram<String> histogram, int depth) {
     var breed = Monsters.breeds.tryChoose(depth);
     if (breed == null) return;
@@ -297,6 +312,7 @@ class MonsterDepthsChart extends Chart {
     histogram.add((breed.depth - depth).toString());
   }
 
+  @override
   String describe(String label) {
     var relative = int.parse(label);
     if (relative == 0) return "same";
@@ -306,10 +322,13 @@ class MonsterDepthsChart extends Chart {
 }
 
 class FloorDropsChart extends Chart {
+  @override
   String get name => "floor-drops";
 
+  @override
   Iterable<String> get labels => ItemTypesChart._labels;
 
+  @override
   void generate(Histogram<String> histogram, int depth) {
     var drop = FloorDrops.choose(depth);
     drop.drop.dropItem(depth, (item) {
@@ -317,6 +336,7 @@ class FloorDropsChart extends Chart {
     });
   }
 
+  @override
   String describe(String label) {
     var type = Items.types.find(label);
     return "$label (depth ${type.depth})";
@@ -339,10 +359,13 @@ class ArchitecturesChart extends Chart {
     return labels;
   }
 
+  @override
   String get name => "architectures";
 
+  @override
   Iterable<String> get labels => _labels;
 
+  @override
   void generate(Histogram<String> histogram, int depth) {
     var styles = ArchitecturalStyle.pick(depth);
     for (var style in styles) {
@@ -351,6 +374,7 @@ class ArchitecturesChart extends Chart {
   }
 
   // TODO: Show min and max depths?
+  @override
   String describe(String label) => label;
 }
 

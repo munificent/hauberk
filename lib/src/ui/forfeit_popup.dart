@@ -9,6 +9,7 @@ class ForfeitPopup extends Popup {
 
   ForfeitPopup({required bool isTown}) : _isTown = isTown;
 
+  @override
   List<String> get message {
     if (_isTown) return const ["Return to main menu?"];
 
@@ -18,9 +19,11 @@ class ForfeitPopup extends Popup {
     ];
   }
 
+  @override
   Map<String, String> get helpKeys =>
       const {"Y": "Yes", "N": "No", "Esc": "No"};
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop(false);
@@ -30,6 +33,7 @@ class ForfeitPopup extends Popup {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
@@ -46,5 +50,6 @@ class ForfeitPopup extends Popup {
     return true;
   }
 
+  @override
   bool update() => false;
 }

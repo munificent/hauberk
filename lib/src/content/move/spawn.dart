@@ -11,8 +11,10 @@ class SpawnMove extends Move {
       : _preferStraight = preferStraight ?? false,
         super(rate);
 
+  @override
   num get experience => 6.0;
 
+  @override
   bool shouldUse(Monster monster) {
     // Don't breed offscreen since it can end up filling the room before the
     // hero gets there.
@@ -26,6 +28,7 @@ class SpawnMove extends Move {
     return false;
   }
 
+  @override
   Action onGetAction(Monster monster) {
     // Pick an open adjacent tile.
     var dirs = <Direction>[];
@@ -67,5 +70,6 @@ class SpawnMove extends Move {
     return SpawnAction(monster.pos + rng.item(dirs), monster.breed);
   }
 
+  @override
   String toString() => "Spawn rate: $rate";
 }

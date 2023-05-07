@@ -32,8 +32,10 @@ class Motility {
 
   Motility._(this._bitMask);
 
+  @override
   int get hashCode => _bitMask;
 
+  @override
   bool operator ==(Object other) {
     if (other is Motility) return _bitMask == other._bitMask;
     return false;
@@ -49,6 +51,7 @@ class Motility {
 
   bool overlaps(Motility other) => _bitMask & other._bitMask != 0;
 
+  @override
   String toString() => _bitMask.toString();
 }
 
@@ -59,6 +62,7 @@ class TilePortal {
 
   const TilePortal(this.name);
 
+  @override
   String toString() => name;
 }
 

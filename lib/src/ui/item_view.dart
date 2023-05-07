@@ -179,21 +179,18 @@ abstract class ItemView {
 String formatMoney(int price) {
   var result = price.toString();
   if (price > 999999999) {
-    result = result.substring(0, result.length - 9) +
-        "," +
-        result.substring(result.length - 9);
+    result = "${result.substring(0, result.length - 9)},"
+        "${result.substring(result.length - 9)}";
   }
 
   if (price > 999999) {
-    result = result.substring(0, result.length - 6) +
-        "," +
-        result.substring(result.length - 6);
+    result = "${result.substring(0, result.length - 6)},"
+        "${result.substring(result.length - 6)}";
   }
 
   if (price > 999) {
-    result = result.substring(0, result.length - 3) +
-        "," +
-        result.substring(result.length - 3);
+    result = "${result.substring(0, result.length - 3)},"
+        "${result.substring(result.length - 3)}";
   }
 
   return result;

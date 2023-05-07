@@ -19,6 +19,7 @@ class ItemPanel extends Panel {
 
   bool get onGroundVisible => bounds.height > 50;
 
+  @override
   void renderPanel(Terminal terminal) {
     var hero = _game.hero;
     _drawItems(
@@ -47,13 +48,17 @@ class ItemPanel extends Panel {
 
 class _ItemPanelItemView extends ItemView {
   final Game _game;
+  @override
   final ItemCollection items;
 
   _ItemPanelItemView(this._game, this.items);
 
+  @override
   HeroSave get save => _game.hero.save;
 
+  @override
   bool get showLetters => false;
 
+  @override
   bool get canSelectAny => false;
 }

@@ -10,11 +10,14 @@ class ConfirmPopup extends Popup {
 
   ConfirmPopup(this._message, this._result);
 
+  @override
   List<String> get message => [_message];
 
+  @override
   Map<String, String> get helpKeys =>
       const {"Y": "Yes", "N": "No", "Esc": "No"};
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop();
@@ -24,6 +27,7 @@ class ConfirmPopup extends Popup {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 

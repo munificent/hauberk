@@ -10,6 +10,7 @@ class Cavern extends Architecture {
   // TODO: Fields to tune density distribution, thresholds, and number of
   // rounds of smoothing.
 
+  @override
   Iterable<String> build() sync* {
     // True is wall, false is floor, null is untouchable tiles that belong to
     // other architectures.

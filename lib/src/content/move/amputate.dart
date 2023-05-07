@@ -8,6 +8,7 @@ import '../action/polymorph.dart';
 /// For example, a skeleton can amputate into a decapitated skeleton and a
 /// skull.
 class AmputateMove extends Move {
+  @override
   num get experience => _body.breed.maxHealth * 0.5;
 
   /// The breed the remaining body turns into.
@@ -21,8 +22,10 @@ class AmputateMove extends Move {
   AmputateMove(this._body, this._part, this._message) : super(1.0);
 
   /// Doesn't spontaneously amputate.
+  @override
   bool shouldUse(Monster monster) => false;
 
+  @override
   bool shouldUseOnDamage(Monster monster, int damage) {
     // Doing more damage increases the odds.
     var odds = damage / monster.maxHealth;
@@ -35,8 +38,10 @@ class AmputateMove extends Move {
     return false;
   }
 
+  @override
   Action onGetAction(Monster monster) =>
       AmputateAction(_body.breed, _part.breed, _message);
 
+  @override
   String toString() => "Amputate ${_body.breed.name} + ${_part.breed.name}";
 }

@@ -61,5 +61,6 @@ class Affix {
     _statBonuses[stat] = bonus;
   }
 
+  @override
   String toString() => name;
 }

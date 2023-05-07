@@ -19,18 +19,23 @@ class SelectDepthPopup extends Popup {
     _depth = math.min(Option.maxDepth, save.maxDepth + 1);
   }
 
+  @override
   int get width => 42;
 
+  @override
   int get height => 26;
 
+  @override
   List<String> get message => const [
         "Stairs descend into darkness.",
         "How far down shall you venture?"
       ];
 
+  @override
   Map<String, String> get helpKeys =>
       const {"OK": "Enter dungeon", "↕↔": "Change depth", "Esc": "Cancel"};
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.w:
@@ -61,6 +66,7 @@ class SelectDepthPopup extends Popup {
     return false;
   }
 
+  @override
   void renderPopup(Terminal terminal) {
     for (var depth = 1; depth <= Option.maxDepth; depth++) {
       var x = (depth - 1) % 10;

@@ -61,6 +61,7 @@ class Monster extends Actor {
 
   bool get isAwake => _state is AwakeState;
 
+  @override
   Motility get motility => breed.motility;
 
   /// Whether the monster wanted to melee or do a ranged attack the last time
@@ -83,21 +84,27 @@ class Monster extends Actor {
 
   double get fear => _fear;
 
+  @override
   Object get appearance => breed.appearance;
 
+  @override
   String get nounText => 'the ${breed.name}';
 
+  @override
   Pronoun get pronoun => breed.pronoun;
 
   /// How much experience the [Hero] gains for killing this monster.
   int get experience => breed.experience;
 
+  @override
   int get maxHealth => breed.maxHealth;
 
   /// Instead of armor, we just scale up the health for different breeds to
   /// accomplish the same thing.
+  @override
   int get armor => 0;
 
+  @override
   int get emanationLevel => breed.emanationLevel;
 
   /// How much the monster relies on sight to sense the hero, from 0.0 to 1.0.
@@ -163,12 +170,16 @@ class Monster extends Actor {
     throw AssertionError("Unreachable.");
   }
 
+  @override
   int get baseSpeed => Energy.normalSpeed + breed.speed;
 
+  @override
   int get baseDodge => breed.dodge;
 
+  @override
   Iterable<Defense> onGetDefenses() => breed.defenses;
 
+  @override
   Action onGetAction() {
     // Recharge moves.
     for (var move in breed.moves) {
@@ -333,13 +344,16 @@ class Monster extends Actor {
     _state.bind(this);
   }
 
+  @override
   List<Hit> onCreateMeleeHits(Actor? defender) =>
       [rng.item(breed.attacks).createHit()];
 
   // TODO: Breed resistances.
+  @override
   int onGetResistance(Element element) => 0;
 
   /// Inflicting damage decreases fear.
+  @override
   void onGiveDamage(Action action, Actor defender, int damage) {
     // The greater the power of the hit, the more emboldening it is.
     var fear = 100.0 * damage / game.hero.maxHealth;
@@ -367,6 +381,7 @@ class Monster extends Actor {
   }
 
   /// Taking damage increases fear.
+  @override
   void onTakeDamage(Action action, Actor? attacker, int damage) {
     _alertness = _maxAlertness;
 
@@ -415,6 +430,7 @@ class Monster extends Actor {
   }
 
   /// Called when this Actor has been killed by [attackNoun].
+  @override
   void onDied(Noun attackNoun) {
     // TODO: Is using the breed's motility correct? We probably don't want
     // drops going through doors.
@@ -426,6 +442,7 @@ class Monster extends Actor {
     game.stage.removeActor(this);
   }
 
+  @override
   void changePosition(Vec from, Vec to) {
     super.changePosition(from, to);
 

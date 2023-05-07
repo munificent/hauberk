@@ -10,6 +10,7 @@ import 'input.dart';
 
 /// Base class for a centered modal dialog.
 abstract class Popup extends Screen<Input> {
+  @override
   bool get isTransparent => true;
 
   /// The width of the content area of the popup.
@@ -29,6 +30,7 @@ abstract class Popup extends Screen<Input> {
 
   Map<String, String> get helpKeys;
 
+  @override
   void render(Terminal terminal) {
     Draw.helpKeys(terminal, helpKeys);
 

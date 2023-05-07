@@ -25,6 +25,7 @@ abstract class RayActionBase extends Action {
   /// obstructed. This is the angle of each ray still being traced.
   final _rays = <double>[];
 
+  @override
   bool get isImmediate => false;
 
   int get range;
@@ -62,6 +63,7 @@ abstract class RayActionBase extends Action {
     }
   }
 
+  @override
   ActionResult onPerform() {
     if (_radius == 0.0) {
       reachStartTile(_from);
@@ -106,6 +108,7 @@ abstract class RayActionBase extends Action {
 class RayAction extends RayActionBase with ElementActionMixin {
   final Hit _hit;
 
+  @override
   int get range => _hit.range;
 
   /// A 45° cone of [hit] centered on the line from [from] to [to].
@@ -119,6 +122,7 @@ class RayAction extends RayActionBase with ElementActionMixin {
   RayAction._(this._hit, Vec from, Vec to, double fraction)
       : super(from, to, fraction);
 
+  @override
   void reachTile(Vec pos, num distance) {
     hitTile(_hit, pos, distance);
   }
@@ -132,8 +136,10 @@ class RingSelfAction extends Action {
 
   RingSelfAction(this._attack);
 
+  @override
   bool get isImmediate => false;
 
+  @override
   ActionResult onPerform() {
     return alternate(RayAction.ring(actor!.pos, _attack.createHit()));
   }
@@ -145,8 +151,10 @@ class RingFromAction extends Action {
 
   RingFromAction(this._attack, this._pos);
 
+  @override
   bool get isImmediate => false;
 
+  @override
   ActionResult onPerform() {
     return alternate(RayAction.ring(_pos, _attack.createHit()));
   }

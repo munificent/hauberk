@@ -7,6 +7,7 @@ class HowlAction extends Action {
 
   HowlAction(this._range, String? verb) : _verb = verb ?? "howls";
 
+  @override
   ActionResult onPerform() {
     log("{1} $_verb!", actor);
     addEvent(EventType.howl, actor: actor);

@@ -31,7 +31,7 @@ void main() {
 }
 
 String percent(int count) {
-  return (count * 100 / tries).toStringAsFixed(3) + "%";
+  return "${(count * 100 / tries).toStringAsFixed(3)}%";
 }
 
 void generate() {

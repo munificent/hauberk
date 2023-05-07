@@ -6,8 +6,10 @@ class MissiveMove extends Move {
 
   MissiveMove(this._missive, num rate) : super(rate);
 
+  @override
   num get experience => 0.0;
 
+  @override
   bool shouldUse(Monster monster) {
     var target = monster.game.hero.pos;
     var distance = (target - monster.pos).kingLength;
@@ -19,8 +21,10 @@ class MissiveMove extends Move {
     return monster.canView(target);
   }
 
+  @override
   Action onGetAction(Monster monster) =>
       MissiveAction(monster.game.hero, _missive);
 
+  @override
   String toString() => "$_missive rate: $rate";
 }

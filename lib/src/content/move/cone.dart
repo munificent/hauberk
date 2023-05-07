@@ -6,13 +6,16 @@ import '../action/ray.dart';
 
 class ConeMove extends Move {
   final Attack attack;
+  @override
   int get range => attack.range;
 
+  @override
   num get experience =>
       attack.damage * 3.0 * attack.element.experience * (1.0 + range / 10.0);
 
   ConeMove(num rate, this.attack) : super(rate);
 
+  @override
   bool shouldUse(Monster monster) {
     if (monster.isBlinded && rng.float(1.0) < monster.sightReliance) {
       var chance =
@@ -39,8 +42,10 @@ class ConeMove extends Move {
     return true;
   }
 
+  @override
   Action onGetAction(Monster monster) =>
       RayAction.cone(monster.pos, monster.game.hero.pos, attack.createHit());
 
+  @override
   String toString() => "Cone $attack rate: $rate";
 }

@@ -37,5 +37,6 @@ class Element {
       : attackAction = attack ?? ((_) => null),
         floorAction = floor ?? ((_, __, ___, ____) => null);
 
+  @override
   String toString() => name;
 }

@@ -17,6 +17,7 @@ class FlowAction extends Action with ElementActionMixin {
   final Motility _motility;
   final int _slowness;
 
+  @override
   bool get isImmediate => false;
 
   var _frame = 0;
@@ -27,6 +28,7 @@ class FlowAction extends Action with ElementActionMixin {
   FlowAction(this._from, this._hit, this._motility, {int? slowness})
       : _slowness = slowness ?? 1;
 
+  @override
   ActionResult onPerform() {
     // Only animate 1/slowness frames.
     _frame = (_frame + 1) % _slowness;
@@ -72,6 +74,7 @@ class FlowSelfAction extends Action {
 
   FlowSelfAction(this._attack, this._motility);
 
+  @override
   ActionResult onPerform() {
     return alternate(FlowAction(actor!.pos, _attack.createHit(), _motility));
   }
@@ -84,6 +87,7 @@ class FlowFromAction extends Action {
 
   FlowFromAction(this._attack, this._pos, this._motility);
 
+  @override
   ActionResult onPerform() {
     return alternate(FlowAction(_pos, _attack.createHit(), _motility));
   }

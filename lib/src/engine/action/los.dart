@@ -12,10 +12,12 @@ abstract class LosAction extends Action {
   /// Override this to provide the range of the line.
   int get range;
 
+  @override
   bool get isImmediate => false;
 
   LosAction(this._target);
 
+  @override
   ActionResult onPerform() {
     var pos = _los.current;
 

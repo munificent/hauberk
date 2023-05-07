@@ -67,5 +67,6 @@ class VecSet extends IterableBase<Vec> {
     _yMax = math.max(_yMax, pos.y);
   }
 
+  @override
   bool contains(Object? element) => _values[element as Vec] == _sentinel;
 }

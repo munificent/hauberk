@@ -32,6 +32,7 @@ class MissiveAction extends Action {
 
   MissiveAction(this.target, this.missive);
 
+  @override
   ActionResult onPerform() {
     var message = rng.item(_messages[missive]!);
 

@@ -227,12 +227,12 @@ class Tiles {
   static final shop9 =
       tile("shop entrance", "○", red).to(TilePortals.shop9).open();
 
-  static _TileBuilder tile(String name, Object char, Color fore,
+  static TileBuilder tile(String name, Object char, Color fore,
           [Color? back]) =>
-      _TileBuilder(name, char, fore, back);
+      TileBuilder(name, char, fore, back);
 
   static List<TileType> multi(String name, Object char, Color fore, Color? back,
-      int count, TileType Function(_TileBuilder, int) generate) {
+      int count, TileType Function(TileBuilder, int) generate) {
     var result = <TileType>[];
     for (var i = 0; i < count; i++) {
       var builder = tile(name, char, fore, back);
@@ -329,7 +329,7 @@ class Tiles {
   };
 }
 
-class _TileBuilder {
+class TileBuilder {
   final String name;
   final List<Glyph> glyphs;
 
@@ -338,16 +338,16 @@ class _TileBuilder {
   TilePortal? _portal;
   int _emanation = 0;
 
-  factory _TileBuilder(String name, Object char, Color fore, [Color? back]) {
+  factory TileBuilder(String name, Object char, Color fore, [Color? back]) {
     back ??= darkerCoolGray;
     var charCode = char is int ? char : (char as String).codeUnitAt(0);
 
-    return _TileBuilder._(name, Glyph.fromCharCode(charCode, fore, back));
+    return TileBuilder._(name, Glyph.fromCharCode(charCode, fore, back));
   }
 
-  _TileBuilder._(this.name, Glyph glyph) : glyphs = [glyph];
+  TileBuilder._(this.name, Glyph glyph) : glyphs = [glyph];
 
-  _TileBuilder blend(double amount, Color fore, Color back) {
+  TileBuilder blend(double amount, Color fore, Color back) {
     for (var i = 0; i < glyphs.length; i++) {
       var glyph = glyphs[i];
       glyphs[i] = Glyph.fromCharCode(glyph.char, glyph.fore.blend(fore, amount),
@@ -357,7 +357,7 @@ class _TileBuilder {
     return this;
   }
 
-  _TileBuilder animate(int count, double maxMix, Color fore, Color back) {
+  TileBuilder animate(int count, double maxMix, Color fore, Color back) {
     var glyph = glyphs.first;
     for (var i = 1; i < count; i++) {
       var mixedFore =
@@ -371,22 +371,22 @@ class _TileBuilder {
     return this;
   }
 
-  _TileBuilder emanate(int emanation) {
+  TileBuilder emanate(int emanation) {
     _emanation = emanation;
     return this;
   }
 
-  _TileBuilder to(TilePortal portal) {
+  TileBuilder to(TilePortal portal) {
     _portal = portal;
     return this;
   }
 
-  _TileBuilder onClose(Action Function(Vec) onClose) {
+  TileBuilder onClose(Action Function(Vec) onClose) {
     _onClose = onClose;
     return this;
   }
 
-  _TileBuilder onOpen(Action Function(Vec) onOpen) {
+  TileBuilder onOpen(Action Function(Vec) onOpen) {
     _onOpen = onOpen;
     return this;
   }

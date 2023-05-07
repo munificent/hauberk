@@ -8,6 +8,7 @@ class AttackAction extends Action {
 
   AttackAction(this.defender);
 
+  @override
   ActionResult onPerform() {
     for (var hit in actor!.createMeleeHits(defender)) {
       hit.perform(this, actor, defender);
@@ -17,7 +18,9 @@ class AttackAction extends Action {
     return ActionResult.success;
   }
 
+  @override
   double get noise => Sound.attackNoise;
 
+  @override
   String toString() => '$actor attacks $defender';
 }

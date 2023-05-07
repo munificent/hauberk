@@ -163,6 +163,7 @@ class Furnishing extends Decor {
 
   Furnishing(this._cells);
 
+  @override
   bool canPlace(Painter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {
@@ -181,6 +182,7 @@ class Furnishing extends Decor {
     return true;
   }
 
+  @override
   void place(Painter painter, Vec pos) {
     for (var y = 0; y < _cells.height; y++) {
       for (var x = 0; x < _cells.width; x++) {

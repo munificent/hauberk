@@ -11,6 +11,7 @@ class WalkAction extends Action {
   final Direction dir;
   WalkAction(this.dir);
 
+  @override
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
     if (dir == Direction.none) {
@@ -71,6 +72,7 @@ class WalkAction extends Action {
     return succeed();
   }
 
+  @override
   String toString() => '$actor walks $dir';
 }
 
@@ -80,6 +82,7 @@ class OpenDoorAction extends Action {
 
   OpenDoorAction(this.pos, this.openDoor);
 
+  @override
   ActionResult onPerform() {
     game.stage[pos].type = openDoor;
     game.stage.tileOpacityChanged();
@@ -95,6 +98,7 @@ class CloseDoorAction extends Action {
 
   CloseDoorAction(this.doorPos, this.closedDoor);
 
+  @override
   ActionResult onPerform() {
     var blockingActor = game.stage.actorAt(doorPos);
     if (blockingActor != null) {
@@ -112,6 +116,7 @@ class CloseDoorAction extends Action {
 
 /// Action for doing nothing for a turn.
 class RestAction extends Action {
+  @override
   ActionResult onPerform() {
     if (actor is Hero) {
       if (hero.stomach > 0 && !hero.poison.isActive) {
@@ -130,5 +135,6 @@ class RestAction extends Action {
     return succeed();
   }
 
+  @override
   double get noise => Sound.restNoise;
 }

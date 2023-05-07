@@ -44,6 +44,7 @@ class _ItemDrop implements Drop {
 
   _ItemDrop(this._type, this._depth, this._affixChance);
 
+  @override
   void dropItem(int depth, AddItem addItem) {
     addItem(Affixes.createItem(_type, _depth ?? depth, _affixChance));
   }
@@ -64,6 +65,7 @@ class _TagDrop implements Drop {
 
   _TagDrop(this._tag, this._depth, this._affixChance);
 
+  @override
   void dropItem(int depth, AddItem addItem) {
     var itemType = Items.types.tryChoose(_depth ?? depth, tag: _tag);
     if (itemType == null) return;
@@ -79,6 +81,7 @@ class _PercentDrop implements Drop {
 
   _PercentDrop(this._chance, this._drop);
 
+  @override
   void dropItem(int depth, AddItem addItem) {
     if (rng.range(100) >= _chance) return;
     _drop.dropItem(depth, addItem);
@@ -91,6 +94,7 @@ class _AllOfDrop implements Drop {
 
   _AllOfDrop(this._drops);
 
+  @override
   void dropItem(int depth, AddItem addItem) {
     for (var drop in _drops) {
       drop.dropItem(depth, addItem);
@@ -109,6 +113,7 @@ class _OneOfDrop implements Drop {
     });
   }
 
+  @override
   void dropItem(int depth, AddItem addItem) {
     // TODO: Allow passing in depth?
     var drop = _drop.tryChoose(1);
@@ -125,6 +130,7 @@ class _RepeatDrop implements Drop {
 
   _RepeatDrop(this._count, this._drop);
 
+  @override
   void dropItem(int depth, AddItem addItem) {
     var taper = 5;
     if (_count > 3) taper = 4;

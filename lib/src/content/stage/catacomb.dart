@@ -21,6 +21,7 @@ class Catacomb extends Architecture {
         _minSize = minSize ?? 8,
         _maxSize = maxSize ?? 32;
 
+  @override
   Iterable<String> build() sync* {
     // Don't try to make chambers bigger than the stage.
     var maxSize = _maxSize.toDouble();

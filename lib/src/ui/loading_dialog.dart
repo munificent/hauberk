@@ -12,6 +12,7 @@ class LoadingDialog extends Screen<Input> {
   final Iterator<String> _steps;
   int _frame = 0;
 
+  @override
   bool get isTransparent => true;
 
   factory LoadingDialog(HeroSave save, Content content, int depth) {
@@ -21,6 +22,7 @@ class LoadingDialog extends Screen<Input> {
 
   LoadingDialog._(this._game, this._steps);
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop(false);
@@ -30,6 +32,7 @@ class LoadingDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
@@ -46,6 +49,7 @@ class LoadingDialog extends Screen<Input> {
     return true;
   }
 
+  @override
   void update() {
     var stopwatch = Stopwatch()..start();
 
@@ -61,6 +65,7 @@ class LoadingDialog extends Screen<Input> {
     _frame = (_frame + 1) % 10;
   }
 
+  @override
   void render(Terminal terminal) {
     var width = 30;
     var height = 7;

@@ -103,6 +103,7 @@ class StagePanel extends Panel {
         _gameScreen.game.hero.dazzle.isActive;
   }
 
+  @override
   void renderPanel(Terminal terminal) {
     _positionCamera(terminal.size);
 

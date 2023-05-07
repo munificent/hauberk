@@ -8,11 +8,13 @@ import '../action/bolt.dart';
 // monster won't choose move if out of range, but it means the action can go
 // farther than intended range.
 class BoltMove extends RangedMove {
+  @override
   num get experience =>
       attack.damage * attack.element.experience * (1.0 + range / 20.0);
 
   BoltMove(num rate, Attack attack) : super(rate, attack);
 
+  @override
   bool shouldUse(Monster monster) {
     if (monster.isBlinded && rng.float(1.0) < monster.sightReliance) {
       var chance =
@@ -43,8 +45,10 @@ class BoltMove extends RangedMove {
     return true;
   }
 
+  @override
   Action onGetAction(Monster monster) =>
       BoltAction(monster.game.hero.pos, attack.createHit());
 
+  @override
   String toString() => "Bolt $attack rate: $rate";
 }

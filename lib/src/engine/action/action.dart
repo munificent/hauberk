@@ -161,6 +161,7 @@ class FocusAction extends Action {
 
   FocusAction(this._focus, this._action);
 
+  @override
   ActionResult onPerform() {
     if (hero.focus < _focus) return fail("You aren't focused enough.");
 
@@ -179,6 +180,7 @@ class FuryAction extends Action {
 
   FuryAction(this._fury, this._action);
 
+  @override
   ActionResult onPerform() {
     if (hero.fury < _fury) return fail("You aren't angry enough.");
 
@@ -194,6 +196,7 @@ mixin GeneratorActionMixin on Action {
   /// Start the generator the first time through.
   late final Iterator<ActionResult> _iterator = onGenerate().iterator;
 
+  @override
   ActionResult onPerform() {
     // If it reaches the end, it succeeds.
     if (!_iterator.moveNext()) return ActionResult.success;

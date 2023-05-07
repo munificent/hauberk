@@ -90,6 +90,7 @@ class Sound {
 class _SoundFlow extends Flow {
   _SoundFlow(Stage stage) : super(stage, stage.game.hero.pos);
 
+  @override
   int? tileCost(int parentCost, Vec pos, Tile tile, bool isDiagonal) {
     // Stop propagating if we reach the max distance.
     if (parentCost >= Sound.maxDistance) return null;
@@ -108,20 +109,24 @@ class _SoundFlow extends Flow {
 class _SoundPathfinder extends Pathfinder<int> {
   _SoundPathfinder(Stage stage, Vec from, Vec to) : super(stage, from, to);
 
+  @override
   int? processStep(Path path) {
     if (path.cost > Sound.maxDistance) return Sound.maxDistance;
     return null;
   }
 
+  @override
   int stepCost(Vec pos, Tile tile) {
     return _tileCost(tile);
   }
 
+  @override
   int reachedGoal(Path path) => path.cost;
 
   /// There's no path to the goal so, just pick the path that gets nearest to
   /// it and hope for the best. (Maybe someone will open a door later or
   /// something.)
+  @override
   int unreachableGoal() => Sound.maxDistance;
 }
 

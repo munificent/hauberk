@@ -11,6 +11,7 @@ class GameOverScreen extends Screen<Input> {
 
   GameOverScreen(this.log);
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.cancel:
@@ -21,6 +22,7 @@ class GameOverScreen extends Screen<Input> {
     return true;
   }
 
+  @override
   void render(Terminal terminal) {
     terminal.clear();
 

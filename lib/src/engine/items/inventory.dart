@@ -33,6 +33,7 @@ mixin ItemCollection implements Iterable<Item> {
 
   String get name => location.name;
 
+  @override
   int get length;
 
   Item operator [](int index);
@@ -62,6 +63,7 @@ mixin ItemCollection implements Iterable<Item> {
 
 /// The collection of [Item]s held by an [Actor].
 class Inventory extends IterableMixin<Item> with ItemCollection {
+  @override
   final ItemLocation location;
 
   final List<Item> _items;
@@ -74,8 +76,10 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   Item? get lastUnequipped => _lastUnequipped;
   Item? _lastUnequipped;
 
+  @override
   int get length => _items.length;
 
+  @override
   Item operator [](int index) => _items[index];
 
   Inventory(this.location, [this._capacity, Iterable<Item>? items])
@@ -95,10 +99,12 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     _lastUnequipped = null;
   }
 
+  @override
   void remove(Item item) {
     _items.remove(item);
   }
 
+  @override
   Item removeAt(int index) {
     var item = _items[index];
     _items.removeAt(index);
@@ -106,6 +112,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     return item;
   }
 
+  @override
   bool canAdd(Item item) {
     // If there's an empty slot, can always add it.
     if (_capacity == null || _items.length < _capacity!) return true;
@@ -124,6 +131,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     return false;
   }
 
+  @override
   AddItemResult tryAdd(Item item, {bool wasUnequipped = false}) {
     var adding = item.count;
 
@@ -156,6 +164,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   ///
   /// This should be called any time the count of an item stack in the hero's
   /// inventory is changed.
+  @override
   void countChanged() {
     // Hacky. Just re-add everything from scratch.
     var items = _items.toList();
@@ -167,6 +176,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     }
   }
 
+  @override
   Iterator<Item> get iterator => _items.iterator;
 }
 

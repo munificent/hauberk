@@ -33,8 +33,10 @@ class Keep extends RoomArchitecture {
       : _junctions = JunctionSet(takeFrom);
 
   // TODO: Different paint styles for different monsters.
+  @override
   PaintStyle get paintStyle => PaintStyle.granite;
 
+  @override
   Iterable<String> build() sync* {
     debugJunctions = _junctions;
 
@@ -51,6 +53,7 @@ class Keep extends RoomArchitecture {
     }
   }
 
+  @override
   bool spawnMonsters(Painter painter) {
     var tiles = painter.ownedTiles
         .where((pos) => painter.getTile(pos).isWalkable)

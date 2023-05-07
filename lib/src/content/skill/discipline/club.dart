@@ -8,23 +8,30 @@ class ClubMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
   static double _bashScale(int level) => lerpDouble(level, 1, 10, 1.0, 2.0);
 
   // TODO: Better name.
+  @override
   String get name => "Club Mastery";
 
+  @override
   String get useName => "Club Bash";
 
+  @override
   String get description =>
       "Bludgeons may not be the most sophisticated of weapons, but what they "
       "lack in refinement, they make up for in brute force.";
 
+  @override
   String get weaponType => "club";
 
+  @override
   String levelDescription(int level) {
     // TODO: Describe scale.
-    return super.levelDescription(level) + " Bashes the enemy away.";
+    return "${super.levelDescription(level)} Bashes the enemy away.";
   }
 
+  @override
   int furyCost(HeroSave hero, int level) => 20;
 
+  @override
   Action onGetDirectionAction(Game game, int level, Direction dir) {
     return BashAction(dir, ClubMastery._bashScale(level));
   }
@@ -38,9 +45,12 @@ class BashAction extends MasteryAction {
 
   BashAction(this._dir, double scale) : super(scale);
 
+  @override
   bool get isImmediate => false;
+  @override
   String get weaponType => "club";
 
+  @override
   ActionResult onPerform() {
     if (_step == 0) {
       _damage = attack(actor!.pos + _dir);
@@ -74,5 +84,6 @@ class BashAction extends MasteryAction {
     return doneIf(_step > 10);
   }
 
+  @override
   String toString() => '$actor bashes $_dir';
 }

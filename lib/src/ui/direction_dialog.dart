@@ -17,6 +17,7 @@ abstract class DirectionDialog extends Screen<Input> {
 
   int _animateOffset = 0;
 
+  @override
   bool get isTransparent => true;
 
   Game get game => _gameScreen.game;
@@ -27,6 +28,7 @@ abstract class DirectionDialog extends Screen<Input> {
 
   DirectionDialog(this._gameScreen);
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.cancel:
@@ -62,11 +64,13 @@ abstract class DirectionDialog extends Screen<Input> {
     return true;
   }
 
+  @override
   void update() {
     _animateOffset = (_animateOffset + 1) % (_numFrames * _ticksPerFrame);
     if (_animateOffset % _ticksPerFrame == 0) dirty();
   }
 
+  @override
   void render(Terminal terminal) {
     void draw(int frame, Direction dir, String char) {
       var pos = game.hero.pos + dir;
@@ -133,16 +137,20 @@ abstract class DirectionDialog extends Screen<Input> {
 class SkillDirectionDialog extends DirectionDialog {
   final void Function(Direction direction) _onSelect;
 
+  @override
   String get query => "Which direction?";
 
+  @override
   String get helpText => "Choose direction";
 
   SkillDirectionDialog(GameScreen gameScreen, this._onSelect)
       : super(gameScreen);
 
   // TODO: Let skill filter out invalid directions.
+  @override
   bool canTarget(Tile tile) => true;
 
+  @override
   bool tryDirection(Direction direction) {
     _onSelect(direction);
     return true;
@@ -151,13 +159,17 @@ class SkillDirectionDialog extends DirectionDialog {
 
 /// Asks the user to select an adjacent tile to close.
 class CloseDialog extends DirectionDialog {
+  @override
   String get query => "Close what?";
+  @override
   String get helpText => "Choose direction";
 
   CloseDialog(GameScreen gameScreen) : super(gameScreen);
 
+  @override
   bool canTarget(Tile tile) => tile.type.canClose;
 
+  @override
   bool tryDirection(Direction direction) {
     var pos = game.hero.pos + direction;
     var tile = game.stage[pos].type;
@@ -173,13 +185,17 @@ class CloseDialog extends DirectionDialog {
 
 /// Asks the user to select an adjacent tile to open.
 class OpenDialog extends DirectionDialog {
+  @override
   String get query => "Open what?";
+  @override
   String get helpText => "Choose direction";
 
   OpenDialog(GameScreen gameScreen) : super(gameScreen);
 
+  @override
   bool canTarget(Tile tile) => tile.type.canOpen;
 
+  @override
   bool tryDirection(Direction direction) {
     var pos = game.hero.pos + direction;
     var tile = game.stage[pos].type;

@@ -34,6 +34,7 @@ class ItemDialog extends Screen<Input> {
   /// The current item being inspected or `null` if there is none.
   Item? _inspected;
 
+  @override
   bool get isTransparent => true;
 
   /// True if the item dialog supports tabbing between item lists.
@@ -61,6 +62,7 @@ class ItemDialog extends Screen<Input> {
       : _command = _PutItemCommand(),
         _location = ItemLocation.inventory;
 
+  @override
   bool handleInput(Input input) {
     switch (input) {
       case Input.ok:
@@ -104,6 +106,7 @@ class ItemDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.shift) {
       _shiftDown = true;
@@ -136,6 +139,7 @@ class ItemDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyUp(int keyCode, {required bool shift, required bool alt}) {
     if (keyCode == KeyCode.shift) {
       _shiftDown = false;
@@ -146,6 +150,7 @@ class ItemDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   void render(Terminal terminal) {
     var itemCount = 0;
     switch (_location) {
@@ -206,7 +211,7 @@ class ItemDialog extends Screen<Input> {
         query = _command.query(_location);
       }
     } else {
-      query = _command.queryCount(_location) + " $_count";
+      query = "${_command.queryCount(_location)} $_count";
     }
 
     _renderHelp(terminal, query);
@@ -290,20 +295,28 @@ class ItemDialog extends Screen<Input> {
 class _ItemDialogItemView extends ItemView {
   final ItemDialog _dialog;
 
+  @override
   HeroSave get save => _dialog._gameScreen.game.hero.save;
 
+  @override
   ItemCollection get items => _dialog._getItems();
 
+  @override
   bool get canSelectAny => true;
 
+  @override
   bool get capitalize => _dialog._shiftDown;
 
+  @override
   bool get showPrices => _dialog._command.showPrices;
 
+  @override
   Item? get inspectedItem => _dialog._inspected;
 
+  @override
   bool canSelect(Item item) => _dialog._canSelect(item);
 
+  @override
   int getPrice(Item item) => _dialog._command.getPrice(item);
 
   _ItemDialogItemView(this._dialog);
@@ -368,11 +381,14 @@ abstract class _ItemCommand {
 }
 
 class _DropItemCommand extends _ItemCommand {
+  @override
   List<ItemLocation> get allowedLocations =>
       const [ItemLocation.inventory, ItemLocation.equipment];
 
+  @override
   bool get needsCount => true;
 
+  @override
   String query(ItemLocation location) {
     switch (location) {
       case ItemLocation.inventory:
@@ -384,10 +400,13 @@ class _DropItemCommand extends _ItemCommand {
     throw AssertionError("Unreachable.");
   }
 
+  @override
   String queryCount(ItemLocation location) => 'Drop how many?';
 
+  @override
   bool canSelect(Item item) => true;
 
+  @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     dialog._gameScreen.game.hero
@@ -397,8 +416,10 @@ class _DropItemCommand extends _ItemCommand {
 }
 
 class _UseItemCommand extends _ItemCommand {
+  @override
   bool get needsCount => false;
 
+  @override
   String query(ItemLocation location) {
     switch (location) {
       case ItemLocation.inventory:
@@ -411,8 +432,10 @@ class _UseItemCommand extends _ItemCommand {
     throw AssertionError("Unreachable.");
   }
 
+  @override
   bool canSelect(Item item) => item.canUse;
 
+  @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     dialog._gameScreen.game.hero.setNextAction(UseAction(location, item));
@@ -421,8 +444,10 @@ class _UseItemCommand extends _ItemCommand {
 }
 
 class _EquipItemCommand extends _ItemCommand {
+  @override
   bool get needsCount => false;
 
+  @override
   String query(ItemLocation location) {
     switch (location) {
       case ItemLocation.inventory:
@@ -436,8 +461,10 @@ class _EquipItemCommand extends _ItemCommand {
     throw AssertionError("Unreachable.");
   }
 
+  @override
   bool canSelect(Item item) => item.canEquip;
 
+  @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     dialog._gameScreen.game.hero.setNextAction(EquipAction(location, item));
@@ -446,8 +473,10 @@ class _EquipItemCommand extends _ItemCommand {
 }
 
 class _TossItemCommand extends _ItemCommand {
+  @override
   bool get needsCount => false;
 
+  @override
   String query(ItemLocation location) {
     switch (location) {
       case ItemLocation.inventory:
@@ -461,8 +490,10 @@ class _TossItemCommand extends _ItemCommand {
     throw AssertionError("Unreachable.");
   }
 
+  @override
   bool canSelect(Item item) => item.canToss;
 
+  @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     // Create the hit now so range modifiers can be calculated before the
@@ -481,16 +512,22 @@ class _TossItemCommand extends _ItemCommand {
 // TODO: It queries for a count. But if there is only a single item, the hero
 // automatically picks up the whole stack. Should it do the same here?
 class _PickUpItemCommand extends _ItemCommand {
+  @override
   List<ItemLocation> get allowedLocations => const [ItemLocation.onGround];
 
+  @override
   bool get needsCount => true;
 
+  @override
   String query(ItemLocation location) => 'Pick up which item?';
 
+  @override
   String queryCount(ItemLocation location) => 'Pick up how many?';
 
+  @override
   bool canSelect(Item item) => true;
 
+  @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     // Pick up item and return to the game
@@ -502,22 +539,29 @@ class _PickUpItemCommand extends _ItemCommand {
 class _PutItemCommand extends _ItemCommand {
   _PutItemCommand();
 
+  @override
   List<ItemLocation> get allowedLocations =>
       const [ItemLocation.inventory, ItemLocation.equipment];
 
+  @override
   bool get needsCount => true;
 
+  @override
   String query(ItemLocation location) => "Put which item?";
 
+  @override
   String queryCount(ItemLocation location) => "Put how many?";
 
+  @override
   bool canSelect(Item item) => true;
 
+  @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     transfer(dialog, item, count, dialog._gameScreen.game.hero.save.home);
   }
 
+  @override
   void afterTransfer(ItemDialog dialog, Item item, int count) {
     dialog._gameScreen.game.log
         .message("You put ${item.clone(count)} safely into your home.");
@@ -530,26 +574,35 @@ class _SellItemCommand extends _ItemCommand {
 
   _SellItemCommand(this._shop);
 
+  @override
   List<ItemLocation> get allowedLocations =>
       const [ItemLocation.inventory, ItemLocation.equipment];
 
+  @override
   bool get needsCount => true;
 
+  @override
   bool get showPrices => true;
 
+  @override
   String query(ItemLocation location) => "Sell which item?";
 
+  @override
   String queryCount(ItemLocation location) => "Sell how many?";
 
+  @override
   bool canSelect(Item item) => item.price != 0;
 
+  @override
   int getPrice(Item item) => (item.price * 0.75).floor();
 
+  @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {
     transfer(dialog, item, count, _shop);
   }
 
+  @override
   void afterTransfer(ItemDialog dialog, Item item, int count) {
     var itemText = item.clone(count).toString();
     var price = getPrice(item) * count;

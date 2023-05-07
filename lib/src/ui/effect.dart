@@ -254,11 +254,13 @@ class ElementEffect implements Effect {
   ElementEffect(this._pos, Element element)
       : _sequence = _elementSequences[element]!;
 
+  @override
   bool update(Game game) {
     if (rng.oneIn(_age + 2)) _age++;
     return _age < _sequence.length;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(_pos.x, _pos.y, rng.item(_sequence[_age]));
   }
@@ -272,12 +274,14 @@ class FrameEffect implements Effect {
 
   FrameEffect(this.pos, this.char, this.color, {this.life = 4});
 
+  @override
   bool update(Game game) {
     if (!game.stage[pos].isVisible) return false;
 
     return --life >= 0;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(pos.x, pos.y, Glyph(char, color));
   }
@@ -291,12 +295,14 @@ class ItemEffect implements Effect {
 
   ItemEffect(this.pos, this.item);
 
+  @override
   bool update(Game game) {
     if (!game.stage[pos].isVisible) return false;
 
     return --_life >= 0;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(pos.x, pos.y, item.appearance as Glyph);
   }
@@ -311,8 +317,10 @@ class DamageEffect implements Effect {
   DamageEffect(this.actor, this.element, int damage)
       : _blinks = math.sqrt(damage / 5).ceil();
 
+  @override
   bool update(Game game) => ++_frame < _blinks * _framesPerBlink;
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     var frame = _frame % _framesPerBlink;
     if (frame < _framesPerBlink ~/ 2) {
@@ -345,6 +353,7 @@ class ParticleEffect implements Effect {
 
   ParticleEffect._(this.x, this.y, this.h, this.v, this.life, this.color);
 
+  @override
   bool update(Game game) {
     x += h;
     y += v;
@@ -356,6 +365,7 @@ class ParticleEffect implements Effect {
     return life-- > 0;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(x.toInt(), y.toInt(), Glyph('•', color));
   }
@@ -388,6 +398,7 @@ class TeleportEffect implements Effect {
 
   TeleportEffect._(this.x, this.y, this.h, this.v, this.target);
 
+  @override
   bool update(Game game) {
     var friction = 1.0 - age * 0.015;
     h *= friction;
@@ -404,6 +415,7 @@ class TeleportEffect implements Effect {
     return (Vec(x.toInt(), y.toInt()) - target) > 1;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     var pos = Vec(x.toInt(), y.toInt());
     if (!game.stage.bounds.contains(pos)) return;
@@ -432,10 +444,12 @@ class HealEffect implements Effect {
 
   HealEffect(this.x, this.y);
 
+  @override
   bool update(Game game) {
     return frame++ < 24;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     if (game.stage.get(x, y).isOccluded) return;
 
@@ -462,8 +476,10 @@ class DetectEffect implements Effect {
 
   DetectEffect(this.pos);
 
+  @override
   bool update(Game game) => --life >= 0;
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     var radius = life ~/ 4;
     var glyph = Glyph("*", _colors[radius]);
@@ -484,8 +500,10 @@ class MapEffect implements Effect {
     life = _maxLife;
   }
 
+  @override
   bool update(Game game) => --life >= 0;
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     var glyph = game.stage[pos].type.appearance as Glyph;
 
@@ -509,6 +527,7 @@ class TreasureEffect implements Effect {
       : _x = pos.x,
         _y = pos.y;
 
+  @override
   bool update(Game game) {
     if (_life.isEven) {
       _y--;
@@ -518,6 +537,7 @@ class TreasureEffect implements Effect {
     return --_life >= 0;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     drawGlyph(_x, _y, _item.appearance as Glyph);
   }
@@ -536,10 +556,12 @@ class HowlEffect implements Effect {
 
   HowlEffect(this._actor);
 
+  @override
   bool update(Game game) {
     return ++_age < 24;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     var pos = _actor.pos;
 
@@ -565,12 +587,14 @@ class BlinkEffect implements Effect {
 
   BlinkEffect(this._actor, this._glyph);
 
+  @override
   bool update(Game game) {
     if (!game.stage[_actor.pos].isVisible) return false;
 
     return ++_age < 24;
   }
 
+  @override
   void render(Game game, DrawGlyph drawGlyph) {
     var pos = _actor.pos;
 

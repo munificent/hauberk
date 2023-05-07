@@ -6,6 +6,7 @@ import 'architect.dart';
 
 /// Uses a cellular automata to carve out rounded open cavernous areas.
 class River extends Architecture {
+  @override
   Iterable<String> build() sync* {
     // TODO: Branching tributaries?
 
@@ -38,9 +39,9 @@ class River extends Architecture {
         return _RiverPoint(width + 2.0, y);
       case Direction.w:
         return _RiverPoint(-2.0, y);
+      default:
+        throw AssertionError("Unreachable.");
     }
-
-    throw AssertionError("Unreachable.");
   }
 
   void _displace(_RiverPoint start, _RiverPoint end) {
@@ -97,5 +98,6 @@ class _RiverPoint {
   _RiverPoint(this.x, this.y, [double? radius])
       : radius = radius ?? rng.float(1.0, 3.0);
 
+  @override
   String toString() => "$x,$y ($radius)";
 }

@@ -300,6 +300,7 @@ class _Tag<T> {
     return false;
   }
 
+  @override
   String toString() {
     if (parent == null) return name;
     return "$parent/$name";
@@ -313,13 +314,16 @@ class _QueryKey {
 
   _QueryKey(this.name, this.depth);
 
+  @override
   int get hashCode => name.hashCode ^ depth.hashCode;
 
+  @override
   bool operator ==(Object other) {
     var query = other as _QueryKey;
     return name == query.name && depth == query.depth;
   }
 
+  @override
   String toString() => "$name ($depth)";
 }
 

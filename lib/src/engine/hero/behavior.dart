@@ -24,8 +24,10 @@ class ActionBehavior extends Behavior {
 
   ActionBehavior(this.action);
 
+  @override
   bool canPerform(Hero hero) => true;
 
+  @override
   Action getAction(Hero hero) {
     hero.waitForInput();
     return action;
@@ -40,6 +42,7 @@ class ActionBehavior extends Behavior {
 /// * He is "disturbed" and something gets hit attention, like a [Monster]
 ///   moving, being hit, etc.
 class RestBehavior extends Behavior {
+  @override
   bool canPerform(Hero hero) {
     // See if done resting.
     if (hero.health == hero.maxHealth) return false;
@@ -53,6 +56,7 @@ class RestBehavior extends Behavior {
     return true;
   }
 
+  @override
   Action getAction(Hero hero) => RestAction();
 }
 
@@ -70,6 +74,7 @@ class RunBehavior extends Behavior {
 
   RunBehavior(this.direction);
 
+  @override
   bool canPerform(Hero hero) {
     // On first step, always try to go in direction player pressed.
     if (firstStep) return true;
@@ -131,6 +136,7 @@ class RunBehavior extends Behavior {
     return _shouldKeepRunning(hero);
   }
 
+  @override
   Action getAction(Hero hero) {
     firstStep = false;
     return WalkAction(direction);

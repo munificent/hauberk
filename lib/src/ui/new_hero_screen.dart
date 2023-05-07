@@ -105,6 +105,7 @@ class NewHeroScreen extends Screen<Input> {
       : _race = rng.range(content.races.length),
         _class = rng.range(content.classes.length);
 
+  @override
   void render(Terminal terminal) {
     terminal.clear();
 
@@ -240,6 +241,7 @@ class NewHeroScreen extends Screen<Input> {
     }
   }
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop();
@@ -271,6 +273,7 @@ class NewHeroScreen extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     // TODO: Figuring out the char code manually here is lame. Pass it in from
     // the KeyEvent?

@@ -5,10 +5,12 @@ import '../action/teleport.dart';
 class TeleportMove extends Move {
   final int _range;
 
+  @override
   num get experience => _range * 0.7;
 
   TeleportMove(num rate, this._range) : super(rate);
 
+  @override
   bool shouldUse(Monster monster) {
     if (monster.isAfraid) return true;
 
@@ -21,7 +23,9 @@ class TeleportMove extends Move {
     return true;
   }
 
+  @override
   Action onGetAction(Monster monster) => TeleportAction(_range);
 
+  @override
   String toString() => "Teleport $_range";
 }

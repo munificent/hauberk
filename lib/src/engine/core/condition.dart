@@ -74,6 +74,7 @@ abstract class Condition {
 
 /// A condition that temporarily boosts the actor's speed.
 class HasteCondition extends Condition {
+  @override
   void onDeactivate() {
     actor.log("{1} slow[s] back down.", actor);
   }
@@ -81,6 +82,7 @@ class HasteCondition extends Condition {
 
 /// A condition that temporarily lowers the actor's speed.
 class ColdCondition extends Condition {
+  @override
   void onDeactivate() {
     actor.log("{1} warm[s] back up.", actor);
   }
@@ -88,6 +90,7 @@ class ColdCondition extends Condition {
 
 /// A condition that inflicts damage every turn.
 class PoisonCondition extends Condition {
+  @override
   void onUpdate(Action action) {
     // TODO: Apply resistances. If resistance lowers intensity to zero, end
     // condition and log message.
@@ -97,6 +100,7 @@ class PoisonCondition extends Condition {
     }
   }
 
+  @override
   void onDeactivate() {
     actor.log("{1} [are|is] no longer poisoned.", actor);
   }
@@ -104,6 +108,7 @@ class PoisonCondition extends Condition {
 
 /// A condition that impairs vision.
 class BlindnessCondition extends Condition {
+  @override
   void onDeactivate() {
     actor.log("{1} can see clearly again.", actor);
     if (actor == actor.game.hero) actor.game.stage.heroVisibilityChanged();
@@ -116,6 +121,7 @@ class ResistCondition extends Condition {
 
   ResistCondition(this._element);
 
+  @override
   void onDeactivate() {
     actor.log("{1} feel[s] susceptible to $_element.", actor);
   }
@@ -125,6 +131,7 @@ class ResistCondition extends Condition {
 class PerceiveCondition extends Condition {
   PerceiveCondition();
 
+  @override
   void onDeactivate() {
     actor.log("{1} no longer perceive[s] monsters.", actor);
   }

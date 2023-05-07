@@ -10,6 +10,7 @@ class LogPanel extends Panel {
 
   LogPanel(this._log);
 
+  @override
   void renderPanel(Terminal terminal) {
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
     terminal.writeAt(2, 0, " Messages ", UIHue.text);

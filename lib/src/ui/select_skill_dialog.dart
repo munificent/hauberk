@@ -13,6 +13,7 @@ class SelectSkillDialog extends Screen<Input> {
   final GameScreen _gameScreen;
   final List<UsableSkill> _skills = [];
 
+  @override
   bool get isTransparent => true;
 
   SelectSkillDialog(this._gameScreen) {
@@ -21,6 +22,7 @@ class SelectSkillDialog extends Screen<Input> {
     }
   }
 
+  @override
   bool handleInput(Input input) {
     if (input == Input.cancel) {
       ui.pop();
@@ -30,6 +32,7 @@ class SelectSkillDialog extends Screen<Input> {
     return false;
   }
 
+  @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
@@ -49,6 +52,7 @@ class SelectSkillDialog extends Screen<Input> {
     ui.pop(_skills[index]);
   }
 
+  @override
   void render(Terminal terminal) {
     Draw.helpKeys(terminal, {
       "A-Z": "Select skill",

@@ -12,10 +12,12 @@ class Dungeon extends RoomArchitecture {
   /// How much open space it tries to carve.
   final double _density;
 
+  @override
   PaintStyle get paintStyle => PaintStyle.flagstone;
 
   Dungeon({double? density}) : _density = density ?? 0.3;
 
+  @override
   Iterable<String> build() sync* {
     var failed = 0;
     while (carvedDensity < _density && failed < 100) {

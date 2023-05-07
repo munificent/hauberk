@@ -3,13 +3,17 @@ import 'dart:math' as math;
 import '../../../engine.dart';
 
 class BattleHardening extends Discipline {
+  @override
   int get maxLevel => 40;
 
+  @override
   String get description => "Years of taking hits have turned your skin as "
       "hard as cured leather.";
 
+  @override
   String get name => "Battle Hardening";
 
+  @override
   void takeDamage(Hero hero, int damage) {
     hero.discoverSkill(this);
 
@@ -20,9 +24,12 @@ class BattleHardening extends Discipline {
     hero.refreshSkill(this);
   }
 
+  @override
   int modifyArmor(HeroSave hero, int level, int armor) => armor + level;
 
+  @override
   String levelDescription(int level) => "Increases armor by $level.";
 
+  @override
   int baseTrainingNeeded(int level) => (60 * math.pow(level, 1.5)).ceil();
 }

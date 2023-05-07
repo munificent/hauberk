@@ -141,10 +141,12 @@ abstract class MonsterState {
 }
 
 class AsleepState extends MonsterState {
+  @override
   Action getAction() => RestAction();
 }
 
 class AwakeState extends MonsterState {
+  @override
   Action getAction() {
     // If on a burning etc. tile, try to get out.
     // TODO: Should consider moves like teleport that will help it escape.
@@ -412,6 +414,7 @@ class AwakeState extends MonsterState {
 }
 
 class AfraidState extends MonsterState {
+  @override
   Action getAction() {
     // TODO: Take light and the breed's light preference into account.
     // If we're already hidden, rest.

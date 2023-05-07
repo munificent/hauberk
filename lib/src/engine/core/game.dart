@@ -372,5 +372,6 @@ class EventType {
 
   const EventType(this._name);
 
+  @override
   String toString() => _name;
 }

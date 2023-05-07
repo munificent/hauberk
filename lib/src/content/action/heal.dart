@@ -7,6 +7,7 @@ class HealAction extends Action {
 
   HealAction(this.amount, {this.curePoison = false});
 
+  @override
   ActionResult onPerform() {
     var changed = false;
 

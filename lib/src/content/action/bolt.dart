@@ -9,6 +9,7 @@ class BoltAction extends LosAction {
   final bool _canMiss;
   final int? _range;
 
+  @override
   int get range => _range ?? _hit.range;
 
   BoltAction(Vec target, this._hit, {bool canMiss = false, int? range})
@@ -16,6 +17,7 @@ class BoltAction extends LosAction {
         _range = range,
         super(target);
 
+  @override
   void onStep(Vec previous, Vec pos) {
     addEvent(EventType.bolt,
         element: _hit.element,
@@ -23,6 +25,7 @@ class BoltAction extends LosAction {
         dir: (pos - previous).nearestDirection);
   }
 
+  @override
   bool onHitActor(Vec pos, Actor target) {
     // TODO: Should range increase odds of missing? If so, do that here. Also
     // need to tweak enemy AI then since they shouldn't always try to maximize
