@@ -100,14 +100,11 @@ class PaintStyle {
 
     if (tile == Tiles.doorway) {
       if (_closedDoor != null && _openDoor != null) {
-        switch (rng.range(6)) {
-          case 0:
-            return _openDoor!;
-          case 1:
-            return _floorTile();
-          default:
-            return _closedDoor!;
-        }
+        return switch (rng.range(6)) {
+          0 => _openDoor!,
+          1 => _floorTile(),
+          _ => _closedDoor!
+        };
       } else if (_closedDoor != null) {
         return _closedDoor!;
       } else if (_openDoor != null) {

@@ -122,6 +122,10 @@ class Keep extends RoomArchitecture {
       case Region.s:
       case Region.se:
         yMin = (height * 0.75).toInt();
+      case Region.everywhere:
+      case Region.e:
+      case Region.w:
+        break; // No change.
     }
 
     switch (region) {
@@ -133,6 +137,10 @@ class Keep extends RoomArchitecture {
       case Region.e:
       case Region.se:
         xMin = (width * 0.75).toInt();
+      case Region.everywhere:
+      case Region.n:
+      case Region.s:
+        break; // No change.
     }
 
     if (xMax < xMin) xMax = xMin;
@@ -149,27 +157,17 @@ class Keep extends RoomArchitecture {
     double diagonal(int xDistance, int yDistance) =>
         lerpDouble(xDistance + yDistance, 0, width + height, 2.0, -3.0);
 
-    var density = 0.0;
-    switch (region) {
-      case Region.everywhere:
-        return true;
-      case Region.n:
-        density = lerpDouble(pos.y, 0, height, max, min);
-      case Region.ne:
-        density = diagonal(width - pos.x - 1, pos.y);
-      case Region.e:
-        density = lerpDouble(pos.x, 0, width, min, max);
-      case Region.se:
-        density = diagonal(width - pos.x - 1, height - pos.y - 1);
-      case Region.s:
-        density = lerpDouble(pos.y, 0, height, min, max);
-      case Region.sw:
-        density = diagonal(pos.x, height - pos.y - 1);
-      case Region.w:
-        density = lerpDouble(pos.x, 0, width, max, min);
-      case Region.nw:
-        density = diagonal(pos.x, pos.y);
-    }
+    var density = switch (region) {
+      Region.everywhere => 1.0,
+      Region.n => lerpDouble(pos.y, 0, height, max, min),
+      Region.ne => diagonal(width - pos.x - 1, pos.y),
+      Region.e => lerpDouble(pos.x, 0, width, min, max),
+      Region.se => diagonal(width - pos.x - 1, height - pos.y - 1),
+      Region.s => lerpDouble(pos.y, 0, height, min, max),
+      Region.sw => diagonal(pos.x, height - pos.y - 1),
+      Region.w => lerpDouble(pos.x, 0, width, max, min),
+      Region.nw => diagonal(pos.x, pos.y),
+    };
 
     return rng.float(1.0) < density;
   }
@@ -263,17 +261,11 @@ class JunctionSet {
   }
 
   Junction takeNext() {
-    Junction junction;
-    switch (_takeFrom) {
-      case TakeFrom.newest:
-        junction = _junctions.removeLast();
-
-      case TakeFrom.oldest:
-        junction = _junctions.removeAt(0);
-
-      case TakeFrom.random:
-        junction = rng.take(_junctions);
-    }
+    var junction = switch (_takeFrom) {
+      TakeFrom.newest => _junctions.removeLast(),
+      TakeFrom.oldest => _junctions.removeAt(0),
+      TakeFrom.random => rng.take(_junctions),
+    };
 
     _byPosition.remove(junction.position);
     junction.tries++;

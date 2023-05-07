@@ -37,44 +37,21 @@ class Lighting {
   /// to a "nice-looking" increasing radius of light. Changing the attenuation
   /// values below will likely require these to be re-tuned.
   static int emanationForLevel(int level) {
-    switch (level) {
-      case 1:
-        // Only the tile itself.
-        return 40;
-
-      case 2:
-        // A 3x3 "plus" shape.
-        return 56;
-
-      case 3:
-        // A 3x3 square.
-        return 72;
-
-      case 4:
-        // A 5x5 diamond.
-        return 96;
-
-      case 5:
-        // A 5x5 circle.
-        return 120;
-
-      case 6:
-        // A 7x7 circle.
-        return 160;
-
-      case 7:
-        // A 9x9 circle.
-        return 200;
-
-      case 8:
-        // A 11x11 circle.
-        return 240;
-
-      default:
-        // Anything else is clamped.
-        if (level <= 0) return 0;
-        return max;
-    }
+    return switch (level) {
+      1 => 40, // Only the tile itself.
+      2 => 56, // A 3x3 "plus" shape.
+      3 => 72, // A 3x3 square.
+      4 => 96, // A 5x5 diamond.
+      5 => 120, // A 5x5 circle.
+      6 => 160, // A 7x7 circle.
+      7 => 200, // A 9x9 circle.
+      8 => 240, // A 11x11 circle.
+      // Anything else is clamped.
+      _
+          when level <= 0 =>
+        0,
+      _ => max
+    };
   }
 
   final Stage _stage;

@@ -41,17 +41,12 @@ class Room {
     // TODO: More room shapes:
     // - Plus
     // - T
-    switch (rng.inclusive(10)) {
-      case 0:
-        return _diamond(depth);
-      case 1:
-        return _octagon(depth);
-      case 2:
-      case 3:
-        return _angled(depth);
-      default:
-        return _rectangle(depth);
-    }
+    return switch (rng.inclusive(10)) {
+      0 => _diamond(depth),
+      1 => _octagon(depth),
+      2 || 3 => _angled(depth),
+      _ => _rectangle(depth),
+    };
   }
 
   static Array2D<RoomTile> _rectangle(int depth) {

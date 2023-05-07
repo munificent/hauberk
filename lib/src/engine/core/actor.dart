@@ -180,14 +180,11 @@ abstract class Actor implements Noun {
   void modifyHit(Hit hit, HitType type) {
     // Hard to hit an actor you can't see.
     if (isBlinded) {
-      switch (type) {
-        case HitType.melee:
-          hit.scaleStrike(0.5);
-        case HitType.ranged:
-          hit.scaleStrike(0.3);
-        case HitType.toss:
-          hit.scaleStrike(0.2);
-      }
+      hit.scaleStrike(switch (type) {
+        HitType.melee => 0.5,
+        HitType.ranged => 0.3,
+        HitType.toss => 0.2,
+      });
     }
 
     // Let the subclass also modify it.

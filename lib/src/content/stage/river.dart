@@ -28,20 +28,14 @@ class River extends Architecture {
     var x = rng.float(width * 0.25, width * 0.75);
     var y = rng.float(height * 0.25, height * 0.75);
 
-    switch (side) {
-      case Direction.none:
-        return _RiverPoint(x, y);
-      case Direction.n:
-        return _RiverPoint(x, -2.0);
-      case Direction.s:
-        return _RiverPoint(x, height + 2.0);
-      case Direction.e:
-        return _RiverPoint(width + 2.0, y);
-      case Direction.w:
-        return _RiverPoint(-2.0, y);
-      default:
-        throw AssertionError("Unreachable.");
-    }
+    return switch (side) {
+      Direction.none => _RiverPoint(x, y),
+      Direction.n => _RiverPoint(x, -2.0),
+      Direction.s => _RiverPoint(x, height + 2.0),
+      Direction.e => _RiverPoint(width + 2.0, y),
+      Direction.w => _RiverPoint(-2.0, y),
+      _ => throw AssertionError("Unreachable."),
+    };
   }
 
   void _displace(_RiverPoint start, _RiverPoint end) {

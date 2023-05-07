@@ -8,21 +8,21 @@ import 'painter.dart';
 import 'reachability.dart';
 
 // TODO: Consider regions that are randomly placed blobs in the middle too.
-class Region {
-  final String name;
-
+enum Region {
   /// Cover the whole stage.
-  static const everywhere = Region("everywhere");
-  static const n = Region("n");
-  static const ne = Region("ne");
-  static const e = Region("e");
-  static const se = Region("se");
-  static const s = Region("s");
-  static const sw = Region("sw");
-  static const w = Region("w");
-  static const nw = Region("nw");
+  everywhere("everywhere"),
+  n("n"),
+  ne("ne"),
+  e("e"),
+  se("se"),
+  s("s"),
+  sw("sw"),
+  w("w"),
+  nw("nw");
 
   static const directions = [n, ne, e, se, s, sw, w, nw];
+
+  final String name;
 
   const Region(this.name);
 }

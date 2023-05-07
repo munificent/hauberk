@@ -85,7 +85,5 @@ class Cavern extends Architecture {
         var range = math.min(width, height);
         return lerpDouble(distance, 0, range, min, max);
     }
-
-    throw AssertionError("Unreachable.");
   }
 }
