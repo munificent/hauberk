@@ -28,40 +28,41 @@ class Storage {
 
     for (var hero in data['heroes'] as List<dynamic>) {
       try {
-        var name = hero['name'] as String;
+        var heroData = hero as Map<String, dynamic>;
+        var name = heroData['name'] as String;
         var race = _loadRace(hero['race'] as Map<String, dynamic>);
 
         HeroClass heroClass;
-        if (hero['class'] == null) {
+        if (heroData['class'] == null) {
           // TODO: Temp for characters before classes.
           heroClass = content.classes[0];
         } else {
-          var name = hero['class'] as String;
+          var name = heroData['class'] as String;
           heroClass = content.classes.firstWhere((c) => c.name == name);
         }
 
-        var inventoryItems = _loadItems(hero['inventory']);
+        var inventoryItems = _loadItems(heroData['inventory']);
         var inventory = Inventory(
             ItemLocation.inventory, Option.inventoryCapacity, inventoryItems);
 
         var equipment = Equipment();
-        for (var item in _loadItems(hero['equipment'])) {
+        for (var item in _loadItems(heroData['equipment'])) {
           // TODO: If there are multiple slots of the same type, this may
           // shuffle items around.
           equipment.equip(item);
         }
 
-        var homeItems = _loadItems(hero['home']);
+        var homeItems = _loadItems(heroData['home']);
         var home = Inventory(ItemLocation.home, Option.homeCapacity, homeItems);
 
-        var crucibleItems = _loadItems(hero['crucible']);
+        var crucibleItems = _loadItems(heroData['crucible']);
         var crucible = Inventory(
             ItemLocation.crucible, Option.crucibleCapacity, crucibleItems);
 
         // TODO: What if shops are added or changed?
         var shops = <Shop, Inventory>{};
-        if (hero.containsKey('shops')) {
-          var shopsData = hero['shops'] as Map<String, dynamic>;
+        if (heroData.containsKey('shops')) {
+          var shopsData = heroData['shops'] as Map<String, dynamic>;
           content.shops.forEach((name, shop) {
             var shopData = shopsData[name] as List<dynamic>?;
             if (shopData != null) {
@@ -81,11 +82,11 @@ class Storage {
 
         // Defaults are to support legacy saves.
 
-        var experience = hero['experience'] as int;
+        var experience = heroData['experience'] as int;
 
         var levels = <Skill, int>{};
         var points = <Skill, int>{};
-        var skills = hero['skills'] as Map<String, dynamic>?;
+        var skills = heroData['skills'] as Map<String, dynamic>?;
         if (skills != null) {
           for (var name in skills.keys) {
             var skill = content.findSkill(name);
@@ -105,10 +106,10 @@ class Storage {
 
         var skillSet = SkillSet.from(levels, points);
 
-        var lore = _loadLore(hero['lore'] as Map<String, dynamic>);
+        var lore = _loadLore(heroData['lore'] as Map<String, dynamic>);
 
-        var gold = hero['gold'] as int;
-        var maxDepth = hero['maxDepth'] as int? ?? 0;
+        var gold = heroData['gold'] as int;
+        var maxDepth = heroData['maxDepth'] as int? ?? 0;
 
         var heroSave = HeroSave.load(
             name,
