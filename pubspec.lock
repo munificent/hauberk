@@ -292,9 +292,10 @@ packages:
   malison:
     dependency: "direct main"
     description:
-      path: "../../../../Dev/Game/malison"
-      relative: true
-    source: path
+      name: malison
+      sha256: "2a4f1dd4ac079b1ac238be2bf2f19fda8dc9ebcbf2f784cc159a50cd9b40b8bc"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.13.1"
   markdown:
     dependency: "direct main"
@@ -355,10 +356,11 @@ packages:
   piecemeal:
     dependency: "direct main"
     description:
-      path: "../../../../Dev/Game/piecemeal"
-      relative: true
-    source: path
-    version: "2.0.0-dev"
+      name: piecemeal
+      sha256: "1c57c8f3a4955065d5baf32d2b4d6d6d26f40018abee162932ed8cd230d6b6fc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   pointycastle:
     dependency: transitive
     description:
@@ -584,4 +586,4 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.0.0-417 <3.2.0"
+  dart: ">=3.0.0 <3.2.0"
