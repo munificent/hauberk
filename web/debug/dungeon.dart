@@ -2,10 +2,6 @@ import 'dart:async';
 import 'dart:html' as html;
 import 'dart:math' as math;
 
-import 'package:malison/malison.dart';
-import 'package:malison/malison_web.dart';
-import 'package:piecemeal/piecemeal.dart';
-
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/stage/architect.dart';
 import 'package:hauberk/src/content/stage/decorator.dart';
@@ -13,6 +9,9 @@ import 'package:hauberk/src/content/stage/keep.dart';
 import 'package:hauberk/src/debug.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
+import 'package:malison/malison.dart';
+import 'package:malison/malison_web.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 import 'histogram.dart';
 
@@ -113,7 +112,7 @@ Future generate() async {
   Keep.debugJunctions = null;
   Debug.densityMap = null;
 
-  _game = Game(content, save, depth);
+  _game = Game(content, depth);
   var thisGame = _game;
   var stage = _game.stage;
 
@@ -126,7 +125,7 @@ Future generate() async {
   stateCanvas.height = stage.height * 8;
 
   var start = DateTime.now();
-  for (var _ in _game.generate()) {
+  for (var _ in _game.generate(save)) {
 //    print(event);
     render();
 

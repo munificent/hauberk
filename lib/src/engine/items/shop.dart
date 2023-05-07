@@ -1,7 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
-import 'inventory.dart';
 
 class Shop {
   /// The maximum number of items a shop can contain.

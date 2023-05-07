@@ -1,11 +1,10 @@
 import 'dart:collection';
 
-import 'package:hauberk/src/content/item/drops.dart';
-import 'package:piecemeal/piecemeal.dart';
-
-import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/content/item/drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
+import 'package:hauberk/src/engine.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 /// This script is for tuning and balancing the way stats and equipment affect
 /// melee combat.
@@ -63,7 +62,7 @@ void main(List<String> arguments) {
 void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
     [Map<String, int>? results]) {
   var save = content.createHero("blah");
-  var game = Game(content, save, 1);
+  var game = Game(content, 1);
 
 //  save.attributes[Attribute.strength] = strength;
 //  save.attributes[Attribute.agility] = agility;

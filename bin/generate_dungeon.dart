@@ -1,7 +1,6 @@
-import 'package:piecemeal/piecemeal.dart';
-
-import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/engine.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 /// A benchmark that just repeatedly generates dungeons for running in a
 /// profiler.
@@ -19,8 +18,8 @@ void main() {
     for (var i = 1; i <= 10; i++) {
       rng.setSeed(i);
 
-      var game = Game(content, save, 1);
-      for (var _ in game.generate()) {}
+      var game = Game(content, 1);
+      for (var _ in game.generate(save)) {}
 
       // Read some bit of game data so the JIT doesn't optimize the whole
       // program away as dead code.

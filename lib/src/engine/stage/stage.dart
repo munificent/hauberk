@@ -57,8 +57,6 @@ class Stage {
 
   Tile get(int x, int y) => tiles.get(x, y);
 
-  void set(int x, int y, Tile tile) => tiles.set(x, y, tile);
-
   void addActor(Actor actor) {
     assert(_actorsByTile[actor.pos] == null);
 

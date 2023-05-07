@@ -1,10 +1,9 @@
 import 'dart:html' as html;
 
-import 'package:malison/malison.dart';
-import 'package:piecemeal/piecemeal.dart';
-
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:malison/malison.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 final _scaleBySelect = html.querySelector("select") as html.SelectElement;
 

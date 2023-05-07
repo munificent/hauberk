@@ -1,7 +1,6 @@
+import 'package:hauberk/src/engine/core/resource.dart';
 import 'package:piecemeal/piecemeal.dart';
 import 'package:test/test.dart';
-
-import 'package:hauberk/src/engine/core/resource.dart';
 
 void main() {
   var resourceSet = ResourceSet<String>();

@@ -38,8 +38,8 @@ void main() {
 }
 
 void spawnStuff(int depth) {
-  var game = Game(content, content.createHero("temp"), depth);
-  for (var _ in game.generate()) {}
+  var game = Game(content, depth);
+  for (var _ in game.generate(content.createHero("temp"))) {}
 
   var monsters = allMonsters[depth];
   var items = allItems[depth];

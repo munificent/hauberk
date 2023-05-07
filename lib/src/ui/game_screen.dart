@@ -124,8 +124,8 @@ class GameScreen extends Screen<Input> {
   }
 
   factory GameScreen.town(Storage storage, Content content, HeroSave save) {
-    var game = Game(content, save, 0, width: 60, height: 34);
-    for (var _ in game.generate()) {}
+    var game = Game(content, 0, width: 60, height: 34);
+    for (var _ in game.generate(save)) {}
 
     return GameScreen(storage, game, null);
   }

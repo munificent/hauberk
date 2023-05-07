@@ -1,7 +1,7 @@
 import 'dart:html' as html;
 
-import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';
 
@@ -48,9 +48,9 @@ void main() {
 }
 
 void generate() {
-  var game = Game(content, save, depth);
+  var game = Game(content, depth);
 
-  for (var event in game.generate()) {
+  for (var event in game.generate(save)) {
     print(event);
   }
 

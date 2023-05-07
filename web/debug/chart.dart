@@ -1,14 +1,13 @@
 import 'dart:html' as html;
 import 'dart:svg' as svg;
 
-import 'package:malison/malison.dart';
-
-import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/content/item/affixes.dart';
 import 'package:hauberk/src/content/item/floor_drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
 import 'package:hauberk/src/content/stage/architectural_style.dart';
+import 'package:hauberk/src/engine.dart';
+import 'package:malison/malison.dart';
 
 import 'histogram.dart';
 
@@ -37,6 +36,7 @@ Chart get currentChart {
 }
 
 void main() {
+  ArchitecturalStyle.initialize();
   Items.initialize();
   Affixes.initialize();
   Monsters.initialize();

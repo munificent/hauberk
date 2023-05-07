@@ -1,7 +1,7 @@
 # Just a trivial makefile to shorten some common commands.
 
 serve:
-	pub run build_runner serve
+	dart run build_runner serve
 
 build: docs
 	pub run build_runner build --output web:build --release

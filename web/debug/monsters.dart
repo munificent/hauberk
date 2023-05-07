@@ -1,10 +1,9 @@
 import 'dart:html' as html;
 
-import 'package:malison/malison.dart';
-
-import 'package:hauberk/src/content/monster/monsters.dart';
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/content/monster/monsters.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:malison/malison.dart';
 
 import 'histogram.dart';
 

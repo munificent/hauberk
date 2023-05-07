@@ -1,9 +1,9 @@
 import 'dart:html' as html;
 
+import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/classes.dart';
 import 'package:hauberk/src/content/races.dart';
 import 'package:hauberk/src/content/skill/skills.dart';
-import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';

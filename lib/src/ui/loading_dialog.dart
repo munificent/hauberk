@@ -9,13 +9,17 @@ import 'input.dart';
 /// Dialog shown while a new level is being generated.
 class LoadingDialog extends Screen<Input> {
   final Game _game;
-  late final Iterator<String> _steps = _game.generate().iterator;
+  final Iterator<String> _steps;
   int _frame = 0;
 
   bool get isTransparent => true;
 
-  LoadingDialog(HeroSave save, Content content, int depth)
-      : _game = Game(content, save.clone(), depth);
+  factory LoadingDialog(HeroSave save, Content content, int depth) {
+    var game = Game(content, depth);
+    return LoadingDialog._(game, game.generate(save.clone()).iterator);
+  }
+
+  LoadingDialog._(this._game, this._steps);
 
   bool handleInput(Input input) {
     if (input == Input.cancel) {

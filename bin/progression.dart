@@ -7,8 +7,8 @@ void main() {
   var content = createContent();
   var save = content.createHero("Fred", content.races[4], content.classes[1]);
   for (var level = 1; level <= Option.maxDepth; level++) {
-    var game = Game(content, save, level);
-    for (var _ in game.generate()) {}
+    var game = Game(content, level);
+    for (var _ in game.generate(save)) {}
 
     var hero = game.hero;
     for (var actor in game.stage.actors) {

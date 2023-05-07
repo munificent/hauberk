@@ -1,7 +1,6 @@
-import 'package:piecemeal/piecemeal.dart';
-
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 /// Tracks what level the hero reaches if they kill every monster in every
 /// generated dungeon going down.
@@ -38,8 +37,8 @@ class Simulator {
   }
 
   void _exploreDepth() {
-    game = Game(content, save, depth);
-    for (var _ in game.generate()) {}
+    game = Game(content, depth);
+    for (var _ in game.generate(save)) {}
 
     print("--- Depth $depth (hero level ${hero.level}) ---");
 

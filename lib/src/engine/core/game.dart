@@ -23,7 +23,6 @@ import 'log.dart';
 class Game {
   final Content content;
 
-  final HeroSave _save;
   final log = Log();
 
   final _actions = Queue<Action>();
@@ -57,7 +56,7 @@ class Game {
   late Stage _stage;
   late Hero hero;
 
-  Game(this.content, this._save, this.depth, {int? width, int? height}) {
+  Game(this.content, this.depth, {int? width, int? height}) {
     // TODO: Vary size?
     _stage = Stage(width ?? 80, height ?? 60, this);
 
@@ -65,17 +64,20 @@ class Game {
     rng.shuffle(_substanceUpdateOrder);
   }
 
-  Iterable<String> generate() sync* {
+  Iterable<String> generate(HeroSave save) sync* {
     // TODO: Do something useful with depth.
     late Vec heroPos;
-    yield* content.buildStage(_save.lore, _stage, depth, (pos) {
+    yield* content.buildStage(save.lore, _stage, depth, (pos) {
       heroPos = pos;
     });
 
-    hero = Hero(this, heroPos, _save);
-    _stage.addActor(hero);
-
     yield "Calculating visibility";
+    initHero(heroPos, save);
+  }
+
+  void initHero(Vec heroPos, HeroSave save) {
+    hero = Hero(this, heroPos, save);
+    _stage.addActor(hero);
     _stage.refreshView();
   }
 

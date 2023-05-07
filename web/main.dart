@@ -2,16 +2,15 @@ import 'dart:html' as html;
 import 'dart:js';
 import 'dart:math' as math;
 
-import 'package:malison/malison.dart';
-import 'package:malison/malison_web.dart';
-import 'package:piecemeal/piecemeal.dart';
-
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/debug.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/ui/game_screen.dart';
 import 'package:hauberk/src/ui/input.dart';
 import 'package:hauberk/src/ui/main_menu_screen.dart';
+import 'package:malison/malison.dart';
+import 'package:malison/malison_web.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 final _fonts = <TerminalFont>[];
 late final UserInterface<Input> _ui;
