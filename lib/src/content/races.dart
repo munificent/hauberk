@@ -33,7 +33,7 @@ class Races {
       description:
           "What can be said about the fae folk that is known to be true? "
           "Dimunitive and easily harmed, they survive by cloaking themselves "
-          "in fables, tricks, and subterfuge. Quick to anger, and quick to "
+          "in fables, tricks, and subterfuge. Quick to anger and quick to "
           "forgive, the fae live each moment as if it may be their last, "
           "bright-burning flames all too aware of how easily they may be "
           "snuffed out.");
