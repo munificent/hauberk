@@ -48,23 +48,54 @@ class Log {
 
   static List<String> wordWrap(int width, String text) {
     var lines = <String>[];
-    var start = 0;
-    int? wordBreak;
-    for (var i = 0; i < text.length; i++) {
-      if (text[i] == ' ') wordBreak = i + 1;
+    var line = '';
+    var wordStart = -1;
 
-      if (i - start >= width) {
-        // No space to break at, so character wrap.
-        wordBreak ??= i;
-        lines.add(text.substring(start, wordBreak).trim());
-        start = wordBreak;
-        while (start < text.length && text[start] == ' ') {
-          start++;
-        }
+    void finishWord(int end) {
+      if (wordStart == -1) return;
+
+      if (line.isNotEmpty) line += ' ';
+      line += text.substring(wordStart, end);
+      wordStart = -1;
+    }
+
+    void finishLine() {
+      lines.add(line);
+      line = '';
+    }
+
+    for (var i = 0; i < text.length; i++) {
+      switch (text[i]) {
+        case ' ':
+          finishWord(i);
+
+        case '\n':
+          finishWord(i);
+          finishLine();
+          wordStart = -1;
+
+        case _
+            when wordStart != -1 &&
+                line.isNotEmpty &&
+                line.length + 1 + i - wordStart >= width:
+          // The word won't fit on the current line, so start a new line.
+          finishLine();
+
+        case _ when wordStart != -1 && line.isEmpty && i - wordStart >= width:
+          // The word is longer than a line, so character split it.
+          finishWord(i);
+          finishLine();
+          wordStart = i;
+
+        case _ when wordStart == -1:
+          // We got a non-whitespace character, so begin a new word here.
+          wordStart = i;
       }
     }
 
-    lines.add(text.substring(start, text.length).trim());
+    finishWord(text.length);
+    if (line.isNotEmpty) finishLine();
+
     return lines;
   }
 
