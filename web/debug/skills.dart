@@ -7,79 +7,77 @@ import 'package:hauberk/src/content/skill/skills.dart';
 import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';
+import 'html_builder.dart';
 
-final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 final breedDrops = <Breed, Histogram<String>>{};
 
 void main() {
   createContent();
   var hero = HeroSave("", Races.human, Classes.mage);
 
-  var text = StringBuffer();
-  text.write('''
-    <table>
-    <thead>
-    <tr>
-      <td>Name</td>
-      <td>Max Level</td>
-      <td>Focus</td>
-      <td>Complexity</td>
-      <td>Damage</td>
-      <td>Range</td>
-      <td>Description</td>
-    </tr>
-    </thead>
-    <tbody>
-    ''');
+  var builder = HtmlBuilder();
+  builder.table();
+  builder.td('Name');
+  builder.td('Max Focus');
+  builder.td('Focus');
+  builder.td('Complexity');
+  builder.td('Damage');
+  builder.td('Range');
+  builder.td('Description');
+  builder.tbody();
 
   for (var skill in Skills.all) {
-    text.write('<tr>');
-    text.write('<td><a href="#${anchor(skill.name)}">${skill.name}</a></td>');
-    text.write('<td class="r">${skill.maxLevel}</td>');
+    builder.td('<a href="#${anchor(skill.name)}">${skill.name}</a>');
+    builder.td(skill.maxLevel);
 
     if (skill is UsableSkill) {
-      text.write('<td class="r">${skill.focusCost(hero, 1)}</td>');
+      builder.td(skill.focusCost(hero, 1));
     } else {
-      text.write('<td class="r">&mdash;</td>');
+      builder.td('&mdash;', right: true);
     }
 
     if (skill is Discipline) {
-      text.write('<td class="r">&mdash;</td>');
-      text.write('<td class="r">&mdash;</td>');
-      text.write('<td class="r">&mdash;</td>');
+      builder.td('&mdash;', right: true);
+      builder.td('&mdash;', right: true);
+      builder.td('&mdash;', right: true);
     } else if (skill is Spell) {
-      text.write('<td class="r">${skill.baseComplexity}</td>');
-      text.write('<td class="r">${skill.damage}</td>');
-      text.write('<td class="r">${skill.range}</td>');
+      builder.td(skill.baseComplexity);
+      builder.td(skill.damage);
+      builder.td(skill.range);
     }
 
-    text.write('<td>${skill.description}</td>');
-    text.writeln('</tr>');
+    builder.td(skill.description);
+    builder.trEnd();
   }
-  text.write('</tbody></table>');
 
+  builder.tableEnd();
+
+  builder.h2('Spell focus cost');
+  builder.table();
+  builder.td('Intellect');
+  for (var intellect = 1; intellect <= Stat.max; intellect++) {
+    builder.td(intellect);
+  }
+
+  builder.tbody();
   for (var skill in Skills.all) {
-    text.write('<h2 id="${anchor(skill.name)}">${skill.name}</h2>');
-    if (skill is Discipline) {
-      // TODO: Show stuff.
-    } else if (skill is Spell) {
-      text.write('''<table><thead>
-      <tr>
-        <td>Intellect</td><td>Focus Cost</td>
-      </tr>
-      </thead><tbody>''');
-      for (var intellect = skill.baseComplexity; intellect <= 60; intellect++) {
-        hero.intellect.update(intellect, (_) {});
-        text.write('<tr><td>$intellect</td>');
-        var focus = skill.focusCost(hero, 1);
-        text.write('<td>$focus</td>');
-        text.writeln('</tr>');
-      }
-      text.writeln('</tbody></table>');
-    }
-  }
+    if (skill is! Spell) continue;
 
-  html.querySelector('body')!.appendHtml(text.toString(), validator: validator);
+    builder.td(skill.name);
+    for (var intellect = 1; intellect <= Stat.max; intellect++) {
+      hero.intellect.update(intellect, (_) {});
+      if (skill.calculateLevel(hero) > 0) {
+        builder.td(skill.focusCost(hero, 1));
+      } else {
+        builder.td('&mdash;', right: true);
+      }
+    }
+
+    builder.trEnd();
+  }
+  builder.tableEnd();
+
+  builder.appendToBody();
 }
 
 String anchor(String name) => name.replaceAll(" ", "-").toLowerCase();

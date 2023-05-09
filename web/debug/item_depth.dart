@@ -5,6 +5,7 @@ import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';
+import 'html_builder.dart';
 
 const tries = 10000;
 
@@ -50,39 +51,22 @@ void generate() {
     if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
   }
 
-  var tableContents = StringBuffer();
-  tableContents.write('''
-    <thead>
-    <tr>
-      <td width="300px">Item</td>
-      <td>Chance</td>
-    </tr>
-    </thead>
-    <tbody>
-    ''');
+  var builder = HtmlBuilder();
+  builder.thead();
+  builder.td('Item', width: 300);
+  builder.tbody();
 
   for (var affix in affixes.descending()) {
-    tableContents.write('''
-    <tr>
-      <td>$affix</td>
-      <td>${percent(affixes.count(affix))}</td>
-    </tr>
-    ''');
+    builder.td(affix);
+    builder.td(percent(affixes.count(affix)));
+    builder.trEnd();
   }
 
   for (var item in items.descending()) {
-    tableContents.write('''
-    <tr>
-      <td>$item</td>
-      <td>${percent(items.count(item))}</td>
-    </tr>
-    ''');
+    builder.td(item);
+    builder.td(percent(items.count(item)));
+    builder.trEnd();
   }
 
-  var validator = html.NodeValidatorBuilder.common();
-  validator.allowInlineStyles();
-
-  html
-      .querySelector('table')!
-      .setInnerHtml(tableContents.toString(), validator: validator);
+  builder.replaceContents('table');
 }

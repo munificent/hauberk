@@ -4,12 +4,11 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
 
 import 'histogram.dart';
+import 'html_builder.dart';
 
 Histogram<String> monsters = Histogram();
 Histogram<String> items = Histogram();
 Histogram<String> affixes = Histogram();
-
-final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 HeroSave save = content.createHero("hero");
 Content content = createContent();
@@ -75,20 +74,16 @@ void generate() {
 }
 
 void generateTable() {
-  var text = StringBuffer();
+  var builder = HtmlBuilder();
+  builder.thead();
+  builder.td('Monsters');
+  builder.td('Items');
+  builder.td('Affixes');
 
-  text.write('''<thead>
-    <tr>
-      <td>Monsters</td>
-      <td>Items</td>
-      <td>Affixes</td>
-    </tr>
-  </thead>''');
-
-  text.write('<tr>');
+  builder.tbody();
 
   void renderColumn(Histogram<String> histogram, int max) {
-    text.write('<td width="25%">');
+    builder.tdBegin(width: '25%');
     for (var name in histogram.descending()) {
       var count = histogram.count(name);
       var width = 100 * count ~/ max;
@@ -96,22 +91,19 @@ void generateTable() {
           (100 * count / histogram.total).toStringAsFixed(2).padLeft(5, "0");
       var chance = (count / generated).toStringAsFixed(1).padLeft(6);
 
-      text.write(
+      builder.write(
           '<span style="font-family: monospace;">$percent% $chance </span>');
-      text.write('<div class="bar" style="width: ${width}px;"></div> $name');
-      text.write('<br>');
+      builder.write('<div class="bar" style="width: ${width}px;"></div> $name');
+      builder.write('<br>');
     }
 
-    text.write('</td>');
+    builder.tdEnd();
   }
 
   renderColumn(monsters, monsters.max);
   renderColumn(items, items.max);
   renderColumn(affixes, items.max);
 
-  text.write('</tr>');
-
-  html
-      .querySelector('table')!
-      .setInnerHtml(text.toString(), validator: validator);
+  builder.tbodyEnd();
+  builder.replaceContents('table');
 }

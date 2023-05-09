@@ -202,8 +202,6 @@ class Table<T> {
   }
 
   void _sortRows() {
-    print("sort orders: ${_sortOrders.join(' ')}");
-
     _rows.sort((rowA, rowB) {
       for (var i = _sortOrders.length - 1; i >= 0; i--) {
         var columnIndex = _sortOrders[i];
@@ -230,30 +228,6 @@ class Table<T> {
 
       return _defaultSort(rowA._value, rowB._value);
     });
-
-//    for (var columnIndex in _sortOrders) {
-//      _rows.sort((rowA, rowB) {
-//        var column = columnIndex.abs() - 1;
-//        var cellA = rowA._cells[column];
-//        var cellB = rowB._cells[column];
-//
-//        var comparison = 0;
-//        if (cellA == null && cellB == null) {
-//          // Do nothing.
-//        } else if (cellA == null) {
-//          comparison = 1;
-//        } else if (cellB == null) {
-//          comparison = -1;
-//        } else if (cellA is num && cellB is num) {
-//          comparison = cellA.compareTo(cellB);
-//        } else if (cellA is String && cellB is String) {
-//          comparison = cellA.compareTo(cellB);
-//        }
-//
-//        if (columnIndex < 0) comparison = -comparison;
-//        return comparison;
-//      });
-//    }
   }
 }
 
