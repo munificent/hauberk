@@ -38,6 +38,7 @@ class Property<T extends num> {
   }
 }
 
+// TODO: Enum.
 class Stat {
   static const max = 60;
 
@@ -127,17 +128,13 @@ class Strength extends StatBase {
   /// Calculates the melee damage scaling factor based on the hero's strength
   /// relative to the weapon's [heft].
   double heftScale(int heft) {
-    var relative = (value - heft).clamp(-20, 50);
+    var relative = (value - heft).clamp(-10, 50);
 
-    if (relative < -10) {
-      return lerpDouble(relative, -20, -10, 0.05, 0.3);
-    } else if (relative < 0) {
+    if (relative < 0) {
       // Note that there is an immediate step down to 0.8 at -1.
-      return lerpDouble(relative, -10, -1, 0.3, 0.8);
-    } else if (relative < 30) {
-      return lerpDouble(relative, 0, 30, 1.0, 2.0);
+      return lerpDouble(relative, -10, -1, 0.0, 0.6);
     } else {
-      return lerpDouble(relative, 30, 50, 2.0, 3.0);
+      return lerpDouble(relative, 0, 50, 1.0, 2.0);
     }
   }
 }

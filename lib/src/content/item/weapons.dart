@@ -36,17 +36,17 @@ void weapons() {
     ..toss(breakage: 35, range: 4);
   item("Walking Stick", tan, frequency: 0.5, price: 10)
     ..depth(2, to: 40)
-    ..weapon(10, heft: 9)
+    ..weapon(9, heft: 10)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 5, fuel: 15);
   item("Sta[ff|aves]", brown, frequency: 0.5, price: 50)
     ..depth(7)
-    ..weapon(14, heft: 11)
+    ..weapon(13, heft: 14)
     ..toss(damage: 5)
     ..destroy(Elements.fire, chance: 2, fuel: 15);
   item("Quartersta[ff|aves]", lightCoolGray, frequency: 0.5, price: 80)
     ..depth(24)
-    ..weapon(20, heft: 13)
+    ..weapon(20, heft: 22)
     ..toss(damage: 8)
     ..destroy(Elements.fire, chance: 2, fuel: 15);
 
@@ -56,15 +56,15 @@ void weapons() {
     ..toss(breakage: 15, range: 5);
   item("Hammer", tan, frequency: 0.5, price: 120)
     ..depth(40)
-    ..weapon(32, heft: 22)
+    ..weapon(28, heft: 22)
     ..toss(damage: 12);
   item("Mattock", brown, frequency: 0.5, price: 240)
     ..depth(46)
-    ..weapon(40, heft: 26)
+    ..weapon(36, heft: 29)
     ..toss(damage: 16);
   item("War Hammer", lightCoolGray, frequency: 0.5, price: 400)
     ..depth(52)
-    ..weapon(48, heft: 30)
+    ..weapon(44, heft: 38)
     ..toss(damage: 20);
 
   // Maces.
@@ -73,11 +73,11 @@ void weapons() {
     ..toss(breakage: 15, range: 4);
   item("Morningstar", lightCoolGray, frequency: 0.5, price: 130)
     ..depth(24)
-    ..weapon(26, heft: 17)
+    ..weapon(25, heft: 21)
     ..toss(damage: 11);
   item("Mace", coolGray, frequency: 0.5, price: 310)
     ..depth(33)
-    ..weapon(36, heft: 23)
+    ..weapon(36, heft: 32)
     ..toss(damage: 16);
 
   // Whips.
@@ -87,12 +87,12 @@ void weapons() {
     ..skill("Whip Mastery");
   item("Whip", tan, frequency: 0.5, price: 40)
     ..depth(4)
-    ..weapon(10, heft: 7)
+    ..weapon(9, heft: 7)
     ..toss(damage: 1)
     ..destroy(Elements.fire, chance: 10, fuel: 5);
   item("Chain Whip", lightCoolGray, frequency: 0.5, price: 230)
     ..depth(15)
-    ..weapon(18, heft: 15)
+    ..weapon(18, heft: 17)
     ..toss(damage: 2);
   item("Flail", coolGray, frequency: 0.5, price: 350)
     ..depth(27)
@@ -106,28 +106,28 @@ void weapons() {
     ..toss(breakage: 2, range: 8);
   item("Kni[fe|ves]", darkCoolGray, frequency: 0.5, price: 20)
     ..depth(3, to: 20)
-    ..weapon(8, heft: 5)
-    ..toss(damage: 8);
+    ..weapon(6, heft: 5)
+    ..toss(damage: 6);
   item("Dirk", lightCoolGray, frequency: 0.5, price: 30)
     ..depth(4, to: 40)
-    ..weapon(10, heft: 6)
-    ..toss(damage: 10);
+    ..weapon(8, heft: 6)
+    ..toss(damage: 8);
   item("Dagger", lightBlue, frequency: 0.5, price: 50)
     ..depth(6, to: 70)
-    ..weapon(12, heft: 7)
-    ..toss(damage: 12);
+    ..weapon(9, heft: 7)
+    ..toss(damage: 9);
   item("Stiletto[es]", coolGray, frequency: 0.5, price: 80)
     ..depth(10)
-    ..weapon(14, heft: 6)
-    ..toss(damage: 14);
+    ..weapon(11, heft: 8)
+    ..toss(damage: 11);
   item("Rondel", lightAqua, frequency: 0.5, price: 130)
     ..depth(20)
-    ..weapon(16, heft: 9)
-    ..toss(damage: 16);
+    ..weapon(13, heft: 9)
+    ..toss(damage: 13);
   item("Baselard", gold, frequency: 0.5, price: 200)
     ..depth(30)
-    ..weapon(18, heft: 11)
-    ..toss(damage: 18);
+    ..weapon(15, heft: 11)
+    ..toss(damage: 15);
   // Main-guache
   // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
 
@@ -137,23 +137,23 @@ void weapons() {
     ..skill("Swordfighting");
   item("Rapier", darkCoolGray, frequency: 0.5, price: 140)
     ..depth(13)
-    ..weapon(13, heft: 12)
+    ..weapon(13, heft: 13)
     ..toss(damage: 4);
   item("Shortsword", coolGray, frequency: 0.5, price: 230)
     ..depth(17)
-    ..weapon(15, heft: 13)
+    ..weapon(15, heft: 15)
     ..toss(damage: 6);
   item("Scimitar", lightCoolGray, frequency: 0.5, price: 370)
     ..depth(18)
-    ..weapon(24, heft: 16)
+    ..weapon(24, heft: 18)
     ..toss(damage: 9);
   item("Cutlass[es]", buttermilk, frequency: 0.5, price: 520)
     ..depth(20)
-    ..weapon(26, heft: 17)
+    ..weapon(26, heft: 22)
     ..toss(damage: 11);
   item("Falchion", lightAqua, frequency: 0.5, price: 750)
     ..depth(34)
-    ..weapon(28, heft: 18)
+    ..weapon(28, heft: 25)
     ..toss(damage: 15);
 
   /*

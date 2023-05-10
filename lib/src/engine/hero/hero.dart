@@ -33,11 +33,10 @@ class Hero extends Actor {
 
   Behavior? _behavior;
 
-  /// Damage scales for each weapon being wielded, based on the weapon, other
-  /// equipment, and stats.
-  ///
-  /// This list parallels the sequence returned by `equipment.weapons`.
-  final List<Property<double>> _heftScales = [Property(), Property()];
+  /// Damage scale for wielded weapons based on strength, their combined heft,
+  /// skills, etc.
+  final Property<double> _heftDamageScale = Property();
+  double get heftDamageScale => _heftDamageScale.value;
 
   /// How full the hero is.
   ///
@@ -219,7 +218,7 @@ class Hero extends Actor {
       weapon.modifyHit(hit);
 
       // Take heft and strength into account.
-      hit.scaleDamage(_heftScales[i].value);
+      hit.scaleDamage(_heftDamageScale.value);
       hits.add(hit);
     }
 
@@ -248,7 +247,7 @@ class Hero extends Actor {
     var hit = weapons[i].attack!.createHit();
 
     // Take heft and strength into account.
-    hit.scaleDamage(_heftScales[i].value);
+    hit.scaleDamage(_heftDamageScale.value);
 
     modifyHit(hit, HitType.ranged);
     return hit;
@@ -274,7 +273,7 @@ class Hero extends Actor {
 
     // Let armor modify it. We don't worry about weapons here since the weapon
     // modified it when the hit was created. This ensures that when
-    // dual-wielding that one weapon's modifiers don't affect the other.
+    // dual-wielding, that one weapon's modifiers don't affect the other.
     for (var item in equipment) {
       if (item.type.weaponType == null) item.modifyHit(hit);
     }
@@ -472,39 +471,38 @@ class Hero extends Actor {
 
     // Refresh the heft scales.
     var weapons = equipment.weapons.toList();
-    for (var i = 0; i < weapons.length; i++) {
-      var weapon = weapons[i];
 
-      // Dual-wielding imposes a heft penalty.
-      var heftModifier = 1.0;
-
-      if (weapons.length == 2) {
-        heftModifier = 1.3;
-
-        // Discover the dual-wield skill.
-        // TODO: This is a really specific method to put on Skill. Is there a
-        // cleaner way to handle this?
-        for (var skill in game.content.skills) {
-          skill.dualWield(this);
-        }
+    var totalHeft = 0;
+    if (weapons.length > 1) {
+      // Discover the dual-wield skill.
+      // TODO: This is a really specific method to put on Skill. Is there a
+      // cleaner way to handle this?
+      for (var skill in game.content.skills) {
+        skill.dualWield(this);
       }
-
-      for (var skill in skills.acquired) {
-        heftModifier =
-            skill.modifyHeft(this, skills.level(skill), heftModifier);
-      }
-
-      var heft = (weapon.heft * heftModifier).round();
-      var heftScale = strength.heftScale(heft);
-      _heftScales[i].update(heftScale, (previous) {
-        // TODO: Reword these if there is no weapon equipped?
-        if (heftScale < 1.0 && previous >= 1.0) {
-          game.log.error("You are too weak to effectively wield $weapon.");
-        } else if (heftScale >= 1.0 && previous < 1.0) {
-          game.log.message("You feel comfortable wielding $weapon.");
-        }
-      });
     }
+
+    var heftModifier = 1.0;
+    for (var skill in skills.acquired) {
+      heftModifier = skill.modifyHeft(this, skills.level(skill), heftModifier);
+    }
+
+    // When dual-wielding, it's as if each weapon has an individual heft that
+    // is the total of both of them.
+    for (var weapon in weapons) {
+      totalHeft += weapon.heft;
+    }
+
+    var heftScale = strength.heftScale((totalHeft * heftModifier).round());
+    _heftDamageScale.update(heftScale, (previous) {
+      // TODO: Reword these if there is no weapon equipped?
+      var weaponList = weapons.join(' and ');
+      if (heftScale < 1.0 && previous >= 1.0) {
+        game.log.error("You are too weak to effectively wield $weaponList.");
+      } else if (heftScale >= 1.0 && previous < 1.0) {
+        game.log.message("You feel comfortable wielding $weaponList.");
+      }
+    });
 
     // See if any skills changed. (Gaining intellect learns spells.)
     _refreshSkills();

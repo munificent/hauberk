@@ -5,7 +5,7 @@ class DualWield extends Discipline {
   @override
   int get maxLevel => 10;
 
-  static double _heftModifier(int level) => lerpDouble(level, 0, 10, 1.0, 0.5);
+  static double _heftModifier(int level) => lerpDouble(level, 1, 10, 1.5, 0.7);
 
   @override
   String get name => "Dual-wield";
@@ -16,11 +16,17 @@ class DualWield extends Discipline {
       "warriors do with only a single weapon in their puny arms.";
 
   @override
-  String levelDescription(int level) => "Reduces heft when dual-wielding by "
-      "${((1.0 - _heftModifier(level)) * 100).toInt()}%.";
+  String levelDescription(int level) =>
+      "Total heft when dual-wielding is scaled by "
+      "${(_heftModifier(level) * 100).toInt()}%.";
 
   @override
-  int baseTrainingNeeded(int level) => 100 * level * level * level;
+  int baseTrainingNeeded(int level) {
+    // As soon as it's discovered, reach level 1.
+    level--;
+
+    return 100 * level * level * level;
+  }
 
   @override
   void dualWield(Hero hero) {
@@ -30,9 +36,11 @@ class DualWield extends Discipline {
   @override
   double modifyHeft(Hero hero, int level, double heftModifier) {
     // Have to be dual-wielding.
-    if (hero.equipment.weapons.length != 2) return heftModifier;
+    if (hero.equipment.weapons.length == 2) {
+      return heftModifier * _heftModifier(level);
+    }
 
-    return heftModifier * _heftModifier(level);
+    return heftModifier;
   }
 
   @override
