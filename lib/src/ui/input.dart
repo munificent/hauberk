@@ -14,11 +14,8 @@ class Input {
   /// Exit the successfully completed level.
   static const quit = Input("quit");
 
-  /// Open nearby doors, chests, etc.
-  static const open = Input("open");
-
-  /// Close nearby doors.
-  static const close = Input("close");
+  /// Operate nearby doors, chests, lights, etc.
+  static const operate = Input("operate");
 
   static const drop = Input("drop");
   static const use = Input("use");

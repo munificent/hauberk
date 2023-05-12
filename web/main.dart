@@ -66,8 +66,7 @@ void main() {
   _ui.keyPress.bind(Input.forfeit, KeyCode.f, shift: true);
   _ui.keyPress.bind(Input.quit, KeyCode.q);
 
-  _ui.keyPress.bind(Input.open, KeyCode.c, shift: true);
-  _ui.keyPress.bind(Input.close, KeyCode.c);
+  _ui.keyPress.bind(Input.operate, KeyCode.c); // TODO: Better key?
   _ui.keyPress.bind(Input.drop, KeyCode.d);
   _ui.keyPress.bind(Input.use, KeyCode.u);
   _ui.keyPress.bind(Input.pickUp, KeyCode.g);

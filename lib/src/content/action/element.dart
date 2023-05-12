@@ -7,11 +7,10 @@ import '../tiles.dart';
 
 mixin ElementActionMixin implements Action {
   void hitTile(Hit hit, Vec pos, num distance, [int fuel = 0]) {
-    // Open tiles if the given motility lets us go through them.
-    var tile = game.stage[pos];
-    if (tile.type.canOpen) {
-      addAction(tile.type.onOpen!(pos));
-    }
+    // TODO: This used to open door tiles if possible but that behavior broke
+    // when open and closed were unified as "operate". Consider whether element
+    // hits should be able to operate tiles or not and, if so, how we know when
+    // they should.
 
     addEvent(EventType.cone, element: hit.element, pos: pos);
 

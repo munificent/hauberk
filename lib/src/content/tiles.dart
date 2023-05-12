@@ -76,28 +76,28 @@ class Tiles {
 
   // Doors.
   static final openDoor =
-      tile("open door", "○", tan, darkBrown).onClose(_closeDoor).open();
+      tile("open door", "○", tan, darkBrown).onOperate(_closeDoor).open();
   static final closedDoor =
-      tile("closed door", "◙", tan, darkBrown).onOpen(_openDoor).door();
+      tile("closed door", "◙", tan, darkBrown).onOperate(_openDoor).door();
 
   static final openSquareDoor = tile("open square door", "♂", tan, darkBrown)
-      .onClose(_closeSquareDoor)
+      .onOperate(_closeSquareDoor)
       .open();
 
   static final closedSquareDoor =
       tile("closed square door", "♀", tan, darkBrown)
-          .onOpen(_openSquareDoor)
+          .onOperate(_openSquareDoor)
           .door();
 
   static final openBarredDoor =
       tile("open barred door", "♂", lightWarmGray, coolGray)
-          .onClose(_closeBarredDoor)
+          .onOperate(_closeBarredDoor)
           .open();
 
   // TODO: Should be able to see through but not fly through.
   static final closedBarredDoor =
       tile("closed barred door", "♪", lightWarmGray, coolGray)
-          .onOpen(_openBarredDoor)
+          .onOperate(_openBarredDoor)
           .transparentDoor();
 
   // Unsorted.
@@ -133,10 +133,10 @@ class Tiles {
 
   static final openChest = tile("open chest", "⌠", tan).obstacle();
   static final closedChest = tile("closed chest", "⌡", tan)
-      .onOpen((pos) => OpenChestAction(pos))
+      .onOperate((pos) => OpenChestAction(pos))
       .obstacle();
   static final closedBarrel = tile("closed barrel", "°", tan)
-      .onOpen((pos) => OpenBarrelAction(pos))
+      .onOperate((pos) => OpenBarrelAction(pos))
       .obstacle();
   static final openBarrel = tile("open barrel", "∙", tan).obstacle();
 
@@ -333,8 +333,7 @@ class TileBuilder {
   final String name;
   final List<Glyph> glyphs;
 
-  Action Function(Vec)? _onClose;
-  Action Function(Vec)? _onOpen;
+  Action Function(Vec)? _onOperate;
   TilePortal? _portal;
   int _emanation = 0;
 
@@ -381,13 +380,8 @@ class TileBuilder {
     return this;
   }
 
-  TileBuilder onClose(Action Function(Vec) onClose) {
-    _onClose = onClose;
-    return this;
-  }
-
-  TileBuilder onOpen(Action Function(Vec) onOpen) {
-    _onOpen = onOpen;
+  TileBuilder onOperate(Action Function(Vec) onOperate) {
+    _onOperate = onOperate;
     return this;
   }
 
@@ -405,10 +399,7 @@ class TileBuilder {
 
   TileType _motility(Motility motility) {
     return TileType(name, glyphs.length == 1 ? glyphs.first : glyphs, motility,
-        portal: _portal,
-        emanation: _emanation,
-        onClose: _onClose,
-        onOpen: _onOpen);
+        portal: _portal, emanation: _emanation, onOperate: _onOperate);
   }
 }
 

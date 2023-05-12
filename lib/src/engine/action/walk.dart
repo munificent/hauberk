@@ -26,10 +26,18 @@ class WalkAction extends Action {
       return alternate(AttackAction(target));
     }
 
-    // See if it can be opened.
+    // If the tile is a closed door and the actor can open it, or the tile can't
+    // be entered at all but can be operated, then try to operate it.
+    //
+    // We don't operate it unconditionally because we don't want to close open
+    // doors when walking through them.
     var tile = game.stage[pos].type;
-    if (tile.canOpen) {
-      return alternate(tile.onOpen!(pos));
+    if (tile.canOperate) {
+      if (tile.motility == Motility.door &&
+              actor!.motility.overlaps(Motility.door) ||
+          !tile.canEnter(actor!.motility)) {
+        return alternate(tile.onOperate!(pos));
+      }
     }
 
     // See if we can walk there.

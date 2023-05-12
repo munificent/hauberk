@@ -78,26 +78,21 @@ class TileType {
   final int emanation;
   final Object? appearance;
 
-  bool get canClose => onClose != null;
-
-  bool get canOpen => onOpen != null;
+  bool get canOperate => onOperate != null;
 
   final Motility motility;
 
-  /// If the tile can be "opened", this is the function that produces an open
-  /// action for it. Otherwise `null`.
-  final Action Function(Vec)? onClose;
-
-  /// If the tile can be "opened", this is the function that produces an open
-  /// action for it. Otherwise `null`.
-  final Action Function(Vec)? onOpen;
+  /// If the tile can be "operated", this is the function that produces an
+  /// action for it. This is used for opening and closing toors, lighting fixed
+  /// lights, etc. Otherwise `null`.
+  final Action Function(Vec)? onOperate;
 
   bool get isTraversable => canEnter(Motility.doorAndWalk);
 
   bool get isWalkable => canEnter(Motility.walk);
 
   TileType(this.name, this.appearance, this.motility,
-      {int? emanation, this.portal, this.onClose, this.onOpen})
+      {int? emanation, this.portal, this.onOperate})
       : emanation = emanation ?? 0;
 
   /// Whether an actor with [motility] is able to enter this tile.

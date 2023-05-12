@@ -148,53 +148,27 @@ class SkillDirectionDialog extends DirectionDialog {
   }
 }
 
-/// Asks the user to select an adjacent tile to close.
-class CloseDialog extends DirectionDialog {
+/// Asks the user to select an adjacent tile to operate.
+class OperateDialog extends DirectionDialog {
   @override
-  String get query => "Close what?";
+  String get query => "Operate what?";
   @override
   String get helpText => "Choose direction";
 
-  CloseDialog(GameScreen gameScreen) : super(gameScreen);
+  OperateDialog(GameScreen gameScreen) : super(gameScreen);
 
   @override
-  bool canTarget(Tile tile) => tile.type.canClose;
+  bool canTarget(Tile tile) => tile.type.canOperate;
 
   @override
   bool tryDirection(Direction direction) {
     var pos = game.hero.pos + direction;
     var tile = game.stage[pos].type;
-    if (tile.canClose) {
-      game.hero.setNextAction(tile.onClose!(pos));
+    if (tile.canOperate) {
+      game.hero.setNextAction(tile.onOperate!(pos));
       return true;
     } else {
-      game.log.error('There is nothing to close there.');
-      return false;
-    }
-  }
-}
-
-/// Asks the user to select an adjacent tile to open.
-class OpenDialog extends DirectionDialog {
-  @override
-  String get query => "Open what?";
-  @override
-  String get helpText => "Choose direction";
-
-  OpenDialog(GameScreen gameScreen) : super(gameScreen);
-
-  @override
-  bool canTarget(Tile tile) => tile.type.canOpen;
-
-  @override
-  bool tryDirection(Direction direction) {
-    var pos = game.hero.pos + direction;
-    var tile = game.stage[pos].type;
-    if (tile.canOpen) {
-      game.hero.setNextAction(tile.onOpen!(pos));
-      return true;
-    } else {
-      game.log.error('There is nothing to open there.');
+      game.log.error('There is nothing to operate there.');
       return false;
     }
   }

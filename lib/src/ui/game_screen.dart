@@ -170,10 +170,8 @@ class GameScreen extends Screen<Input> {
           dirty();
         }
 
-      case Input.open:
-        _open();
-      case Input.close:
-        _closeDoor();
+      case Input.operate:
+        _operate();
       case Input.pickUp:
         _pickUp();
       case Input.equip:
@@ -437,46 +435,24 @@ class GameScreen extends Screen<Input> {
     return true;
   }
 
-  void _open() {
-    // See how many adjacent closed doors there are.
-    // TODO: Handle chests.
-    var openable = <Vec>[];
+  void _operate() {
+    // See how many adjacent operable tiles there are.
+    var operable = <Vec>[];
     for (var pos in game.hero.pos.neighbors) {
-      if (game.stage[pos].type.canOpen) {
-        openable.add(pos);
+      if (game.stage[pos].type.canOperate) {
+        operable.add(pos);
       }
     }
 
-    if (openable.isEmpty) {
-      game.log.error('You are not next to anything to open.');
+    if (operable.isEmpty) {
+      game.log.error('You are not next to anything to operate.');
       dirty();
-    } else if (openable.length == 1) {
-      var pos = openable.first;
+    } else if (operable.length == 1) {
+      var pos = operable.first;
       // TODO: This leaks information if the hero is next to unexplored tiles.
-      game.hero.setNextAction(game.stage[pos].type.onOpen!(pos));
+      game.hero.setNextAction(game.stage[pos].type.onOperate!(pos));
     } else {
-      ui.push(OpenDialog(this));
-    }
-  }
-
-  void _closeDoor() {
-    // See how many adjacent open doors there are.
-    var closeable = <Vec>[];
-    for (var pos in game.hero.pos.neighbors) {
-      if (game.stage[pos].type.canClose) {
-        closeable.add(pos);
-      }
-    }
-
-    if (closeable.isEmpty) {
-      game.log.error('You are not next to an open door.');
-      dirty();
-    } else if (closeable.length == 1) {
-      var pos = closeable.first;
-      // TODO: This leaks information if the hero is next to unexplored tiles.
-      game.hero.setNextAction(game.stage[pos].type.onClose!(pos));
-    } else {
-      ui.push(CloseDialog(this));
+      ui.push(OperateDialog(this));
     }
   }
 
