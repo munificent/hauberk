@@ -33,20 +33,37 @@ abstract class RoomArchitecture extends Architecture {
   }
 }
 
+enum RoomShapes {
+  /// Rooms whose sides are all 90 degrees.
+  rectangular,
+
+  /// Rooms with 45 degree sides.
+  octagonal,
+
+  /// All room shapes.
+  any
+}
+
 /// Generates random rooms.
 class Room {
-  static Array2D<RoomTile> create(int depth) {
-    // TODO: Instead of picking from these randomly, different architectural
-    // styles should prefer certain room shapes.
+  static Array2D<RoomTile> create(int depth, RoomShapes shapes) {
+    switch (shapes) {
+      case RoomShapes.rectangular:
+        return rng.oneIn(3) ? _angled(depth) : _rectangle(depth);
+      case RoomShapes.octagonal:
+        return rng.oneIn(3) ? _diamond(depth) : _octagon(depth);
+      case RoomShapes.any:
+        return switch (rng.range(10)) {
+          0 => _diamond(depth),
+          1 => _octagon(depth),
+          2 || 3 => _angled(depth),
+          _ => _rectangle(depth),
+        };
+    }
+
     // TODO: More room shapes:
     // - Plus
     // - T
-    return switch (rng.inclusive(10)) {
-      0 => _diamond(depth),
-      1 => _octagon(depth),
-      2 || 3 => _angled(depth),
-      _ => _rectangle(depth),
-    };
   }
 
   static Array2D<RoomTile> _rectangle(int depth) {

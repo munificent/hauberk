@@ -97,7 +97,7 @@ class Keep extends RoomArchitecture {
   }
 
   bool _tryPlaceStartingRoom() {
-    var room = Room.create(depth);
+    var room = Room.create(depth, RoomShapes.rectangular);
     for (var i = 0; i < 100; i++) {
       var pos = _startLocation(room);
       if (_tryPlaceRoom(room, pos.x, pos.y)) return true;
@@ -173,7 +173,7 @@ class Keep extends RoomArchitecture {
   }
 
   bool _tryAttachRoom(Junction junction) {
-    var room = Room.create(depth);
+    var room = Room.create(depth, RoomShapes.rectangular);
 
     // Try to find a junction that can mate with this one.
     var direction = junction.direction.rotate180;

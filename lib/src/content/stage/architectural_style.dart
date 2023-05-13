@@ -5,14 +5,16 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import 'architect.dart';
 import 'builder.dart';
+import 'room.dart';
 
 class ArchitecturalStyle {
   static final ResourceSet<ArchitecturalStyle> styles = ResourceSet();
 
   static void initialize() {
-    // Generic default dungeon style.
-    // TODO: Variations on this.
-    dungeon();
+    // Generic default dungeon styles.
+    dungeon(RoomShapes.rectangular, frequency: 6.0);
+    dungeon(RoomShapes.octagonal, frequency: 1.0);
+    dungeon(RoomShapes.any, frequency: 3.0);
 
     // TODO: Decide if we should ever do full-size keeps anymore.
 //    addStyle("keep",

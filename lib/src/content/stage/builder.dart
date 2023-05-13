@@ -7,6 +7,7 @@ import 'keep.dart';
 import 'lake.dart';
 import 'pit.dart';
 import 'river.dart';
+import 'room.dart';
 
 void _addStyle(String name,
     {int start = 1,
@@ -33,12 +34,12 @@ void _addStyle(String name,
       endFrequency: endFrequency);
 }
 
-void dungeon() {
+void dungeon(RoomShapes shapes, {required double frequency}) {
   _addStyle("dungeon",
-      startFrequency: 10.0,
+      startFrequency: frequency,
       decor: "dungeon",
       decorDensity: 0.09,
-      create: () => Dungeon());
+      create: () => Dungeon(shapes: shapes));
 }
 
 void catacomb(String monsters,
