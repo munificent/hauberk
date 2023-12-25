@@ -12,6 +12,9 @@ final _content = createContent();
 final List<ItemType> _weapons =
     _content.items.where((item) => item.attack != null).toList();
 
+/// For each strength value and dual-wield skill level, finds the weapon or
+/// pair of weapons with the highest average damage. This can be used to tune
+/// the math for heft and dual wielding.
 void main() {
   _buildTable();
 }
@@ -21,24 +24,24 @@ void _buildTable() async {
 
   var builder = HtmlBuilder();
   builder.thead();
-  builder.td("Str / Dual Wield");
+  builder.td("Str \\ Dual Wield Level");
   for (var wield = 0; wield <= DualWield().maxLevel; wield++) {
     builder.td(wield);
   }
   builder.tbody();
   for (var strength = 1; strength <= Stat.max; strength++) {
     builder.td(strength);
-    for (var wield = 1; wield <= DualWield().maxLevel; wield++) {
+    for (var wield = 0; wield <= DualWield().maxLevel; wield++) {
       var best = _findBestWeapons(strength, wield).join('<br>');
       builder.td(best, right: true);
-
-      await html.window.animationFrame;
-      html.querySelector('table')!.setInnerHtml(
-          'Generating data strength = $strength, dual wield = $wield...',
-          validator: validator);
     }
 
     builder.trEnd();
+
+    await html.window.animationFrame;
+    html.querySelector('table')!.setInnerHtml(
+        'Generating data strength = $strength...',
+        validator: validator);
   }
   builder.tbodyEnd();
   builder.replaceContents('table');

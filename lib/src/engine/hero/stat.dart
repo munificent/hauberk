@@ -131,7 +131,7 @@ class Strength extends StatBase {
     var relative = (value - heft).clamp(-10, 50);
 
     if (relative < 0) {
-      // Note that there is an immediate step down to 0.8 at -1.
+      // Note there is an immediate step down to 0.6 at -1.
       return lerpDouble(relative, -10, -1, 0.0, 0.6);
     } else {
       return lerpDouble(relative, 0, 50, 1.0, 2.0);
