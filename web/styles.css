@@ -57,6 +57,7 @@ code {
 table {
   border-collapse: collapse;
   font-family: monospace;
+  font-size: 12px;
 }
 
 tr:nth-child(2n) {

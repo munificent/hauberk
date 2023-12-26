@@ -6,6 +6,7 @@ import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
 
 import 'histogram.dart';
+import 'html_builder.dart';
 
 final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 final breedDrops = <Breed, Histogram<String>>{};
@@ -19,77 +20,69 @@ void main() {
     return a.experience.compareTo(b.experience);
   });
 
-  var text = StringBuffer();
-  text.write('''
-    <thead>
-    <tr>
-      <td colspan="2">Breed</td>
-      <td>Depth</td>
-      <td>Health</td>
-      <td>Meander</td>
-      <td>Speed</td>
-      <td>Dodge</td>
-      <td>Exp</td>
-      <td>Count</td>
-      <td>Attacks</td>
-      <td>Moves</td>
-      <td>Tags</td>
-      <td>Flags</td>
-      <td width="20%">Drops</td>
-    </tr>
-    </thead>
-    <tbody>
-    ''');
+  var builder = HtmlBuilder();
+  builder.thead();
+  builder.td('Breed', colspan: 2);
+  builder.td('Depth');
+  builder.td('Health');
+  builder.td('Meander');
+  builder.td('Speed');
+  builder.td('Dodge');
+  builder.td('Exp', right: true);
+  builder.td('Count');
+  builder.td('Attacks');
+  builder.td('Moves');
+  builder.td('Tags and flags');
+  builder.td('Drops', width: '20%');
+  builder.tbody();
 
   for (var breed in breeds) {
     var glyph = breed.appearance as Glyph;
 
+    builder.td('<pre><span style="color: ${glyph.fore.cssColor}">'
+        '${String.fromCharCodes([glyph.char])}'
+        '</span></pre>');
+
+    builder.td(breed.name);
+    builder.td(breed.depth);
+    builder.td(breed.maxHealth);
+    builder.td(breed.meander);
+    builder.td(breed.speed);
+
+    builder.tdBegin();
+    builder.write(breed.dodge.toString());
+    if (breed.defenses.isNotEmpty) {
+      builder.write('+${breed.defenses.map((e) => e.amount).join("+")}');
+    }
+    builder.tdEnd();
+
+    builder.td(breed.experience);
+
     var count = breed.countMin.toString();
     if (breed.countMax != breed.countMin) {
-      count += "&thinsp;&ndash;&thinsp;${breed.countMax}";
+      count += ":${breed.countMax}";
     }
 
-    text.write('''
-        <tr>
-          <td>
-            <pre><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
-          glyph.char
-        ])}</span></pre>
-          </td>
-          <td>${breed.name}</td>
-          <td>${breed.depth}</td>
-          <td class="r">${breed.maxHealth}</td>
-          <td class="r">${breed.meander}</td>
-          <td class="r">${breed.speed}</td>
-        ''');
+    builder.td(count, right: true);
 
-    text.write('<td>${breed.dodge}');
-    if (breed.defenses.isNotEmpty) {
-      text.write('+${breed.defenses.map((e) => e.amount).join("+")}');
-    }
-    text.write('</td>');
-    text.write('<td class="r">${breed.experience}</td>');
-    text.write('<td class="r">$count</td>');
-
-    text.write('<td>');
     var attacks = breed.attacks.map(
         (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} $attack');
-    text.write(attacks.join('<br>'));
-    text.write('</td>');
+    builder.td(attacks.join('<br>'));
 
-    text.writeln('<td>${breed.moves.join("<br>")}</td>');
+    builder.td(breed.moves.join("<br>"));
 
-    var tags = Monsters.breeds.getTags(breed.name).toList()..remove("monster");
-    text.write('<td>${tags.join(", ")}</td>');
-    text.write('<td>${breed.flags}</td>');
-    text.write('<td><span class="drop" id="${breed.name}">(drops)</span></td>');
-    text.write('</tr>');
+    builder.td([
+      for (var tag in Monsters.breeds.getTags(breed.name))
+        if (tag != "monster") tag,
+      ...breed.flags.names,
+    ].join(" "));
+
+    builder.td('<span class="drop" id="${breed.name}">(drops)</span>');
+
+    builder.trEnd();
   }
-  text.write('</tbody>');
 
-  html
-      .querySelector('table')!
-      .setInnerHtml(text.toString(), validator: validator);
+  builder.replaceContents('table');
 
   for (var span in html.querySelectorAll('span.drop')) {
     span.onClick.listen((_) {

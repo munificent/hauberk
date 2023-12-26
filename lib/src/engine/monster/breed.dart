@@ -268,6 +268,24 @@ class BreedFlags {
   final bool protective;
   final bool unique;
 
+  factory BreedFlags.fromSet(Set<String> names) {
+    names = names.toSet();
+
+    var flags = BreedFlags(
+        berzerk: names.remove("berzerk"),
+        cowardly: names.remove("cowardly"),
+        fearless: names.remove("fearless"),
+        immobile: names.remove("immobile"),
+        protective: names.remove("protective"),
+        unique: names.remove("unique"));
+
+    if (names.isNotEmpty) {
+      throw ArgumentError('Unknown flags "${names.join(', ')}"');
+    }
+
+    return flags;
+  }
+
   BreedFlags(
       {required this.berzerk,
       required this.cowardly,
@@ -290,33 +308,15 @@ class BreedFlags {
     return scale;
   }
 
-  factory BreedFlags.fromSet(Set<String> names) {
-    names = names.toSet();
-
-    var flags = BreedFlags(
-        berzerk: names.remove("berzerk"),
-        cowardly: names.remove("cowardly"),
-        fearless: names.remove("fearless"),
-        immobile: names.remove("immobile"),
-        protective: names.remove("protective"),
-        unique: names.remove("unique"));
-
-    if (names.isNotEmpty) {
-      throw ArgumentError('Unknown flags "${names.join(', ')}"');
-    }
-
-    return flags;
-  }
+  List<String> get names => [
+        if (berzerk) "berzerk",
+        if (cowardly) "cowardly",
+        if (fearless) "fearless",
+        if (immobile) "immobile",
+        if (protective) "protective",
+        if (unique) "unique",
+      ];
 
   @override
-  String toString() {
-    return [
-      if (berzerk) "berzerk",
-      if (cowardly) "cowardly",
-      if (fearless) "fearless",
-      if (immobile) "immobile",
-      if (protective) "protective",
-      if (unique) "unique",
-    ].join(" ");
-  }
+  String toString() => names.join(" ");
 }
