@@ -14,7 +14,7 @@ void weapons() {
     ..toss(breakage: 25, range: 5);
   item("Stick", tan, frequency: 0.5)
     ..depth(1, to: 20)
-    ..weapon(7, heft: 6)
+    ..weapon(4, heft: 6)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 10, fuel: 10);
   item("Cudgel", lightCoolGray, frequency: 0.5, price: 20)
