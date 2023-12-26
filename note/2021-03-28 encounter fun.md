@@ -177,7 +177,7 @@ for the session is good, as is leaning more on fury and focus.
     instantly and leave the next turn a clean slate, more things like poison,
     gaseous clouds, burning wall, buffs, debuffs, etc. that affect future turns.
 
-*   Likewise more monsters moves that affect multiple turns.
+*   Likewise more monster moves that affect multiple turns.
 
 So the high level summary here is:
 

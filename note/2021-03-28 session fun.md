@@ -38,8 +38,8 @@ Pick up rocks to enchant and throw. Use grass as a spell component. Uncover
 hidden treasure.
 
 Instead of a quick battle every few steps, have fewer bigger encounters more
-spread out. So when the player is in an encounter, they're really in it and
-in that space for a while. And when they aren't in encounter, they have a good
+spread out. So when the player is in an encounter, they're really in it and in
+that space for a while. And when they aren't in an encounter, they have a good
 amount of time creeping through eerily quiet spaces letting their anticipation
 build. Let the dungeon generator's theming foreshadow the encounter they will
 eventually have.
@@ -65,7 +65,7 @@ property of dungeon layout and monster sleeping.
 
 One option would be to make that more formal. Imagine that opening a door
 awakens all monsters in the new room. Once they are all dead, the encounter is
-over and the game knows it. Monsters never open door and monsters in unreached
+over and the game knows it. Monsters never open doors and monsters in unreached
 areas are asleep. Players would automatically re-heal once the encounter is
 over.
 
@@ -151,6 +151,3 @@ Ideas:
     you need to stay long enough to cancel that out and make it profitable. This
     feels weird and punishing, but could work if we do multiple areas and make
     weaker dungeons cheaper. It might help prevent dungeon scumming too.
-
-
-
