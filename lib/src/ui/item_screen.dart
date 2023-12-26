@@ -247,7 +247,7 @@ abstract class ItemScreen extends Screen<Input> {
 abstract class _ItemVerbScreen extends ItemScreen {
   String get _verb;
 
-  _ItemVerbScreen(GameScreen gameScreen) : super._(gameScreen);
+  _ItemVerbScreen(super.gameScreen) : super._();
 }
 
 class _TownItemView extends ItemView {
@@ -298,7 +298,7 @@ class _HomeViewScreen extends ItemScreen {
         "Esc": "Leave"
       };
 
-  _HomeViewScreen(GameScreen gameScreen) : super._(gameScreen);
+  _HomeViewScreen(super.gameScreen) : super._();
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -342,7 +342,7 @@ class _HomeGetScreen extends _ItemVerbScreen {
   @override
   ItemCollection get _destination => _gameScreen.game.hero.inventory;
 
-  _HomeGetScreen(GameScreen gameScreen) : super(gameScreen);
+  _HomeGetScreen(super.gameScreen);
 
   @override
   bool get _canSelectAny => true;
@@ -377,7 +377,7 @@ class _ShopViewScreen extends ItemScreen {
         "Esc": "Cancel"
       };
 
-  _ShopViewScreen(GameScreen gameScreen, this._shop) : super._(gameScreen);
+  _ShopViewScreen(super.gameScreen, this._shop) : super._();
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -425,7 +425,7 @@ class _ShopBuyScreen extends _ItemVerbScreen {
   @override
   ItemCollection get _destination => _gameScreen.game.hero.save.inventory;
 
-  _ShopBuyScreen(GameScreen gameScreen, this._shop) : super(gameScreen);
+  _ShopBuyScreen(super.gameScreen, this._shop);
 
   @override
   bool get _canSelectAny => true;
@@ -486,9 +486,9 @@ class _CountScreen extends ItemScreen {
   Map<String, String> get _helpKeys =>
       {"OK": _parent._verb, "↕": "Change quantity", "Esc": "Cancel"};
 
-  _CountScreen(GameScreen gameScreen, this._parent, this._item)
+  _CountScreen(super.gameScreen, this._parent, this._item)
       : _count = _parent._initialCount(_item),
-        super._(gameScreen) {
+        super._() {
     _inspected = _item;
   }
 

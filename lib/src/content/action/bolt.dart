@@ -12,10 +12,9 @@ class BoltAction extends LosAction {
   @override
   int get range => _range ?? _hit.range;
 
-  BoltAction(Vec target, this._hit, {bool canMiss = false, int? range})
+  BoltAction(super.target, this._hit, {bool canMiss = false, int? range})
       : _canMiss = canMiss,
-        _range = range,
-        super(target);
+        _range = range;
 
   @override
   void onStep(Vec previous, Vec pos) {

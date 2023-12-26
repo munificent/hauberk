@@ -204,7 +204,7 @@ class FamilyBuilder extends _BaseBuilder {
   /// Character for the current monster.
   final String _character;
 
-  FamilyBuilder(double? frequency, this._character) : super(frequency);
+  FamilyBuilder(super.frequency, this._character);
 }
 
 class BreedBuilder extends _BaseBuilder {

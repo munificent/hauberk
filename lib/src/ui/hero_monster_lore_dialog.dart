@@ -14,8 +14,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
   int _selection = 0;
   int _scroll = 0;
 
-  HeroMonsterLoreDialog(Content content, HeroSave hero)
-      : super.base(content, hero) {
+  HeroMonsterLoreDialog(super.content, super.hero) : super.base() {
     _listBreeds();
   }
 

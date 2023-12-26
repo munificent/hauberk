@@ -8,7 +8,7 @@ class HasteMove extends Move {
   @override
   num get experience => _duration * _speed;
 
-  HasteMove(num rate, this._duration, this._speed) : super(rate);
+  HasteMove(super.rate, this._duration, this._speed);
 
   @override
   bool shouldUse(Monster monster) {

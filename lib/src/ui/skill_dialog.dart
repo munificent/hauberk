@@ -177,7 +177,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 }
 
 class DisciplineDialog extends SkillTypeDialog<Discipline> {
-  DisciplineDialog(HeroSave hero) : super(hero);
+  DisciplineDialog(super.hero);
 
   @override
   String get _name => "Disciplines";
@@ -246,7 +246,7 @@ class SpellDialog extends SkillTypeDialog<Spell> {
   @override
   String get _rowSeparator => "──────────────────────────────── ────";
 
-  SpellDialog(HeroSave hero) : super(hero);
+  SpellDialog(super.hero);
 
   @override
   void _renderSkillListHeader(Terminal terminal) {

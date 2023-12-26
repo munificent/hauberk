@@ -15,8 +15,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
   int _selection = 0;
   int _scroll = 0;
 
-  HeroItemLoreDialog(Content content, HeroSave hero)
-      : super.base(content, hero) {
+  HeroItemLoreDialog(super.content, super.hero) : super.base() {
     _listItems();
   }
 

@@ -7,9 +7,8 @@ import '../action/spawn.dart';
 class SpawnMove extends Move {
   final bool _preferStraight;
 
-  SpawnMove(num rate, {bool? preferStraight})
-      : _preferStraight = preferStraight ?? false,
-        super(rate);
+  SpawnMove(super.rate, {bool? preferStraight})
+      : _preferStraight = preferStraight ?? false;
 
   @override
   num get experience => 6.0;

@@ -3,7 +3,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../core/actor.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
-import '../items/inventory.dart';
 import '../items/item.dart';
 import 'action.dart';
 import 'item.dart';
@@ -18,8 +17,7 @@ class TossAction extends ItemAction {
   final Hit _hit;
   final Vec _target;
 
-  TossAction(ItemLocation location, Item item, this._hit, this._target)
-      : super(location, item);
+  TossAction(super.location, super.item, this._hit, this._target);
 
   @override
   ActionResult onPerform() {
@@ -54,7 +52,7 @@ class TossLosAction extends LosAction {
   @override
   int get range => _hit.range;
 
-  TossLosAction(Vec target, this._item, this._hit) : super(target);
+  TossLosAction(super.target, this._item, this._hit);
 
   @override
   void onStep(Vec previous, Vec pos) {

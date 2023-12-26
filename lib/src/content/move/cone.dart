@@ -13,7 +13,7 @@ class ConeMove extends Move {
   num get experience =>
       attack.damage * 3.0 * attack.element.experience * (1.0 + range / 10.0);
 
-  ConeMove(num rate, this.attack) : super(rate);
+  ConeMove(super.rate, this.attack);
 
   @override
   bool shouldUse(Monster monster) {

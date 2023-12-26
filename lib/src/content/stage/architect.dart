@@ -467,8 +467,7 @@ abstract class Architecture {
 class _LengthPathfinder extends Pathfinder<bool> {
   final int _maxLength;
 
-  _LengthPathfinder(Stage stage, Vec start, Vec end, this._maxLength)
-      : super(stage, start, end);
+  _LengthPathfinder(super.stage, super.start, super.end, this._maxLength);
 
   @override
   bool? processStep(Path path) {

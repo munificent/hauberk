@@ -270,12 +270,11 @@ class MotilityFlow extends Flow {
   final bool _avoidSubstances;
   final int? _maxDistance;
 
-  MotilityFlow(Stage stage, Vec start, this._motility,
-      {int? maxDistance, bool? avoidActors, bool? avoidSubstances})
+  MotilityFlow(super.stage, super.start, this._motility,
+      {super.maxDistance, bool? avoidActors, bool? avoidSubstances})
       : _maxDistance = maxDistance,
         _avoidActors = avoidActors ?? true,
-        _avoidSubstances = avoidSubstances ?? false,
-        super(stage, start, maxDistance: maxDistance);
+        _avoidSubstances = avoidSubstances ?? false;
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
   @override

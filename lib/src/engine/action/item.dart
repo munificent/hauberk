@@ -97,8 +97,7 @@ class DropAction extends ItemAction {
   /// The number of items in the stack to drop.
   final int _count;
 
-  DropAction(ItemLocation location, Item item, this._count)
-      : super(location, item);
+  DropAction(super.location, super.item, this._count);
 
   @override
   ActionResult onPerform() {
@@ -128,7 +127,7 @@ class DropAction extends ItemAction {
 /// [Equipment]. May cause a currently equipped Item to become unequipped. If
 /// there is no room in the Inventory for that Item, it will drop to the ground.
 class EquipAction extends ItemAction {
-  EquipAction(ItemLocation location, Item item) : super(location, item);
+  EquipAction(super.location, super.item);
 
   @override
   ActionResult onPerform() {
@@ -183,7 +182,7 @@ class EquipAction extends ItemAction {
 /// [Inventory]. If there is no room in the inventory, it will drop to the
 /// ground.
 class UnequipAction extends ItemAction {
-  UnequipAction(ItemLocation location, Item item) : super(location, item);
+  UnequipAction(super.location, super.item);
 
   @override
   ActionResult onPerform() {
@@ -210,7 +209,7 @@ class UnequipAction extends ItemAction {
 
 /// [Action] for using an [Item].
 class UseAction extends ItemAction {
-  UseAction(ItemLocation location, Item item) : super(location, item);
+  UseAction(super.location, super.item);
 
   @override
   ActionResult onPerform() {

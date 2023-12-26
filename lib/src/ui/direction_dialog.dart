@@ -134,8 +134,7 @@ class SkillDirectionDialog extends DirectionDialog {
   @override
   String get helpText => "Choose direction";
 
-  SkillDirectionDialog(GameScreen gameScreen, this._onSelect)
-      : super(gameScreen);
+  SkillDirectionDialog(super.gameScreen, this._onSelect);
 
   // TODO: Let skill filter out invalid directions.
   @override
@@ -155,7 +154,7 @@ class CloseDialog extends DirectionDialog {
   @override
   String get helpText => "Choose direction";
 
-  CloseDialog(GameScreen gameScreen) : super(gameScreen);
+  CloseDialog(super.gameScreen);
 
   @override
   bool canTarget(Tile tile) => tile.type.canClose;
@@ -181,7 +180,7 @@ class OpenDialog extends DirectionDialog {
   @override
   String get helpText => "Choose direction";
 
-  OpenDialog(GameScreen gameScreen) : super(gameScreen);
+  OpenDialog(super.gameScreen);
 
   @override
   bool canTarget(Tile tile) => tile.type.canOpen;
