@@ -2,11 +2,10 @@ import 'dart:html' as html;
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
+import 'package:hauberk/src/debug/histogram.dart';
+import 'package:hauberk/src/debug/table.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
-
-import 'histogram.dart';
-import 'html_builder.dart';
 
 final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 final breedDrops = <Breed, Histogram<String>>{};
@@ -14,94 +13,72 @@ final breedDrops = <Breed, Histogram<String>>{};
 void main() {
   createContent();
 
-  var breeds = Monsters.breeds.all.toList();
-  breeds.sort((a, b) {
+  var table = Table<Breed>("table", (a, b) {
     if (a.depth != b.depth) return a.depth.compareTo(b.depth);
     return a.experience.compareTo(b.experience);
   });
 
-  var builder = HtmlBuilder();
-  builder.thead();
-  builder.td('Breed', colspan: 2);
-  builder.td('Depth');
-  builder.td('Health');
-  builder.td('Meander');
-  builder.td('Speed');
-  builder.td('Dodge');
-  builder.td('Exp', right: true);
-  builder.td('Count');
-  builder.td('Attacks');
-  builder.td('Moves');
-  builder.td('Tags and flags');
-  builder.td('Drops', width: '20%');
-  builder.tbody();
+  table.column('Breed',
+      compare: (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  table.column('Depth', right: true);
+  table.column('Health', right: true);
+  table.column('Meander', right: true);
+  table.column('Speed', right: true);
+  table.column('Dodge',
+      compare: (a, b) => _totalDodge(a).compareTo(_totalDodge(b)));
+  table.column('Exp', right: true);
+  table.column('Count', compare: (a, b) {
+    if (a.countMin != b.countMin) return a.countMin.compareTo(b.countMin);
+    return a.countMax.compareTo(b.countMax);
+  });
+  table.column('Attacks');
+  table.column('Moves');
+  table.column('Tags');
+  table.column('Flags');
 
-  for (var breed in breeds) {
+  for (var breed in Monsters.breeds.all) {
+    var cells = <Object?>[];
+
     var glyph = breed.appearance as Glyph;
-
-    builder.td('<pre><span style="color: ${glyph.fore.cssColor}">'
+    cells.add('<code class="term"><span style="color: ${glyph.fore.cssColor}">'
         '${String.fromCharCodes([glyph.char])}'
-        '</span></pre>');
+        '</span></code>&nbsp;${breed.name}');
 
-    builder.td(breed.name);
-    builder.td(breed.depth);
-    builder.td(breed.maxHealth);
-    builder.td(breed.meander);
-    builder.td(breed.speed);
-
-    builder.tdBegin();
-    builder.write(breed.dodge.toString());
-    if (breed.defenses.isNotEmpty) {
-      builder.write('+${breed.defenses.map((e) => e.amount).join("+")}');
-    }
-    builder.tdEnd();
-
-    builder.td(breed.experience);
+    cells.add(breed.depth);
+    cells.add(breed.maxHealth);
+    cells.add(breed.meander);
+    cells.add(breed.speed);
+    cells.add(_dodgesAndDefenses(breed).join('+'));
+    cells.add(breed.experience);
 
     var count = breed.countMin.toString();
     if (breed.countMax != breed.countMin) {
       count += ":${breed.countMax}";
     }
-
-    builder.td(count, right: true);
+    cells.add(count);
 
     var attacks = breed.attacks.map(
         (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} $attack');
-    builder.td(attacks.join('<br>'));
+    cells.add(attacks.join('<br>'));
 
-    builder.td(breed.moves.join("<br>"));
+    cells.add(breed.moves.join("<br>"));
 
-    builder.td([
+    cells.add([
       for (var tag in Monsters.breeds.getTags(breed.name))
         if (tag != "monster") tag,
-      ...breed.flags.names,
     ].join(" "));
 
-    builder.td('<span class="drop" id="${breed.name}">(drops)</span>');
+    cells.add(breed.flags.names.join(" "));
 
-    builder.trEnd();
+    table.row(breed, cells);
   }
 
-  builder.replaceContents('table');
-
-  for (var span in html.querySelectorAll('span.drop')) {
-    span.onClick.listen((_) {
-      moreDrops(span);
-    });
-  }
+  table.render();
 }
 
-void moreDrops(html.Element span) {
-  var breed = Monsters.breeds.find(span.id);
-  var drops = breedDrops.putIfAbsent(breed, () => Histogram());
+int _totalDodge(Breed breed) =>
+    _dodgesAndDefenses(breed).reduce((a, b) => a + b);
 
-  for (var i = 0; i < 100; i++) {
-    breed.drop.dropItem(breed.depth, (item) {
-      drops.add(item.toString());
-    });
-  }
-
-  span.innerHtml = drops.descending().map((name) {
-    return "$name (${drops.count(name)})";
-  }).join('<br>');
+List<int> _dodgesAndDefenses(Breed breed) {
+  return [breed.dodge, for (var defense in breed.defenses) defense.amount];
 }
