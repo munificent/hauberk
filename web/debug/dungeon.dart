@@ -7,13 +7,12 @@ import 'package:hauberk/src/content/stage/architect.dart';
 import 'package:hauberk/src/content/stage/decorator.dart';
 import 'package:hauberk/src/content/stage/keep.dart';
 import 'package:hauberk/src/debug.dart';
+import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
-
-import 'histogram.dart';
 
 final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 

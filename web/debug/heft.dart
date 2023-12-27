@@ -2,10 +2,9 @@ import 'dart:html' as html;
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/skill/discipline/dual_wield.dart';
+import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:piecemeal/piecemeal.dart';
-
-import 'html_builder.dart';
 
 final _content = createContent();
 
@@ -40,7 +39,7 @@ void _buildTable() async {
 
     await html.window.animationFrame;
     html.querySelector('table')!.setInnerHtml(
-        'Generating data strength = $strength...',
+        'Generating data for strength $strength...',
         validator: validator);
   }
   builder.tbodyEnd();

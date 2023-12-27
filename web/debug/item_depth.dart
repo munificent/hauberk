@@ -2,10 +2,9 @@ import 'dart:html' as html;
 
 import 'package:hauberk/src/content/item/affixes.dart';
 import 'package:hauberk/src/content/item/items.dart';
+import 'package:hauberk/src/debug/histogram.dart';
+import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
-
-import 'histogram.dart';
-import 'html_builder.dart';
 
 const tries = 10000;
 

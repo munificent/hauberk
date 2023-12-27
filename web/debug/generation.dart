@@ -1,10 +1,9 @@
 import 'dart:html' as html;
 
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/debug/histogram.dart';
+import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
-
-import 'histogram.dart';
-import 'html_builder.dart';
 
 Histogram<String> monsters = Histogram();
 Histogram<String> items = Histogram();

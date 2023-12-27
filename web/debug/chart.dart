@@ -6,10 +6,9 @@ import 'package:hauberk/src/content/item/floor_drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
 import 'package:hauberk/src/content/stage/architectural_style.dart';
+import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
-
-import 'histogram.dart';
 
 const batchSize = 1000;
 const chartWidth = 600;

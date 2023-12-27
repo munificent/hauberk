@@ -40,9 +40,9 @@ void main() {
     var cells = <Object?>[];
 
     var glyph = breed.appearance as Glyph;
-    cells.add('<code class="term"><span style="color: ${glyph.fore.cssColor}">'
+    cells.add('<code class="term" style="color: ${glyph.fore.cssColor}">'
         '${String.fromCharCodes([glyph.char])}'
-        '</span></code>&nbsp;${breed.name}');
+        '</code>&nbsp;${breed.name}');
 
     cells.add(breed.depth);
     cells.add(breed.maxHealth);
