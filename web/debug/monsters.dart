@@ -2,13 +2,11 @@ import 'dart:html' as html;
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
-import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/debug/table.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
 
 final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
-final breedDrops = <Breed, Histogram<String>>{};
 
 void main() {
   createContent();
@@ -40,9 +38,10 @@ void main() {
     var cells = <Object?>[];
 
     var glyph = breed.appearance as Glyph;
+    var anchor = Uri.encodeFull(breed.name);
     cells.add('<code class="term" style="color: ${glyph.fore.cssColor}">'
         '${String.fromCharCodes([glyph.char])}'
-        '</code>&nbsp;${breed.name}');
+        '</code>&nbsp;<a href="monster.html#$anchor">${breed.name}</a>');
 
     cells.add(breed.depth);
     cells.add(breed.maxHealth);
