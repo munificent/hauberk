@@ -179,29 +179,16 @@ class Storage {
       count = data['count'] as int;
     }
 
-    Affix? prefix;
-    if (data.containsKey('prefix')) {
-      var prefixData = data['prefix'];
-      // TODO: Older save from back when affixes had types.
-      if (prefixData is Map<String, dynamic>) {
-        prefix = content.findAffix(prefixData['name'] as String);
-      } else {
-        prefix = content.findAffix(prefixData as String);
+    var affixes = <Affix>[];
+    if (data.containsKey('affixes')) {
+      var affixesData = data['affixes'] as List<dynamic>;
+
+      for (var affixData in affixesData) {
+        affixes.add(content.findAffix(affixData as String)!);
       }
     }
 
-    Affix? suffix;
-    if (data.containsKey('suffix')) {
-      var suffixData = data['suffix'];
-      // TODO: Older save from back when affixes had types.
-      if (suffixData is Map<String, dynamic>) {
-        suffix = content.findAffix(suffixData['name'] as String);
-      } else {
-        suffix = content.findAffix(suffixData as String);
-      }
-    }
-
-    return Item(type, count, prefix, suffix);
+    return Item(type, count, affixes);
   }
 
   Lore _loadLore(Map<String, dynamic>? data) {
@@ -332,8 +319,8 @@ class Storage {
     return <String, dynamic>{
       'type': item.type.name,
       'count': item.count,
-      if (item.prefix != null) 'prefix': item.prefix!.name,
-      if (item.suffix != null) 'suffix': item.suffix!.name,
+      if (item.affixes.isNotEmpty)
+        'affixes': [for (var affix in item.affixes) affix.id]
     };
   }
 }

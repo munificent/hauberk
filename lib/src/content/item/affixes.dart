@@ -50,19 +50,20 @@ class Affixes {
     // See how many affixes the item has. The affixChance only boosts one roll
     // because it increases the odds of *an* affix, but not the odds of
     // multiple.
-    var affixes = 0;
-    if (rng.float(100.0) < chance + affixChance) affixes++;
+    var affixCount = 0;
+    if (rng.float(100.0) < chance + affixChance) affixCount++;
 
     // Make dual-affix items rarer since they are more powerful (they only take
     // a single equipment slot) and also look kind of funny.
-    if (rng.float(100.0) < chance && rng.oneIn(5)) affixes++;
+    if (rng.float(100.0) < chance && rng.oneIn(5)) affixCount++;
 
-    if (affixes == 0) return Item(itemType, 1);
+    if (affixCount == 0) return Item(itemType, 1);
 
+    // TODO: Now that affixes are a uniform list, this could be cleaner.
     var prefix = _chooseAffix(prefixes, itemType, affixDepth);
     var suffix = _chooseAffix(suffixes, itemType, affixDepth);
 
-    if (affixes == 1 && prefix != null && suffix != null) {
+    if (affixCount == 1 && prefix != null && suffix != null) {
       if (rng.oneIn(2)) {
         prefix = null;
       } else {
@@ -70,7 +71,8 @@ class Affixes {
       }
     }
 
-    return Item(itemType, 1, prefix, suffix);
+    return Item(
+        itemType, 1, [if (prefix != null) prefix, if (suffix != null) suffix]);
   }
 
   static Affix find(String name) {

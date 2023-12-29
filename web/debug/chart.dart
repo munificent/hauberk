@@ -227,7 +227,7 @@ class ItemTypesChart extends Chart {
     if (itemType == null) return;
 
     var item = Affixes.createItem(itemType, depth);
-    if (item.prefix != null || item.suffix != null) {
+    if (item.affixes.isNotEmpty) {
       histogram.add("${itemType.name} (ego)");
     } else {
       histogram.add(itemType.name);
@@ -252,8 +252,8 @@ class AffixesChart extends Chart {
   static List<String> _makeLabels() {
     var names = [
       "(none)",
-      ...Affixes.prefixes.all.map((affix) => "${affix.name} _"),
-      ...Affixes.suffixes.all.map((affix) => "_ ${affix.name}"),
+      ...Affixes.prefixes.all.map((affix) => affix.id),
+      ...Affixes.suffixes.all.map((affix) => affix.id),
     ];
 
     // TODO: Sort by depth and rarity?
@@ -282,9 +282,11 @@ class AffixesChart extends Chart {
 
     var item = Affixes.createItem(itemType, depth);
 
-    if (item.prefix != null) histogram.add("${item.prefix!.name} _");
-    if (item.suffix != null) histogram.add("_ ${item.suffix!.name}");
-    if (item.prefix == null && item.suffix == null) histogram.add("(none)");
+    for (var affix in item.affixes) {
+      histogram.add(affix.id);
+    }
+
+    if (item.affixes.isEmpty) histogram.add("(none)");
   }
 
   @override

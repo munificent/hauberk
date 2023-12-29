@@ -5,15 +5,18 @@ import 'item.dart';
 /// A modifier that can be applied to an [Item] to change its capabilities.
 /// For example, in a "Dagger of Wounding", the "of Wounding" part is an affix.
 class Affix {
-  /// The full unique name of the affixes.
+  /// The unique identifier for the affix.
   ///
-  /// It's possible for different affixes to have the same name but different
-  /// values or applying to different equipment. For storage, we need to know
-  /// which one it actually is, which this distinguishes.
-  final String name;
+  /// It's possible for different affixes to have the same display name but
+  /// different modifiers or applying to different equipment. For storage, we
+  /// need to know which one it actually is, which this distinguishes.
+  final String id;
 
-  /// The short, shown name of the affix.
-  final String displayName;
+  /// The template used to modify an item's name with this affix's name.
+  ///
+  /// Contains "_" where the item name should appear in the resulting name, like
+  /// "_ of Burning" or "Elven _".
+  final String _nameTemplate;
 
   final double heftScale;
   final int weightBonus;
@@ -29,7 +32,7 @@ class Affix {
   final int priceBonus;
   final double priceScale;
 
-  Affix(this.name, this.displayName,
+  Affix(this.id, this._nameTemplate,
       {double? heftScale,
       int? weightBonus,
       int? strikeBonus,
@@ -49,6 +52,9 @@ class Affix {
         priceBonus = priceBonus ?? 0,
         priceScale = priceScale ?? 1.0;
 
+  /// Applies this affix's name to the item with [name].
+  String itemName(String name) => _nameTemplate.replaceAll('_', name);
+
   int resistance(Element element) => _resists[element] ?? 0;
 
   void resist(Element element, int power) {
@@ -62,5 +68,5 @@ class Affix {
   }
 
   @override
-  String toString() => name;
+  String toString() => id;
 }

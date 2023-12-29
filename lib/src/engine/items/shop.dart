@@ -44,8 +44,8 @@ class Shop {
         var item = inventory[i];
 
         if (previous.type == item.type &&
-            previous.prefix == item.prefix &&
-            previous.suffix == item.suffix) {
+            previous.affixes.isEmpty &&
+            item.affixes.isEmpty) {
           inventory.removeAt(i);
           i--;
         }

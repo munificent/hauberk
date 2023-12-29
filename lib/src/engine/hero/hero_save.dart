@@ -174,8 +174,9 @@ class HeroSave {
 
     // Let equipment modify it.
     for (var item in equipment) {
-      if (item.prefix != null) bonus += item.prefix!.statBonus(stat);
-      if (item.suffix != null) bonus += item.suffix!.statBonus(stat);
+      for (var affix in item.affixes) {
+        bonus += affix.statBonus(stat);
+      }
     }
 
     return bonus;

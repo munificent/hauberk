@@ -46,8 +46,10 @@ void generate() {
     var item = Affixes.createItem(itemType, depth);
 
     items.add(item.toString());
-    if (item.prefix != null) affixes.add("${item.prefix!.name} _");
-    if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
+
+    for (var affix in item.affixes) {
+      affixes.add(affix.id);
+    }
   }
 
   var builder = HtmlBuilder();

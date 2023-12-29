@@ -63,8 +63,9 @@ void _update() {
     breed.drop.dropItem(breed.depth, (item) {
       items.add(item.type.name);
 
-      if (item.prefix != null) affixes.add("${item.prefix!.name} _");
-      if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
+      for (var affix in item.affixes) {
+        affixes.add(affix.id);
+      }
     });
   }
 

@@ -31,6 +31,8 @@ class WizardDialog extends Screen<Input> {
       ui.push(_WizardTrainDialog(_game));
     };
 
+    _menuItems["Kill All Monsters"] = _killAllMonsters;
+
     _menuItems["Toggle Show All Monsters"] = () {
       Debug.showAllMonsters = !Debug.showAllMonsters;
       _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
@@ -134,6 +136,16 @@ class WizardDialog extends Screen<Input> {
     } else {
       _game.hero.experience = experienceLevelCost(_game.hero.level + 1);
       _game.hero.refreshProperties();
+    }
+
+    dirty();
+  }
+
+  void _killAllMonsters() {
+    for (var monster in _game.stage.actors.toList()) {
+      if (monster is! Monster) continue;
+
+      monster.onDied(Noun('The wizard'));
     }
 
     dirty();

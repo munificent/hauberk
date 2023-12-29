@@ -42,21 +42,19 @@ void affixCategory(String tag) {
   _affixTag = tag;
 }
 
-AffixBuilder affix(String name, double frequency) {
+AffixBuilder affix(String nameTemplate, double frequency) {
   finishAffix();
 
   bool isPrefix;
-  if (name.endsWith(" _")) {
-    name = name.substring(0, name.length - 2);
+  if (nameTemplate.endsWith(" _")) {
     isPrefix = true;
-  } else if (name.startsWith("_ ")) {
-    name = name.substring(2);
+  } else if (nameTemplate.startsWith("_ ")) {
     isPrefix = false;
   } else {
-    throw ArgumentError('Affix "$name" must start or end with "_".');
+    throw ArgumentError('Affix "$nameTemplate" must start or end with "_".');
   }
 
-  return _affix = AffixBuilder(name, isPrefix, frequency);
+  return _affix = AffixBuilder(nameTemplate, isPrefix, frequency);
 }
 
 class _BaseBuilder {
@@ -315,7 +313,7 @@ class ItemBuilder extends _BaseBuilder {
 }
 
 class AffixBuilder {
-  final String _name;
+  final String _nameTemplate;
   final bool _isPrefix;
   int? _minDepth;
   int? _maxDepth;
@@ -334,7 +332,7 @@ class AffixBuilder {
   final Map<Element, int> _resists = {};
   final Map<Stat, int> _statBonuses = {};
 
-  AffixBuilder(this._name, this._isPrefix, this._frequency);
+  AffixBuilder(this._nameTemplate, this._isPrefix, this._frequency);
 
   /// Sets the affix's minimum depth to [from]. If [to] is given, then the
   /// affix has the given depth range. Otherwise, its max range is
@@ -471,17 +469,16 @@ void finishAffix() {
 
   var affixes = builder._isPrefix ? Affixes.prefixes : Affixes.suffixes;
 
-  var displayName = builder._name;
-  var fullName = "$displayName ($_affixTag)";
+  // Generate a unique ID for it.
+  var idBase = builder._nameTemplate.replaceAll("_", "[$_affixTag]");
+  var id = idBase;
   var index = 1;
-
-  // Generate a unique name for it.
-  while (affixes.tryFind(fullName) != null) {
+  while (affixes.tryFind(id) != null) {
     index++;
-    fullName = "$displayName ($_affixTag $index)";
+    id = "$idBase ($index)";
   }
 
-  var affix = Affix(fullName, displayName,
+  var affix = Affix(id, builder._nameTemplate,
       heftScale: builder._heftScale,
       weightBonus: builder._weightBonus,
       strikeBonus: builder._strikeBonus,
@@ -496,7 +493,7 @@ void finishAffix() {
   builder._statBonuses.forEach(affix.setStatBonus);
 
   affixes.addRanged(affix,
-      name: fullName,
+      name: id,
       start: builder._minDepth,
       end: builder._maxDepth,
       startFrequency: builder._frequency,

@@ -49,15 +49,10 @@ class Lore {
     _foundItems.putIfAbsent(item.type, () => 0);
     _foundItems[item.type] = _foundItems[item.type]! + 1;
 
-    void findAffix(Affix? affix) {
-      if (affix == null) return;
-
+    for (var affix in item.affixes) {
       _foundAffixes.putIfAbsent(affix, () => 0);
       _foundAffixes[affix] = _foundAffixes[affix]! + 1;
     }
-
-    findAffix(item.prefix);
-    findAffix(item.suffix);
   }
 
   void useItem(Item item) {

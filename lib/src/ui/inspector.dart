@@ -88,8 +88,10 @@ class Inspector {
 
     for (var stat in Stat.all) {
       var bonus = 0;
-      if (_item.prefix != null) bonus += _item.prefix!.statBonus(stat);
-      if (_item.suffix != null) bonus += _item.suffix!.statBonus(stat);
+
+      for (var affix in _item.affixes) {
+        bonus += affix.statBonus(stat);
+      }
 
       if (bonus < 0) {
         sentences.add("It lowers your ${stat.name} by ${-bonus}.");

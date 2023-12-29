@@ -11,10 +11,10 @@ import 'item_type.dart';
 class Item implements Comparable<Item>, Noun {
   final ItemType type;
 
-  final Affix? prefix;
-  final Affix? suffix;
+  final List<Affix> affixes;
 
-  Item(this.type, this._count, [this.prefix, this.suffix]);
+  Item(this.type, this._count, [List<Affix> affixes = const []])
+      : affixes = List.unmodifiable(affixes);
 
   Object get appearance => type.appearance;
 
@@ -43,28 +43,22 @@ class Item implements Comparable<Item>, Noun {
   Element get element {
     var result = Element.none;
     if (attack != null) result = attack!.element;
-    if (prefix != null && prefix!.brand != Element.none) result = prefix!.brand;
-    if (suffix != null && suffix!.brand != Element.none) result = suffix!.brand;
+
+    for (var affix in affixes) {
+      if (affix.brand != Element.none) result = affix.brand;
+    }
+
     return result;
   }
 
-  int get strikeBonus {
-    var result = 0;
-    _applyAffixes((affix) => result += affix.strikeBonus);
-    return result;
-  }
+  int get strikeBonus =>
+      affixes.fold(0, (bonus, affix) => bonus + affix.strikeBonus);
 
-  double get damageScale {
-    var result = 1.0;
-    _applyAffixes((affix) => result *= affix.damageScale);
-    return result;
-  }
+  double get damageScale =>
+      affixes.fold(1.0, (bonus, affix) => bonus * affix.damageScale);
 
-  int get damageBonus {
-    var result = 0;
-    _applyAffixes((affix) => result += affix.damageBonus);
-    return result;
-  }
+  int get damageBonus =>
+      affixes.fold(0, (bonus, affix) => bonus + affix.damageBonus);
 
   // TODO: Affix defenses?
   Defense? get defense => type.defense;
@@ -77,18 +71,13 @@ class Item implements Comparable<Item>, Noun {
   int get baseArmor => type.armor;
 
   /// The amount of protection added by the affixes.
-  int get armorModifier {
-    var result = 0;
-    _applyAffixes((affix) => result += affix.armor);
-    return result;
-  }
+  int get armorModifier =>
+      affixes.fold(0, (bonus, affix) => bonus + affix.armor);
 
   @override
   String get nounText {
-    var name = type.quantifiableName;
-
-    if (prefix != null) name = "${prefix!.displayName} $name";
-    if (suffix != null) name = "$name ${suffix!.displayName}";
+    var name = affixes.fold(
+        type.quantifiableName, (name, affix) => affix.itemName(name));
 
     return Log.quantify(name, count);
   }
@@ -100,13 +89,18 @@ class Item implements Comparable<Item>, Noun {
   int get price {
     var price = type.price.toDouble();
 
-    // If an item has both a prefix and a suffix, it's even more expensive
-    // since that makes the item more powerful.
-    var affixScale = 1.0;
-    if (prefix != null && suffix != null) affixScale = 1.5;
+    // If an item has multiple affixes, then it's even more valuable since it
+    // provides multiple benefits in a single slot, so scale all of the affixes
+    // by their total count.
+    var affixScale = 1 + affixes.length;
 
-    _applyAffixes((affix) => price *= affix.priceScale * affixScale);
-    _applyAffixes((affix) => price += affix.priceBonus * affixScale);
+    for (var affix in affixes) {
+      price *= affix.priceScale * affixScale;
+    }
+
+    for (var affix in affixes) {
+      price += affix.priceBonus * affixScale;
+    }
 
     return price.ceil();
   }
@@ -115,16 +109,18 @@ class Item implements Comparable<Item>, Noun {
 
   /// The penalty to the hero's strength when wearing this.
   int get weight {
-    var result = type.weight;
-    _applyAffixes((affix) => result += affix.weightBonus);
-    return math.max(0, result);
+    var totalWeight = affixes.fold(
+        type.weight, (weight, affix) => weight + affix.weightBonus);
+
+    return math.max(0, totalWeight);
   }
 
   /// The amount of strength required to wield the item effectively.
   int get heft {
-    var result = type.heft.toDouble();
-    _applyAffixes((affix) => result *= affix.heftScale);
-    return result.round();
+    var totalHeft = affixes.fold(
+        type.heft.toDouble(), (heft, affix) => heft * affix.heftScale);
+
+    return totalHeft.round();
   }
 
   // TODO: Affixes that modify.
@@ -144,11 +140,8 @@ class Item implements Comparable<Item>, Noun {
   }
 
   /// Gets the resistance this item confers to [element] when equipped.
-  int resistance(Element element) {
-    var resistance = 0;
-    _applyAffixes((affix) => resistance += affix.resistance(element));
-    return resistance;
-  }
+  int resistance(Element element) => affixes.fold(
+      0, (resistance, affix) => resistance + affix.resistance(element));
 
   @override
   int compareTo(Item other) {
@@ -168,15 +161,14 @@ class Item implements Comparable<Item>, Noun {
   ///
   /// If [count] is given, the clone has that count. Otherwise, it has the
   /// same count as this item.
-  Item clone([int? count]) => Item(type, count ?? _count, prefix, suffix);
+  Item clone([int? count]) => Item(type, count ?? _count, affixes);
 
   bool canStack(Item item) {
     if (type != item.type) return false;
 
     // Items with affixes don't stack.
     // TODO: Should they?
-    if (prefix != null || item.prefix != null) return false;
-    if (suffix != null || item.suffix != null) return false;
+    if (affixes.isNotEmpty) return false;
 
     return true;
   }
@@ -189,13 +181,8 @@ class Item implements Comparable<Item>, Noun {
   void stack(Item item) {
     if (!canStack(item)) return;
 
-    // If we get here, we are trying to stack. We don't support stacking
-    // items with affixes, and we should avoid that by not having any affixes
-    // defined for stackable items. Validate that invariant here.
-    assert(prefix == null &&
-        suffix == null &&
-        item.prefix == null &&
-        item.suffix == null);
+    // We don't support stacking items with affixes.
+    assert(affixes.isEmpty && item.affixes.isEmpty);
 
     var total = count + item.count;
     if (total <= type.maxStack) {
@@ -220,9 +207,4 @@ class Item implements Comparable<Item>, Noun {
 
   @override
   String toString() => nounText;
-
-  void _applyAffixes(Function(Affix) callback) {
-    if (prefix != null) callback(prefix!);
-    if (suffix != null) callback(suffix!);
-  }
 }
