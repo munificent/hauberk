@@ -169,6 +169,7 @@ class Item implements Comparable<Item>, Noun {
     // Items with affixes don't stack.
     // TODO: Should they?
     if (affixes.isNotEmpty) return false;
+    if (item.affixes.isNotEmpty) return false;
 
     return true;
   }

@@ -112,9 +112,10 @@ class Strength extends StatBase {
   @override
   int get _statOffset => -_hero.weight;
 
+  /// The highest fury level the hero can reach.
   int get maxFury {
-    if (value <= 10) return lerpInt(value, 1, 10, 40, 100);
-    return lerpInt(value, 10, 60, 100, 200);
+    if (value < 10) return 0;
+    return (value - 8) ~/ 2;
   }
 
   double get tossRangeScale {
@@ -124,6 +125,11 @@ class Strength extends StatBase {
     if (value <= 50) return lerpDouble(value, 40, 50, 1.8, 2.0);
     return lerpDouble(value, 50, 60, 2.0, 2.1);
   }
+
+  /// The damage multiplier for a given [fury].
+  ///
+  /// Each point of fury adds another `0.1` to the multiplier.
+  double furyScale(int fury) => 1.0 + fury * 0.1;
 
   /// Calculates the melee damage scaling factor based on the hero's strength
   /// relative to the weapon's [heft].
@@ -213,11 +219,5 @@ class Will extends StatBase {
   double get damageFocusScale {
     if (value <= 10) return lerpDouble(value, 1, 10, 800, 400);
     return lerpDouble(value, 10, 60, 400, 80);
-  }
-
-  /// Scales how much fury is lost when regenerating focus.
-  double get restFuryScale {
-    if (value <= 10) return lerpDouble(value, 1, 10, 4.0, 1.0);
-    return lerpDouble(value, 10, 60, 1.0, 0.2);
   }
 }

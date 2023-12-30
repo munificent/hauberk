@@ -30,9 +30,6 @@ class SpearMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
   }
 
   @override
-  int furyCost(HeroSave hero, int level) => 20;
-
-  @override
   Action onGetDirectionAction(Game game, int level, Direction dir) =>
       SpearAction(dir, SpearMastery._spearScale(level));
 }

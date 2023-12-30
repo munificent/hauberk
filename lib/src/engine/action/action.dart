@@ -170,25 +170,6 @@ class FocusAction extends Action {
   }
 }
 
-/// Attempts to perform an action that spends fury.
-class FuryAction extends Action {
-  /// The fury cost of the action.
-  final int _fury;
-
-  /// The action to perform if the hero has enough focus.
-  final Action _action;
-
-  FuryAction(this._fury, this._action);
-
-  @override
-  ActionResult onPerform() {
-    if (hero.fury < _fury) return fail("You aren't angry enough.");
-
-    hero.spendFury(_fury);
-    return alternate(_action);
-  }
-}
-
 // TODO: Use this for more actions.
 /// For multi-step actions, lets you define one using a `sync*` function and
 /// `yield` instead of building the state machine manually.
