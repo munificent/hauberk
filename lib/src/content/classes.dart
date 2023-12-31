@@ -29,7 +29,8 @@ class Classes {
           "forces are safely ensconced in a piece of familiar gear.");
 
   // TODO: Different book for generalist mage versus sorceror?
-  static final mage = _class("Mage", parseDrop('Spellbook "Elemental Primer"'),
+  static final mage = _class(
+      "Mage", parseDrop("Spellbook \"Elemental Primer\""),
       masteries: 0.2,
       spells: 1.0,
       description:
