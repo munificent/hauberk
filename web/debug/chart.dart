@@ -2,6 +2,7 @@ import 'dart:html' as html;
 import 'dart:svg' as svg;
 
 import 'package:hauberk/src/content/item/affixes.dart';
+import 'package:hauberk/src/content/item/drops.dart';
 import 'package:hauberk/src/content/item/floor_drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
@@ -128,7 +129,7 @@ abstract class Chart {
         if (count == 0) continue;
 
         var fraction = count / total;
-        var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(1);
+        var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(3);
         x -= fraction * chartWidth;
 
         var color = _colors[label]!;
@@ -226,12 +227,18 @@ class ItemTypesChart extends Chart {
     var itemType = Items.types.tryChoose(depth);
     if (itemType == null) return;
 
-    var item = Affixes.createItem(itemType, depth);
-    if (item.affixes.isNotEmpty) {
-      histogram.add("${itemType.name} (ego)");
-    } else {
-      histogram.add(itemType.name);
-    }
+    // Create a blank lore each time so that we can count how often a given
+    // artifact shows up without uniqueness coming into play.
+    var lore = Lore();
+    var dropAny = parseDrop("item");
+
+    dropAny.dropItem(lore, depth, (item) {
+      if (item.affixes.isNotEmpty) {
+        histogram.add("${itemType.name} (ego)");
+      } else {
+        histogram.add(itemType.name);
+      }
+    });
   }
 
   @override
@@ -251,7 +258,8 @@ class AffixesChart extends Chart {
 
   static List<String> _makeLabels() {
     var names = [
-      "(none)",
+      "(No affix)",
+      ...Affixes.artifacts.all.map((affix) => affix.id),
       ...Affixes.prefixes.all.map((affix) => affix.id),
       ...Affixes.suffixes.all.map((affix) => affix.id),
     ];
@@ -274,19 +282,19 @@ class AffixesChart extends Chart {
 
   @override
   void generate(Histogram<String> histogram, int depth) {
-    var itemType = Items.types.tryChoose(depth, tag: "equipment");
-    if (itemType == null) return;
+    var dropAny = parseDrop("equipment");
 
-    // Don't count items that can't have affixes.
-    if (!Items.types.hasTag(itemType.name, "equipment")) return;
+    // Create a blank lore each time so that we can count how often a given
+    // artifact shows up without uniqueness coming into play.
+    var lore = Lore();
 
-    var item = Affixes.createItem(itemType, depth);
+    dropAny.dropItem(lore, depth, (item) {
+      for (var affix in item.affixes) {
+        histogram.add(affix.id);
+      }
 
-    for (var affix in item.affixes) {
-      histogram.add(affix.id);
-    }
-
-    if (item.affixes.isEmpty) histogram.add("(none)");
+      if (item.affixes.isEmpty) histogram.add("(No affix)");
+    });
   }
 
   @override
@@ -332,7 +340,12 @@ class FloorDropsChart extends Chart {
   @override
   void generate(Histogram<String> histogram, int depth) {
     var drop = FloorDrops.choose(depth);
-    drop.drop.dropItem(depth, (item) {
+
+    // Create a blank lore each time so that we can count how often a given
+    // artifact shows up without uniqueness coming into play.
+    var lore = Lore();
+
+    drop.drop.dropItem(lore, depth, (item) {
       histogram.add(item.type.name);
     });
   }

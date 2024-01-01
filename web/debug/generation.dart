@@ -46,9 +46,9 @@ void main() {
 }
 
 void generate() {
-  var game = Game(content, depth);
+  var game = Game(content, depth, save);
 
-  for (var event in game.generate(save)) {
+  for (var event in game.generate()) {
     print(event);
   }
 
@@ -64,7 +64,7 @@ void generate() {
     if (actor is Monster) {
       monsters.add(actor.breed.name);
 
-      actor.breed.drop.dropItem(depth, addItem);
+      actor.breed.drop.dropItem(game.hero.lore, depth, addItem);
     }
   }
 

@@ -4,7 +4,6 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/skill/discipline/dual_wield.dart';
 import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
-import 'package:piecemeal/piecemeal.dart';
 
 final _content = createContent();
 
@@ -51,8 +50,7 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
   var weaponDesc = <String, String>{};
 
   var save = HeroSave("Blah", _content.races.first, _content.classes.first);
-  var game = Game(_content, 1);
-  var hero = Hero(game, Vec.zero, save);
+  var game = Game(_content, 1, save);
 
   for (var i = 0; i < _weapons.length; i++) {
     for (var j = i - 1; j < _weapons.length; j++) {
@@ -64,11 +62,12 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
       for (var weapon in weapons) {
         totalHeft += weapon.heft;
         totalDamage += weapon.attack!.damage;
-        hero.equipment.tryAdd(Item(weapon, 1));
+        game.hero.equipment.tryAdd(Item(weapon, 1));
       }
 
       var heftModifier = 1.0;
-      heftModifier = DualWield().modifyHeft(hero, dualWieldLevel, heftModifier);
+      heftModifier =
+          DualWield().modifyHeft(game.hero, dualWieldLevel, heftModifier);
       var scaledHeft = (totalHeft * heftModifier).round();
 
       var strengthStat = Strength();
@@ -87,9 +86,9 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
       weaponDesc[label] = scaledDamage.toStringAsFixed(2).padLeft(7);
 
       // We re-use the hero for performance, so unequip the weapons.
-      var previous = hero.equipment.toList();
+      var previous = game.hero.equipment.toList();
       for (var item in previous) {
-        hero.equipment.remove(item);
+        game.hero.equipment.remove(item);
       }
     }
   }

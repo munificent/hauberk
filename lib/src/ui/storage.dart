@@ -196,6 +196,7 @@ class Storage {
     var slain = <Breed, int>{};
     var foundItems = <ItemType, int>{};
     var foundAffixes = <Affix, int>{};
+    var createdArtifacts = <Affix>{};
     var usedItems = <ItemType, int>{};
 
     // TODO: Older saves before lore.
@@ -239,9 +240,17 @@ class Storage {
           if (itemType != null) usedItems[itemType] = count as int;
         });
       }
+
+      var createdArtifactsList = data['createdArtifacts'] as List<dynamic>?;
+      if (createdArtifactsList != null) {
+        for (var name in createdArtifactsList) {
+          createdArtifacts.add(content.findAffix(name as String)!);
+        }
+      }
     }
 
-    return Lore.from(seenBreeds, slain, foundItems, foundAffixes, usedItems);
+    return Lore.from(seenBreeds, slain, foundItems, foundAffixes,
+        createdArtifacts, usedItems);
   }
 
   void save() {
@@ -276,17 +285,6 @@ class Storage {
         };
       }
 
-      var seen = <String, dynamic>{};
-      var slain = <String, dynamic>{};
-      var lore = {'seen': seen, 'slain': slain};
-      for (var breed in content.breeds) {
-        var count = hero.lore.seenBreed(breed);
-        if (count != 0) seen[breed.name] = count;
-
-        count = hero.lore.slain(breed);
-        if (count != 0) slain[breed.name] = count;
-      }
-
       heroData.add({
         'name': hero.name,
         'race': race,
@@ -298,7 +296,7 @@ class Storage {
         'shops': shops,
         'experience': hero.experience,
         'skills': skills,
-        'lore': lore,
+        'lore': _saveLore(hero.lore),
         'gold': hero.gold,
         'maxDepth': hero.maxDepth
       });
@@ -309,6 +307,47 @@ class Storage {
 
     html.window.localStorage['heroes'] = json.encode(data);
     print('Saved.');
+  }
+
+  Map<String, dynamic> _saveLore(Lore lore) {
+    var seen = <String, dynamic>{};
+    var slain = <String, dynamic>{};
+    var foundItems = <String, dynamic>{};
+    var foundAffixes = <String, dynamic>{};
+    var usedItems = <String, dynamic>{};
+    var createdArtifacts = <dynamic>[];
+
+    for (var breed in content.breeds) {
+      var count = lore.seenBreed(breed);
+      if (count != 0) seen[breed.name] = count;
+
+      count = lore.slain(breed);
+      if (count != 0) slain[breed.name] = count;
+    }
+
+    for (var itemType in content.items) {
+      var found = lore.foundItems(itemType);
+      if (found != 0) foundItems[itemType.name] = found;
+
+      var used = lore.usedItems(itemType);
+      if (used != 0) usedItems[itemType.name] = used;
+    }
+
+    for (var affix in content.affixes) {
+      var found = lore.foundAffixes(affix);
+      if (found != 0) foundAffixes[affix.id] = found;
+
+      if (lore.createdArtifact(affix)) createdArtifacts.add(affix.id);
+    }
+
+    return {
+      'seen': seen,
+      'slain': slain,
+      'foundItems': foundItems,
+      'foundAffixes': foundAffixes,
+      'usedItems': usedItems,
+      'createdArtifacts': createdArtifacts,
+    };
   }
 
   List _saveItems(Iterable<Item> items) {

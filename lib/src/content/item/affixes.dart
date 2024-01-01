@@ -1,88 +1,26 @@
-import 'package:piecemeal/piecemeal.dart';
-
 import '../../engine.dart';
 import '../elements.dart';
 import 'builder.dart';
 import 'items.dart';
 
 class Affixes {
+  static final artifacts = ResourceSet<Affix>();
   static final prefixes = ResourceSet<Affix>();
   static final suffixes = ResourceSet<Affix>();
 
-  /// Creates a new [Item] of [itemType] and chooses affixes for it.
-  static Item createItem(ItemType itemType, int droppedDepth,
-      [int? affixChance]) {
-    affixChance ??= 0;
-
-    // Only equipped items have affixes.
-    if (itemType.equipSlot == null) return Item(itemType, 1);
-
-    // Calculate the effective depth of the item for generating affixes. This
-    // affects both the chances of having an affix at all, and which affixes it
-    // gets.
-    //
-    // The basic idea is that an item's overall value should reflect the depth
-    // where it's generated. So if an item for a shallower depth appears deeper
-    // in the dungeon it is more likely to have an affix to compensate.
-    // Likewise, finding a depth 20 item at depth 10 is already a good find, so
-    // it's less likely to also have an affix on it.
-    var affixDepth = droppedDepth;
-    var outOfDepth = itemType.depth - droppedDepth;
-
-    if (outOfDepth > 0) {
-      // Generating a stronger item than expected, so it will have weaker
-      // affixes.
-      affixDepth -= outOfDepth;
-    } else {
-      // Generating a weaker item than expected, so boost its affix. Reduce the
-      // boost as the hero gets deeper in the dungeon. Otherwise, near 100, the
-      // boost ends up pushing almost everything past 100 since most equipment
-      // has a lower starting depth.
-      var weight = lerpDouble(droppedDepth, 1, 100, 0.5, 0.0);
-      affixDepth -= rng.round(outOfDepth * weight);
-    }
-
-    affixDepth = affixDepth.clamp(1, 100);
-
-    // This generates a curve that starts around 1% and slowly ramps upwards.
-    var chance = 0.008 * affixDepth * affixDepth + 0.05 * affixDepth + 0.1;
-
-    // See how many affixes the item has. The affixChance only boosts one roll
-    // because it increases the odds of *an* affix, but not the odds of
-    // multiple.
-    var affixCount = 0;
-    if (rng.float(100.0) < chance + affixChance) affixCount++;
-
-    // Make dual-affix items rarer since they are more powerful (they only take
-    // a single equipment slot) and also look kind of funny.
-    if (rng.float(100.0) < chance && rng.oneIn(5)) affixCount++;
-
-    if (affixCount == 0) return Item(itemType, 1);
-
-    // TODO: Now that affixes are a uniform list, this could be cleaner.
-    var prefix = _chooseAffix(prefixes, itemType, affixDepth);
-    var suffix = _chooseAffix(suffixes, itemType, affixDepth);
-
-    if (affixCount == 1 && prefix != null && suffix != null) {
-      if (rng.oneIn(2)) {
-        prefix = null;
-      } else {
-        suffix = null;
-      }
-    }
-
-    return Item(
-        itemType, 1, [if (prefix != null) prefix, if (suffix != null) suffix]);
-  }
+  static Iterable<Affix> get all =>
+      [...artifacts.all, ...prefixes.all, ...suffixes.all];
 
   static Affix find(String name) {
-    var type = prefixes.tryFind(name);
-    if (type != null) return type;
+    for (var affixSet in [artifacts, prefixes, suffixes]) {
+      var affix = affixSet.tryFind(name);
+      if (affix != null) return affix;
+    }
 
-    return suffixes.find(name);
+    throw ArgumentError("Unknown affix '$name'.");
   }
 
-  static Affix? _chooseAffix(
+  static Affix? tryChoose(
       ResourceSet<Affix> affixes, ItemType itemType, int depth) {
     return affixes.tryChooseMatching(depth, Items.types.getTags(itemType.name));
   }
@@ -93,6 +31,8 @@ class Affixes {
     _resists();
     _extraDamage();
     _brands();
+    _artifacts();
+
     // TODO: "of Accuracy" increases range of bows.
     // TODO: "Heavy" and "adamant" increase weight and armor.
     // TODO: More stat bonus affixes.
@@ -539,7 +479,18 @@ class Affixes {
       ..brand(Elements.spirit, resist: 2);
   }
 
+  static void _artifacts() {
+    // TODO: Real ones.
+    affixCategory("dagger");
+    affix("Mercygiver", 1.0)
+      ..depth(1, to: 30)
+      ..price(100, 1.2)
+      ..heft(1.05)
+      ..damage(scale: 2, bonus: 10);
+  }
+
   static void defineItemTag(String tag) {
+    artifacts.defineTags(tag);
     prefixes.defineTags(tag);
     suffixes.defineTags(tag);
   }

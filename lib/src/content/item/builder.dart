@@ -45,16 +45,16 @@ void affixCategory(String tag) {
 AffixBuilder affix(String nameTemplate, double frequency) {
   finishAffix();
 
-  bool isPrefix;
+  ResourceSet<Affix> affixSet;
   if (nameTemplate.endsWith(" _")) {
-    isPrefix = true;
+    affixSet = Affixes.prefixes;
   } else if (nameTemplate.startsWith("_ ")) {
-    isPrefix = false;
+    affixSet = Affixes.suffixes;
   } else {
-    throw ArgumentError('Affix "$nameTemplate" must start or end with "_".');
+    affixSet = Affixes.artifacts;
   }
 
-  return _affix = AffixBuilder(nameTemplate, isPrefix, frequency);
+  return _affix = AffixBuilder(nameTemplate, affixSet, frequency);
 }
 
 class _BaseBuilder {
@@ -314,7 +314,10 @@ class ItemBuilder extends _BaseBuilder {
 
 class AffixBuilder {
   final String _nameTemplate;
-  final bool _isPrefix;
+
+  /// The kind of affixes this affix will be a member of.
+  final ResourceSet<Affix> _affixSet;
+
   int? _minDepth;
   int? _maxDepth;
   final double _frequency;
@@ -332,7 +335,7 @@ class AffixBuilder {
   final Map<Element, int> _resists = {};
   final Map<Stat, int> _statBonuses = {};
 
-  AffixBuilder(this._nameTemplate, this._isPrefix, this._frequency);
+  AffixBuilder(this._nameTemplate, this._affixSet, this._frequency);
 
   /// Sets the affix's minimum depth to [from]. If [to] is given, then the
   /// affix has the given depth range. Otherwise, its max range is
@@ -467,13 +470,11 @@ void finishAffix() {
   var builder = _affix;
   if (builder == null) return;
 
-  var affixes = builder._isPrefix ? Affixes.prefixes : Affixes.suffixes;
-
   // Generate a unique ID for it.
   var idBase = builder._nameTemplate.replaceAll("_", "[$_affixTag]");
   var id = idBase;
   var index = 1;
-  while (affixes.tryFind(id) != null) {
+  while (builder._affixSet.tryFind(id) != null) {
     index++;
     id = "$idBase ($index)";
   }
@@ -492,7 +493,7 @@ void finishAffix() {
   builder._resists.forEach(affix.resist);
   builder._statBonuses.forEach(affix.setStatBonus);
 
-  affixes.addRanged(affix,
+  builder._affixSet.addRanged(affix,
       name: id,
       start: builder._minDepth,
       end: builder._maxDepth,

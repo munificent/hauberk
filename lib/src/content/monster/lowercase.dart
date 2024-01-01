@@ -293,7 +293,7 @@ void goblins() {
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
     ..drop("treasure", count: 3)
-    ..drop("equipment", count: 2, depthOffset: 8, affixChance: 30)
+    ..dropGood("equipment", count: 2, depthOffset: 4)
     ..drop("magic", count: 3, depthOffset: 4)
     ..flags("protective unique");
 
@@ -483,8 +483,8 @@ void kobolds() {
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
     ..drop("treasure", count: 3, depthOffset: 5)
-    ..drop("spear", percent: 20, depthOffset: 5, affixChance: 20)
-    ..drop("armor", percent: 30, depthOffset: 5, affixChance: 10)
+    ..dropGood("spear", percent: 20, depthOffset: 5)
+    ..dropGood("armor", percent: 30, depthOffset: 5)
     ..drop("magic", count: 2, depthOffset: 5)
     ..flags("unique");
 
@@ -683,7 +683,7 @@ void rodents() {
     ..attack("scratch[es]", 10)
     ..minion("rodent", 8, 16)
     ..drop("treasure", count: 3)
-    ..drop("item", percent: 50, depthOffset: 10, affixChance: 10)
+    ..dropGood("item", percent: 50, depthOffset: 10)
     ..flags("unique");
 }
 

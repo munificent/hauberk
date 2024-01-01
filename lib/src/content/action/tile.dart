@@ -32,7 +32,7 @@ abstract class _OpenTileAction extends Action {
         _minDepthEmptyChance, _maxDepthEmptyChance))) {
       log("The $_name is empty.", actor);
     } else {
-      game.stage.placeDrops(_pos, Motility.walk, _createDrop());
+      game.stage.placeDrops(_pos, _createDrop(), depth: game.depth);
 
       log("{1} open[s] the $_name.", actor);
     }

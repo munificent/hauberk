@@ -432,9 +432,7 @@ class Monster extends Actor {
   /// Called when this Actor has been killed by [attackNoun].
   @override
   void onDied(Noun attackNoun) {
-    // TODO: Is using the breed's motility correct? We probably don't want
-    // drops going through doors.
-    var items = game.stage.placeDrops(pos, breed.motility, breed.drop);
+    var items = game.stage.placeDrops(pos, breed.drop, depth: breed.depth);
     for (var item in items) {
       log("{1} drop[s] {2}.", this, item);
     }

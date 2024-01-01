@@ -53,31 +53,33 @@ class Game {
   final int depth;
 
   Stage get stage => _stage;
-  late Stage _stage;
-  late Hero hero;
+  late final Stage _stage;
+  late final Hero hero;
 
-  Game(this.content, this.depth, {int? width, int? height}) {
+  Game(this.content, this.depth, HeroSave save, {int? width, int? height}) {
     // TODO: Vary size?
     _stage = Stage(width ?? 80, height ?? 60, this);
+
+    hero = Hero(this, Vec.zero, save);
+    _stage.addActor(hero);
 
     _substanceUpdateOrder.addAll(_stage.bounds.inflate(-1));
     rng.shuffle(_substanceUpdateOrder);
   }
 
-  Iterable<String> generate(HeroSave save) sync* {
+  Iterable<String> generate() sync* {
     // TODO: Do something useful with depth.
     late Vec heroPos;
-    yield* content.buildStage(save.lore, _stage, depth, (pos) {
+    yield* content.buildStage(hero.save.lore, _stage, depth, (pos) {
       heroPos = pos;
     });
 
     yield "Calculating visibility";
-    initHero(heroPos, save);
+    initHero(heroPos);
   }
 
-  void initHero(Vec heroPos, HeroSave save) {
-    hero = Hero(this, heroPos, save);
-    _stage.addActor(hero);
+  void initHero(Vec heroPos) {
+    hero.pos = heroPos;
     _stage.refreshView();
   }
 
@@ -255,6 +257,8 @@ abstract class Content {
   Iterable<Element> get elements;
 
   Iterable<ItemType> get items;
+
+  Iterable<Affix> get affixes;
 
   List<Race> get races;
 

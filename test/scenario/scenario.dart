@@ -67,8 +67,8 @@ class Scenario {
     }
 
     var save = _content.createHero("Test");
-    var game =
-        Game(_content, 1, width: lines.first.length, height: lines.length);
+    var game = Game(_content, 1, save,
+        width: lines.first.length, height: lines.length);
     _game = game;
 
     var stage = game.stage;
@@ -100,7 +100,7 @@ class Scenario {
     }
 
     assert(heroPos != null, "No hero '@' character.");
-    game.initHero(heroPos!, save);
+    game.initHero(heroPos!);
   }
 
   void heroRun(Direction direction) {

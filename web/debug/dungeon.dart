@@ -111,7 +111,7 @@ Future generate() async {
   Keep.debugJunctions = null;
   Debug.densityMap = null;
 
-  _game = Game(content, depth);
+  _game = Game(content, depth, save);
   var thisGame = _game;
   var stage = _game.stage;
 
@@ -124,7 +124,7 @@ Future generate() async {
   stateCanvas.height = stage.height * 8;
 
   var start = DateTime.now();
-  for (var _ in _game.generate(save)) {
+  for (var _ in _game.generate()) {
 //    print(event);
     render();
 

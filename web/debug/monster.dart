@@ -60,7 +60,11 @@ void _update() {
   var affixes = Histogram<String>();
 
   for (var i = 0; i < dropTries; i++) {
-    breed.drop.dropItem(breed.depth, (item) {
+    // Create a blank lore each time so that we can count how often a given
+    // artifact shows up without uniqueness coming into play.
+    var lore = Lore();
+
+    breed.drop.dropItem(lore, breed.depth, (item) {
       items.add(item.type.name);
 
       for (var affix in item.affixes) {

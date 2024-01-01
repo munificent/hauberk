@@ -4,6 +4,7 @@ import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/log.dart';
+import '../hero/lore.dart';
 import '../hero/skill.dart';
 import 'item.dart';
 
@@ -11,7 +12,11 @@ typedef TossItemUse = Action Function(Vec pos);
 typedef AddItem = void Function(Item item);
 
 abstract class Drop {
-  void dropItem(int depth, AddItem addItem);
+  /// Generates items at [depth] by calling [addItem] for each new item.
+  ///
+  /// If [lore] is given, then it's used to avoid creating duplicate artifacts.
+  /// If [lore] is `null`, then no artifacts will be created.
+  void dropItem(Lore? lore, int depth, AddItem addItem);
 }
 
 class ItemUse {

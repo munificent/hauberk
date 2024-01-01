@@ -246,11 +246,26 @@ class BreedBuilder extends _BaseBuilder {
 
   /// Drops [name], which can be either an item type or tag.
   void drop(String name,
-      {int percent = 100,
-      int count = 1,
-      int depthOffset = 0,
-      int? affixChance}) {
-    var drop = percentDrop(percent, name, _depth + depthOffset, affixChance);
+      {int percent = 100, int count = 1, int depthOffset = 0}) {
+    var drop = percentDrop(percent, name, depth: _depth + depthOffset);
+    if (count > 1) drop = repeatDrop(count, drop);
+    _drops.add(drop);
+  }
+
+  /// Drops [name], which can be either an item type or tag.
+  void dropGood(String name,
+      {int percent = 100, int count = 1, int depthOffset = 0}) {
+    var drop = percentDrop(percent, name,
+        depth: _depth + depthOffset, quality: ItemQuality.good);
+    if (count > 1) drop = repeatDrop(count, drop);
+    _drops.add(drop);
+  }
+
+  /// Drops [name], which can be either an item type or tag.
+  void dropGreat(String name,
+      {int percent = 100, int count = 1, int depthOffset = 0}) {
+    var drop = percentDrop(percent, name,
+        depth: _depth + depthOffset, quality: ItemQuality.great);
     if (count > 1) drop = repeatDrop(count, drop);
     _drops.add(drop);
   }

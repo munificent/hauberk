@@ -18,8 +18,8 @@ void main() {
     for (var i = 1; i <= 10; i++) {
       rng.setSeed(i);
 
-      var game = Game(content, 1);
-      for (var _ in game.generate(save)) {}
+      var game = Game(content, 1, save);
+      for (var _ in game.generate()) {}
 
       // Read some bit of game data so the JIT doesn't optimize the whole
       // program away as dead code.

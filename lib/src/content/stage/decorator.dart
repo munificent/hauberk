@@ -294,7 +294,7 @@ class Decorator {
       if (breed.flags.unique) _spawnedUniques.add(breed);
 
       if (isCorpse) {
-        _architect.stage.placeDrops(pos, breed.motility, breed.drop);
+        _architect.stage.placeDrops(pos, breed.drop, depth: breed.depth);
       } else {
         var monster = breed.spawn(_architect.stage.game, pos);
         _architect.stage.addActor(monster);
@@ -408,8 +408,8 @@ class Decorator {
       // TODO: Style-specific drop types.
       var floorDrop = FloorDrops.choose(_architect.depth);
 
-      var items =
-          _architect.stage.placeDrops(pos, Motility.walk, floorDrop.drop);
+      var items = _architect.stage
+          .placeDrops(pos, floorDrop.drop, depth: _architect.depth);
       for (var item in items) {
         // Give worthless items a little price so we don't clutter too many of
         // them.

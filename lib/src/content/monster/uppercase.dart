@@ -128,7 +128,7 @@ void quest() {
     ..darkCone(rate: 10, damage: 500)
     ..flags("fearless unique")
     ..openDoors()
-    ..drop("item", count: 20, affixChance: 50);
+    ..dropGreat("item", count: 20);
   // TODO: Minions. Moves.
 }
 
