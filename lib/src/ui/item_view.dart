@@ -5,7 +5,7 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
-import 'inspector.dart';
+import 'item_inspector.dart';
 
 /// Renders a list of items in some UI context, including the surrounding frame.
 abstract class ItemView {
@@ -153,12 +153,12 @@ abstract class ItemView {
 
       // Draw the inspector for this item.
       if (item == inspectedItem) {
-        var inspector = Inspector(save, item);
+        var inspector = ItemInspector(save, item);
         if (inspectorOnRight) {
-          if (left + width + Inspector.width > terminal.width) {
+          if (left + width + ItemInspector.width > terminal.width) {
             // No room on the right so draw it below.
             terminal.writeAt(left + width - 1, y, "▼", UIHue.selection);
-            inspector.draw(left + (width - Inspector.width) ~/ 2,
+            inspector.draw(left + (width - ItemInspector.width) ~/ 2,
                 top + itemSlotCount + 3, terminal);
           } else {
             terminal.writeAt(left + width - 1, y, "►", UIHue.selection);
@@ -166,7 +166,7 @@ abstract class ItemView {
           }
         } else {
           terminal.writeAt(left, y, "◄", UIHue.selection);
-          inspector.draw(left - Inspector.width, y, terminal);
+          inspector.draw(left - ItemInspector.width, y, terminal);
         }
       }
 

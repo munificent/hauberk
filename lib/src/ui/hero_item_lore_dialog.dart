@@ -2,9 +2,9 @@ import 'package:malison/malison.dart';
 
 import '../engine.dart';
 import '../hues.dart';
-import 'draw.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
+import 'item_inspector.dart';
 import 'item_view.dart';
 
 class HeroItemLoreDialog extends HeroInfoDialog {
@@ -118,25 +118,8 @@ class HeroItemLoreDialog extends HeroInfoDialog {
   }
 
   void _showItem(Terminal terminal, ItemType item) {
-    terminal = terminal.rect(0, terminal.height - 15, terminal.width, 14);
-
-    Draw.frame(terminal, 0, 1, 80, terminal.height - 1);
-    terminal.writeAt(1, 0, "┌─┐", darkCoolGray);
-    terminal.writeAt(1, 1, "╡ ╞", darkCoolGray);
-    terminal.writeAt(1, 2, "└─┘", darkCoolGray);
-
-    // TODO: Get working.
-    var found = hero.lore.foundItems(item);
-    if (found == 0) {
-      terminal.writeAt(
-          1, 3, "You have not found this item yet.", UIHue.disabled);
-      return;
-    }
-
-    terminal.drawGlyph(2, 1, item.appearance as Glyph);
-    terminal.writeAt(4, 1, item.name, UIHue.selection);
-
-    // TODO: Show item details. Can we reuse the code from item_view.dart?
+    var inspector = ItemInspector(hero, Item(item, 1), wide: true);
+    inspector.drawWide(terminal.rect(0, terminal.height - 15, 80, 14));
   }
 
   void _select(int offset) {

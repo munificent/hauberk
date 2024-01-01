@@ -116,22 +116,24 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
   }
 
   void _showMonster(Terminal terminal, Breed breed) {
-    terminal = terminal.rect(0, terminal.height - 15, terminal.width, 14);
-
-    Draw.frame(terminal, 0, 1, 80, terminal.height - 1);
-    terminal.writeAt(1, 0, "┌─┐", darkCoolGray);
-    terminal.writeAt(1, 1, "╡ ╞", darkCoolGray);
-    terminal.writeAt(1, 2, "└─┘", darkCoolGray);
+    terminal = terminal.rect(0, terminal.height - 15, 80, 14);
 
     var seen = hero.lore.seenBreed(breed);
+
+    Draw.glyphFrame(
+        terminal,
+        0,
+        0,
+        terminal.width,
+        terminal.height,
+        seen == 0 ? Glyph("?", UIHue.disabled) : breed.appearance as Glyph,
+        seen == 0 ? "" : breed.name);
+
     if (seen == 0) {
       terminal.writeAt(
           1, 3, "You have not seen this breed yet.", UIHue.disabled);
       return;
     }
-
-    terminal.drawGlyph(2, 1, breed.appearance as Glyph);
-    terminal.writeAt(4, 1, breed.name, UIHue.selection);
 
     var y = 3;
     // TODO: Remove this check once all breeds have descriptions.

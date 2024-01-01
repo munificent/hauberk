@@ -238,8 +238,10 @@ class ItemBuilder extends _BaseBuilder {
   }
 
   void perception({int duration = 5, int distance = 16}) {
-    // TODO: Better description.
-    use("Perceive monsters.", () => PerceiveAction(duration, distance));
+    use(
+        "Perceives the location of monsters, even those that are otherwise "
+        "hidden.",
+        () => PerceiveAction(duration, distance));
   }
 
   void resistSalve(Element element) {
