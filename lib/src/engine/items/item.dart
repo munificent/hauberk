@@ -153,11 +153,24 @@ class Item implements Comparable<Item>, Noun {
 
   @override
   int compareTo(Item other) {
+    // Sort by type.
     if (type.sortIndex != other.type.sortIndex) {
       return type.sortIndex.compareTo(other.type.sortIndex);
     }
 
-    // TODO: Take into account affixes.
+    // Sort by affixes. Fewer affixes first.
+    if (affixes.length != other.affixes.length) {
+      return affixes.length.compareTo(other.affixes.length);
+    }
+
+    // Same number of affixes, so sort by affix.
+    for (var i = 0; i < affixes.length; i++) {
+      var affix = affixes[i];
+      var otherAffix = other.affixes[i];
+      if (affix.sortIndex != otherAffix.sortIndex) {
+        return affix.sortIndex.compareTo(otherAffix.sortIndex);
+      }
+    }
 
     // Order by descending count.
     if (count != other.count) return other.count.compareTo(count);

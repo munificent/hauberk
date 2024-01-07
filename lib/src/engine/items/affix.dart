@@ -18,6 +18,8 @@ class Affix {
   /// "_ of Burning" or "Elven _".
   final String _nameTemplate;
 
+  final int sortIndex;
+
   final double heftScale;
   final int weightBonus;
   final int strikeBonus;
@@ -32,7 +34,7 @@ class Affix {
   final int priceBonus;
   final double priceScale;
 
-  Affix(this.id, this._nameTemplate,
+  Affix(this.id, this._nameTemplate, this.sortIndex,
       {double? heftScale,
       int? weightBonus,
       int? strikeBonus,

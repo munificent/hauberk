@@ -15,7 +15,6 @@ import '../skill/skills.dart';
 import 'affixes.dart';
 import 'items.dart';
 
-int _sortIndex = 0;
 late CategoryBuilder _category;
 ItemBuilder? _itemBuilder;
 String? _affixTag;
@@ -151,7 +150,7 @@ class CategoryBuilder extends _BaseBuilder {
 
     // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
     // example, a "sword" item will match a "weapon" affix.
-    Affixes.defineItemTag(tagPath);
+    Affixes.defineItemTag("item/$tagPath");
   }
 
   void treasure() {
@@ -164,6 +163,8 @@ class CategoryBuilder extends _BaseBuilder {
 }
 
 class ItemBuilder extends _BaseBuilder {
+  static int _sortIndex = 0;
+
   final String _name;
   final Color _color;
   final double _frequency;
@@ -372,6 +373,8 @@ class ItemBuilder extends _BaseBuilder {
 }
 
 class AffixBuilder {
+  static int _sortIndex = 0;
+
   final String _nameTemplate;
 
   /// The kind of affixes this affix will be a member of.
@@ -479,7 +482,7 @@ class AffixBuilder {
       }
     }
 
-    var affix = Affix(id, _nameTemplate,
+    var affix = Affix(id, _nameTemplate, _sortIndex++,
         heftScale: _heftScale,
         weightBonus: _weightBonus,
         strikeBonus: _strikeBonus,

@@ -201,10 +201,18 @@ class ItemTypesChart extends Chart {
 
   static List<String> _makeLabels() {
     var names = Items.types.all.map((type) => type.name).toList();
-    for (var itemType in Items.types.all) {
-      if (itemType.equipSlot != null) names.add('${itemType.name} (ego)');
-    }
+    names.sort((a, b) {
+      var aType = Items.types.find(a);
+      var bType = Items.types.find(b);
 
+      if (aType.depth != bType.depth) {
+        return aType.depth.compareTo(bType.depth);
+      }
+
+      return bType.sortIndex.compareTo(aType.sortIndex);
+    });
+
+    names.addAll(names.map((name) => "$name (ego)").toList());
     return names;
   }
 
