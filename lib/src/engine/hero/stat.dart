@@ -17,12 +17,8 @@ import '../hero/hero_save.dart';
 class Property<T extends num> {
   T? _value;
 
-  /// The current modified value.
-  T get value => _modify(_value!);
-
-  /// A subclass can override this to modify the observed value. The updating
-  /// and notifications are based on the raw base value.
-  T _modify(T base) => base;
+  /// The current value.
+  T get value => _value!;
 
   /// Stores the new base [value]. If [value] is different from the current
   /// base value, calls [onChange], passing in the previous value. Does not take
@@ -72,10 +68,6 @@ abstract class StatBase extends Property<int> {
 
   String get _loseAdjective;
 
-  @override
-  int _modify(int base) =>
-      (base + _statOffset + _hero.statBonus(_stat)).clamp(1, Stat.max);
-
   int get _statOffset => 0;
 
   void bindHero(HeroSave hero) {
@@ -84,8 +76,11 @@ abstract class StatBase extends Property<int> {
   }
 
   void refresh(Game game) {
-    var newValue =
-        _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
+    var newValue = (_hero.race.valueAtLevel(_stat, _hero.level) +
+            _statOffset +
+            _hero.statBonus(_stat))
+        .clamp(1, Stat.max);
+
     update(newValue, (previous) {
       var gain = newValue - previous;
       if (gain > 0) {

@@ -20,7 +20,7 @@ class Items {
     potions();
     scrolls();
     spellBooks();
-    // TODO: Rings.
+    rings();
     // TODO: Amulets.
     // TODO: Wands.
     weapons();

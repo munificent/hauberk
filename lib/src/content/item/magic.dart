@@ -224,7 +224,7 @@ void scrolls() {
 }
 
 void spellBooks() {
-  category(CharCode.vulgarFractionOneHalf, stack: 3)
+  category(CharCode.vulgarFractionOneHalf)
     ..tag("magic/book/sorcery")
     ..toss(damage: 1, range: 3, breakage: 25)
     ..destroy(Elements.fire, chance: 5, fuel: 10);
@@ -243,4 +243,14 @@ void spellBooks() {
     ]);
 
   // TODO: More spell books and reorganize spells.
+}
+
+void rings() {
+  // TODO: Glyph for rings.
+  // TODO: Decide whether this reuses all of the same names and effects as the
+  // intellect helms or not.
+  category(CharCode.vulgarFractionOneHalf).tag("magic/ring");
+  item("Ring[s] of Wisdom", blue, frequency: 0.05, price: 1000)
+    ..depth(20)
+    ..affix.intellect(2);
 }

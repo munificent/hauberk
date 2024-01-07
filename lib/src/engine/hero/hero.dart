@@ -474,7 +474,6 @@ class Hero extends Actor {
     // Refresh the heft scales.
     var weapons = equipment.weapons.toList();
 
-    var totalHeft = 0;
     if (weapons.length > 1) {
       // Discover the dual-wield skill.
       // TODO: This is a really specific method to put on Skill. Is there a
@@ -491,6 +490,7 @@ class Hero extends Actor {
 
     // When dual-wielding, it's as if each weapon has an individual heft that
     // is the total of both of them.
+    var totalHeft = 0;
     for (var weapon in weapons) {
       totalHeft += weapon.heft;
     }

@@ -11,10 +11,18 @@ import 'item_type.dart';
 class Item implements Comparable<Item>, Noun {
   final ItemType type;
 
-  final List<Affix> affixes;
+  /// The random affixes added to the item, not including any intrinsic one.
+  final List<Affix> _affixes;
+
+  List<Affix> get affixes {
+    // If there's an instrinsic affix, that's the only one.
+    if (type.intrinsicAffix case var affix?) return [affix];
+
+    return _affixes;
+  }
 
   Item(this.type, this._count, [List<Affix> affixes = const []])
-      : affixes = List.unmodifiable(affixes);
+      : _affixes = List.unmodifiable(affixes);
 
   Object get appearance => type.appearance;
 

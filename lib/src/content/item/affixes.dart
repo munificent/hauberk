@@ -26,6 +26,7 @@ class Affixes {
   }
 
   static void initialize() {
+    // TODO: Other races.
     _elven();
     _dwarven();
     _resists();
@@ -52,7 +53,7 @@ class Affixes {
         ..price(700, 4.0)
         ..intellect(5 + i);
       affix("_ of Genius", 1.0)
-        ..depth(65)
+        ..depth(85)
         ..price(1000, 5.0)
         ..intellect(7 + i);
     }
