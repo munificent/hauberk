@@ -9,9 +9,9 @@ Scenario? _scenario;
 // TODO: Should this use the real game content?
 Content _content = createContent();
 
-void scenario(String name, void Function() body) {
+void scenario(String name, void Function() body, {bool debugSteps = false}) {
   test(name, () {
-    _scenario = Scenario();
+    _scenario = Scenario(debugSteps);
     try {
       body();
     } finally {
@@ -28,13 +28,22 @@ void heroRun(Direction direction) => _scenario!.heroRun(direction);
 
 void playUntilNeedsInput() => _scenario!.playUntilNeedsInput();
 
-void expectHeroAt(int label) => _scenario!.expectHeroAt(label);
+void expectHeroAt(int label, {int? turns}) =>
+    _scenario!.expectHeroAt(label, turns: turns);
 
 class Scenario {
+  /// If true, prints the stage after every turn.
+  final bool _debugSteps;
+
   /// Numeric labels for positions on the stage.
   final Map<int, Vec> _labels = {};
 
   Game? _game;
+
+  /// The number of elapsed game turns.
+  int _turns = 0;
+
+  Scenario(this._debugSteps);
 
   void setUpStage(String stageDescriptor) {
     // TODO: Allow optional parameter to add more types.
@@ -110,13 +119,43 @@ class Scenario {
   void playUntilNeedsInput() {
     var game = _game!;
     while (true) {
+      _printStage();
       var result = game.update();
       if (!result.madeProgress) break;
+
+      _turns++;
     }
+
+    _printStage();
   }
 
-  void expectHeroAt(int label) {
+  void expectHeroAt(int label, {int? turns}) {
     var pos = _labels[label]!;
     expect(_game!.hero.pos, pos);
+    if (turns != null) expect(_turns, turns);
+  }
+
+  void _printStage() {
+    if (!_debugSteps) return;
+
+    var stage = _game!.stage;
+
+    var tileChars = {Tiles.flagstoneWall: "#", Tiles.flagstoneFloor: "."};
+
+    for (var y = 0; y < stage.height; y++) {
+      var line = "";
+      for (var x = 0; x < stage.width; x++) {
+        var pos = Vec(x, y);
+        var char = tileChars[stage[pos].type]!;
+
+        if (stage.actorAt(pos) is Hero) {
+          char = "@";
+        }
+
+        line += char;
+      }
+
+      print(line);
+    }
   }
 }
