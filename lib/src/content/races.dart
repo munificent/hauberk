@@ -9,10 +9,9 @@ class Races {
       will: 30,
       description:
           "It takes a certain kind of person to be willing to spend their life "
-          "deep in the bowels of the Earth, toiling away in darkness. Dwarves "
-          "aren't just willing, but delight in it. Solid, impenetrable and, "
-          "well, not very bright... perhaps it's no surprise that dwarves love "
-          "mines since they have so much in common.");
+          "deep under the Earth, toiling away in darkness. Dwarves aren't just "
+          "willing, but delight in it. Solid, impenetrable and somewhat dim, "
+          "dwarves have much in common with the mines they love.");
   static final elf = _race("Elf",
       strength: 35,
       agility: 40,

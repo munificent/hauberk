@@ -174,8 +174,8 @@ void weapons() {
     ..skill("Spear Mastery");
   item("Pointed Stick", brown, frequency: 0.5, price: 10)
     ..depth(2, to: 30)
-    ..weapon(10, heft: 9)
-    ..toss(damage: 9)
+    ..weapon(7, heft: 9)
+    ..toss(damage: 6)
     ..destroy(Elements.fire, chance: 7, fuel: 12);
   item("Spear", tan, frequency: 0.5, price: 160)
     ..depth(13, to: 60)

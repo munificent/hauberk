@@ -90,13 +90,13 @@ class Tiles {
           .door();
 
   static final openBarredDoor =
-      tile("open barred door", "♂", lightWarmGray, coolGray)
+      tile("open barred door", "♂", lightWarmGray, darkCoolGray)
           .onClose(_closeBarredDoor)
           .open();
 
   // TODO: Should be able to see through but not fly through.
   static final closedBarredDoor =
-      tile("closed barred door", "♪", lightWarmGray, coolGray)
+      tile("closed barred door", "♪", lightWarmGray, darkCoolGray)
           .onOpen(_openBarredDoor)
           .transparentDoor();
 
