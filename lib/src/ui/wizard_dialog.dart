@@ -210,7 +210,6 @@ abstract class _SearchDialog<T> extends Screen<Input> {
             return true;
           }
         }
-        break;
     }
 
     return false;

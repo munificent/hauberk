@@ -255,7 +255,6 @@ class SidebarPanel extends Panel {
           drawCondition("P", peaGreen);
         default:
           drawCondition("P", mint);
-          break;
       }
     }
 
