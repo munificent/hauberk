@@ -40,6 +40,12 @@ class Breed {
   final Pronoun pronoun;
   String get name => Log.singular(_name);
 
+  /// Whether a monster of this breed has a proper name like "Fred" versus a
+  /// generic name like "bar".
+  ///
+  /// The latter gets a definite article but the former does not.
+  final bool hasProperName;
+
   /// Untyped so the engine isn't coupled to how monsters appear.
   final Object appearance;
 
@@ -133,7 +139,8 @@ class Breed {
       this.minions,
       this.stain,
       required this.flags,
-      String? description})
+      String? description,
+      this.hasProperName = false})
       : vision = vision ?? 8,
         hearing = hearing ?? 10,
         speed = speed ?? 0,

@@ -53,7 +53,9 @@ FamilyBuilder family(String character,
   _family._speed = speed;
   _family._dodge = dodge;
   _family._tracking = tracking;
-  _family._flags = flags;
+  if (flags != null) {
+    _family._flags.addAll(flags.split(" "));
+  }
 
   return _family;
 }
@@ -123,8 +125,7 @@ class _BaseBuilder {
   final List<Defense> _defenses = [];
   final List<String> _groups = [];
 
-  // TODO: Make flags strongly typed here too?
-  String? _flags;
+  final List<String> _flags = [];
 
   int? _countMin;
   int? _countMax;
@@ -140,7 +141,7 @@ class _BaseBuilder {
 
   void flags(String flags) {
     // TODO: Allow negated flags.
-    _flags = flags;
+    _flags.addAll(flags.split(" "));
   }
 
   void emanate(int level) {
@@ -209,6 +210,7 @@ class FamilyBuilder extends _BaseBuilder {
 
 class BreedBuilder extends _BaseBuilder {
   final String _name;
+  bool _hasProperName = false;
   final int _depth;
   final Object _appearance;
   final int _health;
@@ -270,12 +272,10 @@ class BreedBuilder extends _BaseBuilder {
     _drops.add(drop);
   }
 
-  void he() {
-    _pronoun = Pronoun.he;
-  }
-
-  void she() {
-    _pronoun = Pronoun.she;
+  void unique({Pronoun? pronoun, bool properName = true}) {
+    _flags.add("unique");
+    _pronoun = pronoun;
+    _hasProperName = properName;
   }
 
   // TODO: Figure out some strategy for which of these parameters have defaults
@@ -398,12 +398,7 @@ class BreedBuilder extends _BaseBuilder {
   }
 
   Breed build() {
-    var flags = {
-      // TODO: Use ?. and ...?.
-      if (_family._flags != null) ..._family._flags!.split(" "),
-      if (_flags != null) ..._flags!.split(" "),
-    };
-
+    var flags = {..._family._flags, ..._flags};
     var dodge = _dodge ?? _family._dodge;
     if (flags.contains("immobile")) dodge = 0;
 
@@ -417,6 +412,7 @@ class BreedBuilder extends _BaseBuilder {
     var breed = Breed(
         _name,
         _pronoun ?? Pronoun.it,
+        hasProperName: _hasProperName,
         _appearance,
         _attacks,
         _moves,

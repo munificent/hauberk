@@ -88,7 +88,7 @@ class Monster extends Actor {
   Object get appearance => breed.appearance;
 
   @override
-  String get nounText => 'the ${breed.name}';
+  String get nounText => breed.hasProperName ? breed.name : "the ${breed.name}";
 
   @override
   Pronoun get pronoun => breed.pronoun;
