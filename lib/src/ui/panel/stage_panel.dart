@@ -64,13 +64,14 @@ class StagePanel extends Panel {
   /// The portion of the [Stage] currently in view on screen.
   Rect get cameraBounds => _cameraBounds;
 
-  late Rect _cameraBounds;
+  /// This will get initialized by [_positionCamera] before it gets used.
+  Rect _cameraBounds = Rect.empty;
 
-  /// The amount of offset the rendered stage from the top left corner of the
+  /// The amount to offset the rendered stage from the top left corner of the
   /// screen.
   ///
   /// This will be zero unless the stage is smaller than the view.
-  late Vec _renderOffset;
+  Vec _renderOffset = Vec.zero;
 
   StagePanel(this._gameScreen);
 
@@ -292,21 +293,75 @@ class StagePanel extends Panel {
 
   /// Determines which portion of the [Stage] should be in view based on the
   /// position of the [Hero].
-  void _positionCamera(Vec size) {
+  ///
+  /// We don't continuously center the hero on every step because the constant
+  /// scrolling by one tile at a time makes it hard for the player to keep
+  /// track of what's moving during combat. This wouldn't be an issue if the
+  /// game had pixel-level scrolling, but scrolling one tile at a time makes it
+  /// too jumpy.
+  ///
+  /// Instead, we only re-center the view when the hero gets close to a screen
+  /// edge. Also, we center horizontally and vertically independently of each
+  /// other.
+  ///
+  /// This function also handles the view size being larger than the stage,
+  /// which can happen in the town or in small dungeons if the player has a
+  /// large screen.
+  void _positionCamera(Vec viewSize) {
     var game = _gameScreen.game;
 
-    // Handle the stage being smaller than the view.
-    var rangeWidth = math.max(0, game.stage.width - size.x);
-    var rangeHeight = math.max(0, game.stage.height - size.y);
+    var cameraX = _cameraBounds.left;
+    var offsetX = 0;
 
-    var cameraRange = Rect(0, 0, rangeWidth, rangeHeight);
+    int centerX() => (game.hero.pos.x - viewSize.x ~/ 2)
+        .clamp(0, game.stage.width - viewSize.x);
 
-    var camera = game.hero.pos - size ~/ 2;
-    camera = cameraRange.clamp(camera);
-    _cameraBounds = Rect(camera.x, camera.y, math.min(size.x, game.stage.width),
-        math.min(size.y, game.stage.height));
+    if (viewSize.x >= game.stage.width) {
+      // The view is bigger than the stage, so lock the camera and center the
+      // stage inside the view.
+      cameraX = 0;
+      offsetX = math.max(0, viewSize.x - game.stage.width) ~/ 2;
+    } else if (_cameraBounds.width == 0 || _cameraBounds.width != viewSize.x) {
+      // We haven't initialized the camera yet, so center it on the hero.
+      cameraX = centerX();
+    } else {
+      var heroViewX = game.hero.pos.x - _cameraBounds.left;
+      if (heroViewX < 8 || heroViewX > viewSize.x - 8) {
+        // The hero is getting too close to the left or right edge, so
+        // re-center.
+        cameraX = centerX();
+      }
+    }
 
-    _renderOffset = Vec(math.max(0, size.x - game.stage.width) ~/ 2,
-        math.max(0, size.y - game.stage.height) ~/ 2);
+    var cameraY = _cameraBounds.top;
+    var offsetY = 0;
+
+    int centerY() => (game.hero.pos.y - viewSize.y ~/ 2)
+        .clamp(0, game.stage.height - viewSize.y);
+
+    if (viewSize.y >= game.stage.height) {
+      // The view is bigger than the stage, so lock the camera and center the
+      // stage inside the view.
+      cameraY = 0;
+      offsetY = math.max(0, viewSize.y - game.stage.height) ~/ 2;
+    } else if (_cameraBounds.height == 0 ||
+        _cameraBounds.height != viewSize.y) {
+      // We haven't initialized the camera yet, so center it on the hero.
+      cameraY = centerY();
+    } else {
+      var heroViewY = game.hero.pos.y - _cameraBounds.top;
+      if (heroViewY < 8 || heroViewY > viewSize.y - 8) {
+        // The hero is getting too close to the left or right edge, so
+        // re-center.
+        cameraY = centerY();
+      }
+    }
+
+    _cameraBounds = Rect(
+        cameraX,
+        cameraY,
+        math.min(viewSize.x, game.stage.width),
+        math.min(viewSize.y, game.stage.height));
+    _renderOffset = Vec(offsetX, offsetY);
   }
 }
