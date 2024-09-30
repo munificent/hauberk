@@ -191,8 +191,7 @@ class Hit {
 
     action.addEvent(EventType.hit,
         actor: defender, element: element, other: damage);
-    action.log(
-        '{1} ${_attack.verb} {2} for $damage damage.', attackNoun, defender);
+    action.log('{1} ${_attack.verb} {2}.', attackNoun, defender);
     return damage;
   }
 
