@@ -1,4 +1,5 @@
 import 'package:malison/malison.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
 import '../../content/elements.dart';
@@ -245,6 +246,10 @@ class SidebarPanel extends Panel {
 
     if (actor is Monster && actor.isAfraid) {
       drawCondition("!", sandal);
+    }
+
+    if (actor is Monster && actor.isAsleep) {
+      drawCondition("z", darkBlue);
     }
 
     if (actor.poison.isActive) {
