@@ -1,4 +1,5 @@
 import '../core/element.dart';
+import '../core/log.dart';
 import '../core/option.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
@@ -54,6 +55,8 @@ class HeroSave {
   /// The lowest depth that the hero has successfully explored and exited.
   int maxDepth = 0;
 
+  final Log log;
+
   Lore get lore => _lore;
   Lore _lore;
 
@@ -101,6 +104,7 @@ class HeroSave {
       : race = race.rollStats(),
         shops = {},
         skills = SkillSet(),
+        log = Log(),
         _lore = Lore() {
     _bindStats();
   }
@@ -117,6 +121,7 @@ class HeroSave {
       this.shops,
       this.experience,
       this.skills,
+      this.log,
       this._lore,
       this.gold,
       this.maxDepth) {
@@ -150,6 +155,9 @@ class HeroSave {
       shops,
       experience,
       skills.clone(),
+      // Don't clone the log. The log is persistent even when the Hero dies in
+      // the dungeon, so all HeroSaves share the same object.
+      log,
       _lore.clone(),
       gold,
       maxDepth);

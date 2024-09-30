@@ -23,7 +23,7 @@ import 'log.dart';
 class Game {
   final Content content;
 
-  final log = Log();
+  Log get log => hero.save.log;
 
   final _actions = Queue<Action>();
   final _reactions = <Action>[];

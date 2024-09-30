@@ -38,7 +38,7 @@ class LogPanel extends Panel {
         color = color.blend(Color.black, 0.5);
       }
 
-      var lines = Log.wordWrap(terminal.width, message.text);
+      var lines = Log.wordWrap(terminal.width, text);
       for (var j = lines.length - 1; j >= 0 && y >= 0; j--) {
         terminal.writeAt(0, y, lines[j], color);
         y--;

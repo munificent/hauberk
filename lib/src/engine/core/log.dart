@@ -100,7 +100,7 @@ class Log {
     return lines;
   }
 
-  static const _maxMessages = 20;
+  static const _maxMessages = 100;
 
   final messages = <Message>[];
 
@@ -348,7 +348,7 @@ class Message {
   final String text;
 
   /// The number of times this message has been repeated.
-  int count = 1;
+  int count;
 
-  Message(this.type, this.text);
+  Message(this.type, this.text, [this.count = 1]);
 }

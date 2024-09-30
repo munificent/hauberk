@@ -106,6 +106,7 @@ class Storage {
 
         var skillSet = SkillSet.from(levels, points);
 
+        var log = _loadLog(heroData['log']);
         var lore = _loadLore(heroData['lore'] as Map<String, dynamic>);
 
         var gold = heroData['gold'] as int;
@@ -122,6 +123,7 @@ class Storage {
             shops,
             experience,
             skillSet,
+            log,
             lore,
             gold,
             maxDepth);
@@ -189,6 +191,22 @@ class Storage {
     }
 
     return Item(type, count, affixes);
+  }
+
+  Log _loadLog(Object? data) {
+    var log = Log();
+    if (data is List<dynamic>) {
+      for (var messageData in data) {
+        var messageMap = messageData as Map<String, dynamic>;
+        var type = LogType.values
+            .firstWhere((type) => type.name == messageMap['type'] as String);
+        var text = messageMap['text'] as String;
+        var count = messageMap['count'] as int;
+        log.messages.add(Message(type, text, count));
+      }
+    }
+
+    return log;
   }
 
   Lore _loadLore(Map<String, dynamic>? data) {
@@ -296,6 +314,7 @@ class Storage {
         'shops': shops,
         'experience': hero.experience,
         'skills': skills,
+        'log': _saveLog(hero.log),
         'lore': _saveLore(hero.lore),
         'gold': hero.gold,
         'maxDepth': hero.maxDepth
@@ -307,6 +326,17 @@ class Storage {
 
     html.window.localStorage['heroes'] = json.encode(data);
     print('Saved.');
+  }
+
+  List<dynamic> _saveLog(Log log) {
+    return [
+      for (var message in log.messages)
+        <String, dynamic>{
+          'type': message.type.name,
+          'text': message.text,
+          'count': message.count
+        }
+    ];
   }
 
   Map<String, dynamic> _saveLore(Lore lore) {
