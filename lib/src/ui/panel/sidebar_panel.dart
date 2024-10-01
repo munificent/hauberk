@@ -1,4 +1,5 @@
 import 'package:malison/malison.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
 import '../../content/elements.dart';
@@ -195,12 +196,18 @@ class SidebarPanel extends Panel {
   }
 
   void _drawFury(Hero hero, Terminal terminal, int y) {
-    // TODO: Show bar once these are tuned.
-    // terminal.writeAt(1, y, 'Fury', UIHue.helpText);
-    // Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.fury,
-    //     hero.strength.maxFury, red, maroon);
-    _drawStat(
-        terminal, y, 'Fury', hero.fury, red, hero.strength.maxFury, maroon);
+    // If the hero can't have any fury, gray it out.
+    terminal.writeAt(1, y, 'Fury',
+        hero.strength.maxFury == 0 ? UIHue.disabled : UIHue.helpText);
+
+    terminal.writeAt(
+        terminal.width - 3, y, hero.fury.toString().padLeft(2), persimmon);
+
+    if (hero.fury > 0) {
+      var scale = "${hero.strength.furyScale(hero.fury).toStringAsFixed(1)}x";
+      terminal.writeAt(10, y, scale.padLeft(4),
+          hero.fury == hero.strength.maxFury ? carrot : persimmon);
+    }
   }
 
   /// Draws a labeled numeric stat.
@@ -241,6 +248,10 @@ class SidebarPanel extends Panel {
       drawCondition("!", sandal);
     }
 
+    if (actor is Monster && actor.isAsleep) {
+      drawCondition("z", darkBlue);
+    }
+
     if (actor.poison.isActive) {
       switch (actor.poison.intensity) {
         case 1:
@@ -249,7 +260,6 @@ class SidebarPanel extends Panel {
           drawCondition("P", peaGreen);
         default:
           drawCondition("P", mint);
-          break;
       }
     }
 

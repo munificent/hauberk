@@ -8,7 +8,7 @@ class TeleportMove extends Move {
   @override
   num get experience => _range * 0.7;
 
-  TeleportMove(num rate, this._range) : super(rate);
+  TeleportMove(super.rate, this._range);
 
   @override
   bool shouldUse(Monster monster) {

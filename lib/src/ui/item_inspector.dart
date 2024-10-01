@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:malison/malison.dart';
 
 import '../content/elements.dart';
@@ -6,78 +8,125 @@ import '../hues.dart';
 import 'draw.dart';
 
 /// Shows a detailed info box for an item.
-class Inspector {
+class ItemInspector {
+  /// The width of the inspector when used
   static const width = 34;
 
   final Item _item;
 
-  final List<_Section> _sections = [];
+  _Section? _attackSection;
+  _Section? _defenseSection;
+  _Section? _resistancesSection;
+  _Section? _useSection;
+  late final _Section _descriptionSection;
 
-  Inspector(HeroSave hero, this._item) {
+  ItemInspector(HeroSave hero, this._item, {bool wide = false})
+      : _descriptionSection = _description(_item, wide ? 78 : width) {
+    // Build the sections ahead of time so that we can determine where
+    // everything will be positioned before we start drawing.
+
     // TODO: Handle armor that gives attack bonuses even though the item
     // itself has no attack.
-    if (_item.attack != null) _sections.add(_AttackSection(hero, _item));
+    if (_item.attack != null) _attackSection = _AttackSection(hero, _item);
 
     if (_item.armor != 0 || _item.defense != null) {
-      _sections.add(_DefenseSection(_item));
+      _defenseSection = _DefenseSection(_item);
     }
 
     // TODO: Show spells for spellbooks.
 
-    if (_item.canEquip) _sections.add(_ResistancesSection(_item));
+    if (_item.canEquip) _resistancesSection = _ResistancesSection(_item);
 
-    if (_item.canUse) _use();
-    _description();
+    if (_item.canUse) {
+      _useSection = _TextSection(
+          "Use", Log.wordWrap(wide ? 78 : width, _item.type.use!.description));
+    }
 
     // TODO: Max stack size?
   }
 
+  /// Draw the floating inspector next to an item with the sections in a single
+  /// column.
   void draw(int x, int itemY, Terminal terminal) {
-    // Frame.
-    var height = 2;
+    var sections = [
+      if (_attackSection case var section?) section,
+      if (_defenseSection case var section?) section,
+      if (_resistancesSection case var section?) section,
+      if (_useSection case var section?) section,
+      _descriptionSection,
+    ];
 
-    // Two more for the item box.
-    height += 2;
-    for (var section in _sections) {
+    // Two for the frame and two more for the glyph box.
+    var height = 2 + 2;
+
+    height += _sectionsHeight(sections);
+
+    // Try to align the box next to the item, but shift it as needed to keep it
+    // in bounds and not overlapping the help box on the bottom.
+    var top = (itemY - 1).clamp(0, terminal.height - 4 - height);
+    terminal = terminal.rect(x, top, width, height);
+
+    Draw.glyphFrame(terminal, 0, 0, terminal.width, terminal.height,
+        _item.appearance as Glyph, _item.nounText);
+
+    // Draw the sections.
+    var y = 3;
+    for (var section in sections) {
+      y = section.draw(terminal, y);
+    }
+  }
+
+  /// Draw the inspector at the bottom of the terminal full width for use in
+  /// the lore screens.
+  void drawWide(Terminal terminal) {
+    Draw.glyphFrame(terminal, 0, 0, terminal.width, terminal.height,
+        _item.appearance as Glyph, _item.nounText);
+
+    // Attack and defense in a column on the left. (We put them in the same
+    // column because most items don't have both.)
+    var leftY = 3;
+    if (_attackSection case var section?) {
+      leftY = section.draw(terminal, leftY);
+    }
+
+    if (_defenseSection case var section?) {
+      leftY = section.draw(terminal, leftY);
+    }
+
+    // Resistances in a column on the right.
+    var rightTerminal =
+        terminal.rect(40, 0, terminal.width - 40, terminal.height);
+    var rightY = 3;
+
+    if (_resistancesSection case var section?) {
+      rightY = section.draw(rightTerminal, rightY);
+    }
+
+    // Use and description below both columns.
+    var y = math.max(leftY, rightY);
+    if (_useSection case var section?) {
+      y = section.draw(terminal, y);
+    }
+
+    // Put the description below both columns.
+    _descriptionSection.draw(terminal, y);
+  }
+
+  /// Get the height of a vertical list of [sections] including their headers
+  /// and spacing between them.
+  int _sectionsHeight(List<_Section> sections) {
+    var height = 0;
+
+    for (var section in sections) {
       // +1 for the header.
       height += section.height + 1;
     }
 
     // A line of space between each section.
-    height += _sections.length - 1;
-
-    // Try to align the box next to the item, but shift it as needed to keep it
-    // in bounds and not overlapping the help box on the bottom.
-    var top = (itemY - 1).clamp(0, terminal.height - 4 - height);
-    terminal = terminal.rect(x, top, 34, height);
-
-    // Draw the frame.
-    Draw.frame(
-        terminal, 0, 1, terminal.width, terminal.height - 1, UIHue.helpText);
-
-    Draw.box(terminal, 1, 0, 3, 3, UIHue.helpText);
-    terminal.writeAt(1, 1, "╡", UIHue.helpText);
-    terminal.writeAt(3, 1, "╞", UIHue.helpText);
-
-    terminal.drawGlyph(2, 1, _item.appearance as Glyph);
-    terminal.writeAt(4, 1, _item.nounText, UIHue.primary);
-
-    // Draw the sections.
-    var y = 3;
-    for (var section in _sections) {
-      terminal.writeAt(1, y, "${section.header}:", UIHue.selection);
-      y++;
-
-      section.draw(terminal, y);
-      y += section.height + 1;
-    }
+    return height + sections.length - 1;
   }
 
-  void _use() {
-    _sections.add(_TextSection("Use", _wordWrap(_item.type.use!.description)));
-  }
-
-  void _description() {
+  static _Section _description(Item item, int width) {
     // TODO: Support color codes in strings to make important information stand
     // out more.
 
@@ -88,8 +137,10 @@ class Inspector {
 
     for (var stat in Stat.all) {
       var bonus = 0;
-      if (_item.prefix != null) bonus += _item.prefix!.statBonus(stat);
-      if (_item.suffix != null) bonus += _item.suffix!.statBonus(stat);
+
+      for (var affix in item.affixes) {
+        bonus += affix.statBonus(stat);
+      }
 
       if (bonus < 0) {
         sentences.add("It lowers your ${stat.name} by ${-bonus}.");
@@ -98,7 +149,7 @@ class Inspector {
       }
     }
 
-    var toss = _item.toss;
+    var toss = item.toss;
     if (toss != null) {
       var element = "";
       if (toss.attack.element != Element.none) {
@@ -116,24 +167,30 @@ class Inspector {
       // TODO: Describe toss use.
     }
 
-    if (_item.emanationLevel > 0) {
-      sentences.add("It emanates ${_item.emanationLevel} light.");
+    if (item.emanationLevel > 0) {
+      sentences.add("It emanates ${item.emanationLevel} light.");
     }
 
-    for (var element in _item.type.destroyChance.keys) {
+    for (var element in item.type.destroyChance.keys) {
       sentences.add("It can be destroyed by ${element.name.toLowerCase()}.");
     }
 
-    _sections.add(_TextSection("Description", _wordWrap(sentences.join(" "))));
+    return _TextSection(
+        "Description", Log.wordWrap(width - 2, sentences.join(" ")));
   }
-
-  List<String> _wordWrap(String text) => Log.wordWrap(width - 2, text);
 }
 
 abstract class _Section {
   String get header;
   int get height;
-  void draw(Terminal terminal, int y);
+
+  int draw(Terminal terminal, int y) {
+    terminal.writeAt(1, y, "$header:", UIHue.selection);
+    _drawContent(terminal, y + 1);
+    return y + height + 2;
+  }
+
+  void _drawContent(Terminal terminal, int y);
 
   // TODO: Mostly copied from hero_equipment_dialog. Unify.
   void _writeBonus(Terminal terminal, int x, int y, int bonus) {
@@ -200,7 +257,7 @@ class _AttackSection extends _Section {
   _AttackSection(this._hero, this._item);
 
   @override
-  void draw(Terminal terminal, int y) {
+  void _drawContent(Terminal terminal, int y) {
     _writeLabel(terminal, y, "Damage");
     if (_item.element != Element.none) {
       terminal.writeAt(
@@ -224,6 +281,7 @@ class _AttackSection extends _Section {
 
     if (_item.attack!.isRanged) {
       _writeStat(terminal, y, "Range", _item.attack!.range);
+      y++;
     }
 
     _writeLabel(terminal, y, "Heft");
@@ -232,7 +290,6 @@ class _AttackSection extends _Section {
     terminal.writeAt(12, y, _item.heft.toString(), color);
     _writeScale(terminal, 16, y, _hero.strength.heftScale(_item.heft));
     // TODO: Show heft when dual-wielding somehow?
-    y++;
   }
 }
 
@@ -243,14 +300,20 @@ class _DefenseSection extends _Section {
   String get header => "Defense";
 
   @override
-  int get height => _item.defense != null ? 3 : 2;
+  int get height {
+    var result = 1; // Weight.
+    if (_item.defense != null) result++;
+    if (_item.armor != 0) result++;
+    return result;
+  }
 
   _DefenseSection(this._item);
 
   @override
-  void draw(Terminal terminal, int y) {
+  void _drawContent(Terminal terminal, int y) {
     if (_item.defense != null) {
       _writeStat(terminal, y, "Dodge", _item.defense!.amount);
+      y++;
     }
 
     if (_item.armor != 0) {
@@ -265,7 +328,6 @@ class _DefenseSection extends _Section {
     }
 
     _writeStat(terminal, y, "Weight", _item.weight);
-    // TODO: Encumbrance.
   }
 }
 
@@ -281,7 +343,7 @@ class _ResistancesSection extends _Section {
   _ResistancesSection(this._item);
 
   @override
-  void draw(Terminal terminal, int y) {
+  void _drawContent(Terminal terminal, int y) {
     var x = 1;
     for (var element in Elements.all) {
       if (element == Element.none) continue;
@@ -306,7 +368,7 @@ class _TextSection extends _Section {
   _TextSection(this.header, this._lines);
 
   @override
-  void draw(Terminal terminal, int y) {
+  void _drawContent(Terminal terminal, int y) {
     for (var line in _lines) {
       terminal.writeAt(1, y, line, UIHue.text);
       y++;

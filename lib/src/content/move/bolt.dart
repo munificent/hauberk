@@ -12,7 +12,7 @@ class BoltMove extends RangedMove {
   num get experience =>
       attack.damage * attack.element.experience * (1.0 + range / 20.0);
 
-  BoltMove(num rate, Attack attack) : super(rate, attack);
+  BoltMove(super.rate, super.attack);
 
   @override
   bool shouldUse(Monster monster) {

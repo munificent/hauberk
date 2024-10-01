@@ -31,6 +31,8 @@ class WizardDialog extends Screen<Input> {
       ui.push(_WizardTrainDialog(_game));
     };
 
+    _menuItems["Kill All Monsters"] = _killAllMonsters;
+
     _menuItems["Toggle Show All Monsters"] = () {
       Debug.showAllMonsters = !Debug.showAllMonsters;
       _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
@@ -138,6 +140,16 @@ class WizardDialog extends Screen<Input> {
 
     dirty();
   }
+
+  void _killAllMonsters() {
+    for (var monster in _game.stage.actors.toList()) {
+      if (monster is! Monster) continue;
+
+      monster.onDied(Noun('The wizard'));
+    }
+
+    dirty();
+  }
 }
 
 /// Base class for a dialog that searches for things by name.
@@ -198,7 +210,6 @@ abstract class _SearchDialog<T> extends Screen<Input> {
             return true;
           }
         }
-        break;
     }
 
     return false;
@@ -258,7 +269,7 @@ abstract class _SearchDialog<T> extends Screen<Input> {
 }
 
 class _WizardDropDialog extends _SearchDialog<ItemType> {
-  _WizardDropDialog(Game game) : super(game);
+  _WizardDropDialog(super.game);
 
   @override
   String get _question => "Drop what?";
@@ -281,7 +292,7 @@ class _WizardDropDialog extends _SearchDialog<ItemType> {
 }
 
 class _WizardSpawnDialog extends _SearchDialog<Breed> {
-  _WizardSpawnDialog(Game game) : super(game);
+  _WizardSpawnDialog(super.game);
 
   @override
   String get _question => "Spawn what?";
@@ -307,7 +318,7 @@ class _WizardSpawnDialog extends _SearchDialog<Breed> {
 }
 
 class _WizardTrainDialog extends _SearchDialog<Discipline> {
-  _WizardTrainDialog(Game game) : super(game);
+  _WizardTrainDialog(super.game);
 
   @override
   String get _question => "Train which discipline?";

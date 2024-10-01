@@ -1,3 +1,4 @@
+import '../../engine.dart';
 import '../../hues.dart';
 import '../action/missive.dart';
 import '../elements.dart';
@@ -66,15 +67,14 @@ void faeFolk() {
     ..drop("magic", percent: 30);
 
   breed("Tink", 8, peaGreen, 40, meander: 10)
-    ..she()
+    ..unique(pronoun: Pronoun.she)
     ..attack("poke[s]", 8)
     ..missive(Missive.insult, rate: 4)
     ..sparkBolt(rate: 8, damage: 4)
     ..windBolt(rate: 10, damage: 7)
     ..teleport(range: 5)
     ..drop("treasure", count: 2)
-    ..drop("magic", count: 3, depthOffset: 3)
-    ..flags("unique");
+    ..drop("magic", count: 3, depthOffset: 3);
 
   // TODO: https://en.wikipedia.org/wiki/Puck_(folklore)
 }
@@ -122,13 +122,14 @@ void quest() {
   // TODO: Better group?
   family("Q").groups("magical");
   breed("Nameless Unmaker", 100, purple, 1000, speed: 2)
+    ..unique(pronoun: Pronoun.it)
     ..sense(see: 16, hear: 16)
     ..attack("crushe[s]", 250, Elements.earth)
     ..attack("blast[s]", 200, Elements.lightning)
     ..darkCone(rate: 10, damage: 500)
-    ..flags("fearless unique")
+    ..flags("fearless")
     ..openDoors()
-    ..drop("item", count: 20, affixChance: 50);
+    ..dropGreat("item", count: 20);
   // TODO: Minions. Moves.
 }
 

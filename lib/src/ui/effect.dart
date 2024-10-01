@@ -96,10 +96,10 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(HowlEffect(event.actor!));
 
     case EventType.awaken:
-      effects.add(BlinkEffect(event.actor!, Glyph('!', ash)));
+      effects.add(BlinkEffect(event.actor!, Glyph('!', ash), 1));
 
     case EventType.frighten:
-      effects.add(BlinkEffect(event.actor!, Glyph("!", gold)));
+      effects.add(BlinkEffect(event.actor!, Glyph("!", gold), 3));
 
     case EventType.wind:
       // TODO: Do something.
@@ -562,24 +562,28 @@ class HowlEffect implements Effect {
 }
 
 class BlinkEffect implements Effect {
+  static const int _blinkFrames = 12;
+
   final Actor _actor;
   final Glyph _glyph;
+  final int _blinks;
+
   int _age = 0;
 
-  BlinkEffect(this._actor, this._glyph);
+  BlinkEffect(this._actor, this._glyph, this._blinks);
 
   @override
   bool update(Game game) {
     if (!game.stage[_actor.pos].isVisible) return false;
 
-    return ++_age < 24;
+    return ++_age < _blinkFrames * 2 * _blinks;
   }
 
   @override
   void render(Game game, DrawGlyph drawGlyph) {
     var pos = _actor.pos;
 
-    if ((_age ~/ 6).isOdd) {
+    if ((_age ~/ _blinkFrames).isOdd) {
       drawGlyph(pos.x, pos.y, _glyph);
     }
   }

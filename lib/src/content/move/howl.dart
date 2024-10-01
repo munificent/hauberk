@@ -8,7 +8,7 @@ class HowlMove extends Move {
   @override
   num get experience => _range * 0.5;
 
-  HowlMove(num rate, this._range, this._verb) : super(rate);
+  HowlMove(super.rate, this._range, this._verb);
 
   @override
   bool shouldUse(Monster monster) {

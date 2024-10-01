@@ -107,7 +107,7 @@ class _SoundFlow extends Flow {
 }
 
 class _SoundPathfinder extends Pathfinder<int> {
-  _SoundPathfinder(Stage stage, Vec from, Vec to) : super(stage, from, to);
+  _SoundPathfinder(super.stage, super.from, super.to);
 
   @override
   int? processStep(Path path) {

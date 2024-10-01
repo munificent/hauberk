@@ -81,19 +81,19 @@ void canines() {
 
   // TODO: Drops.
   breed("Skoll", 36, gold, 200)
-    ..flags("unique")
+    ..unique()
     ..minion("canine", 5, 9)
     ..attack("bite[s]", 20)
     ..howl();
 
   breed("Hati", 40, blue, 250)
-    ..flags("unique")
+    ..unique()
     ..minion("canine", 5, 9)
     ..attack("bite[s]", 23)
     ..howl();
 
   breed("Fenrir", 44, darkCoolGray, 300)
-    ..flags("unique")
+    ..unique()
     ..minion("canine", 3, 5)
     ..minion("Skoll")
     ..minion("Hati")
@@ -287,15 +287,15 @@ void goblins() {
     ..drop("magic", percent: 20);
 
   breed("Erlkonig, the Goblin Prince", 14, darkCoolGray, 120)
-    ..he()
+    ..unique(pronoun: Pronoun.he)
     ..minion("goblin", 4, 8)
     ..attack("hit[s]", 10)
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
     ..drop("treasure", count: 3)
-    ..drop("equipment", count: 2, depthOffset: 8, affixChance: 30)
+    ..dropGood("equipment", count: 2, depthOffset: 4)
     ..drop("magic", count: 3, depthOffset: 4)
-    ..flags("protective unique");
+    ..flags("protective");
 
   // TODO: Hobgoblins, bugbears, bogill.
   // TODO: https://en.wikipedia.org/wiki/Moss_people
@@ -474,7 +474,7 @@ void kobolds() {
     ..drop("magic", percent: 30);
 
   breed("Feng", 10, carrot, 80, speed: 1, meander: 10)
-    ..he()
+    ..unique(pronoun: Pronoun.he)
     ..minion("kobold", 4, 10)
     ..minion("canine", 1, 3)
     ..attack("stab[s]", 5)
@@ -483,10 +483,9 @@ void kobolds() {
     ..teleport(rate: 50, range: 30)
     ..lightningCone(rate: 8, damage: 12)
     ..drop("treasure", count: 3, depthOffset: 5)
-    ..drop("spear", percent: 20, depthOffset: 5, affixChance: 20)
-    ..drop("armor", percent: 30, depthOffset: 5, affixChance: 10)
-    ..drop("magic", count: 2, depthOffset: 5)
-    ..flags("unique");
+    ..dropGood("spear", percent: 20, depthOffset: 5)
+    ..dropGood("armor", percent: 30, depthOffset: 5)
+    ..drop("magic", count: 2, depthOffset: 5);
 
   // homonculous
 }
@@ -590,14 +589,13 @@ void people() {
     ..openDoors()
     ..emanate(2);
   breed("Harold the Misfortunate", 1, lilac, 30)
-    ..he()
+    ..unique(pronoun: Pronoun.he)
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy)
     ..drop("treasure", percent: 80)
     ..drop("weapon", percent: 20, depthOffset: 4)
     ..drop("armor", percent: 30, depthOffset: 4)
-    ..drop("magic", percent: 40, depthOffset: 4)
-    ..flags("unique");
+    ..drop("magic", percent: 40, depthOffset: 4);
 
   breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 30)
     ..attack("hit[s]", 3)
@@ -678,13 +676,12 @@ void rodents() {
     ..attack("scratch[es]", 8);
 
   breed("The Rat King", 8, maroon, 120)
-    ..he()
+    ..unique(pronoun: Pronoun.he)
     ..attack("bite[s]", 16)
     ..attack("scratch[es]", 10)
     ..minion("rodent", 8, 16)
     ..drop("treasure", count: 3)
-    ..drop("item", percent: 50, depthOffset: 10, affixChance: 10)
-    ..flags("unique");
+    ..dropGood("item", percent: 50, depthOffset: 10);
 }
 
 void slugs() {

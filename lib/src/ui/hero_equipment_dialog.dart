@@ -7,8 +7,7 @@ import 'hero_info_dialog.dart';
 // TODO: Unify with HeroItemLoreDialog so that we can select and show inspector
 // for equipment.
 class HeroEquipmentDialog extends HeroInfoDialog {
-  HeroEquipmentDialog(Content content, HeroSave hero)
-      : super.base(content, hero);
+  HeroEquipmentDialog(super.content, super.hero) : super.base();
 
   @override
   String get name => "Equipment";

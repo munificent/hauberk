@@ -106,6 +106,7 @@ class Storage {
 
         var skillSet = SkillSet.from(levels, points);
 
+        var log = _loadLog(heroData['log']);
         var lore = _loadLore(heroData['lore'] as Map<String, dynamic>);
 
         var gold = heroData['gold'] as int;
@@ -122,6 +123,7 @@ class Storage {
             shops,
             experience,
             skillSet,
+            log,
             lore,
             gold,
             maxDepth);
@@ -179,29 +181,32 @@ class Storage {
       count = data['count'] as int;
     }
 
-    Affix? prefix;
-    if (data.containsKey('prefix')) {
-      var prefixData = data['prefix'];
-      // TODO: Older save from back when affixes had types.
-      if (prefixData is Map<String, dynamic>) {
-        prefix = content.findAffix(prefixData['name'] as String);
-      } else {
-        prefix = content.findAffix(prefixData as String);
+    var affixes = <Affix>[];
+    if (data.containsKey('affixes')) {
+      var affixesData = data['affixes'] as List<dynamic>;
+
+      for (var affixData in affixesData) {
+        affixes.add(content.findAffix(affixData as String)!);
       }
     }
 
-    Affix? suffix;
-    if (data.containsKey('suffix')) {
-      var suffixData = data['suffix'];
-      // TODO: Older save from back when affixes had types.
-      if (suffixData is Map<String, dynamic>) {
-        suffix = content.findAffix(suffixData['name'] as String);
-      } else {
-        suffix = content.findAffix(suffixData as String);
+    return Item(type, count, affixes);
+  }
+
+  Log _loadLog(Object? data) {
+    var log = Log();
+    if (data is List<dynamic>) {
+      for (var messageData in data) {
+        var messageMap = messageData as Map<String, dynamic>;
+        var type = LogType.values
+            .firstWhere((type) => type.name == messageMap['type'] as String);
+        var text = messageMap['text'] as String;
+        var count = messageMap['count'] as int;
+        log.messages.add(Message(type, text, count));
       }
     }
 
-    return Item(type, count, prefix, suffix);
+    return log;
   }
 
   Lore _loadLore(Map<String, dynamic>? data) {
@@ -209,6 +214,7 @@ class Storage {
     var slain = <Breed, int>{};
     var foundItems = <ItemType, int>{};
     var foundAffixes = <Affix, int>{};
+    var createdArtifacts = <Affix>{};
     var usedItems = <ItemType, int>{};
 
     // TODO: Older saves before lore.
@@ -252,9 +258,17 @@ class Storage {
           if (itemType != null) usedItems[itemType] = count as int;
         });
       }
+
+      var createdArtifactsList = data['createdArtifacts'] as List<dynamic>?;
+      if (createdArtifactsList != null) {
+        for (var name in createdArtifactsList) {
+          createdArtifacts.add(content.findAffix(name as String)!);
+        }
+      }
     }
 
-    return Lore.from(seenBreeds, slain, foundItems, foundAffixes, usedItems);
+    return Lore.from(seenBreeds, slain, foundItems, foundAffixes,
+        createdArtifacts, usedItems);
   }
 
   void save() {
@@ -289,17 +303,6 @@ class Storage {
         };
       }
 
-      var seen = <String, dynamic>{};
-      var slain = <String, dynamic>{};
-      var lore = {'seen': seen, 'slain': slain};
-      for (var breed in content.breeds) {
-        var count = hero.lore.seenBreed(breed);
-        if (count != 0) seen[breed.name] = count;
-
-        count = hero.lore.slain(breed);
-        if (count != 0) slain[breed.name] = count;
-      }
-
       heroData.add({
         'name': hero.name,
         'race': race,
@@ -311,7 +314,8 @@ class Storage {
         'shops': shops,
         'experience': hero.experience,
         'skills': skills,
-        'lore': lore,
+        'log': _saveLog(hero.log),
+        'lore': _saveLore(hero.lore),
         'gold': hero.gold,
         'maxDepth': hero.maxDepth
       });
@@ -324,6 +328,58 @@ class Storage {
     print('Saved.');
   }
 
+  List<dynamic> _saveLog(Log log) {
+    return [
+      for (var message in log.messages)
+        <String, dynamic>{
+          'type': message.type.name,
+          'text': message.text,
+          'count': message.count
+        }
+    ];
+  }
+
+  Map<String, dynamic> _saveLore(Lore lore) {
+    var seen = <String, dynamic>{};
+    var slain = <String, dynamic>{};
+    var foundItems = <String, dynamic>{};
+    var foundAffixes = <String, dynamic>{};
+    var usedItems = <String, dynamic>{};
+    var createdArtifacts = <dynamic>[];
+
+    for (var breed in content.breeds) {
+      var count = lore.seenBreed(breed);
+      if (count != 0) seen[breed.name] = count;
+
+      count = lore.slain(breed);
+      if (count != 0) slain[breed.name] = count;
+    }
+
+    for (var itemType in content.items) {
+      var found = lore.foundItems(itemType);
+      if (found != 0) foundItems[itemType.name] = found;
+
+      var used = lore.usedItems(itemType);
+      if (used != 0) usedItems[itemType.name] = used;
+    }
+
+    for (var affix in content.affixes) {
+      var found = lore.foundAffixes(affix);
+      if (found != 0) foundAffixes[affix.id] = found;
+
+      if (lore.createdArtifact(affix)) createdArtifacts.add(affix.id);
+    }
+
+    return {
+      'seen': seen,
+      'slain': slain,
+      'foundItems': foundItems,
+      'foundAffixes': foundAffixes,
+      'usedItems': usedItems,
+      'createdArtifacts': createdArtifacts,
+    };
+  }
+
   List _saveItems(Iterable<Item> items) {
     return <dynamic>[for (var item in items) _saveItem(item)];
   }
@@ -332,8 +388,8 @@ class Storage {
     return <String, dynamic>{
       'type': item.type.name,
       'count': item.count,
-      if (item.prefix != null) 'prefix': item.prefix!.name,
-      if (item.suffix != null) 'suffix': item.suffix!.name,
+      if (item.affixes.isNotEmpty)
+        'affixes': [for (var affix in item.affixes) affix.id]
     };
   }
 }

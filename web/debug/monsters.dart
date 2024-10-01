@@ -2,113 +2,82 @@ import 'dart:html' as html;
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
+import 'package:hauberk/src/debug/table.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
 
-import 'histogram.dart';
-
 final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
-final breedDrops = <Breed, Histogram<String>>{};
 
 void main() {
   createContent();
 
-  var breeds = Monsters.breeds.all.toList();
-  breeds.sort((a, b) {
+  var table = Table<Breed>("table", (a, b) {
     if (a.depth != b.depth) return a.depth.compareTo(b.depth);
     return a.experience.compareTo(b.experience);
   });
 
-  var text = StringBuffer();
-  text.write('''
-    <thead>
-    <tr>
-      <td colspan="2">Breed</td>
-      <td>Depth</td>
-      <td>Health</td>
-      <td>Meander</td>
-      <td>Speed</td>
-      <td>Dodge</td>
-      <td>Exp</td>
-      <td>Count</td>
-      <td>Attacks</td>
-      <td>Moves</td>
-      <td>Tags</td>
-      <td>Flags</td>
-      <td width="20%">Drops</td>
-    </tr>
-    </thead>
-    <tbody>
-    ''');
+  table.column('Breed',
+      compare: (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  table.column('Depth', right: true);
+  table.column('Health', right: true);
+  table.column('Meander', right: true);
+  table.column('Speed', right: true);
+  table.column('Dodge',
+      compare: (a, b) => _totalDodge(a).compareTo(_totalDodge(b)));
+  table.column('Exp', right: true);
+  table.column('Count', compare: (a, b) {
+    if (a.countMin != b.countMin) return a.countMin.compareTo(b.countMin);
+    return a.countMax.compareTo(b.countMax);
+  });
+  table.column('Attacks');
+  table.column('Moves');
+  table.column('Tags');
+  table.column('Flags');
 
-  for (var breed in breeds) {
+  for (var breed in Monsters.breeds.all) {
+    var cells = <Object?>[];
+
     var glyph = breed.appearance as Glyph;
+    var anchor = Uri.encodeFull(breed.name);
+    cells.add('<code class="term" style="color: ${glyph.fore.cssColor}">'
+        '${String.fromCharCodes([glyph.char])}'
+        '</code>&nbsp;<a href="monster.html#$anchor">${breed.name}</a>');
+
+    cells.add(breed.depth);
+    cells.add(breed.maxHealth);
+    cells.add(breed.meander);
+    cells.add(breed.speed);
+    cells.add(_dodgesAndDefenses(breed).join('+'));
+    cells.add(breed.experience);
 
     var count = breed.countMin.toString();
     if (breed.countMax != breed.countMin) {
-      count += "&thinsp;&ndash;&thinsp;${breed.countMax}";
+      count += ":${breed.countMax}";
     }
+    cells.add(count);
 
-    text.write('''
-        <tr>
-          <td>
-            <pre><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
-          glyph.char
-        ])}</span></pre>
-          </td>
-          <td>${breed.name}</td>
-          <td>${breed.depth}</td>
-          <td class="r">${breed.maxHealth}</td>
-          <td class="r">${breed.meander}</td>
-          <td class="r">${breed.speed}</td>
-        ''');
-
-    text.write('<td>${breed.dodge}');
-    if (breed.defenses.isNotEmpty) {
-      text.write('+${breed.defenses.map((e) => e.amount).join("+")}');
-    }
-    text.write('</td>');
-    text.write('<td class="r">${breed.experience}</td>');
-    text.write('<td class="r">$count</td>');
-
-    text.write('<td>');
     var attacks = breed.attacks.map(
         (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} $attack');
-    text.write(attacks.join('<br>'));
-    text.write('</td>');
+    cells.add(attacks.join('<br>'));
 
-    text.writeln('<td>${breed.moves.join("<br>")}</td>');
+    cells.add(breed.moves.join("<br>"));
 
-    var tags = Monsters.breeds.getTags(breed.name).toList()..remove("monster");
-    text.write('<td>${tags.join(", ")}</td>');
-    text.write('<td>${breed.flags}</td>');
-    text.write('<td><span class="drop" id="${breed.name}">(drops)</span></td>');
-    text.write('</tr>');
+    cells.add([
+      for (var tag in Monsters.breeds.getTags(breed.name))
+        if (tag != "monster") tag,
+    ].join(" "));
+
+    cells.add(breed.flags.names.join(" "));
+
+    table.row(breed, cells);
   }
-  text.write('</tbody>');
 
-  html
-      .querySelector('table')!
-      .setInnerHtml(text.toString(), validator: validator);
-
-  for (var span in html.querySelectorAll('span.drop')) {
-    span.onClick.listen((_) {
-      moreDrops(span);
-    });
-  }
+  table.render();
 }
 
-void moreDrops(html.Element span) {
-  var breed = Monsters.breeds.find(span.id);
-  var drops = breedDrops.putIfAbsent(breed, () => Histogram());
+int _totalDodge(Breed breed) =>
+    _dodgesAndDefenses(breed).reduce((a, b) => a + b);
 
-  for (var i = 0; i < 100; i++) {
-    breed.drop.dropItem(breed.depth, (item) {
-      drops.add(item.toString());
-    });
-  }
-
-  span.innerHtml = drops.descending().map((name) {
-    return "$name (${drops.count(name)})";
-  }).join('<br>');
+List<int> _dodgesAndDefenses(Breed breed) {
+  return [breed.dodge, for (var defense in breed.defenses) defense.amount];
 }

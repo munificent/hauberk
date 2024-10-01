@@ -40,6 +40,12 @@ class Breed {
   final Pronoun pronoun;
   String get name => Log.singular(_name);
 
+  /// Whether a monster of this breed has a proper name like "Fred" versus a
+  /// generic name like "bar".
+  ///
+  /// The latter gets a definite article but the former does not.
+  final bool hasProperName;
+
   /// Untyped so the engine isn't coupled to how monsters appear.
   final Object appearance;
 
@@ -133,7 +139,8 @@ class Breed {
       this.minions,
       this.stain,
       required this.flags,
-      String? description})
+      String? description,
+      this.hasProperName = false})
       : vision = vision ?? 8,
         hearing = hearing ?? 10,
         speed = speed ?? 0,
@@ -268,6 +275,24 @@ class BreedFlags {
   final bool protective;
   final bool unique;
 
+  factory BreedFlags.fromSet(Set<String> names) {
+    names = names.toSet();
+
+    var flags = BreedFlags(
+        berzerk: names.remove("berzerk"),
+        cowardly: names.remove("cowardly"),
+        fearless: names.remove("fearless"),
+        immobile: names.remove("immobile"),
+        protective: names.remove("protective"),
+        unique: names.remove("unique"));
+
+    if (names.isNotEmpty) {
+      throw ArgumentError('Unknown flags "${names.join(', ')}"');
+    }
+
+    return flags;
+  }
+
   BreedFlags(
       {required this.berzerk,
       required this.cowardly,
@@ -290,33 +315,15 @@ class BreedFlags {
     return scale;
   }
 
-  factory BreedFlags.fromSet(Set<String> names) {
-    names = names.toSet();
-
-    var flags = BreedFlags(
-        berzerk: names.remove("berzerk"),
-        cowardly: names.remove("cowardly"),
-        fearless: names.remove("fearless"),
-        immobile: names.remove("immobile"),
-        protective: names.remove("protective"),
-        unique: names.remove("unique"));
-
-    if (names.isNotEmpty) {
-      throw ArgumentError('Unknown flags "${names.join(', ')}"');
-    }
-
-    return flags;
-  }
+  List<String> get names => [
+        if (berzerk) "berzerk",
+        if (cowardly) "cowardly",
+        if (fearless) "fearless",
+        if (immobile) "immobile",
+        if (protective) "protective",
+        if (unique) "unique",
+      ];
 
   @override
-  String toString() {
-    return [
-      if (berzerk) "berzerk",
-      if (cowardly) "cowardly",
-      if (fearless) "fearless",
-      if (immobile) "immobile",
-      if (protective) "protective",
-      if (unique) "unique",
-    ].join(" ");
-  }
+  String toString() => names.join(" ");
 }

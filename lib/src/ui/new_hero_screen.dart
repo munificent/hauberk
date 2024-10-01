@@ -332,7 +332,6 @@ class NewHeroScreen extends Screen<Input> {
             return true;
           }
         }
-        break;
     }
 
     return false;

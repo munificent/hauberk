@@ -1,4 +1,6 @@
 /// These actions are side effects from taking elemental damage.
+library;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';

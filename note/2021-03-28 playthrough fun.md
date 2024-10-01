@@ -38,7 +38,7 @@ shows up or which kind it is. There's no real way for the player to say, "I'm
 going to work towards ___ today."
 
 I don't want players to have *total* control over how they grow their hero. I
-think serendipity and rare random artifiacts are a big part of the experience.
+think serendipity and rare random artifacts are a big part of the experience.
 The player may stumble onto an item that entirely changes the end-game kit they
 build. But the player should have *some* ability to decide what to work on with
 a little more fidelity than just "Gonna grind more today."
@@ -67,7 +67,7 @@ do to make the playthough experience feel more gratifying.
 
 Bring back areas so that players can choose to explore different regions to get
 different stuff. Maybe even a persistent overworld with multiple dungeons. Give
-some areas prequisites that players must complete to unlock the area.
+some areas prerequisites that players must complete to unlock the area.
 
 In fact, if we make areas need to be unlocked by beating other areas, killing
 certain monsters, and/or getting certain items, then that opens up an entire new

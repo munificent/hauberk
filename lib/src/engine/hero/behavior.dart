@@ -144,53 +144,140 @@ class RunBehavior extends Behavior {
 
   /// Advance one step while in a passage.
   ///
-  /// The hero will follow curves and turns as long as there is only one
-  /// direction they can go. (This is more or less true, though right-angle
-  /// turns need special handling.)
+  /// The basic idea is to look ahead two steps from the current position and
+  /// choose a direction for the first step based on where the hero is able
+  /// to get. Looking two steps ahead enables the hero to cut corners, like:
+  ///
+  ///     #####       #####       #####       #####
+  ///     -@..#       .-@.#       ..\.#       ....#
+  ///     ###.#  -->  ###.#  -->  ###@#  -->  ###|#
+  ///       #.#         #.#         #.#         #@#
+  ///
+  /// Note how the hero never steps all the way into the corner (which would
+  /// require another step and make the hero slower than chasing monsters).
   bool _runInPassage(Hero hero) {
-    // Keep running as long as there's only one direction to go. Allow up to a
-    // 90° turn while running.
-    var openDirs = [
+    // Note that "near" in this function means one step from the hero and "far"
+    // means two.
+
+    // The first step directions that lead to an open position.
+    var dirsToNear = <Direction>[];
+
+    // The first step directions that lead to an open second position.
+    var dirsToFar = <Direction>{};
+
+    // The set of tiles reachable in two steps.
+    var farPositions = <Vec>{};
+
+    // Consider one step, allowing up to a 90° turn.
+    var possibleFirstDirs = [
       direction.rotateLeft90,
       direction.rotateLeft45,
       direction,
       direction.rotateRight45,
-      direction.rotateRight90
-    ].where((dir) => _isOpen(hero, dir)).toSet();
+      direction.rotateRight90,
+    ];
 
-    if (openDirs.length == 1) {
-      direction = openDirs.first;
-      return true;
+    for (var firstDir in possibleFirstDirs) {
+      // Ignore unreachable tiles.
+      var firstPos = hero.pos + firstDir;
+      if (!_isOpenAt(hero, firstPos)) continue;
+
+      // We can get here, so it's a viable step.
+      dirsToNear.add(firstDir);
+
+      // From here, consider possible second steps, allowing up to a 45° turn.
+      var possibleSecondDirs = [
+        firstDir.rotateLeft45,
+        firstDir,
+        firstDir.rotateRight45,
+      ];
+
+      for (var secondDir in possibleSecondDirs) {
+        // Ignore unreachable tiles.
+        var secondPos = firstPos + secondDir;
+        if (!_isOpenAt(hero, secondPos)) continue;
+
+        dirsToFar.add(firstDir);
+        farPositions.add(secondPos);
+      }
     }
 
-    // Corner case, literally. If we're approaching a right-angle turn, keep
-    // going. We'd normally stop here because there are two ways you can go,
-    // straight into the corner of the turn (1) or diagonal to take a shortcut
-    // around it (2):
-    //
-    //     ####
-    //     #12.
-    //     #@##
-    //     #^#
-    //
-    // We detect this case by seeing if there are two (and only two) open
-    // directions: ahead and 45° *and* if one step past that is blocked.
-    if (openDirs.length != 2) return false;
-    if (!openDirs.contains(direction)) return false;
-    if (!openDirs.contains(direction.rotateLeft45) &&
-        !openDirs.contains(direction.rotateRight45)) return false;
+    switch (dirsToFar.length) {
+      case 0 when dirsToNear.length == 1:
+        // We can't reach any far points and only one near point, so may as well
+        // go there. In other words, go all the way into a dead end:
+        //
+        //     ####
+        //     >@.#
+        //     ####
+        direction = dirsToNear.first;
+        return true;
 
-    var twoStepsAhead = hero.game.stage[hero.pos + direction * 2].isTraversable;
-    if (twoStepsAhead) return false;
+      case 1:
+        // There's only one way to go that leads to far destinations, so pick
+        // that. There may be multiple far points that can be reached going
+        // this way, as in:
+        //
+        //     #####
+        //     >@12#
+        //     ###3#
+        //       #.#
+        //
+        // Here, both 2 and 3 are far reachable tiles, but you have to go
+        // through 1 to get to either, so 1 is unambiguously the best path. This
+        // lets the hero walk towards corners.
+        direction = dirsToFar.first;
+        return true;
 
-    // If we got here, we're in a corner. Keep going straight.
-    return true;
+      case 2 when farPositions.length == 1:
+        // There is only one far tile that's reachable, but there are two near
+        // paths to reach it. This is usually from going through a tight corner
+        // or zig-zag like:
+        //
+        //     #####
+        //     .>@1####
+        //     ###23...
+        //       ######
+        //
+        // Here, the hero can reach 3 by going through either 1 (E then SE) or
+        // 2 (SE then E). So the first step is ambiguous, but the ambiguity
+        // isn't *interesting* enough to be worth stopping.
+        //
+        // If the two possible directions are only 45° apart and both reach the
+        // same far point, just (mostly arbitrarily) pick the direction that's
+        // closest to the current heading.
+        //
+        // If the two possible directions *aren't* 45° apart, then it is a more
+        // ambiguous path, as in:
+        //
+        //       ###
+        //     ###1###
+        //     .>@#3..
+        //     ###2###
+        //       ###
+        //
+        // Here, there is a real fork in the road, so we don't choose and
+        // instead stop.
+        if (dirsToFar.contains(direction)) {
+          return true;
+        } else if (dirsToFar.contains(direction.rotateLeft45) &&
+            dirsToFar.contains(direction.rotateLeft90)) {
+          direction = direction.rotateLeft45;
+          return true;
+        } else if (dirsToFar.contains(direction.rotateRight45) &&
+            dirsToFar.contains(direction.rotateRight90)) {
+          direction = direction.rotateRight45;
+          return true;
+        }
+    }
+
+    return false;
   }
 
   bool _runInOpen(Hero hero) {
     // Whether or not the hero's left and right sides are open cannot change.
-    // In other words, if he is running along a wall on his left (closed on
-    // left, open on right), he will stop if he enters an open room (open on
+    // In other words, if they are running along a wall on their left (closed on
+    // left, open on right), they will stop if they enter an open room (open on
     // both).
     var nextLeft = _isOpen(hero, direction.rotateLeft45);
     var nextRight = _isOpen(hero, direction.rotateRight45);
@@ -230,6 +317,11 @@ class RunBehavior extends Behavior {
   }
 
   // TODO: Leaks information. Should take explored/visible into account.
-  bool _isOpen(Hero hero, Direction dir) =>
-      hero.game.stage[hero.pos + dir].isTraversable;
+  bool _isOpen(Hero hero, Vec offset) => _isOpenAt(hero, hero.pos + offset);
+
+  // TODO: Leaks information. Should take explored/visible into account.
+  bool _isOpenAt(Hero hero, Vec pos) {
+    return hero.game.stage.bounds.contains(pos) &&
+        hero.game.stage[pos].isTraversable;
+  }
 }

@@ -14,6 +14,18 @@ class Draw {
         "┘");
   }
 
+  /// Draws a frame with a little box on top for a glyph with the name next to
+  /// it.
+  static void glyphFrame(Terminal terminal, int x, int y, int width, int height,
+      Glyph glyph, String label) {
+    frame(terminal, x, y + 1, width, height - 1);
+    terminal.writeAt(x + 1, y, "┌─┐", darkCoolGray);
+    terminal.writeAt(x + 1, y + 1, "╡ ╞", darkCoolGray);
+    terminal.writeAt(x + 1, y + 2, "└─┘", darkCoolGray);
+    terminal.drawGlyph(x + 2, y + 1, glyph);
+    terminal.writeAt(x + 4, y + 1, label, UIHue.primary);
+  }
+
   static void doubleBox(Terminal terminal, int x, int y, int width, int height,
       [Color? color]) {
     _box(terminal, x, y, width, height, color, "╔", "═", "╗", "║", "╚", "═",

@@ -17,12 +17,8 @@ import '../hero/hero_save.dart';
 class Property<T extends num> {
   T? _value;
 
-  /// The current modified value.
-  T get value => _modify(_value!);
-
-  /// A subclass can override this to modify the observed value. The updating
-  /// and notifications are based on the raw base value.
-  T _modify(T base) => base;
+  /// The current value.
+  T get value => _value!;
 
   /// Stores the new base [value]. If [value] is different from the current
   /// base value, calls [onChange], passing in the previous value. Does not take
@@ -72,10 +68,6 @@ abstract class StatBase extends Property<int> {
 
   String get _loseAdjective;
 
-  @override
-  int _modify(int base) =>
-      (base + _statOffset + _hero.statBonus(_stat)).clamp(1, Stat.max);
-
   int get _statOffset => 0;
 
   void bindHero(HeroSave hero) {
@@ -84,8 +76,11 @@ abstract class StatBase extends Property<int> {
   }
 
   void refresh(Game game) {
-    var newValue =
-        _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
+    var newValue = (_hero.race.valueAtLevel(_stat, _hero.level) +
+            _statOffset +
+            _hero.statBonus(_stat))
+        .clamp(1, Stat.max);
+
     update(newValue, (previous) {
       var gain = newValue - previous;
       if (gain > 0) {
@@ -112,9 +107,10 @@ class Strength extends StatBase {
   @override
   int get _statOffset => -_hero.weight;
 
+  /// The highest fury level the hero can reach.
   int get maxFury {
-    if (value <= 10) return lerpInt(value, 1, 10, 40, 100);
-    return lerpInt(value, 10, 60, 100, 200);
+    if (value < 10) return 0;
+    return (value - 8) ~/ 2;
   }
 
   double get tossRangeScale {
@@ -125,13 +121,18 @@ class Strength extends StatBase {
     return lerpDouble(value, 50, 60, 2.0, 2.1);
   }
 
+  /// The damage multiplier for a given [fury].
+  ///
+  /// Each point of fury adds another `0.1` to the multiplier.
+  double furyScale(int fury) => 1.0 + fury * 0.1;
+
   /// Calculates the melee damage scaling factor based on the hero's strength
   /// relative to the weapon's [heft].
   double heftScale(int heft) {
     var relative = (value - heft).clamp(-10, 50);
 
     if (relative < 0) {
-      // Note that there is an immediate step down to 0.8 at -1.
+      // Note there is an immediate step down to 0.6 at -1.
       return lerpDouble(relative, -10, -1, 0.0, 0.6);
     } else {
       return lerpDouble(relative, 0, 50, 1.0, 2.0);
@@ -213,11 +214,5 @@ class Will extends StatBase {
   double get damageFocusScale {
     if (value <= 10) return lerpDouble(value, 1, 10, 800, 400);
     return lerpDouble(value, 10, 60, 400, 80);
-  }
-
-  /// Scales how much fury is lost when regenerating focus.
-  double get restFuryScale {
-    if (value <= 10) return lerpDouble(value, 1, 10, 4.0, 1.0);
-    return lerpDouble(value, 10, 60, 1.0, 0.2);
   }
 }

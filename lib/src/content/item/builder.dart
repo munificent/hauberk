@@ -15,11 +15,10 @@ import '../skill/skills.dart';
 import 'affixes.dart';
 import 'items.dart';
 
-int _sortIndex = 0;
 late CategoryBuilder _category;
-ItemBuilder? _item;
-late String _affixTag;
-AffixBuilder? _affix;
+ItemBuilder? _itemBuilder;
+String? _affixTag;
+AffixBuilder? _affixBuilder;
 
 CategoryBuilder category(int glyph, {String? verb, int? stack}) {
   finishItem();
@@ -34,7 +33,7 @@ ItemBuilder item(String name, Color color,
     {double frequency = 1.0, int price = 0}) {
   finishItem();
 
-  return _item = ItemBuilder(name, color, frequency, price);
+  return _itemBuilder = ItemBuilder(name, color, frequency, price);
 }
 
 void affixCategory(String tag) {
@@ -42,21 +41,19 @@ void affixCategory(String tag) {
   _affixTag = tag;
 }
 
-AffixBuilder affix(String name, double frequency) {
+AffixBuilder affix(String nameTemplate, double frequency) {
   finishAffix();
 
-  bool isPrefix;
-  if (name.endsWith(" _")) {
-    name = name.substring(0, name.length - 2);
-    isPrefix = true;
-  } else if (name.startsWith("_ ")) {
-    name = name.substring(2);
-    isPrefix = false;
+  ResourceSet<Affix> affixSet;
+  if (nameTemplate.endsWith(" _")) {
+    affixSet = Affixes.prefixes;
+  } else if (nameTemplate.startsWith("_ ")) {
+    affixSet = Affixes.suffixes;
   } else {
-    throw ArgumentError('Affix "$name" must start or end with "_".');
+    affixSet = Affixes.artifacts;
   }
 
-  return _affix = AffixBuilder(name, isPrefix, frequency);
+  return _affixBuilder = AffixBuilder(nameTemplate, affixSet, frequency);
 }
 
 class _BaseBuilder {
@@ -153,7 +150,7 @@ class CategoryBuilder extends _BaseBuilder {
 
     // TODO: Hacky. We need a matching tag hiearchy for affixes so that, for
     // example, a "sword" item will match a "weapon" affix.
-    Affixes.defineItemTag(tagPath);
+    Affixes.defineItemTag("item/$tagPath");
   }
 
   void treasure() {
@@ -166,6 +163,8 @@ class CategoryBuilder extends _BaseBuilder {
 }
 
 class ItemBuilder extends _BaseBuilder {
+  static int _sortIndex = 0;
+
   final String _name;
   final Color _color;
   final double _frequency;
@@ -176,6 +175,10 @@ class ItemBuilder extends _BaseBuilder {
   int? _weight;
   int? _heft;
   int? _armor;
+
+  AffixBuilder? _affixBuilder;
+
+  AffixBuilder get affix => _affixBuilder ??= AffixBuilder("_");
 
   // TODO: Instead of late final, initialize these in item() instead of depth().
   late final int _minDepth;
@@ -240,8 +243,10 @@ class ItemBuilder extends _BaseBuilder {
   }
 
   void perception({int duration = 5, int distance = 16}) {
-    // TODO: Better description.
-    use("Perceive monsters.", () => PerceiveAction(duration, distance));
+    use(
+        "Perceives the location of monsters, even those that are otherwise "
+        "hidden.",
+        () => PerceiveAction(duration, distance));
   }
 
   void resistSalve(Element element) {
@@ -312,11 +317,69 @@ class ItemBuilder extends _BaseBuilder {
           () => IlluminateSelfAction(range));
     }
   }
+
+  ItemType _build() {
+    var appearance = Glyph.fromCharCode(_category._glyph, _color);
+
+    Toss? toss;
+    var tossDamage = _tossDamage ?? _category._tossDamage;
+    if (tossDamage != null) {
+      var noun = Noun("the ${_name.toLowerCase()}");
+      var verb = "hits";
+      if (_category._verb != null) {
+        verb = Log.conjugate(_category._verb!, Pronoun.it);
+      }
+
+      var range = _tossRange ?? _category._tossRange;
+      assert(range != null);
+      var element = _tossElement ?? _category._tossElement ?? Element.none;
+      var use = _tossUse ?? _category._tossUse;
+      var breakage = _category._breakage ?? _breakage ?? 0;
+
+      var tossAttack = Attack(noun, verb, tossDamage, range, element);
+      toss = Toss(breakage, tossAttack, use);
+    }
+
+    var itemType = ItemType(
+        _name,
+        appearance,
+        _minDepth,
+        _sortIndex++,
+        _category._equipSlot,
+        _category._weaponType,
+        _use,
+        _attack,
+        toss,
+        _defense,
+        _armor ?? 0,
+        _price,
+        _maxStack ?? _category._maxStack ?? 1,
+        _affixBuilder?._build(),
+        weight: _weight ?? 0,
+        heft: _heft ?? 0,
+        emanation: _emanation ?? _category._emanation,
+        fuel: _fuel ?? _category._fuel,
+        treasure: _category._isTreasure,
+        twoHanded: _category._isTwoHanded);
+
+    itemType.destroyChance.addAll(_category._destroyChance);
+    itemType.destroyChance.addAll(_destroyChance);
+
+    itemType.skills.addAll(_category._skills);
+    itemType.skills.addAll(_skills);
+
+    return itemType;
+  }
 }
 
 class AffixBuilder {
-  final String _name;
-  final bool _isPrefix;
+  static int _sortIndex = 0;
+
+  final String _nameTemplate;
+
+  /// The kind of affixes this affix will be a member of.
+  final ResourceSet<Affix>? _affixSet;
+
   int? _minDepth;
   int? _maxDepth;
   final double _frequency;
@@ -334,7 +397,7 @@ class AffixBuilder {
   final Map<Element, int> _resists = {};
   final Map<Stat, int> _statBonuses = {};
 
-  AffixBuilder(this._name, this._isPrefix, this._frequency);
+  AffixBuilder(this._nameTemplate, [this._affixSet, this._frequency = 0.0]);
 
   /// Sets the affix's minimum depth to [from]. If [to] is given, then the
   /// affix has the given depth range. Otherwise, its max range is
@@ -400,60 +463,48 @@ class AffixBuilder {
     _priceBonus = bonus;
     _priceScale = scale;
   }
+
+  Affix _build() {
+    var id = _nameTemplate;
+
+    var affixSet = _affixSet;
+    if (affixSet != null) {
+      // If the affix is going into a resource set, make sure it has a unique
+      // ID. (If it's an intrinsic affix on an ItemType, it doesn't matter if
+      // there is a name collision.)
+      var idBase = _nameTemplate.replaceAll("_", "[$_affixTag]");
+      id = idBase;
+      var index = 1;
+
+      while (affixSet.tryFind(id) != null) {
+        index++;
+        id = "$idBase ($index)";
+      }
+    }
+
+    var affix = Affix(id, _nameTemplate, _sortIndex++,
+        heftScale: _heftScale,
+        weightBonus: _weightBonus,
+        strikeBonus: _strikeBonus,
+        damageScale: _damageScale,
+        damageBonus: _damageBonus,
+        brand: _brand,
+        armor: _armor,
+        priceBonus: _priceBonus,
+        priceScale: _priceScale);
+
+    _resists.forEach(affix.resist);
+    _statBonuses.forEach(affix.setStatBonus);
+
+    return affix;
+  }
 }
 
 void finishItem() {
-  var builder = _item;
+  var builder = _itemBuilder;
   if (builder == null) return;
 
-  var appearance = Glyph.fromCharCode(_category._glyph, builder._color);
-
-  Toss? toss;
-  var tossDamage = builder._tossDamage ?? _category._tossDamage;
-  if (tossDamage != null) {
-    var noun = Noun("the ${builder._name.toLowerCase()}");
-    var verb = "hits";
-    if (_category._verb != null) {
-      verb = Log.conjugate(_category._verb!, Pronoun.it);
-    }
-
-    var range = builder._tossRange ?? _category._tossRange;
-    assert(range != null);
-    var element =
-        builder._tossElement ?? _category._tossElement ?? Element.none;
-    var use = builder._tossUse ?? _category._tossUse;
-    var breakage = _category._breakage ?? builder._breakage ?? 0;
-
-    var tossAttack = Attack(noun, verb, tossDamage, range, element);
-    toss = Toss(breakage, tossAttack, use);
-  }
-
-  var itemType = ItemType(
-      builder._name,
-      appearance,
-      builder._minDepth,
-      _sortIndex++,
-      _category._equipSlot,
-      _category._weaponType,
-      builder._use,
-      builder._attack,
-      toss,
-      builder._defense,
-      builder._armor ?? 0,
-      builder._price,
-      builder._maxStack ?? _category._maxStack ?? 1,
-      weight: builder._weight ?? 0,
-      heft: builder._heft ?? 0,
-      emanation: builder._emanation ?? _category._emanation,
-      fuel: builder._fuel ?? _category._fuel,
-      treasure: _category._isTreasure,
-      twoHanded: _category._isTwoHanded);
-
-  itemType.destroyChance.addAll(_category._destroyChance);
-  itemType.destroyChance.addAll(builder._destroyChance);
-
-  itemType.skills.addAll(_category._skills);
-  itemType.skills.addAll(builder._skills);
+  var itemType = builder._build();
 
   Items.types.addRanged(itemType,
       name: itemType.name,
@@ -462,45 +513,22 @@ void finishItem() {
       startFrequency: builder._frequency,
       tags: _category._tag);
 
-  _item = null;
+  _itemBuilder = null;
 }
 
 void finishAffix() {
-  var builder = _affix;
+  var builder = _affixBuilder;
   if (builder == null) return;
 
-  var affixes = builder._isPrefix ? Affixes.prefixes : Affixes.suffixes;
+  var affix = builder._build();
 
-  var displayName = builder._name;
-  var fullName = "$displayName ($_affixTag)";
-  var index = 1;
-
-  // Generate a unique name for it.
-  while (affixes.tryFind(fullName) != null) {
-    index++;
-    fullName = "$displayName ($_affixTag $index)";
-  }
-
-  var affix = Affix(fullName, displayName,
-      heftScale: builder._heftScale,
-      weightBonus: builder._weightBonus,
-      strikeBonus: builder._strikeBonus,
-      damageScale: builder._damageScale,
-      damageBonus: builder._damageBonus,
-      brand: builder._brand,
-      armor: builder._armor,
-      priceBonus: builder._priceBonus,
-      priceScale: builder._priceScale);
-
-  builder._resists.forEach(affix.resist);
-  builder._statBonuses.forEach(affix.setStatBonus);
-
-  affixes.addRanged(affix,
-      name: fullName,
+  builder._affixSet!.addRanged(affix,
+      name: affix.id,
       start: builder._minDepth,
       end: builder._maxDepth,
       startFrequency: builder._frequency,
       endFrequency: builder._frequency,
       tags: _affixTag);
-  _affix = null;
+
+  _affixBuilder = null;
 }

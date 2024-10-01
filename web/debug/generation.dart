@@ -1,10 +1,9 @@
 import 'dart:html' as html;
 
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/debug/histogram.dart';
+import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
-
-import 'histogram.dart';
-import 'html_builder.dart';
 
 Histogram<String> monsters = Histogram();
 Histogram<String> items = Histogram();
@@ -47,24 +46,25 @@ void main() {
 }
 
 void generate() {
-  var game = Game(content, depth);
+  var game = Game(content, depth, save);
 
-  for (var event in game.generate(save)) {
+  for (var event in game.generate()) {
     print(event);
   }
 
   void addItem(Item item) {
     items.add(item.type.name);
 
-    if (item.prefix != null) affixes.add("${item.prefix!.name} _");
-    if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
+    for (var affix in item.affixes) {
+      affixes.add(affix.id);
+    }
   }
 
   for (var actor in game.stage.actors) {
     if (actor is Monster) {
       monsters.add(actor.breed.name);
 
-      actor.breed.drop.dropItem(depth, addItem);
+      actor.breed.drop.dropItem(game.hero.lore, depth, addItem);
     }
   }
 

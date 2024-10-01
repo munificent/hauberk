@@ -77,8 +77,8 @@ class MappingAction extends Action {
 class MappingFlow extends Flow {
   final int _maxDistance;
 
-  MappingFlow(Stage stage, Vec start, this._maxDistance)
-      : super(stage, start, maxDistance: _maxDistance);
+  MappingFlow(super.stage, super.start, this._maxDistance)
+      : super(maxDistance: _maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
   @override

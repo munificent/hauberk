@@ -4,14 +4,20 @@ import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/log.dart';
+import '../hero/lore.dart';
 import '../hero/skill.dart';
+import 'affix.dart';
 import 'item.dart';
 
 typedef TossItemUse = Action Function(Vec pos);
 typedef AddItem = void Function(Item item);
 
 abstract class Drop {
-  void dropItem(int depth, AddItem addItem);
+  /// Generates items at [depth] by calling [addItem] for each new item.
+  ///
+  /// If [lore] is given, then it's used to avoid creating duplicate artifacts.
+  /// If [lore] is `null`, then no artifacts will be created.
+  void dropItem(Lore? lore, int depth, AddItem addItem);
 }
 
 class ItemUse {
@@ -117,6 +123,17 @@ class ItemType {
   /// The [Skill]s discovered when picking up an item of this type.
   final List<Skill> skills = [];
 
+  /// If items of this type have a built-in affix, the affix.
+  ///
+  /// Some items, like rings and amulets always have some magical effect that
+  /// modifies the hero. Instead of reimplementing all of the mechanism in
+  /// Affix that handles modifying hero properties, we model those item types
+  /// by saying that have an "intrinsic affix" that provides that effect. If
+  /// an ItemType contains an intrinsicAffix, then every Item of that ItemType
+  /// will have that affix. (And no other affixes. There are no "ego" items
+  /// that have both an intrinsic affix and other randomly added ones.)
+  final Affix? intrinsicAffix;
+
   ItemType(
       this.quantifiableName,
       this.appearance,
@@ -131,6 +148,7 @@ class ItemType {
       this.armor,
       this.price,
       this.maxStack,
+      this.intrinsicAffix,
       {this.weight = 0,
       this.heft = 1,
       int? emanation,

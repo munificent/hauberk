@@ -62,7 +62,7 @@ void main(List<String> arguments) {
 void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
     [Map<String, int>? results]) {
   var save = content.createHero("blah");
-  var game = Game(content, 1);
+  var game = Game(content, 1, save);
 
 //  save.attributes[Attribute.strength] = strength;
 //  save.attributes[Attribute.agility] = agility;

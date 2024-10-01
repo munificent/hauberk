@@ -9,10 +9,9 @@ class Races {
       will: 30,
       description:
           "It takes a certain kind of person to be willing to spend their life "
-          "deep in the bowels of the Earth, toiling away in darkness. Dwarves "
-          "aren't just willing, but delight in it. Solid, impenetrable and, "
-          "well, not very bright... perhaps it's no surprise that dwarves love "
-          "mines since they have so much in common.");
+          "deep under the Earth, toiling away in darkness. Dwarves aren't just "
+          "willing, but delight in it. Solid, impenetrable and somewhat dim, "
+          "dwarves have much in common with the mines they love.");
   static final elf = _race("Elf",
       strength: 35,
       agility: 40,
@@ -57,17 +56,9 @@ class Races {
       will: 30,
       description:
           "Humans excel at nothing, but nor are they particularly weak in any "
-          "area. Most other races considers humans sort of like mice: pesky "
+          "area. Most other races consider humans sort of like mice: pesky "
           "creatures who seem do little but breed, which they do with "
           "great devotion.");
-  static final troll = _race("Troll",
-      strength: 45,
-      agility: 20,
-      fortitude: 35,
-      intellect: 10,
-      will: 40,
-      description:
-          "Troll strong like rock. Troll smart like rock. Troll eat rock.");
 
   /// All of the known races.
   static final List<Race> all = [
@@ -76,7 +67,6 @@ class Races {
     fae,
     gnome,
     human,
-    troll,
   ];
 
   static Race _race(String name,

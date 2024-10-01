@@ -54,14 +54,18 @@ class Hero extends Actor {
   int get focus => _focus;
   int _focus = 0;
 
-  /// How enraged the hero is. Physical skills like active disciplines spend
-  /// fury.
+  /// How enraged the hero is.
+  ///
+  /// Each level increases the damage multiplier for melee damage.
   int get fury => _fury;
   int _fury = 0;
 
   /// The number of hero turns since they last took a hit that caused them to
   /// lose focus.
   int _turnsSinceLostFocus = 0;
+
+  /// The number of hero turns since they last dealt damage to a monster.
+  int _turnsSinceGaveDamage = 100;
 
   /// How much noise the Hero's last action made.
   double get lastNoise => _lastNoise;
@@ -234,6 +238,9 @@ class Hero extends Actor {
         skill.modifyAttack(
             this, defender as Monster?, hit, skills.level(skill));
       }
+
+      // Scale damage by fury.
+      hit.scaleDamage(strength.furyScale(fury));
     }
 
     return hits;
@@ -287,18 +294,17 @@ class Hero extends Actor {
 
   @override
   void onGiveDamage(Action action, Actor defender, int damage) {
-    // Hitting increases fury.
-    _gainFury(damage / defender.maxHealth * maxHealth / 100);
+    // Hitting starts or continues the fury chain.
+    _turnsSinceGaveDamage = 0;
   }
 
   @override
   void onTakeDamage(Action action, Actor? attacker, int damage) {
-    // Getting hit loses focus and gains fury.
+    // Getting hit loses focus.
     // TODO: Lose less focus for ranged attacks?
     var focus = (damage / maxHealth * will.damageFocusScale).ceil();
     _focus = (_focus - focus).clamp(0, intellect.maxFocus);
 
-    _gainFury(damage / maxHealth * 50);
     _turnsSinceLostFocus = 0;
 
     // TODO: Would be better to do skills.discovered, but right now this also
@@ -312,11 +318,11 @@ class Hero extends Actor {
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
 
+    // Killing starts or continues the fury chain.
+    _turnsSinceGaveDamage = 0;
+
     // It only counts if the hero's seen the monster at least once.
     if (!_seenMonsters.contains(monster)) return;
-
-    // Gain some fury.
-    _gainFury(defender.maxHealth / maxHealth * 50);
 
     lore.slay(monster.breed);
 
@@ -344,6 +350,19 @@ class Hero extends Actor {
       if (stomach == 0) game.log.message("You are getting hungry.");
     }
 
+    // Update fury.
+    if (_turnsSinceGaveDamage == 0) {
+      // Every turn the hero harmed a monster increases fury.
+      _fury++;
+    } else if (_turnsSinceGaveDamage > 1) {
+      // Otherwise, it decays, with a one turn grace period.
+      // TODO: Maybe have higher will slow the decay rate.
+      _fury -= _turnsSinceGaveDamage - 1;
+    }
+
+    _fury = _fury.clamp(0, strength.maxFury);
+
+    _turnsSinceGaveDamage++;
     _turnsSinceLostFocus++;
 
     // TODO: Passive skills?
@@ -421,28 +440,11 @@ class Hero extends Actor {
     _focus -= focus;
   }
 
-  /// Spends fury on some useful action.
-  ///
-  /// Does not reset [_turnsSinceLostFocus].
-  void spendFury(int fury) {
-    assert(_fury >= fury);
-
-    _fury -= fury;
-  }
-
   void regenerateFocus(int focus) {
     // The longer the hero goes without losing focus, the more quickly it
     // regenerates.
     var scale = (_turnsSinceLostFocus + 1).clamp(1, 8) / 4;
     _focus = (_focus + focus * scale).ceil().clamp(0, intellect.maxFocus);
-
-    _fury = (_fury - focus * scale * will.restFuryScale)
-        .ceil()
-        .clamp(0, strength.maxFury);
-  }
-
-  void _gainFury(double fury) {
-    _fury = (_fury + fury.ceil()).clamp(0, strength.maxFury);
   }
 
   /// Refreshes all hero state whose change should be logged.
@@ -472,7 +474,6 @@ class Hero extends Actor {
     // Refresh the heft scales.
     var weapons = equipment.weapons.toList();
 
-    var totalHeft = 0;
     if (weapons.length > 1) {
       // Discover the dual-wield skill.
       // TODO: This is a really specific method to put on Skill. Is there a
@@ -489,6 +490,7 @@ class Hero extends Actor {
 
     // When dual-wielding, it's as if each weapon has an individual heft that
     // is the total of both of them.
+    var totalHeft = 0;
     for (var weapon in weapons) {
       totalHeft += weapon.heft;
     }
@@ -510,7 +512,6 @@ class Hero extends Actor {
     // Keep other stats in bounds.
     health = health.clamp(0, maxHealth);
     _focus = _focus.clamp(0, intellect.maxFocus);
-    // TODO: Is this how we want max fury derived?
     _fury = _fury.clamp(0, strength.maxFury);
   }
 

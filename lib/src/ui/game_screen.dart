@@ -124,8 +124,8 @@ class GameScreen extends Screen<Input> {
   }
 
   factory GameScreen.town(Storage storage, Content content, HeroSave save) {
-    var game = Game(content, 0, width: 60, height: 34);
-    for (var _ in game.generate(save)) {}
+    var game = Game(content, 0, save, width: 60, height: 34);
+    for (var _ in game.generate()) {}
 
     return GameScreen(storage, game, null);
   }
@@ -372,19 +372,20 @@ class GameScreen extends Screen<Input> {
     var centerWidth = size.x - leftWidth;
 
     itemPanel.hide();
-    if (size.x >= 100) {
-      var width = math.min(50, 20 + (size.x - 100) ~/ 2);
+    if (size.x >= 80) {
+      var width = math.min(50, 20 + (size.x - 80) ~/ 2);
       itemPanel.show(Rect(size.x - width, 0, width, size.y));
       centerWidth = size.x - leftWidth - width;
     }
 
     _sidebarPanel.show(Rect(0, 0, leftWidth, size.y));
 
-    var logHeight = 6 + (size.y - 40) ~/ 2;
-    logHeight = math.min(logHeight, 20);
+    var logHeight = 3 + (size.y - 30) ~/ 2;
+    logHeight = math.min(logHeight, 10);
 
-    stagePanel.show(Rect(leftWidth, 0, centerWidth, size.y - logHeight));
-    _logPanel.show(Rect(leftWidth, size.y - logHeight, centerWidth, logHeight));
+    _logPanel.show(Rect(leftWidth, 0, centerWidth, logHeight));
+    stagePanel
+        .show(Rect(leftWidth, logHeight, centerWidth, size.y - logHeight));
   }
 
   @override

@@ -74,22 +74,23 @@ class Log {
           finishLine();
           wordStart = -1;
 
-        case _
-            when wordStart != -1 &&
-                line.isNotEmpty &&
-                line.length + 1 + i - wordStart >= width:
-          // The word won't fit on the current line, so start a new line.
-          finishLine();
+        case _:
+          // Begin a new word here if we aren't already in one.
+          if (wordStart == -1) wordStart = i;
 
-        case _ when wordStart != -1 && line.isEmpty && i - wordStart >= width:
-          // The word is longer than a line, so character split it.
-          finishWord(i);
-          finishLine();
-          wordStart = i;
+          // Include the character we're currently processing.
+          var wordLength = i - wordStart + 1;
 
-        case _ when wordStart == -1:
-          // We got a non-whitespace character, so begin a new word here.
-          wordStart = i;
+          if (line.isEmpty && wordLength > width) {
+            // The word is longer than a line, so character split it.
+            finishWord(i);
+            finishLine();
+            wordStart = i;
+          } else if (line.isNotEmpty && line.length + 1 + wordLength > width) {
+            // There isn't room to append a space and the word to the current
+            // line, so wrap before it.
+            finishLine();
+          }
       }
     }
 
@@ -99,7 +100,7 @@ class Log {
     return lines;
   }
 
-  static const _maxMessages = 20;
+  static const _maxMessages = 100;
 
   final messages = <Message>[];
 
@@ -347,7 +348,7 @@ class Message {
   final String text;
 
   /// The number of times this message has been repeated.
-  int count = 1;
+  int count;
 
-  Message(this.type, this.text);
+  Message(this.type, this.text, [this.count = 1]);
 }

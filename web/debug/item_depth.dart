@@ -1,11 +1,11 @@
 import 'dart:html' as html;
 
 import 'package:hauberk/src/content/item/affixes.dart';
+import 'package:hauberk/src/content/item/drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
+import 'package:hauberk/src/debug/histogram.dart';
+import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
-
-import 'histogram.dart';
-import 'html_builder.dart';
 
 const tries = 10000;
 
@@ -39,16 +39,24 @@ void generate() {
   var items = Histogram<String>();
   var affixes = Histogram<String>();
 
+  var dropAny = parseDrop('item');
+
   for (var i = 0; i < tries; i++) {
     var itemType = Items.types.tryChoose(depth);
     if (itemType == null) continue;
 
-    // TODO: Pass in levelOffset.
-    var item = Affixes.createItem(itemType, depth);
+    // Create a blank lore each time so that we can count how often a given
+    // artifact shows up without uniqueness coming into play.
+    var lore = Lore();
 
-    items.add(item.toString());
-    if (item.prefix != null) affixes.add("${item.prefix!.name} _");
-    if (item.suffix != null) affixes.add("_ ${item.suffix!.name}");
+    // TODO: Pass in levelOffset.
+    dropAny.dropItem(lore, depth, (item) {
+      items.add(item.toString());
+
+      for (var affix in item.affixes) {
+        affixes.add(affix.id);
+      }
+    });
   }
 
   var builder = HtmlBuilder();

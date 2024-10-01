@@ -18,6 +18,7 @@ class Monsters {
       "humanoid/orcus/ogre",
       "humanoid/orcus/orc",
       "humanoid/saurian",
+      "humanoid/troll",
       "magical/eye",
       "magical/jelly",
       "mythical/beast/dragon",

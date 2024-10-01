@@ -5,7 +5,6 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/item/drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/engine.dart';
-import 'package:piecemeal/piecemeal.dart';
 
 final content = createContent();
 
@@ -127,13 +126,11 @@ class FortitudeAxis extends StatAxis {
 }
 
 SimResult simulate(HeroSave save) {
-  var game = Game(content, 1);
+  var game = Game(content, 1, save);
 
   var wins = 0;
   for (var i = 0; i < simulationRounds; i++) {
     var monster = Monster(game, breed, 0, 0, 1);
-    game.initHero(Vec.zero, save);
-
     while (true) {
       var action = AttackAction(monster);
       action.bind(game.hero);

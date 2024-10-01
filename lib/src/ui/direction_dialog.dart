@@ -134,8 +134,7 @@ class SkillDirectionDialog extends DirectionDialog {
   @override
   String get helpText => "Choose direction";
 
-  SkillDirectionDialog(GameScreen gameScreen, this._onSelect)
-      : super(gameScreen);
+  SkillDirectionDialog(super.gameScreen, this._onSelect);
 
   // TODO: Let skill filter out invalid directions.
   @override

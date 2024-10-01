@@ -36,7 +36,7 @@ class Shop {
 
     while (inventory.length < count && tries++ < 100) {
       // Try to add an item.
-      _drop.dropItem(1, inventory.tryAdd);
+      _drop.dropItem(null, 1, inventory.tryAdd);
 
       // Remove duplicates.
       for (var i = 1; i < inventory.length; i++) {
@@ -44,8 +44,8 @@ class Shop {
         var item = inventory[i];
 
         if (previous.type == item.type &&
-            previous.prefix == item.prefix &&
-            previous.suffix == item.suffix) {
+            previous.affixes.isEmpty &&
+            item.affixes.isEmpty) {
           inventory.removeAt(i);
           i--;
         }

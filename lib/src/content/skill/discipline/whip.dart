@@ -28,9 +28,6 @@ class WhipMastery extends MasteryDiscipline with UsableSkill, TargetSkill {
   }
 
   @override
-  int furyCost(HeroSave hero, int level) => 20;
-
-  @override
   int getRange(Game game) => 3;
 
   @override

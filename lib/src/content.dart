@@ -50,16 +50,25 @@ class GameContent implements Content {
 
   @override
   Iterable<Breed> get breeds => Monsters.breeds.all;
+
   @override
   List<HeroClass> get classes => Classes.all;
+
   @override
   Iterable<Element> get elements => Elements.all;
+
   @override
   Iterable<ItemType> get items => Items.types.all;
+
+  @override
+  Iterable<Affix> get affixes => Affixes.all;
+
   @override
   List<Race> get races => Races.all;
+
   @override
   Iterable<Skill> get skills => Skills.all;
+
   @override
   Map<String, Shop> get shops => Shops.all;
 
@@ -81,7 +90,7 @@ class GameContent implements Content {
       hero.inventory.tryAdd(Item(Items.types.find(type), amount));
     });
 
-    heroClass.startingItems.dropItem(1, hero.inventory.tryAdd);
+    heroClass.startingItems.dropItem(hero.lore, 1, hero.inventory.tryAdd);
 
     // TODO: Instead of giving the player access to all shops at once, consider
     // letting the rescue shopkeepers from the dungeon to unlock better and

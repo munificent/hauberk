@@ -21,6 +21,10 @@ class Lore {
   /// The number of items with each affix that the hero has picked up or used.
   final Map<Affix, int> _foundAffixes;
 
+  /// The artifact affixes whose items exist in the world. This doesn't
+  /// necessarily mean that the hero has found them.
+  final Set<Affix> _createdArtifacts;
+
   /// The number of consumable items of each type that the hero has used.
   final Map<ItemType, int> _usedItems;
 
@@ -30,10 +34,10 @@ class Lore {
   /// The total number of monsters slain.
   int get allSlain => _slainBreeds.values.fold(0, (a, b) => a + b);
 
-  Lore() : this.from({}, {}, {}, {}, {});
+  Lore() : this.from({}, {}, {}, {}, {}, {});
 
   Lore.from(this._seenBreeds, this._slainBreeds, this._foundItems,
-      this._foundAffixes, this._usedItems);
+      this._foundAffixes, this._createdArtifacts, this._usedItems);
 
   void seeBreed(Breed breed) {
     _seenBreeds.putIfAbsent(breed, () => 0);
@@ -49,20 +53,27 @@ class Lore {
     _foundItems.putIfAbsent(item.type, () => 0);
     _foundItems[item.type] = _foundItems[item.type]! + 1;
 
-    void findAffix(Affix? affix) {
-      if (affix == null) return;
-
+    for (var affix in item.affixes) {
       _foundAffixes.putIfAbsent(affix, () => 0);
       _foundAffixes[affix] = _foundAffixes[affix]! + 1;
     }
-
-    findAffix(item.prefix);
-    findAffix(item.suffix);
   }
 
   void useItem(Item item) {
     _usedItems.putIfAbsent(item.type, () => 0);
     _usedItems[item.type] = _usedItems[item.type]! + 1;
+  }
+
+  void createArtifact(Affix artifact) {
+    _createdArtifacts.add(artifact);
+  }
+
+  /// Forget that [artifact] was created.
+  ///
+  /// This is called when the hero leaves a dungeon with an artifact on the
+  /// ground. This allows it to be generated again later on future dives.
+  void uncreateArtifact(Affix artifact) {
+    _createdArtifacts.remove(artifact);
   }
 
   /// The number of monsters of [breed] that the hero has detected.
@@ -80,6 +91,14 @@ class Lore {
   /// The number of items of [type] the hero has used.
   int usedItems(ItemType type) => _usedItems[type] ?? 0;
 
-  Lore clone() => Lore.from(Map.of(_seenBreeds), Map.of(_slainBreeds),
-      Map.of(_foundItems), Map.of(_foundAffixes), Map.of(_usedItems));
+  /// Whether [artifact] has already been generated.
+  bool createdArtifact(Affix artifact) => _createdArtifacts.contains(artifact);
+
+  Lore clone() => Lore.from(
+      {..._seenBreeds},
+      {..._slainBreeds},
+      {..._foundItems},
+      {..._foundAffixes},
+      {..._createdArtifacts},
+      {..._usedItems});
 }

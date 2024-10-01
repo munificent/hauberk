@@ -8,7 +8,7 @@ class HealMove extends Move {
   @override
   num get experience => _amount;
 
-  HealMove(num rate, this._amount) : super(rate);
+  HealMove(super.rate, this._amount);
 
   @override
   bool shouldUse(Monster monster) {

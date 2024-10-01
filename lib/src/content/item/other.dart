@@ -21,12 +21,12 @@ void treasure() {
   category(CharCode.centSign)
     ..tag("treasure/coin")
     ..treasure();
-  item("Copper Coins", persimmon, price: 4).depth(1, to: 11);
-  item("Bronze Coins", tan, price: 8).depth(7, to: 20);
-  item("Silver Coins", lightAqua, price: 20).depth(11, to: 30);
-  item("Electrum Coins", buttermilk, price: 50).depth(20, to: 40);
-  item("Gold Coins", gold, price: 100).depth(30, to: 50);
-  item("Platinum Coins", lightCoolGray, price: 300).depth(40, to: 70);
+  item("Copper Coin", persimmon, price: 4).depth(1, to: 11);
+  item("Bronze Coin", tan, price: 8).depth(7, to: 20);
+  item("Silver Coin", lightAqua, price: 20).depth(11, to: 30);
+  item("Electrum Coin", buttermilk, price: 50).depth(20, to: 40);
+  item("Gold Coin", gold, price: 100).depth(30, to: 50);
+  item("Platinum Coin", lightCoolGray, price: 300).depth(40, to: 70);
 
   // Bars.
   category(CharCode.dollarSign)

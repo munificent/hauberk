@@ -32,7 +32,7 @@ abstract class _OpenTileAction extends Action {
         _minDepthEmptyChance, _maxDepthEmptyChance))) {
       log("The $_name is empty.", actor);
     } else {
-      game.stage.placeDrops(_pos, Motility.walk, _createDrop());
+      game.stage.placeDrops(_pos, _createDrop(), depth: game.depth);
 
       log("{1} open[s] the $_name.", actor);
     }
@@ -45,7 +45,7 @@ abstract class _OpenTileAction extends Action {
 
 /// Open a barrel and place its drops.
 class OpenBarrelAction extends _OpenTileAction {
-  OpenBarrelAction(Vec pos) : super(pos);
+  OpenBarrelAction(super.pos);
 
   @override
   String get _name => "barrel";
@@ -66,7 +66,7 @@ class OpenBarrelAction extends _OpenTileAction {
 
 /// Open a chest and place its drops.
 class OpenChestAction extends _OpenTileAction {
-  OpenChestAction(Vec pos) : super(pos);
+  OpenChestAction(super.pos);
 
   @override
   String get _name => "chest";

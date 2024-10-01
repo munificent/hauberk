@@ -37,8 +37,8 @@ class Simulator {
   }
 
   void _exploreDepth() {
-    game = Game(content, depth);
-    for (var _ in game.generate(save)) {}
+    game = Game(content, depth, save);
+    for (var _ in game.generate()) {}
 
     print("--- Depth $depth (hero level ${hero.level}) ---");
 
@@ -112,7 +112,7 @@ class Simulator {
 
     kill.kills++;
 
-    monster.breed.drop.dropItem(depth, _getItem);
+    monster.breed.drop.dropItem(hero.lore, depth, _getItem);
   }
 
   void _log(Object message) {

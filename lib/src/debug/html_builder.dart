@@ -40,20 +40,23 @@ class HtmlBuilder {
     _end('table');
   }
 
-  void td(Object contents, {bool? right, Object? width}) {
+  void td(Object contents, {bool? right, Object? width, int? colspan}) {
     // Numbers default to right justification.
-    tdBegin(right: right ?? contents is num, width: width);
+    tdBegin(right: right ?? contents is num, width: width, colspan: colspan);
     write(contents.toString());
     tdEnd();
   }
 
-  void tdBegin({bool right = false, Object? width}) {
+  void tdBegin({bool right = false, Object? width, int? colspan}) {
     if (_needsRow) {
       _tag('tr');
       _needsRow = false;
     }
 
-    _tag('td', cssClass: right ? 'r' : null, width: width);
+    _tag('td',
+        cssClass: right ? 'r' : null,
+        width: width,
+        attributes: {if (colspan != null) 'colspan': colspan});
   }
 
   void tdEnd() {
@@ -76,26 +79,6 @@ class HtmlBuilder {
     _buffer.writeln(text);
   }
 
-  void _tag(String tag, {String? cssClass, Object? width}) {
-    if (width is num) width = '${width}px';
-    if (width is! String?) {
-      throw ArgumentError('Width must be number or String.');
-    }
-
-    _buffer.write('<$tag');
-    if (cssClass != null) _buffer.write(' class=$cssClass');
-    if (width != null) _buffer.write(' style="width: $width;"');
-    _buffer.write('>');
-  }
-
-  void _end(String tag) {
-    _buffer.writeln('</$tag>');
-  }
-
-  void _finishTr() {
-    if (!_needsRow) _end('tr');
-  }
-
   void appendToBody() {
     html
         .querySelector('body')!
@@ -106,5 +89,37 @@ class HtmlBuilder {
     html
         .querySelector(selector)!
         .setInnerHtml(_buffer.toString(), validator: _validator);
+  }
+
+  @override
+  String toString() => _buffer.toString();
+
+  void _tag(String tag,
+      {Map<String, Object>? attributes, String? cssClass, Object? width}) {
+    if (width is num) width = '${width}px';
+    if (width is! String?) {
+      throw ArgumentError('Width must be number or String.');
+    }
+
+    _buffer.write('<$tag');
+
+    if (cssClass != null) _buffer.write(' class=$cssClass');
+    if (width != null) _buffer.write(' style="width: $width;"');
+
+    if (attributes != null) {
+      attributes.forEach((name, value) {
+        _buffer.write(' $name=$value');
+      });
+    }
+
+    _buffer.write('>');
+  }
+
+  void _end(String tag) {
+    _buffer.writeln('</$tag>');
+  }
+
+  void _finishTr() {
+    if (!_needsRow) _end('tr');
   }
 }

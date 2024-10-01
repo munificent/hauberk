@@ -97,9 +97,6 @@ mixin UsableSkill implements Skill {
   /// The focus cost to use the skill, with proficiency applied.
   int focusCost(HeroSave hero, int level) => 0;
 
-  /// The fury cost to use the skill, with proficiency applied.
-  int furyCost(HeroSave hero, int level) => 0;
-
   /// If the skill cannot currently be used (for example Archery when a bow is
   /// not equipped), returns the reason why. Otherwise, returns `null` to
   /// indicate the skill is usable.
@@ -110,10 +107,6 @@ mixin UsableSkill implements Skill {
   Action _wrapActionCost(HeroSave hero, int level, Action action) {
     if (focusCost(hero, level) > 0) {
       return FocusAction(focusCost(hero, level), action);
-    }
-
-    if (furyCost(hero, level) > 0) {
-      return FuryAction(furyCost(hero, level), action);
     }
 
     return action;

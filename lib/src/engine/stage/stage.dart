@@ -89,13 +89,13 @@ class Stage {
 
   Actor? actorAt(Vec pos) => _actorsByTile[pos];
 
-  List<Item> placeDrops(Vec pos, Motility motility, Drop drop) {
+  List<Item> placeDrops(Vec pos, Drop drop, {required int depth}) {
     var items = <Item>[];
 
     // Try to keep dropped items from overlapping.
-    var flow = MotilityFlow(this, pos, motility, avoidActors: false);
+    var flow = MotilityFlow(this, pos, Motility.walk, avoidActors: false);
 
-    drop.dropItem(game.depth, (item) {
+    drop.dropItem(game.hero.lore, depth, (item) {
       items.add(item);
 
       // Prefer to not place under monsters or stack with other items.
