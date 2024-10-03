@@ -1,5 +1,4 @@
 import 'package:malison/malison.dart';
-import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
 import '../../content/elements.dart';

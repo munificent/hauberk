@@ -33,7 +33,7 @@ class SelectDepthPopup extends Popup {
 
   @override
   Map<String, String> get helpKeys =>
-      const {"OK": "Enter dungeon", "↕↔": "Change depth", "Esc": "Cancel"};
+      const {"OK": "Enter dungeon", "↕↔": "Change depth", "`": "Cancel"};
 
   @override
   bool handleInput(Input input) {

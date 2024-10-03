@@ -234,7 +234,7 @@ class TargetDialog extends Screen<Input> {
       helpKeys["↕↔"] = "Choose monster";
       helpKeys["Tab"] = "Target floor";
     }
-    helpKeys["Esc"] = "Cancel";
+    helpKeys["`"] = "Cancel";
     Draw.helpKeys(terminal, helpKeys, "Choose a target");
   }
 

@@ -11,6 +11,7 @@ import '../hero/race.dart';
 import '../hero/skill.dart';
 import '../items/affix.dart';
 import '../items/item_type.dart';
+import '../items/recipe.dart';
 import '../items/shop.dart';
 import '../monster/breed.dart';
 import '../stage/stage.dart';
@@ -265,6 +266,8 @@ abstract class Content {
   Iterable<Skill> get skills;
 
   Map<String, Shop> get shops;
+
+  List<Recipe> get recipes;
 
   HeroSave createHero(String name, [Race race, HeroClass heroClass]);
 

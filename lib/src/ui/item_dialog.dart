@@ -50,17 +50,15 @@ class ItemDialog extends Screen<Input> {
       : _command = _PickUpItemCommand(),
         _location = ItemLocation.onGround;
 
-  ItemDialog.equip(this._gameScreen)
-      : _command = _EquipItemCommand(),
-        _location = ItemLocation.inventory;
+  ItemDialog.equip(this._gameScreen) : _command = _EquipItemCommand();
 
   ItemDialog.sell(this._gameScreen, Inventory shop)
-      : _command = _SellItemCommand(shop),
-        _location = ItemLocation.inventory;
+      : _command = _SellItemCommand(shop);
 
-  ItemDialog.put(this._gameScreen)
-      : _command = _PutItemCommand(),
-        _location = ItemLocation.inventory;
+  ItemDialog.putCrucible(this._gameScreen, void Function() onTransfer)
+      : _command = _PutCrucibleItemCommand(onTransfer);
+
+  ItemDialog.putHome(this._gameScreen) : _command = _PutHomeItemCommand();
 
   @override
   bool handleInput(Input input) {
@@ -214,7 +212,7 @@ class ItemDialog extends Screen<Input> {
       if (_shiftDown) {
         helpKeys = {
           "A-Z": "Inspect item",
-          if (_inspected != null) "Esc": "Hide inspector"
+          if (_inspected != null) "`": "Hide inspector"
         };
       } else {
         helpKeys = {
@@ -527,9 +525,7 @@ class _PickUpItemCommand extends _ItemCommand {
   }
 }
 
-class _PutItemCommand extends _ItemCommand {
-  _PutItemCommand();
-
+abstract class _PutItemCommand extends _ItemCommand {
   @override
   List<ItemLocation> get allowedLocations =>
       const [ItemLocation.inventory, ItemLocation.equipment];
@@ -545,7 +541,28 @@ class _PutItemCommand extends _ItemCommand {
 
   @override
   bool canSelect(Item item) => true;
+}
 
+class _PutCrucibleItemCommand extends _PutItemCommand {
+  final void Function() _onTransfer;
+
+  _PutCrucibleItemCommand(this._onTransfer);
+
+  @override
+  void selectItem(
+      ItemDialog dialog, Item item, int count, ItemLocation location) {
+    transfer(dialog, item, count, dialog._gameScreen.game.hero.save.crucible);
+  }
+
+  @override
+  void afterTransfer(ItemDialog dialog, Item item, int count) {
+    dialog._gameScreen.game.log
+        .message("You place ${item.clone(count)} into the crucible.");
+    _onTransfer();
+  }
+}
+
+class _PutHomeItemCommand extends _PutItemCommand {
   @override
   void selectItem(
       ItemDialog dialog, Item item, int count, ItemLocation location) {

@@ -35,10 +35,6 @@ abstract class ItemScreen extends Screen<Input> {
   /// The item currently being inspected or `null` if none.
   Item? _inspected;
 
-//  /// If the crucible contains a complete recipe, this will be it. Otherwise,
-//  /// this will be `null`.
-//  Recipe completeRecipe;
-
   String? _error;
 
   ItemCollection get _items;
@@ -58,6 +54,9 @@ abstract class ItemScreen extends Screen<Input> {
 
   factory ItemScreen.shop(GameScreen gameScreen, Inventory shop) =>
       _ShopViewScreen(gameScreen, shop);
+
+  factory ItemScreen.crucible(GameScreen gameScreen) =>
+      _CrucibleViewScreen(gameScreen);
 
   bool get _canSelectAny => false;
   bool get _showPrices => false;
@@ -93,17 +92,6 @@ abstract class ItemScreen extends Screen<Input> {
     }
 
     if (alt) return false;
-
-//    if (keyCode == KeyCode.space && completeRecipe != null) {
-//      _save.crucible.clear();
-//      completeRecipe.result.spawnDrop(_save.crucible.tryAdd);
-//      refreshRecipe();
-//
-//      // The player probably wants to get the item out of the crucible.
-//      _mode = Mode.get;
-//      dirty();
-//      return true;
-//    }
 
     if (_shiftDown && keyCode == KeyCode.escape) {
       _inspected = null;
@@ -173,7 +161,7 @@ abstract class ItemScreen extends Screen<Input> {
             terminal,
             {
               "A-Z": "Inspect item",
-              if (_inspected != null) "Esc": "Hide inspector"
+              if (_inspected != null) "`": "Hide inspector"
             },
             "Inspect which item?");
       } else {
@@ -186,16 +174,6 @@ abstract class ItemScreen extends Screen<Input> {
         math.min(ItemView.preferredWidth, _gameScreen.stagePanel.bounds.width);
     view.render(terminal, _gameScreen.stagePanel.bounds.x,
         _gameScreen.stagePanel.bounds.y, width, _items.length);
-
-//    if (completeRecipe != null) {
-//      terminal.writeAt(59, 2, "Press [Space] to forge item!", UIHue.selection);
-//
-//      var itemCount = _place.items(this).length;
-//      for (var i = 0; i < completeRecipe.produces.length; i++) {
-//        terminal.writeAt(50, itemCount + i + 4,
-//            completeRecipe.produces.elementAt(i), UIHue.text);
-//      }
-//    }
 
     if (_error != null) {
       terminal.writeAt(0, 32, _error!, red);
@@ -231,10 +209,6 @@ abstract class ItemScreen extends Screen<Input> {
     }
 
     _afterTransfer(item, count);
-    // TODO
-//    } else if (_place == _Place.crucible) {
-//      refreshRecipe();
-//    }
 
     return true;
   }
@@ -295,7 +269,8 @@ class _HomeViewScreen extends ItemScreen {
         "G": "Get item",
         "P": "Put item",
         "Shift": "Inspect item",
-        "Esc": "Leave"
+        "Tab": "Use crucible",
+        "`": "Leave"
       };
 
   _HomeViewScreen(super.gameScreen) : super._();
@@ -308,7 +283,7 @@ class _HomeViewScreen extends ItemScreen {
 
     switch (keyCode) {
       case KeyCode.g:
-        var screen = _HomeGetScreen(_gameScreen);
+        var screen = _GetFromHomeScreen(_gameScreen);
         screen._inspected = _inspected;
         _isActive = false;
         ui.push(screen);
@@ -316,7 +291,11 @@ class _HomeViewScreen extends ItemScreen {
 
       case KeyCode.p:
         _isActive = false;
-        ui.push(ItemDialog.put(_gameScreen));
+        ui.push(ItemDialog.putHome(_gameScreen));
+        return true;
+
+      case KeyCode.tab:
+        ui.goTo(ItemScreen.crucible(_gameScreen));
         return true;
     }
 
@@ -324,8 +303,8 @@ class _HomeViewScreen extends ItemScreen {
   }
 }
 
-/// Screen to get items from the hero's home.
-class _HomeGetScreen extends _ItemVerbScreen {
+/// Screen to get items from the hero's home or crucible.
+abstract class _GetScreen extends _ItemVerbScreen {
   @override
   String get _headerText => "Get which item?";
 
@@ -334,15 +313,12 @@ class _HomeGetScreen extends _ItemVerbScreen {
 
   @override
   Map<String, String> get _helpKeys =>
-      {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
-
-  @override
-  ItemCollection get _items => _gameScreen.game.hero.save.home;
+      {"A-Z": "Select item", "Shift": "Inspect item", "`": "Cancel"};
 
   @override
   ItemCollection get _destination => _gameScreen.game.hero.inventory;
 
-  _HomeGetScreen(super.gameScreen);
+  _GetScreen(super.gameScreen);
 
   @override
   bool get _canSelectAny => true;
@@ -352,8 +328,141 @@ class _HomeGetScreen extends _ItemVerbScreen {
 
   @override
   void _afterTransfer(Item item, int count) {
-    _gameScreen.game.log.message("You get ${item.clone(count)}.");
     _gameScreen.game.hero.pickUp(item);
+  }
+}
+
+/// Screen to get items from the hero's home.
+class _GetFromHomeScreen extends _GetScreen {
+  @override
+  ItemCollection get _items => _gameScreen.game.hero.save.home;
+
+  _GetFromHomeScreen(super.gameScreen);
+
+  @override
+  void _afterTransfer(Item item, int count) {
+    _gameScreen.game.log
+        .message("You take ${item.clone(count)} from your home.");
+    super._afterTransfer(item, count);
+  }
+}
+
+/// Screen to get items from the hero's crucible.
+class _GetFromCrucibleScreen extends _GetScreen {
+  final void Function() _onTransfer;
+
+  @override
+  ItemCollection get _items => _gameScreen.game.hero.save.crucible;
+
+  _GetFromCrucibleScreen(super.gameScreen, this._onTransfer);
+
+  @override
+  void _afterTransfer(Item item, int count) {
+    _gameScreen.game.log
+        .message("You remove ${item.clone(count)} from the crucible.");
+    super._afterTransfer(item, count);
+
+    _onTransfer();
+  }
+}
+
+class _CrucibleViewScreen extends ItemScreen {
+  /// If the crucible contains a complete recipe, this will be it. Otherwise,
+  /// this will be `null`.
+  Recipe? _completeRecipe;
+
+  @override
+  ItemCollection get _items => _save.crucible;
+
+  @override
+  String get _headerText => _completeRecipe != null
+      ? "Ready to forge item!"
+      : "Place items to complete a recipe.";
+
+  @override
+  Map<String, String> get _helpKeys => {
+        "G": "Get item",
+        "P": "Put item",
+        "Shift": "Inspect item",
+        if (_completeRecipe != null) "Space": "Forge item",
+        "Tab": "Back to home",
+        "`": "Leave"
+      };
+
+  _CrucibleViewScreen(super.gameScreen) : super._() {
+    _refreshRecipe();
+  }
+
+  @override
+  void render(Terminal terminal) {
+    super.render(terminal);
+
+    // TODO: This UI isn't great.
+    var width =
+        math.min(ItemView.preferredWidth, _gameScreen.stagePanel.bounds.width);
+    terminal = terminal.rect(_gameScreen.stagePanel.bounds.x + 4,
+        _gameScreen.stagePanel.bounds.y + _items.length + 1, width - 8, 3);
+
+    Draw.box(terminal, 0, 0, terminal.width, terminal.height);
+    terminal.writeAt(0, 0, "┬", darkCoolGray);
+    terminal.writeAt(terminal.width - 1, 0, "┬", darkCoolGray);
+
+    if (_completeRecipe case var recipe?) {
+      terminal.writeAt(1, 1, "Forge a ${recipe.produces}", UIHue.primary);
+    } else if (_items.isEmpty) {
+      terminal.writeAt(1, 1, "Add ingredients to crucible", UIHue.disabled);
+    } else {
+      terminal.writeAt(1, 1, "Not a complete recipe", UIHue.disabled);
+    }
+  }
+
+  @override
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
+    if (super.keyDown(keyCode, shift: shift, alt: alt)) return true;
+
+    if (shift || alt) return false;
+
+    switch (keyCode) {
+      case KeyCode.g:
+        var screen = _GetFromCrucibleScreen(_gameScreen, _refreshRecipe);
+        screen._inspected = _inspected;
+        _isActive = false;
+        ui.push(screen);
+        return true;
+
+      case KeyCode.p:
+        _isActive = false;
+        ui.push(ItemDialog.putCrucible(_gameScreen, _refreshRecipe));
+        return true;
+
+      case KeyCode.space when _completeRecipe != null:
+        _save.crucible.clear();
+        _completeRecipe!.result.dropItem(_save.lore, 1, _save.crucible.tryAdd);
+        _refreshRecipe();
+        dirty();
+        return true;
+
+      case KeyCode.tab:
+        ui.goTo(ItemScreen.home(_gameScreen));
+        return true;
+    }
+
+    return false;
+  }
+
+  @override
+  void _afterTransfer(Item item, int count) {
+    _refreshRecipe();
+  }
+
+  void _refreshRecipe() {
+    _completeRecipe = null;
+    for (var recipe in _gameScreen.game.content.recipes) {
+      if (recipe.isComplete(_save.crucible)) {
+        _completeRecipe = recipe;
+        return;
+      }
+    }
   }
 }
 
@@ -374,7 +483,7 @@ class _ShopViewScreen extends ItemScreen {
         "B": "Buy item",
         "S": "Sell item",
         "Shift": "Inspect item",
-        "Esc": "Cancel"
+        "`": "Cancel"
       };
 
   _ShopViewScreen(super.gameScreen, this._shop) : super._();
@@ -417,7 +526,7 @@ class _ShopBuyScreen extends _ItemVerbScreen {
 
   @override
   Map<String, String> get _helpKeys =>
-      {"A-Z": "Select item", "Shift": "Inspect item", "Esc": "Cancel"};
+      {"A-Z": "Select item", "Shift": "Inspect item", "`": "Cancel"};
 
   @override
   ItemCollection get _items => _shop;
@@ -484,7 +593,7 @@ class _CountScreen extends ItemScreen {
 
   @override
   Map<String, String> get _helpKeys =>
-      {"OK": _parent._verb, "↕": "Change quantity", "Esc": "Cancel"};
+      {"OK": _parent._verb, "↕": "Change quantity", "`": "Cancel"};
 
   _CountScreen(super.gameScreen, this._parent, this._item)
       : _count = _parent._initialCount(_item),

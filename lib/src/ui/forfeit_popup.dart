@@ -20,8 +20,7 @@ class ForfeitPopup extends Popup {
   }
 
   @override
-  Map<String, String> get helpKeys =>
-      const {"Y": "Yes", "N": "No", "Esc": "No"};
+  Map<String, String> get helpKeys => const {"Y": "Yes", "N": "No", "`": "No"};
 
   @override
   bool handleInput(Input input) {

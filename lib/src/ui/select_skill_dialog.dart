@@ -57,7 +57,7 @@ class SelectSkillDialog extends Screen<Input> {
     Draw.helpKeys(terminal, {
       "A-Z": "Select skill",
       // "1-9": "Bind quick key",
-      "Esc": "Exit"
+      "`": "Exit"
     });
 
     // If the item panel is visible, put it there. Otherwise, put it in the

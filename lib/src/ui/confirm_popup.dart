@@ -14,8 +14,7 @@ class ConfirmPopup extends Popup {
   List<String> get message => [_message];
 
   @override
-  Map<String, String> get helpKeys =>
-      const {"Y": "Yes", "N": "No", "Esc": "No"};
+  Map<String, String> get helpKeys => const {"Y": "Yes", "N": "No", "`": "No"};
 
   @override
   bool handleInput(Input input) {

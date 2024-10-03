@@ -429,8 +429,6 @@ class GameScreen extends Screen<Input> {
         _enterShop(7);
       case TilePortals.shop9:
         _enterShop(8);
-      // TODO: No crucible right now.
-//        ui.push(new ItemScreen.crucible(content, save));
     }
 
     return true;

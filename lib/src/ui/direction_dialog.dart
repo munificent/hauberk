@@ -108,7 +108,7 @@ abstract class DirectionDialog extends Screen<Input> {
     draw(6, Direction.w, "-");
     draw(7, Direction.nw, r"\");
 
-    Draw.helpKeys(terminal, {"↕↔": helpText, "Esc": "Cancel"}, query);
+    Draw.helpKeys(terminal, {"↕↔": helpText, "`": "Cancel"}, query);
   }
 
   void _select(Direction dir) {
@@ -154,7 +154,7 @@ class OperateDialog extends DirectionDialog {
   @override
   String get helpText => "Choose direction";
 
-  OperateDialog(GameScreen gameScreen) : super(gameScreen);
+  OperateDialog(super.gameScreen);
 
   @override
   bool canTarget(Tile tile) => tile.type.canOperate;

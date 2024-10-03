@@ -7,6 +7,7 @@ import 'content/elements.dart';
 import 'content/item/affixes.dart';
 import 'content/item/floor_drops.dart';
 import 'content/item/items.dart';
+import 'content/item/recipes.dart';
 import 'content/item/shops.dart';
 import 'content/monster/monsters.dart';
 import 'content/races.dart';
@@ -21,9 +22,11 @@ Content createContent() {
   // Note: The order is significant here. For example, monster drops will
   // reference items, which need to have already been created.
   Items.initialize();
+  Recipes.initialize();
   Monsters.initialize();
   Affixes.initialize();
   Shops.initialize();
+  Recipes.initialize();
   FloorDrops.initialize();
   ArchitecturalStyle.initialize();
   Decor.initialize();
@@ -71,6 +74,9 @@ class GameContent implements Content {
 
   @override
   Map<String, Shop> get shops => Shops.all;
+
+  @override
+  List<Recipe> get recipes => Recipes.all;
 
   @override
   HeroSave createHero(String name, [Race? race, HeroClass? heroClass]) {
