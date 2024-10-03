@@ -24,8 +24,7 @@ void healing() {
 }
 
 void teleportation() {
-  // TODO: Bring these back when the ingredients exist and are dropped.
-  // recipe('Scroll of Sidestepping', {'Insect Wing': 1, 'Black Feather': 1});
+  recipe('Scroll of Sidestepping', {'Insect Wing': 1, 'Feather': 1});
   recipe('Scroll of Phasing', {'Scroll of Sidestepping': 2});
   recipe('Scroll of Teleportation', {'Scroll of Phasing': 2});
   recipe('Scroll of Disappearing', {'Scroll of Teleportation': 2});

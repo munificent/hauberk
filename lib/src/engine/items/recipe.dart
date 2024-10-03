@@ -7,6 +7,9 @@ class Recipe {
   /// Maps each required item type to the count of items of that type that are
   /// needed.
   final Map<ItemType, int> ingredients;
+
+  // TODO: Eventually we'll want something more sophisticated than just a [Drop]
+  // since some recipes will modify one of the ingredient items.
   final Drop result;
 
   /// User-facing description of what this recipe does.
@@ -29,7 +32,7 @@ class Recipe {
   /// [items] ingredients. Returns `null` if [items] contains any ingredients
   /// that are not used by this recipe.
   Map<ItemType, int>? _missingIngredients(Iterable<Item> items) {
-    var missing = Map<ItemType, int>.from(ingredients);
+    var missing = {...ingredients};
     for (var item in items) {
       if (!missing.containsKey(item.type)) return null;
       missing[item.type] = missing[item.type]! - item.count;

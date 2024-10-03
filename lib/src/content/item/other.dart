@@ -67,22 +67,16 @@ void treasure() {
 }
 
 void pelts() {
-  // TODO: Should these appear on the floor?
   // TODO: Better pictogram than a pelt?
-  // TODO: These currently have no use. Either remove them, or add crafting
-  // back in.
-  /*
   category(CharCode.latinSmallLetterEWithAcute, stack: 20)
-    ..destroy(Elements.fire, chance: 40, fuel: 1);
-  item("Flower", cornflower, 1, frequency: 1.0); // TODO: Use in recipe.
-  item("Insect Wing", violet, 1, frequency: 1.0);
-  item("Red Feather", brickRed, 2, frequency: 1.0); // TODO: Use in recipe.
-  item("Black Feather", steelGray, 2, frequency: 1.0);
+    ..tag("item/pelt")
+    ..destroy(Elements.fire, chance: 80, fuel: 1);
+  item("Insect Wing", violet, frequency: 0.0).depth(1);
+  item("Feather", lightCoolGray, frequency: 0.0).depth(1);
 
-  category(CharCode.latinSmallLetterEWithAcute, stack: 4)
-    ..destroy(Elements.fire, chance: 20, fuel: 3);
-  item("Fur Pelt", persimmon, 1, frequency: 1.0);
-  */
+  // category(CharCode.latinSmallLetterEWithAcute, stack: 4)
+  //   ..destroy(Elements.fire, chance: 20, fuel: 3);
+  // item("Fur Pelt", persimmon, 1, frequency: 1.0);
 }
 
 void food() {

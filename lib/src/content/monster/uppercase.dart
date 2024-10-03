@@ -14,18 +14,19 @@ void birds() {
     ..defense(10, "{1} flaps out of the way.")
     ..fly()
     ..count(3, 6);
+
   breed("crow", 4, darkCoolGray, 7, speed: 2, meander: 30)
     ..attack("bite[s]", 5)
-    ..drop("treasure", percent: 10);
+    ..drop("Feather", percent: 30);
   describe(""""What harm can a stupid little crow do?" you think as it and its
       murderous friends dive towards your eyes, claws extended.""");
 
   breed("raven", 6, coolGray, 16, meander: 15)
     ..attack("bite[s]", 5)
     ..attack("claw[s]", 4)
-    ..drop("treasure", percent: 10)
+    ..drop("Feather", percent: 30)
     ..flags("protective");
-  describe("""It's black eyes gleam with a malevolent intelligence.""");
+  describe("""Its black eyes gleam with a malevolent intelligence.""");
 }
 
 void canids() {}
@@ -95,11 +96,13 @@ void hybrids() {
     ..attack("bite[s]", 10)
     ..attack("scratch[es]", 15)
     ..howl(verb: "screeches")
-    ..missive(Missive.screech);
+    ..missive(Missive.screech)
+    ..drop("Feather", percent: 50);
 
   breed("griffin", 35, gold, 200)
     ..attack("bite[s]", 20)
-    ..attack("scratch[es]", 15);
+    ..attack("scratch[es]", 15)
+    ..drop("Feather", percent: 50);
 
   // TODO: https://en.wikipedia.org/wiki/List_of_hybrid_creatures_in_folklore
 }

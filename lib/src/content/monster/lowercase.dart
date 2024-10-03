@@ -312,7 +312,8 @@ void insects() {
     ..count(2, 5)
     ..preferCorner()
     ..attack("crawl[s] on", 2)
-    ..spawn(rate: 6);
+    ..spawn(rate: 6)
+    ..drop("Insect Wing", percent: 30);
   describe("""It's not quite as easy to squash one of these when it's as long as
       your arm.""");
 
@@ -325,7 +326,8 @@ void insects() {
     ..sense(see: 5, hear: 2);
   breed("firefly", 8, carrot, 6, speed: 1, meander: 70)
     ..count(3, 8)
-    ..attack("bite[s]", 12, Elements.fire);
+    ..attack("bite[s]", 12, Elements.fire)
+    ..drop("Insect Wing", percent: 40);
 }
 
 void jellies() {

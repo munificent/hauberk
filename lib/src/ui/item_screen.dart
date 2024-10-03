@@ -457,6 +457,9 @@ class _CrucibleViewScreen extends ItemScreen {
 
   void _refreshRecipe() {
     _completeRecipe = null;
+
+    // TODO: Would be good to show partially matching recipes somehow.
+
     for (var recipe in _gameScreen.game.content.recipes) {
       if (recipe.isComplete(_save.crucible)) {
         _completeRecipe = recipe;
