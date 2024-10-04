@@ -104,7 +104,7 @@ void weapons() {
   category(CharCode.latinCapitalLetterNWithTilde, verb: "stab[s]")
     ..tag("equipment/weapon/dagger")
     ..toss(breakage: 2, range: 8);
-  item("Kni[fe|ves]", darkCoolGray, frequency: 0.5, price: 20)
+  item("Kni[fe|ves]", lightWarmGray, frequency: 0.5, price: 20)
     ..depth(3, to: 20)
     ..weapon(6, heft: 5)
     ..toss(damage: 6);
@@ -135,7 +135,7 @@ void weapons() {
     ..tag("equipment/weapon/sword")
     ..toss(breakage: 20, range: 5)
     ..skill("Swordfighting");
-  item("Rapier", darkCoolGray, frequency: 0.5, price: 140)
+  item("Rapier", warmGray, frequency: 0.5, price: 140)
     ..depth(13)
     ..weapon(13, heft: 13)
     ..toss(damage: 4);
@@ -218,7 +218,7 @@ void weapons() {
     ..weapon(19, heft: 19)
     ..toss(damage: 26, range: 5);
   // TODO: Two-handed?
-  item("Battleaxe", darkCoolGray, frequency: 0.5, price: 550)
+  item("Battleaxe", warmGray, frequency: 0.5, price: 550)
     ..depth(40)
     ..weapon(25, heft: 30)
     ..toss(damage: 28, range: 4);
