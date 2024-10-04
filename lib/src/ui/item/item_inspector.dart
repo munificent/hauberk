@@ -2,10 +2,10 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 
-import '../content/elements.dart';
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
+import '../../content/elements.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../draw.dart';
 
 /// Shows a detailed info box for an item.
 class ItemInspector {

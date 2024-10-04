@@ -4,8 +4,8 @@ import '../engine.dart';
 import '../hues.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
-import 'item_inspector.dart';
-import 'item_view.dart';
+import 'item/item_inspector.dart';
+import 'item/item_renderer.dart';
 
 class HeroItemLoreDialog extends HeroInfoDialog {
   static const _rowCount = 11;

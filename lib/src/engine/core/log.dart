@@ -26,6 +26,8 @@ class Log {
   /// quantify("(a) unicorn", 1); // -> "a unicorn"
   /// quantify("ocelot", 1);      // -> "an ocelot"
   /// ```
+  ///
+  /// If [article] is false, then omits the "a"/"an" if the count is 1.
   static String quantify(String text, int count) {
     String quantity;
     if (count == 1) {
@@ -44,6 +46,32 @@ class Log {
     }
 
     return "$quantity ${_categorize(text, isFirst: count == 1, force: true)}";
+  }
+
+  /// Quantifies the noun pattern in [text] to create a noun phrase for that
+  /// number. Examples:
+  ///
+  /// ```
+  /// quantify("bunn[y|ies]", 1); // -> "bunny"
+  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
+  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
+  /// quantify("(a) unicorn", 1); // -> "unicorn"
+  /// quantify("ocelot", 1);      // -> "ocelot"
+  /// ```
+  ///
+  /// Unlike [quantify()], omits the article.
+  ///
+  /// If [article] is false, then omits the "a"/"an" if the count is 1.
+  static String quantifyWithoutArticle(String text, int count) {
+    if (count == 1) {
+      // Strip off the article from text with an explicit one.
+      if (text.startsWith("(a) ")) {
+        text = text.substring(4);
+      }
+      return _categorize(text, isFirst: true, force: true);
+    } else {
+      return "$count ${_categorize(text, isFirst: false, force: true)}";
+    }
   }
 
   static List<String> wordWrap(int width, String text) {

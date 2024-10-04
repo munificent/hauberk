@@ -3,20 +3,22 @@ import 'dart:math' as math;
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
-import 'game_screen.dart';
-import 'input.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../draw.dart';
+import '../game_screen.dart';
+import '../input.dart';
 import 'item_dialog.dart';
-import 'item_view.dart';
+import 'item_renderer.dart';
 
 // TODO: Home screen is confusing when empty.
 // TODO: The home (get) and shop (buy) screens handle selecting a count
 // completely differently from the ItemDialogs (put, sell, etc.). Different
 // code and different user interface. Unify those.
 
-abstract class ItemScreen extends Screen<Input> {
+/// A screen for a place in the town where the hero can interact with items:
+/// a shop, their home, or the crucible.
+abstract class TownScreen extends Screen<Input> {
   final GameScreen _gameScreen;
 
   // TODO: Move this and _transfer() to an intermediate class instead of making
@@ -45,18 +47,18 @@ abstract class ItemScreen extends Screen<Input> {
 
   Map<String, String> get _helpKeys;
 
-  ItemScreen._(this._gameScreen);
+  TownScreen._(this._gameScreen);
 
   @override
   bool get isTransparent => true;
 
-  factory ItemScreen.home(GameScreen gameScreen) => _HomeViewScreen(gameScreen);
+  factory TownScreen.home(GameScreen gameScreen) => _HomeScreen(gameScreen);
 
-  factory ItemScreen.shop(GameScreen gameScreen, Inventory shop) =>
-      _ShopViewScreen(gameScreen, shop);
+  factory TownScreen.shop(GameScreen gameScreen, Inventory shop) =>
+      _ShopScreen(gameScreen, shop);
 
-  factory ItemScreen.crucible(GameScreen gameScreen) =>
-      _CrucibleViewScreen(gameScreen);
+  factory TownScreen.crucible(GameScreen gameScreen) =>
+      _CrucibleScreen(gameScreen);
 
   bool get _canSelectAny => false;
   bool get _showPrices => false;
@@ -169,11 +171,20 @@ abstract class ItemScreen extends Screen<Input> {
       }
     }
 
-    var view = _TownItemView(this);
-    var width =
-        math.min(ItemView.preferredWidth, _gameScreen.stagePanel.bounds.width);
-    view.render(terminal, _gameScreen.stagePanel.bounds.x,
-        _gameScreen.stagePanel.bounds.y, width, _items.length);
+    renderItems(terminal, _items,
+        left: _gameScreen.stagePanel.bounds.x,
+        top: _gameScreen.stagePanel.bounds.y,
+        width: math.min(
+            preferredItemListWidth, _gameScreen.stagePanel.bounds.width),
+        itemSlotCount: _items.length,
+        save: _gameScreen.game.hero.save,
+        capitalize: _shiftDown,
+        showPrices: _showPrices,
+        inspectedItem: _isActive ? _inspected : null,
+        inspectorOnRight: true,
+        canSelectAny: _shiftDown || _canSelectAny,
+        canSelect: _canSelect,
+        getPrice: _itemPrice);
 
     if (_error != null) {
       terminal.writeAt(0, 32, _error!, red);
@@ -217,47 +228,14 @@ abstract class ItemScreen extends Screen<Input> {
   void _afterTransfer(Item item, int count) {}
 }
 
-/// Base class for item views where the player is performing an action.
-abstract class _ItemVerbScreen extends ItemScreen {
+/// Base class for town screens where the player is performing an action.
+abstract class _ItemVerbScreen extends TownScreen {
   String get _verb;
 
   _ItemVerbScreen(super.gameScreen) : super._();
 }
 
-class _TownItemView extends ItemView {
-  final ItemScreen _screen;
-
-  _TownItemView(this._screen);
-
-  @override
-  HeroSave get save => _screen._gameScreen.game.hero.save;
-
-  @override
-  ItemCollection get items => _screen._items;
-
-  @override
-  bool get capitalize => _screen._shiftDown;
-
-  @override
-  bool get showPrices => _screen._showPrices;
-
-  @override
-  Item? get inspectedItem => _screen._isActive ? _screen._inspected : null;
-
-  @override
-  bool get inspectorOnRight => true;
-
-  @override
-  bool get canSelectAny => _screen._shiftDown || _screen._canSelectAny;
-
-  @override
-  bool canSelect(Item item) => _screen._canSelect(item);
-
-  @override
-  int? getPrice(Item item) => _screen._itemPrice(item);
-}
-
-class _HomeViewScreen extends ItemScreen {
+class _HomeScreen extends TownScreen {
   @override
   ItemCollection get _items => _save.home;
 
@@ -273,7 +251,7 @@ class _HomeViewScreen extends ItemScreen {
         "`": "Leave"
       };
 
-  _HomeViewScreen(super.gameScreen) : super._();
+  _HomeScreen(super.gameScreen) : super._();
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -295,7 +273,7 @@ class _HomeViewScreen extends ItemScreen {
         return true;
 
       case KeyCode.tab:
-        ui.goTo(ItemScreen.crucible(_gameScreen));
+        ui.goTo(TownScreen.crucible(_gameScreen));
         return true;
     }
 
@@ -366,7 +344,7 @@ class _GetFromCrucibleScreen extends _GetScreen {
   }
 }
 
-class _CrucibleViewScreen extends ItemScreen {
+class _CrucibleScreen extends TownScreen {
   /// If the crucible contains a complete recipe, this will be it. Otherwise,
   /// this will be `null`.
   Recipe? _completeRecipe;
@@ -389,7 +367,7 @@ class _CrucibleViewScreen extends ItemScreen {
         "`": "Leave"
       };
 
-  _CrucibleViewScreen(super.gameScreen) : super._() {
+  _CrucibleScreen(super.gameScreen) : super._() {
     _refreshRecipe();
   }
 
@@ -399,7 +377,7 @@ class _CrucibleViewScreen extends ItemScreen {
 
     // TODO: This UI isn't great.
     var width =
-        math.min(ItemView.preferredWidth, _gameScreen.stagePanel.bounds.width);
+        math.min(preferredItemListWidth, _gameScreen.stagePanel.bounds.width);
     terminal = terminal.rect(_gameScreen.stagePanel.bounds.x + 4,
         _gameScreen.stagePanel.bounds.y + _items.length + 1, width - 8, 3);
 
@@ -443,7 +421,7 @@ class _CrucibleViewScreen extends ItemScreen {
         return true;
 
       case KeyCode.tab:
-        ui.goTo(ItemScreen.home(_gameScreen));
+        ui.goTo(TownScreen.home(_gameScreen));
         return true;
     }
 
@@ -470,7 +448,7 @@ class _CrucibleViewScreen extends ItemScreen {
 }
 
 /// Views the contents of a shop and lets the player choose to buy or sell.
-class _ShopViewScreen extends ItemScreen {
+class _ShopScreen extends TownScreen {
   final Inventory _shop;
 
   @override
@@ -489,7 +467,7 @@ class _ShopViewScreen extends ItemScreen {
         "`": "Cancel"
       };
 
-  _ShopViewScreen(super.gameScreen, this._shop) : super._();
+  _ShopScreen(super.gameScreen, this._shop) : super._();
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -573,7 +551,7 @@ class _ShopBuyScreen extends _ItemVerbScreen {
 }
 
 /// Screen to let the player choose a count for a selected item.
-class _CountScreen extends ItemScreen {
+class _CountScreen extends TownScreen {
   /// The [_ItemVerbScreen] that pushed this.
   final _ItemVerbScreen _parent;
   final Item _item;
@@ -630,40 +608,25 @@ class _CountScreen extends ItemScreen {
     switch (input) {
       case Input.ok:
         ui.pop(_count);
-        return true;
-
       case Input.cancel:
         ui.pop();
-        return true;
-
-      case Input.n:
-        if (_count < _parent._maxCount(_item)) {
-          _count++;
-          dirty();
-        }
-        return true;
-
-      case Input.s:
-        if (_count > 1) {
-          _count--;
-          dirty();
-        }
-        return true;
-
+      case Input.n when _count < _parent._maxCount(_item):
+        _count++;
+      case Input.s when _count > 1:
+        _count--;
       case Input.runN:
         _count = _parent._maxCount(_item);
-        dirty();
-        return true;
-
       case Input.runS:
         _count = 1;
-        dirty();
-        return true;
 
-      // TODO: Allow typing number.
+      // TODO: Allow typing in number.
+
+      default:
+        return false;
     }
 
-    return false;
+    dirty();
+    return true;
   }
 
   @override

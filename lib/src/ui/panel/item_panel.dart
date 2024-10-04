@@ -2,7 +2,7 @@ import 'package:malison/malison.dart';
 
 import '../../engine.dart';
 import '../draw.dart';
-import '../item_view.dart';
+import '../item/item_renderer.dart';
 import 'panel.dart';
 
 class ItemPanel extends Panel {
@@ -41,24 +41,13 @@ class ItemPanel extends Panel {
 
   void _drawItems(
       Terminal terminal, int y, int itemSlotCount, ItemCollection items) {
-    var view = _ItemPanelItemView(_game, items);
-    view.render(terminal, 0, y, terminal.width, itemSlotCount);
+    renderItems(terminal, items,
+        left: 0,
+        top: y,
+        width: terminal.width,
+        itemSlotCount: itemSlotCount,
+        save: _game.hero.save,
+        showLetters: false,
+        canSelectAny: false);
   }
-}
-
-class _ItemPanelItemView extends ItemView {
-  final Game _game;
-  @override
-  final ItemCollection items;
-
-  _ItemPanelItemView(this._game, this.items);
-
-  @override
-  HeroSave get save => _game.hero.save;
-
-  @override
-  bool get showLetters => false;
-
-  @override
-  bool get canSelectAny => false;
 }

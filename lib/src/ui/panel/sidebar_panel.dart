@@ -7,7 +7,7 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../draw.dart';
 import '../game_screen.dart';
-import '../item_view.dart';
+import '../item/item_renderer.dart';
 import 'panel.dart';
 
 // TODO: Split this into multiple panels and/or give it a better name.

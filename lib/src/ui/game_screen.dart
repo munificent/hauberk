@@ -15,8 +15,8 @@ import 'forfeit_popup.dart';
 import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
-import 'item_dialog.dart';
-import 'item_screen.dart';
+import 'item/item_dialog.dart';
+import 'item/town_screen.dart';
 import 'loading_dialog.dart';
 import 'panel/item_panel.dart';
 import 'panel/log_panel.dart';
@@ -311,7 +311,7 @@ class GameScreen extends Screen<Input> {
         _storage.save();
         ui.pop();
       }
-    } else if (popped is ItemScreen) {
+    } else if (popped is TownScreen) {
       // Always save when leaving home or a shop.
       _storage.save();
     } else if (popped is ItemDialog) {
@@ -410,7 +410,7 @@ class GameScreen extends Screen<Input> {
       case TilePortals.dungeon:
         ui.push(SelectDepthPopup(game.content, game.hero.save));
       case TilePortals.home:
-        ui.push(ItemScreen.home(this));
+        ui.push(TownScreen.home(this));
       case TilePortals.shop1:
         _enterShop(0);
       case TilePortals.shop2:
@@ -548,6 +548,6 @@ class GameScreen extends Screen<Input> {
     var shops = game.hero.save.shops.keys.toList();
     if (index >= shops.length) return;
 
-    ui.push(ItemScreen.shop(this, game.hero.save.shops[shops[index]]!));
+    ui.push(TownScreen.shop(this, game.hero.save.shops[shops[index]]!));
   }
 }

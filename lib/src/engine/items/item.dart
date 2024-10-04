@@ -84,11 +84,13 @@ class Item implements Comparable<Item>, Noun {
 
   @override
   String get nounText {
-    var name = affixes.fold(
-        type.quantifiableName, (name, affix) => affix.itemName(name));
-
-    return Log.quantify(name, count);
+    return Log.quantify(quantifiableName, count);
   }
+
+  /// Gets the noun string used to build quantified names for the item,
+  /// including any affixes.
+  String get quantifiableName => affixes.fold(
+      type.quantifiableName, (name, affix) => affix.itemName(name));
 
   @override
   Pronoun get pronoun => Pronoun.it;
