@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'package:hauberk/src/ui/item/toss_dialog.dart';
+import 'package:hauberk/src/ui/item/use_dialog.dart';
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
@@ -15,7 +17,10 @@ import 'forfeit_popup.dart';
 import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
+import 'item/drop_dialog.dart';
+import 'item/equip_dialog.dart';
 import 'item/item_dialog.dart';
+import 'item/pick_up_dialog.dart';
 import 'item/town_screen.dart';
 import 'loading_dialog.dart';
 import 'panel/item_panel.dart';
@@ -158,11 +163,11 @@ class GameScreen extends Screen<Input> {
       case Input.heroInfo:
         ui.push(HeroInfoDialog(game.content, game.hero.save));
       case Input.drop:
-        ui.push(ItemDialog.drop(this));
+        ui.push(DropDialog(this));
       case Input.use:
-        ui.push(ItemDialog.use(this));
+        ui.push(UseDialog(this));
       case Input.toss:
-        ui.push(ItemDialog.toss(this));
+        ui.push(TossDialog(this));
 
       case Input.rest:
         if (!game.hero.rest()) {
@@ -175,7 +180,7 @@ class GameScreen extends Screen<Input> {
       case Input.pickUp:
         _pickUp();
       case Input.equip:
-        ui.push(ItemDialog.equip(this));
+        ui.push(EquipDialog(this));
 
       case Input.nw:
         action = WalkAction(Direction.nw);
@@ -459,7 +464,7 @@ class GameScreen extends Screen<Input> {
     var items = game.stage.itemsAt(game.hero.pos);
     if (items.length > 1) {
       // Show item dialog if there are multiple things to pick up.
-      ui.push(ItemDialog.pickUp(this));
+      ui.push(PickUpDialog(this));
     } else if (items.length == 1) {
       // Otherwise attempt to pick the one item.
       game.hero.setNextAction(PickUpAction(items.first));

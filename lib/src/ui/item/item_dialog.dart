@@ -7,7 +7,6 @@ import '../../engine.dart';
 import '../draw.dart';
 import '../game_screen.dart';
 import '../input.dart';
-import 'item_command.dart';
 import 'item_renderer.dart';
 
 /// Modal dialog for letting the user perform an [Action] on an [Item]
@@ -15,11 +14,8 @@ import 'item_renderer.dart';
 ///
 /// This overlays an item panel on the right side of the main screen and makes
 /// it look like one of those panels has become active.
-class ItemDialog extends Screen<Input> {
+abstract class ItemDialog extends Screen<Input> {
   final GameScreen gameScreen;
-
-  /// The command the player is trying to perform on an item.
-  final ItemCommand _command;
 
   /// The current location being shown to the player.
   ItemLocation _location = ItemLocation.inventory;
@@ -41,27 +37,25 @@ class ItemDialog extends Screen<Input> {
   bool get isTransparent => true;
 
   /// True if the item dialog supports tabbing between item lists.
-  bool get canSwitchLocations => _command.allowedLocations.length > 1;
+  bool get canSwitchLocations => allowedLocations.length > 1;
 
-  ItemDialog.drop(this.gameScreen) : _command = DropItemCommand();
+  /// Locations of items that can be used with this command. When a command
+  /// allows multiple locations, players can switch between them.
+  List<ItemLocation> get allowedLocations => const [
+        ItemLocation.inventory,
+        ItemLocation.onGround,
+        ItemLocation.equipment
+      ];
 
-  ItemDialog.use(this.gameScreen) : _command = UseItemCommand();
+  /// If the player must select how many items in a stack, returns `true`.
+  bool get needsCount;
 
-  ItemDialog.toss(this.gameScreen) : _command = TossItemCommand();
+  bool get showPrices => false;
 
-  ItemDialog.pickUp(this.gameScreen)
-      : _command = PickUpItemCommand(),
-        _location = ItemLocation.onGround;
+  /// The verb to describe this command in the help bar.
+  String get helpVerb;
 
-  ItemDialog.equip(this.gameScreen) : _command = EquipItemCommand();
-
-  ItemDialog.sell(this.gameScreen, Inventory shop)
-      : _command = SellItemCommand(shop);
-
-  ItemDialog.putCrucible(this.gameScreen, void Function() onTransfer)
-      : _command = PutCrucibleItemCommand(onTransfer);
-
-  ItemDialog.putHome(this.gameScreen) : _command = PutHomeItemCommand();
+  ItemDialog(this.gameScreen, [this._location = ItemLocation.inventory]);
 
   ItemCollection get items {
     var hero = gameScreen.game.hero;
@@ -73,12 +67,52 @@ class ItemDialog extends Screen<Input> {
     };
   }
 
+  /// The query shown to the user when selecting an item in this mode from the
+  /// [ItemDialog].
+  String query(ItemLocation location);
+
+  /// The query shown to the user when selecting a quantity for an item in this
+  /// mode from the [ItemDialog].
+  String queryCount(ItemLocation location) => throw UnimplementedError();
+
+  /// Returns `true` if [item] is a valid selection for this command.
+  bool canSelect(Item item);
+
+  /// Called when a valid item has been selected.
+  void selectItem(Item item, int count, ItemLocation location);
+
+  int getPrice(Item item) => item.price;
+
+  void transfer(Item item, int count, ItemCollection destination) {
+    if (!destination.canAdd(item)) {
+      gameScreen.game.log.error("Not enough room for ${item.clone(count)}.");
+      dirty();
+      return;
+    }
+
+    if (count == item.count) {
+      // Moving the entire stack.
+      destination.tryAdd(item);
+      items.remove(item);
+    } else {
+      // Splitting the stack.
+      destination.tryAdd(item.splitStack(count));
+      items.countChanged();
+    }
+
+    afterTransfer(item, count);
+    ui.pop();
+  }
+
+  // TODO: Remove dialog param. Make override?
+  void afterTransfer(Item item, int count) {}
+
   @override
   bool handleInput(Input input) {
     if (_selectedItem case var selected?) {
       switch (input) {
         case Input.ok:
-          _command.selectItem(this, selected, _count, _location);
+          selectItem(selected, _count, _location);
           return true;
 
         case Input.cancel:
@@ -195,23 +229,23 @@ class ItemDialog extends Screen<Input> {
         save: gameScreen.game.hero.save,
         canSelectAny: true,
         capitalize: _selectedItem == null && _shiftDown,
-        showPrices: _command.showPrices,
+        showPrices: showPrices,
         inspectedItem: _inspected,
         canSelect: _canSelect,
-        getPrice: _command.getPrice);
+        getPrice: getPrice);
 
-    String query;
+    String queryText;
     if (_selectedItem == null) {
       if (_shiftDown) {
-        query = "Inspect which item?";
+        queryText = "Inspect which item?";
       } else {
-        query = _command.query(_location);
+        queryText = query(_location);
       }
     } else {
-      query = "${_command.queryCount(_location)} $_count";
+      queryText = "${queryCount(_location)} $_count";
     }
 
-    _renderHelp(terminal, query);
+    _renderHelp(terminal, queryText);
   }
 
   void _renderHelp(Terminal terminal, String query) {
@@ -230,11 +264,7 @@ class ItemDialog extends Screen<Input> {
         };
       }
     } else {
-      helpKeys = {
-        "OK": _command.helpVerb,
-        "↕": "Change quantity",
-        "`": "Cancel"
-      };
+      helpKeys = {"OK": helpVerb, "↕": "Change quantity", "`": "Cancel"};
     }
 
     Draw.helpKeys(terminal, helpKeys, query);
@@ -244,7 +274,7 @@ class ItemDialog extends Screen<Input> {
     if (_shiftDown && _selectedItem == null) return true;
 
     if (_selectedItem != null) return item == _selectedItem;
-    return _command.canSelect(item);
+    return canSelect(item);
   }
 
   void _selectItem(int index) {
@@ -259,24 +289,24 @@ class ItemDialog extends Screen<Input> {
       _inspected = item;
       dirty();
     } else {
-      if (!_command.canSelect(item)) return;
+      if (!canSelect(item)) return;
 
-      if (item.count > 1 && _command.needsCount) {
+      if (item.count > 1 && needsCount) {
         _selectedItem = item;
         _inspected = null;
         _count = item.count;
         dirty();
       } else {
         // Either we don't need a count or there's only one item.
-        _command.selectItem(this, item, 1, _location);
+        selectItem(item, 1, _location);
       }
     }
   }
 
   /// Rotates through the viewable locations the player can select an item from.
   void _advanceLocation(int offset) {
-    var index = _command.allowedLocations.indexOf(_location);
-    var count = _command.allowedLocations.length;
-    _location = _command.allowedLocations[(index + count + offset) % count];
+    var index = allowedLocations.indexOf(_location);
+    var count = allowedLocations.length;
+    _location = allowedLocations[(index + count + offset) % count];
   }
 }

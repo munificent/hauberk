@@ -8,8 +8,9 @@ import '../../hues.dart';
 import '../draw.dart';
 import '../game_screen.dart';
 import '../input.dart';
-import 'item_dialog.dart';
 import 'item_renderer.dart';
+import 'put_dialog.dart';
+import 'sell_dialog.dart';
 
 // TODO: Home screen is confusing when empty.
 // TODO: The home (get) and shop (buy) screens handle selecting a count
@@ -269,7 +270,7 @@ class _HomeScreen extends TownScreen {
 
       case KeyCode.p:
         _isActive = false;
-        ui.push(ItemDialog.putHome(_gameScreen));
+        ui.push(PutHomeDialog(_gameScreen));
         return true;
 
       case KeyCode.tab:
@@ -410,7 +411,7 @@ class _CrucibleScreen extends TownScreen {
 
       case KeyCode.p:
         _isActive = false;
-        ui.push(ItemDialog.putCrucible(_gameScreen, _refreshRecipe));
+        ui.push(PutCrucibleDialog(_gameScreen, _refreshRecipe));
         return true;
 
       case KeyCode.space when _completeRecipe != null:
@@ -484,7 +485,7 @@ class _ShopScreen extends TownScreen {
 
       case KeyCode.s:
         _isActive = false;
-        ui.push(ItemDialog.sell(_gameScreen, _shop));
+        ui.push(SellDialog(_gameScreen, _shop));
         return true;
     }
 
