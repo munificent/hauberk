@@ -137,10 +137,10 @@ class NewHeroScreen extends Screen<Input> {
     terminal = terminal.rect(0, 0, 40, 10);
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        _field == _Field.name ? UIHue.selection : darkCoolGray);
+        color: _field == _Field.name ? UIHue.selection : UIHue.disabled,
+        label: "Name",
+        labelSelected: _field == _Field.name);
 
-    terminal.writeAt(
-        1, 0, "Name", _field == _Field.name ? UIHue.selection : UIHue.text);
     terminal.writeAt(1, 2, "Out of the mists of history, a hero", UIHue.text);
     terminal.writeAt(1, 3, "appears named...", UIHue.text);
 
@@ -166,9 +166,9 @@ class NewHeroScreen extends Screen<Input> {
     terminal = terminal.rect(0, 10, 40, 29);
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        _field == _Field.race ? UIHue.selection : darkCoolGray);
-    terminal.writeAt(
-        1, 0, "Race", _field == _Field.race ? UIHue.selection : UIHue.text);
+        color: _field == _Field.race ? UIHue.selection : UIHue.disabled,
+        label: "Race",
+        labelSelected: _field == _Field.race);
 
     var race = content.races[_race];
     terminal.writeAt(1, 2, race.name, UIHue.primary);
@@ -193,9 +193,9 @@ class NewHeroScreen extends Screen<Input> {
     terminal = terminal.rect(40, 10, 40, 29);
 
     Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        _field == _Field.heroClass ? UIHue.selection : darkCoolGray);
-    terminal.writeAt(1, 0, "Class",
-        _field == _Field.heroClass ? UIHue.selection : UIHue.text);
+        color: _field == _Field.heroClass ? UIHue.selection : UIHue.disabled,
+        label: "Class",
+        labelSelected: _field == _Field.heroClass);
 
     var heroClass = content.classes[_class];
     terminal.writeAt(1, 2, heroClass.name, UIHue.primary);
@@ -227,7 +227,7 @@ class NewHeroScreen extends Screen<Input> {
       selected = _class;
     }
 
-    terminal.writeAt(1, 0, "Choose a $label:", UIHue.selection);
+    terminal.writeAt(2, 0, " Choose a $label ", UIHue.selection);
 
     var y = 2;
     for (var i = 0; i < items.length; i++) {

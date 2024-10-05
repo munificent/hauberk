@@ -9,9 +9,14 @@ class Draw {
   }
 
   static void frame(Terminal terminal, int x, int y, int width, int height,
-      [Color? color]) {
+      {Color? color, String? label, bool labelSelected = false}) {
     _box(terminal, x, y, width, height, color, "╒", "═", "╕", "│", "└", "─",
         "┘");
+
+    if (label != null) {
+      terminal.writeAt(
+          x + 2, y, " $label ", labelSelected ? UIHue.selection : UIHue.text);
+    }
   }
 
   /// Draws a frame with a little box on top for a glyph with the name next to

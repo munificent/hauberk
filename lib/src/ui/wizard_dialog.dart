@@ -81,15 +81,15 @@ class WizardDialog extends Screen<Input> {
     // Draw a box for the contents.
     var width = _menuItems.keys
         .fold<int>(0, (width, name) => math.max(width, name.length));
-    Draw.frame(terminal, 0, 0, width + 4, _menuItems.length + 3);
-    terminal.writeAt(1, 0, "Wizard Menu", UIHue.selection);
+    Draw.frame(terminal, 0, 0, width + 4, _menuItems.length + 2,
+        color: UIHue.selection, label: "Wizard Menu", labelSelected: true);
 
     var i = 0;
     for (var menuItem in _menuItems.keys) {
-      terminal.writeAt(1, i + 2, " )", UIHue.secondary);
+      terminal.writeAt(1, i + 1, " )", UIHue.secondary);
       terminal.writeAt(
-          1, i + 2, "abcdefghijklmnopqrstuvwxyz"[i], UIHue.selection);
-      terminal.writeAt(3, i + 2, menuItem, UIHue.primary);
+          1, i + 1, "abcdefghijklmnopqrstuvwxyz"[i], UIHue.selection);
+      terminal.writeAt(3, i + 1, menuItem, UIHue.primary);
 
       i++;
     }
@@ -218,8 +218,7 @@ abstract class _SearchDialog<T> extends Screen<Input> {
   @override
   void render(Terminal terminal) {
     // Draw a box for the contents.
-    Draw.frame(terminal, 25, 0, 43, 39);
-    terminal.writeAt(26, 0, _question, UIHue.selection);
+    Draw.frame(terminal, 25, 0, 43, 39, label: _question, labelSelected: true);
 
     terminal.writeAt(28 + _question.length, 0, _pattern, UIHue.selection);
     terminal.writeAt(28 + _question.length + _pattern.length, 0, " ",

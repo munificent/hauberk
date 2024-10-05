@@ -34,11 +34,12 @@ class SidebarPanel extends Panel {
 
   @override
   void renderPanel(Terminal terminal) {
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
-
     var game = _gameScreen.game;
     var hero = game.hero;
-    terminal.writeAt(2, 0, " ${hero.save.name} ", UIHue.text);
+
+    Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
+        label: hero.save.name);
+
     terminal.writeAt(1, 2, "${hero.save.race.name} ${hero.save.heroClass.name}",
         UIHue.primary);
 

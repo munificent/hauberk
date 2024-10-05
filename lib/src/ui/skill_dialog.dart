@@ -105,8 +105,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
   void _renderSkillList(Terminal terminal) {
     terminal = terminal.rect(0, 0, 40, terminal.height - 1);
 
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
-    terminal.writeAt(1, 0, _name, UIHue.text);
+    Draw.frame(terminal, 0, 0, terminal.width, terminal.height, label: _name);
 
     _renderSkillListHeader(terminal);
     terminal.writeAt(2, 2, _rowSeparator, darkCoolGray);
@@ -143,16 +142,18 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
   void _renderSkill(Terminal terminal) {
     terminal = terminal.rect(40, 0, terminal.width - 40, terminal.height - 1);
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
 
-    if (_skills.isEmpty) return;
+    if (_skills.isEmpty) {
+      Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
+    } else {
+      var skill = _skills[_selectedSkill];
+      Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
+          label: skill.name, labelSelected: true);
 
-    var skill = _skills[_selectedSkill];
-    terminal.writeAt(1, 0, skill.name, UIHue.selection);
+      _writeText(terminal, 1, 2, skill.description);
 
-    _writeText(terminal, 1, 2, skill.description);
-
-    _renderSkillDetails(terminal, skill);
+      _renderSkillDetails(terminal, skill);
+    }
   }
 
   void _writeText(Terminal terminal, int x, int y, String text) {

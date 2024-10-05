@@ -79,8 +79,8 @@ class SelectSkillDialog extends Screen<Input> {
     // Draw a box for the contents.
     var height = math.max(_skills.length + 2, 3);
 
-    Draw.frame(terminal, 0, 0, terminal.width, height, UIHue.selection);
-    terminal.writeAt(2, 0, " Use which skill? ", UIHue.selection);
+    Draw.frame(terminal, 0, 0, terminal.width, height,
+        color: UIHue.selection, label: "Use which skill?", labelSelected: true);
 
     terminal = terminal.rect(1, 1, terminal.width - 2, terminal.height - 2);
 
@@ -93,25 +93,16 @@ class SelectSkillDialog extends Screen<Input> {
     for (var y = 0; y < _skills.length; y++) {
       var skill = _skills[y];
 
-      var borderColor = UIHue.secondary;
-      var letterColor = darkerCoolGray;
-      var textColor = UIHue.disabled;
-
-      var reason = skill.unusableReason(_gameScreen.game);
-      if (reason == null) {
-        borderColor = UIHue.primary;
-        letterColor = UIHue.selection;
-        textColor = UIHue.selection;
-      }
-
-      if (reason != null) {
+      if (skill.unusableReason(_gameScreen.game) case var reason?) {
         terminal.writeAt(
-            terminal.width - reason.length - 2, y, "($reason)", textColor);
+            terminal.width - reason.length - 2, y, "($reason)", UIHue.disabled);
+        terminal.writeAt(3, y, skill.useName, UIHue.disabled);
+      } else {
+        terminal.writeAt(0, y, " )   ", UIHue.disabled);
+        terminal.writeAt(
+            0, y, "abcdefghijklmnopqrstuvwxyz"[y], UIHue.selection);
+        terminal.writeAt(3, y, skill.useName, UIHue.primary);
       }
-
-      terminal.writeAt(0, y, "( )   ", borderColor);
-      terminal.writeAt(1, y, "abcdefghijklmnopqrstuvwxyz"[y], letterColor);
-      terminal.writeAt(4, y, skill.useName, textColor);
     }
   }
 }

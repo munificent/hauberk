@@ -29,9 +29,9 @@ void renderItems(
   int? Function(Item item) getPrice = _defaultGetPrice,
 }) {
   Draw.frame(terminal, left, top, width, itemSlotCount + 2,
-      canSelectAny ? UIHue.selection : UIHue.disabled);
-  terminal.writeAt(left + 2, top, " ${items.name} ",
-      canSelectAny ? UIHue.selection : UIHue.text);
+      color: canSelectAny ? UIHue.selection : UIHue.disabled,
+      label: items.name,
+      labelSelected: canSelectAny);
 
   var letters =
       capitalize ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz";
