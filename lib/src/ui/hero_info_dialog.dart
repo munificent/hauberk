@@ -3,6 +3,7 @@ import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
+import 'draw.dart';
 import 'hero_equipment_dialog.dart';
 import 'hero_item_lore_dialog.dart';
 import 'hero_monster_lore_dialog.dart';
@@ -34,7 +35,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
 
   String get name;
 
-  String? get extraHelp => null;
+  Map<String, String> get extraHelp => {};
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -69,15 +70,12 @@ abstract class HeroInfoDialog extends Screen<Input> {
 
   @override
   void render(Terminal terminal) {
-    terminal.clear();
-
     var nextScreen = _screens[(_screens.indexOf(this) + 1) % _screens.length];
-    var helpText = '[Esc] Exit, [Tab] View ${nextScreen.name}';
-    if (extraHelp != null) {
-      helpText += ", $extraHelp";
-    }
-
-    terminal.writeAt(0, terminal.height - 1, helpText, coolGray);
+    Draw.helpKeys(terminal, {
+      ...extraHelp,
+      'Tab': 'View ${nextScreen.name}',
+      '`': 'Exit',
+    });
   }
 
   void drawEquipmentTable(

@@ -22,7 +22,8 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
   String get name => "Monster Lore";
 
   @override
-  String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
+  Map<String, String> get extraHelp =>
+      {"↕": "Scroll", "S": _sort.next.helpText};
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -61,7 +62,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
 
   @override
   void render(Terminal terminal) {
-    super.render(terminal);
+    terminal.clear();
 
     void writeLine(int y, Color color) {
       terminal.writeAt(
@@ -113,6 +114,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     writeLine(2, darkCoolGray);
 
     _showMonster(terminal, _breeds[_selection]);
+    super.render(terminal);
   }
 
   void _showMonster(Terminal terminal, Breed breed) {

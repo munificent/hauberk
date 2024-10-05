@@ -13,7 +13,7 @@ I want players to decide to take their hero's skill progression in a totally
 different direction if they stumble upon a particularly interesting piece of
 gear.
 
-It would be very cool if the set of equiped items felt a bit like a
+It would be very cool if the set of equipped items felt a bit like a
 machine-building board game where they harmonize in complex ways.
 
 Some ideas for equipment effects:

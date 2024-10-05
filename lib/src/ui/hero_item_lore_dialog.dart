@@ -23,7 +23,8 @@ class HeroItemLoreDialog extends HeroInfoDialog {
   String get name => "Item Lore";
 
   @override
-  String get extraHelp => "[↕] Scroll, [S] ${_sort.next.helpText}";
+  Map<String, String> get extraHelp =>
+      {"↕": "Scroll", "S": _sort.next.helpText};
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -62,7 +63,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
   @override
   void render(Terminal terminal) {
-    super.render(terminal);
+    terminal.clear();
 
     void writeLine(int y, Color color) {
       terminal.writeAt(
@@ -115,6 +116,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
     writeLine(2, darkCoolGray);
 
     _showItem(terminal, _items[_selection]);
+    super.render(terminal);
   }
 
   void _showItem(Terminal terminal, ItemType item) {
