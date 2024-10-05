@@ -41,6 +41,8 @@ class ItemPanel extends Panel {
 
   void _drawItems(
       Terminal terminal, int y, int itemSlotCount, ItemCollection items) {
+    // TODO: There can be more items on the ground than fit in the UI.
+    // Figure out how to handle that.
     renderItems(terminal, items,
         left: 0,
         top: y,

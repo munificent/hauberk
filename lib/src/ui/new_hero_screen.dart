@@ -114,19 +114,23 @@ class NewHeroScreen extends Screen<Input> {
     _renderClass(terminal);
     _renderMenu(terminal);
 
-    var help = <String>["[Tab] Next field"];
+    var helpKeys = {
+      "Tab": "Next field",
+    };
+
     switch (_field) {
       case _Field.name:
-        help.add("[A-Z Del] Edit name");
+        helpKeys["A-Z Del"] = "Edit name";
       case _Field.race:
-        help.add("[↕] Select race");
+        helpKeys["↕"] = "Select race";
       case _Field.heroClass:
-        help.add("[↕] Select class");
+        helpKeys["↕"] = "Select class";
     }
 
-    help.add("[Enter] Create hero");
-    help.add("[Esc] Cancel");
-    terminal.writeAt(0, terminal.height - 1, help.join(", "), UIHue.helpText);
+    helpKeys["Enter"] = "Create hero";
+    helpKeys["Esc"] = "Cancel";
+
+    Draw.helpKeys(terminal, helpKeys);
   }
 
   void _renderName(Terminal terminal) {

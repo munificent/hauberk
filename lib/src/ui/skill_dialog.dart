@@ -41,7 +41,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     }
   }
 
-  String? get _extraHelp => null;
+  Map<String, String> get _extraHelp => const {};
 
   // TODO: Eventually should clone skill set so we can cancel changes on dialog.
   SkillSet get _skillSet => _hero.skills;
@@ -95,12 +95,11 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     _renderSkillList(terminal);
     _renderSkill(terminal);
 
-    var helpText = '[Esc] Exit, [Tab] View ${_nextScreen._name}';
-    if (_extraHelp != null) {
-      helpText += ", $_extraHelp";
-    }
-
-    terminal.writeAt(0, terminal.height - 1, helpText, UIHue.helpText);
+    Draw.helpKeys(terminal, {
+      ..._extraHelp,
+      "Tab": "View ${_nextScreen._name}",
+      "`": "Exit",
+    });
   }
 
   void _renderSkillList(Terminal terminal) {

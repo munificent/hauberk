@@ -94,7 +94,7 @@ class WizardDialog extends Screen<Input> {
       i++;
     }
 
-    terminal.writeAt(0, terminal.height - 1, "[Esc] Exit", UIHue.helpText);
+    Draw.helpKeys(terminal, {"`": "Exit"});
   }
 
   void _mapDungeon() {
@@ -248,8 +248,8 @@ abstract class _SearchDialog<T> extends Screen<Input> {
       if (n >= 36) break;
     }
 
-    terminal.writeAt(0, terminal.height - 1,
-        "[0-9] Select, [Return] Select All, [Esc] Exit", UIHue.helpText);
+    Draw.helpKeys(
+        terminal, {"0-9": "Select", "Enter": "Select all", "`": "Exit"});
   }
 
   List<T> get _matchedItems => _allItems
