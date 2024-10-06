@@ -74,14 +74,11 @@ abstract class StatBase extends Property<int> {
 
   void bindHero(HeroSave hero) {
     _hero = hero;
-    _value = _hero.race.valueAtLevel(_stat, _hero.level).clamp(1, Stat.max);
+    _value = _calculateValue();
   }
 
   void refresh(Game game) {
-    var newValue = (_hero.race.valueAtLevel(_stat, _hero.level) +
-            _statOffset +
-            _hero.statBonus(_stat))
-        .clamp(1, Stat.max);
+    var newValue = _calculateValue();
 
     update(newValue, (previous) {
       var gain = newValue - previous;
@@ -94,6 +91,11 @@ abstract class StatBase extends Property<int> {
       }
     });
   }
+
+  int _calculateValue() => (_hero.race.valueAtLevel(_stat, _hero.level) +
+          _statOffset +
+          _hero.statBonus(_stat))
+      .clamp(1, Stat.max);
 }
 
 class Strength extends StatBase {
