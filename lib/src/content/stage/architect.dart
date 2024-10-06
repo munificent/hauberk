@@ -88,6 +88,10 @@ class Architect {
     yield* _addShortcuts(unownedPassages);
     yield* _claimPassages(unownedPassages);
 
+    // The main menu looks for this to know when it should light the dungeon it
+    // shows in the background.
+    yield "Ready to decorate";
+
     var decorator = Decorator(this);
     yield* decorator.decorate();
 

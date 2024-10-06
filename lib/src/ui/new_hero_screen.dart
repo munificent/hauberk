@@ -113,7 +113,6 @@ class NewHeroScreen extends Screen<Input> {
         _death = SelectControl(0, 28, "Death", _deaths) {
     _controls.addAll([_name, _race, _class, _death]);
 
-    _name._defaultName = rng.item(_defaultNames);
     _race.selected = rng.range(_content.races.length);
     _class.selected = rng.range(_content.classes.length);
   }
@@ -186,16 +185,6 @@ class NewHeroScreen extends Screen<Input> {
     }
 
     switch (input) {
-      case Input.ok when _name._isUnique:
-        var hero = _content.createHero(_name._name,
-            race: _content.races[_race.selected],
-            heroClass: _content.classes[_class.selected],
-            permadeath: _death.selected == 1);
-        _storage.heroes.add(hero);
-        _storage.save();
-        ui.goTo(GameScreen.town(_storage, _content, hero, newHero: true));
-        return true;
-
       case Input.cancel:
         ui.pop();
         return true;
@@ -214,6 +203,18 @@ class NewHeroScreen extends Screen<Input> {
     if (alt) return false;
 
     switch (keyCode) {
+      // We look for "enter" explicitly and not Input.OK, because typing "l"
+      // should enter that letter, not create a hero.
+      case KeyCode.enter when _name._isUnique:
+        var hero = _content.createHero(_name._name,
+            race: _content.races[_race.selected],
+            heroClass: _content.classes[_class.selected],
+            permadeath: _death.selected == 1);
+        _storage.heroes.add(hero);
+        _storage.save();
+        ui.goTo(GameScreen.town(_storage, _content, hero, newHero: true));
+        return true;
+
       case KeyCode.tab:
         var offset = shift ? _controls.length - 1 : 1;
         _focus = (_focus + offset) % _controls.length;
@@ -245,7 +246,7 @@ class NameControl extends Control {
 
   String _enteredName = "";
 
-  String _defaultName = "";
+  String _defaultName = rng.item(_defaultNames);
 
   String get _name => _enteredName.isNotEmpty ? _enteredName : _defaultName;
 

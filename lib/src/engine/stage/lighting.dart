@@ -47,9 +47,7 @@ class Lighting {
       7 => 200, // A 9x9 circle.
       8 => 240, // A 11x11 circle.
       // Anything else is clamped.
-      _
-          when level <= 0 =>
-        0,
+      _ when level <= 0 => 0,
       _ => max
     };
   }
