@@ -10,7 +10,8 @@ void main() {
 
 class Simulator {
   static final content = createContent();
-  final save = content.createHero("Fred", content.races[4], content.classes[1]);
+  final save = content.createHero("Fred",
+      race: content.races[4], heroClass: content.classes[1]);
 
   late Game game;
   late int depth;

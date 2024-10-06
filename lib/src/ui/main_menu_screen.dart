@@ -4,6 +4,7 @@ import 'package:malison/malison_web.dart';
 import '../engine.dart';
 import '../hues.dart';
 import 'confirm_popup.dart';
+import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
 import 'new_hero_screen.dart';
@@ -107,12 +108,15 @@ class MainMenuScreen extends Screen<Input> {
 
   @override
   void activate(Screen popped, Object? result) {
-    if (popped is ConfirmPopup && result == 'delete') {
+    if (popped is ConfirmPopup && result == "delete") {
       storage.heroes.removeAt(selectedHero);
+      storage.save();
+
+      // If they deleted the last hero, keep the selection in bounds.
       if (selectedHero > 0 && selectedHero >= storage.heroes.length) {
         selectedHero--;
       }
-      storage.save();
+
       dirty();
     }
   }
@@ -122,12 +126,6 @@ class MainMenuScreen extends Screen<Input> {
     // Center everything horizontally.
     terminal =
         terminal.rect((terminal.width - 78) ~/ 2, 0, 80, terminal.height);
-
-    terminal.writeAt(
-        0,
-        terminal.height - 1,
-        '[L] Select a hero, [↕] Change selection, [N] Create a new hero, [D] Delete hero',
-        UIHue.helpText);
 
     // Center the content vertically.
     terminal =
@@ -163,7 +161,17 @@ class MainMenuScreen extends Screen<Input> {
       terminal.writeAt(30, 20 + i, "Level ${hero.level}", secondary);
       terminal.writeAt(40, 20 + i, hero.race.name, secondary);
       terminal.writeAt(50, 20 + i, hero.heroClass.name, secondary);
+      if (hero.permadeath) {
+        terminal.writeAt(65, 20 + i, "Permadeath", secondary);
+      }
     }
+
+    Draw.helpKeys(terminal, {
+      "OK": "Play",
+      "↕": "Change selection",
+      "N": "Create a new hero",
+      "D": "Delete hero",
+    });
   }
 
   void _changeSelection(int offset) {

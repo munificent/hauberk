@@ -122,13 +122,6 @@ class Hero extends Actor {
     // Set the meters now that we know the stats.
     health = maxHealth;
     _focus = intellect.maxFocus;
-
-    // Acquire any skills from the starting items.
-    // TODO: Doing this here is hacky. It only really comes into play for
-    // starting items.
-    for (var item in inventory) {
-      _gainItemSkills(item);
-    }
   }
 
   // TODO: Hackish.
@@ -175,9 +168,9 @@ class Hero extends Actor {
         // See if the hero can immediately use it.
         var level = skill.calculateLevel(save);
         if (skills.gain(skill, level)) {
-          game.log.gain(skill.gainMessage(level), this);
+          log(skill.gainMessage(level), this);
         } else {
-          game.log.gain(skill.discoverMessage, this);
+          log(skill.discoverMessage, this);
         }
       }
     }

@@ -81,194 +81,124 @@ const _defaultNames = [
   "Aleida"
 ];
 
-class _Field {
-  static const name = 0;
-  static const race = 1;
-  static const heroClass = 2;
-  static const count = 3;
-}
-
 // TODO: Update to handle resizable UI.
 class NewHeroScreen extends Screen<Input> {
-  static const _maxNameLength = 20;
+  static const _deaths = ["Stairs", "Permanent"];
 
-  final Content content;
-  final Storage storage;
+  static const _deathDescriptions = [
+    "When you die, you lose everything since the last time you went up or "
+        "down a set of stairs (or left a shop).",
+    "When you die, that's it. Your hero is gone forever. This is the most "
+        "challenging way to play, but often the most rewarding as well."
+  ];
 
-  int _field = _Field.name;
-  String _name = "";
-  String _defaultName = rng.item(_defaultNames);
-  int _race;
-  int _class;
+  final Content _content;
+  final Storage _storage;
 
-  NewHeroScreen(this.content, this.storage)
-      : _race = rng.range(content.races.length),
-        _class = rng.range(content.classes.length);
+  /// Index of the control that has focus.
+  int _focus = 0;
+
+  final NameControl _name;
+  final SelectControl _race;
+  final SelectControl _class;
+  final SelectControl _death;
+  final List<Control> _controls = [];
+
+  NewHeroScreen(this._content, this._storage)
+      : _name = NameControl(0, 0, _storage),
+        _race = SelectControl(
+            0, 4, "Race", _content.races.map((race) => race.name).toList()),
+        _class = SelectControl(
+            0, 14, "Class", _content.classes.map((cls) => cls.name).toList()),
+        _death = SelectControl(0, 28, "Death", _deaths) {
+    _controls.addAll([_name, _race, _class, _death]);
+
+    _name._defaultName = rng.item(_defaultNames);
+    _race.selected = rng.range(_content.races.length);
+    _class.selected = rng.range(_content.classes.length);
+  }
 
   @override
   void render(Terminal terminal) {
-    terminal.clear();
+    Draw.dialog(terminal, 80, 40,
+        label: "Out of the forgotten wilderness, a hero appears...",
+        (terminal) {
+      Draw.hLine(terminal, 0, 3, terminal.width);
+      Draw.hLine(terminal, 0, 13, terminal.width);
+      Draw.hLine(terminal, 0, 27, terminal.width);
 
-    _renderName(terminal);
-    _renderRace(terminal);
-    _renderClass(terminal);
-    _renderMenu(terminal);
+      _renderRace(terminal.rect(0, 4, terminal.width, 8));
+      _renderClass(terminal.rect(0, 14, terminal.width, 15));
+      _renderDeath(terminal.rect(0, 28, terminal.width, 7));
 
-    var helpKeys = {
+      for (var i = 0; i < _controls.length; i++) {
+        _controls[i].render(terminal, focus: i == _focus);
+      }
+    }, helpKeys: {
       "Tab": "Next field",
-    };
-
-    switch (_field) {
-      case _Field.name:
-        helpKeys["A-Z Del"] = "Edit name";
-      case _Field.race:
-        helpKeys["↕"] = "Select race";
-      case _Field.heroClass:
-        helpKeys["↕"] = "Select class";
-    }
-
-    helpKeys["Enter"] = "Create hero";
-    helpKeys["Esc"] = "Cancel";
-
-    Draw.helpKeys(terminal, helpKeys);
-  }
-
-  void _renderName(Terminal terminal) {
-    terminal = terminal.rect(0, 0, 40, 10);
-
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        color: _field == _Field.name ? UIHue.selection : UIHue.disabled,
-        label: "Name",
-        labelSelected: _field == _Field.name);
-
-    terminal.writeAt(1, 2, "Out of the mists of history, a hero", UIHue.text);
-    terminal.writeAt(1, 3, "appears named...", UIHue.text);
-
-    Draw.box(terminal, 2, 5, 23, 3,
-        _field == _Field.name ? UIHue.selection : UIHue.disabled);
-
-    if (_name.isNotEmpty) {
-      terminal.writeAt(3, 6, _name, UIHue.primary);
-      if (_field == _Field.name) {
-        terminal.writeAt(
-            3 + _name.length, 6, " ", Color.black, UIHue.selection);
-      }
-    } else {
-      if (_field == _Field.name) {
-        terminal.writeAt(3, 6, _defaultName, Color.black, UIHue.selection);
-      } else {
-        terminal.writeAt(3, 6, _defaultName, UIHue.primary);
-      }
-    }
+      ..._controls[_focus].helpKeys,
+      if (_name._isUnique) "Enter": "Create hero",
+      "`": "Cancel"
+    });
   }
 
   void _renderRace(Terminal terminal) {
-    terminal = terminal.rect(0, 10, 40, 29);
+    var race = _content.races[_race.selected];
+    _renderText(terminal, race.description);
 
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        color: _field == _Field.race ? UIHue.selection : UIHue.disabled,
-        label: "Race",
-        labelSelected: _field == _Field.race);
-
-    var race = content.races[_race];
-    terminal.writeAt(1, 2, race.name, UIHue.primary);
-
-    var y = 4;
-    for (var line in Log.wordWrap(38, race.description)) {
-      terminal.writeAt(1, y, line, UIHue.text);
-      y++;
-    }
-
-    y = 18;
+    // Show how race affects stats.
+    var y = 3;
     for (var stat in Stat.all) {
-      terminal.writeAt(2, y, stat.name, UIHue.secondary);
-      var width = 25 * race.stats[stat]! ~/ 45;
-      terminal.writeAt(12, y, " " * width, ash, red);
-      terminal.writeAt(12 + width, y, " " * (25 - width), ash, maroon);
-      y += 2;
+      terminal.writeAt(0, y, stat.abbreviation, UIHue.secondary);
+      Draw.thinMeter(terminal, 4, y, 14, race.stats[stat]!, 45);
+      y++;
     }
   }
 
   void _renderClass(Terminal terminal) {
-    terminal = terminal.rect(40, 10, 40, 29);
+    var heroClass = _content.classes[_class.selected];
+    _renderText(terminal, heroClass.description);
 
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        color: _field == _Field.heroClass ? UIHue.selection : UIHue.disabled,
-        label: "Class",
-        labelSelected: _field == _Field.heroClass);
-
-    var heroClass = content.classes[_class];
-    terminal.writeAt(1, 2, heroClass.name, UIHue.primary);
-
-    var y = 4;
-    for (var line in Log.wordWrap(38, heroClass.description)) {
-      terminal.writeAt(1, y, line, UIHue.text);
-      y++;
-    }
+    // TODO: Should show class proficiencies in some way. That's hard right now
+    // because they are stored individually for each skill which is way too
+    // fine-grained to fit on this little UI.
+    //
+    // Maybe have some kind of category system for skills?
   }
 
-  void _renderMenu(Terminal terminal) {
-    terminal = terminal.rect(40, 0, 40, 10);
+  void _renderDeath(Terminal terminal) {
+    _renderText(terminal, _deathDescriptions[_death.selected]);
+  }
 
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
-
-    if (_field == _Field.name) return;
-
-    String label;
-    var items = <String>[];
-    int selected;
-    if (_field == _Field.race) {
-      label = "race";
-      items.addAll(content.races.map((race) => race.name));
-      selected = _race;
-    } else {
-      label = "class";
-      items.addAll(content.classes.map((c) => c.name));
-      selected = _class;
-    }
-
-    terminal.writeAt(2, 0, " Choose a $label ", UIHue.selection);
-
-    var y = 2;
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      var isSelected = i == selected;
-      terminal.writeAt(
-          2, y, item, isSelected ? UIHue.selection : UIHue.primary);
-      if (isSelected) {
-        terminal.writeAt(1, y, "►", UIHue.selection);
-      }
+  void _renderText(Terminal terminal, String description) {
+    var y = 3;
+    for (var line in Log.wordWrap(59, description)) {
+      terminal.writeAt(19, y, line, UIHue.text);
       y++;
     }
   }
 
   @override
   bool handleInput(Input input) {
-    if (input == Input.cancel) {
-      ui.pop();
+    if (_controls[_focus].handleInput(input)) {
+      dirty();
       return true;
     }
 
-    if (_field == _Field.race) {
-      switch (input) {
-        case Input.n:
-          _changeRace(-1);
-          return true;
+    switch (input) {
+      case Input.ok when _name._isUnique:
+        var hero = _content.createHero(_name._name,
+            race: _content.races[_race.selected],
+            heroClass: _content.classes[_class.selected],
+            permadeath: _death.selected == 1);
+        _storage.heroes.add(hero);
+        _storage.save();
+        ui.goTo(GameScreen.town(_storage, _content, hero, newHero: true));
+        return true;
 
-        case Input.s:
-          _changeRace(1);
-          return true;
-      }
-    } else if (_field == _Field.heroClass) {
-      switch (input) {
-        case Input.n:
-          _changeClass(-1);
-          return true;
-
-        case Input.s:
-          _changeClass(1);
-          return true;
-      }
+      case Input.cancel:
+        ui.pop();
+        return true;
     }
 
     return false;
@@ -276,98 +206,198 @@ class NewHeroScreen extends Screen<Input> {
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
-    // TODO: Figuring out the char code manually here is lame. Pass it in from
-    // the KeyEvent?
+    if (_controls[_focus].keyDown(keyCode, shift: shift, alt: alt)) {
+      dirty();
+      return true;
+    }
+
+    if (alt) return false;
 
     switch (keyCode) {
-      case KeyCode.enter:
-        var hero = content.createHero(_name.isNotEmpty ? _name : _defaultName,
-            content.races[_race], content.classes[_class]);
-        storage.heroes.add(hero);
-        storage.save();
-        ui.goTo(GameScreen.town(storage, content, hero));
-        return true;
-
       case KeyCode.tab:
-        if (shift) {
-          _changeField(-1);
-        } else {
-          _changeField(1);
-        }
+        var offset = shift ? _controls.length - 1 : 1;
+        _focus = (_focus + offset) % _controls.length;
+        dirty();
         return true;
+    }
 
+    return false;
+  }
+}
+
+abstract class Control {
+  Map<String, String> get helpKeys;
+
+  bool handleInput(Input input) => false;
+
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) => false;
+
+  void render(Terminal terminal, {required bool focus});
+}
+
+class NameControl extends Control {
+  static const _maxNameLength = 20;
+
+  final int _x;
+  final int _y;
+
+  final Storage _storage;
+
+  String _enteredName = "";
+
+  String _defaultName = "";
+
+  String get _name => _enteredName.isNotEmpty ? _enteredName : _defaultName;
+
+  bool _isUnique = false;
+
+  NameControl(this._x, this._y, this._storage) {
+    _refreshUnique();
+  }
+
+  @override
+  Map<String, String> get helpKeys => const {"A-Z Del": "Edit name"};
+
+  @override
+  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
+    if (alt) return false;
+
+    switch (keyCode) {
       case KeyCode.delete:
-        if (_field == _Field.name) {
-          if (_name.isNotEmpty) {
-            _name = _name.substring(0, _name.length - 1);
+        if (_enteredName.isNotEmpty) {
+          _enteredName = _enteredName.substring(0, _enteredName.length - 1);
 
-            // Pick a new default name.
-            if (_name.isEmpty) {
-              _defaultName = rng.item(_defaultNames);
-            }
-
-            dirty();
+          // Pick a new default name.
+          if (_enteredName.isEmpty) {
+            _defaultName = rng.item(_defaultNames);
           }
         }
+
+        _refreshUnique();
         return true;
 
       case KeyCode.space:
-        if (_field == _Field.name) {
-          // TODO: Handle modifiers.
-          _appendToName(" ");
-        }
+        // TODO: Handle modifiers.
+        _append(" ");
         return true;
 
       default:
-        if (_field == _Field.name && !alt) {
-          var key = keyCode;
+        var key = keyCode;
 
-          if (key >= KeyCode.a && key <= KeyCode.z) {
-            var charCode = key;
-            // TODO: Handle other modifiers.
-            if (!shift) {
-              charCode = 'a'.codeUnits[0] - 'A'.codeUnits[0] + charCode;
-            }
-
-            _appendToName(String.fromCharCodes([charCode]));
-            return true;
-          } else if (key >= KeyCode.zero && key <= KeyCode.nine) {
-            _appendToName(String.fromCharCodes([key]));
-            return true;
+        if (key >= KeyCode.a && key <= KeyCode.z) {
+          // TODO: Figuring out the char code manually here is lame. Pass it
+          // in from the KeyEvent?
+          var charCode = key;
+          // TODO: Handle other modifiers.
+          if (!shift) {
+            charCode = 'a'.codeUnits[0] - 'A'.codeUnits[0] + charCode;
           }
+
+          _append(String.fromCharCode(charCode));
+          return true;
+        } else if (key >= KeyCode.zero && key <= KeyCode.nine) {
+          _append(String.fromCharCode(key));
+          return true;
         }
     }
 
     return false;
   }
 
-  void _changeField(int offset) {
-    _field = (_field + offset + _Field.count) % _Field.count;
-    dirty();
-  }
-
-  void _appendToName(String text) {
-    _name += text;
-    if (_name.length > _maxNameLength) {
-      _name = _name.substring(0, _maxNameLength);
+  void _append(String append) {
+    if (_enteredName.length < _maxNameLength) {
+      _enteredName += append;
     }
 
-    dirty();
+    _refreshUnique();
   }
 
-  void _changeRace(int offset) {
-    var race = (_race + offset).clamp(0, content.races.length - 1);
-    if (race != _race) {
-      _race = race;
-      dirty();
+  /// See if there is already a hero with this name.
+  ///
+  /// We don't allow heroes to share the same name because when permadeath is
+  /// on, we use the name to figure out which hero to delete from storage.
+  void _refreshUnique() {
+    _isUnique = _storage.heroes.every((hero) => hero.name != _name);
+  }
+
+  @override
+  void render(Terminal terminal, {required bool focus}) {
+    var color = _isUnique ? UIHue.selection : red;
+
+    terminal.writeAt(_x, _y + 1, "Name:", focus ? UIHue.selection : UIHue.text);
+    if (focus) {
+      Draw.box(terminal, _x + 18, _y, 23, 3, color);
+    }
+
+    if (_enteredName.isNotEmpty) {
+      terminal.writeAt(_x + 19, _y + 1, _enteredName, UIHue.primary);
+      if (focus) {
+        terminal.writeAt(
+            _x + 19 + _enteredName.length, _y + 1, " ", Color.black, color);
+      }
+    } else {
+      if (focus) {
+        terminal.writeAt(_x + 19, _y + 1, _defaultName, Color.black, color);
+      } else {
+        terminal.writeAt(_x + 19, _y + 1, _defaultName, UIHue.primary);
+      }
+    }
+
+    if (!_isUnique) {
+      terminal.writeAt(42, 1, "Already a hero with that name", red);
     }
   }
+}
 
-  void _changeClass(int offset) {
-    var heroClass = (_class + offset).clamp(0, content.classes.length - 1);
-    if (heroClass != _class) {
-      _class = heroClass;
-      dirty();
+class SelectControl extends Control {
+  final int _x;
+  final int _y;
+  final String _name;
+  final List<String> _options;
+
+  int selected = 0;
+
+  SelectControl(this._x, this._y, this._name, this._options);
+
+  @override
+  Map<String, String> get helpKeys => {"◄►": "Select ${_name.toLowerCase()}"};
+
+  @override
+  bool handleInput(Input input) {
+    switch (input) {
+      case Input.w:
+        selected = (selected + _options.length - 1) % _options.length;
+        return true;
+      case Input.e:
+        selected = (selected + 1) % _options.length;
+        return true;
+    }
+
+    return false;
+  }
+
+  @override
+  void render(Terminal terminal, {required bool focus}) {
+    terminal.writeAt(
+        _x, _y + 1, "$_name:", focus ? UIHue.selection : UIHue.text);
+
+    if (focus) {
+      var x = _x + 19;
+      for (var i = 0; i < _options.length; i++) {
+        var option = _options[i];
+
+        if (i == selected) {
+          Draw.box(terminal, x - 1, _y, option.length + 2, 3, UIHue.selection);
+          terminal.writeAt(x - 1, _y + 1, "◄", UIHue.selection);
+          terminal.writeAt(x + option.length, _y + 1, "►", UIHue.selection);
+        }
+
+        terminal.writeAt(
+            x, _y + 1, option, i == selected ? UIHue.selection : UIHue.primary);
+        x += option.length + 2;
+      }
+    } else {
+      terminal.writeAt(_x + 19, _y + 1, _options[selected], UIHue.primary);
     }
   }
 }

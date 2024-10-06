@@ -32,6 +32,9 @@ abstract class Popup extends Screen<Input> {
 
   @override
   void render(Terminal terminal) {
+    // TODO: This ends up drawing help keys on top of the help keys of the
+    // screen behind this. Would be good to only show the help keys of the
+    // top-most screen that has input focus.
     Draw.helpKeys(terminal, helpKeys);
 
     var messageLines = message;

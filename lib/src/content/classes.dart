@@ -43,8 +43,8 @@ class Classes {
           "some less natural forces).");
 
   // TODO: Add these once their skill types are working.
-//  static final rogue = new HeroClass("Rogue", "TODO");
-//  static final priest = new HeroClass("Priest", "TODO");
+  //  static final rogue = new HeroClass("Rogue", "TODO");
+  //  static final priest = new HeroClass("Priest", "TODO");
 
   // TODO: Specialist subclasses.
 

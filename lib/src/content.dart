@@ -79,27 +79,15 @@ class GameContent implements Content {
   List<Recipe> get recipes => Recipes.all;
 
   @override
-  HeroSave createHero(String name, [Race? race, HeroClass? heroClass]) {
+  HeroSave createHero(String name,
+      {Race? race, HeroClass? heroClass, bool permadeath = false}) {
     race ??= Races.human;
     heroClass ??= Classes.adventurer;
 
-    var hero = HeroSave(name, race, heroClass);
-
-    var initialItems = {
-      "Mending Salve": 3,
-      "Scroll of Sidestepping": 2,
-      "Tallow Candle": 4,
-      "Loaf of Bread": 5
-    };
-
-    initialItems.forEach((type, amount) {
-      hero.inventory.tryAdd(Item(Items.types.find(type), amount));
-    });
-
-    heroClass.startingItems.dropItem(hero.lore, 1, hero.inventory.tryAdd);
+    var hero = HeroSave(name, race, heroClass, permadeath: permadeath);
 
     // TODO: Instead of giving the player access to all shops at once, consider
-    // letting the rescue shopkeepers from the dungeon to unlock better and
+    // letting them rescue shopkeepers from the dungeon to unlock better and
     // better shops over time.
     // Populate the shops.
     for (var shop in shops.values) {
@@ -107,6 +95,24 @@ class GameContent implements Content {
     }
 
     return hero;
+  }
+
+  @override
+  List<Item> startingItems(HeroSave hero) {
+    var initialItems = {
+      "Mending Salve": 3,
+      "Scroll of Sidestepping": 2,
+      "Tallow Candle": 4,
+      "Loaf of Bread": 5
+    };
+
+    var items = [
+      for (var (type, amount) in initialItems.pairs)
+        Item(Items.types.find(type), amount)
+    ];
+
+    hero.heroClass.startingItems.dropItem(hero.lore, 1, items.add);
+    return items;
   }
 
   // TODO: Putting this right here in content is kind of lame. Is there a

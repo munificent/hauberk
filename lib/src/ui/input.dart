@@ -2,6 +2,7 @@
 ///
 /// Physical keys on the keyboard are mapped to these, which the user interface
 /// then interprets.
+// TODO: This could be an enum type.
 class Input {
   /// Rests in the level, selects a menu item.
   static const ok = Input("ok");
@@ -70,4 +71,7 @@ class Input {
   final String name;
 
   const Input(this.name);
+
+  @override
+  String toString() => "Input($name)";
 }

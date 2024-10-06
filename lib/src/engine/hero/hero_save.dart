@@ -24,6 +24,9 @@ class HeroSave {
   final RaceStats race;
   final HeroClass heroClass;
 
+  /// If `true`, then the hero is deleted from storage when they die.
+  final bool permadeath;
+
   int get level => experienceLevel(experience);
 
   var _inventory = Inventory(ItemLocation.inventory, Option.inventoryCapacity);
@@ -100,7 +103,7 @@ class HeroSave {
     return total;
   }
 
-  HeroSave(this.name, Race race, this.heroClass)
+  HeroSave(this.name, Race race, this.heroClass, {this.permadeath = false})
       : race = race.rollStats(),
         shops = {},
         skills = SkillSet(),
@@ -114,6 +117,7 @@ class HeroSave {
       this.name,
       this.race,
       this.heroClass,
+      this.permadeath,
       this._inventory,
       this._equipment,
       this._home,
@@ -145,6 +149,7 @@ class HeroSave {
       name,
       race,
       heroClass,
+      permadeath,
       inventory.clone(),
       equipment.clone(),
       // TODO: Assumes home doesn't change in game.

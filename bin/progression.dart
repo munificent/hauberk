@@ -5,7 +5,8 @@ import 'package:hauberk/src/engine.dart';
 /// generated dungeon going down.
 void main() {
   var content = createContent();
-  var save = content.createHero("Fred", content.races[4], content.classes[1]);
+  var save = content.createHero("Fred",
+      race: content.races[4], heroClass: content.classes[1]);
   for (var level = 1; level <= Option.maxDepth; level++) {
     var game = Game(content, level, save);
     for (var _ in game.generate()) {}

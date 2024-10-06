@@ -54,6 +54,8 @@ class Stat {
 
   final String name;
 
+  String get abbreviation => name.substring(0, 3);
+
   const Stat(this.name);
 }
 

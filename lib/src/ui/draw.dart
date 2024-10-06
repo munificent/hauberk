@@ -1,7 +1,26 @@
 import 'package:malison/malison.dart';
 import '../hues.dart';
 
+// TODO: Turn these into extension on Terminal?
 class Draw {
+  // TODO: Unify this with Popup.
+  static void dialog(Terminal terminal, int width, int height,
+      void Function(Terminal) drawContents,
+      {required String label, Map<String, String>? helpKeys}) {
+    terminal.fill(0, 0, terminal.width, terminal.height, darkerCoolGray);
+
+    var dialogTerminal = terminal.rect((terminal.width - width) ~/ 2,
+        (terminal.height - 2 - height) ~/ 2, width, height);
+    Draw.frame(
+        dialogTerminal, 0, 0, dialogTerminal.width, dialogTerminal.height,
+        label: label);
+
+    drawContents(dialogTerminal.rect(
+        1, 1, dialogTerminal.width - 2, dialogTerminal.height - 2));
+
+    if (helpKeys != null) Draw.helpKeys(terminal, helpKeys);
+  }
+
   static void box(Terminal terminal, int x, int y, int width, int height,
       [Color? color]) {
     _box(terminal, x, y, width, height, color, "┌", "─", "┐", "│", "└", "─",
@@ -17,6 +36,13 @@ class Draw {
       terminal.writeAt(
           x + 2, y, " $label ", labelSelected ? UIHue.selection : UIHue.text);
     }
+  }
+
+  /// Draws a thin horizontal line starting at ([x], [y]) and going [width]
+  /// characters to the right.
+  static void hLine(Terminal terminal, int x, int y, int width,
+      {Color? color}) {
+    terminal.writeAt(x, y, "─" * width, color ?? darkCoolGray);
   }
 
   /// Draws a frame with a little box on top for a glyph with the name next to

@@ -41,6 +41,8 @@ class Storage {
           heroClass = content.classes.firstWhere((c) => c.name == name);
         }
 
+        var permadeath = heroData['death'] == 'permanent';
+
         var inventoryItems = _loadItems(heroData['inventory']);
         var inventory = Inventory(
             ItemLocation.inventory, Option.inventoryCapacity, inventoryItems);
@@ -116,6 +118,7 @@ class Storage {
             name,
             race,
             heroClass,
+            permadeath,
             inventory,
             equipment,
             home,
@@ -272,57 +275,44 @@ class Storage {
   }
 
   void save() {
-    var heroData = <dynamic>[];
-    for (var hero in heroes) {
-      var raceStats = <String, dynamic>{};
-      for (var stat in Stat.all) {
-        raceStats[stat.name] = hero.race.max(stat);
-      }
-
-      var race = {
-        'name': hero.race.name,
-        'seed': hero.race.seed,
-        'stats': raceStats
-      };
-
-      var inventory = _saveItems(hero.inventory);
-      var equipment = _saveItems(hero.equipment);
-      var home = _saveItems(hero.home);
-      var crucible = _saveItems(hero.crucible);
-
-      var shops = <String, dynamic>{};
-      hero.shops.forEach((shop, inventory) {
-        shops[shop.name] = _saveItems(inventory);
-      });
-
-      var skills = <String, dynamic>{};
-      for (var skill in hero.skills.discovered) {
-        skills[skill.name] = {
-          'level': hero.skills.level(skill),
-          'points': hero.skills.points(skill)
-        };
-      }
-
-      heroData.add({
-        'name': hero.name,
-        'race': race,
-        'class': hero.heroClass.name,
-        'inventory': inventory,
-        'equipment': equipment,
-        'home': home,
-        'crucible': crucible,
-        'shops': shops,
-        'experience': hero.experience,
-        'skills': skills,
-        'log': _saveLog(hero.log),
-        'lore': _saveLore(hero.lore),
-        'gold': hero.gold,
-        'maxDepth': hero.maxDepth
-      });
-    }
-
     // TODO: Version.
-    var data = {'heroes': heroData};
+    var data = {
+      'heroes': [
+        for (var hero in heroes)
+          {
+            'name': hero.name,
+            'race': {
+              'name': hero.race.name,
+              'seed': hero.race.seed,
+              'stats': {
+                for (var stat in Stat.all) stat.name: hero.race.max(stat)
+              }
+            },
+            'class': hero.heroClass.name,
+            'death': hero.permadeath ? 'permanent' : 'dungeon',
+            'inventory': _saveItems(hero.inventory),
+            'equipment': _saveItems(hero.equipment),
+            'home': _saveItems(hero.home),
+            'crucible': _saveItems(hero.crucible),
+            'shops': {
+              for (var MapEntry(key: shop, value: items) in hero.shops.entries)
+                shop.name: _saveItems(items)
+            },
+            'experience': hero.experience,
+            'skills': {
+              for (var skill in hero.skills.discovered)
+                skill.name: {
+                  'level': hero.skills.level(skill),
+                  'points': hero.skills.points(skill)
+                }
+            },
+            'log': _saveLog(hero.log),
+            'lore': _saveLore(hero.lore),
+            'gold': hero.gold,
+            'maxDepth': hero.maxDepth
+          }
+      ]
+    };
 
     html.window.localStorage['heroes'] = json.encode(data);
     print('Saved.');

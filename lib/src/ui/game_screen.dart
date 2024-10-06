@@ -128,8 +128,25 @@ class GameScreen extends Screen<Input> {
     Debug.bindGameScreen(this);
   }
 
-  factory GameScreen.town(Storage storage, Content content, HeroSave save) {
+  /// Builds a GameScreen and game with the hero in the town.
+  ///
+  /// If [newHero] is `true`, then [save] was just created. After creating the
+  /// game, grants the hero their starting equipment. We do this here instead
+  /// of when creating the [HeroSave] because gaining items can unlock skills,
+  /// which adds to the log. The log can only be accessed once the [Hero] is in
+  /// a [Game].
+  factory GameScreen.town(Storage storage, Content content, HeroSave save,
+      {bool newHero = false}) {
     var game = Game(content, 0, save, width: 60, height: 34);
+
+    // Give the hero their starting gear.
+    if (newHero) {
+      for (var item in content.startingItems(save)) {
+        game.hero.inventory.tryAdd(item);
+        game.hero.pickUp(item);
+      }
+    }
+
     for (var _ in game.generate()) {}
 
     return GameScreen(storage, game, null);
@@ -355,7 +372,13 @@ class GameScreen extends Screen<Input> {
 
     // See if the hero died.
     if (!game.hero.isAlive) {
-      ui.goTo(GameOverScreen(game.log));
+      // If they have permadeath on, delete the hero.
+      if (game.hero.save.permadeath) {
+        _storage.heroes.removeWhere((save) => save.name == game.hero.save.name);
+        _storage.save();
+      }
+
+      ui.goTo(GameOverScreen(game.hero));
       return;
     }
 
