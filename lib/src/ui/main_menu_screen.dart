@@ -123,24 +123,21 @@ class MainMenuScreen extends Screen<Input> {
 
   @override
   void render(Terminal terminal) {
-    // Center everything horizontally.
-    terminal =
-        terminal.rect((terminal.width - 78) ~/ 2, 0, 80, terminal.height);
+    // Center the content.
+    var centerTerminal = terminal.rect(
+        (terminal.width - 78) ~/ 2, (terminal.height - 40) ~/ 2, 80, 40);
 
-    // Center the content vertically.
-    terminal =
-        terminal.rect(0, (terminal.height - 40) ~/ 2, terminal.width, 40);
     for (var y = 0; y < _chars.length; y++) {
       for (var x = 0; x < _chars[y].length; x++) {
         var color = _colors[_charColors[y][x]];
-        terminal.writeAt(x + 1, y + 1, _chars[y][x], color);
+        centerTerminal.writeAt(x + 1, y + 1, _chars[y][x], color);
       }
     }
 
-    terminal.writeAt(10, 18, 'Which hero shall you play?', UIHue.text);
+    centerTerminal.writeAt(10, 18, 'Which hero shall you play?', UIHue.text);
 
     if (storage.heroes.isEmpty) {
-      terminal.writeAt(
+      centerTerminal.writeAt(
           10, 20, '(No heroes. Please create a new one.)', UIHue.helpText);
     }
 
@@ -153,16 +150,16 @@ class MainMenuScreen extends Screen<Input> {
         primary = UIHue.selection;
         secondary = UIHue.selection;
 
-        terminal.drawChar(
+        centerTerminal.drawChar(
             9, 20 + i, CharCode.blackRightPointingPointer, UIHue.selection);
       }
 
-      terminal.writeAt(10, 20 + i, hero.name, primary);
-      terminal.writeAt(30, 20 + i, "Level ${hero.level}", secondary);
-      terminal.writeAt(40, 20 + i, hero.race.name, secondary);
-      terminal.writeAt(50, 20 + i, hero.heroClass.name, secondary);
+      centerTerminal.writeAt(10, 20 + i, hero.name, primary);
+      centerTerminal.writeAt(30, 20 + i, "Level ${hero.level}", secondary);
+      centerTerminal.writeAt(40, 20 + i, hero.race.name, secondary);
+      centerTerminal.writeAt(50, 20 + i, hero.heroClass.name, secondary);
       if (hero.permadeath) {
-        terminal.writeAt(65, 20 + i, "Permadeath", secondary);
+        centerTerminal.writeAt(65, 20 + i, "Permadeath", secondary);
       }
     }
 
