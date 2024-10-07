@@ -238,7 +238,7 @@ class MainMenuScreen extends Screen<Input> {
 
     if (storage.heroes.isEmpty) {
       centerTerminal.writeAt(
-          10, 20, '(No heroes. Please create a new one.)', UIHue.helpText);
+          3, 21, '(No heroes. Please create a new one.)', UIHue.disabled);
     } else {
       if (_scroll > 0) {
         centerTerminal.writeAt(
