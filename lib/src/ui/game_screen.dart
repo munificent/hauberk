@@ -115,7 +115,6 @@ class GameScreen extends Screen<Input> {
     if (hero.poison.isActive) return peaGreen;
     if (hero.cold.isActive) return lightBlue;
     if (hero.health < hero.maxHealth / 2) return pink;
-    if (hero.stomach == 0 && hero.health < hero.maxHealth) return sandal;
     return ash;
   }
 
@@ -342,7 +341,7 @@ class GameScreen extends Screen<Input> {
     } else if (popped is SkillDialog) {
       // TODO: Once skills can be learned on the SkillDialog again, make this
       // work.
-//      game.hero.updateSkills(result);
+      // game.hero.updateSkills(result);
     } else if (popped is SelectSkillDialog && result != null) {
       if (result is TargetSkill) {
         _openTargetDialog(result);

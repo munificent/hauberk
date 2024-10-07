@@ -2,9 +2,9 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 
-enum Missive { clumsy, insult, screech }
+enum Missive { clumsy, insult, screech, hiss }
 
-final _messages = {
+const _messages = {
   Missive.clumsy: [
     "{1} forget[s] what {1 he} was doing.",
     "{1} lurch[es] around.",
@@ -20,15 +20,23 @@ final _messages = {
     "{1} sneer[s] at {2}!",
   ],
   Missive.screech: [
-    "{1} screeches at {2}!",
-    "{1} taunts {2}!",
-    "{1} cackles at {2}!"
-  ]
+    "{1} screech[es] at {2}!",
+    "{1} taunt[s] {2}!",
+    "{1} cackle[s] at {2}!",
+  ],
+  Missive.hiss: [
+    "{1} hiss[es] at {2}!",
+    "{1} spit[s] at {2}!",
+  ],
 };
 
 class MissiveAction extends Action {
   final Actor target;
   final Missive missive;
+
+  /// Missives make noise.
+  @override
+  double get noise => Sound.attackNoise;
 
   MissiveAction(this.target, this.missive);
 

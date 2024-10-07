@@ -180,7 +180,8 @@ class Fortitude extends StatBase {
   @override
   String get _loseAdjective => "sickly";
 
-  int get maxHealth => (math.pow(value, 1.4) + 1.23 * value + 18).toInt();
+  /// A somewhat gentle curve from 10 to 400.
+  int get maxHealth => (math.pow(value, 1.458) + 9).toInt();
 }
 
 class Intellect extends StatBase {

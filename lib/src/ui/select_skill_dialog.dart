@@ -37,7 +37,7 @@ class SelectSkillDialog extends Screen<Input> {
     if (shift || alt) return false;
 
     if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
-      selectCommand(keyCode - KeyCode.a);
+      _useSkill(keyCode - KeyCode.a);
       return true;
     }
 
@@ -45,7 +45,7 @@ class SelectSkillDialog extends Screen<Input> {
     return false;
   }
 
-  void selectCommand(int index) {
+  void _useSkill(int index) {
     if (index >= _skills.length) return;
     if (_skills[index].unusableReason(_gameScreen.game) != null) return;
 

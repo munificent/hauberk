@@ -15,7 +15,7 @@ void birds() {
     ..fly()
     ..count(3, 6);
 
-  breed("crow", 4, darkCoolGray, 7, speed: 2, meander: 30)
+  breed("crow", 4, darkCoolGray, 10, speed: 2, meander: 30)
     ..attack("bite[s]", 5)
     ..drop("Feather", percent: 30);
   describe(""""What harm can a stupid little crow do?" you think as it and its
@@ -165,7 +165,7 @@ void snakes() {
   family("S", dodge: 30, meander: 30)
     ..groups("snake")
     ..sense(see: 4, hear: 7);
-  breed("water snake", 1, lima, 9).attack("bite[s]", 3);
+  breed("water snake", 1, lima, 11).attack("bite[s]", 3);
 
   breed("brown snake", 3, tan, 25).attack("bite[s]", 4);
 

@@ -292,7 +292,7 @@ class Monster extends Actor {
 
     var visibility = (breed.vision - distance) / breed.vision;
     Debug.monsterStat(this, "see", illumination * visibility);
-    return illumination * visibility;
+    return (illumination / 64) * visibility;
 
     // TODO: Can the monster see other changes? Other monsters moving?
   }

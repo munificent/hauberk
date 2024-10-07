@@ -1,5 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import '../core/actor.dart';
 import '../core/game.dart';
 import '../hero/hero.dart';
 import '../stage/sound.dart';
@@ -8,17 +9,18 @@ import 'action.dart';
 import 'attack.dart';
 
 class WalkAction extends Action {
-  final Direction dir;
-  WalkAction(this.dir);
+  final Direction _dir;
+
+  WalkAction(this._dir);
 
   @override
   ActionResult onPerform() {
     // Rest if we aren't moving anywhere.
-    if (dir == Direction.none) {
+    if (_dir == Direction.none) {
       return alternate(RestAction());
     }
 
-    var pos = actor!.pos + dir;
+    var pos = actor!.pos + _dir;
 
     // See if there is an actor there.
     var target = game.stage.actorAt(pos);
@@ -81,7 +83,7 @@ class WalkAction extends Action {
   }
 
   @override
-  String toString() => '$actor walks $dir';
+  String toString() => '$actor walks $_dir';
 }
 
 class OpenDoorAction extends Action {
@@ -126,18 +128,25 @@ class CloseDoorAction extends Action {
 class RestAction extends Action {
   @override
   ActionResult onPerform() {
-    if (actor is Hero) {
-      if (hero.stomach > 0 && !hero.poison.isActive) {
-        // TODO: Does this scale well when the hero has very high max health?
-        // Might need to go up by more than one point then.
-        hero.health++;
-      }
+    switch (actor) {
+      case Hero hero:
+        // Always digesting.
+        if (hero.stomach > 0) {
+          hero.stomach--;
+          if (hero.stomach == 0) game.log.message("You are getting hungry.");
 
-      // TODO: Have this amount increase over successive resting turns?
-      hero.regenerateFocus(10);
-    } else if (!actor!.isVisibleToHero) {
-      // Monsters can rest if out of sight.
-      actor!.health++;
+          if (!hero.poison.isActive) {
+            // TODO: Does this scale well when the hero has very high max
+            // health? Might need to go up by more than one point then.
+            hero.health++;
+          }
+        }
+
+        // TODO: Have this amount increase over successive resting turns?
+        hero.regenerateFocus(10);
+      case Actor actor when !actor.isVisibleToHero && !actor.poison.isActive:
+        // Monsters can rest if out of sight.
+        actor.health++;
     }
 
     return succeed();

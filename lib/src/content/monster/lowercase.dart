@@ -14,12 +14,11 @@ void arachnids() {
     ..groups("spider")
     ..sense(see: 4, hear: 2)
     ..stain(Tiles.spiderweb);
-  breed("brown spider", 5, tan, 6, dodge: 30, meander: 40)
+  breed("little brown spider", 3, tan, 2, dodge: 30, meander: 40)
       .attack("bite[s]", 5, Elements.poison);
-  describe("""Like a large dog, if the dog had eight articulated legs, eight
-  glittering eyes, and wanted nothing more than to kill you.""");
+  describe("Seems harmless enough. What's that dripping from its pedipalps?");
 
-  breed("gray spider", 7, coolGray, 12, dodge: 30, meander: 30)
+  breed("gray spider", 7, coolGray, 20, dodge: 30, meander: 30)
       .attack("bite[s]", 5, Elements.poison);
 
   breed("spiderling", 9, ash, 14, dodge: 35, meander: 50)
@@ -28,6 +27,8 @@ void arachnids() {
 
   breed("giant spider", 12, darkBlue, 40, meander: 30)
       .attack("bite[s]", 7, Elements.poison);
+  describe("""Like a large dog, if the dog had eight articulated legs, eight
+  glittering eyes, and wanted nothing more than to kill you.""");
 }
 
 void bats() {
@@ -36,7 +37,7 @@ void bats() {
     ..sense(see: 2, hear: 8)
     ..fly()
     ..preferOpen();
-  breed("brown bat", 1, tan, 3, frequency: 0.5, meander: 50)
+  breed("brown bat", 1, tan, 4, frequency: 0.5, meander: 50)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 4)
     ..attack("bite[s]", 3);
@@ -220,6 +221,7 @@ void felines() {
     ..sense(see: 10, hear: 8)
     ..groups("feline");
   breed("stray cat", 1, gold, 11, speed: 1, meander: 30)
+    ..missive(Missive.hiss, rate: 4)
     ..attack("bite[s]", 5)
     ..attack("scratch[es]", 4);
 }
@@ -308,11 +310,11 @@ void insects() {
     ..groups("bug")
     ..sense(see: 5, hear: 2);
   // TODO: Spawn as eggs which can hatch into cockroaches?
-  breed("giant cockroach[es]", 1, brown, 1, frequency: 0.4)
+  breed("giant cockroach[es]", 1, brown, 4, frequency: 0.4)
     ..count(2, 5)
     ..preferCorner()
     ..attack("crawl[s] on", 2)
-    ..spawn(rate: 6)
+    ..spawn(rate: 4)
     ..drop("Insect Wing", percent: 30);
   describe("""It's not quite as easy to squash one of these when it's as long as
       your arm.""");
@@ -346,7 +348,7 @@ void jellies() {
     ..sense(see: 2, hear: 1)
     ..preferCorner()
     ..count(4);
-  breed("green slime", 2, peaGreen, 10)
+  breed("green slime", 2, peaGreen, 8)
     ..stain(Tiles.greenJellyStain)
     ..attack("crawl[s] on", 4)
     ..spawn(rate: 4);
@@ -559,7 +561,6 @@ void orcs() {
     ..drop("spear", percent: 5);
 
   breed("orc brute", 29, mint, 120)
-    ..count(1)
     ..minion("orc", 2, 5)
     ..attack("bash[es]", 16)
     ..drop("treasure", percent: 20)
@@ -654,13 +655,13 @@ void rodents() {
     ..groups("rodent")
     ..sense(see: 4, hear: 6)
     ..preferWall();
-  breed("[mouse|mice]", 1, sandal, 2, frequency: 0.7)
-    ..count(2, 5)
+  breed("[mouse|mice]", 1, sandal, 3, frequency: 0.7)
+    ..count(6)
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
 
   breed("sewer rat", 2, coolGray, 8, meander: 20)
-    ..count(1, 4)
+    ..count(4)
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
 
@@ -669,7 +670,7 @@ void rodents() {
     ..attack("scratch[es]", 4);
 
   breed("plague rat", 6, lima, 20)
-    ..count(1, 4)
+    ..count(4)
     ..attack("bite[s]", 15, Elements.poison)
     ..attack("scratch[es]", 8);
 
@@ -724,7 +725,7 @@ void worms() {
     ..groups("worm")
     ..sense(see: 2, hear: 3);
   breed("blood worm", 1, maroon, 4, frequency: 0.5)
-    ..count(2, 5)
+    ..count(3, 7)
     ..attack("crawl[s] on", 5);
 
   breed("fire worm", 10, carrot, 6)
@@ -733,7 +734,7 @@ void worms() {
     ..attack("crawl[s] on", 5, Elements.fire);
 
   family("w", dodge: 10, meander: 30, flags: "fearless").groups("worm");
-  breed("giant earthworm", 3, pink, 20, speed: -2).attack("crawl[s] on", 5);
+  breed("giant earthworm", 3, pink, 30, speed: -2).attack("crawl[s] on", 5);
 
   breed("giant cave worm", 7, sandal, 80, speed: -2)
       .attack("crawl[s] on", 12, Elements.acid);
@@ -745,16 +746,16 @@ void skeletons() {
     ..sense(see: 4, hear: 4);
   // TODO: Special room/trap where these get spawned and come up from the
   // ground?
-  breed("bony hand", 3, coolGray, 16, frequency: 3.0, meander: 40, speed: -1)
+  breed("bony hand", 3, coolGray, 18, frequency: 3.0, meander: 40, speed: -1)
       .attack("claw[s]", 6);
 
-  breed("bony arm", 4, lightCoolGray, 22, frequency: 4.0, meander: 40)
+  breed("bony arm", 4, lightCoolGray, 26, frequency: 4.0, meander: 40)
       .attack("claw[s]", 8);
 
-  breed("severed skull", 7, sandal, 28, frequency: 3.0, meander: 40, speed: -2)
+  breed("severed skull", 7, sandal, 33, frequency: 3.0, meander: 40, speed: -2)
       .attack("bite[s]", 10);
 
-  breed("decapitated skeleton", 10, buttermilk, 38, frequency: 4.0, meander: 60)
+  breed("decapitated skeleton", 10, buttermilk, 44, frequency: 4.0, meander: 60)
     ..sense(see: 0, hear: 0)
     ..openDoors()
     ..attack("claw[s]", 7)
@@ -762,13 +763,13 @@ void skeletons() {
     ..drop("weapon", percent: 10)
     ..drop("armor", percent: 10);
 
-  breed("armless skeleton", 12, mint, 40, frequency: 4.0)
+  breed("armless skeleton", 12, mint, 50, frequency: 4.0)
     ..attack("bite[s]", 9)
     ..attack("kick[s]", 7)
     ..drop("treasure", percent: 30)
     ..drop("armor", percent: 10);
 
-  breed("one-armed skeleton", 13, lima, 46, frequency: 5.0)
+  breed("one-armed skeleton", 13, lima, 60, frequency: 5.0)
     ..openDoors()
     ..attack("claw[s]", 7)
     ..amputate("armless skeleton", "bony arm", "{1}'s arm falls off!")
@@ -777,7 +778,7 @@ void skeletons() {
     ..drop("weapon", percent: 5)
     ..drop("armor", percent: 10);
 
-  breed("skeleton", 15, ash, 50, frequency: 6.0)
+  breed("skeleton", 15, ash, 70, frequency: 6.0)
     ..openDoors()
     ..attack("claw[s]", 7)
     ..attack("bite[s]", 9)
@@ -788,7 +789,7 @@ void skeletons() {
     ..drop("weapon", percent: 10)
     ..drop("armor", percent: 10);
 
-  breed("skeleton warrior", 17, pink, 70, frequency: 6.0)
+  breed("skeleton warrior", 17, pink, 90, frequency: 6.0)
     ..openDoors()
     ..attack("slash[es]", 13)
     ..attack("stab[s]", 10)
@@ -799,7 +800,7 @@ void skeletons() {
     ..drop("weapon", percent: 20)
     ..drop("armor", percent: 15);
 
-  breed("robed skeleton", 19, lilac, 70, frequency: 4.0)
+  breed("robed skeleton", 19, lilac, 110, frequency: 4.0)
     ..openDoors()
     ..attack("slash[es]", 13)
     ..attack("stab[s]", 10)

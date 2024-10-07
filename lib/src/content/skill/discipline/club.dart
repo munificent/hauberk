@@ -51,9 +51,12 @@ class BashAction extends MasteryAction {
   ActionResult onPerform() {
     if (_step == 0) {
       _damage = attack(actor!.pos + _dir);
-
-      // If the hit missed, no pushback.
-      if (_damage == null) return ActionResult.success;
+      if (_damage == null) {
+        return fail("There's no one there!");
+      } else if (_damage == 0) {
+        // If the hit missed, no pushback.
+        return ActionResult.success;
+      }
     } else if (_step == 1) {
       // Push the defender.
       var defender = game.stage.actorAt(actor!.pos + _dir);

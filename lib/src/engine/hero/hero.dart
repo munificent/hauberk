@@ -337,12 +337,6 @@ class Hero extends Actor {
     // Make some noise.
     _lastNoise = action.noise;
 
-    // Always digesting.
-    if (stomach > 0) {
-      stomach--;
-      if (stomach == 0) game.log.message("You are getting hungry.");
-    }
-
     // Update fury.
     if (_turnsSinceGaveDamage == 0) {
       // Every turn the hero harmed a monster increases fury.

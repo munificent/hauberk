@@ -10,7 +10,7 @@ import 'tile.dart';
 /// Used for monsters that hear the hero's actions.
 class Sound {
   static const restNoise = 0.05;
-  static const normalNoise = 0.25;
+  static const normalNoise = 0.20;
   static const attackNoise = 1.0;
 
   static const maxDistance = 16;
