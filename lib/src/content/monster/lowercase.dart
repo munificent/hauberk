@@ -129,7 +129,7 @@ void dragons() {
     family("d")
       ..groups("dragon")
       ..sense(see: 12, hear: 8)
-      ..defense(10, "{2} [is|are] deflected by its scales.")
+      ..defense(10, "{2} [are|is] deflected by its scales.")
       ..preferOpen();
 
     var dragon =
@@ -147,7 +147,7 @@ void dragons() {
     family("d")
       ..groups("dragon")
       ..sense(see: 16, hear: 10)
-      ..defense(20, "{2} [is|are] deflected by its scales.")
+      ..defense(20, "{2} [are|is] deflected by its scales.")
       ..preferOpen();
 
     dragon = breed("$name dragon", 50 + i * 2, adultColor, 350 + i * 50)
@@ -500,7 +500,7 @@ void lizardMen() {
   family("l", meander: 10, flags: "fearless")
     ..groups("saurian")
     ..sense(see: 10, hear: 5)
-    ..defense(5, "{2} [is|are] deflected by its scales.");
+    ..defense(5, "{2} [are|is] deflected by its scales.");
   breed("lizard guard", 11, gold, 26)
     ..attack("claw[s]", 8)
     ..attack("bite[s]", 10)

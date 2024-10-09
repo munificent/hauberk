@@ -8,9 +8,9 @@ class EatAction extends Action {
   @override
   ActionResult onPerform() {
     if (hero.stomach == Option.heroMaxStomach) {
-      log("{1} [is|are] already full!", actor);
+      log("{1} [are|is] already full!", actor);
     } else if (hero.stomach + _amount > Option.heroMaxStomach) {
-      log("{1} [is|are] stuffed!", actor);
+      log("{1} [are|is] stuffed!", actor);
     } else {
       log("{1} feel[s] satiated.", actor);
     }

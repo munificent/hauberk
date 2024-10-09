@@ -173,7 +173,7 @@ class GameContent implements Content {
       } else if (tile.element == Elements.poison) {
         _spreadPoison(stage, pos, tile);
 
-        if (tile.substance > 0) return PoisonedFloorAction(pos);
+        if (tile.substance > 0) return PoisonedFloorAction(pos, tile.substance);
       }
 
       // TODO: Cold.
@@ -222,28 +222,35 @@ class GameContent implements Content {
   void _spreadPoison(Stage stage, Vec pos, Tile tile) {
     if (!tile.isFlyable) return;
 
-    // Average the poison with this tile and its neighbors.
-    var poison = tile.element == Elements.poison ? tile.substance * 4 : 0;
-    var open = 4;
+    // Average the poison with this tile and its neighbors so that the poison
+    // gradually spreads.
+    var poison = 0;
+    var tiles = 0;
 
     void neighbor(int x, int y) {
       var neighbor = stage.get(pos.x + x, pos.y + y);
 
       if (neighbor.isFlyable) {
-        open++;
-        if (neighbor.element == Elements.poison) poison += neighbor.substance;
+        tiles++;
+        if (neighbor.element == Elements.poison) {
+          poison += neighbor.substance;
+        }
       }
     }
 
+    neighbor(0, 0);
     neighbor(-1, 0);
     neighbor(1, 0);
     neighbor(0, -1);
     neighbor(0, 1);
-
-    // Round down so that poison gradually decays.
-    poison = (poison / open).round();
+    neighbor(-1, -1);
+    neighbor(1, -1);
+    neighbor(-1, 1);
+    neighbor(1, 1);
 
     tile.element = Elements.poison;
-    tile.substance = (poison - 1).clamp(0, 255);
+
+    // Dissipate some every turn.
+    tile.substance = ((poison / tiles).truncate() - 4).clamp(0, 255);
   }
 }

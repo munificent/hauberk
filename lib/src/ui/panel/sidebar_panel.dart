@@ -278,7 +278,7 @@ class SidebarPanel extends Panel {
     if (actor.perception.isActive) drawCondition("V", ash);
 
     for (var element in Elements.all) {
-      if (actor.resistances[element]!.isActive) {
+      if (actor.resistanceCondition(element).isActive) {
         drawCondition(
             _resistLetters[element]!, Color.black, elementColor(element));
       }

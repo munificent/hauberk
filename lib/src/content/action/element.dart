@@ -136,7 +136,7 @@ class PoisonFloorAction extends Action with DestroyActionMixin {
     // Try to fill the tile with poison gas.
     if (tile.isFlyable) {
       tile.element = Elements.poison;
-      tile.substance = (tile.substance + _damage * 16).clamp(0, 255);
+      tile.substance = (tile.substance + _damage * 4).clamp(0, 255);
     }
 
     return ActionResult.success;
@@ -147,18 +147,25 @@ class PoisonFloorAction extends Action with DestroyActionMixin {
 /// poisonous gas.
 class PoisonedFloorAction extends Action with DestroyActionMixin {
   final Vec _pos;
+  final int _damage;
 
-  PoisonedFloorAction(this._pos);
+  PoisonedFloorAction(this._pos, int substance)
+      : _damage = lerpInt(substance, 0, 255, 3, 8);
 
   @override
   ActionResult onPerform() {
     // See if there is an actor there.
-    var target = game.stage.actorAt(_pos);
-    if (target != null) {
-      // TODO: What should the damage be?
-      var hit =
-          Attack(Noun("poison"), "chokes", 4, 0, Elements.poison).createHit();
-      hit.perform(this, null, target, canMiss: false);
+    var actor = game.stage.actorAt(_pos);
+    if (actor != null) {
+      if (actor.resistanceCondition(Elements.poison).isActive) {
+        // If they have any resistance to poison, then poison gas doesn't
+        // affect them.
+        log("{1} [are|is] unaffected by the poison.", actor);
+      } else {
+        var hit = Attack(Noun("poison"), "chokes", _damage, 0, Elements.poison)
+            .createHit();
+        hit.perform(this, null, actor, canMiss: false);
+      }
     }
 
     return ActionResult.success;

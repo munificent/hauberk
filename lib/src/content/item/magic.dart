@@ -95,35 +95,36 @@ void potions() {
   // dram, draught, elixir, philter
 
   // TODO: Don't need to strictly have every single element here.
+  // TODO: Should shatter and take effect when tossed.
   category(CharCode.latinSmallLetterEWithGrave, stack: 10)
     ..tag("magic/potion/bottled")
     ..toss(damage: 1, range: 8, breakage: 100)
     ..destroy(Elements.cold, chance: 15);
   item("Bottled Wind", lightBlue, frequency: 0.5, price: 100)
     ..depth(4)
-    ..flow(Elements.air, "the wind", "blasts", 20, fly: true);
+    ..flow(Elements.air, "the wind", "blasts", 10, fly: true);
   // TODO: Make not freezable?
   item("Bottled Ice", blue, frequency: 0.5, price: 120)
     ..depth(7)
-    ..ball(Elements.cold, "the cold", "freezes", 30);
+    ..ball(Elements.cold, "the cold", "freezes", 20);
   item("Bottled Fire", red, frequency: 0.5, price: 140)
     ..depth(11)
-    ..flow(Elements.fire, "the fire", "burns", 44, fly: true);
+    ..flow(Elements.fire, "the fire", "burns", 30, fly: true);
   item("Bottled Ocean", darkBlue, frequency: 0.5, price: 160)
     ..depth(12)
-    ..flow(Elements.water, "the water", "drowns", 52);
-  item("Bottled Earth", tan, frequency: 0.5, price: 180)
+    ..flow(Elements.water, "the water", "drowns", 40);
+  item("Bottled Poison", sherwood, frequency: 0.5, price: 240)
     ..depth(13)
+    ..flow(Elements.poison, "the poison", "infects", 50, fly: true);
+  item("Bottled Earth", tan, frequency: 0.5, price: 180)
+    ..depth(16)
     ..ball(Elements.earth, "the dirt", "crushes", 58);
   item("Bottled Lightning", lilac, frequency: 0.5, price: 200)
-    ..depth(16)
+    ..depth(18)
     ..ball(Elements.lightning, "the lightning", "shocks", 68);
   item("Bottled Acid", lima, frequency: 0.5, price: 220)
-    ..depth(18)
-    ..flow(Elements.acid, "the acid", "corrodes", 72);
-  item("Bottled Poison", sherwood, frequency: 0.5, price: 240)
     ..depth(22)
-    ..flow(Elements.poison, "the poison", "infects", 90, fly: true);
+    ..flow(Elements.acid, "the acid", "corrodes", 72);
   item("Bottled Shadow", darkCoolGray, frequency: 0.5, price: 260)
     ..depth(28)
     ..ball(Elements.dark, "the darkness", "torments", 120);

@@ -220,8 +220,8 @@ abstract class _SearchDialog<T> extends Screen<Input> {
     // Draw a box for the contents.
     Draw.frame(terminal, 25, 0, 43, 39, label: _question, labelSelected: true);
 
-    terminal.writeAt(28 + _question.length, 0, _pattern, UIHue.selection);
-    terminal.writeAt(28 + _question.length + _pattern.length, 0, " ",
+    terminal.writeAt(29 + _question.length, 0, _pattern, UIHue.selection);
+    terminal.writeAt(29 + _question.length + _pattern.length, 0, " ",
         UIHue.selection, UIHue.selection);
 
     var n = 0;

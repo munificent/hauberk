@@ -348,6 +348,9 @@ class Pronoun {
   final String possessive;
 
   const Pronoun(this.subjective, this.objective, this.possessive);
+
+  @override
+  String toString() => "$subjective/$objective";
 }
 
 enum LogType {

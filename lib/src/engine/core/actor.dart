@@ -33,7 +33,7 @@ abstract class Actor implements Noun {
 
   // TODO: Wrap this in a method that returns a non-nullable result.
   // Temporary resistance to elements.
-  final resistances = <Element, ResistCondition>{};
+  final _resistances = <Element, ResistCondition>{};
 
   // All [Condition]s for the actor.
   Iterable<Condition> get conditions => [
@@ -43,7 +43,7 @@ abstract class Actor implements Noun {
         blindness,
         dazzle,
         perception,
-        ...resistances.values
+        ..._resistances.values
       ];
 
   Vec _pos;
@@ -79,7 +79,7 @@ abstract class Actor implements Noun {
 
   Actor(this.game, int x, int y) : _pos = Vec(x, y) {
     for (var element in game.content.elements) {
-      resistances[element] = ResistCondition(element);
+      _resistances[element] = ResistCondition(element);
     }
 
     for (var condition in conditions) {
@@ -205,7 +205,7 @@ abstract class Actor implements Noun {
     var result = onGetResistance(element);
 
     // Apply temporary resistance.
-    var resistance = resistances[element]!;
+    var resistance = resistanceCondition(element);
     if (resistance.isActive) {
       result += resistance.intensity;
     }
@@ -214,6 +214,10 @@ abstract class Actor implements Noun {
   }
 
   int onGetResistance(Element element);
+
+  /// Temporary resistance to elements.
+  ResistCondition resistanceCondition(Element element) =>
+      _resistances[element]!;
 
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.

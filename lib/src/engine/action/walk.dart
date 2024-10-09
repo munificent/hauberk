@@ -130,7 +130,7 @@ class RestAction extends Action {
   ActionResult onPerform() {
     switch (actor) {
       case Hero hero:
-        // Always digesting.
+        // Digest when resting.
         if (hero.stomach > 0) {
           hero.stomach--;
           if (hero.stomach == 0) game.log.message("You are getting hungry.");
