@@ -2,6 +2,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
 import '../../action/bolt.dart';
+import 'discipline.dart';
 
 class Archery extends Discipline with UsableSkill, TargetSkill {
   // TODO: Tune.

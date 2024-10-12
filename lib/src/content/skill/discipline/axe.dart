@@ -4,7 +4,7 @@ import '../../../engine.dart';
 import 'mastery.dart';
 
 /// A slashing melee attack that hits a number of adjacent monsters.
-class AxeMastery extends MasteryDiscipline with UsableSkill, DirectionSkill {
+class AxeMastery extends UsableMasteryDiscipline with DirectionSkill {
   // TODO: Tune.
   static double _sweepScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 

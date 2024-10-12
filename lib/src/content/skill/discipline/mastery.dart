@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
+import 'discipline.dart';
 
 // TODO: More disciplines:
 // - Dodging attacks, which increases dodge.
@@ -31,12 +32,6 @@ abstract class MasteryDiscipline extends Discipline {
         "$weaponType.";
   }
 
-  String? unusableReason(Game game) {
-    if (_hasWeapon(game.hero)) return null;
-
-    return "No $weaponType equipped.";
-  }
-
   bool _hasWeapon(Hero hero) =>
       hero.equipment.weapons.any((item) => item.type.weaponType == weaponType);
 
@@ -61,6 +56,16 @@ abstract class MasteryDiscipline extends Discipline {
     // TODO: Tune.
     level--;
     return 100 * level * level * level;
+  }
+}
+
+abstract class UsableMasteryDiscipline extends MasteryDiscipline
+    with UsableSkill {
+  @override
+  String? unusableReason(Game game) {
+    if (_hasWeapon(game.hero)) return null;
+
+    return "No $weaponType equipped.";
   }
 }
 

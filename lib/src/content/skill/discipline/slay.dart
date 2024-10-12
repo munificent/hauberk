@@ -1,5 +1,6 @@
 import '../../../engine.dart';
 import '../../monster/monsters.dart';
+import 'discipline.dart';
 
 class SlayDiscipline extends Discipline {
   // TODO: Tune.

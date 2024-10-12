@@ -1,4 +1,5 @@
 import '../../../engine.dart';
+import 'discipline.dart';
 
 class DualWield extends Discipline {
   // TODO: Tune.

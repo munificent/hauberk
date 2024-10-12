@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import '../../../engine.dart';
+import 'discipline.dart';
 
 class BattleHardening extends Discipline {
   @override
