@@ -2,6 +2,7 @@ import '../engine.dart';
 import 'item/drops.dart';
 import 'skill/discipline/mastery.dart';
 import 'skill/skills.dart';
+import 'skill/spell/spell.dart';
 
 class Classes {
   // TODO: Tune battle-hardening.

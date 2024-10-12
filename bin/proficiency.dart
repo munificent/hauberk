@@ -1,5 +1,4 @@
 import 'package:hauberk/src/content.dart';
-import 'package:hauberk/src/engine.dart';
 
 /// Shows how proficiency affects skills for the various classes.
 void main(List<String> arguments) {

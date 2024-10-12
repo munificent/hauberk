@@ -20,8 +20,10 @@ abstract class Panel {
   }
 
   void render(Terminal terminal) {
-    if (!isVisible) return;
-    renderPanel(terminal.rect(bounds.x, bounds.y, bounds.width, bounds.height));
+    if (_bounds case var bounds?) {
+      renderPanel(
+          terminal.rect(bounds.x, bounds.y, bounds.width, bounds.height));
+    }
   }
 
   void renderPanel(Terminal terminal);

@@ -1,20 +1,15 @@
-import '../../../engine.dart';
-
 import '../../action/detection.dart';
+import 'spell.dart';
 
-class SenseItems extends Spell with ActionSkill {
-  @override
-  String get description => "Detect nearby items.";
-  @override
-  String get name => "Sense Items";
-  @override
-  int get baseComplexity => 17;
-  @override
-  int get baseFocusCost => 40;
-  @override
-  int get range => 20;
-
-  @override
-  Action onGetAction(Game game, int level) =>
-      DetectAction([DetectType.item], range);
+List<Spell> divinationSpells() {
+  return [
+    ActionSpell(
+      "Sense Items",
+      description: "Detect nearby items.",
+      complexity: 17,
+      focus: 40,
+      range: 20,
+      (spell, game, level) => DetectAction([DetectType.item], spell.range),
+    )
+  ];
 }

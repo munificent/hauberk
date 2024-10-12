@@ -43,22 +43,9 @@ class Skills {
     ],
 
     // Spells.
-    ...[
-      // Divination.
-      SenseItems(),
-
-      // Conjuring.
-      Flee(),
-      Escape(),
-      Disappear(),
-
-      // Sorcery.
-      Icicle(),
-      BrilliantBeam(),
-      Windstorm(),
-      FireBarrier(),
-      TidalWave(),
-    ]
+    ...divinationSpells(),
+    ...conjuringSpells(),
+    ...sorcerySpells(),
   ];
 
   static final Map<String, Skill> _byName = {

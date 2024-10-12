@@ -18,6 +18,8 @@ import 'content/stage/town.dart';
 import 'content/tiles.dart';
 import 'engine.dart';
 
+export 'content/skill/spell/spell.dart';
+
 Content createContent() {
   // Note: The order is significant here. For example, monster drops will
   // reference items, which need to have already been created.
