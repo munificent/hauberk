@@ -14,6 +14,7 @@ class Items {
 
     litter();
     treasure();
+    gems();
     pelts();
     food();
     lightSources();

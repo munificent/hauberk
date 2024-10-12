@@ -8,12 +8,16 @@ void litter() {
   category(CharCode.latinCapitalLetterCWithCedilla, stack: 10)
     ..tag("item")
     ..toss(damage: 3, range: 7, element: Elements.earth, breakage: 10);
-  item("Rock", tan, frequency: 0.1).depth(1);
+  item("Rock", tan)
+    ..depth(1)
+    ..frequency(0.5);
 
   category(CharCode.latinSmallLetterUWithDiaeresis, stack: 4)
     ..tag("item")
     ..toss(damage: 2, range: 5, breakage: 30);
-  item("Skull", lightCoolGray, frequency: 0.1).depth(1);
+  item("Skull", lightCoolGray)
+    ..frequency(0.25)
+    ..depth(1);
 }
 
 void treasure() {
@@ -38,41 +42,45 @@ void treasure() {
   item("Electrum Bar", buttermilk, price: 1200).depth(70, to: 90);
   item("Gold Bar", gold, price: 2000).depth(80);
   item("Platinum Bar", lightCoolGray, price: 3000).depth(90);
+}
 
-/*
-  // TODO: Could add more treasure using other currency symbols.
+void gems() {
+  // TODO: Make a glyph for gems.
+  category(CharCode.centSign)
+    ..tag("item/gem")
+    ..destroy(Elements.acid, chance: 50);
+  // TODO: Tune price, depths, and rarity.
+  item("Amethyst Shard", lavender, price: 30).depth(7, to: 27);
+  item("Uncut Amethyst", lilac, price: 100).depth(27, to: 57);
+  item("Faceted Amethyst", purple, price: 400).depth(57);
 
-  // TODO: Instead of treasure, make these recipe components.
-  // Gems
-  category(r"$", "treasure/gem");
-  tossable(damage: 2, range: 7, breakage: 5);
-  treasure("Amethyst",      3,  lightPurple,   100);
-  treasure("Sapphire",      12, blue,          200);
-  treasure("Emerald",       20, green,         300);
-  treasure("Ruby",          35, red,           500);
-  treasure("Diamond",       60, white,        1000);
-  treasure("Blue Diamond",  80, lightBlue,    2000);
+  item("Sapphire Shard", lightBlue, price: 34).depth(8, to: 28);
+  item("Uncut Sapphire", blue, price: 125).depth(28, to: 58);
+  item("Faceted Sapphire", darkBlue, price: 440).depth(58);
 
-  // Rocks
-  category(r"$", "treasure/rock");
-  tossable(damage: 2, range: 7, breakage: 5);
-  treasure("Turquoise Stone", 15, aqua,         60);
-  treasure("Onyx Stone",      20, darkGray,    160);
-  treasure("Malachite Stone", 25, lightGreen,  400);
-  treasure("Jade Stone",      30, darkGreen,   400);
-  treasure("Pearl",           35, lightYellow, 600);
-  treasure("Opal",            40, lightPurple, 800);
-  treasure("Fire Opal",       50, lightOrange, 900);
-*/
+  item("Emerald Shard", lima, price: 37).depth(9, to: 29);
+  item("Uncut Emerald", peaGreen, price: 136).depth(29, to: 59);
+  item("Faceted Emerald", sherwood, price: 486).depth(59);
+
+  item("Ruby Shard", pink, price: 41).depth(10, to: 30);
+  item("Uncut Ruby", red, price: 142).depth(30, to: 60);
+  item("Faceted Ruby", maroon, price: 498).depth(60);
+
+  item("Diamond Shard", coolGray, price: 45).depth(11, to: 31);
+  item("Uncut Diamond", lightCoolGray, price: 153).depth(31, to: 61);
+  item("Faceted Diamond", ash, price: 507).depth(61);
+
+  // TODO: Turquoise, Onyx, Malachite, Jade, Pearl, Opal, Fire Opal.
 }
 
 void pelts() {
   // TODO: Better pictogram than a pelt?
   category(CharCode.latinSmallLetterEWithAcute, stack: 20)
     ..tag("item/pelt")
+    ..frequency(0.0)
     ..destroy(Elements.fire, chance: 80, fuel: 1);
-  item("Insect Wing", violet, frequency: 0.0).depth(1);
-  item("Feather", lightCoolGray, frequency: 0.0).depth(1);
+  item("Insect Wing", violet).depth(1);
+  item("Feather", lightCoolGray).depth(1);
 
   // category(CharCode.latinSmallLetterEWithAcute, stack: 4)
   //   ..destroy(Elements.fire, chance: 20, fuel: 3);
@@ -146,8 +154,9 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 60, fuel: 60);
 
   // TODO: Maybe allow this to be equipped and increase its radius when held?
-  item("Lantern", gold, frequency: 0.3, price: 78)
+  item("Lantern", gold, price: 78)
     ..depth(18)
+    ..frequency(0.3)
     ..toss(damage: 5, range: 5, element: Elements.fire)
     ..lightSource(level: 6, range: 18);
 }

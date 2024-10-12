@@ -370,16 +370,15 @@ class Storage {
     };
   }
 
-  List _saveItems(Iterable<Item> items) {
-    return <dynamic>[for (var item in items) _saveItem(item)];
-  }
-
-  Map<String, dynamic> _saveItem(Item item) {
-    return <String, dynamic>{
-      'type': item.type.name,
-      'count': item.count,
-      if (item.affixes.isNotEmpty)
-        'affixes': [for (var affix in item.affixes) affix.id]
-    };
+  List<dynamic> _saveItems(Iterable<Item> items) {
+    return [
+      for (var item in items)
+        {
+          'type': item.type.name,
+          'count': item.count,
+          if (item.appliedAffixes.isNotEmpty)
+            'affixes': [for (var affix in item.appliedAffixes) affix.id]
+        }
+    ];
   }
 }

@@ -29,11 +29,10 @@ CategoryBuilder category(int glyph, {String? verb, int? stack}) {
   return _category;
 }
 
-ItemBuilder item(String name, Color color,
-    {double frequency = 1.0, int price = 0}) {
+ItemBuilder item(String name, Color color, {int price = 0}) {
   finishItem();
 
-  return _itemBuilder = ItemBuilder(name, color, frequency, price);
+  return _itemBuilder = ItemBuilder(name, color, price);
 }
 
 void affixCategory(String tag) {
@@ -67,9 +66,15 @@ class _BaseBuilder {
   TossItemUse? _tossUse;
   int? _emanation;
   int? _fuel;
+  double? _frequency;
+  bool? _isTwoHanded;
 
   /// Percent chance of objects in the current category breaking when thrown.
   int? _breakage;
+
+  void frequency(double frequency) {
+    _frequency = frequency;
+  }
 
   void stack(int stack) {
     _maxStack = stack;
@@ -93,6 +98,10 @@ class _BaseBuilder {
     _fuel = fuel;
   }
 
+  void twoHanded() {
+    _isTwoHanded = true;
+  }
+
   void skill(String skill) {
     _skills.add(Skills.find(skill));
   }
@@ -111,7 +120,6 @@ class CategoryBuilder extends _BaseBuilder {
   String? _weaponType;
   late final String _tag;
   bool _isTreasure = false;
-  bool _isTwoHanded = false;
 
   CategoryBuilder(this._glyph, this._verb);
 
@@ -156,10 +164,6 @@ class CategoryBuilder extends _BaseBuilder {
   void treasure() {
     _isTreasure = true;
   }
-
-  void twoHanded() {
-    _isTwoHanded = true;
-  }
 }
 
 class ItemBuilder extends _BaseBuilder {
@@ -167,7 +171,6 @@ class ItemBuilder extends _BaseBuilder {
 
   final String _name;
   final Color _color;
-  final double _frequency;
   final int _price;
   ItemUse? _use;
   Attack? _attack;
@@ -184,7 +187,7 @@ class ItemBuilder extends _BaseBuilder {
   late final int _minDepth;
   late final int _maxDepth;
 
-  ItemBuilder(this._name, this._color, this._frequency, this._price);
+  ItemBuilder(this._name, this._color, this._price);
 
   /// Sets the item's minimum depth to [from]. If [to] is given, then the item
   /// has the given depth range. Otherwise, its max is [Option.maxDepth].
@@ -360,7 +363,7 @@ class ItemBuilder extends _BaseBuilder {
         emanation: _emanation ?? _category._emanation,
         fuel: _fuel ?? _category._fuel,
         treasure: _category._isTreasure,
-        twoHanded: _category._isTwoHanded);
+        twoHanded: _category._isTwoHanded ?? _isTwoHanded ?? false);
 
     itemType.destroyChance.addAll(_category._destroyChance);
     itemType.destroyChance.addAll(_destroyChance);
@@ -510,7 +513,7 @@ void finishItem() {
       name: itemType.name,
       start: builder._minDepth,
       end: builder._maxDepth,
-      startFrequency: builder._frequency,
+      startFrequency: builder._frequency ?? _category._frequency ?? 1.0,
       tags: _category._tag);
 
   _itemBuilder = null;
@@ -527,7 +530,6 @@ void finishAffix() {
       start: builder._minDepth,
       end: builder._maxDepth,
       startFrequency: builder._frequency,
-      endFrequency: builder._frequency,
       tags: _affixTag);
 
   _affixBuilder = null;

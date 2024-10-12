@@ -12,17 +12,17 @@ class Item implements Comparable<Item>, Noun {
   final ItemType type;
 
   /// The random affixes added to the item, not including any intrinsic one.
-  final List<Affix> _affixes;
+  final List<Affix> appliedAffixes;
 
   List<Affix> get affixes {
     // If there's an instrinsic affix, that's the only one.
     if (type.intrinsicAffix case var affix?) return [affix];
 
-    return _affixes;
+    return appliedAffixes;
   }
 
   Item(this.type, this._count, [List<Affix> affixes = const []])
-      : _affixes = List.unmodifiable(affixes);
+      : appliedAffixes = affixes;
 
   Object get appearance => type.appearance;
 

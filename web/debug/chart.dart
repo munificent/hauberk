@@ -224,9 +224,6 @@ class ItemTypesChart extends Chart {
 
   @override
   void generate(Histogram<String> histogram, int depth) {
-    var itemType = Items.types.tryChoose(depth);
-    if (itemType == null) return;
-
     // Create a blank lore each time so that we can count how often a given
     // artifact shows up without uniqueness coming into play.
     var lore = Lore();
@@ -234,9 +231,9 @@ class ItemTypesChart extends Chart {
 
     dropAny.dropItem(lore, depth, (item) {
       if (item.affixes.isNotEmpty) {
-        histogram.add("${itemType.name} (ego)");
+        histogram.add("${item.type.name} (ego)");
       } else {
-        histogram.add(itemType.name);
+        histogram.add(item.type.name);
       }
     });
   }

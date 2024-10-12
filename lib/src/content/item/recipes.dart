@@ -7,10 +7,30 @@ class Recipes {
   static final List<Recipe> all = [];
 
   static void initialize() {
+    gems();
     healing();
     teleportation();
     armor();
   }
+}
+
+void gems() {
+  recipe("Uncut Amethyst", {"Amethyst Shard": 4});
+  recipe("Faceted Amethyst", {"Uncut Amethyst": 4});
+
+  recipe("Uncut Sapphire", {"Sapphire Shard": 4});
+  recipe("Faceted Sapphire", {"Uncut Sapphire": 4});
+
+  recipe("Uncut Emerald", {"Emerald Shard": 4});
+  recipe("Faceted Emerald", {"Uncut Emerald": 4});
+
+  recipe("Uncut Ruby", {"Ruby Shard": 4});
+  recipe("Faceted Ruby", {"Uncut Ruby": 4});
+
+  recipe("Uncut Diamond", {"Diamond Shard": 4});
+  recipe("Faceted Diamond", {"Uncut Diamond": 4});
+
+  // TODO: Recipes to socket them into equipment.
 }
 
 void healing() {
