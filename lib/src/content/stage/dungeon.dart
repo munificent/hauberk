@@ -17,7 +17,7 @@ class Dungeon extends RoomArchitecture {
   @override
   PaintStyle get paintStyle => PaintStyle.flagstone;
 
-  Dungeon({required RoomShapes shapes, double density = 0.3})
+  Dungeon({required RoomShapes shapes, double density = 0.25})
       : _density = density,
         _shapes = shapes;
 
