@@ -527,4 +527,104 @@ void roomDecor() {
     ?#?
     .&.
     ?.?""");
+
+  // Streams.
+  category(themes: "built", frequency: 10.0);
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #...#
+    #≈≡≈#
+    #...#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #....#
+    #≈≈≡≈#
+    #....#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.....#
+    #≈≈≡≈≈#
+    #.....#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.....#
+    #≈≡≈≡≈#
+    #.....#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #......#
+    #......#
+    #≈≈≡≈≈≈#
+    #......#
+    #......#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #......#
+    #......#
+    #≈≡≈≈≡≈#
+    #......#
+    #......#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.......#
+    #≈≈≈≡≈≈≈#
+    #.......#
+    #.......#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.......#
+    #.......#
+    #≈≈≡≈≡≈≈#
+    #.......#
+    #.......#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.......#
+    #.......#
+    #≈≡≈≈≈≡≈#
+    #.......#
+    #.......#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #........#
+    #........#
+    #≈≈≈≡≈≈≈≈#
+    #........#
+    #........#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #........#
+    #........#
+    #≈≈≡≈≈≡≈≈#
+    #........#
+    #........#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.........#
+    #.........#
+    #≈≈≈≈≡≈≈≈≈#
+    #.........#
+    #.........#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.........#
+    #.........#
+    #≈≈≡≈≈≈≡≈≈#
+    #.........#
+    #.........#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.........#
+    #.........#
+    #≈≈≈≈≡≈≈≈≈#
+    #≈≈≈≈≡≈≈≈≈#
+    #.........#
+    #.........#""");
+
+  furnishing(symmetry: Symmetry.rotate90, template: """
+    #.........#
+    #.........#
+    #≈≈≡≈≈≈≡≈≈#
+    #≈≈≡≈≈≈≡≈≈#
+    #.........#
+    #.........#""");
 }
