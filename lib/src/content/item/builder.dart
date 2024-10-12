@@ -43,15 +43,8 @@ void affixCategory(String tag) {
 AffixBuilder affix(String nameTemplate, double frequency) {
   finishAffix();
 
-  ResourceSet<Affix> affixSet;
-  if (nameTemplate.endsWith(" _")) {
-    affixSet = Affixes.prefixes;
-  } else if (nameTemplate.startsWith("_ ")) {
-    affixSet = Affixes.suffixes;
-  } else {
-    affixSet = Affixes.artifacts;
-  }
-
+  var affixSet =
+      nameTemplate.endsWith(" _") ? Affixes.prefixes : Affixes.suffixes;
   return _affixBuilder = AffixBuilder(nameTemplate, affixSet, frequency);
 }
 
@@ -178,10 +171,9 @@ class ItemBuilder extends _BaseBuilder {
   int? _weight;
   int? _heft;
   int? _armor;
+  bool _isArtifact = false;
 
-  AffixBuilder? _affixBuilder;
-
-  AffixBuilder get affix => _affixBuilder ??= AffixBuilder("_");
+  Affix? _instrinsicAffix;
 
   // TODO: Instead of late final, initialize these in item() instead of depth().
   late final int _minDepth;
@@ -194,6 +186,24 @@ class ItemBuilder extends _BaseBuilder {
   void depth(int from, {int? to}) {
     _minDepth = from;
     _maxDepth = to ?? Option.maxDepth;
+  }
+
+  /// Marks this item type as an artifact with an intrisic affix populated by
+  /// calling [buildAffix].
+  void artifact(void Function(AffixBuilder affixBuilder)? buildAffix) {
+    _isArtifact = true;
+    if (buildAffix != null) {
+      instrinsicAffix(buildAffix);
+    }
+  }
+
+  /// Give this item type an intrinsic affix populated by calling [buildAffix].
+  void instrinsicAffix(void Function(AffixBuilder affixBuilder) buildAffix) {
+    assert(_instrinsicAffix == null);
+
+    var builder = AffixBuilder("$_name intrinsic affix");
+    buildAffix(builder);
+    _instrinsicAffix = builder._build();
   }
 
   void defense(int amount, String message) {
@@ -357,13 +367,14 @@ class ItemBuilder extends _BaseBuilder {
         _armor ?? 0,
         _price,
         _maxStack ?? _category._maxStack ?? 1,
-        _affixBuilder?._build(),
+        _instrinsicAffix,
         weight: _weight ?? 0,
         heft: _heft ?? 0,
         emanation: _emanation ?? _category._emanation,
         fuel: _fuel ?? _category._fuel,
         treasure: _category._isTreasure,
-        twoHanded: _category._isTwoHanded ?? _isTwoHanded ?? false);
+        twoHanded: _category._isTwoHanded ?? _isTwoHanded ?? false,
+        isArtifact: _isArtifact);
 
     itemType.destroyChance.addAll(_category._destroyChance);
     itemType.destroyChance.addAll(_destroyChance);

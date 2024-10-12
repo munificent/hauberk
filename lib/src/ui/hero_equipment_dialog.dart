@@ -59,8 +59,10 @@ class HeroEquipmentDialog extends HeroInfoDialog {
 
       var attack = item.attack;
       if (attack != null) {
+        // Use [element] directly from the item because [attack] is just the
+        // base attack before modifiers.
         terminal.writeAt(
-            48, y, attack.element.abbreviation, elementColor(attack.element));
+            48, y, item.element.abbreviation, elementColor(item.element));
 
         terminal.writeAt(51, y, attack.damage.toString().padLeft(2), ash);
       }

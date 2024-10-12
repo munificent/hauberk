@@ -43,19 +43,19 @@ abstract class _BaseDrop {
       : _quality = quality ?? ItemQuality.normal;
 
   Item _makeItem(Lore? lore, int dropDepth, ItemType itemType) {
+    // If we picked an artifact, record it.
+    if (itemType.isArtifact && lore != null) lore.createArtifact(itemType);
+
+    // If the item type already has an affix, then we can't add more.
+    if (itemType.intrinsicAffix != null) return Item(itemType, 1);
+
     // Only equipped items have affixes.
     if (itemType.equipSlot == null) return Item(itemType, 1);
 
     // TODO: If we're deeper than the item's type, then slightly boost the
     // chances of of it being something good.
 
-    // Try to make an artifact first.
-    if (lore != null) {
-      var artifact = _rollArtifact(lore, itemType, dropDepth);
-      if (artifact != null) return Item(itemType, 1, [artifact]);
-    }
-
-    // Otherwise, try a prefix and/or suffix.
+    // Try to add a prefix and/or suffix.
     var prefix = _rollAffix(Affixes.prefixes, itemType, dropDepth);
     var suffix = _rollAffix(Affixes.suffixes, itemType, dropDepth);
 
@@ -69,39 +69,7 @@ abstract class _BaseDrop {
       }
     }
 
-    return Item(
-        itemType, 1, [if (prefix != null) prefix, if (suffix != null) suffix]);
-  }
-
-  Affix? _rollArtifact(Lore lore, ItemType itemType, int depth) {
-    // See if we want to make it.
-    var (min, max) = switch (_quality) {
-      ItemQuality.normal => (0.0001, 0.1),
-      ItemQuality.good => (0.001, 0.2),
-      ItemQuality.great => (0.01, 0.5),
-    };
-
-    var chance = lerpDouble(depth, 0, Option.maxDepth, min, max);
-    if (rng.float(1.0) > chance) return null;
-
-    // Try multiple times so that if we hit a previously created one, we might
-    // be able to find another.
-    for (var i = 0; i < 10; i++) {
-      var artifact = Affixes.tryChoose(Affixes.artifacts, itemType, depth);
-
-      // If there are no artifacts for this category, give up.
-      if (artifact == null) break;
-
-      // Don't create duplicates.
-      if (lore.createdArtifact(artifact)) continue;
-
-      lore.createArtifact(artifact);
-      return artifact;
-    }
-
-    // If we got here, we failed to find an uncreated artifact for the item
-    // type.
-    return null;
+    return Item(itemType, 1, prefix: prefix, suffix: suffix);
   }
 
   Affix? _rollAffix(ResourceSet<Affix> affixes, ItemType itemType, int depth) {
@@ -126,6 +94,11 @@ class _ItemDrop extends _BaseDrop implements Drop {
 
   @override
   void dropItem(Lore? lore, int depth, AddItem addItem) {
+    // If this drops an artifact that already exists, do nothing.
+    if (_type.isArtifact && lore != null && lore.createdArtifact(_type)) {
+      return;
+    }
+
     addItem(_makeItem(lore, depth, _type));
   }
 }
@@ -139,13 +112,37 @@ class _TagDrop extends _BaseDrop implements Drop {
 
   @override
   void dropItem(Lore? lore, int depth, AddItem addItem) {
-    // Pick a random item type.
-    var itemType = Items.types.tryChoose(_depth ?? depth, tag: _tag);
-
-    // TODO: Can this happen?
-    if (itemType == null) return;
+    var itemType = _rollItemType(lore, depth);
 
     addItem(_makeItem(lore, depth, itemType));
+  }
+
+  ItemType _rollItemType(Lore? lore, int depth) {
+    var artifactTries = switch (_quality) {
+      ItemQuality.normal => 0,
+      ItemQuality.good => 3,
+      ItemQuality.great => 15,
+    };
+
+    while (true) {
+      var itemType = Items.types.choose(_depth ?? depth, tag: _tag);
+
+      // If we hit an artifact that already exists, try again.
+      if (itemType.isArtifact &&
+          lore != null &&
+          lore.createdArtifact(itemType)) {
+        continue;
+      }
+
+      // If we didn't hit an artifact and it's a higher quality drop, try again.
+      if (!itemType.isArtifact && artifactTries > 0) {
+        artifactTries--;
+        continue;
+      }
+
+      // If we get here, it's a winner.
+      return itemType;
+    }
   }
 }
 

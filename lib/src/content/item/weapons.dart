@@ -134,8 +134,14 @@ void weapons() {
     ..depth(30)
     ..weapon(15, heft: 11)
     ..toss(damage: 15);
-  // Main-guache
-  // Unique dagger: "Mercygiver" (see Misericorde at Wikipedia)
+  // TODO: Main-guache
+
+  // Artifact daggers.
+  item("Mercygiver", purple, price: 2000)
+    ..depth(20, to: 50)
+    ..frequency(0.2)
+    ..weapon(20, heft: 6)
+    ..artifact((affix) => affix..brand(Elements.dark));
 
   category(CharCode.feminineOrdinalIndicator, verb: "slash[es]")
     ..tag("equipment/weapon/sword")

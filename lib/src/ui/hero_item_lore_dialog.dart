@@ -99,7 +99,12 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
         terminal.writeAt(55, y, item.depth.toString().padLeft(5), fore);
         terminal.writeAt(61, y, formatMoney(item.price).padLeft(7), fore);
-        terminal.writeAt(69, y, found.toString().padLeft(5), fore);
+
+        if (item.isArtifact) {
+          terminal.writeAt(69, y, "Yes".padLeft(5), fore);
+        } else {
+          terminal.writeAt(69, y, found.toString().padLeft(5), fore);
+        }
 
         if (item.use != null) {
           var used = hero.lore.usedItems(item);
@@ -115,7 +120,10 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
     writeLine(2, darkCoolGray);
 
-    _showItem(terminal, _items[_selection]);
+    if (hero.lore.foundItems(_items[_selection]) > 0) {
+      _showItem(terminal, _items[_selection]);
+    }
+
     super.render(terminal);
   }
 

@@ -256,7 +256,6 @@ class AffixesChart extends Chart {
   static List<String> _makeLabels() {
     var names = [
       "(No affix)",
-      ...Affixes.artifacts.all.map((affix) => affix.id),
       ...Affixes.prefixes.all.map((affix) => affix.id),
       ...Affixes.suffixes.all.map((affix) => affix.id),
     ];

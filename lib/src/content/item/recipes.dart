@@ -58,6 +58,7 @@ void armor() {
   // recipe('Fur-lined Robe', {'Robe': 1, 'Fox Pelt': 1});
 }
 
+/// Adds a new recipe.
 void recipe(String drop, Map<String, int> ingredientNames) {
   var ingredients = <ItemType, int>{
     for (var MapEntry(key: name, value: ingredient) in ingredientNames.entries)

@@ -4,15 +4,13 @@ import 'builder.dart';
 import 'items.dart';
 
 class Affixes {
-  static final artifacts = ResourceSet<Affix>();
   static final prefixes = ResourceSet<Affix>();
   static final suffixes = ResourceSet<Affix>();
 
-  static Iterable<Affix> get all =>
-      [...artifacts.all, ...prefixes.all, ...suffixes.all];
+  static Iterable<Affix> get all => [...prefixes.all, ...suffixes.all];
 
   static Affix find(String name) {
-    for (var affixSet in [artifacts, prefixes, suffixes]) {
+    for (var affixSet in [prefixes, suffixes]) {
       var affix = affixSet.tryFind(name);
       if (affix != null) return affix;
     }
@@ -32,7 +30,6 @@ class Affixes {
     _resists();
     _extraDamage();
     _brands();
-    _artifacts();
 
     // TODO: "of Accuracy" increases range of bows.
     // TODO: "Heavy" and "adamant" increase weight and armor.
@@ -480,18 +477,7 @@ class Affixes {
       ..brand(Elements.spirit, resist: 2);
   }
 
-  static void _artifacts() {
-    // TODO: Real ones.
-    affixCategory("dagger");
-    affix("Mercygiver", 1.0)
-      ..depth(1, to: 30)
-      ..price(100, 1.2)
-      ..heft(1.05)
-      ..damage(scale: 2, bonus: 10);
-  }
-
   static void defineItemTag(String tag) {
-    artifacts.defineTags(tag);
     prefixes.defineTags(tag);
     suffixes.defineTags(tag);
   }

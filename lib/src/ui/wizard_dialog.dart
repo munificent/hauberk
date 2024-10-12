@@ -285,6 +285,10 @@ class _WizardDropDialog extends _SearchDialog<ItemType> {
 
   @override
   void _selectItem(ItemType itemType) {
+    if (itemType.isArtifact) {
+      _game.hero.lore.createArtifact(itemType);
+    }
+
     var item = Item(itemType, itemType.maxStack);
     _game.stage.addItem(item, _game.hero.pos);
     _game.log.cheat("Dropped {1}.", item);

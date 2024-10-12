@@ -126,6 +126,24 @@ class ResourceSet<T> {
   /// by ten.
   ///
   /// If no tag is given, chooses from all resources based only on depth.
+  T choose(int depth, {String? tag, bool? includeParents}) =>
+      tryChoose(depth, tag: tag, includeParents: includeParents)!;
+
+  /// Chooses a random resource in [tag] for [depth].
+  ///
+  /// Includes all resources of child tags of [tag]. For example, given tag path
+  /// "equipment/weapon/sword", if [tag] is "weapon", this will permit resources
+  /// tagged "weapon" or "sword", with equal probability.
+  ///
+  /// Resources in parent tags, or in children of those tags, are also possible,
+  /// but with less probability. So in the above example, anything tagged
+  /// "equipment" is included but rare. Likewise, "equipment/armor" may also
+  /// show up, but is less frequent. The odds of a resource outside of [tag] or
+  /// its children show up are based on the common ancestor tag that contains
+  /// both [tag] and the resource. Each level of ancestry divides the chances
+  /// by ten.
+  ///
+  /// If no tag is given, chooses from all resources based only on depth.
   ///
   /// May return `null` if there are no resources with [tag].
   T? tryChoose(int depth, {String? tag, bool? includeParents}) {

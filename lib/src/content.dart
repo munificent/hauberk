@@ -114,7 +114,16 @@ class GameContent implements Content {
         Item(Items.types.find(type), amount)
     ];
 
-    hero.heroClass.startingItems.dropItem(hero.lore, 1, items.add);
+    hero.heroClass.startingItems.dropItem(hero.lore, 1, (item) {
+      // On the off chance that the player gets very lucky and gets an artifact
+      // as a starting item, make sure it's unique.
+      if (item.type.isArtifact) {
+        hero.lore.createArtifact(item.type);
+      }
+
+      items.add(item);
+    });
+
     return items;
   }
 

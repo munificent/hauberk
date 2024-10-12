@@ -184,16 +184,15 @@ class Storage {
       count = data['count'] as int;
     }
 
-    var affixes = <Affix>[];
-    if (data.containsKey('affixes')) {
-      var affixesData = data['affixes'] as List<dynamic>;
+    var prefix = _loadAffix(data['prefix']);
+    var suffix = _loadAffix(data['suffix']);
 
-      for (var affixData in affixesData) {
-        affixes.add(content.findAffix(affixData as String)!);
-      }
-    }
+    return Item(type, count, prefix: prefix, suffix: suffix);
+  }
 
-    return Item(type, count, affixes);
+  Affix? _loadAffix(dynamic data) {
+    if (data is String) return content.findAffix(data);
+    return null;
   }
 
   Log _loadLog(Object? data) {
@@ -217,7 +216,7 @@ class Storage {
     var slain = <Breed, int>{};
     var foundItems = <ItemType, int>{};
     var foundAffixes = <Affix, int>{};
-    var createdArtifacts = <Affix>{};
+    var createdArtifacts = <ItemType>{};
     var usedItems = <ItemType, int>{};
 
     // TODO: Older saves before lore.
@@ -265,7 +264,7 @@ class Storage {
       var createdArtifactsList = data['createdArtifacts'] as List<dynamic>?;
       if (createdArtifactsList != null) {
         for (var name in createdArtifactsList) {
-          createdArtifacts.add(content.findAffix(name as String)!);
+          createdArtifacts.add(content.tryFindItem(name as String)!);
         }
       }
     }
@@ -356,8 +355,12 @@ class Storage {
     for (var affix in content.affixes) {
       var found = lore.foundAffixes(affix);
       if (found != 0) foundAffixes[affix.id] = found;
+    }
 
-      if (lore.createdArtifact(affix)) createdArtifacts.add(affix.id);
+    for (var itemType in content.items) {
+      if (itemType.isArtifact && lore.createdArtifact(itemType)) {
+        createdArtifacts.add(itemType.name);
+      }
     }
 
     return {
@@ -376,8 +379,8 @@ class Storage {
         {
           'type': item.type.name,
           'count': item.count,
-          if (item.appliedAffixes.isNotEmpty)
-            'affixes': [for (var affix in item.appliedAffixes) affix.id]
+          if (item.prefix case var prefix?) 'prefix': prefix.id,
+          if (item.suffix case var suffix?) 'suffix': suffix.id,
         }
     ];
   }

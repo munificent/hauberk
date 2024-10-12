@@ -128,11 +128,17 @@ class ItemType {
   /// Some items, like rings and amulets always have some magical effect that
   /// modifies the hero. Instead of reimplementing all of the mechanism in
   /// Affix that handles modifying hero properties, we model those item types
-  /// by saying that have an "intrinsic affix" that provides that effect. If
-  /// an ItemType contains an intrinsicAffix, then every Item of that ItemType
-  /// will have that affix. (And no other affixes. There are no "ego" items
-  /// that have both an intrinsic affix and other randomly added ones.)
+  /// by saying that they have an "intrinsic affix" that provides that effect.
+  ///
+  /// If an ItemType contains an intrinsicAffix, then every Item of that
+  /// ItemType will have that affix. (And no other affixes. There are no "ego"
+  /// items that have both an intrinsic affix and other randomly added ones.)
   final Affix? intrinsicAffix;
+
+  /// Whether this item type is for a unique artifact.
+  ///
+  /// If `true`, then the hero will only ever see one item of this type.
+  final bool isArtifact;
 
   ItemType(
       this.quantifiableName,
@@ -154,6 +160,7 @@ class ItemType {
       int? emanation,
       int? fuel,
       bool? treasure,
+      required this.isArtifact,
       bool? twoHanded})
       : emanationLevel = emanation ?? 0,
         fuel = fuel ?? 0,

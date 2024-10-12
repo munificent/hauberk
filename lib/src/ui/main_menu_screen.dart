@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
@@ -110,7 +112,7 @@ class MainMenuScreen extends Screen<Input> {
 
   void _refreshScroll() {
     // Keep it in bounds.
-    _scroll = _scroll.clamp(0, storage.heroes.length - _listHeight);
+    _scroll = _scroll.clamp(0, max(storage.heroes.length - _listHeight, 0));
 
     // Show the selected hero.
     if (selectedHero < _scroll) {

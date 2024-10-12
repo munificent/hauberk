@@ -9,7 +9,6 @@ Histogram<String> monsters = Histogram();
 Histogram<String> items = Histogram();
 Histogram<String> affixes = Histogram();
 
-HeroSave save = content.createHero("hero");
 Content content = createContent();
 
 int generated = 0;
@@ -46,6 +45,9 @@ void main() {
 }
 
 void generate() {
+  // Create a new hero every time so that we get better statistics for
+  // artifacts.
+  var save = content.createHero("hero");
   var game = Game(content, depth, save);
 
   for (var event in game.generate()) {

@@ -63,18 +63,23 @@ void generate() {
   builder.thead();
   builder.td('Item', width: 300);
   builder.tbody();
-
-  for (var affix in affixes.descending()) {
-    builder.td(affix);
-    builder.td(percent(affixes.count(affix)));
-    builder.trEnd();
-  }
-
   for (var item in items.descending()) {
     builder.td(item);
     builder.td(percent(items.count(item)));
     builder.trEnd();
   }
 
-  builder.replaceContents('table');
+  builder.replaceContents('table#item');
+
+  builder = HtmlBuilder();
+  builder.thead();
+  builder.td('Affix', width: 300);
+  builder.tbody();
+  for (var affix in affixes.descending()) {
+    builder.td(affix);
+    builder.td(percent(affixes.count(affix)));
+    builder.trEnd();
+  }
+
+  builder.replaceContents('table#affix');
 }

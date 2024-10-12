@@ -11,18 +11,20 @@ import 'item_type.dart';
 class Item implements Comparable<Item>, Noun {
   final ItemType type;
 
-  /// The random affixes added to the item, not including any intrinsic one.
-  final List<Affix> appliedAffixes;
+  final Affix? prefix;
+  final Affix? suffix;
 
   List<Affix> get affixes {
     // If there's an instrinsic affix, that's the only one.
     if (type.intrinsicAffix case var affix?) return [affix];
 
-    return appliedAffixes;
+    return [
+      if (prefix case var prefix?) prefix,
+      if (suffix case var suffix?) suffix,
+    ];
   }
 
-  Item(this.type, this._count, [List<Affix> affixes = const []])
-      : appliedAffixes = affixes;
+  Item(this.type, this._count, {this.prefix, this.suffix});
 
   Object get appearance => type.appearance;
 
@@ -43,6 +45,9 @@ class Item implements Comparable<Item>, Noun {
   /// Whether the item can be thrown or not.
   bool get canToss => type.toss != null;
 
+  // TODO: Since this ignores affixes, it's probably not what the rest of the
+  // game actually wants most of the time. Should we apply them here instead of
+  // in modifyHit?()?
   /// The base attack for the item, ignoring its own affixes.
   Attack? get attack => type.attack;
 
@@ -84,6 +89,9 @@ class Item implements Comparable<Item>, Noun {
 
   @override
   String get nounText {
+    // Artifacts have proper names.
+    if (type.isArtifact) return type.name;
+
     return Log.quantify(quantifiableName, count);
   }
 
@@ -184,13 +192,13 @@ class Item implements Comparable<Item>, Noun {
   ///
   /// If [count] is given, the clone has that count. Otherwise, it has the
   /// same count as this item.
-  Item clone([int? count]) => Item(type, count ?? _count, affixes);
+  Item clone([int? count]) =>
+      Item(type, count ?? _count, prefix: prefix, suffix: suffix);
 
   bool canStack(Item item) {
     if (type != item.type) return false;
 
     // Items with affixes don't stack.
-    // TODO: Should they?
     if (affixes.isNotEmpty) return false;
     if (item.affixes.isNotEmpty) return false;
 

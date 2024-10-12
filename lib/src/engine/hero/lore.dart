@@ -21,9 +21,9 @@ class Lore {
   /// The number of items with each affix that the hero has picked up or used.
   final Map<Affix, int> _foundAffixes;
 
-  /// The artifact affixes whose items exist in the world. This doesn't
+  /// The artifact [ItemType]s whose items exist in the world. This doesn't
   /// necessarily mean that the hero has found them.
-  final Set<Affix> _createdArtifacts;
+  final Set<ItemType> _createdArtifacts;
 
   /// The number of consumable items of each type that the hero has used.
   final Map<ItemType, int> _usedItems;
@@ -64,7 +64,7 @@ class Lore {
     _usedItems[item.type] = _usedItems[item.type]! + 1;
   }
 
-  void createArtifact(Affix artifact) {
+  void createArtifact(ItemType artifact) {
     _createdArtifacts.add(artifact);
   }
 
@@ -72,8 +72,8 @@ class Lore {
   ///
   /// This is called when the hero leaves a dungeon with an artifact on the
   /// ground. This allows it to be generated again later on future dives.
-  void uncreateArtifact(Affix artifact) {
-    _createdArtifacts.remove(artifact);
+  void uncreateArtifact(Item artifact) {
+    _createdArtifacts.remove(artifact.type);
   }
 
   /// The number of monsters of [breed] that the hero has detected.
@@ -83,7 +83,7 @@ class Lore {
   int slain(Breed breed) => _slainBreeds[breed] ?? 0;
 
   /// The number of items of [type] the hero has picked up.
-  int foundItems(ItemType type) => _foundItems[type] ?? 1;
+  int foundItems(ItemType type) => _foundItems[type] ?? 0;
 
   /// The number of items with [affix] the hero has picked up.
   int foundAffixes(Affix affix) => _foundAffixes[affix] ?? 0;
@@ -92,7 +92,8 @@ class Lore {
   int usedItems(ItemType type) => _usedItems[type] ?? 0;
 
   /// Whether [artifact] has already been generated.
-  bool createdArtifact(Affix artifact) => _createdArtifacts.contains(artifact);
+  bool createdArtifact(ItemType artifact) =>
+      _createdArtifacts.contains(artifact);
 
   Lore clone() => Lore.from(
       {..._seenBreeds},
