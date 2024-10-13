@@ -1,4 +1,5 @@
 import 'package:malison/malison.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 import '../../engine.dart';
 import '../action/condition.dart';
@@ -40,7 +41,7 @@ void affixCategory(String tag) {
   _affixTag = tag;
 }
 
-AffixBuilder affix(String nameTemplate, double frequency) {
+AffixBuilder affix(String nameTemplate, {double frequency = 1.0}) {
   finishAffix();
 
   var affixSet =
@@ -173,7 +174,7 @@ class ItemBuilder extends _BaseBuilder {
   int? _armor;
   bool _isArtifact = false;
 
-  Affix? _instrinsicAffix;
+  AffixType? _instrinsicAffix;
 
   // TODO: Instead of late final, initialize these in item() instead of depth().
   late final int _minDepth;
@@ -392,24 +393,25 @@ class AffixBuilder {
   final String _nameTemplate;
 
   /// The kind of affixes this affix will be a member of.
-  final ResourceSet<Affix>? _affixSet;
+  final ResourceSet<AffixType>? _affixSet;
 
   int? _minDepth;
   int? _maxDepth;
   final double _frequency;
 
-  double? _heftScale;
-  int? _weightBonus;
-  int? _strikeBonus;
-  double? _damageScale;
-  int? _damageBonus;
+  RollParameter? _rollParameter;
+  ParameterizeDouble? _heftScale;
+  ParameterizeInt? _weightBonus;
+  ParameterizeInt? _strikeBonus;
+  ParameterizeDouble? _damageScale;
+  ParameterizeInt? _damageBonus;
   Element? _brand;
-  int? _armor;
-  int? _priceBonus;
-  double? _priceScale;
+  ParameterizeInt? _armorBonus;
+  ParameterizeInt? _priceBonus;
+  ParameterizeDouble? _priceScale;
 
-  final Map<Element, int> _resists = {};
-  final Map<Stat, int> _statBonuses = {};
+  final Map<Element, ParameterizeInt> _resists = {};
+  final Map<Stat, ParameterizeInt> _statBonuses = {};
 
   AffixBuilder(this._nameTemplate, [this._affixSet, this._frequency = 0.0]);
 
@@ -421,64 +423,80 @@ class AffixBuilder {
     _maxDepth = to ?? Option.maxDepth;
   }
 
+  void price(int bonus, double scale) {
+    priceP((_) => bonus, (_) => scale);
+  }
+
+  void priceP(ParameterizeInt bonus, ParameterizeDouble scale) {
+    _priceBonus = bonus;
+    _priceScale = scale;
+  }
+
+  void parameter(int min, {int? max, int? boostOneIn}) {
+    max ??= min;
+
+    _rollParameter = () {
+      var value = rng.inclusive(min, max);
+
+      if (boostOneIn != null) {
+        var boosted = 0;
+        while (boosted++ < 10 && rng.oneIn(boostOneIn)) {
+          value++;
+        }
+      }
+
+      return value;
+    };
+  }
+
   void heft(double scale) {
-    _heftScale = scale;
+    _heftScale = (_) => scale;
   }
 
   void weight(int bonus) {
-    _weightBonus = bonus;
+    _weightBonus = (_) => bonus;
   }
 
   void strike(int bonus) {
-    _strikeBonus = bonus;
+    _strikeBonus = (_) => bonus;
   }
 
-  void damage({double? scale, int? bonus}) {
-    _damageScale = scale;
-    _damageBonus = bonus;
+  void damage({ParameterizeDouble? scale, ParameterizeInt? bonus}) {
+    if (scale != null) _damageScale = scale;
+    if (bonus != null) _damageBonus = bonus;
   }
 
   void brand(Element element, {int? resist}) {
     _brand = element;
 
     // By default, branding also grants resistance.
-    _resists[element] = resist ?? 1;
+    _resists[element] = (_) => resist ?? 1;
   }
 
-  void armor(int armor) {
-    _armor = armor;
+  void armor(ParameterizeInt armor) {
+    _armorBonus = armor;
   }
 
-  void resist(Element element, [int? power]) {
-    _resists[element] = power ?? 1;
+  void resist(Element element, [ParameterizeInt? power]) {
+    if (power != null) {
+      _resists[element] = power;
+    } else {
+      _resists[element] = (_) => 1;
+    }
   }
 
-  void strength(int bonus) {
-    _statBonuses[Stat.strength] = bonus;
+  void strength(ParameterizeInt bonus) => _statBonus(Stat.strength, bonus);
+  void agility(ParameterizeInt bonus) => _statBonus(Stat.agility, bonus);
+  void fortitude(ParameterizeInt bonus) => _statBonus(Stat.fortitude, bonus);
+  void intellect(ParameterizeInt bonus) => _statBonus(Stat.intellect, bonus);
+  void will(ParameterizeInt bonus) => _statBonus(Stat.will, bonus);
+
+  /// Gives the affix a [bonus] to [stat].
+  void _statBonus(Stat stat, ParameterizeInt bonus) {
+    _statBonuses[stat] = bonus;
   }
 
-  void agility(int bonus) {
-    _statBonuses[Stat.agility] = bonus;
-  }
-
-  void fortitude(int bonus) {
-    _statBonuses[Stat.fortitude] = bonus;
-  }
-
-  void intellect(int bonus) {
-    _statBonuses[Stat.intellect] = bonus;
-  }
-
-  void will(int bonus) {
-    _statBonuses[Stat.will] = bonus;
-  }
-
-  void price(int bonus, double scale) {
-    _priceBonus = bonus;
-    _priceScale = scale;
-  }
-
-  Affix _build() {
+  AffixType _build() {
     var id = _nameTemplate;
 
     var affixSet = _affixSet;
@@ -496,23 +514,37 @@ class AffixBuilder {
       }
     }
 
-    var affix = Affix(id, _nameTemplate, _sortIndex++,
+    var affix = AffixType(id, _nameTemplate, _sortIndex++,
+        rollParameter: _rollParameter,
         heftScale: _heftScale,
         weightBonus: _weightBonus,
         strikeBonus: _strikeBonus,
         damageScale: _damageScale,
         damageBonus: _damageBonus,
         brand: _brand,
-        armor: _armor,
+        armorBonus: _armorBonus,
         priceBonus: _priceBonus,
         priceScale: _priceScale);
 
-    _resists.forEach(affix.resist);
+    _resists.forEach(affix.setResist);
     _statBonuses.forEach(affix.setStatBonus);
 
     return affix;
   }
 }
+
+/// Ignores the parameter and yields a fixed value.
+T Function(int) fixed<T>(T value) => (_) => value;
+
+/// Uses the parameter value as an int.
+final ParameterizeInt equalsParam = _intIdentity;
+
+int _intIdentity(int value) => value;
+
+/// Converts the parameter to a double scale value by taking [base] and adding
+/// [scale] times the parameter to it.
+ParameterizeDouble scaleParam({double base = 1.0, double scale = 0.1}) =>
+    (int parameter) => base + parameter * scale;
 
 void finishItem() {
   var builder = _itemBuilder;

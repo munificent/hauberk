@@ -68,7 +68,7 @@ void _update() {
       items.add(item.type.name);
 
       for (var affix in item.affixes) {
-        affixes.add(affix.id);
+        affixes.add(affix.type.id);
       }
     });
   }

@@ -133,7 +133,7 @@ class ItemType {
   /// If an ItemType contains an intrinsicAffix, then every Item of that
   /// ItemType will have that affix. (And no other affixes. There are no "ego"
   /// items that have both an intrinsic affix and other randomly added ones.)
-  final Affix? intrinsicAffix;
+  final AffixType? intrinsicAffix;
 
   /// Whether this item type is for a unique artifact.
   ///

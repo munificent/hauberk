@@ -23,7 +23,7 @@ abstract class Content {
   Iterable<String> buildStage(
       Lore lore, Stage stage, int depth, Function(Vec) placeHero);
 
-  Affix? findAffix(String name);
+  AffixType? findAffix(String name);
 
   Breed? tryFindBreed(String name);
 
@@ -39,7 +39,7 @@ abstract class Content {
 
   Iterable<ItemType> get items;
 
-  Iterable<Affix> get affixes;
+  Iterable<AffixType> get affixes;
 
   List<Race> get races;
 

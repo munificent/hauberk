@@ -19,7 +19,7 @@ class Lore {
   final Map<ItemType, int> _foundItems;
 
   /// The number of items with each affix that the hero has picked up or used.
-  final Map<Affix, int> _foundAffixes;
+  final Map<AffixType, int> _foundAffixes;
 
   /// The artifact [ItemType]s whose items exist in the world. This doesn't
   /// necessarily mean that the hero has found them.
@@ -54,8 +54,8 @@ class Lore {
     _foundItems[item.type] = _foundItems[item.type]! + 1;
 
     for (var affix in item.affixes) {
-      _foundAffixes.putIfAbsent(affix, () => 0);
-      _foundAffixes[affix] = _foundAffixes[affix]! + 1;
+      _foundAffixes.putIfAbsent(affix.type, () => 0);
+      _foundAffixes[affix.type] = _foundAffixes[affix.type]! + 1;
     }
   }
 
@@ -86,7 +86,7 @@ class Lore {
   int foundItems(ItemType type) => _foundItems[type] ?? 0;
 
   /// The number of items with [affix] the hero has picked up.
-  int foundAffixes(Affix affix) => _foundAffixes[affix] ?? 0;
+  int foundAffixes(AffixType affix) => _foundAffixes[affix] ?? 0;
 
   /// The number of items of [type] the hero has used.
   int usedItems(ItemType type) => _usedItems[type] ?? 0;

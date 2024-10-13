@@ -186,13 +186,18 @@ class Storage {
 
     var prefix = _loadAffix(data['prefix']);
     var suffix = _loadAffix(data['suffix']);
+    var intrinsicAffix = _loadAffix(data['intrinsic']);
 
-    return Item(type, count, prefix: prefix, suffix: suffix);
+    return Item(type, count,
+        prefix: prefix, suffix: suffix, intrinsicAffix: intrinsicAffix);
   }
 
   Affix? _loadAffix(dynamic data) {
-    if (data is String) return content.findAffix(data);
-    return null;
+    return switch (data) {
+      {'id': String id, 'parameter': int parameter} =>
+        Affix(content.findAffix(id)!, parameter),
+      _ => null,
+    };
   }
 
   Log _loadLog(Object? data) {
@@ -215,7 +220,7 @@ class Storage {
     var seenBreeds = <Breed, int>{};
     var slain = <Breed, int>{};
     var foundItems = <ItemType, int>{};
-    var foundAffixes = <Affix, int>{};
+    var foundAffixes = <AffixType, int>{};
     var createdArtifacts = <ItemType>{};
     var usedItems = <ItemType, int>{};
 
@@ -379,9 +384,18 @@ class Storage {
         {
           'type': item.type.name,
           'count': item.count,
-          if (item.prefix case var prefix?) 'prefix': prefix.id,
-          if (item.suffix case var suffix?) 'suffix': suffix.id,
+          if (item.prefix case var affix?) 'prefix': _saveAffix(affix),
+          if (item.suffix case var affix?) 'suffix': _saveAffix(affix),
+          if (item.intrinsicAffix case var affix?)
+            'intrinsic': _saveAffix(affix),
         }
     ];
+  }
+
+  Map<String, dynamic> _saveAffix(Affix affix) {
+    return {
+      'id': affix.type.id,
+      'parameter': affix.parameter,
+    };
   }
 }

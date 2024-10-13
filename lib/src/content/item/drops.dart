@@ -46,8 +46,10 @@ abstract class _BaseDrop {
     // If we picked an artifact, record it.
     if (itemType.isArtifact && lore != null) lore.createArtifact(itemType);
 
-    // If the item type already has an affix, then we can't add more.
-    if (itemType.intrinsicAffix != null) return Item(itemType, 1);
+    // If the item type already has an affix, use that one.
+    if (itemType.intrinsicAffix case var intrinsic?) {
+      return Item(itemType, 1, intrinsicAffix: intrinsic.spawn());
+    }
 
     // Only equipped items have affixes.
     if (itemType.equipSlot == null) return Item(itemType, 1);
@@ -56,23 +58,25 @@ abstract class _BaseDrop {
     // chances of of it being something good.
 
     // Try to add a prefix and/or suffix.
-    var prefix = _rollAffix(Affixes.prefixes, itemType, dropDepth);
-    var suffix = _rollAffix(Affixes.suffixes, itemType, dropDepth);
+    var prefixType = _rollAffix(Affixes.prefixes, itemType, dropDepth);
+    var suffixType = _rollAffix(Affixes.suffixes, itemType, dropDepth);
 
     // Having two affixes is rarer than the odds of just generating two, since
     // it's more valuable to have two affixes on a single item slot.
-    if (prefix != null && suffix != null && !rng.oneIn(4)) {
+    if (prefixType != null && suffixType != null && !rng.oneIn(4)) {
       if (rng.oneIn(2)) {
-        prefix = null;
+        prefixType = null;
       } else {
-        suffix = null;
+        suffixType = null;
       }
     }
 
-    return Item(itemType, 1, prefix: prefix, suffix: suffix);
+    return Item(itemType, 1,
+        prefix: prefixType?.spawn(), suffix: suffixType?.spawn());
   }
 
-  Affix? _rollAffix(ResourceSet<Affix> affixes, ItemType itemType, int depth) {
+  AffixType? _rollAffix(
+      ResourceSet<AffixType> affixes, ItemType itemType, int depth) {
     var (min, max) = switch (_quality) {
       ItemQuality.normal => (0.002, 0.8),
       ItemQuality.good => (0.1, 1.0),

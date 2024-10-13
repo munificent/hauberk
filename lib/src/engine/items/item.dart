@@ -13,18 +13,17 @@ class Item implements Comparable<Item>, Noun {
 
   final Affix? prefix;
   final Affix? suffix;
+  final Affix? intrinsicAffix;
 
   List<Affix> get affixes {
-    // If there's an instrinsic affix, that's the only one.
-    if (type.intrinsicAffix case var affix?) return [affix];
-
     return [
-      if (prefix case var prefix?) prefix,
-      if (suffix case var suffix?) suffix,
+      if (prefix case var affix?) affix,
+      if (suffix case var affix?) affix,
+      if (intrinsicAffix case var affix?) affix,
     ];
   }
 
-  Item(this.type, this._count, {this.prefix, this.suffix});
+  Item(this.type, this._count, {this.prefix, this.suffix, this.intrinsicAffix});
 
   Object get appearance => type.appearance;
 
@@ -85,7 +84,7 @@ class Item implements Comparable<Item>, Noun {
 
   /// The amount of protection added by the affixes.
   int get armorModifier =>
-      affixes.fold(0, (bonus, affix) => bonus + affix.armor);
+      affixes.fold(0, (bonus, affix) => bonus + affix.armorBonus);
 
   @override
   String get nounText {
@@ -192,8 +191,8 @@ class Item implements Comparable<Item>, Noun {
   ///
   /// If [count] is given, the clone has that count. Otherwise, it has the
   /// same count as this item.
-  Item clone([int? count]) =>
-      Item(type, count ?? _count, prefix: prefix, suffix: suffix);
+  Item clone([int? count]) => Item(type, count ?? _count,
+      prefix: prefix, suffix: suffix, intrinsicAffix: intrinsicAffix);
 
   bool canStack(Item item) {
     if (type != item.type) return false;

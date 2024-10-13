@@ -286,7 +286,7 @@ class AffixesChart extends Chart {
 
     dropAny.dropItem(lore, depth, (item) {
       for (var affix in item.affixes) {
-        histogram.add(affix.id);
+        histogram.add(affix.type.id);
       }
 
       if (item.affixes.isEmpty) histogram.add("(No affix)");

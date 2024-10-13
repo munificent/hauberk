@@ -46,7 +46,7 @@ class GameContent implements Content {
   }
 
   @override
-  Affix findAffix(String name) => Affixes.find(name);
+  AffixType findAffix(String name) => Affixes.find(name);
   @override
   Breed? tryFindBreed(String name) => Monsters.breeds.tryFind(name);
   @override
@@ -67,7 +67,7 @@ class GameContent implements Content {
   Iterable<ItemType> get items => Items.types.all;
 
   @override
-  Iterable<Affix> get affixes => Affixes.all;
+  Iterable<AffixType> get affixes => Affixes.all;
 
   @override
   List<Race> get races => Races.all;

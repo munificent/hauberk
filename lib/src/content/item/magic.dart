@@ -259,5 +259,5 @@ void rings() {
   item("Ring[s] of Wisdom", blue, price: 1000)
     ..depth(20)
     ..frequency(0.05)
-    ..instrinsicAffix((affix) => affix..intellect(2));
+    ..instrinsicAffix((affix) => affix..intellect(fixed(2)));
 }
