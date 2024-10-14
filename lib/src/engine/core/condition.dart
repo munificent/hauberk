@@ -41,7 +41,7 @@ abstract class Condition {
       if (isActive) {
         onUpdate(action);
       } else {
-        onDeactivate();
+        onDeactivate(action);
         _intensity = 0;
       }
     }
@@ -67,7 +67,7 @@ abstract class Condition {
   // TODO: Instead of modifying the given action, should this create a reaction?
   void onUpdate(Action action) {}
 
-  void onDeactivate();
+  void onDeactivate(Action action);
 }
 
 // TODO: Move these to content?
@@ -75,16 +75,16 @@ abstract class Condition {
 /// A condition that temporarily boosts the actor's speed.
 class HasteCondition extends Condition {
   @override
-  void onDeactivate() {
-    actor.log("{1} slow[s] back down.", actor);
+  void onDeactivate(Action action) {
+    action.log("{1} slow[s] back down.", actor);
   }
 }
 
 /// A condition that temporarily lowers the actor's speed.
 class ColdCondition extends Condition {
   @override
-  void onDeactivate() {
-    actor.log("{1} warm[s] back up.", actor);
+  void onDeactivate(Action action) {
+    action.log("{1} warm[s] back up.", actor);
   }
 }
 
@@ -96,22 +96,22 @@ class PoisonCondition extends Condition {
     // condition and log message.
 
     if (!actor.takeDamage(action, intensity, Noun("the poison"))) {
-      actor.log("{1} [are|is] hurt by poison!", actor);
+      action.log("{1} [are|is] hurt by poison!", actor);
     }
   }
 
   @override
-  void onDeactivate() {
-    actor.log("{1} [are|is] no longer poisoned.", actor);
+  void onDeactivate(Action action) {
+    action.log("{1} [are|is] no longer poisoned.", actor);
   }
 }
 
 /// A condition that impairs vision.
 class BlindnessCondition extends Condition {
   @override
-  void onDeactivate() {
-    actor.log("{1} can see clearly again.", actor);
-    if (actor == actor.game.hero) actor.game.stage.heroVisibilityChanged();
+  void onDeactivate(Action action) {
+    action.log("{1} can see clearly again.", actor);
+    if (actor == action.game.hero) action.game.stage.heroVisibilityChanged();
   }
 }
 
@@ -122,8 +122,8 @@ class ResistCondition extends Condition {
   ResistCondition(this._element);
 
   @override
-  void onDeactivate() {
-    actor.log("{1} feel[s] susceptible to $_element.", actor);
+  void onDeactivate(Action action) {
+    action.log("{1} feel[s] susceptible to $_element.", actor);
   }
 }
 
@@ -132,7 +132,7 @@ class PerceiveCondition extends Condition {
   PerceiveCondition();
 
   @override
-  void onDeactivate() {
-    actor.log("{1} no longer perceive[s] monsters.", actor);
+  void onDeactivate(Action action) {
+    action.log("{1} no longer perceive[s] monsters.", actor);
   }
 }
