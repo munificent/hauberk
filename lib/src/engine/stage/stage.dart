@@ -57,6 +57,23 @@ class Stage {
 
   Tile get(int x, int y) => tiles.get(x, y);
 
+  /// Whether it's possible for an actor with [motility] to ever be on the tile
+  /// at [pos].
+  bool canOccupy(Vec pos, Motility motility) {
+    if (pos.x < 0) return false;
+    if (pos.x >= width) return false;
+    if (pos.y < 0) return false;
+    if (pos.y >= height) return false;
+
+    return this[pos].canEnter(motility);
+  }
+
+  /// Whether a actor with [motility] can enter the tile at [pos] right now.
+  ///
+  /// This is true if the actor can occupy [pos] and no other actor already is.
+  bool canEnter(Vec pos, Motility motility) =>
+      canOccupy(pos, motility) && game.stage.actorAt(pos) == null;
+
   void addActor(Actor actor) {
     assert(_actorsByTile[actor.pos] == null);
 

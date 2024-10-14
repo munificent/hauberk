@@ -12,9 +12,10 @@ class TeleportAction extends Action {
   ActionResult onPerform() {
     var targets = <Vec>[];
 
+    var actorPos = actor!.pos;
     var bounds = Rect.intersect(
-        Rect.leftTopRightBottom(actor!.x - distance, actor!.y - distance,
-            actor!.x + distance, actor!.y + distance),
+        Rect.leftTopRightBottom(actorPos.x - distance, actorPos.y - distance,
+            actorPos.x + distance, actorPos.y + distance),
         game.stage.bounds);
 
     for (var pos in bounds) {
@@ -36,7 +37,7 @@ class TeleportAction extends Action {
     }
 
     var from = actor!.pos;
-    actor!.pos = best;
+    moveActor(actor!, best);
     addEvent(EventType.teleport, actor: actor, pos: from);
     return succeed('{1} teleport[s]!', actor);
   }

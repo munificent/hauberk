@@ -356,8 +356,7 @@ class Hero extends Actor {
   }
 
   @override
-  void changePosition(Vec from, Vec to) {
-    super.changePosition(from, to);
+  void onChangePosition(Game game, Vec from, Vec to) {
     game.stage.heroVisibilityChanged();
   }
 

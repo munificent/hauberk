@@ -71,7 +71,7 @@ class BashAction extends MasteryAction {
       chance = chance.clamp(5, 100);
 
       if (defender.canEnter(dest) && rng.percent(chance)) {
-        defender.pos = dest;
+        moveActor(defender, dest);
         defender.energy.energy = 0;
         log("{1} is knocked back!", defender);
         addEvent(EventType.knockBack, pos: actor!.pos + _dir, dir: _dir);

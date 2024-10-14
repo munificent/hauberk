@@ -72,7 +72,7 @@ class Game {
   }
 
   void initHero(Vec heroPos) {
-    hero.pos = heroPos;
+    hero.setPosition(this, heroPos);
     _stage.refreshView();
   }
 

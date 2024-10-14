@@ -53,7 +53,7 @@ class WalkAction extends Action {
       return fail('{1} hit[s] the ${tile.name}.', actor);
     }
 
-    actor!.pos = pos;
+    moveActor(actor!, pos);
 
     // See if the hero stepped on anything interesting.
     if (actor is Hero) {

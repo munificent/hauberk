@@ -432,9 +432,7 @@ class Monster extends Actor {
   }
 
   @override
-  void changePosition(Vec from, Vec to) {
-    super.changePosition(from, to);
-
+  void onChangePosition(Game game, Vec from, Vec to) {
     // If the monster is (or was) visible, don't let the hero rest through it
     // moving.
     if (game.stage[from].isVisible || game.stage[to].isVisible) {

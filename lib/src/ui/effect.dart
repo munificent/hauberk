@@ -62,7 +62,8 @@ void addEffects(List<Effect> effects, Event event) {
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
         // TODO: Different blood colors for different breeds.
-        effects.add(ParticleEffect(event.actor!.x, event.actor!.y, red));
+        effects
+            .add(ParticleEffect(event.actor!.pos.x, event.actor!.pos.y, red));
       }
 
     case EventType.heal:
@@ -305,7 +306,7 @@ class DamageEffect implements Effect {
   void render(Game game, DrawGlyph drawGlyph) {
     var frame = _frame % _framesPerBlink;
     if (frame < _framesPerBlink ~/ 2) {
-      drawGlyph(actor.x, actor.y, Glyph("*", elementColor(element)));
+      drawGlyph(actor.pos.x, actor.pos.y, Glyph("*", elementColor(element)));
     }
   }
 

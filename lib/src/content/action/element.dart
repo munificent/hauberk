@@ -194,7 +194,7 @@ class WindAction extends Action {
 
     log("{1} [are|is] thrown by the wind!", actor);
     addEvent(EventType.wind, actor: actor, pos: actor!.pos);
-    actor!.pos = rng.item(positions);
+    moveActor(actor!, rng.item(positions));
 
     return ActionResult.success;
   }

@@ -46,28 +46,9 @@ abstract class Actor implements Noun {
         ..._resistances.values
       ];
 
-  Vec _pos;
-
+  /// Where the actor is on the [Stage].
   Vec get pos => _pos;
-
-  set pos(Vec value) {
-    if (value != _pos) {
-      changePosition(_pos, value);
-      _pos = value;
-    }
-  }
-
-  int get x => pos.x;
-
-  set x(int value) {
-    pos = Vec(value, y);
-  }
-
-  int get y => pos.y;
-
-  set y(int value) {
-    pos = Vec(x, value);
-  }
+  Vec _pos;
 
   int _health = 0;
 
@@ -139,18 +120,31 @@ abstract class Actor implements Noun {
   /// [Lighting.emanationForLevel()].
   int get emanationLevel;
 
-  /// Called when the actor's position is about to change from [from] to [to].
-  void changePosition(Vec from, Vec to) {
-    game.stage.moveActor(from, to);
-
-    if (emanationLevel > 0) game.stage.actorEmanationChanged();
-  }
-
   int get baseSpeed;
 
   /// The actor's base dodge ability. This is the percentage chance of a melee
   /// attack missing the actor.
   int get baseDodge;
+
+  /// Changes the actor's position to [to].
+  ///
+  /// This should generally not be called directly because the [Stage] needs to
+  /// track the location of every actor. Instead, prefer calling
+  /// [Action.moveActor()].
+  void setPosition(Game game, Vec to) {
+    if (_pos == to) return;
+
+    var from = _pos;
+
+    if (emanationLevel > 0) game.stage.actorEmanationChanged();
+
+    onChangePosition(game, from, to);
+    game.stage.moveActor(from, to);
+    _pos = to;
+  }
+
+  /// Called when the actor's position is about to change from [from] to [to].
+  void onChangePosition(Game game, Vec from, Vec to) {}
 
   Iterable<Defense> onGetDefenses();
 

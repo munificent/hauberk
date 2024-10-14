@@ -84,6 +84,11 @@ abstract class Action {
         actor: actor, element: element, pos: pos, dir: dir, other: other);
   }
 
+  /// Moves [actor] to [dest].
+  void moveActor(Actor actor, Vec dest) {
+    actor.setPosition(game, dest);
+  }
+
   /// How much noise is produced by this action. Override to make certain
   /// actions quieter or louder.
   double get noise => Sound.normalNoise;

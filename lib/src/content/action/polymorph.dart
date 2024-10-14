@@ -37,20 +37,18 @@ class AmputateAction extends Action {
 
     log(_message, actor);
 
-    // Create the part.
-    var part = _partBreed.spawn(game, Vec.zero, monster);
-    part.awaken();
-
     // Pick an open adjacent tile.
     var positions = <Vec>[];
     for (var dir in Direction.all) {
       var pos = actor!.pos + dir;
-      if (part.canEnter(pos)) positions.add(pos);
+      if (game.stage.canEnter(pos, _partBreed.motility)) positions.add(pos);
     }
 
     // If there's no room for the part, it disappears.
     if (positions.isNotEmpty) {
-      part.pos = rng.item(positions);
+      // Create the part.
+      var part = _partBreed.spawn(game, rng.item(positions), monster);
+      part.awaken();
       game.stage.addActor(part);
 
       // TODO: Different event?
