@@ -211,46 +211,37 @@ class Monster extends Actor {
 
     // TODO: If standing in substance, should try to get out if harmful.
 
-    _updateState(notice);
-    return _state.getAction();
-  }
-
-  void _updateState(double notice) {
     // See if we want to change state.
-    if (isAsleep) {
-      if (_fear > _frightenThreshold) {
-        log("{1} is afraid!", this);
-        game.addEvent(EventType.frighten, actor: this);
-
+    switch (_state) {
+      case AsleepState() when _fear > _frightenThreshold:
         _resetCharges();
-        _changeState(AfraidState());
-      } else if (rng.percent(_awakenPercent(notice))) {
-        log("{1} wakes up!", this);
+        return ChangeMonsterStateAction("{1} is afraid!", AfraidState(),
+            event: EventType.frighten);
+
+      case AsleepState() when rng.percent(_awakenPercent(notice)):
+        _alertness = _maxAlertness;
+        _resetCharges();
 
         // TODO: Probably shouldn't add event if monster woke up because they
         // were hit.
-        game.addEvent(EventType.awaken, actor: this);
+        return ChangeMonsterStateAction("{1} wakes up!", AwakeState(),
+            event: EventType.awaken);
 
-        _alertness = _maxAlertness;
-        _resetCharges();
-        _changeState(AwakeState());
-      }
-    } else if (isAwake) {
-      if (_fear > _frightenThreshold) {
-        log("{1} is afraid!", this);
-        game.addEvent(EventType.frighten, actor: this);
-        _changeState(AfraidState());
-      } else if (notice < 0.01) {
-        log("{1} falls asleep!", this);
+      case AwakeState() when _fear > _frightenThreshold:
+        return ChangeMonsterStateAction("{1} is afraid!", AfraidState(),
+            event: EventType.frighten);
 
+      case AwakeState() when notice < 0.01:
         _alertness = 0.0;
-        _changeState(AsleepState());
-      }
-    } else if (isAfraid) {
-      if (_fear <= 0.0) {
-        log("{1} grows courageous!", this);
-        _changeState(AwakeState());
-      }
+        return ChangeMonsterStateAction("{1} falls asleep.", AsleepState());
+
+      case AfraidState() when _fear <= 0.0:
+        return ChangeMonsterStateAction(
+            "{1} find[s] {1 his} courage.", AwakeState());
+
+      default:
+        // Keep the current state.
+        return _state.getAction();
     }
   }
 
@@ -493,5 +484,31 @@ class Monster extends Actor {
     for (var move in breed.moves) {
       _recharges[move] = rng.float(move.rate / 2);
     }
+  }
+}
+
+/// Action that changes a monster to a given state and then performs that
+/// state's action.
+class ChangeMonsterStateAction extends Action {
+  final String _message;
+  final MonsterState _state;
+  final EventType? _event;
+
+  ChangeMonsterStateAction(this._message, this._state, {EventType? event})
+      : _event = event;
+
+  @override
+  ActionResult onPerform() {
+    // Let the player know the monster changed.
+    log(_message, actor);
+
+    if (_event case var event?) {
+      addEvent(event, actor: actor);
+    }
+
+    monster._changeState(_state);
+
+    // Now let the new state decide what the monster does.
+    return alternate(monster._state.getAction());
   }
 }

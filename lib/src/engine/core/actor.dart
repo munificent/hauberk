@@ -306,12 +306,6 @@ abstract class Actor implements Noun {
     if (isAlive) onFinishTurn(action);
   }
 
-  /// Logs [message] if the actor is visible to the hero.
-  void log(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    if (!game.hero.canPerceive(this)) return;
-    game.log.message(message, noun1, noun2, noun3);
-  }
-
   @override
   String toString() => nounText;
 }

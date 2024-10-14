@@ -6,7 +6,6 @@ import '../../debug.dart';
 import '../action/action.dart';
 import '../action/walk.dart';
 import '../core/game.dart';
-import '../core/log.dart';
 import '../hero/hero.dart';
 import '../monster/breed.dart';
 import '../monster/monster.dart';
@@ -80,10 +79,6 @@ abstract class MonsterState {
   Game get game => _monster.game;
 
   Vec get pos => _monster.pos;
-
-  void log(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    monster.log(message, noun1, noun2, noun3);
-  }
 
   Action getAction();
 
