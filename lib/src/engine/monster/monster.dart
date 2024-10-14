@@ -431,10 +431,10 @@ class Monster extends Actor {
 
   /// Called when this Actor has been killed by [attackNoun].
   @override
-  void onDied(Noun attackNoun) {
+  void onDied(Action action, Noun attackNoun) {
     var items = game.stage.placeDrops(pos, breed.drop, depth: breed.depth);
     for (var item in items) {
-      log("{1} drop[s] {2}.", this, item);
+      action.log("{1} drop[s] {2}.", this, item);
     }
 
     game.stage.removeActor(this);

@@ -145,8 +145,9 @@ class WizardDialog extends Screen<Input> {
   void _killAllMonsters() {
     for (var monster in _game.stage.actors.toList()) {
       if (monster is! Monster) continue;
-
-      monster.onDied(Noun('The wizard'));
+      _game.stage.placeDrops(monster.pos, monster.breed.drop,
+          depth: monster.breed.depth);
+      _game.stage.removeActor(monster);
     }
 
     dirty();

@@ -162,15 +162,15 @@ class Hero extends Actor {
   // lore. Then the skill levels can be stored using Property and refreshed
   // like other properties.
   /// Discover or acquire any skills associated with [item].
-  void _gainItemSkills(Item item) {
+  void _gainItemSkills(Game game, Item item) {
     for (var skill in item.type.skills) {
       if (save.heroClass.proficiency(skill) != 0.0 && skills.discover(skill)) {
         // See if the hero can immediately use it.
         var level = skill.calculateLevel(save);
         if (skills.gain(skill, level)) {
-          log(skill.gainMessage(level), this);
+          game.log.gain(skill.gainMessage(level), this);
         } else {
-          log(skill.discoverMessage, this);
+          game.log.gain(skill.discoverMessage, this);
         }
       }
     }
@@ -328,8 +328,8 @@ class Hero extends Actor {
   }
 
   @override
-  void onDied(Noun attackNoun) {
-    game.log.message("you were slain by {1}.", attackNoun);
+  void onDied(Action action, Noun attackNoun) {
+    action.log("{1} [were|was] slain by {2}.", this, attackNoun);
   }
 
   @override
@@ -506,13 +506,13 @@ class Hero extends Actor {
   ///
   /// This can be in response to picking it up, or equipping or using it
   /// straight from the ground.
-  void pickUp(Item item) {
+  void pickUp(Game game, Item item) {
     // TODO: If the user repeatedly picks up and drops the same item, it gets
     // counted every time. Maybe want to put a (serialized) flag on items for
     // whether they have been picked up or not.
     lore.findItem(item);
 
-    _gainItemSkills(item);
+    _gainItemSkills(game, item);
     refreshProperties();
   }
 

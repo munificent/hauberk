@@ -26,7 +26,7 @@ class GameOverScreen extends Screen<Input> {
     // TODO: This could be a whole lot more interesting looking. Show the hero's
     // final stats, etc.
     Draw.dialog(terminal, 60, 40, label: "You have died", (terminal) {
-      var y = 38;
+      var y = terminal.height - 1;
       for (var i = _hero.save.log.messages.length - 1; i >= 0; i--) {
         // TODO: Include count, lines, color.
         var lines =

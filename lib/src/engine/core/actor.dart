@@ -234,7 +234,7 @@ abstract class Actor implements Noun {
     action.log("{1} kill[s] {2}.", attackNoun, this);
     if (attacker != null) attacker.onKilled(action, this);
 
-    onDied(attackNoun);
+    onDied(action, attackNoun);
 
     return true;
   }
@@ -253,7 +253,7 @@ abstract class Actor implements Noun {
   }
 
   /// Called when this Actor has been killed by [attackNoun].
-  void onDied(Noun attackNoun) {
+  void onDied(Action action, Noun attackNoun) {
     // Do nothing.
   }
 

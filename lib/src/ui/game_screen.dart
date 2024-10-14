@@ -142,7 +142,7 @@ class GameScreen extends Screen<Input> {
     if (newHero) {
       for (var item in content.startingItems(save)) {
         game.hero.inventory.tryAdd(item);
-        game.hero.pickUp(item);
+        game.hero.pickUp(game, item);
       }
     }
 

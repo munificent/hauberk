@@ -307,7 +307,7 @@ abstract class _GetScreen extends _ItemVerbScreen {
 
   @override
   void _afterTransfer(Item item, int count) {
-    _gameScreen.game.hero.pickUp(item);
+    _gameScreen.game.hero.pickUp(_gameScreen.game, item);
   }
 }
 
@@ -547,7 +547,7 @@ class _ShopBuyScreen extends _ItemVerbScreen {
     // Acquiring an item may unlock skills.
     // TODO: Would be nice if hero handled this more automatically. Maybe make
     // Inventory and Equipment manage this?
-    _gameScreen.game.hero.pickUp(item);
+    _gameScreen.game.hero.pickUp(_gameScreen.game, item);
   }
 }
 
