@@ -49,7 +49,8 @@ void faeFolk() {
     ..missive(Missive.insult, rate: 4)
     ..sparkBolt(rate: 12, damage: 4)
     ..drop("treasure", percent: 10)
-    ..drop("magic", percent: 30);
+    ..drop("magic", percent: 30)
+    ..drop("Insect Wing", percent: 30);
 
   breed("house sprite", 5, lightBlue, 10)
     ..attack("poke[s]", 5)
@@ -57,7 +58,8 @@ void faeFolk() {
     ..stoneBolt(rate: 10, damage: 4)
     ..teleport(rate: 8, range: 4)
     ..drop("treasure", percent: 10)
-    ..drop("magic", percent: 30);
+    ..drop("magic", percent: 30)
+    ..drop("Insect Wing", percent: 30);
 
   breed("mischievous sprite", 7, pink, 24)
     ..attack("poke[s]", 6)
@@ -65,7 +67,8 @@ void faeFolk() {
     ..windBolt(rate: 10, damage: 8)
     ..teleport(range: 5)
     ..drop("treasure", percent: 10)
-    ..drop("magic", percent: 30);
+    ..drop("magic", percent: 30)
+    ..drop("Insect Wing", percent: 30);
 
   breed("Tink", 8, peaGreen, 40, meander: 10)
     ..unique(pronoun: Pronoun.she)

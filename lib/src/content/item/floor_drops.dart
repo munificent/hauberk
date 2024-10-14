@@ -18,14 +18,8 @@ class FloorDrops {
           percentDrop(20, "weapon"),
           percentDrop(20, "armor"),
           percentDrop(20, "food"),
-          percentDrop(15, "magic"),
           percentDrop(15, "magic")
         ]));
-
-    floorDrop(
-        startFrequency: 5.0,
-        location: SpawnLocation.wall,
-        drop: parseDrop("magic"));
 
     floorDrop(startFrequency: 10.0, endFrequency: 1.0, drop: parseDrop("food"));
 

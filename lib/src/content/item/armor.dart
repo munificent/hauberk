@@ -31,7 +31,7 @@ void bodyArmor() {
   // Robes.
   category(CharCode.latinSmallLetterOWithCircumflex)
       .tag("equipment/armor/body/robe");
-  item("Robe", blue, price: 20)
+  item("Robe", blue, price: 30)
     ..depth(2, to: 40)
     ..frequency(0.5)
     ..armor(4)
@@ -47,7 +47,7 @@ void bodyArmor() {
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body")
     ..frequency(0.5);
-  item("Cloth Shirt", ash, price: 40)
+  item("Cloth Shirt", ash, price: 20)
     ..depth(2, to: 30)
     ..armor(3)
     ..destroy(Elements.fire, chance: 15, fuel: 4);
