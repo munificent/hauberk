@@ -23,7 +23,7 @@ class AmputateMove extends Move {
 
   /// Doesn't spontaneously amputate.
   @override
-  bool shouldUse(Stage stage, Monster monster) => false;
+  bool shouldUse(Game game, Monster monster) => false;
 
   @override
   bool shouldUseOnDamage(Monster monster, int damage) {
@@ -39,7 +39,7 @@ class AmputateMove extends Move {
   }
 
   @override
-  Action onGetAction(Monster monster) =>
+  Action onGetAction(Game game, Monster monster) =>
       AmputateAction(_body.breed, _part.breed, _message);
 
   @override

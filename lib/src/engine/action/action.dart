@@ -35,10 +35,10 @@ abstract class Action {
   /// ongoing action or should wait until the current action is finished.
   bool get isImmediate => true;
 
-  void bind(Actor actor, {bool? consumesEnergy}) {
+  void bind(Game game, Actor actor, {bool? consumesEnergy}) {
     _actor = actor;
     _pos = actor.pos;
-    _game = actor.game;
+    _game = game;
     _consumesEnergy = consumesEnergy ?? true;
   }
 
@@ -120,7 +120,7 @@ abstract class Action {
   }
 
   ActionResult alternate(Action action) {
-    action.bind(_actor!, consumesEnergy: _consumesEnergy);
+    action.bind(_game, _actor!, consumesEnergy: _consumesEnergy);
     return ActionResult.alternate(action);
   }
 

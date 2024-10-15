@@ -14,21 +14,21 @@ class SpawnMove extends Move {
   num get experience => 6.0;
 
   @override
-  bool shouldUse(Stage stage, Monster monster) {
+  bool shouldUse(Game game, Monster monster) {
     // Don't breed offscreen since it can end up filling the room before the
     // hero gets there.
     if (!monster.isVisibleToHero) return false;
 
     // Look for an open adjacent tile.
     for (var neighbor in monster.pos.neighbors) {
-      if (stage.willEnter(neighbor, monster.motility)) return true;
+      if (game.stage.willEnter(neighbor, monster.motility)) return true;
     }
 
     return false;
   }
 
   @override
-  Action onGetAction(Monster monster) {
+  Action onGetAction(Game game, Monster monster) {
     // Pick an open adjacent tile.
     var dirs = <Direction>[];
 
@@ -36,13 +36,12 @@ class SpawnMove extends Move {
     // ones that continue existing lines.
     if (_preferStraight) {
       for (var dir in Direction.all) {
-        if (!monster.game.stage
-            .willEnter(monster.pos + dir, monster.motility)) {
+        if (!game.stage.willEnter(monster.pos + dir, monster.motility)) {
           continue;
         }
 
         bool checkNeighbor(Direction neighbor) {
-          var other = monster.game.stage.actorAt(monster.pos + dir);
+          var other = game.stage.actorAt(monster.pos + dir);
           return other != null &&
               other is Monster &&
               other.breed == monster.breed;
@@ -64,8 +63,7 @@ class SpawnMove extends Move {
 
     if (dirs.isEmpty) {
       for (var dir in Direction.all) {
-        if (!monster.game.stage
-            .willEnter(monster.pos + dir, monster.motility)) {
+        if (!game.stage.willEnter(monster.pos + dir, monster.motility)) {
           continue;
         }
 

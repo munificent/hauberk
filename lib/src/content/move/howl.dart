@@ -11,13 +11,13 @@ class HowlMove extends Move {
   HowlMove(super.rate, this._range, this._verb);
 
   @override
-  bool shouldUse(Stage stage, Monster monster) {
+  bool shouldUse(Game game, Monster monster) {
     // Don't wake up others unless the hero is around.
     // TODO: Should take sight into account.
     if (!monster.isVisibleToHero) return false;
 
     // See if there are any sleeping monsters nearby.
-    for (var actor in monster.game.stage.actors) {
+    for (var actor in game.stage.actors) {
       if (actor == monster) continue;
 
       // If we found someone asleep, howl.
@@ -32,7 +32,7 @@ class HowlMove extends Move {
   }
 
   @override
-  Action onGetAction(Monster monster) => HowlAction(_range, _verb);
+  Action onGetAction(Game game, Monster monster) => HowlAction(_range, _verb);
 
   @override
   String toString() => "Howl $_range";

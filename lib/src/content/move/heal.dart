@@ -11,14 +11,14 @@ class HealMove extends Move {
   HealMove(super.rate, this._amount);
 
   @override
-  bool shouldUse(Stage stage, Monster monster) {
+  bool shouldUse(Game game, Monster monster) {
     // Heal if it could heal the full amount, or it's getting close to death.
     return (monster.health / monster.maxHealth < 0.25) ||
         (monster.maxHealth - monster.health >= _amount);
   }
 
   @override
-  Action onGetAction(Monster monster) {
+  Action onGetAction(Game game, Monster monster) {
     return HealAction(_amount);
   }
 

@@ -11,13 +11,14 @@ class HasteMove extends Move {
   HasteMove(super.rate, this._duration, this._speed);
 
   @override
-  bool shouldUse(Stage stage, Monster monster) {
+  bool shouldUse(Game game, Monster monster) {
     // Don't use if already hasted.
     return !monster.haste.isActive;
   }
 
   @override
-  Action onGetAction(Monster monster) => HasteAction(_duration, _speed);
+  Action onGetAction(Game game, Monster monster) =>
+      HasteAction(_duration, _speed);
 
   @override
   String toString() => "Haste $_speed for $_duration turns rate: $rate";

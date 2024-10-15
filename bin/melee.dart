@@ -156,7 +156,7 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
 
   while (true) {
     var action = AttackAction(monster);
-    action.bind(hero);
+    action.bind(game, hero);
     action.perform();
 
     if (monster.health <= 0) {
@@ -165,7 +165,7 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
     }
 
     action = AttackAction(hero);
-    action.bind(monster);
+    action.bind(game, monster);
     action.perform();
 
     if (hero.health <= 0) {

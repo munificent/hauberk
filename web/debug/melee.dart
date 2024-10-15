@@ -133,7 +133,7 @@ SimResult simulate(HeroSave save) {
     var monster = Monster(game, breed, 0, 0, 1);
     while (true) {
       var action = AttackAction(monster);
-      action.bind(game.hero);
+      action.bind(game, game.hero);
       action.perform();
 
       if (monster.health == 0) {
@@ -142,7 +142,7 @@ SimResult simulate(HeroSave save) {
       }
 
       action = AttackAction(game.hero);
-      action.bind(monster);
+      action.bind(game, monster);
       action.perform();
 
       if (game.hero.health == 0) break;

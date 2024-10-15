@@ -81,7 +81,7 @@ abstract class MonsterState {
 
   Vec get pos => _monster.pos;
 
-  Action getAction(Stage stage);
+  Action getAction(Game game);
 
   /// Applies the monster's meandering to [dir].
   Direction _meander(Direction dir) {
@@ -138,12 +138,12 @@ abstract class MonsterState {
 
 class AsleepState extends MonsterState {
   @override
-  Action getAction(Stage stage) => RestAction();
+  Action getAction(Game game) => RestAction();
 }
 
 class AwakeState extends MonsterState {
   @override
-  Action getAction(Stage stage) {
+  Action getAction(Game game) {
     // If on a burning etc. tile, try to get out.
     // TODO: Should consider moves like teleport that will help it escape.
     var escape = _escapeSubstance();
@@ -151,10 +151,9 @@ class AwakeState extends MonsterState {
 
     // If there is a worthwhile move, use it.
     var moves = breed.moves
-        .where((move) =>
-            monster.canUse(move) && move.shouldUse(game.stage, monster))
+        .where((move) => monster.canUse(move) && move.shouldUse(game, monster))
         .toList();
-    if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
+    if (moves.isNotEmpty) return rng.item(moves).getAction(game, monster);
 
     // If the monster doesn't pursue, then it does melee or waits.
     if (breed.flags.immobile) {
@@ -228,7 +227,7 @@ class AwakeState extends MonsterState {
     // Now that we know what the monster *wants* to do, reconcile it with what
     // they're able to do.
     var meleeDir = _findMeleePath();
-    var rangedDir = rangedAttacks > 0 ? _findRangedPath(stage) : null;
+    var rangedDir = rangedAttacks > 0 ? _findRangedPath(game.stage) : null;
 
     Direction? walkDir;
     if (monster.wantsToMelee) {
@@ -412,7 +411,7 @@ class AwakeState extends MonsterState {
 
 class AfraidState extends MonsterState {
   @override
-  Action getAction(Stage stage) {
+  Action getAction(Game game) {
     // TODO: Take light and the breed's light preference into account.
     // If we're already hidden, rest.
     if (game.stage[pos].isOccluded) return RestAction();
@@ -433,7 +432,7 @@ class AfraidState extends MonsterState {
     var heroDistance = (pos - game.hero.pos).kingLength;
     var farther = Direction.all.where((dir) {
       var here = pos + dir;
-      if (!stage.willEnter(here, monster.motility)) return false;
+      if (!game.stage.willEnter(here, monster.motility)) return false;
       return (here - game.hero.pos).kingLength > heroDistance;
     });
 
@@ -445,6 +444,6 @@ class AfraidState extends MonsterState {
 
     // If we got here, we couldn't escape. Cornered!
     // TODO: Kind of hacky.
-    return monster.awaken().getAction(stage);
+    return monster.awaken().getAction(game);
   }
 }

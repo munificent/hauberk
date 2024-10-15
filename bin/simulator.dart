@@ -104,7 +104,7 @@ class Simulator {
 
     while (monster.health > 0) {
       var attack = AttackAction(monster);
-      attack.bind(hero);
+      attack.bind(game, hero);
       attack.perform();
       kill.hits++;
 

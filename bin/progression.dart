@@ -15,7 +15,7 @@ void main() {
     for (var actor in game.stage.actors) {
       if (actor is Monster) {
         var attack = AttackAction(actor);
-        attack.bind(hero);
+        attack.bind(game, hero);
         hero.seeMonster(actor);
         hero.onKilled(attack, actor);
       }

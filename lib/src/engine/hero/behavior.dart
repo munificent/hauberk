@@ -51,7 +51,7 @@ class RestBehavior extends Behavior {
     // TODO: Keep resting if focus is not at max?
 
     if (hero.stomach == 0) {
-      hero.game.log.message("You must eat before you can rest.");
+      game.log.message("You must eat before you can rest.");
       return false;
     }
 
@@ -112,7 +112,7 @@ class RunBehavior extends Behavior {
         dirs.add(direction.rotateRight90);
       }
 
-      var openDirs = dirs.where((dir) => _isOpen(hero, dir));
+      var openDirs = dirs.where((dir) => _isOpen(game.stage, hero, dir));
 
       if (openDirs.isEmpty) return false;
 
@@ -126,13 +126,13 @@ class RunBehavior extends Behavior {
         direction = openDirs.first;
       } else {
         // Entering an open area.
-        openLeft = _isOpen(hero, direction.rotateLeft90);
-        openRight = _isOpen(hero, direction.rotateRight90);
+        openLeft = _isOpen(game.stage, hero, direction.rotateLeft90);
+        openRight = _isOpen(game.stage, hero, direction.rotateRight90);
       }
     } else if (!openLeft! && !openRight!) {
-      if (!_runInPassage(hero)) return false;
+      if (!_runInPassage(game.stage, hero)) return false;
     } else {
-      if (!_runInOpen(hero)) return false;
+      if (!_runInOpen(game.stage, hero)) return false;
     }
 
     return _shouldKeepRunning(game.stage, hero);
@@ -157,7 +157,7 @@ class RunBehavior extends Behavior {
   ///
   /// Note how the hero never steps all the way into the corner (which would
   /// require another step and make the hero slower than chasing monsters).
-  bool _runInPassage(Hero hero) {
+  bool _runInPassage(Stage stage, Hero hero) {
     // Note that "near" in this function means one step from the hero and "far"
     // means two.
 
@@ -182,7 +182,7 @@ class RunBehavior extends Behavior {
     for (var firstDir in possibleFirstDirs) {
       // Ignore unreachable tiles.
       var firstPos = hero.pos + firstDir;
-      if (!_isOpenAt(hero, firstPos)) continue;
+      if (!_isOpenAt(stage, hero, firstPos)) continue;
 
       // We can get here, so it's a viable step.
       dirsToNear.add(firstDir);
@@ -197,7 +197,7 @@ class RunBehavior extends Behavior {
       for (var secondDir in possibleSecondDirs) {
         // Ignore unreachable tiles.
         var secondPos = firstPos + secondDir;
-        if (!_isOpenAt(hero, secondPos)) continue;
+        if (!_isOpenAt(stage, hero, secondPos)) continue;
 
         dirsToFar.add(firstDir);
         farPositions.add(secondPos);
@@ -276,13 +276,13 @@ class RunBehavior extends Behavior {
     return false;
   }
 
-  bool _runInOpen(Hero hero) {
+  bool _runInOpen(Stage stage, Hero hero) {
     // Whether or not the hero's left and right sides are open cannot change.
     // In other words, if they are running along a wall on their left (closed on
     // left, open on right), they will stop if they enter an open room (open on
     // both).
-    var nextLeft = _isOpen(hero, direction.rotateLeft45);
-    var nextRight = _isOpen(hero, direction.rotateRight45);
+    var nextLeft = _isOpen(stage, hero, direction.rotateLeft45);
+    var nextRight = _isOpen(stage, hero, direction.rotateRight45);
     return openLeft == nextLeft && openRight == nextRight;
   }
 
@@ -318,11 +318,11 @@ class RunBehavior extends Behavior {
   }
 
   // TODO: Leaks information. Should take explored/visible into account.
-  bool _isOpen(Hero hero, Vec offset) => _isOpenAt(hero, hero.pos + offset);
+  bool _isOpen(Stage stage, Hero hero, Vec offset) =>
+      _isOpenAt(stage, hero, hero.pos + offset);
 
   // TODO: Leaks information. Should take explored/visible into account.
-  bool _isOpenAt(Hero hero, Vec pos) {
-    return hero.game.stage.bounds.contains(pos) &&
-        hero.game.stage[pos].isTraversable;
+  bool _isOpenAt(Stage stage, Hero hero, Vec pos) {
+    return stage.bounds.contains(pos) && stage[pos].isTraversable;
   }
 }

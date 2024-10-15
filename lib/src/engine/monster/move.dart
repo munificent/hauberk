@@ -1,7 +1,7 @@
 import '../action/action.dart';
 import '../core/combat.dart';
+import '../core/game.dart';
 import '../monster/monster.dart';
-import '../stage/stage.dart';
 
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,
@@ -27,7 +27,7 @@ abstract class Move {
 
   /// Returns `true` if the monster would reasonably perform this move right
   /// now during its turn.
-  bool shouldUse(Stage stage, Monster monster) => true;
+  bool shouldUse(Game game, Monster monster) => true;
 
   /// Returns `true` if the monster would reasonably perform this move in
   /// response to taking [damage].
@@ -35,13 +35,13 @@ abstract class Move {
 
   /// Called when the [Monster] has selected this move. Returns an [Action] that
   /// performs the move.
-  Action getAction(Monster monster) {
+  Action getAction(Game game, Monster monster) {
     monster.useMove(this);
-    return onGetAction(monster);
+    return onGetAction(game, monster);
   }
 
   /// Create the [Action] to perform this move.
-  Action onGetAction(Monster monster);
+  Action onGetAction(Game game, Monster monster);
 }
 
 /// Base class for a Move that performs a ranged attack in some way.

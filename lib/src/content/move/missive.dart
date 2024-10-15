@@ -10,8 +10,8 @@ class MissiveMove extends Move {
   num get experience => 0.0;
 
   @override
-  bool shouldUse(Stage stage, Monster monster) {
-    var target = monster.game.hero.pos;
+  bool shouldUse(Game game, Monster monster) {
+    var target = game.hero.pos;
     var distance = (target - monster.pos).kingLength;
 
     // Don't insult when in melee distance.
@@ -22,8 +22,8 @@ class MissiveMove extends Move {
   }
 
   @override
-  Action onGetAction(Monster monster) =>
-      MissiveAction(monster.game.hero, _missive);
+  Action onGetAction(Game game, Monster monster) =>
+      MissiveAction(game.hero, _missive);
 
   @override
   String toString() => "$_missive rate: $rate";
