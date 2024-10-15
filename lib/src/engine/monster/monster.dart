@@ -241,7 +241,7 @@ class Monster extends Actor {
 
       default:
         // Keep the current state.
-        return _state.getAction();
+        return _state.getAction(game.stage);
     }
   }
 
@@ -507,6 +507,6 @@ class ChangeMonsterStateAction extends Action {
     monster._changeState(_state);
 
     // Now let the new state decide what the monster does.
-    return alternate(monster._state.getAction());
+    return alternate(monster._state.getAction(game.stage));
   }
 }

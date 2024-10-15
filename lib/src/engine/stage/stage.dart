@@ -57,6 +57,8 @@ class Stage {
 
   Tile get(int x, int y) => tiles.get(x, y);
 
+  // TODO: These four methods are kind of weird. Better names? Merge them?
+
   /// Whether it's possible for an actor with [motility] to ever be on the tile
   /// at [pos].
   bool canOccupy(Vec pos, Motility motility) {
@@ -68,11 +70,28 @@ class Stage {
     return this[pos].canEnter(motility);
   }
 
-  /// Whether a actor with [motility] can enter the tile at [pos] right now.
+  /// Whether an actor with [motility] can enter the tile at [pos] right now.
   ///
   /// This is true if the actor can occupy [pos] and no other actor already is.
   bool canEnter(Vec pos, Motility motility) =>
       canOccupy(pos, motility) && game.stage.actorAt(pos) == null;
+
+  // TODO: Should take into account that some actors are immune to some
+  // substances.
+  /// Whether the actor desires to enter the tile at [pos].
+  ///
+  /// Takes into account that actors do not want to step into burning tiles.
+  bool willEnter(Vec pos, Motility motility) =>
+      canEnter(pos, motility) && game.stage[pos].substance == 0;
+
+  // TODO: Should take into account that some actors are immune to some
+  // substances.
+  /// Whether an actor with motility ever desires to be on the tile at [pos].
+  ///
+  /// Takes into account that actors do not want to step into burning tiles,
+  /// but does not care if the tile is occupied.
+  bool willOccupy(Vec pos, Motility motility) =>
+      canOccupy(pos, motility) && game.stage[pos].substance == 0;
 
   void addActor(Actor actor) {
     assert(_actorsByTile[actor.pos] == null);

@@ -2,7 +2,9 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
 import '../action/walk.dart';
+import '../core/game.dart';
 import '../monster/monster.dart';
+import '../stage/stage.dart';
 import 'hero.dart';
 
 /// What the [Hero] is "doing". If the hero has no behavior, he is waiting for
@@ -13,7 +15,7 @@ import 'hero.dart';
 /// series of actions. For example, when running, it will continue to produce
 /// walk actions until disturbed.
 abstract class Behavior {
-  bool canPerform(Hero hero);
+  bool canPerform(Game game, Hero hero);
   Action getAction(Hero hero);
 }
 
@@ -25,7 +27,7 @@ class ActionBehavior extends Behavior {
   ActionBehavior(this.action);
 
   @override
-  bool canPerform(Hero hero) => true;
+  bool canPerform(Game game, Hero hero) => true;
 
   @override
   Action getAction(Hero hero) {
@@ -43,7 +45,7 @@ class ActionBehavior extends Behavior {
 ///   moving, being hit, etc.
 class RestBehavior extends Behavior {
   @override
-  bool canPerform(Hero hero) {
+  bool canPerform(Game game, Hero hero) {
     // See if done resting.
     if (hero.health == hero.maxHealth) return false;
     // TODO: Keep resting if focus is not at max?
@@ -75,7 +77,7 @@ class RunBehavior extends Behavior {
   RunBehavior(this.direction);
 
   @override
-  bool canPerform(Hero hero) {
+  bool canPerform(Game game, Hero hero) {
     // On first step, always try to go in direction player pressed.
     if (firstStep) return true;
 
@@ -133,7 +135,7 @@ class RunBehavior extends Behavior {
       if (!_runInOpen(hero)) return false;
     }
 
-    return _shouldKeepRunning(hero);
+    return _shouldKeepRunning(game.stage, hero);
   }
 
   @override
@@ -287,11 +289,10 @@ class RunBehavior extends Behavior {
   /// Returns `true` if the hero can run one step in the current direction.
   ///
   /// Returns `false` if they should stop because they'd hit a wall or actor.
-  bool _shouldKeepRunning(Hero hero) {
+  bool _shouldKeepRunning(Stage stage, Hero hero) {
     var pos = hero.pos + direction;
-    var stage = hero.game.stage;
 
-    if (!hero.canEnter(pos)) return false;
+    if (!stage.canEnter(pos, hero.motility)) return false;
 
     // Don't open doors. The hero *could* run through it, but they probably
     // don't want to since the player doesn't know what's past it.

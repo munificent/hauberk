@@ -11,7 +11,7 @@ class HasteMove extends Move {
   HasteMove(super.rate, this._duration, this._speed);
 
   @override
-  bool shouldUse(Monster monster) {
+  bool shouldUse(Stage stage, Monster monster) {
     // Don't use if already hasted.
     return !monster.haste.isActive;
   }

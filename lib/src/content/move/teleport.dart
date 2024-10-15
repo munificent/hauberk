@@ -11,7 +11,7 @@ class TeleportMove extends Move {
   TeleportMove(super.rate, this._range);
 
   @override
-  bool shouldUse(Monster monster) {
+  bool shouldUse(Stage stage, Monster monster) {
     if (monster.isAfraid) return true;
 
     var target = monster.game.hero.pos;

@@ -19,7 +19,7 @@ class TeleportAction extends Action {
         game.stage.bounds);
 
     for (var pos in bounds) {
-      if (!actor!.willEnter(pos)) continue;
+      if (!game.stage.willEnter(pos, actor!.motility)) continue;
       if (pos - actor!.pos > distance) continue;
       targets.add(pos);
     }

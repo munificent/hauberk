@@ -16,7 +16,7 @@ class ConeMove extends Move {
   ConeMove(super.rate, this.attack);
 
   @override
-  bool shouldUse(Monster monster) {
+  bool shouldUse(Stage stage, Monster monster) {
     if (monster.isBlinded && rng.float(1.0) < monster.sightReliance) {
       var chance =
           lerpDouble(monster.sightReliance, 0.0, 1.0, 0.0, 70.0).toInt();

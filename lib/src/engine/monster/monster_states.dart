@@ -11,6 +11,7 @@ import '../monster/breed.dart';
 import '../monster/monster.dart';
 import '../monster/monster_pathfinder.dart';
 import '../stage/flow.dart';
+import '../stage/stage.dart';
 import 'move.dart';
 
 /// This defines the monster AI. AI is broken into a three level hierarchy.
@@ -80,7 +81,7 @@ abstract class MonsterState {
 
   Vec get pos => _monster.pos;
 
-  Action getAction();
+  Action getAction(Stage stage);
 
   /// Applies the monster's meandering to [dir].
   Direction _meander(Direction dir) {
@@ -125,7 +126,7 @@ abstract class MonsterState {
 
     dirs = dirs.where((dir) {
       var here = pos + dir;
-      if (!monster.willOccupy(here)) return false;
+      if (!game.stage.willOccupy(here, monster.motility)) return false;
       var actor = game.stage.actorAt(here);
       return actor == null || actor == game.hero;
     }).toList();
@@ -137,12 +138,12 @@ abstract class MonsterState {
 
 class AsleepState extends MonsterState {
   @override
-  Action getAction() => RestAction();
+  Action getAction(Stage stage) => RestAction();
 }
 
 class AwakeState extends MonsterState {
   @override
-  Action getAction() {
+  Action getAction(Stage stage) {
     // If on a burning etc. tile, try to get out.
     // TODO: Should consider moves like teleport that will help it escape.
     var escape = _escapeSubstance();
@@ -150,7 +151,8 @@ class AwakeState extends MonsterState {
 
     // If there is a worthwhile move, use it.
     var moves = breed.moves
-        .where((move) => monster.canUse(move) && move.shouldUse(monster))
+        .where((move) =>
+            monster.canUse(move) && move.shouldUse(game.stage, monster))
         .toList();
     if (moves.isNotEmpty) return rng.item(moves).getAction(monster);
 
@@ -226,7 +228,7 @@ class AwakeState extends MonsterState {
     // Now that we know what the monster *wants* to do, reconcile it with what
     // they're able to do.
     var meleeDir = _findMeleePath();
-    var rangedDir = rangedAttacks > 0 ? _findRangedPath() : null;
+    var rangedDir = rangedAttacks > 0 ? _findRangedPath(stage) : null;
 
     Direction? walkDir;
     if (monster.wantsToMelee) {
@@ -259,7 +261,7 @@ class AwakeState extends MonsterState {
   /// Returns the [Direction] to take along the path. Returns [Direction.none]
   /// if the monster's current position is a good ranged spot. Returns `null`
   /// if no good ranged position could be found.
-  Direction? _findRangedPath() {
+  Direction? _findRangedPath(Stage stage) {
     var maxRange = 9999;
     for (var move in breed.moves) {
       if (move.range > 0 && move.range < maxRange) maxRange = move.range;
@@ -298,7 +300,7 @@ class AwakeState extends MonsterState {
 
     for (var dir in Direction.all) {
       var pos = monster.pos + dir;
-      if (!monster.willEnter(pos)) continue;
+      if (!stage.willEnter(pos, monster.motility)) continue;
       if (!isValidRangedPosition(pos)) continue;
 
       var distance = (pos - game.hero.pos).kingLength;
@@ -326,7 +328,7 @@ class AwakeState extends MonsterState {
   }
 
   Direction? _findMeleePath() {
-    var losDir = _findLosWalkPath();
+    var losDir = _findLosWalkPath(game.stage);
     if (losDir != null) return losDir;
 
     return MonsterPathfinder.findDirection(game.stage, monster);
@@ -344,7 +346,7 @@ class AwakeState extends MonsterState {
   ///    to the hero, A* will always prefer an intercardinal move direction,
   ///    even if the hero is almost a cardinal direction away. Bresenham will
   ///    pick a direction that's closest to the direction pointing at the hero.
-  Direction? _findLosWalkPath() {
+  Direction? _findLosWalkPath(Stage stage) {
     // TODO: Need to verify that this does actually help performance.
     Vec? first;
     var length = 1;
@@ -354,14 +356,14 @@ class AwakeState extends MonsterState {
 
       // Don't walk into fire, etc.
       // TODO: Take immunity into account.
-      if (game.stage[pos].substance > 0) return null;
+      if (stage[pos].substance > 0) return null;
 
       // TODO: Should not walk through doors since that might not be the
       // fastest path.
-      if (!monster.canOccupy(pos)) return null;
+      if (!stage.canOccupy(pos, monster.motility)) return null;
 
       // Don't walk into other monsters.
-      var actor = game.stage.actorAt(pos);
+      var actor = stage.actorAt(pos);
       if (actor != null && actor is! Hero) return null;
 
       if (++length >= breed.tracking) return null;
@@ -410,7 +412,7 @@ class AwakeState extends MonsterState {
 
 class AfraidState extends MonsterState {
   @override
-  Action getAction() {
+  Action getAction(Stage stage) {
     // TODO: Take light and the breed's light preference into account.
     // If we're already hidden, rest.
     if (game.stage[pos].isOccluded) return RestAction();
@@ -431,7 +433,7 @@ class AfraidState extends MonsterState {
     var heroDistance = (pos - game.hero.pos).kingLength;
     var farther = Direction.all.where((dir) {
       var here = pos + dir;
-      if (!monster.willEnter(here)) return false;
+      if (!stage.willEnter(here, monster.motility)) return false;
       return (here - game.hero.pos).kingLength > heroDistance;
     });
 
@@ -443,6 +445,6 @@ class AfraidState extends MonsterState {
 
     // If we got here, we couldn't escape. Cornered!
     // TODO: Kind of hacky.
-    return monster.awaken().getAction();
+    return monster.awaken().getAction(stage);
   }
 }

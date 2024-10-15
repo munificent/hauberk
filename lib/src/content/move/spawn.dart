@@ -14,14 +14,14 @@ class SpawnMove extends Move {
   num get experience => 6.0;
 
   @override
-  bool shouldUse(Monster monster) {
+  bool shouldUse(Stage stage, Monster monster) {
     // Don't breed offscreen since it can end up filling the room before the
     // hero gets there.
     if (!monster.isVisibleToHero) return false;
 
     // Look for an open adjacent tile.
     for (var neighbor in monster.pos.neighbors) {
-      if (monster.willEnter(neighbor)) return true;
+      if (stage.willEnter(neighbor, monster.motility)) return true;
     }
 
     return false;
@@ -36,7 +36,10 @@ class SpawnMove extends Move {
     // ones that continue existing lines.
     if (_preferStraight) {
       for (var dir in Direction.all) {
-        if (!monster.willEnter(monster.pos + dir)) continue;
+        if (!monster.game.stage
+            .willEnter(monster.pos + dir, monster.motility)) {
+          continue;
+        }
 
         bool checkNeighbor(Direction neighbor) {
           var other = monster.game.stage.actorAt(monster.pos + dir);
@@ -61,7 +64,11 @@ class SpawnMove extends Move {
 
     if (dirs.isEmpty) {
       for (var dir in Direction.all) {
-        if (!monster.willEnter(monster.pos + dir)) continue;
+        if (!monster.game.stage
+            .willEnter(monster.pos + dir, monster.motility)) {
+          continue;
+        }
+
         dirs.add(dir);
       }
     }

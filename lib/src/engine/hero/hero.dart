@@ -130,7 +130,7 @@ class Hero extends Actor {
 
   @override
   bool get needsInput {
-    if (_behavior != null && !_behavior!.canPerform(this)) {
+    if (_behavior != null && !_behavior!.canPerform(game, this)) {
       waitForInput();
     }
 

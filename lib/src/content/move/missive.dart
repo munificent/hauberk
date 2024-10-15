@@ -10,7 +10,7 @@ class MissiveMove extends Move {
   num get experience => 0.0;
 
   @override
-  bool shouldUse(Monster monster) {
+  bool shouldUse(Stage stage, Monster monster) {
     var target = monster.game.hero.pos;
     var distance = (target - monster.pos).kingLength;
 

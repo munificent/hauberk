@@ -1,6 +1,7 @@
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../monster/monster.dart';
+import '../stage/stage.dart';
 
 /// A [Move] is an action that a [Monster] can perform aside from the basic
 /// walking and melee attack actions. Moves include things like spells, breaths,
@@ -26,7 +27,7 @@ abstract class Move {
 
   /// Returns `true` if the monster would reasonably perform this move right
   /// now during its turn.
-  bool shouldUse(Monster monster) => true;
+  bool shouldUse(Stage stage, Monster monster) => true;
 
   /// Returns `true` if the monster would reasonably perform this move in
   /// response to taking [damage].

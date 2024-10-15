@@ -43,7 +43,7 @@ class WalkAction extends Action {
     }
 
     // See if we can walk there.
-    if (!actor!.canOccupy(pos)) {
+    if (!game.stage.canOccupy(pos, actor!.motility)) {
       // If the hero runs into something in the dark, they can figure out what
       // it is.
       if (actor is Hero) {
