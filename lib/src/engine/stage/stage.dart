@@ -57,6 +57,9 @@ class Stage {
 
   Tile get(int x, int y) => tiles.get(x, y);
 
+  /// Whether or not [actor] can be seen by the hero.
+  bool isVisibleToHero(Actor actor) => this[actor.pos].isVisible;
+
   /// Gets whether or not [actor] has a line of sight from to [target].
   ///
   /// Does not take into account if there are other [Actor]s between the two

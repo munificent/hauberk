@@ -17,7 +17,7 @@ class SpawnMove extends Move {
   bool shouldUse(Game game, Monster monster) {
     // Don't breed offscreen since it can end up filling the room before the
     // hero gets there.
-    if (!monster.isVisibleToHero) return false;
+    if (!game.stage.isVisibleToHero(monster)) return false;
 
     // Look for an open adjacent tile.
     for (var neighbor in monster.pos.neighbors) {

@@ -78,13 +78,10 @@ abstract class Actor implements Noun {
 
   bool get isAlive => health > 0;
 
-  /// Whether or not the actor can be seen by the hero.
-  bool get isVisibleToHero => game.stage[pos].isVisible;
-
   /// Whether the actor's vision is currently impaired.
   bool get isBlinded => blindness.isActive || dazzle.isActive;
 
-  bool get needsInput => false;
+  bool needsInput(Game game) => false;
 
   Motility get motility;
 

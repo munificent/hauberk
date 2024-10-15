@@ -298,7 +298,7 @@ class GameScreen extends Screen<Input> {
 
   @override
   void activate(Screen popped, Object? result) {
-    if (!game.hero.needsInput) {
+    if (!game.hero.needsInput(game)) {
       // The player is coming back from a screen where they selected an action
       // for the hero. Give them a bit to visually reorient themselves before
       // kicking off the action.

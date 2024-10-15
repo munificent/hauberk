@@ -138,14 +138,14 @@ class Game {
         var actor = stage.currentActor;
 
         // If we are still waiting for input for the actor, just return (again).
-        if (actor.energy.canTakeTurn && actor.needsInput) {
+        if (actor.energy.canTakeTurn && actor.needsInput(this)) {
           return makeResult(madeProgress);
         }
 
         if (actor.energy.canTakeTurn || actor.energy.gain(actor.speed)) {
           // If the actor can move now, but needs input from the user, just
           // return so we can wait for it.
-          if (actor.needsInput) return makeResult(madeProgress);
+          if (actor.needsInput(this)) return makeResult(madeProgress);
 
           _actions.add(actor.getAction(this));
         } else {

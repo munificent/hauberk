@@ -144,7 +144,8 @@ class RestAction extends Action {
 
         // TODO: Have this amount increase over successive resting turns?
         hero.regenerateFocus(10);
-      case Actor actor when !actor.isVisibleToHero && !actor.poison.isActive:
+      case Actor actor
+          when !game.stage.isVisibleToHero(actor) && !actor.poison.isActive:
         // Monsters can rest if out of sight.
         actor.health++;
     }

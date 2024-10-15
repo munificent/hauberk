@@ -438,7 +438,7 @@ class Monster extends Actor {
     var fearDecay = 5.0 + (pos - game.hero.pos).kingLength;
 
     // Fear decays more quickly if out of sight.
-    if (!isVisibleToHero) fearDecay = 5.0 + fearDecay * 2.0;
+    if (!game.stage.isVisibleToHero(this)) fearDecay = 5.0 + fearDecay * 2.0;
 
     // The closer the monster is to death, the less quickly it gets over fear.
     fearDecay = 2.0 + fearDecay * health / maxHealth;

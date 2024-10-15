@@ -129,7 +129,7 @@ class Hero extends Actor {
   Object get appearance => 'hero';
 
   @override
-  bool get needsInput {
+  bool needsInput(Game game) {
     if (_behavior != null && !_behavior!.canPerform(game, this)) {
       waitForInput();
     }
