@@ -11,7 +11,6 @@ import '../monster/breed.dart';
 import '../monster/monster.dart';
 import '../monster/monster_pathfinder.dart';
 import '../stage/flow.dart';
-import '../stage/stage.dart';
 import 'move.dart';
 
 /// This defines the monster AI. AI is broken into a three level hierarchy.
@@ -77,14 +76,12 @@ abstract class MonsterState {
 
   Breed get breed => _monster.breed;
 
-  Game get game => _monster.game;
-
   Vec get pos => _monster.pos;
 
   Action getAction(Game game);
 
   /// Applies the monster's meandering to [dir].
-  Direction _meander(Direction dir) {
+  Direction _meander(Game game, Direction dir) {
     var meander = breed.meander;
 
     if (monster.isBlinded) {
@@ -146,7 +143,7 @@ class AwakeState extends MonsterState {
   Action getAction(Game game) {
     // If on a burning etc. tile, try to get out.
     // TODO: Should consider moves like teleport that will help it escape.
-    var escape = _escapeSubstance();
+    var escape = _escapeSubstance(game);
     if (escape != Direction.none) return WalkAction(escape);
 
     // If there is a worthwhile move, use it.
@@ -226,8 +223,8 @@ class AwakeState extends MonsterState {
 
     // Now that we know what the monster *wants* to do, reconcile it with what
     // they're able to do.
-    var meleeDir = _findMeleePath();
-    var rangedDir = rangedAttacks > 0 ? _findRangedPath(game.stage) : null;
+    var meleeDir = _findMeleePath(game);
+    var rangedDir = rangedAttacks > 0 ? _findRangedPath(game) : null;
 
     Direction? walkDir;
     if (monster.wantsToMelee) {
@@ -238,14 +235,14 @@ class AwakeState extends MonsterState {
 
     walkDir ??= Direction.none;
 
-    return WalkAction(_meander(walkDir));
+    return WalkAction(_meander(game, walkDir));
   }
 
   /// If the monster is currently on a substance tile, find the nearest path
   /// out of the substance.
   ///
   /// Otherwise, returns [Direction.none].
-  Direction _escapeSubstance() {
+  Direction _escapeSubstance(Game game) {
     // If we're not on a bad tile, don't worry.
     if (game.stage[monster.pos].substance == 0) return Direction.none;
 
@@ -260,7 +257,7 @@ class AwakeState extends MonsterState {
   /// Returns the [Direction] to take along the path. Returns [Direction.none]
   /// if the monster's current position is a good ranged spot. Returns `null`
   /// if no good ranged position could be found.
-  Direction? _findRangedPath(Stage stage) {
+  Direction? _findRangedPath(Game game) {
     var maxRange = 9999;
     for (var move in breed.moves) {
       if (move.range > 0 && move.range < maxRange) maxRange = move.range;
@@ -282,7 +279,7 @@ class AwakeState extends MonsterState {
       if (actor != null && actor != monster) return false;
 
       // Ignore tiles that don't have a line-of-sight to the hero.
-      return _hasLosFrom(pos);
+      return _hasLosFrom(game, pos);
     }
 
     // First, see if the current tile or any of its neighbors are good. Once in
@@ -299,7 +296,7 @@ class AwakeState extends MonsterState {
 
     for (var dir in Direction.all) {
       var pos = monster.pos + dir;
-      if (!stage.willEnter(pos, monster.motility)) continue;
+      if (!game.stage.willEnter(pos, monster.motility)) continue;
       if (!isValidRangedPosition(pos)) continue;
 
       var distance = (pos - game.hero.pos).kingLength;
@@ -326,8 +323,8 @@ class AwakeState extends MonsterState {
     return null;
   }
 
-  Direction? _findMeleePath() {
-    var losDir = _findLosWalkPath(game.stage);
+  Direction? _findMeleePath(Game game) {
+    var losDir = _findLosWalkPath(game);
     if (losDir != null) return losDir;
 
     return MonsterPathfinder.findDirection(game.stage, monster);
@@ -345,7 +342,7 @@ class AwakeState extends MonsterState {
   ///    to the hero, A* will always prefer an intercardinal move direction,
   ///    even if the hero is almost a cardinal direction away. Bresenham will
   ///    pick a direction that's closest to the direction pointing at the hero.
-  Direction? _findLosWalkPath(Stage stage) {
+  Direction? _findLosWalkPath(Game game) {
     // TODO: Need to verify that this does actually help performance.
     Vec? first;
     var length = 1;
@@ -355,14 +352,14 @@ class AwakeState extends MonsterState {
 
       // Don't walk into fire, etc.
       // TODO: Take immunity into account.
-      if (stage[pos].substance > 0) return null;
+      if (game.stage[pos].substance > 0) return null;
 
       // TODO: Should not walk through doors since that might not be the
       // fastest path.
-      if (!stage.canOccupy(pos, monster.motility)) return null;
+      if (!game.stage.canOccupy(pos, monster.motility)) return null;
 
       // Don't walk into other monsters.
-      var actor = stage.actorAt(pos);
+      var actor = game.stage.actorAt(pos);
       if (actor != null && actor is! Hero) return null;
 
       if (++length >= breed.tracking) return null;
@@ -397,7 +394,7 @@ class AwakeState extends MonsterState {
   }
 
   /// Returns `true` if there is an open LOS from [from] to the hero.
-  bool _hasLosFrom(Vec from) {
+  bool _hasLosFrom(Game game, Vec from) {
     for (var step in Line(from, game.hero.pos)) {
       if (step == game.hero.pos) return true;
       if (game.stage[step].blocksView) return false;
@@ -425,7 +422,7 @@ class AfraidState extends MonsterState {
 
     if (dir != Direction.none) {
       Debug.monsterLog(monster, "fleeing $dir out of sight");
-      return WalkAction(_meander(dir));
+      return WalkAction(_meander(game, dir));
     }
 
     // If we couldn't find a hidden tile, at least try to get some distance.
@@ -439,7 +436,7 @@ class AfraidState extends MonsterState {
     if (farther.isNotEmpty) {
       dir = rng.item(farther.toList());
       Debug.monsterLog(monster, "fleeing $dir away from hero");
-      return WalkAction(_meander(dir));
+      return WalkAction(_meander(game, dir));
     }
 
     // If we got here, we couldn't escape. Cornered!
