@@ -147,9 +147,7 @@ class Game {
           // return so we can wait for it.
           if (actor.needsInput) return makeResult(madeProgress);
 
-          var action = actor.getAction();
-          action.bind(this, actor);
-          _actions.add(action);
+          _actions.add(actor.getAction(this));
         } else {
           // This actor doesn't have enough energy yet, so move on to the next.
           stage.advanceActor();

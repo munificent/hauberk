@@ -57,6 +57,35 @@ class Stage {
 
   Tile get(int x, int y) => tiles.get(x, y);
 
+  /// Gets whether or not [actor] has a line of sight from to [target].
+  ///
+  /// Does not take into account if there are other [Actor]s between the two
+  /// points.
+  bool canView(Actor actor, Vec target) {
+    // Walk to the target.
+    for (var step in Line(actor.pos, target)) {
+      if (step == target) return true;
+      if (game.stage[step].blocksView) return false;
+    }
+
+    throw AssertionError("Unreachable.");
+  }
+
+  /// Gets whether or not [actor] has a line of sight to [target].
+  ///
+  /// Does take into account if there are other [Actor]s between the actor and
+  /// the target.
+  bool canTarget(Actor actor, Vec target) {
+    // Walk to the target.
+    for (var step in Line(actor.pos, target)) {
+      if (step == target) return true;
+      if (game.stage.actorAt(step) != null) return false;
+      if (game.stage[step].blocksView) return false;
+    }
+
+    throw AssertionError("Unreachable.");
+  }
+
   // TODO: These four methods are kind of weird. Better names? Merge them?
 
   /// Whether it's possible for an actor with [motility] to ever be on the tile

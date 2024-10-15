@@ -141,35 +141,6 @@ class Monster extends Actor {
   /// Returns `true` if [move] is recharged.
   bool canUse(Move move) => _recharges[move] == 0.0;
 
-  /// Gets whether or not this monster has a line of sight to [target].
-  ///
-  /// Does not take into account if there are other [Actor]s between the monster
-  /// and the target.
-  bool canView(Vec target) {
-    // Walk to the target.
-    for (var step in Line(pos, target)) {
-      if (step == target) return true;
-      if (game.stage[step].blocksView) return false;
-    }
-
-    throw AssertionError("Unreachable.");
-  }
-
-  /// Gets whether or not this monster has a line of sight to [target].
-  ///
-  /// Does take into account if there are other [Actor]s between the monster
-  /// and the target.
-  bool canTarget(Vec target) {
-    // Walk to the target.
-    for (var step in Line(pos, target)) {
-      if (step == target) return true;
-      if (game.stage.actorAt(step) != null) return false;
-      if (game.stage[step].blocksView) return false;
-    }
-
-    throw AssertionError("Unreachable.");
-  }
-
   @override
   int get baseSpeed => Energy.normalSpeed + breed.speed;
 
@@ -180,7 +151,7 @@ class Monster extends Actor {
   Iterable<Defense> onGetDefenses() => breed.defenses;
 
   @override
-  Action onGetAction() {
+  Action onGetAction(Game game) {
     // Recharge moves.
     for (var move in breed.moves) {
       _recharges[move] = math.max(0.0, _recharges[move]! - 1.0);
@@ -188,8 +159,8 @@ class Monster extends Actor {
 
     // Use the monster's senses to update its mood.
     var awareness = 0.0;
-    awareness += _seeHero();
-    awareness += _hearHero();
+    awareness += _seeHero(game);
+    awareness += _hearHero(game);
     // TODO: Smell?
 
     // Persist some of the awareness. Note that the historical and current
@@ -199,7 +170,7 @@ class Monster extends Actor {
     _alertness = _alertness * 0.75 + awareness * 0.2;
     _alertness = _alertness.clamp(0.0, _maxAlertness);
 
-    _decayFear();
+    _decayFear(game);
     _fear = _fear.clamp(0.0, _frightenThreshold);
 
     var notice = math.max(awareness, _alertness);
@@ -256,14 +227,14 @@ class Monster extends Actor {
     return lerpDouble(normal * normal * normal, 0.0, 1.0, 5.0, 100.0).round();
   }
 
-  double _seeHero() {
+  double _seeHero(Game game) {
     if (breed.vision == 0) {
       Debug.monsterStat(this, "see", 0.0, "sightless");
       return 0.0;
     }
 
     var heroPos = game.hero.pos;
-    if (!canView(heroPos)) {
+    if (!game.stage.canView(this, heroPos)) {
       Debug.monsterStat(this, "see", 0.0, "out of sight");
       return 0.0;
     }
@@ -288,7 +259,7 @@ class Monster extends Actor {
     // TODO: Can the monster see other changes? Other monsters moving?
   }
 
-  double _hearHero() {
+  double _hearHero(Game game) {
     if (breed.hearing == 0) {
       Debug.monsterStat(this, "hear", 0.0, "deaf");
       return 0.0;
@@ -347,14 +318,14 @@ class Monster extends Actor {
   @override
   void onGiveDamage(Action action, Actor defender, int damage) {
     // The greater the power of the hit, the more emboldening it is.
-    var fear = 100.0 * damage / game.hero.maxHealth;
+    var fear = 100.0 * damage / action.game.hero.maxHealth;
 
     _modifyFear(-fear);
     Debug.monsterReason(this, "fear",
-        "hit for $damage/${game.hero.maxHealth} decrease by $fear");
+        "hit for $damage/${action.game.hero.maxHealth} decrease by $fear");
 
     // Nearby monsters may witness it.
-    _updateWitnesses((witness) {
+    _updateWitnesses(action.game, (witness) {
       witness._viewHeroDamage(action, damage);
     });
   }
@@ -387,7 +358,7 @@ class Monster extends Actor {
         this, "fear", "hit for $damage/$maxHealth increases by $fear");
 
     // Nearby monsters may witness it.
-    _updateWitnesses((witness) {
+    _updateWitnesses(action.game, (witness) {
       witness._viewMonsterDamage(action, this, damage);
     });
 
@@ -396,7 +367,7 @@ class Monster extends Actor {
         .where((move) => move.shouldUseOnDamage(this, damage))
         .toList();
     if (moves.isNotEmpty) {
-      action.addAction(rng.item(moves).getAction(game, this), this);
+      action.addAction(rng.item(moves).getAction(action.game, this), this);
     }
   }
 
@@ -423,12 +394,13 @@ class Monster extends Actor {
   /// Called when this Actor has been killed by [attackNoun].
   @override
   void onDied(Action action, Noun attackNoun) {
-    var items = game.stage.placeDrops(pos, breed.drop, depth: breed.depth);
+    var items =
+        action.game.stage.placeDrops(pos, breed.drop, depth: breed.depth);
     for (var item in items) {
       action.log("{1} drop[s] {2}.", this, item);
     }
 
-    game.stage.removeActor(this);
+    action.game.stage.removeActor(this);
   }
 
   @override
@@ -446,7 +418,7 @@ class Monster extends Actor {
   }
 
   /// Invokes [callback] on all nearby monsters that can see this one.
-  void _updateWitnesses(void Function(Monster monster) callback) {
+  void _updateWitnesses(Game game, void Function(Monster monster) callback) {
     for (var other in game.stage.actors) {
       if (other == this) continue;
       if (other is! Monster) continue;
@@ -455,13 +427,13 @@ class Monster extends Actor {
       var distance = (other.pos - pos).kingLength;
       if (distance > 20) continue;
 
-      if (other.canView(pos)) callback(other);
+      if (game.stage.canView(other, pos)) callback(other);
     }
   }
 
   /// Fear decays over time, more quickly the farther the monster is from the
   /// hero.
-  void _decayFear() {
+  void _decayFear(Game game) {
     // TODO: Poison should slow the decay of fear.
     var fearDecay = 5.0 + (pos - game.hero.pos).kingLength;
 

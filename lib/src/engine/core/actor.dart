@@ -148,9 +148,13 @@ abstract class Actor implements Noun {
 
   Iterable<Defense> onGetDefenses();
 
-  Action getAction() => onGetAction();
+  Action getAction(Game game) {
+    var action = onGetAction(game);
+    action.bind(game, this);
+    return action;
+  }
 
-  Action onGetAction();
+  Action onGetAction(Game game);
 
   /// Create a new [Hit] for this [Actor] to attempt to hit [defender].
   ///

@@ -12,7 +12,7 @@ class HowlAction extends Action {
     log("{1} $_verb!", actor);
     addEvent(EventType.howl, actor: actor);
 
-    for (var other in monster.game.stage.actors) {
+    for (var other in game.stage.actors) {
       if (other != actor &&
           other is Monster &&
           (other.pos - monster.pos) <= _range) {

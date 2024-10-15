@@ -36,7 +36,7 @@ class BoltMove extends RangedMove {
     }
 
     // Don't fire a bolt if it's obstructed.
-    if (!monster.canTarget(target)) {
+    if (!game.stage.canTarget(monster, target)) {
       Debug.monsterLog(monster, "bolt move can't target");
       return false;
     }

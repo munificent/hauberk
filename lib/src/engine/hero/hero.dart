@@ -198,7 +198,7 @@ class Hero extends Actor {
   }
 
   @override
-  Action onGetAction() => _behavior!.getAction(this);
+  Action onGetAction(Game game) => _behavior!.getAction(this);
 
   @override
   List<Hit> onCreateMeleeHits(Actor? defender) {

@@ -33,7 +33,7 @@ class ConeMove extends Move {
     }
 
     // TODO: Should minimize friendly fire.
-    if (!monster.canView(target)) {
+    if (!game.stage.canView(monster, target)) {
       Debug.monsterLog(monster, "cone move can't target");
       return false;
     }

@@ -18,7 +18,7 @@ class MissiveMove extends Move {
     if (distance <= 1) return false;
 
     // Don't insult someone it can't see.
-    return monster.canView(target);
+    return game.stage.canView(monster, target);
   }
 
   @override
