@@ -1,4 +1,3 @@
-import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
@@ -11,13 +10,6 @@ void main() {
   var fortitude = Fortitude();
   var intellect = Intellect();
   var will = Will();
-
-  var save = createContent().createHero("Blah");
-  strength.bindHero(save);
-  agility.bindHero(save);
-  fortitude.bindHero(save);
-  intellect.bindHero(save);
-  will.bindHero(save);
 
   var builder = HtmlBuilder();
   builder.table();

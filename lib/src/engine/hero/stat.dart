@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import '../core/game.dart';
 import '../core/math.dart';
 import '../hero/hero_save.dart';
 
@@ -60,8 +59,6 @@ class Stat {
 }
 
 abstract class StatBase extends Property<int> {
-  late final HeroSave _hero;
-
   String get name => _stat.name;
 
   Stat get _stat;
@@ -70,32 +67,31 @@ abstract class StatBase extends Property<int> {
 
   String get _loseAdjective;
 
-  int get _statOffset => 0;
+  int _statOffset(HeroSave hero) => 0;
 
-  void bindHero(HeroSave hero) {
-    _hero = hero;
-    _value = _calculateValue();
-  }
-
-  void refresh(Game game) {
-    var newValue = _calculateValue();
+  void refresh(HeroSave hero) {
+    var newValue = _calculateValue(hero);
 
     update(newValue, (previous) {
       var gain = newValue - previous;
       if (gain > 0) {
-        game.log
+        hero.log
             .gain("You feel $_gainAdjective! Your $name increased by $gain.");
       } else {
-        game.log.error(
+        hero.log.error(
             "You feel $_loseAdjective! Your $name decreased by ${-gain}.");
       }
     });
   }
 
-  int _calculateValue() => (_hero.race.valueAtLevel(_stat, _hero.level) +
-          _statOffset +
-          _hero.statBonus(_stat))
-      .clamp(1, Stat.max);
+  int _calculateValue(HeroSave hero) =>
+      (hero.race.valueAtLevel(_stat, hero.level) +
+              _statOffset(hero) +
+              hero.statBonus(_stat))
+          .clamp(1, Stat.max);
+
+  @override
+  String toString() => name;
 }
 
 class Strength extends StatBase {
@@ -109,7 +105,7 @@ class Strength extends StatBase {
   String get _loseAdjective => "weak";
 
   @override
-  int get _statOffset => -_hero.weight;
+  int _statOffset(HeroSave hero) => -hero.weight;
 
   /// The highest fury level the hero can reach.
   int get maxFury {

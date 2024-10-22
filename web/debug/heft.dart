@@ -71,7 +71,6 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
       var scaledHeft = (totalHeft * heftModifier).round();
 
       var strengthStat = Strength();
-      strengthStat.bindHero(save);
       strengthStat.update(strengthValue, (_) {});
       var heftScale = strengthStat.heftScale(scaledHeft);
 

@@ -45,6 +45,7 @@ class Hero extends Actor {
   ///
   /// It starts half-full, presumably the hero had a nice meal before heading
   /// off to adventure.
+  // TODO: This should be in HeroSave.
   int get stomach => _stomach;
 
   set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
@@ -447,15 +448,15 @@ class Hero extends Actor {
   void refreshProperties() {
     var level = experienceLevel(experience);
     _level.update(level, (previous) {
-      game.log.gain('You have reached level $level.');
+      save.log.gain('You have reached level $level.');
       // TODO: Different message if level went down.
     });
 
-    strength.refresh(game);
-    agility.refresh(game);
-    fortitude.refresh(game);
-    intellect.refresh(game);
-    will.refresh(game);
+    strength.refresh(save);
+    agility.refresh(save);
+    fortitude.refresh(save);
+    intellect.refresh(save);
+    will.refresh(save);
 
     // Refresh the heft scales.
     var weapons = equipment.weapons.toList();
@@ -486,9 +487,9 @@ class Hero extends Actor {
       // TODO: Reword these if there is no weapon equipped?
       var weaponList = weapons.join(' and ');
       if (heftScale < 1.0 && previous >= 1.0) {
-        game.log.error("You are too weak to effectively wield $weaponList.");
+        save.log.error("You are too weak to effectively wield $weaponList.");
       } else if (heftScale >= 1.0 && previous < 1.0) {
-        game.log.message("You feel comfortable wielding $weaponList.");
+        save.log.message("You feel comfortable wielding $weaponList.");
       }
     });
 

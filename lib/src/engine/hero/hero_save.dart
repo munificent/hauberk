@@ -108,9 +108,7 @@ class HeroSave {
         shops = {},
         skills = SkillSet(),
         log = Log(),
-        _lore = Lore() {
-    _bindStats();
-  }
+        _lore = Lore();
 
   // TODO: Rename.
   HeroSave.load(
@@ -128,9 +126,7 @@ class HeroSave {
       this.log,
       this._lore,
       this.gold,
-      this.maxDepth) {
-    _bindStats();
-  }
+      this.maxDepth);
 
   /// Move data from [hero] into this object. This should be called when the
   /// [Hero] has successfully completed a stage and his changes need to be
@@ -193,13 +189,5 @@ class HeroSave {
     }
 
     return bonus;
-  }
-
-  void _bindStats() {
-    strength.bindHero(this);
-    agility.bindHero(this);
-    fortitude.bindHero(this);
-    intellect.bindHero(this);
-    will.bindHero(this);
   }
 }
