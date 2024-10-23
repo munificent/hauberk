@@ -372,18 +372,18 @@ class Hero extends Actor {
   /// Starts resting, if the hero has eaten and is able to regenerate.
   bool rest() {
     if (poison.isActive) {
-      game.log
+      save.log
           .error("You cannot rest while poison courses through your veins!");
       return false;
     }
 
     if (health == maxHealth) {
-      game.log.message("You are fully rested.");
+      save.log.message("You are fully rested.");
       return false;
     }
 
     if (stomach == 0) {
-      game.log.error("You are too hungry to rest.");
+      save.log.error("You are too hungry to rest.");
       return false;
     }
 
@@ -528,13 +528,13 @@ class Hero extends Actor {
 
     if (!skills.discover(skill)) return;
 
-    game.log.gain(skill.discoverMessage, this);
+    save.log.gain(skill.discoverMessage, this);
   }
 
   void refreshSkill(Skill skill) {
     var level = skill.calculateLevel(save);
     if (skills.gain(skill, level)) {
-      game.log.gain(skill.gainMessage(level), this);
+      save.log.gain(skill.gainMessage(level), this);
     }
   }
 
