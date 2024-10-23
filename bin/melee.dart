@@ -151,7 +151,7 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
           flags: BreedFlags.fromSet({})));
 
   var monster = Monster(game, breed, 0, 0, 1);
-  var hero = Hero(game, Vec.zero, save);
+  var hero = Hero(game, Vec.zero, save, content.skills);
   game.hero = hero;
 
   while (true) {

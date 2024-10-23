@@ -114,7 +114,11 @@ class Hero extends Actor {
   @override
   int get emanationLevel => save.emanationLevel;
 
-  Hero(Game game, Vec pos, this.save) : super(game, pos.x, pos.y) {
+  /// All [Skill]s in the game.
+  final Iterable<Skill> _allSkills;
+
+  Hero(Game game, Vec pos, this.save, this._allSkills)
+      : super(game, pos.x, pos.y) {
     // Give the hero energy so they can act before all of the monsters.
     energy.energy = Energy.actionCost;
 
@@ -303,7 +307,7 @@ class Hero extends Actor {
 
     // TODO: Would be better to do skills.discovered, but right now this also
     // discovers BattleHardening.
-    for (var skill in game.content.skills) {
+    for (var skill in _allSkills) {
       skill.takeDamage(this, damage);
     }
   }
@@ -411,7 +415,7 @@ class Hero extends Actor {
       // If this is the first time we've seen this breed, see if that unlocks
       // a slaying skill for it.
       if (lore.seenBreed(monster.breed) == 1) {
-        for (var skill in game.content.skills) {
+        for (var skill in _allSkills) {
           skill.seeBreed(this, monster.breed);
         }
       }
@@ -465,7 +469,7 @@ class Hero extends Actor {
       // Discover the dual-wield skill.
       // TODO: This is a really specific method to put on Skill. Is there a
       // cleaner way to handle this?
-      for (var skill in game.content.skills) {
+      for (var skill in _allSkills) {
         skill.dualWield(this);
       }
     }

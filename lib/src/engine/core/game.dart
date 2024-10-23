@@ -53,7 +53,7 @@ class Game {
     // TODO: Vary size?
     _stage = Stage(width ?? 120, height ?? 80, this);
 
-    hero = Hero(this, Vec.zero, save);
+    hero = Hero(this, Vec.zero, save, content.skills);
     _stage.addActor(hero);
 
     _substanceUpdateOrder.addAll(_stage.bounds.inflate(-1));
