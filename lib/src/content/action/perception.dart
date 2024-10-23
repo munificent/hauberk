@@ -17,7 +17,7 @@ class PerceiveAction extends Action {
     for (var actor in game.stage.actors) {
       if (actor == hero) continue;
 
-      if (hero.canPerceive(actor)) alreadyPerceived.add(actor);
+      if (game.heroCanPerceive(actor)) alreadyPerceived.add(actor);
     }
 
     hero.perception.activate(_duration, _distance);
@@ -26,7 +26,7 @@ class PerceiveAction extends Action {
     for (var actor in game.stage.actors) {
       if (actor == hero) continue;
 
-      if (hero.canPerceive(actor) && !alreadyPerceived.contains(actor)) {
+      if (game.heroCanPerceive(actor) && !alreadyPerceived.contains(actor)) {
         addEvent(EventType.perceive, actor: actor);
         perceived = true;
       }

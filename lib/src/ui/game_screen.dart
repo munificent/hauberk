@@ -93,7 +93,7 @@ class GameScreen extends Screen<Input> {
     // Forget the target if it dies or goes offscreen.
     var actor = _targetActor;
     if (actor != null) {
-      if (!actor.isAlive || !game.hero.canPerceive(actor)) {
+      if (!actor.isAlive || !game.heroCanPerceive(actor)) {
         _targetActor = null;
       }
     }

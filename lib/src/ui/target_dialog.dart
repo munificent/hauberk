@@ -32,7 +32,7 @@ class TargetDialog extends Screen<Input> {
     var hero = _gameScreen.game.hero;
     for (var actor in _gameScreen.game.stage.actors) {
       if (actor is! Monster) continue;
-      if (!hero.canPerceive(actor)) continue;
+      if (!_gameScreen.game.heroCanPerceive(actor)) continue;
 
       // Must be within range.
       var toMonster = actor.pos - hero.pos;
@@ -145,7 +145,7 @@ class TargetDialog extends Screen<Input> {
       } else if (_isKnownOccluded(pos)) {
         // The player knows it can't be targeted.
         continue;
-      } else if (actor != null && hero.canPerceive(actor)) {
+      } else if (actor != null && _gameScreen.game.heroCanPerceive(actor)) {
         // Show the actor.
         continue;
       }

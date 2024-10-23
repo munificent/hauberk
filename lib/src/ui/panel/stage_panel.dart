@@ -168,7 +168,7 @@ class StagePanel extends Panel {
       var showActor = tile.isVisible ||
           pos == game.hero.pos ||
           Debug.showAllMonsters ||
-          actor != null && hero.canPerceive(actor);
+          actor != null && game.heroCanPerceive(actor);
 
       if (showActor && actor != null) {
         var actorGlyph = actor.appearance;

@@ -191,6 +191,19 @@ class Game {
     return result;
   }
 
+  /// Whether the hero can currently perceive [actor].
+  ///
+  /// Takes into account both visibility and [perception].
+  bool heroCanPerceive(Actor actor) {
+    if (stage[actor.pos].isVisible) return true;
+    if (hero.perception.isActive &&
+        (hero.pos - actor.pos) < hero.perception.intensity) {
+      return true;
+    }
+
+    return false;
+  }
+
   void _updateSubstances() {
     while (_substanceIndex! < _substanceUpdateOrder.length) {
       var pos = _substanceUpdateOrder[_substanceIndex!];
