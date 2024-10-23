@@ -35,17 +35,6 @@ abstract class Actor implements Noun {
   // Temporary resistance to elements.
   final _resistances = <Element, ResistCondition>{};
 
-  // All [Condition]s for the actor.
-  Iterable<Condition> get conditions => [
-        haste,
-        cold,
-        poison,
-        blindness,
-        dazzle,
-        perception,
-        ..._resistances.values
-      ];
-
   /// Where the actor is on the [Stage].
   Vec get pos => _pos;
   Vec _pos;
@@ -58,15 +47,7 @@ abstract class Actor implements Noun {
     _health = value.clamp(0, maxHealth);
   }
 
-  Actor(this.game, int x, int y) : _pos = Vec(x, y) {
-    for (var element in game.content.elements) {
-      _resistances[element] = ResistCondition(element);
-    }
-
-    for (var condition in conditions) {
-      condition.bind(this);
-    }
-  }
+  Actor(this.game, int x, int y) : _pos = Vec(x, y);
 
   Object get appearance;
 
@@ -207,8 +188,10 @@ abstract class Actor implements Noun {
   int onGetResistance(Element element);
 
   /// Temporary resistance to elements.
+  ///
+  /// Lazy-initialized because [Actor] doesn't know the full set of elements.
   ResistCondition resistanceCondition(Element element) =>
-      _resistances[element]!;
+      _resistances[element] ??= ResistCondition(element);
 
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.
@@ -260,6 +243,16 @@ abstract class Actor implements Noun {
 
   void finishTurn(Action action) {
     energy.spend();
+
+    var conditions = [
+      haste,
+      cold,
+      poison,
+      blindness,
+      dazzle,
+      perception,
+      ..._resistances.values
+    ];
 
     for (var condition in conditions) {
       condition.update(action);

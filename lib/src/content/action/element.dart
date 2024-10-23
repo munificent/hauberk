@@ -157,9 +157,9 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
     // See if there is an actor there.
     var actor = game.stage.actorAt(_pos);
     if (actor != null) {
-      if (actor.resistanceCondition(Elements.poison).isActive) {
-        // If they have any resistance to poison, then poison gas doesn't
-        // affect them.
+      // If they have any resistance to poison, then poison gas doesn't
+      // affect them.
+      if (actor.resistance(Elements.poison) > 0) {
         log("{1} [are|is] unaffected by the poison.", actor);
       } else {
         var hit = Attack(Noun("poison"), "chokes", _damage, 0, Elements.poison)

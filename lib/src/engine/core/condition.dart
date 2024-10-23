@@ -9,10 +9,6 @@ import 'log.dart';
 /// A temporary condition that modifies some property of an [Actor] while it
 /// is in effect.
 abstract class Condition {
-  /// The [Actor] that this condition applies to.
-  Actor get actor => _actor;
-  late Actor _actor;
-
   /// The number of turns that the condition while remain in effect for.
   int _turnsRemaining = 0;
 
@@ -27,12 +23,6 @@ abstract class Condition {
 
   /// The condition's current intensity, or zero if not active.
   int get intensity => _intensity;
-
-  /// Binds the condition to the actor that it applies to. Must be called and
-  /// can only be called once.
-  void bind(Actor actor) {
-    _actor = actor;
-  }
 
   /// Processes one turn of the condition.
   void update(Action action) {
@@ -76,7 +66,7 @@ abstract class Condition {
 class HasteCondition extends Condition {
   @override
   void onDeactivate(Action action) {
-    action.log("{1} slow[s] back down.", actor);
+    action.log("{1} slow[s] back down.", action.actor);
   }
 }
 
@@ -84,7 +74,7 @@ class HasteCondition extends Condition {
 class ColdCondition extends Condition {
   @override
   void onDeactivate(Action action) {
-    action.log("{1} warm[s] back up.", actor);
+    action.log("{1} warm[s] back up.", action.actor);
   }
 }
 
@@ -95,14 +85,14 @@ class PoisonCondition extends Condition {
     // TODO: Apply resistances. If resistance lowers intensity to zero, end
     // condition and log message.
 
-    if (!actor.takeDamage(action, intensity, Noun("the poison"))) {
-      action.log("{1} [are|is] hurt by poison!", actor);
+    if (!action.actor!.takeDamage(action, intensity, Noun("the poison"))) {
+      action.log("{1} [are|is] hurt by poison!", action.actor);
     }
   }
 
   @override
   void onDeactivate(Action action) {
-    action.log("{1} [are|is] no longer poisoned.", actor);
+    action.log("{1} [are|is] no longer poisoned.", action.actor);
   }
 }
 
@@ -110,8 +100,10 @@ class PoisonCondition extends Condition {
 class BlindnessCondition extends Condition {
   @override
   void onDeactivate(Action action) {
-    action.log("{1} can see clearly again.", actor);
-    if (actor == action.game.hero) action.game.stage.heroVisibilityChanged();
+    action.log("{1} can see clearly again.", action.actor);
+    if (action.actor == action.game.hero) {
+      action.game.stage.heroVisibilityChanged();
+    }
   }
 }
 
@@ -123,7 +115,7 @@ class ResistCondition extends Condition {
 
   @override
   void onDeactivate(Action action) {
-    action.log("{1} feel[s] susceptible to $_element.", actor);
+    action.log("{1} feel[s] susceptible to $_element.", action.actor);
   }
 }
 
@@ -133,6 +125,6 @@ class PerceiveCondition extends Condition {
 
   @override
   void onDeactivate(Action action) {
-    action.log("{1} no longer perceive[s] monsters.", actor);
+    action.log("{1} no longer perceive[s] monsters.", action.actor);
   }
 }

@@ -194,8 +194,9 @@ class ResistAction extends ConditionAction {
 
   @override
   void onActivate() {
-    // Poison resistance also immediately cures poison.
     log("{1} [are|is] resistant to $_element.", actor);
+
+    // Poison resistance also immediately cures poison.
     if (actor!.poison.isActive) {
       actor!.poison.cancel();
       log("{1} [are|is] no longer poisoned.", actor);
