@@ -12,6 +12,26 @@ class Storage {
     _load();
   }
 
+  /// Add new [hero] to storage.
+  void add(HeroSave hero) {
+    heroes.add(hero);
+    save();
+  }
+
+  /// Delete [hero] from storage.
+  void remove(HeroSave hero) {
+    heroes.removeWhere((existing) => existing.name == hero.name);
+    save();
+  }
+
+  /// Replace the existing save for the given hero (identified by name) with
+  /// [hero].
+  void replace(HeroSave hero) {
+    var index = heroes.indexWhere((existing) => existing.name == hero.name);
+    heroes[index] = hero;
+    save();
+  }
+
   void _load() {
     // TODO: For debugging. If the query is "?clear", then ditch saved heroes.
     if (html.window.location.search == '?clear') {
@@ -114,7 +134,7 @@ class Storage {
         var gold = heroData['gold'] as int;
         var maxDepth = heroData['maxDepth'] as int? ?? 0;
 
-        var heroSave = HeroSave.load(
+        var heroSave = HeroSave(
             name,
             race,
             heroClass,

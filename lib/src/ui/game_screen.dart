@@ -40,7 +40,8 @@ class GameScreen extends Screen<Input> {
   /// When the hero is in the dungeon, this is their save state before entering.
   /// If they die or forfeit, their current state is discarded and this one is
   /// used instead.
-  final HeroSave? _storageSave;
+  final HeroSave _previousSave;
+
   final Storage _storage;
   final LogPanel _logPanel;
   final ItemPanel itemPanel;
@@ -118,8 +119,9 @@ class GameScreen extends Screen<Input> {
     return ash;
   }
 
-  GameScreen(this._storage, this.game, this._storageSave)
-      : _logPanel = LogPanel(game.log),
+  GameScreen(this._storage, this.game)
+      : _previousSave = game.hero.save.clone(),
+        _logPanel = LogPanel(game.log),
         itemPanel = ItemPanel(game) {
     _sidebarPanel = SidebarPanel(this);
     _stagePanel = StagePanel(this);
@@ -148,7 +150,7 @@ class GameScreen extends Screen<Input> {
 
     for (var _ in game.generate()) {}
 
-    return GameScreen(storage, game, null);
+    return GameScreen(storage, game);
   }
 
   /// Draws [Glyph] at [x], [y] in [Stage] coordinates onto the stage panel.
@@ -163,8 +165,7 @@ class GameScreen extends Screen<Input> {
       case Input.quit:
         var portal = game.stage[game.hero.pos].portal;
         if (portal == TilePortals.exit) {
-          // Should have a storage because there are no exits in the town.
-          ui.push(ExitPopup(_storageSave!, game));
+          ui.push(ExitPopup(_previousSave, game));
         } else {
           game.log.error("You are not standing on an exit.");
           dirty();
@@ -307,7 +308,6 @@ class GameScreen extends Screen<Input> {
 
     if (popped is ExitPopup) {
       // TODO: Hero should start next to dungeon entrance.
-      _storageSave!.takeFrom(game.hero);
 
       // Update shops.
       game.hero.save.shops.forEach((shop, inventory) {
@@ -315,18 +315,18 @@ class GameScreen extends Screen<Input> {
       });
 
       _storage.save();
-      ui.goTo(GameScreen.town(_storage, game.content, _storageSave!));
+      ui.goTo(GameScreen.town(_storage, game.content, game.hero.save));
     } else if (popped is SelectDepthPopup && result is int) {
       // Enter the dungeon.
       _storage.save();
       ui.push(LoadingDialog(game.hero.save, game.content, result));
     } else if (popped is LoadingDialog) {
-      ui.goTo(GameScreen(_storage, result as Game, game.hero.save));
+      ui.goTo(GameScreen(_storage, result as Game));
     } else if (popped is ForfeitPopup && result == true) {
       if (game.depth > 0) {
         // Forfeiting, so return to the town and discard the current hero.
         // TODO: Hero should start next to dungeon entrance.
-        ui.goTo(GameScreen.town(_storage, game.content, _storageSave!));
+        ui.goTo(GameScreen.town(_storage, game.content, _previousSave));
       } else {
         // Leaving the town. Save just to be safe.
         _storage.save();
@@ -371,13 +371,7 @@ class GameScreen extends Screen<Input> {
 
     // See if the hero died.
     if (!game.hero.isAlive) {
-      // If they have permadeath on, delete the hero.
-      if (game.hero.save.permadeath) {
-        _storage.heroes.removeWhere((save) => save.name == game.hero.save.name);
-        _storage.save();
-      }
-
-      ui.goTo(GameOverScreen(game.hero));
+      ui.goTo(GameOverScreen(_storage, game.hero.save, _previousSave));
       return;
     }
 

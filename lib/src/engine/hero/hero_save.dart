@@ -60,8 +60,7 @@ class HeroSave {
 
   final Log log;
 
-  Lore get lore => _lore;
-  Lore _lore;
+  final Lore lore;
 
   final strength = Strength();
   final agility = Agility();
@@ -103,15 +102,21 @@ class HeroSave {
     return total;
   }
 
-  HeroSave(this.name, Race race, this.heroClass, {this.permadeath = false})
+  HeroSave.create(this.name, Race race, this.heroClass,
+      {this.permadeath = false})
       : race = race.rollStats(),
         shops = {},
         skills = SkillSet(),
         log = Log(),
-        _lore = Lore();
+        lore = Lore() {
+    strength.refresh(this);
+    agility.refresh(this);
+    fortitude.refresh(this);
+    intellect.refresh(this);
+    will.refresh(this);
+  }
 
-  // TODO: Rename.
-  HeroSave.load(
+  HeroSave(
       this.name,
       this.race,
       this.heroClass,
@@ -124,24 +129,17 @@ class HeroSave {
       this.experience,
       this.skills,
       this.log,
-      this._lore,
+      this.lore,
       this.gold,
-      this.maxDepth);
-
-  /// Move data from [hero] into this object. This should be called when the
-  /// [Hero] has successfully completed a stage and his changes need to be
-  /// "saved".
-  void takeFrom(Hero hero) {
-    _inventory = hero.inventory;
-    _equipment = hero.equipment;
-    experience = hero.experience;
-    gold = hero.gold;
-    skills = hero.skills;
-    _lore = hero.lore;
-    maxDepth = hero.save.maxDepth;
+      this.maxDepth) {
+    strength.refresh(this);
+    agility.refresh(this);
+    fortitude.refresh(this);
+    intellect.refresh(this);
+    will.refresh(this);
   }
 
-  HeroSave clone() => HeroSave.load(
+  HeroSave clone() => HeroSave(
       name,
       race,
       heroClass,
@@ -159,7 +157,7 @@ class HeroSave {
       // Don't clone the log. The log is persistent even when the Hero dies in
       // the dungeon, so all HeroSaves share the same object.
       log,
-      _lore.clone(),
+      lore.clone(),
       gold,
       maxDepth);
 

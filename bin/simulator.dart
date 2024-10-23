@@ -58,8 +58,6 @@ class Simulator {
         assert(event is Hero);
       }
     }
-
-    save.takeFrom(hero);
   }
 
   void _getItem(Item item) {

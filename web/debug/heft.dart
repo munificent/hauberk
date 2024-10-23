@@ -49,7 +49,8 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
   var weaponDamage = <String, num>{};
   var weaponDesc = <String, String>{};
 
-  var save = HeroSave("Blah", _content.races.first, _content.classes.first);
+  var save =
+      HeroSave.create("Blah", _content.races.first, _content.classes.first);
   var game = Game(_content, 1, save);
 
   for (var i = 0; i < _weapons.length; i++) {

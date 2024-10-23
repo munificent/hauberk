@@ -10,7 +10,7 @@ final breedDrops = <Breed, Histogram<String>>{};
 
 void main() {
   createContent();
-  var hero = HeroSave("", Races.human, Classes.mage);
+  var hero = HeroSave.create("", Races.human, Classes.mage);
 
   var builder = HtmlBuilder();
   builder.table();

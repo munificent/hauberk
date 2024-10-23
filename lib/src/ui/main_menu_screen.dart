@@ -150,8 +150,7 @@ class MainMenuScreen extends Screen<Input> {
     _isActive = true;
 
     if (popped is ConfirmPopup && result == "delete") {
-      storage.heroes.removeAt(selectedHero);
-      storage.save();
+      storage.heroes.remove(storage.heroes[selectedHero]);
 
       // If they deleted the last hero, keep the selection in bounds.
       if (selectedHero > 0 && selectedHero >= storage.heroes.length) {

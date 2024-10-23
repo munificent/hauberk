@@ -210,8 +210,7 @@ class NewHeroScreen extends Screen<Input> {
             race: _content.races[_race.selected],
             heroClass: _content.classes[_class.selected],
             permadeath: _death.selected == 1);
-        _storage.heroes.add(hero);
-        _storage.save();
+        _storage.add(hero);
         ui.goTo(GameScreen.town(_storage, _content, hero, newHero: true));
         return true;
 

@@ -4,11 +4,20 @@ import 'package:malison/malison_web.dart';
 import '../engine.dart';
 import 'draw.dart';
 import 'input.dart';
+import 'storage.dart';
 
 class GameOverScreen extends Screen<Input> {
-  final Hero _hero;
+  final HeroSave _hero;
 
-  GameOverScreen(this._hero);
+  GameOverScreen(Storage storage, this._hero, HeroSave previousSave) {
+    // If they have permadeath on, delete the hero.
+    if (_hero.permadeath) {
+      storage.remove(_hero);
+    } else {
+      storage.replace(previousSave);
+    }
+    storage.save();
+  }
 
   @override
   bool handleInput(Input input) {
@@ -27,10 +36,9 @@ class GameOverScreen extends Screen<Input> {
     // final stats, etc.
     Draw.dialog(terminal, 60, 40, label: "You have died", (terminal) {
       var y = terminal.height - 1;
-      for (var i = _hero.save.log.messages.length - 1; i >= 0; i--) {
+      for (var i = _hero.log.messages.length - 1; i >= 0; i--) {
         // TODO: Include count, lines, color.
-        var lines =
-            Log.wordWrap(terminal.width, _hero.save.log.messages[i].text);
+        var lines = Log.wordWrap(terminal.width, _hero.log.messages[i].text);
         for (var j = lines.length - 1; j >= 0; j--) {
           terminal.writeAt(0, y, lines[j]);
           y--;
@@ -39,8 +47,6 @@ class GameOverScreen extends Screen<Input> {
 
         if (y < 0) break;
       }
-    }, helpKeys: {
-      '`': _hero.save.permadeath ? "Create a new hero" : "Try again"
-    });
+    }, helpKeys: {'`': _hero.permadeath ? "Create a new hero" : "Try again"});
   }
 }

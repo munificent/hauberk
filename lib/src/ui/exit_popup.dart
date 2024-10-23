@@ -9,7 +9,9 @@ import 'input.dart';
 import 'popup.dart';
 
 class ExitPopup extends Popup {
-  final HeroSave _save;
+  /// The state of the hero before entering the dungeon.
+  final HeroSave _previous;
+
   final Game _game;
   final List<_AnimatedValue> _values = [];
 
@@ -21,31 +23,31 @@ class ExitPopup extends Popup {
   @override
   Map<String, String> get helpKeys => {"OK": "Return to town"};
 
-  ExitPopup(this._save, this._game) {
+  ExitPopup(this._previous, this._game) {
     var hero = _game.hero;
 
-    _values.add(_AnimatedValue(5, "Gold", hero.gold - _save.gold, gold));
-    _values.add(_AnimatedValue(
-        6, "Experience", hero.experience - _save.experience, peaGreen));
-    _values
-        .add(_AnimatedValue(7, "Levels", hero.level - _save.level, lightAqua));
+    var y = 5;
 
-    _values.add(_AnimatedValue(
-        9, "Strength", hero.strength.value - _save.strength.value, blue));
-    _values.add(_AnimatedValue(
-        10, "Agility", hero.agility.value - _save.agility.value, blue));
-    _values.add(_AnimatedValue(
-        11, "Fortitude", hero.fortitude.value - _save.fortitude.value, blue));
-    _values.add(_AnimatedValue(
-        12, "Intellect", hero.intellect.value - _save.intellect.value, blue));
-    _values.add(
-        _AnimatedValue(13, "Will", hero.will.value - _save.will.value, blue));
+    void add(String label, Color color, int change, {int? total}) {
+      _values.add(_AnimatedValue(y++, label, change, color, total: total));
+    }
 
-    var slain = hero.lore.allSlain - _save.lore.allSlain;
+    add("Gold", gold, hero.gold - _previous.gold);
+    add("Experience", peaGreen, hero.experience - _previous.experience);
+    add("Levels", lightAqua, hero.level - _previous.level);
+
+    y++;
+    add("Strength", blue, hero.strength.value - _previous.strength.value);
+    add("Agility", blue, hero.agility.value - _previous.agility.value);
+    add("Fortitude", blue, hero.fortitude.value - _previous.fortitude.value);
+    add("Intellect", blue, hero.intellect.value - _previous.intellect.value);
+    add("Will", blue, hero.will.value - _previous.will.value);
+
+    y += 3;
+    var slain = hero.lore.allSlain - _previous.lore.allSlain;
     var remainingMonsters =
         _game.stage.actors.where((actor) => actor is! Hero).length;
-    _values.add(_AnimatedValue(17, "Monsters", slain, red,
-        total: slain + remainingMonsters));
+    add("Monsters", red, slain, total: slain + remainingMonsters);
   }
 
   @override
@@ -56,7 +58,7 @@ class ExitPopup extends Popup {
     if (input != Input.ok) return false;
 
     // Remember that this depth was reached.
-    _game.hero.save.maxDepth = math.max(_save.maxDepth, _game.depth);
+    _game.hero.save.maxDepth = math.max(_previous.maxDepth, _game.depth);
 
     ui.pop();
     return true;

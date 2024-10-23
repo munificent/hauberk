@@ -87,7 +87,7 @@ class GameContent implements Content {
     race ??= Races.human;
     heroClass ??= Classes.adventurer;
 
-    var hero = HeroSave(name, race, heroClass, permadeath: permadeath);
+    var hero = HeroSave.create(name, race, heroClass, permadeath: permadeath);
 
     // TODO: Instead of giving the player access to all shops at once, consider
     // letting them rescue shopkeepers from the dungeon to unlock better and
