@@ -20,7 +20,7 @@ class SpawnAction extends Action {
     // over time.
     monster.generation++;
 
-    var spawned = _breed.spawn(game, _pos, monster);
+    var spawned = _breed.spawn(_pos, monster);
     game.stage.addActor(spawned);
 
     addEvent(EventType.spawn, actor: spawned);

@@ -114,8 +114,7 @@ class Monster extends Actor {
     return breed.vision / senses;
   }
 
-  Monster(Game game, this._breed, int x, int y, this.generation)
-      : super(game, x, y) {
+  Monster(this._breed, super.x, super.y, this.generation) {
     health = maxHealth;
 
     _state.bind(this);

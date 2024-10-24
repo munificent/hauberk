@@ -130,7 +130,7 @@ SimResult simulate(HeroSave save) {
 
   var wins = 0;
   for (var i = 0; i < simulationRounds; i++) {
-    var monster = Monster(game, breed, 0, 0, 1);
+    var monster = Monster(breed, 0, 0, 1);
     while (true) {
       var action = AttackAction(monster);
       action.bind(game, game.hero);

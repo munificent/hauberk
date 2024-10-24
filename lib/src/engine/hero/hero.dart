@@ -117,8 +117,7 @@ class Hero extends Actor {
   /// All [Skill]s in the game.
   final Iterable<Skill> _allSkills;
 
-  Hero(Game game, Vec pos, this.save, this._allSkills)
-      : super(game, pos.x, pos.y) {
+  Hero(Vec pos, this.save, this._allSkills) : super(pos.x, pos.y) {
     // Give the hero energy so they can act before all of the monsters.
     energy.energy = Energy.actionCost;
 

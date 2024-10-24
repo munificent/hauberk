@@ -4,7 +4,6 @@ import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/item/drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/engine.dart';
-import 'package:piecemeal/piecemeal.dart';
 
 /// This script is for tuning and balancing the way stats and equipment affect
 /// melee combat.
@@ -150,13 +149,11 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
           tracking: 10,
           flags: BreedFlags.fromSet({})));
 
-  var monster = Monster(game, breed, 0, 0, 1);
-  var hero = Hero(game, Vec.zero, save, content.skills);
-  game.hero = hero;
+  var monster = Monster(breed, 0, 0, 1);
 
   while (true) {
     var action = AttackAction(monster);
-    action.bind(game, hero);
+    action.bind(game, game.hero);
     action.perform();
 
     if (monster.health <= 0) {
@@ -164,11 +161,11 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
       return true;
     }
 
-    action = AttackAction(hero);
+    action = AttackAction(game.hero);
     action.bind(game, monster);
     action.perform();
 
-    if (hero.health <= 0) {
+    if (game.hero.health <= 0) {
 //      print("versus $monsterHealth -> lose");
       return false;
     }

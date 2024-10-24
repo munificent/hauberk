@@ -47,13 +47,14 @@ class Game {
 
   Stage get stage => _stage;
   late final Stage _stage;
-  late final Hero hero;
 
-  Game(this.content, this.depth, HeroSave save, {int? width, int? height}) {
+  final Hero hero;
+
+  Game(this.content, this.depth, HeroSave save, {int? width, int? height})
+      : hero = Hero(Vec.zero, save, content.skills) {
     // TODO: Vary size?
     _stage = Stage(width ?? 120, height ?? 80, this);
 
-    hero = Hero(this, Vec.zero, save, content.skills);
     _stage.addActor(hero);
 
     _substanceUpdateOrder.addAll(_stage.bounds.inflate(-1));

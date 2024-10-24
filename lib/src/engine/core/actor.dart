@@ -11,7 +11,6 @@ import 'log.dart';
 
 /// An active entity in the game. Includes monsters and the hero.
 abstract class Actor implements Noun {
-  final Game game;
   final Energy energy = Energy();
 
   /// Haste raises speed.
@@ -47,7 +46,7 @@ abstract class Actor implements Noun {
     _health = value.clamp(0, maxHealth);
   }
 
-  Actor(this.game, int x, int y) : _pos = Vec(x, y);
+  Actor(int x, int y) : _pos = Vec(x, y);
 
   Object get appearance;
 

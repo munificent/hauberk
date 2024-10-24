@@ -2,7 +2,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../core/combat.dart';
 import '../core/energy.dart';
-import '../core/game.dart';
 import '../core/log.dart';
 import '../core/math.dart';
 import '../hero/hero.dart';
@@ -213,11 +212,11 @@ class Breed {
     return exp.ceil();
   }
 
-  Monster spawn(Game game, Vec pos, [Monster? parent]) {
+  Monster spawn(Vec pos, [Monster? parent]) {
     var generation = 1;
     if (parent != null) generation = parent.generation + 1;
 
-    return Monster(game, this, pos.x, pos.y, generation);
+    return Monster(this, pos.x, pos.y, generation);
   }
 
   /// Generate the list of breeds spawned by this breed.

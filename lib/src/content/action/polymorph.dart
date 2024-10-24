@@ -47,7 +47,7 @@ class AmputateAction extends Action {
     // If there's no room for the part, it disappears.
     if (positions.isNotEmpty) {
       // Create the part.
-      var part = _partBreed.spawn(game, rng.item(positions), monster);
+      var part = _partBreed.spawn(rng.item(positions), monster);
       part.awaken();
       game.stage.addActor(part);
 

@@ -296,7 +296,7 @@ class Decorator {
       if (isCorpse) {
         _architect.stage.placeDrops(pos, breed.drop, depth: breed.depth);
       } else {
-        var monster = breed.spawn(_architect.stage.game, pos);
+        var monster = breed.spawn(pos);
         _architect.stage.addActor(monster);
         experience += monster.experience;
 

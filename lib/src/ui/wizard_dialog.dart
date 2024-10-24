@@ -317,7 +317,7 @@ class _WizardSpawnDialog extends _SearchDialog<Breed> {
     var pos = flow.bestWhere((pos) => (pos - _game.hero.pos) > 6);
     if (pos == null) return;
 
-    var monster = breed.spawn(_game, pos);
+    var monster = breed.spawn(pos);
     _game.stage.addActor(monster);
   }
 }
