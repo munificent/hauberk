@@ -10,45 +10,32 @@ import '../hues.dart';
 import 'draw.dart';
 import 'input.dart';
 
+typedef _WizardAction = (String, int, String, void Function());
+
 /// Cheat menu.
 class WizardDialog extends Screen<Input> {
-  final Map<String, void Function()> _menuItems = {};
+  final List<_WizardAction> _menuItems = [];
   final Game _game;
+
+  /// Whether this dialog is on top or there is another one above it.
+  bool _isActive = true;
 
   @override
   bool get isTransparent => true;
 
   WizardDialog(this._game) {
-    _menuItems["Map Dungeon"] = _mapDungeon;
-    _menuItems["Illuminate Dungeon"] = _illuminateDungeon;
-    _menuItems["Drop Item"] = () {
-      ui.push(_WizardDropDialog(_game));
-    };
-    _menuItems["Spawn Monster"] = () {
-      ui.push(_WizardSpawnDialog(_game));
-    };
-    _menuItems["Gain Level"] = _gainLevel;
-    _menuItems["Train Discipline"] = () {
-      ui.push(_WizardTrainDialog(_game));
-    };
-
-    _menuItems["Kill All Monsters"] = _killAllMonsters;
-
-    _menuItems["Toggle Show All Monsters"] = () {
-      Debug.showAllMonsters = !Debug.showAllMonsters;
-      _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
-      ui.pop();
-    };
-    _menuItems["Toggle Show Monster Alertness"] = () {
-      Debug.showMonsterAlertness = !Debug.showMonsterAlertness;
-      _game.log.cheat("Show monster alertness = ${Debug.showMonsterAlertness}");
-      ui.pop();
-    };
-    _menuItems["Toggle Show Hero Volume"] = () {
-      Debug.showHeroVolume = !Debug.showHeroVolume;
-      _game.log.cheat("Show hero volume = ${Debug.showHeroVolume}");
-      ui.pop();
-    };
+    _menuItems.addAll([
+      ("m", KeyCode.m, "Map Dungeon", _mapDungeon),
+      ("i", KeyCode.i, "Illuminate Dungeon", _illuminateDungeon),
+      ("d", KeyCode.d, "Drop Item", _dropItem),
+      ("s", KeyCode.s, "Spawn Monster", _spawnMonster),
+      ("g", KeyCode.g, "Gain Level", _gainLevel),
+      ("t", KeyCode.t, "Train Discipline", _trainDiscipline),
+      ("k", KeyCode.k, "Kill All Monsters", _killAllMonsters),
+      ("o", KeyCode.o, "Toggle Show All Monsters", _toggleShowAllMonsters),
+      ("a", KeyCode.a, "Toggle Show Monster Alertness", _toggleAlertness),
+      ("v", KeyCode.v, "Toggle Show Hero Volume", _toggleShowHeroVolume),
+    ]);
   }
 
   @override
@@ -65,37 +52,49 @@ class WizardDialog extends Screen<Input> {
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
     if (shift || alt) return false;
 
-    var index = keyCode - KeyCode.a;
-    if (index < 0 || index >= _menuItems.length) return false;
+    for (var (_, key, _, action) in _menuItems) {
+      if (key == keyCode) {
+        action();
+        dirty();
+        return true;
+      }
+    }
 
-    var menuItem = _menuItems[_menuItems.keys.elementAt(index)]!;
-    menuItem();
-    dirty();
+    return false;
 
     // TODO: Invoking a wizard command should mark the hero as a cheater.
+  }
 
-    return true;
+  @override
+  void activate(Screen<Input> popped, Object? result) {
+    _isActive = true;
   }
 
   @override
   void render(Terminal terminal) {
     // Draw a box for the contents.
-    var width = _menuItems.keys
-        .fold<int>(0, (width, name) => math.max(width, name.length));
-    Draw.frame(terminal, 0, 0, width + 4, _menuItems.length + 2,
-        color: UIHue.selection, label: "Wizard Menu", labelSelected: true);
+    var width = 0;
+    for (var (_, _, name, _) in _menuItems) {
+      width = math.max(width, name.length);
+    }
+
+    Draw.frame(terminal, 0, 0, 40, _menuItems.length + 2,
+        color: _isActive ? UIHue.selection : UIHue.disabled,
+        label: "Wizard Menu",
+        labelSelected: _isActive);
 
     var i = 0;
-    for (var menuItem in _menuItems.keys) {
-      terminal.writeAt(1, i + 1, " )", UIHue.secondary);
+    for (var (key, _, name, _) in _menuItems) {
       terminal.writeAt(
-          1, i + 1, "abcdefghijklmnopqrstuvwxyz"[i], UIHue.selection);
-      terminal.writeAt(3, i + 1, menuItem, UIHue.primary);
-
+          1, i + 1, key, _isActive ? UIHue.selection : UIHue.disabled);
+      terminal.writeAt(
+          2, i + 1, ")", _isActive ? UIHue.secondary : UIHue.disabled);
+      terminal.writeAt(
+          4, i + 1, name, _isActive ? UIHue.primary : UIHue.disabled);
       i++;
     }
 
-    Draw.helpKeys(terminal, {"`": "Exit"});
+    if (_isActive) Draw.helpKeys(terminal, {"`": "Exit"});
   }
 
   void _mapDungeon() {
@@ -131,6 +130,16 @@ class WizardDialog extends Screen<Input> {
     stage.refreshView();
   }
 
+  void _dropItem() {
+    _isActive = false;
+    ui.push(_WizardDropDialog(_game));
+  }
+
+  void _spawnMonster() {
+    _isActive = false;
+    ui.push(_WizardSpawnDialog(_game));
+  }
+
   void _gainLevel() {
     if (_game.hero.level == Hero.maxLevel) {
       _game.log.cheat("Already at max level.");
@@ -142,6 +151,11 @@ class WizardDialog extends Screen<Input> {
     dirty();
   }
 
+  void _trainDiscipline() {
+    _isActive = false;
+    ui.push(_WizardTrainDialog(_game));
+  }
+
   void _killAllMonsters() {
     for (var monster in _game.stage.actors.toList()) {
       if (monster is! Monster) continue;
@@ -151,6 +165,24 @@ class WizardDialog extends Screen<Input> {
     }
 
     dirty();
+  }
+
+  void _toggleShowAllMonsters() {
+    Debug.showAllMonsters = !Debug.showAllMonsters;
+    _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
+    ui.pop();
+  }
+
+  void _toggleAlertness() {
+    Debug.showMonsterAlertness = !Debug.showMonsterAlertness;
+    _game.log.cheat("Show monster alertness = ${Debug.showMonsterAlertness}");
+    ui.pop();
+  }
+
+  void _toggleShowHeroVolume() {
+    Debug.showHeroVolume = !Debug.showHeroVolume;
+    _game.log.cheat("Show hero volume = ${Debug.showHeroVolume}");
+    ui.pop();
   }
 }
 
@@ -219,11 +251,14 @@ abstract class _SearchDialog<T> extends Screen<Input> {
 
   @override
   void render(Terminal terminal) {
-    // Draw a box for the contents.
-    Draw.frame(terminal, 25, 0, 43, 39, label: _question, labelSelected: true);
+    var dialog = terminal.rect(40, 0, 43, 38);
 
-    terminal.writeAt(29 + _question.length, 0, _pattern, UIHue.selection);
-    terminal.writeAt(29 + _question.length + _pattern.length, 0, " ",
+    // Draw a box for the contents.
+    Draw.frame(dialog, 0, 0, dialog.width, dialog.height,
+        label: _question, color: UIHue.selection);
+
+    dialog.writeAt(_question.length + 4, 0, _pattern, UIHue.selection);
+    dialog.writeAt(_question.length + 4 + _pattern.length, 0, " ",
         UIHue.selection, UIHue.selection);
 
     var n = 0;
@@ -233,17 +268,17 @@ abstract class _SearchDialog<T> extends Screen<Input> {
       }
 
       if (n < 10) {
-        terminal.writeAt(26, n + 2, n.toString(), UIHue.selection);
-        terminal.writeAt(27, n + 2, ")", UIHue.disabled);
+        dialog.writeAt(1, n + 1, n.toString(), UIHue.selection);
+        dialog.writeAt(2, n + 1, ")", UIHue.disabled);
       }
 
       var appearance = _itemAppearance(item);
       if (appearance is Glyph) {
-        terminal.drawGlyph(28, n + 2, appearance);
+        dialog.drawGlyph(3, n + 1, appearance);
       } else {
-        terminal.writeAt(28, n + 2, "-");
+        dialog.writeAt(3, n + 1, "-");
       }
-      terminal.writeAt(30, n + 2, _itemName(item), UIHue.primary);
+      dialog.writeAt(5, n + 1, _itemName(item), UIHue.primary);
 
       n++;
       if (n >= 36) break;
