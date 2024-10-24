@@ -110,16 +110,16 @@ void potions() {
   // TODO: Make not freezable?
   item("Bottled Ice", blue, price: 120)
     ..depth(7)
-    ..ball(Elements.cold, "the cold", "freezes", 20);
+    ..ball(Elements.cold, "the cold", "freezes", 16);
   item("Bottled Fire", red, price: 140)
     ..depth(11)
-    ..flow(Elements.fire, "the fire", "burns", 30, fly: true);
+    ..flow(Elements.fire, "the fire", "burns", 23, fly: true);
   item("Bottled Ocean", darkBlue, price: 160)
     ..depth(12)
-    ..flow(Elements.water, "the water", "drowns", 40);
+    ..flow(Elements.water, "the water", "drowns", 30);
   item("Bottled Poison", sherwood, price: 240)
     ..depth(13)
-    ..flow(Elements.poison, "the poison", "infects", 50, fly: true);
+    ..flow(Elements.poison, "the poison", "infects", 10, fly: true);
   item("Bottled Earth", tan, price: 180)
     ..depth(16)
     ..ball(Elements.earth, "the dirt", "crushes", 58);
