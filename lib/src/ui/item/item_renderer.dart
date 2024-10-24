@@ -55,6 +55,15 @@ void renderItems(
     var x = left + (showLetters ? 3 : 1);
     var y = top + slot + 1;
 
+    // If we run out of room, don't overflow. This can happen when looking at
+    // items on the ground.
+    if (slot >= itemSlotCount) {
+      var more = items.length - itemSlotCount;
+      terminal.writeAt(x + 1, top + itemSlotCount + 1, " $more more... ",
+          canSelectAny ? UIHue.selection : UIHue.disabled);
+      break;
+    }
+
     // If there's no item in this equipment slot, show the slot name.
     if (item == null) {
       // If this is the second hand slot and the previous one has a
@@ -62,10 +71,8 @@ void renderItems(
       if (slot > 0 &&
           items.slotTypes[slot] == "hand" &&
           items.slotTypes[slot - 1] == "hand" &&
-          // TODO: Use "?.".
-          items.slots.elementAt(slot - 1) != null &&
-          items.slots.elementAt(slot - 1)!.type.isTwoHanded) {
-        terminal.writeAt(x + 2, y, "↑ two-handed", UIHue.disabled);
+          (items.slots.elementAt(slot - 1)?.type.isTwoHanded ?? false)) {
+        terminal.writeAt(x, y, "↑ (two-handed)", UIHue.disabled);
       } else {
         terminal.writeAt(
             x + 2, y, "(${items.slotTypes[slot]})", UIHue.disabled);

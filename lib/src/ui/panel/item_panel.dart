@@ -6,6 +6,9 @@ import '../item/item_renderer.dart';
 import 'panel.dart';
 
 class ItemPanel extends Panel {
+  /// The number of items shown in the "On Ground" panel when not expanded.
+  static const groundPanelSize = 5;
+
   final Game _game;
 
   ItemPanel(this._game);
@@ -31,7 +34,7 @@ class ItemPanel extends Panel {
     // Don't show the on the ground panel if the height is too short for it.
     if (onGroundVisible) {
       var onGround = _game.stage.itemsAt(hero.pos);
-      _drawItems(terminal, onGroundTop, 5, onGround);
+      _drawItems(terminal, onGroundTop, groundPanelSize, onGround);
     }
 
     // TODO: Show something useful down here. Maybe mini-map or monster info.
@@ -41,8 +44,6 @@ class ItemPanel extends Panel {
 
   void _drawItems(
       Terminal terminal, int y, int itemSlotCount, ItemCollection items) {
-    // TODO: There can be more items on the ground than fit in the UI.
-    // Figure out how to handle that.
     renderItems(terminal, items,
         left: 0,
         top: y,

@@ -7,6 +7,7 @@ import '../../engine.dart';
 import '../draw.dart';
 import '../game_screen.dart';
 import '../input.dart';
+import '../panel/item_panel.dart';
 import 'item_renderer.dart';
 
 /// Modal dialog for letting the user perform an [Action] on an [Item]
@@ -185,17 +186,14 @@ abstract class ItemDialog extends Screen<Input> {
 
   @override
   void render(Terminal terminal) {
-    var itemCount = 0;
-    switch (_location) {
-      case ItemLocation.inventory:
-        itemCount = Option.inventoryCapacity;
-      case ItemLocation.equipment:
-        itemCount = gameScreen.game.hero.equipment.slots.length;
-      case ItemLocation.onGround:
-        // TODO: Define this constant somewhere. Make the game engine try not
-        // to place more than this many items per tile.
-        itemCount = 5;
-    }
+    var itemCount = switch (_location) {
+      ItemLocation.inventory => Option.inventoryCapacity,
+      ItemLocation.equipment => gameScreen.game.hero.equipment.slots.length,
+      // On the rare chance that there are a ton of items on the ground, don't
+      // overflow the panel.
+      ItemLocation.onGround => math.min(items.length, 26),
+      _ => throw StateError("Unexpected location."),
+    };
 
     int itemsLeft;
     int itemsTop;
@@ -204,8 +202,24 @@ abstract class ItemDialog extends Screen<Input> {
       itemsTop = switch (_location) {
         ItemLocation.inventory => gameScreen.itemPanel.inventoryTop,
         ItemLocation.equipment => gameScreen.itemPanel.equipmentTop,
+
+        // If there are more items on the ground than fit in the panel, then
+        // expand it upwards.
+        ItemLocation.onGround
+            when gameScreen.itemPanel.onGroundVisible &&
+                itemCount > ItemPanel.groundPanelSize =>
+          math.max(
+              0,
+              gameScreen.itemPanel.onGroundTop -
+                  itemCount +
+                  ItemPanel.groundPanelSize),
+
+        // Show the on ground items over the panel.
         ItemLocation.onGround when gameScreen.itemPanel.onGroundVisible =>
           gameScreen.itemPanel.onGroundTop,
+
+        // If the screen is too small to show the ground panel by default,
+        // then just draw it at the top.
         ItemLocation.onGround => 0,
         _ => throw StateError("Unexpected location."),
       };
