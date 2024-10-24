@@ -68,7 +68,7 @@ class Stage {
     // Walk to the target.
     for (var step in Line(actor.pos, target)) {
       if (step == target) return true;
-      if (game.stage[step].blocksView) return false;
+      if (this[step].blocksView) return false;
     }
 
     throw AssertionError("Unreachable.");
@@ -82,8 +82,8 @@ class Stage {
     // Walk to the target.
     for (var step in Line(actor.pos, target)) {
       if (step == target) return true;
-      if (game.stage.actorAt(step) != null) return false;
-      if (game.stage[step].blocksView) return false;
+      if (actorAt(step) != null) return false;
+      if (this[step].blocksView) return false;
     }
 
     throw AssertionError("Unreachable.");
@@ -106,7 +106,7 @@ class Stage {
   ///
   /// This is true if the actor can occupy [pos] and no other actor already is.
   bool canEnter(Vec pos, Motility motility) =>
-      canOccupy(pos, motility) && game.stage.actorAt(pos) == null;
+      canOccupy(pos, motility) && actorAt(pos) == null;
 
   // TODO: Should take into account that some actors are immune to some
   // substances.
@@ -114,7 +114,7 @@ class Stage {
   ///
   /// Takes into account that actors do not want to step into burning tiles.
   bool willEnter(Vec pos, Motility motility) =>
-      canEnter(pos, motility) && game.stage[pos].substance == 0;
+      canEnter(pos, motility) && this[pos].substance == 0;
 
   // TODO: Should take into account that some actors are immune to some
   // substances.
@@ -123,7 +123,7 @@ class Stage {
   /// Takes into account that actors do not want to step into burning tiles,
   /// but does not care if the tile is occupied.
   bool willOccupy(Vec pos, Motility motility) =>
-      canOccupy(pos, motility) && game.stage[pos].substance == 0;
+      canOccupy(pos, motility) && this[pos].substance == 0;
 
   void addActor(Actor actor) {
     assert(_actorsByTile[actor.pos] == null);
