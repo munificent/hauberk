@@ -86,9 +86,11 @@ class Scenario {
       var line = lines[y];
       for (var x = 0; x < line.length; x++) {
         var char = line[x];
-        var tile = tileTypes[char];
-        assert(tile != null, "Unknown tile char '$char'.");
-        stage.get(x, y).type = tile!;
+        var tileType = tileTypes[char];
+        assert(tileType != null, "Unknown tile char '$char'.");
+
+        stage.get(x, y).type = tileType!;
+        stage.exploreAt(x, y, force: true);
 
         // Keep track of position markers.
         switch (char) {

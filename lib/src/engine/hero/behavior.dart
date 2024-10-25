@@ -78,7 +78,7 @@ class RunBehavior extends Behavior {
 
   @override
   bool canPerform(Game game, Hero hero) {
-    // On first step, always try to go in direction player pressed.
+    // On the first step, always try to go in the direction the player pressed.
     if (firstStep) return true;
 
     if (openLeft == null) {
@@ -126,8 +126,10 @@ class RunBehavior extends Behavior {
         direction = openDirs.first;
       } else {
         // Entering an open area.
-        openLeft = _isOpen(game.stage, hero, direction.rotateLeft90);
-        openRight = _isOpen(game.stage, hero, direction.rotateRight90);
+        openLeft = _isOpen(game.stage, hero, direction.rotateLeft45) &&
+            _isOpen(game.stage, hero, direction.rotateLeft90);
+        openRight = _isOpen(game.stage, hero, direction.rotateRight45) &&
+            _isOpen(game.stage, hero, direction.rotateRight90);
       }
     } else if (!openLeft! && !openRight!) {
       if (!_runInPassage(game.stage, hero)) return false;
