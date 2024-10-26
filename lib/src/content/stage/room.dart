@@ -75,15 +75,14 @@ class Room {
   }
 
   static Array2D<RoomTile> _rectangle(int depth) {
-    var (min, max) = switch (_roomSize()) {
-      RoomSize.small => (3, 4),
-      RoomSize.medium => (5, 8),
-      RoomSize.large => (9, 16),
+    var (short, long) = switch (rng.oneIn(10)) {
+      true => (rng.inclusive(12, 24), rng.inclusive(12, 24)),
+      false => (rng.inclusive(3, 10), rng.inclusive(3, 10)),
     };
 
-    // Make a randomly-sized room but keep the aspect ratio reasonable.
-    var short = rng.inclusive(min, max);
-    var long = rng.inclusive(short, (short * 1.5).ceil());
+    if (short > long) {
+      (short, long) = (long, short);
+    }
 
     var horizontal = rng.oneIn(2);
     var width = horizontal ? long : short;
