@@ -117,6 +117,7 @@ class Tiles {
 
   static final water = tile("water", "≈", blue, darkBlue)
       .animate(10, 0.5, darkBlue, darkerCoolGray)
+      .emanate(32)
       .water();
   static final steppingStone =
       tile("stepping stone", "•", lightCoolGray, darkBlue).open();

@@ -451,6 +451,15 @@ abstract class Architecture {
     // TODO: Should water own the walls that surround it (if not already owned)?
   }
 
+  // TODO: The way rivers interact with ownership is weird.
+  void placeShore(Vec pos) {
+    // Don't overwrite river with shore.
+    if (_architect.stage[pos].type == Tiles.unformed) {
+      _architect.stage[pos].type = Tiles.open;
+      _architect._owners[pos] = this;
+    }
+  }
+
   /// Marks the tile at [pos] as not allowing a passage to be dug through it.
   void preventPassage(Vec pos) {
     assert(_architect._owners[pos] == null ||
