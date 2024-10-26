@@ -66,10 +66,24 @@ class Room {
     // - T
   }
 
+  /// Chooses a random room size with weighted probability towards smaller
+  /// rooms.
+  static RoomSize _roomSize() {
+    if (!rng.oneIn(4)) return RoomSize.small;
+    if (!rng.oneIn(4)) return RoomSize.medium;
+    return RoomSize.large;
+  }
+
   static Array2D<RoomTile> _rectangle(int depth) {
+    var (min, max) = switch (_roomSize()) {
+      RoomSize.small => (3, 4),
+      RoomSize.medium => (5, 8),
+      RoomSize.large => (9, 16),
+    };
+
     // Make a randomly-sized room but keep the aspect ratio reasonable.
-    var short = rng.inclusive(3, 10);
-    var long = rng.inclusive(short, math.min(16, short + 4));
+    var short = rng.inclusive(min, max);
+    var long = rng.inclusive(short, (short * 1.5).ceil());
 
     var horizontal = rng.oneIn(2);
     var width = horizontal ? long : short;
@@ -109,9 +123,15 @@ class Room {
   }
 
   static Array2D<RoomTile> _angled(int depth) {
+    var (min, max) = switch (_roomSize()) {
+      RoomSize.small => (5, 8),
+      RoomSize.medium => (9, 12),
+      RoomSize.large => (13, 18),
+    };
+
     // Make a randomly-sized room but keep the aspect ratio reasonable.
-    var short = rng.inclusive(5, 10);
-    var long = rng.inclusive(short, math.min(16, short + 4));
+    var short = rng.inclusive(min, max);
+    var long = rng.inclusive(short, (short * 1.5).ceil());
 
     var horizontal = rng.oneIn(2);
     var width = horizontal ? long : short;
@@ -179,12 +199,24 @@ class Room {
   }
 
   static Array2D<RoomTile> _diamond(int depth) {
-    var size = rng.inclusive(5, 17);
+    var (min, max) = switch (_roomSize()) {
+      RoomSize.small => (5, 9),
+      RoomSize.medium => (10, 17),
+      RoomSize.large => (18, 27),
+    };
+
+    var size = rng.inclusive(min, max);
     return _angledCorners(size, (size - 1) ~/ 2, depth);
   }
 
   static Array2D<RoomTile> _octagon(int depth) {
-    var size = rng.inclusive(6, 13);
+    var (min, max) = switch (_roomSize()) {
+      RoomSize.small => (6, 9),
+      RoomSize.medium => (10, 16),
+      RoomSize.large => (17, 24),
+    };
+
+    var size = rng.inclusive(min, max);
     var corner = rng.inclusive(2, size ~/ 2 - 1);
 
     return _angledCorners(size, corner, depth);
@@ -307,3 +339,5 @@ class RoomTile {
 
   bool get isJunction => direction != Direction.none;
 }
+
+enum RoomSize { small, medium, large }
