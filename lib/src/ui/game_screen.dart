@@ -27,11 +27,13 @@ import 'panel/item_panel.dart';
 import 'panel/log_panel.dart';
 import 'panel/sidebar_panel.dart';
 import 'panel/stage_panel.dart';
+import 'peek_dialog.dart';
 import 'select_depth_popup.dart';
 import 'select_skill_dialog.dart';
 import 'skill_dialog.dart';
 import 'storage.dart';
 import 'target_dialog.dart';
+import 'look_dialog.dart';
 import 'wizard_dialog.dart';
 
 class GameScreen extends Screen<Input> {
@@ -185,6 +187,11 @@ class GameScreen extends Screen<Input> {
         ui.push(UseDialog(this));
       case Input.toss:
         ui.push(TossDialog(this));
+
+      case Input.peek:
+        ui.push(PeekDialog(this));
+      case Input.look:
+        ui.push(LookDialog(this));
 
       case Input.rest:
         if (!game.hero.rest()) {

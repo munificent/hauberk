@@ -41,6 +41,10 @@ class Input {
   static const w = Input("w");
   static const nw = Input("nw");
 
+  /// Peeking and Looking
+  static const peek = Input("peek");
+  static const look = Input("look");
+
   /// Rest repeatedly.
   static const rest = Input("rest");
 

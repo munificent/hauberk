@@ -149,6 +149,9 @@ void main() {
 
   _ui.keyPress.bind(Input.wizard, KeyCode.w, shift: true, alt: true);
 
+  _ui.keyPress.bind(Input.peek, KeyCode.x, shift: true);
+  _ui.keyPress.bind(Input.look, KeyCode.z);
+
   _ui.push(MainMenuScreen(content));
 
   _ui.handlingInput = true;
