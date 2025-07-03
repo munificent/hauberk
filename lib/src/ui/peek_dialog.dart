@@ -80,7 +80,7 @@ class PeekDialog extends Screen<Input> {
 
     Draw.helpKeys(terminal, {
       "↕↔": "Peek over direction",
-      "``": "Exit"
+      "`": "Exit"
     });
   }
 }

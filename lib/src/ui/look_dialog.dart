@@ -82,7 +82,6 @@ class LookDialog extends Screen<Input> {
       leftWidth = 25;
     }
 
-    print(leftWidth);
     Draw.frame(terminal, 0, terminal.height - 20, leftWidth, 20, color: gold);
 
     var targetPos = lookedPosition;
