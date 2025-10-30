@@ -22,7 +22,7 @@ keyboard if you have one:
     |---+---+---|          |---+---+---|
     | 4 | 5 | 6 | maps to: |<- |   | ->|
     |---+---+---|          |---+---+---|
-    | 7 | 8 | 9 |          | / | v | \ |
+    | 1 | 2 | 3 |          | / | v | \ |
     '---'---'---'          '---'---'---'
 
 If you don't have a numpad, but do have a US layout keyboard, you can also use:
