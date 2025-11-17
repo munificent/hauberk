@@ -219,18 +219,13 @@ class Decorator {
       densityMap[pos] = (density * architecture.style.monsterDensity).toInt();
     }
 
-    // Try spawn as many monsters as needed to reach a total experience value
-    // based on the number of open tiles. (In other words, each tile the player
-    // explores nets some average expected amount of experience.)
-    var experiencePerTile = 2.0 + math.pow(_architect.depth - 1, 2.0) * 0.2;
-    var goalExperience = densityMap.possibleTiles * experiencePerTile;
+    // Some stages carve more open space than others, so pick a number of
+    // monsters aiming for a roughly even density per open tile with some
+    // randomness so that some stages are more intense than others.
+    var goalMonsters = densityMap.possibleTiles * 0.02 * rng.float(1.0, 1.4);
+    var spawnedMonsters = 0;
 
-    // Add some randomness so some stages are worth more than others.
-    goalExperience += rng.float(goalExperience * 0.2);
-
-    var totalExperience = 0;
-
-    while (totalExperience < goalExperience) {
+    while (spawnedMonsters < goalMonsters) {
       var pos = densityMap.choose();
 
       // If there are no remaining open tiles, abort.
@@ -249,10 +244,10 @@ class Decorator {
       // Don't place dead or redundant uniques.
       if (!_canSpawn(breed)) continue;
 
-      var experience = _spawnMonster(densityMap, pos, breed);
+      var spawned = _spawnMonster(densityMap, pos, breed);
       yield "Spawned monster";
 
-      totalExperience += experience;
+      spawnedMonsters += spawned;
     }
 
     Debug.densityMap = null;
@@ -286,7 +281,7 @@ class Decorator {
   int _spawnMonster(DensityMap? density, Vec pos, Breed breed) {
     var isCorpse = !breed.flags.unique && rng.oneIn(10);
 
-    var experience = 0;
+    var count = 0;
     void spawn(Breed breed, Vec pos) {
       if (_architect.stage.actorAt(pos) != null) return;
       if (!_canSpawn(breed)) return;
@@ -298,7 +293,7 @@ class Decorator {
       } else {
         var monster = breed.spawn(pos);
         _architect.stage.addActor(monster);
-        experience += monster.experience;
+        count++;
 
         // Don't cluster monsters too much.
         // TODO: Increase distance for stronger monsters?
@@ -336,7 +331,7 @@ class Decorator {
       spawn(breed, here);
     }
 
-    return experience;
+    return count;
   }
 
 //  void _stain(TileType tile, Vec start, int distance, int count) {

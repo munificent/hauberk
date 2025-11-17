@@ -76,7 +76,7 @@ class Room {
 
   static Array2D<RoomTile> _rectangle(int depth) {
     var (short, long) = switch (rng.oneIn(10)) {
-      true => (rng.inclusive(12, 24), rng.inclusive(12, 24)),
+      true => (rng.inclusive(11, 18), rng.inclusive(11, 18)),
       false => (rng.inclusive(3, 10), rng.inclusive(3, 10)),
     };
 
