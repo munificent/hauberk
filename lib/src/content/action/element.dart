@@ -160,7 +160,7 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
       // If they have any resistance to poison, then poison gas doesn't
       // affect them.
       if (actor.resistance(Elements.poison) > 0) {
-        log("{1} [are|is] unaffected by the poison.", actor);
+        show("{1} [are|is] unaffected by the poison.", actor);
       } else {
         var hit = Attack(Noun("poison"), "chokes", _damage, 0, Elements.poison)
             .createHit();
@@ -192,7 +192,7 @@ class WindAction extends Action {
         flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();
     if (positions.isEmpty) return ActionResult.failure;
 
-    log("{1} [are|is] thrown by the wind!", actor);
+    show("{1} [are|is] thrown by the wind!", actor);
     addEvent(EventType.wind, actor: actor, pos: actor!.pos);
     moveActor(actor!, rng.item(positions));
 

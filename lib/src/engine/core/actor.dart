@@ -204,7 +204,7 @@ abstract class Actor implements Noun {
     action.addEvent(EventType.die, actor: this);
 
     // TODO: Different verb for unliving monsters.
-    action.log("{1} kill[s] {2}.", attackNoun, this);
+    action.show("{1} kill[s] {2}.", attackNoun, this);
     if (attacker != null) attacker.onKilled(action, this);
 
     onDied(action, attackNoun);

@@ -77,13 +77,13 @@ class HasteAction extends ConditionAction {
   int get duration => _duration;
 
   @override
-  void onActivate() => log("{1} start[s] moving faster.", actor);
+  void onActivate() => show("{1} start[s] moving faster.", actor);
 
   @override
-  void onExtend() => log("{1} [feel]s the haste lasting longer.", actor);
+  void onExtend() => show("{1} [feel]s the haste lasting longer.", actor);
 
   @override
-  void onIntensify() => log("{1} move[s] even faster.", actor);
+  void onIntensify() => show("{1} move[s] even faster.", actor);
 }
 
 class FreezeActorAction extends ConditionAction with DestroyActionMixin {
@@ -107,13 +107,13 @@ class FreezeActorAction extends ConditionAction with DestroyActionMixin {
   int get duration => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
 
   @override
-  void onActivate() => log("{1} [are|is] frozen!", actor);
+  void onActivate() => show("{1} [are|is] frozen!", actor);
 
   @override
-  void onExtend() => log("{1} feel[s] the cold linger!", actor);
+  void onExtend() => show("{1} feel[s] the cold linger!", actor);
 
   @override
-  void onIntensify() => log("{1} feel[s] the cold intensify!", actor);
+  void onIntensify() => show("{1} feel[s] the cold intensify!", actor);
 }
 
 class PoisonAction extends ConditionAction {
@@ -131,13 +131,13 @@ class PoisonAction extends ConditionAction {
   int get duration => 1 + rng.triangleInt(_damage * 2, _damage ~/ 2);
 
   @override
-  void onActivate() => log("{1} [are|is] poisoned!", actor);
+  void onActivate() => show("{1} [are|is] poisoned!", actor);
 
   @override
-  void onExtend() => log("{1} feel[s] the poison linger!", actor);
+  void onExtend() => show("{1} feel[s] the poison linger!", actor);
 
   @override
-  void onIntensify() => log("{1} feel[s] the poison intensify!", actor);
+  void onIntensify() => show("{1} feel[s] the poison intensify!", actor);
 }
 
 class BlindAction extends ConditionAction {
@@ -153,12 +153,12 @@ class BlindAction extends ConditionAction {
 
   @override
   void onActivate() {
-    log("{1 his} vision dims!", actor);
+    show("{1 his} vision dims!", actor);
     game.stage.heroVisibilityChanged();
   }
 
   @override
-  void onExtend() => log("{1 his} vision dims!", actor);
+  void onExtend() => show("{1 his} vision dims!", actor);
 }
 
 class DazzleAction extends ConditionAction {
@@ -173,10 +173,10 @@ class DazzleAction extends ConditionAction {
   int get duration => 3 + rng.triangleInt(_damage * 2, _damage ~/ 2);
 
   @override
-  void onActivate() => log("{1} [are|is] dazzled by the light!", actor);
+  void onActivate() => show("{1} [are|is] dazzled by the light!", actor);
 
   @override
-  void onExtend() => log("{1} [are|is] dazzled by the light!", actor);
+  void onExtend() => show("{1} [are|is] dazzled by the light!", actor);
 }
 
 class ResistAction extends ConditionAction {
@@ -194,17 +194,17 @@ class ResistAction extends ConditionAction {
 
   @override
   void onActivate() {
-    log("{1} [are|is] resistant to $_element.", actor);
+    show("{1} [are|is] resistant to $_element.", actor);
 
     // Poison resistance also immediately cures poison.
     if (actor!.poison.isActive) {
       actor!.poison.cancel();
-      log("{1} [are|is] no longer poisoned.", actor);
+      show("{1} [are|is] no longer poisoned.", actor);
     }
 
     // TODO: Same thing for cold? Other conditions?
   }
 
   @override
-  void onExtend() => log("{1} feel[s] the resistance extend.", actor);
+  void onExtend() => show("{1} feel[s] the resistance extend.", actor);
 }

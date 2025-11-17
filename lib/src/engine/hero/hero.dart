@@ -333,7 +333,7 @@ class Hero extends Actor {
 
   @override
   void onDied(Action action, Noun attackNoun) {
-    action.log("{1} [were|was] slain by {2}.", this, attackNoun);
+    action.show("{1} [were|was] slain by {2}.", this, attackNoun);
   }
 
   @override

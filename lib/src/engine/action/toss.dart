@@ -103,7 +103,7 @@ class TossLosAction extends LosAction {
 
     // See if it breaks.
     if (rng.percent(toss.breakage)) {
-      log("{1} breaks!", _item);
+      show("{1} breaks!", _item);
       return;
     }
 

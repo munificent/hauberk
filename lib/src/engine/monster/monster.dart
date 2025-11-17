@@ -396,7 +396,7 @@ class Monster extends Actor {
     var items =
         action.game.stage.placeDrops(pos, breed.drop, depth: breed.depth);
     for (var item in items) {
-      action.log("{1} drop[s] {2}.", this, item);
+      action.show("{1} drop[s] {2}.", this, item);
     }
 
     action.game.stage.removeActor(this);
@@ -469,7 +469,7 @@ class ChangeMonsterStateAction extends Action {
   @override
   ActionResult onPerform() {
     // Let the player know the monster changed.
-    log(_message, actor);
+    show(_message, actor);
 
     if (_event case var event?) {
       addEvent(event, actor: actor);

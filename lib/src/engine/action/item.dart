@@ -77,12 +77,12 @@ class PickUpAction extends Action {
       return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
     }
 
-    log('{1} pick[s] up {2}.', actor, item.clone(result.added));
+    show('{1} pick[s] up {2}.', actor, item.clone(result.added));
 
     if (result.remaining == 0) {
       game.stage.removeItem(item, actor!.pos);
     } else {
-      log("{1} [don't|doesn't] have room for {2}.", actor,
+      show("{1} [don't|doesn't] have room for {2}.", actor,
           item.clone(result.remaining));
     }
 
@@ -112,10 +112,10 @@ class DropAction extends ItemAction {
     }
 
     if (location == ItemLocation.equipment) {
-      log('{1} take[s] off and drop[s] {2}.', actor, dropped);
+      show('{1} take[s] off and drop[s] {2}.', actor, dropped);
       hero.refreshProperties();
     } else {
-      log('{1} drop[s] {2}.', actor, dropped);
+      show('{1} drop[s] {2}.', actor, dropped);
     }
 
     game.stage.addItem(dropped, actor!.pos);
@@ -155,11 +155,11 @@ class EquipAction extends ItemAction {
       var copy = unequippedItem.clone();
       var result = hero.inventory.tryAdd(unequippedItem, wasUnequipped: true);
       if (result.remaining == 0) {
-        log('{1} unequip[s] {2}.', actor, copy);
+        show('{1} unequip[s] {2}.', actor, copy);
       } else {
         // No room in inventory, so drop it.
         game.stage.addItem(unequippedItem, actor!.pos);
-        log(
+        show(
             "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
             "ground.",
             actor,
@@ -167,7 +167,7 @@ class EquipAction extends ItemAction {
       }
     }
 
-    log("{1} equip[s] {2}.", actor, equipped);
+    show("{1} equip[s] {2}.", actor, equipped);
 
     if (item.emanationLevel > 0) {
       game.stage.actorEmanationChanged();
@@ -191,11 +191,11 @@ class UnequipAction extends ItemAction {
     removeItem();
     var result = hero.inventory.tryAdd(item, wasUnequipped: true);
     if (result.remaining == 0) {
-      log('{1} unequip[s] {2}.', actor, copy);
+      show('{1} unequip[s] {2}.', actor, copy);
     } else {
       // No room in inventory, so drop it.
       game.stage.addItem(item, actor!.pos);
-      log(
+      show(
           "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
           "the ground.",
           actor,
@@ -267,12 +267,12 @@ mixin DestroyActionMixin implements Action {
 
       if (destroyedCount == item.count) {
         // TODO: Effect.
-        log("{1} ${element.destroyMessage}!", item);
+        show("{1} ${element.destroyMessage}!", item);
         removeItem(item);
       } else if (destroyedCount > 0) {
         var destroyedPart = item.splitStack(destroyedCount);
         // TODO: Effect.
-        log("{1} ${element.destroyMessage}!", destroyedPart);
+        show("{1} ${element.destroyMessage}!", destroyedPart);
       }
 
       fuel += item.type.fuel * destroyedCount;

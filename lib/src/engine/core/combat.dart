@@ -131,9 +131,42 @@ class Hit {
   int perform(Action action, Actor? attacker, Actor defender, {bool? canMiss}) {
     canMiss ??= true;
 
+    // Even if the hero can't fully see what's happening, it's important to give
+    // them some information if the attack affects them. Generate a message
+    // based on what they can see about the hit.
+    var canSeeAttacker = false;
+    if (attacker is Hero) {
+      // The hero sees what they themselves do.
+      canSeeAttacker = true;
+    } else if (attacker != null &&
+        action.game.stage.isVisibleToHero(attacker)) {
+      // The hero sees what visible monsters do.
+      canSeeAttacker = true;
+    } else if (defender is Hero && _attack.noun != null) {
+      // The hero sees if a thing hits them (even if they don't see where it
+      // came from).
+      canSeeAttacker = true;
+    } else if (action.game.stage.isVisibleToHero(defender) &&
+        _attack.noun != null) {
+      // The hero see if a thing hits a visible monster (even if they don't see
+      // where it came from).
+      canSeeAttacker = true;
+    }
+
+    var canSeeDefender = false;
+    if (defender is Hero) {
+      // The hero sees themselves.
+      canSeeDefender = true;
+    } else if (action.game.stage.isVisibleToHero(defender)) {
+      // The hero sees what hits visible monsters.
+      canSeeDefender = true;
+    }
+
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
     // attacker ("the wolf bites").
-    var attackNoun = (_attack.noun ?? attacker)!;
+    var attackNoun =
+        canSeeAttacker ? (_attack.noun ?? attacker)! : Noun('something');
+    var defenderNoun = canSeeDefender ? defender : Noun('something');
 
     // Don't sleep through being attacked.
     if (defender is Hero) defender.disturb();
@@ -152,7 +185,9 @@ class Hit {
       for (var defense in defenses) {
         strike -= defense.amount;
         if (strike < 0) {
-          action.log(defense.message, defender, attackNoun);
+          if (canSeeAttacker || canSeeDefender) {
+            action.log(defense.message, defenderNoun, attackNoun);
+          }
           return 0;
         }
       }
@@ -166,7 +201,9 @@ class Hit {
     if (damage == 0) {
       // Armor cancelled out all damage.
       // TODO: Should still affect monster alertness.
-      action.log('{1} do[es] no damage to {2}.', attackNoun, defender);
+      if (canSeeAttacker || canSeeDefender) {
+        action.log('{1} do[es] no damage to {2}.', attackNoun, defenderNoun);
+      }
       return 0;
     }
 
@@ -191,7 +228,9 @@ class Hit {
 
     action.addEvent(EventType.hit,
         actor: defender, element: element, other: damage);
-    action.log('{1} ${_attack.verb} {2}.', attackNoun, defender);
+    if (canSeeAttacker || canSeeDefender) {
+      action.log('{1} ${_attack.verb} {2}.', attackNoun, defenderNoun);
+    }
     return damage;
   }
 

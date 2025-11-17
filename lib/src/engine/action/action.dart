@@ -93,29 +93,28 @@ abstract class Action {
   /// actions quieter or louder.
   double get noise => Sound.normalNoise;
 
-  void error(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    if (!game.stage[_pos].isVisible) return;
-    _game.log.error(message, noun1, noun2, noun3);
-  }
-
+  /// Directly logs [message], not taking visibility into account.
   void log(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    if (!game.stage[_pos].isVisible) return;
     _game.log.message(message, noun1, noun2, noun3);
   }
 
-  void gain(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    if (!game.stage[_pos].isVisible) return;
-    _game.log.gain(message, noun1, noun2, noun3);
+  /// Logs [message] if it occurs on a tile the hero can see.
+  void show(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
+    if (game.stage[_pos].isVisible || actor is Hero) {
+      _game.log.message(message, noun1, noun2, noun3);
+    }
   }
 
   ActionResult succeed(
       [String? message, Noun? noun1, Noun? noun2, Noun? noun3]) {
-    if (message != null) log(message, noun1, noun2, noun3);
+    if (message != null) show(message, noun1, noun2, noun3);
     return ActionResult.success;
   }
 
   ActionResult fail([String? message, Noun? noun1, Noun? noun2, Noun? noun3]) {
-    if (message != null) error(message, noun1, noun2, noun3);
+    if (message != null && (game.stage[_pos].isVisible || actor is Hero)) {
+      _game.log.error(message, noun1, noun2, noun3);
+    }
     return ActionResult.failure;
   }
 

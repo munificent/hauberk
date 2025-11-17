@@ -9,7 +9,7 @@ class HowlAction extends Action {
 
   @override
   ActionResult onPerform() {
-    log("{1} $_verb!", actor);
+    show("{1} $_verb!", actor);
     addEvent(EventType.howl, actor: actor);
 
     for (var other in game.stage.actors) {

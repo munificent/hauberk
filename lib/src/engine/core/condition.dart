@@ -66,7 +66,7 @@ abstract class Condition {
 class HasteCondition extends Condition {
   @override
   void onDeactivate(Action action) {
-    action.log("{1} slow[s] back down.", action.actor);
+    action.show("{1} slow[s] back down.", action.actor);
   }
 }
 
@@ -74,7 +74,7 @@ class HasteCondition extends Condition {
 class ColdCondition extends Condition {
   @override
   void onDeactivate(Action action) {
-    action.log("{1} warm[s] back up.", action.actor);
+    action.show("{1} warm[s] back up.", action.actor);
   }
 }
 
@@ -86,13 +86,13 @@ class PoisonCondition extends Condition {
     // condition and log message.
 
     if (!action.actor!.takeDamage(action, intensity, Noun("the poison"))) {
-      action.log("{1} [are|is] hurt by poison!", action.actor);
+      action.show("{1} [are|is] hurt by poison!", action.actor);
     }
   }
 
   @override
   void onDeactivate(Action action) {
-    action.log("{1} [are|is] no longer poisoned.", action.actor);
+    action.show("{1} [are|is] no longer poisoned.", action.actor);
   }
 }
 
@@ -100,7 +100,7 @@ class PoisonCondition extends Condition {
 class BlindnessCondition extends Condition {
   @override
   void onDeactivate(Action action) {
-    action.log("{1} can see clearly again.", action.actor);
+    action.show("{1} can see clearly again.", action.actor);
     if (action.actor == action.game.hero) {
       action.game.stage.heroVisibilityChanged();
     }
@@ -115,7 +115,7 @@ class ResistCondition extends Condition {
 
   @override
   void onDeactivate(Action action) {
-    action.log("{1} feel[s] susceptible to $_element.", action.actor);
+    action.show("{1} feel[s] susceptible to $_element.", action.actor);
   }
 }
 
@@ -125,6 +125,6 @@ class PerceiveCondition extends Condition {
 
   @override
   void onDeactivate(Action action) {
-    action.log("{1} no longer perceive[s] monsters.", action.actor);
+    action.show("{1} no longer perceive[s] monsters.", action.actor);
   }
 }

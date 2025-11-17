@@ -67,12 +67,12 @@ class WalkAction extends Action {
           var max = (item.price * 1.5).ceil();
           var value = rng.range(min, max);
           hero.gold += value;
-          log("{1} pick[s] up {2} worth $value gold.", hero, item);
+          show("{1} pick[s] up {2} worth $value gold.", hero, item);
           game.stage.removeItem(item, pos);
 
           addEvent(EventType.gold, actor: actor, pos: actor!.pos, other: item);
         } else {
-          log('{1} [are|is] standing on {2}.', actor, item);
+          show('{1} [are|is] standing on {2}.', actor, item);
         }
       }
 

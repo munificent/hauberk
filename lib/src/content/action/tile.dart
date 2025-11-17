@@ -30,11 +30,11 @@ abstract class _OpenTileAction extends Action {
     // TODO: Traps. Locks.
     if (rng.percent(lerpInt(game.depth, 1, Option.maxDepth,
         _minDepthEmptyChance, _maxDepthEmptyChance))) {
-      log("The $_name is empty.", actor);
+      show("The $_name is empty.", actor);
     } else {
       game.stage.placeDrops(_pos, _createDrop(), depth: game.depth);
 
-      log("{1} open[s] the $_name.", actor);
+      show("{1} open[s] the $_name.", actor);
     }
 
     return ActionResult.success;

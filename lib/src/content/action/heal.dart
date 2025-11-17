@@ -13,14 +13,14 @@ class HealAction extends Action {
 
     if (actor!.poison.isActive && curePoison) {
       actor!.poison.cancel();
-      log("{1} [are|is] cleansed of poison.", actor);
+      show("{1} [are|is] cleansed of poison.", actor);
       changed = true;
     }
 
     if (actor!.health != actor!.maxHealth && amount > 0) {
       actor!.health += amount;
       addEvent(EventType.heal, actor: actor, other: amount);
-      log('{1} feel[s] better.', actor);
+      show('{1} feel[s] better.', actor);
       changed = true;
     }
 

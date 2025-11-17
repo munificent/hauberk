@@ -35,7 +35,7 @@ class AmputateAction extends Action {
     // Hack off the part.
     addAction(PolymorphAction(_bodyBreed));
 
-    log(_message, actor);
+    show(_message, actor);
 
     // Pick an open adjacent tile.
     var positions = <Vec>[];

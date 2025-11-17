@@ -77,15 +77,15 @@ class DetectAction extends Action {
 
     if (foundExits > 0) {
       if (foundItems > 0) {
-        log('{1} sense[s] hidden secrets in the dark!', actor);
+        show('{1} sense[s] hidden secrets in the dark!', actor);
       } else {
-        log('{1} sense[s] places to escape!', actor);
+        show('{1} sense[s] places to escape!', actor);
       }
     } else {
       if (foundItems > 0) {
-        log('{1} sense[s] the treasures held in the dark!', actor);
+        show('{1} sense[s] the treasures held in the dark!', actor);
       } else {
-        log('The darkness holds no secrets.');
+        show('The darkness holds no secrets.');
       }
     }
 

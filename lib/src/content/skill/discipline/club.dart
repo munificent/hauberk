@@ -73,7 +73,7 @@ class BashAction extends MasteryAction {
       if (game.stage.canEnter(dest, defender.motility) && rng.percent(chance)) {
         moveActor(defender, dest);
         defender.energy.energy = 0;
-        log("{1} is knocked back!", defender);
+        show("{1} is knocked back!", defender);
         addEvent(EventType.knockBack, pos: actor!.pos + _dir, dir: _dir);
       }
     } else {
