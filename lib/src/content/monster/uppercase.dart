@@ -31,7 +31,73 @@ void birds() {
 
 void canids() {}
 
-void greaterDragons() {}
+void greaterDragons() {
+  // TODO: Tune. Give more attacks. Tune drops.
+  // TODO: Give each breed more variety.
+  // TODO: Minions?
+  var dragons = [
+    ("forest", Element.none, peaGreen, sherwood),
+    ("brown", Elements.earth, sandal, tan),
+    ("blue", Elements.water, lightBlue, blue),
+    ("white", Elements.cold, lightCoolGray, ash),
+    ("purple", Elements.poison, lilac, purple),
+    ("green", Elements.acid, lima, olive),
+    ("silver", Elements.lightning, lightAqua, lightBlue),
+    ("red", Elements.fire, pink, red),
+    ("gold", Elements.light, buttermilk, gold),
+    ("black", Elements.dark, coolGray, darkCoolGray),
+    ("ethereal", Elements.spirit, aqua, darkBlue)
+  ];
+
+  var max = dragons.length - 1;
+
+  family("D")
+    ..groups("dragon")
+    ..sense(see: 12, hear: 8)
+    ..defense(10, "{2} [are|is] deflected by its scales.")
+    ..preferOpen();
+
+  var i = 0;
+  for (var (name, element, color, _) in dragons) {
+    var dragon = breed("elder $name dragon", lerpInt(i, 0, max, 65, 85), color,
+        lerpInt(i, 0, max, 800, 1500))
+      ..attack("bite[s]", lerpInt(i, 0, max, 40, 80))
+      ..attack("claw[s]", lerpInt(i, 0, max, 35, 75))
+      ..drop("treasure", count: lerpInt(i, 0, max, 6, 16))
+      ..drop("magic", count: lerpInt(i, 0, max, 3, 6))
+      ..drop("equipment", count: lerpInt(i, 0, max, 3, 6));
+
+    if (element != Element.none) {
+      dragon.cone(element,
+          rate: 11, damage: lerpInt(i, 0, max, 40, 100), range: 5);
+    }
+
+    i++;
+  }
+
+  family("D")
+    ..groups("dragon")
+    ..sense(see: 16, hear: 10)
+    ..defense(20, "{2} [are|is] deflected by its scales.")
+    ..preferOpen();
+
+  i = 0;
+  for (var (name, element, _, color) in dragons) {
+    var dragon = breed("ancient $name dragon", lerpInt(i, 0, max, 80, 99),
+        color, lerpInt(i, 0, max, 1400, 2000))
+      ..attack("bite[s]", lerpInt(i, 0, max, 60, 100))
+      ..attack("claw[s]", lerpInt(i, 0, max, 50, 80))
+      ..drop("treasure", count: lerpInt(i, 0, max, 7, 20))
+      ..drop("magic", count: lerpInt(i, 0, max, 4, 7))
+      ..drop("equipment", count: lerpInt(i, 0, max, 4, 7));
+
+    if (element != Element.none) {
+      dragon.cone(element, rate: 8, damage: lerpInt(i, 0, max, 200, 400));
+    }
+
+    i++;
+  }
+}
 
 void elementals() {}
 

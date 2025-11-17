@@ -104,65 +104,70 @@ void canines() {
 
 void dragons() {
   // TODO: Tune. Give more attacks. Tune drops.
-  // TODO: Juvenile and elder dragons.
+  // TODO: Give each breed more variety.
   // TODO: Minions?
-  var dragons = {
-    "forest": [Element.none, peaGreen, sherwood],
-    "brown": [Elements.earth, sandal, tan],
-    "blue": [Elements.water, lightBlue, blue],
-    "white": [Elements.cold, lightCoolGray, ash],
-    "purple": [Elements.poison, lilac, purple],
-    "green": [Elements.acid, lima, olive],
-    "silver": [Elements.lightning, lightAqua, lightBlue],
-    "red": [Elements.fire, pink, red],
-    "gold": [Elements.light, buttermilk, gold],
-    "black": [Elements.dark, coolGray, darkCoolGray],
-    "ethereal": [Elements.spirit, aqua, darkBlue]
-  };
+  var dragons = [
+    ("forest", Element.none, peaGreen, sherwood),
+    ("brown", Elements.earth, sandal, tan),
+    ("blue", Elements.water, lightBlue, blue),
+    ("white", Elements.cold, lightCoolGray, ash),
+    ("purple", Elements.poison, lilac, purple),
+    ("green", Elements.acid, lima, olive),
+    ("silver", Elements.lightning, lightAqua, lightBlue),
+    ("red", Elements.fire, pink, red),
+    ("gold", Elements.light, buttermilk, gold),
+    ("black", Elements.dark, coolGray, darkCoolGray),
+    ("ethereal", Elements.spirit, aqua, darkBlue)
+  ];
+
+  var max = dragons.length - 1;
+
+  family("d")
+    ..groups("dragon")
+    ..sense(see: 12, hear: 8)
+    ..defense(10, "{2} [are|is] deflected by its scales.")
+    ..preferOpen();
 
   var i = 0;
-  dragons.forEach((name, data) {
-    var element = data[0] as Element;
-    var youngColor = data[1] as Color;
-    var adultColor = data[1] as Color;
-
-    family("d")
-      ..groups("dragon")
-      ..sense(see: 12, hear: 8)
-      ..defense(10, "{2} [are|is] deflected by its scales.")
-      ..preferOpen();
-
-    var dragon =
-        breed("juvenile $name dragon", 46 + i * 2, youngColor, 150 + i * 20)
-          ..attack("bite[s]", 20 + i * 2)
-          ..attack("claw[s]", 15 + i)
-          ..drop("treasure", count: 2 + i ~/ 2)
-          ..drop("magic")
-          ..drop("equipment");
+  for (var (name, element, color, _) in dragons) {
+    var dragon = breed("juvenile $name dragon", lerpInt(i, 0, max, 38, 53),
+        color, lerpInt(i, 0, max, 150, 350))
+      ..attack("bite[s]", lerpInt(i, 0, max, 20, 40))
+      ..attack("claw[s]", lerpInt(i, 0, max, 15, 25))
+      ..drop("treasure", count: lerpInt(i, 0, max, 2, 10))
+      ..drop("magic")
+      ..drop("equipment");
 
     if (element != Element.none) {
-      dragon.cone(element, rate: 11, damage: 40 + i * 6, range: 5);
-    }
-
-    family("d")
-      ..groups("dragon")
-      ..sense(see: 16, hear: 10)
-      ..defense(20, "{2} [are|is] deflected by its scales.")
-      ..preferOpen();
-
-    dragon = breed("$name dragon", 50 + i * 2, adultColor, 350 + i * 50)
-      ..attack("bite[s]", 30 + i * 2)
-      ..attack("claw[s]", 25 + i)
-      ..drop("treasure", count: 5 + i ~/ 2)
-      ..drop("magic", count: 3 + i ~/ 3)
-      ..drop("equipment", count: 2 + i ~/ 3);
-
-    if (element != Element.none) {
-      dragon.cone(element, rate: 8, damage: 70 + i * 8);
+      dragon.cone(element,
+          rate: 11, damage: lerpInt(i, 0, max, 40, 100), range: 5);
     }
 
     i++;
-  });
+  }
+
+  family("d")
+    ..groups("dragon")
+    ..sense(see: 16, hear: 10)
+    ..defense(20, "{2} [are|is] deflected by its scales.")
+    ..preferOpen();
+
+  i = 0;
+  for (var (name, element, _, color) in dragons) {
+    var dragon = breed("$name dragon", lerpInt(i, 0, max, 48, 62), color,
+        lerpInt(i, 0, max, 350, 850))
+      ..attack("bite[s]", lerpInt(i, 0, max, 30, 50))
+      ..attack("claw[s]", lerpInt(i, 0, max, 25, 35))
+      ..drop("treasure", count: lerpInt(i, 0, max, 5, 15))
+      ..drop("magic", count: lerpInt(i, 0, max, 2, 5))
+      ..drop("equipment", count: lerpInt(i, 0, max, 2, 5));
+
+    if (element != Element.none) {
+      dragon.cone(element, rate: 8, damage: lerpInt(i, 0, max, 70, 150));
+    }
+
+    i++;
+  }
 }
 
 void eyes() {
