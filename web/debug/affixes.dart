@@ -21,8 +21,13 @@ void main() {
 
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(html.OptionElement(
-        data: i.toString(), value: i.toString(), selected: i == 1));
+    depthSelect.append(
+      html.OptionElement(
+        data: i.toString(),
+        value: i.toString(),
+        selected: i == 1,
+      ),
+    );
   }
 
   depthSelect.onChange.listen((event) {
@@ -91,17 +96,21 @@ void generate() {
       builder.td("&nbsp;");
     }
 
-    builder.td([
-      for (var element in Elements.all)
-        if (affix.resistance(element) != 0)
-          "${element.abbreviation}:${affix.resistance(element)}"
-    ].join(" "));
+    builder.td(
+      [
+        for (var element in Elements.all)
+          if (affix.resistance(element) != 0)
+            "${element.abbreviation}:${affix.resistance(element)}",
+      ].join(" "),
+    );
 
-    builder.td([
-      for (var stat in Stat.all)
-        if (affix.statBonus(stat) != 0)
-          "${stat.abbreviation}:${affix.statBonus(stat)}"
-    ].join(" "));
+    builder.td(
+      [
+        for (var stat in Stat.all)
+          if (affix.statBonus(stat) != 0)
+            "${stat.abbreviation}:${affix.statBonus(stat)}",
+      ].join(" "),
+    );
 
     builder.td(percent(affixes.count(data)));
     builder.trEnd();

@@ -29,8 +29,9 @@ void helms() {
 
 void bodyArmor() {
   // Robes.
-  category(CharCode.latinSmallLetterOWithCircumflex)
-      .tag("equipment/armor/body/robe");
+  category(
+    CharCode.latinSmallLetterOWithCircumflex,
+  ).tag("equipment/armor/body/robe");
   item("Robe", blue, price: 30)
     ..depth(2, to: 40)
     ..frequency(0.5)
@@ -82,7 +83,7 @@ void bodyArmor() {
     ..depth(35)
     ..armor(36, weight: 7);
 
-//  CharCode.latinSmallLetterUWithCircumflex // armor
+  //  CharCode.latinSmallLetterUWithCircumflex // armor
 
   /*
   Metal Lamellar Armor[s]

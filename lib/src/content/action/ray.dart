@@ -76,8 +76,10 @@ abstract class RayActionBase extends Action {
 
     // See which new tiles each ray hit now.
     _rays.removeWhere((ray) {
-      var pos = Vec(_from.x + (math.sin(ray) * _radius).round(),
-          _from.y + (math.cos(ray) * _radius).round());
+      var pos = Vec(
+        _from.x + (math.sin(ray) * _radius).round(),
+        _from.y + (math.cos(ray) * _radius).round(),
+      );
 
       // TODO: Support rays that hit closed doors but do not go past them. That
       // would let fire attacks set closed doors on fire.
@@ -120,7 +122,7 @@ class RayAction extends RayActionBase with ElementActionMixin {
       RayAction._(hit, center, center, 1.0);
 
   RayAction._(this._hit, Vec from, Vec to, double fraction)
-      : super(from, to, fraction);
+    : super(from, to, fraction);
 
   @override
   void reachTile(Vec pos, num distance) {

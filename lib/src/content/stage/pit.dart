@@ -20,8 +20,8 @@ class Pit extends Architecture {
   PaintStyle get paintStyle => PaintStyle.stoneJail;
 
   Pit(this._monsterGroup, {int? minSize, int? maxSize})
-      : _minSize = minSize ?? 12,
-        _maxSize = maxSize ?? 24;
+    : _minSize = minSize ?? 12,
+      _maxSize = maxSize ?? 24;
 
   @override
   Iterable<String> build() sync* {
@@ -65,8 +65,11 @@ class Pit extends Architecture {
 
       if (painter.hasActor(pos)) continue;
 
-      var breed = painter.chooseBreed(depth,
-          tag: _monsterGroup, includeParentTags: false);
+      var breed = painter.chooseBreed(
+        depth,
+        tag: _monsterGroup,
+        includeParentTags: false,
+      );
       painter.spawnMonster(pos, breed);
     }
 
@@ -112,10 +115,11 @@ class Pit extends Architecture {
       var cave = Blob.make(size);
 
       var allowed = Rect.leftTopRightBottom(
-          pitBounds.left - cave.width,
-          pitBounds.top - cave.height,
-          pitBounds.right + cave.width,
-          pitBounds.bottom + cave.height);
+        pitBounds.left - cave.width,
+        pitBounds.top - cave.height,
+        pitBounds.right + cave.width,
+        pitBounds.bottom + cave.height,
+      );
       allowed = Rect.intersect(allowed, bounds.inflate(-1));
 
       if (_tryPlaceCave(cave, allowed) != null) yield "antechamber";

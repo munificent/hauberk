@@ -141,31 +141,31 @@ class ItemType {
   final bool isArtifact;
 
   ItemType(
-      this.quantifiableName,
-      this.appearance,
-      this.depth,
-      this.sortIndex,
-      this.equipSlot,
-      this.weaponType,
-      this.use,
-      this.attack,
-      this.toss,
-      this.defense,
-      this.armor,
-      this.price,
-      this.maxStack,
-      this.intrinsicAffix,
-      {this.weight = 0,
-      this.heft = 1,
-      int? emanation,
-      int? fuel,
-      bool? treasure,
-      required this.isArtifact,
-      bool? twoHanded})
-      : emanationLevel = emanation ?? 0,
-        fuel = fuel ?? 0,
-        isTreasure = treasure ?? false,
-        isTwoHanded = twoHanded ?? false;
+    this.quantifiableName,
+    this.appearance,
+    this.depth,
+    this.sortIndex,
+    this.equipSlot,
+    this.weaponType,
+    this.use,
+    this.attack,
+    this.toss,
+    this.defense,
+    this.armor,
+    this.price,
+    this.maxStack,
+    this.intrinsicAffix, {
+    this.weight = 0,
+    this.heft = 1,
+    int? emanation,
+    int? fuel,
+    bool? treasure,
+    required this.isArtifact,
+    bool? twoHanded,
+  }) : emanationLevel = emanation ?? 0,
+       fuel = fuel ?? 0,
+       isTreasure = treasure ?? false,
+       isTwoHanded = twoHanded ?? false;
 
   @override
   String toString() => name;

@@ -13,7 +13,11 @@ class LogPanel extends Panel {
   void renderPanel(Terminal terminal) {
     terminal.clear();
     terminal.writeAt(
-        0, terminal.height - 1, "─" * terminal.width, darkCoolGray);
+      0,
+      terminal.height - 1,
+      "─" * terminal.width,
+      darkCoolGray,
+    );
 
     var y = terminal.height - 2;
     for (var i = _log.messages.length - 1; i >= 0 && y >= 0; i--) {

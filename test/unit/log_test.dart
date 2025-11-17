@@ -3,8 +3,12 @@ import 'package:test/test.dart';
 
 void main() {
   group('Log.wordWrap()', () {
-    testWordWrap(String label, String input, List<String> expected,
-        {int width = 20}) {
+    testWordWrap(
+      String label,
+      String input,
+      List<String> expected, {
+      int width = 20,
+    }) {
       test(label, () {
         expect(Log.wordWrap(width, input), equals(expected));
       });
@@ -16,10 +20,7 @@ void main() {
     testWordWrap(
       'split at last word',
       'first second third fourth fifth sixth',
-      [
-        'first second third',
-        'fourth fifth sixth',
-      ],
+      ['first second third', 'fourth fifth sixth'],
     );
 
     testWordWrap(
@@ -48,17 +49,12 @@ void main() {
     testWordWrap(
       'collapse spaces',
       '  first    second  third      fourth    fifth        sixth     ',
-      [
-        'first second third',
-        'fourth fifth sixth',
-      ],
+      ['first second third', 'fourth fifth sixth'],
     );
 
-    testWordWrap(
-      'no split from trailing spaces',
-      'no word wrapping      ',
-      ['no word wrapping'],
-    );
+    testWordWrap('no split from trailing spaces', 'no word wrapping      ', [
+      'no word wrapping',
+    ]);
 
     testWordWrap(
       'explicit newlines',
@@ -79,34 +75,39 @@ void main() {
         'abcdefghijklmnopqrst',
         'uvwxyz0123456789abcd',
         'efghijklmnopqrstuvwx',
-        'yz'
+        'yz',
       ],
     );
 
     testWordWrap(
-        'realistic example at 39',
-        'You stab the Harold the Misfortunate for 8 damage.',
-        ['You stab the Harold the Misfortunate', 'for 8 damage.'],
-        width: 39);
+      'realistic example at 39',
+      'You stab the Harold the Misfortunate for 8 damage.',
+      ['You stab the Harold the Misfortunate', 'for 8 damage.'],
+      width: 39,
+    );
     testWordWrap(
-        'realistic example at 40',
-        'You stab the Harold the Misfortunate for 8 damage.',
-        ['You stab the Harold the Misfortunate for', '8 damage.'],
-        width: 40);
+      'realistic example at 40',
+      'You stab the Harold the Misfortunate for 8 damage.',
+      ['You stab the Harold the Misfortunate for', '8 damage.'],
+      width: 40,
+    );
     testWordWrap(
-        'realistic example at 41',
-        'You stab the Harold the Misfortunate for 8 damage.',
-        ['You stab the Harold the Misfortunate for', '8 damage.'],
-        width: 41);
+      'realistic example at 41',
+      'You stab the Harold the Misfortunate for 8 damage.',
+      ['You stab the Harold the Misfortunate for', '8 damage.'],
+      width: 41,
+    );
     testWordWrap(
-        'realistic example at 42',
-        'You stab the Harold the Misfortunate for 8 damage.',
-        ['You stab the Harold the Misfortunate for 8', 'damage.'],
-        width: 42);
+      'realistic example at 42',
+      'You stab the Harold the Misfortunate for 8 damage.',
+      ['You stab the Harold the Misfortunate for 8', 'damage.'],
+      width: 42,
+    );
     testWordWrap(
-        'realistic example at 43',
-        'You stab the Harold the Misfortunate for 8 damage.',
-        ['You stab the Harold the Misfortunate for 8', 'damage.'],
-        width: 43);
+      'realistic example at 43',
+      'You stab the Harold the Misfortunate for 8 damage.',
+      ['You stab the Harold the Misfortunate for 8', 'damage.'],
+      width: 43,
+    );
   });
 }

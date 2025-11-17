@@ -122,32 +122,39 @@ class Breed {
 
   final String description;
 
-  Breed(this._name, this.pronoun, this.appearance, this.attacks, this.moves,
-      this.drop, this.location, this.motility,
-      {required this.depth,
-      required this.maxHealth,
-      required this.tracking,
-      int? vision,
-      int? hearing,
-      required this.meander,
-      int? speed,
-      int? dodge,
-      int? emanationLevel,
-      int? countMin,
-      int? countMax,
-      this.minions,
-      this.stain,
-      required this.flags,
-      String? description,
-      this.hasProperName = false})
-      : vision = vision ?? 8,
-        hearing = hearing ?? 10,
-        speed = speed ?? 0,
-        dodge = dodge ?? 20,
-        emanationLevel = emanationLevel ?? 0,
-        countMin = countMin ?? 1,
-        countMax = countMax ?? 1,
-        description = description ?? "Indescribable.";
+  Breed(
+    this._name,
+    this.pronoun,
+    this.appearance,
+    this.attacks,
+    this.moves,
+    this.drop,
+    this.location,
+    this.motility, {
+    required this.depth,
+    required this.maxHealth,
+    required this.tracking,
+    int? vision,
+    int? hearing,
+    required this.meander,
+    int? speed,
+    int? dodge,
+    int? emanationLevel,
+    int? countMin,
+    int? countMax,
+    this.minions,
+    this.stain,
+    required this.flags,
+    String? description,
+    this.hasProperName = false,
+  }) : vision = vision ?? 8,
+       hearing = hearing ?? 10,
+       speed = speed ?? 0,
+       dodge = dodge ?? 20,
+       emanationLevel = emanationLevel ?? 0,
+       countMin = countMin ?? 1,
+       countMax = countMax ?? 1,
+       description = description ?? "Indescribable.";
 
   /// How much experience a level one [Hero] gains for killing a [Monster] of
   /// this breed.
@@ -278,12 +285,13 @@ class BreedFlags {
     names = names.toSet();
 
     var flags = BreedFlags(
-        berzerk: names.remove("berzerk"),
-        cowardly: names.remove("cowardly"),
-        fearless: names.remove("fearless"),
-        immobile: names.remove("immobile"),
-        protective: names.remove("protective"),
-        unique: names.remove("unique"));
+      berzerk: names.remove("berzerk"),
+      cowardly: names.remove("cowardly"),
+      fearless: names.remove("fearless"),
+      immobile: names.remove("immobile"),
+      protective: names.remove("protective"),
+      unique: names.remove("unique"),
+    );
 
     if (names.isNotEmpty) {
       throw ArgumentError('Unknown flags "${names.join(', ')}"');
@@ -292,13 +300,14 @@ class BreedFlags {
     return flags;
   }
 
-  BreedFlags(
-      {required this.berzerk,
-      required this.cowardly,
-      required this.fearless,
-      required this.immobile,
-      required this.protective,
-      required this.unique});
+  BreedFlags({
+    required this.berzerk,
+    required this.cowardly,
+    required this.fearless,
+    required this.immobile,
+    required this.protective,
+    required this.unique,
+  });
 
   /// The way this set of flags affects the experience gained when killing a
   /// monster.
@@ -315,13 +324,13 @@ class BreedFlags {
   }
 
   List<String> get names => [
-        if (berzerk) "berzerk",
-        if (cowardly) "cowardly",
-        if (fearless) "fearless",
-        if (immobile) "immobile",
-        if (protective) "protective",
-        if (unique) "unique",
-      ];
+    if (berzerk) "berzerk",
+    if (cowardly) "cowardly",
+    if (fearless) "fearless",
+    if (immobile) "immobile",
+    if (protective) "protective",
+    if (unique) "unique",
+  ];
 
   @override
   String toString() => names.join(" ");

@@ -233,7 +233,11 @@ class Hero extends Actor {
 
       for (var skill in skills.acquired) {
         skill.modifyAttack(
-            this, defender as Monster?, hit, skills.level(skill));
+          this,
+          defender as Monster?,
+          hit,
+          skills.level(skill),
+        );
       }
 
       // Scale damage by fury.
@@ -375,8 +379,9 @@ class Hero extends Actor {
   /// Starts resting, if the hero has eaten and is able to regenerate.
   bool rest() {
     if (poison.isActive) {
-      save.log
-          .error("You cannot rest while poison courses through your veins!");
+      save.log.error(
+        "You cannot rest while poison courses through your veins!",
+      );
       return false;
     }
 

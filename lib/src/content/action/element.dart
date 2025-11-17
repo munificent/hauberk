@@ -150,7 +150,7 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
   final int _damage;
 
   PoisonedFloorAction(this._pos, int substance)
-      : _damage = lerpInt(substance, 0, 255, 3, 8);
+    : _damage = lerpInt(substance, 0, 255, 3, 8);
 
   @override
   ActionResult onPerform() {
@@ -162,8 +162,13 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
       if (actor.resistance(Elements.poison) > 0) {
         show("{1} [are|is] unaffected by the poison.", actor);
       } else {
-        var hit = Attack(Noun("poison"), "chokes", _damage, 0, Elements.poison)
-            .createHit();
+        var hit = Attack(
+          Noun("poison"),
+          "chokes",
+          _damage,
+          0,
+          Elements.poison,
+        ).createHit();
         hit.perform(this, null, actor, canMiss: false);
       }
     }
@@ -186,10 +191,15 @@ class WindAction extends Action {
 
     // Don't blow through doors.
     var motility = actor!.motility - Motility.door;
-    var flow =
-        MotilityFlow(game.stage, actor!.pos, motility, maxDistance: distance);
-    var positions =
-        flow.reachable.where((pos) => game.stage.actorAt(pos) == null).toList();
+    var flow = MotilityFlow(
+      game.stage,
+      actor!.pos,
+      motility,
+      maxDistance: distance,
+    );
+    var positions = flow.reachable
+        .where((pos) => game.stage.actorAt(pos) == null)
+        .toList();
     if (positions.isEmpty) return ActionResult.failure;
 
     show("{1} [are|is] thrown by the wind!", actor);
@@ -211,10 +221,13 @@ class LightFloorAction extends Action {
     var min = (1.0 + hit.averageDamage.toInt() * 4.0)
         .clamp(0.0, Lighting.max)
         .toDouble();
-    var max =
-        (128.0 + hit.averageDamage * 16.0).clamp(0.0, Lighting.max).toDouble();
-    return LightFloorAction._(pos,
-        lerpDouble(hit.range - distance, 0.0, hit.range, min, max).toInt());
+    var max = (128.0 + hit.averageDamage * 16.0)
+        .clamp(0.0, Lighting.max)
+        .toDouble();
+    return LightFloorAction._(
+      pos,
+      lerpDouble(hit.range - distance, 0.0, hit.range, min, max).toInt(),
+    );
   }
 
   LightFloorAction._(this._pos, this._emanation);

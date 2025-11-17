@@ -8,7 +8,8 @@ class BattleHardening extends Discipline {
   int get maxLevel => 40;
 
   @override
-  String get description => "Years of taking hits have turned your skin as "
+  String get description =>
+      "Years of taking hits have turned your skin as "
       "hard as cured leather.";
 
   @override

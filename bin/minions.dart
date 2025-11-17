@@ -22,8 +22,9 @@ void main() {
     var total = (histogram.total / trials).toStringAsFixed(2);
     print("${breed.name} ($total)");
     for (var minion in histogram.descending()) {
-      var count =
-          (histogram.count(minion) / trials).toStringAsFixed(2).padLeft(4);
+      var count = (histogram.count(minion) / trials)
+          .toStringAsFixed(2)
+          .padLeft(4);
       print("- $count $minion");
     }
   }

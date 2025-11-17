@@ -38,8 +38,11 @@ class Painter {
   bool hasActor(Vec pos) => _architect.stage.actorAt(pos) != null;
 
   Breed chooseBreed(int depth, {String? tag, bool? includeParentTags}) {
-    return _decorator.chooseBreed(depth,
-        tag: tag, includeParentTags: includeParentTags);
+    return _decorator.chooseBreed(
+      depth,
+      tag: tag,
+      includeParentTags: includeParentTags,
+    );
   }
 
   void spawnMonster(Vec pos, Breed breed) {
@@ -52,25 +55,27 @@ class Painter {
 class PaintStyle {
   static final rock = PaintStyle();
   static final flagstone = PaintStyle(
-      floor: [Tiles.flagstoneFloor],
-      wall: [Tiles.flagstoneWall],
-      closedDoor: Tiles.closedDoor,
-      openDoor: Tiles.openDoor);
+    floor: [Tiles.flagstoneFloor],
+    wall: [Tiles.flagstoneWall],
+    closedDoor: Tiles.closedDoor,
+    openDoor: Tiles.openDoor,
+  );
   static final granite = PaintStyle(
-      floor: [Tiles.graniteFloor],
-      wall: [Tiles.graniteWall],
-      closedDoor: Tiles.closedSquareDoor);
+    floor: [Tiles.graniteFloor],
+    wall: [Tiles.graniteWall],
+    closedDoor: Tiles.closedSquareDoor,
+  );
   static final stoneJail = PaintStyle(closedDoor: Tiles.closedBarredDoor);
 
   static final Map<TileType, List<TileType>> _defaultTypes = {
     Tiles.solidWet: [Tiles.water],
-    Tiles.passageWet: [Tiles.bridge]
+    Tiles.passageWet: [Tiles.bridge],
   };
 
   static final List<TileType> _defaultWalls = [
     Tiles.granite1,
     Tiles.granite2,
-    Tiles.granite3
+    Tiles.granite3,
   ];
 
   final List<TileType>? _floor;
@@ -78,15 +83,15 @@ class PaintStyle {
   final TileType? _closedDoor;
   final TileType? _openDoor;
 
-  PaintStyle(
-      {List<TileType>? floor,
-      List<TileType>? wall,
-      TileType? closedDoor,
-      TileType? openDoor})
-      : _floor = floor,
-        _wall = wall,
-        _closedDoor = closedDoor,
-        _openDoor = openDoor;
+  PaintStyle({
+    List<TileType>? floor,
+    List<TileType>? wall,
+    TileType? closedDoor,
+    TileType? openDoor,
+  }) : _floor = floor,
+       _wall = wall,
+       _closedDoor = closedDoor,
+       _openDoor = openDoor;
 
   TileType paintTile(Painter painter, Vec pos) {
     var tile = painter.getTile(pos);
@@ -94,21 +99,21 @@ class PaintStyle {
     if (tile == Tiles.open || tile == Tiles.passage) return _floorTile();
 
     if (tile == Tiles.solid) {
-      if (_wall != null) return rng.item(_wall!);
+      if (_wall != null) return rng.item(_wall);
       return rng.item(_defaultWalls);
     }
 
     if (tile == Tiles.doorway) {
       if (_closedDoor != null && _openDoor != null) {
         return switch (rng.range(6)) {
-          0 => _openDoor!,
+          0 => _openDoor,
           1 => _floorTile(),
-          _ => _closedDoor!
+          _ => _closedDoor,
         };
       } else if (_closedDoor != null) {
-        return _closedDoor!;
+        return _closedDoor;
       } else if (_openDoor != null) {
-        return _openDoor!;
+        return _openDoor;
       } else {
         return _floorTile();
       }
@@ -120,7 +125,7 @@ class PaintStyle {
   }
 
   TileType _floorTile() {
-    if (_floor != null) return rng.item(_floor!);
+    if (_floor != null) return rng.item(_floor);
 
     return Tiles.flagstoneFloor;
   }

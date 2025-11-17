@@ -8,7 +8,7 @@ class SpawnMove extends Move {
   final bool _preferStraight;
 
   SpawnMove(super.rate, {bool? preferStraight})
-      : _preferStraight = preferStraight ?? false;
+    : _preferStraight = preferStraight ?? false;
 
   @override
   num get experience => 6.0;

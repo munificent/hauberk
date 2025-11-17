@@ -48,7 +48,7 @@ class Lighting {
       8 => 240, // A 11x11 circle.
       // Anything else is clamped.
       _ when level <= 0 => 0,
-      _ => max
+      _ => max,
     };
   }
 
@@ -73,10 +73,10 @@ class Lighting {
   bool _visibilityDirty = true;
 
   Lighting(Stage stage)
-      : _stage = stage,
-        _floorLight = Array2D(stage.width, stage.height, 0),
-        _actorLight = Array2D(stage.width, stage.height, 0),
-        _fov = Fov(stage);
+    : _stage = stage,
+      _floorLight = Array2D(stage.width, stage.height, 0),
+      _actorLight = Array2D(stage.width, stage.height, 0),
+      _fov = Fov(stage);
 
   void dirtyFloorLight() {
     _floorLightDirty = true;
@@ -214,10 +214,14 @@ class Lighting {
           if (neighborTile.blocksView) return;
 
           openNeighbor = true;
-          floorIllumination =
-              math.max(floorIllumination, neighborTile.floorIllumination);
-          actorIllumination =
-              math.max(actorIllumination, neighborTile.actorIllumination);
+          floorIllumination = math.max(
+            floorIllumination,
+            neighborTile.floorIllumination,
+          );
+          actorIllumination = math.max(
+            actorIllumination,
+            neighborTile.actorIllumination,
+          );
         }
 
         // First, see if any of the cardinal neighbors are lit.

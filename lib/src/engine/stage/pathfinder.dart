@@ -83,10 +83,11 @@ abstract class Pathfinder<T> {
         if (cost == null) continue;
 
         var newPath = Path(
-            path.startDirection == Direction.none ? dir : path.startDirection,
-            neighbor,
-            path.length + 1,
-            path.cost + cost);
+          path.startDirection == Direction.none ? dir : path.startDirection,
+          neighbor,
+          path.length + 1,
+          path.cost + cost,
+        );
         paths.add(newPath, priority(newPath, end));
       }
     }

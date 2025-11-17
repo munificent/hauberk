@@ -10,13 +10,21 @@ final content = createContent();
 
 const simulationRounds = 20;
 
-Breed breed = Breed("meat", Pronoun.it, "", [Attack(null, "hits", 20)], [],
-    dropAllOf([]), SpawnLocation.anywhere, Motility.walk,
-    depth: 1,
-    meander: 0,
-    maxHealth: 200,
-    flags: BreedFlags.fromSet({}),
-    tracking: 10);
+Breed breed = Breed(
+  "meat",
+  Pronoun.it,
+  "",
+  [Attack(null, "hits", 20)],
+  [],
+  dropAllOf([]),
+  SpawnLocation.anywhere,
+  Motility.walk,
+  depth: 1,
+  meander: 0,
+  maxHealth: 200,
+  flags: BreedFlags.fromSet({}),
+  tracking: 10,
+);
 
 void main() {
   var rows = AgilityAxis();
@@ -36,11 +44,11 @@ void main() {
       var save = content.createHero("temp");
 
       // TODO: Fix to use skills.
-//      save.attributes[Attribute.strength] = 20;
-//      save.attributes[Attribute.agility] = 20;
-//      save.attributes[Attribute.fortitude] = 20;
-//      save.attributes[Attribute.intellect] = 20;
-//      save.attributes[Attribute.will] = 20;
+      //      save.attributes[Attribute.strength] = 20;
+      //      save.attributes[Attribute.agility] = 20;
+      //      save.attributes[Attribute.fortitude] = 20;
+      //      save.attributes[Attribute.intellect] = 20;
+      //      save.attributes[Attribute.will] = 20;
 
       rows.apply(y, save);
       columns.apply(x, save);
@@ -101,7 +109,7 @@ class StrengthAxis extends StatAxis {
   @override
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
-//    save.attributes[Attribute.strength] = _attribute(cell);
+    //    save.attributes[Attribute.strength] = _attribute(cell);
   }
 }
 
@@ -111,7 +119,7 @@ class AgilityAxis extends StatAxis {
   @override
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
-//    save.attributes[Attribute.agility] = _attribute(cell);
+    //    save.attributes[Attribute.agility] = _attribute(cell);
   }
 }
 
@@ -121,7 +129,7 @@ class FortitudeAxis extends StatAxis {
   @override
   void apply(int cell, HeroSave save) {
     // TODO: Fix to use skills.
-//    save.attributes[Attribute.fortitude] = _attribute(cell);
+    //    save.attributes[Attribute.fortitude] = _attribute(cell);
   }
 }
 

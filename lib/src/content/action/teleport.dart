@@ -14,9 +14,14 @@ class TeleportAction extends Action {
 
     var actorPos = actor!.pos;
     var bounds = Rect.intersect(
-        Rect.leftTopRightBottom(actorPos.x - distance, actorPos.y - distance,
-            actorPos.x + distance, actorPos.y + distance),
-        game.stage.bounds);
+      Rect.leftTopRightBottom(
+        actorPos.x - distance,
+        actorPos.y - distance,
+        actorPos.x + distance,
+        actorPos.y + distance,
+      ),
+      game.stage.bounds,
+    );
 
     for (var pos in bounds) {
       if (!game.stage.willEnter(pos, actor!.motility)) continue;

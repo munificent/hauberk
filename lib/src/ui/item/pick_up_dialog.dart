@@ -17,7 +17,7 @@ class PickUpDialog extends ItemDialog {
   String get helpVerb => "Pick up";
 
   PickUpDialog(GameScreen gameScreen)
-      : super(gameScreen, ItemLocation.onGround);
+    : super(gameScreen, ItemLocation.onGround);
 
   @override
   String query(ItemLocation location) => 'Pick up which item?';

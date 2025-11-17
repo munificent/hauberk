@@ -81,7 +81,7 @@ abstract class Flow {
 
   /// Lazily iterates over all reachable tiles in order of increasing cost.
   Iterable<Vec> get reachable sync* {
-    for (var i = 0;; i++) {
+    for (var i = 0; ; i++) {
       // Lazily find the next reachable tile.
       while (i >= _found.length) {
         // If we run out of tiles to search, stop.
@@ -153,7 +153,7 @@ abstract class Flow {
     var goals = <Vec>[];
 
     int? lowestCost;
-    for (var i = 0;; i++) {
+    for (var i = 0; ; i++) {
       // Lazily find the next open tile.
       while (i >= _found.length) {
         // If we flowed everywhere and didn't find anything, give up.
@@ -270,11 +270,16 @@ class MotilityFlow extends Flow {
   final bool _avoidSubstances;
   final int? _maxDistance;
 
-  MotilityFlow(super.stage, super.start, this._motility,
-      {super.maxDistance, bool? avoidActors, bool? avoidSubstances})
-      : _maxDistance = maxDistance,
-        _avoidActors = avoidActors ?? true,
-        _avoidSubstances = avoidSubstances ?? false;
+  MotilityFlow(
+    super.stage,
+    super.start,
+    this._motility, {
+    super.maxDistance,
+    bool? avoidActors,
+    bool? avoidSubstances,
+  }) : _maxDistance = maxDistance,
+       _avoidActors = avoidActors ?? true,
+       _avoidSubstances = avoidSubstances ?? false;
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
   @override
@@ -290,7 +295,7 @@ class MotilityFlow extends Flow {
 
     // TODO: Assumes cost == distance.
     // Can't reach if it's too far.
-    if (_maxDistance != null && parentCost >= _maxDistance!) return null;
+    if (_maxDistance != null && parentCost >= _maxDistance) return null;
 
     return 1;
   }

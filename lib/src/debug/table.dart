@@ -14,13 +14,16 @@ class Table<T> {
 
   Table(this._selector, this._defaultSort);
 
-  void column(String name,
-      {bool right = false,
-      Object? defaultValue,
-      String Function(T, Object?)? render,
-      int Function(T, T)? compare}) {
-    _columns
-        .add(Column(name, defaultValue, render, compare, alignRight: right));
+  void column(
+    String name, {
+    bool right = false,
+    Object? defaultValue,
+    String Function(T, Object?)? render,
+    int Function(T, T)? compare,
+  }) {
+    _columns.add(
+      Column(name, defaultValue, render, compare, alignRight: right),
+    );
   }
 
   void row(T value, List<Object?> cells) {
@@ -147,8 +150,13 @@ class Column<T> {
   final int Function(T, T)? compareCells;
   final bool alignRight;
 
-  Column(this.name, this.defaultValue, this.renderCell, this.compareCells,
-      {required this.alignRight});
+  Column(
+    this.name,
+    this.defaultValue,
+    this.renderCell,
+    this.compareCells, {
+    required this.alignRight,
+  });
 }
 
 class Row<T> {

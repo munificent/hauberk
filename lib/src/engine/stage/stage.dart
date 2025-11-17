@@ -43,8 +43,8 @@ class Stage {
   final Array2D<Actor?> _actorsByTile;
 
   Stage(int width, int height, this.game)
-      : tiles = Array2D.generated(width, height, (_) => Tile()),
-        _actorsByTile = Array2D(width, height, null);
+    : tiles = Array2D.generated(width, height, (_) => Tile()),
+      _actorsByTile = Array2D(width, height, null);
 
   Tile operator [](Vec pos) => tiles[pos];
 
@@ -196,8 +196,10 @@ class Stage {
 
   void addItem(Item item, Vec pos) {
     // Get the inventory for the tile.
-    var inventory =
-        _itemsByTile.putIfAbsent(pos, () => Inventory(ItemLocation.onGround));
+    var inventory = _itemsByTile.putIfAbsent(
+      pos,
+      () => Inventory(ItemLocation.onGround),
+    );
     var result = inventory.tryAdd(item);
     // Inventory is unlimited, so should always succeed.
     assert(result.remaining == 0);

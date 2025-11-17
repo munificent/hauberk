@@ -22,7 +22,8 @@ abstract class Panel {
   void render(Terminal terminal) {
     if (_bounds case var bounds?) {
       renderPanel(
-          terminal.rect(bounds.x, bounds.y, bounds.width, bounds.height));
+        terminal.rect(bounds.x, bounds.y, bounds.width, bounds.height),
+      );
     }
   }
 

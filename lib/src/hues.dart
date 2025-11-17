@@ -74,6 +74,6 @@ Color elementColor(Element element) {
     Elements.poison: peaGreen,
     Elements.dark: darkCoolGray,
     Elements.light: buttermilk,
-    Elements.spirit: purple
+    Elements.spirit: purple,
   }[element]!;
 }

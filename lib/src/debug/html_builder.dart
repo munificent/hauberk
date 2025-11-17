@@ -53,10 +53,12 @@ class HtmlBuilder {
       _needsRow = false;
     }
 
-    _tag('td',
-        cssClass: right ? 'r' : null,
-        width: width,
-        attributes: {if (colspan != null) 'colspan': colspan});
+    _tag(
+      'td',
+      cssClass: right ? 'r' : null,
+      width: width,
+      attributes: {if (colspan != null) 'colspan': colspan},
+    );
   }
 
   void tdEnd() {
@@ -94,8 +96,12 @@ class HtmlBuilder {
   @override
   String toString() => _buffer.toString();
 
-  void _tag(String tag,
-      {Map<String, Object>? attributes, String? cssClass, Object? width}) {
+  void _tag(
+    String tag, {
+    Map<String, Object>? attributes,
+    String? cssClass,
+    Object? width,
+  }) {
     if (width is num) width = '${width}px';
     if (width is! String?) {
       throw ArgumentError('Width must be number or String.');

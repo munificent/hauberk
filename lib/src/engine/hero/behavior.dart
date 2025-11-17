@@ -101,11 +101,7 @@ class RunBehavior extends Behavior {
       //
       // If the player presses NE here, we want to run north and not get
       // confused by the east passage.
-      var dirs = [
-        direction.rotateLeft45,
-        direction,
-        direction.rotateRight45,
-      ];
+      var dirs = [direction.rotateLeft45, direction, direction.rotateRight45];
 
       if (Direction.cardinal.contains(direction)) {
         dirs.add(direction.rotateLeft90);
@@ -126,9 +122,11 @@ class RunBehavior extends Behavior {
         direction = openDirs.first;
       } else {
         // Entering an open area.
-        openLeft = _isOpen(game.stage, hero, direction.rotateLeft45) &&
+        openLeft =
+            _isOpen(game.stage, hero, direction.rotateLeft45) &&
             _isOpen(game.stage, hero, direction.rotateLeft90);
-        openRight = _isOpen(game.stage, hero, direction.rotateRight45) &&
+        openRight =
+            _isOpen(game.stage, hero, direction.rotateRight45) &&
             _isOpen(game.stage, hero, direction.rotateRight90);
       }
     } else if (!openLeft! && !openRight!) {

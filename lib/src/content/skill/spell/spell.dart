@@ -79,14 +79,16 @@ class ActionSpell extends Spell with ActionSkill {
 
   final Action Function(ActionSpell spell, Game game, int level) _getAction;
 
-  ActionSpell(this.name, this._getAction,
-      {required this.description,
-      required int complexity,
-      required int focus,
-      this.damage = 0,
-      this.range = 0})
-      : baseComplexity = complexity,
-        baseFocusCost = focus;
+  ActionSpell(
+    this.name,
+    this._getAction, {
+    required this.description,
+    required int complexity,
+    required int focus,
+    this.damage = 0,
+    this.range = 0,
+  }) : baseComplexity = complexity,
+       baseFocusCost = focus;
 
   @override
   Action onGetAction(Game game, int level) => _getAction(this, game, level);
@@ -112,16 +114,18 @@ class TargetSpell extends Spell with TargetSkill {
   final int range;
 
   final Action Function(TargetSpell spell, Game game, int level, Vec target)
-      _getAction;
+  _getAction;
 
-  TargetSpell(this.name, this._getAction,
-      {required this.description,
-      required int complexity,
-      required int focus,
-      required this.damage,
-      required this.range})
-      : baseComplexity = complexity,
-        baseFocusCost = focus;
+  TargetSpell(
+    this.name,
+    this._getAction, {
+    required this.description,
+    required int complexity,
+    required int focus,
+    required this.damage,
+    required this.range,
+  }) : baseComplexity = complexity,
+       baseFocusCost = focus;
 
   @override
   Action onGetTargetAction(Game game, int level, Vec target) =>

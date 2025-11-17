@@ -62,7 +62,7 @@ void armor() {
 void recipe(String drop, Map<String, int> ingredientNames) {
   var ingredients = <ItemType, int>{
     for (var MapEntry(key: name, value: ingredient) in ingredientNames.entries)
-      Items.types.find(name): ingredient
+      Items.types.find(name): ingredient,
   };
 
   // TODO: Allow more interesting descriptions when we have recipes that do

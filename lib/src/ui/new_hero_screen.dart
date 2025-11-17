@@ -78,7 +78,7 @@ const _defaultNames = [
   "Enndolynn",
   "Krea",
   "Dimia",
-  "Aleida"
+  "Aleida",
 ];
 
 // TODO: Update to handle resizable UI.
@@ -89,7 +89,7 @@ class NewHeroScreen extends Screen<Input> {
     "When you die, you lose everything since the last time you went up or "
         "down a set of stairs (or left a shop).",
     "When you die, that's it. Your hero is gone forever. This is the most "
-        "challenging way to play, but often the most rewarding as well."
+        "challenging way to play, but often the most rewarding as well.",
   ];
 
   final Content _content;
@@ -105,12 +105,20 @@ class NewHeroScreen extends Screen<Input> {
   final List<Control> _controls = [];
 
   NewHeroScreen(this._content, this._storage)
-      : _name = NameControl(0, 0, _storage),
-        _race = SelectControl(
-            0, 4, "Race", _content.races.map((race) => race.name).toList()),
-        _class = SelectControl(
-            0, 14, "Class", _content.classes.map((cls) => cls.name).toList()),
-        _death = SelectControl(0, 28, "Death", _deaths) {
+    : _name = NameControl(0, 0, _storage),
+      _race = SelectControl(
+        0,
+        4,
+        "Race",
+        _content.races.map((race) => race.name).toList(),
+      ),
+      _class = SelectControl(
+        0,
+        14,
+        "Class",
+        _content.classes.map((cls) => cls.name).toList(),
+      ),
+      _death = SelectControl(0, 28, "Death", _deaths) {
     _controls.addAll([_name, _race, _class, _death]);
 
     _race.selected = rng.range(_content.races.length);
@@ -119,26 +127,31 @@ class NewHeroScreen extends Screen<Input> {
 
   @override
   void render(Terminal terminal) {
-    Draw.dialog(terminal, 80, 40,
-        label: "Out of the forgotten wilderness, a hero appears...",
-        (terminal) {
-      Draw.hLine(terminal, 0, 3, terminal.width);
-      Draw.hLine(terminal, 0, 13, terminal.width);
-      Draw.hLine(terminal, 0, 27, terminal.width);
+    Draw.dialog(
+      terminal,
+      80,
+      40,
+      label: "Out of the forgotten wilderness, a hero appears...",
+      (terminal) {
+        Draw.hLine(terminal, 0, 3, terminal.width);
+        Draw.hLine(terminal, 0, 13, terminal.width);
+        Draw.hLine(terminal, 0, 27, terminal.width);
 
-      _renderRace(terminal.rect(0, 4, terminal.width, 8));
-      _renderClass(terminal.rect(0, 14, terminal.width, 15));
-      _renderDeath(terminal.rect(0, 28, terminal.width, 7));
+        _renderRace(terminal.rect(0, 4, terminal.width, 8));
+        _renderClass(terminal.rect(0, 14, terminal.width, 15));
+        _renderDeath(terminal.rect(0, 28, terminal.width, 7));
 
-      for (var i = 0; i < _controls.length; i++) {
-        _controls[i].render(terminal, focus: i == _focus);
-      }
-    }, helpKeys: {
-      "Tab": "Next field",
-      ..._controls[_focus].helpKeys,
-      if (_name._isUnique) "Enter": "Create hero",
-      "`": "Cancel"
-    });
+        for (var i = 0; i < _controls.length; i++) {
+          _controls[i].render(terminal, focus: i == _focus);
+        }
+      },
+      helpKeys: {
+        "Tab": "Next field",
+        ..._controls[_focus].helpKeys,
+        if (_name._isUnique) "Enter": "Create hero",
+        "`": "Cancel",
+      },
+    );
   }
 
   void _renderRace(Terminal terminal) {
@@ -206,10 +219,12 @@ class NewHeroScreen extends Screen<Input> {
       // We look for "enter" explicitly and not Input.OK, because typing "l"
       // should enter that letter, not create a hero.
       case KeyCode.enter when _name._isUnique:
-        var hero = _content.createHero(_name._name,
-            race: _content.races[_race.selected],
-            heroClass: _content.classes[_class.selected],
-            permadeath: _death.selected == 1);
+        var hero = _content.createHero(
+          _name._name,
+          race: _content.races[_race.selected],
+          heroClass: _content.classes[_class.selected],
+          permadeath: _death.selected == 1,
+        );
         _storage.add(hero);
         ui.goTo(GameScreen.town(_storage, _content, hero, newHero: true));
         return true;
@@ -333,7 +348,12 @@ class NameControl extends Control {
       terminal.writeAt(_x + 19, _y + 1, _enteredName, UIHue.primary);
       if (focus) {
         terminal.writeAt(
-            _x + 19 + _enteredName.length, _y + 1, " ", Color.black, color);
+          _x + 19 + _enteredName.length,
+          _y + 1,
+          " ",
+          Color.black,
+          color,
+        );
       }
     } else {
       if (focus) {
@@ -379,7 +399,11 @@ class SelectControl extends Control {
   @override
   void render(Terminal terminal, {required bool focus}) {
     terminal.writeAt(
-        _x, _y + 1, "$_name:", focus ? UIHue.selection : UIHue.text);
+      _x,
+      _y + 1,
+      "$_name:",
+      focus ? UIHue.selection : UIHue.text,
+    );
 
     if (focus) {
       var x = _x + 19;
@@ -393,7 +417,11 @@ class SelectControl extends Control {
         }
 
         terminal.writeAt(
-            x, _y + 1, option, i == selected ? UIHue.selection : UIHue.primary);
+          x,
+          _y + 1,
+          option,
+          i == selected ? UIHue.selection : UIHue.primary,
+        );
         x += option.length + 2;
       }
     } else {

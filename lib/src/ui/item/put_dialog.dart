@@ -4,8 +4,10 @@ import 'item_dialog.dart';
 
 abstract class _PutDialog extends ItemDialog {
   @override
-  List<ItemLocation> get allowedLocations =>
-      const [ItemLocation.inventory, ItemLocation.equipment];
+  List<ItemLocation> get allowedLocations => const [
+    ItemLocation.inventory,
+    ItemLocation.equipment,
+  ];
 
   @override
   bool get needsCount => true;
@@ -37,8 +39,9 @@ class PutCrucibleDialog extends _PutDialog {
 
   @override
   void afterTransfer(Item item, int count) {
-    gameScreen.game.log
-        .message("You place ${item.clone(count)} into the crucible.");
+    gameScreen.game.log.message(
+      "You place ${item.clone(count)} into the crucible.",
+    );
     _onTransfer();
   }
 }
@@ -53,7 +56,8 @@ class PutHomeDialog extends _PutDialog {
 
   @override
   void afterTransfer(Item item, int count) {
-    gameScreen.game.log
-        .message("You put ${item.clone(count)} safely into your home.");
+    gameScreen.game.log.message(
+      "You put ${item.clone(count)} safely into your home.",
+    );
   }
 }

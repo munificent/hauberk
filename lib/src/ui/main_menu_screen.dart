@@ -53,7 +53,7 @@ const _colors = {
   "R": red,
   "O": carrot,
   "G": gold,
-  "Y": yellow
+  "Y": yellow,
 };
 
 class MainMenuScreen extends Screen<Input> {
@@ -132,7 +132,8 @@ class MainMenuScreen extends Screen<Input> {
           var name = storage.heroes[selectedHero].name;
           _isActive = false;
           ui.push(
-              ConfirmPopup("Are you sure you want to delete $name?", 'delete'));
+            ConfirmPopup("Are you sure you want to delete $name?", 'delete'),
+          );
         }
         return true;
 
@@ -209,8 +210,13 @@ class MainMenuScreen extends Screen<Input> {
       _renderDungeon(terminal, game);
     } else {
       var save = content.createHero("Temporary");
-      var game = _game = Game(content, rng.inclusive(1, Option.maxDepth), save,
-          width: terminal.width, height: terminal.height);
+      var game = _game = Game(
+        content,
+        rng.inclusive(1, Option.maxDepth),
+        save,
+        width: terminal.width,
+        height: terminal.height,
+      );
 
       _generator = game.generate().iterator;
       _lightDungeon = false;
@@ -219,11 +225,20 @@ class MainMenuScreen extends Screen<Input> {
 
     // Center the content.
     var centerTerminal = terminal.rect(
-        (terminal.width - 68) ~/ 2, (terminal.height - 34) ~/ 2, 68, 34);
+      (terminal.width - 68) ~/ 2,
+      (terminal.height - 34) ~/ 2,
+      68,
+      34,
+    );
 
     centerTerminal.clear();
     Draw.doubleBox(
-        centerTerminal, 0, 0, centerTerminal.width, centerTerminal.height);
+      centerTerminal,
+      0,
+      0,
+      centerTerminal.width,
+      centerTerminal.height,
+    );
 
     for (var y = 0; y < _chars.length; y++) {
       for (var x = 0; x < _chars[y].length; x++) {
@@ -239,16 +254,28 @@ class MainMenuScreen extends Screen<Input> {
 
     if (storage.heroes.isEmpty) {
       centerTerminal.writeAt(
-          3, 21, '(No heroes. Please create a new one.)', UIHue.disabled);
+        3,
+        21,
+        '(No heroes. Please create a new one.)',
+        UIHue.disabled,
+      );
     } else {
       if (_scroll > 0) {
         centerTerminal.writeAt(
-            centerTerminal.width ~/ 2, 20, "▲", UIHue.selection);
+          centerTerminal.width ~/ 2,
+          20,
+          "▲",
+          UIHue.selection,
+        );
       }
 
       if (_scroll < storage.heroes.length - _listHeight) {
         centerTerminal.writeAt(
-            centerTerminal.width ~/ 2, 29, "▼", UIHue.selection);
+          centerTerminal.width ~/ 2,
+          29,
+          "▼",
+          UIHue.selection,
+        );
       }
 
       for (var i = 0; i < _listHeight; i++) {
@@ -264,7 +291,11 @@ class MainMenuScreen extends Screen<Input> {
           secondary = UIHue.selection;
 
           centerTerminal.drawChar(
-              2, 21 + i, CharCode.blackRightPointingPointer, UIHue.selection);
+            2,
+            21 + i,
+            CharCode.blackRightPointingPointer,
+            UIHue.selection,
+          );
         }
 
         centerTerminal.writeAt(3, 21 + i, hero.name, primary);
@@ -354,7 +385,9 @@ class MainMenuScreen extends Screen<Input> {
       if (tile.actorIllumination > 0) {
         const glow = Color(200, 130, 0);
         color = color.add(
-            glow, lerpDouble(tile.actorIllumination, 0, 255, 0.05, 0.1));
+          glow,
+          lerpDouble(tile.actorIllumination, 0, 255, 0.05, 0.1),
+        );
       }
 
       return color;

@@ -13,10 +13,7 @@ abstract class SkillDialog extends Screen<Input> {
   late final SkillDialog _nextScreen;
 
   factory SkillDialog(HeroSave hero) {
-    var screens = [
-      DisciplineDialog(hero),
-      SpellDialog(hero),
-    ];
+    var screens = [DisciplineDialog(hero), SpellDialog(hero)];
 
     for (var i = 0; i < screens.length; i++) {
       screens[i]._nextScreen = screens[(i + 1) % screens.length];
@@ -73,10 +70,10 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
       // TODO: Get this working with spells, tricks, etc. that need to be
       // explicitly raised.
-//      case Input.e:
-//        if (!_canRaiseSkill) return false;
-//        _raiseSkill();
-//        return true;
+      //      case Input.e:
+      //        if (!_canRaiseSkill) return false;
+      //        _raiseSkill();
+      //        return true;
 
       // TODO: Use OK to confirm changes and cancel to discard them?
       case Input.cancel:
@@ -137,8 +134,12 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
       i++;
     }
 
-    terminal.drawChar(1, _selectedSkill * 2 + 3,
-        CharCode.blackRightPointingPointer, UIHue.selection);
+    terminal.drawChar(
+      1,
+      _selectedSkill * 2 + 3,
+      CharCode.blackRightPointingPointer,
+      UIHue.selection,
+    );
   }
 
   void _renderSkill(Terminal terminal) {
@@ -148,8 +149,15 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
       Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
     } else {
       var skill = _skills[_selectedSkill];
-      Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-          label: skill.name, labelSelected: true);
+      Draw.frame(
+        terminal,
+        0,
+        0,
+        terminal.width,
+        terminal.height,
+        label: skill.name,
+        labelSelected: true,
+      );
 
       _writeText(terminal, 1, 2, skill.description);
 
@@ -193,13 +201,21 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
 
   @override
   void _renderSkillInList(
-      Terminal terminal, int y, Color color, Discipline skill) {
+    Terminal terminal,
+    int y,
+    Color color,
+    Discipline skill,
+  ) {
     var level = _skillSet.level(skill).toString().padLeft(3);
     terminal.writeAt(31, y, level, color);
 
     var percent = skill.percentUntilNext(_hero);
     terminal.writeAt(
-        35, y, percent == null ? "  --" : "$percent%".padLeft(4), color);
+      35,
+      y,
+      percent == null ? "  --" : "$percent%".padLeft(4),
+      color,
+    );
   }
 
   @override
@@ -211,7 +227,11 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
       _writeText(terminal, 3, 10, skill.levelDescription(level));
     } else {
       terminal.writeAt(
-          3, 10, "(You haven't trained this yet.)", UIHue.disabled);
+        3,
+        10,
+        "(You haven't trained this yet.)",
+        UIHue.disabled,
+      );
     }
 
     // TODO: Show fury cost.
@@ -233,7 +253,15 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
       var next = skill.trainingNeeded(_hero.heroClass, level + 1)!;
       terminal.writeAt(9, 32, "$percent%".padLeft(4), UIHue.text);
       Draw.meter(
-          terminal, 14, 32, 25, points - current, next - current, red, maroon);
+        terminal,
+        14,
+        32,
+        25,
+        points - current,
+        next - current,
+        red,
+        maroon,
+      );
     } else {
       terminal.writeAt(14, 32, "(At max level.)", UIHue.disabled);
     }
@@ -257,18 +285,30 @@ class SpellDialog extends SkillTypeDialog<Spell> {
   @override
   void _renderSkillInList(Terminal terminal, int y, Color color, Spell skill) {
     terminal.writeAt(
-        35, y, skill.complexity(_hero.heroClass).toString().padLeft(4), color);
+      35,
+      y,
+      skill.complexity(_hero.heroClass).toString().padLeft(4),
+      color,
+    );
   }
 
   @override
   void _renderSkillDetails(Terminal terminal, Spell skill) {
     terminal.writeAt(1, 30, "Complexity:", UIHue.secondary);
     if (_hero.skills.isAcquired(skill)) {
-      terminal.writeAt(13, 30,
-          skill.complexity(_hero.heroClass).toString().padLeft(3), UIHue.text);
+      terminal.writeAt(
+        13,
+        30,
+        skill.complexity(_hero.heroClass).toString().padLeft(3),
+        UIHue.text,
+      );
     } else {
       terminal.writeAt(
-          13, 30, skill.complexity(_hero.heroClass).toString().padLeft(3), red);
+        13,
+        30,
+        skill.complexity(_hero.heroClass).toString().padLeft(3),
+        red,
+      );
 
       var need = skill.complexity(_hero.heroClass) - _hero.intellect.value;
       terminal.writeAt(17, 30, "Need $need more intellect", UIHue.secondary);
@@ -276,8 +316,12 @@ class SpellDialog extends SkillTypeDialog<Spell> {
 
     var level = _skillSet.level(skill);
     terminal.writeAt(1, 32, "Focus cost:", UIHue.secondary);
-    terminal.writeAt(13, 32,
-        skill.focusCost(_hero, level).toString().padLeft(3), UIHue.text);
+    terminal.writeAt(
+      13,
+      32,
+      skill.focusCost(_hero, level).toString().padLeft(3),
+      UIHue.text,
+    );
 
     if (skill.damage != 0) {
       terminal.writeAt(1, 34, "Damage:", UIHue.secondary);

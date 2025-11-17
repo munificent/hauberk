@@ -10,8 +10,13 @@ final context = canvas.context2D;
 
 void main() {
   for (var i = 4; i <= 128; i++) {
-    sizeSelect.append(html.OptionElement(
-        data: i.toString(), value: i.toString(), selected: i == 16));
+    sizeSelect.append(
+      html.OptionElement(
+        data: i.toString(),
+        value: i.toString(),
+        selected: i == 16,
+      ),
+    );
   }
 
   sizeSelect.onChange.listen((event) {

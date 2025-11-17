@@ -27,13 +27,16 @@ class SelectDepthPopup extends Popup {
 
   @override
   List<String> get message => const [
-        "Stairs descend into darkness.",
-        "How far down shall you venture?"
-      ];
+    "Stairs descend into darkness.",
+    "How far down shall you venture?",
+  ];
 
   @override
-  Map<String, String> get helpKeys =>
-      const {"OK": "Enter dungeon", "↕↔": "Change depth", "`": "Cancel"};
+  Map<String, String> get helpKeys => const {
+    "OK": "Enter dungeon",
+    "↕↔": "Change depth",
+    "`": "Cancel",
+  };
 
   @override
   bool handleInput(Input input) {
@@ -78,9 +81,17 @@ class SelectDepthPopup extends Popup {
       } else if (depth == _depth) {
         color = UIHue.selection;
         terminal.drawChar(
-            x * 4, y + 5, CharCode.blackRightPointingPointer, color);
+          x * 4,
+          y + 5,
+          CharCode.blackRightPointingPointer,
+          color,
+        );
         terminal.drawChar(
-            x * 4 + 4, y + 5, CharCode.blackLeftPointingPointer, color);
+          x * 4 + 4,
+          y + 5,
+          CharCode.blackLeftPointingPointer,
+          color,
+        );
       }
 
       terminal.writeAt(x * 4 + 1, y + 5, depth.toString().padLeft(3), color);

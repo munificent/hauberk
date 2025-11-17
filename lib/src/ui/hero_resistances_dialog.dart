@@ -16,11 +16,12 @@ class HeroResistancesDialog extends HeroInfoDialog {
 
     void writeLine(int y, Color color) {
       terminal.writeAt(
-          2,
-          y,
-          "───────────────────────────────────────────── "
-          "── ── ── ── ── ── ── ── ── ── ──",
-          color);
+        2,
+        y,
+        "───────────────────────────────────────────── "
+        "── ── ── ── ── ── ── ── ── ── ──",
+        color,
+      );
     }
 
     terminal.writeAt(48, 0, "══════════ Resistances ═════════", darkCoolGray);

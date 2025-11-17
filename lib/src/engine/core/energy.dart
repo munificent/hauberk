@@ -22,7 +22,7 @@ class Energy {
     120, // 2x normal speed
     150, // 3/2 normal speed
     180, // 3x normal speed
-    240 // 4x normal speed
+    240, // 4x normal speed
   ];
 
   int energy = 0;

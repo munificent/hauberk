@@ -16,8 +16,11 @@ void main() {
 
     var counts = <String, int>{};
     for (var i = 0; i < 10000; i++) {
-      var animal =
-          resourceSet.tryChoose(1, tag: tag, includeParents: includeParents)!;
+      var animal = resourceSet.tryChoose(
+        1,
+        tag: tag,
+        includeParents: includeParents,
+      )!;
       counts.putIfAbsent(animal, () => 0);
       counts[animal] = counts[animal]! + 1;
     }

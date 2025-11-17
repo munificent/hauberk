@@ -157,14 +157,17 @@ class Decorator {
       // decor places a table and the paint style changes the material of it.
       var painter = Painter(this, _architect, architecture);
 
-      var decorTiles =
-          rng.round(tiles.length * architecture.style.decorDensity);
+      var decorTiles = rng.round(
+        tiles.length * architecture.style.decorDensity,
+      );
       decorTiles = rng.float(decorTiles * 0.8, decorTiles * 1.2).ceil();
 
       var tries = 0;
       while (tries++ < decorTiles && painter.paintedCount < decorTiles) {
-        var decor =
-            Decor.choose(_architect.depth, architecture.style.decorTheme);
+        var decor = Decor.choose(
+          _architect.depth,
+          architecture.style.decorTheme,
+        );
         if (decor == null) continue;
 
         for (var i = 0; i < tiles.length; i++) {
@@ -255,8 +258,11 @@ class Decorator {
 
   Breed chooseBreed(int depth, {String? tag, bool? includeParentTags}) {
     while (true) {
-      var breed = Monsters.breeds
-          .tryChoose(depth, tag: tag, includeParents: includeParentTags)!;
+      var breed = Monsters.breeds.tryChoose(
+        depth,
+        tag: tag,
+        includeParents: includeParentTags,
+      )!;
 
       if (_canSpawn(breed)) return breed;
     }
@@ -302,10 +308,10 @@ class Decorator {
 
       // TODO: Get this working again. Instead of setting the tile type, we may
       // want a second attribute for a stain applied on top of the tile.
-//      if (breed.stain != null) {
-//        // TODO: Larger stains for stronger monsters?
-//        _stain(breed.stain, pos, 5, 2);
-//      }
+      //      if (breed.stain != null) {
+      //        // TODO: Larger stains for stronger monsters?
+      //        _stain(breed.stain, pos, 5, 2);
+      //      }
     }
 
     var breeds = breed.spawnAll();
@@ -322,8 +328,10 @@ class Decorator {
 
       // TODO: Ideally, this would follow the location preference of the breed
       // too, even for minions of different breeds.
-      var here =
-          flow.reachable.firstWhere((_) => true, orElse: () => Vec(-1, -1));
+      var here = flow.reachable.firstWhere(
+        (_) => true,
+        orElse: () => Vec(-1, -1),
+      );
 
       // If there are no open tiles, discard the remaining monsters.
       if (here == Vec(-1, -1)) break;
@@ -334,32 +342,36 @@ class Decorator {
     return count;
   }
 
-//  void _stain(TileType tile, Vec start, int distance, int count) {
-//    // Make a bunch of wandering paths from the starting point, leaving stains
-//    // as they go.
-//    for (var i = 0; i < count; i++) {
-//      var pos = start;
-//      for (var j = 0; j < distance; j++) {
-//        if (rng.percent(60) && getTileAt(pos) == Tiles.floor) {
-//          setTileAt(pos, tile);
-//        }
-//
-//        var dirs = Direction.all
-//            .where((dir) => getTileAt(pos + dir).isTraversable)
-//            .toList();
-//        if (dirs.isEmpty) return;
-//        pos += rng.item(dirs);
-//      }
-//    }
-//  }
+  //  void _stain(TileType tile, Vec start, int distance, int count) {
+  //    // Make a bunch of wandering paths from the starting point, leaving stains
+  //    // as they go.
+  //    for (var i = 0; i < count; i++) {
+  //      var pos = start;
+  //      for (var j = 0; j < distance; j++) {
+  //        if (rng.percent(60) && getTileAt(pos) == Tiles.floor) {
+  //          setTileAt(pos, tile);
+  //        }
+  //
+  //        var dirs = Direction.all
+  //            .where((dir) => getTileAt(pos + dir).isTraversable)
+  //            .toList();
+  //        if (dirs.isEmpty) return;
+  //        pos += rng.item(dirs);
+  //      }
+  //    }
+  //  }
 
   Iterable<String> _dropItems() sync* {
     // Build a density map for where items should drop.
     var densityMap = DensityMap(_stage.width, _stage.height);
     Debug.densityMap = densityMap;
 
-    var flow = MotilityFlow(_stage, _heroPos, Motility.doorAndWalk,
-        avoidActors: false);
+    var flow = MotilityFlow(
+      _stage,
+      _heroPos,
+      Motility.doorAndWalk,
+      avoidActors: false,
+    );
 
     for (var pos in _stage.bounds.inflate(-1)) {
       var architecture = _architect.ownerAt(pos);
@@ -403,8 +415,11 @@ class Decorator {
       // TODO: Style-specific drop types.
       var floorDrop = FloorDrops.choose(_architect.depth);
 
-      var items = _architect.stage
-          .placeDrops(pos, floorDrop.drop, depth: _architect.depth);
+      var items = _architect.stage.placeDrops(
+        pos,
+        floorDrop.drop,
+        depth: _architect.depth,
+      );
       for (var item in items) {
         // Give worthless items a little price so we don't clutter too many of
         // them.

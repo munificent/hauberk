@@ -91,9 +91,14 @@ class TileType {
 
   bool get isWalkable => canEnter(Motility.walk);
 
-  TileType(this.name, this.appearance, this.motility,
-      {int? emanation, this.portal, this.onOperate})
-      : emanation = emanation ?? 0;
+  TileType(
+    this.name,
+    this.appearance,
+    this.motility, {
+    int? emanation,
+    this.portal,
+    this.onOperate,
+  }) : emanation = emanation ?? 0;
 
   /// Whether an actor with [motility] is able to enter this tile.
   bool canEnter(Motility motility) => this.motility.overlaps(motility);
@@ -151,8 +156,10 @@ class Tile {
 
   /// If you call this, make sure to call [Stage.tileEmanationChanged()].
   void addEmanation(int offset) {
-    _appliedEmanation =
-        (_appliedEmanation + offset).clamp(0, Lighting.floorMax);
+    _appliedEmanation = (_appliedEmanation + offset).clamp(
+      0,
+      Lighting.floorMax,
+    );
   }
 
   void maxEmanation(int amount) {

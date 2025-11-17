@@ -19,7 +19,10 @@ class Affixes {
   }
 
   static AffixType? tryChoose(
-      ResourceSet<AffixType> affixes, ItemType itemType, int depth) {
+    ResourceSet<AffixType> affixes,
+    ItemType itemType,
+    int depth,
+  ) {
     return affixes.tryChooseMatching(depth, Items.types.getTags(itemType.name));
   }
 

@@ -26,10 +26,18 @@ class ItemPanel extends Panel {
   void renderPanel(Terminal terminal) {
     var hero = _game.hero;
     _drawItems(
-        terminal, equipmentTop, hero.equipment.slots.length, hero.equipment);
+      terminal,
+      equipmentTop,
+      hero.equipment.slots.length,
+      hero.equipment,
+    );
 
     _drawItems(
-        terminal, inventoryTop, Option.inventoryCapacity, hero.inventory);
+      terminal,
+      inventoryTop,
+      Option.inventoryCapacity,
+      hero.inventory,
+    );
 
     // Don't show the on the ground panel if the height is too short for it.
     if (onGroundVisible) {
@@ -43,14 +51,21 @@ class ItemPanel extends Panel {
   }
 
   void _drawItems(
-      Terminal terminal, int y, int itemSlotCount, ItemCollection items) {
-    renderItems(terminal, items,
-        left: 0,
-        top: y,
-        width: terminal.width,
-        itemSlotCount: itemSlotCount,
-        save: _game.hero.save,
-        showLetters: false,
-        canSelectAny: false);
+    Terminal terminal,
+    int y,
+    int itemSlotCount,
+    ItemCollection items,
+  ) {
+    renderItems(
+      terminal,
+      items,
+      left: 0,
+      top: y,
+      width: terminal.width,
+      itemSlotCount: itemSlotCount,
+      save: _game.hero.save,
+      showLetters: false,
+      canSelectAny: false,
+    );
   }
 }

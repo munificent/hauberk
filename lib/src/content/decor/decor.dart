@@ -26,7 +26,7 @@ abstract class Decor {
     waterDecor();
 
     // TODO: Doesn't look great. Remove or redo.
-//    all.addUnnamed(Blast(), 1, 0.01, "laboratory");
+    //    all.addUnnamed(Blast(), 1, 0.01, "laboratory");
   }
 
   static Decor? choose(int depth, String theme) {

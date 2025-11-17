@@ -34,8 +34,13 @@ int get depth {
 
 void main() {
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(html.OptionElement(
-        data: i.toString(), value: i.toString(), selected: i == 1));
+    depthSelect.append(
+      html.OptionElement(
+        data: i.toString(),
+        value: i.toString(),
+        selected: i == 1,
+      ),
+    );
   }
 
   depthSelect.onChange.listen((event) {
@@ -62,7 +67,7 @@ void hover(Vec pos) {
   hoverPos = pos;
 
   var buffer = StringBuffer();
-//  var dungeon = Dungeon.last;
+  //  var dungeon = Dungeon.last;
   var stage = _game.stage;
   if (stage.bounds.contains(pos)) {
     buffer.write("<h2>Hover $pos</h2>");
@@ -78,27 +83,27 @@ void hover(Vec pos) {
 
     buffer.write("<p>${stage[pos].type.name}</p>");
 
-//    var place = dungeon.placeAt(pos);
-//    if (place != null) {
-//      var themes = place.themes.keys.toList();
-//      themes.sort((a, b) => place.themes[b].compareTo(place.themes[a]));
-//
-//      if (themes.isNotEmpty) {
-//        buffer.writeln("<h3>${themes.first} ${place.cells.first}</h3>");
-//      } else {
-//        buffer.writeln("<h3>(no theme) ${place.cells.first}</h3>");
-//      }
-//      buffer.writeln("<ul>");
-//
-//      var total = place.totalStrength.toStringAsFixed(2);
-//      for (var theme in themes) {
-//        var strength = place.themes[theme];
-//        var percent = 100 * strength ~/ place.totalStrength;
-//        buffer.writeln("<li>${percent.toString().padLeft(3)}% $theme "
-//            "(${strength.toStringAsFixed(2)}/$total)</li>");
-//      }
-//      buffer.writeln("</ul>");
-//    }
+    //    var place = dungeon.placeAt(pos);
+    //    if (place != null) {
+    //      var themes = place.themes.keys.toList();
+    //      themes.sort((a, b) => place.themes[b].compareTo(place.themes[a]));
+    //
+    //      if (themes.isNotEmpty) {
+    //        buffer.writeln("<h3>${themes.first} ${place.cells.first}</h3>");
+    //      } else {
+    //        buffer.writeln("<h3>(no theme) ${place.cells.first}</h3>");
+    //      }
+    //      buffer.writeln("<ul>");
+    //
+    //      var total = place.totalStrength.toStringAsFixed(2);
+    //      for (var theme in themes) {
+    //        var strength = place.themes[theme];
+    //        var percent = 100 * strength ~/ place.totalStrength;
+    //        buffer.writeln("<li>${percent.toString().padLeft(3)}% $theme "
+    //            "(${strength.toStringAsFixed(2)}/$total)</li>");
+    //      }
+    //      buffer.writeln("</ul>");
+    //    }
   }
 
   html
@@ -115,8 +120,15 @@ Future generate() async {
   var thisGame = _game;
   var stage = _game.stage;
 
-  terminal = RetroTerminal(stage.width, stage.height, "../font_8.png",
-      canvas: canvas, charWidth: 8, charHeight: 8, scale: 1);
+  terminal = RetroTerminal(
+    stage.width,
+    stage.height,
+    "../font_8.png",
+    canvas: canvas,
+    charWidth: 8,
+    charHeight: 8,
+    scale: 1,
+  );
   canvas.width = stage.width * 8;
   canvas.height = stage.height * 8;
 
@@ -125,7 +137,7 @@ Future generate() async {
 
   var start = DateTime.now();
   for (var _ in _game.generate()) {
-//    print(event);
+    //    print(event);
     render();
 
     var elapsed = DateTime.now().difference(start);
@@ -169,9 +181,7 @@ Future generate() async {
       <tr>
         <td>${monsters.count(breed)}</td>
         <td>
-          <pre><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
-          glyph.char
-        ])}</span></pre>
+          <pre><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([glyph.char])}</span></pre>
         </td>
         <td>${breed.name}</td>
         <td>${breed.depth}</td>
@@ -179,8 +189,10 @@ Future generate() async {
         <td>
       ''');
 
-    var attacks = breed.attacks.map((attack) =>
-        '${Log.conjugate(attack.verb, breed.pronoun)} (${attack.damage})');
+    var attacks = breed.attacks.map(
+      (attack) =>
+          '${Log.conjugate(attack.verb, breed.pronoun)} (${attack.damage})',
+    );
     tableContents.write(attacks.join(', '));
 
     tableContents.write('</td><td>');
@@ -257,9 +269,10 @@ void render({bool showInfo = true}) {
 
       var light = ((1.0 - tile.illumination / 128) * 0.5).clamp(0.0, 1.0);
       glyph = Glyph.fromCharCode(
-          glyph.char,
-          glyph.fore.blend(Color.black, light),
-          glyph.back.blend(Color.black, light));
+        glyph.char,
+        glyph.fore.blend(Color.black, light),
+        glyph.back.blend(Color.black, light),
+      );
 
       var items = stage.itemsAt(pos);
       if (items.isNotEmpty) {

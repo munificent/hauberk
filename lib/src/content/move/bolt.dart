@@ -17,8 +17,13 @@ class BoltMove extends RangedMove {
   @override
   bool shouldUse(Game game, Monster monster) {
     if (monster.isBlinded && rng.float(1.0) < monster.sightReliance) {
-      var chance =
-          lerpDouble(monster.sightReliance, 0.0, 1.0, 0.0, 90.0).toInt();
+      var chance = lerpDouble(
+        monster.sightReliance,
+        0.0,
+        1.0,
+        0.0,
+        90.0,
+      ).toInt();
       if (rng.percent(chance)) return false;
     }
 

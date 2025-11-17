@@ -185,8 +185,11 @@ class Monster extends Actor {
     switch (_state) {
       case AsleepState() when _fear > _frightenThreshold:
         _resetCharges();
-        return ChangeMonsterStateAction("{1} is afraid!", AfraidState(),
-            event: EventType.frighten);
+        return ChangeMonsterStateAction(
+          "{1} is afraid!",
+          AfraidState(),
+          event: EventType.frighten,
+        );
 
       case AsleepState() when rng.percent(_awakenPercent(notice)):
         _alertness = _maxAlertness;
@@ -194,12 +197,18 @@ class Monster extends Actor {
 
         // TODO: Probably shouldn't add event if monster woke up because they
         // were hit.
-        return ChangeMonsterStateAction("{1} wakes up!", AwakeState(),
-            event: EventType.awaken);
+        return ChangeMonsterStateAction(
+          "{1} wakes up!",
+          AwakeState(),
+          event: EventType.awaken,
+        );
 
       case AwakeState() when _fear > _frightenThreshold:
-        return ChangeMonsterStateAction("{1} is afraid!", AfraidState(),
-            event: EventType.frighten);
+        return ChangeMonsterStateAction(
+          "{1} is afraid!",
+          AfraidState(),
+          event: EventType.frighten,
+        );
 
       case AwakeState() when notice < 0.01:
         _alertness = 0.0;
@@ -207,7 +216,9 @@ class Monster extends Actor {
 
       case AfraidState() when _fear <= 0.0:
         return ChangeMonsterStateAction(
-            "{1} find[s] {1 his} courage.", AwakeState());
+          "{1} find[s] {1 his} courage.",
+          AwakeState(),
+        );
 
       default:
         // Keep the current state.
@@ -270,7 +281,11 @@ class Monster extends Actor {
     var volume =
         game.stage.heroVolume(pos) * game.hero.lastNoise * breed.hearing / 10;
     Debug.monsterStat(
-        this, "hear", volume, "noise ${game.hero.lastNoise}, volume $volume");
+      this,
+      "hear",
+      volume,
+      "noise ${game.hero.lastNoise}, volume $volume",
+    );
     return volume;
   }
 
@@ -306,8 +321,9 @@ class Monster extends Actor {
   }
 
   @override
-  List<Hit> onCreateMeleeHits(Actor? defender) =>
-      [rng.item(breed.attacks).createHit()];
+  List<Hit> onCreateMeleeHits(Actor? defender) => [
+    rng.item(breed.attacks).createHit(),
+  ];
 
   // TODO: Breed resistances.
   @override
@@ -320,8 +336,11 @@ class Monster extends Actor {
     var fear = 100.0 * damage / action.game.hero.maxHealth;
 
     _modifyFear(-fear);
-    Debug.monsterReason(this, "fear",
-        "hit for $damage/${action.game.hero.maxHealth} decrease by $fear");
+    Debug.monsterReason(
+      this,
+      "fear",
+      "hit for $damage/${action.game.hero.maxHealth} decrease by $fear",
+    );
 
     // Nearby monsters may witness it.
     _updateWitnesses(action.game, (witness) {
@@ -338,7 +357,10 @@ class Monster extends Actor {
 
     _modifyFear(-fear);
     Debug.monsterReason(
-        this, "fear", "witness $damage/$maxHealth decrease by $fear");
+      this,
+      "fear",
+      "witness $damage/$maxHealth decrease by $fear",
+    );
   }
 
   /// Taking damage increases fear.
@@ -354,7 +376,10 @@ class Monster extends Actor {
 
     _modifyFear(fear);
     Debug.monsterReason(
-        this, "fear", "hit for $damage/$maxHealth increases by $fear");
+      this,
+      "fear",
+      "hit for $damage/$maxHealth increases by $fear",
+    );
 
     // Nearby monsters may witness it.
     _updateWitnesses(action.game, (witness) {
@@ -387,14 +412,20 @@ class Monster extends Actor {
 
     _modifyFear(fear);
     Debug.monsterReason(
-        this, "fear", "witness $damage/$maxHealth increase by $fear");
+      this,
+      "fear",
+      "witness $damage/$maxHealth increase by $fear",
+    );
   }
 
   /// Called when this Actor has been killed by [attackNoun].
   @override
   void onDied(Action action, Noun attackNoun) {
-    var items =
-        action.game.stage.placeDrops(pos, breed.drop, depth: breed.depth);
+    var items = action.game.stage.placeDrops(
+      pos,
+      breed.drop,
+      depth: breed.depth,
+    );
     for (var item in items) {
       action.show("{1} drop[s] {2}.", this, item);
     }
@@ -464,7 +495,7 @@ class ChangeMonsterStateAction extends Action {
   final EventType? _event;
 
   ChangeMonsterStateAction(this._message, this._state, {EventType? event})
-      : _event = event;
+    : _event = event;
 
   @override
   ActionResult onPerform() {

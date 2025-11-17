@@ -7,8 +7,9 @@ import 'package:hauberk/src/engine.dart';
 
 final _content = createContent();
 
-final List<ItemType> _weapons =
-    _content.items.where((item) => item.attack != null).toList();
+final List<ItemType> _weapons = _content.items
+    .where((item) => item.attack != null)
+    .toList();
 
 /// For each strength value and dual-wield skill level, finds the weapon or
 /// pair of weapons with the highest average damage. This can be used to tune
@@ -37,9 +38,12 @@ void _buildTable() async {
     builder.trEnd();
 
     await html.window.animationFrame;
-    html.querySelector('table')!.setInnerHtml(
-        'Generating data for strength $strength...',
-        validator: validator);
+    html
+        .querySelector('table')!
+        .setInnerHtml(
+          'Generating data for strength $strength...',
+          validator: validator,
+        );
   }
   builder.tbodyEnd();
   builder.replaceContents('table');
@@ -49,8 +53,11 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
   var weaponDamage = <String, num>{};
   var weaponDesc = <String, String>{};
 
-  var save =
-      HeroSave.create("Blah", _content.races.first, _content.classes.first);
+  var save = HeroSave.create(
+    "Blah",
+    _content.races.first,
+    _content.classes.first,
+  );
   var game = Game(_content, 1, save);
 
   for (var i = 0; i < _weapons.length; i++) {
@@ -67,8 +74,11 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
       }
 
       var heftModifier = 1.0;
-      heftModifier =
-          DualWield().modifyHeft(game.hero, dualWieldLevel, heftModifier);
+      heftModifier = DualWield().modifyHeft(
+        game.hero,
+        dualWieldLevel,
+        heftModifier,
+      );
       var scaledHeft = (totalHeft * heftModifier).round();
 
       var strengthStat = Strength();

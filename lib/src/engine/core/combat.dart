@@ -44,8 +44,8 @@ class Attack {
   final Element element;
 
   Attack(this.noun, this.verb, this.damage, [int? range, Element? element])
-      : range = range ?? 0,
-        element = element ?? Element.none;
+    : range = range ?? 0,
+      element = element ?? Element.none;
 
   bool get isRanged => range > 0;
 
@@ -164,8 +164,9 @@ class Hit {
 
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
     // attacker ("the wolf bites").
-    var attackNoun =
-        canSeeAttacker ? (_attack.noun ?? attacker)! : Noun('something');
+    var attackNoun = canSeeAttacker
+        ? (_attack.noun ?? attacker)!
+        : Noun('something');
     var defenderNoun = canSeeDefender ? defender : Noun('something');
 
     // Don't sleep through being attacked.
@@ -226,8 +227,12 @@ class Hit {
       // was resisted?
     }
 
-    action.addEvent(EventType.hit,
-        actor: defender, element: element, other: damage);
+    action.addEvent(
+      EventType.hit,
+      actor: defender,
+      element: element,
+      other: damage,
+    );
     if (canSeeAttacker || canSeeDefender) {
       action.log('{1} ${_attack.verb} {2}.', attackNoun, defenderNoun);
     }

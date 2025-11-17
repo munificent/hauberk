@@ -120,9 +120,9 @@ class GameScreen extends Screen<Input> {
   }
 
   GameScreen(this._storage, this.game)
-      : _previousSave = game.hero.save.clone(),
-        _logPanel = LogPanel(game.log),
-        itemPanel = ItemPanel(game) {
+    : _previousSave = game.hero.save.clone(),
+      _logPanel = LogPanel(game.log),
+      itemPanel = ItemPanel(game) {
     _sidebarPanel = SidebarPanel(this);
     _stagePanel = StagePanel(this);
 
@@ -136,8 +136,12 @@ class GameScreen extends Screen<Input> {
   /// of when creating the [HeroSave] because gaining items can unlock skills,
   /// which adds to the log. The log can only be accessed once the [Hero] is in
   /// a [Game].
-  factory GameScreen.town(Storage storage, Content content, HeroSave save,
-      {bool newHero = false}) {
+  factory GameScreen.town(
+    Storage storage,
+    Content content,
+    HeroSave save, {
+    bool newHero = false,
+  }) {
     var game = Game(content, 0, save, width: 60, height: 34);
 
     // Give the hero their starting gear.
@@ -268,7 +272,8 @@ class GameScreen extends Screen<Input> {
         } else if (_lastSkill is ActionSkill) {
           var actionSkill = _lastSkill as ActionSkill;
           game.hero.setNextAction(
-              actionSkill.getAction(game, game.hero.skills.level(actionSkill)));
+            actionSkill.getAction(game, game.hero.skills.level(actionSkill)),
+          );
         } else {
           game.log.error("No skill selected.");
           dirty();
@@ -346,14 +351,17 @@ class GameScreen extends Screen<Input> {
       if (result is TargetSkill) {
         _openTargetDialog(result);
       } else if (result is DirectionSkill) {
-        ui.push(SkillDirectionDialog(this, (dir) {
-          _lastSkill = result;
-          _fireTowards(dir);
-        }));
+        ui.push(
+          SkillDirectionDialog(this, (dir) {
+            _lastSkill = result;
+            _fireTowards(dir);
+          }),
+        );
       } else if (result is ActionSkill) {
         _lastSkill = result;
         game.hero.setNextAction(
-            result.getAction(game, game.hero.skills.level(result)));
+          result.getAction(game, game.hero.skills.level(result)),
+        );
       }
     }
   }
@@ -405,8 +413,9 @@ class GameScreen extends Screen<Input> {
     logHeight = math.min(logHeight, 10);
 
     _logPanel.show(Rect(leftWidth, 0, centerWidth, logHeight));
-    stagePanel
-        .show(Rect(leftWidth, logHeight, centerWidth, size.y - logHeight));
+    stagePanel.show(
+      Rect(leftWidth, logHeight, centerWidth, size.y - logHeight),
+    );
   }
 
   @override
@@ -492,7 +501,8 @@ class GameScreen extends Screen<Input> {
 
   void _openTargetDialog(TargetSkill skill) {
     ui.push(
-        TargetDialog(this, skill.getRange(game), (_) => _fireAtTarget(skill)));
+      TargetDialog(this, skill.getRange(game), (_) => _fireAtTarget(skill)),
+    );
   }
 
   void _fireAtTarget(TargetSkill skill) {
@@ -506,8 +516,13 @@ class GameScreen extends Screen<Input> {
     // TODO: It's kind of annoying that we force the player to select a target
     // or direction for skills that spend focus/fury even when they won't be
     // able to perform it. Should do an early check first.
-    game.hero.setNextAction(skill.getTargetAction(
-        game, game.hero.skills.level(skill), currentTarget!));
+    game.hero.setNextAction(
+      skill.getTargetAction(
+        game,
+        game.hero.skills.level(skill),
+        currentTarget!,
+      ),
+    );
   }
 
   void _fireTowards(Direction dir) {
@@ -516,8 +531,13 @@ class GameScreen extends Screen<Input> {
 
     if (_lastSkill is DirectionSkill) {
       var directionSkill = _lastSkill as DirectionSkill;
-      game.hero.setNextAction(directionSkill.getDirectionAction(
-          game, game.hero.skills.level(directionSkill), dir));
+      game.hero.setNextAction(
+        directionSkill.getDirectionAction(
+          game,
+          game.hero.skills.level(directionSkill),
+          dir,
+        ),
+      );
     } else if (_lastSkill is TargetSkill) {
       var targetSkill = _lastSkill as TargetSkill;
       var pos = game.hero.pos + dir;
@@ -548,8 +568,13 @@ class GameScreen extends Screen<Input> {
       }
 
       if (currentTarget != null) {
-        game.hero.setNextAction(targetSkill.getTargetAction(
-            game, game.hero.skills.level(targetSkill), currentTarget!));
+        game.hero.setNextAction(
+          targetSkill.getTargetAction(
+            game,
+            game.hero.skills.level(targetSkill),
+            currentTarget!,
+          ),
+        );
       } else {
         var tile = game.stage[game.hero.pos + dir].type.name;
         game.log.error("There is a $tile in the way.");

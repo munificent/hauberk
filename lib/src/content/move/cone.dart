@@ -18,8 +18,13 @@ class ConeMove extends Move {
   @override
   bool shouldUse(Game game, Monster monster) {
     if (monster.isBlinded && rng.float(1.0) < monster.sightReliance) {
-      var chance =
-          lerpDouble(monster.sightReliance, 0.0, 1.0, 0.0, 70.0).toInt();
+      var chance = lerpDouble(
+        monster.sightReliance,
+        0.0,
+        1.0,
+        0.0,
+        70.0,
+      ).toInt();
       if (rng.percent(chance)) return false;
     }
 

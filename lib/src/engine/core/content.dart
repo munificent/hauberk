@@ -21,7 +21,11 @@ abstract class Content {
   // TODO: Temp. Figure out where dungeon generator lives.
   // TODO: Using a callback to set the hero position is kind of hokey.
   Iterable<String> buildStage(
-      Lore lore, Stage stage, int depth, Function(Vec) placeHero);
+    Lore lore,
+    Stage stage,
+    int depth,
+    Function(Vec) placeHero,
+  );
 
   AffixType? findAffix(String name);
 
@@ -49,8 +53,12 @@ abstract class Content {
 
   List<Recipe> get recipes;
 
-  HeroSave createHero(String name,
-      {Race? race, HeroClass? heroClass, bool permadeath});
+  HeroSave createHero(
+    String name, {
+    Race? race,
+    HeroClass? heroClass,
+    bool permadeath,
+  });
 
   List<Item> startingItems(HeroSave hero);
 

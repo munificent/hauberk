@@ -39,13 +39,15 @@ BreedBuilder? _builder;
 
 late FamilyBuilder _family;
 
-FamilyBuilder family(String character,
-    {double? frequency,
-    int? meander,
-    int? speed,
-    int? dodge,
-    int? tracking,
-    String? flags}) {
+FamilyBuilder family(
+  String character, {
+  double? frequency,
+  int? meander,
+  int? speed,
+  int? dodge,
+  int? tracking,
+  String? flags,
+}) {
   finishBreed();
 
   _family = FamilyBuilder(frequency, character);
@@ -64,26 +66,33 @@ void finishBreed() {
   var builder = _builder;
   if (builder == null) return;
 
-  var tags = [
-    ..._family._groups,
-    ...builder._groups,
-  ];
+  var tags = [..._family._groups, ...builder._groups];
 
   if (tags.isEmpty) tags.add("monster");
 
   var breed = builder.build();
 
-  Monsters.breeds.add(breed,
-      name: breed.name,
-      depth: breed.depth,
-      frequency: builder._frequency ?? _family._frequency,
-      tags: tags.join(" "));
+  Monsters.breeds.add(
+    breed,
+    name: breed.name,
+    depth: breed.depth,
+    frequency: builder._frequency ?? _family._frequency,
+    tags: tags.join(" "),
+  );
   _builder = null;
 }
 
 // TODO: Move more named params into builder methods?
-BreedBuilder breed(String name, int depth, Color color, int health,
-    {double? frequency, int speed = 0, int? dodge, int? meander}) {
+BreedBuilder breed(
+  String name,
+  int depth,
+  Color color,
+  int health, {
+  double? frequency,
+  int speed = 0,
+  int? dodge,
+  int? meander,
+}) {
   finishBreed();
 
   var glyph = Glyph(_family._character, color);
@@ -221,9 +230,13 @@ class BreedBuilder extends _BaseBuilder {
   Pronoun? _pronoun;
   String? _description;
 
-  BreedBuilder(this._name, this._depth, double? frequency, this._appearance,
-      this._health)
-      : super(frequency);
+  BreedBuilder(
+    this._name,
+    this._depth,
+    double? frequency,
+    this._appearance,
+    this._health,
+  ) : super(frequency);
 
   void minion(String name, [int? minOrMax, int? max]) {
     Spawn spawn;
@@ -247,27 +260,47 @@ class BreedBuilder extends _BaseBuilder {
   }
 
   /// Drops [name], which can be either an item type or tag.
-  void drop(String name,
-      {int percent = 100, int count = 1, int depthOffset = 0}) {
+  void drop(
+    String name, {
+    int percent = 100,
+    int count = 1,
+    int depthOffset = 0,
+  }) {
     var drop = percentDrop(percent, name, depth: _depth + depthOffset);
     if (count > 1) drop = repeatDrop(count, drop);
     _drops.add(drop);
   }
 
   /// Drops [name], which can be either an item type or tag.
-  void dropGood(String name,
-      {int percent = 100, int count = 1, int depthOffset = 0}) {
-    var drop = percentDrop(percent, name,
-        depth: _depth + depthOffset, quality: ItemQuality.good);
+  void dropGood(
+    String name, {
+    int percent = 100,
+    int count = 1,
+    int depthOffset = 0,
+  }) {
+    var drop = percentDrop(
+      percent,
+      name,
+      depth: _depth + depthOffset,
+      quality: ItemQuality.good,
+    );
     if (count > 1) drop = repeatDrop(count, drop);
     _drops.add(drop);
   }
 
   /// Drops [name], which can be either an item type or tag.
-  void dropGreat(String name,
-      {int percent = 100, int count = 1, int depthOffset = 0}) {
-    var drop = percentDrop(percent, name,
-        depth: _depth + depthOffset, quality: ItemQuality.great);
+  void dropGreat(
+    String name, {
+    int percent = 100,
+    int count = 1,
+    int depthOffset = 0,
+  }) {
+    var drop = percentDrop(
+      percent,
+      name,
+      depth: _depth + depthOffset,
+      quality: ItemQuality.great,
+    );
     if (count > 1) drop = repeatDrop(count, drop);
     _drops.add(drop);
   }
@@ -284,38 +317,79 @@ class BreedBuilder extends _BaseBuilder {
   void heal({num rate = 5, required int amount}) =>
       _addMove(HealMove(rate, amount));
 
-  void arrow({num rate = 5, required int damage}) =>
-      _bolt("the arrow", "hits", Element.none,
-          rate: rate, damage: damage, range: 8);
+  void arrow({num rate = 5, required int damage}) => _bolt(
+    "the arrow",
+    "hits",
+    Element.none,
+    rate: rate,
+    damage: damage,
+    range: 8,
+  );
 
-  void whip({num rate = 5, required int damage, int range = 2}) =>
-      _bolt(null, "whips", Element.none,
-          rate: rate, damage: damage, range: range);
+  void whip({num rate = 5, required int damage, int range = 2}) => _bolt(
+    null,
+    "whips",
+    Element.none,
+    rate: rate,
+    damage: damage,
+    range: range,
+  );
 
-  void bolt(Element element,
-      {required num rate, required int damage, required int range}) {
-    _bolt(_elementText[element]![0], _elementText[element]![1], element,
-        rate: rate, damage: damage, range: range);
+  void bolt(
+    Element element, {
+    required num rate,
+    required int damage,
+    required int range,
+  }) {
+    _bolt(
+      _elementText[element]![0],
+      _elementText[element]![1],
+      element,
+      rate: rate,
+      damage: damage,
+      range: range,
+    );
   }
 
   void windBolt({num rate = 5, required int damage}) =>
       bolt(Elements.air, rate: rate, damage: damage, range: 8);
 
-  void stoneBolt({num rate = 5, required int damage}) =>
-      _bolt("the stone", "hits", Elements.earth,
-          rate: rate, damage: damage, range: 8);
+  void stoneBolt({num rate = 5, required int damage}) => _bolt(
+    "the stone",
+    "hits",
+    Elements.earth,
+    rate: rate,
+    damage: damage,
+    range: 8,
+  );
 
-  void waterBolt({num rate = 5, required int damage}) =>
-      _bolt("the jet", "splashes", Elements.water,
-          rate: rate, damage: damage, range: 8);
+  void waterBolt({num rate = 5, required int damage}) => _bolt(
+    "the jet",
+    "splashes",
+    Elements.water,
+    rate: rate,
+    damage: damage,
+    range: 8,
+  );
 
   void sparkBolt({required num rate, required int damage, int range = 6}) =>
-      _bolt("the spark", "zaps", Elements.lightning,
-          rate: rate, damage: damage, range: range);
+      _bolt(
+        "the spark",
+        "zaps",
+        Elements.lightning,
+        rate: rate,
+        damage: damage,
+        range: range,
+      );
 
-  void iceBolt({num rate = 5, required int damage, int range = 8}) =>
-      _bolt("the ice", "freezes", Elements.cold,
-          rate: rate, damage: damage, range: range);
+  void iceBolt({num rate = 5, required int damage, int range = 8}) => _bolt(
+    "the ice",
+    "freezes",
+    Elements.cold,
+    rate: rate,
+    damage: damage,
+    range: range,
+  );
 
   void fireBolt({num rate = 5, required int damage}) =>
       bolt(Elements.fire, rate: rate, damage: damage, range: 8);
@@ -336,8 +410,14 @@ class BreedBuilder extends _BaseBuilder {
       bolt(Elements.poison, rate: rate, damage: damage, range: 8);
 
   void cone(Element element, {num? rate, required int damage, int? range}) {
-    _cone(_elementText[element]![0], _elementText[element]![1], element,
-        rate: rate, damage: damage, range: range);
+    _cone(
+      _elementText[element]![0],
+      _elementText[element]![1],
+      element,
+      rate: rate,
+      damage: damage,
+      range: range,
+    );
   }
 
   void windCone({required num rate, required int damage, int? range}) =>
@@ -379,14 +459,26 @@ class BreedBuilder extends _BaseBuilder {
   void amputate(String body, String part, String message) =>
       _addMove(AmputateMove(BreedRef(body), BreedRef(part), message));
 
-  void _bolt(String? noun, String verb, Element element,
-      {required num rate, required int damage, required int range}) {
+  void _bolt(
+    String? noun,
+    String verb,
+    Element element, {
+    required num rate,
+    required int damage,
+    required int range,
+  }) {
     var nounObject = noun != null ? Noun(noun) : null;
     _addMove(BoltMove(rate, Attack(nounObject, verb, damage, range, element)));
   }
 
-  void _cone(String noun, String verb, Element element,
-      {num? rate, required int damage, int? range}) {
+  void _cone(
+    String noun,
+    String verb,
+    Element element, {
+    num? rate,
+    required int damage,
+    int? range,
+  }) {
     rate ??= 5;
     range ??= 10;
 
@@ -410,30 +502,31 @@ class BreedBuilder extends _BaseBuilder {
     }
 
     var breed = Breed(
-        _name,
-        _pronoun ?? Pronoun.it,
-        hasProperName: _hasProperName,
-        _appearance,
-        _attacks,
-        _moves,
-        dropAllOf(_drops),
-        _location ?? _family._location ?? SpawnLocation.anywhere,
-        _family._motility | _motility,
-        depth: _depth,
-        maxHealth: _health,
-        tracking: (_tracking ?? 0) + (_family._tracking ?? 10),
-        vision: _vision ?? _family._vision,
-        hearing: _hearing ?? _family._hearing,
-        meander: _meander ?? _family._meander ?? 0,
-        speed: (_speed ?? 0) + (_family._speed ?? 0),
-        dodge: dodge,
-        emanationLevel: _family._emanationLevel ?? _emanationLevel,
-        countMin: _countMin ?? _family._countMin,
-        countMax: _countMax ?? _family._countMax,
-        minions: minions,
-        stain: _stain ?? _family._stain,
-        flags: BreedFlags.fromSet(flags),
-        description: _description);
+      _name,
+      _pronoun ?? Pronoun.it,
+      hasProperName: _hasProperName,
+      _appearance,
+      _attacks,
+      _moves,
+      dropAllOf(_drops),
+      _location ?? _family._location ?? SpawnLocation.anywhere,
+      _family._motility | _motility,
+      depth: _depth,
+      maxHealth: _health,
+      tracking: (_tracking ?? 0) + (_family._tracking ?? 10),
+      vision: _vision ?? _family._vision,
+      hearing: _hearing ?? _family._hearing,
+      meander: _meander ?? _family._meander ?? 0,
+      speed: (_speed ?? 0) + (_family._speed ?? 0),
+      dodge: dodge,
+      emanationLevel: _family._emanationLevel ?? _emanationLevel,
+      countMin: _countMin ?? _family._countMin,
+      countMax: _countMax ?? _family._countMax,
+      minions: minions,
+      stain: _stain ?? _family._stain,
+      flags: BreedFlags.fromSet(flags),
+      description: _description,
+    );
 
     breed.defenses.addAll(_family._defenses);
     breed.defenses.addAll(_defenses);

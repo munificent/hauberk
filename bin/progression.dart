@@ -5,8 +5,11 @@ import 'package:hauberk/src/engine.dart';
 /// generated dungeon going down.
 void main() {
   var content = createContent();
-  var save = content.createHero("Fred",
-      race: content.races[4], heroClass: content.classes[1]);
+  var save = content.createHero(
+    "Fred",
+    race: content.races[4],
+    heroClass: content.classes[1],
+  );
   for (var level = 1; level <= Option.maxDepth; level++) {
     var game = Game(content, level, save);
     for (var _ in game.generate()) {}
@@ -22,7 +25,9 @@ void main() {
     }
 
     var bar = "*" * hero.level;
-    print("${level.toString().padLeft(3)} "
-        "${hero.level.toString().padLeft(3)} $bar");
+    print(
+      "${level.toString().padLeft(3)} "
+      "${hero.level.toString().padLeft(3)} $bar",
+    );
   }
 }

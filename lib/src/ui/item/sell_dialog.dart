@@ -7,8 +7,10 @@ class SellDialog extends ItemDialog {
   final Inventory _shop;
 
   @override
-  List<ItemLocation> get allowedLocations =>
-      const [ItemLocation.inventory, ItemLocation.equipment];
+  List<ItemLocation> get allowedLocations => const [
+    ItemLocation.inventory,
+    ItemLocation.equipment,
+  ];
 
   @override
   bool get needsCount => true;

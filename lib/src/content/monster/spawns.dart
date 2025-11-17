@@ -35,8 +35,11 @@ class _TagSpawn implements Spawn {
   @override
   void spawnBreed(int depth, AddMonster addMonster) {
     for (var tries = 0; tries < 10; tries++) {
-      var breed =
-          Monsters.breeds.tryChoose(depth, tag: _tag, includeParents: false);
+      var breed = Monsters.breeds.tryChoose(
+        depth,
+        tag: _tag,
+        includeParents: false,
+      );
       if (breed == null) continue;
       if (breed.flags.unique) continue;
 

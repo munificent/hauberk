@@ -23,7 +23,7 @@ abstract class HeroInfoDialog extends Screen<Input> {
         HeroEquipmentDialog(content, hero),
         HeroResistancesDialog(content, hero),
         HeroMonsterLoreDialog(content, hero),
-        HeroItemLoreDialog(content, hero)
+        HeroItemLoreDialog(content, hero),
         // TODO: Affixes.
       ]);
     }
@@ -79,7 +79,9 @@ abstract class HeroInfoDialog extends Screen<Input> {
   }
 
   void drawEquipmentTable(
-      Terminal terminal, void Function(Item? item, int y) callback) {
+    Terminal terminal,
+    void Function(Item? item, int y) callback,
+  ) {
     terminal.writeAt(2, 1, "Equipment", gold);
 
     var y = 3;
@@ -89,7 +91,11 @@ abstract class HeroInfoDialog extends Screen<Input> {
 
       if (item == null) {
         terminal.writeAt(
-            2, y, "(${hero.equipment.slotTypes[i]})", darkCoolGray);
+          2,
+          y,
+          "(${hero.equipment.slotTypes[i]})",
+          darkCoolGray,
+        );
         y += 2;
         continue;
       }

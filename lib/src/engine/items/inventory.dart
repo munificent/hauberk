@@ -9,14 +9,20 @@ import 'item.dart';
 /// the [Hero] in their [Inventory] or [Equipment]. This enum describes which
 /// of those is the case.
 class ItemLocation {
-  static const onGround =
-      ItemLocation._("On Ground", "There is nothing on the ground.");
-  static const inventory =
-      ItemLocation._("Inventory", "Your backpack is empty.");
+  static const onGround = ItemLocation._(
+    "On Ground",
+    "There is nothing on the ground.",
+  );
+  static const inventory = ItemLocation._(
+    "Inventory",
+    "Your backpack is empty.",
+  );
   static const equipment = ItemLocation._("Equipment", "<not used>");
   static const home = ItemLocation._("Home", "There is nothing in your home.");
-  static const crucible =
-      ItemLocation._("Crucible", "The crucible is waiting.");
+  static const crucible = ItemLocation._(
+    "Crucible",
+    "The crucible is waiting.",
+  );
 
   final String name;
   final String emptyDescription;
@@ -83,7 +89,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   Item operator [](int index) => _items[index];
 
   Inventory(this.location, [this._capacity, Iterable<Item>? items])
-      : _items = [...?items];
+    : _items = [...?items];
 
   /// Creates a new copy of this Inventory. This is done when the [Hero] enters
   /// a stage so that any inventory changes that happen in the stage are
@@ -115,7 +121,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   @override
   bool canAdd(Item item) {
     // If there's an empty slot, can always add it.
-    if (_capacity == null || _items.length < _capacity!) return true;
+    if (_capacity == null || _items.length < _capacity) return true;
 
     // See if we can merge it with other stacks.
     var remaining = item.count;
@@ -146,7 +152,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     }
 
     // See if there is room to start a new stack with the rest.
-    if (_capacity != null && _items.length >= _capacity!) {
+    if (_capacity != null && _items.length >= _capacity) {
       // There isn't room to pick up everything.
       return AddItemResult(adding - item.count, item.count);
     }

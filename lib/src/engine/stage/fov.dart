@@ -64,7 +64,7 @@ class Fov {
 
     // Sweep through the rows ('rows' may be vertical or horizontal based on
     // the incrementors). Start at row 1 to skip the center position.
-    for (var row = 1;; row++) {
+    for (var row = 1; ; row++) {
       var pos = start + (rowInc * row);
 
       // If we've traversed out of bounds, bail.
@@ -161,8 +161,10 @@ class Fov {
     if (overlapsNext) {
       if (overlapsPrev) {
         // Overlaps both, so unify one and delete the other.
-        _shadows[index - 1].end =
-            math.max(_shadows[index - 1].end, _shadows[index].end);
+        _shadows[index - 1].end = math.max(
+          _shadows[index - 1].end,
+          _shadows[index].end,
+        );
         _shadows.removeAt(index);
       } else {
         // Just overlaps the next shadow, so unify it with that.

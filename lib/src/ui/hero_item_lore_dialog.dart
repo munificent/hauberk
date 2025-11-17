@@ -23,8 +23,10 @@ class HeroItemLoreDialog extends HeroInfoDialog {
   String get name => "Item Lore";
 
   @override
-  Map<String, String> get extraHelp =>
-      {"↕": "Scroll", "S": _sort.next.helpText};
+  Map<String, String> get extraHelp => {
+    "↕": "Scroll",
+    "S": _sort.next.helpText,
+  };
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -67,11 +69,12 @@ class HeroItemLoreDialog extends HeroInfoDialog {
 
     void writeLine(int y, Color color) {
       terminal.writeAt(
-          2,
-          y,
-          "──────────────────────────────────────────────────── ───── ─────── "
-          "───── ─────",
-          color);
+        2,
+        y,
+        "──────────────────────────────────────────────────── ───── ─────── "
+        "───── ─────",
+        color,
+      );
     }
 
     terminal.writeAt(2, 1, "Items", gold);
@@ -114,7 +117,11 @@ class HeroItemLoreDialog extends HeroInfoDialog {
         }
       } else {
         terminal.writeAt(
-            2, y, "(undiscovered ${_scroll + i + 1})", UIHue.disabled);
+          2,
+          y,
+          "(undiscovered ${_scroll + i + 1})",
+          UIHue.disabled,
+        );
       }
     }
 
@@ -190,8 +197,8 @@ class HeroItemLoreDialog extends HeroInfoDialog {
       _selection = _items.indexOf(selectedItem);
 
       // TODO
-//      // It may not be found since the unique page doesn't show all breeds.
-//      if (_selection == -1) _selection = 0;
+      //      // It may not be found since the unique page doesn't show all breeds.
+      //      if (_selection == -1) _selection = 0;
     }
     _select(0);
   }

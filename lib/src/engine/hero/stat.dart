@@ -43,13 +43,7 @@ class Stat {
   static const intellect = Stat("Intellect");
   static const will = Stat("Will");
 
-  static const all = [
-    strength,
-    agility,
-    fortitude,
-    intellect,
-    will,
-  ];
+  static const all = [strength, agility, fortitude, intellect, will];
 
   final String name;
 
@@ -75,11 +69,13 @@ abstract class StatBase extends Property<int> {
     update(newValue, (previous) {
       var gain = newValue - previous;
       if (gain > 0) {
-        hero.log
-            .gain("You feel $_gainAdjective! Your $name increased by $gain.");
+        hero.log.gain(
+          "You feel $_gainAdjective! Your $name increased by $gain.",
+        );
       } else {
         hero.log.error(
-            "You feel $_loseAdjective! Your $name decreased by ${-gain}.");
+          "You feel $_loseAdjective! Your $name decreased by ${-gain}.",
+        );
       }
     });
   }

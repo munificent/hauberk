@@ -10,8 +10,11 @@ void main() {
 
 class Simulator {
   static final content = createContent();
-  final save = content.createHero("Fred",
-      race: content.races[4], heroClass: content.classes[1]);
+  final save = content.createHero(
+    "Fred",
+    race: content.races[4],
+    heroClass: content.classes[1],
+  );
 
   late Game game;
   late int depth;
@@ -32,8 +35,10 @@ class Simulator {
 
     for (var breed in breeds) {
       var kill = kills[breed]!;
-      print("${breed.name.padRight(40)} ${kill.kills.toString().padLeft(5)} "
-          "${(kill.hits / kill.kills).toStringAsFixed(1).padLeft(9)}");
+      print(
+        "${breed.name.padRight(40)} ${kill.kills.toString().padLeft(5)} "
+        "${(kill.hits / kill.kills).toStringAsFixed(1).padLeft(9)}",
+      );
     }
   }
 
@@ -43,10 +48,7 @@ class Simulator {
 
     print("--- Depth $depth (hero level ${hero.level}) ---");
 
-    var events = <Object>[
-      ...game.stage.actors,
-      ...game.stage.allItems,
-    ];
+    var events = <Object>[...game.stage.actors, ...game.stage.allItems];
     rng.shuffle(events);
 
     for (var event in events) {
@@ -64,7 +66,7 @@ class Simulator {
     if (item.type.weaponType != null) {
       _getWeapon(item);
     } else {
-//      _log(item);
+      //      _log(item);
     }
 
     // TODO: Equip armor.
@@ -79,12 +81,12 @@ class Simulator {
     var weapon = weapons.isNotEmpty ? weapons.first : null;
 
     if (weapon != null && weapon.price >= item.price) {
-//      _log("$item is not better than ${hero.equipment.weapon}");
+      //      _log("$item is not better than ${hero.equipment.weapon}");
       return;
     }
 
     if (item.heft > hero.strength.value) {
-//      _log("$item is too heavy (${item.heft} heft, ${hero.strength.value} strength)");
+      //      _log("$item is too heavy (${item.heft} heft, ${hero.strength.value} strength)");
       return;
     }
 
@@ -95,7 +97,7 @@ class Simulator {
   }
 
   void _fightMonster(Monster monster) {
-//    _log(monster);
+    //    _log(monster);
     hero.seeMonster(monster);
 
     var kill = kills.putIfAbsent(monster.breed, () => Kill());

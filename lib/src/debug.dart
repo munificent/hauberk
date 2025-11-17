@@ -49,8 +49,12 @@ class Debug {
   ///
   /// The value should range from 0.0 to 1.0. If there is a descriptive [reason]
   /// for the value, that can be provided too.
-  static void monsterStat(Monster monster, String stat, num value,
-      [String? reason]) {
+  static void monsterStat(
+    Monster monster,
+    String stat,
+    num value, [
+    String? reason,
+  ]) {
     if (!enabled) return;
 
     var monsterLog = _monsters.putIfAbsent(monster, () => _MonsterLog(monster));
@@ -109,8 +113,10 @@ class _MonsterLog {
 
     var statNames = stats.keys.toList();
     statNames.sort();
-    var length =
-        statNames.fold<int>(0, (length, name) => math.max(length, name.length));
+    var length = statNames.fold<int>(
+      0,
+      (length, name) => math.max(length, name.length),
+    );
 
     var barChars = " ▁▂▃▄▅▆▇█";
     for (var name in statNames) {

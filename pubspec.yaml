@@ -1,6 +1,6 @@
 name: hauberk
 environment:
-  sdk: '^3.0.0'
+  sdk: '^3.8.0'
 dependencies:
   malison: '^0.13.2'
   markdown: any

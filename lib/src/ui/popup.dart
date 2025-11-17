@@ -43,7 +43,9 @@ abstract class Popup extends Screen<Input> {
     var lineCount = 0;
     if (messageLines != null) {
       widestLine = messageLines.fold<int>(
-          0, (width, line) => math.max(width, line.length));
+        0,
+        (width, line) => math.max(width, line.length),
+      );
       lineCount = messageLines.length;
     }
 
@@ -56,7 +58,13 @@ abstract class Popup extends Screen<Input> {
     var top = (terminal.height - popupHeight) ~/ 3;
     var left = (terminal.width - popupWidth) ~/ 2;
     Draw.doubleBox(
-        terminal, left - 1, top - 1, popupWidth + 2, popupHeight + 2, gold);
+      terminal,
+      left - 1,
+      top - 1,
+      popupWidth + 2,
+      popupHeight + 2,
+      gold,
+    );
 
     terminal = terminal.rect(left, top, popupWidth, popupHeight);
     terminal.clear();
@@ -64,7 +72,9 @@ abstract class Popup extends Screen<Input> {
     // Draw the message if there is one.
     if (messageLines != null) {
       var widest = messageLines.fold<int>(
-          0, (width, line) => math.max(width, line.length));
+        0,
+        (width, line) => math.max(width, line.length),
+      );
       var x = (terminal.width - widest) ~/ 2;
       var y = 1;
 

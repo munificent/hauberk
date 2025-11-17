@@ -13,15 +13,17 @@ class BoltAction extends LosAction {
   int get range => _range ?? _hit.range;
 
   BoltAction(super.target, this._hit, {bool canMiss = false, int? range})
-      : _canMiss = canMiss,
-        _range = range;
+    : _canMiss = canMiss,
+      _range = range;
 
   @override
   void onStep(Vec previous, Vec pos) {
-    addEvent(EventType.bolt,
-        element: _hit.element,
-        pos: pos,
-        dir: (pos - previous).nearestDirection);
+    addEvent(
+      EventType.bolt,
+      element: _hit.element,
+      pos: pos,
+      dir: (pos - previous).nearestDirection,
+    );
   }
 
   @override

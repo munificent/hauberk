@@ -68,8 +68,12 @@ class LoadingDialog extends Screen<Input> {
     var width = 30;
     var height = 7;
 
-    terminal = terminal.rect((terminal.width - width) ~/ 2,
-        (terminal.height - height) ~/ 2, width, height);
+    terminal = terminal.rect(
+      (terminal.width - width) ~/ 2,
+      (terminal.height - height) ~/ 2,
+      width,
+      height,
+    );
 
     Draw.doubleBox(terminal, 0, 0, terminal.width, terminal.height, gold);
 

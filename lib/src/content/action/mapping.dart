@@ -16,7 +16,7 @@ class MappingAction extends Action {
   bool get isImmediate => false;
 
   MappingAction(this._maxDistance, {bool? illuminate})
-      : _illuminate = illuminate ?? false;
+    : _illuminate = illuminate ?? false;
 
   @override
   ActionResult onPerform() {
@@ -78,7 +78,7 @@ class MappingFlow extends Flow {
   final int _maxDistance;
 
   MappingFlow(super.stage, super.start, this._maxDistance)
-      : super(maxDistance: _maxDistance);
+    : super(maxDistance: _maxDistance);
 
   /// The cost to enter [tile] at [pos] or `null` if the tile cannot be entered.
   @override

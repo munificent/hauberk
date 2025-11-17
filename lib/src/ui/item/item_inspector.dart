@@ -21,7 +21,7 @@ class ItemInspector {
   late final _Section _descriptionSection;
 
   ItemInspector(HeroSave hero, this._item, {bool wide = false})
-      : _descriptionSection = _description(_item, wide ? 78 : width) {
+    : _descriptionSection = _description(_item, wide ? 78 : width) {
     // Build the sections ahead of time so that we can determine where
     // everything will be positioned before we start drawing.
 
@@ -39,7 +39,9 @@ class ItemInspector {
 
     if (_item.canUse) {
       _useSection = _TextSection(
-          "Use", Log.wordWrap(wide ? 78 : width, _item.type.use!.description));
+        "Use",
+        Log.wordWrap(wide ? 78 : width, _item.type.use!.description),
+      );
     }
 
     // TODO: Max stack size?
@@ -66,8 +68,15 @@ class ItemInspector {
     var top = (itemY - 1).clamp(0, terminal.height - 4 - height);
     terminal = terminal.rect(x, top, width, height);
 
-    Draw.glyphFrame(terminal, 0, 0, terminal.width, terminal.height,
-        _item.appearance as Glyph, _item.nounText);
+    Draw.glyphFrame(
+      terminal,
+      0,
+      0,
+      terminal.width,
+      terminal.height,
+      _item.appearance as Glyph,
+      _item.nounText,
+    );
 
     // Draw the sections.
     var y = 3;
@@ -79,8 +88,15 @@ class ItemInspector {
   /// Draw the inspector at the bottom of the terminal full width for use in
   /// the lore screens.
   void drawWide(Terminal terminal) {
-    Draw.glyphFrame(terminal, 0, 0, terminal.width, terminal.height,
-        _item.appearance as Glyph, _item.nounText);
+    Draw.glyphFrame(
+      terminal,
+      0,
+      0,
+      terminal.width,
+      terminal.height,
+      _item.appearance as Glyph,
+      _item.nounText,
+    );
 
     // Attack and defense in a column on the left. (We put them in the same
     // column because most items don't have both.)
@@ -94,8 +110,12 @@ class ItemInspector {
     }
 
     // Resistances in a column on the right.
-    var rightTerminal =
-        terminal.rect(40, 0, terminal.width - 40, terminal.height);
+    var rightTerminal = terminal.rect(
+      40,
+      0,
+      terminal.width - 40,
+      terminal.height,
+    );
     var rightY = 3;
 
     if (_resistancesSection case var section?) {
@@ -156,12 +176,15 @@ class ItemInspector {
         element = " ${toss.attack.element.name}";
       }
 
-      sentences.add("It can be thrown for ${toss.attack.damage}$element"
-          " damage up to range ${toss.attack.range}.");
+      sentences.add(
+        "It can be thrown for ${toss.attack.damage}$element"
+        " damage up to range ${toss.attack.range}.",
+      );
 
       if (toss.breakage != 0) {
-        sentences
-            .add("It has a ${toss.breakage}% chance of breaking when thrown.");
+        sentences.add(
+          "It has a ${toss.breakage}% chance of breaking when thrown.",
+        );
       }
 
       // TODO: Describe toss use.
@@ -176,7 +199,9 @@ class ItemInspector {
     }
 
     return _TextSection(
-        "Description", Log.wordWrap(width - 2, sentences.join(" ")));
+      "Description",
+      Log.wordWrap(width - 2, sentences.join(" ")),
+    );
   }
 }
 
@@ -261,7 +286,11 @@ class _AttackSection extends _Section {
     _writeLabel(terminal, y, "Damage");
     if (_item.element != Element.none) {
       terminal.writeAt(
-          9, y, _item.element.abbreviation, elementColor(_item.element));
+        9,
+        y,
+        _item.element.abbreviation,
+        elementColor(_item.element),
+      );
     }
 
     terminal.writeAt(12, y, _item.attack!.damage.toString(), UIHue.text);
@@ -349,8 +378,12 @@ class _ResistancesSection extends _Section {
       if (element == Element.none) continue;
       var resistance = _item.resistance(element);
       _writeBonus(terminal, x - 1, y, resistance);
-      terminal.writeAt(x, y + 1, element.abbreviation,
-          resistance == 0 ? UIHue.disabled : elementColor(element));
+      terminal.writeAt(
+        x,
+        y + 1,
+        element.abbreviation,
+        resistance == 0 ? UIHue.disabled : elementColor(element),
+      );
       x += 3;
     }
   }

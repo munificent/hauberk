@@ -78,19 +78,37 @@ class WizardDialog extends Screen<Input> {
       width = math.max(width, name.length);
     }
 
-    Draw.frame(terminal, 0, 0, 40, _menuItems.length + 2,
-        color: _isActive ? UIHue.selection : UIHue.disabled,
-        label: "Wizard Menu",
-        labelSelected: _isActive);
+    Draw.frame(
+      terminal,
+      0,
+      0,
+      40,
+      _menuItems.length + 2,
+      color: _isActive ? UIHue.selection : UIHue.disabled,
+      label: "Wizard Menu",
+      labelSelected: _isActive,
+    );
 
     var i = 0;
     for (var (key, _, name, _) in _menuItems) {
       terminal.writeAt(
-          1, i + 1, key, _isActive ? UIHue.selection : UIHue.disabled);
+        1,
+        i + 1,
+        key,
+        _isActive ? UIHue.selection : UIHue.disabled,
+      );
       terminal.writeAt(
-          2, i + 1, ")", _isActive ? UIHue.secondary : UIHue.disabled);
+        2,
+        i + 1,
+        ")",
+        _isActive ? UIHue.secondary : UIHue.disabled,
+      );
       terminal.writeAt(
-          4, i + 1, name, _isActive ? UIHue.primary : UIHue.disabled);
+        4,
+        i + 1,
+        name,
+        _isActive ? UIHue.primary : UIHue.disabled,
+      );
       i++;
     }
 
@@ -159,8 +177,11 @@ class WizardDialog extends Screen<Input> {
   void _killAllMonsters() {
     for (var monster in _game.stage.actors.toList()) {
       if (monster is! Monster) continue;
-      _game.stage.placeDrops(monster.pos, monster.breed.drop,
-          depth: monster.breed.depth);
+      _game.stage.placeDrops(
+        monster.pos,
+        monster.breed.drop,
+        depth: monster.breed.depth,
+      );
       _game.stage.removeActor(monster);
     }
 
@@ -254,12 +275,24 @@ abstract class _SearchDialog<T> extends Screen<Input> {
     var dialog = terminal.rect(40, 0, 43, 38);
 
     // Draw a box for the contents.
-    Draw.frame(dialog, 0, 0, dialog.width, dialog.height,
-        label: _question, color: UIHue.selection);
+    Draw.frame(
+      dialog,
+      0,
+      0,
+      dialog.width,
+      dialog.height,
+      label: _question,
+      color: UIHue.selection,
+    );
 
     dialog.writeAt(_question.length + 4, 0, _pattern, UIHue.selection);
-    dialog.writeAt(_question.length + 4 + _pattern.length, 0, " ",
-        UIHue.selection, UIHue.selection);
+    dialog.writeAt(
+      _question.length + 4 + _pattern.length,
+      0,
+      " ",
+      UIHue.selection,
+      UIHue.selection,
+    );
 
     var n = 0;
     for (var item in _matchedItems) {
@@ -284,13 +317,18 @@ abstract class _SearchDialog<T> extends Screen<Input> {
       if (n >= 36) break;
     }
 
-    Draw.helpKeys(
-        terminal, {"0-9": "Select", "Enter": "Select all", "`": "Exit"});
+    Draw.helpKeys(terminal, {
+      "0-9": "Select",
+      "Enter": "Select all",
+      "`": "Exit",
+    });
   }
 
   List<T> get _matchedItems => _allItems
-      .where((item) =>
-          _itemName(item).toLowerCase().contains(_pattern.toLowerCase()))
+      .where(
+        (item) =>
+            _itemName(item).toLowerCase().contains(_pattern.toLowerCase()),
+      )
       .toList();
 
   String get _question;
@@ -377,10 +415,14 @@ class _WizardTrainDialog extends _SearchDialog<Discipline> {
   void _selectItem(Discipline discipline) {
     var level = _game.hero.skills.level(discipline);
     if (level + 1 < discipline.maxLevel) {
-      var training =
-          discipline.trainingNeeded(_game.hero.save.heroClass, level + 1)!;
+      var training = discipline.trainingNeeded(
+        _game.hero.save.heroClass,
+        level + 1,
+      )!;
       _game.hero.skills.earnPoints(
-          discipline, training - _game.hero.skills.points(discipline));
+        discipline,
+        training - _game.hero.skills.points(discipline),
+      );
       _game.hero.refreshSkill(discipline);
     } else {
       _game.log.cheat("Already at max level.");

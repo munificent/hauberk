@@ -160,32 +160,34 @@ abstract class TownScreen extends Screen<Input> {
     // its own help.
     if (_isActive) {
       if (_shiftDown) {
-        Draw.helpKeys(
-            terminal,
-            {
-              "A-Z": "Inspect item",
-              if (_inspected != null) "`": "Hide inspector"
-            },
-            "Inspect which item?");
+        Draw.helpKeys(terminal, {
+          "A-Z": "Inspect item",
+          if (_inspected != null) "`": "Hide inspector",
+        }, "Inspect which item?");
       } else {
         Draw.helpKeys(terminal, _helpKeys, _headerText);
       }
     }
 
-    renderItems(terminal, _items,
-        left: _gameScreen.stagePanel.bounds.x,
-        top: _gameScreen.stagePanel.bounds.y,
-        width: math.min(
-            preferredItemListWidth, _gameScreen.stagePanel.bounds.width),
-        itemSlotCount: _items.length,
-        save: _gameScreen.game.hero.save,
-        capitalize: _shiftDown,
-        showPrices: _showPrices,
-        inspectedItem: _isActive ? _inspected : null,
-        inspectorOnRight: true,
-        canSelectAny: _shiftDown || _canSelectAny,
-        canSelect: _canSelect,
-        getPrice: _itemPrice);
+    renderItems(
+      terminal,
+      _items,
+      left: _gameScreen.stagePanel.bounds.x,
+      top: _gameScreen.stagePanel.bounds.y,
+      width: math.min(
+        preferredItemListWidth,
+        _gameScreen.stagePanel.bounds.width,
+      ),
+      itemSlotCount: _items.length,
+      save: _gameScreen.game.hero.save,
+      capitalize: _shiftDown,
+      showPrices: _showPrices,
+      inspectedItem: _isActive ? _inspected : null,
+      inspectorOnRight: true,
+      canSelectAny: _shiftDown || _canSelectAny,
+      canSelect: _canSelect,
+      getPrice: _itemPrice,
+    );
 
     if (_error != null) {
       terminal.writeAt(0, 32, _error!, red);
@@ -245,12 +247,12 @@ class _HomeScreen extends TownScreen {
 
   @override
   Map<String, String> get _helpKeys => {
-        "G": "Get item",
-        "P": "Put item",
-        "Shift": "Inspect item",
-        "Tab": "Use crucible",
-        "`": "Leave"
-      };
+    "G": "Get item",
+    "P": "Put item",
+    "Shift": "Inspect item",
+    "Tab": "Use crucible",
+    "`": "Leave",
+  };
 
   _HomeScreen(super.gameScreen) : super._();
 
@@ -291,8 +293,11 @@ abstract class _GetScreen extends _ItemVerbScreen {
   String get _verb => "Get";
 
   @override
-  Map<String, String> get _helpKeys =>
-      {"A-Z": "Select item", "Shift": "Inspect item", "`": "Cancel"};
+  Map<String, String> get _helpKeys => {
+    "A-Z": "Select item",
+    "Shift": "Inspect item",
+    "`": "Cancel",
+  };
 
   @override
   ItemCollection get _destination => _gameScreen.game.hero.inventory;
@@ -320,8 +325,9 @@ class _GetFromHomeScreen extends _GetScreen {
 
   @override
   void _afterTransfer(Item item, int count) {
-    _gameScreen.game.log
-        .message("You take ${item.clone(count)} from your home.");
+    _gameScreen.game.log.message(
+      "You take ${item.clone(count)} from your home.",
+    );
     super._afterTransfer(item, count);
   }
 }
@@ -337,8 +343,9 @@ class _GetFromCrucibleScreen extends _GetScreen {
 
   @override
   void _afterTransfer(Item item, int count) {
-    _gameScreen.game.log
-        .message("You remove ${item.clone(count)} from the crucible.");
+    _gameScreen.game.log.message(
+      "You remove ${item.clone(count)} from the crucible.",
+    );
     super._afterTransfer(item, count);
 
     _onTransfer();
@@ -360,13 +367,13 @@ class _CrucibleScreen extends TownScreen {
 
   @override
   Map<String, String> get _helpKeys => {
-        "G": "Get item",
-        "P": "Put item",
-        "Shift": "Inspect item",
-        if (_completeRecipe != null) "Space": "Forge item",
-        "Tab": "Back to home",
-        "`": "Leave"
-      };
+    "G": "Get item",
+    "P": "Put item",
+    "Shift": "Inspect item",
+    if (_completeRecipe != null) "Space": "Forge item",
+    "Tab": "Back to home",
+    "`": "Leave",
+  };
 
   _CrucibleScreen(super.gameScreen) : super._() {
     _refreshRecipe();
@@ -377,10 +384,16 @@ class _CrucibleScreen extends TownScreen {
     super.render(terminal);
 
     // TODO: This UI isn't great.
-    var width =
-        math.min(preferredItemListWidth, _gameScreen.stagePanel.bounds.width);
-    terminal = terminal.rect(_gameScreen.stagePanel.bounds.x + 4,
-        _gameScreen.stagePanel.bounds.y + _items.length + 1, width - 8, 3);
+    var width = math.min(
+      preferredItemListWidth,
+      _gameScreen.stagePanel.bounds.width,
+    );
+    terminal = terminal.rect(
+      _gameScreen.stagePanel.bounds.x + 4,
+      _gameScreen.stagePanel.bounds.y + _items.length + 1,
+      width - 8,
+      3,
+    );
 
     Draw.box(terminal, 0, 0, terminal.width, terminal.height);
     terminal.writeAt(0, 0, "┬", darkCoolGray);
@@ -462,11 +475,11 @@ class _ShopScreen extends TownScreen {
 
   @override
   Map<String, String> get _helpKeys => {
-        "B": "Buy item",
-        "S": "Sell item",
-        "Shift": "Inspect item",
-        "`": "Cancel"
-      };
+    "B": "Buy item",
+    "S": "Sell item",
+    "Shift": "Inspect item",
+    "`": "Cancel",
+  };
 
   _ShopScreen(super.gameScreen, this._shop) : super._();
 
@@ -507,8 +520,11 @@ class _ShopBuyScreen extends _ItemVerbScreen {
   String get _verb => "Buy";
 
   @override
-  Map<String, String> get _helpKeys =>
-      {"A-Z": "Select item", "Shift": "Inspect item", "`": "Cancel"};
+  Map<String, String> get _helpKeys => {
+    "A-Z": "Select item",
+    "Shift": "Inspect item",
+    "`": "Cancel",
+  };
 
   @override
   ItemCollection get _items => _shop;
@@ -540,8 +556,9 @@ class _ShopBuyScreen extends _ItemVerbScreen {
   @override
   void _afterTransfer(Item item, int count) {
     var price = item.price * count;
-    _gameScreen.game.log
-        .message("You buy ${item.clone(count)} for $price gold.");
+    _gameScreen.game.log.message(
+      "You buy ${item.clone(count)} for $price gold.",
+    );
     _save.gold -= price;
 
     // Acquiring an item may unlock skills.
@@ -574,12 +591,15 @@ class _CountScreen extends TownScreen {
   }
 
   @override
-  Map<String, String> get _helpKeys =>
-      {"OK": _parent._verb, "↕": "Change quantity", "`": "Cancel"};
+  Map<String, String> get _helpKeys => {
+    "OK": _parent._verb,
+    "↕": "Change quantity",
+    "`": "Cancel",
+  };
 
   _CountScreen(super.gameScreen, this._parent, this._item)
-      : _count = _parent._initialCount(_item),
-        super._() {
+    : _count = _parent._initialCount(_item),
+      super._() {
     _inspected = _item;
   }
 

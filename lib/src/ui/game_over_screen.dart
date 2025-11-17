@@ -34,19 +34,26 @@ class GameOverScreen extends Screen<Input> {
   void render(Terminal terminal) {
     // TODO: This could be a whole lot more interesting looking. Show the hero's
     // final stats, etc.
-    Draw.dialog(terminal, 60, 40, label: "You have died", (terminal) {
-      var y = terminal.height - 1;
-      for (var i = _hero.log.messages.length - 1; i >= 0; i--) {
-        // TODO: Include count, lines, color.
-        var lines = Log.wordWrap(terminal.width, _hero.log.messages[i].text);
-        for (var j = lines.length - 1; j >= 0; j--) {
-          terminal.writeAt(0, y, lines[j]);
-          y--;
+    Draw.dialog(
+      terminal,
+      60,
+      40,
+      label: "You have died",
+      (terminal) {
+        var y = terminal.height - 1;
+        for (var i = _hero.log.messages.length - 1; i >= 0; i--) {
+          // TODO: Include count, lines, color.
+          var lines = Log.wordWrap(terminal.width, _hero.log.messages[i].text);
+          for (var j = lines.length - 1; j >= 0; j--) {
+            terminal.writeAt(0, y, lines[j]);
+            y--;
+            if (y < 0) break;
+          }
+
           if (y < 0) break;
         }
-
-        if (y < 0) break;
-      }
-    }, helpKeys: {'`': _hero.permadeath ? "Create a new hero" : "Try again"});
+      },
+      helpKeys: {'`': _hero.permadeath ? "Create a new hero" : "Try again"},
+    );
   }
 }

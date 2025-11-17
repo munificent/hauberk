@@ -65,7 +65,10 @@ class Storage {
 
         var inventoryItems = _loadItems(heroData['inventory']);
         var inventory = Inventory(
-            ItemLocation.inventory, Option.inventoryCapacity, inventoryItems);
+          ItemLocation.inventory,
+          Option.inventoryCapacity,
+          inventoryItems,
+        );
 
         var equipment = Equipment();
         for (var item in _loadItems(heroData['equipment'])) {
@@ -79,7 +82,10 @@ class Storage {
 
         var crucibleItems = _loadItems(heroData['crucible']);
         var crucible = Inventory(
-            ItemLocation.crucible, Option.crucibleCapacity, crucibleItems);
+          ItemLocation.crucible,
+          Option.crucibleCapacity,
+          crucibleItems,
+        );
 
         // TODO: What if shops are added or changed?
         var shops = <Shop, Inventory>{};
@@ -135,21 +141,22 @@ class Storage {
         var maxDepth = heroData['maxDepth'] as int? ?? 0;
 
         var heroSave = HeroSave(
-            name,
-            race,
-            heroClass,
-            permadeath,
-            inventory,
-            equipment,
-            home,
-            crucible,
-            shops,
-            experience,
-            skillSet,
-            log,
-            lore,
-            gold,
-            maxDepth);
+          name,
+          race,
+          heroClass,
+          permadeath,
+          inventory,
+          equipment,
+          home,
+          crucible,
+          shops,
+          experience,
+          skillSet,
+          log,
+          lore,
+          gold,
+          maxDepth,
+        );
         heroes.add(heroSave);
       } catch (error, trace) {
         print("Could not load hero. Data:");
@@ -208,14 +215,21 @@ class Storage {
     var suffix = _loadAffix(data['suffix']);
     var intrinsicAffix = _loadAffix(data['intrinsic']);
 
-    return Item(type, count,
-        prefix: prefix, suffix: suffix, intrinsicAffix: intrinsicAffix);
+    return Item(
+      type,
+      count,
+      prefix: prefix,
+      suffix: suffix,
+      intrinsicAffix: intrinsicAffix,
+    );
   }
 
   Affix? _loadAffix(dynamic data) {
     return switch (data) {
-      {'id': String id, 'parameter': int parameter} =>
-        Affix(content.findAffix(id)!, parameter),
+      {'id': String id, 'parameter': int parameter} => Affix(
+        content.findAffix(id)!,
+        parameter,
+      ),
       _ => null,
     };
   }
@@ -225,8 +239,9 @@ class Storage {
     if (data is List<dynamic>) {
       for (var messageData in data) {
         var messageMap = messageData as Map<String, dynamic>;
-        var type = LogType.values
-            .firstWhere((type) => type.name == messageMap['type'] as String);
+        var type = LogType.values.firstWhere(
+          (type) => type.name == messageMap['type'] as String,
+        );
         var text = messageMap['text'] as String;
         var count = messageMap['count'] as int;
         log.messages.add(Message(type, text, count));
@@ -294,8 +309,14 @@ class Storage {
       }
     }
 
-    return Lore.from(seenBreeds, slain, foundItems, foundAffixes,
-        createdArtifacts, usedItems);
+    return Lore.from(
+      seenBreeds,
+      slain,
+      foundItems,
+      foundAffixes,
+      createdArtifacts,
+      usedItems,
+    );
   }
 
   void save() {
@@ -309,8 +330,8 @@ class Storage {
               'name': hero.race.name,
               'seed': hero.race.seed,
               'stats': {
-                for (var stat in Stat.all) stat.name: hero.race.max(stat)
-              }
+                for (var stat in Stat.all) stat.name: hero.race.max(stat),
+              },
             },
             'class': hero.heroClass.name,
             'death': hero.permadeath ? 'permanent' : 'dungeon',
@@ -320,22 +341,22 @@ class Storage {
             'crucible': _saveItems(hero.crucible),
             'shops': {
               for (var MapEntry(key: shop, value: items) in hero.shops.entries)
-                shop.name: _saveItems(items)
+                shop.name: _saveItems(items),
             },
             'experience': hero.experience,
             'skills': {
               for (var skill in hero.skills.discovered)
                 skill.name: {
                   'level': hero.skills.level(skill),
-                  'points': hero.skills.points(skill)
-                }
+                  'points': hero.skills.points(skill),
+                },
             },
             'log': _saveLog(hero.log),
             'lore': _saveLore(hero.lore),
             'gold': hero.gold,
-            'maxDepth': hero.maxDepth
-          }
-      ]
+            'maxDepth': hero.maxDepth,
+          },
+      ],
     };
 
     html.window.localStorage['heroes'] = json.encode(data);
@@ -348,8 +369,8 @@ class Storage {
         <String, dynamic>{
           'type': message.type.name,
           'text': message.text,
-          'count': message.count
-        }
+          'count': message.count,
+        },
     ];
   }
 
@@ -408,14 +429,11 @@ class Storage {
           if (item.suffix case var affix?) 'suffix': _saveAffix(affix),
           if (item.intrinsicAffix case var affix?)
             'intrinsic': _saveAffix(affix),
-        }
+        },
     ];
   }
 
   Map<String, dynamic> _saveAffix(Affix affix) {
-    return {
-      'id': affix.type.id,
-      'parameter': affix.parameter,
-    };
+    return {'id': affix.type.id, 'parameter': affix.parameter};
   }
 }

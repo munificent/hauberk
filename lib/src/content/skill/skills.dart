@@ -49,7 +49,7 @@ class Skills {
   ];
 
   static final Map<String, Skill> _byName = {
-    for (var skill in all) skill.name: skill
+    for (var skill in all) skill.name: skill,
   };
 
   static Skill find(String name) {

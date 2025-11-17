@@ -35,9 +35,12 @@ class TossDialog extends ItemDialog {
     gameScreen.game.hero.modifyHit(hit, HitType.toss);
 
     // Now we need a target.
-    ui.goTo(TargetDialog(gameScreen, hit.range, (target) {
-      gameScreen.game.hero
-          .setNextAction(TossAction(location, item, hit, target));
-    }));
+    ui.goTo(
+      TargetDialog(gameScreen, hit.range, (target) {
+        gameScreen.game.hero.setNextAction(
+          TossAction(location, item, hit, target),
+        );
+      }),
+    );
   }
 }

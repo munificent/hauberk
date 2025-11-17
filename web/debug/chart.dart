@@ -26,7 +26,7 @@ final List<Chart> _charts = [
   AffixesChart(),
   MonsterDepthsChart(),
   FloorDropsChart(),
-  ArchitecturesChart()
+  ArchitecturesChart(),
 ];
 
 final _colors = <String, Color>{};
@@ -44,8 +44,8 @@ void main() {
 
   for (var itemType in Items.types.all) {
     _colors[itemType.name] = (itemType.appearance as Glyph).fore;
-    _colors["${itemType.name} (ego)"] =
-        (itemType.appearance as Glyph).fore.blend(Color.black, 0.5);
+    _colors["${itemType.name} (ego)"] = (itemType.appearance as Glyph).fore
+        .blend(Color.black, 0.5);
   }
 
   for (var breed in Monsters.breeds.all) {
@@ -137,10 +137,14 @@ abstract class Chart {
           color = color.blend(Color.white, 0.80);
         }
 
-        buffer.write('<rect fill="${color.cssColor}" x="$x" y="$y" '
-            'width="${right - x}" height="$barSize">');
-        buffer.write('<title>depth ${depth + 1}: ${describe(label)} $percent% '
-            '($count)</title></rect>');
+        buffer.write(
+          '<rect fill="${color.cssColor}" x="$x" y="$y" '
+          'width="${right - x}" height="$barSize">',
+        );
+        buffer.write(
+          '<title>depth ${depth + 1}: ${describe(label)} $percent% '
+          '($count)</title></rect>',
+        );
 
         right = x;
       }

@@ -97,7 +97,9 @@ class Item implements Comparable<Item>, Noun {
   /// Gets the noun string used to build quantified names for the item,
   /// including any affixes.
   String get quantifiableName => affixes.fold(
-      type.quantifiableName, (name, affix) => affix.itemName(name));
+    type.quantifiableName,
+    (name, affix) => affix.itemName(name),
+  );
 
   @override
   Pronoun get pronoun => Pronoun.it;
@@ -127,7 +129,9 @@ class Item implements Comparable<Item>, Noun {
   /// The penalty to the hero's strength when wearing this.
   int get weight {
     var totalWeight = affixes.fold(
-        type.weight, (weight, affix) => weight + affix.weightBonus);
+      type.weight,
+      (weight, affix) => weight + affix.weightBonus,
+    );
 
     return math.max(0, totalWeight);
   }
@@ -135,7 +139,9 @@ class Item implements Comparable<Item>, Noun {
   /// The amount of strength required to wield the item effectively.
   int get heft {
     var totalHeft = affixes.fold(
-        type.heft.toDouble(), (heft, affix) => heft * affix.heftScale);
+      type.heft.toDouble(),
+      (heft, affix) => heft * affix.heftScale,
+    );
 
     return totalHeft.round();
   }
@@ -158,7 +164,9 @@ class Item implements Comparable<Item>, Noun {
 
   /// Gets the resistance this item confers to [element] when equipped.
   int resistance(Element element) => affixes.fold(
-      0, (resistance, affix) => resistance + affix.resistance(element));
+    0,
+    (resistance, affix) => resistance + affix.resistance(element),
+  );
 
   @override
   int compareTo(Item other) {
@@ -191,8 +199,13 @@ class Item implements Comparable<Item>, Noun {
   ///
   /// If [count] is given, the clone has that count. Otherwise, it has the
   /// same count as this item.
-  Item clone([int? count]) => Item(type, count ?? _count,
-      prefix: prefix, suffix: suffix, intrinsicAffix: intrinsicAffix);
+  Item clone([int? count]) => Item(
+    type,
+    count ?? _count,
+    prefix: prefix,
+    suffix: suffix,
+    intrinsicAffix: intrinsicAffix,
+  );
 
   bool canStack(Item item) {
     if (type != item.type) return false;

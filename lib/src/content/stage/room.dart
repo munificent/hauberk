@@ -41,7 +41,7 @@ enum RoomShapes {
   octagonal,
 
   /// All room shapes.
-  any
+  any,
 }
 
 /// Generates random rooms.
@@ -109,7 +109,7 @@ class Room {
           Vec(1 + i, 1 + i),
           Vec(width - i, 1 + i),
           Vec(1 + i, height - i),
-          Vec(width - i, height - i)
+          Vec(width - i, height - i),
         ]);
       }
     }
@@ -248,7 +248,7 @@ class Room {
           Vec(size ~/ 2 + 1, size ~/ 2 + 1 - i),
           Vec(size ~/ 2 + 1 + i, size ~/ 2 + 1),
           Vec(size ~/ 2 + 1, size ~/ 2 + 1 + i),
-          Vec(size ~/ 2 + 1 - i, size ~/ 2 + 1)
+          Vec(size ~/ 2 + 1 - i, size ~/ 2 + 1),
         ]);
       }
     }
@@ -300,7 +300,10 @@ class Room {
   // generate every possible lighting setup for a room before picking one or
   // even deciding if the room should be lit.
   static void _addLights(
-      int depth, Array2D<RoomTile> room, List<List<Vec>> lights) {
+    int depth,
+    Array2D<RoomTile> room,
+    List<List<Vec>> lights,
+  ) {
     if (lights.isEmpty) return;
 
     if (!rng.percent(lerpInt(depth, 1, Option.maxDepth, 90, 20))) return;

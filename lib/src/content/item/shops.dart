@@ -48,7 +48,7 @@ class Shops {
       "Battleaxe": 0.2,
       "Short Bow": 1.0,
       "Longbow": 0.3,
-      "Crossbow": 0.05
+      "Crossbow": 0.05,
     });
 
     shop("Skullduggery and Bamboozelry", {
@@ -56,7 +56,7 @@ class Shops {
       "Dagger": 0.3,
       "Stiletto": 0.1,
       "Rondel": 0.05,
-      "Baselard": 0.02
+      "Baselard": 0.02,
     });
 
     shop("Garthag's Armoury", {
@@ -76,7 +76,7 @@ class Shops {
       "Pair of Shoes": 1.0,
       "Pair of Boots": 1.0,
       "Pair of Plated Boots": 1.0,
-      "Pair of Greaves": 1.0
+      "Pair of Greaves": 1.0,
     });
 
     shop("Unguence the Alchemist", {
@@ -101,7 +101,7 @@ class Shops {
     });
   }
 
-/*
+  /*
   Glur's Rare Artifacts
   */
 }

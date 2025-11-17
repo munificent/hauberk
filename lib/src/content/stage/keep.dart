@@ -30,7 +30,7 @@ class Keep extends RoomArchitecture {
   }
 
   Keep._(this._maxRooms, TakeFrom takeFrom)
-      : _junctions = JunctionSet(takeFrom);
+    : _junctions = JunctionSet(takeFrom);
 
   // TODO: Different paint styles for different monsters.
   @override
@@ -177,8 +177,9 @@ class Keep extends RoomArchitecture {
 
     // Try to find a junction that can mate with this one.
     var direction = junction.direction.rotate180;
-    var junctions =
-        room.bounds.where((pos) => room[pos].direction == direction).toList();
+    var junctions = room.bounds
+        .where((pos) => room[pos].direction == direction)
+        .toList();
     rng.shuffle(junctions);
 
     for (var pos in junctions) {

@@ -3,10 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../tiles.dart';
 
-enum DetectType {
-  exit,
-  item,
-}
+enum DetectType { exit, item }
 
 /// An [Action] that marks all tiles containing [Item]s explored.
 class DetectAction extends Action {
@@ -21,7 +18,7 @@ class DetectAction extends Action {
   bool get isImmediate => false;
 
   DetectAction(Iterable<DetectType> types, [this._maxDistance])
-      : _types = types.toSet();
+    : _types = types.toSet();
 
   @override
   ActionResult onPerform() {
@@ -43,7 +40,7 @@ class DetectAction extends Action {
 
     void addTile(Vec pos) {
       var distance = (actor!.pos - pos).lengthSquared;
-      if (_maxDistance != null && distance > _maxDistance! * _maxDistance!) {
+      if (_maxDistance != null && distance > _maxDistance * _maxDistance) {
         return;
       }
 

@@ -16,19 +16,26 @@ void main() {
     return a.experience.compareTo(b.experience);
   });
 
-  table.column('Breed',
-      compare: (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  table.column(
+    'Breed',
+    compare: (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+  );
   table.column('Depth', right: true);
   table.column('Health', right: true);
   table.column('Meander', right: true);
   table.column('Speed', right: true);
-  table.column('Dodge',
-      compare: (a, b) => _totalDodge(a).compareTo(_totalDodge(b)));
+  table.column(
+    'Dodge',
+    compare: (a, b) => _totalDodge(a).compareTo(_totalDodge(b)),
+  );
   table.column('Exp', right: true);
-  table.column('Count', compare: (a, b) {
-    if (a.countMin != b.countMin) return a.countMin.compareTo(b.countMin);
-    return a.countMax.compareTo(b.countMax);
-  });
+  table.column(
+    'Count',
+    compare: (a, b) {
+      if (a.countMin != b.countMin) return a.countMin.compareTo(b.countMin);
+      return a.countMax.compareTo(b.countMax);
+    },
+  );
   table.column('Attacks');
   table.column('Moves');
   table.column('Tags');
@@ -39,9 +46,11 @@ void main() {
 
     var glyph = breed.appearance as Glyph;
     var anchor = Uri.encodeFull(breed.name);
-    cells.add('<code class="term" style="color: ${glyph.fore.cssColor}">'
-        '${String.fromCharCodes([glyph.char])}'
-        '</code>&nbsp;<a href="monster.html#$anchor">${breed.name}</a>');
+    cells.add(
+      '<code class="term" style="color: ${glyph.fore.cssColor}">'
+      '${String.fromCharCodes([glyph.char])}'
+      '</code>&nbsp;<a href="monster.html#$anchor">${breed.name}</a>',
+    );
 
     cells.add(breed.depth);
     cells.add(breed.maxHealth);
@@ -57,15 +66,18 @@ void main() {
     cells.add(count);
 
     var attacks = breed.attacks.map(
-        (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} $attack');
+      (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} $attack',
+    );
     cells.add(attacks.join('<br>'));
 
     cells.add(breed.moves.join("<br>"));
 
-    cells.add([
-      for (var tag in Monsters.breeds.getTags(breed.name))
-        if (tag != "monster") tag,
-    ].join(" "));
+    cells.add(
+      [
+        for (var tag in Monsters.breeds.getTags(breed.name))
+          if (tag != "monster") tag,
+      ].join(" "),
+    );
 
     cells.add(breed.flags.names.join(" "));
 

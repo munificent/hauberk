@@ -48,7 +48,7 @@ class StagePanel extends Panel {
     [gold, persimmon],
     [buttermilk, carrot],
     [tan, red],
-    [red, brown]
+    [red, brown],
   ];
 
   final GameScreen _gameScreen;
@@ -81,8 +81,11 @@ class StagePanel extends Panel {
   }
 
   void _drawStageGlyph(Terminal terminal, int x, int y, Glyph glyph) {
-    terminal.drawGlyph(x - _cameraBounds.x + _renderOffset.x,
-        y - _cameraBounds.y + _renderOffset.y, glyph);
+    terminal.drawGlyph(
+      x - _cameraBounds.x + _renderOffset.x,
+      y - _cameraBounds.y + _renderOffset.y,
+      glyph,
+    );
   }
 
   bool update(Iterable<Event> events) {
@@ -165,7 +168,8 @@ class StagePanel extends Panel {
       }
 
       var actor = game.stage.actorAt(pos);
-      var showActor = tile.isVisible ||
+      var showActor =
+          tile.isVisible ||
           pos == game.hero.pos ||
           Debug.showAllMonsters ||
           actor != null && game.heroCanPerceive(actor);
@@ -222,8 +226,10 @@ class StagePanel extends Panel {
           if (visibility < 64) {
             // Only blend up to 50% of the shadow color so that there is a
             // clear line between hidden and visible tiles.
-            color =
-                color.blend(shadow, lerpDouble(visibility, 0, 64, 0.5, 0.0));
+            color = color.blend(
+              shadow,
+              lerpDouble(visibility, 0, 64, 0.5, 0.0),
+            );
           } else if (visibility > 128) {
             color = color.add(ash, lerpDouble(visibility, 128, 255, 0.0, 0.2));
           }
@@ -231,7 +237,9 @@ class StagePanel extends Panel {
           if (tile.actorIllumination > 0) {
             const glow = Color(200, 130, 0);
             color = color.add(
-                glow, lerpDouble(tile.actorIllumination, 0, 255, 0.05, 0.1));
+              glow,
+              lerpDouble(tile.actorIllumination, 0, 255, 0.05, 0.1),
+            );
           }
 
           return color;
@@ -313,8 +321,10 @@ class StagePanel extends Panel {
     var cameraX = _cameraBounds.left;
     var offsetX = 0;
 
-    int centerX() => (game.hero.pos.x - viewSize.x ~/ 2)
-        .clamp(0, game.stage.width - viewSize.x);
+    int centerX() => (game.hero.pos.x - viewSize.x ~/ 2).clamp(
+      0,
+      game.stage.width - viewSize.x,
+    );
 
     if (viewSize.x >= game.stage.width) {
       // The view is bigger than the stage, so lock the camera and center the
@@ -336,8 +346,10 @@ class StagePanel extends Panel {
     var cameraY = _cameraBounds.top;
     var offsetY = 0;
 
-    int centerY() => (game.hero.pos.y - viewSize.y ~/ 2)
-        .clamp(0, game.stage.height - viewSize.y);
+    int centerY() => (game.hero.pos.y - viewSize.y ~/ 2).clamp(
+      0,
+      game.stage.height - viewSize.y,
+    );
 
     if (viewSize.y >= game.stage.height) {
       // The view is bigger than the stage, so lock the camera and center the
@@ -358,10 +370,11 @@ class StagePanel extends Panel {
     }
 
     _cameraBounds = Rect(
-        cameraX,
-        cameraY,
-        math.min(viewSize.x, game.stage.width),
-        math.min(viewSize.y, game.stage.height));
+      cameraX,
+      cameraY,
+      math.min(viewSize.x, game.stage.width),
+      math.min(viewSize.y, game.stage.height),
+    );
     _renderOffset = Vec(offsetX, offsetY);
   }
 }

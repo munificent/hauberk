@@ -25,7 +25,7 @@ class SidebarPanel extends Panel {
     Elements.poison: "P",
     Elements.dark: "D",
     Elements.light: "L",
-    Elements.spirit: "S"
+    Elements.spirit: "S",
   };
 
   final GameScreen _gameScreen;
@@ -37,11 +37,21 @@ class SidebarPanel extends Panel {
     var game = _gameScreen.game;
     var hero = game.hero;
 
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height,
-        label: hero.save.name);
+    Draw.frame(
+      terminal,
+      0,
+      0,
+      terminal.width,
+      terminal.height,
+      label: hero.save.name,
+    );
 
-    terminal.writeAt(1, 2, "${hero.save.race.name} ${hero.save.heroClass.name}",
-        UIHue.primary);
+    terminal.writeAt(
+      1,
+      2,
+      "${hero.save.race.name} ${hero.save.heroClass.name}",
+      UIHue.primary,
+    );
 
     _drawStats(hero, terminal, 4);
 
@@ -89,12 +99,13 @@ class SidebarPanel extends Panel {
 
       terminal.drawGlyph(1, y, glyph);
       terminal.writeAt(
-          3,
-          y,
-          name,
-          (_gameScreen.currentTargetActor == monster)
-              ? UIHue.selection
-              : UIHue.text);
+        3,
+        y,
+        name,
+        (_gameScreen.currentTargetActor == monster)
+            ? UIHue.selection
+            : UIHue.text,
+      );
 
       _drawHealthBar(terminal, y + 1, monster);
     }
@@ -105,7 +116,11 @@ class SidebarPanel extends Panel {
     void drawStat(StatBase stat) {
       terminal.writeAt(x, y, stat.name.substring(0, 3), UIHue.helpText);
       terminal.writeAt(
-          x, y + 1, stat.value.toString().padLeft(3), UIHue.primary);
+        x,
+        y + 1,
+        stat.value.toString().padLeft(3),
+        UIHue.primary,
+      );
       x += (terminal.width - 4) ~/ 4;
     }
 
@@ -125,15 +140,28 @@ class SidebarPanel extends Panel {
 
     var levelString = hero.level.toString();
     terminal.writeAt(
-        terminal.width - levelString.length - 1, y, levelString, lightAqua);
+      terminal.width - levelString.length - 1,
+      y,
+      levelString,
+      lightAqua,
+    );
 
     if (hero.level < Hero.maxLevel) {
-      var levelPercent = 100 *
+      var levelPercent =
+          100 *
           (hero.experience - experienceLevelCost(hero.level)) ~/
           (experienceLevelCost(hero.level + 1) -
               experienceLevelCost(hero.level));
-      Draw.thinMeter(terminal, 10, y, terminal.width - 14, levelPercent, 100,
-          lightAqua, aqua);
+      Draw.thinMeter(
+        terminal,
+        10,
+        y,
+        terminal.width - 14,
+        levelPercent,
+        100,
+        lightAqua,
+        aqua,
+      );
     }
   }
 
@@ -153,7 +181,11 @@ class SidebarPanel extends Panel {
       var hitString = hits[i].damageString;
       // TODO: Show element and other bonuses.
       terminal.writeAt(
-          terminal.width - hitString.length - 1, y + i, hitString, carrot);
+        terminal.width - hitString.length - 1,
+        y + i,
+        hitString,
+        carrot,
+      );
     }
   }
 
@@ -182,8 +214,16 @@ class SidebarPanel extends Panel {
 
   void _drawFood(Hero hero, Terminal terminal, int y) {
     terminal.writeAt(1, y, "Food", UIHue.helpText);
-    Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.stomach,
-        Option.heroMaxStomach, tan, brown);
+    Draw.thinMeter(
+      terminal,
+      10,
+      y,
+      terminal.width - 11,
+      hero.stomach,
+      Option.heroMaxStomach,
+      tan,
+      brown,
+    );
   }
 
   void _drawFocus(Hero hero, Terminal terminal, int y) {
@@ -191,29 +231,54 @@ class SidebarPanel extends Panel {
     // terminal.writeAt(1, y, 'Focus', UIHue.helpText);
     // Draw.thinMeter(terminal, 10, y, terminal.width - 11, hero.focus,
     //     hero.intellect.maxFocus, blue, darkBlue);
-    _drawStat(terminal, y, 'Focus', hero.focus, blue, hero.intellect.maxFocus,
-        darkBlue);
+    _drawStat(
+      terminal,
+      y,
+      'Focus',
+      hero.focus,
+      blue,
+      hero.intellect.maxFocus,
+      darkBlue,
+    );
   }
 
   void _drawFury(Hero hero, Terminal terminal, int y) {
     // If the hero can't have any fury, gray it out.
-    terminal.writeAt(1, y, 'Fury',
-        hero.strength.maxFury == 0 ? UIHue.disabled : UIHue.helpText);
+    terminal.writeAt(
+      1,
+      y,
+      'Fury',
+      hero.strength.maxFury == 0 ? UIHue.disabled : UIHue.helpText,
+    );
 
     terminal.writeAt(
-        terminal.width - 3, y, hero.fury.toString().padLeft(2), persimmon);
+      terminal.width - 3,
+      y,
+      hero.fury.toString().padLeft(2),
+      persimmon,
+    );
 
     if (hero.fury > 0) {
       var scale = "${hero.strength.furyScale(hero.fury).toStringAsFixed(1)}x";
-      terminal.writeAt(10, y, scale.padLeft(4),
-          hero.fury == hero.strength.maxFury ? carrot : persimmon);
+      terminal.writeAt(
+        10,
+        y,
+        scale.padLeft(4),
+        hero.fury == hero.strength.maxFury ? carrot : persimmon,
+      );
     }
   }
 
   /// Draws a labeled numeric stat.
   void _drawStat(
-      Terminal terminal, int y, String label, Object value, Color valueColor,
-      [int? max, Color? maxColor]) {
+    Terminal terminal,
+    int y,
+    String label,
+    Object value,
+    Color valueColor, [
+    int? max,
+    Color? maxColor,
+  ]) {
     terminal.writeAt(1, y, label, UIHue.helpText);
 
     var x = terminal.width - 1;
@@ -280,7 +345,10 @@ class SidebarPanel extends Panel {
     for (var element in Elements.all) {
       if (actor.resistanceCondition(element).isActive) {
         drawCondition(
-            _resistLetters[element]!, Color.black, elementColor(element));
+          _resistLetters[element]!,
+          Color.black,
+          elementColor(element),
+        );
       }
     }
 
@@ -289,7 +357,15 @@ class SidebarPanel extends Panel {
       terminal.writeAt(2, y, alertness, ash);
     }
 
-    Draw.meter(terminal, 10, y, terminal.width - 11, actor.health,
-        actor.maxHealth, red, maroon);
+    Draw.meter(
+      terminal,
+      10,
+      y,
+      terminal.width - 11,
+      actor.health,
+      actor.maxHealth,
+      red,
+      maroon,
+    );
   }
 }

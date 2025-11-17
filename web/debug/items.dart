@@ -30,8 +30,10 @@ num _itemScale(ItemType item) {
 }
 
 void _makeTable() {
-  var table =
-      Table<ItemType>("table", (a, b) => a.sortIndex.compareTo(b.sortIndex));
+  var table = Table<ItemType>(
+    "table",
+    (a, b) => a.sortIndex.compareTo(b.sortIndex),
+  );
   table.column("Item", compare: (a, b) => a.name.compareTo(b.name));
   table.column("Depth", right: true);
   table.column("Stack", right: true);
@@ -57,9 +59,7 @@ void _makeTable() {
 
     var glyph = item.appearance as Glyph;
     cells.add('''
-<code class="term"><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([
-          glyph.char
-        ])}</span></code>&nbsp;${item.name}
+<code class="term"><span style="color: ${glyph.fore.cssColor}">${String.fromCharCodes([glyph.char])}</span></code>&nbsp;${item.name}
     ''');
 
     cells.add(scaleValue(item.depth));

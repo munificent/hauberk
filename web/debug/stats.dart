@@ -42,8 +42,10 @@ void main() {
 
     builder.td(i);
     builder.td(strength.maxFury);
-    builder.td(strength.furyScale(strength.maxFury).toStringAsFixed(1),
-        right: true);
+    builder.td(
+      strength.furyScale(strength.maxFury).toStringAsFixed(1),
+      right: true,
+    );
     builder.td(strength.tossRangeScale.toStringAsFixed(1), right: true);
     builder.td(strength.heftScale(20).toStringAsFixed(2), right: true);
     builder.td(agility.dodgeBonus);

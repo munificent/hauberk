@@ -19,7 +19,7 @@ final _directionLines = {
   Direction.s: "|",
   Direction.sw: "/",
   Direction.w: "-",
-  Direction.nw: r"\"
+  Direction.nw: r"\",
 };
 
 /// Adds an [Effect]s that should be displayed when [event] happens.
@@ -55,15 +55,17 @@ void addEffects(List<Effect> effects, Event event) {
       effects.add(ItemEffect(event.pos!, event.other as Item));
 
     case EventType.hit:
-      effects
-          .add(DamageEffect(event.actor!, event.element, event.other as int));
+      effects.add(
+        DamageEffect(event.actor!, event.element, event.other as int),
+      );
 
     case EventType.die:
       // TODO: Make number of particles vary based on monster health.
       for (var i = 0; i < 10; i++) {
         // TODO: Different blood colors for different breeds.
-        effects
-            .add(ParticleEffect(event.actor!.pos.x, event.actor!.pos.y, red));
+        effects.add(
+          ParticleEffect(event.actor!.pos.x, event.actor!.pos.y, red),
+        );
       }
 
     case EventType.heal:
@@ -156,25 +158,25 @@ final _elementSequences = <Element, List<List<Glyph>>>{
   Element.none: [
     _glyphs("•", [sandal]),
     _glyphs("•", [sandal]),
-    _glyphs("•", [tan])
+    _glyphs("•", [tan]),
   ],
   Elements.air: [
     _glyphs("Oo", [ash, lightAqua]),
     _glyphs(".", [lightAqua]),
-    _glyphs(".", [lightBlue])
+    _glyphs(".", [lightBlue]),
   ],
   Elements.earth: [
     _glyphs("*%", [sandal, gold]),
     _glyphs("*%", [tan, brown]),
     _glyphs("•*", [tan]),
-    _glyphs("•", [brown])
+    _glyphs("•", [brown]),
   ],
   Elements.fire: [
     _glyphs("▲^", [gold, buttermilk]),
     _glyphs("*^", [carrot]),
     _glyphs("^", [red]),
     _glyphs("^", [brown, red]),
-    _glyphs(".", [brown, red])
+    _glyphs(".", [brown, red]),
   ],
   Elements.water: [
     _glyphs("Oo", [lightAqua, lightBlue]),
@@ -182,48 +184,48 @@ final _elementSequences = <Element, List<List<Glyph>>>{
     _glyphs("•^", [blue, darkBlue]),
     _glyphs("^~", [blue, darkBlue]),
     _glyphs("~", [darkBlue]),
-    _glyphs(".", [darkBlue, violet])
+    _glyphs(".", [darkBlue, violet]),
   ],
   Elements.acid: [
     _glyphs("Oo", [buttermilk, gold]),
     _glyphs("o•~", [lima, gold]),
     _glyphs(":,", [lima, olive]),
-    _glyphs(".", [lima])
+    _glyphs(".", [lima]),
   ],
   Elements.cold: [
     _glyphs("*", [ash]),
     _glyphs("+x", [lightAqua, ash]),
     _glyphs("+x", [lightBlue, lightCoolGray]),
-    _glyphs(".", [coolGray, darkBlue])
+    _glyphs(".", [coolGray, darkBlue]),
   ],
   Elements.lightning: [
     _glyphs("*", [lilac]),
     _glyphs(r"-|\/", [purple, ash]),
-    _glyphs(".", [darkerCoolGray, darkerCoolGray, darkerCoolGray, lilac])
+    _glyphs(".", [darkerCoolGray, darkerCoolGray, darkerCoolGray, lilac]),
   ],
   Elements.poison: [
     _glyphs("Oo", [mint, lima]),
     _glyphs("o•", [peaGreen, peaGreen, olive]),
     _glyphs("•", [sherwood, olive]),
-    _glyphs(".", [sherwood])
+    _glyphs(".", [sherwood]),
   ],
   Elements.dark: [
     _glyphs("*%", [darkerCoolGray, darkerCoolGray, darkCoolGray]),
     _glyphs("•", [darkerCoolGray, darkerCoolGray, lightCoolGray]),
     _glyphs(".", [darkerCoolGray]),
-    _glyphs(".", [darkerCoolGray])
+    _glyphs(".", [darkerCoolGray]),
   ],
   Elements.light: [
     _glyphs("*", [ash]),
     _glyphs("x+", [ash, buttermilk]),
     _glyphs(":;\"'`,", [buttermilk, gold]),
-    _glyphs(".", [lightCoolGray, buttermilk])
+    _glyphs(".", [lightCoolGray, buttermilk]),
   ],
   Elements.spirit: [
     _glyphs("Oo*+", [lilac, lightCoolGray]),
     _glyphs("o+", [purple, peaGreen]),
-    _glyphs("•.", [violet, sherwood, sherwood])
-  ]
+    _glyphs("•.", [violet, sherwood, sherwood]),
+  ],
 };
 
 /// Draws a motionless particle for an [Element] that fades in intensity over
@@ -234,7 +236,7 @@ class ElementEffect implements Effect {
   int _age = 0;
 
   ElementEffect(this._pos, Element element)
-      : _sequence = _elementSequences[element]!;
+    : _sequence = _elementSequences[element]!;
 
   @override
   bool update(Game game) {
@@ -297,7 +299,7 @@ class DamageEffect implements Effect {
   int _frame = 0;
 
   DamageEffect(this.actor, this.element, int damage)
-      : _blinks = math.sqrt(damage / 5).ceil();
+    : _blinks = math.sqrt(damage / 5).ceil();
 
   @override
   bool update(Game game) => ++_frame < _blinks * _framesPerBlink;
@@ -445,13 +447,7 @@ class HealEffect implements Effect {
 }
 
 class DetectEffect implements Effect {
-  static final _colors = [
-    ash,
-    buttermilk,
-    gold,
-    olive,
-    darkOlive,
-  ];
+  static final _colors = [ash, buttermilk, gold, olive, darkOlive];
 
   final Vec pos;
   int life = 20;
@@ -490,9 +486,10 @@ class MapEffect implements Effect {
     var glyph = game.stage[pos].type.appearance as Glyph;
 
     glyph = Glyph.fromCharCode(
-        glyph.char,
-        glyph.fore.blend(gold, life / _maxLife),
-        glyph.back.blend(tan, life / _maxLife));
+      glyph.char,
+      glyph.fore.blend(gold, life / _maxLife),
+      glyph.back.blend(tan, life / _maxLife),
+    );
 
     drawGlyph(pos.x, pos.y, glyph);
   }
@@ -505,9 +502,7 @@ class TreasureEffect implements Effect {
   final Item _item;
   int _life = 8;
 
-  TreasureEffect(Vec pos, this._item)
-      : _x = pos.x,
-        _y = pos.y;
+  TreasureEffect(Vec pos, this._item) : _x = pos.x, _y = pos.y;
 
   @override
   bool update(Game game) {

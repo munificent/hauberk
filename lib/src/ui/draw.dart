@@ -4,51 +4,127 @@ import '../hues.dart';
 // TODO: Turn these into extension on Terminal?
 class Draw {
   // TODO: Unify this with Popup.
-  static void dialog(Terminal terminal, int width, int height,
-      void Function(Terminal) drawContents,
-      {required String label, Map<String, String>? helpKeys}) {
+  static void dialog(
+    Terminal terminal,
+    int width,
+    int height,
+    void Function(Terminal) drawContents, {
+    required String label,
+    Map<String, String>? helpKeys,
+  }) {
     terminal.fill(0, 0, terminal.width, terminal.height, darkerCoolGray);
 
-    var dialogTerminal = terminal.rect((terminal.width - width) ~/ 2,
-        (terminal.height - 2 - height) ~/ 2, width, height);
+    var dialogTerminal = terminal.rect(
+      (terminal.width - width) ~/ 2,
+      (terminal.height - 2 - height) ~/ 2,
+      width,
+      height,
+    );
     Draw.frame(
-        dialogTerminal, 0, 0, dialogTerminal.width, dialogTerminal.height,
-        label: label);
+      dialogTerminal,
+      0,
+      0,
+      dialogTerminal.width,
+      dialogTerminal.height,
+      label: label,
+    );
 
-    drawContents(dialogTerminal.rect(
-        1, 1, dialogTerminal.width - 2, dialogTerminal.height - 2));
+    drawContents(
+      dialogTerminal.rect(
+        1,
+        1,
+        dialogTerminal.width - 2,
+        dialogTerminal.height - 2,
+      ),
+    );
 
     if (helpKeys != null) Draw.helpKeys(terminal, helpKeys);
   }
 
-  static void box(Terminal terminal, int x, int y, int width, int height,
-      [Color? color]) {
-    _box(terminal, x, y, width, height, color, "┌", "─", "┐", "│", "└", "─",
-        "┘");
+  static void box(
+    Terminal terminal,
+    int x,
+    int y,
+    int width,
+    int height, [
+    Color? color,
+  ]) {
+    _box(
+      terminal,
+      x,
+      y,
+      width,
+      height,
+      color,
+      "┌",
+      "─",
+      "┐",
+      "│",
+      "└",
+      "─",
+      "┘",
+    );
   }
 
-  static void frame(Terminal terminal, int x, int y, int width, int height,
-      {Color? color, String? label, bool labelSelected = false}) {
-    _box(terminal, x, y, width, height, color, "╒", "═", "╕", "│", "└", "─",
-        "┘");
+  static void frame(
+    Terminal terminal,
+    int x,
+    int y,
+    int width,
+    int height, {
+    Color? color,
+    String? label,
+    bool labelSelected = false,
+  }) {
+    _box(
+      terminal,
+      x,
+      y,
+      width,
+      height,
+      color,
+      "╒",
+      "═",
+      "╕",
+      "│",
+      "└",
+      "─",
+      "┘",
+    );
 
     if (label != null) {
       terminal.writeAt(
-          x + 2, y, " $label ", labelSelected ? UIHue.selection : UIHue.text);
+        x + 2,
+        y,
+        " $label ",
+        labelSelected ? UIHue.selection : UIHue.text,
+      );
     }
   }
 
   /// Draws a thin horizontal line starting at ([x], [y]) and going [width]
   /// characters to the right.
-  static void hLine(Terminal terminal, int x, int y, int width,
-      {Color? color}) {
+  static void hLine(
+    Terminal terminal,
+    int x,
+    int y,
+    int width, {
+    Color? color,
+  }) {
     terminal.writeAt(x, y, "─" * width, color ?? darkCoolGray);
   }
 
   /// Draws a frame with a little box on top for a glyph with the name next to
   /// it.
-  static void glyphFrame(Terminal terminal, int x, int y, int width, int height,
-      Glyph glyph, String label) {
+  static void glyphFrame(
+    Terminal terminal,
+    int x,
+    int y,
+    int width,
+    int height,
+    Glyph glyph,
+    String label,
+  ) {
     frame(terminal, x, y + 1, width, height - 1);
     terminal.writeAt(x + 1, y, "┌─┐", darkCoolGray);
     terminal.writeAt(x + 1, y + 1, "╡ ╞", darkCoolGray);
@@ -57,14 +133,36 @@ class Draw {
     terminal.writeAt(x + 4, y + 1, label, UIHue.primary);
   }
 
-  static void doubleBox(Terminal terminal, int x, int y, int width, int height,
-      [Color? color]) {
-    _box(terminal, x, y, width, height, color, "╔", "═", "╗", "║", "╚", "═",
-        "╝");
+  static void doubleBox(
+    Terminal terminal,
+    int x,
+    int y,
+    int width,
+    int height, [
+    Color? color,
+  ]) {
+    _box(
+      terminal,
+      x,
+      y,
+      width,
+      height,
+      color,
+      "╔",
+      "═",
+      "╗",
+      "║",
+      "╚",
+      "═",
+      "╝",
+    );
   }
 
-  static void helpKeys(Terminal terminal, Map<String, String> helpKeys,
-      [String? query]) {
+  static void helpKeys(
+    Terminal terminal,
+    Map<String, String> helpKeys, [
+    String? query,
+  ]) {
     // Draw the help.
     var helpTextLength = 0;
     helpKeys.forEach((key, text) {
@@ -76,13 +174,29 @@ class Draw {
 
     // Show the query string, if there is one.
     if (query != null) {
-      box(terminal, x - 2, terminal.height - 4, helpTextLength + 4, 5,
-          UIHue.text);
-      terminal.writeAt((terminal.width - query.length) ~/ 2,
-          terminal.height - 3, query, UIHue.primary);
+      box(
+        terminal,
+        x - 2,
+        terminal.height - 4,
+        helpTextLength + 4,
+        5,
+        UIHue.text,
+      );
+      terminal.writeAt(
+        (terminal.width - query.length) ~/ 2,
+        terminal.height - 3,
+        query,
+        UIHue.primary,
+      );
     } else {
-      box(terminal, x - 2, terminal.height - 2, helpTextLength + 4, 3,
-          UIHue.text);
+      box(
+        terminal,
+        x - 2,
+        terminal.height - 2,
+        helpTextLength + 4,
+        3,
+        UIHue.text,
+      );
     }
 
     var first = true;
@@ -107,19 +221,20 @@ class Draw {
   }
 
   static void _box(
-      Terminal terminal,
-      int x,
-      int y,
-      int width,
-      int height,
-      Color? color,
-      String topLeft,
-      String top,
-      String topRight,
-      String vertical,
-      String bottomLeft,
-      String bottom,
-      String bottomRight) {
+    Terminal terminal,
+    int x,
+    int y,
+    int width,
+    int height,
+    Color? color,
+    String topLeft,
+    String top,
+    String topRight,
+    String vertical,
+    String bottomLeft,
+    String bottom,
+    String bottomRight,
+  ) {
     color ??= darkCoolGray;
     var bar = vertical + " " * (width - 2) + vertical;
     for (var row = y + 1; row < y + height - 1; row++) {
@@ -138,8 +253,15 @@ class Draw {
   /// will only be full if [value] is exactly [max], otherwise at least one
   /// half unit will be missing.
   static void meter(
-      Terminal terminal, int x, int y, int width, int value, int max,
-      [Color? fore, Color? back]) {
+    Terminal terminal,
+    int x,
+    int y,
+    int width,
+    int value,
+    int max, [
+    Color? fore,
+    Color? back,
+  ]) {
     assert(max != 0);
 
     fore ??= red;
@@ -169,8 +291,15 @@ class Draw {
   /// will only be full if [value] is exactly [max], otherwise at least one
   /// half unit will be missing.
   static void thinMeter(
-      Terminal terminal, int x, int y, int width, int value, int max,
-      [Color? fore, Color? back]) {
+    Terminal terminal,
+    int x,
+    int y,
+    int width,
+    int value,
+    int max, [
+    Color? fore,
+    Color? back,
+  ]) {
     assert(max != 0);
 
     fore ??= red;

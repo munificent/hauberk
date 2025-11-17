@@ -102,13 +102,16 @@ class HeroSave {
     return total;
   }
 
-  HeroSave.create(this.name, Race race, this.heroClass,
-      {this.permadeath = false})
-      : race = race.rollStats(),
-        shops = {},
-        skills = SkillSet(),
-        log = Log(),
-        lore = Lore() {
+  HeroSave.create(
+    this.name,
+    Race race,
+    this.heroClass, {
+    this.permadeath = false,
+  }) : race = race.rollStats(),
+       shops = {},
+       skills = SkillSet(),
+       log = Log(),
+       lore = Lore() {
     strength.refresh(this);
     agility.refresh(this);
     fortitude.refresh(this);
@@ -117,21 +120,22 @@ class HeroSave {
   }
 
   HeroSave(
-      this.name,
-      this.race,
-      this.heroClass,
-      this.permadeath,
-      this._inventory,
-      this._equipment,
-      this._home,
-      this._crucible,
-      this.shops,
-      this.experience,
-      this.skills,
-      this.log,
-      this.lore,
-      this.gold,
-      this.maxDepth) {
+    this.name,
+    this.race,
+    this.heroClass,
+    this.permadeath,
+    this._inventory,
+    this._equipment,
+    this._home,
+    this._crucible,
+    this.shops,
+    this.experience,
+    this.skills,
+    this.log,
+    this.lore,
+    this.gold,
+    this.maxDepth,
+  ) {
     strength.refresh(this);
     agility.refresh(this);
     fortitude.refresh(this);
@@ -140,26 +144,27 @@ class HeroSave {
   }
 
   HeroSave clone() => HeroSave(
-      name,
-      race,
-      heroClass,
-      permadeath,
-      inventory.clone(),
-      equipment.clone(),
-      // TODO: Assumes home doesn't change in game.
-      home,
-      // TODO: Assumes home doesn't change in game.
-      crucible,
-      // TODO: Assumes shops don't change in game.
-      shops,
-      experience,
-      skills.clone(),
-      // Don't clone the log. The log is persistent even when the Hero dies in
-      // the dungeon, so all HeroSaves share the same object.
-      log,
-      lore.clone(),
-      gold,
-      maxDepth);
+    name,
+    race,
+    heroClass,
+    permadeath,
+    inventory.clone(),
+    equipment.clone(),
+    // TODO: Assumes home doesn't change in game.
+    home,
+    // TODO: Assumes home doesn't change in game.
+    crucible,
+    // TODO: Assumes shops don't change in game.
+    shops,
+    experience,
+    skills.clone(),
+    // Don't clone the log. The log is persistent even when the Hero dies in
+    // the dungeon, so all HeroSaves share the same object.
+    log,
+    lore.clone(),
+    gold,
+    maxDepth,
+  );
 
   /// Gets the total permament resistance provided by all equipment.
   int equipmentResistance(Element element) {

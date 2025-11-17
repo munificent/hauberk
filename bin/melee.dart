@@ -42,32 +42,37 @@ void main(List<String> arguments) {
     }
   }
 
-//  const totalPoints = 80;
-//  for (var s = 0; s <= 50; s += 5) {
-//    for (var a = 0; a <= 50; a += 5) {
-//      var f = totalPoints - s - a;
-//      if (f > 50) continue;
-//      if (f < 0) continue;
-//      if (s + a + f > totalPoints) continue;
-//
-//      var strength = 10 + s;
-//      var agility = 10 + a;
-//      var fortitude = 10 + f;
-//      runTrial(strength, agility, fortitude, "Scimitar");
-//    }
-//  }
+  //  const totalPoints = 80;
+  //  for (var s = 0; s <= 50; s += 5) {
+  //    for (var a = 0; a <= 50; a += 5) {
+  //      var f = totalPoints - s - a;
+  //      if (f > 50) continue;
+  //      if (f < 0) continue;
+  //      if (s + a + f > totalPoints) continue;
+  //
+  //      var strength = 10 + s;
+  //      var agility = 10 + a;
+  //      var fortitude = 10 + f;
+  //      runTrial(strength, agility, fortitude, "Scimitar");
+  //    }
+  //  }
 }
 
-void runTrial(int strength, int agility, int fortitude, List<ItemType> gear,
-    [Map<String, int>? results]) {
+void runTrial(
+  int strength,
+  int agility,
+  int fortitude,
+  List<ItemType> gear, [
+  Map<String, int>? results,
+]) {
   var save = content.createHero("blah");
   var game = Game(content, 1, save);
 
-//  save.attributes[Attribute.strength] = strength;
-//  save.attributes[Attribute.agility] = agility;
-//  save.attributes[Attribute.fortitude] = fortitude;
-//  save.attributes[Attribute.intellect] = 20;
-//  save.attributes[Attribute.will] = 20;
+  //  save.attributes[Attribute.strength] = strength;
+  //  save.attributes[Attribute.agility] = agility;
+  //  save.attributes[Attribute.fortitude] = fortitude;
+  //  save.attributes[Attribute.intellect] = 20;
+  //  save.attributes[Attribute.will] = 20;
 
   for (var item in gear) {
     save.equipment.tryAdd(Item(item, 1));
@@ -104,7 +109,7 @@ int findMatch(Game game, HeroSave save) {
 }
 
 int runMatch(Game game, HeroSave save, int monsterHealth) {
-//  print("match $monsterHealth");
+  //  print("match $monsterHealth");
   var rounds = 0;
   var wins = 0;
   var losses = 0;
@@ -140,14 +145,23 @@ int runMatch(Game game, HeroSave save, int monsterHealth) {
 
 bool fight(Game game, HeroSave save, int monsterHealth) {
   var breed = breeds.putIfAbsent(
-      monsterHealth,
-      () => Breed("meat", Pronoun.it, "", [Attack(null, "hits", 20)], [],
-          dropAllOf([]), SpawnLocation.anywhere, Motility.walk,
-          depth: 1,
-          meander: 0,
-          maxHealth: monsterHealth,
-          tracking: 10,
-          flags: BreedFlags.fromSet({})));
+    monsterHealth,
+    () => Breed(
+      "meat",
+      Pronoun.it,
+      "",
+      [Attack(null, "hits", 20)],
+      [],
+      dropAllOf([]),
+      SpawnLocation.anywhere,
+      Motility.walk,
+      depth: 1,
+      meander: 0,
+      maxHealth: monsterHealth,
+      tracking: 10,
+      flags: BreedFlags.fromSet({}),
+    ),
+  );
 
   var monster = Monster(breed, 0, 0, 1);
 
@@ -157,7 +171,7 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
     action.perform();
 
     if (monster.health <= 0) {
-//      print("versus $monsterHealth -> win");
+      //      print("versus $monsterHealth -> win");
       return true;
     }
 
@@ -166,7 +180,7 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
     action.perform();
 
     if (game.hero.health <= 0) {
-//      print("versus $monsterHealth -> lose");
+      //      print("versus $monsterHealth -> lose");
       return false;
     }
   }

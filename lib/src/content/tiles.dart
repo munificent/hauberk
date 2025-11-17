@@ -53,21 +53,38 @@ class Tiles {
   // Real tiles.
 
   // Walls.
-  static final flagstoneWall =
-      tile("flagstone wall", "▒", lightWarmGray, warmGray).solid();
+  static final flagstoneWall = tile(
+    "flagstone wall",
+    "▒",
+    lightWarmGray,
+    warmGray,
+  ).solid();
 
-  static final graniteWall =
-      tile("granite wall", "▒", coolGray, darkCoolGray).solid();
+  static final graniteWall = tile(
+    "granite wall",
+    "▒",
+    coolGray,
+    darkCoolGray,
+  ).solid();
 
-  static final granite1 = tile("granite", "▓", coolGray, darkCoolGray)
-      .blend(0.0, darkCoolGray, darkerCoolGray)
-      .solid();
-  static final granite2 = tile("granite", "▓", coolGray, darkCoolGray)
-      .blend(0.2, darkCoolGray, darkerCoolGray)
-      .solid();
-  static final granite3 = tile("granite", "▓", coolGray, darkCoolGray)
-      .blend(0.4, darkCoolGray, darkerCoolGray)
-      .solid();
+  static final granite1 = tile(
+    "granite",
+    "▓",
+    coolGray,
+    darkCoolGray,
+  ).blend(0.0, darkCoolGray, darkerCoolGray).solid();
+  static final granite2 = tile(
+    "granite",
+    "▓",
+    coolGray,
+    darkCoolGray,
+  ).blend(0.2, darkCoolGray, darkerCoolGray).solid();
+  static final granite3 = tile(
+    "granite",
+    "▓",
+    coolGray,
+    darkCoolGray,
+  ).blend(0.4, darkCoolGray, darkerCoolGray).solid();
 
   // Floors.
   static final flagstoneFloor = tile("flagstone floor", "·", warmGray).open();
@@ -75,30 +92,47 @@ class Tiles {
   static final graniteFloor = tile("granite floor", "·", coolGray).open();
 
   // Doors.
-  static final openDoor =
-      tile("open door", "○", tan, darkBrown).onOperate(_closeDoor).open();
-  static final closedDoor =
-      tile("closed door", "◙", tan, darkBrown).onOperate(_openDoor).door();
+  static final openDoor = tile(
+    "open door",
+    "○",
+    tan,
+    darkBrown,
+  ).onOperate(_closeDoor).open();
+  static final closedDoor = tile(
+    "closed door",
+    "◙",
+    tan,
+    darkBrown,
+  ).onOperate(_openDoor).door();
 
-  static final openSquareDoor = tile("open square door", "♂", tan, darkBrown)
-      .onOperate(_closeSquareDoor)
-      .open();
+  static final openSquareDoor = tile(
+    "open square door",
+    "♂",
+    tan,
+    darkBrown,
+  ).onOperate(_closeSquareDoor).open();
 
-  static final closedSquareDoor =
-      tile("closed square door", "♀", tan, darkBrown)
-          .onOperate(_openSquareDoor)
-          .door();
+  static final closedSquareDoor = tile(
+    "closed square door",
+    "♀",
+    tan,
+    darkBrown,
+  ).onOperate(_openSquareDoor).door();
 
-  static final openBarredDoor =
-      tile("open barred door", "♂", lightWarmGray, coolGray)
-          .onOperate(_closeBarredDoor)
-          .open();
+  static final openBarredDoor = tile(
+    "open barred door",
+    "♂",
+    lightWarmGray,
+    coolGray,
+  ).onOperate(_closeBarredDoor).open();
 
   // TODO: Should be able to see through but not fly through.
-  static final closedBarredDoor =
-      tile("closed barred door", "♪", lightWarmGray, coolGray)
-          .onOperate(_openBarredDoor)
-          .transparentDoor();
+  static final closedBarredDoor = tile(
+    "closed barred door",
+    "♪",
+    lightWarmGray,
+    coolGray,
+  ).onOperate(_openBarredDoor).transparentDoor();
 
   // Unsorted.
 
@@ -108,19 +142,29 @@ class Tiles {
   static final lowWall = tile("low wall", "%", lightWarmGray).obstacle();
 
   // TODO: Different character that doesn't look like bridge?
-  static final stairs =
-      tile("stairs", "≡", lightWarmGray, coolGray).to(TilePortals.exit).open();
+  static final stairs = tile(
+    "stairs",
+    "≡",
+    lightWarmGray,
+    coolGray,
+  ).to(TilePortals.exit).open();
   static final bridge = tile("bridge", "≡", tan, darkBrown).open();
 
   // TODO: Stop glowing when stepped on?
   static final glowingMoss = Tiles.tile("moss", "░", aqua).emanate(128).open();
 
-  static final water = tile("water", "≈", blue, darkBlue)
-      .animate(10, 0.5, darkBlue, darkerCoolGray)
-      .emanate(32)
-      .water();
-  static final steppingStone =
-      tile("stepping stone", "•", lightCoolGray, darkBlue).open();
+  static final water = tile(
+    "water",
+    "≈",
+    blue,
+    darkBlue,
+  ).animate(10, 0.5, darkBlue, darkerCoolGray).emanate(32).water();
+  static final steppingStone = tile(
+    "stepping stone",
+    "•",
+    lightCoolGray,
+    darkBlue,
+  ).open();
 
   static final dirt = tile("dirt", "·", brown).open();
   static final dirt2 = tile("dirt2", "φ", brown).open();
@@ -133,12 +177,16 @@ class Tiles {
   // Decor.
 
   static final openChest = tile("open chest", "⌠", tan).obstacle();
-  static final closedChest = tile("closed chest", "⌡", tan)
-      .onOperate((pos) => OpenChestAction(pos))
-      .obstacle();
-  static final closedBarrel = tile("closed barrel", "°", tan)
-      .onOperate((pos) => OpenBarrelAction(pos))
-      .obstacle();
+  static final closedChest = tile(
+    "closed chest",
+    "⌡",
+    tan,
+  ).onOperate((pos) => OpenChestAction(pos)).obstacle();
+  static final closedBarrel = tile(
+    "closed barrel",
+    "°",
+    tan,
+  ).onOperate((pos) => OpenBarrelAction(pos)).obstacle();
   static final openBarrel = tile("open barrel", "∙", tan).obstacle();
 
   static final tableTopLeft = tile("table", "┌", tan).obstacle();
@@ -158,13 +206,23 @@ class Tiles {
   static final candle = tile("candle", "≥", sandal).emanate(128).obstacle();
 
   // TODO: Animate.
-  static final wallTorch =
-      tile("wall torch", "≤", gold, coolGray).emanate(192).solid();
+  static final wallTorch = tile(
+    "wall torch",
+    "≤",
+    gold,
+    coolGray,
+  ).emanate(192).solid();
 
   // TODO: Different glyph.
   // TODO: Animate.
-  static final braziers = multi("brazier", "≤", tan, null, 5,
-      (tile, n) => tile.emanate(192 - n * 12).obstacle());
+  static final braziers = multi(
+    "brazier",
+    "≤",
+    tan,
+    null,
+    5,
+    (tile, n) => tile.emanate(192 - n * 12).obstacle(),
+  );
 
   static final statue = tile("statue", "P", ash, coolGray).obstacle();
 
@@ -176,15 +234,21 @@ class Tiles {
   // TODO: Not used right now.
   static final brownJellyStain = tile("brown jelly stain", "·", tan).open();
 
-  static final grayJellyStain =
-      tile("gray jelly stain", "·", darkCoolGray).open();
+  static final grayJellyStain = tile(
+    "gray jelly stain",
+    "·",
+    darkCoolGray,
+  ).open();
 
   static final greenJellyStain = tile("green jelly stain", "·", lima).open();
 
   static final redJellyStain = tile("red jelly stain", "·", red).open();
 
-  static final violetJellyStain =
-      tile("violet jelly stain", "·", purple).open();
+  static final violetJellyStain = tile(
+    "violet jelly stain",
+    "·",
+    purple,
+  ).open();
 
   static final whiteJellyStain = tile("white jelly stain", "·", ash).open();
 
@@ -193,47 +257,88 @@ class Tiles {
 
   // Town tiles.
 
-  static final dungeonEntrance =
-      tile("dungeon entrance", "≡", lightWarmGray, coolGray)
-          .to(TilePortals.dungeon)
-          .open();
+  static final dungeonEntrance = tile(
+    "dungeon entrance",
+    "≡",
+    lightWarmGray,
+    coolGray,
+  ).to(TilePortals.dungeon).open();
 
-  static final home =
-      tile("home entrance", "○", sandal).to(TilePortals.home).open();
+  static final home = tile(
+    "home entrance",
+    "○",
+    sandal,
+  ).to(TilePortals.home).open();
 
-  static final shop1 =
-      tile("shop entrance", "○", carrot).to(TilePortals.shop1).open();
+  static final shop1 = tile(
+    "shop entrance",
+    "○",
+    carrot,
+  ).to(TilePortals.shop1).open();
 
-  static final shop2 =
-      tile("shop entrance", "○", gold).to(TilePortals.shop2).open();
+  static final shop2 = tile(
+    "shop entrance",
+    "○",
+    gold,
+  ).to(TilePortals.shop2).open();
 
-  static final shop3 =
-      tile("shop entrance", "○", lima).to(TilePortals.shop3).open();
+  static final shop3 = tile(
+    "shop entrance",
+    "○",
+    lima,
+  ).to(TilePortals.shop3).open();
 
-  static final shop4 =
-      tile("shop entrance", "○", peaGreen).to(TilePortals.shop4).open();
+  static final shop4 = tile(
+    "shop entrance",
+    "○",
+    peaGreen,
+  ).to(TilePortals.shop4).open();
 
-  static final shop5 =
-      tile("shop entrance", "○", aqua).to(TilePortals.shop5).open();
+  static final shop5 = tile(
+    "shop entrance",
+    "○",
+    aqua,
+  ).to(TilePortals.shop5).open();
 
-  static final shop6 =
-      tile("shop entrance", "○", lightAqua).to(TilePortals.shop6).open();
+  static final shop6 = tile(
+    "shop entrance",
+    "○",
+    lightAqua,
+  ).to(TilePortals.shop6).open();
 
-  static final shop7 =
-      tile("shop entrance", "○", blue).to(TilePortals.shop7).open();
+  static final shop7 = tile(
+    "shop entrance",
+    "○",
+    blue,
+  ).to(TilePortals.shop7).open();
 
-  static final shop8 =
-      tile("shop entrance", "○", purple).to(TilePortals.shop8).open();
+  static final shop8 = tile(
+    "shop entrance",
+    "○",
+    purple,
+  ).to(TilePortals.shop8).open();
 
-  static final shop9 =
-      tile("shop entrance", "○", red).to(TilePortals.shop9).open();
+  static final shop9 = tile(
+    "shop entrance",
+    "○",
+    red,
+  ).to(TilePortals.shop9).open();
 
-  static TileBuilder tile(String name, Object char, Color fore,
-          [Color? back]) =>
-      TileBuilder(name, char, fore, back);
+  static TileBuilder tile(
+    String name,
+    Object char,
+    Color fore, [
+    Color? back,
+  ]) => TileBuilder(name, char, fore, back);
 
-  static List<TileType> multi(String name, Object char, Color fore, Color? back,
-      int count, TileType Function(TileBuilder, int) generate) {
+  static List<TileType> multi(
+    String name,
+    Object char,
+    Color fore,
+    Color? back,
+    int count,
+    TileType Function(TileBuilder, int) generate,
+  ) {
     var result = <TileType>[];
     for (var i = 0; i < count; i++) {
       var builder = tile(name, char, fore, back);
@@ -274,7 +379,7 @@ class Tiles {
     closedBarrel: 40,
     candle: 1,
     chair: 10,
-    spiderweb: 1
+    spiderweb: 1,
   };
 
   /// How long [tile] burns before going out.
@@ -307,7 +412,7 @@ class Tiles {
     closedBarrel: 40,
     candle: 60,
     chair: 40,
-    spiderweb: 20
+    spiderweb: 20,
   };
 
   /// What types [tile] can turn into when it finishes burning.
@@ -326,7 +431,7 @@ class Tiles {
     treeAlt2: [dirt, dirt2],
     candle: [tableCenter],
     // TODO: This doesn't handle spiderwebs on other floors.
-    spiderweb: [flagstoneFloor]
+    spiderweb: [flagstoneFloor],
   };
 }
 
@@ -350,8 +455,11 @@ class TileBuilder {
   TileBuilder blend(double amount, Color fore, Color back) {
     for (var i = 0; i < glyphs.length; i++) {
       var glyph = glyphs[i];
-      glyphs[i] = Glyph.fromCharCode(glyph.char, glyph.fore.blend(fore, amount),
-          glyph.back.blend(back, amount));
+      glyphs[i] = Glyph.fromCharCode(
+        glyph.char,
+        glyph.fore.blend(fore, amount),
+        glyph.back.blend(back, amount),
+      );
     }
 
     return this;
@@ -360,10 +468,14 @@ class TileBuilder {
   TileBuilder animate(int count, double maxMix, Color fore, Color back) {
     var glyph = glyphs.first;
     for (var i = 1; i < count; i++) {
-      var mixedFore =
-          glyph.fore.blend(fore, lerpDouble(i, 0, count, 0.0, maxMix));
-      var mixedBack =
-          glyph.back.blend(back, lerpDouble(i, 0, count, 0.0, maxMix));
+      var mixedFore = glyph.fore.blend(
+        fore,
+        lerpDouble(i, 0, count, 0.0, maxMix),
+      );
+      var mixedBack = glyph.back.blend(
+        back,
+        lerpDouble(i, 0, count, 0.0, maxMix),
+      );
 
       glyphs.add(Glyph.fromCharCode(glyph.char, mixedFore, mixedBack));
     }
@@ -399,8 +511,14 @@ class TileBuilder {
   TileType water() => _motility(Motility.fly | Motility.swim);
 
   TileType _motility(Motility motility) {
-    return TileType(name, glyphs.length == 1 ? glyphs.first : glyphs, motility,
-        portal: _portal, emanation: _emanation, onOperate: _onOperate);
+    return TileType(
+      name,
+      glyphs.length == 1 ? glyphs.first : glyphs,
+      motility,
+      portal: _portal,
+      emanation: _emanation,
+      onOperate: _onOperate,
+    );
   }
 }
 

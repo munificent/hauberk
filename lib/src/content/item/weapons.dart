@@ -142,11 +142,13 @@ void weapons() {
     ..depth(20, to: 50)
     ..frequency(0.2)
     ..weapon(12, heft: 6)
-    ..artifact((affix) => affix
-      ..parameter(8, max: 12, boostOneIn: 3)
-      ..damage(bonus: equalsParam)
-      ..agility(fixed(2))
-      ..brand(Elements.dark));
+    ..artifact(
+      (affix) => affix
+        ..parameter(8, max: 12, boostOneIn: 3)
+        ..damage(bonus: equalsParam)
+        ..agility(fixed(2))
+        ..brand(Elements.dark),
+    );
 
   category(CharCode.feminineOrdinalIndicator, verb: "slash[es]")
     ..tag("equipment/weapon/sword")

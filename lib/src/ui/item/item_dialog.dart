@@ -43,10 +43,10 @@ abstract class ItemDialog extends Screen<Input> {
   /// Locations of items that can be used with this command. When a command
   /// allows multiple locations, players can switch between them.
   List<ItemLocation> get allowedLocations => const [
-        ItemLocation.inventory,
-        ItemLocation.onGround,
-        ItemLocation.equipment
-      ];
+    ItemLocation.inventory,
+    ItemLocation.onGround,
+    ItemLocation.equipment,
+  ];
 
   /// If the player must select how many items in a stack, returns `true`.
   bool get needsCount;
@@ -209,10 +209,11 @@ abstract class ItemDialog extends Screen<Input> {
             when gameScreen.itemPanel.onGroundVisible &&
                 itemCount > ItemPanel.groundPanelSize =>
           math.max(
-              0,
-              gameScreen.itemPanel.onGroundTop -
-                  itemCount +
-                  ItemPanel.groundPanelSize),
+            0,
+            gameScreen.itemPanel.onGroundTop -
+                itemCount +
+                ItemPanel.groundPanelSize,
+          ),
 
         // Show the on ground items over the panel.
         ItemLocation.onGround when gameScreen.itemPanel.onGroundVisible =>
@@ -227,7 +228,9 @@ abstract class ItemDialog extends Screen<Input> {
       // Always make it at least 2 wider than the item panel. That way, with
       // the letters, the items stay in the same position.
       itemsWidth = math.max(
-          preferredItemListWidth, gameScreen.itemPanel.bounds.width + 2);
+        preferredItemListWidth,
+        gameScreen.itemPanel.bounds.width + 2,
+      );
       itemsLeft = terminal.width - itemsWidth;
     } else {
       itemsWidth = preferredItemListWidth;
@@ -235,18 +238,21 @@ abstract class ItemDialog extends Screen<Input> {
       itemsTop = gameScreen.stagePanel.bounds.y;
     }
 
-    renderItems(terminal, items,
-        left: itemsLeft,
-        top: itemsTop,
-        width: itemsWidth,
-        itemSlotCount: itemCount,
-        save: gameScreen.game.hero.save,
-        canSelectAny: true,
-        capitalize: _selectedItem == null && _shiftDown,
-        showPrices: showPrices,
-        inspectedItem: _inspected,
-        canSelect: _canSelect,
-        getPrice: getPrice);
+    renderItems(
+      terminal,
+      items,
+      left: itemsLeft,
+      top: itemsTop,
+      width: itemsWidth,
+      itemSlotCount: itemCount,
+      save: gameScreen.game.hero.save,
+      canSelectAny: true,
+      capitalize: _selectedItem == null && _shiftDown,
+      showPrices: showPrices,
+      inspectedItem: _inspected,
+      canSelect: _canSelect,
+      getPrice: getPrice,
+    );
 
     String queryText;
     if (_selectedItem == null) {
@@ -268,13 +274,13 @@ abstract class ItemDialog extends Screen<Input> {
       if (_shiftDown) {
         helpKeys = {
           "A-Z": "Inspect item",
-          if (_inspected != null) "`": "Hide inspector"
+          if (_inspected != null) "`": "Hide inspector",
         };
       } else {
         helpKeys = {
           "A-Z": "Select item",
           "Shift": "Inspect item",
-          if (canSwitchLocations) "Tab": "Switch view"
+          if (canSwitchLocations) "Tab": "Switch view",
         };
       }
     } else {

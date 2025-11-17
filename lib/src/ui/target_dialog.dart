@@ -169,7 +169,11 @@ class TargetDialog extends Screen<Input> {
       }
 
       _gameScreen.drawStageGlyph(
-          terminal, pos.x, pos.y, Glyph.fromCharCode(charCode, gold));
+        terminal,
+        pos.x,
+        pos.y,
+        Glyph.fromCharCode(charCode, gold),
+      );
     }
 
     var target = _gameScreen.currentTarget;
@@ -199,11 +203,14 @@ class TargetDialog extends Screen<Input> {
         }
 
         _gameScreen.drawStageGlyph(
-            terminal,
-            pos.x,
-            pos.y,
-            Glyph.fromCharCode(
-                CharCode.bullet, (frame == 0) ? gold : darkCoolGray));
+          terminal,
+          pos.x,
+          pos.y,
+          Glyph.fromCharCode(
+            CharCode.bullet,
+            (frame == 0) ? gold : darkCoolGray,
+          ),
+        );
         frame = (frame + _numFrames - 1) % _numFrames;
       }
     }
@@ -212,16 +219,36 @@ class TargetDialog extends Screen<Input> {
     var reticleColor = darkCoolGray;
     if (reachedTarget) reticleColor = (frame == 0) ? gold : darkCoolGray;
     _gameScreen.drawStageGlyph(
-        terminal, target.x - 1, target.y, Glyph('-', reticleColor));
+      terminal,
+      target.x - 1,
+      target.y,
+      Glyph('-', reticleColor),
+    );
     _gameScreen.drawStageGlyph(
-        terminal, target.x + 1, target.y, Glyph('-', reticleColor));
+      terminal,
+      target.x + 1,
+      target.y,
+      Glyph('-', reticleColor),
+    );
     _gameScreen.drawStageGlyph(
-        terminal, target.x, target.y - 1, Glyph('|', reticleColor));
+      terminal,
+      target.x,
+      target.y - 1,
+      Glyph('|', reticleColor),
+    );
     _gameScreen.drawStageGlyph(
-        terminal, target.x, target.y + 1, Glyph('|', reticleColor));
+      terminal,
+      target.x,
+      target.y + 1,
+      Glyph('|', reticleColor),
+    );
     if (!reachedTarget) {
       _gameScreen.drawStageGlyph(
-          terminal, target.x, target.y, Glyph('X', reticleColor));
+        terminal,
+        target.x,
+        target.y,
+        Glyph('X', reticleColor),
+      );
     }
 
     var helpKeys = <String, String>{};
@@ -278,14 +305,18 @@ class TargetDialog extends Screen<Input> {
     }
 
     var nearest = _findLowest<Monster>(
-        ahead, (monster) => (monster.pos - target).lengthSquared);
+      ahead,
+      (monster) => (monster.pos - target).lengthSquared,
+    );
     if (nearest != null) {
       _gameScreen.targetActor(nearest);
       return;
     }
 
     var farthest = _findHighest<Monster>(
-        behind, (monster) => (monster.pos - target).lengthSquared);
+      behind,
+      (monster) => (monster.pos - target).lengthSquared,
+    );
     if (farthest != null) {
       _gameScreen.targetActor(farthest);
     }

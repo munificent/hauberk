@@ -17,23 +17,37 @@ class ResourceSet<T> {
 
   Iterable<T> get all => _resources.values.map((resource) => resource.object);
 
-  void add(T object,
-      {String? name, int? depth, double? frequency, String? tags}) {
+  void add(
+    T object, {
+    String? name,
+    int? depth,
+    double? frequency,
+    String? tags,
+  }) {
     _add(object, name, depth, depth, frequency, frequency, tags);
   }
 
-  void addRanged(T object,
-      {String? name,
-      int? start,
-      int? end,
-      double? startFrequency,
-      double? endFrequency,
-      String? tags}) {
+  void addRanged(
+    T object, {
+    String? name,
+    int? start,
+    int? end,
+    double? startFrequency,
+    double? endFrequency,
+    String? tags,
+  }) {
     _add(object, name, start, end, startFrequency, endFrequency, tags);
   }
 
-  void _add(T object, String? name, int? startDepth, int? endDepth,
-      double? startFrequency, double? endFrequency, String? tags) {
+  void _add(
+    T object,
+    String? name,
+    int? startDepth,
+    int? endDepth,
+    double? startFrequency,
+    double? endFrequency,
+    String? tags,
+  ) {
     name ??= _resources.length.toString();
     startDepth ??= 1;
     endDepth ??= startDepth;
@@ -44,8 +58,13 @@ class ResourceSet<T> {
       throw ArgumentError('Already have a resource named "$name".');
     }
 
-    var resource =
-        _Resource(object, startDepth, endDepth, startFrequency, endFrequency);
+    var resource = _Resource(
+      object,
+      startDepth,
+      endDepth,
+      startFrequency,
+      endFrequency,
+    );
     _resources[name] = resource;
 
     if (tags != null && tags != "") {
@@ -158,9 +177,11 @@ class ResourceSet<T> {
 
     return _runQuery(label, depth, (resource) {
       var scale = 1.0;
-      for (_Tag<T>? thisTag = goalTag;
-          thisTag != null;
-          thisTag = thisTag.parent) {
+      for (
+        _Tag<T>? thisTag = goalTag;
+        thisTag != null;
+        thisTag = thisTag.parent
+      ) {
         for (var resourceTag in resource._tags) {
           if (resourceTag.contains(thisTag)) return scale;
         }
@@ -204,7 +225,10 @@ class ResourceSet<T> {
   }
 
   T? _runQuery(
-      String name, int depth, double Function(_Resource<T> resource) scale) {
+    String name,
+    int depth,
+    double Function(_Resource<T> resource) scale,
+  ) {
     // Reuse a cached query, if possible.
     var key = _QueryKey(name, depth);
     var query = _queries[key];
@@ -250,8 +274,13 @@ class _Resource<T> {
 
   final Set<_Tag<T>> _tags = {};
 
-  _Resource(this.object, this.startDepth, this.endDepth, this.startFrequency,
-      this.endFrequency);
+  _Resource(
+    this.object,
+    this.startDepth,
+    this.endDepth,
+    this.startFrequency,
+    this.endFrequency,
+  );
 
   /// The resource's frequency at [depth].
   ///
@@ -261,7 +290,12 @@ class _Resource<T> {
   double frequencyAtDepth(int depth) {
     if (startDepth == endDepth) return startFrequency;
     return lerpDouble(
-        depth, startDepth, endDepth, startFrequency, endFrequency);
+      depth,
+      startDepth,
+      endDepth,
+      startFrequency,
+      endFrequency,
+    );
   }
 
   /// Gets the probability adjustment for choosing this resource at [depth].
@@ -397,8 +431,9 @@ class _ResourceQuery<T> {
     for (var i = 0; i < resources.length; i++) {
       var chance = chances[i];
       if (i > 0) chance -= chances[i - 1];
-      var percent =
-          (100.0 * chance / totalChance).toStringAsFixed(5).padLeft(8);
+      var percent = (100.0 * chance / totalChance)
+          .toStringAsFixed(5)
+          .padLeft(8);
       print("$percent% ${resources[i].object}");
     }
   }

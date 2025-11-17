@@ -57,30 +57,40 @@ class SelectSkillDialog extends Screen<Input> {
     Draw.helpKeys(terminal, {
       "A-Z": "Select skill",
       // "1-9": "Bind quick key",
-      "`": "Exit"
+      "`": "Exit",
     });
 
     // If the item panel is visible, put it there. Otherwise, put it in the
     // stage area.
     if (_gameScreen.itemPanel.isVisible) {
       terminal = terminal.rect(
-          _gameScreen.itemPanel.bounds.left,
-          _gameScreen.itemPanel.bounds.top,
-          _gameScreen.itemPanel.bounds.width,
-          _gameScreen.itemPanel.bounds.height);
+        _gameScreen.itemPanel.bounds.left,
+        _gameScreen.itemPanel.bounds.top,
+        _gameScreen.itemPanel.bounds.width,
+        _gameScreen.itemPanel.bounds.height,
+      );
     } else {
       terminal = terminal.rect(
-          _gameScreen.stagePanel.bounds.left,
-          _gameScreen.stagePanel.bounds.top,
-          _gameScreen.stagePanel.bounds.width,
-          _gameScreen.stagePanel.bounds.height);
+        _gameScreen.stagePanel.bounds.left,
+        _gameScreen.stagePanel.bounds.top,
+        _gameScreen.stagePanel.bounds.width,
+        _gameScreen.stagePanel.bounds.height,
+      );
     }
 
     // Draw a box for the contents.
     var height = math.max(_skills.length + 2, 3);
 
-    Draw.frame(terminal, 0, 0, terminal.width, height,
-        color: UIHue.selection, label: "Use which skill?", labelSelected: true);
+    Draw.frame(
+      terminal,
+      0,
+      0,
+      terminal.width,
+      height,
+      color: UIHue.selection,
+      label: "Use which skill?",
+      labelSelected: true,
+    );
 
     terminal = terminal.rect(1, 1, terminal.width - 2, terminal.height - 2);
 
@@ -95,12 +105,20 @@ class SelectSkillDialog extends Screen<Input> {
 
       if (skill.unusableReason(_gameScreen.game) case var reason?) {
         terminal.writeAt(
-            terminal.width - reason.length - 2, y, "($reason)", UIHue.disabled);
+          terminal.width - reason.length - 2,
+          y,
+          "($reason)",
+          UIHue.disabled,
+        );
         terminal.writeAt(3, y, skill.useName, UIHue.disabled);
       } else {
         terminal.writeAt(0, y, " )   ", UIHue.disabled);
         terminal.writeAt(
-            0, y, "abcdefghijklmnopqrstuvwxyz"[y], UIHue.selection);
+          0,
+          y,
+          "abcdefghijklmnopqrstuvwxyz"[y],
+          UIHue.selection,
+        );
         terminal.writeAt(3, y, skill.useName, UIHue.primary);
       }
     }

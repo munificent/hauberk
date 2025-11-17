@@ -38,7 +38,7 @@ class MonsterPathfinder extends Pathfinder<Direction?> {
   Path? _nearest;
 
   MonsterPathfinder(Stage stage, this._monster)
-      : super(stage, _monster.pos, stage.game.hero.pos);
+    : super(stage, _monster.pos, stage.game.hero.pos);
 
   @override
   Direction? processStep(Path path) {

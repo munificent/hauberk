@@ -28,13 +28,20 @@ void renderItems(
   bool Function(Item item) canSelect = _defaultCanSelect,
   int? Function(Item item) getPrice = _defaultGetPrice,
 }) {
-  Draw.frame(terminal, left, top, width, itemSlotCount + 2,
-      color: canSelectAny ? UIHue.selection : UIHue.disabled,
-      label: items.name,
-      labelSelected: canSelectAny);
+  Draw.frame(
+    terminal,
+    left,
+    top,
+    width,
+    itemSlotCount + 2,
+    color: canSelectAny ? UIHue.selection : UIHue.disabled,
+    label: items.name,
+    labelSelected: canSelectAny,
+  );
 
-  var letters =
-      capitalize ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz";
+  var letters = capitalize
+      ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      : "abcdefghijklmnopqrstuvwxyz";
 
   // Shift the stats over to make room for prices, if needed.
   var statRight = left + width - 1;
@@ -43,8 +50,10 @@ void renderItems(
     for (var item in items) {
       var price = getPrice(item);
       if (price != null) {
-        statRight =
-            math.min(statRight, left + width - formatMoney(price).length - 3);
+        statRight = math.min(
+          statRight,
+          left + width - formatMoney(price).length - 3,
+        );
       }
     }
   }
@@ -59,8 +68,12 @@ void renderItems(
     // items on the ground.
     if (slot >= itemSlotCount) {
       var more = items.length - itemSlotCount;
-      terminal.writeAt(x + 1, top + itemSlotCount + 1, " $more more... ",
-          canSelectAny ? UIHue.selection : UIHue.disabled);
+      terminal.writeAt(
+        x + 1,
+        top + itemSlotCount + 1,
+        " $more more... ",
+        canSelectAny ? UIHue.selection : UIHue.disabled,
+      );
       break;
     }
 
@@ -75,7 +88,11 @@ void renderItems(
         terminal.writeAt(x, y, "↑ (two-handed)", UIHue.disabled);
       } else {
         terminal.writeAt(
-            x + 2, y, "(${items.slotTypes[slot]})", UIHue.disabled);
+          x + 2,
+          y,
+          "(${items.slotTypes[slot]})",
+          UIHue.disabled,
+        );
       }
       letter++;
       slot++;
@@ -121,7 +138,11 @@ void renderItems(
       var priceLeft = left + width - 1 - price.length - 1;
       terminal.writeAt(priceLeft, y, "\$", enabled ? tan : UIHue.disabled);
       terminal.writeAt(
-          priceLeft + 1, y, price, enabled ? gold : UIHue.disabled);
+        priceLeft + 1,
+        y,
+        price,
+        enabled ? gold : UIHue.disabled,
+      );
 
       nameRight = priceLeft;
     }
@@ -131,7 +152,11 @@ void renderItems(
       var statLeft = statRight - string.length - 1;
       terminal.drawChar(statLeft, y, symbol, enabled ? dark : UIHue.disabled);
       terminal.writeAt(
-          statLeft + 1, y, string, enabled ? light : UIHue.disabled);
+        statLeft + 1,
+        y,
+        string,
+        enabled ? light : UIHue.disabled,
+      );
 
       nameRight = statLeft;
     }
@@ -141,7 +166,11 @@ void renderItems(
     if (item.attack != null) {
       var hit = item.attack!.createHit();
       drawStat(
-          CharCode.feminineOrdinalIndicator, hit.damageString, carrot, brown);
+        CharCode.feminineOrdinalIndicator,
+        hit.damageString,
+        carrot,
+        brown,
+      );
     } else if (item.armor != 0) {
       drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
     }
@@ -158,8 +187,11 @@ void renderItems(
         if (left + width + ItemInspector.width > terminal.width) {
           // No room on the right so draw it below.
           terminal.writeAt(left + width - 1, y, "▼", UIHue.selection);
-          inspector.draw(left + (width - ItemInspector.width) ~/ 2,
-              top + itemSlotCount + 3, terminal);
+          inspector.draw(
+            left + (width - ItemInspector.width) ~/ 2,
+            top + itemSlotCount + 3,
+            terminal,
+          );
         } else {
           terminal.writeAt(left + width - 1, y, "►", UIHue.selection);
           inspector.draw(left + width, y, terminal);
@@ -182,17 +214,20 @@ int? _defaultGetPrice(Item item) => item.price;
 String formatMoney(int price) {
   var result = price.toString();
   if (price > 999999999) {
-    result = "${result.substring(0, result.length - 9)},"
+    result =
+        "${result.substring(0, result.length - 9)},"
         "${result.substring(result.length - 9)}";
   }
 
   if (price > 999999) {
-    result = "${result.substring(0, result.length - 6)},"
+    result =
+        "${result.substring(0, result.length - 6)},"
         "${result.substring(result.length - 6)}";
   }
 
   if (price > 999) {
-    result = "${result.substring(0, result.length - 3)},"
+    result =
+        "${result.substring(0, result.length - 3)},"
         "${result.substring(result.length - 3)}";
   }
 

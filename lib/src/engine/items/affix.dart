@@ -94,27 +94,30 @@ class AffixType {
   final ParameterizeInt _priceBonus;
   final ParameterizeDouble _priceScale;
 
-  AffixType(this.id, this._nameTemplate, this.sortIndex,
-      {RollParameter? rollParameter,
-      required ParameterizeDouble? heftScale,
-      required ParameterizeInt? weightBonus,
-      required ParameterizeInt? strikeBonus,
-      required ParameterizeDouble? damageScale,
-      required ParameterizeInt? damageBonus,
-      ParameterizeInt? armorBonus,
-      Element? brand,
-      ParameterizeDouble? priceScale,
-      ParameterizeInt? priceBonus})
-      : _rollParameter = rollParameter,
-        _heftScale = heftScale ?? _noScale,
-        _weightBonus = weightBonus ?? _noBonus,
-        _strikeBonus = strikeBonus ?? _noBonus,
-        _damageScale = damageScale ?? _noScale,
-        _damageBonus = damageBonus ?? _noBonus,
-        _armorBonus = armorBonus ?? _noBonus,
-        brand = brand ?? Element.none,
-        _priceScale = priceScale ?? _noScale,
-        _priceBonus = priceBonus ?? _noBonus;
+  AffixType(
+    this.id,
+    this._nameTemplate,
+    this.sortIndex, {
+    RollParameter? rollParameter,
+    required ParameterizeDouble? heftScale,
+    required ParameterizeInt? weightBonus,
+    required ParameterizeInt? strikeBonus,
+    required ParameterizeDouble? damageScale,
+    required ParameterizeInt? damageBonus,
+    ParameterizeInt? armorBonus,
+    Element? brand,
+    ParameterizeDouble? priceScale,
+    ParameterizeInt? priceBonus,
+  }) : _rollParameter = rollParameter,
+       _heftScale = heftScale ?? _noScale,
+       _weightBonus = weightBonus ?? _noBonus,
+       _strikeBonus = strikeBonus ?? _noBonus,
+       _damageScale = damageScale ?? _noScale,
+       _damageBonus = damageBonus ?? _noBonus,
+       _armorBonus = armorBonus ?? _noBonus,
+       brand = brand ?? Element.none,
+       _priceScale = priceScale ?? _noScale,
+       _priceBonus = priceBonus ?? _noBonus;
 
   /// Creates a new affix with this affix type, rolling a random parameter for
   /// it as needed.

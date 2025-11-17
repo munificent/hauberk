@@ -15,7 +15,7 @@ class ForfeitPopup extends Popup {
 
     return const [
       "Are you sure you want to forfeit the level?",
-      "You will lose all items and experience gained in the dungeon."
+      "You will lose all items and experience gained in the dungeon.",
     ];
   }
 

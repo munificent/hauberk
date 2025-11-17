@@ -12,19 +12,36 @@ void arachnids() {
     ..groups("spider")
     ..sense(see: 4, hear: 2)
     ..stain(Tiles.spiderweb);
-  breed("little brown spider", 3, tan, 2, dodge: 30, meander: 40)
-      .attack("bite[s]", 5, Elements.poison);
+  breed(
+    "little brown spider",
+    3,
+    tan,
+    2,
+    dodge: 30,
+    meander: 40,
+  ).attack("bite[s]", 5, Elements.poison);
   describe("Seems harmless enough. What's that dripping from its pedipalps?");
 
-  breed("gray spider", 7, coolGray, 20, dodge: 30, meander: 30)
-      .attack("bite[s]", 5, Elements.poison);
+  breed(
+    "gray spider",
+    7,
+    coolGray,
+    20,
+    dodge: 30,
+    meander: 30,
+  ).attack("bite[s]", 5, Elements.poison);
 
   breed("spiderling", 9, ash, 14, dodge: 35, meander: 50)
     ..count(2, 7)
     ..attack("bite[s]", 10, Elements.poison);
 
-  breed("giant spider", 12, darkBlue, 40, meander: 30)
-      .attack("bite[s]", 7, Elements.poison);
+  breed(
+    "giant spider",
+    12,
+    darkBlue,
+    40,
+    meander: 30,
+  ).attack("bite[s]", 7, Elements.poison);
   describe("""Like a large dog, if the dog had eight articulated legs, eight
   glittering eyes, and wanted nothing more than to kill you.""");
 }
@@ -115,7 +132,7 @@ void dragons() {
     ("red", Elements.fire, pink, red),
     ("gold", Elements.light, buttermilk, gold),
     ("black", Elements.dark, coolGray, darkCoolGray),
-    ("ethereal", Elements.spirit, aqua, darkBlue)
+    ("ethereal", Elements.spirit, aqua, darkBlue),
   ];
 
   var max = dragons.length - 1;
@@ -128,17 +145,26 @@ void dragons() {
 
   var i = 0;
   for (var (name, element, color, _) in dragons) {
-    var dragon = breed("juvenile $name dragon", lerpInt(i, 0, max, 38, 53),
-        color, lerpInt(i, 0, max, 150, 350))
-      ..attack("bite[s]", lerpInt(i, 0, max, 20, 40))
-      ..attack("claw[s]", lerpInt(i, 0, max, 15, 25))
-      ..drop("treasure", count: lerpInt(i, 0, max, 2, 10))
-      ..drop("magic")
-      ..drop("equipment");
+    var dragon =
+        breed(
+            "juvenile $name dragon",
+            lerpInt(i, 0, max, 38, 53),
+            color,
+            lerpInt(i, 0, max, 150, 350),
+          )
+          ..attack("bite[s]", lerpInt(i, 0, max, 20, 40))
+          ..attack("claw[s]", lerpInt(i, 0, max, 15, 25))
+          ..drop("treasure", count: lerpInt(i, 0, max, 2, 10))
+          ..drop("magic")
+          ..drop("equipment");
 
     if (element != Element.none) {
-      dragon.cone(element,
-          rate: 11, damage: lerpInt(i, 0, max, 40, 100), range: 5);
+      dragon.cone(
+        element,
+        rate: 11,
+        damage: lerpInt(i, 0, max, 40, 100),
+        range: 5,
+      );
     }
 
     i++;
@@ -152,13 +178,18 @@ void dragons() {
 
   i = 0;
   for (var (name, element, _, color) in dragons) {
-    var dragon = breed("$name dragon", lerpInt(i, 0, max, 48, 62), color,
-        lerpInt(i, 0, max, 350, 850))
-      ..attack("bite[s]", lerpInt(i, 0, max, 30, 50))
-      ..attack("claw[s]", lerpInt(i, 0, max, 25, 35))
-      ..drop("treasure", count: lerpInt(i, 0, max, 5, 15))
-      ..drop("magic", count: lerpInt(i, 0, max, 2, 5))
-      ..drop("equipment", count: lerpInt(i, 0, max, 2, 5));
+    var dragon =
+        breed(
+            "$name dragon",
+            lerpInt(i, 0, max, 48, 62),
+            color,
+            lerpInt(i, 0, max, 350, 850),
+          )
+          ..attack("bite[s]", lerpInt(i, 0, max, 30, 50))
+          ..attack("claw[s]", lerpInt(i, 0, max, 25, 35))
+          ..drop("treasure", count: lerpInt(i, 0, max, 5, 15))
+          ..drop("magic", count: lerpInt(i, 0, max, 2, 5))
+          ..drop("equipment", count: lerpInt(i, 0, max, 2, 5));
 
     if (element != Element.none) {
       dragon.cone(element, rate: 8, damage: lerpInt(i, 0, max, 70, 150));
@@ -696,8 +727,12 @@ void slugs() {
     ..sense(see: 3, hear: 1);
   breed("giant slug", 3, olive, 20).attack("crawl[s] on", 8);
 
-  breed("suppurating slug", 6, lima, 50)
-      .attack("crawl[s] on", 12, Elements.poison);
+  breed(
+    "suppurating slug",
+    6,
+    lima,
+    50,
+  ).attack("crawl[s] on", 12, Elements.poison);
 
   // TODO: Leave a trail.
   breed("acidic slug", 9, olive, 70).attack("crawl[s] on", 16, Elements.acid);
@@ -739,8 +774,13 @@ void worms() {
   family("w", dodge: 10, meander: 30, flags: "fearless").groups("worm");
   breed("giant earthworm", 3, pink, 30, speed: -2).attack("crawl[s] on", 5);
 
-  breed("giant cave worm", 7, sandal, 80, speed: -2)
-      .attack("crawl[s] on", 12, Elements.acid);
+  breed(
+    "giant cave worm",
+    7,
+    sandal,
+    80,
+    speed: -2,
+  ).attack("crawl[s] on", 12, Elements.acid);
 }
 
 void skeletons() {
@@ -749,14 +789,34 @@ void skeletons() {
     ..sense(see: 4, hear: 4);
   // TODO: Special room/trap where these get spawned and come up from the
   // ground?
-  breed("bony hand", 3, coolGray, 18, frequency: 3.0, meander: 40, speed: -1)
-      .attack("claw[s]", 6);
+  breed(
+    "bony hand",
+    3,
+    coolGray,
+    18,
+    frequency: 3.0,
+    meander: 40,
+    speed: -1,
+  ).attack("claw[s]", 6);
 
-  breed("bony arm", 4, lightCoolGray, 26, frequency: 4.0, meander: 40)
-      .attack("claw[s]", 8);
+  breed(
+    "bony arm",
+    4,
+    lightCoolGray,
+    26,
+    frequency: 4.0,
+    meander: 40,
+  ).attack("claw[s]", 8);
 
-  breed("severed skull", 7, sandal, 33, frequency: 3.0, meander: 40, speed: -2)
-      .attack("bite[s]", 10);
+  breed(
+    "severed skull",
+    7,
+    sandal,
+    33,
+    frequency: 3.0,
+    meander: 40,
+    speed: -2,
+  ).attack("bite[s]", 10);
 
   breed("decapitated skeleton", 10, buttermilk, 44, frequency: 4.0, meander: 60)
     ..sense(see: 0, hear: 0)

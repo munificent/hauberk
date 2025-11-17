@@ -10,34 +10,37 @@ class FloorDrops {
 
     // TODO: Tune this.
     floorDrop(
-        startFrequency: 2.0,
-        location: SpawnLocation.wall,
-        drop: dropAllOf([
-          percentDrop(30, "Skull"),
-          percentDrop(30, "treasure"),
-          percentDrop(20, "weapon"),
-          percentDrop(20, "armor"),
-          percentDrop(20, "food"),
-          percentDrop(15, "magic")
-        ]));
+      startFrequency: 2.0,
+      location: SpawnLocation.wall,
+      drop: dropAllOf([
+        percentDrop(30, "Skull"),
+        percentDrop(30, "treasure"),
+        percentDrop(20, "weapon"),
+        percentDrop(20, "armor"),
+        percentDrop(20, "food"),
+        percentDrop(15, "magic"),
+      ]),
+    );
 
     floorDrop(startFrequency: 10.0, endFrequency: 1.0, drop: parseDrop("food"));
 
     floorDrop(
-        startFrequency: 3.0,
-        endFrequency: 0.01,
-        location: SpawnLocation.corner,
-        drop: parseDrop("Rock"));
+      startFrequency: 3.0,
+      endFrequency: 0.01,
+      location: SpawnLocation.corner,
+      drop: parseDrop("Rock"),
+    );
 
     floorDrop(startFrequency: 10.0, drop: parseDrop("treasure"));
 
     floorDrop(startFrequency: 4.0, endFrequency: 0.1, drop: parseDrop("light"));
 
     floorDrop(
-        startFrequency: 2.0,
-        endFrequency: 5.0,
-        location: SpawnLocation.anywhere,
-        drop: parseDrop("item"));
+      startFrequency: 2.0,
+      endFrequency: 5.0,
+      location: SpawnLocation.anywhere,
+      drop: parseDrop("item"),
+    );
 
     // TODO: Other stuff.
   }
@@ -52,16 +55,19 @@ class FloorDrop {
   FloorDrop(this.location, this.drop);
 }
 
-void floorDrop(
-    {double? startFrequency,
-    double? endFrequency,
-    SpawnLocation? location,
-    required Drop drop}) {
+void floorDrop({
+  double? startFrequency,
+  double? endFrequency,
+  SpawnLocation? location,
+  required Drop drop,
+}) {
   location ??= SpawnLocation.anywhere;
   var floorDrop = FloorDrop(location, drop);
-  _floorDrops.addRanged(floorDrop,
-      start: 1,
-      end: 100,
-      startFrequency: startFrequency,
-      endFrequency: endFrequency);
+  _floorDrops.addRanged(
+    floorDrop,
+    start: 1,
+    end: 100,
+    startFrequency: startFrequency,
+    endFrequency: endFrequency,
+  );
 }

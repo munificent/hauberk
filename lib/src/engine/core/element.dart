@@ -29,13 +29,16 @@ class Element {
   /// element hits a tile or `null` if this element has no effect.
   final Action? Function(Vec pos, Hit hit, num distance, int fuel) floorAction;
 
-  Element(this.name, this.abbreviation, this.experience,
-      {this.emanates = false,
-      this.destroyMessage = "",
-      Action? Function(int damage)? attack,
-      Action? Function(Vec pos, Hit hit, num distance, int fuel)? floor})
-      : attackAction = attack ?? ((_) => null),
-        floorAction = floor ?? ((_, __, ___, ____) => null);
+  Element(
+    this.name,
+    this.abbreviation,
+    this.experience, {
+    this.emanates = false,
+    this.destroyMessage = "",
+    Action? Function(int damage)? attack,
+    Action? Function(Vec pos, Hit hit, num distance, int fuel)? floor,
+  }) : attackAction = attack ?? ((_) => null),
+       floorAction = floor ?? ((_, _, _, _) => null);
 
   @override
   String toString() => name;

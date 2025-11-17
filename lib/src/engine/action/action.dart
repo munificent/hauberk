@@ -74,14 +74,22 @@ abstract class Action {
     _game.addAction(action);
   }
 
-  void addEvent(EventType type,
-      {Actor? actor,
-      Element? element,
-      Object? other,
-      Vec? pos,
-      Direction? dir}) {
-    _game.addEvent(type,
-        actor: actor, element: element, pos: pos, dir: dir, other: other);
+  void addEvent(
+    EventType type, {
+    Actor? actor,
+    Element? element,
+    Object? other,
+    Vec? pos,
+    Direction? dir,
+  }) {
+    _game.addEvent(
+      type,
+      actor: actor,
+      element: element,
+      pos: pos,
+      dir: dir,
+      other: other,
+    );
   }
 
   /// Moves [actor] to [dest].
@@ -105,8 +113,12 @@ abstract class Action {
     }
   }
 
-  ActionResult succeed(
-      [String? message, Noun? noun1, Noun? noun2, Noun? noun3]) {
+  ActionResult succeed([
+    String? message,
+    Noun? noun1,
+    Noun? noun2,
+    Noun? noun3,
+  ]) {
     if (message != null) show(message, noun1, noun2, noun3);
     return ActionResult.success;
   }
@@ -148,11 +160,11 @@ class ActionResult {
   final bool done;
 
   const ActionResult({required this.succeeded, required this.done})
-      : alternative = null;
+    : alternative = null;
 
   const ActionResult.alternate(this.alternative)
-      : succeeded = false,
-        done = true;
+    : succeeded = false,
+      done = true;
 }
 
 /// Attempts to perform an action that spends focus.

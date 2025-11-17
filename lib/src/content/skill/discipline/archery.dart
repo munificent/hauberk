@@ -67,7 +67,7 @@ class ArrowAction extends BoltAction {
   final Archery _skill;
 
   ArrowAction(this._skill, Vec target, Hit hit)
-      : super(target, hit, canMiss: true);
+    : super(target, hit, canMiss: true);
 
   @override
   bool onHitActor(Vec pos, Actor target) {

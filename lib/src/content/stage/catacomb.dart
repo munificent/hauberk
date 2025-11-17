@@ -17,9 +17,9 @@ class Catacomb extends Architecture {
   final int _maxSize;
 
   Catacomb({double? density, int? minSize, int? maxSize})
-      : _density = density ?? 0.3,
-        _minSize = minSize ?? 8,
-        _maxSize = maxSize ?? 32;
+    : _density = density ?? 0.3,
+      _minSize = minSize ?? 8,
+      _maxSize = maxSize ?? 32;
 
   @override
   Iterable<String> build() sync* {

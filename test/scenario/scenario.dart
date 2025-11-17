@@ -71,13 +71,20 @@ class Scenario {
     assert(lines.isNotEmpty, "Need non-empty stage description.");
     var width = lines.first.length;
     for (var y = 0; y < lines.length; y++) {
-      assert(lines[y].length == width,
-          "Line $y doesn't have expected width $width.");
+      assert(
+        lines[y].length == width,
+        "Line $y doesn't have expected width $width.",
+      );
     }
 
     var save = _content.createHero("Test");
-    var game = Game(_content, 1, save,
-        width: lines.first.length, height: lines.length);
+    var game = Game(
+      _content,
+      1,
+      save,
+      width: lines.first.length,
+      height: lines.length,
+    );
     _game = game;
 
     var stage = game.stage;

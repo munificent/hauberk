@@ -18,14 +18,16 @@ void main() {
     intellect.update(i, (_) {});
     will.update(i, (_) {});
 
-    print(" ${i.toString().padLeft(2)}:"
-        " ${strength.tossRangeScale.toStringAsFixed(1).padLeft(3)}"
-        " ${strength.heftScale(20).toStringAsFixed(2).padLeft(5)}"
-        " ${agility.dodgeBonus.toString().padLeft(5)}"
-        " ${agility.strikeBonus.toString().padLeft(6)}"
-        " ${fortitude.maxHealth.toString().padLeft(6)}"
-        " ${intellect.maxFocus.toString().padLeft(11)}"
-        " ${intellect.spellFocusScale(10).toStringAsFixed(2).padLeft(10)}"
-        " ${will.damageFocusScale.toStringAsFixed(0).padLeft(5)}");
+    print(
+      " ${i.toString().padLeft(2)}:"
+      " ${strength.tossRangeScale.toStringAsFixed(1).padLeft(3)}"
+      " ${strength.heftScale(20).toStringAsFixed(2).padLeft(5)}"
+      " ${agility.dodgeBonus.toString().padLeft(5)}"
+      " ${agility.strikeBonus.toString().padLeft(6)}"
+      " ${fortitude.maxHealth.toString().padLeft(6)}"
+      " ${intellect.maxFocus.toString().padLeft(11)}"
+      " ${intellect.spellFocusScale(10).toStringAsFixed(2).padLeft(10)}"
+      " ${will.damageFocusScale.toStringAsFixed(0).padLeft(5)}",
+    );
   }
 }

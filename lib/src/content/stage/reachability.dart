@@ -27,8 +27,8 @@ class Reachability {
   List<_FillStep> _beforeFill = const [];
 
   Reachability(this.stage, this._start)
-      : _distances = Array2D<int>(stage.width, stage.height, _unknown),
-        _affected = VecSet(stage.width, stage.height) {
+    : _distances = Array2D<int>(stage.width, stage.height, _unknown),
+      _affected = VecSet(stage.width, stage.height) {
     _setDistance(_start, 0);
     _process([_start]);
   }

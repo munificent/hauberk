@@ -246,7 +246,7 @@ void spellBooks() {
       "Brilliant Beam",
       "Windstorm",
       "Fire Barrier",
-      "Tidal Wave"
+      "Tidal Wave",
     ]);
 
   // TODO: More spell books and reorganize spells.

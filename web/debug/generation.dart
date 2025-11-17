@@ -21,8 +21,13 @@ int get depth {
 void main() {
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(html.OptionElement(
-        data: i.toString(), value: i.toString(), selected: i == 1));
+    depthSelect.append(
+      html.OptionElement(
+        data: i.toString(),
+        value: i.toString(),
+        selected: i == 1,
+      ),
+    );
   }
 
   depthSelect.onChange.listen((_) {
@@ -89,12 +94,14 @@ void generateTable() {
     for (var name in histogram.descending()) {
       var count = histogram.count(name);
       var width = 100 * count ~/ max;
-      var percent =
-          (100 * count / histogram.total).toStringAsFixed(2).padLeft(5, "0");
+      var percent = (100 * count / histogram.total)
+          .toStringAsFixed(2)
+          .padLeft(5, "0");
       var chance = (count / generated).toStringAsFixed(1).padLeft(6);
 
       builder.write(
-          '<span style="font-family: monospace;">$percent% $chance </span>');
+        '<span style="font-family: monospace;">$percent% $chance </span>',
+      );
       builder.write('<div class="bar" style="width: ${width}px;"></div> $name');
       builder.write('<br>');
     }

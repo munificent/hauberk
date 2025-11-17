@@ -5,8 +5,10 @@ import 'item_dialog.dart';
 
 class DropDialog extends ItemDialog {
   @override
-  List<ItemLocation> get allowedLocations =>
-      const [ItemLocation.inventory, ItemLocation.equipment];
+  List<ItemLocation> get allowedLocations => const [
+    ItemLocation.inventory,
+    ItemLocation.equipment,
+  ];
 
   @override
   bool get needsCount => true;

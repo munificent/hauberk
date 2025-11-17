@@ -156,8 +156,13 @@ class Log {
     add(LogType.cheat, message, noun1, noun2, noun3);
   }
 
-  void add(LogType type, String message,
-      [Noun? noun1, Noun? noun2, Noun? noun3]) {
+  void add(
+    LogType type,
+    String message, [
+    Noun? noun1,
+    Noun? noun2,
+    Noun? noun3,
+  ]) {
     message = _format(message, noun1, noun2, noun3);
 
     // See if it's a repeat of the last message.
@@ -280,8 +285,11 @@ class Log {
   ///
   /// If [force] is `true`, then a trailing "s" will be added to the end if
   /// [isFirst] is `false` and [text] doesn't have any formatting.
-  static String _categorize(String text,
-      {required bool isFirst, bool force = false}) {
+  static String _categorize(
+    String text, {
+    required bool isFirst,
+    bool force = false,
+  }) {
     var optionalSuffix = RegExp(r'\[(\w+?)\]');
     var irregular = RegExp(r'\[([^|]+)\|([^\]]+)\]');
 

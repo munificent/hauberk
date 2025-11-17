@@ -51,7 +51,7 @@ class Game {
   final Hero hero;
 
   Game(this.content, this.depth, HeroSave save, {int? width, int? height})
-      : hero = Hero(Vec.zero, save, content.skills) {
+    : hero = Hero(Vec.zero, save, content.skills) {
     // TODO: Vary size?
     _stage = Stage(width ?? 120, height ?? 80, this);
 
@@ -162,7 +162,7 @@ class Game {
             _substanceIndex = 0;
             _updateSubstances();
           }
-//          trySpawnMonster();
+          //          trySpawnMonster();
         }
       }
     }
@@ -176,12 +176,14 @@ class Game {
     }
   }
 
-  void addEvent(EventType type,
-      {Actor? actor,
-      Element? element,
-      Object? other,
-      Vec? pos,
-      Direction? dir}) {
+  void addEvent(
+    EventType type, {
+    Actor? actor,
+    Element? element,
+    Object? other,
+    Vec? pos,
+    Direction? dir,
+  }) {
     _events.add(Event(type, actor, element ?? Element.none, pos, dir, other));
   }
 
@@ -222,23 +224,23 @@ class Game {
     _substanceIndex = null;
   }
 
-// TODO: Decide if we want to keep this. Now that there is hunger forcing the
-// player to explore, it doesn't seem strictly necessary.
+  // TODO: Decide if we want to keep this. Now that there is hunger forcing the
+  // player to explore, it doesn't seem strictly necessary.
   /// Over time, new monsters will appear in unexplored areas of the dungeon.
   /// This is to encourage players to not waste time: the more they linger, the
   /// more dangerous the remaining areas become.
-//  void trySpawnMonster() {
-//    if (!rng.oneIn(Option.spawnMonsterChance)) return;
-//
-//    // Try to place a new monster in unexplored areas.
-//    Vec pos = rng.vecInRect(stage.bounds);
-//
-//    final tile = stage[pos];
-//    if (tile.visible || tile.isExplored || !tile.isPassable) return;
-//    if (stage.actorAt(pos) != null) return;
-//
-//    stage.spawnMonster(area.pickBreed(level), pos);
-//  }
+  //  void trySpawnMonster() {
+  //    if (!rng.oneIn(Option.spawnMonsterChance)) return;
+  //
+  //    // Try to place a new monster in unexplored areas.
+  //    Vec pos = rng.vecInRect(stage.bounds);
+  //
+  //    final tile = stage[pos];
+  //    if (tile.visible || tile.isExplored || !tile.isPassable) return;
+  //    if (stage.actorAt(pos) != null) return;
+  //
+  //    stage.spawnMonster(area.pickBreed(level), pos);
+  //  }
 }
 
 /// Each call to [Game.update()] will return a [GameResult] object that tells

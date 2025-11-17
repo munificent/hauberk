@@ -20,8 +20,9 @@ void main() {
   // If there's a URL hash, show that monster.
   if (html.window.location.hash.isNotEmpty) {
     // Trim the leading "#".
-    var name =
-        Uri.decodeFull(html.window.location.hash.substring(1)).toLowerCase();
+    var name = Uri.decodeFull(
+      html.window.location.hash.substring(1),
+    ).toLowerCase();
 
     for (var breed in Monsters.breeds.all) {
       if (breed.name.toLowerCase() == name) {
@@ -33,10 +34,13 @@ void main() {
 
   for (var breed in Monsters.breeds.all) {
     var glyph = breed.appearance as Glyph;
-    _breedSelect.append(html.OptionElement(
+    _breedSelect.append(
+      html.OptionElement(
         data: '[${String.fromCharCode(glyph.char)}] ${breed.name}',
         value: breed.name,
-        selected: breed == selectedBreed));
+        selected: breed == selectedBreed,
+      ),
+    );
   }
 
   _breedSelect.onChange.listen((event) {
@@ -84,12 +88,14 @@ void _update() {
     for (var name in histogram.descending()) {
       var count = histogram.count(name);
       var width = 100 * count ~/ max;
-      var percent =
-          (100 * count / histogram.total).toStringAsFixed(2).padLeft(5, "0");
+      var percent = (100 * count / histogram.total)
+          .toStringAsFixed(2)
+          .padLeft(5, "0");
       var chance = (count / dropTries).toStringAsFixed(2).padLeft(6);
 
       builder.write(
-          '<span style="font-family: monospace;">$percent% $chance </span>');
+        '<span style="font-family: monospace;">$percent% $chance </span>',
+      );
       builder.write('<div class="bar" style="width: ${width}px;"></div> $name');
       builder.write('<br>');
     }

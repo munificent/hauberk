@@ -10,6 +10,6 @@ List<Spell> divinationSpells() {
       focus: 40,
       range: 20,
       (spell, game, level) => DetectAction([DetectType.item], spell.range),
-    )
+    ),
   ];
 }

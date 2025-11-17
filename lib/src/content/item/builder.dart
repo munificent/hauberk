@@ -44,8 +44,9 @@ void affixCategory(String tag) {
 AffixBuilder affix(String nameTemplate, {double frequency = 1.0}) {
   finishAffix();
 
-  var affixSet =
-      nameTemplate.endsWith(" _") ? Affixes.prefixes : Affixes.suffixes;
+  var affixSet = nameTemplate.endsWith(" _")
+      ? Affixes.prefixes
+      : Affixes.suffixes;
   return _affixBuilder = AffixBuilder(nameTemplate, affixSet, frequency);
 }
 
@@ -132,7 +133,7 @@ class CategoryBuilder extends _BaseBuilder {
       "cloak",
       "helm",
       "gloves",
-      "boots"
+      "boots",
     ];
 
     if (tags.contains("shield") || tags.contains("light")) {
@@ -222,8 +223,12 @@ class ItemBuilder extends _BaseBuilder {
     _heft = heft;
   }
 
-  void ranged(String noun,
-      {required int heft, required int damage, required int range}) {
+  void ranged(
+    String noun, {
+    required int heft,
+    required int damage,
+    required int range,
+  }) {
     _attack = Attack(Noun(noun), "pierce[s]", damage, range);
     // TODO: Make this per-item once it does something.
     _heft = heft;
@@ -258,14 +263,17 @@ class ItemBuilder extends _BaseBuilder {
 
   void perception({int duration = 5, int distance = 16}) {
     use(
-        "Perceives the location of monsters, even those that are otherwise "
-        "hidden.",
-        () => PerceiveAction(duration, distance));
+      "Perceives the location of monsters, even those that are otherwise "
+      "hidden.",
+      () => PerceiveAction(duration, distance),
+    );
   }
 
   void resistSalve(Element element) {
-    use("Grantes resistance to $element for 40 turns.",
-        () => ResistAction(40, element));
+    use(
+      "Grantes resistance to $element for 40 turns.",
+      () => ResistAction(40, element),
+    );
   }
 
   void mapping(int distance, {bool illuminate = false}) {
@@ -279,47 +287,66 @@ class ItemBuilder extends _BaseBuilder {
   }
 
   void haste(int amount, int duration) {
-    use("Raises speed by $amount for $duration turns.",
-        () => HasteAction(amount, duration));
+    use(
+      "Raises speed by $amount for $duration turns.",
+      () => HasteAction(amount, duration),
+    );
   }
 
   void teleport(int distance) {
-    use("Attempts to teleport up to $distance steps away.",
-        () => TeleportAction(distance));
+    use(
+      "Attempts to teleport up to $distance steps away.",
+      () => TeleportAction(distance),
+    );
   }
 
   // TODO: Take list of conditions to cure?
   void heal(int amount, {bool curePoison = false}) {
-    use("Instantly heals $amount lost health.",
-        () => HealAction(amount, curePoison: curePoison));
+    use(
+      "Instantly heals $amount lost health.",
+      () => HealAction(amount, curePoison: curePoison),
+    );
   }
 
   /// Sets a use and toss use that creates an expanding ring of elemental
   /// damage.
-  void ball(Element element, String noun, String verb, int damage,
-      {int? range}) {
+  void ball(
+    Element element,
+    String noun,
+    String verb,
+    int damage, {
+    int? range,
+  }) {
     range ??= 3;
     var attack = Attack(Noun(noun), verb, damage, range, element);
 
     use(
-        "Unleashes a ball of $element that inflicts $damage damage out to "
-        "$range steps from the hero.",
-        () => RingSelfAction(attack));
+      "Unleashes a ball of $element that inflicts $damage damage out to "
+      "$range steps from the hero.",
+      () => RingSelfAction(attack),
+    );
     tossUse((pos) => RingFromAction(attack, pos));
   }
 
   /// Sets a use and toss use that creates a flow of elemental damage.
-  void flow(Element element, String noun, String verb, int damage,
-      {int range = 5, bool fly = false}) {
+  void flow(
+    Element element,
+    String noun,
+    String verb,
+    int damage, {
+    int range = 5,
+    bool fly = false,
+  }) {
     var attack = Attack(Noun(noun), verb, damage, range, element);
 
     var motility = Motility.walk;
     if (fly) motility |= Motility.fly;
 
     use(
-        "Unleashes a flow of $element that inflicts $damage damage out to "
-        "$range steps from the hero.",
-        () => FlowSelfAction(attack, motility));
+      "Unleashes a flow of $element that inflicts $damage damage out to "
+      "$range steps from the hero.",
+      () => FlowSelfAction(attack, motility),
+    );
     tossUse((pos) => FlowFromAction(attack, pos, motility));
   }
 
@@ -327,8 +354,10 @@ class ItemBuilder extends _BaseBuilder {
     _emanation = level;
 
     if (range != null) {
-      use("Illuminates out to a range of $range.",
-          () => IlluminateSelfAction(range));
+      use(
+        "Illuminates out to a range of $range.",
+        () => IlluminateSelfAction(range),
+      );
     }
   }
 
@@ -355,27 +384,28 @@ class ItemBuilder extends _BaseBuilder {
     }
 
     var itemType = ItemType(
-        _name,
-        appearance,
-        _minDepth,
-        _sortIndex++,
-        _category._equipSlot,
-        _category._weaponType,
-        _use,
-        _attack,
-        toss,
-        _defense,
-        _armor ?? 0,
-        _price,
-        _maxStack ?? _category._maxStack ?? 1,
-        _instrinsicAffix,
-        weight: _weight ?? 0,
-        heft: _heft ?? 0,
-        emanation: _emanation ?? _category._emanation,
-        fuel: _fuel ?? _category._fuel,
-        treasure: _category._isTreasure,
-        twoHanded: _category._isTwoHanded ?? _isTwoHanded ?? false,
-        isArtifact: _isArtifact);
+      _name,
+      appearance,
+      _minDepth,
+      _sortIndex++,
+      _category._equipSlot,
+      _category._weaponType,
+      _use,
+      _attack,
+      toss,
+      _defense,
+      _armor ?? 0,
+      _price,
+      _maxStack ?? _category._maxStack ?? 1,
+      _instrinsicAffix,
+      weight: _weight ?? 0,
+      heft: _heft ?? 0,
+      emanation: _emanation ?? _category._emanation,
+      fuel: _fuel ?? _category._fuel,
+      treasure: _category._isTreasure,
+      twoHanded: _category._isTwoHanded ?? _isTwoHanded ?? false,
+      isArtifact: _isArtifact,
+    );
 
     itemType.destroyChance.addAll(_category._destroyChance);
     itemType.destroyChance.addAll(_destroyChance);
@@ -514,17 +544,21 @@ class AffixBuilder {
       }
     }
 
-    var affix = AffixType(id, _nameTemplate, _sortIndex++,
-        rollParameter: _rollParameter,
-        heftScale: _heftScale,
-        weightBonus: _weightBonus,
-        strikeBonus: _strikeBonus,
-        damageScale: _damageScale,
-        damageBonus: _damageBonus,
-        brand: _brand,
-        armorBonus: _armorBonus,
-        priceBonus: _priceBonus,
-        priceScale: _priceScale);
+    var affix = AffixType(
+      id,
+      _nameTemplate,
+      _sortIndex++,
+      rollParameter: _rollParameter,
+      heftScale: _heftScale,
+      weightBonus: _weightBonus,
+      strikeBonus: _strikeBonus,
+      damageScale: _damageScale,
+      damageBonus: _damageBonus,
+      brand: _brand,
+      armorBonus: _armorBonus,
+      priceBonus: _priceBonus,
+      priceScale: _priceScale,
+    );
 
     _resists.forEach(affix.setResist);
     _statBonuses.forEach(affix.setStatBonus);
@@ -534,7 +568,8 @@ class AffixBuilder {
 }
 
 /// Ignores the parameter and yields a fixed value.
-T Function(int) fixed<T>(T value) => (_) => value;
+T Function(int) fixed<T>(T value) =>
+    (_) => value;
 
 /// Uses the parameter value as an int.
 final ParameterizeInt equalsParam = _intIdentity;
@@ -552,12 +587,14 @@ void finishItem() {
 
   var itemType = builder._build();
 
-  Items.types.addRanged(itemType,
-      name: itemType.name,
-      start: builder._minDepth,
-      end: builder._maxDepth,
-      startFrequency: builder._frequency ?? _category._frequency ?? 1.0,
-      tags: _category._tag);
+  Items.types.addRanged(
+    itemType,
+    name: itemType.name,
+    start: builder._minDepth,
+    end: builder._maxDepth,
+    startFrequency: builder._frequency ?? _category._frequency ?? 1.0,
+    tags: _category._tag,
+  );
 
   _itemBuilder = null;
 }
@@ -568,12 +605,14 @@ void finishAffix() {
 
   var affix = builder._build();
 
-  builder._affixSet!.addRanged(affix,
-      name: affix.id,
-      start: builder._minDepth,
-      end: builder._maxDepth,
-      startFrequency: builder._frequency,
-      tags: _affixTag);
+  builder._affixSet!.addRanged(
+    affix,
+    name: affix.id,
+    start: builder._minDepth,
+    end: builder._maxDepth,
+    startFrequency: builder._frequency,
+    tags: _affixTag,
+  );
 
   _affixBuilder = null;
 }

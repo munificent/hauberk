@@ -36,8 +36,14 @@ class Lore {
 
   Lore() : this.from({}, {}, {}, {}, {}, {});
 
-  Lore.from(this._seenBreeds, this._slainBreeds, this._foundItems,
-      this._foundAffixes, this._createdArtifacts, this._usedItems);
+  Lore.from(
+    this._seenBreeds,
+    this._slainBreeds,
+    this._foundItems,
+    this._foundAffixes,
+    this._createdArtifacts,
+    this._usedItems,
+  );
 
   void seeBreed(Breed breed) {
     _seenBreeds.putIfAbsent(breed, () => 0);
@@ -96,10 +102,11 @@ class Lore {
       _createdArtifacts.contains(artifact);
 
   Lore clone() => Lore.from(
-      {..._seenBreeds},
-      {..._slainBreeds},
-      {..._foundItems},
-      {..._foundAffixes},
-      {..._createdArtifacts},
-      {..._usedItems});
+    {..._seenBreeds},
+    {..._slainBreeds},
+    {..._foundItems},
+    {..._foundAffixes},
+    {..._createdArtifacts},
+    {..._usedItems},
+  );
 }

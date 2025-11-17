@@ -31,11 +31,11 @@ class VecSet extends IterableBase<Vec> {
   int _yMax;
 
   VecSet(int width, int height)
-      : _values = Array2D(width, height, 0),
-        _xMin = width,
-        _xMax = 0,
-        _yMin = height,
-        _yMax = 0;
+    : _values = Array2D(width, height, 0),
+      _xMin = width,
+      _xMax = 0,
+      _yMin = height,
+      _yMax = 0;
 
   @override
   Iterator<Vec> get iterator {

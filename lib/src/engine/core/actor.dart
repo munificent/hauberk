@@ -194,8 +194,12 @@ abstract class Actor implements Noun {
 
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.
-  bool takeDamage(Action action, int damage, Noun attackNoun,
-      [Actor? attacker]) {
+  bool takeDamage(
+    Action action,
+    int damage,
+    Noun attackNoun, [
+    Actor? attacker,
+  ]) {
     health -= damage;
     onTakeDamage(action, attacker, damage);
 
@@ -250,7 +254,7 @@ abstract class Actor implements Noun {
       blindness,
       dazzle,
       perception,
-      ..._resistances.values
+      ..._resistances.values,
     ];
 
     for (var condition in conditions) {

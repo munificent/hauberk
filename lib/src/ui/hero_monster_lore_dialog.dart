@@ -22,8 +22,10 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
   String get name => "Monster Lore";
 
   @override
-  Map<String, String> get extraHelp =>
-      {"↕": "Scroll", "S": _sort.next.helpText};
+  Map<String, String> get extraHelp => {
+    "↕": "Scroll",
+    "S": _sort.next.helpText,
+  };
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
@@ -66,11 +68,12 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
 
     void writeLine(int y, Color color) {
       terminal.writeAt(
-          2,
-          y,
-          "──────────────────────────────────────────────────────────── ───── "
-          "───── ─────",
-          color);
+        2,
+        y,
+        "──────────────────────────────────────────────────────────── ───── "
+        "───── ─────",
+        color,
+      );
     }
 
     terminal.writeAt(2, 1, "Monsters", gold);
@@ -107,7 +110,11 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
         }
       } else {
         terminal.writeAt(
-            2, y, "(undiscovered ${_scroll + i + 1})", UIHue.disabled);
+          2,
+          y,
+          "(undiscovered ${_scroll + i + 1})",
+          UIHue.disabled,
+        );
       }
     }
 
@@ -123,17 +130,22 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     var seen = hero.lore.seenBreed(breed);
 
     Draw.glyphFrame(
-        terminal,
-        0,
-        0,
-        terminal.width,
-        terminal.height,
-        seen == 0 ? Glyph("?", UIHue.disabled) : breed.appearance as Glyph,
-        seen == 0 ? "" : breed.name);
+      terminal,
+      0,
+      0,
+      terminal.width,
+      terminal.height,
+      seen == 0 ? Glyph("?", UIHue.disabled) : breed.appearance as Glyph,
+      seen == 0 ? "" : breed.name,
+    );
 
     if (seen == 0) {
       terminal.writeAt(
-          1, 3, "You have not seen this breed yet.", UIHue.disabled);
+        1,
+        3,
+        "You have not seen this breed yet.",
+        UIHue.disabled,
+      );
       return;
     }
 
@@ -184,8 +196,10 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
         sentences.add("You have seen but not slain this unique $noun.");
       }
     } else {
-      sentences.add("You have seen ${lore.seenBreed(breed)} and slain "
-          "${lore.slain(breed)} of this $noun.");
+      sentences.add(
+        "You have seen ${lore.seenBreed(breed)} and slain "
+        "${lore.slain(breed)} of this $noun.",
+      );
     }
 
     sentences.add("$pronoun is worth ${breed.experience} experience.");
@@ -197,8 +211,10 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     // TODO: Other stats, moves, attacks, etc.
 
     return sentences
-        .map((sentence) =>
-            sentence.substring(0, 1).toUpperCase() + sentence.substring(1))
+        .map(
+          (sentence) =>
+              sentence.substring(0, 1).toUpperCase() + sentence.substring(1),
+        )
         .join(" ");
   }
 
@@ -272,8 +288,10 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
 
 class _Sort {
   /// The default order they are created in in the content.
-  static const appearance =
-      _Sort("ordered by appearance", "Sort by appearance");
+  static const appearance = _Sort(
+    "ordered by appearance",
+    "Sort by appearance",
+  );
 
   /// Sort by depth.
   static const depth = _Sort("ordered by depth", "Sort by depth");

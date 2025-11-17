@@ -17,17 +17,20 @@ class ArchitecturalStyle {
     dungeon(RoomShapes.any, frequency: 3.0);
 
     // TODO: Decide if we should ever do full-size keeps anymore.
-//    addStyle("keep",
-//        startFrequency: 2.0,
-//        endFrequency: 5.0,
-//        decor: "keep",
-//        decorDensity: 0.07,
-//        create: () => Keep());
+    //    addStyle("keep",
+    //        startFrequency: 2.0,
+    //        endFrequency: 5.0,
+    //        decor: "keep",
+    //        decorDensity: 0.07,
+    //        create: () => Keep());
 
     // TODO: Define more.
     // TODO: More catacomb styles with different tile types and tuned params.
-    catacomb("bat bug humanoid natural",
-        startFrequency: 1.0, endFrequency: 2.0);
+    catacomb(
+      "bat bug humanoid natural",
+      startFrequency: 1.0,
+      endFrequency: 2.0,
+    );
     cavern("animal bat bug natural", startFrequency: 0.2, endFrequency: 1.0);
 
     // TODO: Forest style that uses cavern-like CA to open an organic-shaped
@@ -86,18 +89,18 @@ class ArchitecturalStyle {
   final bool canFill;
 
   ArchitecturalStyle(
-      this.name,
-      this.decorTheme,
-      double? decorDensity,
-      this.monsterGroups,
-      double? monsterDensity,
-      double? itemDensity,
-      this._factory,
-      {bool? canFill})
-      : decorDensity = decorDensity ?? 0.1,
-        monsterDensity = monsterDensity ?? 1.0,
-        itemDensity = itemDensity ?? 1.0,
-        canFill = canFill ?? true;
+    this.name,
+    this.decorTheme,
+    double? decorDensity,
+    this.monsterGroups,
+    double? monsterDensity,
+    double? itemDensity,
+    this._factory, {
+    bool? canFill,
+  }) : decorDensity = decorDensity ?? 0.1,
+       monsterDensity = monsterDensity ?? 1.0,
+       itemDensity = itemDensity ?? 1.0,
+       canFill = canFill ?? true;
 
   Architecture create(Architect architect, Region region) {
     var architecture = _factory();

@@ -40,7 +40,7 @@ abstract class _BaseDrop {
   final ItemQuality _quality;
 
   _BaseDrop(this._depth, ItemQuality? quality)
-      : _quality = quality ?? ItemQuality.normal;
+    : _quality = quality ?? ItemQuality.normal;
 
   Item _makeItem(Lore? lore, int dropDepth, ItemType itemType) {
     // If we picked an artifact, record it.
@@ -71,12 +71,19 @@ abstract class _BaseDrop {
       }
     }
 
-    return Item(itemType, 1,
-        prefix: prefixType?.spawn(), suffix: suffixType?.spawn());
+    return Item(
+      itemType,
+      1,
+      prefix: prefixType?.spawn(),
+      suffix: suffixType?.spawn(),
+    );
   }
 
   AffixType? _rollAffix(
-      ResourceSet<AffixType> affixes, ItemType itemType, int depth) {
+    ResourceSet<AffixType> affixes,
+    ItemType itemType,
+    int depth,
+  ) {
     var (min, max) = switch (_quality) {
       ItemQuality.normal => (0.002, 0.8),
       ItemQuality.good => (0.1, 1.0),

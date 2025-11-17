@@ -45,8 +45,9 @@ class ExitPopup extends Popup {
 
     y += 3;
     var slain = hero.lore.allSlain - _previous.lore.allSlain;
-    var remainingMonsters =
-        _game.stage.actors.where((actor) => actor is! Hero).length;
+    var remainingMonsters = _game.stage.actors
+        .where((actor) => actor is! Hero)
+        .length;
     add("Monsters", red, slain, total: slain + remainingMonsters);
   }
 
@@ -80,22 +81,46 @@ class ExitPopup extends Popup {
 
     for (var value in _values) {
       terminal.writeAt(
-          5, value.y, "................................", UIHue.disabled);
-      terminal.writeAt(5, value.y, "${value.name}:",
-          value.value == 0 ? UIHue.disabled : UIHue.primary);
+        5,
+        value.y,
+        "................................",
+        UIHue.disabled,
+      );
+      terminal.writeAt(
+        5,
+        value.y,
+        "${value.name}:",
+        value.value == 0 ? UIHue.disabled : UIHue.primary,
+      );
 
       var number = value.current.toString();
       if (value.total != null) {
         var total = value.total.toString();
         terminal.writeAt(
-            terminal.width - 1 - total.length, value.y, total, value.color);
+          terminal.width - 1 - total.length,
+          value.y,
+          total,
+          value.color,
+        );
         terminal.writeAt(
-            terminal.width - 1 - total.length - 3, value.y, " / ", value.color);
-        terminal.writeAt(terminal.width - 4 - total.length - number.length,
-            value.y, number, value.color);
+          terminal.width - 1 - total.length - 3,
+          value.y,
+          " / ",
+          value.color,
+        );
+        terminal.writeAt(
+          terminal.width - 4 - total.length - number.length,
+          value.y,
+          number,
+          value.color,
+        );
       } else {
-        terminal.writeAt(terminal.width - 1 - number.length, value.y, number,
-            value.value == 0 ? UIHue.disabled : value.color);
+        terminal.writeAt(
+          terminal.width - 1 - number.length,
+          value.y,
+          number,
+          value.value == 0 ? UIHue.disabled : value.color,
+        );
       }
     }
 
@@ -117,7 +142,7 @@ class _AnimatedValue {
   int current;
 
   _AnimatedValue(this.y, this.name, this.value, this.color, {this.total})
-      : current = 0;
+    : current = 0;
 
   bool update() {
     if (current >= value) return false;

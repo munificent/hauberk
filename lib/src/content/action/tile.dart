@@ -28,8 +28,15 @@ abstract class _OpenTileAction extends Action {
 
     // TODO: Chance of monster in it?
     // TODO: Traps. Locks.
-    if (rng.percent(lerpInt(game.depth, 1, Option.maxDepth,
-        _minDepthEmptyChance, _maxDepthEmptyChance))) {
+    if (rng.percent(
+      lerpInt(
+        game.depth,
+        1,
+        Option.maxDepth,
+        _minDepthEmptyChance,
+        _maxDepthEmptyChance,
+      ),
+    )) {
       show("The $_name is empty.", actor);
     } else {
       game.stage.placeDrops(_pos, _createDrop(), depth: game.depth);
@@ -83,8 +90,8 @@ class OpenChestAction extends _OpenTileAction {
   // TODO: Drop more than one item sometimes.
   @override
   Drop _createDrop() => dropOneOf({
-        parseDrop("treasure", depth: game.depth): 0.5,
-        parseDrop("magic", depth: game.depth): 0.2,
-        parseDrop("equipment", depth: game.depth): 0.3
-      });
+    parseDrop("treasure", depth: game.depth): 0.5,
+    parseDrop("magic", depth: game.depth): 0.2,
+    parseDrop("equipment", depth: game.depth): 0.3,
+  });
 }

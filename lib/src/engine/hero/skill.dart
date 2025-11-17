@@ -77,8 +77,8 @@ abstract class Skill implements Comparable<Skill> {
   double modifyHeft(Hero hero, int level, double heftModifier) => heftModifier;
 
   /// Gives the skill a chance to modify the hit the hero is about to receive.
-// TODO: Not currently used.
-//  void modifyDefense(Hit hit) {}
+  // TODO: Not currently used.
+  //  void modifyDefense(Hit hit) {}
 
   @override
   int compareTo(Skill other) => _sortOrder.compareTo(other._sortOrder);
@@ -128,7 +128,10 @@ mixin TargetSkill implements UsableSkill {
 
   Action getTargetAction(Game game, int level, Vec target) {
     return _wrapActionCost(
-        game.hero.save, level, onGetTargetAction(game, level, target));
+      game.hero.save,
+      level,
+      onGetTargetAction(game, level, target),
+    );
   }
 
   /// Override this to create the [Action] that the [Hero] should perform when
@@ -142,7 +145,10 @@ mixin DirectionSkill implements UsableSkill {
   /// using this [Skill].
   Action getDirectionAction(Game game, int level, Direction dir) {
     return _wrapActionCost(
-        game.hero.save, level, onGetDirectionAction(game, level, dir));
+      game.hero.save,
+      level,
+      onGetDirectionAction(game, level, dir),
+    );
   }
 
   /// Override this to create the [Action] that the [Hero] should perform when
@@ -162,9 +168,7 @@ class SkillSet {
   /// How many points the hero has earned towards the next level of each skill.
   final Map<Skill, int> _points;
 
-  SkillSet()
-      : _levels = {},
-        _points = {};
+  SkillSet() : _levels = {}, _points = {};
 
   SkillSet.from(this._levels, this._points);
 

@@ -18,11 +18,12 @@ class HeroEquipmentDialog extends HeroInfoDialog {
 
     void writeLine(int y, Color color) {
       terminal.writeAt(
-          2,
-          y,
-          "───────────────────────────────────────────── "
-          "── ─────────── ──── ───── ──────",
-          color);
+        2,
+        y,
+        "───────────────────────────────────────────── "
+        "── ─────────── ──── ───── ──────",
+        color,
+      );
     }
 
     void writeScale(int x, int y, double scale) {
@@ -62,7 +63,11 @@ class HeroEquipmentDialog extends HeroInfoDialog {
         // Use [element] directly from the item because [attack] is just the
         // base attack before modifiers.
         terminal.writeAt(
-            48, y, item.element.abbreviation, elementColor(item.element));
+          48,
+          y,
+          item.element.abbreviation,
+          elementColor(item.element),
+        );
 
         terminal.writeAt(51, y, attack.damage.toString().padLeft(2), ash);
       }

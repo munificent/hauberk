@@ -39,7 +39,7 @@ class Architect {
   int _carvedTiles = 0;
 
   Architect(this.lore, this.stage, this.depth)
-      : _owners = Array2D(stage.width, stage.height, null) {
+    : _owners = Array2D(stage.width, stage.height, null) {
     debugOwners = _owners;
   }
 
@@ -188,8 +188,10 @@ class Architect {
       } else if (tile.type == Tiles.unformedWet) {
         tile.type = Tiles.solidWet;
       } else {
-        assert(tile.type == Tiles.solid || tile.type == Tiles.solidWet,
-            "Unexpected tile type.");
+        assert(
+          tile.type == Tiles.solid || tile.type == Tiles.solidWet,
+          "Unexpected tile type.",
+        );
       }
 
       // Optimization: If it's already been cut off, we know it can be filled.
@@ -462,9 +464,11 @@ abstract class Architecture {
 
   /// Marks the tile at [pos] as not allowing a passage to be dug through it.
   void preventPassage(Vec pos) {
-    assert(_architect._owners[pos] == null ||
-        _architect._owners[pos] == this ||
-        _architect.stage[pos].type == Tiles.unformedWet);
+    assert(
+      _architect._owners[pos] == null ||
+          _architect._owners[pos] == this ||
+          _architect.stage[pos].type == Tiles.unformedWet,
+    );
 
     if (_architect.stage[pos].type == Tiles.unformed) {
       _architect.stage[pos].type = Tiles.solid;

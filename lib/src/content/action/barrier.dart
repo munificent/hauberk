@@ -58,8 +58,10 @@ class BarrierAction extends Action with ElementActionMixin {
         if (!going) return false;
 
         bool tryOffset(double h, double v) {
-          var offset =
-              Vec((_h * _distance + h).round(), (_v * _distance + v).round());
+          var offset = Vec(
+            (_h * _distance + h).round(),
+            (_v * _distance + v).round(),
+          );
           var pos = _center + offset * sign;
           if (!game.stage[pos].isFlyable) return false;
 

@@ -24,10 +24,7 @@ const _messages = {
     "{1} taunt[s] {2}!",
     "{1} cackle[s] at {2}!",
   ],
-  Missive.hiss: [
-    "{1} hiss[es] at {2}!",
-    "{1} spit[s] at {2}!",
-  ],
+  Missive.hiss: ["{1} hiss[es] at {2}!", "{1} spit[s] at {2}!"],
 };
 
 class MissiveAction extends Action {

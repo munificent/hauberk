@@ -44,8 +44,10 @@ class River extends Architecture {
       _ => throw StateError("Unreachable"),
     };
 
-    var mid = _RiverPoint(rng.float(width * 0.4, width * 0.6),
-        rng.float(height * 0.4, height * 0.6));
+    var mid = _RiverPoint(
+      rng.float(width * 0.4, width * 0.6),
+      rng.float(height * 0.4, height * 0.6),
+    );
 
     _displace(start, mid);
     _displace(mid, end);
@@ -64,7 +66,8 @@ class River extends Architecture {
       // TODO: Add some randomness.
 
       var shoreRandomness = math.min(2.0, length / 4.0);
-      var shoreRadius = (start.shoreRadius + end.shoreRadius) / 2.0 +
+      var shoreRadius =
+          (start.shoreRadius + end.shoreRadius) / 2.0 +
           rng.float(-shoreRandomness, shoreRandomness);
       shoreRadius = shoreRadius.clamp(0.0, 4.0);
 
@@ -118,8 +121,8 @@ class _RiverPoint {
   double get radius => shoreRadius + waterRadius;
 
   _RiverPoint(this.x, this.y, [double? shoreRadius, double? waterRadius])
-      : shoreRadius = shoreRadius ?? rng.float(1.0, 3.0),
-        waterRadius = waterRadius ?? rng.float(1.0, 3.0);
+    : shoreRadius = shoreRadius ?? rng.float(1.0, 3.0),
+      waterRadius = waterRadius ?? rng.float(1.0, 3.0);
 
   @override
   String toString() => "$x,$y ($waterRadius)";

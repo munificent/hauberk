@@ -99,24 +99,24 @@ class Cell {
   final Motility? _motility;
   final List<TileType> _require = [];
 
-  Cell(
-      {TileType? apply,
-      Motility? motility,
-      TileType? require,
-      List<TileType>? requireAny})
-      : _apply = apply,
-        _motility = motility {
+  Cell({
+    TileType? apply,
+    Motility? motility,
+    TileType? require,
+    List<TileType>? requireAny,
+  }) : _apply = apply,
+       _motility = motility {
     if (require != null) _require.add(require);
     if (requireAny != null) _require.addAll(requireAny);
   }
 
   bool meetsRequirement(TileType tile) {
-    if (_motility != null && !tile.canEnter(_motility!)) return false;
+    if (_motility != null && !tile.canEnter(_motility)) return false;
     if (_require.isNotEmpty && !_require.contains(tile)) return false;
     return true;
   }
 
   void apply(Painter painter, Vec pos) {
-    if (_apply != null) painter.setTile(pos, _apply!);
+    if (_apply != null) painter.setTile(pos, _apply);
   }
 }

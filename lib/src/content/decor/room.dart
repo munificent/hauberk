@@ -19,190 +19,236 @@ void roomDecor() {
 
   // Counters.
   category(themes: "dungeon keep", cells: tableCells);
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     ?...
     #─┐.
     #-│.
     #╤╛.
-    ?...""");
+    ?...""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
-    ?...
-    #─┐.
-    #i│.
-    #╤╛.
-    ?...""");
-
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
-    ?...
-    #─┐.
-    #-│.
-    #-│.
-    #╤╛.
-    ?...""");
-
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     ?...
     #─┐.
     #i│.
+    #╤╛.
+    ?...""",
+  );
+
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
+    ?...
+    #─┐.
+    #-│.
+    #-│.
+    #╤╛.
+    ?...""",
+  );
+
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
+    ?...
+    #─┐.
+    #i│.
     #i│.
     #╤╛.
-    ?...""");
+    ?...""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     ?...
     #─┐.
     #-│.
     #-│.
     #-│.
     #╤╛.
-    ?...""");
+    ?...""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     ?...
     #─┐.
     #-│.
     #i│.
     #-│.
     #╤╛.
-    ?...""");
+    ?...""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     ?...
     #─┐.
     #i│.
     #-│.
     #i│.
     #╤╛.
-    ?...""");
+    ?...""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .....
     .┌─┐.
     .│-│.
-    ?###?""");
+    ?###?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .....
     .┌─┐.
     .│i│.
-    ?###?""");
+    ?###?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ......
     .┌──┐.
     .│--│.
-    ?####?""");
+    ?####?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ......
     .┌──┐.
     .│ii│.
-    ?####?""");
+    ?####?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│---│.
-    ?#####?""");
+    ?#####?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│-i-│.
-    ?#####?""");
+    ?#####?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│i-i│.
-    ?#####?""");
+    ?#####?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?###?
     .│-│.
     .╞═╡.
-    .....""");
+    .....""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?###?
     .│i│.
     .╞═╡.
-    .....""");
+    .....""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?####?
     .│--│.
     .╞══╡.
-    ......""");
+    ......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?####?
     .│ii│.
     .╞══╡.
-    ......""");
+    ......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?#####?
     .│---│.
     .╞═══╡.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?#####?
     .│-i-│.
     .╞═══╡.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?#####?
     .│i-i│.
     .╞═══╡.
-    .......""");
+    .......""",
+  );
 
   // Separating counters.
   category(themes: "dungeon keep", cells: tableCells);
-  furnishing(template: """
+  furnishing(
+    template: """
     ?.....?
     #─┐.┌─#
     #╤╛.╘╤#
-    ?.....?""");
+    ?.....?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?.......?
     #──┐.┌──#
     #═╤╛.╘╤═#
-    ?.......?""");
+    ?.......?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?.........?
     #───┐.┌───#
     #══╤╛.╘╤══#
-    ?.........?""");
+    ?.........?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?##?
     .││.
     .╞╡.
     ....
     .┌┐.
     .││.
-    ?##?""");
+    ?##?""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?##?
-    .││.
-    .││.
-    .╞╡.
-    ....
-    .┌┐.
-    .││.
-    .││.
-    ?##?""");
-
-  furnishing(template: """
-    ?##?
-    .││.
     .││.
     .││.
     .╞╡.
@@ -210,421 +256,592 @@ void roomDecor() {
     .┌┐.
     .││.
     .││.
+    ?##?""",
+  );
+
+  furnishing(
+    template: """
+    ?##?
     .││.
-    ?##?""");
+    .││.
+    .││.
+    .╞╡.
+    ....
+    .┌┐.
+    .││.
+    .││.
+    .││.
+    ?##?""",
+  );
 
   // Tables.
   category(themes: "dungeon keep", cells: tableCells);
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .....
     .┌─┐.
     .│-│.
     .╞═╡.
-    .....""");
+    .....""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .....
     .┌─┐.
     .│i│.
     .╞═╡.
-    .....""");
+    .....""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ......
     .┌──┐.
     .│--│.
     .╞══╡.
-    ......""");
+    ......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ......
     .┌──┐.
     .│ii│.
     .╞══╡.
-    ......""");
+    ......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│---│.
     .╘╤═╤╛.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│-i-│.
     .╘╤═╤╛.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│i-i│.
     .╘╤═╤╛.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ........
     .┌────┐.
     .│----│.
     .╘╤══╤╛.
-    ........""");
+    ........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ........
     .┌────┐.
     .│i--i│.
     .╘╤══╤╛.
-    ........""");
+    ........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .........
     .┌─────┐.
     .│-----│.
     .╘╤═══╤╛.
-    .........""");
+    .........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .........
     .┌─────┐.
     .│--i--│.
     .╘╤═══╤╛.
-    .........""");
+    .........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .........
     .┌─────┐.
     .│-i-i-│.
     .╘╤═══╤╛.
-    .........""");
+    .........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ..........
     .┌──────┐.
     .│------│.
     .╘╤════╤╛.
-    ..........""");
+    ..........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ..........
     .┌──────┐.
     .│-i--i-│.
     .╘╤════╤╛.
-    ..........""");
+    ..........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .....
     .┌─┐.
     .│-│.
     .│-│.
     .╞═╡.
-    .....""");
+    .....""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .....
     .┌─┐.
     .│i│.
     .│i│.
     .╞═╡.
-    .....""");
+    .....""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ......
     .┌──┐.
     .│--│.
     .│--│.
     .╞══╡.
-    ......""");
+    ......""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     ......
     .┌──┐.
     .│i-│.
     .│-i│.
     .╞══╡.
-    ......""");
+    ......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│---│.
     .│---│.
     .╘╤═╤╛.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│-i-│.
     .│-i-│.
     .╘╤═╤╛.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│-i-│.
     .│i-i│.
     .╘╤═╤╛.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .......
     .┌───┐.
     .│i-i│.
     .│-i-│.
     .╘╤═╤╛.
-    .......""");
+    .......""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ........
     .┌────┐.
     .│----│.
     .│----│.
     .╘╤══╤╛.
-    ........""");
+    ........""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     ........
     .┌────┐.
     .│i---│.
     .│---i│.
     .╘╤══╤╛.
-    ........""");
+    ........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .........
     .┌─────┐.
     .│-----│.
     .│-----│.
     .╘╤═══╤╛.
-    .........""");
+    .........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .........
     .┌─────┐.
     .│--i--│.
     .│-i-i-│.
     .╘╤═══╤╛.
-    .........""");
+    .........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     .........
     .┌─────┐.
     .│i---i│.
     .│--i--│.
     .╘╤═══╤╛.
-    .........""");
+    .........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ..........
     .┌──────┐.
     .│------│.
     .│------│.
     .╘╤════╤╛.
-    ..........""");
+    ..........""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ..........
     .┌──────┐.
     .│-i--i-│.
     .│-i--i-│.
     .╘╤════╤╛.
-    ..........""");
+    ..........""",
+  );
 
   // TODO: More table sizes? Shapes?
 
   // Chairs.
-  category(themes: "built", frequency: 2.0, cells: {
-    "π": applyOpen(Tiles.chair),
-  });
+  category(
+    themes: "built",
+    frequency: 2.0,
+    cells: {"π": applyOpen(Tiles.chair)},
+  );
 
-  furnishing(symmetry: Symmetry.mirrorBoth, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorBoth,
+    template: """
     π.
-    .┌""");
+    .┌""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorBoth, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorBoth,
+    template: """
     π.
-    ┌?""");
+    ┌?""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorBoth, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorBoth,
+    template: """
     ..
-    π┌""");
+    π┌""",
+  );
 
-  furnishing(symmetry: Symmetry.mirrorHorizontal, template: """
+  furnishing(
+    symmetry: Symmetry.mirrorHorizontal,
+    template: """
     .╞
-    π.""");
+    π.""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ?═?
-    .π.""");
+    .π.""",
+  );
 
-  furnishing(template: """
+  furnishing(
+    template: """
     ?╤?
-    .π.""");
+    .π.""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     π
-    #""");
+    #""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     π
     .
-    #""");
+    #""",
+  );
 
   // TODO: Some fraction of the time, should place open barrels and chests.
   // Barrels.
   category(
-      themes: "built",
-      frequency: 0.7,
-      cells: {"%": applyOpen(Tiles.closedBarrel)});
+    themes: "built",
+    frequency: 0.7,
+    cells: {"%": applyOpen(Tiles.closedBarrel)},
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ##?
     #%.
-    ?.?""");
+    ?.?""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ?.?
     .%.
-    ?.?""");
+    ?.?""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ###?
     #%%.
-    ?..?""");
+    ?..?""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ###?
     #%%.
     #%.?
-    ?.??""");
+    ?.??""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ?##?
     .%%.
-    ?..?""");
+    ?..?""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ?###?
     .%%%.
-    ?...?""");
+    ?...?""",
+  );
 
   // Chests.
   category(
-      themes: "built",
-      frequency: 0.5,
-      cells: {"&": applyOpen(Tiles.closedChest)});
+    themes: "built",
+    frequency: 0.5,
+    cells: {"&": applyOpen(Tiles.closedChest)},
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ##?
     #&.
-    ?.?""");
+    ?.?""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     ?#?
     .&.
-    ?.?""");
+    ?.?""",
+  );
 
   // Streams.
   category(themes: "built", frequency: 10.0);
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #...#
     #≈≡≈#
-    #...#""");
+    #...#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #....#
     #≈≈≡≈#
-    #....#""");
+    #....#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.....#
     #≈≈≡≈≈#
-    #.....#""");
+    #.....#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.....#
     #≈≡≈≡≈#
-    #.....#""");
+    #.....#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #......#
     #......#
     #≈≈≡≈≈≈#
     #......#
-    #......#""");
+    #......#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #......#
     #......#
     #≈≡≈≈≡≈#
     #......#
-    #......#""");
+    #......#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.......#
     #≈≈≈≡≈≈≈#
     #.......#
-    #.......#""");
+    #.......#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.......#
     #.......#
     #≈≈≡≈≡≈≈#
     #.......#
-    #.......#""");
+    #.......#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.......#
     #.......#
     #≈≡≈≈≈≡≈#
     #.......#
-    #.......#""");
+    #.......#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #........#
     #........#
     #≈≈≈≡≈≈≈≈#
     #........#
-    #........#""");
+    #........#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #........#
     #........#
     #≈≈≡≈≈≡≈≈#
     #........#
-    #........#""");
+    #........#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.........#
     #.........#
     #≈≈≈≈≡≈≈≈≈#
     #.........#
-    #.........#""");
+    #.........#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.........#
     #.........#
     #≈≈≡≈≈≈≡≈≈#
     #.........#
-    #.........#""");
+    #.........#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.........#
     #.........#
     #≈≈≈≈≡≈≈≈≈#
     #≈≈≈≈≡≈≈≈≈#
     #.........#
-    #.........#""");
+    #.........#""",
+  );
 
-  furnishing(symmetry: Symmetry.rotate90, template: """
+  furnishing(
+    symmetry: Symmetry.rotate90,
+    template: """
     #.........#
     #.........#
     #≈≈≡≈≈≈≡≈≈#
     #≈≈≡≈≈≈≡≈≈#
     #.........#
-    #.........#""");
+    #.........#""",
+  );
 }

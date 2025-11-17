@@ -25,8 +25,13 @@ class TerminalFont {
   final int charWidth;
   final int charHeight;
 
-  TerminalFont(this.name, this.canvas, this.terminal,
-      {required this.charWidth, required this.charHeight});
+  TerminalFont(
+    this.name,
+    this.canvas,
+    this.terminal, {
+    required this.charWidth,
+    required this.charHeight,
+  });
 }
 
 void main() {
@@ -170,8 +175,15 @@ void _addFont(String name, int charWidth, [int? charHeight]) {
   });
 
   var terminal = _makeTerminal(canvas, charWidth, charHeight);
-  _fonts.add(TerminalFont(name, canvas, terminal,
-      charWidth: charWidth, charHeight: charHeight));
+  _fonts.add(
+    TerminalFont(
+      name,
+      canvas,
+      terminal,
+      charWidth: charWidth,
+      charHeight: charHeight,
+    ),
+  );
 
   if (Debug.enabled) {
     // Clicking a monster toggles its debug pane.
@@ -223,7 +235,10 @@ void _addFont(String name, int charWidth, [int? charHeight]) {
 }
 
 RetroTerminal _makeTerminal(
-    html.CanvasElement canvas, int charWidth, int charHeight) {
+  html.CanvasElement canvas,
+  int charWidth,
+  int charHeight,
+) {
   var width = (html.document.body!.clientWidth - 20) ~/ charWidth;
   var height = (html.document.body!.clientHeight - 30) ~/ charHeight;
 
@@ -241,11 +256,15 @@ RetroTerminal _makeTerminal(
   // Make the terminal.
   var file = "font_$charWidth";
   if (charWidth != charHeight) file += "_$charHeight";
-  return RetroTerminal(width, height, "$file.png",
-      canvas: canvas,
-      charWidth: charWidth,
-      charHeight: charHeight,
-      scale: html.window.devicePixelRatio.toInt());
+  return RetroTerminal(
+    width,
+    height,
+    "$file.png",
+    canvas: canvas,
+    charWidth: charWidth,
+    charHeight: charHeight,
+    scale: html.window.devicePixelRatio.toInt(),
+  );
 }
 
 /// Updates the character dimensions of the current terminal to fit the screen
@@ -266,7 +285,7 @@ void _fullscreen() {
     "requestFullscreen",
     "mozRequestFullScreen",
     "webkitRequestFullscreen",
-    "msRequestFullscreen"
+    "msRequestFullscreen",
   ];
   for (var method in methods) {
     if (jsElement.hasProperty(method)) {
@@ -299,10 +318,12 @@ Future<void> _refreshDebugBoxes() async {
       debugBox.className = "debug";
       debugBox.style.display = "inline-block";
 
-      var x = (screenPos.x + 1) * _font.charWidth +
+      var x =
+          (screenPos.x + 1) * _font.charWidth +
           _font.canvas.offset.left.toInt() +
           4;
-      var y = (screenPos.y) * _font.charHeight +
+      var y =
+          (screenPos.y) * _font.charHeight +
           _font.canvas.offset.top.toInt() +
           2;
       debugBox.style.left = x.toString();

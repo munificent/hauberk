@@ -40,7 +40,11 @@ Content createContent() {
 class GameContent implements Content {
   @override
   Iterable<String> buildStage(
-      Lore lore, Stage stage, int depth, Function(Vec) placeHero) {
+    Lore lore,
+    Stage stage,
+    int depth,
+    Function(Vec) placeHero,
+  ) {
     if (depth == 0) return Town(stage).buildStage(placeHero);
     return Architect(lore, stage, depth).buildStage(placeHero);
   }
@@ -82,8 +86,12 @@ class GameContent implements Content {
   List<Recipe> get recipes => Recipes.all;
 
   @override
-  HeroSave createHero(String name,
-      {Race? race, HeroClass? heroClass, bool permadeath = false}) {
+  HeroSave createHero(
+    String name, {
+    Race? race,
+    HeroClass? heroClass,
+    bool permadeath = false,
+  }) {
     race ??= Races.human;
     heroClass ??= Classes.adventurer;
 
@@ -106,12 +114,12 @@ class GameContent implements Content {
       "Mending Salve": 3,
       "Scroll of Sidestepping": 2,
       "Tallow Candle": 4,
-      "Loaf of Bread": 5
+      "Loaf of Bread": 5,
     };
 
     var items = [
       for (var (type, amount) in initialItems.pairs)
-        Item(Items.types.find(type), amount)
+        Item(Items.types.find(type), amount),
     ];
 
     hero.heroClass.startingItems.dropItem(hero.lore, 1, (item) {

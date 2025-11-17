@@ -49,7 +49,7 @@ abstract class ItemAction extends Action {
       case ItemLocation.onGround:
         // TODO: Need to optimize stacks on the ground too.
         // If the hero picks up part of a floor stack, it should be reshuffled.
-//        game.stage.itemsAt(actor.pos).countChanged();
+        //        game.stage.itemsAt(actor.pos).countChanged();
         break;
 
       case ItemLocation.inventory:
@@ -82,8 +82,11 @@ class PickUpAction extends Action {
     if (result.remaining == 0) {
       game.stage.removeItem(item, actor!.pos);
     } else {
-      show("{1} [don't|doesn't] have room for {2}.", actor,
-          item.clone(result.remaining));
+      show(
+        "{1} [don't|doesn't] have room for {2}.",
+        actor,
+        item.clone(result.remaining),
+      );
     }
 
     hero.pickUp(game, item);
@@ -160,10 +163,11 @@ class EquipAction extends ItemAction {
         // No room in inventory, so drop it.
         game.stage.addItem(unequippedItem, actor!.pos);
         show(
-            "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
-            "ground.",
-            actor,
-            unequippedItem);
+          "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
+          "ground.",
+          actor,
+          unequippedItem,
+        );
       }
     }
 
@@ -196,10 +200,11 @@ class UnequipAction extends ItemAction {
       // No room in inventory, so drop it.
       game.stage.addItem(item, actor!.pos);
       show(
-          "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
-          "the ground.",
-          actor,
-          item);
+        "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
+        "the ground.",
+        actor,
+        item,
+      );
     }
 
     hero.refreshProperties();
@@ -245,8 +250,12 @@ mixin DestroyActionMixin implements Action {
   ///
   /// Handles splitting stacks and logging errors. Returns the total fuel
   /// produced by all destroyed items.
-  int _destroy(Element element, Iterable<Item> items, bool isHeld,
-      void Function(Item) removeItem) {
+  int _destroy(
+    Element element,
+    Iterable<Item> items,
+    bool isHeld,
+    void Function(Item) removeItem,
+  ) {
     var fuel = 0;
 
     // Copy items to avoid concurrent modification.

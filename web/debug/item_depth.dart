@@ -20,8 +20,13 @@ void main() {
 
   var depthSelect = html.querySelector("#depth") as html.SelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
-    depthSelect.append(html.OptionElement(
-        data: i.toString(), value: i.toString(), selected: i == 1));
+    depthSelect.append(
+      html.OptionElement(
+        data: i.toString(),
+        value: i.toString(),
+        selected: i == 1,
+      ),
+    );
   }
 
   depthSelect.onChange.listen((event) {

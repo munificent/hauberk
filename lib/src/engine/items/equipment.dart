@@ -15,18 +15,18 @@ class Equipment extends IterableBase<Item> with ItemCollection {
   final List<Item?> slots;
 
   Equipment()
-      : slotTypes = const [
-          'hand',
-          'hand',
-          'ring',
-          'necklace',
-          'body',
-          'cloak',
-          'helm',
-          'gloves',
-          'boots'
-        ],
-        slots = List<Item?>.filled(9, null);
+    : slotTypes = const [
+        'hand',
+        'hand',
+        'ring',
+        'necklace',
+        'body',
+        'cloak',
+        'helm',
+        'gloves',
+        'boots',
+      ],
+      slots = List<Item?>.filled(9, null);
 
   /// Gets the currently-equipped weapons, if any.
   Iterable<Item> get weapons =>

@@ -18,13 +18,15 @@ int lerpInt(int value, int min, int max, int outMin, int outMax) =>
 // TODO: Not currently used. Delete?
 /// Finds the quadratic curve that goes through [x0],[y0], [x1],[y1], and
 /// [x2],[y2]. Then calculates the y position at [x].
-double quadraticInterpolate(num x,
-    {required num x0,
-    required num y0,
-    required num x1,
-    required num y1,
-    required num x2,
-    required num y2}) {
+double quadraticInterpolate(
+  num x, {
+  required num x0,
+  required num y0,
+  required num x1,
+  required num y1,
+  required num x2,
+  required num y2,
+}) {
   // From: http://mathonline.wikidot.com/deleted:quadratic-polynomial-interpolation
   var a = ((x - x1) * (x - x2)) / ((x0 - x1) * (x0 - x2));
   var b = ((x - x0) * (x - x2)) / ((x1 - x0) * (x1 - x2));

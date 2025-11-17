@@ -26,7 +26,7 @@ class FlowAction extends Action with ElementActionMixin {
   // them. That would let fire flow attacks that can set closed doors on fire.
 
   FlowAction(this._from, this._hit, this._motility, {int? slowness})
-      : _slowness = slowness ?? 1;
+    : _slowness = slowness ?? 1;
 
   @override
   ActionResult onPerform() {

@@ -18,8 +18,8 @@ class Dungeon extends RoomArchitecture {
   PaintStyle get paintStyle => PaintStyle.flagstone;
 
   Dungeon({required RoomShapes shapes, double density = 0.25})
-      : _density = density,
-        _shapes = shapes;
+    : _density = density,
+      _shapes = shapes;
 
   @override
   Iterable<String> build() sync* {
