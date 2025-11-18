@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+import 'dart:js_interop';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
@@ -6,11 +6,12 @@ import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
+import 'package:web/web.dart' as web;
 
-html.SelectElement get _breedSelect =>
-    html.querySelector("#breed") as html.SelectElement;
+web.HTMLSelectElement get _breedSelect =>
+    web.document.querySelector("#breed") as web.HTMLSelectElement;
 
-Breed get _selectedBreed => Monsters.breeds.find(_breedSelect.value!);
+Breed get _selectedBreed => Monsters.breeds.find(_breedSelect.value);
 
 void main() {
   createContent();
@@ -18,10 +19,10 @@ void main() {
   var selectedBreed = Monsters.breeds.all.first;
 
   // If there's a URL hash, show that monster.
-  if (html.window.location.hash.isNotEmpty) {
+  if (web.window.location.hash.isNotEmpty) {
     // Trim the leading "#".
     var name = Uri.decodeFull(
-      html.window.location.hash.substring(1),
+      web.window.location.hash.substring(1),
     ).toLowerCase();
 
     for (var breed in Monsters.breeds.all) {
@@ -35,11 +36,10 @@ void main() {
   for (var breed in Monsters.breeds.all) {
     var glyph = breed.appearance as Glyph;
     _breedSelect.append(
-      html.OptionElement(
-        data: '[${String.fromCharCode(glyph.char)}] ${breed.name}',
-        value: breed.name,
-        selected: breed == selectedBreed,
-      ),
+      web.HTMLOptionElement()
+        ..text = '[${String.fromCharCode(glyph.char)}] ${breed.name}'
+        ..value = breed.name
+        ..selected = breed == selectedBreed,
     );
   }
 
@@ -54,9 +54,9 @@ void main() {
 void _update() {
   var breed = _selectedBreed;
 
-  html.querySelector('h1')!.innerHtml =
-      '<a href="index.html">Debug</a> / Monster /  ${breed.name}';
-  html.window.location.hash = Uri.encodeFull(breed.name);
+  web.document.querySelector('h1')!.innerHTML =
+      '<a href="index.html">Debug</a> / Monster /  ${breed.name}'.toJS;
+  web.window.location.hash = Uri.encodeFull(breed.name);
 
   const dropTries = 1000;
 

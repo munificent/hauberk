@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:html' as html;
+
+import 'package:web/web.dart' as web;
 
 import '../engine.dart';
 
@@ -34,12 +35,12 @@ class Storage {
 
   void _load() {
     // TODO: For debugging. If the query is "?clear", then ditch saved heroes.
-    if (html.window.location.search == '?clear') {
+    if (web.window.location.search == '?clear') {
       save();
       return;
     }
 
-    var storage = html.window.localStorage['heroes'];
+    var storage = web.window.localStorage.getItem('heroes');
     if (storage == null) return;
 
     var data = json.decode(storage) as Map<String, dynamic>;
@@ -359,7 +360,8 @@ class Storage {
       ],
     };
 
-    html.window.localStorage['heroes'] = json.encode(data);
+    var encoded = json.encode(data);
+    web.window.localStorage.setItem('heroes', encoded);
     print('Saved.');
   }
 

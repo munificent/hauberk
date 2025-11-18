@@ -1,6 +1,6 @@
-import 'dart:html' as html;
+import 'dart:js_interop';
 
-final _validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
+import 'package:web/web.dart' as web;
 
 class HtmlBuilder {
   final StringBuffer _buffer = StringBuffer();
@@ -82,15 +82,13 @@ class HtmlBuilder {
   }
 
   void appendToBody() {
-    html
+    web.document
         .querySelector('body')!
-        .appendHtml(_buffer.toString(), validator: _validator);
+        .insertAdjacentHTML('beforeend', _buffer.toString().toJS);
   }
 
   void replaceContents(String selector) {
-    html
-        .querySelector(selector)!
-        .setInnerHtml(_buffer.toString(), validator: _validator);
+    web.document.querySelector(selector)!.innerHTML = _buffer.toString().toJS;
   }
 
   @override

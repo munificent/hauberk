@@ -1,12 +1,8 @@
-import 'dart:html' as html;
-
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/monster/monsters.dart';
 import 'package:hauberk/src/debug/table.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
-
-final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
 
 void main() {
   createContent();

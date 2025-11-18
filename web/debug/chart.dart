@@ -1,5 +1,4 @@
-import 'dart:html' as html;
-import 'dart:svg' as svg;
+import 'dart:js_interop';
 
 import 'package:hauberk/src/content/item/affixes.dart';
 import 'package:hauberk/src/content/item/drops.dart';
@@ -10,15 +9,18 @@ import 'package:hauberk/src/content/stage/architectural_style.dart';
 import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
+import 'package:web/web.dart' as web;
 
 const batchSize = 1000;
 const chartWidth = 600;
 const barSize = 6;
 
-final _svg = html.querySelector("svg") as svg.SvgElement;
-final _chart = html.querySelector("select[name=chart]") as html.SelectElement;
+final _svg = web.document.querySelector("svg") as web.SVGElement;
+final _chart =
+    web.document.querySelector("select[name=chart]") as web.HTMLSelectElement;
 final _highlight =
-    html.querySelector("select[name=highlight]") as html.SelectElement;
+    web.document.querySelector("select[name=highlight]")
+        as web.HTMLSelectElement;
 
 final List<Chart> _charts = [
   BreedChart(),
@@ -103,7 +105,7 @@ abstract class Chart {
       buffer.writeln('<option value="$label" $selected>$label</option>');
     }
 
-    _highlight.setInnerHtml(buffer.toString());
+    _highlight.innerHTML = buffer.toString().toJS;
 
     _draw();
   }
@@ -150,7 +152,7 @@ abstract class Chart {
       }
     }
 
-    _svg.setInnerHtml(buffer.toString());
+    _svg.innerHTML = buffer.toString().toJS;
   }
 }
 

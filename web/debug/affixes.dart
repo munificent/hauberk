@@ -1,5 +1,3 @@
-import 'dart:html' as html;
-
 import 'package:hauberk/src/content/elements.dart';
 import 'package:hauberk/src/content/item/affixes.dart';
 import 'package:hauberk/src/content/item/drops.dart';
@@ -7,26 +5,28 @@ import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:web/web.dart' as web;
 
 const tries = 100000;
 
 int get depth {
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
-  return int.parse(depthSelect.value!);
+  var depthSelect =
+      web.document.querySelector("#depth") as web.HTMLSelectElement;
+  return int.parse(depthSelect.value);
 }
 
 void main() {
   Items.initialize();
   Affixes.initialize();
 
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
+  var depthSelect =
+      web.document.querySelector("#depth") as web.HTMLSelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
     depthSelect.append(
-      html.OptionElement(
-        data: i.toString(),
-        value: i.toString(),
-        selected: i == 1,
-      ),
+      web.HTMLOptionElement()
+        ..text = i.toString()
+        ..value = i.toString()
+        ..selected = i == 1,
     );
   }
 

@@ -139,10 +139,9 @@ class _AnimatedValue {
   final Color color;
   final int? total;
 
-  int current;
+  int current = 0;
 
-  _AnimatedValue(this.y, this.name, this.value, this.color, {this.total})
-    : current = 0;
+  _AnimatedValue(this.y, this.name, this.value, this.color, {this.total});
 
   bool update() {
     if (current >= value) return false;

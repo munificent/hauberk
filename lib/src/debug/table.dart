@@ -1,10 +1,9 @@
-import 'dart:html' as html;
+import 'dart:js_interop';
+
+import 'package:web/web.dart' as web;
 
 /// Generates an HTML table with sortable columns.
 class Table<T> {
-  static final _validator = html.NodeValidatorBuilder.common()
-    ..allowInlineStyles();
-
   final String _selector;
   final int Function(T a, T b) _defaultSort;
   final List<Column<T>> _columns = [];
@@ -33,14 +32,14 @@ class Table<T> {
   void render() {
     _sortRows();
 
-    var table = html.querySelector(_selector) as html.TableElement;
-    table.children.clear();
+    var table = web.document.querySelector(_selector) as web.HTMLTableElement;
+    table.innerHTML = ''.toJS;
 
     var thead = table.createTHead();
-    var headRow = thead.addRow();
+    var headRow = thead.insertRow();
 
     for (var i = 0; i < _columns.length; i++) {
-      var cell = headRow.addCell();
+      var cell = headRow.insertCell();
 
       var text = _columns[i].name;
       if (_sortOrders.isNotEmpty) {
@@ -55,7 +54,7 @@ class Table<T> {
         }
       }
 
-      cell.setInnerHtml(text, validator: _validator);
+      cell.innerHTML = text.toJS;
       cell.style.cursor = 'pointer';
       if (_columns[i].alignRight) cell.style.textAlign = 'right';
 
@@ -67,12 +66,12 @@ class Table<T> {
     var tbody = table.createTBody();
 
     for (var row in _rows) {
-      var tableRow = tbody.addRow();
+      var tableRow = tbody.insertRow();
 
       for (var i = 0; i < row._cells.length; i++) {
         var column = _columns[i];
         var cell = row._cells[i];
-        var tableCell = tableRow.addCell();
+        var tableCell = tableRow.insertCell();
 
         var text = '&mdash;';
         if (cell == null) {
@@ -88,7 +87,7 @@ class Table<T> {
           text = cell.toString();
         }
 
-        tableCell.setInnerHtml(text, validator: _validator);
+        tableCell.innerHTML = text.toJS;
         if (column.alignRight) tableCell.style.textAlign = 'right';
       }
     }

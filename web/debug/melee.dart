@@ -1,10 +1,11 @@
-import 'dart:html' as html;
+import 'dart:js_interop';
 import 'dart:math' as math;
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/item/drops.dart';
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:web/web.dart' as web;
 
 final content = createContent();
 
@@ -204,17 +205,19 @@ class Table {
       buffer.write("</tr>");
     }
 
-    var validator = html.NodeValidatorBuilder.common();
-    validator.allowInlineStyles();
+    web.document.querySelector('table')!.innerHTML = buffer.toString().toJS;
 
-    html
-        .querySelector('table')!
-        .setInnerHtml(buffer.toString(), validator: validator);
-
-    for (var column in html.querySelectorAll('thead td')) {
-      column.onClick.listen((_) {
-        sortBy(column.id);
-      });
+    {
+      var columns = web.document.querySelectorAll('thead td');
+      for (var i = 0; i < columns.length; i++) {
+        var column = columns.item(i)!;
+        column.addEventListener(
+          'click',
+          () {
+            sortBy(column.nodeName);
+          }.toJS,
+        );
+      }
     }
   }
 

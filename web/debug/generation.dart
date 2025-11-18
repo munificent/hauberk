@@ -1,9 +1,8 @@
-import 'dart:html' as html;
-
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/debug/histogram.dart';
 import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:web/web.dart' as web;
 
 Histogram<String> monsters = Histogram();
 Histogram<String> items = Histogram();
@@ -14,19 +13,20 @@ Content content = createContent();
 int generated = 0;
 
 int get depth {
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
-  return int.parse(depthSelect.value!);
+  var depthSelect =
+      web.document.querySelector("#depth") as web.HTMLSelectElement;
+  return int.parse(depthSelect.value);
 }
 
 void main() {
-  var depthSelect = html.querySelector("#depth") as html.SelectElement;
+  var depthSelect =
+      web.document.querySelector("#depth") as web.HTMLSelectElement;
   for (var i = 1; i <= Option.maxDepth; i++) {
     depthSelect.append(
-      html.OptionElement(
-        data: i.toString(),
-        value: i.toString(),
-        selected: i == 1,
-      ),
+      web.HTMLOptionElement()
+        ..text = i.toString()
+        ..value = i.toString()
+        ..selected = i == 1,
     );
   }
 
@@ -40,7 +40,7 @@ void main() {
     generateTable();
   });
 
-  html.querySelector('table')!.onClick.listen((_) {
+  web.document.querySelector('table')!.onClick.listen((_) {
     generate();
     generateTable();
   });

@@ -1,5 +1,5 @@
-import 'dart:html' as html;
-import 'dart:js';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:math' as math;
 
 import 'package:hauberk/src/content.dart';
@@ -11,6 +11,7 @@ import 'package:hauberk/src/ui/main_menu_screen.dart';
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
+import 'package:web/web.dart' as web;
 
 final _fonts = <TerminalFont>[];
 late final UserInterface<Input> _ui;
@@ -20,7 +21,7 @@ final Set<Monster> _debugMonsters = {};
 
 class TerminalFont {
   final String name;
-  final html.CanvasElement canvas;
+  final web.HTMLCanvasElement canvas;
   RenderableTerminal terminal;
   final int charWidth;
   final int charHeight;
@@ -47,7 +48,7 @@ void main() {
   _addFont("16x20", 16, 20);
 
   // Load the user's font preference, if any.
-  var fontName = html.window.localStorage["font"];
+  var fontName = web.window.localStorage.getItem("font");
   _font = _fonts[1];
   for (var thisFont in _fonts) {
     if (thisFont.name == fontName) {
@@ -56,13 +57,11 @@ void main() {
     }
   }
 
-  var div = html.querySelector("#game")!;
+  var div = web.document.querySelector("#game")!;
   div.append(_font.canvas);
 
   // Scale the terminal to fit the screen.
-  html.window.onResize.listen((_) {
-    _resizeTerminal();
-  });
+  web.window.addEventListener('resize', _resizeTerminal.toJS);
 
   _ui = UserInterface<Input>(_font.terminal);
 
@@ -160,7 +159,7 @@ void main() {
   _ui.running = true;
 
   if (Debug.enabled) {
-    html.document.body!.onKeyDown.listen((_) {
+    web.document.body!.onKeyDown.listen((_) {
       _refreshDebugBoxes();
     });
   }
@@ -169,7 +168,7 @@ void main() {
 void _addFont(String name, int charWidth, [int? charHeight]) {
   charHeight ??= charWidth;
 
-  var canvas = html.CanvasElement();
+  var canvas = web.HTMLCanvasElement();
   canvas.onDoubleClick.listen((_) {
     _fullscreen();
   });
@@ -191,7 +190,7 @@ void _addFont(String name, int charWidth, [int? charHeight]) {
       var gameScreen = Debug.gameScreen as GameScreen?;
       if (gameScreen == null) return;
 
-      var pixel = Vec(event.offset.x.toInt(), event.offset.y.toInt());
+      var pixel = Vec(event.offsetX.toInt(), event.offsetY.toInt());
       var pos = terminal.pixelToChar(pixel);
 
       var absolute = pos + gameScreen.cameraBounds.topLeft;
@@ -211,13 +210,13 @@ void _addFont(String name, int charWidth, [int? charHeight]) {
   }
 
   // Make a button for it.
-  var button = html.ButtonElement();
-  button.innerHtml = name;
+  var button = web.HTMLButtonElement();
+  button.innerHTML = name.toJS;
   button.onClick.listen((_) {
     for (var i = 0; i < _fonts.length; i++) {
       if (_fonts[i].name == name) {
         _font = _fonts[i];
-        html.querySelector("#game")!.append(_font.canvas);
+        web.document.querySelector("#game")!.append(_font.canvas);
       } else {
         _fonts[i].canvas.remove();
       }
@@ -228,24 +227,24 @@ void _addFont(String name, int charWidth, [int? charHeight]) {
     if (Debug.enabled) _refreshDebugBoxes();
 
     // Remember the preference.
-    html.window.localStorage['font'] = name;
+    web.window.localStorage.setItem('font', name);
   });
 
-  html.querySelector('.button-bar')!.children.add(button);
+  web.document.querySelector('.button-bar')!.children.add(button);
 }
 
 RetroTerminal _makeTerminal(
-  html.CanvasElement canvas,
+  web.HTMLCanvasElement canvas,
   int charWidth,
   int charHeight,
 ) {
-  var width = (html.document.body!.clientWidth - 20) ~/ charWidth;
-  var height = (html.document.body!.clientHeight - 30) ~/ charHeight;
+  var width = (web.document.body!.clientWidth - 20) ~/ charWidth;
+  var height = (web.document.body!.clientHeight - 30) ~/ charHeight;
 
   width = math.max(width, 80);
   height = math.max(height, 40);
 
-  var scale = html.window.devicePixelRatio.toInt();
+  var scale = web.window.devicePixelRatio.toInt();
   var canvasWidth = charWidth * width;
   var canvasHeight = charHeight * height;
   canvas.width = canvasWidth * scale;
@@ -263,7 +262,7 @@ RetroTerminal _makeTerminal(
     canvas: canvas,
     charWidth: charWidth,
     charHeight: charHeight,
-    scale: html.window.devicePixelRatio.toInt(),
+    scale: web.window.devicePixelRatio.toInt(),
   );
 }
 
@@ -278,8 +277,8 @@ void _resizeTerminal() {
 
 /// See: https://stackoverflow.com/a/29715395/9457
 void _fullscreen() {
-  var div = html.querySelector("#game")!;
-  var jsElement = JsObject.fromBrowserObject(div);
+  var div = web.document.querySelector("#game")!;
+  var jsElement = div as JSObject;
 
   var methods = [
     "requestFullscreen",
@@ -288,49 +287,52 @@ void _fullscreen() {
     "msRequestFullscreen",
   ];
   for (var method in methods) {
-    if (jsElement.hasProperty(method)) {
-      jsElement.callMethod(method);
+    if (jsElement.hasProperty(method.toJS).toDart) {
+      jsElement.callMethod(method.toJS);
       return;
     }
   }
 }
 
-Future<void> _refreshDebugBoxes() async {
-  // Hack: Give the engine a chance to update.
-  await html.window.animationFrame;
+void _refreshDebugBoxes() {
+  void refresh() {
+    var debugBoxes = web.document.querySelectorAll(".debug");
+    for (var i = 0; i < debugBoxes.length; i++) {
+      web.document.body!.removeChild(debugBoxes.item(i)!);
+    }
 
-  for (var debugBox in html.querySelectorAll(".debug")) {
-    html.document.body!.children.remove(debugBox);
-  }
+    var gameScreen = Debug.gameScreen as GameScreen?;
+    if (gameScreen == null) return;
 
-  var gameScreen = Debug.gameScreen as GameScreen?;
-  if (gameScreen == null) return;
+    _debugMonsters.removeWhere((monster) => !monster.isAlive);
+    for (var monster in _debugMonsters) {
+      if (gameScreen.cameraBounds.contains(monster.pos)) {
+        var screenPos = monster.pos - gameScreen.cameraBounds.topLeft;
 
-  _debugMonsters.removeWhere((monster) => !monster.isAlive);
-  for (var monster in _debugMonsters) {
-    if (gameScreen.cameraBounds.contains(monster.pos)) {
-      var screenPos = monster.pos - gameScreen.cameraBounds.topLeft;
+        var info = Debug.monsterInfo(monster);
+        if (info == null) continue;
 
-      var info = Debug.monsterInfo(monster);
-      if (info == null) continue;
+        var debugBox = web.HTMLPreElement.pre();
+        debugBox.className = "debug";
+        debugBox.style.display = "inline-block";
 
-      var debugBox = html.PreElement();
-      debugBox.className = "debug";
-      debugBox.style.display = "inline-block";
+        var x =
+            (screenPos.x + 1) * _font.charWidth +
+            _font.canvas.offsetLeft.toInt() +
+            4;
+        var y =
+            (screenPos.y) * _font.charHeight +
+            _font.canvas.offsetTop.toInt() +
+            2;
+        debugBox.style.left = x.toString();
+        debugBox.style.top = y.toString();
+        debugBox.textContent = info;
 
-      var x =
-          (screenPos.x + 1) * _font.charWidth +
-          _font.canvas.offset.left.toInt() +
-          4;
-      var y =
-          (screenPos.y) * _font.charHeight +
-          _font.canvas.offset.top.toInt() +
-          2;
-      debugBox.style.left = x.toString();
-      debugBox.style.top = y.toString();
-      debugBox.text = info;
-
-      html.document.body!.children.add(debugBox);
+        web.document.body!.children.add(debugBox);
+      }
     }
   }
+
+  // Hack: Give the engine a chance to update.
+  web.window.requestAnimationFrame(refresh.toJS);
 }

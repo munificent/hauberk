@@ -1,12 +1,12 @@
-import 'dart:html' as html;
-
 import 'package:hauberk/src/content/item/items.dart';
 import 'package:hauberk/src/debug/table.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
+import 'package:web/web.dart' as web;
 
-final _scaleBySelect = html.querySelector("select") as html.SelectElement;
+final _scaleBySelect =
+    web.document.querySelector("select") as web.HTMLSelectElement;
 
 void main() {
   Items.initialize();

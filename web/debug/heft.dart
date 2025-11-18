@@ -1,9 +1,11 @@
-import 'dart:html' as html;
+import 'dart:js_interop';
 
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/content/skill/discipline/dual_wield.dart';
 import 'package:hauberk/src/debug/html_builder.dart';
+import 'package:hauberk/src/debug/utils.dart';
 import 'package:hauberk/src/engine.dart';
+import 'package:web/web.dart' as web;
 
 final _content = createContent();
 
@@ -19,8 +21,6 @@ void main() {
 }
 
 void _buildTable() async {
-  var validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
-
   var builder = HtmlBuilder();
   builder.thead();
   builder.td("Str \\ Dual Wield Level");
@@ -37,13 +37,9 @@ void _buildTable() async {
 
     builder.trEnd();
 
-    await html.window.animationFrame;
-    html
-        .querySelector('table')!
-        .setInnerHtml(
-          'Generating data for strength $strength...',
-          validator: validator,
-        );
+    await waitFrame();
+    web.document.querySelector('table')!.innerHTML =
+        'Generating data for strength $strength...'.toJS;
   }
   builder.tbodyEnd();
   builder.replaceContents('table');

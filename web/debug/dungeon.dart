@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:html' as html;
+import 'dart:js_interop';
 import 'dart:math' as math;
 
 import 'package:hauberk/src/content.dart';
@@ -8,17 +8,20 @@ import 'package:hauberk/src/content/stage/decorator.dart';
 import 'package:hauberk/src/content/stage/keep.dart';
 import 'package:hauberk/src/debug.dart';
 import 'package:hauberk/src/debug/histogram.dart';
+import 'package:hauberk/src/debug/utils.dart';
 import 'package:hauberk/src/engine.dart';
 import 'package:hauberk/src/hues.dart';
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
+import 'package:web/web.dart' as web;
 
-final validator = html.NodeValidatorBuilder.common()..allowInlineStyles();
-
-final depthSelect = html.querySelector("#depth") as html.SelectElement;
-final canvas = html.querySelector("canvas#tiles") as html.CanvasElement;
-final stateCanvas = html.querySelector("canvas#states") as html.CanvasElement;
+final depthSelect =
+    web.document.querySelector("#depth") as web.HTMLSelectElement;
+final canvas =
+    web.document.querySelector("canvas#tiles") as web.HTMLCanvasElement;
+final stateCanvas =
+    web.document.querySelector("canvas#states") as web.HTMLCanvasElement;
 
 final content = createContent();
 final save = content.createHero("hero");
@@ -29,17 +32,15 @@ Vec? hoverPos;
 final Map<Architecture, int> hues = {};
 
 int get depth {
-  return int.parse(depthSelect.value!);
+  return int.parse(depthSelect.value);
 }
 
 void main() {
   for (var i = 1; i <= Option.maxDepth; i++) {
     depthSelect.append(
-      html.OptionElement(
-        data: i.toString(),
-        value: i.toString(),
-        selected: i == 1,
-      ),
+      web.HTMLOptionElement()
+        ..value = i.toString()
+        ..selected = i == 1,
     );
   }
 
@@ -56,7 +57,7 @@ void main() {
   });
 
   stateCanvas.onMouseMove.listen((event) {
-    hover(Vec(event.offset.x ~/ 8, event.offset.y ~/ 8));
+    hover(Vec(event.offsetX.toInt() ~/ 8, event.offsetY.toInt() ~/ 8));
   });
 
   generate();
@@ -106,12 +107,12 @@ void hover(Vec pos) {
     //    }
   }
 
-  html
-      .querySelector('div[id=hover]')!
-      .setInnerHtml(buffer.toString(), validator: validator);
+  web.document.querySelector('div[id=hover]')!.innerHTML = buffer
+      .toString()
+      .toJS;
 }
 
-Future generate() async {
+Future<void> generate() async {
   hues.clear();
   Keep.debugJunctions = null;
   Debug.densityMap = null;
@@ -142,7 +143,7 @@ Future generate() async {
 
     var elapsed = DateTime.now().difference(start);
     if (elapsed.inMilliseconds > 60) {
-      await html.window.animationFrame;
+      await waitFrame();
       start = DateTime.now();
     }
 
@@ -201,9 +202,9 @@ Future generate() async {
   }
   tableContents.write('</tbody>');
 
-  html
-      .querySelector('table[id=monsters]')!
-      .setInnerHtml(tableContents.toString(), validator: validator);
+  web.document.querySelector('table[id=monsters]')!.innerHTML = tableContents
+      .toString()
+      .toJS;
 
   tableContents.clear();
   tableContents.write('''
@@ -244,9 +245,9 @@ Future generate() async {
     </tr>
     ''');
   }
-  html
-      .querySelector('table[id=items]')!
-      .setInnerHtml(tableContents.toString(), validator: validator);
+  web.document.querySelector('table[id=items]')!.innerHTML = tableContents
+      .toString()
+      .toJS;
 }
 
 void render({bool showInfo = true}) {
@@ -295,7 +296,7 @@ void render({bool showInfo = true}) {
   terminal.render();
 
   var context = stateCanvas.context2D;
-  context.clearRect(0, 0, stateCanvas.width!, stateCanvas.height!);
+  context.clearRect(0, 0, stateCanvas.width, stateCanvas.height);
 
   if (!showInfo) return;
 
@@ -305,7 +306,7 @@ void render({bool showInfo = true}) {
       if (architecture == null) continue;
 
       var hue = hues.putIfAbsent(architecture, () => hues.length * 49);
-      context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)';
+      context.fillStyle = 'hsla($hue, 100%, 50%, 0.1)'.toJS;
       context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
     }
   }
@@ -323,13 +324,13 @@ void render({bool showInfo = true}) {
         var density = densityMap[pos] / max;
         if (density == 0) continue;
 
-        context.fillStyle = 'rgba(255,255,0,$density)';
+        context.fillStyle = 'rgba(255,255,0,$density)'.toJS;
         context.fillRect(pos.x * 8, pos.y * 8, 8, 8);
       }
     }
   }
 
-  context.fillStyle = 'hsla(0, 100%, 100%, 0.4)';
+  context.fillStyle = 'hsla(0, 100%, 100%, 0.4)'.toJS;
   if (Keep.debugJunctions != null) {
     for (var pos in _game.stage.bounds) {
       var junction = Keep.debugJunctions![pos];
