@@ -16,7 +16,7 @@ class LoadingDialog extends Screen<Input> {
   bool get isTransparent => true;
 
   factory LoadingDialog(HeroSave save, Content content, int depth) {
-    var game = Game(content, depth, save.clone());
+    var game = Game(content, depth, save);
     return LoadingDialog._(game, game.generate().iterator);
   }
 
