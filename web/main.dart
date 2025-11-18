@@ -230,7 +230,7 @@ void _addFont(String name, int charWidth, [int? charHeight]) {
     web.window.localStorage.setItem('font', name);
   });
 
-  web.document.querySelector('.button-bar')!.children.add(button);
+  web.document.querySelector('.button-bar')!.appendChild(button);
 }
 
 RetroTerminal _makeTerminal(
@@ -238,8 +238,8 @@ RetroTerminal _makeTerminal(
   int charWidth,
   int charHeight,
 ) {
-  var width = (web.document.body!.clientWidth - 20) ~/ charWidth;
-  var height = (web.document.body!.clientHeight - 30) ~/ charHeight;
+  var width = (web.window.innerWidth - 20) ~/ charWidth;
+  var height = (web.window.innerHeight - 30) ~/ charHeight;
 
   width = math.max(width, 80);
   height = math.max(height, 40);
