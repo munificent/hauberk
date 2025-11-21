@@ -30,10 +30,10 @@ void renderItems(
 }) {
   Draw.frame(
     terminal,
-    left,
-    top,
-    width,
-    itemSlotCount + 2,
+    x: left,
+    y: top,
+    width: width,
+    height: itemSlotCount + 2,
     color: canSelectAny ? UIHue.selection : UIHue.disabled,
     label: items.name,
     labelSelected: canSelectAny,

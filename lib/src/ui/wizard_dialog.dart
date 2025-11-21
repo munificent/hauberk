@@ -80,10 +80,8 @@ class WizardDialog extends Screen<Input> {
 
     Draw.frame(
       terminal,
-      0,
-      0,
-      40,
-      _menuItems.length + 2,
+      width: 40,
+      height: _menuItems.length + 2,
       color: _isActive ? UIHue.selection : UIHue.disabled,
       label: "Wizard Menu",
       labelSelected: _isActive,
@@ -275,15 +273,7 @@ abstract class _SearchDialog<T> extends Screen<Input> {
     var dialog = terminal.rect(40, 0, 43, 38);
 
     // Draw a box for the contents.
-    Draw.frame(
-      dialog,
-      0,
-      0,
-      dialog.width,
-      dialog.height,
-      label: _question,
-      color: UIHue.selection,
-    );
+    Draw.frame(dialog, label: _question, color: UIHue.selection);
 
     dialog.writeAt(_question.length + 4, 0, _pattern, UIHue.selection);
     dialog.writeAt(

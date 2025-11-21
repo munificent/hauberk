@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:malison/malison.dart';
+import '../engine.dart';
 import '../hues.dart';
 
 // TODO: Turn these into extension on Terminal?
@@ -20,14 +23,7 @@ class Draw {
       width,
       height,
     );
-    Draw.frame(
-      dialogTerminal,
-      0,
-      0,
-      dialogTerminal.width,
-      dialogTerminal.height,
-      label: label,
-    );
+    Draw.frame(dialogTerminal, label: label);
 
     drawContents(
       dialogTerminal.rect(
@@ -67,11 +63,11 @@ class Draw {
   }
 
   static void frame(
-    Terminal terminal,
-    int x,
-    int y,
-    int width,
-    int height, {
+    Terminal terminal, {
+    int? x,
+    int? y,
+    int? width,
+    int? height,
     Color? color,
     String? label,
     bool labelSelected = false,
@@ -94,11 +90,29 @@ class Draw {
 
     if (label != null) {
       terminal.writeAt(
-        x + 2,
-        y,
+        (x ?? 0) + 2,
+        y ?? 0,
         " $label ",
         labelSelected ? UIHue.selection : UIHue.text,
       );
+    }
+  }
+
+  /// Breaks a string into lines and draws them.
+  static void text(
+    Terminal terminal,
+    String text, {
+    int? x,
+    int? y,
+    int? width,
+    Color color = UIHue.text,
+  }) {
+    x ??= 0;
+    y ??= 0;
+    width ??= terminal.width;
+
+    for (var line in Log.wordWrap(width - x, text)) {
+      terminal.writeAt(x, y = y! + 1, line, color);
     }
   }
 
@@ -116,6 +130,7 @@ class Draw {
 
   /// Draws a frame with a little box on top for a glyph with the name next to
   /// it.
+  // TODO: Make position parameters named and optional.
   static void glyphFrame(
     Terminal terminal,
     int x,
@@ -125,7 +140,7 @@ class Draw {
     Glyph glyph,
     String label,
   ) {
-    frame(terminal, x, y + 1, width, height - 1);
+    frame(terminal, x: x, y: y + 1, width: width, height: height - 1);
     terminal.writeAt(x + 1, y, "┌─┐", darkCoolGray);
     terminal.writeAt(x + 1, y + 1, "╡ ╞", darkCoolGray);
     terminal.writeAt(x + 1, y + 2, "└─┘", darkCoolGray);
@@ -170,18 +185,16 @@ class Draw {
       helpTextLength += key.length + text.length + 3;
     });
 
-    var x = (terminal.width - helpTextLength) ~/ 2;
+    var boxWidth = helpTextLength;
+    if (query != null) {
+      boxWidth = max(boxWidth, query.length);
+    }
+
+    var x = (terminal.width - boxWidth) ~/ 2;
 
     // Show the query string, if there is one.
     if (query != null) {
-      box(
-        terminal,
-        x - 2,
-        terminal.height - 4,
-        helpTextLength + 4,
-        5,
-        UIHue.text,
-      );
+      box(terminal, x - 2, terminal.height - 4, boxWidth + 4, 5, UIHue.text);
       terminal.writeAt(
         (terminal.width - query.length) ~/ 2,
         terminal.height - 3,
@@ -189,17 +202,11 @@ class Draw {
         UIHue.primary,
       );
     } else {
-      box(
-        terminal,
-        x - 2,
-        terminal.height - 2,
-        helpTextLength + 4,
-        3,
-        UIHue.text,
-      );
+      box(terminal, x - 2, terminal.height - 2, boxWidth + 4, 3, UIHue.text);
     }
 
     var first = true;
+    x += (boxWidth - helpTextLength) ~/ 2;
     helpKeys.forEach((key, text) {
       if (!first) {
         terminal.writeAt(x, terminal.height - 1, ", ", UIHue.secondary);
@@ -222,10 +229,10 @@ class Draw {
 
   static void _box(
     Terminal terminal,
-    int x,
-    int y,
-    int width,
-    int height,
+    int? x,
+    int? y,
+    int? width,
+    int? height,
     Color? color,
     String topLeft,
     String top,
@@ -235,6 +242,11 @@ class Draw {
     String bottom,
     String bottomRight,
   ) {
+    x ??= 0;
+    y ??= 0;
+    width ??= terminal.width;
+    height ??= terminal.height;
+
     color ??= darkCoolGray;
     var bar = vertical + " " * (width - 2) + vertical;
     for (var row = y + 1; row < y + height - 1; row++) {

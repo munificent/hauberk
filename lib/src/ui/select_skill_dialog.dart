@@ -83,10 +83,7 @@ class SelectSkillDialog extends Screen<Input> {
 
     Draw.frame(
       terminal,
-      0,
-      0,
-      terminal.width,
-      height,
+      height: height,
       color: UIHue.selection,
       label: "Use which skill?",
       labelSelected: true,

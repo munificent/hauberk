@@ -103,7 +103,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
   void _renderSkillList(Terminal terminal) {
     terminal = terminal.rect(0, 0, 40, terminal.height - 1);
 
-    Draw.frame(terminal, 0, 0, terminal.width, terminal.height, label: _name);
+    Draw.frame(terminal, label: _name);
 
     _renderSkillListHeader(terminal);
     terminal.writeAt(2, 2, _rowSeparator, darkCoolGray);
@@ -122,6 +122,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
       var detailColor = UIHue.text;
       if (i == _selectedSkill) {
         nameColor = UIHue.selection;
+        detailColor = UIHue.selection;
       } else if (!_skillSet.isAcquired(skill)) {
         nameColor = UIHue.disabled;
         detailColor = UIHue.disabled;
@@ -146,18 +147,10 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
     terminal = terminal.rect(40, 0, terminal.width - 40, terminal.height - 1);
 
     if (_skills.isEmpty) {
-      Draw.frame(terminal, 0, 0, terminal.width, terminal.height);
+      Draw.frame(terminal);
     } else {
       var skill = _skills[_selectedSkill];
-      Draw.frame(
-        terminal,
-        0,
-        0,
-        terminal.width,
-        terminal.height,
-        label: skill.name,
-        labelSelected: true,
-      );
+      Draw.frame(terminal, label: skill.name, labelSelected: true);
 
       _writeText(terminal, 1, 2, skill.description);
 
@@ -166,9 +159,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
   }
 
   void _writeText(Terminal terminal, int x, int y, String text) {
-    for (var line in Log.wordWrap(terminal.width - 1 - x, text)) {
-      terminal.writeAt(x, y++, line, UIHue.text);
-    }
+    Draw.text(terminal, text, x: x, y: y, width: terminal.width - 1);
   }
 
   void _renderSkillListHeader(Terminal terminal);

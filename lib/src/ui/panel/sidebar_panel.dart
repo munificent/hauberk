@@ -37,14 +37,7 @@ class SidebarPanel extends Panel {
     var game = _gameScreen.game;
     var hero = game.hero;
 
-    Draw.frame(
-      terminal,
-      0,
-      0,
-      terminal.width,
-      terminal.height,
-      label: hero.save.name,
-    );
+    Draw.frame(terminal, label: hero.save.name);
 
     terminal.writeAt(
       1,
