@@ -33,10 +33,12 @@ class ExitPopup extends Popup {
     }
 
     add("Gold", gold, hero.gold - _previous.gold);
+    // TODO: Would be good to show experience earned without taking into account
+    // any that they spent while in the dungeon.
     add("Experience", peaGreen, hero.experience - _previous.experience);
-    add("Levels", lightAqua, hero.level - _previous.level);
 
     y++;
+    // TODO: Not really useful anymore now that players control this directly.
     add("Strength", blue, hero.strength.value - _previous.strength.value);
     add("Agility", blue, hero.agility.value - _previous.agility.value);
     add("Fortitude", blue, hero.fortitude.value - _previous.fortitude.value);

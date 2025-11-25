@@ -33,7 +33,7 @@ void main() {
   builder.td('Focus', right: true);
   builder.tbody();
 
-  for (var i = 1; i <= Stat.max; i++) {
+  for (var i = 1; i <= Stat.modifiedMax; i++) {
     strength.update(i, (_) {});
     agility.update(i, (_) {});
     fortitude.update(i, (_) {});

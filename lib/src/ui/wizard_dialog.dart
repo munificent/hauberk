@@ -29,7 +29,7 @@ class WizardDialog extends Screen<Input> {
       ("i", KeyCode.i, "Illuminate Dungeon", _illuminateDungeon),
       ("d", KeyCode.d, "Drop Item", _dropItem),
       ("s", KeyCode.s, "Spawn Monster", _spawnMonster),
-      ("g", KeyCode.g, "Gain Level", _gainLevel),
+      ("x", KeyCode.x, "Gain Experience", _gainExperience),
       ("t", KeyCode.t, "Train Discipline", _trainDiscipline),
       ("k", KeyCode.k, "Kill All Monsters", _killAllMonsters),
       ("o", KeyCode.o, "Toggle Show All Monsters", _toggleShowAllMonsters),
@@ -156,14 +156,9 @@ class WizardDialog extends Screen<Input> {
     ui.push(_WizardSpawnDialog(_game));
   }
 
-  void _gainLevel() {
-    if (_game.hero.level == Hero.maxLevel) {
-      _game.log.cheat("Already at max level.");
-    } else {
-      _game.hero.experience = experienceLevelCost(_game.hero.level + 1);
-      _game.hero.refreshProperties();
-    }
-
+  void _gainExperience() {
+    _game.hero.experience += 10000;
+    _game.hero.refreshProperties();
     dirty();
   }
 

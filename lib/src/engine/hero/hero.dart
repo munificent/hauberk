@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -23,9 +21,6 @@ import 'stat.dart';
 
 /// The main player-controlled [Actor]. The player's avatar in the game world.
 class Hero extends Actor {
-  /// The highest level the hero can reach.
-  static const maxLevel = 50;
-
   final HeroSave save;
 
   /// Monsters the hero has already seen. Makes sure we don't double count them.
@@ -140,10 +135,6 @@ class Hero extends Actor {
 
     return _behavior == null;
   }
-
-  /// The hero's experience level.
-  int get level => _level.value;
-  final _level = Property<int>();
 
   @override
   int get armor => save.armor;
@@ -303,7 +294,7 @@ class Hero extends Actor {
   void onTakeDamage(Action action, Actor? attacker, int damage) {
     // Getting hit loses focus.
     // TODO: Lose less focus for ranged attacks?
-    var focus = (damage / maxHealth * will.damageFocusScale).ceil();
+    var focus = (damage / maxHealth * 400 * will.damageFocusScale).ceil();
     _focus = (_focus - focus).clamp(0, intellect.maxFocus);
 
     _turnsSinceLostFocus = 0;
@@ -454,12 +445,6 @@ class Hero extends Actor {
   /// updated matters. Properties must be updated after the properties they
   /// depend on.
   void refreshProperties() {
-    var level = experienceLevel(experience);
-    _level.update(level, (previous) {
-      save.log.gain('You have reached level $level.');
-      // TODO: Different message if level went down.
-    });
-
     strength.refresh(save);
     agility.refresh(save);
     fortitude.refresh(save);
@@ -545,18 +530,4 @@ class Hero extends Actor {
       save.log.gain(skill.gainMessage(level), this);
     }
   }
-}
-
-int experienceLevel(int experience) {
-  for (var level = 1; level <= Hero.maxLevel; level++) {
-    if (experience < experienceLevelCost(level)) return level - 1;
-  }
-
-  return Hero.maxLevel;
-}
-
-/// Returns how much experience is needed to reach [level].
-int experienceLevelCost(int level) {
-  if (level > Hero.maxLevel) throw RangeError.value(level, "level");
-  return math.pow(level - 1, 3).toInt() * 1000;
 }

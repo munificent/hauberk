@@ -1,8 +1,8 @@
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
 
-/// Tracks what level the hero reaches if they kill every monster in every
-/// generated dungeon going down.
+/// Tracks how much experience the hero gains if they kill every monster in
+/// every generated dungeon going down.
 void main() {
   var content = createContent();
   var save = content.createHero(
@@ -10,8 +10,8 @@ void main() {
     race: content.races[4],
     heroClass: content.classes[1],
   );
-  for (var level = 1; level <= Option.maxDepth; level++) {
-    var game = Game(content, level, save);
+  for (var depth = 1; depth <= Option.maxDepth; depth++) {
+    var game = Game(content, depth, save);
     for (var _ in game.generate()) {}
 
     var hero = game.hero;
@@ -24,10 +24,9 @@ void main() {
       }
     }
 
-    var bar = "*" * hero.level;
     print(
-      "${level.toString().padLeft(3)} "
-      "${hero.level.toString().padLeft(3)} $bar",
+      "${depth.toString().padLeft(3)} "
+      "${hero.experience.toString().padLeft(10)}",
     );
   }
 }

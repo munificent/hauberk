@@ -28,6 +28,7 @@ class Input {
   static const heroInfo = Input("heroInfo");
   static const selectSkill = Input("selectSkill");
   static const editSkills = Input("editSkills");
+  static const spendExperience = Input("spendExperience");
 
   /// Directional inputs.
   ///

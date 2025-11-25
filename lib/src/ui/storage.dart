@@ -51,7 +51,8 @@ class Storage {
       try {
         var heroData = hero as Map<String, dynamic>;
         var name = heroData['name'] as String;
-        var race = _loadRace(hero['race'] as Map<String, dynamic>);
+        var raceName = hero['race'] as String;
+        var race = content.races.firstWhere((race) => race.name == raceName);
 
         HeroClass heroClass;
         if (heroData['class'] == null) {
@@ -140,6 +141,7 @@ class Storage {
 
         var gold = heroData['gold'] as int;
         var maxDepth = heroData['maxDepth'] as int? ?? 0;
+        var stats = heroData['stats'] as Map<String, dynamic>;
 
         var heroSave = HeroSave(
           name,
@@ -157,6 +159,11 @@ class Storage {
           lore,
           gold,
           maxDepth,
+          strength: stats['strength'] as int,
+          agility: stats['agility'] as int,
+          fortitude: stats['fortitude'] as int,
+          intellect: stats['intellect'] as int,
+          will: stats['will'] as int,
         );
         heroes.add(heroSave);
       } catch (error, trace) {
@@ -165,28 +172,6 @@ class Storage {
         print("Error:\n$error\n$trace");
       }
     }
-  }
-
-  RaceStats _loadRace(Map<String, dynamic>? data) {
-    // TODO: Temp to handle heros from before races.
-    if (data == null) {
-      return content.races.elementAt(4).rollStats();
-    }
-
-    var name = data['name'] as String;
-    var race = content.races.firstWhere((race) => race.name == name);
-
-    var statData = data['stats'] as Map<String, dynamic>;
-    var stats = <Stat, int>{};
-
-    for (var stat in Stat.all) {
-      stats[stat] = statData[stat.name] as int;
-    }
-
-    // TODO: 1234 is temp for characters without seed.
-    var seed = data['seed'] as int? ?? 1234;
-
-    return RaceStats(race, stats, seed);
   }
 
   List<Item> _loadItems(List<dynamic> data) {
@@ -327,12 +312,13 @@ class Storage {
         for (var hero in heroes)
           {
             'name': hero.name,
-            'race': {
-              'name': hero.race.name,
-              'seed': hero.race.seed,
-              'stats': {
-                for (var stat in Stat.all) stat.name: hero.race.max(stat),
-              },
+            'race': hero.race.name,
+            'stats': {
+              'strength': hero.strength.baseValue,
+              'agility': hero.agility.baseValue,
+              'fortitude': hero.fortitude.baseValue,
+              'intellect': hero.intellect.baseValue,
+              'will': hero.will.baseValue,
             },
             'class': hero.heroClass.name,
             'death': hero.permadeath ? 'permanent' : 'dungeon',

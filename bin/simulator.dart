@@ -46,7 +46,7 @@ class Simulator {
     game = Game(content, depth, save);
     for (var _ in game.generate()) {}
 
-    print("--- Depth $depth (hero level ${hero.level}) ---");
+    print("--- Depth $depth ---");
 
     var events = <Object>[...game.stage.actors, ...game.stage.allItems];
     rng.shuffle(events);

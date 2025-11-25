@@ -33,15 +33,42 @@ class Property<T extends num> {
   }
 }
 
-// TODO: Enum.
-class Stat {
-  static const max = 60;
+enum Stat {
+  strength("Strength"),
+  agility("Agility"),
+  fortitude("Fortitude"),
+  intellect("Intellect"),
+  will("Will");
 
-  static const strength = Stat("Strength");
-  static const agility = Stat("Agility");
-  static const fortitude = Stat("Fortitude");
-  static const intellect = Stat("Intellect");
-  static const will = Stat("Will");
+  /// How much experience it takes to raise a stat by a single point given that
+  /// the hero's total number of base stat points for all stats is [statTotal]
+  /// and the race affects the stat with [raceScale].
+  static int experienceCostAt(int statTotal, double raceScale) {
+    // When a race is better at a stat, the cost goes down.
+    var baseCost = (100 * (1.0 / raceScale));
+
+    // As the hero's total stats increase, it gets harder and harder to raise
+    // more stats. Also, as their stats get higher, they are also generally
+    // stronger and are killing monsters which yield more experience, so we
+    // curve the cost upwards significantly.
+    var totalScale = lerpDouble(
+      statTotal,
+      10 * 5,
+      Stat.modifiedMax * 5,
+      1.0,
+      20.0,
+    );
+    var totalCurve = math.pow(totalScale, 3.0);
+    // TODO: This will certainly need tuning.
+
+    return (baseCost * totalCurve).toInt();
+  }
+
+  /// The maximum base value a stat can have before any modifiers are applied.
+  static const baseMax = 40;
+
+  /// The maximum value a stat can have after modifiers are applied.
+  static const modifiedMax = 50;
 
   static const all = [strength, agility, fortitude, intellect, will];
 
@@ -63,7 +90,16 @@ abstract class StatBase extends Property<int> {
 
   int _statOffset(HeroSave hero) => 0;
 
-  void refresh(HeroSave hero) {
+  /// The value of the stat before any modifiers are applied.
+  int get baseValue => _baseValue;
+  int _baseValue = 0;
+
+  void initialize(int value) {
+    _baseValue = value;
+  }
+
+  void refresh(HeroSave hero, [int? newBaseValue]) {
+    if (newBaseValue != null) _baseValue = newBaseValue;
     var newValue = _calculateValue(hero);
 
     update(newValue, (previous) {
@@ -80,17 +116,41 @@ abstract class StatBase extends Property<int> {
     });
   }
 
+  // TODO: Passing in save is kind of weird.
+  int experienceCost(HeroSave save) {
+    var total =
+        save.strength.baseValue +
+        save.agility.baseValue +
+        save.fortitude.baseValue +
+        save.intellect.baseValue +
+        save.will.baseValue;
+    return Stat.experienceCostAt(total, save.race.statScale(_stat));
+  }
+
   int _calculateValue(HeroSave hero) =>
-      (hero.race.valueAtLevel(_stat, hero.level) +
-              _statOffset(hero) +
-              hero.statBonus(_stat))
-          .clamp(1, Stat.max);
+      (_baseValue + _statOffset(hero) + hero.statBonus(_stat)).clamp(
+        1,
+        Stat.modifiedMax,
+      );
 
   @override
   String toString() => name;
 }
 
 class Strength extends StatBase {
+  static int maxFuryAt(int strength) {
+    if (strength < 10) return 0;
+    return (strength - 8) ~/ 2;
+  }
+
+  static double tossRangeScaleAt(int strength) {
+    if (strength <= 20) return lerpDouble(strength, 1, 20, 0.1, 1.0);
+    if (strength <= 30) return lerpDouble(strength, 20, 30, 1.0, 1.5);
+    if (strength <= 40) return lerpDouble(strength, 30, 40, 1.5, 1.8);
+    if (strength <= 50) return lerpDouble(strength, 40, 50, 1.8, 2.0);
+    return lerpDouble(strength, 50, 60, 2.0, 2.1);
+  }
+
   @override
   Stat get _stat => Stat.strength;
 
@@ -101,21 +161,15 @@ class Strength extends StatBase {
   String get _loseAdjective => "weak";
 
   @override
-  int _statOffset(HeroSave hero) => -hero.weight;
+  int _statOffset(HeroSave hero) => weightOffset(hero);
+
+  /// How much the hero's weight affects strength.
+  int weightOffset(HeroSave hero) => -hero.weight;
 
   /// The highest fury level the hero can reach.
-  int get maxFury {
-    if (value < 10) return 0;
-    return (value - 8) ~/ 2;
-  }
+  int get maxFury => maxFuryAt(value);
 
-  double get tossRangeScale {
-    if (value <= 20) return lerpDouble(value, 1, 20, 0.1, 1.0);
-    if (value <= 30) return lerpDouble(value, 20, 30, 1.0, 1.5);
-    if (value <= 40) return lerpDouble(value, 30, 40, 1.5, 1.8);
-    if (value <= 50) return lerpDouble(value, 40, 50, 1.8, 2.0);
-    return lerpDouble(value, 50, 60, 2.0, 2.1);
-  }
+  double get tossRangeScale => tossRangeScaleAt(value);
 
   /// The damage multiplier for a given [fury].
   ///
@@ -137,6 +191,18 @@ class Strength extends StatBase {
 }
 
 class Agility extends StatBase {
+  static int dodgeBonusAt(int value) {
+    if (value <= 10) return lerpInt(value, 1, 10, -50, 0);
+    if (value <= 30) return lerpInt(value, 10, 30, 0, 20);
+    return lerpInt(value, 30, 60, 20, 60);
+  }
+
+  static int strikeBonusAt(int value) {
+    if (value <= 10) return lerpInt(value, 1, 10, -30, 0);
+    if (value <= 30) return lerpInt(value, 10, 30, 0, 20);
+    return lerpInt(value, 30, 60, 20, 50);
+  }
+
   @override
   Stat get _stat => Stat.agility;
 
@@ -148,21 +214,16 @@ class Agility extends StatBase {
 
   // TODO: Subtract encumbrance.
 
-  int get dodgeBonus {
-    if (value <= 10) return lerpInt(value, 1, 10, -50, 0);
-    if (value <= 30) return lerpInt(value, 10, 30, 0, 20);
-    return lerpInt(value, 30, 60, 20, 60);
-  }
+  int get dodgeBonus => dodgeBonusAt(value);
 
-  int get strikeBonus {
-    if (value <= 10) return lerpInt(value, 1, 10, -30, 0);
-    if (value <= 30) return lerpInt(value, 10, 30, 0, 20);
-    return lerpInt(value, 30, 60, 20, 50);
-  }
+  int get strikeBonus => strikeBonusAt(value);
 }
 
 // TODO: "Vitality"?
 class Fortitude extends StatBase {
+  /// A somewhat gentle curve from 10 to 400.
+  static int maxHealthAt(int value) => (math.pow(value, 1.458) + 9).toInt();
+
   @override
   Stat get _stat => Stat.fortitude;
 
@@ -172,11 +233,15 @@ class Fortitude extends StatBase {
   @override
   String get _loseAdjective => "sickly";
 
-  /// A somewhat gentle curve from 10 to 400.
-  int get maxHealth => (math.pow(value, 1.458) + 9).toInt();
+  int get maxHealth => maxHealthAt(value);
 }
 
 class Intellect extends StatBase {
+  static int maxFocusAt(int value) {
+    if (value <= 10) return lerpInt(value, 1, 10, 40, 100);
+    return lerpInt(value, 10, 60, 100, 200);
+  }
+
   @override
   Stat get _stat => Stat.intellect;
 
@@ -186,10 +251,7 @@ class Intellect extends StatBase {
   @override
   String get _loseAdjective => "stupid";
 
-  int get maxFocus {
-    if (value <= 10) return lerpInt(value, 1, 10, 40, 100);
-    return lerpInt(value, 10, 60, 100, 200);
-  }
+  int get maxFocus => maxFocusAt(value);
 
   double spellFocusScale(int complexity) {
     var relative = value - complexity.clamp(0, 50);
@@ -198,6 +260,11 @@ class Intellect extends StatBase {
 }
 
 class Will extends StatBase {
+  static double damageFocusScaleAt(int value) {
+    if (value <= 10) return lerpDouble(value, 1, 10, 2.0, 1.0);
+    return lerpDouble(value, 10, 60, 1.0, 0.4);
+  }
+
   @override
   Stat get _stat => Stat.will;
 
@@ -208,8 +275,5 @@ class Will extends StatBase {
   String get _loseAdjective => "foolish";
 
   /// Scales how much focus is lost when taking damage.
-  double get damageFocusScale {
-    if (value <= 10) return lerpDouble(value, 1, 10, 800, 400);
-    return lerpDouble(value, 10, 60, 400, 80);
-  }
+  double get damageFocusScale => damageFocusScaleAt(value);
 }

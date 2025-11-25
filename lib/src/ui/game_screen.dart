@@ -13,6 +13,7 @@ import '../engine.dart';
 import '../hues.dart';
 import 'direction_dialog.dart';
 import 'exit_popup.dart';
+import 'experience_dialog.dart';
 import 'forfeit_popup.dart';
 import 'game_over_screen.dart';
 import 'hero_info_dialog.dart';
@@ -181,6 +182,8 @@ class GameScreen extends Screen<Input> {
         ui.push(SelectSkillDialog(this));
       case Input.editSkills:
         ui.push(SkillDialog(game.hero.save));
+      case Input.spendExperience:
+        ui.push(ExperienceDialog(game.hero.save));
       case Input.heroInfo:
         ui.push(HeroInfoDialog(game.content, game.hero.save));
       case Input.drop:

@@ -299,7 +299,9 @@ class MainMenuScreen extends Screen<Input> {
         }
 
         centerTerminal.writeAt(3, 21 + i, hero.name, primary);
-        centerTerminal.writeAt(25, 21 + i, "Level ${hero.level}", secondary);
+        // TODO: Now that there is no experience level, is there a way we can
+        // indicate overall "power"? Maybe we should track total experience
+        // earned?
         centerTerminal.writeAt(34, 21 + i, hero.race.name, secondary);
         centerTerminal.writeAt(42, 21 + i, hero.heroClass.name, secondary);
         if (hero.permadeath) {

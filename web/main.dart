@@ -82,6 +82,7 @@ void main() {
   _ui.keyPress.bind(Input.selectSkill, KeyCode.s);
   _ui.keyPress.bind(Input.heroInfo, KeyCode.a);
   _ui.keyPress.bind(Input.editSkills, KeyCode.s, shift: true);
+  _ui.keyPress.bind(Input.spendExperience, KeyCode.e, shift: true);
 
   // Laptop directions.
   _ui.keyPress.bind(Input.nw, KeyCode.i);

@@ -51,7 +51,7 @@ class SidebarPanel extends Panel {
     // TODO: Decide on a consistent set of colors for attributes and use them
     // consistently through the UI.
     _drawHealth(hero, terminal, 7);
-    _drawLevel(hero, terminal, 8);
+    _drawExperience(hero, terminal, 8);
     _drawGold(hero, terminal, 9);
 
     _drawArmor(hero, terminal, 10);
@@ -128,34 +128,16 @@ class SidebarPanel extends Panel {
     _drawStat(terminal, y, "Health", hero.health, red, hero.maxHealth, maroon);
   }
 
-  void _drawLevel(Hero hero, Terminal terminal, int y) {
-    terminal.writeAt(1, y, "Level", UIHue.helpText);
+  void _drawExperience(Hero hero, Terminal terminal, int y) {
+    terminal.writeAt(1, y, "Exp", UIHue.helpText);
 
-    var levelString = hero.level.toString();
+    var experienceString = hero.experience.toString();
     terminal.writeAt(
-      terminal.width - levelString.length - 1,
+      terminal.width - experienceString.length - 1,
       y,
-      levelString,
+      experienceString,
       lightAqua,
     );
-
-    if (hero.level < Hero.maxLevel) {
-      var levelPercent =
-          100 *
-          (hero.experience - experienceLevelCost(hero.level)) ~/
-          (experienceLevelCost(hero.level + 1) -
-              experienceLevelCost(hero.level));
-      Draw.thinMeter(
-        terminal,
-        10,
-        y,
-        terminal.width - 14,
-        levelPercent,
-        100,
-        lightAqua,
-        aqua,
-      );
-    }
   }
 
   void _drawGold(Hero hero, Terminal terminal, int y) {

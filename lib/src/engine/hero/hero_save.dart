@@ -21,13 +21,11 @@ import 'stat.dart';
 // figure out what gets saved and what doesn't now.
 class HeroSave {
   final String name;
-  final RaceStats race;
+  final Race race;
   final HeroClass heroClass;
 
   /// If `true`, then the hero is deleted from storage when they die.
   final bool permadeath;
-
-  int get level => experienceLevel(experience);
 
   var _inventory = Inventory(ItemLocation.inventory, Option.inventoryCapacity);
 
@@ -104,19 +102,19 @@ class HeroSave {
 
   HeroSave.create(
     this.name,
-    Race race,
+    this.race,
     this.heroClass, {
     this.permadeath = false,
-  }) : race = race.rollStats(),
-       shops = {},
+  }) : shops = {},
        skills = SkillSet(),
        log = Log(),
        lore = Lore() {
-    strength.refresh(this);
-    agility.refresh(this);
-    fortitude.refresh(this);
-    intellect.refresh(this);
-    will.refresh(this);
+    // TODO: Give new heroes some starting stat points.
+    strength.initialize(10);
+    agility.initialize(10);
+    fortitude.initialize(10);
+    intellect.initialize(10);
+    will.initialize(10);
   }
 
   HeroSave(
@@ -134,13 +132,18 @@ class HeroSave {
     this.log,
     this.lore,
     this.gold,
-    this.maxDepth,
-  ) {
-    strength.refresh(this);
-    agility.refresh(this);
-    fortitude.refresh(this);
-    intellect.refresh(this);
-    will.refresh(this);
+    this.maxDepth, {
+    required int strength,
+    required int agility,
+    required int fortitude,
+    required int intellect,
+    required int will,
+  }) {
+    this.strength.initialize(strength);
+    this.agility.initialize(agility);
+    this.fortitude.initialize(fortitude);
+    this.intellect.initialize(intellect);
+    this.will.initialize(will);
   }
 
   HeroSave clone() => HeroSave(
@@ -164,6 +167,11 @@ class HeroSave {
     lore.clone(),
     gold,
     maxDepth,
+    strength: strength.baseValue,
+    agility: agility.baseValue,
+    fortitude: fortitude.baseValue,
+    intellect: intellect.baseValue,
+    will: will.baseValue,
   );
 
   /// Gets the total permament resistance provided by all equipment.

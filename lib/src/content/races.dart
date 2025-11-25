@@ -3,11 +3,11 @@ import '../engine.dart';
 class Races {
   static final dwarf = _race(
     "Dwarf",
-    strength: 35,
-    agility: 25,
-    fortitude: 45,
-    intellect: 15,
-    will: 30,
+    strength: 1.3,
+    agility: 0.6,
+    fortitude: 1.4,
+    intellect: 0.7,
+    will: 0.9,
     description:
         "It takes a certain kind of person to be willing to spend their life "
         "deep under the Earth, toiling away in darkness. Dwarves aren't just "
@@ -16,11 +16,11 @@ class Races {
   );
   static final elf = _race(
     "Elf",
-    strength: 35,
-    agility: 40,
-    fortitude: 25,
-    intellect: 35,
-    will: 15,
+    strength: 0.9,
+    agility: 1.2,
+    fortitude: 0.9,
+    intellect: 1.1,
+    will: 1.2,
     description:
         "There are few things elves are not good at, as any elf will be "
         "quick to inform you. Clever, quick on their feet, and surprisingly "
@@ -29,11 +29,11 @@ class Races {
   // TODO: Make stats lower and enable them to fly?
   static final fae = _race(
     "Fae",
-    strength: 20,
-    agility: 45,
-    fortitude: 15,
-    intellect: 35,
-    will: 25,
+    strength: 0.8,
+    agility: 1.5,
+    fortitude: 0.7,
+    intellect: 1.0,
+    will: 1.3,
     description:
         "What can be said about the fae folk that is known to be true? "
         "Dimunitive and easily harmed, they survive by cloaking themselves "
@@ -44,11 +44,11 @@ class Races {
   );
   static final gnome = _race(
     "Gnome",
-    strength: 20,
-    agility: 20,
-    fortitude: 30,
-    intellect: 45,
-    will: 35,
+    strength: 0.6,
+    agility: 0.7,
+    fortitude: 0.9,
+    intellect: 1.5,
+    will: 1.2,
     description:
         "Gnomes are gentle, quiet folk, difficult to arouse to anger (unless "
         "you interrupt one while reading). Most live a life of the mind, "
@@ -58,11 +58,11 @@ class Races {
   );
   static final human = _race(
     "Human",
-    strength: 30,
-    agility: 30,
-    fortitude: 30,
-    intellect: 30,
-    will: 30,
+    strength: 1.0,
+    agility: 1.0,
+    fortitude: 1.0,
+    intellect: 1.0,
+    will: 1.0,
     description:
         "Humans excel at nothing, but nor are they particularly weak in any "
         "area. Most other races consider humans sort of like mice: pesky "
@@ -75,11 +75,11 @@ class Races {
 
   static Race _race(
     String name, {
-    required int strength,
-    required int agility,
-    required int fortitude,
-    required int intellect,
-    required int will,
+    required double strength,
+    required double agility,
+    required double fortitude,
+    required double intellect,
+    required double will,
     required String description,
   }) {
     return Race(name, description, {

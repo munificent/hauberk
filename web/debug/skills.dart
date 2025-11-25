@@ -52,7 +52,7 @@ void main() {
   builder.h2('Spell focus cost');
   builder.table();
   builder.td('Intellect');
-  for (var intellect = 1; intellect <= Stat.max; intellect++) {
+  for (var intellect = 1; intellect <= Stat.modifiedMax; intellect++) {
     builder.td(intellect);
   }
 
@@ -61,7 +61,7 @@ void main() {
     if (skill is! Spell) continue;
 
     builder.td(skill.name);
-    for (var intellect = 1; intellect <= Stat.max; intellect++) {
+    for (var intellect = 1; intellect <= Stat.modifiedMax; intellect++) {
       hero.intellect.update(intellect, (_) {});
       if (skill.calculateLevel(hero) > 0) {
         builder.td(skill.focusCost(hero, 1));
