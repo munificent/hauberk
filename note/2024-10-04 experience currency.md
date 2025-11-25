@@ -155,7 +155,7 @@ Seems promising.
 
 ### Spell school level
 
-Let's say that in addition to learning invididual spells (or maybe instead of),
+Let's say that in addition to learning individual spells (or maybe instead of),
 the hero has a level for each spell school. They can spend experience raising
 that level. Each spell has a level. They can only cast a spell if they have at
 least the spell's level in the spell's school.
@@ -217,7 +217,7 @@ that they tweak proficiencies.
 
 So you would roll a mage. Then in the game you luck out and stumble onto a
 necromancy spellbook so decide to specialize in that. After earning enough
-experience, you buy the necromancer subclass. That maybe makes it cheapear to
+experience, you buy the necromancer subclass. That maybe makes it cheaper to
 learn necromancy spells. Though if that's all it does, then once you've learned
 a bunch of those spells already, there's no reason to get the title.
 
