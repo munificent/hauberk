@@ -18,7 +18,7 @@ class ExperienceDialog extends Screen<Input> {
   StatBase get _selectedStat => switch (_selectedStatIndex) {
     0 => _save.strength,
     1 => _save.agility,
-    2 => _save.fortitude,
+    2 => _save.vitality,
     3 => _save.intellect,
     4 => _save.will,
     _ => throw ArgumentError(),
@@ -98,7 +98,7 @@ class ExperienceDialog extends Screen<Input> {
       case 1:
         _drawAgilityPanel(panelTerminal);
       case 2:
-        _drawFortitudePanel(panelTerminal);
+        _drawVitalityPanel(panelTerminal);
       case 3:
         _drawIntellectPanel(panelTerminal);
       case 4:
@@ -123,7 +123,7 @@ class ExperienceDialog extends Screen<Input> {
     var stats = [
       _save.strength,
       _save.agility,
-      _save.fortitude,
+      _save.vitality,
       _save.intellect,
       _save.will,
     ];
@@ -187,9 +187,9 @@ class ExperienceDialog extends Screen<Input> {
     });
   }
 
-  void _drawFortitudePanel(Terminal terminal) {
-    _drawStatPanel(terminal, _save.fortitude, ['Max health'], (int value) {
-      return [Fortitude.maxHealthAt(value).toString()];
+  void _drawVitalityPanel(Terminal terminal) {
+    _drawStatPanel(terminal, _save.vitality, ['Max health'], (int value) {
+      return [Vitality.maxHealthAt(value).toString()];
     });
   }
 

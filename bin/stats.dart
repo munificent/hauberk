@@ -18,18 +18,18 @@ void main() {
 
   var strength = Strength();
   var agility = Agility();
-  var fortitude = Fortitude();
+  var vitality = Vitality();
   var intellect = Intellect();
   var will = Will();
 
-  print("     Strength   Agility     Fortitude Intellect           Will");
+  print("     Strength   Agility     Vitality  Intellect           Will");
   print("     ┌───────┐ ┌──────────┐ ┌───────┐ ┌─────────────────┐ ┌───┐");
-  print("Lvl  Toss Heft Dodge Strike Health    MaxFocus SpellFocus Focus");
+  print("Lvl  Toss Heft Dodge Strike MaxHealth MaxFocus SpellFocus Focus");
 
   for (var i = 1; i <= Stat.modifiedMax; i++) {
     strength.update(i, (_) {});
     agility.update(i, (_) {});
-    fortitude.update(i, (_) {});
+    vitality.update(i, (_) {});
     intellect.update(i, (_) {});
     will.update(i, (_) {});
 
@@ -39,8 +39,8 @@ void main() {
       " ${strength.heftScale(20).toStringAsFixed(2).padLeft(5)}"
       " ${agility.dodgeBonus.toString().padLeft(5)}"
       " ${agility.strikeBonus.toString().padLeft(6)}"
-      " ${fortitude.maxHealth.toString().padLeft(6)}"
-      " ${intellect.maxFocus.toString().padLeft(11)}"
+      " ${vitality.maxHealth.toString().padLeft(9)}"
+      " ${intellect.maxFocus.toString().padLeft(8)}"
       " ${intellect.spellFocusScale(10).toStringAsFixed(2).padLeft(10)}"
       " ${will.damageFocusScale.toStringAsFixed(2).padLeft(5)}",
     );

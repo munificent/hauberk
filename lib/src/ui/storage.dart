@@ -161,7 +161,7 @@ class Storage {
           maxDepth,
           strength: stats['strength'] as int,
           agility: stats['agility'] as int,
-          fortitude: stats['fortitude'] as int,
+          vitality: stats['vitality'] as int,
           intellect: stats['intellect'] as int,
           will: stats['will'] as int,
         );
@@ -316,7 +316,7 @@ class Storage {
             'stats': {
               'strength': hero.strength.baseValue,
               'agility': hero.agility.baseValue,
-              'fortitude': hero.fortitude.baseValue,
+              'vitality': hero.vitality.baseValue,
               'intellect': hero.intellect.baseValue,
               'will': hero.will.baseValue,
             },

@@ -4,7 +4,6 @@ import 'package:malison/malison.dart';
 import '../engine.dart';
 import '../hues.dart';
 
-// TODO: Turn these into extension on Terminal?
 class Draw {
   // TODO: Unify this with Popup.
   static void dialog(

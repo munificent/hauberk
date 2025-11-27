@@ -90,13 +90,13 @@ class Hero extends Actor {
   Lore get lore => save.lore;
 
   @override
-  int get maxHealth => fortitude.maxHealth;
+  int get maxHealth => vitality.maxHealth;
 
   Strength get strength => save.strength;
 
   Agility get agility => save.agility;
 
-  Fortitude get fortitude => save.fortitude;
+  Vitality get vitality => save.vitality;
 
   Intellect get intellect => save.intellect;
 
@@ -447,7 +447,7 @@ class Hero extends Actor {
   void refreshProperties() {
     strength.refresh(save);
     agility.refresh(save);
-    fortitude.refresh(save);
+    vitality.refresh(save);
     intellect.refresh(save);
     will.refresh(save);
 

@@ -62,7 +62,7 @@ class HeroSave {
 
   final strength = Strength();
   final agility = Agility();
-  final fortitude = Fortitude();
+  final vitality = Vitality();
   final intellect = Intellect();
   final will = Will();
 
@@ -112,7 +112,7 @@ class HeroSave {
     // TODO: Give new heroes some starting stat points.
     strength.initialize(10);
     agility.initialize(10);
-    fortitude.initialize(10);
+    vitality.initialize(10);
     intellect.initialize(10);
     will.initialize(10);
   }
@@ -135,13 +135,13 @@ class HeroSave {
     this.maxDepth, {
     required int strength,
     required int agility,
-    required int fortitude,
+    required int vitality,
     required int intellect,
     required int will,
   }) {
     this.strength.initialize(strength);
     this.agility.initialize(agility);
-    this.fortitude.initialize(fortitude);
+    this.vitality.initialize(vitality);
     this.intellect.initialize(intellect);
     this.will.initialize(will);
   }
@@ -169,7 +169,7 @@ class HeroSave {
     maxDepth,
     strength: strength.baseValue,
     agility: agility.baseValue,
-    fortitude: fortitude.baseValue,
+    vitality: vitality.baseValue,
     intellect: intellect.baseValue,
     will: will.baseValue,
   );

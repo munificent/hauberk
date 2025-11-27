@@ -119,7 +119,7 @@ class SidebarPanel extends Panel {
 
     drawStat(hero.strength);
     drawStat(hero.agility);
-    drawStat(hero.fortitude);
+    drawStat(hero.vitality);
     drawStat(hero.intellect);
     drawStat(hero.will);
   }

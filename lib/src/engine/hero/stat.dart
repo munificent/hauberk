@@ -121,7 +121,7 @@ abstract class StatBase extends Property<int> {
     var total =
         save.strength.baseValue +
         save.agility.baseValue +
-        save.fortitude.baseValue +
+        save.vitality.baseValue +
         save.intellect.baseValue +
         save.will.baseValue;
     return Stat.experienceCostAt(total, save.race.statScale(_stat));
@@ -219,8 +219,7 @@ class Agility extends StatBase {
   int get strikeBonus => strikeBonusAt(value);
 }
 
-// TODO: "Vitality"?
-class Fortitude extends StatBase {
+class Vitality extends StatBase {
   /// A somewhat gentle curve from 10 to 400.
   static int maxHealthAt(int value) => (math.pow(value, 1.458) + 9).toInt();
 

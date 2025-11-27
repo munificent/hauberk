@@ -7,7 +7,7 @@ final breedDrops = <Breed, Histogram<String>>{};
 void main() {
   var strength = Strength();
   var agility = Agility();
-  var fortitude = Fortitude();
+  var vitality = Vitality();
   var intellect = Intellect();
   var will = Will();
 
@@ -36,7 +36,7 @@ void main() {
   for (var i = 1; i <= Stat.modifiedMax; i++) {
     strength.update(i, (_) {});
     agility.update(i, (_) {});
-    fortitude.update(i, (_) {});
+    vitality.update(i, (_) {});
     intellect.update(i, (_) {});
     will.update(i, (_) {});
 
@@ -50,7 +50,7 @@ void main() {
     builder.td(strength.heftScale(20).toStringAsFixed(2), right: true);
     builder.td(agility.dodgeBonus);
     builder.td(agility.strikeBonus);
-    builder.td(fortitude.maxHealth);
+    builder.td(vitality.maxHealth);
     builder.td(intellect.maxFocus);
     builder.td(intellect.spellFocusScale(10).toStringAsFixed(2), right: true);
     builder.td(will.damageFocusScale.toStringAsFixed(0), right: true);

@@ -41,7 +41,7 @@ class ExitPopup extends Popup {
     // TODO: Not really useful anymore now that players control this directly.
     add("Strength", blue, hero.strength.value - _previous.strength.value);
     add("Agility", blue, hero.agility.value - _previous.agility.value);
-    add("Fortitude", blue, hero.fortitude.value - _previous.fortitude.value);
+    add("Vitality", blue, hero.vitality.value - _previous.vitality.value);
     add("Intellect", blue, hero.intellect.value - _previous.intellect.value);
     add("Will", blue, hero.will.value - _previous.will.value);
 
