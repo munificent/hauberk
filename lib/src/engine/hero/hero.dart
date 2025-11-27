@@ -56,10 +56,6 @@ class Hero extends Actor {
   int get fury => _fury;
   int _fury = 0;
 
-  /// The number of hero turns since they last took a hit that caused them to
-  /// lose focus.
-  int _turnsSinceLostFocus = 0;
-
   /// The number of hero turns since they last dealt damage to a monster.
   int _turnsSinceGaveDamage = 100;
 
@@ -99,8 +95,6 @@ class Hero extends Actor {
   Vitality get vitality => save.vitality;
 
   Intellect get intellect => save.intellect;
-
-  Will get will => save.will;
 
   // TODO: Equipment and items that let the hero swim, fly, etc.
   @override
@@ -292,13 +286,6 @@ class Hero extends Actor {
 
   @override
   void onTakeDamage(Action action, Actor? attacker, int damage) {
-    // Getting hit loses focus.
-    // TODO: Lose less focus for ranged attacks?
-    var focus = (damage / maxHealth * 400 * will.damageFocusScale).ceil();
-    _focus = (_focus - focus).clamp(0, intellect.maxFocus);
-
-    _turnsSinceLostFocus = 0;
-
     // TODO: Would be better to do skills.discovered, but right now this also
     // discovers BattleHardening.
     for (var skill in _allSkills) {
@@ -349,7 +336,6 @@ class Hero extends Actor {
     _fury = _fury.clamp(0, strength.maxFury);
 
     _turnsSinceGaveDamage++;
-    _turnsSinceLostFocus++;
 
     // TODO: Passive skills?
   }
@@ -427,10 +413,7 @@ class Hero extends Actor {
   }
 
   void regenerateFocus(int focus) {
-    // The longer the hero goes without losing focus, the more quickly it
-    // regenerates.
-    var scale = (_turnsSinceLostFocus + 1).clamp(1, 8) / 4;
-    _focus = (_focus + focus * scale).ceil().clamp(0, intellect.maxFocus);
+    _focus = (_focus + focus).clamp(0, intellect.maxFocus);
   }
 
   /// Refreshes all hero state whose change should be logged.
@@ -449,7 +432,6 @@ class Hero extends Actor {
     agility.refresh(save);
     vitality.refresh(save);
     intellect.refresh(save);
-    will.refresh(save);
 
     // Refresh the heft scales.
     var weapons = equipment.weapons.toList();

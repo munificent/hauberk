@@ -111,17 +111,16 @@ class SidebarPanel extends Panel {
       terminal.writeAt(
         x,
         y + 1,
-        stat.value.toString().padLeft(3),
+        stat.value.toString().padLeft(2),
         UIHue.primary,
       );
-      x += (terminal.width - 4) ~/ 4;
+      x += (terminal.width - 4) ~/ 3;
     }
 
     drawStat(hero.strength);
     drawStat(hero.agility);
     drawStat(hero.vitality);
     drawStat(hero.intellect);
-    drawStat(hero.will);
   }
 
   void _drawHealth(Hero hero, Terminal terminal, int y) {

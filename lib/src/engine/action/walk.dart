@@ -76,7 +76,7 @@ class WalkAction extends Action {
         }
       }
 
-      hero.regenerateFocus(4);
+      hero.regenerateFocus(1);
     }
 
     return succeed();
@@ -97,7 +97,7 @@ class OpenDoorAction extends Action {
     game.stage[pos].type = openDoor;
     game.stage.tileOpacityChanged();
 
-    if (actor is Hero) hero.regenerateFocus(4);
+    if (actor is Hero) hero.regenerateFocus(1);
     return succeed('{1} open[s] the door.', actor);
   }
 }
@@ -119,7 +119,7 @@ class CloseDoorAction extends Action {
     game.stage[doorPos].type = closedDoor;
     game.stage.tileOpacityChanged();
 
-    if (actor is Hero) hero.regenerateFocus(4);
+    if (actor is Hero) hero.regenerateFocus(1);
     return succeed('{1} close[s] the door.', actor);
   }
 }
@@ -142,8 +142,7 @@ class RestAction extends Action {
           }
         }
 
-        // TODO: Have this amount increase over successive resting turns?
-        hero.regenerateFocus(10);
+        hero.regenerateFocus(2);
       case Actor actor
           when !game.stage.isVisibleToHero(actor) && !actor.poison.isActive:
         // Monsters can rest if out of sight.

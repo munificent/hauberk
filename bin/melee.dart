@@ -68,12 +68,6 @@ void runTrial(
   var save = content.createHero("blah");
   var game = Game(content, 1, save);
 
-  //  save.attributes[Attribute.strength] = strength;
-  //  save.attributes[Attribute.agility] = agility;
-  //  save.attributes[Attribute.fortitude] = fortitude;
-  //  save.attributes[Attribute.intellect] = 20;
-  //  save.attributes[Attribute.will] = 20;
-
   for (var item in gear) {
     save.equipment.tryAdd(Item(item, 1));
   }

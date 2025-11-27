@@ -163,7 +163,7 @@ class NewHeroScreen extends Screen<Input> {
     for (var stat in Stat.all) {
       terminal.writeAt(0, y, stat.abbreviation, UIHue.secondary);
       var scale = (race.statScale(stat) * 100).toInt();
-      Draw.thinMeter(terminal, 4, y, 14, scale, 150);
+      Draw.thinMeter(terminal, 4, y, 14, scale, 200);
       y++;
     }
   }

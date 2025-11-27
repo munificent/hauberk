@@ -163,7 +163,6 @@ class Storage {
           agility: stats['agility'] as int,
           vitality: stats['vitality'] as int,
           intellect: stats['intellect'] as int,
-          will: stats['will'] as int,
         );
         heroes.add(heroSave);
       } catch (error, trace) {
@@ -318,7 +317,6 @@ class Storage {
               'agility': hero.agility.baseValue,
               'vitality': hero.vitality.baseValue,
               'intellect': hero.intellect.baseValue,
-              'will': hero.will.baseValue,
             },
             'class': hero.heroClass.name,
             'death': hero.permadeath ? 'permanent' : 'dungeon',

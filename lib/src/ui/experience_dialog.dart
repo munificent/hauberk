@@ -20,7 +20,6 @@ class ExperienceDialog extends Screen<Input> {
     1 => _save.agility,
     2 => _save.vitality,
     3 => _save.intellect,
-    4 => _save.will,
     _ => throw ArgumentError(),
   };
 
@@ -83,7 +82,7 @@ class ExperienceDialog extends Screen<Input> {
       UIHue.primary,
     );
 
-    _drawStatsList(terminal.rect(0, 3, 40, 13));
+    _drawStatsList(terminal.rect(0, 3, 40, 11));
 
     var panelTerminal = terminal.rect(
       40,
@@ -101,8 +100,6 @@ class ExperienceDialog extends Screen<Input> {
         _drawVitalityPanel(panelTerminal);
       case 3:
         _drawIntellectPanel(panelTerminal);
-      case 4:
-        _drawWillPanel(panelTerminal);
     }
 
     Draw.helpKeys(terminal, {
@@ -125,7 +122,6 @@ class ExperienceDialog extends Screen<Input> {
       _save.agility,
       _save.vitality,
       _save.intellect,
-      _save.will,
     ];
 
     var i = 0;
@@ -203,12 +199,6 @@ class ExperienceDialog extends Screen<Input> {
       },
       // TODO: Show spell focus scale somehow.
     );
-  }
-
-  void _drawWillPanel(Terminal terminal) {
-    _drawStatPanel(terminal, _save.will, ['Damage focus scale'], (int value) {
-      return ['${(Will.damageFocusScaleAt(value) * 100).toInt()}%'];
-    });
   }
 
   void _drawStatPanel(

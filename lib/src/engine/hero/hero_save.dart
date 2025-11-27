@@ -64,7 +64,6 @@ class HeroSave {
   final agility = Agility();
   final vitality = Vitality();
   final intellect = Intellect();
-  final will = Will();
 
   int get emanationLevel {
     var level = 0;
@@ -114,7 +113,6 @@ class HeroSave {
     agility.initialize(10);
     vitality.initialize(10);
     intellect.initialize(10);
-    will.initialize(10);
   }
 
   HeroSave(
@@ -137,13 +135,11 @@ class HeroSave {
     required int agility,
     required int vitality,
     required int intellect,
-    required int will,
   }) {
     this.strength.initialize(strength);
     this.agility.initialize(agility);
     this.vitality.initialize(vitality);
     this.intellect.initialize(intellect);
-    this.will.initialize(will);
   }
 
   HeroSave clone() => HeroSave(
@@ -171,7 +167,6 @@ class HeroSave {
     agility: agility.baseValue,
     vitality: vitality.baseValue,
     intellect: intellect.baseValue,
-    will: will.baseValue,
   );
 
   /// Gets the total permament resistance provided by all equipment.

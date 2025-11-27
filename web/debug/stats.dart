@@ -9,7 +9,6 @@ void main() {
   var agility = Agility();
   var vitality = Vitality();
   var intellect = Intellect();
-  var will = Will();
 
   var builder = HtmlBuilder();
   builder.table();
@@ -18,7 +17,6 @@ void main() {
   builder.td('Agility', colspan: 2);
   builder.td('Fortitude');
   builder.td('Intellect', colspan: 2);
-  builder.td('Will');
   builder.trEnd();
   builder.td('Stat', right: true);
   builder.td('Max Fury', right: true);
@@ -30,7 +28,6 @@ void main() {
   builder.td('Health', right: true);
   builder.td('Max Focus', right: true);
   builder.td('Spell Focus', right: true);
-  builder.td('Focus', right: true);
   builder.tbody();
 
   for (var i = 1; i <= Stat.modifiedMax; i++) {
@@ -38,7 +35,6 @@ void main() {
     agility.update(i, (_) {});
     vitality.update(i, (_) {});
     intellect.update(i, (_) {});
-    will.update(i, (_) {});
 
     builder.td(i);
     builder.td(strength.maxFury);
@@ -53,7 +49,6 @@ void main() {
     builder.td(vitality.maxHealth);
     builder.td(intellect.maxFocus);
     builder.td(intellect.spellFocusScale(10).toStringAsFixed(2), right: true);
-    builder.td(will.damageFocusScale.toStringAsFixed(0), right: true);
     builder.trEnd();
   }
 

@@ -43,7 +43,6 @@ class ExitPopup extends Popup {
     add("Agility", blue, hero.agility.value - _previous.agility.value);
     add("Vitality", blue, hero.vitality.value - _previous.vitality.value);
     add("Intellect", blue, hero.intellect.value - _previous.intellect.value);
-    add("Will", blue, hero.will.value - _previous.will.value);
 
     y += 3;
     var slain = hero.lore.allSlain - _previous.lore.allSlain;

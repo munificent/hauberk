@@ -37,8 +37,7 @@ enum Stat {
   strength("Strength"),
   agility("Agility"),
   fortitude("Fortitude"),
-  intellect("Intellect"),
-  will("Will");
+  intellect("Intellect");
 
   /// How much experience it takes to raise a stat by a single point given that
   /// the hero's total number of base stat points for all stats is [statTotal]
@@ -53,8 +52,8 @@ enum Stat {
     // curve the cost upwards significantly.
     var totalScale = lerpDouble(
       statTotal,
-      10 * 5,
-      Stat.modifiedMax * 5,
+      10 * Stat.all.length,
+      Stat.modifiedMax * Stat.all.length,
       1.0,
       20.0,
     );
@@ -70,7 +69,7 @@ enum Stat {
   /// The maximum value a stat can have after modifiers are applied.
   static const modifiedMax = 50;
 
-  static const all = [strength, agility, fortitude, intellect, will];
+  static const all = [strength, agility, fortitude, intellect];
 
   final String name;
 
@@ -122,8 +121,7 @@ abstract class StatBase extends Property<int> {
         save.strength.baseValue +
         save.agility.baseValue +
         save.vitality.baseValue +
-        save.intellect.baseValue +
-        save.will.baseValue;
+        save.intellect.baseValue;
     return Stat.experienceCostAt(total, save.race.statScale(_stat));
   }
 
@@ -256,23 +254,4 @@ class Intellect extends StatBase {
     var relative = value - complexity.clamp(0, 50);
     return lerpDouble(relative, 0, 50, 1.0, 0.2);
   }
-}
-
-class Will extends StatBase {
-  static double damageFocusScaleAt(int value) {
-    if (value <= 10) return lerpDouble(value, 1, 10, 2.0, 1.0);
-    return lerpDouble(value, 10, 60, 1.0, 0.4);
-  }
-
-  @override
-  Stat get _stat => Stat.will;
-
-  @override
-  String get _gainAdjective => "driven";
-
-  @override
-  String get _loseAdjective => "foolish";
-
-  /// Scales how much focus is lost when taking damage.
-  double get damageFocusScale => damageFocusScaleAt(value);
 }

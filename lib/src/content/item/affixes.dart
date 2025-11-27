@@ -144,7 +144,7 @@ class Affixes {
       ..price(500, 2.2)
       ..heft(0.6)
       ..damage(scale: fixed(1.5))
-      ..will(equalsParam)
+      ..intellect(equalsParam)
       ..resist(Elements.air)
       ..resist(Elements.light);
   }
