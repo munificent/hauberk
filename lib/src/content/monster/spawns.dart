@@ -12,6 +12,31 @@ Spawn repeatSpawn(int min, int max, Spawn spawn) =>
 
 Spawn spawnAll(List<Spawn> spawns) => _AllOfSpawn(spawns);
 
+/// Converts [drop] to a JSON-like representation that describes all of the
+/// data it contains.
+Map<String, Object?> spawnGameData(Spawn spawn) {
+  switch (spawn) {
+    case _BreedSpawn breed:
+      return {'type': 'breed', 'breed': breed._breed.breed.name};
+    case _TagSpawn tag:
+      return {'type': 'tag', 'tag': tag._tag};
+    case _RepeatSpawn repeat:
+      return {
+        'type': 'repeat',
+        'minCount': repeat._minCount,
+        'maxCount': repeat._maxCount,
+        'spawn': spawnGameData(repeat._spawn),
+      };
+    case _AllOfSpawn allOf:
+      return {
+        'type': 'allOf',
+        'spawns': [for (var spawn in allOf._spawns) spawnGameData(spawn)],
+      };
+    default:
+      throw ArgumentError('Unexpected spawn type $spawn.');
+  }
+}
+
 /// Spawns a monster of a given breed.
 class _BreedSpawn implements Spawn {
   final BreedRef _breed;

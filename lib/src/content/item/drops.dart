@@ -6,6 +6,53 @@ import 'items.dart';
 
 enum ItemQuality { normal, good, great }
 
+/// Converts [drop] to a JSON-like representation that describes all of the
+/// data it contains.
+Map<String, Object> dropGameData(Drop drop) {
+  var result = <String, Object>{};
+
+  if (drop case _BaseDrop baseDrop) {
+    result.addAll({
+      if (baseDrop._depth case var depth?) 'depth': depth,
+      'quality': baseDrop._quality.name,
+    });
+  }
+
+  switch (drop) {
+    case _ItemDrop item:
+      result.addAll({'type': 'item', 'itemType': item._type.name});
+    case _TagDrop tag:
+      result.addAll({'type': 'tag', 'tag': tag._tag});
+    case _PercentDrop percent:
+      result.addAll({
+        'type': 'percent',
+        'chance': percent._chance,
+        'drop': dropGameData(percent._drop),
+      });
+    case _AllOfDrop allOf:
+      result.addAll({
+        'type': 'allOf',
+        'drops': [for (var child in allOf._drops) dropGameData(child)],
+      });
+    case _OneOfDrop oneOf:
+      result.addAll({
+        'type': 'oneOf',
+        // TODO: Include tags, depth, etc.
+        'drops': [for (var child in oneOf._drop.all) dropGameData(child)],
+      });
+    case _RepeatDrop repeat:
+      result.addAll({
+        'type': 'repeat',
+        'count': repeat._count,
+        'drop': dropGameData(repeat._drop),
+      });
+    default:
+      throw ArgumentError('Unexpected drop $drop.');
+  }
+
+  return result;
+}
+
 Drop parseDrop(String name, {int? depth, ItemQuality? quality}) {
   // See if we're parsing a drop for a single item type.
   var itemType = Items.types.tryFind(name);

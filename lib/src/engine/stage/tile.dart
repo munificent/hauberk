@@ -52,7 +52,14 @@ class Motility {
   bool overlaps(Motility other) => _bitMask & other._bitMask != 0;
 
   @override
-  String toString() => _bitMask.toString();
+  String toString() {
+    return [
+      if (overlaps(Motility.door)) 'door',
+      if (overlaps(Motility.fly)) 'fly',
+      if (overlaps(Motility.swim)) 'swim',
+      if (overlaps(Motility.walk)) 'walk',
+    ].join('|');
+  }
 }
 
 /// Enum-like class for tiles that transport the hero: dungeon entrance, exit,
