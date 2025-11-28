@@ -40,9 +40,9 @@ BreedBuilder? _builder;
 late FamilyBuilder _family;
 
 FamilyBuilder family(
-  String character, {
+  String character,
+  String groupPath, {
   double? frequency,
-  int? meander,
   int? speed,
   int? dodge,
   int? tracking,
@@ -50,8 +50,10 @@ FamilyBuilder family(
 }) {
   finishBreed();
 
-  _family = FamilyBuilder(frequency, character);
-  _family._meander = meander;
+  Monsters.breeds.defineTags("monster/$groupPath");
+  var group = groupPath.split("/").last;
+
+  _family = FamilyBuilder(frequency, character, group);
   _family._speed = speed;
   _family._dodge = dodge;
   _family._tracking = tracking;
@@ -66,7 +68,7 @@ void finishBreed() {
   var builder = _builder;
   if (builder == null) return;
 
-  var tags = [..._family._groups, ...builder._groups];
+  var tags = [_family._group];
 
   if (tags.isEmpty) tags.add("monster");
 
@@ -91,7 +93,6 @@ BreedBuilder breed(
   double? frequency,
   int speed = 0,
   int? dodge,
-  int? meander,
 }) {
   finishBreed();
 
@@ -99,7 +100,6 @@ BreedBuilder breed(
   var builder = BreedBuilder(name, depth, frequency, glyph, health);
   builder._speed = speed;
   builder._dodge = dodge;
-  builder._meander = meander;
   _builder = builder;
   return builder;
 }
@@ -125,14 +125,11 @@ class _BaseBuilder {
   /// specifies a speed, it offsets the family's speed.
   int? _speed;
 
-  /// The default meander for breeds in the current family. If the breed
-  /// specifies a meander, it offset's the family's meander.
   int? _meander;
 
   int? _dodge;
 
   final List<Defense> _defenses = [];
-  final List<String> _groups = [];
 
   final List<String> _flags = [];
 
@@ -155,6 +152,10 @@ class _BaseBuilder {
 
   void emanate(int level) {
     _emanationLevel = level;
+  }
+
+  void meander(int meander) {
+    _meander = meander;
   }
 
   void sense({int? see, int? hear}) {
@@ -204,17 +205,15 @@ class _BaseBuilder {
   void defense(int amount, String message) {
     _defenses.add(Defense(amount, message));
   }
-
-  void groups(String names) {
-    _groups.addAll(names.split(" "));
-  }
 }
 
 class FamilyBuilder extends _BaseBuilder {
   /// Character for the current monster.
   final String _character;
 
-  FamilyBuilder(super.frequency, this._character);
+  final String _group;
+
+  FamilyBuilder(super.frequency, this._character, this._group);
 }
 
 class BreedBuilder extends _BaseBuilder {
@@ -238,14 +237,15 @@ class BreedBuilder extends _BaseBuilder {
     this._health,
   ) : super(frequency);
 
-  void minion(String name, [int? minOrMax, int? max]) {
-    Spawn spawn;
-    if (Monsters.breeds.tagExists(name)) {
-      spawn = spawnTag(name);
-    } else {
-      spawn = spawnBreed(name);
-    }
+  void minionTag(String name, [int? minOrMax, int? max]) {
+    _minion(spawnTag(name), minOrMax, max);
+  }
 
+  void minionBreed(String name, [int? minOrMax, int? max]) {
+    _minion(spawnBreed(name), minOrMax, max);
+  }
+
+  void _minion(Spawn spawn, [int? minOrMax, int? max]) {
     if (max != null) {
       spawn = repeatSpawn(minOrMax!, max, spawn);
     } else if (minOrMax != null) {
@@ -531,8 +531,7 @@ class BreedBuilder extends _BaseBuilder {
     breed.defenses.addAll(_family._defenses);
     breed.defenses.addAll(_defenses);
 
-    breed.groups.addAll(_family._groups);
-    breed.groups.addAll(_groups);
+    breed.groups.add(_family._group);
 
     return breed;
   }

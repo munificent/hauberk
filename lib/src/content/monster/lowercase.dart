@@ -8,67 +8,56 @@ import 'builder.dart';
 // TODO: Describe other monsters.
 void arachnids() {
   // TODO: Should all spiders hide in passages?
-  family("a", flags: "fearless")
-    ..groups("spider")
+  family("a", "natural/bug/spider", flags: "fearless")
     ..sense(see: 4, hear: 2)
     ..stain(Tiles.spiderweb);
-  breed(
-    "little brown spider",
-    3,
-    tan,
-    2,
-    dodge: 30,
-    meander: 40,
-  ).attack("bite[s]", 5, Elements.poison);
+  breed("little brown spider", 3, tan, 2, dodge: 30)
+    ..meander(40)
+    ..attack("bite[s]", 5, Elements.poison);
   describe("Seems harmless enough. What's that dripping from its pedipalps?");
 
-  breed(
-    "gray spider",
-    7,
-    coolGray,
-    20,
-    dodge: 30,
-    meander: 30,
-  ).attack("bite[s]", 5, Elements.poison);
+  breed("gray spider", 7, coolGray, 20, dodge: 30)
+    ..meander(30)
+    ..attack("bite[s]", 5, Elements.poison);
 
-  breed("spiderling", 9, ash, 14, dodge: 35, meander: 50)
+  breed("spiderling", 9, ash, 14, dodge: 35)
+    ..meander(50)
     ..count(2, 7)
     ..attack("bite[s]", 10, Elements.poison);
 
-  breed(
-    "giant spider",
-    12,
-    darkBlue,
-    40,
-    meander: 30,
-  ).attack("bite[s]", 7, Elements.poison);
+  breed("giant spider", 12, darkBlue, 40)
+    ..meander(30)
+    ..attack("bite[s]", 7, Elements.poison);
   describe("""Like a large dog, if the dog had eight articulated legs, eight
   glittering eyes, and wanted nothing more than to kill you.""");
 }
 
 void bats() {
-  family("b", speed: 1)
-    ..groups("bat")
+  family("b", "natural/animal/mammal/bat", speed: 1)
     ..sense(see: 2, hear: 8)
     ..fly()
     ..preferOpen();
-  breed("brown bat", 1, tan, 4, frequency: 0.5, meander: 50)
+  breed("brown bat", 1, tan, 4, frequency: 0.5)
+    ..meander(50)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 4)
     ..attack("bite[s]", 3);
 
-  breed("giant bat", 4, brown, 24, meander: 30).attack("bite[s]", 6);
+  breed("giant bat", 4, brown, 24)
+    ..meander(30)
+    ..attack("bite[s]", 6);
 
-  breed("cave bat", 6, lightCoolGray, 30, meander: 40)
+  breed("cave bat", 6, lightCoolGray, 30)
+    ..meander(40)
     ..defense(20, "{1} flits out of the way.")
     ..count(2, 5)
     ..attack("bite[s]", 6);
 }
 
 void canines() {
-  family("c", dodge: 25, tracking: 20, meander: 25)
-    ..groups("canine")
-    ..sense(see: 5, hear: 10);
+  family("c", "natural/animal/mammal/canine", dodge: 25, tracking: 20)
+    ..sense(see: 5, hear: 10)
+    ..meander(25);
 
   breed("mangy cur", 2, buttermilk, 11)
     ..count(4)
@@ -98,26 +87,31 @@ void canines() {
   // TODO: Drops.
   breed("Skoll", 36, gold, 200)
     ..unique()
-    ..minion("canine", 5, 9)
+    ..minionTag("canine", 5, 9)
     ..attack("bite[s]", 20)
     ..howl();
 
   breed("Hati", 40, blue, 250)
     ..unique()
-    ..minion("canine", 5, 9)
+    ..minionTag("canine", 5, 9)
     ..attack("bite[s]", 23)
     ..howl();
 
   breed("Fenrir", 44, darkCoolGray, 300)
     ..unique()
-    ..minion("canine", 3, 5)
-    ..minion("Skoll")
-    ..minion("Hati")
+    ..minionTag("canine", 3, 5)
+    ..minionBreed("Skoll")
+    ..minionBreed("Hati")
     ..attack("bite[s]", 26)
     ..howl();
 }
 
 void dragons() {
+  family("d", "mythical/beast/dragon")
+    ..sense(see: 12, hear: 8)
+    ..defense(10, "{2} [are|is] deflected by its scales.")
+    ..preferOpen();
+
   // TODO: Tune. Give more attacks. Tune drops.
   // TODO: Give each breed more variety.
   // TODO: Minions?
@@ -136,12 +130,6 @@ void dragons() {
   ];
 
   var max = dragons.length - 1;
-
-  family("d")
-    ..groups("dragon")
-    ..sense(see: 12, hear: 8)
-    ..defense(10, "{2} [are|is] deflected by its scales.")
-    ..preferOpen();
 
   var i = 0;
   for (var (name, element, color, _) in dragons) {
@@ -170,8 +158,7 @@ void dragons() {
     i++;
   }
 
-  family("d")
-    ..groups("dragon")
+  family("d", "mythical/beast/dragon")
     ..sense(see: 16, hear: 10)
     ..defense(20, "{2} [are|is] deflected by its scales.")
     ..preferOpen();
@@ -200,8 +187,7 @@ void dragons() {
 }
 
 void eyes() {
-  family("e", flags: "immobile")
-    ..groups("eye")
+  family("e", "magical/eye", flags: "immobile")
     ..sense(see: 16, hear: 1)
     ..defense(10, "{1} blinks out of the way.")
     ..fly()
@@ -251,21 +237,21 @@ void eyes() {
 }
 
 void felines() {
-  family("f")
-    ..sense(see: 10, hear: 8)
-    ..groups("feline");
-  breed("stray cat", 1, gold, 11, speed: 1, meander: 30)
+  family("f", "natural/animal/mammal/feline").sense(see: 10, hear: 8);
+  breed("stray cat", 1, gold, 11, speed: 1)
+    ..meander(30)
     ..missive(Missive.hiss, rate: 4)
     ..attack("bite[s]", 5)
     ..attack("scratch[es]", 4);
 }
 
 void goblins() {
-  family("g", meander: 10)
+  family("g", "humanoid/hob/goblin")
     ..sense(see: 8, hear: 4)
-    ..groups("goblin")
+    ..meander(10)
     ..openDoors();
-  breed("goblin peon", 4, sandal, 30, meander: 20)
+  breed("goblin peon", 4, sandal, 30)
+    ..meander(20)
     ..count(4)
     ..attack("stab[s]", 8)
     ..missive(Missive.insult, rate: 8)
@@ -275,7 +261,7 @@ void goblins() {
 
   breed("goblin archer", 6, peaGreen, 36)
     ..count(2)
-    ..minion("goblin", 0, 3)
+    ..minionTag("goblin", 0, 3)
     ..attack("stab[s]", 4)
     ..arrow(rate: 3, damage: 8)
     ..drop("treasure", percent: 30)
@@ -285,7 +271,7 @@ void goblins() {
 
   breed("goblin fighter", 6, tan, 58)
     ..count(2)
-    ..minion("goblin", 1, 4)
+    ..minionTag("goblin", 1, 4)
     ..attack("stab[s]", 12)
     ..drop("treasure", percent: 20)
     ..drop("spear", percent: 10)
@@ -295,7 +281,7 @@ void goblins() {
 
   breed("goblin warrior", 8, lightCoolGray, 68)
     ..count(2)
-    ..minion("goblin", 1, 5)
+    ..minionTag("goblin", 1, 5)
     ..attack("stab[s]", 16)
     ..drop("treasure", percent: 25)
     ..drop("axe", percent: 10)
@@ -305,7 +291,7 @@ void goblins() {
     ..flags("protective");
 
   breed("goblin mage", 9, darkBlue, 50)
-    ..minion("goblin", 1, 4)
+    ..minionTag("goblin", 1, 4)
     ..attack("whip[s]", 7)
     ..fireBolt(rate: 12, damage: 12)
     ..sparkBolt(rate: 12, damage: 16)
@@ -314,7 +300,7 @@ void goblins() {
     ..drop("magic", percent: 30);
 
   breed("goblin ranger", 12, sherwood, 60)
-    ..minion("goblin", 0, 5)
+    ..minionTag("goblin", 0, 5)
     ..attack("stab[s]", 10)
     ..arrow(rate: 3, damage: 12)
     ..drop("treasure", percent: 20)
@@ -324,7 +310,7 @@ void goblins() {
 
   breed("Erlkonig, the Goblin Prince", 14, darkCoolGray, 120)
     ..unique(pronoun: Pronoun.he)
-    ..minion("goblin", 4, 8)
+    ..minionTag("goblin", 4, 8)
     ..attack("hit[s]", 10)
     ..attack("slash[es]", 14)
     ..darkBolt(rate: 20, damage: 20)
@@ -340,9 +326,9 @@ void goblins() {
 void humanoids() {}
 
 void insects() {
-  family("i", tracking: 3, meander: 40, flags: "fearless")
-    ..groups("bug")
-    ..sense(see: 5, hear: 2);
+  family("i", "bug", tracking: 3, flags: "fearless")
+    ..sense(see: 5, hear: 2)
+    ..meander(40);
   // TODO: Spawn as eggs which can hatch into cockroaches?
   breed("giant cockroach[es]", 1, brown, 4, frequency: 0.4)
     ..count(2, 5)
@@ -353,23 +339,25 @@ void insects() {
   describe("""It's not quite as easy to squash one of these when it's as long as
       your arm.""");
 
-  breed("giant centipede", 3, red, 14, speed: 2, meander: 20)
+  breed("giant centipede", 3, red, 14, speed: 2)
+    ..meander(20)
     ..attack("crawl[s] on", 4)
     ..attack("bite[s]", 8);
 
-  family("i", tracking: 3, meander: 40, flags: "fearless")
-    ..groups("fly")
-    ..sense(see: 5, hear: 2);
-  breed("firefly", 8, carrot, 6, speed: 1, meander: 70)
+  family("i", "natural/bug/fly", tracking: 3, flags: "fearless")
+    ..sense(see: 5, hear: 2)
+    ..meander(40);
+  breed("firefly", 8, carrot, 6, speed: 1)
+    ..meander(70)
     ..count(3, 8)
     ..attack("bite[s]", 12, Elements.fire)
     ..drop("Insect Wing", percent: 40);
 }
 
 void jellies() {
-  family("j", frequency: 0.7, speed: -1, meander: 30, flags: "fearless")
-    ..groups("jelly")
+  family("j", "magical/jelly", frequency: 0.7, speed: -1, flags: "fearless")
     ..sense(see: 3, hear: 1)
+    ..meander(30)
     ..preferWall()
     ..count(4);
   breed("green jelly", 1, lima, 5)
@@ -377,8 +365,7 @@ void jellies() {
     ..attack("crawl[s] on", 3);
   // TODO: More elements.
 
-  family("j", frequency: 0.6, flags: "fearless immobile")
-    ..groups("jelly")
+  family("j", "jelly", frequency: 0.6, flags: "fearless immobile")
     ..sense(see: 2, hear: 1)
     ..preferCorner()
     ..count(4);
@@ -428,10 +415,11 @@ void jellies() {
 }
 
 void kobolds() {
-  family("k", meander: 15, flags: "cowardly")
-    ..groups("kobold")
-    ..sense(see: 10, hear: 4);
-  breed("scurrilous imp", 1, pink, 12, meander: 20)
+  family("k", "humanoid/hob/kobold", flags: "cowardly")
+    ..sense(see: 10, hear: 4)
+    ..meander(15);
+  breed("scurrilous imp", 1, pink, 12)
+    ..meander(20)
     ..count(2)
     ..attack("club[s]", 4)
     ..missive(Missive.insult)
@@ -442,17 +430,17 @@ void kobolds() {
 
   breed("vexing imp", 2, purple, 16)
     ..count(2)
-    ..minion("kobold", 0, 1)
+    ..minionTag("kobold", 0, 1)
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult)
     ..sparkBolt(rate: 5, damage: 6)
     ..drop("treasure", percent: 25)
     ..drop("teleportation", percent: 20);
 
-  family("k", meander: 20).groups("kobold");
+  family("k", "kobold").meander(20);
   breed("kobold", 3, red, 20)
     ..count(3)
-    ..minion("canine", 0, 3)
+    ..minionTag("canine", 0, 3)
     ..attack("poke[s]", 4)
     ..teleport(range: 6)
     ..drop("treasure", percent: 25)
@@ -461,7 +449,7 @@ void kobolds() {
 
   breed("kobold shaman", 4, darkBlue, 20)
     ..count(2)
-    ..minion("canine", 0, 3)
+    ..minionTag("canine", 0, 3)
     ..attack("hit[s]", 4)
     ..waterBolt(rate: 10, damage: 8)
     ..drop("treasure", percent: 25)
@@ -479,7 +467,7 @@ void kobolds() {
 
   breed("kobold priest", 6, blue, 30)
     ..count(2)
-    ..minion("kobold", 1, 3)
+    ..minionTag("kobold", 1, 3)
     ..attack("club[s]", 6)
     ..heal(rate: 15, amount: 10)
     ..haste(rate: 7)
@@ -490,8 +478,8 @@ void kobolds() {
 
   breed("imp incanter", 7, lilac, 33)
     ..count(2)
-    ..minion("kobold", 1, 3)
-    ..minion("canine", 0, 3)
+    ..minionTag("kobold", 1, 3)
+    ..minionTag("canine", 0, 3)
     ..attack("scratch[es]", 4)
     ..missive(Missive.insult, rate: 6)
     ..sparkBolt(rate: 5, damage: 10)
@@ -501,8 +489,8 @@ void kobolds() {
     ..flags("cowardly");
 
   breed("imp warlock", 8, violet, 46)
-    ..minion("kobold", 2, 5)
-    ..minion("canine", 0, 3)
+    ..minionTag("kobold", 2, 5)
+    ..minionTag("canine", 0, 3)
     ..attack("stab[s]", 5)
     ..iceBolt(rate: 8, damage: 12)
     ..sparkBolt(rate: 8, damage: 12)
@@ -511,10 +499,11 @@ void kobolds() {
     ..drop("robe", percent: 10)
     ..drop("magic", percent: 30);
 
-  breed("Feng", 10, carrot, 80, speed: 1, meander: 10)
+  breed("Feng", 10, carrot, 80, speed: 1)
+    ..meander(10)
     ..unique(pronoun: Pronoun.he)
-    ..minion("kobold", 4, 10)
-    ..minion("canine", 1, 3)
+    ..minionTag("kobold", 4, 10)
+    ..minionTag("canine", 1, 3)
     ..attack("stab[s]", 5)
     ..missive(Missive.insult, rate: 7)
     ..teleport(rate: 5, range: 6)
@@ -531,9 +520,9 @@ void kobolds() {
 void lizardMen() {
   // troglodyte
 
-  family("l", meander: 10, flags: "fearless")
-    ..groups("saurian")
+  family("l", "humanoid/saurian", flags: "fearless")
     ..sense(see: 10, hear: 5)
+    ..meander(10)
     ..defense(5, "{2} [are|is] deflected by its scales.");
   breed("lizard guard", 11, gold, 26)
     ..attack("claw[s]", 8)
@@ -543,7 +532,7 @@ void lizardMen() {
     ..drop("spear", percent: 10);
 
   breed("lizard protector", 15, lima, 30)
-    ..minion("saurian", 0, 2)
+    ..minionTag("saurian", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 14)
     ..drop("treasure", percent: 30)
@@ -551,7 +540,7 @@ void lizardMen() {
     ..drop("spear", percent: 10);
 
   breed("armored lizard", 17, lightCoolGray, 38)
-    ..minion("saurian", 0, 2)
+    ..minionTag("saurian", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 15)
     ..drop("treasure", percent: 30)
@@ -559,16 +548,16 @@ void lizardMen() {
     ..drop("spear", percent: 10);
 
   breed("scaled guardian", 19, darkCoolGray, 50)
-    ..minion("saurian", 0, 3)
-    ..minion("salamander", 0, 2)
+    ..minionTag("saurian", 0, 3)
+    ..minionTag("salamander", 0, 2)
     ..attack("claw[s]", 10)
     ..attack("bite[s]", 15)
     ..drop("treasure", percent: 40)
     ..drop("equipment", percent: 10);
 
   breed("saurian", 21, carrot, 64)
-    ..minion("saurian", 1, 4)
-    ..minion("salamander", 0, 2)
+    ..minionTag("saurian", 1, 4)
+    ..minionTag("salamander", 0, 2)
     ..attack("claw[s]", 12)
     ..attack("bite[s]", 17)
     ..drop("treasure", percent: 50)
@@ -582,9 +571,9 @@ void nagas() {
 }
 
 void orcs() {
-  family("o", meander: 10)
+  family("o", "humanoid/orcus/orc")
     ..sense(see: 7, hear: 6)
-    ..groups("orc")
+    ..meander(10)
     ..openDoors()
     ..flags("protective");
   breed("orc", 28, carrot, 100)
@@ -595,7 +584,7 @@ void orcs() {
     ..drop("spear", percent: 5);
 
   breed("orc brute", 29, mint, 120)
-    ..minion("orc", 2, 5)
+    ..minionTag("orc", 2, 5)
     ..attack("bash[es]", 16)
     ..drop("treasure", percent: 20)
     ..drop("club", percent: 10)
@@ -603,14 +592,14 @@ void orcs() {
 
   breed("orc soldier", 30, lightCoolGray, 140)
     ..count(4, 6)
-    ..minion("orcus", 1, 5)
+    ..minionTag("orcus", 1, 5)
     ..attack("stab[s]", 20)
     ..drop("treasure", percent: 25)
     ..drop("axe", percent: 10)
     ..drop("armor", percent: 10);
 
   breed("orc chieftain", 31, red, 180)
-    ..minion("orcus", 2, 10)
+    ..minionTag("orcus", 2, 10)
     ..attack("stab[s]", 10)
     ..drop("treasure", count: 2, percent: 40)
     ..drop("equipment", percent: 20)
@@ -620,9 +609,9 @@ void orcs() {
 }
 
 void people() {
-  family("p", tracking: 14, meander: 10)
-    ..groups("human")
+  family("p", "humanoid/human", tracking: 14)
     ..sense(see: 10, hear: 5)
+    ..meander(10)
     ..openDoors()
     ..emanate(2);
   breed("Harold the Misfortunate", 1, lilac, 30)
@@ -634,7 +623,8 @@ void people() {
     ..drop("armor", percent: 30, depthOffset: 4)
     ..drop("magic", percent: 40, depthOffset: 4);
 
-  breed("hapless adventurer", 1, buttermilk, 14, dodge: 15, meander: 30)
+  breed("hapless adventurer", 1, buttermilk, 14, dodge: 15)
+    ..meander(30)
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy, rate: 12)
     ..drop("treasure", percent: 15)
@@ -652,7 +642,8 @@ void people() {
     ..drop("magic", percent: 20)
     ..flags("cowardly");
 
-  breed("decrepit mage", 3, purple, 20, meander: 30)
+  breed("decrepit mage", 3, purple, 20)
+    ..meander(30)
     ..attack("hit[s]", 2)
     ..sparkBolt(rate: 10, damage: 8)
     ..drop("treasure", percent: 15)
@@ -662,7 +653,8 @@ void people() {
     ..drop("robe", percent: 10)
     ..drop("boots", percent: 5);
 
-  breed("unlucky ranger", 5, peaGreen, 30, dodge: 25, meander: 20)
+  breed("unlucky ranger", 5, peaGreen, 30, dodge: 25)
+    ..meander(20)
     ..attack("slash[es]", 2)
     ..arrow(rate: 4, damage: 2)
     ..missive(Missive.clumsy, rate: 10)
@@ -671,7 +663,8 @@ void people() {
     ..drop("bow", percent: 10)
     ..drop("body", percent: 20);
 
-  breed("drunken priest", 5, blue, 34, meander: 40)
+  breed("drunken priest", 5, blue, 34)
+    ..meander(40)
     ..attack("hit[s]", 8)
     ..heal(rate: 15, amount: 8)
     ..missive(Missive.clumsy)
@@ -685,16 +678,17 @@ void people() {
 void quadrupeds() {}
 
 void rodents() {
-  family("r", dodge: 30, meander: 30)
-    ..groups("rodent")
+  family("r", "natural/animal/mammal/rodent", dodge: 30)
     ..sense(see: 4, hear: 6)
+    ..meander(30)
     ..preferWall();
   breed("[mouse|mice]", 1, sandal, 3, frequency: 0.7)
     ..count(6)
     ..attack("bite[s]", 3)
     ..attack("scratch[es]", 2);
 
-  breed("sewer rat", 2, coolGray, 8, meander: 20)
+  breed("sewer rat", 2, coolGray, 8)
+    ..meander(20)
     ..count(4)
     ..attack("bite[s]", 4)
     ..attack("scratch[es]", 3);
@@ -716,15 +710,22 @@ void rodents() {
     ..unique(pronoun: Pronoun.he)
     ..attack("bite[s]", 16)
     ..attack("scratch[es]", 10)
-    ..minion("rodent", 8, 16)
+    ..minionTag("rodent", 8, 16)
     ..drop("treasure", count: 3)
     ..dropGood("item", percent: 50, depthOffset: 10);
 }
 
 void slugs() {
-  family("s", tracking: 2, flags: "fearless", speed: -3, dodge: 5, meander: 30)
-    ..groups("slug")
-    ..sense(see: 3, hear: 1);
+  family(
+      "s",
+      "natural/bug/slug",
+      tracking: 2,
+      flags: "fearless",
+      speed: -3,
+      dodge: 5,
+    )
+    ..sense(see: 3, hear: 1)
+    ..meander(30);
   breed("giant slug", 3, olive, 20).attack("crawl[s] on", 8);
 
   breed(
@@ -743,9 +744,11 @@ void troglodytes() {}
 void minorUndead() {}
 
 void vines() {
-  family("v", flags: "fearless immobile")
-    ..groups("vine")
-    ..sense(see: 10, hear: 10);
+  family(
+    "v",
+    "natural/plant/vine",
+    flags: "fearless immobile",
+  ).sense(see: 10, hear: 10);
   breed("choker", 16, peaGreen, 40).attack("strangle", 12);
   // TODO: Touch to confuse?
   breed("nightshade", 19, lilac, 50)
@@ -759,9 +762,9 @@ void vines() {
 }
 
 void worms() {
-  family("w", dodge: 15, meander: 40, flags: "fearless")
-    ..groups("worm")
-    ..sense(see: 2, hear: 3);
+  family("w", "natural/bug/worm", dodge: 15, flags: "fearless")
+    ..sense(see: 2, hear: 3)
+    ..meander(40);
   breed("blood worm", 1, maroon, 4, frequency: 0.5)
     ..count(3, 7)
     ..attack("crawl[s] on", 5);
@@ -771,7 +774,8 @@ void worms() {
     ..preferWall()
     ..attack("crawl[s] on", 5, Elements.fire);
 
-  family("w", dodge: 10, meander: 30, flags: "fearless").groups("worm");
+  // TODO: Just make breed.
+  family("w", "natural/bug/worm", dodge: 10, flags: "fearless").meander(30);
   breed("giant earthworm", 3, pink, 30, speed: -2).attack("crawl[s] on", 5);
 
   breed(
@@ -784,42 +788,26 @@ void worms() {
 }
 
 void skeletons() {
-  family("x", meander: 30)
-    ..groups("skeleton")
-    ..sense(see: 4, hear: 4);
+  family("x", "undead/skeleton")
+    ..sense(see: 4, hear: 4)
+    ..meander(30);
   // TODO: Special room/trap where these get spawned and come up from the
   // ground?
-  breed(
-    "bony hand",
-    3,
-    coolGray,
-    18,
-    frequency: 3.0,
-    meander: 40,
-    speed: -1,
-  ).attack("claw[s]", 6);
+  breed("bony hand", 3, coolGray, 18, frequency: 3.0, speed: -1)
+    ..meander(40)
+    ..attack("claw[s]", 6);
 
-  breed(
-    "bony arm",
-    4,
-    lightCoolGray,
-    26,
-    frequency: 4.0,
-    meander: 40,
-  ).attack("claw[s]", 8);
+  breed("bony arm", 4, lightCoolGray, 26, frequency: 4.0)
+    ..meander(40)
+    ..attack("claw[s]", 8);
 
-  breed(
-    "severed skull",
-    7,
-    sandal,
-    33,
-    frequency: 3.0,
-    meander: 40,
-    speed: -2,
-  ).attack("bite[s]", 10);
+  breed("severed skull", 7, sandal, 33, frequency: 3.0, speed: -2)
+    ..meander(40)
+    ..attack("bite[s]", 10);
 
-  breed("decapitated skeleton", 10, buttermilk, 44, frequency: 4.0, meander: 60)
+  breed("decapitated skeleton", 10, buttermilk, 44, frequency: 4.0)
     ..sense(see: 0, hear: 0)
+    ..meander(60)
     ..openDoors()
     ..attack("claw[s]", 7)
     ..drop("treasure", percent: 30)

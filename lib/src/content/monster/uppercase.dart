@@ -8,20 +8,21 @@ import 'builder.dart';
 void ancients() {}
 
 void birds() {
-  family("B")
-    ..groups("bird")
+  family("B", "natural/animal/bird")
     ..sense(see: 8, hear: 6)
     ..defense(10, "{1} flaps out of the way.")
     ..fly()
     ..count(3, 6);
 
-  breed("crow", 4, darkCoolGray, 10, speed: 2, meander: 30)
+  breed("crow", 4, darkCoolGray, 10, speed: 2)
+    ..meander(30)
     ..attack("bite[s]", 5)
     ..drop("Feather", percent: 30);
   describe(""""What harm can a stupid little crow do?" you think as it and its
       murderous friends dive towards your eyes, claws extended.""");
 
-  breed("raven", 6, coolGray, 16, meander: 15)
+  breed("raven", 6, coolGray, 16)
+    ..meander(15)
     ..attack("bite[s]", 5)
     ..attack("claw[s]", 4)
     ..drop("Feather", percent: 30)
@@ -51,8 +52,7 @@ void greaterDragons() {
 
   var max = dragons.length - 1;
 
-  family("D")
-    ..groups("dragon")
+  family("D", "mythical/beast/dragon")
     ..sense(see: 12, hear: 8)
     ..defense(10, "{2} [are|is] deflected by its scales.")
     ..preferOpen();
@@ -84,8 +84,7 @@ void greaterDragons() {
     i++;
   }
 
-  family("D")
-    ..groups("dragon")
+  family("D", "mythical/beast/dragon")
     ..sense(see: 16, hear: 10)
     ..defense(20, "{2} [are|is] deflected by its scales.")
     ..preferOpen();
@@ -118,9 +117,9 @@ void elementals() {}
 void faeFolk() {
   // Sprites, pixies, fairies, elves, etc.
 
-  family("F", speed: 2, meander: 30, flags: "cowardly")
-    ..groups("fae")
+  family("F", "humanoid/hob/fae", speed: 2, flags: "cowardly")
     ..sense(see: 10, hear: 8)
+    ..meander(30)
     ..defense(10, "{1} flits out of the way.")
     ..fly()
     ..preferOpen();
@@ -150,8 +149,9 @@ void faeFolk() {
     ..drop("magic", percent: 30)
     ..drop("Insect Wing", percent: 30);
 
-  breed("Tink", 8, peaGreen, 40, meander: 10)
+  breed("Tink", 8, peaGreen, 40)
     ..unique(pronoun: Pronoun.she)
+    ..meander(10)
     ..attack("poke[s]", 8)
     ..missive(Missive.insult, rate: 4)
     ..sparkBolt(rate: 8, damage: 4)
@@ -168,9 +168,7 @@ void golems() {
 }
 
 void hybrids() {
-  family("H")
-    ..groups("hybrid")
-    ..sense(see: 10, hear: 12);
+  family("H", "mythical/beast/hybrid").sense(see: 10, hear: 12);
 
   // TODO: Cause disease when scratched?
   breed("harpy", 25, lilac, 50, speed: 2)
@@ -200,13 +198,15 @@ void hydras() {}
 
 void demons() {}
 
-void ogres() {}
+void ogres() {
+  // "humanoid/orcus/ogre"
+}
 
 void giants() {}
 
 void quest() {
   // TODO: Better group?
-  family("Q").groups("magical");
+  family("Q", "magical");
   breed("Nameless Unmaker", 100, purple, 1000, speed: 2)
     ..unique(pronoun: Pronoun.it)
     ..sense(see: 16, hear: 16)
@@ -220,15 +220,16 @@ void quest() {
 }
 
 void reptiles() {
-  family("R").groups("herp");
-  breed("frog", 1, lima, 4, dodge: 30, meander: 30)
+  family("R", "natural/animal/herp");
+  breed("frog", 1, lima, 4, dodge: 30)
     ..sense(see: 6, hear: 4)
+    ..meander(30)
     ..swim()
     ..attack("hop[s] on", 2);
 
-  family("R", dodge: 30, meander: 20)
-    ..groups("salamander")
+  family("R", "natural/animal/herp/salamander", dodge: 30)
     ..sense(see: 6, hear: 5)
+    ..meander(20)
     ..preferOpen()
     ..emanate(3);
   breed("juvenile salamander", 7, pink, 20)
@@ -245,9 +246,9 @@ void reptiles() {
 }
 
 void snakes() {
-  family("S", dodge: 30, meander: 30)
-    ..groups("snake")
-    ..sense(see: 4, hear: 7);
+  family("S", "natural/animal/herp/snake", dodge: 30)
+    ..sense(see: 4, hear: 7)
+    ..meander(30);
   breed("water snake", 1, lima, 11).attack("bite[s]", 3);
 
   breed("brown snake", 3, tan, 25).attack("bite[s]", 4);
@@ -255,7 +256,9 @@ void snakes() {
   breed("cave snake", 8, lightCoolGray, 40).attack("bite[s]", 10);
 }
 
-void trolls() {}
+void trolls() {
+  // "humanoid/troll"
+}
 
 void majorUndead() {}
 

@@ -8,39 +8,6 @@ class Monsters {
   static final ResourceSet<Breed> breeds = ResourceSet();
 
   static void initialize() {
-    // Define the tag path and store the leaf tag which is what gets used by
-    // the item types.
-    var groups = [
-      "humanoid/hob/fae",
-      "humanoid/hob/goblin",
-      "humanoid/hob/kobold",
-      "humanoid/human",
-      "humanoid/orcus/ogre",
-      "humanoid/orcus/orc",
-      "humanoid/saurian",
-      "humanoid/troll",
-      "magical/eye",
-      "magical/jelly",
-      "mythical/beast/dragon",
-      "mythical/beast/hybrid",
-      "natural/animal/bird",
-      "natural/animal/herp/salamander",
-      "natural/animal/herp/snake",
-      "natural/animal/mammal/bat",
-      "natural/animal/mammal/canine",
-      "natural/animal/mammal/feline",
-      "natural/animal/mammal/rodent",
-      "natural/bug/fly",
-      "natural/bug/slug",
-      "natural/bug/spider",
-      "natural/bug/worm",
-      "natural/plant/vine",
-      "undead/skeleton",
-    ];
-    for (var group in groups) {
-      breeds.defineTags("monster/$group");
-    }
-
     // TODO: https://en.wikipedia.org/wiki/P%C3%BAca
     // TODO: https://en.wikipedia.org/wiki/Kelpie
     // TODO: https://en.wikipedia.org/wiki/The_Morr%C3%ADgan
