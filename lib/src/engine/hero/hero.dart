@@ -191,42 +191,40 @@ class Hero extends Actor {
 
   @override
   List<Hit> onCreateMeleeHits(Actor? defender) {
+    var attacks = <(Item?, Attack)>[];
+
+    // Use any equipped melee weapons.
+    for (var weapon in equipment.weapons) {
+      if (!weapon.attack!.isRanged) attacks.add((weapon, weapon.attack!));
+    }
+
+    // If there are none, punch.
+    if (attacks.isEmpty) {
+      attacks.add((null, Attack(this, 'punch[es]', Option.heroPunchDamage)));
+    }
+
     var hits = <Hit>[];
-
-    // See if any melee weapons are equipped.
-    var weapons = equipment.weapons.toList();
-    for (var i = 0; i < weapons.length; i++) {
-      var weapon = weapons[i];
-      if (weapon.attack!.isRanged) continue;
-
-      var hit = weapon.attack!.createHit();
-
-      weapon.modifyHit(hit);
-
-      // Take heft and strength into account.
-      hit.scaleDamage(_heftDamageScale.value);
+    for (var (weapon, attack) in attacks) {
+      var hit = attack.createHit();
       hits.add(hit);
-    }
 
-    // If not, punch it.
-    if (hits.isEmpty) {
-      hits.add(Attack(this, 'punch[es]', Option.heroPunchDamage).createHit());
-    }
-
-    for (var hit in hits) {
-      hit.addStrike(agility.strikeBonus);
+      hit.addStrike(agility.strikeBonus, 'agility');
 
       for (var skill in skills.acquired) {
-        skill.modifyAttack(
-          this,
-          defender as Monster?,
-          hit,
-          skills.level(skill),
-        );
+        var level = skills.level(skill);
+        skill.modifyHit(this, defender as Monster?, weapon, hit, level);
       }
 
       // Scale damage by fury.
-      hit.scaleDamage(strength.furyScale(fury));
+      hit.scaleDamage(strength.furyScale(fury), 'fury');
+
+      if (weapon != null) {
+        // Take heft and strength into account.
+        hit.scaleDamage(_heftDamageScale.value, 'heft');
+
+        // Let the weapon's affixes have an effect.
+        weapon.modifyHit(hit);
+      }
     }
 
     return hits;
@@ -240,7 +238,7 @@ class Hero extends Actor {
     var hit = weapons[i].attack!.createHit();
 
     // Take heft and strength into account.
-    hit.scaleDamage(_heftDamageScale.value);
+    hit.scaleDamage(_heftDamageScale.value, 'heft');
 
     modifyHit(hit, HitType.ranged);
     return hit;

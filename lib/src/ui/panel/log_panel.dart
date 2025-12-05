@@ -34,7 +34,7 @@ class LogPanel extends Panel {
         LogType.quest => purple,
         LogType.gain => gold,
         LogType.help => peaGreen,
-        LogType.cheat => aqua,
+        LogType.debug => aqua,
       };
 
       // Fade out all but the most recent message.

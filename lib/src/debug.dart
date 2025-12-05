@@ -11,6 +11,9 @@ import 'engine.dart';
 class Debug {
   static const enabled = true;
 
+  /// If true, logs details about combat statistics.
+  static const bool logCombat = false;
+
   /// If true, all monsters are rendered, regardless of in-game visibility.
   static bool showAllMonsters = false;
 

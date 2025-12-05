@@ -18,11 +18,18 @@ abstract class MasteryDiscipline extends Discipline {
   double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.0, 2.0);
 
   @override
-  void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {
-    if (!_hasWeapon(hero)) return;
+  void modifyHit(
+    Hero hero,
+    Monster? monster,
+    Item? weapon,
+    Hit hit,
+    int level,
+  ) {
+    // Only for weapons that this mastery applies to.
+    if (weapon == null || weapon.type.weaponType != weaponType) return;
 
     // TODO: Tune.
-    hit.scaleDamage(_damageScale(level));
+    hit.scaleDamage(_damageScale(level), 'mastery');
   }
 
   @override
@@ -91,7 +98,7 @@ abstract class MasteryAction extends Action {
       if (weapons[i].type.weaponType != weaponType) continue;
 
       var hit = hits[i];
-      hit.scaleDamage(damageScale);
+      hit.scaleDamage(damageScale, 'mastery');
       damage += hit.perform(this, actor, defender);
 
       if (!defender.isAlive) break;

@@ -50,7 +50,7 @@ class Archery extends Discipline with UsableSkill, TargetSkill {
   int getRange(Game game) {
     var hit = game.hero.createRangedHit();
     var level = game.hero.skills.level(this);
-    hit.scaleStrike(_strikeScale(level));
+    hit.scaleStrike(_strikeScale(level), 'archery');
     return hit.range;
   }
 

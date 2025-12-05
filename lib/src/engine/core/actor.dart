@@ -155,7 +155,7 @@ abstract class Actor implements Noun {
         HitType.melee => 0.5,
         HitType.ranged => 0.3,
         HitType.toss => 0.2,
-      });
+      }, 'blindness');
     }
 
     // Let the subclass also modify it.

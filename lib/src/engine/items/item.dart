@@ -155,9 +155,12 @@ class Item implements Comparable<Item>, Noun {
 
   /// Apply any affix modifications to hit.
   void modifyHit(Hit hit) {
-    hit.addStrike(strikeBonus);
-    hit.scaleDamage(damageScale);
-    hit.addDamage(damageBonus);
+    for (var affix in affixes) {
+      hit.addStrike(affix.strikeBonus, affix.itemName('_'));
+      hit.scaleDamage(affix.damageScale, affix.itemName('_'));
+      hit.addDamage(affix.damageBonus, affix.itemName('_'));
+    }
+
     hit.brand(element);
     // TODO: Range modifier.
   }

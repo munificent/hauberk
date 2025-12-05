@@ -42,12 +42,18 @@ class SlayDiscipline extends Discipline {
   }
 
   @override
-  void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {
+  void modifyHit(
+    Hero hero,
+    Monster? monster,
+    Item? weapon,
+    Hit hit,
+    int level,
+  ) {
     if (monster == null) return;
     if (!Monsters.breeds.hasTag(monster.breed.name, _breedGroup)) return;
 
     // TODO: Tune.
-    hit.scaleDamage(_damageScale(level));
+    hit.scaleDamage(_damageScale(level), 'slay skill');
   }
 
   @override

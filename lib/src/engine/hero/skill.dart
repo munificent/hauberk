@@ -5,6 +5,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
+import '../items/item.dart';
 import '../monster/breed.dart';
 import '../monster/monster.dart';
 import 'hero.dart';
@@ -61,10 +62,15 @@ abstract class Skill implements Comparable<Skill> {
   /// Called when the hero is dual-wielding two weapons.
   void dualWield(Hero hero) {}
 
-  // TODO: Rename to "modifyHit".
   /// Gives the skill a chance to modify the [hit] the [hero] is about to
-  /// perform on [monster].
-  void modifyAttack(Hero hero, Monster? monster, Hit hit, int level) {}
+  /// perform on [monster] when using [weapon].
+  void modifyHit(
+    Hero hero,
+    Monster? monster,
+    Item? weapon,
+    Hit hit,
+    int level,
+  ) {}
 
   /// Modifies the hero's base armor.
   int modifyArmor(HeroSave hero, int level, int armor) => armor;

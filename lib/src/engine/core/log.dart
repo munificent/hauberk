@@ -133,30 +133,30 @@ class Log {
   final messages = <Message>[];
 
   void message(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    add(LogType.message, message, noun1, noun2, noun3);
+    _add(LogType.message, message, noun1, noun2, noun3);
   }
 
   void error(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    add(LogType.error, message, noun1, noun2, noun3);
+    _add(LogType.error, message, noun1, noun2, noun3);
   }
 
   void quest(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    add(LogType.quest, message, noun1, noun2, noun3);
+    _add(LogType.quest, message, noun1, noun2, noun3);
   }
 
   void gain(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    add(LogType.gain, message, noun1, noun2, noun3);
+    _add(LogType.gain, message, noun1, noun2, noun3);
   }
 
   void help(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    add(LogType.help, message, noun1, noun2, noun3);
+    _add(LogType.help, message, noun1, noun2, noun3);
   }
 
-  void cheat(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    add(LogType.cheat, message, noun1, noun2, noun3);
+  void debug(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
+    _add(LogType.debug, message, noun1, noun2, noun3);
   }
 
-  void add(
+  void _add(
     LogType type,
     String message, [
     Noun? noun1,
@@ -377,8 +377,8 @@ enum LogType {
   /// Help or tutorial messages.
   help,
 
-  /// Help or tutorial messages.
-  cheat,
+  /// Internal debug messages for hacking on the game.
+  debug,
 }
 
 /// A single log entry.

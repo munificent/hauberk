@@ -49,7 +49,7 @@ class WhipMastery extends UsableMasteryDiscipline with TargetSkill {
       break;
     }
 
-    hit.scaleDamage(WhipMastery._whipScale(level));
+    hit.scaleDamage(WhipMastery._whipScale(level), 'whip mastery');
 
     // TODO: Better effect.
     return BoltAction(target, hit, range: getRange(game), canMiss: true);

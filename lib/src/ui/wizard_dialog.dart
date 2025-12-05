@@ -183,19 +183,19 @@ class WizardDialog extends Screen<Input> {
 
   void _toggleShowAllMonsters() {
     Debug.showAllMonsters = !Debug.showAllMonsters;
-    _game.log.cheat("Show all monsters = ${Debug.showAllMonsters}");
+    _game.log.debug("Show all monsters = ${Debug.showAllMonsters}");
     ui.pop();
   }
 
   void _toggleAlertness() {
     Debug.showMonsterAlertness = !Debug.showMonsterAlertness;
-    _game.log.cheat("Show monster alertness = ${Debug.showMonsterAlertness}");
+    _game.log.debug("Show monster alertness = ${Debug.showMonsterAlertness}");
     ui.pop();
   }
 
   void _toggleShowHeroVolume() {
     Debug.showHeroVolume = !Debug.showHeroVolume;
-    _game.log.cheat("Show hero volume = ${Debug.showHeroVolume}");
+    _game.log.debug("Show hero volume = ${Debug.showHeroVolume}");
     ui.pop();
   }
 }
@@ -350,7 +350,7 @@ class _WizardDropDialog extends _SearchDialog<ItemType> {
 
     var item = Item(itemType, itemType.maxStack);
     _game.stage.addItem(item, _game.hero.pos);
-    _game.log.cheat("Dropped {1}.", item);
+    _game.log.debug("Dropped {1}.", item);
   }
 }
 
@@ -410,7 +410,7 @@ class _WizardTrainDialog extends _SearchDialog<Discipline> {
       );
       _game.hero.refreshSkill(discipline);
     } else {
-      _game.log.cheat("Already at max level.");
+      _game.log.debug("Already at max level.");
     }
   }
 }
