@@ -27,21 +27,15 @@ class HeroSave {
   /// If `true`, then the hero is deleted from storage when they die.
   final bool permadeath;
 
-  var _inventory = Inventory(ItemLocation.inventory, Option.inventoryCapacity);
+  final Inventory inventory;
 
-  Inventory get inventory => _inventory;
-
-  var _equipment = Equipment();
-
-  Equipment get equipment => _equipment;
+  final Equipment equipment;
 
   /// Items in the hero's home.
-  Inventory get home => _home;
-  var _home = Inventory(ItemLocation.home, Option.homeCapacity);
+  final Inventory home;
 
   /// Items in the hero's crucible.
-  Inventory get crucible => _crucible;
-  var _crucible = Inventory(ItemLocation.crucible, Option.crucibleCapacity);
+  final Inventory crucible;
 
   /// The current inventories of all the shops.
   final Map<Shop, Inventory> shops;
@@ -104,7 +98,11 @@ class HeroSave {
     this.race,
     this.heroClass, {
     this.permadeath = false,
-  }) : shops = {},
+  }) : inventory = Inventory(ItemLocation.inventory, Option.inventoryCapacity),
+       equipment = Equipment(),
+       home = Inventory(ItemLocation.home, Option.homeCapacity),
+       crucible = Inventory(ItemLocation.crucible, Option.crucibleCapacity),
+       shops = {},
        skills = SkillSet(),
        log = Log(),
        lore = Lore() {
@@ -120,10 +118,10 @@ class HeroSave {
     this.race,
     this.heroClass,
     this.permadeath,
-    this._inventory,
-    this._equipment,
-    this._home,
-    this._crucible,
+    this.inventory,
+    this.equipment,
+    this.home,
+    this.crucible,
     this.shops,
     this.experience,
     this.skills,
