@@ -115,26 +115,15 @@ class Storage {
         var experience = heroData['experience'] as int;
 
         var levels = <Skill, int>{};
-        var points = <Skill, int>{};
         var skills = heroData['skills'] as Map<String, dynamic>?;
         if (skills != null) {
           for (var name in skills.keys) {
             var skill = content.findSkill(name);
-            // Handle old storage without points.
-            // TODO: Remove when no longer needed.
-            var skillData = skills[name];
-            if (skillData is int) {
-              levels[skill] = skillData;
-              points[skill] = 0;
-            } else {
-              skillData as Map<String, dynamic>;
-              levels[skill] = skillData['level'] as int;
-              points[skill] = skillData['points'] as int;
-            }
+            levels[skill] = skills[name] as int;
           }
         }
 
-        var skillSet = SkillSet.from(levels, points);
+        var skillSet = SkillSet.from(levels);
 
         var log = _loadLog(heroData['log']);
         var lore = _loadLore(heroData['lore'] as Map<String, dynamic>);
@@ -330,11 +319,8 @@ class Storage {
             },
             'experience': hero.experience,
             'skills': {
-              for (var skill in hero.skills.discovered)
-                skill.name: {
-                  'level': hero.skills.level(skill),
-                  'points': hero.skills.points(skill),
-                },
+              for (var skill in hero.skills.acquired)
+                skill.name: hero.skills.level(skill),
             },
             'log': _saveLog(hero.log),
             'lore': _saveLore(hero.lore),

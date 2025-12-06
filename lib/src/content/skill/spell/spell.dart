@@ -11,9 +11,6 @@ abstract class Spell extends Skill with UsableSkill {
   String gainMessage(int level) => '{1} have learned the spell $name.';
 
   @override
-  String get discoverMessage => '{1} are not wise enough to cast $name.';
-
-  @override
   String levelDescription(int level) =>
       'TODO: Implement Spell.levelDescription().';
 
@@ -33,14 +30,6 @@ abstract class Spell extends Skill with UsableSkill {
 
   /// The range of the spell, or 0 if not relevant.
   int get range => 0;
-
-  @override
-  int onCalculateLevel(HeroSave hero, int points) {
-    if (hero.heroClass.proficiency(this) == 0.0) return 0;
-
-    // If the hero has enough intellect, they have it.
-    return hero.intellect.value >= complexity(hero.heroClass) ? 1 : 0;
-  }
 
   @override
   int focusCost(HeroSave hero, int level) {

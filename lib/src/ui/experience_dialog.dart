@@ -32,10 +32,15 @@ class ExperienceDialog extends Screen<Input> {
 
   bool get _canRaise {
     if (_selectedStat case var stat?) {
+      if (stat.baseValue == Stat.baseMax) return false;
       var cost = stat.experienceCost(_hero);
       return cost != null && _hero.experience >= cost;
+    } else if (_selectedSkill case var skill?) {
+      var level = _hero.skills.level(skill);
+      if (level == skill.maxLevel) return false;
+      var cost = skill.experienceCost(_hero, level + 1);
+      return cost != null && _hero.experience >= cost;
     } else {
-      // TODO: Implement leveling skills.
       return false;
     }
   }
@@ -72,8 +77,12 @@ class ExperienceDialog extends Screen<Input> {
           if (_selectedStat case var stat?) {
             _hero.experience -= stat.experienceCost(_hero)!;
             stat.refresh(_hero, stat.baseValue + 1);
-          } else {
-            // TODO: Implement raising skill levels.
+            // TODO: Need to refresh properties here?
+          } else if (_selectedSkill case var skill?) {
+            var level = _hero.skills.level(skill);
+            _hero.experience -= skill.experienceCost(_hero, level + 1)!;
+            _hero.skills.setLevel(skill, level + 1);
+            // TODO: Need to refresh properties here?
           }
           dirty();
         }
@@ -143,8 +152,6 @@ class ExperienceDialog extends Screen<Input> {
   void _drawStatsList(Terminal terminal) {
     Draw.frame(terminal, label: 'Stats');
 
-    var separator = "──────────────────────── ─── ────────";
-
     // Current value and cost to increment?
     terminal.writeAt(27, 1, "Val     Cost", UIHue.helpText);
 
@@ -157,32 +164,14 @@ class ExperienceDialog extends Screen<Input> {
 
     var i = 0;
     for (var stat in stats) {
-      var y = i * 2 + 3;
-      terminal.writeAt(
-        2,
-        y - 1,
-        separator,
-        stat == stats.first ? darkCoolGray : darkerCoolGray,
+      _writeRow(
+        terminal,
+        i,
+        stat.name,
+        level: stat.value,
+        cost: stat.experienceCost(_hero),
+        selected: i == _selectedIndex,
       );
-
-      var color = UIHue.primary;
-      if (i == _selectedIndex) {
-        color = UIHue.selection;
-      }
-
-      terminal.writeAt(2, y, stat.name, color);
-      terminal.writeAt(27, y, stat.value.toString().padLeft(3), color);
-      if (stat.experienceCost(_hero) case var cost?) {
-        terminal.writeAt(
-          31,
-          y,
-          cost.toString().padLeft(8),
-          cost <= _hero.experience ? color : UIHue.disabled,
-        );
-      } else {
-        terminal.writeAt(31, y, '(at max)', UIHue.disabled);
-      }
-
       i++;
     }
   }
@@ -190,40 +179,54 @@ class ExperienceDialog extends Screen<Input> {
   void _drawSkillsList(Terminal terminal) {
     Draw.frame(terminal, label: 'Skills');
 
-    var separator = "──────────────────────── ─── ────────";
-
     // Current value and cost to increment?
     terminal.writeAt(27, 1, "Lvl     Cost", UIHue.helpText);
 
     var i = 0;
     for (var skill in _content.skills) {
-      var y = i * 2 + 3;
-      terminal.writeAt(
-        2,
-        y - 1,
-        separator,
-        i == 0 ? darkCoolGray : darkerCoolGray,
+      var level = _hero.skills.level(skill);
+      _writeRow(
+        terminal,
+        i,
+        skill.name,
+        level: level,
+        cost: skill.experienceCost(_hero, level + 1),
+        selected: i == _selectedIndex - Stat.values.length,
       );
 
-      var nameColor = UIHue.primary;
-      var detailColor = UIHue.text;
-      if (i == _selectedIndex - Stat.values.length) {
-        nameColor = UIHue.selection;
-        detailColor = UIHue.selection;
-      }
+      i++;
+    }
+  }
 
-      terminal.writeAt(2, y, skill.name, nameColor);
-      var level = _hero.skills.level(skill);
-      terminal.writeAt(27, y, level.toString().padLeft(3), detailColor);
-      var cost = skill.experienceCost(_hero, level + 1);
+  void _writeRow(
+    Terminal terminal,
+    int i,
+    String name, {
+    required int level,
+    required int? cost,
+    required bool selected,
+  }) {
+    var y = i * 2 + 3;
+
+    terminal.writeAt(
+      2,
+      y - 1,
+      "──────────────────────── ─── ────────",
+      i == 0 ? darkCoolGray : darkerCoolGray,
+    );
+
+    var color = selected ? UIHue.selection : UIHue.primary;
+    terminal.writeAt(2, y, name, color);
+    terminal.writeAt(27, y, level.toString().padLeft(3), color);
+    if (cost != null) {
       terminal.writeAt(
         31,
         y,
         cost.toString().padLeft(8),
-        cost <= _hero.experience ? detailColor : UIHue.disabled,
+        cost <= _hero.experience ? color : UIHue.disabled,
       );
-
-      i++;
+    } else {
+      terminal.writeAt(31, y, ' (Maxed)', UIHue.disabled);
     }
   }
 

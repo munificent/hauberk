@@ -41,29 +41,6 @@ abstract class MasteryDiscipline extends Discipline {
 
   bool _hasWeapon(Hero hero) =>
       hero.equipment.weapons.any((item) => item.type.weaponType == weaponType);
-
-  @override
-  void killMonster(Hero hero, Action action, Monster monster) {
-    // Have to have killed the monster by hitting it.
-    if (action is! AttackAction) return;
-
-    if (!_hasWeapon(hero)) return;
-
-    hero.skills.earnPoints(this, (monster.experience / 100).ceil());
-    hero.refreshSkill(this);
-  }
-
-  @override
-  int baseTrainingNeeded(int level) {
-    if (level == 0) return 0;
-
-    // Get the mastery and unlock the action as soon as it's first used.
-    if (level == 1) return 1;
-
-    // TODO: Tune.
-    level--;
-    return 100 * level * level * level;
-  }
 }
 
 abstract class UsableMasteryDiscipline extends MasteryDiscipline

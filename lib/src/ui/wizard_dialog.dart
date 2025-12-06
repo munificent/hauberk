@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
-import '../content.dart';
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
@@ -30,7 +29,6 @@ class WizardDialog extends Screen<Input> {
       ("d", KeyCode.d, "Drop Item", _dropItem),
       ("s", KeyCode.s, "Spawn Monster", _spawnMonster),
       ("x", KeyCode.x, "Gain Experience", _gainExperience),
-      ("t", KeyCode.t, "Train Discipline", _trainDiscipline),
       ("k", KeyCode.k, "Kill All Monsters", _killAllMonsters),
       ("o", KeyCode.o, "Toggle Show All Monsters", _toggleShowAllMonsters),
       ("a", KeyCode.a, "Toggle Show Monster Alertness", _toggleAlertness),
@@ -160,11 +158,6 @@ class WizardDialog extends Screen<Input> {
     _game.hero.experience += 10000;
     _game.hero.refreshProperties();
     dirty();
-  }
-
-  void _trainDiscipline() {
-    _isActive = false;
-    ui.push(_WizardTrainDialog(_game));
   }
 
   void _killAllMonsters() {
@@ -377,40 +370,5 @@ class _WizardSpawnDialog extends _SearchDialog<Breed> {
 
     var monster = breed.spawn(pos);
     _game.stage.addActor(monster);
-  }
-}
-
-class _WizardTrainDialog extends _SearchDialog<Discipline> {
-  _WizardTrainDialog(super.game);
-
-  @override
-  String get _question => "Train which discipline?";
-
-  @override
-  Iterable<Discipline> get _allItems =>
-      _game.content.skills.whereType<Discipline>();
-
-  @override
-  String _itemName(Discipline discipline) => discipline.name;
-
-  @override
-  Object? _itemAppearance(Discipline discipline) => null;
-
-  @override
-  void _selectItem(Discipline discipline) {
-    var level = _game.hero.skills.level(discipline);
-    if (level + 1 < discipline.maxLevel) {
-      var training = discipline.trainingNeeded(
-        _game.hero.save.heroClass,
-        level + 1,
-      )!;
-      _game.hero.skills.earnPoints(
-        discipline,
-        training - _game.hero.skills.points(discipline),
-      );
-      _game.hero.refreshSkill(discipline);
-    } else {
-      _game.log.debug("Already at max level.");
-    }
   }
 }

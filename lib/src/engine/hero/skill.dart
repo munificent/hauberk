@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -33,34 +31,18 @@ abstract class Skill implements Comparable<Skill> {
   /// Message displayed when the hero reaches [level] in the skill.
   String gainMessage(int level);
 
-  /// Message displayed when the hero first discovers this skill.
-  String get discoverMessage;
-
   int get maxLevel;
-
-  /// Determines what level [hero] has in this skill.
-  int calculateLevel(HeroSave hero) =>
-      onCalculateLevel(hero, hero.skills.points(this));
-
-  int onCalculateLevel(HeroSave hero, int points);
 
   String levelDescription(int level);
 
   /// The amount of experience to increase the skill to [level] from the
-  /// previous level.
-  int experienceCost(HeroSave hero, int level) {
-    // TODO: Implement.
+  /// previous level or `null` if it can't be raised to that level.
+  int? experienceCost(HeroSave hero, int level) {
+    if (level > maxLevel) return null;
+
+    // TODO: Implement for real.
     return 1234;
   }
-
-  /// Called when the hero takes damage.
-  void takeDamage(Hero hero, int damage) {}
-
-  /// Called when the hero kills [monster].
-  void killMonster(Hero hero, Action action, Monster monster) {}
-
-  /// Called when the hero is dual-wielding two weapons.
-  void dualWield(Hero hero) {}
 
   /// Gives the skill a chance to modify the [hit] the [hero] is about to
   /// perform on [monster] when using [weapon].
@@ -81,10 +63,6 @@ abstract class Skill implements Comparable<Skill> {
   /// Gives the skill a chance to adjust the [heftModifier] applied to the base
   /// heft of a weapon.
   double modifyHeft(Hero hero, int level, double heftModifier) => heftModifier;
-
-  /// Gives the skill a chance to modify the hit the hero is about to receive.
-  // TODO: Not currently used.
-  //  void modifyDefense(Hit hit) {}
 
   @override
   int compareTo(Skill other) => _sortOrder.compareTo(other._sortOrder);
@@ -162,6 +140,7 @@ mixin DirectionSkill implements UsableSkill {
   Action onGetDirectionAction(Game game, int level, Direction dir);
 }
 
+// TODO: Remove this class?
 /// A collection of [Skill]s and the hero's progress in them.
 class SkillSet {
   /// The levels the hero has gained in each skill.
@@ -171,67 +150,20 @@ class SkillSet {
   /// not discovered it.
   final Map<Skill, int> _levels;
 
-  /// How many points the hero has earned towards the next level of each skill.
-  final Map<Skill, int> _points;
+  SkillSet() : _levels = {};
 
-  SkillSet() : _levels = {}, _points = {};
+  SkillSet.from(this._levels);
 
-  SkillSet.from(this._levels, this._points);
-
-  /// All the skills the hero knows about.
-  Iterable<Skill> get discovered => _levels.keys.toList()..sort();
-
-  /// All the skills the hero actually has.
-  Iterable<Skill> get acquired =>
-      _levels.keys.where((skill) => _levels[skill]! > 0);
+  /// All the skills the hero has at least one level in.
+  Iterable<Skill> get acquired => _levels.keys;
 
   /// Gets the current level of [skill] or 0 if the skill isn't known.
   int level(Skill skill) => _levels[skill] ?? 0;
 
-  /// Gets the current points in [skill] or 0 if the skill isn't known.
-  int points(Skill skill) => _points[skill] ?? 0;
-
-  void earnPoints(Skill skill, int points) {
-    points += this.points(skill);
-    _points[skill] = points;
-  }
-
-  /// Learns that [skill] exists.
-  ///
-  /// Returns `true` if the hero wasn't already aware of this skill.
-  bool discover(Skill skill) {
-    if (_levels.containsKey(skill)) return false;
-
-    _levels[skill] = 0;
-    return true;
-  }
-
-  bool gain(Skill skill, int level) {
-    level = math.min(level, skill.maxLevel);
-
-    if (_levels[skill] == level) return false;
-
-    // Don't discover the skill if not already known.
-    if (level == 0 && !_levels.containsKey(skill)) return false;
-
+  void setLevel(Skill skill, int level) {
+    assert(level > 0 && level <= skill.maxLevel);
     _levels[skill] = level;
-    return true;
   }
 
-  /// Whether the hero is aware of the existence of this skill.
-  bool isDiscovered(Skill skill) => _levels.containsKey(skill);
-
-  /// Whether the hero knows of and has learned this skill.
-  bool isAcquired(Skill skill) =>
-      _levels.containsKey(skill) && _levels[skill]! > 0;
-
-  SkillSet clone() => SkillSet.from(Map.from(_levels), Map.from(_points));
-
-  void update(SkillSet other) {
-    _levels.clear();
-    _levels.addAll(other._levels);
-
-    _points.clear();
-    _points.addAll(other._points);
-  }
+  SkillSet clone() => SkillSet.from({..._levels});
 }

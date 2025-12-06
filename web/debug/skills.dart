@@ -63,11 +63,12 @@ void main() {
     builder.td(skill.name);
     for (var intellect = 1; intellect <= Stat.modifiedMax; intellect++) {
       hero.intellect.update(intellect, (_) {});
-      if (skill.calculateLevel(hero) > 0) {
-        builder.td(skill.focusCost(hero, 1));
-      } else {
-        builder.td('&mdash;', right: true);
-      }
+      // TODO: Get this working again.
+      // if (skill.calculateLevel(hero) > 0) {
+      //   builder.td(skill.focusCost(hero, 1));
+      // } else {
+      builder.td('&mdash;', right: true);
+      // }
     }
 
     builder.trEnd();

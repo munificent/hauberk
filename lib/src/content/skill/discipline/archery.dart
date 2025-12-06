@@ -33,15 +33,6 @@ class Archery extends Discipline with UsableSkill, TargetSkill {
   bool _hasBow(Hero hero) =>
       hero.equipment.weapons.any((item) => item.type.weaponType == "bow");
 
-  // TODO: Tune.
-  @override
-  int baseTrainingNeeded(int level) {
-    // Reach level 1 immediately so that the hero can begin using the bow.
-    level--;
-
-    return 100 * level * level * level;
-  }
-
   /// Focus cost goes down with level.
   @override
   int focusCost(HeroSave hero, int level) => 21 - level;
@@ -57,25 +48,6 @@ class Archery extends Discipline with UsableSkill, TargetSkill {
   @override
   Action onGetTargetAction(Game game, int level, Vec target) {
     var hit = game.hero.createRangedHit();
-    return ArrowAction(this, target, hit);
-  }
-}
-
-/// Fires a bolt, a straight line of an elemental attack that stops at the
-/// first [Actor] is hits or opaque tile.
-class ArrowAction extends BoltAction {
-  final Archery _skill;
-
-  ArrowAction(this._skill, Vec target, Hit hit)
-    : super(target, hit, canMiss: true);
-
-  @override
-  bool onHitActor(Vec pos, Actor target) {
-    super.onHitActor(pos, target);
-
-    var monster = target as Monster;
-    hero.skills.earnPoints(_skill, (monster.experience / 1000).ceil());
-    hero.refreshSkill(_skill);
-    return true;
+    return BoltAction(target, hit, canMiss: true);
   }
 }

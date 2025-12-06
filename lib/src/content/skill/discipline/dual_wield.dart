@@ -22,19 +22,6 @@ class DualWield extends Discipline {
       "${(_heftModifier(level) * 100).toInt()}%.";
 
   @override
-  int baseTrainingNeeded(int level) {
-    // As soon as it's discovered, reach level 1.
-    level--;
-
-    return 100 * level * level * level;
-  }
-
-  @override
-  void dualWield(Hero hero) {
-    hero.discoverSkill(this);
-  }
-
-  @override
   double modifyHeft(Hero hero, int level, double heftModifier) {
     // Have to be dual-wielding.
     if (hero.equipment.weapons.length == 2) {
@@ -42,17 +29,5 @@ class DualWield extends Discipline {
     }
 
     return heftModifier;
-  }
-
-  @override
-  void killMonster(Hero hero, Action action, Monster monster) {
-    // Have to have killed the monster by hitting it.
-    if (action is! AttackAction) return;
-
-    // Have to be dual-wielding.
-    if (hero.equipment.weapons.length != 2) return;
-
-    hero.skills.earnPoints(this, (monster.experience / 100).ceil());
-    hero.refreshSkill(this);
   }
 }

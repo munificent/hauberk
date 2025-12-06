@@ -120,6 +120,8 @@ class ItemType {
   /// burning tile.
   final int fuel;
 
+  // TODO: Remove if I decide that spellbooks don't discover spells and weapons
+  // don't discover masteries.
   /// The [Skill]s discovered when picking up an item of this type.
   final List<Skill> skills = [];
 

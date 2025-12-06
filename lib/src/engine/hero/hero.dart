@@ -103,10 +103,7 @@ class Hero extends Actor {
   @override
   int get emanationLevel => save.emanationLevel;
 
-  /// All [Skill]s in the game.
-  final Iterable<Skill> _allSkills;
-
-  Hero(Vec pos, this.save, this._allSkills) : super(pos.x, pos.y) {
+  Hero(Vec pos, this.save) : super(pos.x, pos.y) {
     // Give the hero energy so they can act before all of the monsters.
     energy.energy = Energy.actionCost;
 
@@ -146,24 +143,6 @@ class Hero extends Actor {
     this.skills.update(skills);
   }
   */
-
-  // TODO: The set of skills discovered from items should probably be stored in
-  // lore. Then the skill levels can be stored using Property and refreshed
-  // like other properties.
-  /// Discover or acquire any skills associated with [item].
-  void _gainItemSkills(Game game, Item item) {
-    for (var skill in item.type.skills) {
-      if (save.heroClass.proficiency(skill) != 0.0 && skills.discover(skill)) {
-        // See if the hero can immediately use it.
-        var level = skill.calculateLevel(save);
-        if (skills.gain(skill, level)) {
-          game.log.gain(skill.gainMessage(level), this);
-        } else {
-          game.log.gain(skill.discoverMessage, this);
-        }
-      }
-    }
-  }
 
   @override
   int get baseSpeed => Energy.normalSpeed;
@@ -283,15 +262,6 @@ class Hero extends Actor {
   }
 
   @override
-  void onTakeDamage(Action action, Actor? attacker, int damage) {
-    // TODO: Would be better to do skills.discovered, but right now this also
-    // discovers BattleHardening.
-    for (var skill in _allSkills) {
-      skill.takeDamage(this, damage);
-    }
-  }
-
-  @override
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
 
@@ -302,10 +272,6 @@ class Hero extends Actor {
     if (!_seenMonsters.contains(monster)) return;
 
     lore.slay(monster.breed);
-
-    for (var skill in skills.discovered) {
-      skill.killMonster(this, action, monster);
-    }
 
     experience += monster.experience;
     refreshProperties();
@@ -424,17 +390,6 @@ class Hero extends Actor {
     intellect.refresh(save);
 
     // Refresh the heft scales.
-    var weapons = equipment.weapons.toList();
-
-    if (weapons.length > 1) {
-      // Discover the dual-wield skill.
-      // TODO: This is a really specific method to put on Skill. Is there a
-      // cleaner way to handle this?
-      for (var skill in _allSkills) {
-        skill.dualWield(this);
-      }
-    }
-
     var heftModifier = 1.0;
     for (var skill in skills.acquired) {
       heftModifier = skill.modifyHeft(this, skills.level(skill), heftModifier);
@@ -443,7 +398,8 @@ class Hero extends Actor {
     // When dual-wielding, it's as if each weapon has an individual heft that
     // is the total of both of them.
     var totalHeft = 0;
-    for (var weapon in weapons) {
+    var weapons = equipment.weapons.toList();
+    for (var weapon in equipment.weapons) {
       totalHeft += weapon.heft;
     }
 
@@ -457,9 +413,6 @@ class Hero extends Actor {
         save.log.message("You feel comfortable wielding $weaponList.");
       }
     });
-
-    // See if any skills changed. (Gaining intellect learns spells.)
-    _refreshSkills();
 
     // Keep other stats in bounds.
     health = health.clamp(0, maxHealth);
@@ -476,30 +429,6 @@ class Hero extends Actor {
     // counted every time. Maybe want to put a (serialized) flag on items for
     // whether they have been picked up or not.
     lore.findItem(item);
-
-    _gainItemSkills(game, item);
     refreshProperties();
-  }
-
-  /// See if any known skills have leveled up.
-  void _refreshSkills() {
-    skills.discovered.forEach(refreshSkill);
-  }
-
-  /// Ensures the hero has discovered [skill] and logs if it is the first time
-  /// it's been seen.
-  void discoverSkill(Skill skill) {
-    if (save.heroClass.proficiency(skill) == 0.0) return;
-
-    if (!skills.discover(skill)) return;
-
-    save.log.gain(skill.discoverMessage, this);
-  }
-
-  void refreshSkill(Skill skill) {
-    var level = skill.calculateLevel(save);
-    if (skills.gain(skill, level)) {
-      save.log.gain(skill.gainMessage(level), this);
-    }
   }
 }

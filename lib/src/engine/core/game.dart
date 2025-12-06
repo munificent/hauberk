@@ -51,7 +51,7 @@ class Game {
   final Hero hero;
 
   Game(this.content, this.depth, HeroSave save, {int? width, int? height})
-    : hero = Hero(Vec.zero, save, content.skills) {
+    : hero = Hero(Vec.zero, save) {
     // TODO: Vary size?
     _stage = Stage(width ?? 120, height ?? 80, this);
 

@@ -7,13 +7,14 @@ import '../hues.dart';
 import 'draw.dart';
 import 'input.dart';
 
+// TODO: Merge this with ExperienceDialog.
 // TODO: Get working with resizable UI.
 abstract class SkillDialog extends Screen<Input> {
   // TODO: Make this a getter instead of a field.
   late final SkillDialog _nextScreen;
 
-  factory SkillDialog(HeroSave hero) {
-    var screens = [DisciplineDialog(hero), SpellDialog(hero)];
+  factory SkillDialog(Content content, HeroSave hero) {
+    var screens = [DisciplineDialog(content, hero), SpellDialog(content, hero)];
 
     for (var i = 0; i < screens.length; i++) {
       screens[i]._nextScreen = screens[(i + 1) % screens.length];
@@ -28,13 +29,14 @@ abstract class SkillDialog extends Screen<Input> {
 }
 
 abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
+  final Content _content;
   final HeroSave _hero;
   final List<T> _skills = [];
 
   int _selectedSkill = 0;
 
-  SkillTypeDialog(this._hero) : super._() {
-    for (var skill in _hero.skills.discovered) {
+  SkillTypeDialog(this._content, this._hero) : super._() {
+    for (var skill in _content.skills) {
       if (skill is T) _skills.add(skill);
     }
   }
@@ -123,7 +125,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
       if (i == _selectedSkill) {
         nameColor = UIHue.selection;
         detailColor = UIHue.selection;
-      } else if (!_skillSet.isAcquired(skill)) {
+      } else if (_skillSet.level(skill) == 0) {
         nameColor = UIHue.disabled;
         detailColor = UIHue.disabled;
       }
@@ -177,7 +179,7 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 }
 
 class DisciplineDialog extends SkillTypeDialog<Discipline> {
-  DisciplineDialog(super.hero);
+  DisciplineDialog(super.content, super.hero);
 
   @override
   String get _name => "Disciplines";
@@ -200,13 +202,13 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     var level = _skillSet.level(skill).toString().padLeft(3);
     terminal.writeAt(31, y, level, color);
 
-    var percent = skill.percentUntilNext(_hero);
-    terminal.writeAt(
-      35,
-      y,
-      percent == null ? "  --" : "$percent%".padLeft(4),
-      color,
-    );
+    // var percent = skill.percentUntilNext(_hero);
+    // terminal.writeAt(
+    //   35,
+    //   y,
+    //   percent == null ? "  --" : "$percent%".padLeft(4),
+    //   color,
+    // );
   }
 
   @override
@@ -235,27 +237,6 @@ class DisciplineDialog extends SkillTypeDialog<Discipline> {
     terminal.writeAt(1, 30, "Level:", UIHue.secondary);
     terminal.writeAt(9, 30, level.toString().padLeft(4), UIHue.text);
     Draw.meter(terminal, 14, 30, 25, level, skill.maxLevel, red, maroon);
-
-    terminal.writeAt(1, 32, "Next:", UIHue.secondary);
-    var percent = skill.percentUntilNext(_hero);
-    if (percent != null) {
-      var points = _hero.skills.points(skill);
-      var current = skill.trainingNeeded(_hero.heroClass, level)!;
-      var next = skill.trainingNeeded(_hero.heroClass, level + 1)!;
-      terminal.writeAt(9, 32, "$percent%".padLeft(4), UIHue.text);
-      Draw.meter(
-        terminal,
-        14,
-        32,
-        25,
-        points - current,
-        next - current,
-        red,
-        maroon,
-      );
-    } else {
-      terminal.writeAt(14, 32, "(At max level.)", UIHue.disabled);
-    }
   }
 }
 
@@ -266,7 +247,7 @@ class SpellDialog extends SkillTypeDialog<Spell> {
   @override
   String get _rowSeparator => "──────────────────────────────── ────";
 
-  SpellDialog(super.hero);
+  SpellDialog(super.content, super.hero);
 
   @override
   void _renderSkillListHeader(Terminal terminal) {
@@ -286,7 +267,7 @@ class SpellDialog extends SkillTypeDialog<Spell> {
   @override
   void _renderSkillDetails(Terminal terminal, Spell skill) {
     terminal.writeAt(1, 30, "Complexity:", UIHue.secondary);
-    if (_hero.skills.isAcquired(skill)) {
+    if (_hero.skills.level(skill) > 0) {
       terminal.writeAt(
         13,
         30,
