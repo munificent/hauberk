@@ -52,7 +52,7 @@ void renderItems(
       if (price != null) {
         statRight = math.min(
           statRight,
-          left + width - formatMoney(price).length - 3,
+          left + width - formatNumber(price).length - 3,
         );
       }
     }
@@ -134,7 +134,7 @@ void renderItems(
 
     var nameRight = left + width - 1;
     if (showPrices && getPrice(item) != null) {
-      var price = formatMoney(getPrice(item)!);
+      var price = formatNumber(getPrice(item)!);
       var priceLeft = left + width - 1 - price.length - 1;
       terminal.writeAt(priceLeft, y, "\$", enabled ? tan : UIHue.disabled);
       terminal.writeAt(
@@ -211,21 +211,21 @@ bool _defaultCanSelect(Item item) => false;
 int? _defaultGetPrice(Item item) => item.price;
 
 // TODO: Move this elsewhere?
-String formatMoney(int price) {
-  var result = price.toString();
-  if (price > 999999999) {
+String formatNumber(int value) {
+  var result = value.toString();
+  if (value > 999999999) {
     result =
         "${result.substring(0, result.length - 9)},"
         "${result.substring(result.length - 9)}";
   }
 
-  if (price > 999999) {
+  if (value > 999999) {
     result =
         "${result.substring(0, result.length - 6)},"
         "${result.substring(result.length - 6)}";
   }
 
-  if (price > 999) {
+  if (value > 999) {
     result =
         "${result.substring(0, result.length - 3)},"
         "${result.substring(result.length - 3)}";

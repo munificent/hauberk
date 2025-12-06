@@ -94,7 +94,10 @@ class Shops {
     });
 
     shop("The Droll Magery", {
+      // TODO: No spellbooks for now.
+      /*
       "Spellbook \"Elemental Primer\"": 1.0,
+      */
       "Scroll of Sidestepping": 1.0,
       "Scroll of Phasing": 1.0,
       "Scroll of Item Detection": 1.0,

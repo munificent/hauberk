@@ -583,7 +583,7 @@ class _CountScreen extends TownScreen {
     var itemText = _item.clone(_count).toString();
     var price = _parent._itemPrice(_item);
     if (price != null) {
-      var priceString = formatMoney(price * _count);
+      var priceString = formatNumber(price * _count);
       return "${_parent._verb} $itemText for $priceString gold?";
     } else {
       return "${_parent._verb} $itemText?";

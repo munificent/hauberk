@@ -9,16 +9,16 @@ import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
-class SelectSkillDialog extends Screen<Input> {
+class AbilityDialog extends Screen<Input> {
   final GameScreen _gameScreen;
-  final List<UsableSkill> _skills = [];
+  final List<Ability> _abilities = [];
 
   @override
   bool get isTransparent => true;
 
-  SelectSkillDialog(this._gameScreen) {
+  AbilityDialog(this._gameScreen) {
     for (var skill in _gameScreen.game.hero.skills.acquired) {
-      if (skill is UsableSkill) _skills.add(skill);
+      if (skill.ability case var ability?) _abilities.add(ability);
     }
   }
 
@@ -37,7 +37,7 @@ class SelectSkillDialog extends Screen<Input> {
     if (shift || alt) return false;
 
     if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
-      _useSkill(keyCode - KeyCode.a);
+      _useAbility(keyCode - KeyCode.a);
       return true;
     }
 
@@ -45,17 +45,17 @@ class SelectSkillDialog extends Screen<Input> {
     return false;
   }
 
-  void _useSkill(int index) {
-    if (index >= _skills.length) return;
-    if (_skills[index].unusableReason(_gameScreen.game) != null) return;
+  void _useAbility(int index) {
+    if (index >= _abilities.length) return;
+    if (_abilities[index].unusableReason(_gameScreen.game) != null) return;
 
-    ui.pop(_skills[index]);
+    ui.pop(_abilities[index]);
   }
 
   @override
   void render(Terminal terminal) {
     Draw.helpKeys(terminal, {
-      "A-Z": "Select skill",
+      "A-Z": "Select ability",
       // "1-9": "Bind quick key",
       "`": "Exit",
     });
@@ -79,35 +79,39 @@ class SelectSkillDialog extends Screen<Input> {
     }
 
     // Draw a box for the contents.
-    var height = math.max(_skills.length + 2, 3);
+    var height = math.max(_abilities.length + 2, 3);
 
     Draw.frame(
       terminal,
       height: height,
       color: UIHue.selection,
-      label: "Use which skill?",
+      label: "Use which ability?",
       labelSelected: true,
     );
 
     terminal = terminal.rect(1, 1, terminal.width - 2, terminal.height - 2);
 
-    if (_skills.isEmpty) {
-      terminal.writeAt(0, 0, "(You don't have any skills yet)", UIHue.disabled);
+    if (_abilities.isEmpty) {
+      terminal.writeAt(
+        0,
+        0,
+        "(You don't have any abilities yet.)",
+        UIHue.disabled,
+      );
       return;
     }
 
     // TODO: Handle this being taller than the screen.
-    for (var y = 0; y < _skills.length; y++) {
-      var skill = _skills[y];
-
-      if (skill.unusableReason(_gameScreen.game) case var reason?) {
+    for (var y = 0; y < _abilities.length; y++) {
+      var ability = _abilities[y];
+      if (ability.unusableReason(_gameScreen.game) case var reason?) {
         terminal.writeAt(
           terminal.width - reason.length - 2,
           y,
           "($reason)",
           UIHue.disabled,
         );
-        terminal.writeAt(3, y, skill.useName, UIHue.disabled);
+        terminal.writeAt(3, y, ability.name, UIHue.disabled);
       } else {
         terminal.writeAt(0, y, " )   ", UIHue.disabled);
         terminal.writeAt(
@@ -116,7 +120,7 @@ class SelectSkillDialog extends Screen<Input> {
           "abcdefghijklmnopqrstuvwxyz"[y],
           UIHue.selection,
         );
-        terminal.writeAt(3, y, skill.useName, UIHue.primary);
+        terminal.writeAt(3, y, ability.name, UIHue.primary);
       }
     }
   }

@@ -3,16 +3,13 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class SpearMastery extends UsableMasterySkill with DirectionSkill {
+class SpearMastery extends MasterySkill {
   // TODO: Tune.
   static double _spearScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
   @override
   String get name => "Spear Mastery";
-
-  @override
-  String get useName => "Spear Attack";
 
   @override
   String get description =>
@@ -22,26 +19,44 @@ class SpearMastery extends UsableMasterySkill with DirectionSkill {
   @override
   String get weaponType => "spear";
 
+  // TODO: Having to make this late to plumb the skill through is gross.
+  @override
+  late final Ability ability = SpearStabAbility(this);
+
   @override
   String levelDescription(int level) {
     var damage = (_spearScale(level) * 100).toInt();
     return "${super.levelDescription(level)} Distance spear attacks inflict "
         "$damage% of the damage of a regular attack.";
   }
+}
+
+class SpearStabAbility extends DirectionAbility with MasteryAbility {
+  @override
+  final Skill skill;
+
+  SpearStabAbility(this.skill);
+
+  @override
+  String get name => "Spear Stab";
+
+  @override
+  String get weaponType => "spear";
 
   @override
   Action onGetDirectionAction(Game game, int level, Direction dir) =>
-      SpearAction(dir, SpearMastery._spearScale(level));
+      SpearStabAction(dir, SpearMastery._spearScale(level));
 }
 
 /// A melee attack that penetrates a row of actors.
-class SpearAction extends MasteryAction with GeneratorActionMixin {
+class SpearStabAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
 
-  SpearAction(this._dir, double damageScale) : super(damageScale);
+  SpearStabAction(this._dir, double damageScale) : super(damageScale);
 
   @override
   bool get isImmediate => false;
+
   @override
   String get weaponType => "spear";
 

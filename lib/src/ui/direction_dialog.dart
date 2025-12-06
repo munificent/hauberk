@@ -124,8 +124,8 @@ abstract class DirectionDialog extends Screen<Input> {
   bool tryDirection(Direction direction);
 }
 
-/// Asks the user to select a direction for a [DirectionSkill].
-class SkillDirectionDialog extends DirectionDialog {
+/// Asks the user to select a direction for a [DirectionAbility].
+class AbilityDirectionDialog extends DirectionDialog {
   final void Function(Direction direction) _onSelect;
 
   @override
@@ -134,9 +134,9 @@ class SkillDirectionDialog extends DirectionDialog {
   @override
   String get helpText => "Choose direction";
 
-  SkillDirectionDialog(super.gameScreen, this._onSelect);
+  AbilityDirectionDialog(super.gameScreen, this._onSelect);
 
-  // TODO: Let skill filter out invalid directions.
+  // TODO: Let ability filter out invalid directions.
   @override
   bool canTarget(Tile tile) => true;
 

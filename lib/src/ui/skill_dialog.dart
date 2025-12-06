@@ -1,3 +1,5 @@
+// TODO: Disabled for now since spells aren't working yet.
+/*
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
@@ -244,3 +246,4 @@ class SpellDialog extends SkillTypeDialog<Spell> {
     }
   }
 }
+*/

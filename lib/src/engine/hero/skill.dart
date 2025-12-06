@@ -1,10 +1,7 @@
-import 'package:piecemeal/piecemeal.dart';
-
-import '../action/action.dart';
 import '../core/combat.dart';
-import '../core/game.dart';
 import '../items/item.dart';
 import '../monster/monster.dart';
+import 'ability.dart';
 import 'hero.dart';
 import 'hero_save.dart';
 
@@ -21,13 +18,12 @@ abstract class Skill implements Comparable<Skill> {
 
   String get description;
 
-  /// The name shown when using the skill.
-  ///
-  /// By default, this is the same as the name of the skill, but it differs
-  /// for some.
-  String get useName => name;
-
   int get maxLevel;
+
+  // TODO: May want this to be per-level at some point if there are skills that
+  // grant multiple abilities at different levels.
+  /// If this skill grants an ability, the ability.
+  Ability? get ability => null;
 
   String levelDescription(int level);
 
@@ -40,7 +36,7 @@ abstract class Skill implements Comparable<Skill> {
     return 1234;
   }
 
-  /// Gives the skill a chance to modify the [hit] the [hero] is about to
+  /// Gives the skill a chance to modify the melee [hit] the [hero] is about to
   /// perform on [monster] when using [weapon].
   void modifyHit(
     Hero hero,
@@ -49,6 +45,10 @@ abstract class Skill implements Comparable<Skill> {
     Hit hit,
     int level,
   ) {}
+
+  /// Gives the skill a chance to modify the ranged [hit] the [hero] is about to
+  /// fire using [weapon].
+  void modifyRangedHit(Hero hero, Item? weapon, Hit hit, int level) {}
 
   /// Modifies the hero's base armor.
   int modifyArmor(HeroSave hero, int level, int armor) => armor;
@@ -62,78 +62,6 @@ abstract class Skill implements Comparable<Skill> {
 
   @override
   int compareTo(Skill other) => _sortOrder.compareTo(other._sortOrder);
-}
-
-/// Additional interface for active skills that expose a command the player
-/// can invoke.
-///
-/// Some skills require additional data to be performed -- a target position
-/// or a direction. Those will implement one of the subclasses, [TargetSkill]
-/// or [DirectionSkill].
-mixin UsableSkill implements Skill {
-  /// The focus cost to use the skill, with proficiency applied.
-  int focusCost(HeroSave hero, int level) => 0;
-
-  /// If the skill cannot currently be used (for example Archery when a bow is
-  /// not equipped), returns the reason why. Otherwise, returns `null` to
-  /// indicate the skill is usable.
-  String? unusableReason(Game game) => null;
-
-  /// If this skill has a focus or fury cost, wraps [action] in an appropriate
-  /// action to spend that.
-  Action _wrapActionCost(HeroSave hero, int level, Action action) {
-    if (focusCost(hero, level) > 0) {
-      return FocusAction(focusCost(hero, level), action);
-    }
-
-    return action;
-  }
-}
-
-/// A skill that can be directly used to perform an action.
-mixin ActionSkill implements UsableSkill {
-  Action getAction(Game game, int level) {
-    return _wrapActionCost(game.hero.save, level, onGetAction(game, level));
-  }
-
-  Action onGetAction(Game game, int level);
-}
-
-/// A skill that requires a target position to perform.
-mixin TargetSkill implements UsableSkill {
-  bool get canTargetSelf => false;
-
-  /// The maximum range of the target from the hero.
-  int getRange(Game game);
-
-  Action getTargetAction(Game game, int level, Vec target) {
-    return _wrapActionCost(
-      game.hero.save,
-      level,
-      onGetTargetAction(game, level, target),
-    );
-  }
-
-  /// Override this to create the [Action] that the [Hero] should perform when
-  /// using this [Skill].
-  Action onGetTargetAction(Game game, int level, Vec target);
-}
-
-/// A skill that requires a direction to perform.
-mixin DirectionSkill implements UsableSkill {
-  /// Override this to create the [Action] that the [Hero] should perform when
-  /// using this [Skill].
-  Action getDirectionAction(Game game, int level, Direction dir) {
-    return _wrapActionCost(
-      game.hero.save,
-      level,
-      onGetDirectionAction(game, level, dir),
-    );
-  }
-
-  /// Override this to create the [Action] that the [Hero] should perform when
-  /// using this [Skill].
-  Action onGetDirectionAction(Game game, int level, Direction dir);
 }
 
 // TODO: Remove this class?

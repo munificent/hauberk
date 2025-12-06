@@ -2,7 +2,6 @@ import '../engine.dart';
 import 'item/drops.dart';
 import 'skill/discipline/mastery.dart';
 import 'skill/skills.dart';
-import 'skill/spell/spell.dart';
 
 class Classes {
   // TODO: Tune battle-hardening.
@@ -36,10 +35,10 @@ class Classes {
         "forces are safely ensconced in a piece of familiar gear.",
   );
 
-  // TODO: Different book for generalist mage versus sorceror?
   static final mage = _class(
     "Mage",
-    parseDrop("Spellbook \"Elemental Primer\""),
+    // TODO: If we bring back spellbooks, do one here.
+    parseDrop("item"),
     masteries: 0.2,
     spells: 1.0,
     description:
@@ -74,7 +73,10 @@ HeroClass _class(
   for (var skill in Skills.all) {
     var proficiency = 1.0;
     if (skill is MasterySkill) proficiency *= masteries;
+    // TODO: Spells aren't working right now.
+    /*
     if (skill is Spell) proficiency *= spells;
+    */
 
     proficiencies[skill] = proficiency;
   }

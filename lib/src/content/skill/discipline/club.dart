@@ -3,16 +3,13 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class ClubMastery extends UsableMasterySkill with DirectionSkill {
+class ClubMastery extends MasterySkill {
   // TODO: Tune.
   static double _bashScale(int level) => lerpDouble(level, 1, 10, 1.0, 2.0);
 
   // TODO: Better name.
   @override
   String get name => "Club Mastery";
-
-  @override
-  String get useName => "Club Bash";
 
   @override
   String get description =>
@@ -22,25 +19,42 @@ class ClubMastery extends UsableMasterySkill with DirectionSkill {
   @override
   String get weaponType => "club";
 
+  // TODO: Having to make this late to plumb the skill through is gross.
+  @override
+  late final Ability ability = ClubBashAbility(this);
+
   @override
   String levelDescription(int level) {
     // TODO: Describe scale.
     return "${super.levelDescription(level)} Bashes the enemy away.";
   }
+}
+
+class ClubBashAbility extends DirectionAbility with MasteryAbility {
+  @override
+  final Skill skill;
+
+  ClubBashAbility(this.skill);
+
+  @override
+  String get name => "Club Bash";
+
+  @override
+  String get weaponType => "club";
 
   @override
   Action onGetDirectionAction(Game game, int level, Direction dir) {
-    return BashAction(dir, ClubMastery._bashScale(level));
+    return ClubBashAction(dir, ClubMastery._bashScale(level));
   }
 }
 
 /// A melee attack that attempts to push back the defender.
-class BashAction extends MasteryAction {
+class ClubBashAction extends MasteryAction {
   final Direction _dir;
   int _step = 0;
   int? _damage = 0;
 
-  BashAction(this._dir, double scale) : super(scale);
+  ClubBashAction(this._dir, double scale) : super(scale);
 
   @override
   bool get isImmediate => false;

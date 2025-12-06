@@ -101,7 +101,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
         terminal.writeAt(2, y, item.name, fore);
 
         terminal.writeAt(55, y, item.depth.toString().padLeft(5), fore);
-        terminal.writeAt(61, y, formatMoney(item.price).padLeft(7), fore);
+        terminal.writeAt(61, y, formatNumber(item.price).padLeft(7), fore);
 
         if (item.isArtifact) {
           terminal.writeAt(69, y, "Yes".padLeft(5), fore);

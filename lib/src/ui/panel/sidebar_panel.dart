@@ -130,7 +130,7 @@ class SidebarPanel extends Panel {
   void _drawExperience(Hero hero, Terminal terminal, int y) {
     terminal.writeAt(1, y, "Exp", UIHue.helpText);
 
-    var experienceString = hero.experience.toString();
+    var experienceString = formatNumber(hero.experience);
     terminal.writeAt(
       terminal.width - experienceString.length - 1,
       y,
@@ -141,7 +141,7 @@ class SidebarPanel extends Panel {
 
   void _drawGold(Hero hero, Terminal terminal, int y) {
     terminal.writeAt(1, y, "Gold", UIHue.helpText);
-    var heroGold = formatMoney(hero.gold);
+    var heroGold = formatNumber(hero.gold);
     terminal.writeAt(terminal.width - 1 - heroGold.length, y, heroGold, gold);
   }
 

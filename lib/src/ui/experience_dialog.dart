@@ -5,6 +5,7 @@ import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
 import 'input.dart';
+import 'item/item_renderer.dart';
 
 // TODO: Can probably merge this with SkillDialog to have one general place to
 // develop the hero.
@@ -101,7 +102,7 @@ class ExperienceDialog extends Screen<Input> {
     terminal.writeAt(
       31,
       1,
-      _hero.experience.toString().padLeft(8),
+      formatNumber(_hero.experience).padLeft(8),
       UIHue.primary,
     );
 
@@ -222,7 +223,7 @@ class ExperienceDialog extends Screen<Input> {
       terminal.writeAt(
         31,
         y,
-        cost.toString().padLeft(8),
+        formatNumber(cost).padLeft(8),
         cost <= _hero.experience ? color : UIHue.disabled,
       );
     } else {

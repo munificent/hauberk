@@ -11,6 +11,7 @@ import '../content/tiles.dart';
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
+import 'ability_dialog.dart';
 import 'direction_dialog.dart';
 import 'exit_popup.dart';
 import 'experience_dialog.dart';
@@ -29,8 +30,6 @@ import 'panel/log_panel.dart';
 import 'panel/sidebar_panel.dart';
 import 'panel/stage_panel.dart';
 import 'select_depth_popup.dart';
-import 'select_skill_dialog.dart';
-import 'skill_dialog.dart';
 import 'storage.dart';
 import 'target_dialog.dart';
 import 'wizard_dialog.dart';
@@ -58,7 +57,7 @@ class GameScreen extends Screen<Input> {
   Actor? _targetActor;
   Vec? _target;
 
-  UsableSkill? _lastSkill;
+  Ability? _lastAbility;
 
   /// The portal for the tile the hero is currently standing on.
   ///
@@ -178,10 +177,14 @@ class GameScreen extends Screen<Input> {
 
       case Input.forfeit:
         ui.push(ForfeitPopup(isTown: game.depth == 0));
-      case Input.selectSkill:
-        ui.push(SelectSkillDialog(this));
+      case Input.useAbility:
+        ui.push(AbilityDialog(this));
       case Input.editSkills:
+        // TODO: Disabled since spells aren't working yet.
+        /*
         ui.push(SkillDialog(game.content, game.hero.save));
+        */
+        break;
       case Input.spendExperience:
         ui.push(ExperienceDialog(game.content, game.hero.save));
       case Input.heroInfo:
@@ -260,26 +263,26 @@ class GameScreen extends Screen<Input> {
         _fireTowards(Direction.se);
 
       case Input.fire:
-        if (_lastSkill is TargetSkill) {
-          var targetSkill = _lastSkill as TargetSkill;
-          if (currentTargetActor != null) {
-            // If we still have a visible target, use it.
-            _fireAtTarget(_lastSkill as TargetSkill);
-          } else {
+        switch (_lastAbility) {
+          case TargetAbility targetAbility when currentTargetActor != null:
+            // We still have a visible target, use it.
+            _fireAtTarget(targetAbility);
+          case TargetAbility targetAbility:
             // No current target, so ask for one.
-            _openTargetDialog(targetSkill);
-          }
-        } else if (_lastSkill is DirectionSkill) {
-          // Ask user to pick a direction.
-          ui.push(SkillDirectionDialog(this, _fireTowards));
-        } else if (_lastSkill is ActionSkill) {
-          var actionSkill = _lastSkill as ActionSkill;
-          game.hero.setNextAction(
-            actionSkill.getAction(game, game.hero.skills.level(actionSkill)),
-          );
-        } else {
-          game.log.error("No skill selected.");
-          dirty();
+            _openTargetDialog(targetAbility);
+          case DirectionAbility _:
+            // Ask user to pick a direction.
+            ui.push(AbilityDirectionDialog(this, _fireTowards));
+          case ActionAbility actionAbility:
+            game.hero.setNextAction(
+              actionAbility.getAction(
+                game,
+                game.hero.skills.level(actionAbility.skill),
+              ),
+            );
+          default:
+            game.log.error("No ability selected.");
+            dirty();
         }
 
       case Input.swap:
@@ -311,58 +314,61 @@ class GameScreen extends Screen<Input> {
       _pause = 10;
     }
 
-    if (popped is ExitPopup) {
-      // TODO: Hero should start next to dungeon entrance.
+    switch ((popped, result)) {
+      case (ExitPopup(), _):
+        // TODO: Hero should start next to dungeon entrance.
 
-      // Update shops.
-      game.hero.save.shops.forEach((shop, inventory) {
-        shop.update(inventory);
-      });
+        // Update shops.
+        game.hero.save.shops.forEach((shop, inventory) {
+          shop.update(inventory);
+        });
 
-      _storage.save();
-      ui.goTo(GameScreen.town(_storage, game.content, game.hero.save));
-    } else if (popped is SelectDepthPopup && result is int) {
-      // Enter the dungeon.
-      _storage.save();
-      ui.push(LoadingDialog(game.hero.save, game.content, result));
-    } else if (popped is LoadingDialog) {
-      ui.goTo(GameScreen(_storage, result as Game));
-    } else if (popped is ForfeitPopup && result == true) {
-      if (game.depth > 0) {
+        _storage.save();
+        ui.goTo(GameScreen.town(_storage, game.content, game.hero.save));
+
+      case (SelectDepthPopup(), var depth as int):
+        // Enter the dungeon.
+        _storage.save();
+        ui.push(LoadingDialog(game.hero.save, game.content, depth));
+
+      case (LoadingDialog(), var newGame as Game):
+        ui.goTo(GameScreen(_storage, newGame));
+
+      case (ForfeitPopup(), true) when game.depth > 0:
         // Forfeiting, so return to the town and discard the current hero.
+        // TODO: What should this do when permadeath is enabled?
         // TODO: Hero should start next to dungeon entrance.
         ui.goTo(GameScreen.town(_storage, game.content, _previousSave));
-      } else {
+
+      case (ForfeitPopup(), true):
         // Leaving the town. Save just to be safe.
         _storage.save();
         ui.pop();
-      }
-    } else if (popped is TownScreen) {
-      // Always save when leaving home or a shop.
-      _storage.save();
-    } else if (popped is ItemDialog) {
-      // Save after changing items in the town.
-      if (game.depth == 0) _storage.save();
-    } else if (popped is SkillDialog) {
-      // TODO: Once skills can be learned on the SkillDialog again, make this
-      // work.
-      // game.hero.updateSkills(result);
-    } else if (popped is SelectSkillDialog && result != null) {
-      if (result is TargetSkill) {
-        _openTargetDialog(result);
-      } else if (result is DirectionSkill) {
+
+      case (TownScreen(), _):
+        // Always save when leaving home or a shop.
+        _storage.save();
+
+      case (ItemDialog(), _) when game.depth == 0:
+        // Save after changing items in the town.
+        _storage.save();
+
+      case (AbilityDialog(), TargetAbility ability):
+        _openTargetDialog(ability);
+
+      case (AbilityDialog(), DirectionAbility ability):
         ui.push(
-          SkillDirectionDialog(this, (dir) {
-            _lastSkill = result;
+          AbilityDirectionDialog(this, (dir) {
+            _lastAbility = ability;
             _fireTowards(dir);
           }),
         );
-      } else if (result is ActionSkill) {
-        _lastSkill = result;
+
+      case (AbilityDialog(), ActionAbility ability):
+        _lastAbility = ability;
         game.hero.setNextAction(
-          result.getAction(game, game.hero.skills.level(result)),
+          ability.getAction(game, game.hero.skills.level(ability.skill)),
         );
-      }
     }
   }
 
@@ -499,27 +505,27 @@ class GameScreen extends Screen<Input> {
     }
   }
 
-  void _openTargetDialog(TargetSkill skill) {
+  void _openTargetDialog(TargetAbility ability) {
     ui.push(
-      TargetDialog(this, skill.getRange(game), (_) => _fireAtTarget(skill)),
+      TargetDialog(this, ability.getRange(game), (_) => _fireAtTarget(ability)),
     );
   }
 
-  void _fireAtTarget(TargetSkill skill) {
-    if (currentTarget == game.hero.pos && !skill.canTargetSelf) {
+  void _fireAtTarget(TargetAbility ability) {
+    if (currentTarget == game.hero.pos && !ability.canTargetSelf) {
       game.log.error("You can't target yourself.");
       dirty();
       return;
     }
 
-    _lastSkill = skill;
+    _lastAbility = ability;
     // TODO: It's kind of annoying that we force the player to select a target
-    // or direction for skills that spend focus/fury even when they won't be
-    // able to perform it. Should do an early check first.
+    // or direction for skills that spend focus even when they won't be able to
+    // perform it. Should do an early check first.
     game.hero.setNextAction(
-      skill.getTargetAction(
+      ability.getTargetAction(
         game,
-        game.hero.skills.level(skill),
+        game.hero.skills.level(ability.skill),
         currentTarget!,
       ),
     );
@@ -529,64 +535,66 @@ class GameScreen extends Screen<Input> {
     // If the user canceled, don't fire.
     if (dir == Direction.none) return;
 
-    if (_lastSkill is DirectionSkill) {
-      var directionSkill = _lastSkill as DirectionSkill;
-      game.hero.setNextAction(
-        directionSkill.getDirectionAction(
-          game,
-          game.hero.skills.level(directionSkill),
-          dir,
-        ),
-      );
-    } else if (_lastSkill is TargetSkill) {
-      var targetSkill = _lastSkill as TargetSkill;
-      var pos = game.hero.pos + dir;
-
-      // Target the monster that is in the fired direction, if any.
-      late Vec previous;
-      for (var step in Line(game.hero.pos, pos)) {
-        // If we reached an actor, target it.
-        var actor = game.stage.actorAt(step);
-        if (actor != null) {
-          targetActor(actor);
-          break;
-        }
-
-        // If we hit a wall, target the floor tile before it.
-        if (game.stage[step].blocksView) {
-          targetFloor(previous);
-          break;
-        }
-
-        // If we hit the end of the range, target the floor there.
-        if ((step - game.hero.pos) >= targetSkill.getRange(game)) {
-          targetFloor(step);
-          break;
-        }
-
-        previous = step;
-      }
-
-      if (currentTarget != null) {
+    switch (_lastAbility) {
+      case DirectionAbility directionAbility:
         game.hero.setNextAction(
-          targetSkill.getTargetAction(
+          directionAbility.getDirectionAction(
             game,
-            game.hero.skills.level(targetSkill),
-            currentTarget!,
+            game.hero.skills.level(directionAbility.skill),
+            dir,
           ),
         );
-      } else {
-        var tile = game.stage[game.hero.pos + dir].type.name;
-        game.log.error("There is a $tile in the way.");
+
+      case TargetAbility targetAbility:
+        var pos = game.hero.pos + dir;
+
+        // Target the monster that is in the fired direction, if any.
+        late Vec previous;
+        for (var step in Line(game.hero.pos, pos)) {
+          // If we reached an actor, target it.
+          var actor = game.stage.actorAt(step);
+          if (actor != null) {
+            targetActor(actor);
+            break;
+          }
+
+          // If we hit a wall, target the floor tile before it.
+          if (game.stage[step].blocksView) {
+            targetFloor(previous);
+            break;
+          }
+
+          // If we hit the end of the range, target the floor there.
+          if ((step - game.hero.pos) >= targetAbility.getRange(game)) {
+            targetFloor(step);
+            break;
+          }
+
+          previous = step;
+        }
+
+        if (currentTarget != null) {
+          game.hero.setNextAction(
+            targetAbility.getTargetAction(
+              game,
+              game.hero.skills.level(targetAbility.skill),
+              currentTarget!,
+            ),
+          );
+        } else {
+          var tile = game.stage[game.hero.pos + dir].type.name;
+          game.log.error("There is a $tile in the way.");
+          dirty();
+        }
+
+      case ActionAbility actionAbility:
+        game.log.error("${actionAbility.name} does not take a direction.");
         dirty();
-      }
-    } else if (_lastSkill is ActionSkill) {
-      game.log.error("${_lastSkill!.useName} does not take a direction.");
-      dirty();
-    } else {
-      // TODO: Better error message.
-      game.log.error("No skill selected.");
-      dirty();
+
+      default:
+        // TODO: Better error message.
+        game.log.error("No ability selected.");
+        dirty();
     }
   }
 

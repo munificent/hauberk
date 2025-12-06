@@ -214,7 +214,13 @@ class Hero extends Actor {
     var i = weapons.indexWhere((weapon) => weapon.attack!.isRanged);
     assert(i != -1, "Should have ranged weapon equipped.");
 
-    var hit = weapons[i].attack!.createHit();
+    var weapon = weapons[i];
+    var hit = weapon.attack!.createHit();
+
+    for (var skill in skills.acquired) {
+      var level = skills.level(skill);
+      skill.modifyRangedHit(this, weapon, hit, level);
+    }
 
     // Take heft and strength into account.
     hit.scaleDamage(_heftDamageScale.value, 'heft');

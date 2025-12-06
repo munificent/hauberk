@@ -4,21 +4,25 @@ import '../../../engine.dart';
 import '../../action/bolt.dart';
 import 'mastery.dart';
 
-class WhipMastery extends UsableMasterySkill with TargetSkill {
+class WhipMastery extends MasterySkill {
   // TODO: Tune.
   static double _whipScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
   @override
   String get name => "Whip Mastery";
-  @override
-  String get useName => "Whip Crack";
+
   @override
   String get description =>
       "Whips and flails are difficult to use well, but deadly even at a "
       "distance when mastered.";
+
   @override
   String get weaponType => "whip";
+
+  // TODO: Having to make this late to plumb the skill through is gross.
+  @override
+  late final Ability ability = WhipCrackAbility(this);
 
   @override
   String levelDescription(int level) {
@@ -26,6 +30,19 @@ class WhipMastery extends UsableMasterySkill with TargetSkill {
     return "${super.levelDescription(level)} Ranged whip attacks inflict "
         "$damage% of the damage of a regular attack.";
   }
+}
+
+class WhipCrackAbility extends TargetAbility with MasteryAbility {
+  @override
+  final Skill skill;
+
+  WhipCrackAbility(this.skill);
+
+  @override
+  String get name => "Whip Crack";
+
+  @override
+  String get weaponType => "whip";
 
   @override
   int getRange(Game game) => 3;
@@ -49,7 +66,7 @@ class WhipMastery extends UsableMasterySkill with TargetSkill {
       break;
     }
 
-    hit.scaleDamage(WhipMastery._whipScale(level), 'whip mastery');
+    hit.scaleDamage(WhipMastery._whipScale(level), "whip mastery");
 
     // TODO: Better effect.
     return BoltAction(target, hit, range: getRange(game), canMiss: true);

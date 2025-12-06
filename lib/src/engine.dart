@@ -17,6 +17,7 @@ export 'engine/core/option.dart';
 export 'engine/core/resource.dart';
 export 'engine/core/utils.dart';
 export 'engine/core/vec_set.dart';
+export 'engine/hero/ability.dart';
 export 'engine/hero/hero.dart';
 export 'engine/hero/hero_class.dart';
 export 'engine/hero/hero_save.dart';

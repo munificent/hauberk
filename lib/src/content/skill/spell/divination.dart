@@ -1,3 +1,5 @@
+// TODO: Spells aren't working right now.
+/*
 import '../../action/detection.dart';
 import 'spell.dart';
 
@@ -13,3 +15,4 @@ List<Spell> divinationSpells() {
     ),
   ];
 }
+*/

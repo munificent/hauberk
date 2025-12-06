@@ -26,7 +26,7 @@ class Input {
   static const equip = Input("equip");
 
   static const heroInfo = Input("heroInfo");
-  static const selectSkill = Input("selectSkill");
+  static const useAbility = Input("useAbility");
   static const editSkills = Input("editSkills");
   static const spendExperience = Input("spendExperience");
 

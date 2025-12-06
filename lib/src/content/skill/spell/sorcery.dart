@@ -1,3 +1,5 @@
+// TODO: Spells aren't working right now.
+/*
 import '../../../engine.dart';
 import '../../action/barrier.dart';
 import '../../action/bolt.dart';
@@ -109,3 +111,4 @@ List<Spell> sorcerySpells() {
     ),
   ];
 }
+*/

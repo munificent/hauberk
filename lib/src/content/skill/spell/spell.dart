@@ -1,3 +1,5 @@
+// TODO: Spells aren't working right now.
+/*
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
@@ -121,3 +123,4 @@ class TargetSpell extends Spell with TargetSkill {
   Action onGetTargetAction(Game game, int level, Vec target) =>
       _getAction(this, game, level, target);
 }
+*/

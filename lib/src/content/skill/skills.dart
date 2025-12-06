@@ -7,9 +7,12 @@ import 'discipline/dual_wield.dart';
 import 'discipline/spear.dart';
 import 'discipline/sword.dart';
 import 'discipline/whip.dart';
+// TODO: Spells aren't working right now.
+/*
 import 'spell/conjuring.dart';
 import 'spell/divination.dart';
 import 'spell/sorcery.dart';
+*/
 
 class Skills {
   /// All of the known skills.
@@ -44,10 +47,13 @@ class Skills {
       */
     ],
 
+    // TODO: Spells aren't working right now.
+    /*
     // Spells.
     ...divinationSpells(),
     ...conjuringSpells(),
     ...sorcerySpells(),
+    */
   ];
 
   static final Map<String, Skill> _byName = {

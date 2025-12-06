@@ -4,22 +4,25 @@ import '../../../engine.dart';
 import 'mastery.dart';
 
 /// A slashing melee attack that hits a number of adjacent monsters.
-class AxeMastery extends UsableMasterySkill with DirectionSkill {
+class AxeMastery extends MasterySkill {
   // TODO: Tune.
   static double _sweepScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   // TODO: Better name.
   @override
   String get name => "Axe Mastery";
-  @override
-  String get useName => "Axe Sweep";
 
   @override
   String get description =>
       "Axes are not just for woodcutting. In the hands of a skilled user, "
       "they can cut down a swath of nearby foes as well.";
+
   @override
   String get weaponType => "axe";
+
+  // TODO: Having to make this late to plumb the skill through is gross.
+  @override
+  late final Ability ability = AxeSweepAbility(this);
 
   @override
   String levelDescription(int level) {
@@ -27,15 +30,28 @@ class AxeMastery extends UsableMasterySkill with DirectionSkill {
     return "${super.levelDescription(level)} Sweep attacks inflict $damage% "
         "of the damage of a regular attack.";
   }
+}
+
+class AxeSweepAbility extends DirectionAbility with MasteryAbility {
+  @override
+  final Skill skill;
+
+  AxeSweepAbility(this.skill);
+
+  @override
+  String get name => "Axe Sweep";
+
+  @override
+  String get weaponType => "axe";
 
   @override
   Action onGetDirectionAction(Game game, int level, Direction dir) {
-    return SweepAction(dir, AxeMastery._sweepScale(level));
+    return AxeSweepAction(dir, AxeMastery._sweepScale(level));
   }
 }
 
 /// A sweeping melee attack that hits three adjacent tiles.
-class SweepAction extends MasteryAction with GeneratorActionMixin {
+class AxeSweepAction extends MasteryAction with GeneratorActionMixin {
   final Direction _dir;
 
   @override
@@ -44,7 +60,7 @@ class SweepAction extends MasteryAction with GeneratorActionMixin {
   @override
   String get weaponType => "axe";
 
-  SweepAction(this._dir, double damageScale) : super(damageScale);
+  AxeSweepAction(this._dir, double damageScale) : super(damageScale);
 
   @override
   Iterable<ActionResult> onGenerate() sync* {

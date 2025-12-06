@@ -230,6 +230,8 @@ void scrolls() {
 }
 
 void spellBooks() {
+  // TODO: No spell books for now.
+  /*
   category(CharCode.vulgarFractionOneHalf)
     ..tag("magic/book/sorcery")
     ..toss(damage: 1, range: 3, breakage: 25)
@@ -248,6 +250,7 @@ void spellBooks() {
       "Fire Barrier",
       "Tidal Wave",
     ]);
+  */
 
   // TODO: More spell books and reorganize spells.
 }

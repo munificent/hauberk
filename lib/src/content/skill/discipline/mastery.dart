@@ -37,18 +37,20 @@ abstract class MasterySkill extends Skill {
     return "Melee attacks inflict $damage% more damage when using a "
         "$weaponType.";
   }
-
-  bool _hasWeapon(Hero hero) =>
-      hero.equipment.weapons.any((item) => item.type.weaponType == weaponType);
 }
 
-abstract class UsableMasterySkill extends MasterySkill with UsableSkill {
+mixin MasteryAbility implements Ability {
+  String get weaponType;
+
   @override
   String? unusableReason(Game game) {
     if (_hasWeapon(game.hero)) return null;
 
-    return "No $weaponType equipped.";
+    return "No $weaponType equipped";
   }
+
+  bool _hasWeapon(Hero hero) =>
+      hero.equipment.weapons.any((item) => item.type.weaponType == weaponType);
 }
 
 abstract class MasteryAction extends Action {
