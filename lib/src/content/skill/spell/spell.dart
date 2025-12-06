@@ -8,9 +8,6 @@ import '../../../engine.dart';
 /// discovered, as long as it's not too complex, the hero can use it.
 abstract class Spell extends Skill with UsableSkill {
   @override
-  String gainMessage(int level) => '{1} have learned the spell $name.';
-
-  @override
   String levelDescription(int level) =>
       'TODO: Implement Spell.levelDescription().';
 

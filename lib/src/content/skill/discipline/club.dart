@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class ClubMastery extends UsableMasteryDiscipline with DirectionSkill {
+class ClubMastery extends UsableMasterySkill with DirectionSkill {
   // TODO: Tune.
   static double _bashScale(int level) => lerpDouble(level, 1, 10, 1.0, 2.0);
 

@@ -1,14 +1,13 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
-import 'discipline.dart';
 
 // TODO: More disciplines:
 // - Dodging attacks, which increases dodge.
 // - Fury. Increases damage when health is low. Trained by killing monsters
 //   when near death.
 
-abstract class MasteryDiscipline extends Discipline {
+abstract class MasterySkill extends Skill {
   // TODO: Tune.
   @override
   int get maxLevel => 20;
@@ -43,8 +42,7 @@ abstract class MasteryDiscipline extends Discipline {
       hero.equipment.weapons.any((item) => item.type.weaponType == weaponType);
 }
 
-abstract class UsableMasteryDiscipline extends MasteryDiscipline
-    with UsableSkill {
+abstract class UsableMasterySkill extends MasterySkill with UsableSkill {
   @override
   String? unusableReason(Game game) {
     if (_hasWeapon(game.hero)) return null;

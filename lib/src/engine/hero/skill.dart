@@ -27,10 +27,6 @@ abstract class Skill implements Comparable<Skill> {
   /// for some.
   String get useName => name;
 
-  // TODO: Different messages for gain and lose?
-  /// Message displayed when the hero reaches [level] in the skill.
-  String gainMessage(int level);
-
   int get maxLevel;
 
   String levelDescription(int level);

@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class SpearMastery extends UsableMasteryDiscipline with DirectionSkill {
+class SpearMastery extends UsableMasterySkill with DirectionSkill {
   // TODO: Tune.
   static double _spearScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 

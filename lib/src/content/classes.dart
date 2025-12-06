@@ -73,7 +73,7 @@ HeroClass _class(
 
   for (var skill in Skills.all) {
     var proficiency = 1.0;
-    if (skill is MasteryDiscipline) proficiency *= masteries;
+    if (skill is MasterySkill) proficiency *= masteries;
     if (skill is Spell) proficiency *= spells;
 
     proficiencies[skill] = proficiency;

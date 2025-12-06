@@ -2,9 +2,8 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
 import '../../action/bolt.dart';
-import 'discipline.dart';
 
-class Archery extends Discipline with UsableSkill, TargetSkill {
+class Archery extends Skill with UsableSkill, TargetSkill {
   // TODO: Tune.
   @override
   int get maxLevel => 20;

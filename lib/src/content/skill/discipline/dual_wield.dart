@@ -1,7 +1,6 @@
 import '../../../engine.dart';
-import 'discipline.dart';
 
-class DualWield extends Discipline {
+class DualWield extends Skill {
   // TODO: Tune.
   @override
   int get maxLevel => 10;

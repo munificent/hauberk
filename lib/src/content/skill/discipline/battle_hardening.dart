@@ -1,7 +1,6 @@
 import '../../../engine.dart';
-import 'discipline.dart';
 
-class BattleHardening extends Discipline {
+class BattleHardening extends Skill {
   @override
   int get maxLevel => 40;
 

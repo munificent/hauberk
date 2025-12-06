@@ -1,7 +1,7 @@
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class Swordfighting extends MasteryDiscipline {
+class Swordfighting extends MasterySkill {
   static int _parryDefense(int level) => lerpInt(level, 1, 20, 1, 20);
 
   @override

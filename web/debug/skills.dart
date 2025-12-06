@@ -33,14 +33,14 @@ void main() {
       builder.td('&mdash;', right: true);
     }
 
-    if (skill is Discipline) {
-      builder.td('&mdash;', right: true);
-      builder.td('&mdash;', right: true);
-      builder.td('&mdash;', right: true);
-    } else if (skill is Spell) {
+    if (skill is Spell) {
       builder.td(skill.baseComplexity);
       builder.td(skill.damage);
       builder.td(skill.range);
+    } else {
+      builder.td('&mdash;', right: true);
+      builder.td('&mdash;', right: true);
+      builder.td('&mdash;', right: true);
     }
 
     builder.td(skill.description);

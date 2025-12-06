@@ -18,7 +18,6 @@ import 'content/stage/town.dart';
 import 'content/tiles.dart';
 import 'engine.dart';
 
-export 'content/skill/discipline/discipline.dart';
 export 'content/skill/spell/spell.dart';
 
 Content createContent() {

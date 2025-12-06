@@ -7,14 +7,14 @@ import '../hues.dart';
 import 'draw.dart';
 import 'input.dart';
 
-// TODO: Merge this with ExperienceDialog.
+// TODO: Merge this with ExperienceDialog or maybe turn it into SpellDialog?
 // TODO: Get working with resizable UI.
 abstract class SkillDialog extends Screen<Input> {
   // TODO: Make this a getter instead of a field.
   late final SkillDialog _nextScreen;
 
   factory SkillDialog(Content content, HeroSave hero) {
-    var screens = [DisciplineDialog(content, hero), SpellDialog(content, hero)];
+    var screens = [SpellDialog(content, hero)];
 
     for (var i = 0; i < screens.length; i++) {
       screens[i]._nextScreen = screens[(i + 1) % screens.length];
@@ -175,68 +175,6 @@ abstract class SkillTypeDialog<T extends Skill> extends SkillDialog {
 
     _selectedSkill = (_selectedSkill + offset).clamp(0, _skills.length - 1);
     dirty();
-  }
-}
-
-class DisciplineDialog extends SkillTypeDialog<Discipline> {
-  DisciplineDialog(super.content, super.hero);
-
-  @override
-  String get _name => "Disciplines";
-
-  @override
-  String get _rowSeparator => "──────────────────────────── ─── ────";
-
-  @override
-  void _renderSkillListHeader(Terminal terminal) {
-    terminal.writeAt(31, 1, "Lev Next", UIHue.helpText);
-  }
-
-  @override
-  void _renderSkillInList(
-    Terminal terminal,
-    int y,
-    Color color,
-    Discipline skill,
-  ) {
-    var level = _skillSet.level(skill).toString().padLeft(3);
-    terminal.writeAt(31, y, level, color);
-
-    // var percent = skill.percentUntilNext(_hero);
-    // terminal.writeAt(
-    //   35,
-    //   y,
-    //   percent == null ? "  --" : "$percent%".padLeft(4),
-    //   color,
-    // );
-  }
-
-  @override
-  void _renderSkillDetails(Terminal terminal, Discipline skill) {
-    var level = _skillSet.level(skill);
-
-    terminal.writeAt(1, 8, "At current level $level:", UIHue.primary);
-    if (level > 0) {
-      _writeText(terminal, 3, 10, skill.levelDescription(level));
-    } else {
-      terminal.writeAt(
-        3,
-        10,
-        "(You haven't trained this yet.)",
-        UIHue.disabled,
-      );
-    }
-
-    // TODO: Show fury cost.
-
-    if (level < skill.maxLevel) {
-      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
-      _writeText(terminal, 3, 18, skill.levelDescription(level + 1));
-    }
-
-    terminal.writeAt(1, 30, "Level:", UIHue.secondary);
-    terminal.writeAt(9, 30, level.toString().padLeft(4), UIHue.text);
-    Draw.meter(terminal, 14, 30, 25, level, skill.maxLevel, red, maroon);
   }
 }
 
