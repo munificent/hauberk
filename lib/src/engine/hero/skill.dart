@@ -44,6 +44,15 @@ abstract class Skill implements Comparable<Skill> {
 
   int onCalculateLevel(HeroSave hero, int points);
 
+  String levelDescription(int level);
+
+  /// The amount of experience to increase the skill to [level] from the
+  /// previous level.
+  int experienceCost(HeroSave hero, int level) {
+    // TODO: Implement.
+    return 1234;
+  }
+
   /// Called when the hero takes damage.
   void takeDamage(Hero hero, int damage) {}
 

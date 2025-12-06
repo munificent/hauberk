@@ -155,7 +155,7 @@ class ItemInspector {
     // TODO: General description.
     // TODO: Equip slot.
 
-    for (var stat in Stat.all) {
+    for (var stat in Stat.values) {
       var bonus = 0;
 
       for (var affix in item.affixes) {

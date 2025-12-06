@@ -160,7 +160,7 @@ class NewHeroScreen extends Screen<Input> {
 
     // Show how race affects stats.
     var y = 3;
-    for (var stat in Stat.all) {
+    for (var stat in Stat.values) {
       terminal.writeAt(0, y, stat.abbreviation, UIHue.secondary);
       var scale = (race.statScale(stat) * 100).toInt();
       Draw.thinMeter(terminal, 4, y, 14, scale, 200);

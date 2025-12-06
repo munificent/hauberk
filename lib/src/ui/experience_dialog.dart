@@ -11,25 +11,36 @@ import 'input.dart';
 
 /// UI to see and spend experience.
 class ExperienceDialog extends Screen<Input> {
-  final HeroSave _save;
+  final Content _content;
+  final HeroSave _hero;
 
-  int _selectedStatIndex = 0;
+  int _selectedIndex = 0;
 
-  StatBase get _selectedStat => switch (_selectedStatIndex) {
-    0 => _save.strength,
-    1 => _save.agility,
-    2 => _save.vitality,
-    3 => _save.intellect,
-    _ => throw ArgumentError(),
+  StatBase? get _selectedStat => switch (_selectedIndex) {
+    0 => _hero.strength,
+    1 => _hero.agility,
+    2 => _hero.vitality,
+    3 => _hero.intellect,
+    _ => null,
   };
 
-  bool get _canRaiseStat {
-    var stat = _selectedStat;
-    var cost = stat.experienceCost(_save);
-    return stat.baseValue < Stat.baseMax && _save.experience >= cost;
+  Skill? get _selectedSkill {
+    // On stats.
+    if (_selectedIndex < Stat.values.length) return null;
+    return _content.skills[_selectedIndex - Stat.values.length];
   }
 
-  ExperienceDialog(this._save);
+  bool get _canRaise {
+    if (_selectedStat case var stat?) {
+      var cost = stat.experienceCost(_hero);
+      return cost != null && _hero.experience >= cost;
+    } else {
+      // TODO: Implement leveling skills.
+      return false;
+    }
+  }
+
+  ExperienceDialog(this._content, this._hero);
 
   @override
   bool handleInput(Input input) {
@@ -57,10 +68,13 @@ class ExperienceDialog extends Screen<Input> {
 
     switch (keyCode) {
       case KeyCode.r:
-        if (_canRaiseStat) {
-          var stat = _selectedStat;
-          _save.experience -= stat.experienceCost(_save);
-          stat.refresh(_save, stat.baseValue + 1);
+        if (_canRaise) {
+          if (_selectedStat case var stat?) {
+            _hero.experience -= stat.experienceCost(_hero)!;
+            stat.refresh(_hero, stat.baseValue + 1);
+          } else {
+            // TODO: Implement raising skill levels.
+          }
           dirty();
         }
         return true;
@@ -78,11 +92,20 @@ class ExperienceDialog extends Screen<Input> {
     terminal.writeAt(
       31,
       1,
-      _save.experience.toString().padLeft(8),
+      _hero.experience.toString().padLeft(8),
       UIHue.primary,
     );
 
     _drawStatsList(terminal.rect(0, 3, 40, 11));
+    _drawSkillsList(terminal.rect(0, 14, 40, terminal.height - 14));
+
+    // Selected row cursor.
+    terminal.drawChar(
+      1,
+      _selectedIndex * 2 + (_selectedIndex < Stat.values.length ? 6 : 9),
+      CharCode.blackRightPointingPointer,
+      UIHue.selection,
+    );
 
     var panelTerminal = terminal.rect(
       40,
@@ -91,7 +114,7 @@ class ExperienceDialog extends Screen<Input> {
       terminal.height,
     );
 
-    switch (_selectedStatIndex) {
+    switch (_selectedIndex) {
       case 0:
         _drawStrengthPanel(panelTerminal);
       case 1:
@@ -100,13 +123,21 @@ class ExperienceDialog extends Screen<Input> {
         _drawVitalityPanel(panelTerminal);
       case 3:
         _drawIntellectPanel(panelTerminal);
+      default:
+        _drawSkillPanel(
+          panelTerminal,
+          _content.skills[_selectedIndex - Stat.values.length],
+        );
     }
 
     Draw.helpKeys(terminal, {
       "↕": "Change selection",
-      if (_canRaiseStat) "R": "Raise ${_selectedStat.name}",
+      if (_selectedStat case var stat? when _canRaise)
+        "R": "Raise ${stat.name}",
+      if (_selectedSkill case var skill? when _canRaise)
+        "R": "Raise ${skill.name}",
       "`": "Exit",
-    }, "You can spend ${_save.experience} experience");
+    }, "You can spend ${_hero.experience} experience");
   }
 
   void _drawStatsList(Terminal terminal) {
@@ -115,13 +146,13 @@ class ExperienceDialog extends Screen<Input> {
     var separator = "──────────────────────── ─── ────────";
 
     // Current value and cost to increment?
-    terminal.writeAt(27, 1, "Cur     Cost", UIHue.helpText);
+    terminal.writeAt(27, 1, "Val     Cost", UIHue.helpText);
 
     var stats = [
-      _save.strength,
-      _save.agility,
-      _save.vitality,
-      _save.intellect,
+      _hero.strength,
+      _hero.agility,
+      _hero.vitality,
+      _hero.intellect,
     ];
 
     var i = 0;
@@ -134,36 +165,70 @@ class ExperienceDialog extends Screen<Input> {
         stat == stats.first ? darkCoolGray : darkerCoolGray,
       );
 
+      var color = UIHue.primary;
+      if (i == _selectedIndex) {
+        color = UIHue.selection;
+      }
+
+      terminal.writeAt(2, y, stat.name, color);
+      terminal.writeAt(27, y, stat.value.toString().padLeft(3), color);
+      if (stat.experienceCost(_hero) case var cost?) {
+        terminal.writeAt(
+          31,
+          y,
+          cost.toString().padLeft(8),
+          cost <= _hero.experience ? color : UIHue.disabled,
+        );
+      } else {
+        terminal.writeAt(31, y, '(at max)', UIHue.disabled);
+      }
+
+      i++;
+    }
+  }
+
+  void _drawSkillsList(Terminal terminal) {
+    Draw.frame(terminal, label: 'Skills');
+
+    var separator = "──────────────────────── ─── ────────";
+
+    // Current value and cost to increment?
+    terminal.writeAt(27, 1, "Lvl     Cost", UIHue.helpText);
+
+    var i = 0;
+    for (var skill in _content.skills) {
+      var y = i * 2 + 3;
+      terminal.writeAt(
+        2,
+        y - 1,
+        separator,
+        i == 0 ? darkCoolGray : darkerCoolGray,
+      );
+
       var nameColor = UIHue.primary;
       var detailColor = UIHue.text;
-      if (i == _selectedStatIndex) {
+      if (i == _selectedIndex - Stat.values.length) {
         nameColor = UIHue.selection;
         detailColor = UIHue.selection;
       }
 
-      terminal.writeAt(2, y, stat.name, nameColor);
-      terminal.writeAt(27, y, stat.value.toString().padLeft(3), detailColor);
-      var cost = stat.experienceCost(_save);
+      terminal.writeAt(2, y, skill.name, nameColor);
+      var level = _hero.skills.level(skill);
+      terminal.writeAt(27, y, level.toString().padLeft(3), detailColor);
+      var cost = skill.experienceCost(_hero, level + 1);
       terminal.writeAt(
         31,
         y,
         cost.toString().padLeft(8),
-        cost <= _save.experience ? detailColor : UIHue.disabled,
+        cost <= _hero.experience ? detailColor : UIHue.disabled,
       );
 
       i++;
     }
-
-    terminal.drawChar(
-      1,
-      _selectedStatIndex * 2 + 3,
-      CharCode.blackRightPointingPointer,
-      UIHue.selection,
-    );
   }
 
   void _drawStrengthPanel(Terminal terminal) {
-    _drawStatPanel(terminal, _save.strength, ['Max Fury', 'Toss range scale'], (
+    _drawStatPanel(terminal, _hero.strength, ['Max Fury', 'Toss range scale'], (
       int value,
     ) {
       var tossPercent = '${(Strength.tossRangeScaleAt(value) * 100).toInt()}%';
@@ -173,7 +238,7 @@ class ExperienceDialog extends Screen<Input> {
   }
 
   void _drawAgilityPanel(Terminal terminal) {
-    _drawStatPanel(terminal, _save.agility, ['Dodge bonus', 'Strike bonus'], (
+    _drawStatPanel(terminal, _hero.agility, ['Dodge bonus', 'Strike bonus'], (
       int value,
     ) {
       return [
@@ -184,7 +249,7 @@ class ExperienceDialog extends Screen<Input> {
   }
 
   void _drawVitalityPanel(Terminal terminal) {
-    _drawStatPanel(terminal, _save.vitality, ['Max health'], (int value) {
+    _drawStatPanel(terminal, _hero.vitality, ['Max health'], (int value) {
       return [Vitality.maxHealthAt(value).toString()];
     });
   }
@@ -192,7 +257,7 @@ class ExperienceDialog extends Screen<Input> {
   void _drawIntellectPanel(Terminal terminal) {
     _drawStatPanel(
       terminal,
-      _save.intellect,
+      _hero.intellect,
       ['Max focus'],
       (int value) {
         return [Intellect.maxFocusAt(value).toString()];
@@ -218,8 +283,8 @@ class ExperienceDialog extends Screen<Input> {
     terminal.writeAt(15, y, stat.baseValue.toString().padLeft(3), UIHue.text);
     y++;
 
-    if (stat == _save.strength) {
-      var weightOffset = _save.strength.weightOffset(_save).toInt();
+    if (stat == _hero.strength) {
+      var weightOffset = _hero.strength.weightOffset(_hero).toInt();
       modifiers = (currentValue - stat.baseValue + weightOffset);
       terminal.writeAt(1, y, 'Weight offset:', UIHue.secondary);
       terminal.writeAt(15, y, weightOffset.toString().padLeft(3), UIHue.text);
@@ -259,11 +324,47 @@ class ExperienceDialog extends Screen<Input> {
     }
   }
 
+  void _drawSkillPanel(Terminal terminal, Skill skill) {
+    Draw.frame(terminal, label: skill.name, labelSelected: true);
+    var level = _hero.skills.level(skill);
+
+    terminal.writeAt(1, 8, "At current level $level:", UIHue.primary);
+    if (level > 0) {
+      Draw.text(
+        terminal,
+        x: 3,
+        y: 10,
+        width: terminal.width - 1,
+        skill.levelDescription(level),
+      );
+    } else {
+      terminal.writeAt(
+        3,
+        10,
+        "(You haven't trained this yet.)",
+        UIHue.disabled,
+      );
+    }
+
+    if (level < skill.maxLevel) {
+      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
+      Draw.text(
+        terminal,
+        x: 3,
+        y: 18,
+        width: terminal.width - 1,
+        skill.levelDescription(level + 1),
+      );
+    }
+
+    terminal.writeAt(1, 30, "Level:", UIHue.secondary);
+    terminal.writeAt(9, 30, level.toString().padLeft(4), UIHue.text);
+    Draw.meter(terminal, 14, 30, 25, level, skill.maxLevel, red, maroon);
+  }
+
   void _changeSelection(int offset) {
-    _selectedStatIndex = (_selectedStatIndex + offset).clamp(
-      0,
-      Stat.all.length - 1,
-    );
+    var length = Stat.values.length + _content.skills.length;
+    _selectedIndex = (_selectedIndex + offset + length) % length;
     dirty();
   }
 }

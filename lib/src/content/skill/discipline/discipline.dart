@@ -15,8 +15,6 @@ abstract class Discipline extends Skill {
   @override
   String get discoverMessage => "{1} can begin training in $name.";
 
-  String levelDescription(int level);
-
   @override
   int onCalculateLevel(HeroSave hero, int points) {
     var training = hero.skills.points(this);

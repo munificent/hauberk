@@ -77,7 +77,7 @@ class GameContent implements Content {
   List<Race> get races => Races.all;
 
   @override
-  Iterable<Skill> get skills => Skills.all;
+  List<Skill> get skills => Skills.all;
 
   @override
   Map<String, Shop> get shops => Shops.all;

@@ -52,8 +52,8 @@ enum Stat {
     // curve the cost upwards significantly.
     var totalScale = lerpDouble(
       statTotal,
-      10 * Stat.all.length,
-      Stat.modifiedMax * Stat.all.length,
+      10 * Stat.values.length,
+      Stat.modifiedMax * Stat.values.length,
       1.0,
       20.0,
     );
@@ -68,8 +68,6 @@ enum Stat {
 
   /// The maximum value a stat can have after modifiers are applied.
   static const modifiedMax = 50;
-
-  static const all = [strength, agility, fortitude, intellect];
 
   final String name;
 
@@ -116,7 +114,8 @@ abstract class StatBase extends Property<int> {
   }
 
   // TODO: Passing in save is kind of weird.
-  int experienceCost(HeroSave save) {
+  int? experienceCost(HeroSave save) {
+    if (baseValue >= Stat.baseMax) return null;
     var total =
         save.strength.baseValue +
         save.agility.baseValue +

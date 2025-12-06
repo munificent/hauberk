@@ -106,7 +106,7 @@ void generate() {
 
     builder.td(
       [
-        for (var stat in Stat.all)
+        for (var stat in Stat.values)
           if (affix.statBonus(stat) != 0)
             "${stat.abbreviation}:${affix.statBonus(stat)}",
       ].join(" "),

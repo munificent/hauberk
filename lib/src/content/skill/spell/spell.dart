@@ -13,6 +13,10 @@ abstract class Spell extends Skill with UsableSkill {
   @override
   String get discoverMessage => '{1} are not wise enough to cast $name.';
 
+  @override
+  String levelDescription(int level) =>
+      'TODO: Implement Spell.levelDescription().';
+
   /// Spells are not leveled.
   @override
   int get maxLevel => 1;

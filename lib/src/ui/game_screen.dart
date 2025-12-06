@@ -183,7 +183,7 @@ class GameScreen extends Screen<Input> {
       case Input.editSkills:
         ui.push(SkillDialog(game.hero.save));
       case Input.spendExperience:
-        ui.push(ExperienceDialog(game.hero.save));
+        ui.push(ExperienceDialog(game.content, game.hero.save));
       case Input.heroInfo:
         ui.push(HeroInfoDialog(game.content, game.hero.save));
       case Input.drop:

@@ -47,7 +47,7 @@ abstract class Content {
 
   List<Race> get races;
 
-  Iterable<Skill> get skills;
+  List<Skill> get skills;
 
   Map<String, Shop> get shops;
 
