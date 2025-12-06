@@ -6,7 +6,6 @@ import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
 import '../items/item.dart';
-import '../monster/breed.dart';
 import '../monster/monster.dart';
 import 'hero.dart';
 import 'hero_save.dart';
@@ -39,11 +38,6 @@ abstract class Skill implements Comparable<Skill> {
 
   int get maxLevel;
 
-  // TODO: Not used right now. Might be useful for rogue skills.
-  /*
-  Skill get prerequisite => null;
-  */
-
   /// Determines what level [hero] has in this skill.
   int calculateLevel(HeroSave hero) =>
       onCalculateLevel(hero, hero.skills.points(this));
@@ -52,9 +46,6 @@ abstract class Skill implements Comparable<Skill> {
 
   /// Called when the hero takes damage.
   void takeDamage(Hero hero, int damage) {}
-
-  /// Called the first time the hero has seen a monster of [breed].
-  void seeBreed(Hero hero, Breed breed) {}
 
   /// Called when the hero kills [monster].
   void killMonster(Hero hero, Action action, Monster monster) {}
@@ -217,21 +208,6 @@ class SkillSet {
     _levels[skill] = level;
     return true;
   }
-
-  /* TODO: Not used right now. Might be useful for rogue skills.
-  /// Whether the hero can raise the level of this skill.
-  bool canGain(Skill skill) {
-    if (!isDiscovered(skill)) return false;
-    if (this[skill] >= skill.maxLevel) return false;
-
-    // Must have some level of the prerequisite.
-    if (skill.prerequisite != null && this[skill.prerequisite] == 0) {
-      return false;
-    }
-
-    return true;
-  }
-  */
 
   /// Whether the hero is aware of the existence of this skill.
   bool isDiscovered(Skill skill) => _levels.containsKey(skill);

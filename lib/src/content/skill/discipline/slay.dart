@@ -1,3 +1,5 @@
+// TODO: For now, slaying isn't a learnable skill.
+/*
 import '../../../engine.dart';
 import '../../monster/monsters.dart';
 import 'discipline.dart';
@@ -67,3 +69,4 @@ class SlayDiscipline extends Discipline {
   @override
   int baseTrainingNeeded(int level) => 100 * level * level * level;
 }
+*/

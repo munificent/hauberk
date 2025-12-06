@@ -4,7 +4,6 @@ import 'discipline/axe.dart';
 import 'discipline/battle_hardening.dart';
 import 'discipline/club.dart';
 import 'discipline/dual_wield.dart';
-import 'discipline/slay.dart';
 import 'discipline/spear.dart';
 import 'discipline/sword.dart';
 import 'discipline/whip.dart';
@@ -28,7 +27,9 @@ class Skills {
       Swordfighting(),
       WhipMastery(),
 
+      // TODO: Getting rid of these as skills at least for now.
       // Slays.
+      /*
       SlayDiscipline("Animals", "animal"),
       SlayDiscipline("Bugs", "bug"),
       SlayDiscipline("Dragons", "dragon"),
@@ -40,6 +41,7 @@ class Skills {
       SlayDiscipline("Plants", "plant"),
       SlayDiscipline("Saurians", "saurian"),
       SlayDiscipline("Undead", "undead"),
+      */
     ],
 
     // Spells.

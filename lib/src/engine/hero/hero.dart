@@ -390,14 +390,6 @@ class Hero extends Actor {
       // (so that sneak play-style still lets the player gain levels), do that
       // here.
       lore.seeBreed(monster.breed);
-
-      // If this is the first time we've seen this breed, see if that unlocks
-      // a slaying skill for it.
-      if (lore.seenBreed(monster.breed) == 1) {
-        for (var skill in _allSkills) {
-          skill.seeBreed(this, monster.breed);
-        }
-      }
     }
   }
 
