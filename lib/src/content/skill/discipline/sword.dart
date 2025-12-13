@@ -29,7 +29,7 @@ class Swordfighting extends MasterySkill {
     if (swords == 0) return null;
 
     // TODO: Should the parrying ability depend on the sword's damage?
-
+    // TODO: Return a separate defense for each sword if dual wielding.
     // Dual-wielding swords doubles the parry.
     return Defense(_parryDefense(level) * swords, "{1} parr[y|ies] {2}.");
   }

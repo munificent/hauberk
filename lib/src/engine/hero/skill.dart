@@ -29,10 +29,8 @@ abstract class Skill implements Comparable<Skill> {
   String levelDescription(int level);
 
   /// The amount of experience to increase the skill to [level] from the
-  /// previous level or `null` if it can't be raised to that level.
-  int? experienceCost(HeroSave hero, int level) {
-    if (level > maxLevel) return null;
-
+  /// previous level.
+  int experienceCost(HeroSave hero, int level) {
     // TODO: Implement for real.
     return 1234;
   }

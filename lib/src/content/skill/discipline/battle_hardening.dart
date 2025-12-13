@@ -2,7 +2,7 @@ import '../../../engine.dart';
 
 class BattleHardening extends Skill {
   @override
-  int get maxLevel => 40;
+  int get maxLevel => 20;
 
   @override
   String get description =>
@@ -13,7 +13,7 @@ class BattleHardening extends Skill {
   String get name => "Battle Hardening";
 
   @override
-  int modifyArmor(HeroSave hero, int level, int armor) => armor + level;
+  int modifyArmor(HeroSave hero, int level, int armor) => armor + level * 2;
 
   @override
   String levelDescription(int level) => "Increases armor by $level.";

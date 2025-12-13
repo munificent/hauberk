@@ -98,9 +98,8 @@ class GameContent implements Content {
     HeroClass? heroClass,
     bool permadeath = false,
   }) {
-    race ??= Races.human;
-    heroClass ??= Classes.adventurer;
-
+    race ??= Races.all.firstWhere((race) => race.name == "Human");
+    heroClass ??= Classes.all.first;
     var hero = HeroSave.create(name, race, heroClass, permadeath: permadeath);
 
     // TODO: Instead of giving the player access to all shops at once, consider

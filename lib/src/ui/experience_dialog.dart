@@ -35,12 +35,12 @@ class ExperienceDialog extends Screen<Input> {
     if (_selectedStat case var stat?) {
       if (stat.baseValue == Stat.baseMax) return false;
       var cost = stat.experienceCost(_hero.save);
-      return cost != null && _hero.experience >= cost;
+      return _hero.experience >= cost;
     } else if (_selectedSkill case var skill?) {
       var level = _hero.skills.level(skill);
-      if (level == skill.maxLevel) return false;
+      if (level == _hero.save.heroClass.skillCap(skill)) return false;
       var cost = skill.experienceCost(_hero.save, level + 1);
-      return cost != null && _hero.experience >= cost;
+      return _hero.experience >= cost;
     } else {
       return false;
     }
@@ -76,11 +76,11 @@ class ExperienceDialog extends Screen<Input> {
       case KeyCode.g:
         if (_canRaise) {
           if (_selectedStat case var stat?) {
-            _hero.experience -= stat.experienceCost(_hero.save)!;
+            _hero.experience -= stat.experienceCost(_hero.save);
             stat.refresh(_hero.save, stat.baseValue + 1);
           } else if (_selectedSkill case var skill?) {
             var level = _hero.skills.level(skill);
-            _hero.experience -= skill.experienceCost(_hero.save, level + 1)!;
+            _hero.experience -= skill.experienceCost(_hero.save, level + 1);
             _hero.skills.setLevel(skill, level + 1);
           }
           _hero.refreshProperties();
@@ -141,9 +141,7 @@ class ExperienceDialog extends Screen<Input> {
 
     Draw.helpKeys(terminal, {
       "↕": "Change selection",
-      if (_selectedStat case var stat? when _canRaise) "G": "Gain ${stat.name}",
-      if (_selectedSkill case var skill? when _canRaise)
-        "G": "Gain ${skill.name}",
+      if (_canRaise) "G": "Gain ${_selectedStat != null ? "stat" : "skill"}",
       "`": "Exit",
     }, "You can spend ${_hero.experience} experience");
   }
@@ -168,6 +166,7 @@ class ExperienceDialog extends Screen<Input> {
         i,
         stat.name,
         level: stat.value,
+        maxLevel: Stat.baseMax,
         cost: stat.experienceCost(_hero.save),
         selected: i == _selectedIndex,
       );
@@ -189,6 +188,7 @@ class ExperienceDialog extends Screen<Input> {
         i,
         skill.name,
         level: level,
+        maxLevel: _hero.save.heroClass.skillCap(skill),
         cost: skill.experienceCost(_hero.save, level + 1),
         selected: i == _selectedIndex - Stat.values.length,
       );
@@ -202,7 +202,8 @@ class ExperienceDialog extends Screen<Input> {
     int i,
     String name, {
     required int level,
-    required int? cost,
+    required int maxLevel,
+    required int cost,
     required bool selected,
   }) {
     var y = i * 2 + 3;
@@ -214,18 +215,21 @@ class ExperienceDialog extends Screen<Input> {
       i == 0 ? darkCoolGray : darkerCoolGray,
     );
 
-    var color = selected ? UIHue.selection : UIHue.primary;
+    var color = switch (null) {
+      _ when selected => UIHue.selection,
+      _ when level < maxLevel && cost <= _hero.experience => UIHue.primary,
+      _ when maxLevel == 0 => UIHue.disabled,
+      _ => UIHue.text,
+    };
+
     terminal.writeAt(2, y, name, color);
     terminal.writeAt(27, y, level.toString().padLeft(3), color);
-    if (cost != null) {
-      terminal.writeAt(
-        31,
-        y,
-        formatNumber(cost).padLeft(8),
-        cost <= _hero.experience ? color : UIHue.disabled,
-      );
+    if (level < maxLevel) {
+      terminal.writeAt(31, y, formatNumber(cost).padLeft(8), color);
+    } else if (maxLevel > 0) {
+      terminal.writeAt(31, y, " (Maxed)", color);
     } else {
-      terminal.writeAt(31, y, ' (Maxed)', UIHue.disabled);
+      terminal.writeAt(31, y, " (Can't)", color);
     }
   }
 
@@ -351,7 +355,8 @@ class ExperienceDialog extends Screen<Input> {
       );
     }
 
-    if (level < skill.maxLevel) {
+    var maxLevel = _hero.save.heroClass.skillCap(skill);
+    if (level < maxLevel) {
       terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
       Draw.text(
         terminal,
@@ -364,7 +369,7 @@ class ExperienceDialog extends Screen<Input> {
 
     terminal.writeAt(1, 30, "Level:", UIHue.secondary);
     terminal.writeAt(9, 30, level.toString().padLeft(4), UIHue.text);
-    Draw.meter(terminal, 14, 30, 25, level, skill.maxLevel, red, maroon);
+    Draw.meter(terminal, 14, 30, 25, level, maxLevel, red, maroon);
   }
 
   void _changeSelection(int offset) {

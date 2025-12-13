@@ -114,8 +114,7 @@ abstract class StatBase extends Property<int> {
   }
 
   // TODO: Passing in save is kind of weird.
-  int? experienceCost(HeroSave save) {
-    if (baseValue >= Stat.baseMax) return null;
+  int experienceCost(HeroSave save) {
     var total =
         save.strength.baseValue +
         save.agility.baseValue +

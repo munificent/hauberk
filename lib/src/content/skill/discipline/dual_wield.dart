@@ -5,8 +5,6 @@ class DualWield extends Skill {
   @override
   int get maxLevel => 10;
 
-  static double _heftModifier(int level) => lerpDouble(level, 1, 10, 1.5, 0.7);
-
   @override
   String get name => "Dual-wield";
 
@@ -29,4 +27,6 @@ class DualWield extends Skill {
 
     return heftModifier;
   }
+
+  double _heftModifier(int level) => lerpDouble(level, 1, maxLevel, 1.0, 0.5);
 }
