@@ -234,8 +234,12 @@ class Vitality extends StatBase {
 
 class Intellect extends StatBase {
   static int maxFocusAt(int value) {
-    if (value <= 10) return lerpInt(value, 1, 10, 40, 100);
-    return lerpInt(value, 10, 60, 100, 200);
+    if (value <= 10) return lerpInt(value, 1, 10, 0, 20);
+    return lerpInt(value, 10, 50, 20, 200);
+  }
+
+  static int spellCountAt(int value) {
+    return lerpInt(value, 10, 40, 0, 15);
   }
 
   @override
@@ -248,6 +252,8 @@ class Intellect extends StatBase {
   String get _loseAdjective => "stupid";
 
   int get maxFocus => maxFocusAt(value);
+
+  int get spellCount => spellCountAt(value);
 
   double spellFocusScale(int complexity) {
     var relative = value - complexity.clamp(0, 50);

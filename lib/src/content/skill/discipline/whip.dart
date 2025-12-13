@@ -32,7 +32,8 @@ class WhipMastery extends MasterySkill {
   }
 }
 
-class WhipCrackAbility extends TargetAbility with MasteryAbility {
+// TODO: Probably want to make this more powerful and give it a focus cost.
+class WhipCrackAbility extends MasteryAbility with TargetAbility {
   @override
   final Skill skill;
 

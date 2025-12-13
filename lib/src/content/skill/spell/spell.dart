@@ -1,56 +1,46 @@
-// TODO: Spells aren't working right now.
-/*
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
+import '../skills.dart';
+import 'conjuring.dart';
+import 'divination.dart';
+import 'sorcery.dart';
 
-/// Spells are the primary skill for mages.
-///
-/// Spells do not need to be explicitly trained or learned. As soon as one is
-/// discovered, as long as it's not too complex, the hero can use it.
-abstract class Spell extends Skill with UsableSkill {
-  @override
-  String levelDescription(int level) =>
-      'TODO: Implement Spell.levelDescription().';
+abstract final class Spells {
+  static final List<Spell> all = [
+    ...conjuringSpells(Skills.find("Conjuring")),
+    ...divinationSpells(Skills.find("Divination")),
+    ...sorcerySpells(Skills.find("Sorcery")),
+  ];
 
-  /// Spells are not leveled.
-  @override
-  int get maxLevel => 1;
+  static final Map<String, Spell> _byName = {
+    for (var spell in all) spell.name: spell,
+  };
 
-  /// The base focus cost to cast the spell.
-  int get baseFocusCost;
-
-  /// The amount of [Intellect] the hero must possess to use this spell
-  /// effectively, ignoring class proficiency.
-  int get baseComplexity;
-
-  /// The base damage of the spell, or 0 if not relevant.
-  int get damage => 0;
-
-  /// The range of the spell, or 0 if not relevant.
-  int get range => 0;
-
-  @override
-  int focusCost(HeroSave hero, int level) {
-    var cost = baseFocusCost.toDouble();
-
-    // Intellect makes spells cheaper, relative to their complexity.
-    cost *= hero.intellect.spellFocusScale(complexity(hero.heroClass));
-
-    // Spell proficiency lowers cost.
-    cost /= hero.heroClass.proficiency(this);
-
-    // Round up so that it always costs at least 1.
-    return cost.ceil();
+  static Spell find(String name) {
+    var spell = _byName[name];
+    if (spell == null) throw ArgumentError("Unknown spell '$name'.");
+    return spell;
   }
-
-  int complexity(HeroClass heroClass) =>
-      ((baseComplexity - 9) / heroClass.proficiency(this)).round() + 9;
-
-  int getRange(Game game) => range;
 }
 
-class ActionSpell extends Spell with ActionSkill {
+class SpellSchool extends Skill {
+  @override
+  int get maxLevel => 10;
+
+  @override
+  final String name;
+
+  SpellSchool(this.name);
+
+  @override
+  String get description => "TODO";
+
+  @override
+  String levelDescription(int level) => "TODO";
+}
+
+class ActionSpell extends Spell with ActionAbility {
   @override
   final String name;
 
@@ -58,35 +48,34 @@ class ActionSpell extends Spell with ActionSkill {
   final String description;
 
   @override
-  final int baseComplexity;
+  final Skill skill;
 
   @override
-  final int baseFocusCost;
+  final int spellLevel;
 
-  @override
-  final int damage;
+  final int _focusCost;
 
-  @override
-  final int range;
-
-  final Action Function(ActionSpell spell, Game game, int level) _getAction;
+  final Action Function(ActionSpell spell, Game game, int schoolLevel)
+  _getAction;
 
   ActionSpell(
+    this.skill,
     this.name,
     this._getAction, {
     required this.description,
-    required int complexity,
+    required this.spellLevel,
     required int focus,
-    this.damage = 0,
-    this.range = 0,
-  }) : baseComplexity = complexity,
-       baseFocusCost = focus;
+  }) : _focusCost = focus;
 
   @override
-  Action onGetAction(Game game, int level) => _getAction(this, game, level);
+  int focusCost(HeroSave hero, int skillLevel) => _focusCost;
+
+  @override
+  Action onGetAction(Game game, int schoolLevel) =>
+      _getAction(this, game, schoolLevel);
 }
 
-class TargetSpell extends Spell with TargetSkill {
+class TargetSpell extends Spell with TargetAbility {
   @override
   final String name;
 
@@ -94,33 +83,35 @@ class TargetSpell extends Spell with TargetSkill {
   final String description;
 
   @override
-  final int baseComplexity;
+  final Skill skill;
 
   @override
-  final int baseFocusCost;
+  final int spellLevel;
 
-  @override
-  final int damage;
+  final int _focusCost;
 
-  @override
   final int range;
 
   final Action Function(TargetSpell spell, Game game, int level, Vec target)
   _getAction;
 
   TargetSpell(
+    this.skill,
     this.name,
     this._getAction, {
     required this.description,
-    required int complexity,
+    required this.spellLevel,
     required int focus,
-    required this.damage,
     required this.range,
-  }) : baseComplexity = complexity,
-       baseFocusCost = focus;
+  }) : _focusCost = focus;
+
+  @override
+  int focusCost(HeroSave hero, int skillLevel) => _focusCost;
 
   @override
   Action onGetTargetAction(Game game, int level, Vec target) =>
       _getAction(this, game, level, target);
+
+  @override
+  int getRange(Game game) => range;
 }
-*/

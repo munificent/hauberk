@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -28,10 +30,16 @@ class Hero extends Actor {
 
   Behavior? _behavior;
 
+  // TODO: These properties are never actually read. They're only used to log
+  // messages when the calculated value changes. Everything else that uses the
+  // value gets it directly. This feels weird.
+
   /// Damage scale for wielded weapons based on strength, their combined heft,
   /// skills, etc.
   final Property<double> _heftDamageScale = Property();
-  double get heftDamageScale => _heftDamageScale.value;
+
+  /// How many spells the hero is able to know, based on intellect.
+  final Property<int> _spellCount = Property();
 
   /// How full the hero is.
   ///
@@ -417,6 +425,36 @@ class Hero extends Actor {
         save.log.error("You are too weak to effectively wield $weaponList.");
       } else if (heftScale >= 1.0 && previous < 1.0) {
         save.log.message("You feel comfortable wielding $weaponList.");
+      }
+    });
+
+    var spellCount = intellect.spellCount;
+    _spellCount.update(spellCount, (previous) {
+      // Let the player know if they lost or regained any previously learned
+      // spells.
+      var knownBefore = math.min(save.learnedSpells.length, previous);
+      var knownAfter = math.min(save.learnedSpells.length, spellCount);
+      if (knownAfter < knownBefore) {
+        for (var i = knownBefore - 1; i >= knownAfter; i--) {
+          var spell = save.learnedSpells[i];
+          save.log.error("You can't remember how to cast $spell!");
+        }
+      } else if (knownAfter > knownBefore) {
+        for (var i = knownBefore; i < knownAfter; i++) {
+          var spell = save.learnedSpells[i];
+          save.log.message("You remember how to cast $spell!");
+        }
+      }
+
+      // Let the player know if they have room to learn any new spells.
+      var availableBefore = math.max(0, previous - save.learnedSpells.length);
+      var availableAfter = math.max(0, spellCount - save.learnedSpells.length);
+      if (availableBefore != availableAfter) {
+        if (availableAfter == 1) {
+          save.log.gain("You can learn 1 spell.");
+        } else {
+          save.log.gain("You can learn $availableAfter spells.");
+        }
       }
     });
 

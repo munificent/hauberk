@@ -30,7 +30,8 @@ class ClubMastery extends MasterySkill {
   }
 }
 
-class ClubBashAbility extends DirectionAbility with MasteryAbility {
+// TODO: Probably want to make this more powerful and give it a focus cost.
+class ClubBashAbility extends MasteryAbility with DirectionAbility {
   @override
   final Skill skill;
 

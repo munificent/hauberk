@@ -30,6 +30,7 @@ import 'panel/log_panel.dart';
 import 'panel/sidebar_panel.dart';
 import 'panel/stage_panel.dart';
 import 'select_depth_popup.dart';
+import 'spell_dialog.dart';
 import 'storage.dart';
 import 'target_dialog.dart';
 import 'wizard_dialog.dart';
@@ -178,15 +179,13 @@ class GameScreen extends Screen<Input> {
       case Input.forfeit:
         ui.push(ForfeitPopup(isTown: game.depth == 0));
       case Input.useAbility:
-        ui.push(AbilityDialog(this));
-      case Input.editSkills:
-        // TODO: Disabled since spells aren't working yet.
-        /*
-        ui.push(SkillDialog(game.content, game.hero.save));
-        */
-        break;
+        ui.push(AbilityDialog(this, showSpells: false));
+      case Input.castSpell:
+        ui.push(AbilityDialog(this, showSpells: true));
+      case Input.editSpells:
+        ui.push(SpellDialog(game.content, game.hero));
       case Input.spendExperience:
-        ui.push(ExperienceDialog(game.content, game.hero.save));
+        ui.push(ExperienceDialog(game.content, game.hero));
       case Input.heroInfo:
         ui.push(HeroInfoDialog(game.content, game.hero.save));
       case Input.drop:

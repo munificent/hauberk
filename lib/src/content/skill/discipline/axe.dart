@@ -32,7 +32,8 @@ class AxeMastery extends MasterySkill {
   }
 }
 
-class AxeSweepAbility extends DirectionAbility with MasteryAbility {
+// TODO: Probably want to make this more powerful and give it a focus cost.
+class AxeSweepAbility extends MasteryAbility with DirectionAbility {
   @override
   final Skill skill;
 

@@ -7,53 +7,43 @@ import 'discipline/dual_wield.dart';
 import 'discipline/spear.dart';
 import 'discipline/sword.dart';
 import 'discipline/whip.dart';
-// TODO: Spells aren't working right now.
-/*
-import 'spell/conjuring.dart';
-import 'spell/divination.dart';
-import 'spell/sorcery.dart';
-*/
+import 'spell/spell.dart';
 
 class Skills {
   /// All of the known skills.
   static final List<Skill> all = [
     // Disciplines.
-    ...[
-      BattleHardening(),
-      DualWield(),
+    BattleHardening(),
+    DualWield(),
 
-      // Masteries.
-      Archery(),
-      AxeMastery(),
-      ClubMastery(),
-      SpearMastery(),
-      Swordfighting(),
-      WhipMastery(),
+    // Masteries.
+    Archery(),
+    AxeMastery(),
+    ClubMastery(),
+    SpearMastery(),
+    Swordfighting(),
+    WhipMastery(),
 
-      // TODO: Getting rid of these as skills at least for now.
-      // Slays.
-      /*
-      SlayDiscipline("Animals", "animal"),
-      SlayDiscipline("Bugs", "bug"),
-      SlayDiscipline("Dragons", "dragon"),
-      SlayDiscipline("Fae Folk", "fae"),
-      SlayDiscipline("Goblins", "goblin"),
-      SlayDiscipline("Humans", "human"),
-      SlayDiscipline("Jellies", "jelly"),
-      SlayDiscipline("Kobolds", "kobold"),
-      SlayDiscipline("Plants", "plant"),
-      SlayDiscipline("Saurians", "saurian"),
-      SlayDiscipline("Undead", "undead"),
-      */
-    ],
-
-    // TODO: Spells aren't working right now.
+    // TODO: Getting rid of these as skills at least for now.
+    // Slays.
     /*
-    // Spells.
-    ...divinationSpells(),
-    ...conjuringSpells(),
-    ...sorcerySpells(),
+    SlayDiscipline("Animals", "animal"),
+    SlayDiscipline("Bugs", "bug"),
+    SlayDiscipline("Dragons", "dragon"),
+    SlayDiscipline("Fae Folk", "fae"),
+    SlayDiscipline("Goblins", "goblin"),
+    SlayDiscipline("Humans", "human"),
+    SlayDiscipline("Jellies", "jelly"),
+    SlayDiscipline("Kobolds", "kobold"),
+    SlayDiscipline("Plants", "plant"),
+    SlayDiscipline("Saurians", "saurian"),
+    SlayDiscipline("Undead", "undead"),
     */
+
+    // Spell schools.
+    SpellSchool("Conjuring"),
+    SpellSchool("Divination"),
+    SpellSchool("Sorcery"),
   ];
 
   static final Map<String, Skill> _byName = {

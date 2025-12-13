@@ -1,18 +1,16 @@
-// TODO: Spells aren't working right now.
-/*
+import '../../../engine.dart';
 import '../../action/detection.dart';
 import 'spell.dart';
 
-List<Spell> divinationSpells() {
+List<Spell> divinationSpells(Skill divinationSchool) {
   return [
     ActionSpell(
+      divinationSchool,
       "Sense Items",
       description: "Detect nearby items.",
-      complexity: 17,
+      spellLevel: 1,
       focus: 40,
-      range: 20,
-      (spell, game, level) => DetectAction([DetectType.item], spell.range),
+      (spell, game, level) => DetectAction([DetectType.item], 20),
     ),
   ];
 }
-*/

@@ -12,6 +12,7 @@ import 'content/item/shops.dart';
 import 'content/monster/monsters.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
+import 'content/skill/spell/spell.dart';
 import 'content/stage/architect.dart';
 import 'content/stage/architectural_style.dart';
 import 'content/stage/town.dart';
@@ -58,6 +59,9 @@ class GameContent implements Content {
   Skill findSkill(String name) => Skills.find(name);
 
   @override
+  Spell findSpell(String name) => Spells.find(name);
+
+  @override
   Iterable<Breed> get breeds => Monsters.breeds.all;
 
   @override
@@ -77,6 +81,9 @@ class GameContent implements Content {
 
   @override
   List<Skill> get skills => Skills.all;
+
+  @override
+  List<Spell> get spells => Spells.all;
 
   @override
   Map<String, Shop> get shops => Shops.all;

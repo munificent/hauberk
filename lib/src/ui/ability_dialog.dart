@@ -9,16 +9,32 @@ import 'draw.dart';
 import 'game_screen.dart';
 import 'input.dart';
 
+/// Selects an [Ability] to perform.
 class AbilityDialog extends Screen<Input> {
   final GameScreen _gameScreen;
+
+  // TODO: Consider whether it's a better UX to merge these dialogs.
+  /// If `true`, the dialog is for selecting a spell to cast, otherwise it's
+  /// for selecting a non-spell ability.
+  final bool _showSpells;
+
   final List<Ability> _abilities = [];
 
   @override
   bool get isTransparent => true;
 
-  AbilityDialog(this._gameScreen) {
-    for (var skill in _gameScreen.game.hero.skills.acquired) {
-      if (skill.ability case var ability?) _abilities.add(ability);
+  AbilityDialog(this._gameScreen, {required bool showSpells})
+    : _showSpells = showSpells {
+    var hero = _gameScreen.game.hero;
+
+    if (_showSpells) {
+      for (var spell in hero.save.learnedSpells) {
+        _abilities.add(spell);
+      }
+    } else {
+      for (var skill in hero.skills.acquired) {
+        if (skill.ability case var ability?) _abilities.add(ability);
+      }
     }
   }
 
@@ -55,7 +71,7 @@ class AbilityDialog extends Screen<Input> {
   @override
   void render(Terminal terminal) {
     Draw.helpKeys(terminal, {
-      "A-Z": "Select ability",
+      "A-Z": _showSpells ? "Select spell" : "Select ability",
       // "1-9": "Bind quick key",
       "`": "Exit",
     });
@@ -85,9 +101,11 @@ class AbilityDialog extends Screen<Input> {
       terminal,
       height: height,
       color: UIHue.selection,
-      label: "Use which ability?",
+      label: _showSpells ? "Cast which spell?" : "Use which ability?",
       labelSelected: true,
     );
+
+    terminal.writeAt(terminal.width - 7, 0, ' Focus', UIHue.selection);
 
     terminal = terminal.rect(1, 1, terminal.width - 2, terminal.height - 2);
 
@@ -95,7 +113,9 @@ class AbilityDialog extends Screen<Input> {
       terminal.writeAt(
         0,
         0,
-        "(You don't have any abilities yet.)",
+        _showSpells
+            ? "(You don't know any spells)"
+            : "(You don't have any abilities)",
         UIHue.disabled,
       );
       return;
@@ -104,6 +124,9 @@ class AbilityDialog extends Screen<Input> {
     // TODO: Handle this being taller than the screen.
     for (var y = 0; y < _abilities.length; y++) {
       var ability = _abilities[y];
+      var skillLevel = _gameScreen.game.hero.skills.level(ability.skill);
+      var focusCost = ability.focusCost(_gameScreen.game.hero.save, skillLevel);
+
       if (ability.unusableReason(_gameScreen.game) case var reason?) {
         terminal.writeAt(
           terminal.width - reason.length - 2,
@@ -112,6 +135,14 @@ class AbilityDialog extends Screen<Input> {
           UIHue.disabled,
         );
         terminal.writeAt(3, y, ability.name, UIHue.disabled);
+      } else if (_gameScreen.game.hero.focus < focusCost) {
+        terminal.writeAt(3, y, ability.name, UIHue.disabled);
+        terminal.writeAt(
+          terminal.width - 3,
+          y,
+          focusCost.toString().padLeft(3),
+          Color.red,
+        );
       } else {
         terminal.writeAt(0, y, " )   ", UIHue.disabled);
         terminal.writeAt(
@@ -121,6 +152,12 @@ class AbilityDialog extends Screen<Input> {
           UIHue.selection,
         );
         terminal.writeAt(3, y, ability.name, UIHue.primary);
+        terminal.writeAt(
+          terminal.width - 3,
+          y,
+          focusCost.toString().padLeft(3),
+          UIHue.text,
+        );
       }
     }
   }

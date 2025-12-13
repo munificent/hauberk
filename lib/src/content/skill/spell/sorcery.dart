@@ -1,5 +1,3 @@
-// TODO: Spells aren't working right now.
-/*
 import '../../../engine.dart';
 import '../../action/barrier.dart';
 import '../../action/bolt.dart';
@@ -8,20 +6,20 @@ import '../../action/ray.dart';
 import '../../elements.dart';
 import 'spell.dart';
 
-List<Spell> sorcerySpells() {
+List<Spell> sorcerySpells(Skill sorcerySkill) {
   return [
     TargetSpell(
+      sorcerySkill,
       "Icicle",
       description: "Launches a spear-like icicle.",
-      complexity: 10,
+      spellLevel: 1,
       focus: 12,
-      damage: 8,
       range: 8,
       (spell, game, level, target) {
         var attack = Attack(
           Noun("the icicle"),
           "pierce",
-          spell.damage,
+          8,
           spell.range,
           Elements.cold,
         );
@@ -29,17 +27,17 @@ List<Spell> sorcerySpells() {
       },
     ),
     TargetSpell(
+      sorcerySkill,
       "Brilliant Beam",
       description: "Emits a blinding beam of radiance.",
-      complexity: 14,
+      spellLevel: 2,
       focus: 24,
-      damage: 10,
       range: 12,
       (spell, game, level, target) {
         var attack = Attack(
           Noun("the light"),
           "sear",
-          spell.damage,
+          10,
           spell.range,
           Elements.light,
         );
@@ -47,20 +45,13 @@ List<Spell> sorcerySpells() {
       },
     ),
     ActionSpell(
+      sorcerySkill,
       "Windstorm",
       description: "Summons a blast of air, spreading out from the sorceror.",
-      complexity: 18,
+      spellLevel: 3,
       focus: 36,
-      damage: 10,
-      range: 6,
       (spell, game, level) {
-        var attack = Attack(
-          Noun("the wind"),
-          "blast",
-          spell.damage,
-          spell.range,
-          Elements.air,
-        );
+        var attack = Attack(Noun("the wind"), "blast", 10, 6, Elements.air);
         return FlowAction(
           game.hero.pos,
           attack.createHit(),
@@ -69,17 +60,17 @@ List<Spell> sorcerySpells() {
       },
     ),
     TargetSpell(
+      sorcerySkill,
       "Fire Barrier",
       description: "Creates a wall of fire.",
-      complexity: 30,
+      spellLevel: 4,
       focus: 45,
-      damage: 10,
       range: 8,
       (spell, game, level, target) {
         var attack = Attack(
           Noun("the fire"),
           "burn",
-          spell.damage,
+          10,
           spell.range,
           Elements.fire,
         );
@@ -87,18 +78,17 @@ List<Spell> sorcerySpells() {
       },
     ),
     ActionSpell(
+      sorcerySkill,
       "Tidal Wave",
       description: "Summons a giant tidal wave.",
-      complexity: 40,
+      spellLevel: 5,
       focus: 70,
-      damage: 50,
-      range: 15,
       (spell, game, level) {
         var attack = Attack(
           Noun("the wave"),
           "inundate",
-          spell.damage,
-          spell.range,
+          50,
+          15,
           Elements.water,
         );
         return FlowAction(
@@ -111,4 +101,3 @@ List<Spell> sorcerySpells() {
     ),
   ];
 }
-*/

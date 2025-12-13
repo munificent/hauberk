@@ -4,6 +4,7 @@ import '../core/option.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
 import '../items/shop.dart';
+import 'ability.dart';
 import 'hero.dart';
 import 'hero_class.dart';
 import 'lore.dart';
@@ -42,7 +43,13 @@ class HeroSave {
 
   int experience = 0;
 
-  SkillSet skills;
+  final SkillSet skills;
+
+  /// The [Spell]s the [Hero] has learned in the order they learned them.
+  ///
+  /// Note that the [Hero] may not currently "know" all of the spells in this
+  /// list if their [Intellect] has been lowered.
+  final List<Spell> learnedSpells;
 
   /// How much gold the hero has.
   int gold = Option.heroGoldStart;
@@ -104,6 +111,7 @@ class HeroSave {
        crucible = Inventory(ItemLocation.crucible, Option.crucibleCapacity),
        shops = {},
        skills = SkillSet(),
+       learnedSpells = [],
        log = Log(),
        lore = Lore() {
     // TODO: Give new heroes some starting stat points.
@@ -125,6 +133,7 @@ class HeroSave {
     this.shops,
     this.experience,
     this.skills,
+    this.learnedSpells,
     this.log,
     this.lore,
     this.gold,
@@ -155,6 +164,7 @@ class HeroSave {
     shops,
     experience,
     skills.clone(),
+    [...learnedSpells],
     // Don't clone the log. The log is persistent even when the Hero dies in
     // the dungeon, so all HeroSaves share the same object.
     log,
@@ -194,4 +204,17 @@ class HeroSave {
 
     return bonus;
   }
+
+  /// Get the current status of the [hero]'s knowledge of [spell].
+  SpellStatus spellStatus(Spell spell) =>
+      switch (learnedSpells.indexOf(spell)) {
+        -1 when intellect.spellCount - learnedSpells.length <= 0 =>
+          SpellStatus.notEnoughIntellect,
+        -1 when spell.spellLevel > skills.level(spell.skill) =>
+          SpellStatus.notEnoughSchool,
+        -1 => SpellStatus.learnable,
+        var spellIndex when spellIndex >= intellect.spellCount =>
+          SpellStatus.forgotten,
+        _ => SpellStatus.known,
+      };
 }

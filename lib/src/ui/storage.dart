@@ -113,18 +113,8 @@ class Storage {
         // Defaults are to support legacy saves.
 
         var experience = heroData['experience'] as int;
-
-        var levels = <Skill, int>{};
-        var skills = heroData['skills'] as Map<String, dynamic>?;
-        if (skills != null) {
-          for (var name in skills.keys) {
-            var skill = content.findSkill(name);
-            levels[skill] = skills[name] as int;
-          }
-        }
-
-        var skillSet = SkillSet.from(levels);
-
+        var skills = _loadSkills(heroData['skills']);
+        var spells = _loadSpells(heroData['spells']);
         var log = _loadLog(heroData['log']);
         var lore = _loadLore(heroData['lore'] as Map<String, dynamic>);
 
@@ -143,7 +133,8 @@ class Storage {
           crucible,
           shops,
           experience,
-          skillSet,
+          skills,
+          spells,
           log,
           lore,
           gold,
@@ -206,6 +197,20 @@ class Storage {
       ),
       _ => null,
     };
+  }
+
+  SkillSet _loadSkills(Map<String, dynamic>? data) {
+    return SkillSet.from({
+      if (data != null)
+        for (var name in data.keys) content.findSkill(name): data[name] as int,
+    });
+  }
+
+  List<Spell> _loadSpells(List<dynamic>? data) {
+    return [
+      if (data != null)
+        for (var name in data) content.findSpell(name as String),
+    ];
   }
 
   Log _loadLog(Object? data) {
@@ -322,6 +327,7 @@ class Storage {
               for (var skill in hero.skills.acquired)
                 skill.name: hero.skills.level(skill),
             },
+            'spells': [for (var spell in hero.learnedSpells) spell.name],
             'log': _saveLog(hero.log),
             'lore': _saveLore(hero.lore),
             'gold': hero.gold,

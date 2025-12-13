@@ -34,7 +34,7 @@ class Archery extends Skill {
   }
 }
 
-class FireArrowAbility extends TargetAbility {
+class FireArrowAbility extends Ability with TargetAbility {
   @override
   final Skill skill;
 

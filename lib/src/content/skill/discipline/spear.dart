@@ -31,7 +31,8 @@ class SpearMastery extends MasterySkill {
   }
 }
 
-class SpearStabAbility extends DirectionAbility with MasteryAbility {
+// TODO: Probably want to make this more powerful and give it a focus cost.
+class SpearStabAbility extends MasteryAbility with DirectionAbility {
   @override
   final Skill skill;
 

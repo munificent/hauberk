@@ -1,37 +1,35 @@
-// TODO: Spells aren't working right now.
-/*
+import '../../../engine.dart';
 import '../../action/teleport.dart';
 import 'spell.dart';
 
-List<Spell> conjuringSpells() {
+List<Spell> conjuringSpells(Skill conjuringSkill) {
   // TODO: These spells are all kind of similar and boring. Might be good if
   // they had some differences. Maybe some could try to teleport specifically
   // far away from monsters, etc.
   return [
     ActionSpell(
+      conjuringSkill,
       "Flee",
       description: "Teleports the hero a short distance away.",
-      complexity: 10,
+      spellLevel: 1,
       focus: 16,
-      range: 8,
-      (spell, game, level) => TeleportAction(spell.range),
+      (spell, game, level) => TeleportAction(8),
     ),
     ActionSpell(
+      conjuringSkill,
       "Escape",
       description: "Teleports the hero away.",
-      complexity: 15,
+      spellLevel: 2,
       focus: 25,
-      range: 16,
-      (spell, game, level) => TeleportAction(spell.range),
+      (spell, game, level) => TeleportAction(16),
     ),
     ActionSpell(
+      conjuringSkill,
       "Disappear",
       description: "Moves the hero across the dungeon.",
-      complexity: 30,
+      spellLevel: 4,
       focus: 50,
-      range: 100,
-      (spell, game, level) => TeleportAction(spell.range),
+      (spell, game, level) => TeleportAction(100),
     ),
   ];
 }
-*/

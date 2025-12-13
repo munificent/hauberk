@@ -4,6 +4,7 @@ import '../monster/monster.dart';
 import 'ability.dart';
 import 'hero.dart';
 import 'hero_save.dart';
+import 'stat.dart';
 
 /// An immutable unique skill a hero may learn.
 ///
@@ -68,10 +69,6 @@ abstract class Skill implements Comparable<Skill> {
 /// A collection of [Skill]s and the hero's progress in them.
 class SkillSet {
   /// The levels the hero has gained in each skill.
-  ///
-  /// If a skill is at level zero here, it means the hero has discovered the
-  /// skill, but not gained it. If not present in the map at all, the hero has
-  /// not discovered it.
   final Map<Skill, int> _levels;
 
   SkillSet() : _levels = {};
@@ -81,7 +78,7 @@ class SkillSet {
   /// All the skills the hero has at least one level in.
   Iterable<Skill> get acquired => _levels.keys;
 
-  /// Gets the current level of [skill] or 0 if the skill isn't known.
+  /// Gets the current level of [skill].
   int level(Skill skill) => _levels[skill] ?? 0;
 
   void setLevel(Skill skill, int level) {
@@ -90,4 +87,24 @@ class SkillSet {
   }
 
   SkillSet clone() => SkillSet.from({..._levels});
+}
+
+enum SpellStatus {
+  /// The hero hasn't learned the spell, but could.
+  learnable,
+
+  /// The hero has already learned as many spells as their [Intellect] allows
+  /// so can't learn this (or any other spell) right now.
+  notEnoughIntellect,
+
+  /// The hero's level in the spell's spell school isn't high enough to learn
+  /// this spell.
+  notEnoughSchool,
+
+  /// The hero has learned and currently knows the spell.
+  known,
+
+  /// The hero learned the spell but forgot it because their [Intellect] is
+  /// currently too low.
+  forgotten,
 }

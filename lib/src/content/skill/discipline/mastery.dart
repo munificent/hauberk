@@ -39,7 +39,7 @@ abstract class MasterySkill extends Skill {
   }
 }
 
-mixin MasteryAbility implements Ability {
+abstract class MasteryAbility extends Ability {
   String get weaponType;
 
   @override

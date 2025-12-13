@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
+import '../hero/ability.dart';
 import '../hero/hero_class.dart';
 import '../hero/hero_save.dart';
 import '../hero/lore.dart';
@@ -35,6 +36,8 @@ abstract class Content {
 
   Skill findSkill(String name);
 
+  Spell findSpell(String name);
+
   Iterable<Breed> get breeds;
 
   List<HeroClass> get classes;
@@ -48,6 +51,8 @@ abstract class Content {
   List<Race> get races;
 
   List<Skill> get skills;
+
+  List<Spell> get spells;
 
   Map<String, Shop> get shops;
 

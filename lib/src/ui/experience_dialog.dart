@@ -13,7 +13,7 @@ import 'item/item_renderer.dart';
 /// UI to see and spend experience.
 class ExperienceDialog extends Screen<Input> {
   final Content _content;
-  final HeroSave _hero;
+  final Hero _hero;
 
   int _selectedIndex = 0;
 
@@ -34,12 +34,12 @@ class ExperienceDialog extends Screen<Input> {
   bool get _canRaise {
     if (_selectedStat case var stat?) {
       if (stat.baseValue == Stat.baseMax) return false;
-      var cost = stat.experienceCost(_hero);
+      var cost = stat.experienceCost(_hero.save);
       return cost != null && _hero.experience >= cost;
     } else if (_selectedSkill case var skill?) {
       var level = _hero.skills.level(skill);
       if (level == skill.maxLevel) return false;
-      var cost = skill.experienceCost(_hero, level + 1);
+      var cost = skill.experienceCost(_hero.save, level + 1);
       return cost != null && _hero.experience >= cost;
     } else {
       return false;
@@ -73,18 +73,17 @@ class ExperienceDialog extends Screen<Input> {
     if (shift || alt) return false;
 
     switch (keyCode) {
-      case KeyCode.r:
+      case KeyCode.g:
         if (_canRaise) {
           if (_selectedStat case var stat?) {
-            _hero.experience -= stat.experienceCost(_hero)!;
-            stat.refresh(_hero, stat.baseValue + 1);
-            // TODO: Need to refresh properties here?
+            _hero.experience -= stat.experienceCost(_hero.save)!;
+            stat.refresh(_hero.save, stat.baseValue + 1);
           } else if (_selectedSkill case var skill?) {
             var level = _hero.skills.level(skill);
-            _hero.experience -= skill.experienceCost(_hero, level + 1)!;
+            _hero.experience -= skill.experienceCost(_hero.save, level + 1)!;
             _hero.skills.setLevel(skill, level + 1);
-            // TODO: Need to refresh properties here?
           }
+          _hero.refreshProperties();
           dirty();
         }
         return true;
@@ -142,10 +141,9 @@ class ExperienceDialog extends Screen<Input> {
 
     Draw.helpKeys(terminal, {
       "↕": "Change selection",
-      if (_selectedStat case var stat? when _canRaise)
-        "R": "Raise ${stat.name}",
+      if (_selectedStat case var stat? when _canRaise) "G": "Gain ${stat.name}",
       if (_selectedSkill case var skill? when _canRaise)
-        "R": "Raise ${skill.name}",
+        "G": "Gain ${skill.name}",
       "`": "Exit",
     }, "You can spend ${_hero.experience} experience");
   }
@@ -170,7 +168,7 @@ class ExperienceDialog extends Screen<Input> {
         i,
         stat.name,
         level: stat.value,
-        cost: stat.experienceCost(_hero),
+        cost: stat.experienceCost(_hero.save),
         selected: i == _selectedIndex,
       );
       i++;
@@ -191,7 +189,7 @@ class ExperienceDialog extends Screen<Input> {
         i,
         skill.name,
         level: level,
-        cost: skill.experienceCost(_hero, level + 1),
+        cost: skill.experienceCost(_hero.save, level + 1),
         selected: i == _selectedIndex - Stat.values.length,
       );
 
@@ -262,9 +260,12 @@ class ExperienceDialog extends Screen<Input> {
     _drawStatPanel(
       terminal,
       _hero.intellect,
-      ['Max focus'],
+      ['Max focus', 'Spells'],
       (int value) {
-        return [Intellect.maxFocusAt(value).toString()];
+        return [
+          Intellect.maxFocusAt(value).toString(),
+          Intellect.spellCountAt(value).toString(),
+        ];
       },
       // TODO: Show spell focus scale somehow.
     );
@@ -288,7 +289,7 @@ class ExperienceDialog extends Screen<Input> {
     y++;
 
     if (stat == _hero.strength) {
-      var weightOffset = _hero.strength.weightOffset(_hero).toInt();
+      var weightOffset = _hero.strength.weightOffset(_hero.save).toInt();
       modifiers = (currentValue - stat.baseValue + weightOffset);
       terminal.writeAt(1, y, 'Weight offset:', UIHue.secondary);
       terminal.writeAt(15, y, weightOffset.toString().padLeft(3), UIHue.text);
