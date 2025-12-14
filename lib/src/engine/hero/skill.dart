@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../core/combat.dart';
 import '../items/item.dart';
 import '../monster/monster.dart';
@@ -11,6 +13,13 @@ import 'stat.dart';
 /// This class does not contain how good a hero is at the skill. It is more the
 /// *kind* of skill.
 abstract class Skill implements Comparable<Skill> {
+  static const maxLevel = 20;
+
+  static int experienceCostAt(int baseExperience, int level) {
+    // return (baseExperience * math.pow((level + 1) / 2, 4)).toInt();
+    return (baseExperience * math.pow((level + 2) / 3, 4)).toInt();
+  }
+
   static int _nextSortOrder = 0;
 
   final int _sortOrder = _nextSortOrder++;
@@ -19,7 +28,8 @@ abstract class Skill implements Comparable<Skill> {
 
   String get description;
 
-  int get maxLevel;
+  /// The experience cost to reach level one in this skill.
+  int get baseExperience => 1000;
 
   // TODO: May want this to be per-level at some point if there are skills that
   // grant multiple abilities at different levels.
@@ -31,8 +41,7 @@ abstract class Skill implements Comparable<Skill> {
   /// The amount of experience to increase the skill to [level] from the
   /// previous level.
   int experienceCost(HeroSave hero, int level) {
-    // TODO: Implement for real.
-    return 1234;
+    return experienceCostAt(baseExperience, level);
   }
 
   /// Gives the skill a chance to modify the melee [hit] the [hero] is about to
@@ -80,7 +89,7 @@ class SkillSet {
   int level(Skill skill) => _levels[skill] ?? 0;
 
   void setLevel(Skill skill, int level) {
-    assert(level > 0 && level <= skill.maxLevel);
+    assert(level > 0 && level <= Skill.maxLevel);
     _levels[skill] = level;
   }
 

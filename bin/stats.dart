@@ -1,21 +1,6 @@
 import 'package:hauberk/src/engine.dart';
 
 void main() {
-  print('Stat       0.7      0.8      0.9      1.0      1.1      1.2      1.3');
-  print('-----  -------  -------  -------  -------  -------  -------  -------');
-  for (var statTotal = 50; statTotal <= 50 * 5; statTotal += 5) {
-    var line = statTotal.toString().padLeft(4);
-    line += ':  ';
-    for (var raceScale = 0.7; raceScale <= 1.4; raceScale += 0.1) {
-      line += Stat.experienceCostAt(statTotal, raceScale).toString().padLeft(7);
-      line += '  ';
-    }
-    print(line);
-  }
-
-  print('');
-  print('');
-
   var strength = Strength();
   var agility = Agility();
   var vitality = Vitality();

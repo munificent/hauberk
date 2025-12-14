@@ -1,10 +1,6 @@
 import '../../../engine.dart';
 
 class DualWield extends Skill {
-  // TODO: Tune.
-  @override
-  int get maxLevel => 10;
-
   @override
   String get name => "Dual-wield";
 
@@ -28,5 +24,6 @@ class DualWield extends Skill {
     return heftModifier;
   }
 
-  double _heftModifier(int level) => lerpDouble(level, 1, maxLevel, 1.0, 0.5);
+  double _heftModifier(int level) =>
+      lerpDouble(level, 1, Skill.maxLevel, 1.0, 0.5);
 }

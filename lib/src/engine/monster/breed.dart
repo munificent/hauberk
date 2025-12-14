@@ -214,7 +214,7 @@ class Breed {
     // Scale it down arbitrarily to keep the numbers reasonable. This is tuned
     // so that the weakest monsters can still have some variance in experience
     // when rounded to an integer.
-    exp /= 40;
+    exp /= 100;
 
     return exp.ceil();
   }

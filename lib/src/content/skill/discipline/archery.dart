@@ -4,10 +4,6 @@ import '../../../engine.dart';
 import '../../action/bolt.dart';
 
 class Archery extends Skill {
-  // TODO: Tune.
-  @override
-  int get maxLevel => 10;
-
   @override
   String get name => "Archery";
 
@@ -20,6 +16,8 @@ class Archery extends Skill {
   String levelDescription(int level) =>
       "Scales strike by ${(_strikeScale(level) * 100).toInt()}%.";
 
+  // TODO: Maybe a higher-level archery ability that lets you fire a volley of
+  // arrows.
   // TODO: Having to make this late to plumb the skill through is gross.
   @override
   late final Ability ability = FireArrowAbility(this);
@@ -31,7 +29,8 @@ class Archery extends Skill {
     }
   }
 
-  double _strikeScale(int level) => lerpDouble(level, 1, maxLevel, 1.0, 3.0);
+  double _strikeScale(int level) =>
+      lerpDouble(level, 1, Skill.maxLevel, 1.0, 3.0);
 }
 
 class FireArrowAbility extends Ability with TargetAbility {

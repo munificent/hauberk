@@ -50,9 +50,11 @@ class Lore {
     _seenBreeds[breed] = _seenBreeds[breed]! + 1;
   }
 
-  void slay(Breed breed) {
+  /// Increments the number of monsters of [breed] that have been slain and
+  /// returns the new total.
+  int slay(Breed breed) {
     _slainBreeds.putIfAbsent(breed, () => 0);
-    _slainBreeds[breed] = _slainBreeds[breed]! + 1;
+    return _slainBreeds[breed] = _slainBreeds[breed]! + 1;
   }
 
   void findItem(Item item) {

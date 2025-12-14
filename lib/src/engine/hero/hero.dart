@@ -285,9 +285,15 @@ class Hero extends Actor {
     // It only counts if the hero's seen the monster at least once.
     if (!_seenMonsters.contains(monster)) return;
 
-    lore.slay(monster.breed);
+    var slain = lore.slay(monster.breed);
 
-    experience += monster.experience;
+    // Killing more of the same breed gives diminishing returns. This is to
+    // discourage players from grinding indefinitely, and reflects that the
+    // hero learns less and less each time they kill the same monster.
+    var baseExperience = monster.experience;
+    var scaled = (baseExperience * 20 / (slain + 19)).ceil();
+    experience += scaled;
+
     refreshProperties();
   }
 

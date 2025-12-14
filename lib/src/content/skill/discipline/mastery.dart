@@ -8,13 +8,10 @@ import '../../../engine.dart';
 //   when near death.
 
 abstract class MasterySkill extends Skill {
-  // TODO: Tune.
-  @override
-  int get maxLevel => 20;
-
   String get weaponType;
 
-  double _damageScale(int level) => lerpDouble(level, 1, maxLevel, 1.0, 2.0);
+  double _damageScale(int level) =>
+      lerpDouble(level, 1, Skill.maxLevel, 1.0, 2.0);
 
   @override
   void modifyHit(

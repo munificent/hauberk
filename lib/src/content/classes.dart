@@ -20,7 +20,7 @@ class Classes {
         ..._archery(10),
         ..._dualWield(10),
         ..._masteries(10),
-        ..._spellSchools(5),
+        ..._spellSchools(10),
       },
     ),
 
@@ -49,7 +49,7 @@ class Classes {
           "other arts and skills. But the rewards in return can be great for "
           "anyone willing to dance with the raw forces of nature (as well as "
           "some less natural forces).",
-      {..._archery(1), ..._spellSchools(8)},
+      {..._archery(1), ..._spellSchools(16)},
     ),
 
     // TODO: Rogues. Priests. Subclasses.
@@ -85,7 +85,7 @@ Map<Skill, int> _spellSchools([int? level]) => {
 
 Map<Skill, int> _skillCap(String skillName, [int? level]) {
   var skill = Skills.find(skillName);
-  return {skill: level ?? Skills.find(skillName).maxLevel};
+  return {skill: level ?? Skill.maxLevel};
 }
 
 HeroClass _class(

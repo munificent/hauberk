@@ -5,7 +5,8 @@ import 'mastery.dart';
 
 class ClubMastery extends MasterySkill {
   // TODO: Tune.
-  static double _bashScale(int level) => lerpDouble(level, 1, 10, 1.0, 2.0);
+  static double _bashScale(int level) =>
+      lerpDouble(level, 1, Skill.maxLevel, 1.0, 2.0);
 
   // TODO: Better name.
   @override

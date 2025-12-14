@@ -24,13 +24,13 @@ void _buildTable() async {
   var builder = HtmlBuilder();
   builder.thead();
   builder.td("Str \\ Dual Wield Level");
-  for (var wield = 0; wield <= DualWield().maxLevel; wield++) {
+  for (var wield = 0; wield <= Skill.maxLevel; wield++) {
     builder.td(wield);
   }
   builder.tbody();
   for (var strength = 1; strength <= Stat.modifiedMax; strength++) {
     builder.td(strength);
-    for (var wield = 0; wield <= DualWield().maxLevel; wield++) {
+    for (var wield = 0; wield <= Skill.maxLevel; wield++) {
       var best = _findBestWeapons(strength, wield).join('<br>');
       builder.td(best, right: true);
     }

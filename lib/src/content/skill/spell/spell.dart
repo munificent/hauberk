@@ -26,10 +26,10 @@ abstract final class Spells {
 
 class SpellSchool extends Skill {
   @override
-  int get maxLevel => 10;
+  final String name;
 
   @override
-  final String name;
+  final int baseExperience = 4000;
 
   SpellSchool(this.name);
 

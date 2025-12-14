@@ -44,7 +44,7 @@ enum Stat {
   /// and the race affects the stat with [raceScale].
   static int experienceCostAt(int statTotal, double raceScale) {
     // When a race is better at a stat, the cost goes down.
-    var baseCost = (100 * (1.0 / raceScale));
+    var baseCost = (400 * (1.0 / raceScale));
 
     // As the hero's total stats increase, it gets harder and harder to raise
     // more stats. Also, as their stats get higher, they are also generally
@@ -53,12 +53,11 @@ enum Stat {
     var totalScale = lerpDouble(
       statTotal,
       10 * Stat.values.length,
-      Stat.modifiedMax * Stat.values.length,
+      Stat.baseMax * Stat.values.length,
       1.0,
-      20.0,
+      25.0,
     );
     var totalCurve = math.pow(totalScale, 3.0);
-    // TODO: This will certainly need tuning.
 
     return (baseCost * totalCurve).toInt();
   }

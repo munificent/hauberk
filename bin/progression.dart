@@ -24,9 +24,20 @@ void main() {
       }
     }
 
+    var mostSlainCount = 0;
+    var mostSlainBreed = '?';
+    for (var breed in hero.lore.slainBreeds) {
+      var slain = hero.lore.slain(breed);
+      if (slain > mostSlainCount) {
+        mostSlainCount = slain;
+        mostSlainBreed = breed.name;
+      }
+    }
+
     print(
       "${depth.toString().padLeft(3)} "
-      "${hero.experience.toString().padLeft(10)}",
+      "${hero.experience.toString().padLeft(10)} "
+      "${mostSlainCount.toString().padLeft(4)} $mostSlainBreed",
     );
   }
 }
