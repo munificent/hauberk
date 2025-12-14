@@ -11,7 +11,7 @@ abstract class MasterySkill extends Skill {
   String get weaponType;
 
   double _damageScale(int level) =>
-      lerpDouble(level, 1, Skill.maxLevel, 1.0, 2.0);
+      lerpDouble(level, 1, Skill.maxLevel, 1.0, 4.0);
 
   @override
   void modifyHit(
@@ -24,7 +24,6 @@ abstract class MasterySkill extends Skill {
     // Only for weapons that this mastery applies to.
     if (weapon == null || weapon.type.weaponType != weaponType) return;
 
-    // TODO: Tune.
     hit.scaleDamage(_damageScale(level), 'mastery');
   }
 
