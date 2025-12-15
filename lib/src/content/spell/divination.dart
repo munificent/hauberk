@@ -1,6 +1,6 @@
-import '../../../engine.dart';
-import '../../action/detection.dart';
-import 'spell.dart';
+import '../../engine.dart';
+import '../action/detection.dart';
+import '../spells.dart';
 
 List<Spell> divinationSpells(Skill divinationSchool) {
   return [

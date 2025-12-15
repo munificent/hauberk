@@ -2,11 +2,6 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
 
-// TODO: More disciplines:
-// - Dodging attacks, which increases dodge.
-// - Fury. Increases damage when health is low. Trained by killing monsters
-//   when near death.
-
 abstract class MasterySkill extends Skill {
   String get weaponType;
 

@@ -166,8 +166,7 @@ class Hero extends Actor {
     }
 
     for (var skill in skills.acquired) {
-      var defense = skill.getDefense(this, skills.level(skill));
-      if (defense != null) yield defense;
+      yield* skill.defenses(this, skills.level(skill));
     }
 
     // TODO: Temporary bonuses, etc.
@@ -425,12 +424,20 @@ class Hero extends Actor {
 
     var heftScale = strength.heftScale((totalHeft * heftModifier).round());
     _heftDamageScale.update(heftScale, (previous) {
-      // TODO: Reword these if there is no weapon equipped?
-      var weaponList = weapons.join(' and ');
+      var description = switch (weapons) {
+        // Dual-wielding two of the same weapon.
+        [var a, var b] when a.quantifiableName == b.quantifiableName =>
+          Log.quantify(a.quantifiableName, 2),
+        [var a, var b] => "${a.nounText} and ${b.nounText}",
+        [var a] => a.nounText,
+        [] => "your fists",
+        _ => throw ArgumentError(),
+      };
+
       if (heftScale < 1.0 && previous >= 1.0) {
-        save.log.error("You are too weak to effectively wield $weaponList.");
+        save.log.error("You are too weak to effectively wield $description.");
       } else if (heftScale >= 1.0 && previous < 1.0) {
-        save.log.message("You feel comfortable wielding $weaponList.");
+        save.log.message("You feel comfortable wielding $description.");
       }
     });
 

@@ -1,17 +1,22 @@
 import '../../engine.dart';
-import 'discipline/archery.dart';
-import 'discipline/axe.dart';
-import 'discipline/battle_hardening.dart';
-import 'discipline/club.dart';
-import 'discipline/dual_wield.dart';
-import 'discipline/spear.dart';
-import 'discipline/sword.dart';
-import 'discipline/whip.dart';
-import 'spell/spell.dart';
+import 'archery.dart';
+import 'battle_hardening.dart';
+import 'mastery/axe.dart';
+import 'mastery/club.dart';
+import 'mastery/dual_wield.dart';
+import 'mastery/spear.dart';
+import 'mastery/sword.dart';
+import 'mastery/whip.dart';
+import 'spell_school.dart';
 
 class Skills {
   /// All of the known skills.
   static final List<Skill> all = [
+    // TODO: More disciplines:
+    // - Dodging attacks, which increases dodge.
+    // - Fury. Increases damage when health is low. Trained by killing monsters
+    //   when near death.
+
     // Disciplines.
     BattleHardening(),
     DualWield(),

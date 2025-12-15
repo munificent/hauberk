@@ -1,10 +1,10 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../../../engine.dart';
-import '../skills.dart';
-import 'conjuring.dart';
-import 'divination.dart';
-import 'sorcery.dart';
+import '../engine.dart';
+import 'skill/skills.dart';
+import 'spell/conjuring.dart';
+import 'spell/divination.dart';
+import 'spell/sorcery.dart';
 
 abstract final class Spells {
   static final List<Spell> all = [
@@ -22,22 +22,6 @@ abstract final class Spells {
     if (spell == null) throw ArgumentError("Unknown spell '$name'.");
     return spell;
   }
-}
-
-class SpellSchool extends Skill {
-  @override
-  final String name;
-
-  @override
-  final int baseExperience = 4000;
-
-  SpellSchool(this.name);
-
-  @override
-  String get description => "TODO";
-
-  @override
-  String levelDescription(int level) => "TODO";
 }
 
 class ActionSpell extends Spell with ActionAbility {

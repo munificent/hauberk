@@ -1,7 +1,7 @@
 import 'dart:js_interop';
 
 import 'package:hauberk/src/content.dart';
-import 'package:hauberk/src/content/skill/discipline/dual_wield.dart';
+import 'package:hauberk/src/content/skill/mastery/dual_wield.dart';
 import 'package:hauberk/src/debug/html_builder.dart';
 import 'package:hauberk/src/debug/utils.dart';
 import 'package:hauberk/src/engine.dart';

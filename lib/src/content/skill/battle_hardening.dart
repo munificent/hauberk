@@ -1,4 +1,4 @@
-import '../../../engine.dart';
+import '../../engine.dart';
 
 class BattleHardening extends Skill {
   @override

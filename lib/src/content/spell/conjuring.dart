@@ -1,6 +1,6 @@
-import '../../../engine.dart';
-import '../../action/teleport.dart';
-import 'spell.dart';
+import '../../engine.dart';
+import '../action/teleport.dart';
+import '../spells.dart';
 
 List<Spell> conjuringSpells(Skill conjuringSkill) {
   // TODO: These spells are all kind of similar and boring. Might be good if

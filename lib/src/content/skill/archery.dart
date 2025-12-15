@@ -1,7 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 
-import '../../../engine.dart';
-import '../../action/bolt.dart';
+import '../../engine.dart';
+import '../action/bolt.dart';
 
 class Archery extends Skill {
   @override

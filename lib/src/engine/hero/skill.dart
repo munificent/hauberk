@@ -62,7 +62,7 @@ abstract class Skill implements Comparable<Skill> {
   int modifyArmor(HeroSave hero, int level, int armor) => armor;
 
   /// Gives the skill a chance to add new defenses to the hero.
-  Defense? getDefense(Hero hero, int level) => null;
+  Iterable<Defense> defenses(Hero hero, int level) => const [];
 
   /// Gives the skill a chance to adjust the [heftModifier] applied to the base
   /// heft of a weapon.

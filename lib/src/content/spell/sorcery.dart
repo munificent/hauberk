@@ -1,10 +1,10 @@
-import '../../../engine.dart';
-import '../../action/barrier.dart';
-import '../../action/bolt.dart';
-import '../../action/flow.dart';
-import '../../action/ray.dart';
-import '../../elements.dart';
-import 'spell.dart';
+import '../../engine.dart';
+import '../action/barrier.dart';
+import '../action/bolt.dart';
+import '../action/flow.dart';
+import '../action/ray.dart';
+import '../elements.dart';
+import '../spells.dart';
 
 List<Spell> sorcerySpells(Skill sorcerySkill) {
   return [

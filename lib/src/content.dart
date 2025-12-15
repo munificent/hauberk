@@ -12,14 +12,14 @@ import 'content/item/shops.dart';
 import 'content/monster/monsters.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
-import 'content/skill/spell/spell.dart';
+import 'content/spells.dart';
 import 'content/stage/architect.dart';
 import 'content/stage/architectural_style.dart';
 import 'content/stage/town.dart';
 import 'content/tiles.dart';
 import 'engine.dart';
 
-export 'content/skill/spell/spell.dart';
+export 'content/skill/spell_school.dart';
 
 Content createContent() {
   // Note: The order is significant here. For example, monster drops will
