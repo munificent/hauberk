@@ -39,11 +39,13 @@ void main() {
   var content = createContent();
 
   _addFont("6x8", 6, 8);
+  _addFont("6x9", 6, 9);
   _addFont("8x8", 8);
   _addFont("8x10", 8, 10);
   _addFont("9x12", 9, 12);
   _addFont("10x12", 10, 12);
   _addFont("12x16", 12, 16);
+  _addFont("12x18", 12, 18);
   _addFont("16x16", 16);
   _addFont("16x20", 16, 20);
 
