@@ -1,6 +1,7 @@
 import '../core/element.dart';
 import '../core/log.dart';
 import '../core/option.dart';
+import '../core/resource.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
 import '../items/shop.dart';
@@ -114,11 +115,25 @@ class HeroSave {
        learnedSpells = [],
        log = Log(),
        lore = Lore() {
-    // TODO: Give new heroes some starting stat points.
-    strength.initialize(10);
-    agility.initialize(10);
-    vitality.initialize(10);
-    intellect.initialize(10);
+    // Give new heroes some starting stat points, allocated randomly based on
+    // the race scales.
+    var raceStats = ResourceSet<Stat>();
+    raceStats.add(Stat.strength, frequency: race.statScale(Stat.strength));
+    raceStats.add(Stat.agility, frequency: race.statScale(Stat.agility));
+    raceStats.add(Stat.vitality, frequency: race.statScale(Stat.vitality));
+    raceStats.add(Stat.intellect, frequency: race.statScale(Stat.intellect));
+
+    var statPoints = {for (var stat in Stat.values) stat: 0};
+    for (var i = 0; i < Stat.values.length * 4; i++) {
+      var stat = raceStats.choose(0);
+      statPoints[stat] = statPoints[stat]! + 1;
+    }
+
+    // Allocate twice as many points and then divide in half to smooth out the
+    // distribution a little and make it less random.
+    for (var stat in [strength, agility, vitality, intellect]) {
+      stat.initialize(this, 10 + (statPoints[stat.stat]! ~/ 2));
+    }
   }
 
   HeroSave(
@@ -143,10 +158,10 @@ class HeroSave {
     required int vitality,
     required int intellect,
   }) {
-    this.strength.initialize(strength);
-    this.agility.initialize(agility);
-    this.vitality.initialize(vitality);
-    this.intellect.initialize(intellect);
+    this.strength.initialize(this, strength);
+    this.agility.initialize(this, agility);
+    this.vitality.initialize(this, vitality);
+    this.intellect.initialize(this, intellect);
   }
 
   HeroSave clone() => HeroSave(

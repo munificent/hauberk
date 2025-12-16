@@ -517,7 +517,7 @@ class AffixBuilder {
 
   void strength(ParameterizeInt bonus) => _statBonus(Stat.strength, bonus);
   void agility(ParameterizeInt bonus) => _statBonus(Stat.agility, bonus);
-  void fortitude(ParameterizeInt bonus) => _statBonus(Stat.fortitude, bonus);
+  void vitality(ParameterizeInt bonus) => _statBonus(Stat.vitality, bonus);
   void intellect(ParameterizeInt bonus) => _statBonus(Stat.intellect, bonus);
 
   /// Gives the affix a [bonus] to [stat].

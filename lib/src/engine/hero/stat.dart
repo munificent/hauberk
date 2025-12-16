@@ -36,7 +36,7 @@ class Property<T extends num> {
 enum Stat {
   strength("Strength"),
   agility("Agility"),
-  fortitude("Fortitude"),
+  vitality("Vitality"),
   intellect("Intellect");
 
   /// How much experience it takes to raise a stat by a single point given that
@@ -76,9 +76,9 @@ enum Stat {
 }
 
 abstract class StatBase extends Property<int> {
-  String get name => _stat.name;
+  String get name => stat.name;
 
-  Stat get _stat;
+  Stat get stat;
 
   String get _gainAdjective;
 
@@ -90,8 +90,9 @@ abstract class StatBase extends Property<int> {
   int get baseValue => _baseValue;
   int _baseValue = 0;
 
-  void initialize(int value) {
+  void initialize(HeroSave hero, int value) {
     _baseValue = value;
+    _value = _calculateValue(hero);
   }
 
   void refresh(HeroSave hero, [int? newBaseValue]) {
@@ -119,11 +120,11 @@ abstract class StatBase extends Property<int> {
         save.agility.baseValue +
         save.vitality.baseValue +
         save.intellect.baseValue;
-    return Stat.experienceCostAt(total, save.race.statScale(_stat));
+    return Stat.experienceCostAt(total, save.race.statScale(stat));
   }
 
   int _calculateValue(HeroSave hero) =>
-      (_baseValue + _statOffset(hero) + hero.statBonus(_stat)).clamp(
+      (_baseValue + _statOffset(hero) + hero.statBonus(stat)).clamp(
         1,
         Stat.modifiedMax,
       );
@@ -147,7 +148,7 @@ class Strength extends StatBase {
   }
 
   @override
-  Stat get _stat => Stat.strength;
+  Stat get stat => Stat.strength;
 
   @override
   String get _gainAdjective => "mighty";
@@ -199,7 +200,7 @@ class Agility extends StatBase {
   }
 
   @override
-  Stat get _stat => Stat.agility;
+  Stat get stat => Stat.agility;
 
   @override
   String get _gainAdjective => "dextrous";
@@ -219,7 +220,7 @@ class Vitality extends StatBase {
   static int maxHealthAt(int value) => (math.pow(value, 1.458) + 9).toInt();
 
   @override
-  Stat get _stat => Stat.fortitude;
+  Stat get stat => Stat.vitality;
 
   @override
   String get _gainAdjective => "tough";
@@ -241,7 +242,7 @@ class Intellect extends StatBase {
   }
 
   @override
-  Stat get _stat => Stat.intellect;
+  Stat get stat => Stat.intellect;
 
   @override
   String get _gainAdjective => "smart";

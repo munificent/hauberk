@@ -4,6 +4,8 @@ import 'package:hauberk/src/ui/item/item_renderer.dart';
 
 /// Shows various numbers around spending experience.
 void main() {
+  var content = createContent();
+
   // The cost to raise stats with various race modifiers at various amounts of
   // total stat points.
   var statCount = Stat.values.length;
@@ -48,8 +50,6 @@ void main() {
   print("");
   print("");
 
-  var content = createContent();
-
   // Race affects stat gain experience cost, so show the totals for every race.
   print("Race          Stat XP");
   print("--------  -----------");
@@ -61,10 +61,6 @@ void main() {
     );
 
     var stats = [hero.strength, hero.agility, hero.vitality, hero.intellect];
-    for (var stat in stats) {
-      stat.refresh(hero);
-    }
-
     var statExperience = 0;
     for (var stat in stats) {
       while (stat.value < Stat.baseMax) {

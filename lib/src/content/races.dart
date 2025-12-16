@@ -7,7 +7,7 @@ class Races {
       "Dwarf",
       strength: 1.3,
       agility: 0.6,
-      fortitude: 1.4,
+      vitality: 1.4,
       intellect: 0.7,
       description:
           "It takes a certain kind of person to be willing to spend their life "
@@ -19,7 +19,7 @@ class Races {
       "Elf",
       strength: 0.9,
       agility: 1.1,
-      fortitude: 0.7,
+      vitality: 0.7,
       intellect: 1.3,
       description:
           "There are few things elves are not good at, as any elf will be "
@@ -31,7 +31,7 @@ class Races {
       "Fae",
       strength: 0.6,
       agility: 1.6,
-      fortitude: 0.7,
+      vitality: 0.7,
       intellect: 1.1,
       description:
           "What can be said about the fae folk that is known to be true? "
@@ -45,7 +45,7 @@ class Races {
       "Gnome",
       strength: 0.7,
       agility: 0.8,
-      fortitude: 1.0,
+      vitality: 1.0,
       intellect: 1.5,
       description:
           "Gnomes are gentle, quiet folk, difficult to arouse to anger (unless "
@@ -58,7 +58,7 @@ class Races {
       "Human",
       strength: 1.0,
       agility: 1.0,
-      fortitude: 1.0,
+      vitality: 1.0,
       intellect: 1.0,
       description:
           "Humans excel at nothing, but nor are they particularly weak in any "
@@ -72,14 +72,14 @@ class Races {
     String name, {
     required double strength,
     required double agility,
-    required double fortitude,
+    required double vitality,
     required double intellect,
     required String description,
   }) {
     return Race(name, description, {
       Stat.strength: strength,
       Stat.agility: agility,
-      Stat.fortitude: fortitude,
+      Stat.vitality: vitality,
       Stat.intellect: intellect,
     });
   }
