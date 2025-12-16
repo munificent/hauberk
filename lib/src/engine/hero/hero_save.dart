@@ -118,13 +118,14 @@ class HeroSave {
     // Give new heroes some starting stat points, allocated randomly based on
     // the race scales.
     var raceStats = ResourceSet<Stat>();
-    raceStats.add(Stat.strength, frequency: race.statScale(Stat.strength));
-    raceStats.add(Stat.agility, frequency: race.statScale(Stat.agility));
-    raceStats.add(Stat.vitality, frequency: race.statScale(Stat.vitality));
-    raceStats.add(Stat.intellect, frequency: race.statScale(Stat.intellect));
+    for (var stat in Stat.values) {
+      // Shift the baseline so that weaker stats get fewer points since they'll
+      // start at 10 anyway.
+      raceStats.add(stat, frequency: race.statScale(stat) - 0.5);
+    }
 
     var statPoints = {for (var stat in Stat.values) stat: 0};
-    for (var i = 0; i < Stat.values.length * 4; i++) {
+    for (var i = 0; i < Stat.values.length * 2; i++) {
       var stat = raceStats.choose(0);
       statPoints[stat] = statPoints[stat]! + 1;
     }
@@ -132,7 +133,7 @@ class HeroSave {
     // Allocate twice as many points and then divide in half to smooth out the
     // distribution a little and make it less random.
     for (var stat in [strength, agility, vitality, intellect]) {
-      stat.initialize(this, 10 + (statPoints[stat.stat]! ~/ 2));
+      stat.initialize(this, 10 + (statPoints[stat.stat]!));
     }
   }
 
