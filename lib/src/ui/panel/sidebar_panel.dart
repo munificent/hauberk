@@ -51,16 +51,16 @@ class SidebarPanel extends Panel {
     // TODO: Decide on a consistent set of colors for attributes and use them
     // consistently through the UI.
     _drawHealth(hero, terminal, 7);
-    _drawExperience(hero, terminal, 8);
-    _drawGold(hero, terminal, 9);
+    _drawFocus(hero, terminal, 8);
+    _drawFury(hero, terminal, 9);
+    _drawFood(hero, terminal, 10);
 
-    _drawArmor(hero, terminal, 10);
-    _drawDefense(hero, terminal, 11);
-    _drawWeapons(hero, terminal, 12);
+    _drawArmor(hero, terminal, 12);
+    _drawDefense(hero, terminal, 13);
+    _drawWeapons(hero, terminal, 14);
 
-    _drawFood(hero, terminal, 15);
-    _drawFocus(hero, terminal, 16);
-    _drawFury(hero, terminal, 17);
+    _drawExperience(hero, terminal, 16);
+    _drawGold(hero, terminal, 17);
 
     // Draw the nearby monsters.
     terminal.writeAt(1, 19, "@", _gameScreen.heroColor);
@@ -148,19 +148,17 @@ class SidebarPanel extends Panel {
   void _drawWeapons(Hero hero, Terminal terminal, int y) {
     var hits = hero.createMeleeHits(null).toList();
 
-    var label = hits.length == 2 ? "Weapons" : "Weapon";
+    var label = hits.length > 1 ? "Weapons" : "Weapon";
     terminal.writeAt(1, y, label, UIHue.helpText);
 
-    for (var i = 0; i < hits.length; i++) {
-      var hitString = hits[i].damageString;
-      // TODO: Show element and other bonuses.
-      terminal.writeAt(
-        terminal.width - hitString.length - 1,
-        y + i,
-        hitString,
-        carrot,
-      );
-    }
+    var hitString = hits.map((hit) => hit.damageString).join('+');
+    // TODO: Show element and other bonuses.
+    terminal.writeAt(
+      terminal.width - hitString.length - 1,
+      y,
+      hitString,
+      carrot,
+    );
   }
 
   void _drawDefense(Hero hero, Terminal terminal, int y) {
@@ -217,30 +215,15 @@ class SidebarPanel extends Panel {
   }
 
   void _drawFury(Hero hero, Terminal terminal, int y) {
-    // If the hero can't have any fury, gray it out.
-    terminal.writeAt(
-      1,
+    _drawStat(
+      terminal,
       y,
       'Fury',
-      hero.strength.maxFury == 0 ? UIHue.disabled : UIHue.helpText,
-    );
-
-    terminal.writeAt(
-      terminal.width - 3,
-      y,
-      hero.fury.toString().padLeft(2),
+      hero.fury,
+      carrot,
+      hero.strength.maxFury,
       persimmon,
     );
-
-    if (hero.fury > 0) {
-      var scale = "${hero.strength.furyScale(hero.fury).toStringAsFixed(1)}x";
-      terminal.writeAt(
-        10,
-        y,
-        scale.padLeft(4),
-        hero.fury == hero.strength.maxFury ? carrot : persimmon,
-      );
-    }
   }
 
   /// Draws a labeled numeric stat.

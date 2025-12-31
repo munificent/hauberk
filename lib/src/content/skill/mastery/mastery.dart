@@ -30,6 +30,7 @@ abstract class MasterySkill extends Skill {
   }
 }
 
+// TODO: These should be more powerful and drain focus.
 abstract class MasteryAbility extends Ability {
   String get weaponType;
 

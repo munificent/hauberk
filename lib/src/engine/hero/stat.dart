@@ -135,8 +135,8 @@ abstract class StatBase extends Property<int> {
 
 class Strength extends StatBase {
   static int maxFuryAt(int strength) {
-    if (strength < 10) return 0;
-    return (strength - 8) ~/ 2;
+    if (strength <= 10) return lerpInt(strength, 1, 10, 0, 20);
+    return lerpInt(strength, 10, 50, 20, 200);
   }
 
   static double tossRangeScaleAt(int strength) {
@@ -166,11 +166,6 @@ class Strength extends StatBase {
   int get maxFury => maxFuryAt(value);
 
   double get tossRangeScale => tossRangeScaleAt(value);
-
-  /// The damage multiplier for a given [fury].
-  ///
-  /// Each point of fury adds another `0.1` to the multiplier.
-  double furyScale(int fury) => 1.0 + fury * 0.1;
 
   /// Calculates the melee damage scaling factor based on the hero's strength
   /// relative to the weapon's [heft].

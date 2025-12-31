@@ -20,7 +20,6 @@ void main() {
   builder.trEnd();
   builder.td('Stat', right: true);
   builder.td('Max Fury', right: true);
-  builder.td('Max Fury Dmg', right: true);
   builder.td('Toss', right: true);
   builder.td('Heft', right: true);
   builder.td('Dodge', right: true);
@@ -38,10 +37,6 @@ void main() {
 
     builder.td(i);
     builder.td(strength.maxFury);
-    builder.td(
-      strength.furyScale(strength.maxFury).toStringAsFixed(1),
-      right: true,
-    );
     builder.td(strength.tossRangeScale.toStringAsFixed(1), right: true);
     builder.td(strength.heftScale(20).toStringAsFixed(2), right: true);
     builder.td(agility.dodgeBonus);

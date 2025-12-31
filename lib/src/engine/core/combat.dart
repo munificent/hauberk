@@ -203,8 +203,9 @@ class Hit {
         : Noun('something');
     var defenderNoun = canSeeDefender ? defender : Noun('something');
 
-    // Don't sleep through being attacked.
-    if (defender is Hero) defender.disturb();
+    if (defender is Hero) {
+      defender.receiveAttack(this);
+    }
 
     // See if any defense blocks the attack.
     // TODO: Instead of a single "canMiss" flag, consider having each defense

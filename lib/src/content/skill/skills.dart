@@ -1,6 +1,7 @@
 import '../../engine.dart';
 import 'archery.dart';
 import 'battle_hardening.dart';
+import 'bloodlust.dart';
 import 'mastery/axe.dart';
 import 'mastery/club.dart';
 import 'mastery/dual_wield.dart';
@@ -10,18 +11,21 @@ import 'mastery/whip.dart';
 import 'spell_school.dart';
 
 class Skills {
-  /// All of the known skills.
+  /// All of the skills in the game.
   static final List<Skill> all = [
-    // TODO: More disciplines:
-    // - Dodging attacks, which increases dodge.
-    // - Fury. Increases damage when health is low. Trained by killing monsters
-    //   when near death.
+    // TODO: More skills:
+    // - Passively increases dodge.
+    // - Backstabbing: Increases damage when attacking unaware monster. Also
+    //   lowers sound when attacking unaware monster.
+    // - Stealth: Lowers sound produced by hero.
+    // - Something that increases chance of monster drops.
 
-    // Disciplines.
+    // Warrior skills.
+    Bloodlust(),
     BattleHardening(),
     DualWield(),
 
-    // Masteries.
+    // Weapon masteries.
     Archery(),
     AxeMastery(),
     ClubMastery(),

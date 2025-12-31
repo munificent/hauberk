@@ -54,18 +54,20 @@ class Hero extends Actor {
   set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
   int _stomach = Option.heroMaxStomach ~/ 2;
 
-  /// How calm and centered the hero is. Mental skills like spells spend focus.
+  /// How calm and centered the hero is.
+  ///
+  /// Mental skills like spells spend focus.
   int get focus => _focus;
   int _focus = 0;
 
   /// How enraged the hero is.
   ///
-  /// Each level increases the damage multiplier for melee damage.
+  /// Physical skills spend this.
   int get fury => _fury;
   int _fury = 0;
 
-  /// The number of hero turns since they last dealt damage to a monster.
-  int _turnsSinceGaveDamage = 100;
+  /// The number of hero turns since they were last attacked.
+  int _turnsSinceAttack = 1000;
 
   /// How much noise the Hero's last action made.
   double get lastNoise => _lastNoise;
@@ -201,9 +203,6 @@ class Hero extends Actor {
         skill.modifyHit(this, defender as Monster?, weapon, hit, level);
       }
 
-      // Scale damage by fury.
-      hit.scaleDamage(strength.furyScale(fury), 'fury');
-
       if (weapon != null) {
         // Take heft and strength into account.
         hit.scaleDamage(_heftDamageScale.value, 'heft');
@@ -269,17 +268,8 @@ class Hero extends Actor {
   int onGetResistance(Element element) => save.equipmentResistance(element);
 
   @override
-  void onGiveDamage(Action action, Actor defender, int damage) {
-    // Hitting starts or continues the fury chain.
-    _turnsSinceGaveDamage = 0;
-  }
-
-  @override
   void onKilled(Action action, Actor defender) {
     var monster = defender as Monster;
-
-    // Killing starts or continues the fury chain.
-    _turnsSinceGaveDamage = 0;
 
     // It only counts if the hero's seen the monster at least once.
     if (!_seenMonsters.contains(monster)) return;
@@ -306,19 +296,13 @@ class Hero extends Actor {
     // Make some noise.
     _lastNoise = action.noise;
 
-    // Update fury.
-    if (_turnsSinceGaveDamage == 0) {
-      // Every turn the hero harmed a monster increases fury.
-      _fury++;
-    } else if (_turnsSinceGaveDamage > 1) {
-      // Otherwise, it decays, with a one turn grace period.
-      // TODO: Maybe have higher will slow the decay rate.
-      _fury -= _turnsSinceGaveDamage - 1;
+    // Fury decays if the hero is no longer being attacked.
+    if (_fury > 0 && _turnsSinceAttack > 1) {
+      var decay = ((_turnsSinceAttack - 2) ~/ 2);
+      _fury = (_fury - decay).clamp(0, strength.maxFury);
     }
 
-    _fury = _fury.clamp(0, strength.maxFury);
-
-    _turnsSinceGaveDamage++;
+    _turnsSinceAttack++;
 
     // TODO: Passive skills?
   }
@@ -326,6 +310,23 @@ class Hero extends Actor {
   @override
   void onChangePosition(Game game, Vec from, Vec to) {
     game.stage.heroVisibilityChanged();
+  }
+
+  /// Called when an [Actor] is attempting to [hit] the hero.
+  ///
+  /// Note that this is called even if the hit ultimately misses.
+  void receiveAttack(Hit hit) {
+    // Don't sleep through being attacked.
+    disturb();
+
+    // Being attacked increases fury. We do this on each attack so that if the
+    // hero is surrounded, their fury goes up faster. This mitigates some of
+    // the negative consequences of being outnumbered.
+    _turnsSinceAttack = 0;
+
+    var healthFraction = hit.averageDamage / health;
+    var furyIncrease = (healthFraction * 10.0).ceil();
+    _fury = (_fury + furyIncrease).clamp(0, strength.maxFury);
   }
 
   void waitForInput() {
@@ -379,8 +380,6 @@ class Hero extends Actor {
   }
 
   /// Spends focus on some useful action.
-  ///
-  /// Does not reset [_turnsSinceLostFocus].
   void spendFocus(int focus) {
     assert(_focus >= focus);
 
