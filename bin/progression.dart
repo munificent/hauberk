@@ -35,9 +35,9 @@ void main() {
     }
 
     print(
-      "${depth.toString().padLeft(3)} "
-      "${hero.experience.toString().padLeft(10)} "
-      "${mostSlainCount.toString().padLeft(4)} $mostSlainBreed",
+      "${depth.fmt(w: 3)} "
+      "${hero.experience.fmt(w: 12)} "
+      "${mostSlainCount.fmt(w: 4)} $mostSlainBreed",
     );
   }
 }

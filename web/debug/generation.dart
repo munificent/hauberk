@@ -95,9 +95,9 @@ void generateTable() {
       var count = histogram.count(name);
       var width = 100 * count ~/ max;
       var percent = (100 * count / histogram.total)
-          .toStringAsFixed(2)
-          .padLeft(5, "0");
-      var chance = (count / generated).toStringAsFixed(1).padLeft(6);
+          .fmt(w: 5, d: 2)
+          .replaceAll(' ', '&nbsp;');
+      var chance = (count / generated).fmt(w: 6, d: 1);
 
       builder.write(
         '<span style="font-family: monospace;">$percent% $chance </span>',

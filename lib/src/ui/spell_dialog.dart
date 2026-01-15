@@ -124,12 +124,7 @@ class SpellDialog extends Screen<Input> {
       };
 
       terminal.writeAt(2, y, spell.name, nameColor);
-      terminal.writeAt(
-        36,
-        y,
-        spell.spellLevel.toString().padLeft(3),
-        levelColor,
-      );
+      terminal.writeAt(36, y, spell.spellLevel.fmt(w: 3), levelColor);
 
       i++;
     }
@@ -170,7 +165,7 @@ class SpellDialog extends Screen<Input> {
     terminal.writeAt(
       13,
       32,
-      spell.focusCost(_hero.save, 1).toString().padLeft(3),
+      spell.focusCost(_hero.save, 1).fmt(w: 3),
       UIHue.text,
     );
   }

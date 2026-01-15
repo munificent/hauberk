@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:hauberk/src/content/monster/monsters.dart';
+import 'package:hauberk/src/engine.dart';
 
 const trials = 1000;
 
@@ -19,12 +20,10 @@ void main() {
       });
     }
 
-    var total = (histogram.total / trials).toStringAsFixed(2);
+    var total = (histogram.total / trials).fmt(d: 2);
     print("${breed.name} ($total)");
     for (var minion in histogram.descending()) {
-      var count = (histogram.count(minion) / trials)
-          .toStringAsFixed(2)
-          .padLeft(4);
+      var count = (histogram.count(minion) / trials).fmt(w: 4, d: 2);
       print("- $count $minion");
     }
   }

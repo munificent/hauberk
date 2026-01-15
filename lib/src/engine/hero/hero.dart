@@ -324,6 +324,9 @@ class Hero extends Actor {
     // the negative consequences of being outnumbered.
     _turnsSinceAttack = 0;
 
+    // Avoid divide by zero.
+    if (health == 0) return;
+
     var healthFraction = hit.averageDamage / health;
     var furyIncrease = (healthFraction * 10.0).ceil();
     _fury = (_fury + furyIncrease).clamp(0, strength.maxFury);

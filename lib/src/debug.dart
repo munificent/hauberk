@@ -123,7 +123,7 @@ class _MonsterLog {
 
     var barChars = " ▁▂▃▄▅▆▇█";
     for (var name in statNames) {
-      var barBuffer = StringBuffer("${name.padRight(length)} ");
+      var barBuffer = StringBuffer("${name.fmt(w: length)} ");
       var showBar = false;
 
       var values = stats[name]!;
@@ -134,7 +134,7 @@ class _MonsterLog {
       }
 
       if (values.isNotEmpty) {
-        barBuffer.write(" ${values.last.toStringAsFixed(4).padLeft(6)}");
+        barBuffer.write(" ${values.last.fmt(w: 6, d: 4)}");
       }
 
       if (statReason[name] != null) {

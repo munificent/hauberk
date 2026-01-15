@@ -26,9 +26,8 @@ class SpearMastery extends MasterySkill {
 
   @override
   String levelDescription(int level) {
-    var damage = (_spearScale(level) * 100).toInt();
     return "${super.levelDescription(level)} Distance spear attacks inflict "
-        "$damage% of the damage of a regular attack.";
+        "${_spearScale(level).fmtPercent()} of the damage of a regular attack.";
   }
 }
 

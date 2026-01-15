@@ -26,9 +26,8 @@ class AxeMastery extends MasterySkill {
 
   @override
   String levelDescription(int level) {
-    var damage = (_sweepScale(level) * 100).toInt();
-    return "${super.levelDescription(level)} Sweep attacks inflict $damage% "
-        "of the damage of a regular attack.";
+    return "${super.levelDescription(level)} Sweep attacks inflict "
+        "${_sweepScale(level).fmtPercent()} of the damage of a regular attack.";
   }
 }
 

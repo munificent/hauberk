@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import 'math.dart';
+import 'utils.dart';
 
 class ResourceSet<T> {
   final Map<String, _Tag<T>> _tags = {};
@@ -431,10 +432,8 @@ class _ResourceQuery<T> {
     for (var i = 0; i < resources.length; i++) {
       var chance = chances[i];
       if (i > 0) chance -= chances[i - 1];
-      var percent = (100.0 * chance / totalChance)
-          .toStringAsFixed(5)
-          .padLeft(8);
-      print("$percent% ${resources[i].object}");
+      var percent = (chance / totalChance).fmtPercent(w: 8, d: 5);
+      print("$percent ${resources[i].object}");
     }
   }
 }

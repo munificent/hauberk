@@ -36,9 +36,7 @@ void main() {
   generate();
 }
 
-String percent(int count) {
-  return "${(count * 100 / tries).toStringAsFixed(3)}%";
-}
+String percent(int count) => (count / tries).fmtPercent(d: 3);
 
 void generate() {
   var items = Histogram<String>();

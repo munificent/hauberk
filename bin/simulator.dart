@@ -36,8 +36,8 @@ class Simulator {
     for (var breed in breeds) {
       var kill = kills[breed]!;
       print(
-        "${breed.name.padRight(40)} ${kill.kills.toString().padLeft(5)} "
-        "${(kill.hits / kill.kills).toStringAsFixed(1).padLeft(9)}",
+        "${breed.name.fmt(w: 40)} ${kill.kills.fmt(w: 5)} "
+        "${(kill.hits / kill.kills).fmt(w: 9, d: 1)}",
       );
     }
   }

@@ -131,7 +131,7 @@ abstract class Chart {
         if (count == 0) continue;
 
         var fraction = count / total;
-        var percent = ((fraction * 1000).toInt() / 10).toStringAsFixed(3);
+        var percent = ((fraction * 1000).toInt() / 10).fmt(d: 3);
         x -= fraction * chartWidth;
 
         var color = _colors[label]!;

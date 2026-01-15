@@ -14,7 +14,7 @@ class Archery extends Skill {
 
   @override
   String levelDescription(int level) =>
-      "Scales strike by ${(_strikeScale(level) * 100).toInt()}%.";
+      "Scales strike by ${_strikeScale(level).fmtPercent()}.";
 
   // TODO: Maybe a higher-level archery ability that lets you fire a volley of
   // arrows.

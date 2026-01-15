@@ -5,7 +5,6 @@ import '../engine.dart';
 import '../hues.dart';
 import 'draw.dart';
 import 'input.dart';
-import 'item/item_renderer.dart';
 
 // TODO: Can probably merge this with SkillDialog to have one general place to
 // develop the hero.
@@ -98,12 +97,7 @@ class ExperienceDialog extends Screen<Input> {
 
     Draw.frame(terminal, width: 40, height: 3);
     terminal.writeAt(2, 1, "Available experience", UIHue.text);
-    terminal.writeAt(
-      31,
-      1,
-      formatNumber(_hero.experience).padLeft(8),
-      UIHue.primary,
-    );
+    terminal.writeAt(31, 1, _hero.experience.fmt(w: 8), UIHue.primary);
 
     _drawStatsList(terminal.rect(0, 3, 40, 11));
     _drawSkillsList(terminal.rect(0, 14, 40, terminal.height - 14));
@@ -143,7 +137,7 @@ class ExperienceDialog extends Screen<Input> {
       "↕": "Change selection",
       if (_canRaise) "G": "Gain ${_selectedStat != null ? "stat" : "skill"}",
       "`": "Exit",
-    }, "You can spend ${_hero.experience} experience");
+    }, "You can spend ${_hero.experience.fmt()} experience");
   }
 
   void _drawStatsList(Terminal terminal) {
@@ -223,9 +217,9 @@ class ExperienceDialog extends Screen<Input> {
     };
 
     terminal.writeAt(2, y, name, color);
-    terminal.writeAt(27, y, level.toString().padLeft(3), color);
+    terminal.writeAt(27, y, level.fmt(w: 3), color);
     if (level < maxLevel) {
-      terminal.writeAt(31, y, formatNumber(cost).padLeft(8), color);
+      terminal.writeAt(31, y, cost.fmt(w: 8), color);
     } else if (maxLevel > 0) {
       terminal.writeAt(31, y, " (Maxed)", color);
     } else {
@@ -237,9 +231,11 @@ class ExperienceDialog extends Screen<Input> {
     _drawStatPanel(terminal, _hero.strength, ['Max Fury', 'Toss range scale'], (
       int value,
     ) {
-      var tossPercent = '${(Strength.tossRangeScaleAt(value) * 100).toInt()}%';
       // TODO: Show weapon heft and armor weight somehow.
-      return [Strength.maxFuryAt(value).toString(), tossPercent];
+      return [
+        Strength.maxFuryAt(value).toString(),
+        Strength.tossRangeScaleAt(value).fmtPercent(),
+      ];
     });
   }
 
@@ -289,23 +285,23 @@ class ExperienceDialog extends Screen<Input> {
 
     var y = 2;
     terminal.writeAt(1, y, 'Base value:', UIHue.secondary);
-    terminal.writeAt(15, y, stat.baseValue.toString().padLeft(3), UIHue.text);
+    terminal.writeAt(15, y, stat.baseValue.fmt(w: 3), UIHue.text);
     y++;
 
     if (stat == _hero.strength) {
       var weightOffset = _hero.strength.weightOffset(_hero.save).toInt();
       modifiers = (currentValue - stat.baseValue + weightOffset);
       terminal.writeAt(1, y, 'Weight offset:', UIHue.secondary);
-      terminal.writeAt(15, y, weightOffset.toString().padLeft(3), UIHue.text);
+      terminal.writeAt(15, y, weightOffset.fmt(w: 3), UIHue.text);
       y++;
     }
 
     terminal.writeAt(1, y, 'Modifiers:', UIHue.secondary);
-    terminal.writeAt(15, y, modifiers.toString().padLeft(3), UIHue.text);
+    terminal.writeAt(15, y, modifiers.fmt(w: 3), UIHue.text);
     y++;
 
     terminal.writeAt(1, y, 'Current value:', UIHue.secondary);
-    terminal.writeAt(15, y, currentValue.toString().padLeft(3), UIHue.primary);
+    terminal.writeAt(15, y, currentValue.fmt(w: 3), UIHue.primary);
 
     y = 9;
     for (var label in labels) {
@@ -367,9 +363,11 @@ class ExperienceDialog extends Screen<Input> {
       );
     }
 
-    terminal.writeAt(1, 30, "Level:", UIHue.secondary);
-    terminal.writeAt(9, 30, level.toString().padLeft(4), UIHue.text);
-    Draw.meter(terminal, 14, 30, 25, level, maxLevel, red, maroon);
+    if (maxLevel != 0) {
+      terminal.writeAt(1, 30, "Level:", UIHue.secondary);
+      terminal.writeAt(9, 30, level.fmt(w: 4), UIHue.text);
+      Draw.meter(terminal, 14, 30, 25, level, maxLevel, red, maroon);
+    }
   }
 
   void _changeSelection(int offset) {

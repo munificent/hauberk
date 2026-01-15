@@ -24,8 +24,8 @@ abstract class MasterySkill extends Skill {
 
   @override
   String levelDescription(int level) {
-    var damage = ((_damageScale(level) - 1.0) * 100).toInt();
-    return "Melee attacks inflict $damage% more damage when using a "
+    var damage = (_damageScale(level) - 1.0).fmtPercent();
+    return "Melee attacks inflict $damage more damage when using a "
         "$weaponType.";
   }
 }

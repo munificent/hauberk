@@ -29,7 +29,7 @@ class Bloodlust extends Skill {
 
   @override
   String levelDescription(int level) {
-    var percent = (damageScaleAt(level) * 100).toStringAsFixed(1);
-    return "Increases damage by $percent% for each point of fury.";
+    var percent = damageScaleAt(level).fmtPercent(d: 1);
+    return "Increases damage by $percent for each point of fury.";
   }
 }

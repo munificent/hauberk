@@ -12,7 +12,7 @@ class DualWield extends Skill {
   @override
   String levelDescription(int level) =>
       "Total heft when dual-wielding is scaled by "
-      "${(_heftModifier(level) * 100).toInt()}%.";
+      "${_heftModifier(level).fmtPercent()}.";
 
   @override
   double modifyHeft(Hero hero, int level, double heftModifier) {

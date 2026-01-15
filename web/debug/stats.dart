@@ -37,13 +37,13 @@ void main() {
 
     builder.td(i);
     builder.td(strength.maxFury);
-    builder.td(strength.tossRangeScale.toStringAsFixed(1), right: true);
-    builder.td(strength.heftScale(20).toStringAsFixed(2), right: true);
+    builder.td(strength.tossRangeScale.fmt(d: 1), right: true);
+    builder.td(strength.heftScale(20).fmt(d: 2), right: true);
     builder.td(agility.dodgeBonus);
     builder.td(agility.strikeBonus);
     builder.td(vitality.maxHealth);
     builder.td(intellect.maxFocus);
-    builder.td(intellect.spellFocusScale(10).toStringAsFixed(2), right: true);
+    builder.td(intellect.spellFocusScale(10).fmt(d: 2), right: true);
     builder.trEnd();
   }
 

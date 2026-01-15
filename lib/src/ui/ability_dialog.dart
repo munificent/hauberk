@@ -137,12 +137,7 @@ class AbilityDialog extends Screen<Input> {
         terminal.writeAt(3, y, ability.name, UIHue.disabled);
       } else if (_gameScreen.game.hero.focus < focusCost) {
         terminal.writeAt(3, y, ability.name, UIHue.disabled);
-        terminal.writeAt(
-          terminal.width - 3,
-          y,
-          focusCost.toString().padLeft(3),
-          Color.red,
-        );
+        terminal.writeAt(terminal.width - 3, y, focusCost.fmt(w: 3), Color.red);
       } else {
         terminal.writeAt(0, y, " )   ", UIHue.disabled);
         terminal.writeAt(
@@ -155,7 +150,7 @@ class AbilityDialog extends Screen<Input> {
         terminal.writeAt(
           terminal.width - 3,
           y,
-          focusCost.toString().padLeft(3),
+          focusCost.fmt(w: 3),
           UIHue.text,
         );
       }

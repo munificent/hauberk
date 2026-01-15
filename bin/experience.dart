@@ -1,6 +1,5 @@
 import 'package:hauberk/src/content.dart';
 import 'package:hauberk/src/engine.dart';
-import 'package:hauberk/src/ui/item/item_renderer.dart';
 
 /// Shows various numbers around spending experience.
 void main() {
@@ -9,9 +8,7 @@ void main() {
   // The cost to raise stats with various race modifiers at various amounts of
   // total stat points.
   var statCount = Stat.values.length;
-  var scales = [
-    for (var i = 0.7; i < 1.6; i += 0.1) i.toStringAsFixed(1).padLeft(12),
-  ];
+  var scales = [for (var i = 0.7; i < 1.6; i += 0.1) i.fmt(w: 12, d: 1)];
   print("Stat ${scales.join()}");
   print('-----${"  ----------" * 9}');
   for (
@@ -19,12 +16,10 @@ void main() {
     statTotal <= Stat.baseMax * statCount;
     statTotal += statCount
   ) {
-    var line = statTotal.toString().padLeft(4);
+    var line = statTotal.fmt(w: 4);
     line += ':  ';
     for (var raceScale = 0.7; raceScale < 1.6; raceScale += 0.1) {
-      line += formatNumber(
-        Stat.experienceCostAt(statTotal, raceScale),
-      ).padLeft(10);
+      line += Stat.experienceCostAt(statTotal, raceScale).fmt(w: 10);
       line += '  ';
     }
     print(line);
@@ -35,14 +30,14 @@ void main() {
 
   // The cost to raise a skill with various base experience costs.
   var bases = [for (var i = 1000; i <= 10000; i += 1000) i];
-  print("Skill  ${bases.map((b) => formatNumber(b).padLeft(10)).join('  ')}");
+  print("Skill  ${bases.map((b) => b.fmt(w: 10)).join('  ')}");
   print("-----${"  ----------" * 10}");
   for (var level = 1; level <= Skill.maxLevel; level++) {
-    var line = "${level.toString().padLeft(4)}:";
+    var line = "${level.fmt(w: 4)}:";
 
     for (var baseExperience in bases) {
       var experience = Skill.experienceCostAt(baseExperience, level);
-      line += "  ${formatNumber(experience).padLeft(10)}";
+      line += "  ${experience.fmt(w: 10)}";
     }
     print(line);
   }
@@ -70,8 +65,8 @@ void main() {
     }
 
     print(
-      '${race.name.padRight(8)}  '
-      '${formatNumber(statExperience).padLeft(11)}',
+      '${race.name.fmt(w: 8)}  '
+      '${statExperience.fmt(w: 11)}',
     );
   }
 
@@ -106,10 +101,10 @@ void main() {
     }
 
     print(
-      '${heroClass.name.padRight(12)}  '
-      '${formatNumber(skillExperience).padLeft(11)}  '
-      '${skills.toString().padLeft(6)}  '
-      '${skillLevels.toString().padLeft(6)}',
+      '${heroClass.name.fmt(w: 12)}  '
+      '${skillExperience.fmt(w: 11)}  '
+      '${skills.fmt(w: 6)}  '
+      '${skillLevels.fmt(w: 6)}',
     );
   }
 }

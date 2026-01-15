@@ -96,12 +96,12 @@ void hover(Vec pos) {
     //      }
     //      buffer.writeln("<ul>");
     //
-    //      var total = place.totalStrength.toStringAsFixed(2);
+    //      var total = place.totalStrength.fmt('.2');
     //      for (var theme in themes) {
     //        var strength = place.themes[theme];
     //        var percent = 100 * strength ~/ place.totalStrength;
     //        buffer.writeln("<li>${percent.toString().padLeft(3)}% $theme "
-    //            "(${strength.toStringAsFixed(2)}/$total)</li>");
+    //            "(${strength.fmt('.2')}/$total)</li>");
     //      }
     //      buffer.writeln("</ul>");
     //    }

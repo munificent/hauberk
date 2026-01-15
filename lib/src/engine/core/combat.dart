@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../debug.dart';
 import '../action/action.dart';
+import '../core/utils.dart';
 import '../hero/hero.dart';
 import 'actor.dart';
 import 'element.dart';
@@ -219,7 +220,7 @@ class Hit {
       if (Debug.logCombat) {
         var strikeMods = [
           for (var scale in _strikeScales)
-            'x ${scale.amount.toStringAsFixed(2)} (${scale.reason})',
+            'x ${scale.amount.fmt(d: 2)} (${scale.reason})',
           for (var bonus in _strikeBonuses)
             '+ ${bonus.amount} (${bonus.reason})',
         ].join(' ');
@@ -308,11 +309,11 @@ class Hit {
         '(',
         _attack.damage,
         for (var scale in _damageScales)
-          'x ${scale.amount.toStringAsFixed(2)} (${scale.reason})',
+          'x ${scale.amount.fmt(d: 2)} (${scale.reason})',
         for (var bonus in _damageBonuses) '+ ${bonus.amount} (${bonus.reason})',
         ')',
-        if (resistScale != 1.0) 'x ${resistScale.toStringAsFixed(2)} (resist)',
-        if (armorScale != 1.0) 'x ${armorScale.toStringAsFixed(2)} (armor)',
+        if (resistScale != 1.0) 'x ${resistScale.fmt(d: 2)} (resist)',
+        if (armorScale != 1.0) 'x ${armorScale.fmt(d: 2)} (armor)',
       ].join(' ');
 
       log.debug('damage: $damageString');

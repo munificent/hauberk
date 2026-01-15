@@ -5,7 +5,6 @@ import '../hues.dart';
 import 'hero_info_dialog.dart';
 import 'input.dart';
 import 'item/item_inspector.dart';
-import 'item/item_renderer.dart';
 
 class HeroItemLoreDialog extends HeroInfoDialog {
   static const _rowCount = 11;
@@ -100,18 +99,18 @@ class HeroItemLoreDialog extends HeroInfoDialog {
         terminal.drawGlyph(0, y, item.appearance as Glyph);
         terminal.writeAt(2, y, item.name, fore);
 
-        terminal.writeAt(55, y, item.depth.toString().padLeft(5), fore);
-        terminal.writeAt(61, y, formatNumber(item.price).padLeft(7), fore);
+        terminal.writeAt(55, y, item.depth.fmt(w: 5), fore);
+        terminal.writeAt(61, y, item.price.fmt(w: 7), fore);
 
         if (item.isArtifact) {
           terminal.writeAt(69, y, "Yes".padLeft(5), fore);
         } else {
-          terminal.writeAt(69, y, found.toString().padLeft(5), fore);
+          terminal.writeAt(69, y, found.fmt(w: 5), fore);
         }
 
         if (item.use != null) {
           var used = hero.lore.usedItems(item);
-          terminal.writeAt(75, y, used.toString().padLeft(5), fore);
+          terminal.writeAt(75, y, used.fmt(w: 5), fore);
         } else {
           terminal.writeAt(75, y, "--".padLeft(5), fore);
         }

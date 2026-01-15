@@ -244,8 +244,6 @@ abstract class _Section {
 
   // TODO: Mostly copied from hero_equipment_dialog. Unify.
   void _writeScale(Terminal terminal, int x, int y, double scale) {
-    var string = scale.toStringAsFixed(1);
-
     var xColor = UIHue.disabled;
     var numberColor = UIHue.disabled;
     if (scale > 1.0) {
@@ -257,7 +255,7 @@ abstract class _Section {
     }
 
     terminal.writeAt(x, y, "x", xColor);
-    terminal.writeAt(x + 1, y, string, numberColor);
+    terminal.writeAt(x + 1, y, scale.fmt(d: 1), numberColor);
   }
 }
 
@@ -299,7 +297,7 @@ class _AttackSection extends _Section {
     terminal.writeAt(25, y, "=", UIHue.secondary);
 
     var damage = _item.attack!.damage * _item.damageScale + _item.damageBonus;
-    terminal.writeAt(27, y, damage.toStringAsFixed(2).padLeft(6), carrot);
+    terminal.writeAt(27, y, damage.fmt(w: 6, d: 2), carrot);
     y++;
 
     if (_item.strikeBonus != 0) {
@@ -351,7 +349,7 @@ class _DefenseSection extends _Section {
       _writeBonus(terminal, 16, y, _item.armorModifier);
       terminal.writeAt(25, y, "=", UIHue.secondary);
 
-      var armor = _item.armor.toString().padLeft(6);
+      var armor = _item.armor.fmt(w: 6);
       terminal.writeAt(27, y, armor, peaGreen);
       y++;
     }

@@ -7,7 +7,6 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../draw.dart';
 import '../game_screen.dart';
-import '../item/item_renderer.dart';
 import 'panel.dart';
 
 // TODO: Split this into multiple panels and/or give it a better name.
@@ -108,12 +107,7 @@ class SidebarPanel extends Panel {
     var x = 1;
     void drawStat(StatBase stat) {
       terminal.writeAt(x, y, stat.name.substring(0, 3), UIHue.helpText);
-      terminal.writeAt(
-        x,
-        y + 1,
-        stat.value.toString().padLeft(2),
-        UIHue.primary,
-      );
+      terminal.writeAt(x, y + 1, stat.value.fmt(w: 2), UIHue.primary);
       x += (terminal.width - 4) ~/ 3;
     }
 
@@ -130,7 +124,7 @@ class SidebarPanel extends Panel {
   void _drawExperience(Hero hero, Terminal terminal, int y) {
     terminal.writeAt(1, y, "Exp", UIHue.helpText);
 
-    var experienceString = formatNumber(hero.experience);
+    var experienceString = hero.experience.fmt();
     terminal.writeAt(
       terminal.width - experienceString.length - 1,
       y,
@@ -141,7 +135,7 @@ class SidebarPanel extends Panel {
 
   void _drawGold(Hero hero, Terminal terminal, int y) {
     terminal.writeAt(1, y, "Gold", UIHue.helpText);
-    var heroGold = formatNumber(hero.gold);
+    var heroGold = hero.gold.fmt();
     terminal.writeAt(terminal.width - 1 - heroGold.length, y, heroGold, gold);
   }
 
@@ -310,7 +304,7 @@ class SidebarPanel extends Panel {
     }
 
     if (Debug.showMonsterAlertness && actor is Monster) {
-      var alertness = (actor.alertness * 100).toInt().toString().padLeft(3);
+      var alertness = (actor.alertness * 100).toInt().fmt(w: 3);
       terminal.writeAt(2, y, alertness, ash);
     }
 

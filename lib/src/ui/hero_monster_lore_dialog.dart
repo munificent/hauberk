@@ -100,13 +100,13 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
         terminal.drawGlyph(0, y, breed.appearance as Glyph);
         terminal.writeAt(2, y, breed.name, fore);
 
-        terminal.writeAt(63, y, breed.depth.toString().padLeft(5), fore);
+        terminal.writeAt(63, y, breed.depth.fmt(w: 5), fore);
         if (breed.flags.unique) {
           terminal.writeAt(69, y, "Yes".padLeft(5), fore);
           terminal.writeAt(75, y, (slain > 0 ? "Yes" : "No").padLeft(5), fore);
         } else {
-          terminal.writeAt(69, y, seen.toString().padLeft(5), fore);
-          terminal.writeAt(75, y, slain.toString().padLeft(5), fore);
+          terminal.writeAt(69, y, seen.fmt(w: 5), fore);
+          terminal.writeAt(75, y, slain.fmt(w: 5), fore);
         }
       } else {
         terminal.writeAt(

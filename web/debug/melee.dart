@@ -199,7 +199,7 @@ class Table {
 
         var bg = "hsla(10, 40%, 30%, $normal)";
         buffer.write("<td style='text-align: right; background: $bg;'>");
-        buffer.write("${value.toStringAsFixed(2)}</td>");
+        buffer.write("${value.fmt(d: 2)}</td>");
       }
 
       buffer.write("</tr>");

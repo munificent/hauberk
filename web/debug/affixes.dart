@@ -37,9 +37,7 @@ void main() {
   generate();
 }
 
-String percent(int count) {
-  return "${(count * 100 / tries).toStringAsFixed(3)}%";
-}
+String percent(int count) => (count / tries).fmtPercent(d: 3);
 
 void generate() {
   var affixes = Histogram<AffixData>();
@@ -87,7 +85,7 @@ void generate() {
     builder.td(affix.heftScale);
     builder.td(affix.weightBonus);
     builder.td(affix.strikeBonus);
-    builder.td("${affix.damageBonus} ${affix.damageScale.toStringAsFixed(1)}");
+    builder.td("${affix.damageBonus} ${affix.damageScale.fmt(d: 1)}");
     builder.td(affix.armorBonus);
 
     if (affix.brand != Element.none) {

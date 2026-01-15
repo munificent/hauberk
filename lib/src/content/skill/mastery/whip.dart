@@ -27,9 +27,8 @@ class WhipMastery extends MasterySkill {
 
   @override
   String levelDescription(int level) {
-    var damage = (_whipScale(level) * 100).toInt();
     return "${super.levelDescription(level)} Ranged whip attacks inflict "
-        "$damage% of the damage of a regular attack.";
+        "${_whipScale(level).fmtPercent()} of the damage of a regular attack.";
   }
 }
 

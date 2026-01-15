@@ -89,9 +89,9 @@ void _update() {
       var count = histogram.count(name);
       var width = 100 * count ~/ max;
       var percent = (100 * count / histogram.total)
-          .toStringAsFixed(2)
-          .padLeft(5, "0");
-      var chance = (count / dropTries).toStringAsFixed(2).padLeft(6);
+          .fmt(w: 5, d: 2)
+          .replaceAll(' ', '&nbsp;');
+      var chance = (count / dropTries).fmt(w: 6, d: 2);
 
       builder.write(
         '<span style="font-family: monospace;">$percent% $chance </span>',

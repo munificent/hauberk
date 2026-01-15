@@ -94,7 +94,7 @@ class SelectDepthPopup extends Popup {
         );
       }
 
-      terminal.writeAt(x * 4 + 1, y + 5, depth.toString().padLeft(3), color);
+      terminal.writeAt(x * 4 + 1, y + 5, depth.fmt(w: 3), color);
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:hauberk/src/content.dart';
+import 'package:hauberk/src/engine.dart';
 
 /// Roll new heroes for each race and show the starting stats.
 void main() {
@@ -11,7 +12,7 @@ void main() {
         heroClass: content.classes.first,
       );
 
-      var line = race.name.padRight(5);
+      var line = race.name.fmt(w: 5);
 
       for (var stat in [
         hero.strength,
@@ -20,7 +21,7 @@ void main() {
         hero.intellect,
       ]) {
         var bar = '*' * (stat.value);
-        line += '  ${stat.value.toString().padLeft(2)} ${bar.padRight(20)}';
+        line += '  ${stat.value.fmt(w: 2)} ${bar.fmt(w: 20)}';
       }
 
       print(line);

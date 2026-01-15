@@ -84,12 +84,7 @@ List<String> _findBestWeapons(int strengthValue, int dualWieldLevel) {
       var scaledDamage = totalDamage * heftScale;
       var label = weapons.join('+');
       weaponDamage[label] = scaledDamage;
-
-      // TODO: Use this if you want more details on the math.
-      // weaponDesc[label] =
-      //     'heft: $totalHeft x ${heftModifier.toStringAsFixed(2)} = $scaledHeft '
-      //     'dam: ${totalDamage} x ${heftScale.toStringAsFixed(2)} = ${scaledDamage.toStringAsFixed(2)}';
-      weaponDesc[label] = scaledDamage.toStringAsFixed(2).padLeft(7);
+      weaponDesc[label] = scaledDamage.fmt(w: 7, d: 2);
 
       // We re-use the hero for performance, so unequip the weapons.
       var previous = game.hero.equipment.toList();

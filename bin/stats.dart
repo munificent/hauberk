@@ -18,15 +18,15 @@ void main() {
     intellect.update(i, (_) {});
 
     print(
-      "  ${i.toString().padLeft(2)}:"
-      " ${strength.maxFury.toString().padLeft(7)}"
-      " ${strength.tossRangeScale.toStringAsFixed(1).padLeft(3)}"
-      " ${strength.heftScale(20).toStringAsFixed(2).padLeft(5)}"
-      " ${agility.dodgeBonus.toString().padLeft(5)}"
-      " ${agility.strikeBonus.toString().padLeft(6)}"
-      " ${vitality.maxHealth.toString().padLeft(9)}"
-      " ${intellect.maxFocus.toString().padLeft(8)}"
-      " ${intellect.spellCount.toString().padLeft(6)}",
+      "  ${i.fmt(w: 2)}:"
+      " ${strength.maxFury.fmt(w: 7)}"
+      " ${strength.tossRangeScale.fmt(w: 3, d: 1)}"
+      " ${strength.heftScale(20).fmt(w: 5, d: 2)}"
+      " ${agility.dodgeBonus.fmt(w: 5)}"
+      " ${agility.strikeBonus.fmt(w: 6)}"
+      " ${vitality.maxHealth.fmt(w: 9)}"
+      " ${intellect.maxFocus.fmt(w: 8)}"
+      " ${intellect.spellCount.fmt(w: 6)}",
     );
   }
 
@@ -39,11 +39,11 @@ void main() {
   for (var i = 1; i <= Stat.modifiedMax; i++) {
     strength.update(i, (_) {});
 
-    var line = "${i.toString().padLeft(2)}:";
+    var line = "${i.fmt(w: 2)}:";
     for (var level = 1; level <= Skill.maxLevel; level += 2) {
       var scale = Bloodlust.damageScaleAt(level) * strength.maxFury;
       var bar = _makeBar(10, scale / maxScale);
-      line += " ${((scale + 1.0) * 100).toInt().toString().padLeft(4)}% $bar";
+      line += " ${(scale + 1.0).fmtPercent(w: 4, d: 0)} $bar";
     }
     print(line);
   }
@@ -61,5 +61,5 @@ String _makeBar(int width, num value) {
   var bar =
       solidBlock * solidChars +
       chars[(fraction * chars.length).toInt().clamp(0, chars.length - 1)];
-  return bar.padRight(width);
+  return bar.fmt(w: width);
 }

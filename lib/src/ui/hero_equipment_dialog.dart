@@ -27,7 +27,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
     }
 
     void writeScale(int x, int y, double scale) {
-      var string = scale.toStringAsFixed(1);
+      var string = scale.fmt(d: 1);
 
       if (scale > 1.0) {
         terminal.writeAt(x, y, "x", sherwood);
@@ -69,7 +69,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
           elementColor(item.element),
         );
 
-        terminal.writeAt(51, y, attack.damage.toString().padLeft(2), ash);
+        terminal.writeAt(51, y, attack.damage.fmt(w: 2), ash);
       }
 
       writeScale(54, y, item.damageScale);
@@ -79,7 +79,7 @@ class HeroEquipmentDialog extends HeroInfoDialog {
       // TODO: Dodge bonuses.
 
       if (item.baseArmor != 0) {
-        terminal.writeAt(74, y, item.baseArmor.toString().padLeft(2), ash);
+        terminal.writeAt(74, y, item.baseArmor.fmt(w: 2), ash);
       }
 
       writeBonus(77, y, item.armorModifier);
@@ -114,13 +114,13 @@ class HeroEquipmentDialog extends HeroInfoDialog {
     writeLine(totalY - 1, darkCoolGray);
 
     terminal.writeAt(48, totalY, element.abbreviation, elementColor(element));
-    terminal.writeAt(51, totalY, baseDamage.toString().padLeft(2));
+    terminal.writeAt(51, totalY, baseDamage.fmt(w: 2));
     writeScale(54, totalY, totalDamageScale);
     writeBonus(59, totalY, totalDamageBonus);
     writeBonus(64, totalY, totalStrikeBonus);
 
     // TODO: Might need three digits for armor.
-    terminal.writeAt(74, totalY, totalArmor.toString().padLeft(2), ash);
+    terminal.writeAt(74, totalY, totalArmor.fmt(w: 2), ash);
     writeBonus(77, totalY, totalArmorBonus);
 
     // TODO: Show resulting average damage. Include stat bonuses and stuff too.

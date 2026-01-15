@@ -36,7 +36,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
 
         var x = 48 + i * 3;
         var resistance = item.resistance(element);
-        var string = resistance.toString().padLeft(2);
+        var string = resistance.fmt(w: 2);
         if (resistance > 0) {
           terminal.writeAt(x, y, string, peaGreen);
         } else if (resistance < 0) {
@@ -69,7 +69,7 @@ class HeroResistancesDialog extends HeroInfoDialog {
         color = red;
       }
 
-      terminal.writeAt(x, totalY, resistance.toString().padLeft(2), color);
+      terminal.writeAt(x, totalY, resistance.fmt(w: 2), color);
       i++;
     }
   }
