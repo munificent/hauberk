@@ -395,31 +395,36 @@ class GameScreen extends Screen<Input> {
 
   @override
   void resize(Vec size) {
-    var leftWidth = 21;
+    // Grow the sidebar slowly because extra width here is slightly useful for
+    // longer monster names but otherwise isn't as useful as making the stage
+    // bigger. Make sure that the size increases by multiples of three so that
+    // the stats stay evenly spaced.
+    var sidebarWidth = (21 + ((size.x - 100) ~/ 30) * 3).clamp(21, 33);
 
-    if (size > 160) {
-      leftWidth = 29;
-    } else if (size > 150) {
-      leftWidth = 25;
-    }
-
-    var centerWidth = size.x - leftWidth;
-
-    itemPanel.hide();
+    // Hide the item column completely if the screen is very small to maximize
+    // the stage. If visible grow it more slowly than the stage. It's useful to
+    // see longer item names, but not as useful as more stage space.
+    var itemWidth = 0;
     if (size.x >= 80) {
-      var width = math.min(50, 20 + (size.x - 80) ~/ 2);
-      itemPanel.show(Rect(size.x - width, 0, width, size.y));
-      centerWidth = size.x - leftWidth - width;
+      itemWidth = math.min(50, 20 + (size.x - 80) ~/ 3);
+      itemPanel.show(Rect(size.x - itemWidth, 0, itemWidth, size.y));
     }
 
-    _sidebarPanel.show(Rect(0, 0, leftWidth, size.y));
+    var logHeight = math.min(10, 3 + (size.y - 30) ~/ 3);
 
-    var logHeight = 3 + (size.y - 30) ~/ 2;
-    logHeight = math.min(logHeight, 10);
+    var centerWidth = size.x - sidebarWidth - itemWidth;
 
-    _logPanel.show(Rect(leftWidth, 0, centerWidth, logHeight));
+    _sidebarPanel.show(Rect(0, 0, sidebarWidth, size.y));
+
+    if (itemWidth > 0) {
+      itemPanel.show(Rect(size.x - itemWidth, 0, itemWidth, size.y));
+    } else {
+      itemPanel.hide();
+    }
+
+    _logPanel.show(Rect(sidebarWidth, 0, centerWidth, logHeight));
     stagePanel.show(
-      Rect(leftWidth, logHeight, centerWidth, size.y - logHeight),
+      Rect(sidebarWidth, logHeight, centerWidth, size.y - logHeight),
     );
   }
 

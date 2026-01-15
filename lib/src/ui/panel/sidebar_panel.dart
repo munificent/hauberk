@@ -108,7 +108,7 @@ class SidebarPanel extends Panel {
     void drawStat(StatBase stat) {
       terminal.writeAt(x, y, stat.name.substring(0, 3), UIHue.helpText);
       terminal.writeAt(x, y + 1, stat.value.fmt(w: 2), UIHue.primary);
-      x += (terminal.width - 4) ~/ 3;
+      x += (terminal.width - 6) ~/ 3;
     }
 
     drawStat(hero.strength);
