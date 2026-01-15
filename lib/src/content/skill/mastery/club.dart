@@ -20,9 +20,8 @@ class ClubMastery extends MasterySkill {
   @override
   String get weaponType => "club";
 
-  // TODO: Having to make this late to plumb the skill through is gross.
   @override
-  late final Ability ability = ClubBashAbility(this);
+  Ability? initializeAbility() => ClubBashAbility(this);
 
   @override
   String levelDescription(int level) {

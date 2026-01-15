@@ -21,9 +21,8 @@ class WhipMastery extends MasterySkill {
   @override
   String get weaponType => "whip";
 
-  // TODO: Having to make this late to plumb the skill through is gross.
   @override
-  late final Ability ability = WhipCrackAbility(this);
+  Ability? initializeAbility() => WhipCrackAbility(this);
 
   @override
   String levelDescription(int level) {

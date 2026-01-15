@@ -28,11 +28,9 @@ abstract class Ability {
   /// If this skill has a focus cost, wraps [action] in an appropriate action
   /// to spend that.
   Action _wrapFocusCost(HeroSave hero, int skillLevel, Action action) {
-    if (focusCost(hero, skillLevel) > 0) {
-      return FocusAction(focusCost(hero, skillLevel), action);
-    }
-
-    return action;
+    var cost = focusCost(hero, skillLevel);
+    if (cost <= 0) return action;
+    return FocusAction(cost, action);
   }
 }
 

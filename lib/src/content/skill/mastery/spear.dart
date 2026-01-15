@@ -20,9 +20,8 @@ class SpearMastery extends MasterySkill {
   @override
   String get weaponType => "spear";
 
-  // TODO: Having to make this late to plumb the skill through is gross.
   @override
-  late final Ability ability = SpearStabAbility(this);
+  Ability? initializeAbility() => SpearStabAbility(this);
 
   @override
   String levelDescription(int level) {

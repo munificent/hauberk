@@ -6,6 +6,8 @@ import '../action/ray.dart';
 import '../elements.dart';
 import '../spells.dart';
 
+// TODO: Spells should get stronger as sorcery level increases.
+
 List<Spell> sorcerySpells(Skill sorcerySkill) {
   return [
     TargetSpell(

@@ -18,9 +18,8 @@ class Archery extends Skill {
 
   // TODO: Maybe a higher-level archery ability that lets you fire a volley of
   // arrows.
-  // TODO: Having to make this late to plumb the skill through is gross.
   @override
-  late final Ability ability = FireArrowAbility(this);
+  Ability? initializeAbility() => FireArrowAbility(this);
 
   @override
   void modifyRangedHit(Hero hero, Item? weapon, Hit hit, int level) {

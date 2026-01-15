@@ -20,9 +20,8 @@ class AxeMastery extends MasterySkill {
   @override
   String get weaponType => "axe";
 
-  // TODO: Having to make this late to plumb the skill through is gross.
   @override
-  late final Ability ability = AxeSweepAbility(this);
+  Ability? initializeAbility() => AxeSweepAbility(this);
 
   @override
   String levelDescription(int level) {

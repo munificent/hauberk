@@ -13,30 +13,27 @@ import 'input.dart';
 class AbilityDialog extends Screen<Input> {
   final GameScreen _gameScreen;
 
-  // TODO: Consider whether it's a better UX to merge these dialogs.
+  // TODO: Consider whether it's a better UX to merge these dialogs and show
+  // abilities and spells together.
+
   /// If `true`, the dialog is for selecting a spell to cast, otherwise it's
   /// for selecting a non-spell ability.
   final bool _showSpells;
 
-  final List<Ability> _abilities = [];
+  final List<Ability> _abilities;
 
   @override
   bool get isTransparent => true;
 
   AbilityDialog(this._gameScreen, {required bool showSpells})
-    : _showSpells = showSpells {
-    var hero = _gameScreen.game.hero;
-
-    if (_showSpells) {
-      for (var spell in hero.save.learnedSpells) {
-        _abilities.add(spell);
-      }
-    } else {
-      for (var skill in hero.skills.acquired) {
-        if (skill.ability case var ability?) _abilities.add(ability);
-      }
-    }
-  }
+    : _showSpells = showSpells,
+      _abilities = [
+        if (showSpells)
+          ..._gameScreen.game.hero.save.learnedSpells
+        else
+          for (var skill in _gameScreen.game.hero.skills.acquired)
+            ?skill.ability,
+      ];
 
   @override
   bool handleInput(Input input) {
@@ -57,7 +54,7 @@ class AbilityDialog extends Screen<Input> {
       return true;
     }
 
-    // TODO: Quick keys!
+    // TODO: Quick keys.
     return false;
   }
 
