@@ -1,12 +1,12 @@
 import 'package:malison/malison.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
-import 'hero_info_dialog.dart';
-import 'input.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../draw.dart';
+import '../input.dart';
+import 'info_dialog.dart';
 
-class HeroMonsterLoreDialog extends HeroInfoDialog {
+class MonsterLoreInfoDialog extends InfoDialog {
   static const _rowCount = 11;
 
   final List<Breed> _breeds = [];
@@ -14,7 +14,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
   int _selection = 0;
   int _scroll = 0;
 
-  HeroMonsterLoreDialog(super.content, super.hero) : super.base() {
+  MonsterLoreInfoDialog(super.content, super.hero) : super.base() {
     _listBreeds();
   }
 
@@ -63,7 +63,7 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
   }
 
   @override
-  void render(Terminal terminal) {
+  void renderInfo(Terminal terminal) {
     terminal.clear();
 
     void writeLine(int y, Color color) {
@@ -76,7 +76,6 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
       );
     }
 
-    terminal.writeAt(2, 1, "Monsters", gold);
     terminal.writeAt(20, 1, "(${_sort.description})".padLeft(42), darkCoolGray);
     terminal.writeAt(63, 1, "Depth Seen Slain", coolGray);
 
@@ -121,7 +120,6 @@ class HeroMonsterLoreDialog extends HeroInfoDialog {
     writeLine(2, darkCoolGray);
 
     _showMonster(terminal, _breeds[_selection]);
-    super.render(terminal);
   }
 
   void _showMonster(Terminal terminal, Breed breed) {

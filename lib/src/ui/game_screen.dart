@@ -17,7 +17,7 @@ import 'exit_popup.dart';
 import 'experience_dialog.dart';
 import 'forfeit_popup.dart';
 import 'game_over_screen.dart';
-import 'hero_info_dialog.dart';
+import 'info/info_dialog.dart';
 import 'input.dart';
 import 'item/drop_dialog.dart';
 import 'item/equip_dialog.dart';
@@ -187,7 +187,7 @@ class GameScreen extends Screen<Input> {
       case Input.spendExperience:
         ui.push(ExperienceDialog(game.content, game.hero));
       case Input.heroInfo:
-        ui.push(HeroInfoDialog(game.content, game.hero.save));
+        ui.push(InfoDialog(game.content, game.hero.save));
       case Input.drop:
         ui.push(DropDialog(this));
       case Input.use:

@@ -1,12 +1,12 @@
 import 'package:malison/malison.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'hero_info_dialog.dart';
-import 'input.dart';
-import 'item/item_inspector.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../input.dart';
+import '../item/item_inspector.dart';
+import 'info_dialog.dart';
 
-class HeroItemLoreDialog extends HeroInfoDialog {
+class ItemLoreInfoDialog extends InfoDialog {
   static const _rowCount = 11;
 
   final List<ItemType> _items = [];
@@ -14,7 +14,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
   int _selection = 0;
   int _scroll = 0;
 
-  HeroItemLoreDialog(super.content, super.hero) : super.base() {
+  ItemLoreInfoDialog(super.content, super.hero) : super.base() {
     _listItems();
   }
 
@@ -63,7 +63,7 @@ class HeroItemLoreDialog extends HeroInfoDialog {
   }
 
   @override
-  void render(Terminal terminal) {
+  void renderInfo(Terminal terminal) {
     terminal.clear();
 
     void writeLine(int y, Color color) {
@@ -76,7 +76,6 @@ class HeroItemLoreDialog extends HeroInfoDialog {
       );
     }
 
-    terminal.writeAt(2, 1, "Items", gold);
     terminal.writeAt(20, 1, "(${_sort.description})".padLeft(34), darkCoolGray);
     terminal.writeAt(55, 1, "Depth   Price Found  Used", coolGray);
 
@@ -129,8 +128,6 @@ class HeroItemLoreDialog extends HeroInfoDialog {
     if (hero.lore.foundItems(_items[_selection]) > 0) {
       _showItem(terminal, _items[_selection]);
     }
-
-    super.render(terminal);
   }
 
   void _showItem(Terminal terminal, ItemType item) {
