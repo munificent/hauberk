@@ -48,12 +48,8 @@ extension NumExtensions on num {
   ///
   /// If [d] is given, includes that many digits of precision. If [w] is given,
   /// pads the result on the left to at least that many characters.
-  String fmtPercent({int? w, int? d}) {
-    var result = d != null
-        ? '${(this * 100).toStringAsFixed(d)}%'
-        : '${this * 100}%';
-    return result.padLeft(w ?? 0);
-  }
+  String fmtPercent({int? w, int? d}) =>
+      '${(this * 100).toStringAsFixed(d ?? 0)}%'.padLeft(w ?? 0);
 }
 
 extension ObjectExtensions on Object {

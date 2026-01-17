@@ -67,18 +67,16 @@ void main() {
   group('num.fmtPercent()', () {
     test('no arguments', () {
       expect(123.fmtPercent(), '12300%');
-      expect(0.123.fmtPercent(), '12.3%');
-      expect(4.5.fmtPercent(), '450.0%');
-      expect((-0.45).fmtPercent(), '-45.0%');
+      expect(0.123.fmtPercent(), '12%');
+      expect(4.5.fmtPercent(), '450%');
+      expect((-0.45).fmtPercent(), '-45%');
     });
 
     test('width', () {
-      expect(.12345.fmtPercent(w: 6, d: 0), '   12%');
-      expect(.12345.fmtPercent(w: 6, d: 1), ' 12.3%');
-      expect(.12345.fmtPercent(w: 6, d: 2), '12.35%');
-      expect(.12345.fmtPercent(w: 6, d: 3), '12.345%');
-      expect(.12345.fmtPercent(w: 6, d: 4), '12.3450%');
-      expect(.12345.fmtPercent(w: 12, d: 4), '    12.3450%');
+      expect(.12345.fmtPercent(w: 0), '12%');
+      expect(.12345.fmtPercent(w: 2), '12%');
+      expect(.12345.fmtPercent(w: 4), ' 12%');
+      expect(.12345.fmtPercent(w: 8), '     12%');
     });
 
     test('digits', () {
