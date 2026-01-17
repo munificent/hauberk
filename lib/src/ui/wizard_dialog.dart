@@ -2,7 +2,9 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
+import 'package:piecemeal/piecemeal.dart';
 
+import '../content/tiles.dart';
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
@@ -30,6 +32,8 @@ class WizardDialog extends Screen<Input> {
       ("s", KeyCode.s, "Spawn Monster", _spawnMonster),
       ("x", KeyCode.x, "Gain Experience", _gainExperience),
       ("k", KeyCode.k, "Kill All Monsters", _killAllMonsters),
+      ("c", KeyCode.c, "Clear All Floor Items", _clearFloorItems),
+      ("l", KeyCode.l, "Make Stairs", _makeStairs),
       ("o", KeyCode.o, "Toggle Show All Monsters", _toggleShowAllMonsters),
       ("a", KeyCode.a, "Toggle Show Monster Alertness", _toggleAlertness),
       ("v", KeyCode.v, "Toggle Show Hero Volume", _toggleShowHeroVolume),
@@ -157,7 +161,6 @@ class WizardDialog extends Screen<Input> {
   void _gainExperience() {
     _game.hero.experience += 10000;
     _game.hero.refreshProperties();
-    dirty();
   }
 
   void _killAllMonsters() {
@@ -170,8 +173,25 @@ class WizardDialog extends Screen<Input> {
       );
       _game.stage.removeActor(monster);
     }
+  }
 
-    dirty();
+  void _clearFloorItems() {
+    // Collect the items to clear first then remove them. We can't remove
+    // items inside [forEachItem()] because that will concurrently modify the
+    // item map.
+    var items = <(Vec, Item)>[];
+    _game.stage.forEachItem((item, pos) {
+      items.add((pos, item));
+    });
+
+    for (var (pos, item) in items) {
+      _game.stage.removeItem(item, pos);
+    }
+  }
+
+  void _makeStairs() {
+    _game.stage[_game.hero.pos].type = Tiles.stairs;
+    _game.log.debug("Put stairs here");
   }
 
   void _toggleShowAllMonsters() {
