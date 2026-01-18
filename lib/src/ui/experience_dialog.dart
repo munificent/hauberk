@@ -3,8 +3,8 @@ import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
-import 'draw.dart';
 import 'input.dart';
+import 'widget/draw.dart';
 
 // TODO: Can probably merge this with SkillDialog to have one general place to
 // develop the hero.

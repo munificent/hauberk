@@ -5,8 +5,8 @@ import '../../content/elements.dart';
 import '../../debug.dart';
 import '../../engine.dart';
 import '../../hues.dart';
-import '../draw.dart';
-import '../game_screen.dart';
+import '../game/game_screen.dart';
+import '../widget/draw.dart';
 import 'panel.dart';
 
 // TODO: Split this into multiple panels and/or give it a better name.

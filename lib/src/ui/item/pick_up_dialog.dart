@@ -1,7 +1,7 @@
 import '../../engine/action/item.dart';
 import '../../engine/items/inventory.dart';
 import '../../engine/items/item.dart';
-import '../game_screen.dart';
+import '../game/game_screen.dart';
 import 'item_dialog.dart';
 
 // TODO: It queries for a count. But if there is only a single item, the hero

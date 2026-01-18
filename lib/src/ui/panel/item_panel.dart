@@ -1,8 +1,8 @@
 import 'package:malison/malison.dart';
 
 import '../../engine.dart';
-import '../draw.dart';
 import '../item/item_renderer.dart';
+import '../widget/draw.dart';
 import 'panel.dart';
 
 class ItemPanel extends Panel {

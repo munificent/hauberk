@@ -2,11 +2,11 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../input.dart';
+import '../widget/draw.dart';
 import 'game_screen.dart';
-import 'input.dart';
 
 /// Modal dialog for letting the user select a [Direction] to perform a command.
 abstract class DirectionDialog extends Screen<Input> {

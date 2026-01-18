@@ -4,9 +4,9 @@ import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 // TODO: Directly importing this is a little hacky. Put "appearance" on Element?
-import '../content/elements.dart';
-import '../engine.dart';
-import '../hues.dart';
+import '../../content/elements.dart';
+import '../../engine.dart';
+import '../../hues.dart';
 
 // TODO: Effects need to take background color into effect better: should be
 // black when over unexplored tiles, unlit over unlit, etc.

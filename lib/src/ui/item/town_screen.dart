@@ -5,9 +5,9 @@ import 'package:malison/malison_web.dart';
 
 import '../../engine.dart';
 import '../../hues.dart';
-import '../draw.dart';
-import '../game_screen.dart';
+import '../game/game_screen.dart';
 import '../input.dart';
+import '../widget/draw.dart';
 import 'item_renderer.dart';
 import 'put_dialog.dart';
 import 'sell_dialog.dart';

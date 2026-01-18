@@ -2,7 +2,7 @@ import '../../engine/action/toss.dart';
 import '../../engine/core/combat.dart';
 import '../../engine/items/inventory.dart';
 import '../../engine/items/item.dart';
-import '../target_dialog.dart';
+import '../game/target_dialog.dart';
 import 'item_dialog.dart';
 
 class TossDialog extends ItemDialog {

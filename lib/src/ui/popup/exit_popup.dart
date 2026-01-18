@@ -3,9 +3,9 @@ import 'dart:math' as math;
 import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'input.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../input.dart';
 import 'popup.dart';
 
 class ExitPopup extends Popup {

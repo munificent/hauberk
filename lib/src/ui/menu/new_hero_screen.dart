@@ -2,12 +2,12 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
-import 'game_screen.dart';
-import 'input.dart';
-import 'storage.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../game/game_screen.dart';
+import '../input.dart';
+import '../storage.dart';
+import '../widget/draw.dart';
 
 // From: http://medieval.stormthecastle.com/medieval-names.htm.
 const _defaultNames = [

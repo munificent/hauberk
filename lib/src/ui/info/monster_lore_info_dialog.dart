@@ -2,8 +2,8 @@ import 'package:malison/malison.dart';
 
 import '../../engine.dart';
 import '../../hues.dart';
-import '../draw.dart';
 import '../input.dart';
+import '../widget/draw.dart';
 import '../widget/table.dart';
 import 'info_dialog.dart';
 

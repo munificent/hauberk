@@ -4,10 +4,10 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../../engine.dart';
-import '../draw.dart';
-import '../game_screen.dart';
+import '../game/game_screen.dart';
 import '../input.dart';
 import '../panel/item_panel.dart';
+import '../widget/draw.dart';
 import 'item_renderer.dart';
 
 /// Modal dialog for letting the user perform an [Action] on an [Item]

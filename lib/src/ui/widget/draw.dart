@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:malison/malison.dart';
-import '../engine.dart';
-import '../hues.dart';
+import '../../engine.dart';
+import '../../hues.dart';
 
 class Draw {
   // TODO: Unify this with Popup.

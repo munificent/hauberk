@@ -4,7 +4,7 @@ import 'package:malison/malison.dart';
 
 import '../../engine.dart';
 import '../../hues.dart';
-import '../draw.dart';
+import '../widget/draw.dart';
 import 'item_inspector.dart';
 
 /// The ideal maximum width of an item list, including the frame.

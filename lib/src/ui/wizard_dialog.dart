@@ -8,8 +8,8 @@ import '../content/tiles.dart';
 import '../debug.dart';
 import '../engine.dart';
 import '../hues.dart';
-import 'draw.dart';
 import 'input.dart';
+import 'widget/draw.dart';
 
 typedef _WizardAction = (String, int, String, void Function());
 

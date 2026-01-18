@@ -2,10 +2,10 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 
-import '../debug.dart';
-import '../engine.dart';
-import '../hues.dart';
-import 'input.dart';
+import '../../debug.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../input.dart';
 import 'popup.dart';
 
 class SelectDepthPopup extends Popup {

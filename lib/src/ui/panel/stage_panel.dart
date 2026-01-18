@@ -8,8 +8,8 @@ import '../../content/elements.dart';
 import '../../debug.dart';
 import '../../engine.dart';
 import '../../hues.dart';
-import '../effect.dart';
-import '../game_screen.dart';
+import '../game/effect.dart';
+import '../game/game_screen.dart';
 import 'panel.dart';
 
 /// The main gameplay area of the screen.

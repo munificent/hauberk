@@ -4,14 +4,14 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'confirm_popup.dart';
-import 'draw.dart';
-import 'game_screen.dart';
-import 'input.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../game/game_screen.dart';
+import '../input.dart';
+import '../popup/confirm_popup.dart';
+import '../storage.dart';
+import '../widget/draw.dart';
 import 'new_hero_screen.dart';
-import 'storage.dart';
 
 const _chars = [
   r"_____ _____                 ____                     ____",

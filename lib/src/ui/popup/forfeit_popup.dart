@@ -1,6 +1,6 @@
 import 'package:malison/malison.dart';
 
-import 'input.dart';
+import '../input.dart';
 import 'popup.dart';
 
 /// Modal dialog for letting the user confirm forfeiting the level.

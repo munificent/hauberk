@@ -3,8 +3,8 @@ import 'package:malison/malison_web.dart';
 
 import '../../engine.dart';
 import '../../hues.dart';
-import '../draw.dart';
 import '../input.dart';
+import '../widget/draw.dart';
 import 'equipment_info_dialog.dart';
 import 'item_lore_info_dialog.dart';
 import 'monster_lore_info_dialog.dart';

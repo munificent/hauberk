@@ -1,10 +1,10 @@
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
-import '../engine.dart';
-import '../hues.dart';
-import 'draw.dart';
-import 'input.dart';
+import '../../engine.dart';
+import '../../hues.dart';
+import '../input.dart';
+import '../widget/draw.dart';
 
 /// Dialog shown while a new level is being generated.
 class LoadingDialog extends Screen<Input> {

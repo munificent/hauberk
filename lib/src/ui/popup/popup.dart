@@ -3,10 +3,9 @@ import 'dart:math' as math;
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
-import '../hues.dart';
-import 'draw.dart';
-
-import 'input.dart';
+import '../../hues.dart';
+import '../input.dart';
+import '../widget/draw.dart';
 
 /// Base class for a centered modal dialog.
 abstract class Popup extends Screen<Input> {
