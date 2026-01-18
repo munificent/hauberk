@@ -4,11 +4,13 @@ import '../../engine.dart';
 import '../../hues.dart';
 import 'info_dialog.dart';
 
+// TODO: Use Table and allow selecting a row to show the inspector for the
+// selected equipment.
 abstract class EquipmentInfoDialog extends InfoDialog {
   EquipmentInfoDialog(super.content, super.hero) : super.base();
 
   @override
-  void renderInfo(Terminal terminal) {
+  void drawInfo(Terminal terminal) {
     var cellsX = terminal.width - 32;
     var y = 3;
 
@@ -61,8 +63,6 @@ abstract class EquipmentInfoDialog extends InfoDialog {
   String get _cellLines;
 }
 
-// TODO: Unify with HeroItemLoreDialog so that we can select and show inspector
-// for equipment.
 class EquipmentStatsInfoDialog extends EquipmentInfoDialog {
   EquipmentStatsInfoDialog(super.content, super.hero);
 

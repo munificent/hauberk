@@ -4,34 +4,60 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../draw.dart';
 import '../input.dart';
+import '../widget/table.dart';
 import 'info_dialog.dart';
 
 class MonsterLoreInfoDialog extends InfoDialog {
-  static const _rowCount = 11;
+  static int _compareGlyph(Breed a, Breed b) {
+    var aChar = (a.appearance as Glyph).char;
+    var bChar = (b.appearance as Glyph).char;
 
-  final List<Breed> _breeds = [];
-  _Sort _sort = _Sort.appearance;
-  int _selection = 0;
-  int _scroll = 0;
+    bool isUpper(int c) => c >= CharCode.aUpper && c <= CharCode.zUpper;
+
+    // Sort lowercase letters first even though they come later in character
+    // code.
+    if (isUpper(aChar) && !isUpper(bChar)) return 1;
+    if (!isUpper(aChar) && isUpper(bChar)) return -1;
+
+    return aChar.compareTo(bChar);
+  }
+
+  static int _compareDepth(Breed a, Breed b) => a.depth.compareTo(b.depth);
+
+  static int _compareName(Breed a, Breed b) =>
+      a.name.toLowerCase().compareTo(b.name.toLowerCase());
+
+  final Table<Breed> _table = Table(
+    [
+      Column("Name"),
+      Column("Depth", width: 5, align: Align.right),
+      Column("Seen", width: 5, align: Align.right),
+      Column("Slain", width: 5, align: Align.right),
+    ],
+    orders: [
+      RowOrder("appearance", [_compareGlyph, _compareDepth]),
+      RowOrder("name", [_compareName]),
+      RowOrder("depth", [_compareDepth, _compareName]),
+    ],
+    filters: [
+      RowFilter("all", where: (breed) => true),
+      RowFilter("uniques", where: (breed) => breed.flags.unique),
+    ],
+  );
 
   MonsterLoreInfoDialog(super.content, super.hero) : super.base() {
-    _listBreeds();
+    _buildRows();
   }
 
   @override
   String get name => "Monster Lore";
 
   @override
-  Map<String, String> get extraHelp => {
-    "↕": "Scroll",
-    "S": _sort.next.helpText,
-  };
+  Map<String, String> get extraHelp => _table.extraHelp;
 
   @override
   bool keyDown(int keyCode, {required bool shift, required bool alt}) {
-    if (!shift && !alt && keyCode == KeyCode.s) {
-      _sort = _sort.next;
-      _listBreeds();
+    if (_table.keyDown(keyCode, shift: shift, alt: alt)) {
       dirty();
       return true;
     }
@@ -41,85 +67,19 @@ class MonsterLoreInfoDialog extends InfoDialog {
 
   @override
   bool handleInput(Input input) {
-    switch (input) {
-      case Input.n:
-        _select(-1);
-        return true;
-
-      case Input.s:
-        _select(1);
-        return true;
-
-      case Input.runN:
-        _select(-(_rowCount - 1));
-        return true;
-
-      case Input.runS:
-        _select(_rowCount - 1);
-        return true;
+    if (_table.handleInput(input)) {
+      dirty();
+      return true;
     }
 
     return super.handleInput(input);
   }
 
   @override
-  void renderInfo(Terminal terminal) {
-    terminal.clear();
+  void drawInfo(Terminal terminal) {
+    _table.draw(terminal.rect(0, 1, terminal.width, terminal.height - 16));
 
-    void writeLine(int y, Color color) {
-      terminal.writeAt(
-        2,
-        y,
-        "──────────────────────────────────────────────────────────── ───── "
-        "───── ─────",
-        color,
-      );
-    }
-
-    terminal.writeAt(20, 1, "(${_sort.description})".padLeft(42), darkCoolGray);
-    terminal.writeAt(63, 1, "Depth Seen Slain", coolGray);
-
-    for (var i = 0; i < _rowCount; i++) {
-      var y = i * 2 + 3;
-      writeLine(y + 1, darkerCoolGray);
-
-      var index = _scroll + i;
-      if (index >= _breeds.length) continue;
-      var breed = _breeds[index];
-
-      var fore = UIHue.text;
-      if (index == _selection) {
-        fore = UIHue.selection;
-        terminal.writeAt(1, y, "►", fore);
-      }
-
-      var seen = hero.lore.seenBreed(breed);
-      var slain = hero.lore.slain(breed);
-      if (seen > 0) {
-        terminal.drawGlyph(0, y, breed.appearance as Glyph);
-        terminal.writeAt(2, y, breed.name, fore);
-
-        terminal.writeAt(63, y, breed.depth.fmt(w: 5), fore);
-        if (breed.flags.unique) {
-          terminal.writeAt(69, y, "Yes".padLeft(5), fore);
-          terminal.writeAt(75, y, (slain > 0 ? "Yes" : "No").padLeft(5), fore);
-        } else {
-          terminal.writeAt(69, y, seen.fmt(w: 5), fore);
-          terminal.writeAt(75, y, slain.fmt(w: 5), fore);
-        }
-      } else {
-        terminal.writeAt(
-          2,
-          y,
-          "(undiscovered ${_scroll + i + 1})",
-          UIHue.disabled,
-        );
-      }
-    }
-
-    writeLine(2, darkCoolGray);
-
-    _showMonster(terminal, _breeds[_selection]);
+    _showMonster(terminal, _table.selectedRow.data);
   }
 
   void _showMonster(Terminal terminal, Breed breed) {
@@ -165,14 +125,6 @@ class MonsterLoreInfoDialog extends InfoDialog {
     }
   }
 
-  void _select(int offset) {
-    _selection = (_selection + offset).clamp(0, _breeds.length - 1);
-
-    // Keep the selected row on screen.
-    _scroll = _scroll.clamp(_selection - _rowCount + 1, _selection);
-    dirty();
-  }
-
   String _describeBreed(Breed breed) {
     var sentences = <String>[];
     var pronoun = breed.pronoun.subjective;
@@ -195,15 +147,15 @@ class MonsterLoreInfoDialog extends InfoDialog {
       }
     } else {
       sentences.add(
-        "You have seen ${lore.seenBreed(breed)} and slain "
-        "${lore.slain(breed)} of this $noun.",
+        "You have seen ${lore.seenBreed(breed).fmt()} and slain "
+        "${lore.slain(breed).fmt()} of this $noun.",
       );
     }
 
-    sentences.add("$pronoun is worth ${breed.experience} experience.");
+    sentences.add("$pronoun is worth ${breed.experience.fmt()} experience.");
 
     if (lore.slain(breed) > 0) {
-      sentences.add("$pronoun has ${breed.maxHealth} health.");
+      sentences.add("$pronoun has ${breed.maxHealth.fmt()} health.");
     }
 
     // TODO: Other stats, moves, attacks, etc.
@@ -216,96 +168,32 @@ class MonsterLoreInfoDialog extends InfoDialog {
         .join(" ");
   }
 
-  void _listBreeds() {
-    // Try to keep the current breed selected, if there is one.
-    Breed? selectedBreed;
-    if (_breeds.isNotEmpty) {
-      selectedBreed = _breeds[_selection];
-    }
+  void _buildRows() {
+    // TODO: Sort mode to show only uniques.
+    var breeds = content.breeds.toList();
 
-    _breeds.clear();
-
-    if (_sort == _Sort.uniques) {
-      _breeds.addAll(content.breeds.where((breed) => breed.flags.unique));
-    } else {
-      _breeds.addAll(content.breeds);
-    }
-
-    int compareGlyph(Breed a, Breed b) {
-      var aChar = (a.appearance as Glyph).char;
-      var bChar = (b.appearance as Glyph).char;
-
-      bool isUpper(int c) => c >= CharCode.aUpper && c <= CharCode.zUpper;
-
-      // Sort lowercase letters first even though they come later in character
-      // code.
-      if (isUpper(aChar) && !isUpper(bChar)) return 1;
-      if (!isUpper(aChar) && isUpper(bChar)) return -1;
-
-      return aChar.compareTo(bChar);
-    }
-
-    int compareDepth(Breed a, Breed b) => a.depth.compareTo(b.depth);
-
-    var comparisons = <int Function(Breed, Breed)>[];
-    switch (_sort) {
-      case _Sort.appearance:
-        comparisons = [compareGlyph, compareDepth];
-
-      case _Sort.name:
-        // No other comparisons.
-        break;
-
-      case _Sort.depth:
-        comparisons = [compareDepth];
-
-      case _Sort.uniques:
-        comparisons = [compareDepth];
-    }
-
-    _breeds.sort((a, b) {
-      for (var comparison in comparisons) {
-        var compare = comparison(a, b);
-        if (compare != 0) return compare;
+    _table.rebuild(() sync* {
+      for (var index = 0; index < breeds.length; index++) {
+        var breed = breeds[index];
+        var seen = hero.lore.seenBreed(breed);
+        if (seen > 0) {
+          yield Row(breed, glyph: breed.appearance as Glyph, [
+            Cell(breed.name),
+            Cell(breed.depth.fmt()),
+            if (breed.flags.unique) ...[
+              Cell("Yes"),
+              Cell(hero.lore.slain(breed) > 0 ? "Yes" : "No"),
+            ] else ...[
+              Cell(seen.fmt()),
+              Cell(hero.lore.slain(breed).fmt()),
+            ],
+          ]);
+        } else {
+          yield Row(breed, [
+            Cell("(undiscovered ${index + 1})", color: UIHue.disabled),
+          ]);
+        }
       }
-
-      // Otherwise, sort by name.
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
-
-    _selection = 0;
-    if (selectedBreed != null) {
-      _selection = _breeds.indexOf(selectedBreed);
-
-      // It may not be found since the unique page doesn't show all breeds.
-      if (_selection == -1) _selection = 0;
-    }
-    _select(0);
   }
-}
-
-class _Sort {
-  /// The default order they are created in in the content.
-  static const appearance = _Sort(
-    "ordered by appearance",
-    "Sort by appearance",
-  );
-
-  /// Sort by depth.
-  static const depth = _Sort("ordered by depth", "Sort by depth");
-
-  /// Sort alphabetically by name.
-  static const name = _Sort("ordered by name", "Sort by name");
-
-  /// Show only uniques.
-  static const uniques = _Sort("uniques", "Show only uniques");
-
-  static const all = [appearance, depth, name, uniques];
-
-  final String description;
-  final String helpText;
-
-  const _Sort(this.description, this.helpText);
-
-  _Sort get next => all[(all.indexOf(this) + 1) % all.length];
 }

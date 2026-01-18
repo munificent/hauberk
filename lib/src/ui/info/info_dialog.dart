@@ -94,7 +94,7 @@ abstract class InfoDialog extends Screen<Input> {
       x += tabWidth + 2;
     }
 
-    renderInfo(terminal.rect(0, 3, terminal.width, terminal.height - 3));
+    drawInfo(terminal.rect(0, 3, terminal.width, terminal.height - 3));
 
     var nextScreen = _screens[(_screens.indexOf(this) + 1) % _screens.length];
     Draw.helpKeys(terminal, {
@@ -104,5 +104,5 @@ abstract class InfoDialog extends Screen<Input> {
     });
   }
 
-  void renderInfo(Terminal terminal);
+  void drawInfo(Terminal terminal);
 }
