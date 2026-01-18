@@ -133,6 +133,17 @@ class WizardDialog extends Screen<Input> {
         }
       }
     }
+
+    // Also discover every monster and item on the stage.
+    for (var actor in stage.actors) {
+      if (actor is Monster) {
+        _game.hero.seeMonster(actor);
+      }
+    }
+
+    stage.forEachItem((item, _) {
+      _game.hero.lore.findItem(item);
+    });
   }
 
   void _illuminateDungeon() {
