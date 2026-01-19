@@ -28,7 +28,7 @@ class MonsterLoreInfoDialog extends InfoDialog {
       a.name.toLowerCase().compareTo(b.name.toLowerCase());
 
   final Table<Breed> _table = Table(
-    [
+    columns: [
       Column("Name"),
       Column("Depth", width: 5, align: Align.right),
       Column("Seen", width: 5, align: Align.right),
@@ -93,8 +93,8 @@ class MonsterLoreInfoDialog extends InfoDialog {
       0,
       terminal.width,
       terminal.height,
-      seen == 0 ? Glyph("?", UIHue.disabled) : breed.appearance as Glyph,
-      seen == 0 ? "" : breed.name,
+      glyph: seen == 0 ? Glyph("?", UIHue.disabled) : breed.appearance as Glyph,
+      label: seen == 0 ? "" : breed.name,
     );
 
     if (seen == 0) {
@@ -190,7 +190,7 @@ class MonsterLoreInfoDialog extends InfoDialog {
           ]);
         } else {
           yield Row(breed, [
-            Cell("(undiscovered ${index + 1})", color: UIHue.disabled),
+            Cell("(undiscovered ${index + 1})", enabled: false),
           ]);
         }
       }

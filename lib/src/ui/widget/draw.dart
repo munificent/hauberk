@@ -135,16 +135,16 @@ class Draw {
     int x,
     int y,
     int width,
-    int height,
-    Glyph glyph,
-    String label,
-  ) {
+    int height, {
+    Glyph? glyph,
+    String? label,
+  }) {
     frame(terminal, x: x, y: y + 1, width: width, height: height - 1);
     terminal.writeAt(x + 1, y, "┌─┐", darkCoolGray);
     terminal.writeAt(x + 1, y + 1, "╡ ╞", darkCoolGray);
     terminal.writeAt(x + 1, y + 2, "└─┘", darkCoolGray);
-    terminal.drawGlyph(x + 2, y + 1, glyph);
-    terminal.writeAt(x + 4, y + 1, label, UIHue.primary);
+    if (glyph != null) terminal.drawGlyph(x + 2, y + 1, glyph);
+    if (label != null) terminal.writeAt(x + 4, y + 1, label, UIHue.primary);
   }
 
   static void doubleBox(

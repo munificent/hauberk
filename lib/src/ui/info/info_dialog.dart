@@ -19,8 +19,7 @@ abstract class InfoDialog extends Screen<Input> {
   factory InfoDialog(Content content, HeroSave hero) {
     if (_screens.isEmpty) {
       _screens.addAll([
-        EquipmentStatsInfoDialog(content, hero),
-        EquipmentResistancesInfoDialog(content, hero),
+        EquipmentInfoDialog(content, hero),
         MonsterLoreInfoDialog(content, hero),
         ItemLoreInfoDialog(content, hero),
         // TODO: Affixes.

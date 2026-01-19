@@ -1,7 +1,6 @@
 import 'package:malison/malison.dart';
 
 import '../../engine.dart';
-import '../../hues.dart';
 import '../input.dart';
 import '../item/item_inspector.dart';
 import '../widget/table.dart';
@@ -21,7 +20,7 @@ class ItemLoreInfoDialog extends InfoDialog {
       a.name.toLowerCase().compareTo(b.name.toLowerCase());
 
   late final Table<ItemType> _table = Table(
-    [
+    columns: [
       Column("Name"),
       Column("Depth", width: 5, align: Align.right),
       Column("Price", width: 7, align: Align.right),
@@ -75,16 +74,13 @@ class ItemLoreInfoDialog extends InfoDialog {
   void drawInfo(Terminal terminal) {
     _table.draw(terminal.rect(0, 1, terminal.width, terminal.height - 16));
 
-    if (hero.lore.foundItems(_table.selectedRow.data) > 0) {
-      _showItem(terminal, _table.selectedRow.data);
+    var item = _table.selectedRow.data;
+    if (hero.lore.foundItems(item) > 0) {
+      var inspector = ItemInspector(hero, Item(item, 1), wide: true);
+      inspector.drawWide(
+        terminal.rect(0, terminal.height - 15, terminal.width, 14),
+      );
     }
-  }
-
-  void _showItem(Terminal terminal, ItemType item) {
-    var inspector = ItemInspector(hero, Item(item, 1), wide: true);
-    inspector.drawWide(
-      terminal.rect(0, terminal.height - 15, terminal.width, 14),
-    );
   }
 
   void _buildRows() {
@@ -103,11 +99,11 @@ class ItemLoreInfoDialog extends InfoDialog {
             if (item.use != null)
               Cell(hero.lore.usedItems(item).fmt(w: 5))
             else
-              Cell("--", color: UIHue.disabled),
+              Cell("--", enabled: false),
           ]);
         } else {
           yield Row(item, [
-            Cell("(undiscovered ${index + 1})", color: UIHue.disabled),
+            Cell("(undiscovered ${index + 1})", enabled: false),
           ]);
         }
       }

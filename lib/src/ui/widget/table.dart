@@ -13,6 +13,9 @@ class Table<T> {
   /// The rows that are visible given the current filter.
   final List<Row<T>> _shownRows = [];
 
+  /// Whether to show the scroll bar.
+  final bool _showScrollBar;
+
   final List<RowOrder<T>> _orders;
 
   final List<RowFilter<T>> _filters;
@@ -38,15 +41,18 @@ class Table<T> {
   /// The currently selected row.
   Row get selectedRow => _shownRows[_selectedRow];
 
-  Table(
-    this._columns, {
+  Table({
+    bool scrollBar = true,
+    List<Column> columns = const [],
     List<RowOrder<T>> orders = const [],
     List<RowFilter<T>> filters = const [],
-  }) : _orders = orders,
+  }) : _showScrollBar = scrollBar,
+       _columns = columns.toList(),
+       _orders = orders,
        _filters = filters;
 
   Map<String, String> get extraHelp => {
-    "↕": "Scroll",
+    "↕": "Select row",
     if (_orders.isNotEmpty)
       "S": "Sort by ${_orders[(_order + 1) % _orders.length].description}",
     if (_filters.isNotEmpty)
@@ -101,8 +107,15 @@ class Table<T> {
     }
   }
 
-  void rebuild(Iterable<Row<T>> Function() build) {
+  void rebuild(Iterable<Row<T>> Function() build, {List<Column>? columns}) {
     _preserveSelectedRow(() {
+      if (columns != null) {
+        _columns.clear();
+        _columns.addAll(columns);
+        // Force a resize the next time it's rendered.
+        _size = Vec.zero;
+      }
+
       _allRows.clear();
       _allRows.addAll(build());
       _orderAndFilter();
@@ -115,10 +128,11 @@ class Table<T> {
     // Draw the headers.
     for (var column in _columns) {
       terminal.writeAt(
-        column._x + column.align.offset(column._calculatedWidth, column.label),
+        column._x +
+            column.align.offset(column._calculatedWidth, column.label.length),
         0,
         column.label,
-        coolGray,
+        column.color ?? coolGray,
       );
     }
 
@@ -127,13 +141,17 @@ class Table<T> {
       if (_orders.isNotEmpty) "ordered by ${_orders[_order].description}",
       if (_filters.isNotEmpty) "show ${_filters[_filter].description}",
     ];
-    var description = "(${parts.join(', ')})";
-    terminal.writeAt(
-      _columns.first._x + _columns.first._calculatedWidth - description.length,
-      0,
-      description,
-      darkCoolGray,
-    );
+    if (parts.isNotEmpty) {
+      var description = "(${parts.join(', ')})";
+      terminal.writeAt(
+        _columns.first._x +
+            _columns.first._calculatedWidth -
+            description.length,
+        0,
+        description,
+        darkCoolGray,
+      );
+    }
 
     // Header line.
     _drawLine(terminal, 1, darkCoolGray);
@@ -165,31 +183,38 @@ class Table<T> {
         );
       }
 
-      _drawLine(terminal, y + 1, darkerCoolGray);
+      // If it's a fixed size table, show the bottom line like a header.
+      var lineColor = darkerCoolGray;
+      if (!_showScrollBar && rowIndex == _shownRows.length - 1) {
+        lineColor = darkCoolGray;
+      }
+      _drawLine(terminal, y + 1, lineColor);
     }
 
     // Draw the scroll bar.
-    var barHeight = _visibleRows * 2;
-    if (_shownRows.length <= _visibleRows) {
-      // No scroll thumb.
-      for (var i = 0; i < barHeight; i++) {
-        terminal.writeAt(terminal.width - 1, i + 2, "▌", darkerCoolGray);
-      }
-    } else {
-      var thumbHeight = (barHeight * _visibleRows / _shownRows.length)
-          .toInt()
-          .clamp(1, barHeight);
-      var thumbTop =
-          ((barHeight - thumbHeight) *
-                  _scroll /
-                  (_shownRows.length - _visibleRows + 1))
-              .toInt();
-      var thumbBottom = thumbTop + thumbHeight;
-      for (var i = 0; i < barHeight; i++) {
-        var color = i < thumbTop || i > thumbBottom
-            ? darkerCoolGray
-            : darkCoolGray;
-        terminal.writeAt(terminal.width - 1, i + 2, "▌", color);
+    if (_showScrollBar) {
+      var barHeight = _visibleRows * 2;
+      if (_shownRows.length <= _visibleRows) {
+        // No scroll thumb.
+        for (var i = 0; i < barHeight; i++) {
+          terminal.writeAt(terminal.width - 1, i + 2, "▌", darkerCoolGray);
+        }
+      } else {
+        var thumbHeight = (barHeight * _visibleRows / _shownRows.length)
+            .toInt()
+            .clamp(1, barHeight);
+        var thumbTop =
+            ((barHeight - thumbHeight) *
+                    _scroll /
+                    (_shownRows.length - _visibleRows + 1))
+                .toInt();
+        var thumbBottom = thumbTop + thumbHeight;
+        for (var i = 0; i < barHeight; i++) {
+          var color = i < thumbTop || i > thumbBottom
+              ? darkerCoolGray
+              : darkCoolGray;
+          terminal.writeAt(terminal.width - 1, i + 2, "▌", color);
+        }
       }
     }
   }
@@ -211,8 +236,10 @@ class Table<T> {
     // Add a character of padding between each column.
     totalFixedWidth += _columns.length - 1;
 
-    // Add two spaces for the glyph and arrow, and two for the scroll bar.
-    totalFixedWidth += 4;
+    // Add two spaces for the glyph and arrow.
+    totalFixedWidth += 2;
+
+    if (_showScrollBar) totalFixedWidth += 2;
 
     // Give the growable column any remaining space.
     if (growableColumn != null) {
@@ -237,14 +264,16 @@ class Table<T> {
 
   void _orderAndFilter() {
     _preserveSelectedRow(() {
-      _allRows.sort((rowA, rowB) {
-        for (var comparison in _orders[_order].comparisons) {
-          var order = comparison(rowA.data, rowB.data);
-          if (order != 0) return order;
-        }
+      if (_orders.isNotEmpty) {
+        _allRows.sort((rowA, rowB) {
+          for (var comparison in _orders[_order].comparisons) {
+            var order = comparison(rowA.data, rowB.data);
+            if (order != 0) return order;
+          }
 
-        return 0;
-      });
+          return 0;
+        });
+      }
 
       _shownRows.clear();
       if (_filters.isNotEmpty) {
@@ -320,11 +349,12 @@ enum Align {
   center,
   right;
 
-  /// How much horizontal offset to apply to align [text] within [width].
-  int offset(int width, String text) => switch (this) {
+  /// How much horizontal offset to apply to align [textLength] within
+  /// [cellWidth].
+  int offset(int cellWidth, int textLength) => switch (this) {
     Align.left => 0,
-    Align.center => (width - text.length) ~/ 2,
-    Align.right => width - text.length,
+    Align.center => (cellWidth - textLength) ~/ 2,
+    Align.right => cellWidth - textLength,
   };
 }
 
@@ -337,6 +367,8 @@ class Column {
   /// fit the available space.
   final int width;
 
+  final Color? color;
+
   /// The starting horizontal position of the column.
   int _x = 0;
 
@@ -346,7 +378,7 @@ class Column {
   /// the remaining space.
   int _calculatedWidth = 0;
 
-  Column(this.label, {this.width = 0, this.align = Align.left});
+  Column(this.label, {this.width = 0, this.align = Align.left, this.color});
 }
 
 class Row<T> {
@@ -358,19 +390,68 @@ class Row<T> {
 }
 
 class Cell {
+  final List<TextSpan> spans;
+  final bool enabled;
+
+  /// A simple cell showing text in a normal color.
+  Cell(String text, {this.enabled = true}) : spans = [TextSpan(text, null)];
+
+  /// A simple cell showing text in a fixed color.
+  Cell.colored(String text, Color color)
+    : spans = [TextSpan(text, color)],
+      enabled = true;
+
+  /// A cell containing a series of differently colored pieces of text.
+  Cell.spans(this.spans) : enabled = true;
+
+  void draw(Terminal terminal, Column column, int y, {required bool selected}) {
+    TextSpan.draw(
+      terminal,
+      spans,
+      x: column._x,
+      y: y,
+      width: column._calculatedWidth,
+      align: column.align,
+      defaultColor: switch ((selected, enabled)) {
+        (true, true) => UIHue.selection,
+        (false, true) => UIHue.text,
+        (_, false) => UIHue.disabled,
+      },
+    );
+  }
+}
+
+class TextSpan {
+  static void draw(
+    Terminal terminal,
+    List<TextSpan> spans, {
+    required int x,
+    required int y,
+    required int width,
+    Align align = Align.left,
+    Color defaultColor = UIHue.text,
+  }) {
+    var totalLength = spans.fold(
+      0,
+      (length, span) => length + span.text.length,
+    );
+
+    var spanX = align.offset(width, totalLength);
+    for (var span in spans) {
+      var text = span.text;
+      if (spanX + text.length > width) {
+        text = text.substring(0, width - spanX);
+      }
+
+      terminal.writeAt(x + spanX, y, text, span.color ?? defaultColor);
+      spanX += span.text.length;
+    }
+  }
+
   final String text;
   final Color? color;
 
-  Cell(this.text, {this.color});
-
-  void draw(Terminal terminal, Column column, int y, {required bool selected}) {
-    terminal.writeAt(
-      column._x + column.align.offset(column._calculatedWidth, text),
-      y,
-      text,
-      color ?? (selected ? UIHue.selection : UIHue.text),
-    );
-  }
+  TextSpan(this.text, [this.color]);
 }
 
 class RowOrder<T> {

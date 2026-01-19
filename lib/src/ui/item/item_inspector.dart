@@ -74,8 +74,8 @@ class ItemInspector {
       0,
       terminal.width,
       terminal.height,
-      _item.appearance as Glyph,
-      _item.nounText,
+      glyph: _item.appearance as Glyph,
+      label: _item.nounText,
     );
 
     // Draw the sections.
@@ -94,8 +94,8 @@ class ItemInspector {
       0,
       terminal.width,
       terminal.height,
-      _item.appearance as Glyph,
-      _item.nounText,
+      glyph: _item.appearance as Glyph,
+      label: _item.nounText,
     );
 
     // Attack and defense in a column on the left. (We put them in the same
