@@ -405,8 +405,8 @@ class GameScreen extends Screen<Input> {
     // the stage. If visible grow it more slowly than the stage. It's useful to
     // see longer item names, but not as useful as more stage space.
     var itemWidth = 0;
-    if (size.x >= 80) {
-      itemWidth = math.min(50, 20 + (size.x - 80) ~/ 3);
+    if (size.x >= 100) {
+      itemWidth = math.min(50, 24 + (size.x - 100) ~/ 3);
       itemPanel.show(Rect(size.x - itemWidth, 0, itemWidth, size.y));
     }
 
