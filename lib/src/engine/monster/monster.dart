@@ -9,8 +9,8 @@ import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
-import '../core/log.dart';
 import '../core/math.dart';
+import '../core/thing.dart';
 import '../hero/hero.dart';
 import '../stage/tile.dart';
 import 'breed.dart';
@@ -88,10 +88,7 @@ class Monster extends Actor {
   Object get appearance => breed.appearance;
 
   @override
-  String get nounText => breed.hasProperName ? breed.name : "the ${breed.name}";
-
-  @override
-  Pronoun get pronoun => breed.pronoun;
+  Noun get noun => breed.noun;
 
   /// How much experience the [Hero] gains for killing this monster.
   int get experience => breed.experience;
@@ -418,9 +415,9 @@ class Monster extends Actor {
     );
   }
 
-  /// Called when this Actor has been killed by [attackNoun].
+  /// Called when this monster has been killed by [attack].
   @override
-  void onDied(Action action, Noun attackNoun) {
+  void onDied(Action action, Thing attack) {
     var items = action.game.stage.placeDrops(
       pos,
       breed.drop,

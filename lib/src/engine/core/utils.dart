@@ -1,8 +1,3 @@
-extension MapExtensions<K, V> on Map<K, V> {
-  Iterable<(K, V)> get pairs =>
-      entries.map((entry) => (entry.key, entry.value));
-}
-
 extension IntExtensions on int {
   /// Converts the number to a string, with separating commas for thousands,
   /// millions, etc.
@@ -34,6 +29,11 @@ extension IntExtensions on int {
 
     return result.padLeft(w ?? 0);
   }
+}
+
+extension MapExtensions<K, V> on Map<K, V> {
+  Iterable<(K, V)> get pairs =>
+      entries.map((entry) => (entry.key, entry.value));
 }
 
 extension NumExtensions on num {

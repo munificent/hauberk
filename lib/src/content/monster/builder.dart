@@ -255,8 +255,8 @@ class BreedBuilder extends _BaseBuilder {
     _minions.add(spawn);
   }
 
-  void attack(String verb, int damage, [Element? element, Noun? noun]) {
-    _attacks.add(Attack(noun, verb, damage, 0, element));
+  void attack(String verb, int damage, [Element? element, Prop? prop]) {
+    _attacks.add(Attack(prop, verb, damage, 0, element));
   }
 
   /// Drops [name], which can be either an item type or tag.
@@ -460,15 +460,19 @@ class BreedBuilder extends _BaseBuilder {
       _addMove(AmputateMove(BreedRef(body), BreedRef(part), message));
 
   void _bolt(
-    String? noun,
+    String? prop,
     String verb,
     Element element, {
     required num rate,
     required int damage,
     required int range,
   }) {
-    var nounObject = noun != null ? Noun(noun) : null;
-    _addMove(BoltMove(rate, Attack(nounObject, verb, damage, range, element)));
+    _addMove(
+      BoltMove(
+        rate,
+        Attack(prop != null ? Prop(prop) : null, verb, damage, range, element),
+      ),
+    );
   }
 
   void _cone(
@@ -482,7 +486,7 @@ class BreedBuilder extends _BaseBuilder {
     rate ??= 5;
     range ??= 10;
 
-    _addMove(ConeMove(rate, Attack(Noun(noun), verb, damage, range, element)));
+    _addMove(ConeMove(rate, Attack(Prop(noun), verb, damage, range, element)));
   }
 
   void _addMove(Move move) {
@@ -502,9 +506,11 @@ class BreedBuilder extends _BaseBuilder {
     }
 
     var breed = Breed(
-      _name,
-      _pronoun ?? Pronoun.it,
-      hasProperName: _hasProperName,
+      NounBuilder(
+        _name,
+        pronoun: _pronoun ?? Pronoun.it,
+        category: _hasProperName ? NounCategory.proper : NounCategory.normal,
+      ).build(1),
       _appearance,
       _attacks,
       _moves,

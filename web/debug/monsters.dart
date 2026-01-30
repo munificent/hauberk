@@ -62,7 +62,7 @@ void main() {
     cells.add(count);
 
     var attacks = breed.attacks.map(
-      (attack) => '${Log.conjugate(attack.verb, breed.pronoun)} $attack',
+      (attack) => '${Log.conjugate(attack.verb, breed.noun.pronoun)} $attack',
     );
     cells.add(attacks.join('<br>'));
 

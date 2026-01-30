@@ -141,8 +141,7 @@ bool fight(Game game, HeroSave save, int monsterHealth) {
   var breed = breeds.putIfAbsent(
     monsterHealth,
     () => Breed(
-      "meat",
-      Pronoun.it,
+      Noun("meat"),
       "",
       [Attack(null, "hits", 20)],
       [],

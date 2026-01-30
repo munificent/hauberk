@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../core/actor.dart';
 import '../core/element.dart';
 import '../core/game.dart';
-import '../core/log.dart';
+import '../core/thing.dart';
 import '../hero/hero.dart';
 import '../monster/monster.dart';
 import '../stage/sound.dart';
@@ -102,30 +102,35 @@ abstract class Action {
   double get noise => Sound.normalNoise;
 
   /// Directly logs [message], not taking visibility into account.
-  void log(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    _game.log.message(message, noun1, noun2, noun3);
+  void log(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
+    _game.log.message(message, thing1, thing2, thing3);
   }
 
   /// Logs [message] if it occurs on a tile the hero can see.
-  void show(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
+  void show(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
     if (game.stage[_pos].isVisible || actor is Hero) {
-      _game.log.message(message, noun1, noun2, noun3);
+      _game.log.message(message, thing1, thing2, thing3);
     }
   }
 
   ActionResult succeed([
     String? message,
-    Noun? noun1,
-    Noun? noun2,
-    Noun? noun3,
+    Thing? noun1,
+    Thing? noun2,
+    Thing? noun3,
   ]) {
     if (message != null) show(message, noun1, noun2, noun3);
     return ActionResult.success;
   }
 
-  ActionResult fail([String? message, Noun? noun1, Noun? noun2, Noun? noun3]) {
+  ActionResult fail([
+    String? message,
+    Thing? thing1,
+    Thing? thing2,
+    Thing? thing3,
+  ]) {
     if (message != null && (game.stage[_pos].isVisible || actor is Hero)) {
-      _game.log.error(message, noun1, noun2, noun3);
+      _game.log.error(message, thing1, thing2, thing3);
     }
     return ActionResult.failure;
   }

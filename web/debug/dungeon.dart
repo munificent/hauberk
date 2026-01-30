@@ -192,7 +192,7 @@ Future<void> generate() async {
 
     var attacks = breed.attacks.map(
       (attack) =>
-          '${Log.conjugate(attack.verb, breed.pronoun)} (${attack.damage})',
+          '${Log.conjugate(attack.verb, breed.noun.pronoun)} (${attack.damage})',
     );
     tableContents.write(attacks.join(', '));
 

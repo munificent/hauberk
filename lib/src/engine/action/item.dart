@@ -74,16 +74,16 @@ class PickUpAction extends Action {
   ActionResult onPerform() {
     var result = hero.inventory.tryAdd(item);
     if (result.added == 0) {
-      return fail("{1} [don't|doesn't] have room for {2}.", actor, item);
+      return fail("{1} [don't|doesn't] have room for {the 2}.", actor, item);
     }
 
-    show('{1} pick[s] up {2}.', actor, item.clone(result.added));
+    show('{1} pick[s] up {the 2}.', actor, item.clone(result.added));
 
     if (result.remaining == 0) {
       game.stage.removeItem(item, actor!.pos);
     } else {
       show(
-        "{1} [don't|doesn't] have room for {2}.",
+        "{1} [don't|doesn't] have room for {the 2}.",
         actor,
         item.clone(result.remaining),
       );
@@ -115,10 +115,10 @@ class DropAction extends ItemAction {
     }
 
     if (location == ItemLocation.equipment) {
-      show('{1} take[s] off and drop[s] {2}.', actor, dropped);
+      show('{1} take[s] off and drop[s] {the 2}.', actor, dropped);
       hero.refreshProperties();
     } else {
-      show('{1} drop[s] {2}.', actor, dropped);
+      show('{1} drop[s] {the 2}.', actor, dropped);
     }
 
     game.stage.addItem(dropped, actor!.pos);
@@ -140,7 +140,7 @@ class EquipAction extends ItemAction {
     }
 
     if (!hero.equipment.canEquip(item)) {
-      return fail('{1} cannot equip {2}.', actor, item);
+      return fail('{1} cannot equip {the 2}.', actor, item);
     }
 
     var equipped = item;
@@ -158,12 +158,12 @@ class EquipAction extends ItemAction {
       var copy = unequippedItem.clone();
       var result = hero.inventory.tryAdd(unequippedItem, wasUnequipped: true);
       if (result.remaining == 0) {
-        show('{1} unequip[s] {2}.', actor, copy);
+        show('{1} unequip[s] {the 2}.', actor, copy);
       } else {
         // No room in inventory, so drop it.
         game.stage.addItem(unequippedItem, actor!.pos);
         show(
-          "{1} [don't|doesn't] have room for {2} and {2 he} drops to the "
+          "{1} [don't|doesn't] have room for {the 2} and {2 he} drops to the "
           "ground.",
           actor,
           unequippedItem,
@@ -171,7 +171,7 @@ class EquipAction extends ItemAction {
       }
     }
 
-    show("{1} equip[s] {2}.", actor, equipped);
+    show("{1} equip[s] {the 2}.", actor, equipped);
 
     if (item.emanationLevel > 0) {
       game.stage.actorEmanationChanged();
@@ -195,12 +195,12 @@ class UnequipAction extends ItemAction {
     removeItem();
     var result = hero.inventory.tryAdd(item, wasUnequipped: true);
     if (result.remaining == 0) {
-      show('{1} unequip[s] {2}.', actor, copy);
+      show('{1} unequip[s] {the 2}.', actor, copy);
     } else {
       // No room in inventory, so drop it.
       game.stage.addItem(item, actor!.pos);
       show(
-        "{1} [don't|doesn't] have room for {2} and {2 he} drops to "
+        "{1} [don't|doesn't] have room for {the 2} and {2 he} drops to "
         "the ground.",
         actor,
         item,
@@ -218,7 +218,7 @@ class UseAction extends ItemAction {
 
   @override
   ActionResult onPerform() {
-    if (!item.canUse) return fail("{1} can't be used.", item);
+    if (!item.canUse) return fail("{the 1} can't be used.", item);
 
     // TODO: Some items should not be usable when certain conditions are active.
     // For example, you cannot read scrolls when dazzled or blinded.
@@ -276,12 +276,12 @@ mixin DestroyActionMixin implements Action {
 
       if (destroyedCount == item.count) {
         // TODO: Effect.
-        show("{1} ${element.destroyMessage}!", item);
+        show("{the 1} ${element.destroyMessage}!", item);
         removeItem(item);
       } else if (destroyedCount > 0) {
         var destroyedPart = item.splitStack(destroyedCount);
         // TODO: Effect.
-        show("{1} ${element.destroyMessage}!", destroyedPart);
+        show("{the 1} ${element.destroyMessage}!", destroyedPart);
       }
 
       fuel += item.type.fuel * destroyedCount;

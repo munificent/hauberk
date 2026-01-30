@@ -19,7 +19,7 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       range: 8,
       (spell, game, level, target) {
         var attack = Attack(
-          Noun("the icicle"),
+          Prop("icicle"),
           "pierce",
           8,
           spell.range,
@@ -37,7 +37,7 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       range: 12,
       (spell, game, level, target) {
         var attack = Attack(
-          Noun("the light"),
+          Prop("light"),
           "sear",
           10,
           spell.range,
@@ -53,7 +53,7 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       spellLevel: 3,
       focus: 36,
       (spell, game, level) {
-        var attack = Attack(Noun("the wind"), "blast", 10, 6, Elements.air);
+        var attack = Attack(Prop("wind"), "blast", 10, 6, Elements.air);
         return FlowAction(
           game.hero.pos,
           attack.createHit(),
@@ -70,7 +70,7 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       range: 8,
       (spell, game, level, target) {
         var attack = Attack(
-          Noun("the fire"),
+          Prop("fire"),
           "burn",
           10,
           spell.range,
@@ -86,13 +86,7 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       spellLevel: 5,
       focus: 70,
       (spell, game, level) {
-        var attack = Attack(
-          Noun("the wave"),
-          "inundate",
-          50,
-          15,
-          Elements.water,
-        );
+        var attack = Attack(Prop("wave"), "inundate", 50, 15, Elements.water);
         return FlowAction(
           game.hero.pos,
           attack.createHit(),

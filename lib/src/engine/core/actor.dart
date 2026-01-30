@@ -7,10 +7,10 @@ import 'condition.dart';
 import 'element.dart';
 import 'energy.dart';
 import 'game.dart';
-import 'log.dart';
+import 'thing.dart';
 
 /// An active entity in the game. Includes monsters and the hero.
-abstract class Actor implements Noun {
+abstract class Actor extends Thing {
   final Energy energy = Energy();
 
   /// Haste raises speed.
@@ -49,12 +49,6 @@ abstract class Actor implements Noun {
   Actor(int x, int y) : _pos = Vec(x, y);
 
   Object get appearance;
-
-  @override
-  String get nounText;
-
-  @override
-  Pronoun get pronoun => Pronoun.it;
 
   bool get isAlive => health > 0;
 
@@ -194,12 +188,7 @@ abstract class Actor implements Noun {
 
   /// Reduces the actor's health by [damage], and handles its death. Returns
   /// `true` if the actor died.
-  bool takeDamage(
-    Action action,
-    int damage,
-    Noun attackNoun, [
-    Actor? attacker,
-  ]) {
+  bool takeDamage(Action action, int damage, Thing attack, [Actor? attacker]) {
     health -= damage;
     onTakeDamage(action, attacker, damage);
 
@@ -208,10 +197,10 @@ abstract class Actor implements Noun {
     action.addEvent(EventType.die, actor: this);
 
     // TODO: Different verb for unliving monsters.
-    action.show("{1} kill[s] {2}.", attackNoun, this);
+    action.show("{1} kill[s] {2}.", attack, this);
     if (attacker != null) attacker.onKilled(action, this);
 
-    onDied(action, attackNoun);
+    onDied(action, attack);
 
     return true;
   }
@@ -229,8 +218,8 @@ abstract class Actor implements Noun {
     // Do nothing.
   }
 
-  /// Called when this Actor has been killed by [attackNoun].
-  void onDied(Action action, Noun attackNoun) {
+  /// Called when this Actor has been killed by [attack].
+  void onDied(Action action, Thing attack) {
     // Do nothing.
   }
 
@@ -263,7 +252,4 @@ abstract class Actor implements Noun {
 
     if (isAlive) onFinishTurn(action);
   }
-
-  @override
-  String toString() => nounText;
 }

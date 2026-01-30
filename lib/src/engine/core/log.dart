@@ -1,77 +1,28 @@
+import 'thing.dart';
+
 /// The message log.
 class Log {
-  /// Given a noun pattern, returns the unquantified singular form of it.
-  /// Examples:
-  ///
-  /// ```
-  /// singular("dog");           // "dog"
-  /// singular("dogg[y|ies]");   // "doggy"
-  /// singular("cockroach[es]"); // "cockroach"
-  /// ```
-  static String singular(String text) => _categorize(text, isFirst: true);
-
   /// Conjugates the verb pattern in [text] to agree with [pronoun].
+  ///
+  /// Verbs are written like `run[s]` or `[is|are]. The first category is is
+  /// for agreeing with a third-person singular noun ("it runs") and the second
+  /// is for a second-person noun ("you run").
   static String conjugate(String text, Pronoun pronoun) {
-    var isFirst = pronoun == Pronoun.you || pronoun == Pronoun.they;
-    return _categorize(text, isFirst: isFirst);
-  }
+    var first = switch (pronoun) {
+      Pronoun.you || Pronoun.they => true,
+      Pronoun.she || Pronoun.he || Pronoun.it => false,
+    };
 
-  /// Quantifies the noun pattern in [text] to create a noun phrase for that
-  /// number. Examples:
-  ///
-  /// ```
-  /// quantify("bunn[y|ies]", 1); // -> "a bunny"
-  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
-  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
-  /// quantify("(a) unicorn", 1); // -> "a unicorn"
-  /// quantify("ocelot", 1);      // -> "an ocelot"
-  /// ```
-  ///
-  /// If [article] is false, then omits the "a"/"an" if the count is 1.
-  static String quantify(String text, int count) {
-    String quantity;
-    if (count == 1) {
-      // Handle irregular nouns that start with a vowel but use "a", like
-      // "a unicorn".
-      if (text.startsWith("(a) ")) {
-        quantity = "a";
-        text = text.substring(4);
-      } else if ("aeiouAEIOU".contains(text[0])) {
-        quantity = "an";
+    return text.replaceAllMapped(_quantifier, (match) {
+      var firstPart = match[1]!;
+      if (match[3] case var secondPart?) {
+        return first ? firstPart : secondPart;
       } else {
-        quantity = "a";
+        // Only one part, so it's implicitly the plural part with an empty
+        // string for the singular.
+        return first ? '' : firstPart;
       }
-    } else {
-      quantity = count.toString();
-    }
-
-    return "$quantity ${_categorize(text, isFirst: count == 1, force: true)}";
-  }
-
-  /// Quantifies the noun pattern in [text] to create a noun phrase for that
-  /// number. Examples:
-  ///
-  /// ```
-  /// quantify("bunn[y|ies]", 1); // -> "bunny"
-  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
-  /// quantify("bunn[y|ies]", 2); // -> "2 bunnies"
-  /// quantify("(a) unicorn", 1); // -> "unicorn"
-  /// quantify("ocelot", 1);      // -> "ocelot"
-  /// ```
-  ///
-  /// Unlike [quantify()], omits the article.
-  ///
-  /// If [article] is false, then omits the "a"/"an" if the count is 1.
-  static String quantifyWithoutArticle(String text, int count) {
-    if (count == 1) {
-      // Strip off the article from text with an explicit one.
-      if (text.startsWith("(a) ")) {
-        text = text.substring(4);
-      }
-      return _categorize(text, isFirst: true, force: true);
-    } else {
-      return "$count ${_categorize(text, isFirst: false, force: true)}";
-    }
+    });
   }
 
   static List<String> wordWrap(int width, String text) {
@@ -132,38 +83,38 @@ class Log {
 
   final messages = <Message>[];
 
-  void message(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    _add(LogType.message, message, noun1, noun2, noun3);
+  void message(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
+    _add(LogType.message, message, thing1, thing2, thing3);
   }
 
-  void error(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    _add(LogType.error, message, noun1, noun2, noun3);
+  void error(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
+    _add(LogType.error, message, thing1, thing2, thing3);
   }
 
-  void quest(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    _add(LogType.quest, message, noun1, noun2, noun3);
+  void quest(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
+    _add(LogType.quest, message, thing1, thing2, thing3);
   }
 
-  void gain(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    _add(LogType.gain, message, noun1, noun2, noun3);
+  void gain(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
+    _add(LogType.gain, message, thing1, thing2, thing3);
   }
 
-  void help(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    _add(LogType.help, message, noun1, noun2, noun3);
+  void help(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
+    _add(LogType.help, message, thing1, thing2, thing3);
   }
 
-  void debug(String message, [Noun? noun1, Noun? noun2, Noun? noun3]) {
-    _add(LogType.debug, message, noun1, noun2, noun3);
+  void debug(String message, [Thing? thing1, Thing? thing2, Thing? thing3]) {
+    _add(LogType.debug, message, thing1, thing2, thing3);
   }
 
   void _add(
     LogType type,
     String message, [
-    Noun? noun1,
-    Noun? noun2,
-    Noun? noun3,
+    Thing? thing1,
+    Thing? thing2,
+    Thing? thing3,
   ]) {
-    message = _format(message, noun1, noun2, noun3);
+    message = _format(message, thing1, thing2, thing3);
 
     // See if it's a repeat of the last message.
     if (messages.isNotEmpty) {
@@ -239,126 +190,37 @@ class Log {
   ///
   /// Finally, the first letter in the result will be capitalized to properly
   /// sentence case it.
-  String _format(String text, [Noun? noun1, Noun? noun2, Noun? noun3]) {
+  String _format(String text, [Thing? thing1, Thing? thing2, Thing? thing3]) {
     var result = text;
 
-    var nouns = [noun1, noun2, noun3];
+    var things = [thing1, thing2, thing3];
     for (var i = 1; i <= 3; i++) {
-      var noun = nouns[i - 1];
-
-      if (noun != null) {
-        result = result.replaceAll('{$i}', noun.nounText);
+      if (things[i - 1] case var thing?) {
+        result = result.replaceAll('{$i}', thing.noun.indefinite);
+        result = result.replaceAll('{the $i}', thing.noun.definite);
 
         // Handle pronouns.
-        result = result.replaceAll('{$i he}', noun.pronoun.subjective);
-        result = result.replaceAll('{$i him}', noun.pronoun.objective);
-        result = result.replaceAll('{$i his}', noun.pronoun.possessive);
+        result = result.replaceAll('{$i he}', thing.noun.pronoun.subjective);
+        result = result.replaceAll('{$i him}', thing.noun.pronoun.objective);
+        result = result.replaceAll('{$i his}', thing.noun.pronoun.possessive);
       }
     }
 
-    // Make the verb match the subject (which is assumed to be the first noun).
-    if (noun1 != null) {
-      result = Log.conjugate(result, noun1.pronoun);
+    // Make the verb match the subject (which is assumed to be the first thing).
+    if (thing1 != null) {
+      result = Log.conjugate(result, thing1.noun.pronoun);
     }
 
     // Sentence case it by capitalizing the first letter.
     return '${result[0].toUpperCase()}${result.substring(1)}';
   }
 
-  /// Parses a string and chooses one of two grammatical categories.
-  ///
-  /// If used for verbs, selects a verb form to agree with a subject. In that
-  /// case, the first category is is for agreeing with a third-person singular
-  /// noun ("it runs") and the second is for a second-person noun ("you run").
-  ///
-  /// If used for a noun, selects a number. The first category is singular
-  /// ("knife") and the second is plural ("knives").
-  ///
-  /// Examples:
-  ///
-  /// ```
-  /// _categorize("run[s]", isFirst: true)       // -> "run"
-  /// _categorize("run[s]", isFirst: false)      // -> "runs"
-  /// _categorize("bunn[y|ies]", isFirst: true)  // -> "bunny"
-  /// _categorize("bunn[y|ies]", isFirst: false) // -> "bunnies"
-  /// ```
-  ///
-  /// If [force] is `true`, then a trailing "s" will be added to the end if
-  /// [isFirst] is `false` and [text] doesn't have any formatting.
-  static String _categorize(
-    String text, {
-    required bool isFirst,
-    bool force = false,
-  }) {
-    var optionalSuffix = RegExp(r'\[(\w+?)\]');
-    var irregular = RegExp(r'\[([^|]+)\|([^\]]+)\]');
-
-    // If it's a regular word in second category, just add an "s".
-    if (force && !isFirst && !text.contains("[")) return "${text}s";
-
-    // Handle words with optional suffixes like `close[s]` and `sword[s]`.
-    while (true) {
-      var match = optionalSuffix.firstMatch(text);
-      if (match == null) break;
-
-      var before = text.substring(0, match.start);
-      var after = text.substring(match.end);
-      if (isFirst) {
-        // Omit the optional part.
-        text = '$before$after';
-      } else {
-        // Include the optional part.
-        text = '$before${match[1]}$after';
-      }
-    }
-
-    // Handle irregular words like `[are|is]` and `sta[ff|aves]`.
-    while (true) {
-      var match = irregular.firstMatch(text);
-      if (match == null) break;
-
-      var before = text.substring(0, match.start);
-      var after = text.substring(match.end);
-      if (isFirst) {
-        // Use the first form.
-        text = '$before${match[1]}$after';
-      } else {
-        // Use the second form.
-        text = '$before${match[2]}$after';
-      }
-    }
-
-    return text;
-  }
-}
-
-class Noun {
-  final String nounText;
-
-  Pronoun get pronoun => Pronoun.it;
-
-  Noun(this.nounText);
-
-  @override
-  String toString() => nounText;
-}
-
-class Pronoun {
-  // See http://en.wikipedia.org/wiki/English_personal_pronouns.
-  static const you = Pronoun('you', 'you', 'your');
-  static const she = Pronoun('she', 'her', 'her');
-  static const he = Pronoun('he', 'him', 'his');
-  static const it = Pronoun('it', 'it', 'its');
-  static const they = Pronoun('they', 'them', 'their');
-
-  final String subjective;
-  final String objective;
-  final String possessive;
-
-  const Pronoun(this.subjective, this.objective, this.possessive);
-
-  @override
-  String toString() => "$subjective/$objective";
+  static final RegExp _quantifier = RegExp(
+    r"\[" // Opening "[".
+    r"([^|\]]+)" // First or only part inside square brackets.
+    r"(\|([^\]]+))?" // Optional "|" followed by second part.
+    r"\]", // Closing "]".
+  );
 }
 
 enum LogType {

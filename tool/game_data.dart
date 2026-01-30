@@ -18,9 +18,8 @@ void main() {
   for (var name in names) {
     var breed = Monsters.breeds.find(name);
     var breedData = {
+      // TODO: Expand name data.
       'name': breed.name,
-      'pronoun': breed.pronoun.toString(),
-      'hasProperName': breed.hasProperName,
       'appearance': _appearanceGameData(breed.appearance),
       'depth': breed.depth,
       'maxHealth': breed.maxHealth,
@@ -45,7 +44,7 @@ void main() {
         'attacks': [
           for (var attack in breed.attacks)
             {
-              if (attack.noun case var noun?) 'noun': noun.nounText,
+              if (attack.prop case var prop?) 'prop': prop.noun.short,
               'verb': attack.verb,
               'damage': attack.damage,
               'range': attack.range,

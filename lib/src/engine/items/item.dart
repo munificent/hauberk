@@ -3,12 +3,12 @@ import 'dart:math' as math;
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
-import '../core/log.dart';
+import '../core/thing.dart';
 import 'affix.dart';
 import 'item_type.dart';
 
 /// A thing that can be picked up.
-class Item implements Comparable<Item>, Noun {
+class Item extends Thing implements Comparable<Item> {
   final ItemType type;
 
   final Affix? prefix;
@@ -87,22 +87,7 @@ class Item implements Comparable<Item>, Noun {
       affixes.fold(0, (bonus, affix) => bonus + affix.armorBonus);
 
   @override
-  String get nounText {
-    // Artifacts have proper names.
-    if (type.isArtifact) return type.name;
-
-    return Log.quantify(quantifiableName, count);
-  }
-
-  /// Gets the noun string used to build quantified names for the item,
-  /// including any affixes.
-  String get quantifiableName => affixes.fold(
-    type.quantifiableName,
-    (name, affix) => affix.itemName(name),
-  );
-
-  @override
-  Pronoun get pronoun => Pronoun.it;
+  late final Noun noun = _initializeNoun();
 
   /// How much the one unit of the item can be bought and sold for.
   int get price {
@@ -156,9 +141,9 @@ class Item implements Comparable<Item>, Noun {
   /// Apply any affix modifications to hit.
   void modifyHit(Hit hit) {
     for (var affix in affixes) {
-      hit.addStrike(affix.strikeBonus, affix.itemName('_'));
-      hit.scaleDamage(affix.damageScale, affix.itemName('_'));
-      hit.addDamage(affix.damageBonus, affix.itemName('_'));
+      hit.addStrike(affix.strikeBonus, affix.toString());
+      hit.scaleDamage(affix.damageScale, affix.toString());
+      hit.addDamage(affix.damageBonus, affix.toString());
     }
 
     hit.brand(element);
@@ -252,6 +237,21 @@ class Item implements Comparable<Item>, Noun {
     return clone(count);
   }
 
-  @override
-  String toString() => nounText;
+  Noun _initializeNoun() {
+    var prefixes = <String>[];
+    var suffixes = <String>[];
+    for (var affix in affixes) {
+      if (affix.type.isPrefix) {
+        prefixes.add(affix.type.name);
+      } else {
+        suffixes.add(affix.type.name);
+      }
+    }
+
+    return type.nounBuilder.build(
+      count,
+      prefixes: prefixes,
+      suffixes: suffixes,
+    );
+  }
 }

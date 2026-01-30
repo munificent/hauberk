@@ -224,12 +224,12 @@ class ItemBuilder extends _BaseBuilder {
   }
 
   void ranged(
-    String noun, {
+    String prop, {
     required int heft,
     required int damage,
     required int range,
   }) {
-    _attack = Attack(Noun(noun), "pierce[s]", damage, range);
+    _attack = Attack(Prop(prop), "pierce[s]", damage, range);
     // TODO: Make this per-item once it does something.
     _heft = heft;
   }
@@ -312,13 +312,13 @@ class ItemBuilder extends _BaseBuilder {
   /// damage.
   void ball(
     Element element,
-    String noun,
+    String prop,
     String verb,
     int damage, {
     int? range,
   }) {
     range ??= 3;
-    var attack = Attack(Noun(noun), verb, damage, range, element);
+    var attack = Attack(Prop(prop), verb, damage, range, element);
 
     use(
       "Unleashes a ball of $element that inflicts $damage damage out to "
@@ -331,13 +331,13 @@ class ItemBuilder extends _BaseBuilder {
   /// Sets a use and toss use that creates a flow of elemental damage.
   void flow(
     Element element,
-    String noun,
+    String prop,
     String verb,
     int damage, {
     int range = 5,
     bool fly = false,
   }) {
-    var attack = Attack(Noun(noun), verb, damage, range, element);
+    var attack = Attack(Prop(prop), verb, damage, range, element);
 
     var motility = Motility.walk;
     if (fly) motility |= Motility.fly;
@@ -365,26 +365,30 @@ class ItemBuilder extends _BaseBuilder {
     var appearance = Glyph.fromCharCode(_category._glyph, _color);
 
     Toss? toss;
-    var tossDamage = _tossDamage ?? _category._tossDamage;
-    if (tossDamage != null) {
-      var noun = Noun("the ${_name.toLowerCase()}");
-      var verb = "hits";
-      if (_category._verb != null) {
-        verb = Log.conjugate(_category._verb!, Pronoun.it);
-      }
-
-      var range = _tossRange ?? _category._tossRange;
-      assert(range != null);
-      var element = _tossElement ?? _category._tossElement ?? Element.none;
-      var use = _tossUse ?? _category._tossUse;
-      var breakage = _category._breakage ?? _breakage ?? 0;
-
-      var tossAttack = Attack(noun, verb, tossDamage, range, element);
-      toss = Toss(breakage, tossAttack, use);
+    if (_tossDamage ?? _category._tossDamage case var tossDamage?) {
+      var tossAttack = Attack(
+        Prop(_name.toLowerCase()),
+        switch (_category._verb) {
+          var verb? => Log.conjugate(verb, Pronoun.it),
+          _ => "hits",
+        },
+        tossDamage,
+        _tossRange ?? _category._tossRange,
+        _tossElement ?? _category._tossElement ?? Element.none,
+      );
+      toss = Toss(
+        _category._breakage ?? _breakage ?? 0,
+        tossAttack,
+        _tossUse ?? _category._tossUse,
+      );
     }
 
     var itemType = ItemType(
-      _name,
+      NounBuilder(
+        _name,
+        // TODO: Support artifacts with definite names.
+        category: _isArtifact ? NounCategory.proper : NounCategory.normal,
+      ),
       appearance,
       _minDepth,
       _sortIndex++,
@@ -543,9 +547,13 @@ class AffixBuilder {
       }
     }
 
+    var isPrefix = _nameTemplate.endsWith(" _");
+    var name = _nameTemplate.replaceAll("_", "").trim();
+
     var affix = AffixType(
       id,
-      _nameTemplate,
+      name,
+      prefix: isPrefix,
       _sortIndex++,
       rollParameter: _rollParameter,
       heftScale: _heftScale,

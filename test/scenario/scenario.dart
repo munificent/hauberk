@@ -24,14 +24,23 @@ class Scenario {
   /// Numeric labels for positions on the stage.
   final Map<int, Vec> _labels = {};
 
-  Game? _game;
+  late final Game _game;
 
   /// The number of elapsed game turns.
   int _turns = 0;
 
   Scenario(this._debugSteps);
 
-  void setUpStage(String stageDescriptor) {
+  void setUpStage([String? stageDescriptor]) {
+    stageDescriptor ??= """
+       #########
+       #.......#
+       #.......#
+       #...@...#
+       #.......#
+       #.......#
+       #########""";
+
     // TODO: Allow optional parameter to add more types.
     var tileTypes = {
       "#": Tiles.flagstoneWall,
@@ -47,8 +56,6 @@ class Scenario {
       "8": Tiles.flagstoneFloor,
       "9": Tiles.flagstoneFloor,
     };
-
-    assert(_game == null, "Already set up stage.");
 
     var lines = stageDescriptor.split("\n").map((line) => line.trim()).toList();
     if (lines.first.isEmpty) lines.removeAt(0);
@@ -107,15 +114,25 @@ class Scenario {
     game.initHero(heroPos!);
   }
 
+  Item placeItem(String itemType, {int? at}) {
+    var item = Item(_game.content.tryFindItem(itemType)!, 1);
+    var pos = at != null ? _labels[at]! : _game.hero.pos;
+    _game.stage.addItem(item, pos);
+    return item;
+  }
+
+  void heroNextAction(Action action) {
+    _game.hero.setNextAction(action);
+  }
+
   void heroRun(Direction direction) {
-    _game!.hero.run(direction);
+    _game.hero.run(direction);
   }
 
   void playUntilNeedsInput() {
-    var game = _game!;
     while (true) {
       _printStage();
-      var result = game.update();
+      var result = _game.update();
       if (!result.madeProgress) break;
 
       _turns++;
@@ -126,14 +143,18 @@ class Scenario {
 
   void expectHeroAt(int label, {int? turns}) {
     var pos = _labels[label]!;
-    expect(_game!.hero.pos, pos);
+    expect(_game.hero.pos, pos);
     if (turns != null) expect(_turns, turns);
+  }
+
+  void expectLog(String message) {
+    expect(_game.log.messages.last.text, message);
   }
 
   void _printStage() {
     if (!_debugSteps) return;
 
-    var stage = _game!.stage;
+    var stage = _game.stage;
 
     var tileChars = {Tiles.flagstoneWall: "#", Tiles.flagstoneFloor: "."};
 

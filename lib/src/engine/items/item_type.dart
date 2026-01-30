@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
-import '../core/log.dart';
+import '../core/thing.dart';
 import '../hero/lore.dart';
 import '../hero/skill.dart';
 import 'affix.dart';
@@ -45,14 +45,14 @@ class Toss {
 
 /// A kind of [Item]. Each item will have a type that describes the item.
 class ItemType {
-  /// The pattern string used to generate quantified names for items of this
-  /// type: `Scroll[s] of Disappearing`, etc.
-  final String quantifiableName;
+  /// The builder used to generate [Noun]s for items of this type:
+  /// `Scroll[s] of Disappearing`, etc.
+  final NounBuilder nounBuilder;
 
   /// The singular name of the item type: "Sword", "Scroll of Disappearing".
   ///
   /// This is used to identify the item type in drops, affixes, etc.
-  String get name => Log.singular(quantifiableName);
+  String get name => nounBuilder.shortName;
 
   final Object appearance;
 
@@ -143,7 +143,7 @@ class ItemType {
   final bool isArtifact;
 
   ItemType(
-    this.quantifiableName,
+    this.nounBuilder,
     this.appearance,
     this.depth,
     this.sortIndex,

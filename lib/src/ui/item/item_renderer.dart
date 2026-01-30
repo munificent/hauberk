@@ -172,7 +172,7 @@ void renderItems(
       drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
     }
 
-    var name = Log.quantifyWithoutArticle(item.quantifiableName, item.count);
+    var name = item.noun.short;
     var nameWidth = nameRight - (x + 2);
     if (name.length > nameWidth) name = name.substring(0, nameWidth);
     terminal.writeAt(x + 2, y, name, textColor);

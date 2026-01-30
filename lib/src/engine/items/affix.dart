@@ -52,9 +52,6 @@ class Affix {
   int get priceBonus => type._priceBonus(parameter);
   double get priceScale => type._priceScale(parameter);
 
-  /// Applies this affix's name to the item with [name].
-  String itemName(String name) => type._itemName(name);
-
   @override
   String toString() => "${type.id} $parameter";
 }
@@ -68,11 +65,12 @@ class AffixType {
   /// need to know which one it actually is, which this distinguishes.
   final String id;
 
-  /// The template used to modify an item's name with this affix's name.
-  ///
-  /// Contains "_" where the item name should appear in the resulting name, like
-  /// "_ of Burning" or "Elven _".
-  final String _nameTemplate;
+  /// The name of the affix.
+  final String name;
+
+  /// True if the affix name goes before the item name and false if it goes
+  /// after.
+  final bool isPrefix;
 
   final int sortIndex;
 
@@ -96,8 +94,9 @@ class AffixType {
 
   AffixType(
     this.id,
-    this._nameTemplate,
+    this.name,
     this.sortIndex, {
+    required bool prefix,
     RollParameter? rollParameter,
     required ParameterizeDouble? heftScale,
     required ParameterizeInt? weightBonus,
@@ -108,7 +107,8 @@ class AffixType {
     Element? brand,
     ParameterizeDouble? priceScale,
     ParameterizeInt? priceBonus,
-  }) : _rollParameter = rollParameter,
+  }) : isPrefix = prefix,
+       _rollParameter = rollParameter,
        _heftScale = heftScale ?? _noScale,
        _weightBonus = weightBonus ?? _noBonus,
        _strikeBonus = strikeBonus ?? _noBonus,
@@ -122,9 +122,6 @@ class AffixType {
   /// Creates a new affix with this affix type, rolling a random parameter for
   /// it as needed.
   Affix spawn() => Affix(this, _rollParameter?.call() ?? 0);
-
-  /// Applies this affix's name to the item with [name].
-  String _itemName(String name) => _nameTemplate.replaceAll('_', name);
 
   void setResist(Element element, ParameterizeInt power) {
     _resists[element] = power;

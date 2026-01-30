@@ -37,7 +37,7 @@ void bodyArmor() {
     ..frequency(0.5)
     ..armor(4)
     ..destroy(Elements.fire, chance: 15, fuel: 8);
-  item("Fur-lined Robe", sherwood, price: 110)
+  item("Lined Robe", sherwood, price: 110)
     ..depth(6)
     ..frequency(0.25)
     ..armor(6)
@@ -131,14 +131,14 @@ void gloves() {
   //
   // Could probably do the same for heft. A battleaxe of fire doesn't do a lot
   // of fire damage if you can't lift it.
-  item("Pair[s] of Gloves", sandal, price: 170)
+  item("(Pair[s] of )Gloves", sandal, price: 170)
     ..depth(8)
     ..armor(1)
     ..destroy(Elements.fire, chance: 7, fuel: 2);
-  item("Set[s] of Bracers", brown, price: 480)
+  item("(Set[s] of )Bracers", brown, price: 480)
     ..depth(17)
     ..armor(2, weight: 1);
-  item("Pair[s] of Gauntlets", darkCoolGray, price: 800)
+  item("(Pair[s] of )Gauntlets", darkCoolGray, price: 800)
     ..depth(34)
     ..armor(4, weight: 2);
 }
@@ -149,40 +149,46 @@ void shields() {
     ..frequency(0.5)
     ..toss(damage: 5, range: 8, breakage: 10);
   // TODO: Encumbrance.
-  item("Small Leather Shield", brown, price: 170)
-    ..depth(12, to: 50)
+  item("Buckler", darkCoolGray, price: 170)
+    ..depth(10, to: 40)
     ..armor(0, weight: 2)
-    ..defense(4, "The shield blocks {2}.")
-    ..destroy(Elements.fire, chance: 7, fuel: 14);
-  item("Wooden Targe", sandal, price: 250)
-    ..depth(25)
+    ..defense(3, "The buckler blocks {2}.");
+  item("Leather Shield", brown, price: 240)
+    ..depth(20, to: 50)
+    ..armor(0, weight: 3)
+    ..defense(5, "The shield blocks {2}.")
+    ..destroy(Elements.fire, chance: 15, fuel: 14);
+  item("Targe", sandal, price: 340)
+    ..depth(30, to: 60)
     ..armor(0, weight: 4)
-    ..defense(6, "The targe blocks {2}.")
-    ..destroy(Elements.fire, chance: 14, fuel: 20);
-  item("Large Leather Shield", tan, price: 320)
-    ..depth(35)
-    ..armor(0, weight: 5)
-    ..defense(8, "The shield blocks {2}.")
-    ..destroy(Elements.fire, chance: 7, fuel: 17);
-  item("Steel Buckler", darkCoolGray, price: 450)
-    ..depth(50)
-    ..armor(0, weight: 4)
-    ..defense(10, "The buckler blocks {2}.");
-  item("Kite Shield", lightCoolGray, price: 650)
-    ..depth(65)
+    ..defense(8, "The targe blocks {2}.")
+    ..destroy(Elements.fire, chance: 10, fuel: 20);
+  item("Roundel", coolGray, price: 410)
+    ..depth(40, to: 80)
+    ..armor(0, weight: 6)
+    ..defense(10, "The shield blocks {2}.");
+  item("Steel Shield", lightCoolGray, price: 570)
+    ..depth(50, to: 90)
     ..armor(0, weight: 7)
     ..defense(12, "The shield blocks {2}.");
+  item("Kite Shield", lightWarmGray, price: 650)
+    ..depth(60)
+    ..armor(0, weight: 8)
+    ..defense(15, "The shield blocks {2}.");
+
+  // TODO: https://en.wikipedia.org/wiki/Lantern_shield
+  // TODO: https://en.wikipedia.org/wiki/Rondache
 }
 
 void boots() {
   category(CharCode.latinSmallLetterIWithGrave)
     ..tag("equipment/armor/boots")
     ..frequency(0.3);
-  item("Pair[s] of Sandals", tan, price: 10)
+  item("(Pair[s] of )Sandals", tan, price: 10)
     ..depth(2, to: 20)
     ..armor(1)
     ..destroy(Elements.fire, chance: 20, fuel: 3);
-  item("Pair[s] of Shoes", brown, price: 30)
+  item("(Pair[s] of )Shoes", brown, price: 30)
     ..depth(8, to: 40)
     ..armor(2)
     ..destroy(Elements.fire, chance: 14, fuel: 3);
@@ -190,13 +196,13 @@ void boots() {
   category(CharCode.latinCapitalLetterAWithDiaeresis)
     ..tag("equipment/armor/boots")
     ..frequency(0.3);
-  item("Pair[s] of Boots", tan, price: 70)
+  item("(Pair[s] of )Boots", tan, price: 70)
     ..depth(14)
     ..armor(6, weight: 1);
-  item("Pair[s] of Plated Boots", coolGray, price: 250)
+  item("(Pair[s] of )Plated Boots", coolGray, price: 250)
     ..depth(22)
     ..armor(8, weight: 2);
-  item("Pair[s] of Greaves", lightCoolGray, price: 350)
+  item("(Pair[s] of )Greaves", lightCoolGray, price: 350)
     ..depth(47)
     ..armor(12, weight: 3);
 }

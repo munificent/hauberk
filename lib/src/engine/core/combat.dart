@@ -10,6 +10,7 @@ import 'actor.dart';
 import 'element.dart';
 import 'game.dart';
 import 'log.dart';
+import 'thing.dart';
 
 /// Armor reduces damage by an inverse curve such that increasing armor has
 /// less and less effect. Damage is reduced to the following:
@@ -28,9 +29,11 @@ num getArmorMultiplier(int armor) {
 }
 
 class Attack {
-  /// The thing performing the attack. If `null`, then the attacker will be
-  /// used.
-  final Noun? noun;
+  /// The object performing the attack if not the attacker, like an arrow or
+  /// fireball.
+  ///
+  /// If `null`, then the attacking actor will be used.
+  final Thing? prop;
 
   /// A verb string describing the attack: "hits", "fries", etc.
   final String verb;
@@ -45,7 +48,7 @@ class Attack {
 
   final Element element;
 
-  Attack(this.noun, this.verb, this.damage, [int? range, Element? element])
+  Attack(this.prop, this.verb, this.damage, [int? range, Element? element])
     : range = range ?? 0,
       element = element ?? Element.none;
 
@@ -177,12 +180,12 @@ class Hit {
         action.game.stage.isVisibleToHero(attacker)) {
       // The hero sees what visible monsters do.
       canSeeAttacker = true;
-    } else if (defender is Hero && _attack.noun != null) {
+    } else if (defender is Hero && _attack.prop != null) {
       // The hero sees if a thing hits them (even if they don't see where it
       // came from).
       canSeeAttacker = true;
     } else if (action.game.stage.isVisibleToHero(defender) &&
-        _attack.noun != null) {
+        _attack.prop != null) {
       // The hero see if a thing hits a visible monster (even if they don't see
       // where it came from).
       canSeeAttacker = true;
@@ -200,9 +203,9 @@ class Hit {
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
     // attacker ("the wolf bites").
     var attackNoun = canSeeAttacker
-        ? (_attack.noun ?? attacker)!
-        : Noun('something');
-    var defenderNoun = canSeeDefender ? defender : Noun('something');
+        ? (_attack.prop ?? attacker)!
+        : Thing.something;
+    var defenderNoun = canSeeDefender ? defender : Thing.something;
 
     if (defender is Hero) {
       defender.receiveAttack(this);

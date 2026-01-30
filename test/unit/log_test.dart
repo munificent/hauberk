@@ -2,7 +2,7 @@ import 'package:hauberk/src/engine/core/log.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Log.wordWrap()', () {
+  group('wordWrap()', () {
     testWordWrap(
       String label,
       String input,

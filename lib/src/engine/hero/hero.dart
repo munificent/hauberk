@@ -8,8 +8,8 @@ import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
-import '../core/log.dart';
 import '../core/option.dart';
+import '../core/thing.dart';
 import '../items/equipment.dart';
 import '../items/inventory.dart';
 import '../items/item.dart';
@@ -74,10 +74,7 @@ class Hero extends Actor {
   double _lastNoise = 0.0;
 
   @override
-  String get nounText => 'you';
-
-  @override
-  Pronoun get pronoun => Pronoun.you;
+  Noun get noun => Noun.you;
 
   Inventory get inventory => save.inventory;
 
@@ -287,8 +284,8 @@ class Hero extends Actor {
   }
 
   @override
-  void onDied(Action action, Noun attackNoun) {
-    action.show("{1} [were|was] slain by {2}.", this, attackNoun);
+  void onDied(Action action, Thing attack) {
+    action.show("{1} [were|was] slain by {2}.", this, attack);
   }
 
   @override
@@ -428,10 +425,10 @@ class Hero extends Actor {
     _heftDamageScale.update(heftScale, (previous) {
       var description = switch (weapons) {
         // Dual-wielding two of the same weapon.
-        [var a, var b] when a.quantifiableName == b.quantifiableName =>
-          Log.quantify(a.quantifiableName, 2),
-        [var a, var b] => "${a.nounText} and ${b.nounText}",
-        [var a] => a.nounText,
+        [var a, var b] when a.noun.short == b.noun.short =>
+          a.clone(2).noun.short,
+        [var a, var b] => "${a.noun.indefinite} and ${b.noun.indefinite}",
+        [var a] => a.noun.indefinite,
         [] => "your fists",
         _ => throw ArgumentError(),
       };

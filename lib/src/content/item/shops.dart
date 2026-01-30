@@ -71,12 +71,12 @@ class Shops {
       "Mail Hauberk": 1.0,
       "Scale Mail": 1.0,
       "Robe": 1.0,
-      "Fur-lined Robe": 1.0,
-      "Pair of Sandals": 1.0,
-      "Pair of Shoes": 1.0,
-      "Pair of Boots": 1.0,
-      "Pair of Plated Boots": 1.0,
-      "Pair of Greaves": 1.0,
+      "Lined Robe": 1.0,
+      "Sandals": 1.0,
+      "Shoes": 1.0,
+      "Boots": 1.0,
+      "Plated Boots": 1.0,
+      "Greaves": 1.0,
     });
 
     shop("Unguence the Alchemist", {

@@ -15,6 +15,7 @@ export 'engine/core/log.dart';
 export 'engine/core/math.dart';
 export 'engine/core/option.dart';
 export 'engine/core/resource.dart';
+export 'engine/core/thing.dart';
 export 'engine/core/utils.dart';
 export 'engine/core/vec_set.dart';
 export 'engine/hero/ability.dart';

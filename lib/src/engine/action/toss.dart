@@ -21,7 +21,7 @@ class TossAction extends ItemAction {
 
   @override
   ActionResult onPerform() {
-    if (!item.canToss) return fail("{1} can't be thrown.", item);
+    if (!item.canToss) return fail("{the 1} can't be thrown.", item);
 
     Item tossed;
     if (item.count == 1) {

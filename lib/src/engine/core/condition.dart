@@ -1,7 +1,7 @@
 import '../action/action.dart';
 import 'actor.dart';
 import 'element.dart';
-import 'log.dart';
+import 'thing.dart';
 
 // TODO: To reinforce the session-oriented play style of the game, maybe these
 // shouldn't wear off?
@@ -85,7 +85,7 @@ class PoisonCondition extends Condition {
     // TODO: Apply resistances. If resistance lowers intensity to zero, end
     // condition and log message.
 
-    if (!action.actor!.takeDamage(action, intensity, Noun("the poison"))) {
+    if (!action.actor!.takeDamage(action, intensity, Prop.mass("poison"))) {
       action.show("{1} [are|is] hurt by poison!", action.actor);
     }
   }

@@ -2,8 +2,8 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../core/combat.dart';
 import '../core/energy.dart';
-import '../core/log.dart';
 import '../core/math.dart';
+import '../core/thing.dart';
 import '../hero/hero.dart';
 import '../items/item.dart';
 import '../items/item_type.dart';
@@ -36,14 +36,9 @@ class BreedRef {
 
 /// A single kind of [Monster] in the game.
 class Breed {
-  final Pronoun pronoun;
-  String get name => Log.singular(_name);
+  String get name => noun.toString();
 
-  /// Whether a monster of this breed has a proper name like "Fred" versus a
-  /// generic name like "bar".
-  ///
-  /// The latter gets a definite article but the former does not.
-  final bool hasProperName;
+  final Noun noun;
 
   /// Untyped so the engine isn't coupled to how monsters appear.
   final Object appearance;
@@ -105,10 +100,6 @@ class Breed {
   /// Additional monsters that should be spawned when this one is spawned.
   final Spawn? minions;
 
-  /// The name of the breed. If the breed's name has irregular pluralization
-  /// like "bunn[y|ies]", this will be the original unparsed string.
-  final String _name;
-
   /// If this breed should stain some of the nearby floor tiles when spawned,
   /// this is the type is should stain them with. Otherwise `null`.
   final TileType? stain;
@@ -123,8 +114,7 @@ class Breed {
   final String description;
 
   Breed(
-    this._name,
-    this.pronoun,
+    this.noun,
     this.appearance,
     this.attacks,
     this.moves,
@@ -146,7 +136,6 @@ class Breed {
     this.stain,
     required this.flags,
     String? description,
-    this.hasProperName = false,
   }) : vision = vision ?? 8,
        hearing = hearing ?? 10,
        speed = speed ?? 0,

@@ -127,7 +127,7 @@ class MonsterLoreInfoDialog extends InfoDialog {
 
   String _describeBreed(Breed breed) {
     var sentences = <String>[];
-    var pronoun = breed.pronoun.subjective;
+    var pronoun = breed.noun.pronoun.subjective;
     var lore = hero.lore;
 
     // TODO: Breed descriptive text.

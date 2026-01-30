@@ -12,8 +12,7 @@ final content = createContent();
 const simulationRounds = 20;
 
 Breed breed = Breed(
-  "meat",
-  Pronoun.it,
+  Noun("meat"),
   "",
   [Attack(null, "hits", 20)],
   [],

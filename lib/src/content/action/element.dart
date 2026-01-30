@@ -91,7 +91,13 @@ class BurningFloorAction extends Action with DestroyActionMixin {
     var target = game.stage.actorAt(_pos);
     if (target != null) {
       // TODO: What should the damage be?
-      var hit = Attack(Noun("fire"), "burns", 10, 0, Elements.fire).createHit();
+      var hit = Attack(
+        Prop.mass("fire"),
+        "burns",
+        10,
+        0,
+        Elements.fire,
+      ).createHit();
       hit.perform(this, null, target, canMiss: false);
     }
 
@@ -163,7 +169,7 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
         show("{1} [are|is] unaffected by the poison.", actor);
       } else {
         var hit = Attack(
-          Noun("poison"),
+          Prop.mass("poison"),
           "chokes",
           _damage,
           0,

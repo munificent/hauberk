@@ -136,7 +136,7 @@ class EquipmentInfoDialog extends InfoDialog {
 
           if (item != null) {
             yield Row(item, glyph: item.appearance as Glyph, [
-              Cell(item.nounText),
+              Cell(item.noun.short),
               ...switch (_columns) {
                 _Columns.uninitialized => const [],
                 _Columns.stats => _buildStatCells(item),
