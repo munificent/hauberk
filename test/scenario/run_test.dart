@@ -3,20 +3,20 @@ import 'package:piecemeal/piecemeal.dart';
 import 'scenario.dart';
 
 void main() {
-  scenario("run in open space to wall", () {
-    setUpStage("""##########
+  scenario("run in open space to wall", (s) {
+    s.setUpStage("""##########
                   #........#
                   #@......1#
                   #........#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run diagonal in open space to wall", () {
-    setUpStage("""##########
+  scenario("run diagonal in open space to wall", (s) {
+    s.setUpStage("""##########
                   #....1...#
                   #........#
                   #........#
@@ -25,73 +25,73 @@ void main() {
                   #........#
                   ##########""");
 
-    heroRun(Direction.ne);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.ne);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run along left wall until end", () {
-    setUpStage("""##########
+  scenario("run along left wall until end", (s) {
+    s.setUpStage("""##########
                   #@......1#
                   #........#
                   #........#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run along right wall until end", () {
-    setUpStage("""##########
+  scenario("run along right wall until end", (s) {
+    s.setUpStage("""##########
                   #........#
                   #........#
                   #@......1#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("enter open space and run to wall", () {
-    setUpStage("""##########
+  scenario("enter open space and run to wall", (s) {
+    s.setUpStage("""##########
                   ##.......#
                   #@......1#
                   ##.......#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("enter open left wall and run until end", () {
-    setUpStage("""##########
+  scenario("enter open left wall and run until end", (s) {
+    s.setUpStage("""##########
                   #@......1#
                   ##.......#
                   ##.......#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("enter open right wall and run until end", () {
-    setUpStage("""##########
+  scenario("enter open right wall and run until end", (s) {
+    s.setUpStage("""##########
                   ##.......#
                   ##.......#
                   #@......1#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run along left wall until opening", () {
-    setUpStage("""##########
+  scenario("run along left wall until opening", (s) {
+    s.setUpStage("""##########
                   ######.###
                   ######.###
                   #@...1...#
@@ -99,13 +99,13 @@ void main() {
                   #........#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run along right wall until opening", () {
-    setUpStage("""##########
+  scenario("run along right wall until opening", (s) {
+    s.setUpStage("""##########
                   #........#
                   #........#
                   #@...1...#
@@ -113,37 +113,37 @@ void main() {
                   ######.###
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run through corridor until T left intersection", () {
-    setUpStage("""##########
+  scenario("run through corridor until T left intersection", (s) {
+    s.setUpStage("""##########
                   ######.###
                   ######.###
                   #@...1...#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run through corridor until T right intersection", () {
-    setUpStage("""##########
+  scenario("run through corridor until T right intersection", (s) {
+    s.setUpStage("""##########
                   #@...1...#
                   ######.###
                   ######.###
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run through corridor until cross intersection", () {
-    setUpStage("""##########
+  scenario("run through corridor until cross intersection", (s) {
+    s.setUpStage("""##########
                   ######.###
                   ######.###
                   #@...1...#
@@ -151,13 +151,13 @@ void main() {
                   ######.###
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("stop at T", () {
-    setUpStage("""###########
+  scenario("stop at T", (s) {
+    s.setUpStage("""###########
                   #.........#
                   #####1#####
                   #####.#####
@@ -165,25 +165,25 @@ void main() {
                   #####@#####
                   ###########""");
 
-    heroRun(Direction.n);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.n);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue straight through T left intersection", () {
-    setUpStage("""##########
+  scenario("continue straight through T left intersection", (s) {
+    s.setUpStage("""##########
                   ####.#####
                   ####.#####
                   #..@....1#
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue left through T left intersection", () {
-    setUpStage("""##########
+  scenario("continue left through T left intersection", (s) {
+    s.setUpStage("""##########
                   ####1#####
                   ####.#####
                   ####.#####
@@ -191,25 +191,25 @@ void main() {
                   #..@.....#
                   ##########""");
 
-    heroRun(Direction.ne);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.ne);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue straight through T right intersection", () {
-    setUpStage("""##########
+  scenario("continue straight through T right intersection", (s) {
+    s.setUpStage("""##########
                   #..@....1#
                   ####.#####
                   ####.#####
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue right through T right intersection", () {
-    setUpStage("""##########
+  scenario("continue right through T right intersection", (s) {
+    s.setUpStage("""##########
                   #..@.....#
                   ####.#####
                   ####.#####
@@ -217,13 +217,13 @@ void main() {
                   ####1#####
                   ##########""");
 
-    heroRun(Direction.se);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.se);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue straight through cross intersection", () {
-    setUpStage("""##########
+  scenario("continue straight through cross intersection", (s) {
+    s.setUpStage("""##########
                   ####.#####
                   ####.#####
                   ####.#####
@@ -233,13 +233,13 @@ void main() {
                   ####.#####
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue left through cross intersection", () {
-    setUpStage("""##########
+  scenario("continue left through cross intersection", (s) {
+    s.setUpStage("""##########
                   ####1#####
                   ####.#####
                   ####.#####
@@ -249,13 +249,13 @@ void main() {
                   ####.#####
                   ##########""");
 
-    heroRun(Direction.ne);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.ne);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue right through cross intersection", () {
-    setUpStage("""##########
+  scenario("continue right through cross intersection", (s) {
+    s.setUpStage("""##########
                   ####.#####
                   ####.#####
                   ####.#####
@@ -265,13 +265,13 @@ void main() {
                   ####1#####
                   ##########""");
 
-    heroRun(Direction.se);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.se);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("run through right turns", () {
-    setUpStage("""###########
+  scenario("run through right turns", (s) {
+    s.setUpStage("""###########
                   #@........#
                   #########.#
                   #1#######.#
@@ -280,15 +280,15 @@ void main() {
                   #.........#
                   ###########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 21);
+    s.expectHeroAt(1, turns: 21);
   });
 
-  scenario("run through left turns", () {
-    setUpStage("""###########
+  scenario("run through left turns", (s) {
+    s.setUpStage("""###########
                   #@#1......#
                   #.#######.#
                   #.#######.#
@@ -297,43 +297,43 @@ void main() {
                   #.........#
                   ###########""");
 
-    heroRun(Direction.s);
-    playUntilNeedsInput();
+    s.heroRun(Direction.s);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 21);
+    s.expectHeroAt(1, turns: 21);
   });
 
-  scenario("run through two step zig-zag corridor", () {
-    setUpStage("""###########
+  scenario("run through two step zig-zag corridor", (s) {
+    s.setUpStage("""###########
                   #@....#####
                   #####.#####
                   #####....1#
                   ###########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 8);
+    s.expectHeroAt(1, turns: 8);
   });
 
-  scenario("run around wall", () {
-    setUpStage("""#######
+  scenario("run around wall", (s) {
+    s.setUpStage("""#######
                   #@....#
                   #####.#
                   #1....#
                   #######""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 8);
+    s.expectHeroAt(1, turns: 8);
   });
 
-  scenario("run around buttonhook corner right", () {
-    setUpStage("""#######
+  scenario("run around buttonhook corner right", (s) {
+    s.setUpStage("""#######
                   #@....#
                   #####.#
                   ####..#
@@ -341,15 +341,15 @@ void main() {
                   ####1##
                   #######""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 7);
+    s.expectHeroAt(1, turns: 7);
   });
 
-  scenario("run around buttonhook corner left", () {
-    setUpStage("""#######
+  scenario("run around buttonhook corner left", (s) {
+    s.setUpStage("""#######
                   #....@#
                   #.#####
                   #..####
@@ -357,41 +357,41 @@ void main() {
                   ##1####
                   #######""");
 
-    heroRun(Direction.w);
-    playUntilNeedsInput();
+    s.heroRun(Direction.w);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 7);
+    s.expectHeroAt(1, turns: 7);
   });
 
-  scenario("run through one step zig-zag corridor", () {
-    setUpStage("""###########
+  scenario("run through one step zig-zag corridor", (s) {
+    s.setUpStage("""###########
                   #@....#####
                   #####....1#
                   ###########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 8);
+    s.expectHeroAt(1, turns: 8);
   });
 
-  scenario("run through one step zig-zag corridor", () {
-    setUpStage("""##########
+  scenario("run through one step zig-zag corridor", (s) {
+    s.setUpStage("""##########
                   ####....1#
                   #@...#####
                   ##########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
 
     // Count turns to make sure the hero cuts the corners diagonally.
-    expectHeroAt(1, turns: 7);
+    s.expectHeroAt(1, turns: 7);
   });
 
-  scenario("continue through zig-zag corridor", () {
-    setUpStage("""##########
+  scenario("continue through zig-zag corridor", (s) {
+    s.setUpStage("""##########
                   ###......#
                   ###.####.#
                   ###.#....#
@@ -400,15 +400,15 @@ void main() {
                   #@#1..####
                   ##########""");
 
-    heroRun(Direction.n);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.n);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("stop in wide diagonal corridor", () {
+  scenario("stop in wide diagonal corridor", (s) {
     // TODO: It would be good if running could detect this and continue through
     // it but for now it doesn't, so pinning the test to the current behavior.
-    setUpStage("""#############
+    s.setUpStage("""#############
                   #######.....#
                   ######..#####
                   #####..######
@@ -416,13 +416,13 @@ void main() {
                   #@.1.########
                   #############""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("stop at diagonal branch", () {
-    setUpStage("""###########
+  scenario("stop at diagonal branch", (s) {
+    s.setUpStage("""###########
                   #######.###
                   ######.####
                   #####.#####
@@ -432,13 +432,13 @@ void main() {
                   #######.###
                   ###########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue through corridor with 45° left turns", () {
-    setUpStage("""#############
+  scenario("continue through corridor with 45° left turns", (s) {
+    s.setUpStage("""#############
                   #####@#1#####
                   ####.###.####
                   ###.#####.###
@@ -452,13 +452,13 @@ void main() {
                   #####...#####
                   #############""");
 
-    heroRun(Direction.sw);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.sw);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue through corridor with 45° right turns", () {
-    setUpStage("""#############
+  scenario("continue through corridor with 45° right turns", (s) {
+    s.setUpStage("""#############
                   #####1#@#####
                   ####.###.####
                   ###.#####.###
@@ -472,13 +472,13 @@ void main() {
                   #####...#####
                   #############""");
 
-    heroRun(Direction.se);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.se);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue through diagonal corridor with 90° left turns", () {
-    setUpStage("""###########
+  scenario("continue through diagonal corridor with 90° left turns", (s) {
+    s.setUpStage("""###########
                   ####1#@####
                   ###.###.###
                   ##.#####.##
@@ -489,13 +489,13 @@ void main() {
                   #####.#####
                   ###########""");
 
-    heroRun(Direction.se);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.se);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("continue through diagonal corridor with 90° right turns", () {
-    setUpStage("""###########
+  scenario("continue through diagonal corridor with 90° right turns", (s) {
+    s.setUpStage("""###########
                   ####@#1####
                   ###.###.###
                   ##.#####.##
@@ -506,23 +506,23 @@ void main() {
                   #####.#####
                   ###########""");
 
-    heroRun(Direction.sw);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.sw);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
-  scenario("stop at ambiguous pillar", () {
+  scenario("stop at ambiguous pillar", (s) {
     // Even though both two-step paths end up at the same point, we don't know
     // which to pick, so we pick neither.
-    setUpStage("""###########
+    s.setUpStage("""###########
                   #####.#####
                   #@..1#....#
                   #####.#####
                   ###########""");
 
-    heroRun(Direction.e);
-    playUntilNeedsInput();
-    expectHeroAt(1);
+    s.heroRun(Direction.e);
+    s.playUntilNeedsInput();
+    s.expectHeroAt(1);
   });
 
   // TODO: Test that it cuts corners when turning through corridor.

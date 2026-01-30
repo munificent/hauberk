@@ -4,32 +4,18 @@ import 'package:hauberk/src/engine.dart';
 import 'package:piecemeal/piecemeal.dart';
 import 'package:test/test.dart';
 
-Scenario? _scenario;
-
 // TODO: Should this use the real game content?
 Content _content = createContent();
 
-void scenario(String name, void Function() body, {bool debugSteps = false}) {
+void scenario(
+  String name,
+  void Function(Scenario) body, {
+  bool debugSteps = false,
+}) {
   test(name, () {
-    _scenario = Scenario(debugSteps);
-    try {
-      body();
-    } finally {
-      _scenario = null;
-    }
+    body(Scenario(debugSteps));
   });
 }
-
-void setUpStage(String stage) => _scenario!.setUpStage(stage);
-
-void stage(String stage) {}
-
-void heroRun(Direction direction) => _scenario!.heroRun(direction);
-
-void playUntilNeedsInput() => _scenario!.playUntilNeedsInput();
-
-void expectHeroAt(int label, {int? turns}) =>
-    _scenario!.expectHeroAt(label, turns: turns);
 
 class Scenario {
   /// If true, prints the stage after every turn.
