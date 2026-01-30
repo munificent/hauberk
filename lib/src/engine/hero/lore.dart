@@ -1,6 +1,6 @@
-import '../items/affix.dart';
-import '../items/item.dart';
-import '../items/item_type.dart';
+import '../item/affix.dart';
+import '../item/item.dart';
+import '../item/item_type.dart';
 import '../monster/breed.dart';
 
 /// The history of interesting events the hero has experienced.

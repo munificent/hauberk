@@ -3,7 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../core/actor.dart';
 import '../core/combat.dart';
 import '../core/game.dart';
-import '../items/item.dart';
+import '../item/item.dart';
 import 'action.dart';
 import 'item.dart';
 import 'los.dart';

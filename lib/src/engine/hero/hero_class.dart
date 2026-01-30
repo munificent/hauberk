@@ -1,4 +1,4 @@
-import '../items/item_type.dart';
+import '../item/item_type.dart';
 import 'skill.dart';
 
 /// The hero's class.

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import '../core/combat.dart';
-import '../items/item.dart';
+import '../item/item.dart';
 import '../monster/monster.dart';
 import 'ability.dart';
 import 'hero.dart';

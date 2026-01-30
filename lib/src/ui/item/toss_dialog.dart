@@ -1,7 +1,7 @@
 import '../../engine/action/toss.dart';
 import '../../engine/core/combat.dart';
-import '../../engine/items/inventory.dart';
-import '../../engine/items/item.dart';
+import '../../engine/item/inventory.dart';
+import '../../engine/item/item.dart';
 import '../game/target_dialog.dart';
 import 'item_dialog.dart';
 

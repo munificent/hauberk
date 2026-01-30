@@ -1,6 +1,6 @@
 import '../../engine/action/item.dart';
-import '../../engine/items/inventory.dart';
-import '../../engine/items/item.dart';
+import '../../engine/item/inventory.dart';
+import '../../engine/item/item.dart';
 import 'item_dialog.dart';
 
 class EquipDialog extends ItemDialog {

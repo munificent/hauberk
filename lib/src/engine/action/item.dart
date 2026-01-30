@@ -4,9 +4,9 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../core/element.dart';
 import '../hero/hero.dart';
-import '../items/equipment.dart';
-import '../items/inventory.dart';
-import '../items/item.dart';
+import '../item/equipment.dart';
+import '../item/inventory.dart';
+import '../item/item.dart';
 import 'action.dart';
 
 /// Base class for an [Action] that works with an existing [Item] in the game.

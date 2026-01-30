@@ -1,5 +1,5 @@
-import '../../engine/items/inventory.dart';
-import '../../engine/items/item.dart';
+import '../../engine/item/inventory.dart';
+import '../../engine/item/item.dart';
 import 'item_dialog.dart';
 
 // TODO: Require confirmation when selling an item if it isn't a stack?
