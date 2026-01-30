@@ -96,7 +96,8 @@ abstract class TownScreen extends Screen<Input> {
 
     if (alt) return false;
 
-    if (_shiftDown && keyCode == KeyCode.escape) {
+    if (_shiftDown &&
+        (keyCode == KeyCode.escape || keyCode == KeyCode.backtick)) {
       _inspected = null;
       dirty();
       return true;

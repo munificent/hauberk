@@ -144,34 +144,6 @@ void renderItems(
       nameRight = priceLeft;
     }
 
-    void drawStat(int symbol, Object stat, Color light, Color dark) {
-      var string = stat.toString();
-      var statLeft = statRight - string.length - 1;
-      terminal.drawChar(statLeft, y, symbol, enabled ? dark : UIHue.disabled);
-      terminal.writeAt(
-        statLeft + 1,
-        y,
-        string,
-        enabled ? light : UIHue.disabled,
-      );
-
-      nameRight = statLeft;
-    }
-
-    // TODO: Eventually need to handle equipment that gives both an armor and
-    // attack bonus.
-    if (item.attack != null) {
-      var hit = item.attack!.createHit();
-      drawStat(
-        CharCode.feminineOrdinalIndicator,
-        hit.damageString,
-        carrot,
-        brown,
-      );
-    } else if (item.armor != 0) {
-      drawStat(CharCode.latinSmallLetterAe, item.armor, peaGreen, sherwood);
-    }
-
     var name = item.noun.short;
     var nameWidth = nameRight - (x + 2);
     if (name.length > nameWidth) name = name.substring(0, nameWidth);
