@@ -83,18 +83,22 @@ void bodyArmor() {
     ..depth(35)
     ..armor(36, weight: 7);
 
-  //  CharCode.latinSmallLetterUWithCircumflex // armor
-
-  /*
-  Metal Lamellar Armor[s]
-  Chain Mail Armor[s]
-  Metal Scale Mail[s]
-  Plated Mail[s]
-  Brigandine[s]
-  Steel Breastplate[s]
-  Partial Plate Armor[s]
-  Full Plate Armor[s]
-  */
+  // Plate armor.
+  category(CharCode.latinSmallLetterUWithCircumflex)
+    ..tag("equipment/armor/body")
+    ..frequency(0.5);
+  item("Plated Mail", darkCoolGray, price: 1000)
+    ..depth(40)
+    ..armor(40, weight: 8);
+  item("Brigandine", tan, price: 1300)
+    ..depth(50)
+    ..armor(46, weight: 10);
+  item("Breastplate", coolGray, price: 2000)
+    ..depth(60)
+    ..armor(52, weight: 14);
+  item("Plate Armor", lightCoolGray, price: 3400)
+    ..depth(70)
+    ..armor(60, weight: 18);
 }
 
 void cloaks() {
@@ -176,8 +180,11 @@ void shields() {
     ..armor(0, weight: 8)
     ..defense(15, "The shield blocks {2}.");
 
-  // TODO: https://en.wikipedia.org/wiki/Lantern_shield
-  // TODO: https://en.wikipedia.org/wiki/Rondache
+  item("Lantern Shield", gold, price: 1200)
+    ..depth(30)
+    ..armor(0, weight: 8)
+    ..defense(11, "The shield blocks {2}.")
+    ..lightSource(level: 5);
 }
 
 void boots() {
