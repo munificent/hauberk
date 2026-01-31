@@ -39,6 +39,7 @@ void main() {
   for (var i = 1; i <= Option.maxDepth; i++) {
     depthSelect.append(
       web.HTMLOptionElement()
+        ..label = i.toString()
         ..value = i.toString()
         ..selected = i == 1,
     );

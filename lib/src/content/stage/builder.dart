@@ -50,7 +50,7 @@ void dungeon(RoomShapes shapes, {required double frequency}) {
     "dungeon",
     startFrequency: frequency,
     decor: "dungeon",
-    decorDensity: 0.09,
+    decorDensity: 0.04,
     create: () => Dungeon(shapes: shapes),
   );
 }
@@ -122,7 +122,7 @@ void keep(String monsters, {required int start, required int end}) {
     end: end,
     startFrequency: 2.0,
     decor: "keep",
-    decorDensity: 0.07,
+    decorDensity: 0.05,
     monsters: monsters,
     // Keep spawns monsters itself.
     monsterDensity: 0.0,

@@ -225,7 +225,7 @@ class Decorator {
     // Some stages carve more open space than others, so pick a number of
     // monsters aiming for a roughly even density per open tile with some
     // randomness so that some stages are more intense than others.
-    var goalMonsters = densityMap.possibleTiles * 0.02 * rng.float(1.0, 1.4);
+    var goalMonsters = densityMap.possibleTiles * 0.03 * rng.float(1.0, 1.4);
     var spawnedMonsters = 0;
 
     while (spawnedMonsters < goalMonsters) {

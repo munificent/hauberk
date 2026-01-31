@@ -304,6 +304,10 @@ class Room {
     Array2D<RoomTile> room,
     List<List<Vec>> lights,
   ) {
+    // TODO: I really don't like the way braziers look in the middle of rooms.
+    // For now, just don't place them at all. Figure out a better way to handle
+    // diegetic and/or non-diegetic light.
+    /*
     if (lights.isEmpty) return;
 
     if (!rng.percent(lerpInt(depth, 1, Option.maxDepth, 90, 20))) return;
@@ -311,6 +315,7 @@ class Room {
     for (var light in rng.item(lights)) {
       room[light] = RoomTile.tile(rng.item(Tiles.braziers));
     }
+    */
   }
 }
 
