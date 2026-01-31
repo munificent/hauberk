@@ -11,8 +11,11 @@ class Equipment extends IterableBase<Item> with ItemCollection {
 
   @override
   final List<String> slotTypes;
+
   @override
   final List<Item?> slots;
+
+  int get capacity => slots.length;
 
   Equipment()
     : slotTypes = const [

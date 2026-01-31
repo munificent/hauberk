@@ -184,10 +184,10 @@ class ItemBuilder extends _BaseBuilder {
   ItemBuilder(this._name, this._color, this._price);
 
   /// Sets the item's minimum depth to [from]. If [to] is given, then the item
-  /// has the given depth range. Otherwise, its max is [Option.maxDepth].
+  /// has the given depth range. Otherwise, its max is [Stage.maxDepth].
   void depth(int from, {int? to}) {
     _minDepth = from;
-    _maxDepth = to ?? Option.maxDepth;
+    _maxDepth = to ?? Stage.maxDepth;
   }
 
   /// Marks this item type as an artifact with an intrisic affix populated by
@@ -451,10 +451,10 @@ class AffixBuilder {
 
   /// Sets the affix's minimum depth to [from]. If [to] is given, then the
   /// affix has the given depth range. Otherwise, its max range is
-  /// [Option.maxDepth].
+  /// [Stage.maxDepth].
   void depth(int from, {int? to}) {
     _minDepth = from;
-    _maxDepth = to ?? Option.maxDepth;
+    _maxDepth = to ?? Stage.maxDepth;
   }
 
   void price(int bonus, double scale) {

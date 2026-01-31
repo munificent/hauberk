@@ -16,7 +16,7 @@ class SelectDepthPopup extends Popup {
   int _depth = 1;
 
   SelectDepthPopup(this.content, this.save) {
-    _depth = math.min(Option.maxDepth, save.maxDepth + 1);
+    _depth = math.min(Stage.maxDepth, save.maxDepth + 1);
   }
 
   @override
@@ -71,7 +71,7 @@ class SelectDepthPopup extends Popup {
 
   @override
   void renderPopup(Terminal terminal) {
-    for (var depth = 1; depth <= Option.maxDepth; depth++) {
+    for (var depth = 1; depth <= Stage.maxDepth; depth++) {
       var x = (depth - 1) % 10;
       var y = ((depth - 1) ~/ 10) * 2;
 
@@ -100,7 +100,7 @@ class SelectDepthPopup extends Popup {
 
   void _changeDepth(int depth) {
     if (depth < 1) return;
-    if (depth > Option.maxDepth) return;
+    if (depth > Stage.maxDepth) return;
     if (!Debug.enabled && depth > save.maxDepth + 1) return;
 
     _depth = depth;

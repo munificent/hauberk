@@ -8,7 +8,6 @@ import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/energy.dart';
 import '../core/game.dart';
-import '../core/option.dart';
 import '../core/thing.dart';
 import '../item/equipment.dart';
 import '../item/inventory.dart';
@@ -23,6 +22,11 @@ import 'stat.dart';
 
 /// The main player-controlled [Actor]. The player's avatar in the game world.
 class Hero extends Actor {
+  static const stomachSize = 400;
+
+  /// How much damage an unarmed hero does.
+  static const punchDamage = 3;
+
   final HeroSave save;
 
   /// Monsters the hero has already seen. Makes sure we don't double count them.
@@ -51,8 +55,8 @@ class Hero extends Actor {
   // TODO: This should be in HeroSave.
   int get stomach => _stomach;
 
-  set stomach(int value) => _stomach = value.clamp(0, Option.heroMaxStomach);
-  int _stomach = Option.heroMaxStomach ~/ 2;
+  set stomach(int value) => _stomach = value.clamp(0, stomachSize);
+  int _stomach = stomachSize ~/ 2;
 
   /// How calm and centered the hero is.
   ///
@@ -185,7 +189,7 @@ class Hero extends Actor {
 
     // If there are none, punch.
     if (attacks.isEmpty) {
-      attacks.add((null, Attack(this, 'punch[es]', Option.heroPunchDamage)));
+      attacks.add((null, Attack(this, 'punch[es]', punchDamage)));
     }
 
     var hits = <Hit>[];

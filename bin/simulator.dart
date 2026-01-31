@@ -24,7 +24,7 @@ class Simulator {
   final Map<Breed, Kill> kills = {};
 
   void run() {
-    for (depth = 1; depth <= Option.maxDepth; depth++) {
+    for (depth = 1; depth <= Stage.maxDepth; depth++) {
       _exploreDepth();
     }
 

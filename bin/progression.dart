@@ -10,7 +10,7 @@ void main() {
     race: content.races[4],
     heroClass: content.classes[1],
   );
-  for (var depth = 1; depth <= Option.maxDepth; depth++) {
+  for (var depth = 1; depth <= Stage.maxDepth; depth++) {
     var game = Game(content, depth, save);
     for (var _ in game.generate()) {}
 

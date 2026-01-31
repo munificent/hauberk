@@ -212,7 +212,7 @@ class MainMenuScreen extends Screen<Input> {
       var save = content.createHero("Temporary");
       var game = _game = Game(
         content,
-        rng.inclusive(1, Option.maxDepth),
+        rng.inclusive(1, Stage.maxDepth),
         save,
         width: terminal.width,
         height: terminal.height,

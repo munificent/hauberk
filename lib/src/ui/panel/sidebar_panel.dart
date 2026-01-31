@@ -186,7 +186,7 @@ class SidebarPanel extends Panel {
       y,
       terminal.width - 11,
       hero.stomach,
-      Option.heroMaxStomach,
+      Hero.stomachSize,
       tan,
       brown,
     );

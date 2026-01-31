@@ -20,7 +20,7 @@ void main() {
 
   var depthSelect =
       web.document.querySelector("#depth") as web.HTMLSelectElement;
-  for (var i = 1; i <= Option.maxDepth; i++) {
+  for (var i = 1; i <= Stage.maxDepth; i++) {
     depthSelect.append(
       web.HTMLOptionElement()
         ..text = i.toString()

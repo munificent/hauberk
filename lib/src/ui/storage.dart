@@ -66,11 +66,7 @@ class Storage {
         var permadeath = heroData['death'] == 'permanent';
 
         var inventoryItems = _loadItems(heroData['inventory']);
-        var inventory = Inventory(
-          ItemLocation.inventory,
-          Option.inventoryCapacity,
-          inventoryItems,
-        );
+        var inventory = Inventory(ItemLocation.inventory, inventoryItems);
 
         var equipment = Equipment();
         for (var item in _loadItems(heroData['equipment'])) {
@@ -80,14 +76,10 @@ class Storage {
         }
 
         var homeItems = _loadItems(heroData['home']);
-        var home = Inventory(ItemLocation.home, Option.homeCapacity, homeItems);
+        var home = Inventory(ItemLocation.home, homeItems);
 
         var crucibleItems = _loadItems(heroData['crucible']);
-        var crucible = Inventory(
-          ItemLocation.crucible,
-          Option.crucibleCapacity,
-          crucibleItems,
-        );
+        var crucible = Inventory(ItemLocation.crucible, crucibleItems);
 
         // TODO: What if shops are added or changed?
         var shops = <Shop, Inventory>{};

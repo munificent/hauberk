@@ -243,7 +243,7 @@ class EquipmentInfoDialog extends InfoDialog {
 
   void _writeStatTotals(Terminal terminal, int x, int y) {
     var element = Element.none;
-    var baseDamage = Option.heroPunchDamage;
+    var baseDamage = Hero.punchDamage;
     var totalDamageScale = 1.0;
     var totalDamageBonus = 0;
     var totalStrikeBonus = 0;

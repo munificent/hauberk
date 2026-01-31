@@ -12,24 +12,37 @@ class ItemLocation {
   static const onGround = ItemLocation._(
     "On Ground",
     "There is nothing on the ground.",
+    0,
   );
   static const inventory = ItemLocation._(
     "Inventory",
     "Your backpack is empty.",
+    24,
   );
-  static const equipment = ItemLocation._("Equipment", "<not used>");
-  static const home = ItemLocation._("Home", "There is nothing in your home.");
+  static const equipment = ItemLocation._("Equipment", "<not used>", 0);
+  static const home = ItemLocation._(
+    "Home",
+    "There is nothing in your home.",
+    26,
+  );
   static const crucible = ItemLocation._(
     "Crucible",
     "The crucible is waiting.",
+    8,
   );
 
   final String name;
   final String emptyDescription;
 
-  const ItemLocation._(this.name, this.emptyDescription);
+  /// How many items an inventory of this location can hold, or `0` if not
+  /// limited.
+  final int capacity;
 
-  ItemLocation.shop(this.name) : emptyDescription = "All sold out!";
+  const ItemLocation._(this.name, this.emptyDescription, this.capacity);
+
+  ItemLocation.shop(this.name)
+    : emptyDescription = "All sold out!",
+      capacity = 26;
 }
 
 // TODO: Move tryAdd() out of ItemCollection and Equipment? I think it's only
@@ -69,11 +82,17 @@ mixin ItemCollection implements Iterable<Item> {
 
 /// The collection of [Item]s held by an [Actor].
 class Inventory extends IterableMixin<Item> with ItemCollection {
+  /// The maximum number of items the hero's inventory can contain.
+  // static const capacity = 24;
+
   @override
   final ItemLocation location;
 
   final List<Item> _items;
-  final int? _capacity;
+
+  /// The maximum number of items the inventory can hold or `0` if it isn't
+  /// bounded.
+  final int capacity;
 
   /// If the [Hero] had to unequip an item in order to equip another one, this
   /// will refer to the item that was unequipped.
@@ -88,15 +107,16 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   @override
   Item operator [](int index) => _items[index];
 
-  Inventory(this.location, [this._capacity, Iterable<Item>? items])
-    : _items = [...?items];
+  Inventory(this.location, [Iterable<Item>? items])
+    : capacity = location.capacity,
+      _items = [...?items];
 
   /// Creates a new copy of this Inventory. This is done when the [Hero] enters
   /// a stage so that any inventory changes that happen in the stage are
   /// discarded if the hero dies.
   Inventory clone() {
     var items = _items.map((item) => item.clone());
-    return Inventory(location, _capacity, items);
+    return Inventory(location, items);
   }
 
   /// Removes all items from the inventory.
@@ -121,7 +141,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
   @override
   bool canAdd(Item item) {
     // If there's an empty slot, can always add it.
-    if (_capacity == null || _items.length < _capacity) return true;
+    if (capacity == 0 || _items.length < capacity) return true;
 
     // See if we can merge it with other stacks.
     var remaining = item.count;
@@ -152,7 +172,7 @@ class Inventory extends IterableMixin<Item> with ItemCollection {
     }
 
     // See if there is room to start a new stack with the rest.
-    if (_capacity != null && _items.length >= _capacity) {
+    if (capacity != 0 && _items.length >= capacity) {
       // There isn't room to pick up everything.
       return AddItemResult(adding - item.count, item.count);
     }

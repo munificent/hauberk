@@ -15,29 +15,18 @@ class ItemPanel extends Panel {
 
   int get equipmentTop => 0;
 
-  int get inventoryTop => _game.hero.equipment.slots.length + 2;
+  int get inventoryTop => _game.hero.equipment.capacity + 2;
 
   int get onGroundTop =>
-      _game.hero.equipment.slots.length + Option.inventoryCapacity + 4;
+      _game.hero.equipment.capacity + _game.hero.inventory.capacity + 4;
 
   bool get onGroundVisible => bounds.height > 50;
 
   @override
   void renderPanel(Terminal terminal) {
     var hero = _game.hero;
-    _drawItems(
-      terminal,
-      equipmentTop,
-      hero.equipment.slots.length,
-      hero.equipment,
-    );
-
-    _drawItems(
-      terminal,
-      inventoryTop,
-      Option.inventoryCapacity,
-      hero.inventory,
-    );
+    _drawItems(terminal, equipmentTop, hero.equipment.capacity, hero.equipment);
+    _drawItems(terminal, inventoryTop, hero.inventory.capacity, hero.inventory);
 
     // Don't show the on the ground panel if the height is too short for it.
     if (onGroundVisible) {

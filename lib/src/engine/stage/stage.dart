@@ -14,6 +14,8 @@ import 'tile.dart';
 
 /// The game's live play area.
 class Stage {
+  static const maxDepth = 100;
+
   final Game game;
 
   final _actors = <Actor>[];

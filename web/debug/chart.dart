@@ -72,14 +72,14 @@ void main() {
 }
 
 abstract class Chart {
-  final histograms = List.generate(Option.maxDepth, (_) => Histogram<String>());
+  final histograms = List.generate(Stage.maxDepth, (_) => Histogram<String>());
 
   String get name;
 
   Iterable<String> get labels;
 
   void generateMore() {
-    for (var depth = 1; depth <= Option.maxDepth; depth++) {
+    for (var depth = 1; depth <= Stage.maxDepth; depth++) {
       var histogram = histograms[depth - 1];
 
       for (var i = 0; i < batchSize; i++) {
@@ -115,7 +115,7 @@ abstract class Chart {
 
     var buffer = StringBuffer();
 
-    for (var depth = 0; depth < Option.maxDepth; depth++) {
+    for (var depth = 0; depth < Stage.maxDepth; depth++) {
       var histogram = histograms[depth];
       var total = 0;
       for (var label in labels) {

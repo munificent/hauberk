@@ -36,7 +36,7 @@ int get depth {
 }
 
 void main() {
-  for (var i = 1; i <= Option.maxDepth; i++) {
+  for (var i = 1; i <= Stage.maxDepth; i++) {
     depthSelect.append(
       web.HTMLOptionElement()
         ..label = i.toString()

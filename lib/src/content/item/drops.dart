@@ -137,7 +137,7 @@ abstract class _BaseDrop {
       ItemQuality.great => (1.0, 1.0),
     };
 
-    var chance = lerpDouble(depth, 0, Option.maxDepth, min, max);
+    var chance = lerpDouble(depth, 0, Stage.maxDepth, min, max);
     if (rng.float(1.0) > chance) return null;
 
     return Affixes.tryChoose(affixes, itemType, depth);

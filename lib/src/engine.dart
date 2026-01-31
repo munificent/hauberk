@@ -13,7 +13,6 @@ export 'engine/core/energy.dart';
 export 'engine/core/game.dart';
 export 'engine/core/log.dart';
 export 'engine/core/math.dart';
-export 'engine/core/option.dart';
 export 'engine/core/resource.dart';
 export 'engine/core/thing.dart';
 export 'engine/core/utils.dart';

@@ -32,7 +32,7 @@ abstract class _OpenTileAction extends Action {
       lerpInt(
         game.depth,
         1,
-        Option.maxDepth,
+        Stage.maxDepth,
         _minDepthEmptyChance,
         _maxDepthEmptyChance,
       ),

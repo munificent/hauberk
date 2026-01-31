@@ -1,6 +1,5 @@
 import '../core/element.dart';
 import '../core/log.dart';
-import '../core/option.dart';
 import '../core/resource.dart';
 import '../item/equipment.dart';
 import '../item/inventory.dart';
@@ -53,7 +52,7 @@ class HeroSave {
   final List<Spell> learnedSpells;
 
   /// How much gold the hero has.
-  int gold = Option.heroGoldStart;
+  int gold = 60;
 
   /// The lowest depth that the hero has successfully explored and exited.
   int maxDepth = 0;
@@ -106,10 +105,10 @@ class HeroSave {
     this.race,
     this.heroClass, {
     this.permadeath = false,
-  }) : inventory = Inventory(ItemLocation.inventory, Option.inventoryCapacity),
+  }) : inventory = Inventory(ItemLocation.inventory),
        equipment = Equipment(),
-       home = Inventory(ItemLocation.home, Option.homeCapacity),
-       crucible = Inventory(ItemLocation.crucible, Option.crucibleCapacity),
+       home = Inventory(ItemLocation.home),
+       crucible = Inventory(ItemLocation.crucible),
        shops = {},
        skills = SkillSet(),
        learnedSpells = [],

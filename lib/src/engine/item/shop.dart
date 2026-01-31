@@ -3,9 +3,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 
 class Shop {
-  /// The maximum number of items a shop can contain.
-  static const capacity = 26;
-
   final Drop _drop;
 
   final String name;
@@ -13,18 +10,20 @@ class Shop {
   Shop(this.name, this._drop);
 
   Inventory create() {
-    var inventory = Inventory(ItemLocation.shop(name), capacity);
+    var inventory = Inventory(ItemLocation.shop(name));
     update(inventory);
     return inventory;
   }
 
   Inventory load(Iterable<Item> items) {
-    return Inventory(ItemLocation.shop(name), capacity, items);
+    return Inventory(ItemLocation.shop(name), items);
   }
 
   void update(Inventory inventory) {
     // Remove some.
-    var remainCount = rng.float(capacity * 0.2, capacity * 0.4).toInt();
+    var remainCount = rng
+        .float(inventory.capacity * 0.2, inventory.capacity * 0.4)
+        .toInt();
 
     while (inventory.length > remainCount) {
       inventory.removeAt(rng.range(inventory.length));
@@ -32,7 +31,9 @@ class Shop {
 
     // Add some.
     var tries = 0;
-    var count = rng.float(capacity * 0.3, capacity * 0.7).toInt();
+    var count = rng
+        .float(inventory.capacity * 0.3, inventory.capacity * 0.7)
+        .toInt();
 
     while (inventory.length < count && tries++ < 100) {
       // Try to add an item.

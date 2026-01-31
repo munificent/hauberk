@@ -310,7 +310,7 @@ class Room {
     /*
     if (lights.isEmpty) return;
 
-    if (!rng.percent(lerpInt(depth, 1, Option.maxDepth, 90, 20))) return;
+    if (!rng.percent(lerpInt(depth, 1, Stage.maxDepth, 90, 20))) return;
 
     for (var light in rng.item(lights)) {
       room[light] = RoomTile.tile(rng.item(Tiles.braziers));
