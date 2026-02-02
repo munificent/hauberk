@@ -19,17 +19,17 @@ import 'spawns.dart';
 final collapseNewlines = RegExp(r"\n\s*");
 
 final _elementText = {
-  Elements.air: ["the wind", "buffets"],
-  Elements.earth: ["the soil", "buries"],
-  Elements.fire: ["the flame", "burns"],
-  Elements.water: ["the water", "blasts"],
-  Elements.acid: ["the acid", "melts"],
-  Elements.cold: ["the ice", "freezes"],
-  Elements.lightning: ["the lightning", "shocks"],
-  Elements.poison: ["the poison", "chokes"],
-  Elements.dark: ["the darkness", "crushes"],
-  Elements.light: ["the light", "sears"],
-  Elements.spirit: ["the spirit", "haunts"],
+  Elements.air: ["wind", "buffets"],
+  Elements.earth: ["soil", "buries"],
+  Elements.fire: ["flame", "burns"],
+  Elements.water: ["water", "blasts"],
+  Elements.acid: ["acid", "melts"],
+  Elements.cold: ["ice", "freezes"],
+  Elements.lightning: ["lightning", "shocks"],
+  Elements.poison: ["poison", "chokes"],
+  Elements.dark: ["darkness", "crushes"],
+  Elements.light: ["light", "sears"],
+  Elements.spirit: ["spirit", "haunts"],
 };
 
 /// The last builder that was created. It gets implicitly finished when the
@@ -318,7 +318,7 @@ class BreedBuilder extends _BaseBuilder {
       _addMove(HealMove(rate, amount));
 
   void arrow({num rate = 5, required int damage}) => _bolt(
-    "the arrow",
+    "arrow",
     "hits",
     Element.none,
     rate: rate,
@@ -355,7 +355,7 @@ class BreedBuilder extends _BaseBuilder {
       bolt(Elements.air, rate: rate, damage: damage, range: 8);
 
   void stoneBolt({num rate = 5, required int damage}) => _bolt(
-    "the stone",
+    "stone",
     "hits",
     Elements.earth,
     rate: rate,
@@ -364,7 +364,7 @@ class BreedBuilder extends _BaseBuilder {
   );
 
   void waterBolt({num rate = 5, required int damage}) => _bolt(
-    "the jet",
+    "jet",
     "splashes",
     Elements.water,
     rate: rate,
@@ -374,7 +374,7 @@ class BreedBuilder extends _BaseBuilder {
 
   void sparkBolt({required num rate, required int damage, int range = 6}) =>
       _bolt(
-        "the spark",
+        "spark",
         "zaps",
         Elements.lightning,
         rate: rate,
@@ -383,7 +383,7 @@ class BreedBuilder extends _BaseBuilder {
       );
 
   void iceBolt({num rate = 5, required int damage, int range = 8}) => _bolt(
-    "the ice",
+    "ice",
     "freezes",
     Elements.cold,
     rate: rate,
@@ -447,8 +447,8 @@ class BreedBuilder extends _BaseBuilder {
   void howl({num rate = 10, int range = 10, String? verb}) =>
       _addMove(HowlMove(rate, range, verb));
 
-  void haste({num rate = 5, int duration = 10, int speed = 1}) =>
-      _addMove(HasteMove(rate, duration, speed));
+  void haste({num rate = 5, int speed = 1, int duration = 10}) =>
+      _addMove(HasteMove(rate, speed, duration));
 
   void teleport({num rate = 10, int range = 10}) =>
       _addMove(TeleportMove(rate, range));

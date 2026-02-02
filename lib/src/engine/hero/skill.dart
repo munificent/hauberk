@@ -16,7 +16,6 @@ abstract class Skill implements Comparable<Skill> {
   static const maxLevel = 20;
 
   static int experienceCostAt(int baseExperience, int level) {
-    // return (baseExperience * math.pow((level + 1) / 2, 4)).toInt();
     return (baseExperience * math.pow((level + 2) / 3, 4)).toInt();
   }
 
@@ -29,7 +28,7 @@ abstract class Skill implements Comparable<Skill> {
   String get description;
 
   /// The experience cost to reach level one in this skill.
-  int get baseExperience => 1000;
+  int get baseExperience => 400;
 
   // TODO: May want this to be per-level at some point if there are skills that
   // grant multiple abilities at different levels.

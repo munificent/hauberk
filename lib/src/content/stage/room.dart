@@ -69,15 +69,16 @@ class Room {
   /// Chooses a random room size with weighted probability towards smaller
   /// rooms.
   static RoomSize _roomSize() {
-    if (!rng.oneIn(4)) return RoomSize.small;
-    if (!rng.oneIn(4)) return RoomSize.medium;
+    if (!rng.oneIn(5)) return RoomSize.small;
+    if (!rng.oneIn(5)) return RoomSize.medium;
     return RoomSize.large;
   }
 
   static Array2D<RoomTile> _rectangle(int depth) {
-    var (short, long) = switch (rng.oneIn(10)) {
-      true => (rng.inclusive(11, 18), rng.inclusive(11, 18)),
-      false => (rng.inclusive(3, 10), rng.inclusive(3, 10)),
+    var (short, long) = switch (_roomSize()) {
+      RoomSize.small => (rng.inclusive(3, 8), rng.inclusive(3, 8)),
+      RoomSize.medium => (rng.inclusive(7, 10), rng.inclusive(7, 10)),
+      RoomSize.large => (rng.inclusive(9, 16), rng.inclusive(9, 16)),
     };
 
     if (short > long) {
@@ -124,8 +125,8 @@ class Room {
   static Array2D<RoomTile> _angled(int depth) {
     var (min, max) = switch (_roomSize()) {
       RoomSize.small => (5, 8),
-      RoomSize.medium => (9, 12),
-      RoomSize.large => (13, 18),
+      RoomSize.medium => (7, 10),
+      RoomSize.large => (9, 16),
     };
 
     // Make a randomly-sized room but keep the aspect ratio reasonable.
@@ -199,9 +200,9 @@ class Room {
 
   static Array2D<RoomTile> _diamond(int depth) {
     var (min, max) = switch (_roomSize()) {
-      RoomSize.small => (5, 9),
-      RoomSize.medium => (10, 17),
-      RoomSize.large => (18, 27),
+      RoomSize.small => (6, 9),
+      RoomSize.medium => (10, 15),
+      RoomSize.large => (16, 21),
     };
 
     var size = rng.inclusive(min, max);
@@ -211,8 +212,8 @@ class Room {
   static Array2D<RoomTile> _octagon(int depth) {
     var (min, max) = switch (_roomSize()) {
       RoomSize.small => (6, 9),
-      RoomSize.medium => (10, 16),
-      RoomSize.large => (17, 24),
+      RoomSize.medium => (10, 15),
+      RoomSize.large => (16, 21),
     };
 
     var size = rng.inclusive(min, max);

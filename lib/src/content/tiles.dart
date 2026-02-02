@@ -145,7 +145,7 @@ class Tiles {
   static final stairs = tile(
     "stairs",
     "≡",
-    lightWarmGray,
+    ash,
     coolGray,
   ).to(TilePortals.exit).open();
   static final bridge = tile("bridge", "≡", tan, darkBrown).open();
@@ -261,7 +261,7 @@ class Tiles {
     "dungeon entrance",
     "≡",
     lightWarmGray,
-    coolGray,
+    darkCoolGray,
   ).to(TilePortals.dungeon).open();
 
   static final home = tile(

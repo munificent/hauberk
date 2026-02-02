@@ -17,8 +17,9 @@ class Classes {
           "little of everything.",
       {
         ..._battleHardening(10),
-        ..._archery(10),
+        ..._bloodlust(10),
         ..._dualWield(10),
+        ..._archery(10),
         ..._masteries(10),
         ..._spellSchools(10),
       },
@@ -35,7 +36,13 @@ class Classes {
           "of their equipment. While they aren't above using a little magic "
           "here and there, they're most comfortable when those supernatural "
           "forces are safely ensconced in a piece of familiar gear.",
-      {..._battleHardening(), ..._archery(), ..._dualWield(), ..._masteries()},
+      {
+        ..._battleHardening(),
+        ..._bloodlust(),
+        ..._dualWield(),
+        ..._archery(),
+        ..._masteries(),
+      },
     ),
 
     _class(
@@ -63,13 +70,16 @@ Map<Skill, int> _archery([int? level]) => _skillCap("Archery", level);
 Map<Skill, int> _battleHardening([int? level]) =>
     _skillCap("Battle Hardening", level);
 
+Map<Skill, int> _bloodlust([int? level]) => _skillCap("Bloodlust", level);
+
 /// Creates a skill cap map that caps [DualWield].
 Map<Skill, int> _dualWield([int? level]) => _skillCap("Dual-wield", level);
 
 /// Creates a skill cap map that caps all masteries at [level].
 Map<Skill, int> _masteries([int? level]) => {
   ..._skillCap("Axe Mastery", level),
-  ..._skillCap("Club Mastery", level),
+  ..._skillCap("Bludgeoning", level),
+  ..._skillCap("Knife Fighting", level),
   ..._skillCap("Spear Mastery", level),
   ..._skillCap("Swordfighting", level),
   ..._skillCap("Whip Mastery", level),

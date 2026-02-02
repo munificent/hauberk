@@ -11,7 +11,7 @@ void weapons() {
   category(CharCode.latinSmallLetterAWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/club")
     ..frequency(0.5)
-    ..skill("Club Mastery")
+    ..skill("Bludgeoning")
     ..toss(breakage: 25, range: 5);
   item("Stick", tan)
     ..depth(1, to: 20)
@@ -114,11 +114,11 @@ void weapons() {
     ..depth(3, to: 20)
     ..weapon(6, heft: 5)
     ..toss(damage: 6);
-  item("Dirk", lightCoolGray, price: 30)
+  item("Dagger", lightCoolGray, price: 30)
     ..depth(4, to: 40)
     ..weapon(8, heft: 6)
     ..toss(damage: 8);
-  item("Dagger", lightBlue, price: 50)
+  item("Dirk", lightBlue, price: 50)
     ..depth(6, to: 70)
     ..weapon(9, heft: 7)
     ..toss(damage: 9);
@@ -256,18 +256,18 @@ void weapons() {
     ..skill("Archery");
   item("Short Bow", tan, price: 120)
     ..depth(6, to: 60)
-    ..ranged("the arrow", heft: 12, damage: 5, range: 8)
+    ..ranged("arrow", heft: 12, damage: 5, range: 8)
     ..toss(damage: 2)
     ..destroy(Elements.fire, chance: 15, fuel: 10);
   item("Longbow", brown, price: 250)
     ..depth(13)
-    ..ranged("the arrow", heft: 18, damage: 9, range: 12)
+    ..ranged("arrow", heft: 18, damage: 9, range: 12)
     ..toss(damage: 3)
     ..destroy(Elements.fire, chance: 7, fuel: 13);
   // TODO: Warbow.
   item("Crossbow", lightCoolGray, price: 600)
     ..depth(28)
-    ..ranged("the bolt", heft: 24, damage: 14, range: 16)
+    ..ranged("bolt", heft: 24, damage: 14, range: 16)
     ..toss(damage: 4)
     ..destroy(Elements.fire, chance: 4, fuel: 14);
 }

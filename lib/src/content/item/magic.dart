@@ -104,40 +104,40 @@ void potions() {
     ..frequency(0.5)
     ..toss(damage: 1, range: 8, breakage: 100)
     ..destroy(Elements.cold, chance: 15);
-  item("Bottled Wind", lightBlue, price: 100)
+  item("Bottled Wind", lightBlue, price: 60)
     ..depth(4)
-    ..flow(Elements.air, "the wind", "blasts", 10, fly: true);
+    ..flow(Elements.air, "wind", "blasts", 10, fly: true);
   // TODO: Make not freezable?
-  item("Bottled Ice", blue, price: 120)
+  item("Bottled Ice", blue, price: 100)
     ..depth(7)
-    ..ball(Elements.cold, "the cold", "freezes", 16);
+    ..ball(Elements.cold, "cold", "freezes", 16);
   item("Bottled Fire", red, price: 140)
     ..depth(11)
-    ..flow(Elements.fire, "the fire", "burns", 23, fly: true);
+    ..flow(Elements.fire, "fire", "burns", 23, fly: true);
   item("Bottled Ocean", darkBlue, price: 160)
     ..depth(12)
-    ..flow(Elements.water, "the water", "drowns", 30);
+    ..flow(Elements.water, "water", "drowns", 30);
   item("Bottled Poison", sherwood, price: 240)
     ..depth(13)
-    ..flow(Elements.poison, "the poison", "infects", 10, fly: true);
+    ..flow(Elements.poison, "poison", "infects", 10, fly: true);
   item("Bottled Earth", tan, price: 180)
     ..depth(16)
-    ..ball(Elements.earth, "the dirt", "crushes", 58);
+    ..ball(Elements.earth, "dirt", "crushes", 58);
   item("Bottled Lightning", lilac, price: 200)
     ..depth(18)
-    ..ball(Elements.lightning, "the lightning", "shocks", 68);
+    ..ball(Elements.lightning, "lightning", "shocks", 68);
   item("Bottled Acid", lima, price: 220)
     ..depth(22)
-    ..flow(Elements.acid, "the acid", "corrodes", 72);
+    ..flow(Elements.acid, "acid", "corrodes", 72);
   item("Bottled Shadow", darkCoolGray, price: 260)
     ..depth(28)
-    ..ball(Elements.dark, "the darkness", "torments", 120);
+    ..ball(Elements.dark, "darkness", "torments", 120);
   item("Bottled Radiance", buttermilk, price: 280)
     ..depth(34)
     ..ball(Elements.light, "light", "sears", 140);
   item("Bottled Spirit", coolGray, price: 300)
     ..depth(40)
-    ..flow(Elements.spirit, "the spirit", "haunts", 160, fly: true);
+    ..flow(Elements.spirit, "spirit", "haunts", 160, fly: true);
 }
 
 void scrolls() {

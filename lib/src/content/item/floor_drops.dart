@@ -8,7 +8,6 @@ class FloorDrops {
   static void initialize() {
     // Add generic stuff at every depth.
 
-    // TODO: Tune this.
     floorDrop(
       startFrequency: 2.0,
       location: SpawnLocation.wall,
@@ -25,15 +24,15 @@ class FloorDrops {
     floorDrop(startFrequency: 10.0, endFrequency: 1.0, drop: parseDrop("food"));
 
     floorDrop(
-      startFrequency: 3.0,
-      endFrequency: 0.01,
+      startFrequency: 5.0,
+      endFrequency: 0.1,
       location: SpawnLocation.corner,
       drop: parseDrop("Rock"),
     );
 
-    floorDrop(startFrequency: 10.0, drop: parseDrop("treasure"));
+    floorDrop(startFrequency: 20.0, drop: parseDrop("treasure"));
 
-    floorDrop(startFrequency: 4.0, endFrequency: 0.1, drop: parseDrop("light"));
+    floorDrop(startFrequency: 3.0, endFrequency: 0.1, drop: parseDrop("light"));
 
     floorDrop(
       startFrequency: 2.0,

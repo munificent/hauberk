@@ -14,7 +14,7 @@ void main() {
   for (
     var statTotal = 10 * statCount;
     statTotal <= Stat.baseMax * statCount;
-    statTotal += statCount
+    statTotal++
   ) {
     var line = statTotal.fmt(w: 4);
     line += ':  ';
@@ -29,7 +29,7 @@ void main() {
   print("");
 
   // The cost to raise a skill with various base experience costs.
-  var bases = [for (var i = 1000; i <= 10000; i += 1000) i];
+  var bases = [400, 600, 800, 1000, 1500, 2000, 3000, 5000];
   print("Skill  ${bases.map((b) => b.fmt(w: 10)).join('  ')}");
   print("-----${"  ----------" * 10}");
   for (var level = 1; level <= Skill.maxLevel; level++) {

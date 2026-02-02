@@ -130,32 +130,32 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 40, fuel: 20);
 
   // TODO: Ball of fire when hits toss target.
-  item("Wax Candle", ash, price: 8)
-    ..depth(4, to: 20)
+  item("Wax Candle", ash, price: 24)
+    ..depth(6, to: 20)
     ..stack(10)
     ..toss(damage: 3, range: 8, element: Elements.fire)
     ..lightSource(level: 3, range: 7)
     ..destroy(Elements.fire, chance: 40, fuel: 25);
 
   // TODO: Larger ball of fire when hits toss target.
-  item("Oil Lamp", brown, price: 18)
-    ..depth(8, to: 30)
+  item("Oil Lamp", brown, price: 146)
+    ..depth(12, to: 30)
     ..stack(4)
     ..toss(damage: 10, range: 8, element: Elements.fire)
     ..lightSource(level: 4, range: 10)
     ..destroy(Elements.fire, chance: 50, fuel: 40);
 
   // TODO: Ball of fire when hits toss target.
-  item("Torch[es]", tan, price: 16)
-    ..depth(11, to: 45)
+  item("Torch[es]", tan, price: 230)
+    ..depth(17, to: 45)
     ..stack(4)
     ..toss(damage: 6, range: 10, element: Elements.fire)
     ..lightSource(level: 5, range: 14)
     ..destroy(Elements.fire, chance: 60, fuel: 60);
 
   // TODO: Maybe allow this to be equipped and increase its radius when held?
-  item("Lantern", gold, price: 78)
-    ..depth(18)
+  item("Lantern", gold, price: 350)
+    ..depth(24)
     ..frequency(0.3)
     ..toss(damage: 5, range: 5, element: Elements.fire)
     ..lightSource(level: 6, range: 18);

@@ -53,7 +53,7 @@ class Game {
   Game(this.content, this.depth, HeroSave save, {int? width, int? height})
     : hero = Hero(Vec.zero, save) {
     // TODO: Vary size?
-    _stage = Stage(width ?? 120, height ?? 80, this);
+    _stage = Stage(width ?? 100, height ?? 80, this);
 
     _stage.addActor(hero);
 

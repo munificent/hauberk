@@ -3,10 +3,11 @@ import 'archery.dart';
 import 'battle_hardening.dart';
 import 'bloodlust.dart';
 import 'mastery/axe.dart';
-import 'mastery/club.dart';
+import 'mastery/bludgeoning.dart';
 import 'mastery/dual_wield.dart';
+import 'mastery/knife_fighting.dart';
 import 'mastery/spear.dart';
-import 'mastery/sword.dart';
+import 'mastery/swordfighting.dart';
 import 'mastery/whip.dart';
 import 'spell_school.dart';
 
@@ -21,14 +22,15 @@ class Skills {
     // - Something that increases chance of monster drops.
 
     // Warrior skills.
-    Bloodlust(),
     BattleHardening(),
+    Bloodlust(),
     DualWield(),
 
     // Weapon masteries.
     Archery(),
     AxeMastery(),
-    ClubMastery(),
+    Bludgeoning(),
+    KnifeFighting(),
     SpearMastery(),
     Swordfighting(),
     WhipMastery(),

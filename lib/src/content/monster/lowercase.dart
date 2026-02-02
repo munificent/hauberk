@@ -241,8 +241,8 @@ void felines() {
   breed("stray cat", 1, gold, 11, speed: 1)
     ..meander(30)
     ..missive(Missive.hiss, rate: 4)
-    ..attack("bite[s]", 5)
-    ..attack("scratch[es]", 4);
+    ..attack("bite[s]", 4)
+    ..attack("scratch[es]", 3);
 }
 
 void goblins() {
@@ -358,9 +358,8 @@ void jellies() {
   family("j", "magical/jelly", frequency: 0.7, speed: -1, flags: "fearless")
     ..sense(see: 3, hear: 1)
     ..meander(30)
-    ..preferWall()
-    ..count(4);
-  breed("green jelly", 1, lima, 5)
+    ..preferWall();
+  breed("green jelly", 1, lima, 10)
     ..stain(Tiles.greenJellyStain)
     ..attack("crawl[s] on", 3);
   // TODO: More elements.
@@ -614,7 +613,7 @@ void people() {
     ..meander(10)
     ..openDoors()
     ..emanate(2);
-  breed("Harold the Misfortunate", 1, lilac, 30)
+  breed("Harold the Misfortunate", 2, lilac, 30)
     ..unique(pronoun: Pronoun.he)
     ..attack("hit[s]", 3)
     ..missive(Missive.clumsy)

@@ -2,13 +2,13 @@ import '../../engine.dart';
 import '../action/condition.dart';
 
 class HasteMove extends Move {
-  final int _duration;
   final int _speed;
+  final int _duration;
 
   @override
   num get experience => _duration * _speed;
 
-  HasteMove(super.rate, this._duration, this._speed);
+  HasteMove(super.rate, this._speed, this._duration);
 
   @override
   bool shouldUse(Game game, Monster monster) {
@@ -18,7 +18,7 @@ class HasteMove extends Move {
 
   @override
   Action onGetAction(Game game, Monster monster) =>
-      HasteAction(_duration, _speed);
+      HasteAction(_speed, _duration);
 
   @override
   String toString() => "Haste $_speed for $_duration turns rate: $rate";

@@ -78,7 +78,7 @@ class ExitPopup extends Popup {
     terminal.writeAt(1, 1, "You survived depth ${_game.depth}!", UIHue.text);
 
     terminal.writeAt(1, 3, "You gained:", UIHue.text);
-    terminal.writeAt(1, 15, "You slayed:", UIHue.text);
+    terminal.writeAt(1, 13, "You slayed:", UIHue.text);
 
     for (var value in _values) {
       terminal.writeAt(

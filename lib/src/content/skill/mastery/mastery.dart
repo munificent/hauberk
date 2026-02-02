@@ -6,7 +6,7 @@ abstract class MasterySkill extends Skill {
   String get weaponType;
 
   double _damageScale(int level) =>
-      lerpDouble(level, 1, Skill.maxLevel, 1.0, 4.0);
+      lerpDouble(level, 1, Skill.maxLevel, 1.1, 4.0);
 
   @override
   void modifyHit(
@@ -25,7 +25,8 @@ abstract class MasterySkill extends Skill {
   @override
   String levelDescription(int level) {
     var damage = (_damageScale(level) - 1.0).fmtPercent();
-    return "Melee attacks inflict $damage more damage when using a "
+    var a = "aeiou".contains(weaponType[0]) ? "an" : "a";
+    return "Melee attacks inflict +$damage damage when using $a "
         "$weaponType.";
   }
 }

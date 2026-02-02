@@ -3,7 +3,6 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-/// A slashing melee attack that hits a number of adjacent monsters.
 class AxeMastery extends MasterySkill {
   // TODO: Tune.
   static double _sweepScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
@@ -31,6 +30,7 @@ class AxeMastery extends MasterySkill {
 }
 
 // TODO: Probably want to make this more powerful and give it a focus cost.
+/// A slashing melee attack that hits a number of adjacent monsters.
 class AxeSweepAbility extends MasteryAbility with DirectionAbility {
   @override
   final Skill skill;

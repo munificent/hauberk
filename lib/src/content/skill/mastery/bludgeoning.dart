@@ -3,19 +3,19 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import 'mastery.dart';
 
-class ClubMastery extends MasterySkill {
+class Bludgeoning extends MasterySkill {
   // TODO: Tune.
   static double _bashScale(int level) =>
       lerpDouble(level, 1, Skill.maxLevel, 1.0, 2.0);
 
-  // TODO: Better name.
   @override
-  String get name => "Club Mastery";
+  String get name => "Bludgeoning";
 
   @override
   String get description =>
-      "Bludgeons may not be the most sophisticated of weapons, but what they "
-      "lack in refinement, they make up for in brute force.";
+      "Bludgeons may not be the most sophisticated of weapons, but hitting "
+      "someone really hard with a blunt object can often be an effective "
+      "argument in your favor.";
 
   @override
   String get weaponType => "club";
@@ -45,7 +45,7 @@ class ClubBashAbility extends MasteryAbility with DirectionAbility {
 
   @override
   Action onGetDirectionAction(Game game, int level, Direction dir) {
-    return ClubBashAction(dir, ClubMastery._bashScale(level));
+    return ClubBashAction(dir, Bludgeoning._bashScale(level));
   }
 }
 

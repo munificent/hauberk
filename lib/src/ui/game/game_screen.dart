@@ -325,7 +325,7 @@ class GameScreen extends Screen<Input> {
         _storage.save();
         ui.goTo(GameScreen.town(_storage, game.content, game.hero.save));
 
-      case (SelectDepthPopup(), var depth as int):
+      case (SelectDepthPopup(), int depth):
         // Enter the dungeon.
         _storage.save();
         ui.push(LoadingDialog(game.hero.save, game.content, depth));
@@ -368,6 +368,10 @@ class GameScreen extends Screen<Input> {
         game.hero.setNextAction(
           ability.getAction(game, game.hero.skills.level(ability.skill)),
         );
+
+      case (ExperienceDialog(), _):
+        // Save in case they gained any stats or skills.
+        _storage.save();
     }
   }
 
