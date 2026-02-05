@@ -284,7 +284,7 @@ void render({bool showInfo = true}) {
       var actor = stage.actorAt(pos);
       if (actor != null) {
         if (actor.appearance is String) {
-          glyph = Glyph.fromCharCode(CharCode.at, ash);
+          glyph = Glyph.fromCharCode(CharCode.at, lighterWarmGray);
         } else {
           glyph = actor.appearance as Glyph;
         }

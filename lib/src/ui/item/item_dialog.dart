@@ -42,10 +42,11 @@ abstract class ItemDialog extends Screen<Input> {
 
   /// Locations of items that can be used with this command. When a command
   /// allows multiple locations, players can switch between them.
-  List<ItemLocation> get allowedLocations => const [
-    ItemLocation.inventory,
-    ItemLocation.onGround,
+  List<ItemLocation> get allowedLocations => [
     ItemLocation.equipment,
+    ItemLocation.inventory,
+    if (gameScreen.game.stage.itemsAt(gameScreen.game.hero.pos).isNotEmpty)
+      ItemLocation.onGround,
   ];
 
   /// If the player must select how many items in a stack, returns `true`.

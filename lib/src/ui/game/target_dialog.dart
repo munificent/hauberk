@@ -208,7 +208,7 @@ class TargetDialog extends Screen<Input> {
           pos.y,
           Glyph.fromCharCode(
             CharCode.bullet,
-            (frame == 0) ? gold : darkCoolGray,
+            (frame == 0) ? UIHue.highlight : UIHue.disabled,
           ),
         );
         frame = (frame + _numFrames - 1) % _numFrames;
@@ -216,8 +216,10 @@ class TargetDialog extends Screen<Input> {
     }
 
     // Highlight the reticle if the bolt will reach the target.
-    var reticleColor = darkCoolGray;
-    if (reachedTarget) reticleColor = (frame == 0) ? gold : darkCoolGray;
+    var reticleColor = UIHue.disabled;
+    if (reachedTarget) {
+      reticleColor = (frame == 0) ? UIHue.highlight : UIHue.disabled;
+    }
     _gameScreen.drawStageGlyph(
       terminal,
       target.x - 1,
@@ -262,7 +264,7 @@ class TargetDialog extends Screen<Input> {
       helpKeys["Tab"] = "Target floor";
     }
     helpKeys["`"] = "Cancel";
-    Draw.helpKeys(terminal, helpKeys, "Choose a target");
+    Draw.helpKeys(terminal, helpKeys, "Choose a target.");
   }
 
   void _changeTarget(Direction dir) {

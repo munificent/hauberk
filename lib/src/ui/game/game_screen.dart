@@ -117,7 +117,7 @@ class GameScreen extends Screen<Input> {
     if (hero.poison.isActive) return peaGreen;
     if (hero.cold.isActive) return lightBlue;
     if (hero.health < hero.maxHealth / 2) return pink;
-    return ash;
+    return lighterWarmGray;
   }
 
   GameScreen(this._storage, this.game)

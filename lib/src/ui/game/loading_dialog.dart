@@ -81,6 +81,6 @@ class LoadingDialog extends Screen<Input> {
 
     var offset = _frame ~/ 2;
     var bar = ("/    " * 6).substring(offset, offset + 26);
-    terminal.writeAt(2, 4, bar, UIHue.primary);
+    terminal.writeAt(2, 4, bar, UIHue.text);
   }
 }

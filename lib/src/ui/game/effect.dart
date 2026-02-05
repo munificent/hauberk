@@ -89,17 +89,17 @@ void addEffects(List<Effect> effects, Event event) {
 
     case EventType.spawn:
       // TODO: Something more interesting.
-      effects.add(FrameEffect(event.actor!.pos, '*', ash));
+      effects.add(FrameEffect(event.actor!.pos, '*', lighterCoolGray));
 
     case EventType.polymorph:
       // TODO: Something more interesting.
-      effects.add(FrameEffect(event.actor!.pos, '*', ash));
+      effects.add(FrameEffect(event.actor!.pos, '*', lighterCoolGray));
 
     case EventType.howl:
       effects.add(HowlEffect(event.actor!));
 
     case EventType.awaken:
-      effects.add(BlinkEffect(event.actor!, Glyph('!', ash), 1));
+      effects.add(BlinkEffect(event.actor!, Glyph('!', lighterCoolGray), 1));
 
     case EventType.frighten:
       effects.add(BlinkEffect(event.actor!, Glyph("!", gold), 3));
@@ -116,7 +116,7 @@ void addEffects(List<Effect> effects, Event event) {
     case EventType.stab:
       var line = _directionLines[event.dir]!;
 
-      var color = ash;
+      var color = lighterCoolGray;
       if (event.other != null) {
         color = (event.other as Glyph).fore;
       }
@@ -161,7 +161,7 @@ final _elementSequences = <Element, List<List<Glyph>>>{
     _glyphs("•", [tan]),
   ],
   Elements.air: [
-    _glyphs("Oo", [ash, lightAqua]),
+    _glyphs("Oo", [lighterCoolGray, lightAqua]),
     _glyphs(".", [lightAqua]),
     _glyphs(".", [lightBlue]),
   ],
@@ -193,14 +193,14 @@ final _elementSequences = <Element, List<List<Glyph>>>{
     _glyphs(".", [lima]),
   ],
   Elements.cold: [
-    _glyphs("*", [ash]),
-    _glyphs("+x", [lightAqua, ash]),
+    _glyphs("*", [lighterCoolGray]),
+    _glyphs("+x", [lightAqua, lighterCoolGray]),
     _glyphs("+x", [lightBlue, lightCoolGray]),
     _glyphs(".", [coolGray, darkBlue]),
   ],
   Elements.lightning: [
     _glyphs("*", [lilac]),
-    _glyphs(r"-|\/", [purple, ash]),
+    _glyphs(r"-|\/", [purple, lighterCoolGray]),
     _glyphs(".", [darkerCoolGray, darkerCoolGray, darkerCoolGray, lilac]),
   ],
   Elements.poison: [
@@ -216,8 +216,8 @@ final _elementSequences = <Element, List<List<Glyph>>>{
     _glyphs(".", [darkerCoolGray]),
   ],
   Elements.light: [
-    _glyphs("*", [ash]),
-    _glyphs("x+", [ash, buttermilk]),
+    _glyphs("*", [lighterCoolGray]),
+    _glyphs("x+", [lighterCoolGray, buttermilk]),
     _glyphs(":;\"'`,", [buttermilk, gold]),
     _glyphs(".", [lightCoolGray, buttermilk]),
   ],
@@ -365,7 +365,7 @@ class TeleportEffect implements Effect {
   int age = 0;
   final Vec target;
 
-  static final _colors = [lightAqua, lightBlue, lilac, ash];
+  static final _colors = [lightAqua, lightBlue, lilac, lighterCoolGray];
 
   factory TeleportEffect(Vec from, Vec target) {
     var x = from.x;
@@ -447,7 +447,7 @@ class HealEffect implements Effect {
 }
 
 class DetectEffect implements Effect {
-  static final _colors = [ash, buttermilk, gold, olive, darkOlive];
+  static final _colors = [lighterCoolGray, buttermilk, gold, olive, darkOlive];
 
   final Vec pos;
   int life = 20;

@@ -22,7 +22,7 @@ void helms() {
   item("Visored Helm", lightCoolGray, price: 350)
     ..depth(40)
     ..armor(5, weight: 6);
-  item("Great Helm", ash, price: 550)
+  item("Great Helm", lighterCoolGray, price: 550)
     ..depth(50)
     ..armor(6, weight: 8);
 }
@@ -48,7 +48,7 @@ void bodyArmor() {
   category(CharCode.latinSmallLetterOWithDiaeresis)
     ..tag("equipment/armor/body")
     ..frequency(0.5);
-  item("Cloth Shirt", ash, price: 20)
+  item("Cloth Shirt", lighterCoolGray, price: 20)
     ..depth(2, to: 30)
     ..armor(3)
     ..destroy(Elements.fire, chance: 15, fuel: 4);

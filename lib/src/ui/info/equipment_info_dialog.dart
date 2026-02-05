@@ -97,7 +97,7 @@ class EquipmentInfoDialog extends InfoDialog {
         _writeResistanceTotals(terminal, cellsX + 33, totalY);
     }
 
-    terminal.writeAt(cellsX - 7, totalY, "Totals", coolGray);
+    terminal.writeAt(cellsX - 7, totalY, "Totals", UIHue.label);
 
     if (_table.selectedRow.data case var item?) {
       var inspector = ItemInspector(hero, item, wide: true);
@@ -226,19 +226,24 @@ class EquipmentInfoDialog extends InfoDialog {
   }
 
   void _writeStatHeader(Terminal terminal, int x) {
-    terminal.writeAt(x, 0, "══════Attack═══════ ══Defense═══", darkerCoolGray);
-    terminal.writeAt(x + 6, 0, "Attack", darkCoolGray);
-    terminal.writeAt(x + 22, 0, "Defense", darkCoolGray);
-    // terminal.writeAt(x, 0, "══════Attack═══════ ══Defense═══", darkCoolGray);
-    // terminal.writeAt(x, 0, "┌───── Attack ────┐ ┌─ Defend ─┐", darkCoolGray);
+    terminal.writeAt(
+      x,
+      0,
+      "═════ Attack ══════ ══ Defense ═",
+      UIHue.rowSeparator,
+    );
+    terminal.writeAt(x + 6, 0, "Attack", UIHue.subtext);
+    terminal.writeAt(x + 23, 0, "Defense", UIHue.subtext);
   }
 
   void _writeResistancesHeader(Terminal terminal, int x) {
-    terminal.writeAt(x, 0, "══════════Resistances═══════════", darkerCoolGray);
-    terminal.writeAt(x + 10, 0, "Resistances", darkCoolGray);
-    // terminal.writeAt(x, 0, "══════════Resistances═══════════", darkCoolGray);
-    // terminal.writeAt(x, 0, "══════════Resistances═══════════", darkCoolGray);
-    // terminal.writeAt(x, 0, "┌───────── Resistances ────────┐", darkCoolGray);
+    terminal.writeAt(
+      x,
+      0,
+      "═════════ Resistances ══════════",
+      UIHue.rowSeparator,
+    );
+    terminal.writeAt(x + 10, 0, "Resistances", UIHue.subtext);
   }
 
   void _writeStatTotals(Terminal terminal, int x, int y) {
@@ -289,7 +294,7 @@ class EquipmentInfoDialog extends InfoDialog {
       if (element == Element.none) continue;
 
       var resistance = hero.equipmentResistance(element);
-      var color = darkCoolGray;
+      var color = UIHue.subtext;
       if (resistance > 0) {
         color = peaGreen;
       } else if (resistance < 0) {

@@ -4,13 +4,14 @@ import 'package:malison/malison.dart';
 import 'content/elements.dart';
 import 'engine.dart';
 
-const ash = Color(0xe2, 0xdf, 0xf0);
-const lightCoolGray = Color(0x74, 0x92, 0xb5);
-const coolGray = Color(0x3f, 0x4b, 0x73);
-const darkCoolGray = Color(0x26, 0x2a, 0x42);
+const lighterCoolGray = Color(0xd0, 0xc3, 0xd6);
+const lightCoolGray = Color(0x7d, 0x90, 0xb3);
+const coolGray = Color(0x48, 0x52, 0x73);
+const darkCoolGray = Color(0x29, 0x2d, 0x42);
 const darkerCoolGray = Color(0x14, 0x13, 0x1f);
 
-const lightWarmGray = Color(0x84, 0x7e, 0x87);
+const lighterWarmGray = Color(0xc1, 0xb5, 0xc7);
+const lightWarmGray = Color(0x7d, 0x77, 0x80);
 const warmGray = Color(0x48, 0x40, 0x4a);
 const darkWarmGray = Color(0x2a, 0x24, 0x2b);
 const darkerWarmGray = Color(0x16, 0x11, 0x17);
@@ -51,14 +52,89 @@ const pink = Color(0xff, 0x7a, 0x69);
 const red = Color(0xcc, 0x23, 0x39);
 const maroon = Color(0x54, 0x00, 0x27);
 
+class HueSet {
+  static const List<Color> dazzle = [
+    darkCoolGray,
+    coolGray,
+    lightCoolGray,
+    lighterCoolGray,
+    sandal,
+    tan,
+    persimmon,
+    brown,
+    buttermilk,
+    gold,
+    carrot,
+    mint,
+    olive,
+    lima,
+    peaGreen,
+    sherwood,
+    pink,
+    red,
+    maroon,
+    lilac,
+    purple,
+    violet,
+    lightAqua,
+    lightBlue,
+    blue,
+    darkBlue,
+  ];
+
+  static const List<(Color, Color)> fire = [
+    (gold, persimmon),
+    (buttermilk, carrot),
+    (tan, red),
+    (red, brown),
+  ];
+}
+
 class UIHue {
-  // TODO: These aren't very meaningful and are sort of randomly applied. Redo.
+  // Colors for text and items the user may interact with:
+
+  /// Text for a currently selected thing in a list, key commands, or other
+  /// UI that indicates active user focus.
+  static const highlight = gold;
+
+  /// Text that can be selected but isn't currently.
+  static const selectable = lighterWarmGray;
+
+  /// Text or UI that the user can't currently interact with but sometimes can.
+  static const disabled = warmGray;
+
+  /// Text or UI showing a place where something could be but isn't, like an
+  /// empty equipment slot. This is "more disabled" than [disabled].
+  static const absent = darkerCoolGray;
+
+  // Other non-interactive text:
+
+  /// Informative text that the user doesn't directly interact with is useful
+  /// content to be read.
   static const text = lightWarmGray;
-  static const helpText = lightWarmGray;
-  static const selection = gold;
-  static const disabled = darkCoolGray;
-  static const primary = ash;
-  static const secondary = darkCoolGray;
+
+  /// Label string describing some other piece of UI or information.
+  static const label = warmGray;
+
+  /// Column header on a table or text describing a section of the UI.
+  static const header = coolGray;
+
+  /// Text that doesn't really matter but helps organize the UI.
+  static const subtext = darkCoolGray;
+
+  // Colors for lines and other non-text UI.
+
+  /// Linework that may overlay and need to appear in front of other lines.
+  static const overlayLine = coolGray;
+
+  /// Lines that frame panels, tables, etc.
+  static const line = darkCoolGray;
+
+  /// A very faint line separating table rows.
+  static const rowSeparator = darkerCoolGray;
+
+  // TODO: Migrate everything off this.
+  static const secondary = pink; // darkCoolGray;
 }
 
 Color elementColor(Element element) {

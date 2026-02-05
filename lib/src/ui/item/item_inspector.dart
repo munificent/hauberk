@@ -9,7 +9,7 @@ import '../widget/draw.dart';
 
 /// Shows a detailed info box for an item.
 class ItemInspector {
-  /// The width of the inspector when used
+  /// The width of the inspector when used next to an item list.
   static const width = 34;
 
   final Item _item;
@@ -210,7 +210,7 @@ abstract class _Section {
   int get height;
 
   int draw(Terminal terminal, int y) {
-    terminal.writeAt(1, y, "$header:", UIHue.selection);
+    terminal.writeAt(1, y, "$header ", UIHue.header);
     _drawContent(terminal, y + 1);
     return y + height + 2;
   }
@@ -234,12 +234,12 @@ abstract class _Section {
   }
 
   void _writeLabel(Terminal terminal, int y, String label) {
-    terminal.writeAt(1, y, "$label:", UIHue.text);
+    terminal.writeAt(1, y, "$label:", UIHue.label);
   }
 
   void _writeStat(Terminal terminal, int y, String label, int value) {
     _writeLabel(terminal, y, label);
-    terminal.writeAt(12, y, value.toString(), UIHue.primary);
+    terminal.writeAt(12, y, value.toString(), UIHue.text);
   }
 
   // TODO: Mostly copied from hero_equipment_dialog. Unify.
@@ -294,7 +294,7 @@ class _AttackSection extends _Section {
     terminal.writeAt(12, y, _item.attack!.damage.toString(), UIHue.text);
     _writeScale(terminal, 16, y, _item.damageScale);
     _writeBonus(terminal, 20, y, _item.damageBonus);
-    terminal.writeAt(25, y, "=", UIHue.secondary);
+    terminal.writeAt(25, y, "=", UIHue.subtext);
 
     var damage = _item.attack!.damage * _item.damageScale + _item.damageBonus;
     terminal.writeAt(27, y, damage.fmt(w: 6, d: 2), carrot);
@@ -313,7 +313,7 @@ class _AttackSection extends _Section {
 
     _writeLabel(terminal, y, "Heft");
     var strongEnough = _hero.strength.value >= _item.heft;
-    var color = strongEnough ? UIHue.primary : red;
+    var color = strongEnough ? UIHue.text : red;
     terminal.writeAt(12, y, _item.heft.toString(), color);
     _writeScale(terminal, 16, y, _hero.strength.heftScale(_item.heft));
     // TODO: Show heft when dual-wielding somehow?
@@ -347,7 +347,7 @@ class _DefenseSection extends _Section {
       _writeLabel(terminal, y, "Armor");
       terminal.writeAt(12, y, _item.baseArmor.toString(), UIHue.text);
       _writeBonus(terminal, 16, y, _item.armorModifier);
-      terminal.writeAt(25, y, "=", UIHue.secondary);
+      terminal.writeAt(25, y, "=", UIHue.subtext);
 
       var armor = _item.armor.fmt(w: 6);
       terminal.writeAt(27, y, armor, peaGreen);

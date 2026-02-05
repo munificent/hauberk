@@ -68,7 +68,7 @@ void gems() {
 
   item("Diamond Shard", coolGray, price: 45).depth(11, to: 31);
   item("Uncut Diamond", lightCoolGray, price: 153).depth(31, to: 61);
-  item("Faceted Diamond", ash, price: 507).depth(61);
+  item("Faceted Diamond", lighterCoolGray, price: 507).depth(61);
 
   // TODO: Turquoise, Onyx, Malachite, Jade, Pearl, Opal, Fire Opal.
 }
@@ -130,7 +130,7 @@ void lightSources() {
     ..destroy(Elements.fire, chance: 40, fuel: 20);
 
   // TODO: Ball of fire when hits toss target.
-  item("Wax Candle", ash, price: 24)
+  item("Wax Candle", lighterCoolGray, price: 24)
     ..depth(6, to: 20)
     ..stack(10)
     ..toss(damage: 3, range: 8, element: Elements.fire)

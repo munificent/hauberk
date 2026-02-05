@@ -34,9 +34,8 @@ void renderItems(
     y: top,
     width: width,
     height: itemSlotCount + 2,
-    color: canSelectAny ? UIHue.selection : UIHue.disabled,
     label: items.name,
-    labelSelected: canSelectAny,
+    selected: canSelectAny,
   );
 
   var letters = capitalize
@@ -69,7 +68,7 @@ void renderItems(
         x + 1,
         top + itemSlotCount + 1,
         " $more more... ",
-        canSelectAny ? UIHue.selection : UIHue.disabled,
+        canSelectAny ? UIHue.highlight : UIHue.disabled,
       );
       break;
     }
@@ -84,43 +83,18 @@ void renderItems(
           (items.slots.elementAt(slot - 1)?.type.isTwoHanded ?? false)) {
         terminal.writeAt(x, y, "↑ (two-handed)", UIHue.disabled);
       } else {
-        terminal.writeAt(
-          x + 2,
-          y,
-          "(${items.slotTypes[slot]})",
-          UIHue.disabled,
-        );
+        terminal.writeAt(x + 2, y, "(${items.slotTypes[slot]})", UIHue.absent);
       }
       letter++;
       slot++;
       continue;
     }
 
-    var borderColor = darkCoolGray;
-    var letterColor = UIHue.secondary;
-    var textColor = UIHue.primary;
-    var enabled = true;
+    var enabled = !canSelectAny || canSelect(item);
 
-    if (canSelectAny) {
-      if (canSelect(item)) {
-        borderColor = UIHue.secondary;
-        letterColor = UIHue.selection;
-        textColor = UIHue.primary;
-      } else {
-        borderColor = Color.black;
-        letterColor = Color.black;
-        textColor = UIHue.disabled;
-        enabled = false;
-      }
-    }
-
-    if (item == inspectedItem) {
-      textColor = UIHue.selection;
-    }
-
-    if (showLetters) {
-      terminal.writeAt(left + 1, y, " )", borderColor);
-      terminal.writeAt(left + 1, y, letters[letter], letterColor);
+    if (showLetters && canSelectAny && canSelect(item)) {
+      terminal.writeAt(left + 1, y, " )", UIHue.line);
+      terminal.writeAt(left + 1, y, letters[letter], UIHue.highlight);
     }
 
     letter++;
@@ -144,9 +118,17 @@ void renderItems(
       nameRight = priceLeft;
     }
 
+    // Draw the item name.
     var name = item.noun.short;
     var nameWidth = nameRight - (x + 2);
     if (name.length > nameWidth) name = name.substring(0, nameWidth);
+
+    var textColor = switch (null) {
+      _ when item == inspectedItem => UIHue.highlight,
+      _ when canSelectAny && canSelect(item) => UIHue.selectable,
+      _ when canSelectAny => UIHue.disabled,
+      _ => UIHue.text,
+    };
     terminal.writeAt(x + 2, y, name, textColor);
 
     // Draw the inspector for this item.
@@ -155,18 +137,18 @@ void renderItems(
       if (inspectorOnRight) {
         if (left + width + ItemInspector.width > terminal.width) {
           // No room on the right so draw it below.
-          terminal.writeAt(left + width - 1, y, "▼", UIHue.selection);
+          terminal.writeAt(left + width - 1, y, "▼", UIHue.highlight);
           inspector.draw(
             left + (width - ItemInspector.width) ~/ 2,
             top + itemSlotCount + 3,
             terminal,
           );
         } else {
-          terminal.writeAt(left + width - 1, y, "►", UIHue.selection);
+          terminal.writeAt(left + width - 1, y, "►", UIHue.highlight);
           inspector.draw(left + width, y, terminal);
         }
       } else {
-        terminal.writeAt(left, y, "◄", UIHue.selection);
+        terminal.writeAt(left, y, "◄", UIHue.highlight);
         inspector.draw(left - ItemInspector.width, y, terminal);
       }
     }

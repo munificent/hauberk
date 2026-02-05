@@ -69,20 +69,18 @@ abstract class InfoDialog extends Screen<Input> {
   @override
   void render(Terminal terminal) {
     // Draw the tabs.
-    Draw.hLine(terminal, 0, 2, terminal.width, color: UIHue.text);
+    Draw.hLine(terminal, 0, 2, terminal.width, color: UIHue.overlayLine);
 
     var x = 2;
     for (var screen in _screens) {
       var tabWidth = screen.name.length;
 
-      var tabColor = UIHue.disabled;
-      var textColor = UIHue.disabled;
+      var tabColor = UIHue.line;
+      var textColor = UIHue.subtext;
       if (screen == this) {
-        tabColor = UIHue.text;
-        textColor = UIHue.selection;
-        terminal.writeAt(x, 2, "┘${' ' * tabWidth}└", UIHue.text);
-      } else {
-        terminal.writeAt(x, 2, "─${'─' * tabWidth}─", UIHue.text);
+        tabColor = UIHue.overlayLine;
+        textColor = UIHue.header;
+        terminal.writeAt(x, 2, "┘${' ' * tabWidth}└", UIHue.overlayLine);
       }
 
       terminal.writeAt(x, 0, "┌${'─' * tabWidth}┐", tabColor);

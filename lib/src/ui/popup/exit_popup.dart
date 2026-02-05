@@ -77,21 +77,21 @@ class ExitPopup extends Popup {
   void renderPopup(Terminal terminal) {
     terminal.writeAt(1, 1, "You survived depth ${_game.depth}!", UIHue.text);
 
-    terminal.writeAt(1, 3, "You gained:", UIHue.text);
-    terminal.writeAt(1, 13, "You slayed:", UIHue.text);
+    terminal.writeAt(1, 3, "You gained:", UIHue.header);
+    terminal.writeAt(1, 13, "You slayed:", UIHue.header);
 
     for (var value in _values) {
       terminal.writeAt(
         5,
         value.y,
         "................................",
-        UIHue.disabled,
+        UIHue.rowSeparator,
       );
       terminal.writeAt(
         5,
         value.y,
-        "${value.name}:",
-        value.value == 0 ? UIHue.disabled : UIHue.primary,
+        "${value.name} ",
+        value.value == 0 ? UIHue.disabled : UIHue.label,
       );
 
       var number = value.current.toString();

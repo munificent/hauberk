@@ -62,7 +62,7 @@ abstract class Popup extends Screen<Input> {
       top - 1,
       popupWidth + 2,
       popupHeight + 2,
-      gold,
+      UIHue.highlight,
     );
 
     terminal = terminal.rect(left, top, popupWidth, popupHeight);

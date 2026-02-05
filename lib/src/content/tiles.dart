@@ -145,7 +145,7 @@ class Tiles {
   static final stairs = tile(
     "stairs",
     "≡",
-    ash,
+    lighterCoolGray,
     coolGray,
   ).to(TilePortals.exit).open();
   static final bridge = tile("bridge", "≡", tan, darkBrown).open();
@@ -224,7 +224,12 @@ class Tiles {
     (tile, n) => tile.emanate(192 - n * 12).obstacle(),
   );
 
-  static final statue = tile("statue", "P", ash, coolGray).obstacle();
+  static final statue = tile(
+    "statue",
+    "P",
+    lighterCoolGray,
+    coolGray,
+  ).obstacle();
 
   // Make these "monsters" that can be pushed around.
   static final chair = tile("chair", "π", tan).open();
@@ -250,7 +255,11 @@ class Tiles {
     purple,
   ).open();
 
-  static final whiteJellyStain = tile("white jelly stain", "·", ash).open();
+  static final whiteJellyStain = tile(
+    "white jelly stain",
+    "·",
+    lighterCoolGray,
+  ).open();
 
   // TODO: Make this do stuff when walked through.
   static final spiderweb = tile("spiderweb", "÷", coolGray).open();

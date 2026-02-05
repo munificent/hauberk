@@ -42,7 +42,7 @@ class SidebarPanel extends Panel {
       1,
       2,
       "${hero.save.race.name} ${hero.save.heroClass.name}",
-      UIHue.primary,
+      UIHue.text,
     );
 
     _drawStats(hero, terminal, 4);
@@ -63,7 +63,7 @@ class SidebarPanel extends Panel {
 
     // Draw the nearby monsters.
     terminal.writeAt(1, 19, "@", _gameScreen.heroColor);
-    terminal.writeAt(3, 19, hero.save.name, UIHue.text);
+    terminal.writeAt(3, 19, hero.save.name, UIHue.selectable);
     _drawHealthBar(terminal, 20, hero);
 
     var visibleMonsters = _gameScreen.stagePanel.visibleMonsters;
@@ -95,8 +95,8 @@ class SidebarPanel extends Panel {
         y,
         name,
         (_gameScreen.currentTargetActor == monster)
-            ? UIHue.selection
-            : UIHue.text,
+            ? UIHue.highlight
+            : UIHue.selectable,
       );
 
       _drawHealthBar(terminal, y + 1, monster);
@@ -106,8 +106,8 @@ class SidebarPanel extends Panel {
   void _drawStats(Hero hero, Terminal terminal, int y) {
     var x = 1;
     void drawStat(StatBase stat) {
-      terminal.writeAt(x, y, stat.name.substring(0, 3), UIHue.helpText);
-      terminal.writeAt(x, y + 1, stat.value.fmt(w: 2), UIHue.primary);
+      terminal.writeAt(x, y, stat.name.substring(0, 3), UIHue.label);
+      terminal.writeAt(x, y + 1, stat.value.fmt(w: 2), UIHue.text);
       x += (terminal.width - 6) ~/ 3;
     }
 
@@ -122,7 +122,7 @@ class SidebarPanel extends Panel {
   }
 
   void _drawExperience(Hero hero, Terminal terminal, int y) {
-    terminal.writeAt(1, y, "Exp", UIHue.helpText);
+    terminal.writeAt(1, y, "Exp", UIHue.label);
 
     var experienceString = hero.experience.fmt();
     terminal.writeAt(
@@ -134,7 +134,7 @@ class SidebarPanel extends Panel {
   }
 
   void _drawGold(Hero hero, Terminal terminal, int y) {
-    terminal.writeAt(1, y, "Gold", UIHue.helpText);
+    terminal.writeAt(1, y, "Gold", UIHue.label);
     var heroGold = hero.gold.fmt();
     terminal.writeAt(terminal.width - 1 - heroGold.length, y, heroGold, gold);
   }
@@ -142,8 +142,7 @@ class SidebarPanel extends Panel {
   void _drawWeapons(Hero hero, Terminal terminal, int y) {
     var hits = hero.createMeleeHits(null).toList();
 
-    var label = hits.length > 1 ? "Weapons" : "Weapon";
-    terminal.writeAt(1, y, label, UIHue.helpText);
+    terminal.writeAt(1, y, hits.length > 1 ? "Weapons" : "Weapon", UIHue.label);
 
     var hitString = hits.map((hit) => hit.damageString).join('+');
     // TODO: Show element and other bonuses.
@@ -179,7 +178,7 @@ class SidebarPanel extends Panel {
   }
 
   void _drawFood(Hero hero, Terminal terminal, int y) {
-    terminal.writeAt(1, y, "Food", UIHue.helpText);
+    terminal.writeAt(1, y, "Food", UIHue.label);
     Draw.thinMeter(
       terminal,
       10,
@@ -230,7 +229,7 @@ class SidebarPanel extends Panel {
     int? max,
     Color? maxColor,
   ]) {
-    terminal.writeAt(1, y, label, UIHue.helpText);
+    terminal.writeAt(1, y, label, UIHue.label);
 
     var x = terminal.width - 1;
     if (max != null) {
@@ -291,7 +290,7 @@ class SidebarPanel extends Panel {
 
     if (actor.blindness.isActive) drawCondition("B", darkCoolGray);
     if (actor.dazzle.isActive) drawCondition("D", lilac);
-    if (actor.perception.isActive) drawCondition("V", ash);
+    if (actor.perception.isActive) drawCondition("V", lighterCoolGray);
 
     for (var element in Elements.all) {
       if (actor.resistanceCondition(element).isActive) {
@@ -305,7 +304,7 @@ class SidebarPanel extends Panel {
 
     if (Debug.showMonsterAlertness && actor is Monster) {
       var alertness = (actor.alertness * 100).toInt().fmt(w: 3);
-      terminal.writeAt(2, y, alertness, ash);
+      terminal.writeAt(2, y, alertness, lighterCoolGray);
     }
 
     Draw.meter(

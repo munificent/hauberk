@@ -20,7 +20,7 @@ void arachnids() {
     ..meander(30)
     ..attack("bite[s]", 5, Elements.poison);
 
-  breed("spiderling", 9, ash, 14, dodge: 35)
+  breed("spiderling", 9, lighterCoolGray, 14, dodge: 35)
     ..meander(50)
     ..count(2, 7)
     ..attack("bite[s]", 10, Elements.poison);
@@ -74,7 +74,7 @@ void canines() {
     ..attack("bite[s]", 8)
     ..howl();
 
-  breed("wolf", 26, ash, 60)
+  breed("wolf", 26, lighterCoolGray, 60)
     ..count(3, 6)
     ..attack("bite[s]", 12)
     ..howl();
@@ -119,7 +119,7 @@ void dragons() {
     ("forest", Element.none, peaGreen, sherwood),
     ("brown", Elements.earth, sandal, tan),
     ("blue", Elements.water, lightBlue, blue),
-    ("white", Elements.cold, lightCoolGray, ash),
+    ("white", Elements.cold, lightCoolGray, lighterCoolGray),
     ("purple", Elements.poison, lilac, purple),
     ("green", Elements.acid, lima, olive),
     ("silver", Elements.lightning, lightAqua, lightBlue),
@@ -373,7 +373,7 @@ void jellies() {
     ..attack("crawl[s] on", 4)
     ..spawn(rate: 4);
 
-  breed("frosty slime", 4, ash, 14)
+  breed("frosty slime", 4, lighterCoolGray, 14)
     ..stain(Tiles.whiteJellyStain)
     ..attack("crawl[s] on", 5, Elements.cold)
     ..spawn(rate: 4);
@@ -828,7 +828,7 @@ void skeletons() {
     ..drop("weapon", percent: 5)
     ..drop("armor", percent: 10);
 
-  breed("skeleton", 15, ash, 70, frequency: 6.0)
+  breed("skeleton", 15, lighterCoolGray, 70, frequency: 6.0)
     ..openDoors()
     ..attack("claw[s]", 7)
     ..attack("bite[s]", 9)

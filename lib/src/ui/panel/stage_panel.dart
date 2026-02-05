@@ -14,42 +14,7 @@ import 'panel.dart';
 
 /// The main gameplay area of the screen.
 class StagePanel extends Panel {
-  static const _dazzleColors = [
-    darkCoolGray,
-    coolGray,
-    lightCoolGray,
-    ash,
-    sandal,
-    tan,
-    persimmon,
-    brown,
-    buttermilk,
-    gold,
-    carrot,
-    mint,
-    olive,
-    lima,
-    peaGreen,
-    sherwood,
-    pink,
-    red,
-    maroon,
-    lilac,
-    purple,
-    violet,
-    lightAqua,
-    lightBlue,
-    blue,
-    darkBlue,
-  ];
-
   static const _fireChars = [CharCode.blackUpPointingTriangle, CharCode.caret];
-  static const _fireColors = [
-    [gold, persimmon],
-    [buttermilk, carrot],
-    [tan, red],
-    [red, brown],
-  ];
 
   final GameScreen _gameScreen;
 
@@ -155,10 +120,7 @@ class StagePanel extends Panel {
         if (tile.substance != 0) {
           if (tile.element == Elements.fire) {
             char = rng.item(_fireChars);
-            var color = rng.item(_fireColors);
-            fore = color[0];
-            back = color[1];
-
+            (fore, back) = rng.item(HueSet.fire);
             _hasAnimatedTile = true;
           } else if (tile.element == Elements.poison) {
             var amount = 0.1 + (tile.substance / 255) * 0.9;
@@ -200,7 +162,7 @@ class StagePanel extends Panel {
         var chance = math.min(90, hero.dazzle.duration * 8);
         if (rng.percent(chance)) {
           char = rng.percent(chance) ? char : CharCode.asterisk;
-          fore = rng.item(_dazzleColors);
+          fore = rng.item(HueSet.dazzle);
         }
 
         lightFore = false;
@@ -231,7 +193,10 @@ class StagePanel extends Panel {
               lerpDouble(visibility, 0, 64, 0.5, 0.0),
             );
           } else if (visibility > 128) {
-            color = color.add(ash, lerpDouble(visibility, 128, 255, 0.0, 0.2));
+            color = color.add(
+              lighterCoolGray,
+              lerpDouble(visibility, 128, 255, 0.0, 0.2),
+            );
           }
 
           if (tile.actorIllumination > 0) {

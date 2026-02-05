@@ -105,20 +105,20 @@ class NewHeroScreen extends Screen<Input> {
   final List<Control> _controls = [];
 
   NewHeroScreen(this._content, this._storage)
-    : _name = NameControl(0, 0, _storage),
+    : _name = NameControl(0, 3, _storage),
       _race = SelectControl(
         0,
-        4,
+        7,
         "Race",
         _content.races.map((race) => race.name).toList(),
       ),
       _class = SelectControl(
         0,
-        14,
+        17,
         "Class",
         _content.classes.map((cls) => cls.name).toList(),
       ),
-      _death = SelectControl(0, 28, "Death", _deaths) {
+      _death = SelectControl(0, 31, "Death", _deaths) {
     _controls.addAll([_name, _race, _class, _death]);
 
     _race.selected = rng.range(_content.races.length);
@@ -131,15 +131,22 @@ class NewHeroScreen extends Screen<Input> {
       terminal,
       80,
       40,
-      label: "Out of the forgotten wilderness, a hero appears...",
+      label: "Create New Hero",
       (terminal) {
-        Draw.hLine(terminal, 0, 3, terminal.width);
-        Draw.hLine(terminal, 0, 13, terminal.width);
-        Draw.hLine(terminal, 0, 27, terminal.width);
+        Draw.text(
+          terminal,
+          "Out of the forgotten wilderness, a hero appears...",
+          x: 2,
+          y: 1,
+        );
 
-        _renderRace(terminal.rect(0, 4, terminal.width, 8));
-        _renderClass(terminal.rect(0, 14, terminal.width, 15));
-        _renderDeath(terminal.rect(0, 28, terminal.width, 7));
+        for (var y in const [6, 16, 30]) {
+          Draw.hLine(terminal, 0, y, terminal.width, color: UIHue.rowSeparator);
+        }
+
+        _renderRace(terminal.rect(0, 7, terminal.width, 8));
+        _renderClass(terminal.rect(0, 17, terminal.width, 15));
+        _renderDeath(terminal.rect(0, 31, terminal.width, 7));
 
         for (var i = 0; i < _controls.length; i++) {
           _controls[i].render(terminal, focus: i == _focus);
@@ -161,7 +168,7 @@ class NewHeroScreen extends Screen<Input> {
     // Show how race affects stats.
     var y = 3;
     for (var stat in Stat.values) {
-      terminal.writeAt(0, y, stat.abbreviation, UIHue.secondary);
+      terminal.writeAt(0, y, stat.abbreviation, UIHue.label);
       var scale = (race.statScale(stat) * 100).toInt();
       Draw.thinMeter(terminal, 4, y, 14, scale, 200);
       y++;
@@ -184,11 +191,7 @@ class NewHeroScreen extends Screen<Input> {
   }
 
   void _renderText(Terminal terminal, String description) {
-    var y = 3;
-    for (var line in Log.wordWrap(59, description)) {
-      terminal.writeAt(19, y, line, UIHue.text);
-      y++;
-    }
+    Draw.text(terminal, description, x: 19, y: 3, width: 74);
   }
 
   @override
@@ -338,15 +341,15 @@ class NameControl extends Control {
 
   @override
   void render(Terminal terminal, {required bool focus}) {
-    var color = _isUnique ? UIHue.selection : red;
+    var color = _isUnique ? UIHue.highlight : red;
 
-    terminal.writeAt(_x, _y + 1, "Name:", focus ? UIHue.selection : UIHue.text);
+    terminal.writeAt(_x, _y + 1, "Name:", UIHue.header);
     if (focus) {
       Draw.box(terminal, _x + 18, _y, 23, 3, color);
     }
 
     if (_enteredName.isNotEmpty) {
-      terminal.writeAt(_x + 19, _y + 1, _enteredName, UIHue.primary);
+      terminal.writeAt(_x + 19, _y + 1, _enteredName, UIHue.selectable);
       if (focus) {
         terminal.writeAt(
           _x + 19 + _enteredName.length,
@@ -360,7 +363,7 @@ class NameControl extends Control {
       if (focus) {
         terminal.writeAt(_x + 19, _y + 1, _defaultName, Color.black, color);
       } else {
-        terminal.writeAt(_x + 19, _y + 1, _defaultName, UIHue.primary);
+        terminal.writeAt(_x + 19, _y + 1, _defaultName, UIHue.selectable);
       }
     }
 
@@ -399,12 +402,7 @@ class SelectControl extends Control {
 
   @override
   void render(Terminal terminal, {required bool focus}) {
-    terminal.writeAt(
-      _x,
-      _y + 1,
-      "$_name:",
-      focus ? UIHue.selection : UIHue.text,
-    );
+    terminal.writeAt(_x, _y + 1, "$_name:", UIHue.header);
 
     if (focus) {
       var x = _x + 19;
@@ -412,21 +410,21 @@ class SelectControl extends Control {
         var option = _options[i];
 
         if (i == selected) {
-          Draw.box(terminal, x - 1, _y, option.length + 2, 3, UIHue.selection);
-          terminal.writeAt(x - 1, _y + 1, "◄", UIHue.selection);
-          terminal.writeAt(x + option.length, _y + 1, "►", UIHue.selection);
+          Draw.box(terminal, x - 1, _y, option.length + 2, 3, UIHue.highlight);
+          terminal.writeAt(x - 1, _y + 1, "◄", UIHue.highlight);
+          terminal.writeAt(x + option.length, _y + 1, "►", UIHue.highlight);
         }
 
         terminal.writeAt(
           x,
           _y + 1,
           option,
-          i == selected ? UIHue.selection : UIHue.primary,
+          i == selected ? UIHue.highlight : UIHue.selectable,
         );
         x += option.length + 2;
       }
     } else {
-      terminal.writeAt(_x + 19, _y + 1, _options[selected], UIHue.primary);
+      terminal.writeAt(_x + 19, _y + 1, _options[selected], UIHue.selectable);
     }
   }
 }

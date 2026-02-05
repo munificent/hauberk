@@ -132,7 +132,7 @@ class Table<T> {
             column.align.offset(column._calculatedWidth, column.label.length),
         0,
         column.label,
-        column.color ?? coolGray,
+        column.color ?? UIHue.header,
       );
     }
 
@@ -149,12 +149,12 @@ class Table<T> {
             description.length,
         0,
         description,
-        darkCoolGray,
+        UIHue.subtext,
       );
     }
 
     // Header line.
-    _drawLine(terminal, 1, darkCoolGray);
+    _drawLine(terminal, 1, UIHue.line);
 
     // Draw the rows.
     for (var i = 0; i < _visibleRows; i++) {
@@ -170,23 +170,24 @@ class Table<T> {
       }
 
       if (rowIndex == _selectedRow) {
-        terminal.writeAt(1, y, "►", UIHue.selection);
+        terminal.writeAt(1, y, "►", UIHue.highlight);
       }
 
       assert(row.cells.length <= _columns.length);
       for (var j = 0; j < row.cells.length; j++) {
-        row.cells[j].draw(
-          terminal,
-          _columns[j],
-          y,
-          selected: rowIndex == _selectedRow,
-        );
+        var cell = row.cells[j];
+        cell.draw(terminal, _columns[j], y, switch (null) {
+          _ when rowIndex == _selectedRow => UIHue.highlight,
+          _ when !cell.enabled => UIHue.disabled,
+          _ when j == 0 => UIHue.selectable,
+          _ => UIHue.text,
+        });
       }
 
       // If it's a fixed size table, show the bottom line like a header.
-      var lineColor = darkerCoolGray;
+      var lineColor = UIHue.rowSeparator;
       if (!_showScrollBar && rowIndex == _shownRows.length - 1) {
-        lineColor = darkCoolGray;
+        lineColor = UIHue.line;
       }
       _drawLine(terminal, y + 1, lineColor);
     }
@@ -197,7 +198,7 @@ class Table<T> {
       if (_shownRows.length <= _visibleRows) {
         // No scroll thumb.
         for (var i = 0; i < barHeight; i++) {
-          terminal.writeAt(terminal.width - 1, i + 2, "▌", darkerCoolGray);
+          terminal.writeAt(terminal.width - 1, i + 2, "▌", UIHue.rowSeparator);
         }
       } else {
         var thumbHeight = (barHeight * _visibleRows / _shownRows.length)
@@ -211,8 +212,8 @@ class Table<T> {
         var thumbBottom = thumbTop + thumbHeight;
         for (var i = 0; i < barHeight; i++) {
           var color = i < thumbTop || i > thumbBottom
-              ? darkerCoolGray
-              : darkCoolGray;
+              ? UIHue.rowSeparator
+              : UIHue.line;
           terminal.writeAt(terminal.width - 1, i + 2, "▌", color);
         }
       }
@@ -404,7 +405,7 @@ class Cell {
   /// A cell containing a series of differently colored pieces of text.
   Cell.spans(this.spans) : enabled = true;
 
-  void draw(Terminal terminal, Column column, int y, {required bool selected}) {
+  void draw(Terminal terminal, Column column, int y, Color defaultColor) {
     TextSpan.draw(
       terminal,
       spans,
@@ -412,11 +413,7 @@ class Cell {
       y: y,
       width: column._calculatedWidth,
       align: column.align,
-      defaultColor: switch ((selected, enabled)) {
-        (true, true) => UIHue.selection,
-        (false, true) => UIHue.text,
-        (_, false) => UIHue.disabled,
-      },
+      defaultColor: defaultColor,
     );
   }
 }
@@ -429,7 +426,7 @@ class TextSpan {
     required int y,
     required int width,
     Align align = Align.left,
-    Color defaultColor = UIHue.text,
+    Color defaultColor = UIHue.selectable,
   }) {
     var totalLength = spans.fold(
       0,

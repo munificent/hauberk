@@ -67,9 +67,9 @@ class Draw {
     int? y,
     int? width,
     int? height,
-    Color? color,
     String? label,
-    bool labelSelected = false,
+    bool selected = false,
+    Color? color,
   }) {
     _box(
       terminal,
@@ -77,7 +77,7 @@ class Draw {
       y,
       width,
       height,
-      color,
+      color ?? (selected ? UIHue.highlight : UIHue.line),
       "╒",
       "═",
       "╕",
@@ -92,13 +92,15 @@ class Draw {
         (x ?? 0) + 2,
         y ?? 0,
         " $label ",
-        labelSelected ? UIHue.selection : UIHue.text,
+        selected ? UIHue.highlight : UIHue.header,
       );
     }
   }
 
   /// Breaks a string into lines and draws them.
-  static void text(
+  ///
+  /// Returns the number of lines.
+  static int text(
     Terminal terminal,
     String text, {
     int? x,
@@ -107,12 +109,15 @@ class Draw {
     Color color = UIHue.text,
   }) {
     x ??= 0;
-    y ??= 0;
+    var lineY = y ?? 0;
     width ??= terminal.width;
 
-    for (var line in Log.wordWrap(width - x, text)) {
-      terminal.writeAt(x, y = y! + 1, line, color);
+    var lines = Log.wordWrap(width - x, text);
+    for (var line in lines) {
+      terminal.writeAt(x, lineY++, line, color);
     }
+
+    return lines.length;
   }
 
   /// Draws a thin horizontal line starting at ([x], [y]) and going [width]
@@ -124,7 +129,7 @@ class Draw {
     int width, {
     Color? color,
   }) {
-    terminal.writeAt(x, y, "─" * width, color ?? darkCoolGray);
+    terminal.writeAt(x, y, "─" * width, color ?? UIHue.line);
   }
 
   /// Draws a frame with a little box on top for a glyph with the name next to
@@ -139,12 +144,21 @@ class Draw {
     Glyph? glyph,
     String? label,
   }) {
-    frame(terminal, x: x, y: y + 1, width: width, height: height - 1);
-    terminal.writeAt(x + 1, y, "┌─┐", darkCoolGray);
-    terminal.writeAt(x + 1, y + 1, "╡ ╞", darkCoolGray);
-    terminal.writeAt(x + 1, y + 2, "└─┘", darkCoolGray);
+    frame(
+      terminal,
+      x: x,
+      y: y + 1,
+      width: width,
+      height: height - 1,
+      color: UIHue.overlayLine,
+    );
+    terminal.writeAt(x + 1, y, "┌─┐", UIHue.overlayLine);
+    terminal.writeAt(x + 1, y + 1, "╡ ╞", UIHue.overlayLine);
+    terminal.writeAt(x + 1, y + 2, "└─┘", UIHue.overlayLine);
     if (glyph != null) terminal.drawGlyph(x + 2, y + 1, glyph);
-    if (label != null) terminal.writeAt(x + 4, y + 1, label, UIHue.primary);
+    if (label != null) {
+      terminal.writeAt(x + 4, y + 1, " $label ", UIHue.header);
+    }
   }
 
   static void doubleBox(
@@ -193,33 +207,47 @@ class Draw {
 
     // Show the query string, if there is one.
     if (query != null) {
-      box(terminal, x - 2, terminal.height - 4, boxWidth + 4, 5, UIHue.text);
+      box(
+        terminal,
+        x - 2,
+        terminal.height - 4,
+        boxWidth + 4,
+        5,
+        UIHue.overlayLine,
+      );
       terminal.writeAt(
         (terminal.width - query.length) ~/ 2,
         terminal.height - 3,
         query,
-        UIHue.primary,
+        UIHue.text,
       );
     } else {
-      box(terminal, x - 2, terminal.height - 2, boxWidth + 4, 3, UIHue.text);
+      box(
+        terminal,
+        x - 2,
+        terminal.height - 2,
+        boxWidth + 4,
+        3,
+        UIHue.overlayLine,
+      );
     }
 
     var first = true;
     x += (boxWidth - helpTextLength) ~/ 2;
     helpKeys.forEach((key, text) {
       if (!first) {
-        terminal.writeAt(x, terminal.height - 1, ", ", UIHue.secondary);
+        terminal.writeAt(x, terminal.height - 1, ", ", UIHue.text);
         x += 2;
       }
 
-      terminal.writeAt(x, terminal.height - 1, "[", UIHue.secondary);
+      terminal.writeAt(x, terminal.height - 1, "[", UIHue.line);
       x++;
-      terminal.writeAt(x, terminal.height - 1, key, UIHue.selection);
+      terminal.writeAt(x, terminal.height - 1, key, UIHue.highlight);
       x += key.length;
-      terminal.writeAt(x, terminal.height - 1, "] ", UIHue.secondary);
+      terminal.writeAt(x, terminal.height - 1, "] ", UIHue.line);
       x += 2;
 
-      terminal.writeAt(x, terminal.height - 1, text, UIHue.helpText);
+      terminal.writeAt(x, terminal.height - 1, text, UIHue.selectable);
       x += text.length;
 
       first = false;
@@ -246,7 +274,7 @@ class Draw {
     width ??= terminal.width;
     height ??= terminal.height;
 
-    color ??= darkCoolGray;
+    color ??= UIHue.line;
     var bar = vertical + " " * (width - 2) + vertical;
     for (var row = y + 1; row < y + height - 1; row++) {
       terminal.writeAt(x, row, bar, color);

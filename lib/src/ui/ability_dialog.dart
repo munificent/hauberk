@@ -97,12 +97,11 @@ class AbilityDialog extends Screen<Input> {
     Draw.frame(
       terminal,
       height: height,
-      color: UIHue.selection,
       label: _showSpells ? "Cast which spell?" : "Use which ability?",
-      labelSelected: true,
+      selected: true,
     );
 
-    terminal.writeAt(terminal.width - 7, 0, ' Focus', UIHue.selection);
+    terminal.writeAt(terminal.width - 7, 0, ' Focus', UIHue.highlight);
 
     terminal = terminal.rect(1, 1, terminal.width - 2, terminal.height - 2);
 
@@ -141,9 +140,9 @@ class AbilityDialog extends Screen<Input> {
           0,
           y,
           "abcdefghijklmnopqrstuvwxyz"[y],
-          UIHue.selection,
+          UIHue.highlight,
         );
-        terminal.writeAt(3, y, ability.name, UIHue.primary);
+        terminal.writeAt(3, y, ability.name, UIHue.selectable);
         terminal.writeAt(
           terminal.width - 3,
           y,

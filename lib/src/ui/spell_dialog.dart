@@ -106,18 +106,18 @@ class SpellDialog extends Screen<Input> {
     var (:school, :spells) = _schools[_selectedSchool];
     Draw.frame(terminal, label: "${school.name} Spells");
 
-    terminal.writeAt(36, 1, "Lvl", UIHue.helpText);
-    terminal.writeAt(2, 2, row, darkCoolGray);
+    terminal.writeAt(36, 1, "Lvl", UIHue.header);
+    terminal.writeAt(2, 2, row, UIHue.line);
 
     var i = 0;
     for (var spell in spells) {
       var y = i * 2 + 3;
-      terminal.writeAt(2, y + 1, row, darkerCoolGray);
+      terminal.writeAt(2, y + 1, row, UIHue.rowSeparator);
 
       var (nameColor, levelColor) = switch (_hero.save.spellStatus(spell)) {
-        _ when i == _selectedSpellIndex => (UIHue.selection, UIHue.selection),
-        SpellStatus.known => (UIHue.primary, UIHue.text),
-        SpellStatus.learnable => (UIHue.text, UIHue.text),
+        _ when i == _selectedSpellIndex => (UIHue.highlight, UIHue.highlight),
+        SpellStatus.known => (UIHue.selectable, UIHue.text),
+        SpellStatus.learnable => (UIHue.selectable, UIHue.text),
         SpellStatus.forgotten ||
         SpellStatus.notEnoughIntellect ||
         SpellStatus.notEnoughSchool => (UIHue.disabled, UIHue.disabled),
@@ -133,13 +133,13 @@ class SpellDialog extends Screen<Input> {
       1,
       _selectedSpellIndex * 2 + 3,
       CharCode.blackRightPointingPointer,
-      UIHue.selection,
+      UIHue.highlight,
     );
   }
 
   void _renderSpell(Terminal terminal) {
     var spell = _schools[_selectedSchool].spells[_selectedSpellIndex];
-    Draw.frame(terminal, label: spell.name, labelSelected: true);
+    Draw.frame(terminal, label: spell.name, selected: true);
 
     _writeText(terminal, 1, 2, spell.description);
 
@@ -156,12 +156,10 @@ class SpellDialog extends Screen<Input> {
     };
     // TODO: Different colors.
     var y = 12;
-    for (var line in Log.wordWrap(terminal.width - 2, status)) {
-      terminal.writeAt(1, y++, line);
-    }
+    y += Draw.text(terminal, status, x: 1, y: y, width: terminal.width - 2);
 
     // TODO: Show spell level.
-    terminal.writeAt(1, 32, "Focus cost:", UIHue.secondary);
+    terminal.writeAt(1, 32, "Focus cost:", UIHue.label);
     terminal.writeAt(
       13,
       32,

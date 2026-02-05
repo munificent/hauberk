@@ -11,8 +11,8 @@ import 'widget/draw.dart';
 
 /// UI to see and spend experience.
 class ExperienceDialog extends Screen<Input> {
-  final Content _content;
   final Hero _hero;
+  final List<Skill> _skills;
 
   int _selectedIndex = 0;
 
@@ -27,7 +27,7 @@ class ExperienceDialog extends Screen<Input> {
   Skill? get _selectedSkill {
     // On stats.
     if (_selectedIndex < Stat.values.length) return null;
-    return _content.skills[_selectedIndex - Stat.values.length];
+    return _skills[_selectedIndex - Stat.values.length];
   }
 
   bool get _canRaise {
@@ -45,7 +45,11 @@ class ExperienceDialog extends Screen<Input> {
     }
   }
 
-  ExperienceDialog(this._content, this._hero);
+  ExperienceDialog(Content content, this._hero)
+    : _skills = [
+        for (var skill in content.skills)
+          if (_hero.save.heroClass.skillCap(skill) > 0) skill,
+      ];
 
   @override
   bool handleInput(Input input) {
@@ -96,8 +100,8 @@ class ExperienceDialog extends Screen<Input> {
     terminal.clear();
 
     Draw.frame(terminal, width: 40, height: 3);
-    terminal.writeAt(2, 1, "Available experience", UIHue.text);
-    terminal.writeAt(31, 1, _hero.experience.fmt(w: 8), UIHue.primary);
+    terminal.writeAt(2, 1, "Available experience:", UIHue.label);
+    terminal.writeAt(31, 1, _hero.experience.fmt(w: 8), UIHue.text);
 
     _drawStatsList(terminal.rect(0, 3, 40, 11));
     _drawSkillsList(terminal.rect(0, 14, 40, terminal.height - 14));
@@ -107,7 +111,7 @@ class ExperienceDialog extends Screen<Input> {
       1,
       _selectedIndex * 2 + (_selectedIndex < Stat.values.length ? 6 : 9),
       CharCode.blackRightPointingPointer,
-      UIHue.selection,
+      UIHue.highlight,
     );
 
     var panelTerminal = terminal.rect(
@@ -129,7 +133,7 @@ class ExperienceDialog extends Screen<Input> {
       default:
         _drawSkillPanel(
           panelTerminal,
-          _content.skills[_selectedIndex - Stat.values.length],
+          _skills[_selectedIndex - Stat.values.length],
         );
     }
 
@@ -144,7 +148,7 @@ class ExperienceDialog extends Screen<Input> {
     Draw.frame(terminal, label: 'Stats');
 
     // Current value and cost to increment?
-    terminal.writeAt(27, 1, "Val     Cost", UIHue.helpText);
+    terminal.writeAt(27, 1, "Val     Cost", UIHue.header);
 
     var stats = [
       _hero.strength,
@@ -172,10 +176,10 @@ class ExperienceDialog extends Screen<Input> {
     Draw.frame(terminal, label: 'Skills');
 
     // Current value and cost to increment?
-    terminal.writeAt(27, 1, "Lvl     Cost", UIHue.helpText);
+    terminal.writeAt(27, 1, "Lvl     Cost", UIHue.header);
 
     var i = 0;
-    for (var skill in _content.skills) {
+    for (var skill in _skills) {
       var level = _hero.skills.level(skill);
       _writeRow(
         terminal,
@@ -206,24 +210,27 @@ class ExperienceDialog extends Screen<Input> {
       2,
       y - 1,
       "──────────────────────── ─── ────────",
-      i == 0 ? darkCoolGray : darkerCoolGray,
+      i == 0 ? UIHue.line : UIHue.rowSeparator,
     );
 
-    var color = switch (null) {
-      _ when selected => UIHue.selection,
-      _ when level < maxLevel && cost <= _hero.experience => UIHue.primary,
-      _ when maxLevel == 0 => UIHue.disabled,
+    var nameColor = switch (null) {
+      _ when selected => UIHue.highlight,
+      _ when level >= maxLevel || cost > _hero.experience => UIHue.disabled,
+      _ => UIHue.selectable,
+    };
+
+    var infoColor = switch (null) {
+      _ when selected => UIHue.highlight,
+      _ when level >= maxLevel || cost > _hero.experience => UIHue.disabled,
       _ => UIHue.text,
     };
 
-    terminal.writeAt(2, y, name, color);
-    terminal.writeAt(27, y, level.fmt(w: 3), color);
+    terminal.writeAt(2, y, name, nameColor);
+    terminal.writeAt(27, y, level.fmt(w: 3), infoColor);
     if (level < maxLevel) {
-      terminal.writeAt(31, y, cost.fmt(w: 8), color);
-    } else if (maxLevel > 0) {
-      terminal.writeAt(31, y, " (Maxed)", color);
+      terminal.writeAt(31, y, cost.fmt(w: 8), infoColor);
     } else {
-      terminal.writeAt(31, y, " (Can't)", color);
+      terminal.writeAt(31, y, " (Maxed)", infoColor);
     }
   }
 
@@ -277,63 +284,63 @@ class ExperienceDialog extends Screen<Input> {
     List<String> labels,
     List<String> Function(int value) describe,
   ) {
-    Draw.frame(terminal, label: stat.name, labelSelected: true);
+    Draw.frame(terminal, label: stat.name);
 
     var currentValue = stat.value;
     // TODO: Would be good to show what is causing the modifiers.
     var modifiers = currentValue - stat.baseValue;
 
     var y = 2;
-    terminal.writeAt(1, y, 'Base value:', UIHue.secondary);
+    terminal.writeAt(1, y, 'Base value:', UIHue.label);
     terminal.writeAt(15, y, stat.baseValue.fmt(w: 3), UIHue.text);
     y++;
 
     if (stat == _hero.strength) {
       var weightOffset = _hero.strength.weightOffset(_hero.save).toInt();
       modifiers = (currentValue - stat.baseValue + weightOffset);
-      terminal.writeAt(1, y, 'Weight offset:', UIHue.secondary);
+      terminal.writeAt(1, y, 'Weight offset:', UIHue.label);
       terminal.writeAt(15, y, weightOffset.fmt(w: 3), UIHue.text);
       y++;
     }
 
-    terminal.writeAt(1, y, 'Modifiers:', UIHue.secondary);
+    terminal.writeAt(1, y, 'Modifiers:', UIHue.label);
     terminal.writeAt(15, y, modifiers.fmt(w: 3), UIHue.text);
     y++;
 
-    terminal.writeAt(1, y, 'Current value:', UIHue.secondary);
-    terminal.writeAt(15, y, currentValue.fmt(w: 3), UIHue.primary);
+    terminal.writeAt(1, y, 'Current value:', UIHue.label);
+    terminal.writeAt(15, y, currentValue.fmt(w: 3), UIHue.text);
 
     y = 9;
     for (var label in labels) {
-      terminal.writeAt(1, y, '$label:', UIHue.secondary);
+      terminal.writeAt(1, y, '$label:', UIHue.label);
       y++;
     }
 
-    terminal.writeAt(24, 7, 'Current', UIHue.text);
-    terminal.writeAt(24, 8, '───────', UIHue.secondary);
+    terminal.writeAt(24, 7, 'Current', UIHue.header);
+    terminal.writeAt(24, 8, '───────', UIHue.line);
     y = 9;
     for (var value in describe(currentValue)) {
-      terminal.writeAt(24, y, value.padLeft(7));
+      terminal.writeAt(24, y, value.padLeft(7), UIHue.text);
       y++;
     }
 
     if (currentValue < Stat.baseMax) {
       var nextValue = currentValue + 1;
-      terminal.writeAt(32, 7, '   Next', UIHue.text);
-      terminal.writeAt(32, 8, '───────', UIHue.secondary);
+      terminal.writeAt(32, 7, '   Next', UIHue.header);
+      terminal.writeAt(32, 8, '───────', UIHue.line);
       y = 9;
       for (var value in describe(nextValue)) {
-        terminal.writeAt(32, y, value.padLeft(7));
+        terminal.writeAt(32, y, value.padLeft(7), UIHue.text);
         y++;
       }
     }
   }
 
   void _drawSkillPanel(Terminal terminal, Skill skill) {
-    Draw.frame(terminal, label: skill.name, labelSelected: true);
+    Draw.frame(terminal, label: skill.name);
     var level = _hero.skills.level(skill);
 
-    terminal.writeAt(1, 8, "At current level $level:", UIHue.primary);
+    terminal.writeAt(1, 8, "At current level $level:", UIHue.label);
     if (level > 0) {
       Draw.text(
         terminal,
@@ -353,7 +360,7 @@ class ExperienceDialog extends Screen<Input> {
 
     var maxLevel = _hero.save.heroClass.skillCap(skill);
     if (level < maxLevel) {
-      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.primary);
+      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.label);
       Draw.text(
         terminal,
         x: 3,
@@ -364,14 +371,14 @@ class ExperienceDialog extends Screen<Input> {
     }
 
     if (maxLevel != 0) {
-      terminal.writeAt(1, 30, "Level:", UIHue.secondary);
+      terminal.writeAt(1, 30, "Level:", UIHue.label);
       terminal.writeAt(9, 30, level.fmt(w: 4), UIHue.text);
       Draw.meter(terminal, 14, 30, 25, level, maxLevel, red, maroon);
     }
   }
 
   void _changeSelection(int offset) {
-    var length = Stat.values.length + _content.skills.length;
+    var length = Stat.values.length + _skills.length;
     _selectedIndex = (_selectedIndex + offset + length) % length;
     dirty();
   }

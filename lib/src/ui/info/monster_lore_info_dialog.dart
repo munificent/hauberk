@@ -94,7 +94,7 @@ class MonsterLoreInfoDialog extends InfoDialog {
       terminal.width,
       terminal.height,
       glyph: seen == 0 ? Glyph("?", UIHue.disabled) : breed.appearance as Glyph,
-      label: seen == 0 ? "" : breed.name,
+      label: seen == 0 ? null : breed.name,
     );
 
     if (seen == 0) {
@@ -110,19 +110,24 @@ class MonsterLoreInfoDialog extends InfoDialog {
     var y = 3;
     // TODO: Remove this check once all breeds have descriptions.
     if (breed.description != "") {
-      for (var line in Log.wordWrap(terminal.width - 2, breed.description)) {
-        terminal.writeAt(1, y, line, UIHue.text);
-        y++;
-      }
+      y += Draw.text(
+        terminal,
+        breed.description,
+        x: 1,
+        y: y,
+        width: terminal.width - 2,
+      );
 
       y++;
     }
 
-    var description = _describeBreed(breed);
-    for (var line in Log.wordWrap(terminal.width - 2, description)) {
-      terminal.writeAt(1, y, line, UIHue.text);
-      y++;
-    }
+    Draw.text(
+      terminal,
+      _describeBreed(breed),
+      x: 1,
+      y: y,
+      width: terminal.width - 2,
+    );
   }
 
   String _describeBreed(Breed breed) {

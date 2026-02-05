@@ -40,7 +40,7 @@ void greaterDragons() {
     ("forest", Element.none, peaGreen, sherwood),
     ("brown", Elements.earth, sandal, tan),
     ("blue", Elements.water, lightBlue, blue),
-    ("white", Elements.cold, lightCoolGray, ash),
+    ("white", Elements.cold, lightCoolGray, lighterCoolGray),
     ("purple", Elements.poison, lilac, purple),
     ("green", Elements.acid, lima, olive),
     ("silver", Elements.lightning, lightAqua, lightBlue),

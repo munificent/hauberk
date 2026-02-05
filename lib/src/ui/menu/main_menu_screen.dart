@@ -265,7 +265,7 @@ class MainMenuScreen extends Screen<Input> {
           centerTerminal.width ~/ 2,
           20,
           "▲",
-          UIHue.selection,
+          UIHue.highlight,
         );
       }
 
@@ -274,7 +274,7 @@ class MainMenuScreen extends Screen<Input> {
           centerTerminal.width ~/ 2,
           29,
           "▼",
-          UIHue.selection,
+          UIHue.highlight,
         );
       }
 
@@ -284,38 +284,42 @@ class MainMenuScreen extends Screen<Input> {
 
         var hero = storage.heroes[heroIndex];
 
-        var primary = UIHue.primary;
-        var secondary = UIHue.secondary;
         if (heroIndex == selectedHero) {
-          primary = UIHue.selection;
-          secondary = UIHue.selection;
-
           centerTerminal.drawChar(
             2,
             21 + i,
             CharCode.blackRightPointingPointer,
-            UIHue.selection,
+            UIHue.highlight,
           );
         }
 
-        centerTerminal.writeAt(3, 21 + i, hero.name, primary);
+        var nameColor = heroIndex == selectedHero
+            ? UIHue.highlight
+            : UIHue.selectable;
+        centerTerminal.writeAt(3, 21 + i, hero.name, nameColor);
+
+        var infoColor = heroIndex == selectedHero
+            ? UIHue.highlight
+            : UIHue.text;
         // TODO: Now that there is no experience level, is there a way we can
         // indicate overall "power"? Maybe we should track total experience
         // earned?
-        centerTerminal.writeAt(34, 21 + i, hero.race.name, secondary);
-        centerTerminal.writeAt(42, 21 + i, hero.heroClass.name, secondary);
+        centerTerminal.writeAt(34, 21 + i, hero.race.name, infoColor);
+        centerTerminal.writeAt(42, 21 + i, hero.heroClass.name, infoColor);
         if (hero.permadeath) {
-          centerTerminal.writeAt(55, 21 + i, "Permadeath", secondary);
+          centerTerminal.writeAt(55, 21 + i, "Permadeath", infoColor);
         }
       }
     }
 
-    Draw.helpKeys(terminal, {
-      "OK": "Play",
-      "↕": "Change selection",
-      "N": "Create a new hero",
-      "D": "Delete hero",
-    });
+    if (_isActive) {
+      Draw.helpKeys(terminal, {
+        "OK": "Play",
+        "↕": "Change selection",
+        "N": "Create a new hero",
+        "D": "Delete hero",
+      });
+    }
   }
 
   void _renderDungeon(Terminal terminal, Game game) {
@@ -381,7 +385,10 @@ class MainMenuScreen extends Screen<Input> {
       if (visibility < 128) {
         color = color.blend(shadow, lerpDouble(visibility, 0, 127, 1.0, 0.0));
       } else if (visibility > 128) {
-        color = color.add(ash, lerpDouble(visibility, 128, 255, 0.0, 0.2));
+        color = color.add(
+          lighterCoolGray,
+          lerpDouble(visibility, 128, 255, 0.0, 0.2),
+        );
       }
 
       if (tile.actorIllumination > 0) {

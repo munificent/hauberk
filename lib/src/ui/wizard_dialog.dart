@@ -84,9 +84,8 @@ class WizardDialog extends Screen<Input> {
       terminal,
       width: 40,
       height: _menuItems.length + 2,
-      color: _isActive ? UIHue.selection : UIHue.disabled,
       label: "Wizard Menu",
-      labelSelected: _isActive,
+      selected: _isActive,
     );
 
     var i = 0;
@@ -95,19 +94,14 @@ class WizardDialog extends Screen<Input> {
         1,
         i + 1,
         key,
-        _isActive ? UIHue.selection : UIHue.disabled,
+        _isActive ? UIHue.highlight : UIHue.disabled,
       );
-      terminal.writeAt(
-        2,
-        i + 1,
-        ")",
-        _isActive ? UIHue.secondary : UIHue.disabled,
-      );
+      terminal.writeAt(2, i + 1, ")", _isActive ? UIHue.line : UIHue.disabled);
       terminal.writeAt(
         4,
         i + 1,
         name,
-        _isActive ? UIHue.primary : UIHue.disabled,
+        _isActive ? UIHue.selectable : UIHue.disabled,
       );
       i++;
     }
@@ -172,6 +166,7 @@ class WizardDialog extends Screen<Input> {
   void _gainExperience() {
     _game.hero.experience += 10000;
     _game.hero.refreshProperties();
+    _game.log.debug("Gave the hero 10,000 experience.");
   }
 
   void _killAllMonsters() {
@@ -202,7 +197,7 @@ class WizardDialog extends Screen<Input> {
 
   void _makeStairs() {
     _game.stage[_game.hero.pos].type = Tiles.stairs;
-    _game.log.debug("Put stairs here");
+    _game.log.debug("Placed stairs under hero.");
   }
 
   void _toggleShowAllMonsters() {
@@ -292,15 +287,15 @@ abstract class _SearchDialog<T> extends Screen<Input> {
     var dialog = terminal.rect(40, 0, 43, 38);
 
     // Draw a box for the contents.
-    Draw.frame(dialog, label: _question, color: UIHue.selection);
+    Draw.frame(dialog, label: _question, selected: true);
 
-    dialog.writeAt(_question.length + 4, 0, _pattern, UIHue.selection);
+    dialog.writeAt(_question.length + 4, 0, _pattern, UIHue.highlight);
     dialog.writeAt(
       _question.length + 4 + _pattern.length,
       0,
       " ",
-      UIHue.selection,
-      UIHue.selection,
+      UIHue.highlight,
+      UIHue.highlight,
     );
 
     var n = 0;
@@ -310,7 +305,7 @@ abstract class _SearchDialog<T> extends Screen<Input> {
       }
 
       if (n < 10) {
-        dialog.writeAt(1, n + 1, n.toString(), UIHue.selection);
+        dialog.writeAt(1, n + 1, n.toString(), UIHue.highlight);
         dialog.writeAt(2, n + 1, ")", UIHue.disabled);
       }
 
@@ -320,7 +315,7 @@ abstract class _SearchDialog<T> extends Screen<Input> {
       } else {
         dialog.writeAt(3, n + 1, "-");
       }
-      dialog.writeAt(5, n + 1, _itemName(item), UIHue.primary);
+      dialog.writeAt(5, n + 1, _itemName(item), UIHue.selectable);
 
       n++;
       if (n >= 36) break;

@@ -23,7 +23,7 @@ class SelectDepthPopup extends Popup {
   int get width => 42;
 
   @override
-  int get height => 26;
+  int get height => 25;
 
   @override
   List<String> get message => const [
@@ -75,11 +75,11 @@ class SelectDepthPopup extends Popup {
       var x = (depth - 1) % 10;
       var y = ((depth - 1) ~/ 10) * 2;
 
-      var color = UIHue.primary;
+      var color = UIHue.selectable;
       if (!Debug.enabled && depth > save.maxDepth + 1) {
         color = UIHue.disabled;
       } else if (depth == _depth) {
-        color = UIHue.selection;
+        color = UIHue.highlight;
         terminal.drawChar(
           x * 4,
           y + 5,

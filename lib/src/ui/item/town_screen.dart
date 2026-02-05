@@ -397,11 +397,11 @@ class _CrucibleScreen extends TownScreen {
     );
 
     Draw.box(terminal, 0, 0, terminal.width, terminal.height);
-    terminal.writeAt(0, 0, "┬", darkCoolGray);
-    terminal.writeAt(terminal.width - 1, 0, "┬", darkCoolGray);
+    terminal.writeAt(0, 0, "┬", UIHue.line);
+    terminal.writeAt(terminal.width - 1, 0, "┬", UIHue.line);
 
     if (_completeRecipe case var recipe?) {
-      terminal.writeAt(1, 1, "Forge a ${recipe.produces}", UIHue.primary);
+      terminal.writeAt(1, 1, "Forge a ${recipe.produces}", UIHue.selectable);
     } else if (_items.isEmpty) {
       terminal.writeAt(1, 1, "Add ingredients to crucible", UIHue.disabled);
     } else {

@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 
 import '../../engine.dart';
 import '../../hues.dart';
+import '../widget/draw.dart';
 import 'panel.dart';
 
 class LogPanel extends Panel {
@@ -12,12 +13,7 @@ class LogPanel extends Panel {
   @override
   void renderPanel(Terminal terminal) {
     terminal.clear();
-    terminal.writeAt(
-      0,
-      terminal.height - 1,
-      "─" * terminal.width,
-      darkCoolGray,
-    );
+    Draw.hLine(terminal, 0, terminal.height - 1, terminal.width);
 
     var y = terminal.height - 2;
     for (var i = _log.messages.length - 1; i >= 0 && y >= 0; i--) {
@@ -29,7 +25,7 @@ class LogPanel extends Panel {
       }
 
       var color = switch (message.type) {
-        LogType.message => ash,
+        LogType.message => UIHue.text,
         LogType.error => red,
         LogType.quest => purple,
         LogType.gain => gold,
