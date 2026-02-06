@@ -16,7 +16,10 @@ abstract class Skill implements Comparable<Skill> {
   static const maxLevel = 20;
 
   static int experienceCostAt(int baseExperience, int level) {
-    return (baseExperience * math.pow((level + 2) / 3, 4)).toInt();
+    // Level 1 is [baseExperience] and every level above that is 1.5x the
+    // previous level. In other wors, it works like compound interest:
+    // https://en.wikipedia.org/wiki/Compound_interest
+    return (baseExperience * math.pow(1 + 0.5, level - 1)).toInt();
   }
 
   static int _nextSortOrder = 0;

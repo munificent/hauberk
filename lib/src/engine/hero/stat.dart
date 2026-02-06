@@ -44,7 +44,7 @@ enum Stat {
   /// and the race affects the stat with [raceScale].
   static int experienceCostAt(int statTotal, double raceScale) {
     // When a race is better at a stat, the cost goes down.
-    var baseCost = (500 * (1.0 / raceScale));
+    var baseCost = (400 * (1.0 / raceScale));
 
     // As the hero's total stats increase, it gets harder and harder to raise
     // more stats. Also, as their stats get higher, they are also generally
@@ -55,9 +55,9 @@ enum Stat {
       12 * Stat.values.length,
       Stat.baseMax * Stat.values.length,
       1.0,
-      35.0,
+      40.0,
     );
-    var totalCurve = math.pow(totalScale, 3.0);
+    var totalCurve = math.pow(totalScale, 2.0);
 
     return (baseCost * totalCurve).toInt();
   }

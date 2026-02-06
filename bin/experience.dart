@@ -12,7 +12,7 @@ void main() {
   print("Stat ${scales.join()}");
   print('-----${"  ----------" * 9}');
   for (
-    var statTotal = 10 * statCount;
+    var statTotal = 12 * statCount;
     statTotal <= Stat.baseMax * statCount;
     statTotal++
   ) {

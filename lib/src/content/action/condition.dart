@@ -128,7 +128,7 @@ class PoisonAction extends ConditionAction {
   int get intensity => 1 + _damage ~/ 20;
 
   @override
-  int get duration => 1 + rng.triangleInt(_damage * 2, _damage ~/ 2);
+  int get duration => 1 + rng.triangleInt(_damage, _damage ~/ 2);
 
   @override
   void onActivate() => show("{1} [are|is] poisoned!", actor);
