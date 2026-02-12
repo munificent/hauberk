@@ -95,7 +95,7 @@ Map<Skill, int> _spellSchools([int? level]) => {
 
 Map<Skill, int> _skillCap(String skillName, [int? level]) {
   var skill = Skills.find(skillName);
-  return {skill: level ?? Skill.maxLevel};
+  return {skill: level ?? Skill.baseMax};
 }
 
 HeroClass _class(

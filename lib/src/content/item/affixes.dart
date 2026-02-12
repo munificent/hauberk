@@ -33,6 +33,7 @@ class Affixes {
     _resists();
     _extraDamage();
     _brands();
+    _masters();
 
     // TODO: "of Accuracy" increases range of bows.
     // TODO: "Heavy" and "adamant" increase weight and armor.
@@ -49,7 +50,7 @@ class Affixes {
       ..parameter(2, max: 3, boostOneIn: 4)
       ..price(500, 3.0)
       ..intellect(equalsParam);
-    affix("_ of Sagacity")
+    affix("_ of Sagacity", frequency: 100000.0)
       ..depth(75)
       ..parameter(4, max: 5, boostOneIn: 4)
       ..price(700, 4.0)
@@ -506,6 +507,38 @@ class Affixes {
       ..heft(0.7)
       ..damage(scale: scaleParam())
       ..brand(Elements.spirit, resist: 2);
+  }
+
+  static void _masters() {
+    var weaponTypes = [
+      ("axe", "Axe Mastery"),
+      ("club", "Bludgeoning"),
+      ("dagger", "Knife Fighting"),
+      ("spear", "Spear Mastery"),
+      ("sword", "Swordfighting"),
+      ("whip", "Whip Mastery"),
+    ];
+
+    for (var (type, skill) in weaponTypes) {
+      affixCategory(type);
+      affix("Fine _", frequency: 1.0)
+        ..depth(1, to: 40)
+        ..parameter(1)
+        ..price(1000, 1.8)
+        ..skill(skill, equalsParam);
+
+      affix("Deft _", frequency: 1.0)
+        ..depth(20, to: 60)
+        ..parameter(2, max: 3)
+        ..price(2000, 2.4)
+        ..skill(skill, equalsParam);
+
+      affix("Master's _", frequency: 1.0)
+        ..depth(40)
+        ..parameter(3, max: 4, boostOneIn: 6)
+        ..price(4000, 3.4)
+        ..skill(skill, equalsParam);
+    }
   }
 
   static void defineItemTag(String tag) {

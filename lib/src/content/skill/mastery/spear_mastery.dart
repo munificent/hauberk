@@ -6,7 +6,7 @@ import 'mastery.dart';
 class SpearMastery extends MasterySkill {
   // TODO: Tune.
   static double _spearScale(int level) =>
-      lerpDouble(level, 1, Skill.maxLevel, 1.0, 3.0);
+      lerpDouble(level, 1, Skill.modifiedMax, 1.0, 3.0);
 
   // TODO: Better name.
   @override

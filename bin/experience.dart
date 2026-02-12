@@ -32,7 +32,7 @@ void main() {
   var bases = [400, 600, 800, 1000, 1500, 2000, 3000, 5000];
   print("Skill  ${bases.map((b) => b.fmt(w: 10)).join('  ')}");
   print("-----${"  ----------" * 10}");
-  for (var level = 1; level <= Skill.maxLevel; level++) {
+  for (var level = 1; level <= Skill.baseMax; level++) {
     var line = "${level.fmt(w: 4)}:";
 
     for (var baseExperience in bases) {

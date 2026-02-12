@@ -2,7 +2,7 @@ import '../../engine.dart';
 
 class Bloodlust extends Skill {
   static double damageScaleAt(int level) {
-    var levelFactor = lerpDouble(level, 1, Skill.maxLevel, 1.0, 4.0);
+    var levelFactor = lerpDouble(level, 1, Skill.modifiedMax, 1.0, 4.0);
 
     // Normalize the fury scale so that if we tweak max fury, this mostly
     // shouldn't have to change.

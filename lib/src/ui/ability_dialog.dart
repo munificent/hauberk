@@ -118,9 +118,10 @@ class AbilityDialog extends Screen<Input> {
     }
 
     // TODO: Handle this being taller than the screen.
+    var hero = _gameScreen.game.hero;
     for (var y = 0; y < _abilities.length; y++) {
       var ability = _abilities[y];
-      var skillLevel = _gameScreen.game.hero.skills.level(ability.skill);
+      var skillLevel = hero.skills.level(ability.skill);
       var focusCost = ability.focusCost(_gameScreen.game.hero.save, skillLevel);
 
       if (ability.unusableReason(_gameScreen.game) case var reason?) {

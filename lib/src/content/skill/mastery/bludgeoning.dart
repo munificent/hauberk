@@ -6,7 +6,7 @@ import 'mastery.dart';
 class Bludgeoning extends MasterySkill {
   // TODO: Tune.
   static double _bashScale(int level) =>
-      lerpDouble(level, 1, Skill.maxLevel, 1.0, 2.0);
+      lerpDouble(level, 1, Skill.modifiedMax, 1.0, 2.0);
 
   @override
   String get name => "Bludgeoning";

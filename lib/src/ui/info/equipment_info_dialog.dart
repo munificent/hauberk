@@ -358,6 +358,8 @@ enum _Columns {
   /// Showing only resistances.
   resistances,
 
+  // TODO: Columns for skill bonuses.
+
   /// Showing everything.
   all,
 }

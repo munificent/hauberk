@@ -4,6 +4,7 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 import 'package:piecemeal/piecemeal.dart';
 
+import '../content/item/drops.dart';
 import '../content/tiles.dart';
 import '../debug.dart';
 import '../engine.dart';
@@ -164,7 +165,7 @@ class WizardDialog extends Screen<Input> {
   }
 
   void _gainExperience() {
-    _game.hero.experience += 10000;
+    _game.hero.experience += 10000 + (_game.hero.experience ~/ 4);
     _game.hero.refreshProperties();
     _game.log.debug("Gave the hero 10,000 experience.");
   }
@@ -367,9 +368,12 @@ class _WizardDropDialog extends _SearchDialog<ItemType> {
       _game.hero.lore.createArtifact(itemType);
     }
 
-    var item = Item(itemType, itemType.maxStack);
-    _game.stage.addItem(item, _game.hero.pos);
-    _game.log.debug("Dropped {1}.", item);
+    // Parse it as a drop so that it might have affixes.
+    var drop = parseDrop(itemType.name);
+    drop.dropItem(_game.hero.lore, _game.depth, (item) {
+      _game.stage.addItem(item, _game.hero.pos);
+      _game.log.debug("Dropped {1}.", item);
+    });
   }
 }
 

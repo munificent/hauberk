@@ -4,6 +4,7 @@ import '../action/action.dart';
 import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/thing.dart';
+import '../hero/skill.dart';
 import 'affix.dart';
 import 'item_type.dart';
 
@@ -155,6 +156,19 @@ class Item extends Thing implements Comparable<Item> {
     0,
     (resistance, affix) => resistance + affix.resistance(element),
   );
+
+  /// Gets the modifiers to skill levels from this item.
+  Map<Skill, int> get skillBonuses {
+    var bonuses = <Skill, int>{};
+    for (var affix in affixes) {
+      affix.skillBonuses.forEach((skill, bonus) {
+        bonuses.putIfAbsent(skill, () => 0);
+        bonuses[skill] = bonuses[skill]! + bonus;
+      });
+    }
+
+    return bonuses;
+  }
 
   @override
   int compareTo(Item other) {

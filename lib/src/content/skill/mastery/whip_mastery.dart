@@ -7,7 +7,7 @@ import 'mastery.dart';
 class WhipMastery extends MasterySkill {
   // TODO: Tune.
   static double _whipScale(int level) =>
-      lerpDouble(level, 1, Skill.maxLevel, 1.0, 3.0);
+      lerpDouble(level, 1, Skill.modifiedMax, 1.0, 3.0);
 
   // TODO: Better name.
   @override

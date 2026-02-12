@@ -33,14 +33,14 @@ void main() {
   print("");
   print("Bloodlust");
   var maxScale =
-      Bloodlust.damageScaleAt(Skill.maxLevel) *
+      Bloodlust.damageScaleAt(Skill.modifiedMax) *
       Strength.maxFuryAt(Stat.modifiedMax);
 
   for (var i = 1; i <= Stat.modifiedMax; i++) {
     strength.update(i, (_) {});
 
     var line = "${i.fmt(w: 2)}:";
-    for (var level = 1; level <= Skill.maxLevel; level += 2) {
+    for (var level = 1; level <= Skill.modifiedMax; level++) {
       var scale = Bloodlust.damageScaleAt(level) * strength.maxFury;
       var bar = _makeBar(10, scale / maxScale);
       line += " ${(scale + 1.0).fmtPercent(w: 4, d: 0)} $bar";

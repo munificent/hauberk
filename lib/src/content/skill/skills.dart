@@ -2,13 +2,13 @@ import '../../engine.dart';
 import 'archery.dart';
 import 'battle_hardening.dart';
 import 'bloodlust.dart';
-import 'mastery/axe.dart';
+import 'mastery/axe_mastery.dart';
 import 'mastery/bludgeoning.dart';
 import 'mastery/dual_wield.dart';
 import 'mastery/knife_fighting.dart';
-import 'mastery/spear.dart';
+import 'mastery/spear_mastery.dart';
 import 'mastery/swordfighting.dart';
-import 'mastery/whip.dart';
+import 'mastery/whip_mastery.dart';
 import 'spell_school.dart';
 
 class Skills {

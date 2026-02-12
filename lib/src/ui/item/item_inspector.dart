@@ -169,6 +169,14 @@ class ItemInspector {
       }
     }
 
+    item.skillBonuses.forEach((skill, bonus) {
+      if (bonus < 0) {
+        sentences.add("It lowers ${skill.name} by ${-bonus}.");
+      } else if (bonus > 0) {
+        sentences.add("It raises ${skill.name} by $bonus.");
+      }
+    });
+
     var toss = item.toss;
     if (toss != null) {
       var element = "";

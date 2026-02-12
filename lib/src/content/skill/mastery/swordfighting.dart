@@ -3,7 +3,7 @@ import 'mastery.dart';
 
 class Swordfighting extends MasterySkill {
   static int _parryDefense(int level) =>
-      lerpInt(level, 1, Skill.maxLevel, 5, 30);
+      lerpInt(level, 1, Skill.modifiedMax, 5, 30);
 
   @override
   String get name => "Swordfighting";

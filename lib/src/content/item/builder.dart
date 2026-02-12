@@ -446,6 +446,7 @@ class AffixBuilder {
 
   final Map<Element, ParameterizeInt> _resists = {};
   final Map<Stat, ParameterizeInt> _statBonuses = {};
+  final Map<Skill, ParameterizeInt> _skillBonuses = {};
 
   AffixBuilder(this._nameTemplate, [this._affixSet, this._frequency = 0.0]);
 
@@ -529,6 +530,11 @@ class AffixBuilder {
     _statBonuses[stat] = bonus;
   }
 
+  void skill(String skillName, ParameterizeInt bonus) {
+    var skill = Skills.find(skillName);
+    _skillBonuses[skill] = bonus;
+  }
+
   AffixType _build() {
     var id = _nameTemplate;
 
@@ -565,6 +571,7 @@ class AffixBuilder {
       armorBonus: _armorBonus,
       priceBonus: _priceBonus,
       priceScale: _priceScale,
+      skillBonuses: _skillBonuses,
     );
 
     _resists.forEach(affix.setResist);

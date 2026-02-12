@@ -29,7 +29,7 @@ class Archery extends Skill {
   }
 
   double _strikeScale(int level) =>
-      lerpDouble(level, 1, Skill.maxLevel, 1.0, 3.0);
+      lerpDouble(level, 1, Skill.modifiedMax, 1.0, 3.0);
 }
 
 class FireArrowAbility extends Ability with TargetAbility {

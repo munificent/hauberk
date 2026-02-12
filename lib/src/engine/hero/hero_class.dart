@@ -16,5 +16,7 @@ class HeroClass {
 
   /// The maximum level of [skill] that a hero with this class can attain or
   /// `0` if they can't learn this skill at all.
+  ///
+  /// This is the maximum base value before equipment modifiers are applied.
   int skillCap(Skill skill) => _skillCaps[skill] ?? 0;
 }

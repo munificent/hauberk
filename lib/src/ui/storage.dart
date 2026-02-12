@@ -317,7 +317,7 @@ class Storage {
             'experience': hero.experience,
             'skills': {
               for (var skill in hero.skills.acquired)
-                skill.name: hero.skills.level(skill),
+                skill.name: hero.skills.baseLevel(skill),
             },
             'spells': [for (var spell in hero.learnedSpells) spell.name],
             'log': _saveLog(hero.log),

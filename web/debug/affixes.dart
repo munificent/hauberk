@@ -72,6 +72,7 @@ void generate() {
   builder.td("Brand");
   builder.td("Resistance");
   builder.td("Stat");
+  builder.td("Skill");
   builder.td("Percent");
   builder.tbody();
 
@@ -107,6 +108,13 @@ void generate() {
         for (var stat in Stat.values)
           if (affix.statBonus(stat) != 0)
             "${stat.abbreviation}:${affix.statBonus(stat)}",
+      ].join(" "),
+    );
+
+    builder.td(
+      [
+        for (var (skill, bonus) in affix.skillBonuses.pairs)
+          "${skill.name}:$bonus",
       ].join(" "),
     );
 

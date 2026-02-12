@@ -25,5 +25,5 @@ class DualWield extends Skill {
   }
 
   double _heftModifier(int level) =>
-      lerpDouble(level, 1, Skill.maxLevel, 1.0, 0.5);
+      lerpDouble(level, 1, Skill.modifiedMax, 1.0, 0.5);
 }

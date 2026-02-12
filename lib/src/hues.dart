@@ -132,9 +132,6 @@ class UIHue {
 
   /// A very faint line separating table rows.
   static const rowSeparator = darkerCoolGray;
-
-  // TODO: Migrate everything off this.
-  static const secondary = pink; // darkCoolGray;
 }
 
 Color elementColor(Element element) {

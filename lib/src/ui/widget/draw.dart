@@ -106,11 +106,12 @@ class Draw {
     int? x,
     int? y,
     int? width,
-    Color color = UIHue.text,
+    Color? color,
   }) {
     x ??= 0;
     var lineY = y ?? 0;
     width ??= terminal.width;
+    color ??= UIHue.text;
 
     var lines = Log.wordWrap(width - x, text);
     for (var line in lines) {

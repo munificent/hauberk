@@ -1,4 +1,6 @@
 import '../core/element.dart';
+import '../core/utils.dart';
+import '../hero/skill.dart';
 import '../hero/stat.dart';
 import 'item.dart';
 
@@ -52,6 +54,12 @@ class Affix {
   int get priceBonus => type._priceBonus(parameter);
   double get priceScale => type._priceScale(parameter);
 
+  /// Gets the modifiers to skill levels from this item.
+  Map<Skill, int> get skillBonuses => {
+    for (var (skill, bonus) in type._skillBonuses.pairs)
+      skill: bonus(parameter),
+  };
+
   @override
   String toString() => "${type.id} $parameter";
 }
@@ -92,6 +100,9 @@ class AffixType {
   final ParameterizeInt _priceBonus;
   final ParameterizeDouble _priceScale;
 
+  /// Gets the modifiers to skill levels from this item.
+  final Map<Skill, ParameterizeInt> _skillBonuses;
+
   AffixType(
     this.id,
     this.name,
@@ -107,6 +118,7 @@ class AffixType {
     Element? brand,
     ParameterizeDouble? priceScale,
     ParameterizeInt? priceBonus,
+    Map<Skill, ParameterizeInt>? skillBonuses,
   }) : isPrefix = prefix,
        _rollParameter = rollParameter,
        _heftScale = heftScale ?? _noScale,
@@ -117,7 +129,8 @@ class AffixType {
        _armorBonus = armorBonus ?? _noBonus,
        brand = brand ?? Element.none,
        _priceScale = priceScale ?? _noScale,
-       _priceBonus = priceBonus ?? _noBonus;
+       _priceBonus = priceBonus ?? _noBonus,
+       _skillBonuses = skillBonuses ?? {};
 
   /// Creates a new affix with this affix type, rolling a random parameter for
   /// it as needed.

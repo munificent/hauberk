@@ -6,9 +6,6 @@ import '../hues.dart';
 import 'input.dart';
 import 'widget/draw.dart';
 
-// TODO: Can probably merge this with SkillDialog to have one general place to
-// develop the hero.
-
 /// UI to see and spend experience.
 class ExperienceDialog extends Screen<Input> {
   final Hero _hero;
@@ -36,7 +33,7 @@ class ExperienceDialog extends Screen<Input> {
       var cost = stat.experienceCost(_hero.save);
       return _hero.experience >= cost;
     } else if (_selectedSkill case var skill?) {
-      var level = _hero.skills.level(skill);
+      var level = _hero.skills.baseLevel(skill);
       if (level == _hero.save.heroClass.skillCap(skill)) return false;
       var cost = skill.experienceCost(_hero.save, level + 1);
       return _hero.experience >= cost;
@@ -82,7 +79,7 @@ class ExperienceDialog extends Screen<Input> {
             _hero.experience -= stat.experienceCost(_hero.save);
             stat.refresh(_hero.save, stat.baseValue + 1);
           } else if (_selectedSkill case var skill?) {
-            var level = _hero.skills.level(skill);
+            var level = _hero.skills.baseLevel(skill);
             _hero.experience -= skill.experienceCost(_hero.save, level + 1);
             _hero.skills.setLevel(skill, level + 1);
           }
@@ -99,12 +96,13 @@ class ExperienceDialog extends Screen<Input> {
   void render(Terminal terminal) {
     terminal.clear();
 
-    Draw.frame(terminal, width: 40, height: 3);
+    const leftWidth = 46;
+    Draw.frame(terminal, width: leftWidth, height: 3);
     terminal.writeAt(2, 1, "Available experience:", UIHue.label);
-    terminal.writeAt(31, 1, _hero.experience.fmt(w: 8), UIHue.text);
+    terminal.writeAt(25, 1, _hero.experience.fmt(w: 9), UIHue.text);
 
-    _drawStatsList(terminal.rect(0, 3, 40, 11));
-    _drawSkillsList(terminal.rect(0, 14, 40, terminal.height - 14));
+    _drawStatsList(terminal.rect(0, 3, leftWidth, 11));
+    _drawSkillsList(terminal.rect(0, 14, leftWidth, terminal.height - 14));
 
     // Selected row cursor.
     terminal.drawChar(
@@ -115,9 +113,9 @@ class ExperienceDialog extends Screen<Input> {
     );
 
     var panelTerminal = terminal.rect(
-      40,
+      leftWidth,
       0,
-      terminal.width - 40,
+      terminal.width - leftWidth,
       terminal.height,
     );
 
@@ -148,7 +146,7 @@ class ExperienceDialog extends Screen<Input> {
     Draw.frame(terminal, label: 'Stats');
 
     // Current value and cost to increment?
-    terminal.writeAt(27, 1, "Val     Cost", UIHue.header);
+    terminal.writeAt(21, 1, "Base Equip Total    Cost", UIHue.header);
 
     var stats = [
       _hero.strength,
@@ -163,8 +161,10 @@ class ExperienceDialog extends Screen<Input> {
         terminal,
         i,
         stat.name,
-        level: stat.value,
-        maxLevel: Stat.baseMax,
+        baseValue: stat.baseValue,
+        bonus: stat.value - stat.baseValue,
+        fullValue: stat.value,
+        maxValue: Stat.baseMax,
         cost: stat.experienceCost(_hero.save),
         selected: i == _selectedIndex,
       );
@@ -175,19 +175,20 @@ class ExperienceDialog extends Screen<Input> {
   void _drawSkillsList(Terminal terminal) {
     Draw.frame(terminal, label: 'Skills');
 
-    // Current value and cost to increment?
-    terminal.writeAt(27, 1, "Lvl     Cost", UIHue.header);
+    terminal.writeAt(21, 1, "Base Equip Total    Cost", UIHue.header);
 
     var i = 0;
     for (var skill in _skills) {
-      var level = _hero.skills.level(skill);
+      var baseLevel = _hero.skills.baseLevel(skill);
       _writeRow(
         terminal,
         i,
         skill.name,
-        level: level,
-        maxLevel: _hero.save.heroClass.skillCap(skill),
-        cost: skill.experienceCost(_hero.save, level + 1),
+        baseValue: baseLevel,
+        bonus: _hero.skills.bonus(skill),
+        fullValue: _hero.skills.level(skill),
+        maxValue: _hero.save.heroClass.skillCap(skill),
+        cost: skill.experienceCost(_hero.save, baseLevel + 1),
         selected: i == _selectedIndex - Stat.values.length,
       );
 
@@ -199,38 +200,54 @@ class ExperienceDialog extends Screen<Input> {
     Terminal terminal,
     int i,
     String name, {
-    required int level,
-    required int maxLevel,
+    required int baseValue,
+    required int bonus,
+    required int fullValue,
+    required int maxValue,
     required int cost,
     required bool selected,
   }) {
+    // Note that [fullValue] might not be [baseValue] + [bonus] because the
+    // full value is clamped to the allowed range.
+
     var y = i * 2 + 3;
 
     terminal.writeAt(
       2,
       y - 1,
-      "──────────────────────── ─── ────────",
+      "───────────────── ───── ───── ───── ───────",
       i == 0 ? UIHue.line : UIHue.rowSeparator,
     );
 
     var nameColor = switch (null) {
       _ when selected => UIHue.highlight,
-      _ when level >= maxLevel || cost > _hero.experience => UIHue.disabled,
+      _ when baseValue >= maxValue || cost > _hero.experience => UIHue.disabled,
       _ => UIHue.selectable,
     };
 
     var infoColor = switch (null) {
       _ when selected => UIHue.highlight,
-      _ when level >= maxLevel || cost > _hero.experience => UIHue.disabled,
+      _ when baseValue >= maxValue || cost > _hero.experience => UIHue.disabled,
       _ => UIHue.text,
     };
 
     terminal.writeAt(2, y, name, nameColor);
-    terminal.writeAt(27, y, level.fmt(w: 3), infoColor);
-    if (level < maxLevel) {
-      terminal.writeAt(31, y, cost.fmt(w: 8), infoColor);
+    terminal.writeAt(20, y, baseValue.fmt(w: 5), infoColor);
+
+    var bonusColor = switch (bonus) {
+      > 0 => peaGreen,
+      < 0 => red,
+      _ => UIHue.absent,
+    };
+
+    terminal.writeAt(26, y, bonus.fmt(w: 5, sign: true), bonusColor);
+
+    terminal.writeAt(32, y, fullValue.fmt(w: 5), infoColor);
+
+    if (baseValue < maxValue) {
+      terminal.writeAt(38, y, cost.fmt(w: 7), infoColor);
     } else {
-      terminal.writeAt(31, y, " (Maxed)", infoColor);
+      terminal.writeAt(39, y, "At max", infoColor);
     }
   }
 
@@ -296,8 +313,8 @@ class ExperienceDialog extends Screen<Input> {
     y++;
 
     if (stat == _hero.strength) {
-      var weightOffset = _hero.strength.weightOffset(_hero.save).toInt();
-      modifiers = (currentValue - stat.baseValue + weightOffset);
+      var weightOffset = _hero.strength.weightOffset(_hero.save);
+      modifiers = (currentValue - stat.baseValue - weightOffset);
       terminal.writeAt(1, y, 'Weight offset:', UIHue.label);
       terminal.writeAt(15, y, weightOffset.fmt(w: 3), UIHue.text);
       y++;
@@ -338,42 +355,49 @@ class ExperienceDialog extends Screen<Input> {
 
   void _drawSkillPanel(Terminal terminal, Skill skill) {
     Draw.frame(terminal, label: skill.name);
-    var level = _hero.skills.level(skill);
 
-    terminal.writeAt(1, 8, "At current level $level:", UIHue.label);
-    if (level > 0) {
-      Draw.text(
-        terminal,
-        x: 3,
-        y: 10,
-        width: terminal.width - 1,
-        skill.levelDescription(level),
-      );
-    } else {
-      terminal.writeAt(
-        3,
-        10,
-        "(You haven't trained this yet.)",
-        UIHue.disabled,
-      );
-    }
-
+    var baseLevel = _hero.skills.baseLevel(skill);
+    var bonus = _hero.skills.bonus(skill);
+    var fullLevel = _hero.skills.level(skill);
     var maxLevel = _hero.save.heroClass.skillCap(skill);
-    if (level < maxLevel) {
-      terminal.writeAt(1, 16, "At next level ${level + 1}:", UIHue.label);
+
+    terminal.writeAt(1, 2, "Base level:", UIHue.label);
+    terminal.writeAt(13, 2, baseLevel.fmt(w: 2), UIHue.text);
+    terminal.writeAt(16, 2, "/", UIHue.subtext);
+    terminal.writeAt(18, 2, maxLevel.fmt(w: 2), UIHue.text);
+    Draw.meter(terminal, 22, 2, 10, baseLevel, maxLevel, red, maroon);
+
+    terminal.writeAt(1, 3, "Equipment:", UIHue.label);
+    // TODO: Show individual equipment bonuses.
+    terminal.writeAt(17, 3, bonus.fmt(w: 3, sign: true), UIHue.text);
+
+    terminal.writeAt(1, 4, "Full level:", UIHue.label);
+    terminal.writeAt(13, 4, fullLevel.fmt(w: 2), UIHue.text);
+    terminal.writeAt(16, 4, "/", UIHue.subtext);
+    terminal.writeAt(18, 4, Skill.modifiedMax.fmt(w: 2), UIHue.text);
+
+    void describeLevel(String name, int level, int y) {
+      Draw.hLine(terminal, 1, y, terminal.width - 2);
+      terminal.writeAt(2, y, " At $name level $level ", UIHue.header);
+      var (description, color) = switch (level) {
+        > 0 => (skill.levelDescription(level), null),
+        _ => ("You haven't learned this skill.", UIHue.disabled),
+      };
       Draw.text(
         terminal,
-        x: 3,
-        y: 18,
+        x: 1,
+        y: y + 2,
         width: terminal.width - 1,
-        skill.levelDescription(level + 1),
+        description,
+        color: color,
       );
     }
 
-    if (maxLevel != 0) {
-      terminal.writeAt(1, 30, "Level:", UIHue.label);
-      terminal.writeAt(9, 30, level.fmt(w: 4), UIHue.text);
-      Draw.meter(terminal, 14, 30, 25, level, maxLevel, red, maroon);
+    describeLevel("current", fullLevel, 6);
+
+    var nextLevel = (baseLevel + 1 + bonus).clamp(0, maxLevel);
+    if (nextLevel < maxLevel) {
+      describeLevel("next", nextLevel, 16);
     }
   }
 

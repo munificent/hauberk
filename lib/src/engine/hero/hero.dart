@@ -283,8 +283,6 @@ class Hero extends Actor {
     var baseExperience = monster.experience;
     var scaled = (baseExperience * 20 / (slain + 19)).ceil();
     experience += scaled;
-
-    refreshProperties();
   }
 
   @override
@@ -410,6 +408,8 @@ class Hero extends Actor {
     agility.refresh(save);
     vitality.refresh(save);
     intellect.refresh(save);
+
+    skills.refreshBonuses(save);
 
     // Refresh the heft scales.
     var heftModifier = 1.0;
