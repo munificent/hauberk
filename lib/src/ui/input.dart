@@ -30,6 +30,7 @@ class Input {
   static const castSpell = Input("castSpell");
   static const editSpells = Input("editSpells");
   static const spendExperience = Input("spendExperience");
+  static const help = Input("help");
 
   /// Directional inputs.
   ///

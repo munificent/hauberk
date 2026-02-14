@@ -47,9 +47,9 @@ aren't there yet.*
 
 ## A Hero Awakens
 
-To play, you need avatar in the game world to live (and die!) vicariously
+To play, you need an avatar in the game world to live (and die!) vicariously
 through. On the Main Menu Screen, type `N` to create a new hero (or heroine, the
-game is gender-neutral). Enter a name, or use the default suggested one and hit
+game is gender-blind). Enter a name, or use the default suggested one and hit
 `Enter`.
 
 *There isn't much to specify at character creation time right now, but

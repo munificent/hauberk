@@ -13,6 +13,7 @@ import '../../engine.dart';
 import '../../hues.dart';
 import '../ability_dialog.dart';
 import '../experience_dialog.dart';
+import '../help/help_dialog.dart';
 import '../info/info_dialog.dart';
 import '../input.dart';
 import '../item/drop_dialog.dart';
@@ -186,6 +187,8 @@ class GameScreen extends Screen<Input> {
         ui.push(SpellDialog(game.content, game.hero));
       case Input.spendExperience:
         ui.push(ExperienceDialog(game.content, game.hero));
+      case Input.help:
+        ui.push(HelpDialog());
       case Input.heroInfo:
         ui.push(InfoDialog(game.content, game.hero.save));
       case Input.drop:

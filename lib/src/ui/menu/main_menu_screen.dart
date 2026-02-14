@@ -7,6 +7,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../engine.dart';
 import '../../hues.dart';
 import '../game/game_screen.dart';
+import '../help/help_dialog.dart';
 import '../input.dart';
 import '../popup/confirm_popup.dart';
 import '../storage.dart';
@@ -104,6 +105,10 @@ class MainMenuScreen extends Screen<Input> {
           _isActive = false;
           ui.push(GameScreen.town(storage, content, save));
         }
+        return true;
+
+      case Input.help:
+        ui.push(HelpDialog());
         return true;
     }
 
@@ -318,6 +323,7 @@ class MainMenuScreen extends Screen<Input> {
         "↕": "Change selection",
         "N": "Create a new hero",
         "D": "Delete hero",
+        "H": "Help",
       });
     }
   }

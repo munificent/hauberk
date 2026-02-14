@@ -3,6 +3,7 @@ import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../hues.dart';
+import 'draw.dart';
 
 class Table<T> {
   final List<Column> _columns;
@@ -194,29 +195,15 @@ class Table<T> {
 
     // Draw the scroll bar.
     if (_showScrollBar) {
-      var barHeight = _visibleRows * 2;
-      if (_shownRows.length <= _visibleRows) {
-        // No scroll thumb.
-        for (var i = 0; i < barHeight; i++) {
-          terminal.writeAt(terminal.width - 1, i + 2, "▌", UIHue.rowSeparator);
-        }
-      } else {
-        var thumbHeight = (barHeight * _visibleRows / _shownRows.length)
-            .toInt()
-            .clamp(1, barHeight);
-        var thumbTop =
-            ((barHeight - thumbHeight) *
-                    _scroll /
-                    (_shownRows.length - _visibleRows + 1))
-                .toInt();
-        var thumbBottom = thumbTop + thumbHeight;
-        for (var i = 0; i < barHeight; i++) {
-          var color = i < thumbTop || i > thumbBottom
-              ? UIHue.rowSeparator
-              : UIHue.line;
-          terminal.writeAt(terminal.width - 1, i + 2, "▌", color);
-        }
-      }
+      Draw.scrollBar(
+        terminal,
+        x: terminal.width - 1,
+        y: 2,
+        height: _visibleRows * 2 - 1,
+        totalRows: _shownRows.length,
+        visibleRows: _visibleRows,
+        scrollPosition: _scroll,
+      );
     }
   }
 

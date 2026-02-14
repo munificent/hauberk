@@ -187,6 +187,41 @@ class Draw {
     );
   }
 
+  static void scrollBar(
+    Terminal terminal, {
+    required int x,
+    required int y,
+    required int height,
+    required int totalRows,
+    required int visibleRows,
+    required int scrollPosition,
+  }) {
+    if (totalRows <= visibleRows) {
+      // No scroll thumb.
+      for (var i = 0; i < height; i++) {
+        terminal.writeAt(x, i + y, "▌", UIHue.rowSeparator);
+      }
+    } else {
+      var thumbHeight = (height * visibleRows / totalRows).toInt().clamp(
+        1,
+        height,
+      );
+      var thumbTop =
+          ((height - thumbHeight) *
+                  scrollPosition /
+                  (totalRows - visibleRows + 1))
+              .toInt();
+      var thumbBottom = thumbTop + thumbHeight;
+
+      for (var i = 0; i < height; i++) {
+        var color = i < thumbTop || i > thumbBottom
+            ? UIHue.rowSeparator
+            : UIHue.line;
+        terminal.writeAt(x, i + y, "▌", color);
+      }
+    }
+  }
+
   static void helpKeys(
     Terminal terminal,
     Map<String, String> helpKeys, [
