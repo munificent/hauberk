@@ -14,8 +14,7 @@ import 'water.dart';
 
 abstract class Decor {
   static void initialize() {
-    all.defineTags("built/room/dungeon");
-    all.defineTags("built/room/keep");
+    all.defineTags("room");
     all.defineTags("catacomb");
     all.defineTags("cave/glowing-moss");
     all.defineTags("water");

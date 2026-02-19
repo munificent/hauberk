@@ -18,7 +18,7 @@ void roomDecor() {
   };
 
   // Counters.
-  category(themes: "dungeon keep", cells: tableCells);
+  category(themes: "room", cells: tableCells);
   furnishing(
     symmetry: Symmetry.mirrorHorizontal,
     template: """
@@ -210,7 +210,7 @@ void roomDecor() {
   );
 
   // Separating counters.
-  category(themes: "dungeon keep", cells: tableCells);
+  category(themes: "room", cells: tableCells);
   furnishing(
     template: """
     ?.....?
@@ -275,7 +275,7 @@ void roomDecor() {
   );
 
   // Tables.
-  category(themes: "dungeon keep", cells: tableCells);
+  category(themes: "room", cells: tableCells);
 
   furnishing(
     template: """
@@ -559,7 +559,7 @@ void roomDecor() {
 
   // Chairs.
   category(
-    themes: "built",
+    themes: "room",
     frequency: 2.0,
     cells: {"π": applyOpen(Tiles.chair)},
   );
@@ -623,7 +623,7 @@ void roomDecor() {
   // TODO: Some fraction of the time, should place open barrels and chests.
   // Barrels.
   category(
-    themes: "built",
+    themes: "room",
     frequency: 0.7,
     cells: {"%": applyOpen(Tiles.closedBarrel)},
   );
@@ -679,7 +679,7 @@ void roomDecor() {
 
   // Chests.
   category(
-    themes: "built",
+    themes: "room",
     frequency: 0.5,
     cells: {"&": applyOpen(Tiles.closedChest)},
   );
@@ -701,7 +701,7 @@ void roomDecor() {
   );
 
   // Streams.
-  category(themes: "built", frequency: 10.0);
+  category(themes: "room", frequency: 1.0);
   furnishing(
     symmetry: Symmetry.rotate90,
     template: """

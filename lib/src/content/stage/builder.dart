@@ -49,7 +49,7 @@ void dungeon(RoomShapes shapes, {required double frequency}) {
   _addStyle(
     "dungeon",
     startFrequency: frequency,
-    decor: "dungeon",
+    decor: "room",
     decorDensity: 0.04,
     create: () => Dungeon(shapes: shapes),
   );
@@ -121,7 +121,7 @@ void keep(String monsters, {required int start, required int end}) {
     start: start,
     end: end,
     startFrequency: 2.0,
-    decor: "keep",
+    decor: "room",
     decorDensity: 0.05,
     monsters: monsters,
     // Keep spawns monsters itself.
