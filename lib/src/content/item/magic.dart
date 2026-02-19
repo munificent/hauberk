@@ -151,7 +151,7 @@ void scrolls() {
     ..frequency(0.3)
     ..toss(damage: 1, range: 3, breakage: 75)
     ..destroy(Elements.fire, chance: 20, fuel: 5);
-  item("Scroll[s] of Sidestepping", lilac, price: 16)
+  item("Scroll[s] of Sidestepping", lilac, price: 20)
     ..depth(2)
     ..frequency(0.5)
     ..teleport(8);
@@ -177,7 +177,7 @@ void scrolls() {
     ..depth(8, to: 30)
     ..detection([DetectType.exit]);
 
-  item("Scroll[s] of Find Nearby Items", gold, price: 24)
+  item("Scroll[s] of Find Nearby Items", gold, price: 16)
     ..depth(2, to: 16)
     ..detection([DetectType.item], range: 20);
   item("Scroll[s] of Item Detection", carrot, price: 64)
