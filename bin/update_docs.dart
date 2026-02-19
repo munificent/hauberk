@@ -86,6 +86,7 @@ void buildInGameDocs(Map<String, List<Node>> chapters) {
     for (var node in nodes) {
       var text = node.textContent
           .replaceAll("\n", " ")
+          .replaceAll("\\", "\\\\")
           .replaceAll("\"", "\\\"")
           .replaceAll("&lt;", "<")
           .replaceAll("&gt;", ">")

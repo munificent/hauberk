@@ -2,13 +2,11 @@
 
 **TODO: This is all horrendously out of date.**
 
-Welcome! I see you have an adventurous spirit! Not because you wish to venture
-into dungeons filled with beasts and untolds horrors, but because you have the
-fortitude to try out a game while it's still under development. Well, some of
-the former too.
-
-A caution for the unwary: **The game is not done, or balanced, or complete, or
-bug-free.** It may destroy your savefiles or steal your boyfriend!
+Welcome! If you are here, you must have an adventurous spirit. Not only because
+you wish to venture into dungeons filled with beasts and untolds horrors, but
+because you have the fortitude to try out a game while it's still under
+development. A caution for the unwary: **The game is not done, or balanced, or
+complete, or bug-free.** It may destroy your savefiles or steal your boyfriend!
 
 ## Input
 

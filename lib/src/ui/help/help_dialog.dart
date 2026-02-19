@@ -19,8 +19,6 @@ class HelpDialog extends Screen<Input> {
   @override
   bool handleInput(Input input) {
     switch (input) {
-      // TODO: Shift to page up/down.
-
       case Input.n:
         _scroll(-1);
         return true;
@@ -33,7 +31,6 @@ class HelpDialog extends Screen<Input> {
       case Input.runS:
         _scroll(_viewHeight);
         return true;
-
       case Input.cancel:
         ui.pop();
         return true;
