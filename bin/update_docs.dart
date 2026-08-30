@@ -8,6 +8,8 @@ import 'package:path/path.dart' as p;
 final hauberkDir = p.dirname(p.dirname(p.fromUri(Platform.script)));
 final docDir = Directory(p.join(hauberkDir, "doc"));
 
+const _pageWidth = 56;
+
 /// Regenerates the documentation HTML files from the Markdown sources.
 void main(List<String> arguments) {
   var templatePath = "doc/_template.html";
@@ -79,43 +81,70 @@ void buildInGameDocs(Map<String, List<Node>> chapters) {
   buffer.writeln();
   buffer.writeln("const Map<String, List<HelpLine>> helpChapters = {");
 
+  void write(String text, {String? color}) {
+    if (color == null) {
+      buffer.writeln("    HelpLine(\"$text\"),");
+    } else {
+      buffer.writeln("    HelpLine(color: UIHue.$color, \"$text\"),");
+    }
+  }
+
+  void writeNewline([int count = 1]) {
+    for (var i = 0; i < count; i++) {
+      buffer.writeln("    HelpLine(\"\"),");
+    }
+  }
+
   chapters.forEach((chapter, nodes) {
     buffer.writeln("  \"$chapter\": [");
 
-    var needsBlankLine = false;
+    var afterParagraph = false;
     for (var node in nodes) {
       var text = node.textContent
-          .replaceAll("\n", " ")
           .replaceAll("\\", "\\\\")
           .replaceAll("\"", "\\\"")
           .replaceAll("&lt;", "<")
           .replaceAll("&gt;", ">")
           .replaceAll("&quot;", "\\\"");
 
-      if (needsBlankLine) {
-        buffer.writeln("    HelpLine(\"\"),");
-        needsBlankLine = false;
-      }
-
+      var isParagraph = false;
       switch (node) {
         case Element(tag: "h1"):
-          buffer.writeln("    HelpLine(color: UIHue.header, \"$text\"),");
-          buffer.writeln("    HelpLine(color: UIHue.header, \"${'═' * 50}\"),");
+          write(color: "header", text);
+          write(color: "header", '═' * _pageWidth);
 
         case Element(tag: "h2"):
-          buffer.writeln("    HelpLine(color: UIHue.header, \"$text\"),");
-          buffer.writeln("    HelpLine(color: UIHue.header, \"${'─' * 50}\"),");
+          writeNewline(2);
+          write(color: "header", text);
+          write(color: "header", '─' * _pageWidth);
 
         case Element(tag: "h3"):
-          buffer.writeln("    HelpLine(color: UIHue.header, \"$text\"),");
+          writeNewline(2);
+          write(color: "header", text);
+          writeNewline();
+
+        case Element(tag: "pre"):
+          if (afterParagraph) writeNewline(2);
+          for (var line in text.trim().split("\n")) {
+            write(line);
+          }
+          isParagraph = true;
+
+        case Element(tag: "p"):
+          if (afterParagraph) writeNewline(2);
+          var collapsed = text.replaceAll("\n", " ");
+          for (var line in Log.wordWrap(_pageWidth, collapsed)) {
+            write(line);
+            writeNewline();
+          }
+
+          isParagraph = true;
 
         default:
-          for (var line in Log.wordWrap(50, text)) {
-            buffer.writeln("    HelpLine(\"$line\"),");
-          }
+          print("Unhandled node $node");
       }
 
-      needsBlankLine = true;
+      afterParagraph = isParagraph;
     }
 
     buffer.writeln("  ],");

@@ -11,6 +11,9 @@ class HelpDialog extends Screen<Input> {
   int _scrollPosition = 0;
   int _viewHeight = 30;
 
+  /// Overlap pages a bit so the reader can keep track.
+  int get _pageHeight => _viewHeight - 3;
+
   final List<String> _chapterNames = helpChapters.keys.toList();
 
   @override
@@ -26,10 +29,10 @@ class HelpDialog extends Screen<Input> {
         _scroll(1);
         return true;
       case Input.runN:
-        _scroll(-_viewHeight);
+        _scroll(-_pageHeight);
         return true;
       case Input.runS:
-        _scroll(_viewHeight);
+        _scroll(_pageHeight);
         return true;
       case Input.cancel:
         ui.pop();
@@ -85,7 +88,7 @@ class HelpDialog extends Screen<Input> {
       var lineIndex = i + _scrollPosition;
       if (lineIndex < helpLines.length) {
         var line = helpLines[lineIndex];
-        frameTerminal.writeAt(26, i + 2, line.text, line.color);
+        frameTerminal.writeAt(21, i + 2, line.text, line.color);
       }
     }
 
@@ -102,6 +105,7 @@ class HelpDialog extends Screen<Input> {
     Draw.helpKeys(terminal, {
       "Tab": "Next Chapter",
       "↕": "Scroll",
+      "Shift-↕": "Page Up/Down",
       "`": "Exit",
     });
   }
@@ -122,15 +126,6 @@ class HelpDialog extends Screen<Input> {
     dirty();
   }
 }
-
-class Block {
-  final BlockType type;
-  final List<String> lines;
-
-  const Block(this.type, this.lines);
-}
-
-enum BlockType { h1, h2, h3, text }
 
 class HelpLine {
   final Color color;
