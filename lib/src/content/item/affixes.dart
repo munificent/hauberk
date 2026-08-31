@@ -50,7 +50,7 @@ class Affixes {
       ..parameter(2, max: 3, boostOneIn: 4)
       ..price(500, 3.0)
       ..intellect(equalsParam);
-    affix("_ of Sagacity", frequency: 100000.0)
+    affix("_ of Sagacity")
       ..depth(75)
       ..parameter(4, max: 5, boostOneIn: 4)
       ..price(700, 4.0)
