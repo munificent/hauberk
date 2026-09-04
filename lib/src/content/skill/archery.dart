@@ -49,7 +49,7 @@ class FireArrowAbility extends Ability with TargetAbility {
 
   /// Focus cost goes down with level.
   @override
-  int focusCost(HeroSave hero, int level) => 21 - level;
+  int focusCost(int level) => 21 - level;
 
   @override
   int getRange(Game game) {

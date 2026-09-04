@@ -17,11 +17,7 @@ class Item extends Thing implements Comparable<Item> {
   final Affix? intrinsicAffix;
 
   List<Affix> get affixes {
-    return [
-      if (prefix case var affix?) affix,
-      if (suffix case var affix?) affix,
-      if (intrinsicAffix case var affix?) affix,
-    ];
+    return [?prefix, ?suffix, ?intrinsicAffix];
   }
 
   Item(this.type, this._count, {this.prefix, this.suffix, this.intrinsicAffix});

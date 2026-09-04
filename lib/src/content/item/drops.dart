@@ -13,7 +13,7 @@ Map<String, Object> dropGameData(Drop drop) {
 
   if (drop case _BaseDrop baseDrop) {
     result.addAll({
-      if (baseDrop._depth case var depth?) 'depth': depth,
+      'depth': ?baseDrop._depth,
       'quality': baseDrop._quality.name,
     });
   }

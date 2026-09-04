@@ -160,12 +160,7 @@ class SpellDialog extends Screen<Input> {
 
     // TODO: Show spell level.
     terminal.writeAt(1, 32, "Focus cost:", UIHue.label);
-    terminal.writeAt(
-      13,
-      32,
-      spell.focusCost(_hero.save, 1).fmt(w: 3),
-      UIHue.text,
-    );
+    terminal.writeAt(13, 32, spell.focusCost(1).fmt(w: 3), UIHue.text);
   }
 
   void _writeText(Terminal terminal, int x, int y, String text) {

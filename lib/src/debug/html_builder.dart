@@ -57,7 +57,7 @@ class HtmlBuilder {
       'td',
       cssClass: right ? 'r' : null,
       width: width,
-      attributes: {if (colspan != null) 'colspan': colspan},
+      attributes: {'colspan': ?colspan},
     );
   }
 

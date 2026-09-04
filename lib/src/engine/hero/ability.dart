@@ -16,9 +16,8 @@ abstract class Ability {
   /// The skill that granted this ability.
   Skill get skill;
 
-  // TODO: Don't pass in hero and skill level and make this constant?
   /// The focus cost to use the ability when its skill is at [skillLevel].
-  int focusCost(HeroSave hero, int skillLevel) => 0;
+  int focusCost(int skillLevel) => 0;
 
   /// If the ability cannot currently be used (for example Archery when a bow
   /// is not equipped), returns the reason why. Otherwise, returns `null` to
@@ -28,10 +27,30 @@ abstract class Ability {
   /// If this skill has a focus cost, wraps [action] in an appropriate action
   /// to spend that.
   Action _wrapFocusCost(HeroSave hero, int skillLevel, Action action) {
-    var cost = focusCost(hero, skillLevel);
+    var cost = focusCost(skillLevel);
     if (cost <= 0) return action;
     return FocusAction(cost, action);
   }
+}
+
+enum SpellStatus {
+  /// The hero hasn't learned the spell, but could.
+  learnable,
+
+  /// The hero has already learned as many spells as their [Intellect] allows
+  /// so can't learn this (or any other spell) right now.
+  notEnoughIntellect,
+
+  /// The hero's level in the spell's spell school isn't high enough to learn
+  /// this spell.
+  notEnoughSchool,
+
+  /// The hero has learned and currently knows the spell.
+  known,
+
+  /// The hero learned the spell but forgot it because their [Intellect] is
+  /// currently too low.
+  forgotten,
 }
 
 abstract class Spell extends Ability {
@@ -41,7 +60,6 @@ abstract class Spell extends Ability {
   @override
   String? unusableReason(Game game) {
     return switch (game.hero.save.spellStatus(this)) {
-      SpellStatus.learnable ||
       SpellStatus.learnable ||
       SpellStatus.notEnoughIntellect ||
       SpellStatus.notEnoughSchool => "You don't know this spell",

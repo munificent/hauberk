@@ -136,23 +136,3 @@ class SkillSet {
 
   SkillSet clone() => SkillSet.from({..._gainedLevels});
 }
-
-enum SpellStatus {
-  /// The hero hasn't learned the spell, but could.
-  learnable,
-
-  /// The hero has already learned as many spells as their [Intellect] allows
-  /// so can't learn this (or any other spell) right now.
-  notEnoughIntellect,
-
-  /// The hero's level in the spell's spell school isn't high enough to learn
-  /// this spell.
-  notEnoughSchool,
-
-  /// The hero has learned and currently knows the spell.
-  known,
-
-  /// The hero learned the spell but forgot it because their [Intellect] is
-  /// currently too low.
-  forgotten,
-}

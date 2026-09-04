@@ -51,10 +51,10 @@ class ItemInspector {
   /// column.
   void draw(int x, int itemY, Terminal terminal) {
     var sections = [
-      if (_attackSection case var section?) section,
-      if (_defenseSection case var section?) section,
-      if (_resistancesSection case var section?) section,
-      if (_useSection case var section?) section,
+      ?_attackSection,
+      ?_defenseSection,
+      ?_resistancesSection,
+      ?_useSection,
       _descriptionSection,
     ];
 

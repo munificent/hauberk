@@ -122,7 +122,7 @@ class AbilityDialog extends Screen<Input> {
     for (var y = 0; y < _abilities.length; y++) {
       var ability = _abilities[y];
       var skillLevel = hero.skills.level(ability.skill);
-      var focusCost = ability.focusCost(_gameScreen.game.hero.save, skillLevel);
+      var focusCost = ability.focusCost(skillLevel);
 
       if (ability.unusableReason(_gameScreen.game) case var reason?) {
         terminal.writeAt(

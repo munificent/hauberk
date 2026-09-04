@@ -52,7 +52,7 @@ class ActionSpell extends Spell with ActionAbility {
   }) : _focusCost = focus;
 
   @override
-  int focusCost(HeroSave hero, int skillLevel) => _focusCost;
+  int focusCost(int skillLevel) => _focusCost;
 
   @override
   Action onGetAction(Game game, int schoolLevel) =>
@@ -90,7 +90,7 @@ class TargetSpell extends Spell with TargetAbility {
   }) : _focusCost = focus;
 
   @override
-  int focusCost(HeroSave hero, int skillLevel) => _focusCost;
+  int focusCost(int skillLevel) => _focusCost;
 
   @override
   Action onGetTargetAction(Game game, int level, Vec target) =>
