@@ -281,18 +281,9 @@ class ExperienceDialog extends Screen<Input> {
   }
 
   void _drawIntellectPanel(Terminal terminal) {
-    _drawStatPanel(
-      terminal,
-      _hero.intellect,
-      ['Max focus', 'Spells'],
-      (int value) {
-        return [
-          Intellect.maxFocusAt(value).toString(),
-          Intellect.spellCountAt(value).toString(),
-        ];
-      },
-      // TODO: Show spell focus scale somehow.
-    );
+    _drawStatPanel(terminal, _hero.intellect, ['Max focus'], (int value) {
+      return [Intellect.maxFocusAt(value).toString()];
+    });
   }
 
   void _drawStatPanel(

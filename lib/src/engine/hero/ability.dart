@@ -13,73 +13,82 @@ abstract class Ability {
   // TODO: Make this abstract and make the subclasses fill it in.
   String get description => 'TODO';
 
-  /// The skill that granted this ability.
-  Skill get skill;
-
-  /// The focus cost to use the ability when its skill is at [skillLevel].
-  int focusCost(int skillLevel) => 0;
+  /// The focus cost to use the ability.
+  int focusCost(HeroSave hero) => 0;
 
   /// If the ability cannot currently be used (for example Archery when a bow
   /// is not equipped), returns the reason why. Otherwise, returns `null` to
   /// indicate the ability is usable.
-  String? unusableReason(Game game) => null;
+  String? unusableReason(Game game) {
+    var reasons = [
+      for (var requirement in requirements) ?requirement.check(game),
+    ];
+
+    if (reasons.isEmpty) return null;
+    return reasons.join(' ');
+  }
+
+  /// The conditions that must be met before this ability is available.
+  List<Requirement> get requirements;
 
   /// If this skill has a focus cost, wraps [action] in an appropriate action
   /// to spend that.
-  Action _wrapFocusCost(HeroSave hero, int skillLevel, Action action) {
-    var cost = focusCost(skillLevel);
+  Action _wrapFocusCost(HeroSave hero, Action action) {
+    var cost = focusCost(hero);
     if (cost <= 0) return action;
     return FocusAction(cost, action);
   }
 }
 
-enum SpellStatus {
-  /// The hero hasn't learned the spell, but could.
-  learnable,
+/// A condition that must be met before an [Ability] can be used.
+abstract class Requirement {
+  /// Describes the requirement to the user.
+  String get description;
 
-  /// The hero has already learned as many spells as their [Intellect] allows
-  /// so can't learn this (or any other spell) right now.
-  notEnoughIntellect,
-
-  /// The hero's level in the spell's spell school isn't high enough to learn
-  /// this spell.
-  notEnoughSchool,
-
-  /// The hero has learned and currently knows the spell.
-  known,
-
-  /// The hero learned the spell but forgot it because their [Intellect] is
-  /// currently too low.
-  forgotten,
+  /// If the requirement is met, returns `null`. Otherwise returns a string
+  /// describing why it is not met.
+  String? check(Game game);
 }
 
-abstract class Spell extends Ability {
-  /// How difficult the spell is to cast.
-  int get spellLevel;
+class SkillLevelRequirement extends Requirement {
+  final Skill _skill;
+  final int _level;
+
+  SkillLevelRequirement(this._skill, this._level);
 
   @override
-  String? unusableReason(Game game) {
-    return switch (game.hero.save.spellStatus(this)) {
-      SpellStatus.learnable ||
-      SpellStatus.notEnoughIntellect ||
-      SpellStatus.notEnoughSchool => "You don't know this spell",
-      SpellStatus.known => null,
-      SpellStatus.forgotten => "You forgot this spell",
-    };
+  String get description =>
+      "You must be at level $_level or higher in ${_skill.name}.";
+
+  @override
+  String? check(Game game) {
+    if (game.hero.skills.level(_skill) >= _level) return null;
+    return "Not enough ${_skill.name}";
+  }
+}
+
+class IntellectRequirement extends Requirement {
+  final int _intellect;
+
+  IntellectRequirement(this._intellect);
+
+  @override
+  String get description => "You need at least $_intellect intellect.";
+
+  @override
+  String? check(Game game) {
+    if (game.hero.save.intellect.value >= _intellect) return null;
+    return "You aren't smart enough.";
   }
 }
 
 /// An [Ability] that can be directly used to perform an action.
 mixin ActionAbility on Ability {
-  Action getAction(Game game, int skillLevel) {
-    return _wrapFocusCost(
-      game.hero.save,
-      skillLevel,
-      onGetAction(game, skillLevel),
-    );
+  Action getAction(Game game) {
+    return _wrapFocusCost(game.hero.save, onGetAction(game));
   }
 
-  Action onGetAction(Game game, int skillLevel);
+  Action onGetAction(Game game);
 }
 
 /// A skill that requires a target position to perform.
@@ -89,32 +98,24 @@ mixin TargetAbility on Ability {
   /// The maximum range of the target from the hero.
   int getRange(Game game);
 
-  Action getTargetAction(Game game, int skillLevel, Vec target) {
-    return _wrapFocusCost(
-      game.hero.save,
-      skillLevel,
-      onGetTargetAction(game, skillLevel, target),
-    );
+  Action getTargetAction(Game game, Vec target) {
+    return _wrapFocusCost(game.hero.save, onGetTargetAction(game, target));
   }
 
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Ability].
-  Action onGetTargetAction(Game game, int skillLevel, Vec target);
+  Action onGetTargetAction(Game game, Vec target);
 }
 
 /// A skill that requires a direction to perform.
 mixin DirectionAbility on Ability {
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Ability].
-  Action getDirectionAction(Game game, int skillLevel, Direction dir) {
-    return _wrapFocusCost(
-      game.hero.save,
-      skillLevel,
-      onGetDirectionAction(game, skillLevel, dir),
-    );
+  Action getDirectionAction(Game game, Direction dir) {
+    return _wrapFocusCost(game.hero.save, onGetDirectionAction(game, dir));
   }
 
   /// Override this to create the [Action] that the [Hero] should perform when
   /// using this [Ability].
-  Action onGetDirectionAction(Game game, int skillLevel, Direction dir);
+  Action onGetDirectionAction(Game game, Direction dir);
 }

@@ -1,5 +1,6 @@
 import 'package:piecemeal/piecemeal.dart';
 
+import 'content/ability/abilities.dart';
 import 'content/action/element.dart';
 import 'content/classes.dart';
 import 'content/decor/decor.dart';
@@ -12,7 +13,6 @@ import 'content/item/shops.dart';
 import 'content/monster/monsters.dart';
 import 'content/races.dart';
 import 'content/skill/skills.dart';
-import 'content/spells.dart';
 import 'content/stage/architect.dart';
 import 'content/stage/architectural_style.dart';
 import 'content/stage/town.dart';
@@ -59,9 +59,6 @@ class GameContent implements Content {
   Skill findSkill(String name) => Skills.find(name);
 
   @override
-  Spell findSpell(String name) => Spells.find(name);
-
-  @override
   Iterable<Breed> get breeds => Monsters.breeds.all;
 
   @override
@@ -83,7 +80,7 @@ class GameContent implements Content {
   List<Skill> get skills => Skills.all;
 
   @override
-  List<Spell> get spells => Spells.all;
+  List<Ability> get abilities => Abilities.all;
 
   @override
   Map<String, Shop> get shops => Shops.all;

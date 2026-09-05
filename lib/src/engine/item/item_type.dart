@@ -5,7 +5,6 @@ import '../core/combat.dart';
 import '../core/element.dart';
 import '../core/thing.dart';
 import '../hero/lore.dart';
-import '../hero/skill.dart';
 import 'affix.dart';
 import 'item.dart';
 
@@ -119,11 +118,6 @@ class ItemType {
   /// If the item burns when on the ground, how much fuel it adds to the
   /// burning tile.
   final int fuel;
-
-  // TODO: Remove if I decide that spellbooks don't discover spells and weapons
-  // don't discover masteries.
-  /// The [Skill]s discovered when picking up an item of this type.
-  final List<Skill> skills = [];
 
   /// If items of this type have a built-in affix, the affix.
   ///

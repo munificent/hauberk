@@ -1,5 +1,6 @@
-import '../../../engine.dart';
+import '../../engine.dart';
 
+// TODO: Make this a barbarian class power instead of a skill?
 class DualWield extends Skill {
   @override
   String get name => "Dual-wield";

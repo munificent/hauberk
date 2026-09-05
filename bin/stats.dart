@@ -8,8 +8,8 @@ void main() {
   var intellect = Intellect();
 
   print("      Strength          Agility      Vitality  Intellect");
-  print("      ┌───────────────┐ ┌──────────┐ ┌───────┐ ┌─────────────┐");
-  print("Value MaxFury Toss Heft Dodge Strike MaxHealth MaxFocus Spells");
+  print("      ┌───────────────┐ ┌──────────┐ ┌───────┐ ┌──────┐");
+  print("Value MaxFury Toss Heft Dodge Strike MaxHealth MaxFocus");
 
   for (var i = 1; i <= Stat.modifiedMax; i++) {
     strength.update(i, (_) {});
@@ -25,8 +25,7 @@ void main() {
       " ${agility.dodgeBonus.fmt(w: 5)}"
       " ${agility.strikeBonus.fmt(w: 6)}"
       " ${vitality.maxHealth.fmt(w: 9)}"
-      " ${intellect.maxFocus.fmt(w: 8)}"
-      " ${intellect.spellCount.fmt(w: 6)}",
+      " ${intellect.maxFocus.fmt(w: 8)}",
     );
   }
 

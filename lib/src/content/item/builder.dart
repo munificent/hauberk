@@ -51,7 +51,6 @@ AffixBuilder affix(String nameTemplate, {double frequency = 1.0}) {
 }
 
 class _BaseBuilder {
-  final List<Skill> _skills = [];
   final Map<Element, int> _destroyChance = {};
 
   int? _maxStack;
@@ -95,14 +94,6 @@ class _BaseBuilder {
 
   void twoHanded() {
     _isTwoHanded = true;
-  }
-
-  void skill(String skill) {
-    _skills.add(Skills.find(skill));
-  }
-
-  void skills(List<String> skills) {
-    _skills.addAll(skills.map(Skills.find));
   }
 }
 
@@ -413,9 +404,6 @@ class ItemBuilder extends _BaseBuilder {
 
     itemType.destroyChance.addAll(_category._destroyChance);
     itemType.destroyChance.addAll(_destroyChance);
-
-    itemType.skills.addAll(_category._skills);
-    itemType.skills.addAll(_skills);
 
     return itemType;
   }

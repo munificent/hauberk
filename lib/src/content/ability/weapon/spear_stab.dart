@@ -1,51 +1,26 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
-import 'mastery.dart';
+import '../../skill/mastery.dart';
+import '../mastery.dart';
 
-class SpearMastery extends MasterySkill {
+// TODO: Probably want to make this more powerful and give it a focus cost.
+class SpearStabAbility extends Ability with DirectionAbility {
   // TODO: Tune.
   static double _spearScale(int level) =>
       lerpDouble(level, 1, Skill.modifiedMax, 1.0, 3.0);
-
-  // TODO: Better name.
-  @override
-  String get name => "Spear Mastery";
-
-  @override
-  String get description =>
-      "Your diligent study of spears and polearms lets you attack at a "
-      "distance when wielding one.";
-
-  @override
-  String get weaponType => "spear";
-
-  @override
-  Ability? initializeAbility() => SpearStabAbility(this);
-
-  @override
-  String levelDescription(int level) {
-    return "${super.levelDescription(level)} Distance spear attacks inflict "
-        "${_spearScale(level).fmtPercent()} of the damage of a regular attack.";
-  }
-}
-
-// TODO: Probably want to make this more powerful and give it a focus cost.
-class SpearStabAbility extends MasteryAbility with DirectionAbility {
-  @override
-  final Skill skill;
-
-  SpearStabAbility(this.skill);
 
   @override
   String get name => "Spear Stab";
 
   @override
-  String get weaponType => "spear";
+  final List<Requirement> requirements = [WeaponTypeRequirement("spear")];
 
   @override
-  Action onGetDirectionAction(Game game, int level, Direction dir) =>
-      SpearStabAction(dir, SpearMastery._spearScale(level));
+  Action onGetDirectionAction(Game game, Direction dir) {
+    var level = game.hero.save.skills.level(SpearMastery.instance);
+    return SpearStabAction(dir, _spearScale(level));
+  }
 }
 
 /// A melee attack that penetrates a row of actors.

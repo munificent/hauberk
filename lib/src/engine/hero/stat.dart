@@ -232,10 +232,6 @@ class Intellect extends StatBase {
     return lerpInt(value, 10, 50, 20, 200);
   }
 
-  static int spellCountAt(int value) {
-    return lerpInt(value, 10, 40, 0, 15);
-  }
-
   @override
   Stat get stat => Stat.intellect;
 
@@ -246,11 +242,4 @@ class Intellect extends StatBase {
   String get _loseAdjective => "stupid";
 
   int get maxFocus => maxFocusAt(value);
-
-  int get spellCount => spellCountAt(value);
-
-  double spellFocusScale(int complexity) {
-    var relative = value - complexity.clamp(0, 50);
-    return lerpDouble(relative, 0, 50, 1.0, 0.2);
-  }
 }

@@ -26,7 +26,6 @@ void main() {
   builder.td('Strike', right: true);
   builder.td('Health', right: true);
   builder.td('Max Focus', right: true);
-  builder.td('Spell Focus', right: true);
   builder.tbody();
 
   for (var i = 1; i <= Stat.modifiedMax; i++) {
@@ -43,7 +42,6 @@ void main() {
     builder.td(agility.strikeBonus);
     builder.td(vitality.maxHealth);
     builder.td(intellect.maxFocus);
-    builder.td(intellect.spellFocusScale(10).fmt(d: 2), right: true);
     builder.trEnd();
   }
 

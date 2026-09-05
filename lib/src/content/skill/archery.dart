@@ -1,9 +1,10 @@
-import 'package:piecemeal/piecemeal.dart';
-
 import '../../engine.dart';
-import '../action/bolt.dart';
 
 class Archery extends Skill {
+  static final Archery instance = Archery._();
+
+  Archery._();
+
   @override
   String get name => "Archery";
 
@@ -16,11 +17,6 @@ class Archery extends Skill {
   String levelDescription(int level) =>
       "Scales strike by ${_strikeScale(level).fmtPercent()}.";
 
-  // TODO: Maybe a higher-level archery ability that lets you fire a volley of
-  // arrows.
-  @override
-  Ability? initializeAbility() => FireArrowAbility(this);
-
   @override
   void modifyRangedHit(Hero hero, Item? weapon, Hit hit, int level) {
     if (weapon != null && weapon.type.weaponType == 'bow') {
@@ -30,38 +26,4 @@ class Archery extends Skill {
 
   double _strikeScale(int level) =>
       lerpDouble(level, 1, Skill.modifiedMax, 1.0, 3.0);
-}
-
-class FireArrowAbility extends Ability with TargetAbility {
-  @override
-  final Skill skill;
-
-  FireArrowAbility(this.skill);
-
-  @override
-  String get name => "Fire Arrow";
-
-  @override
-  String? unusableReason(Game game) {
-    if (!_hasBow(game.hero)) return "No bow equipped";
-    return null;
-  }
-
-  /// Focus cost goes down with level.
-  @override
-  int focusCost(int level) => 21 - level;
-
-  @override
-  int getRange(Game game) {
-    return game.hero.createRangedHit().range;
-  }
-
-  @override
-  Action onGetTargetAction(Game game, int level, Vec target) {
-    var hit = game.hero.createRangedHit();
-    return BoltAction(target, hit, canMiss: true);
-  }
-
-  bool _hasBow(Hero hero) =>
-      hero.equipment.weapons.any((item) => item.type.weaponType == "bow");
 }

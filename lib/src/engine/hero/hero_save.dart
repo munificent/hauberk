@@ -4,7 +4,6 @@ import '../core/resource.dart';
 import '../item/equipment.dart';
 import '../item/inventory.dart';
 import '../item/shop.dart';
-import 'ability.dart';
 import 'hero.dart';
 import 'hero_class.dart';
 import 'lore.dart';
@@ -45,11 +44,15 @@ class HeroSave {
 
   final SkillSet skills;
 
+  // TODO: Turn this into acquiredAbilities and notify the player when an
+  // ability's requirements are or are not longer satisfied.
+  /*
   /// The [Spell]s the [Hero] has learned in the order they learned them.
   ///
   /// Note that the [Hero] may not currently "know" all of the spells in this
   /// list if their [Intellect] has been lowered.
   final List<Spell> learnedSpells;
+  */
 
   /// How much gold the hero has.
   int gold = 60;
@@ -111,7 +114,7 @@ class HeroSave {
        crucible = Inventory(ItemLocation.crucible),
        shops = {},
        skills = SkillSet(),
-       learnedSpells = [],
+       /*learnedSpells = [],*/
        log = Log(),
        lore = Lore() {
     // Give new heroes some starting stat points, allocated randomly based on
@@ -148,7 +151,7 @@ class HeroSave {
     this.shops,
     this.experience,
     this.skills,
-    this.learnedSpells,
+    /*this.learnedSpells,*/
     this.log,
     this.lore,
     this.gold,
@@ -179,7 +182,7 @@ class HeroSave {
     shops,
     experience,
     skills.clone(),
-    [...learnedSpells],
+    /*[...learnedSpells],*/
     // Don't clone the log. The log is persistent even when the Hero dies in
     // the dungeon, so all HeroSaves share the same object.
     log,
@@ -221,15 +224,15 @@ class HeroSave {
   }
 
   /// Get the current status of the [hero]'s knowledge of [spell].
-  SpellStatus spellStatus(Spell spell) =>
-      switch (learnedSpells.indexOf(spell)) {
-        -1 when intellect.spellCount - learnedSpells.length <= 0 =>
-          SpellStatus.notEnoughIntellect,
-        -1 when spell.spellLevel > skills.level(spell.skill) =>
-          SpellStatus.notEnoughSchool,
-        -1 => SpellStatus.learnable,
-        var spellIndex when spellIndex >= intellect.spellCount =>
-          SpellStatus.forgotten,
-        _ => SpellStatus.known,
-      };
+  // SpellStatus spellStatus(Spell spell) =>
+  //     switch (learnedSpells.indexOf(spell)) {
+  //       -1 when intellect.spellCount - learnedSpells.length <= 0 =>
+  //         SpellStatus.notEnoughIntellect,
+  //       -1 when spell.spellLevel > skills.level(spell.skill) =>
+  //         SpellStatus.notEnoughSchool,
+  //       -1 => SpellStatus.learnable,
+  //       var spellIndex when spellIndex >= intellect.spellCount =>
+  //         SpellStatus.forgotten,
+  //       _ => SpellStatus.known,
+  //     };
 }

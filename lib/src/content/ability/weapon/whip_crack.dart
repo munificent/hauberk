@@ -2,53 +2,26 @@ import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
 import '../../action/bolt.dart';
-import 'mastery.dart';
+import '../../skill/mastery.dart';
+import '../mastery.dart';
 
-class WhipMastery extends MasterySkill {
+// TODO: Probably want to make this more powerful and give it a focus cost.
+class WhipCrackAbility extends Ability with TargetAbility {
   // TODO: Tune.
   static double _whipScale(int level) =>
       lerpDouble(level, 1, Skill.modifiedMax, 1.0, 3.0);
-
-  // TODO: Better name.
-  @override
-  String get name => "Whip Mastery";
-
-  @override
-  String get description =>
-      "Whips and flails are difficult to use well, but deadly even at a "
-      "distance when mastered.";
-
-  @override
-  String get weaponType => "whip";
-
-  @override
-  Ability? initializeAbility() => WhipCrackAbility(this);
-
-  @override
-  String levelDescription(int level) {
-    return "${super.levelDescription(level)} Ranged whip attacks inflict "
-        "${_whipScale(level).fmtPercent()} of the damage of a regular attack.";
-  }
-}
-
-// TODO: Probably want to make this more powerful and give it a focus cost.
-class WhipCrackAbility extends MasteryAbility with TargetAbility {
-  @override
-  final Skill skill;
-
-  WhipCrackAbility(this.skill);
 
   @override
   String get name => "Whip Crack";
 
   @override
-  String get weaponType => "whip";
+  final List<Requirement> requirements = [WeaponTypeRequirement("whip")];
 
   @override
   int getRange(Game game) => 3;
 
   @override
-  Action onGetTargetAction(Game game, int level, Vec target) {
+  Action onGetTargetAction(Game game, Vec target) {
     var defender = game.stage.actorAt(target);
 
     // Find which hand has a whip. If both do, just pick the first.
@@ -66,7 +39,8 @@ class WhipCrackAbility extends MasteryAbility with TargetAbility {
       break;
     }
 
-    hit.scaleDamage(WhipMastery._whipScale(level), "whip mastery");
+    var level = game.hero.save.skills.level(WhipMastery.instance);
+    hit.scaleDamage(_whipScale(level), "whip mastery");
 
     // TODO: Better effect.
     return BoltAction(target, hit, range: getRange(game), canMiss: true);

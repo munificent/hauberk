@@ -1,51 +1,25 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
-import 'mastery.dart';
-
-class AxeMastery extends MasterySkill {
-  // TODO: Tune.
-  static double _sweepScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
-
-  // TODO: Better name.
-  @override
-  String get name => "Axe Mastery";
-
-  @override
-  String get description =>
-      "Axes are not just for woodcutting. In the hands of a skilled user, "
-      "they can cut down a swath of nearby foes as well.";
-
-  @override
-  String get weaponType => "axe";
-
-  @override
-  Ability? initializeAbility() => AxeSweepAbility(this);
-
-  @override
-  String levelDescription(int level) {
-    return "${super.levelDescription(level)} Sweep attacks inflict "
-        "${_sweepScale(level).fmtPercent()} of the damage of a regular attack.";
-  }
-}
+import '../../skill/mastery.dart';
+import '../mastery.dart';
 
 // TODO: Probably want to make this more powerful and give it a focus cost.
 /// A slashing melee attack that hits a number of adjacent monsters.
-class AxeSweepAbility extends MasteryAbility with DirectionAbility {
-  @override
-  final Skill skill;
-
-  AxeSweepAbility(this.skill);
+class AxeSweepAbility extends Ability with DirectionAbility {
+  // TODO: Tune.
+  static double _sweepScale(int level) => lerpDouble(level, 1, 10, 1.0, 3.0);
 
   @override
   String get name => "Axe Sweep";
 
   @override
-  String get weaponType => "axe";
+  final List<Requirement> requirements = [WeaponTypeRequirement("axe")];
 
   @override
-  Action onGetDirectionAction(Game game, int level, Direction dir) {
-    return AxeSweepAction(dir, AxeMastery._sweepScale(level));
+  Action onGetDirectionAction(Game game, Direction dir) {
+    var level = game.hero.save.skills.level(AxeMastery.instance);
+    return AxeSweepAction(dir, _sweepScale(level));
   }
 }
 

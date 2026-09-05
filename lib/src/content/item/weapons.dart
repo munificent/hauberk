@@ -11,7 +11,6 @@ void weapons() {
   category(CharCode.latinSmallLetterAWithAcute, verb: "hit[s]")
     ..tag("equipment/weapon/club")
     ..frequency(0.5)
-    ..skill("Bludgeoning")
     ..toss(breakage: 25, range: 5);
   item("Stick", tan)
     ..depth(1, to: 20)
@@ -88,8 +87,7 @@ void weapons() {
   category(CharCode.latinSmallLetterNWithTilde, verb: "whip[s]")
     ..tag("equipment/weapon/whip")
     ..frequency(0.5)
-    ..toss(breakage: 25, range: 4)
-    ..skill("Whip Mastery");
+    ..toss(breakage: 25, range: 4);
   item("Whip", tan, price: 40)
     ..depth(4)
     ..weapon(9, heft: 7)
@@ -153,8 +151,7 @@ void weapons() {
   category(CharCode.feminineOrdinalIndicator, verb: "slash[es]")
     ..tag("equipment/weapon/sword")
     ..frequency(0.5)
-    ..toss(breakage: 20, range: 5)
-    ..skill("Swordfighting");
+    ..toss(breakage: 20, range: 5);
   item("Rapier", warmGray, price: 140)
     ..depth(13)
     ..weapon(13, heft: 13)
@@ -191,8 +188,7 @@ void weapons() {
   category(CharCode.masculineOrdinalIndicator, verb: "stab[s]")
     ..tag("equipment/weapon/spear")
     ..frequency(0.5)
-    ..toss(range: 9)
-    ..skill("Spear Mastery");
+    ..toss(range: 9);
   item("Pointed Stick", brown, price: 10)
     ..depth(2, to: 30)
     ..weapon(7, heft: 9)
@@ -211,8 +207,7 @@ void weapons() {
     ..tag("equipment/weapon/polearm")
     ..frequency(0.5)
     ..twoHanded()
-    ..toss(range: 4)
-    ..skill("Spear Mastery");
+    ..toss(range: 4);
   item("Lance", lightBlue, price: 550)
     ..depth(28)
     ..weapon(22, heft: 23)
@@ -226,8 +221,7 @@ void weapons() {
 
   category(CharCode.invertedQuestionMark, verb: "chop[s]")
     ..tag("equipment/weapon/axe")
-    ..frequency(0.5)
-    ..skill("Axe Mastery");
+    ..frequency(0.5);
   item("Hatchet", coolGray, price: 90)
     ..depth(6, to: 50)
     ..weapon(12, heft: 10)
@@ -252,8 +246,7 @@ void weapons() {
     ..tag("equipment/weapon/bow")
     ..frequency(0.3)
     ..twoHanded()
-    ..toss(breakage: 50, range: 5)
-    ..skill("Archery");
+    ..toss(breakage: 50, range: 5);
   item("Short Bow", tan, price: 120)
     ..depth(6, to: 60)
     ..ranged("arrow", heft: 12, damage: 5, range: 8)

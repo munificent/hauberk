@@ -29,12 +29,12 @@ import '../panel/stage_panel.dart';
 import '../popup/exit_popup.dart';
 import '../popup/forfeit_popup.dart';
 import '../popup/select_depth_popup.dart';
-import '../spell_dialog.dart';
 import '../storage.dart';
 import '../wizard_dialog.dart';
 import 'direction_dialog.dart';
 import 'loading_dialog.dart';
 import 'target_dialog.dart';
+import 'use_ability_dialog.dart';
 
 class GameScreen extends Screen<Input> {
   final Game game;
@@ -180,11 +180,13 @@ class GameScreen extends Screen<Input> {
       case Input.forfeit:
         ui.push(ForfeitPopup(isTown: game.depth == 0));
       case Input.useAbility:
-        ui.push(AbilityDialog(this, showSpells: false));
+        ui.push(UseAbilityDialog(this /*, showSpells: false*/));
+      /*
       case Input.castSpell:
         ui.push(AbilityDialog(this, showSpells: true));
-      case Input.editSpells:
-        ui.push(SpellDialog(game.content, game.hero));
+        */
+      case Input.editSpells: // TODO: Rename.
+        ui.push(AbilityDialog(game));
       case Input.spendExperience:
         ui.push(ExperienceDialog(game.content, game.hero));
       case Input.help:
@@ -276,12 +278,7 @@ class GameScreen extends Screen<Input> {
             // Ask user to pick a direction.
             ui.push(AbilityDirectionDialog(this, _fireTowards));
           case ActionAbility actionAbility:
-            game.hero.setNextAction(
-              actionAbility.getAction(
-                game,
-                game.hero.skills.level(actionAbility.skill),
-              ),
-            );
+            game.hero.setNextAction(actionAbility.getAction(game));
           default:
             game.log.error("No ability selected.");
             dirty();
@@ -355,10 +352,10 @@ class GameScreen extends Screen<Input> {
         // Save after changing items in the town.
         _storage.save();
 
-      case (AbilityDialog(), TargetAbility ability):
+      case (UseAbilityDialog(), TargetAbility ability):
         _openTargetDialog(ability);
 
-      case (AbilityDialog(), DirectionAbility ability):
+      case (UseAbilityDialog(), DirectionAbility ability):
         ui.push(
           AbilityDirectionDialog(this, (dir) {
             _lastAbility = ability;
@@ -366,11 +363,9 @@ class GameScreen extends Screen<Input> {
           }),
         );
 
-      case (AbilityDialog(), ActionAbility ability):
+      case (UseAbilityDialog(), ActionAbility ability):
         _lastAbility = ability;
-        game.hero.setNextAction(
-          ability.getAction(game, game.hero.skills.level(ability.skill)),
-        );
+        game.hero.setNextAction(ability.getAction(game));
 
       case (ExperienceDialog(), _):
         // Save in case they gained any stats or skills.
@@ -533,13 +528,7 @@ class GameScreen extends Screen<Input> {
     // TODO: It's kind of annoying that we force the player to select a target
     // or direction for skills that spend focus even when they won't be able to
     // perform it. Should do an early check first.
-    game.hero.setNextAction(
-      ability.getTargetAction(
-        game,
-        game.hero.skills.level(ability.skill),
-        currentTarget!,
-      ),
-    );
+    game.hero.setNextAction(ability.getTargetAction(game, currentTarget!));
   }
 
   void _fireTowards(Direction dir) {
@@ -548,13 +537,7 @@ class GameScreen extends Screen<Input> {
 
     switch (_lastAbility) {
       case DirectionAbility directionAbility:
-        game.hero.setNextAction(
-          directionAbility.getDirectionAction(
-            game,
-            game.hero.skills.level(directionAbility.skill),
-            dir,
-          ),
-        );
+        game.hero.setNextAction(directionAbility.getDirectionAction(game, dir));
 
       case TargetAbility targetAbility:
         var pos = game.hero.pos + dir;
@@ -584,14 +567,8 @@ class GameScreen extends Screen<Input> {
           previous = step;
         }
 
-        if (currentTarget != null) {
-          game.hero.setNextAction(
-            targetAbility.getTargetAction(
-              game,
-              game.hero.skills.level(targetAbility.skill),
-              currentTarget!,
-            ),
-          );
+        if (currentTarget case var target?) {
+          game.hero.setNextAction(targetAbility.getTargetAction(game, target));
         } else {
           var tile = game.stage[game.hero.pos + dir].type.name;
           game.log.error("There is a $tile in the way.");

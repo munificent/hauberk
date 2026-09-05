@@ -1,156 +1,158 @@
-import 'dart:math' as math;
-
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import '../engine.dart';
 import '../hues.dart';
-import 'game/game_screen.dart';
 import 'input.dart';
 import 'widget/draw.dart';
 
-/// Selects an [Ability] to perform.
+// TODO: Should this be a tab on the info screen instead? Need to decide if a
+// user explicitly chooses to learn abilities or they are granted automatically
+// when requirements are met. If the latter, then this can probably be an info
+// screen. If the former, it should probably be on the experience dialog.
+
+/// Describe abilities.
 class AbilityDialog extends Screen<Input> {
-  final GameScreen _gameScreen;
+  final Game _game;
+  final List<Ability> _abilities = [];
 
-  // TODO: Consider whether it's a better UX to merge these dialogs and show
-  // abilities and spells together.
+  int _selectedAbilityIndex = 0;
 
-  /// If `true`, the dialog is for selecting a spell to cast, otherwise it's
-  /// for selecting a non-spell ability.
-  final bool _showSpells;
+  Ability get _selectedAbility => _abilities[_selectedAbilityIndex];
 
-  final List<Ability> _abilities;
-
-  @override
-  bool get isTransparent => true;
-
-  AbilityDialog(this._gameScreen, {required bool showSpells})
-    : _showSpells = showSpells,
-      _abilities = [
-        if (showSpells)
-          ..._gameScreen.game.hero.save.learnedSpells
-        else
-          for (var skill in _gameScreen.game.hero.skills.acquired)
-            ?skill.ability,
-      ];
+  AbilityDialog(this._game) {
+    // TODO: Do something here if the abilities need to be sorted or categorized
+    // somehow.
+    _abilities.addAll(_game.content.abilities);
+  }
 
   @override
   bool handleInput(Input input) {
-    if (input == Input.cancel) {
-      ui.pop();
-      return true;
+    switch (input) {
+      case Input.n:
+        _changeAbility(-1);
+      case Input.s:
+        _changeAbility(1);
+      case Input.cancel:
+        ui.pop();
+      default:
+        return false;
     }
 
-    return false;
-  }
-
-  @override
-  bool keyDown(int keyCode, {required bool shift, required bool alt}) {
-    if (shift || alt) return false;
-
-    if (keyCode >= KeyCode.a && keyCode <= KeyCode.z) {
-      _useAbility(keyCode - KeyCode.a);
-      return true;
-    }
-
-    // TODO: Quick keys.
-    return false;
-  }
-
-  void _useAbility(int index) {
-    if (index >= _abilities.length) return;
-    if (_abilities[index].unusableReason(_gameScreen.game) != null) return;
-
-    ui.pop(_abilities[index]);
+    return true;
   }
 
   @override
   void render(Terminal terminal) {
-    Draw.helpKeys(terminal, {
-      "A-Z": _showSpells ? "Select spell" : "Select ability",
-      // "1-9": "Bind quick key",
-      "`": "Exit",
-    });
+    terminal.clear();
 
-    // If the item panel is visible, put it there. Otherwise, put it in the
-    // stage area.
-    if (_gameScreen.itemPanel.isVisible) {
-      terminal = terminal.rect(
-        _gameScreen.itemPanel.bounds.left,
-        _gameScreen.itemPanel.bounds.top,
-        _gameScreen.itemPanel.bounds.width,
-        _gameScreen.itemPanel.bounds.height,
-      );
-    } else {
-      terminal = terminal.rect(
-        _gameScreen.stagePanel.bounds.left,
-        _gameScreen.stagePanel.bounds.top,
-        _gameScreen.stagePanel.bounds.width,
-        _gameScreen.stagePanel.bounds.height,
-      );
-    }
-
-    // Draw a box for the contents.
-    var height = math.max(_abilities.length + 2, 3);
-
-    Draw.frame(
-      terminal,
-      height: height,
-      label: _showSpells ? "Cast which spell?" : "Use which ability?",
-      selected: true,
+    _renderAbilityList(terminal.rect(0, 0, 40, terminal.height - 1));
+    _renderAbility(
+      terminal.rect(40, 0, terminal.width - 40, terminal.height - 1),
     );
 
-    terminal.writeAt(terminal.width - 7, 0, ' Focus', UIHue.highlight);
+    Draw.helpKeys(terminal, {"↕": "Select ability", "`": "Exit"});
+  }
 
-    terminal = terminal.rect(1, 1, terminal.width - 2, terminal.height - 2);
+  void _renderAbilityList(Terminal terminal) {
+    const row = "─────────────────────────────── ─────";
 
-    if (_abilities.isEmpty) {
+    Draw.frame(terminal, label: "Abilities");
+
+    terminal.writeAt(34, 1, "Focus", UIHue.header);
+    terminal.writeAt(2, 2, row, UIHue.line);
+
+    var i = 0;
+    for (var ability in _abilities) {
+      var y = i * 2 + 3;
+      terminal.writeAt(2, y + 1, row, UIHue.rowSeparator);
+
+      //   var (nameColor, levelColor) = switch (_hero.save.spellStatus(spell)) {
+      //     _ when i == _selectedSpellIndex => (UIHue.highlight, UIHue.highlight),
+      //     SpellStatus.known => (UIHue.selectable, UIHue.text),
+      //     SpellStatus.learnable => (UIHue.selectable, UIHue.text),
+      //     SpellStatus.forgotten ||
+      //     SpellStatus.notEnoughIntellect ||
+      //     SpellStatus.notEnoughSchool => (UIHue.disabled, UIHue.disabled),
+      //   };
+
+      var nameColor = i == _selectedAbilityIndex
+          ? UIHue.highlight
+          : UIHue.selectable;
+
+      var focusColor = i == _selectedAbilityIndex
+          ? UIHue.highlight
+          : UIHue.text;
+
+      terminal.writeAt(2, y, ability.name, nameColor);
       terminal.writeAt(
-        0,
-        0,
-        _showSpells
-            ? "(You don't know any spells)"
-            : "(You don't have any abilities)",
-        UIHue.disabled,
+        34,
+        y,
+        ability.focusCost(_game.hero.save).fmt(w: 5),
+        focusColor,
       );
-      return;
+
+      i++;
     }
 
-    // TODO: Handle this being taller than the screen.
-    var hero = _gameScreen.game.hero;
-    for (var y = 0; y < _abilities.length; y++) {
-      var ability = _abilities[y];
-      var skillLevel = hero.skills.level(ability.skill);
-      var focusCost = ability.focusCost(skillLevel);
+    terminal.drawChar(
+      1,
+      _selectedAbilityIndex * 2 + 3,
+      CharCode.blackRightPointingPointer,
+      UIHue.highlight,
+    );
+  }
 
-      if (ability.unusableReason(_gameScreen.game) case var reason?) {
-        terminal.writeAt(
-          terminal.width - reason.length - 2,
-          y,
-          "($reason)",
-          UIHue.disabled,
-        );
-        terminal.writeAt(3, y, ability.name, UIHue.disabled);
-      } else if (_gameScreen.game.hero.focus < focusCost) {
-        terminal.writeAt(3, y, ability.name, UIHue.disabled);
-        terminal.writeAt(terminal.width - 3, y, focusCost.fmt(w: 3), Color.red);
-      } else {
-        terminal.writeAt(0, y, " )   ", UIHue.disabled);
-        terminal.writeAt(
-          0,
-          y,
-          "abcdefghijklmnopqrstuvwxyz"[y],
-          UIHue.highlight,
-        );
-        terminal.writeAt(3, y, ability.name, UIHue.selectable);
-        terminal.writeAt(
-          terminal.width - 3,
-          y,
-          focusCost.fmt(w: 3),
-          UIHue.text,
-        );
+  void _renderAbility(Terminal terminal) {
+    var ability = _selectedAbility;
+    Draw.frame(terminal, label: ability.name, selected: true);
+
+    _writeText(terminal, 1, 2, ability.description);
+
+    // var status = switch (_hero.save.spellStatus(spell)) {
+    //   SpellStatus.known => "You know this spell.",
+    //   SpellStatus.forgotten =>
+    //     "You learned this spell but your intellect "
+    //         "is currently too low to use it.",
+    //   SpellStatus.notEnoughIntellect =>
+    //     "You aren't smart enough to learn any more spells.",
+    //   SpellStatus.notEnoughSchool =>
+    //     "You aren't skilled enough in ${spell.skill.name} to learn this spell.",
+    //   SpellStatus.learnable => "You can learn this spell.",
+    // };
+    // // TODO: Different colors.
+    // var y = 12;
+    // y += Draw.text(terminal, status, x: 1, y: y, width: terminal.width - 2);
+
+    // Show the requirements.
+    terminal.writeAt(1, 10, "Requirements:", UIHue.header);
+    var y = 12;
+    for (var requirement in ability.requirements) {
+      var (bulletColor, textColor) = requirement.check(_game) == null
+          ? (sherwood, peaGreen)
+          : (maroon, red);
+
+      terminal.drawChar(1, y, CharCode.bullet, bulletColor);
+      for (var line in Log.wordWrap(50, requirement.description)) {
+        terminal.writeAt(3, y++, line, textColor);
       }
+
+      y++;
     }
+
+    terminal.writeAt(1, 32, "Focus cost:", UIHue.label);
+    var focusCost = ability.focusCost(_game.hero.save).fmt(w: 3);
+    terminal.writeAt(13, 32, focusCost, UIHue.text);
+  }
+
+  void _writeText(Terminal terminal, int x, int y, String text) {
+    Draw.text(terminal, text, x: x, y: y, width: terminal.width - 1);
+  }
+
+  void _changeAbility(int offset) {
+    _selectedAbilityIndex =
+        (_selectedAbilityIndex + _abilities.length + offset) %
+        _abilities.length;
+    dirty();
   }
 }

@@ -3,10 +3,8 @@ import 'dart:math' as math;
 import '../core/combat.dart';
 import '../item/item.dart';
 import '../monster/monster.dart';
-import 'ability.dart';
 import 'hero.dart';
 import 'hero_save.dart';
-import 'stat.dart';
 
 /// An immutable unique skill a hero may learn.
 ///
@@ -39,12 +37,6 @@ abstract class Skill implements Comparable<Skill> {
   /// The experience cost to reach level one in this skill.
   int get baseExperience => 1000;
 
-  // TODO: May want this to be per-level at some point if there are skills that
-  // grant multiple abilities at different levels.
-  /// If this skill grants an ability, the ability.
-  Ability? get ability => _ability;
-  late final Ability? _ability = initializeAbility();
-
   String levelDescription(int level);
 
   /// The amount of experience to increase the skill to [level] from the
@@ -76,9 +68,6 @@ abstract class Skill implements Comparable<Skill> {
   /// Gives the skill a chance to adjust the [heftModifier] applied to the base
   /// heft of a weapon.
   double modifyHeft(Hero hero, int level, double heftModifier) => heftModifier;
-
-  /// Called once for the skill to create its [Ability] if it has one.
-  Ability? initializeAbility() => null;
 
   @override
   int compareTo(Skill other) => _sortOrder.compareTo(other._sortOrder);

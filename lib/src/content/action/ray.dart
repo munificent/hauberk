@@ -117,6 +117,10 @@ class RayAction extends RayActionBase with ElementActionMixin {
   factory RayAction.cone(Vec from, Vec to, Hit hit) =>
       RayAction._(hit, from, to, 1.0 / 8.0);
 
+  /// A 22.5° cone of [hit] centered on the line from [from] to [to].
+  factory RayAction.narrowCone(Vec from, Vec to, Hit hit) =>
+      RayAction._(hit, from, to, 1.0 / 16.0);
+
   /// A complete ring of [hit] radiating outwards from [center].
   factory RayAction.ring(Vec center, Hit hit) =>
       RayAction._(hit, center, center, 1.0);

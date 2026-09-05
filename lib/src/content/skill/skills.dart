@@ -2,13 +2,8 @@ import '../../engine.dart';
 import 'archery.dart';
 import 'battle_hardening.dart';
 import 'bloodlust.dart';
-import 'mastery/axe_mastery.dart';
-import 'mastery/bludgeoning.dart';
-import 'mastery/dual_wield.dart';
-import 'mastery/knife_fighting.dart';
-import 'mastery/spear_mastery.dart';
-import 'mastery/swordfighting.dart';
-import 'mastery/whip_mastery.dart';
+import 'dual_wield.dart';
+import 'mastery.dart';
 import 'spell_school.dart';
 
 class Skills {
@@ -27,13 +22,13 @@ class Skills {
     DualWield(),
 
     // Weapon masteries.
-    Archery(),
-    AxeMastery(),
-    Bludgeoning(),
+    Archery.instance,
+    AxeMastery.instance,
+    Bludgeoning.instance,
     KnifeFighting(),
-    SpearMastery(),
+    SpearMastery.instance,
     Swordfighting(),
-    WhipMastery(),
+    WhipMastery.instance,
 
     // TODO: Getting rid of these as skills at least for now.
     // Slays.
@@ -52,9 +47,9 @@ class Skills {
     */
 
     // Spell schools.
-    SpellSchool("Conjuring"),
-    SpellSchool("Divination"),
-    SpellSchool("Sorcery"),
+    SpellSchool.conjuring,
+    SpellSchool.divination,
+    SpellSchool.sorcery,
   ];
 
   static final Map<String, Skill> _byName = {

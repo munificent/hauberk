@@ -28,6 +28,7 @@ class Input {
   static const heroInfo = Input("heroInfo");
   static const useAbility = Input("useAbility");
   static const castSpell = Input("castSpell");
+  // TODO: Rename.
   static const editSpells = Input("editSpells");
   static const spendExperience = Input("spendExperience");
   static const help = Input("help");

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:piecemeal/piecemeal.dart';
 
 import '../action/action.dart';
@@ -41,9 +39,6 @@ class Hero extends Actor {
   /// Damage scale for wielded weapons based on strength, their combined heft,
   /// skills, etc.
   final Property<double> _heftDamageScale = Property();
-
-  /// How many spells the hero is able to know, based on intellect.
-  final Property<int> _spellCount = Property();
 
   /// How full the hero is.
   ///
@@ -444,6 +439,7 @@ class Hero extends Actor {
       }
     });
 
+    /*
     var spellCount = intellect.spellCount;
     _spellCount.update(spellCount, (previous) {
       // Let the player know if they lost or regained any previously learned
@@ -473,6 +469,7 @@ class Hero extends Actor {
         }
       }
     });
+    */
 
     // Keep other stats in bounds.
     health = health.clamp(0, maxHealth);

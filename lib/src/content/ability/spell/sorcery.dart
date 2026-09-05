@@ -1,23 +1,24 @@
-import '../../engine.dart';
-import '../action/barrier.dart';
-import '../action/bolt.dart';
-import '../action/flow.dart';
-import '../action/ray.dart';
-import '../elements.dart';
-import '../spells.dart';
+import '../../../engine.dart';
+import '../../action/barrier.dart';
+import '../../action/bolt.dart';
+import '../../action/flow.dart';
+import '../../action/ray.dart';
+import '../../elements.dart';
+import '../../skill/spell_school.dart';
+import 'spell.dart';
 
 // TODO: Spells should get stronger as sorcery level increases.
 
-List<Spell> sorcerySpells(Skill sorcerySkill) {
+List<Spell> sorcerySpells() {
   return [
     TargetSpell(
-      sorcerySkill,
       "Icicle",
+      SpellSchool.sorcery,
       description: "Launches a spear-like icicle.",
       spellLevel: 1,
       focus: 12,
       range: 8,
-      (spell, game, level, target) {
+      (spell, game, target) {
         var attack = Attack(
           Prop("icicle"),
           "pierce",
@@ -29,13 +30,13 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       },
     ),
     TargetSpell(
-      sorcerySkill,
       "Brilliant Beam",
+      SpellSchool.sorcery,
       description: "Emits a blinding beam of radiance.",
       spellLevel: 2,
       focus: 24,
       range: 12,
-      (spell, game, level, target) {
+      (spell, game, target) {
         var attack = Attack(
           Prop("light"),
           "sear",
@@ -43,16 +44,16 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
           spell.range,
           Elements.light,
         );
-        return RayAction.cone(game.hero.pos, target, attack.createHit());
+        return RayAction.narrowCone(game.hero.pos, target, attack.createHit());
       },
     ),
     ActionSpell(
-      sorcerySkill,
       "Windstorm",
+      SpellSchool.sorcery,
       description: "Summons a blast of air, spreading out from the sorceror.",
       spellLevel: 3,
       focus: 36,
-      (spell, game, level) {
+      (spell, game) {
         var attack = Attack(Prop("wind"), "blast", 10, 6, Elements.air);
         return FlowAction(
           game.hero.pos,
@@ -62,13 +63,13 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       },
     ),
     TargetSpell(
-      sorcerySkill,
       "Fire Barrier",
+      SpellSchool.sorcery,
       description: "Creates a wall of fire.",
       spellLevel: 4,
       focus: 45,
       range: 8,
-      (spell, game, level, target) {
+      (spell, game, target) {
         var attack = Attack(
           Prop("fire"),
           "burn",
@@ -80,12 +81,12 @@ List<Spell> sorcerySpells(Skill sorcerySkill) {
       },
     ),
     ActionSpell(
-      sorcerySkill,
       "Tidal Wave",
+      SpellSchool.sorcery,
       description: "Summons a giant tidal wave.",
       spellLevel: 5,
       focus: 70,
-      (spell, game, level) {
+      (spell, game) {
         var attack = Attack(Prop("wave"), "inundate", 50, 15, Elements.water);
         return FlowAction(
           game.hero.pos,

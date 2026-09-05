@@ -1,51 +1,25 @@
 import 'package:piecemeal/piecemeal.dart';
 
 import '../../../engine.dart';
-import 'mastery.dart';
+import '../../skill/mastery.dart';
+import '../mastery.dart';
 
-class Bludgeoning extends MasterySkill {
+// TODO: Probably want to make this more powerful and give it a focus cost.
+class ClubBashAbility extends Ability with DirectionAbility {
   // TODO: Tune.
   static double _bashScale(int level) =>
       lerpDouble(level, 1, Skill.modifiedMax, 1.0, 2.0);
 
   @override
-  String get name => "Bludgeoning";
-
-  @override
-  String get description =>
-      "Bludgeons may not be the most sophisticated of weapons, but hitting "
-      "someone really hard with a blunt object can often be an effective "
-      "argument in your favor.";
-
-  @override
-  String get weaponType => "club";
-
-  @override
-  Ability? initializeAbility() => ClubBashAbility(this);
-
-  @override
-  String levelDescription(int level) {
-    // TODO: Describe scale.
-    return "${super.levelDescription(level)} Bashes the enemy away.";
-  }
-}
-
-// TODO: Probably want to make this more powerful and give it a focus cost.
-class ClubBashAbility extends MasteryAbility with DirectionAbility {
-  @override
-  final Skill skill;
-
-  ClubBashAbility(this.skill);
-
-  @override
   String get name => "Club Bash";
 
   @override
-  String get weaponType => "club";
+  final List<Requirement> requirements = [WeaponTypeRequirement("club")];
 
   @override
-  Action onGetDirectionAction(Game game, int level, Direction dir) {
-    return ClubBashAction(dir, Bludgeoning._bashScale(level));
+  Action onGetDirectionAction(Game game, Direction dir) {
+    var level = game.hero.save.skills.level(Bludgeoning.instance);
+    return ClubBashAction(dir, _bashScale(level));
   }
 }
 

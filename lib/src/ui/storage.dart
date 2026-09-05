@@ -106,7 +106,9 @@ class Storage {
 
         var experience = heroData['experience'] as int;
         var skills = _loadSkills(heroData['skills']);
+        /*
         var spells = _loadSpells(heroData['spells']);
+        */
         var log = _loadLog(heroData['log']);
         var lore = _loadLore(heroData['lore'] as Map<String, dynamic>);
 
@@ -126,7 +128,7 @@ class Storage {
           shops,
           experience,
           skills,
-          spells,
+          /*spells,*/
           log,
           lore,
           gold,
@@ -198,12 +200,14 @@ class Storage {
     });
   }
 
+  /*
   List<Spell> _loadSpells(List<dynamic>? data) {
     return [
       if (data != null)
         for (var name in data) content.findSpell(name as String),
     ];
   }
+  */
 
   Log _loadLog(Object? data) {
     var log = Log();
@@ -319,7 +323,7 @@ class Storage {
               for (var skill in hero.skills.acquired)
                 skill.name: hero.skills.baseLevel(skill),
             },
-            'spells': [for (var spell in hero.learnedSpells) spell.name],
+            /*'spells': [for (var spell in hero.learnedSpells) spell.name],*/
             'log': _saveLog(hero.log),
             'lore': _saveLore(hero.lore),
             'gold': hero.gold,

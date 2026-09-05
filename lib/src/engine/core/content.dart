@@ -36,8 +36,6 @@ abstract class Content {
 
   Skill findSkill(String name);
 
-  Spell findSpell(String name);
-
   Iterable<Breed> get breeds;
 
   List<HeroClass> get classes;
@@ -52,7 +50,7 @@ abstract class Content {
 
   List<Skill> get skills;
 
-  List<Spell> get spells;
+  List<Ability> get abilities;
 
   Map<String, Shop> get shops;
 
