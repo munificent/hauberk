@@ -67,6 +67,44 @@ void main() {
 
   _ui = UserInterface<Input>(_font.terminal);
 
+  ///     Key Normal                  Shift
+  ///     Q   Quit (forfeit)          -
+  ///     W   -                       -
+  ///     E   Equip (item)            Spend experience
+  ///     R   -                       -
+  ///     T   Throw (item)            -
+  ///     Y   -                       -
+  ///     U   Use (item)              -
+  ///     I   Walk NW                 Run NW
+  ///     O   Walk W                  Run W
+  ///     P   Walk NE                 Run NE
+  ///
+  ///     [
+  ///     ]
+  ///     \
+  ///     A   (Use) ability           About hero
+  ///     S   (Cast) spell (unused)   View abilities
+  ///     D   Drop                    -
+  ///     F
+  ///     G   Get (item)              -
+  ///     H   Help                    -
+  ///     J
+  ///     K   Walk W                  Run W
+  ///     L   OK                      Rest
+  ///     ;   Walk E                  Run E
+  ///     '
+  ///
+  ///     Z   -                       -
+  ///     X   Swap (item)             -
+  ///     C   Operate (door, chest)   -
+  ///     V   -                       -
+  ///     B   -                       -
+  ///     N   -                       -
+  ///     M   -                       -
+  ///     ,   Walk SW                 Run SW
+  ///     .   Walk S                  Run S
+  ///     /   Walk SE                 Run SE
+
   // Set up the keyPress.
   _ui.keyPress.bind(Input.ok, KeyCode.enter);
   _ui.keyPress.bind(Input.cancel, KeyCode.escape);
