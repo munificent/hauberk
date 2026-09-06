@@ -104,7 +104,7 @@ class Hit {
   }
 
   double get _strikeBonus {
-    return _strikeBonuses.fold(1, (total, bonus) => total + bonus.amount);
+    return _strikeBonuses.fold(0, (total, bonus) => total + bonus.amount);
   }
 
   double get _damageScale {
@@ -112,7 +112,7 @@ class Hit {
   }
 
   double get _damageBonus {
-    return _damageBonuses.fold(1, (total, bonus) => total + bonus.amount);
+    return _damageBonuses.fold(0, (total, bonus) => total + bonus.amount);
   }
 
   Element get element {
