@@ -10,8 +10,10 @@ class BattleHardening extends Skill {
   String get name => "Battle Hardening";
 
   @override
-  int modifyArmor(HeroSave hero, int level, int armor) =>
-      armor + _armorModifier(level);
+  int modifyArmor(HeroSave hero, int armor) {
+    var level = hero.skills.level(this);
+    return armor + _armorModifier(level);
+  }
 
   @override
   String levelDescription(int level) =>

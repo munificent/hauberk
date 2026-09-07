@@ -17,13 +17,8 @@ class Bloodlust extends Skill {
   String get name => "Bloodlust";
 
   @override
-  void modifyHit(
-    Hero hero,
-    Monster? monster,
-    Item? weapon,
-    Hit hit,
-    int level,
-  ) {
+  void modifyHit(Hero hero, Monster? monster, Item? weapon, Hit hit) {
+    var level = hero.save.skills.level(this);
     hit.scaleDamage(damageScaleAt(level) * hero.fury, 'Bloodlust');
   }
 

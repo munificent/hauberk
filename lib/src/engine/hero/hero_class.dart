@@ -1,4 +1,5 @@
 import '../item/item_type.dart';
+import 'power.dart';
 import 'skill.dart';
 
 /// The hero's class.
@@ -9,10 +10,18 @@ class HeroClass {
 
   final Map<Skill, int> _skillCaps;
 
+  final List<Power> powers;
+
   /// Generates items a hero of this class should start with.
   final Drop startingItems;
 
-  HeroClass(this.name, this.description, this._skillCaps, this.startingItems);
+  HeroClass(
+    this.name,
+    this.description,
+    this._skillCaps,
+    this.powers,
+    this.startingItems,
+  );
 
   /// The maximum level of [skill] that a hero with this class can attain or
   /// `0` if they can't learn this skill at all.

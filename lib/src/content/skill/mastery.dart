@@ -7,16 +7,11 @@ abstract class MasterySkill extends Skill {
       lerpDouble(level, 1, Skill.modifiedMax, 1.1, 4.0);
 
   @override
-  void modifyHit(
-    Hero hero,
-    Monster? monster,
-    Item? weapon,
-    Hit hit,
-    int level,
-  ) {
+  void modifyHit(Hero hero, Monster? monster, Item? weapon, Hit hit) {
     // Only for weapons that this mastery applies to.
     if (weapon == null || weapon.type.weaponType != weaponType) return;
 
+    var level = hero.save.skills.level(this);
     hit.scaleDamage(_damageScale(level), 'mastery');
   }
 
@@ -145,7 +140,9 @@ class Swordfighting extends MasterySkill {
       "${_parryDefense(level)}.";
 
   @override
-  Iterable<Defense> defenses(Hero hero, int level) sync* {
+  Iterable<Defense> defenses(Hero hero) sync* {
+    var level = hero.save.skills.level(this);
+
     // The hero can parry with both swords if dual-wielding.
     for (var weapon in hero.equipment.weapons) {
       if (weapon.type.weaponType == "sword") {

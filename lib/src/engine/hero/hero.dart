@@ -36,8 +36,7 @@ class Hero extends Actor {
   // messages when the calculated value changes. Everything else that uses the
   // value gets it directly. This feels weird.
 
-  /// Damage scale for wielded weapons based on strength, their combined heft,
-  /// skills, etc.
+  /// Damage scale for the main wielded weapon based on strength and heft.
   final Property<double> _heftDamageScale = Property();
 
   /// How full the hero is.
@@ -139,17 +138,6 @@ class Hero extends Actor {
   /// The total weight of all equipment.
   int get weight => save.weight;
 
-  // TODO: Not currently used since skills are not explicitly learned in the
-  // UI. Re-enable when we add rogue skills?
-  /*
-  /// Updates the hero's skill levels to [skills] and apply any other changes
-  /// caused by that.
-  void updateSkills(SkillSet skills) {
-    // Update anything affected.
-    this.skills.update(skills);
-  }
-  */
-
   @override
   int get baseSpeed => Energy.normalSpeed;
 
@@ -163,8 +151,8 @@ class Hero extends Actor {
       if (defense != null) yield defense;
     }
 
-    for (var skill in skills.acquired) {
-      yield* skill.defenses(this, skills.level(skill));
+    for (var capability in save.capabilities) {
+      yield* capability.defenses(this);
     }
 
     // TODO: Temporary bonuses, etc.
@@ -194,9 +182,8 @@ class Hero extends Actor {
 
       hit.addStrike(agility.strikeBonus, 'agility');
 
-      for (var skill in skills.acquired) {
-        var level = skills.level(skill);
-        skill.modifyHit(this, defender as Monster?, weapon, hit, level);
+      for (var capability in save.capabilities) {
+        capability.modifyHit(this, defender as Monster?, weapon, hit);
       }
 
       if (weapon != null) {
@@ -219,9 +206,8 @@ class Hero extends Actor {
     var weapon = weapons[i];
     var hit = weapon.attack!.createHit();
 
-    for (var skill in skills.acquired) {
-      var level = skills.level(skill);
-      skill.modifyRangedHit(this, weapon, hit, level);
+    for (var capability in save.capabilities) {
+      capability.modifyRangedHit(this, weapon, hit);
     }
 
     // Take heft and strength into account.
@@ -406,21 +392,18 @@ class Hero extends Actor {
 
     skills.refreshBonuses(save);
 
-    // Refresh the heft scales.
-    var heftModifier = 1.0;
-    for (var skill in skills.acquired) {
-      heftModifier = skill.modifyHeft(this, skills.level(skill), heftModifier);
-    }
-
-    // When dual-wielding, it's as if each weapon has an individual heft that
-    // is the total of both of them.
-    var totalHeft = 0;
+    // Refresh the heft scale.
     var weapons = equipment.weapons.toList();
-    for (var weapon in equipment.weapons) {
+    var totalHeft = 0.0;
+    for (var weapon in weapons) {
       totalHeft += weapon.heft;
     }
 
-    var heftScale = strength.heftScale((totalHeft * heftModifier).round());
+    for (var capability in save.capabilities) {
+      totalHeft = capability.modifyHeft(this, weapons, totalHeft);
+    }
+
+    var heftScale = strength.heftScale((totalHeft).round());
     _heftDamageScale.update(heftScale, (previous) {
       var description = switch (weapons) {
         // Dual-wielding two of the same weapon.

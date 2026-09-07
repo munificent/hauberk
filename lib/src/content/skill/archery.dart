@@ -18,7 +18,8 @@ class Archery extends Skill {
       "Scales strike by ${_strikeScale(level).fmtPercent()}.";
 
   @override
-  void modifyRangedHit(Hero hero, Item? weapon, Hit hit, int level) {
+  void modifyRangedHit(Hero hero, Item? weapon, Hit hit) {
+    var level = hero.skills.level(this);
     if (weapon != null && weapon.type.weaponType == 'bow') {
       hit.scaleStrike(_strikeScale(level), 'archery');
     }

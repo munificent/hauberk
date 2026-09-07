@@ -1,16 +1,13 @@
 import 'dart:math' as math;
 
-import '../core/combat.dart';
-import '../item/item.dart';
-import '../monster/monster.dart';
-import 'hero.dart';
 import 'hero_save.dart';
+import 'power.dart';
 
 /// An immutable unique skill a hero may learn.
 ///
 /// This class does not contain how good a hero is at the skill. It is more the
 /// *kind* of skill.
-abstract class Skill implements Comparable<Skill> {
+abstract class Skill with Capability implements Comparable<Skill> {
   /// The highest level a skill can have just from spending experience,
   /// ignoring any class-specific restrictions.
   static const baseMax = 10;
@@ -44,30 +41,6 @@ abstract class Skill implements Comparable<Skill> {
   int experienceCost(HeroSave hero, int level) {
     return experienceCostAt(baseExperience, level);
   }
-
-  /// Gives the skill a chance to modify the melee [hit] the [hero] is about to
-  /// perform on [monster] when using [weapon].
-  void modifyHit(
-    Hero hero,
-    Monster? monster,
-    Item? weapon,
-    Hit hit,
-    int level,
-  ) {}
-
-  /// Gives the skill a chance to modify the ranged [hit] the [hero] is about to
-  /// fire using [weapon].
-  void modifyRangedHit(Hero hero, Item? weapon, Hit hit, int level) {}
-
-  /// Modifies the hero's base armor.
-  int modifyArmor(HeroSave hero, int level, int armor) => armor;
-
-  /// Gives the skill a chance to add new defenses to the hero.
-  Iterable<Defense> defenses(Hero hero, int level) => const [];
-
-  /// Gives the skill a chance to adjust the [heftModifier] applied to the base
-  /// heft of a weapon.
-  double modifyHeft(Hero hero, int level, double heftModifier) => heftModifier;
 
   @override
   int compareTo(Skill other) => _sortOrder.compareTo(other._sortOrder);

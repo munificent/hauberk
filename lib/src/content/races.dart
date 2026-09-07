@@ -5,6 +5,7 @@ class Races {
   static final List<Race> all = [
     _race(
       "Dwarf",
+      const [], // TODO: Come up with race powers.
       strength: 1.3,
       agility: 0.6,
       vitality: 1.4,
@@ -17,6 +18,7 @@ class Races {
     ),
     _race(
       "Elf",
+      const [], // TODO: Come up with race powers.
       strength: 0.9,
       agility: 1.1,
       vitality: 0.7,
@@ -29,6 +31,7 @@ class Races {
     // TODO: Make stats lower and enable them to fly?
     _race(
       "Fae",
+      const [], // TODO: Come up with race powers.
       strength: 0.6,
       agility: 1.6,
       vitality: 0.7,
@@ -43,6 +46,7 @@ class Races {
     ),
     _race(
       "Gnome",
+      const [], // TODO: Come up with race powers.
       strength: 0.7,
       agility: 0.8,
       vitality: 1.0,
@@ -56,6 +60,7 @@ class Races {
     ),
     _race(
       "Human",
+      const [], // TODO: Come up with race powers.
       strength: 1.0,
       agility: 1.0,
       vitality: 1.0,
@@ -69,14 +74,15 @@ class Races {
   ];
 
   static Race _race(
-    String name, {
+    String name,
+    List<Power> powers, {
     required double strength,
     required double agility,
     required double vitality,
     required double intellect,
     required String description,
   }) {
-    return Race(name, description, {
+    return Race(name, description, powers, {
       Stat.strength: strength,
       Stat.agility: agility,
       Stat.vitality: vitality,

@@ -1,5 +1,6 @@
 import '../engine.dart';
 import 'item/drops.dart';
+import 'powers.dart';
 import 'skill/skills.dart';
 
 class Classes {
@@ -15,14 +16,27 @@ class Classes {
           "wilds and live on one's wits. Adventurers are flexible and "
           "resourceful. They are masters of nothing, but able to learn a "
           "little of everything.",
+      const [
+        // TODO: Come up with class powers.
+      ],
       {
         ..._battleHardening(10),
         ..._bloodlust(10),
-        ..._dualWield(10),
         ..._archery(10),
         ..._masteries(10),
         ..._spellSchools(10),
       },
+    ),
+
+    _class(
+      "Barbarian",
+      parseDrop("weapon"),
+      "TODO",
+      [
+        DualWield(),
+        // TODO: Another class power.
+      ],
+      {..._battleHardening(), ..._bloodlust(), ..._archery(), ..._masteries()},
     ),
 
     _class(
@@ -36,13 +50,10 @@ class Classes {
           "of their equipment. While they aren't above using a little magic "
           "here and there, they're most comfortable when those supernatural "
           "forces are safely ensconced in a piece of familiar gear.",
-      {
-        ..._battleHardening(),
-        ..._bloodlust(),
-        ..._dualWield(),
-        ..._archery(),
-        ..._masteries(),
-      },
+      const [
+        // TODO: Come up with class powers.
+      ],
+      {..._battleHardening(), ..._bloodlust(), ..._archery(), ..._masteries()},
     ),
 
     _class(
@@ -56,6 +67,9 @@ class Classes {
           "other arts and skills. But the rewards in return can be great for "
           "anyone willing to dance with the raw forces of nature (as well as "
           "some less natural forces).",
+      const [
+        // TODO: Come up with class powers.
+      ],
       {..._archery(1), ..._spellSchools(16)},
     ),
 
@@ -71,9 +85,6 @@ Map<Skill, int> _battleHardening([int? level]) =>
     _skillCap("Battle Hardening", level);
 
 Map<Skill, int> _bloodlust([int? level]) => _skillCap("Bloodlust", level);
-
-/// Creates a skill cap map that caps [DualWield].
-Map<Skill, int> _dualWield([int? level]) => _skillCap("Dual-wield", level);
 
 /// Creates a skill cap map that caps all masteries at [level].
 Map<Skill, int> _masteries([int? level]) => {
@@ -102,7 +113,8 @@ HeroClass _class(
   String name,
   Drop startingItems,
   String description,
+  List<Power> powers,
   Map<Skill, int> skillCaps,
 ) {
-  return HeroClass(name, description, skillCaps, startingItems);
+  return HeroClass(name, description, skillCaps, powers, startingItems);
 }

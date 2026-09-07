@@ -7,6 +7,7 @@ import '../item/shop.dart';
 import 'hero.dart';
 import 'hero_class.dart';
 import 'lore.dart';
+import 'power.dart';
 import 'race.dart';
 import 'skill.dart';
 import 'stat.dart';
@@ -86,8 +87,8 @@ class HeroSave {
       total += item.armor;
     }
 
-    for (var skill in skills.acquired) {
-      total = skill.modifyArmor(this, skills.level(skill), total);
+    for (var capability in capabilities) {
+      total = capability.modifyArmor(this, total);
     }
 
     return total;
@@ -101,6 +102,13 @@ class HeroSave {
     }
 
     return total;
+  }
+
+  /// All of the race, class, and skill capabilities the hero currently has.
+  Iterable<Capability> get capabilities sync* {
+    yield* race.powers;
+    yield* heroClass.powers;
+    yield* skills.acquired;
   }
 
   HeroSave.create(

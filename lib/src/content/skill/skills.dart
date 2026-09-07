@@ -2,7 +2,6 @@ import '../../engine.dart';
 import 'archery.dart';
 import 'battle_hardening.dart';
 import 'bloodlust.dart';
-import 'dual_wield.dart';
 import 'mastery.dart';
 import 'spell_school.dart';
 
@@ -19,7 +18,6 @@ class Skills {
     // Warrior skills.
     BattleHardening(),
     Bloodlust(),
-    DualWield(),
 
     // Weapon masteries.
     Archery.instance,
