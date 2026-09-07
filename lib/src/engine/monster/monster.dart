@@ -61,9 +61,6 @@ class Monster extends Actor {
 
   bool get isAwake => _state is AwakeState;
 
-  @override
-  Motility get motility => breed.motility;
-
   /// Whether the monster wanted to melee or do a ranged attack the last time
   /// it took a step.
   bool wantsToMelee = true;
@@ -142,6 +139,9 @@ class Monster extends Actor {
 
   @override
   int get baseDodge => breed.dodge;
+
+  @override
+  Motility onGetMotility() => breed.motility;
 
   @override
   Iterable<Defense> onGetDefenses() => breed.defenses;

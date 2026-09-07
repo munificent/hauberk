@@ -30,3 +30,16 @@ class QuickStudy extends Power {
     return experience * 1.1;
   }
 }
+
+/// This power doesn't actually do anything. Instead, the [FlitterAbility] is
+/// gated on the hero being a fae.
+///
+/// This is just here to show up in the new hero screen.
+class Flitter extends Power {
+  @override
+  String get name => "Flitter";
+
+  @override
+  String get description =>
+      "Take flight and soar over the ground, at least until you get tired.";
+}

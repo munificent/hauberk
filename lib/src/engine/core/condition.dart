@@ -107,6 +107,19 @@ class BlindnessCondition extends Condition {
   }
 }
 
+class FlyingCondition extends Condition {
+  @override
+  void onDeactivate(Action action) {
+    action.show("{1} flutter[s] down to the ground.", action.actor);
+
+    // TODO: Handle landing on a tile that can't be walked on. Water should
+    // probably drown the actor over a few turns (mainly so the hero has a turn
+    // or two to try to teleport or escape). Tables should I guess let them
+    // walk off? Maybe we pathfind to the nearest walkable tile and say "You
+    // fell off the [obstacle]!"?
+  }
+}
+
 /// A condition that provides resistance to an element.
 class ResistCondition extends Condition {
   final Element _element;

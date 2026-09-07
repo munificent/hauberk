@@ -2,6 +2,25 @@ import '../engine.dart';
 import 'powers.dart';
 
 class Races {
+  static final fae = _race(
+    "Fae",
+    [
+      Flitter(),
+      // TODO: Another.
+    ],
+    strength: 0.6,
+    agility: 1.6,
+    vitality: 0.7,
+    intellect: 1.1,
+    description:
+        "What can be said about the fae folk that is known to be true? "
+        "Dimunitive and easily harmed, they survive by cloaking themselves "
+        "in fables, tricks, and subterfuge. Quick to anger and quick to "
+        "forgive, the fae live each moment as if it may be their last, "
+        "bright-burning flames all too aware of how easily they may be "
+        "snuffed out.",
+  );
+
   /// All of the known races.
   static final List<Race> all = [
     _race(
@@ -29,22 +48,7 @@ class Races {
           "quick to inform you. Clever, quick on their feet, and surprisingly "
           "strong for how they look. Which is radiantly beautiful, naturally.",
     ),
-    // TODO: Make stats lower and enable them to fly?
-    _race(
-      "Fae",
-      const [], // TODO: Come up with race powers.
-      strength: 0.6,
-      agility: 1.6,
-      vitality: 0.7,
-      intellect: 1.1,
-      description:
-          "What can be said about the fae folk that is known to be true? "
-          "Dimunitive and easily harmed, they survive by cloaking themselves "
-          "in fables, tricks, and subterfuge. Quick to anger and quick to "
-          "forgive, the fae live each moment as if it may be their last, "
-          "bright-burning flames all too aware of how easily they may be "
-          "snuffed out.",
-    ),
+    fae,
     _race(
       "Gnome",
       const [], // TODO: Come up with race powers.

@@ -259,37 +259,24 @@ class SidebarPanel extends Panel {
       x++;
     }
 
-    if (actor is Monster && actor.isAfraid) {
-      drawCondition("!", sandal);
+    // Good conditions:
+
+    if (actor.haste.isActive) {
+      drawCondition("S", switch (actor.haste.intensity) {
+        1 => tan,
+        2 => gold,
+        _ => buttermilk,
+      });
     }
 
-    if (actor is Monster && actor.isAsleep) {
-      drawCondition("z", darkBlue);
+    if (actor.flying.isActive) {
+      drawCondition("F", switch (actor.flying.duration) {
+        1 => darkAqua,
+        2 => aqua,
+        _ => lightAqua,
+      });
     }
 
-    if (actor.poison.isActive) {
-      switch (actor.poison.intensity) {
-        case 1:
-          drawCondition("P", sherwood);
-        case 2:
-          drawCondition("P", peaGreen);
-        default:
-          drawCondition("P", mint);
-      }
-    }
-
-    if (actor.cold.isActive) drawCondition("C", lightBlue);
-    switch (actor.haste.intensity) {
-      case 1:
-        drawCondition("S", tan);
-      case 2:
-        drawCondition("S", gold);
-      case 3:
-        drawCondition("S", buttermilk);
-    }
-
-    if (actor.blindness.isActive) drawCondition("B", darkCoolGray);
-    if (actor.dazzle.isActive) drawCondition("D", lilac);
     if (actor.perception.isActive) drawCondition("V", lighterCoolGray);
 
     for (var element in Elements.all) {
@@ -301,6 +288,31 @@ class SidebarPanel extends Panel {
         );
       }
     }
+
+    // Monster statuses:
+
+    if (actor is Monster && actor.isAfraid) {
+      drawCondition("!", sandal);
+    }
+
+    if (actor is Monster && actor.isAsleep) {
+      drawCondition("z", darkBlue);
+    }
+
+    // Bad conditions:
+
+    if (actor.poison.isActive) {
+      drawCondition("P", switch (actor.poison.intensity) {
+        1 => sherwood,
+        2 => peaGreen,
+        _ => mint,
+      });
+    }
+
+    if (actor.cold.isActive) drawCondition("C", blue);
+
+    if (actor.blindness.isActive) drawCondition("B", darkCoolGray);
+    if (actor.dazzle.isActive) drawCondition("D", lilac);
 
     if (Debug.showMonsterAlertness && actor is Monster) {
       var alertness = (actor.alertness * 100).toInt().fmt(w: 3);

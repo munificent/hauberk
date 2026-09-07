@@ -35,6 +35,8 @@ class UseAbilityDialog extends Screen<Input> {
           ..._gameScreen.game.hero.save.learnedSpells
         else*/
         // for (var skill in _gameScreen.game.hero.skills.acquired) ?skill.ability,
+        // TODO: Shouldn't show all abilities. In particular, "Flitter" should
+        // only be visible to fae heroes.
         ..._gameScreen.game.content.abilities,
       ];
 

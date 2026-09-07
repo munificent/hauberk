@@ -1,4 +1,5 @@
 import '../../engine.dart';
+import 'flitter.dart';
 import 'spell/conjuring.dart';
 import 'spell/divination.dart';
 import 'spell/sorcery.dart';
@@ -10,6 +11,7 @@ import 'weapon/whip_crack.dart';
 class Abilities {
   /// All of the abilities in the game.
   static final List<Ability> all = [
+    FlitterAbility(),
     AxeSweepAbility(),
     ClubBashAbility(),
     SpearStabAbility(),

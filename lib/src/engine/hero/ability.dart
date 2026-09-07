@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../action/action.dart';
 import '../core/game.dart';
 import 'hero_save.dart';
+import 'requirement.dart';
 import 'skill.dart';
 
 /// A behavior the [Hero] can perform granted by a [Skill].
@@ -37,48 +38,6 @@ abstract class Ability {
     var cost = focusCost(hero);
     if (cost <= 0) return action;
     return FocusAction(cost, action);
-  }
-}
-
-/// A condition that must be met before an [Ability] can be used.
-abstract class Requirement {
-  /// Describes the requirement to the user.
-  String get description;
-
-  /// If the requirement is met, returns `null`. Otherwise returns a string
-  /// describing why it is not met.
-  String? check(Game game);
-}
-
-class SkillLevelRequirement extends Requirement {
-  final Skill _skill;
-  final int _level;
-
-  SkillLevelRequirement(this._skill, this._level);
-
-  @override
-  String get description =>
-      "You must be at level $_level or higher in ${_skill.name}.";
-
-  @override
-  String? check(Game game) {
-    if (game.hero.skills.level(_skill) >= _level) return null;
-    return "Not enough ${_skill.name}";
-  }
-}
-
-class IntellectRequirement extends Requirement {
-  final int _intellect;
-
-  IntellectRequirement(this._intellect);
-
-  @override
-  String get description => "You need at least $_intellect intellect.";
-
-  @override
-  String? check(Game game) {
-    if (game.hero.save.intellect.value >= _intellect) return null;
-    return "You aren't smart enough.";
   }
 }
 

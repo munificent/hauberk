@@ -13,22 +13,24 @@ import 'thing.dart';
 abstract class Actor extends Thing {
   final Energy energy = Energy();
 
-  /// Haste raises speed.
-  final Condition haste = HasteCondition();
+  /// Makes it hard for the actor to see.
+  final Condition blindness = BlindnessCondition();
 
   /// Cold lowers speed.
   final Condition cold = ColdCondition();
 
-  /// Poison inflicts damage each turn.
-  final Condition poison = PoisonCondition();
-
-  /// Makes it hard for the actor to see.
-  final Condition blindness = BlindnessCondition();
-
   /// Makes it hard for the actor to see.
   final Condition dazzle = BlindnessCondition();
 
+  final Condition flying = FlyingCondition();
+
+  /// Haste raises speed.
+  final Condition haste = HasteCondition();
+
   final Condition perception = PerceiveCondition();
+
+  /// Poison inflicts damage each turn.
+  final Condition poison = PoisonCondition();
 
   // TODO: Wrap this in a method that returns a non-nullable result.
   // Temporary resistance to elements.
@@ -57,7 +59,12 @@ abstract class Actor extends Thing {
 
   bool needsInput(Game game) => false;
 
-  Motility get motility;
+  Motility get motility {
+    var result = onGetMotility();
+    if (flying.isActive) result |= Motility.fly;
+    print("$this $result");
+    return result;
+  }
 
   int get maxHealth;
 
@@ -116,6 +123,8 @@ abstract class Actor extends Thing {
 
   /// Called when the actor's position is about to change from [from] to [to].
   void onChangePosition(Game game, Vec from, Vec to) {}
+
+  Motility onGetMotility();
 
   Iterable<Defense> onGetDefenses();
 
@@ -237,12 +246,13 @@ abstract class Actor extends Thing {
     energy.spend();
 
     var conditions = [
-      haste,
       cold,
-      poison,
       blindness,
       dazzle,
+      flying,
+      haste,
       perception,
+      poison,
       ..._resistances.values,
     ];
 

@@ -24,6 +24,7 @@ export 'engine/hero/hero_save.dart';
 export 'engine/hero/lore.dart';
 export 'engine/hero/power.dart';
 export 'engine/hero/race.dart';
+export 'engine/hero/requirement.dart';
 export 'engine/hero/skill.dart';
 export 'engine/hero/stat.dart';
 export 'engine/item/affix.dart';

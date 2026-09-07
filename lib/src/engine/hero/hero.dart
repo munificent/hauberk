@@ -99,10 +99,6 @@ class Hero extends Actor {
 
   Intellect get intellect => save.intellect;
 
-  // TODO: Equipment and items that let the hero swim, fly, etc.
-  @override
-  Motility get motility => Motility.doorAndWalk;
-
   @override
   int get emanationLevel => save.emanationLevel;
 
@@ -141,6 +137,10 @@ class Hero extends Actor {
 
   @override
   int get baseDodge => 20 + agility.dodgeBonus;
+
+  // TODO: Equipment and items that let the hero swim, fly, etc.
+  @override
+  Motility onGetMotility() => Motility.doorAndWalk;
 
   @override
   Iterable<Defense> onGetDefenses() sync* {
