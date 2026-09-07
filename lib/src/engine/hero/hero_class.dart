@@ -8,7 +8,11 @@ class HeroClass {
 
   final String description;
 
-  final Map<Skill, int> _skillCaps;
+  /// The maximum skill level that skills in a domain can have.
+  ///
+  /// If the [Domain] isn't present, then the class can't learn skills in it
+  /// at all.
+  final Map<Domain, int> domainCaps;
 
   final List<Power> powers;
 
@@ -18,7 +22,7 @@ class HeroClass {
   HeroClass(
     this.name,
     this.description,
-    this._skillCaps,
+    this.domainCaps,
     this.powers,
     this.startingItems,
   );
@@ -27,5 +31,5 @@ class HeroClass {
   /// `0` if they can't learn this skill at all.
   ///
   /// This is the maximum base value before equipment modifiers are applied.
-  int skillCap(Skill skill) => _skillCaps[skill] ?? 0;
+  int skillCap(Skill skill) => domainCaps[skill.domain] ?? 0;
 }

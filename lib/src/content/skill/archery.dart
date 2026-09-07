@@ -1,4 +1,5 @@
 import '../../engine.dart';
+import 'skills.dart';
 
 class Archery extends Skill {
   static final Archery instance = Archery._();
@@ -12,6 +13,9 @@ class Archery extends Skill {
   String get description =>
       "Kill your foe without risking harm to yourself by unleashing a volley "
       "of arrows from far away.";
+
+  @override
+  Domain get domain => Domains.archery;
 
   @override
   String levelDescription(int level) =>

@@ -1,4 +1,5 @@
 import '../../engine.dart';
+import 'skills.dart';
 
 class Bloodlust extends Skill {
   static double damageScaleAt(int level) {
@@ -10,11 +11,14 @@ class Bloodlust extends Skill {
   }
 
   @override
+  String get name => "Bloodlust";
+
+  @override
   String get description =>
       "The more furious you are, the more deadly in combat you become.";
 
   @override
-  String get name => "Bloodlust";
+  Domain get domain => Domains.body;
 
   @override
   void modifyHit(Hero hero, Monster? monster, Item? weapon, Hit hit) {

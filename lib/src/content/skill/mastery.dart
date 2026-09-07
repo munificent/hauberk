@@ -1,6 +1,10 @@
 import '../../engine.dart';
+import 'skills.dart';
 
 abstract class MasterySkill extends Skill {
+  @override
+  Domain get domain => Domains.weaponry;
+
   String get weaponType;
 
   double _damageScale(int level) =>

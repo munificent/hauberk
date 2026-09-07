@@ -1,4 +1,5 @@
 import '../../engine.dart';
+import 'skills.dart';
 
 class SpellSchool extends Skill {
   static final SpellSchool conjuring = SpellSchool._("Conjuring");
@@ -7,6 +8,9 @@ class SpellSchool extends Skill {
 
   @override
   final String name;
+
+  @override
+  Domain get domain => Domains.spell;
 
   @override
   final int baseExperience = 4000;

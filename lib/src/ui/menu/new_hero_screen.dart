@@ -159,24 +159,21 @@ class NewHeroScreen extends Screen<Input> {
     _renderPowers(terminal, race.powers);
 
     // Show how race affects stats.
-    var y = 3;
-    for (var stat in Stat.values) {
-      terminal.writeAt(0, y, stat.name, UIHue.label);
-      var scale = (race.statScale(stat) * 100).toInt();
-      Draw.thinMeter(terminal, 10, y, 8, scale, 200);
-      y++;
-    }
+    _renderMeters(terminal, 200, [
+      for (var stat in Stat.values)
+        (stat.name, (race.statScale(stat) * 100).toInt()),
+    ]);
   }
 
   void _renderClass(Terminal terminal) {
     var heroClass = _content.classes[_class.selected];
     _renderPowers(terminal, heroClass.powers);
 
-    // TODO: Should show class proficiencies in some way. That's hard right now
-    // because they are stored individually for each skill which is way too
-    // fine-grained to fit on this little UI.
-    //
-    // Maybe have some kind of category system for skills?
+    // Show class domain proficiencies.
+    _renderMeters(terminal, Skill.baseMax, [
+      for (var entry in heroClass.domainCaps.entries)
+        (entry.key.name, entry.value),
+    ]);
   }
 
   void _renderPowers(Terminal terminal, List<Power> powers) {
@@ -190,6 +187,15 @@ class NewHeroScreen extends Screen<Input> {
 
       terminal.writeAt(25, startY, "${power.name}:", UIHue.label);
 
+      y++;
+    }
+  }
+
+  void _renderMeters(Terminal terminal, int max, List<(String, int)> meters) {
+    var y = 3;
+    for (var (name, value) in meters) {
+      terminal.writeAt(0, y, name, UIHue.label);
+      Draw.thinMeter(terminal, 13, y, 10, value, max);
       y++;
     }
   }

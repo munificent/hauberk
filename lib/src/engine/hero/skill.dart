@@ -27,9 +27,14 @@ abstract class Skill with Capability implements Comparable<Skill> {
 
   final int _sortOrder = _nextSortOrder++;
 
+  @override
   String get name;
 
+  @override
   String get description;
+
+  /// The category the skill belongs to.
+  Domain get domain;
 
   /// The experience cost to reach level one in this skill.
   int get baseExperience => 1000;
@@ -97,4 +102,17 @@ class SkillSet {
   }
 
   SkillSet clone() => SkillSet.from({..._gainedLevels});
+}
+
+/// A grouping of related skills.
+final class Domain {
+  final String name;
+
+  const Domain(this.name);
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  operator ==(Object other) => other is Domain && name == other.name;
 }

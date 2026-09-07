@@ -1,13 +1,16 @@
 import '../../engine.dart';
+import 'skills.dart';
 
 class BattleHardening extends Skill {
   @override
-  String get description =>
-      "Years of taking hits have turned your skin as "
-      "hard as cured leather.";
+  String get name => "Battle Hardening";
 
   @override
-  String get name => "Battle Hardening";
+  String get description =>
+      "Years of taking hits have turned your skin as hard as cured leather.";
+
+  @override
+  Domain get domain => Domains.body;
 
   @override
   int modifyArmor(HeroSave hero, int armor) {
