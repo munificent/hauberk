@@ -80,8 +80,6 @@ class Hero extends Actor {
 
   int get experience => save.experience;
 
-  set experience(int value) => save.experience = value;
-
   SkillSet get skills => save.skills;
 
   int get gold => save.gold;
@@ -258,12 +256,18 @@ class Hero extends Actor {
 
     var slain = lore.slay(monster.breed);
 
+    var experience = monster.experience.toDouble();
+
     // Killing more of the same breed gives diminishing returns. This is to
     // discourage players from grinding indefinitely, and reflects that the
     // hero learns less and less each time they kill the same monster.
-    var baseExperience = monster.experience;
-    var scaled = (baseExperience * 20 / (slain + 19)).ceil();
-    experience += scaled;
+    experience = experience * 20 / (slain + 19);
+
+    for (var capability in save.capabilities) {
+      experience = capability.modifyExperience(this, monster, experience);
+    }
+
+    grantExperience(experience.ceil());
   }
 
   @override
@@ -290,6 +294,16 @@ class Hero extends Actor {
   @override
   void onChangePosition(Game game, Vec from, Vec to) {
     game.stage.heroVisibilityChanged();
+  }
+
+  void grantExperience(int amount) {
+    save.experience += amount;
+  }
+
+  void spendExperience(int amount) {
+    assert(save.experience >= amount);
+
+    save.experience -= amount;
   }
 
   /// Called when an [Actor] is attempting to [hit] the hero.

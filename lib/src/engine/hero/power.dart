@@ -30,4 +30,9 @@ mixin Capability {
   /// the hero has equipped.
   double modifyHeft(Hero hero, List<Item> weapons, double totalHeft) =>
       totalHeft;
+
+  /// Gives the capability a chance to adjust the experience earned for killing
+  /// [monster].
+  double modifyExperience(Hero hero, Monster monster, double experience) =>
+      experience;
 }

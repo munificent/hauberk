@@ -41,6 +41,8 @@ class HeroSave {
   /// The current inventories of all the shops.
   final Map<Shop, Inventory> shops;
 
+  /// Note: Don't read or write this directly. Go through [Hero.experience]
+  /// instead.
   int experience = 0;
 
   final SkillSet skills;

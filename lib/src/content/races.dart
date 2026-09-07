@@ -1,4 +1,5 @@
 import '../engine.dart';
+import 'powers.dart';
 
 class Races {
   /// All of the known races.
@@ -60,7 +61,10 @@ class Races {
     ),
     _race(
       "Human",
-      const [], // TODO: Come up with race powers.
+      [
+        QuickStudy(),
+        // TODO: Another.
+      ],
       strength: 1.0,
       agility: 1.0,
       vitality: 1.0,

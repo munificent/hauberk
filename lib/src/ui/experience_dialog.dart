@@ -76,11 +76,11 @@ class ExperienceDialog extends Screen<Input> {
       case KeyCode.g:
         if (_canRaise) {
           if (_selectedStat case var stat?) {
-            _hero.experience -= stat.experienceCost(_hero.save);
+            _hero.spendExperience(stat.experienceCost(_hero.save));
             stat.refresh(_hero.save, stat.baseValue + 1);
           } else if (_selectedSkill case var skill?) {
             var level = _hero.skills.baseLevel(skill);
-            _hero.experience -= skill.experienceCost(_hero.save, level + 1);
+            _hero.spendExperience(skill.experienceCost(_hero.save, level + 1));
             _hero.skills.setLevel(skill, level + 1);
           }
           _hero.refreshProperties();
