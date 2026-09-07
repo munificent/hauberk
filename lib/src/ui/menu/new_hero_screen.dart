@@ -105,20 +105,20 @@ class NewHeroScreen extends Screen<Input> {
   final List<Control> _controls = [];
 
   NewHeroScreen(this._content, this._storage)
-    : _name = NameControl(0, 3, _storage),
+    : _name = NameControl(0, 0, _storage),
       _race = SelectControl(
         0,
-        7,
+        2,
         "Race",
         _content.races.map((race) => race.name).toList(),
       ),
       _class = SelectControl(
         0,
-        17,
+        12,
         "Class",
         _content.classes.map((cls) => cls.name).toList(),
       ),
-      _death = SelectControl(0, 31, "Death", _deaths) {
+      _death = SelectControl(0, 22, "Death", _deaths) {
     _controls.addAll([_name, _race, _class, _death]);
 
     _race.selected = rng.range(_content.races.length);
@@ -133,20 +133,13 @@ class NewHeroScreen extends Screen<Input> {
       40,
       label: "Create New Hero",
       (terminal) {
-        Draw.text(
-          terminal,
-          "Out of the forgotten wilderness, a hero appears...",
-          x: 2,
-          y: 1,
-        );
-
-        for (var y in const [6, 16, 30]) {
+        for (var y in const [2, 12, 22]) {
           Draw.hLine(terminal, 0, y, terminal.width, color: UIHue.rowSeparator);
         }
 
-        _renderRace(terminal.rect(0, 7, terminal.width, 8));
-        _renderClass(terminal.rect(0, 17, terminal.width, 15));
-        _renderDeath(terminal.rect(0, 31, terminal.width, 7));
+        _renderRace(terminal.rect(0, 2, terminal.width, 10));
+        _renderClass(terminal.rect(0, 12, terminal.width, 10));
+        _renderDescription(terminal.rect(0, 25, terminal.width, 14));
 
         for (var i = 0; i < _controls.length; i++) {
           _controls[i].render(terminal, focus: i == _focus);
@@ -163,21 +156,21 @@ class NewHeroScreen extends Screen<Input> {
 
   void _renderRace(Terminal terminal) {
     var race = _content.races[_race.selected];
-    _renderText(terminal, race.description);
+    _renderPowers(terminal, race.powers);
 
     // Show how race affects stats.
     var y = 3;
     for (var stat in Stat.values) {
-      terminal.writeAt(0, y, stat.abbreviation, UIHue.label);
+      terminal.writeAt(0, y, stat.name, UIHue.label);
       var scale = (race.statScale(stat) * 100).toInt();
-      Draw.thinMeter(terminal, 4, y, 14, scale, 200);
+      Draw.thinMeter(terminal, 10, y, 8, scale, 200);
       y++;
     }
   }
 
   void _renderClass(Terminal terminal) {
     var heroClass = _content.classes[_class.selected];
-    _renderText(terminal, heroClass.description);
+    _renderPowers(terminal, heroClass.powers);
 
     // TODO: Should show class proficiencies in some way. That's hard right now
     // because they are stored individually for each skill which is way too
@@ -186,12 +179,42 @@ class NewHeroScreen extends Screen<Input> {
     // Maybe have some kind of category system for skills?
   }
 
-  void _renderDeath(Terminal terminal) {
-    _renderText(terminal, _deathDescriptions[_death.selected]);
+  void _renderPowers(Terminal terminal, List<Power> powers) {
+    var y = 3;
+    for (var power in powers) {
+      var startY = y;
+      var text = "${power.name}: ${power.description}";
+      for (var line in Log.wordWrap(53, text)) {
+        terminal.writeAt(25, y++, line, UIHue.text);
+      }
+
+      terminal.writeAt(25, startY, "${power.name}:", UIHue.label);
+
+      y++;
+    }
   }
 
-  void _renderText(Terminal terminal, String description) {
-    Draw.text(terminal, description, x: 19, y: 3, width: 74);
+  void _renderDescription(Terminal terminal) {
+    var (name, description) = switch (_focus) {
+      0 => ("Name", "Enter a name for your new hero."),
+      1 => (
+        _content.races[_race.selected].name,
+        _content.races[_race.selected].description,
+      ),
+      2 => (
+        _content.classes[_class.selected].name,
+        _content.classes[_class.selected].description,
+      ),
+      3 => (_deaths[_death.selected], _deathDescriptions[_death.selected]),
+      _ => throw StateError("Unexpected focus."),
+    };
+
+    Draw.frame(terminal, label: name, selected: true);
+
+    var y = 2;
+    for (var line in Log.wordWrap(terminal.width - 2, description)) {
+      terminal.writeAt(1, y++, line, UIHue.text);
+    }
   }
 
   @override
@@ -345,14 +368,14 @@ class NameControl extends Control {
 
     terminal.writeAt(_x, _y + 1, "Name:", UIHue.header);
     if (focus) {
-      Draw.box(terminal, _x + 18, _y, 23, 3, color);
+      Draw.box(terminal, _x + 24, _y, 23, 3, color);
     }
 
     if (_enteredName.isNotEmpty) {
-      terminal.writeAt(_x + 19, _y + 1, _enteredName, UIHue.selectable);
+      terminal.writeAt(_x + 25, _y + 1, _enteredName, UIHue.selectable);
       if (focus) {
         terminal.writeAt(
-          _x + 19 + _enteredName.length,
+          _x + 25 + _enteredName.length,
           _y + 1,
           " ",
           Color.black,
@@ -361,14 +384,14 @@ class NameControl extends Control {
       }
     } else {
       if (focus) {
-        terminal.writeAt(_x + 19, _y + 1, _defaultName, Color.black, color);
+        terminal.writeAt(_x + 25, _y + 1, _defaultName, Color.black, color);
       } else {
-        terminal.writeAt(_x + 19, _y + 1, _defaultName, UIHue.selectable);
+        terminal.writeAt(_x + 25, _y + 1, _defaultName, UIHue.selectable);
       }
     }
 
     if (!_isUnique) {
-      terminal.writeAt(42, 1, "Already a hero with that name", red);
+      terminal.writeAt(48, 3, "Already a hero with that name", red);
     }
   }
 }
@@ -405,7 +428,7 @@ class SelectControl extends Control {
     terminal.writeAt(_x, _y + 1, "$_name:", UIHue.header);
 
     if (focus) {
-      var x = _x + 19;
+      var x = _x + 25;
       for (var i = 0; i < _options.length; i++) {
         var option = _options[i];
 
@@ -424,7 +447,7 @@ class SelectControl extends Control {
         x += option.length + 2;
       }
     } else {
-      terminal.writeAt(_x + 19, _y + 1, _options[selected], UIHue.selectable);
+      terminal.writeAt(_x + 25, _y + 1, _options[selected], UIHue.selectable);
     }
   }
 }
