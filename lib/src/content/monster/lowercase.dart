@@ -237,7 +237,11 @@ void eyes() {
 }
 
 void felines() {
-  family("f", "natural/animal/mammal/feline").sense(see: 10, hear: 8);
+  family(
+    "f",
+    "natural/animal/mammal/feline",
+    dodge: 40,
+  ).sense(see: 10, hear: 8);
   breed("stray cat", 1, gold, 11, speed: 1)
     ..meander(30)
     ..missive(Missive.hiss, rate: 4)
