@@ -63,6 +63,10 @@ class TossLosAction extends LosAction {
   bool onHitActor(Vec pos, Actor target) {
     // TODO: Range should affect strike.
     if (_hit.perform(this, actor, target) == 0) {
+      // TODO: This isn't right. The return value from perform() doesn't
+      // distinguish between "the hit missed", "a defense like a shield blocked
+      // the hit", and "the hit connected but did no damage". It should only
+      // keep flying in the first case.
       // The item missed, so keep flying.
       _missed = true;
       return false;

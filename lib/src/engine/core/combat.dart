@@ -9,7 +9,6 @@ import '../hero/hero.dart';
 import 'actor.dart';
 import 'element.dart';
 import 'game.dart';
-import 'log.dart';
 import 'thing.dart';
 
 /// Armor reduces damage by an inverse curve such that increasing armor has
@@ -23,7 +22,7 @@ import 'thing.dart';
 ///     120   25%
 ///     160   20%
 ///     ...   etc.
-num getArmorMultiplier(int armor) {
+double getArmorMultiplier(int armor) {
   // Damage is never increased.
   return 1.0 / (1.0 + math.max(0, armor) / 40.0);
 }
@@ -167,38 +166,18 @@ class Hit {
   /// Returns the amount of damage done if the attack connected or `null` if
   /// it missed.
   int perform(Action action, Actor? attacker, Actor defender, {bool? canMiss}) {
+    if (Debug.logCombat) {
+      if (attacker != null) {
+        print("$attacker hitting $defender ($canMiss):");
+      } else {
+        print("hitting $defender ($canMiss):");
+      }
+    }
+
     canMiss ??= true;
 
-    // Even if the hero can't fully see what's happening, it's important to give
-    // them some information if the attack affects them. Generate a message
-    // based on what they can see about the hit.
-    var canSeeAttacker = false;
-    if (attacker is Hero) {
-      // The hero sees what they themselves do.
-      canSeeAttacker = true;
-    } else if (attacker != null &&
-        action.game.stage.isVisibleToHero(attacker)) {
-      // The hero sees what visible monsters do.
-      canSeeAttacker = true;
-    } else if (defender is Hero && _attack.prop != null) {
-      // The hero sees if a thing hits them (even if they don't see where it
-      // came from).
-      canSeeAttacker = true;
-    } else if (action.game.stage.isVisibleToHero(defender) &&
-        _attack.prop != null) {
-      // The hero see if a thing hits a visible monster (even if they don't see
-      // where it came from).
-      canSeeAttacker = true;
-    }
-
-    var canSeeDefender = false;
-    if (defender is Hero) {
-      // The hero sees themselves.
-      canSeeDefender = true;
-    } else if (action.game.stage.isVisibleToHero(defender)) {
-      // The hero sees what hits visible monsters.
-      canSeeDefender = true;
-    }
+    var canSeeAttacker = _canSeeAttacker(action, attacker, defender);
+    var canSeeDefender = _canSeeDefender(action, defender);
 
     // If the attack itself doesn't have a noun ("the arrow hits"), use the
     // attacker ("the wolf bites").
@@ -220,21 +199,7 @@ class Hit {
       var strike = strikeRoll * _strikeScale + _strikeBonus;
       var defenses = defender.defenses.toList();
 
-      if (Debug.logCombat) {
-        var strikeMods = [
-          for (var scale in _strikeScales)
-            'x ${scale.amount.fmt(d: 2)} (${scale.reason})',
-          for (var bonus in _strikeBonuses)
-            '+ ${bonus.amount} (${bonus.reason})',
-        ].join(' ');
-        action.game.log.debug('strike: $strikeRoll $strikeMods');
-
-        var defenseString = [
-          for (var defense in defenses)
-            '${defense.amount} (${defense.message})',
-        ].join(' ');
-        action.game.log.debug('defense: $defenseString');
-      }
+      if (Debug.logCombat) _debugStrikeRoll(defenses, strikeRoll);
 
       // Shuffle defenses so the message shown isn't biased by their order (just
       // their relative amounts).
@@ -253,7 +218,7 @@ class Hit {
     // Roll for damage.
     var armor = defender.armor;
     var resistance = defender.resistance(element);
-    var damage = _rollDamage(action.game.log, armor, resistance);
+    var damage = _rollDamage(armor, resistance);
 
     if (damage == 0) {
       // Armor cancelled out all damage.
@@ -295,7 +260,42 @@ class Hit {
     return damage;
   }
 
-  int _rollDamage(Log log, int armor, int resistance) {
+  /// Even if the hero can't fully see what's happening, it's important to give
+  /// them some information if the attack affects them. Generate a message
+  /// based on what they can see about the hit.
+  bool _canSeeAttacker(Action action, Actor? attacker, Actor defender) {
+    // The hero sees what they themselves do.
+    if (attacker is Hero) return true;
+
+    // The hero sees what visible monsters do.
+    if (attacker != null && action.game.stage.isVisibleToHero(attacker)) {
+      return true;
+    }
+
+    // The hero sees a thing that hits them (even if they don't see where it
+    // came from).
+    if (defender is Hero && _attack.prop != null) return true;
+
+    // The hero see if a thing hits a visible monster (even if they don't see
+    // where it came from).
+    if (action.game.stage.isVisibleToHero(defender) && _attack.prop != null) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _canSeeDefender(Action action, Actor defender) {
+    // The hero sees themselves.
+    if (defender is Hero) return true;
+
+    // The hero sees what hits visible monsters.
+    if (action.game.stage.isVisibleToHero(defender)) return true;
+
+    return false;
+  }
+
+  int _rollDamage(int armor, int resistance) {
     var resistScale = 1.0 / (1.0 + resistance);
 
     // Calculate in cents so that we don't do as much rounding until after
@@ -307,22 +307,37 @@ class Hit {
     var rolled =
         rng.triangleInt(damageCents, damageCents ~/ 2).toDouble() * armorScale;
 
-    if (Debug.logCombat) {
-      var damageString = [
-        '(',
-        _attack.damage,
-        for (var scale in _damageScales)
-          'x ${scale.amount.fmt(d: 2)} (${scale.reason})',
-        for (var bonus in _damageBonuses) '+ ${bonus.amount} (${bonus.reason})',
-        ')',
-        if (resistScale != 1.0) 'x ${resistScale.fmt(d: 2)} (resist)',
-        if (armorScale != 1.0) 'x ${armorScale.fmt(d: 2)} (armor)',
-      ].join(' ');
-
-      log.debug('damage: $damageString');
-    }
+    if (Debug.logCombat) _debugDamageRoll(resistScale, armorScale);
 
     return (rolled / 100).round();
+  }
+
+  void _debugStrikeRoll(List<Defense> defenses, int strikeRoll) {
+    var strikeMods = [
+      for (var scale in _strikeScales)
+        'x ${scale.amount.fmt(d: 2)} (${scale.reason})',
+      for (var bonus in _strikeBonuses) '+ ${bonus.amount} (${bonus.reason})',
+    ].join(' ');
+    print('strike: $strikeRoll $strikeMods');
+
+    var defenseString = [
+      for (var defense in defenses) '${defense.amount} (${defense.message})',
+    ].join(' ');
+    print('defense: $defenseString');
+  }
+
+  void _debugDamageRoll(double resistScale, double armorScale) {
+    var damageString = [
+      '(',
+      _attack.damage,
+      for (var scale in _damageScales)
+        'x ${scale.amount.fmt(d: 2)} (${scale.reason})',
+      for (var bonus in _damageBonuses) '+ ${bonus.amount} (${bonus.reason})',
+      ')',
+      if (resistScale != 1.0) 'x ${resistScale.fmt(d: 2)} (resist)',
+      if (armorScale != 1.0) 'x ${armorScale.fmt(d: 2)} (armor)',
+    ].join(' ');
+    print('damage: $damageString');
   }
 }
 

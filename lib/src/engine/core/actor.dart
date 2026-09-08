@@ -228,9 +228,7 @@ abstract class Actor extends Thing {
   }
 
   /// Called when this Actor has been killed by [attack].
-  void onDied(Action action, Thing attack) {
-    // Do nothing.
-  }
+  void onDied(Action action, Thing attack);
 
   /// Called when this Actor has killed [defender].
   void onKilled(Action action, Actor defender) {
