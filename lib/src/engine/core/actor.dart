@@ -82,7 +82,7 @@ abstract class Actor extends Thing {
     var dodge = baseDodge;
 
     // Hard to dodge an attack you can't see coming.
-    if (isBlinded) dodge ~/= 2;
+    if (isBlinded) dodge ~/= 3;
 
     if (dodge != 0) yield Defense(dodge, "{1} dodge[s] {2}.");
 

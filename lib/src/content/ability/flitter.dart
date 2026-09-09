@@ -20,8 +20,8 @@ class FlyAction extends Action {
     if (hero.flying.isActive) {
       hero.flying.cancel();
     } else {
-      // TODO: Extend the duration based on strength?
-      hero.flying.activate(8);
+      var duration = lerpInt(hero.strength.value, 0, Stat.modifiedMax, 3, 20);
+      hero.flying.activate(duration);
       log("{1} unfold your wings and take flight.", actor);
     }
 

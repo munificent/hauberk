@@ -4,10 +4,7 @@ import 'powers.dart';
 class Races {
   static final fae = _race(
     "Fae",
-    [
-      Flitter(),
-      // TODO: Another.
-    ],
+    [FairyDust(), Flitter()],
     strength: 0.6,
     agility: 1.6,
     vitality: 0.7,

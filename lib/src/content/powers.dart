@@ -18,6 +18,19 @@ class DualWield extends Power {
   }
 }
 
+/// This power doesn't actually do anything. Instead, the [FairyDustAbility] is
+/// gated on the hero being a fae.
+///
+/// This is just here to show up in the new hero screen.
+class FairyDust extends Power {
+  @override
+  String get name => "Fairy Dust";
+
+  @override
+  String get description =>
+      "A sprinkle of glimmering magic dazzles all nearby foes.";
+}
+
 /// This power doesn't actually do anything. Instead, the [FlitterAbility] is
 /// gated on the hero being a fae.
 ///

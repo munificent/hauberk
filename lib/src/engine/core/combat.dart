@@ -47,7 +47,7 @@ class Attack {
 
   final Element element;
 
-  Attack(this.prop, this.verb, this.damage, [int? range, Element? element])
+  Attack(this.prop, this.verb, this.damage, {int? range, Element? element})
     : range = range ?? 0,
       element = element ?? Element.none;
 

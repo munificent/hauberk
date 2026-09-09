@@ -23,8 +23,8 @@ List<Spell> sorcerySpells() {
           Prop("icicle"),
           "pierce",
           8,
-          spell.range,
-          Elements.cold,
+          range: spell.range,
+          element: Elements.cold,
         );
         return BoltAction(target, attack.createHit());
       },
@@ -41,8 +41,8 @@ List<Spell> sorcerySpells() {
           Prop("light"),
           "sear",
           10,
-          spell.range,
-          Elements.light,
+          range: spell.range,
+          element: Elements.light,
         );
         return RayAction.narrowCone(game.hero.pos, target, attack.createHit());
       },
@@ -54,7 +54,13 @@ List<Spell> sorcerySpells() {
       spellLevel: 3,
       focus: 36,
       (spell, game) {
-        var attack = Attack(Prop("wind"), "blast", 10, 6, Elements.air);
+        var attack = Attack(
+          Prop("wind"),
+          "blast",
+          10,
+          range: 6,
+          element: Elements.air,
+        );
         return FlowAction(
           game.hero.pos,
           attack.createHit(),
@@ -74,8 +80,8 @@ List<Spell> sorcerySpells() {
           Prop("fire"),
           "burn",
           10,
-          spell.range,
-          Elements.fire,
+          range: spell.range,
+          element: Elements.fire,
         );
         return BarrierAction(game.hero.pos, target, attack.createHit());
       },
@@ -87,7 +93,13 @@ List<Spell> sorcerySpells() {
       spellLevel: 5,
       focus: 70,
       (spell, game) {
-        var attack = Attack(Prop("wave"), "inundate", 50, 15, Elements.water);
+        var attack = Attack(
+          Prop("wave"),
+          "inundate",
+          50,
+          range: 15,
+          element: Elements.water,
+        );
         return FlowAction(
           game.hero.pos,
           attack.createHit(),

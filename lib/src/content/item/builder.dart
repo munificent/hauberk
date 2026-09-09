@@ -210,7 +210,7 @@ class ItemBuilder extends _BaseBuilder {
   }
 
   void weapon(int damage, {required int heft, Element? element}) {
-    _attack = Attack(null, _category._verb!, damage, null, element);
+    _attack = Attack(null, _category._verb!, damage, element: element);
     _heft = heft;
   }
 
@@ -220,8 +220,7 @@ class ItemBuilder extends _BaseBuilder {
     required int damage,
     required int range,
   }) {
-    _attack = Attack(Prop(prop), "pierce[s]", damage, range);
-    // TODO: Make this per-item once it does something.
+    _attack = Attack(Prop(prop), "pierce[s]", damage, range: range);
     _heft = heft;
   }
 
@@ -309,7 +308,13 @@ class ItemBuilder extends _BaseBuilder {
     int? range,
   }) {
     range ??= 3;
-    var attack = Attack(Prop(prop), verb, damage, range, element);
+    var attack = Attack(
+      Prop(prop),
+      verb,
+      damage,
+      range: range,
+      element: element,
+    );
 
     use(
       "Unleashes a ball of $element that inflicts $damage damage out to "
@@ -328,7 +333,13 @@ class ItemBuilder extends _BaseBuilder {
     int range = 5,
     bool fly = false,
   }) {
-    var attack = Attack(Prop(prop), verb, damage, range, element);
+    var attack = Attack(
+      Prop(prop),
+      verb,
+      damage,
+      range: range,
+      element: element,
+    );
 
     var motility = Motility.walk;
     if (fly) motility |= Motility.fly;
@@ -364,8 +375,8 @@ class ItemBuilder extends _BaseBuilder {
           _ => "hits",
         },
         tossDamage,
-        _tossRange ?? _category._tossRange,
-        _tossElement ?? _category._tossElement ?? Element.none,
+        range: _tossRange ?? _category._tossRange,
+        element: _tossElement ?? _category._tossElement ?? Element.none,
       );
       toss = Toss(
         _category._breakage ?? _breakage ?? 0,

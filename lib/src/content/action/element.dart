@@ -95,8 +95,7 @@ class BurningFloorAction extends Action with DestroyActionMixin {
         Prop.mass("fire"),
         "burns",
         10,
-        0,
-        Elements.fire,
+        element: Elements.fire,
       ).createHit();
       hit.perform(this, null, target, canMiss: false);
     }
@@ -172,8 +171,7 @@ class PoisonedFloorAction extends Action with DestroyActionMixin {
           Prop.mass("poison"),
           "chokes",
           _damage,
-          0,
-          Elements.poison,
+          element: Elements.poison,
         ).createHit();
         hit.perform(this, null, actor, canMiss: false);
       }

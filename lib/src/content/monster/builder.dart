@@ -256,7 +256,7 @@ class BreedBuilder extends _BaseBuilder {
   }
 
   void attack(String verb, int damage, [Element? element, Prop? prop]) {
-    _attacks.add(Attack(prop, verb, damage, 0, element));
+    _attacks.add(Attack(prop, verb, damage, element: element));
   }
 
   /// Drops [name], which can be either an item type or tag.
@@ -470,7 +470,13 @@ class BreedBuilder extends _BaseBuilder {
     _addMove(
       BoltMove(
         rate,
-        Attack(prop != null ? Prop(prop) : null, verb, damage, range, element),
+        Attack(
+          prop != null ? Prop(prop) : null,
+          verb,
+          damage,
+          range: range,
+          element: element,
+        ),
       ),
     );
   }
@@ -486,7 +492,12 @@ class BreedBuilder extends _BaseBuilder {
     rate ??= 5;
     range ??= 10;
 
-    _addMove(ConeMove(rate, Attack(Prop(noun), verb, damage, range, element)));
+    _addMove(
+      ConeMove(
+        rate,
+        Attack(Prop(noun), verb, damage, range: range, element: element),
+      ),
+    );
   }
 
   void _addMove(Move move) {

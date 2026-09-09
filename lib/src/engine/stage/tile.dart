@@ -161,7 +161,7 @@ class Tile {
   /// things like light spells.
   int _appliedEmanation = 0;
 
-  /// If you call this, make sure to call [Stage.tileEmanationChanged()].
+  /// If you call this, make sure to call [Stage.floorEmanationChanged()].
   void addEmanation(int offset) {
     _appliedEmanation = (_appliedEmanation + offset).clamp(
       0,
