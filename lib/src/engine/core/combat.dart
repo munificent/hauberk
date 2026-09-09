@@ -347,5 +347,5 @@ class Defense {
   final int amount;
   final String message;
 
-  Defense(this.amount, this.message);
+  const Defense(this.amount, this.message);
 }

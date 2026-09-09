@@ -143,18 +143,11 @@ class Hero extends Actor {
   Motility onGetMotility() => Motility.doorAndWalk;
 
   @override
-  Iterable<Defense> onGetDefenses() sync* {
-    for (var item in equipment) {
-      var defense = item.defense;
-      if (defense != null) yield defense;
-    }
-
-    for (var capability in save.capabilities) {
-      yield* capability.defenses(this);
-    }
-
+  Iterable<Defense> onGetDefenses() => [
+    for (var item in equipment) ?item.defense,
+    for (var capability in save.capabilities) ...capability.defenses(this),
     // TODO: Temporary bonuses, etc.
-  }
+  ];
 
   @override
   Action onGetAction(Game game) => _behavior!.getAction(this);

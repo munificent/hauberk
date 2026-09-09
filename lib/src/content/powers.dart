@@ -18,19 +18,6 @@ class DualWield extends Power {
   }
 }
 
-class QuickStudy extends Power {
-  @override
-  String get name => "Quick Study";
-
-  @override
-  String get description => "Gain 10% more experience when killing a monster.";
-
-  @override
-  double modifyExperience(Hero hero, Monster monster, double experience) {
-    return experience * 1.1;
-  }
-}
-
 /// This power doesn't actually do anything. Instead, the [FlitterAbility] is
 /// gated on the hero being a fae.
 ///
@@ -42,4 +29,30 @@ class Flitter extends Power {
   @override
   String get description =>
       "Take flight and soar over the ground, at least until you get tired.";
+}
+
+class Foolhardy extends Power {
+  @override
+  String get name => "Foolhardy";
+
+  @override
+  String get description => "An aura of good luck makes you 10% harder to hit.";
+
+  @override
+  Iterable<Defense> defenses(Hero hero) => const [
+    Defense(10, "Your luck protects you!"),
+  ];
+}
+
+class QuickStudy extends Power {
+  @override
+  String get name => "Quick Study";
+
+  @override
+  String get description => "Gain 10% more experience when killing a monster.";
+
+  @override
+  double modifyExperience(Hero hero, Monster monster, double experience) {
+    return experience * 1.1;
+  }
 }

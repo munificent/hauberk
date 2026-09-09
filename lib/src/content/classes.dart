@@ -16,8 +16,9 @@ class Classes {
           "wilds and live on one's wits. Adventurers are flexible and "
           "resourceful. They are masters of nothing, but able to learn a "
           "little of everything.",
-      const [
-        // TODO: Come up with class powers.
+      [
+        Foolhardy(),
+        // TODO: Another.
       ],
       {
         Domains.archery: 5,
