@@ -101,10 +101,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_web_compilers
-      sha256: c8be4b48f09289d145c7eaa3240f1e7776c529ea1cecddf483218edd3129de3f
+      sha256: f8e2a2b3c45b0754fccb284e6f5d890b9d7ff3bed758293e55d29bcdc2821b78
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.8.10"
   built_collection:
     dependency: transitive
     description:
@@ -602,4 +602,4 @@ packages:
     source: hosted
     version: "3.1.4"
 sdks:
-  dart: ">=3.11.0 <3.13.0-z"
+  dart: ">=3.13.0 <3.14.0-z"

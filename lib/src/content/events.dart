@@ -1,8 +1,11 @@
 import '../engine.dart';
 
 class Events {
-  /// One step of a bolt.
+  /// One step of an elemental bolt.
   static const bolt = EventType("bolt");
+
+  /// One step of an icicle spell.
+  static const icicle = EventType("icicle");
 
   /// The leading edge of a cone.
   static const cone = EventType("cone");

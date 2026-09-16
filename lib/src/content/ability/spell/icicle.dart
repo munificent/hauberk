@@ -3,6 +3,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../../engine.dart';
 import '../../action/bolt.dart';
 import '../../elements.dart';
+import '../../events.dart';
 import '../../skill/arcana.dart';
 import 'spell.dart';
 
@@ -11,7 +12,7 @@ class IcicleSpell extends Spell with TargetAbility {
   String get name => "Icicle";
 
   @override
-  String get description => "TODO";
+  String get description => "A razor-sharp blade of ice flies toward a target.";
 
   @override
   final List<Arcanum> arcana = [Arcanum.icewinding];
@@ -31,9 +32,9 @@ class IcicleSpell extends Spell with TargetAbility {
       range: getRange(game),
       element: Elements.cold,
     );
-    return BoltAction(target, attack.createHit());
+    return BoltAction(target, attack.createHit(), event: Events.icicle);
   }
 
   @override
-  int getRange(Game game) => 8;
+  int getRange(Game game) => 10 + spellPower(game.hero.save);
 }

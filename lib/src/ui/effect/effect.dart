@@ -4,6 +4,7 @@ import 'package:piecemeal/piecemeal.dart';
 import '../../content.dart';
 import '../../engine.dart';
 import '../../hues.dart';
+import 'animation.dart';
 import 'blink.dart';
 import 'damage.dart';
 import 'detect.dart';
@@ -26,11 +27,15 @@ void addEffects(List<Effect> effects, Event event) {
     case Events.bolt:
       // TODO: Assumes all none-element bolts are arrows. Do something better?
       if (event.element == Element.none) {
-        var char = _directionLines[event.dir]!;
+        var char = _lines[event.dir]!;
         effects.add(FrameEffect(event.pos, char, sandal, life: 2));
       } else {
         effects.add(ElementEffect(event.pos, event.element));
       }
+
+    case Events.icicle:
+      var animation = _icicleAnimations[event.dir]!;
+      effects.add(AnimationEffect(event.pos, animation));
 
     case Events.cone:
       effects.add(ElementEffect(event.pos, event.element));
@@ -96,7 +101,7 @@ void addEffects(List<Effect> effects, Event event) {
 
     case Events.slash:
     case Events.stab:
-      var line = _directionLines[event.dir]!;
+      var line = _lines[event.dir]!;
 
       var color = lighterCoolGray;
       if (event.item case var item?) {
@@ -123,7 +128,7 @@ abstract class Effect {
   void render(Game game, DrawGlyph drawGlyph);
 }
 
-final _directionLines = {
+final _lines = {
   Direction.n: "|",
   Direction.ne: "/",
   Direction.e: "-",
@@ -134,9 +139,7 @@ final _directionLines = {
   Direction.nw: r"\",
 };
 
-// TODO: Use for icicle.
-/*
-final _directionChevrons = {
+final _chevrons = {
   Direction.n: "^",
   Direction.ne: "┐",
   Direction.e: ">",
@@ -146,4 +149,14 @@ final _directionChevrons = {
   Direction.w: "<",
   Direction.nw: "┌",
 };
-*/
+
+// TODO: Better place for this?
+final _icicleAnimations = {
+  for (var direction in Direction.all)
+    direction: AnimationBuilder()
+        .frame(_chevrons[direction]!, [lighterCoolGray])
+        .frame(_chevrons[direction]!, [lightBlue])
+        .frame("*x+", [blue])
+        .frame("*x+", [darkBlue])
+        .build(),
+};
