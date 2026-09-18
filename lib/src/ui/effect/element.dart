@@ -24,7 +24,7 @@ class ElementEffect implements Effect {
 
   @override
   void render(Game game, DrawGlyph drawGlyph) {
-    if (game.stage.get(_pos.x, _pos.x).isOccluded) return;
+    if (game.stage.get(_pos.x, _pos.y).isOccluded) return;
 
     drawGlyph(_pos.x, _pos.y, _animation.get(_age));
   }

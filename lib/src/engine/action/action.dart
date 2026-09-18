@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import '../core/actor.dart';
@@ -205,6 +206,7 @@ mixin GeneratorActionMixin on Action {
   late final Iterator<ActionResult> _iterator = onGenerate().iterator;
 
   @override
+  @nonVirtual
   ActionResult onPerform() {
     // If it reaches the end, it succeeds.
     if (!_iterator.moveNext()) return ActionResult.success;
